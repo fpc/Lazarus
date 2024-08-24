@@ -6932,7 +6932,7 @@ procedure TIdeWatch.DoLoadDisplayFormatFromXMLConfig(const AConfig: TXMLConfig;
 var
   s: String;
 begin
-  s := LowerCase(AConfig.GetValue(APath+AOldPath, 'wdfDefault'));
+  s := LowerCase(AConfig.GetValue(AOldPath, 'wdfDefault'));
   if s <> 'wdfdefault' then begin
     ADisplayFormat := ParseOldDispFormat(s);
   end
@@ -7144,7 +7144,7 @@ begin
   then Include(FEvaluateFlags, defFunctionCallRunAllThreads)
   else Exclude(FEvaluateFlags, defFunctionCallRunAllThreads);
 
-  DoLoadDisplayFormatFromXMLConfig(AConfig, APath + 'DisplayStyle', '/Value', FDisplayFormat);
+  DoLoadDisplayFormatFromXMLConfig(AConfig, APath + 'DisplayFormat', APath + 'DisplayStyle/Value', FDisplayFormat);
 
   FRepeatCount := AConfig.GetValue(APath + 'RepeatCount', 0);
 
