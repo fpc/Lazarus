@@ -193,6 +193,7 @@ procedure TArrayNavigationBar.cbEnforceBoundChange(Sender: TObject);
 begin
   UpdateBoundsInfo;
   cbAutoHideChange(nil);
+  edArrayStartEditingDone(nil);
 end;
 
 procedure TArrayNavigationBar.edArrayPageSizeEditingDone(Sender: TObject);
