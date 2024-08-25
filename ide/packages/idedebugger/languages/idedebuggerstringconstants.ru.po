@@ -11,6 +11,10 @@ msgstr ""
 "Language: ru\n"
 "X-Generator: Poedit 2.3.1\n"
 
+#: idedebuggerstringconstants.arrnavautohide
+msgid "Hide automatically"
+msgstr ""
+
 #: idedebuggerstringconstants.arrnavenforcebounds
 msgctxt "idedebuggerstringconstants.arrnavenforcebounds"
 msgid "Enforce bounds"

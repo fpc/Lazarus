@@ -623,6 +623,7 @@ begin
   btnArrayFastDown.Caption := '';
 
   cbEnforceBound.Caption := arrnavEnforceBounds;
+  cbAutoHide.Caption := arrnavAutoHide;
 
   FNavBarVisible := True;
   btnHide.Images     := IDEImages.Images_16;

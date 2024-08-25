@@ -515,6 +515,7 @@ resourcestring
   optDispGutterCustomDisplayformat = 'Custom Display Format';
   dbgConvertOrdinalToName = 'Conversion of ordinal to name';
   arrnavEnforceBounds = 'Enforce bounds';
+  arrnavAutoHide = 'Hide automatically';
 
 implementation
 

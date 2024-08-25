@@ -5,6 +5,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
+#: idedebuggerstringconstants.arrnavautohide
+msgid "Hide automatically"
+msgstr ""
+
 #: idedebuggerstringconstants.arrnavenforcebounds
 msgctxt "idedebuggerstringconstants.arrnavenforcebounds"
 msgid "Enforce bounds"

@@ -12,6 +12,10 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "Language: pt_BR\n"
 
+#: idedebuggerstringconstants.arrnavautohide
+msgid "Hide automatically"
+msgstr ""
+
 #: idedebuggerstringconstants.arrnavenforcebounds
 msgctxt "idedebuggerstringconstants.arrnavenforcebounds"
 msgid "Enforce bounds"

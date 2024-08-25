@@ -12,6 +12,10 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Generator: Poedit 3.2\n"
 
+#: idedebuggerstringconstants.arrnavautohide
+msgid "Hide automatically"
+msgstr ""
+
 #: idedebuggerstringconstants.arrnavenforcebounds
 msgctxt "idedebuggerstringconstants.arrnavenforcebounds"
 msgid "Enforce bounds"
