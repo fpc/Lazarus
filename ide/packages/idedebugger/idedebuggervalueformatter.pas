@@ -55,6 +55,9 @@ type
     function DoFormatValue(AWatchValue: IWatchResultDataIntf; ADisplayFormat: TWatchDisplayFormat;
       AWatchResultPrinter: IWatchResultPrinter; out APrintedValue: String
       ): Boolean;
+    function MatchesAll(AWatchValue: IWatchResultDataIntf; ADisplayFormat: TWatchDisplayFormat; ANestLevel: integer;
+                        const AWatchedVarUpper, AWatchedExprUpper: String;
+                        var AWatchedTypeUpper: String; var AWatchedTypeUpperDone: Boolean): Boolean;
   public
     constructor Create;
     constructor Create(AFormatter: TLazDbgIdeValueFormatterRegistryEntryClass);
@@ -65,8 +68,6 @@ type
     procedure LoadDataFromXMLConfig(const AConfig: TRttiXMLConfig; const APath: string);
     procedure SaveDataToXMLConfig(const AConfig: TRttiXMLConfig; const APath: string);
 
-    function MatchesAll(AWatchValue: IWatchResultDataIntf; ADisplayFormat: TWatchDisplayFormat; ANestLevel: integer;
-                        const AWatchedVarUpper, AWatchedExprUpper: String): Boolean;
     function FormatValue(AWatchValue: IWatchResultDataIntf;
       ADisplayFormat: TWatchDisplayFormat; ANestLevel: integer;
       AWatchResultPrinter: IWatchResultPrinter; out APrintedValue: String;
@@ -271,7 +272,8 @@ end;
 
 function TIdeDbgValueFormatterSelector.MatchesAll(AWatchValue: IWatchResultDataIntf;
   ADisplayFormat: TWatchDisplayFormat; ANestLevel: integer; const AWatchedVarUpper,
-  AWatchedExprUpper: String): Boolean;
+  AWatchedExprUpper: String; var AWatchedTypeUpper: String; var AWatchedTypeUpperDone: Boolean
+  ): Boolean;
 var
   j: Integer;
   a: IWatchResultDataIntf;
@@ -287,7 +289,11 @@ begin
   then
     exit;
 
-  if not IsMatchingTypeName(AnsiUpperCase(AWatchValue.TypeName)) then begin
+  if not AWatchedTypeUpperDone then begin
+    AWatchedTypeUpper := AnsiUpperCase(AWatchValue.TypeName);
+    AWatchedTypeUpperDone := True;
+  end;
+  if not IsMatchingTypeName(AWatchedTypeUpper) then begin
     if not MatchInherited then
       exit;
     j := AWatchValue.AnchestorCount - 1;
@@ -311,8 +317,13 @@ function TIdeDbgValueFormatterSelector.FormatValue(AWatchValue: IWatchResultData
   ADisplayFormat: TWatchDisplayFormat; ANestLevel: integer;
   AWatchResultPrinter: IWatchResultPrinter; out APrintedValue: String;
   const AWatchedVarUpper, AWatchedExprUpper: String): Boolean;
+var
+  AWatchedTypeUpper: String;
+  AWatchedTypeUpperDone: Boolean;
 begin
-  Result := MatchesAll(AWatchValue, ADisplayFormat, ANestLevel, AWatchedVarUpper, AWatchedExprUpper);
+  AWatchedTypeUpperDone := False;
+  Result := MatchesAll(AWatchValue, ADisplayFormat, ANestLevel,
+    AWatchedVarUpper, AWatchedExprUpper, AWatchedTypeUpper, AWatchedTypeUpperDone);
   if Result then
     Result := DoFormatValue(AWatchValue, ADisplayFormat, AWatchResultPrinter, APrintedValue);
 end;
@@ -477,10 +488,15 @@ function TIdeDbgValueFormatterSelectorList.FormatValue(AWatchValue: IWatchResult
 var
   i: Integer;
   f: TIdeDbgValueFormatterSelector;
+  AWatchedTypeUpper: String;
+  AWatchedTypeUpperDone: Boolean;
 begin
+  AWatchedTypeUpperDone := False;
   for i := 0 to Count - 1 do begin
     f := Items[i];
-    if not f.MatchesAll(AWatchValue, ADisplayFormat, ANestLevel, AWatchedVarUpper, AWatchedExprUpper) then
+    if not f.MatchesAll(AWatchValue, ADisplayFormat, ANestLevel,
+                        AWatchedVarUpper, AWatchedExprUpper, AWatchedTypeUpper, AWatchedTypeUpperDone)
+    then
       continue;
 
     Result := f.DoFormatValue(AWatchValue, ADisplayFormat, AWatchResultPrinter, APrintedValue);
