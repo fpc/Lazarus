@@ -11,7 +11,7 @@ object WatchInspectNav: TWatchInspectNav
   DesignTop = 35
   object ToolBar1: TToolBar
     Left = 0
-    Height = 46
+    Height = 47
     Top = 25
     Width = 1040
     AutoSize = True
@@ -170,48 +170,49 @@ object WatchInspectNav: TWatchInspectNav
       Visible = False
     end
     inline ArrayNavigationBar1: TArrayNavigationBar
-      Left = 604
+      Left = 1
       Height = 23
-      Top = 2
-      Width = 253
+      Top = 24
+      Width = 476
+      AutoSize = True
       ClientHeight = 23
-      ClientWidth = 253
+      ClientWidth = 476
       TabOrder = 1
     end
     object tbDivArray: TToolButton
-      Left = 857
+      Left = 477
       Height = 22
-      Top = 2
+      Top = 24
       Caption = 'tbDivArray'
       Style = tbsDivider
     end
     object BtnAddWatch: TToolButton
-      Left = 862
-      Top = 2
+      Left = 482
+      Top = 24
       Caption = 'Add Watch'
       OnClick = BtnAddWatchClick
     end
     object BtnInspect: TToolButton
-      Left = 981
-      Top = 2
+      Left = 601
+      Top = 24
       Caption = 'Inspect'
       OnClick = BtnInspectClick
     end
     object BtnEvaluate: TToolButton
-      Left = 929
-      Top = 2
+      Left = 549
+      Top = 24
       Caption = 'Evaluate'
       OnClick = BtnEvaluateClick
     end
     object tbDivAdd: TToolButton
-      Left = 1027
+      Left = 647
       Height = 22
-      Top = 2
+      Top = 24
       Caption = 'tbDivAdd'
       Style = tbsDivider
     end
     object btnEvalHistory: TToolButton
-      Left = 1
+      Left = 652
       Top = 24
       Caption = 'History'
       DropdownMenu = mnuHistory

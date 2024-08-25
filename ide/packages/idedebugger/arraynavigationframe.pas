@@ -75,6 +75,7 @@ type
     procedure CreateWnd; override;
     procedure SetParent(AParent: TWinControl); override;
   public
+    constructor Create(TheOwner: TComponent); override;
     constructor Create(TheOwner: TComponent; ATree: TDbgTreeView; ANode: PVirtualNode); reintroduce;
     destructor Destroy; override;
     function PreferredHeight: integer;
@@ -372,6 +373,7 @@ end;
 
 procedure TArrayNavigationBar.HideNavBar;
 begin
+  if FTree = nil then exit;
   FNavBarVisible := False;
   FTree.NodeRightButtonImgIdx[FNode] := IDEImages.LoadImage('NavArrow_Show');
   FTree.NodeControlVisible[FNode] := False;
@@ -379,6 +381,7 @@ end;
 
 procedure TArrayNavigationBar.ShowNavBar;
 begin
+  if FTree = nil then exit;
   Constraints.MinWidth := Max(Max(cbEnforceBound.Left + btnHide.Width + btnHide.Width,
                                   FTree.RangeX
                                  ), FTree.ClientWidth);
@@ -389,6 +392,7 @@ end;
 
 procedure TArrayNavigationBar.UpdateCollapsedExpanded;
 begin
+  if FTree = nil then exit;
   if FTree.Expanded[FNode] then begin
     if FNavBarVisible then
       ShowNavBar
@@ -498,6 +502,8 @@ end;
 
 procedure TArrayNavigationBar.DoParentResized(Sender: TObject);
 begin
+  if FTree = nil then exit;
+
   if (edArrayStart = nil) or (Parent = nil) or (not HandleAllocated) or (not IsVisible) then
     exit;
 
@@ -555,6 +561,8 @@ end;
 procedure TArrayNavigationBar.VisibleChanged;
 begin
   inherited VisibleChanged;
+  if FTree = nil then exit;
+
   if HandleAllocated then begin
     if Visible then
       FTree.NodeControlHeight[FNode] := Max(15, PreferredHeight);
@@ -566,6 +574,8 @@ end;
 procedure TArrayNavigationBar.CreateWnd;
 begin
   inherited CreateWnd;
+  if FTree = nil then exit;
+
   if Visible then
     FTree.NodeControlHeight[FNode] := Max(15, PreferredHeight);
   UpdateCollapsedExpanded;
@@ -574,14 +584,21 @@ end;
 
 procedure TArrayNavigationBar.SetParent(AParent: TWinControl);
 begin
-  if (AParent = nil) and (Parent <> nil) then
+  if (AParent = nil) and (Parent <> nil) and (FTree <> nil) then
     Parent.RemoveHandlerOnResize(@DoParentResized);
   inherited SetParent(AParent);
-  if Parent <> nil then begin
+  if (Parent <> nil) and (FTree <> nil) then begin
     Parent.AddHandlerOnResize(@DoParentResized);
     if HandleAllocated and IsVisible then
       DoParentResized(nil);
   end;
+end;
+
+constructor TArrayNavigationBar.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  btnHide.Visible := False;
+  cbAutoHide.Visible := False;
 end;
 
 constructor TArrayNavigationBar.Create(TheOwner: TComponent; ATree: TDbgTreeView;

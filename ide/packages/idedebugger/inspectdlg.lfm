@@ -96,6 +96,7 @@ object IDEInspectDlg: TIDEInspectDlg
         Height = 23
         Top = 24
         Width = 253
+        AutoSize = True
         ClientHeight = 23
         ClientWidth = 253
         TabOrder = 1
