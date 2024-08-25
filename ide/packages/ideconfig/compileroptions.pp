@@ -2951,6 +2951,7 @@ begin
   fTargetOS := CompOpts.fTargetOS;
   fTargetCPU := CompOpts.fTargetCPU;
   fTargetProc := CompOpts.fTargetProc;
+  FSubtarget := CompOpts.FSubtarget;
   fOptLevel := CompOpts.fOptLevel;
   fVarsInReg := CompOpts.fVarsInReg;
   fUncertainOpt := CompOpts.fUncertainOpt;

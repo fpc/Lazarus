@@ -323,12 +323,14 @@ begin
         end;
       end;
     end;
+    //debugln(['TCompilerConfigTargetFrame.FillSubTargetComboBox UseSubTarget="',UseSubTarget,'" Candidates=[',sl.Text,']']);
     with SubtargetComboBox do begin
       Items.BeginUpdate;
       Items.Assign(sl);
       SetComboBoxText(SubtargetComboBox,UseSubTarget,cstCaseInsensitive);
       Items.EndUpdate;
     end;
+    //debugln(['TCompilerConfigTargetFrame.FillSubTargetComboBox SubtargetComboBox: Text="',SubtargetComboBox.Text,'" Index=',SubtargetComboBox.ItemIndex,' Items=[',SubtargetComboBox.Items.Text,']']);
   finally
     sl.Free;
   end;
