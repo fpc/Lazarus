@@ -11,6 +11,10 @@ uses
   LazUTF8, Graphics, CocoaGDIObjects,
   CocoaAll, CocoaPrivate, CocoaCustomControl, CocoaUtils;
 
+const
+  IM_MESSAGE_WPARAM_GET_IME_HANDLER = 0;
+  IM_MESSAGE_WPARAM_GET_LW_HANDLER  = 1;
+
 type
   { ICocoaIMEControl }
 

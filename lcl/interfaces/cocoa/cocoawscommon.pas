@@ -1952,13 +1952,35 @@ end;
 
 { TCocoaWSCustomControl }
 
+function SendIMCompostionMessage(
+  const control: TWinControl; const WParam: LclType.WPARAM ): PtrInt;
+var
+  Mess : TLMessage;
+begin
+  FillChar(Mess,SizeOf(Mess),0);
+  Mess.Msg:= LM_IM_COMPOSITION;
+  Mess.WParam:= WParam;
+  Result:= DeliverMessage( control,  Mess );
+end;
+
 // get IMEHandler by LM_IM_COMPOSITION message
 function getControlIMEHandler(const control: TWinControl): ICocoaIMEControl;
 var
   handle : PtrInt;
 begin
-  handle := SendSimpleMessage(control, LM_IM_COMPOSITION);
+  handle := SendIMCompostionMessage( control, IM_MESSAGE_WPARAM_GET_IME_HANDLER );
   Result := TObject(handle) as ICocoaIMEControl;
+end;
+
+// get Lookup Word Handler by LM_IM_COMPOSITION message
+function getControlLWHandler(const control: TWinControl): ICocoaLookupWord;
+var
+  handle: PtrInt;
+begin
+  Result:= nil;
+  handle := SendIMCompostionMessage( control, IM_MESSAGE_WPARAM_GET_LW_HANDLER );
+  if TObject(handle) is ICocoaLookupWord then
+    Result:= TObject(handle) as ICocoaLookupWord;
 end;
 
 class function TCocoaWSCustomControl.CreateHandle(const AWinControl: TWinControl;
@@ -1977,7 +1999,8 @@ begin
     // AWinControl is a Full Control Edit (such as SynEdit/ATSynEdit)
     ctrl := TCocoaFullControlEdit.alloc.lclInitWithCreateParams(AParams);
     lcl := TLCLFullControlEditCallback.Create(ctrl, AWinControl);
-    TCocoaFullControlEdit(ctrl).imeHandler := imeHandler;
+    TCocoaFullControlEdit(ctrl).imeHandler:= imeHandler;
+    TCocoaFullControlEdit(ctrl).lwHandler:= getControlLWHandler(AWinControl);
     TCocoaFullControlEdit(ctrl).unmarkText;
   end
   else
