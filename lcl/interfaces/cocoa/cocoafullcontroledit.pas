@@ -8,7 +8,7 @@ interface
 
 uses
   Classes, SysUtils,
-  LazUTF8,
+  LazUTF8, Graphics, CocoaGDIObjects,
   CocoaAll, CocoaPrivate, CocoaCustomControl, CocoaUtils;
 
 type
@@ -16,7 +16,7 @@ type
 
   // IME Parameters for Cocoa Interface internal and LCL Full Control Edit
   // intentionally keep the Record type, emphasizing that it is only a simple type,
-  // only used as parameters, don‘t put into logical functions
+  // only used as parameters, don't put into logical functions
   TCocoaIMEParameters = record
     text: ShortString;           // Marked Text
     textCharLength: Integer;     // length in code point
@@ -32,12 +32,34 @@ type
   // implement this simple interface
   // class LazSynCocoaIMM in SynEdit Component for reference
   // class ATSynEdit_Adapter_CocoaIME in ATSynEdit Component for reference
-  ICocoaIMEControl = interface
+  ICocoaIMEControl = interface ['{AAD5C3AD-C8E0-20A4-E779-6F5D4F8380BD}']
     procedure IMESessionBegin;
     procedure IMESessionEnd;
     procedure IMEUpdateIntermediateText( var params: TCocoaIMEParameters );
     procedure IMEInsertFinalText( var params: TCocoaIMEParameters );
-    function  IMEGetTextBound( var params: TCocoaIMEParameters ) : TRect;
+    function  IMEGetTextBound( var params: TCocoaIMEParameters ): TRect;
+  end;
+
+  { ICocoaLookupWord }
+
+  // Lookup Word Parameters for Cocoa Interface internal and LCL Full Control Edit
+  // intentionally keep the Record type, emphasizing that it is only a simple type,
+  // only used as parameters, don't put into logical functions
+  TCocoaLWParameters = record
+    text: String;               // return line text from LCL Full Control Edit
+    row: Integer;               // the row being looked up
+    col: Integer;               // the column being looked up
+    length: Integer;            // the length the text we want to obtain
+  end;
+
+  // the LCL Component that need Cocoa Lookup Word support need to
+  // implement this simple interface
+  ICocoaLookupWord = interface ['{F5B0D020-1F29-9E8C-33DD-AA122597E6A2}']
+    procedure LWRowColForScreenPoint( var params: TCocoaLWParameters;
+      const screenPoint: TPoint );
+    procedure LWLineForRow( var params: TCocoaLWParameters );
+    function  LWGetTextBound( var params: TCocoaLWParameters ): TRect;
+    function  LWGetFont( var params: TCocoaLWParameters ): TFont;
   end;
 
   { TCocoaFullControlEdit }
