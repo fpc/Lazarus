@@ -460,12 +460,13 @@ var
   params: TCocoaLWParameters;
   lclPoint: TPoint;
 begin
-  Result:= 0;
+  Result:= NSNotFound;
   if NOT Assigned(self.lwHandler) then
     Exit;
   lclPoint:= ScreenPointFromNSToLCL( aPoint );
   self.lwHandler.LWRowColForScreenPoint( params, lclPoint );
-  Result:= LWParamsToRange(params).location;
+  if params.col >= 0 then
+    Result:= LWParamsToRange(params).location;
 end;
 
 function TCocoaFullControlEdit.validAttributesForMarkedText: NSArray;

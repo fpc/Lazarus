@@ -178,15 +178,19 @@ procedure LazSynImeCocoa.LWRowColForScreenPoint(
 var
   localPoint: TPoint;
   logicalPoint: TPoint;
-  pLine: pchar;
+  lineText: String;
 begin
   localPoint:= FriendEdit.ScreenToClient( screenPoint );
   logicalPoint:= TSynEdit(FriendEdit).PixelsToLogicalPos( localPoint );
   params.row:= logicalPoint.Y;
   if params.row > 0 then
     params.row:= params.row - 1;
-  pLine:= pchar( FriendEdit.Lines[params.row] );
-  params.col:= UTF8Length( pLine, logicalPoint.x ) - 1;
+  lineText:= FriendEdit.Lines[params.row];
+  if logicalPoint.x <= lineText.length then begin
+    params.col:= UTF8Length( pchar(lineText), logicalPoint.x ) - 1;
+  end else begin
+    params.col:= -1;
+  end;
 end;
 
 procedure LazSynImeCocoa.LWLineForRow( var params: TCocoaLWParameters );
