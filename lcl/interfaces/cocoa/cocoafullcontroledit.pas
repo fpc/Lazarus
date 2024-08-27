@@ -8,15 +8,19 @@ interface
 
 uses
   Classes, SysUtils,
-  LazUTF8,
+  LazUTF8, Graphics, CocoaGDIObjects,
   CocoaAll, CocoaPrivate, CocoaCustomControl, CocoaUtils;
+
+const
+  IM_MESSAGE_WPARAM_GET_IME_HANDLER = 0;
+  IM_MESSAGE_WPARAM_GET_LW_HANDLER  = 1;
 
 type
   { ICocoaIMEControl }
 
   // IME Parameters for Cocoa Interface internal and LCL Full Control Edit
   // intentionally keep the Record type, emphasizing that it is only a simple type,
-  // only used as parameters, don‘t put into logical functions
+  // only used as parameters, don't put into logical functions
   TCocoaIMEParameters = record
     text: ShortString;           // Marked Text
     textCharLength: Integer;     // length in code point
@@ -32,12 +36,34 @@ type
   // implement this simple interface
   // class LazSynCocoaIMM in SynEdit Component for reference
   // class ATSynEdit_Adapter_CocoaIME in ATSynEdit Component for reference
-  ICocoaIMEControl = interface
+  ICocoaIMEControl = interface ['{AAD5C3AD-C8E0-20A4-E779-6F5D4F8380BD}']
     procedure IMESessionBegin;
     procedure IMESessionEnd;
     procedure IMEUpdateIntermediateText( var params: TCocoaIMEParameters );
     procedure IMEInsertFinalText( var params: TCocoaIMEParameters );
-    function  IMEGetTextBound( var params: TCocoaIMEParameters ) : TRect;
+    function  IMEGetTextBound( var params: TCocoaIMEParameters ): TRect;
+  end;
+
+  { ICocoaLookupWord }
+
+  // Lookup Word Parameters for Cocoa Interface internal and LCL Full Control Edit
+  // intentionally keep the Record type, emphasizing that it is only a simple type,
+  // only used as parameters, don't put into logical functions
+  TCocoaLWParameters = record
+    text: String;               // return line text from LCL Full Control Edit
+    row: Integer;               // the row being looked up
+    col: Integer;               // the column being looked up
+    length: Integer;            // the length the text we want to obtain
+  end;
+
+  // the LCL Component that need Cocoa Lookup Word support need to
+  // implement this simple interface
+  ICocoaLookupWord = interface ['{F5B0D020-1F29-9E8C-33DD-AA122597E6A2}']
+    procedure LWRowColForScreenPoint( var params: TCocoaLWParameters;
+      const screenPoint: TPoint );
+    procedure LWLineForRow( var params: TCocoaLWParameters );
+    function  LWGetTextBound( var params: TCocoaLWParameters ): TRect;
+    function  LWGetFont( var params: TCocoaLWParameters ): TFont;
   end;
 
   { TCocoaFullControlEdit }
@@ -52,6 +78,7 @@ type
     _currentMarkedText: NSString;
   public
     imeHandler: ICocoaIMEControl;
+    lwHandler: ICocoaLookupWord;
   public
     procedure keyDown(theEvent: NSEvent); override;
     procedure mouseDown(event: NSEvent); override;
@@ -248,18 +275,91 @@ begin
   end;
 end;
 
+
+{
+  the Cocoa API uses a continuous positive integer to locate the text position,
+  mainly in:
+  1. get the text index corresponding to the current mouse cursor through
+     the return value of characterIndexForPoint()
+  2. the text is obtained through the parameter aRange.location passed in by
+     attributedSubstringForProposedRange_actualRange().
+  note that Cocoa assumes that the index are continuous, with -1 corresponding
+  to the previous character and +1 corresponding to the next character,
+  which is where the trouble comes in.
+
+  however, in the controls such as SynEdit, there is no corresponding Index.
+  although the index can be calculated by traversing each line, it increases
+  the workload and complexity.
+
+  in Lookup Word, we only need to ensure that the index is continuous in a line,
+  so a simplified method is used:
+  1. controls such as SynEdit are indexed by row + column
+  2. the index required by Cooca is a 64-bit integer
+  3. so the rows and columns are encoded into 64-bit Index, with
+     the high 32 bits corresponding to the rows and
+     the lower 32 bits corresponding to the columns.
+  4. the operation on the Index cannot cross line. if it does,
+     a simple correction is required. see rangeToLWParams().
+}
+
+const
+  LW_LOCATION_BASE = $1000000000000000;
+
+function rangeToLWParams( const aRange: NSRange ): TCocoaLWParameters;
+var
+  location: NSUInteger;
+begin
+  location:= aRange.location;
+  if location >= (LW_LOCATION_BASE/2) then
+    location:= location - LW_LOCATION_BASE;
+  Result.row:= location shr 32;
+  Result.col:= location and $FFFFFFFF;
+  Result.length:= aRange.length;
+  if Result.col < 0 then begin
+    Result.col:= 0;
+    Result.row:= Result.row + 1;
+  end;
+end;
+
+function LWParamsToRange( const params: TCocoaLWParameters ): NSRange;
+var
+  location: NSUInteger;
+begin
+  location:= (QWord(params.row) shl 32) + params.col;
+  Result.location:= location + LW_LOCATION_BASE;
+  Result.length:= params.length;
+end;
+
 // cursor tracking
 function TCocoaFullControlEdit.firstRectForCharacterRange_actualRange(
   aRange: NSRange; actualRange: NSRangePointer): NSRect;
+
+  function getImeTextBound: TRect;
+  var
+    params: TCocoaIMEParameters;
+  begin
+    params:= _currentParams;
+    setIMESelectedRange( params, _currentMarkedText, aRange );
+    params.isFirstCall:= not hasMarkedText();
+    Result:= imeHandler.IMEGetTextBound( params );
+  end;
+
+  function getLookupWordBound: TRect;
+  var
+    params: TCocoaLWParameters;
+  begin
+    params:= rangeToLWParams( aRange );
+    Result:= lwHandler.LWGetTextBound( params );
+  end;
+
 var
-  params: TCocoaIMEParameters;
   rect : TRect;
 begin
-  params:= _currentParams;
-  setIMESelectedRange( params, _currentMarkedText, aRange );
-  params.isFirstCall:= not hasMarkedText();
-
-  rect:= imeHandler.IMEGetTextBound( params );
+  if aRange.location < LW_LOCATION_BASE then begin
+    rect:= getImeTextBound;
+  end else begin
+    rect:= getLookupWordBound;
+  end;
   LCLToNSRect( rect, NSGlobalScreenBottom, Result );
 end;
 
@@ -295,21 +395,83 @@ begin
   Result:= ( _currentParams.textNSLength > 0 );
 end;
 
+{
+  1. given the previous description of not crossing lines,
+     at most one line of text is returned.
+  2. LW_LOCATION_BASE has been added to location to distinguish
+     between IME and Lookup Word.
+}
 function TCocoaFullControlEdit.attributedSubstringForProposedRange_actualRange(
   aRange: NSRange; actualRange: NSRangePointer): NSAttributedString;
+var
+  params: TCocoaLWParameters;
+  textWord: NSString;
+
+  procedure initParams;
+  begin
+    params:= rangeToLWParams( aRange );
+    self.lwHandler.LWLineForRow( params );
+  end;
+
+  procedure initTextWord;
+  var
+    lineText: NSString;
+    subRange: NSRange;
+  begin
+    lineText:= StrToNSString( params.text );
+    subRange.location:= params.col;
+    subRange.length:= aRange.length;
+    if subRange.location + subRange.length > lineText.length then
+      subRange.length:= lineText.length - subRange.location;
+    textWord:= lineText.substringWithRange(subRange);
+  end;
+
+  function getAttributeWord: NSAttributedString;
+  var
+    attribs: NSDictionary;
+    lclFont: TFont;
+    cocoaFont: NSFont;
+  begin
+    lclFont:= self.lwHandler.LWGetFont( params );
+    cocoaFont:= TCocoaFont(lclFont.Reference.Handle).Font;
+    attribs:= NSMutableDictionary.alloc.initWithCapacity(1);
+    attribs.setValue_forKey( cocoaFont, NSFontAttributeName );
+    Result:= NSAttributedString.alloc.initWithString_attributes(
+              textWord, attribs );
+    Result.autorelease;
+    attribs.release;
+  end;
+
 begin
-  Result := nil;
+  Result:= nil;
+
+  if NOT Assigned(self.lwHandler) then
+    Exit;
+
+  initParams;
+  initTextWord;
+  actualRange^:= LWParamsToRange( params );
+  Result:= getAttributeWord;
+end;
+
+function TCocoaFullControlEdit.characterIndexForPoint(aPoint: NSPoint
+  ): NSUInteger;
+var
+  params: TCocoaLWParameters;
+  lclPoint: TPoint;
+begin
+  Result:= NSNotFound;
+  if NOT Assigned(self.lwHandler) then
+    Exit;
+  lclPoint:= ScreenPointFromNSToLCL( aPoint );
+  self.lwHandler.LWRowColForScreenPoint( params, lclPoint );
+  if params.col >= 0 then
+    Result:= LWParamsToRange(params).location;
 end;
 
 function TCocoaFullControlEdit.validAttributesForMarkedText: NSArray;
 begin
   Result := nil;
-end;
-
-function TCocoaFullControlEdit.characterIndexForPoint(aPoint: NSPoint
-  ): NSUInteger;
-begin
-  Result := 0;
 end;
 
 end.
