@@ -13,7 +13,7 @@ msgstr ""
 
 #: idedebuggerstringconstants.arrnavautohide
 msgid "Hide automatically"
-msgstr ""
+msgstr "Скрывать автоматически"
 
 #: idedebuggerstringconstants.arrnavenforcebounds
 msgctxt "idedebuggerstringconstants.arrnavenforcebounds"
@@ -56,17 +56,16 @@ msgstr "Больше не спрашивать"
 
 #: idedebuggerstringconstants.dispformatarraynavautohide
 msgid "Auto-hide"
-msgstr ""
+msgstr "Скрывать автоматически"
 
 #: idedebuggerstringconstants.dispformatarraynavenforcebounds
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatarraynavenforcebounds"
 msgid "Enforce bounds"
 msgstr "Соблюдать границы"
 
 #: idedebuggerstringconstants.dispformatarraynavpagesize
 msgid "Page-size"
-msgstr ""
+msgstr "Размер страницы"
 
 #: idedebuggerstringconstants.dispformatbasebin
 msgctxt "idedebuggerstringconstants.dispformatbasebin"
@@ -132,7 +131,7 @@ msgstr "Числовое значение"
 
 #: idedebuggerstringconstants.dispformatdlgarraynav
 msgid "Array Navigation"
-msgstr ""
+msgstr "Перемещение по массиву"
 
 #: idedebuggerstringconstants.dispformatdlgbtnadrformat
 msgid "Address"
@@ -184,12 +183,7 @@ msgstr "Число (вторичный)"
 
 #: idedebuggerstringconstants.dispformatdlgbtnoptions
 msgid "Options"
-msgstr ""
-
-#: idedebuggerstringconstants.dispformatdlgbtnord
-msgctxt "idedebuggerstringconstants.dispformatdlgbtnord"
-msgid "Ordinal"
-msgstr "Простой"
+msgstr "Параметры"
 
 #: idedebuggerstringconstants.dispformatdlgbtnpointer
 msgctxt "idedebuggerstringconstants.dispformatdlgbtnpointer"
@@ -225,10 +219,9 @@ msgid "(Typed)"
 msgstr "(Типизированный)"
 
 #: idedebuggerstringconstants.dispformatdlgindent
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatdlgindent"
 msgid "Multiline"
-msgstr "Многострочный"
+msgstr "Многострочность"
 
 #: idedebuggerstringconstants.dispformatenumname
 msgctxt "idedebuggerstringconstants.dispformatenumname"
@@ -304,7 +297,7 @@ msgstr "Структуры (адрес)"
 
 #: idedebuggerstringconstants.dispformatindentmaxwrap
 msgid "Max multiline level"
-msgstr "Максимальный уровень многострочного"
+msgstr "Максимальный уровень вложенности строк"
 
 #: idedebuggerstringconstants.dispformatnoleadzero
 msgid "Hide leading zeros"

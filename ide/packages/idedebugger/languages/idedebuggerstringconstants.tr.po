@@ -191,11 +191,6 @@ msgstr ""
 msgid "Options"
 msgstr ""
 
-#: idedebuggerstringconstants.dispformatdlgbtnord
-msgctxt "idedebuggerstringconstants.dispformatdlgbtnord"
-msgid "Ordinal"
-msgstr ""
-
 #: idedebuggerstringconstants.dispformatdlgbtnpointer
 msgctxt "idedebuggerstringconstants.dispformatdlgbtnpointer"
 msgid "Pointer"
