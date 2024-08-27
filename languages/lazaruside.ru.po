@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-07-13 01:24+0300\n"
+"PO-Revision-Date: 2024-08-27 15:40+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -2628,6 +2628,11 @@ msgstr "Границы"
 msgid "Marker color"
 msgstr "Маркер"
 
+#: lazarusidestrconsts.dlgmarkupcurrentworddelayinsec
+#, object-pascal-format
+msgid "(%s sec delay after caret move)"
+msgstr "(задержка в %s сек. после перемещения курсора)"
+
 #: lazarusidestrconsts.dlgmarkupfoldcolor
 msgid "Vertical-mark"
 msgstr "Вертикальная черта"
@@ -2757,13 +2762,18 @@ msgstr "Подсвечивать операторные скобки при ус
 msgid "Match whole words, if length is less or equal to:"
 msgstr "Подсвечивать слова полностью при длине не более:"
 
+#: lazarusidestrconsts.dlgmarkupwordkeycombo
+#, object-pascal-format
+msgid "Markup current word by key: %s"
+msgstr "Подсвечивать текущее слово комбинацией клавиш: %s"
+
 #: lazarusidestrconsts.dlgmarkupwordnokeyword
 msgid "Ignore keywords"
 msgstr "Игнорировать зарезервированные слова"
 
-#: lazarusidestrconsts.dlgmarkupwordnotimer
-msgid "Disable timer for markup current word"
-msgstr "Отключить подсветку текущего слова"
+#: lazarusidestrconsts.dlgmarkupwordoncaretmove
+msgid "Automatically markup current word on caret move"
+msgstr "Автоматически подсвечивать текущее слово при перемещении курсора"
 
 #: lazarusidestrconsts.dlgmarkupwordtrim
 msgid "Trim spaces (when highlighting current selection)"

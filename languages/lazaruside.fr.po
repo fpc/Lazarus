@@ -2643,6 +2643,11 @@ msgstr "Marge et gouttière"
 msgid "Marker color"
 msgstr "Couleur de marqueur"
 
+#: lazarusidestrconsts.dlgmarkupcurrentworddelayinsec
+#, object-pascal-format
+msgid "(%s sec delay after caret move)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupfoldcolor
 msgid "Vertical-mark"
 msgstr "Marque verticale"
@@ -2772,13 +2777,18 @@ msgstr "Parenthèses de mot au curseur (global)"
 msgid "Match whole words, if length is less or equal to:"
 msgstr "Vérifier les limites d'un mot pour une longueur inférieure ou égale à :"
 
+#: lazarusidestrconsts.dlgmarkupwordkeycombo
+#, object-pascal-format
+msgid "Markup current word by key: %s"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupwordnokeyword
 msgid "Ignore keywords"
 msgstr "Ignorer les mots-clés"
 
-#: lazarusidestrconsts.dlgmarkupwordnotimer
-msgid "Disable timer for markup current word"
-msgstr "Désactiver le minuteur sur marquage du mot courant"
+#: lazarusidestrconsts.dlgmarkupwordoncaretmove
+msgid "Automatically markup current word on caret move"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupwordtrim
 msgid "Trim spaces (when highlighting current selection)"

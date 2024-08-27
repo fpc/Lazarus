@@ -2632,6 +2632,11 @@ msgstr "边界和边栏"
 msgid "Marker color"
 msgstr "标记颜色"
 
+#: lazarusidestrconsts.dlgmarkupcurrentworddelayinsec
+#, object-pascal-format
+msgid "(%s sec delay after caret move)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupfoldcolor
 msgid "Vertical-mark"
 msgstr "垂直标记"
@@ -2761,13 +2766,18 @@ msgstr ""
 msgid "Match whole words, if length is less or equal to:"
 msgstr "匹配整个单词,如果长度小于或等于:"
 
+#: lazarusidestrconsts.dlgmarkupwordkeycombo
+#, object-pascal-format
+msgid "Markup current word by key: %s"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupwordnokeyword
 msgid "Ignore keywords"
 msgstr "忽略关键字"
 
-#: lazarusidestrconsts.dlgmarkupwordnotimer
-msgid "Disable timer for markup current word"
-msgstr "禁用标记当前单词的计时器"
+#: lazarusidestrconsts.dlgmarkupwordoncaretmove
+msgid "Automatically markup current word on caret move"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupwordtrim
 msgid "Trim spaces (when highlighting current selection)"

@@ -2622,6 +2622,11 @@ msgstr "Marginaali ja reunapalkki"
 msgid "Marker color"
 msgstr "Merkattu väri"
 
+#: lazarusidestrconsts.dlgmarkupcurrentworddelayinsec
+#, object-pascal-format
+msgid "(%s sec delay after caret move)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupfoldcolor
 msgid "Vertical-mark"
 msgstr "Pysty-merkki"
@@ -2751,13 +2756,18 @@ msgstr ""
 msgid "Match whole words, if length is less or equal to:"
 msgstr "Täsmää koko sana, jos pituus on pienempi tai yhtäsuuri kuin:"
 
+#: lazarusidestrconsts.dlgmarkupwordkeycombo
+#, object-pascal-format
+msgid "Markup current word by key: %s"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupwordnokeyword
 msgid "Ignore keywords"
 msgstr "Ohita avainsanat"
 
-#: lazarusidestrconsts.dlgmarkupwordnotimer
-msgid "Disable timer for markup current word"
-msgstr "Älä käytä ajastinta aktiivista sanaa merkittäessä"
+#: lazarusidestrconsts.dlgmarkupwordoncaretmove
+msgid "Automatically markup current word on caret move"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupwordtrim
 msgid "Trim spaces (when highlighting current selection)"

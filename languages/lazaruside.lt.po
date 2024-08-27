@@ -2705,6 +2705,11 @@ msgstr "Paraštės"
 msgid "Marker color"
 msgstr "Žymeklio spalva"
 
+#: lazarusidestrconsts.dlgmarkupcurrentworddelayinsec
+#, object-pascal-format
+msgid "(%s sec delay after caret move)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupfoldcolor
 msgid "Vertical-mark"
 msgstr ""
@@ -2840,13 +2845,18 @@ msgstr "Žodžio skliaustai pagal žymeklį (globaliai)"
 msgid "Match whole words, if length is less or equal to:"
 msgstr "Priderinti žodžių ribas žodžiams, kurių ilgis iki:"
 
+#: lazarusidestrconsts.dlgmarkupwordkeycombo
+#, object-pascal-format
+msgid "Markup current word by key: %s"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupwordnokeyword
 msgid "Ignore keywords"
 msgstr "Ignoruoti bazinius žodžius"
 
-#: lazarusidestrconsts.dlgmarkupwordnotimer
-msgid "Disable timer for markup current word"
-msgstr "Paryškinant dabartinį žodį, delsos netaikyti"
+#: lazarusidestrconsts.dlgmarkupwordoncaretmove
+msgid "Automatically markup current word on caret move"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupwordtrim
 msgid "Trim spaces (when highlighting current selection)"

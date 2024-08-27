@@ -2603,6 +2603,11 @@ msgstr "Kenar boşluğu ve oluk"
 msgid "Marker color"
 msgstr "İşaretçi rengi"
 
+#: lazarusidestrconsts.dlgmarkupcurrentworddelayinsec
+#, object-pascal-format
+msgid "(%s sec delay after caret move)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupfoldcolor
 msgid "Vertical-mark"
 msgstr "Dikey-işaret"
@@ -2731,13 +2736,18 @@ msgstr "İmleçteki anahtar sözcükler (global)"
 msgid "Match whole words, if length is less or equal to:"
 msgstr "Uzunluk şundan küçük veya eşitse, tam kelimeleri eşleştirin:"
 
+#: lazarusidestrconsts.dlgmarkupwordkeycombo
+#, object-pascal-format
+msgid "Markup current word by key: %s"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupwordnokeyword
 msgid "Ignore keywords"
 msgstr "Anahtar kelimeleri yoksay"
 
-#: lazarusidestrconsts.dlgmarkupwordnotimer
-msgid "Disable timer for markup current word"
-msgstr "Geçerli kelimeyi biçimlendirmek için zamanlayıcıyı devre dışı bırak"
+#: lazarusidestrconsts.dlgmarkupwordoncaretmove
+msgid "Automatically markup current word on caret move"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupwordtrim
 msgid "Trim spaces (when highlighting current selection)"

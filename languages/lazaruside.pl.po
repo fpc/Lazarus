@@ -2708,6 +2708,11 @@ msgstr "Margines i pasek ikon"
 msgid "Marker color"
 msgstr "Kolor zaznaczenia"
 
+#: lazarusidestrconsts.dlgmarkupcurrentworddelayinsec
+#, object-pascal-format
+msgid "(%s sec delay after caret move)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupfoldcolor
 #, fuzzy
 msgid "Vertical-mark"
@@ -2850,13 +2855,18 @@ msgstr ""
 msgid "Match whole words, if length is less or equal to:"
 msgstr "Dopasowywuj granice słowa dla słów od długości:"
 
+#: lazarusidestrconsts.dlgmarkupwordkeycombo
+#, object-pascal-format
+msgid "Markup current word by key: %s"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupwordnokeyword
 msgid "Ignore keywords"
 msgstr "Ignoruj słowa kluczowe"
 
-#: lazarusidestrconsts.dlgmarkupwordnotimer
-msgid "Disable timer for markup current word"
-msgstr "Wyłącz licznik czasu dla zaznaczenia bieżącego słowa"
+#: lazarusidestrconsts.dlgmarkupwordoncaretmove
+msgid "Automatically markup current word on caret move"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupwordtrim
 msgid "Trim spaces (when highlighting current selection)"

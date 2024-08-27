@@ -2665,6 +2665,11 @@ msgstr "Okraj a žlábek"
 msgid "Marker color"
 msgstr "Barva značkovače"
 
+#: lazarusidestrconsts.dlgmarkupcurrentworddelayinsec
+#, object-pascal-format
+msgid "(%s sec delay after caret move)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupfoldcolor
 msgid "Vertical-mark"
 msgstr "Svislá-značka"
@@ -2794,13 +2799,18 @@ msgstr "Závorky klíčového slova na pozici kurzoru (celkově)"
 msgid "Match whole words, if length is less or equal to:"
 msgstr "Shoda celých slov, pokud délka je menší nebo stejná:"
 
+#: lazarusidestrconsts.dlgmarkupwordkeycombo
+#, object-pascal-format
+msgid "Markup current word by key: %s"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupwordnokeyword
 msgid "Ignore keywords"
 msgstr "Ignorovat klíčová slova"
 
-#: lazarusidestrconsts.dlgmarkupwordnotimer
-msgid "Disable timer for markup current word"
-msgstr "Vypnout časovač pro označení aktuálního slova"
+#: lazarusidestrconsts.dlgmarkupwordoncaretmove
+msgid "Automatically markup current word on caret move"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupwordtrim
 msgid "Trim spaces (when highlighting current selection)"

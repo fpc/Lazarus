@@ -2679,6 +2679,11 @@ msgstr "Rand und Leiste"
 msgid "Marker color"
 msgstr "Markierungsfarbe"
 
+#: lazarusidestrconsts.dlgmarkupcurrentworddelayinsec
+#, object-pascal-format
+msgid "(%s sec delay after caret move)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupfoldcolor
 msgid "Vertical-mark"
 msgstr ""
@@ -2812,13 +2817,18 @@ msgstr "Wortklammern am Cursor (global)"
 msgid "Match whole words, if length is less or equal to:"
 msgstr "Nur ganze Wörter, wenn Länge kleiner oder gleich:"
 
+#: lazarusidestrconsts.dlgmarkupwordkeycombo
+#, object-pascal-format
+msgid "Markup current word by key: %s"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupwordnokeyword
 msgid "Ignore keywords"
 msgstr "Schlüsselworte übergehen"
 
-#: lazarusidestrconsts.dlgmarkupwordnotimer
-msgid "Disable timer for markup current word"
-msgstr "Timer für Wort-Hervorhebung deaktivieren"
+#: lazarusidestrconsts.dlgmarkupwordoncaretmove
+msgid "Automatically markup current word on caret move"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupwordtrim
 msgid "Trim spaces (when highlighting current selection)"

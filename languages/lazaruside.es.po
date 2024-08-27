@@ -2706,6 +2706,11 @@ msgstr "Margen y columna de marcas"
 msgid "Marker color"
 msgstr "Color de marca"
 
+#: lazarusidestrconsts.dlgmarkupcurrentworddelayinsec
+#, object-pascal-format
+msgid "(%s sec delay after caret move)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupfoldcolor
 msgid "Vertical-mark"
 msgstr "Marca-vertical"
@@ -2841,13 +2846,18 @@ msgstr "Soporte de palabras en signos de intercalación (global)"
 msgid "Match whole words, if length is less or equal to:"
 msgstr "Coincidir límites de palabra para palabras de hasta esta longitud:"
 
+#: lazarusidestrconsts.dlgmarkupwordkeycombo
+#, object-pascal-format
+msgid "Markup current word by key: %s"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupwordnokeyword
 msgid "Ignore keywords"
 msgstr "Ignorar palabras clave"
 
-#: lazarusidestrconsts.dlgmarkupwordnotimer
-msgid "Disable timer for markup current word"
-msgstr "Desactivar temporizador para señalización de palabra actual"
+#: lazarusidestrconsts.dlgmarkupwordoncaretmove
+msgid "Automatically markup current word on caret move"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupwordtrim
 msgid "Trim spaces (when highlighting current selection)"

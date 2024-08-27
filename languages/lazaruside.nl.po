@@ -2708,6 +2708,11 @@ msgstr "Marge en goot"
 msgid "Marker color"
 msgstr "Marker kleur"
 
+#: lazarusidestrconsts.dlgmarkupcurrentworddelayinsec
+#, object-pascal-format
+msgid "(%s sec delay after caret move)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupfoldcolor
 msgid "Vertical-mark"
 msgstr ""
@@ -2837,12 +2842,17 @@ msgstr ""
 msgid "Match whole words, if length is less or equal to:"
 msgstr ""
 
+#: lazarusidestrconsts.dlgmarkupwordkeycombo
+#, object-pascal-format
+msgid "Markup current word by key: %s"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupwordnokeyword
 msgid "Ignore keywords"
 msgstr ""
 
-#: lazarusidestrconsts.dlgmarkupwordnotimer
-msgid "Disable timer for markup current word"
+#: lazarusidestrconsts.dlgmarkupwordoncaretmove
+msgid "Automatically markup current word on caret move"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupwordtrim

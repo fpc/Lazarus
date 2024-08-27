@@ -2778,6 +2778,11 @@ msgstr "שוליים וקווי עזר"
 msgid "Marker color"
 msgstr "צבע הסמן"
 
+#: lazarusidestrconsts.dlgmarkupcurrentworddelayinsec
+#, object-pascal-format
+msgid "(%s sec delay after caret move)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupfoldcolor
 msgid "Vertical-mark"
 msgstr ""
@@ -2911,17 +2916,20 @@ msgstr ""
 msgid "Match whole words, if length is less or equal to:"
 msgstr "התאם את תוחמי המילה עד לאורך זה:"
 
+#: lazarusidestrconsts.dlgmarkupwordkeycombo
+#, object-pascal-format
+msgid "Markup current word by key: %s"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupwordnokeyword
 #, fuzzy
 #| msgid "Ignore Keywords"
 msgid "Ignore keywords"
 msgstr "התעלם ממילות-מפתח"
 
-#: lazarusidestrconsts.dlgmarkupwordnotimer
-#, fuzzy
-#| msgid "Disable Timer for Markup Current Word"
-msgid "Disable timer for markup current word"
-msgstr "בטל טיימר עבור מלה נוכחית עליונה"
+#: lazarusidestrconsts.dlgmarkupwordoncaretmove
+msgid "Automatically markup current word on caret move"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupwordtrim
 #, fuzzy

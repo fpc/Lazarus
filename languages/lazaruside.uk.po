@@ -2630,6 +2630,11 @@ msgstr "Межі і смужка"
 msgid "Marker color"
 msgstr "Маркери"
 
+#: lazarusidestrconsts.dlgmarkupcurrentworddelayinsec
+#, object-pascal-format
+msgid "(%s sec delay after caret move)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupfoldcolor
 msgid "Vertical-mark"
 msgstr "Вертикальна позначка"
@@ -2759,13 +2764,18 @@ msgstr "Операторні дужки біля курсора (глобаль�
 msgid "Match whole words, if length is less or equal to:"
 msgstr "Відповідність цілого слова для слів не довших, ніж:"
 
+#: lazarusidestrconsts.dlgmarkupwordkeycombo
+#, object-pascal-format
+msgid "Markup current word by key: %s"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupwordnokeyword
 msgid "Ignore keywords"
 msgstr "Знехтувати ключові слова"
 
-#: lazarusidestrconsts.dlgmarkupwordnotimer
-msgid "Disable timer for markup current word"
-msgstr "Вимкнути таймер для підсвітки поточного слова"
+#: lazarusidestrconsts.dlgmarkupwordoncaretmove
+msgid "Automatically markup current word on caret move"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupwordtrim
 msgid "Trim spaces (when highlighting current selection)"
