@@ -685,10 +685,8 @@ var
 
   function Slope(PT1,Pt2 : TFloatPoint) : Extended;
   begin
-    If Pt2.X <> Pt1.X then
-      Result := (Pt2.Y - Pt1.Y) / (Pt2.X - Pt1.X)
-    else
-      Result := 1;
+    // The case Pt1.X = Pt2.X has already been handled.
+    Result := (Pt2.Y - Pt1.Y) / (Pt2.X - Pt1.X);
   end;
 
   function YIntercept(PT1,Pt2 : TFloatPoint) : Extended;
@@ -697,6 +695,15 @@ var
   end;
 
 begin
+  if SP.X = EP.X then
+  begin
+    if SP.Y <> EP.Y then
+      Result := abs(Pt.X - SP.X)
+    else
+      Result := Distance(Pt, SP);
+    exit;
+  end;
+
   A := -Slope(SP,EP);
   B := 1;
   C := -YIntercept(SP, EP);
