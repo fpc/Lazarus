@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-12-26 15:21+0100\n"
-"PO-Revision-Date: 2024-01-23 13:31+0100\n"
+"PO-Revision-Date: 2024-08-28 14:15+0200\n"
 "Last-Translator: Slavko <slavino@slavino.sk>\n"
 "Language-Team: Slovenský <sk@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1828,7 +1828,7 @@ msgstr "Prípony súborov"
 #: lazarusidestrconsts.dlgfiles
 #, object-pascal-format
 msgid "%s files"
-msgstr ""
+msgstr "%s súborov"
 
 #: lazarusidestrconsts.dlgfilterall
 msgctxt "lazarusidestrconsts.dlgfilterall"
@@ -3487,7 +3487,7 @@ msgstr "(žiadne)"
 
 #: lazarusidestrconsts.dlgpointertypecheck
 msgid "@<pointer> returns a typed pointer"
-msgstr ""
+msgstr "@<ukazovateľ> vracia typovaný ukazovateľ"
 
 #: lazarusidestrconsts.dlgpoloadicon
 msgid "&Load Icon"
@@ -3914,7 +3914,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgshowallunits
 msgid "Show all units"
-msgstr ""
+msgstr "Zobraziť všetky jednotky"
 
 #: lazarusidestrconsts.dlgshowcaptionsofnonvisuals
 msgid "Show captions of nonvisual components"
@@ -5469,10 +5469,8 @@ msgid "Bold non default values"
 msgstr "Zmenené hodnoty tučne"
 
 #: lazarusidestrconsts.lisborderspace
-#, fuzzy
-#| msgid "BorderSpace"
 msgid "Border space"
-msgstr "Medzera okraja"
+msgstr "Priestor na okraji"
 
 #: lazarusidestrconsts.lisbottom
 #, fuzzy
@@ -5587,11 +5585,11 @@ msgstr "Režim vybudovania: %s"
 
 #: lazarusidestrconsts.lisbuildmodediffdifferencesbetweenbuildmodes
 msgid "Differences between build modes"
-msgstr ""
+msgstr "Rozdiely medzi režimami vybudovania"
 
 #: lazarusidestrconsts.lisbuildmodediffdifferencestootherbuildmodes
 msgid "Differences from other build modes"
-msgstr ""
+msgstr "Rozdiely oproti ostatným režimom vybudovania"
 
 #: lazarusidestrconsts.lisbuildmodediffmode
 msgid "Mode:"
@@ -5713,7 +5711,7 @@ msgstr "Porovnať súbory (nie na vytváranie záplat)"
 #: lazarusidestrconsts.liscbpfiles
 #, object-pascal-format
 msgid "%s (%s files)"
-msgstr ""
+msgstr "%s (%s súborov)"
 
 #: lazarusidestrconsts.liscbpreallydeletesourcefiles
 #, object-pascal-format
@@ -6196,7 +6194,7 @@ msgstr "Zmeniť na Windows \\"
 
 #: lazarusidestrconsts.lischeckall
 msgid "Check All"
-msgstr ""
+msgstr "Začiarknúť všetko"
 
 #: lazarusidestrconsts.lischeckcompilerpath
 msgid "Please make sure that the path to the compiler in the IDE options is correct."
@@ -6500,7 +6498,7 @@ msgstr "&Zatvoriť"
 
 #: lazarusidestrconsts.liscloseallchecked
 msgid "Close All Checked"
-msgstr ""
+msgstr "Zatvoriť všetky začiarknuté"
 
 #: lazarusidestrconsts.lisclosealltabsclose
 msgid "Close files"
@@ -6563,7 +6561,7 @@ msgstr "Nejednoznačný dodatočný konfiguračný súbor prekladača"
 
 #: lazarusidestrconsts.liscocallon
 msgid "Call on:"
-msgstr "Volať na:"
+msgstr "Volať pri:"
 
 #: lazarusidestrconsts.liscoclickokifaresuretodothat
 #, object-pascal-format, fuzzy
@@ -6578,7 +6576,7 @@ msgstr "Príkaz:"
 
 #: lazarusidestrconsts.liscode
 msgid "Code"
-msgstr ""
+msgstr "Kód"
 
 #: lazarusidestrconsts.liscodebrowser
 msgctxt "lazarusidestrconsts.liscodebrowser"
@@ -8207,7 +8205,7 @@ msgstr "Riadok kurzora v aktuálnom editore"
 
 #: lazarusidestrconsts.liscustomopthint
 msgid "These options are passed to the compiler after macros are replaced."
-msgstr ""
+msgstr "Tieto voľby sa odovzdajú prekladaču po nahradení makier."
 
 #: lazarusidestrconsts.liscustomoptions
 msgid "custom options"
@@ -14689,7 +14687,7 @@ msgstr "Prezerať"
 
 #: lazarusidestrconsts.lispatheditdeleteinvalidpaths
 msgid "Delete Invalid Paths"
-msgstr ""
+msgstr "Zmazať neplatné cesty"
 
 #: lazarusidestrconsts.lispatheditmovepathdown
 msgid "Move path down (Ctrl+Down)"
@@ -16380,7 +16378,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisremoveallunits
 msgid "Remove all units"
-msgstr ""
+msgstr "Odstrániť všetky jednotky"
 
 #: lazarusidestrconsts.lisremovecompileroptionhidemessage
 msgid "Remove Compiler Option Hide Message"
@@ -16399,7 +16397,7 @@ msgstr ""
 #: lazarusidestrconsts.lisremovefilesfrompackage
 #, object-pascal-format
 msgid "Remove %s files from package \"%s\"?"
-msgstr ""
+msgstr "Odstrániť %s súborov z balíčka \"%s\"?"
 
 #: lazarusidestrconsts.lisremovefromproject
 msgid "Remove from Project"
@@ -16749,7 +16747,7 @@ msgstr "Uložiť všetko"
 
 #: lazarusidestrconsts.lissaveallchecked
 msgid "Save All Checked"
-msgstr ""
+msgstr "Uložiť všetky začiarknuté"
 
 #: lazarusidestrconsts.lissaveallmodified
 msgid "Save all modified files"
@@ -16868,7 +16866,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisscanning
 msgid "Scanning"
-msgstr ""
+msgstr "Skenovanie"
 
 #: lazarusidestrconsts.lisscanning2
 #, object-pascal-format
@@ -18396,15 +18394,15 @@ msgstr "Ďalšie adresáre:"
 
 #: lazarusidestrconsts.lisudallpackageunits
 msgid "All package units"
-msgstr ""
+msgstr "Všetky jednotky balíčkov"
 
 #: lazarusidestrconsts.lisudallsourceeditorunits
 msgid "All source editor units"
-msgstr ""
+msgstr "Všetky jednotky editora zdrojového kódu"
 
 #: lazarusidestrconsts.lisudallunits
 msgid "All units"
-msgstr ""
+msgstr "Všetky jednotky"
 
 #: lazarusidestrconsts.lisudbydefaultonlytheprojectunitsandthesourceeditorunit
 msgid "By default only the project units and the source editor units are searched. Add here a list of directories separated by semicolon to search as well."
@@ -18453,12 +18451,12 @@ msgstr "Projekty a balíčky"
 
 #: lazarusidestrconsts.lisudscanning
 msgid "Scanning ..."
-msgstr ""
+msgstr "Skenovanie ..."
 
 #: lazarusidestrconsts.lisudscanningunits
 #, object-pascal-format
 msgid "Scanning: %s units ..."
-msgstr ""
+msgstr "Skenovanie: %s jednotiek ..."
 
 #: lazarusidestrconsts.lisudsearch
 msgid "(Search)"
@@ -18482,7 +18480,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisudselectedunits
 msgid "Selected units"
-msgstr ""
+msgstr "Vybraté jednotky"
 
 #: lazarusidestrconsts.lisudshownodesfordirectories
 msgid "Show nodes for directories"
@@ -18885,7 +18883,7 @@ msgstr "Nemožno vytvoriť príkaz CreateForm v zdrojovom kóde projektu"
 
 #: lazarusidestrconsts.lisuncheckall
 msgid "Uncheck All"
-msgstr ""
+msgstr "Zrušiť začiarknutie všetkých"
 
 #: lazarusidestrconsts.lisundo
 msgctxt "lazarusidestrconsts.lisundo"
@@ -18984,7 +18982,7 @@ msgstr ""
 #: lazarusidestrconsts.lisunusedunitsof
 #, object-pascal-format
 msgid "Unused units of %s"
-msgstr ""
+msgstr "Nepoužité jednotky z %s"
 
 #: lazarusidestrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
 msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
@@ -19063,7 +19061,7 @@ msgstr "Použiť začiarkavacie políčko pre boolovské hodnoty"
 
 #: lazarusidestrconsts.lisusecommentsincustomoptions
 msgid "Use comments in custom options"
-msgstr ""
+msgstr "Použiť komentáre vo vlastných voľbách"
 
 #: lazarusidestrconsts.lisusedby
 #, object-pascal-format
