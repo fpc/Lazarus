@@ -219,7 +219,7 @@ begin
   // two vertexs in pixels
   p1:= PosToPixels( p1 );
   p2:= PosToPixels( p2 );
-  p2.Y:= p2.Y + FriendEdit.LineHeight;
+  p2.Y:= p2.Y + FriendEdit.LineHeight - FriendEdit.ExtraLineSpacing;
 
   // client rect in pixels
   Result:= TRect.Create( p1 , p2 );
