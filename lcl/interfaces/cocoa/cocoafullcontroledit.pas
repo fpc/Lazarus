@@ -421,9 +421,13 @@ var
     lineText:= StrToNSString( params.text );
     subRange.location:= params.col;
     subRange.length:= aRange.length;
-    if subRange.location + subRange.length > lineText.length then
-      subRange.length:= lineText.length - subRange.location;
-    textWord:= lineText.substringWithRange(subRange);
+    if subRange.location + subRange.length > lineText.length then begin
+      if lineText.length > subRange.location then
+        subRange.length:= lineText.length - subRange.location
+      else
+        subRange.length:= 0;
+    end;
+    textWord:= lineText.substringWithRange( subRange );
   end;
 
   function getAttributeWord: NSAttributedString;
