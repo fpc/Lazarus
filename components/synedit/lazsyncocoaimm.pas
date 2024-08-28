@@ -186,7 +186,9 @@ begin
   if params.row > 0 then
     params.row:= params.row - 1;
   lineText:= FriendEdit.Lines[params.row];
-  if logicalPoint.x <= lineText.length then begin
+  if (lineText.length>0) and (logicalPoint.x<=lineText.length+1) then begin
+    if logicalPoint.x > lineText.length then
+      logicalPoint.x:= lineText.length;
     params.col:= UTF8Length( pchar(lineText), logicalPoint.x ) - 1;
   end else begin
     params.col:= -1;
@@ -209,9 +211,11 @@ var
 begin
   lineText:= FriendEdit.Lines[params.row];
 
-  col1Bytes:= UTF8CodepointToByteIndex( pchar(lineText), lineText.Length, params.col );
-  col2Bytes:= UTF8CodepointToByteIndex( pchar(lineText), lineText.Length, params.col + params.length );
 
+  col1Bytes:= UTF8CodepointToByteIndex( pchar(lineText),
+                lineText.Length, params.col );
+  col2Bytes:= col1Bytes + UTF8CodepointToByteIndex( pchar(lineText)+col1Bytes,
+                lineText.Length-col1Bytes, params.length );
   // two vertexs in bytes
   p1:= Point( col1Bytes + 1, params.row + 1 );
   p2:= Point( col2Bytes + 1, params.row + 1 );
@@ -274,8 +278,10 @@ begin
   // two vertexs in bytes
   p1:= _IntermediateTextBeginPos;
   p2:= p1;
-  p1.X:= p1.X + UTF8CodepointToByteIndex( pchar(@params.text[1]), params.textByteLength, params.selectedStart );
-  p2.X:= p2.X + UTF8CodepointToByteIndex( pchar(@params.text[1]), params.textByteLength, params.selectedStart+params.selectedLength );
+  p1.X:= p1.X + UTF8CodepointToByteIndex( pchar(@params.text[1]),
+                  params.textByteLength, params.selectedStart );
+  p2.X:= p1.X + UTF8CodepointToByteIndex( pchar(@params.text[1])+p1.X,
+                  params.textByteLength-p1.X, params.selectedLength );
 
   // two vertexs in pixels
   p1:= PosToPixels( p1 );
