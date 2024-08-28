@@ -80,6 +80,8 @@ type
     imeHandler: ICocoaIMEControl;
     lwHandler: ICocoaLookupWord;
   public
+    function initWithFrame(frameRect: NSRect): id; override;
+
     procedure keyDown(theEvent: NSEvent); override;
     procedure mouseDown(event: NSEvent); override;
     procedure mouseUp(event: NSEvent); override;
@@ -134,6 +136,12 @@ begin
 end;
 
 { TCocoaFullControlEdit }
+
+function TCocoaFullControlEdit.initWithFrame(frameRect: NSRect): id;
+begin
+  Result:=inherited initWithFrame(frameRect);
+  self.unmarkText;
+end;
 
 {
   for IME Key Down:

@@ -2001,7 +2001,6 @@ begin
     lcl := TLCLFullControlEditCallback.Create(ctrl, AWinControl);
     TCocoaFullControlEdit(ctrl).imeHandler:= imeHandler;
     TCocoaFullControlEdit(ctrl).lwHandler:= getControlLWHandler(AWinControl);
-    TCocoaFullControlEdit(ctrl).unmarkText;
   end
   else
   begin
