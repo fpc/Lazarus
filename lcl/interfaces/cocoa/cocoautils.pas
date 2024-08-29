@@ -25,6 +25,8 @@ type
 const
   NSNullRect : NSRect = (origin:(x:0; y:0); size:(width:0; height:0));
 
+procedure hideAllSubviews( parent: NSView );
+
 function GetNSSize(width, height: CGFloat): NSSize; inline;
 
 function GetNSPoint(x,y: single): NSPoint; inline;
@@ -160,6 +162,14 @@ function AllocImageRotatedByDegrees(src: NSImage; degrees: double): NSImage;
 function AllocCursorFromCursorByDegrees(src: NSCursor; degrees: double): NSCursor;
 
 implementation
+
+procedure hideAllSubviews( parent: NSView );
+var
+  view: NSView;
+begin
+  for view in parent.subviews do
+    view.setHidden( True );
+end;
 
 procedure ApplicationWillShowModal;
 begin

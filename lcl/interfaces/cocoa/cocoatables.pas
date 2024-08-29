@@ -90,6 +90,7 @@ type
     procedure addSubview(aView: NSView); override;
     procedure dealloc; override;
 
+    function lclGetPorcessor: TCocoaTableViewProcessor; message 'lclGetPorcessor';
     procedure lclSetProcessor( processor: TCocoaTableViewProcessor ); message 'lclSetProcessor:';
     procedure lclSetCheckBoxes( checkBoxes: Boolean); message 'lclSetCheckBoxes:';
     function lclHasCheckBoxes: Boolean; message 'lclHasCheckBoxes';
@@ -320,15 +321,6 @@ begin
   Result := TCocoaTableListView.alloc;
 end;
 
-procedure hideAllSubviews( parent: NSView );
-var
-  view: NSView;
-begin
-  for view in parent.subviews do
-    view.setHidden( True );
-end;
-
-
 function updateNSTextFieldWithTFont( cocoaField: NSTextField; lclFont: TFont ):
   Boolean;
 var
@@ -385,14 +377,15 @@ begin
     Exit;
   end;
 
-  done:= self.tableView.lclCallDrawItem( row , self.bounds.size, dirtyRect );
+  done:= self.tableView.lclCallDrawItem( row, self.bounds.size, dirtyRect );
 
   if done then begin
     // the Cocoa default drawing cannot be skipped in NSTableView,
     // we can only hide the CellViews to get the same effect.
     // in the Lazarus IDE, there is a ListBox with OwnerDraw in Project-Forms,
     // it's a case where the default drawing must be skipped.
-    hideAllSubviews( self );
+    if Assigned(self.tableView.lclGetPorcessor) then
+      self.tableView.lclGetPorcessor.onOwnerDrawItem( self );
   end else begin
     drawNSViewBackground( self, tableView.lclGetCanvas.Brush );
     inherited drawRect( dirtyRect );
@@ -475,6 +468,11 @@ end;
 procedure TCocoaTableListView.dealloc;
 begin
   FreeAndNil( _processor );
+end;
+
+function TCocoaTableListView.lclGetPorcessor: TCocoaTableViewProcessor;
+begin
+  Result:= _processor;
 end;
 
 procedure TCocoaTableListView.lclSetProcessor( processor: TCocoaTableViewProcessor);

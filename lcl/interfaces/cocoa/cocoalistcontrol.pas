@@ -8,7 +8,8 @@ interface
 uses
   Classes, SysUtils,
   LCLType, Graphics, Controls, ComCtrls,
-  CocoaAll, CocoaPrivate, CocoaCallback, CocoaWSCommon, CocoaGDIObjects;
+  CocoaAll, CocoaPrivate, CocoaCallback, CocoaWSCommon, CocoaGDIObjects,
+  CocoaUtils;
 
 type
   {
@@ -97,6 +98,7 @@ type
     procedure onReloadData( tv: NSTableView ); virtual; abstract;
     procedure onSelectOneItem( tv: NSTableView; selection: NSIndexSet ); virtual; abstract;
     procedure onSelectionChanged( tv: NSTableView ); virtual; abstract;
+    procedure onOwnerDrawItem( rowView: NSView ); virtual abstract;
   end;
 
   { TCocoaTableListControlProcessor }
@@ -107,6 +109,7 @@ type
   public
     procedure onReloadData( tv: NSTableView ); override;
     procedure onSelectOneItem( tv: NSTableView; selection: NSIndexSet ); override;
+    procedure onOwnerDrawItem( rowView: NSView ); override;
   end;
 
   { TCocoaListControlStringList }
@@ -202,6 +205,11 @@ begin
 
   lclcb.selectionIndexSet.removeAllIndexes;
   lclcb.selectionIndexSet.addIndexes( selection );
+end;
+
+procedure TCocoaTableListControlProcessor.onOwnerDrawItem( rowView: NSView );
+begin
+  hideAllSubviews( rowView );
 end;
 
 { TCocoaListControlStringList }
