@@ -460,6 +460,16 @@ var
     attribs.release;
   end;
 
+  procedure setActualRange;
+  begin
+    if aRange.location >= (LW_LOCATION_BASE/2) then begin
+      actualRange^:= LWParamsToRange( params );
+    end else begin
+      actualRange^.location:= aRange.location;
+      actualRange^.length:= textWord.length;
+    end
+  end;
+
 begin
   Result:= nil;
 
@@ -468,7 +478,7 @@ begin
 
   initParams;
   initTextWord;
-  actualRange^:= LWParamsToRange( params );
+  setActualRange;
   Result:= getAttributeWord;
 end;
 
