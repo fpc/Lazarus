@@ -426,6 +426,12 @@ var
     lineText: NSString;
     subRange: NSRange;
   begin
+    if (aRange.location=0) and (params.text='') then begin
+      params.text:= ' ';
+      textWord:= NSSTR( ' ' );
+      Exit;
+    end;
+
     lineText:= StrToNSString( params.text );
     subRange.location:= params.col;
     subRange.length:= aRange.length;
