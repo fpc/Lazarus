@@ -189,7 +189,7 @@ begin
   if (lineText.length>0) and (logicalPoint.x<=lineText.length+1) then begin
     if logicalPoint.x > lineText.length then
       logicalPoint.x:= lineText.length;
-    params.col:= UTF8Length( pchar(lineText), logicalPoint.x ) - 1;
+    params.col:= UTF8CodepointCount( pchar(lineText), logicalPoint.x ) - 1;
   end else begin
     params.col:= -1;
   end;
