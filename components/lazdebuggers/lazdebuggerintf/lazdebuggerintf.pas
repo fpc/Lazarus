@@ -137,6 +137,7 @@ type
   TLzDbgArrayType       = (datUnknown, datDynArray, datStatArray);
   TLzDbgFieldVisibility = (dfvUnknown, dfvPrivate, dfvProtected, dfvPublic, dfvPublished);
   TLzDbgFieldFlag  = (dffClass, dffAbstract, dffVirtual, dffOverwritten, dffConstructor, dffDestructor, dffVariant);
+  TLzDbgArrayTypes = set of TLzDbgArrayType;
   TLzDbgFieldFlags = set of TLzDbgFieldFlag;
 
   { IDbgWatchDataIntf:

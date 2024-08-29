@@ -128,8 +128,44 @@ msgctxt "idedebuggerstringconstants.dispformatcharord"
 msgid "Ordinal"
 msgstr ""
 
+#: idedebuggerstringconstants.dispformatdlgarraycombine
+msgid "Combine lengths"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgarraycombineall
+msgid "Always"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgarraycombinedyn
+msgid "Dynamic"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgarraycombinenone
+msgid "Never"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgarraycombinestat
+msgid "Static"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgarraylen
+msgid "Array len"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgarraymaxnest
+msgid "Nested"
+msgstr ""
+
 #: idedebuggerstringconstants.dispformatdlgarraynav
-msgid "Array Navigation"
+msgid "Array navigation"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgarrayshowprefix
+msgid "Show len"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgarrayshowprefixembedded
+msgid "Include embedded"
 msgstr ""
 
 #: idedebuggerstringconstants.dispformatdlgbtnadrformat
@@ -138,6 +174,10 @@ msgstr ""
 
 #: idedebuggerstringconstants.dispformatdlgbtnall
 msgid "All"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatdlgbtnarray
+msgid "Array"
 msgstr ""
 
 #: idedebuggerstringconstants.dispformatdlgbtnbool
@@ -741,6 +781,11 @@ msgstr "Colonna tipo metodo"
 #, object-pascal-format
 msgid "Len=%d: "
 msgstr "Lung=%d"
+
+#: idedebuggerstringconstants.drslen2
+#, object-pascal-format
+msgid "Len=%s: "
+msgstr ""
 
 #: idedebuggerstringconstants.drsnewvalue
 msgid "New Value"

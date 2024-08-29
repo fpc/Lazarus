@@ -286,11 +286,6 @@ begin
       FWatchPrinter.FormatFlags := FWatchPrinter.FormatFlags - [rpfSkipValueFormatter];
     FWatchPrinter.OnlyValueFormatter := WatchInspectNav1.DbgValueFormatter;
     ResultText := FWatchPrinter.PrintWatchValue(WatchInspectNav1.CurrentWatchValue.ResultData, WatchInspectNav1.DisplayFormat, AWatch.Expression);
-    if (WatchInspectNav1.CurrentWatchValue.ResultData <> nil) and
-       (WatchInspectNav1.CurrentWatchValue.ResultData.ValueKind = rdkArray) and (WatchInspectNav1.CurrentWatchValue.ResultData.ArrayLength > 0)
-    then
-      ResultText := Format(drsLen, [WatchInspectNav1.CurrentWatchValue.ResultData.ArrayLength]) + ResultText
-    else
     if (WatchInspectNav1.CurrentWatchValue.TypeInfo <> nil) and
        (WatchInspectNav1.CurrentWatchValue.TypeInfo.Attributes * [saArray, saDynArray] <> []) and
        (WatchInspectNav1.CurrentWatchValue.TypeInfo.Len >= 0)

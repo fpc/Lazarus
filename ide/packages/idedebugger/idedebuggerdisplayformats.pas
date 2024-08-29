@@ -171,6 +171,11 @@ begin
    AConfig.GetValue(APath + 'PointerBase',  ord(DefaultWatchDisplayFormat.Pointer.Address.BaseFormat),        ADisplayFormat.Pointer.Address.BaseFormat,       TypeInfo(TValueDisplayFormatBase));
    ADisplayFormat.Pointer.Address.Signed := AConfig.GetValue(APath + 'PointerSign', DefaultWatchDisplayFormat.Pointer.Address.Signed);
    ADisplayFormat.Pointer.Address.NoLeadZero := AConfig.GetValue(APath + 'PointerLeadZero', DefaultWatchDisplayFormat.Pointer.Address.NoLeadZero);
+  ADisplayFormat.ArrayLen.UseInherited := AConfig.GetValue(APath + 'ArrayLineInherit', DefaultWatchDisplayFormat.ArrayLen.UseInherited);
+    ADisplayFormat.ArrayLen.ShowLenPrefix         := AConfig.GetValue(APath + 'ArrayShowLenPrefix',         DefaultWatchDisplayFormat.ArrayLen.ShowLenPrefix);
+    ADisplayFormat.ArrayLen.ShowLenPrefixEmbedded := AConfig.GetValue(APath + 'ArrayShowLenPrefixEmbedded', DefaultWatchDisplayFormat.ArrayLen.ShowLenPrefixEmbedded);
+    ADisplayFormat.ArrayLen.LenPrefixMaxNest      := AConfig.GetValue(APath + 'ArrayLenPrefixMaxNest',      DefaultWatchDisplayFormat.ArrayLen.LenPrefixMaxNest);
+    AConfig.GetValue(APath + 'ArrayLenPrefixCombine',  ord(DefaultWatchDisplayFormat.ArrayLen.LenPrefixCombine),    ADisplayFormat.ArrayLen.LenPrefixCombine,   TypeInfo(TValueDisplayFormatArrayType));
   ADisplayFormat.MultiLine.UseInherited := AConfig.GetValue(APath + 'MultiLineInherit', DefaultWatchDisplayFormat.MultiLine.UseInherited);
    ADisplayFormat.MultiLine.MaxMultiLineDepth := AConfig.GetValue(APath + 'MultiLineMaxWrapDepth', DefaultWatchDisplayFormat.MultiLine.MaxMultiLineDepth);
   ADisplayFormat.ArrayNavBar.UseInherited := AConfig.GetValue(APath + 'ArrayNavBarInherit', DefaultWatchDisplayFormat.ArrayNavBar.UseInherited);
@@ -236,6 +241,11 @@ begin
    AConfig.SetDeleteValue(APath + 'PointerBase',       ADisplayFormat.Pointer.Address.BaseFormat,   ord(DefaultWatchDisplayFormat.Pointer.Address.BaseFormat),       TypeInfo(TValueDisplayFormatBase));
    AConfig.SetDeleteValue(APath + 'PointerSign',       ADisplayFormat.Pointer.Address.Signed,       DefaultWatchDisplayFormat.Pointer.Address.Signed);
    AConfig.SetDeleteValue(APath + 'PointerLeadZero',   ADisplayFormat.Pointer.Address.NoLeadZero,   DefaultWatchDisplayFormat.Pointer.Address.NoLeadZero);
+  AConfig.SetDeleteValue(APath + 'ArrayLineInherit', ADisplayFormat.ArrayLen.UseInherited,       DefaultWatchDisplayFormat.ArrayLen.UseInherited);
+    AConfig.SetDeleteValue(APath + 'ArrayShowLenPrefix',         ADisplayFormat.ArrayLen.ShowLenPrefix,          DefaultWatchDisplayFormat.ArrayLen.ShowLenPrefix);
+    AConfig.SetDeleteValue(APath + 'ArrayShowLenPrefixEmbedded', ADisplayFormat.ArrayLen.ShowLenPrefixEmbedded,  DefaultWatchDisplayFormat.ArrayLen.ShowLenPrefixEmbedded);
+    AConfig.SetDeleteValue(APath + 'ArrayLenPrefixMaxNest',      ADisplayFormat.ArrayLen.LenPrefixMaxNest,       DefaultWatchDisplayFormat.ArrayLen.LenPrefixMaxNest);
+    AConfig.SetDeleteValue(APath + 'ArrayLenPrefixCombine',      ADisplayFormat.ArrayLen.LenPrefixCombine,       ord(DefaultWatchDisplayFormat.ArrayLen.LenPrefixCombine),  TypeInfo(TValueDisplayFormatArrayType));
   AConfig.SetDeleteValue(APath + 'MultiLineInherit',   ADisplayFormat.MultiLine.UseInherited,       DefaultWatchDisplayFormat.MultiLine.UseInherited);
    AConfig.SetDeleteValue(APath + 'MultiLineMaxWrapDepth',ADisplayFormat.MultiLine.MaxMultiLineDepth, DefaultWatchDisplayFormat.MultiLine.MaxMultiLineDepth);
   AConfig.SetDeleteValue(APath + 'ArrayNavBarInherit',   ADisplayFormat.ArrayNavBar.UseInherited,       DefaultWatchDisplayFormat.ArrayNavBar.UseInherited);

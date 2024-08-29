@@ -1585,9 +1585,9 @@ begin
          not( (ResData.ValueKind = rdkPrePrinted) and (AWatchAbleResult.TypeInfo <> nil) )
       then begin
         if defSkipValueFormatter in TheWatch.EvaluateFlags then
-          FWatchDlg.FWatchPrinter.FormatFlags := [rpfClearMultiLine, rpfPrefixOuterArrayLen, rpfSkipValueFormatter]
+          FWatchDlg.FWatchPrinter.FormatFlags := [rpfClearMultiLine, rpfSkipValueFormatter]
         else
-          FWatchDlg.FWatchPrinter.FormatFlags := [rpfClearMultiLine, rpfPrefixOuterArrayLen];
+          FWatchDlg.FWatchPrinter.FormatFlags := [rpfClearMultiLine];
         FWatchDlg.FWatchPrinter.OnlyValueFormatter := TheWatch.DbgValueFormatter;
         WatchValueStr := FWatchDlg.FWatchPrinter.PrintWatchValue(ResData, DispFormat, TheWatch.Expression);
         TreeView.NodeText[AVNode, COL_WATCH_VALUE-1] := WatchValueStr;

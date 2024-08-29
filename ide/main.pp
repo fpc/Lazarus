@@ -11560,7 +11560,7 @@ begin
 
   ResultText := '';
   WatchPrinter := DebugBoss.HintWatchPrinter;
-  WatchPrinter.FormatFlags := [rpfMultiLine, rpfIndent, rpfPrefixOuterArrayLen];
+  WatchPrinter.FormatFlags := [rpfMultiLine, rpfIndent];
   DispFormat := DefaultWatchDisplayFormat;
   if FHintWatchData.WatchValue.Watch <> nil then
     DispFormat := FHintWatchData.WatchValue.Watch.DisplayFormat;

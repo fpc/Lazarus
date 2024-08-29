@@ -52,6 +52,7 @@ type
     ): TResolvedDisplayFormat;
     function ResolveMultiLine(const ADispFormat: TWatchDisplayFormat): TWatchDisplayFormatMultiline;
     function ResolveArrayNavBar(const ADispFormat: TWatchDisplayFormat): TWatchDisplayFormatArrayNav;
+    function ResolveArrayLen(const ADispFormat: TWatchDisplayFormat): TWatchDisplayFormatArrayLen;
     // Resolving from FallBackFormats[n] to FallBackFormats[0]
     // [0] must be the IDE global format, and will be used regardless of UseInherited
     property FallBackFormats: TWatchDisplayFormatList read FFallBackFormats;
@@ -61,7 +62,6 @@ type
     rpfIndent,           // use Indent. Only when MultiLine
     rpfMultiLine,
     rpfClearMultiLine,   // clean up pre-printed data
-    rpfPrefixOuterArrayLen,
     rpfSkipValueFormatter
   );
   TWatchResultPrinterFormatFlags = set of TWatchResultPrinterFormatFlag;
@@ -84,6 +84,8 @@ type
     FIndentLvl: integer;
     FIndentString: String;
     FHasLineBreak: Boolean;
+    FParentResValue, FCurrentResValue: TWatchResultData;
+    FCurrentOuterMostArrayLvl, FOuterMostArrayCount, FCurrentArrayCombineLvl: integer;
   protected const
     MAX_ALLOWED_NEST_LVL = 100;
   protected type
@@ -423,6 +425,21 @@ begin
     Result := DefaultWatchDisplayFormat.ArrayNavBar;
 end;
 
+function TDisplayFormatResolver.ResolveArrayLen(const ADispFormat: TWatchDisplayFormat
+  ): TWatchDisplayFormatArrayLen;
+var
+  i: Integer;
+begin
+  Result := ADispFormat.ArrayLen;
+  i := FFallBackFormats.Count-1;
+  while (Result.UseInherited) and (i > 0) do begin
+    Result := FFallBackFormats[i].ArrayLen;
+    dec(i);
+  end;
+  if (Result.UseInherited) then
+    Result := DefaultWatchDisplayFormat.ArrayLen;
+end;
+
 { TWatchResultPrinter }
 
 procedure TWatchResultPrinter.StoreSetting(var AStorage: TWatchResStoredSettings);
@@ -584,11 +601,95 @@ end;
 
 function TWatchResultPrinter.PrintArray(AResValue: TWatchResultData;
   const ADispFormat: TWatchDisplayFormat; ANestLvl: Integer; const AWatchedExpr: String): String;
+type
+  TIntegerArray = array of integer;
+
+  function CheckArrayIndexes(AnArrayResValue: TWatchResultData;
+    var AKnownLengthList: TIntegerArray; var AKnownLengthDepth, AMaxAllEqualDepth: Integer;
+    ACurrentDepth: integer; AnArrayTypes: TLzDbgArrayTypes;
+    out AnHasNonStatNested: boolean): boolean;
+  var
+    r: TWatchResultData;
+    Len, i, Cnt: Integer;
+    NestedNonStatNested: Boolean;
+  begin
+    Result := False;
+    AnHasNonStatNested := AnArrayResValue.ArrayType <> datStatArray;
+    Len := AnArrayResValue.ArrayLength;
+
+    if ACurrentDepth > AKnownLengthDepth then begin
+      AKnownLengthDepth := ACurrentDepth;
+      AKnownLengthList[ACurrentDepth] := Len;
+    end
+    else
+    if AKnownLengthList[ACurrentDepth] <> Len then
+      exit;
+
+    Cnt := AnArrayResValue.Count;
+    if (Cnt <> Len) then begin
+      if (AnArrayResValue.ArrayType <> datStatArray) then
+        exit;
+      AnArrayTypes := [datStatArray]; // all nested must be stat, since we can't test to the end
+    end;
+
+    Result := True;
+    if ACurrentDepth = AMaxAllEqualDepth then
+      exit;
+
+    if (Len = 0) or (Cnt = 0)
+       //( (Cnt = 0) and (ACurrentDepth = AKnownLengthDepth))
+    then begin
+      if ACurrentDepth < AMaxAllEqualDepth then
+        AMaxAllEqualDepth := ACurrentDepth;
+      exit;
+    end;
+
+    for i := 0 to Cnt - 1 do begin
+      AnArrayResValue.SetSelectedIndex(i);
+      r := AnArrayResValue.SelectedEntry;
+      NestedNonStatNested := False;
+      if (r.ValueKind <> rdkArray) or
+         ( not(r.ArrayType in AnArrayTypes)) or
+         not CheckArrayIndexes(AnArrayResValue.SelectedEntry, AKnownLengthList, AKnownLengthDepth,
+                               AMaxAllEqualDepth, ACurrentDepth + 1, AnArrayTypes, NestedNonStatNested)
+      then begin
+        AnHasNonStatNested := AnHasNonStatNested or NestedNonStatNested;
+        if ACurrentDepth < AMaxAllEqualDepth then
+          AMaxAllEqualDepth := ACurrentDepth;
+        exit;
+      end;
+      AnHasNonStatNested := AnHasNonStatNested or NestedNonStatNested;
+
+     if not AnHasNonStatNested  then  // includes current is stat-array
+        break; // they must all be the same
+    end;
+  end;
+
+  procedure CheckArrayIndexes(var AnArrayResValue: TWatchResultData;
+    out AKnownLengthList: TIntegerArray; out AnAllEqualDepth: Integer;
+    AnArrayTypes: TLzDbgArrayTypes);
+  var
+    KnownLenDepth: Integer;
+    dummy: boolean;
+  begin
+    SetLength(AKnownLengthList, 100);
+    KnownLenDepth := -1;
+    AnAllEqualDepth := 99;
+    CheckArrayIndexes(AnArrayResValue, AKnownLengthList, KnownLenDepth,  AnAllEqualDepth, 0, AnArrayTypes, dummy);
+    inc(AnAllEqualDepth);
+  end;
+
 var
-  i: Integer;
-  sep, tn: String;
-  SepHasBreak, SepUsed, OldHasLineBreak: Boolean;
+  i, Cnt, MaxCnt, PrefixIdxCnt, OldCurrentOuterMostArrayLvl, OldOuterMostArrayCount,
+    OldCurrentArrayCombineLvl: Integer;
+  sep, tn, sep2, LenStr: String;
+  SepHasBreak, OldHasLineBreak, CutOff: Boolean;
+  ShowLen, ShowCombined, ShowCombinedStatOnly, ShowCombinedDynOnly, OuterMostArray: Boolean;
   MultiLine: TWatchDisplayFormatMultiline;
+  Results: array of string;
+  PrefixIdxList: TIntegerArray;
+  LenPrefix: TWatchDisplayFormatArrayLen;
+  ArrayTypes: TLzDbgArrayTypes;
 begin
   if (AResValue.ArrayType = datDynArray) then begin
     tn := AResValue.TypeName;
@@ -610,14 +711,16 @@ begin
   end;
 
   sep := ', ';
+  sep2 := '';
   SepHasBreak := False;
-  SepUsed := False;
   MultiLine := FDisplayFormatResolver.ResolveMultiLine(ADispFormat);
   if (rpfMultiLine in FFormatFlags) and (FIndentLvl < MultiLine.MaxMultiLineDepth ) then begin
     sep := ',' + FLineSeparator;
+    sep2 := FLineSeparator;
     SepHasBreak := True;
     if (rpfIndent in FFormatFlags) then begin
       sep := sep + FIndentString;
+      sep2 := sep2 + FIndentString;
       FIndentString := FIndentString + '  ';
       inc(FIndentLvl);
     end;
@@ -625,36 +728,115 @@ begin
   OldHasLineBreak := FHasLineBreak;
   FHasLineBreak := False;
 
-  Result := '';
-  for i := 0 to AResValue.Count - 1 do begin
-    if Result <> '' then begin
-      Result := Result + sep;
-      SepUsed := True;
+  OldCurrentOuterMostArrayLvl := FCurrentOuterMostArrayLvl;
+  OldOuterMostArrayCount := FOuterMostArrayCount;
+  OldCurrentArrayCombineLvl := FCurrentArrayCombineLvl;
+  try
+    OuterMostArray := (FParentResValue = nil) or (FParentResValue.ValueKind <> rdkArray);
+    if OuterMostArray then begin
+      FCurrentOuterMostArrayLvl := ANestLvl;
+      inc(FOuterMostArrayCount);
+      FCurrentArrayCombineLvl := 0;
     end;
-    AResValue.SetSelectedIndex(i);
-    OldHasLineBreak := OldHasLineBreak or FHasLineBreak;
-    FHasLineBreak := False;
-    Result := Result + PrintWatchValueEx(AResValue.SelectedEntry, ADispFormat, ANestLvl, AWatchedExpr);
-    if Length(Result) > 1000*1000 div Max(1, ANestLvl*4) then begin
-      Result := Result + sep +'...';
-      SepUsed := True;
-      break;
+
+    LenPrefix := FDisplayFormatResolver.ResolveArrayLen(ADispFormat);
+    ShowLen := LenPrefix.ShowLenPrefix and
+               ( (FOuterMostArrayCount = 1) or LenPrefix.ShowLenPrefixEmbedded ) and
+               (AResValue.ArrayLength > 0) and
+               (ANestLvl <= FCurrentOuterMostArrayLvl + LenPrefix.LenPrefixMaxNest) and
+               (ANestLvl >= FCurrentOuterMostArrayLvl + FCurrentArrayCombineLvl);
+    if ShowLen then begin
+      ShowCombinedDynOnly  := (LenPrefix.LenPrefixCombine = vdfatDyn) and (AResValue.ArrayType = datDynArray);
+      ShowCombinedStatOnly := (LenPrefix.LenPrefixCombine = vdfatStat) and (AResValue.ArrayType = datStatArray);
+      ShowCombined := OuterMostArray and (
+        (LenPrefix.LenPrefixCombine = vdfatAll) or
+        ShowCombinedStatOnly or ShowCombinedDynOnly
+      );
+
+      if ShowCombinedDynOnly then
+        ArrayTypes := [datDynArray]
+      else
+      if ShowCombinedStatOnly then
+        ArrayTypes := [datStatArray]
+      else
+        ArrayTypes := [Low(TLzDbgArrayType)..High(TLzDbgArrayType)];
     end;
-  end;
-  if AResValue.Count < AResValue.ArrayLength then begin
-    Result := Result + sep +'...';
-    SepUsed := True;
-  end;
-  if FHasLineBreak then
-    Result := '(' + Result + sep +')'
-  else
-    Result := '(' + Result +')';
 
-  if (rpfPrefixOuterArrayLen in FFormatFlags) and (ANestLvl = 0) and (AResValue.ArrayLength > 0) then
-    Result := Format(drsLen, [AResValue.ArrayLength]) + Result;
 
-  if (SepUsed and SepHasBreak) or OldHasLineBreak then
-    FHasLineBreak := True;
+
+    MaxCnt := 1000*1000 div Max(1, ANestLvl*4);
+    Cnt := AResValue.Count;
+    CutOff := (Cnt > MaxCnt) or (Cnt < AResValue.ArrayLength);
+    if CutOff then begin
+      if Cnt > MaxCnt then
+        Cnt := MaxCnt;
+      SetLength(Results, Cnt+1);
+    end
+    else
+      SetLength(Results, Cnt);
+
+    if ShowLen then begin
+      if ShowCombined then begin
+        CheckArrayIndexes(AResValue, PrefixIdxList, PrefixIdxCnt, ArrayTypes);
+        FCurrentArrayCombineLvl := PrefixIdxCnt;
+      end
+      else begin
+        SetLength(PrefixIdxList, 1);
+        PrefixIdxList[0] := AResValue.ArrayLength;
+        PrefixIdxCnt := 1;
+      end;
+
+      ShowLen := PrefixIdxCnt > 0;
+      if ShowLen then begin
+        LenStr := '';
+        for i := 0 to PrefixIdxCnt - 2 do
+          LenStr := LenStr + IntToStr(PrefixIdxList[i]) + ', ';
+        LenStr := LenStr + IntToStr(PrefixIdxList[PrefixIdxCnt-1]);
+        if PrefixIdxCnt > 1 then
+          LenStr := '('+LenStr+')';
+        LenStr := Format(drsLen2, [LenStr]);
+      end;
+    end;
+
+    if Cnt > 0 then begin
+      for i := 0 to Cnt - 1 do begin
+        AResValue.SetSelectedIndex(i);
+        OldHasLineBreak := OldHasLineBreak or FHasLineBreak;
+        FHasLineBreak := False;
+        Results[i] := PrintWatchValueEx(AResValue.SelectedEntry, ADispFormat, ANestLvl, AWatchedExpr);
+      end;
+
+      if CutOff then begin
+        Results[Cnt] := '...';
+        inc(Cnt);
+      end;
+
+      if Cnt > 1 then
+        Results[Cnt-1] := Results[Cnt-1] + sep2 +')'
+      else
+        Results[Cnt-1] := Results[Cnt-1] +')';
+
+      if ShowLen then
+        Results[0] := LenStr + sep2 + '(' + Results[0]
+      else
+        Results[0] := '(' + Results[0];
+
+      Result := AnsiString.Join(sep, Results);
+    end
+    else begin
+      if ShowLen then
+        Result := LenStr + '()'
+      else
+        Result := '()';
+    end;
+
+    if ((Cnt > 1) and SepHasBreak) or OldHasLineBreak then
+      FHasLineBreak := True;
+  finally
+    FCurrentOuterMostArrayLvl := OldCurrentOuterMostArrayLvl;
+    FOuterMostArrayCount := OldOuterMostArrayCount;
+    FCurrentArrayCombineLvl := OldCurrentArrayCombineLvl;
+  end;
 end;
 
 function TWatchResultPrinter.PrintStruct(AResValue: TWatchResultData;
@@ -947,7 +1129,7 @@ function TWatchResultPrinter.PrintWatchValueEx(AResValue: TWatchResultData;
 var
   PointerValue: TWatchResultDataPointer absolute AResValue;
   ResTypeName, CurIndentString: String;
-  PtrDeref, PtrDeref2: TWatchResultData;
+  PtrDeref, PtrDeref2, OldCurrentResValue, OldParentResValue: TWatchResultData;
   Resolved: TResolvedDisplayFormat;
   n, CurIndentLvl: Integer;
   StoredSettings: TWatchResStoredSettings;
@@ -955,6 +1137,10 @@ begin
   inc(ANestLvl);
   CurIndentLvl := FIndentLvl;
   CurIndentString := FIndentString;
+  OldCurrentResValue := FCurrentResValue;
+  OldParentResValue := FParentResValue;
+  FParentResValue := FCurrentResValue;
+  FCurrentResValue := AResValue;
   try
     if ANestLvl > MAX_ALLOWED_NEST_LVL then
       exit('...');
@@ -1078,6 +1264,8 @@ begin
   finally
     FIndentLvl := CurIndentLvl;
     FIndentString := CurIndentString;
+    FCurrentResValue := OldCurrentResValue;
+    FParentResValue := OldParentResValue;
   end;
 end;
 
@@ -1116,6 +1304,8 @@ begin
     FLineSeparator := ' ';
 
   FWatchedVarName := UpperCase(AWatchedExpr);
+  FParentResValue := nil;
+  FCurrentResValue := nil;
   Result := PrintWatchValueEx(AResValue, ADispFormat, -1, FWatchedVarName);
 end;
 
@@ -1148,6 +1338,8 @@ begin
   else begin
     // TOOD: full init? Or Call PrintWatchValueEx ?
     // TODO: inc level/count of iterations
+    FParentResValue := nil;
+    FCurrentResValue := nil;
     Result := PrintWatchValueEx(AResValObj, ADispFormat, -1, FWatchedExprInFormatter);
   end;
 end;

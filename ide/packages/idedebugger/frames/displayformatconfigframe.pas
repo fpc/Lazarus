@@ -12,6 +12,7 @@ uses
 type
   TValueDisplayFormatArray = array of TValueDisplayFormat;
   TValueDisplayFormatHexSeperatorArray = array of TValueDisplayFormatHexSeperator;
+  TValueDisplayFormatArrayTypeArray = array of TValueDisplayFormatArrayType;
   TBoolSet = set of boolean;
 
   TRadioButton = class;
@@ -46,8 +47,11 @@ type
   TDisplayFormatFrame = class(TFrame)
     cbAddrSign: TCheckBox;
     cbAddrNoLeadZero: TCheckBox;
+    cbArrayShowPrefix: TCheckBox;
+    cbArrayShowPrefixEmbedded: TCheckBox;
     cbEnumValSign: TCheckBox;
     cbMemDump: TCheckBox;
+    cbOverrideArray: TCheckBox;
     cbOverrideEnumVal: TCheckBox;
     cbOverrideArrayNavBar: TCheckBox;
     cbOverrideNum2Base: TCheckBox;
@@ -68,6 +72,7 @@ type
     cbArrayNavEnforceBounds: TCheckBox;
     DigitSpacer3: TLabel;
     DigitSpacer4: TLabel;
+    DividerBevelArray: TDividerBevel;
     DividerBevelEnumVal: TDividerBevel;
     DividerBevelNum2: TDividerBevel;
     DividerBevelPointerDeref: TDividerBevel;
@@ -80,10 +85,13 @@ type
     DividerBevelArrayNavBar: TDividerBevel;
     DividerBevelStruct: TDividerBevel;
     Label1: TLabel;
+    lbArrayCombine: TLabel;
+    lbOverrideArray: TLabel;
     lbPageSize: TLabel;
     lbMaxWrapLvl: TLabel;
     lbOverrideIndent: TLabel;
     lbOverrideArrayNavBar: TLabel;
+    lbArrayLenMaxNest: TLabel;
     lbStructAddrTypedFiller: TLabel;
     Label3: TLabel;
     lbEnumValBaseSpace: TLabel;
@@ -102,6 +110,8 @@ type
     lbOverrideNumBase: TLabel;
     lbNum2SepGroup: TLabel;
     PanelAddressLeadZero: TPanel;
+    PanelArray: TPanel;
+    PanelArrayShowPrefix: TPanel;
     PanelEnumVal: TPanel;
     PanelENumValBase: TPanel;
     PanelEnumValRb: TPanel;
@@ -118,6 +128,7 @@ type
     PanelIndentMax: TPanel;
     PanelArrayNavBar: TPanel;
     PanelArrayNavBarOpts: TPanel;
+    PanelArrayPrefixCombine: TPanel;
     rbClear: TRadioButton;
     rbClear1: TRadioButton;
     rbClear10: TRadioButton;
@@ -127,6 +138,7 @@ type
     rbClear14: TRadioButton;
     rbClear15: TRadioButton;
     rbClear16: TRadioButton;
+    rbClear17: TRadioButton;
     rbClear2: TRadioButton;
     rbClear3: TRadioButton;
     rbClear4: TRadioButton;
@@ -165,6 +177,10 @@ type
     rbSign2Auto: TRadioButton;
     rbSign2Signed: TRadioButton;
     rbSign2Unsigned: TRadioButton;
+    rbArrayCombineNone: TRadioButton;
+    rbArrayCombineAll: TRadioButton;
+    rbArrayCombineStat: TRadioButton;
+    rbArrayCombineDyn: TRadioButton;
     Shape10: TShape;
     Shape11: TShape;
     Shape12: TShape;
@@ -233,6 +249,8 @@ type
     Spacer19: TLabel;
     Spacer2: TLabel;
     Spacer20: TLabel;
+    Spacer21: TLabel;
+    Spacer22: TLabel;
     Spacer3: TLabel;
     Spacer4: TLabel;
     Spacer5: TLabel;
@@ -245,6 +263,7 @@ type
     SpinFloatDigits: TSpinEdit;
     SpinDigits: TSpinEdit;
     Spin2Digits: TSpinEdit;
+    spinArrayLenMaxNest: TSpinEdit;
     tbIndent: TSpeedButton;
     ToolBar1: TToolBar;
     tbCurrent: TSpeedButton;
@@ -264,11 +283,11 @@ type
     tbBool: TSpeedButton;
     tbChar: TSpeedButton;
     tbFloat: TSpeedButton;
+    tbArray: TSpeedButton;
     ToolButton5: TToolButton;
-    procedure cbAddrNoLeadZeroChange(Sender: TObject);
-    procedure cbArrayNavEnforceBoundsChange(Sender: TObject);
+    procedure cbArrayShowPrefixChange(Sender: TObject);
+    procedure DataCheckboxChange(Sender: TObject);
     procedure cbMemDumpChange(Sender: TObject);
-    procedure cbNum2VisibleCheckedChange(Sender: TObject);
     procedure CheckLabelClicked(Sender: TObject);
     procedure FormatAddrTypeChanged(Sender: TObject);
     procedure FormatNumGroupChanged(Sender: TObject);
@@ -284,7 +303,7 @@ type
     procedure tbFormatClick(Sender: TObject);
     procedure tbIndentClick(Sender: TObject);
   private type
-    TFmtButtons = (bsNum, bsEnum, bsBool, bsChar, bsFloat, bsStruct, bsPtr, bsIndent);
+    TFmtButtons = (bsNum, bsEnum, bsBool, bsChar, bsFloat, bsStruct, bsPtr, bsArray, bsIndent);
   private
     FAllowMultiTabs: boolean;
     FHighlightModifiedTabs: boolean;
@@ -326,8 +345,10 @@ type
     procedure ClearRadios(APanel: TWinControl; ARecursive: Boolean = False; AnExcludeSelf: boolean = False);
     procedure ApplyDispForm(APanel: TPanel; ADispForm: TValueDisplayFormats; AnRbOrder: TValueDisplayFormatArray);
     procedure ApplyDispForm(APanel: TPanel; ADispForm: TValueDisplayFormatHexSeperators; AnRbOrder: TValueDisplayFormatHexSeperatorArray);
+    procedure ApplyDispForm(APanel: TPanel; ADispForm: TValueDisplayFormatArrayTypes; AnRbOrder: TValueDisplayFormatArrayTypeArray);
     function ReadDispForm(APanel: TPanel; AnRbOrder: TValueDisplayFormatArray): TValueDisplayFormats;
     function ReadDispForm(APanel: TPanel; AnRbOrder: TValueDisplayFormatHexSeperatorArray): TValueDisplayFormatHexSeperators;
+    function ReadDispForm(APanel: TPanel; AnRbOrder: TValueDisplayFormatArrayTypeArray): TValueDisplayFormatArrayTypes;
     function BtnDownCount: integer;
 
     procedure UpdateButtonStates;
@@ -380,6 +401,7 @@ const
   RBA_PtrDeref: TValueDisplayFormatArray = (vdfPointerDerefOn, vdfPointerDerefOff, vdfPointerDerefOnly);
   RBA_Addr: TValueDisplayFormatArray = (vdfAddressPlain, vdfAddressTyped);
   RBA_AddrNum: TValueDisplayFormatArray = (vdfBaseHex, vdfBaseDecimal, vdfBaseOct, vdfBaseBin);
+  RBA_ArrayCombine: TValueDisplayFormatArrayTypeArray = (vdfatNone, vdfatAll, vdfatStat, vdfatDyn);
 
   INT_MIX = low(integer);
   INT_UNK = low(integer)+1;
@@ -444,6 +466,15 @@ var
 begin
   Result := 0;
   for d in TValueDisplayFormatHexSeperators do
+    if d in hs then inc(Result);
+end;
+
+function LenCombineCount(hs: TValueDisplayFormatArrayTypes): integer;
+var
+  d: TValueDisplayFormatArrayType;
+begin
+  Result := 0;
+  for d in TValueDisplayFormatArrayTypes do
     if d in hs then inc(Result);
 end;
 
@@ -540,7 +571,7 @@ begin
   PanelAddressFormat.Enabled := not cbMemDump.Checked;
 end;
 
-procedure TDisplayFormatFrame.cbAddrNoLeadZeroChange(Sender: TObject);
+procedure TDisplayFormatFrame.DataCheckboxChange(Sender: TObject);
 begin
   if FUpdatingDisplay > 0 then
     exit;
@@ -550,24 +581,10 @@ begin
   UpdateDisplay;
 end;
 
-procedure TDisplayFormatFrame.cbArrayNavEnforceBoundsChange(Sender: TObject);
+procedure TDisplayFormatFrame.cbArrayShowPrefixChange(Sender: TObject);
 begin
-  if FUpdatingDisplay > 0 then
-    exit;
-  TControl(Sender).Tag := 0;
-  EnableParentOverride(TControl(Sender));
-  UpdateFormat;
-  UpdateDisplay;
-end;
-
-procedure TDisplayFormatFrame.cbNum2VisibleCheckedChange(Sender: TObject);
-begin
-  if FUpdatingDisplay > 0 then
-    exit;
-  TControl(Sender).Tag := 0;
-  EnableParentOverride(TControl(Sender));
-  UpdateFormat;
-  UpdateDisplay;
+  cbArrayShowPrefixEmbedded.Enabled := cbArrayShowPrefix.Checked;
+  DataCheckboxChange(Sender);
 end;
 
 procedure TDisplayFormatFrame.CheckLabelClicked(Sender: TObject);
@@ -585,6 +602,7 @@ end;
 
 procedure TDisplayFormatFrame.FormatAddrTypeChanged(Sender: TObject);
 begin
+  // "ALL" page only. On the "all" page this does not have an "override" checkbox.
   if FUpdatingDisplay > 0 then
     exit;
   TControl(Sender).Tag := 0;
@@ -711,6 +729,8 @@ begin
     tbFloat.Down   := tbAll.Down;
     tbStruct.Down  := tbAll.Down;
     tbPointer.Down := tbAll.Down;
+    tbArray.Down   := tbAll.Down;
+    tbIndent.Down  := False;
   finally
     FInButtonClick := False;
   end;
@@ -754,6 +774,8 @@ begin
     tbFloat.Down   := False;
     tbStruct.Down  := False;
     tbPointer.Down := False;
+    tbArray.Down   := False;
+    tbIndent.Down  := False;
     case FCurrentResDataType of
       rdkError: ;
       rdkPrePrinted: ;
@@ -770,7 +792,7 @@ begin
       rdkSet:            tbEnum.Down := True;
       rdkVariant: ;
       rdkPCharOrString: ;
-      rdkArray: ;
+      rdkArray:          tbArray.Down := True;
       rdkStruct:         tbStruct.Down := True;
       rdkConvertRes: ;
       rdkFunction: ;
@@ -792,9 +814,10 @@ begin
   FInButtonClick := True;
   try
     UpdateFormat;
+    tbIndent.Down  := False;
     if (not(ssShift in GetKeyShiftState)) or
        (not FAllowMultiTabs) or
-       (not(tbNumber.Down or tbEnum.Down or tbBool.Down or tbChar.Down or tbFloat.Down or tbStruct.Down or tbPointer.Down))
+       (not(tbNumber.Down or tbEnum.Down or tbBool.Down or tbChar.Down or tbFloat.Down or tbStruct.Down or tbPointer.Down or tbArray.Down))
     then begin
       tbNumber.Down  := tbNumber  = Sender;
       tbEnum.Down    := tbEnum    = Sender;
@@ -803,6 +826,7 @@ begin
       tbFloat.Down   := tbFloat   = Sender;
       tbStruct.Down  := tbStruct  = Sender;
       tbPointer.Down := tbPointer = Sender;
+      tbArray.Down   := tbArray   = Sender;
     end;
     case FCurrentResDataType of
       rdkChar:           tbCurrent.Down := tbChar.Down;
@@ -815,11 +839,12 @@ begin
       rdkEnumVal:        tbCurrent.Down := tbEnum.Down;
       rdkSet:            tbCurrent.Down := tbEnum.Down;
       rdkStruct:         tbCurrent.Down := tbStruct.Down;
+      rdkArray:          tbCurrent.Down := tbArray.Down;
       else tbCurrent.Down := False;
     end;
     if FShowAll then
       tbAll.Down := tbNumber.Down and tbEnum.Down and tbBool.Down and tbChar.Down and
-                    tbFloat.Down and tbStruct.Down and tbPointer.Down;
+                    tbFloat.Down and tbStruct.Down and tbPointer.Down and tbArray.Down;
   finally
     FInButtonClick := False;
   end;
@@ -833,7 +858,7 @@ begin
   FInButtonClick := True;
   try
     UpdateFormat;
-    tbIndent.Down := True;
+    tbIndent.Down  := True;
     tbCurrent.Down := False;
     tbAll.Down     := False;
     tbNumber.Down  := False;
@@ -843,6 +868,7 @@ begin
     tbFloat.Down   := False;
     tbStruct.Down  := False;
     tbPointer.Down := False;
+    tbArray.Down   := False;
   finally
     FInButtonClick := False;
   end;
@@ -1082,6 +1108,40 @@ begin
   end;
 end;
 
+procedure TDisplayFormatFrame.ApplyDispForm(APanel: TPanel;
+  ADispForm: TValueDisplayFormatArrayTypes; AnRbOrder: TValueDisplayFormatArrayTypeArray);
+var
+  i, j: Integer;
+begin
+  ClearRadios(APanel);
+
+  if LenCombineCount(ADispForm) = 1 then begin
+    j := 0;
+    for i := 0 to APanel.ControlCount - 1 do begin
+      if not (APanel.Controls[i] is TRadioButton) then
+        continue;
+      if AnRbOrder[j] in ADispForm then
+        TRadioButton(APanel.Controls[i]).Checked := True;
+      inc(j);
+      if j >= Length(AnRbOrder) then break;
+    end;
+  end
+  else
+  if FShowMultiRadio then begin
+    j := 0;
+    for i := 0 to APanel.ControlCount - 1 do begin
+      if not (APanel.Controls[i] is TRadioButton) then
+        continue;
+      if AnRbOrder[j] in ADispForm then
+        TRadioButton(APanel.Controls[i]).ShowMultiMarker
+      else
+        TRadioButton(APanel.Controls[i]).HideMultiMarker;
+      inc(j);
+      if j >= Length(AnRbOrder) then break;
+    end;
+  end;
+end;
+
 function TDisplayFormatFrame.ReadDispForm(APanel: TPanel; AnRbOrder: TValueDisplayFormatArray): TValueDisplayFormats;
 var
   i, j: Integer;
@@ -1099,6 +1159,23 @@ begin
 end;
 
 function TDisplayFormatFrame.ReadDispForm(APanel: TPanel; AnRbOrder: TValueDisplayFormatHexSeperatorArray): TValueDisplayFormatHexSeperators;
+var
+  i, j: Integer;
+begin
+  Result := [];
+  j := 0;
+  for i := 0 to APanel.ControlCount - 1 do begin
+    if not (APanel.Controls[i] is TRadioButton) then
+      continue;
+    if TRadioButton(APanel.Controls[i]).Checked then
+      include(Result, AnRbOrder[j]);
+    inc(j);
+    if j >= Length(AnRbOrder) then break;
+  end
+end;
+
+function TDisplayFormatFrame.ReadDispForm(APanel: TPanel;
+  AnRbOrder: TValueDisplayFormatArrayTypeArray): TValueDisplayFormatArrayTypes;
 var
   i, j: Integer;
 begin
@@ -1132,17 +1209,20 @@ begin
   FButtonStates[bsFloat]  := tbFloat.Down;
   FButtonStates[bsStruct] := tbStruct.Down;
   FButtonStates[bsPtr]    := tbPointer.Down;
+  FButtonStates[bsArray]  := tbArray.Down;
   FButtonStates[bsIndent] := tbIndent.Down;
 end;
 
 procedure TDisplayFormatFrame.UpdateVisiblePanels;
 var
   CaptDivEnum, CaptRbEnumName: String;
-  CheckAddrFormatVis: Boolean;
+  CheckAddrFormatVis, ArrayOnly: Boolean;
 begin
   CheckAddrFormatVis := (tbPointer.Down or tbStruct.Down) and
-                        (tbNumber.Down or tbEnum.Down or tbBool.Down or tbChar.Down or tbFloat.Down) and // any other
+                        (tbNumber.Down or tbEnum.Down or tbBool.Down or tbChar.Down or tbFloat.Down or tbArray.Down) and // any other
                         (not FShowFullAddressInMulti);
+  ArrayOnly := tbArray.Down and
+    not(tbPointer.Down or tbStruct.Down or tbNumber.Down or tbEnum.Down or tbBool.Down or tbChar.Down or tbFloat.Down);  // any other
 
   PanelNum.Visible           := tbNumber.Down;
   PanelNum2.Visible          := tbNumber.Down;
@@ -1154,8 +1234,11 @@ begin
   PanelStruct.Visible        := tbStruct.Down;
   PanelPointer.Visible       := tbPointer.Down;
   PanelAddressFormat.Visible := (tbPointer.Down or tbStruct.Down) and (not CheckAddrFormatVis);
+  PanelArray.Visible         := tbArray.Down;
+  PanelArrayPrefixCombine.Visible := ArrayOnly;
+  PanelArrayNavBar.Visible   := ArrayOnly and FShowArrayNavBarOpts;
+
   PanelIndent.Visible        := tbIndent.Down;
-  PanelArrayNavBar.Visible   := tbIndent.Down and FShowArrayNavBarOpts;
 
   lbStructAddrTypedFiller.Visible := CheckAddrFormatVis;
   cbStructAddrTyped.Visible       := CheckAddrFormatVis;
@@ -1300,10 +1383,13 @@ begin
       else
         BoolFromCBState(cbOverrideAddressFormat.State, FDisplayFormat[i].Pointer.Address.UseInherited);
     end;
-    if FButtonStates[bsIndent] then begin
-      BoolFromCBState(cbOverrideIndent.State, FDisplayFormat[i].MultiLine.UseInherited);
+    if FButtonStates[bsArray] then begin
+      BoolFromCBState(cbOverrideArray.State, FDisplayFormat[i].ArrayLen.UseInherited);
       if FShowArrayNavBarOpts then
         BoolFromCBState(cbOverrideArrayNavBar.State, FDisplayFormat[i].ArrayNavBar.UseInherited);
+    end;
+    if FButtonStates[bsIndent] then begin
+      BoolFromCBState(cbOverrideIndent.State, FDisplayFormat[i].MultiLine.UseInherited);
     end;
   end;
 end;
@@ -1315,6 +1401,8 @@ var
   g: TValueDisplayFormatHexSeperator;
   gs: TValueDisplayFormatHexSeperators;
   i: Integer;
+  als: TValueDisplayFormatArrayTypes;
+  al: TValueDisplayFormatArrayType;
 begin
   UpdateFormatOverrides;
 
@@ -1511,9 +1599,16 @@ begin
         BoolFromCB(cbAddrNoLeadZero, FDisplayFormat[i].Pointer.Address.NoLeadZero, False);
       end;
     end;
-    if FButtonStates[bsIndent] then begin
-      if (SpinIndentMaxWrap.Tag = 0) then
-        FDisplayFormat[i].MultiLine.MaxMultiLineDepth := SpinIndentMaxWrap.Value;
+    if FButtonStates[bsArray] then begin
+      BoolFromCB(cbArrayShowPrefix, FDisplayFormat[i].ArrayLen.ShowLenPrefix, False);
+      BoolFromCB(cbArrayShowPrefixEmbedded, FDisplayFormat[i].ArrayLen.ShowLenPrefixEmbedded, False);
+      if (spinArrayLenMaxNest.Tag = 0) then
+        FDisplayFormat[i].ArrayLen.LenPrefixMaxNest := spinArrayLenMaxNest.Value;
+      als := ReadDispForm(PanelArrayPrefixCombine, RBA_ArrayCombine);
+      if LenCombineCount(als) = 1 then
+        for al := low(TValueDisplayFormatArrayType) to high(TValueDisplayFormatArrayType) do
+          if al in als then
+            FDisplayFormat[i].ArrayLen.LenPrefixCombine := al;
 
       if FShowArrayNavBarOpts then begin
         BoolFromCB(cbArrayNavAutoHide, FDisplayFormat[i].ArrayNavBar.AutoHideNavBar, False);
@@ -1521,6 +1616,10 @@ begin
         if (SpinPageSize.Tag = 0) then
           FDisplayFormat[i].ArrayNavBar.PageSize := SpinPageSize.Value;
       end;
+    end;
+    if FButtonStates[bsIndent] then begin
+      if (SpinIndentMaxWrap.Tag = 0) then
+        FDisplayFormat[i].MultiLine.MaxMultiLineDepth := SpinIndentMaxWrap.Value;
     end;
 
     BoolFromCBState(cbMemDump.State, FDisplayFormat[i].MemDump, False);
@@ -1542,7 +1641,7 @@ end;
 procedure TDisplayFormatFrame.UpdateDisplay;
 var
   InherhitNum, InherhitNum2, InherhitEnum, InherhitEnumVal, InherhitFloat,
-  InherhitStruct, InherhitPtr, InherhitAddress, InherhitIndent, InherhitArrayNav: TBoolSet;
+  InherhitStruct, InherhitPtr, InherhitAddress, InherhitIndent, InherhitArrayLen, InherhitArrayNav: TBoolSet;
 
   FormatNumBase:       TValueDisplayFormats;
   FormatNumSign:       TValueDisplayFormats;
@@ -1578,11 +1677,16 @@ var
   FormatAddressSign:   TBoolSet;
   FormatAddressLead:   TBoolSet;
 
-  FormatIndentMaxWrap: integer;
+  FormatArrayShowLen:         TBoolSet;
+  FormatArrayShowLenEmbedded: TBoolSet;
+  FormatArrayLenMaxNest:      integer;
+  FormatArrayLenCombine:      TValueDisplayFormatArrayTypes;
 
   FormatArrayNavAutoHide:    TBoolSet;
   FormatArrayNavForceBounds: TBoolSet;
   FormatPageSize:     integer;
+
+  FormatIndentMaxWrap: integer;
 
   FormatIsMemDump: TBoolSet;
 
@@ -1609,8 +1713,9 @@ begin
     InherhitStruct  := [];
     InherhitPtr     := [];
     InherhitAddress := [];
-    InherhitIndent  := [];
+    InherhitArrayLen:= [];
     InherhitArrayNav:= [];
+    InherhitIndent  := [];
 
     FormatNumBase       := [];
     FormatNumSign       := [];
@@ -1645,6 +1750,11 @@ begin
     FormatAddressBase   := [];
     FormatAddressSign   := [];
     FormatAddressLead   := [];
+
+    FormatArrayShowLen         := [];
+    FormatArrayShowLenEmbedded := [];
+    FormatArrayLenMaxNest      := INT_UNK;
+    FormatArrayLenCombine      := [];
 
     FormatArrayNavAutoHide    := [];
     FormatArrayNavForceBounds := [];
@@ -1748,14 +1858,26 @@ begin
           FormatAddressPtr_Ty := [True, False];
       end;
 
+      if FButtonStates[bsArray] then begin
+        include(InherhitArrayLen,  FDisplayFormat[i].ArrayLen.UseInherited);
+        if (not FDisplayFormat[i].ArrayLen.UseInherited) or (not ShowOverrideChecks) then begin
+          include(FormatArrayShowLen,  FDisplayFormat[i].ArrayLen.ShowLenPrefix);
+          include(FormatArrayShowLenEmbedded,  FDisplayFormat[i].ArrayLen.ShowLenPrefixEmbedded);
+          UpdateIntSetting(FormatArrayLenMaxNest, FDisplayFormat[i].ArrayLen.LenPrefixMaxNest);
+          include(FormatArrayLenCombine,  FDisplayFormat[i].ArrayLen.LenPrefixCombine);
+        end;
+
+        include(InherhitArrayNav,  FDisplayFormat[i].ArrayNavBar.UseInherited);
+        if (not FDisplayFormat[i].ArrayNavBar.UseInherited) or (not ShowOverrideChecks) then begin
+          include(FormatArrayNavAutoHide,    FDisplayFormat[i].ArrayNavBar.AutoHideNavBar);
+          include(FormatArrayNavForceBounds, FDisplayFormat[i].ArrayNavBar.EnforceBounds);
+          UpdateIntSetting(FormatPageSize, FDisplayFormat[i].ArrayNavBar.PageSize);
+        end;
+      end;
+
       if FButtonStates[bsIndent] then begin
         include(InherhitIndent,  FDisplayFormat[i].MultiLine.UseInherited);
         UpdateIntSetting(FormatIndentMaxWrap, FDisplayFormat[i].MultiLine.MaxMultiLineDepth);
-
-        include(InherhitArrayNav,  FDisplayFormat[i].ArrayNavBar.UseInherited);
-        include(FormatArrayNavAutoHide,    FDisplayFormat[i].ArrayNavBar.AutoHideNavBar);
-        include(FormatArrayNavForceBounds, FDisplayFormat[i].ArrayNavBar.EnforceBounds);
-        UpdateIntSetting(FormatPageSize, FDisplayFormat[i].ArrayNavBar.PageSize);
       end;
     end;
 
@@ -1768,8 +1890,9 @@ begin
       cbOverrideStruct.State        := BoolsetToCBState(InherhitStruct);
       cbOverridePointerDeref.State  := BoolsetToCBState(InherhitPtr);
       cbOverrideAddressFormat.State := BoolsetToCBState(InherhitAddress);
-      cbOverrideIndent.State        := BoolsetToCBState(InherhitIndent);
+      cbOverrideArray.State         := BoolsetToCBState(InherhitArrayLen);
       cbOverrideArrayNavBar.State   := BoolsetToCBState(InherhitArrayNav);
+      cbOverrideIndent.State        := BoolsetToCBState(InherhitIndent);
     end
     else begin
       InherhitNum     := [False];
@@ -1780,8 +1903,9 @@ begin
       InherhitStruct  := [False];
       InherhitPtr     := [False];
       InherhitAddress := [False];
-      InherhitIndent  := [False];
+      InherhitArrayLen:= [False];
       InherhitArrayNav:= [False];
+      InherhitIndent  := [False];
     end;
 
 
@@ -1895,22 +2019,45 @@ begin
       cbAddrSign.Tag   := 0;
     end;
 
-    if InherhitIndent = [True] then begin
-      SetSpinEditToInherit(SpinIndentMaxWrap);
+    if InherhitArrayLen = [True] then begin
+      cbArrayShowPrefix.State := cbUnchecked;
+      cbArrayShowPrefixEmbedded.State := cbUnchecked;
+      cbArrayShowPrefix.Tag := 1;
+      cbArrayShowPrefixEmbedded.Tag := 1;
+      SetSpinEditToInherit(spinArrayLenMaxNest);
+      ClearRadios(PanelArrayPrefixCombine);
     end
     else begin
-      IntToSpinEdit(SpinIndentMaxWrap, FormatIndentMaxWrap);
+      cbArrayShowPrefix.State := BoolsetToCBState(FormatArrayShowLen, False);
+      cbArrayShowPrefixEmbedded.State := BoolsetToCBState(FormatArrayShowLenEmbedded, False);
+      IntToSpinEdit(spinArrayLenMaxNest, FormatArrayLenMaxNest);
+      ApplyDispForm(PanelArrayPrefixCombine, FormatArrayLenCombine, RBA_ArrayCombine);
+      cbArrayShowPrefix.Tag := 0;
+      cbArrayShowPrefixEmbedded.Tag := 0;
+      spinArrayLenMaxNest.Tag := 0;
     end;
 
     if InherhitArrayNav = [True] then begin
-      cbArrayNavAutoHide.State := cbGrayed;
-      cbArrayNavEnforceBounds.State := cbGrayed;
+      cbArrayNavAutoHide.State := cbUnchecked;
+      cbArrayNavEnforceBounds.State := cbUnchecked;
+      cbArrayNavAutoHide.Tag := 1;
+      cbArrayNavEnforceBounds.Tag := 1;
       SetSpinEditToInherit(SpinPageSize)
     end
     else begin
       cbArrayNavAutoHide.State := BoolsetToCBState(FormatArrayNavAutoHide, False);
       cbArrayNavEnforceBounds.State := BoolsetToCBState(FormatArrayNavForceBounds, False);
       IntToSpinEdit(SpinPageSize, FormatPageSize);
+      cbArrayNavAutoHide.Tag := 0;
+      cbArrayNavEnforceBounds.Tag := 0;
+      SpinPageSize.Tag := 0;
+    end;
+
+    if InherhitIndent = [True] then begin
+      SetSpinEditToInherit(SpinIndentMaxWrap);
+    end
+    else begin
+      IntToSpinEdit(SpinIndentMaxWrap, FormatIndentMaxWrap);
     end;
 
     UpdateNumDigitPanel;
@@ -1929,6 +2076,7 @@ begin
     FormatSpinChanged(SpinFloatDigits);
     FormatSpinChanged(SpinIndentMaxWrap);
     FormatSpinChanged(SpinPageSize);
+    FormatSpinChanged(spinArrayLenMaxNest);
 
     dec(FUpdatingDisplay);
   end;
@@ -1937,7 +2085,7 @@ end;
 procedure TDisplayFormatFrame.UpdateTabs;
 var
   MarkTabNumber, MarkTabEnum, MarkTabBool, MarkTabChar, MarkTabFloat, MarkTabStruct,
-    MarkTabPointer: Boolean;
+    MarkTabPointer, MarkTabArray: Boolean;
   i: Integer;
 begin
   MarkTabNumber  := False;
@@ -1947,6 +2095,7 @@ begin
   MarkTabFloat   := False;
   MarkTabStruct  := False;
   MarkTabPointer := False;
+  MarkTabArray   := False;
 
   if FHighlightModifiedTabs then begin
     for i := 0 to FDisplayFormatCount - 1 do begin
@@ -2013,6 +2162,18 @@ begin
         (FDisplayFormat[i].Pointer.Address.BaseFormat = DefaultWatchDisplayFormat.Pointer.Address.BaseFormat) or
         (FDisplayFormat[i].Pointer.Address.Signed     = DefaultWatchDisplayFormat.Pointer.Address.Signed)
       ));
+      MarkTabArray := MarkTabBool or
+      ((not FDisplayFormat[i].ArrayLen.UseInherited) and (
+        (FDisplayFormat[i].ArrayLen.ShowLenPrefix          = DefaultWatchDisplayFormat.ArrayLen.ShowLenPrefix) or
+        (FDisplayFormat[i].ArrayLen.ShowLenPrefixEmbedded  = DefaultWatchDisplayFormat.ArrayLen.ShowLenPrefixEmbedded) or
+        (FDisplayFormat[i].ArrayLen.LenPrefixMaxNest       = DefaultWatchDisplayFormat.ArrayLen.LenPrefixMaxNest) or
+        (FDisplayFormat[i].ArrayLen.LenPrefixCombine       = DefaultWatchDisplayFormat.ArrayLen.LenPrefixCombine)
+      )) or
+      ((not FDisplayFormat[i].ArrayNavBar.UseInherited) and FShowArrayNavBarOpts and (
+        (FDisplayFormat[i].ArrayNavBar.AutoHideNavBar = DefaultWatchDisplayFormat.ArrayNavBar.AutoHideNavBar) or
+        (FDisplayFormat[i].ArrayNavBar.EnforceBounds  = DefaultWatchDisplayFormat.ArrayNavBar.EnforceBounds) or
+        (FDisplayFormat[i].ArrayNavBar.PageSize       = DefaultWatchDisplayFormat.ArrayNavBar.PageSize)
+      ));
     end;
   end;
 
@@ -2023,6 +2184,7 @@ begin
   tbFloat.Font.Underline   := MarkTabFloat;
   tbStruct.Font.Underline  := MarkTabStruct;
   tbPointer.Font.Underline := MarkTabPointer;
+  tbArray.Font.Underline   := MarkTabArray;
 end;
 
 constructor TDisplayFormatFrame.Create(TheOwner: TComponent);
@@ -2053,6 +2215,7 @@ begin
   tbFloat.Caption   := DispFormatDlgBtnFloat;
   tbStruct.Caption  := DispFormatDlgBtnStruct;
   tbPointer.Caption := DispFormatDlgBtnPointer;
+  tbArray.Caption   := DispFormatDlgBtnArray;
   tbIndent.Caption  := DispFormatDlgBtnOptions;
 
 
@@ -2150,6 +2313,16 @@ begin
   lbOverrideIndent.Caption := DispFormatDlgIndent;
   lbMaxWrapLvl.Caption     := DispFormatIndentMaxWrap;
 
+  lbOverrideArray.Caption           := DispFormatDlgArrayLen;
+  cbArrayShowPrefix.Caption         := DispFormatDlgArrayShowPrefix;
+  cbArrayShowPrefixEmbedded.Caption := DispFormatDlgArrayShowPrefixEmbedded;
+  lbArrayLenMaxNest.Caption         := DispFormatDlgArrayMaxNest;
+  lbArrayCombine.Caption            := DispFormatDlgArrayCombine;
+  rbArrayCombineNone.Caption        := DispFormatDlgArrayCombineNone;
+  rbArrayCombineAll.Caption         := DispFormatDlgArrayCombineAll;
+  rbArrayCombineStat.Caption        := DispFormatDlgArrayCombineStat;
+  rbArrayCombineDyn.Caption         := DispFormatDlgArrayCombineDyn;
+
   lbOverrideArrayNavBar.Caption   := DispFormatDlgArrayNav;
   cbArrayNavAutoHide.Caption      := DispFormatArrayNavAutoHide;
   cbArrayNavEnforceBounds.Caption := DispFormatArrayNavEnforceBounds;
@@ -2186,6 +2359,7 @@ begin
     tbFloat.Down   := False;
     tbStruct.Down  := False;
     tbPointer.Down := False;
+    tbArray.Down   := False;
     case FCurrentResDataType of
         rdkChar:           tbChar.Down := True;
         rdkSignedNumVal:   tbNumber.Down := True;
@@ -2197,6 +2371,7 @@ begin
         rdkEnumVal:        tbEnum.Down := True;
         rdkSet:            tbEnum.Down := True;
         rdkStruct:         tbStruct.Down := True;
+        rdkArray:          tbArray.Down := True;
         else begin
                            if FShowAll then tbAll.Down := True;
                            tbNumber.Down  := True;
@@ -2206,6 +2381,7 @@ begin
                            tbFloat.Down   := True;
                            tbStruct.Down  := True;
                            tbPointer.Down := True;
+                           tbArray.Down := True;
                            tbCurrent.Down := False;
                            tbCurrent.Enabled := False;
           end;

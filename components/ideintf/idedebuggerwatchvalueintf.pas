@@ -78,6 +78,9 @@ type
   TValueDisplayFormatHexSeperators = set of TValueDisplayFormatHexSeperator;
   TValueDisplayNumDigitsArray = array [TValueDisplayFormatBase] of integer; // Entry for Char is not used
 
+  TValueDisplayFormatArrayType = (vdfatNone, vdfatAll, vdfatStat, vdfatDyn);
+  TValueDisplayFormatArrayTypes = set of TValueDisplayFormatArrayType;
+
   { TWatchDisplayFormatNum }
 
   TWatchDisplayFormatNum2 = packed record
@@ -151,6 +154,17 @@ type
     class operator = (a,b: TWatchDisplayFormatPointer): boolean;
   end;
 
+  { TWatchDisplayFormatArrayLen }
+
+  TWatchDisplayFormatArrayLen = packed record
+    UseInherited:          boolean;
+    ShowLenPrefix:         boolean;
+    ShowLenPrefixEmbedded: boolean; // arary in struct in array
+    LenPrefixMaxNest:      integer; // In directly nested arrays, show for n nested levels too
+    LenPrefixCombine:      TValueDisplayFormatArrayType;
+    class operator = (a,b: TWatchDisplayFormatArrayLen): boolean;
+  end;
+
   TWatchDisplayFormatMultiline = packed record
     UseInherited:          boolean;
     MaxMultiLineDepth:     integer; // Deeper than this will not be line-wrapped
@@ -176,6 +190,7 @@ type
     Float:   TWatchDisplayFormatFloat;
     Struct:  TWatchDisplayFormatStruct;
     Pointer: TWatchDisplayFormatPointer;
+    ArrayLen:  TWatchDisplayFormatArrayLen;
     MultiLine:   TWatchDisplayFormatMultiline;
     ArrayNavBar: TWatchDisplayFormatArrayNav;
 
@@ -251,6 +266,12 @@ const
                         NoLeadZero: False;
                        );
              );
+    ArrayLen: (UseInherited:          True;
+             ShowLenPrefix:         True;
+             ShowLenPrefixEmbedded: True;
+             LenPrefixMaxNest:      3;
+             LenPrefixCombine:      vdfatStat;
+            );
     MultiLine: (UseInherited:     True;
                 MaxMultiLineDepth: 3;
                );
@@ -448,6 +469,7 @@ function dbgs(vds: TValueDisplayFormatHexSeperator): string; overload;
 function dbgs(vds: TValueDisplayFormatHexSeperators): string; overload;
 function dbgs(vdnda: TValueDisplayNumDigitsArray): string; overload;
 function dbgs(df: TWatchDisplayFormat): string; overload;
+function dbgs(dfat: TValueDisplayFormatArrayType): string; overload;
 
 implementation
 
@@ -521,9 +543,15 @@ begin
     'Addr: '+dbgs(df.Struct.Address.UseInherited)+' '+dbgs(df.Struct.Address.TypeFormat)+' '+dbgs(df.Struct.Address.BaseFormat)+' '+dbgs(df.Struct.Address.Signed)+' '+dbgs(df.Struct.Address.NoLeadZero) + LineEnding+
     'Ptr: '+dbgs(df.Pointer.UseInherited)+' '+dbgs(df.Pointer.DerefFormat) + LineEnding+
     'Addr: '+dbgs(df.Pointer.Address.UseInherited)+' '+dbgs(df.Pointer.Address.TypeFormat)+' '+dbgs(df.Pointer.Address.BaseFormat)+' '+dbgs(df.Pointer.Address.Signed)+' '+dbgs(df.Struct.Address.NoLeadZero) + LineEnding+
+    'Array: '+dbgs(df.ArrayLen.UseInherited)+' '+dbgs(df.ArrayLen.ShowLenPrefix) +dbgs(df.ArrayLen.ShowLenPrefixEmbedded) +dbgs(df.ArrayLen.LenPrefixMaxNest) +dbgs(df.ArrayLen.LenPrefixCombine) + LineEnding+
     'Indent: '+dbgs(df.MultiLine.UseInherited)+' '+dbgs(df.MultiLine.MaxMultiLineDepth) + LineEnding+
     'ArrayNav: '+dbgs(df.ArrayNavBar.UseInherited)+' '+dbgs(df.ArrayNavBar.PageSize)+' '+dbgs(df.ArrayNavBar.EnforceBounds)+' '+dbgs(df.ArrayNavBar.AutoHideNavBar) + LineEnding+
     'Dmp: '+dbgs(df.MemDump);
+end;
+
+function dbgs(dfat: TValueDisplayFormatArrayType): string;
+begin
+  WriteStr(Result, dfat);
 end;
 
 operator = (a, b: TValueDisplayNumDigitsArray): boolean;
@@ -660,6 +688,19 @@ begin
   ;
 end;
 
+{ TWatchDisplayFormatArrayLen }
+
+class operator TWatchDisplayFormatArrayLen. = (a, b: TWatchDisplayFormatArrayLen): boolean;
+begin
+  Result :=
+    (a.UseInherited           = b.UseInherited) and
+    (a.ShowLenPrefix          = b.ShowLenPrefix) and
+    (a.ShowLenPrefixEmbedded  = b.ShowLenPrefixEmbedded) and
+    (a.LenPrefixMaxNest       = b.LenPrefixMaxNest) and
+    (a.LenPrefixCombine       = b.LenPrefixCombine)
+  ;
+end;
+
 { TWatchDisplayFormatMultiline }
 
 class operator TWatchDisplayFormatMultiline. = (a, b: TWatchDisplayFormatMultiline): boolean;
@@ -692,6 +733,7 @@ begin
     (a.Float       = b.Float) and
     (a.Struct      = b.Struct) and
     (a.Pointer     = b.Pointer) and
+    (a.ArrayLen    = b.ArrayLen) and
     (a.MultiLine   = b.MultiLine) and
     (a.ArrayNavBar = b.ArrayNavBar) and
     (a.MemDump     = b.MemDump);
@@ -704,6 +746,7 @@ begin
                 Float.UseInherited and
                 Struct.UseInherited and Struct.Address.UseInherited and
                 Pointer.UseInherited and Pointer.Address.UseInherited and
+                ArrayLen.UseInherited and
                 MultiLine.UseInherited and ArrayNavBar.UseInherited
                );
 end;
@@ -721,6 +764,7 @@ begin
   Struct.Address.UseInherited  := False;
   Pointer.UseInherited         := False;
   Pointer.Address.UseInherited := False;
+  ArrayLen.UseInherited         := False;
   MultiLine.UseInherited       := False;
   ArrayNavBar.UseInherited     := False;
 end;
@@ -742,6 +786,7 @@ begin
   a := Pointer.Address;
   if Pointer.UseInherited         then Pointer         := AnOther.Pointer;
   if not a.UseInherited           then Pointer.Address := a;
+  if ArrayLen.UseInherited        then ArrayLen        := AnOther.ArrayLen;
   if MultiLine.UseInherited       then MultiLine       := AnOther.MultiLine;
   if ArrayNavBar.UseInherited     then ArrayNavBar     := AnOther.ArrayNavBar;
 end;

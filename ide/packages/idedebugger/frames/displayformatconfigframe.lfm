@@ -1,6 +1,6 @@
 object DisplayFormatFrame: TDisplayFormatFrame
   Left = 0
-  Height = 581
+  Height = 664
   Top = 0
   Width = 592
   HorzScrollBar.Page = 1
@@ -11,7 +11,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
   VertScrollBar.Tracking = True
   AutoScroll = True
   AutoSize = True
-  ClientHeight = 581
+  ClientHeight = 664
   ClientWidth = 592
   Constraints.MaxWidth = 850
   Constraints.MinWidth = 480
@@ -169,6 +169,20 @@ object DisplayFormatFrame: TDisplayFormatFrame
       ParentFont = False
       OnClick = tbFormatClick
     end
+    object tbArray: TSpeedButton
+      Left = 401
+      Height = 19
+      Top = 2
+      Width = 32
+      AllowAllUp = True
+      AutoSize = True
+      Caption = 'Array'
+      Flat = True
+      GroupIndex = 9167
+      Transparent = False
+      ParentFont = False
+      OnClick = tbFormatClick
+    end
     object ToolButton12: TToolButton
       Left = 132
       Height = 22
@@ -224,7 +238,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       Visible = False
     end
     object ToolButton5: TToolButton
-      Left = 401
+      Left = 433
       Height = 22
       Top = 2
       Caption = 'ToolButton5'
@@ -232,7 +246,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       Style = tbsSeparator
     end
     object tbIndent: TSpeedButton
-      Left = 409
+      Left = 441
       Height = 19
       Top = 2
       Width = 38
@@ -240,7 +254,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AutoSize = True
       Caption = 'Indent'
       Flat = True
-      GroupIndex = 9166
+      GroupIndex = 9199
       Transparent = False
       ParentFont = False
       OnClick = tbIndentClick
@@ -849,7 +863,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Width = 481
         Caption = 'cbNum2Visibile'
         TabOrder = 0
-        OnChange = cbNum2VisibleCheckedChange
+        OnChange = DataCheckboxChange
       end
     end
     object PanelNum2All: TPanel
@@ -2545,7 +2559,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Width = 481
         Caption = 'cbAddrNoLeadZero'
         TabOrder = 0
-        OnChange = cbAddrNoLeadZeroChange
+        OnChange = DataCheckboxChange
       end
       object rbClear16: TRadioButton
         AnchorSideBottom.Control = PanelAddressLeadZero
@@ -2688,15 +2702,250 @@ object DisplayFormatFrame: TDisplayFormatFrame
       end
     end
   end
-  object PanelArrayNavBar: TPanel
+  object PanelArray: TPanel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = PanelIndent
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 26
+    Height = 45
     Top = 498
+    Width = 592
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Bottom = 4
+    BevelOuter = bvNone
+    ChildSizing.EnlargeHorizontal = crsScaleChilds
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 2
+    ClientHeight = 45
+    ClientWidth = 592
+    TabOrder = 12
+    object Spacer21: TLabel
+      Left = 0
+      Height = 1
+      Top = 0
+      Width = 107
+      BorderSpacing.Right = 4
+      Caption = '  '
+      Constraints.MaxHeight = 1
+    end
+    object Spacer22: TLabel
+      Left = 111
+      Height = 1
+      Top = 0
+      Width = 481
+      Caption = '         '
+      Constraints.MaxHeight = 1
+    end
+    object DividerBevelArray: TDividerBevel
+      Left = 0
+      Height = 1
+      Top = 0
+      Width = 592
+      Align = alTop
+      AutoSize = False
+      BevelWidth = 1
+      BorderSpacing.Bottom = 2
+      CaptionSpacing = 5
+      Font.Height = 2
+      Font.Style = [fsBold]
+      LeftIndent = 30
+      ParentFont = False
+      Style = gsHorLines
+    end
+    object cbOverrideArray: TCheckBox
+      AnchorSideLeft.Control = Spacer21
+      AnchorSideTop.Control = DividerBevelArray
+      AnchorSideTop.Side = asrBottom
+      Left = 0
+      Height = 17
+      Top = 3
+      Width = 18
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 0
+      OnChange = OverrideCheckChanged
+    end
+    object lbOverrideArray: TLabel
+      AnchorSideLeft.Control = cbOverrideArray
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = cbOverrideArray
+      AnchorSideRight.Control = Spacer21
+      AnchorSideRight.Side = asrBottom
+      Left = 18
+      Height = 15
+      Top = 3
+      Width = 89
+      Anchors = [akTop, akLeft, akRight]
+      Caption = 'lbOverrideArrayNavBar'
+      Font.Style = [fsBold]
+      ParentFont = False
+      WordWrap = True
+      OnClick = CheckLabelClicked
+    end
+    object PanelArrayShowPrefix: TPanel
+      AnchorSideLeft.Control = Spacer22
+      AnchorSideTop.Control = DividerBevelArray
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Spacer22
+      AnchorSideRight.Side = asrBottom
+      Left = 111
+      Height = 23
+      Top = 3
+      Width = 481
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
+      BevelOuter = bvNone
+      ChildSizing.EnlargeHorizontal = crsSameSize
+      ChildSizing.ShrinkHorizontal = crsSameSize
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 3
+      ClientHeight = 23
+      ClientWidth = 481
+      TabOrder = 1
+      object cbArrayShowPrefix: TCheckBox
+        Left = 0
+        Height = 19
+        Top = 0
+        Width = 160
+        Caption = 'cbArrayShowPrefix'
+        TabOrder = 0
+        OnChange = cbArrayShowPrefixChange
+      end
+      object cbArrayShowPrefixEmbedded: TCheckBox
+        Left = 160
+        Height = 19
+        Top = 0
+        Width = 161
+        Caption = 'cbArrayShowPrefixEmbedded'
+        TabOrder = 1
+        OnChange = DataCheckboxChange
+      end
+      object lbArrayLenMaxNest: TLabel
+        Left = 321
+        Height = 15
+        Top = 2
+        Width = 104
+        BorderSpacing.CellAlignHorizontal = ccaLeftTop
+        BorderSpacing.CellAlignVertical = ccaCenter
+        Caption = 'lbArrayLenMaxNest'
+      end
+      object spinArrayLenMaxNest: TSpinEdit
+        AnchorSideLeft.Control = lbArrayLenMaxNest
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = PanelArrayShowPrefix
+        AnchorSideRight.Control = PanelArrayShowPrefix
+        AnchorSideRight.Side = asrBottom
+        Left = 428
+        Height = 23
+        Top = 0
+        Width = 48
+        Alignment = taRightJustify
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Left = 3
+        BorderSpacing.Right = 5
+        BorderSpacing.CellAlignHorizontal = ccaRightBottom
+        Constraints.MaxWidth = 90
+        MaxValue = 99
+        TabOrder = 2
+        OnChange = FormatSpinChanged
+      end
+    end
+    object lbArrayCombine: TLabel
+      AnchorSideLeft.Control = Spacer22
+      AnchorSideTop.Control = PanelArrayPrefixCombine
+      AnchorSideTop.Side = asrCenter
+      Left = 111
+      Height = 15
+      Top = 28
+      Width = 87
+      Caption = 'lbArrayCombine'
+    end
+    object PanelArrayPrefixCombine: TPanel
+      AnchorSideLeft.Control = lbArrayCombine
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = PanelArrayShowPrefix
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Spacer22
+      AnchorSideRight.Side = asrBottom
+      Left = 201
+      Height = 19
+      Top = 26
+      Width = 391
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
+      BorderSpacing.Left = 3
+      BevelOuter = bvNone
+      ChildSizing.EnlargeHorizontal = crsSameSize
+      ChildSizing.ShrinkHorizontal = crsSameSize
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 4
+      ClientHeight = 19
+      ClientWidth = 391
+      TabOrder = 2
+      object rbArrayCombineNone: TRadioButton
+        Left = 0
+        Height = 19
+        Top = 0
+        Width = 98
+        AutoSize = False
+        Caption = 'rbSignAuto'
+        TabOrder = 0
+        OnChange = FormatRadioChanged
+      end
+      object rbArrayCombineAll: TRadioButton
+        Left = 98
+        Height = 19
+        Top = 0
+        Width = 98
+        AutoSize = False
+        Caption = 'rbSignSigned'
+        TabOrder = 1
+        OnChange = FormatRadioChanged
+      end
+      object rbArrayCombineStat: TRadioButton
+        Left = 196
+        Height = 19
+        Top = 0
+        Width = 97
+        AutoSize = False
+        Caption = 'rbSignUnsigned'
+        TabOrder = 2
+        OnChange = FormatRadioChanged
+      end
+      object rbArrayCombineDyn: TRadioButton
+        Left = 293
+        Height = 19
+        Top = 0
+        Width = 98
+        AutoSize = False
+        Caption = 'rbSignUnsigned'
+        TabOrder = 4
+        OnChange = FormatRadioChanged
+      end
+      object rbClear17: TRadioButton
+        AnchorSideTop.Control = PanelArrayPrefixCombine
+        Left = -99
+        Height = 1
+        Top = 0
+        Width = 1
+        AutoSize = False
+        TabOrder = 3
+      end
+    end
+  end
+  object PanelArrayNavBar: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = PanelArray
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 26
+    Top = 547
     Width = 592
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -2799,7 +3048,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Width = 160
         Caption = 'cbArrayNavAutoHide'
         TabOrder = 0
-        OnChange = cbArrayNavEnforceBoundsChange
+        OnChange = DataCheckboxChange
       end
       object cbArrayNavEnforceBounds: TCheckBox
         Left = 160
@@ -2808,7 +3057,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Width = 161
         Caption = 'cbArrayNavEnforceBounds'
         TabOrder = 1
-        OnChange = cbArrayNavEnforceBoundsChange
+        OnChange = DataCheckboxChange
       end
       object lbPageSize: TLabel
         Left = 321
@@ -2822,6 +3071,8 @@ object DisplayFormatFrame: TDisplayFormatFrame
       object SpinPageSize: TSpinEdit
         AnchorSideLeft.Control = lbPageSize
         AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = PanelArrayNavBarOpts
+        AnchorSideRight.Control = PanelArrayNavBarOpts
         AnchorSideRight.Side = asrBottom
         Left = 380
         Height = 23
@@ -2849,7 +3100,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 34
-    Top = 528
+    Top = 577
     Width = 592
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True

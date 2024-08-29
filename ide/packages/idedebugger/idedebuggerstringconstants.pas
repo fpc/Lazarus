@@ -391,6 +391,7 @@ resourcestring
   dsrEvalUseDebugConverter = 'Use Backend Converter';
 
   drsLen = 'Len=%d: ';
+  drsLen2 = 'Len=%s: ';
   synfNewValueIsEmpty = '"New value" is empty.';
   synfTheDebuggerWasNotAbleToModifyTheValue = 'The debugger was not able to modify the value.';
   drsSuspend = 'Suspend';
@@ -429,6 +430,7 @@ resourcestring
   DispFormatDlgBtnFloat     = 'Float';
   DispFormatDlgBtnStruct    = 'Structure';
   DispFormatDlgBtnPointer   = 'Pointer';
+  DispFormatDlgBtnArray     = 'Array';
   DispFormatDlgBtnAdrFormat = 'Address';
   DispFormatDlgBtnOptions   = 'Options';
 
@@ -493,7 +495,16 @@ resourcestring
   DispFormatPointerDerefOnly     = 'Only deref data';
   DispFormatDlgIndent            = 'Multiline';
   DispFormatIndentMaxWrap        = 'Max multiline level';
-  DispFormatDlgArrayNav          = 'Array Navigation';
+  DispFormatDlgArrayLen          = 'Array len';
+  DispFormatDlgArrayShowPrefix         = 'Show len';
+  DispFormatDlgArrayShowPrefixEmbedded = 'Include embedded';
+  DispFormatDlgArrayMaxNest            = 'Nested';
+  DispFormatDlgArrayCombine            = 'Combine lengths';
+  DispFormatDlgArrayCombineNone        = 'Never';
+  DispFormatDlgArrayCombineAll         = 'Always';
+  DispFormatDlgArrayCombineStat        = 'Static';
+  DispFormatDlgArrayCombineDyn         = 'Dynamic';
+  DispFormatDlgArrayNav          = 'Array navigation';
   DispFormatArrayNavAutoHide     = 'Auto-hide';
   DispFormatArrayNavEnforceBounds= 'Enforce bounds';
   DispFormatArrayNavPageSize     = 'Page-size';
