@@ -74,6 +74,7 @@ type
     procedure VisibleChanged; override;
     procedure CreateWnd; override;
     procedure SetParent(AParent: TWinControl); override;
+    procedure Init;
   public
     constructor Create(TheOwner: TComponent); override;
     constructor Create(TheOwner: TComponent; ATree: TDbgTreeView; ANode: PVirtualNode); reintroduce;
@@ -595,22 +596,8 @@ begin
   end;
 end;
 
-constructor TArrayNavigationBar.Create(TheOwner: TComponent);
+procedure TArrayNavigationBar.Init;
 begin
-  inherited Create(TheOwner);
-  btnHide.Visible := False;
-  cbAutoHide.Visible := False;
-end;
-
-constructor TArrayNavigationBar.Create(TheOwner: TComponent; ATree: TDbgTreeView;
-  ANode: PVirtualNode);
-begin
-  FTree := ATree;
-  FNode := ANode;
-  inherited Create(TheOwner);
-  Name := '';
-  Constraints.MinWidth := cbEnforceBound.Left + btnHide.Width + btnHide.Width;
-
   edArrayStart.Hint := dlgInspectIndexOfFirstItemToShow;
   edArrayPageSize.Hint := dlgInspectAmountOfItemsToShow;
 
@@ -642,6 +629,26 @@ begin
 
   cbEnforceBound.Caption := arrnavEnforceBounds;
   cbAutoHide.Caption := arrnavAutoHide;
+end;
+
+constructor TArrayNavigationBar.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  btnHide.Visible := False;
+  cbAutoHide.Visible := False;
+  Init;
+end;
+
+constructor TArrayNavigationBar.Create(TheOwner: TComponent; ATree: TDbgTreeView;
+  ANode: PVirtualNode);
+begin
+  FTree := ATree;
+  FNode := ANode;
+  inherited Create(TheOwner);
+  Name := '';
+  Constraints.MinWidth := cbEnforceBound.Left + btnHide.Width + btnHide.Width;
+
+  Init;
 
   FNavBarVisible := True;
   btnHide.Images     := IDEImages.Images_16;
