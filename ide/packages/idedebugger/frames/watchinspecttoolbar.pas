@@ -627,6 +627,7 @@ begin
   EdInspect.TextHint := drsEnterExpression;
 
   ToolBar1.Images := IDEImages.Images_16;
+  ToolBar1.OnPaint := @FrameResize;
 
   FPowerImgIdx     := IDEImages.LoadImage('debugger_power');
   FPowerImgIdxGrey := IDEImages.LoadImage('debugger_power_grey');

@@ -59,6 +59,7 @@ object EvaluateDlg: TEvaluateDlg
         Height = 23
         Top = 46
         Width = 253
+        AutoSize = True
         ClientHeight = 23
         ClientWidth = 253
         TabOrder = 1
@@ -110,7 +111,7 @@ object EvaluateDlg: TEvaluateDlg
     Height = 25
     Top = 265
     Width = 420
-    Align = alBottom
+    Align = alClient
     AutoSize = True
     BorderSpacing.Top = 3
     Caption = 'Panel1'
