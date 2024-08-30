@@ -634,42 +634,59 @@ Even faster UTF-8 character counting
 
 <element name="UTF8CodepointCount">
 <short>
-Gets the number of UTF-8-encoded codepoints in the specified value.
+Gets the number of valid UTF-8 codepoints in the specified value.
 </short>
 <descr>
 <p>
-<var>UTF8CodepointCount</var> is an overloaded <var>PtrInt</var> function used 
-to determine the number of UTF-8 codepoints found in the specified value. The 
-overloaded variants allow the value to be specified using either the String or 
-the PChar type.
+<var>UTF8CodepointCount</var> is an overloaded <var>SizeInt</var> function used 
+to determine the number of UTF-8 codepoints found in the specified value. It is 
+similar to the UTF8Length routine, but excludes any invalid codepoints found in 
+the input value from the count in the return value. The overloaded variants 
+allow the input value to be specified using either the String or the PChar type.
 </p>
 <p>
 UTF8CodepointCount iterates over the byte values in the s or p arguments, and 
-increments the return value when a valid UTF-8 codepoint is found. Valid 
-codepoints include those represented by combining character combinations. 
-UTF8CodepointLen (in system.pp) is called to the get the size for each 
-of the UTF-8 codepoints. The process is repeated until all of the bytes in the 
-input value have been examined, or a codepoint with a length of zero (0) is encountered.
+increments the return value when a valid UTF-8 codepoint is found. 
+UTF8CodepointLen (in system.pp) is called to the get the size for each of the 
+UTF-8 codepoints. Valid codepoints include those represented using combining 
+characters. The process is repeated until all of the bytes in the input value 
+have been examined, or until a codepoint with a length of zero (0) is 
+encountered.
 </p>
 <p>
 The return value is zero (0) if the s or p arguments are empty, or when the 
 ByteCount argument is zero (0).
 </p>
+<p>
+For example:
+</p>
+<code>
+// var
+//   Utf8Str, InvalidUtf8Str: String;
+//   Cnt, Len: Integer;
+
+{A macron (decomposed)}
+Utf8Str := 'A' + #$CC#$84;
+
+{invalid single byte UTF-8}
+InvalidUtf8Str := #$C0#$C1#$F5#$F6#$F7#$F8#$F9#$FA#$FB#$FC#$FD#$FE#$FF;
+
+Cnt := UTF8CodePointCount(Utf8Str); // Cnt = 2
+Len := UTF8Length(Utf8Str); // Len = 2
+
+Cnt := UTF8CodePointCount(InvalidUtf8Str); // Cnt = 0
+Len := UTF8Length(InvalidUtf8Str); // Len = 13
+
+Cnt := UTF8CodePointCount(InvalidUtf8Str + Utf8Str); // Cnt = 2
+Len := UTF8Length(InvalidUtf8Str + Utf8Str); // Len = 15
+</code>
 </descr>
 <version>
-Added in LazUtils version 4.0. (c8a1f93a)
+Added in LazUtils version 4.0.
 </version>
-<notes>
-<note>
-I wrote a test application to compare the results for UTF8Length and 
-UTF8CodepointCount. They return exactly the same values for the UTF-8 strings I 
-cribbed from the Unicode web site. 
-So basically, why is this routine needed?
-</note>
-</notes>
 <seealso>
-<link id="UTF8CodepointSize"/>
 <link id="UTF8Length"/>
+<link id="UTF8CodepointSize"/>
 <link id="UTF8LengthFast"/>
 <link id="UTF8CharacterLength"/>
 <link id="#rtl.system.UTF8CodepointLen">UTF8CodepointLen</link>
@@ -677,7 +694,8 @@ So basically, why is this routine needed?
 </element>
 <element name="UTF8CodepointCount.Result">
 <short>
-Pointer to the Integer value with the number of codepoints including combining characters.
+Integer value with the number of valid codepoints including combining 
+characters.
 </short>
 </element>
 <element name="UTF8CodepointCount.s">
