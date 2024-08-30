@@ -152,6 +152,7 @@ begin
   list.setDataSource(list);
   list.setDelegate(list);
   list.setAllowsMultipleSelection(lclCheckListBox.MultiSelect);
+  list.CustomRowHeight:= lclCheckListBox.ItemHeight;
   list.readOnly := true;
   //todo:
   //list.AllowMixedState := TCustomCheckListBox(AWinControl).AllowGrayed;

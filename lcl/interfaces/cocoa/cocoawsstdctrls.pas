@@ -2524,6 +2524,7 @@ begin
   list.setDataSource(list);
   list.setDelegate(list);
   list.setAllowsMultipleSelection(lclListBox.MultiSelect);
+  list.CustomRowHeight:= lclListBox.ItemHeight;
   list.readOnly := true;
   // LCL ItemHeight for TListBox can only be set during Recreation of Handle
   if TCustomListBox(AWinControl).ItemHeight>0 then
