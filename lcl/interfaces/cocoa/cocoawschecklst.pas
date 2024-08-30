@@ -183,6 +183,9 @@ end;
  ------------------------------------------------------------------------------}
 class function TCocoaWSCustomCheckListBox.GetState(
   const ACheckListBox: TCustomCheckListBox; const AIndex: integer): TCheckBoxState;
+const
+  checkStateArray: Array [NSMixedState..NSOnState] of TCheckBoxState =
+    ( cbGrayed, cbUnchecked, cbChecked );
 var
   lclcb : TLCLCheckboxListCallback;
   checkState: Integer;
@@ -193,10 +196,8 @@ begin
   if NOT Assigned(lclcb) then
     Exit;
 
-  if lclcb.GetItemCheckedAt(AIndex, checkState) then begin
-    if checkState <> NSOffState then
-      Result:= cbChecked;
-  end;
+  if lclcb.GetItemCheckedAt(AIndex, checkState) then
+    Result:= checkStateArray[checkState];
 end;
 
 {------------------------------------------------------------------------------
@@ -211,6 +212,9 @@ end;
 class procedure TCocoaWSCustomCheckListBox.SetState(
   const ACheckListBox: TCustomCheckListBox; const AIndex: integer;
   const AState: TCheckBoxState);
+const
+  checkStateArray: Array [TCheckBoxState] of Integer =
+    ( NSOffState, NSOnState, NSMixedState );
 var
   cocoaTLV: TCocoaTableListView;
   lclcb : TLCLCheckboxListCallback;
@@ -220,11 +224,7 @@ begin
   if NOT Assigned(lclcb) then
     Exit;
 
-  if AState <> cbUnchecked then
-    checkState:= NSOnState
-  else
-    checkState:= NSOffState;
-
+  checkState:= checkStateArray[AState];
   lclcb.SetItemCheckedAt( AIndex, checkState );
 
   cocoaTLV:= getTableViewFromLCLListBox( ACheckListBox );

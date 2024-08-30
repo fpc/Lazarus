@@ -7,7 +7,7 @@ interface
 
 uses
   Classes, SysUtils,
-  LCLType, Graphics, Controls, ComCtrls,
+  LCLType, Graphics, Controls, ComCtrls, StdCtrls,
   CocoaAll, CocoaPrivate, CocoaCallback, CocoaWSCommon, CocoaGDIObjects,
   CocoaUtils;
 
@@ -54,11 +54,13 @@ type
   private
     _selectionIndexSet: NSMutableIndexSet;
     _checkedIndexSet: NSMutableIndexSet;
+    _mixedCheckedIndexSet: NSMutableIndexSet;
   public
     constructor Create(AOwner: NSObject; ATarget: TWinControl; AHandleFrame: NSView = nil); override;
     destructor Destroy; override;
     function selectionIndexSet: NSMutableIndexSet; virtual;
     function checkedIndexSet: NSMutableIndexSet; virtual;
+    function mixedCheckedIndexSet: NSMutableIndexSet; virtual;
     function GetItemCheckedAt( row: Integer; var CheckState: Integer): Boolean; virtual;
     procedure SetItemCheckedAt( row: Integer; CheckState: Integer); virtual;
     function getItemStableSelection(ARow: Integer): Boolean; virtual;
@@ -136,12 +138,14 @@ begin
   inherited;
   _selectionIndexSet:= NSMutableIndexSet.new;
   _checkedIndexSet:= NSMutableIndexSet.new;
+  _mixedCheckedIndexSet:= NSMutableIndexSet.new;
 end;
 
 destructor TLCLListControlCallback.Destroy;
 begin
   _selectionIndexSet.release;
   _checkedIndexSet.release;
+  _mixedCheckedIndexSet.release;
   inherited Destroy;
 end;
 
@@ -155,22 +159,40 @@ begin
   Result:= _checkedIndexSet;
 end;
 
+function TLCLListControlCallback.mixedCheckedIndexSet: NSMutableIndexSet;
+begin
+  Result:= _mixedCheckedIndexSet;
+end;
+
 function TLCLListControlCallback.GetItemCheckedAt(row: Integer;
   var CheckState: Integer): Boolean;
 var
-  BoolState : array [Boolean] of Integer = (NSOffState, NSOnState);
+  checkStateArray : array [Boolean] of Integer = (NSOffState, NSOnState);
+  mixStateArray : array [Boolean] of Integer = (NSOffState, NSMixedState);
 begin
-  CheckState := BoolState[self.checkedIndexSet.containsIndex(row)];
+  CheckState := checkStateArray[self.checkedIndexSet.containsIndex(row)];
+  if CheckState = NSOffState then
+    CheckState := mixStateArray[self.mixedCheckedIndexSet.containsIndex(row)];
   Result := true;
 end;
 
 procedure TLCLListControlCallback.SetItemCheckedAt(row: Integer;
   CheckState: Integer);
 begin
-  if CheckState = NSOnState then
-    self.checkedIndexSet.addIndex( row )
-  else
-    self.checkedIndexSet.removeIndex( row );
+  case CheckState of
+    NSOnState: begin
+      self.checkedIndexSet.addIndex( row );
+      self.mixedCheckedIndexSet.removeIndex( row );
+    end;
+    NSMixedState: begin
+      self.checkedIndexSet.removeIndex( row );
+      self.mixedCheckedIndexSet.addIndex( row );
+    end;
+    else begin
+      self.checkedIndexSet.removeIndex( row );
+      self.mixedCheckedIndexSet.removeIndex( row );
+    end;
+  end;
 end;
 
 function TLCLListControlCallback.getItemStableSelection(ARow: Integer): Boolean;

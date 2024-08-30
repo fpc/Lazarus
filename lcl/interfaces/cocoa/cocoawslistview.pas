@@ -554,8 +554,10 @@ begin
     Exit;
 
   lclcb.ownerData := AValue;
-  if lclcb.ownerData then
+  if lclcb.ownerData then begin
     lclcb.checkedIndexSet.removeAllIndexes; // releasing memory
+    lclcb.mixedCheckedIndexSet.removeAllIndexes; // releasing memory
+  end;
 end;
 
 class procedure TCocoaWSCustomListView.SetProperty(const ALV: TCustomListView;
@@ -592,8 +594,8 @@ begin
   if TCocoaListView(lclcb.Owner).initializing then
     Exit;
 
-  if Assigned(lclcb.checkedIndexSet) then
-    lclcb.checkedIndexSet.removeAllIndexes;
+  lclcb.checkedIndexSet.removeAllIndexes;
+  lclcb.mixedCheckedIndexSet.removeAllIndexes;
   lclcb.selectionIndexSet.removeAllIndexes;
 
   WSHandler:= getWSHandler( ALV );

@@ -520,7 +520,7 @@ begin
     Exit;
 
   tv.callback.GetItemCheckedAt( row, checked );
-  Result:= checked=NSOnState;
+  Result:= checked<>NSOffState;
 end;
 
 function TCocoaTableListView.lclCallDrawItem(row: NSInteger;
@@ -1198,6 +1198,7 @@ begin
 
   _checkBox:= NSButton.alloc.init;
   _checkBox.setButtonType( NSSwitchButton );
+  _checkBox.setAllowsMixedState( True );
   _checkBox.setTitle( CocoaConst.NSSTR_EMPTY );
   _checkBox.setTarget( _tableView );
   _checkBox.setAction( ObjCSelector('checkboxAction:') );
@@ -1393,6 +1394,7 @@ begin
     Exit;
 
   self.callback.checkedIndexSet.shiftIndexesStartingAtIndex_by( AIndex, 1 );
+  self.callback.mixedCheckedIndexSet.shiftIndexesStartingAtIndex_by( AIndex, 1 );
   self.callback.selectionIndexSet.shiftIndexesStartingAtIndex_by( AIndex, 1 );
   self.selectRowIndexesByProgram( self.callback.selectionIndexSet );
   self.reloadData;
@@ -1405,6 +1407,7 @@ begin
     Exit;
 
   self.callback.checkedIndexSet.shiftIndexesStartingAtIndex_by( AIndex+1, -1);
+  self.callback.mixedCheckedIndexSet.shiftIndexesStartingAtIndex_by( AIndex+1, -1);
   self.callback.selectionIndexSet.shiftIndexesStartingAtIndex_by( AIndex+1, -1 );
   self.selectRowIndexesByProgram( self.callback.selectionIndexSet );
   self.reloadData;
@@ -1438,6 +1441,7 @@ begin
     Exit;
 
   ExchangeIndexSetItem( self.callback.checkedIndexSet, AIndex1, AIndex2 );
+  ExchangeIndexSetItem( self.callback.mixedCheckedIndexSet, AIndex1, AIndex2 );
   ExchangeIndexSetItem( self.callback.selectionIndexSet, AIndex1, AIndex2 );
   self.reloadData;
 end;
@@ -1445,6 +1449,7 @@ end;
 procedure TCocoaTableListView.lclClearItem;
 begin
   self.callback.checkedIndexSet.removeAllIndexes;
+  self.callback.mixedCheckedIndexSet.removeAllIndexes;
   self.callback.selectionIndexSet.removeAllIndexes;
   self.reloadData;
 end;
