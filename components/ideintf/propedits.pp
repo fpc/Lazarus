@@ -404,7 +404,7 @@ type
                             {%H-}AState: TPropEditDrawState); virtual;
     procedure UpdateSubProperties; virtual;
     function SubPropertiesNeedsUpdate: boolean; virtual;
-    function ValueIsStreamed: boolean; virtual;
+    function ValueIsStreamed: boolean; virtual; // if value is stored, usually because it differs from default value
     function IsRevertableToInherited: boolean; virtual;
     // These are used for the popup menu in OI
     function GetVerbCount: Integer; virtual;
@@ -643,11 +643,11 @@ type
     FSubPropsNameFilter: String;
     FHideClassName: Boolean;
     FSubProps: TObjectList;
-    procedure ListSubProps(Prop: TPropertyEditor);
-    procedure SetSubPropsTypeFilter(const AValue: TTypeKinds);
-    function EditorFilter(const AEditor: TPropertyEditor): Boolean;
   protected
     function GetSelections: TPersistentSelectionList; virtual;
+    function EditorFilter(const AEditor: TPropertyEditor): Boolean; virtual;
+    procedure ListSubProps(Prop: TPropertyEditor); virtual;
+    procedure SetSubPropsTypeFilter(const AValue: TTypeKinds); virtual;
   public
     constructor Create(Hook: TPropertyEditorHook; APropCount: Integer); override;
     destructor Destroy; override;
@@ -656,7 +656,7 @@ type
     function AllEqual: Boolean; override;
     function GetAttributes: TPropertyAttributes; override;
     procedure GetProperties(Proc: TGetPropEditProc); override;
-    function GetValue: ansistring; override;
+    function GetValue: String; override;
 
     property SubPropsTypeFilter: TTypeKinds
       read FSubPropsTypeFilter write SetSubPropsTypeFilter default tkAny;
@@ -665,26 +665,6 @@ type
     property HideClassName: Boolean read FHideClassName write FHideClassName;
   end;
 
-{ TMethodPropertyEditor
-  Property editor for all method properties. }
-
-  TMethodPropertyEditor = class(TPropertyEditor)
-  private
-    function GetTrimmedEventName: shortstring;
-  public
-    function AllEqual: Boolean; override;
-    procedure Edit; override;
-    procedure ShowValue; override;
-    function GetAttributes: TPropertyAttributes; override;
-    function GetEditLimit: Integer; override;
-    function GetValue: ansistring; override;
-    procedure GetValues(Proc: TGetStrProc); override;
-    procedure SetValue(const NewValue: ansistring); override;
-    function GetFormMethodName: shortstring;
-    class function GetDefaultMethodName(Root, Component: TComponent;
-        const RootClassName, ComponentName, PropName: shortstring): shortstring;
-  end;
-  
 { TPersistentPropertyEditor
   A base editor for TPersistent. It does allow editing of the properties.
   It allows the user to set the value of this property to point to a component
@@ -789,6 +769,59 @@ type
     procedure Edit; override;
     function CreateDlg(s: TStrings): TPagesPropEditorDlg; virtual;
     function GetAttributes: TPropertyAttributes; override;
+  end;
+
+  { TRecordPropertyEditor }
+
+  TRecordPropertyEditor = class(TPropertyEditor)
+  private
+    FCanReadFields: boolean;
+    FCanWriteFields: boolean;
+    FSubPropsTypeFilter: TTypeKinds;
+    FSubPropsNameFilter: String;
+    FHideRecordName: Boolean;
+    FSubProps: TObjectList;
+  protected
+    function EditorFilter(const AEditor: TPropertyEditor): Boolean; virtual;
+    procedure ListSubProps(Prop: TPropertyEditor); virtual;
+    procedure SetSubPropsTypeFilter(const AValue: TTypeKinds); virtual;
+  public
+    constructor Create(Hook: TPropertyEditorHook; APropCount: Integer); override;
+    destructor Destroy; override;
+    function AllEqual: Boolean; override;
+    function GetAttributes: TPropertyAttributes; override;
+    procedure GetProperties(Proc: TGetPropEditProc); override;
+    function GetValue: string; override;
+    procedure Initialize; override;
+    function ValueIsStreamed: boolean; override;
+
+    property SubPropsTypeFilter: TTypeKinds
+      read FSubPropsTypeFilter write SetSubPropsTypeFilter default tkAny;
+    property SubPropsNameFilter: String
+      read FSubPropsNameFilter write FSubPropsNameFilter;
+    property HideRecordName: Boolean read FHideRecordName write FHideRecordName;
+    property CanReadFields: boolean read FCanReadFields;
+    property CanWriteFields: boolean read FCanWriteFields;
+  end;
+
+{ TMethodPropertyEditor
+  Property editor for all method properties. }
+
+  TMethodPropertyEditor = class(TPropertyEditor)
+  private
+    function GetTrimmedEventName: shortstring;
+  public
+    function AllEqual: Boolean; override;
+    procedure Edit; override;
+    procedure ShowValue; override;
+    function GetAttributes: TPropertyAttributes; override;
+    function GetEditLimit: Integer; override;
+    function GetValue: ansistring; override;
+    procedure GetValues(Proc: TGetStrProc); override;
+    procedure SetValue(const NewValue: ansistring); override;
+    function GetFormMethodName: shortstring;
+    class function GetDefaultMethodName(Root, Component: TComponent;
+        const RootClassName, ComponentName, PropName: shortstring): shortstring;
   end;
 
 { TComponentNamePropertyEditor
@@ -1654,7 +1687,6 @@ type
   private
     FList: PPropList;
     FCount: Integer;
-    FSize: Integer;
     {$IFDEF HasExtRtti}
     FExtVisibility: TVisibilityClasses;
     FListExt: PPropListEx;
@@ -1998,6 +2030,174 @@ begin
   Result := [paDialog, paRevertable, paReadOnly];
 end;
 
+{ TRecordPropertyEditor }
+
+procedure TRecordPropertyEditor.SetSubPropsTypeFilter(const AValue: TTypeKinds);
+begin
+  if FSubPropsTypeFilter=AValue then Exit;
+  FSubPropsTypeFilter:=AValue;
+end;
+
+function TRecordPropertyEditor.EditorFilter(const AEditor: TPropertyEditor): Boolean;
+begin
+  Result := IsInteresting(AEditor, SubPropsTypeFilter, SubPropsNameFilter);
+end;
+
+procedure TRecordPropertyEditor.ListSubProps(Prop: TPropertyEditor);
+begin
+  FSubProps.Add(Prop);
+end;
+
+constructor TRecordPropertyEditor.Create(Hook: TPropertyEditorHook; APropCount: Integer);
+begin
+  inherited Create(Hook, APropCount);
+  FSubPropsTypeFilter:=tkAny;
+end;
+
+destructor TRecordPropertyEditor.Destroy;
+begin
+  FSubProps.Free;
+  inherited Destroy;
+end;
+
+function TRecordPropertyEditor.AllEqual: Boolean;
+begin
+  Result:=True; // ToDo: Maybe all sub-properties should be compared for equality.
+end;
+
+function TRecordPropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result := [{paMultiSelect, }paSubProperties, paReadOnly];
+end;
+
+procedure TRecordPropertyEditor.GetProperties(Proc: TGetPropEditProc);
+{$IFDEF HasExtRtti}
+var
+  aPropInfo: PPropInfo;
+  aTypeData: PTypeData;
+  Fields: PManagedField;
+  i: Integer;
+  FieldTypeInfo: PTypeInfo;
+  FieldCnt: LongInt;
+  ReadAccess, WriteAccess: Byte;
+  ReadNeedsCall, HasManagedTypes, WriteNeedsCall: Boolean;
+  //RecInit: PRecInitData;
+{$ENDIF}
+begin
+  writeln('TRecordPropertyEditor.GetProperties START');
+  {$IFDEF HasExtRtti}
+  aPropInfo:=GetPropInfo;
+  writeln('TRecordPropertyEditor.GetProperties aPropInfo^.Name=',aPropInfo^.Name);
+  aTypeData:=GetTypeData(aPropInfo^.PropType);
+  FieldCnt:=aTypeData^.TotalFieldCount;
+  writeln('TRecordPropertyEditor.GetProperties RecSize=',aTypeData^.RecSize,' TotalFieldCount=',FieldCnt);
+
+  // check read and write access
+  ReadAccess:=(aPropInfo^.PropProcs) and 3;
+  case ReadAccess of
+  ptStatic,
+  ptVirtual: ReadNeedsCall:=true;
+  else ReadNeedsCall:=false;
+  end;
+  FCanReadFields:=true;
+
+  WriteAccess:=(aPropInfo^.PropProcs shr 2) and 3;
+  case WriteAccess of
+  ptStatic,
+  ptVirtual: WriteNeedsCall:=true;
+  else WriteNeedsCall:=false;
+  end;
+  FCanWriteFields:=true;
+
+  Fields:=PManagedField(AlignToPtr(PByte(@aTypeData^.TotalFieldCount)+SizeOf(Longint)));
+  for i:=0 to FieldCnt-1 do begin
+    FieldTypeInfo:=Fields[i].TypeRef;
+    writeln('TRecordPropertyEditor.GetProperties Normal ',i,'/',FieldCnt,' FldOffset=',Fields[i].FldOffset,' ',FieldTypeInfo^.Name,' ',FieldTypeInfo^.Kind);
+    // todo read value
+    case FieldTypeInfo^.Kind of
+      tkInteger: ;
+      //tkChar,
+      //tkEnumeration,
+      //tkFloat,
+      //tkSet,
+      //tkMethod,
+      //tkSString,
+      //tkClass,
+      //tkWChar,
+      //tkBool,
+      //tkInt64,
+      //tkQWord,
+      //tkUChar,
+      //tkClassRef,
+      //tkPointer: ;
+
+      //tkLString,
+      //tkAString,
+      //tkWString,
+
+      //tkUnknown: ;
+      //tkVariant: ;
+      //tkArray: ;
+      //tkRecord: ;
+      //tkInterface: ;
+      //tkObject: ;
+      //tkDynArray: ;
+      //tkInterfaceRaw: ;
+      //tkProcVar: ;
+      //tkUString: ;
+      //tkHelper: ;
+      //tkFile: ;
+    else
+      if ReadNeedsCall then
+        FCanReadFields:=false;
+      if WriteNeedsCall then
+        FCanWriteFields:=false;
+    end;
+  end;
+
+  // create field editors
+  if CanReadFields then begin
+    for i:=0 to FieldCnt-1 do begin
+      FieldTypeInfo:=Fields[i].TypeRef;
+
+      case FieldTypeInfo^.Kind of
+      tkInteger:
+        begin
+
+        end;
+      else
+
+      end;
+    end;
+  end;
+
+  {$ELSE}
+  if Proc<>nil then ;
+  FCanReadFields:=false;
+  {$ENDIF}
+end;
+
+function TRecordPropertyEditor.GetValue: string;
+begin
+  if FHideRecordName then
+    Result:=''
+  else
+    Result:='(' + GetPropType^.Name + ')';
+end;
+
+procedure TRecordPropertyEditor.Initialize;
+begin
+  inherited Initialize;
+  if FSubProps<>nil then exit;
+  FSubProps:=TObjectList.Create(true);
+  GetProperties(@ListSubProps);
+end;
+
+function TRecordPropertyEditor.ValueIsStreamed: boolean;
+begin
+  Result:=false;
+end;
+
 { TSelectableComponentEnumerator }
 
 procedure TSelectableComponentEnumerator.GetSelectableComponents(
@@ -2162,7 +2362,7 @@ const
                    tkDynArray,tkInterfaceRaw,tkProcVar,tkUString,tkUChar,
                    tkHelper);
 }
-
+  // default property editor classes
   PropClassMap:array[TypInfo.TTypeKind] of TPropertyEditorClass=(
     nil,                       // tkUnknown
     TIntegerPropertyEditor,    // tkInteger
@@ -2177,7 +2377,7 @@ const
     TWideStringPropertyEditor, // tkWString
     TPropertyEditor,           // tkVariant
     nil,                       // tkArray
-    nil,                       // tkRecord
+    TRecordPropertyEditor,     // tkRecord
     TInterfacePropertyEditor,  // tkInterface
     TClassPropertyEditor,      // tkClass
     nil,                       // tkObject
@@ -2353,7 +2553,7 @@ end;
 
 destructor TPropInfoList.Destroy;
 begin
-  if FList<>nil then FreeMem(FList,FSize);
+  if FList<>nil then FreeMem(FList);
 end;
 
 function TPropInfoList.Contains(P:PPropInfo):Boolean;
@@ -2574,9 +2774,8 @@ begin
              GetTypeData(P^.PropertyType)^.ClassType)
          )
       then
-        if ((P^.PersistentClass=nil) or (Obj.InheritsFrom(P^.PersistentClass))) and
-           ((P^.PropertyName='')
-           or (CompareText(PropInfo^.Name,P^.PropertyName)=0))
+        if ((P^.PersistentClass=nil) or (Obj.InheritsFrom(P^.PersistentClass)))
+            and ((P^.PropertyName='') or (CompareText(PropInfo^.Name,P^.PropertyName)=0))
         then
           if (C=nil) or   // see if P is better match than C
              ((C^.PersistentClass=nil) and (P^.PersistentClass<>nil)) or
@@ -2789,7 +2988,7 @@ begin
   FPropertyHook:=Hook;
   PropListSize:=APropCount * SizeOf(TInstProp);
   GetMem(FPropList,PropListSize);
-  FillChar(FPropList^,PropListSize,0);
+  FillByte(FPropList^,PropListSize,0);
   FPropCount:=APropCount;
 end;
 
@@ -4870,7 +5069,7 @@ begin
   end;
 end;
 
-function TClassPropertyEditor.GetValue: ansistring;
+function TClassPropertyEditor.GetValue: String;
 begin
   if FHideClassName then
     Result:=''
