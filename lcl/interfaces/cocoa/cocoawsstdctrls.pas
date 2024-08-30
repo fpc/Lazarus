@@ -2726,8 +2726,8 @@ var
   view: TCocoaTableListView;
 begin
   view := getTableViewFromLCLListBox(ACustomListBox);
-  ListBoxSetStyle(view, TCustomListBox(ACustomListBox).Style);
-  view.setNeedsDisplay_(true);
+  ListBoxSetStyle(view, ACustomListBox.Style);
+  view.reloadData;
 end;
 
 class procedure TCocoaWSCustomListBox.SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer);

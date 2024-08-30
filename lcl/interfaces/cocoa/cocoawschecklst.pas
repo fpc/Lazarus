@@ -61,6 +61,7 @@ type
     class function GetState(const ACheckListBox: TCustomCheckListBox; const AIndex: integer): TCheckBoxState; override;
     class procedure SetState(const ACheckListBox: TCustomCheckListBox; const AIndex: integer; const AState: TCheckBoxState); override;
     class function GetCheckWidth(const ACheckListBox: TCustomCheckListBox): integer; override;
+    class procedure SetStyle(const ACustomListBox: TCustomListBox); override;
   end;
 
 implementation
@@ -158,6 +159,8 @@ begin
   //list.AllowMixedState := TCustomCheckListBox(AWinControl).AllowGrayed;
   list.isOwnerDraw := lclCheckListBox.Style in [lbOwnerDrawFixed, lbOwnerDrawVariable];
 
+  ListBoxSetStyle(list, TCustomListBox(AWinControl).Style);
+
   scroll := EmbedInScrollView(list);
   if not Assigned(scroll) then
   begin
@@ -235,6 +238,12 @@ class function TCocoaWSCustomCheckListBox.GetCheckWidth(
   const ACheckListBox: TCustomCheckListBox): integer;
 begin
   Result:= Round( CocoaConfigListView.vsList.item.checkBoxOccupiedWidth );
+end;
+
+class procedure TCocoaWSCustomCheckListBox.SetStyle(
+  const ACustomListBox: TCustomListBox);
+begin
+  TCocoaWSCustomListBox.SetStyle( ACustomListBox );
 end;
 
 end.
