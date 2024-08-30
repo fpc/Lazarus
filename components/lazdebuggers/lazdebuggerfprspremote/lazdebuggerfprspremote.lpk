@@ -13,8 +13,9 @@
     <Description Value="This package is a debugger backend for the Lazarus-IDE.
 - It is based on FpDebug and requires no external debugger executable.
 - It currently supports the gdb Remote Serial Protocol.
-- Supported targets: AVR"/>
+- Supported targets: AVR, Xtensa, RISC-V"/>
     <License Value="GPLv2"/>
+    <Version Build="1"/>
     <Files>
       <Item>
         <Filename Value="rspremotedebugger.pas"/>
