@@ -190,13 +190,12 @@ begin
     crsShowCodeToolsNodeInfo, nil, nil, ShowCodeNodeInfoCommand);
 
   // View menu - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  {$IFNDEF EnableCodyExperiments}
   // Cody tool window
   ViewCodyWindowCommand:=RegisterIDECommand(CmdCatView, 'Cody',
     'Cody', CleanIDEShortCut, CleanIDEShortCut, nil, @ShowCodyWindow);
   RegisterIDEMenuCommand(itmViewMainWindows, 'ViewCody',
     'Cody', nil, nil, ViewCodyWindowCommand)
-  {$IFNDEF EnableCodyExperiments}
-   .Visible:=false
   {$ENDIF};
 
   // Components - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
