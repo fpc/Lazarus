@@ -22,6 +22,9 @@ unit ObjectInspector;
 
 {$Mode objfpc}{$H+}
 
+{$IF FPC_FULLVERSION>30300}
+  {$Define HasExtRtti}
+{$ENDIF}
 {off $DEFINE DoNotCatchOIExceptions}
 
 interface
@@ -270,6 +273,9 @@ type
   private
     FBackgroundColor: TColor;
     FColumn: TOICustomPropertyGridColumn;
+    {$IFDEF HasExtRtti}
+    FExtVisibility: TVisibilityClasses;
+    {$ENDIF}
     FGutterColor: TColor;
     FGutterEdgeColor: TColor;
     FHighlightColor: TColor;
@@ -351,6 +357,9 @@ type
     procedure SetColumn(const AValue: TOICustomPropertyGridColumn);
     procedure SetCurrentEditValue(const NewValue: string);
     procedure SetDrawHorzGridLines(const AValue: Boolean);
+    {$IFDEF HasExtRtti}
+    procedure SetExtVisibility(const AValue: TVisibilityClasses);
+    {$ENDIF}
     procedure SetFavorites(const AValue: TOIFavoriteProperties);
     procedure SetFilter(const AValue: TTypeKinds);
     procedure SetGutterColor(const AValue: TColor);
@@ -535,6 +544,9 @@ type
     property TopY: integer read FTopY write SetTopY default 0;
     property Favorites: TOIFavoriteProperties read FFavorites write SetFavorites;
     property Filter : TTypeKinds read FFilter write SetFilter;
+    {$IFDEF HasExtRtti}
+    property ExtVisibility: TVisibilityClasses read FExtVisibility write SetExtVisibility;
+    {$ENDIF}
     property HideClassNames: Boolean read FHideClassNames write FHideClassNames;
     property PropNameFilter : String read FPropNameFilter write FPropNameFilter;
   end;
@@ -1973,7 +1985,7 @@ begin
   // get properties
   if FSelection.Count>0 then begin
     GetPersistentProperties(FSelection, FFilter + [tkClass], FPropertyEditorHook,
-      @AddPropertyEditor, @EditorFilter);
+      @AddPropertyEditor, nil, @EditorFilter{$IFDEF HasExtRtti},ExtVisibility{$ENDIF});
   end;
   // sort
   FRows.Sort(@SortGridRows);
@@ -3397,6 +3409,15 @@ begin
   Invalidate;
 end;
 
+{$IFDEF HasExtRtti}
+procedure TOICustomPropertyGrid.SetExtVisibility(const AValue: TVisibilityClasses);
+begin
+  if FExtVisibility=AValue then Exit;
+  FExtVisibility:=AValue;
+  BuildPropertyList;
+end;
+{$ENDIF}
+
 procedure TOICustomPropertyGrid.SetFavorites(
   const AValue: TOIFavoriteProperties);
 begin
@@ -3408,11 +3429,9 @@ end;
 
 procedure TOICustomPropertyGrid.SetFilter(const AValue: TTypeKinds);
 begin
-  if (AValue<>FFilter) then
-  begin
-    FFilter:=AValue;
-    BuildPropertyList;
-  end;
+  if AValue=FFilter then exit;
+  FFilter:=AValue;
+  BuildPropertyList;
 end;
 
 procedure TOICustomPropertyGrid.SetGutterColor(const AValue: TColor);

@@ -19,6 +19,10 @@ unit PropEdits;
 // This unit contains a lot of base type conversions. Disable range checking.
 {$R-}
 
+{$IF FPC_FULLVERSION>30300}
+  {$Define HasExtRtti}
+{$ENDIF}
+
 interface
 
 uses
@@ -1279,7 +1283,8 @@ type
 procedure GetPersistentProperties(ASelection: TPersistentSelectionList;
   AFilter: TTypeKinds; AHook: TPropertyEditorHook; AProc: TGetPropEditProc;
   APropInfoFilterFunc: TPropInfoFilterFunc;
-  AEditorFilterFunc: TPropertyEditorFilterFunc);
+  AEditorFilterFunc: TPropertyEditorFilterFunc
+  {$IFDEF HasExtRtti};ExtVisibility: TVisibilityClasses = []{$ENDIF});
 
 procedure GetPersistentProperties(ASelection: TPersistentSelectionList;
   AFilter: TTypeKinds; AHook: TPropertyEditorHook; AProc: TGetPropEditProc;
@@ -1650,9 +1655,17 @@ type
     FList: PPropList;
     FCount: Integer;
     FSize: Integer;
+    {$IFDEF HasExtRtti}
+    FExtVisibility: TVisibilityClasses;
+    FListExt: PPropListEx;
+    function GetExt(Index: Integer): PPropInfoEx;
+    {$ENDIF}
     function Get(Index: Integer): PPropInfo;
   public
     constructor Create(Instance: TPersistent; Filter: TTypeKinds);
+    {$IFDEF HasExtRtti}
+    constructor Create(Instance: TPersistent; Filter: TTypeKinds; AddExtVisibility: TVisibilityClasses);
+    {$ENDIF}
     destructor Destroy; override;
     function Contains(P: PPropInfo): Boolean;
     procedure Delete(Index: Integer);
@@ -1660,6 +1673,10 @@ type
     procedure Sort;
     property Count: Integer read FCount;
     property Items[Index: Integer]: PPropInfo read Get; default;
+    {$IFDEF HasExtRtti}
+    property ExtVisibility: TVisibilityClasses read FExtVisibility;
+    property Ext[Index: Integer]: PPropInfoEx read GetExt;
+    {$ENDIF}
   end;
 
 //==============================================================================
@@ -2216,24 +2233,65 @@ type
 
 constructor TPropInfoList.Create(Instance:TPersistent; Filter:TTypeKinds);
 var
-  BigList: PPropList;
-  TypeInfo: PTypeInfo;
+  ListCapacity: integer;
+
+  procedure Add(PropInfo: PPropInfo{$IFDEF HasExtRtti}; Ext: PPropInfoEx{$ENDIF});
+  var
+    i: Integer;
+  begin
+    if PropInfo^.PropType^.Kind in Filter then begin
+      // check if name already exists in list
+      i:=FCount-1;
+      while (i>=0) and (CompareText(FList^[i]^.Name,PropInfo^.Name)<>0) do
+        dec(i);
+      if (i<0) then begin
+        // add property info
+        if FCount=ListCapacity then begin
+          if ListCapacity<16 then
+            ListCapacity:=16
+          else
+            ListCapacity:=ListCapacity*2;
+          ReAllocMem(FList,ListCapacity*SizeOf(Pointer));
+          {$IFDEF HasExtRtti}
+          ReAllocMem(FListExt,ListCapacity*SizeOf(Pointer));
+          {$ENDIF}
+        end;
+        FList^[FCount]:=PropInfo;
+        {$IFDEF HasExtRtti}
+        FListExt^[FCount]:=Ext;
+        {$ENDIF}
+        inc(FCount);
+      end;
+    end;
+  end;
+
+var
+  aTypeInfo: PTypeInfo;
   TypeData: PTypeData;
   PropInfo: PPropInfo;
   PropData: ^TPropData;
-  CurCount, i: integer;
+  {$IFDEF HasExtRtti}
+  PropList: PPropListEx;
+  PropInfoEx: PPropInfoEx;
+  {$ENDIF}
+  CurCount: integer;
   //CurParent: TClass;
 begin
-  TypeInfo:=Instance.ClassInfo;
-  TypeData:=GetTypeData(TypeInfo);
-  GetMem(BigList,TypeData^.PropCount * SizeOf(Pointer));
+  aTypeInfo:=Instance.ClassInfo;
 
-  // read all properties and remove doubles
-  TypeInfo:=Instance.ClassInfo;
+  // read all published properties and remove doubles
+  TypeData:=GetTypeData(aTypeInfo);
+  ListCapacity:=TypeData^.PropCount;
+  ReAllocMem(FList,ListCapacity * SizeOf(Pointer));
+  {$IFDEF HASEXTRTTI}
+  ReAllocMem(FListExt,ListCapacity * SizeOf(Pointer));
+  {$ENDIF}
+
+  aTypeInfo:=Instance.ClassInfo;
   FCount:=0;
   repeat
     // read all property infos of current class
-    TypeData:=GetTypeData(TypeInfo);
+    TypeData:=GetTypeData(aTypeInfo);
     // skip unitname
     PropData:=AlignToPtr(Pointer(@TypeData^.UnitName)+Length(TypeData^.UnitName)+1);
     // read property count
@@ -2242,7 +2300,7 @@ begin
 
     {writeln('TPropInfoList.Create D ',CurCount,' TypeData^.ClassType=',DbgS(TypeData^.ClassType));
     writeln('TPropInfoList.Create E ClassName="',TypeData^.ClassType.ClassName,'"',
-    ' TypeInfo=',DbgS(TypeInfo),
+    ' TypeInfo=',DbgS(aTypeInfo),
     ' TypeData^.ClassType.ClassInfo=',DbgS(TypeData^.ClassType.ClassInfo),
     ' TypeData^.ClassType.ClassParent=',DbgS(TypeData^.ClassType.ClassParent),
     ' TypeData^.ParentInfo=',DbgS(TypeData^.ParentInfo),
@@ -2256,33 +2314,42 @@ begin
 
     // read properties
     while CurCount>0 do begin
-      if PropInfo^.PropType^.Kind in Filter then begin
-        // check if name already exists in list
-        i:=FCount-1;
-        while (i>=0) and (CompareText(BigList^[i]^.Name,PropInfo^.Name)<>0) do
-          dec(i);
-        if (i<0) then begin
-          // add property info to BigList
-          BigList^[FCount]:=PropInfo;
-          inc(FCount);
-        end;
-      end;
+      Add(PropInfo{$IFDEF HasExtRtti},nil{$ENDIF});
       // point PropInfo to next propinfo record.
       // Located at Name[Length(Name)+1] !
       PropInfo:=PPropInfo(AlignToPtr(pointer(@PropInfo^.Name)+PByte(@PropInfo^.Name)^+1));
       dec(CurCount);
     end;
-    TypeInfo:=TypeData^.ParentInfo;
-    if TypeInfo=nil then break;
-  until false;
 
-  // create FList
-  FSize:=FCount * SizeOf(Pointer);
-  GetMem(FList,FSize);
-  Move(BigList^,FList^,FSize);
-  FreeMem(BigList);
+    {$IFDEF HasExtRtti}
+    if FExtVisibility<>[] then begin
+      CurCount:=GetPropListEx(aTypeInfo,PropList,FExtVisibility);
+      try
+        while CurCount>0 do begin
+          dec(CurCount);
+          PropInfoEx:=PropList^[CurCount];
+          Add(PropInfoEx^.Info,PropInfoEx);
+        end;
+      finally
+        Freemem(PropList);
+      end;
+    end;
+    {$ENDIF}
+
+    aTypeInfo:=TypeData^.ParentInfo;
+  until aTypeInfo=nil;
+
   Sort;
 end;
+
+{$IFDEF HasExtRtti}
+constructor TPropInfoList.Create(Instance: TPersistent; Filter: TTypeKinds;
+  AddExtVisibility: TVisibilityClasses);
+begin
+  FExtVisibility:=AddExtVisibility;
+  Create(Instance,Filter);
+end;
+{$ENDIF}
 
 destructor TPropInfoList.Destroy;
 begin
@@ -2310,9 +2377,11 @@ end;
 procedure TPropInfoList.Delete(Index:Integer);
 begin
   Dec(FCount);
-  if Index < FCount then
-    Move(FList^[Index+1],FList^[Index],
-      (FCount-Index) * SizeOf(Pointer));
+  if Index >= FCount then exit;
+  System.Move(FList^[Index+1],FList^[Index],(FCount-Index) * SizeOf(Pointer));
+  {$IFDEF HasExtRtti}
+  System.Move(FListExt^[Index+1],FListExt^[Index],(FCount-Index) * SizeOf(Pointer));
+  {$ENDIF}
 end;
 
 function TPropInfoList.Get(Index:Integer):PPropInfo;
@@ -2320,42 +2389,56 @@ begin
   Result:=FList^[Index];
 end;
 
+{$IFDEF HasExtRtti}
+function TPropInfoList.GetExt(Index: Integer): PPropInfoEx;
+begin
+  Result:=FListExt^[Index];
+end;
+{$ENDIF}
+
 procedure TPropInfoList.Intersect(List:TPropInfoList);
 var
-  I:Integer;
+  i:Integer;
 begin
-  for I:=FCount-1 downto 0 do
-    if not List.Contains(FList^[I]) then Delete(I);
+  for i:=FCount-1 downto 0 do
+    if not List.Contains(FList^[i]) then Delete(i);
 end;
 
 procedure TPropInfoList.Sort;
+
   procedure QuickSort(L, R: Integer);
   var
-    I, J: Longint;
-    P, Q: PPropInfo;
+    i, j: Longint;
+    p: PPropInfo;
+    h: Pointer;
   begin
     repeat
-      I := L;
-      J := R;
-      P := FList^[(L + R) div 2];
+      i := L;
+      j := R;
+      p := FList^[(L + R) div 2];
       repeat
-        while CompareText(P^.Name, FList^[i]^.Name) > 0 do
-          inc(I);
-        while CompareText(P^.Name, FList^[J]^.Name) < 0 do
-          dec(J);
-        if I <= J then
+        while CompareText(p^.Name, FList^[i]^.Name) > 0 do
+          inc(i);
+        while CompareText(p^.Name, FList^[j]^.Name) < 0 do
+          dec(j);
+        if i <= j then
         begin
-          Q := FList^[I];
-          Flist^[I] := FList^[J];
-          FList^[J] := Q;
-          inc(I);
-          dec(J);
+          h := FList^[i];
+          Flist^[i] := FList^[j];
+          FList^[j] := h;
+          {$IFDEF HasExtRtti}
+          h := FListExt^[i];
+          FListExt^[i] := FListExt^[j];
+          FListExt^[j] := h;
+          {$ENDIF}
+          inc(i);
+          dec(j);
         end;
-      until I > J;
-      if L < J then
-        QuickSort(L, J);
-      L := I;
-    until I >= R;
+      until i > j;
+      if L < j then
+        QuickSort(L, j);
+      L := i;
+    until i >= R;
   end;
 begin
   if Count > 0 then
@@ -2532,7 +2615,8 @@ end;
 procedure GetPersistentProperties(ASelection: TPersistentSelectionList;
   AFilter: TTypeKinds; AHook: TPropertyEditorHook; AProc: TGetPropEditProc;
   APropInfoFilterFunc: TPropInfoFilterFunc;
-  AEditorFilterFunc: TPropertyEditorFilterFunc);
+  AEditorFilterFunc: TPropertyEditorFilterFunc
+  {$IFDEF HasExtRtti};ExtVisibility: TVisibilityClasses = []{$ENDIF});
 var
   I, J, SelCount: Integer;
   ClassTyp: TClass;
@@ -2554,12 +2638,13 @@ begin
   ClassTyp := Instance.ClassType;
   // Create a property candidate list of all properties that can be found in
   // every component in the list and in the Filter
-  Candidates := TPropInfoList.Create(Instance, AFilter);
+  Candidates := TPropInfoList.Create(Instance, AFilter{$IFDEF HasExtRtti},ExtVisibility{$ENDIF});
   try
     // check each property candidate
     for I := Candidates.Count - 1 downto 0 do
     begin
       PropInfo := Candidates[I];
+
       // check if property is readable
       if (PropInfo^.GetProc=nil)
       or ((not GShowReadOnlyProps) and (PropInfo^.PropType^.Kind <> tkClass)
@@ -2597,7 +2682,7 @@ begin
         PropLists.Count := SelCount;
         // Create a property info list for each component in the selection
         for I := 0 to SelCount - 1 do
-          PropLists[i] := TPropInfoList.Create(ASelection[I], AFilter);
+          PropLists[i] := TPropInfoList.Create(ASelection[I], AFilter{$IFDEF HasExtRtti},ExtVisibility{$ENDIF});
 
         // Eliminate each property in Candidates that is not in all property lists
         for I := 0 to SelCount - 1 do
@@ -3441,6 +3526,7 @@ begin
           Changed:=true;
           SetInterfaceProp(InstProp.Instance,InstProp.PropInfo,NewInterface);
         end;
+      else
       end;
     end;
   finally
