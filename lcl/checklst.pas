@@ -113,6 +113,7 @@ type
     property ItemHeight;
     property ItemIndex;
     property MultiSelect;
+    property Options;
     property ParentBidiMode;
     property ParentColor;
     property ParentFont;
