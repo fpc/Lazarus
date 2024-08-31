@@ -67,6 +67,7 @@ procedure Coords2Angles(X, Y, Width, Height : Integer; SX, SY,
   EX, EY : Integer; var Angle1, Angle2 : Extended);
 
 function Distance(const PT1,Pt2 : TPoint) : Extended; overload; inline;
+function Distance(const PT1,Pt2 : TFloatPoint) : Extended; overload; inline;
 function Distance(const Pt, SP, EP : TFloatPoint) : Extended; overload;
 
 function EccentricAngle(const PT : TPoint; const Rect : TRect) : Extended;
@@ -661,7 +662,7 @@ end;
 
 {------------------------------------------------------------------------------
   Method:   Distance
-  Params:   PT1, PT2
+  Params:   PT1, PT2: TPoint
   Returns:  Extended
 
   Use Distance to get the distance between any two Points. It is primarily
@@ -669,6 +670,20 @@ end;
 
 ------------------------------------------------------------------------------}
 function Distance(const PT1, Pt2: TPoint): Extended;
+begin
+  Result := Sqrt(Sqr(Pt2.X - Pt1.X) + Sqr(Pt2.Y - Pt1.Y));
+end;
+
+{------------------------------------------------------------------------------
+  Method:   Distance
+  Params:   PT1, PT2: TFloatPoint
+  Returns:  Extended
+
+  Use Distance to get the distance between any two Points. It is primarily
+  for use in other routines such as EccentricAngle.
+
+------------------------------------------------------------------------------}
+function Distance(const PT1, Pt2: TFloatPoint): Extended;
 begin
   Result := Sqrt(Sqr(Pt2.X - Pt1.X) + Sqr(Pt2.Y - Pt1.Y));
 end;
@@ -693,9 +708,9 @@ var
     Result := (Pt2.Y - Pt1.Y) / (Pt2.X - Pt1.X);
   end;
 
-  function YIntercept(PT1,Pt2 : TFloatPoint) : Extended;
+  function YIntercept(Pt1: TFloatPoint; ASlope: Extended) : Extended;
   begin
-    Result := Pt1.Y - Slope(Pt1,Pt2)*Pt1.X;
+    Result := Pt1.Y - ASlope*Pt1.X;
   end;
 
 begin
@@ -710,7 +725,7 @@ begin
 
   A := -Slope(SP,EP);
   B := 1;
-  C := -YIntercept(SP, EP);
+  C := -YIntercept(SP, -A);
   Result := ABS(A*Pt.X + B*Pt.Y + C)/Sqrt(Sqr(A) + Sqr(B));
 end;
 
