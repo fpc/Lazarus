@@ -667,6 +667,7 @@ end;
 procedure TCocoaReadOnlyView.drawRect(dirtyRect: NSRect);
 var
   ctx : TCocoaContext;
+  ctxRect: TRect;
 begin
   inherited drawRect(dirtyRect);
 
@@ -674,8 +675,9 @@ begin
 
   ctx := TCocoaContext.Create(NSGraphicsContext.currentContext);
   try
-    ctx.InitDraw(Round(dirtyRect.size.width), Round(dirtyRect.size.height));
-    combobox.callback.ComboBoxDrawItem(itemIndex, ctx, NSRectToRect(frame), isMouseOver);
+    ctxRect:= NSRectToRect( bounds );
+    ctx.InitDraw( ctxRect.Width, ctxRect.Height );
+    combobox.callback.ComboBoxDrawItem(itemIndex, ctx, ctxRect, isMouseOver);
   finally
     ctx.Free;
   end;
