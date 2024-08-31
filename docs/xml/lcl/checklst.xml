@@ -1186,6 +1186,8 @@ ancestor class.
 <element name="TCheckListBox.ItemIndex" link="#lcl.stdctrls.TCustomListBox.ItemIndex"/>
 <element name="TCheckListBox.MultiSelect"
 link="#lcl.stdctrls.TCustomListBox.MultiSelect"/>
+<element name="TCheckListBox.Options"
+link="#lcl.stdctrls.TCustomListBox.Options"/>
 <element name="TCheckListBox.ParentBidiMode"
 link="#lcl.controls.TControl.ParentBiDiMode"/>
 <element name="TCheckListBox.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
