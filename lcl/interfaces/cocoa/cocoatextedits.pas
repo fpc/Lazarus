@@ -29,8 +29,9 @@ interface
 uses
   Types, Classes, SysUtils,
   Math, // needed for MinDouble, MaxDouble
-  MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects, CocoaPrivate, CocoaCallback,
-  LCLType;
+  LCLType,
+  MacOSAll, CocoaAll, CocoaConfig, CocoaUtils, CocoaGDIObjects,
+  CocoaPrivate, CocoaCallback;
 
 const
   SPINEDIT_DEFAULT_STEPPER_WIDTH = 15;
@@ -186,9 +187,6 @@ type
     procedure scrollWheel(event: NSEvent); override;
   end;
 
-const
-  COMBOBOX_RO_MENUITEM_HEIGHT = 18;
-
 type
   TCocoaComboBox = objcclass;
   TCocoaReadOnlyComboBox = objcclass;
@@ -319,6 +317,7 @@ type
   TCocoaReadOnlyComboBox = objcclass(NSPopUpButton)
   private
     _textColorAttribs: NSDictionary;
+    _itemHeight: Integer;
   public
     //Owner: TCustomComboBox;
     callback: IComboboxCallBack;
@@ -329,8 +328,14 @@ type
     isOwnerDrawn: Boolean;
     isOwnerMeasure: Boolean;
     isComboBoxEx: Boolean;
-    function acceptsFirstResponder: LCLObjCBoolean; override;
+
+    function initWithFrame(frameRect: NSRect): id; override;
     procedure dealloc; override;
+
+    function lclGetItemHeight: Integer message 'lclGetItemHeight';
+    procedure lclSetItemHeight(itemHeight: Integer ); message 'lclSetItemHeight:';
+
+    function acceptsFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     function lclGetFrameToLayoutDelta: TRect; override;
@@ -519,7 +524,7 @@ begin
 
   if FOwner.isOwnerDrawn then
   begin
-    menuItem := TCocoaReadOnlyView.alloc.initWithFrame( NSMakeRect(0,0, FOwner.frame.size.width, COMBOBOX_RO_MENUITEM_HEIGHT) );
+    menuItem := TCocoaReadOnlyView.alloc.initWithFrame( NSMakeRect(0,0, FOwner.frame.size.width, FOwner.lclGetItemHeight) );
     menuItem.itemIndex := Index;
     menuItem.combobox := FOwner;
 
@@ -1587,12 +1592,31 @@ begin
   Result := NSViewCanFocus(Self);
 end;
 
+function TCocoaReadOnlyComboBox.initWithFrame(frameRect: NSRect): id;
+begin
+  Result:=inherited initWithFrame(frameRect);
+  _itemHeight:= CocoaConfigComboBox.readOnly.item.defaultHeight;
+end;
+
 procedure TCocoaReadOnlyComboBox.dealloc;
 begin
   FreeAndNil( list );
   _textColorAttribs.release;
   if resultNS <> nil then resultNS.release;
   inherited dealloc;
+end;
+
+function TCocoaReadOnlyComboBox.lclGetItemHeight: Integer;
+begin
+  Result:= _itemHeight;
+end;
+
+procedure TCocoaReadOnlyComboBox.lclSetItemHeight(itemHeight: Integer);
+begin
+  if itemHeight <= 0 then
+    _itemHeight:= CocoaConfigComboBox.readOnly.item.defaultHeight
+  else
+    _itemHeight:= itemHeight;
 end;
 
 function TCocoaReadOnlyComboBox.lclGetCallback: ICommonCallback;

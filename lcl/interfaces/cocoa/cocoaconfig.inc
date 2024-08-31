@@ -45,6 +45,13 @@ var
   );
 
 var
+  CocoaConfigComboBox: TCocoaConfigComboBox = (
+    readOnly: (
+      item: ( defaultHeight: 18 )
+    );
+  );
+
+var
   CocoaConfigListView: TCocoaConfigListView = (
     vsReport: (
       tableViewStyle: NSTableViewStyleAutomatic;

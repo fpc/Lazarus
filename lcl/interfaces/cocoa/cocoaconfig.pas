@@ -48,6 +48,19 @@ type
   end;
 
 type
+  TCocoaConfigReadOnlyComboBoxItem = record
+    defaultHeight: Integer;
+  end;
+
+  TCocoaConfigReadOnlyComboBox = record
+    item: TCocoaConfigReadOnlyComboBoxItem;
+  end;
+
+  TCocoaConfigComboBox = record
+    readOnly: TCocoaConfigReadOnlyComboBox;
+  end;
+
+type
   TCocoaConfigSize = record
     width: Double;
     height: Double;

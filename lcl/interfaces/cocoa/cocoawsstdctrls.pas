@@ -1975,6 +1975,7 @@ begin
     TComboBoxAsyncHelper.SetLastIndex(rocmb);
     rocmb.callback:=TLCLComboboxCallback.Create(rocmb, AWinControl);
     Result:=TLCLHandle(rocmb);
+    rocmb.lclSetItemHeight( TCustomComboBoxAccess(AWinControl).ItemHeight );
     rocmb.isOwnerDrawn := ComboBoxIsOwnerDrawn(TCustomComboBox(AWinControl).Style);
     rocmb.isOwnerMeasure := ComboBoxIsVariable(TCustomComboBox(AWinControl).Style);
   end
@@ -2218,7 +2219,7 @@ begin
   end;
 
   if ComboBoxStyleIsReadOnly(ACustomComboBox.Style) then
-    Result := 26 // ToDo
+    Result:=TCocoaReadOnlyComboBox(ACustomComboBox.Handle).lclGetItemHeight
   else
     Result:=Round(TCocoaComboBox(ACustomComboBox.Handle).itemHeight);
 end;
@@ -2230,7 +2231,7 @@ begin
     Exit;
 
   if ComboBoxStyleIsReadOnly(ACustomComboBox.Style) then
-    Exit // ToDo
+    TCocoaReadOnlyComboBox(ACustomComboBox.Handle).lclSetItemHeight(AItemHeight)
   else
     TCocoaComboBox(ACustomComboBox.Handle).setItemHeight(AItemHeight);
 end;
