@@ -190,7 +190,7 @@ begin
     crsShowCodeToolsNodeInfo, nil, nil, ShowCodeNodeInfoCommand);
 
   // View menu - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  {$IFNDEF EnableCodyExperiments}
+  {$IFDEF EnableCodyExperiments}
   // Cody tool window
   ViewCodyWindowCommand:=RegisterIDECommand(CmdCatView, 'Cody',
     'Cody', CleanIDEShortCut, CleanIDEShortCut, nil, @ShowCodyWindow);
