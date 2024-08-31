@@ -140,6 +140,70 @@ both <var>TMenu</var> and <var>TMenuItem</var>, and implemented in the
 <short><b>True</b> to rebuild the menu item hierarchy.</short>
 </element>
 
+<element name="TMenuItemAutoFlag">
+<short>
+Represents line reduction modes available for menu items.
+</short>
+<descr>
+<p>
+<var>TMenuItemAutoFlag</var> is an enumerated type with values that represent 
+the line reduction modes available for maintaining menu item instances. 
+TMenuItemAutoFlag controls when a menu or menu items are checked and 
+updated to eliminate redundant separators between adjacent menu items.
+</p>
+<p>
+TMenuItemAutoFlag is the type used for the <var>AutoLineReduction</var> 
+property in <var>TMenuItem</var>.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TMenuItem.AutoLineReduction"/>
+</seealso>
+</element>
+<element name="TMenuItemAutoFlag.maAutomatic">
+<short>
+The parent menu (including a top-level menu item) is automatically examined and 
+updated when the menu is displayed.
+</short>
+</element>
+<element name="TMenuItemAutoFlag.maManual">
+<short>
+The parent menu (including a top-level menu item) is automatically examined and 
+updated when a method which performs the action is explicitly called. 
+</short>
+</element>
+<element name="TMenuItemAutoFlag.maParent">
+<short>
+A menu item is examined and updated using the line reduction applied to the 
+parent menu item. maParent is not relevant for TMenu (TMainMenu) instances; 
+they do not have a parent menu item and the value is translated at run-time to 
+maAutomatic.
+</short>
+</element>
+
+<element name="TMenuAutoFlag">
+<short>
+Range type which represents the valid TMenuItemAutoFlag values for TMenu 
+instances.
+</short>
+<descr>
+<p>
+TMenuAutoFlag is the type used for the <var>AutoLineReduction</var> 
+property in <var>TMenu</var> and descendent classes.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TMenu.AutoLineReduction"/>
+<link id="TMenuItemAutoFlag"/>
+</seealso>
+</element>
+
 <element name="TMenuActionLink">
 <short>
 <var>TMenuActionLink</var>: defines the link between a selected menu item and 
@@ -948,6 +1012,8 @@ TMenuItem is the type maintained in both the <var>TMenu.Items</var> and
 <element name="TMenuItem.MergeWith.aMenu"/>
 <element name="TMenuItem.SetAutoCheck"/>
 <element name="TMenuItem.SetAutoCheck.AValue"/>
+<element name="TMenuItem.SetAutoLineReduction"/>
+<element name="TMenuItem.SetAutoLineReduction.AValue"/>
 <element name="TMenuItem.SetCaption"/>
 <element name="TMenuItem.SetCaption.AValue"/>
 <element name="TMenuItem.SetChecked"/>
@@ -1072,6 +1138,32 @@ AssignTo method is called.
 <short>Action or menu item where values are stored in the method.</short>
 </element>
 
+<element name="TMenuItem.GetAutoLineReduction">
+<short>
+Indicates whether automatic line reduction is enabled for the menu item.
+</short>
+<descr>
+<p>
+<var>GetAutoLineReduction</var> ensures that the setting in the 
+AutoLineReduction property is translated to either maAutomatic or maManual when 
+it contains maParent.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TMenuItem.AutoLineReduction"/>
+<link id="TMenuItem.InternalRethinkLines"/>
+</seealso>
+</element>
+<element name="TMenuItem.GetAutoLineReduction.Result">
+<short>
+Returns <b>True</b> when AutoLineReduction is resolved to maParent or 
+maAutomatic.
+</short>
+</element>
+
 <element name="TMenuItem.BitmapChange">
 <short>
 Updates the image associated with the menu item when it has been changed.
@@ -1188,6 +1280,51 @@ the Windows platform only.
 </element>
 <element name="TMenuItem.DoMeasureItem.AHeight">
 <short>Calculated height for the menu item.</short>
+</element>
+
+<element name="TMenuItem.InternalRethinkLines">
+<short>
+Indicates whether child menu Items need to be updated to hide leading or 
+trailing separators.
+</short>
+<descr>
+<p>
+<var>InternalRethinkLines</var> is called from the RethinkLines and 
+CheckChildrenHandles methods. The return value indicates whether the visibility 
+of child menu items which are leading or trailing separators has been updated. 
+</p>
+<p>
+<b>True</b> indicates that the visibility for one or more of the child menu 
+items was changed in the method.
+</p>
+<p>
+To maintain compatibility with the Delphi VCL behavior, all menu separators are 
+visible when GetAutoLineReduction returns <b>False</b>.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TMenuItem.Items"/>
+<link id="TMenuItem.Visible"/>
+<link id="TMenuItem.RethinkLines"/>
+<link id="TMenuItem.CheckChildrenHandles"/>
+<link id="TMenuItem.GetAutoLineReduction"/>
+<link id="TMenuItem.AutoLineReduction"/>
+<link id="TMenu.AutoLineReduction"/>
+</seealso>
+</element>
+<element name="TMenuItem.InternalRethinkLines.Result">
+<short>
+Returns <b>True</b>if the visibility for one or more of the child menu items 
+was changed in the method.
+</short>
+</element>
+<element name="TMenuItem.InternalRethinkLines.AForced">
+<short>
+Not used in the current implementation.
+</short>
 </element>
 
 <element name="TMenuItem.GetAction">
@@ -2397,7 +2534,6 @@ image list is not available or an image index has not been specified.
 </short>
 </element>
 
-
 <element name="TMenuItem.IsCheckItem">
 <short>
 Indicates if the menu item is configured as a check box or a radio button 
@@ -2547,6 +2683,37 @@ Device context used to get the display density (PPI) for the glyph images.
 <short>
 DPI setting used to scale the icon images retrieved in the method to the 
 monitor where menu item is displayed.
+</short>
+</element>
+
+<element name="TMenuItem.RethinkLines">
+<short>
+Performs actions needed to update the visibility of child menu separators and 
+signal the OnChange event handler for the changes.
+</short>
+<descr>
+<p>
+<var>RethinkLines</var> calls the InternalRethinkLines method to toggle the 
+visibility of examine or update the visible child menu items. If any of the 
+child Items was changed, the MenuChanged method is called to signal the 
+OnChange event handler (when assigned) and rebuild (re-display) the submenu.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TMenuItem.Items"/>
+<link id="TMenuItem.MenuChanged"/>
+<link id="TMenuItem.InternalRethinkLines"/>
+<link id="TMenu.OnChange"/>
+<link id="TMainMenu.OnChange"/>
+</seealso>
+</element>
+<element name="TMenuItem.RethinkLines.Result">
+<short>
+Returns <b>True</b> if the visibility of child menu item(s) was changed in the 
+method.
 </short>
 </element>
 
@@ -2897,6 +3064,45 @@ menu item.
 <link id="TMenuItem.RadioItem"/>
 <link id="TMenuItem.Click"/>
 <link id="TMenuItem.Action"/>
+</seealso>
+</element>
+
+<element name="TMenuItem.AutoLineReduction">
+<short>
+Indicates the method used to perform line reduction for the menu item and 
+optionally for its child Items.
+</short>
+<descr>
+<p>
+<var>AutoLineReduction</var> is a <var>TMenuItemAutoFlag</var> property which 
+controls if redundant separators on child Items are automatically hidden on the 
+submenu. Line reduction causes leading, trailing, or adjacent menu separators 
+to be hidden.
+</p>
+<p>
+maAutomatic and maParent cause redundant separators to be maintained by the 
+Parent menu item (or menu). Use maManual if line reduction is performed only 
+when the RethinkLines method is explicitly called. The default value for the 
+property is maParent and causes the line reduction setting in the Parent to be 
+applied to the menu item.
+</p>
+<p>
+See TMenuItemAutoFlag for more information about the valid values for the 
+property.
+</p>
+<p>
+Changing the value for the property causes the MenuChanged method to be called 
+to signal the OnChange event handler and to build (display) the menu and its 
+child Items at run-time.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TMenuItemAutoFlag"/>
+<link id="TMenu.AutoLineReduction"/>
+<link id="TMenuAutoFlag"/>
 </seealso>
 </element>
 
@@ -3476,6 +3682,32 @@ Handles the CM_APPSHOWMENUGLYPHCHANGED message for the menu.
 <short>Control message examined in the method.</short>
 </element>
 
+<element name="TMenu.GetAutoLineReduction">
+<short>
+Gets the value for the AutoLineReduction property.
+</short>
+<descr>
+<p>
+<var>GetAutoLineReduction</var> ensures that the property contains a value 
+which is valid for the menu. maParent in the child Items is translated to 
+maAutomatic.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TMenu.AutoLineReduction"/>
+<link id="TMenu.Items"/>
+<link id="TMenuAutoFlag"/>
+</seealso>
+</element>
+<element name="TMenu.GetAutoLineReduction.Result">
+<short>
+Value for the AutoLineReduction property.
+</short>
+</element>
+
 <element name="TMenu.IsBiDiModeStored">
 <short>Implements the storage specifier for the BiDiMode property.</short>
 <descr/>
@@ -3496,6 +3728,30 @@ Implements the OnChange event handler used in the Images property.
 </element>
 <element name="TMenu.ImageListChange.Sender">
 <short>Object for the event notification.</short>
+</element>
+
+<element name="TMenu.SetAutoLineReduction">
+<short>
+Sets the value for the AutoLineReduction property.
+</short>
+<descr>
+<p>
+Stores the property value to AutoLineReduction in the Items member.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TMenu.AutoLineReduction"/>
+<link id="TMenu.Items"/>
+</seealso>
+
+</element>
+<element name="TMenu.SetAutoLineReduction.AValue">
+<short>
+New value for the AutoLineReduction property.
+</short>
 </element>
 
 <element name="TMenu.SetBiDiMode">
@@ -4091,6 +4347,45 @@ Indicates whether the shortcut key for a menu item is used in the menu.
 </element>
 
 <!-- published -->
+<element name="TMenu.AutoLineReduction">
+<short>
+Indicates the method used to perform line reduction for the menu and 
+optionally for its child Items.
+</short>
+<descr>
+<p>
+<var>AutoLineReduction</var> is a <var>TMenuAutoFlag</var> property which 
+controls if redundant separators on the menu or its child Items are 
+automatically hidden. Line reduction causes leading, trailing, or adjacent menu 
+separators to be hidden.
+</p>
+<p>
+maAutomatic causes redundant separators to be automatically removed for the 
+menu. The default value for the property is maAutomatic and causes the line 
+reduction top be performed automatically. Use maManual if line reduction is 
+performed only when the RethinkLines method in a child menu item is explicitly 
+called.
+</p>
+<p>
+See TMenuAutoFlag for more information about the valid values for the property.
+</p>
+<p>
+The value in AutoLineReduction is used by child menu Items when their 
+AutoLineReduction property is set to maParent or maAutomatic.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TMenu.AutoLineReduction"/>
+<link id="TMenu.Items"/>
+<link id="TMenuItem.AutoLineReduction"/>
+<link id="TMenuAutoFlag"/>
+<link id="TMenuItemAutoFlag"/>
+</seealso>
+</element>
+
 <element name="TMenu.BidiMode">
 <short>
 Indicates whether Bi-directional text mode is implemented allowing use with 
