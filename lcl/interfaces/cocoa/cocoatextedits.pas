@@ -211,6 +211,7 @@ type
     procedure ComboBoxSelectionDidChange;
     procedure ComboBoxSelectionIsChanging;
 
+    procedure GetRowHeight(rowidx: integer; var h: Integer);
     procedure ComboBoxDrawItem(itemIndex: Integer; ctx: TCocoaContext;
       const r: TRect; isSelected: Boolean);
   end;
@@ -317,7 +318,7 @@ type
   TCocoaReadOnlyComboBox = objcclass(NSPopUpButton)
   private
     _textColorAttribs: NSDictionary;
-    _itemHeight: Integer;
+    _defaultItemHeight: Integer;
   public
     //Owner: TCustomComboBox;
     callback: IComboboxCallBack;
@@ -332,8 +333,9 @@ type
     function initWithFrame(frameRect: NSRect): id; override;
     procedure dealloc; override;
 
-    function lclGetItemHeight: Integer message 'lclGetItemHeight';
-    procedure lclSetItemHeight(itemHeight: Integer ); message 'lclSetItemHeight:';
+    function lclGetItemHeight( row: Integer ): Integer; message 'lclGetItemHeight:';
+    function lclGetDefaultItemHeight: Integer; message 'lclGetDefaultItemHeight';
+    procedure lclSetDefaultItemHeight(itemHeight: Integer); message 'lclSetItemHeight:';
 
     function acceptsFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
@@ -524,7 +526,8 @@ begin
 
   if FOwner.isOwnerDrawn then
   begin
-    menuItem := TCocoaReadOnlyView.alloc.initWithFrame( NSMakeRect(0,0, FOwner.frame.size.width, FOwner.lclGetItemHeight) );
+    menuItem := TCocoaReadOnlyView.alloc.initWithFrame(
+      NSMakeRect(0,0, FOwner.frame.size.width, FOwner.lclGetItemHeight(index)) );
     menuItem.itemIndex := Index;
     menuItem.combobox := FOwner;
 
@@ -1597,7 +1600,7 @@ end;
 function TCocoaReadOnlyComboBox.initWithFrame(frameRect: NSRect): id;
 begin
   Result:=inherited initWithFrame(frameRect);
-  _itemHeight:= CocoaConfigComboBox.readOnly.item.defaultHeight;
+  _defaultItemHeight:= CocoaConfigComboBox.readOnly.item.defaultHeight;
 end;
 
 procedure TCocoaReadOnlyComboBox.dealloc;
@@ -1608,17 +1611,25 @@ begin
   inherited dealloc;
 end;
 
-function TCocoaReadOnlyComboBox.lclGetItemHeight: Integer;
+function TCocoaReadOnlyComboBox.lclGetDefaultItemHeight: Integer;
 begin
-  Result:= _itemHeight;
+  Result:= _defaultItemHeight;
 end;
 
-procedure TCocoaReadOnlyComboBox.lclSetItemHeight(itemHeight: Integer);
+function TCocoaReadOnlyComboBox.lclGetItemHeight( row: Integer ): Integer;
+begin
+  if self.isOwnerMeasure and Assigned(self.callback) then
+    self.callback.GetRowHeight( row, Result )
+  else
+    Result:= _defaultItemHeight;
+end;
+
+procedure TCocoaReadOnlyComboBox.lclSetDefaultItemHeight(itemHeight: Integer);
 begin
   if itemHeight <= 0 then
-    _itemHeight:= CocoaConfigComboBox.readOnly.item.defaultHeight
+    _defaultItemHeight:= CocoaConfigComboBox.readOnly.item.defaultHeight
   else
-    _itemHeight:= itemHeight;
+    _defaultItemHeight:= itemHeight;
 end;
 
 function TCocoaReadOnlyComboBox.lclGetCallback: ICommonCallback;

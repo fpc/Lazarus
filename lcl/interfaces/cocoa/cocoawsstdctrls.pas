@@ -86,6 +86,7 @@ type
     procedure ComboBoxSelectionDidChange;
     procedure ComboBoxSelectionIsChanging;
 
+    procedure GetRowHeight(rowidx: integer; var h: Integer);
     procedure ComboBoxDrawItem(itemIndex: Integer; ctx: TCocoaContext;
       const r: TRect; isSelected: Boolean);
   end;
@@ -824,6 +825,9 @@ end;
 
 { TLCLComboboxCallback }
 
+type
+  TCustomComboBoxAccess = class(TCustomComboBox);
+
 procedure TLCLComboboxCallback.ComboBoxWillPopUp;
 begin
   isShowPopup := true;
@@ -844,6 +848,11 @@ end;
 procedure TLCLComboboxCallback.ComboBoxSelectionIsChanging;
 begin
 
+end;
+
+procedure TLCLComboboxCallback.GetRowHeight(rowidx: integer; var h: Integer);
+begin
+  TCustomComboBoxAccess(Target).MeasureItem(rowidx, h);
 end;
 
 procedure TLCLComboboxCallback.ComboBoxDrawItem(itemIndex: Integer;
@@ -1940,11 +1949,6 @@ end;
 
 { TCocoaWSCustomComboBox }
 
-type
-  TCustomComboBoxAccess = class(TCustomComboBox)
-  end;
-
-
 class function TCocoaWSCustomComboBox.getNSText(const ACustomComboBox: TCustomComboBox): NSText;
 var
   control: NSControl;
@@ -1975,7 +1979,7 @@ begin
     TComboBoxAsyncHelper.SetLastIndex(rocmb);
     rocmb.callback:=TLCLComboboxCallback.Create(rocmb, AWinControl);
     Result:=TLCLHandle(rocmb);
-    rocmb.lclSetItemHeight( TCustomComboBoxAccess(AWinControl).ItemHeight );
+    rocmb.lclSetDefaultItemHeight( TCustomComboBoxAccess(AWinControl).ItemHeight );
     rocmb.isOwnerDrawn := ComboBoxIsOwnerDrawn(TCustomComboBox(AWinControl).Style);
     rocmb.isOwnerMeasure := ComboBoxIsVariable(TCustomComboBox(AWinControl).Style);
   end
@@ -2219,7 +2223,7 @@ begin
   end;
 
   if ComboBoxStyleIsReadOnly(ACustomComboBox.Style) then
-    Result:=TCocoaReadOnlyComboBox(ACustomComboBox.Handle).lclGetItemHeight
+    Result:=TCocoaReadOnlyComboBox(ACustomComboBox.Handle).lclGetDefaultItemHeight
   else
     Result:=Round(TCocoaComboBox(ACustomComboBox.Handle).itemHeight);
 end;
@@ -2231,7 +2235,7 @@ begin
     Exit;
 
   if ComboBoxStyleIsReadOnly(ACustomComboBox.Style) then
-    TCocoaReadOnlyComboBox(ACustomComboBox.Handle).lclSetItemHeight(AItemHeight)
+    TCocoaReadOnlyComboBox(ACustomComboBox.Handle).lclSetDefaultItemHeight(AItemHeight)
   else
     TCocoaComboBox(ACustomComboBox.Handle).setItemHeight(AItemHeight);
 end;
