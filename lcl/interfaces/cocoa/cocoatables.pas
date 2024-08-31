@@ -124,10 +124,10 @@ type
     function fittingSize: NSSize; override;
 
     procedure drawRect(dirtyRect: NSRect); override;
-    function lclCallDrawItem( row: NSInteger; ctxSize: NSSize; clipRect: NSRect): Boolean;
-      message 'lclCallDrawItem:ctxSize:clipRect:';
-    function lclCallCustomDraw( row: Integer; col: Integer; ctxSize: NSSize; clipRect: NSRect): Boolean;
-      message 'lclCallCustomDraw:col:ctxSize:clipRect:';
+    function lclCallDrawItem( row: NSInteger; canvasRect: NSRect ): Boolean;
+      message 'lclCallDrawItem:canvasRect:';
+    function lclCallCustomDraw( row: Integer; col: Integer; canvasRect: NSRect ): Boolean;
+      message 'lclCallCustomDraw:col:canvasRect:';
 
     // mouse
     procedure mouseDown(event: NSEvent); override;
@@ -377,7 +377,7 @@ begin
     Exit;
   end;
 
-  done:= self.tableView.lclCallDrawItem( row, self.bounds.size, dirtyRect );
+  done:= self.tableView.lclCallDrawItem( row, self.bounds );
 
   if done then begin
     // the Cocoa default drawing cannot be skipped in NSTableView,
@@ -524,7 +524,7 @@ begin
 end;
 
 function TCocoaTableListView.lclCallDrawItem(row: NSInteger;
-  ctxSize: NSSize; clipRect: NSRect ): Boolean;
+  canvasRect: NSRect ): Boolean;
 var
   ctx: TCocoaContext;
   ItemState: TOwnerDrawState;
@@ -536,7 +536,7 @@ begin
     Exit;
 
   ctx := TCocoaContext.Create(NSGraphicsContext.currentContext);
-  ctx.InitDraw(Round(ctxSize.width), Round(ctxSize.height));
+  ctx.InitDraw(Round(canvasRect.size.width), Round(canvasRect.size.height));
   try
     ItemState := [];
     if isRowSelected(row) then Include(ItemState, odSelected);
@@ -546,14 +546,14 @@ begin
     if isChecked(self,row) then
       Include(ItemState, odChecked);
 
-    Result:= self.callback.drawItem(row, ctx, NSRectToRect(clipRect), ItemState);
+    Result:= self.callback.drawItem(row, ctx, NSRectToRect(canvasRect), ItemState);
   finally
     ctx.Free;
   end;
 end;
 
 function TCocoaTableListView.lclCallCustomDraw(row: Integer; col: Integer;
-  ctxSize: NSSize; clipRect: NSRect): Boolean;
+  canvasRect: NSRect ): Boolean;
 var
   ctx: TCocoaContext;
   state: TCustomDrawState;
@@ -565,7 +565,7 @@ begin
     Exit;
 
   ctx := TCocoaContext.Create(NSGraphicsContext.currentContext);
-  ctx.InitDraw(Round(ctxSize.width), Round(ctxSize.height));
+  ctx.InitDraw(Round(canvasRect.size.width), Round(canvasRect.size.height));
   try
     state := [];
     if isRowSelected(row) then Include(state, cdsSelected);
@@ -596,7 +596,7 @@ begin
     Exit;
   end;
 
-  done:= self.lclCallCustomDraw( -1, -1, self.bounds.size, dirtyRect );
+  done:= self.lclCallCustomDraw( -1, -1, self.bounds );
 
   if done then begin
     // the Cocoa default drawing cannot be skipped in NSTableView,
@@ -1147,7 +1147,7 @@ begin
 
   row:= _tableView.rowForView( self );
   col:= _tableView.columnForView( self );
-  done:= cocoaTLV.lclCallCustomDraw( row, col, self.bounds.size, dirtyRect );
+  done:= cocoaTLV.lclCallCustomDraw( row, col, self.bounds );
 
   if done then begin
     // the Cocoa default drawing cannot be skipped in NSTableView,
