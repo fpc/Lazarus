@@ -22,6 +22,7 @@
 constructor TMenu.Create(AOwner: TComponent);
 begin
   FItems := TMenuItem.Create(Self);
+  FItems.FAutoLineReduction := maAutomatic;
   FItems.FOnChange := @MenuChanged;
   FItems.FMenu := Self;
   FImageChangeLink := TChangeLink.Create;
@@ -93,6 +94,14 @@ begin
   FItems.UpdateImages;
 end;
 
+function TMenu.GetAutoLineReduction: TMenuAutoFlag;
+begin
+  case FItems.AutoLineReduction of
+    maParent, maAutomatic: Result := maAutomatic;  //cannot return maParent for TMenu.AutoLineReduction
+    maManual: Result := maManual;
+  end;
+end;
+
 procedure TMenu.BidiModeChanged;
 begin
   if HandleAllocated then
@@ -138,6 +147,11 @@ end;
 procedure TMenu.ImageListChange(Sender: TObject);
 begin
   if Sender = Images then UpdateItems;
+end;
+
+procedure TMenu.SetAutoLineReduction(AValue: TMenuAutoFlag);
+begin
+  FItems.AutoLineReduction := AValue;
 end;
 
 {------------------------------------------------------------------------------

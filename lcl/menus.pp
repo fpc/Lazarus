@@ -59,6 +59,8 @@ type
 
   TMenuChangeEvent = procedure (Sender: TObject; Source: TMenuItem;
                                 Rebuild: Boolean) of object;
+  TMenuItemAutoFlag = (maAutomatic, maManual, maParent);
+  TMenuAutoFlag = maAutomatic..maManual;
 
   { TMenuActionLink }
 
@@ -147,6 +149,7 @@ type
   TMenuItem = class(TLCLComponent)
   private
     FActionLink: TMenuActionLink;
+    FAutoLineReduction: TMenuItemAutoFlag;
     FCaption: TTranslateString;
     FBitmap: TBitmap;
     FGlyphShowMode: TGlyphShowMode;
@@ -200,6 +203,7 @@ type
     function IsVisibleStored: boolean;
     procedure MergeWith(const aMenu: TMenuItem);
     procedure SetAutoCheck(const AValue: boolean);
+    procedure SetAutoLineReduction(AValue: TMenuItemAutoFlag);
     procedure SetCaption(const AValue: TTranslateString);
     procedure SetChecked(AValue: Boolean);
     procedure SetDefault(AValue: Boolean);
@@ -222,9 +226,11 @@ type
     class procedure WSRegisterClass; override;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); virtual;
     procedure AssignTo(Dest: TPersistent); override;
+    function GetAutoLineReduction: Boolean;
     procedure BitmapChange(Sender: TObject);
     function DoDrawItem(ACanvas: TCanvas; ARect: TRect; AState: TOwnerDrawState): Boolean; virtual;
     function DoMeasureItem(ACanvas: TCanvas; var AWidth, AHeight: Integer): Boolean; virtual;
+    function InternalRethinkLines(AForced: Boolean): Boolean; virtual;
     function GetAction: TBasicAction;
     function GetActionLinkClass: TMenuActionLinkClass; virtual;
     function GetHandle: HMenu;
@@ -287,6 +293,7 @@ type
     procedure Clear;
     function HasBitmap: boolean;
     function GetIconSize(ADC: HDC; DPI: Integer = 0): TPoint; virtual;
+    function RethinkLines: Boolean;
     // Event lists
     procedure RemoveAllHandlersOfObject(AnObject: TObject); override;
     procedure AddHandlerOnDestroy(const OnDestroyEvent: TNotifyEvent;
@@ -313,6 +320,8 @@ type
   published
     property Action: TBasicAction read GetAction write SetAction;
     property AutoCheck: boolean read FAutoCheck write SetAutoCheck default False;
+    property AutoLineReduction: TMenuItemAutoFlag
+      read FAutoLineReduction write SetAutoLineReduction default maParent;
     property Caption: TTranslateString read FCaption write SetCaption
                              stored IsCaptionStored;
     property Checked: Boolean read FChecked write SetChecked
@@ -367,8 +376,10 @@ type
 //See TCustomForm.CMBiDiModeChanged
     procedure CMParentBiDiModeChanged(var Message: TLMessage); message CM_PARENTBIDIMODECHANGED;
     procedure CMAppShowMenuGlyphChanged(var Message: TLMessage); message CM_APPSHOWMENUGLYPHCHANGED;
+    function GetAutoLineReduction: TMenuAutoFlag;
     function IsBiDiModeStored: Boolean;
     procedure ImageListChange(Sender: TObject);
+    procedure SetAutoLineReduction(AValue: TMenuAutoFlag);
     procedure SetBiDiMode(const AValue: TBiDiMode);
     procedure SetImages(const AValue: TCustomImageList);
     procedure SetImagesWidth(const aImagesWidth: Integer);
@@ -411,6 +422,8 @@ type
     property Parent: TComponent read FParent write SetParent;
     property ShortcutHandled: boolean read FShortcutHandled write FShortcutHandled;
   published
+    property AutoLineReduction: TMenuAutoFlag
+      read GetAutoLineReduction write SetAutoLineReduction default maAutomatic;
     property BidiMode:TBidiMode read FBidiMode write SetBidiMode stored IsBiDiModeStored default bdLeftToRight;
     property ParentBidiMode:Boolean read FParentBidiMode write SetParentBidiMode default True;
     property Items: TMenuItem read FItems;

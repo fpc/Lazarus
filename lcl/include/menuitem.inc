@@ -115,6 +115,7 @@ begin
   FRightJustify := False;
   FShowAlwaysCheckable := False;
   FGlyphShowMode := gsmApplication;
+  FAutoLineReduction := maParent;
 
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := @ImageListChange;
@@ -342,6 +343,69 @@ begin
   end;
 end;
 
+function TMenuItem.InternalRethinkLines(AForced: Boolean): Boolean;
+var
+  LItem: TMenuItem;
+  LLastVisibleIsLine, HideSeps: Boolean;
+  LLastVisibleItem: TMenuItem;
+  I: Integer;
+begin
+  debugln(['TMenuItem.InternalRethinkLines, AForced=',AForced]);
+  Result := False;
+  if (csDesigning in ComponentState) then
+    Exit;
+  HideSeps := GetAutoLineReduction;
+  if {AForced or} HideSeps then
+  begin
+    LLastVisibleIsLine := True; // to hide head line
+    LLastVisibleItem := nil;
+
+    for I:= 0 to Count - 1 do
+    begin
+      LItem := Items[I];
+      if LItem.IsLine then
+      begin
+        // hide head or double lines
+        if LItem.Visible <> not LLastVisibleIsLine then
+        begin
+          LItem.Visible := not LLastVisibleIsLine;
+          Result := True;
+          debugln(['TMenuItem.InternalRethinkLines: hiding separator with name "',LItem.Name,'"']);
+        end;
+      end;
+
+      if LItem.Visible then
+      begin
+        LLastVisibleIsLine := LItem.IsLine;
+        LLastVisibleItem := LItem;
+      end;
+    end;
+
+    // hide end line
+    if (LLastVisibleItem <> nil) and
+      LLastVisibleItem.IsLine and LLastVisibleItem.Visible then
+    begin
+      LLastVisibleItem.Visible := False;
+      Result := True;
+      debugln(['TMenuItem.InternalRethinkLines: hiding separator with name "',LItem.Name,'"']);
+    end;
+  end
+  else
+  //apparently if GetAToLineReduction is False, Delphi sets all separators to be visible
+  begin
+    for i := 0 to Count - 1 do
+    begin
+      LItem := Items[i];
+      if LItem.IsLine and not LItem.Visible then
+      begin
+        LItem.Visible := True;
+        Result := True;
+        debugln(['TMenuItem.InternalRethinkLines: unhiding separator with name "',LItem.Name,'"']);
+      end;
+    end;
+  end;
+end;
+
 procedure TMenuItem.CheckChildrenHandles;
 
   function GetMenu(Item: TMenuItem): TMenu;
@@ -369,6 +433,14 @@ var
 begin
   if FItems = nil then
     Exit;
+
+  InitiateActions; // actions may update items visibility
+  if InternalRethinkLines(False) then
+  begin
+    // Especially to re-index the items in native way
+    for i := 0 to Count - 1 do
+      Items[I].DestroyHandle;
+  end;
 
   AMenu := GetMenu(Self);
   AMergedItems := MergedItems;
@@ -689,6 +761,15 @@ begin
   FAutoCheck := AValue;
   if (OldIsCheckItem<>IsCheckItem) and (HandleAllocated) then
     RecreateHandle;
+end;
+
+procedure TMenuItem.SetAutoLineReduction(AValue: TMenuItemAutoFlag);
+begin
+  if FAutoLineReduction <> AValue then
+  begin
+    FAutoLineReduction := AValue;
+    MenuChanged(True);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1051,6 +1132,13 @@ begin
       Result.y := Bitmap.Height;
     end;
   end;
+end;
+
+function TMenuItem.RethinkLines: Boolean;
+begin
+  Result := InternalRethinkLines(True);
+  if Result then
+    MenuChanged(True);
 end;
 
 procedure TMenuItem.RemoveAllHandlersOfObject(AnObject: TObject);
@@ -1671,6 +1759,22 @@ end;
 procedure TMenuItem.BitmapChange(Sender: TObject);
 begin
   UpdateImage;
+end;
+
+function TMenuItem.GetAutoLineReduction: Boolean;
+var
+  AutoFlag: TMenuItemAutoFlag;
+begin
+  AutoFlag := FAutoLineReduction;
+  if (AutoFlag = maParent) and Assigned(Parent) then
+    if Parent.GetAutoLineReduction then
+      AutoFlag := maAutomatic
+    else
+      AutoFlag := maManual;
+  case AutoFlag of
+    maParent, maAutomatic: Result := True;
+    maManual: Result := False;
+  end;
 end;
 
 // included by menus.pp
