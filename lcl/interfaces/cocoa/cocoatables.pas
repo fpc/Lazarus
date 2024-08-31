@@ -73,6 +73,7 @@ type
   private
     _processor: TCocoaTableViewProcessor;
     _checkBoxes: Boolean;
+    _checkBoxAllowsMixed: Boolean;
   public
     iconSize: NSSize;
     callback: TLCLListControlCallback;
@@ -92,8 +93,10 @@ type
 
     function lclGetPorcessor: TCocoaTableViewProcessor; message 'lclGetPorcessor';
     procedure lclSetProcessor( processor: TCocoaTableViewProcessor ); message 'lclSetProcessor:';
-    procedure lclSetCheckBoxes( checkBoxes: Boolean); message 'lclSetCheckBoxes:';
+    procedure lclSetCheckBoxes( checkBoxes: Boolean ); message 'lclSetCheckBoxes:';
     function lclHasCheckBoxes: Boolean; message 'lclHasCheckBoxes';
+    procedure lclSetCheckBoxAllowsMixed( allowsMixed: Boolean ); message 'lclSetCheckBoxAllowsMixed:';
+    function lclCheckBoxAllowsMixed: Boolean; message 'lclCheckBoxAllowsMixed';
     function lclGetCanvas: TCanvas; message 'lclGetCanvas';
 
     function tableView_viewForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): NSView;
@@ -416,6 +419,16 @@ end;
 function TCocoaTableListView.lclHasCheckBoxes: Boolean;
 begin
   Result:= _checkBoxes;
+end;
+
+procedure TCocoaTableListView.lclSetCheckBoxAllowsMixed(allowsMixed: Boolean);
+begin
+  _checkBoxAllowsMixed:= allowsMixed;
+end;
+
+function TCocoaTableListView.lclCheckBoxAllowsMixed: Boolean;
+begin
+  Result:= _checkBoxAllowsMixed;
 end;
 
 procedure TCocoaTableListView.backend_setCallback(cb: TLCLListViewCallback);
@@ -1198,7 +1211,7 @@ begin
 
   _checkBox:= NSButton.alloc.init;
   _checkBox.setButtonType( NSSwitchButton );
-  _checkBox.setAllowsMixedState( True );
+  _checkBox.setAllowsMixedState( TCocoaTableListView(_tableView).lclCheckBoxAllowsMixed );
   _checkBox.setTitle( CocoaConst.NSSTR_EMPTY );
   _checkBox.setTarget( _tableView );
   _checkBox.setAction( ObjCSelector('checkboxAction:') );
@@ -1462,7 +1475,7 @@ begin
 
   row := rowForView(sender.superview);
   self.callback.SetItemCheckedAt(row, sender.state);
-  if sender.state = NSOnState then begin
+  if sender.state <> NSOffState then begin
     self.selectOneItemByIndex(row, True);
     self.window.makeFirstResponder( self );
   end;

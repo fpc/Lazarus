@@ -147,6 +147,7 @@ begin
   list.lclSetProcessor( processor );
   list.callback := TLCLCheckboxListCallback.CreateWithView(list, AWinControl);
   list.lclSetCheckboxes(true);
+  list.lclSetCheckBoxAllowsMixed( lclCheckListBox.AllowGrayed );
   //list.list := TCocoaStringList.Create(list);
   list.addTableColumn(NSTableColumn.alloc.init.autorelease);
   list.setHeaderView(nil);
