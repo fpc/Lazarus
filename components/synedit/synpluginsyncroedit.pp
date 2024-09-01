@@ -671,6 +671,13 @@ var
   rcInval: TRect;
 begin
   if not Enabled then exit;
+  if FGlyphAtLine = -1 then
+    FGlyphAtLine := TCustomSynEdit(SynEdit).CaretY;
+  if ( (FGlyphAtLine = -1) and (FGlyphLastLine = TCustomSynEdit(SynEdit).CaretY) ) or
+     ( (FGlyphAtLine <>-1) and (FGlyphLastLine = FGlyphAtLine) )
+  then
+    exit;
+
   if FGlyphLastLine <> -2 then begin
     if SynEdit.HandleAllocated then begin
       rcInval := GetGutterGlyphRect(FGlyphLastLine);

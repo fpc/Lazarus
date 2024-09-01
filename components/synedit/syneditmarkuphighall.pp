@@ -48,6 +48,7 @@ type
 
   TSynMarkupHighAllMatchList = class(TSynEditStorageMem)
   private
+    FChangeStamp: int64;
     function GetEndPoint(const Index : Integer) : TPoint;
     function GetPoint(const Index : Integer) : TPoint;
     function GetPointCount : Integer;
@@ -85,6 +86,7 @@ type
     property EndPoint   [const Index : Integer] : TPoint read GetEndPoint write SetEndPoint;
     property PointCount : Integer read GetPointCount;
     property Point      [const Index : Integer] : TPoint read GetPoint;
+    property ChangeStamp: int64 read FChangeStamp;
   end;
 
   { TSynMarkupHighAllMultiMatchList - Allow matches with different markup / no overlap }
@@ -1833,6 +1835,7 @@ begin
     exit;
   if AIndex + ACount > Count then
     ACount := Count - AIndex;
+  {$PUSH}{$R-}{$Q-}FChangeStamp := FChangeStamp+1;{$POP}
   DeleteRows(AIndex, ACount);
 end;
 
@@ -1840,11 +1843,13 @@ procedure TSynMarkupHighAllMatchList.Insert(AIndex: Integer; ACount: Integer);
 begin
   if AIndex > Count then
     exit;
+  {$PUSH}{$R-}{$Q-}FChangeStamp := FChangeStamp+1;{$POP}
   InsertRows(AIndex, ACount);
 end;
 
 procedure TSynMarkupHighAllMatchList.Insert(AIndex: Integer; AStartPoint, AEndPoint: TPoint);
 begin
+  {$PUSH}{$R-}{$Q-}FChangeStamp := FChangeStamp+1;{$POP}
   Insert(AIndex);
   PSynMarkupHighAllMatch(ItemPointer[AIndex])^.StartPoint := AStartPoint;
   PSynMarkupHighAllMatch(ItemPointer[AIndex])^.EndPoint   := AEndPoint;
@@ -1853,6 +1858,7 @@ end;
 procedure TSynMarkupHighAllMatchList.SetCount(const AValue : Integer);
 begin
   if Count=AValue then exit;
+  {$PUSH}{$R-}{$Q-}FChangeStamp := FChangeStamp+1;{$POP}
   if (Capacity <= AValue) then begin
     Capacity := Max(Capacity, AValue) * 2;
     inherited SetCount(AValue);
@@ -1885,6 +1891,7 @@ begin
   if Index = Count
   then Count := Count + 1; // AutoIncrease
   PSynMarkupHighAllMatch(ItemPointer[Index])^.StartPoint := AValue;
+  {$PUSH}{$R-}{$Q-}FChangeStamp := FChangeStamp+1;{$POP}
 end;
 
 function TSynMarkupHighAllMatchList.GetInintialForItemSize: Integer;
@@ -1902,6 +1909,7 @@ begin
   if Index = Count
   then Count := Count + 1; // AutoIncrease
   PSynMarkupHighAllMatch(ItemPointer[Index])^.EndPoint := AValue;
+  {$PUSH}{$R-}{$Q-}FChangeStamp := FChangeStamp+1;{$POP}
 end;
 
 function TSynMarkupHighAllMatchList.GetMatch(const Index: Integer): TSynMarkupHighAllMatch;
@@ -1915,6 +1923,7 @@ begin
   if Index = Count
   then Count := Count + 1; // AutoIncrease
   PSynMarkupHighAllMatch(ItemPointer[Index])^ := AValue;
+  {$PUSH}{$R-}{$Q-}FChangeStamp := FChangeStamp+1;{$POP}
 end;
 
 { TSynMarkupHighAllMultiMatchList }
@@ -2147,6 +2156,7 @@ var
   var
     EndOffsLine: Integer;
     Idx: Integer;
+    ch: Int64;
   begin
     // Check, if there is exactly one match in the visible lines
     if (not HideSingleMatch) or (Matches.Count <> 1) or
@@ -2161,10 +2171,12 @@ var
       if ComparePoints(FSearchedEnd, FMatches.EndPoint[0]) < 0 then
         FSearchedEnd := FMatches.EndPoint[0];
       Idx := 1;
+      ch := FMatches.ChangeStamp;
       FSearchedEnd := FindMatches(FSearchedEnd,
                                   Point(Length(Lines[EndOffsLine - 1])+1, EndOffsLine),
                                   Idx, LastScreenLine);
-      SendLineInvalidation;
+      if ch <> FMatches.ChangeStamp then
+        SendLineInvalidation;
       if Idx > 1 then
         exit;
     end;
