@@ -507,28 +507,27 @@ specified line.
 <descr>
 <p>  
 <var>Distance</var> is an overloaded function with variants that operate on 
-either two TPoint coordinates, or on a point (TFloatPoint) and a line defined 
-by two additional points (TFloatPoint) values. The Distance() function is used 
-primarily for internal purposes (such as in Bezier2PolyLine and EccentricAngle) 
+either two point coordinates, or on a point and a line defined by two 
+additional points values. The Distance() function is used primarily for 
+internal purposes (such as in Bezier2PolyLine and EccentricAngle) 
 but can be used for any purpose.
 </p>
 <p>
 The return value is an Extended type with the calculated distance between the 
-argument values.
+argument values. The return value is always a positive value.
 </p>
 <p>
-The variant using TPoint arguments calculates the length of a straight line 
-between the coordinates in PT1 and PT2 using the Pythagorean theorem. The 
-distance between identical points is always zero (0). The distance is always a 
-positive value.
+The variants using two point arguments (TPoint or TFloatPoint) calculates the 
+length of a straight line between the coordinates in PT1 and PT2 using the 
+Pythagorean theorem. The distance between identical points is always zero (0). 
 </p>
 <p>
-The variant with TFloatPoint arguments calculates the distance between the 
-point Pt and the line represented by the points in SP and EP using Euclidean 
-geometry. The distance is derived by finding the length of an imaginary line 
-between Pt and the closest point that intersects the slope of the line in SP 
-and EP. The distance is always a positive value. The distance for a point which 
-lies on the defined line is always zero (0).
+The variant with three TFloatPoint arguments calculates the distance between 
+the point Pt and the line represented by the points in SP and EP using 
+Euclidean geometry. The distance is derived by finding the length of an 
+imaginary line between Pt and the closest point that intersects the slope of 
+the line in SP and EP. The distance for a point which lies on the defined line 
+is always zero (0).
 </p>
 </descr>
 <seealso/>
