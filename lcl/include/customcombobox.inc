@@ -1053,7 +1053,13 @@ begin
   if csLoading in ComponentState then Exit;
   
   if HandleAllocated then
-    TWSCustomComboBoxClass(WidgetSetClass).SetItemIndex(Self, FItemIndex)
+  begin
+    if Val = -1 then
+      ShowEmulatedTextHintIfYouCan
+    else
+      HideEmulatedTextHint;
+    TWSCustomComboBoxClass(WidgetSetClass).SetItemIndex(Self, FItemIndex);
+  end
   else
   begin
     // remember text, in case one reads text without creating handle
