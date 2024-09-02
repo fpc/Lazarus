@@ -3972,32 +3972,42 @@ displayed the edit box for the control.
 
 <element name="TCustomComboBox.ItemIndex">
 <short>
-The index of the currently selected item, or -1 if none is selected.
+The index of the currently selected item, or -1 if no item is selected.
 </short>
 <descr>
 <p>
 <var>ItemIndex</var> is an <var>Integer</var> property which contains the 
-ordinal position in <var>Items</var> for the current list box selection in 
-the control. The first value in Items is at index position <b>0</b> 
-(<b>zero</b>). The final value in Items is at the index position 
-<var>ItemCount</var><b>-1</b>. When no value is selected in the list box, 
-ItemIndex is set to <b>-1</b>. The default value for the property is 
-<b>-1</b>.
+ordinal position in <var>Items</var> for the current selection in the drop-down 
+list. The first value in Items is at index position <b>0</b> (<b>zero</b>). The 
+final value in Items is at the index position <var>ItemCount</var><b>-1</b>. 
+When no value is selected in the drop-down list, ItemIndex is set to <b>-1</b>. 
+The default value for the property is <b>-1</b>.
 </p>
 <p>
-When the value for the property is read, the widgetset class is queried when 
-a handle has been assigned for the control.
+When the value for the property is read, the widgetset class is queried if a 
+handle has been assigned for the control.
 </p>
 <p>
 Assigning a new value to the property causes the value in <var>Text</var> to 
-be updated to reflect the new selection in the control. When ItemIndex is 
-<b>-1</b>, Text is set to an empty string ('').
+be updated to reflect the new selection in the control. When ItemIndex is set 
+to <b>-1</b>, Text is set to an empty string ('') and the TextHint for the 
+control is displayed (when assigned).
+</p>
+<p>
+For platforms which use emulated text hints, the non-native placeholder is 
+displayed or hidden when ItemIndex or Text is changed. <b>-1</b> causes the
+value in TextHint to be displayed on the control. Any other value causes the 
+emulated text hint to be hidden. Platforms which support native TextHint 
+placeholders control the hint display in the widget instance.
 </p>
 </descr>
 <seealso>
 <link id="TCustomComboBox.Items"/>
 <link id="TCustomComboBox.AddItem"/>
 <link id="TCustomComboBox.Text"/>
+<link id="TCustomComboBox.TextHint"/>
+<link id="TCustomComboBox.CanShowEmulatedTextHint"/>
+<link id="TCustomComboBox.EmulatedTextHintStatus"/>
 <link id="TCustomComboBox.AddHistoryItem"/>
 </seealso>
 </element>
@@ -6775,7 +6785,7 @@ control.
 </p>
 <remark>
 In the current LCL implementation, TextHint display is emulated for all 
-widgetsets except Win32/Win64 (since ComCtIVersionIE6) and QT5.
+widgetsets except Win32/Win64 (since ComCtlVersionIE6) and QT5/QT6.
 </remark>
 </descr>
 <seealso>
@@ -9094,8 +9104,8 @@ CanShowEmulatedTextHint determines whether an emulated <var>TextHint</var>
 can be displayed for the control. Normally, this requires a control handle 
 and an unassigned value in the control text. In addition, some widgetsets 
 implement text hints natively, and do not require LCL to emulate the 
-capability (Windows, QT5). Emulated hint displays can also be suppressed when 
-the widgetset class is being freed (when the Lines in the control have 
+capability (Windows, QT5, QT6). Emulated hint displays can also be suppressed 
+when the widgetset class is being freed (when the Lines in the control have 
 already been destroyed).
 </p>
 <p>
