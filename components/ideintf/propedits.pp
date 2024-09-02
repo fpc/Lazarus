@@ -8750,7 +8750,7 @@ begin
       PExtended(Field)^:=Value;
 {$ifdef FPC_COMP_IS_INT64}
     ftComp:
-      PComp(Instance)^:=trunc(Value);
+      PComp(Field)^:=trunc(Value);
 {$else FPC_COMP_IS_INT64}
     ftComp:
       PComp(Field)^:=Comp(Value);
