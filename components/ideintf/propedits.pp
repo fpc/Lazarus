@@ -1366,7 +1366,8 @@ procedure GetPersistentProperties(AItem: TPersistent;
   AFilter: TTypeKinds; AHook: TPropertyEditorHook; AProc: TGetPropEditProc;
   AEditorFilterFunc: TPropertyEditorFilterFunc);
 
-function GetEditorClass(PropInfo:PPropInfo; Obj: TPersistent): TPropertyEditorClass;
+function GetEditorClass(PropInfo: PPropInfo; Obj: TPersistent): TPropertyEditorClass;
+function GetEditorClass(PropName: shortstring; Info: PTypeInfo; Obj: TPersistent): TPropertyEditorClass;
 
 //==============================================================================
 
@@ -2147,7 +2148,6 @@ end;
 constructor TRecordPropertyEditor.Create(Hook: TPropertyEditorHook; APropCount: Integer);
 begin
   inherited Create(Hook, APropCount);
-  writeln('TRecordPropertyEditor.Create ');
 end;
 
 destructor TRecordPropertyEditor.Destroy;
@@ -2179,16 +2179,15 @@ var
   Instance: TPersistent;
   FieldList: PExtendedFieldInfoTable;
   Field: PExtendedVmtFieldEntry;
+  EdClass: TPropertyEditorClass;
 {$ENDIF}
 begin
-  writeln('TRecordPropertyEditor.GetProperties START');
   {$IFDEF HasExtRtti}
   Instance:=FPropList^[0].Instance;
   PropInfo:=GetPropInfo;
   if PropInfo=nil then
     exit;
 
-  writeln('TRecordPropertyEditor.GetProperties aPropInfo^.Name=',GetPropInfo^.Name);
   aTypeData:=GetTypeData(PropInfo^.PropType);
 
   FieldCnt:=GetFieldList(PropInfo^.PropType,FieldList,[vcPublic,vcPublished]);
@@ -2209,19 +2208,17 @@ begin
       Field:=FieldList^[i];
       FieldTypeInfo:=Field^.FieldType^;
 
-      // todo filter editors
+      EdClass:=GetEditorClass('',FieldTypeInfo,nil);
+      Editor := EdClass.Create(PropertyHook,1);
+      Editor.SetRecordFieldEntry(0, PByte(FRecordData)+Field^.FieldOffset, Field^.Name, FieldTypeInfo);
+      Editor.Initialize;
 
-      case FieldTypeInfo^.Kind of
-      tkInteger:
-        begin
-          Editor:=TIntegerPropertyEditor.Create(PropertyHook,1);
-          Editor.SetRecordFieldEntry(0, PByte(FRecordData)+Field^.FieldOffset, Field^.Name, FieldTypeInfo);
-          Editor.Initialize;
-
-          Proc(Editor);
-        end;
-      else
-
+      if ((PropCount > 1) and not (paMultiSelect in Editor.GetAttributes))
+      or not Editor.ValueAvailable
+      then begin
+        Editor.Free;
+      end else begin
+        Proc(Editor);
       end;
     end;
   end;
@@ -2242,16 +2239,12 @@ end;
 procedure TRecordPropertyEditor.Initialize;
 var
   PropInfo: PPropInfo;
-  aTypeData: PTypeData;
 begin
   inherited Initialize;
 
   PropInfo:=GetPropInfo;
   if PropInfo=nil then
     exit;
-
-  writeln('TRecordPropertyEditor.Initialize aPropInfo^.Name=',GetPropInfo^.Name);
-  aTypeData:=GetTypeData(PropInfo^.PropType);
 
   // check read and write access
   FReadAccess:=(PropInfo^.PropProcs) and 3;
@@ -2811,9 +2804,7 @@ end;
 
 function GetEditorClass(PropInfo:PPropInfo; Obj:TPersistent): TPropertyEditorClass;
 var
-  PropType:PTypeInfo;
-  P,C:PPropertyClassRec;
-  I:Integer;
+  I: Integer;
 begin
   Result := nil;
   if PropertyEditorMapperList<>nil then begin
@@ -2824,56 +2815,65 @@ begin
       end;
     end;
   end;
-  if Result=nil then begin
-    PropType:=PropInfo^.PropType;
-    I:=0;
-    C:=nil;
-    while I < PropertyClassList.Count do begin
-      P:=PropertyClassList[I];
+  Result:=GetEditorClass(PropInfo^.Name,PropInfo^.PropType,Obj);
+end;
 
-      if ((P^.PropertyType=PropType) or
-           ((P^.PropertyType^.Kind=PropType^.Kind) and
-            (P^.PropertyType^.Name=PropType^.Name)
-           )
-         ) or
-         ( (PropType^.Kind=tkClass) and
-           (P^.PropertyType^.Kind=tkClass) and
-           GetTypeData(PropType)^.ClassType.InheritsFrom(
-             GetTypeData(P^.PropertyType)^.ClassType)
+function GetEditorClass(PropName: shortstring; Info: PTypeInfo; Obj: TPersistent
+  ): TPropertyEditorClass;
+var
+  P, C: PPropertyClassRec;
+  I: Integer;
+  TypeData: PTypeData;
+begin
+  Result := nil;
+  I:=0;
+  C:=nil;
+  TypeData:=GetTypeData(Info);
+  while I < PropertyClassList.Count do begin
+    P:=PropertyClassList[I];
+
+    if ((P^.PropertyType=Info) or
+         ((P^.PropertyType^.Kind=Info^.Kind) and
+          (P^.PropertyType^.Name=Info^.Name)
          )
+       ) or
+       ( (Info^.Kind=tkClass) and
+         (P^.PropertyType^.Kind=tkClass) and
+         TypeData^.ClassType.InheritsFrom(
+           GetTypeData(P^.PropertyType)^.ClassType)
+       )
+    then
+      if ((P^.PersistentClass=nil) or ((Obj<>nil) and (Obj.InheritsFrom(P^.PersistentClass))))
+          and ((P^.PropertyName='') or (CompareText(P^.PropertyName,PropName)=0))
       then
-        if ((P^.PersistentClass=nil) or ((Obj<>nil) and (Obj.InheritsFrom(P^.PersistentClass))))
-            and ((P^.PropertyName='') or (CompareText(PropInfo^.Name,P^.PropertyName)=0))
+        if (C=nil) or   // see if P is better match than C
+           ((C^.PersistentClass=nil) and (P^.PersistentClass<>nil)) or
+           ((C^.PropertyName='') and (P^.PropertyName<>''))
+           or  // P's proptype match is exact,but C's does not
+           ((C^.PropertyType<>Info) and (P^.PropertyType=Info))
+           or  // P's proptype is more specific than C's proptype
+           ((P^.PropertyType<>C^.PropertyType) and
+            (P^.PropertyType^.Kind=tkClass) and
+            (C^.PropertyType^.Kind=tkClass) and
+            GetTypeData(P^.PropertyType)^.ClassType.InheritsFrom(
+              GetTypeData(C^.PropertyType)^.ClassType))
+           or // P's component class is more specific than C's component class
+           ((P^.PersistentClass<>nil) and (C^.PersistentClass<>nil) and
+            (P^.PersistentClass<>C^.PersistentClass) and
+            (P^.PersistentClass.InheritsFrom(C^.PersistentClass)))
         then
-          if (C=nil) or   // see if P is better match than C
-             ((C^.PersistentClass=nil) and (P^.PersistentClass<>nil)) or
-             ((C^.PropertyName='') and (P^.PropertyName<>''))
-             or  // P's proptype match is exact,but C's does not
-             ((C^.PropertyType<>PropType) and (P^.PropertyType=PropType))
-             or  // P's proptype is more specific than C's proptype
-             ((P^.PropertyType<>C^.PropertyType) and
-              (P^.PropertyType^.Kind=tkClass) and
-              (C^.PropertyType^.Kind=tkClass) and
-              GetTypeData(P^.PropertyType)^.ClassType.InheritsFrom(
-                GetTypeData(C^.PropertyType)^.ClassType))
-             or // P's component class is more specific than C's component class
-             ((P^.PersistentClass<>nil) and (C^.PersistentClass<>nil) and
-              (P^.PersistentClass<>C^.PersistentClass) and
-              (P^.PersistentClass.InheritsFrom(C^.PersistentClass)))
-          then
-            C:=P;
-      Inc(I);
-    end;
-    if C<>nil then
-      Result:=C^.EditorClass
-    else begin
-      if (PropType^.Kind<>tkClass)
-      or (GetTypeData(PropType)^.ClassType.InheritsFrom(TPersistent))
-      or (GetTypeData(PropType)^.PropCount > 0) then
-        Result:=PropClassMap[PropType^.Kind]
-      else
-        Result:=nil;
-    end;
+          C:=P;
+    Inc(I);
+  end;
+  if C<>nil then
+    Result:=C^.EditorClass
+  else begin
+    if (Info^.Kind<>tkClass)
+    or (TypeData^.ClassType.InheritsFrom(TPersistent))
+    or (TypeData^.PropCount > 0) then
+      Result:=PropClassMap[Info^.Kind]
+    else
+      Result:=nil;
   end;
   if (Result<>nil) and Result.InheritsFrom(THiddenPropertyEditor) then
     Result:=nil;
