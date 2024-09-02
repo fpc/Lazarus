@@ -734,10 +734,9 @@ var
   end;
 begin
   AForm := TCustomForm(AWinControl);
-  if not (csDesigning in AForm.ComponentState) then
+  if GTK_IS_WINDOW({%H-}PGtkWindow(AForm.Handle)) and not (csDesigning in AForm.ComponentState) then
   begin
-    if AForm.HandleObjectShouldBeVisible and
-      GTK_IS_WINDOW({%H-}PGtkWindow(AForm.Handle)) then
+    if AForm.HandleObjectShouldBeVisible then
       begin
         gtk_window_set_keep_above({%H-}PGtkWindow(AForm.Handle),
           GBoolean(AForm.FormStyle in fsAllStayOnTop))

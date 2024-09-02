@@ -1283,7 +1283,7 @@ begin
         gdk_window_set_keep_above(W^.Window, False);
         if Assigned(nact) then
         begin
-          gdk_window_restack(W^.Window, act, False);
+          gdk_window_restack(W^.Window, nact, False);
           nact:=W^.Window;
         end
         else begin
