@@ -18,6 +18,10 @@ unit IDETextConverter;
 
 {$mode objfpc}{$H+}
 
+{$IF FPC_FULLVERSION>30300}
+  {$WARN 6060 off : not all possible case cases}
+{$ENDIF}
+
 interface
 
 uses
