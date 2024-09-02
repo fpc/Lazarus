@@ -1,6 +1,7 @@
 unit CocoaToolBar;
 
 {$mode objfpc}{$H+}
+{$interfaces corba}
 {$modeswitch objectivec2}
 
 interface
@@ -13,6 +14,41 @@ type
 
   TCocoaToolBarItemHandler = procedure ( Sender: id );
 
+  { TCocoaConfigToolBarItemClass }
+
+  TCocoaConfigToolBarItemClass = class( TCocoaConfigToolBarItemInterface )
+  private
+    _itemConfig: TCocoaConfigToolBarItem;
+  public
+    constructor Create( itemConfig: TCocoaConfigToolBarItem );
+    function createItem: NSToolBarItem;
+    function identifier: String;
+    function iconName: String;
+    function title: String;
+    function tips: String;
+    function onClick: Pointer;
+  end;
+
+  { TCocoaConfigToolBarItemGroupClass }
+
+  TCocoaConfigToolBarItemGroupClass = class( TCocoaConfigToolBarItemInterface )
+  private
+    _itemConfig: TCocoaConfigToolBarItemGroup;
+  public
+    constructor Create( itemConfig: TCocoaConfigToolBarItemGroup );
+    function createItem: NSToolBarItem;
+    function identifier: String;
+    function iconName: String;
+    function title: String;
+    function tips: String;
+    function onClick: Pointer;
+
+    function representation: NSToolbarItemGroupControlRepresentation;
+    function selectionMode: NSToolbarItemGroupSelectionMode;
+    function selectedIndex: NSInteger;
+    function subitems: TCocoaConfigToolBarItems;
+  end;
+
   { TCocoaToolBarItem }
 
   TCocoaToolBarItem = objcclass( NSToolBarItem )
@@ -22,6 +58,23 @@ type
   public
     procedure lclSetHandler( handler: TCocoaToolBarItemHandler );
       message 'lclSetHandler:';
+  end;
+
+  { TCocoaToolBarItemGroupWrapper }
+
+  TCocoaToolBarItemGroupWrapper = objcclass( NSObject )
+  private
+    _itemGroup: NSToolbarItemGroup;
+    _handler: TCocoaToolBarItemHandler;
+    procedure lclItemAction( sender: id ); message 'lclItemAction:';
+    function lclGetSelectedItem: NSToolBarItem; message 'lclGetSelectedItem';
+  public
+    procedure lclSetHandler( handler: TCocoaToolBarItemHandler );
+      message 'lclSetHandler:';
+    procedure lclSetItemGroup( itemGroup: NSToolbarItemGroup );
+      message 'lclSetItemGroup:';
+    procedure lclSetSelectedIndex( index: NSInteger );
+      message 'lclSetSelectedIndex:';
   end;
 
   TCocoaToolBarItemCreator = function ( identifier: String ): NSToolbarItem;
@@ -54,15 +107,68 @@ type
   { TCocoaToolBarUtils }
 
   TCocoaToolBarUtils = class
+  private
+    class procedure initItemCommonData( item: NSToolBarItem; itemConfig: TCocoaConfigToolBarItemInterface );
   public
+    class function forItem( itemsConfig: TCocoaConfigToolBarItem ): TCocoaConfigToolBarItemInterface;
+    class function forItem( itemsConfig: TCocoaConfigToolBarItemGroup ): TCocoaConfigToolBarItemInterface;
+    class function createItem( identifier: String; itemsConfig: TCocoaConfigToolBarItems ): NSToolbarItem;
     class procedure createToolBar( win: NSWindow );
-    class function createToolBarItem( identifier: String; itemsConfig: TCocoaConfigToolBarItems ): NSToolbarItem; overload;
-    class function createToolBarItem( lclItemConfig: TCocoaConfigToolBarItem ): NSToolBarItem; overload;
   end;
 
   function defaultToolBarItemCreatorImplement( identifier: String ): NSToolbarItem;
 
 implementation
+
+class procedure TCocoaToolBarUtils.initItemCommonData( item: NSToolBarItem;
+  itemConfig: TCocoaConfigToolBarItemInterface );
+var
+  cocoaImageName: NSString;
+  cocoaLabel: NSString;
+  cocoaTips: NSString;
+begin
+  cocoaImageName:= StrToNSString( itemConfig.iconName );
+  cocoaLabel:= StrToNSString( itemConfig.title );
+  cocoaTips:= StrToNSString( itemConfig.tips );
+
+  item.setImage( NSImage.imageWithSystemSymbolName_accessibilityDescription(
+    cocoaImageName, nil ) );
+  item.setLabel( cocoaLabel );
+  item.setPaletteLabel( cocoaLabel );
+  item.setToolTip( cocoaTips );
+  item.setBordered( True );
+  item.setVisibilityPriority( NSToolbarItemVisibilityPriorityHigh );
+  item.setTarget( item );
+  item.setAction( ObjCSelector('lclItemAction:') );
+end;
+
+class function TCocoaToolBarUtils.forItem(itemsConfig: TCocoaConfigToolBarItem
+  ): TCocoaConfigToolBarItemInterface;
+begin
+  Result:= TCocoaConfigToolBarItemClass.Create( itemsConfig );
+end;
+
+class function TCocoaToolBarUtils.forItem(
+  itemsConfig: TCocoaConfigToolBarItemGroup): TCocoaConfigToolBarItemInterface;
+begin
+  Result:= TCocoaConfigToolBarItemGroupClass.Create( itemsConfig );
+end;
+
+class function TCocoaToolBarUtils.createItem( identifier: String;
+  itemsConfig: TCocoaConfigToolBarItems ): NSToolbarItem;
+var
+  i: Integer;
+  count: Integer;
+begin
+  Result:= nil;
+  count:= length( itemsConfig );
+  for i:=0 to count-1 do begin
+    if identifier = itemsConfig[i].identifier then begin
+      Result:= itemsConfig[i].createItem;
+      Exit;
+    end;
+  end;
+end;
 
 class procedure TCocoaToolBarUtils.createToolBar( win: NSWindow );
 var
@@ -85,54 +191,10 @@ begin
   win.setToolbar( toolBar );
 end;
 
-class function TCocoaToolBarUtils.createToolBarItem( identifier: String;
-  itemsConfig: TCocoaConfigToolBarItems ): NSToolbarItem;
-var
-  i: Integer;
-  count: Integer;
-begin
-  Result:= nil;
-  count:= length( itemsConfig );
-  for i:=0 to count-1 do begin
-    if identifier = itemsConfig[i].identifier then begin
-      Result:= self.createToolBarItem( itemsConfig[i] );
-      Exit;
-    end;
-  end;
-end;
-
-class function TCocoaToolBarUtils.createToolBarItem( lclItemConfig: TCocoaConfigToolBarItem ): NSToolBarItem;
-var
-  cocoaItem: TCocoaToolBarItem;
-  cocoaIdentifier: NSString;
-  cocoaImageName: NSString;
-  cocoaLabel: NSString;
-  cocoaTips: NSString;
-begin
-  cocoaIdentifier:= StrToNSString( lclItemConfig.identifier );
-  cocoaImageName:= StrToNSString( lclItemConfig.iconName );
-  cocoaLabel:= StrToNSString( lclItemConfig.title );
-  cocoaTips:= StrToNSString( lclItemConfig.tips );
-
-  cocoaItem:= TCocoaToolBarItem.alloc.initWithItemIdentifier( cocoaIdentifier );
-  cocoaItem.setImage( NSImage.imageWithSystemSymbolName_accessibilityDescription(
-    cocoaImageName, nil ) );
-  cocoaItem.setLabel( cocoaLabel );
-  cocoaItem.setPaletteLabel( cocoaLabel );
-  cocoaItem.setToolTip( cocoaTips );
-  cocoaItem.setBordered( True );
-  cocoaItem.setVisibilityPriority( NSToolbarItemVisibilityPriorityHigh );
-  cocoaItem.setTarget( cocoaItem );
-  cocoaItem.setAction( ObjCSelector('lclItemAction:') );
-  cocoaItem.lclSetHandler( TCocoaToolBarItemHandler(lclItemConfig.onClick) );
-
-  Result:= cocoaItem;
-end;
-
 function defaultToolBarItemCreatorImplement(identifier: String
   ): NSToolbarItem;
 begin
-  Result:= TCocoaToolBarUtils.createToolBarItem( identifier, CocoaConfigForm.toolBar.items );
+  Result:= TCocoaToolBarUtils.createItem( identifier, CocoaConfigForm.toolBar.items );
 end;
 
 { TCocoaToolBarItem }
@@ -145,6 +207,50 @@ end;
 procedure TCocoaToolBarItem.lclSetHandler(handler: TCocoaToolBarItemHandler);
 begin
   _handler:= handler;
+end;
+
+{ TCocoaToolBarItemGroupWrapper }
+
+procedure TCocoaToolBarItemGroupWrapper.lclItemAction(sender: id);
+var
+  index: NSInteger;
+begin
+  index:= _itemGroup.selectedIndex;
+  self.lclSetSelectedIndex( index );
+  _handler( self.lclGetSelectedItem );
+end;
+
+function TCocoaToolBarItemGroupWrapper.lclGetSelectedItem: NSToolBarItem;
+var
+  index: NSInteger;
+begin
+  Result:= nil;
+  index:= _itemGroup.selectedIndex;
+  if (index>=0) and (index<_itemGroup.subitems.count) then
+    Result:= _itemGroup.subitems.objectAtIndex( index );
+end;
+
+procedure TCocoaToolBarItemGroupWrapper.lclSetHandler(handler: TCocoaToolBarItemHandler
+  );
+begin
+  _handler:= handler;
+end;
+
+procedure TCocoaToolBarItemGroupWrapper.lclSetItemGroup(
+  itemGroup: NSToolbarItemGroup);
+begin
+  _itemGroup:= itemGroup;
+end;
+
+procedure TCocoaToolBarItemGroupWrapper.lclSetSelectedIndex(index: NSInteger);
+var
+  item: NSToolBarItem;
+begin
+  if (index>=0) and (index<_itemGroup.subitems.count) then begin
+    _itemGroup.setSelected_atIndex( True, index );
+    item:= self.lclGetSelectedItem;
+    _itemGroup.setImage( item.image );
+  end;
 end;
 
 { TCocoaToolBar }
@@ -201,6 +307,147 @@ begin
     _allowedItemIdentifiers.release;
   _allowedItemIdentifiers := identifiers;
   _allowedItemIdentifiers.retain;
+end;
+
+{ TCocoaConfigToolBarItemClass }
+
+constructor TCocoaConfigToolBarItemClass.Create(
+  itemConfig: TCocoaConfigToolBarItem);
+begin
+  _itemConfig:= itemConfig;
+end;
+
+function TCocoaConfigToolBarItemClass.createItem: NSToolBarItem;
+var
+  cocoaIdentifier: NSString;
+  cocoaItem: TCocoaToolBarItem;
+begin
+  cocoaIdentifier:= StrToNSString( _itemConfig.identifier );
+  cocoaItem:= TCocoaToolBarItem.alloc.initWithItemIdentifier( cocoaIdentifier );
+  TCocoaToolBarUtils.initItemCommonData( cocoaItem, self );
+  cocoaItem.lclSetHandler( TCocoaToolBarItemHandler(self.onClick) );
+  cocoaItem.autorelease;
+  Result:= cocoaItem;
+end;
+
+function TCocoaConfigToolBarItemClass.identifier: String;
+begin
+  Result:= _itemConfig.identifier;
+end;
+
+function TCocoaConfigToolBarItemClass.iconName: String;
+begin
+  Result:= _itemConfig.iconName;
+end;
+
+function TCocoaConfigToolBarItemClass.title: String;
+begin
+  Result:= _itemConfig.title;
+end;
+
+function TCocoaConfigToolBarItemClass.tips: String;
+begin
+  Result:= _itemConfig.tips;
+end;
+
+function TCocoaConfigToolBarItemClass.onClick: Pointer;
+begin
+  Result:= _itemConfig.onClick;
+end;
+
+{ TCocoaConfigToolBarItemGroupClass }
+
+constructor TCocoaConfigToolBarItemGroupClass.Create(
+  itemConfig: TCocoaConfigToolBarItemGroup);
+begin
+  _itemConfig:= itemConfig;
+end;
+
+function TCocoaConfigToolBarItemGroupClass.createItem: NSToolBarItem;
+var
+  groupWrapper: TCocoaToolBarItemGroupWrapper;
+  toolbarItem: NSToolbarItemGroup;
+  images: NSMutableArray;
+  labels: NSMutableArray;
+
+  procedure initSubitems;
+  var
+    i: Integer;
+    count: Integer;
+  begin
+    count:= length( self.subitems );
+    images:= NSMutableArray.arrayWithCapacity( count );
+    labels:= NSMutableArray.arrayWithCapacity( count );
+    for i:=0 to count-1 do begin
+      images.addObject( NSImage.imageWithSystemSymbolName_accessibilityDescription(
+                          StrToNSString(self.subitems[i].iconName), nil) );
+      labels.addObject( StrToNSString(self.subitems[i].title) );
+    end;
+  end;
+
+begin
+  initSubitems;
+  toolbarItem:= NSToolbarItemGroup.groupWithItemIdentifier_images_selectionMode_labels_target_action(
+    StrToNSString( self.identifier ),
+    images,
+    self.selectionMode,
+    labels,
+    nil,
+    nil );
+
+  groupWrapper:= TCocoaToolBarItemGroupWrapper.new;
+  groupWrapper.lclSetItemGroup( toolbarItem );
+  groupWrapper.lclSetSelectedIndex( self.selectedIndex );
+  groupWrapper.lclSetHandler( TCocoaToolBarItemHandler(self.onClick) );
+  TCocoaToolBarUtils.initItemCommonData( toolbarItem, self );
+  toolbarItem.setTarget( groupWrapper );
+  toolbarItem.setAction( ObjCSelector('lclItemAction:') );
+  Result:= toolbarItem;
+end;
+
+function TCocoaConfigToolBarItemGroupClass.identifier: String;
+begin
+  Result:= _itemConfig.identifier;
+end;
+
+function TCocoaConfigToolBarItemGroupClass.iconName: String;
+begin
+  Result:= _itemConfig.iconName;
+end;
+
+function TCocoaConfigToolBarItemGroupClass.title: String;
+begin
+  Result:= _itemConfig.title;
+end;
+
+function TCocoaConfigToolBarItemGroupClass.tips: String;
+begin
+  Result:= _itemConfig.tips;
+end;
+
+function TCocoaConfigToolBarItemGroupClass.onClick: Pointer;
+begin
+  Result:= _itemConfig.onClick;
+end;
+
+function TCocoaConfigToolBarItemGroupClass.representation: NSToolbarItemGroupControlRepresentation;
+begin
+  Result:= _itemConfig.representation;
+end;
+
+function TCocoaConfigToolBarItemGroupClass.selectionMode: NSToolbarItemGroupSelectionMode;
+begin
+  Result:= _itemConfig.selectionMode;
+end;
+
+function TCocoaConfigToolBarItemGroupClass.selectedIndex: NSInteger;
+begin
+  Result:= _itemConfig.selectedIndex;
+end;
+
+function TCocoaConfigToolBarItemGroupClass.subitems: TCocoaConfigToolBarItems;
+begin
+  Result:= _itemConfig.subitems;
 end;
 
 end.

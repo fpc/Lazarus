@@ -475,6 +475,49 @@ type
     procedure setNavigational( newValue: Boolean ); message 'setNavigational:'; { available in 11.0 }
   end;
 
+type
+  NSToolbarItemGroupSelectionMode = NSInteger;
+const
+  NSToolbarItemGroupSelectionModeSelectOne = 0;
+  NSToolbarItemGroupSelectionModeSelectAny = 1;
+  NSToolbarItemGroupSelectionModeMomentary = 2;
+type
+  NSToolbarItemGroupControlRepresentation = NSInteger;
+const
+  NSToolbarItemGroupControlRepresentationAutomatic = 0;
+  NSToolbarItemGroupControlRepresentationExpanded = 1;
+  NSToolbarItemGroupControlRepresentationCollapsed = 2;
+
+type
+  NSToolbarItemGroupFix = objccategory external (NSToolbarItemGroup)
+    procedure setControlRepresentation( newValue: NSToolbarItemGroupControlRepresentation );
+      message 'setControlRepresentation:';  { available in 10.15 }
+    procedure setSelectionMode( newValue: NSToolbarItemGroupSelectionMode );
+      message 'setSelectionMode:';  { available in 10.15 }
+
+    function selectedIndex: NSInteger; message 'selectedIndex'; { available in 10.15 }
+    function isSelectedAtIndex: Boolean; message 'isSelectedAtIndex'; { available in 10.15 }
+    procedure setSelected_atIndex( newValue: Boolean; index: NSInteger );
+      message 'setSelected:atIndex:';  { available in 10.15 }
+
+    class function groupWithItemIdentifier_titles_selectionMode_labels_target_action(
+        aItemIdentifier: NSString;
+        titles: NSArray;
+        selectionMode: NSToolbarItemGroupSelectionMode;
+        labels: NSArray;
+        aTarget: id;
+        aAction: SEL ): id;
+      message 'groupWithItemIdentifier:titles:selectionMode:labels:target:action:'; { available in 10.15 }
+    class function groupWithItemIdentifier_images_selectionMode_labels_target_action(
+        aItemIdentifier: NSString;
+        images: NSArray;
+        selectionMode: NSToolbarItemGroupSelectionMode;
+        labels: NSArray;
+        aTarget: id;
+        aAction: SEL ): id;
+      message 'groupWithItemIdentifier:images:selectionMode:labels:target:action:'; { available in 10.15 }
+  end;
+
   NSTableColumnFix = objccategory external (NSTableColumn)
     procedure setTitle(atitle: NSString); message 'setTitle:';
     function title: NSString; message 'title';

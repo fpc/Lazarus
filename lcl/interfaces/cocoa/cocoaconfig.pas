@@ -2,6 +2,7 @@ unit CocoaConfig;
 
 {$mode objfpc}{$H+}
 {$modeswitch objectivec1}
+{$interfaces corba}
 {$include cocoadefines.inc}
 
 interface
@@ -12,7 +13,20 @@ uses
   CocoaAll, Cocoa_Extra, CocoaConst;
 
 type
-  TCocoaConfigToolBarItem = record
+  TCocoaConfigToolBarItemInterface = interface
+    function createItem: NSToolBarItem;
+    function identifier: String;
+    function iconName: String;
+    function title: String;
+    function tips: String;
+    function onClick: Pointer;
+  end;
+
+  TCocoaConfigToolBarItems = Array of TCocoaConfigToolBarItemInterface;
+
+  { TCocoaConfigToolBarItem }
+
+  TCocoaConfigToolBarItem = object
     identifier: String;
     iconName: String;
     title: String;
@@ -20,7 +34,12 @@ type
     onClick: Pointer;
   end;
 
-  TCocoaConfigToolBarItems = Array of TCocoaConfigToolBarItem;
+  TCocoaConfigToolBarItemGroup = object( TCocoaConfigToolBarItem )
+    representation: NSToolbarItemGroupControlRepresentation;
+    selectionMode: NSToolbarItemGroupSelectionMode;
+    selectedIndex: NSInteger;
+    subitems: TCocoaConfigToolBarItems;
+  end;
 
   TCocoaConfigToolBar = record
     identifier: String;
