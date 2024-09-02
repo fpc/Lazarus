@@ -131,45 +131,43 @@ msgstr "Числовое значение"
 
 #: idedebuggerstringconstants.dispformatdlgarraycombine
 msgid "Combine lengths"
-msgstr ""
+msgstr "Складывать длины"
 
 #: idedebuggerstringconstants.dispformatdlgarraycombineall
 msgid "Always"
-msgstr ""
+msgstr "Всегда"
 
 #: idedebuggerstringconstants.dispformatdlgarraycombinedyn
 msgid "Dynamic"
-msgstr ""
+msgstr "Для динамических"
 
 #: idedebuggerstringconstants.dispformatdlgarraycombinenone
 msgid "Never"
-msgstr ""
+msgstr "Никогда"
 
 #: idedebuggerstringconstants.dispformatdlgarraycombinestat
 msgid "Static"
-msgstr ""
+msgstr "Для статических"
 
 #: idedebuggerstringconstants.dispformatdlgarraylen
 msgid "Array len"
-msgstr ""
+msgstr "Длина массива"
 
 #: idedebuggerstringconstants.dispformatdlgarraymaxnest
 msgid "Nested"
-msgstr ""
+msgstr "Вложенность"
 
 #: idedebuggerstringconstants.dispformatdlgarraynav
-#, fuzzy
-#| msgid "Array Navigation"
 msgid "Array navigation"
 msgstr "Перемещение по массиву"
 
 #: idedebuggerstringconstants.dispformatdlgarrayshowprefix
 msgid "Show len"
-msgstr ""
+msgstr "Показывать длину"
 
 #: idedebuggerstringconstants.dispformatdlgarrayshowprefixembedded
 msgid "Include embedded"
-msgstr ""
+msgstr "Учитывать вложенные"
 
 #: idedebuggerstringconstants.dispformatdlgbtnadrformat
 msgid "Address"
@@ -181,7 +179,7 @@ msgstr "Все"
 
 #: idedebuggerstringconstants.dispformatdlgbtnarray
 msgid "Array"
-msgstr ""
+msgstr "Массив"
 
 #: idedebuggerstringconstants.dispformatdlgbtnbool
 msgid "Boolean"
@@ -784,7 +782,7 @@ msgstr "Длина=%d: "
 #: idedebuggerstringconstants.drslen2
 #, object-pascal-format
 msgid "Len=%s: "
-msgstr ""
+msgstr "Длина=%s: "
 
 #: idedebuggerstringconstants.drsnewvalue
 msgid "New Value"
