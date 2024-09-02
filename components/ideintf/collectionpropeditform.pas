@@ -70,11 +70,6 @@ implementation
 uses
   PropEdits, FormEditingIntf, ObjectInspector;
 
-type
-  TPersistentAccess = class(TPersistent)
-
-  end;
-
 procedure TCollectionPropertyEditorForm.FormCreate(Sender: TObject);
 begin
   ToolBar1.Images := IDEImages.Images_16;
