@@ -425,6 +425,12 @@ type
     function CGContext: CGContextRef; message 'CGContext';
   end;
 
+  NSImageFix = objccategory external (NSImage)
+    class function imageWithSystemSymbolName_accessibilityDescription(
+      aName: NSString; aAccessibilityDescription: NSString ): id;
+      message 'imageWithSystemSymbolName:accessibilityDescription:'; { available in 11.0 }
+  end;
+
   NSEventFix = objccategory external (NSEvent)
     class function modifierFlags_: NSUInteger; message 'modifierFlags';
     // available in 10.7+
@@ -462,6 +468,11 @@ type
     // 10.14
     function appearance: NSAppearance; message 'appearance'; // 10.14 (10.13)
     function effectiveAppearance: NSAppearance; message 'effectiveAppearance'; // 10.14 (10.13)
+  end;
+
+  NSToolBarItemFix = objccategory external (NSToolBarItem)
+    procedure setBordered( newValue: Boolean ); message 'setBordered:'; { available in 10.15 }
+    procedure setNavigational( newValue: Boolean ); message 'setNavigational:'; { available in 11.0 }
   end;
 
   NSTableColumnFix = objccategory external (NSTableColumn)

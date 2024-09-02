@@ -30,9 +30,9 @@ uses
   // Widgetset
   WSForms, WSLCLClasses, LCLMessageGlue,
   // LCL Cocoa
-  CocoaInt, CocoaConfig, CocoaPrivate, CocoaCallback, CocoaUtils, CocoaWSCommon, CocoaMenus,
-  CocoaGDIObjects,
-  CocoaWindows, CocoaCustomControl, CocoaScrollers, CocoaWSScrollers, cocoa_extra;
+  CocoaInt, CocoaConfig, CocoaPrivate, CocoaCallback, CocoaWSCommon, CocoaGDIObjects,
+  CocoaWindows, CocoaToolBar, CocoaCustomControl, CocoaScrollers, CocoaWSScrollers,
+  CocoaUtils, CocoaMenus, Cocoa_Extra;
 
 type
   { TLCLWindowCallback }
@@ -855,6 +855,8 @@ begin
     ds.release;
   end;
   doc.release;
+
+  TCocoaToolBarUtils.createToolBar( win );
 
   Result := TLCLHandle(cnt);
 end;

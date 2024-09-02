@@ -7,10 +7,38 @@ unit CocoaConfig;
 interface
 
 uses
+  SysUtils,
   Menus,
   CocoaAll, Cocoa_Extra, CocoaConst;
 
 type
+  TCocoaConfigToolBarItem = record
+    identifier: String;
+    iconName: String;
+    title: String;
+    tips: String;
+    onClick: Pointer;
+  end;
+
+  TCocoaConfigToolBarItems = Array of TCocoaConfigToolBarItem;
+
+  TCocoaConfigToolBar = record
+    identifier: String;
+    items: TCocoaConfigToolBarItems;
+    defaultItemsIdentifiers: TStringArray;
+    allowedItemsIdentifiers: TStringArray;
+    itemCreator: Pointer;
+  end;
+
+  TCocoaConfigForm = record
+    toolBar: TCocoaConfigToolBar;
+  end;
+
+var
+  CocoaConfigForm: TCocoaConfigForm;
+
+type
+
   TCocoaConfigMenuItem = record
     defaultCheckImageName: NSString;
     defaultRadioImageName: NSString;
