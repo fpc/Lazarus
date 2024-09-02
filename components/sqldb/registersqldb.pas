@@ -635,7 +635,7 @@ begin
 
   TheDialog := CreateEnhancedDlg(Strings);
   try
-    TheDialog.Caption := Format(SSQLStringsPropertyEditorDlgTitle, [GetPropInfo^.Name]);
+    TheDialog.Caption := Format(SSQLStringsPropertyEditorDlgTitle, [GetName]);
     if (GetComponent(0) is TSQLQuery) then
       begin
       Query := (GetComponent(0) as TSQLQuery);

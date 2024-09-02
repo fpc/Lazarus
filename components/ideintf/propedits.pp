@@ -18,6 +18,7 @@ unit PropEdits;
 
 // This unit contains a lot of base type conversions. Disable range checking.
 {$R-}
+{$ModeSwitch advancedrecords}
 
 {$IF FPC_FULLVERSION>30300}
   {$Define HasExtRtti}
@@ -270,10 +271,43 @@ type
 
   TPropertyEditor = class;
 
+  { TInstProp }
+
   TInstProp = record
-    Instance: TPersistent;
-    PropInfo: PPropInfo;
+    Instance: TPersistent; // can be nil, e.g. record field
+    PropInfo: PPropInfo;   // can be nil, e.g. record field
+    Field: Pointer; // for record field
+    FieldName: PShortString;
+    FieldTypeInfo: PTypeInfo;
     // ToDo: add list of parent instances, e.g. Label1.Font.Color: Font needs Label1
+    function GetTypeInfo: PTypeInfo;
+    function GetKind: TTypeKind;
+    function GetOrd: int64;
+    procedure SetOrd(const Value: int64);
+    function GetEnum: string;
+    procedure SetEnum(const Value: string);
+    function GetSet(Brackets: boolean): string;
+    procedure SetSet(const Value: string);
+    function GetString: AnsiString;
+    procedure SetString(const Value: string);
+    function GetWideString: WideString;
+    procedure SetWideString(const Value: WideString);
+    function GetUnicodeString: UnicodeString;
+    procedure SetUnicodeString(const Value: UnicodeString);
+    function GetRawByteString: RawByteString;
+    procedure SetRawByteString(const Value: RawByteString);
+    function GetFloat: Extended;
+    procedure SetFloat(const Value: Extended);
+    function GetObject(MinClass: TClass = nil): TObject;
+    procedure SetObject(const Value: TObject);
+    function GetPointerValue: Pointer;
+    procedure SetPointerValue(const Value: Pointer);
+    function GetMethod: TMethod;
+    procedure SetMethod(const Value: TMethod);
+    function GetInterface: IInterface;
+    procedure SetInterface(const Value: IInterface);
+    function GetVariant: Variant;
+    procedure SetVariant(const Value: Variant);
   end;
   PInstProp = ^TInstProp;
 
@@ -339,6 +373,7 @@ type
     function GetPropType: PTypeInfo;
     function GetPropInfo: PPropInfo;
     function GetInstProp: PInstProp;
+    function GetEnumValueAt(Index: Integer): string;
     function GetFloatValue: Extended;
     function GetFloatValueAt(Index: Integer): Extended;
     function GetInt64Value: Int64;
@@ -376,7 +411,9 @@ type
     procedure RevertToInherited; virtual;
     procedure SetValue(const {%H-}NewValue: ansistring); virtual;
     procedure SetPropEntry(Index: Integer; AnInstance: TPersistent;
-                           APropInfo: PPropInfo);
+                           APropInfo: PPropInfo); virtual;
+    procedure SetRecordFieldEntry(Index: Integer; AnInstance: Pointer;
+                                  aName: PShortString; AFieldInfo: PTypeInfo); virtual;
     procedure SetFloatValue(const NewValue: Extended);
     procedure SetMethodValue(const NewValue: TMethod);
     procedure SetInt64Value(const NewValue: Int64);
@@ -387,7 +424,7 @@ type
     procedure SetWideStrValue(const NewValue: WideString);
     procedure SetUnicodeStrValue(const NewValue: UnicodeString);
     procedure SetVarValue(const NewValue: Variant);
-    procedure Modified(PropName: ShortString = '');
+    procedure Modified(Index: integer = 0);
     function ValueAvailable: Boolean;
     procedure ListMeasureWidth(const {%H-}AValue: ansistring; {%H-}Index: Integer;
                                {%H-}ACanvas: TCanvas; var {%H-}AWidth: Integer); virtual;
@@ -632,36 +669,44 @@ type
     function OrdValueToVisualValue(OrdValue: longint): string; override;
   end;
 
-{ TClassPropertyEditor
-  Default property editor for all objects. Does not allow modifying the
-  property but does display the class name of the object and will allow the
-  editing of the object's properties as sub-properties of the property. }
+  { TStructurePropertyEditor }
 
-  TClassPropertyEditor = class(TPropertyEditor)
+  TStructurePropertyEditor = class(TPropertyEditor)
   private
     FSubPropsTypeFilter: TTypeKinds;
     FSubPropsNameFilter: String;
-    FHideClassName: Boolean;
     FSubProps: TObjectList;
   protected
-    function GetSelections: TPersistentSelectionList; virtual;
     function EditorFilter(const AEditor: TPropertyEditor): Boolean; virtual;
     procedure ListSubProps(Prop: TPropertyEditor); virtual;
     procedure SetSubPropsTypeFilter(const AValue: TTypeKinds); virtual;
   public
     constructor Create(Hook: TPropertyEditorHook; APropCount: Integer); override;
     destructor Destroy; override;
-
-    function ValueIsStreamed: boolean; override;
     function AllEqual: Boolean; override;
-    function GetAttributes: TPropertyAttributes; override;
-    procedure GetProperties(Proc: TGetPropEditProc); override;
-    function GetValue: String; override;
 
     property SubPropsTypeFilter: TTypeKinds
       read FSubPropsTypeFilter write SetSubPropsTypeFilter default tkAny;
     property SubPropsNameFilter: String
       read FSubPropsNameFilter write FSubPropsNameFilter;
+  end;
+
+{ TClassPropertyEditor
+  Default property editor for all objects. Does not allow modifying the
+  property but does display the class name of the object and will allow the
+  editing of the object's properties as sub-properties of the property. }
+
+  TClassPropertyEditor = class(TStructurePropertyEditor)
+  private
+    FHideClassName: Boolean;
+  protected
+    function GetSelections: TPersistentSelectionList; virtual;
+  public
+    function ValueIsStreamed: boolean; override;
+    function GetAttributes: TPropertyAttributes; override;
+    procedure GetProperties(Proc: TGetPropEditProc); override;
+    function GetValue: String; override;
+
     property HideClassName: Boolean read FHideClassName write FHideClassName;
   end;
 
@@ -773,18 +818,16 @@ type
 
   { TRecordPropertyEditor }
 
-  TRecordPropertyEditor = class(TPropertyEditor)
+  TRecordPropertyEditor = class(TStructurePropertyEditor)
   private
     FCanReadFields: boolean;
     FCanWriteFields: boolean;
-    FSubPropsTypeFilter: TTypeKinds;
-    FSubPropsNameFilter: String;
     FHideRecordName: Boolean;
-    FSubProps: TObjectList;
   protected
-    function EditorFilter(const AEditor: TPropertyEditor): Boolean; virtual;
-    procedure ListSubProps(Prop: TPropertyEditor); virtual;
-    procedure SetSubPropsTypeFilter(const AValue: TTypeKinds); virtual;
+    FRecordData: PByte; // depending on FRecordRead this points to a temp mem or the instance
+    FReadAccess, FWriteAccess: Byte; // see ptField..ptConst
+    procedure LoadRecord; virtual;
+    procedure GetRecordData(const aMethod: TMethod; WithIndex: boolean; Index: Longint); virtual;
   public
     constructor Create(Hook: TPropertyEditorHook; APropCount: Integer); override;
     destructor Destroy; override;
@@ -795,10 +838,6 @@ type
     procedure Initialize; override;
     function ValueIsStreamed: boolean; override;
 
-    property SubPropsTypeFilter: TTypeKinds
-      read FSubPropsTypeFilter write SetSubPropsTypeFilter default tkAny;
-    property SubPropsNameFilter: String
-      read FSubPropsNameFilter write FSubPropsNameFilter;
     property HideRecordName: Boolean read FHideRecordName write FHideRecordName;
     property CanReadFields: boolean read FCanReadFields;
     property CanWriteFields: boolean read FCanWriteFields;
@@ -1863,6 +1902,36 @@ procedure EditCollectionNoAddDel(AComponent: TComponent; ACollection: TCollectio
 function IsInteresting(AEditor: TPropertyEditor;
   const AFilter: TTypeKinds; const APropNameFilter: String): Boolean;
 
+function GetOrdField(Field: Pointer; FieldInfo: PTypeInfo): Int64; overload;
+procedure SetOrdField(Field: Pointer; FieldInfo: PTypeInfo; Value: Int64); overload;
+function GetEnumField(Field: Pointer; FieldInfo: PTypeInfo): String; overload;
+procedure SetEnumField(Field: Pointer; FieldInfo: PTypeInfo; const Value: string); overload;
+function GetSetField(Field: Pointer; FieldInfo: PTypeInfo; Brackets: Boolean): String; overload;
+procedure SetSetField(Field: Pointer; FieldInfo: PTypeInfo; const Value: string); overload;
+function GetStringField(Field: Pointer; FieldInfo: PTypeInfo): String; overload;
+procedure SetStringField(Field: Pointer; FieldInfo: PTypeInfo; const Value: string); overload;
+function GetWideStringField(Field: Pointer; FieldInfo: PTypeInfo): WideString; overload;
+procedure SetWideStringField(Field: Pointer; FieldInfo: PTypeInfo; const Value: WideString); overload;
+function GetUnicodeStringField(Field: Pointer; FieldInfo: PTypeInfo): UnicodeString; overload;
+procedure SetUnicodeStringField(Field: Pointer; FieldInfo: PTypeInfo; const Value: UnicodeString); overload;
+function GetRawbyteStringField(Field: Pointer; FieldInfo: PTypeInfo): RawByteString; overload;
+procedure SetRawbyteStringField(Field: Pointer; FieldInfo: PTypeInfo; const Value: RawByteString); overload;
+function GetFloatField(Field: Pointer; FieldInfo: PTypeInfo): Extended; overload;
+procedure SetFloatField(Field: Pointer; FieldInfo: PTypeInfo; const Value: Extended); overload;
+function GetObjectField(Field: Pointer; FieldInfo: PTypeInfo; MinClass: TClass = nil): TObject; overload;
+procedure SetObjectField(Field: Pointer; FieldInfo: PTypeInfo; const Value: TObject); overload;
+function GetPointerField(Field: Pointer; FieldInfo: PTypeInfo): Pointer; overload;
+procedure SetPointerField(Field: Pointer; FieldInfo: PTypeInfo; const Value: Pointer); overload;
+function GetMethodField(Field: Pointer; FieldInfo: PTypeInfo): TMethod; overload;
+procedure SetMethodField(Field: Pointer; FieldInfo: PTypeInfo; const Value: TMethod); overload;
+function GetInterfaceField(Field: Pointer; FieldInfo: PTypeInfo): IInterface; overload;
+procedure SetInterfaceField(Field: Pointer; FieldInfo: PTypeInfo; const Value: IInterface); overload;
+function GetVariantField(Field: Pointer; FieldInfo: PTypeInfo): Variant; overload;
+procedure SetVariantField(Field: Pointer; FieldInfo: PTypeInfo; const Value: Variant); overload;
+
+Function GetPointerProp(Instance: TObject; PropInfo: PPropInfo): Pointer; overload;
+Procedure SetPointerProp(Instance: TObject; PropInfo: PPropInfo; Value: Pointer); overload;
+
 function dbgs(peh: TPropEditHint): string; overload;
 
 const
@@ -2032,31 +2101,59 @@ end;
 
 { TRecordPropertyEditor }
 
-procedure TRecordPropertyEditor.SetSubPropsTypeFilter(const AValue: TTypeKinds);
+procedure TRecordPropertyEditor.LoadRecord;
+var
+  PropInfo: PPropInfo;
+  Instance: TPersistent;
+  AMethod: TMethod;
 begin
-  if FSubPropsTypeFilter=AValue then Exit;
-  FSubPropsTypeFilter:=AValue;
+  if FRecordData=nil then
+    raise EPropertyError.CreateFmt(SErrCannotReadProperty, [GetName]);
+
+  PropInfo:=GetPropInfo;
+  Instance:=FPropList^[0].Instance;
+  if (PropInfo=nil) or (Instance=nil) then
+    raise EPropertyError.CreateFmt(SErrCannotReadProperty, [GetName]);
+
+  case (PropInfo^.PropProcs) and 3 of
+  ptField: ;
+  ptStatic,
+  ptVirtual:
+    begin
+      if (PropInfo^.PropProcs and 3)=ptStatic then
+        AMethod.Code:=PropInfo^.GetProc
+      else
+        AMethod.Code:=PCodePointer(Pointer(Instance.ClassType)+{%H-}PtrUInt(PropInfo^.GetProc))^;
+      AMethod.Data:=Instance;
+      if ((PropInfo^.PropProcs shr 6) and 1)<>0 then begin
+        GetRecordData(AMethod,true,PropInfo^.Index);
+      end else begin
+        GetRecordData(AMethod,false,0);
+      end;
+    end;
+  else
+    raise EPropertyError.CreateFmt(SErrCannotReadProperty, [GetName]);
+  end;
 end;
 
-function TRecordPropertyEditor.EditorFilter(const AEditor: TPropertyEditor): Boolean;
+procedure TRecordPropertyEditor.GetRecordData(const aMethod: TMethod; WithIndex: boolean;
+  Index: Longint);
 begin
-  Result := IsInteresting(AEditor, SubPropsTypeFilter, SubPropsNameFilter);
-end;
-
-procedure TRecordPropertyEditor.ListSubProps(Prop: TPropertyEditor);
-begin
-  FSubProps.Add(Prop);
+  raise EPropertyError.CreateFmt(SErrCannotReadProperty, [GetName]);
+  if aMethod.Code<>nil then ;
+  if WithIndex and (Index>=0) then ;
 end;
 
 constructor TRecordPropertyEditor.Create(Hook: TPropertyEditorHook; APropCount: Integer);
 begin
   inherited Create(Hook, APropCount);
-  FSubPropsTypeFilter:=tkAny;
+  writeln('TRecordPropertyEditor.Create ');
 end;
 
 destructor TRecordPropertyEditor.Destroy;
 begin
-  FSubProps.Free;
+  if FReadAccess in [ptStatic,ptVirtual] then
+    ReAllocMem(FRecordData,0);
   inherited Destroy;
 end;
 
@@ -2073,97 +2170,56 @@ end;
 procedure TRecordPropertyEditor.GetProperties(Proc: TGetPropEditProc);
 {$IFDEF HasExtRtti}
 var
-  aPropInfo: PPropInfo;
+  PropInfo: PPropInfo;
   aTypeData: PTypeData;
-  Fields: PManagedField;
   i: Integer;
   FieldTypeInfo: PTypeInfo;
   FieldCnt: LongInt;
-  ReadAccess, WriteAccess: Byte;
-  ReadNeedsCall, HasManagedTypes, WriteNeedsCall: Boolean;
-  //RecInit: PRecInitData;
+  Editor: TPropertyEditor;
+  Instance: TPersistent;
+  FieldList: PExtendedFieldInfoTable;
+  Field: PExtendedVmtFieldEntry;
 {$ENDIF}
 begin
   writeln('TRecordPropertyEditor.GetProperties START');
   {$IFDEF HasExtRtti}
-  aPropInfo:=GetPropInfo;
-  writeln('TRecordPropertyEditor.GetProperties aPropInfo^.Name=',aPropInfo^.Name);
-  aTypeData:=GetTypeData(aPropInfo^.PropType);
-  FieldCnt:=aTypeData^.TotalFieldCount;
-  writeln('TRecordPropertyEditor.GetProperties RecSize=',aTypeData^.RecSize,' TotalFieldCount=',FieldCnt);
+  Instance:=FPropList^[0].Instance;
+  PropInfo:=GetPropInfo;
+  if PropInfo=nil then
+    exit;
 
-  // check read and write access
-  ReadAccess:=(aPropInfo^.PropProcs) and 3;
-  case ReadAccess of
-  ptStatic,
-  ptVirtual: ReadNeedsCall:=true;
-  else ReadNeedsCall:=false;
-  end;
-  FCanReadFields:=true;
+  writeln('TRecordPropertyEditor.GetProperties aPropInfo^.Name=',GetPropInfo^.Name);
+  aTypeData:=GetTypeData(PropInfo^.PropType);
 
-  WriteAccess:=(aPropInfo^.PropProcs shr 2) and 3;
-  case WriteAccess of
-  ptStatic,
-  ptVirtual: WriteNeedsCall:=true;
-  else WriteNeedsCall:=false;
-  end;
-  FCanWriteFields:=true;
-
-  Fields:=PManagedField(AlignToPtr(PByte(@aTypeData^.TotalFieldCount)+SizeOf(Longint)));
-  for i:=0 to FieldCnt-1 do begin
-    FieldTypeInfo:=Fields[i].TypeRef;
-    writeln('TRecordPropertyEditor.GetProperties Normal ',i,'/',FieldCnt,' FldOffset=',Fields[i].FldOffset,' ',FieldTypeInfo^.Name,' ',FieldTypeInfo^.Kind);
-    // todo read value
-    case FieldTypeInfo^.Kind of
-      tkInteger: ;
-      //tkChar,
-      //tkEnumeration,
-      //tkFloat,
-      //tkSet,
-      //tkMethod,
-      //tkSString,
-      //tkClass,
-      //tkWChar,
-      //tkBool,
-      //tkInt64,
-      //tkQWord,
-      //tkUChar,
-      //tkClassRef,
-      //tkPointer: ;
-
-      //tkLString,
-      //tkAString,
-      //tkWString,
-
-      //tkUnknown: ;
-      //tkVariant: ;
-      //tkArray: ;
-      //tkRecord: ;
-      //tkInterface: ;
-      //tkObject: ;
-      //tkDynArray: ;
-      //tkInterfaceRaw: ;
-      //tkProcVar: ;
-      //tkUString: ;
-      //tkHelper: ;
-      //tkFile: ;
-    else
-      if ReadNeedsCall then
-        FCanReadFields:=false;
-      if WriteNeedsCall then
-        FCanWriteFields:=false;
-    end;
-  end;
+  FieldCnt:=GetFieldList(PropInfo^.PropType,FieldList,[vcPublic,vcPublished]);
 
   // create field editors
   if CanReadFields then begin
+    if FRecordData=nil then
+      case (PropInfo^.PropProcs) and 3 of
+      ptField:
+        // direct access
+        FRecordData:=PByte(Instance)+{%H-}PtrUInt(PropInfo^.GetProc);
+      else
+        // local cache
+        FRecordData:=AllocMem(aTypeData^.RecSize);
+      end;
+
     for i:=0 to FieldCnt-1 do begin
-      FieldTypeInfo:=Fields[i].TypeRef;
+      Field:=FieldList^[i];
+      FieldTypeInfo:=Field^.FieldType^;
+
+      // todo filter editors
+      GetEditorClass();
 
       case FieldTypeInfo^.Kind of
       tkInteger:
         begin
+          Editor:=TIntegerPropertyEditor.Create(PropertyHook,1);
+          Editor.SetRecordFieldEntry(0, PByte(FRecordData)+Field^.FieldOffset, Field^.Name, FieldTypeInfo);
+          Editor.Initialize;
 
+          Proc(Editor);
         end;
       else
 
@@ -2173,7 +2229,6 @@ begin
 
   {$ELSE}
   if Proc<>nil then ;
-  FCanReadFields:=false;
   {$ENDIF}
 end;
 
@@ -2186,11 +2241,25 @@ begin
 end;
 
 procedure TRecordPropertyEditor.Initialize;
+var
+  PropInfo: PPropInfo;
+  aTypeData: PTypeData;
 begin
   inherited Initialize;
-  if FSubProps<>nil then exit;
-  FSubProps:=TObjectList.Create(true);
-  GetProperties(@ListSubProps);
+
+  PropInfo:=GetPropInfo;
+  if PropInfo=nil then
+    exit;
+
+  writeln('TRecordPropertyEditor.Initialize aPropInfo^.Name=',GetPropInfo^.Name);
+  aTypeData:=GetTypeData(PropInfo^.PropType);
+
+  // check read and write access
+  FReadAccess:=(PropInfo^.PropProcs) and 3;
+  FCanReadFields:=FReadAccess in [ptField{,ptStatic,ptVirtual}];
+
+  FWriteAccess:=(PropInfo^.PropProcs shr 2) and 3;
+  FCanWriteFields:=FWriteAccess=ptField;
 end;
 
 function TRecordPropertyEditor.ValueIsStreamed: boolean;
@@ -2774,7 +2843,7 @@ begin
              GetTypeData(P^.PropertyType)^.ClassType)
          )
       then
-        if ((P^.PersistentClass=nil) or (Obj.InheritsFrom(P^.PersistentClass)))
+        if ((P^.PersistentClass=nil) or ((Obj<>nil) and (Obj.InheritsFrom(P^.PersistentClass))))
             and ((P^.PropertyName='') or (CompareText(PropInfo^.Name,P^.PropertyName)=0))
         then
           if (C=nil) or   // see if P is better match than C
@@ -3057,7 +3126,11 @@ end;
 
 function TPropertyEditor.CallStoredFunction: Boolean;
 begin
-  Result := (FPropList^[0].Instance <> nil) and IsStoredProp(FPropList^[0].Instance, FPropList^[0].PropInfo);
+  with FPropList^[0] do begin
+    if PropInfo=nil then
+      exit(false);
+    Result := (Instance <> nil) and IsStoredProp(Instance, PropInfo);
+  end;
 end;
 
 {$IFDEF UseOINormalCheckBox}
@@ -3207,7 +3280,7 @@ begin
   Result:=GetFloatValueAt(0);
 end;
 
-procedure SetIndexValues(P: PPRopInfo; var Index, IValue : Longint);
+procedure SetIndexValues(P: PPropInfo; var Index, IValue : Longint);
 begin
   Index:=((P^.PropProcs shr 6) and 1);
   if Index<>0 then
@@ -3218,7 +3291,7 @@ end;
 
 function TPropertyEditor.GetFloatValueAt(Index:Integer):Extended;
 begin
-  with FPropList^[Index] do Result:=GetFloatProp(Instance,PropInfo);
+  Result:=FPropList^[Index].GetFloat;
 end;
 
 function TPropertyEditor.GetMethodValue:TMethod;
@@ -3262,9 +3335,9 @@ begin
   end;
 end;
 
-function TPropertyEditor.GetMethodValueAt(Index:Integer):TMethod;
+function TPropertyEditor.GetMethodValueAt(Index: Integer):TMethod;
 begin
-  with FPropList^[Index] do Result:=LazGetMethodProp(Instance,PropInfo);
+  Result:=FPropList^[Index].GetMethod;
 end;
 
 function TPropertyEditor.GetEditLimit: Integer;
@@ -3272,19 +3345,26 @@ begin
   Result := 255;
 end;
 
-function TPropertyEditor.GetName:shortstring;
+function TPropertyEditor.GetName: shortstring;
 begin
-  Result:=FPropList^[0].PropInfo^.Name;
+  with FPropList^[0] do begin
+    if PropInfo<>nil then
+      Result:=PropInfo^.Name
+    else if FieldName<>nil then
+      Result:=FieldName^
+    else
+      Result:='';
+  end;
 end;
 
-function TPropertyEditor.GetOrdValue:Longint;
+function TPropertyEditor.GetOrdValue: Longint;
 begin
   Result:=GetOrdValueAt(0);
 end;
 
-function TPropertyEditor.GetOrdValueAt(Index:Integer):Longint;
+function TPropertyEditor.GetOrdValueAt(Index: Integer): Longint;
 begin
-  with FPropList^[Index] do Result:=GetOrdProp(Instance,PropInfo);
+  Result:=FPropList^[Index].GetOrd;
 end;
 
 function TPropertyEditor.GetObjectValue: TObject;
@@ -3299,14 +3379,12 @@ end;
 
 function TPropertyEditor.GetObjectValueAt(Index: Integer): TObject;
 begin
-  with FPropList^[Index] do
-    Result:=GetObjectProp(Instance,PropInfo,nil); // nil for fpc 1.0.x
+  Result:=FPropList^[Index].GetObject;
 end;
 
 function TPropertyEditor.GetObjectValueAt(Index: Integer; MinClass: TClass): TObject;
 begin
-  with FPropList^[Index] do
-    Result:=GetObjectProp(Instance,PropInfo,MinClass);
+  Result:=FPropList^[Index].GetObject(MinClass);
 end;
 
 function TPropertyEditor.GetDefaultOrdValue: Longint;
@@ -3314,19 +3392,20 @@ var
   APropInfo: PPropInfo;
 begin
   APropInfo:=FPropList^[0].PropInfo;
-  Result:=APropInfo^.Default;
+  if APropInfo<>nil then
+    Result:=APropInfo^.Default
+  else
+    Result:=0;
 end;
 
 function TPropertyEditor.GetSetValue(Brackets: boolean): AnsiString;
 begin
-  with FPropList^[0] do
-    Result:=GetSetProp(Instance,PropInfo,Brackets);
+  Result:=FPropList^[0].GetSet(Brackets);
 end;
 
 function TPropertyEditor.GetSetValueAt(Index: Integer; Brackets: boolean): AnsiString;
 begin
-  with FPropList^[Index] do
-    Result:=GetSetProp(Instance,PropInfo,Brackets);
+  Result:=FPropList^[Index].GetSet(Brackets);
 end;
 
 function TPropertyEditor.GetPrivateDirectory:ansistring;
@@ -3360,7 +3439,7 @@ procedure TPropertyEditor.GetProperties(Proc:TGetPropEditProc);
 begin
 end;
 
-function TPropertyEditor.GetPropInfo:PPropInfo;
+function TPropertyEditor.GetPropInfo: PPropInfo;
 begin
   Result:=FPropList^[0].PropInfo;
 end;
@@ -3370,29 +3449,39 @@ begin
   Result:=@FPropList^[0];
 end;
 
-function TPropertyEditor.GetPropType:PTypeInfo;
+function TPropertyEditor.GetEnumValueAt(Index: Integer): string;
 begin
-  Result:=FPropList^[0].PropInfo^.PropType;
+  Result:=FPropList^[Index].GetEnum;
 end;
 
-function TPropertyEditor.GetStrValue:AnsiString;
+function TPropertyEditor.GetPropType: PTypeInfo;
+begin
+  with FPropList^[0] do begin
+    if FieldTypeInfo<>nil then
+      Result:=FieldTypeInfo
+    else
+      Result:=PropInfo^.PropType;
+  end;
+end;
+
+function TPropertyEditor.GetStrValue: AnsiString;
 begin
   Result:=GetStrValueAt(0);
 end;
 
-function TPropertyEditor.GetStrValueAt(Index:Integer):AnsiString;
+function TPropertyEditor.GetStrValueAt(Index:Integer): AnsiString;
 begin
-  with FPropList^[Index] do Result:=GetStrProp(Instance,PropInfo);
+  Result:=FPropList^[Index].GetString;
 end;
 
-function TPropertyEditor.GetVarValue:Variant;
+function TPropertyEditor.GetVarValue: Variant;
 begin
   Result:=GetVarValueAt(0);
 end;
 
-function TPropertyEditor.GetVarValueAt(Index:Integer):Variant;
+function TPropertyEditor.GetVarValueAt(Index:Integer): Variant;
 begin
-  with FPropList^[Index] do Result:=GetVariantProp(Instance,PropInfo);
+  Result:=FPropList^[Index].GetVariant;
 end;
 
 function TPropertyEditor.GetWideStrValue: WideString;
@@ -3402,7 +3491,7 @@ end;
 
 function TPropertyEditor.GetWideStrValueAt(Index: Integer): WideString;
 begin
-  with FPropList^[Index] do Result:=GetWideStrProp(Instance,PropInfo);
+  Result:=FPropList^[Index].GetWideString;
 end;
 
 function TPropertyEditor.HasDefaultValue: Boolean;
@@ -3410,6 +3499,7 @@ var
   APropInfo: PPropInfo;
 begin
   APropInfo:=FPropList^[0].PropInfo;
+  if APropInfo=nil then exit(true);
   Result := APropInfo^.Default<>NoDefaultValue;
 end;
 
@@ -3420,7 +3510,7 @@ end;
 
 function TPropertyEditor.GetUnicodeStrValueAt(Index: Integer): UnicodeString;
 begin
-  with FPropList^[Index] do Result:=GetUnicodeStrProp(Instance,PropInfo);
+  Result:=FPropList^[Index].GetUnicodeString;
 end;
 
 function TPropertyEditor.GetValue:ansistring;
@@ -3483,29 +3573,52 @@ begin
 end;
 
 procedure TPropertyEditor.Initialize;
-
-  procedure RaiseNoInstance;
-  begin
-    raise Exception.Create('TPropertyEditor.Initialize '+dbgsName(Self));
-  end;
-
 begin
-  if FPropList^[0].Instance=nil then
-    RaiseNoInstance;
+  with FPropList^[0] do begin
+    if Instance<>nil then
+    begin
+      if PropInfo=nil then
+        raise Exception.Create('TPropertyEditor.Initialize 20240902134758 '+dbgsName(Self));
+    end else if Field<>nil then begin
+      if FieldTypeInfo=nil then
+        raise Exception.Create('TPropertyEditor.Initialize 20240902134825 '+dbgsName(Self));
+    end else
+      raise Exception.Create('TPropertyEditor.Initialize 20240902134831 '+dbgsName(Self));
+  end;
 end;
 
-procedure TPropertyEditor.Modified(PropName: ShortString);
+procedure TPropertyEditor.Modified(Index: integer);
+var
+  PropName: ShortString;
 begin
-  if PropertyHook <> nil then
-    PropertyHook.Modified(Self, PropName);
+  if PropertyHook = nil then exit;
+  with FPropList^[Index] do begin
+    if PropInfo<>nil then
+      PropName:=PropInfo^.Name
+    else
+      PropName:='';
+  end;
+  PropertyHook.Modified(Self, PropName);
 end;
 
 procedure TPropertyEditor.SetPropEntry(Index:Integer;
   AnInstance:TPersistent; APropInfo:PPropInfo);
 begin
+  FPropList^[Index]:=Default(TInstProp);
   with FPropList^[Index] do begin
     Instance:=AnInstance;
     PropInfo:=APropInfo;
+  end;
+end;
+
+procedure TPropertyEditor.SetRecordFieldEntry(Index: Integer; AnInstance: Pointer;
+  aName: PShortString; AFieldInfo: PTypeInfo);
+begin
+  FPropList^[Index]:=Default(TInstProp);
+  with FPropList^[Index] do begin
+    Field:=AnInstance;
+    FieldName:=aName;
+    FieldTypeInfo:=AFieldInfo;
   end;
 end;
 
@@ -3515,8 +3628,8 @@ var
 begin
   for I:=0 to FPropCount-1 do
     with FPropList^[I] do begin
-      SetFloatProp(Instance,PropInfo,NewValue);
-      Modified(PropInfo^.Name);
+      SetFloat(NewValue);
+      Modified(I);
     end;
 end;
 
@@ -3526,8 +3639,8 @@ var
 begin
   for I:=0 to FPropCount-1 do
     with FPropList^[I] do begin
-      LazSetMethodProp(Instance,PropInfo,NewValue);
-      Modified(PropInfo^.Name);
+      SetMethod(NewValue);
+      Modified(I);
     end;
 end;
 
@@ -3537,8 +3650,8 @@ var
 begin
   for I:=0 to FPropCount-1 do
     with FPropList^[I] do begin
-      SetInt64Prop(Instance,PropInfo,NewValue);
-      Modified(PropInfo^.Name);
+      SetOrd(NewValue);
+      Modified(I);
     end;
 end;
 
@@ -3548,8 +3661,8 @@ var
 begin
   for I := 0 to FPropCount - 1 do
     with FPropList^[I] do begin
-      SetInterfaceProp(Instance, PropInfo, NewValue);
-      Modified(PropInfo^.Name);
+      SetInterface(NewValue);
+      Modified(I);
     end;
 end;
 
@@ -3559,8 +3672,8 @@ var
 begin
   for I := 0 to FPropCount - 1 do
     with FPropList^[I] do begin
-      SetOrdProp(Instance, PropInfo, NewValue);
-      Modified(PropInfo^.Name);
+      SetOrd(NewValue);
+      Modified(I);
     end;
 end;
 
@@ -3570,8 +3683,8 @@ var
 begin
   for I := 0 to FPropCount - 1 do
     with FPropList^[I] do begin
-      SetOrdProp(Instance, PropInfo, PtrInt({%H-}PtrUInt(NewValue)));
-      Modified(PropInfo^.Name);
+      SetPointerValue(NewValue);
+      Modified(I);
     end;
 end;
 
@@ -3581,8 +3694,8 @@ var
 begin
   for I:=0 to FPropCount-1 do
     with FPropList^[I] do begin
-      SetStrProp(Instance,PropInfo,NewValue);
-      Modified(PropInfo^.Name);
+      SetString(NewValue);
+      Modified(I);
     end;
 end;
 
@@ -3592,8 +3705,8 @@ var
 begin
   for I:=0 to FPropCount-1 do
     with FPropList^[I] do begin
-      SetWideStrProp(Instance,PropInfo,NewValue);
-      Modified(PropInfo^.Name);
+      SetWideString(NewValue);
+      Modified(I);
     end;
 end;
 
@@ -3603,8 +3716,8 @@ var
 begin
   for I:=0 to FPropCount-1 do
     with FPropList^[I] do begin
-      SetUnicodeStrProp(Instance,PropInfo,NewValue);
-      Modified(PropInfo^.Name);
+      SetUnicodeString(NewValue);
+      Modified(I);
     end;
 end;
 
@@ -3614,8 +3727,8 @@ var
 begin
   for I:=0 to FPropCount-1 do
     with FPropList^[I] do begin
-      SetVariantProp(Instance,PropInfo,NewValue);
-      Modified(PropInfo^.Name);
+      SetVariant(NewValue);  // todo field
+      Modified(I);
     end;
 end;
 
@@ -3625,7 +3738,7 @@ var
 begin
   if PropertyHook<>nil then
     for I:=0 to FPropCount-1 do
-      with FPropList^[I] do PropertyHook.Revert(Instance,PropInfo);
+      with FPropList^[I] do PropertyHook.Revert(Instance,PropInfo); // todo field
 end;
 
 procedure TPropertyEditor.RevertToInherited;
@@ -3652,78 +3765,78 @@ begin
       if not PropertyHook.GetAncestorInstance(InstProp,AncestorInstProp) then
         continue;
 
-      case InstProp.PropInfo^.PropType^.Kind of
+      case InstProp.GetKind of
       tkInteger,tkChar,tkEnumeration,tkBool,tkInt64,tkQWord:
         begin
-          OldOrdValue:=GetOrdProp(InstProp.Instance,InstProp.PropInfo);
-          NewOrdValue:=GetOrdProp(AncestorInstProp.Instance,AncestorInstProp.PropInfo);
+          OldOrdValue:=InstProp.GetOrd;
+          NewOrdValue:=AncestorInstProp.GetOrd;
           if OldOrdValue=NewOrdValue then continue;
           Changed:=true;
-          SetOrdProp(InstProp.Instance,InstProp.PropInfo,NewOrdValue);
+          InstProp.SetOrd(NewOrdValue);
         end;
       tkSet:
         begin
-          OldStr:=GetSetProp(InstProp.Instance,InstProp.PropInfo,false);
-          NewStr:=GetSetProp(AncestorInstProp.Instance,AncestorInstProp.PropInfo,false);
+          OldStr:=InstProp.GetSet(false);
+          NewStr:=AncestorInstProp.GetSet(false);
           if OldStr=NewStr then continue;
           Changed:=true;
-          SetSetProp(InstProp.Instance,InstProp.PropInfo,NewStr);
+          InstProp.SetSet(NewStr);
         end;
       tkString,tkLString,tkAString:
         begin
-          OldStr:=GetStrProp(InstProp.Instance,InstProp.PropInfo);
-          NewStr:=GetStrProp(AncestorInstProp.Instance,AncestorInstProp.PropInfo);
+          OldStr:=InstProp.GetString;
+          NewStr:=AncestorInstProp.GetString;
           if OldStr=NewStr then continue;
           Changed:=true;
-          SetStrProp(InstProp.Instance,InstProp.PropInfo,NewStr);
+          InstProp.SetString(NewStr);
         end;
       tkWString:
         begin
-          OldWideStr:=GetWideStrProp(InstProp.Instance,InstProp.PropInfo);
-          NewWideStr:=GetWideStrProp(AncestorInstProp.Instance,AncestorInstProp.PropInfo);
+          OldWideStr:=InstProp.GetWideString;
+          NewWideStr:=AncestorInstProp.GetWideString;
           if OldWideStr=NewWideStr then continue;
           Changed:=true;
-          SetWideStrProp(InstProp.Instance,InstProp.PropInfo,NewWideStr);
+          InstProp.SetWideString(NewWideStr);
         end;
       tkUString:
         begin
-          OldUString:=GetUnicodeStrProp(InstProp.Instance,InstProp.PropInfo);
-          NewUString:=GetUnicodeStrProp(AncestorInstProp.Instance,AncestorInstProp.PropInfo);
+          OldUString:=InstProp.GetUnicodeString;
+          NewUString:=AncestorInstProp.GetUnicodeString;
           if OldUString=NewUString then continue;
           Changed:=true;
-          SetUnicodeStrProp(InstProp.Instance,InstProp.PropInfo,NewUString);
+          InstProp.SetUnicodeString(NewUString);
         end;
       tkFloat:
         begin
-          OldFloat:=GetFloatProp(InstProp.Instance,InstProp.PropInfo);
-          NewFloat:=GetFloatProp(AncestorInstProp.Instance,AncestorInstProp.PropInfo);
+          OldFloat:=InstProp.GetFloat;
+          NewFloat:=AncestorInstProp.GetFloat;
           if OldFloat=NewFloat then continue;
           Changed:=true;
-          SetFloatProp(InstProp.Instance,InstProp.PropInfo,NewFloat);
+          InstProp.SetFloat(NewFloat);
         end;
       tkClass:
         begin
-          OldObj:=GetObjectProp(InstProp.Instance,InstProp.PropInfo);
-          NewObj:=GetObjectProp(AncestorInstProp.Instance,AncestorInstProp.PropInfo);
+          OldObj:=InstProp.GetObject;
+          NewObj:=AncestorInstProp.GetObject;
           if OldObj=NewObj then continue;
           Changed:=true;
-          SetObjectProp(InstProp.Instance,InstProp.PropInfo,NewObj);
+          InstProp.SetObject(NewObj);
         end;
       tkMethod:
         begin
-          OldMethod:=GetMethodProp(InstProp.Instance,InstProp.PropInfo);
-          NewMethod:=GetMethodProp(AncestorInstProp.Instance,AncestorInstProp.PropInfo);
+          OldMethod:=InstProp.GetMethod;
+          NewMethod:=AncestorInstProp.GetMethod;
           if SameMethod(OldMethod,NewMethod) then continue;
           Changed:=true;
-          SetMethodProp(InstProp.Instance,InstProp.PropInfo,NewMethod);
+          InstProp.SetMethod(NewMethod);
         end;
       tkInterface:
         begin
-          OldInterface:=GetInterfaceProp(InstProp.Instance,InstProp.PropInfo);
-          NewInterface:=GetInterfaceProp(AncestorInstProp.Instance,AncestorInstProp.PropInfo);
+          OldInterface:=InstProp.GetInterface;
+          NewInterface:=AncestorInstProp.GetInterface;
           if OldInterface=NewInterface then continue;
           Changed:=true;
-          SetInterfaceProp(InstProp.Instance,InstProp.PropInfo,NewInterface);
+          InstProp.SetInterface(NewInterface);
         end;
       else
       end;
@@ -3766,7 +3879,7 @@ end;
 
 function TPropertyEditor.GetInt64ValueAt(Index:Integer):Int64;
 begin
-  with FPropList^[Index] do Result:=GetInt64Prop(Instance,PropInfo);
+  Result:=FPropList^[Index].GetOrd;
 end;
 
 function TPropertyEditor.GetIntfValue: IInterface;
@@ -3776,7 +3889,7 @@ end;
 
 function TPropertyEditor.GetIntfValueAt(Index: Integer): IInterface;
 begin
-  with FPropList^[Index] do Result := GetInterfaceProp(Instance, PropInfo);
+  Result:=FPropList^[Index].GetInterface;
 end;
 
 { these three procedures implement the default render behavior of the
@@ -3873,7 +3986,7 @@ begin
   Result:=(paRevertable in GetAttributes) and (GetComponent(0) is TComponent)
     and (csAncestor in TComponent(GetComponent(0)).ComponentState)
     and (PropertyHook<>nil)
-    and (FPropList^[0].PropInfo^.PropType^.Kind in
+    and (GetPropType^.Kind in
       [tkInteger,tkChar,tkEnumeration,tkBool,tkInt64,tkQWord,
        tkSet,
        tkString,tkLString,tkAString,
@@ -3940,6 +4053,232 @@ begin
       exit;
     end;
   end;
+end;
+
+{ TInstProp }
+
+function TInstProp.GetTypeInfo: PTypeInfo;
+begin
+  if PropInfo<>nil then
+    Result:=PropInfo^.PropType
+  else
+    Result:=FieldTypeInfo;
+end;
+
+function TInstProp.GetKind: TTypeKind;
+begin
+  if PropInfo<>nil then
+    Result:=PropInfo^.PropType^.Kind
+  else
+    Result:=FieldTypeInfo^.Kind;
+end;
+
+function TInstProp.GetOrd: int64;
+begin
+  if Field<>nil then
+    Result:=GetOrdField(Field,FieldTypeInfo)
+  else
+    Result:=GetOrdProp(Instance,PropInfo);
+end;
+
+procedure TInstProp.SetOrd(const Value: int64);
+begin
+  if Field<>nil then
+    SetOrdField(Field,FieldTypeInfo,Value)
+  else
+    SetOrdProp(Instance,PropInfo,Value);
+end;
+
+function TInstProp.GetEnum: string;
+begin
+  if Field<>nil then
+    Result:=GetEnumField(Field,FieldTypeInfo)
+  else
+    Result:=GetEnumProp(Instance,PropInfo);
+end;
+
+procedure TInstProp.SetEnum(const Value: string);
+begin
+  if Field<>nil then
+    SetEnumField(Field,FieldTypeInfo,Value)
+  else
+    SetEnumProp(Instance,PropInfo,Value);
+end;
+
+function TInstProp.GetSet(Brackets: boolean): string;
+begin
+  if Field<>nil then
+    Result:=GetSetField(Field,FieldTypeInfo,Brackets)
+  else
+    Result:=GetSetProp(Instance,PropInfo,Brackets);
+end;
+
+procedure TInstProp.SetSet(const Value: string);
+begin
+  if Field<>nil then
+    SetSetField(Field,FieldTypeInfo,Value)
+  else
+    SetSetProp(Instance,PropInfo,Value);
+end;
+
+function TInstProp.GetString: AnsiString;
+begin
+  if Field<>nil then
+    Result:=GetStringField(Field,FieldTypeInfo)
+  else
+    Result:=GetStrProp(Instance,PropInfo);
+end;
+
+procedure TInstProp.SetString(const Value: string);
+begin
+  if Field<>nil then
+    SetStringField(Field,FieldTypeInfo,Value)
+  else
+    SetStrProp(Instance,PropInfo,Value);
+end;
+
+function TInstProp.GetWideString: WideString;
+begin
+  if Field<>nil then
+    Result:=GetWideStringField(Field,FieldTypeInfo)
+  else
+    Result:=GetWideStrProp(Instance,PropInfo);
+end;
+
+procedure TInstProp.SetWideString(const Value: WideString);
+begin
+  if Field<>nil then
+    SetWideStringField(Field,FieldTypeInfo,Value)
+  else
+    SetWideStrProp(Instance,PropInfo,Value);
+end;
+
+function TInstProp.GetUnicodeString: UnicodeString;
+begin
+  if Field<>nil then
+    Result:=GetUnicodeStringField(Field,FieldTypeInfo)
+  else
+    Result:=GetUnicodeStrProp(Instance,PropInfo);
+end;
+
+procedure TInstProp.SetUnicodeString(const Value: UnicodeString);
+begin
+  if Field<>nil then
+    SetUnicodeStringField(Field,FieldTypeInfo,Value)
+  else
+    SetUnicodeStrProp(Instance,PropInfo,Value);
+end;
+
+function TInstProp.GetRawByteString: RawByteString;
+begin
+  if Field<>nil then
+    Result:=GetRawbyteStringField(Field,FieldTypeInfo)
+  else
+    Result:=GetRawbyteStrProp(Instance,PropInfo);
+end;
+
+procedure TInstProp.SetRawByteString(const Value: RawByteString);
+begin
+  if Field<>nil then
+    SetRawbyteStringField(Field,FieldTypeInfo,Value)
+  else
+    SetRawByteStrProp(Instance,PropInfo,Value);
+end;
+
+function TInstProp.GetFloat: Extended;
+begin
+  if Field<>nil then
+    Result:=GetFloatField(Field,FieldTypeInfo)
+  else
+    Result:=GetFloatProp(Instance,PropInfo);
+end;
+
+procedure TInstProp.SetFloat(const Value: Extended);
+begin
+  if Field<>nil then
+    SetFloatField(Field,FieldTypeInfo,Value)
+  else
+    SetFloatProp(Instance,PropInfo,Value);
+end;
+
+function TInstProp.GetObject(MinClass: TClass): TObject;
+begin
+  if Field<>nil then
+    Result:=GetObjectField(Field,FieldTypeInfo,MinClass)
+  else
+    Result:=GetObjectProp(Instance,PropInfo,MinClass);
+end;
+
+procedure TInstProp.SetObject(const Value: TObject);
+begin
+  if Field<>nil then
+    SetObjectField(Field,FieldTypeInfo,Value)
+  else
+    SetObjectProp(Instance,PropInfo,Value);
+end;
+
+function TInstProp.GetPointerValue: Pointer;
+begin
+  if Field<>nil then
+    Result:=GetPointerField(Field,FieldTypeInfo)
+  else
+    Result:=GetPointerProp(Instance,PropInfo);
+end;
+
+procedure TInstProp.SetPointerValue(const Value: Pointer);
+begin
+  if Field<>nil then
+    SetPointerField(Field,FieldTypeInfo,Value)
+  else
+    SetPointerProp(Instance,PropInfo,Value);
+end;
+
+function TInstProp.GetMethod: TMethod;
+begin
+  if Field<>nil then
+    Result:=GetMethodField(Field,FieldTypeInfo)
+  else
+    Result:=GetMethodProp(Instance,PropInfo);
+end;
+
+procedure TInstProp.SetMethod(const Value: TMethod);
+begin
+  if Field<>nil then
+    SetMethodField(Field,FieldTypeInfo,Value)
+  else
+    LazSetMethodProp(Instance,PropInfo,Value);
+end;
+
+function TInstProp.GetInterface: IInterface;
+begin
+  if Field<>nil then
+    Result:=GetInterfaceField(Field,FieldTypeInfo)
+  else
+    Result:=GetInterfaceProp(Instance,PropInfo);
+end;
+
+procedure TInstProp.SetInterface(const Value: IInterface);
+begin
+  if Field<>nil then
+    SetInterfaceField(Field,FieldTypeInfo,Value)
+  else
+    SetInterfaceProp(Instance,PropInfo,Value);
+end;
+
+function TInstProp.GetVariant: Variant;
+begin
+  if Field<>nil then
+    Result:=GetVariantField(Field,FieldTypeInfo)
+  else
+    Result:=GetVariantProp(Instance,PropInfo);
+end;
+
+procedure TInstProp.SetVariant(const Value: Variant);
+begin
+  if Field<>nil then
+    SetVariantField(Field,FieldTypeInfo,Value)
+  else
+    SetVariantProp(Instance,PropInfo,Value);
 end;
 
 { TOrdinalPropertyEditor }
@@ -4619,6 +4958,41 @@ begin
   Result := Result + ']';
 end;
 
+{ TStructurePropertyEditor }
+
+function TStructurePropertyEditor.EditorFilter(const AEditor: TPropertyEditor): Boolean;
+begin
+  Result := IsInteresting(AEditor, SubPropsTypeFilter, SubPropsNameFilter);
+end;
+
+procedure TStructurePropertyEditor.ListSubProps(Prop: TPropertyEditor);
+begin
+  FSubProps.Add(Prop);
+end;
+
+procedure TStructurePropertyEditor.SetSubPropsTypeFilter(const AValue: TTypeKinds);
+begin
+  if FSubPropsTypeFilter = AValue then exit;
+  FSubPropsTypeFilter := AValue;
+end;
+
+constructor TStructurePropertyEditor.Create(Hook: TPropertyEditorHook; APropCount: Integer);
+begin
+  inherited Create(Hook, APropCount);
+  FSubPropsTypeFilter := tkAny;
+end;
+
+destructor TStructurePropertyEditor.Destroy;
+begin
+  FreeAndNil(FSubProps);
+  inherited Destroy;
+end;
+
+function TStructurePropertyEditor.AllEqual: Boolean;
+begin
+  Result:=true;
+end;
+
 { TListElementPropertyEditor }
 
 constructor TListElementPropertyEditor.Create(Parent: TListPropertyEditor;
@@ -5013,28 +5387,6 @@ end;
 
 { TClassPropertyEditor }
 
-constructor TClassPropertyEditor.Create(Hook: TPropertyEditorHook; APropCount: Integer);
-begin
-  inherited Create(Hook, APropCount);
-  FSubPropsTypeFilter := tkAny;
-end;
-
-function TClassPropertyEditor.AllEqual: Boolean;
-begin
-  Result:=True; // ToDo: Maybe all sub-properties should be compared for equality.
-end;
-
-destructor TClassPropertyEditor.Destroy;
-begin
-  FSubProps.Free;
-  inherited Destroy;
-end;
-
-function TClassPropertyEditor.EditorFilter(const AEditor: TPropertyEditor): Boolean;
-begin
-  Result := IsInteresting(AEditor, SubPropsTypeFilter, SubPropsNameFilter);
-end;
-
 function TClassPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect, paSubProperties, paReadOnly];
@@ -5095,17 +5447,6 @@ begin
     if TPropertyEditor(FSubProps[I]).ValueIsStreamed then
       Exit(True);
   Result := False;
-end;
-
-procedure TClassPropertyEditor.ListSubProps(Prop: TPropertyEditor);
-begin
-  FSubProps.Add(Prop);
-end;
-
-procedure TClassPropertyEditor.SetSubPropsTypeFilter(const AValue: TTypeKinds);
-begin
-  if FSubPropsTypeFilter = AValue then exit;
-  FSubPropsTypeFilter := AValue;
 end;
 
 { TMethodPropertyEditor }
@@ -5507,9 +5848,12 @@ begin
 end;
 
 function TPersistentPropertyEditor.GetAttributes: TPropertyAttributes;
+var
+  Info: PPropInfo;
 begin
   Result := [paMultiSelect];
-  if Assigned(GetPropInfo^.SetProc) then
+  Info:=GetPropInfo;
+  if (Info<>nil) and Assigned(Info^.SetProc) then
     Result := Result + [paValueList, paSortList, paRevertable, paVolatileSubProperties]
   else
     Result := Result + [paReadOnly];
@@ -5653,9 +5997,12 @@ begin
 end;
 
 function TInterfacePropertyEditor.GetAttributes: TPropertyAttributes;
+var
+  Info: PPropInfo;
 begin
- Result := [paMultiSelect];
-  if Assigned(GetPropInfo^.SetProc) then
+  Result := [paMultiSelect];
+  Info:=GetPropInfo;
+  if (Info<>nil) and Assigned(Info^.SetProc) then
     Result := Result + [paValueList, paSortList, paRevertable, paVolatileSubProperties]
   else
     Result := Result + [paReadOnly];
@@ -6560,10 +6907,10 @@ procedure TFileDlgFilterProperty.Edit;
 begin
   with TFileFilterPropEditForm.Create(Application) do
   try
-    Filter:=GetStrProp(GetComponent(0), 'Filter');
+    Filter:=GetStrValue;
     if ShowModal=mrOk then begin
       SetStrValue(Filter);
-      Modified('Filter');
+      Modified;
     end;
   finally
     Free;
@@ -7220,14 +7567,16 @@ begin
   while GetNextHandlerIndex(htModified,i) do
     TPropHookModified(FHandlers[htModified][i])(Sender);
 
-  i := GetHandlerCount(htModifiedWithName);
-  while GetNextHandlerIndex(htModifiedWithName,i) do
-    TPropHookModifiedWithName(FHandlers[htModifiedWithName][i])(Sender, PropName);
+  if PropName>'' then
+  begin
+    i := GetHandlerCount(htModifiedWithName);
+    while GetNextHandlerIndex(htModifiedWithName,i) do
+      TPropHookModifiedWithName(FHandlers[htModifiedWithName][i])(Sender, PropName);
+  end;
 
   if Sender is TPropertyEditor then
   begin
     // mark the designer form of every selected persistent
-    // ToDo: Use PropName here somehow.
     Editor := TPropertyEditor(Sender);
     List := TFPList.Create;
     try
@@ -8064,7 +8413,7 @@ var
     obj: TPersistent;
     PropCnt: LongInt;
   begin
-    ti := A.GetPropInfo^.PropType;
+    ti := A.GetPropType;
     //DebugLn('IsInteresting: ', ti^.Name);
     Result := ti^.Kind <> tkClass;
     if Result then
@@ -8149,6 +8498,389 @@ begin
     //DebugLn('IsInteresting <- ', BoolToStr(Result, true));
   finally
     visited.Free;
+  end;
+end;
+
+function GetOrdField(Field: Pointer; FieldInfo: PTypeInfo): Int64;
+var
+  Signed: Boolean;
+  DataSize: Integer;
+  OrdType: TOrdType;
+begin
+  Result:=0;
+  Signed := false;
+  DataSize := 4;
+  case FieldInfo^.Kind of
+    tkChar, tkBool:
+      DataSize:=1;
+    tkWChar:
+      DataSize:=2;
+    tkSet,
+    tkEnumeration,
+    tkInteger:
+      begin
+        OrdType:=GetTypeData(FieldInfo)^.OrdType;
+        case OrdType of
+          otSByte,otUByte: DataSize := 1;
+          otSWord,otUWord: DataSize := 2;
+        end;
+        Signed := OrdType in [otSByte,otSWord,otSLong];
+      end;
+    tkInt64 :
+      begin
+        DataSize:=8;
+        Signed:=true;
+      end;
+    tkQword :
+      begin
+        DataSize:=8;
+        Signed:=false;
+      end;
+  end;
+
+  if Signed then begin
+    case DataSize of
+      1: Result:=PShortInt(Field)^;
+      2: Result:=PSmallInt(Field)^;
+      4: Result:=PLongint(Field)^;
+      8: Result:=PInt64(Field)^;
+    end;
+  end else begin
+    case DataSize of
+      1: Result:=PByte(Field)^;
+      2: Result:=PWord(Field)^;
+      4: Result:=PLongint(Field)^;
+      8: Result:=PInt64(Field)^;
+    end;
+  end;
+end;
+
+procedure SetOrdField(Field: Pointer; FieldInfo: PTypeInfo; Value: Int64);
+var
+  DataSize: Integer;
+begin
+  if FieldInfo^.Kind in [tkInt64,tkQword] then
+    DataSize := 8
+  else
+    DataSize := 4;
+  if not (FieldInfo^.Kind in [tkInt64,tkQword,tkClass,tkInterface,tkInterfaceRaw,tkDynArray]) then
+    begin
+      // cut off unnecessary stuff
+      case GetTypeData(FieldInfo)^.OrdType of
+        otSWord,otUWord:
+          begin
+            Value:=Value and $ffff;
+            DataSize := 2;
+          end;
+        otSByte,otUByte:
+          begin
+            Value:=Value and $ff;
+            DataSize := 1;
+          end;
+       end;
+    end;
+  case DataSize of
+  1: PByte(Field)^:=Byte(Value);
+  2: PWord(Field)^:=Word(Value);
+  4: PLongint(Field)^:=Longint(Value);
+  8: PInt64(Field)^:=Value;
+  end;
+end;
+
+function GetEnumField(Field: Pointer; FieldInfo: PTypeInfo): String;
+begin
+  Result:=GetEnumName(FieldInfo, GetOrdField(Field, FieldInfo));
+end;
+
+procedure SetEnumField(Field: Pointer; FieldInfo: PTypeInfo; const Value: string);
+var
+  PV: Integer;
+begin
+  PV:=GetEnumValue(FieldInfo, Value);
+  if (PV<0) then
+    raise EPropertyError.CreateFmt(SErrUnknownEnumValue, [Value]);
+  SetOrdField(Field, FieldInfo, PV);
+end;
+
+function GetSetField(Field: Pointer; FieldInfo: PTypeInfo; Brackets: Boolean): String;
+begin
+  Result:=SetToString(FieldInfo,GetOrdField(Field,FieldInfo),Brackets);
+end;
+
+procedure SetSetField(Field: Pointer; FieldInfo: PTypeInfo; const Value: string);
+begin
+  SetOrdField(Field,FieldInfo,StringToSet(FieldInfo,Value));
+end;
+
+function GetStringField(Field: Pointer; FieldInfo: PTypeInfo): String;
+begin
+  Result:='';
+  case FieldInfo^.Kind of
+    tkWString:
+      Result:=AnsiString(GetWideStringField(Field,FieldInfo));
+    tkUString:
+      Result := AnsiString(GetUnicodeStringField(Field,FieldInfo));
+    tkSString:
+      Result := PShortString(Field)^;
+    tkAString:
+      Result := PAnsiString(Field)^;
+  end;
+end;
+
+procedure SetStringField(Field: Pointer; FieldInfo: PTypeInfo; const Value: string);
+begin
+  case FieldInfo^.Kind of
+    tkWString:
+      SetWideStringField(Field,FieldInfo,WideString(Value));
+    tkUString:
+      SetUnicodeStringField(Field,FieldInfo,UnicodeString(Value));
+    tkSString:
+      PShortString(Field)^:=Value;
+    tkAString:
+      PAnsiString(Field)^:=Value;
+  end;
+end;
+
+function GetWideStringField(Field: Pointer; FieldInfo: PTypeInfo): WideString;
+begin
+  Result:='';
+  case FieldInfo^.Kind of
+    tkSString,tkAString:
+      Result := WideString(GetStringField(Field,FieldInfo));
+    tkUString :
+      Result := GetUnicodeStringField(Field,FieldInfo);
+    tkWString:
+      Result := PWideString(Field)^;
+  end;
+end;
+
+procedure SetWideStringField(Field: Pointer; FieldInfo: PTypeInfo; const Value: WideString);
+begin
+  case FieldInfo^.Kind of
+    tkSString,tkAString:
+      SetStringField(Field,FieldInfo,AnsiString(Value));
+    tkUString:
+       SetUnicodeStringField(Field,FieldInfo,Value);
+    tkWString:
+      PWideString(Field)^:=Value;
+  end;
+end;
+
+function GetUnicodeStringField(Field: Pointer; FieldInfo: PTypeInfo): UnicodeString;
+begin
+  Result:='';
+  case FieldInfo^.Kind of
+    tkSString,tkAString:
+      Result := UnicodeString(GetStringField(Field,FieldInfo));
+    tkWString:
+      Result := GetWideStringField(Field,FieldInfo);
+    tkUString :
+      Result := PUnicodeString(Field)^;
+  end;
+end;
+
+procedure SetUnicodeStringField(Field: Pointer; FieldInfo: PTypeInfo; const Value: UnicodeString
+  );
+begin
+  case FieldInfo^.Kind of
+    tkSString,tkAString:
+      SetStringField(Field,FieldInfo,AnsiString(Value));
+    tkWString:
+      SetWideStringField(Field,FieldInfo,Value);
+    tkUString:
+      PUnicodeString(Field)^:=Value;
+  end;
+end;
+
+function GetRawbyteStringField(Field: Pointer; FieldInfo: PTypeInfo): RawByteString;
+begin
+  Result:='';
+  case FieldInfo^.Kind of
+    tkWString:
+      Result := RawByteString(GetWideStringField(Field,FieldInfo));
+    tkUString:
+      Result := RawByteString(GetUnicodeStringField(Field,FieldInfo));
+    tkSString:
+      Result := RawByteString(GetStringField(Field,FieldInfo));
+    tkAString:
+      Result := PAnsiString(Field)^;
+  end;
+end;
+
+procedure SetRawbyteStringField(Field: Pointer; FieldInfo: PTypeInfo; const Value: RawByteString
+  );
+begin
+  case FieldInfo^.Kind of
+    tkWString:
+      SetWideStringField(Field,FieldInfo,WideString(Value));
+    tkUString:
+       SetUnicodeStringField(Field,FieldInfo,UnicodeString(Value));
+    tkSString:
+      SetStringField(Field,FieldInfo,Value);
+    tkAString:
+      PAnsiString(Field)^:=Value;
+  else
+  end;
+end;
+
+function GetFloatField(Field: Pointer; FieldInfo: PTypeInfo): Extended;
+begin
+  Result:=0.0;
+  case GetTypeData(FieldInfo)^.FloatType of
+  ftSingle:
+    Result:=PSingle(Field)^;
+  ftDouble:
+    Result:=PDouble(Field)^;
+  ftExtended:
+    Result:=PExtended(Field)^;
+  ftComp:
+    Result:=PComp(Field)^;
+  ftCurr:
+    Result:=PCurrency(Field)^;
+  end;
+end;
+
+procedure SetFloatField(Field: Pointer; FieldInfo: PTypeInfo; const Value: Extended);
+begin
+  Case GetTypeData(FieldInfo)^.FloatType of
+    ftSingle:
+      PSingle(Field)^:=Value;
+    ftDouble:
+      PDouble(Field)^:=Value;
+    ftExtended:
+      PExtended(Field)^:=Value;
+{$ifdef FPC_COMP_IS_INT64}
+    ftComp:
+      PComp(Instance)^:=trunc(Value);
+{$else FPC_COMP_IS_INT64}
+    ftComp:
+      PComp(Field)^:=Comp(Value);
+{$endif FPC_COMP_IS_INT64}
+    ftCurr:
+      PCurrency(Field)^:=Value;
+   end;
+end;
+
+function GetObjectField(Field: Pointer; FieldInfo: PTypeInfo; MinClass: TClass): TObject;
+begin
+  Result:=TObject(PPointer(Field)^);
+  if (MinClass<>nil) and (Result<>nil) Then
+    if not Result.InheritsFrom(MinClass) then
+      Result:=nil;
+  if FieldInfo=nil then ;
+end;
+
+procedure SetObjectField(Field: Pointer; FieldInfo: PTypeInfo; const Value: TObject);
+begin
+  PPointer(Field)^:=Pointer(Value);
+  if FieldInfo=nil then ;
+end;
+
+function GetPointerField(Field: Pointer; FieldInfo: PTypeInfo): Pointer;
+begin
+  Result:=PPointer(Field)^;
+  if FieldInfo=nil then ;
+end;
+
+procedure SetPointerField(Field: Pointer; FieldInfo: PTypeInfo; const Value: Pointer);
+begin
+  PPointer(Field)^:=Value;
+  if FieldInfo=nil then ;
+end;
+
+function GetMethodField(Field: Pointer; FieldInfo: PTypeInfo): TMethod;
+begin
+  Result:=PMethod(Field)^;
+  if FieldInfo=nil then ;
+end;
+
+procedure SetMethodField(Field: Pointer; FieldInfo: PTypeInfo; const Value: TMethod);
+begin
+  PMethod(Field)^:=Value;
+  if FieldInfo=nil then ;
+end;
+
+function GetInterfaceField(Field: Pointer; FieldInfo: PTypeInfo): IInterface;
+begin
+  Result:=IInterface(PPointer(Field)^);
+  if FieldInfo=nil then ;
+end;
+
+procedure SetInterfaceField(Field: Pointer; FieldInfo: PTypeInfo; const Value: IInterface);
+begin
+  PInterface(Field)^:=Value;
+  if FieldInfo=nil then ;
+end;
+
+function GetVariantField(Field: Pointer; FieldInfo: PTypeInfo): Variant;
+begin
+  Result:=PVariant(Field)^;
+end;
+
+procedure SetVariantField(Field: Pointer; FieldInfo: PTypeInfo; const Value: Variant);
+begin
+  PVariant(Field)^:=Value;
+end;
+
+Function GetPointerProp(Instance: TObject; PropInfo : PPropInfo): Pointer;
+
+Type
+  TGetPointerProcIndex = function (index:longint): Pointer of object;
+  TGetPointerProc = function (): Pointer of object;
+
+var
+  AMethod : TMethod;
+
+begin
+  case (PropInfo^.PropProcs) and 3 of
+  ptField:
+    Result := PPointer(Pointer(Instance) + LongWord(PropInfo^.GetProc))^;
+  ptStatic,
+  ptVirtual:
+    begin
+      if (PropInfo^.PropProcs and 3)=ptStatic then
+        AMethod.Code:=PropInfo^.GetProc
+      else
+        AMethod.Code:=PCodePointer(Pointer(Instance.ClassType)+PtrUInt(PropInfo^.GetProc))^;
+      AMethod.Data:=Instance;
+      if ((PropInfo^.PropProcs shr 6) and 1)<>0 then
+        Result:=TGetPointerProcIndex(AMethod)(PropInfo^.Index)
+      else
+        Result:=TGetPointerProc(AMethod)();
+    end;
+  else
+    raise EPropertyError.CreateFmt(SErrCannotReadProperty, [PropInfo^.Name]);
+  end;
+end;
+
+Procedure SetPointerProp(Instance: TObject; PropInfo : PPropInfo;  Value: Pointer);
+
+type
+  TSetPointerProcIndex = procedure(index: longint; p: pointer) of object;
+  TSetPointerProc = procedure(p: pointer) of object;
+
+var
+  AMethod : TMethod;
+
+begin
+  case (PropInfo^.PropProcs shr 2) and 3 of
+    ptField:
+      PPointer(Pointer(Instance) + LongWord(PropInfo^.SetProc))^:=Value;
+    ptStatic,
+    ptVirtual:
+      begin
+        if ((PropInfo^.PropProcs shr 2) and 3)=ptStatic then
+          AMethod.Code:=PropInfo^.SetProc
+        else
+          AMethod.Code:=PCodePointer(Pointer(Instance.ClassType)+PtrUInt(PropInfo^.SetProc))^;
+        AMethod.Data:=Instance;
+        if ((PropInfo^.PropProcs shr 6) and 1)<>0 then
+          TSetPointerProcIndex(AMethod)(PropInfo^.Index,Value)
+        else
+          TSetPointerProc(AMethod)(Value);
+      end;
+  else
+    raise EPropertyError.CreateFmt(SErrCannotWriteToProperty, [PropInfo^.Name]);
   end;
 end;
 

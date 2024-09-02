@@ -1511,20 +1511,18 @@ procedure TOICustomPropertyGrid.SetRowValue(CheckFocus, ForceValue: boolean);
 
   function GetPropValue(Editor: TPropertyEditor; Index: integer): string;
   var
-    PropKind: TTypeKind;
-    PropInfo: PPropInfo;
+    Info: PTypeInfo;
     BoolVal: Boolean;
   begin
     Result:='';
-    PropInfo := Editor.GetPropInfo;
-    PropKind := PropInfo^.PropType^.Kind;
-    case PropKind of
+    Info:=Editor.GetPropType;
+    case Info^.Kind of
       tkInteger, tkInt64:
         Result := IntToStr(Editor.GetInt64ValueAt(Index));
       tkChar, tkWChar, tkUChar:
         Result := Char(Editor.GetOrdValueAt(Index));
       tkEnumeration:
-        Result := GetEnumName(PropInfo^.PropType, Editor.GetOrdValueAt(Index));
+        Result := Editor.GetEnumValueAt(Index);
       tkFloat:
         Result := FloatToStr(Editor.GetFloatValueAt(Index));
       tkBool: begin

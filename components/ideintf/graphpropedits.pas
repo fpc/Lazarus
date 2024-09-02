@@ -534,7 +534,7 @@ begin
 
     // set things up
     Pen.Color := clWindowText;
-    Brush.Style := TBrushStyle(GetEnumValue(GetPropInfo^.PropType, CurValue));
+    Brush.Style := TBrushStyle(GetEnumValue(GetPropType, CurValue));
 
     // bsClear hack
     if Brush.Style = bsClear then begin
@@ -610,7 +610,7 @@ begin
 
     // set thing up and do work
     Pen.Color := clWindowText;
-    i:=GetEnumValue(GetPropInfo^.PropType, CurValue);
+    i:=GetEnumValue(GetPropType, CurValue);
     Pen.Style := TPenStyle(i);
     MoveTo(ARect.Left + 1, vTop);
     LineTo(vRight - 1, vTop);

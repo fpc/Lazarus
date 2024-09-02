@@ -22,6 +22,10 @@ unit RTTIGrids;
 
 {$mode objfpc}{$H+}
 
+{$IF FPC_FULLVERSION>30300}
+  {$WARN 6060 off : }
+{$ENDIF}
+
 interface
 
 uses
@@ -586,10 +590,12 @@ end;
 procedure TTICustomGrid.AddHeaderPropertyEditor(Prop: TPropertyEditor);
 var
   NewProperty: TTIGridProperty;
+  PropName: String;
 begin
-  if (FHideProperties.IndexOf(Prop.GetPropInfo^.Name)>=0)
+  PropName:=Prop.GetName;
+  if (FHideProperties.IndexOf(PropName)>=0)
   or ((tgoShowOnlyProperties in FTIOptions)
-      and (FShowOnlyProperties.IndexOf(Prop.GetPropInfo^.Name)<0))
+      and (FShowOnlyProperties.IndexOf(PropName)<0))
   then begin
     // skip property
     Prop.Free;

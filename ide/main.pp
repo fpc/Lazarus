@@ -2020,6 +2020,11 @@ var
   ActiveUnitInfo: TUnitInfo;
   CTResult: Boolean;
 begin
+  if (InstProp^.Instance=nil) or (InstProp^.PropInfo=nil) then begin
+    debugln(['TMainIDE.PropHookGetCompatibleMethods not a TPersistent property']);
+    exit;
+  end;
+
   ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource])
   then exit;
@@ -2046,6 +2051,11 @@ var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
 begin
+  if (InstProp^.Instance=nil) or (InstProp^.PropInfo=nil) then begin
+    debugln(['TMainIDE.PropHookCompatibleMethodExists not a TPersistent property']);
+    exit;
+  end;
+
   ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource]) then
     Exit(False);
