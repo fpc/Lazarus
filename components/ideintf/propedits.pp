@@ -2210,7 +2210,6 @@ begin
       FieldTypeInfo:=Field^.FieldType^;
 
       // todo filter editors
-      GetEditorClass();
 
       case FieldTypeInfo^.Kind of
       tkInteger:
