@@ -34,6 +34,10 @@ type
     onClick: Pointer;
   end;
 
+  TCocoaConfigToolBarItemSharing = object( TCocoaConfigToolBarItem )
+    onGetItems: Pointer;
+  end;
+
   TCocoaConfigToolBarItemGroup = object( TCocoaConfigToolBarItem )
     representation: NSToolbarItemGroupControlRepresentation;
     selectionMode: NSToolbarItemGroupSelectionMode;

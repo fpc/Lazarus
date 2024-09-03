@@ -29,6 +29,21 @@ type
     function onClick: Pointer;
   end;
 
+  { TCocoaConfigToolBarItemSharingClass }
+
+  TCocoaConfigToolBarItemSharingClass = class( TCocoaConfigToolBarItemInterface )
+  private
+    _itemConfig: TCocoaConfigToolBarItemSharing;
+  public
+    constructor Create( itemConfig: TCocoaConfigToolBarItemSharing );
+    function createItem: NSToolBarItem;
+    function identifier: String;
+    function iconName: String;
+    function title: String;
+    function tips: String;
+    function onClick: Pointer;
+  end;
+
   { TCocoaConfigToolBarItemGroupClass }
 
   TCocoaConfigToolBarItemGroupClass = class( TCocoaConfigToolBarItemInterface )
@@ -58,6 +73,26 @@ type
   public
     procedure lclSetHandler( handler: TCocoaToolBarItemHandler );
       message 'lclSetHandler:';
+  end;
+
+  { TCocoaToolBarItemSharing }
+
+  TCocoaToolBarItemSharingOnGetItems = function ( item: NSToolBarItem ): TStringArray;
+
+  TCocoaToolBarItemSharingDelegate = objcclass( NSObject, NSSharingServicePickerToolbarItemDelegateProtocol )
+  private
+    _onGetItems: TCocoaToolBarItemSharingOnGetItems;
+  public
+    function itemsForSharingServicePickerToolbarItem(
+      pickerToolbarItem: NSSharingServicePickerToolbarItem ): NSArray;
+  public
+    procedure lclSetOnGetItems( onGetItems: TCocoaToolBarItemSharingOnGetItems );
+      message 'lclSetOnGetItems:';
+  end;
+
+  TCocoaToolBarItemSharing  = objcclass( NSSharingServicePickerToolbarItem )
+  public
+    procedure dealloc; override;
   end;
 
   { TCocoaToolBarItemGroupWrapper }
@@ -111,6 +146,7 @@ type
     class procedure initItemCommonData( item: NSToolBarItem; itemConfig: TCocoaConfigToolBarItemInterface );
   public
     class function forItem( itemsConfig: TCocoaConfigToolBarItem ): TCocoaConfigToolBarItemInterface;
+    class function forItem( itemsConfig: TCocoaConfigToolBarItemSharing ): TCocoaConfigToolBarItemInterface;
     class function forItem( itemsConfig: TCocoaConfigToolBarItemGroup ): TCocoaConfigToolBarItemInterface;
     class function createItem( identifier: String; itemsConfig: TCocoaConfigToolBarItems ): NSToolbarItem;
     class procedure createToolBar( win: NSWindow );
@@ -131,8 +167,10 @@ begin
   cocoaLabel:= StrToNSString( itemConfig.title );
   cocoaTips:= StrToNSString( itemConfig.tips );
 
-  item.setImage( NSImage.imageWithSystemSymbolName_accessibilityDescription(
-    cocoaImageName, nil ) );
+  if cocoaImageName.length > 0 then begin
+    item.setImage( NSImage.imageWithSystemSymbolName_accessibilityDescription(
+      cocoaImageName, nil ) );
+  end;
   item.setLabel( cocoaLabel );
   item.setPaletteLabel( cocoaLabel );
   item.setToolTip( cocoaTips );
@@ -146,6 +184,12 @@ class function TCocoaToolBarUtils.forItem(itemsConfig: TCocoaConfigToolBarItem
   ): TCocoaConfigToolBarItemInterface;
 begin
   Result:= TCocoaConfigToolBarItemClass.Create( itemsConfig );
+end;
+
+class function TCocoaToolBarUtils.forItem( itemsConfig: TCocoaConfigToolBarItemSharing
+  ): TCocoaConfigToolBarItemInterface;
+begin
+  Result:= TCocoaConfigToolBarItemSharingClass.Create( itemsConfig );
 end;
 
 class function TCocoaToolBarUtils.forItem(
@@ -207,6 +251,29 @@ end;
 procedure TCocoaToolBarItem.lclSetHandler(handler: TCocoaToolBarItemHandler);
 begin
   _handler:= handler;
+end;
+
+{ TCocoaToolBarItemSharing }
+
+function TCocoaToolBarItemSharingDelegate.itemsForSharingServicePickerToolbarItem(
+  pickerToolbarItem: NSSharingServicePickerToolbarItem): NSArray;
+var
+  lclArray: TStringArray;
+begin
+  lclArray:= _onGetItems( pickerToolbarItem );
+  Result:= UrlArrayFromLCLToNS( lclArray );
+end;
+
+procedure TCocoaToolBarItemSharingDelegate.lclSetOnGetItems(
+  onGetItems: TCocoaToolBarItemSharingOnGetItems );
+begin
+  _onGetItems:= onGetItems;
+end;
+
+procedure TCocoaToolBarItemSharing.dealloc;
+begin
+  NSObject(delegate).release;
+  Inherited;
 end;
 
 { TCocoaToolBarItemGroupWrapper }
@@ -353,6 +420,60 @@ end;
 function TCocoaConfigToolBarItemClass.onClick: Pointer;
 begin
   Result:= _itemConfig.onClick;
+end;
+
+{ TCocoaConfigToolBarItemClass }
+
+constructor TCocoaConfigToolBarItemSharingClass.Create(
+  itemConfig: TCocoaConfigToolBarItemSharing );
+begin
+  _itemConfig:= itemConfig;
+end;
+
+function TCocoaConfigToolBarItemSharingClass.createItem: NSToolBarItem;
+var
+  cocoaIdentifier: NSString;
+  cocoaItem: TCocoaToolBarItemSharing;
+  cocoaItemDelegate: TCocoaToolBarItemSharingDelegate;
+begin
+  cocoaIdentifier:= StrToNSString( _itemConfig.identifier );
+  cocoaItem:= TCocoaToolBarItemSharing.alloc.initWithItemIdentifier( cocoaIdentifier );
+  TCocoaToolBarUtils.initItemCommonData( cocoaItem, self );
+  cocoaItem.setAutovalidates( False );
+
+  // release in TCocoaToolBarItemSharing
+  cocoaItemDelegate:= TCocoaToolBarItemSharingDelegate.new;
+  cocoaItemDelegate.lclSetOnGetItems( TCocoaToolBarItemSharingOnGetItems(_itemConfig.onGetItems) );
+  cocoaItem.setDelegate( cocoaItemDelegate );
+
+  cocoaItem.autorelease;
+  Result:= cocoaItem;
+end;
+
+function TCocoaConfigToolBarItemSharingClass.identifier: String;
+begin
+  Result:= _itemConfig.identifier;
+end;
+
+function TCocoaConfigToolBarItemSharingClass.iconName: String;
+begin
+  Result:= _itemConfig.iconName;
+end;
+
+function TCocoaConfigToolBarItemSharingClass.title: String;
+begin
+  Result:= _itemConfig.title;
+end;
+
+function TCocoaConfigToolBarItemSharingClass.tips: String;
+begin
+  Result:= _itemConfig.tips;
+end;
+
+function TCocoaConfigToolBarItemSharingClass.onClick: Pointer;
+begin
+  // NSSharingServicePickerToolbarItem fully handle all action
+  Result:= nil;
 end;
 
 { TCocoaConfigToolBarItemGroupClass }

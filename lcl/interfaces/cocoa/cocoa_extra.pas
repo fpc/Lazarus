@@ -475,6 +475,21 @@ type
     procedure setNavigational( newValue: Boolean ); message 'setNavigational:'; { available in 11.0 }
   end;
 
+  NSSharingServicePickerToolbarItem = objcclass;
+
+  NSSharingServicePickerToolbarItemDelegateProtocol = objcprotocol
+    function itemsForSharingServicePickerToolbarItem(
+      pickerToolbarItem: NSSharingServicePickerToolbarItem ): NSArray;
+      message 'itemsForSharingServicePickerToolbarItem:';  { available in 10.15 }
+  end;
+
+  NSSharingServicePickerToolbarItem = objcclass external (NSToolBarItem)
+    procedure setDelegate( aDelegate: NSSharingServicePickerToolbarItemDelegateProtocol );
+      message 'setDelegate:';  { available in 10.15 }
+    function delegate: NSSharingServicePickerToolbarItemDelegateProtocol;
+      message 'delegate';  { available in 10.15 }
+  end;
+
 type
   NSToolbarItemGroupSelectionMode = NSInteger;
 const
