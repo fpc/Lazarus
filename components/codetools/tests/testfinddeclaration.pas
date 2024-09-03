@@ -151,6 +151,7 @@ type
     procedure TestFindDeclaration_ProcRef;
     procedure TestFindDeclaration_Ampersand;
     procedure TestFindDeclaration_Ampersand_UnitName;
+    procedure TestFindDeclaration_AmpersandArray;
 
     // unit/include search
     procedure TestFindDeclaration_UnitSearch_CurrentDir;
@@ -299,8 +300,8 @@ var
   FoundNode: TCodeTreeNode;
   NameStartPos, i, j, l, IdentifierStartPos, IdentifierEndPos,
     BlockTopLine, BlockBottomLine, CommentEnd, StartOffs, TestLoop: Integer;
-  Marker, ExpectedType, NewType, ExpexctedCompletion, ExpexctedTerm,
-    ExpexctedCompletionPart, ExpexctedTermPart, s: String;
+  Marker, ExpectedType, NewType, ExpectedCompletion, ExpexctedTerm,
+    ExpectedCompletionPart, ExpexctedTermPart, s: String;
   IdentItem: TIdentifierListItem;
   ItsAKeyword, IsSubIdentifier, ExpInvert, ExpComment: boolean;
   ExistingDefinition: TFindContext;
@@ -451,14 +452,14 @@ begin
 
           // test identifier completion
           if (ExpectedPath<>'') and (Marker<>'declaration!') then begin
-            for ExpexctedCompletionPart in ExpectedPath.Split(';') do begin
-              ExpexctedCompletion := ExpexctedCompletionPart;
+            for ExpectedCompletionPart in ExpectedPath.Split(';') do begin
+              ExpectedCompletion := ExpectedCompletionPart;
               StartOffs := 0;
-              if (ExpexctedCompletion <> '') and (ExpexctedCompletion[1] in ['+','-']) then begin
-                i := Pos('=', ExpexctedCompletion);
+              if (ExpectedCompletion <> '') and (ExpectedCompletion[1] in ['+','-']) then begin
+                i := Pos('=', ExpectedCompletion);
                 if i > 1 then begin
-                  StartOffs := StrToIntDef(copy(ExpexctedCompletion, 1, i-1), 0);
-                  Delete(ExpexctedCompletion, 1, i);
+                  StartOffs := StrToIntDef(copy(ExpectedCompletion, 1, i-1), 0);
+                  Delete(ExpectedCompletion, 1, i);
                 end
                 else
                   StartOffs := 0;
@@ -468,13 +469,13 @@ begin
 
               if not CodeToolBoss.GatherIdentifiers(CursorPos.Code,CursorPos.X,CursorPos.Y)
               then begin
-                if ExpexctedCompletion<>'' then begin
+                if ExpectedCompletion<>'' then begin
                   WriteSource(StartOffs,MainTool);
                   AssertEquals('GatherIdentifiers (Loop: '+IntToStr(TestLoop)+') failed at '+MainTool.CleanPosToStr(StartOffs,true)+': '+CodeToolBoss.ErrorMessage,false,true);
                 end;
                 continue;
               end else begin
-                for ExpexctedTermPart in ExpexctedCompletion.Split(',') do begin
+                for ExpexctedTermPart in ExpectedCompletion.Split(',') do begin
                   ExpexctedTerm := ExpexctedTermPart;
                   ExpInvert := (ExpexctedTerm <> '') and (ExpexctedTerm[1] = '!');
                   if ExpInvert then
@@ -1380,6 +1381,30 @@ begin
   'uses &Type;',
   'begin',
   '  r{declaration:&type.r}:=3;',
+  'end.']);
+  FindDeclarations(Code);
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_AmpersandArray;
+begin
+  StartProgram;
+  Add([
+  'type',
+  '  TFoo = record',
+  '    abc: integer;',
+  '    &array:',
+  '      record',
+  '        x:integer;',
+  '      end',
+  '  end;',
+  'var',
+  '  AnFoo: TFoo;',
+  '  &array: TFoo{declaration:TFoo};',
+  'begin',
+  '  AnFoo.abc{declaration:TFoo.abc} :=2;',
+  '  AnFoo.&array{declaration:TFoo.array}.x{declaration:TFoo.array.x} := 3;',
+  '  &Array{declaration:array}.abc{declaration:TFoo.abc} :=4;',
+  '  &Array.&array{declaration:TFoo.array}.x{declaration:TFoo.array.x} := 5;',
   'end.']);
   FindDeclarations(Code);
 end;
