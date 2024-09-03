@@ -45,6 +45,11 @@ type
     preferredWidth: Double;
   end;
 
+  TCocoaConfigToolBarItemMenu = object( TCocoaConfigToolBarItem )
+    showsIndicator: Boolean;
+    menu: TMenuItem;
+  end;
+
   TCocoaConfigToolBarItemGroup = object( TCocoaConfigToolBarItem )
     representation: NSToolbarItemGroupControlRepresentation;
     selectionMode: NSToolbarItemGroupSelectionMode;

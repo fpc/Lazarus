@@ -8,7 +8,7 @@ interface
 
 uses
   Classes, SysUtils,
-  CocoaAll, CocoaConfig, Cocoa_Extra, CocoaUtils;
+  CocoaAll, CocoaConfig, CocoaMenus, Cocoa_Extra, CocoaUtils;
 
 type
 
@@ -51,6 +51,21 @@ type
     _itemConfig: TCocoaConfigToolBarItemSearch;
   public
     constructor Create( itemConfig: TCocoaConfigToolBarItemSearch );
+    function createItem: NSToolBarItem;
+    function identifier: String;
+    function iconName: String;
+    function title: String;
+    function tips: String;
+    function onClick: Pointer;
+  end;
+
+  { TCocoaConfigToolBarItemMenuClass }
+
+  TCocoaConfigToolBarItemMenuClass = class( TCocoaConfigToolBarItemInterface )
+  private
+    _itemConfig: TCocoaConfigToolBarItemMenu;
+  public
+    constructor Create( itemConfig: TCocoaConfigToolBarItemMenu );
     function createItem: NSToolBarItem;
     function identifier: String;
     function iconName: String;
@@ -125,6 +140,17 @@ type
       message 'lclSetHandler:';
   end;
 
+  { TCocoaToolBarItemMenu }
+
+  TCocoaToolBarItemMenu = objcclass( NSMenuToolBarItem )
+  private
+    _handler: TCocoaToolBarItemHandler;
+    procedure lclItemAction( sender: id ); message 'lclItemAction:';
+  public
+    procedure lclSetHandler( handler: TCocoaToolBarItemHandler );
+      message 'lclSetHandler:';
+  end;
+
   { TCocoaToolBarItemGroupWrapper }
 
   TCocoaToolBarItemGroupWrapper = objcclass( NSObject )
@@ -178,6 +204,7 @@ type
     class function forItem( itemsConfig: TCocoaConfigToolBarItem ): TCocoaConfigToolBarItemInterface;
     class function forItem( itemsConfig: TCocoaConfigToolBarItemSharing ): TCocoaConfigToolBarItemInterface;
     class function forItem( itemsConfig: TCocoaConfigToolBarItemSearch ): TCocoaConfigToolBarItemInterface;
+    class function forItem( itemsConfig: TCocoaConfigToolBarItemMenu ): TCocoaConfigToolBarItemInterface;
     class function forItem( itemsConfig: TCocoaConfigToolBarItemGroup ): TCocoaConfigToolBarItemInterface;
     class function createItem( identifier: String; itemsConfig: TCocoaConfigToolBarItems ): NSToolbarItem;
     class procedure createToolBar( win: NSWindow );
@@ -230,6 +257,12 @@ begin
 end;
 
 class function TCocoaToolBarUtils.forItem(
+  itemsConfig: TCocoaConfigToolBarItemMenu): TCocoaConfigToolBarItemInterface;
+begin
+  Result:= TCocoaConfigToolBarItemMenuClass.Create( itemsConfig );
+end;
+
+class function TCocoaToolBarUtils.forItem(
   itemsConfig: TCocoaConfigToolBarItemGroup): TCocoaConfigToolBarItemInterface;
 begin
   Result:= TCocoaConfigToolBarItemGroupClass.Create( itemsConfig );
@@ -265,6 +298,7 @@ begin
 
   toolBar:= TCocoaToolBar.alloc.initWithIdentifier(
     StrToNSString(CocoaConfigForm.toolBar.identifier) );
+  toolBar.setAllowsUserCustomization( True );
   toolBar.lclSetDefaultItemIdentifiers( defaultArray );
   toolBar.lclSetAllowedItemIdentifiers( allowedArray );
   toolBar.lclSetItemCreator( TCocoaToolBarItemCreator(CocoaConfigForm.toolBar.itemCreator) );
@@ -335,6 +369,18 @@ end;
 
 procedure TCocoaToolBarItemSearch.lclSetHandler(
   handler: TCocoaToolBarItemHandler);
+begin
+  _handler:= handler;
+end;
+
+{ TCocoaToolBarItemMenu }
+
+procedure TCocoaToolBarItemMenu.lclItemAction(sender: id);
+begin
+  _handler( sender );
+end;
+
+procedure TCocoaToolBarItemMenu.lclSetHandler(handler: TCocoaToolBarItemHandler);
 begin
   _handler:= handler;
 end;
@@ -587,6 +633,63 @@ begin
 end;
 
 function TCocoaConfigToolBarItemSearchClass.onClick: Pointer;
+begin
+  Result:= _itemConfig.onClick;
+end;
+
+{ TCocoaConfigToolBarItemMenuClass }
+
+constructor TCocoaConfigToolBarItemMenuClass.Create(
+  itemConfig: TCocoaConfigToolBarItemMenu );
+begin
+  _itemConfig:= itemConfig;
+end;
+
+function TCocoaConfigToolBarItemMenuClass.createItem: NSToolBarItem;
+var
+  cocoaIdentifier: NSString;
+  cocoaItem: TCocoaToolBarItemMenu;
+  cocoaMenu: NSMenu;
+begin
+  cocoaIdentifier:= StrToNSString( _itemConfig.identifier );
+  cocoaItem:= TCocoaToolBarItemMenu.alloc.initWithItemIdentifier( cocoaIdentifier );
+  cocoaItem.setShowsIndicator( _itemConfig.showsIndicator );
+  TCocoaToolBarUtils.initItemCommonData( cocoaItem, self );
+  if Assigned(self.onClick) then
+    cocoaItem.lclSetHandler( TCocoaToolBarItemHandler(self.onClick) )
+  else
+    cocoaItem.setAction( nil );
+
+  cocoaMenu:= NSMenu.new;
+  NSMenuAddItemsFromLCLMenu( cocoaMenu, _itemConfig.menu );
+  cocoaItem.setMenu( cocoaMenu );
+  cocoaMenu.autorelease;
+
+  cocoaItem.autorelease;
+  Result:= cocoaItem;
+end;
+
+function TCocoaConfigToolBarItemMenuClass.identifier: String;
+begin
+  Result:= _itemConfig.identifier;
+end;
+
+function TCocoaConfigToolBarItemMenuClass.iconName: String;
+begin
+  Result:= _itemConfig.iconName;
+end;
+
+function TCocoaConfigToolBarItemMenuClass.title: String;
+begin
+  Result:= _itemConfig.title;
+end;
+
+function TCocoaConfigToolBarItemMenuClass.tips: String;
+begin
+  Result:= _itemConfig.tips;
+end;
+
+function TCocoaConfigToolBarItemMenuClass.onClick: Pointer;
 begin
   Result:= _itemConfig.onClick;
 end;

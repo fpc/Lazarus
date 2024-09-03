@@ -470,12 +470,13 @@ type
     function effectiveAppearance: NSAppearance; message 'effectiveAppearance'; // 10.14 (10.13)
   end;
 
+type
   NSToolBarItemFix = objccategory external (NSToolBarItem)
     procedure setBordered( newValue: Boolean ); message 'setBordered:'; { available in 10.15 }
     procedure setNavigational( newValue: Boolean ); message 'setNavigational:'; { available in 11.0 }
   end;
 
-
+type
   NSSearchFieldDelegateProtocol = objcprotocol external (NSTextFieldDelegateProtocol)
     procedure searchFieldDidStartSearching( sender: NSSearchField );
       message 'searchFieldDidStartSearching:';
@@ -496,6 +497,7 @@ type
       message 'setResignsFirstResponderWithCancel:';  { available in 11.0 }
   end;
 
+type
   NSSharingServicePickerToolbarItem = objcclass;
 
   NSSharingServicePickerToolbarItemDelegateProtocol = objcprotocol external name 'NSSharingServicePickerToolbarItemDelegate'
@@ -509,6 +511,13 @@ type
       message 'setDelegate:';  { available in 10.15 }
     function delegate: NSSharingServicePickerToolbarItemDelegateProtocol;
       message 'delegate';  { available in 10.15 }
+  end;
+
+type
+  NSMenuToolbarItem = objcclass external (NSToolBarItem)
+    function menu: NSMenu; message 'menu';  { available in 10.15 }
+    procedure setMenu( newValue: NSMenu ); message 'setMenu:';  { available in 10.15 }
+    procedure setShowsIndicator( newValue: Boolean ); message 'setShowsIndicator:';  { available in 10.15 }
   end;
 
 type
@@ -554,6 +563,7 @@ type
       message 'groupWithItemIdentifier:images:selectionMode:labels:target:action:'; { available in 10.15 }
   end;
 
+type
   NSTableColumnFix = objccategory external (NSTableColumn)
     procedure setTitle(atitle: NSString); message 'setTitle:';
     function title: NSString; message 'title';
