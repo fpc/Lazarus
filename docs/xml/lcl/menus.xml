@@ -1398,16 +1398,49 @@ surface for the IDE.
 </element>
 
 <element name="TMenuItem.CheckChildrenHandles">
-<short>Verifies the handles for child menu items on the menu.</short>
+<short>
+Verifies the handles for child menu items on the menu.
+</short>
 <descr>
 <p>
-CheckChildrenHandles recursively checks menu items to ensure that handles for 
-merged menu items are freed when they are hidden, or not owned by a menu item 
-on the menu. No actions are performed in the method when Items has not been 
-assigned.
+<var>CheckChildrenHandles</var> recursively checks menu items to ensure that 
+handles for merged / child menu items are freed when they are hidden, or not 
+owned by a menu item on the menu. No actions are performed in the method when 
+Items has not been assigned.
+</p>
+<p>
+At run-time, InitiateActions is called to ensure that the visibility of child 
+Items with an action are up-to-date. If AutoLineReduction is in effect, 
+RethinkLines is called to remove redundant menu separators. These actions are  
+not performed at design-time.
+</p>
+<p>
+The handle for hidden menu items in MergedItems are freed. The handle for 
+visible menu items in MergedItems are freed and re-created.
+</p>
+<p>
+CheckChildrenHandles is called from CreateHandle when the handle for a menu 
+item is allocated. It is also called when a menu item is merged into another 
+menu or item. Finally, it is called when update notifications are handled for 
+the class instances in the Items property.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TMenuItem.CreateHandle"/>
+<link id="TMenuItem.Handle"/>
+<link id="TMenuItem.Menu"/>
+<link id="TMenuItem.Parent"/>
+<link id="TMenuItem.Items"/>
+<link id="TMenuItem.MergedItems"/>
+<link id="TMenuItem.MergedWith"/>
+<link id="TMenuItem.InitiateActions"/>
+<link id="TMenuItem.InitiateAction"/>
+<link id="TMenuItem.AutoLineReduction"/>
+<link id="TMenuItem.RethinkLines"/>
+<link id="TMenuItem.Action"/>
+<link id="TMenuItem.Visible"/>
+<link id="TMenuItems.Notify"/>
+</seealso>
 </element>
 
 <element name="TMenuItem.CreateHandle">
