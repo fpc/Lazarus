@@ -426,21 +426,15 @@ var
     lineText: NSString;
     subRange: NSRange;
   begin
-    if (aRange.location=0) and (params.text='') then begin
-      params.text:= ' ';
-      textWord:= NSSTR( ' ' );
-      Exit;
-    end;
-
     lineText:= StrToNSString( params.text );
     subRange.location:= params.col;
     subRange.length:= aRange.length;
-    if subRange.location + subRange.length > lineText.length then begin
-      if lineText.length > subRange.location then
-        subRange.length:= lineText.length - subRange.location
-      else
-        subRange.length:= 0;
+    if subRange.location >= lineText.length then begin
+      textWord:= NSSTR( ' ' );
+      Exit;
     end;
+    if subRange.location + subRange.length > lineText.length then
+      subRange.length:= lineText.length - subRange.location;
     textWord:= lineText.substringWithRange( subRange );
   end;
 
@@ -463,6 +457,7 @@ var
   procedure setActualRange;
   begin
     if aRange.location >= (LW_LOCATION_BASE/2) then begin
+      params.length:= textWord.length;
       actualRange^:= LWParamsToRange( params );
     end else begin
       actualRange^.location:= aRange.location;
