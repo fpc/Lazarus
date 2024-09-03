@@ -43,7 +43,9 @@ type
       );
   published
     procedure Test_GetValuesOfCaseVariable_Enum;
+    procedure Test_GetValuesOfCaseVariable_Enum_Amp;
     procedure Test_FindCodeContext_ProcParams;
+    procedure Test_FindCodeContext_ProcParams_Amp;
     procedure Test_FindCodeContext_ProcParams_NoClosingBracket;
     procedure Test_FindCodeContext_ProcTypeParams;
     procedure Test_FindCodeContext_AttributeParams;
@@ -96,6 +98,33 @@ begin
   end;
 end;
 
+procedure TTestIdentCompletion.Test_GetValuesOfCaseVariable_Enum_Amp;
+var
+  List: TStrings;
+begin
+  List:=TStringList.Create;
+  try
+    Code.Source:=
+    'type &array = (abc, &array, amp, &aaa);'+LineEnding
+    +'var e: &array;'+LineEnding
+    +'begin'+LineEnding
+    +'  case e of'+LineEnding
+    +'end.';
+    List.Clear;
+    if not CodeToolBoss.GetValuesOfCaseVariable(Code,8,4,List) then begin
+      Fail('GetValuesOfCaseVariable failed on case enum');
+    end;
+    //writeln('TTestIdentCompletion.Test_GetValuesOfCaseVariable_Enum ',List.Text);
+    AssertEquals('case enum count',4,List.Count);
+    AssertEquals('case enum[0]','abc',List[0]);
+    AssertEquals('case enum[1]','&array',List[1]);
+    AssertEquals('case enum[2]','amp',List[2]);
+    AssertEquals('case enum[3]','&aaa',List[3]);
+  finally
+    List.Free;
+  end;
+end;
+
 procedure TTestIdentCompletion.Test_FindCodeContext_ProcParams;
 var
   SrcMark: TFDMarker;
@@ -112,6 +141,45 @@ begin
   'end;',
   'begin',
   '  DoIt(3,{#c}4);',
+  'end.']);
+  ParseSimpleMarkers(Code);
+  SrcMark:=FindMarker('c','#');
+  AssertNotNull('missing src marker #c',SrcMark);
+  MainTool.CleanPosToCaret(SrcMark.CleanPos,CursorPos);
+  CodeContexts:=nil;
+  try
+    if not CodeToolBoss.FindCodeContext(Code,CursorPos.X,CursorPos.Y,CodeContexts)
+    then begin
+      WriteSource(CursorPos);
+      Fail('CodeToolBoss.FindCodeContext');
+    end;
+    AssertEquals('CodeContexts.Count',2,CodeContexts.Count);
+    //for i:=0 to CodeContexts.Count-1 do
+    //  debugln(['TTestIdentCompletion.Test_FindCodeContext_ProcParams ',i,' ',CodeContexts[i].AsDebugString(true)]);
+    CheckCodeContext(CodeContexts[0],'b');
+    CheckCodeContext(CodeContexts[1],'a');
+  finally
+    CodeContexts.Free;
+  end;
+end;
+
+procedure TTestIdentCompletion.Test_FindCodeContext_ProcParams_Amp;
+var
+  SrcMark: TFDMarker;
+  CursorPos: TCodeXYPosition;
+  CodeContexts: TCodeContextInfo;
+begin
+  StartProgram;
+  Add([
+  'type &array = byte;',
+  '{#a}procedure &procedure(&type, j: &array);',
+  'begin',
+  'end;',
+  '{#b}procedure &procedure(s, &h: string);',
+  'begin',
+  'end;',
+  'begin',
+  '  &procedure(3,{#c}4);',
   'end.']);
   ParseSimpleMarkers(Code);
   SrcMark:=FindMarker('c','#');

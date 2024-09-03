@@ -38,6 +38,7 @@
 
       Each TEST can start with an optional POS (integer positive/negative)
       The POS specifies the relative source-pos from the start of the identifier before the comment.
+      ("start of the identifier": identifier does NOT include any "&" for this pos)
 
       Each ENTRY can start with a ! to test for a non-present completion
 
@@ -484,9 +485,14 @@ begin
                   while i>=0 do begin
                     IdentItem:=CodeToolBoss.IdentifierList.FilteredItems[i];
                     //debugln(['TTestFindDeclaration.FindDeclarations ',IdentItem.Identifier]);
-                    l:=length(IdentItem.Identifier);
+                    s := IdentItem.Identifier;
+                    if (iliNeedsAmpersand in IdentItem.Flags)
+                       and (Marker = 'completion') // declaration=path.ident does not include the &
+                    then
+                      s := '&' + s;
+                    l:=length(s);
                     if ((l=length(ExpexctedTerm)) or (ExpexctedTerm[length(ExpexctedTerm)-l]='.'))
-                    and (CompareText(IdentItem.Identifier,RightStr(ExpexctedTerm,l))=0)
+                    and (CompareText(s,RightStr(ExpexctedTerm,l))=0)
                     then break;
                     dec(i);
                   end;
@@ -523,7 +529,10 @@ begin
             end else begin
               //debugln(['TTestFindDeclaration.FindDeclarations FoundPath=',FoundPath]);
               if pos('/', ExpectedType) > 0 then
-                NewType := NewExprType.Context.Tool.GetSourceName + '/' + NewType;
+                if NewExprType.Context.Tool <> nil then
+                  NewType := NewExprType.Context.Tool.GetSourceName + '/' + NewType
+                else
+                  NewType := 'NOT-FOUND' + '/' + NewType;
               if LowerCase(ExpectedType)<>LowerCase(NewType) then begin
                 WriteSource(IdentifierStartPos,MainTool);
                 AssertEquals('GuessTypeOfIdentifier (Loop: '+IntToStr(TestLoop)+') wrong at '+MainTool.CleanPosToStr(IdentifierStartPos,true),LowerCase(ExpectedType),LowerCase(NewType));
