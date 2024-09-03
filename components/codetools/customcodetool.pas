@@ -1765,7 +1765,7 @@ begin
           if (IsIdentChar[Src[CurPos.StartPos-1]]) then
             dec(CurPos.StartPos)
           else begin
-            case UpChars[Src[CurPos.StartPos-1]] of
+            case Src[CurPos.StartPos-1] of
             '@':
               if (CurPos.StartPos>2)
               and (Src[CurPos.StartPos-2]='@') then
@@ -1774,6 +1774,9 @@ begin
             '$':
               // hex number
               dec(CurPos.StartPos);
+            '&':
+              if IsIdentStartChar[Src[CurPos.StartPos]] then
+                dec(CurPos.StartPos);
             else
               case UpChars[Src[CurPos.StartPos]] of
               'E':
