@@ -475,9 +475,30 @@ type
     procedure setNavigational( newValue: Boolean ); message 'setNavigational:'; { available in 11.0 }
   end;
 
+
+  NSSearchFieldDelegateProtocol = objcprotocol external (NSTextFieldDelegateProtocol)
+    procedure searchFieldDidStartSearching( sender: NSSearchField );
+      message 'searchFieldDidStartSearching:';
+    procedure searchFieldDidEndSearching( sender: NSSearchField );
+      message 'searchFieldDidEndSearching:';
+  end;
+
+  NSSearchToolbarItem = objcclass external (NSToolBarItem)
+    procedure setSearchField( newValue: NSSearchField );
+      message 'setSearchField:';  { available in 11.0 }
+    function searchField: NSSearchField;
+      message 'searchField';  { available in 11.0 }
+
+    procedure setPreferredWidthForSearchField( newValue: CGFloat );
+      message 'setPreferredWidthForSearchField:';  { available in 11.0 }
+
+    procedure setResignsFirstResponderWithCancel( newValue: Boolean );
+      message 'setResignsFirstResponderWithCancel:';  { available in 11.0 }
+  end;
+
   NSSharingServicePickerToolbarItem = objcclass;
 
-  NSSharingServicePickerToolbarItemDelegateProtocol = objcprotocol
+  NSSharingServicePickerToolbarItemDelegateProtocol = objcprotocol external name 'NSSharingServicePickerToolbarItemDelegate'
     function itemsForSharingServicePickerToolbarItem(
       pickerToolbarItem: NSSharingServicePickerToolbarItem ): NSArray;
       message 'itemsForSharingServicePickerToolbarItem:';  { available in 10.15 }

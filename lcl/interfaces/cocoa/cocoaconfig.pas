@@ -38,6 +38,13 @@ type
     onGetItems: Pointer;
   end;
 
+  TCocoaConfigToolBarItemSearch = object( TCocoaConfigToolBarItem )
+    sendWhole: Boolean;
+    sendImmediately: Boolean;
+    resignsWithCancel: Boolean;
+    preferredWidth: Double;
+  end;
+
   TCocoaConfigToolBarItemGroup = object( TCocoaConfigToolBarItem )
     representation: NSToolbarItemGroupControlRepresentation;
     selectionMode: NSToolbarItemGroupSelectionMode;

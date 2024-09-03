@@ -44,6 +44,21 @@ type
     function onClick: Pointer;
   end;
 
+  { TCocoaConfigToolBarItemSearchClass }
+
+  TCocoaConfigToolBarItemSearchClass = class( TCocoaConfigToolBarItemInterface )
+  private
+    _itemConfig: TCocoaConfigToolBarItemSearch;
+  public
+    constructor Create( itemConfig: TCocoaConfigToolBarItemSearch );
+    function createItem: NSToolBarItem;
+    function identifier: String;
+    function iconName: String;
+    function title: String;
+    function tips: String;
+    function onClick: Pointer;
+  end;
+
   { TCocoaConfigToolBarItemGroupClass }
 
   TCocoaConfigToolBarItemGroupClass = class( TCocoaConfigToolBarItemInterface )
@@ -93,6 +108,21 @@ type
   TCocoaToolBarItemSharing  = objcclass( NSSharingServicePickerToolbarItem )
   public
     procedure dealloc; override;
+  end;
+
+  { TCocoaToolBarItemSearch }
+
+  TCocoaToolBarItemSearch = objcclass( NSSearchToolBarItem, NSSearchFieldDelegateProtocol )
+  private
+    _isSearching: Boolean;
+    _handler: TCocoaToolBarItemHandler;
+    procedure lclItemAction( sender: id ); message 'lclItemAction:';
+  public
+    procedure searchFieldDidStartSearching( sender: NSSearchField );
+    procedure searchFieldDidEndSearching( sender: NSSearchField );
+  public
+    procedure lclSetHandler( handler: TCocoaToolBarItemHandler );
+      message 'lclSetHandler:';
   end;
 
   { TCocoaToolBarItemGroupWrapper }
@@ -147,6 +177,7 @@ type
   public
     class function forItem( itemsConfig: TCocoaConfigToolBarItem ): TCocoaConfigToolBarItemInterface;
     class function forItem( itemsConfig: TCocoaConfigToolBarItemSharing ): TCocoaConfigToolBarItemInterface;
+    class function forItem( itemsConfig: TCocoaConfigToolBarItemSearch ): TCocoaConfigToolBarItemInterface;
     class function forItem( itemsConfig: TCocoaConfigToolBarItemGroup ): TCocoaConfigToolBarItemInterface;
     class function createItem( identifier: String; itemsConfig: TCocoaConfigToolBarItems ): NSToolbarItem;
     class procedure createToolBar( win: NSWindow );
@@ -190,6 +221,12 @@ class function TCocoaToolBarUtils.forItem( itemsConfig: TCocoaConfigToolBarItemS
   ): TCocoaConfigToolBarItemInterface;
 begin
   Result:= TCocoaConfigToolBarItemSharingClass.Create( itemsConfig );
+end;
+
+class function TCocoaToolBarUtils.forItem(
+  itemsConfig: TCocoaConfigToolBarItemSearch): TCocoaConfigToolBarItemInterface;
+begin
+  Result:= TCocoaConfigToolBarItemSearchClass.Create( itemsConfig );
 end;
 
 class function TCocoaToolBarUtils.forItem(
@@ -274,6 +311,32 @@ procedure TCocoaToolBarItemSharing.dealloc;
 begin
   NSObject(delegate).release;
   Inherited;
+end;
+
+{ TCocoaToolBarItemSearch }
+
+procedure TCocoaToolBarItemSearch.lclItemAction(sender: id);
+begin
+  if _isSearching then
+    _handler( sender );
+end;
+
+procedure TCocoaToolBarItemSearch.searchFieldDidStartSearching(
+  sender: NSSearchField);
+begin
+  _isSearching:= True;
+end;
+
+procedure TCocoaToolBarItemSearch.searchFieldDidEndSearching(
+  sender: NSSearchField);
+begin
+  _isSearching:= False;
+end;
+
+procedure TCocoaToolBarItemSearch.lclSetHandler(
+  handler: TCocoaToolBarItemHandler);
+begin
+  _handler:= handler;
 end;
 
 { TCocoaToolBarItemGroupWrapper }
@@ -474,6 +537,58 @@ function TCocoaConfigToolBarItemSharingClass.onClick: Pointer;
 begin
   // NSSharingServicePickerToolbarItem fully handle all action
   Result:= nil;
+end;
+
+{ TCocoaConfigToolBarItemSearchClass }
+
+constructor TCocoaConfigToolBarItemSearchClass.Create(
+  itemConfig: TCocoaConfigToolBarItemSearch );
+begin
+  _itemConfig:= itemConfig;
+end;
+
+function TCocoaConfigToolBarItemSearchClass.createItem: NSToolBarItem;
+var
+  cocoaIdentifier: NSString;
+  cocoaItem: TCocoaToolBarItemSearch;
+begin
+  cocoaIdentifier:= StrToNSString( _itemConfig.identifier );
+  cocoaItem:= TCocoaToolBarItemSearch.alloc.initWithItemIdentifier( cocoaIdentifier );
+  cocoaItem.searchField.setSendsWholeSearchString( _itemConfig.sendWhole );
+  cocoaItem.searchField.setSendsSearchStringImmediately( _itemConfig.sendImmediately );
+  cocoaItem.searchField.setDelegate( NSTextFieldDelegateProtocol(cocoaItem) );
+  cocoaItem.setResignsFirstResponderWithCancel( _itemConfig.resignsWithCancel );
+  if _itemConfig.preferredWidth > 0 then
+    cocoaItem.setPreferredWidthForSearchField( _itemConfig.preferredWidth );
+  TCocoaToolBarUtils.initItemCommonData( cocoaItem, self );
+  cocoaItem.lclSetHandler( TCocoaToolBarItemHandler(self.onClick) );
+  cocoaItem.autorelease;
+  Result:= cocoaItem;
+end;
+
+function TCocoaConfigToolBarItemSearchClass.identifier: String;
+begin
+  Result:= _itemConfig.identifier;
+end;
+
+function TCocoaConfigToolBarItemSearchClass.iconName: String;
+begin
+  Result:= _itemConfig.iconName;
+end;
+
+function TCocoaConfigToolBarItemSearchClass.title: String;
+begin
+  Result:= _itemConfig.title;
+end;
+
+function TCocoaConfigToolBarItemSearchClass.tips: String;
+begin
+  Result:= _itemConfig.tips;
+end;
+
+function TCocoaConfigToolBarItemSearchClass.onClick: Pointer;
+begin
+  Result:= _itemConfig.onClick;
 end;
 
 { TCocoaConfigToolBarItemGroupClass }
