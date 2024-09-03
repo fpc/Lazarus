@@ -433,13 +433,15 @@ var
 begin
   if FItems = nil then
     Exit;
-
-  InitiateActions; // actions may update items visibility
-  if InternalRethinkLines(False) then
+  if not (csDesigning in ComponentState) then // issue #41109
   begin
-    // Especially to re-index the items in native way
-    for i := 0 to Count - 1 do
-      Items[I].DestroyHandle;
+    InitiateActions; // actions may update items visibility
+    if InternalRethinkLines(False) then
+    begin
+      // Especially to re-index the items in native way
+      for i := 0 to Count - 1 do
+        Items[I].DestroyHandle;
+    end;
   end;
 
   AMenu := GetMenu(Self);
