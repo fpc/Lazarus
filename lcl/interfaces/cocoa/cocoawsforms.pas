@@ -772,9 +772,13 @@ var
   var
     pFormConfig: PCocoaConfigForm;
   begin
+    if NSAppKitVersionNumber < NSAppKitVersionNumber11_0 then
+      Exit;
+
     pFormConfig:= TCocoaFormUtils.getConfigByName( AWinControl.Name );
     if NOT Assigned(pFormConfig) then
       Exit;
+
     applyCocoaConfigTitleBar( pFormConfig^.titleBar );
     applyCocoaConfigToolBar( pFormConfig^.toolBar );
   end;
@@ -867,6 +871,8 @@ begin
     cnt.wincallback := TCocoaWindow(win).callback;
     win.setContentView(cnt);
 
+    applyCocoaConfigForm;
+
     win.makeFirstResponder(doc);
   end
   else
@@ -905,8 +911,6 @@ begin
     ds.release;
   end;
   doc.release;
-
-  applyCocoaConfigForm;
 
   Result := TLCLHandle(cnt);
 end;
