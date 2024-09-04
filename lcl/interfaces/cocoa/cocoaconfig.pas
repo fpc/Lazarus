@@ -81,11 +81,14 @@ type
   end;
 
   TCocoaConfigForm = record
+    name: String;
     toolBar: TCocoaConfigToolBar;
   end;
 
+  TCocoaConfigForms = Array of TCocoaConfigForm;
+
 var
-  CocoaConfigForm: TCocoaConfigForm;
+  CocoaConfigForms: TCocoaConfigForms;
 
 type
 

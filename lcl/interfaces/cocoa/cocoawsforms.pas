@@ -236,6 +236,29 @@ begin
     TCocoaWindow(win).keepWinLevel := lvl;
 end;
 
+type
+  PCocoaConfigForm = ^TCocoaConfigForm;
+
+  TCocoaFormUtils = class
+    class function getConfigByName( const name: String ): PCocoaConfigForm;
+  end;
+
+class function TCocoaFormUtils.getConfigByName( const name: String ):
+  PCocoaConfigForm;
+var
+  i: Integer;
+  count: Integer;
+begin
+  Result:= nil;
+  count:= length( CocoaConfigForms );
+  for i:=0 to count-1 do begin
+    if name = CocoaConfigForms[i].name then begin
+      Result:= @CocoaConfigForms[i];
+      Exit;
+    end;
+  end;
+end;
+
 { TCocoaWSHintWindow }
 
 class function TCocoaWSHintWindow.CreateHandle(const AWinControl: TWinControl;
@@ -729,6 +752,19 @@ var
   lDestView: NSView;
   ds: TCocoaDesignOverlay;
   cb: TLCLWindowCallback;
+
+  procedure mergeToolBar;
+  var
+    pFormConfig: PCocoaConfigForm;
+    toolbar: TCocoaToolBar;
+  begin
+    pFormConfig:= TCocoaFormUtils.getConfigByName( AWinControl.Name );
+    if NOT Assigned(pFormConfig) then
+      Exit;
+    toolbar:= TCocoaToolBarUtils.createToolBar( pFormConfig^.toolBar );
+    win.setToolbar( toolbar );
+  end;
+
 begin
   //todo: create TCocoaWindow or TCocoaPanel depending on the border style
   //      if parent is specified neither Window nor Panel needs to be created
@@ -856,7 +892,7 @@ begin
   end;
   doc.release;
 
-  TCocoaToolBarUtils.createToolBar( win );
+  mergeToolBar;
 
   Result := TLCLHandle(cnt);
 end;
