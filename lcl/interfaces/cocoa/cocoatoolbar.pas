@@ -686,10 +686,8 @@ begin
   if NOT Assigned(_onAction) then
     cocoaItem.setAction( nil );
 
-  cocoaMenu:= NSMenu.new;
-  NSMenuAddItemsFromLCLMenu( cocoaMenu, _menu );
+  cocoaMenu:= NSMenuItem(_menu.Handle).submenu;
   cocoaItem.setMenu( cocoaMenu );
-  cocoaMenu.autorelease;
 
   cocoaItem.autorelease;
   Result:= cocoaItem;
