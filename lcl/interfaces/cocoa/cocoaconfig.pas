@@ -25,6 +25,8 @@ type
 
   TCocoaConfigToolBarItemBase = object
     identifier: String;
+    priority: NSInteger;
+    navigational: Boolean;
   end;
 
   { TCocoaConfigToolBarItemWithUI }
@@ -33,6 +35,7 @@ type
     iconName: String;
     title: String;
     tips: String;
+    bordered: Boolean;
   end;
 
   { TCocoaConfigToolBarItemWithAction }
@@ -68,6 +71,9 @@ type
 
   TCocoaConfigToolBar = record
     identifier: String;
+    displayMode: NSToolbarDisplayMode;
+    allowsUserCustomization: Boolean;
+    autosavesConfiguration: Boolean;
     items: TCocoaConfigToolBarItems;
     defaultItemsIdentifiers: TStringArray;
     allowedItemsIdentifiers: TStringArray;

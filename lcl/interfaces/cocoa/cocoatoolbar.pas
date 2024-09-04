@@ -25,6 +25,8 @@ type
   TCocoaConfigToolBarItemClassBase = class( TCocoaConfigToolBarItemClassAbstract )
   protected
     _identifier: String;
+    _priority: NSInteger;
+    _navigational: Boolean;
   protected
     procedure toClassConfig( pItemConfig: PCocoaConfigToolBarItemBase );
   public
@@ -39,6 +41,7 @@ type
     _iconName: String;
     _title: String;
     _tips: String;
+    _bordered: Boolean;
   protected
     procedure toClassConfig( pItemConfig: PCocoaConfigToolBarItemWithUI );
   public
@@ -307,7 +310,9 @@ begin
 
   toolBar:= TCocoaToolBar.alloc.initWithIdentifier(
     StrToNSString(CocoaConfigForm.toolBar.identifier) );
-  toolBar.setAllowsUserCustomization( True );
+  toolBar.setDisplayMode( CocoaConfigForm.toolBar.displayMode );
+  toolBar.setAllowsUserCustomization( CocoaConfigForm.toolBar.allowsUserCustomization );
+  toolBar.setAutosavesConfiguration( CocoaConfigForm.toolBar.autosavesConfiguration );
   toolBar.lclSetDefaultItemIdentifiers( defaultArray );
   toolBar.lclSetAllowedItemIdentifiers( allowedArray );
   toolBar.lclSetItemCreator( TCocoaToolBarItemCreator(CocoaConfigForm.toolBar.itemCreator) );
@@ -500,12 +505,14 @@ procedure TCocoaConfigToolBarItemClassBase.toClassConfig(
   pItemConfig: PCocoaConfigToolBarItemBase);
 begin
   _identifier:= pItemConfig^.identifier;
+  _priority:= pItemConfig^.priority;
+  _navigational:= pItemConfig^.navigational;
 end;
 
 procedure TCocoaConfigToolBarItemClassBase.setItemAttribs(item: NSToolBarItem);
 begin
-  item.setBordered( True );
-  item.setVisibilityPriority( NSToolbarItemVisibilityPriorityHigh );
+  item.setVisibilityPriority( _priority );
+  item.setNavigational( _navigational );
 end;
 
 function TCocoaConfigToolBarItemClassBase.identifier: String;
@@ -522,6 +529,7 @@ begin
   _iconName:= pItemConfig^.iconName;
   _title:= pItemConfig^.title;
   _tips:= pItemConfig^.tips;
+  _bordered:= pItemConfig^.bordered;
 end;
 
 procedure TCocoaConfigToolBarItemClassWithUI.setItemAttribs(item: NSToolBarItem
@@ -544,6 +552,7 @@ begin
   item.setLabel( cocoaLabel );
   item.setPaletteLabel( cocoaLabel );
   item.setToolTip( cocoaTips );
+  item.setBordered( _bordered );
 end;
 
 function TCocoaConfigToolBarItemClassWithUI.iconName: String;
