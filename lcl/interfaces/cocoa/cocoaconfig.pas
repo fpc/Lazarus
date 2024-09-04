@@ -69,8 +69,14 @@ type
     subitems: TCocoaConfigToolBarItems;
   end;
 
+  TCocoaConfigTitleBar = record
+    transparent: Boolean;
+    separatorStyle: NSTitlebarSeparatorStyle;
+  end;
+
   TCocoaConfigToolBar = record
     identifier: String;
+    style: NSWindowToolbarStyle;
     displayMode: NSToolbarDisplayMode;
     allowsUserCustomization: Boolean;
     autosavesConfiguration: Boolean;
@@ -82,6 +88,7 @@ type
 
   TCocoaConfigForm = record
     name: String;
+    titleBar: TCocoaConfigTitleBar;
     toolBar: TCocoaConfigToolBar;
   end;
 

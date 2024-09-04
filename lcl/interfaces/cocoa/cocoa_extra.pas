@@ -439,8 +439,27 @@ type
     function scrollingDeltaY: CGFloat; message 'scrollingDeltaY';
   end;
 
+type
+  NSTitlebarSeparatorStyle = NSInteger;     { available in 11.0 }
+const
+  NSTitlebarSeparatorStyleAutomatic = 0;
+  NSTitlebarSeparatorStyleNone      = 1;
+  NSTitlebarSeparatorStyleLine      = 2;
+  NSTitlebarSeparatorStyleShadow    = 3;
+
+type
+  NSWindowToolbarStyle = NSInteger;    { available in 11.0 }
+const
+  NSWindowToolbarStyleAutomatic      = 0;
+  NSWindowToolbarStyleExpanded       = 1;
+  NSWindowToolbarStylePreference     = 2;
+  NSWindowToolbarStyleUnified        = 3;
+  NSWindowToolbarStyleUnifiedCompact = 4;
+
+type
   NSWindowTabbingMode = NSInteger;
 
+type
   NSWindowFix = objccategory external (NSWindow)
     // 10.4-10.7
     // userSpaceScaleFactor is declare in the latest CocoaAll
@@ -468,6 +487,11 @@ type
     // 10.14
     function appearance: NSAppearance; message 'appearance'; // 10.14 (10.13)
     function effectiveAppearance: NSAppearance; message 'effectiveAppearance'; // 10.14 (10.13)
+    // 11.0
+    procedure setTitlebarSeparatorStyle( newValue: NSTitlebarSeparatorStyle );
+      message 'setTitlebarSeparatorStyle:';  { available in 11.0 }
+    procedure setToolbarStyle( newValue: NSWindowToolbarStyle );
+      message 'setToolbarStyle:';  { available in 11.0 }
   end;
 
 type

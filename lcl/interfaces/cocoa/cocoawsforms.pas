@@ -753,16 +753,30 @@ var
   ds: TCocoaDesignOverlay;
   cb: TLCLWindowCallback;
 
-  procedure mergeToolBar;
+  procedure applyCocoaConfigToolBar( const config: TCocoaConfigToolBar );
+  var
+    toolbar: TCocoaToolBar;
+  begin
+    toolbar:= TCocoaToolBarUtils.createToolBar( config );
+    win.setToolbarStyle( config.style );
+    win.setToolbar( toolbar );
+  end;
+
+  procedure applyCocoaConfigTitleBar( const config: TCocoaConfigTitleBar );
+  begin
+    win.setTitlebarAppearsTransparent( config.transparent );
+    win.setTitlebarSeparatorStyle( config.separatorStyle );
+  end;
+
+  procedure applyCocoaConfigForm;
   var
     pFormConfig: PCocoaConfigForm;
-    toolbar: TCocoaToolBar;
   begin
     pFormConfig:= TCocoaFormUtils.getConfigByName( AWinControl.Name );
     if NOT Assigned(pFormConfig) then
       Exit;
-    toolbar:= TCocoaToolBarUtils.createToolBar( pFormConfig^.toolBar );
-    win.setToolbar( toolbar );
+    applyCocoaConfigTitleBar( pFormConfig^.titleBar );
+    applyCocoaConfigToolBar( pFormConfig^.toolBar );
   end;
 
 begin
@@ -892,7 +906,7 @@ begin
   end;
   doc.release;
 
-  mergeToolBar;
+  applyCocoaConfigForm;
 
   Result := TLCLHandle(cnt);
 end;
