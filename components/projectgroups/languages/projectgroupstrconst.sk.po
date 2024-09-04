@@ -578,3 +578,4 @@ msgstr "Chyba zápisu"
 #, object-pascal-format
 msgid "XML syntax error in file \"%s\": %s"
 msgstr "Chyba XML syntaxe v súbore \"%s\": %s"
+

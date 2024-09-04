@@ -1528,3 +1528,4 @@ msgstr "Veľkosť"
 #: lclstrconsts.sshellctrlstype
 msgid "Type"
 msgstr "Typ"
+
