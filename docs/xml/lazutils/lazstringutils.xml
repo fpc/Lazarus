@@ -1282,7 +1282,9 @@ location where c was located.
 </element>
 
 <element name="LazIsValidIdent">
-<short>This is a copy of IsValidIdent from the FPC 3.1 FCL library.</short>
+<short>
+Deprecated. Use SysUtils.IsValidIdent in RTL instead.
+</short>
 <descr>
 <p>
 <var>LazIsValidIdent</var> is a <var>Boolean</var> function used to determine 
@@ -1322,11 +1324,10 @@ Case is not significant when determining the validity of an identifier name.
 LazIsValidIdent is used in the implementation of various tools in the Lazarus 
 IDE. (IDEIntf, CodeTools, BuildIntf)
 </p>
-<remark>
-Use the IsValidIdent routine from FPC 3.2.X when version 3.2 is the minimum 
-requirement.
-</remark>
 </descr>
+<version>
+Deprecated since LCL version 3.6. Use SysUtils.IsValidIdent in RTL instead.
+</version>
 <seealso>
 <link id="#rtl.sysutils.IsValidIdent">IsValidIdent</link>
 </seealso>
