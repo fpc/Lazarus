@@ -13,7 +13,7 @@ uses
   CocoaAll, Cocoa_Extra, CocoaConst;
 
 type
-  TCocoaConfigToolBarItemInterface = interface
+  TCocoaConfigToolBarItemAdapter = interface
     function createItem: NSToolBarItem;
     function identifier: String;
     function iconName: String;
@@ -22,7 +22,7 @@ type
     function onClick: Pointer;
   end;
 
-  TCocoaConfigToolBarItems = Array of TCocoaConfigToolBarItemInterface;
+  TCocoaConfigToolBarItems = Array of TCocoaConfigToolBarItemAdapter;
 
   { TCocoaConfigToolBarItem }
 
