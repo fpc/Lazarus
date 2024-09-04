@@ -1,7 +1,7 @@
 unit CocoaConfig;
 
 {$mode objfpc}{$H+}
-{$modeswitch objectivec1}
+{$modeswitch objectivec2}
 {$interfaces corba}
 {$include cocoadefines.inc}
 
@@ -13,44 +13,53 @@ uses
   CocoaAll, Cocoa_Extra, CocoaConst;
 
 type
-  TCocoaConfigToolBarItemAdapter = interface
-    function createItem: NSToolBarItem;
-    function identifier: String;
-    function iconName: String;
-    function title: String;
-    function tips: String;
-    function onClick: Pointer;
+  TCocoaConfigToolBarItemClassAbstract = class
+  public
+    function identifier: String; virtual; abstract;
+    function createItem: NSToolBarItem; virtual; abstract;
   end;
 
-  TCocoaConfigToolBarItems = Array of TCocoaConfigToolBarItemAdapter;
+  TCocoaConfigToolBarItems = Array of TCocoaConfigToolBarItemClassAbstract;
 
-  { TCocoaConfigToolBarItem }
+  { TCocoaConfigToolBarItemBase }
 
-  TCocoaConfigToolBarItem = object
+  TCocoaConfigToolBarItemBase = object
     identifier: String;
+  end;
+
+  { TCocoaConfigToolBarItemWithUI }
+
+  TCocoaConfigToolBarItemWithUI = object( TCocoaConfigToolBarItemBase )
     iconName: String;
     title: String;
     tips: String;
+  end;
+
+  { TCocoaConfigToolBarItemWithAction }
+
+  TCocoaConfigToolBarItemWithAction = object( TCocoaConfigToolBarItemWithUI )
     onClick: Pointer;
   end;
 
-  TCocoaConfigToolBarItemSharing = object( TCocoaConfigToolBarItem )
+  TCocoaConfigToolBarItem = TCocoaConfigToolBarItemWithAction;
+
+  TCocoaConfigToolBarItemSharing = object( TCocoaConfigToolBarItemWithUI )
     onGetItems: Pointer;
   end;
 
-  TCocoaConfigToolBarItemSearch = object( TCocoaConfigToolBarItem )
+  TCocoaConfigToolBarItemSearch = object( TCocoaConfigToolBarItemWithAction )
     sendWhole: Boolean;
     sendImmediately: Boolean;
     resignsWithCancel: Boolean;
     preferredWidth: Double;
   end;
 
-  TCocoaConfigToolBarItemMenu = object( TCocoaConfigToolBarItem )
+  TCocoaConfigToolBarItemMenu = object( TCocoaConfigToolBarItemWithAction )
     showsIndicator: Boolean;
     menu: TMenuItem;
   end;
 
-  TCocoaConfigToolBarItemGroup = object( TCocoaConfigToolBarItem )
+  TCocoaConfigToolBarItemGroup = object( TCocoaConfigToolBarItemWithAction )
     representation: NSToolbarItemGroupControlRepresentation;
     selectionMode: NSToolbarItemGroupSelectionMode;
     selectedIndex: NSInteger;
