@@ -15,7 +15,7 @@ uses
 type
   TCocoaConfigToolBarItemClassAbstract = class
   public
-    function identifier: String; virtual; abstract;
+    function identifier: NSString; virtual; abstract;
     function createItem: NSToolBarItem; virtual; abstract;
   end;
 
@@ -41,7 +41,7 @@ type
   { TCocoaConfigToolBarItemWithAction }
 
   TCocoaConfigToolBarItemWithAction = object( TCocoaConfigToolBarItemWithUI )
-    onClick: Pointer;
+    onAction: Pointer;
   end;
 
   TCocoaConfigToolBarItem = TCocoaConfigToolBarItemWithAction;
