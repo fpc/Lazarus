@@ -1,16 +1,104 @@
 unit CocoaConfig;
 
 {$mode objfpc}{$H+}
-{$modeswitch objectivec1}
+{$modeswitch objectivec2}
+{$interfaces corba}
 {$include cocoadefines.inc}
 
 interface
 
 uses
+  SysUtils,
   Menus,
   CocoaAll, Cocoa_Extra, CocoaConst;
 
 type
+  TCocoaConfigToolBarItemClassAbstract = class
+  public
+    function identifier: NSString; virtual; abstract;
+    function createItem: NSToolBarItem; virtual; abstract;
+  end;
+
+  TCocoaConfigToolBarItems = Array of TCocoaConfigToolBarItemClassAbstract;
+
+  { TCocoaConfigToolBarItemBase }
+
+  TCocoaConfigToolBarItemBase = object
+    identifier: String;
+    priority: NSInteger;
+    navigational: Boolean;
+  end;
+
+  { TCocoaConfigToolBarItemWithUI }
+
+  TCocoaConfigToolBarItemWithUI = object( TCocoaConfigToolBarItemBase )
+    iconName: String;
+    title: String;
+    tips: String;
+    bordered: Boolean;
+  end;
+
+  { TCocoaConfigToolBarItemWithAction }
+
+  TCocoaConfigToolBarItemWithAction = object( TCocoaConfigToolBarItemWithUI )
+    onAction: Pointer;
+  end;
+
+  TCocoaConfigToolBarItem = TCocoaConfigToolBarItemWithAction;
+
+  TCocoaConfigToolBarItemSharing = object( TCocoaConfigToolBarItemWithUI )
+    onGetItems: Pointer;
+  end;
+
+  TCocoaConfigToolBarItemSearch = object( TCocoaConfigToolBarItemWithAction )
+    sendWhole: Boolean;
+    sendImmediately: Boolean;
+    resignsWithCancel: Boolean;
+    preferredWidth: Double;
+  end;
+
+  TCocoaConfigToolBarItemMenu = object( TCocoaConfigToolBarItemWithAction )
+    showsIndicator: Boolean;
+    menu: TMenuItem;
+  end;
+
+  TCocoaConfigToolBarItemGroup = object( TCocoaConfigToolBarItemWithAction )
+    representation: NSToolbarItemGroupControlRepresentation;
+    selectionMode: NSToolbarItemGroupSelectionMode;
+    selectedIndex: NSInteger;
+    subitems: TCocoaConfigToolBarItems;
+  end;
+
+  TCocoaConfigTitleBar = record
+    transparent: Boolean;
+    separatorStyle: NSTitlebarSeparatorStyle;
+  end;
+
+  TCocoaConfigToolBar = record
+    identifier: String;
+    style: NSWindowToolbarStyle;
+    displayMode: NSToolbarDisplayMode;
+    allowsUserCustomization: Boolean;
+    autosavesConfiguration: Boolean;
+    items: TCocoaConfigToolBarItems;
+    defaultItemsIdentifiers: TStringArray;
+    allowedItemsIdentifiers: TStringArray;
+    itemCreator: Pointer;
+  end;
+
+  TCocoaConfigForm = record
+    name: String;
+    titleBar: TCocoaConfigTitleBar;
+    toolBar: TCocoaConfigToolBar;
+  end;
+
+  TCocoaConfigForms = Array of TCocoaConfigForm;
+
+var
+  CocoaConfigForms: TCocoaConfigForms;
+
+type
+
   TCocoaConfigMenuItem = record
     defaultCheckImageName: NSString;
     defaultRadioImageName: NSString;

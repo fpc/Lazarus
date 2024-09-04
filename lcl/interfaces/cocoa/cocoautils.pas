@@ -25,6 +25,9 @@ type
 const
   NSNullRect : NSRect = (origin:(x:0; y:0); size:(width:0; height:0));
 
+function StringArrayFromLCLToNS(const lclArray: TStringArray): NSArray;
+function UrlArrayFromLCLToNS(const lclArray: TStringArray): NSArray;
+
 procedure hideAllSubviews( parent: NSView );
 
 function GetNSSize(width, height: CGFloat): NSSize; inline;
@@ -162,6 +165,39 @@ function AllocImageRotatedByDegrees(src: NSImage; degrees: double): NSImage;
 function AllocCursorFromCursorByDegrees(src: NSCursor; degrees: double): NSCursor;
 
 implementation
+
+function StringArrayFromLCLToNS( const lclArray: TStringArray ): NSArray;
+var
+  cocoaArray: NSMutableArray;
+  i: Integer;
+  count: Integer;
+begin
+  Result:= nil;
+  if NOT Assigned(lclArray) then
+    Exit;
+  count:= length( lclArray );
+  cocoaArray:= NSMutableArray.arrayWithCapacity( count );
+  for i:=0 to count-1 do begin
+    cocoaArray.addObject( StrToNSString(lclArray[i]) );
+  end;
+  Result:= cocoaArray;
+end;
+
+function UrlArrayFromLCLToNS(const lclArray:TStringArray): NSArray;
+var
+  cocoaArray: NSMutableArray;
+  url: NSUrl;
+  i: Integer;
+  count: Integer;
+begin
+  count:= length( lclArray );
+  cocoaArray:= NSMutableArray.arrayWithCapacity( count );
+  for i:=0 to count-1 do begin
+    url:= NSUrl.URLWithString( StrToNSString(lclArray[i]) );
+    cocoaArray.addObject( url );
+  end;
+  Result:= cocoaArray;
+end;
 
 procedure hideAllSubviews( parent: NSView );
 var

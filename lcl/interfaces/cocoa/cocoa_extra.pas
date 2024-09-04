@@ -425,6 +425,12 @@ type
     function CGContext: CGContextRef; message 'CGContext';
   end;
 
+  NSImageFix = objccategory external (NSImage)
+    class function imageWithSystemSymbolName_accessibilityDescription(
+      aName: NSString; aAccessibilityDescription: NSString ): id;
+      message 'imageWithSystemSymbolName:accessibilityDescription:'; { available in 11.0 }
+  end;
+
   NSEventFix = objccategory external (NSEvent)
     class function modifierFlags_: NSUInteger; message 'modifierFlags';
     // available in 10.7+
@@ -433,8 +439,27 @@ type
     function scrollingDeltaY: CGFloat; message 'scrollingDeltaY';
   end;
 
+type
+  NSTitlebarSeparatorStyle = NSInteger;     { available in 11.0 }
+const
+  NSTitlebarSeparatorStyleAutomatic = 0;
+  NSTitlebarSeparatorStyleNone      = 1;
+  NSTitlebarSeparatorStyleLine      = 2;
+  NSTitlebarSeparatorStyleShadow    = 3;
+
+type
+  NSWindowToolbarStyle = NSInteger;    { available in 11.0 }
+const
+  NSWindowToolbarStyleAutomatic      = 0;
+  NSWindowToolbarStyleExpanded       = 1;
+  NSWindowToolbarStylePreference     = 2;
+  NSWindowToolbarStyleUnified        = 3;
+  NSWindowToolbarStyleUnifiedCompact = 4;
+
+type
   NSWindowTabbingMode = NSInteger;
 
+type
   NSWindowFix = objccategory external (NSWindow)
     // 10.4-10.7
     // userSpaceScaleFactor is declare in the latest CocoaAll
@@ -462,8 +487,107 @@ type
     // 10.14
     function appearance: NSAppearance; message 'appearance'; // 10.14 (10.13)
     function effectiveAppearance: NSAppearance; message 'effectiveAppearance'; // 10.14 (10.13)
+    // 11.0
+    procedure setTitlebarSeparatorStyle( newValue: NSTitlebarSeparatorStyle );
+      message 'setTitlebarSeparatorStyle:';  { available in 11.0 }
+    procedure setToolbarStyle( newValue: NSWindowToolbarStyle );
+      message 'setToolbarStyle:';  { available in 11.0 }
   end;
 
+type
+  NSToolBarItemFix = objccategory external (NSToolBarItem)
+    procedure setBordered( newValue: Boolean ); message 'setBordered:'; { available in 10.15 }
+    procedure setNavigational( newValue: Boolean ); message 'setNavigational:'; { available in 11.0 }
+  end;
+
+type
+  NSSearchFieldDelegateProtocol = objcprotocol external (NSTextFieldDelegateProtocol)
+    procedure searchFieldDidStartSearching( sender: NSSearchField );
+      message 'searchFieldDidStartSearching:';
+    procedure searchFieldDidEndSearching( sender: NSSearchField );
+      message 'searchFieldDidEndSearching:';
+  end;
+
+  NSSearchToolbarItem = objcclass external (NSToolBarItem)
+    procedure setSearchField( newValue: NSSearchField );
+      message 'setSearchField:';  { available in 11.0 }
+    function searchField: NSSearchField;
+      message 'searchField';  { available in 11.0 }
+
+    procedure setPreferredWidthForSearchField( newValue: CGFloat );
+      message 'setPreferredWidthForSearchField:';  { available in 11.0 }
+
+    procedure setResignsFirstResponderWithCancel( newValue: Boolean );
+      message 'setResignsFirstResponderWithCancel:';  { available in 11.0 }
+  end;
+
+type
+  NSSharingServicePickerToolbarItem = objcclass;
+
+  NSSharingServicePickerToolbarItemDelegateProtocol = objcprotocol external name 'NSSharingServicePickerToolbarItemDelegate'
+    function itemsForSharingServicePickerToolbarItem(
+      pickerToolbarItem: NSSharingServicePickerToolbarItem ): NSArray;
+      message 'itemsForSharingServicePickerToolbarItem:';  { available in 10.15 }
+  end;
+
+  NSSharingServicePickerToolbarItem = objcclass external (NSToolBarItem)
+    procedure setDelegate( aDelegate: NSSharingServicePickerToolbarItemDelegateProtocol );
+      message 'setDelegate:';  { available in 10.15 }
+    function delegate: NSSharingServicePickerToolbarItemDelegateProtocol;
+      message 'delegate';  { available in 10.15 }
+  end;
+
+type
+  NSMenuToolbarItem = objcclass external (NSToolBarItem)
+    function menu: NSMenu; message 'menu';  { available in 10.15 }
+    procedure setMenu( newValue: NSMenu ); message 'setMenu:';  { available in 10.15 }
+    procedure setShowsIndicator( newValue: Boolean ); message 'setShowsIndicator:';  { available in 10.15 }
+  end;
+
+type
+  NSToolbarItemGroupSelectionMode = NSInteger;
+const
+  NSToolbarItemGroupSelectionModeSelectOne = 0;
+  NSToolbarItemGroupSelectionModeSelectAny = 1;
+  NSToolbarItemGroupSelectionModeMomentary = 2;
+type
+  NSToolbarItemGroupControlRepresentation = NSInteger;
+const
+  NSToolbarItemGroupControlRepresentationAutomatic = 0;
+  NSToolbarItemGroupControlRepresentationExpanded = 1;
+  NSToolbarItemGroupControlRepresentationCollapsed = 2;
+
+type
+  NSToolbarItemGroupFix = objccategory external (NSToolbarItemGroup)
+    procedure setControlRepresentation( newValue: NSToolbarItemGroupControlRepresentation );
+      message 'setControlRepresentation:';  { available in 10.15 }
+    procedure setSelectionMode( newValue: NSToolbarItemGroupSelectionMode );
+      message 'setSelectionMode:';  { available in 10.15 }
+
+    function selectedIndex: NSInteger; message 'selectedIndex'; { available in 10.15 }
+    function isSelectedAtIndex: Boolean; message 'isSelectedAtIndex'; { available in 10.15 }
+    procedure setSelected_atIndex( newValue: Boolean; index: NSInteger );
+      message 'setSelected:atIndex:';  { available in 10.15 }
+
+    class function groupWithItemIdentifier_titles_selectionMode_labels_target_action(
+        aItemIdentifier: NSString;
+        titles: NSArray;
+        selectionMode: NSToolbarItemGroupSelectionMode;
+        labels: NSArray;
+        aTarget: id;
+        aAction: SEL ): id;
+      message 'groupWithItemIdentifier:titles:selectionMode:labels:target:action:'; { available in 10.15 }
+    class function groupWithItemIdentifier_images_selectionMode_labels_target_action(
+        aItemIdentifier: NSString;
+        images: NSArray;
+        selectionMode: NSToolbarItemGroupSelectionMode;
+        labels: NSArray;
+        aTarget: id;
+        aAction: SEL ): id;
+      message 'groupWithItemIdentifier:images:selectionMode:labels:target:action:'; { available in 10.15 }
+  end;
+
+type
   NSTableColumnFix = objccategory external (NSTableColumn)
     procedure setTitle(atitle: NSString); message 'setTitle:';
     function title: NSString; message 'title';
