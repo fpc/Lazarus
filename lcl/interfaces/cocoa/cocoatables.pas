@@ -356,7 +356,7 @@ var
   width: Integer;
   height: Integer;
 begin
-  if (lclBrush.Color=clWindow) or (lclBrush.Color=clDefault) then
+  if lclBrush.Color = clWhite then   // see also TBrush.create
     Exit;
 
   width:= Round( view.bounds.size.width );
