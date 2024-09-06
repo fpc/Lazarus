@@ -336,7 +336,7 @@ begin
     if (ItemIndex >= 0) and ItemEnabled[ItemIndex] then
     begin
       Index := ItemIndex;
-      Checked[Index] := not Checked[Index];
+      Toggle(Index);
       ClickCheck;
       ItemClick(Index);    // deprecated in V3.99
     end;
