@@ -420,11 +420,17 @@ begin
 end;
 
 procedure TCocoaWindowContent.lclSetFrame(const r: TRect);
+var
+  size: NSSize;
 begin
   if isembedded then
-    inherited lclSetFrame(r)
-  else
-    window.lclSetFrame(r);
+    inherited lclSetFrame( r )
+  else begin
+    window.lclSetFrame( r );
+    size.width:= r.Width;
+    size.height:= r.Height;
+    self.setFrameSize( size );
+  end;
 end;
 
 function TCocoaWindowContent.lclFrame: TRect;
