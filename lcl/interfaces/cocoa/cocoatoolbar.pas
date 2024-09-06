@@ -12,7 +12,6 @@ uses
   CocoaAll, CocoaPrivate, CocoaConfig, CocoaMenus, Cocoa_Extra, CocoaUtils;
 
 type
-  TCocoaToolBarItemHandler = procedure ( Sender: id );
   TCocoaToolBarItemSharingOnGetItems = function ( item: NSToolBarItem ): TStringArray;
 
   PCocoaConfigToolBar = ^TCocoaConfigToolBar;
@@ -24,15 +23,22 @@ type
 
   { TCocoaConfigToolBarItemClassBase }
 
+  // NSToolbarDelegateProtocol.toolbar_itemForItemIdentifier_willBeInsertedIntoToolbar()
+  // requires NSToolBarItem to be created each time it is called,
+  // corresponding to TCocoaConfigToolBarItemClassAbstract.createItem().
+  //
+  // so TCocoaConfigToolBarItemClassAbstract and its subclass should NOT
+  // reference the created NSToolBarItem.
+  // that is, there should be no other fields except the Config Data itself.
   TCocoaConfigToolBarItemClassBase = class( TCocoaConfigToolBarItemClassAbstract )
   protected
     _identifier: String;
     _priority: NSInteger;
     _navigational: Boolean;
   protected
-    procedure toClassConfig( pItemConfig: PCocoaConfigToolBarItemBase );
+    procedure toClassConfig( const pItemConfig: PCocoaConfigToolBarItemBase );
   public
-    procedure setItemAttribs( item: NSToolBarItem ); virtual;
+    procedure setItemAttribs( const item: NSToolBarItem ); virtual;
     function identifier: NSString; override;
   end;
 
@@ -45,9 +51,9 @@ type
     _tips: String;
     _bordered: Boolean;
   protected
-    procedure toClassConfig( pItemConfig: PCocoaConfigToolBarItemWithUI );
+    procedure toClassConfig( const pItemConfig: PCocoaConfigToolBarItemWithUI );
   public
-    procedure setItemAttribs( item: NSToolBarItem ); override;
+    procedure setItemAttribs( const item: NSToolBarItem ); override;
     function iconName: NSString; virtual;
     function title: NSString; virtual;
     function tips: NSString; virtual;
@@ -57,11 +63,11 @@ type
 
   TCocoaConfigToolBarItemClassWithAction = class( TCocoaConfigToolBarItemClassWithUI )
   protected
-    _onAction: TCocoaToolBarItemHandler;
+    _onAction: TCocoaToolBarItemActionHandler;
   protected
-    procedure toClassConfig( pItemConfig: PCocoaConfigToolBarItemWithAction );
+    procedure toClassConfig( const pItemConfig: PCocoaConfigToolBarItemWithAction );
   public
-    procedure setItemAttribs( item: NSToolBarItem ); override;
+    procedure setItemAttribs( const item: NSToolBarItem ); override;
   end;
 
   { TCocoaConfigToolBarItemClass }
@@ -122,10 +128,10 @@ type
 
   TCocoaToolBarItem = objcclass( NSToolBarItem )
   private
-    _handler: TCocoaToolBarItemHandler;
-    procedure lclItemAction( sender: id ); message 'lclItemAction:';
+    _handler: TCocoaToolBarItemActionHandler;
+    procedure lclItemAction( const sender: id ); message 'lclItemAction:';
   public
-    procedure lclSetHandler( handler: TCocoaToolBarItemHandler );
+    procedure lclSetHandler( const handler: TCocoaToolBarItemActionHandler );
       message 'lclSetHandler:';
   end;
 
@@ -138,7 +144,7 @@ type
     function itemsForSharingServicePickerToolbarItem(
       pickerToolbarItem: NSSharingServicePickerToolbarItem ): NSArray;
   public
-    procedure lclSetOnGetItems( onGetItems: TCocoaToolBarItemSharingOnGetItems );
+    procedure lclSetOnGetItems( const onGetItems: TCocoaToolBarItemSharingOnGetItems );
       message 'lclSetOnGetItems:';
   end;
 
@@ -152,13 +158,13 @@ type
   TCocoaToolBarItemSearch = objcclass( NSSearchToolBarItem, NSSearchFieldDelegateProtocol )
   private
     _isSearching: Boolean;
-    _handler: TCocoaToolBarItemHandler;
+    _handler: TCocoaToolBarItemActionHandler;
     procedure lclItemAction( sender: id ); message 'lclItemAction:';
   public
     procedure searchFieldDidStartSearching( sender: NSSearchField );
     procedure searchFieldDidEndSearching( sender: NSSearchField );
   public
-    procedure lclSetHandler( handler: TCocoaToolBarItemHandler );
+    procedure lclSetHandler( const handler: TCocoaToolBarItemActionHandler );
       message 'lclSetHandler:';
   end;
 
@@ -166,10 +172,10 @@ type
 
   TCocoaToolBarItemMenu = objcclass( NSMenuToolBarItem )
   private
-    _handler: TCocoaToolBarItemHandler;
+    _handler: TCocoaToolBarItemActionHandler;
     procedure lclItemAction( sender: id ); message 'lclItemAction:';
   public
-    procedure lclSetHandler( handler: TCocoaToolBarItemHandler );
+    procedure lclSetHandler( const handler: TCocoaToolBarItemActionHandler );
       message 'lclSetHandler:';
   end;
 
@@ -178,20 +184,20 @@ type
   TCocoaToolBarItemGroupWrapper = objcclass( NSObject )
   private
     _itemGroup: NSToolbarItemGroup;
-    _handler: TCocoaToolBarItemHandler;
-    procedure lclItemAction( sender: id ); message 'lclItemAction:';
+    _handler: TCocoaToolBarItemActionHandler;
+    procedure lclItemAction( const sender: id ); message 'lclItemAction:';
     function lclGetSelectedItem: NSToolBarItem; message 'lclGetSelectedItem';
   public
-    procedure lclSetHandler( handler: TCocoaToolBarItemHandler );
+    procedure lclSetHandler( const handler: TCocoaToolBarItemActionHandler );
       message 'lclSetHandler:';
-    procedure lclSetItemGroup( itemGroup: NSToolbarItemGroup );
+    procedure lclSetItemGroup( const itemGroup: NSToolbarItemGroup );
       message 'lclSetItemGroup:';
-    procedure lclSetSelectedIndex( index: NSInteger );
+    procedure lclSetSelectedIndex( const index: NSInteger );
       message 'lclSetSelectedIndex:';
   end;
 
-  TCocoaToolBarItemCreator = function ( identifier: String;
-    items: TCocoaConfigToolBarItems ): NSToolbarItem;
+  TCocoaToolBarItemCreator = function ( const identifier: String;
+    const items: TCocoaConfigToolBarItems ): NSToolbarItem;
   
   { TCocoaToolBar }
 
@@ -213,7 +219,7 @@ type
   public
     procedure lclSetConfig( const pConfig: Pointer );
       message 'lclSetConfig:';
-    procedure lclSetItemCreator( itemCreator: TCocoaToolBarItemCreator );
+    procedure lclSetItemCreator( const itemCreator: TCocoaToolBarItemCreator );
       message 'lclSetItemCreator:';
     procedure lclSetDefaultItemIdentifiers( identifiers: NSArray );
       message 'lclSetDefaultItemIdentifiers:';
@@ -225,58 +231,58 @@ type
 
   TCocoaToolBarUtils = class
   public
-    class function toClass( itemConfig: TCocoaConfigToolBarItem ):
+    class function toClass( const itemConfig: TCocoaConfigToolBarItem ):
       TCocoaConfigToolBarItemClassAbstract;
-    class function toClass( itemConfig: TCocoaConfigToolBarItemSharing ):
+    class function toClass( const itemConfig: TCocoaConfigToolBarItemSharing ):
       TCocoaConfigToolBarItemClassAbstract;
-    class function toClass( itemConfig: TCocoaConfigToolBarItemSearch ):
+    class function toClass( const itemConfig: TCocoaConfigToolBarItemSearch ):
       TCocoaConfigToolBarItemClassAbstract;
-    class function toClass( itemConfig: TCocoaConfigToolBarItemMenu ):
+    class function toClass( const itemConfig: TCocoaConfigToolBarItemMenu ):
       TCocoaConfigToolBarItemClassAbstract;
-    class function toClass( itemConfig: TCocoaConfigToolBarItemGroup ):
+    class function toClass( const itemConfig: TCocoaConfigToolBarItemGroup ):
       TCocoaConfigToolBarItemClassAbstract;
   public
-    class function createItem( identifier: String; itemsConfig: TCocoaConfigToolBarItems ): NSToolbarItem;
+    class function createItem( const identifier: String; const itemsConfig: TCocoaConfigToolBarItems ): NSToolbarItem;
     class function createToolBar( const toolBarConfig: TCocoaConfigToolBar ): TCocoaToolBar;
   end;
 
-  function defaultToolBarItemCreatorImplement( identifier: String;
-    items: TCocoaConfigToolBarItems ): NSToolbarItem;
+  function defaultToolBarItemCreatorImplement( const identifier: String;
+    const items: TCocoaConfigToolBarItems ): NSToolbarItem;
 
 implementation
 
-class function TCocoaToolBarUtils.toClass(itemConfig: TCocoaConfigToolBarItem
+class function TCocoaToolBarUtils.toClass( const itemConfig: TCocoaConfigToolBarItem
   ): TCocoaConfigToolBarItemClassAbstract;
 begin
   Result:= TCocoaConfigToolBarItemClass.Create( itemConfig );
 end;
 
-class function TCocoaToolBarUtils.toClass( itemConfig: TCocoaConfigToolBarItemSharing
+class function TCocoaToolBarUtils.toClass( const itemConfig: TCocoaConfigToolBarItemSharing
   ): TCocoaConfigToolBarItemClassAbstract;
 begin
   Result:= TCocoaConfigToolBarItemClassSharing.Create( itemConfig );
 end;
 
-class function TCocoaToolBarUtils.toClass( itemConfig: TCocoaConfigToolBarItemSearch
+class function TCocoaToolBarUtils.toClass( const itemConfig: TCocoaConfigToolBarItemSearch
   ): TCocoaConfigToolBarItemClassAbstract;
 begin
   Result:= TCocoaConfigToolBarItemClassSearch.Create( itemConfig );
 end;
 
-class function TCocoaToolBarUtils.toClass( itemConfig: TCocoaConfigToolBarItemMenu
+class function TCocoaToolBarUtils.toClass( const itemConfig: TCocoaConfigToolBarItemMenu
   ): TCocoaConfigToolBarItemClassAbstract;
 begin
   Result:= TCocoaConfigToolBarItemClassMenu.Create( itemConfig );
 end;
 
-class function TCocoaToolBarUtils.toClass( itemConfig: TCocoaConfigToolBarItemGroup
+class function TCocoaToolBarUtils.toClass( const itemConfig: TCocoaConfigToolBarItemGroup
   ): TCocoaConfigToolBarItemClassAbstract;
 begin
   Result:= TCocoaConfigToolBarItemClassGroup.Create( itemConfig );
 end;
 
-class function TCocoaToolBarUtils.createItem( identifier: String;
-  itemsConfig: TCocoaConfigToolBarItems ): NSToolbarItem;
+class function TCocoaToolBarUtils.createItem( const identifier: String;
+  const itemsConfig: TCocoaConfigToolBarItems ): NSToolbarItem;
 var
   i: Integer;
   count: Integer;
@@ -319,20 +325,20 @@ begin
   Result:= toolBar;
 end;
 
-function defaultToolBarItemCreatorImplement( identifier: String;
-  items: TCocoaConfigToolBarItems ): NSToolbarItem;
+function defaultToolBarItemCreatorImplement( const identifier: String;
+  const items: TCocoaConfigToolBarItems ): NSToolbarItem;
 begin
   Result:= TCocoaToolBarUtils.createItem( identifier, items );
 end;
 
 { TCocoaToolBarItem }
 
-procedure TCocoaToolBarItem.lclItemAction(sender: id);
+procedure TCocoaToolBarItem.lclItemAction( const sender: id );
 begin
   _handler( sender );
 end;
 
-procedure TCocoaToolBarItem.lclSetHandler(handler: TCocoaToolBarItemHandler);
+procedure TCocoaToolBarItem.lclSetHandler( const handler: TCocoaToolBarItemActionHandler );
 begin
   _handler:= handler;
 end;
@@ -349,7 +355,7 @@ begin
 end;
 
 procedure TCocoaToolBarItemSharingDelegate.lclSetOnGetItems(
-  onGetItems: TCocoaToolBarItemSharingOnGetItems );
+  const onGetItems: TCocoaToolBarItemSharingOnGetItems );
 begin
   _onGetItems:= onGetItems;
 end;
@@ -381,7 +387,7 @@ begin
 end;
 
 procedure TCocoaToolBarItemSearch.lclSetHandler(
-  handler: TCocoaToolBarItemHandler);
+  const handler: TCocoaToolBarItemActionHandler);
 begin
   _handler:= handler;
 end;
@@ -393,14 +399,14 @@ begin
   _handler( sender );
 end;
 
-procedure TCocoaToolBarItemMenu.lclSetHandler(handler: TCocoaToolBarItemHandler);
+procedure TCocoaToolBarItemMenu.lclSetHandler( const handler: TCocoaToolBarItemActionHandler );
 begin
   _handler:= handler;
 end;
 
 { TCocoaToolBarItemGroupWrapper }
 
-procedure TCocoaToolBarItemGroupWrapper.lclItemAction(sender: id);
+procedure TCocoaToolBarItemGroupWrapper.lclItemAction( const sender: id );
 var
   index: NSInteger;
 begin
@@ -419,19 +425,20 @@ begin
     Result:= _itemGroup.subitems.objectAtIndex( index );
 end;
 
-procedure TCocoaToolBarItemGroupWrapper.lclSetHandler(handler: TCocoaToolBarItemHandler
-  );
+procedure TCocoaToolBarItemGroupWrapper.lclSetHandler(
+  const handler: TCocoaToolBarItemActionHandler );
 begin
   _handler:= handler;
 end;
 
 procedure TCocoaToolBarItemGroupWrapper.lclSetItemGroup(
-  itemGroup: NSToolbarItemGroup);
+  const itemGroup: NSToolbarItemGroup);
 begin
   _itemGroup:= itemGroup;
 end;
 
-procedure TCocoaToolBarItemGroupWrapper.lclSetSelectedIndex(index: NSInteger);
+procedure TCocoaToolBarItemGroupWrapper.lclSetSelectedIndex(
+  const index: NSInteger);
 var
   item: NSToolBarItem;
 begin
@@ -482,8 +489,8 @@ begin
   _pToolBarItems:= Pointer( PCocoaConfigToolBar(pConfig)^.Items );
 end;
 
-procedure TCocoaToolBar.lclSetItemCreator(itemCreator: TCocoaToolBarItemCreator
-  );
+procedure TCocoaToolBar.lclSetItemCreator(
+  const itemCreator: TCocoaToolBarItemCreator );
 begin
   _itemCreator:= itemCreator;
 end;
@@ -507,14 +514,15 @@ end;
 { TCocoaConfigToolBarItemClassBase }
 
 procedure TCocoaConfigToolBarItemClassBase.toClassConfig(
-  pItemConfig: PCocoaConfigToolBarItemBase);
+  const pItemConfig: PCocoaConfigToolBarItemBase);
 begin
   _identifier:= pItemConfig^.identifier;
   _priority:= pItemConfig^.priority;
   _navigational:= pItemConfig^.navigational;
 end;
 
-procedure TCocoaConfigToolBarItemClassBase.setItemAttribs(item: NSToolBarItem);
+procedure TCocoaConfigToolBarItemClassBase.setItemAttribs(
+  const item: NSToolBarItem );
 begin
   item.setVisibilityPriority( _priority );
   item.setNavigational( _navigational );
@@ -528,7 +536,7 @@ end;
 { TCocoaConfigToolBarItemClassWithUI }
 
 procedure TCocoaConfigToolBarItemClassWithUI.toClassConfig(
-  pItemConfig: PCocoaConfigToolBarItemWithUI );
+  const pItemConfig: PCocoaConfigToolBarItemWithUI );
 begin
   Inherited toClassConfig( pItemConfig );
   _iconName:= pItemConfig^.iconName;
@@ -537,8 +545,8 @@ begin
   _bordered:= pItemConfig^.bordered;
 end;
 
-procedure TCocoaConfigToolBarItemClassWithUI.setItemAttribs(item: NSToolBarItem
-  );
+procedure TCocoaConfigToolBarItemClassWithUI.setItemAttribs(
+  const item: NSToolBarItem );
 var
   cocoaImageName: NSString;
   cocoaLabel: NSString;
@@ -576,14 +584,14 @@ end;
 { TCocoaConfigToolBarItemClassWithAction }
 
 procedure TCocoaConfigToolBarItemClassWithAction.toClassConfig(
-  pItemConfig: PCocoaConfigToolBarItemWithAction );
+  const pItemConfig: PCocoaConfigToolBarItemWithAction );
 begin
   Inherited toClassConfig( pItemConfig );
-  _onAction:= TCocoaToolBarItemHandler( pItemConfig^.onAction );
+  _onAction:= TCocoaToolBarItemActionHandler( pItemConfig^.onAction );
 end;
 
 procedure TCocoaConfigToolBarItemClassWithAction.setItemAttribs(
-  item: NSToolBarItem);
+  const item: NSToolBarItem);
 begin
   inherited setItemAttribs(item);
   item.setTarget( item );

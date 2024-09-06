@@ -13,6 +13,8 @@ uses
   CocoaAll, Cocoa_Extra, CocoaConst;
 
 type
+  TCocoaToolBarItemActionHandler = procedure ( const Sender: id );
+
   TCocoaConfigToolBarItemClassAbstract = class
   public
     function identifier: NSString; virtual; abstract;
@@ -41,7 +43,7 @@ type
   { TCocoaConfigToolBarItemWithAction }
 
   TCocoaConfigToolBarItemWithAction = object( TCocoaConfigToolBarItemWithUI )
-    onAction: Pointer;
+    onAction: TCocoaToolBarItemActionHandler;
   end;
 
   TCocoaConfigToolBarItem = TCocoaConfigToolBarItemWithAction;
