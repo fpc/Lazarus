@@ -127,6 +127,7 @@ type
     function fittingSize: NSSize; override;
 
     procedure drawRect(dirtyRect: NSRect); override;
+    procedure setNeedsDisplayInRect(invalidRect: NSRect); override;
     function lclCallDrawItem( row: NSInteger; canvasRect: NSRect ): Boolean;
       message 'lclCallDrawItem:canvasRect:';
     function lclCallCustomDraw( row: Integer; col: Integer; canvasRect: NSRect ): Boolean;
@@ -618,6 +619,29 @@ begin
   end else begin
     drawNSViewBackground( self, self.lclGetCanvas.Brush );
     inherited;
+  end;
+end;
+
+procedure TCocoaTableListView.setNeedsDisplayInRect( invalidRect: NSRect );
+var
+  rowRange: NSRange;
+  rowView: NSView;
+  row: Integer;
+  startIndex: Integer;
+  endIndex: Integer;
+begin
+  inherited;
+
+  rowRange := self.rowsInRect( invalidRect );
+  if rowRange.length = 0 then
+    Exit;;
+
+  startIndex:= rowRange.location;
+  endIndex:= rowRange.location + rowRange.length - 1;
+  for row:= startIndex to endIndex do begin
+    rowView := self.rowViewAtRow_makeIfNecessary( row, False );
+    if Assigned(rowView) then
+      rowView.setNeedsDisplay_( True );
   end;
 end;
 
