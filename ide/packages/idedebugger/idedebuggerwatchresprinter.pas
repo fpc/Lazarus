@@ -81,11 +81,12 @@ type
     FInValFormNestLevel: integer;
     FResValueInFormatter: TWatchResultData;
     FWatchedExprInFormatter: String;
-    FIndentLvl: integer;
     FIndentString: String;
     FHasLineBreak: Boolean;
+    FElementCount, FCurrentMultilineLvl, FDeepestMultilineLvl, FDeepestArray: integer;
     FParentResValue, FCurrentResValue: TWatchResultData;
     FCurrentOuterMostArrayLvl, FOuterMostArrayCount, FCurrentArrayCombineLvl: integer;
+    FCurrentArrayLenShown: boolean;
   protected const
     MAX_ALLOWED_NEST_LVL = 100;
   protected type
@@ -625,14 +626,18 @@ type
     if AKnownLengthList[ACurrentDepth] <> Len then
       exit;
 
+    Result := True;
+
     Cnt := AnArrayResValue.Count;
     if (Cnt <> Len) then begin
-      if (AnArrayResValue.ArrayType <> datStatArray) then
+      if (AnArrayResValue.ArrayType <> datStatArray) then begin
+        if ACurrentDepth < AMaxAllEqualDepth then
+          AMaxAllEqualDepth := ACurrentDepth;
         exit;
+      end;
       AnArrayTypes := [datStatArray]; // all nested must be stat, since we can't test to the end
     end;
 
-    Result := True;
     if ACurrentDepth = AMaxAllEqualDepth then
       exit;
 
@@ -680,17 +685,26 @@ type
   end;
 
 var
-  i, Cnt, MaxCnt, PrefixIdxCnt, OldCurrentOuterMostArrayLvl, OldOuterMostArrayCount,
-    OldCurrentArrayCombineLvl: Integer;
-  sep, tn, sep2, LenStr: String;
-  SepHasBreak, OldHasLineBreak, CutOff: Boolean;
-  ShowLen, ShowCombined, ShowCombinedStatOnly, ShowCombinedDynOnly, OuterMostArray: Boolean;
+  i, Cnt, Len, MaxLen: Integer;
+  PrefixIdxCnt, OldCurrentOuterMostArrayLvl, OldOuterMostArrayCount,
+    OldCurrentArrayCombineLvl, ElemCnt, HideLenEach, ForceSingleLineEach, SepLen: Integer;
+  CurIndentString: String;
+  tn, sep, sep2, LenStr: String;
+  OldHasLineBreak, CutOff: Boolean;
+  ShowLen, ShowCombined, ShowCombinedStatOnly, ShowCombinedDynOnly, OuterMostArray,
+    CouldHide, OldCurrentArrayLenShown, LoopCurrentArrayLenShown, CouldSingleLine,
+    ShowMultiLine: Boolean;
   MultiLine: TWatchDisplayFormatMultiline;
   Results: array of string;
   PrefixIdxList: TIntegerArray;
   LenPrefix: TWatchDisplayFormatArrayLen;
   ArrayTypes: TLzDbgArrayTypes;
+  EntryVal: TWatchResultData;
 begin
+  inc(FCurrentMultilineLvl);
+  if (ANestLvl > FDeepestArray) then
+    FDeepestArray := ANestLvl;
+
   if (AResValue.ArrayType = datDynArray) then begin
     tn := AResValue.TypeName;
     if (AResValue.Count = 0) and (AResValue.DataAddress = 0) then begin
@@ -710,33 +724,38 @@ begin
     end;
   end;
 
-  sep := ', ';
-  sep2 := '';
-  SepHasBreak := False;
+  CurIndentString := FIndentString;
+  SepLen := 2; // ', '
   MultiLine := FDisplayFormatResolver.ResolveMultiLine(ADispFormat);
-  if (rpfMultiLine in FFormatFlags) and (FIndentLvl < MultiLine.MaxMultiLineDepth ) then begin
-    sep := ',' + FLineSeparator;
-    sep2 := FLineSeparator;
-    SepHasBreak := True;
+  ShowMultiLine := (rpfMultiLine in FFormatFlags) and (FCurrentMultilineLvl <= MultiLine.MaxMultiLineDepth);
+  if ShowMultiLine then begin
+    SepLen := 1 {,} + Length(FLineSeparator);
     if (rpfIndent in FFormatFlags) then begin
-      sep := sep + FIndentString;
-      sep2 := sep2 + FIndentString;
+      SepLen := SepLen + Length(FIndentString);
       FIndentString := FIndentString + '  ';
-      inc(FIndentLvl);
     end;
-  end;
+    CouldSingleLine := MultiLine.ForceSingleLine;
+  end
+  else
+    CouldSingleLine := False;
+
+  ForceSingleLineEach := Max(1, MultiLine.ForceSingleLineThresholdEach);
   OldHasLineBreak := FHasLineBreak;
   FHasLineBreak := False;
 
   OldCurrentOuterMostArrayLvl := FCurrentOuterMostArrayLvl;
   OldOuterMostArrayCount := FOuterMostArrayCount;
   OldCurrentArrayCombineLvl := FCurrentArrayCombineLvl;
+  OldCurrentArrayLenShown := FCurrentArrayLenShown;
   try
+    if (FCurrentMultilineLvl > FDeepestMultilineLvl) and (AResValue.ArrayLength > 0) then
+      FDeepestMultilineLvl := FCurrentMultilineLvl;
     OuterMostArray := (FParentResValue = nil) or (FParentResValue.ValueKind <> rdkArray);
     if OuterMostArray then begin
       FCurrentOuterMostArrayLvl := ANestLvl;
       inc(FOuterMostArrayCount);
       FCurrentArrayCombineLvl := 0;
+      FCurrentArrayLenShown := False;
     end;
 
     LenPrefix := FDisplayFormatResolver.ResolveArrayLen(ADispFormat);
@@ -764,12 +783,9 @@ begin
 
 
 
-    MaxCnt := 1000*1000 div Max(1, ANestLvl*4);
     Cnt := AResValue.Count;
-    CutOff := (Cnt > MaxCnt) or (Cnt < AResValue.ArrayLength);
+    CutOff := (Cnt < AResValue.ArrayLength);
     if CutOff then begin
-      if Cnt > MaxCnt then
-        Cnt := MaxCnt;
       SetLength(Results, Cnt+1);
     end
     else
@@ -798,26 +814,94 @@ begin
       end;
     end;
 
+    LoopCurrentArrayLenShown := FCurrentArrayLenShown;
+    FCurrentArrayLenShown := False;
+    CouldHide := LenPrefix.HideLen and (AResValue.ArrayLength <= LenPrefix.HideLenThresholdCnt);
+    HideLenEach := Max(1, LenPrefix.HideLenThresholdEach);
+    MaxLen := 1000*1000 div Max(1, ANestLvl*4);
+    Len := 0;
     if Cnt > 0 then begin
+      dec(FElementCount);
       for i := 0 to Cnt - 1 do begin
         AResValue.SetSelectedIndex(i);
-        OldHasLineBreak := OldHasLineBreak or FHasLineBreak;
-        FHasLineBreak := False;
-        Results[i] := PrintWatchValueEx(AResValue.SelectedEntry, ADispFormat, ANestLvl, AWatchedExpr);
+        ElemCnt := FElementCount;
+        EntryVal := AResValue.SelectedEntry;
+        Results[i] := PrintWatchValueEx(EntryVal, ADispFormat, ANestLvl, AWatchedExpr);
+        Len := Len + Length(Results[i]) + SepLen;
+
+        if CouldHide and (
+             ( (LenPrefix.HideLenThresholdLen > 0) and
+               (Length(Results[i]) > LenPrefix.HideLenThresholdLen)
+             ) or
+             (FElementCount - ElemCnt > HideLenEach) or
+             ( (LenPrefix.HideLenThresholdEach = 0) and (EntryVal.ValueKind in [rdkArray, rdkStruct]) )
+           )
+        then
+          CouldHide := False;
+
+        if CouldSingleLine and (
+             ( (MultiLine.ForceSingleLineThresholdLen > 0) and
+               (Length(Results[i]) > MultiLine.ForceSingleLineThresholdLen)
+             ) or
+             (FElementCount - ElemCnt > ForceSingleLineEach) or
+             ( (MultiLine.ForceSingleLineThresholdEach = 0) and (EntryVal.ValueKind in [rdkArray, rdkStruct]) )
+           )
+        then
+          CouldSingleLine := False;
+
+        if Len > MaxLen then begin
+          CutOff := True;
+          Cnt := i+1;
+          SetLength(Results, Cnt+1);
+        end;
       end;
+
+      if FCurrentArrayLenShown then
+        CouldHide := False;
+      FCurrentArrayLenShown := FCurrentArrayLenShown or LoopCurrentArrayLenShown;
+
+      if FHasLineBreak or
+         ( ( (ANestLvl < FDeepestArray) or (MultiLine.ForceSingleLineReverseDepth <= 1) ) and
+           (AResValue.FieldCount > MultiLine.ForceSingleLineThresholdStructFld) ) or
+         (Min(FDeepestMultilineLvl, MultiLine.MaxMultiLineDepth) - FCurrentMultilineLvl >= MultiLine.ForceSingleLineReverseDepth)
+      then
+        CouldSingleLine := False;
 
       if CutOff then begin
         Results[Cnt] := '...';
         inc(Cnt);
       end;
 
-      if Cnt > 1 then
+      if ShowMultiLine and not CouldSingleLine then begin
+        if (rpfIndent in FFormatFlags) then begin
+          sep := ',' + FLineSeparator + FIndentString;
+          sep2 := FLineSeparator + FIndentString;
+        end
+        else begin
+          sep := ',' + FLineSeparator;
+          sep2 := FLineSeparator;
+        end;
+        if Cnt > 1 then
+          FHasLineBreak := True;
+      end
+      else begin
+        sep := ', ';
+        sep2 := '';
+      end;
+
+      if (Cnt > 1) and (not CouldSingleLine) then
         Results[Cnt-1] := Results[Cnt-1] + sep2 +')'
       else
         Results[Cnt-1] := Results[Cnt-1] +')';
 
-      if ShowLen then
-        Results[0] := LenStr + sep2 + '(' + Results[0]
+      if CouldHide and
+         (ANestLvl - FCurrentOuterMostArrayLvl >= LenPrefix.HideLenKeepDepth)
+      then
+        ShowLen := False;
+      if ShowLen then begin
+        Results[0] := LenStr + sep2 + '(' + Results[0];
+        FCurrentArrayLenShown := True;
+      end
       else
         Results[0] := '(' + Results[0];
 
@@ -830,12 +914,15 @@ begin
         Result := '()';
     end;
 
-    if ((Cnt > 1) and SepHasBreak) or OldHasLineBreak then
+    if OldHasLineBreak then
       FHasLineBreak := True;
   finally
+    if FCurrentOuterMostArrayLvl = ANestLvl then
+      FCurrentArrayLenShown := OldCurrentArrayLenShown;
     FCurrentOuterMostArrayLvl := OldCurrentOuterMostArrayLvl;
     FOuterMostArrayCount := OldOuterMostArrayCount;
     FCurrentArrayCombineLvl := OldCurrentArrayCombineLvl;
+    FIndentString := CurIndentString;
   end;
 end;
 
@@ -849,10 +936,13 @@ var
   Resolved: TResolvedDisplayFormat;
   FldInfo: TWatchResultDataFieldInfo;
   FldOwner: TWatchResultData;
-  vis, sep, tn, Header, we: String;
-  InclVisSect, SepUsed, OldHasLineBreak: Boolean;
+  vis, sep, tn, Header, we, CurIndentString: String;
+  InclVisSect, OldHasLineBreak, CouldSingleLine, ShowMultiLine: Boolean;
   MultiLine: TWatchDisplayFormatMultiline;
+  Results: array of string;
+  FldIdx, Len, ForceSingleLineEach, ElemCnt, SepLen: Integer;
 begin
+  inc(FCurrentMultilineLvl);
   Resolved := DisplayFormatResolver.ResolveDispFormat(ADispFormat, AResValue);
   Result := '';
 
@@ -883,18 +973,36 @@ begin
   Header := Result;
   Result := '';
 
-  sep := '';
-  SepUsed := False;
-  MultiLine := FDisplayFormatResolver.ResolveMultiLine(ADispFormat);
-  if (rpfMultiLine in FFormatFlags) and (FIndentLvl < MultiLine.MaxMultiLineDepth ) then begin
-    sep := FLineSeparator;
-    if (rpfIndent in FFormatFlags) then begin
-      sep := sep + FIndentString;
-      FIndentString := FIndentString + '  ';
-      inc(FIndentLvl);
-    end;
+  if Header <> '' then
+    Header := Header + ': ';
+  if (Resolved.Struct.DataFormat <> vdfStructFull) and
+     not(AResValue.StructType in [dstClass, dstInterface])
+  then
+    tn := '';
+  if AResValue.FieldCount = 0 then begin
+    Result := Header + tn + '()';
+    exit;
   end;
 
+  if (FCurrentMultilineLvl > FDeepestMultilineLvl) and (AResValue.FieldCount > 0) then
+    FDeepestMultilineLvl := FCurrentMultilineLvl;
+
+  CurIndentString := FIndentString;
+  SepLen := 1; // ' ' space
+  MultiLine := FDisplayFormatResolver.ResolveMultiLine(ADispFormat);
+  ShowMultiLine := (rpfMultiLine in FFormatFlags) and (FCurrentMultilineLvl <= MultiLine.MaxMultiLineDepth);
+  if ShowMultiLine then begin
+    SepLen := Length(FLineSeparator);
+    if (rpfIndent in FFormatFlags) then begin
+      SepLen := SepLen + Length(FIndentString);
+      FIndentString := FIndentString + '  ';
+    end;
+    CouldSingleLine := MultiLine.ForceSingleLine and (AResValue.FieldCount <= MultiLine.ForceSingleLineThresholdStructFld);
+  end
+  else
+    CouldSingleLine := False;
+
+  ForceSingleLineEach := Max(1, MultiLine.ForceSingleLineThresholdEach);
   OldHasLineBreak := FHasLineBreak;
   FHasLineBreak := False;
 
@@ -902,7 +1010,26 @@ begin
   InclVisSect := (Resolved.Struct.DataFormat = vdfStructFull) and (AResValue.StructType in [dstClass, dstObject]);
   FldOwner := nil;
   vis := '';
+  dec(FElementCount);
+  FldIdx := 1;
+  if Resolved.Struct.DataFormat = vdfStructFull then
+    inc(FldIdx);
+  if InclVisSect then
+    inc(FldIdx);
+  SetLength(Results, AResValue.FieldCount * FldIdx+1);
+  FldIdx := 0;
+  if (Header <> '') or (tn <> '') then begin
+    Results[FldIdx] := Header + tn + '(';
+    inc(FldIdx);
+  end;
+  Len := 0;
   for FldInfo in AResValue do begin
+    if Len > 1 + 1000*1000 div Max(1, ANestLvl*4) then begin
+      Results[FldIdx] := '...';
+      inc(FldIdx);
+      break;
+    end;
+
     if FldOwner <> FldInfo.Owner then begin
       FldOwner := FldInfo.Owner;
       vis := '';
@@ -910,65 +1037,70 @@ begin
       if (Resolved.Struct.DataFormat = vdfStructFull) and (FldOwner <> nil) and (FldOwner.DirectFieldCount > 0) and
          (AResValue.StructType in [dstClass, dstInterface, dstObject]) // record has no inheritance
       then begin
-        if (Length(Result) > 0) then begin
-          Result := Result + sep;
-          SepUsed := True;
-        end;
-        Result := Result + '{' + FldOwner.TypeName + '}';
+        Results[FldIdx] := '{' + FldOwner.TypeName + '}';
+        Len := Len + Length(Results[FldIdx]) + SepLen;
+        inc(FldIdx);
+        inc(FElementCount);
       end;
     end;
 
     if InclVisSect and (vis <> VisibilityNames[FldInfo.FieldVisibility]) then begin
       vis := VisibilityNames[FldInfo.FieldVisibility];
-      if (Length(Result) > 0) then begin
-        Result := Result + sep;
-        SepUsed := True;
-      end;
-      Result := Result + vis;
+      Results[FldIdx] := vis;
+      Len := Len + Length(Results[FldIdx]) + SepLen;
+      inc(FldIdx);
+      inc(FElementCount);
     end;
 
-    if (Length(Result) > 0) then begin
-      Result := Result + sep;
-      SepUsed := True;
-    end;
-
+    ElemCnt := FElementCount;
+    Results[FldIdx] := PrintWatchValueEx(FldInfo.Field, ADispFormat, ANestLvl, we + UpperCase(FldInfo.FieldName)) + ';';
     if Resolved.Struct.DataFormat <> vdfStructValOnly then
-      Result := Result + FldInfo.FieldName + ': ';
-    OldHasLineBreak := OldHasLineBreak or FHasLineBreak;
-    FHasLineBreak := False;
-    Result := Result + PrintWatchValueEx(FldInfo.Field, ADispFormat, ANestLvl, we + UpperCase(FldInfo.FieldName)) + ';';
+      Results[FldIdx] := FldInfo.FieldName + ': ' + Results[FldIdx];
+    Len := Len + Length(Results[FldIdx]) + SepLen;
 
-    if Length(Result) > 1000*1000 div Max(1, ANestLvl*4) then begin
-      Result := Result + sep +'...';
-      SepUsed := True;
-      break;
-    end;
+    if CouldSingleLine and (
+         ( (MultiLine.ForceSingleLineThresholdLen > 0) and
+           (Length(Results[FldIdx]) > MultiLine.ForceSingleLineThresholdLen)
+         ) or
+         (FElementCount - ElemCnt > ForceSingleLineEach) or
+         ( (MultiLine.ForceSingleLineThresholdEach = 0) and (FldInfo.Field.ValueKind in [rdkArray, rdkStruct]) )
+       )
+    then
+      CouldSingleLine := False;
+
+    inc(FldIdx);
   end;
 
-  if Header <> '' then
-    Header := Header + ': ';
-  if (Resolved.Struct.DataFormat <> vdfStructFull) and
-     not(AResValue.StructType in [dstClass, dstInterface])
+  SetLength(Results, FldIdx);
+  if FHasLineBreak or
+     (Min(FDeepestMultilineLvl, MultiLine.MaxMultiLineDepth) - FCurrentMultilineLvl > MultiLine.ForceSingleLineReverseDepth)
   then
-    tn := '';
+    CouldSingleLine := False;
 
-  if Result = '' then begin
-    Result := Header + tn + '()';
+  if ShowMultiLine and not CouldSingleLine then begin
+    if (rpfIndent in FFormatFlags) then
+      sep := FLineSeparator + FIndentString
+    else
+      sep := FLineSeparator;
   end
-  else begin
-    if (Header <> '') or (tn <> '') then begin
-      Result := Header + tn + '(' + Sep + Result;
-      SepUsed := True;
-    end
-    else
-      Result := '(' + Result;
-    if FHasLineBreak then
-      Result := Result + sep + ')'
-    else
-      Result := Result + ')';
-  end;
-  if (SepUsed and (Sep <> '')) or OldHasLineBreak then
+  else
+    sep := ' ';
+
+
+  dec(FldIdx);
+  if FHasLineBreak then
+    Results[FldIdx] := Results[FldIdx] + sep + ')'
+  else
+    Results[FldIdx] := Results[FldIdx] + ')';
+
+  if not ((Header <> '') or (tn <> '')) then
+    Results[0] := '(' + Results[0];
+
+  Result := AnsiString.Join(sep, Results);
+
+  if ((FldIdx > 0) and (Sep <> ' ')) or OldHasLineBreak then
     FHasLineBreak := True;
+  FIndentString := CurIndentString;
 end;
 
 function TWatchResultPrinter.PrintConverted(AResValue: TWatchResultData;
@@ -1128,19 +1260,19 @@ function TWatchResultPrinter.PrintWatchValueEx(AResValue: TWatchResultData;
 
 var
   PointerValue: TWatchResultDataPointer absolute AResValue;
-  ResTypeName, CurIndentString: String;
+  ResTypeName: String;
   PtrDeref, PtrDeref2, OldCurrentResValue, OldParentResValue: TWatchResultData;
   Resolved: TResolvedDisplayFormat;
-  n, CurIndentLvl: Integer;
+  n, OldCurrentMultilineLvl: Integer;
   StoredSettings: TWatchResStoredSettings;
 begin
   inc(ANestLvl);
-  CurIndentLvl := FIndentLvl;
-  CurIndentString := FIndentString;
   OldCurrentResValue := FCurrentResValue;
   OldParentResValue := FParentResValue;
+  OldCurrentMultilineLvl := FCurrentMultilineLvl;
   FParentResValue := FCurrentResValue;
   FCurrentResValue := AResValue;
+  inc(FElementCount);
   try
     if ANestLvl > MAX_ALLOWED_NEST_LVL then
       exit('...');
@@ -1195,6 +1327,8 @@ begin
         Result := '';
 
         PtrDeref :=  PointerValue.DerefData;
+        if (Resolved.Pointer.DerefFormat = vdfPointerDerefOnly) then
+          dec(FElementCount);
         if (Resolved.Pointer.DerefFormat <> vdfPointerDerefOnly) or (PtrDeref = nil) then begin
           n := AResValue.ByteSize;
           if n = 0 then n := FTargetAddressSize;
@@ -1262,17 +1396,16 @@ begin
       rdkVariant: Result := PrintWatchValueEx(AResValue.DerefData, ADispFormat, ANestLvl, AWatchedExpr);
     end;
   finally
-    FIndentLvl := CurIndentLvl;
-    FIndentString := CurIndentString;
     FCurrentResValue := OldCurrentResValue;
     FParentResValue := OldParentResValue;
+    FCurrentMultilineLvl := OldCurrentMultilineLvl;
   end;
 end;
 
 constructor TWatchResultPrinter.Create;
 begin
   FFormatFlags := [rpfMultiLine, rpfIndent];
-  FIndentLvl    := 0;
+  FCurrentMultilineLvl    := 0;
   FIndentString := '';
   FTargetAddressSize := SizeOf(Pointer); // TODO: ask debugger
   FDisplayFormatResolver := TDisplayFormatResolver.Create;
@@ -1306,6 +1439,10 @@ begin
   FWatchedVarName := UpperCase(AWatchedExpr);
   FParentResValue := nil;
   FCurrentResValue := nil;
+  FElementCount := 0;
+  FCurrentMultilineLvl := 0;
+  FDeepestMultilineLvl := 0;
+  FDeepestArray := 0;
   Result := PrintWatchValueEx(AResValue, ADispFormat, -1, FWatchedVarName);
 end;
 
@@ -1340,6 +1477,10 @@ begin
     // TODO: inc level/count of iterations
     FParentResValue := nil;
     FCurrentResValue := nil;
+    FElementCount := 0;
+    FCurrentMultilineLvl := 0;
+    FDeepestMultilineLvl := 0;
+    FDeepestArray := 0;
     Result := PrintWatchValueEx(AResValObj, ADispFormat, -1, FWatchedExprInFormatter);
   end;
 end;

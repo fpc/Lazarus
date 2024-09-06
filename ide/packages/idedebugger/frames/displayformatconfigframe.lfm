@@ -1,6 +1,6 @@
 object DisplayFormatFrame: TDisplayFormatFrame
   Left = 0
-  Height = 664
+  Height = 754
   Top = 0
   Width = 592
   HorzScrollBar.Page = 1
@@ -11,13 +11,13 @@ object DisplayFormatFrame: TDisplayFormatFrame
   VertScrollBar.Tracking = True
   AutoScroll = True
   AutoSize = True
-  ClientHeight = 664
+  ClientHeight = 754
   ClientWidth = 592
   Constraints.MaxWidth = 850
   Constraints.MinWidth = 480
   TabOrder = 0
-  DesignLeft = 387
-  DesignTop = 68
+  DesignLeft = 430
+  DesignTop = 14
   object ToolBar1: TToolBar
     Left = 0
     Height = 24
@@ -552,13 +552,14 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Left = 391
         Height = 23
         Top = 0
-        Width = 85
+        Width = 70
         Alignment = taRightJustify
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 3
         BorderSpacing.Right = 5
         BorderSpacing.CellAlignHorizontal = ccaRightBottom
-        Constraints.MaxWidth = 90
+        Constraints.MaxWidth = 70
+        Constraints.MinWidth = 45
         MaxValue = 32
         MinValue = -1
         TabOrder = 2
@@ -1087,13 +1088,14 @@ object DisplayFormatFrame: TDisplayFormatFrame
           Left = 397
           Height = 23
           Top = 0
-          Width = 79
+          Width = 70
           Alignment = taRightJustify
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Left = 3
           BorderSpacing.Right = 5
           BorderSpacing.CellAlignHorizontal = ccaRightBottom
-          Constraints.MaxWidth = 90
+          Constraints.MaxWidth = 70
+          Constraints.MinWidth = 45
           MaxValue = 32
           MinValue = -1
           TabOrder = 2
@@ -1900,13 +1902,14 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Left = 383
         Height = 23
         Top = 0
-        Width = 90
+        Width = 70
         Alignment = taRightJustify
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 3
         BorderSpacing.Right = 5
         BorderSpacing.CellAlignHorizontal = ccaRightBottom
-        Constraints.MaxWidth = 90
+        Constraints.MaxWidth = 70
+        Constraints.MinWidth = 45
         MaxValue = 25
         TabOrder = 2
         OnChange = FormatSpinChanged
@@ -2580,7 +2583,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 26
+    Height = 74
     Top = 468
     Width = 592
     Anchors = [akTop, akLeft, akRight]
@@ -2591,7 +2594,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     ChildSizing.ShrinkHorizontal = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 2
-    ClientHeight = 26
+    ClientHeight = 74
     ClientWidth = 592
     TabOrder = 10
     object Spacer17: TLabel
@@ -2693,11 +2696,185 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Left = 78
         Height = 23
         Top = 0
-        Width = 50
+        Width = 60
         Alignment = taRightJustify
-        Constraints.MaxWidth = 90
+        Constraints.MaxWidth = 70
+        Constraints.MinWidth = 45
         MaxValue = 999
         TabOrder = 0
+        OnChange = FormatSpinChanged
+      end
+    end
+    object PanelIndentForceSingleLine: TPanel
+      AnchorSideLeft.Control = Spacer18
+      AnchorSideTop.Control = PanelIndentMax
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Spacer18
+      AnchorSideRight.Side = asrBottom
+      Left = 111
+      Height = 48
+      Top = 26
+      Width = 481
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
+      BevelOuter = bvNone
+      ChildSizing.HorizontalSpacing = 3
+      ChildSizing.VerticalSpacing = 2
+      ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+      ChildSizing.ShrinkHorizontal = crsHomogenousChildResize
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 7
+      ClientHeight = 48
+      ClientWidth = 481
+      TabOrder = 2
+      object cbForceSingleLine: TCheckBox
+        AnchorSideLeft.Control = fill1
+        AnchorSideTop.Control = fill1
+        AnchorSideTop.Side = asrCenter
+        Left = 0
+        Height = 19
+        Top = 2
+        Width = 114
+        Caption = 'cbForceSingleLine'
+        TabOrder = 4
+        OnChange = cbArrayShowPrefixChange
+      end
+      object fill1: TLabel
+        Left = 0
+        Height = 23
+        Top = 0
+        Width = 15
+        Constraints.MaxWidth = 15
+        Constraints.MinWidth = 15
+      end
+      object fill10: TLabel
+        Left = 18
+        Height = 23
+        Top = 0
+        Width = 107
+      end
+      object fill2: TLabel
+        Left = 128
+        Height = 23
+        Top = 0
+        Width = 45
+      end
+      object lbForceSingleLineStructFld: TLabel
+        AnchorSideRight.Side = asrBottom
+        Left = 176
+        Height = 15
+        Top = 4
+        Width = 103
+        BorderSpacing.CellAlignVertical = ccaCenter
+        Caption = 'lbForceSingleLineStructFld'
+      end
+      object spinForceSingleLineStructFld: TSpinEdit
+        AnchorSideRight.Side = asrBottom
+        Left = 282
+        Height = 23
+        Top = 0
+        Width = 45
+        Alignment = taRightJustify
+        Constraints.MaxWidth = 65
+        Constraints.MinWidth = 45
+        MaxValue = 99
+        TabOrder = 5
+        OnChange = FormatSpinChanged
+      end
+      object lbForceSingleLineArrayLen: TLabel
+        AnchorSideRight.Side = asrBottom
+        Left = 330
+        Height = 15
+        Top = 4
+        Width = 103
+        BorderSpacing.CellAlignVertical = ccaCenter
+        Caption = 'lbForceSingleLineArrayLen'
+      end
+      object spinForceSingleLineArrayLen: TSpinEdit
+        AnchorSideRight.Side = asrBottom
+        Left = 436
+        Height = 23
+        Top = 0
+        Width = 45
+        Alignment = taRightJustify
+        Constraints.MaxWidth = 65
+        Constraints.MinWidth = 45
+        MaxValue = 99
+        TabOrder = 3
+        OnChange = FormatSpinChanged
+      end
+      object fill3: TLabel
+        Left = 0
+        Height = 23
+        Top = 25
+        Width = 15
+      end
+      object lbForceSingleLineRevDepth: TLabel
+        AnchorSideRight.Side = asrBottom
+        Left = 18
+        Height = 15
+        Top = 29
+        Width = 107
+        BorderSpacing.CellAlignVertical = ccaCenter
+        Caption = 'lbForceSingleLineRevDepth'
+      end
+      object spinForceSingleLineRevDepth: TSpinEdit
+        AnchorSideRight.Side = asrBottom
+        Left = 128
+        Height = 23
+        Top = 25
+        Width = 45
+        Alignment = taRightJustify
+        Constraints.MaxWidth = 65
+        Constraints.MinWidth = 45
+        MaxValue = 99
+        MinValue = 1
+        TabOrder = 0
+        Value = 1
+        OnChange = FormatSpinChanged
+      end
+      object lbForceSingleLineEach: TLabel
+        AnchorSideRight.Side = asrBottom
+        Left = 176
+        Height = 15
+        Top = 29
+        Width = 103
+        BorderSpacing.CellAlignVertical = ccaCenter
+        Caption = 'lbForceSingleLineEach'
+      end
+      object spinForceSingleLineEach: TSpinEdit
+        AnchorSideRight.Side = asrBottom
+        Left = 282
+        Height = 23
+        Top = 25
+        Width = 45
+        Alignment = taRightJustify
+        Constraints.MaxWidth = 65
+        Constraints.MinWidth = 45
+        MaxValue = 99
+        TabOrder = 1
+        OnChange = FormatSpinChanged
+      end
+      object lbForceSingleLineLen: TLabel
+        AnchorSideRight.Side = asrBottom
+        Left = 330
+        Height = 15
+        Top = 29
+        Width = 103
+        BorderSpacing.CellAlignVertical = ccaCenter
+        Caption = 'lbForceSingleLineLen'
+      end
+      object spinForceSingleLineLen: TSpinEdit
+        AnchorSideRight.Side = asrBottom
+        Left = 436
+        Height = 23
+        Top = 25
+        Width = 45
+        Alignment = taRightJustify
+        Constraints.MaxWidth = 65
+        Constraints.MinWidth = 45
+        MaxValue = 999
+        TabOrder = 2
         OnChange = FormatSpinChanged
       end
     end
@@ -2709,8 +2886,8 @@ object DisplayFormatFrame: TDisplayFormatFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 45
-    Top = 498
+    Height = 93
+    Top = 546
     Width = 592
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -2720,7 +2897,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     ChildSizing.ShrinkHorizontal = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 2
-    ClientHeight = 45
+    ClientHeight = 93
     ClientWidth = 592
     TabOrder = 12
     object Spacer21: TLabel
@@ -2780,7 +2957,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       Top = 3
       Width = 89
       Anchors = [akTop, akLeft, akRight]
-      Caption = 'lbOverrideArrayNavBar'
+      Caption = 'lbOverrideArray'
       Font.Style = [fsBold]
       ParentFont = False
       WordWrap = True
@@ -2849,6 +3026,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         BorderSpacing.Right = 5
         BorderSpacing.CellAlignHorizontal = ccaRightBottom
         Constraints.MaxWidth = 90
+        Constraints.MinWidth = 45
         MaxValue = 99
         TabOrder = 2
         OnChange = FormatSpinChanged
@@ -2936,6 +3114,167 @@ object DisplayFormatFrame: TDisplayFormatFrame
         TabOrder = 3
       end
     end
+    object PanelArrayHideLen: TPanel
+      AnchorSideLeft.Control = Spacer22
+      AnchorSideTop.Control = PanelArrayPrefixCombine
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Spacer22
+      AnchorSideRight.Side = asrBottom
+      Left = 111
+      Height = 48
+      Top = 45
+      Width = 481
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
+      BevelOuter = bvNone
+      ChildSizing.HorizontalSpacing = 3
+      ChildSizing.VerticalSpacing = 2
+      ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+      ChildSizing.ShrinkHorizontal = crsHomogenousChildResize
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 7
+      ClientHeight = 48
+      ClientWidth = 481
+      TabOrder = 3
+      object cbArrayHideLen: TCheckBox
+        AnchorSideLeft.Control = fill7
+        AnchorSideTop.Control = fill7
+        AnchorSideTop.Side = asrCenter
+        Left = 0
+        Height = 19
+        Top = 2
+        Width = 103
+        Caption = 'cbArrayHideLen'
+        TabOrder = 4
+        OnChange = cbArrayShowPrefixChange
+      end
+      object fill7: TLabel
+        Left = 0
+        Height = 23
+        Top = 0
+        Width = 15
+        Constraints.MaxWidth = 15
+        Constraints.MinWidth = 15
+      end
+      object fill8: TLabel
+        Left = 18
+        Height = 23
+        Top = 0
+        Width = 110
+      end
+      object fill6: TLabel
+        Left = 131
+        Height = 23
+        Top = 0
+        Width = 45
+      end
+      object fill5: TLabel
+        Left = 179
+        Height = 23
+        Top = 0
+        Width = 104
+      end
+      object fill4: TLabel
+        Left = 286
+        Height = 23
+        Top = 0
+        Width = 45
+      end
+      object lbArrayHideLenIfLess: TLabel
+        AnchorSideRight.Side = asrBottom
+        Left = 334
+        Height = 15
+        Top = 4
+        Width = 99
+        BorderSpacing.CellAlignVertical = ccaCenter
+        Caption = 'lbArrayHideLenIfLess'
+      end
+      object spinArrayHideLenIfLess: TSpinEdit
+        AnchorSideRight.Side = asrBottom
+        Left = 436
+        Height = 23
+        Top = 0
+        Width = 45
+        Alignment = taRightJustify
+        Constraints.MaxWidth = 65
+        Constraints.MinWidth = 45
+        MaxValue = 99
+        TabOrder = 0
+        OnChange = FormatSpinChanged
+      end
+      object fill9: TLabel
+        Left = 0
+        Height = 23
+        Top = 25
+        Width = 15
+      end
+      object lbArrayHideLenKeepDepth: TLabel
+        AnchorSideRight.Side = asrBottom
+        Left = 18
+        Height = 15
+        Top = 29
+        Width = 110
+        BorderSpacing.CellAlignVertical = ccaCenter
+        Caption = 'lbArrayHideLenKeepDepth'
+      end
+      object spinArrayHideLenRevDepth: TSpinEdit
+        AnchorSideRight.Side = asrBottom
+        Left = 131
+        Height = 23
+        Top = 25
+        Width = 45
+        Alignment = taRightJustify
+        Constraints.MaxWidth = 65
+        Constraints.MinWidth = 45
+        MaxValue = 99
+        TabOrder = 1
+        OnChange = FormatSpinChanged
+      end
+      object lbArrayHideLenThresEach: TLabel
+        AnchorSideRight.Side = asrBottom
+        Left = 179
+        Height = 15
+        Top = 29
+        Width = 104
+        BorderSpacing.CellAlignVertical = ccaCenter
+        Caption = 'lbArrayHideLenThresEach'
+      end
+      object spinArrayHideLenThresEach: TSpinEdit
+        AnchorSideRight.Side = asrBottom
+        Left = 286
+        Height = 23
+        Top = 25
+        Width = 45
+        Alignment = taRightJustify
+        Constraints.MaxWidth = 65
+        Constraints.MinWidth = 45
+        MaxValue = 99
+        TabOrder = 2
+        OnChange = FormatSpinChanged
+      end
+      object lbArrayHideLenThresLen: TLabel
+        AnchorSideRight.Side = asrBottom
+        Left = 334
+        Height = 15
+        Top = 29
+        Width = 99
+        BorderSpacing.CellAlignVertical = ccaCenter
+        Caption = 'lbArrayHideLenThresLen'
+      end
+      object spinArrayHideLenThresLen: TSpinEdit
+        AnchorSideRight.Side = asrBottom
+        Left = 436
+        Height = 23
+        Top = 25
+        Width = 45
+        Alignment = taRightJustify
+        Constraints.MaxWidth = 65
+        Constraints.MinWidth = 45
+        MaxValue = 999
+        TabOrder = 3
+        OnChange = FormatSpinChanged
+      end
+    end
   end
   object PanelArrayNavBar: TPanel
     AnchorSideLeft.Control = Owner
@@ -2945,7 +3284,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 26
-    Top = 547
+    Top = 643
     Width = 592
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -3077,13 +3416,14 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Left = 380
         Height = 23
         Top = 0
-        Width = 90
+        Width = 70
         Alignment = taRightJustify
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 3
         BorderSpacing.Right = 5
         BorderSpacing.CellAlignHorizontal = ccaRightBottom
-        Constraints.MaxWidth = 90
+        Constraints.MaxWidth = 70
+        Constraints.MinWidth = 45
         MaxValue = 5000
         MinValue = 1
         TabOrder = 2
@@ -3100,7 +3440,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 34
-    Top = 577
+    Top = 673
     Width = 592
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True

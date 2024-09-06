@@ -48,8 +48,10 @@ type
     cbAddrSign: TCheckBox;
     cbAddrNoLeadZero: TCheckBox;
     cbArrayShowPrefix: TCheckBox;
+    cbForceSingleLine: TCheckBox;
     cbArrayShowPrefixEmbedded: TCheckBox;
     cbEnumValSign: TCheckBox;
+    cbArrayHideLen: TCheckBox;
     cbMemDump: TCheckBox;
     cbOverrideArray: TCheckBox;
     cbOverrideEnumVal: TCheckBox;
@@ -84,8 +86,27 @@ type
     DividerBevelPointerDeref1: TDividerBevel;
     DividerBevelArrayNavBar: TDividerBevel;
     DividerBevelStruct: TDividerBevel;
+    fill1: TLabel;
+    fill10: TLabel;
+    fill2: TLabel;
+    fill3: TLabel;
+    fill4: TLabel;
+    fill5: TLabel;
+    fill6: TLabel;
+    fill7: TLabel;
+    fill8: TLabel;
+    fill9: TLabel;
     Label1: TLabel;
     lbArrayCombine: TLabel;
+    lbArrayHideLenIfLess: TLabel;
+    lbForceSingleLineArrayLen: TLabel;
+    lbForceSingleLineStructFld: TLabel;
+    lbForceSingleLineRevDepth: TLabel;
+    lbForceSingleLineEach: TLabel;
+    lbArrayHideLenThresLen: TLabel;
+    lbArrayHideLenKeepDepth: TLabel;
+    lbArrayHideLenThresEach: TLabel;
+    lbForceSingleLineLen: TLabel;
     lbOverrideArray: TLabel;
     lbPageSize: TLabel;
     lbMaxWrapLvl: TLabel;
@@ -111,7 +132,9 @@ type
     lbNum2SepGroup: TLabel;
     PanelAddressLeadZero: TPanel;
     PanelArray: TPanel;
+    PanelIndentForceSingleLine: TPanel;
     PanelArrayShowPrefix: TPanel;
+    PanelArrayHideLen: TPanel;
     PanelEnumVal: TPanel;
     PanelENumValBase: TPanel;
     PanelEnumValRb: TPanel;
@@ -258,6 +281,15 @@ type
     Spacer7: TLabel;
     Spacer8: TLabel;
     Spacer9: TLabel;
+    spinArrayHideLenIfLess: TSpinEdit;
+    spinForceSingleLineArrayLen: TSpinEdit;
+    spinForceSingleLineStructFld: TSpinEdit;
+    spinForceSingleLineRevDepth: TSpinEdit;
+    spinForceSingleLineEach: TSpinEdit;
+    spinArrayHideLenThresLen: TSpinEdit;
+    spinArrayHideLenRevDepth: TSpinEdit;
+    spinArrayHideLenThresEach: TSpinEdit;
+    spinForceSingleLineLen: TSpinEdit;
     SpinPageSize: TSpinEdit;
     SpinIndentMaxWrap: TSpinEdit;
     SpinFloatDigits: TSpinEdit;
@@ -669,6 +701,14 @@ begin
   then begin
     FUpdatingSpin := True;
     TSpinEdit(Sender).Text := DispFormatNumDigitsFull;
+    TSpinEdit(Sender).SelectAll;
+    FUpdatingSpin := False;
+  end;
+  if (TSpinEdit(Sender).Tag = 0) and (TSpinEdit(Sender).Value = 0) and
+     ( (Sender = spinForceSingleLineStructFld) or (Sender = spinForceSingleLineArrayLen) )
+  then begin
+    FUpdatingSpin := True;
+    TSpinEdit(Sender).Text := DispFormatForceSingleLineDigitsAny;
     TSpinEdit(Sender).SelectAll;
     FUpdatingSpin := False;
   end;
@@ -1236,6 +1276,7 @@ begin
   PanelAddressFormat.Visible := (tbPointer.Down or tbStruct.Down) and (not CheckAddrFormatVis);
   PanelArray.Visible         := tbArray.Down;
   PanelArrayPrefixCombine.Visible := ArrayOnly;
+  PanelArrayHideLen.Visible  := ArrayOnly;
   PanelArrayNavBar.Visible   := ArrayOnly and FShowArrayNavBarOpts;
 
   PanelIndent.Visible        := tbIndent.Down;
@@ -1395,6 +1436,12 @@ begin
 end;
 
 procedure TDisplayFormatFrame.UpdateFormat;
+  procedure SpinToValue(ASpinEdit: TSpinEdit; var AValue: integer);
+  begin
+    if (ASpinEdit.Tag = 0) then
+      AValue := ASpinEdit.Value;
+  end;
+
 var
   d: TValueDisplayFormat;
   ds: TValueDisplayFormats;
@@ -1419,8 +1466,8 @@ begin
             if g in gs then
               FDisplayFormat[i].Num.SeparatorHexBin := g;
       end;
-      if (SpinDigits.Tag = 0) and (FDisplayFormat[i].Num.BaseFormat <> vdfBaseChar) then
-        FDisplayFormat[i].Num.MinDigits[FDisplayFormat[i].Num.BaseFormat] := SpinDigits.Value;
+      if (FDisplayFormat[i].Num.BaseFormat <> vdfBaseChar) then
+        SpinToValue(SpinDigits, FDisplayFormat[i].Num.MinDigits[FDisplayFormat[i].Num.BaseFormat]);
 
       ds := ReadDispForm(PanelNumBase, RBA_Num);
       if IdeDebuggerDisplayFormats.DisplayFormatCount(ds) = 1 then
@@ -1445,8 +1492,8 @@ begin
               if g in gs then
                 FDisplayFormat[i].Num2.SeparatorHexBin := g;
         end;
-        if (Spin2Digits.Tag = 0) and (FDisplayFormat[i].Num2.BaseFormat <> vdfBaseChar) then
-          FDisplayFormat[i].Num2.MinDigits[FDisplayFormat[i].Num2.BaseFormat] := Spin2Digits.Value;
+        if (FDisplayFormat[i].Num2.BaseFormat <> vdfBaseChar) then
+          SpinToValue(Spin2Digits, FDisplayFormat[i].Num2.MinDigits[FDisplayFormat[i].Num2.BaseFormat]);
 
         ds := ReadDispForm(PanelNum2Base, RBA_Num);
         if IdeDebuggerDisplayFormats.DisplayFormatCount(ds) = 1 then
@@ -1535,8 +1582,7 @@ begin
         for d := low(TValueDisplayFormatFloat) to high(TValueDisplayFormatFloat) do
           if d in ds then
             FDisplayFormat[i].Float.NumFormat := d;
-      if (SpinFloatDigits.Tag = 0) then
-        FDisplayFormat[i].Float.Precission := SpinFloatDigits.Value;
+      SpinToValue(SpinFloatDigits, FDisplayFormat[i].Float.Precission);
     end;
     if FButtonStates[bsStruct] then begin
       ds := ReadDispForm(PanelStructFld, RBA_StructVal);
@@ -1602,8 +1648,12 @@ begin
     if FButtonStates[bsArray] then begin
       BoolFromCB(cbArrayShowPrefix, FDisplayFormat[i].ArrayLen.ShowLenPrefix, False);
       BoolFromCB(cbArrayShowPrefixEmbedded, FDisplayFormat[i].ArrayLen.ShowLenPrefixEmbedded, False);
-      if (spinArrayLenMaxNest.Tag = 0) then
-        FDisplayFormat[i].ArrayLen.LenPrefixMaxNest := spinArrayLenMaxNest.Value;
+      SpinToValue(spinArrayLenMaxNest, FDisplayFormat[i].ArrayLen.LenPrefixMaxNest);
+      BoolFromCB(cbArrayHideLen, FDisplayFormat[i].ArrayLen.HideLen, False);
+      SpinToValue(spinArrayHideLenIfLess,       FDisplayFormat[i].ArrayLen.HideLenThresholdCnt);
+      SpinToValue(spinArrayHideLenRevDepth,     FDisplayFormat[i].ArrayLen.HideLenKeepDepth);
+      SpinToValue(spinArrayHideLenThresEach,    FDisplayFormat[i].ArrayLen.HideLenThresholdEach);
+      SpinToValue(spinArrayHideLenThresLen, FDisplayFormat[i].ArrayLen.HideLenThresholdLen);
       als := ReadDispForm(PanelArrayPrefixCombine, RBA_ArrayCombine);
       if LenCombineCount(als) = 1 then
         for al := low(TValueDisplayFormatArrayType) to high(TValueDisplayFormatArrayType) do
@@ -1613,17 +1663,20 @@ begin
       if FShowArrayNavBarOpts then begin
         BoolFromCB(cbArrayNavAutoHide, FDisplayFormat[i].ArrayNavBar.AutoHideNavBar, False);
         BoolFromCB(cbArrayNavEnforceBounds, FDisplayFormat[i].ArrayNavBar.EnforceBounds, False);
-        if (SpinPageSize.Tag = 0) then
-          FDisplayFormat[i].ArrayNavBar.PageSize := SpinPageSize.Value;
+        SpinToValue(SpinPageSize, FDisplayFormat[i].ArrayNavBar.PageSize);
       end;
     end;
     if FButtonStates[bsIndent] then begin
-      if (SpinIndentMaxWrap.Tag = 0) then
-        FDisplayFormat[i].MultiLine.MaxMultiLineDepth := SpinIndentMaxWrap.Value;
+      SpinToValue(SpinIndentMaxWrap, FDisplayFormat[i].MultiLine.MaxMultiLineDepth);
+      BoolFromCB(cbForceSingleLine, FDisplayFormat[i].MultiLine.ForceSingleLine, False);
+      SpinToValue(spinForceSingleLineRevDepth,  FDisplayFormat[i].MultiLine.ForceSingleLineThresholdStructFld);
+      SpinToValue(spinForceSingleLineArrayLen,  FDisplayFormat[i].MultiLine.ForceSingleLineThresholdArrayLen);
+      SpinToValue(spinForceSingleLineArrayLen,  FDisplayFormat[i].MultiLine.ForceSingleLineReverseDepth);
+      SpinToValue(spinForceSingleLineEach,      FDisplayFormat[i].MultiLine.ForceSingleLineThresholdEach);
+      SpinToValue(spinForceSingleLineLen,       FDisplayFormat[i].MultiLine.ForceSingleLineThresholdLen);
     end;
 
     BoolFromCBState(cbMemDump.State, FDisplayFormat[i].MemDump, False);
-DebugLn(dbgs(FDisplayFormat[i]));
   end;
 end;
 
@@ -1639,6 +1692,17 @@ begin
 end;
 
 procedure TDisplayFormatFrame.UpdateDisplay;
+  procedure SetCheckBoxToInherit(ACheckBox: TCheckBox);
+  begin
+    ACheckBox.State := cbUnchecked;
+    ACheckBox.Tag := 1;
+  end;
+  procedure SetCheckBoxState(ACheckBox: TCheckBox; AValue: TBoolSet; ARevert: boolean = True);
+  begin
+    ACheckBox.State := BoolsetToCBState(AValue, ARevert);
+    ACheckBox.Tag := 0;
+  end;
+
 var
   InherhitNum, InherhitNum2, InherhitEnum, InherhitEnumVal, InherhitFloat,
   InherhitStruct, InherhitPtr, InherhitAddress, InherhitIndent, InherhitArrayLen, InherhitArrayNav: TBoolSet;
@@ -1681,12 +1745,23 @@ var
   FormatArrayShowLenEmbedded: TBoolSet;
   FormatArrayLenMaxNest:      integer;
   FormatArrayLenCombine:      TValueDisplayFormatArrayTypes;
+  FormatHideLen:                TBoolSet;
+  FormatHideLenThresholdCnt:    integer;
+  FormatHideLenReverseDepth:    integer;
+  FormatHideLenThresholdEach:   integer;
+  FormatHideLenThresholdFullLen:integer;
 
   FormatArrayNavAutoHide:    TBoolSet;
   FormatArrayNavForceBounds: TBoolSet;
   FormatPageSize:     integer;
 
   FormatIndentMaxWrap: integer;
+  FormatForceSingleLine:                   TBoolSet;
+  FormatForceSingleLineThresholdStructFld: integer;
+  FormatForceSingleLineThresholdArrayLen:  integer;
+  FormatForceSingleLineReverseDepth:       integer;
+  FormatForceSingleLineThresholdEach:      integer;
+  FormatForceSingleLineThresholdLen:       integer;
 
   FormatIsMemDump: TBoolSet;
 
@@ -1755,12 +1830,23 @@ begin
     FormatArrayShowLenEmbedded := [];
     FormatArrayLenMaxNest      := INT_UNK;
     FormatArrayLenCombine      := [];
+    FormatHideLen                 := [];
+    FormatHideLenReverseDepth     := INT_UNK;
+    FormatHideLenThresholdCnt     := INT_UNK;
+    FormatHideLenThresholdEach    := INT_UNK;
+    FormatHideLenThresholdFullLen := INT_UNK;
 
     FormatArrayNavAutoHide    := [];
     FormatArrayNavForceBounds := [];
     FormatPageSize:= INT_UNK;
 
     FormatIndentMaxWrap := INT_UNK;
+    FormatForceSingleLine                   := [];
+    FormatForceSingleLineThresholdStructFld := INT_UNK;
+    FormatForceSingleLineThresholdArrayLen  := INT_UNK;
+    FormatForceSingleLineReverseDepth       := INT_UNK;
+    FormatForceSingleLineThresholdEach      := INT_UNK;
+    FormatForceSingleLineThresholdLen       := INT_UNK;
 
     FormatIsMemDump := [];
 
@@ -1865,6 +1951,11 @@ begin
           include(FormatArrayShowLenEmbedded,  FDisplayFormat[i].ArrayLen.ShowLenPrefixEmbedded);
           UpdateIntSetting(FormatArrayLenMaxNest, FDisplayFormat[i].ArrayLen.LenPrefixMaxNest);
           include(FormatArrayLenCombine,  FDisplayFormat[i].ArrayLen.LenPrefixCombine);
+          include(FormatHideLen,  FDisplayFormat[i].ArrayLen.HideLen);
+          UpdateIntSetting(FormatHideLenReverseDepth,     FDisplayFormat[i].ArrayLen.HideLenKeepDepth    );
+          UpdateIntSetting(FormatHideLenThresholdCnt,     FDisplayFormat[i].ArrayLen.HideLenThresholdCnt    );
+          UpdateIntSetting(FormatHideLenThresholdEach,    FDisplayFormat[i].ArrayLen.HideLenThresholdEach   );
+          UpdateIntSetting(FormatHideLenThresholdFullLen, FDisplayFormat[i].ArrayLen.HideLenThresholdLen);
         end;
 
         include(InherhitArrayNav,  FDisplayFormat[i].ArrayNavBar.UseInherited);
@@ -1877,7 +1968,15 @@ begin
 
       if FButtonStates[bsIndent] then begin
         include(InherhitIndent,  FDisplayFormat[i].MultiLine.UseInherited);
-        UpdateIntSetting(FormatIndentMaxWrap, FDisplayFormat[i].MultiLine.MaxMultiLineDepth);
+        if (not FDisplayFormat[i].MultiLine.UseInherited) or (not ShowOverrideChecks) then begin
+          include(FormatForceSingleLine,  FDisplayFormat[i].MultiLine.ForceSingleLine);
+          UpdateIntSetting(FormatIndentMaxWrap, FDisplayFormat[i].MultiLine.MaxMultiLineDepth);
+          UpdateIntSetting(FormatForceSingleLineThresholdStructFld, FDisplayFormat[i].MultiLine.ForceSingleLineThresholdStructFld);
+          UpdateIntSetting(FormatForceSingleLineThresholdArrayLen,  FDisplayFormat[i].MultiLine.ForceSingleLineThresholdArrayLen);
+          UpdateIntSetting(FormatForceSingleLineReverseDepth,       FDisplayFormat[i].MultiLine.ForceSingleLineReverseDepth      );
+          UpdateIntSetting(FormatForceSingleLineThresholdEach,      FDisplayFormat[i].MultiLine.ForceSingleLineThresholdEach     );
+          UpdateIntSetting(FormatForceSingleLineThresholdLen,       FDisplayFormat[i].MultiLine.ForceSingleLineThresholdLen      );
+        end;
       end;
     end;
 
@@ -1912,37 +2011,31 @@ begin
     if (InherhitNum = [True]) or (not FButtonStates[bsNum]) then begin
       ClearRadios(PanelNumBase);
       ClearRadios(PanelNumSign);
-      cbNumSeparator.State :=         cbUnchecked;
-      cbNumSeparator.Tag   :=         1; // do not read back
+      SetCheckBoxToInherit(cbNumSeparator);
       ClearRadios(PanelNumSepGroup);
       SetSpinEditToInherit(SpinDigits);
     end
     else begin
       ApplyDispForm(PanelNumBase,     FormatNumBase, RBA_Num);
       ApplyDispForm(PanelNumSign,     FormatNumSign, RBA_Sign);
-      cbNumSeparator.State :=         BoolsetToCBState(FormatNumSep, False);
-      cbNumSeparator.Tag   :=         0;
+      SetCheckBoxState(cbNumSeparator, FormatNumSep, False);
       ApplyDispForm(PanelNumSepGroup, FormatNumGroup, RBA_Group);
       SpinDigits.Tag       := 0;
     end;
 
     if InherhitNum2 = [True] then begin
-      cbNum2Visibile.State  :=         cbUnchecked;
-      cbNum2Visibile.Tag    :=         1;
+      SetCheckBoxToInherit(cbNum2Visibile);
       ClearRadios(PanelNum2Base);
       ClearRadios(PanelNum2Sign);
-      cbNum2Separator.State :=         cbUnchecked;
-      cbNum2Separator.Tag   :=         1;
+      SetCheckBoxToInherit(cbNum2Separator);
       ClearRadios(PanelNum2SepGroup);
       SetSpinEditToInherit(Spin2Digits);
     end
     else begin
-      cbNum2Visibile.State  :=         BoolsetToCBState(FormatNum2Visible, False);
-      cbNum2Visibile.Tag    :=         0;
+      SetCheckBoxState(cbNum2Visibile, FormatNum2Visible, False);
       ApplyDispForm(PanelNum2Base,     FormatNum2Base, RBA_Num);
       ApplyDispForm(PanelNum2Sign,     FormatNum2Sign, RBA_Sign);
-      cbNum2Separator.State :=         BoolsetToCBState(FormatNum2Sep, False);
-      cbNum2Separator.Tag   :=         0;
+      SetCheckBoxState(cbNum2Separator, FormatNum2Sep, False);
       ApplyDispForm(PanelNum2SepGroup, FormatNum2Group, RBA_Group);
       Spin2Digits.Tag       := 0;
     end;
@@ -1951,28 +2044,24 @@ begin
       ClearRadios(PanelEnumRb1);
       ClearRadios(PanelEnumBase);
       //ClearRadios(PanelEnumSign);
-      cbEnumSign.State := cbUnchecked;
-      cbEnumSign.Tag   := 1;
+      SetCheckBoxToInherit(cbEnumSign);
     end
     else begin
       ApplyDispForm(PanelEnumRb1,  FormatEnum,     RBA_Enum);
       ApplyDispForm(PanelEnumBase, FormatEnumBase, RBA_Num);
       //ApplyDispForm(PanelEnumSign, FormatEnumSign, RBA_Sign);
-      cbEnumSign.State := BoolsetToCBState(FormatEnumSign, False);
-      cbEnumSign.Tag   := 0;
+      SetCheckBoxState(cbEnumSign, FormatEnumSign, False);
     end;
 
     if InherhitEnumVal = [True] then begin
       ClearRadios(PanelEnumValRb);
       ClearRadios(PanelEnumValBase);
-      cbEnumValSign.State := cbUnchecked;
-      cbEnumValSign.Tag   := 1;
+      SetCheckBoxToInherit(cbEnumValSign);
     end
     else begin
       ApplyDispForm(PanelEnumValRb,   FormatEnumVal,     RBA_Enum);
       ApplyDispForm(PanelEnumValBase, FormatEnumValBase, RBA_Num);
-      cbEnumValSign.State := BoolsetToCBState(FormatEnumValSign, False);
-      cbEnumValSign.Tag   := 0;
+      SetCheckBoxState(cbEnumValSign, FormatEnumValSign, False);
     end;
 
     if InherhitFloat = [True] then begin
@@ -2003,61 +2092,71 @@ begin
     if InherhitAddress = [True] then begin
       ClearRadios(PanelAddressType);
       ClearRadios(PanelAddressBase);
-      cbAddrSign.State := cbUnchecked;
-      cbAddrNoLeadZero.State := cbUnchecked;
+      SetCheckBoxToInherit(cbAddrSign);
+      SetCheckBoxToInherit(cbAddrNoLeadZero);
       cbStructAddrTyped.State  := cbGrayed;
       cbPointerAddrTyped.State := cbGrayed;
-      cbAddrSign.Tag   := 1;
     end
     else begin
       ApplyDispForm(PanelAddressType, FormatAddress,     RBA_Addr);
       ApplyDispForm(PanelAddressBase, FormatAddressBase, RBA_AddrNum);
-      cbAddrSign.State := BoolsetToCBState(FormatAddressSign, False);
-      cbAddrNoLeadZero.State := BoolsetToCBState(FormatAddressLead, False);
+      SetCheckBoxState(cbAddrSign, FormatAddressSign, False);
+      SetCheckBoxState(cbAddrNoLeadZero, FormatAddressLead, False);
       cbStructAddrTyped.State  := BoolsetToCBState(FormatAddressStr_Ty, False);
       cbPointerAddrTyped.State := BoolsetToCBState(FormatAddressPtr_Ty, False);
-      cbAddrSign.Tag   := 0;
     end;
 
     if InherhitArrayLen = [True] then begin
-      cbArrayShowPrefix.State := cbUnchecked;
-      cbArrayShowPrefixEmbedded.State := cbUnchecked;
-      cbArrayShowPrefix.Tag := 1;
-      cbArrayShowPrefixEmbedded.Tag := 1;
+      SetCheckBoxToInherit(cbArrayShowPrefix);
+      SetCheckBoxToInherit(cbArrayShowPrefixEmbedded);
+      SetCheckBoxToInherit(cbArrayHideLen);
       SetSpinEditToInherit(spinArrayLenMaxNest);
+      SetSpinEditToInherit(spinArrayHideLenRevDepth);
+      SetSpinEditToInherit(spinArrayHideLenIfLess);
+      SetSpinEditToInherit(spinArrayHideLenThresEach);
+      SetSpinEditToInherit(spinArrayHideLenThresLen);
       ClearRadios(PanelArrayPrefixCombine);
     end
     else begin
-      cbArrayShowPrefix.State := BoolsetToCBState(FormatArrayShowLen, False);
-      cbArrayShowPrefixEmbedded.State := BoolsetToCBState(FormatArrayShowLenEmbedded, False);
+      SetCheckBoxState(cbArrayShowPrefix, FormatArrayShowLen, False);
+      SetCheckBoxState(cbArrayShowPrefixEmbedded, FormatArrayShowLenEmbedded, False);
       IntToSpinEdit(spinArrayLenMaxNest, FormatArrayLenMaxNest);
       ApplyDispForm(PanelArrayPrefixCombine, FormatArrayLenCombine, RBA_ArrayCombine);
-      cbArrayShowPrefix.Tag := 0;
-      cbArrayShowPrefixEmbedded.Tag := 0;
-      spinArrayLenMaxNest.Tag := 0;
+      SetCheckBoxState(cbArrayHideLen, FormatHideLen, False);
+      IntToSpinEdit(spinArrayHideLenRevDepth,     FormatHideLenReverseDepth    );
+      IntToSpinEdit(spinArrayHideLenIfLess,       FormatHideLenThresholdCnt    );
+      IntToSpinEdit(spinArrayHideLenThresEach,    FormatHideLenThresholdEach   );
+      IntToSpinEdit(spinArrayHideLenThresLen, FormatHideLenThresholdFullLen);
     end;
 
     if InherhitArrayNav = [True] then begin
-      cbArrayNavAutoHide.State := cbUnchecked;
-      cbArrayNavEnforceBounds.State := cbUnchecked;
-      cbArrayNavAutoHide.Tag := 1;
-      cbArrayNavEnforceBounds.Tag := 1;
-      SetSpinEditToInherit(SpinPageSize)
+      SetCheckBoxToInherit(cbArrayNavAutoHide);
+      SetCheckBoxToInherit(cbArrayNavEnforceBounds);
+      SetSpinEditToInherit(SpinPageSize);
     end
     else begin
-      cbArrayNavAutoHide.State := BoolsetToCBState(FormatArrayNavAutoHide, False);
-      cbArrayNavEnforceBounds.State := BoolsetToCBState(FormatArrayNavForceBounds, False);
+      SetCheckBoxState(cbArrayNavAutoHide, FormatArrayNavAutoHide, False);
+      SetCheckBoxState(cbArrayNavEnforceBounds, FormatArrayNavForceBounds, False);
       IntToSpinEdit(SpinPageSize, FormatPageSize);
-      cbArrayNavAutoHide.Tag := 0;
-      cbArrayNavEnforceBounds.Tag := 0;
-      SpinPageSize.Tag := 0;
     end;
 
     if InherhitIndent = [True] then begin
       SetSpinEditToInherit(SpinIndentMaxWrap);
+      SetCheckBoxToInherit(cbForceSingleLine);
+      SetSpinEditToInherit(spinForceSingleLineStructFld);
+      SetSpinEditToInherit(spinForceSingleLineArrayLen);
+      SetSpinEditToInherit(spinForceSingleLineRevDepth);
+      SetSpinEditToInherit(spinForceSingleLineEach);
+      SetSpinEditToInherit(spinForceSingleLineLen);
     end
     else begin
       IntToSpinEdit(SpinIndentMaxWrap, FormatIndentMaxWrap);
+      SetCheckBoxState(cbForceSingleLine, FormatForceSingleLine, False);
+      IntToSpinEdit(spinForceSingleLineStructFld, FormatForceSingleLineThresholdStructFld      );
+      IntToSpinEdit(spinForceSingleLineArrayLen,  FormatForceSingleLineThresholdArrayLen      );
+      IntToSpinEdit(spinForceSingleLineRevDepth,  FormatForceSingleLineReverseDepth     );
+      IntToSpinEdit(spinForceSingleLineEach,      FormatForceSingleLineThresholdEach      );
+      IntToSpinEdit(spinForceSingleLineLen,       FormatForceSingleLineThresholdLen);
     end;
 
     UpdateNumDigitPanel;
@@ -2074,9 +2173,18 @@ begin
     FormatSpinChanged(SpinDigits);
     FormatSpinChanged(Spin2Digits);
     FormatSpinChanged(SpinFloatDigits);
-    FormatSpinChanged(SpinIndentMaxWrap);
     FormatSpinChanged(SpinPageSize);
     FormatSpinChanged(spinArrayLenMaxNest);
+    FormatSpinChanged(spinArrayHideLenRevDepth);
+    FormatSpinChanged(spinArrayHideLenIfLess);
+    FormatSpinChanged(spinArrayHideLenThresEach);
+    FormatSpinChanged(spinArrayHideLenThresLen);
+    FormatSpinChanged(SpinIndentMaxWrap);
+    FormatSpinChanged(spinForceSingleLineStructFld);
+    FormatSpinChanged(spinForceSingleLineArrayLen);
+    FormatSpinChanged(spinForceSingleLineRevDepth);
+    FormatSpinChanged(spinForceSingleLineEach);
+    FormatSpinChanged(spinForceSingleLineLen);
 
     dec(FUpdatingDisplay);
   end;
@@ -2312,6 +2420,12 @@ begin
 
   lbOverrideIndent.Caption := DispFormatDlgIndent;
   lbMaxWrapLvl.Caption     := DispFormatIndentMaxWrap;
+  cbForceSingleLine.Caption          := DispFormatForceSingleLineToggle;
+  lbForceSingleLineStructFld.Caption := DispFormatForceSingleLineStructFld;
+  lbForceSingleLineArrayLen.Caption  := DispFormatForceSingleLineArrayLen;
+  lbForceSingleLineRevDepth.Caption  := DispFormatForceSingleLineDepth;
+  lbForceSingleLineEach.Caption      := DispFormatForceSingleLineEach;
+  lbForceSingleLineLen.Caption       := DispFormatForceSingleLineLen;
 
   lbOverrideArray.Caption           := DispFormatDlgArrayLen;
   cbArrayShowPrefix.Caption         := DispFormatDlgArrayShowPrefix;
@@ -2322,6 +2436,11 @@ begin
   rbArrayCombineAll.Caption         := DispFormatDlgArrayCombineAll;
   rbArrayCombineStat.Caption        := DispFormatDlgArrayCombineStat;
   rbArrayCombineDyn.Caption         := DispFormatDlgArrayCombineDyn;
+  cbArrayHideLen.Caption            := DispFormatArrayHideLenToggle;
+  lbArrayHideLenIfLess.Caption      := DispFormatArrayHideLenIfLess;
+  lbArrayHideLenKeepDepth.Caption   := DispFormatArrayHideLenKeepDepth;
+  lbArrayHideLenThresEach.Caption   := DispFormatArrayHideLenThresEach;
+  lbArrayHideLenThresLen.Caption    := DispFormatArrayHideLenThresFullLen;
 
   lbOverrideArrayNavBar.Caption   := DispFormatDlgArrayNav;
   cbArrayNavAutoHide.Caption      := DispFormatArrayNavAutoHide;

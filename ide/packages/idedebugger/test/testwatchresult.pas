@@ -1,6 +1,7 @@
 unit TestWatchResult;
 
 {$mode objfpc}{$H+}
+{$ModeSwitch advancedrecords}
 
 interface
 
@@ -31,9 +32,10 @@ type
     property IdeRes: TWatchResultData read GetIdeRes;
   end;
 
-  { TTestIdeDebuggerWatchResult }
 
-  TTestIdeDebuggerWatchResult = class(TTestCase)
+  { TTestBaseIdeDebuggerWatchResult }
+
+  TTestBaseIdeDebuggerWatchResult = class(TTestCase)
   private type
     TTwoResRecord = record
       NestPtr, NestNum: IDbgWatchDataIntf;
@@ -69,6 +71,36 @@ type
       (cdStruct_ErrEmptyFields,cdStruct_ErrEmptyFields) //cdStruct_ErrEmptyFields
       //(cdStruct_EmptyFields, cdStruct_EmptyFields)  // cdStruct_EmptyFields
     );
+  protected type
+
+    { TBuildInfo }
+
+    TBuildInfo = record
+      FType: TWatchResultDataKind;
+      FFieldInfo: array of TBuildInfo;
+      FArray: record
+        ArrayType: TLzDbgArrayType;
+        Len, Cnt: integer;
+      end;
+      FStruct: record
+        StructType: TLzDbgStructType;
+        Fields: array of TBuildInfo;
+      end;
+      FField: record
+        FName: String;
+        FVis: TLzDbgFieldVisibility;
+      end;
+      FNum: record
+        Val: qword;
+        Incr: Integer;
+      end;
+      class operator := (a: string): TBuildInfo;
+      class operator +  (a: string; b: TBuildInfo): TBuildInfo;
+      class operator +  (a, b: TBuildInfo): TBuildInfo;
+      class operator *  (a: string; b: TLzDbgFieldVisibility): TBuildInfo;
+      class operator *  (a: TBuildInfo; b: TLzDbgFieldVisibility): TBuildInfo;
+    end;
+    TBuildInfoArray = array of TBuildInfo;
   protected
     class procedure AssertEquals(const AMessage: string; Expected, Actual: TWatchResultDataKind); overload;
 
@@ -240,6 +272,14 @@ type
                          AnAddr: QWord = 990;
                          AnErrPreFix: String = ''
                         ): TTwoResRecord;
+
+
+    function  b(AType: TWatchResultDataKind; AValue: Int64; AnIncrease: Integer = 0): TBuildInfo; overload;
+    function  b(AValue: Int64; AnIncrease: Integer = 0): TBuildInfo; overload;
+    function  b(AnArrayType: TLzDbgArrayType; ALen: Integer; ACnt: Integer = 0): TBuildInfo; overload;
+    function  b(AnStructType: TLzDbgStructType; Fields: Array of TBuildInfo): TBuildInfo; overload;
+    function  CreateNestedData(ABuildInfo: array of TBuildInfo): TWatchResultData;
+
     procedure AssertData(const AMessage: string; IdeRes: TWatchResultData;
                          AKind: TTestCreateDataKind; AnErr: Boolean;
                          ATypeName: String = '';
@@ -248,6 +288,9 @@ type
                          AnErrPreFix: String = ''
                         );
 
+  end;
+
+  TTestIdeDebuggerWatchResult = class(TTestBaseIdeDebuggerWatchResult)
   published
     procedure TestWatchResError;
     procedure TestPrePrint;
@@ -269,7 +312,16 @@ type
 
   end;
 
+
+  operator *  (a: string; b: TLzDbgFieldVisibility): TTestBaseIdeDebuggerWatchResult.TBuildInfo;
+
 implementation
+
+operator * (a: string; b: TLzDbgFieldVisibility): TTestBaseIdeDebuggerWatchResult.TBuildInfo;
+begin
+  Result := a;
+  Result.FField.FVis := b;
+end;
 
 { TTestWatchResWrapper }
 
@@ -305,22 +357,22 @@ begin
   FreeAndNil(FIdeRes);
 end;
 
-{ TTestIdeDebuggerWatchResult }
+{ TTestBaseIdeDebuggerWatchResult }
 
-class procedure TTestIdeDebuggerWatchResult.AssertEquals(
+class procedure TTestBaseIdeDebuggerWatchResult.AssertEquals(
   const AMessage: string; Expected, Actual: TWatchResultDataKind);
 begin
   AssertEquals(AMessage, dbgs(Expected), dbgs(Actual));
 end;
 
-procedure TTestIdeDebuggerWatchResult.AssertValKind(const AMessage: string;
+procedure TTestBaseIdeDebuggerWatchResult.AssertValKind(const AMessage: string;
   IdeRes: TWatchResultData; ExpKind: TWatchResultDataKind);
 begin
   AssertTrue(AMessage+': not nil', IdeRes <> nil);
   AssertEquals(AMessage, ExpKind, IdeRes.ValueKind);
 end;
 
-procedure TTestIdeDebuggerWatchResult.AssertTypeName(const AMessage: string;
+procedure TTestBaseIdeDebuggerWatchResult.AssertTypeName(const AMessage: string;
   IdeRes: TWatchResultData; ExpTypeName: String);
 begin
   AssertTrue(AMessage+': not nil', IdeRes <> nil);
@@ -328,7 +380,7 @@ begin
     AssertEquals(AMessage, ExpTypeName, IdeRes.TypeName);
 end;
 
-procedure TTestIdeDebuggerWatchResult.AssertNumData(const AMessage: string;
+procedure TTestBaseIdeDebuggerWatchResult.AssertNumData(const AMessage: string;
   IdeRes: TWatchResultData; ExpKind: TWatchResultDataKind; ExpInt64: Int64;
   ExpQW: QWord; ExpStr: String; ExpNumByte: Integer; ExpTypeName: String;
   ASaveLoad: Boolean; ACreateCopy: Boolean);
@@ -356,7 +408,7 @@ begin
   end;
 end;
 
-procedure TTestIdeDebuggerWatchResult.AssertNumDataSigned(
+procedure TTestBaseIdeDebuggerWatchResult.AssertNumDataSigned(
   const AMessage: string; IdeRes: TWatchResultData; ExpInt64: Int64;
   ExpNumByte: Integer; ExpTypeName: String; ASaveLoad: Boolean;
   ACreateCopy: Boolean);
@@ -364,7 +416,7 @@ begin
   AssertNumData(AMessage, IdeRes, rdkSignedNumVal, ExpInt64, QWord(ExpInt64), IntToStr(ExpInt64), ExpNumByte, ExpTypeName, ASaveLoad, ACreateCopy);
 end;
 
-procedure TTestIdeDebuggerWatchResult.AssertErrData(const AMessage: string;
+procedure TTestBaseIdeDebuggerWatchResult.AssertErrData(const AMessage: string;
   IdeRes: TWatchResultData; ExpErr: String; ASaveLoad: Boolean;
   ACreateCopy: Boolean);
 var
@@ -386,7 +438,7 @@ begin
   end;
 end;
 
-procedure TTestIdeDebuggerWatchResult.AssertPrePrintData(
+procedure TTestBaseIdeDebuggerWatchResult.AssertPrePrintData(
   const AMessage: string; IdeRes: TWatchResultData; ExpStr: String;
   ExpTypeName: String; ASaveLoad: Boolean; ACreateCopy: Boolean);
 var
@@ -410,7 +462,7 @@ begin
   end;
 end;
 
-procedure TTestIdeDebuggerWatchResult.AssertPointerData(const AMessage: string;
+procedure TTestBaseIdeDebuggerWatchResult.AssertPointerData(const AMessage: string;
   IdeRes: TWatchResultData; ExpAddr: QWord; ExpHasDeref: Boolean;
   ExpTypeName: String; ASaveLoad: Boolean; ACreateCopy: Boolean);
 var
@@ -435,7 +487,7 @@ begin
   end;
 end;
 
-procedure TTestIdeDebuggerWatchResult.AssertPointerToPrePrintData(
+procedure TTestBaseIdeDebuggerWatchResult.AssertPointerToPrePrintData(
   const AMessage: string; IdeRes: TWatchResultData; ExpAddr: QWord;
   ExpStr: String; ExpTypeName: String; ExpStrTypeName: String;
   ASaveLoad: Boolean; ACreateCopy: Boolean);
@@ -463,7 +515,7 @@ begin
   end;
 end;
 
-procedure TTestIdeDebuggerWatchResult.AssertPointerToErrData(
+procedure TTestBaseIdeDebuggerWatchResult.AssertPointerToErrData(
   const AMessage: string; IdeRes: TWatchResultData; ExpAddr: QWord;
   ExpErr: String; ExpTypeName: String; ASaveLoad: Boolean; ACreateCopy: Boolean
   );
@@ -491,7 +543,7 @@ begin
   end;
 end;
 
-procedure TTestIdeDebuggerWatchResult.AssertPointerToSignedNumData(
+procedure TTestBaseIdeDebuggerWatchResult.AssertPointerToSignedNumData(
   const AMessage: string; IdeRes: TWatchResultData; ExpAddr: QWord;
   ExpInt64: Int64; ExpNumByte: Integer; ExpTypeName: String;
   ExpNumTypeName: String; ASaveLoad: Boolean; ACreateCopy: Boolean);
@@ -519,7 +571,7 @@ begin
   end;
 end;
 
-procedure TTestIdeDebuggerWatchResult.AssertPtrPointerToErrData(
+procedure TTestBaseIdeDebuggerWatchResult.AssertPtrPointerToErrData(
   const AMessage: string; IdeRes: TWatchResultData; ExpAddr,
   ExpNestAddr: QWord; ExpErr: String; ExpTypeName: String;
   ExpNestTypeName: String; ASaveLoad: Boolean; ACreateCopy: Boolean);
@@ -547,7 +599,7 @@ begin
   end;
 end;
 
-procedure TTestIdeDebuggerWatchResult.AssertPtrPointerToSignedNumData(
+procedure TTestBaseIdeDebuggerWatchResult.AssertPtrPointerToSignedNumData(
   const AMessage: string; IdeRes: TWatchResultData; ExpAddr,
   ExpNestAddr: QWord; ExpInt64: Int64; ExpNumByte: Integer;
   ExpTypeName: String; ExpNestTypeName: String; ExpNumTypeName: String;
@@ -576,7 +628,7 @@ begin
   end;
 end;
 
-procedure TTestIdeDebuggerWatchResult.AssertArrayOfNumData(
+procedure TTestBaseIdeDebuggerWatchResult.AssertArrayOfNumData(
   const AMessage: string; IdeRes: TWatchResultData; ExpNum: Int64;
   ExpTypeName: String; ASaveLoad: Boolean; ACreateCopy: Boolean);
 var
@@ -600,7 +652,7 @@ begin
   end;
 end;
 
-procedure TTestIdeDebuggerWatchResult.AssertArrayOfErrData(
+procedure TTestBaseIdeDebuggerWatchResult.AssertArrayOfErrData(
   const AMessage: string; IdeRes: TWatchResultData; ExpAnErr: String;
   ASaveLoad: Boolean; ACreateCopy: Boolean);
 var
@@ -622,7 +674,7 @@ begin
   end;
 end;
 
-procedure TTestIdeDebuggerWatchResult.AssertEmptyArrayOfNumData(
+procedure TTestBaseIdeDebuggerWatchResult.AssertEmptyArrayOfNumData(
   const AMessage: string; IdeRes: TWatchResultData; ExpNum: Int64;
   ExpTypeName: String; ASaveLoad: Boolean; ACreateCopy: Boolean);
 var
@@ -642,7 +694,7 @@ begin
   end;
 end;
 
-procedure TTestIdeDebuggerWatchResult.AssertPtrArrayOfNumData(
+procedure TTestBaseIdeDebuggerWatchResult.AssertPtrArrayOfNumData(
   const AMessage: string; IdeRes: TWatchResultData; ExpNum: Int64;
   ExpTypeName: String; ASaveLoad: Boolean; ACreateCopy: Boolean);
 var
@@ -669,7 +721,7 @@ begin
   end;
 end;
 
-procedure TTestIdeDebuggerWatchResult.AssertArrayData(
+procedure TTestBaseIdeDebuggerWatchResult.AssertArrayData(
   const AMessage: string; IdeRes: TWatchResultData;
   ExpArrayType: TLzDbgArrayType;
   ExpLength: Int64;
@@ -705,7 +757,7 @@ begin
   end;
 end;
 
-procedure TTestIdeDebuggerWatchResult.AssertStructField(const AMessage: string;
+procedure TTestBaseIdeDebuggerWatchResult.AssertStructField(const AMessage: string;
   IdeRes: TWatchResultData; TestFieldNum: Integer; ExpName: String;
   ExpVisibilty: TLzDbgFieldVisibility; ExpFlags: TLzDbgFieldFlags;
   ExpAnchTypeName: String; ExpTypeName: String; ExpKind: TWatchResultDataKind;
@@ -752,7 +804,7 @@ begin
   end;
 end;
 
-procedure TTestIdeDebuggerWatchResult.AssertStructData(const AMessage: string;
+procedure TTestBaseIdeDebuggerWatchResult.AssertStructData(const AMessage: string;
   IdeRes: TWatchResultData; ExpType: TLzDbgStructType; ExpAddr: QWord;
   ExpFieldCnt: Integer; ExpTypeName: String; ASaveLoad: Boolean;
   ACreateCopy: Boolean);
@@ -785,7 +837,7 @@ begin
   end;
 end;
 
-procedure TTestIdeDebuggerWatchResult.AssertStructAnch(const AMessage: string;
+procedure TTestBaseIdeDebuggerWatchResult.AssertStructAnch(const AMessage: string;
   IdeRes: TWatchResultData; ExpType: TLzDbgStructType;
   ExpDirectFieldCnt: Integer; ExpTypeName: String; ASaveLoad: Boolean;
   ACreateCopy: Boolean);
@@ -814,7 +866,7 @@ begin
   end;
 end;
 
-procedure TTestIdeDebuggerWatchResult.AssertStruct(const AMessage: string;
+procedure TTestBaseIdeDebuggerWatchResult.AssertStruct(const AMessage: string;
   IdeRes: TWatchResultData; StrctTyp: TLzDbgStructType; WithFld: Boolean;
   WithAnch: Integer; WithAnch1Fld, WithAnch2Fld: Boolean; aEntryType1,
   aEntryType2: TTestCreateDataKind; aErr1, aErr2: Boolean; aNil: Boolean;
@@ -893,7 +945,7 @@ begin
       AssertStructAnch('', IdeRes.Anchestors[1], StrctTyp, 0, 'TAnch2');
 end;
 
-function TTestIdeDebuggerWatchResult.SaveLoad(ARes: TWatchResultData
+function TTestBaseIdeDebuggerWatchResult.SaveLoad(ARes: TWatchResultData
   ): TWatchResultData;
 var
   AXmlConf: TXMLConfig;
@@ -911,7 +963,7 @@ begin
   AXmlConf.Free;
 end;
 
-function TTestIdeDebuggerWatchResult.CreatePointer(
+function TTestBaseIdeDebuggerWatchResult.CreatePointer(
   ResIntf: IDbgWatchDataIntf; AnAddr: QWord; ATypeName: String;
   ASkipSetDeref: boolean): IDbgWatchDataIntf;
 begin
@@ -923,7 +975,7 @@ begin
     Result := ResIntf.SetDerefData;
 end;
 
-function TTestIdeDebuggerWatchResult.CreatePtrPrePrint(
+function TTestBaseIdeDebuggerWatchResult.CreatePtrPrePrint(
   ResIntf: IDbgWatchDataIntf; AnAddr: QWord; AStr: String
   ): IDbgWatchDataIntf;
 begin
@@ -934,7 +986,7 @@ begin
   Result.SetTypeName('TMyText');
 end;
 
-function TTestIdeDebuggerWatchResult.CreatePtrNum(ResIntf: IDbgWatchDataIntf;
+function TTestBaseIdeDebuggerWatchResult.CreatePtrNum(ResIntf: IDbgWatchDataIntf;
   AnAddr: QWord; ANum: Int64; AByteSize: integer): IDbgWatchDataIntf;
 begin
   ResIntf.CreatePointerValue(AnAddr);
@@ -944,7 +996,7 @@ begin
   Result.SetTypeName('TMyNum');
 end;
 
-function TTestIdeDebuggerWatchResult.CreatePtrErr(ResIntf: IDbgWatchDataIntf;
+function TTestBaseIdeDebuggerWatchResult.CreatePtrErr(ResIntf: IDbgWatchDataIntf;
   AnAddr: QWord; AnErr: String): IDbgWatchDataIntf;
 begin
   ResIntf.CreatePointerValue(AnAddr);
@@ -953,7 +1005,7 @@ begin
   Result.CreateError(AnErr);
 end;
 
-function TTestIdeDebuggerWatchResult.CreatePtrPtrNum(
+function TTestBaseIdeDebuggerWatchResult.CreatePtrPtrNum(
   ResIntf: IDbgWatchDataIntf; AnAddr: QWord; ANum: Int64; AByteSize: integer
   ): TTwoResRecord;
 begin
@@ -969,7 +1021,7 @@ begin
   Result.NestNum.SetTypeName('TFooNum');
 end;
 
-function TTestIdeDebuggerWatchResult.CreatePtrPtrErr(
+function TTestBaseIdeDebuggerWatchResult.CreatePtrPtrErr(
   ResIntf: IDbgWatchDataIntf; AnAddr: QWord; AnErr: String): TTwoResRecord;
 begin
   ResIntf.CreatePointerValue(AnAddr);
@@ -983,7 +1035,7 @@ begin
   Result.NestNum.CreateError(AnErr);
 end;
 
-function TTestIdeDebuggerWatchResult.CreateArrayOfNum(ResIntf: IDbgWatchDataIntf;
+function TTestBaseIdeDebuggerWatchResult.CreateArrayOfNum(ResIntf: IDbgWatchDataIntf;
   ANum: Int64; AByteSize: integer): TTwoResRecord;
 var
   dat: IDbgWatchDataIntf;
@@ -997,7 +1049,7 @@ begin
   dat.CreateNumValue(ANum+7, True, 2);
 end;
 
-function TTestIdeDebuggerWatchResult.CreateArrayOfErr(
+function TTestBaseIdeDebuggerWatchResult.CreateArrayOfErr(
   ResIntf: IDbgWatchDataIntf; AnErr: String): TTwoResRecord;
 var
   dat: IDbgWatchDataIntf;
@@ -1008,7 +1060,7 @@ begin
   Result.NestNum.CreateError(AnErr);
 end;
 
-function TTestIdeDebuggerWatchResult.CreateEmptyArrayOfNum(
+function TTestBaseIdeDebuggerWatchResult.CreateEmptyArrayOfNum(
   ResIntf: IDbgWatchDataIntf; ANum: Int64; AByteSize: integer): TTwoResRecord;
 var
   p, dat: IDbgWatchDataIntf;
@@ -1017,7 +1069,7 @@ begin
 //  Result.NestNum.CreateNumValue(ANum, True, 2); // proto
 end;
 
-function TTestIdeDebuggerWatchResult.CreatePtrArrayOfNum(
+function TTestBaseIdeDebuggerWatchResult.CreatePtrArrayOfNum(
   ResIntf: IDbgWatchDataIntf; ANum: Int64; AByteSize: integer): TTwoResRecord;
 begin
   ResIntf.CreatePointerValue(1500);
@@ -1026,7 +1078,7 @@ begin
   CreateArrayOfNum(Result.NestPtr, ANum, AByteSize).NestNum;
 end;
 
-procedure TTestIdeDebuggerWatchResult.CreateStruct(ResIntf: IDbgWatchDataIntf;
+procedure TTestBaseIdeDebuggerWatchResult.CreateStruct(ResIntf: IDbgWatchDataIntf;
   StrctTyp: TLzDbgStructType; WithFld: Boolean; WithAnch: Integer; WithAnch1Fld,
   WithAnch2Fld: Boolean; aEntryType1, aEntryType2: TTestCreateDataKind; aErr1, aErr2: Boolean;
   aNil: Boolean; aOnlyFieldData: Boolean; abortFieldsAfterErr: Boolean);
@@ -1094,7 +1146,7 @@ begin
   end;
 end;
 
-function TTestIdeDebuggerWatchResult.CreateData(ResIntf: IDbgWatchDataIntf;
+function TTestBaseIdeDebuggerWatchResult.CreateData(ResIntf: IDbgWatchDataIntf;
   AKind: TTestCreateDataKind; AnErr: Boolean; ATypeName: String;
   ANumVal: Int64; AnAddr: QWord; AnErrPreFix: String): TTwoResRecord;
 begin
@@ -1155,7 +1207,112 @@ begin
     ResIntf.SetTypeName(ATypeName); // incl. on error
 end;
 
-procedure TTestIdeDebuggerWatchResult.AssertData(const AMessage: string;
+function TTestBaseIdeDebuggerWatchResult.b(AType: TWatchResultDataKind; AValue: Int64;
+  AnIncrease: Integer): TBuildInfo;
+begin
+  Result.FType := AType;
+  Result.FNum.Val := qword(AValue);
+  Result.FNum.Incr := AnIncrease;
+end;
+
+function TTestBaseIdeDebuggerWatchResult.b(AValue: Int64; AnIncrease: Integer): TBuildInfo;
+begin
+  Result.FType := rdkSignedNumVal;
+  Result.FNum.Val := qword(AValue);
+  Result.FNum.Incr := AnIncrease;
+end;
+
+function TTestBaseIdeDebuggerWatchResult.b(AnArrayType: TLzDbgArrayType; ALen: Integer;
+  ACnt: Integer): TBuildInfo;
+begin
+  Result.FType := rdkArray;
+  Result.FArray.ArrayType := AnArrayType;
+  Result.FArray.Len := ALen;
+  if ACnt = 0 then ACnt := ALen;
+  Result.FArray.Cnt := ACnt;
+end;
+
+function TTestBaseIdeDebuggerWatchResult.b(AnStructType: TLzDbgStructType;
+  Fields: array of TBuildInfo): TBuildInfo;
+var
+  i: Integer;
+begin
+  Result.FType := rdkStruct;
+  Result.FStruct.StructType := AnStructType;
+  SetLength(Result.FStruct.Fields, Length(Fields));
+  for i := 0 to Length(Fields) - 1 do
+    Result.FStruct.Fields[i] := Fields[i];
+end;
+
+function TTestBaseIdeDebuggerWatchResult.CreateNestedData(ABuildInfo: array of TBuildInfo
+  ): TWatchResultData;
+  procedure DoCreateNestedData(AResIntf: IDbgWatchDataIntf;
+    var ABuildInfo: array of TBuildInfo; AnIndex: Integer);
+  var
+    bi, fld: TBuildInfo;
+    i: Integer;
+  begin
+    if AnIndex >= Length(ABuildInfo) then begin
+      AResIntf.CreateNumValue(0, True);
+      exit;
+    end;
+
+    bi := ABuildInfo[AnIndex];
+    case bi.FType of
+      rdkSignedNumVal,
+      rdkUnsignedNumVal: begin
+        AResIntf.CreateNumValue(bi.FNum.Val, bi.FType = rdkSignedNumVal);
+        ABuildInfo[AnIndex].FNum.Val := bi.FNum.Val + bi.FNum.Incr;
+      end;
+      rdkArray: begin
+        AResIntf.CreateArrayValue(bi.FArray.ArrayType, bi.FArray.Len);
+        for i := 0 to Max(0, bi.FArray.Cnt-1) do begin
+          DoCreateNestedData(AResIntf.SetNextArrayData, ABuildInfo, AnIndex + 1);
+        end;
+      end;
+      rdkStruct: begin
+        AResIntf.CreateStructure(bi.FStruct.StructType, $99887766);
+        AResIntf.SetTypeName('TMyStruct'+IntToStr(AnIndex));
+        for i := 0 to Length(bi.FStruct.Fields) - 1 do begin
+          fld := bi.FStruct.Fields[i];
+          if Length(fld.FFieldInfo) > 0 then
+            DoCreateNestedData(AResIntf.AddField(fld.FField.FName, fld.FField.FVis, []), fld.FFieldInfo, 0)
+          else
+            DoCreateNestedData(AResIntf.AddField(fld.FField.FName, fld.FField.FVis, []), ABuildInfo, AnIndex + 1);
+        end;
+      end;
+      //rdkError: ;
+      //rdkPrePrinted: ;
+      //rdkString: ;
+      //rdkWideString: ;
+      //rdkChar: ;
+      //rdkPointerVal: ;
+      //rdkFloatVal: ;
+      //rdkBool: ;
+      //rdkEnum: ;
+      //rdkEnumVal: ;
+      //rdkSet: ;
+      //rdkVariant: ;
+      //rdkPCharOrString: ;
+      //rdkConvertRes: ;
+      //rdkFunction: ;
+      //rdkProcedure: ;
+      //rdkFunctionRef: ;
+      //rdkProcedureRef: ;
+      else
+        AResIntf.CreateNumValue(0, True);
+    end;
+  end;
+var
+  t: TTestWatchResWrapper;
+begin
+  t.Init;
+  DoCreateNestedData(t.ResIntf, ABuildInfo, 0);
+  Result := t.IdeRes;
+  // do not: t.done
+end;
+
+procedure TTestBaseIdeDebuggerWatchResult.AssertData(const AMessage: string;
   IdeRes: TWatchResultData; AKind: TTestCreateDataKind; AnErr: Boolean;
   ATypeName: String; ANumVal: Int64; AnAddr: QWord; AnErrPreFix: String);
 begin
@@ -1196,6 +1353,50 @@ begin
           cdStruct_ErrEmptyFields:AssertStruct(AMessage, IdeRes, dstObject, True, 0, False, False, cdErrNum, cdErrNum, False, False, False, ATypeName);
           //cdStruct_EmptyFields:AssertStruct(AMessage, IdeRes, dstObject, True, 0, False, False, cdErrNum, cdErrNum, False, False, False, ATypeName);
         end;
+end;
+
+{ TTestBaseIdeDebuggerWatchResult.TBuildInfo }
+
+class operator TTestBaseIdeDebuggerWatchResult.TBuildInfo. := (a: string): TBuildInfo;
+begin
+  Result.FField.FName := a;
+  Result.FField.FVis := dfvPublic;
+  Result.FType := rdkUnknown;
+end;
+
+class operator TTestBaseIdeDebuggerWatchResult.TBuildInfo. + (a: string; b: TBuildInfo
+  ): TBuildInfo;
+var
+  l: SizeInt;
+begin
+  Result.FField.FName := a;
+  l := Length(b.FFieldInfo);
+  SetLength(Result.FFieldInfo, l+1);
+  Result.FFieldInfo[l] := b;
+end;
+
+class operator TTestBaseIdeDebuggerWatchResult.TBuildInfo. + (a, b: TBuildInfo): TBuildInfo;
+var
+  l: SizeInt;
+begin
+  Result := a;
+  l := Length(b.FFieldInfo);
+  SetLength(Result.FFieldInfo, l+1);
+  Result.FFieldInfo[l] := b;
+end;
+
+class operator TTestBaseIdeDebuggerWatchResult.TBuildInfo. * (a: string; b: TLzDbgFieldVisibility
+  ): TBuildInfo;
+begin
+  Result := a;
+  Result.FField.FVis := b;
+end;
+
+class operator TTestBaseIdeDebuggerWatchResult.TBuildInfo. * (a: TBuildInfo;
+  b: TLzDbgFieldVisibility): TBuildInfo;
+begin
+  Result := a;
+  Result.FField.FVis := b;
 end;
 
 procedure TTestIdeDebuggerWatchResult.TestWatchResError;

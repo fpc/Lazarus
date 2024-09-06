@@ -48,6 +48,29 @@ msgstr ""
 msgid "Do not ask again"
 msgstr ""
 
+#: idedebuggerstringconstants.dispformatarrayhidelenifless
+msgctxt "idedebuggerstringconstants.dispformatarrayhidelenifless"
+msgid "Max len"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatarrayhidelenkeepdepth
+msgid "Min nested"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatarrayhidelenthreseach
+msgctxt "idedebuggerstringconstants.dispformatarrayhidelenthreseach"
+msgid "Max sub-values"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatarrayhidelenthresfulllen
+msgctxt "idedebuggerstringconstants.dispformatarrayhidelenthresfulllen"
+msgid "Max text len"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatarrayhidelentoggle
+msgid "Hide \"Len\", if ..."
+msgstr ""
+
 #: idedebuggerstringconstants.dispformatarraynavautohide
 msgid "Auto-hide"
 msgstr ""
@@ -286,6 +309,37 @@ msgstr "Dziesiętne"
 
 #: idedebuggerstringconstants.dispformatfloatscientific
 msgid "Exponent"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatforcesinglelinearraylen
+msgctxt "idedebuggerstringconstants.dispformatforcesinglelinearraylen"
+msgid "Max len"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatforcesinglelinedepth
+msgid "Max sub-levels"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatforcesinglelinedigitsany
+msgid "Any"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatforcesinglelineeach
+msgctxt "idedebuggerstringconstants.dispformatforcesinglelineeach"
+msgid "Max sub-values"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatforcesinglelinelen
+msgctxt "idedebuggerstringconstants.dispformatforcesinglelinelen"
+msgid "Max text len"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatforcesinglelinestructfld
+msgid "Max fields"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatforcesinglelinetoggle
+msgid "Keep singleline, if ..."
 msgstr ""
 
 #: idedebuggerstringconstants.dispformatgroupaddress

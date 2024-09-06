@@ -495,6 +495,14 @@ resourcestring
   DispFormatPointerDerefOnly     = 'Only deref data';
   DispFormatDlgIndent            = 'Multiline';
   DispFormatIndentMaxWrap        = 'Max multiline level';
+  DispFormatForceSingleLineToggle    = 'Keep singleline, if ...';
+  DispFormatForceSingleLineArrayLen  = 'Max len';
+  DispFormatForceSingleLineStructFld = 'Max fields';
+  DispFormatForceSingleLineDepth     = 'Max sub-levels';
+  DispFormatForceSingleLineEach      = 'Max sub-values';
+  DispFormatForceSingleLineLen       = 'Max text len';
+  DispFormatForceSingleLineDigitsAny = 'Any';
+
   DispFormatDlgArrayLen          = 'Array len';
   DispFormatDlgArrayShowPrefix         = 'Show len';
   DispFormatDlgArrayShowPrefixEmbedded = 'Include embedded';
@@ -504,6 +512,12 @@ resourcestring
   DispFormatDlgArrayCombineAll         = 'Always';
   DispFormatDlgArrayCombineStat        = 'Static';
   DispFormatDlgArrayCombineDyn         = 'Dynamic';
+  DispFormatArrayHideLenToggle         = 'Hide "Len", if ...';
+  DispFormatArrayHideLenIfLess         = 'Max len';
+  DispFormatArrayHideLenKeepDepth      = 'Min nested';
+  DispFormatArrayHideLenThresEach      = 'Max sub-values';
+  DispFormatArrayHideLenThresFullLen   = 'Max text len';
+
   DispFormatDlgArrayNav          = 'Array navigation';
   DispFormatArrayNavAutoHide     = 'Auto-hide';
   DispFormatArrayNavEnforceBounds= 'Enforce bounds';

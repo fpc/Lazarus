@@ -162,12 +162,25 @@ type
     ShowLenPrefixEmbedded: boolean; // arary in struct in array
     LenPrefixMaxNest:      integer; // In directly nested arrays, show for n nested levels too
     LenPrefixCombine:      TValueDisplayFormatArrayType;
+    HideLen:               boolean;
+    HideLenThresholdCnt:   integer; // maximum "len" value to ommit
+    HideLenKeepDepth:      integer; // Min-nest level, before considering to hide
+    HideLenThresholdEach:  integer; // If each entry has less than n nested entries (0 = only simple values allowed)
+    HideLenThresholdLen:   integer; // max printed len of each entry
     class operator = (a,b: TWatchDisplayFormatArrayLen): boolean;
   end;
 
   TWatchDisplayFormatMultiline = packed record
     UseInherited:          boolean;
     MaxMultiLineDepth:     integer; // Deeper than this will not be line-wrapped
+    ForceSingleLine:                   Boolean;
+    ForceSingleLineThresholdStructFld: integer; // fields in the struct itself
+    ForceSingleLineThresholdArrayLen:  integer; // len of array
+    // ArrayLen is not applied to the most inner, if the most inner is an array
+    // AND if ReverseDepth > 1
+    ForceSingleLineReverseDepth:       integer; // amount of array/struct levels that can be excluded
+    ForceSingleLineThresholdEach:      integer; // max nested elements in each field
+    ForceSingleLineThresholdLen:       integer; // max printed len of each field (name + content)
     class operator = (a,b: TWatchDisplayFormatMultiline): boolean;
   end;
   TWatchDisplayFormatArrayNav = packed record
@@ -271,9 +284,20 @@ const
              ShowLenPrefixEmbedded: True;
              LenPrefixMaxNest:      3;
              LenPrefixCombine:      vdfatStat;
+             HideLen:               True;
+             HideLenThresholdCnt:   1;
+             HideLenKeepDepth:      1;
+             HideLenThresholdEach:  2;
+             HideLenThresholdLen:   20;
             );
     MultiLine: (UseInherited:     True;
                 MaxMultiLineDepth: 3;
+                ForceSingleLine:                   True;
+                ForceSingleLineThresholdStructFld: 2;
+                ForceSingleLineThresholdArrayLen:  3;
+                ForceSingleLineReverseDepth:       2;
+                ForceSingleLineThresholdEach:      4;
+                ForceSingleLineThresholdLen:      20;
                );
     ArrayNavBar: (UseInherited:   True;
                   PageSize:       10;
@@ -693,11 +717,16 @@ end;
 class operator TWatchDisplayFormatArrayLen. = (a, b: TWatchDisplayFormatArrayLen): boolean;
 begin
   Result :=
-    (a.UseInherited           = b.UseInherited) and
-    (a.ShowLenPrefix          = b.ShowLenPrefix) and
-    (a.ShowLenPrefixEmbedded  = b.ShowLenPrefixEmbedded) and
-    (a.LenPrefixMaxNest       = b.LenPrefixMaxNest) and
-    (a.LenPrefixCombine       = b.LenPrefixCombine)
+    (a.UseInherited            = b.UseInherited) and
+    (a.ShowLenPrefix           = b.ShowLenPrefix) and
+    (a.ShowLenPrefixEmbedded   = b.ShowLenPrefixEmbedded) and
+    (a.LenPrefixMaxNest        = b.LenPrefixMaxNest) and
+    (a.LenPrefixCombine        = b.LenPrefixCombine) and
+    (a.HideLen                 = b.HideLen) and
+    (a.HideLenThresholdCnt     = b.HideLenThresholdCnt) and
+    (a.HideLenKeepDepth        = b.HideLenKeepDepth) and
+    (a.HideLenThresholdEach    = b.HideLenThresholdEach) and
+    (a.HideLenThresholdLen     = b.HideLenThresholdLen)
   ;
 end;
 
@@ -707,7 +736,14 @@ class operator TWatchDisplayFormatMultiline. = (a, b: TWatchDisplayFormatMultili
 begin
   Result :=
     (a.UseInherited          = b.UseInherited) and
-    (a.MaxMultiLineDepth     = b.MaxMultiLineDepth);
+    (a.MaxMultiLineDepth     = b.MaxMultiLineDepth) and
+    (a.ForceSingleLine                   = b.ForceSingleLine) and
+    (a.ForceSingleLineThresholdStructFld = b.ForceSingleLineThresholdStructFld) and
+    (a.ForceSingleLineThresholdArrayLen  = b.ForceSingleLineThresholdArrayLen) and
+    (a.ForceSingleLineReverseDepth       = b.ForceSingleLineReverseDepth) and
+    (a.ForceSingleLineThresholdEach      = b.ForceSingleLineThresholdEach) and
+    (a.ForceSingleLineThresholdLen       = b.ForceSingleLineThresholdLen)
+  ;
 end;
 
 { TWatchDisplayFormatArrayNav }
