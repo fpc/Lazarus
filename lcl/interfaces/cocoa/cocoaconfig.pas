@@ -88,6 +88,8 @@ type
 
   TCocoaConfigForm = record
     name: String;
+    className: String;
+    isMainForm: Boolean;
     titleBar: TCocoaConfigTitleBar;
     toolBar: TCocoaConfigToolBar;
   end;

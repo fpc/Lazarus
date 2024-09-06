@@ -239,8 +239,12 @@ end;
 type
   PCocoaConfigForm = ^TCocoaConfigForm;
 
+  { TCocoaFormUtils }
+
   TCocoaFormUtils = class
     class function getConfigByName( const name: String ): PCocoaConfigForm;
+    class function getConfigByClassName( const aClassName: String ): PCocoaConfigForm;
+    class function getConfigForMainForm: PCocoaConfigForm;
   end;
 
 class function TCocoaFormUtils.getConfigByName( const name: String ):
@@ -253,6 +257,37 @@ begin
   count:= length( CocoaConfigForms );
   for i:=0 to count-1 do begin
     if name = CocoaConfigForms[i].name then begin
+      Result:= @CocoaConfigForms[i];
+      Exit;
+    end;
+  end;
+end;
+
+class function TCocoaFormUtils.getConfigByClassName( const aClassName: String ):
+  PCocoaConfigForm;
+var
+  i: Integer;
+  count: Integer;
+begin
+  Result:= nil;
+  count:= length( CocoaConfigForms );
+  for i:=0 to count-1 do begin
+    if aClassName = CocoaConfigForms[i].className then begin
+      Result:= @CocoaConfigForms[i];
+      Exit;
+    end;
+  end;
+end;
+
+class function TCocoaFormUtils.getConfigForMainForm: PCocoaConfigForm;
+var
+  i: Integer;
+  count: Integer;
+begin
+  Result:= nil;
+  count:= length( CocoaConfigForms );
+  for i:=0 to count-1 do begin
+    if CocoaConfigForms[i].isMainForm then begin
       Result:= @CocoaConfigForms[i];
       Exit;
     end;
@@ -768,6 +803,20 @@ var
     win.setTitlebarSeparatorStyle( config.separatorStyle );
   end;
 
+  function getFormConfig: PCocoaConfigForm;
+  begin
+    Result:= TCocoaFormUtils.getConfigByName( AWinControl.Name );
+    if Assigned(Result) then
+      Exit;
+
+    Result:= TCocoaFormUtils.getConfigByClassName( AWinControl.ClassName );
+    if Assigned(Result) then
+      Exit;
+
+    if Application.MainForm = AWinControl then
+      Result:= TCocoaFormUtils.getConfigForMainForm;
+  end;
+
   procedure applyCocoaConfigForm;
   var
     pFormConfig: PCocoaConfigForm;
@@ -775,7 +824,7 @@ var
     if NSAppKitVersionNumber < NSAppKitVersionNumber11_0 then
       Exit;
 
-    pFormConfig:= TCocoaFormUtils.getConfigByName( AWinControl.Name );
+    pFormConfig:= getFormConfig;
     if NOT Assigned(pFormConfig) then
       Exit;
 
