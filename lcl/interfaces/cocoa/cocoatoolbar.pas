@@ -8,8 +8,9 @@ interface
 
 uses
   Classes, SysUtils,
-  Menus,
-  CocoaAll, CocoaPrivate, CocoaConfig, CocoaMenus, Cocoa_Extra, CocoaUtils;
+  Forms, Menus,
+  CocoaAll, CocoaPrivate, CocoaConfig, CocoaWindows, CocoaMenus,
+  Cocoa_Extra, CocoaUtils;
 
 type
   TCocoaToolBarItemSharingOnGetItems = function ( item: NSToolBarItem ): TStringArray;
@@ -28,8 +29,10 @@ type
   // corresponding to TCocoaConfigToolBarItemClassAbstract.createItem().
   //
   // so TCocoaConfigToolBarItemClassAbstract and its subclass should NOT
-  // reference the created NSToolBarItem.
-  // that is, there should be no other fields except the Config Data itself.
+  // reference the created NSToolBarItem. that is, there should be no
+  // other fields in it except the Config Data itself.
+  //
+  // use TCocoaToolBarUtils.findItemByIdentifier() to get the NSToolBarItem instance.
   TCocoaConfigToolBarItemClassBase = class( TCocoaConfigToolBarItemClassAbstract )
   protected
     _identifier: String;
@@ -242,8 +245,12 @@ type
     class function toClass( const itemConfig: TCocoaConfigToolBarItemGroup ):
       TCocoaConfigToolBarItemClassAbstract;
   public
-    class function createItem( const identifier: String; const itemsConfig: TCocoaConfigToolBarItems ): NSToolbarItem;
-    class function createToolBar( const toolBarConfig: TCocoaConfigToolBar ): TCocoaToolBar;
+    class function createItem( const identifier: String;
+      const itemsConfig: TCocoaConfigToolBarItems ): NSToolbarItem;
+    class function createToolBar( const toolBarConfig: TCocoaConfigToolBar ):
+      TCocoaToolBar;
+    class function findItemByIdentifier( const form: TCustomForm;
+      const identifier: String ): NSToolbarItem;
   end;
 
   function defaultToolBarItemCreatorImplement( const identifier: String;
@@ -323,6 +330,37 @@ begin
     toolBar.lclSetItemCreator( TCocoaToolBarItemCreator(toolBarConfig.itemCreator) );
 
   Result:= toolBar;
+end;
+
+class function TCocoaToolBarUtils.findItemByIdentifier( const form: TCustomForm;
+  const identifier: String ): NSToolbarItem;
+var
+  content: TCocoaWindowContent;
+  win: NSWindow;
+  toolBar: NSToolBar;
+  item: NSToolBarItem;
+  cocoaIdentifier: NSString;
+begin
+  Result:= nil;
+  content:= TCocoaWindowContent( form.handle );
+  if NOT Assigned(content) then
+    Exit;
+  if content.isembedded then
+    Exit;
+  win:= content.window;
+  if NOT Assigned(win) then
+    Exit;
+  toolBar:= win.toolbar;
+  if NOT Assigned(toolBar) then
+    Exit;
+
+  cocoaIdentifier:= StrToNSString( identifier );
+  for item in toolBar.items do begin
+    if item.itemIdentifier.isEqualToString(cocoaIdentifier) then begin
+      Result:= item;
+      Exit;
+    end;
+  end;
 end;
 
 function defaultToolBarItemCreatorImplement( const identifier: String;
