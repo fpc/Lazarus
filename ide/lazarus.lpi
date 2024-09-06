@@ -1457,6 +1457,11 @@
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="Project_DisplayFormat_Options"/>
       </Unit>
+      <Unit>
+        <Filename Value="cocoaideformconfig.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CocoaIDEFormConfig"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

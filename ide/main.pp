@@ -74,7 +74,7 @@ uses
   GraphType, LazStringUtils, LazTracer,
   LCLExceptionStacktrace,
   {$IFDEF LCLWin} Win32Proc, {$ENDIF}
-  {$IFDEF LCLCocoa} CocoaConfig, {$ENDIF}
+  {$IFDEF LCLCocoa} CocoaConfig, CocoaIDEFormConfig,{$ENDIF}
   // SynEdit
   SynEdit, AllSynEdit, SynEditKeyCmds, SynEditMarks, SynEditHighlighter, SynHighlighterPas,
   // BuildIntf
