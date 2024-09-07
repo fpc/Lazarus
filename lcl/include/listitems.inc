@@ -160,7 +160,7 @@ begin
   Include(Owner.FFlags, lffItemsMoving);
   try
     FItems.Exchange(AIndex1, AIndex2);
-    FCacheIndex := AIndex1;
+    FCacheIndex := AIndex2;
     FCacheItem := AItem;
     if not Owner.OwnerData and WSUpdateAllowed then
     begin
