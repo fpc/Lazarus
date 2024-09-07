@@ -450,7 +450,7 @@ var
 begin
   index:= _itemGroup.selectedIndex;
   self.lclSetSelectedIndex( index );
-  _handler( self.lclGetSelectedItem );
+  _handler( _itemGroup );
 end;
 
 function TCocoaToolBarItemGroupWrapper.lclGetSelectedItem: NSToolBarItem;
@@ -732,8 +732,10 @@ begin
   if NOT Assigned(_onAction) then
     cocoaItem.setAction( nil );
 
-  cocoaMenu:= NSMenuItem(_menu.Handle).submenu;
-  cocoaItem.setMenu( cocoaMenu );
+  if Assigned(_menu) then begin
+    cocoaMenu:= NSMenuItem(_menu.Handle).submenu;
+    cocoaItem.setMenu( cocoaMenu );
+  end;
 
   cocoaItem.autorelease;
   Result:= cocoaItem;
