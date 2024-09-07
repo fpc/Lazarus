@@ -350,7 +350,7 @@ var
   LLastVisibleItem: TMenuItem;
   I: Integer;
 begin
-  debugln(['TMenuItem.InternalRethinkLines, AForced=',AForced]);
+  //debugln(['TMenuItem.InternalRethinkLines, AForced=',AForced]);
   Result := False;
   if (csDesigning in ComponentState) then
     Exit;
@@ -370,7 +370,7 @@ begin
         begin
           LItem.Visible := not LLastVisibleIsLine;
           Result := True;
-          debugln(['TMenuItem.InternalRethinkLines: hiding separator with name "',LItem.Name,'"']);
+          //debugln(['TMenuItem.InternalRethinkLines: hiding separator with name "',LItem.Name,'"']);
         end;
       end;
 
@@ -387,7 +387,7 @@ begin
     begin
       LLastVisibleItem.Visible := False;
       Result := True;
-      debugln(['TMenuItem.InternalRethinkLines: hiding separator with name "',LItem.Name,'"']);
+      //debugln(['TMenuItem.InternalRethinkLines: hiding separator with name "',LItem.Name,'"']);
     end;
   end
   else
@@ -400,7 +400,7 @@ begin
       begin
         LItem.Visible := True;
         Result := True;
-        debugln(['TMenuItem.InternalRethinkLines: unhiding separator with name "',LItem.Name,'"']);
+        //debugln(['TMenuItem.InternalRethinkLines: unhiding separator with name "',LItem.Name,'"']);
       end;
     end;
   end;
