@@ -83,7 +83,7 @@ if TargetOS=&apos;darwin&apos; then begin
       +&apos; -framework OpenGL&apos;
       +&apos; &apos;&apos;-dylib_file&apos;&apos; &apos;&apos;/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib:/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib&apos;&apos;&apos;;
   end else if LCLWidgetType=&apos;cocoa&apos; then
-    UsageLinkerOptions := &apos;-framework Cocoa -weak_framework UserNotifications&apos;;
+    UsageLinkerOptions := &apos;-weak_framework AppKit -weak_framework UserNotifications&apos;;
 end else if TargetOS=&apos;solaris&apos; then begin
   UsageLibraryPath:=&apos;/usr/X11R6/lib&apos;;
 end;"/>
