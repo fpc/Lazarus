@@ -1774,7 +1774,7 @@ begin
 
   case AState of
     lisSelected: begin
-      Result:= (AIndex>=0) and (AIndex <= _tableView.numberOfRows);
+      Result:= (AIndex>=0) and (AIndex < _tableView.numberOfRows);
       AIsSet:= lclcb.getItemStableSelection( AIndex );
     end;
   end;
