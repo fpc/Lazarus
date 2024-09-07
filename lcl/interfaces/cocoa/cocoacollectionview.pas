@@ -151,7 +151,6 @@ type
     _collectionView: TCocoaCollectionView;
   private
     function getCallback: TLCLListViewCallback;
-    procedure doReloadDataAfterDelete( AIndex: PtrInt );
   public
     constructor Create( listView: TCocoaListView );
   public
@@ -1108,18 +1107,6 @@ end;
 procedure TCocoaWSListView_CollectionViewHandler.ItemDelete(
   const AIndex: Integer);
 begin
-  Application.QueueAsyncCall( @doReloadDataAfterDelete, AIndex );
-end;
-
-procedure TCocoaWSListView_CollectionViewHandler.doReloadDataAfterDelete( AIndex: PtrInt );
-var
-  lclcb : TLCLListViewCallback;
-begin
-  lclcb:= getCallback;
-  if NOT Assigned(lclcb) then
-    Exit;
-
-  lclcb.selectionIndexSet.shiftIndexesStartingAtIndex_by( AIndex+1, -1 );
   _collectionView.reloadData;
 end;
 

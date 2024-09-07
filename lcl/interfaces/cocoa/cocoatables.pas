@@ -191,7 +191,6 @@ type
     _tableView: TCocoaTableListView;
   private
     function getCallback: TLCLListViewCallback;
-    procedure doReloadDataAfterDelete( AIndex: PtrInt );
   public
     constructor Create( listView: TCocoaListView );
     function getColumnFromIndex( const AIndex: Integer ): NSTableColumn;
@@ -1528,11 +1527,6 @@ begin
   Result:= TLCLListViewCallback( _tableView.lclGetCallback.GetCallbackObject );
 end;
 
-procedure TCocoaWSListView_TableViewHandler.doReloadDataAfterDelete( AIndex: PtrInt);
-begin
-  _tableView.lclDeleteItem( AIndex );
-end;
-
 procedure TCocoaWSListView_TableViewHandler.ColumnDelete(
   const AIndex: Integer);
 var
@@ -1714,7 +1708,7 @@ end;
 procedure TCocoaWSListView_TableViewHandler.ItemDelete(const AIndex: Integer
   );
 begin
-  Application.QueueAsyncCall( @doReloadDataAfterDelete, AIndex );
+  _tableView.lclDeleteItem( AIndex );
 end;
 
 function TCocoaWSListView_TableViewHandler.ItemDisplayRect(const AIndex,
