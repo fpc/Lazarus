@@ -8,107 +8,53 @@
   for details about the license.
  *****************************************************************************
 }
-procedure ListAdd(var List : TList; Item: Pointer);
-begin
-  if List = nil then
-    List := TList.Create;
-  List.Add(Item);
-end;
-
-procedure ListInsert(var List : TList; Index : Longint; Item: Pointer);
-begin
-  if List = nil then
-    List := TList.Create;
-  List.Insert(Index, Item);
-end;
-
-function ListIndexOf(var List : TList; Item: Pointer) : Longint;
-begin
-  Result := -1;
-  if List <> nil then
-    Result := List.IndexOf(Item);
-end;
-
-function ListCount(List : TList) : Longint;
-begin
-  Result := 0;
-  if List <> nil then
-    Result := List.Count;
-end;
-
-procedure ListRemove(var List : TList; Item: Pointer);
-begin
-  if List = nil then
-    Exit;
-  List.Remove(Item);
-  if List.Count = 0 then
-  begin
-    List.Free;
-    List := nil;
-  end;
-end;
-
-procedure ListDelete(var List : TList; Index: integer);
-begin
-  if List = nil then
-    Exit;
-  List.Delete(Index);
-  if List.Count = 0 then
-  begin
-    List.Free;
-    List := nil;
-  end;
-end;
-
-procedure ListAdd(var List : TFPList; Item: Pointer);
+procedure ListAdd(var List : TFPList; Item: Pointer); inline;
 begin
   if List = nil then
     List := TFPList.Create;
   List.Add(Item);
 end;
 
-procedure ListInsert(var List : TFPList; Index : Longint; Item: Pointer);
+procedure ListInsert(var List : TFPList; Index : Longint; Item: Pointer); inline;
 begin
   if List = nil then
     List := TFPList.Create;
   List.Insert(Index, Item);
 end;
 
-function ListIndexOf(var List : TFPList; Item: Pointer) : Longint;
+function ListIndexOf(var List : TFPList; Item: Pointer) : Longint; inline;
 begin
-  Result := -1;
-  if List <> nil then
-    Result := List.IndexOf(Item);
+  if assigned(List) then
+    Result := List.IndexOf(Item)
+  else
+    Result := -1;
 end;
 
-function ListCount(List : TFPList) : Longint;
+function ListCount(List : TFPList) : Longint; inline;
 begin
-  Result := 0;
-  if List <> nil then
-    Result := List.Count;
+  if assigned(List) then
+    Result := List.Count
+  else
+    Result := 0;
 end;
 
-procedure ListRemove(var List : TFPList; Item: Pointer);
+procedure ListRemove(var List : TFPList; Item: Pointer); inline;
 begin
-  if List = nil then
-    Exit;
-  List.Remove(Item);
-  if List.Count = 0 then
+  if assigned(List) then
   begin
-    List.Free;
-    List := nil;
+    List.Remove(Item);
+    if List.Count = 0 then
+      FreeAndNil(List);
   end;
 end;
 
-procedure ListDelete(var List : TFPList; Index: integer);
+procedure ListDelete(var List : TFPList; Index: integer); inline;
 begin
-  if List = nil then
-    Exit;
-  List.Delete(Index);
-  if List.Count = 0 then
+  if assigned(List) then
   begin
-    List.Free;
-    List := nil;
+    List.Delete(Index);
+    if List.Count = 0 then
+      FreeAndNil(List);
   end;
 end;
 
