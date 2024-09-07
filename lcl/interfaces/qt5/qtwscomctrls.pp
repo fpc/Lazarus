@@ -842,7 +842,10 @@ begin
     Exit(-1);
 
   // TODO: columns in vsIcon mode
-  if IsIconView(ALV) or (csDestroyingHandle in ALV.ControlState) then
+  if IsIconView(ALV) then
+    exit(0);
+
+  if (TQtWidget(ALV.Handle) is TQtListWidget) then
     exit(0);
 
   QtTreeWidget := TQtTreeWidget(ALV.Handle);
