@@ -737,6 +737,7 @@ begin
         QtListWidget.setWrapping(IconOptions.AutoArrange);
         QtListWidget.setViewFlow(IconArngToQListFlow[IconOptions.Arrangement]);
         QtListWidget.setWordWrap(IconOptions.WrapText);
+        QtListWidget.setUniformItemSizes(IconOptions.WrapText);
       end;
 
     end else
@@ -839,7 +840,7 @@ begin
     Exit(-1);
 
   // TODO: columns in vsIcon mode
-  if IsIconView(ALV) then
+  if IsIconView(ALV) or (csDestroyingHandle in ALV.ControlState) then
     exit(0);
 
   QtTreeWidget := TQtTreeWidget(ALV.Handle);
@@ -849,7 +850,6 @@ begin
    unfortunatelly it''s hardcoded in listcolumn.inc.}
   if (csDesigning in ALV.ComponentState) and (QtTreeWidget.ColCount <> ALV.ColumnCount) then
     exit(50);
-
   Result := QtTreeWidget.ColWidth[AIndex];
 end;
 
