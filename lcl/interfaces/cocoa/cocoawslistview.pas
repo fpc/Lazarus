@@ -44,6 +44,7 @@ type
     // Item
     class procedure ItemDelete(const ALV: TCustomListView; const AIndex: Integer); override;
     class function  ItemDisplayRect(const ALV: TCustomListView; const AIndex, ASubItem: Integer; ACode: TDisplayCode): TRect; override;
+    class procedure ItemExchange(const ALV: TCustomListView; AItem: TListItem; const AIndex1, AIndex2: Integer); override;
     class function  ItemGetChecked(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AItem: TListItem): Boolean; override;
     class function  ItemGetPosition(const ALV: TCustomListView; const AIndex: Integer): TPoint; override;
     class function  ItemGetState(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AItem: TListItem; const AState: TListItemState; out AIsSet: Boolean): Boolean; override; // returns True if supported
@@ -315,6 +316,16 @@ begin
   WSHandler:= getWSHandler( ALV );
   if Assigned(WSHandler) then
     Result:= WSHandler.ItemDisplayRect( AIndex, ASubItem, ACode );
+end;
+
+class procedure TCocoaWSCustomListView.ItemExchange(const ALV: TCustomListView;
+  AItem: TListItem; const AIndex1, AIndex2: Integer);
+var
+  WSHandler: TCocoaWSListViewHandler;
+begin
+  WSHandler:= getWSHandler( ALV );
+  if Assigned(WSHandler) then
+    WSHandler.ItemExchange(ALV, AItem, AIndex1, AIndex2);
 end;
 
 class function TCocoaWSCustomListView.ItemGetChecked(

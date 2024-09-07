@@ -212,6 +212,7 @@ type
     // Item
     procedure ItemDelete( const AIndex: Integer); override;
     function  ItemDisplayRect( const AIndex, ASubItem: Integer; ACode: TDisplayCode): TRect; override;
+    procedure ItemExchange(const ALV: TCustomListView; AItem: TListItem; const AIndex1, AIndex2: Integer); override;
     function  ItemGetPosition( const AIndex: Integer): TPoint; override;
     function  ItemGetState( const AIndex: Integer; const {%H-}AItem: TListItem; const AState: TListItemState; out AIsSet: Boolean): Boolean; override; // returns True if supported
     procedure ItemInsert( const AIndex: Integer; const {%H-}AItem: TListItem); override;
@@ -1744,6 +1745,12 @@ begin
   Result:= NSRectToRect( frame );
 end;
 
+procedure TCocoaWSListView_TableViewHandler.ItemExchange(
+  const ALV: TCustomListView; AItem: TListItem; const AIndex1, AIndex2: Integer);
+begin
+  _tableView.lclExchangeItem( AIndex1, AIndex2 );
+end;
+
 function TCocoaWSListView_TableViewHandler.ItemGetPosition(
   const AIndex: Integer): TPoint;
 var
@@ -1757,12 +1764,18 @@ end;
 function TCocoaWSListView_TableViewHandler.ItemGetState(
   const AIndex: Integer; const AItem: TListItem; const AState: TListItemState;
   out AIsSet: Boolean): Boolean;
+var
+  lclcb : TLCLListViewCallback;
 begin
   Result:= false;
+  lclcb:= getCallback;
+  if NOT Assigned(lclcb) then
+    Exit;
+
   case AState of
     lisSelected: begin
       Result:= (AIndex>=0) and (AIndex <= _tableView.numberOfRows);
-      AIsSet:= _tableView.isRowSelected(AIndex);
+      AIsSet:= lclcb.getItemStableSelection( AIndex );
     end;
   end;
 end;

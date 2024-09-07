@@ -133,6 +133,7 @@ type
     // Item
     procedure ItemDelete( const AIndex: Integer); virtual; abstract;
     function  ItemDisplayRect( const AIndex, ASubItem: Integer; ACode: TDisplayCode): TRect; virtual; abstract;
+    procedure ItemExchange(const ALV: TCustomListView; AItem: TListItem; const AIndex1, AIndex2: Integer); virtual; abstract;
     function  ItemGetPosition( const AIndex: Integer): TPoint; virtual; abstract;
     function  ItemGetState( const AIndex: Integer; const {%H-}AItem: TListItem; const AState: TListItemState; out AIsSet: Boolean): Boolean; virtual; abstract; // returns True if supported
     procedure ItemInsert( const AIndex: Integer; const {%H-}AItem: TListItem); virtual; abstract;
