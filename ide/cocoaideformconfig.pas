@@ -137,11 +137,13 @@ begin
   ];
 
   CocoaConfigForms:= [ mainIDEFormConfig ];
+
+  IDEMainFormHandler:= TCocoaIDEMainFormHandler.create;
 end;
 
 initialization
-  initCocoaConfigForms;
-  IDEMainFormHandler:= TCocoaIDEMainFormHandler.create;
+  if NSAppKitVersionNumber >= NSAppKitVersionNumber11_0 then
+    initCocoaConfigForms;
 
 end.
 
