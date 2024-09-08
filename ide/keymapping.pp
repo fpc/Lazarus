@@ -1576,10 +1576,10 @@ begin
   ecDesignerCut:         SetSingle(VK_X,[XCtrl],   VK_Delete,[ssShift]);
   ecDesignerPaste:       SetSingle(VK_V,[XCtrl],   VK_Insert,[ssShift]);
   ecDesignerSelectParent:SetSingle(VK_ESCAPE,[]);
-  ecDesignerMoveToFront: SetSingle(VK_PRIOR,[ssShift]);
-  ecDesignerMoveToBack:  SetSingle(VK_NEXT,[ssShift]);
-  ecDesignerForwardOne:  SetSingle(VK_PRIOR,[XCtrl]);
-  ecDesignerBackOne:     SetSingle(VK_NEXT,[XCtrl]);
+  ecDesignerMoveToFront: SetSingle(VK_NEXT,[ssShift]);
+  ecDesignerMoveToBack:  SetSingle(VK_PRIOR,[ssShift]);
+  ecDesignerForwardOne:  SetSingle(VK_NEXT,[XCtrl]);
+  ecDesignerBackOne:     SetSingle(VK_PRIOR,[XCtrl]);
   ecDesignerToggleNonVisComps: SetSingle(VK_UNKNOWN,[]);
 
   // macro
