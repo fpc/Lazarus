@@ -229,7 +229,14 @@ type
     procedure DoShowAnchorEditor;
     procedure DoShowTabOrderEditor;
     procedure DoShowObjectInspector;
-    procedure DoChangeZOrder(TheAction: Integer);
+    type
+      TChangeOrderAction = (
+        coaMoveToFront,
+        coaMoveToBack,
+        coaForwardOne,
+        coaBackOne
+      );
+    procedure DoChangeZOrder(TheAction: TChangeOrderAction);
 
     procedure NotifyComponentAdded(AComponent: TComponent);
     function  ComponentClassAtPos(const AClass: TComponentClass;
@@ -1602,7 +1609,7 @@ begin
     OnShowObjectInspector(Self);
 end;
 
-procedure TDesigner.DoChangeZOrder(TheAction: Integer);
+procedure TDesigner.DoChangeZOrder(TheAction: TChangeOrderAction);
 var
   Control: TControl;
   Parent: TWinControl;
@@ -1613,13 +1620,13 @@ begin
 
   Control := TControl(Selection[0].Persistent);
   Parent := Control.Parent;
-  if (Parent = nil) and (TheAction in [2, 3]) then Exit;
+  if (Parent = nil) and (TheAction in [coaForwardOne, coaBackOne]) then Exit;
 
   case TheAction of
-   0: Control.BringToFront;
-   1: Control.SendToBack;
-   2: Parent.SetControlIndex(Control, Parent.GetControlIndex(Control) + 1);
-   3: Parent.SetControlIndex(Control, Parent.GetControlIndex(Control) - 1);
+    coaMoveToFront: Control.BringToFront;
+    coaMoveToBack : Control.SendToBack;
+    coaForwardOne : Parent.SetControlIndex(Control, Parent.GetControlIndex(Control) + 1);
+    coaBackOne    : Parent.SetControlIndex(Control, Parent.GetControlIndex(Control) - 1);
   end;
 
   // Ensure the order of controls in the OI now reflects the new ZOrder
@@ -1764,10 +1771,10 @@ begin
     ecDesignerCopy         : CopySelection;
     ecDesignerCut          : CutSelection;
     ecDesignerPaste        : PasteSelection([cpsfFindUniquePositions]);
-    ecDesignerMoveToFront  : DoChangeZOrder(0);
-    ecDesignerMoveToBack   : DoChangeZOrder(1);
-    ecDesignerForwardOne   : DoChangeZOrder(2);
-    ecDesignerBackOne      : DoChangeZOrder(3);
+    ecDesignerMoveToFront  : DoChangeZOrder(coaMoveToFront);
+    ecDesignerMoveToBack   : DoChangeZOrder(coaMoveToBack);
+    ecDesignerForwardOne   : DoChangeZOrder(coaForwardOne);
+    ecDesignerBackOne      : DoChangeZOrder(coaBackOne   );
     ecDesignerToggleNonVisComps: ShowNonVisualComponents:=not ShowNonVisualComponents;
   else
     Exit;
@@ -4227,22 +4234,22 @@ end;
 
 procedure TDesigner.OrderMoveToFrontMenuClick(Sender: TObject);
 begin
-  DoChangeZOrder(0);
+  DoChangeZOrder(coaMoveToFront);
 end;
 
 procedure TDesigner.OrderMoveToBackMenuClick(Sender: TObject);
 begin
-  DoChangeZOrder(1);
+  DoChangeZOrder(coaMoveToBack);
 end;
 
 procedure TDesigner.OrderForwardOneMenuClick(Sender: TObject);
 begin
-  DoChangeZOrder(2);
+  DoChangeZOrder(coaForwardOne);
 end;
 
 procedure TDesigner.OrderBackOneMenuClick(Sender: TObject);
 begin
-  DoChangeZOrder(3);
+  DoChangeZOrder(coaBackOne);
 end;
 
 procedure TDesigner.HintTimer(Sender: TObject);
