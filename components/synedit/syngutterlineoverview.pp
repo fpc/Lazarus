@@ -1000,7 +1000,7 @@ end;
 destructor TSynGutterLOvProviderCurrentPage.Destroy;
 begin
   SynEdit.UnRegisterStatusChangedHandler(@SynStatusChanged);
-  ViewedTextBuffer.AddChangeHandler(senrLineMappingChanged, @FoldChanged);
+  ViewedTextBuffer.RemoveChangeHandler(senrLineMappingChanged, @FoldChanged);
   inherited;
 end;
 
