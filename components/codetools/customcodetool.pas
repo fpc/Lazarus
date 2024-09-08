@@ -548,7 +548,7 @@ begin
     if IsIdentStartChar[p^] then begin
       if not WordIsKeyWordFuncList.DoIdentifier(p) then
         exit(true);
-    end else if (p^='&') and (IsIdentChar[p[1]]) then begin
+    end else if (p^='&') and (IsIdentStartChar[p[1]]) then begin
       exit(true);
     end;
   end;
@@ -1774,7 +1774,7 @@ begin
             '$':
               // hex number
               dec(CurPos.StartPos);
-            '&':
+            '&': // &-identifier
               if IsIdentStartChar[Src[CurPos.StartPos]] then
                 dec(CurPos.StartPos);
             else
