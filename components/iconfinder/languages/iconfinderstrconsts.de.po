@@ -220,3 +220,4 @@ msgstr "Außenlinie"
 msgctxt "iconfinderstrconsts.rsmetadata_style"
 msgid "Style"
 msgstr "Stil"
+

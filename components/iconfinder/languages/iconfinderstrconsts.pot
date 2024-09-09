@@ -6,7 +6,6 @@ msgid "Add..."
 msgstr ""
 
 #: iconfinderstrconsts.rsfolders_confirmdeletefoldermsg
-msgctxt "iconfinderstrconsts.rsfolders_confirmdeletefoldermsg"
 msgid "Do you really want to remove this folder from the icon library?"
 msgstr ""
 
@@ -15,7 +14,6 @@ msgid "Delete"
 msgstr ""
 
 #: iconfinderstrconsts.rsfolders_iconfinderfolders
-msgctxt "iconfinderstrconsts.rsfolders_iconfinderfolders"
 msgid "Icon Folders"
 msgstr ""
 
@@ -145,37 +143,30 @@ msgid "(any style)"
 msgstr ""
 
 #: iconfinderstrconsts.rsmetadata_caption
-msgctxt "iconfinderstrconsts.rsmetadata_caption"
 msgid "Edit Icon Metadata"
 msgstr ""
 
 #: iconfinderstrconsts.rsmetadata_classicstyle
-msgctxt "iconfinderstrconsts.rsmetadata_classicstyle"
 msgid "Classic"
 msgstr ""
 
 #: iconfinderstrconsts.rsmetadata_flatstyle
-msgctxt "iconfinderstrconsts.rsmetadata_flatstyle"
 msgid "Flat"
 msgstr ""
 
 #: iconfinderstrconsts.rsmetadata_keywords
-msgctxt "iconfinderstrconsts.rsmetadata_keywords"
 msgid "Keywords (one keyword per line)"
 msgstr ""
 
 #: iconfinderstrconsts.rsmetadata_outline2style
-msgctxt "iconfinderstrconsts.rsmetadata_outline2style"
 msgid "Outline 2-color"
 msgstr ""
 
 #: iconfinderstrconsts.rsmetadata_outlinestyle
-msgctxt "iconfinderstrconsts.rsmetadata_outlinestyle"
 msgid "Outline"
 msgstr ""
 
 #: iconfinderstrconsts.rsmetadata_style
-msgctxt "iconfinderstrconsts.rsmetadata_style"
 msgid "Style"
 msgstr ""
 

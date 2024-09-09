@@ -71,3 +71,4 @@ msgstr "Mittels Icon-Suche hinzufügen ..."
 #: iconfinderstrconstside.rsimglisteditor_replacefromiconfinder
 msgid "Replace by Icon Finder ..."
 msgstr "Mittels Icon-Suche ersetzen ..."
+
