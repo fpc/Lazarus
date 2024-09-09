@@ -10,13 +10,13 @@ object IconViewerFrame: TIconViewerFrame
   DesignTop = 171
   object FilterPanel: TPanel
     Left = 0
-    Height = 29
+    Height = 39
     Top = 0
     Width = 425
     Align = alTop
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 29
+    ClientHeight = 39
     ClientWidth = 425
     ParentBackground = False
     ParentColor = False
@@ -26,12 +26,12 @@ object IconViewerFrame: TIconViewerFrame
       AnchorSideTop.Control = FilterPanel
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 23
+      Height = 32
       Top = 0
-      Width = 74
+      Width = 150
       BorderSpacing.Left = 6
       DropDownCount = 24
-      ItemHeight = 15
+      ItemHeight = 0
       Style = csDropDownList
       TabOrder = 0
       OnChange = cmbFilterBySizeChange
@@ -42,13 +42,13 @@ object IconViewerFrame: TIconViewerFrame
       AnchorSideTop.Control = cmbFilterBySize
       AnchorSideTop.Side = asrCenter
       AnchorSideBottom.Side = asrBottom
-      Left = 86
-      Height = 23
+      Left = 162
+      Height = 32
       Top = 0
-      Width = 108
+      Width = 150
       BorderSpacing.Left = 6
       DropDownCount = 24
-      ItemHeight = 15
+      ItemHeight = 0
       Style = csDropDownList
       TabOrder = 1
       OnChange = cmbFilterByStyleChange
@@ -60,16 +60,16 @@ object IconViewerFrame: TIconViewerFrame
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Control = btnKeywordEditor
       AnchorSideBottom.Side = asrBottom
-      Left = 200
-      Height = 23
+      Left = 318
+      Height = 33
       Top = 0
-      Width = 141
+      Width = 23
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Right = 2
       BorderSpacing.Bottom = 6
       DropDownCount = 24
-      ItemHeight = 15
+      ItemHeight = 0
       TabOrder = 2
       TextHint = 'Enter keywords here'
       OnEditingDone = cmbFilterByKeywordsEditingDone
@@ -80,7 +80,7 @@ object IconViewerFrame: TIconViewerFrame
       AnchorSideRight.Control = btnClearFilter
       Left = 343
       Height = 24
-      Top = -1
+      Top = 4
       Width = 24
       Anchors = [akTop, akRight]
       BorderSpacing.Right = 2
@@ -94,7 +94,7 @@ object IconViewerFrame: TIconViewerFrame
       AnchorSideRight.Side = asrBottom
       Left = 395
       Height = 24
-      Top = -1
+      Top = 4
       Width = 24
       Anchors = [akTop, akRight]
       BorderSpacing.Right = 6
@@ -106,7 +106,7 @@ object IconViewerFrame: TIconViewerFrame
       AnchorSideRight.Control = btnExecuteFilter
       Left = 369
       Height = 24
-      Top = -1
+      Top = 4
       Width = 24
       Anchors = [akTop, akRight]
       BorderSpacing.Right = 2
@@ -115,8 +115,8 @@ object IconViewerFrame: TIconViewerFrame
   end
   object IconDetailsPanel: TPanel
     Left = 6
-    Height = 68
-    Top = 223
+    Height = 72
+    Top = 219
     Width = 413
     Align = alBottom
     AutoSize = True
@@ -124,7 +124,7 @@ object IconViewerFrame: TIconViewerFrame
     BorderSpacing.Top = 6
     BorderSpacing.Right = 6
     BevelOuter = bvNone
-    ClientHeight = 68
+    ClientHeight = 72
     ClientWidth = 413
     TabOrder = 1
     OnResize = IconDetailsPanelResize
@@ -132,22 +132,22 @@ object IconViewerFrame: TIconViewerFrame
       AnchorSideLeft.Control = IconDetailsPanel
       AnchorSideTop.Control = IconDetailsPanel
       Left = 0
-      Height = 68
+      Height = 72
       Top = 0
-      Width = 58
+      Width = 66
       AutoSize = True
       BorderSpacing.Right = 8
       BevelOuter = bvNone
-      ClientHeight = 68
-      ClientWidth = 58
+      ClientHeight = 72
+      ClientWidth = 66
       TabOrder = 0
       object lblFileName: TLabel
         AnchorSideLeft.Control = CaptionPanel
         AnchorSideTop.Control = CaptionPanel
         Left = 0
-        Height = 15
+        Height = 16
         Top = 0
-        Width = 54
+        Width = 61
         Caption = 'File name:'
         Font.Style = [fsItalic]
         ParentFont = False
@@ -157,9 +157,9 @@ object IconViewerFrame: TIconViewerFrame
         AnchorSideTop.Control = lblFileName
         AnchorSideTop.Side = asrBottom
         Left = 0
-        Height = 15
-        Top = 17
-        Width = 23
+        Height = 16
+        Top = 18
+        Width = 30
         BorderSpacing.Top = 2
         Caption = 'Size:'
         Font.Style = [fsItalic]
@@ -170,9 +170,9 @@ object IconViewerFrame: TIconViewerFrame
         AnchorSideTop.Control = lblStyle
         AnchorSideTop.Side = asrBottom
         Left = 0
-        Height = 15
-        Top = 51
-        Width = 58
+        Height = 16
+        Top = 54
+        Width = 66
         BorderSpacing.Top = 2
         BorderSpacing.Bottom = 2
         Caption = 'Keywords: '
@@ -184,9 +184,9 @@ object IconViewerFrame: TIconViewerFrame
         AnchorSideTop.Control = lblSize
         AnchorSideTop.Side = asrBottom
         Left = 0
-        Height = 15
-        Top = 34
-        Width = 28
+        Height = 16
+        Top = 36
+        Width = 34
         BorderSpacing.Top = 2
         Caption = 'Style:'
         Font.Style = [fsItalic]
@@ -197,10 +197,10 @@ object IconViewerFrame: TIconViewerFrame
       AnchorSideLeft.Control = CaptionPanel
       AnchorSideLeft.Side = asrBottom
       AnchorSideRight.Side = asrBottom
-      Left = 66
-      Height = 15
+      Left = 74
+      Height = 16
       Top = 0
-      Width = 71
+      Width = 77
       Caption = 'infoFileName'
     end
     object infoSize: TLabel
@@ -208,10 +208,10 @@ object IconViewerFrame: TIconViewerFrame
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = infoFileName
       AnchorSideTop.Side = asrBottom
-      Left = 66
-      Height = 15
-      Top = 17
-      Width = 41
+      Left = 74
+      Height = 16
+      Top = 18
+      Width = 47
       BorderSpacing.Top = 2
       Caption = 'infoSize'
     end
@@ -220,10 +220,10 @@ object IconViewerFrame: TIconViewerFrame
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = infoSize
       AnchorSideTop.Side = asrBottom
-      Left = 66
-      Height = 15
-      Top = 34
-      Width = 46
+      Left = 74
+      Height = 16
+      Top = 36
+      Width = 51
       BorderSpacing.Top = 2
       Caption = 'infoStyle'
     end
@@ -234,10 +234,10 @@ object IconViewerFrame: TIconViewerFrame
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = IconDetailsPanel
       AnchorSideRight.Side = asrBottom
-      Left = 66
-      Height = 15
-      Top = 51
-      Width = 347
+      Left = 74
+      Height = 16
+      Top = 54
+      Width = 339
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 2
       Caption = 'infoKeywords'
@@ -247,7 +247,7 @@ object IconViewerFrame: TIconViewerFrame
   object Bevel1: TBevel
     Left = 0
     Height = 4
-    Top = 213
+    Top = 209
     Width = 425
     Align = alBottom
     Shape = bsBottomLine
@@ -255,7 +255,7 @@ object IconViewerFrame: TIconViewerFrame
   object Bevel2: TBevel
     Left = 0
     Height = 2
-    Top = 29
+    Top = 39
     Width = 425
     Align = alTop
     Shape = bsBottomLine
