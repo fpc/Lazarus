@@ -262,6 +262,8 @@ begin
   if FMargin <> Value then
   begin
     FMargin := Value;
+    InvalidatePreferredSize;
+    AdjustSize;
     Invalidate;
   end;
 end;
@@ -295,6 +297,8 @@ begin
   if FSpacing <> Value then
   begin
     FSpacing := Value;
+    InvalidatePreferredSize;
+    AdjustSize;
     Invalidate;
   end;
 end;
@@ -569,6 +573,11 @@ var
 begin
   r:=Rect(0,0,0,0);
   MeasureDraw(false,r,PreferredWidth,PreferredHeight);
+  if WithThemeSpace then
+  begin
+    inc(PreferredWidth, 6);     // like TButton
+    inc(PreferredHeight, 6);
+  end;
 end;
 
 procedure TCustomSpeedButton.MeasureDraw(Draw: boolean;
@@ -627,6 +636,15 @@ begin
       InflateRect(TextRect,-Margin,-Margin);
     if HasGlyph then
     begin
+         {
+      if (Spacing >= 0) then S := Spacing else S := 0;
+      case CurLayout of
+        blGlyphLeft: inc(TextRect.Left, GlyphWidth + S);
+        blGlyphRight: dec(TextRect.Right, GlyphWidth + S);
+        blGlyphTop: inc(TextRect.Top, GlyphHeight + S);
+        blGlyphBottom: dec(TextRect.Bottom, GlyphHeight + S);
+      end;
+        }
       if (Spacing>=0) then
         if CurLayout in [blGlyphLeft,blGlyphRight] then
           dec(TextRect.Right,Spacing)
@@ -636,6 +654,7 @@ begin
         dec(TextRect.Right,GlyphWidth)
       else
         dec(TextRect.Bottom,GlyphHeight);
+
     end;
     if not FixedWidth then
     begin
@@ -669,11 +688,13 @@ begin
   else
     S:= 0;
   M:=Margin;
+
   if not Draw then
   begin
     if M<0 then M:=2;
     if S<0 then S:=M;
   end;
+
 
   // Calculate caption and glyph layout
   if M < 0 then begin
@@ -688,7 +709,7 @@ begin
         M:= (ClientSize.cy - TotalSize.cy) div 3;
       S:= M;
     end else begin
-      // fixed Spacing and center content
+      // fixed Spacing, center content
       TotalSize.cx:= GlyphWidth + S + TextSize.cx;
       TotalSize.cy:= GlyphHeight + S + TextSize.cy;
       if Layout in [blGlyphLeft, blGlyphRight] then
@@ -726,7 +747,8 @@ begin
           if Spacing >= 0 then
             OffsetCap.X := OffsetGlyph.X + GlyphWidth + S
           else
-            OffsetCap.X := (OffsetGlyph.X + ClientSize.CX - TextSize.CX) div 2;
+            OffsetCap.X := (OffsetGlyph.X + GlyphWidth + ClientSize.CX - TextSize.CX) div 2;
+            //OffsetCap.X := (OffsetGlyph.X + ClientSize.CX - TextSize.CX) div 2;
         end;
         OffsetCap.Y:= (ClientSize.cy - TextSize.cy) div 2;
       end;
@@ -789,7 +811,7 @@ begin
             TextRect.Right := PaintRect.Right;
       end;
 
-      TextFlags := DT_TOP or cAlignment[BidiFlipAlignment(FAlignment, UseRightToLeftAlignment)];
+      TextFlags := DT_TOP or cAlignment[BidiFlipAlignment(FAlignment, UseRightToLeftAlignment)]; // or DT_NOCLIP;
       if UseRightToLeftReading then
         TextFlags := TextFlags or DT_RTLREADING;
 
@@ -1036,7 +1058,8 @@ begin
   if Value <> FLayout then
   begin
     FLayout:= Value;
-    Invalidate;
+    InvalidatePreferredSize;
+    AdjustSize;
   end;
 end;
 
