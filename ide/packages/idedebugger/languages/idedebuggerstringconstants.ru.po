@@ -57,25 +57,25 @@ msgstr "Больше не спрашивать"
 #: idedebuggerstringconstants.dispformatarrayhidelenifless
 msgctxt "idedebuggerstringconstants.dispformatarrayhidelenifless"
 msgid "Max len"
-msgstr ""
+msgstr "Максимум длины"
 
 #: idedebuggerstringconstants.dispformatarrayhidelenkeepdepth
 msgid "Min nested"
-msgstr ""
+msgstr "Минимум вложенности"
 
 #: idedebuggerstringconstants.dispformatarrayhidelenthreseach
 msgctxt "idedebuggerstringconstants.dispformatarrayhidelenthreseach"
 msgid "Max sub-values"
-msgstr ""
+msgstr "Максимум вложенных значений"
 
 #: idedebuggerstringconstants.dispformatarrayhidelenthresfulllen
 msgctxt "idedebuggerstringconstants.dispformatarrayhidelenthresfulllen"
 msgid "Max text len"
-msgstr ""
+msgstr "Максимум длины текста"
 
 #: idedebuggerstringconstants.dispformatarrayhidelentoggle
 msgid "Hide \"Len\", if ..."
-msgstr ""
+msgstr "Скрывать длину, если ..."
 
 #: idedebuggerstringconstants.dispformatarraynavautohide
 msgid "Auto-hide"
@@ -313,33 +313,33 @@ msgstr "С плавающей точкой"
 #: idedebuggerstringconstants.dispformatforcesinglelinearraylen
 msgctxt "idedebuggerstringconstants.dispformatforcesinglelinearraylen"
 msgid "Max len"
-msgstr ""
+msgstr "Максимум длины"
 
 #: idedebuggerstringconstants.dispformatforcesinglelinedepth
 msgid "Max sub-levels"
-msgstr ""
+msgstr "Максимум уровней вложенности"
 
 #: idedebuggerstringconstants.dispformatforcesinglelinedigitsany
 msgid "Any"
-msgstr ""
+msgstr "Любой"
 
 #: idedebuggerstringconstants.dispformatforcesinglelineeach
 msgctxt "idedebuggerstringconstants.dispformatforcesinglelineeach"
 msgid "Max sub-values"
-msgstr ""
+msgstr "Максимум вложенных значений"
 
 #: idedebuggerstringconstants.dispformatforcesinglelinelen
 msgctxt "idedebuggerstringconstants.dispformatforcesinglelinelen"
 msgid "Max text len"
-msgstr ""
+msgstr "Максимум длины текста"
 
 #: idedebuggerstringconstants.dispformatforcesinglelinestructfld
 msgid "Max fields"
-msgstr ""
+msgstr "Максимум полей"
 
 #: idedebuggerstringconstants.dispformatforcesinglelinetoggle
 msgid "Keep singleline, if ..."
-msgstr ""
+msgstr "Сохранять однострочность, если ..."
 
 #: idedebuggerstringconstants.dispformatgroupaddress
 msgctxt "idedebuggerstringconstants.dispformatgroupaddress"
