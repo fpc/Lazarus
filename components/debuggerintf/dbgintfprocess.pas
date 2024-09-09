@@ -7,6 +7,7 @@ unit DbgIntfProcess;
 {$IF FPC_Fullversion>=30301} {$define HAS_NEW_PROCESS}
 {$ELSE}
 {$IFDEF WINDOWS} {$define USES_NEW_PROCESS} {$define HAS_NEW_PROCESS} {$ENDIF}
+{$IFDEF WINCE}   {$undef USES_NEW_PROCESS}  {$undef HAS_NEW_PROCESS} {$ENDIF}
 {$IFDEF LINUX}   {$define USES_NEW_PROCESS} {$define HAS_NEW_PROCESS} {$ENDIF}
 {$ENDIF}
 
