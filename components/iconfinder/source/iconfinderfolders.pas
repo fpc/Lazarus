@@ -27,7 +27,6 @@ type
   { TIconFolderForm }
 
   TIconFolderForm = class(TForm)
-    CenterBevel: TBevel;
     btnDeleteFolder: TButton;
     btnMoveFolderUp: TButton;
     btnMoveFolderDown: TButton;
