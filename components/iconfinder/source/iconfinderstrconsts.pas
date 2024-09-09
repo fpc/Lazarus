@@ -19,8 +19,8 @@ resourcestring
   RSIconViewer_ExpressionToFilterByKeywordsHint = 'Expression to filter by keywords';
   RSIconViewer_EditKeywordFilterHint = 'Enter/edit a keyword filter';
   RSIconViewer_ClearFilterHint = 'Clear the keyword filter';
-  RSIconViewer_FilterByKeywordsHint = 'Filters by keywords';
-  RSIconViewer_EnterKeywordsHere = 'Enter keywords here...';
+  RSIconViewer_FilterByKeywordsHint = 'Filter by keywords';
+  RSIconViewer_EnterKeywordsHere = 'Enter keywords here';
   RSIconViewer_FileNameLbl = 'File name:';
   RSIconViewer_SizeLbl = 'Size:';
   RSIconViewer_StyleLbl = 'Style:';
@@ -28,7 +28,7 @@ resourcestring
   RSIconViewer_ConfirmDeleteIconMsg = 'Do you really want to delete the selected icon from the library?';
 
   // IconFinderMetadata
-  RSMetadata_Caption = 'Edit Icon Metadata';
+  RSMetadata_Caption = 'Icon Metadata Editor';
   RSMetadata_Keywords = 'Keywords (one keyword per line)';
   RSMetadata_Style = 'Style';
   RSMetadata_ClassicStyle = 'Classic';
@@ -40,7 +40,7 @@ resourcestring
 
   // IconFinderFolders
   RSFolders_IconFinderFolders = 'Icon Folders';
-  RSFolders_Add = 'Add...';
+  RSFolders_Add = 'Add ...';
   RSFolders_Delete = 'Delete';
   RSFolders_MoveUp = 'Move up';
   RSFolders_MoveDown = 'Move down';
