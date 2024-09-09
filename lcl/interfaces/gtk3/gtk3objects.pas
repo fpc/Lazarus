@@ -2082,23 +2082,25 @@ end;
 
 function TGtk3DeviceContext.RoundRect(X1, Y1, X2, Y2: Integer; RX, RY: Integer): Boolean;
 var
-  DX, DY: Double;
+  DX, DY,drx,dry: Double;
 begin
   Result := False;
   cairo_surface_get_device_offset(cairo_get_target(pcr), @DX, @DY);
   DX := DX+PixelOffset;
   DY := DY+PixelOffset;
+  drx:=rx/2;
+  dry:=ry/2;
   cairo_translate(pcr, DX, DY);
   try
-    cairo_move_to(pcr, SX(X1+RX), SY(Y1));
-    cairo_line_to(pcr, SX(X2-RX), SY(Y1));
-    EllipseArcPath(X2-RX, Y1+RY, RX, RY, -PI/2, 0, True, True);
-    cairo_line_to(pcr, SX(X2), SY(Y2-RY));
-    EllipseArcPath(X2-RX, Y2-RY, RX, RY, 0, PI/2, True, True);
-    cairo_line_to(pcr, SX(X1+RX), SY(Y2));
-    EllipseArcPath(X1+RX, Y2-RY, RX, RY, PI/2, PI, True, True);
-    cairo_line_to(pcr, SX(X1), SY(Y1+RX));
-    EllipseArcPath(X1+RX, Y1+RY, RX, RY, PI, PI*1.5, True, True);
+    cairo_move_to(pcr, X1+dRX, Y1);
+    cairo_line_to(pcr, X2-dRX-PixelOffset, Y1);
+    EllipseArcPath(X2-dRX-PixelOffset, Y1+dRY, dRX, dRY, -PI/2, 0, True, True);
+    cairo_line_to(pcr, X2-PixelOffset, Y2-dRY-PixelOffset);
+    EllipseArcPath(X2-dRX-PixelOffset, Y2-dRY-PixelOffset, dRX, dRY, 0, PI/2, True, True);
+    cairo_line_to(pcr, X1+dRX, Y2-PixelOffset);
+    EllipseArcPath(X1+dRX, Y2-dRY-PixelOffset, dRX, dRY, PI/2, PI, True, True);
+    cairo_line_to(pcr, X1, Y1+dRX);
+    EllipseArcPath(X1+dRX, Y1+dRY, dRX, dRY, PI, PI*1.5, True, True);
     FillAndStroke;
     Result := True;
   finally
