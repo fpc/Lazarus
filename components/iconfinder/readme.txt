@@ -8,13 +8,9 @@ image-related components (TImageList, TImage, TBitBtn, TSpeedButton).
 --------------------------------------------------------------------------------
                              Installation
 --------------------------------------------------------------------------------
-* Go to "Package" > "Open package file". 
+* Install the "iconfinder_dsgn_pkg" package via "Package" -> "Add/Remove Packages ..." dialog.
 
-* Load the "iconfinder_pkg.lpk" from packages/runtime of the iconfinder folder
-
-* Load the "iconfinder_dsgn_pkg.lpk" from packages/designtime.
-
-* Click "Use" > "Install", and confirm the question to rebuild the IDE.
+* Click "Rebuild IDE", and confirm the question to rebuild the IDE.
 
 * When the IDE restarts the TImageList and TPicture component/property editors
   have a new option to load an icon from the icon library. There is also an
