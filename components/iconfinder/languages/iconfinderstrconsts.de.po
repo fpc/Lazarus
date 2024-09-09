@@ -12,8 +12,10 @@ msgstr ""
 "X-Generator: Poedit 3.4.4\n"
 
 #: iconfinderstrconsts.rsfolders_add
+#, fuzzy
+#| msgid "Add..."
 msgctxt "iconfinderstrconsts.rsfolders_add"
-msgid "Add..."
+msgid "Add ..."
 msgstr "Neu..."
 
 #: iconfinderstrconsts.rsfolders_confirmdeletefoldermsg
@@ -67,8 +69,10 @@ msgid "Enter/edit a keyword filter"
 msgstr "Filter nach Suchbegriffen eingeben/bearbeiten"
 
 #: iconfinderstrconsts.rsiconviewer_enterkeywordshere
+#, fuzzy
+#| msgid "Enter keywords here..."
 msgctxt "iconfinderstrconsts.rsiconviewer_enterkeywordshere"
-msgid "Enter keywords here..."
+msgid "Enter keywords here"
 msgstr "Suchbegriffe hier eintragen..."
 
 #: iconfinderstrconsts.rsiconviewer_expressiontofilterbykeywordshint
@@ -92,8 +96,10 @@ msgid "Filter by icon style"
 msgstr "Nach Icon-Stil filtern"
 
 #: iconfinderstrconsts.rsiconviewer_filterbykeywordshint
+#, fuzzy
+#| msgid "Filters by keywords"
 msgctxt "iconfinderstrconsts.rsiconviewer_filterbykeywordshint"
-msgid "Filters by keywords"
+msgid "Filter by keywords"
 msgstr "Nach Suchbegriffen filtern"
 
 #: iconfinderstrconsts.rsiconviewer_hideall
@@ -187,8 +193,10 @@ msgid "(any style)"
 msgstr "(beliebig)"
 
 #: iconfinderstrconsts.rsmetadata_caption
+#, fuzzy
+#| msgid "Edit Icon Metadata"
 msgctxt "iconfinderstrconsts.rsmetadata_caption"
-msgid "Edit Icon Metadata"
+msgid "Icon Metadata Editor"
 msgstr "Icon-Metadaten bearbeiten"
 
 #: iconfinderstrconsts.rsmetadata_classicstyle

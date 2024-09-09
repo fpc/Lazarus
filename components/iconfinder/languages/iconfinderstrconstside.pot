@@ -15,7 +15,7 @@ msgid "Icon folder management"
 msgstr ""
 
 #: iconfinderstrconstside.rsiconfinderide_folders
-msgid "Folders..."
+msgid "Folders ..."
 msgstr ""
 
 #: iconfinderstrconstside.rsiconfinderide_general
@@ -27,7 +27,7 @@ msgid "Icon Finder"
 msgstr ""
 
 #: iconfinderstrconstside.rsiconfinderide_metadata
-msgid "Metadata..."
+msgid "Metadata ..."
 msgstr ""
 
 #: iconfinderstrconstside.rsiconfinderide_metadatahint

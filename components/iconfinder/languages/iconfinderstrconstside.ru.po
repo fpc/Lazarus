@@ -1,78 +1,67 @@
 msgid ""
 msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: \n"
 "Language-Team: \n"
-"Language: de\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.4.4\n"
+"X-Generator: Poedit 2.3.1\n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+"Language: ru\n"
 
 #: iconfinderstrconstside.rsgraphpropeditor_iconfinder
 msgid "Icon Finder ..."
-msgstr "Icon-Suche ..."
+msgstr "Средство поиска значков ..."
 
 #: iconfinderstrconstside.rsiconfinderide_caption
 #, object-pascal-format
 msgid "Icon Finder (%d out of %d icons)"
-msgstr "Icon-Suche (%d von %d Bildern)"
+msgstr "Средство поиска значков (%d из %d)"
 
 #: iconfinderstrconstside.rsiconfinderide_folderhint
-msgctxt "iconfinderstrconstside.rsiconfinderide_folderhint"
 msgid "Icon folder management"
-msgstr "Icon-Ordner-Verwaltung"
+msgstr "Управление каталогами значков"
 
 #: iconfinderstrconstside.rsiconfinderide_folders
-#, fuzzy
-#| msgid "Folders..."
-msgctxt "iconfinderstrconstside.rsiconfinderide_folders"
 msgid "Folders ..."
-msgstr "Icon-Ordner..."
+msgstr "Каталоги ..."
 
 #: iconfinderstrconstside.rsiconfinderide_general
-msgctxt "iconfinderstrconstside.rsiconfinderide_general"
 msgid "General"
-msgstr "Allgemein"
+msgstr "Общие"
 
 #: iconfinderstrconstside.rsiconfinderide_iconlibrary
 msgid "Icon Finder"
-msgstr "Icon-Suche"
+msgstr "Средство поиска значков"
 
 #: iconfinderstrconstside.rsiconfinderide_metadata
-#, fuzzy
-#| msgid "Metadata..."
-msgctxt "iconfinderstrconstside.rsiconfinderide_metadata"
 msgid "Metadata ..."
-msgstr "Metadaten..."
+msgstr "Метаданные ..."
 
 #: iconfinderstrconstside.rsiconfinderide_metadatahint
-msgctxt "iconfinderstrconstside.rsiconfinderide_metadatahint"
 msgid "Edit icon metadata"
-msgstr "Icon-Metadaten bearbeiten"
+msgstr "Редактировать метаданные значка"
 
 #: iconfinderstrconstside.rsiconfinderide_savemetadata
-msgctxt "iconfinderstrconstside.rsiconfinderide_savemetadata"
 msgid "Save metadata"
-msgstr "Metadaten speichern"
+msgstr "Сохранить метаданные"
 
 #: iconfinderstrconstside.rsiconfinderide_savemetadatahint
-msgctxt "iconfinderstrconstside.rsiconfinderide_savemetadatahint"
 msgid "Save icon metadata files"
-msgstr "Dateien mit Icon-Metadaten speichern"
+msgstr "Сохранить файлы метаданных значка"
 
 #: iconfinderstrconstside.rsiconfinderide_select
-msgctxt "iconfinderstrconstside.rsiconfinderide_select"
 msgid "Select"
-msgstr "Wählen"
+msgstr "Выбрать"
 
 #: iconfinderstrconstside.rsimglisteditor_addfromiconfinder
 msgid "Add from Icon Finder ..."
-msgstr "Mittels Icon-Suche hinzufügen ..."
+msgstr "Добавить из средства поиска значков ..."
 
 #: iconfinderstrconstside.rsimglisteditor_replacefromiconfinder
 msgid "Replace by Icon Finder ..."
-msgstr "Mittels Icon-Suche ersetzen ..."
+msgstr "Заменить через средство поиска значков ..."
 
