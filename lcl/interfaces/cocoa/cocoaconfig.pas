@@ -13,8 +13,6 @@ uses
   CocoaAll, Cocoa_Extra, CocoaConst;
 
 type
-  TCocoaToolBarItemActionHandler = procedure ( const Sender: id );
-
   TCocoaConfigToolBarItemClassAbstract = class
   public
     function identifier: NSString; virtual; abstract;
@@ -23,6 +21,14 @@ type
 
   TCocoaConfigToolBarItems = Array of TCocoaConfigToolBarItemClassAbstract;
 
+type
+  TCocoaToolBarItemCreator = function ( const identifier: String;
+    const items: TCocoaConfigToolBarItems ): NSToolbarItem;
+  TCocoaToolBarItemActionHandler = procedure ( const Sender: id );
+  TCocoaToolBarItemMenuOnGetMenu = function: TMenuItem;
+  TCocoaToolBarItemSharingOnGetItems = function ( item: NSToolBarItem ): TStringArray;
+
+type
   { TCocoaConfigToolBarItemBase }
 
   TCocoaConfigToolBarItemBase = object
@@ -49,7 +55,7 @@ type
   TCocoaConfigToolBarItem = TCocoaConfigToolBarItemWithAction;
 
   TCocoaConfigToolBarItemSharing = object( TCocoaConfigToolBarItemWithUI )
-    onGetItems: Pointer;
+    onGetItems: TCocoaToolBarItemSharingOnGetItems;
   end;
 
   TCocoaConfigToolBarItemSearch = object( TCocoaConfigToolBarItemWithAction )
@@ -62,6 +68,7 @@ type
   TCocoaConfigToolBarItemMenu = object( TCocoaConfigToolBarItemWithAction )
     showsIndicator: Boolean;
     menu: TMenuItem;
+    onGetMenu: TCocoaToolBarItemMenuOnGetMenu;
   end;
 
   TCocoaConfigToolBarItemGroup = object( TCocoaConfigToolBarItemWithAction )

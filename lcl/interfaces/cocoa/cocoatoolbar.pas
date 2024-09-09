@@ -13,8 +13,6 @@ uses
   Cocoa_Extra, CocoaUtils;
 
 type
-  TCocoaToolBarItemSharingOnGetItems = function ( item: NSToolBarItem ): TStringArray;
-
   PCocoaConfigToolBar = ^TCocoaConfigToolBar;
 
   PCocoaConfigToolBarItemBase = ^TCocoaConfigToolBarItemBase;
@@ -109,6 +107,7 @@ type
   protected
     _showsIndicator: Boolean;
     _menu: TMenuItem;
+    _onGetMenu: TCocoaToolBarItemMenuOnGetMenu;
   public
     constructor Create( const itemConfig: TCocoaConfigToolBarItemMenu );
     function createItem: NSToolBarItem; override;
@@ -199,9 +198,6 @@ type
       message 'lclSetSelectedIndex:';
   end;
 
-  TCocoaToolBarItemCreator = function ( const identifier: String;
-    const items: TCocoaConfigToolBarItems ): NSToolbarItem;
-  
   { TCocoaToolBar }
 
   TCocoaToolBar = objcclass( NSToolBar, NSToolbarDelegateProtocol )
@@ -719,6 +715,7 @@ begin
   self.toClassConfig( @itemConfig );
   _showsIndicator:= itemConfig.showsIndicator;
   _menu:= itemConfig.menu;
+  _onGetMenu:= itemConfig.onGetMenu;
 end;
 
 function TCocoaConfigToolBarItemClassMenu.createItem: NSToolBarItem;
@@ -731,6 +728,11 @@ begin
   self.setItemAttribs( cocoaItem );
   if NOT Assigned(_onAction) then
     cocoaItem.setAction( nil );
+
+  if NOT Assigned(_menu) then begin
+    if Assigned(_onGetMenu) then
+      _menu:= _onGetMenu();
+  end;
 
   if Assigned(_menu) then begin
     cocoaMenu:= NSMenuItem(_menu.Handle).submenu;
