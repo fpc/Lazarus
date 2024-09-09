@@ -219,7 +219,9 @@ begin
   MenuObj := NSObject(AMenuItem.Handle);
   if MenuObj.isKindOfClass(NSMenuItem) then begin
     item := NSMenuItem(MenuObj);
-    Parent.insertItem_atIndex(NSMenuItem(item), idx)
+    if idx > Parent.numberOfItems then
+      idx:= Parent.numberOfItems;
+    Parent.insertItem_atIndex(NSMenuItem(item), idx);
   end
   else if MenuObj.isKindOfClass(NSMenu) then
   begin
