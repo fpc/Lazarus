@@ -19746,44 +19746,56 @@
     </icon>
     <icon filename="Return_01_16.png" width="16" height="16" style="outline 2-color">
       <keywords>
+        <keyword>break</keyword>
         <keyword>line</keyword>
         <keyword>return</keyword>
         <keyword>text</keyword>
+        <keyword>wrap</keyword>
       </keywords>
     </icon>
     <icon filename="Return_01_24.png" width="24" height="24" style="outline 2-color">
       <keywords>
+        <keyword>break</keyword>
         <keyword>line</keyword>
         <keyword>return</keyword>
         <keyword>text</keyword>
+        <keyword>wrap</keyword>
       </keywords>
     </icon>
     <icon filename="Return_01_32.png" width="32" height="32" style="outline 2-color">
       <keywords>
+        <keyword>break</keyword>
         <keyword>line</keyword>
         <keyword>return</keyword>
         <keyword>text</keyword>
+        <keyword>wrap</keyword>
       </keywords>
     </icon>
     <icon filename="Return_01_36.png" width="36" height="36" style="outline 2-color">
       <keywords>
+        <keyword>break</keyword>
         <keyword>line</keyword>
         <keyword>return</keyword>
         <keyword>text</keyword>
+        <keyword>wrap</keyword>
       </keywords>
     </icon>
     <icon filename="Return_01_48.png" width="48" height="48" style="outline 2-color">
       <keywords>
+        <keyword>break</keyword>
         <keyword>line</keyword>
         <keyword>return</keyword>
         <keyword>text</keyword>
+        <keyword>wrap</keyword>
       </keywords>
     </icon>
     <icon filename="Return_01_64.png" width="64" height="64" style="outline 2-color">
       <keywords>
+        <keyword>break</keyword>
         <keyword>line</keyword>
         <keyword>return</keyword>
         <keyword>text</keyword>
+        <keyword>wrap</keyword>
       </keywords>
     </icon>
     <icon filename="SaveAs_01_16.png" width="16" height="16" style="flat">
@@ -22837,181 +22849,229 @@
     <icon filename="User_03_16.png" width="16" height="16" style="classic">
       <keywords>
         <keyword>contacts</keyword>
+        <keyword>many</keyword>
         <keyword>meeting</keyword>
-        <keyword>users</keyword>
+        <keyword>plural</keyword>
+        <keyword>user</keyword>
       </keywords>
     </icon>
     <icon filename="User_03_24.png" width="24" height="24" style="classic">
       <keywords>
         <keyword>contacts</keyword>
+        <keyword>many</keyword>
         <keyword>meeting</keyword>
-        <keyword>users</keyword>
+        <keyword>plural</keyword>
+        <keyword>user</keyword>
       </keywords>
     </icon>
     <icon filename="User_03_32.png" width="32" height="32" style="classic">
       <keywords>
         <keyword>contacts</keyword>
+        <keyword>many</keyword>
         <keyword>meeting</keyword>
-        <keyword>users</keyword>
+        <keyword>plural</keyword>
+        <keyword>user</keyword>
       </keywords>
     </icon>
     <icon filename="User_03_36.png" width="36" height="36" style="classic">
       <keywords>
         <keyword>contacts</keyword>
+        <keyword>many</keyword>
         <keyword>meeting</keyword>
-        <keyword>users</keyword>
+        <keyword>plural</keyword>
+        <keyword>user</keyword>
       </keywords>
     </icon>
     <icon filename="User_03_48.png" width="48" height="48" style="classic">
       <keywords>
         <keyword>contacts</keyword>
+        <keyword>many</keyword>
         <keyword>meeting</keyword>
-        <keyword>users</keyword>
+        <keyword>plural</keyword>
+        <keyword>user</keyword>
       </keywords>
     </icon>
     <icon filename="User_03_64.png" width="64" height="64" style="classic">
       <keywords>
         <keyword>contacts</keyword>
+        <keyword>many</keyword>
         <keyword>meeting</keyword>
-        <keyword>users</keyword>
+        <keyword>plural</keyword>
+        <keyword>user</keyword>
       </keywords>
     </icon>
     <icon filename="User_04_16.png" width="16" height="16" style="outline">
       <keywords>
         <keyword>contacts</keyword>
+        <keyword>many</keyword>
         <keyword>meeting</keyword>
-        <keyword>users</keyword>
+        <keyword>plural</keyword>
+        <keyword>user</keyword>
       </keywords>
     </icon>
     <icon filename="User_04_24.png" width="24" height="24" style="outline">
       <keywords>
         <keyword>contacts</keyword>
+        <keyword>many</keyword>
         <keyword>meeting</keyword>
-        <keyword>users</keyword>
+        <keyword>plural</keyword>
+        <keyword>user</keyword>
       </keywords>
     </icon>
     <icon filename="User_04_32.png" width="32" height="32" style="outline">
       <keywords>
         <keyword>contacts</keyword>
+        <keyword>many</keyword>
         <keyword>meeting</keyword>
-        <keyword>users</keyword>
+        <keyword>plural</keyword>
+        <keyword>user</keyword>
       </keywords>
     </icon>
     <icon filename="User_04_36.png" width="36" height="36" style="outline">
       <keywords>
         <keyword>contacts</keyword>
+        <keyword>many</keyword>
         <keyword>meeting</keyword>
-        <keyword>users</keyword>
+        <keyword>plural</keyword>
+        <keyword>user</keyword>
       </keywords>
     </icon>
     <icon filename="User_04_48.png" width="48" height="48" style="outline">
       <keywords>
         <keyword>contacts</keyword>
+        <keyword>many</keyword>
         <keyword>meeting</keyword>
-        <keyword>users</keyword>
+        <keyword>plural</keyword>
+        <keyword>user</keyword>
       </keywords>
     </icon>
     <icon filename="User_04_64.png" width="64" height="64" style="outline">
       <keywords>
         <keyword>contacts</keyword>
+        <keyword>many</keyword>
         <keyword>meeting</keyword>
-        <keyword>users</keyword>
+        <keyword>plural</keyword>
+        <keyword>user</keyword>
       </keywords>
     </icon>
     <icon filename="User_05_16.png" width="16" height="16" style="outline 2-color">
       <keywords>
         <keyword>contacts</keyword>
+        <keyword>many</keyword>
         <keyword>meeting</keyword>
-        <keyword>users</keyword>
+        <keyword>plural</keyword>
+        <keyword>user</keyword>
       </keywords>
     </icon>
     <icon filename="User_05_24.png" width="24" height="24" style="outline 2-color">
       <keywords>
         <keyword>contacts</keyword>
+        <keyword>many</keyword>
         <keyword>meeting</keyword>
-        <keyword>users</keyword>
+        <keyword>plural</keyword>
+        <keyword>user</keyword>
       </keywords>
     </icon>
     <icon filename="User_05_32.png" width="32" height="32" style="outline 2-color">
       <keywords>
         <keyword>contacts</keyword>
+        <keyword>many</keyword>
         <keyword>meeting</keyword>
-        <keyword>users</keyword>
+        <keyword>plural</keyword>
+        <keyword>user</keyword>
       </keywords>
     </icon>
     <icon filename="User_05_36.png" width="36" height="36" style="outline 2-color">
       <keywords>
         <keyword>contacts</keyword>
+        <keyword>many</keyword>
         <keyword>meeting</keyword>
-        <keyword>users</keyword>
+        <keyword>plural</keyword>
+        <keyword>user</keyword>
       </keywords>
     </icon>
     <icon filename="User_05_48.png" width="48" height="48" style="outline 2-color">
       <keywords>
         <keyword>contacts</keyword>
+        <keyword>many</keyword>
         <keyword>meeting</keyword>
-        <keyword>users</keyword>
+        <keyword>plural</keyword>
+        <keyword>user</keyword>
       </keywords>
     </icon>
     <icon filename="User_05_64.png" width="64" height="64" style="outline 2-color">
       <keywords>
         <keyword>contacts</keyword>
+        <keyword>many</keyword>
         <keyword>meeting</keyword>
-        <keyword>users</keyword>
+        <keyword>plural</keyword>
+        <keyword>user</keyword>
       </keywords>
     </icon>
     <icon filename="User_06_16.png" width="16" height="16" style="outline 2-color">
       <keywords>
         <keyword>contacts</keyword>
         <keyword>grid</keyword>
+        <keyword>many</keyword>
         <keyword>meeting</keyword>
+        <keyword>plural</keyword>
         <keyword>schedule</keyword>
-        <keyword>users</keyword>
+        <keyword>user</keyword>
       </keywords>
     </icon>
     <icon filename="User_06_24.png" width="24" height="24" style="outline 2-color">
       <keywords>
         <keyword>contacts</keyword>
         <keyword>grid</keyword>
+        <keyword>many</keyword>
         <keyword>meeting</keyword>
+        <keyword>plural</keyword>
         <keyword>schedule</keyword>
-        <keyword>users</keyword>
+        <keyword>user</keyword>
       </keywords>
     </icon>
     <icon filename="User_06_32.png" width="32" height="32" style="outline 2-color">
       <keywords>
         <keyword>contacts</keyword>
         <keyword>grid</keyword>
+        <keyword>many</keyword>
         <keyword>meeting</keyword>
+        <keyword>plural</keyword>
         <keyword>schedule</keyword>
-        <keyword>users</keyword>
+        <keyword>user</keyword>
       </keywords>
     </icon>
     <icon filename="User_06_36.png" width="36" height="36" style="outline 2-color">
       <keywords>
         <keyword>contacts</keyword>
         <keyword>grid</keyword>
+        <keyword>many</keyword>
         <keyword>meeting</keyword>
+        <keyword>plural</keyword>
         <keyword>schedule</keyword>
-        <keyword>users</keyword>
+        <keyword>user</keyword>
       </keywords>
     </icon>
     <icon filename="User_06_48.png" width="48" height="48" style="outline 2-color">
       <keywords>
         <keyword>contacts</keyword>
         <keyword>grid</keyword>
+        <keyword>many</keyword>
         <keyword>meeting</keyword>
+        <keyword>plural</keyword>
         <keyword>schedule</keyword>
-        <keyword>users</keyword>
+        <keyword>user</keyword>
       </keywords>
     </icon>
     <icon filename="User_06_64.png" width="64" height="64" style="outline 2-color">
       <keywords>
         <keyword>contacts</keyword>
         <keyword>grid</keyword>
+        <keyword>many</keyword>
         <keyword>meeting</keyword>
+        <keyword>plural</keyword>
         <keyword>schedule</keyword>
-        <keyword>users</keyword>
+        <keyword>user</keyword>
       </keywords>
     </icon>
     <icon filename="Warning_01_16.png" width="16" height="16" style="flat">
@@ -24763,108 +24823,146 @@
     <icon filename="Layer_01_16.png" width="16" height="16" style="flat">
       <keywords>
         <keyword>layer</keyword>
+        <keyword>many</keyword>
+        <keyword>plural</keyword>
         <keyword>top</keyword>
       </keywords>
     </icon>
     <icon filename="Layer_01_24.png" width="24" height="24" style="flat">
       <keywords>
         <keyword>layer</keyword>
+        <keyword>many</keyword>
+        <keyword>plural</keyword>
         <keyword>top</keyword>
       </keywords>
     </icon>
     <icon filename="Layer_01_32.png" width="32" height="32" style="flat">
       <keywords>
         <keyword>layer</keyword>
+        <keyword>many</keyword>
+        <keyword>plural</keyword>
         <keyword>top</keyword>
       </keywords>
     </icon>
     <icon filename="Layer_01_36.png" width="36" height="36" style="flat">
       <keywords>
         <keyword>layer</keyword>
+        <keyword>many</keyword>
+        <keyword>plural</keyword>
         <keyword>top</keyword>
       </keywords>
     </icon>
     <icon filename="Layer_01_48.png" width="48" height="48" style="flat">
       <keywords>
         <keyword>layer</keyword>
+        <keyword>many</keyword>
+        <keyword>plural</keyword>
         <keyword>top</keyword>
       </keywords>
     </icon>
     <icon filename="Layer_01_64.png" width="64" height="64" style="flat">
       <keywords>
         <keyword>layer</keyword>
+        <keyword>many</keyword>
+        <keyword>plural</keyword>
         <keyword>top</keyword>
       </keywords>
     </icon>
     <icon filename="Layer_02_16.png" width="16" height="16" style="flat">
       <keywords>
         <keyword>layer</keyword>
+        <keyword>many</keyword>
+        <keyword>plural</keyword>
       </keywords>
     </icon>
     <icon filename="Layer_02_24.png" width="24" height="24" style="flat">
       <keywords>
         <keyword>layer</keyword>
+        <keyword>many</keyword>
+        <keyword>plural</keyword>
       </keywords>
     </icon>
     <icon filename="Layer_02_32.png" width="32" height="32" style="flat">
       <keywords>
         <keyword>layer</keyword>
+        <keyword>many</keyword>
+        <keyword>plural</keyword>
       </keywords>
     </icon>
     <icon filename="Layer_02_36.png" width="36" height="36" style="flat">
       <keywords>
         <keyword>layer</keyword>
+        <keyword>many</keyword>
+        <keyword>plural</keyword>
       </keywords>
     </icon>
     <icon filename="Layer_02_48.png" width="48" height="48" style="flat">
       <keywords>
         <keyword>layer</keyword>
+        <keyword>many</keyword>
+        <keyword>plural</keyword>
       </keywords>
     </icon>
     <icon filename="Layer_02_64.png" width="64" height="64" style="flat">
       <keywords>
         <keyword>layer</keyword>
+        <keyword>many</keyword>
+        <keyword>plural</keyword>
       </keywords>
     </icon>
     <icon filename="Layer_03_16.png" width="16" height="16" style="flat">
       <keywords>
         <keyword>bottom</keyword>
         <keyword>layer</keyword>
+        <keyword>many</keyword>
+        <keyword>plural</keyword>
       </keywords>
     </icon>
     <icon filename="Layer_03_24.png" width="24" height="24" style="flat">
       <keywords>
         <keyword>bottom</keyword>
         <keyword>layer</keyword>
+        <keyword>many</keyword>
+        <keyword>plural</keyword>
       </keywords>
     </icon>
     <icon filename="Layer_03_32.png" width="32" height="32" style="flat">
       <keywords>
         <keyword>bottom</keyword>
         <keyword>layer</keyword>
+        <keyword>many</keyword>
+        <keyword>plural</keyword>
       </keywords>
     </icon>
     <icon filename="Layer_03_36.png" width="36" height="36" style="flat">
       <keywords>
         <keyword>bottom</keyword>
         <keyword>layer</keyword>
+        <keyword>many</keyword>
+        <keyword>plural</keyword>
       </keywords>
     </icon>
     <icon filename="Layer_03_48.png" width="48" height="48" style="flat">
       <keywords>
         <keyword>bottom</keyword>
         <keyword>layer</keyword>
+        <keyword>many</keyword>
+        <keyword>plural</keyword>
       </keywords>
     </icon>
     <icon filename="Layer_03_64.png" width="64" height="64" style="flat">
       <keywords>
         <keyword>bottom</keyword>
         <keyword>layer</keyword>
+        <keyword>many</keyword>
+        <keyword>plural</keyword>
       </keywords>
     </icon>
     <icon filename="line_wrap_1_16.png" width="16" height="16" style="outline 2-color">
       <keywords>
         <keyword>break</keyword>
+        <keyword>line</keyword>
+        <keyword>return</keyword>
         <keyword>text</keyword>
         <keyword>wrap</keyword>
       </keywords>
@@ -24872,6 +24970,8 @@
     <icon filename="line_wrap_1_24.png" width="24" height="24" style="outline 2-color">
       <keywords>
         <keyword>break</keyword>
+        <keyword>line</keyword>
+        <keyword>return</keyword>
         <keyword>text</keyword>
         <keyword>wrap</keyword>
       </keywords>
@@ -24879,6 +24979,8 @@
     <icon filename="line_wrap_1_32.png" width="32" height="32" style="outline 2-color">
       <keywords>
         <keyword>break</keyword>
+        <keyword>line</keyword>
+        <keyword>return</keyword>
         <keyword>text</keyword>
         <keyword>wrap</keyword>
       </keywords>
@@ -24886,6 +24988,8 @@
     <icon filename="line_wrap_1_36.png" width="36" height="36" style="outline 2-color">
       <keywords>
         <keyword>break</keyword>
+        <keyword>line</keyword>
+        <keyword>return</keyword>
         <keyword>text</keyword>
         <keyword>wrap</keyword>
       </keywords>
@@ -24893,6 +24997,8 @@
     <icon filename="line_wrap_1_48.png" width="48" height="48" style="outline 2-color">
       <keywords>
         <keyword>break</keyword>
+        <keyword>line</keyword>
+        <keyword>return</keyword>
         <keyword>text</keyword>
         <keyword>wrap</keyword>
       </keywords>
@@ -24900,6 +25006,8 @@
     <icon filename="line_wrap_1_64.png" width="64" height="64" style="outline 2-color">
       <keywords>
         <keyword>break</keyword>
+        <keyword>line</keyword>
+        <keyword>return</keyword>
         <keyword>text</keyword>
         <keyword>wrap</keyword>
       </keywords>
@@ -25213,37 +25321,49 @@
     <icon filename="Grid_16_16.png" width="16" height="16" style="classic">
       <keywords>
         <keyword>grid</keyword>
-        <keyword>thumbnails</keyword>
+        <keyword>many</keyword>
+        <keyword>plural</keyword>
+        <keyword>thumbnail</keyword>
       </keywords>
     </icon>
     <icon filename="Grid_16_24.png" width="24" height="24" style="classic">
       <keywords>
         <keyword>grid</keyword>
-        <keyword>thumbnails</keyword>
+        <keyword>many</keyword>
+        <keyword>plural</keyword>
+        <keyword>thumbnail</keyword>
       </keywords>
     </icon>
     <icon filename="Grid_16_32.png" width="32" height="32" style="classic">
       <keywords>
         <keyword>grid</keyword>
-        <keyword>thumbnails</keyword>
+        <keyword>many</keyword>
+        <keyword>plural</keyword>
+        <keyword>thumbnail</keyword>
       </keywords>
     </icon>
     <icon filename="Grid_16_36.png" width="36" height="36" style="classic">
       <keywords>
         <keyword>grid</keyword>
-        <keyword>thumbnails</keyword>
+        <keyword>many</keyword>
+        <keyword>plural</keyword>
+        <keyword>thumbnail</keyword>
       </keywords>
     </icon>
     <icon filename="Grid_16_48.png" width="48" height="48" style="classic">
       <keywords>
         <keyword>grid</keyword>
-        <keyword>thumbnails</keyword>
+        <keyword>many</keyword>
+        <keyword>plural</keyword>
+        <keyword>thumbnail</keyword>
       </keywords>
     </icon>
     <icon filename="Grid_16_64.png" width="64" height="64" style="classic">
       <keywords>
         <keyword>grid</keyword>
-        <keyword>thumbnails</keyword>
+        <keyword>many</keyword>
+        <keyword>plural</keyword>
+        <keyword>thumbnail</keyword>
       </keywords>
     </icon>
     <icon filename="Grid_17_16.png" width="16" height="16" style="classic">
@@ -25251,8 +25371,10 @@
         <keyword>find</keyword>
         <keyword>grid</keyword>
         <keyword>magnify</keyword>
+        <keyword>many</keyword>
+        <keyword>plural</keyword>
         <keyword>search</keyword>
-        <keyword>thumbnails</keyword>
+        <keyword>thumbnail</keyword>
       </keywords>
     </icon>
     <icon filename="Grid_17_24.png" width="24" height="24" style="classic">
@@ -25260,8 +25382,10 @@
         <keyword>find</keyword>
         <keyword>grid</keyword>
         <keyword>magnify</keyword>
+        <keyword>many</keyword>
+        <keyword>plural</keyword>
         <keyword>search</keyword>
-        <keyword>thumbnails</keyword>
+        <keyword>thumbnail</keyword>
       </keywords>
     </icon>
     <icon filename="Grid_17_32.png" width="32" height="32" style="classic">
@@ -25269,8 +25393,10 @@
         <keyword>find</keyword>
         <keyword>grid</keyword>
         <keyword>magnify</keyword>
+        <keyword>many</keyword>
+        <keyword>plural</keyword>
         <keyword>search</keyword>
-        <keyword>thumbnails</keyword>
+        <keyword>thumbnail</keyword>
       </keywords>
     </icon>
     <icon filename="Grid_17_36.png" width="36" height="36" style="classic">
@@ -25278,8 +25404,10 @@
         <keyword>find</keyword>
         <keyword>grid</keyword>
         <keyword>magnify</keyword>
+        <keyword>many</keyword>
+        <keyword>plural</keyword>
         <keyword>search</keyword>
-        <keyword>thumbnails</keyword>
+        <keyword>thumbnail</keyword>
       </keywords>
     </icon>
     <icon filename="Grid_17_48.png" width="48" height="48" style="classic">
@@ -25287,8 +25415,10 @@
         <keyword>find</keyword>
         <keyword>grid</keyword>
         <keyword>magnify</keyword>
+        <keyword>many</keyword>
+        <keyword>plural</keyword>
         <keyword>search</keyword>
-        <keyword>thumbnails</keyword>
+        <keyword>thumbnail</keyword>
       </keywords>
     </icon>
     <icon filename="Grid_17_64.png" width="64" height="64" style="classic">
@@ -25296,8 +25426,10 @@
         <keyword>find</keyword>
         <keyword>grid</keyword>
         <keyword>magnify</keyword>
+        <keyword>many</keyword>
+        <keyword>plural</keyword>
         <keyword>search</keyword>
-        <keyword>thumbnails</keyword>
+        <keyword>thumbnail</keyword>
       </keywords>
     </icon>
     <icon filename="Grid_18_16.png" width="16" height="16" style="classic">
@@ -25305,9 +25437,11 @@
         <keyword>add</keyword>
         <keyword>grid</keyword>
         <keyword>insert</keyword>
+        <keyword>many</keyword>
         <keyword>new</keyword>
+        <keyword>plural</keyword>
         <keyword>plus</keyword>
-        <keyword>thumbnails</keyword>
+        <keyword>thumbnail</keyword>
       </keywords>
     </icon>
     <icon filename="Grid_18_24.png" width="24" height="24" style="classic">
@@ -25315,9 +25449,11 @@
         <keyword>add</keyword>
         <keyword>grid</keyword>
         <keyword>insert</keyword>
+        <keyword>many</keyword>
         <keyword>new</keyword>
+        <keyword>plural</keyword>
         <keyword>plus</keyword>
-        <keyword>thumbnails</keyword>
+        <keyword>thumbnail</keyword>
       </keywords>
     </icon>
     <icon filename="Grid_18_32.png" width="32" height="32" style="classic">
@@ -25325,9 +25461,11 @@
         <keyword>add</keyword>
         <keyword>grid</keyword>
         <keyword>insert</keyword>
+        <keyword>many</keyword>
         <keyword>new</keyword>
+        <keyword>plural</keyword>
         <keyword>plus</keyword>
-        <keyword>thumbnails</keyword>
+        <keyword>thumbnail</keyword>
       </keywords>
     </icon>
     <icon filename="Grid_18_36.png" width="36" height="36" style="classic">
@@ -25335,9 +25473,11 @@
         <keyword>add</keyword>
         <keyword>grid</keyword>
         <keyword>insert</keyword>
+        <keyword>many</keyword>
         <keyword>new</keyword>
+        <keyword>plural</keyword>
         <keyword>plus</keyword>
-        <keyword>thumbnails</keyword>
+        <keyword>thumbnail</keyword>
       </keywords>
     </icon>
     <icon filename="Grid_18_48.png" width="48" height="48" style="classic">
@@ -25345,9 +25485,11 @@
         <keyword>add</keyword>
         <keyword>grid</keyword>
         <keyword>insert</keyword>
+        <keyword>many</keyword>
         <keyword>new</keyword>
+        <keyword>plural</keyword>
         <keyword>plus</keyword>
-        <keyword>thumbnails</keyword>
+        <keyword>thumbnail</keyword>
       </keywords>
     </icon>
     <icon filename="Grid_18_64.png" width="64" height="64" style="classic">
@@ -25355,9 +25497,11 @@
         <keyword>add</keyword>
         <keyword>grid</keyword>
         <keyword>insert</keyword>
+        <keyword>many</keyword>
         <keyword>new</keyword>
+        <keyword>plural</keyword>
         <keyword>plus</keyword>
-        <keyword>thumbnails</keyword>
+        <keyword>thumbnail</keyword>
       </keywords>
     </icon>
     <icon filename="Grid_19_16.png" width="16" height="16" style="classic">
@@ -25366,8 +25510,10 @@
         <keyword>cross</keyword>
         <keyword>delete</keyword>
         <keyword>grid</keyword>
+        <keyword>many</keyword>
+        <keyword>plural</keyword>
         <keyword>remove</keyword>
-        <keyword>thumbnails</keyword>
+        <keyword>thumbnail</keyword>
       </keywords>
     </icon>
     <icon filename="Grid_19_24.png" width="24" height="24" style="classic">
@@ -25376,8 +25522,10 @@
         <keyword>cross</keyword>
         <keyword>delete</keyword>
         <keyword>grid</keyword>
+        <keyword>many</keyword>
+        <keyword>plural</keyword>
         <keyword>remove</keyword>
-        <keyword>thumbnails</keyword>
+        <keyword>thumbnail</keyword>
       </keywords>
     </icon>
     <icon filename="Grid_19_32.png" width="32" height="32" style="classic">
@@ -25386,8 +25534,10 @@
         <keyword>cross</keyword>
         <keyword>delete</keyword>
         <keyword>grid</keyword>
+        <keyword>many</keyword>
+        <keyword>plural</keyword>
         <keyword>remove</keyword>
-        <keyword>thumbnails</keyword>
+        <keyword>thumbnail</keyword>
       </keywords>
     </icon>
     <icon filename="Grid_19_36.png" width="36" height="36" style="classic">
@@ -25396,8 +25546,10 @@
         <keyword>cross</keyword>
         <keyword>delete</keyword>
         <keyword>grid</keyword>
+        <keyword>many</keyword>
+        <keyword>plural</keyword>
         <keyword>remove</keyword>
-        <keyword>thumbnails</keyword>
+        <keyword>thumbnail</keyword>
       </keywords>
     </icon>
     <icon filename="Grid_19_48.png" width="48" height="48" style="classic">
@@ -25406,8 +25558,10 @@
         <keyword>cross</keyword>
         <keyword>delete</keyword>
         <keyword>grid</keyword>
+        <keyword>many</keyword>
+        <keyword>plural</keyword>
         <keyword>remove</keyword>
-        <keyword>thumbnails</keyword>
+        <keyword>thumbnail</keyword>
       </keywords>
     </icon>
     <icon filename="Grid_19_64.png" width="64" height="64" style="classic">
@@ -25416,8 +25570,10 @@
         <keyword>cross</keyword>
         <keyword>delete</keyword>
         <keyword>grid</keyword>
+        <keyword>many</keyword>
+        <keyword>plural</keyword>
         <keyword>remove</keyword>
-        <keyword>thumbnails</keyword>
+        <keyword>thumbnail</keyword>
       </keywords>
     </icon>
     <icon filename="Grid_20_16.png" width="16" height="16" style="classic">
@@ -25425,10 +25581,12 @@
         <keyword>configuration</keyword>
         <keyword>gear</keyword>
         <keyword>grid</keyword>
+        <keyword>many</keyword>
         <keyword>options</keyword>
+        <keyword>plural</keyword>
         <keyword>settings</keyword>
         <keyword>setup</keyword>
-        <keyword>thumbnails</keyword>
+        <keyword>thumbnail</keyword>
       </keywords>
     </icon>
     <icon filename="Grid_20_24.png" width="24" height="24" style="classic">
@@ -25436,10 +25594,12 @@
         <keyword>configuration</keyword>
         <keyword>gear</keyword>
         <keyword>grid</keyword>
+        <keyword>many</keyword>
         <keyword>options</keyword>
+        <keyword>plural</keyword>
         <keyword>settings</keyword>
         <keyword>setup</keyword>
-        <keyword>thumbnails</keyword>
+        <keyword>thumbnail</keyword>
       </keywords>
     </icon>
     <icon filename="Grid_20_32.png" width="32" height="32" style="classic">
@@ -25447,10 +25607,12 @@
         <keyword>configuration</keyword>
         <keyword>gear</keyword>
         <keyword>grid</keyword>
+        <keyword>many</keyword>
         <keyword>options</keyword>
+        <keyword>plural</keyword>
         <keyword>settings</keyword>
         <keyword>setup</keyword>
-        <keyword>thumbnails</keyword>
+        <keyword>thumbnail</keyword>
       </keywords>
     </icon>
     <icon filename="Grid_20_36.png" width="36" height="36" style="classic">
@@ -25458,10 +25620,12 @@
         <keyword>configuration</keyword>
         <keyword>gear</keyword>
         <keyword>grid</keyword>
+        <keyword>many</keyword>
         <keyword>options</keyword>
+        <keyword>plural</keyword>
         <keyword>settings</keyword>
         <keyword>setup</keyword>
-        <keyword>thumbnails</keyword>
+        <keyword>thumbnail</keyword>
       </keywords>
     </icon>
     <icon filename="Grid_20_48.png" width="48" height="48" style="classic">
@@ -25469,10 +25633,12 @@
         <keyword>configuration</keyword>
         <keyword>gear</keyword>
         <keyword>grid</keyword>
+        <keyword>many</keyword>
         <keyword>options</keyword>
+        <keyword>plural</keyword>
         <keyword>settings</keyword>
         <keyword>setup</keyword>
-        <keyword>thumbnails</keyword>
+        <keyword>thumbnail</keyword>
       </keywords>
     </icon>
     <icon filename="Grid_20_64.png" width="64" height="64" style="classic">
@@ -25480,10 +25646,12 @@
         <keyword>configuration</keyword>
         <keyword>gear</keyword>
         <keyword>grid</keyword>
+        <keyword>many</keyword>
         <keyword>options</keyword>
+        <keyword>plural</keyword>
         <keyword>settings</keyword>
         <keyword>setup</keyword>
-        <keyword>thumbnails</keyword>
+        <keyword>thumbnail</keyword>
       </keywords>
     </icon>
     <icon filename="Remove_09_16.png" width="16" height="16" style="flat">
