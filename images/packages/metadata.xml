@@ -1,0 +1,1010 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <icons>
+    <icon filename="pkg_add.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>ide</keyword>
+        <keyword>insert</keyword>
+        <keyword>package</keyword>
+        <keyword>plus</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_add_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>ide</keyword>
+        <keyword>insert</keyword>
+        <keyword>package</keyword>
+        <keyword>plus</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_add_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>ide</keyword>
+        <keyword>insert</keyword>
+        <keyword>package</keyword>
+        <keyword>plus</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_binary.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>binary</keyword>
+        <keyword>code</keyword>
+        <keyword>file</keyword>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+        <keyword>source</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_binary_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>binary</keyword>
+        <keyword>code</keyword>
+        <keyword>file</keyword>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+        <keyword>source</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_binary_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>binary</keyword>
+        <keyword>code</keyword>
+        <keyword>file</keyword>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+        <keyword>source</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_compile.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>options</keyword>
+        <keyword>package</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_compile_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>options</keyword>
+        <keyword>package</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_compile_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>options</keyword>
+        <keyword>package</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_comp_new.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>color</keyword>
+        <keyword>compile</keyword>
+        <keyword>cube</keyword>
+        <keyword>ide</keyword>
+        <keyword>insert</keyword>
+        <keyword>plus</keyword>
+        <keyword>project</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_comp_new_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>color</keyword>
+        <keyword>compile</keyword>
+        <keyword>cube</keyword>
+        <keyword>ide</keyword>
+        <keyword>insert</keyword>
+        <keyword>plus</keyword>
+        <keyword>project</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_comp_new_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>color</keyword>
+        <keyword>compile</keyword>
+        <keyword>cube</keyword>
+        <keyword>ide</keyword>
+        <keyword>insert</keyword>
+        <keyword>plus</keyword>
+        <keyword>project</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_conflict.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>attention</keyword>
+        <keyword>ide</keyword>
+        <keyword>package</keyword>
+        <keyword>warning</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_conflict_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>attention</keyword>
+        <keyword>ide</keyword>
+        <keyword>package</keyword>
+        <keyword>warning</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_conflict_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>attention</keyword>
+        <keyword>ide</keyword>
+        <keyword>package</keyword>
+        <keyword>warning</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_core_overlay.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>cancel</keyword>
+        <keyword>close</keyword>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>ide</keyword>
+        <keyword>overlay</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_core_overlay_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>cancel</keyword>
+        <keyword>close</keyword>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>ide</keyword>
+        <keyword>overlay</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_core_overlay_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>cancel</keyword>
+        <keyword>close</keyword>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>ide</keyword>
+        <keyword>overlay</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_design_overlay.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>design</keyword>
+        <keyword>ide</keyword>
+        <keyword>overlay</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_design_overlay_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>design</keyword>
+        <keyword>ide</keyword>
+        <keyword>overlay</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_design_overlay_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>design</keyword>
+        <keyword>ide</keyword>
+        <keyword>overlay</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_files.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>files</keyword>
+        <keyword>ide</keyword>
+        <keyword>package</keyword>
+        <keyword>sheets</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_files_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>files</keyword>
+        <keyword>ide</keyword>
+        <keyword>package</keyword>
+        <keyword>sheets</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_files_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>files</keyword>
+        <keyword>ide</keyword>
+        <keyword>package</keyword>
+        <keyword>sheets</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_fpc_overlay.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>font</keyword>
+        <keyword>FPC</keyword>
+        <keyword>ide</keyword>
+        <keyword>overlay</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_fpc_overlay_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>font</keyword>
+        <keyword>FPC</keyword>
+        <keyword>ide</keyword>
+        <keyword>overlay</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_fpc_overlay_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>font</keyword>
+        <keyword>FPC</keyword>
+        <keyword>ide</keyword>
+        <keyword>overlay</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_graph.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>hierarchy</keyword>
+        <keyword>ide</keyword>
+        <keyword>nodes</keyword>
+        <keyword>package</keyword>
+        <keyword>tree</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_graph_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>hierarchy</keyword>
+        <keyword>ide</keyword>
+        <keyword>nodes</keyword>
+        <keyword>package</keyword>
+        <keyword>tree</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_graph_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>hierarchy</keyword>
+        <keyword>ide</keyword>
+        <keyword>nodes</keyword>
+        <keyword>package</keyword>
+        <keyword>tree</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_hierarchical.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>hierarchy</keyword>
+        <keyword>ide</keyword>
+        <keyword>node</keyword>
+        <keyword>tree</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_hierarchical_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>hierarchy</keyword>
+        <keyword>ide</keyword>
+        <keyword>node</keyword>
+        <keyword>tree</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_hierarchical_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>hierarchy</keyword>
+        <keyword>ide</keyword>
+        <keyword>node</keyword>
+        <keyword>tree</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_include.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>ide</keyword>
+        <keyword>include</keyword>
+        <keyword>info</keyword>
+        <keyword>page</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_include_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>ide</keyword>
+        <keyword>include</keyword>
+        <keyword>info</keyword>
+        <keyword>page</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_include_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>ide</keyword>
+        <keyword>include</keyword>
+        <keyword>info</keyword>
+        <keyword>page</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_inherited.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>attachment</keyword>
+        <keyword>ide</keyword>
+        <keyword>inherited</keyword>
+        <keyword>package</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_inherited_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>attachment</keyword>
+        <keyword>ide</keyword>
+        <keyword>inherited</keyword>
+        <keyword>package</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_inherited_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>attachment</keyword>
+        <keyword>ide</keyword>
+        <keyword>inherited</keyword>
+        <keyword>package</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_install.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>execute</keyword>
+        <keyword>flash</keyword>
+        <keyword>ide</keyword>
+        <keyword>install</keyword>
+        <keyword>run</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_installed.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>install</keyword>
+        <keyword>package</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_installed_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>install</keyword>
+        <keyword>package</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_installed_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>install</keyword>
+        <keyword>package</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_install_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>execute</keyword>
+        <keyword>flash</keyword>
+        <keyword>ide</keyword>
+        <keyword>install</keyword>
+        <keyword>run</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_install_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>execute</keyword>
+        <keyword>flash</keyword>
+        <keyword>ide</keyword>
+        <keyword>install</keyword>
+        <keyword>run</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_issues.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>attention</keyword>
+        <keyword>file</keyword>
+        <keyword>ide</keyword>
+        <keyword>info</keyword>
+        <keyword>issue</keyword>
+        <keyword>page</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_issues_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>attention</keyword>
+        <keyword>file</keyword>
+        <keyword>ide</keyword>
+        <keyword>info</keyword>
+        <keyword>issue</keyword>
+        <keyword>page</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_issues_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>attention</keyword>
+        <keyword>file</keyword>
+        <keyword>ide</keyword>
+        <keyword>info</keyword>
+        <keyword>issue</keyword>
+        <keyword>page</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_lazarus_overlay.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>Lazarus</keyword>
+        <keyword>overlay</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_lazarus_overlay_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>Lazarus</keyword>
+        <keyword>overlay</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_lazarus_overlay_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>Lazarus</keyword>
+        <keyword>overlay</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_lfm.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>form</keyword>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+        <keyword>windows</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_lfm_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>form</keyword>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+        <keyword>windows</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_lfm_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>form</keyword>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+        <keyword>windows</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_links.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>link</keyword>
+        <keyword>package</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_links_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>link</keyword>
+        <keyword>package</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_links_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>link</keyword>
+        <keyword>package</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_lrs.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>file</keyword>
+        <keyword>ide</keyword>
+        <keyword>options</keyword>
+        <keyword>page</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_lrs_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>file</keyword>
+        <keyword>ide</keyword>
+        <keyword>options</keyword>
+        <keyword>page</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_lrs_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>file</keyword>
+        <keyword>ide</keyword>
+        <keyword>options</keyword>
+        <keyword>page</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_new.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>ide</keyword>
+        <keyword>new</keyword>
+        <keyword>package</keyword>
+        <keyword>page</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_new_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>ide</keyword>
+        <keyword>new</keyword>
+        <keyword>package</keyword>
+        <keyword>page</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_new_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>ide</keyword>
+        <keyword>new</keyword>
+        <keyword>package</keyword>
+        <keyword>page</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_open.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>folder</keyword>
+        <keyword>ide</keyword>
+        <keyword>open</keyword>
+        <keyword>package</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_open_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>folder</keyword>
+        <keyword>ide</keyword>
+        <keyword>open</keyword>
+        <keyword>package</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_open_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>folder</keyword>
+        <keyword>ide</keyword>
+        <keyword>open</keyword>
+        <keyword>package</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_open_packageofcurunit.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>package</keyword>
+        <keyword>unit</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_open_packageofcurunit_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>package</keyword>
+        <keyword>unit</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_open_packageofcurunit_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>package</keyword>
+        <keyword>unit</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_open_recent.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>clock</keyword>
+        <keyword>date</keyword>
+        <keyword>file</keyword>
+        <keyword>folder</keyword>
+        <keyword>ide</keyword>
+        <keyword>open</keyword>
+        <keyword>package</keyword>
+        <keyword>recent</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_open_recent_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>clock</keyword>
+        <keyword>date</keyword>
+        <keyword>file</keyword>
+        <keyword>folder</keyword>
+        <keyword>ide</keyword>
+        <keyword>open</keyword>
+        <keyword>package</keyword>
+        <keyword>recent</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_open_recent_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>clock</keyword>
+        <keyword>date</keyword>
+        <keyword>file</keyword>
+        <keyword>folder</keyword>
+        <keyword>ide</keyword>
+        <keyword>open</keyword>
+        <keyword>package</keyword>
+        <keyword>recent</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_package_autoinstall.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>ide</keyword>
+        <keyword>insert</keyword>
+        <keyword>new</keyword>
+        <keyword>package</keyword>
+        <keyword>plus</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_package_autoinstall_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>ide</keyword>
+        <keyword>insert</keyword>
+        <keyword>new</keyword>
+        <keyword>package</keyword>
+        <keyword>plus</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_package_autoinstall_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>ide</keyword>
+        <keyword>insert</keyword>
+        <keyword>new</keyword>
+        <keyword>package</keyword>
+        <keyword>plus</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_package_circle.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>circle</keyword>
+        <keyword>ide</keyword>
+        <keyword>package</keyword>
+        <keyword>refresh</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_package_circle_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>circle</keyword>
+        <keyword>ide</keyword>
+        <keyword>package</keyword>
+        <keyword>refresh</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_package_circle_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>circle</keyword>
+        <keyword>ide</keyword>
+        <keyword>package</keyword>
+        <keyword>refresh</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_package_uninstall.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>abort</keyword>
+        <keyword>cancel</keyword>
+        <keyword>close</keyword>
+        <keyword>cross</keyword>
+        <keyword>ide</keyword>
+        <keyword>package</keyword>
+        <keyword>uninstall</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_package_uninstall_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>abort</keyword>
+        <keyword>cancel</keyword>
+        <keyword>close</keyword>
+        <keyword>cross</keyword>
+        <keyword>ide</keyword>
+        <keyword>package</keyword>
+        <keyword>uninstall</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_package_uninstall_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>abort</keyword>
+        <keyword>cancel</keyword>
+        <keyword>close</keyword>
+        <keyword>cross</keyword>
+        <keyword>ide</keyword>
+        <keyword>package</keyword>
+        <keyword>uninstall</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_properties.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>ide</keyword>
+        <keyword>options</keyword>
+        <keyword>package</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>tool</keyword>
+        <keyword>wrench</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_properties_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>ide</keyword>
+        <keyword>options</keyword>
+        <keyword>package</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>tool</keyword>
+        <keyword>wrench</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_properties_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>ide</keyword>
+        <keyword>options</keyword>
+        <keyword>package</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>tool</keyword>
+        <keyword>wrench</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_registerunit.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>file</keyword>
+        <keyword>green</keyword>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+        <keyword>register</keyword>
+        <keyword>right</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_registerunit_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>file</keyword>
+        <keyword>green</keyword>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+        <keyword>register</keyword>
+        <keyword>right</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_registerunit_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>file</keyword>
+        <keyword>green</keyword>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+        <keyword>register</keyword>
+        <keyword>right</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_removedfiles.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>file</keyword>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_removedfiles_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>file</keyword>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_removedfiles_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>file</keyword>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_removedrequired.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>close</keyword>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>ide</keyword>
+        <keyword>package</keyword>
+        <keyword>puzzle</keyword>
+        <keyword>remove</keyword>
+        <keyword>required</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_removedrequired_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>close</keyword>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>ide</keyword>
+        <keyword>package</keyword>
+        <keyword>puzzle</keyword>
+        <keyword>remove</keyword>
+        <keyword>required</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_removedrequired_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>close</keyword>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>ide</keyword>
+        <keyword>package</keyword>
+        <keyword>puzzle</keyword>
+        <keyword>remove</keyword>
+        <keyword>required</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_required.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>package</keyword>
+        <keyword>puzzle</keyword>
+        <keyword>required</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_required_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>package</keyword>
+        <keyword>puzzle</keyword>
+        <keyword>required</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_required_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>package</keyword>
+        <keyword>puzzle</keyword>
+        <keyword>required</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_runtime_overlay.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>green</keyword>
+        <keyword>ide</keyword>
+        <keyword>overlay</keyword>
+        <keyword>right</keyword>
+        <keyword>run</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_runtime_overlay_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>green</keyword>
+        <keyword>ide</keyword>
+        <keyword>overlay</keyword>
+        <keyword>right</keyword>
+        <keyword>run</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_runtime_overlay_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>green</keyword>
+        <keyword>ide</keyword>
+        <keyword>overlay</keyword>
+        <keyword>right</keyword>
+        <keyword>run</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_sortalphabetically.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>alpha</keyword>
+        <keyword>ascending</keyword>
+        <keyword>ide</keyword>
+        <keyword>sort</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_sortalphabetically_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>alpha</keyword>
+        <keyword>ascending</keyword>
+        <keyword>ide</keyword>
+        <keyword>sort</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_sortalphabetically_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>alpha</keyword>
+        <keyword>ascending</keyword>
+        <keyword>ide</keyword>
+        <keyword>sort</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_text.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+        <keyword>text</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_text_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+        <keyword>text</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_text_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+        <keyword>text</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_unit.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+        <keyword>text</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_unit_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+        <keyword>text</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pkg_unit_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+        <keyword>text</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+  </icons>
+</metadata>

@@ -1,0 +1,73 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.4.4\n"
+
+#: iconfinderstrconstside.rsgraphpropeditor_iconfinder
+msgid "Icon Finder ..."
+msgstr "Icon-Suche ..."
+
+#: iconfinderstrconstside.rsiconfinderide_caption
+#, object-pascal-format
+msgid "Icon Finder (%d out of %d icons)"
+msgstr "Icon-Suche (%d von %d Bildern)"
+
+#: iconfinderstrconstside.rsiconfinderide_folderhint
+msgctxt "iconfinderstrconstside.rsiconfinderide_folderhint"
+msgid "Icon folder management"
+msgstr "Icon-Ordner-Verwaltung"
+
+#: iconfinderstrconstside.rsiconfinderide_folders
+msgctxt "iconfinderstrconstside.rsiconfinderide_folders"
+msgid "Folders..."
+msgstr "Icon-Ordner..."
+
+#: iconfinderstrconstside.rsiconfinderide_general
+msgctxt "iconfinderstrconstside.rsiconfinderide_general"
+msgid "General"
+msgstr "Allgemein"
+
+#: iconfinderstrconstside.rsiconfinderide_iconlibrary
+msgid "Icon Finder"
+msgstr "Icon-Suche"
+
+#: iconfinderstrconstside.rsiconfinderide_metadata
+msgctxt "iconfinderstrconstside.rsiconfinderide_metadata"
+msgid "Metadata..."
+msgstr "Metadaten..."
+
+#: iconfinderstrconstside.rsiconfinderide_metadatahint
+msgctxt "iconfinderstrconstside.rsiconfinderide_metadatahint"
+msgid "Edit icon metadata"
+msgstr "Icon-Metadaten bearbeiten"
+
+#: iconfinderstrconstside.rsiconfinderide_savemetadata
+msgctxt "iconfinderstrconstside.rsiconfinderide_savemetadata"
+msgid "Save metadata"
+msgstr "Metadaten speichern"
+
+#: iconfinderstrconstside.rsiconfinderide_savemetadatahint
+msgctxt "iconfinderstrconstside.rsiconfinderide_savemetadatahint"
+msgid "Save icon metadata files"
+msgstr "Dateien mit Icon-Metadaten speichern"
+
+#: iconfinderstrconstside.rsiconfinderide_select
+msgctxt "iconfinderstrconstside.rsiconfinderide_select"
+msgid "Select"
+msgstr "Wählen"
+
+#: iconfinderstrconstside.rsimglisteditor_addfromiconfinder
+msgid "Add from Icon Finder ..."
+msgstr "Mittels Icon-Suche hinzufügen ..."
+
+#: iconfinderstrconstside.rsimglisteditor_replacefromiconfinder
+msgid "Replace by Icon Finder ..."
+msgstr "Mittels Icon-Suche ersetzen ..."

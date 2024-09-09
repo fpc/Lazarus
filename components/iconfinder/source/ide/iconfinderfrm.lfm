@@ -1,0 +1,30 @@
+object IconFinderForm: TIconFinderForm
+  Left = 383
+  Height = 600
+  Top = 186
+  Width = 800
+  Caption = 'Icon Finder'
+  ClientHeight = 600
+  ClientWidth = 800
+  LCLVersion = '3.99.0.0'
+  OnCloseQuery = FormCloseQuery
+  OnCreate = FormCreate
+  object ButtonPanel: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 560
+    Width = 788
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = 'Select'
+    OKButton.OnClick = OKButtonClick
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = 'Add'
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 0
+    DefaultButton = pbNone
+    ShowButtons = [pbOK, pbCancel]
+  end
+end

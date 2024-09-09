@@ -1,0 +1,56 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: iconfinderstrconstside.rsgraphpropeditor_iconfinder
+msgid "Icon Finder ..."
+msgstr ""
+
+#: iconfinderstrconstside.rsiconfinderide_caption
+#, object-pascal-format
+msgid "Icon Finder (%d out of %d icons)"
+msgstr ""
+
+#: iconfinderstrconstside.rsiconfinderide_folderhint
+msgid "Icon folder management"
+msgstr ""
+
+#: iconfinderstrconstside.rsiconfinderide_folders
+msgid "Folders..."
+msgstr ""
+
+#: iconfinderstrconstside.rsiconfinderide_general
+msgid "General"
+msgstr ""
+
+#: iconfinderstrconstside.rsiconfinderide_iconlibrary
+msgid "Icon Finder"
+msgstr ""
+
+#: iconfinderstrconstside.rsiconfinderide_metadata
+msgid "Metadata..."
+msgstr ""
+
+#: iconfinderstrconstside.rsiconfinderide_metadatahint
+msgid "Edit icon metadata"
+msgstr ""
+
+#: iconfinderstrconstside.rsiconfinderide_savemetadata
+msgid "Save metadata"
+msgstr ""
+
+#: iconfinderstrconstside.rsiconfinderide_savemetadatahint
+msgid "Save icon metadata files"
+msgstr ""
+
+#: iconfinderstrconstside.rsiconfinderide_select
+msgid "Select"
+msgstr ""
+
+#: iconfinderstrconstside.rsimglisteditor_addfromiconfinder
+msgid "Add from Icon Finder ..."
+msgstr ""
+
+#: iconfinderstrconstside.rsimglisteditor_replacefromiconfinder
+msgid "Replace by Icon Finder ..."
+msgstr ""
+

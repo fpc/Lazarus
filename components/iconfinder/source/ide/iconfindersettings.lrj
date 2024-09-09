@@ -1,0 +1,7 @@
+{"version":1,"strings":[
+{"hash":191236306,"name":"ticonfindersettingsframe.toolbar.caption","sourcebytes":[84,111,111,108,66,97,114],"value":"ToolBar"},
+{"hash":224581363,"name":"ticonfindersettingsframe.tbfolders.caption","sourcebytes":[116,98,70,111,108,100,101,114,115],"value":"tbFolders"},
+{"hash":127445489,"name":"ticonfindersettingsframe.tbeditmetadata.hint","sourcebytes":[69,100,105,116,32,105,99,111,110,32,109,101,116,97,100,97,116,97],"value":"Edit icon metadata"},
+{"hash":169654321,"name":"ticonfindersettingsframe.tbeditmetadata.caption","sourcebytes":[116,98,69,100,105,116,77,101,116,97,100,97,116,97],"value":"tbEditMetadata"},
+{"hash":188704561,"name":"ticonfindersettingsframe.tbsavemetadata.caption","sourcebytes":[116,98,83,97,118,101,77,101,116,97,100,97,116,97],"value":"tbSaveMetadata"}
+]}

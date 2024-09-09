@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <icons>
+    <icon filename="oi_box.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>form</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="oi_box_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>form</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="oi_box_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>form</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="oi_collection.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>collection</keyword>
+        <keyword>node</keyword>
+        <keyword>tree</keyword>
+      </keywords>
+    </icon>
+    <icon filename="oi_collection_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>collection</keyword>
+        <keyword>node</keyword>
+        <keyword>tree</keyword>
+      </keywords>
+    </icon>
+    <icon filename="oi_collection_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>collection</keyword>
+        <keyword>node</keyword>
+        <keyword>tree</keyword>
+      </keywords>
+    </icon>
+    <icon filename="oi_comp.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>generic</keyword>
+      </keywords>
+    </icon>
+    <icon filename="oi_comp_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>generic</keyword>
+      </keywords>
+    </icon>
+    <icon filename="oi_comp_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>generic</keyword>
+      </keywords>
+    </icon>
+    <icon filename="oi_control.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>control</keyword>
+        <keyword>form</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="oi_control_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>control</keyword>
+        <keyword>form</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="oi_control_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>control</keyword>
+        <keyword>form</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="oi_form.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>form</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="oi_form_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>form</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="oi_form_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>form</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="oi_item.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>collection</keyword>
+        <keyword>node</keyword>
+        <keyword>tree</keyword>
+      </keywords>
+    </icon>
+    <icon filename="oi_item_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>collection</keyword>
+        <keyword>node</keyword>
+        <keyword>tree</keyword>
+      </keywords>
+    </icon>
+    <icon filename="oi_item_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>collection</keyword>
+        <keyword>node</keyword>
+        <keyword>tree</keyword>
+      </keywords>
+    </icon>
+  </icons>
+</metadata>

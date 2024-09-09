@@ -1,0 +1,4694 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <icons>
+    <icon filename="bug_small.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>bug</keyword>
+        <keyword>ide</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_abort_build.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>config</keyword>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>remove</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_abort_build_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>config</keyword>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>remove</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_abort_build_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>config</keyword>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>remove</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_add_jump_point_to_history.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>arrow</keyword>
+        <keyword>history</keyword>
+        <keyword>ide</keyword>
+        <keyword>insert</keyword>
+        <keyword>jump</keyword>
+        <keyword>new</keyword>
+        <keyword>page</keyword>
+        <keyword>plus</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_add_jump_point_to_history_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>arrow</keyword>
+        <keyword>history</keyword>
+        <keyword>ide</keyword>
+        <keyword>insert</keyword>
+        <keyword>jump</keyword>
+        <keyword>new</keyword>
+        <keyword>page</keyword>
+        <keyword>plus</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_add_jump_point_to_history_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>arrow</keyword>
+        <keyword>history</keyword>
+        <keyword>ide</keyword>
+        <keyword>insert</keyword>
+        <keyword>jump</keyword>
+        <keyword>new</keyword>
+        <keyword>page</keyword>
+        <keyword>plus</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_build.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>build</keyword>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>restore</keyword>
+        <keyword>resume</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_build_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>build</keyword>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>restore</keyword>
+        <keyword>resume</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_build_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>build</keyword>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>restore</keyword>
+        <keyword>resume</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_build_all.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>many</keyword>
+        <keyword>menu</keyword>
+        <keyword>plural</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_build_all_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>many</keyword>
+        <keyword>menu</keyword>
+        <keyword>plural</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_build_all_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>many</keyword>
+        <keyword>menu</keyword>
+        <keyword>plural</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_build_clean.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>brush</keyword>
+        <keyword>clear</keyword>
+        <keyword>configuration</keyword>
+        <keyword>delete</keyword>
+        <keyword>erase</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>remove</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_build_clean_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>brush</keyword>
+        <keyword>clear</keyword>
+        <keyword>configuration</keyword>
+        <keyword>delete</keyword>
+        <keyword>erase</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>remove</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_build_clean_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>brush</keyword>
+        <keyword>clear</keyword>
+        <keyword>configuration</keyword>
+        <keyword>delete</keyword>
+        <keyword>erase</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>remove</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_build_file.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>text</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_build_file_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>text</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_build_file_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>text</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_build_lazarus.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_build_lazarus_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_build_lazarus_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_build_run_file.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>build</keyword>
+        <keyword>compile</keyword>
+        <keyword>configuration</keyword>
+        <keyword>execute</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>next</keyword>
+        <keyword>page</keyword>
+        <keyword>run</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>text</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_build_run_file_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>build</keyword>
+        <keyword>compile</keyword>
+        <keyword>configuration</keyword>
+        <keyword>execute</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>next</keyword>
+        <keyword>page</keyword>
+        <keyword>run</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>text</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_build_run_file_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>build</keyword>
+        <keyword>compile</keyword>
+        <keyword>configuration</keyword>
+        <keyword>execute</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>next</keyword>
+        <keyword>page</keyword>
+        <keyword>run</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>text</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_clean.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>brush</keyword>
+        <keyword>clean</keyword>
+        <keyword>clear</keyword>
+        <keyword>delete</keyword>
+        <keyword>erase</keyword>
+        <keyword>ide</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_clean_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>brush</keyword>
+        <keyword>clean</keyword>
+        <keyword>clear</keyword>
+        <keyword>delete</keyword>
+        <keyword>erase</keyword>
+        <keyword>ide</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_clean_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>brush</keyword>
+        <keyword>clean</keyword>
+        <keyword>clear</keyword>
+        <keyword>delete</keyword>
+        <keyword>erase</keyword>
+        <keyword>ide</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_clear_all_bookmarks.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>all</keyword>
+        <keyword>bookmark</keyword>
+        <keyword>clear</keyword>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>ide</keyword>
+        <keyword>many</keyword>
+        <keyword>plural</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_clear_all_bookmarks_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>all</keyword>
+        <keyword>bookmark</keyword>
+        <keyword>clear</keyword>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>ide</keyword>
+        <keyword>many</keyword>
+        <keyword>plural</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_clear_all_bookmarks_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>all</keyword>
+        <keyword>bookmark</keyword>
+        <keyword>clear</keyword>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>ide</keyword>
+        <keyword>many</keyword>
+        <keyword>plural</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_clear_file_bookmarks.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>clear</keyword>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>ide</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_clear_file_bookmarks_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>clear</keyword>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>ide</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_clear_file_bookmarks_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>clear</keyword>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>ide</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_close.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>clear</keyword>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>ide</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_close_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>clear</keyword>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>ide</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_close_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>clear</keyword>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>ide</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_close_all.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>all</keyword>
+        <keyword>bookmark</keyword>
+        <keyword>clear</keyword>
+        <keyword>close</keyword>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>file</keyword>
+        <keyword>ide</keyword>
+        <keyword>many</keyword>
+        <keyword>page</keyword>
+        <keyword>plural</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_close_all_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>all</keyword>
+        <keyword>bookmark</keyword>
+        <keyword>clear</keyword>
+        <keyword>close</keyword>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>file</keyword>
+        <keyword>ide</keyword>
+        <keyword>many</keyword>
+        <keyword>page</keyword>
+        <keyword>plural</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_close_all_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>all</keyword>
+        <keyword>bookmark</keyword>
+        <keyword>clear</keyword>
+        <keyword>close</keyword>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>file</keyword>
+        <keyword>ide</keyword>
+        <keyword>many</keyword>
+        <keyword>page</keyword>
+        <keyword>plural</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_codetoolsdefineseditor.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>block</keyword>
+        <keyword>code</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>pencil</keyword>
+        <keyword>source</keyword>
+        <keyword>tree</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_codetoolsdefineseditor_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>block</keyword>
+        <keyword>code</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>pencil</keyword>
+        <keyword>source</keyword>
+        <keyword>tree</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_codetoolsdefineseditor_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>block</keyword>
+        <keyword>code</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>pencil</keyword>
+        <keyword>source</keyword>
+        <keyword>tree</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_codetoolsoptions.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>advance</keyword>
+        <keyword>arrow</keyword>
+        <keyword>configuration</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>next</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>tools</keyword>
+        <keyword>wrench</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_codetoolsoptions_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>advance</keyword>
+        <keyword>arrow</keyword>
+        <keyword>configuration</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>next</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>tools</keyword>
+        <keyword>wrench</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_codetoolsoptions_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>advance</keyword>
+        <keyword>arrow</keyword>
+        <keyword>configuration</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>next</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>tools</keyword>
+        <keyword>wrench</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_comment.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>comment</keyword>
+        <keyword>ide</keyword>
+        <keyword>insert</keyword>
+        <keyword>menu</keyword>
+        <keyword>new</keyword>
+        <keyword>plus</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_comment_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>comment</keyword>
+        <keyword>ide</keyword>
+        <keyword>insert</keyword>
+        <keyword>menu</keyword>
+        <keyword>new</keyword>
+        <keyword>plus</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_comment_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>comment</keyword>
+        <keyword>ide</keyword>
+        <keyword>insert</keyword>
+        <keyword>menu</keyword>
+        <keyword>new</keyword>
+        <keyword>plus</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_compile.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_compiler_options.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>wrench</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_compiler_options_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>wrench</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_compiler_options_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>wrench</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_compile_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_compile_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_configure_build_lazarus.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_configure_build_lazarus_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_configure_build_lazarus_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_configure_help.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>help</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>wrench</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_configure_help_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>help</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>wrench</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_configure_help_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>help</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>wrench</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_editor_options.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>text</keyword>
+        <keyword>wrench</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_editor_options_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>text</keyword>
+        <keyword>wrench</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_editor_options_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>text</keyword>
+        <keyword>wrench</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_edit_breaklines.png" width="16" height="16" style="outline 2-color">
+      <keywords>
+        <keyword>break</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>line</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_edit_breaklines_150.png" width="24" height="24" style="outline 2-color">
+      <keywords>
+        <keyword>break</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>line</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_edit_breaklines_200.png" width="32" height="32" style="outline 2-color">
+      <keywords>
+        <keyword>break</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>line</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_edit_insertcharacter.png" width="16" height="16" style="outline 2-color">
+      <keywords>
+        <keyword>character</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>insert</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_edit_insertcharacter_150.png" width="24" height="24" style="outline 2-color">
+      <keywords>
+        <keyword>character</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>insert</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_edit_insertcharacter_200.png" width="32" height="32" style="outline 2-color">
+      <keywords>
+        <keyword>character</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>insert</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_edit_lowercase.png" width="16" height="16" style="outline">
+      <keywords>
+        <keyword>font</keyword>
+        <keyword>ide</keyword>
+        <keyword>lowercase</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_edit_lowercase_150.png" width="24" height="24" style="outline">
+      <keywords>
+        <keyword>font</keyword>
+        <keyword>ide</keyword>
+        <keyword>lowercase</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_edit_lowercase_200.png" width="32" height="32" style="outline">
+      <keywords>
+        <keyword>font</keyword>
+        <keyword>ide</keyword>
+        <keyword>lowercase</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_edit_select_all.png" width="16" height="16" style="outline 2-color">
+      <keywords>
+        <keyword>all</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>select</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_edit_select_all_150.png" width="24" height="24" style="outline 2-color">
+      <keywords>
+        <keyword>all</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>select</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_edit_select_all_200.png" width="32" height="32" style="outline 2-color">
+      <keywords>
+        <keyword>all</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>select</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_edit_select_codeblock.png" width="16" height="16" style="outline 2-color">
+      <keywords>
+        <keyword>block</keyword>
+        <keyword>code</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>select</keyword>
+        <keyword>source</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_edit_select_codeblock_150.png" width="24" height="24" style="outline 2-color">
+      <keywords>
+        <keyword>block</keyword>
+        <keyword>code</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>select</keyword>
+        <keyword>source</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_edit_select_codeblock_200.png" width="32" height="32" style="outline 2-color">
+      <keywords>
+        <keyword>block</keyword>
+        <keyword>code</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>select</keyword>
+        <keyword>source</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_edit_select_line.png" width="16" height="16" style="outline 2-color">
+      <keywords>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>line</keyword>
+        <keyword>select</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_edit_select_line_150.png" width="24" height="24" style="outline 2-color">
+      <keywords>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>line</keyword>
+        <keyword>select</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_edit_select_line_200.png" width="32" height="32" style="outline 2-color">
+      <keywords>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>line</keyword>
+        <keyword>select</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_edit_select_paragraph.png" width="16" height="16" style="outline 2-color">
+      <keywords>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>paragraph</keyword>
+        <keyword>select</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_edit_select_paragraph_150.png" width="24" height="24" style="outline 2-color">
+      <keywords>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>paragraph</keyword>
+        <keyword>select</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_edit_select_paragraph_200.png" width="32" height="32" style="outline 2-color">
+      <keywords>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>paragraph</keyword>
+        <keyword>select</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_edit_select_tobrace.png" width="16" height="16" style="outline 2-color">
+      <keywords>
+        <keyword>brace</keyword>
+        <keyword>ide</keyword>
+        <keyword>select</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_edit_select_tobrace_150.png" width="24" height="24" style="outline 2-color">
+      <keywords>
+        <keyword>brace</keyword>
+        <keyword>ide</keyword>
+        <keyword>select</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_edit_select_tobrace_200.png" width="32" height="32" style="outline 2-color">
+      <keywords>
+        <keyword>brace</keyword>
+        <keyword>ide</keyword>
+        <keyword>select</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_edit_select_word.png" width="16" height="16" style="outline 2-color">
+      <keywords>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>select</keyword>
+        <keyword>text</keyword>
+        <keyword>word</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_edit_select_word_150.png" width="24" height="24" style="outline 2-color">
+      <keywords>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>select</keyword>
+        <keyword>text</keyword>
+        <keyword>word</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_edit_select_word_200.png" width="32" height="32" style="outline 2-color">
+      <keywords>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>select</keyword>
+        <keyword>text</keyword>
+        <keyword>word</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_edit_sort.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>ascending</keyword>
+        <keyword>ide</keyword>
+        <keyword>sort</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_edit_sort_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>ascending</keyword>
+        <keyword>ide</keyword>
+        <keyword>sort</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_edit_sort_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>ascending</keyword>
+        <keyword>ide</keyword>
+        <keyword>sort</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_edit_swapcase.png" width="16" height="16" style="outline 2-color">
+      <keywords>
+        <keyword>font</keyword>
+        <keyword>ide</keyword>
+        <keyword>lowercase</keyword>
+        <keyword>uppercase</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_edit_swapcase_150.png" width="24" height="24" style="outline 2-color">
+      <keywords>
+        <keyword>font</keyword>
+        <keyword>ide</keyword>
+        <keyword>lowercase</keyword>
+        <keyword>uppercase</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_edit_swapcase_200.png" width="32" height="32" style="outline 2-color">
+      <keywords>
+        <keyword>font</keyword>
+        <keyword>ide</keyword>
+        <keyword>lowercase</keyword>
+        <keyword>uppercase</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_edit_tabstospaces.png" width="16" height="16" style="outline">
+      <keywords>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>last</keyword>
+        <keyword>menu</keyword>
+        <keyword>tab-stop</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_edit_tabstospaces_150.png" width="24" height="24" style="outline">
+      <keywords>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>last</keyword>
+        <keyword>menu</keyword>
+        <keyword>tab-stop</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_edit_tabstospaces_200.png" width="32" height="32" style="outline">
+      <keywords>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>last</keyword>
+        <keyword>menu</keyword>
+        <keyword>tab-stop</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_edit_uppercase.png" width="16" height="16" style="outline">
+      <keywords>
+        <keyword>font</keyword>
+        <keyword>ide</keyword>
+        <keyword>text</keyword>
+        <keyword>uppercase</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_edit_uppercase_150.png" width="24" height="24" style="outline">
+      <keywords>
+        <keyword>font</keyword>
+        <keyword>ide</keyword>
+        <keyword>text</keyword>
+        <keyword>uppercase</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_edit_uppercase_200.png" width="32" height="32" style="outline">
+      <keywords>
+        <keyword>font</keyword>
+        <keyword>ide</keyword>
+        <keyword>text</keyword>
+        <keyword>uppercase</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_environment_options.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>ide</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>tools</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_environment_options_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>ide</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>tools</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_environment_options_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>ide</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>tools</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_exit.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>close</keyword>
+        <keyword>exit</keyword>
+        <keyword>ide</keyword>
+        <keyword>quit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_exit_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>close</keyword>
+        <keyword>exit</keyword>
+        <keyword>ide</keyword>
+        <keyword>quit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_exit_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>close</keyword>
+        <keyword>exit</keyword>
+        <keyword>ide</keyword>
+        <keyword>quit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_exporthtml.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>export</keyword>
+        <keyword>html</keyword>
+        <keyword>ide</keyword>
+        <keyword>internet</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_exporthtml_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>export</keyword>
+        <keyword>html</keyword>
+        <keyword>ide</keyword>
+        <keyword>internet</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_exporthtml_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>export</keyword>
+        <keyword>html</keyword>
+        <keyword>ide</keyword>
+        <keyword>internet</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_file_print.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>print</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_file_print_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>print</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_file_print_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>print</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_file_revert.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>diskette</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>revert</keyword>
+        <keyword>save</keyword>
+        <keyword>store</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_file_revert_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>diskette</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>revert</keyword>
+        <keyword>save</keyword>
+        <keyword>store</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_file_revert_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>diskette</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>revert</keyword>
+        <keyword>save</keyword>
+        <keyword>store</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_goto_bookmark0.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>ide</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_goto_bookmark0_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>ide</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_goto_bookmark0_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>ide</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_goto_bookmark1.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>ide</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_goto_bookmark1_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>ide</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_goto_bookmark1_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>ide</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_goto_bookmark2.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>ide</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_goto_bookmark2_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>ide</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_goto_bookmark2_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>ide</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_goto_bookmark3.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>ide</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_goto_bookmark3_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>ide</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_goto_bookmark3_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>ide</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_goto_bookmark4.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>ide</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_goto_bookmark4_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>ide</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_goto_bookmark4_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>ide</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_goto_bookmark5.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>ide</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_goto_bookmark5_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>ide</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_goto_bookmark5_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>ide</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_goto_bookmark6.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>ide</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_goto_bookmark6_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>ide</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_goto_bookmark6_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>ide</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_goto_bookmark7.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>ide</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_goto_bookmark7_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>ide</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_goto_bookmark7_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>ide</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_goto_bookmark8.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>ide</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_goto_bookmark8_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>ide</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_goto_bookmark8_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>ide</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_goto_bookmark9.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>ide</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_goto_bookmark9_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>ide</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_goto_bookmark9_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>ide</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_goto_bookmarks.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>goto</keyword>
+        <keyword>ide</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_goto_bookmarks_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>goto</keyword>
+        <keyword>ide</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_goto_bookmarks_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>goto</keyword>
+        <keyword>ide</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_goto_line.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>goto</keyword>
+        <keyword>ide</keyword>
+        <keyword>jump</keyword>
+        <keyword>line</keyword>
+        <keyword>menu</keyword>
+        <keyword>source</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_goto_line_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>goto</keyword>
+        <keyword>ide</keyword>
+        <keyword>jump</keyword>
+        <keyword>line</keyword>
+        <keyword>menu</keyword>
+        <keyword>source</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_goto_line_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>goto</keyword>
+        <keyword>ide</keyword>
+        <keyword>jump</keyword>
+        <keyword>line</keyword>
+        <keyword>menu</keyword>
+        <keyword>source</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_indent.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>ide</keyword>
+        <keyword>indent</keyword>
+        <keyword>menu</keyword>
+        <keyword>source</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_indent_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>ide</keyword>
+        <keyword>indent</keyword>
+        <keyword>menu</keyword>
+        <keyword>source</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_indent_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>ide</keyword>
+        <keyword>indent</keyword>
+        <keyword>menu</keyword>
+        <keyword>source</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_information.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>help</keyword>
+        <keyword>ide</keyword>
+        <keyword>info</keyword>
+        <keyword>information</keyword>
+        <keyword>menu</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_information_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>help</keyword>
+        <keyword>ide</keyword>
+        <keyword>info</keyword>
+        <keyword>information</keyword>
+        <keyword>menu</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_information_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>help</keyword>
+        <keyword>ide</keyword>
+        <keyword>info</keyword>
+        <keyword>information</keyword>
+        <keyword>menu</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_jumpto_implementation.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>goto</keyword>
+        <keyword>ide</keyword>
+        <keyword>implementation</keyword>
+        <keyword>jump</keyword>
+        <keyword>menu</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_jumpto_implementationuses.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>goto</keyword>
+        <keyword>ide</keyword>
+        <keyword>implementation</keyword>
+        <keyword>jump</keyword>
+        <keyword>menu</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_jumpto_implementationuses_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>goto</keyword>
+        <keyword>ide</keyword>
+        <keyword>implementation</keyword>
+        <keyword>jump</keyword>
+        <keyword>menu</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_jumpto_implementationuses_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>goto</keyword>
+        <keyword>ide</keyword>
+        <keyword>implementation</keyword>
+        <keyword>jump</keyword>
+        <keyword>menu</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_jumpto_implementation_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>goto</keyword>
+        <keyword>ide</keyword>
+        <keyword>implementation</keyword>
+        <keyword>jump</keyword>
+        <keyword>menu</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_jumpto_implementation_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>goto</keyword>
+        <keyword>ide</keyword>
+        <keyword>implementation</keyword>
+        <keyword>jump</keyword>
+        <keyword>menu</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_jumpto_initialization.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>goto</keyword>
+        <keyword>ide</keyword>
+        <keyword>initialization</keyword>
+        <keyword>jump</keyword>
+        <keyword>menu</keyword>
+        <keyword>source</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_jumpto_initialization_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>goto</keyword>
+        <keyword>ide</keyword>
+        <keyword>initialization</keyword>
+        <keyword>jump</keyword>
+        <keyword>menu</keyword>
+        <keyword>source</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_jumpto_initialization_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>goto</keyword>
+        <keyword>ide</keyword>
+        <keyword>initialization</keyword>
+        <keyword>jump</keyword>
+        <keyword>menu</keyword>
+        <keyword>source</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_jumpto_interface.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>goto</keyword>
+        <keyword>ide</keyword>
+        <keyword>interface</keyword>
+        <keyword>jump</keyword>
+        <keyword>menu</keyword>
+        <keyword>source</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_jumpto_interfaceuses.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>goto</keyword>
+        <keyword>ide</keyword>
+        <keyword>interface</keyword>
+        <keyword>jump</keyword>
+        <keyword>menu</keyword>
+        <keyword>source</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_jumpto_interfaceuses_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>goto</keyword>
+        <keyword>ide</keyword>
+        <keyword>interface</keyword>
+        <keyword>jump</keyword>
+        <keyword>menu</keyword>
+        <keyword>source</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_jumpto_interfaceuses_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>goto</keyword>
+        <keyword>ide</keyword>
+        <keyword>interface</keyword>
+        <keyword>jump</keyword>
+        <keyword>menu</keyword>
+        <keyword>source</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_jumpto_interface_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>goto</keyword>
+        <keyword>ide</keyword>
+        <keyword>interface</keyword>
+        <keyword>jump</keyword>
+        <keyword>menu</keyword>
+        <keyword>source</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_jumpto_interface_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>goto</keyword>
+        <keyword>ide</keyword>
+        <keyword>interface</keyword>
+        <keyword>jump</keyword>
+        <keyword>menu</keyword>
+        <keyword>source</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_jumpto_procedurebegin.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>begin</keyword>
+        <keyword>code</keyword>
+        <keyword>goto</keyword>
+        <keyword>ide</keyword>
+        <keyword>jump</keyword>
+        <keyword>menu</keyword>
+        <keyword>procedure</keyword>
+        <keyword>source</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_jumpto_procedurebegin_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>begin</keyword>
+        <keyword>code</keyword>
+        <keyword>goto</keyword>
+        <keyword>ide</keyword>
+        <keyword>jump</keyword>
+        <keyword>menu</keyword>
+        <keyword>procedure</keyword>
+        <keyword>source</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_jumpto_procedurebegin_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>begin</keyword>
+        <keyword>code</keyword>
+        <keyword>goto</keyword>
+        <keyword>ide</keyword>
+        <keyword>jump</keyword>
+        <keyword>menu</keyword>
+        <keyword>procedure</keyword>
+        <keyword>source</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_jumpto_procedureheader.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>goto</keyword>
+        <keyword>ide</keyword>
+        <keyword>jump</keyword>
+        <keyword>menu</keyword>
+        <keyword>procedure</keyword>
+        <keyword>source</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_jumpto_procedureheader_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>goto</keyword>
+        <keyword>ide</keyword>
+        <keyword>jump</keyword>
+        <keyword>menu</keyword>
+        <keyword>procedure</keyword>
+        <keyword>source</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_jumpto_procedureheader_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>goto</keyword>
+        <keyword>ide</keyword>
+        <keyword>jump</keyword>
+        <keyword>menu</keyword>
+        <keyword>procedure</keyword>
+        <keyword>source</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_jumpto_section.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>goto</keyword>
+        <keyword>ide</keyword>
+        <keyword>implementation</keyword>
+        <keyword>interface</keyword>
+        <keyword>jump</keyword>
+        <keyword>menu</keyword>
+        <keyword>section</keyword>
+        <keyword>source</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_jumpto_section_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>goto</keyword>
+        <keyword>ide</keyword>
+        <keyword>implementation</keyword>
+        <keyword>interface</keyword>
+        <keyword>jump</keyword>
+        <keyword>menu</keyword>
+        <keyword>section</keyword>
+        <keyword>source</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_jumpto_section_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>goto</keyword>
+        <keyword>ide</keyword>
+        <keyword>implementation</keyword>
+        <keyword>interface</keyword>
+        <keyword>jump</keyword>
+        <keyword>menu</keyword>
+        <keyword>section</keyword>
+        <keyword>source</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_manage_desktops.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>desktop</keyword>
+        <keyword>ide</keyword>
+        <keyword>monitor</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_manage_desktops_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>desktop</keyword>
+        <keyword>ide</keyword>
+        <keyword>monitor</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_manage_desktops_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>desktop</keyword>
+        <keyword>ide</keyword>
+        <keyword>monitor</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_manage_source_editors.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>file</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>options</keyword>
+        <keyword>page</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_manage_source_editors_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>file</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>options</keyword>
+        <keyword>page</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_manage_source_editors_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>file</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>options</keyword>
+        <keyword>page</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_new.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>console</keyword>
+        <keyword>file</keyword>
+        <keyword>ide</keyword>
+        <keyword>new</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_new_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>console</keyword>
+        <keyword>file</keyword>
+        <keyword>ide</keyword>
+        <keyword>new</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_new_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>console</keyword>
+        <keyword>file</keyword>
+        <keyword>ide</keyword>
+        <keyword>new</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_new_form.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>form</keyword>
+        <keyword>ide</keyword>
+        <keyword>new</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_new_form_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>form</keyword>
+        <keyword>ide</keyword>
+        <keyword>new</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_new_form_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>form</keyword>
+        <keyword>ide</keyword>
+        <keyword>new</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_new_search.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>find</keyword>
+        <keyword>ide</keyword>
+        <keyword>magifier</keyword>
+        <keyword>new</keyword>
+        <keyword>search</keyword>
+        <keyword>zoom</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_new_search_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>find</keyword>
+        <keyword>ide</keyword>
+        <keyword>magifier</keyword>
+        <keyword>new</keyword>
+        <keyword>search</keyword>
+        <keyword>zoom</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_new_search_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>find</keyword>
+        <keyword>ide</keyword>
+        <keyword>magifier</keyword>
+        <keyword>new</keyword>
+        <keyword>search</keyword>
+        <keyword>zoom</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_new_unit.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>ide</keyword>
+        <keyword>new</keyword>
+        <keyword>page</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_new_unit_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>ide</keyword>
+        <keyword>new</keyword>
+        <keyword>page</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_new_unit_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>ide</keyword>
+        <keyword>new</keyword>
+        <keyword>page</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_pause.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>media</keyword>
+        <keyword>pause</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_pause_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>media</keyword>
+        <keyword>pause</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_pause_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>media</keyword>
+        <keyword>pause</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_project_add.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>ide</keyword>
+        <keyword>insert</keyword>
+        <keyword>new</keyword>
+        <keyword>plus</keyword>
+        <keyword>project</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_project_add_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>ide</keyword>
+        <keyword>insert</keyword>
+        <keyword>new</keyword>
+        <keyword>plus</keyword>
+        <keyword>project</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_project_add_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>ide</keyword>
+        <keyword>insert</keyword>
+        <keyword>new</keyword>
+        <keyword>plus</keyword>
+        <keyword>project</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_project_close.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>close</keyword>
+        <keyword>cross</keyword>
+        <keyword>exit</keyword>
+        <keyword>ide</keyword>
+        <keyword>project</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_project_close_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>close</keyword>
+        <keyword>cross</keyword>
+        <keyword>exit</keyword>
+        <keyword>ide</keyword>
+        <keyword>project</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_project_close_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>close</keyword>
+        <keyword>cross</keyword>
+        <keyword>exit</keyword>
+        <keyword>ide</keyword>
+        <keyword>project</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_project_from_file.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>ide</keyword>
+        <keyword>new</keyword>
+        <keyword>project</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_project_from_file_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>ide</keyword>
+        <keyword>new</keyword>
+        <keyword>project</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_project_from_file_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>ide</keyword>
+        <keyword>new</keyword>
+        <keyword>project</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_project_inspector.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>find</keyword>
+        <keyword>ide</keyword>
+        <keyword>inspect</keyword>
+        <keyword>inspector</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>project</keyword>
+        <keyword>search</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_project_inspector_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>find</keyword>
+        <keyword>ide</keyword>
+        <keyword>inspect</keyword>
+        <keyword>inspector</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>project</keyword>
+        <keyword>search</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_project_inspector_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>find</keyword>
+        <keyword>ide</keyword>
+        <keyword>inspect</keyword>
+        <keyword>inspector</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>project</keyword>
+        <keyword>search</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_project_new.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>new</keyword>
+        <keyword>project</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_project_new_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>new</keyword>
+        <keyword>project</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_project_new_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>new</keyword>
+        <keyword>project</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_project_open.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>folder</keyword>
+        <keyword>ide</keyword>
+        <keyword>load</keyword>
+        <keyword>open</keyword>
+        <keyword>project</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_project_open_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>folder</keyword>
+        <keyword>ide</keyword>
+        <keyword>load</keyword>
+        <keyword>open</keyword>
+        <keyword>project</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_project_open_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>folder</keyword>
+        <keyword>ide</keyword>
+        <keyword>load</keyword>
+        <keyword>open</keyword>
+        <keyword>project</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_project_open_recent.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>date</keyword>
+        <keyword>file</keyword>
+        <keyword>folder</keyword>
+        <keyword>ide</keyword>
+        <keyword>open</keyword>
+        <keyword>project</keyword>
+        <keyword>recent</keyword>
+        <keyword>time</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_project_open_recent_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>date</keyword>
+        <keyword>file</keyword>
+        <keyword>folder</keyword>
+        <keyword>ide</keyword>
+        <keyword>open</keyword>
+        <keyword>project</keyword>
+        <keyword>recent</keyword>
+        <keyword>time</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_project_open_recent_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>date</keyword>
+        <keyword>file</keyword>
+        <keyword>folder</keyword>
+        <keyword>ide</keyword>
+        <keyword>open</keyword>
+        <keyword>project</keyword>
+        <keyword>recent</keyword>
+        <keyword>time</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_project_options.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>ide</keyword>
+        <keyword>options</keyword>
+        <keyword>project</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_project_options_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>ide</keyword>
+        <keyword>options</keyword>
+        <keyword>project</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_project_options_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>ide</keyword>
+        <keyword>options</keyword>
+        <keyword>project</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_project_remove.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>delete</keyword>
+        <keyword>ide</keyword>
+        <keyword>minus</keyword>
+        <keyword>project</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_project_remove_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>delete</keyword>
+        <keyword>ide</keyword>
+        <keyword>minus</keyword>
+        <keyword>project</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_project_remove_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>delete</keyword>
+        <keyword>ide</keyword>
+        <keyword>minus</keyword>
+        <keyword>project</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_project_save.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>diskette</keyword>
+        <keyword>ide</keyword>
+        <keyword>project</keyword>
+        <keyword>save</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_project_save_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>diskette</keyword>
+        <keyword>ide</keyword>
+        <keyword>project</keyword>
+        <keyword>save</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_project_save_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>diskette</keyword>
+        <keyword>ide</keyword>
+        <keyword>project</keyword>
+        <keyword>save</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_project_save_as.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>diskette</keyword>
+        <keyword>ide</keyword>
+        <keyword>insert</keyword>
+        <keyword>new</keyword>
+        <keyword>plus</keyword>
+        <keyword>project</keyword>
+        <keyword>save</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_project_save_as_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>diskette</keyword>
+        <keyword>ide</keyword>
+        <keyword>insert</keyword>
+        <keyword>new</keyword>
+        <keyword>plus</keyword>
+        <keyword>project</keyword>
+        <keyword>save</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_project_save_as_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>diskette</keyword>
+        <keyword>ide</keyword>
+        <keyword>insert</keyword>
+        <keyword>new</keyword>
+        <keyword>plus</keyword>
+        <keyword>project</keyword>
+        <keyword>save</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_quick_compile.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>compile</keyword>
+        <keyword>configuration</keyword>
+        <keyword>export</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_quick_compile_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>compile</keyword>
+        <keyword>configuration</keyword>
+        <keyword>export</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_quick_compile_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>compile</keyword>
+        <keyword>configuration</keyword>
+        <keyword>export</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_redo.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>redo</keyword>
+        <keyword>undo</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_redo_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>redo</keyword>
+        <keyword>undo</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_redo_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>redo</keyword>
+        <keyword>undo</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_reportingbug.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>bug</keyword>
+        <keyword>debugger</keyword>
+        <keyword>edit</keyword>
+        <keyword>ide</keyword>
+        <keyword>pen</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_reportingbug_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>bug</keyword>
+        <keyword>debugger</keyword>
+        <keyword>edit</keyword>
+        <keyword>ide</keyword>
+        <keyword>pen</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_reportingbug_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>bug</keyword>
+        <keyword>debugger</keyword>
+        <keyword>edit</keyword>
+        <keyword>ide</keyword>
+        <keyword>pen</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_reset_debugger.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>debugger</keyword>
+        <keyword>ide</keyword>
+        <keyword>repeat</keyword>
+        <keyword>reset</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_reset_debugger_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>debugger</keyword>
+        <keyword>ide</keyword>
+        <keyword>repeat</keyword>
+        <keyword>reset</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_reset_debugger_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>debugger</keyword>
+        <keyword>ide</keyword>
+        <keyword>repeat</keyword>
+        <keyword>reset</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_run.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>compile</keyword>
+        <keyword>ide</keyword>
+        <keyword>media</keyword>
+        <keyword>play</keyword>
+        <keyword>start</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_run_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>compile</keyword>
+        <keyword>ide</keyword>
+        <keyword>media</keyword>
+        <keyword>play</keyword>
+        <keyword>start</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_run_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>compile</keyword>
+        <keyword>ide</keyword>
+        <keyword>media</keyword>
+        <keyword>play</keyword>
+        <keyword>start</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_run_cursor.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>compile</keyword>
+        <keyword>cursor</keyword>
+        <keyword>ide</keyword>
+        <keyword>run</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_run_cursor_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>compile</keyword>
+        <keyword>cursor</keyword>
+        <keyword>ide</keyword>
+        <keyword>run</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_run_cursor_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>compile</keyword>
+        <keyword>cursor</keyword>
+        <keyword>ide</keyword>
+        <keyword>run</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_run_file.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>compile</keyword>
+        <keyword>file</keyword>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+        <keyword>run</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_run_file_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>compile</keyword>
+        <keyword>file</keyword>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+        <keyword>run</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_run_file_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>compile</keyword>
+        <keyword>file</keyword>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+        <keyword>run</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_run_parameters.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>compile</keyword>
+        <keyword>configuration</keyword>
+        <keyword>ide</keyword>
+        <keyword>options</keyword>
+        <keyword>run</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>wrench</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_run_parameters_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>compile</keyword>
+        <keyword>configuration</keyword>
+        <keyword>ide</keyword>
+        <keyword>options</keyword>
+        <keyword>run</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>wrench</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_run_parameters_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>compile</keyword>
+        <keyword>configuration</keyword>
+        <keyword>ide</keyword>
+        <keyword>options</keyword>
+        <keyword>run</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>wrench</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_run_withdebugging.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>bug</keyword>
+        <keyword>compile</keyword>
+        <keyword>debugger</keyword>
+        <keyword>ide</keyword>
+        <keyword>run</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_run_withdebugging_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>bug</keyword>
+        <keyword>compile</keyword>
+        <keyword>debugger</keyword>
+        <keyword>ide</keyword>
+        <keyword>run</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_run_withdebugging_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>bug</keyword>
+        <keyword>compile</keyword>
+        <keyword>debugger</keyword>
+        <keyword>ide</keyword>
+        <keyword>run</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_run_withoutdebugging.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>compile</keyword>
+        <keyword>debugger</keyword>
+        <keyword>forbidden</keyword>
+        <keyword>ide</keyword>
+        <keyword>minus</keyword>
+        <keyword>run</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_run_withoutdebugging_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>compile</keyword>
+        <keyword>debugger</keyword>
+        <keyword>forbidden</keyword>
+        <keyword>ide</keyword>
+        <keyword>minus</keyword>
+        <keyword>run</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_run_withoutdebugging_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>compile</keyword>
+        <keyword>debugger</keyword>
+        <keyword>forbidden</keyword>
+        <keyword>ide</keyword>
+        <keyword>minus</keyword>
+        <keyword>run</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_saveas.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>diskette</keyword>
+        <keyword>ide</keyword>
+        <keyword>new</keyword>
+        <keyword>rename</keyword>
+        <keyword>save</keyword>
+        <keyword>saveas</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_saveas_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>diskette</keyword>
+        <keyword>ide</keyword>
+        <keyword>new</keyword>
+        <keyword>rename</keyword>
+        <keyword>save</keyword>
+        <keyword>saveas</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_saveas_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>diskette</keyword>
+        <keyword>ide</keyword>
+        <keyword>new</keyword>
+        <keyword>rename</keyword>
+        <keyword>save</keyword>
+        <keyword>saveas</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_save_all.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>all</keyword>
+        <keyword>diskette</keyword>
+        <keyword>ide</keyword>
+        <keyword>save</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_save_all_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>all</keyword>
+        <keyword>diskette</keyword>
+        <keyword>ide</keyword>
+        <keyword>save</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_save_all_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>all</keyword>
+        <keyword>diskette</keyword>
+        <keyword>ide</keyword>
+        <keyword>save</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_files.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>find</keyword>
+        <keyword>ide</keyword>
+        <keyword>many</keyword>
+        <keyword>page</keyword>
+        <keyword>plural</keyword>
+        <keyword>search</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_files_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>find</keyword>
+        <keyword>ide</keyword>
+        <keyword>many</keyword>
+        <keyword>page</keyword>
+        <keyword>plural</keyword>
+        <keyword>search</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_files_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>find</keyword>
+        <keyword>ide</keyword>
+        <keyword>many</keyword>
+        <keyword>page</keyword>
+        <keyword>plural</keyword>
+        <keyword>search</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_find.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>find</keyword>
+        <keyword>ide</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>search</keyword>
+        <keyword>zoom</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_find_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>find</keyword>
+        <keyword>ide</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>search</keyword>
+        <keyword>zoom</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_find_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>find</keyword>
+        <keyword>ide</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>search</keyword>
+        <keyword>zoom</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_find_next.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>down</keyword>
+        <keyword>find</keyword>
+        <keyword>ide</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>next</keyword>
+        <keyword>search</keyword>
+        <keyword>zoom</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_find_next_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>down</keyword>
+        <keyword>find</keyword>
+        <keyword>ide</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>next</keyword>
+        <keyword>search</keyword>
+        <keyword>zoom</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_find_next_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>down</keyword>
+        <keyword>find</keyword>
+        <keyword>ide</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>next</keyword>
+        <keyword>search</keyword>
+        <keyword>zoom</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_find_previous.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>back</keyword>
+        <keyword>find</keyword>
+        <keyword>ide</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>previous</keyword>
+        <keyword>search</keyword>
+        <keyword>up</keyword>
+        <keyword>zoom</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_find_previous_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>back</keyword>
+        <keyword>find</keyword>
+        <keyword>ide</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>previous</keyword>
+        <keyword>search</keyword>
+        <keyword>up</keyword>
+        <keyword>zoom</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_find_previous_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>back</keyword>
+        <keyword>find</keyword>
+        <keyword>ide</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>previous</keyword>
+        <keyword>search</keyword>
+        <keyword>up</keyword>
+        <keyword>zoom</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_incremental.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>cursor</keyword>
+        <keyword>find</keyword>
+        <keyword>ide</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>search</keyword>
+        <keyword>zoom</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_incremental_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>cursor</keyword>
+        <keyword>find</keyword>
+        <keyword>ide</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>search</keyword>
+        <keyword>zoom</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_incremental_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>cursor</keyword>
+        <keyword>find</keyword>
+        <keyword>ide</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>search</keyword>
+        <keyword>zoom</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_jumpback.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>backward</keyword>
+        <keyword>ide</keyword>
+        <keyword>jump</keyword>
+        <keyword>menu</keyword>
+        <keyword>previous</keyword>
+        <keyword>prior</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_jumpback_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>backward</keyword>
+        <keyword>ide</keyword>
+        <keyword>jump</keyword>
+        <keyword>menu</keyword>
+        <keyword>previous</keyword>
+        <keyword>prior</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_jumpback_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>backward</keyword>
+        <keyword>ide</keyword>
+        <keyword>jump</keyword>
+        <keyword>menu</keyword>
+        <keyword>previous</keyword>
+        <keyword>prior</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_jumpforward.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>forward</keyword>
+        <keyword>ide</keyword>
+        <keyword>jump</keyword>
+        <keyword>menu</keyword>
+        <keyword>next</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_jumpforward_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>forward</keyword>
+        <keyword>ide</keyword>
+        <keyword>jump</keyword>
+        <keyword>menu</keyword>
+        <keyword>next</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_jumpforward_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>forward</keyword>
+        <keyword>ide</keyword>
+        <keyword>jump</keyword>
+        <keyword>menu</keyword>
+        <keyword>next</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_next_bookmark.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>bookmark</keyword>
+        <keyword>down</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>next</keyword>
+        <keyword>search</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_next_bookmark_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>bookmark</keyword>
+        <keyword>down</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>next</keyword>
+        <keyword>search</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_next_bookmark_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>bookmark</keyword>
+        <keyword>down</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>next</keyword>
+        <keyword>search</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_next_error.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>down</keyword>
+        <keyword>error</keyword>
+        <keyword>forbidden</keyword>
+        <keyword>goto</keyword>
+        <keyword>ide</keyword>
+        <keyword>minus</keyword>
+        <keyword>next</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_next_error_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>down</keyword>
+        <keyword>error</keyword>
+        <keyword>forbidden</keyword>
+        <keyword>goto</keyword>
+        <keyword>ide</keyword>
+        <keyword>minus</keyword>
+        <keyword>next</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_next_error_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>down</keyword>
+        <keyword>error</keyword>
+        <keyword>forbidden</keyword>
+        <keyword>goto</keyword>
+        <keyword>ide</keyword>
+        <keyword>minus</keyword>
+        <keyword>next</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_openfile_atcursor.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>find</keyword>
+        <keyword>folder</keyword>
+        <keyword>ide</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>menu</keyword>
+        <keyword>open</keyword>
+        <keyword>page</keyword>
+        <keyword>search</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_openfile_atcursor_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>find</keyword>
+        <keyword>folder</keyword>
+        <keyword>ide</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>menu</keyword>
+        <keyword>open</keyword>
+        <keyword>page</keyword>
+        <keyword>search</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_openfile_atcursor_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>find</keyword>
+        <keyword>folder</keyword>
+        <keyword>ide</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>menu</keyword>
+        <keyword>open</keyword>
+        <keyword>page</keyword>
+        <keyword>search</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_previous_bookmark.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>bookmark</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>previous</keyword>
+        <keyword>search</keyword>
+        <keyword>up</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_previous_bookmark_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>bookmark</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>previous</keyword>
+        <keyword>search</keyword>
+        <keyword>up</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_previous_bookmark_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>bookmark</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>previous</keyword>
+        <keyword>search</keyword>
+        <keyword>up</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_previous_error.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>error</keyword>
+        <keyword>forbidden</keyword>
+        <keyword>goto</keyword>
+        <keyword>ide</keyword>
+        <keyword>minus</keyword>
+        <keyword>previous</keyword>
+        <keyword>up</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_previous_error_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>error</keyword>
+        <keyword>forbidden</keyword>
+        <keyword>goto</keyword>
+        <keyword>ide</keyword>
+        <keyword>minus</keyword>
+        <keyword>previous</keyword>
+        <keyword>up</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_previous_error_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>error</keyword>
+        <keyword>forbidden</keyword>
+        <keyword>goto</keyword>
+        <keyword>ide</keyword>
+        <keyword>minus</keyword>
+        <keyword>previous</keyword>
+        <keyword>up</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_procedure_list.png" width="16" height="16" style="outline 2-color">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+        <keyword>procedure</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_procedure_list_150.png" width="24" height="24" style="outline 2-color">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+        <keyword>procedure</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_procedure_list_200.png" width="32" height="32" style="outline 2-color">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+        <keyword>procedure</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_replace.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>ide</keyword>
+        <keyword>left</keyword>
+        <keyword>replace</keyword>
+        <keyword>right</keyword>
+        <keyword>search</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_replace_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>ide</keyword>
+        <keyword>left</keyword>
+        <keyword>replace</keyword>
+        <keyword>right</keyword>
+        <keyword>search</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_replace_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>ide</keyword>
+        <keyword>left</keyword>
+        <keyword>replace</keyword>
+        <keyword>right</keyword>
+        <keyword>search</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_set_bookmark.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>goto</keyword>
+        <keyword>ide</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_set_bookmark_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>goto</keyword>
+        <keyword>ide</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_search_set_bookmark_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>goto</keyword>
+        <keyword>ide</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_select_all.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>all</keyword>
+        <keyword>cursor</keyword>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+        <keyword>select</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_select_all_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>all</keyword>
+        <keyword>cursor</keyword>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+        <keyword>select</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_select_all_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>all</keyword>
+        <keyword>cursor</keyword>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+        <keyword>select</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_set_free_bookmark.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>bookmark</keyword>
+        <keyword>goto</keyword>
+        <keyword>ide</keyword>
+        <keyword>new</keyword>
+        <keyword>plus</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_set_free_bookmark_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>bookmark</keyword>
+        <keyword>goto</keyword>
+        <keyword>ide</keyword>
+        <keyword>new</keyword>
+        <keyword>plus</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_set_free_bookmark_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>bookmark</keyword>
+        <keyword>goto</keyword>
+        <keyword>ide</keyword>
+        <keyword>new</keyword>
+        <keyword>plus</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_source_completecode.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>assistant</keyword>
+        <keyword>code</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>source</keyword>
+        <keyword>wizard</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_source_completecode_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>assistant</keyword>
+        <keyword>code</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>source</keyword>
+        <keyword>wizard</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_source_completecode_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>assistant</keyword>
+        <keyword>code</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>source</keyword>
+        <keyword>wizard</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_source_encloseinifdef.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>comment</keyword>
+        <keyword>dollar</keyword>
+        <keyword>endif</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>pascal</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_source_encloseinifdef_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>comment</keyword>
+        <keyword>dollar</keyword>
+        <keyword>endif</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>pascal</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_source_encloseinifdef_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>comment</keyword>
+        <keyword>dollar</keyword>
+        <keyword>endif</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>pascal</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_source_encloseselection.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>comment</keyword>
+        <keyword>dollar</keyword>
+        <keyword>endif</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>pascal</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_source_encloseselection_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>comment</keyword>
+        <keyword>dollar</keyword>
+        <keyword>endif</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>pascal</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_source_encloseselection_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>comment</keyword>
+        <keyword>dollar</keyword>
+        <keyword>endif</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>pascal</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_source_guessunclosedblock.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>ask</keyword>
+        <keyword>block</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>query</keyword>
+        <keyword>question</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_source_guessunclosedblock_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>ask</keyword>
+        <keyword>block</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>query</keyword>
+        <keyword>question</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_source_guessunclosedblock_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>ask</keyword>
+        <keyword>block</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>query</keyword>
+        <keyword>question</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_source_invertassignment.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>assign</keyword>
+        <keyword>change</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>reverse</keyword>
+        <keyword>revert</keyword>
+        <keyword>undo</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_source_invertassignment_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>assign</keyword>
+        <keyword>change</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>reverse</keyword>
+        <keyword>revert</keyword>
+        <keyword>undo</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_source_invertassignment_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>assign</keyword>
+        <keyword>change</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>reverse</keyword>
+        <keyword>revert</keyword>
+        <keyword>undo</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_source_makeresourcestring.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>assistant</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>resource</keyword>
+        <keyword>wizard</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_source_makeresourcestring_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>assistant</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>resource</keyword>
+        <keyword>wizard</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_source_makeresourcestring_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>assistant</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>resource</keyword>
+        <keyword>wizard</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_source_useunit.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>code</keyword>
+        <keyword>ide</keyword>
+        <keyword>insert</keyword>
+        <keyword>menu</keyword>
+        <keyword>new</keyword>
+        <keyword>plus</keyword>
+        <keyword>source</keyword>
+        <keyword>unit</keyword>
+        <keyword>use</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_source_useunit_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>code</keyword>
+        <keyword>ide</keyword>
+        <keyword>insert</keyword>
+        <keyword>menu</keyword>
+        <keyword>new</keyword>
+        <keyword>plus</keyword>
+        <keyword>source</keyword>
+        <keyword>unit</keyword>
+        <keyword>use</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_source_useunit_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>code</keyword>
+        <keyword>ide</keyword>
+        <keyword>insert</keyword>
+        <keyword>menu</keyword>
+        <keyword>new</keyword>
+        <keyword>plus</keyword>
+        <keyword>source</keyword>
+        <keyword>unit</keyword>
+        <keyword>use</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_stepinto.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>code</keyword>
+        <keyword>debug</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>step</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_stepinto_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>code</keyword>
+        <keyword>debug</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>step</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_stepinto_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>code</keyword>
+        <keyword>debug</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>step</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_stepinto_instr.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>code</keyword>
+        <keyword>debug</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>step</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_stepinto_instr_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>code</keyword>
+        <keyword>debug</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>step</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_stepinto_instr_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>code</keyword>
+        <keyword>debug</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>step</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_stepout.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>code</keyword>
+        <keyword>debug</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>step</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_stepout_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>code</keyword>
+        <keyword>debug</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>step</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_stepout_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>code</keyword>
+        <keyword>debug</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>step</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_stepover.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>code</keyword>
+        <keyword>debug</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>step</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_stepover_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>code</keyword>
+        <keyword>debug</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>step</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_stepover_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>code</keyword>
+        <keyword>debug</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>step</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_stepover_instr.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>code</keyword>
+        <keyword>debug</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>step</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_stepover_instr_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>code</keyword>
+        <keyword>debug</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>step</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_stepover_instr_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>code</keyword>
+        <keyword>debug</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>step</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_stop.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>macro</keyword>
+        <keyword>media</keyword>
+        <keyword>menu</keyword>
+        <keyword>stop</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_stop_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>macro</keyword>
+        <keyword>media</keyword>
+        <keyword>menu</keyword>
+        <keyword>stop</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_stop_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>macro</keyword>
+        <keyword>media</keyword>
+        <keyword>menu</keyword>
+        <keyword>stop</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_togglecomment.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>code</keyword>
+        <keyword>comment</keyword>
+        <keyword>ide</keyword>
+        <keyword>source</keyword>
+        <keyword>toggle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_togglecomment_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>code</keyword>
+        <keyword>comment</keyword>
+        <keyword>ide</keyword>
+        <keyword>source</keyword>
+        <keyword>toggle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_togglecomment_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>code</keyword>
+        <keyword>comment</keyword>
+        <keyword>ide</keyword>
+        <keyword>source</keyword>
+        <keyword>toggle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_toggle_bookmark0.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_toggle_bookmark0_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_toggle_bookmark0_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_toggle_bookmark1.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_toggle_bookmark1_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_toggle_bookmark1_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_toggle_bookmark2.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_toggle_bookmark2_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_toggle_bookmark2_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_toggle_bookmark3.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_toggle_bookmark3_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_toggle_bookmark3_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_toggle_bookmark4.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_toggle_bookmark4_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_toggle_bookmark4_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_toggle_bookmark5.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_toggle_bookmark5_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_toggle_bookmark5_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_toggle_bookmark6.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_toggle_bookmark6_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_toggle_bookmark6_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_toggle_bookmark7.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_toggle_bookmark7_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_toggle_bookmark7_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_toggle_bookmark8.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_toggle_bookmark8_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_toggle_bookmark8_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_toggle_bookmark9.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_toggle_bookmark9_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_toggle_bookmark9_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_toggle_bookmarks.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>toogle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_toggle_bookmarks_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>toogle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_toggle_bookmarks_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>bookmark</keyword>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>toogle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_tool_check_lfm.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>check</keyword>
+        <keyword>form</keyword>
+        <keyword>ide</keyword>
+        <keyword>lfm</keyword>
+        <keyword>menu</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_tool_check_lfm_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>check</keyword>
+        <keyword>form</keyword>
+        <keyword>ide</keyword>
+        <keyword>lfm</keyword>
+        <keyword>menu</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_tool_check_lfm_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>check</keyword>
+        <keyword>form</keyword>
+        <keyword>ide</keyword>
+        <keyword>lfm</keyword>
+        <keyword>menu</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_tool_del_to_laz.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>convert</keyword>
+        <keyword>delphi</keyword>
+        <keyword>ide</keyword>
+        <keyword>lazarus</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_tool_del_to_laz_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>convert</keyword>
+        <keyword>delphi</keyword>
+        <keyword>ide</keyword>
+        <keyword>lazarus</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_tool_del_to_laz_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>convert</keyword>
+        <keyword>delphi</keyword>
+        <keyword>ide</keyword>
+        <keyword>lazarus</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_tool_del_to_laz_form.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>convert</keyword>
+        <keyword>delphi</keyword>
+        <keyword>form</keyword>
+        <keyword>ide</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_tool_del_to_laz_form_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>convert</keyword>
+        <keyword>delphi</keyword>
+        <keyword>form</keyword>
+        <keyword>ide</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_tool_del_to_laz_form_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>convert</keyword>
+        <keyword>delphi</keyword>
+        <keyword>form</keyword>
+        <keyword>ide</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_tool_del_to_laz_pkg.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>convert</keyword>
+        <keyword>delphi</keyword>
+        <keyword>ide</keyword>
+        <keyword>package</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_tool_del_to_laz_pkg_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>convert</keyword>
+        <keyword>delphi</keyword>
+        <keyword>ide</keyword>
+        <keyword>package</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_tool_del_to_laz_pkg_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>convert</keyword>
+        <keyword>delphi</keyword>
+        <keyword>ide</keyword>
+        <keyword>package</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_tool_del_to_laz_project.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>convert</keyword>
+        <keyword>delphi</keyword>
+        <keyword>ide</keyword>
+        <keyword>project</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_tool_del_to_laz_project_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>convert</keyword>
+        <keyword>delphi</keyword>
+        <keyword>ide</keyword>
+        <keyword>project</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_tool_del_to_laz_project_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>convert</keyword>
+        <keyword>delphi</keyword>
+        <keyword>ide</keyword>
+        <keyword>project</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_tool_del_to_laz_unit.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>convert</keyword>
+        <keyword>delphi</keyword>
+        <keyword>ide</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_tool_del_to_laz_unit_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>convert</keyword>
+        <keyword>delphi</keyword>
+        <keyword>ide</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_tool_del_to_laz_unit_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>convert</keyword>
+        <keyword>delphi</keyword>
+        <keyword>ide</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_tool_diff.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>compare</keyword>
+        <keyword>ide</keyword>
+        <keyword>tool</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_tool_diff_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>compare</keyword>
+        <keyword>ide</keyword>
+        <keyword>tool</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_tool_diff_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>compare</keyword>
+        <keyword>ide</keyword>
+        <keyword>tool</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_tool_make_resourcestring.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>options</keyword>
+        <keyword>resource</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_tool_make_resourcestring_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>options</keyword>
+        <keyword>resource</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_tool_make_resourcestring_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>options</keyword>
+        <keyword>resource</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_tool_syntax_check.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>check</keyword>
+        <keyword>code</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>ok</keyword>
+        <keyword>page</keyword>
+        <keyword>source</keyword>
+        <keyword>syntax</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_tool_syntax_check_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>check</keyword>
+        <keyword>code</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>ok</keyword>
+        <keyword>page</keyword>
+        <keyword>source</keyword>
+        <keyword>syntax</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_tool_syntax_check_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>check</keyword>
+        <keyword>code</keyword>
+        <keyword>ide</keyword>
+        <keyword>menu</keyword>
+        <keyword>ok</keyword>
+        <keyword>page</keyword>
+        <keyword>source</keyword>
+        <keyword>syntax</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_uncomment.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>comment</keyword>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>ide</keyword>
+        <keyword>remove</keyword>
+        <keyword>source</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_uncomment_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>comment</keyword>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>ide</keyword>
+        <keyword>remove</keyword>
+        <keyword>source</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_uncomment_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>comment</keyword>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>ide</keyword>
+        <keyword>remove</keyword>
+        <keyword>source</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_undo.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>redo</keyword>
+        <keyword>undo</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_undo_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>redo</keyword>
+        <keyword>undo</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_undo_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>redo</keyword>
+        <keyword>undo</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_unindent.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>text</keyword>
+        <keyword>unindent</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_unindent_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>text</keyword>
+        <keyword>unindent</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_unindent_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>editor</keyword>
+        <keyword>ide</keyword>
+        <keyword>text</keyword>
+        <keyword>unindent</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_anchor_editor.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>anchor</keyword>
+        <keyword>ide</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_anchor_editor_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>anchor</keyword>
+        <keyword>ide</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_anchor_editor_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>anchor</keyword>
+        <keyword>ide</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_code_browser.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>browse</keyword>
+        <keyword>code</keyword>
+        <keyword>find</keyword>
+        <keyword>ide</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>page</keyword>
+        <keyword>search</keyword>
+        <keyword>source</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_code_browser_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>browse</keyword>
+        <keyword>code</keyword>
+        <keyword>find</keyword>
+        <keyword>ide</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>page</keyword>
+        <keyword>search</keyword>
+        <keyword>source</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_code_browser_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>browse</keyword>
+        <keyword>code</keyword>
+        <keyword>find</keyword>
+        <keyword>ide</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>page</keyword>
+        <keyword>search</keyword>
+        <keyword>source</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_code_explorer.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>browser</keyword>
+        <keyword>code</keyword>
+        <keyword>explorer</keyword>
+        <keyword>find</keyword>
+        <keyword>ide</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>page</keyword>
+        <keyword>search</keyword>
+        <keyword>source</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_code_explorer_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>browser</keyword>
+        <keyword>code</keyword>
+        <keyword>explorer</keyword>
+        <keyword>find</keyword>
+        <keyword>ide</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>page</keyword>
+        <keyword>search</keyword>
+        <keyword>source</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_code_explorer_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>browser</keyword>
+        <keyword>code</keyword>
+        <keyword>explorer</keyword>
+        <keyword>find</keyword>
+        <keyword>ide</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>page</keyword>
+        <keyword>search</keyword>
+        <keyword>source</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_components.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>components</keyword>
+        <keyword>ide</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_components_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>components</keyword>
+        <keyword>ide</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_components_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>components</keyword>
+        <keyword>ide</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_forms.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_forms_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_forms_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_inspector.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>find</keyword>
+        <keyword>ide</keyword>
+        <keyword>inspector</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>menu</keyword>
+        <keyword>search</keyword>
+        <keyword>window</keyword>
+        <keyword>zoom</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_inspector_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>find</keyword>
+        <keyword>ide</keyword>
+        <keyword>inspector</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>menu</keyword>
+        <keyword>search</keyword>
+        <keyword>window</keyword>
+        <keyword>zoom</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_inspector_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>find</keyword>
+        <keyword>ide</keyword>
+        <keyword>inspector</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>menu</keyword>
+        <keyword>search</keyword>
+        <keyword>window</keyword>
+        <keyword>zoom</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_jump_history.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>find</keyword>
+        <keyword>history</keyword>
+        <keyword>ide</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>search</keyword>
+        <keyword>source</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_jump_history_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>find</keyword>
+        <keyword>history</keyword>
+        <keyword>ide</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>search</keyword>
+        <keyword>source</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_jump_history_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>find</keyword>
+        <keyword>history</keyword>
+        <keyword>ide</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>search</keyword>
+        <keyword>source</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_messages.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>footer</keyword>
+        <keyword>ide</keyword>
+        <keyword>messages</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_messages_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>footer</keyword>
+        <keyword>ide</keyword>
+        <keyword>messages</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_messages_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>footer</keyword>
+        <keyword>ide</keyword>
+        <keyword>messages</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_restriction_browser.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>attention</keyword>
+        <keyword>browser</keyword>
+        <keyword>components</keyword>
+        <keyword>ide</keyword>
+        <keyword>restriction</keyword>
+        <keyword>warning</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_restriction_browser_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>attention</keyword>
+        <keyword>browser</keyword>
+        <keyword>components</keyword>
+        <keyword>ide</keyword>
+        <keyword>restriction</keyword>
+        <keyword>warning</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_restriction_browser_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>attention</keyword>
+        <keyword>browser</keyword>
+        <keyword>components</keyword>
+        <keyword>ide</keyword>
+        <keyword>restriction</keyword>
+        <keyword>warning</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_search_results.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>find</keyword>
+        <keyword>ide</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>results</keyword>
+        <keyword>search</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_search_results_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>find</keyword>
+        <keyword>ide</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>results</keyword>
+        <keyword>search</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_search_results_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>find</keyword>
+        <keyword>ide</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>results</keyword>
+        <keyword>search</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_source_editor.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>edit</keyword>
+        <keyword>ide</keyword>
+        <keyword>source</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_source_editor_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>edit</keyword>
+        <keyword>ide</keyword>
+        <keyword>source</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_source_editor_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>edit</keyword>
+        <keyword>ide</keyword>
+        <keyword>source</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_todo.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>comment</keyword>
+        <keyword>ide</keyword>
+        <keyword>note</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_todo_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>comment</keyword>
+        <keyword>ide</keyword>
+        <keyword>note</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_todo_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>comment</keyword>
+        <keyword>ide</keyword>
+        <keyword>note</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_toggle_form_unit.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>form</keyword>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+        <keyword>source</keyword>
+        <keyword>toggle</keyword>
+        <keyword>unit</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_toggle_form_unit_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>form</keyword>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+        <keyword>source</keyword>
+        <keyword>toggle</keyword>
+        <keyword>unit</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_toggle_form_unit_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>form</keyword>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+        <keyword>source</keyword>
+        <keyword>toggle</keyword>
+        <keyword>unit</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_units.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+        <keyword>source</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_units_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+        <keyword>source</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_units_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+        <keyword>source</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_unit_info.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>ide</keyword>
+        <keyword>info</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_unit_info_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>ide</keyword>
+        <keyword>info</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="menu_view_unit_info_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>ide</keyword>
+        <keyword>info</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="SelCompPage.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>arrows</keyword>
+        <keyword>down</keyword>
+        <keyword>ide</keyword>
+      </keywords>
+    </icon>
+    <icon filename="SelCompPage_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>arrows</keyword>
+        <keyword>down</keyword>
+        <keyword>ide</keyword>
+      </keywords>
+    </icon>
+    <icon filename="SelCompPage_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>arrows</keyword>
+        <keyword>down</keyword>
+        <keyword>ide</keyword>
+      </keywords>
+    </icon>
+  </icons>
+</metadata>

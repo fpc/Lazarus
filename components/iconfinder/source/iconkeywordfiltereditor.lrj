@@ -1,0 +1,13 @@
+{"version":1,"strings":[
+{"hash":178287250,"name":"tkeywordfiltereditorform.caption","sourcebytes":[75,101,121,119,111,114,100,32,102,105,108,116,101,114,32,101,100,105,116,111,114],"value":"Keyword filter editor"},
+{"hash":80755394,"name":"tkeywordfiltereditorform.lblfilter.caption","sourcebytes":[70,105,108,116,101,114],"value":"Filter"},
+{"hash":18340,"name":"tkeywordfiltereditorform.btnadd.caption","sourcebytes":[65,100,100],"value":"Add"},
+{"hash":17956,"name":"tkeywordfiltereditorform.btnand.caption","sourcebytes":[65,78,68],"value":"AND"},
+{"hash":1346,"name":"tkeywordfiltereditorform.btnor.caption","sourcebytes":[79,82],"value":"OR"},
+{"hash":21316,"name":"tkeywordfiltereditorform.btnnot.caption","sourcebytes":[78,79,84],"value":"NOT"},
+{"hash":4860802,"name":"tkeywordfiltereditorform.btnclear.caption","sourcebytes":[67,108,101,97,114],"value":"Clear"},
+{"hash":219049379,"name":"tkeywordfiltereditorform.lblkeywords.caption","sourcebytes":[75,101,121,119,111,114,100,115],"value":"Keywords"},
+{"hash":21703,"name":"tkeywordfiltereditorform.btnnew.caption","sourcebytes":[78,101,119],"value":"New"},
+{"hash":310020,"name":"tkeywordfiltereditorform.btnedit.caption","sourcebytes":[69,100,105,116],"value":"Edit"},
+{"hash":174310419,"name":"tkeywordfiltereditorform.lblcolumns.caption","sourcebytes":[67,111,108,117,109,110,115],"value":"Columns"}
+]}

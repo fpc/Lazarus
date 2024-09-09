@@ -1,0 +1,222 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.4.4\n"
+
+#: iconfinderstrconsts.rsfolders_add
+msgctxt "iconfinderstrconsts.rsfolders_add"
+msgid "Add..."
+msgstr "Neu..."
+
+#: iconfinderstrconsts.rsfolders_confirmdeletefoldermsg
+msgctxt "iconfinderstrconsts.rsfolders_confirmdeletefoldermsg"
+msgid "Do you really want to remove this folder from the icon library?"
+msgstr "Soll dieser Ordner wirklich aus der Icon-Bibliothek entfernt werden?"
+
+#: iconfinderstrconsts.rsfolders_delete
+msgctxt "iconfinderstrconsts.rsfolders_delete"
+msgid "Delete"
+msgstr "Entfernen"
+
+#: iconfinderstrconsts.rsfolders_iconfinderfolders
+msgctxt "iconfinderstrconsts.rsfolders_iconfinderfolders"
+msgid "Icon Folders"
+msgstr "Icon-Ordner"
+
+#: iconfinderstrconsts.rsfolders_movedown
+msgctxt "iconfinderstrconsts.rsfolders_movedown"
+msgid "Move down"
+msgstr "Nach oben"
+
+#: iconfinderstrconsts.rsfolders_moveup
+msgctxt "iconfinderstrconsts.rsfolders_moveup"
+msgid "Move up"
+msgstr "Nach unten"
+
+#: iconfinderstrconsts.rsfolders_noimages
+#, object-pascal-format
+msgid "Aborted. No supported images in folder \"%s\"."
+msgstr "Abbruch. Keine unterstützten Bilder im Order \"%s\"."
+
+#: iconfinderstrconsts.rsiconviewer_asksavemetadata
+msgctxt "iconfinderstrconsts.rsiconviewer_asksavemetadata"
+msgid "Metadata have been changed. Save?"
+msgstr "Metadaten wurden geändert. Speichern?"
+
+#: iconfinderstrconsts.rsiconviewer_clearfilterhint
+msgctxt "iconfinderstrconsts.rsiconviewer_clearfilterhint"
+msgid "Clear the keyword filter"
+msgstr "Filter nach Suchbegriffen löschen"
+
+#: iconfinderstrconsts.rsiconviewer_confirmdeleteiconmsg
+msgctxt "iconfinderstrconsts.rsiconviewer_confirmdeleteiconmsg"
+msgid "Do you really want to delete the selected icon from the library?"
+msgstr "Soll das ausgewählte Icon wirklich aus der Bibliothek entfernt werden?"
+
+#: iconfinderstrconsts.rsiconviewer_editkeywordfilterhint
+msgctxt "iconfinderstrconsts.rsiconviewer_editkeywordfilterhint"
+msgid "Enter/edit a keyword filter"
+msgstr "Filter nach Suchbegriffen eingeben/bearbeiten"
+
+#: iconfinderstrconsts.rsiconviewer_enterkeywordshere
+msgctxt "iconfinderstrconsts.rsiconviewer_enterkeywordshere"
+msgid "Enter keywords here..."
+msgstr "Suchbegriffe hier eintragen..."
+
+#: iconfinderstrconsts.rsiconviewer_expressiontofilterbykeywordshint
+msgctxt "iconfinderstrconsts.rsiconviewer_expressiontofilterbykeywordshint"
+msgid "Expression to filter by keywords"
+msgstr "Ausdruck zum Filtern nach Suchbegriffen"
+
+#: iconfinderstrconsts.rsiconviewer_filenamelbl
+msgctxt "iconfinderstrconsts.rsiconviewer_filenamelbl"
+msgid "File name:"
+msgstr "Dateiname:"
+
+#: iconfinderstrconsts.rsiconviewer_filterbyiconsizehint
+msgctxt "iconfinderstrconsts.rsiconviewer_filterbyiconsizehint"
+msgid "Filter by icon size"
+msgstr "Nach Icon-Größe filtern"
+
+#: iconfinderstrconsts.rsiconviewer_filterbyiconstylehint
+msgctxt "iconfinderstrconsts.rsiconviewer_filterbyiconstylehint"
+msgid "Filter by icon style"
+msgstr "Nach Icon-Stil filtern"
+
+#: iconfinderstrconsts.rsiconviewer_filterbykeywordshint
+msgctxt "iconfinderstrconsts.rsiconviewer_filterbykeywordshint"
+msgid "Filters by keywords"
+msgstr "Nach Suchbegriffen filtern"
+
+#: iconfinderstrconsts.rsiconviewer_hideall
+msgctxt "iconfinderstrconsts.rsiconviewer_hideall"
+msgid "Hide all"
+msgstr "Alle verbergen"
+
+#: iconfinderstrconsts.rsiconviewer_keywordslbl
+msgctxt "iconfinderstrconsts.rsiconviewer_keywordslbl"
+msgid "Keywords:"
+msgstr "Suchbegriffe:"
+
+#: iconfinderstrconsts.rsiconviewer_showall
+msgctxt "iconfinderstrconsts.rsiconviewer_showall"
+msgid "Show all"
+msgstr "Alle zeigen"
+
+#: iconfinderstrconsts.rsiconviewer_sizelbl
+msgctxt "iconfinderstrconsts.rsiconviewer_sizelbl"
+msgid "Size:"
+msgstr "Größe:"
+
+#: iconfinderstrconsts.rsiconviewer_stylelbl
+msgctxt "iconfinderstrconsts.rsiconviewer_stylelbl"
+msgid "Style:"
+msgstr "Stil:"
+
+#: iconfinderstrconsts.rskeywordeditor_add
+msgctxt "iconfinderstrconsts.rskeywordeditor_add"
+msgid "Add"
+msgstr "Hinzufügen"
+
+#: iconfinderstrconsts.rskeywordeditor_caption
+msgctxt "iconfinderstrconsts.rskeywordeditor_caption"
+msgid "Keyword Filter Editor"
+msgstr "Filter nach Suchbegriffen bearbeiten"
+
+#: iconfinderstrconsts.rskeywordeditor_clear
+msgctxt "iconfinderstrconsts.rskeywordeditor_clear"
+msgid "Clear"
+msgstr "Löschen"
+
+#: iconfinderstrconsts.rskeywordeditor_columns
+msgctxt "iconfinderstrconsts.rskeywordeditor_columns"
+msgid "Columns"
+msgstr "Spalten"
+
+#: iconfinderstrconsts.rskeywordeditor_edit
+msgctxt "iconfinderstrconsts.rskeywordeditor_edit"
+msgid "Edit"
+msgstr "Bearbeiten"
+
+#: iconfinderstrconsts.rskeywordeditor_filter
+msgctxt "iconfinderstrconsts.rskeywordeditor_filter"
+msgid "Filter"
+msgstr "Filter"
+
+#: iconfinderstrconsts.rskeywordeditor_keyword
+msgctxt "iconfinderstrconsts.rskeywordeditor_keyword"
+msgid "Keyword"
+msgstr "Suchbegriff"
+
+#: iconfinderstrconsts.rskeywordeditor_keywordexists
+msgctxt "iconfinderstrconsts.rskeywordeditor_keywordexists"
+msgid "Keyword already defined."
+msgstr "Der Suchbegriff ist bereits erfasst."
+
+#: iconfinderstrconsts.rskeywordeditor_keywords
+msgctxt "iconfinderstrconsts.rskeywordeditor_keywords"
+msgid "Keywords"
+msgstr "Suchbegriffe"
+
+#: iconfinderstrconsts.rskeywordeditor_new
+msgctxt "iconfinderstrconsts.rskeywordeditor_new"
+msgid "New"
+msgstr "Neu"
+
+#: iconfinderstrconsts.rskeywordeditor_newkeyword
+msgctxt "iconfinderstrconsts.rskeywordeditor_newkeyword"
+msgid "New keyword"
+msgstr "Neuer Suchbegriff"
+
+#: iconfinderstrconsts.rsmetadata_anysize
+msgctxt "iconfinderstrconsts.rsmetadata_anysize"
+msgid "(any size)"
+msgstr "(beliebig)"
+
+#: iconfinderstrconsts.rsmetadata_anystyle
+msgctxt "iconfinderstrconsts.rsmetadata_anystyle"
+msgid "(any style)"
+msgstr "(beliebig)"
+
+#: iconfinderstrconsts.rsmetadata_caption
+msgctxt "iconfinderstrconsts.rsmetadata_caption"
+msgid "Edit Icon Metadata"
+msgstr "Icon-Metadaten bearbeiten"
+
+#: iconfinderstrconsts.rsmetadata_classicstyle
+msgctxt "iconfinderstrconsts.rsmetadata_classicstyle"
+msgid "Classic"
+msgstr "Klassisch"
+
+#: iconfinderstrconsts.rsmetadata_flatstyle
+msgctxt "iconfinderstrconsts.rsmetadata_flatstyle"
+msgid "Flat"
+msgstr "Flach"
+
+#: iconfinderstrconsts.rsmetadata_keywords
+msgctxt "iconfinderstrconsts.rsmetadata_keywords"
+msgid "Keywords (one keyword per line)"
+msgstr "Suchbegriffe (ein Suchbegriff pro Zeile)"
+
+#: iconfinderstrconsts.rsmetadata_outline2style
+msgctxt "iconfinderstrconsts.rsmetadata_outline2style"
+msgid "Outline 2-color"
+msgstr "Außenlinie 2-farbig"
+
+#: iconfinderstrconsts.rsmetadata_outlinestyle
+msgctxt "iconfinderstrconsts.rsmetadata_outlinestyle"
+msgid "Outline"
+msgstr "Außenlinie"
+
+#: iconfinderstrconsts.rsmetadata_style
+msgctxt "iconfinderstrconsts.rsmetadata_style"
+msgid "Style"
+msgstr "Stil"

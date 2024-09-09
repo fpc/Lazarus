@@ -1,0 +1,6 @@
+{"version":1,"strings":[
+{"hash":127445489,"name":"ticonmetadataform.caption","sourcebytes":[69,100,105,116,32,105,99,111,110,32,109,101,116,97,100,97,116,97],"value":"Edit icon metadata"},
+{"hash":254244585,"name":"ticonmetadataform.lblkeywords.caption","sourcebytes":[75,101,121,119,111,114,100,115,32,40,111,110,101,32,107,101,121,119,111,114,100,32,112,101,114,32,108,105,110,101,41],"value":"Keywords (one keyword per line)"},
+{"hash":170437043,"name":"ticonmetadataform.cmbstyle.text","sourcebytes":[67,108,97,115,115,105,99],"value":"Classic"},
+{"hash":5947429,"name":"ticonmetadataform.lblstyle.caption","sourcebytes":[83,116,121,108,101],"value":"Style"}
+]}

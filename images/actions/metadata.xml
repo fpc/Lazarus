@@ -1,0 +1,950 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <icons>
+    <icon filename="arrow_down.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>down</keyword>
+        <keyword>green</keyword>
+      </keywords>
+    </icon>
+    <icon filename="arrow_down_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>down</keyword>
+        <keyword>green</keyword>
+      </keywords>
+    </icon>
+    <icon filename="arrow_down_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>down</keyword>
+        <keyword>green</keyword>
+      </keywords>
+    </icon>
+    <icon filename="arrow_left.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>green</keyword>
+        <keyword>left</keyword>
+      </keywords>
+    </icon>
+    <icon filename="arrow_left_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>green</keyword>
+        <keyword>left</keyword>
+      </keywords>
+    </icon>
+    <icon filename="arrow_left_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>green</keyword>
+        <keyword>left</keyword>
+      </keywords>
+    </icon>
+    <icon filename="arrow_right.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>green</keyword>
+        <keyword>right</keyword>
+      </keywords>
+    </icon>
+    <icon filename="arrow_right_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>green</keyword>
+        <keyword>right</keyword>
+      </keywords>
+    </icon>
+    <icon filename="arrow_right_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>green</keyword>
+        <keyword>right</keyword>
+      </keywords>
+    </icon>
+    <icon filename="arrow_up.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>green</keyword>
+        <keyword>up</keyword>
+      </keywords>
+    </icon>
+    <icon filename="arrow_up_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>green</keyword>
+        <keyword>up</keyword>
+      </keywords>
+    </icon>
+    <icon filename="arrow_up_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>green</keyword>
+        <keyword>up</keyword>
+      </keywords>
+    </icon>
+    <icon filename="arrow__darkgreen_down.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>down</keyword>
+        <keyword>green</keyword>
+      </keywords>
+    </icon>
+    <icon filename="arrow__darkgreen_down_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>down</keyword>
+        <keyword>green</keyword>
+      </keywords>
+    </icon>
+    <icon filename="arrow__darkgreen_down_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>down</keyword>
+        <keyword>green</keyword>
+      </keywords>
+    </icon>
+    <icon filename="arrow__darkgreen_left.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>green</keyword>
+        <keyword>left</keyword>
+      </keywords>
+    </icon>
+    <icon filename="arrow__darkgreen_left_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>green</keyword>
+        <keyword>left</keyword>
+      </keywords>
+    </icon>
+    <icon filename="arrow__darkgreen_left_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>green</keyword>
+        <keyword>left</keyword>
+      </keywords>
+    </icon>
+    <icon filename="arrow__darkgreen_right.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>green</keyword>
+        <keyword>right</keyword>
+      </keywords>
+    </icon>
+    <icon filename="arrow__darkgreen_right_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>green</keyword>
+        <keyword>right</keyword>
+      </keywords>
+    </icon>
+    <icon filename="arrow__darkgreen_right_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>green</keyword>
+        <keyword>right</keyword>
+      </keywords>
+    </icon>
+    <icon filename="arrow__darkgreen_up.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>green</keyword>
+        <keyword>up</keyword>
+      </keywords>
+    </icon>
+    <icon filename="arrow__darkgreen_up_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>green</keyword>
+        <keyword>up</keyword>
+      </keywords>
+    </icon>
+    <icon filename="arrow__darkgreen_up_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>green</keyword>
+        <keyword>up</keyword>
+      </keywords>
+    </icon>
+    <icon filename="arrow__darkred_down.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>brown</keyword>
+        <keyword>down</keyword>
+        <keyword>red</keyword>
+      </keywords>
+    </icon>
+    <icon filename="arrow__darkred_down_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>brown</keyword>
+        <keyword>down</keyword>
+        <keyword>red</keyword>
+      </keywords>
+    </icon>
+    <icon filename="arrow__darkred_down_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>brown</keyword>
+        <keyword>down</keyword>
+        <keyword>red</keyword>
+      </keywords>
+    </icon>
+    <icon filename="arrow__darkred_left.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>brown</keyword>
+        <keyword>left</keyword>
+        <keyword>red</keyword>
+      </keywords>
+    </icon>
+    <icon filename="arrow__darkred_left_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>brown</keyword>
+        <keyword>left</keyword>
+        <keyword>red</keyword>
+      </keywords>
+    </icon>
+    <icon filename="arrow__darkred_left_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>brown</keyword>
+        <keyword>left</keyword>
+        <keyword>red</keyword>
+      </keywords>
+    </icon>
+    <icon filename="arrow__darkred_right.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>brown</keyword>
+        <keyword>red</keyword>
+        <keyword>right</keyword>
+      </keywords>
+    </icon>
+    <icon filename="arrow__darkred_right_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>brown</keyword>
+        <keyword>red</keyword>
+        <keyword>right</keyword>
+      </keywords>
+    </icon>
+    <icon filename="arrow__darkred_right_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>brown</keyword>
+        <keyword>red</keyword>
+        <keyword>right</keyword>
+      </keywords>
+    </icon>
+    <icon filename="arrow__darkred_up.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>brown</keyword>
+        <keyword>red</keyword>
+        <keyword>up</keyword>
+      </keywords>
+    </icon>
+    <icon filename="arrow__darkred_up_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>brown</keyword>
+        <keyword>red</keyword>
+        <keyword>up</keyword>
+      </keywords>
+    </icon>
+    <icon filename="arrow__darkred_up_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>brown</keyword>
+        <keyword>red</keyword>
+        <keyword>up</keyword>
+      </keywords>
+    </icon>
+    <icon filename="autocomplete.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>cursor</keyword>
+        <keyword>edit</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="autocomplete_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>cursor</keyword>
+        <keyword>edit</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="autocomplete_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>cursor</keyword>
+        <keyword>edit</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="execute.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>execute</keyword>
+        <keyword>flash</keyword>
+        <keyword>run</keyword>
+      </keywords>
+    </icon>
+    <icon filename="execute_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>execute</keyword>
+        <keyword>flash</keyword>
+        <keyword>run</keyword>
+      </keywords>
+    </icon>
+    <icon filename="execute_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>execute</keyword>
+        <keyword>flash</keyword>
+        <keyword>run</keyword>
+      </keywords>
+    </icon>
+    <icon filename="filter_any_place.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>filter</keyword>
+        <keyword>middle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="filter_any_place_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>filter</keyword>
+        <keyword>middle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="filter_any_place_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>filter</keyword>
+        <keyword>middle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="filter_from_begin.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>begin</keyword>
+        <keyword>filter</keyword>
+        <keyword>start</keyword>
+      </keywords>
+    </icon>
+    <icon filename="filter_from_begin_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>begin</keyword>
+        <keyword>filter</keyword>
+        <keyword>start</keyword>
+      </keywords>
+    </icon>
+    <icon filename="filter_from_begin_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>begin</keyword>
+        <keyword>filter</keyword>
+        <keyword>start</keyword>
+      </keywords>
+    </icon>
+    <icon filename="laz_add.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>insert</keyword>
+        <keyword>plus</keyword>
+      </keywords>
+    </icon>
+    <icon filename="laz_add_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>insert</keyword>
+        <keyword>plus</keyword>
+      </keywords>
+    </icon>
+    <icon filename="laz_add_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>insert</keyword>
+        <keyword>plus</keyword>
+      </keywords>
+    </icon>
+    <icon filename="laz_cancel.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>cancel</keyword>
+        <keyword>close</keyword>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="laz_cancel_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>cancel</keyword>
+        <keyword>close</keyword>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="laz_cancel_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>cancel</keyword>
+        <keyword>close</keyword>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="laz_delete.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>clear</keyword>
+        <keyword>delete</keyword>
+        <keyword>minus</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="laz_delete_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>clear</keyword>
+        <keyword>delete</keyword>
+        <keyword>minus</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="laz_delete_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>clear</keyword>
+        <keyword>delete</keyword>
+        <keyword>minus</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="laz_edit.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>edit</keyword>
+        <keyword>pencil</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="laz_edit_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>edit</keyword>
+        <keyword>pencil</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="laz_edit_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>edit</keyword>
+        <keyword>pencil</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="laz_export.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>export</keyword>
+        <keyword>save</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="laz_export_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>export</keyword>
+        <keyword>save</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="laz_export_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>export</keyword>
+        <keyword>save</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="laz_highlighter.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>color</keyword>
+        <keyword>highlight</keyword>
+        <keyword>pencil</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="laz_highlighter_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>color</keyword>
+        <keyword>highlight</keyword>
+        <keyword>pencil</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="laz_highlighter_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>color</keyword>
+        <keyword>highlight</keyword>
+        <keyword>pencil</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="laz_open.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>folder</keyword>
+        <keyword>open</keyword>
+      </keywords>
+    </icon>
+    <icon filename="laz_open_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>folder</keyword>
+        <keyword>open</keyword>
+      </keywords>
+    </icon>
+    <icon filename="laz_open_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>folder</keyword>
+        <keyword>open</keyword>
+      </keywords>
+    </icon>
+    <icon filename="laz_open_recent.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>appointment</keyword>
+        <keyword>file</keyword>
+        <keyword>folder</keyword>
+        <keyword>open</keyword>
+        <keyword>time</keyword>
+      </keywords>
+    </icon>
+    <icon filename="laz_open_recent_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>appointment</keyword>
+        <keyword>file</keyword>
+        <keyword>folder</keyword>
+        <keyword>open</keyword>
+        <keyword>time</keyword>
+      </keywords>
+    </icon>
+    <icon filename="laz_open_recent_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>appointment</keyword>
+        <keyword>file</keyword>
+        <keyword>folder</keyword>
+        <keyword>open</keyword>
+        <keyword>time</keyword>
+      </keywords>
+    </icon>
+    <icon filename="laz_open_unit.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>document</keyword>
+        <keyword>file</keyword>
+        <keyword>folder</keyword>
+        <keyword>open</keyword>
+        <keyword>page</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="laz_open_unit_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>document</keyword>
+        <keyword>file</keyword>
+        <keyword>folder</keyword>
+        <keyword>open</keyword>
+        <keyword>page</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="laz_open_unit_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>document</keyword>
+        <keyword>file</keyword>
+        <keyword>folder</keyword>
+        <keyword>open</keyword>
+        <keyword>page</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="laz_refresh.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>redo</keyword>
+        <keyword>refresh</keyword>
+        <keyword>restore</keyword>
+        <keyword>revert</keyword>
+        <keyword>update</keyword>
+      </keywords>
+    </icon>
+    <icon filename="laz_refresh_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>redo</keyword>
+        <keyword>refresh</keyword>
+        <keyword>restore</keyword>
+        <keyword>revert</keyword>
+        <keyword>update</keyword>
+      </keywords>
+    </icon>
+    <icon filename="laz_refresh_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>redo</keyword>
+        <keyword>refresh</keyword>
+        <keyword>restore</keyword>
+        <keyword>revert</keyword>
+        <keyword>update</keyword>
+      </keywords>
+    </icon>
+    <icon filename="laz_save.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>diskette</keyword>
+        <keyword>floppy</keyword>
+        <keyword>save</keyword>
+      </keywords>
+    </icon>
+    <icon filename="laz_save_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>diskette</keyword>
+        <keyword>floppy</keyword>
+        <keyword>save</keyword>
+      </keywords>
+    </icon>
+    <icon filename="laz_save_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>diskette</keyword>
+        <keyword>floppy</keyword>
+        <keyword>save</keyword>
+      </keywords>
+    </icon>
+    <icon filename="laz_tick.png" width="16" height="16" style="outline 2-color">
+      <keywords>
+        <keyword>accept</keyword>
+        <keyword>check</keyword>
+        <keyword>complete</keyword>
+        <keyword>done</keyword>
+        <keyword>ok</keyword>
+      </keywords>
+    </icon>
+    <icon filename="laz_tick_150.png" width="24" height="24" style="outline 2-color">
+      <keywords>
+        <keyword>accept</keyword>
+        <keyword>check</keyword>
+        <keyword>complete</keyword>
+        <keyword>done</keyword>
+        <keyword>ok</keyword>
+      </keywords>
+    </icon>
+    <icon filename="laz_tick_200.png" width="32" height="32" style="outline 2-color">
+      <keywords>
+        <keyword>accept</keyword>
+        <keyword>check</keyword>
+        <keyword>complete</keyword>
+        <keyword>done</keyword>
+        <keyword>ok</keyword>
+      </keywords>
+    </icon>
+    <icon filename="laz_wand.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>assistant</keyword>
+        <keyword>wand</keyword>
+        <keyword>wizard</keyword>
+      </keywords>
+    </icon>
+    <icon filename="laz_wand_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>assistant</keyword>
+        <keyword>wand</keyword>
+        <keyword>wizard</keyword>
+      </keywords>
+    </icon>
+    <icon filename="laz_wand_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>assistant</keyword>
+        <keyword>wand</keyword>
+        <keyword>wizard</keyword>
+      </keywords>
+    </icon>
+    <icon filename="next_word.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>order</keyword>
+        <keyword>sort</keyword>
+      </keywords>
+    </icon>
+    <icon filename="next_word_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>order</keyword>
+        <keyword>sort</keyword>
+      </keywords>
+    </icon>
+    <icon filename="next_word_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>order</keyword>
+        <keyword>sort</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pastel_colors.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>background</keyword>
+        <keyword>foreground</keyword>
+        <keyword>order</keyword>
+        <keyword>rectangle</keyword>
+        <keyword>shape</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pastel_colors_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>background</keyword>
+        <keyword>foreground</keyword>
+        <keyword>order</keyword>
+        <keyword>rectangle</keyword>
+        <keyword>shape</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pastel_colors_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>background</keyword>
+        <keyword>foreground</keyword>
+        <keyword>order</keyword>
+        <keyword>rectangle</keyword>
+        <keyword>shape</keyword>
+      </keywords>
+    </icon>
+    <icon filename="preferences.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>check</keyword>
+        <keyword>configuration</keyword>
+        <keyword>done</keyword>
+        <keyword>finished</keyword>
+        <keyword>gear</keyword>
+        <keyword>ok</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="preferences_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>check</keyword>
+        <keyword>configuration</keyword>
+        <keyword>done</keyword>
+        <keyword>finished</keyword>
+        <keyword>gear</keyword>
+        <keyword>ok</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="preferences_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>check</keyword>
+        <keyword>configuration</keyword>
+        <keyword>done</keyword>
+        <keyword>finished</keyword>
+        <keyword>gear</keyword>
+        <keyword>ok</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="previous_word.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>order</keyword>
+        <keyword>sort</keyword>
+      </keywords>
+    </icon>
+    <icon filename="previous_word_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>order</keyword>
+        <keyword>sort</keyword>
+      </keywords>
+    </icon>
+    <icon filename="previous_word_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>order</keyword>
+        <keyword>sort</keyword>
+      </keywords>
+    </icon>
+    <icon filename="restore_default.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>default</keyword>
+        <keyword>restore</keyword>
+      </keywords>
+    </icon>
+    <icon filename="restore_defaults.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>default</keyword>
+        <keyword>restore</keyword>
+      </keywords>
+    </icon>
+    <icon filename="restore_defaults_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>default</keyword>
+        <keyword>restore</keyword>
+      </keywords>
+    </icon>
+    <icon filename="restore_defaults_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>default</keyword>
+        <keyword>restore</keyword>
+      </keywords>
+    </icon>
+    <icon filename="restore_default_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>default</keyword>
+        <keyword>restore</keyword>
+      </keywords>
+    </icon>
+    <icon filename="restore_default_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>default</keyword>
+        <keyword>restore</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tab_close_All.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>all</keyword>
+        <keyword>close</keyword>
+        <keyword>pagecontrol</keyword>
+        <keyword>tab</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tab_close_All_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>all</keyword>
+        <keyword>close</keyword>
+        <keyword>pagecontrol</keyword>
+        <keyword>tab</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tab_close_All_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>all</keyword>
+        <keyword>close</keyword>
+        <keyword>pagecontrol</keyword>
+        <keyword>tab</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tab_close_L.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>close</keyword>
+        <keyword>first</keyword>
+        <keyword>pagecontrol</keyword>
+        <keyword>tab</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tab_close_LR.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>close</keyword>
+        <keyword>first</keyword>
+        <keyword>last</keyword>
+        <keyword>pagecontrol</keyword>
+        <keyword>tab</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tab_close_LR_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>close</keyword>
+        <keyword>first</keyword>
+        <keyword>last</keyword>
+        <keyword>pagecontrol</keyword>
+        <keyword>tab</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tab_close_LR_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>close</keyword>
+        <keyword>first</keyword>
+        <keyword>last</keyword>
+        <keyword>pagecontrol</keyword>
+        <keyword>tab</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tab_close_L_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>close</keyword>
+        <keyword>first</keyword>
+        <keyword>pagecontrol</keyword>
+        <keyword>tab</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tab_close_L_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>close</keyword>
+        <keyword>first</keyword>
+        <keyword>pagecontrol</keyword>
+        <keyword>tab</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tab_close_R.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>close</keyword>
+        <keyword>last</keyword>
+        <keyword>pagecontrol</keyword>
+        <keyword>tab</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tab_close_R_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>close</keyword>
+        <keyword>last</keyword>
+        <keyword>pagecontrol</keyword>
+        <keyword>tab</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tab_close_R_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>close</keyword>
+        <keyword>last</keyword>
+        <keyword>pagecontrol</keyword>
+        <keyword>tab</keyword>
+      </keywords>
+    </icon>
+    <icon filename="_arrow_left.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>left</keyword>
+      </keywords>
+    </icon>
+    <icon filename="_arrow_left_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>left</keyword>
+      </keywords>
+    </icon>
+    <icon filename="_arrow_left_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>left</keyword>
+      </keywords>
+    </icon>
+    <icon filename="_arrow_right.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>right</keyword>
+      </keywords>
+    </icon>
+    <icon filename="_arrow_right_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>right</keyword>
+      </keywords>
+    </icon>
+    <icon filename="_arrow_right_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>right</keyword>
+      </keywords>
+    </icon>
+  </icons>
+</metadata>

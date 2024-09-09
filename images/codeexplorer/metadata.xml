@@ -1,0 +1,476 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <icons>
+    <icon filename="ce_classinterface.png" width="16" height="16" style="outline 2-color">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>interface</keyword>
+        <keyword>link</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_classinterface_150.png" width="24" height="24" style="outline 2-color">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>interface</keyword>
+        <keyword>link</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_classinterface_200.png" width="32" height="32" style="outline 2-color">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>interface</keyword>
+        <keyword>link</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_cycleimplementation.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>implementation</keyword>
+        <keyword>ring</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_cycleimplementation_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>implementation</keyword>
+        <keyword>ring</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_cycleimplementation_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>implementation</keyword>
+        <keyword>ring</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_cycleinterface.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>interface</keyword>
+        <keyword>ring</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_cycleinterface_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>interface</keyword>
+        <keyword>ring</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_cycleinterface_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>interface</keyword>
+        <keyword>ring</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_default.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>default</keyword>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_default_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>default</keyword>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_default_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>default</keyword>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_deprecated.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>attention</keyword>
+        <keyword>calendar</keyword>
+        <keyword>date</keyword>
+        <keyword>deprected</keyword>
+        <keyword>ide</keyword>
+        <keyword>warning</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_deprecated_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>attention</keyword>
+        <keyword>calendar</keyword>
+        <keyword>date</keyword>
+        <keyword>deprected</keyword>
+        <keyword>ide</keyword>
+        <keyword>warning</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_deprecated_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>attention</keyword>
+        <keyword>calendar</keyword>
+        <keyword>date</keyword>
+        <keyword>deprected</keyword>
+        <keyword>ide</keyword>
+        <keyword>warning</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_experimental.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>attention</keyword>
+        <keyword>chemistry</keyword>
+        <keyword>experiment</keyword>
+        <keyword>ide</keyword>
+        <keyword>science</keyword>
+        <keyword>warning</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_experimental_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>attention</keyword>
+        <keyword>chemistry</keyword>
+        <keyword>experiment</keyword>
+        <keyword>ide</keyword>
+        <keyword>science</keyword>
+        <keyword>warning</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_experimental_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>attention</keyword>
+        <keyword>chemistry</keyword>
+        <keyword>experiment</keyword>
+        <keyword>ide</keyword>
+        <keyword>science</keyword>
+        <keyword>warning</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_finalization.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>end</keyword>
+        <keyword>flag</keyword>
+        <keyword>ide</keyword>
+        <keyword>start</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_finalization_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>end</keyword>
+        <keyword>flag</keyword>
+        <keyword>ide</keyword>
+        <keyword>start</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_finalization_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>end</keyword>
+        <keyword>flag</keyword>
+        <keyword>ide</keyword>
+        <keyword>start</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_helper.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>helper</keyword>
+        <keyword>ide</keyword>
+        <keyword>puzzle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_helper_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>helper</keyword>
+        <keyword>ide</keyword>
+        <keyword>puzzle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_helper_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>helper</keyword>
+        <keyword>ide</keyword>
+        <keyword>puzzle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_implementation.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>chip</keyword>
+        <keyword>technology</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_implementation_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>chip</keyword>
+        <keyword>technology</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_implementation_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>chip</keyword>
+        <keyword>technology</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_initialization.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>flash</keyword>
+        <keyword>ide</keyword>
+        <keyword>initialization</keyword>
+        <keyword>sun</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_initialization_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>flash</keyword>
+        <keyword>ide</keyword>
+        <keyword>initialization</keyword>
+        <keyword>sun</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_initialization_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>flash</keyword>
+        <keyword>ide</keyword>
+        <keyword>initialization</keyword>
+        <keyword>sun</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_interface.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>book</keyword>
+        <keyword>ide</keyword>
+        <keyword>interface</keyword>
+        <keyword>open</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_interface_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>book</keyword>
+        <keyword>ide</keyword>
+        <keyword>interface</keyword>
+        <keyword>open</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_interface_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>book</keyword>
+        <keyword>ide</keyword>
+        <keyword>interface</keyword>
+        <keyword>open</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_library.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>attention</keyword>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>library</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>warning</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_library_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>attention</keyword>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>library</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>warning</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_library_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>attention</keyword>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>ide</keyword>
+        <keyword>library</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>warning</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_platform.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>attention</keyword>
+        <keyword>computer</keyword>
+        <keyword>ide</keyword>
+        <keyword>warning</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_platform_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>attention</keyword>
+        <keyword>computer</keyword>
+        <keyword>ide</keyword>
+        <keyword>warning</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_platform_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>attention</keyword>
+        <keyword>computer</keyword>
+        <keyword>ide</keyword>
+        <keyword>warning</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_program.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>command</keyword>
+        <keyword>ide</keyword>
+        <keyword>prompt</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_program_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>command</keyword>
+        <keyword>ide</keyword>
+        <keyword>prompt</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_program_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>command</keyword>
+        <keyword>ide</keyword>
+        <keyword>prompt</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_property_readonly.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>delete</keyword>
+        <keyword>ide</keyword>
+        <keyword>lock</keyword>
+        <keyword>minus</keyword>
+        <keyword>readonly</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_property_readonly_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>delete</keyword>
+        <keyword>ide</keyword>
+        <keyword>lock</keyword>
+        <keyword>minus</keyword>
+        <keyword>readonly</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_property_readonly_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>delete</keyword>
+        <keyword>ide</keyword>
+        <keyword>lock</keyword>
+        <keyword>minus</keyword>
+        <keyword>readonly</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_section.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>folder</keyword>
+        <keyword>ide</keyword>
+        <keyword>open</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_section_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>folder</keyword>
+        <keyword>ide</keyword>
+        <keyword>open</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_section_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>folder</keyword>
+        <keyword>ide</keyword>
+        <keyword>open</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_unimplemented.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>block</keyword>
+        <keyword>ide</keyword>
+        <keyword>stop</keyword>
+        <keyword>unimplemented</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_unimplemented_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>block</keyword>
+        <keyword>ide</keyword>
+        <keyword>stop</keyword>
+        <keyword>unimplemented</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ce_unimplemented_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>block</keyword>
+        <keyword>ide</keyword>
+        <keyword>stop</keyword>
+        <keyword>unimplemented</keyword>
+      </keywords>
+    </icon>
+    <icon filename="show_category.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>category</keyword>
+        <keyword>ide</keyword>
+        <keyword>list</keyword>
+        <keyword>page</keyword>
+      </keywords>
+    </icon>
+    <icon filename="show_category_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>category</keyword>
+        <keyword>ide</keyword>
+        <keyword>list</keyword>
+        <keyword>page</keyword>
+      </keywords>
+    </icon>
+    <icon filename="show_category_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>category</keyword>
+        <keyword>ide</keyword>
+        <keyword>list</keyword>
+        <keyword>page</keyword>
+      </keywords>
+    </icon>
+    <icon filename="show_source.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>ident</keyword>
+        <keyword>page</keyword>
+        <keyword>source</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="show_source_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>ident</keyword>
+        <keyword>page</keyword>
+        <keyword>source</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="show_source_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>ident</keyword>
+        <keyword>page</keyword>
+        <keyword>source</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+  </icons>
+</metadata>

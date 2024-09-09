@@ -1,0 +1,134 @@
+object IconFolderForm: TIconFolderForm
+  Left = 314
+  Height = 336
+  Top = 130
+  Width = 563
+  Caption = 'Icon folders'
+  ClientHeight = 336
+  ClientWidth = 563
+  LCLVersion = '3.99.0.0'
+  OnCreate = FormCreate
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 296
+    Width = 551
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object FolderPanel: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ButtonPanel1
+    Left = 8
+    Height = 280
+    Top = 8
+    Width = 547
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 8
+    Caption = 'Icon folders'
+    ClientHeight = 260
+    ClientWidth = 543
+    TabOrder = 1
+    object clbFolders: TCheckListBox
+      AnchorSideLeft.Control = FolderPanel
+      AnchorSideTop.Control = FolderPanel
+      AnchorSideRight.Control = FolderPanel
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = btnAddFolder
+      Left = 8
+      Height = 219
+      Top = 4
+      Width = 527
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Left = 8
+      BorderSpacing.Top = 4
+      BorderSpacing.Right = 8
+      ItemHeight = 0
+      TabOrder = 0
+      OnSelectionChange = clbFoldersSelectionChange
+    end
+    object btnDeleteFolder: TButton
+      AnchorSideTop.Control = btnAddFolder
+      AnchorSideRight.Control = CenterBevel
+      AnchorSideBottom.Side = asrBottom
+      Left = 193
+      Height = 25
+      Top = 229
+      Width = 75
+      Anchors = [akTop, akRight]
+      Caption = 'Delete'
+      Enabled = False
+      TabOrder = 2
+      OnClick = btnDeleteFolderClick
+    end
+    object btnMoveFolderUp: TButton
+      AnchorSideLeft.Control = CenterBevel
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = btnAddFolder
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Side = asrBottom
+      Left = 274
+      Height = 25
+      Top = 229
+      Width = 75
+      Caption = 'Move up'
+      Enabled = False
+      TabOrder = 3
+      OnClick = btnMoveFolderUpClick
+    end
+    object btnMoveFolderDown: TButton
+      AnchorSideLeft.Control = btnMoveFolderUp
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = btnAddFolder
+      AnchorSideRight.Side = asrBottom
+      Left = 355
+      Height = 25
+      Top = 229
+      Width = 75
+      BorderSpacing.Left = 6
+      Caption = 'Move down'
+      Enabled = False
+      TabOrder = 4
+      OnClick = btnMoveFolderDownClick
+    end
+    object btnAddFolder: TButton
+      AnchorSideRight.Control = btnDeleteFolder
+      AnchorSideBottom.Control = FolderPanel
+      AnchorSideBottom.Side = asrBottom
+      Left = 112
+      Height = 25
+      Top = 229
+      Width = 75
+      Anchors = [akRight, akBottom]
+      BorderSpacing.Around = 6
+      Caption = 'Add ...'
+      TabOrder = 1
+      OnClick = btnAddFolderClick
+    end
+    object CenterBevel: TBevel
+      AnchorSideLeft.Control = FolderPanel
+      AnchorSideLeft.Side = asrCenter
+      AnchorSideTop.Control = btnAddFolder
+      Left = 268
+      Height = 25
+      Top = 229
+      Width = 6
+      Shape = bsSpacer
+    end
+  end
+  object SelectDirectoryDialog: TSelectDirectoryDialog
+    Left = 115
+    Top = 141
+  end
+end

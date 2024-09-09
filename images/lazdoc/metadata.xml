@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <icons>
+    <icon filename="formatbold.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>bold</keyword>
+        <keyword>format</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="formatbold_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>bold</keyword>
+        <keyword>format</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="formatbold_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>bold</keyword>
+        <keyword>format</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="formatitalic.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>format</keyword>
+        <keyword>italic</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="formatitalic_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>format</keyword>
+        <keyword>italic</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="formatitalic_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>format</keyword>
+        <keyword>italic</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="formatunderline.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>format</keyword>
+        <keyword>text</keyword>
+        <keyword>underline</keyword>
+        <keyword>underscore</keyword>
+      </keywords>
+    </icon>
+    <icon filename="formatunderline_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>format</keyword>
+        <keyword>text</keyword>
+        <keyword>underline</keyword>
+        <keyword>underscore</keyword>
+      </keywords>
+    </icon>
+    <icon filename="formatunderline_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>format</keyword>
+        <keyword>text</keyword>
+        <keyword>underline</keyword>
+        <keyword>underscore</keyword>
+      </keywords>
+    </icon>
+    <icon filename="insertcodetag.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>format</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="insertcodetag_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>format</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="insertcodetag_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>format</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="insertlink.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>format</keyword>
+        <keyword>list</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="insertlink_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>format</keyword>
+        <keyword>list</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="insertlink_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>format</keyword>
+        <keyword>list</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="insertparagraph.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>format</keyword>
+        <keyword>paragraph</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="insertparagraph_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>format</keyword>
+        <keyword>paragraph</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="insertparagraph_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>format</keyword>
+        <keyword>paragraph</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="insertprintshort.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>format</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="insertprintshort_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>format</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="insertprintshort_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>format</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="insertremark.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>comment</keyword>
+        <keyword>format</keyword>
+        <keyword>source</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="insertremark_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>comment</keyword>
+        <keyword>format</keyword>
+        <keyword>source</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="insertremark_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>comment</keyword>
+        <keyword>format</keyword>
+        <keyword>source</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="inserturltag.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>format</keyword>
+        <keyword>hyperlink</keyword>
+        <keyword>internet</keyword>
+        <keyword>link</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="inserturltag_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>format</keyword>
+        <keyword>hyperlink</keyword>
+        <keyword>internet</keyword>
+        <keyword>link</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="inserturltag_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>format</keyword>
+        <keyword>hyperlink</keyword>
+        <keyword>internet</keyword>
+        <keyword>link</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="insertvartag.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>format</keyword>
+        <keyword>text</keyword>
+        <keyword>variable</keyword>
+      </keywords>
+    </icon>
+    <icon filename="insertvartag_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>format</keyword>
+        <keyword>text</keyword>
+        <keyword>variable</keyword>
+      </keywords>
+    </icon>
+    <icon filename="insertvartag_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>format</keyword>
+        <keyword>text</keyword>
+        <keyword>variable</keyword>
+      </keywords>
+    </icon>
+  </icons>
+</metadata>

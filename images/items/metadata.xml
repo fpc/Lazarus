@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <icons>
+    <icon filename="datamodule_designer.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>database</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="datamodule_designer_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>database</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="datamodule_designer_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>database</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="form_designer.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>design</keyword>
+        <keyword>size</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="form_designer_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>design</keyword>
+        <keyword>size</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="form_designer_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>design</keyword>
+        <keyword>size</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="frame_designer.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>design</keyword>
+        <keyword>frame</keyword>
+        <keyword>size</keyword>
+      </keywords>
+    </icon>
+    <icon filename="frame_designer_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>design</keyword>
+        <keyword>frame</keyword>
+        <keyword>size</keyword>
+      </keywords>
+    </icon>
+    <icon filename="frame_designer_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>design</keyword>
+        <keyword>frame</keyword>
+        <keyword>size</keyword>
+      </keywords>
+    </icon>
+    <icon filename="item_character.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>keyboard</keyword>
+      </keywords>
+    </icon>
+    <icon filename="item_character_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>keyboard</keyword>
+      </keywords>
+    </icon>
+    <icon filename="item_character_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>keyboard</keyword>
+      </keywords>
+    </icon>
+    <icon filename="item_filter.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>filter</keyword>
+      </keywords>
+    </icon>
+    <icon filename="item_filter_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>filter</keyword>
+      </keywords>
+    </icon>
+    <icon filename="item_filter_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>filter</keyword>
+      </keywords>
+    </icon>
+    <icon filename="item_font.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>font</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="item_font_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>font</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="item_font_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>font</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="item_form.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="item_form_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="item_form_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="item_keyboard.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>keyboard</keyword>
+      </keywords>
+    </icon>
+    <icon filename="item_keyboard_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>keyboard</keyword>
+      </keywords>
+    </icon>
+    <icon filename="item_keyboard_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>keyboard</keyword>
+      </keywords>
+    </icon>
+    <icon filename="item_library.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>book</keyword>
+        <keyword>closed</keyword>
+      </keywords>
+    </icon>
+    <icon filename="item_library_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>book</keyword>
+        <keyword>closed</keyword>
+      </keywords>
+    </icon>
+    <icon filename="item_library_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>book</keyword>
+        <keyword>closed</keyword>
+      </keywords>
+    </icon>
+    <icon filename="item_package.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>package</keyword>
+      </keywords>
+    </icon>
+    <icon filename="item_package_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>package</keyword>
+      </keywords>
+    </icon>
+    <icon filename="item_package_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>package</keyword>
+      </keywords>
+    </icon>
+    <icon filename="item_project.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>color</keyword>
+        <keyword>project</keyword>
+      </keywords>
+    </icon>
+    <icon filename="item_project_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>color</keyword>
+        <keyword>project</keyword>
+      </keywords>
+    </icon>
+    <icon filename="item_project_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>color</keyword>
+        <keyword>project</keyword>
+      </keywords>
+    </icon>
+    <icon filename="item_project_source.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>page</keyword>
+        <keyword>project</keyword>
+        <keyword>source</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="item_project_source_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>page</keyword>
+        <keyword>project</keyword>
+        <keyword>source</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="item_project_source_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>page</keyword>
+        <keyword>project</keyword>
+        <keyword>source</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="item_todo.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>note</keyword>
+        <keyword>remark</keyword>
+      </keywords>
+    </icon>
+    <icon filename="item_todo_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>note</keyword>
+        <keyword>remark</keyword>
+      </keywords>
+    </icon>
+    <icon filename="item_todo_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>note</keyword>
+        <keyword>remark</keyword>
+      </keywords>
+    </icon>
+    <icon filename="item_unit.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+        <keyword>source</keyword>
+        <keyword>text</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="item_unit_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+        <keyword>source</keyword>
+        <keyword>text</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="item_unit_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+        <keyword>source</keyword>
+        <keyword>text</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+  </icons>
+</metadata>

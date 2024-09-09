@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <icons>
+    <icon filename="cc_class.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>class</keyword>
+        <keyword>code</keyword>
+        <keyword>ide</keyword>
+        <keyword>source</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_class_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>class</keyword>
+        <keyword>code</keyword>
+        <keyword>ide</keyword>
+        <keyword>source</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_class_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>class</keyword>
+        <keyword>code</keyword>
+        <keyword>ide</keyword>
+        <keyword>source</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_constant.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>constant</keyword>
+        <keyword>ide</keyword>
+        <keyword>source</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_constant_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>constant</keyword>
+        <keyword>ide</keyword>
+        <keyword>source</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_constant_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>constant</keyword>
+        <keyword>ide</keyword>
+        <keyword>source</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_constructor.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>constructor</keyword>
+        <keyword>ide</keyword>
+        <keyword>source</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_constructor_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>constructor</keyword>
+        <keyword>ide</keyword>
+        <keyword>source</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_constructor_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>constructor</keyword>
+        <keyword>ide</keyword>
+        <keyword>source</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_destructor.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>destructor</keyword>
+        <keyword>ide</keyword>
+        <keyword>source</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_destructor_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>destructor</keyword>
+        <keyword>ide</keyword>
+        <keyword>source</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_destructor_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>destructor</keyword>
+        <keyword>ide</keyword>
+        <keyword>source</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_enum.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>enum</keyword>
+        <keyword>ide</keyword>
+        <keyword>source</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_enum_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>enum</keyword>
+        <keyword>ide</keyword>
+        <keyword>source</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_enum_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>enum</keyword>
+        <keyword>ide</keyword>
+        <keyword>source</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_function.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>function</keyword>
+        <keyword>ide</keyword>
+        <keyword>source</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_function_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>function</keyword>
+        <keyword>ide</keyword>
+        <keyword>source</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_function_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>function</keyword>
+        <keyword>ide</keyword>
+        <keyword>source</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_label.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>ide</keyword>
+        <keyword>label</keyword>
+        <keyword>source</keyword>
+        <keyword>tag</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_label_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>ide</keyword>
+        <keyword>label</keyword>
+        <keyword>source</keyword>
+        <keyword>tag</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_label_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>ide</keyword>
+        <keyword>label</keyword>
+        <keyword>source</keyword>
+        <keyword>tag</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_namespace.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>comment</keyword>
+        <keyword>ide</keyword>
+        <keyword>source</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_namespace_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>comment</keyword>
+        <keyword>ide</keyword>
+        <keyword>source</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_namespace_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>comment</keyword>
+        <keyword>ide</keyword>
+        <keyword>source</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_procedure.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>ide</keyword>
+        <keyword>procedure</keyword>
+        <keyword>source</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_procedure_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>ide</keyword>
+        <keyword>procedure</keyword>
+        <keyword>source</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_procedure_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>ide</keyword>
+        <keyword>procedure</keyword>
+        <keyword>source</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_property.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>ide</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>tool</keyword>
+        <keyword>wrench</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_property_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>ide</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>tool</keyword>
+        <keyword>wrench</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_property_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>ide</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>tool</keyword>
+        <keyword>wrench</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_property_ro.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>ide</keyword>
+        <keyword>lock</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>tool</keyword>
+        <keyword>wrench</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_property_ro_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>ide</keyword>
+        <keyword>lock</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>tool</keyword>
+        <keyword>wrench</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_property_ro_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>ide</keyword>
+        <keyword>lock</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>tool</keyword>
+        <keyword>wrench</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_record.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>hierarchy</keyword>
+        <keyword>ide</keyword>
+        <keyword>record</keyword>
+        <keyword>tree</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_record_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>hierarchy</keyword>
+        <keyword>ide</keyword>
+        <keyword>record</keyword>
+        <keyword>tree</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_record_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>hierarchy</keyword>
+        <keyword>ide</keyword>
+        <keyword>record</keyword>
+        <keyword>tree</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_type.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>layer</keyword>
+        <keyword>many</keyword>
+        <keyword>plural</keyword>
+        <keyword>type</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_type_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>layer</keyword>
+        <keyword>many</keyword>
+        <keyword>plural</keyword>
+        <keyword>type</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_type_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>ide</keyword>
+        <keyword>layer</keyword>
+        <keyword>many</keyword>
+        <keyword>plural</keyword>
+        <keyword>type</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_unit.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>file</keyword>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+        <keyword>source</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_unit_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>file</keyword>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+        <keyword>source</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_unit_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>file</keyword>
+        <keyword>ide</keyword>
+        <keyword>page</keyword>
+        <keyword>source</keyword>
+        <keyword>unit</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_variable.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>ide</keyword>
+        <keyword>source</keyword>
+        <keyword>variable</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_variable_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>ide</keyword>
+        <keyword>source</keyword>
+        <keyword>variable</keyword>
+      </keywords>
+    </icon>
+    <icon filename="cc_variable_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>ide</keyword>
+        <keyword>source</keyword>
+        <keyword>variable</keyword>
+      </keywords>
+    </icon>
+  </icons>
+</metadata>

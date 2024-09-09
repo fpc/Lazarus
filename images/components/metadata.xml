@@ -1,0 +1,3187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <icons>
+    <icon filename="default.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>blocks</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="default_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>blocks</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="default_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>blocks</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tactionlist.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>button</keyword>
+        <keyword>component</keyword>
+        <keyword>menu</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tactionlist_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>button</keyword>
+        <keyword>component</keyword>
+        <keyword>menu</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tactionlist_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>button</keyword>
+        <keyword>component</keyword>
+        <keyword>menu</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tapplicationproperties.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>arrows</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tapplicationproperties_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>arrows</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tapplicationproperties_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>arrows</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tarrow.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>arrows</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tarrow_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>arrows</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tarrow_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>arrows</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tasyncprocess.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>arrows</keyword>
+        <keyword>component</keyword>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>options</keyword>
+        <keyword>palette</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tasyncprocess_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>arrows</keyword>
+        <keyword>component</keyword>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>options</keyword>
+        <keyword>palette</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tasyncprocess_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>arrows</keyword>
+        <keyword>component</keyword>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>options</keyword>
+        <keyword>palette</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tbevel.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tbevel_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tbevel_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tbitbtn.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>button</keyword>
+        <keyword>component</keyword>
+        <keyword>image</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tbitbtn_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>button</keyword>
+        <keyword>component</keyword>
+        <keyword>image</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tbitbtn_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>button</keyword>
+        <keyword>component</keyword>
+        <keyword>image</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tbufdataset.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tbufdataset_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tbufdataset_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tbutton.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>button</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tbuttonpanel.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>button</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tbuttonpanel_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>button</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tbuttonpanel_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>button</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tbutton_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>button</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tbutton_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>button</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcalcedit.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>calculator</keyword>
+        <keyword>component</keyword>
+        <keyword>edit</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcalcedit_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>calculator</keyword>
+        <keyword>component</keyword>
+        <keyword>edit</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcalcedit_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>calculator</keyword>
+        <keyword>component</keyword>
+        <keyword>edit</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcalculatordialog.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>calculator</keyword>
+        <keyword>component</keyword>
+        <keyword>dialog</keyword>
+        <keyword>edit</keyword>
+        <keyword>palette</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcalculatordialog_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>calculator</keyword>
+        <keyword>component</keyword>
+        <keyword>dialog</keyword>
+        <keyword>edit</keyword>
+        <keyword>palette</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcalculatordialog_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>calculator</keyword>
+        <keyword>component</keyword>
+        <keyword>dialog</keyword>
+        <keyword>edit</keyword>
+        <keyword>palette</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcalendar.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>calendar</keyword>
+        <keyword>component</keyword>
+        <keyword>date</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcalendardialog.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>calendar</keyword>
+        <keyword>component</keyword>
+        <keyword>date</keyword>
+        <keyword>dialog</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcalendardialog_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>calendar</keyword>
+        <keyword>component</keyword>
+        <keyword>date</keyword>
+        <keyword>dialog</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcalendardialog_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>calendar</keyword>
+        <keyword>component</keyword>
+        <keyword>date</keyword>
+        <keyword>dialog</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcalendar_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>calendar</keyword>
+        <keyword>component</keyword>
+        <keyword>date</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcalendar_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>calendar</keyword>
+        <keyword>component</keyword>
+        <keyword>date</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcheckbox.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>checkbox</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcheckbox_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>checkbox</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcheckbox_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>checkbox</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcheckcombobox.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>combobox</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcheckcombobox_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>combobox</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcheckcombobox_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>combobox</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcheckgroup.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>checkbox</keyword>
+        <keyword>component</keyword>
+        <keyword>groupbox</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcheckgroup_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>checkbox</keyword>
+        <keyword>component</keyword>
+        <keyword>groupbox</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcheckgroup_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>checkbox</keyword>
+        <keyword>component</keyword>
+        <keyword>groupbox</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tchecklistbox.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>checkbox</keyword>
+        <keyword>component</keyword>
+        <keyword>listbox</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tchecklistbox_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>checkbox</keyword>
+        <keyword>component</keyword>
+        <keyword>listbox</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tchecklistbox_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>checkbox</keyword>
+        <keyword>component</keyword>
+        <keyword>listbox</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcolorbox.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>color</keyword>
+        <keyword>combobox</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcolorbox_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>color</keyword>
+        <keyword>combobox</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcolorbox_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>color</keyword>
+        <keyword>combobox</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcolorbutton.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>button</keyword>
+        <keyword>color</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcolorbutton_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>button</keyword>
+        <keyword>color</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcolorbutton_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>button</keyword>
+        <keyword>color</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcolordialog.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>color</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcolordialog_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>color</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcolordialog_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>color</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcolorlistbox.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>color</keyword>
+        <keyword>component</keyword>
+        <keyword>listbox</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcolorlistbox_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>color</keyword>
+        <keyword>component</keyword>
+        <keyword>listbox</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcolorlistbox_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>color</keyword>
+        <keyword>component</keyword>
+        <keyword>listbox</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcombobox.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>combobox</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcomboboxex.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>color</keyword>
+        <keyword>combobox</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcomboboxex_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>color</keyword>
+        <keyword>combobox</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcomboboxex_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>color</keyword>
+        <keyword>combobox</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcombobox_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>combobox</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcombobox_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>combobox</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcontrolbar.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>bar</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcontrolbar_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>bar</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcontrolbar_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>bar</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcoolbar.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>bar</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcoolbar_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>bar</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcoolbar_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>bar</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcsvdataset.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>csv</keyword>
+        <keyword>database</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcsvdataset_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>csv</keyword>
+        <keyword>database</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcsvdataset_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>csv</keyword>
+        <keyword>database</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdatasource.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>arrows</keyword>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdatasource_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>arrows</keyword>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdatasource_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>arrows</keyword>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdateedit.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>calendar</keyword>
+        <keyword>component</keyword>
+        <keyword>date</keyword>
+        <keyword>edit</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdateedit_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>calendar</keyword>
+        <keyword>component</keyword>
+        <keyword>date</keyword>
+        <keyword>edit</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdateedit_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>calendar</keyword>
+        <keyword>component</keyword>
+        <keyword>date</keyword>
+        <keyword>edit</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdbcalendar.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>calendar</keyword>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>date</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdbcalendar_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>calendar</keyword>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>date</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdbcalendar_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>calendar</keyword>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>date</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdbcheckbox.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>checkbox</keyword>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdbcheckbox_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>checkbox</keyword>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdbcheckbox_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>checkbox</keyword>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdbcombobox.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>combobox</keyword>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdbcombobox_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>combobox</keyword>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdbcombobox_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>combobox</keyword>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdbdateedit.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>date</keyword>
+        <keyword>edit</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdbdateedit_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>date</keyword>
+        <keyword>edit</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdbdateedit_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>date</keyword>
+        <keyword>edit</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdbedit.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>edit</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdbedit_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>edit</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdbedit_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>edit</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdbgrid.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>grid</keyword>
+        <keyword>palette</keyword>
+        <keyword>table</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdbgrid_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>grid</keyword>
+        <keyword>palette</keyword>
+        <keyword>table</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdbgrid_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>grid</keyword>
+        <keyword>palette</keyword>
+        <keyword>table</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdbgroupbox.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>groupbox</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdbgroupbox_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>groupbox</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdbgroupbox_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>groupbox</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdbimage.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>image</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdbimage_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>image</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdbimage_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>image</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdblistbox.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>listbox</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdblistbox_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>listbox</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdblistbox_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>listbox</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdblookupcombobox.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>arrows</keyword>
+        <keyword>combobox</keyword>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>lookup</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdblookupcombobox_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>arrows</keyword>
+        <keyword>combobox</keyword>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>lookup</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdblookupcombobox_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>arrows</keyword>
+        <keyword>combobox</keyword>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>lookup</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdblookuplistbox.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>arrows</keyword>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>listbox</keyword>
+        <keyword>lookup</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdblookuplistbox_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>arrows</keyword>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>listbox</keyword>
+        <keyword>lookup</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdblookuplistbox_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>arrows</keyword>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>listbox</keyword>
+        <keyword>lookup</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdbmemo.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>edit</keyword>
+        <keyword>memo</keyword>
+        <keyword>palette</keyword>
+        <keyword>pencil</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdbmemo_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>edit</keyword>
+        <keyword>memo</keyword>
+        <keyword>palette</keyword>
+        <keyword>pencil</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdbmemo_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>edit</keyword>
+        <keyword>memo</keyword>
+        <keyword>palette</keyword>
+        <keyword>pencil</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdbnavigator.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>arrows</keyword>
+        <keyword>buttons</keyword>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>edit</keyword>
+        <keyword>navigator</keyword>
+        <keyword>palette</keyword>
+        <keyword>spin</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdbnavigator_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>arrows</keyword>
+        <keyword>buttons</keyword>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>edit</keyword>
+        <keyword>navigator</keyword>
+        <keyword>palette</keyword>
+        <keyword>spin</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdbnavigator_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>arrows</keyword>
+        <keyword>buttons</keyword>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>edit</keyword>
+        <keyword>navigator</keyword>
+        <keyword>palette</keyword>
+        <keyword>spin</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdbradiogroup.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>palette</keyword>
+        <keyword>radiobuttons</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdbradiogroup_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>palette</keyword>
+        <keyword>radiobuttons</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdbradiogroup_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>palette</keyword>
+        <keyword>radiobuttons</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdbtext.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>label</keyword>
+        <keyword>palette</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdbtext_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>label</keyword>
+        <keyword>palette</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdbtext_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>label</keyword>
+        <keyword>palette</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdirectoryedit.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>edit</keyword>
+        <keyword>file</keyword>
+        <keyword>open</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdirectoryedit_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>edit</keyword>
+        <keyword>file</keyword>
+        <keyword>open</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdirectoryedit_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>edit</keyword>
+        <keyword>file</keyword>
+        <keyword>open</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdrawgrid.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>grid</keyword>
+        <keyword>palette</keyword>
+        <keyword>shapes</keyword>
+        <keyword>table</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdrawgrid_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>grid</keyword>
+        <keyword>palette</keyword>
+        <keyword>shapes</keyword>
+        <keyword>table</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdrawgrid_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>grid</keyword>
+        <keyword>palette</keyword>
+        <keyword>shapes</keyword>
+        <keyword>table</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tedit.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>edit</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="teditbutton.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>button</keyword>
+        <keyword>component</keyword>
+        <keyword>edit</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="teditbutton_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>button</keyword>
+        <keyword>component</keyword>
+        <keyword>edit</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="teditbutton_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>button</keyword>
+        <keyword>component</keyword>
+        <keyword>edit</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tedit_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>edit</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tedit_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>edit</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="teventlog.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>clock</keyword>
+        <keyword>component</keyword>
+        <keyword>event</keyword>
+        <keyword>list</keyword>
+        <keyword>log</keyword>
+        <keyword>palette</keyword>
+        <keyword>time</keyword>
+      </keywords>
+    </icon>
+    <icon filename="teventlog_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>clock</keyword>
+        <keyword>component</keyword>
+        <keyword>event</keyword>
+        <keyword>list</keyword>
+        <keyword>log</keyword>
+        <keyword>palette</keyword>
+        <keyword>time</keyword>
+      </keywords>
+    </icon>
+    <icon filename="teventlog_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>clock</keyword>
+        <keyword>component</keyword>
+        <keyword>event</keyword>
+        <keyword>list</keyword>
+        <keyword>log</keyword>
+        <keyword>palette</keyword>
+        <keyword>time</keyword>
+      </keywords>
+    </icon>
+    <icon filename="textjsjsondataset.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>json</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="textjsjsondataset_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>json</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="textjsjsondataset_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>json</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tfilelistbox.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>file</keyword>
+        <keyword>listbox</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tfilelistbox_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>file</keyword>
+        <keyword>listbox</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tfilelistbox_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>file</keyword>
+        <keyword>listbox</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tfilenameedit.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>edit</keyword>
+        <keyword>file</keyword>
+        <keyword>page</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tfilenameedit_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>edit</keyword>
+        <keyword>file</keyword>
+        <keyword>page</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tfilenameedit_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>edit</keyword>
+        <keyword>file</keyword>
+        <keyword>page</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tfiltercombobox.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>combobox</keyword>
+        <keyword>component</keyword>
+        <keyword>filter</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tfiltercombobox_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>combobox</keyword>
+        <keyword>component</keyword>
+        <keyword>filter</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tfiltercombobox_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>combobox</keyword>
+        <keyword>component</keyword>
+        <keyword>filter</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tfinddialog.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>find</keyword>
+        <keyword>looking-glass</keyword>
+        <keyword>palette</keyword>
+        <keyword>search</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tfinddialog_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>find</keyword>
+        <keyword>looking-glass</keyword>
+        <keyword>palette</keyword>
+        <keyword>search</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tfinddialog_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>find</keyword>
+        <keyword>looking-glass</keyword>
+        <keyword>palette</keyword>
+        <keyword>search</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tfloatspinedit.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>edit</keyword>
+        <keyword>number</keyword>
+        <keyword>palette</keyword>
+        <keyword>spin</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tfloatspinedit_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>edit</keyword>
+        <keyword>number</keyword>
+        <keyword>palette</keyword>
+        <keyword>spin</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tfloatspinedit_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>edit</keyword>
+        <keyword>number</keyword>
+        <keyword>palette</keyword>
+        <keyword>spin</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tflowpanel.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>flow</keyword>
+        <keyword>palette</keyword>
+        <keyword>panel</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tflowpanel_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>flow</keyword>
+        <keyword>palette</keyword>
+        <keyword>panel</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tflowpanel_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>flow</keyword>
+        <keyword>palette</keyword>
+        <keyword>panel</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tfontdialog.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>dialog</keyword>
+        <keyword>font</keyword>
+        <keyword>palette</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tfontdialog_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>dialog</keyword>
+        <keyword>font</keyword>
+        <keyword>palette</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tfontdialog_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>dialog</keyword>
+        <keyword>font</keyword>
+        <keyword>palette</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tframe.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tframe_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tframe_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>dialog</keyword>
+        <keyword>palette</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tgroupbox.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>dialog</keyword>
+        <keyword>palette</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tgroupbox_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>dialog</keyword>
+        <keyword>palette</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tgroupbox_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>dialog</keyword>
+        <keyword>palette</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="theadercontrol.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>bar</keyword>
+        <keyword>component</keyword>
+        <keyword>header</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="theadercontrol_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>bar</keyword>
+        <keyword>component</keyword>
+        <keyword>header</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="theadercontrol_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>bar</keyword>
+        <keyword>component</keyword>
+        <keyword>header</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="thtmlbrowserhelpviewer.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>help</keyword>
+        <keyword>html</keyword>
+        <keyword>palette</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="thtmlbrowserhelpviewer_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>help</keyword>
+        <keyword>html</keyword>
+        <keyword>palette</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="thtmlbrowserhelpviewer_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>help</keyword>
+        <keyword>html</keyword>
+        <keyword>palette</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="thtmlhelpdatabase.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>help</keyword>
+        <keyword>html</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="thtmlhelpdatabase_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>help</keyword>
+        <keyword>html</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="thtmlhelpdatabase_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>help</keyword>
+        <keyword>html</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tidedialoglayoutstorage.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>save</keyword>
+        <keyword>storage</keyword>
+        <keyword>window</keyword>
+        <keyword>xml</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tidedialoglayoutstorage_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>save</keyword>
+        <keyword>storage</keyword>
+        <keyword>window</keyword>
+        <keyword>xml</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tidedialoglayoutstorage_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>save</keyword>
+        <keyword>storage</keyword>
+        <keyword>window</keyword>
+        <keyword>xml</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tidletimer.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>clock</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>time</keyword>
+        <keyword>timer</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tidletimer_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>clock</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>time</keyword>
+        <keyword>timer</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tidletimer_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>clock</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>time</keyword>
+        <keyword>timer</keyword>
+      </keywords>
+    </icon>
+    <icon filename="timage.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>image</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="timagelist.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>images</keyword>
+        <keyword>many</keyword>
+        <keyword>palette</keyword>
+        <keyword>plural</keyword>
+      </keywords>
+    </icon>
+    <icon filename="timagelist_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>images</keyword>
+        <keyword>many</keyword>
+        <keyword>palette</keyword>
+        <keyword>plural</keyword>
+      </keywords>
+    </icon>
+    <icon filename="timagelist_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>images</keyword>
+        <keyword>many</keyword>
+        <keyword>palette</keyword>
+        <keyword>plural</keyword>
+      </keywords>
+    </icon>
+    <icon filename="timage_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>image</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="timage_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>image</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tinipropstorage.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>ini</keyword>
+        <keyword>palette</keyword>
+        <keyword>save</keyword>
+        <keyword>storage</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tinipropstorage_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>ini</keyword>
+        <keyword>palette</keyword>
+        <keyword>save</keyword>
+        <keyword>storage</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tinipropstorage_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>ini</keyword>
+        <keyword>palette</keyword>
+        <keyword>save</keyword>
+        <keyword>storage</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tjsondataset.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>json</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tjsondataset_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>json</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tjsondataset_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>database</keyword>
+        <keyword>json</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tjsonpropstorage.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>json</keyword>
+        <keyword>palette</keyword>
+        <keyword>save</keyword>
+        <keyword>storage</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tjsonpropstorage_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>json</keyword>
+        <keyword>palette</keyword>
+        <keyword>save</keyword>
+        <keyword>storage</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tjsonpropstorage_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>json</keyword>
+        <keyword>palette</keyword>
+        <keyword>save</keyword>
+        <keyword>storage</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tlabel.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>label</keyword>
+        <keyword>palette</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tlabelededit.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>edit</keyword>
+        <keyword>label</keyword>
+        <keyword>palette</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tlabelededit_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>edit</keyword>
+        <keyword>label</keyword>
+        <keyword>palette</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tlabelededit_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>edit</keyword>
+        <keyword>label</keyword>
+        <keyword>palette</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tlabel_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>label</keyword>
+        <keyword>palette</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tlabel_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>label</keyword>
+        <keyword>palette</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tlazcomponentqueue.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>arrows</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>queue</keyword>
+        <keyword>shapes</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tlazcomponentqueue_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>arrows</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>queue</keyword>
+        <keyword>shapes</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tlazcomponentqueue_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>arrows</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>queue</keyword>
+        <keyword>shapes</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tlistbox.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>listbox</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tlistbox_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>listbox</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tlistbox_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>listbox</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tlistview.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>listview</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tlistview_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>listview</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tlistview_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>listview</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tmainmenu.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>menu</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tmainmenu_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>menu</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tmainmenu_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>menu</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tmaskedit.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>edit</keyword>
+        <keyword>mask</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tmaskedit_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>edit</keyword>
+        <keyword>mask</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tmaskedit_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>edit</keyword>
+        <keyword>mask</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tmemo.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>edit</keyword>
+        <keyword>memo</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tmemo_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>edit</keyword>
+        <keyword>memo</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tmemo_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>edit</keyword>
+        <keyword>memo</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tmouse.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>component</keyword>
+        <keyword>cursor</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tmouse_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>component</keyword>
+        <keyword>cursor</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tmouse_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>component</keyword>
+        <keyword>cursor</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tnotebook.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>notebook</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tnotebook_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>notebook</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tnotebook_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>notebook</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="topendialog.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>dialog</keyword>
+        <keyword>file</keyword>
+        <keyword>open</keyword>
+        <keyword>page</keyword>
+        <keyword>palette</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="topendialog_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>dialog</keyword>
+        <keyword>file</keyword>
+        <keyword>open</keyword>
+        <keyword>page</keyword>
+        <keyword>palette</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="topendialog_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>dialog</keyword>
+        <keyword>file</keyword>
+        <keyword>open</keyword>
+        <keyword>page</keyword>
+        <keyword>palette</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="topenpicturedialog.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>dialog</keyword>
+        <keyword>file</keyword>
+        <keyword>image</keyword>
+        <keyword>open</keyword>
+        <keyword>palette</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="topenpicturedialog_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>dialog</keyword>
+        <keyword>file</keyword>
+        <keyword>image</keyword>
+        <keyword>open</keyword>
+        <keyword>palette</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="topenpicturedialog_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>dialog</keyword>
+        <keyword>file</keyword>
+        <keyword>image</keyword>
+        <keyword>open</keyword>
+        <keyword>palette</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tpagecontrol.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>pagecontrol</keyword>
+        <keyword>palette</keyword>
+        <keyword>tabcontrol</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tpagecontrol_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>pagecontrol</keyword>
+        <keyword>palette</keyword>
+        <keyword>tabcontrol</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tpagecontrol_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>pagecontrol</keyword>
+        <keyword>palette</keyword>
+        <keyword>tabcontrol</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tpaintbox.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>brush</keyword>
+        <keyword>component</keyword>
+        <keyword>drawing</keyword>
+        <keyword>paintbox</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tpaintbox_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>brush</keyword>
+        <keyword>component</keyword>
+        <keyword>drawing</keyword>
+        <keyword>paintbox</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tpaintbox_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>brush</keyword>
+        <keyword>component</keyword>
+        <keyword>drawing</keyword>
+        <keyword>paintbox</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tpairsplitter.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>splitter</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tpairsplitter_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>splitter</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tpairsplitter_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>splitter</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tpanel.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>box</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>panel</keyword>
+        <keyword>square</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tpanel_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>box</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>panel</keyword>
+        <keyword>square</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tpanel_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>box</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>panel</keyword>
+        <keyword>square</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tpicture.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>image</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tpopupmenu.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>menu</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tpopupmenu_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>menu</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tpopupmenu_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>menu</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tpopupnotifier.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>document</keyword>
+        <keyword>edit</keyword>
+        <keyword>image</keyword>
+        <keyword>page</keyword>
+        <keyword>palette</keyword>
+        <keyword>postcard</keyword>
+        <keyword>rich</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tpopupnotifier_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>document</keyword>
+        <keyword>edit</keyword>
+        <keyword>image</keyword>
+        <keyword>page</keyword>
+        <keyword>palette</keyword>
+        <keyword>postcard</keyword>
+        <keyword>rich</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tpopupnotifier_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>document</keyword>
+        <keyword>edit</keyword>
+        <keyword>image</keyword>
+        <keyword>page</keyword>
+        <keyword>palette</keyword>
+        <keyword>postcard</keyword>
+        <keyword>rich</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tprocess.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>configuration</keyword>
+        <keyword>gears</keyword>
+        <keyword>options</keyword>
+        <keyword>palette</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tprocessutf8.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>configuration</keyword>
+        <keyword>gears</keyword>
+        <keyword>options</keyword>
+        <keyword>palette</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>utf8</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tprocessutf8_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>configuration</keyword>
+        <keyword>gears</keyword>
+        <keyword>options</keyword>
+        <keyword>palette</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>utf8</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tprocessutf8_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>configuration</keyword>
+        <keyword>gears</keyword>
+        <keyword>options</keyword>
+        <keyword>palette</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>utf8</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tprocess_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>configuration</keyword>
+        <keyword>gears</keyword>
+        <keyword>options</keyword>
+        <keyword>palette</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tprocess_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>configuration</keyword>
+        <keyword>gears</keyword>
+        <keyword>options</keyword>
+        <keyword>palette</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tprogressbar.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>bar</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>progress</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tprogressbar_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>bar</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>progress</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tprogressbar_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>bar</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>progress</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tradiobutton.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>radiobutton</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tradiobutton_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>radiobutton</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tradiobutton_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>radiobutton</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tradiogroup.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>groupbox</keyword>
+        <keyword>palette</keyword>
+        <keyword>radiobuttons</keyword>
+        <keyword>radiogroup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tradiogroup_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>groupbox</keyword>
+        <keyword>palette</keyword>
+        <keyword>radiobuttons</keyword>
+        <keyword>radiogroup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tradiogroup_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>groupbox</keyword>
+        <keyword>palette</keyword>
+        <keyword>radiobuttons</keyword>
+        <keyword>radiogroup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="treplacedialog.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>dialog</keyword>
+        <keyword>edit</keyword>
+        <keyword>find</keyword>
+        <keyword>looking-glass</keyword>
+        <keyword>palette</keyword>
+        <keyword>pencil</keyword>
+        <keyword>search</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="treplacedialog_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>dialog</keyword>
+        <keyword>edit</keyword>
+        <keyword>find</keyword>
+        <keyword>looking-glass</keyword>
+        <keyword>palette</keyword>
+        <keyword>pencil</keyword>
+        <keyword>search</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="treplacedialog_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>dialog</keyword>
+        <keyword>edit</keyword>
+        <keyword>find</keyword>
+        <keyword>looking-glass</keyword>
+        <keyword>palette</keyword>
+        <keyword>pencil</keyword>
+        <keyword>search</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tsavedialog.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>dialog</keyword>
+        <keyword>diskette</keyword>
+        <keyword>palette</keyword>
+        <keyword>save</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tsavedialog_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>dialog</keyword>
+        <keyword>diskette</keyword>
+        <keyword>palette</keyword>
+        <keyword>save</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tsavedialog_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>dialog</keyword>
+        <keyword>diskette</keyword>
+        <keyword>palette</keyword>
+        <keyword>save</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tsavepicturedialog.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>dialog</keyword>
+        <keyword>diskette</keyword>
+        <keyword>image</keyword>
+        <keyword>palette</keyword>
+        <keyword>save</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tsavepicturedialog_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>dialog</keyword>
+        <keyword>diskette</keyword>
+        <keyword>image</keyword>
+        <keyword>palette</keyword>
+        <keyword>save</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tsavepicturedialog_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>dialog</keyword>
+        <keyword>diskette</keyword>
+        <keyword>image</keyword>
+        <keyword>palette</keyword>
+        <keyword>save</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tscrollbar.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>scrollbar</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tscrollbar_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>scrollbar</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tscrollbar_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>scrollbar</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tscrollbox.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>box</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>scrollbar</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tscrollbox_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>box</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>scrollbar</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tscrollbox_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>box</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>scrollbar</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tselectdirectorydialog.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>dialog</keyword>
+        <keyword>file</keyword>
+        <keyword>open</keyword>
+        <keyword>palette</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tselectdirectorydialog_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>dialog</keyword>
+        <keyword>file</keyword>
+        <keyword>open</keyword>
+        <keyword>palette</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tselectdirectorydialog_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>dialog</keyword>
+        <keyword>file</keyword>
+        <keyword>open</keyword>
+        <keyword>palette</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tservicemanager.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>configuration</keyword>
+        <keyword>edit</keyword>
+        <keyword>gears</keyword>
+        <keyword>options</keyword>
+        <keyword>palette</keyword>
+        <keyword>pencil</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tservicemanager_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>configuration</keyword>
+        <keyword>edit</keyword>
+        <keyword>gears</keyword>
+        <keyword>options</keyword>
+        <keyword>palette</keyword>
+        <keyword>pencil</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tservicemanager_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>configuration</keyword>
+        <keyword>edit</keyword>
+        <keyword>gears</keyword>
+        <keyword>options</keyword>
+        <keyword>palette</keyword>
+        <keyword>pencil</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tshape.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>shapes</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tshape_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>shapes</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tshape_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>shapes</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tshelllistview.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>list</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tshelllistview_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>list</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tshelllistview_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>list</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tshelltreeview.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>tree</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tshelltreeview_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>tree</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tshelltreeview_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>tree</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tsimpleipcclient.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>connecction</keyword>
+        <keyword>ipc</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tsimpleipcclient_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>connecction</keyword>
+        <keyword>ipc</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tsimpleipcclient_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>connecction</keyword>
+        <keyword>ipc</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tsimpleipcserver.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>connection</keyword>
+        <keyword>ipc</keyword>
+        <keyword>palette</keyword>
+        <keyword>server</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tsimpleipcserver_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>connection</keyword>
+        <keyword>ipc</keyword>
+        <keyword>palette</keyword>
+        <keyword>server</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tsimpleipcserver_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>connection</keyword>
+        <keyword>ipc</keyword>
+        <keyword>palette</keyword>
+        <keyword>server</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tspeedbutton.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>button</keyword>
+        <keyword>component</keyword>
+        <keyword>execute</keyword>
+        <keyword>flash</keyword>
+        <keyword>palette</keyword>
+        <keyword>run</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tspeedbutton_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>button</keyword>
+        <keyword>component</keyword>
+        <keyword>execute</keyword>
+        <keyword>flash</keyword>
+        <keyword>palette</keyword>
+        <keyword>run</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tspeedbutton_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>button</keyword>
+        <keyword>component</keyword>
+        <keyword>execute</keyword>
+        <keyword>flash</keyword>
+        <keyword>palette</keyword>
+        <keyword>run</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tspinedit.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>edit</keyword>
+        <keyword>number</keyword>
+        <keyword>palette</keyword>
+        <keyword>spin</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tspinedit_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>edit</keyword>
+        <keyword>number</keyword>
+        <keyword>palette</keyword>
+        <keyword>spin</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tspinedit_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>edit</keyword>
+        <keyword>number</keyword>
+        <keyword>palette</keyword>
+        <keyword>spin</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tsplitter.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>splitter</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tsplitter_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>splitter</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tsplitter_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>splitter</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tstatictext.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>label</keyword>
+        <keyword>palette</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tstatictext_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>label</keyword>
+        <keyword>palette</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tstatictext_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>label</keyword>
+        <keyword>palette</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tstatusbar.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>bar</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>status</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tstatusbar_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>bar</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>status</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tstatusbar_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>bar</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>status</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tstringgrid.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>grid</keyword>
+        <keyword>palette</keyword>
+        <keyword>table</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tstringgrid_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>grid</keyword>
+        <keyword>palette</keyword>
+        <keyword>table</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tstringgrid_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>grid</keyword>
+        <keyword>palette</keyword>
+        <keyword>table</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ttabcontrol.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>tabs</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ttabcontrol_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>tabs</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ttabcontrol_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>tabs</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ttaskdialog.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>dialog</keyword>
+        <keyword>palette</keyword>
+        <keyword>task</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ttaskdialog_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>dialog</keyword>
+        <keyword>palette</keyword>
+        <keyword>task</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ttaskdialog_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>dialog</keyword>
+        <keyword>palette</keyword>
+        <keyword>task</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ttimeedit.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>clock</keyword>
+        <keyword>component</keyword>
+        <keyword>edit</keyword>
+        <keyword>palette</keyword>
+        <keyword>time</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ttimeedit_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>clock</keyword>
+        <keyword>component</keyword>
+        <keyword>edit</keyword>
+        <keyword>palette</keyword>
+        <keyword>time</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ttimeedit_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>clock</keyword>
+        <keyword>component</keyword>
+        <keyword>edit</keyword>
+        <keyword>palette</keyword>
+        <keyword>time</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ttimer.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>clock</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>timer</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ttimer_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>clock</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>timer</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ttimer_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>clock</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>timer</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ttogglebox.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>button</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>toggle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ttogglebox_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>button</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>toggle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ttogglebox_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>button</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>toggle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ttoolbar.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>bar</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>tool</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ttoolbar_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>bar</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>tool</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ttoolbar_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>bar</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>tool</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ttrackbar.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>bar</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>track</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ttrackbar_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>bar</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>track</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ttrackbar_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>bar</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>track</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ttrayicon.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>icon</keyword>
+        <keyword>palette</keyword>
+        <keyword>tray</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ttrayicon_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>icon</keyword>
+        <keyword>palette</keyword>
+        <keyword>tray</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ttrayicon_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>icon</keyword>
+        <keyword>palette</keyword>
+        <keyword>tray</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ttreeview.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>files</keyword>
+        <keyword>palette</keyword>
+        <keyword>tree</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ttreeview_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>files</keyword>
+        <keyword>palette</keyword>
+        <keyword>tree</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ttreeview_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>files</keyword>
+        <keyword>palette</keyword>
+        <keyword>tree</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tupdown.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>arrows</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>spin</keyword>
+        <keyword>updown</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tupdown_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>arrows</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>spin</keyword>
+        <keyword>updown</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tupdown_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>arrows</keyword>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>spin</keyword>
+        <keyword>updown</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tvaluelisteditor.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>grid</keyword>
+        <keyword>palette</keyword>
+        <keyword>table</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tvaluelisteditor_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>grid</keyword>
+        <keyword>palette</keyword>
+        <keyword>table</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tvaluelisteditor_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>grid</keyword>
+        <keyword>palette</keyword>
+        <keyword>table</keyword>
+      </keywords>
+    </icon>
+    <icon filename="txmlconfig.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>configuration</keyword>
+        <keyword>options</keyword>
+        <keyword>palette</keyword>
+        <keyword>screw-driver</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>tools</keyword>
+        <keyword>wrench</keyword>
+        <keyword>xml</keyword>
+      </keywords>
+    </icon>
+    <icon filename="txmlconfig_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>configuration</keyword>
+        <keyword>options</keyword>
+        <keyword>palette</keyword>
+        <keyword>screw-driver</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>tools</keyword>
+        <keyword>wrench</keyword>
+        <keyword>xml</keyword>
+      </keywords>
+    </icon>
+    <icon filename="txmlconfig_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>configuration</keyword>
+        <keyword>options</keyword>
+        <keyword>palette</keyword>
+        <keyword>screw-driver</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+        <keyword>tools</keyword>
+        <keyword>wrench</keyword>
+        <keyword>xml</keyword>
+      </keywords>
+    </icon>
+    <icon filename="txmlpropstorage.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>save</keyword>
+        <keyword>storage</keyword>
+        <keyword>xml</keyword>
+      </keywords>
+    </icon>
+    <icon filename="txmlpropstorage_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>save</keyword>
+        <keyword>storage</keyword>
+        <keyword>xml</keyword>
+      </keywords>
+    </icon>
+    <icon filename="txmlpropstorage_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>palette</keyword>
+        <keyword>save</keyword>
+        <keyword>storage</keyword>
+        <keyword>xml</keyword>
+      </keywords>
+    </icon>
+    <icon filename="unregisteredcomponent.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>help</keyword>
+        <keyword>palette</keyword>
+        <keyword>question</keyword>
+      </keywords>
+    </icon>
+    <icon filename="unregisteredcomponent_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>help</keyword>
+        <keyword>palette</keyword>
+        <keyword>question</keyword>
+      </keywords>
+    </icon>
+    <icon filename="unregisteredcomponent_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>component</keyword>
+        <keyword>help</keyword>
+        <keyword>palette</keyword>
+        <keyword>question</keyword>
+      </keywords>
+    </icon>
+  </icons>
+</metadata>

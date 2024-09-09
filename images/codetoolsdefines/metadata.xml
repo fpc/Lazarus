@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <icons>
+    <icon filename="da_block.png" width="22" height="22"/>
+    <icon filename="da_block_150.png" width="33" height="33"/>
+    <icon filename="da_block_200.png" width="44" height="44"/>
+    <icon filename="da_define.png" width="22" height="22"/>
+    <icon filename="da_definerecurse.png" width="22" height="22"/>
+    <icon filename="da_definerecurse_150.png" width="33" height="33"/>
+    <icon filename="da_definerecurse_200.png" width="44" height="44"/>
+    <icon filename="da_define_150.png" width="33" height="33"/>
+    <icon filename="da_define_200.png" width="44" height="44"/>
+    <icon filename="da_directory.png" width="22" height="22"/>
+    <icon filename="da_directory_150.png" width="33" height="33"/>
+    <icon filename="da_directory_200.png" width="44" height="44"/>
+    <icon filename="da_else.png" width="22" height="22"/>
+    <icon filename="da_elseif.png" width="22" height="22"/>
+    <icon filename="da_elseif_150.png" width="33" height="33"/>
+    <icon filename="da_elseif_200.png" width="44" height="44"/>
+    <icon filename="da_else_150.png" width="33" height="33"/>
+    <icon filename="da_else_200.png" width="44" height="44"/>
+    <icon filename="da_if.png" width="22" height="22"/>
+    <icon filename="da_ifdef.png" width="22" height="22"/>
+    <icon filename="da_ifdef_150.png" width="33" height="33"/>
+    <icon filename="da_ifdef_200.png" width="44" height="44"/>
+    <icon filename="da_ifndef.png" width="22" height="22"/>
+    <icon filename="da_ifndef_150.png" width="33" height="33"/>
+    <icon filename="da_ifndef_200.png" width="44" height="44"/>
+    <icon filename="da_if_150.png" width="33" height="33"/>
+    <icon filename="da_if_200.png" width="44" height="44"/>
+    <icon filename="da_undefine.png" width="22" height="22"/>
+    <icon filename="da_undefineall.png" width="22" height="22"/>
+    <icon filename="da_undefineall_150.png" width="33" height="33"/>
+    <icon filename="da_undefineall_200.png" width="44" height="44"/>
+    <icon filename="da_undefinerecurse.png" width="22" height="22"/>
+    <icon filename="da_undefinerecurse_150.png" width="33" height="33"/>
+    <icon filename="da_undefinerecurse_200.png" width="44" height="44"/>
+    <icon filename="da_undefine_150.png" width="33" height="33"/>
+    <icon filename="da_undefine_200.png" width="44" height="44"/>
+  </icons>
+</metadata>

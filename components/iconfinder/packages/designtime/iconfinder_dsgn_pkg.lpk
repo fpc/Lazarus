@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="5">
+    <PathDelim Value="\"/>
+    <Name Value="iconfinder_dsgn_pkg"/>
+    <Type Value="DesignTime"/>
+    <Author Value="W. Pamler"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <IncludeFiles Value="..\runtime"/>
+        <OtherUnitFiles Value="..\..\source\ide"/>
+        <UnitOutputDirectory Value="lib\design\$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Other>
+        <CustomOptions Value="$(IDEBuildOptions)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="Tool for finding toolbar icons in the Lazarus images folder (design-time package)"/>
+    <License Value="LGPL with linking exception"/>
+    <Version Minor="1"/>
+    <Files>
+      <Item>
+        <Filename Value="..\..\source\ide\imagelisteditorex.pp"/>
+        <UnitName Value="ImageListEditorEx"/>
+      </Item>
+      <Item>
+        <Filename Value="..\..\source\ide\iconfindersettings.pas"/>
+        <UnitName Value="IconFinderSettings"/>
+      </Item>
+      <Item>
+        <Filename Value="..\..\source\ide\iconfinderreg.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="IconFinderReg"/>
+      </Item>
+      <Item>
+        <Filename Value="..\..\source\ide\iconfinderfrm.pas"/>
+        <UnitName Value="IconFinderFrm"/>
+      </Item>
+      <Item>
+        <Filename Value="..\..\source\ide\graphpropeditsex.pas"/>
+        <UnitName Value="graphpropeditsex"/>
+      </Item>
+      <Item>
+        <Filename Value="..\..\source\ide\graphicpropeditex.pas"/>
+        <UnitName Value="graphicpropeditex"/>
+      </Item>
+      <Item>
+        <Filename Value="..\..\source\ide\iconfindercommon.pas"/>
+        <UnitName Value="IconFInderCommon"/>
+      </Item>
+      <Item>
+        <Filename Value="..\..\source\ide\iconfinderstrconstside.pas"/>
+        <UnitName Value="iconfinderstrconstside"/>
+      </Item>
+    </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="..\..\languages"/>
+      <EnableI18NForLFM Value="True"/>
+    </i18n>
+    <RequiredPkgs>
+      <Item>
+        <PackageName Value="iconfinder_pkg"/>
+      </Item>
+      <Item>
+        <PackageName Value="IDEIntf"/>
+      </Item>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

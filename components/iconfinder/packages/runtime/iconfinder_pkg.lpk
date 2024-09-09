@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="5">
+    <PathDelim Value="\"/>
+    <Name Value="iconfinder_pkg"/>
+    <Author Value="W. Pamler"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <IncludeFiles Value="..\..\source"/>
+        <OtherUnitFiles Value="..\..\source"/>
+        <UnitOutputDirectory Value="lib\run\$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Other>
+        <CustomOptions Value="$(IDEBuildOptions)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="Tool for finding toolbar icons in the Lazarus images folder (run-time package)"/>
+    <License Value="LGPL with linking exception"/>
+    <Version Minor="1"/>
+    <Files Count="7">
+      <Item1>
+        <Filename Value="..\..\source\basicthumbnails.pas"/>
+        <UnitName Value="BasicThumbnails"/>
+      </Item1>
+      <Item2>
+        <Filename Value="..\..\source\iconkeywordfiltereditor.pas"/>
+        <UnitName Value="IconKeywordFilterEditor"/>
+      </Item2>
+      <Item3>
+        <Filename Value="..\..\source\iconthumbnails.pas"/>
+        <UnitName Value="IconThumbNails"/>
+      </Item3>
+      <Item4>
+        <Filename Value="..\..\source\iconviewer.pas"/>
+        <UnitName Value="IconViewer"/>
+      </Item4>
+      <Item5>
+        <Filename Value="..\..\source\iconfinderfolders.pas"/>
+        <UnitName Value="IconFinderFolders"/>
+      </Item5>
+      <Item6>
+        <Filename Value="..\..\source\iconfindermetadata.pas"/>
+        <UnitName Value="IconFinderMetaData"/>
+      </Item6>
+      <Item7>
+        <Filename Value="..\..\source\iconfinderstrconsts.pas"/>
+        <UnitName Value="IconFinderStrConsts"/>
+      </Item7>
+    </Files>
+    <CompatibilityMode Value="True"/>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="..\..\languages"/>
+      <EnableI18NForLFM Value="True"/>
+    </i18n>
+    <RequiredPkgs Count="1">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

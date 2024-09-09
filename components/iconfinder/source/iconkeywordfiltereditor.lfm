@@ -1,0 +1,303 @@
+object KeywordFilterEditorForm: TKeywordFilterEditorForm
+  Left = 378
+  Height = 306
+  Top = 224
+  Width = 398
+  Caption = 'Keyword filter editor'
+  ClientHeight = 306
+  ClientWidth = 398
+  Position = poMainFormCenter
+  LCLVersion = '3.99.0.0'
+  OnActivate = FormActivate
+  OnCreate = FormCreate
+  object FilterPanel: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 8
+    Height = 38
+    Top = 8
+    Width = 382
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Left = 8
+    BorderSpacing.Top = 8
+    BorderSpacing.Right = 8
+    BevelOuter = bvNone
+    ClientHeight = 38
+    ClientWidth = 382
+    TabOrder = 0
+    object edFilter: TEdit
+      AnchorSideLeft.Control = FilterPanel
+      AnchorSideTop.Control = lblFilter
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = FilterPanel
+      AnchorSideRight.Side = asrBottom
+      Left = 0
+      Height = 23
+      Top = 15
+      Width = 382
+      Anchors = [akTop, akLeft, akRight]
+      TabOrder = 0
+    end
+    object lblFilter: TLabel
+      AnchorSideLeft.Control = FilterPanel
+      AnchorSideTop.Control = FilterPanel
+      Left = 0
+      Height = 15
+      Top = 0
+      Width = 26
+      Caption = 'Filter'
+    end
+  end
+  object ButtonPanel: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 266
+    Width = 386
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object OperationPanel: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Side = asrCenter
+    AnchorSideTop.Control = FilterPanel
+    AnchorSideTop.Side = asrBottom
+    Left = 16
+    Height = 25
+    Top = 52
+    Width = 366
+    AutoSize = True
+    BorderSpacing.Left = 8
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 8
+    BevelOuter = bvNone
+    ClientHeight = 25
+    ClientWidth = 366
+    TabOrder = 2
+    object btnAdd: TBitBtn
+      AnchorSideLeft.Control = OperationPanel
+      AnchorSideTop.Control = OperationPanel
+      AnchorSideRight.Control = btnAND
+      Left = 0
+      Height = 25
+      Top = 0
+      Width = 70
+      AutoSize = True
+      BorderSpacing.Right = 4
+      Caption = 'Add'
+      Constraints.MinWidth = 70
+      ImageIndex = 8
+      TabOrder = 0
+      OnClick = btnAddClick
+    end
+    object btnAND: TBitBtn
+      AnchorSideLeft.Control = btnAdd
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = OperationPanel
+      AnchorSideBottom.Control = btnAdd
+      AnchorSideBottom.Side = asrBottom
+      Left = 74
+      Height = 25
+      Top = 0
+      Width = 70
+      Anchors = [akTop, akLeft, akBottom]
+      AutoSize = True
+      BorderSpacing.Right = 4
+      Caption = 'AND'
+      Constraints.MinWidth = 70
+      TabOrder = 1
+      OnClick = btnANDClick
+    end
+    object btnOR: TBitBtn
+      AnchorSideLeft.Control = btnAND
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = OperationPanel
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = btnAdd
+      AnchorSideBottom.Side = asrBottom
+      Left = 148
+      Height = 25
+      Top = 0
+      Width = 70
+      Anchors = [akTop, akLeft, akBottom]
+      AutoSize = True
+      Caption = 'OR'
+      Constraints.MinWidth = 70
+      TabOrder = 2
+      OnClick = btnORClick
+    end
+    object btnNOT: TBitBtn
+      AnchorSideLeft.Control = btnOR
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = OperationPanel
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = btnAdd
+      AnchorSideBottom.Side = asrBottom
+      Left = 222
+      Height = 25
+      Top = 0
+      Width = 70
+      Anchors = [akTop, akLeft, akBottom]
+      AutoSize = True
+      BorderSpacing.Left = 4
+      Caption = 'NOT'
+      Constraints.MinWidth = 70
+      TabOrder = 3
+      OnClick = btnNOTClick
+    end
+    object btnClear: TBitBtn
+      AnchorSideLeft.Control = btnNOT
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = OperationPanel
+      AnchorSideBottom.Control = btnAdd
+      AnchorSideBottom.Side = asrBottom
+      Left = 296
+      Height = 25
+      Top = 0
+      Width = 70
+      Anchors = [akTop, akLeft, akBottom]
+      AutoSize = True
+      BorderSpacing.Left = 4
+      Caption = 'Clear'
+      Constraints.MinWidth = 70
+      TabOrder = 4
+      OnClick = btnClearClick
+    end
+  end
+  object KeywordsPanel: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = OperationPanel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ButtonPanel
+    Left = 8
+    Height = 175
+    Top = 85
+    Width = 382
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 8
+    BorderSpacing.Top = 8
+    BorderSpacing.Right = 8
+    BevelOuter = bvNone
+    ClientHeight = 175
+    ClientWidth = 382
+    TabOrder = 3
+    object lblKeywords: TLabel
+      AnchorSideLeft.Control = KeywordsPanel
+      AnchorSideTop.Control = KeywordsPanel
+      Left = 0
+      Height = 15
+      Top = 0
+      Width = 51
+      BorderSpacing.Bottom = 2
+      Caption = 'Keywords'
+    end
+    object lbKeywords: TListBox
+      AnchorSideLeft.Control = KeywordsPanel
+      AnchorSideTop.Control = lblKeywords
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = RightPanel
+      AnchorSideBottom.Control = KeywordsPanel
+      AnchorSideBottom.Side = asrBottom
+      Left = 0
+      Height = 158
+      Top = 17
+      Width = 324
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Right = 8
+      ItemHeight = 0
+      TabOrder = 0
+      OnDblClick = lbKeywordsDblClick
+    end
+    object RightPanel: TPanel
+      AnchorSideTop.Control = lbKeywords
+      AnchorSideRight.Control = KeywordsPanel
+      AnchorSideRight.Side = asrBottom
+      Left = 332
+      Height = 118
+      Top = 17
+      Width = 50
+      Anchors = [akTop, akRight]
+      AutoSize = True
+      BevelOuter = bvNone
+      ClientHeight = 118
+      ClientWidth = 50
+      TabOrder = 1
+      object btnNew: TBitBtn
+        AnchorSideLeft.Control = RightPanel
+        AnchorSideTop.Control = RightPanel
+        AnchorSideRight.Control = RightPanel
+        AnchorSideRight.Side = asrBottom
+        Left = 0
+        Height = 25
+        Top = 0
+        Width = 50
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = True
+        Caption = 'New'
+        ImageIndex = 7
+        TabOrder = 0
+        OnClick = btnNewClick
+      end
+      object btnEdit: TBitBtn
+        AnchorSideLeft.Control = RightPanel
+        AnchorSideTop.Control = btnNew
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = RightPanel
+        AnchorSideRight.Side = asrBottom
+        Left = 0
+        Height = 25
+        Top = 29
+        Width = 50
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = True
+        BorderSpacing.Top = 4
+        Caption = 'Edit'
+        ImageIndex = 3
+        TabOrder = 1
+      end
+      object lblColumns: TLabel
+        AnchorSideLeft.Control = RightPanel
+        AnchorSideTop.Control = btnEdit
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Side = asrBottom
+        Left = 0
+        Height = 15
+        Top = 78
+        Width = 48
+        BorderSpacing.Top = 24
+        Caption = 'Columns'
+      end
+      object seColumns: TSpinEdit
+        AnchorSideLeft.Control = RightPanel
+        AnchorSideTop.Control = lblColumns
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = RightPanel
+        AnchorSideRight.Side = asrBottom
+        Left = 0
+        Height = 23
+        Top = 95
+        Width = 50
+        Alignment = taRightJustify
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Top = 2
+        MaxValue = 100
+        MinValue = 1
+        TabOrder = 2
+        Value = 1
+        OnChange = seColumnsChange
+      end
+    end
+  end
+end

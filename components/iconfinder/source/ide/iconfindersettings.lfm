@@ -1,0 +1,44 @@
+object IconFinderSettingsFrame: TIconFinderSettingsFrame
+  Left = 0
+  Height = 230
+  Top = 0
+  Width = 372
+  ClientHeight = 230
+  ClientWidth = 372
+  ParentFont = False
+  ParentShowHint = False
+  ShowHint = True
+  TabOrder = 0
+  DesignLeft = 592
+  DesignTop = 215
+  object ToolBar: TToolBar
+    Left = 0
+    Height = 26
+    Top = 0
+    Width = 372
+    Caption = 'ToolBar'
+    EdgeBorders = []
+    List = True
+    ShowCaptions = True
+    TabOrder = 0
+    object tbFolders: TToolButton
+      Left = 1
+      Top = 0
+      Caption = 'tbFolders'
+      OnClick = tbFoldersClick
+    end
+    object tbEditMetadata: TToolButton
+      Left = 58
+      Hint = 'Edit icon metadata'
+      Top = 0
+      Caption = 'tbEditMetadata'
+      OnClick = tbEditMetadataClick
+    end
+    object tbSaveMetadata: TToolButton
+      Left = 147
+      Top = 0
+      Caption = 'tbSaveMetadata'
+      OnClick = tbSaveMetadataClick
+    end
+  end
+end

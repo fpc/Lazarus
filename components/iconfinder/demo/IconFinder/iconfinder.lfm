@@ -1,0 +1,51 @@
+object IconFinderForm: TIconFinderForm
+  Left = 506
+  Height = 396
+  Top = 163
+  Width = 681
+  Caption = 'Icon Finder'
+  ClientHeight = 396
+  ClientWidth = 681
+  LCLVersion = '3.99.0.0'
+  OnCreate = FormCreate
+  object Panel1: TPanel
+    Left = 6
+    Height = 25
+    Top = 365
+    Width = 669
+    Align = alBottom
+    AutoSize = True
+    BorderSpacing.Around = 6
+    BevelOuter = bvNone
+    ClientHeight = 25
+    ClientWidth = 669
+    TabOrder = 0
+    object btnSelect: TButton
+      AnchorSideTop.Control = btnCancel
+      AnchorSideRight.Control = btnCancel
+      Left = 513
+      Height = 25
+      Top = 0
+      Width = 75
+      Anchors = [akTop, akRight]
+      BorderSpacing.Right = 6
+      Caption = 'Select'
+      ModalResult = 6
+      TabOrder = 0
+      OnClick = btnSelectClick
+    end
+    object btnCancel: TButton
+      AnchorSideTop.Control = Panel1
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 594
+      Height = 25
+      Top = 0
+      Width = 75
+      Anchors = [akTop, akRight]
+      Caption = 'Cancel'
+      ModalResult = 2
+      TabOrder = 1
+    end
+  end
+end

@@ -1,0 +1,6 @@
+add_icon_from_finder.png
+add_icon_from_finder_150.png
+add_icon_from_finder_200.png
+replace_by_finder.png
+replace_by_finder_150.png
+replace_by_finder_200.png

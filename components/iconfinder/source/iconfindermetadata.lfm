@@ -1,0 +1,109 @@
+object IconMetadataForm: TIconMetadataForm
+  Left = 777
+  Height = 262
+  Top = 320
+  Width = 299
+  ActiveControl = mmoKeywords
+  Caption = 'Edit icon metadata'
+  ClientHeight = 262
+  ClientWidth = 299
+  LCLVersion = '3.99.0.0'
+  OnCreate = FormCreate
+  object ButtonPanel: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 222
+    Width = 287
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 2
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object lblKeywords: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 8
+    Height = 15
+    Top = 8
+    Width = 172
+    BorderSpacing.Left = 8
+    BorderSpacing.Top = 8
+    BorderSpacing.Bottom = 2
+    Caption = 'Keywords (one keyword per line)'
+  end
+  object Image: TImage
+    AnchorSideLeft.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 8
+    Height = 64
+    Top = 32
+    Width = 64
+    AutoSize = True
+    BorderSpacing.Left = 8
+    BorderSpacing.Right = 8
+    Constraints.MinWidth = 30
+  end
+  object mmoKeywords: TMemo
+    AnchorSideLeft.Control = Image
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = lblKeywords
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = cmbStyle
+    Left = 80
+    Height = 160
+    Top = 27
+    Width = 211
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 8
+    BorderSpacing.Top = 4
+    BorderSpacing.Right = 8
+    ScrollBars = ssAutoBoth
+    TabOrder = 0
+    WordWrap = False
+  end
+  object cmbStyle: TComboBox
+    AnchorSideLeft.Control = mmoKeywords
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = mmoKeywords
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ButtonPanel
+    Left = 80
+    Height = 23
+    Top = 193
+    Width = 211
+    Anchors = [akLeft, akRight, akBottom]
+    BorderSpacing.Top = 6
+    ItemHeight = 15
+    ItemIndex = 0
+    Items.Strings = (
+      'Classic'
+      'Flat'
+      'Outline'
+      'Outline 2-color'
+    )
+    Style = csDropDownList
+    TabOrder = 1
+    Text = 'Classic'
+  end
+  object lblStyle: TLabel
+    AnchorSideTop.Control = cmbStyle
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = cmbStyle
+    Left = 47
+    Height = 15
+    Top = 197
+    Width = 25
+    Anchors = [akTop, akRight]
+    BorderSpacing.Right = 8
+    Caption = 'Style'
+  end
+end

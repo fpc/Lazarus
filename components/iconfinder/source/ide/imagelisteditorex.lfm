@@ -1,0 +1,50 @@
+inherited ImageListEditorDlgEx: TImageListEditorDlgEx
+  Left = 472
+  Height = 467
+  Top = 150
+  Width = 592
+  Caption = 'ImageListEditorDlgEx'
+  ClientHeight = 467
+  ClientWidth = 592
+  OnCreate = FormCreate
+  inherited GroupBoxR: TGroupBox
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    Height = 383
+    Width = 367
+    ClientHeight = 363
+    ClientWidth = 363
+    inherited LabelTransparent: TLabel
+      Top = 247
+    end
+    inherited Preview: TScrollBox
+      Height = 235
+      Width = 351
+    end
+    inherited RadioGroup: TRadioGroup
+      Top = 247
+    end
+    inherited ColorBoxTransparent: TColorBox
+      Top = 266
+    end
+  end
+  inherited GroupBoxL: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Height = 383
+    ClientHeight = 363
+    inherited ImageListBox: TListBox
+      Height = 351
+    end
+  end
+  inherited BtnPanel: TButtonPanel
+    Top = 435
+    Width = 580
+  end
+  inherited ToolBar: TToolBar
+    Width = 592
+  end
+  inherited Splitter1: TSplitter
+    Height = 389
+  end
+end

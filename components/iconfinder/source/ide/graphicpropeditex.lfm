@@ -1,0 +1,80 @@
+inherited GraphicPropertyEditorFormEx: TGraphicPropertyEditorFormEx
+  Left = 264
+  Height = 417
+  Top = 298
+  Width = 517
+  ClientHeight = 417
+  ClientWidth = 517
+  Position = poDesigned
+  OnCreate = FormCreate
+  inherited GroupBox1: TGroupBox
+    Height = 373
+    Width = 505
+    ClientHeight = 353
+    ClientWidth = 501
+    inherited ScrollBox: TScrollBox
+      Height = 341
+      Width = 396
+      ClientHeight = 337
+      ClientWidth = 392
+    end
+    inherited LoadSaveBtnPanel: TPanel
+      Left = 408
+      Height = 353
+      Width = 93
+      ClientHeight = 353
+      ClientWidth = 93
+      inherited LoadButton: TButton
+        Width = 81
+      end
+      inherited SaveButton: TButton
+        AnchorSideLeft.Control = nil
+        AnchorSideTop.Control = nil
+        AnchorSideRight.Control = nil
+        Width = 81
+      end
+      inherited ClearButton: TButton
+        AnchorSideLeft.Control = nil
+        AnchorSideTop.Control = nil
+        AnchorSideRight.Control = nil
+        Width = 81
+      end
+      inherited CopyButton: TButton
+        AnchorSideLeft.Control = nil
+        AnchorSideTop.Control = nil
+        AnchorSideTop.Side = asrTop
+        AnchorSideRight.Control = nil
+        AnchorSideRight.Side = asrTop
+        Width = 81
+        Align = alTop
+        BorderSpacing.Around = 6
+      end
+      inherited PasteButton: TButton
+        AnchorSideLeft.Control = nil
+        AnchorSideTop.Control = nil
+        AnchorSideTop.Side = asrTop
+        AnchorSideRight.Control = nil
+        AnchorSideRight.Side = asrTop
+        Width = 81
+        Align = alTop
+        BorderSpacing.Around = 6
+      end
+      object IconFinderButton: TButton[5]
+        Left = 6
+        Height = 25
+        Top = 161
+        Width = 81
+        Align = alTop
+        AutoSize = True
+        BorderSpacing.Around = 6
+        Caption = 'Icon Finder'
+        TabOrder = 5
+        OnClick = IconFinderButtonClick
+      end
+    end
+  end
+  inherited OkCancelButtonPanel: TButtonPanel
+    Top = 385
+    Width = 505
+  end
+end

@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <icons>
+    <icon filename="quickfix.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>assistant</keyword>
+        <keyword>wand</keyword>
+        <keyword>wizard</keyword>
+      </keywords>
+    </icon>
+    <icon filename="quickfix_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>assistant</keyword>
+        <keyword>wand</keyword>
+        <keyword>wizard</keyword>
+      </keywords>
+    </icon>
+    <icon filename="quickfix_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>assistant</keyword>
+        <keyword>wand</keyword>
+        <keyword>wizard</keyword>
+      </keywords>
+    </icon>
+    <icon filename="quickfix_69.png" width="11" height="11" style="classic">
+      <keywords>
+        <keyword>assistant</keyword>
+        <keyword>wand</keyword>
+        <keyword>wizard</keyword>
+      </keywords>
+    </icon>
+    <icon filename="quickfix_75.png" width="12" height="12" style="classic">
+      <keywords>
+        <keyword>assistant</keyword>
+        <keyword>wand</keyword>
+        <keyword>wizard</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_circular_reference.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>reference</keyword>
+        <keyword>resume</keyword>
+        <keyword>return</keyword>
+        <keyword>revert</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_circular_reference_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>reference</keyword>
+        <keyword>resume</keyword>
+        <keyword>return</keyword>
+        <keyword>revert</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_circular_reference_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>reference</keyword>
+        <keyword>resume</keyword>
+        <keyword>return</keyword>
+        <keyword>revert</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_circular_reference_69.png" width="11" height="11" style="classic">
+      <keywords>
+        <keyword>reference</keyword>
+        <keyword>resume</keyword>
+        <keyword>return</keyword>
+        <keyword>revert</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_circular_reference_75.png" width="12" height="12" style="classic">
+      <keywords>
+        <keyword>reference</keyword>
+        <keyword>resume</keyword>
+        <keyword>return</keyword>
+        <keyword>revert</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_error.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>attention</keyword>
+        <keyword>warning</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_error_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>attention</keyword>
+        <keyword>warning</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_error_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>attention</keyword>
+        <keyword>warning</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_error_69.png" width="11" height="11" style="flat">
+      <keywords>
+        <keyword>attention</keyword>
+        <keyword>warning</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_error_75.png" width="12" height="12" style="flat">
+      <keywords>
+        <keyword>attention</keyword>
+        <keyword>warning</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_fatal.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>error</keyword>
+        <keyword>forbidden</keyword>
+        <keyword>minus</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_fatal_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>error</keyword>
+        <keyword>forbidden</keyword>
+        <keyword>minus</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_fatal_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>error</keyword>
+        <keyword>forbidden</keyword>
+        <keyword>minus</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_fatal_69.png" width="11" height="11" style="flat">
+      <keywords>
+        <keyword>error</keyword>
+        <keyword>forbidden</keyword>
+        <keyword>minus</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_fatal_75.png" width="12" height="12" style="flat">
+      <keywords>
+        <keyword>error</keyword>
+        <keyword>forbidden</keyword>
+        <keyword>minus</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_hint.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>bubble</keyword>
+        <keyword>hint</keyword>
+        <keyword>note</keyword>
+        <keyword>remark</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_hint_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>bubble</keyword>
+        <keyword>hint</keyword>
+        <keyword>note</keyword>
+        <keyword>remark</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_hint_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>bubble</keyword>
+        <keyword>hint</keyword>
+        <keyword>note</keyword>
+        <keyword>remark</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_hint_69.png" width="11" height="11" style="classic">
+      <keywords>
+        <keyword>bubble</keyword>
+        <keyword>hint</keyword>
+        <keyword>note</keyword>
+        <keyword>remark</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_hint_75.png" width="12" height="12" style="classic">
+      <keywords>
+        <keyword>bubble</keyword>
+        <keyword>hint</keyword>
+        <keyword>note</keyword>
+        <keyword>remark</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_information.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>help</keyword>
+        <keyword>info</keyword>
+        <keyword>information</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_information_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>help</keyword>
+        <keyword>info</keyword>
+        <keyword>information</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_information_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>help</keyword>
+        <keyword>info</keyword>
+        <keyword>information</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_information_69.png" width="11" height="11" style="flat">
+      <keywords>
+        <keyword>help</keyword>
+        <keyword>info</keyword>
+        <keyword>information</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_information_75.png" width="12" height="12" style="flat">
+      <keywords>
+        <keyword>help</keyword>
+        <keyword>info</keyword>
+        <keyword>information</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_note.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>bubble</keyword>
+        <keyword>hint</keyword>
+        <keyword>note</keyword>
+        <keyword>remark</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_note_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>bubble</keyword>
+        <keyword>hint</keyword>
+        <keyword>note</keyword>
+        <keyword>remark</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_note_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>bubble</keyword>
+        <keyword>hint</keyword>
+        <keyword>note</keyword>
+        <keyword>remark</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_note_69.png" width="11" height="11" style="classic">
+      <keywords>
+        <keyword>bubble</keyword>
+        <keyword>hint</keyword>
+        <keyword>note</keyword>
+        <keyword>remark</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_note_75.png" width="12" height="12" style="classic">
+      <keywords>
+        <keyword>bubble</keyword>
+        <keyword>hint</keyword>
+        <keyword>note</keyword>
+        <keyword>remark</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_not_found.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>assistance</keyword>
+        <keyword>help</keyword>
+        <keyword>question</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_not_found_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>assistance</keyword>
+        <keyword>help</keyword>
+        <keyword>question</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_not_found_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>assistance</keyword>
+        <keyword>help</keyword>
+        <keyword>question</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_not_found_69.png" width="11" height="11" style="flat">
+      <keywords>
+        <keyword>assistance</keyword>
+        <keyword>help</keyword>
+        <keyword>question</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_not_found_75.png" width="12" height="12" style="flat">
+      <keywords>
+        <keyword>assistance</keyword>
+        <keyword>help</keyword>
+        <keyword>question</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_unit_circular_reference.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>circular</keyword>
+        <keyword>page</keyword>
+        <keyword>reference</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_unit_circular_reference_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>circular</keyword>
+        <keyword>page</keyword>
+        <keyword>reference</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_unit_circular_reference_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>circular</keyword>
+        <keyword>page</keyword>
+        <keyword>reference</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_unit_circular_reference_69.png" width="11" height="11" style="classic">
+      <keywords>
+        <keyword>circular</keyword>
+        <keyword>page</keyword>
+        <keyword>reference</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_unit_circular_reference_75.png" width="12" height="12" style="classic">
+      <keywords>
+        <keyword>circular</keyword>
+        <keyword>page</keyword>
+        <keyword>reference</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_unknown.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>assistance</keyword>
+        <keyword>help</keyword>
+        <keyword>question</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_unknown_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>assistance</keyword>
+        <keyword>help</keyword>
+        <keyword>question</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_unknown_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>assistance</keyword>
+        <keyword>help</keyword>
+        <keyword>question</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_unknown_69.png" width="11" height="11" style="flat">
+      <keywords>
+        <keyword>assistance</keyword>
+        <keyword>help</keyword>
+        <keyword>question</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_unknown_75.png" width="12" height="12" style="flat">
+      <keywords>
+        <keyword>assistance</keyword>
+        <keyword>help</keyword>
+        <keyword>question</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_warning.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>attention</keyword>
+        <keyword>danger</keyword>
+        <keyword>warning</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_warning_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>attention</keyword>
+        <keyword>danger</keyword>
+        <keyword>warning</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_warning_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>attention</keyword>
+        <keyword>danger</keyword>
+        <keyword>warning</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_warning_69.png" width="11" height="11" style="flat">
+      <keywords>
+        <keyword>attention</keyword>
+        <keyword>danger</keyword>
+        <keyword>warning</keyword>
+      </keywords>
+    </icon>
+    <icon filename="state_warning_75.png" width="12" height="12" style="flat">
+      <keywords>
+        <keyword>attention</keyword>
+        <keyword>danger</keyword>
+        <keyword>warning</keyword>
+      </keywords>
+    </icon>
+  </icons>
+</metadata>
