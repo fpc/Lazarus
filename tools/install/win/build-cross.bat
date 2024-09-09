@@ -192,6 +192,7 @@ gmkdir -p %BUILDDIR%\image\packager\units
 cp -pr %BUILDDIR%\packager\units\%FPCFULLTARGET% %BUILDDIR%\image\packager\units\%FPCFULLTARGET%
 
 gmkdir -p %BUILDDIR%\components
+gmkdir -p %BUILDDIR%\components\lazdebuggers
 %GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore components\lazutils
 %BUILDDRIVE%
 cd %BUILDDIR%\components\lazutils
@@ -199,6 +200,22 @@ cd %BUILDDIR%\components\lazutils
 IF ERRORLEVEL 1 GOTO CLEANUP
 gmkdir -p %BUILDDIR%\image\components\lazutils
 cp -pr %BUILDDIR%\components\lazutils\lib %BUILDDIR%\image\components\lazutils\lib
+
+%GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore components\lazdebuggers\lazdebuggerintf
+%BUILDDRIVE%
+cd %BUILDDIR%\components\lazdebuggers\lazdebuggerintf
+%MAKEEXE% FPC=%compiler%
+IF ERRORLEVEL 1 GOTO CLEANUP
+gmkdir -p %BUILDDIR%\image\lazdebuggers\lazdebuggerintf
+cp -pr %BUILDDIR%\lazdebuggers\lazdebuggerintf\lib %BUILDDIR%\image\lazdebuggers\lazdebuggerintf\lib
+
+%GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore components\debuggerintf
+%BUILDDRIVE%
+cd %BUILDDIR%\components\debuggerintf
+%MAKEEXE% FPC=%compiler%
+IF ERRORLEVEL 1 GOTO CLEANUP
+gmkdir -p %BUILDDIR%\image\components\debuggerintf
+cp -pr %BUILDDIR%\components\debuggerintf\lib %BUILDDIR%\image\components\debuggerintf\lib
 
 %GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore components\freetype
 %BUILDDRIVE%
@@ -241,6 +258,13 @@ IF ERRORLEVEL 1 GOTO CLEANUP
 %MAKEEXE% FPC=%compiler%
 gmkdir -p %BUILDDIR%\image\components\ideintf\units
 cp -pr %BUILDDIR%\components\ideintf\units\%FPCFULLTARGET% %BUILDDIR%\image\components\ideintf\units\%FPCFULLTARGET%
+
+%GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore components\lazedit
+cd %BUILDDIR%\components\lazedit
+IF ERRORLEVEL 1 GOTO CLEANUP
+%MAKEEXE% FPC=%compiler%
+gmkdir -p %BUILDDIR%\image\components\lazedit\lib
+cp -pr %BUILDDIR%\components\lazedit\lib\%FPCFULLTARGET% %BUILDDIR%\image\components\lazedit\lib\%FPCFULLTARGET%
 
 %GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore components\synedit
 cd %BUILDDIR%\components\synedit
