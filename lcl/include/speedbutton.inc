@@ -801,14 +801,23 @@ begin
       case CurLayout of
         blGlyphLeft:
           if (Margin >= 0) and (Spacing >= 0) then
-            TextRect.Right := PaintRect.Right - Margin;
+          begin
+            TextRect.Right := PaintRect.Right;
+            if Alignment = taRightJustify then dec(TextRect.Right, Margin);
+          end;
         blGlyphRight:
           if (Margin >= 0) and (Spacing >= 0) then
             TextRect.Right := PaintRect.Left + OffsetGlyph.X - Spacing;
         blGlyphTop,
         blGlyphBottom:
           if Margin >= 0 then
+          begin
             TextRect.Right := PaintRect.Right;
+            case Alignment of
+              taLeftJustify: inc(TextRect.Left, Margin);
+              taRightJustify: dec(TextRect.Right, Margin);
+            end;
+          end;
       end;
 
       TextFlags := DT_TOP or cAlignment[BidiFlipAlignment(FAlignment, UseRightToLeftAlignment)]; // or DT_NOCLIP;
