@@ -6,6 +6,7 @@ object Form1: TForm1
   Caption = 'JCF'
   ClientHeight = 612
   ClientWidth = 1301
+  LCLVersion = '3.99.0.0'
   OnCreate = FormCreate
   object Button1: TButton
     Left = 616
@@ -566,6 +567,8 @@ object Form1: TForm1
       object SynGutterMarks1: TSynGutterMarks
         Width = 24
         MouseActions = <>
+        MaxExtraMarksColums = 0
+        Options = [sgmoDeDuplicateMarksOnOverflow]
       end
       object SynGutterLineNumber1: TSynGutterLineNumber
         Width = 17
@@ -1066,6 +1069,8 @@ object Form1: TForm1
       object SynGutterMarks1: TSynGutterMarks
         Width = 24
         MouseActions = <>
+        MaxExtraMarksColums = 0
+        Options = [sgmoDeDuplicateMarksOnOverflow]
       end
       object SynGutterLineNumber1: TSynGutterLineNumber
         Width = 17
@@ -1194,6 +1199,15 @@ object Form1: TForm1
     Width = 327
     Anchors = [akLeft, akBottom]
     TabOrder = 10
+  end
+  object btnReadConfig: TButton
+    Left = 616
+    Height = 25
+    Top = 112
+    Width = 75
+    Caption = 'Read config'
+    TabOrder = 11
+    OnClick = btnReadConfigClick
   end
   object SynPasSyn1: TSynPasSyn
     Enabled = False

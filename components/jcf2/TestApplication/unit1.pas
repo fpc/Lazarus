@@ -20,6 +20,7 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
+    btnReadConfig: TButton;
     Button1: TButton;
     Button2: TButton;
     btnClearAndPaste: TButton;
@@ -42,6 +43,7 @@ type
     PopupMenu1: TPopupMenu;
     SynPasSyn1: TSynPasSyn;
     procedure btnClearAndPasteClick(Sender: TObject);
+    procedure btnReadConfigClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure edFileNameAcceptFileName(Sender: TObject; var Value: string);
@@ -213,6 +215,11 @@ procedure TForm1.btnClearAndPasteClick(Sender: TObject);
 begin
   Memo1.Lines.Clear;
   Memo1.PasteFromClipboard;
+end;
+
+procedure TForm1.btnReadConfigClick(Sender: TObject);
+begin
+  FormattingSettings.Read;
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
