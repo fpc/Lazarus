@@ -12642,10 +12642,6 @@ msgstr "%s içinde kullanılan kısayollar"
 msgid "Shortcuts used in %s (%d)"
 msgstr "%s içinde kullanılan kısayollar (%d)"
 
-#: lazarusidestrconsts.lismenueditorshowmenueditortmenuparameterisnil
-msgid "ShowMenuEditor: TMenu parameter is nil"
-msgstr "ShowMenuEditor: TMenu parametresi yok"
-
 #: lazarusidestrconsts.lismenueditorsins
 #, object-pascal-format
 msgid "\"%s\" in %s"
@@ -12664,10 +12660,6 @@ msgstr ""
 #, object-pascal-format
 msgid "Please expand: \"%s\" is not a sufficient Description"
 msgstr "Lütfen genişletin: \"%s\" açıklama yeterli değil"
-
-#: lazarusidestrconsts.lismenueditorsomewidgetsetsdonotallowseparatorsinthemainmenubar
-msgid "Some widgetsets do not allow separators in the main menubar"
-msgstr "Bazı widget'lar ana menü çubuğunda ayırıcılara izin vermiyor"
 
 #: lazarusidestrconsts.lismenueditorsshortcuts
 #, object-pascal-format

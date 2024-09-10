@@ -12824,10 +12824,6 @@ msgstr "Použité zkratky v %s"
 msgid "Shortcuts used in %s (%d)"
 msgstr "Použité zkratky v %s (%d)"
 
-#: lazarusidestrconsts.lismenueditorshowmenueditortmenuparameterisnil
-msgid "ShowMenuEditor: TMenu parameter is nil"
-msgstr "ShowMenuEditor: TMenu parametr je nil"
-
 #: lazarusidestrconsts.lismenueditorsins
 #, object-pascal-format
 msgid "\"%s\" in %s"
@@ -12849,10 +12845,6 @@ msgstr ""
 #, object-pascal-format
 msgid "Please expand: \"%s\" is not a sufficient Description"
 msgstr "Prosím rozšířit: \"%s\" není dostatečný Popis"
-
-#: lazarusidestrconsts.lismenueditorsomewidgetsetsdonotallowseparatorsinthemainmenubar
-msgid "Some widgetsets do not allow separators in the main menubar"
-msgstr "Některé widgetsety neumožňují oddělovače v hlavní nabídce"
 
 #: lazarusidestrconsts.lismenueditorsshortcuts
 #, object-pascal-format

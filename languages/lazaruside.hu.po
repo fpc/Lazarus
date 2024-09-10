@@ -12782,10 +12782,6 @@ msgstr "Használt gyorsbillentyűk itt: %s"
 msgid "Shortcuts used in %s (%d)"
 msgstr "Használt gyorsbillentyűk itt: %s (%d)"
 
-#: lazarusidestrconsts.lismenueditorshowmenueditortmenuparameterisnil
-msgid "ShowMenuEditor: TMenu parameter is nil"
-msgstr "ShowMenuEditor: a TMenu paraméter \"nil\""
-
 #: lazarusidestrconsts.lismenueditorsins
 #, object-pascal-format
 msgid "\"%s\" in %s"
@@ -12804,10 +12800,6 @@ msgstr ""
 #, object-pascal-format
 msgid "Please expand: \"%s\" is not a sufficient Description"
 msgstr "Kibővítendő: A(z) \"%s\" nem megfelelő leírás"
-
-#: lazarusidestrconsts.lismenueditorsomewidgetsetsdonotallowseparatorsinthemainmenubar
-msgid "Some widgetsets do not allow separators in the main menubar"
-msgstr "Egyes vezérlőkészletek nem engedik meg elválasztók használatát a főmenüben"
 
 #: lazarusidestrconsts.lismenueditorsshortcuts
 #, object-pascal-format

@@ -12908,10 +12908,6 @@ msgstr "ショートカットは%sで使われています"
 msgid "Shortcuts used in %s (%d)"
 msgstr "ショートカット%s (%d)で使われています"
 
-#: lazarusidestrconsts.lismenueditorshowmenueditortmenuparameterisnil
-msgid "ShowMenuEditor: TMenu parameter is nil"
-msgstr "ShowMenuEditor: TMenu引数が空です。"
-
 #: lazarusidestrconsts.lismenueditorsins
 #, object-pascal-format
 msgid "\"%s\" in %s"
@@ -12933,10 +12929,6 @@ msgstr ""
 #, object-pascal-format
 msgid "Please expand: \"%s\" is not a sufficient Description"
 msgstr "拡張して下さい。\"%s\" は十分な記述ではありません"
-
-#: lazarusidestrconsts.lismenueditorsomewidgetsetsdonotallowseparatorsinthemainmenubar
-msgid "Some widgetsets do not allow separators in the main menubar"
-msgstr "いくつかのウィジェットセットではメインメニューバーでのセパレータが使えません"
 
 #: lazarusidestrconsts.lismenueditorsshortcuts
 #, object-pascal-format

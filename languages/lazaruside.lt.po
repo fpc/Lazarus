@@ -12938,10 +12938,6 @@ msgstr "„%s“ naudojami spartieji klavišai"
 msgid "Shortcuts used in %s (%d)"
 msgstr "„%s“ naudojami spartieji klavišai (%d)"
 
-#: lazarusidestrconsts.lismenueditorshowmenueditortmenuparameterisnil
-msgid "ShowMenuEditor: TMenu parameter is nil"
-msgstr "„ShowMenuEditor“: „TMenu“ parametras yra „nil“"
-
 #: lazarusidestrconsts.lismenueditorsins
 #, object-pascal-format
 msgid "\"%s\" in %s"
@@ -12963,10 +12959,6 @@ msgstr ""
 #, object-pascal-format
 msgid "Please expand: \"%s\" is not a sufficient Description"
 msgstr "Reikia išsamiau: „%s“ nepakana aprašymui"
-
-#: lazarusidestrconsts.lismenueditorsomewidgetsetsdonotallowseparatorsinthemainmenubar
-msgid "Some widgetsets do not allow separators in the main menubar"
-msgstr "Kai kurie valdiklių tipai neleidžia naudoti naudoti skirtukų pagrindinėje meniu juostoje"
 
 #: lazarusidestrconsts.lismenueditorsshortcuts
 #, object-pascal-format

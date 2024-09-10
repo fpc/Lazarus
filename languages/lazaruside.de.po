@@ -12843,10 +12843,6 @@ msgstr "Verwendete Tastaturbefehle in %s"
 msgid "Shortcuts used in %s (%d)"
 msgstr "Verwendete Tastaturbefehle in %s (%d)"
 
-#: lazarusidestrconsts.lismenueditorshowmenueditortmenuparameterisnil
-msgid "ShowMenuEditor: TMenu parameter is nil"
-msgstr "ShowMenuEditor: TMenu-Parameter ist nil"
-
 #: lazarusidestrconsts.lismenueditorsins
 #, object-pascal-format
 msgid "\"%s\" in %s"
@@ -12865,10 +12861,6 @@ msgstr ""
 #, object-pascal-format
 msgid "Please expand: \"%s\" is not a sufficient Description"
 msgstr "Bitte erweitern: \"%s\" ist keine ausreichende Beschreibung."
-
-#: lazarusidestrconsts.lismenueditorsomewidgetsetsdonotallowseparatorsinthemainmenubar
-msgid "Some widgetsets do not allow separators in the main menubar"
-msgstr "Einige Widgetsets erlauben keine Trenner in der Hauptmenüleiste."
 
 #: lazarusidestrconsts.lismenueditorsshortcuts
 #, object-pascal-format

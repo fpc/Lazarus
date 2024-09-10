@@ -13011,10 +13011,6 @@ msgstr "Atajos usados en %s"
 msgid "Shortcuts used in %s (%d)"
 msgstr "Atajos usados en %s (%d)"
 
-#: lazarusidestrconsts.lismenueditorshowmenueditortmenuparameterisnil
-msgid "ShowMenuEditor: TMenu parameter is nil"
-msgstr "ShowMenuEditor: TMenu parámetro es nulo"
-
 #: lazarusidestrconsts.lismenueditorsins
 #, object-pascal-format
 msgid "\"%s\" in %s"
@@ -13033,10 +13029,6 @@ msgstr ""
 #, object-pascal-format
 msgid "Please expand: \"%s\" is not a sufficient Description"
 msgstr "Por favor expanda: \"%s\" no es una Descripción suficiente"
-
-#: lazarusidestrconsts.lismenueditorsomewidgetsetsdonotallowseparatorsinthemainmenubar
-msgid "Some widgetsets do not allow separators in the main menubar"
-msgstr "Algunos widgetsets no permiten separadores en la barra de menú principal"
 
 #: lazarusidestrconsts.lismenueditorsshortcuts
 #, object-pascal-format

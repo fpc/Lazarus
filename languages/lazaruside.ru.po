@@ -12675,10 +12675,6 @@ msgstr "Комбинации клавиш в %s"
 msgid "Shortcuts used in %s (%d)"
 msgstr "Комбинации клавиш в %s (%d)"
 
-#: lazarusidestrconsts.lismenueditorshowmenueditortmenuparameterisnil
-msgid "ShowMenuEditor: TMenu parameter is nil"
-msgstr "ShowMenuEditor: параметр TMenu является нулём"
-
 #: lazarusidestrconsts.lismenueditorsins
 #, object-pascal-format
 msgid "\"%s\" in %s"
@@ -12697,10 +12693,6 @@ msgstr ""
 #, object-pascal-format
 msgid "Please expand: \"%s\" is not a sufficient Description"
 msgstr "Введите более длинное описание: \"%s\" слишком коротко."
-
-#: lazarusidestrconsts.lismenueditorsomewidgetsetsdonotallowseparatorsinthemainmenubar
-msgid "Some widgetsets do not allow separators in the main menubar"
-msgstr "Некоторые библиотеки виджетов не разрешают иметь разделители в главной строке меню"
 
 #: lazarusidestrconsts.lismenueditorsshortcuts
 #, object-pascal-format
