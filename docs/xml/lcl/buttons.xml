@@ -4450,7 +4450,8 @@ Use Spacing to set the space reserved between the glyph bitmap and the
 caption for the control.
 </p>
 <p>
-BorderSpacing.InnerBorder can be used as an alternative to the Margin property.
+In TCustomSpeedButton, any value assigned to BorderSpacing.InnerBorder is 
+ignored.
 </p>
 </descr>
 <seealso>
