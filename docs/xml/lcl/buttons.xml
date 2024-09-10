@@ -2413,9 +2413,9 @@ The space prior to the glyph bitmap on the aligned edge of the button layout.
 <p>
 <var>Margin</var> is an <var>Integer</var> property with the space reserved 
 prior to the Glyph or image displayed on the button control. It occurs on the 
-aligned edge specified in Layout, and generally refers to a number of pixels. 
-The value -1 has special meaning; it causes the glyph and caption to be 
-centered on the button surface.
+aligned edge specified in Layout, and refers to a number of pixels. The value 
+-1 has special meaning; it causes the glyph and caption to be centered on the 
+button surface.
 </p>
 <p>
 The default value for the property is -1. Changing the property value causes 
@@ -2966,8 +2966,16 @@ GroupIndex, or Down is changed.
 </element>
 
 <element name="TCustomSpeedButton.SetLayout">
-<short>Sets the value for the Layout property.</short>
-<descr></descr>
+<short>
+Sets the value for the Layout property.
+</short>
+<descr>
+<p>
+Calls InvalidatePreferredSize to reset control flags which cause the preferred 
+size to be recalculated. Calls AdjustSize to apply smart (delayed) resizing for 
+the control.
+</p>  
+</descr>
 <seealso>
 <link id="TCustomSpeedButton.Layout"/>
 </seealso>
@@ -3183,24 +3191,36 @@ Calculates the default height and Width required for the control.
 </short>
 <descr>
 <p>
-Calls MeasureDraw to gets the values for the variable parameters in 
-PreferredWidth and PreferredHeight.
+CalculatePreferredSize is an overridden method in TCustomSpeedButton. It calls 
+MeasureDraw to gets the values for the variable parameters in PreferredWidth 
+and PreferredHeight. If WithThemeSpace is enabled, additional spacing is 
+reserved in PreferredWidth and PreferredHeight for theme element details; both 
+arguments are increased by six (6) pixels.
 </p>
-<remark>
-Please note that the WithThemeSpace parameter is <b>NOT</b> used in the 
-current implementation.
-</remark>
+<p>
+CalculatePreferredSize is called from the GetPreferredSize method (in TControl) 
+when control flags indicate the value has not already been determined.
+</p>
 </descr>
-<seealso></seealso>
+<seealso>
+<link id="#lcl.controls.TControl.GetPreferredSize">TControl.GetPreferredSize</link>
+</seealso>
 </element>
 <element name="TCustomSpeedButton.CalculatePreferredSize.PreferredWidth">
-<short>Width calculated for the control.</short>
+<short>
+Preferred width for the control.
+</short>
 </element>
 <element name="TCustomSpeedButton.CalculatePreferredSize.PreferredHeight">
-<short>Height calculated for the control.</short>
+<short>
+Preferred height for the control.
+</short>
 </element>
 <element name="TCustomSpeedButton.CalculatePreferredSize.WithThemeSpace">
-<short>Not used in the current implementation.</short>
+<short>
+Indicates if additional space is reserved in PreferredWidth and PreferredHeight 
+for theme element details.
+</short>
 </element>
 
 <element name="TCustomSpeedButton.MeasureDraw">
@@ -3211,9 +3231,9 @@ optionally renders the control.
 <descr>
 <p>
 <var>MeasureDraw</var> determines the space needed to draw the content for the 
-speed button control. Values in the Caption, Glyph, Margin, Spacing, and 
-Layout properties are used to determine the layout for the control elements 
-and the space needed to draw the control without clipping. 
+speed button control. Values in the Caption, ShowCaption, Glyph, Margin, 
+Spacing, and Layout properties are used to determine the layout for the control 
+elements and the space needed to draw the control without clipping. 
 </p>
 <p>
 When Draw is enabled, the control is rendered to its Canvas using the State, 
@@ -3236,7 +3256,7 @@ any drawing effect applied in ThemeServices for the control State.
 <p>
 When Caption has been assigned and ShowCaption is enabled, the text size is 
 included in the calculated space requirements. The values in Margins and 
-Spacing are included on the horizontal or vertical size based on the value in 
+Spacing are included in the horizontal or vertical size based on the value in 
 Layout. Values in Alignment and UseRightToLeftReading are used when the text 
 rectangle is calculated. If the Font matches the default System font settings, 
 ThemeServices.DrawText is called to measure/render the text for the control.
@@ -3254,6 +3274,7 @@ Used in the implementation of the CalculatePreferredSize and Paint methods.
 <link id="TCustomSpeedButton.Margin"/>
 <link id="TCustomSpeedButton.Spacing"/>
 <link id="TCustomSpeedButton.Layout"/>
+<link id="TCustomSpeedButton.ShowCaption"/>
 <link id="TCustomSpeedButton.Alignment"/>
 <link id="TCustomSpeedButton.State"/>
 <link id="TCustomSpeedButton.Transparent"/>
@@ -3509,10 +3530,23 @@ whether or not button was pressed)
 <element name="TCustomSpeedButton.SetMargin">
 <short>Sets the value for the Margin property.</short>
 <descr>
-<var>SetMargin</var> - specifies the size of the margin
+<p>
+<var>SetMargin</var> sets the size of the Margin used on the control. Calls 
+InvalidatePreferredSize to update control flags which cause the preferred 
+height and width for the control to be recalculated using the new Margin value. 
+Calls adjust size to perform smart (delayed) resizing when needed. Calls 
+Invalidate to redraw the control.
+</p>
 </descr>
+<version>
+Modified in LCL version 3.6 to recalculate the size and redisplay the control 
+when Margin is changed.
+</version>
 <seealso>
 <link id="TCustomSpeedButton.Margin"/>
+<link id="#lcl.controls.TControl.InvalidatePreferredSize">TControl.InvalidatePreferredSize</link>
+<link id="#lcl.controls.TControl.AdjustSize">TControl.AdjustSize</link>
+<link id="#lcl.controls.TControl.Invalidate">TControl.Invalidate</link>
 </seealso>
 </element>
 <element name="TCustomSpeedButton.SetMargin.Value">
@@ -3533,12 +3567,26 @@ whether or not button was pressed)
 </element>
 
 <element name="TCustomSpeedButton.SetSpacing">
-<short>Sets the value for the Spacing property.</short>
+<short>
+Sets the value for the Spacing property.
+</short>
 <descr>
-<var>SetSpacing</var> - specifies the spacing between buttons.
+<p>
+<var>SetSpacing</var> specifies the spacing used between adjacent controls. 
+Calls InvalidatePreferredSize to recalculate the preferred height and width for 
+the control. AdjustSize is called to perform smart (delayed) resizing when 
+needed. Invalidate is called to redraw the control.
+</p>
 </descr>
+<version>
+Modified in LCL version 3.6 to recalculate preferred size and resize the 
+control when the property is changed.
+</version>
 <seealso>
 <link id="TCustomSpeedButton.Spacing"/>
+<link id="#lcl.controls.TControl.InvalidatePreferredSize">TControl.InvalidatePreferredSize</link>
+<link id="#lcl.controls.TControl.AdjustSize">TControl.AdjustSize</link>
+<link id="#lcl.controls.TControl.Invalidate">TControl.Invalidate</link>
 </seealso>
 </element>
 <element name="TCustomSpeedButton.SetSpacing.Value">
@@ -4333,7 +4381,8 @@ Margin, Glyph (or image), Spacing, and Caption to be aligned to the left edge
 of the button surface.
 </p>
 <p>
-Changing the property value causes the control to be redrawn.
+Changing the property value causes the default size for the control to be 
+recalculated (in SetLayout), and the control is redrawn.
 </p>
 <p>
 Layout is used in the MeasureDraw method to position and size the text and 
@@ -4364,10 +4413,14 @@ Space between the glyph bitmap and the aligned edge in the button layout.
 <descr>
 <p>
 <var>Margin</var> is an <var>Integer</var> property with the space reserved 
-between the Glyph image an the edge of the control. It occurs on the edge 
-specified in Layout, and generally refers to a number of pixels. The value -1 
-has special meaning; it causes both the glyph and caption to be centered on 
-the button surface.
+between the Glyph image an the edge of the control. It is applied on the edge 
+specified in Layout, and refers to a number of pixels. The value -1 has special 
+meaning; it causes both the glyph and caption to be centered on the button 
+surface. 
+</p>
+<p>
+Changing the value for the property causes the control to recalculate its 
+preferred size, and the control is redrawn (in SetMargin).
 </p>
 <p>
 Margin is used in the MeasureDraw method when the glyph image and caption text 
@@ -4381,6 +4434,9 @@ bitmap and caption are aligned.
 Use Spacing to set the space reserved between the glyph bitmap and the 
 caption for the control.
 </p>
+<p>
+BorderSpacing.InnerBorder can be used as an alternative to the Margin property.
+</p>
 </descr>
 <seealso>
 <link id="TCustomSpeedButton.Glyph"/>
@@ -4389,7 +4445,10 @@ caption for the control.
 <link id="TCustomSpeedButton.Layout"/>
 <link id="TCustomSpeedButton.Spacing"/>
 <link id="TCustomSpeedButton.MeasureDraw"/>
+<link id="TCustomSpeedButton.SetMargin"/>
 <link id="#lcl.controls.TControl.Caption">TControl.Caption</link>
+<link id="#lcl.controls.TControl.BorderSpacing">TControl.BorderSpacing</link>
+<link id="#lcl.controls.TControlBorderSpacing.InnerBorder">TControlBorderSpacing.InnerBorder</link>
 </seealso>
 </element>
 
@@ -4537,8 +4596,20 @@ centered, with the same amount of unused space on each side of the control.
 If Spacing is -1 and Margin is not -1 then Spacing will fill the remaining 
 unused space.
 </p>
+<p>
+Changing the value for the property causes the preferred size to be 
+recalculated, and the control is redrawn (in SetSpacing).
+</p>
 </descr>
-<seealso></seealso>
+<seealso>
+<link id="TCustomSpeedButton.SetSpacing"/>
+<link id="TCustomSpeedButton.Margin"/>
+<link id="TCustomSpeedButton.Layout"/>
+<link id="TCustomSpeedButton.Alignment"/>
+<link id="TCustomSpeedButton.Glyph"/>
+<link id="TCustomSpeedButton.ShowCaption"/>
+<link id="#lcl.controls.TControl.Caption">TControl.Caption</link>
+</seealso>
 </element>
 
 <element name="TCustomSpeedButton.Transparent">
