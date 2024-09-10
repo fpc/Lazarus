@@ -4870,14 +4870,11 @@ resourcestring
   lisMenuEditorShortcutsDAndAcceleratorKeysD = 'Shortcuts (%d) and Accelerator keys (%d)';
   lisMenuEditorShortcutsUsedInS = 'Shortcuts used in %s';
   lisMenuEditorShortcutsUsedInSD = 'Shortcuts used in %s (%d)';
-  lisMenuEditorShowMenuEditorTMenuParameterIsNil = 'ShowMenuEditor: TMenu parameter is nil';
   lisMenuEditorSInS = '"%s" in %s';
   lisMenuEditorSIsAlreadyInUse = '"%s" is '
     +'already in use in %s as a shortcut.' + sLineBreak + 'Try a different shortcut.';
   lisMenuEditorSIsNotASufficientDescriptionPleaseExpand = 'Please expand: "%s" is not a '
     +'sufficient Description';
-  lisMenuEditorSomeWidgetsetsDoNotAllowSeparatorsInTheMainMenubar = 'Some '
-    +'widgetsets do not allow separators in the main menubar';
   lisMenuEditorSShortcuts = '%s: Shortcuts';
   lisMenuEditorSShortcutsAndAcceleratorKeys = '%s: Shortcuts and accelerator keys';
   lisMenuEditorSSSOnClickS = '%s.%s.%s - OnClick: %s';

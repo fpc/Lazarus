@@ -297,8 +297,7 @@ var
 
 procedure ShowMenuEditor(aMenu: TMenu);
 begin
-  if (aMenu = nil) then
-    RaiseGDBException(lisMenuEditorShowMenuEditorTMenuParameterIsNil);
+  Assert(Assigned(aMenu), 'ShowMenuEditor: aMenu parameter is nil');
   MenuDesigner.FGui.SetMenu(aMenu, nil);
   SetPopupModeParentForPropertyEditor(MenuDesigner.FGui);
   MenuDesigner.FGui.ShowOnTop;
@@ -811,31 +810,24 @@ end;
 
 procedure TShadowMenu.RecursiveCreateShadows(aParentBox: TShadowBox; aMI: TMenuItem);
 var
-  j: integer;
+  i: integer;
   sb: TShadowBox;
 begin
   TShadowItem.CreateWithBoxAndItem(Self, aParentBox, aMI);
-  if (aMI.Count > 0) then
-  begin
-    sb:=TShadowBox.CreateWithParentBox(Self, aParentBox, aMI);
-    for j:=0 to aMI.Count-1 do
-      RecursiveCreateShadows(sb, aMI.Items[j]);
-  end;
+  if aMI.Count = 0 then Exit;
+  sb:=TShadowBox.CreateWithParentBox(Self, aParentBox, aMI);
+  for i:=0 to aMI.Count-1 do
+    RecursiveCreateShadows(sb, aMI.Items[i]);
 end;
 
 procedure TShadowMenu.CreateShadowBoxesAndItems;
 var
   i: integer;
 begin
-  if (FMenu.Items.Count > 0) then
-  begin
-    FRootBox:=TShadowBox.CreateWithParentBox(Self, nil, FMenu.Items);
-    for i:=0 to FMenu.Items.Count-1 do begin
-      if IsMainMenu and FMenu.Items[i].IsLine then
-        RaiseGDBException(lisMenuEditorSomeWidgetsetsDoNotAllowSeparatorsInTheMainMenubar);
-      RecursiveCreateShadows(FRootBox, FMenu.Items[i]);
-    end;
-  end;
+  if FMenu.Items.Count = 0 then Exit;
+  FRootBox:=TShadowBox.CreateWithParentBox(Self, nil, FMenu.Items);
+  for i:=0 to FMenu.Items.Count-1 do
+    RecursiveCreateShadows(FRootBox, FMenu.Items[i]);
 end;
 
 procedure TShadowMenu.DeleteChildlessShadowAndItem(anExistingSI: TShadowItem);
