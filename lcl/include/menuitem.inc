@@ -362,19 +362,40 @@ begin
     for I:= 0 to Count - 1 do
     begin
       CurItem := Items[I];
-      if CurItem.IsLine and CurItem.Visible then
+      if CurItem.IsLine {and CurItem.Visible} then
       begin
-        debugln(['TMenuItem.InternalRethinkLines: LastVisibleItem=',dbgsname(LastVisibleItem)]);
-        if (LastVisibleItem = nil) or (LastVisibleItem.IsLine) or (I = Count-1) then
+        if CurItem.Visible then
         begin
-          CurItem.Visible := False;
-          Result := True;
-          debugln(['TMenuItem.InternalRethinkLines: hiding separator with name "',CurItem.Name,'"']);
+          debugln(['TMenuItem.InternalRethinkLines: LastVisibleItem=',dbgsname(LastVisibleItem)]);
+          if (LastVisibleItem = nil) or (LastVisibleItem.IsLine) or (I = Count-1) then
+          begin
+            CurItem.Visible := False;
+            Result := True;
+            debugln(['TMenuItem.InternalRethinkLines: hiding separator with name "',CurItem.Name,'"']);
+          end;
+        end
+        else
+        begin
+          //if a previously hidden item is now visible and it was between separators
+          // we may need to unhide the separator now
+          if (LastVisibleItem <> nil) and (not LastVisibleItem.IsLine) then
+          begin
+            CurItem.Visible := True;
+            Result := True;
+            debugln(['TMenuItem.InternalRethinkLines: UNhiding separator with name "',CurItem.Name,'"']);
+          end;
         end;
       end;
       if CurItem.Visible then
         LastVisibleItem := CurItem;
     end;//for
+    //we may have accidently unhidden a separator which turns out to be the last visible item: we must hide that
+    if (LastVisibleItem <> nil) and (LastVisibleItem.IsLine) then
+    begin
+      LastVisibleItem.Visible := False;
+      Result := True;
+      debugln(['TMenuItem.InternalRethinkLines: hiding LastVisibleItem with name "',LastVisibleItem.Name,'"']);
+    end;
   end// if AForced or HideSep
   else
   begin
