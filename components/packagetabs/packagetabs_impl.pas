@@ -513,8 +513,8 @@ begin
   inherited CalculatePreferredSize(PreferredWidth, PreferredHeight,
     WithThemeSpace);
 
-  PreferredHeight := PreferredHeight + 4;
-  PreferredWidth := PreferredWidth + 8;
+  PreferredHeight := PreferredHeight - 2;
+  PreferredWidth := PreferredWidth + 6;
 end;
 
 { TGroupTabLabel }
@@ -537,7 +537,7 @@ begin
     WithThemeSpace);
 
   PreferredHeight := PreferredHeight + 8;
-  PreferredWidth := PreferredWidth + 8;
+  PreferredWidth := PreferredWidth + 6;
 end;
 
 procedure TGroupTabLabel.MouseDown(Button: TMouseButton; Shift: TShiftState;
