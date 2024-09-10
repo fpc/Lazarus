@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <icons>
+    <icon filename="dbnavcancel.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>cancel</keyword>
+        <keyword>close</keyword>
+        <keyword>dbnavigator</keyword>
+      </keywords>
+    </icon>
+    <icon filename="dbnavcancel_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>cancel</keyword>
+        <keyword>close</keyword>
+        <keyword>dbnavigator</keyword>
+      </keywords>
+    </icon>
+    <icon filename="dbnavcancel_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>cancel</keyword>
+        <keyword>close</keyword>
+        <keyword>dbnavigator</keyword>
+      </keywords>
+    </icon>
+    <icon filename="dbnavdelete.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>dbnavigator</keyword>
+        <keyword>delete</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="dbnavdelete_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>dbnavigator</keyword>
+        <keyword>delete</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="dbnavdelete_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>dbnavigator</keyword>
+        <keyword>delete</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="dbnavedit.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>dbnavigator</keyword>
+        <keyword>edit</keyword>
+        <keyword>modify</keyword>
+      </keywords>
+    </icon>
+    <icon filename="dbnavedit_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>dbnavigator</keyword>
+        <keyword>edit</keyword>
+        <keyword>modify</keyword>
+      </keywords>
+    </icon>
+    <icon filename="dbnavedit_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>dbnavigator</keyword>
+        <keyword>edit</keyword>
+        <keyword>modify</keyword>
+      </keywords>
+    </icon>
+    <icon filename="dbnavfirst.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>dbnavigator</keyword>
+        <keyword>first</keyword>
+      </keywords>
+    </icon>
+    <icon filename="dbnavfirst_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>dbnavigator</keyword>
+        <keyword>first</keyword>
+      </keywords>
+    </icon>
+    <icon filename="dbnavfirst_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>dbnavigator</keyword>
+        <keyword>first</keyword>
+      </keywords>
+    </icon>
+    <icon filename="dbnavinsert.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>dbnavigator</keyword>
+        <keyword>insert</keyword>
+        <keyword>new</keyword>
+      </keywords>
+    </icon>
+    <icon filename="dbnavinsert_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>dbnavigator</keyword>
+        <keyword>insert</keyword>
+        <keyword>new</keyword>
+      </keywords>
+    </icon>
+    <icon filename="dbnavinsert_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>dbnavigator</keyword>
+        <keyword>insert</keyword>
+        <keyword>new</keyword>
+      </keywords>
+    </icon>
+    <icon filename="dbnavlast.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>dbnavigator</keyword>
+        <keyword>last</keyword>
+      </keywords>
+    </icon>
+    <icon filename="dbnavlast_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>dbnavigator</keyword>
+        <keyword>last</keyword>
+      </keywords>
+    </icon>
+    <icon filename="dbnavlast_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>dbnavigator</keyword>
+        <keyword>last</keyword>
+      </keywords>
+    </icon>
+    <icon filename="dbnavnext.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>dbnavigator</keyword>
+        <keyword>next</keyword>
+      </keywords>
+    </icon>
+    <icon filename="dbnavnext_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>dbnavigator</keyword>
+        <keyword>next</keyword>
+      </keywords>
+    </icon>
+    <icon filename="dbnavnext_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>dbnavigator</keyword>
+        <keyword>next</keyword>
+      </keywords>
+    </icon>
+    <icon filename="dbnavpost.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>accept</keyword>
+        <keyword>checkmark</keyword>
+        <keyword>commit</keyword>
+        <keyword>dbnavigator</keyword>
+        <keyword>post</keyword>
+      </keywords>
+    </icon>
+    <icon filename="dbnavpost_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>accept</keyword>
+        <keyword>checkmark</keyword>
+        <keyword>commit</keyword>
+        <keyword>dbnavigator</keyword>
+        <keyword>post</keyword>
+      </keywords>
+    </icon>
+    <icon filename="dbnavpost_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>accept</keyword>
+        <keyword>checkmark</keyword>
+        <keyword>commit</keyword>
+        <keyword>dbnavigator</keyword>
+        <keyword>post</keyword>
+      </keywords>
+    </icon>
+    <icon filename="dbnavprior.png" width="16" height="16" style="outline">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>dbnavigator</keyword>
+        <keyword>previous</keyword>
+        <keyword>prior</keyword>
+      </keywords>
+    </icon>
+    <icon filename="dbnavprior_150.png" width="24" height="24" style="outline">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>dbnavigator</keyword>
+        <keyword>previous</keyword>
+        <keyword>prior</keyword>
+      </keywords>
+    </icon>
+    <icon filename="dbnavprior_200.png" width="32" height="32" style="outline">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>dbnavigator</keyword>
+        <keyword>previous</keyword>
+        <keyword>prior</keyword>
+      </keywords>
+    </icon>
+    <icon filename="dbnavrefresh.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>dbnavigator</keyword>
+        <keyword>refresh</keyword>
+        <keyword>update</keyword>
+      </keywords>
+    </icon>
+    <icon filename="dbnavrefresh_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>dbnavigator</keyword>
+        <keyword>refresh</keyword>
+        <keyword>update</keyword>
+      </keywords>
+    </icon>
+    <icon filename="dbnavrefresh_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>dbnavigator</keyword>
+        <keyword>refresh</keyword>
+        <keyword>update</keyword>
+      </keywords>
+    </icon>
+  </icons>
+</metadata>

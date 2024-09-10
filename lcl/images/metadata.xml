@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <icons>
+    <icon filename="btncalculator.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>calculator</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btncalculator_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>calculator</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btncalculator_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>calculator</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btncalendar.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>calendar</keyword>
+        <keyword>date</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btncalendar_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>calendar</keyword>
+        <keyword>date</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btncalendar_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>calendar</keyword>
+        <keyword>date</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btnfiltercancel.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>clear</keyword>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>filter</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btnfiltercancel_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>clear</keyword>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>filter</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btnfiltercancel_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>clear</keyword>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>filter</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btnseldir.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>directory</keyword>
+        <keyword>folder</keyword>
+        <keyword>form</keyword>
+        <keyword>select</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btnseldir_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>directory</keyword>
+        <keyword>folder</keyword>
+        <keyword>form</keyword>
+        <keyword>select</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btnseldir_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>directory</keyword>
+        <keyword>folder</keyword>
+        <keyword>form</keyword>
+        <keyword>select</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btnselfile.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>form</keyword>
+        <keyword>select</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btnselfile_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>form</keyword>
+        <keyword>select</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btnselfile_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>form</keyword>
+        <keyword>select</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btntime.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>clock</keyword>
+        <keyword>time</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btntime_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>clock</keyword>
+        <keyword>time</keyword>
+      </keywords>
+    </icon>
+    <icon filename="btntime_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>clock</keyword>
+        <keyword>time</keyword>
+      </keywords>
+    </icon>
+    <icon filename="sortasc.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>decrease</keyword>
+        <keyword>down</keyword>
+      </keywords>
+    </icon>
+    <icon filename="sortasc_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>decrease</keyword>
+        <keyword>down</keyword>
+      </keywords>
+    </icon>
+    <icon filename="sortasc_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>decrease</keyword>
+        <keyword>down</keyword>
+      </keywords>
+    </icon>
+    <icon filename="sortasc_50.png" width="8" height="8" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>decrease</keyword>
+        <keyword>down</keyword>
+      </keywords>
+    </icon>
+    <icon filename="sortasc_75.png" width="12" height="12" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>decrease</keyword>
+        <keyword>down</keyword>
+      </keywords>
+    </icon>
+    <icon filename="sortdesc.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>increase</keyword>
+        <keyword>up</keyword>
+      </keywords>
+    </icon>
+    <icon filename="sortdesc_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>increase</keyword>
+        <keyword>up</keyword>
+      </keywords>
+    </icon>
+    <icon filename="sortdesc_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>increase</keyword>
+        <keyword>up</keyword>
+      </keywords>
+    </icon>
+    <icon filename="sortdesc_50.png" width="8" height="8" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>increase</keyword>
+        <keyword>up</keyword>
+      </keywords>
+    </icon>
+    <icon filename="sortdesc_75.png" width="12" height="12" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>increase</keyword>
+        <keyword>up</keyword>
+      </keywords>
+    </icon>
+  </icons>
+</metadata>
