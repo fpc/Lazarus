@@ -2974,7 +2974,7 @@ Sets the value for the Layout property.
 Calls InvalidatePreferredSize to reset control flags which cause the preferred 
 size to be recalculated. Calls AdjustSize to apply smart (delayed) resizing for 
 the control.
-</p>  
+</p>
 </descr>
 <seealso>
 <link id="TCustomSpeedButton.Layout"/>
@@ -3201,7 +3201,22 @@ arguments are increased by six (6) pixels.
 CalculatePreferredSize is called from the GetPreferredSize method (in TControl) 
 when control flags indicate the value has not already been determined.
 </p>
+<remark>
+In previous LCL versions, CalculatePreferredSize did not use the WithThemeSpace 
+argument or adjust the preferred size when it was enabled. As a result an 
+auto-sized control would truncate the Caption displayed for a TSpeedButton 
+control. This behavior has been changed in LCL version 4.0. An auto-sized speed 
+button is now increased in size for theme spacing. This can lead to misaligned 
+buttons in applications or descendent classes which handled the condition 
+independently. Descendent classes may need to implement an overridden 
+CalculatePreferredSize method and reduce the preferred size by the pixels added 
+in the base class. Applications can use anchoring or aligning to align the 
+borders on speed button controls.
+</remark>
 </descr>
+<version>
+Modified in LCL version 4.0 to include support the WithThemeSpace argument.
+</version>
 <seealso>
 <link id="#lcl.controls.TControl.GetPreferredSize">TControl.GetPreferredSize</link>
 </seealso>
@@ -3539,7 +3554,7 @@ Invalidate to redraw the control.
 </p>
 </descr>
 <version>
-Modified in LCL version 3.6 to recalculate the size and redisplay the control 
+Modified in LCL version 4.0 to recalculate the size and redisplay the control 
 when Margin is changed.
 </version>
 <seealso>
@@ -3579,7 +3594,7 @@ needed. Invalidate is called to redraw the control.
 </p>
 </descr>
 <version>
-Modified in LCL version 3.6 to recalculate preferred size and resize the 
+Modified in LCL version 4.0 to recalculate preferred size and resize the 
 control when the property is changed.
 </version>
 <seealso>
