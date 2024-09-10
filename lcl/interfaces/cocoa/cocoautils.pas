@@ -186,15 +186,20 @@ end;
 function UrlArrayFromLCLToNS(const lclArray:TStringArray): NSArray;
 var
   cocoaArray: NSMutableArray;
-  url: NSUrl;
+  cocoaUrl: NSUrl;
+  cocoaUrlString: NSString;
   i: Integer;
   count: Integer;
 begin
   count:= length( lclArray );
   cocoaArray:= NSMutableArray.arrayWithCapacity( count );
   for i:=0 to count-1 do begin
-    url:= NSUrl.URLWithString( StrToNSString(lclArray[i]) );
-    cocoaArray.addObject( url );
+    cocoaUrlString:= StrToNSString(lclArray[i]);
+    if cocoaUrlString.containsString( NSSTR('://') ) then
+      cocoaUrl:= NSUrl.URLWithString( cocoaUrlString )
+    else
+      cocoaUrl:= NSUrl.fileURLWithPath( cocoaUrlString );
+    cocoaArray.addObject( cocoaUrl );
   end;
   Result:= cocoaArray;
 end;
