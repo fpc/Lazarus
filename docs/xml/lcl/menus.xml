@@ -1284,22 +1284,30 @@ the Windows platform only.
 
 <element name="TMenuItem.InternalRethinkLines">
 <short>
-Indicates whether child menu Items need to be updated to hide leading or 
-trailing separators.
+Indicates whether child menu Items need to be updated to hide leading, 
+trailing, or adjacent separators.
 </short>
 <descr>
 <p>
 <var>InternalRethinkLines</var> is called from the RethinkLines and 
-CheckChildrenHandles methods. The return value indicates whether the visibility 
-of child menu items which are leading or trailing separators has been updated. 
+CheckChildrenHandles methods. When AutoLineReduction is enabled, it visits each 
+of the child menu Items and checks whether adjacent menu items are configured 
+as menu separators (IsLine = <b>True</b>). The visibility for an adjacent menu 
+separator is updated based on the visibility of its predecessor. If the first
+is visible, the second is hidden - and vice versa.
 </p>
 <p>
-<b>True</b> indicates that the visibility for one or more of the child menu 
-items was changed in the method.
+The return value indicates whether the visibility of child menu items has been 
+updated. <b>True</b> indicates that the visibility for one or more of the child 
+menu items was changed in the method.
 </p>
 <p>
 To maintain compatibility with the Delphi VCL behavior, all menu separators are 
 visible when GetAutoLineReduction returns <b>False</b>.
+</p>
+<p>
+No actions are performed in InternalRethinkLines at design-time, and the return 
+value is <b>False</b>.
 </p>
 </descr>
 <version>
@@ -1308,6 +1316,7 @@ Added in LCL version 4.0.
 <seealso>
 <link id="TMenuItem.Items"/>
 <link id="TMenuItem.Visible"/>
+<link id="TMenuItem.IsLine"/>
 <link id="TMenuItem.RethinkLines"/>
 <link id="TMenuItem.CheckChildrenHandles"/>
 <link id="TMenuItem.GetAutoLineReduction"/>
