@@ -34,7 +34,7 @@ interface
 
 uses
   SysUtils,
-  SwitchableVisitor;
+  SwitchableVisitor, SourceToken, AvgLvlTree;
 
 type
   TIdentifierCaps = class(TSwitchableVisitor)
@@ -42,11 +42,16 @@ type
     fiIdentifierCount: integer;
     fiNonIdentifierCount: integer;
     lsLastChange: string;
-
+    TreeIdentifiers: TAvgLvlTree;
+    TreeNotIdentifiers: TAvgLvlTree;
   protected
     function EnabledVisitSourceToken(const pcNode: TObject): boolean; override;
+    // use the first ocurrence (declaration) of the identifier in the source as normalized capitalisation.
+    function TreeGetNormalizedIdentifierCapitalisation(ATree:TAvgLvlTree; Aidentifier:string):string;
+    procedure UpdateToken(AToken: TSourceToken; AValue:string);
   public
     constructor Create; override;
+    destructor Destroy; override;
 
     function IsIncludedInSettings: boolean; override;
     { return true if you want the message logged}
@@ -57,9 +62,46 @@ implementation
 
 uses
   { local }
-  SourceToken, Tokens, ParseTreeNodeType,
+  Tokens, ParseTreeNodeType,
   JcfSettings, FormatFlags, TokenUtils, jcfbaseConsts;
 
+
+type
+  TTreeNodeData = class
+    lsIdentifier: string;
+    lsIdentifierLowerCase: string;
+  end;
+
+function CompareTreeNodesCaseSensitive(Data1, Data2: Pointer): integer;
+begin
+  Result:=CompareStr(TTreeNodeData(Data1).lsIdentifierLowerCase,TTreeNodeData(Data2).lsIdentifierLowerCase);
+end;
+
+function CompareIdentifierTreeNodeCaseSensitive(AIdentifier, AData: Pointer): integer;
+begin
+  Result:=CompareStr(string(AIdentifier),TTreeNodeData(AData).lsIdentifierLowerCase);
+end;
+
+function TIdentifierCaps.TreeGetNormalizedIdentifierCapitalisation(ATree:TAvgLvlTree; AIdentifier:string):string;
+var
+  Node:TAvgLvlTreeNode;
+  NodeData: TTreeNodeData;
+  lsLower: string;
+begin
+  result := '';
+  lsLower := LowerCase(AIdentifier);
+  Node:=ATree.FindKey(Pointer(lsLower),@CompareIdentifierTreeNodeCaseSensitive);
+  if Node <> nil then
+    Result:= TTreeNodeData(Node.Data).lsIdentifier
+  else
+  begin
+    result := AIdentifier;
+    NodeData := TTreeNodeData.Create;
+    NodeData.lsIdentifier := AIdentifier;
+    NodeData.lsIdentifierLowerCase := lsLower;
+    ATree.Add(NodeData);
+  end;
+end;
 
 function Excluded(const pt: TSourceToken): boolean;
 begin
@@ -67,18 +109,11 @@ begin
 
   { directives in context are excluded }
   if IsDirectiveInContext(pt) then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(True);
 
   // asm has other rules
   if pt.HasParentNode(nAsm) then
-  begin
-    Result := True;
-    exit;
-  end;
-
+    exit(True);
 
   { built in types that are actually being used as types are excluded
     eg.
@@ -93,12 +128,9 @@ begin
 
    user defined types are things that we often *want* to set a specific caps on
    so they are not excluded }
-
-  if (pt.TokenType in BuiltInTypes) and (pt.HasParentNode(nType)) then
-  begin
-    Result := True;
-    exit;
-  end;
+   if (not FormattingSettings.Caps.NotIdentifiersNormalizeCapitalisation) and
+     (pt.TokenType in BuiltInTypes) and (pt.HasParentNode(nType)) then
+     exit(True);
 end;
 
 
@@ -112,6 +144,17 @@ begin
 
   lsLastChange := '';
   FormatFlags  := FormatFlags + [eCapsSpecificWord];
+  TreeIdentifiers := TAvgLvlTree.Create(@CompareTreeNodesCaseSensitive);
+  TreeNotIdentifiers := TAvgLvlTree.Create(@CompareTreeNodesCaseSensitive);
+end;
+
+destructor TIdentifierCaps.Destroy;
+begin
+  TreeIdentifiers.FreeAndClear; // free nodes and objects
+  TreeIdentifiers.Free;
+  TreeNotIdentifiers.FreeAndClear; // free nodes and objects
+  TreeNotIdentifiers.Free;
+  inherited Destroy;
 end;
 
 function TIdentifierCaps.FinalSummary(out psMessage: string): boolean;
@@ -143,13 +186,22 @@ begin
 
 end;
 
-function TIdentifierCaps.EnabledVisitSourceToken(const pcNode: TObject): Boolean;
+procedure TIdentifierCaps.UpdateToken(AToken: TSourceToken; AValue:string);
+begin
+  if AnsiCompareStr(AToken.SourceCode, AValue) <> 0 then
+  begin
+    lsLastChange := Format(lisMsgTo, [AToken.SourceCode, AValue]);
+    AToken.SourceCode := AValue;
+    Inc(fiNonIdentifierCount);
+  end;
+end;
+
+function TIdentifierCaps.EnabledVisitSourceToken(const pcNode: TObject): boolean;
 const
-  NEITHER_NOR = [ttReturn, ttComment, ttWhiteSpace,
-    ttConditionalCompilationRemoved, ttNumber, ttQuotedLiteralString];
+  NEITHER_NOR = [ttReturn, ttComment, ttWhiteSpace, ttConditionalCompilationRemoved, ttNumber, ttQuotedLiteralString];
 var
   lcSourceToken: TSourceToken;
-  lsChange:      string;
+  lcTreeNonIdentifiers: TAvgLvlTree;
 begin
   Result := False;
 
@@ -160,54 +212,58 @@ begin
   if lcSourceToken.TokenType in NEITHER_NOR then
     exit;
 
-  { not in Asm statements}
-  if lcSourceToken.HasParentNode(nAsm) then
+  if Excluded(lcSourceToken) then
     exit;
+
+  if FormattingSettings.Caps.NormalizeCapitalisationOneNamespace then
+    lcTreeNonIdentifiers := TreeIdentifiers
+  else
+    lcTreeNonIdentifiers := TreeNotIdentifiers;
 
   if lcSourceToken.HasParentNode(nIdentifier, 2) then
   begin
     // it's an identifier
-
-    if FormattingSettings.IdentifierCaps.Enabled
-    and FormattingSettings.IdentifierCaps.HasWord(lcSourceToken.SourceCode) then
+    if FormattingSettings.IdentifierCaps.Enabled then
     begin
-      // get the fixed version
-      lsChange := FormattingSettings.IdentifierCaps.CapitaliseWord(lcSourceToken.SourceCode);
-
-      // case-sensitive test - see if anything to do.
-      if AnsiCompareStr(lcSourceToken.SourceCode, lsChange) <> 0 then
+      if FormattingSettings.IdentifierCaps.HasWord(lcSourceToken.SourceCode) then
+        UpdateToken(lcSourceToken, FormattingSettings.IdentifierCaps.CapitaliseWord(lcSourceToken.SourceCode))
+      else
       begin
-        lsLastChange := Format(lisMsgTo, [lcSourceToken.SourceCode, lsChange]);
-        lcSourceToken.SourceCode := lsChange;
-        Inc(fiIdentifierCount);
+        if FormattingSettings.Caps.Enabled and FormattingSettings.Caps.IdentifiersNormalizeCapitalisation then
+          UpdateToken(lcSourceToken, TreeGetNormalizedIdentifierCapitalisation(TreeIdentifiers, lcSourceToken.SourceCode));
       end;
+    end
+    else
+    begin
+      if FormattingSettings.Caps.Enabled and FormattingSettings.Caps.IdentifiersNormalizeCapitalisation then
+        UpdateToken(lcSourceToken, TreeGetNormalizedIdentifierCapitalisation(TreeIdentifiers, lcSourceToken.SourceCode));
     end;
   end
   else
   begin
     // it's not an identifier 
-
-    if FormattingSettings.NotIdentifierCaps.Enabled
-    and FormattingSettings.NotIdentifierCaps.HasWord(lcSourceToken.SourceCode) then
+    if FormattingSettings.NotIdentifierCaps.Enabled then
     begin
-      // get the fixed version
-      lsChange := FormattingSettings.NotIdentifierCaps.CapitaliseWord(lcSourceToken.SourceCode);
-
-      // case-sensitive test - see if anything to do.
-      if AnsiCompareStr(lcSourceToken.SourceCode, lsChange) <> 0 then
+      if FormattingSettings.NotIdentifierCaps.HasWord(lcSourceToken.SourceCode) then
+        UpdateToken(lcSourceToken, FormattingSettings.NotIdentifierCaps.CapitaliseWord(lcSourceToken.SourceCode))
+      else
       begin
-        lsLastChange := Format(lisMsgTo, [lcSourceToken.SourceCode, lsChange]);
-        lcSourceToken.SourceCode := lsChange;
-        Inc(fiNonIdentifierCount);
+        if FormattingSettings.Caps.Enabled and FormattingSettings.Caps.NotIdentifiersNormalizeCapitalisation then
+          UpdateToken(lcSourceToken, TreeGetNormalizedIdentifierCapitalisation(lcTreeNonIdentifiers, lcSourceToken.SourceCode));
       end;
+    end
+    else
+    begin
+      if FormattingSettings.Caps.Enabled and FormattingSettings.Caps.NotIdentifiersNormalizeCapitalisation then
+        UpdateToken(lcSourceToken, TreeGetNormalizedIdentifierCapitalisation(lcTreeNonIdentifiers, lcSourceToken.SourceCode));
     end;
   end;
 end;
 
 function TIdentifierCaps.IsIncludedInSettings: boolean;
 begin
-  Result := FormattingSettings.IdentifierCaps.Enabled or
-            FormattingSettings.NotIdentifierCaps.Enabled;
+  Result := FormattingSettings.IdentifierCaps.Enabled or FormattingSettings.NotIdentifierCaps.Enabled or
+    (FormattingSettings.Caps.Enabled and (FormattingSettings.Caps.IdentifiersNormalizeCapitalisation or FormattingSettings.Caps.NotIdentifiersNormalizeCapitalisation));
 end;
 
 end.

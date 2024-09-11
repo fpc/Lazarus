@@ -39,6 +39,10 @@ type
 
   TfrReservedCapsSettings = class(TAbstractIDEOptionsEditor)
     cbEnable: TCheckBox;
+    cbNormalizeCapitalisationOneNamespace: TCheckBox;
+    cbNormalizeIdentifiers: TCheckBox;
+    cbNormalizeNotIdentifiers: TCheckBox;
+    gbNormalizeCapitalisation: TGroupBox;
     rgReservedWords: TRadioGroup;
     rgOperators: TRadioGroup;
     rgTypes: TRadioGroup;
@@ -106,6 +110,11 @@ begin
   rgTypes.Items[1] := lisObfsAllLowerCase;
   rgTypes.Items[2] := lisObfsMixedCase;
   rgTypes.Items[3] := lisObfsLeaveAlone;
+
+  gbNormalizeCapitalisation.Caption := lisCapsNormalizeCapitalisation;
+  cbNormalizeIdentifiers.Caption := lisCapsIdentifiersIdentifiers;
+  cbNormalizeNotIdentifiers.Caption := lisCapsNotIdentifiersNotIdentifiers;
+  cbNormalizeCapitalisationOneNamespace.Caption := lisCapsNormalizeCapitalisationOneNamespace;
 end;
 
 procedure TfrReservedCapsSettings.cbEnableClick(Sender: TObject);
@@ -115,6 +124,7 @@ begin
   rgDirectives.Enabled := cbEnable.Checked;
   rgOperators.Enabled := cbEnable.Checked;
   rgTypes.Enabled := cbEnable.Checked;
+  gbNormalizeCapitalisation.Enabled := cbEnable.Checked;
 end;
 
 procedure TfrReservedCapsSettings.FrameResize(Sender:TObject);
@@ -133,6 +143,9 @@ begin
     rgDirectives.ItemIndex := Ord(Directives);
     rgOperators.ItemIndex := Ord(Operators);
     rgTypes.ItemIndex := Ord(Types);
+    cbNormalizeIdentifiers.Checked := IdentifiersNormalizeCapitalisation;
+    cbNormalizeNotIdentifiers.Checked := NotIdentifiersNormalizeCapitalisation;
+    cbNormalizeCapitalisationOneNamespace.Checked := NormalizeCapitalisationOneNamespace;
   end;
 end;
 
@@ -147,6 +160,9 @@ begin
     Directives := TCapitalisationType(rgDirectives.ItemIndex);
     Operators := TCapitalisationType(rgOperators.ItemIndex);
     Types := TCapitalisationType(rgTypes.ItemIndex);
+    IdentifiersNormalizeCapitalisation := cbNormalizeIdentifiers.Checked;
+    NotIdentifiersNormalizeCapitalisation := cbNormalizeNotIdentifiers.Checked;
+    NormalizeCapitalisationOneNamespace := cbNormalizeCapitalisationOneNamespace.Checked;
   end;
 end;
 

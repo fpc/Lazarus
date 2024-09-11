@@ -278,6 +278,14 @@ msgstr "識別子"
 msgid "Set capitalisation on these identifiers:"
 msgstr "大文字小文字で整える識別子"
 
+#: jcfuiconsts.liscapsnormalizecapitalisation
+msgid "Normalize capitalisation"
+msgstr ""
+
+#: jcfuiconsts.liscapsnormalizecapitalisationonenamespace
+msgid "Use only one namespace"
+msgstr ""
+
 #: jcfuiconsts.liscapsnotidentifiersnotidentifiers
 msgid "Non-identifiers"
 msgstr "識別子以外"

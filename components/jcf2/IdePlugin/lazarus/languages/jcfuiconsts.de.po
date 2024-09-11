@@ -276,6 +276,14 @@ msgstr "Schlüsselworte"
 msgid "Set capitalisation on these identifiers:"
 msgstr "Schreibweise für diese Bezeichner anwenden:"
 
+#: jcfuiconsts.liscapsnormalizecapitalisation
+msgid "Normalize capitalisation"
+msgstr ""
+
+#: jcfuiconsts.liscapsnormalizecapitalisationonenamespace
+msgid "Use only one namespace"
+msgstr ""
+
 #: jcfuiconsts.liscapsnotidentifiersnotidentifiers
 msgid "Non-identifiers"
 msgstr "Nicht-Bezeicher"

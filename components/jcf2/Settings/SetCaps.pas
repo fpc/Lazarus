@@ -43,6 +43,9 @@ type
     fbEnabled: boolean;
     feReservedWords, feOperators, feDirectives, feConstants,
     feTypes: TCapitalisationType;
+    fbIdentifiersNormalizeCapitalisation: boolean; // change the case to be equal of the word first use.
+    fbNotIdentifiersNormalizeCapitalisation: boolean; // change the case to be equal of the word first use.
+    fbNormalizeCapitalisationOneNamespace: boolean;
 
   protected
   public
@@ -61,6 +64,10 @@ type
     property Constants: TCapitalisationType Read feConstants Write feConstants;
     property Types: TCapitalisationType Read feTypes Write feTypes;
 
+    property IdentifiersNormalizeCapitalisation: boolean Read fbIdentifiersNormalizeCapitalisation Write fbIdentifiersNormalizeCapitalisation; // for words not in the list, change the case to be equal of the word first use.
+    property NotIdentifiersNormalizeCapitalisation: boolean Read fbNotIdentifiersNormalizeCapitalisation Write fbNotIdentifiersNormalizeCapitalisation; // for words not in the list, change the case to be equal of the word first use.
+    property NormalizeCapitalisationOneNamespace: boolean Read fbNormalizeCapitalisationOneNamespace Write fbNormalizeCapitalisationOneNamespace; // share word list for identifiers and not identifiers.
+
   end;
 
 
@@ -74,6 +81,9 @@ const
   REG_CONSTANTS  = 'Constants';
   REG_TYPES      = 'Types';
 
+  REG_IDENTIFIERSNORMALIZECAPITALISATION    = 'IdentifiersNormalizeCapitalisation';
+  REG_NOTIDENTIFIERSNORMALIZECAPITALISATION = 'NotIdentifiersNormalizeCapitalisation';
+  REG_NORMALIZECAPITALISATIONONENAMESPACE = 'NormalizeCapitalisationOneNamespace';
   { TSetCaps }
 
 constructor TSetCaps.Create;
@@ -87,6 +97,9 @@ begin
   Assert(pcStream <> nil);
 
   fbEnabled := pcStream.Read(REG_ENABLED, True);
+  fbIdentifiersNormalizeCapitalisation := pcStream.Read(REG_IDENTIFIERSNORMALIZECAPITALISATION, False);
+  fbNotIdentifiersNormalizeCapitalisation := pcStream.Read(REG_NOTIDENTIFIERSNORMALIZECAPITALISATION, False);
+  fbNormalizeCapitalisationOneNamespace := pcStream.Read(REG_NORMALIZECAPITALISATIONONENAMESPACE, False);
 
   feReservedWords := TCapitalisationType(pcStream.Read(REG_RESERVED_WORDS,
     Ord(ctLower)));
@@ -101,6 +114,9 @@ begin
   Assert(pcOut <> nil);
 
   pcOut.Write(REG_ENABLED, fbEnabled);
+  pcOut.Write(REG_IDENTIFIERSNORMALIZECAPITALISATION, fbIdentifiersNormalizeCapitalisation);
+  pcOut.Write(REG_NOTIDENTIFIERSNORMALIZECAPITALISATION, fbNotIdentifiersNormalizeCapitalisation);
+  pcOut.Write(REG_NORMALIZECAPITALISATIONONENAMESPACE, fbNormalizeCapitalisationOneNamespace);
 
   pcOut.Write(REG_RESERVED_WORDS, Ord(feReservedWords));
   pcOut.Write(REG_OPERATORS, Ord(feOperators));

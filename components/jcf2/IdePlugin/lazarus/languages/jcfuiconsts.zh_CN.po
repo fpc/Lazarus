@@ -278,6 +278,14 @@ msgstr "标识符"
 msgid "Set capitalisation on these identifiers:"
 msgstr "设置大写对于这些标识符:"
 
+#: jcfuiconsts.liscapsnormalizecapitalisation
+msgid "Normalize capitalisation"
+msgstr ""
+
+#: jcfuiconsts.liscapsnormalizecapitalisationonenamespace
+msgid "Use only one namespace"
+msgstr ""
+
 #: jcfuiconsts.liscapsnotidentifiersnotidentifiers
 msgid "Non-identifiers"
 msgstr "非标识符"

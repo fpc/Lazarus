@@ -275,6 +275,14 @@ msgstr ""
 msgid "Set capitalisation on these identifiers:"
 msgstr ""
 
+#: jcfuiconsts.liscapsnormalizecapitalisation
+msgid "Normalize capitalisation"
+msgstr ""
+
+#: jcfuiconsts.liscapsnormalizecapitalisationonenamespace
+msgid "Use only one namespace"
+msgstr ""
+
 #: jcfuiconsts.liscapsnotidentifiersnotidentifiers
 msgid "Non-identifiers"
 msgstr ""
