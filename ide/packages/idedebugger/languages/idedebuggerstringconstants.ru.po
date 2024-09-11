@@ -666,6 +666,10 @@ msgstr "Форматирование значений"
 msgid "Delete all watches?"
 msgstr "Удалить все наблюдения?"
 
+#: idedebuggerstringconstants.dlgwatchpropertyunknown
+msgid ">> Mixed/Keep <<"
+msgstr ""
+
 #: idedebuggerstringconstants.drsaddwatch
 msgctxt "idedebuggerstringconstants.drsaddwatch"
 msgid "Add watch"

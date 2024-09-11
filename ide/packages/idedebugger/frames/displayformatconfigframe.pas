@@ -417,6 +417,18 @@ type
     property HighlightModifiedTabs: boolean read FHighlightModifiedTabs write SetHighlightModifiedTabs;
   end;
 
+const
+  MULTIOPT_INT_MIX = low(integer);
+  MULTIOPT_INT_UNK = low(integer)+1;
+
+procedure UpdateIntSetting(var CurVal: Integer; NewVal: integer);
+procedure SetSpinEditToInherit(ASpin: TSpinEdit);
+procedure IntToSpinEdit(ASpin: TSpinEdit; aVal: integer);
+
+function  BoolsetToCBState(bs: TBoolSet; ARevert: Boolean = True): TCheckBoxState;
+procedure BoolFromCBState(cs: TCheckBoxState; var b: boolean; ARevert: Boolean = True);
+procedure BoolFromCB(cb: TCheckBox; var b: boolean; ARevert: Boolean = True);
+
 implementation
 
 {$R *.lfm}
@@ -435,14 +447,12 @@ const
   RBA_AddrNum: TValueDisplayFormatArray = (vdfBaseHex, vdfBaseDecimal, vdfBaseOct, vdfBaseBin);
   RBA_ArrayCombine: TValueDisplayFormatArrayTypeArray = (vdfatNone, vdfatAll, vdfatStat, vdfatDyn);
 
-  INT_MIX = low(integer);
-  INT_UNK = low(integer)+1;
 
 procedure UpdateIntSetting(var CurVal: Integer; NewVal: integer);
 begin
-  if (CurVal = INT_UNK) or (CurVal = NewVal)
+  if (CurVal = MULTIOPT_INT_UNK) or (CurVal = NewVal)
   then CurVal := NewVal
-  else CurVal := INT_MIX;
+  else CurVal := MULTIOPT_INT_MIX;
 end;
 
 procedure SetSpinEditToInherit(ASpin: TSpinEdit);
@@ -454,10 +464,11 @@ end;
 
 procedure IntToSpinEdit(ASpin: TSpinEdit; aVal: integer);
 begin
-  if (aVal = INT_MIX) or (aVal = INT_UNK) then begin
+  if (aVal = MULTIOPT_INT_MIX) or (aVal = MULTIOPT_INT_UNK) then begin
     ASpin.Tag      := 2;
     ASpin.Value    := 0;
     ASpin.Text     := '';
+    ASpin.Tag      := 2;
   end
   else begin
     ASpin.Tag      := 0;
@@ -1328,7 +1339,7 @@ begin
   else SpinDigits.MaxValue := 16;
 
   if SpinDigits.Tag = 0 then begin
-    FormatNumDigits     := INT_UNK;
+    FormatNumDigits     := MULTIOPT_INT_UNK;
     for i := 0 to FDisplayFormatCount - 1 do
       UpdateIntSetting(FormatNumDigits, FDisplayFormat[i].Num.MinDigits[FDisplayFormat[i].Num.BaseFormat]);
 
@@ -1368,7 +1379,7 @@ begin
   else Spin2Digits.MaxValue := 16;
 
   if Spin2Digits.Tag = 0 then begin
-    FormatNumDigits     := INT_UNK;
+    FormatNumDigits     := MULTIOPT_INT_UNK;
     for i := 0 to FDisplayFormatCount - 1 do
       UpdateIntSetting(FormatNumDigits, FDisplayFormat[i].Num2.MinDigits[FDisplayFormat[i].Num2.BaseFormat]);
 
@@ -1812,7 +1823,7 @@ begin
     FormatENumValSign   := [];
 
     FormatFloat         := [];
-    FormatFloatPrec     := INT_UNK;
+    FormatFloatPrec     := MULTIOPT_INT_UNK;
 
     FormatStruct        := [];
     FormatStructPointer := [];
@@ -1828,25 +1839,25 @@ begin
 
     FormatArrayShowLen         := [];
     FormatArrayShowLenEmbedded := [];
-    FormatArrayLenMaxNest      := INT_UNK;
+    FormatArrayLenMaxNest      := MULTIOPT_INT_UNK;
     FormatArrayLenCombine      := [];
     FormatHideLen                 := [];
-    FormatHideLenReverseDepth     := INT_UNK;
-    FormatHideLenThresholdCnt     := INT_UNK;
-    FormatHideLenThresholdEach    := INT_UNK;
-    FormatHideLenThresholdFullLen := INT_UNK;
+    FormatHideLenReverseDepth     := MULTIOPT_INT_UNK;
+    FormatHideLenThresholdCnt     := MULTIOPT_INT_UNK;
+    FormatHideLenThresholdEach    := MULTIOPT_INT_UNK;
+    FormatHideLenThresholdFullLen := MULTIOPT_INT_UNK;
 
     FormatArrayNavAutoHide    := [];
     FormatArrayNavForceBounds := [];
-    FormatPageSize:= INT_UNK;
+    FormatPageSize:= MULTIOPT_INT_UNK;
 
-    FormatIndentMaxWrap := INT_UNK;
+    FormatIndentMaxWrap := MULTIOPT_INT_UNK;
     FormatForceSingleLine                   := [];
-    FormatForceSingleLineThresholdStructFld := INT_UNK;
-    FormatForceSingleLineThresholdArrayLen  := INT_UNK;
-    FormatForceSingleLineReverseDepth       := INT_UNK;
-    FormatForceSingleLineThresholdEach      := INT_UNK;
-    FormatForceSingleLineThresholdLen       := INT_UNK;
+    FormatForceSingleLineThresholdStructFld := MULTIOPT_INT_UNK;
+    FormatForceSingleLineThresholdArrayLen  := MULTIOPT_INT_UNK;
+    FormatForceSingleLineReverseDepth       := MULTIOPT_INT_UNK;
+    FormatForceSingleLineThresholdEach      := MULTIOPT_INT_UNK;
+    FormatForceSingleLineThresholdLen       := MULTIOPT_INT_UNK;
 
     FormatIsMemDump := [];
 

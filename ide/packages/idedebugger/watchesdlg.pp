@@ -57,7 +57,7 @@ uses
   Debugger, DebuggerTreeView, IdeDebuggerBase, DebuggerDlg, BaseDebugManager,
   IdeDebuggerWatchResult, IdeDebuggerWatchResPrinter, IdeDebuggerUtils,
   IdeDebuggerStringConstants, DbgTreeViewWatchData, EnvDebuggerOptions,
-  IdeDebuggerDisplayFormats, IdeDebuggerOpts, ProjectDebugLink;
+  IdeDebuggerDisplayFormats, IdeDebuggerOpts, ProjectDebugLink, WatchPropertyDlg;
 
 type
 
@@ -462,6 +462,25 @@ var
   SelCanEnable, SelCanDisable: Boolean;
   AllCanEnable, AllCanDisable, HasTopWatchSelected: Boolean;
   VNode: PVirtualNode;
+
+  function CanProperty: boolean;
+  var
+    VPropNode: PVirtualNode;
+    PropWatch: TIdeWatch;
+  begin
+    if tvWatches.SelectedCount > 1 then begin
+      Result := False;
+      for VPropNode in tvWatches.SelectedItemNodes do begin
+        PropWatch := TCurrentWatch(tvWatches.NodeItem[VPropNode]);
+        if (PropWatch.TopParentWatch <> PropWatch) then
+          exit;
+      end;
+      Result := True;
+    end
+    else
+      Result := ItemSelected and (Watch.TopParentWatch = Watch)
+  end;
+
 begin
   if IsUpdating then exit;
   if GetSelectedSnapshot <> nil then begin
@@ -1169,19 +1188,41 @@ end;
 procedure TWatchesDlg.popPropertiesClick(Sender: TObject);
 var
   Watch: TCurrentWatch;
+  SelWatches: array of TIdeWatch;
   d: TIdeWatchValue;
   dk: TWatchResultDataKind;
+  VNode: PVirtualNode;
+  i: Integer;
 begin
   if GetSelectedSnapshot <> nil then exit;
   try
     DisableAllActions;
-    Watch := TCurrentWatch(GetSelected);
-    if (Watch.TopParentWatch = Watch) then begin
-      d := Watch.Values[GetThreadId, GetStackframe];
-      dk := rdkUnknown;
-      if (d <> nil) and (d.Validity = ddsValid) and (d.ResultData <> nil) then
-        dk := d.ResultData.ValueKind;
-      DebugBoss.ShowWatchProperties(Watch, '', dk);
+
+    if tvWatches.SelectedCount > 1 then begin
+      SetLength(SelWatches, tvWatches.SelectedCount);
+      i := 0;
+      for VNode in tvWatches.SelectedItemNodes do begin
+        Watch := TCurrentWatch(tvWatches.NodeItem[VNode]);
+        if (Watch.TopParentWatch <> Watch) then
+          exit;
+        if Length(SelWatches) >= i then
+          SetLength(SelWatches, i + 10);
+        SelWatches[i] := Watch;
+        inc(i);
+      end;
+      SetLength(SelWatches, i);
+      if i > 0 then
+        TWatchPropertyDlg.Create(Self, SelWatches).ShowModal;
+    end
+    else begin
+      Watch := TCurrentWatch(GetSelected);
+      if (Watch.TopParentWatch = Watch) then begin
+        d := Watch.Values[GetThreadId, GetStackframe];
+        dk := rdkUnknown;
+        if (d <> nil) and (d.Validity = ddsValid) and (d.ResultData <> nil) then
+          dk := d.ResultData.ValueKind;
+        DebugBoss.ShowWatchProperties(Watch, '', dk);
+      end;
     end;
   finally
     tvWatchesChange(nil, nil);

@@ -664,6 +664,10 @@ msgstr ""
 msgid "Delete all watches?"
 msgstr ""
 
+#: idedebuggerstringconstants.dlgwatchpropertyunknown
+msgid ">> Mixed/Keep <<"
+msgstr ""
+
 #: idedebuggerstringconstants.drsaddwatch
 msgctxt "idedebuggerstringconstants.drsaddwatch"
 msgid "Add watch"

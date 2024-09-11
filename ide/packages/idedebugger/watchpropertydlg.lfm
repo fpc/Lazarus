@@ -198,23 +198,6 @@ object WatchPropertyDlg: TWatchPropertyDlg
           Layout = tlCenter
           ParentColor = False
         end
-        object txtRepCount: TEdit
-          AnchorSideLeft.Control = lblRepCount
-          AnchorSideLeft.Side = asrBottom
-          AnchorSideTop.Control = lblRepCount
-          AnchorSideTop.Side = asrCenter
-          AnchorSideRight.Control = Panel2
-          AnchorSideRight.Side = asrBottom
-          Left = 85
-          Height = 23
-          Top = 5
-          Width = 196
-          Alignment = taRightJustify
-          Anchors = [akTop, akLeft, akRight]
-          BorderSpacing.Left = 5
-          TabOrder = 0
-          Text = '0'
-        end
         object lblFpDbgConv: TLabel
           AnchorSideTop.Side = asrCenter
           Left = 0
@@ -231,17 +214,18 @@ object WatchPropertyDlg: TWatchPropertyDlg
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = lblFpDbgConv
           AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = Panel2
           AnchorSideRight.Side = asrBottom
           Left = 85
           Height = 23
           Top = 33
-          Width = 227
+          Width = 196
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Left = 5
           Constraints.MinWidth = 150
           ItemHeight = 15
           Style = csDropDownList
-          TabOrder = 1
+          TabOrder = 0
         end
         object lblValFormatter: TLabel
           AnchorSideTop.Side = asrCenter
@@ -270,7 +254,25 @@ object WatchPropertyDlg: TWatchPropertyDlg
           Constraints.MinWidth = 150
           ItemHeight = 15
           Style = csDropDownList
+          TabOrder = 1
+        end
+        object txtRepCount: TSpinEdit
+          AnchorSideLeft.Control = lblRepCount
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = lblRepCount
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = Panel2
+          AnchorSideRight.Side = asrBottom
+          Left = 85
+          Height = 23
+          Top = 5
+          Width = 196
+          Alignment = taRightJustify
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Left = 5
+          MaxValue = 9999
           TabOrder = 2
+          OnChange = txtRepCountChange
         end
       end
     end

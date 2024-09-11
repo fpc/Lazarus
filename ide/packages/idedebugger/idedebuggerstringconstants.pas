@@ -104,6 +104,7 @@ resourcestring
   dlgBackendConvOptDefault = '- Default -';
   dlgBackendConvOptDisabled = '- Disabled -';
   drsRunAllThreadsWhileEvaluat = 'Run all threads while evaluating';
+  dlgWatchPropertyUnknown = '>> Mixed/Keep <<';
 
   // Debugger Dialogs
   lisDbgWinPower = 'On/Off';

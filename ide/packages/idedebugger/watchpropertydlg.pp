@@ -41,7 +41,7 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  Forms, StdCtrls, Extctrls, ButtonPanel,
+  Forms, StdCtrls, Extctrls, ButtonPanel, Spin,
   // IdeIntf
   IDEHelpIntf, IdeIntfStrConsts, IdeDebuggerWatchValueIntf,
   // IdeConfig
@@ -78,20 +78,31 @@ type
     PanelTop: TPanel;
     Spacer2: TLabel;
     txtExpression: TEdit;
-    txtRepCount: TEdit;
+    txtRepCount: TSpinEdit;
     procedure btnHelpClick(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
     procedure chkAllowFuncChange(Sender: TObject);
     procedure txtExpressionChange(Sender: TObject);
+    procedure txtRepCountChange(Sender: TObject);
   private
-    FMode: (wpmWatch, wpmDispFormat);
+    FMode: (wpmWatch, wpmMultiWatch, wpmDispFormat);
     FWatch: TIdeWatch;
+    FWatches: array of TIdeWatch;
     FDisplayFormat: TWatchDisplayFormat;
+
+    procedure InitCaptions(AnIncludeUnknown: Boolean);
+    procedure InitBtnCaptions;
+    function  ValBackConvIndex(const AWatch: TIdeWatch; AnIncludeUnknown: Boolean): integer;
+    function  ValFormatterIndex(const AWatch: TIdeWatch; AnIncludeUnknown: Boolean): integer;
+    procedure  ValBackConvToWatch(AWatch: TIdeWatch; AnIncludeUnknown: Boolean);
+    procedure  ValFormatterToWach(AWatch: TIdeWatch; AnIncludeUnknown: Boolean);
+  protected
+    procedure SetVisible(Value: Boolean); override;
   public
-    constructor Create(AOWner: TComponent; const AWatch: TIdeWatch; const AWatchExpression: String = ''; AResDataType: TWatchResultDataKind = rdkUnknown); overload;
-    constructor Create(AOWner: TComponent; const ADisplayFormat: TWatchDisplayFormat; AResDataType: TWatchResultDataKind; AShowMemDump: boolean = False; AShowArrayNav: boolean = False); overload;
+    constructor Create(AnOWner: TComponent; const AWatch: TIdeWatch; const AWatchExpression: String = ''; AResDataType: TWatchResultDataKind = rdkUnknown); overload;
+    constructor Create(AnOWner: TComponent; const AWatches: array of TIdeWatch); overload;
+    constructor Create(AnOWner: TComponent; const ADisplayFormat: TWatchDisplayFormat; AResDataType: TWatchResultDataKind; AShowMemDump: boolean = False; AShowArrayNav: boolean = False); overload;
     property DisplayFormat: TWatchDisplayFormat read FDisplayFormat;
-    destructor Destroy; override;
   end;
 
 implementation
@@ -102,69 +113,84 @@ implementation
 
 procedure TWatchPropertyDlg.btnOKClick(Sender: TObject);
 var
-  Conv: TIdeDbgValueConvertSelector;
-  VFormatter: TIdeDbgValueFormatterSelector;
+  Idx: Integer;
 begin
-  if FMode = wpmDispFormat then begin
-    FDisplayFormat := DisplayFormatFrame1.DisplayFormat;
-    exit;
+  case FMode of
+    wpmWatch: begin
+      if txtExpression.Text = '' then
+        exit;
+      DebugBoss.Watches.CurrentWatches.BeginUpdate;
+      try
+        if FWatch = nil
+        then begin
+          FWatch := DebugBoss.Watches.CurrentWatches.Add(txtExpression.Text);
+        end
+        else begin
+          FWatch.Expression := txtExpression.Text;
+        end;
+
+        FWatch.DisplayFormat := DisplayFormatFrame1.DisplayFormat;
+
+        FWatch.EvaluateFlags := [];
+        if chkUseInstanceClass.Checked
+        then FWatch.EvaluateFlags := FWatch.EvaluateFlags + [defClassAutoCast];
+        if chkAllowFunc.Checked
+        then FWatch.EvaluateFlags := FWatch.EvaluateFlags + [defAllowFunctionCall];
+        if chkAllowFuncThreads.Checked
+        then FWatch.EvaluateFlags := FWatch.EvaluateFlags + [defFunctionCallRunAllThreads];
+        FWatch.RepeatCount := StrToIntDef(txtRepCount.Text, 0);
+
+        ValBackConvToWatch(FWatch, False);
+        ValFormatterToWach(FWatch, False);
+
+        FWatch.Enabled := chkEnabled.Checked;
+      finally
+        DebugBoss.Watches.CurrentWatches.EndUpdate;
+      end;
+    end;
+
+    wpmMultiWatch: begin
+      DebugBoss.Watches.CurrentWatches.BeginUpdate;
+      try
+        for Idx := 0 to Length(FWatches) - 1 do begin
+          FWatches[Idx].DisplayFormat := DisplayFormatFrame1.DisplayFormats[Idx];
+
+          case chkUseInstanceClass.State of
+            cbUnchecked: FWatches[Idx].EvaluateFlags := FWatches[Idx].EvaluateFlags - [defClassAutoCast];
+            cbChecked:   FWatches[Idx].EvaluateFlags := FWatches[Idx].EvaluateFlags + [defClassAutoCast];
+          end;
+          case chkAllowFunc.State of
+            cbUnchecked: FWatches[Idx].EvaluateFlags := FWatches[Idx].EvaluateFlags - [defAllowFunctionCall];
+            cbChecked:   FWatches[Idx].EvaluateFlags := FWatches[Idx].EvaluateFlags + [defAllowFunctionCall];
+          end;
+          case chkAllowFuncThreads.State of
+            cbUnchecked: FWatches[Idx].EvaluateFlags := FWatches[Idx].EvaluateFlags - [defFunctionCallRunAllThreads];
+            cbChecked:   FWatches[Idx].EvaluateFlags := FWatches[Idx].EvaluateFlags + [defFunctionCallRunAllThreads];
+          end;
+
+          if txtRepCount.Tag = 0 then
+            FWatches[Idx].RepeatCount := txtRepCount.Value;
+
+          ValBackConvToWatch(FWatches[Idx], False);
+          ValFormatterToWach(FWatches[Idx], False);
+
+          case chkEnabled.State of
+            cbUnchecked: FWatches[Idx].Enabled := False;
+            cbChecked:   FWatches[Idx].Enabled := True;
+          end;
+      end;
+      finally
+        DebugBoss.Watches.CurrentWatches.EndUpdate;
+      end;
+    end;
+
+    wpmDispFormat: begin
+      FDisplayFormat := DisplayFormatFrame1.DisplayFormat;
+      exit;
+    end;
   end;
 
-  if txtExpression.Text = '' then
-    exit;
-  DebugBoss.Watches.CurrentWatches.BeginUpdate;
-  try
-    if FWatch = nil
-    then begin
-      FWatch := DebugBoss.Watches.CurrentWatches.Add(txtExpression.Text);
-    end
-    else begin
-      FWatch.Expression := txtExpression.Text;
-    end;
 
-    FWatch.DisplayFormat := DisplayFormatFrame1.DisplayFormat;
-
-    FWatch.EvaluateFlags := [];
-    if chkUseInstanceClass.Checked
-    then FWatch.EvaluateFlags := FWatch.EvaluateFlags + [defClassAutoCast];
-    if chkAllowFunc.Checked
-    then FWatch.EvaluateFlags := FWatch.EvaluateFlags + [defAllowFunctionCall];
-    if chkAllowFuncThreads.Checked
-    then FWatch.EvaluateFlags := FWatch.EvaluateFlags + [defFunctionCallRunAllThreads];
-    FWatch.RepeatCount := StrToIntDef(txtRepCount.Text, 0);
-
-    if dropFpDbgConv.ItemIndex = 0 then
-      FWatch.DbgBackendConverter := nil
-    else
-    if dropFpDbgConv.ItemIndex = 1 then
-      FWatch.EvaluateFlags := FWatch.EvaluateFlags + [defSkipValConv]
-    else begin
-      Conv := TIdeDbgValueConvertSelector(dropFpDbgConv.Items.Objects[dropFpDbgConv.ItemIndex]);
-      if (DebuggerOptions.BackendConverterConfig.IndexOf(Conv) < 0) and
-         (DbgProjectLink.BackendConverterConfig.IndexOf(Conv) < 0)
-      then
-        Conv := nil;
-      FWatch.DbgBackendConverter := Conv;
-    end;
-
-    if dropValFormatter.ItemIndex = 0 then
-      FWatch.DbgValueFormatter := nil
-    else
-    if dropValFormatter.ItemIndex = 1 then
-      FWatch.EvaluateFlags := FWatch.EvaluateFlags + [defSkipValueFormatter]
-    else begin
-      VFormatter := TIdeDbgValueFormatterSelector(dropValFormatter.Items.Objects[dropValFormatter.ItemIndex]);
-      if (DebuggerOptions.ValueFormatterConfig.IndexOf(VFormatter) < 0) and
-         (DbgProjectLink.ValueFormatterConfig.IndexOf(VFormatter) < 0)
-      then
-        VFormatter := nil;
-      FWatch.DbgValueFormatter := VFormatter;
-    end;
-
-    FWatch.Enabled := chkEnabled.Checked;
-  finally
-    DebugBoss.Watches.CurrentWatches.EndUpdate;
-  end;
 end;
 
 procedure TWatchPropertyDlg.chkAllowFuncChange(Sender: TObject);
@@ -179,24 +205,184 @@ begin
   ButtonPanel.OKButton.Enabled := txtExpression.Text <> '';
 end;
 
+procedure TWatchPropertyDlg.txtRepCountChange(Sender: TObject);
+begin
+  txtRepCount.Tag := 0;
+end;
+
+procedure TWatchPropertyDlg.InitCaptions(AnIncludeUnknown: Boolean);
+var
+  i: Integer;
+begin
+  Caption:= lisWatchPropert;
+
+  lblExpression.Caption:= lisExpression;
+  lblRepCount.Caption:= lisRepeatCount;
+  chkEnabled.Caption:= lisEnabled;
+  chkAllowFunc.Caption:= lisAllowFunctio;
+  chkAllowFuncThreads.Caption := drsRunAllThreadsWhileEvaluat;
+  chkUseInstanceClass.Caption := drsUseInstanceClassType;
+
+  lblFpDbgConv.Caption := dlgBackendConvOptDebugConverter;
+  if AnIncludeUnknown then
+    dropFpDbgConv.AddItem(dlgWatchPropertyUnknown, nil);
+  dropFpDbgConv.AddItem(dlgBackendConvOptDefault, nil);
+  dropFpDbgConv.AddItem(dlgBackendConvOptDisabled, nil);
+  for i := 0 to DebuggerOptions.BackendConverterConfig.Count - 1 do
+    dropFpDbgConv.AddItem(DebuggerOptions.BackendConverterConfig.Items[i].Name, DebuggerOptions.BackendConverterConfig.Items[i]);
+  for i := 0 to DbgProjectLink.BackendConverterConfig.Count - 1 do
+    dropFpDbgConv.AddItem(DbgProjectLink.BackendConverterConfig.Items[i].Name, DbgProjectLink.BackendConverterConfig.Items[i]);
+
+
+  lblValFormatter.Caption := dlgVarFormatterDebugOptions;
+  if AnIncludeUnknown then
+    dropValFormatter.AddItem(dlgWatchPropertyUnknown, nil);
+  dropValFormatter.AddItem(dlgBackendConvOptDefault, nil);
+  dropValFormatter.AddItem(dlgBackendConvOptDisabled, nil);
+  for i := 0 to DebuggerOptions.ValueFormatterConfig.Count - 1 do
+    dropValFormatter.AddItem(DebuggerOptions.ValueFormatterConfig.Items[i].Name, DebuggerOptions.ValueFormatterConfig.Items[i]);
+  for i := 0 to DbgProjectLink.ValueFormatterConfig.Count - 1 do
+    dropValFormatter.AddItem(DbgProjectLink.ValueFormatterConfig.Items[i].Name, DbgProjectLink.ValueFormatterConfig.Items[i]);
+
+  dropValFormatter.ItemIndex := 0;
+
+  InitBtnCaptions;
+end;
+
+procedure TWatchPropertyDlg.InitBtnCaptions;
+begin
+  ButtonPanel.OKButton.Caption:=lisBtnOk;
+  ButtonPanel.HelpButton.Caption:=lisMenuHelp;
+  ButtonPanel.CancelButton.Caption:=lisCancel;
+end;
+
+function TWatchPropertyDlg.ValBackConvIndex(const AWatch: TIdeWatch; AnIncludeUnknown: Boolean
+  ): integer;
+var
+  i: Integer;
+begin
+  Result := 0;
+  if AnIncludeUnknown then
+    Result := 1;
+  if AWatch <> nil then begin
+    if defSkipValConv in AWatch.EvaluateFlags then begin
+      Result := Result + 1;
+    end
+    else
+    if AWatch.DbgBackendConverter <> nil then begin
+      i := dropFpDbgConv.Items.IndexOfObject(AWatch.DbgBackendConverter);
+      assert(i > 0, 'TWatchPropertyDlg.Create: i > 0');
+      if i > 0 then
+        Result := i;
+    end;
+  end;
+end;
+
+function TWatchPropertyDlg.ValFormatterIndex(const AWatch: TIdeWatch; AnIncludeUnknown: Boolean
+  ): integer;
+var
+  i: Integer;
+begin
+  Result := 0;
+  if AnIncludeUnknown then
+    Result := 1;
+  if AWatch <> nil then begin
+    if defSkipValueFormatter in AWatch.EvaluateFlags then begin
+      Result := Result + 1;
+    end
+    else
+    if AWatch.DbgValueFormatter <> nil then begin
+      i := dropValFormatter.Items.IndexOfObject(AWatch.DbgValueFormatter);
+      assert(i > 0, 'TWatchPropertyDlg.Create: i > 0');
+      if i > 0 then
+        Result := i;
+    end;
+  end;
+end;
+
+procedure TWatchPropertyDlg.ValBackConvToWatch(AWatch: TIdeWatch; AnIncludeUnknown: Boolean);
+var
+  Offs: Integer;
+  Conv: TIdeDbgValueConvertSelector;
+begin
+  Offs := 0;
+  if AnIncludeUnknown then begin
+    if dropFpDbgConv.ItemIndex = 0 then
+      exit;
+    Offs := 1;
+  end;
+  if dropFpDbgConv.ItemIndex = Offs then
+    AWatch.DbgBackendConverter := nil
+  else
+  if dropFpDbgConv.ItemIndex = Offs+1 then
+    AWatch.EvaluateFlags := AWatch.EvaluateFlags + [defSkipValConv]
+  else begin
+    Conv := TIdeDbgValueConvertSelector(dropFpDbgConv.Items.Objects[dropFpDbgConv.ItemIndex]);
+    if (DebuggerOptions.BackendConverterConfig.IndexOf(Conv) < 0) and
+       (DbgProjectLink.BackendConverterConfig.IndexOf(Conv) < 0)
+    then
+      Conv := nil;
+    AWatch.DbgBackendConverter := Conv;
+  end;
+end;
+
+procedure TWatchPropertyDlg.ValFormatterToWach(AWatch: TIdeWatch; AnIncludeUnknown: Boolean);
+var
+  Offs: Integer;
+  VFormatter: TIdeDbgValueFormatterSelector;
+begin
+  Offs := 0;
+  if AnIncludeUnknown then begin
+    if dropFpDbgConv.ItemIndex = 0 then
+      exit;
+    Offs := 1;
+  end;
+
+  if dropValFormatter.ItemIndex = Offs then
+    AWatch.DbgValueFormatter := nil
+  else
+  if dropValFormatter.ItemIndex = Offs+1 then
+    AWatch.EvaluateFlags := AWatch.EvaluateFlags + [defSkipValueFormatter]
+  else begin
+    VFormatter := TIdeDbgValueFormatterSelector(dropValFormatter.Items.Objects[dropValFormatter.ItemIndex]);
+    if (DebuggerOptions.ValueFormatterConfig.IndexOf(VFormatter) < 0) and
+       (DbgProjectLink.ValueFormatterConfig.IndexOf(VFormatter) < 0)
+    then
+      VFormatter := nil;
+    AWatch.DbgValueFormatter := VFormatter;
+  end;
+end;
+
+procedure TWatchPropertyDlg.SetVisible(Value: Boolean);
+begin
+  inherited SetVisible(Value);
+
+  // Issue #40875
+  if HandleAllocated then
+    if txtRepCount.Tag = 2 then begin
+      txtRepCount.Handle;
+      txtRepCount.Text := '';
+      txtRepCount.Tag := 2;
+    end;
+end;
+
 procedure TWatchPropertyDlg.btnHelpClick(Sender: TObject);
 begin
   LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
-constructor TWatchPropertyDlg.Create(AOWner: TComponent; const AWatch: TIdeWatch;
+constructor TWatchPropertyDlg.Create(AnOWner: TComponent; const AWatch: TIdeWatch;
   const AWatchExpression: String; AResDataType: TWatchResultDataKind);
-var
-  i: Integer;
 begin
   FMode := wpmWatch;
   FWatch := AWatch;
-  inherited Create(AOwner);
+  inherited Create(AnOwner);
   PanelTop.Visible := True;
   ButtonPanel.HelpButton.Visible := True;
   DisplayFormatFrame1.Setup;
   DisplayFormatFrame1.BeginUdpate;
   DisplayFormatFrame1.ShowArrayNavBarOpts := True;
+  DisplayFormatFrame1.ShowMemDump := True;
   try
     if FWatch = nil
     then begin
@@ -228,74 +414,80 @@ begin
     (dfEvalFunctionCalls in DebugBoss.DebuggerClass.SupportedFeatures) and
     (chkAllowFunc.Checked);
 
-  Caption:= lisWatchPropert;
-  lblExpression.Caption:= lisExpression;
-  lblRepCount.Caption:= lisRepeatCount;
-  chkEnabled.Caption:= lisEnabled;
-  chkAllowFunc.Caption:= lisAllowFunctio;
-  chkAllowFuncThreads.Caption := drsRunAllThreadsWhileEvaluat;
-  chkUseInstanceClass.Caption := drsUseInstanceClassType;
+  InitCaptions(False);
 
-  lblFpDbgConv.Caption := dlgBackendConvOptDebugConverter;
-  dropFpDbgConv.AddItem(dlgBackendConvOptDefault, nil);
-  dropFpDbgConv.AddItem(dlgBackendConvOptDisabled, nil);
-  for i := 0 to DebuggerOptions.BackendConverterConfig.Count - 1 do
-    dropFpDbgConv.AddItem(DebuggerOptions.BackendConverterConfig.Items[i].Name, DebuggerOptions.BackendConverterConfig.Items[i]);
-  for i := 0 to DbgProjectLink.BackendConverterConfig.Count - 1 do
-    dropFpDbgConv.AddItem(DbgProjectLink.BackendConverterConfig.Items[i].Name, DbgProjectLink.BackendConverterConfig.Items[i]);
-
-  dropFpDbgConv.ItemIndex := 0;
-  if AWatch <> nil then begin
-    if defSkipValConv in AWatch.EvaluateFlags then begin
-      dropFpDbgConv.ItemIndex := 1;
-    end
-    else
-    if AWatch.DbgBackendConverter <> nil then begin
-      i := dropFpDbgConv.Items.IndexOfObject(AWatch.DbgBackendConverter);
-      assert(i > 0, 'TWatchPropertyDlg.Create: i > 0');
-      if i > 0 then
-        dropFpDbgConv.ItemIndex := i;
-    end;
-  end;
-
-  lblValFormatter.Caption := dlgVarFormatterDebugOptions;
-  dropValFormatter.AddItem(dlgBackendConvOptDefault, nil);
-  dropValFormatter.AddItem(dlgBackendConvOptDisabled, nil);
-  for i := 0 to DebuggerOptions.ValueFormatterConfig.Count - 1 do
-    dropValFormatter.AddItem(DebuggerOptions.ValueFormatterConfig.Items[i].Name, DebuggerOptions.ValueFormatterConfig.Items[i]);
-  for i := 0 to DbgProjectLink.ValueFormatterConfig.Count - 1 do
-    dropValFormatter.AddItem(DbgProjectLink.ValueFormatterConfig.Items[i].Name, DbgProjectLink.ValueFormatterConfig.Items[i]);
-
-  dropValFormatter.ItemIndex := 0;
-  if AWatch <> nil then begin
-    if defSkipValueFormatter in AWatch.EvaluateFlags then begin
-      dropValFormatter.ItemIndex := 1;
-    end
-    else
-    if AWatch.DbgValueFormatter <> nil then begin
-      i := dropValFormatter.Items.IndexOfObject(AWatch.DbgValueFormatter);
-      assert(i > 0, 'TWatchPropertyDlg.Create: i > 0');
-      if i > 0 then
-        dropValFormatter.ItemIndex := i;
-    end;
-  end;
-
-  ButtonPanel.OKButton.Caption:=lisBtnOk;
-  ButtonPanel.HelpButton.Caption:=lisMenuHelp;
-  ButtonPanel.CancelButton.Caption:=lisCancel;
+  dropFpDbgConv.ItemIndex := ValBackConvIndex(AWatch, False);
+  dropValFormatter.ItemIndex := ValFormatterIndex(AWatch, False);
 end;
 
-constructor TWatchPropertyDlg.Create(AOWner: TComponent;
+constructor TWatchPropertyDlg.Create(AnOWner: TComponent; const AWatches: array of TIdeWatch);
+var
+  Idx: Integer;
+  OptEnabled, OptUseInstanceClass, OptAllowFunc, OptFuncThreads: TBoolSet;
+  OptRepeat, OptBackend, OptValFormatter: integer;
+begin
+  FMode := wpmMultiWatch;
+  inherited Create(AnOWner);
+  PanelTop.Visible := True;
+  txtExpression.Text    := '';
+  txtExpression.Enabled := False;
+  InitCaptions(True);
+
+  DisplayFormatFrame1.Setup;
+  DisplayFormatFrame1.ShowArrayNavBarOpts := True;
+  DisplayFormatFrame1.ShowMemDump := True;
+  DisplayFormatFrame1.BeginUdpate;
+  try
+    OptEnabled          := [];
+    OptUseInstanceClass := [];
+    OptAllowFunc        := [];
+    OptFuncThreads      := [];
+    OptRepeat           := MULTIOPT_INT_UNK;
+    OptBackend          := MULTIOPT_INT_UNK;
+    OptValFormatter     := MULTIOPT_INT_UNK;
+
+    DisplayFormatFrame1.DisplayFormatCount := Length(AWatches);
+    SetLength(FWatches, Length(AWatches));
+    for Idx := 0 to Length(AWatches) - 1 do begin
+      DisplayFormatFrame1.DisplayFormats[Idx] := AWatches[Idx].DisplayFormat;
+      FWatches[Idx] := AWatches[Idx];
+      include(OptEnabled, AWatches[Idx].Enabled);
+      include(OptUseInstanceClass, defClassAutoCast             in AWatches[Idx].EvaluateFlags);
+      include(OptAllowFunc,        defAllowFunctionCall         in AWatches[Idx].EvaluateFlags);
+      include(OptFuncThreads,      defFunctionCallRunAllThreads in AWatches[Idx].EvaluateFlags);
+      UpdateIntSetting(OptRepeat,       AWatches[Idx].RepeatCount);
+      UpdateIntSetting(OptBackend,      ValBackConvIndex(AWatches[Idx], True));
+      UpdateIntSetting(OptValFormatter, ValFormatterIndex(AWatches[Idx], True));
+    end;
+    chkEnabled.State          := BoolsetToCBState(OptEnabled, False);
+    chkUseInstanceClass.State := BoolsetToCBState(OptUseInstanceClass, False);
+    chkAllowFunc.State        := BoolsetToCBState(OptAllowFunc, False);
+    chkAllowFuncThreads.State := BoolsetToCBState(OptFuncThreads, False);
+    IntToSpinEdit(txtRepCount, OptRepeat);
+    if OptBackend < 0 then OptBackend := 0;
+    if OptValFormatter < 0 then OptValFormatter := 0;
+    dropFpDbgConv.ItemIndex    := OptBackend;
+    dropValFormatter.ItemIndex := OptValFormatter;
+
+    DisplayFormatFrame1.CurrentResDataType := rdkUnknown;
+    DisplayFormatFrame1.SelectDefaultButton;
+  finally
+    DisplayFormatFrame1.EndUdpate;
+  end;
+end;
+
+constructor TWatchPropertyDlg.Create(AnOWner: TComponent;
   const ADisplayFormat: TWatchDisplayFormat; AResDataType: TWatchResultDataKind;
   AShowMemDump: boolean; AShowArrayNav: boolean);
 begin
   FMode := wpmDispFormat;
-  inherited Create(AOWner);
+  inherited Create(AnOWner);
   PanelTop.Visible := False;
   ButtonPanel.HelpButton.Visible := False;
   FDisplayFormat := ADisplayFormat;
 
   Caption:= dlgDisplayFormatDebugOptions;
+  InitBtnCaptions;
   DisplayFormatFrame1.Setup;
   DisplayFormatFrame1.ShowArrayNavBarOpts := AShowArrayNav;
   DisplayFormatFrame1.ShowMemDump := AShowMemDump;
@@ -304,11 +496,6 @@ begin
   DisplayFormatFrame1.CurrentResDataType := AResDataType;
   DisplayFormatFrame1.SelectDefaultButton;
   DisplayFormatFrame1.EndUdpate;
-end;
-
-destructor TWatchPropertyDlg.Destroy;
-begin
-  inherited;
 end;
 
 end.
