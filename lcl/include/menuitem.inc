@@ -354,7 +354,7 @@ begin
   if (csDesigning in ComponentState) then
     Exit;
   HideSeps := GetAutoLineReduction;
-  debugln(['TMenuItem.InternalRethinkLines, AForced=',AForced,', HideSeps=',HideSeps]);
+  // debugln(['TMenuItem.InternalRethinkLines, AForced=',AForced,', HideSeps=',HideSeps]);
   if {AForced or} HideSeps then
   begin
     LastVisibleItem := nil;
@@ -366,12 +366,12 @@ begin
       begin
         if CurItem.Visible then
         begin
-          debugln(['TMenuItem.InternalRethinkLines: LastVisibleItem=',dbgsname(LastVisibleItem)]);
+          // debugln(['TMenuItem.InternalRethinkLines: LastVisibleItem=',dbgsname(LastVisibleItem)]);
           if (LastVisibleItem = nil) or (LastVisibleItem.IsLine) or (I = Count-1) then
           begin
             CurItem.Visible := False;
             Result := True;
-            debugln(['TMenuItem.InternalRethinkLines: hiding separator with name "',CurItem.Name,'"']);
+            // debugln(['TMenuItem.InternalRethinkLines: hiding separator with name "',CurItem.Name,'"']);
           end;
         end
         else
@@ -382,7 +382,7 @@ begin
           begin
             CurItem.Visible := True;
             Result := True;
-            debugln(['TMenuItem.InternalRethinkLines: UNhiding separator with name "',CurItem.Name,'"']);
+            // debugln(['TMenuItem.InternalRethinkLines: UNhiding separator with name "',CurItem.Name,'"']);
           end;
         end;
       end;
@@ -394,7 +394,7 @@ begin
     begin
       LastVisibleItem.Visible := False;
       Result := True;
-      debugln(['TMenuItem.InternalRethinkLines: hiding LastVisibleItem with name "',LastVisibleItem.Name,'"']);
+      // debugln(['TMenuItem.InternalRethinkLines: hiding LastVisibleItem with name "',LastVisibleItem.Name,'"']);
     end;
   end// if AForced or HideSep
   else
@@ -407,7 +407,7 @@ begin
       begin
         CurItem.Visible := True;
         Result := True;
-        debugln(['TMenuItem.InternalRethinkLines: unhiding separator with name "',CurItem.Name,'"']);
+        // debugln(['TMenuItem.InternalRethinkLines: unhiding separator with name "',CurItem.Name,'"']);
       end;
     end;
   end;
