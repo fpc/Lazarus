@@ -668,7 +668,7 @@ msgstr "Удалить все наблюдения?"
 
 #: idedebuggerstringconstants.dlgwatchpropertyunknown
 msgid ">> Mixed/Keep <<"
-msgstr ""
+msgstr ">> Смешанное / не менять <<"
 
 #: idedebuggerstringconstants.drsaddwatch
 msgctxt "idedebuggerstringconstants.drsaddwatch"
