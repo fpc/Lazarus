@@ -2001,6 +2001,7 @@ begin
     // to be tested and considered
     //ComboBoxSetBorderStyle(cmb, TCustomComboBoxAccess(AWinControl).BorderStyle);
     Result:=TLCLHandle(cmb);
+    UpdateControlFocusRing(cmb, AWinControl);
   end;
   //todo: 26 pixels is the height of 'normal' combobox. The value is taken from the Interface Builder!
   //      use the correct way to set the size constraints

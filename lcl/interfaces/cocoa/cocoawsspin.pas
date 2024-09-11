@@ -26,7 +26,7 @@ uses
   // widgetset
   WSSpin, WSLCLClasses,
   // cocoa ws
-  CocoaPrivate, CocoaWSCommon, CocoaTextEdits;
+  CocoaAll, CocoaPrivate, CocoaWSCommon, CocoaTextEdits, Cocoa_Extra;
 
 type
 
@@ -71,6 +71,7 @@ begin
   lSpin.callback := TLCLCommonCallback.Create(lSpin, AWinControl);
   if (lSpin.Stepper.isKindOfClass(TCocoaSpinEditStepper)) then
     TCocoaSpinEditStepper(lSpin.Stepper).callback:=lSpin.callback;
+  UpdateControlFocusRing(lSpin, AWinControl);
 end;
 
 class procedure TCocoaWSCustomFloatSpinEdit.DestroyHandle(const AWinControl: TWinControl);
