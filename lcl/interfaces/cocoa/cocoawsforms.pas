@@ -795,6 +795,9 @@ var
     toolbar:= TCocoaToolBarUtils.createToolBar( config );
     win.setToolbarStyle( config.style );
     win.setToolbar( toolbar );
+    // in win.setToolBar(), macOS may incorrectly calculate the window size
+    // (ignoring the original TitleBar size) and need to be reset.
+    win.contentView.lclSetFrame( AWinControl.BoundsRect );
   end;
 
   procedure applyCocoaConfigTitleBar( const config: TCocoaConfigTitleBar );
