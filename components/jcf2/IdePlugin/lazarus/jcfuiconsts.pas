@@ -225,7 +225,7 @@ resourcestring
   //Any Word Capitalisation tab
   lisCapsAnyWordAnyWord = 'Any Word';
   lisCapsAnyWordEnable = 'Enable';
-  lisCapsNormalizeCapitalisation = 'Normalize capitalisation';
+  lisCapsNormalizeCapitalisation = 'Normalization of capitalisation';
   lisCapsNormalizeCapitalisationOneNamespace = 'Use only one namespace';
   lisCapsAnyWordSetCapitalisationOnTheseWords = 'Set capitalisation on these '
     +'words:';
