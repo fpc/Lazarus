@@ -4281,7 +4281,7 @@ begin
   if (MimeType = 'text/plain') then // do not translate
   begin
     QGuiApplication_platformName(@WStr);
-    if CompareText(Copy(UTF16ToUTF8(WStr), 1, 7),'wayland') = 0 then  // do not translate
+    if (WStr = 'xcb') or (CompareText(Copy(UTF16ToUTF8(WStr), 1, 7),'wayland') = 0) then  // do not translate
     begin
       AFormats := QStringList_Create;
       QMimeData_formats(QtMimeData, AFormats);
