@@ -278,7 +278,7 @@ msgid "Set capitalisation on these identifiers:"
 msgstr "Nastavit kapitalizaci pro tyto idenitifikátory:"
 
 #: jcfuiconsts.liscapsnormalizecapitalisation
-msgid "Normalize capitalisation"
+msgid "Normalization of capitalisation"
 msgstr ""
 
 #: jcfuiconsts.liscapsnormalizecapitalisationonenamespace

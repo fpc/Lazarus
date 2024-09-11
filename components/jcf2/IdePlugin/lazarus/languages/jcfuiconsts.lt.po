@@ -279,7 +279,7 @@ msgid "Set capitalisation on these identifiers:"
 msgstr "Šiuos identifikatorius didžiosiomis raidėmis:"
 
 #: jcfuiconsts.liscapsnormalizecapitalisation
-msgid "Normalize capitalisation"
+msgid "Normalization of capitalisation"
 msgstr ""
 
 #: jcfuiconsts.liscapsnormalizecapitalisationonenamespace

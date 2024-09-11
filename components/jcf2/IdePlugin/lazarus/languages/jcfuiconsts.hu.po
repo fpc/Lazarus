@@ -279,7 +279,7 @@ msgid "Set capitalisation on these identifiers:"
 msgstr "Nagybetűsítés beállítása ezen azonosítókhoz:"
 
 #: jcfuiconsts.liscapsnormalizecapitalisation
-msgid "Normalize capitalisation"
+msgid "Normalization of capitalisation"
 msgstr ""
 
 #: jcfuiconsts.liscapsnormalizecapitalisationonenamespace
