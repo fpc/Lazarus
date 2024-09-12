@@ -1462,6 +1462,10 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="CocoaIDEFormConfig"/>
       </Unit>
+      <Unit>
+        <Filename Value="cocoaideformconfig.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
