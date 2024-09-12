@@ -185,7 +185,7 @@ begin
        '  Check='+dbgsBool(IsSecondaryCheckBoxChecked)
        );
 
-  WizardForm.NextButton.Enabled := (UninstallState = uiDone) or (UninstallState = uiDestNeeded) or wpCheckBox.Checked;
+  WizardForm.NextButton.Enabled := (UninstallState = uiDone) or (UninstallState = uiDestNeeded) or wpCheckBox.Checked or WizardSilent();
   wpCheckBox.Enabled := not(UninstallState = uiDone);
   wpButton.Enabled := not(UninstallState = uiDone);
 end;

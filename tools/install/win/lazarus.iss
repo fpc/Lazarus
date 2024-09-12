@@ -405,6 +405,7 @@ begin
         ClearExistingConfigForFolder;
 		folder := WizardDirValue;
 
+        if not WizardSilent() then
 		if Pos( ' ', folder ) > 0 then
 		begin
 			MsgBox(SaveCustomMessage('FolderHasSpaces', 'Selected folder contains spaces, please select a folder without spaces in it.'),
@@ -458,6 +459,7 @@ begin
 		end
 
         else
+        if not WizardSilent() then
 		begin
             // Dir NOT empty: do not warn, if uiDestNeeded => folder content is updatable lazarus
 			if ((UninstallState = uiDone) or (UninstallState = UIOtherNeeded)) or
@@ -476,6 +478,7 @@ begin
     if CurPage = wpAskConfDir.ID then begin
       Log('NextButton in AskConfDir');
       s := wpAskConfDir.Values[0];
+      if not WizardSilent() then
       if (not IsDirEmpty(s)) then begin
         MsgBox(Format(CustomMessage('FolderForConfNotEmpty'), [#13#10]), mbConfirmation, MB_OK);
 		Result := False;
