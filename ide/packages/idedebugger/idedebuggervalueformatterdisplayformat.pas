@@ -44,7 +44,7 @@ type
   public
     class function GetRegisteredDisplayName: String;
     function FormatValue(AWatchValue: IWatchResultDataIntf;
-      ADisplayFormat: TWatchDisplayFormat;
+      const ADisplayFormat: TWatchDisplayFormat;
       AWatchResultPrinter: IWatchResultPrinter; out APrintedValue: String
       ): Boolean; override; experimental;
 
@@ -134,7 +134,7 @@ begin
 end;
 
 function TIdeDbgValueFormatterDisplayFormat.FormatValue(AWatchValue: IWatchResultDataIntf;
-  ADisplayFormat: TWatchDisplayFormat; AWatchResultPrinter: IWatchResultPrinter; out
+  const ADisplayFormat: TWatchDisplayFormat; AWatchResultPrinter: IWatchResultPrinter; out
   APrintedValue: String): Boolean;
 var
   d: TWatchDisplayFormat;

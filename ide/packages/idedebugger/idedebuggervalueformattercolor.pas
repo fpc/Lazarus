@@ -56,12 +56,12 @@ type
   TIdeDbgValueFormatterColor = class(TIdeDbgValueFormatterColorBase)
     class function GetRegisteredDisplayName: String;
     function FormatValue(AWatchValue: IWatchResultDataIntf;
-      ADisplayFormat: TWatchDisplayFormat;
+      const ADisplayFormat: TWatchDisplayFormat;
       AWatchResultPrinter: IWatchResultPrinter; out APrintedValue: String
       ): Boolean; override; experimental;
     function FormatValue(aDBGType: TDBGType;
                          aValue: string;
-                         ADisplayFormat: TWatchDisplayFormat;
+                         const ADisplayFormat: TWatchDisplayFormat;
                          out APrintedValue: String
                         ): boolean; override; deprecated 'For values from older backends only - to be removed as backends are upgraded';
   end;
@@ -73,12 +73,12 @@ type
   TIdeDbgValueFormatterColorAlpha = class(TIdeDbgValueFormatterColorBase)
     class function GetRegisteredDisplayName: String;
     function FormatValue(AWatchValue: IWatchResultDataIntf;
-      ADisplayFormat: TWatchDisplayFormat;
+      const ADisplayFormat: TWatchDisplayFormat;
       AWatchResultPrinter: IWatchResultPrinter; out APrintedValue: String
       ): Boolean; override; experimental;
     function FormatValue(aDBGType: TDBGType;
                          aValue: string;
-                         ADisplayFormat: TWatchDisplayFormat;
+                         const ADisplayFormat: TWatchDisplayFormat;
                          out APrintedValue: String
                         ): boolean; override; deprecated 'For values from older backends only - to be removed as backends are upgraded';
   end;
@@ -192,7 +192,7 @@ end;
 { TIdeDbgValueFormatterColor }
 
 function TIdeDbgValueFormatterColor.FormatValue(
-  AWatchValue: IWatchResultDataIntf; ADisplayFormat: TWatchDisplayFormat;
+  AWatchValue: IWatchResultDataIntf; const ADisplayFormat: TWatchDisplayFormat;
   AWatchResultPrinter: IWatchResultPrinter; out APrintedValue: String): Boolean;
 var
   IntToIdentFn: TIntToIdent;
@@ -236,7 +236,7 @@ begin
 end;
 
 function TIdeDbgValueFormatterColor.FormatValue(aDBGType: TDBGType;
-  aValue: string; ADisplayFormat: TWatchDisplayFormat; out APrintedValue: String
+  aValue: string; const ADisplayFormat: TWatchDisplayFormat; out APrintedValue: String
   ): boolean;
 var
   c: integer;
@@ -287,7 +287,7 @@ begin
 end;
 
 function TIdeDbgValueFormatterColorAlpha.FormatValue(
-  AWatchValue: IWatchResultDataIntf; ADisplayFormat: TWatchDisplayFormat;
+  AWatchValue: IWatchResultDataIntf; const ADisplayFormat: TWatchDisplayFormat;
   AWatchResultPrinter: IWatchResultPrinter; out APrintedValue: String): Boolean;
 var
   IntToIdentFn: TIntToIdent;
@@ -333,7 +333,7 @@ begin
 end;
 
 function TIdeDbgValueFormatterColorAlpha.FormatValue(aDBGType: TDBGType;
-  aValue: string; ADisplayFormat: TWatchDisplayFormat; out APrintedValue: String
+  aValue: string; const ADisplayFormat: TWatchDisplayFormat; out APrintedValue: String
   ): boolean;
 var
   c: int64;

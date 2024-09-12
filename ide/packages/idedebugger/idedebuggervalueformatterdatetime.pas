@@ -47,12 +47,12 @@ type
     class function GetRegisteredDisplayName: String;
     //constructor Create;
     function FormatValue(AWatchValue: IWatchResultDataIntf;
-      ADisplayFormat: TWatchDisplayFormat;
+      const ADisplayFormat: TWatchDisplayFormat;
       AWatchResultPrinter: IWatchResultPrinter; out APrintedValue: String
       ): Boolean; override; experimental;
     function FormatValue(aDBGType: TDBGType;
                          aValue: string;
-                         ADisplayFormat: TWatchDisplayFormat;
+                         const ADisplayFormat: TWatchDisplayFormat;
                          out APrintedValue: String
                         ): boolean; override; deprecated 'For values from older backends only - to be removed as backends are upgraded';
 
@@ -141,7 +141,7 @@ begin
 end;
 
 function TIdeDbgValueFormatterDateTime.FormatValue(
-  AWatchValue: IWatchResultDataIntf; ADisplayFormat: TWatchDisplayFormat;
+  AWatchValue: IWatchResultDataIntf; const ADisplayFormat: TWatchDisplayFormat;
   AWatchResultPrinter: IWatchResultPrinter; out APrintedValue: String): Boolean;
 var
   MyDate: Extended;
@@ -164,7 +164,7 @@ begin
 end;
 
 function TIdeDbgValueFormatterDateTime.FormatValue(aDBGType: TDBGType;
-  aValue: string; ADisplayFormat: TWatchDisplayFormat; out APrintedValue: String
+  aValue: string; const ADisplayFormat: TWatchDisplayFormat; out APrintedValue: String
   ): boolean;
 var
   FS: TFormatSettings;

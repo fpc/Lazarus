@@ -36,7 +36,7 @@ type
   public
     class function GetRegisteredDisplayName: String;
     function FormatValue(AWatchValue: IWatchResultDataIntf;
-      ADisplayFormat: TWatchDisplayFormat;
+      const ADisplayFormat: TWatchDisplayFormat;
       AWatchResultPrinter: IWatchResultPrinter; out APrintedValue: String
       ): Boolean; override;
     function SupportedFeatures: TLazDbgIdeValFormatterFeatures; override;
@@ -108,7 +108,7 @@ begin
 end;
 
 function TIdeDbgValueFormatterCharArrayToString.FormatValue(
-  AWatchValue: IWatchResultDataIntf; ADisplayFormat: TWatchDisplayFormat;
+  AWatchValue: IWatchResultDataIntf; const ADisplayFormat: TWatchDisplayFormat;
   AWatchResultPrinter: IWatchResultPrinter; out APrintedValue: String): Boolean;
 var
   Cnt, i: Integer;

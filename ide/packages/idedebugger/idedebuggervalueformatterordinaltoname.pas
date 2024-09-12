@@ -45,12 +45,12 @@ type
     destructor Destroy; override;
     class function GetRegisteredDisplayName: String;
     function FormatValue(AWatchValue: IWatchResultDataIntf;
-      ADisplayFormat: TWatchDisplayFormat;
+      const ADisplayFormat: TWatchDisplayFormat;
       AWatchResultPrinter: IWatchResultPrinter; out APrintedValue: String
       ): Boolean; override;
     function FormatValue(aDBGType: TDBGType;
                          aValue: string;
-                         ADisplayFormat: TWatchDisplayFormat;
+                         const ADisplayFormat: TWatchDisplayFormat;
                          out APrintedValue: String
                         ): boolean; override;
 
@@ -333,7 +333,7 @@ begin
 end;
 
 function TIdeDbgValueFormatterOrdinalToName.FormatValue(AWatchValue: IWatchResultDataIntf;
-  ADisplayFormat: TWatchDisplayFormat; AWatchResultPrinter: IWatchResultPrinter; out
+  const ADisplayFormat: TWatchDisplayFormat; AWatchResultPrinter: IWatchResultPrinter; out
   APrintedValue: String): Boolean;
 var
   c: Int64;
@@ -353,7 +353,7 @@ begin
 end;
 
 function TIdeDbgValueFormatterOrdinalToName.FormatValue(aDBGType: TDBGType; aValue: string;
-  ADisplayFormat: TWatchDisplayFormat; out APrintedValue: String): boolean;
+  const ADisplayFormat: TWatchDisplayFormat; out APrintedValue: String): boolean;
 var
   c: int64;
   i: Integer;

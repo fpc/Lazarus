@@ -23,12 +23,12 @@ type
   public
     class function GetRegisteredDisplayName: String;
     function FormatValue(AWatchValue: IWatchResultDataIntf;
-      ADisplayFormat: TWatchDisplayFormat;
+      const ADisplayFormat: TWatchDisplayFormat;
       AWatchResultPrinter: IWatchResultPrinter; out APrintedValue: String
       ): Boolean; override; experimental;
     function FormatValue(aDBGType: TDBGType;
                          aValue: string;
-                         ADisplayFormat: TWatchDisplayFormat;
+                         const ADisplayFormat: TWatchDisplayFormat;
                          out APrintedValue: String
                         ): boolean; override; deprecated 'For values from older backends only - to be removed as backends are upgraded';
 
@@ -49,7 +49,7 @@ begin
 end;
 
 function TIdeDbgValueFormatterCurrency.FormatValue(
-  AWatchValue: IWatchResultDataIntf; ADisplayFormat: TWatchDisplayFormat;
+  AWatchValue: IWatchResultDataIntf; const ADisplayFormat: TWatchDisplayFormat;
   AWatchResultPrinter: IWatchResultPrinter; out APrintedValue: String): Boolean;
 begin
   Result := (AWatchValue.ValueKind in [rdkUnsignedNumVal, rdkSignedNumVal]);
@@ -74,7 +74,7 @@ begin
 end;
 
 function TIdeDbgValueFormatterCurrency.FormatValue(aDBGType: TDBGType;
-  aValue: string; ADisplayFormat: TWatchDisplayFormat; out APrintedValue: String
+  aValue: string; const ADisplayFormat: TWatchDisplayFormat; out APrintedValue: String
   ): boolean;
 var
   i: int64;

@@ -7,7 +7,7 @@
  Abstract:
    Interface for the package IdeDebugger
 }
-unit IdeDebuggerValueFormatterIntf experimental;
+unit IdeDebuggerValueFormatterIntf;
 
 {$mode objfpc}{$H+}
 {$INTERFACES CORBA}
@@ -25,30 +25,27 @@ type
   end;
 
   TLazDbgIdeValFormatterFeature = (
-    vffFormatValue,    // FormatValue() for IWatchResultDataIntf
-    vffFormatOldValue,  // FormatValue() for older backends TDBGType
+    vffFormatValue,     // FormatValue() for IWatchResultDataIntf
+    vffFormatOldValue,  //   Deprecated: FormatValue() for older backends TDBGType
     vffValueData,       // Normal data
-    vffValueMemDump,    // MemDump
+    vffValueMemDump,    // MemDump (Experimental)
 
     vffPreventOrigValue, // Does not support having the orig value shown with the translated result
-    vffSkipOnRecursion  // The formatter may match during printing the value => skip it in this case
-  ) experimental;
+    vffSkipOnRecursion   // The formatter may match during printing the value => skip it in this case
+  );
   TLazDbgIdeValFormatterFeatures = set of TLazDbgIdeValFormatterFeature;
 
   ILazDbgIdeValueFormatterIntf = interface
     ['{AE8A0E22-E052-4C77-AD88-8812D27F3180}']
-
-    (* *** Experimental - This interface will still change *** *)
-
     function FormatValue(AWatchValue: IWatchResultDataIntf;
-                         ADisplayFormat: TWatchDisplayFormat;
+                         const ADisplayFormat: TWatchDisplayFormat;
                          AWatchResultPrinter: IWatchResultPrinter;
                          out APrintedValue: String
-                        ): Boolean; experimental;
+                        ): Boolean;
 
     function FormatValue(aDBGType: TDBGType;
                          aValue: string;
-                         ADisplayFormat: TWatchDisplayFormat;
+                         const ADisplayFormat: TWatchDisplayFormat;
                          out APrintedValue: String
                         ): boolean; experimental; deprecated 'For values from older backends only - to be removed as backends are upgraded';
 
@@ -113,14 +110,14 @@ type
   public
     constructor Create; // inherited Create may not be called => use init
     function FormatValue(AWatchValue: IWatchResultDataIntf;
-                         ADisplayFormat: TWatchDisplayFormat;
+                         const ADisplayFormat: TWatchDisplayFormat;
                          AWatchResultPrinter: IWatchResultPrinter;
                          out APrintedValue: String
-                        ): Boolean; virtual; experimental;
+                        ): Boolean; virtual;
 
     function FormatValue(aDBGType: TDBGType;
                          aValue: string;
-                         ADisplayFormat: TWatchDisplayFormat;
+                         const ADisplayFormat: TWatchDisplayFormat;
                          out APrintedValue: String
                         ): boolean; virtual; experimental; deprecated 'For values from older backends only - to be removed as backends are upgraded';
 
@@ -225,14 +222,14 @@ begin
 end;
 
 function TLazDbgIdeValueFormatterGeneric.FormatValue(
-  AWatchValue: IWatchResultDataIntf; ADisplayFormat: TWatchDisplayFormat;
+  AWatchValue: IWatchResultDataIntf; const ADisplayFormat: TWatchDisplayFormat;
   AWatchResultPrinter: IWatchResultPrinter; out APrintedValue: String): Boolean;
 begin
   Result := False;
 end;
 
 function TLazDbgIdeValueFormatterGeneric.FormatValue(aDBGType: TDBGType;
-  aValue: string; ADisplayFormat: TWatchDisplayFormat; out APrintedValue: String
+  aValue: string; const ADisplayFormat: TWatchDisplayFormat; out APrintedValue: String
   ): boolean;
 begin
   Result := False;
