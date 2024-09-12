@@ -5,9 +5,9 @@ interface
 
 uses
   Classes, SysUtils,
-  Forms,
+  Forms, Menus,
   SourceEditor, SynEditTypes,
-  CocoaAll, CocoaConfig, CocoaToolBar, Cocoa_Extra, CocoaUtils;
+  CocoaAll, CocoaConfig, CocoaToolBar, Cocoa_Extra;
 
 implementation
 
@@ -16,6 +16,7 @@ type
   private
     searchingString: String;
     procedure doFindNext(Data: PtrInt);
+    procedure doFocusSearchField( Sender: TObject );
   end;
 
 var
@@ -30,7 +31,23 @@ begin
   self.searchingString:= '';
 end;
 
-procedure searchHandle( const Sender: id );
+procedure TCocoaIDEMainFormHandler.doFocusSearchField(Sender: TObject);
+var
+  lclForm: TCustomForm;
+  cocoaItem: NSToolbarItem;
+  cocoaWindow: NSWindow;
+begin
+  lclForm:= Screen.ActiveCustomForm;
+  cocoaItem:= TCocoaToolBarUtils.findItemByIdentifier( lclForm, 'MainIDE.Search' );
+  if NOT Assigned(cocoaItem) then
+    Exit;
+  cocoaWindow:= NSView(lclForm.Handle).window;
+  if NOT Assigned(cocoaWindow) then
+    Exit;
+  cocoaWindow.makeFirstResponder( TCocoaToolBarItemSearch(cocoaItem).searchField );
+end;
+
+procedure searchAction( const Sender: id );
 var
   searchField: NSSearchField absolute Sender;
 begin
@@ -49,6 +66,24 @@ end;
 procedure jumpForwardAction( const Sender: id );
 begin
   SourceEditorManager.JumpForwardClicked( nil );
+end;
+
+function onGetCommandMenu: TMenuItem;
+var
+  menu: TMenuItem;
+
+  function createSearchMenuItem: TMenuItem;
+  begin
+    Result:= TMenuItem.Create( menu );
+    Result.Caption:= 'Search Instantly';
+    Result.OnClick:= @IDEMainFormHandler.doFocusSearchField;
+    Result.ShortCut:= ShortCut( Word('F'), [ssCtrl, ssMeta] );
+  end;
+
+begin
+  menu:= TMenuItem.Create( nil );
+  menu.Add( createSearchMenuItem );
+  Result:= menu;
 end;
 
 
@@ -75,6 +110,19 @@ const
     onAction: @jumpForwardAction;
   );
 
+  commandItemConfig: TCocoaConfigToolBarItemMenu = (
+    identifier: 'MainIDE.Command';
+    iconName: 'ellipsis.circle';
+    title: 'Command';
+    tips: '';
+    bordered: True;
+    onAction: nil;
+
+    showsIndicator: False;
+    menu: nil;
+    onGetMenu: @onGetCommandMenu;
+  );
+
   searchItemConfig: TCocoaConfigToolBarItemSearch = (
     identifier: 'MainIDE.Search';
     priority: NSToolbarItemVisibilityPriorityLow;
@@ -82,7 +130,7 @@ const
     title: 'Search';
     tips: 'Search Instantly';
     bordered: True;
-    onAction: @searchHandle;
+    onAction: @searchAction;
 
     sendWhole: False;
     sendImmediately: False;
@@ -115,12 +163,14 @@ const
       defaultItemsIdentifiers: (
         'MainIDE.Back',
         'MainIDE.Forward',
-        'MainIDE.Search'
+        'MainIDE.Search',
+        'MainIDE.Command'
       );
       allowedItemsIdentifiers: (
         'MainIDE.Back',
         'MainIDE.Forward',
-        'MainIDE.Search'
+        'MainIDE.Search',
+        'MainIDE.Command'
       );
       itemCreator: nil;      // default item Creator
     );
@@ -131,6 +181,7 @@ begin
   mainIDEFormConfig.toolBar.items:= [
     TCocoaToolBarUtils.toClass(backItemConfig),
     TCocoaToolBarUtils.toClass(forwardItemConfig),
+    TCocoaToolBarUtils.toClass(commandItemConfig),
     TCocoaToolBarUtils.toClass(searchItemConfig)
   ];
 
