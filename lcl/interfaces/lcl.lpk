@@ -131,7 +131,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="3" Minor="99"/>
-    <Files Count="547">
+    <Files Count="548">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -2701,6 +2701,10 @@ end;"/>
         <Filename Value="cocoa/cocoaconfig.inc"/>
         <Type Value="Include"/>
       </Item547>
+      <Item548>
+        <Filename Value="cocoa/cocoatoolbar.inc"/>
+        <Type Value="Include"/>
+      </Item548>
     </Files>
     <CompatibilityMode Value="True"/>
     <LazDoc Paths="../../docs/xml/lcl"/>
