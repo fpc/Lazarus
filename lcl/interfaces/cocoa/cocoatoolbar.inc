@@ -724,10 +724,10 @@ var
   cocoaMenu: NSMenu;
 begin
   cocoaItem:= TCocoaToolBarItemMenu.alloc.initWithItemIdentifier( self.identifier );
-  cocoaItem.setShowsIndicator( _showsIndicator );
   self.setItemAttribs( cocoaItem );
   if NOT Assigned(_onAction) then
     cocoaItem.setAction( nil );
+  cocoaItem.setShowsIndicator( _showsIndicator );
 
   if NOT Assigned(_menu) then begin
     if Assigned(_onGetMenu) then
