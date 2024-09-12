@@ -2492,6 +2492,11 @@ begin
   if lclListBox = nil then
     Exit;
 
+  if NOT cocoaTLV.selectingByProgram then begin
+    lclcb.selectionIndexSet.removeAllIndexes;
+    lclcb.selectionIndexSet.addIndexes( tv.selectedRowIndexes );
+  end;
+
   // do not notify about selection changes while clearing
   if Assigned(lclcb.strings) and (lclcb.strings.isClearing) then Exit;
   SendSimpleMessage(lclListBox, LM_SELCHANGE);

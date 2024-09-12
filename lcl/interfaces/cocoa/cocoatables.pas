@@ -1125,15 +1125,8 @@ begin
     Exit;
 
   if Assigned(_processor) then begin
-    if _processor.isInitializing(self) then
-      Exit;
-    _processor.onSelectionChanged( self );
-  end;
-
-  if NOT self.selectingByProgram then begin
-    selectionIndexSet:= self.callback.selectionIndexSet;
-    selectionIndexSet.removeAllIndexes;
-    selectionIndexSet.addIndexes( self.selectedRowIndexes );
+    if NOT _processor.isInitializing(self) then
+      _processor.onSelectionChanged( self );
   end;
 end;
 
@@ -2018,6 +2011,11 @@ begin
 
   selectionIndexSet:= lclcb.selectionIndexSet;
   CompareIndexSets(selectionIndexSet, cocoaTLV.selectedRowIndexes, rm, ad);
+
+  if NOT cocoaTLV.selectingByProgram then begin
+    selectionIndexSet.removeAllIndexes;
+    selectionIndexSet.addIndexes( tv.selectedRowIndexes );
+  end;
 
   NewSel := cocoaTLV.selectedRow();
   sendSelectionChangedMsgToLCL( lclListView, NewSel, ad, rm );
