@@ -1352,9 +1352,9 @@ begin
         Result.RawAsStringPtr^ := 'Error: Unknown';
       rdkPrePrinted: begin
         if rpfClearMultiLine in FFormatFlags then
-          Result.RawAsStringPtr^ := AResValue.AsString
+          Result.RawAsStringPtr^ := ClearMultiline(AResValue.AsString)
         else
-          Result.RawAsStringPtr^ := ClearMultiline(AResValue.AsString);
+          Result.RawAsStringPtr^ := AResValue.AsString;
       end;
       rdkSignedNumVal,
       rdkUnsignedNumVal: begin
