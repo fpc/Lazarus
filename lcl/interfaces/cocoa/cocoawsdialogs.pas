@@ -1236,8 +1236,10 @@ begin
     if lCurExt.compare( NSString.stringWithUTF8String('.*') ) = NSOrderedSame then
       Exit(True);
 
-    lExt := lPath.substringFromIndex( lPath.length - lCurExt.length );
-    if lExt.caseInsensitiveCompare(lCurExt) = NSOrderedSame then Exit(True);
+    if lPath.length >= lCurExt.length then begin
+      lExt := lPath.substringFromIndex( lPath.length - lCurExt.length );
+      if lExt.caseInsensitiveCompare(lCurExt) = NSOrderedSame then Exit(True);
+    end;
   end;
 end;
 
