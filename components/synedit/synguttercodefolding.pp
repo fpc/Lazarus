@@ -477,6 +477,7 @@ end;
 destructor TSynGutterCodeFolding.Destroy;
 begin
   CaretObj.RemoveChangeHandler(@CaretChanged);
+  ViewedTextBuffer.RemoveHanlders(self);
   FreeAndNil(FMarkupInfoCurrentFold);
   FreeAndNil(FMarkupInfoCurrentFoldInternal);
   FreeAndNil(FMouseActionsCollapsed);
