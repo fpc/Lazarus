@@ -941,7 +941,7 @@ var
   vis, sep, tn, Header, we, CurIndentString: String;
   InclVisSect, OldHasLineBreak, CouldSingleLine, ShowMultiLine: Boolean;
   MultiLine: TWatchDisplayFormatMultiline;
-  FldIdx, Len, ForceSingleLineEach, ElemCnt, SepLen: Integer;
+  FldIdx, Len, ForceSingleLineEach, ElemCnt, SepLen, Cnt: Integer;
   RR: TStringBuilderPart;
 begin
   inc(FCurrentMultilineLvl);
@@ -1021,7 +1021,8 @@ begin
     inc(FldIdx);
   if InclVisSect then
     inc(FldIdx);
-  Result.RawPartCount := AResValue.FieldCount * FldIdx;
+  Cnt := AResValue.FieldCount * FldIdx;
+  Result.RawPartCount := Cnt;
   FldIdx := 0;
   Len := 0;
   for FldInfo in AResValue do begin
@@ -1038,6 +1039,10 @@ begin
       if (Resolved.Struct.DataFormat = vdfStructFull) and (FldOwner <> nil) and (FldOwner.DirectFieldCount > 0) and
          (AResValue.StructType in [dstClass, dstInterface, dstObject]) // record has no inheritance
       then begin
+        if FldIdx = Cnt then begin
+          inc(Cnt, 100);
+          Result.RawChangePartCount(Cnt);
+        end;
         Result.RawPartsAsString[FldIdx] := '{' + FldOwner.TypeName + '}';
         Len := Len + Result.PartsTotalLen[FldIdx] + SepLen;
         inc(FldIdx);
@@ -1046,6 +1051,10 @@ begin
     end;
 
     if InclVisSect and (vis <> VisibilityNames[FldInfo.FieldVisibility]) then begin
+      if FldIdx = Cnt then begin
+        inc(Cnt, 100);
+        Result.RawChangePartCount(Cnt);
+      end;
       vis := VisibilityNames[FldInfo.FieldVisibility];
       Result.RawPartsAsString[FldIdx] := vis;
       Len := Len + Result.PartsTotalLen[FldIdx] + SepLen;
@@ -1066,6 +1075,10 @@ begin
       RR.RawParts[0] := PrintWatchValueEx(FldInfo.Field, ADispFormat, ANestLvl, we + UpperCase(FldInfo.FieldName));
     end;
     RR.RawPostfix := '; ';
+    if FldIdx = Cnt then begin
+      inc(Cnt, 100);
+      Result.RawChangePartCount(Cnt);
+    end;
     Result.RawParts[FldIdx] := RR;
     Len := Len + RR.TotalLen + SepLen;
 
