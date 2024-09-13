@@ -518,9 +518,13 @@ var
   ns : NSString;
 begin
   if not Assigned(txt) then Exit;
-  ns := NSStringUtf8(str);
-  txt.setPlaceholderString(ns);
-  ns.release;
+  if str <> '' then begin
+    ns := NSStringUtf8(str);
+    txt.setPlaceholderString(ns);
+    ns.release;
+  end else begin
+    txt.setPlaceholderString(nil);
+  end;
 end;
 
 procedure ObjSetTextHint(obj: NSObject; const str: string);
