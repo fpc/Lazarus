@@ -867,7 +867,7 @@ procedure TDbgControllerStepIntoInstructionCmd.DoResolveEvent(
   var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Finished: boolean);
 begin
   Finished := (AnEvent<>deInternalContinue);
-  if Finished then
+  if Finished and (AnEvent <> deException) then
     AnEvent := deFinishedStep;
 end;
 
@@ -1156,7 +1156,7 @@ begin
     Finished := CompRes = dcsiNewLine;
   end;
 
-  if Finished then
+  if Finished and (AnEvent <> deException) then
     AnEvent := deFinishedStep
   else
   if AnEvent in [deFinishedStep] then
@@ -1226,7 +1226,7 @@ begin
       Finished := not IsAtJumpPad;
   end;
 
-  if Finished then
+  if Finished and (AnEvent <> deException) then
     AnEvent := deFinishedStep
   else
   if AnEvent in [deFinishedStep] then
@@ -1337,7 +1337,7 @@ begin
     Finished := HasReachedEndLineOrSteppedOut(FController.NextOnlyStopOnStartLine);
   end;
 
-  if Finished then
+  if Finished and (AnEvent <> deException) then
     AnEvent := deFinishedStep
   else
   if AnEvent in [deFinishedStep] then
@@ -1371,7 +1371,8 @@ begin
   Finished := (FHiddenBreakpoint = nil) or FHiddenBreakpoint.HasLocation(FThread.GetInstructionPointerRegisterValue);
   if Finished then begin
     RemoveHiddenBreak;
-    AnEvent := deFinishedStep;
+    if (AnEvent <> deException) then
+      AnEvent := deFinishedStep;
   end;
 end;
 
@@ -1436,7 +1437,7 @@ begin
     //  Finished := not IsAtJumpPad;
   end;
 
-  if Finished then
+  if Finished and (AnEvent <> deException) then
     AnEvent := deFinishedStep
   else
   if AnEvent in [deFinishedStep] then
