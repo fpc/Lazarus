@@ -146,15 +146,18 @@ begin
     end;
 
     // ok -> add file to package
-    APackage.BeginUpdate;
-    NewUnitPaths:='';
-    NewIncPaths:='';
-    APackage.AddFileByName(aFilename, NewUnitPaths, NewIncPaths);
-    // extend unit and include search path
-    if not APackage.ExtendUnitSearchPath(NewUnitPaths) then exit;
-    if not APackage.ExtendIncSearchPath(NewIncPaths) then exit;
-    if APackage.Editor<>nil then APackage.Editor.UpdateAll(true);
-    APackage.EndUpdate;
+    APackage.BeginUpdate('TAddFileToAPackageDialog.OkButtonClick');
+    try
+      NewUnitPaths:='';
+      NewIncPaths:='';
+      APackage.AddFileByName(aFilename, NewUnitPaths, NewIncPaths);
+      // extend unit and include search path
+      if not APackage.ExtendUnitSearchPath(NewUnitPaths) then exit;
+      if not APackage.ExtendIncSearchPath(NewIncPaths) then exit;
+      if APackage.Editor<>nil then APackage.Editor.UpdateAll(true);
+    finally
+      APackage.EndUpdate('TAddFileToAPackageDialog.OkButtonClick');
+    end;
 
     ModalResult:=mrOk;
   finally

@@ -517,7 +517,7 @@ begin
   // check if package is already loaded
   Result:=PackageGraph.FindPackageWithFilename(AFilename);
   if (Result<>nil) then exit;
-  if not FileExistsUTF8(AFilename) then
+  if not FileExists(AFilename) then
     PrintErrorAndHalt(ErrorLoadPackageFailed, 'Package file not found: "' + AFilename + '"');
 
   Result:=TLazPackage.Create;
@@ -533,8 +533,13 @@ begin
   if not IsValidPkgName(Result.Name) then
     PrintErrorAndHalt(ErrorPackageNameInvalid,
       Format(lisPkgMangThePackageNameOfTheFileIsInvalid, [Result.Name, LineEnding, Result.Filename]));
+
   // check if Package with same name is already loaded
   ConflictPkg:=PackageGraph.FindPackageWithName(Result.Name,nil);
+  if not PackageGraph.PackageCanBeReplaced(ConflictPkg,Result) then
+    PrintErrorAndHalt(ErrorLoadPackageFailed,
+      'Cannot replace loaded package '+ConflictPkg.IDAsString+' with '+Result.IDAsString+' from "'+Result.Filename+'"');
+
   if ConflictPkg<>nil then begin
     // replace package
     PackageGraph.ReplacePackage(ConflictPkg,Result);

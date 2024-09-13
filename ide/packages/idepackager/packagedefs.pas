@@ -546,7 +546,7 @@ type
     FStorePathDelim: TPathDelimSwitch;
     FTopologicalLevel: integer;
     FTranslated: string;
-    FUpdateLock: integer;
+    FUpdateLocks: TStringArray;
     FUsageOptions: TPkgAdditionalCompilerOptions;
     FUserIgnoreChangeStamp: integer;
     FUserReadOnly: boolean;
@@ -613,8 +613,10 @@ type
     procedure BackupOptions;
     procedure RestoreOptions;
     // modified
-    procedure BeginUpdate;
-    procedure EndUpdate;
+    procedure BeginUpdate(const Reference: string);
+    procedure EndUpdate(const Reference: string);
+    function IsUpdateLocked: boolean;
+    procedure WriteUpdateLocks(const Prefix: string);
     procedure LockModified;
     procedure UnlockModified;
     function ReadOnly: boolean; override;
@@ -2676,6 +2678,11 @@ destructor TLazPackage.Destroy;
 var
   pod: TPkgOutputDir;
 begin
+  if IsUpdateLocked then
+  begin
+    WriteUpdateLocks('TLazPackage.Destroy');
+    raise Exception.Create('TLazPackage.Destroy 20240913140628');
+  end;
   Include(FFlags,lpfDestroying);
   Clear;
   for pod in TPkgOutputDir do
@@ -2712,19 +2719,48 @@ begin
   CompilerOptions.Modified:=FOptionsBackup.CompilerOptions.Modified;
 end;
 
-procedure TLazPackage.BeginUpdate;
+procedure TLazPackage.BeginUpdate(const Reference: string);
 begin
-  inc(FUpdateLock);
+  Insert(Reference,FUpdateLocks,length(FUpdateLocks));
   FDefineTemplates.BeginUpdate;
   FSourceDirectories.BeginUpdate;
 end;
 
-procedure TLazPackage.EndUpdate;
+procedure TLazPackage.EndUpdate(const Reference: string);
+var
+  l: SizeInt;
 begin
-  if FUpdateLock=0 then RaiseGDBException('TLazPackage.EndUpdate');
-  dec(FUpdateLock);
+  l:=length(FUpdateLocks);
+  if l=0 then
+    raise Exception.Create('Error: (lazarus) TLazPackage.EndUpdate 20240913135959');
+  dec(l);
+  if FUpdateLocks[l]<>Reference then
+  begin
+    WriteUpdateLocks('TLazPackage.EndUpdate');
+    debugln(['Error: (lazarus) TLazPackage.EndUpdate cannot remove reference "'+Reference+'"']);
+    raise Exception.Create('TLazPackage.EndUpdate 20240913140039 cannot remove reference "'+Reference+'"');
+  end;
+
+  SetLength(FUpdateLocks,l);
   FDefineTemplates.EndUpdate;
   FSourceDirectories.EndUpdate;
+end;
+
+function TLazPackage.IsUpdateLocked: boolean;
+begin
+  Result:=length(FUpdateLocks)>0;
+end;
+
+procedure TLazPackage.WriteUpdateLocks(const Prefix: string);
+var
+  l, i: Integer;
+begin
+  l:=length(FUpdateLocks);
+  if l=0 then
+    debugln(['TLazPackage.WriteUpdateLocks ',Prefix,' ',IDAsString,' not locked'])
+  else
+    for i:=0 to l-1 do
+      debugln(['Info: (lazarus) ',Prefix,' '+IDAsString+' UpdateLocks[',i,']="',FUpdateLocks[i],'"']);
 end;
 
 procedure TLazPackage.Clear;
@@ -2903,66 +2939,69 @@ begin
   Flags:=Flags+[lpfLoading];
   FileVersion:=XMLConfig.GetValue(Path+'Version',0);
   OldFilename:=Filename;
-  BeginUpdate;
-  Clear;
-  Filename:=OldFilename;
-  LockModified;
-  LoadFlags(Path);
-  StorePathDelim:=CheckPathDelim(XMLConfig.GetValue(Path+'PathDelim/Value','/'),PathDelimChanged);
-  Name:=XMLConfig.GetValue(Path+'Name/Value','');
-  FPackageType:=LazPackageTypeIdentToType(XMLConfig.GetValue(Path+'Type/Value',
-                                          LazPackageTypeIdents[lptRunTime]));
-  FBuildMethod:=StringToBuildMethod(XMLConfig.GetValue(Path+'BuildMethod/Value',
-                                    SBuildMethod[bmLazarus]));
-  FAddToProjectUsesSection:=XMLConfig.GetValue(Path+'AddToProjectUsesSection/Value',
-    FileVersion<4); // since version 4 the default is false
-  FAuthor:=XMLConfig.GetValue(Path+'Author/Value','');
-  FAutoUpdate:=NameToAutoUpdatePolicy(
-                                XMLConfig.GetValue(Path+'AutoUpdate/Value',''));
-  if FileVersion<2 then
-    CompilerOptions.LoadFromXMLConfig(XMLConfig,'CompilerOptions/')
-  else
-    CompilerOptions.LoadFromXMLConfig(XMLConfig,Path+'CompilerOptions/');
-  FDescription:=XMLConfig.GetValue(Path+'Description/Value','');
-  FLicense:=XMLConfig.GetValue(Path+'License/Value','');
-  PkgVersionLoadFromXMLConfig(FVersion,XMLConfig,Path+'Version/',FileVersion);
-  FIconFile:=SwitchPathDelims(XMLConfig.GetValue(Path+'IconFile/Value',''),
-                              PathDelimChanged);
-  OutputStateFile:=SwitchPathDelims(
-                            XMLConfig.GetValue(Path+'OutputStateFile/Value',''),
-                            PathDelimChanged);
-  FFPDocPaths:=SwitchPathDelims(XMLConfig.GetValue(Path+'LazDoc/Paths',''),
-                            PathDelimChanged);
-  FFPDocPackageName:=XMLConfig.GetValue(Path+'LazDoc/PackageName','');
-  // i18n
-  if FileVersion<3 then begin
-    FPOOutputDirectory := SwitchPathDelims(
-              xmlconfig.GetValue(Path+'RST/OutDir', ''),PathDelimChanged);
-    EnableI18N := FPOOutputDirectory <> '';
-  end else begin
-    EnableI18N := xmlconfig.GetValue(Path+'i18n/EnableI18N/Value', False);
-    FPOOutputDirectory := SwitchPathDelims(
-             xmlconfig.GetValue(Path+'i18n/OutDir/Value', ''),PathDelimChanged);
-  end;
-  EnableI18NForLFM:=xmlconfig.GetValue(Path+'i18n/EnableI18NForLFM/Value', false);
-
-  LoadFiles(Path+'Files/',FFiles);
-  UpdateSourceDirectories;
-  LoadPkgDependencyList(XMLConfig,Path+'RequiredPkgs/',
-                        FFirstRequiredDependency,pddRequires,Self,false,false);
-  FUsageOptions.LoadFromXMLConfig(XMLConfig,Path+'UsageOptions/',
-                                  PathDelimChanged);
-  fPublishOptions.LoadFromXMLConfig(XMLConfig,Path+'PublishOptions/',
-                                    PathDelimChanged);
-  LoadStringList(XMLConfig,FProvides,Path+'Provides/');
-  Config:=TXMLOptionsStorage.Create(XMLConfig);
+  BeginUpdate('TLazPackage.LoadFromXMLConfig');
   try
-    TConfigMemStorage(CustomOptions).LoadFromConfig(Config,Path+'CustomOptions/');
+    Clear;
+    Filename:=OldFilename;
+    LockModified;
+    LoadFlags(Path);
+    StorePathDelim:=CheckPathDelim(XMLConfig.GetValue(Path+'PathDelim/Value','/'),PathDelimChanged);
+    Name:=XMLConfig.GetValue(Path+'Name/Value','');
+    FPackageType:=LazPackageTypeIdentToType(XMLConfig.GetValue(Path+'Type/Value',
+                                            LazPackageTypeIdents[lptRunTime]));
+    FBuildMethod:=StringToBuildMethod(XMLConfig.GetValue(Path+'BuildMethod/Value',
+                                      SBuildMethod[bmLazarus]));
+    FAddToProjectUsesSection:=XMLConfig.GetValue(Path+'AddToProjectUsesSection/Value',
+      FileVersion<4); // since version 4 the default is false
+    FAuthor:=XMLConfig.GetValue(Path+'Author/Value','');
+    FAutoUpdate:=NameToAutoUpdatePolicy(
+                                  XMLConfig.GetValue(Path+'AutoUpdate/Value',''));
+    if FileVersion<2 then
+      CompilerOptions.LoadFromXMLConfig(XMLConfig,'CompilerOptions/')
+    else
+      CompilerOptions.LoadFromXMLConfig(XMLConfig,Path+'CompilerOptions/');
+    FDescription:=XMLConfig.GetValue(Path+'Description/Value','');
+    FLicense:=XMLConfig.GetValue(Path+'License/Value','');
+    PkgVersionLoadFromXMLConfig(FVersion,XMLConfig,Path+'Version/',FileVersion);
+    FIconFile:=SwitchPathDelims(XMLConfig.GetValue(Path+'IconFile/Value',''),
+                                PathDelimChanged);
+    OutputStateFile:=SwitchPathDelims(
+                              XMLConfig.GetValue(Path+'OutputStateFile/Value',''),
+                              PathDelimChanged);
+    FFPDocPaths:=SwitchPathDelims(XMLConfig.GetValue(Path+'LazDoc/Paths',''),
+                              PathDelimChanged);
+    FFPDocPackageName:=XMLConfig.GetValue(Path+'LazDoc/PackageName','');
+    // i18n
+    if FileVersion<3 then begin
+      FPOOutputDirectory := SwitchPathDelims(
+                xmlconfig.GetValue(Path+'RST/OutDir', ''),PathDelimChanged);
+      EnableI18N := FPOOutputDirectory <> '';
+    end else begin
+      EnableI18N := xmlconfig.GetValue(Path+'i18n/EnableI18N/Value', False);
+      FPOOutputDirectory := SwitchPathDelims(
+               xmlconfig.GetValue(Path+'i18n/OutDir/Value', ''),PathDelimChanged);
+    end;
+    EnableI18NForLFM:=xmlconfig.GetValue(Path+'i18n/EnableI18NForLFM/Value', false);
+
+    LoadFiles(Path+'Files/',FFiles);
+    UpdateSourceDirectories;
+    LoadPkgDependencyList(XMLConfig,Path+'RequiredPkgs/',
+                          FFirstRequiredDependency,pddRequires,Self,false,false);
+    FUsageOptions.LoadFromXMLConfig(XMLConfig,Path+'UsageOptions/',
+                                    PathDelimChanged);
+    fPublishOptions.LoadFromXMLConfig(XMLConfig,Path+'PublishOptions/',
+                                      PathDelimChanged);
+    LoadStringList(XMLConfig,FProvides,Path+'Provides/');
+    Config:=TXMLOptionsStorage.Create(XMLConfig);
+    try
+      TConfigMemStorage(CustomOptions).LoadFromConfig(Config,Path+'CustomOptions/');
+    finally
+      Config.Free;
+    end;
   finally
-    Config.Free;
+    EndUpdate('TLazPackage.LoadFromXMLConfig');
   end;
 
-  EndUpdate;
   Modified:=false;
   UnlockModified;
   Flags:=Flags-[lpfLoading];

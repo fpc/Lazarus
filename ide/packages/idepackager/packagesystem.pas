@@ -1047,7 +1047,7 @@ begin
       PkgLink.LPKFileDateValid:=true;
       XMLConfig:=TXMLConfig.Create(nil);
       NewPackage:=TLazPackage.Create;
-      NewPackage.BeginUpdate;
+      NewPackage.BeginUpdate('TLazPackageGraph.OpenDependencyWithPackageLink');
       NewPackage.Filename:=AFilename;
       NewPackage.OnModifySilently := @PkgModify;
       Result:=LoadXMLConfigFromCodeBuffer(AFilename,XMLConfig,
@@ -1069,20 +1069,27 @@ begin
       DebugLn('Error: (lazarus) package file "'+AFilename+'" and name "'+NewPackage.Name+'" mismatch.');
       exit(mrCancel);
     end;
+    OldPackage:=FindPackageWithName(NewPackage.Name,NewPackage);
+    if (OldPackage<>nil) and not PackageCanBeReplaced(OldPackage,NewPackage) then
+    begin
+      debugln('Error: (lazarus) Open dependency ['+Dependency.PackageName+']: Failed to replace "'+OldPackage.Filename+'" with "'+NewPackage.Filename+'"');
+      CTDumpStack;
+      exit(mrCancel);
+    end;
+
     // ok
     if pvPkgSearch in Verbosity then
-      debugln('Info: (lazarus) Open dependency ['+Dependency.PackageName+']: Success: "'+NewPackage.Filename+'"');
+      debugln('Info: (lazarus) Open dependency ['+Dependency.PackageName+']: Successfully loaded "'+NewPackage.Filename+'"');
     Result:=mrOk;
     Dependency.RequiredPackage:=NewPackage;
     Dependency.LoadPackageResult:=lprSuccess;
-    OldPackage:=FindPackageWithName(NewPackage.Name,NewPackage);
     if OldPackage=nil then
       AddPackage(NewPackage)
     else
       ReplacePackage(OldPackage,NewPackage);
   finally
     if Assigned(NewPackage) then
-      NewPackage.EndUpdate;
+      NewPackage.EndUpdate('TLazPackageGraph.OpenDependencyWithPackageLink');
     if Result<>mrOk then
       NewPackage.Free;
     EndUpdate;
@@ -2200,75 +2207,77 @@ begin
   FTree.Add(APackage);
   FItems.Add(APackage);
 
-  if IsCompiledInBasePackage(APackage.Name) then begin
-    APackage.Installed:=pitStatic;
-    APackage.AutoInstall:=pitStatic;
-    if SysUtils.CompareText(APackage.Name,'FCL')=0 then begin
-      SetBasePackage(FFCLPackage);
-      APackage.SetAllComponentPriorities(FCLCompPriority);
-    end
-    else if SysUtils.CompareText(APackage.Name,'LazUtils')=0 then
-      SetBasePackage(FLazUtilsPackage)
-    else if SysUtils.CompareText(APackage.Name,'BuildIntf')=0 then begin
-      SetBasePackage(FBuildIntfPackage);
-      APackage.SetAllComponentPriorities(IDEIntfCompPriority);
-    end
-    else if SysUtils.CompareText(APackage.Name,'LCLBase')=0 then begin
-      SetBasePackage(FLCLBasePackage);
-      APackage.SetAllComponentPriorities(LCLCompPriority);
-    end
-    else if SysUtils.CompareText(APackage.Name,'LCL')=0 then begin
-      SetBasePackage(FLCLPackage);
-      APackage.SetAllComponentPriorities(LCLCompPriority);
-    end
-    else if SysUtils.CompareText(APackage.Name,'IDEIntf')=0 then begin
-      SetBasePackage(FIDEIntfPackage);
-      APackage.SetAllComponentPriorities(IDEIntfCompPriority);
-    end
-    else if SysUtils.CompareText(APackage.Name,'LazDebuggerIntf')=0 then
-      SetBasePackage(FLazDebuggerIntfPackage)
-    else if SysUtils.CompareText(APackage.Name,'DebuggerIntf')=0 then
-      SetBasePackage(FDebuggerIntfPackage)
-    else if SysUtils.CompareText(APackage.Name,'LazDebuggerGdbmi')=0 then
-      SetBasePackage(FLazDebuggerGdbmiPackage)
-    else if SysUtils.CompareText(APackage.Name,'IdeDebugger')=0 then
-      SetBasePackage(FIdeDebuggerPackage)
-    else if SysUtils.CompareText(APackage.Name,'IdeUtilsPkg')=0 then
-      SetBasePackage(FIdeUtilsPkgPackage)
-    else if SysUtils.CompareText(APackage.Name,'IdeConfig')=0 then
-      SetBasePackage(FIdeConfigPackage)
-    else if SysUtils.CompareText(APackage.Name,'IdePackagerConfig')=0 then
-      SetBasePackage(FIdePackagerPackage)
-    else if SysUtils.CompareText(APackage.Name,'IdeProject')=0 then
-      SetBasePackage(FIdeProjectPackage)
-    else if SysUtils.CompareText(APackage.Name,'SynEdit')=0 then
-      SetBasePackage(FSynEditPackage)
-    else if SysUtils.CompareText(APackage.Name,'LazControls')=0 then
-      SetBasePackage(FLazControlsPackage)
-    else if SysUtils.CompareText(APackage.Name,'CodeTools')=0 then
-      SetBasePackage(FCodeToolsPackage);
-    if FLazarusBasePackages.IndexOf(APackage)<0 then
-      FLazarusBasePackages.Add(APackage);
-  end;
+  APackage.BeginUpdate('TLazPackageGraph.AddPackage');
+  try
+    if IsCompiledInBasePackage(APackage.Name) then begin
+      APackage.Installed:=pitStatic;
+      APackage.AutoInstall:=pitStatic;
+      if SysUtils.CompareText(APackage.Name,'FCL')=0 then begin
+        SetBasePackage(FFCLPackage);
+        APackage.SetAllComponentPriorities(FCLCompPriority);
+      end
+      else if SysUtils.CompareText(APackage.Name,'LazUtils')=0 then
+        SetBasePackage(FLazUtilsPackage)
+      else if SysUtils.CompareText(APackage.Name,'BuildIntf')=0 then begin
+        SetBasePackage(FBuildIntfPackage);
+        APackage.SetAllComponentPriorities(IDEIntfCompPriority);
+      end
+      else if SysUtils.CompareText(APackage.Name,'LCLBase')=0 then begin
+        SetBasePackage(FLCLBasePackage);
+        APackage.SetAllComponentPriorities(LCLCompPriority);
+      end
+      else if SysUtils.CompareText(APackage.Name,'LCL')=0 then begin
+        SetBasePackage(FLCLPackage);
+        APackage.SetAllComponentPriorities(LCLCompPriority);
+      end
+      else if SysUtils.CompareText(APackage.Name,'IDEIntf')=0 then begin
+        SetBasePackage(FIDEIntfPackage);
+        APackage.SetAllComponentPriorities(IDEIntfCompPriority);
+      end
+      else if SysUtils.CompareText(APackage.Name,'LazDebuggerIntf')=0 then
+        SetBasePackage(FLazDebuggerIntfPackage)
+      else if SysUtils.CompareText(APackage.Name,'DebuggerIntf')=0 then
+        SetBasePackage(FDebuggerIntfPackage)
+      else if SysUtils.CompareText(APackage.Name,'LazDebuggerGdbmi')=0 then
+        SetBasePackage(FLazDebuggerGdbmiPackage)
+      else if SysUtils.CompareText(APackage.Name,'IdeDebugger')=0 then
+        SetBasePackage(FIdeDebuggerPackage)
+      else if SysUtils.CompareText(APackage.Name,'IdeUtilsPkg')=0 then
+        SetBasePackage(FIdeUtilsPkgPackage)
+      else if SysUtils.CompareText(APackage.Name,'IdeConfig')=0 then
+        SetBasePackage(FIdeConfigPackage)
+      else if SysUtils.CompareText(APackage.Name,'IdePackagerConfig')=0 then
+        SetBasePackage(FIdePackagerPackage)
+      else if SysUtils.CompareText(APackage.Name,'IdeProject')=0 then
+        SetBasePackage(FIdeProjectPackage)
+      else if SysUtils.CompareText(APackage.Name,'SynEdit')=0 then
+        SetBasePackage(FSynEditPackage)
+      else if SysUtils.CompareText(APackage.Name,'LazControls')=0 then
+        SetBasePackage(FLazControlsPackage)
+      else if SysUtils.CompareText(APackage.Name,'CodeTools')=0 then
+        SetBasePackage(FCodeToolsPackage);
+      if FLazarusBasePackages.IndexOf(APackage)<0 then
+        FLazarusBasePackages.Add(APackage);
+    end;
 
-  // open all required dependencies
-  Dependency:=APackage.FirstRequiredDependency;
-  while Dependency<>nil do begin
-    OpenDependency(Dependency,false);
-    Dependency:=Dependency.NextRequiresDependency;
+    // open all required dependencies
+    Dependency:=APackage.FirstRequiredDependency;
+    while Dependency<>nil do begin
+      if OpenDependency(Dependency,false)<>lprSuccess then
+        debugln(['Warning: (lazarus) TLazPackageGraph.AddPackage failed to open: ',Dependency.AsString(true,false)]);
+      Dependency:=Dependency.NextRequiresDependency;
+    end;
+
+    // update all missing dependencies
+    UpdateBrokenDependenciesToPackage(APackage);
+
+    // activate define templates
+    APackage.DefineTemplates.Active:=true;
+    if Assigned(OnAddPackage) then
+      OnAddPackage(APackage);
+  finally
+    APackage.EndUpdate('TLazPackageGraph.AddPackage');
   end;
-  
-  // update all missing dependencies
-  UpdateBrokenDependenciesToPackage(APackage);
-  
-  // activate define templates
-  if Assigned(APackage.DefineTemplates) then
-    APackage.DefineTemplates.Active:=true
-  else   // By Juha:
-    // Happened when an old package with the same name was replaced. Cannot reproduce.
-    DebugLn(['TLazPackageGraph.AddPackage: APackage.DefineTemplates=Nil']);
-  if Assigned(OnAddPackage) then
-    OnAddPackage(APackage);
   EndUpdate;
 end;
 
@@ -2305,6 +2314,11 @@ var
 begin
   if pvPkgSearch in Verbosity then
     debugln(['Info: (lazarus) replacing package "'+OldPackage.Filename+'" with "'+NewPackage.Filename+'"']);
+  if OldPackage.IsUpdateLocked then
+  begin
+    OldPackage.WriteUpdateLocks('TLazPackageGraph.ReplacePackage');
+    raise Exception.Create('20240913140848');
+  end;
   BeginUpdate(true);
   // save flags
   OldInstalled:=OldPackage.Installed;
@@ -6010,6 +6024,13 @@ begin
   if SysUtils.CompareText(OldPackage.Name,NewPackage.Name)<>0 then
     RaiseGDBException('TLazPackageGraph.PackageCanBeReplaced');
 
+  if OldPackage.IsUpdateLocked then
+  begin
+    OldPackage.WriteUpdateLocks('TLazPackageGraph.PackageCanBeReplaced Old');
+    debugln(['Error: (lazarus) TLazPackageGraph.PackageCanBeReplaced ',OldPackage.IDAsString,' IsUpdateLocked']);
+    exit(false);
+  end;
+
   Result:=true;
 end;
 
@@ -6159,8 +6180,9 @@ begin
       //debugln(['TLazPackageGraph.OpenDependency checking preferred Prefer=',PreferredFilename]);
       if (PreferredFilename<>'')
       and ((Dependency.RequiredPackage=nil)
-        or ((Dependency.RequiredPackage.FindUsedByDepPrefer(Dependency)=nil)
-            and (CompareFilenames(PreferredFilename,Dependency.RequiredPackage.Filename)<>0)))
+        or ((not Dependency.RequiredPackage.IsUpdateLocked)
+            and (CompareFilenames(PreferredFilename,Dependency.RequiredPackage.Filename)<>0))
+            and (Dependency.RequiredPackage.FindUsedByDepPrefer(Dependency)=nil) )
       then begin
         if pvPkgSearch in Verbosity then
           debugln(['Info: (lazarus) Open dependency ['+Dependency.PackageName+']: trying resolved preferred filename: "'+PreferredFilename+'" ...']);
@@ -6402,31 +6424,34 @@ begin
     // -> create a broken package
     BrokenPackage:=TLazPackage.CreateAndClear;
     with BrokenPackage do begin
-      BeginUpdate;
-      Missing:=true;
-      UserReadOnly:=true;
-      Name:=Dependency.PackageName;
-      Filename:='';
-      Version.SetValues(0,0,0,0);
-      Author:='?';
-      License:='?';
-      AutoUpdate:=pupManually;
-      Description:=lisPkgSysThisPackageIsInstalledButTheLpkFileWasNotFound;
-      PackageType:=lptDesignTime;
-      Installed:=pitStatic;
-      AutoInstall:=pitNope;
-      if IsBasePkg then
-        AutoInstall:=pitStatic
-      else
+      BeginUpdate('TLazPackageGraph.OpenInstalledDependency');
+      try
+        Missing:=true;
+        UserReadOnly:=true;
+        Name:=Dependency.PackageName;
+        Filename:='';
+        Version.SetValues(0,0,0,0);
+        Author:='?';
+        License:='?';
+        AutoUpdate:=pupManually;
+        Description:=lisPkgSysThisPackageIsInstalledButTheLpkFileWasNotFound;
+        PackageType:=lptDesignTime;
+        Installed:=pitStatic;
         AutoInstall:=pitNope;
-      CompilerOptions.UnitOutputDirectory:='';
+        if IsBasePkg then
+          AutoInstall:=pitStatic
+        else
+          AutoInstall:=pitNope;
+        CompilerOptions.UnitOutputDirectory:='';
 
-      // add lazarus registration unit path
-      UsageOptions.UnitPath:='';
+        // add lazarus registration unit path
+        UsageOptions.UnitPath:='';
 
-      Modified:=false;
-      OnModifySilently:=@PkgModify;
-      EndUpdate;
+        Modified:=false;
+        OnModifySilently:=@PkgModify;
+      finally
+        EndUpdate('TLazPackageGraph.OpenInstalledDependency');
+      end;
     end;
     AddPackage(BrokenPackage);
     //DebugLn('TLazPackageGraph.OpenInstalledDependency ',BrokenPackage.IDAsString,' ',dbgs(ord(BrokenPackage.AutoInstall)));
