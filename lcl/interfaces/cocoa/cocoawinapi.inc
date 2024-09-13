@@ -963,8 +963,8 @@ begin
     Exit;
 
   control := ctx.control;
-  if Assigned(control) then
-    is3dClassicStyle := csParentBackground in control.ControlStyle
+  if Assigned(control) and (control is TCustomPanel) then
+    is3dClassicStyle := CocoaConfigPanel.classicFrame3d
   else
     is3dClassicStyle := true;
 

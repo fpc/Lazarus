@@ -295,6 +295,11 @@ type
   end;
 
 type
+  TCocoaConfigPanel = record
+    classicFrame3d: Boolean;
+  end;
+
+type
   TCocoaConfigNotification = record
     alwaysPresent: Boolean;
   end;

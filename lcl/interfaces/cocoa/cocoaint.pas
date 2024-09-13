@@ -33,7 +33,7 @@ uses
   CocoaScrollers, CocoaWSScrollers,
   CocoaWSClipboard, CocoaTextEdits,
   LMessages, LCLProc, LCLIntf, LCLType,
-  Controls, Forms, Themes, Menus,
+  Controls, Forms, Themes, Menus, ExtCtrls,
   IntfGraphics, Graphics;
 
 type

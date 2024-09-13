@@ -151,6 +151,13 @@ var
   );
 
 var
+  CocoaConfigPanel: TCocoaConfigPanel = (
+    // False: Frame3dBox() for TCustomPanel
+    // True:  Frame3dClassic() for TCustomPanel
+    classicFrame3d: False;
+  );
+
+var
   CocoaConfigNotification: TCocoaConfigNotification = (
     // by default on macOS, Notification is only Presented when the APP is
     // in the background.
