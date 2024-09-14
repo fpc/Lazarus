@@ -6735,18 +6735,23 @@ The function variant creates a new <var>TBitmap</var> instance which is used as
 the return value. It calls the overloaded variant to get the content in the 
 TBitmap instance. The return value must be managed by the calling routine; the 
 instance must be explicitly freed to avoid a memory leak. The return value can 
-be <b>Nil</b> if an Exception was raised and handled in the method.
+be <b>Nil</b> if an Exception was raised and handled in the method. This 
+variant is compatible with the signature used in the Delphi VCL; the overloaded 
+procedure leads to clearer code and avoids a potential memory leak.
 </p>
 <p>
 For example:
 </p>
 <code>
 procedure TForm1.Button1Click(Sender: TObject);
+var
+  bmp: TBitmap;
 begin
+  bmp := GetFormImage;
   try
-    Image1.Picture.Assign(GetFormImage);
+    Image1.Picture.Assign(bmp);
   finally
-    Image1.Picture.Free; // to avoid a memory leak
+    bmp.Free;
   end;
 end;
 </code>
