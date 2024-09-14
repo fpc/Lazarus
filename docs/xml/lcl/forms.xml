@@ -6693,30 +6693,84 @@ non-zero value.
 </element>
 
 <element name="TCustomForm.GetFormImage">
-<short>Makes a Bitmap image with the Form content.</short>
+<short>
+Gets the display content for the form as an image.
+</short>
 <descr>
 <p>
-<var>GetFormImage</var> is a <var>TBitmap</var> function used to get a bitmap 
-image with the contents for the form instance. The return value must be 
-managed by the caller to ensure that the image is freed.
+<var>GetFormImage</var> is an overloaded method used to capture the display 
+content for the current form instance as an image type. The overloaded variants 
+allow the image to be passed as a <var>TCustomBitmap</var> argument, or to 
+create a <var>TBitmap</var> instance used as the return value.
 </p>
 <p>
-GetFormImage sets the size for the TBitmap instance to the values in the 
-<var>ClientWidth</var> and <var>ClientHeight</var> properties. The 
-<var>GetWindowRect</var> routine in <file>lclintf</file> is called to get the 
-display rectangle for the form Handle. The <var>PaintTo</var> method is 
-called to draw the rectangle to the <var>Canvas</var> in the bitmap.
+The procedure variant includes the <var>ABitmap</var> argument with the bitmap 
+instance where the image for the form is stored. It sets the size of the bitmap 
+to the ClientWidth and ClientHeight for the form instance. The Handle for the 
+form is used to get the display rectangle for its window, and it is drawn to 
+the Canvas in the bitmap instance. This variant allows one of the other 
+supported images formats (TCustomBitmap descendants like TJpegImage, 
+TPortableNetworkGraphic, et. al.) to be passed in The ABitmap argument. ABitmap 
+is allocated and freed in the calling routine.
 </p>
 <p>
-The return value can be <b>Nil</b> if an <var>Exception</var> was raised and 
-handled in the method.
+For example:
 </p>
+<code>
+procedure TForm1.Button1Click(Sender: TObject);
+var
+  jpg: TJpegImage;
+begin
+  jpg := TJpegImage.Create;
+  try
+    GetFormImage(jpg);
+    Image1.Picture.Assign(jpg);
+  finally
+    jpg.Free;
+  end;
+end;
+</code>
+<p>
+The function variant creates a new <var>TBitmap</var> instance which is used as 
+the return value. It calls the overloaded variant to get the content in the 
+TBitmap instance. The return value must be managed by the calling routine; the 
+instance must be explicitly freed to avoid a memory leak. The return value can 
+be <b>Nil</b> if an Exception was raised and handled in the method.
+</p>
+<p>
+For example:
+</p>
+<code>
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+  try
+    Image1.Picture.Assign(GetFormImage);
+  finally
+    Image1.Picture.Free; // to avoid a memory leak
+  end;
+end;
+</code>
 </descr>
+<version>
+Modified in LCL version 3.6 to include the overloaded variant which stores the 
+image to an existing bitmap instance.
+</version>
 <seealso>
+<link id="TCustomForm.ClientHeight"/>
+<link id="TCustomForm.ClientWidth"/>
+<link id="#lcl.graphics.TCustomBitmap">TCustomBitmap</link>
+<link id="#lcl.graphics.TBitmap">TBitmap</link>
+<link id="#lcl.graphics.TJpegImage">TJpegImage</link>
+<link id="#lcl.graphics.TPortableNetworkGraphic">TTPortableNetworkGraphic</link>
+<link id="#lcl.controls.TWinControl.GetClientOrigin">TWinControl.GetClientOrigin</link>
+<link id="#lcl.controls.TWinControl.PaintTo">TWinControl.PaintTo</link>
+<link id="#lcl.lclintf.GetWindowRect">GetWindowRect</link>
 </seealso>
 </element>
 <element name="TCustomForm.GetFormImage.Result">
-<short>Bitmap created in the method with the image for the form.</short>
+<short>
+Bitmap created in the method with the image for the form.
+</short>
 </element>
 
 <element name="TCustomForm.GetRolesForControl">
