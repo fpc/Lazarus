@@ -328,7 +328,7 @@ type
                                 ): string; virtual;
     function GetDefaultMainSourceFileName: string; virtual;
     function GetDefaultWriteConfigFilePath: string; virtual; abstract;
-    function CanBeDefaulForProject: boolean; virtual;
+    function CanBeDefaultForProject: boolean; virtual;
     function NeedsLinkerOpts: boolean;
     function HasCommands: boolean; // true if there is at least one commad to execute
     function HasCompilerCommand: boolean; virtual;
@@ -1867,7 +1867,7 @@ begin
   Result:='';
 end;
 
-function TBaseCompilerOptions.CanBeDefaulForProject: boolean;
+function TBaseCompilerOptions.CanBeDefaultForProject: boolean;
 begin
   Result:=false;
 end;
