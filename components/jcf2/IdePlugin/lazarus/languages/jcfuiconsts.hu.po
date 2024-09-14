@@ -651,9 +651,17 @@ msgstr "Extra behúzás a begin/end számára eljárásokban"
 msgid "Extra Indent for Case...Else blocks"
 msgstr "Extra behúzás a Case...Else számára"
 
+#: jcfuiconsts.lisindentextraindentforcaselabels
+msgid "Extra Indent for Case labels"
+msgstr ""
+
 #: jcfuiconsts.lisindentextraindentforifelseblocks
 msgid "Extra Indent for If...Else blocks"
 msgstr "Extra behúzás az If...Else számára"
+
+#: jcfuiconsts.lisindentextraindentforinterfaceguid
+msgid "Extra Indent for interface guid"
+msgstr ""
 
 #: jcfuiconsts.lisindentindentation
 msgid "Indentation"

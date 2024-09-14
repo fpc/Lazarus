@@ -107,10 +107,12 @@ resourcestring
     +'comments with code elsewhere';
   lisIndentExtraIndentForIfElseBlocks = 'Extra Indent for If...Else blocks';
   lisIndentExtraIndentForCaseElseBlocks = 'Extra Indent for Case...Else blocks';
+  lisIndentExtraIndentForCaseLabels = 'Extra Indent for Case labels';
   lisIndentIndentForProceduresInLibrary = 'Indent for procedures in program/library';
   lisIndentIndentForProcedureBody = 'Indent for procedure body';
   lisIndentIndentNestedTypes = 'Indent nested types';
   lisIndentIndentVarAndConstInClass = 'Indent var and const in class';
+  lisIndentExtraIndentForInterfaceGuid = 'Extra Indent for interface guid';
 
   //Blank lines tab
   lisBLBlankLines = 'Blank Lines';

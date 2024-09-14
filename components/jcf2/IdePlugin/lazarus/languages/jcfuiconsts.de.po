@@ -649,9 +649,17 @@ msgstr "Zusätzliche Einrückung für Begin/End in Prozeduren"
 msgid "Extra Indent for Case...Else blocks"
 msgstr "Zusätzliche Einrückung bei Case..Else-Blöcken"
 
+#: jcfuiconsts.lisindentextraindentforcaselabels
+msgid "Extra Indent for Case labels"
+msgstr ""
+
 #: jcfuiconsts.lisindentextraindentforifelseblocks
 msgid "Extra Indent for If...Else blocks"
 msgstr "Zusätzliche Einrückung bei If..Else-Blöcken"
+
+#: jcfuiconsts.lisindentextraindentforinterfaceguid
+msgid "Extra Indent for interface guid"
+msgstr ""
 
 #: jcfuiconsts.lisindentindentation
 msgid "Indentation"

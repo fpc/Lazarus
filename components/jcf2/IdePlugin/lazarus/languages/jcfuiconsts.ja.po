@@ -650,9 +650,17 @@ msgstr "手続き内での begin/end にインデントを追加する"
 msgid "Extra Indent for Case...Else blocks"
 msgstr "case...else ブロックにインデントを追加する"
 
+#: jcfuiconsts.lisindentextraindentforcaselabels
+msgid "Extra Indent for Case labels"
+msgstr ""
+
 #: jcfuiconsts.lisindentextraindentforifelseblocks
 msgid "Extra Indent for If...Else blocks"
 msgstr "if...else ブロックにインデントを追加する"
+
+#: jcfuiconsts.lisindentextraindentforinterfaceguid
+msgid "Extra Indent for interface guid"
+msgstr ""
 
 #: jcfuiconsts.lisindentindentation
 msgid "Indentation"

@@ -467,6 +467,11 @@ begin
     if IsRunOnProcDecl(pt) then
       Inc(liIndentCount);
 
+    // decrease ident for interface guid
+    if (not FormattingSettings.Indent.IndentInterfaceGuid) and
+      (pt.TokenType = ttOpenSquareBracket) and pt.HasParentNode(nInterfaceType, 2) then
+        Dec(liIndentCount);
+
     lbHasIndentedDecl := True;
 
     liClassNestingCount := CountClassNesting(pt);
@@ -577,13 +582,16 @@ begin
     if pt.Nestings.GetLevel(nlCaseSelector) > 0 then
     begin
       liIndentCount := liIndentCount + pt.Nestings.GetLevel(nlCaseSelector);
+      //labels on the same level as `case` statement
+      if (liIndentCount > 0) and (not FormattingSettings.Indent.IndentCaseLabels) then
+        Dec(liIndentCount);
       // don't indent the case label again
       if pt.HasParentNode(nCaseLabel, 6) then
         Dec(liIndentCount)
       else if (pt.TokenType in [ttElse, ttOtherwise]) and pt.HasParentNode(nElseCase, 1) then
         Dec(liIndentCount);
 
-      if not FormattingSettings.Indent.IndentCaseElse then
+      if (not FormattingSettings.Indent.IndentCaseElse) and FormattingSettings.Indent.IndentCaseLabels then
       begin
         liIndentCount :=  liIndentCount - pt.CountParentNodes(nElseCase);
       end;

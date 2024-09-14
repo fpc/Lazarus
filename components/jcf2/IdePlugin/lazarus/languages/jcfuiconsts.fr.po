@@ -650,9 +650,17 @@ msgstr "Retrait supplémentaire pour \"begin/end\" dans les procédures"
 msgid "Extra Indent for Case...Else blocks"
 msgstr "Retrait supplémentaire dans les blocs \"Case...Else\""
 
+#: jcfuiconsts.lisindentextraindentforcaselabels
+msgid "Extra Indent for Case labels"
+msgstr ""
+
 #: jcfuiconsts.lisindentextraindentforifelseblocks
 msgid "Extra Indent for If...Else blocks"
 msgstr "Retrait supplémentaire pour les blocs \"If...Else\""
+
+#: jcfuiconsts.lisindentextraindentforinterfaceguid
+msgid "Extra Indent for interface guid"
+msgstr ""
 
 #: jcfuiconsts.lisindentindentation
 msgid "Indentation"

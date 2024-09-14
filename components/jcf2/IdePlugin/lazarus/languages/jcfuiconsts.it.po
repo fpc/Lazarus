@@ -651,9 +651,17 @@ msgstr "Indentazione extra per begin/end all'interno delle procedure"
 msgid "Extra Indent for Case...Else blocks"
 msgstr "Indentazione extra per blocchi Case...Else"
 
+#: jcfuiconsts.lisindentextraindentforcaselabels
+msgid "Extra Indent for Case labels"
+msgstr ""
+
 #: jcfuiconsts.lisindentextraindentforifelseblocks
 msgid "Extra Indent for If...Else blocks"
 msgstr "Indentazione extra per blocchi If...Else"
+
+#: jcfuiconsts.lisindentextraindentforinterfaceguid
+msgid "Extra Indent for interface guid"
+msgstr ""
 
 #: jcfuiconsts.lisindentindentation
 msgid "Indentation"

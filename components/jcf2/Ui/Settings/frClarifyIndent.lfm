@@ -1,36 +1,38 @@
-inherited fClarifyIndent: TfClarifyIndent
-  Height = 347
+object fClarifyIndent: TfClarifyIndent
+  Left = 0
+  Height = 426
+  Top = 0
   Width = 430
-  ClientHeight = 347
+  ClientHeight = 426
   ClientWidth = 430
   TabOrder = 0
   DesignLeft = 737
   DesignTop = 299
-  object Label2: TLabel[0]
+  object Label2: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = edtIndentSpaces
     AnchorSideTop.Side = asrCenter
     Left = 6
-    Height = 14
-    Top = 9
-    Width = 118
+    Height = 15
+    Top = 10
+    Width = 131
     BorderSpacing.Left = 6
     Caption = 'Block indentation spaces'
     ParentColor = False
   end
-  object edtIndentSpaces: TSpinEdit[1]
+  object edtIndentSpaces: TSpinEdit
     AnchorSideLeft.Control = Label2
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = Owner
-    Left = 130
-    Height = 21
+    Left = 143
+    Height = 23
     Top = 6
     Width = 50
     BorderSpacing.Around = 6
     MaxValue = 12
     TabOrder = 0
   end
-  object gbOptions: TGroupBox[2]
+  object gbOptions: TGroupBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = edtIndentSpaces
     AnchorSideTop.Side = asrBottom
@@ -39,35 +41,35 @@ inherited fClarifyIndent: TfClarifyIndent
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 308
-    Top = 33
+    Height = 385
+    Top = 35
     Width = 418
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Options'
-    ClientHeight = 308
-    ClientWidth = 418
+    ClientHeight = 365
+    ClientWidth = 414
     TabOrder = 1
     object cbIndentBeginEnd: TCheckBox
       AnchorSideLeft.Control = gbOptions
       AnchorSideTop.Control = eIndentBeginEndSpaces
       AnchorSideTop.Side = asrCenter
       Left = 6
-      Height = 17
+      Height = 19
       Top = 8
-      Width = 232
+      Width = 252
       BorderSpacing.Left = 6
       BorderSpacing.Bottom = 6
       Caption = 'Extra indent for begin/end inside procedures'
-      OnClick = cbIndentBeginEndClick
       TabOrder = 0
+      OnClick = cbIndentBeginEndClick
     end
     object eIndentBeginEndSpaces: TSpinEdit
       AnchorSideTop.Control = gbOptions
       AnchorSideRight.Control = gbOptions
       AnchorSideRight.Side = asrBottom
-      Left = 348
-      Height = 21
+      Left = 344
+      Height = 23
       Top = 6
       Width = 50
       Anchors = [akTop, akRight]
@@ -82,23 +84,23 @@ inherited fClarifyIndent: TfClarifyIndent
       AnchorSideTop.Control = eFirstLevelIndent
       AnchorSideTop.Side = asrCenter
       Left = 6
-      Height = 17
-      Top = 35
-      Width = 158
+      Height = 19
+      Top = 37
+      Width = 169
       BorderSpacing.Left = 6
       BorderSpacing.Bottom = 6
       Caption = 'Different indent for first level'
-      OnClick = cbHasFirstLevelIndentClick
       TabOrder = 2
+      OnClick = cbHasFirstLevelIndentClick
     end
     object eFirstLevelIndent: TSpinEdit
       AnchorSideTop.Control = eIndentBeginEndSpaces
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = gbOptions
       AnchorSideRight.Side = asrBottom
-      Left = 348
-      Height = 21
-      Top = 33
+      Left = 344
+      Height = 23
+      Top = 35
       Width = 50
       Anchors = [akTop, akRight]
       BorderSpacing.Top = 6
@@ -110,9 +112,9 @@ inherited fClarifyIndent: TfClarifyIndent
       AnchorSideTop.Control = cbHasFirstLevelIndent
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 17
-      Top = 58
-      Width = 260
+      Height = 19
+      Top = 62
+      Width = 292
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
@@ -125,9 +127,9 @@ inherited fClarifyIndent: TfClarifyIndent
       AnchorSideTop.Control = cbKeepWithInProc
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 17
-      Top = 81
-      Width = 239
+      Height = 19
+      Top = 87
+      Width = 271
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
@@ -140,9 +142,9 @@ inherited fClarifyIndent: TfClarifyIndent
       AnchorSideTop.Control = cbKeepWithInGlobals
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 17
-      Top = 104
-      Width = 281
+      Height = 19
+      Top = 112
+      Width = 317
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
@@ -155,9 +157,9 @@ inherited fClarifyIndent: TfClarifyIndent
       AnchorSideTop.Control = cbKeepWithInClassDef
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 17
-      Top = 127
-      Width = 244
+      Height = 19
+      Top = 137
+      Width = 272
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
@@ -170,9 +172,9 @@ inherited fClarifyIndent: TfClarifyIndent
       AnchorSideTop.Control = cbKeepWithElsewhere
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 17
-      Top = 150
-      Width = 170
+      Height = 19
+      Top = 162
+      Width = 174
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
@@ -182,78 +184,108 @@ inherited fClarifyIndent: TfClarifyIndent
     end
     object cbIndentCaseElse: TCheckBox
       AnchorSideLeft.Control = gbOptions
-      AnchorSideTop.Control = cbIndentIfElse
+      AnchorSideTop.Control = cbIndentCaseLabels
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 17
-      Top = 173
-      Width = 186
+      Height = 19
+      Top = 212
+      Width = 192
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
       BorderSpacing.Bottom = 6
       Caption = 'Extra Indent for Case...Else blocks'
-      TabOrder = 9
+      TabOrder = 10
     end
     object cbIndentLibraryProcs: TCheckBox
       AnchorSideLeft.Control = gbOptions
       AnchorSideTop.Control = cbIndentCaseElse
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 17
-      Top = 196
-      Width = 168
+      Height = 19
+      Top = 237
+      Width = 181
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
       BorderSpacing.Bottom = 6
       Caption = 'Indent for procedures in library'
-      TabOrder = 10
+      TabOrder = 11
     end
     object cbIndentProcedureBody: TCheckBox
       AnchorSideLeft.Control = gbOptions
       AnchorSideTop.Control = cbIndentLibraryProcs
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 17
-      Top = 219
-      Width = 146
+      Height = 19
+      Top = 262
+      Width = 157
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
       BorderSpacing.Bottom = 6
       Caption = 'Indent for procedure body'
-      TabOrder = 11
+      TabOrder = 12
     end
     object cbIndentNestedTypes: TCheckBox
       AnchorSideLeft.Control = gbOptions
       AnchorSideTop.Control = cbIndentProcedureBody
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 17
-      Top = 242
-      Width = 116
+      Height = 19
+      Top = 287
+      Width = 121
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
       BorderSpacing.Bottom = 6
       Caption = 'Indent nested types'
-      TabOrder = 12
+      TabOrder = 13
     end
     object cbIndentVarAndConstInClass: TCheckBox
       AnchorSideLeft.Control = gbOptions
       AnchorSideTop.Control = cbIndentNestedTypes
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 17
-      Top = 265
-      Width = 156
+      Height = 19
+      Top = 312
+      Width = 167
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
       BorderSpacing.Bottom = 6
       Caption = 'Indent var and const in class'
-      TabOrder = 13
+      TabOrder = 14
+    end
+    object cbIndentCaseLabels: TCheckBox
+      AnchorSideLeft.Control = gbOptions
+      AnchorSideTop.Control = cbIndentIfElse
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 19
+      Top = 187
+      Width = 157
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 6
+      Caption = 'Extra Indent for case labels'
+      TabOrder = 9
+    end
+    object cbIndentInterfaceGuid: TCheckBox
+      AnchorSideLeft.Control = gbOptions
+      AnchorSideTop.Control = cbIndentVarAndConstInClass
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 19
+      Top = 337
+      Width = 174
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 6
+      Caption = 'Extra Indent for interface guid'
+      TabOrder = 15
     end
   end
 end

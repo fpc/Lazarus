@@ -38,6 +38,8 @@ type
   { TfClarifyIndent }
 
   TfClarifyIndent = class(TAbstractIDEOptionsEditor)
+    cbIndentCaseLabels: TCheckBox;
+    cbIndentInterfaceGuid: TCheckBox;
     Label2: TLabel;
     edtIndentSpaces: TSpinEdit;
     gbOptions: TGroupBox;
@@ -100,10 +102,12 @@ begin
     lisIndentKeepSingleLineCommentsWithCodeElsewhere;
   cbIndentIfElse.Caption := lisIndentExtraIndentForIfElseBlocks;
   cbIndentCaseElse.Caption := lisIndentExtraIndentForCaseElseBlocks;
+  cbIndentCaseLabels.Caption := lisIndentExtraIndentForCaseLabels;
   cbIndentLibraryProcs.Caption := lisIndentIndentForProceduresInLibrary;
   cbIndentProcedureBody.Caption := lisIndentIndentForProcedureBody;
   cbIndentNestedTypes.Caption := lisIndentIndentNestedTypes;
   cbIndentVarAndConstInClass.Caption := lisIndentIndentVarAndConstInClass;
+  cbIndentInterfaceGuid.Caption := lisIndentExtraIndentForInterfaceGuid;
 end;
 
 {-------------------------------------------------------------------------------
@@ -127,11 +131,13 @@ begin
     cbKeepWithInClassDef.Checked := KeepCommentsWithCodeInClassDef;
     cbKeepWithElsewhere.Checked  := KeepCommentsWithCodeElsewhere;
     cbIndentIfElse.Checked := IndentElse;
+    cbIndentCaseLabels.Checked := IndentCaseLabels;
     cbIndentCaseElse.Checked := IndentCaseElse;
     cbIndentProcedureBody.Checked := IndentProcedureBody;
 
     cbIndentNestedTypes.Checked := IndentNestedTypes;
     cbIndentVarAndConstInClass.Checked := IndentVarAndConstInClass;
+    cbIndentInterfaceGuid.Checked := IndentInterfaceGuid;
   end;
 
   cbIndentBeginEndClick(nil);
@@ -157,11 +163,13 @@ begin
     KeepCommentsWithCodeInClassDef := cbKeepWithInClassDef.Checked;
     KeepCommentsWithCodeElsewhere  := cbKeepWithElsewhere.Checked;
     IndentElse := cbIndentIfElse.Checked;
+    IndentCaseLabels := cbIndentCaseLabels.Checked;
     IndentCaseElse := cbIndentCaseElse.Checked;
     IndentProcedureBody := cbIndentProcedureBody.Checked;
 
     IndentNestedTypes := cbIndentNestedTypes.Checked;
     IndentVarAndConstInClass := cbIndentVarAndConstInClass.Checked;
+    IndentInterfaceGuid := cbIndentInterfaceGuid.Checked;
   end;
 end;
 

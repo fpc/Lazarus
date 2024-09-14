@@ -648,8 +648,16 @@ msgstr ""
 msgid "Extra Indent for Case...Else blocks"
 msgstr ""
 
+#: jcfuiconsts.lisindentextraindentforcaselabels
+msgid "Extra Indent for Case labels"
+msgstr ""
+
 #: jcfuiconsts.lisindentextraindentforifelseblocks
 msgid "Extra Indent for If...Else blocks"
+msgstr ""
+
+#: jcfuiconsts.lisindentextraindentforinterfaceguid
+msgid "Extra Indent for interface guid"
 msgstr ""
 
 #: jcfuiconsts.lisindentindentation
