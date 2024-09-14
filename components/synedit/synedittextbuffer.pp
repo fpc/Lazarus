@@ -241,7 +241,7 @@ type
     procedure DetachSynEdit(AEdit: TSynEditBase);
     function  AttachedSynEditCount: Integer;
     property  AttachedSynEdits[Index: Integer]: TSynEditBase read GetAttachedSynEdits;
-    procedure CopyHanlders(OtherLines: TSynEditStringList; AOwner: TObject = nil);
+    procedure CopyHandlers(OtherLines: TSynEditStringList; AOwner: TObject = nil);
     procedure SendCachedNotify; // ToDO: review caching versus changes to topline and other values
   public
     property DosFileFormat: boolean read fDosFileFormat write fDosFileFormat;    
@@ -1366,7 +1366,7 @@ begin
   FNotifyLists[AReason].Remove(AHandler);
 end;
 
-procedure TSynEditStringList.CopyHanlders(OtherLines: TSynEditStringList; AOwner: TObject = nil);
+procedure TSynEditStringList.CopyHandlers(OtherLines: TSynEditStringList; AOwner: TObject = nil);
 var
   i: TSynEditNotifyReason;
 begin
