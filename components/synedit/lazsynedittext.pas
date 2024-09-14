@@ -567,7 +567,7 @@ type
   protected
     procedure AddGenericHandler(AReason: TSynEditNotifyReason; AHandler: TMethod);
     procedure RemoveGenericHandler(AReason: TSynEditNotifyReason; AHandler: TMethod);
-    procedure RemoveHanlders(AOwner: TObject);
+    procedure RemoveHandlers(AOwner: TObject);
     property TextBuffer: TSynEditStringListBase read FTextBuffer write SetTextBuffer;
   public
     constructor Create(ATextBuffer: TSynEditStringListBase; ATopViewChangedCallback: TNotifyEvent);
@@ -1786,7 +1786,7 @@ end;
 
 procedure TSynEditStringsLinked.RemoveHandlers(AOwner: TObject);
 begin
-  Manager.RemoveHanlders(AOwner);
+  Manager.RemoveHandlers(AOwner);
 end;
 
 function TSynEditStringsLinked.LogicPosAddChars(const ALine: String; ALogicalPos,
@@ -1941,7 +1941,7 @@ begin
     FTextBuffer.RemoveManagedHandler(AReason, AHandler);
 end;
 
-procedure TSynTextViewsManager.RemoveHanlders(AOwner: TObject);
+procedure TSynTextViewsManager.RemoveHandlers(AOwner: TObject);
 var
   i: TSynEditNotifyReason;
 begin
