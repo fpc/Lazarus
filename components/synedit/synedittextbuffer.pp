@@ -214,7 +214,7 @@ type
                 AHandler: TMethod); override;
     procedure RemoveManagedHandler(AReason: TSynEditNotifyReason;
                 AHandler: TMethod); override;
-    procedure RemoveManagedHanlders(AOwner: TObject); override;
+    procedure RemoveManagedHandlers(AOwner: TObject); override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -1374,7 +1374,7 @@ begin
     FNotifyLists[i].AddCopyFrom(OtherLines.FNotifyLists[i], AOwner);
 end;
 
-procedure TSynEditStringList.RemoveManagedHanlders(AOwner: TObject);
+procedure TSynEditStringList.RemoveManagedHandlers(AOwner: TObject);
 var
   i: TSynEditNotifyReason;
 begin

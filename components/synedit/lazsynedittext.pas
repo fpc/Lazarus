@@ -548,7 +548,7 @@ type
   protected
     procedure AddManagedHandler(AReason: TSynEditNotifyReason; AHandler: TMethod); virtual; abstract;
     procedure RemoveManagedHandler(AReason: TSynEditNotifyReason; AHandler: TMethod); virtual; abstract;
-    procedure RemoveManagedHanlders(AOwner: TObject); virtual; abstract;
+    procedure RemoveManagedHandlers(AOwner: TObject); virtual; abstract;
   end;
 
   { TSynTextViewsManager }
@@ -1948,7 +1948,7 @@ begin
   for i := low(TSynEditNotifyReason) to high(TSynEditNotifyReason) do
     FNotifyLists[i].RemoveAllMethodsOfObject(AOwner);
   if FTextBuffer <> nil then
-    FTextBuffer.RemoveManagedHanlders(AOwner);
+    FTextBuffer.RemoveManagedHandlers(AOwner);
 end;
 
 constructor TSynTextViewsManager.Create(ATextBuffer: TSynEditStringListBase;
