@@ -1220,11 +1220,11 @@ begin
   Recognise(ttHelper);
   if fcTokenList.FirstSolidTokenType = ttOpenBracket then begin
     Recognise(ttOpenBracket);
-    RecogniseIdentifier(False, idStrict);
+    RecogniseIdentifier(True, idStrict);
     Recognise(ttCloseBracket);
   end;
   Recognise(ttFor);
-  RecogniseIdentifier(False, idStrict);
+  RecogniseIdentifier(True, idStrict);
   RecogniseClassBody;
   Recognise(ttEnd);
   RecogniseHintDirectives;
