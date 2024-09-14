@@ -3055,7 +3055,7 @@ begin
   // target
   if Done(Tool.AddDiff('TargetFileExt',fTargetFileExt,CompOpts.fTargetFileExt)) then exit;
   if Done(Tool.AddDiff('TargetFilename',fTargetFilename,CompOpts.fTargetFilename)) then exit;
-  if Done(Tool.AddDiff('TargetFilenameAppplyConventions',FTargetFilenameAppplyConventions,CompOpts.FTargetFilenameAppplyConventions)) then exit;
+  if Done(Tool.AddDiff('TargetFilenameApplyConventions',FTargetFilenameApplyConventions,CompOpts.FTargetFilenameApplyConventions)) then exit;
 
   // search paths
   if Tool<>nil then Tool.Path:='Paths';
