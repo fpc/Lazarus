@@ -507,7 +507,7 @@ type
     procedure AddEditHandler(AHandler: TStringListLineEditEvent);
     procedure RemoveEditHandler(AHandler: TStringListLineEditEvent);
 
-    procedure RemoveHanlders(AOwner: TObject);
+    procedure RemoveHandlers(AOwner: TObject);
 
     //function GetPhysicalCharWidths(Line: PChar; LineLen, Index: Integer): TPhysicalCharWidths; override;
     property NextLines: TSynEditStrings read fSynStrings write SetSynStrings;
@@ -1784,7 +1784,7 @@ begin
   RemoveGenericHandler(senrEditAction, TMethod(AHandler));
 end;
 
-procedure TSynEditStringsLinked.RemoveHanlders(AOwner: TObject);
+procedure TSynEditStringsLinked.RemoveHandlers(AOwner: TObject);
 begin
   Manager.RemoveHanlders(AOwner);
 end;

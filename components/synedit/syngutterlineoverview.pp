@@ -1128,7 +1128,7 @@ end;
 
 destructor TSynGutterLOvProviderModifiedLines.Destroy;
 begin
-  ViewedTextBuffer.RemoveHanlders(self);
+  ViewedTextBuffer.RemoveHandlers(self);
   SynEdit.UnRegisterStatusChangedHandler(@SynStatusChanged);
   inherited Destroy;
 end;
@@ -1264,7 +1264,7 @@ end;
 
 destructor TSynGutterLOvProviderBookmarks.Destroy;
 begin
-  ViewedTextBuffer.RemoveHanlders(self);
+  ViewedTextBuffer.RemoveHandlers(self);
   (SynEdit.Marks as TSynEditMarkList).UnRegisterChangeHandler(@DoMarkChange);
   inherited Destroy;
 end;
@@ -1304,7 +1304,7 @@ end;
 destructor TSynGutterLineOverview.Destroy;
 begin
   Application.RemoveAsyncCalls(Self);
-  ViewedTextBuffer.RemoveHanlders(self);
+  ViewedTextBuffer.RemoveHandlers(self);
   FreeAndNil(FProviders);
   FreeAndNil(FWinControl);
   FreeAndNil(FLineMarks);
