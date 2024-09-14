@@ -2709,16 +2709,21 @@ begin
   end;
 end;
 
-function TCustomForm.GetFormImage: TBitmap;
+procedure TCustomForm.GetFormImage(ABitmap: TCustomBitmap);
 var
-  ARect: TRect;
+  ARect: TRect = (Left:0; Top:0; Right:0; Bottom:0);
+begin
+  ABitmap.SetSize(ClientWidth, ClientHeight);
+  LCLIntf.GetWindowRect(Handle, ARect);
+  with GetClientOrigin do
+    PaintTo(ABitmap.Canvas, ARect.Left - X, ARect.Top - Y);
+end;
+
+function TCustomForm.GetFormImage: TBitmap;
 begin
   Result := TBitmap.Create;
   try
-    Result.SetSize(ClientWidth, ClientHeight);
-    LCLIntf.GetWindowRect(Handle, ARect);
-    with GetClientOrigin do
-      PaintTo(Result.Canvas, ARect.Left - X, ARect.Top - Y);
+    GetFormImage(Result);
   except
     Result.Free;
     raise;

@@ -708,6 +708,7 @@ type
     procedure EnsureVisible(AMoveToTop: Boolean = True);
     procedure FocusControl(WinControl: TWinControl);
     function FormIsUpdating: Boolean; override;
+    procedure GetFormImage(ABitmap: TCustomBitmap);
     function GetFormImage: TBitmap;
     function GetRolesForControl(AControl: TControl): TControlRolesForForm;
     function GetRealPopupParent: TCustomForm;
