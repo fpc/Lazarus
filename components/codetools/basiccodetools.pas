@@ -1825,7 +1825,7 @@ begin
     dec(IdentStart);
   if (IdentStart>1)  and (Source[IdentStart-1]='&') then
     dec(IdentStart);
-  if (IdentEnd<=length(Source)) and (Source[IdentEnd]='&')  then
+  if (IdentEnd<=length(Source)) and (Source[IdentEnd]='&') then
     inc(IdentEnd);
   while (IdentEnd<=length(Source))
   and (IsIdentChar[Source[IdentEnd]]) do
@@ -1836,7 +1836,7 @@ begin
     and (not IsIdentStartChar[Source[IdentStart]]) do
       inc(IdentStart);
 
-  if (IdentStart>0) and (Source[IdentStart]='&') then begin
+  if (IdentStart>0) and (IdentStart<=length(Source)) and (Source[IdentStart]='&') then begin
     if (IdentStart>length(Source)) or not IsIdentStartChar[Source[IdentStart+1]] then
       IdentEnd:=IdentStart;
   end  else
