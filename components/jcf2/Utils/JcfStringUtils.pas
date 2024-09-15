@@ -161,6 +161,8 @@ function StrStartsWithLineEnd(const aStr:string):boolean;
 // string ends with LF, CR, ignores trailing spaces
 function StrEndsWithLineEnd(const aStr:string):boolean;
 
+procedure FindLineCol(ASource:string; APosition:integer; out ALine:integer; out ACol:integer);
+
 type
   EJcfConversionError = class(Exception)
   end;
@@ -764,6 +766,41 @@ begin
   while (i>0) and (aStr[i] in NativeTabSpace) do   //skip spaces
     dec(i);
   Result := (i>0) and CharIsReturn(aStr[i]);
+end;
+
+procedure FindLineCol(ASource:string; APosition:integer; out ALine:integer; out ACol:integer);
+var
+ liIndex:integer;
+ liLast:integer;
+ liLine:integer;
+ liLineStart:integer;
+begin
+  liLast:=aPosition;
+  if length(ASource) < liLast then
+    liLast:=length(ASource);
+  liIndex:=1;
+  liLine:=1;
+  liLineStart:=1;
+  while liIndex < liLast do
+  begin
+    if ASource[liIndex]=#13 then
+    begin
+      Inc(liLine);
+      if ASource[liIndex + 1] = #10 then
+        Inc(liIndex);
+      liLineStart:= liIndex + 1;
+    end
+    else if ASource[liIndex] = #10 then
+    begin
+      Inc(liLine);
+      liLineStart := liIndex + 1;
+    end;
+    Inc(liIndex);
+  end;
+  ALine := liLine;
+  ACol:= liLast - liLineStart + 1;
+  if ACol < 1 then
+    ACol := 1;
 end;
 
 end.

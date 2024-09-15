@@ -44,7 +44,7 @@ uses
 
 type
 
-  EBuildTokenListWarning=Exception;
+  EBuildTokenListWarning= type Exception;
 
   TBuildTokenListFlag=(btlOnlyDirectives);
   TBuildTokenListFlags = set of TBuildTokenListFlag;
@@ -245,6 +245,7 @@ function TBuildTokenList.TryBracketStarComment(const pcToken: TSourceToken): boo
 var
   liCommentLength, lNestedDepth: integer;
   bPossiblyImbalanced: Boolean;
+  liCommentStart, liLine, liCol:integer;
 
   procedure MoveToCommentEnd;
   var
@@ -260,6 +261,9 @@ var
           // $ (US): 2021-06-28 15:48:59 $
           //  Although it is not a parse error, but I do not want to introduce
           //  another exception class.
+          FindLineCol(fsSourceCode, liCommentStart, liLine, liCol);
+          pcToken.XPosition := liCol;
+          pcToken.YPosition := liLine;
           raise TEParseError.Create(lisMsgUnableToRecoverImbalancedBracketStarComment, pcToken);
         end else
         begin
@@ -305,6 +309,7 @@ begin
   if CurrentChars(2) <> '(*' then
     exit;
 
+  liCommentStart := fiCurrentIndex;
   lNestedDepth := 1;
   { if the comment starts with (*) that is not the end of the comment }
   liCommentLength := 2;
@@ -329,6 +334,7 @@ function TBuildTokenList.TryCurlyComment(const pcToken: TSourceToken): boolean;
 var
   liCommentLength, lNestedDepth: integer;
   bPossiblyImbalanced: Boolean;
+  liCommentStart, liLine, liCol:integer;
 
   procedure MoveToCommentEnd;
   var
@@ -344,6 +350,9 @@ var
           // $ (US): 2021-06-28 15:48:59 $
           //  Although it is not a parse error, but I do not want to introduce
           //  another exception class.
+          FindLineCol(fsSourceCode, liCommentStart, liLine, liCol);
+          pcToken.XPosition := liCol;
+          pcToken.YPosition := liLine;
           raise TEParseError.Create(lisMsgUnableToRecoverImbalancedCurlyComment, pcToken);
         end else
         begin
@@ -375,6 +384,7 @@ begin
   if Current <> '{' then
     exit;
 
+  liCommentStart := fiCurrentIndex;
   bPossiblyImbalanced := False;
 
   pcToken.TokenType  := ttComment;
@@ -500,8 +510,10 @@ function TBuildTokenList.TryMultiLineLiteralString(const pcToken: TSourceToken):
 var
   liCount,liAux:integer;
   liCountEnd:integer;
+  liLiteralStart, liLine, liCol, liPos:integer;
 begin
   Result := False;
+  liLiteralStart := fiCurrentIndex;
   liCount:=0;
   while ForwardChar(liCount)=NativeSingleQuote do
     Inc(liCount);
@@ -520,7 +532,13 @@ begin
     { read until the close ''' }
     repeat
       if Current = #0 then
-        raise TEParseError.Create(Format(lisMsgUnterminatedString,[pcToken.SourceCode]),pcToken);
+      begin
+        FindLineCol(fsSourceCode, liLiteralStart, liLine, liCol);
+        pcToken.XPosition := liCol;
+        pcToken.YPosition := liLine;
+        liPos := 1;
+        raise TEParseError.Create(Format(lisMsgUnterminatedString,[ExtractSubStr(pcToken.SourceCode,liPos,[#13,#10])]),pcToken);
+      end;
 
       if (Current = NativeSingleQuote) then
       begin
@@ -549,9 +567,12 @@ end;
 { complexities like 'Hello'#32'World' and #$12'Foo' are assemlbed in the parser }
 function TBuildTokenList.TryLiteralString(const pcToken: TSourceToken;
   const pcDelimiter: Char): boolean;
+var
+  liLiteralStart, liLine, liCol: integer;
 begin
   Result := False;
 
+  liLiteralStart := fiCurrentIndex;
   if Current = pcDelimiter then
   begin
     Result := True;
@@ -564,8 +585,12 @@ begin
       if Current = #0 then
         break;
       if CharIsReturn(Current) then
+      begin
+        FindLineCol(fsSourceCode, liLiteralStart, liLine, liCol);
+        pcToken.XPosition := liCol;
+        pcToken.YPosition := liLine;
         raise TEParseError.Create(Format(lisMsgUnterminatedString,[pcToken.SourceCode]),pcToken);
-
+      end;
       { two quotes in a row are still part of the string }
       if (Current = pcDelimiter) then
       begin

@@ -331,7 +331,7 @@ begin
       fcConverter.GuiMessages := true;
       fcConverter.FileName := SourceEditorManagerIntf.ActiveEditor.FileName;
       fcConverter.OnIncludeFile := OnIncludeFile;
-      fcConverter.ConvertUsingFakeUnit;
+      fcConverter.ConvertUsingFakeUnit(BlockBegin.Y);
       if not fcConverter.ConvertError then
       begin
         outputstr:=StrTrimLastEndOfLine(fcConverter.OutputCode);

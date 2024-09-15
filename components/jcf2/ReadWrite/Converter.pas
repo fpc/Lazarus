@@ -50,6 +50,7 @@ type
     { the strings for the in and out code }
     fsInputCode, fsOutputCode: String;
     fsFileName: String;
+    fiFirstLineNumber: integer;  //used by ConvertUsingFakeUnit
 
     { classes to lex and parse the source }
     fcTokeniser:      TBuildTokenList;
@@ -88,7 +89,7 @@ type
     procedure Convert;
     procedure ConvertPart(const piStartIndex, piEndIndex: Integer;
                           aOnlyOutputSelection: boolean=false);
-    procedure ConvertUsingFakeUnit;
+    procedure ConvertUsingFakeUnit(AFirstLineNumber:integer = 1);
 
     procedure CollectOutput(const pcRoot: TParseTreeNode);
     { call this to report the current state of the proceedings }
@@ -137,6 +138,7 @@ begin
   fcBuildParseTree := TBuildParseTree.Create;
   fcSingleProcess  := nil;
   fbGuiMessages    := True; // use Ui to show parse errors by default
+  fiFirstLineNumber := 1;
 end;
 
 destructor TConverter.Destroy;
@@ -171,9 +173,15 @@ begin
     try
       fcTokeniser.BuildTokenList(lcTokenList);
     except
-      on E: EBuildTokenListWarning do
+      on ETW: EBuildTokenListWarning do
       begin
-        SendStatusMessage('', Format(lisMsgWarningClassMsg, ['', E.Message]), mtCodeWarning, -1, -1);
+        SendStatusMessage('', Format(lisMsgWarningClassMsg, ['', ETW.Message]), mtCodeWarning, -1, -1);
+      end;
+      on EPR:TEParseError do
+      begin
+        fbConvertError := True;
+        SendStatusMessage('', Format(lisMsgExceptionClassMsg, ['', EPR.Message]), mtException, EPR.YPosition, EPR.XPosition);
+        Exit;
       end;
       on E: Exception do
       begin
@@ -369,7 +377,7 @@ end;
 procedure TConverter.SendStatusMessage(const psUnit, psMessage: String; const peMessageType: TStatusMessageType; const piY, piX: Integer);
 begin
   if Assigned(fOnStatusMessage) then
-    fOnStatusMessage(psUnit, psMessage, peMessageType, piY, piX);
+    fOnStatusMessage(psUnit, psMessage, peMessageType, piY + fiFirstLineNumber - 1, piX);
 end;
 
 procedure TConverter.ShowParseTree;
@@ -390,6 +398,7 @@ begin
   Assert(piStartIndex >= 0);
   Assert(piEndIndex >= piStartIndex);
   Assert(piEndIndex <= Length(InputCode));
+  fiFirstLineNumber := 100;
 
   { round to nearest end of line }
   liRealInputStart := piStartIndex;
@@ -448,7 +457,7 @@ hasImplemen.    F      T      F      T
 // Needed for formating include files or part of a file with tokens not supported by
 // the jedi code format parser.
 // {$I %DATE%} for example.
-procedure TConverter.ConvertUsingFakeUnit;
+procedure TConverter.ConvertUsingFakeUnit(AFirstLineNumber:integer);
 const
   END_MARK_INTERFACE = 'tfaketjcf_intfc_end_mark;';        //<lower case required
   END_MARK_IMPLEMENTATION = 'tfaketjcf_implm_end_mark;'; //<lower case required
@@ -463,6 +472,7 @@ var
   procedure AddFakeUnit;
   begin
     sourceCode := sourceCode + 'unit ' + FAKE_UNIT_NAME + #10;
+    Dec(fiFirstLineNumber);
   end;
 
   procedure AddFakeInterface;
@@ -470,34 +480,43 @@ var
     liUsesPos:integer;
   begin
     sourceCode := sourceCode + 'interface{:*_*:}' + #10;
+    Dec(fiFirstLineNumber);
     liUsesPos:=PosEx('uses',sourceCodeLowerCase,1);
     if (liUsesPos>0) and (liImplementationPos>0) and (liUsesPos<liImplementationPos)
       and (length(sourceCodeLowerCase)>=liUsesPos+4) and CharIsWhiteSpace(sourceCodeLowerCase[liUsesPos+4]) then
     begin
       sourceCode := sourceCode + '// ' + END_MARK_INTERFACE + #10;
+      Dec(fiFirstLineNumber);
     end
     else
     begin
       sourceCode := sourceCode + 'type' + #10;        // if there is only a class selected this is required
       sourceCode := sourceCode + 'faketjcfifc=' + END_MARK_INTERFACE + #10;
+      Dec(fiFirstLineNumber, 2);
     end;
   end;
 
-  procedure AddFakeImplementation;
+  procedure AddFakeImplementation(AAdjustFirstLineNumber: boolean);
   var
     liUsesPos:integer;
   begin
     sourceCode := sourceCode + 'implementation{:*_*:}' + #10;
+    if AAdjustFirstLineNumber then
+      Dec(fiFirstLineNumber);
     liUsesPos:=PosEx('uses',sourceCodeLowerCase,1);
     if ((not hasInterface) and (not hasImplementation)) and (liUsesPos>0)
       and (length(sourceCodeLowerCase)>=liUsesPos+4) and CharIsWhiteSpace(sourceCodeLowerCase[liUsesPos+4]) then
     begin
       sourceCode := sourceCode + '// ' + END_MARK_IMPLEMENTATION + #10;
+      if AAdjustFirstLineNumber then
+        Dec(fiFirstLineNumber);
     end
     else
     begin
       sourceCode := sourceCode + 'type' + #10;
       sourceCode := sourceCode + 'faketjcfimpl=' + END_MARK_IMPLEMENTATION + #10;
+      if AAdjustFirstLineNumber then
+        Dec(fiFirstLineNumber, 2);
     end;
   end;
 
@@ -508,6 +527,7 @@ var
 
 begin
   //WRAPPING the inputCode in a fake unit
+  fiFirstLineNumber := AFirstLineNumber;
   sourceCodeLowerCase := LowerCase(fsInputCode);
   {$push}{$warn 5057 off}
   hasInterface := HasStringAtLineStart(sourceCodeLowerCase, 'interface', liInterfacePos);
@@ -519,11 +539,11 @@ begin
   begin
     AddFakeInterface;
     if hasImplementation = False then
-      AddFakeImplementation;
+      AddFakeImplementation(True);
   end;
   sourceCode := sourceCode + fsInputCode;
   if (hasInterface = True) and (hasImplementation = False) then
-    AddFakeImplementation;
+    AddFakeImplementation(False);
   AddFakeEnd;
   fsInputCode:=sourceCode;
   Convert;
