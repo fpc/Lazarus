@@ -37,6 +37,8 @@ const
   lisMsgEmptyFinallyEndBlock = 'Empty finally..end block';
   lisMsgEmptyTryBlock = 'Empty try block';
   lisMsgExceptionClassMsg = 'Exception %s  %s';
+  lisMsgWarningClassMsg = 'Warning %s %s';
+  lisMsgImbalancedParseDisable = 'Imbalanced number of: //jcf:parse=off/on';
   lisMsgExceptionParsing = 'Exception parsing "%s": %s';
   lisMsgExceptionTokenising = 'Exception tokenising "%s": %s';
   lisMsgExistsAlreadyRemoveIt = '%s %s %s exists already. Remove it?';

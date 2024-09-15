@@ -48,7 +48,7 @@ type
 implementation
 
 uses
-  JcfStringUtils,
+  SysUtils, JcfStringUtils,
   SourceToken, Tokens, ParseTreeNodeType, FormatFlags, Converter;
 
 function CommentMustStay(const pc: TSourceToken): boolean;
@@ -73,8 +73,8 @@ begin
     Result := True;
 
   // these are also flags
-  if ((pc.CommentStyle = eDoubleSlash) and
-    (StrLeft(pc.SourceCode, FORMAT_COMMENT_PREFIX_LEN) = FORMAT_COMMENT_PREFIX)) then
+  if (pc.CommentStyle = eDoubleSlash) and
+    (CompareText(StrLeft(pc.SourceCode, FORMAT_COMMENT_PREFIX_LEN), FORMAT_COMMENT_PREFIX) = 0) then
     Result := True;
 
   // these comments are used to process only selected text.

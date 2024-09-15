@@ -44,6 +44,8 @@ uses
 
 type
 
+  EBuildTokenListWarning=Exception;
+
   TBuildTokenListFlag=(btlOnlyDirectives);
   TBuildTokenListFlags = set of TBuildTokenListFlag;
 
@@ -114,7 +116,7 @@ implementation
 
 uses
   { local }
-  JcfStringUtils, JcfRegistrySettings, ParseError, jcfbaseConsts;
+  JcfStringUtils, JcfRegistrySettings, ParseError, jcfbaseConsts, FormatFlags;
 
 const
   CurlyLeft =  '{'; //widechar(123);
@@ -542,6 +544,7 @@ begin
     pcToken.TokenType := ttQuotedLiteralString;
   end;
 end;
+
 
 { complexities like 'Hello'#32'World' and #$12'Foo' are assemlbed in the parser }
 function TBuildTokenList.TryLiteralString(const pcToken: TSourceToken;
@@ -1023,9 +1026,16 @@ var
   lcNew:     TSourceToken;
   liCounter: integer;
   lbIncludeToken: boolean;
+  liParseDisabledCount: integer;
+  liParseDisabledCountRaw: integer;   // needed to emit warning.
+  lsError: string;
+  leFlags: TFormatFlags;
+  lbOn: boolean;
 begin
   Assert(SourceCode <> '');
   liCounter := 0;
+  liParseDisabledCount := 0;
+  liParseDisabledCountRaw := 0;
 
   while not EndOfFile do
   begin
@@ -1035,6 +1045,31 @@ begin
       lcNew := GetNextToken;
       if lcNew<>nil then
       begin
+        if (lcNew.TokenType=ttComment) then
+        begin
+          if ReadCommentJcfFlags(lcNew.SourceCode, lsError, leFlags, lbOn) then
+          begin
+            if eParse in leFlags then
+            begin
+              if not lbOn then // //jcf:parse=off
+              begin
+                Inc(liParseDisabledCount);
+                Inc(liParseDisabledCountRaw);
+              end
+              else
+              begin
+                if (liParseDisabledCount > 0) then // //jcf:parse=on
+                  Dec(liParseDisabledCount);
+                Dec(liParseDisabledCountRaw);
+              end;
+            end;
+          end;
+        end
+        else
+        begin
+          if (liParseDisabledCount > 0) and lcNew.IsSolid then
+            lcNew.TokenType := ttComment;
+        end;
         if btlOnlyDirectives in AFlags then
         begin
           if not ((lcNew.TokenType=ttComment) and (lcNew.CommentStyle=eCompilerDirective)) then
@@ -1053,6 +1088,8 @@ begin
       raise;
     end;
   end;
+  if liParseDisabledCountRaw <> 0 then
+    raise EBuildTokenListWarning.Create(lisMsgImbalancedParseDisable);
 end;
 
 function TBuildTokenList.Current: Char;

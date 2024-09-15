@@ -1,5 +1,3 @@
- JCF comments
-
 Special comments in the Jedi Code Formatter
 ===========================================
 
@@ -11,20 +9,22 @@ From version 0.52, a more extensive syntax has been implemented to allow for fin
 
 For instance, in the following line of code, the formatter will not alter the spacing
 
-`//jcf:space=off  
-  a   :=     a     +     1   ;  
-//jcf:space=on`
+```
+//jcf:space=off
+  a   :=     a     +     1   ;
+//jcf:space=on
+```
 
 As you can see, the new syntax has the form of a comment like `//jcf:**flag**=**state**`, where **state** is one of `on` or `off`, and the flags are listed below.
 
 Flags
 -----
 
-|     |     |
-| --- | --- |
 | **Flag** | **Description** |
-| `all` | all=on is used to reverse the effects of all `off` comments, as described below. `all=off` is not valid |
-| `format` | All formatting |
+| --- | --- |
+| `parse` | Stop parsing tokens (to avoid errors on unsupported code)- to turn it on again need jcf:parse=on (since lazarus 3.99)|
+| `all` | all=on is used to reverse the effects of all `off` comments (except parse), as described below. `all=off` is not valid |
+| `format` | All formatting (except parse)|
 | `space` | All processes that insert or remove spaces |
 | `addspace` | All processes that insert spaces |
 | `removespace` | All processes that remove spaces |
@@ -56,9 +56,9 @@ Flags
 
 The following rules apply:
 
-* Turning a flag on will not enable it if it is not disabled in the configuration - the flags are to 'block out' a section of code where a format option is not wanted. The on state is there only to end a previous off state.
-* All processes turned off buy a flag comment remain turned off until the corresponding flag comment that turns it back on is reached, or the end of the file is reached, or the flag comment `//jcf:all=on` is reached.
-* The flag comment `//jcf:all=on` will reenable all processes that have been turned off by comments, ie it returns formatting to the options specified in the configuration.
+* Turning a flag on will not enable it if it is not enabled in the configuration - the flags are to 'block out' a section of code where a format option is not wanted. The on state is there only to end a previous off state.
+* All processes (except parse) turned off by a flag comment remain turned off until the corresponding flag comment that turns it back on is reached, or the end of the file is reached, or the flag comment `//jcf:all=on` is reached.
+* The flag comment `//jcf:all=on` will reenable all processes that have been turned off by comments, ie it returns formatting to the options specified in the configuration (except parse).
 * Flag comments only affect the file in which they occur, from the position in which the occur onwards.
 * The effects of some of the flags overlap - this is done to allow degrees of granularity e.g. turn off all alignment, or just alignment of variable declarations for a block of code.
 * In these special comments, character case and some spaces are ignored.
@@ -68,4 +68,3 @@ For examples see the test case unit TestExclusionFlags.pas, for implmentation se
 
 * * *
 
-[Index](index.html)

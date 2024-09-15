@@ -171,6 +171,10 @@ begin
     try
       fcTokeniser.BuildTokenList(lcTokenList);
     except
+      on E: EBuildTokenListWarning do
+      begin
+        SendStatusMessage('', Format(lisMsgWarningClassMsg, ['', E.Message]), mtCodeWarning, -1, -1);
+      end;
       on E: Exception do
       begin
         fbConvertError := True;

@@ -39,7 +39,9 @@ uses
 
 type
 
-  TFormatFlag = (eAllFormat,
+  TFormatFlag = (
+    eParse,      //must be the first item.
+    eAllFormat,  //must be the second item.
     eObfuscate,
     eAddSpace, eRemoveSpace,
     eAddReturn, eRemoveReturn,
@@ -52,7 +54,8 @@ type
 
   { these flags control:
 
-    AllFormat: all clarify processes - turn the formatter as a whole on or off
+    parse: stop parsing tokens - to turn it on again need jcf:parse=on
+    AllFormat: all clarify processes - turn the formatter as a whole on or off (except parse)
     space: all processes that insert or remove spaces
     indent: inenting of code blocks etc
     return: all processes that insert or remove returns - note tat there is some overlap with
@@ -72,7 +75,7 @@ const
   FORMAT_COMMENT_PREFIX     = '//jcf:';
   FORMAT_COMMENT_PREFIX_LEN = 6;
 
-  ALL_FLAGS: TFormatFlags = [Low(TFormatFlag)..High(TFormatFlag)];
+  ALL_FLAGS: TFormatFlags = [eAllFormat..High(TFormatFlag)];
 
 implementation
 
@@ -87,8 +90,9 @@ type
   end;
 
 const
-  FORMAT_FLAG_NAMES: array[1..33] of TRFlagNameData =
+  FORMAT_FLAG_NAMES: array[1..34] of TRFlagNameData =
     (
+    (sName: 'parse'; eFlags: [eParse]),
     (sName: 'format'; eFlags: [eAllFormat]),
     (sName: 'obfuscate'; eFlags: [eObfuscate]),
 
@@ -138,6 +142,7 @@ const
     (sName: 'findreplaceuses'; eFlags: [eFindReplaceUses]),
 
     (sName: 'removecomments'; eFlags: [eRemoveComments])
+
     );
 
 
@@ -153,9 +158,9 @@ const
 { like StrToBoolean, but recognises 'on' and 'off' too }
 function LStrToBoolean(const ps: string): boolean;
 begin
-  if AnsiSameText(ps, 'on') then
+  if ps = 'on' then
     Result := True
-  else if AnsiSameText(ps, 'off') then
+  else if ps = 'off' then
     Result := False
   else
     Result := StrToBoolean(ps);
@@ -172,7 +177,7 @@ end;
 function ReadCommentJcfFlags(psComment: string; out psError: string;
   out peFlags: TFormatFlags; out pbOn: boolean): boolean;
 var
-  lsPrefix, lsRest: string;
+  lsRest: string;
   lsSetting, lsState: string;
   lbFlagFound: boolean;
   liLoop:      integer;
@@ -186,10 +191,15 @@ begin
   else if psComment = OLD_NOFORMAT_OFF then
     psComment := NOFORMAT_OFF;
 
+  if length(psComment) <= FORMAT_COMMENT_PREFIX_LEN then
+    exit;
+  if (psComment[3] <> 'j') and (psComment[3] <> 'J') then
+    exit;
+  psComment := LowerCase(psComment);
+
   { all comments without the required prefix are of no import to this code
     if it's not one, then exit without error }
-  lsPrefix := StrLeft(psComment, 6);
-  if not (AnsiSameText(lsPrefix, FORMAT_COMMENT_PREFIX)) then
+  if not CompareMem(@psComment[1], @FORMAT_COMMENT_PREFIX[1], FORMAT_COMMENT_PREFIX_LEN) then
     exit;
 
   // should be a valid jcf flag directive after here
@@ -225,7 +235,7 @@ begin
   lbFlagFound := False;
 
   // accept jcf:all=on to reset state to normal by removing all flags
-  if AnsiSameText(lsSetting, 'all') then
+  if lsSetting = 'all' then
   begin
     peFlags     := ALL_FLAGS;
     lbFlagFound := True;
@@ -235,7 +245,7 @@ begin
     { match the setting from the table }
     for liLoop := low(FORMAT_FLAG_NAMES) to high(FORMAT_FLAG_NAMES) do
     begin
-      if AnsiSameText(lsSetting, FORMAT_FLAG_NAMES[liLoop].sName) then
+      if lsSetting = FORMAT_FLAG_NAMES[liLoop].sName then
       begin
         peFlags     := FORMAT_FLAG_NAMES[liLoop].eFlags;
         lbFlagFound := True;

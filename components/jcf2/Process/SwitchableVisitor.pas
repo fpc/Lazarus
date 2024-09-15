@@ -44,6 +44,8 @@ type
     fbEnabled: boolean;
     // on/off flags that this processor responds to
     feFormatFlags: TFormatFlags;
+    fiParseDisableCount: integer;
+    fbSpecialCommentEnabled: boolean;
 
   protected
     // enabled state may be changed by this token
@@ -71,6 +73,8 @@ constructor TSwitchableVisitor.Create;
 begin
   inherited;
   fbEnabled := True;
+  fiParseDisableCount := 0;
+  fbSpecialCommentEnabled := False;
 
   //by default, format unless all processors are turned off
   feFormatFlags := [eAllFormat];
@@ -97,6 +101,15 @@ begin
   if lsError <> '' then
     raise TEParseError.Create(lsError, lcToken);
 
+  fbSpecialCommentEnabled := fbEnabled and (fiParseDisableCount = 0) and (not lbOn);  // keep formating //jcf:XXX=off
+  if eParse in leFlags then
+  begin
+    if not lbOn then
+      Inc(fiParseDisableCount)
+    else if fiParseDisableCount > 0 then
+      Dec(fiParseDisableCount);
+  end;
+
   // does this flag affect us? 
   if (FormatFlags * leFlags) <> [] then
     fbEnabled := lbOn;
@@ -120,10 +133,11 @@ begin
 
   InspectSourceToken(pcToken);
 
-  if fbEnabled then
+  if (fbEnabled and (fiParseDisableCount = 0)) or fbSpecialCommentEnabled then
     Result := EnabledVisitSourceToken(pcToken)
   else
     Result:= False;
+  fbSpecialCommentEnabled := False;
 end;
 
 end.
