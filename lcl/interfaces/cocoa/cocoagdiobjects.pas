@@ -281,7 +281,6 @@ type
     procedure ReCreateHandle_IfModified();
     procedure SetModified();
     function CreateSubImage(const ARect: TRect): CGImageRef;
-    function CreateMaskImage(const ARect: TRect): CGImageRef;
     procedure PreMultiplyAlpha();
     function GetNonPreMultipliedData(): PByte;
   public
@@ -1080,22 +1079,6 @@ begin
     Result := CGImageCreateWithImageInRect(MacOSAll.CGImageRef(ImageRep.CGImage), RectToCGRect(ARect));
 end;
 
-
-function TCocoaBitmap.CreateMaskImage(const ARect: TRect): CGImageRef;
-var
-  CGDataProvider: CGDataProviderRef;
-  Mask: CGImageRef;
-begin
-  CGDataProvider := CGDataProviderCreateWithData(nil, FData, FDataSize, nil);
-  try
-    Mask := CGImageMaskCreate(FWidth, FHeight, FBitsPerPixel,
-      FBitsPerPixel, FBytesPerRow, CGDataProvider, nil, 0);
-    Result := CGImageCreateWithImageInRect(Mask, RectToCGRect(ARect));
-  finally
-    CGDataProviderRelease(CGDataProvider);
-    CGImageRelease(Mask);
-  end;
-end;
 
 function TCocoaBitmap.GetColorSpace: NSString;
 begin
@@ -2166,7 +2149,6 @@ function TCocoaContext.StretchDraw(X, Y, Width, Height: Integer;
   Msk: TCocoaBitmap; XMsk, YMsk: Integer; Rop: DWORD): Boolean;
 var
   Bmp: TCocoaBitmap;
-  MskImage: CGImageRef = nil;
   ImgRect: CGRect;
 
   dcWidth: Integer;
@@ -2188,12 +2170,6 @@ begin
   inc(YSrc, -SrcDC.WindowOfs.Y);
 
   CGContextSaveGState(CGContext);
-  //apply window offset
-  if (Msk <> nil) and (Msk.Image <> nil) then begin
-    MskImage := Msk.CreateMaskImage(Bounds(XMsk, YMsk, SrcWidth, SrcHeight));
-    ImgRect := CGRectMake(x, y, dcWidth, dcHeight);
-    CGContextClipToMask(CGContext, ImgRect, MskImage);
-  end;
 
   if NOT SrcDC.ctx.isFlipped then begin
     YSrc := Bmp.Height - (SrcHeight + YSrc);
@@ -2201,8 +2177,6 @@ begin
 
   Result := DrawImageRep(GetNSRect(X, Y, Width, Height),GetNSRect(XSrc, YSrc, SrcWidth, SrcHeight), bmp.ImageRep);
 
-  if Assigned(MskImage) then
-    CGImageRelease(MskImage);
   CGContextRestoreGState(CGContext);
 
   AttachedBitmap_SetModified();
