@@ -2615,6 +2615,9 @@ end;
 destructor TPropInfoList.Destroy;
 begin
   if FList<>nil then FreeMem(FList);
+  {$IFDEF HasExtRtti}
+  if FListExt<>nil then FreeMem(FListExt);
+  {$ENDIF HasExtRtti}
 end;
 
 function TPropInfoList.Contains(P:PPropInfo):Boolean;
