@@ -659,7 +659,7 @@ msgid "Extra Indent for If...Else blocks"
 msgstr "if...else ブロックにインデントを追加する"
 
 #: jcfuiconsts.lisindentextraindentforinterfaceguid
-msgid "Extra Indent for interface guid"
+msgid "Extra Indent for interface GUID"
 msgstr ""
 
 #: jcfuiconsts.lisindentindentation

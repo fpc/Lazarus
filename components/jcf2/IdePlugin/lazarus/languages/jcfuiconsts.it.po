@@ -660,7 +660,7 @@ msgid "Extra Indent for If...Else blocks"
 msgstr "Indentazione extra per blocchi If...Else"
 
 #: jcfuiconsts.lisindentextraindentforinterfaceguid
-msgid "Extra Indent for interface guid"
+msgid "Extra Indent for interface GUID"
 msgstr ""
 
 #: jcfuiconsts.lisindentindentation
