@@ -375,9 +375,16 @@ begin
 end;
 
 procedure TConverter.SendStatusMessage(const psUnit, psMessage: String; const peMessageType: TStatusMessageType; const piY, piX: Integer);
+var
+  lsUnit: string;
 begin
   if Assigned(fOnStatusMessage) then
-    fOnStatusMessage(psUnit, psMessage, peMessageType, piY + fiFirstLineNumber - 1, piX);
+  begin
+    lsUnit := psUnit;
+    if lsUnit = '' then
+      lsUnit := ExtractFileName(fsFileName);
+    fOnStatusMessage(lsUnit, psMessage, peMessageType, piY + fiFirstLineNumber - 1, piX);
+  end;
 end;
 
 procedure TConverter.ShowParseTree;
