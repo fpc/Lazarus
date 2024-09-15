@@ -1006,7 +1006,7 @@ begin
     Result := StartBuilding;
 
   // Auto increment build number
-  if Result and not NoWriteProject
+  if Result and BuildAll and not NoWriteProject
   and Project1.ProjResources.VersionInfo.UseVersionInfo
   and Project1.ProjResources.VersionInfo.AutoIncrementBuild
   then begin
