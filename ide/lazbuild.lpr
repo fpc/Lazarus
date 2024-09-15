@@ -1030,7 +1030,7 @@ begin
     if ProjectDesc.InitProject(Result)<>mrOk then begin
       Result.EndUpdate;
       Result.Free;
-      Result:=nil;
+      exit(nil);
     end;
     Result.EndUpdate;
 
