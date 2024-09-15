@@ -388,6 +388,7 @@ begin
           SelectedIndex := SelectedIndex + (ThumbnailCount - 1 - SelectedIndex) div FColCount * FColCount;
       end;
   end;
+  Key := 0; // discard key... not handled in TWinControl or handled here
 end;
 
 procedure TBasicThumbnailViewer.MouseDown(Button: TMouseButton; Shift:TShiftState;
