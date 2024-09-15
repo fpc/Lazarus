@@ -1204,6 +1204,7 @@ begin
   fieldControl.setDrawsBackground( False );
   fieldControl.setEditable( False );
   fieldControl.setLineBreakMode( NSLineBreakByTruncatingTail );
+  fieldControl.setAllowsExpansionToolTips(True);
   self.setTextField( fieldControl );
   self.addSubview( fieldControl );
 end;
