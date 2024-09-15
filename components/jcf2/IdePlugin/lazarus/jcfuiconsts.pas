@@ -112,7 +112,7 @@ resourcestring
   lisIndentIndentForProcedureBody = 'Indent for procedure body';
   lisIndentIndentNestedTypes = 'Indent nested types';
   lisIndentIndentVarAndConstInClass = 'Indent var and const in class';
-  lisIndentExtraIndentForInterfaceGuid = 'Extra Indent for interface guid';
+  lisIndentExtraIndentForInterfaceGuid = 'Extra Indent for interface GUID';
 
   //Blank lines tab
   lisBLBlankLines = 'Blank Lines';
