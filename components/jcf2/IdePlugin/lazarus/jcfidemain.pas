@@ -339,6 +339,8 @@ begin
       end;
     end;
   finally
+    if fcConverter.ConvertError and (IDEMessagesWindow<>nil) then
+      IDEMessagesWindow.ShowOnTop;
     fcConverter.Free;
   end;
 end;
@@ -384,6 +386,8 @@ begin
       DiffMergeEditor(srcEditor, outputstr, BlockBegin.Y, BlockEnd.Y);
     end;
   finally
+    if fcConverter.ConvertError and (IDEMessagesWindow<>nil) then
+      IDEMessagesWindow.ShowOnTop;
     fcConverter.Free;
   end;
 end;

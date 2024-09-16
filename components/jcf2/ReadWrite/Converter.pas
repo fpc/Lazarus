@@ -382,7 +382,7 @@ begin
   begin
     lsUnit := psUnit;
     if lsUnit = '' then
-      lsUnit := ExtractFileName(fsFileName);
+      lsUnit := fsFileName;
     fOnStatusMessage(lsUnit, psMessage, peMessageType, piY + fiFirstLineNumber - 1, piX);
   end;
 end;

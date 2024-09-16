@@ -35,7 +35,7 @@ interface
 
 uses
   Classes, SysUtils,
-  SrcEditorIntf,
+  SrcEditorIntf, IDEMsgIntf,
   { local }
   Converter, ConvertTypes;
 
@@ -50,7 +50,7 @@ type
     fsCurrentUnitName: string;
     fiConvertCount: integer;
     fOnIncludeFile: TOnIncludeFile;
-    prOcedure SendStatusMessage(const psUnit, psMessage: string;
+    procedure SendStatusMessage(const psUnit, psMessage: string;
       const peMessageType: TStatusMessageType;
       const piY, piX: integer);
 
@@ -129,7 +129,9 @@ begin
     WriteToIDE(pciUnit, fcConverter.OutputCode);
     SendStatusMessage(pciUnit.FileName, 'Formatted unit', mtProgress, -1, -1);
     Inc(fiConvertCount);
-  end;
+  end
+  else if IDEMessagesWindow<>nil then
+    IDEMessagesWindow.ShowOnTop;
 end;
 
 function TEditorConverter.ReadFromIDE(const pcUnit: TSourceEditorInterface): string;
