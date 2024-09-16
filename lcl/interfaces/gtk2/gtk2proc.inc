@@ -2203,7 +2203,12 @@ var
       if im_context_widget<>TargetWidget then
       begin
         //DebugLn(['CheckDeadKey init im_context ',GetWidgetDebugReport(TargetWidget)]);
-        ResetDefaultIMContext;
+
+        // After mouse click, first composition char isn't returned to pre-edit string.
+        // It has occurred with fcitx IM, but should happen with other IM like nabi too.
+        // So the following line is commented out to fix this.
+        //ResetDefaultIMContext;
+
         im_context_widget:=TargetWidget;
         gtk_im_context_set_client_window(im_context,GetControlWindow(TargetWidget));
         //DebugLn(['CheckDeadKey im_context initialized']);
