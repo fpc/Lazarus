@@ -35,11 +35,10 @@ Type
       procedure SetDirectoriesBeforeFiles(AValue: Boolean);
       procedure SetFilesInTree(AValue: Boolean);
       procedure SetLastOpenedDir(AValue: string);
-      procedure SetRoootDir(AValue: TRootDir);
+      procedure SetRootDir(AValue: TRootDir);
       procedure SetSplitterPos(AValue: integer);
       procedure SetStartDir(AValue: TStartDir);
       procedure SetSyncCurrentEditor(AValue: Boolean);
-      procedure WriteConfig; virtual;
       procedure OnFormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     protected
       { Called by file browser window }
@@ -53,9 +52,10 @@ Type
       procedure ConfigWindow(AForm: TFileBrowserForm); virtual;
       function GetResolvedRootDir : String;
       function ShowConfig: Boolean;
+      procedure WriteConfig; virtual;
       procedure Notification(AComponent: TComponent; Operation: TOperation); override;
       property StartDir: TStartDir read FStartDir write SetStartDir;
-      property RootDir: TRootDir read FRootDir write SetRoootDir;
+      property RootDir: TRootDir read FRootDir write SetRootDir;
       property CustomStartDir: string read FCustomStartDir write SetCustomStartDir;
       property CustomRootDir: string read FCustomRootDir write SetCustomRootDir;
       property LastOpenedDir: string read FLastOpenedDir write SetLastOpenedDir;
@@ -129,7 +129,7 @@ begin
   FNeedSave:=True;
 end;
 
-procedure TFileBrowserController.SetRoootDir(AValue: TRootDir);
+procedure TFileBrowserController.SetRootDir(AValue: TRootDir);
 begin
   if FRootDir=AValue then Exit;
   FRootDir:=AValue;

@@ -90,6 +90,8 @@ begin
     sdCustomDir: RB  := RBThisDir;
   end;
   RB.Checked := True;
+  if C.StartDir=sdCustomDir then
+    DEStartDir.Directory:=C.CustomStartDir;
   case C.RootDir of
     rdProjectDir: RB := RBUseProjectDir;
     rdRootDir: RB := RBRootFileSystemRoot;
@@ -97,6 +99,8 @@ begin
     rdCustomDir: RB  := RBRootThisDir;
   end;
   RB.Checked := True;
+  if C.RootDir=rdCustomDir then
+    DERootDir.Directory:=C.CustomRootDir;
   CBShowFilesInline.Checked:=C.FilesInTree;
   CBShowDirectoriesBeforeFiles.Checked:=C.DirectoriesBeforeFiles;
   CBSyncCurrentEditor.Checked:=C.SyncCurrentEditor;
@@ -135,9 +139,9 @@ begin
     RD:=rdCustomDir;
   C.RootDir:=rD;
   if rD=rdCustomDir then
-    C.CustomRootDir:=DEStartDir.Directory
+    C.CustomRootDir:=DERootDir.Directory
   else
-    C.CustomStartDir:='';
+    C.CustomRootDir:='';
   C.FilesInTree:=CBShowFilesInline.Checked;
   C.SyncCurrentEditor:=CBSyncCurrentEditor.Checked;
 end;
