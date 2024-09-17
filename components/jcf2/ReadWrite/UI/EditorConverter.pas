@@ -130,7 +130,7 @@ begin
     SendStatusMessage(pciUnit.FileName, 'Formatted unit', mtProgress, -1, -1);
     Inc(fiConvertCount);
   end
-  else if IDEMessagesWindow<>nil then
+  else
     TJcfIdeMain.ShowIdeMessages;
 end;
 
