@@ -85,7 +85,7 @@ implementation
 
 uses
   { local }
-  JcfLog, JcfRegistrySettings, diffmerge, jcfbaseConsts;
+  JcfLog, JcfRegistrySettings, diffmerge, jcfbaseConsts, JcfIdeMain;
 
 constructor TEditorConverter.Create;
 begin
@@ -131,7 +131,7 @@ begin
     Inc(fiConvertCount);
   end
   else if IDEMessagesWindow<>nil then
-    IDEMessagesWindow.ShowOnTop;
+    TJcfIdeMain.ShowIdeMessages;
 end;
 
 function TEditorConverter.ReadFromIDE(const pcUnit: TSourceEditorInterface): string;

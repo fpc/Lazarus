@@ -80,6 +80,8 @@ type
     procedure DoRegistrySettings(Sender: TObject);
     procedure DoFormatSettings(Sender: TObject);
     procedure DoAbout(Sender: TObject);
+
+    class procedure ShowIdeMessages;
   end;
 
 
@@ -340,7 +342,7 @@ begin
     end;
   finally
     if fcConverter.ConvertError and (IDEMessagesWindow<>nil) then
-      IDEMessagesWindow.ShowOnTop;
+      ShowIdeMessages;
     fcConverter.Free;
   end;
 end;
@@ -387,7 +389,7 @@ begin
     end;
   finally
     if fcConverter.ConvertError and (IDEMessagesWindow<>nil) then
-      IDEMessagesWindow.ShowOnTop;
+      ShowIdeMessages;
     fcConverter.Free;
   end;
 end;
@@ -402,6 +404,11 @@ begin
   finally
     lcAbout.Free;
   end;
+end;
+
+class procedure TJcfIdeMain.ShowIdeMessages;
+begin
+  LazarusIDE.DoShowMessagesView({PutOnTop} True);
 end;
 
 procedure TJcfIdeMain.DoRegistrySettings(Sender: TObject);
