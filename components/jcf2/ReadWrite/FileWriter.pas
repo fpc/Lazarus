@@ -32,7 +32,7 @@ unit FileWriter;
   and writing the file at once
   }
 
-{$I JcfGlobal.inc}
+{$mode delphi}
 
 interface
 

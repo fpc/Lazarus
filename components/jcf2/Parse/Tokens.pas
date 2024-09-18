@@ -45,7 +45,7 @@ unit Tokens;
   ie 'while' -> ttWhile
 }
 
-{$I JcfGlobal.inc}
+{$mode delphi}
 
 interface
 

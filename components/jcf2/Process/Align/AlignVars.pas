@@ -29,7 +29,7 @@ unit AlignVars;
  Align the RHS of var types
 }
 
-{$I JcfGlobal.inc}
+{$mode delphi}
 
 interface
 

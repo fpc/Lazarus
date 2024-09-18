@@ -48,7 +48,7 @@ unit CodeReader;
 
 }
 
-{$I JcfGlobal.inc}
+{$mode delphi}
 
 interface
 

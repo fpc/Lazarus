@@ -25,7 +25,7 @@ See http://www.gnu.org/licenses/gpl.html
 ------------------------------------------------------------------------------*)
 {*)}
 
-{$I JcfGlobal.inc}
+{$mode delphi}
 
 {
 This unit contains string utility code

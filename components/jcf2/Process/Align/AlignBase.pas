@@ -30,7 +30,7 @@ unit AlignBase;
   This is the base class for all aligners
 }
 
-{$I JcfGlobal.inc}
+{$mode delphi}
 
 interface
 

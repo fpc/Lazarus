@@ -33,7 +33,7 @@ unit BuildTokenList;
  2017.05.17 ~pktv Added lexing of octal constants (ex. -> const a=&777;)
 }
 
-{$I JcfGlobal.inc}
+{$mode delphi}
 
 interface
 
@@ -43,8 +43,6 @@ uses
   Tokens, SourceToken, SourceTokenList, JcfUiTools;
 
 type
-
-  EBuildTokenListWarning= type Exception;
 
   TBuildTokenListFlag=(btlOnlyDirectives);
   TBuildTokenListFlags = set of TBuildTokenListFlag;

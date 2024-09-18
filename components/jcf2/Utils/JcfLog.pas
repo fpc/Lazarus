@@ -29,7 +29,7 @@ unit JcfLog;
 
   Log file }
 
-{$I JcfGlobal.inc}
+{$mode delphi}
 
 interface
 

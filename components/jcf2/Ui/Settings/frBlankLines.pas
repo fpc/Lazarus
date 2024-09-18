@@ -24,7 +24,7 @@ See http://www.gnu.org/licenses/gpl.html
 {*)}
 unit frBlankLines;
 
-{$I JcfGlobal.inc}
+{$mode delphi}
 
 interface
 

@@ -32,7 +32,7 @@ unit Converter;
   Wrappers will also support the interface IConvert
 }
 
-{$I JcfGlobal.inc}
+{$mode delphi}
 
 interface
 

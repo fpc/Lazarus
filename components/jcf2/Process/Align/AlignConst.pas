@@ -29,7 +29,7 @@ unit AlignConst;
  Align the RHS of consecutive = signs in a const section
 }
 
-{$I JcfGlobal.inc}
+{$mode delphi}
 
 interface
 

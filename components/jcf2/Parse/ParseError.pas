@@ -25,7 +25,7 @@ See http://www.gnu.org/licenses/gpl.html
 ------------------------------------------------------------------------------*)
 {*)}
 
-{$I JcfGlobal.inc}
+{$mode delphi}
 
 interface
 
@@ -50,6 +50,8 @@ type
     property YPosition: integer Read fiYPosition;
 
   end;
+
+  EBuildTokenListWarning= type Exception;
 
   procedure CheckNilPointer(aPtr:Pointer);
   procedure CheckNilInstance(aInstance: TObject; aLastValidToken: TObject);

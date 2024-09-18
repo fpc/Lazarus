@@ -30,7 +30,7 @@ unit SetWordList;
   Stores a generic word list
 }
 
-{$I JcfGlobal.inc}
+{$mode delphi}
 
 interface
 

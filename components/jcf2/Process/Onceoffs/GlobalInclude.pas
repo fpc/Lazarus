@@ -29,7 +29,7 @@ unit GlobalInclude;
  add in the global include
 }
 
-{$I JcfGlobal.inc}
+{$mode delphi}
 
 interface
 

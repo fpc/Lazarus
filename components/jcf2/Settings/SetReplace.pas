@@ -29,7 +29,7 @@ unit SetReplace;
   AFS 17 Jan 2K
 }
 
-{$I JcfGlobal.inc}
+{$mode delphi}
 
 interface
 

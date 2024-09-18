@@ -28,7 +28,7 @@ See http://www.gnu.org/licenses/gpl.html
 { AFS 30 December 2002
     - fix capitalisation on specified words
 }
-{$I JcfGlobal.inc}
+{$mode delphi}
 
 interface
 

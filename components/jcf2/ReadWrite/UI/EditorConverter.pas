@@ -29,7 +29,7 @@ See http://www.gnu.org/licenses/gpl.html
   Converter class for the IDE pluggin
 }
 
-{$I JcfGlobal.inc}
+{$mode delphi}
 
 interface
 

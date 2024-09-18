@@ -30,7 +30,7 @@ unit JcfSetBase;
 
 }
 
-{$I JcfGlobal.inc}
+{$mode delphi}
 
 interface
 

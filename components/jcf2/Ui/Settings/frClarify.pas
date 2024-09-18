@@ -25,7 +25,7 @@ See http://www.gnu.org/licenses/gpl.html
 
 unit frClarify;
 
-{$I JcfGlobal.inc}
+{$mode delphi}
 
 interface
 

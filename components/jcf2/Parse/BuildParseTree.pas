@@ -35,7 +35,7 @@ See http://www.gnu.org/licenses/gpl.html
  It is much extended via test cases as that is woefully incomplete
 }
 
-{$I JcfGlobal.inc}
+{$mode delphi}
 
 interface
 

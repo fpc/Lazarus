@@ -29,7 +29,7 @@ unit JcfSettings;
   The file name is stored in registry
   This allows centralised settings on a shared dir }
 
-{$I JcfGlobal.inc}
+{$mode delphi}
 
 interface
 

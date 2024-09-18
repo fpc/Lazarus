@@ -33,7 +33,7 @@ unit SetUses;
  - relace unit(s) with a substitute unit wherever they occur
  }
 
-{$I JcfGlobal.inc}
+{$mode delphi}
 
 interface
 

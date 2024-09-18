@@ -37,7 +37,7 @@ unit IntList;
 }
 
 
-{$I JcfGlobal.inc}
+{$mode delphi}
 
 interface
 

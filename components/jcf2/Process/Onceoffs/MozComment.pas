@@ -33,7 +33,7 @@ unit MozComment;
  The easiest way to fix that, is this code below:
 }
 
-{$I JcfGlobal.inc}
+{$mode delphi}
 
 interface
 

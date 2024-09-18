@@ -44,7 +44,7 @@ See http://www.gnu.org/licenses/gpl.html
   with the same interface
 }
 
-{$I JcfGlobal.inc}
+{$mode delphi}
 
 interface
 

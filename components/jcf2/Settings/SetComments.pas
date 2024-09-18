@@ -29,7 +29,7 @@ See http://www.gnu.org/licenses/gpl.html
   For now only options to remove empty comments
   but there may be more  }
 
-{$I JcfGlobal.inc}
+{$mode delphi}
 {$SCOPEDENUMS ON}
 
 interface

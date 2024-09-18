@@ -25,7 +25,7 @@ See http://www.gnu.org/licenses/gpl.html
 ------------------------------------------------------------------------------*)
 {*)}
 
-{$I ..\Include\JcfGlobal.inc}
+{$mode delphi}
 
 interface
 
