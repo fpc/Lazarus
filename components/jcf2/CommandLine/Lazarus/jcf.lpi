@@ -51,7 +51,7 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="..\..\Ui\jcfuitoolsnogui.pas"/>
+        <Filename Value="..\..\UiNoGui\jcfuitoolsnogui.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="JcfUiToolsNoGUI"/>
       </Unit>
@@ -65,7 +65,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir);..\..\Include"/>
-      <OtherUnitFiles Value="..;..\..\Ui"/>
+      <OtherUnitFiles Value="..;..\..\UiNoGui"/>
       <UnitOutputDirectory Value="..\..\lib\CommandLine-$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>
