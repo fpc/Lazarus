@@ -27,7 +27,7 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  Forms, StdCtrls, Dialogs, ExtCtrls, Spin,
+  Forms, StdCtrls, Dialogs, Controls, ExtCtrls, Spin,
   // LazUtils
   FileUtil, LazUTF8, LazLoggerBase,
   // LazControls
@@ -80,7 +80,9 @@ type
     spDropDownCount: TSpinEdit;
     procedure ExportDesktopButtonClick(Sender: TObject);
     procedure ImportDesktopButtonClick(Sender: TObject);
+    procedure LanguageComboBoxChange(Sender: TObject);
   private
+    fCurrentLang: TCaption;
     function LangIDToCaption(const LangID: string): string;
     function CaptionToLangID(const ACaption: string): string;
     procedure DoLoadSettings(AOptions: TAbstractIDEOptions);
@@ -110,6 +112,8 @@ var
   LangID: String;
   sl: TStringListUTF8Fast;
 begin
+  fCurrentLang := '';
+
   // language
   lblLanguage.Caption := dlgEnvLanguage;
   lblLangChangeHint.Caption := dlgEnvLanguageHint;
@@ -184,6 +188,7 @@ begin
   begin
     // language
     LanguageComboBox.Text:=LangIDToCaption(EnvOpt.LanguageID);
+    fCurrentLang := LanguageComboBox.Text;
     //debugln('TEnvironmentOptionsDialog.ReadSettings LanguageComboBox.ItemIndex=',dbgs(LanguageComboBox.ItemIndex),' LanguageID="',LanguageID,'" LanguageComboBox.Text="',LanguageComboBox.Text,'"');
 
     // mouse action
@@ -346,6 +351,11 @@ begin
   finally
     OpenDialog.Free;
   end;
+end;
+
+procedure TDesktopOptionsFrame.LanguageComboBoxChange(Sender: TObject);
+begin
+  lblLangChangeHint.Visible := LanguageComboBox.Text <> fCurrentLang;
 end;
 
 function TDesktopOptionsFrame.LangIDToCaption(const LangID: string): string;

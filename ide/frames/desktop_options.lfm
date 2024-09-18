@@ -109,6 +109,7 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     ShowHint = True
     Style = csDropDownList
     TabOrder = 0
+    OnChange = LanguageComboBoxChange
   end
   object AutoSaveIntervalInSecsComboBox: TComboBox
     AnchorSideLeft.Control = Owner
@@ -488,5 +489,6 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     Caption = 'lblLangChangeHint'
     Font.Style = [fsItalic]
     ParentFont = False
+    Visible = False
   end
 end
