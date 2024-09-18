@@ -64,7 +64,7 @@
       <Filename Value="..\..\lib\CommandLine-$(TargetCPU)-$(TargetOS)\jcf"/>
     </Target>
     <SearchPaths>
-      <IncludeFiles Value="$(ProjOutDir)"/>
+      <IncludeFiles Value="$(ProjOutDir);..\..\Include"/>
       <OtherUnitFiles Value="..;..\..\Ui"/>
       <UnitOutputDirectory Value="..\..\lib\CommandLine-$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
