@@ -405,7 +405,6 @@ begin
   Assert(piStartIndex >= 0);
   Assert(piEndIndex >= piStartIndex);
   Assert(piEndIndex <= Length(InputCode));
-  fiFirstLineNumber := 100;
 
   { round to nearest end of line }
   liRealInputStart := piStartIndex;

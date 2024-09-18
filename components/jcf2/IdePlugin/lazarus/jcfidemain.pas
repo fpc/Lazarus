@@ -278,6 +278,7 @@ begin
   GetSelectedBlockFullLines(BlockBegin,BlockEnd);
   fcConverter := TConverter.Create;
   try
+    ClearToolMessages;
     fcConverter.OnStatusMessage := LogIDEMessage;
     fcConverter.InputCode := sourceCode;
     fcConverter.GuiMessages := false; //true;
@@ -295,7 +296,6 @@ begin
     end
     else
     begin    //try formating wrapping selected code in fake unit.
-      ClearToolMessages;
       BlockBegin := srcEditor.BlockBegin;
       BlockBegin.X := 1;     // full lines.
       BlockEnd := srcEditor.BlockEnd;
