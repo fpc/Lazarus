@@ -25,7 +25,7 @@ See http://www.gnu.org/licenses/gpl.html
 ------------------------------------------------------------------------------*)
 {*)}
 
-  {$I JcfGlobal.inc}
+{$mode delphi}
 uses
   SysUtils, ConvertTypes, FileConverter, SettingsStream,
   JcfSettings, JcfRegistrySettings, WarnImbalancedComment,
