@@ -418,7 +418,7 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     ParentFont = False
   end
   object lblMouseAction: TDividerBevel
-    AnchorSideTop.Control = LanguageComboBox
+    AnchorSideTop.Control = lblLangChangeHint
     AnchorSideTop.Side = asrBottom
     Left = 0
     Height = 15
@@ -474,5 +474,19 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     ShowHint = True
     TabOrder = 13
     Value = 8
+  end
+  object lblLangChangeHint: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = LanguageComboBox
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 15
+    Top = 44
+    Width = 103
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 3
+    Caption = 'lblLangChangeHint'
+    Font.Style = [fsItalic]
+    ParentFont = False
   end
 end

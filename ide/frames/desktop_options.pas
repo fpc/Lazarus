@@ -50,6 +50,7 @@ type
     AutoSaveIntervalInSecsComboBox: TComboBox;
     AutoSaveIntervalInSecsLabel: TLabel;
     AutoSaveProjectCheckBox: TCheckBox;
+    lblLangChangeHint: TLabel;
     lblDropDownCount: TLabel;
     lblComboBoxes: TDividerBevel;
     lblCheckAndAutoSave: TDividerBevel;
@@ -111,7 +112,7 @@ var
 begin
   // language
   lblLanguage.Caption := dlgEnvLanguage;
-  LanguageComboBox.Hint := dlgEnvLanguageHint;
+  lblLangChangeHint.Caption := dlgEnvLanguageHint;
 
   // languages: first the automatic, then sorted the rest
   sl:=TStringListUTF8Fast.Create;
