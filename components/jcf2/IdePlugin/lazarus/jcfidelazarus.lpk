@@ -9,7 +9,7 @@
       <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
-        <IncludeFiles Value="..\..\Include;..\..\Ui\Settings;..\..\Ui\UI"/>
+        <IncludeFiles Value="..\..\Ui\Settings;..\..\Ui\UI"/>
         <OtherUnitFiles Value="..\..\Parse\UI;..\..\Ui\Settings;..\..\ReadWrite\UI;..\..\Utils\UI;..\..\Ui\UI"/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\$(LCLWidgetType)"/>
       </SearchPaths>

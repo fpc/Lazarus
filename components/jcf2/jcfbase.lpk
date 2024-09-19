@@ -7,7 +7,6 @@
       <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
-        <IncludeFiles Value="Include"/>
         <OtherUnitFiles Value="Parse;Parse\PreProcessor;Process;Process\Align;Process\Capitalisation;Process\Indent;Process\Info;Process\Obfuscate;Process\Onceoffs;Process\Returns;Process\Spacing;Process\Transform;Process\Warnings;ReadWrite;Settings;Settings\Streams;Ui;Utils"/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
@@ -15,7 +14,7 @@
     <Description Value="Jedi code format base package"/>
     <License Value="Mozilla Public License v1.1  or  GNU General Public License v2 (dual license)"/>
     <Version Major="1"/>
-    <Files Count="123">
+    <Files Count="122">
       <Item1>
         <Filename Value="Parse\AsmKeywords.pas"/>
         <UnitName Value="AsmKeywords"/>
@@ -497,17 +496,13 @@
         <UnitName Value="JcfUnicodeFiles"/>
       </Item120>
       <Item121>
-        <Filename Value="Include\JcfGlobal.inc"/>
-        <Type Value="Include"/>
-      </Item121>
-      <Item122>
         <Filename Value="JcfVersionConsts.pas"/>
         <UnitName Value="JcfVersionConsts"/>
-      </Item122>
-      <Item123>
+      </Item121>
+      <Item122>
         <Filename Value="jcfbaseconsts.pas"/>
         <UnitName Value="jcfbaseconsts"/>
-      </Item123>
+      </Item122>
     </Files>
     <CompatibilityMode Value="True"/>
     <i18n>
@@ -523,7 +518,6 @@
       </Item2>
     </RequiredPkgs>
     <UsageOptions>
-      <IncludePath Value="Include"/>
       <UnitPath Value="$(PkgOutDir)"/>
     </UsageOptions>
     <PublishOptions>
