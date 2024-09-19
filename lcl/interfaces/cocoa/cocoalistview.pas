@@ -346,6 +346,7 @@ end;
 procedure TCocoaListView.lclClearCallback;
 begin
   callback:= nil;
+  _backendControl.lclClearCallback;
 end;
 
 function TCocoaListView.lclContentView: NSView;

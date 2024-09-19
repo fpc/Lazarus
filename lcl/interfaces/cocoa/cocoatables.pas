@@ -666,11 +666,14 @@ begin
 end;
 
 procedure TCocoaTableListView.restoreFromStableSelection;
+var
+  selection: NSIndexSet;
 begin
   if NOT Assigned(self.callback) then
     Exit;
 
-  self.selectRowIndexesByProgram( self.callback.selectionIndexSet );
+  selection:= self.callback.selectionIndexSet;
+  self.selectRowIndexesByProgram( selection );
 end;
 
 procedure TCocoaTableListView.reloadData;
