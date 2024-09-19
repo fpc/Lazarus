@@ -84,6 +84,7 @@ function GetNSText(text: NSText): string; inline;
 
 procedure SetNSControlValue(c: NSControl; const S: String); inline;
 function GetNSControlValue(c: NSControl): String; inline;
+procedure NSControlMoveCaretToTheEnd(c: NSControl);
 
 procedure ColorToRGBFloat(cl: TColorRef; var r,g,b: Single); inline;
 function RGBToColorFloat(r,g,b: Single): TColorRef; inline;
@@ -1060,6 +1061,17 @@ begin
     Result := NSStringToString(c.stringValue)
   else
     Result := '';
+end;
+
+procedure NSControlMoveCaretToTheEnd(c: NSControl);
+var
+  range: NSRange;
+begin
+  if c.currentEditor <> nil then begin
+    range.location:= NSUIntegerMax;
+    range.length:= 0;
+    c.currentEditor.setSelectedRange( range );
+  end;
 end;
 
 { NSLCLDebugExtension }
