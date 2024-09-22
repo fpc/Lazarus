@@ -33,6 +33,8 @@ type
     FKeyBinding: TEditorMacroKeyBinding;
     FPrivateCompiler: TEMSPSPascalCompiler;
     FPrivateExec: TEMSTPSExec;
+    FCachedCompiled, FCachedCompiledDbg: tbtString;
+
     function GetCompiler: TEMSPSPascalCompiler;
     function GetExec: TEMSTPSExec;
     procedure SetCompiler(AValue: TEMSPSPascalCompiler);
@@ -282,7 +284,8 @@ end;
 
 procedure TEMSEditorMacro.DoPlaybackMacro(aEditor: TWinControl);
 var
-  s, s2: tbtString;
+  s: String;
+  s2: tbtString;
   ExObj: TObject;
   i, x, y: Cardinal;
 begin
@@ -293,14 +296,19 @@ begin
     OnStateChange(Self);
 
   try
-    Compile;
-    if IsInvalid then exit;
+    if FCachedCompiled = '' then begin
+      Compile;
+      if IsInvalid then exit;
 
-    Compiler.GetOutput(s{%H-});
-    if not Exec.LoadData(s) then // Load the data from the Data string.
-      exit;
-    Compiler.GetDebugOutput(s2{%H-});
-    Exec.LoadDebugData(s2);
+      Compiler.GetOutput(FCachedCompiled{%H-});
+      if not Exec.LoadData(FCachedCompiled) then // Load the data from the Data string.
+        exit;
+      Compiler.GetDebugOutput(FCachedCompiledDbg{%H-});
+      Exec.LoadDebugData(FCachedCompiledDbg);
+    end
+    else begin
+      Exec.Cleanup;
+    end;
 
     Exec.SynEdit := aEditor as TCustomSynEdit;
     try
@@ -388,6 +396,8 @@ end;
 procedure TEMSEditorMacro.AssignEventsFrom(AMacroRecorder: TEditorMacro);
 begin
   FHasError := False;
+  FCachedCompiled := '';
+  FCachedCompiledDbg := '';
   if AMacroRecorder = nil then
     Clear
   else
@@ -401,6 +411,8 @@ end;
 
 procedure TEMSEditorMacro.Clear;
 begin
+  FCachedCompiled := '';
+  FCachedCompiledDbg := '';
   FSource := '';
   FHasError := False;
   DoChanged;
@@ -413,6 +425,8 @@ end;
 
 procedure TEMSEditorMacro.SetFromSource(const AText: String);
 begin
+  FCachedCompiled := '';
+  FCachedCompiledDbg := '';
   FSource := AText;
   Compile;
   DoChanged;
@@ -431,6 +445,8 @@ procedure TEMSEditorMacro.ReadFromXmlConf(AConf: TXMLConfig; const APath: String
 var
   s: String;
 begin
+  FCachedCompiled := '';
+  FCachedCompiledDbg := '';
   s := AConf.GetValue(APath + 'Code/Value', '');
   FSource := s;
   FixBeginEnd;

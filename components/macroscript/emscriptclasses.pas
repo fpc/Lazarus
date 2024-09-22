@@ -94,7 +94,8 @@ type
 
   { TEMSTPSExec }
 
-  TEMSTPSExec = class(TPSDebugExec)
+  //TEMSTPSExec = class(TPSDebugExec)  // Required for real Debug // overrides "RunLine"
+  TEMSTPSExec = class(TPSCustomDebugExec)
   protected
     FCLassImp: TPSRuntimeClassImporter;
     FSynEdit: TCustomSynEdit;
