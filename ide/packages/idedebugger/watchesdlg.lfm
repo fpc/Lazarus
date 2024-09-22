@@ -53,7 +53,7 @@ object WatchesDlg: TWatchesDlg
       end
       object ToolButton2: TToolButton
         Left = 24
-        Height = 22
+        Height = 5
         Top = 0
         Caption = 'ToolButton2'
         Style = tbsDivider
@@ -75,7 +75,7 @@ object WatchesDlg: TWatchesDlg
       end
       object ToolButton6: TToolButton
         Left = 152
-        Height = 22
+        Height = 5
         Top = 0
         Caption = 'ToolButton6'
         Style = tbsDivider
@@ -97,7 +97,7 @@ object WatchesDlg: TWatchesDlg
       end
       object ToolButton10: TToolButton
         Left = 203
-        Height = 22
+        Height = 5
         Top = 0
         Caption = 'ToolButton10'
         Style = tbsDivider
@@ -127,18 +127,20 @@ object WatchesDlg: TWatchesDlg
       end
       object ToolButton3: TToolButton
         Left = 121
-        Height = 22
+        Height = 8
         Top = 0
         Caption = 'ToolButton3'
         Style = tbsSeparator
       end
     end
     object tvWatches: TDbgTreeView
+      Cursor = 63
       Left = 0
       Height = 218
       Top = 22
       Width = 315
       Align = alClient
+      DefaultNodeHeight = 19
       DefaultText = 'Node'
       DragMode = dmAutomatic
       DragType = dtVCL
@@ -251,6 +253,10 @@ object WatchesDlg: TWatchesDlg
     end
     object popEnabled: TMenuItem
       Action = actToggleCurrentEnable
+    end
+    object popupWatchFormatPresets: TMenuItem
+      Caption = 'popupWatchFormatPresets'
+      Visible = False
     end
     object popDelete: TMenuItem
       Action = actDeleteSelected

@@ -124,6 +124,7 @@ resourcestring
   lisDbgBreakpointPropertiesHint = 'Breakpoint Properties ...';
 
   liswlProperties = '&Properties';
+  liswlQuickFormat = '&Format';
   liswlDIsableAll = 'D&isable All';
   liswlENableAll = 'E&nable All';
   liswlDeLeteAll = 'De&lete All';
@@ -533,8 +534,16 @@ resourcestring
   DispFormatTargetInspect  = 'Inspect';
   DispFormatTargetEvalMod  = 'Eval/Modify';
   DispFormatOptChangingDescrAll  = 'Setting fallback options for all windows.';
-  DispFormatOptChangingDescrSome = 'Setting fallback options for all windows.';
-  DispFormatOptProjectText       = 'General and specific project settings will be used first. Only if none of them sets a default, then the IDE-wide settings will be tried.';
+  DispFormatOptChangingDescrSome = 'Setting fallback options for selected windows.';
+  DispFormatOptChangingDescrPreset = 'Presets that can be applied to individual watches/locals.';
+  DispFormatOptProjectText       = 'General and specific project settings will be used first. Only if none of them sets a default, then the IDE-wide settings will be used.';
+  DispFormatTargetPreset = 'Presets';
+  DispFormatPresetName   = 'Name';
+  DispFormatPresetNew    = 'New';
+  DispFormatPresetDel    = 'Delete';
+  DispFormatPresetDefaults = 'Add Defaults';
+  DispFormatPresetUp     = 'Up';
+  DispFormatPresetDown   = 'Down';
 
   dbgDoNotShowThisMessageAgain = 'Do not ask again';
   optDispGutterCustomDisplayformat = 'Custom Display Format';

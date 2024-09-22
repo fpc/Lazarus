@@ -39,6 +39,7 @@ type
     Panel1: TPanel;
     EdInspect: TComboBox;
     popConverter: TPopupMenu;
+    mnuWatchFormatPresets: TPopupMenu;
     popValFormatter: TPopupMenu;
     BtnExecute: TSpeedButton;
     ToolBar1: TToolBar;
@@ -116,6 +117,9 @@ type
     procedure ArrayNavSizeChanged(Sender: TObject);
     procedure DoDbgValFormatterMenuClicked(Sender: TObject);
     procedure DoBackConverterChanged(Sender: TObject);
+    procedure ApplyPreset(APreset: TWatchDisplayFormatPreset);
+    procedure DoFormatPresetClickedIde(Sender: TObject);
+    procedure DoFormatPresetClickedProject(Sender: TObject);
     procedure DoValFormatterChanged(Sender: TObject);
     procedure DoDbpConvMenuClicked(Sender: TObject);
     function GetDbgValueFormatter: TIdeDbgValueFormatterSelector;
@@ -157,6 +161,7 @@ type
     procedure Execute(const AnExpression: ansistring; ASkipHistory: Boolean = False);
     procedure UpdateData(AForceClear: Boolean = False);// context changed instead
     procedure DoContextChanged;
+    procedure UpdateFormatPresets;
 
     procedure FocusEnterExpression;
     procedure GoPrevBrowseEntry;
@@ -184,6 +189,7 @@ type
     property ShowCallFunction:   Boolean index 6 read GetShowButtons write SetShowButtons;
     property ShowDisplayFormat:  Boolean index 7 read GetShowButtons write SetShowButtons;
     property ShowWordWrap:       Boolean index 8 read GetShowButtons write SetShowButtons;
+    property ShowFormatPresets:  Boolean index 9 read GetShowButtons write SetShowButtons;
     property AllowMemDump:       Boolean read FAllowMemDump write FAllowMemDump;
 
     property ColClassIsDown:        Boolean index 0 read GetButtonDown;
@@ -237,6 +243,7 @@ begin
     6: Result := btnFunctionEval .Visible;
     7: Result := btnDisplayFormat.Visible;
     8: Result := btnWordWrap.Visible;
+    9: Result := btnDisplayFormat.Style = tbsDropDown;
   end;
 end;
 
@@ -549,6 +556,45 @@ begin
   UpdateData;
 end;
 
+procedure TWatchInspectNav.ApplyPreset(APreset: TWatchDisplayFormatPreset);
+var
+  d: TWatchDisplayFormat;
+begin
+  d := APreset.DisplayFormat;
+  d.CopyInheritedFrom(FDisplayFormat);
+  FDisplayFormat := d;
+
+  // DoDisplaySettingsUpdated;
+  if FOnDisplayFormatChanged <> nil then
+    FOnDisplayFormatChanged(Self);
+end;
+
+procedure TWatchInspectNav.DoFormatPresetClickedIde(Sender: TObject);
+var
+  i: PtrInt;
+begin
+  if (Sender = nil) or not(Sender is TMenuItem) then
+    exit;
+  i := TMenuItem(Sender).Tag;
+  if (i < 0) or (i >= DebuggerOptions.DisplayFormatConfigs.DisplayFormatPresetCount) then
+    exit;
+
+  ApplyPreset(DebuggerOptions.DisplayFormatConfigs.DisplayFormatPresets[i]);
+end;
+
+procedure TWatchInspectNav.DoFormatPresetClickedProject(Sender: TObject);
+var
+  i: PtrInt;
+begin
+  if (Sender = nil) or not(Sender is TMenuItem) then
+    exit;
+  i := TMenuItem(Sender).Tag;
+  if (i < 0) or (i >= DbgProjectLink.DisplayFormatConfigs.DisplayFormatPresetCount) then
+    exit;
+
+  ApplyPreset(DbgProjectLink.DisplayFormatConfigs.DisplayFormatPresets[i]);
+end;
+
 procedure TWatchInspectNav.SetHistoryList(AValue: TStrings);
 begin
   if FHistoryList = AValue then Exit;
@@ -577,6 +623,10 @@ begin
        end;
     7: btnDisplayFormat.Visible    := AValue;
     8: btnWordWrap.Visible         := AValue;
+    9: if AValue then
+        btnDisplayFormat.Style := tbsDropDown
+      else
+        btnDisplayFormat.Style := tbsButton;
   end;
 
   tbDivCol.Visible   := (ShowInspectColumns or ShowDisplayFormat);
@@ -852,6 +902,32 @@ procedure TWatchInspectNav.DoContextChanged;
 begin
   if (not btnPower.Down) or (not Visible) then exit;
   UpdateData;
+end;
+
+procedure TWatchInspectNav.UpdateFormatPresets;
+var
+  i: Integer;
+  m: TMenuItem;
+begin
+  mnuWatchFormatPresets.Items.Clear;
+  for i := 0 to DbgProjectLink.DisplayFormatConfigs.DisplayFormatPresetCount - 1 do begin
+    m := TMenuItem.Create(Self);
+    m.Caption := DbgProjectLink.DisplayFormatConfigs.DisplayFormatPresets[i].Name;
+    m.Tag := i;
+    m.OnClick := @DoFormatPresetClickedProject;
+    mnuWatchFormatPresets.Items.Add(m);
+  end;
+  if (DbgProjectLink.DisplayFormatConfigs.DisplayFormatPresetCount > 0) and
+     (DebuggerOptions.DisplayFormatConfigs.DisplayFormatPresetCount > 0)
+  then
+    mnuWatchFormatPresets.Items.AddSeparator;
+  for i := 0 to DebuggerOptions.DisplayFormatConfigs.DisplayFormatPresetCount - 1 do begin
+    m := TMenuItem.Create(Self);
+    m.Caption := DebuggerOptions.DisplayFormatConfigs.DisplayFormatPresets[i].Name;
+    m.Tag := i;
+    m.OnClick := @DoFormatPresetClickedIde;
+    mnuWatchFormatPresets.Items.Add(m);
+  end;
 end;
 
 procedure TWatchInspectNav.FocusEnterExpression;

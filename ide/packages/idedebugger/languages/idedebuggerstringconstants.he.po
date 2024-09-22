@@ -438,13 +438,17 @@ msgctxt "idedebuggerstringconstants.dispformatoptchangingdescrall"
 msgid "Setting fallback options for all windows."
 msgstr ""
 
+#: idedebuggerstringconstants.dispformatoptchangingdescrpreset
+msgid "Presets that can be applied to individual watches/locals."
+msgstr ""
+
 #: idedebuggerstringconstants.dispformatoptchangingdescrsome
 msgctxt "idedebuggerstringconstants.dispformatoptchangingdescrsome"
-msgid "Setting fallback options for all windows."
+msgid "Setting fallback options for selected windows."
 msgstr ""
 
 #: idedebuggerstringconstants.dispformatoptprojecttext
-msgid "General and specific project settings will be used first. Only if none of them sets a default, then the IDE-wide settings will be tried."
+msgid "General and specific project settings will be used first. Only if none of them sets a default, then the IDE-wide settings will be used."
 msgstr ""
 
 #: idedebuggerstringconstants.dispformatpointeraddressplain
@@ -470,6 +474,36 @@ msgstr ""
 #: idedebuggerstringconstants.dispformatpointerderefonly
 msgctxt "idedebuggerstringconstants.dispformatpointerderefonly"
 msgid "Only deref data"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatpresetdefaults
+msgid "Add Defaults"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatpresetdel
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatpresetdel"
+msgid "Delete"
+msgstr "מחק"
+
+#: idedebuggerstringconstants.dispformatpresetdown
+msgctxt "idedebuggerstringconstants.dispformatpresetdown"
+msgid "Down"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatpresetname
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dispformatpresetname"
+msgid "Name"
+msgstr "שם"
+
+#: idedebuggerstringconstants.dispformatpresetnew
+msgid "New"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformatpresetup
+msgctxt "idedebuggerstringconstants.dispformatpresetup"
+msgid "Up"
 msgstr ""
 
 #: idedebuggerstringconstants.dispformatsignauto
@@ -530,6 +564,10 @@ msgstr ""
 
 #: idedebuggerstringconstants.dispformattargetlocals
 msgid "Locals"
+msgstr ""
+
+#: idedebuggerstringconstants.dispformattargetpreset
+msgid "Presets"
 msgstr ""
 
 #: idedebuggerstringconstants.dispformattargetwatches
@@ -636,10 +674,12 @@ msgid "Index of first item to show"
 msgstr ""
 
 #: idedebuggerstringconstants.dlgsortdown
+msgctxt "idedebuggerstringconstants.dlgsortdown"
 msgid "Down"
 msgstr ""
 
 #: idedebuggerstringconstants.dlgsortup
+msgctxt "idedebuggerstringconstants.dlgsortup"
 msgid "Up"
 msgstr ""
 
@@ -1876,6 +1916,10 @@ msgstr ""
 #: idedebuggerstringconstants.liswlproperties
 msgid "&Properties"
 msgstr "תכונות&"
+
+#: idedebuggerstringconstants.liswlquickformat
+msgid "&Format"
+msgstr ""
 
 #: idedebuggerstringconstants.liswlwatchlist
 #, fuzzy

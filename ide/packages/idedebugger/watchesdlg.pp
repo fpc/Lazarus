@@ -96,6 +96,7 @@ type
     actProperties: TAction;
     InspectLabel: TLabel;
     btnShowDataAddr: TToolButton;
+    popupWatchFormatPresets: TMenuItem;
     pnlL: TPanel;
     ToolBar2: TToolBar;
     tbWordWrap: TToolButton;
@@ -178,6 +179,9 @@ type
     procedure popDeleteAllClick(Sender: TObject);
   private
     FQueuedUnLockCommandProcessing: Boolean;
+    procedure ApplyPreset(APreset: TWatchDisplayFormatPreset);
+    procedure DoFormatPresetClickedIde(Sender: TObject);
+    procedure DoFormatPresetClickedProject(Sender: TObject);
     procedure DoUnLockCommandProcessing(Data: PtrInt);
     function GetWatches: TIdeWatches;
     procedure ContextChanged(Sender: TObject);
@@ -342,6 +346,8 @@ begin
   actProperties.Caption:= liswlProperties;
   actProperties.ImageIndex := IDEImages.LoadImage('menu_environment_options');
 
+  popupWatchFormatPresets.Caption := liswlQuickFormat;
+
   actToggleInspectSite.Caption:= liswlInspectPane;
   actToggleInspectSite.ImageIndex := IDEImages.LoadImage('debugger_inspect');
 
@@ -391,6 +397,9 @@ begin
 end;
 
 procedure TWatchesDlg.DebugConfigChanged;
+var
+  i: Integer;
+  m: TMenuItem;
 begin
   inherited DebugConfigChanged;
   FWatchPrinter.DisplayFormatResolver.FallBackFormats.Clear;
@@ -398,6 +407,30 @@ begin
     DebuggerOptions.DisplayFormatConfigs.AddToTargetedList(FWatchPrinter.DisplayFormatResolver.FallBackFormats, dtfWatches);
   if DbgProjectLink.UseDisplayFormatConfigsFromProject then
     DbgProjectLink.DisplayFormatConfigs.AddToTargetedList(FWatchPrinter.DisplayFormatResolver.FallBackFormats, dtfWatches);
+
+  popupWatchFormatPresets.Clear;
+  popupWatchFormatPresets.Visible :=
+    (DbgProjectLink.DisplayFormatConfigs.DisplayFormatPresetCount > 0) or
+    (DebuggerOptions.DisplayFormatConfigs.DisplayFormatPresetCount > 0);
+  for i := 0 to DbgProjectLink.DisplayFormatConfigs.DisplayFormatPresetCount - 1 do begin
+    m := TMenuItem.Create(Self);
+    m.Caption := DbgProjectLink.DisplayFormatConfigs.DisplayFormatPresets[i].Name;
+    m.Tag := i;
+    m.OnClick := @DoFormatPresetClickedProject;
+    popupWatchFormatPresets.Add(m);
+  end;
+  if (DbgProjectLink.DisplayFormatConfigs.DisplayFormatPresetCount > 0) and
+     (DebuggerOptions.DisplayFormatConfigs.DisplayFormatPresetCount > 0)
+  then
+    popupWatchFormatPresets.AddSeparator;
+  for i := 0 to DebuggerOptions.DisplayFormatConfigs.DisplayFormatPresetCount - 1 do begin
+    m := TMenuItem.Create(Self);
+    m.Caption := DebuggerOptions.DisplayFormatConfigs.DisplayFormatPresets[i].Name;
+    m.Tag := i;
+    m.OnClick := @DoFormatPresetClickedIde;
+    popupWatchFormatPresets.Add(m);
+  end;
+
   UpdateAll;
 end;
 
@@ -1014,6 +1047,58 @@ procedure TWatchesDlg.DoUnLockCommandProcessing(Data: PtrInt);
 begin
   FQueuedUnLockCommandProcessing := False;
   DebugBoss.UnLockCommandProcessing;
+end;
+
+procedure TWatchesDlg.DoFormatPresetClickedProject(Sender: TObject);
+var
+  i: PtrInt;
+begin
+  if (Sender = nil) or not(Sender is TMenuItem) then
+    exit;
+  i := TMenuItem(Sender).Tag;
+  if (i < 0) or (i >= DbgProjectLink.DisplayFormatConfigs.DisplayFormatPresetCount) then
+    exit;
+
+  ApplyPreset(DbgProjectLink.DisplayFormatConfigs.DisplayFormatPresets[i]);
+end;
+
+procedure TWatchesDlg.ApplyPreset(APreset: TWatchDisplayFormatPreset);
+var
+  VNode: PVirtualNode;
+  Watch: TIdeWatch;
+  d: TWatchDisplayFormat;
+begin
+  if tvWatches.SelectedCount > 1 then begin
+    for VNode in tvWatches.SelectedItemNodes do begin
+      Watch := TIdeWatch(tvWatches.NodeItem[VNode]);
+      if (Watch.TopParentWatch <> Watch) then
+        continue;
+      d := APreset.DisplayFormat;
+      d.CopyInheritedFrom(Watch.DisplayFormat);
+      Watch.DisplayFormat := d;
+    end;
+  end
+  else begin
+    Watch := TIdeWatch(GetSelected);
+    if (Watch.TopParentWatch = Watch) then begin
+      d := APreset.DisplayFormat;
+      d.CopyInheritedFrom(Watch.DisplayFormat);
+      Watch.DisplayFormat := d;
+    end;
+  end;
+end;
+
+procedure TWatchesDlg.DoFormatPresetClickedIde(Sender: TObject);
+var
+  i: PtrInt;
+begin
+  if (Sender = nil) or not(Sender is TMenuItem) then
+    exit;
+  i := TMenuItem(Sender).Tag;
+  if (i < 0) or (i >= DebuggerOptions.DisplayFormatConfigs.DisplayFormatPresetCount) then
+    exit;
+
+  ApplyPreset(DebuggerOptions.DisplayFormatConfigs.DisplayFormatPresets[i]);
 end;
 
 procedure TWatchesDlg.DoBeginUpdate;

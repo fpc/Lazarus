@@ -182,6 +182,12 @@ begin
     DebuggerOptions.DisplayFormatConfigs.AddToTargetedList(FWatchPrinter.DisplayFormatResolver.FallBackFormats, dtfEvalMod);
   if DbgProjectLink.UseDisplayFormatConfigsFromProject then
     DbgProjectLink.DisplayFormatConfigs.AddToTargetedList(FWatchPrinter.DisplayFormatResolver.FallBackFormats, dtfEvalMod);
+
+  WatchInspectNav1.UpdateFormatPresets;
+  WatchInspectNav1.ShowFormatPresets :=
+    (DbgProjectLink.DisplayFormatConfigs.DisplayFormatPresetCount > 0) or
+    (DebuggerOptions.DisplayFormatConfigs.DisplayFormatPresetCount > 0);
+
   DoDispFormatChanged(nil);
 end;
 

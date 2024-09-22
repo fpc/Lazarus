@@ -1,6 +1,7 @@
 unit IdeDebuggerDisplayFormats;
 
 {$mode objfpc}{$H+}
+{$ModeSwitch advancedrecords}
 
 interface
 
@@ -8,7 +9,7 @@ uses
   // IdeIntf
   IdeDebuggerWatchValueIntf,
   // LazUtils
-  Laz2_XMLCfg, Classes, fgl,
+  Laz2_XMLCfg, Classes, sysutils, fgl,
   // IdeDebugger
   IdeDebuggerStringConstants, IdeDebuggerUtils;
 
@@ -21,6 +22,34 @@ type
     dtfInspect,
     dtfEvalMod
   );
+
+  { TWatchDisplayFormatPreset }
+
+  TWatchDisplayFormatPreset = record
+    Name: String;
+    DisplayFormat: TWatchDisplayFormat;
+    class operator = (a,b: TWatchDisplayFormatPreset): boolean;
+    procedure Init;
+    procedure LoadFromXml(AXMLCfg: TRttiXMLConfig; APath: String);
+    procedure SaveToXml(AXMLCfg: TRttiXMLConfig; APath: String);
+  end;
+
+  { TWatchDisplayFormatPresetList }
+
+  TWatchDisplayFormatPresetList = class(specialize TFPGList<TWatchDisplayFormatPreset>)
+  private
+    FNoDefaultOnEmpty: boolean;
+  protected
+    FDisplayFormatPresetsDefaults: TWatchDisplayFormatPresetList; // pointer to global list
+  public
+    function IndexOfName(AName: String): integer;
+    function IndexOfFormat(const ADisplayFormat: TWatchDisplayFormat): integer;
+    function Compare(AnOtherList: TWatchDisplayFormatPresetList): boolean;
+    function CountFormatsShared(AnOtherList: TWatchDisplayFormatPresetList): integer;
+    function HasAllPresets: boolean;
+    function HasPresetsList: boolean;
+    property Defaults: TWatchDisplayFormatPresetList read FDisplayFormatPresetsDefaults;
+  end;
 
   { TWatchDisplayFormatList }
 
@@ -37,14 +66,17 @@ type
   TDisplayFormatConfig = class(specialize TChangeNotificationGeneric<TObject>)
   private
     FDefaultDisplayFormats: array [TDisplayFormatTarget] of TWatchDisplayFormat;
+    FDisplayFormatPresets: TWatchDisplayFormatPresetList;
   private
     FGLobalDefault: Boolean;
     FChanged: Boolean;
     FOnChanged: TNotifyEvent;
     procedure DoChanged;
     function GetDefaultDisplayFormats(AnIndex: TDisplayFormatTarget): TWatchDisplayFormat;
+    function GetDisplayFormatPresets(AnIndex: integer): TWatchDisplayFormatPreset;
     procedure SetChanged(AValue: Boolean);
     procedure SetDefaultDisplayFormats(AnIndex: TDisplayFormatTarget; AValue: TWatchDisplayFormat);
+    procedure SetDisplayFormatPresets(AnIndex: integer; AValue: TWatchDisplayFormatPreset);
   public
     constructor Create(AGLobalDefault: Boolean = False);
     destructor Destroy; override;
@@ -58,6 +90,13 @@ type
 
     property DefaultDisplayFormats[AnIndex: TDisplayFormatTarget]: TWatchDisplayFormat
       read GetDefaultDisplayFormats write SetDefaultDisplayFormats; default;
+
+    function DisplayFormatPresetCount: integer;
+    function AddDisplayFormatPreset(APreset: TWatchDisplayFormatPreset): integer;
+    property DisplayFormatPresets[AnIndex: integer]: TWatchDisplayFormatPreset
+      read GetDisplayFormatPresets write SetDisplayFormatPresets;
+    property DisplayFormatPresetList: TWatchDisplayFormatPresetList read FDisplayFormatPresets;
+
     property Changed: Boolean read FChanged write SetChanged;
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
   end;
@@ -112,6 +151,9 @@ const
     'dtfInspect',
     'dtfEvalMod'
   );
+
+var
+  TheDisplayFormatPresetsDefaults: TWatchDisplayFormatPresetList;
 
 procedure LoadDisplayFormatFromXMLConfig(const AConfig: TXMLConfig; const APath: string;
   var ADisplayFormat: TWatchDisplayFormat);
@@ -375,6 +417,87 @@ begin
   inherited Put(Index, Item);
 end;
 
+{ TWatchDisplayFormatPreset }
+
+class operator TWatchDisplayFormatPreset. = (a, b: TWatchDisplayFormatPreset
+  ): boolean;
+begin
+  Result := (a.Name          = b.Name) and
+            (a.DisplayFormat = b.DisplayFormat);
+end;
+
+procedure TWatchDisplayFormatPreset.Init;
+begin
+  Name := '';
+  DisplayFormat := DefaultWatchDisplayFormat;
+end;
+
+procedure TWatchDisplayFormatPreset.LoadFromXml(AXMLCfg: TRttiXMLConfig;
+  APath: String);
+begin
+  Name := AXMLCfg.GetValue(APath + 'Name', '');
+  LoadDisplayFormatFromXMLConfig(AXMLCfg, APath + 'DF/', DisplayFormat);
+end;
+
+procedure TWatchDisplayFormatPreset.SaveToXml(AXMLCfg: TRttiXMLConfig;
+  APath: String);
+begin
+  AXMLCfg.SetDeleteValue(APath + 'Name', Name, '');
+  SaveDisplayFormatToXMLConfig(AXMLCfg, APath + 'DF/', DisplayFormat);
+end;
+
+{ TWatchDisplayFormatPresetList }
+
+function TWatchDisplayFormatPresetList.IndexOfName(AName: String): integer;
+begin
+  Result := Count - 1;
+  while (Result >= 0) and (Items[Result].Name <> AName) do
+    dec(Result);
+end;
+
+function TWatchDisplayFormatPresetList.IndexOfFormat(const ADisplayFormat: TWatchDisplayFormat
+  ): integer;
+begin
+  Result := Count - 1;
+  while (Result >= 0) and (Items[Result].DisplayFormat <> ADisplayFormat) do
+    dec(Result);
+end;
+
+function TWatchDisplayFormatPresetList.Compare(
+  AnOtherList: TWatchDisplayFormatPresetList): boolean;
+var
+  c: Integer;
+begin
+  c := Count;
+  Result := c = AnOtherList.Count;
+  while Result and (c > 0) do begin
+    dec(c);
+    Result := Items[c] = AnOtherList[c];
+  end;
+end;
+
+function TWatchDisplayFormatPresetList.CountFormatsShared(
+  AnOtherList: TWatchDisplayFormatPresetList): integer;
+var
+  i: Integer;
+begin
+  Result := 0;
+  for i := 0 to Count - 1 do
+    if AnOtherList.IndexOfFormat(Items[i].DisplayFormat) >= 0 then
+      inc(Result);
+end;
+
+function TWatchDisplayFormatPresetList.HasAllPresets: boolean;
+begin
+  Result := (FDisplayFormatPresetsDefaults = nil) or
+            (FDisplayFormatPresetsDefaults.CountFormatsShared(Self) = FDisplayFormatPresetsDefaults.Count);
+end;
+
+function TWatchDisplayFormatPresetList.HasPresetsList: boolean;
+begin
+  Result := (FDisplayFormatPresetsDefaults <> nil);
+end;
+
 { TDisplayFormatConfig }
 
 procedure TDisplayFormatConfig.DoChanged;
@@ -388,6 +511,12 @@ function TDisplayFormatConfig.GetDefaultDisplayFormats(AnIndex: TDisplayFormatTa
   ): TWatchDisplayFormat;
 begin
   Result := FDefaultDisplayFormats[AnIndex];
+end;
+
+function TDisplayFormatConfig.GetDisplayFormatPresets(AnIndex: integer
+  ): TWatchDisplayFormatPreset;
+begin
+  Result := FDisplayFormatPresets[AnIndex];
 end;
 
 procedure TDisplayFormatConfig.SetChanged(AValue: Boolean);
@@ -410,9 +539,18 @@ begin
   end;
 end;
 
+procedure TDisplayFormatConfig.SetDisplayFormatPresets(AnIndex: integer;
+  AValue: TWatchDisplayFormatPreset);
+begin
+  FDisplayFormatPresets[AnIndex] := AValue;
+end;
+
 constructor TDisplayFormatConfig.Create(AGLobalDefault: Boolean);
 begin
   FGLobalDefault := AGLobalDefault;
+  FDisplayFormatPresets := TWatchDisplayFormatPresetList.Create;
+  if AGLobalDefault then
+    FDisplayFormatPresets.FDisplayFormatPresetsDefaults := TheDisplayFormatPresetsDefaults;
   inherited Create;
   Clear;
 end;
@@ -420,6 +558,7 @@ end;
 destructor TDisplayFormatConfig.Destroy;
 begin
   inherited Destroy;
+  FDisplayFormatPresets.Free;
   FreeChangeNotifications;
 end;
 
@@ -429,19 +568,33 @@ var
 begin
   for i in TDisplayFormatTarget do
     FDefaultDisplayFormats[i] := DefaultWatchDisplayFormat;
+  FDisplayFormatPresets.Clear;
 end;
 
 procedure TDisplayFormatConfig.Assign(ASource: TDisplayFormatConfig);
 var
   i: TDisplayFormatTarget;
-  c: Boolean;
+  c, c2: Boolean;
+  j: Integer;
 begin
   c := False;
   for i in TDisplayFormatTarget do begin
     c := c or (FDefaultDisplayFormats[i] = ASource.FDefaultDisplayFormats[i]);
     FDefaultDisplayFormats[i] := ASource.FDefaultDisplayFormats[i];
   end;
-  if c then begin
+
+
+  FDisplayFormatPresets.FDisplayFormatPresetsDefaults := ASource.FDisplayFormatPresets.FDisplayFormatPresetsDefaults;
+
+  c2 := FDisplayFormatPresets.Count <> ASource.FDisplayFormatPresets.Count;
+  if not c2 then
+    for j := 0 to FDisplayFormatPresets.Count - 1 do
+      if not(FDisplayFormatPresets[j] = ASource.FDisplayFormatPresets[j]) then
+        c2 := True;
+  if c2 then
+    FDisplayFormatPresets.Assign(ASource.FDisplayFormatPresets);
+
+  if c or c2 then begin
     FChanged := True;
     DoChanged;
   end;
@@ -463,19 +616,102 @@ end;
 procedure TDisplayFormatConfig.LoadFromXml(AXMLCfg: TRttiXMLConfig; APath: String);
 var
   i: TDisplayFormatTarget;
+  c, j: Integer;
+  p: TWatchDisplayFormatPreset;
 begin
   for i in TDisplayFormatTarget do
     LoadDisplayFormatFromXMLConfig(AXMLCfg, APath + XmlDisplayFormatTargetNames[i] + '/', FDefaultDisplayFormats[i]);
   CallChangeNotifications;
+  c := AXMLCfg.GetChildCount(APath + 'Presets');
+  FDisplayFormatPresets.Clear;
+  for j := 0 to c - 1 do begin
+    p.Init;
+    p.LoadFromXml(AXMLCfg, APath + 'Presets/P['+IntToStr(j+1) + ']/');
+    FDisplayFormatPresets.Add(p);
+  end;
+  if (FDisplayFormatPresets.FDisplayFormatPresetsDefaults <> nil) and
+     (FDisplayFormatPresets.Count = 0) and
+     (not AXMLCfg.GetValue(APath + 'PresetsSkipDefaults', False))
+  then
+    FDisplayFormatPresets.Assign(FDisplayFormatPresets.FDisplayFormatPresetsDefaults);
 end;
 
 procedure TDisplayFormatConfig.SaveToXml(AXMLCfg: TRttiXMLConfig; APath: String);
 var
   i: TDisplayFormatTarget;
+  j: Integer;
 begin
   for i in TDisplayFormatTarget do
     SaveDisplayFormatToXMLConfig(AXMLCfg, APath + XmlDisplayFormatTargetNames[i] + '/', FDefaultDisplayFormats[i]);
+  AXMLCfg.SetDeleteValue(APath + 'PresetsSkipDefaults', (FDisplayFormatPresets.Count = 0) and (FDisplayFormatPresets.FDisplayFormatPresetsDefaults <> nil), False);
+  AXMLCfg.DeletePath(APath + 'Presets');
+  if (FDisplayFormatPresets.FDisplayFormatPresetsDefaults = nil) or
+     (not FDisplayFormatPresets.Compare(FDisplayFormatPresets.FDisplayFormatPresetsDefaults))
+  then
+    for j := 0 to FDisplayFormatPresets.Count - 1 do
+      FDisplayFormatPresets[j].SaveToXml(AXMLCfg, APath + 'Presets/P['+IntToStr(j+1) + ']/');
 end;
 
+function TDisplayFormatConfig.DisplayFormatPresetCount: integer;
+begin
+  Result := FDisplayFormatPresets.Count;
+end;
+
+function TDisplayFormatConfig.AddDisplayFormatPreset(
+  APreset: TWatchDisplayFormatPreset): integer;
+begin
+  Result := FDisplayFormatPresets.Add(APreset);
+end;
+
+procedure PopulateDefaultPresets;
+var
+  p: TWatchDisplayFormatPreset;
+begin
+  p.Name := 'Decimal';
+  p.DisplayFormat := DefaultWatchDisplayFormat;
+  p.DisplayFormat.Num.UseInherited := False;
+  p.DisplayFormat.Num.BaseFormat := vdfBaseDecimal;
+  TheDisplayFormatPresetsDefaults.Add(p);
+
+  p.Name := 'Decimal (separator)';
+  p.DisplayFormat := DefaultWatchDisplayFormat;
+  p.DisplayFormat.Num.UseInherited := False;
+  p.DisplayFormat.Num.BaseFormat := vdfBaseDecimal;
+  p.DisplayFormat.Num.SeparatorDec := True;
+  TheDisplayFormatPresetsDefaults.Add(p);
+
+  p.Name := 'Hex';
+  p.DisplayFormat := DefaultWatchDisplayFormat;
+  p.DisplayFormat.Num.UseInherited := False;
+  p.DisplayFormat.Num.BaseFormat := vdfBaseHex;
+  p.DisplayFormat.Num.SeparatorHexBin := vdfhsWord;
+  TheDisplayFormatPresetsDefaults.Add(p);
+
+  p.Name := 'Bin';
+  p.DisplayFormat := DefaultWatchDisplayFormat;
+  p.DisplayFormat.Num.UseInherited := False;
+  p.DisplayFormat.Num.BaseFormat := vdfBaseBin;
+  p.DisplayFormat.Num.SeparatorHexBin := vdfhsLong;
+  TheDisplayFormatPresetsDefaults.Add(p);
+
+  p.Name := 'Structure: Value only';
+  p.DisplayFormat := DefaultWatchDisplayFormat;
+  p.DisplayFormat.Struct.UseInherited := False;
+  p.DisplayFormat.Struct.DataFormat := vdfStructValOnly;
+  TheDisplayFormatPresetsDefaults.Add(p);
+
+  p.Name := 'Structure: Field names';
+  p.DisplayFormat := DefaultWatchDisplayFormat;
+  p.DisplayFormat.Struct.UseInherited := False;
+  p.DisplayFormat.Struct.DataFormat := vdfStructFields;
+  TheDisplayFormatPresetsDefaults.Add(p);
+end;
+
+initialization
+  TheDisplayFormatPresetsDefaults := TWatchDisplayFormatPresetList.Create;
+  PopulateDefaultPresets;
+
+finalization
+  FreeAndNil(TheDisplayFormatPresetsDefaults);
 end.
 

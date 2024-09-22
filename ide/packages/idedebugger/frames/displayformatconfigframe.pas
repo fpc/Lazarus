@@ -975,6 +975,8 @@ end;
 
 procedure TDisplayFormatFrame.SetDisplayFormat(ADispFormat: TWatchDisplayFormat);
 begin
+  FDisplayFormatCount := 1;
+  SetLength(FDisplayFormat, 1);
   FDisplayFormat[0] := ADispFormat;
   UpdateDisplay;
 end;

@@ -14,42 +14,6 @@ object IdeDbgDisplayFormatOptionsFrame: TIdeDbgDisplayFormatOptionsFrame
     Align = alClient
     ClientHeight = 433
     ClientWidth = 587
-    inherited ToolBar1: TToolBar
-      Width = 587
-      inherited btnGlobal: TSpeedButton
-        AllowAllUp = True
-        Flat = True
-      end
-      inherited ToolButton1: TToolButton
-        Height = 22
-      end
-      inherited btnHint: TSpeedButton
-        AllowAllUp = True
-        Flat = True
-      end
-      inherited btnWatches: TSpeedButton
-        AllowAllUp = True
-        Flat = True
-      end
-      inherited btnLocals: TSpeedButton
-        AllowAllUp = True
-        Flat = True
-      end
-      inherited btnInspect: TSpeedButton
-        AllowAllUp = True
-        Flat = True
-      end
-      inherited btnEvalMod: TSpeedButton
-        AllowAllUp = True
-        Flat = True
-      end
-    end
-    inherited lblChangingDescr: TLabel
-      Width = 587
-    end
-    inherited lblProjectText: TLabel
-      Width = 587
-    end
     inherited DisplayFormatFrame1: TDisplayFormatFrame
       Height = 368
       Top = 65

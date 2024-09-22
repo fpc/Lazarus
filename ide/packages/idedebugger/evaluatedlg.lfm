@@ -10,14 +10,13 @@ object EvaluateDlg: TEvaluateDlg
   Constraints.MinHeight = 200
   Constraints.MinWidth = 300
   KeyPreview = True
-  LCLVersion = '3.99.0.0'
   OnClose = FormClose
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   OnMouseDown = FormMouseDown
   object txtResult: TMemo
     Left = 0
-    Height = 150
+    Height = 137
     Top = 112
     Width = 420
     Align = alClient
@@ -32,67 +31,135 @@ object EvaluateDlg: TEvaluateDlg
     inherited ToolBar1: TToolBar
       Height = 90
       Width = 420
-      inherited tbDivPower: TToolButton
-        Height = 22
-      end
-      inherited tbDivForwBackw: TToolButton
-        Height = 22
-      end
-      inherited tbDivFlags: TToolButton
-        Height = 22
-      end
-      inherited btnWordWrap: TToolButton
+      inherited btnColType: TToolButton
         Left = 1
         Top = 24
       end
+      inherited btnColVisibility: TToolButton
+        Left = 24
+        Top = 24
+      end
+      inherited btnWordWrap: TToolButton
+        Left = 47
+        Top = 24
+      end
       inherited tbDivCol: TToolButton
-        Left = 197
-        Height = 22
+        Left = 243
         Top = 24
       end
       inherited edFilter: TEditButton
-        Left = 47
+        Left = 93
         Top = 24
       end
       inherited ArrayNavigationBar1: TArrayNavigationBar
         Left = 1
-        Height = 23
+        Height = 36
         Top = 46
-        Width = 253
+        Width = 529
         AutoSize = True
-        ClientHeight = 23
-        ClientWidth = 253
+        ClientHeight = 36
+        ClientWidth = 529
         TabOrder = 1
+        inherited btnArrayStart: TSpeedButton
+          AnchorSideLeft.Control = WatchInspectNav1.ArrayNavigationBar1
+          AnchorSideTop.Control = WatchInspectNav1.ArrayNavigationBar1
+          AnchorSideBottom.Control = WatchInspectNav1.ArrayNavigationBar1
+          Height = 36
+        end
+        inherited btnArrayFastDown: TSpeedButton
+          AnchorSideTop.Control = WatchInspectNav1.ArrayNavigationBar1
+          AnchorSideBottom.Control = WatchInspectNav1.ArrayNavigationBar1
+          Height = 36
+        end
+        inherited edArrayStart: TLazIntegerEdit
+          AnchorSideTop.Control = WatchInspectNav1.ArrayNavigationBar1
+          AnchorSideBottom.Control = WatchInspectNav1.ArrayNavigationBar1
+          Height = 36
+        end
+        inherited btnArrayFastUp: TSpeedButton
+          AnchorSideTop.Control = WatchInspectNav1.ArrayNavigationBar1
+          AnchorSideBottom.Control = WatchInspectNav1.ArrayNavigationBar1
+          Height = 36
+        end
+        inherited btnArrayEnd: TSpeedButton
+          AnchorSideTop.Control = WatchInspectNav1.ArrayNavigationBar1
+          AnchorSideBottom.Control = WatchInspectNav1.ArrayNavigationBar1
+          Height = 36
+        end
+        inherited Label1: TLabel
+          AnchorSideTop.Control = WatchInspectNav1.ArrayNavigationBar1
+          AnchorSideBottom.Control = WatchInspectNav1.ArrayNavigationBar1
+          Height = 36
+        end
+        inherited btnArrayPageDec: TSpeedButton
+          AnchorSideTop.Control = WatchInspectNav1.ArrayNavigationBar1
+          AnchorSideBottom.Control = WatchInspectNav1.ArrayNavigationBar1
+          Height = 36
+        end
+        inherited edArrayPageSize: TLazIntegerEdit
+          AnchorSideTop.Control = WatchInspectNav1.ArrayNavigationBar1
+          AnchorSideBottom.Control = WatchInspectNav1.ArrayNavigationBar1
+          Height = 36
+        end
+        inherited btnArrayPageInc: TSpeedButton
+          AnchorSideTop.Control = WatchInspectNav1.ArrayNavigationBar1
+          AnchorSideBottom.Control = WatchInspectNav1.ArrayNavigationBar1
+          Height = 36
+        end
+        inherited lblBounds: TLabel
+          AnchorSideTop.Control = WatchInspectNav1.ArrayNavigationBar1
+          AnchorSideBottom.Control = WatchInspectNav1.ArrayNavigationBar1
+          Height = 36
+        end
+        inherited cbEnforceBound: TCheckBox
+          AnchorSideTop.Control = WatchInspectNav1.ArrayNavigationBar1
+          AnchorSideBottom.Control = WatchInspectNav1.ArrayNavigationBar1
+          Height = 36
+          Width = 133
+        end
+        inherited btnHide: TSpeedButton
+          AnchorSideTop.Control = WatchInspectNav1.ArrayNavigationBar1
+          AnchorSideBottom.Control = WatchInspectNav1.ArrayNavigationBar1
+          Left = 411
+          Height = 34
+          Width = 10
+        end
+        inherited cbAutoHide: TCheckBox
+          AnchorSideTop.Control = WatchInspectNav1.ArrayNavigationBar1
+          AnchorSideBottom.Control = WatchInspectNav1.ArrayNavigationBar1
+          Left = 427
+          Height = 36
+          Width = 102
+        end
       end
       inherited tbDivArray: TToolButton
-        Left = 254
-        Height = 22
-        Top = 46
-      end
-      inherited BtnAddWatch: TToolButton
-        Left = 259
-        Top = 46
-      end
-      inherited BtnInspect: TToolButton
         Left = 1
         Top = 68
       end
+      inherited BtnAddWatch: TToolButton
+        Left = 6
+        Top = 68
+      end
+      inherited BtnInspect: TToolButton
+        Left = 149
+        Top = 68
+      end
       inherited BtnEvaluate: TToolButton
-        Left = 326
-        Top = 46
+        Left = 84
+        Top = 68
       end
       inherited tbDivAdd: TToolButton
-        Left = 47
-        Height = 22
+        Left = 204
         Top = 68
       end
       inherited btnEvalHistory: TToolButton
-        Left = 52
+        Left = 209
         Top = 68
       end
       inherited btnDisplayFormat: TToolButton
-        Left = 24
+        Left = 70
         Top = 24
+        PopupMenu = nil
       end
     end
     inherited Panel1: TPanel
@@ -108,22 +175,22 @@ object EvaluateDlg: TEvaluateDlg
   end
   object Panel1: TPanel
     Left = 0
-    Height = 25
-    Top = 265
+    Height = 38
+    Top = 252
     Width = 420
     Align = alBottom
     AutoSize = True
     BorderSpacing.Top = 3
-    ClientHeight = 25
+    ClientHeight = 38
     ClientWidth = 420
     TabOrder = 2
     object EdModify: TComboBox
       Left = 1
-      Height = 23
+      Height = 36
       Top = 1
       Width = 398
       Align = alClient
-      ItemHeight = 15
+      ItemHeight = 0
       ParentShowHint = False
       ShowHint = True
       TabOrder = 0
@@ -132,7 +199,7 @@ object EvaluateDlg: TEvaluateDlg
     end
     object BtnExecModify: TSpeedButton
       Left = 399
-      Height = 23
+      Height = 36
       Top = 1
       Width = 20
       Align = alRight

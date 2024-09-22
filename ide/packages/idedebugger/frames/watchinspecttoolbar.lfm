@@ -11,8 +11,8 @@ object WatchInspectNav: TWatchInspectNav
   DesignTop = 35
   object ToolBar1: TToolBar
     Left = 0
-    Height = 47
-    Top = 25
+    Height = 60
+    Top = 38
     Width = 1040
     AutoSize = True
     Caption = 'ToolBar1'
@@ -44,20 +44,20 @@ object WatchInspectNav: TWatchInspectNav
       OnClick = btnBackwardClick
     end
     object btnForward: TToolButton
-      Left = 53
+      Left = 55
       Top = 2
       Caption = '>>'
       OnClick = btnForwardClick
     end
     object tbDivForwBackw: TToolButton
-      Left = 77
+      Left = 81
       Height = 22
       Top = 2
       Caption = 'tbDivForwBackw'
       Style = tbsDivider
     end
     object btnUseInstance: TToolButton
-      Left = 82
+      Left = 86
       Hint = 'Use Instance class'
       Top = 2
       AllowAllUp = True
@@ -69,7 +69,7 @@ object WatchInspectNav: TWatchInspectNav
       OnClick = btnFunctionEvalClick
     end
     object btnFunctionEval: TToolButton
-      Left = 134
+      Left = 149
       Hint = 'Evaluate Functions'
       Top = 2
       AllowAllUp = True
@@ -81,7 +81,7 @@ object WatchInspectNav: TWatchInspectNav
       OnClick = btnFunctionEvalClick
     end
     object btnUseConverter: TToolButton
-      Left = 189
+      Left = 213
       Hint = 'Use Converter'
       Top = 2
       AllowAllUp = True
@@ -92,7 +92,7 @@ object WatchInspectNav: TWatchInspectNav
       Style = tbsButtonDrop
     end
     object btnUseValFormatter: TToolButton
-      Left = 259
+      Left = 299
       Hint = 'Use Value-formatter'
       Top = 2
       AllowAllUp = True
@@ -103,14 +103,14 @@ object WatchInspectNav: TWatchInspectNav
       Style = tbsButtonDrop
     end
     object tbDivFlags: TToolButton
-      Left = 329
+      Left = 387
       Height = 22
       Top = 2
       Caption = 'tbDivFlags'
       Style = tbsDivider
     end
     object btnColClass: TToolButton
-      Left = 334
+      Left = 392
       Hint = 'Show Class Column'
       Top = 2
       AllowAllUp = True
@@ -122,7 +122,7 @@ object WatchInspectNav: TWatchInspectNav
       OnClick = btnColTypeClick
     end
     object btnColType: TToolButton
-      Left = 357
+      Left = 415
       Top = 2
       AllowAllUp = True
       Caption = 'T'
@@ -133,7 +133,7 @@ object WatchInspectNav: TWatchInspectNav
       OnClick = btnColTypeClick
     end
     object btnColVisibility: TToolButton
-      Left = 380
+      Left = 438
       Top = 2
       AllowAllUp = True
       Caption = 'V'
@@ -144,21 +144,21 @@ object WatchInspectNav: TWatchInspectNav
       OnClick = btnColTypeClick
     end
     object btnWordWrap: TToolButton
-      Left = 403
+      Left = 461
       Top = 2
       Style = tbsCheck
       OnClick = btnWordWrapClick
     end
     object tbDivCol: TToolButton
-      Left = 599
+      Left = 657
       Height = 22
       Top = 2
       Caption = 'tbDivCol'
       Style = tbsDivider
     end
     object edFilter: TEditButton
-      Left = 449
-      Height = 23
+      Left = 507
+      Height = 36
       Top = 2
       Width = 150
       ButtonWidth = 23
@@ -171,58 +171,130 @@ object WatchInspectNav: TWatchInspectNav
     end
     inline ArrayNavigationBar1: TArrayNavigationBar
       Left = 1
-      Height = 23
+      Height = 36
       Top = 24
-      Width = 476
+      Width = 529
       AutoSize = True
-      ClientHeight = 23
-      ClientWidth = 476
+      ClientHeight = 36
+      ClientWidth = 529
       TabOrder = 1
+      inherited btnArrayStart: TSpeedButton
+        AnchorSideLeft.Control = ArrayNavigationBar1
+        AnchorSideTop.Control = ArrayNavigationBar1
+        AnchorSideBottom.Control = ArrayNavigationBar1
+        Height = 36
+      end
+      inherited btnArrayFastDown: TSpeedButton
+        AnchorSideTop.Control = ArrayNavigationBar1
+        AnchorSideBottom.Control = ArrayNavigationBar1
+        Height = 36
+      end
+      inherited edArrayStart: TLazIntegerEdit
+        AnchorSideTop.Control = ArrayNavigationBar1
+        AnchorSideBottom.Control = ArrayNavigationBar1
+        Height = 36
+      end
+      inherited btnArrayFastUp: TSpeedButton
+        AnchorSideTop.Control = ArrayNavigationBar1
+        AnchorSideBottom.Control = ArrayNavigationBar1
+        Height = 36
+      end
+      inherited btnArrayEnd: TSpeedButton
+        AnchorSideTop.Control = ArrayNavigationBar1
+        AnchorSideBottom.Control = ArrayNavigationBar1
+        Height = 36
+      end
+      inherited Label1: TLabel
+        AnchorSideTop.Control = ArrayNavigationBar1
+        AnchorSideBottom.Control = ArrayNavigationBar1
+        Height = 36
+      end
+      inherited btnArrayPageDec: TSpeedButton
+        AnchorSideTop.Control = ArrayNavigationBar1
+        AnchorSideBottom.Control = ArrayNavigationBar1
+        Height = 36
+      end
+      inherited edArrayPageSize: TLazIntegerEdit
+        AnchorSideTop.Control = ArrayNavigationBar1
+        AnchorSideBottom.Control = ArrayNavigationBar1
+        Height = 36
+      end
+      inherited btnArrayPageInc: TSpeedButton
+        AnchorSideTop.Control = ArrayNavigationBar1
+        AnchorSideBottom.Control = ArrayNavigationBar1
+        Height = 36
+      end
+      inherited lblBounds: TLabel
+        AnchorSideTop.Control = ArrayNavigationBar1
+        AnchorSideBottom.Control = ArrayNavigationBar1
+        Height = 36
+      end
+      inherited cbEnforceBound: TCheckBox
+        AnchorSideTop.Control = ArrayNavigationBar1
+        AnchorSideBottom.Control = ArrayNavigationBar1
+        Height = 36
+        Width = 133
+      end
+      inherited btnHide: TSpeedButton
+        AnchorSideTop.Control = ArrayNavigationBar1
+        AnchorSideBottom.Control = ArrayNavigationBar1
+        Left = 411
+        Height = 34
+        Width = 10
+      end
+      inherited cbAutoHide: TCheckBox
+        AnchorSideTop.Control = ArrayNavigationBar1
+        AnchorSideBottom.Control = ArrayNavigationBar1
+        Left = 427
+        Height = 36
+        Width = 102
+      end
     end
     object tbDivArray: TToolButton
-      Left = 477
+      Left = 530
       Height = 22
       Top = 24
       Caption = 'tbDivArray'
       Style = tbsDivider
     end
     object BtnAddWatch: TToolButton
-      Left = 482
+      Left = 535
       Top = 24
       Caption = 'Add Watch'
       OnClick = BtnAddWatchClick
     end
     object BtnInspect: TToolButton
-      Left = 601
+      Left = 678
       Top = 24
       Caption = 'Inspect'
       OnClick = BtnInspectClick
     end
     object BtnEvaluate: TToolButton
-      Left = 549
+      Left = 613
       Top = 24
       Caption = 'Evaluate'
       OnClick = BtnEvaluateClick
     end
     object tbDivAdd: TToolButton
-      Left = 647
+      Left = 733
       Height = 22
       Top = 24
       Caption = 'tbDivAdd'
       Style = tbsDivider
     end
     object btnEvalHistory: TToolButton
-      Left = 652
+      Left = 738
       Top = 24
       Caption = 'History'
       DropdownMenu = mnuHistory
       Style = tbsButtonDrop
     end
     object btnDisplayFormat: TToolButton
-      Left = 426
+      Left = 484
       Top = 2
       AllowAllUp = True
       Caption = 'df'
+      DropdownMenu = mnuWatchFormatPresets
       ParentShowHint = False
       ShowHint = True
       Visible = False
@@ -231,22 +303,22 @@ object WatchInspectNav: TWatchInspectNav
   end
   object Panel1: TPanel
     Left = 0
-    Height = 25
+    Height = 38
     Top = 0
     Width = 1040
     Align = alTop
     AutoSize = True
     Caption = 'Panel1'
-    ClientHeight = 25
+    ClientHeight = 38
     ClientWidth = 1040
     TabOrder = 0
     object EdInspect: TComboBox
       Left = 1
-      Height = 23
+      Height = 36
       Top = 1
       Width = 1018
       Align = alClient
-      ItemHeight = 15
+      ItemHeight = 0
       TabOrder = 0
       TextHint = 'Enter Expression'
       OnChange = EdInspectChange
@@ -255,7 +327,7 @@ object WatchInspectNav: TWatchInspectNav
     end
     object BtnExecute: TSpeedButton
       Left = 1019
-      Height = 23
+      Height = 36
       Top = 1
       Width = 20
       Align = alRight
@@ -286,5 +358,9 @@ object WatchInspectNav: TWatchInspectNav
   object popValFormatter: TPopupMenu
     Left = 280
     Top = 56
+  end
+  object mnuWatchFormatPresets: TPopupMenu
+    Left = 496
+    Top = 80
   end
 end
