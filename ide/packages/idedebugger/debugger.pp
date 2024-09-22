@@ -557,6 +557,7 @@ type
                        const AThreadId: Integer;
                        const AStackFrame: Integer
                       );
+    destructor Destroy; override;
     procedure Assign(AnOther: TWatchValue); override;
     property Watch: TIdeWatch read GetWatch;
 
@@ -4629,6 +4630,13 @@ begin
   Create(AOwnerWatch);
   FThreadId := AThreadId;
   FStackFrame := AStackFrame;
+end;
+
+destructor TIdeWatchValue.Destroy;
+begin
+  inc(DbgStateChangeCounter);
+  if DbgStateChangeCounter = high(DbgStateChangeCounter) then DbgStateChangeCounter := 0;
+  inherited Destroy;
 end;
 
 procedure TIdeWatchValue.Assign(AnOther: TWatchValue);
