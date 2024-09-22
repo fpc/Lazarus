@@ -299,17 +299,28 @@ Value  for the control as an Int64 type.
 </short>
 <descr>
 <p>
-Value is an Int64 property which contains the decimal (base-10) value for the 
-control. Changing the property value causes the display Text in the control to 
-be updated and redisplayed. DisplayBase determines the numeric base (radix) for 
-the converted control Value. An optional prefix is used for numeric base values 
-in DisplayBase like base-2 (binary), base-8 (octal), and base-16 (hexadecimal).
+<var>Value</var> is an <var>Int64</var> property which contains the decimal 
+(base-10) value for the control. Changing the property value causes the display 
+Text in the control to be updated and redisplayed. DisplayBase determines the 
+numeric base (radix) for the converted control Value. An optional prefix is 
+used for numeric base values in DisplayBase like base-2 (binary), base-8 
+(octal), and base-16 (hexadecimal).
 </p>
 <p>
-Use MinValue and MaxValue to set lower and upper limits for the control Value.
+Use MinValue and MaxValue to set lower and upper limits for the control Value. 
+Changing the property causes the new value to be normalized for the limits in 
+MinValue and MaxValue; if the new value is not in the specified range, it is 
+changed to the corresponding lower or upper limit.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TLazIntegerEditGen.MaxValue"/>
+<link id="TLazIntegerEditGen.MinValue"/>
+<link id="TLazIntegerEditGen.DisplayBase"/>
+<link id="TLazIntegerEditGen.BinIndicator"/>
+<link id="TLazIntegerEditGen.HexIndicator"/>
+<link id="TLazIntegerEditGen.OctIndicator"/>
+</seealso>
 </element>
 
 <element name="TLazIntegerEditGen.CurrentValue">
