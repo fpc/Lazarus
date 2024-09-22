@@ -713,9 +713,9 @@ begin
   end;
 
   if NOT selection.isEqualToIndexSet(self.selectedRowIndexes) then begin
+    self.selectRowIndexesByProgram( selection );
     if Assigned(_processor) then
       _processor.onSelectOneItem( self, selection );
-    self.selectRowIndexesByProgram( selection );
   end;
 
   selection.release;
