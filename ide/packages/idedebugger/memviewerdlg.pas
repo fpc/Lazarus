@@ -9,7 +9,7 @@ uses
   StdCtrls, LCLType, Menus, IDEWindowIntf, IDEImagesIntf,
   IdeDebuggerWatchValueIntf, SrcEditorIntf, EditorSyntaxHighlighterDef,
   IDEOptEditorIntf, SynEdit, DbgIntfDebuggerBase, LazClasses, LazDebuggerIntf,
-  LazDebuggerIntfBaseTypes, DebuggerDlg, BaseDebugManager, Debugger,
+  LazDebuggerIntfBaseTypes, LazDebuggerUtils, DebuggerDlg, BaseDebugManager, Debugger,
   IdeDebuggerStringConstants, SynGutterLineNumber, SynEditHighlighter,
   LazNumEdit;
 
@@ -121,7 +121,7 @@ procedure TMemViewDlg.SynGutterLineNumber1FormatLineNumber(
   Sender: TSynGutterLineNumber; ALine: integer; out AText: string;
   const ALineInfo: TSynEditGutterLineInfo);
 begin
-  AText := IntToHex(FCurrentMemAddress + 16 * (ALine-1), FTargetWidth*2);
+  AText := Dec64ToNumb(FCurrentMemAddress + 16 * (ALine-1), FTargetWidth*2, 16);
 end;
 
 procedure TMemViewDlg.edAddressBaseEditingDone(Sender: TObject);
@@ -412,7 +412,7 @@ begin
         TSynGutterLineNumber(edMemViewer.Gutter.Parts.ByClass[TSynGutterLineNumber,0]).DigitCount := FTargetWidth * 2;
         UpdateSynText;
         StatusBar1.Visible := not IsPlainAddress(FCurrentEditAddrBaseText, dummy);
-        StatusBar1.SimpleText := FCurrentEditAddrBaseText + ' @ $' + IntToHex(FCurrentEditAddrBase, FTargetWidth*2);
+        StatusBar1.SimpleText := FCurrentEditAddrBaseText + ' @ $' + Dec64ToNumb(FCurrentEditAddrBase, FTargetWidth*2, 16);
       end;
     end
     else begin
@@ -533,13 +533,13 @@ begin
 
   {$PUSH}{$Q-}{$R-}
   if AnUseCurrentEditAddr then begin
-    WTxt := '$' + IntToHex(FCurrentEditAddrBase + Offs);
+    WTxt := '$' + Dec64ToNumb(FCurrentEditAddrBase + Offs, 1, 16);
   end
   else
   if IsPlainAddress(FCurrentEditAddrBaseText, ANewAddr) then begin
     FCurrentEditAddrBase := ANewAddr;
     ANewAddr := ANewAddr + Offs;
-    WTxt := '$' + IntToHex(ANewAddr);
+    WTxt := '$' + Dec64ToNumb(ANewAddr, 1, 16);
   end
   else begin
     // if offs > 0 then fetch the extra .... TODO: get only address
@@ -617,7 +617,7 @@ begin
   ReleaseRefAndNil(FCurrentWatchValue);
   FWatches.BeginUpdate;
   FWatches.Clear;
-  AWatch := FWatches.Add('$'+IntToHex(ANewStart));
+  AWatch := FWatches.Add('$'+Dec64ToNumb(ANewStart, 1, 16));
   AWatch.EvaluateFlags := [defMemDump];
   {$PUSH}{$Q-}{$R-}
   AWatch.RepeatCount := FCurrentMemAddress - ANewStart;
@@ -677,7 +677,7 @@ begin
   ReleaseRefAndNil(FCurrentWatchValue);
   FWatches.BeginUpdate;
   FWatches.Clear;
-  AWatch := FWatches.Add('$'+IntToHex(ANewStart));
+  AWatch := FWatches.Add('$'+Dec64ToNumb(ANewStart, 1, 16));
   AWatch.EvaluateFlags := [defMemDump];
   AWatch.RepeatCount := ACount;
   AWatch.Enabled := True;
