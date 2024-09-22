@@ -1596,11 +1596,13 @@ begin
   liBracketLevel := 0;
   liMaxBracketLevel := 0;
   liIndex := fcTokenList.CurrentTokenIndex;
-  // scan past the open bracket
-  while not (fcTokenList.SourceTokens[liIndex].TokenType in [ttOpenBracket,ttOpenSquareBracket]) do
+  // scan past the open brackets
+  while fcTokenList.SourceTokens[liIndex].TokenType in [ttOpenBracket,ttOpenSquareBracket] do
+  begin
     Inc(liIndex);
-  Inc(liBracketLevel);
-  Inc(liMaxBracketLevel);
+    Inc(liBracketLevel);
+    Inc(liMaxBracketLevel);
+  end;
   Inc(liIndex);
 
   // look forward to find the first comma or semicolon
