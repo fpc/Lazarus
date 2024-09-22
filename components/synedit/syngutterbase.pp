@@ -213,7 +213,7 @@ type
     property MarkupInfoCurLineMerged: TSynSelectedColorMergeResult read FMarkupInfoCurLineMerged;
     property CaretRow: integer read GetCaretRow;
   public
-    constructor Create(AOwner: TComponent); override;
+    constructor Create(AnOwner: TComponent); override;
     destructor  Destroy; override;
     procedure Assign(Source: TPersistent); override;
     property Left: Integer read FLeft;
@@ -822,8 +822,11 @@ begin
     Result := SynEdit.Scale96ToFont(Result);
 end;
 
-constructor TSynGutterPartBase.Create(AOwner: TComponent);
+constructor TSynGutterPartBase.Create(AnOwner: TComponent);
 begin
+  if (AnOwner = nil) or not(AnOwner is TSynGutterPartListBase) then
+    raise Exception.Create('Invalid Owner');
+
   FMarkupInfo := TSynSelectedColor.Create;
   FMarkupInfo.Background := clBtnFace;
   FMarkupInfo.Foreground := clNone;
@@ -843,7 +846,7 @@ begin
   FAutoSize := True;
   FLeftOffset := 0;
   FRightOffset := 0;
-  Inherited Create(AOwner); // Todo: Lock the DoChange from RegisterItem, and call DoChange at the end (after/in autosize)
+  Inherited Create(AnOwner); // Todo: Lock the DoChange from RegisterItem, and call DoChange at the end (after/in autosize)
 
   FMarkupInfo.OnChange := @DoColorChanged;
   FMarkupInfoCurrentLine.OnChange := @DoColorChanged;
