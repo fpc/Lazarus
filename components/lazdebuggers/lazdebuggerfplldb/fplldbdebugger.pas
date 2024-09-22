@@ -1768,10 +1768,13 @@ begin
 
     if (AWatchValue <> nil) and
        (ResValue <> nil) and (not IsError(ResValue.LastError)) and
-       (not AMemDump) and (AWatchValue.RepeatCount <= 0)  // TODO
+       ( (AWatchValue.RepeatCount <= 0) or AMemDump )  // TODO
     then begin
       WatchResConv := TFpWatchResultConvertor.Create(Ctx.LocationContext);
-      Result := WatchResConv.WriteWatchResultData(ResValue, AWatchValue.ResData);
+      if AMemDump then
+        Result := WatchResConv.WriteWatchResultMemDump(ResValue, AWatchValue.ResData, AWatchValue.RepeatCount)
+      else
+        Result := WatchResConv.WriteWatchResultData(ResValue, AWatchValue.ResData, AWatchValue.RepeatCount);
       WatchResConv.Free;
       if Result then
         exit;

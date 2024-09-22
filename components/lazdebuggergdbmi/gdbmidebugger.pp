@@ -1159,6 +1159,7 @@ type
     property QWordAtIdx[Index: Integer]: Cardinal read GetQWordAtIdx;
     property Addr: TDBGPtr read FAddr;
     function AsText(AStartOffs, ACount: Integer; AAddrWidth: Integer): string;
+    function AsRawString(AStartOffs, ACount: Integer): RawByteString;
   end;
 
   {%endregion    *^^^*  TGDBMINameValueList and Parsers  *^^^*   }
@@ -1474,6 +1475,8 @@ type
     FExpression: String;
     FWatchValue: IDbgWatchValueIntf;
     FTextValue: String;
+    FMemDumpValue: RawByteString;
+    FAddr: TDBGPtr;
     FNumValue: TDBGPtr;
     FHasNumValue: (nvNone, nvUnsigned, nvSigned);
     FTypeInfo: TGDBType;
@@ -4422,6 +4425,19 @@ begin
   for i := AStartOffs to AStartOffs + ACount do begin
     if i >= ACount then exit;
     Result := Result + ' ' + PCLenPartToString(Item[i], 3, 2);
+  end;
+end;
+
+function TGDBMIMemoryDumpResultList.AsRawString(AStartOffs, ACount: Integer
+  ): RawByteString;
+var
+  c, i: Integer;
+begin
+  Result := '';
+  c := Count;
+  for i := AStartOffs to AStartOffs + ACount do begin
+    if i >= c then exit;
+    Result := Result + char(StrToInt('$'+PCLenPartToString(Item[i], 3, 2)));
   end;
 end;
 
@@ -14496,6 +14512,7 @@ var
     i64: Int64;
     Error: word;
     s: String;
+    MemAddr: QWord;
   begin
     Result := False;
     FHasNumValue := nvNone;
@@ -14513,7 +14530,10 @@ var
 
     if defMemDump in FEvalFlags then
     begin
-      AnExpression := QuoteExpr(AddAddressOfToExpression(AnExpression, FTypeInfo));
+      if TryStrToQWord(AnExpression, MemAddr) then
+        AnExpression := IntToStr(MemAddr)
+      else
+        AnExpression := QuoteExpr(AddAddressOfToExpression(AnExpression, FTypeInfo));
 
       Result := False;
       Size := 256;
@@ -14534,7 +14554,8 @@ var
       end;
       MemDump := TGDBMIMemoryDumpResultList.Create(R);
       FValidity := ddsValid;
-      FTextValue := MemDump.AsText(0, MemDump.Count, TargetInfo^.TargetPtrSize*2);
+      FAddr := MemDump.Addr;
+      FMemDumpValue := MemDump.AsRawString(0, MemDump.Count);
       MemDump.Free;
     end
     else
@@ -14647,7 +14668,14 @@ begin
     if FWatchValue <> nil then begin
       FWatchValue.BeginUpdate;
       repeat
-        if not(defMemDump in FEvalFlags) then begin
+        if (defMemDump in FEvalFlags) then begin
+          FWatchValue.ResData.CreateMemDump(FMemDumpValue);
+          FWatchValue.ResData.SetDataAddress(FAddr);
+          FTypeInfo := nil;
+          FWatchValue.Validity := FValidity;
+          break;
+        end
+        else begin
           if (FHasNumValue <> nvNone) and
              (FTypeInfo <> nil) and (FTypeInfo.Kind in [skSimple, skPointer, skInteger, skCardinal]) and
              (FWatchValue.RepeatCount <= 0)

@@ -339,7 +339,7 @@ type
 
   TWatchResultDataKind = (
     rdkUnknown,
-    rdkError, rdkPrePrinted,
+    rdkError, rdkPrePrinted, rdkMemDump,
     rdkString, rdkWideString, rdkChar,
     rdkSignedNumVal, rdkUnsignedNumVal, rdkPointerVal, rdkFloatVal,
     rdkBool, rdkEnum, rdkEnumVal, rdkSet,

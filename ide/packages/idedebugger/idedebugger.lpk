@@ -308,12 +308,19 @@
         <Filename Value="idedebuggervalueformatterordinaltoname.pas"/>
         <UnitName Value="IdeDebuggerValueFormatterOrdinalToName"/>
       </Item>
+      <Item>
+        <Filename Value="memviewerdlg.pas"/>
+        <UnitName Value="MemViewerDlg"/>
+      </Item>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
     </i18n>
     <RequiredPkgs>
+      <Item>
+        <PackageName Value="SynEditDsgn"/>
+      </Item>
       <Item>
         <PackageName Value="IdeProject"/>
       </Item>

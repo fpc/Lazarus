@@ -406,6 +406,7 @@ msgid "Group"
 msgstr ""
 
 #: idedebuggerstringconstants.dispformatnumsepgroupbyte
+msgctxt "idedebuggerstringconstants.dispformatnumsepgroupbyte"
 msgid "Byte"
 msgstr ""
 
@@ -1649,6 +1650,10 @@ msgstr ""
 msgid "Debug Output"
 msgstr ""
 
+#: idedebuggerstringconstants.lismenuviewmemviewer
+msgid "Mem viewer"
+msgstr ""
+
 #: idedebuggerstringconstants.lismore
 msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
@@ -1853,6 +1858,10 @@ msgctxt "idedebuggerstringconstants.liswlinspectpane"
 msgid "Inspect pane"
 msgstr ""
 
+#: idedebuggerstringconstants.liswlmemview
+msgid "Memory"
+msgstr ""
+
 #: idedebuggerstringconstants.liswlproperties
 msgid "&Properties"
 msgstr ""
@@ -1868,6 +1877,35 @@ msgstr ""
 
 #: idedebuggerstringconstants.liswordwrapbtnhint
 msgid "Word wrap"
+msgstr ""
+
+#: idedebuggerstringconstants.memviewgroupbyte
+msgctxt "idedebuggerstringconstants.memviewgroupbyte"
+msgid "Byte"
+msgstr ""
+
+#: idedebuggerstringconstants.memviewgroupdwordbigendian
+msgid "DWord (Big Endian)"
+msgstr ""
+
+#: idedebuggerstringconstants.memviewgroupdwordlittleendian
+msgid "DWord (Little Endian)"
+msgstr ""
+
+#: idedebuggerstringconstants.memviewgroupqwordbigendian
+msgid "QWord (Big Endian)"
+msgstr ""
+
+#: idedebuggerstringconstants.memviewgroupqwordlittleendian
+msgid "QWord (Little Endian)"
+msgstr ""
+
+#: idedebuggerstringconstants.memviewgroupwordbigendian
+msgid "Word (Big Endian)"
+msgstr ""
+
+#: idedebuggerstringconstants.memviewgroupwordlittleendian
+msgid "Word (Little Endian)"
 msgstr ""
 
 #: idedebuggerstringconstants.optdispguttercustomdisplayformat
@@ -1910,12 +1948,24 @@ msgstr ""
 msgid "Raw"
 msgstr ""
 
+#: idedebuggerstringconstants.rsaddressoffset
+msgid "Address-offset"
+msgstr ""
+
 #: idedebuggerstringconstants.rsattachto
 msgid "Attach to"
 msgstr ""
 
+#: idedebuggerstringconstants.rsbaseaddress
+msgid "Base-address"
+msgstr ""
+
 #: idedebuggerstringconstants.rsenterpid
 msgid "Enter PID"
+msgstr ""
+
+#: idedebuggerstringconstants.rslength
+msgid "Length"
 msgstr ""
 
 #: idedebuggerstringconstants.synfnewvalueisempty

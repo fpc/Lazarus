@@ -10,13 +10,13 @@ object LocalsDlg: TLocalsDlg
   ClientHeight = 200
   ClientWidth = 500
   OnShow = FormShow
-  LCLVersion = '2.3.0.0'
   object vtLocals: TDbgTreeView
     Left = 0
     Height = 174
     Top = 26
     Width = 500
     Align = alClient
+    DefaultNodeHeight = 19
     Header.AutoSizeIndex = 0
     Header.Columns = <    
       item
@@ -57,8 +57,8 @@ object LocalsDlg: TLocalsDlg
       Top = 2
       AllowAllUp = True
       Down = True
-      OnClick = ToolButtonPowerClick
       Style = tbsCheck
+      OnClick = ToolButtonPowerClick
     end
     object ToolButton2: TToolButton
       Left = 24
@@ -71,8 +71,8 @@ object LocalsDlg: TLocalsDlg
       Left = 32
       Top = 2
       Caption = '$^'
-      OnClick = btnShowDataAddrClick
       Style = tbsCheck
+      OnClick = btnShowDataAddrClick
     end
   end
   object ActionList1: TActionList
@@ -81,23 +81,23 @@ object LocalsDlg: TLocalsDlg
     object actInspect: TAction
       Category = 'main'
       Caption = 'actInspect'
+      ShortCut = 16457
       OnExecute = actInspectExecute
       OnUpdate = actInspectUpdate
-      ShortCut = 16457
     end
-    object actWath: TAction
+    object actWatch: TAction
       Category = 'main'
-      Caption = 'actWath'
-      OnExecute = actWathExecute
-      OnUpdate = actInspectUpdate
+      Caption = 'actWatch'
       ShortCut = 16471
+      OnExecute = actWatchExecute
+      OnUpdate = actInspectUpdate
     end
     object actEvaluate: TAction
       Category = 'main'
       Caption = 'actEvaluate'
+      ShortCut = 16469
       OnExecute = actEvaluateExecute
       OnUpdate = actInspectUpdate
-      ShortCut = 16469
     end
     object actCopyName: TAction
       Category = 'copy'
@@ -108,23 +108,23 @@ object LocalsDlg: TLocalsDlg
     object actCopyValue: TAction
       Category = 'copy'
       Caption = 'actCopyValue'
+      ShortCut = 24643
       OnExecute = actCopyValueExecute
       OnUpdate = actInspectUpdate
-      ShortCut = 24643
     end
     object actCopyRAWValue: TAction
       Category = 'copy'
       Caption = 'actCopyRAWValue'
+      ShortCut = 16451
       OnExecute = actCopyRAWValueExecute
       OnUpdate = actInspectUpdate
-      ShortCut = 16451
     end
     object actCopyAddr: TAction
       Category = 'copy'
       Caption = 'actCopyAddr'
+      ShortCut = 49219
       OnExecute = actCopyAddrExecute
       OnUpdate = actInspectUpdate
-      ShortCut = 49219
     end
     object actCopyEntry: TAction
       Category = 'copy'
@@ -138,6 +138,12 @@ object LocalsDlg: TLocalsDlg
       OnExecute = actCopyAllExecute
       OnUpdate = actCopyAllUpdate
     end
+    object actMemView: TAction
+      Category = 'main'
+      Caption = 'actMemView'
+      OnExecute = actMemViewExecute
+      OnUpdate = actInspectUpdate
+    end
   end
   object PopupMenu1: TPopupMenu
     Left = 38
@@ -146,10 +152,13 @@ object LocalsDlg: TLocalsDlg
       Action = actInspect
     end
     object MenuItem2: TMenuItem
-      Action = actWath
+      Action = actWatch
     end
     object MenuItem3: TMenuItem
       Action = actEvaluate
+    end
+    object MenuItem5: TMenuItem
+      Action = actMemView
     end
     object MenuItem4: TMenuItem
       Caption = '-'

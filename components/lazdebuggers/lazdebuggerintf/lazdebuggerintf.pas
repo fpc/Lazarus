@@ -197,6 +197,7 @@ type
     // returns the intf for the converted result
     // Use SetDerefData to get the interface for the NON-converted result
     function CreateValueHandlerResult(AValueHandler: ILazDbgValueConverterIntf): IDbgWatchDataIntf;
+    procedure CreateMemDump(AVal: RawByteString);
     procedure CreateError(AVal: String);
 
     // For all Values

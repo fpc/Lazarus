@@ -89,6 +89,7 @@ type
     actCopyAll: TAction;
     actInspect: TAction;
     actEvaluate: TAction;
+    actMemView: TAction;
     actToggleInspectSite: TAction;
     actToggleCurrentEnable: TAction;
     actPower: TAction;
@@ -96,6 +97,7 @@ type
     actProperties: TAction;
     InspectLabel: TLabel;
     btnShowDataAddr: TToolButton;
+    menuMemView: TMenuItem;
     popupWatchFormatPresets: TMenuItem;
     pnlL: TPanel;
     ToolBar2: TToolBar;
@@ -152,6 +154,7 @@ type
     procedure actEnableSelectedExecute(Sender: TObject);
     procedure actEvaluateExecute(Sender: TObject);
     procedure actInspectExecute(Sender: TObject);
+    procedure actMemViewExecute(Sender: TObject);
     procedure actPowerExecute(Sender: TObject);
     procedure actToggleInspectSiteExecute(Sender: TObject);
     procedure btnShowDataAddrClick(Sender: TObject);
@@ -362,6 +365,7 @@ begin
 
   actInspect.Caption := lisInspect;
   actEvaluate.Caption := lisEvaluateModify;
+  actMemView.Caption := lisMenuViewMemViewer;
 
   btnShowDataAddr.ImageIndex := IDEImages.LoadImage('address');
   tbWordWrap.ImageIndex := IDEImages.LoadImage('line_wrap');
@@ -531,6 +535,7 @@ begin
     actAddWatchPoint.Enabled := False;
     actEvaluate.Enabled := False;
     actInspect.Enabled := False;
+    actMemView.Enabled := False;
     UpdateInspectPane;
     exit;
   end;
@@ -566,6 +571,7 @@ begin
   actAddWatchPoint.Enabled := ItemSelected;
   actEvaluate.Enabled := ItemSelected;
   actInspect.Enabled := ItemSelected;
+  actMemView.Enabled := ItemSelected;
 
   actEnableAll.Enabled := AllCanEnable;
   actDisableAll.Enabled := AllCanDisable;
@@ -887,6 +893,15 @@ begin
   CurWatch := GetSelected;
   if CurWatch <> nil then
     DebugBoss.Inspect(CurWatch.Expression, CurWatch);
+end;
+
+procedure TWatchesDlg.actMemViewExecute(Sender: TObject);
+var
+  CurWatch: TIdeWatch;
+begin
+  CurWatch := GetSelected;
+  if CurWatch <> nil then
+    DebugBoss.MemView(CurWatch.Expression);
 end;
 
 procedure TWatchesDlg.actDisableSelectedExecute(Sender: TObject);

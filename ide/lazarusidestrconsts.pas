@@ -3262,6 +3262,7 @@ resourcestring
   srkmecTogglecallStack           = 'View call stack';
   srkmecToggleRegisters           = 'View registers';
   srkmecToggleAssembler           = 'View assembler';
+  srkmecToggleMemViewer           = 'View Mem viewer';
   srkmecViewUnits                 = 'View units';
   srkmecViewForms                 = 'View forms';
   srkmecViewComponents            = 'View components';
@@ -3450,6 +3451,7 @@ resourcestring
   lisKMToggleViewCallStack = 'View Call Stack';
   lisKMToggleViewRegisters = 'View Registers';
   lisKMToggleViewAssembler = 'View Assembler';
+  lisKMToggleViewMemViewer = 'View Mem viewer';
   lisKMToggleViewDebugEvents = 'View Debuger Event Log';
   lisKMToggleViewDebuggerOutput = 'View Debugger Output';
   srkmCatProjectMenu    = 'Project menu commands';

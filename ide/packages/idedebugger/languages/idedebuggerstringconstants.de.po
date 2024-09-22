@@ -418,6 +418,7 @@ msgid "Group"
 msgstr "Gruppe"
 
 #: idedebuggerstringconstants.dispformatnumsepgroupbyte
+msgctxt "idedebuggerstringconstants.dispformatnumsepgroupbyte"
 msgid "Byte"
 msgstr ""
 
@@ -1671,6 +1672,10 @@ msgstr "Ereignis-Protokoll"
 msgid "Debug Output"
 msgstr "Debuggerausgaben"
 
+#: idedebuggerstringconstants.lismenuviewmemviewer
+msgid "Mem viewer"
+msgstr ""
+
 #: idedebuggerstringconstants.lismore
 msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
@@ -1878,6 +1883,10 @@ msgctxt "idedebuggerstringconstants.liswlinspectpane"
 msgid "Inspect pane"
 msgstr ""
 
+#: idedebuggerstringconstants.liswlmemview
+msgid "Memory"
+msgstr ""
+
 #: idedebuggerstringconstants.liswlproperties
 msgid "&Properties"
 msgstr "&Eigenschaften"
@@ -1893,6 +1902,35 @@ msgstr "Liste der überwachten Ausdrücke"
 
 #: idedebuggerstringconstants.liswordwrapbtnhint
 msgid "Word wrap"
+msgstr ""
+
+#: idedebuggerstringconstants.memviewgroupbyte
+msgctxt "idedebuggerstringconstants.memviewgroupbyte"
+msgid "Byte"
+msgstr ""
+
+#: idedebuggerstringconstants.memviewgroupdwordbigendian
+msgid "DWord (Big Endian)"
+msgstr ""
+
+#: idedebuggerstringconstants.memviewgroupdwordlittleendian
+msgid "DWord (Little Endian)"
+msgstr ""
+
+#: idedebuggerstringconstants.memviewgroupqwordbigendian
+msgid "QWord (Big Endian)"
+msgstr ""
+
+#: idedebuggerstringconstants.memviewgroupqwordlittleendian
+msgid "QWord (Little Endian)"
+msgstr ""
+
+#: idedebuggerstringconstants.memviewgroupwordbigendian
+msgid "Word (Big Endian)"
+msgstr ""
+
+#: idedebuggerstringconstants.memviewgroupwordlittleendian
+msgid "Word (Little Endian)"
 msgstr ""
 
 #: idedebuggerstringconstants.optdispguttercustomdisplayformat
@@ -1935,13 +1973,25 @@ msgstr ""
 msgid "Raw"
 msgstr ""
 
+#: idedebuggerstringconstants.rsaddressoffset
+msgid "Address-offset"
+msgstr ""
+
 #: idedebuggerstringconstants.rsattachto
 msgid "Attach to"
 msgstr "Anhängen an"
 
+#: idedebuggerstringconstants.rsbaseaddress
+msgid "Base-address"
+msgstr ""
+
 #: idedebuggerstringconstants.rsenterpid
 msgid "Enter PID"
 msgstr "Geben Sie die PID ein:"
+
+#: idedebuggerstringconstants.rslength
+msgid "Length"
+msgstr ""
 
 #: idedebuggerstringconstants.synfnewvalueisempty
 msgid "\"New value\" is empty."

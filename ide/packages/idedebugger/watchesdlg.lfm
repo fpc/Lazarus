@@ -10,7 +10,6 @@ object WatchesDlg: TWatchesDlg
   ClientHeight = 240
   ClientWidth = 520
   KeyPreview = True
-  LCLVersion = '3.99.0.0'
   OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
   OnShow = FormShow
@@ -53,7 +52,7 @@ object WatchesDlg: TWatchesDlg
       end
       object ToolButton2: TToolButton
         Left = 24
-        Height = 5
+        Height = 22
         Top = 0
         Caption = 'ToolButton2'
         Style = tbsDivider
@@ -75,7 +74,7 @@ object WatchesDlg: TWatchesDlg
       end
       object ToolButton6: TToolButton
         Left = 152
-        Height = 5
+        Height = 22
         Top = 0
         Caption = 'ToolButton6'
         Style = tbsDivider
@@ -97,7 +96,7 @@ object WatchesDlg: TWatchesDlg
       end
       object ToolButton10: TToolButton
         Left = 203
-        Height = 5
+        Height = 22
         Top = 0
         Caption = 'ToolButton10'
         Style = tbsDivider
@@ -127,7 +126,7 @@ object WatchesDlg: TWatchesDlg
       end
       object ToolButton3: TToolButton
         Left = 121
-        Height = 8
+        Height = 22
         Top = 0
         Caption = 'ToolButton3'
         Style = tbsSeparator
@@ -282,6 +281,9 @@ object WatchesDlg: TWatchesDlg
     object popEvaluate: TMenuItem
       Action = actEvaluate
     end
+    object menuMemView: TMenuItem
+      Action = actMemView
+    end
     object popAddWatchPoint: TMenuItem
       Action = actAddWatchPoint
     end
@@ -375,10 +377,6 @@ object WatchesDlg: TWatchesDlg
       Caption = 'actEvaluate'
       OnExecute = actEvaluateExecute
     end
-    object actToggleInspectSite: TAction
-      Caption = 'actToggleInspectSite'
-      OnExecute = actToggleInspectSiteExecute
-    end
     object actCopyName: TAction
       Category = 'copy'
       Caption = 'actCopyName'
@@ -411,6 +409,14 @@ object WatchesDlg: TWatchesDlg
       Category = 'copy'
       Caption = 'actCopyAll'
       OnExecute = actCopyAllExecute
+    end
+    object actMemView: TAction
+      Caption = 'actMemView'
+      OnExecute = actMemViewExecute
+    end
+    object actToggleInspectSite: TAction
+      Caption = 'actToggleInspectSite'
+      OnExecute = actToggleInspectSiteExecute
     end
   end
 end

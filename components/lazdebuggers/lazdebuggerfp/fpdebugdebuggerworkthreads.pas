@@ -1140,8 +1140,6 @@ var
   CastName, ResText2: String;
   WatchResConv: TFpLazDbgWatchResultConvertor;
   ResData: IDbgWatchDataIntf;
-  i: Integer;
-  ddf: TDataDisplayFormat;
   AMemDump: Boolean;
 begin
   Result := False;
@@ -1237,7 +1235,7 @@ begin
     AMemDump := (defMemDump in AnEvalFlags) or
                 ( (ResValue <> nil) and (ResValue.Kind = skAddress) );
 
-    if (FWatchValue <> nil) and (ResValue <> nil) and (not AMemDump)
+    if (FWatchValue <> nil) and (ResValue <> nil)
     then begin
       WatchResConv := TFpLazDbgWatchResultConvertor.Create(FExpressionScope.LocationContext);
       WatchResConv.MaxArrayConv := TFpDebugDebuggerProperties(FDebugger.GetProperties).MemLimits.MaxArrayConversionCnt;
@@ -1255,16 +1253,22 @@ begin
       end;
       WatchResConv.ExpressionScope := FExpressionScope;
       ResData := FWatchValue.ResData;
-      Result := WatchResConv.WriteWatchResultData(ResValue, ResData, FWatchValue.RepeatCount);
 
-      if Result and APasExpr.HasPCharIndexAccess and not IsError(ResValue.LastError) then begin
-      // TODO: Only dwarf 2
-        ResData := ResData.SetPCharShouldBeStringValue;
-        if ResData <> nil then begin
-          APasExpr.FixPCharIndexAccess := True;
-          APasExpr.ResetEvaluation;
-          ResValue := APasExpr.ResultValue;
-          WatchResConv.WriteWatchResultData(ResValue, ResData, FWatchValue.RepeatCount);
+      if AMemDump then begin
+        Result := WatchResConv.WriteWatchResultMemDump(ResValue, ResData, FWatchValue.RepeatCount);
+      end
+      else begin
+        Result := WatchResConv.WriteWatchResultData(ResValue, ResData, FWatchValue.RepeatCount);
+
+        if Result and APasExpr.HasPCharIndexAccess and not IsError(ResValue.LastError) then begin
+        // TODO: Only dwarf 2
+          ResData := ResData.SetPCharShouldBeStringValue;
+          if ResData <> nil then begin
+            APasExpr.FixPCharIndexAccess := True;
+            APasExpr.ResetEvaluation;
+            ResValue := APasExpr.ResultValue;
+            WatchResConv.WriteWatchResultData(ResValue, ResData, FWatchValue.RepeatCount);
+          end;
         end;
       end;
 
@@ -1276,12 +1280,10 @@ begin
     PrettyPrinter := TFpPascalPrettyPrinter.Create(FExpressionScope.SizeOfAddress);
     PrettyPrinter.Context := FExpressionScope.LocationContext;
 
-    ddf := ddfDefault;
-    if AMemDump then ddf := ddfMemDump;
     if defNoTypeInfo in AnEvalFlags then
-      Result := PrettyPrinter.PrintValue(AResText, ResValue, ddf, ARepeatCnt)
+      Result := PrettyPrinter.PrintValue(AResText, ResValue, ddfDefault, ARepeatCnt)
     else
-      Result := PrettyPrinter.PrintValue(AResText, ATypeInfo, ResValue, ddf, ARepeatCnt);
+      Result := PrettyPrinter.PrintValue(AResText, ATypeInfo, ResValue, ddfDefault, ARepeatCnt);
 
     // PCHAR/String
     if Result and APasExpr.HasPCharIndexAccess and not IsError(ResValue.LastError) then begin
@@ -1289,7 +1291,7 @@ begin
       APasExpr.FixPCharIndexAccess := True;
       APasExpr.ResetEvaluation;
       ResValue := APasExpr.ResultValue;
-      if (ResValue=nil) or (not PrettyPrinter.PrintValue(ResText2, ResValue, ddf, ARepeatCnt)) then
+      if (ResValue=nil) or (not PrettyPrinter.PrintValue(ResText2, ResValue, ddfDefault, ARepeatCnt)) then
         ResText2 := 'Failed';
       AResText := 'PChar: '+AResText+ LineEnding + 'String: '+ResText2;
     end;

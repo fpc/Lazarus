@@ -211,6 +211,7 @@ const
   ecViewThreads             = ecFirstLazarus + 329;
   ecViewHistory             = ecFirstLazarus + 460;
   ecViewMacroList           = ecFirstLazarus + 461;
+  ecToggleMemViewer         = ecFirstLazarus + 462;
 
   // sourcenotebook commands
   ecNextEditor              = ecFirstLazarus + 330;
@@ -1984,7 +1985,7 @@ begin
 end;
 
 const
-  IDEEditorCommandStrs: array[0..336] of TIdentMapEntry = (         // DRB reduced elements from 323
+  IDEEditorCommandStrs: array[0..337] of TIdentMapEntry = (
   // search
     (Value: ecFind;                                   Name: 'ecFind'),
     (Value: ecFindAgain;                              Name: 'ecFindAgain'),
@@ -2132,6 +2133,7 @@ const
     (Value: ecViewTodoList;                           Name: 'ecViewTodoList'),
     (Value: ecToggleRegisters;                        Name: 'ecToggleRegisters'),
     (Value: ecToggleAssembler;                        Name: 'ecToggleAssembler'),
+    (Value: ecToggleMemViewer;                        Name: 'ecToggleMemViewer'),
     (Value: ecToggleDebugEvents;                      Name: 'ecToggleDebugEvents'),
     (Value: ecViewPseudoTerminal;                     Name: 'ecViewPseudoTerminal'),
     (Value: ecViewThreads;                            Name: 'ecViewThreads'),

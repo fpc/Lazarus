@@ -749,6 +749,7 @@ type
                              );
     function CreateValueHandlerResult(AValueHandler: ILazDbgValueConverterIntf): IDbgWatchDataIntf;
 
+    procedure CreateMemDump(AVal: RawByteString);
     procedure CreateError(AVal: String); virtual;
 
     function  SetPCharShouldBeStringValue: IDbgWatchDataIntf;
@@ -3943,6 +3944,17 @@ begin
   Result := AddField('', dfvUnknown, []);
 end;
 
+procedure TCurrentResData.CreateMemDump(AVal: RawByteString);
+begin
+  BeforeCreateValue;
+  assert((FNewResultData=nil) or (FNewResultData.ValueKind=rdkMemDump), 'TCurrentResData.CreateMemDump: (FNewResultData=nil) or (FNewResultData.ValueKind=rdkMemDump)');
+  if FNewResultData = nil then
+    FNewResultData := TWatchResultDataMemDump.Create(AVal)
+  else
+    TWatchResultDataMemDump(FNewResultData).Create(AVal);
+  AfterDataCreated;
+end;
+
 function TCurrentResData.CreateArrayValue(AnArrayType: TLzDbgArrayType;
   ATotalCount: Integer; ALowIdx: Integer): IDbgWatchDataIntf;
 begin
@@ -4034,7 +4046,7 @@ end;
 
 procedure TCurrentResData.SetDataAddress(AnAddr: TDbgPtr);
 begin
-  assert((FNewResultData<>nil) and (FNewResultData.ValueKind in [rdkArray, rdkString, rdkWideString]), 'TCurrentResData.SetDataAddress: (FNewResultData<>nil) and (FNewResultData.ValueKind in [rdkArray, rdkString, rdkWideString])');
+  assert((FNewResultData<>nil) and (FNewResultData.ValueKind in [rdkArray, rdkString, rdkWideString, rdkMemDump]), 'TCurrentResData.SetDataAddress: (FNewResultData<>nil) and (FNewResultData.ValueKind in [rdkArray, rdkString, rdkWideString])');
   FNewResultData.SetDataAddress(AnAddr);
 end;
 

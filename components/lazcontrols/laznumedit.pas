@@ -349,6 +349,11 @@ end;
 
 procedure TLazIntegerEditGen.SetValue(AValue: Int64);
 begin
+  if AValue < FMinValue then
+    AValue :=  FMinValue
+  else
+  if AValue > FMaxValue then
+    AValue := FMaxValue;
   if FValue = AValue then
     exit;
 

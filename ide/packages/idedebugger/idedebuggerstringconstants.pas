@@ -160,6 +160,9 @@ resourcestring
 
   lisWatchToWatchPoint = 'Create &Data/Watch Breakpoint ...';
 
+  // Mem viewer
+  liswlMemView = 'Memory';
+
   // Terminal Output
   lisDbgTerminal = 'Console In/Output';
 
@@ -327,6 +330,7 @@ resourcestring
   //Disassembler dialog
   lisDisAssAssembler = 'Assembler';
   lisMenuViewAssembler = 'Assembler';
+  lisMenuViewMemViewer = 'Mem viewer';
   lisDbgAsmCopyToClipboard = 'Copy to Clipboard';
   lisDbgAsmCopyAddressToClipboard = 'Copy address to Clipboard';
   lisDisAssGotoCurrentAddress = 'Goto Current Address';
@@ -550,6 +554,16 @@ resourcestring
   dbgConvertOrdinalToName = 'Conversion of ordinal to name';
   arrnavEnforceBounds = 'Enforce bounds';
   arrnavAutoHide = 'Hide automatically';
+  rsBaseAddress = 'Base-address';
+  rsAddressOffset = 'Address-offset';
+  rsLength = 'Length';
+  MemViewGroupByte = 'Byte';
+  MemViewGroupWordLittleEndian = 'Word (Little Endian)';
+  MemViewGroupDWordLittleEndian = 'DWord (Little Endian)';
+  MemViewGroupQWordLittleEndian = 'QWord (Little Endian)';
+  MemViewGroupWordBigEndian = 'Word (Big Endian)';
+  MemViewGroupDWordBigEndian = 'DWord (Big Endian)';
+  MemViewGroupQWordBigEndian = 'QWord (Big Endian)';
 
 implementation
 

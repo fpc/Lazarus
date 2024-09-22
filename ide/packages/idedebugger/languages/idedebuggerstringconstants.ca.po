@@ -413,6 +413,7 @@ msgid "Group"
 msgstr ""
 
 #: idedebuggerstringconstants.dispformatnumsepgroupbyte
+msgctxt "idedebuggerstringconstants.dispformatnumsepgroupbyte"
 msgid "Byte"
 msgstr ""
 
@@ -1652,6 +1653,10 @@ msgstr "Bitàcora d'events"
 msgid "Debug Output"
 msgstr "Sortida de depuració"
 
+#: idedebuggerstringconstants.lismenuviewmemviewer
+msgid "Mem viewer"
+msgstr ""
+
 #: idedebuggerstringconstants.lismore
 msgid "More"
 msgstr ""
@@ -1852,6 +1857,10 @@ msgctxt "idedebuggerstringconstants.liswlinspectpane"
 msgid "Inspect pane"
 msgstr ""
 
+#: idedebuggerstringconstants.liswlmemview
+msgid "Memory"
+msgstr ""
+
 #: idedebuggerstringconstants.liswlproperties
 msgid "&Properties"
 msgstr "&Propietats"
@@ -1868,6 +1877,35 @@ msgstr "Controls"
 
 #: idedebuggerstringconstants.liswordwrapbtnhint
 msgid "Word wrap"
+msgstr ""
+
+#: idedebuggerstringconstants.memviewgroupbyte
+msgctxt "idedebuggerstringconstants.memviewgroupbyte"
+msgid "Byte"
+msgstr ""
+
+#: idedebuggerstringconstants.memviewgroupdwordbigendian
+msgid "DWord (Big Endian)"
+msgstr ""
+
+#: idedebuggerstringconstants.memviewgroupdwordlittleendian
+msgid "DWord (Little Endian)"
+msgstr ""
+
+#: idedebuggerstringconstants.memviewgroupqwordbigendian
+msgid "QWord (Big Endian)"
+msgstr ""
+
+#: idedebuggerstringconstants.memviewgroupqwordlittleendian
+msgid "QWord (Little Endian)"
+msgstr ""
+
+#: idedebuggerstringconstants.memviewgroupwordbigendian
+msgid "Word (Big Endian)"
+msgstr ""
+
+#: idedebuggerstringconstants.memviewgroupwordlittleendian
+msgid "Word (Little Endian)"
 msgstr ""
 
 #: idedebuggerstringconstants.optdispguttercustomdisplayformat
@@ -1910,12 +1948,24 @@ msgstr ""
 msgid "Raw"
 msgstr ""
 
+#: idedebuggerstringconstants.rsaddressoffset
+msgid "Address-offset"
+msgstr ""
+
 #: idedebuggerstringconstants.rsattachto
 msgid "Attach to"
 msgstr ""
 
+#: idedebuggerstringconstants.rsbaseaddress
+msgid "Base-address"
+msgstr ""
+
 #: idedebuggerstringconstants.rsenterpid
 msgid "Enter PID"
+msgstr ""
+
+#: idedebuggerstringconstants.rslength
+msgid "Length"
 msgstr ""
 
 #: idedebuggerstringconstants.synfnewvalueisempty

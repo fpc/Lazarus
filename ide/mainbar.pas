@@ -198,6 +198,7 @@ type
           itmViewCallStack: TIDEMenuCommand;
           itmViewThreads: TIDEMenuCommand;
           itmViewAssembler: TIDEMenuCommand;
+          itmViewMemViewer: TIDEMenuCommand;
           itmViewDebugOutput: TIDEMenuCommand;
           itmViewDebugEvents: TIDEMenuCommand;
           itmViewPseudoTerminal: TIDEMenuCommand;

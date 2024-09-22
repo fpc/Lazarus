@@ -740,6 +740,7 @@ begin
     ecToggleCallStack         : Result:= srkmecToggleCallStack;
     ecToggleRegisters         : Result:= srkmecToggleRegisters;
     ecToggleAssembler         : Result:= srkmecToggleAssembler;
+    ecToggleMemViewer         : Result:= srkmecToggleMemViewer;
     ecViewHistory             : Result:= srkmecViewHistory;
     ecViewUnitDependencies    : Result:= srkmecViewUnitDependencies;
     ecViewUnitInfo            : Result:= srkmecViewUnitInfo;
@@ -1473,6 +1474,7 @@ begin
   ecToggleCallStack:     SetSingle(VK_S,[XCtrl,ssAlt]);
   ecToggleRegisters:     SetSingle(VK_R,[XCtrl,ssAlt]);
   ecToggleAssembler:     SetSingle(VK_D,[XCtrl,ssAlt]);
+  ecToggleMemViewer:     SetSingle(VK_M,[XCtrl,ssAlt]);
   ecToggleDebugEvents:   SetSingle(VK_V,[XCtrl,ssAlt]);
   ecToggleDebuggerOut:   SetSingle(VK_UNKNOWN,[]);
   ecViewHistory:         SetSingle(VK_H,[XCtrl,ssAlt]);
@@ -2585,6 +2587,7 @@ begin
   ecToggleCallStack:     SetSingle(VK_S,[ssCtrl,ssAlt]);
   ecToggleRegisters:     SetSingle(VK_R,[ssCtrl,ssAlt]);
   ecToggleAssembler:     SetSingle(VK_D,[ssCtrl,ssAlt]);
+  ecToggleMemViewer:     SetSingle(VK_M,[ssCtrl,ssAlt]);
   ecToggleDebugEvents:   SetSingle(VK_V,[ssCtrl,ssAlt]);
   ecToggleDebuggerOut:   SetSingle(VK_UNKNOWN,[]);
   ecViewHistory:         SetSingle(VK_H,[ssCtrl,ssAlt]);
@@ -3331,6 +3334,7 @@ begin
   AddDefault(C, 'Toggle view Call Stack', lisKMToggleViewCallStack, ecToggleCallStack);
   AddDefault(C, 'Toggle view Registers', lisKMToggleViewRegisters, ecToggleRegisters);
   AddDefault(C, 'Toggle view Assembler', lisKMToggleViewAssembler, ecToggleAssembler);
+  AddDefault(C, 'Toggle view Mem viewer', lisKMToggleViewMemViewer, ecToggleMemViewer);
   AddDefault(C, 'Toggle view Event Log', lisKMToggleViewDebugEvents, ecToggleDebugEvents);
   AddDefault(C, 'Toggle view Debugger Output', lisKMToggleViewDebuggerOutput, ecToggleDebuggerOut);
   AddDefault(C, 'Toggle view Debug History', lisKMToggleViewHistory, ecViewHistory);

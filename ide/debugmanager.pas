@@ -74,7 +74,7 @@ uses
   // IdeConfig
   LazConf, CompilerOptions,
   // IDE
-  SourceEditor, ProjectDefs, Project, ProjectDebugLink,
+  SourceEditor, ProjectDefs, Project, ProjectDebugLink, MemViewerDlg,
   LazarusIDEStrConsts, MainBar, MainIntf, MainBase, BaseBuildManager, SourceMarks,
   DebugEventsForm, EnvGuiOptions, RunParamsOpts, RunParamOptions;
 
@@ -194,6 +194,7 @@ type
     procedure InitEvaluateDlg;
     procedure InitRegistersDlg;
     procedure InitAssemblerDlg;
+    procedure InitMemViewerDlg;
     procedure InitInspectDlg;
     procedure InitHistoryDlg;
 
@@ -215,6 +216,7 @@ type
     procedure CallWatchesInvalidatedHandlers(Sender: TObject);
     function GetAvailableCommands: TDBGCommands;
     function CanRunDebugger: Boolean;
+    function GetTargetWidth: Integer; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -275,6 +277,8 @@ type
 
     procedure EvaluateModify(const AExpression: String; AWatch: TWatch = nil); override;
     procedure Inspect(const AExpression: String; AWatch: TWatch = nil); override;
+    procedure MemView(const AExpression: String); override;
+    procedure MemView(const AnAddress: TDBGPtr); override;
 
     function GetFullFilename(const AUnitinfo: TDebuggerUnitInfo; out Filename: string;
                              AskUserIfNotFound: Boolean): Boolean; override;
@@ -1230,6 +1234,7 @@ begin
     ecToggleCallStack   : ViewDebugDialog(ddtCallStack);
     ecToggleRegisters   : ViewDebugDialog(ddtRegisters);
     ecToggleAssembler   : ViewDebugDialog(ddtAssembler);
+    ecToggleMemViewer   : ViewDebugDialog(ddtMemViewer);
     ecToggleDebugEvents : ViewDebugDialog(ddtEvents);
     ecEvaluate          : ViewDebugDialog(ddtEvaluate);
     ecInspect           : ViewDebugDialog(ddtInspect);
@@ -1824,7 +1829,7 @@ procedure TDebugManager.ViewDebugDialog(const ADialogType: TDebugDialogType;
 const
   DEBUGDIALOGCLASS: array[TDebugDialogType] of TDebuggerDlgClass = (
     TDbgOutputForm, TDbgEventsForm, TBreakPointsDlg, TWatchesDlg, TLocalsDlg,
-    TCallStackDlg, TEvaluateDlg, TRegistersDlg, TAssemblerDlg, TIDEInspectDlg,
+    TCallStackDlg, TEvaluateDlg, TRegistersDlg, TAssemblerDlg, TMemViewDlg, TIDEInspectDlg,
     TPseudoConsoleDlg, TThreadsDlg, THistoryDialog
   );
 var
@@ -2035,6 +2040,14 @@ begin
   TheDialog.SetLocation(FDebugger, FCurrentLocation.Address);
 end;
 
+procedure TDebugManager.InitMemViewerDlg;
+var
+  TheDialog: TMemViewDlg;
+begin
+  TheDialog := TMemViewDlg(FDialogs[ddtMemViewer]);
+//  TheDialog.DebugManager := Self;
+end;
+
 procedure TDebugManager.InitInspectDlg;
 var
   TheDialog: TIDEInspectDlg;
@@ -2215,6 +2228,8 @@ begin
     itmViewThreads.Tag := Ord(ddtThreads);
     itmViewAssembler.OnClick := @mnuViewDebugDialogClick;
     itmViewAssembler.Tag := Ord(ddtAssembler);
+    itmViewMemViewer.OnClick := @mnuViewDebugDialogClick;
+    itmViewMemViewer.Tag := Ord(ddtMemViewer);
     itmViewDebugOutput.OnClick := @mnuViewDebugDialogClick;
     itmViewDebugOutput.Tag := Ord(ddtOutput);
     itmViewDebugEvents.OnClick := @mnuViewDebugDialogClick;
@@ -2272,6 +2287,7 @@ begin
     itmViewRegisters.Command:=GetCommand(ecToggleRegisters);
     itmViewCallStack.Command:=GetCommand(ecToggleCallStack);
     itmViewAssembler.Command:=GetCommand(ecToggleAssembler);
+    itmViewMemViewer.Command:=GetCommand(ecToggleMemViewer);
     itmViewThreads.Command:=GetCommand(ecViewThreads);
     if itmViewPseudoTerminal <> nil then
       itmViewPseudoTerminal.Command:=GetCommand(ecViewPseudoTerminal);
@@ -3243,6 +3259,21 @@ begin
   end;
 end;
 
+procedure TDebugManager.MemView(const AExpression: String);
+begin
+  if Destroying then Exit;
+  ViewDebugDialog(ddtMemViewer, True, True, False, False);
+  if FDialogs[ddtMemViewer] <> nil then
+  begin
+    TMemViewDlg(FDialogs[ddtMemViewer]).Execute(AExpression);
+  end;
+end;
+
+procedure TDebugManager.MemView(const AnAddress: TDBGPtr);
+begin
+  MemView(IntToStr(AnAddress));
+end;
+
 function TDebugManager.DoCreateBreakPoint(const AFilename: string;
   ALine: integer; WarnIfNoDebugger: boolean): TModalResult;
 var
@@ -3541,6 +3572,14 @@ begin
              and (pfRunnable in Project1.Flags)
             );
   end;
+end;
+
+function TDebugManager.GetTargetWidth: Integer;
+begin
+  if FDebugger <> nil then
+    Result := FDebugger.TargetWidth
+  else
+    Result := SizeOf(Pointer)*8;
 end;
 
 function TDebugManager.ShowBreakPointProperties(const ABreakpoint: TIDEBreakPoint): TModalresult;

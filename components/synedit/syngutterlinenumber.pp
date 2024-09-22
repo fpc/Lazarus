@@ -117,7 +117,7 @@ end;
 
 procedure TSynGutterLineNumber.SetDigitCount(AValue : integer);
 begin
-  AValue := MinMax(AValue, 2, 12);
+  AValue := MinMax(AValue, 2, 99);
   if FDigitCount <> AValue then
   begin
     FDigitCount := AValue;

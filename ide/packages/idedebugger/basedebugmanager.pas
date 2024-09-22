@@ -62,6 +62,7 @@ type
     ddtEvaluate,
     ddtRegisters,
     ddtAssembler,
+    ddtMemViewer,
     ddtInspect,
     ddtPseudoTerminal,
     ddtThreads,
@@ -81,6 +82,7 @@ const
     'EvaluateModify',
     'Registers',
     'Assembler',
+    'MemViewer',
     'Inspect',
     'PseudoTerminal',
     'Threads',
@@ -132,6 +134,7 @@ type
     function GetDebugger: TDebuggerIntf; virtual; abstract;
     {$ENDIF}
     function GetCurrentDebuggerClass: TDebuggerClass; virtual; abstract;    (* TODO: workaround for http://bugs.freepascal.org/view.php?id=21834   *)
+    function GetTargetWidth: Integer; virtual; abstract;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -186,6 +189,8 @@ type
     procedure JumpToUnitSource(AnUnitInfo: TDebuggerUnitInfo; ALine: Integer; AMapLineFromDebug: Boolean = True); virtual; abstract;
 
     procedure Inspect(const AExpression: String; AWatch: TWatch = nil); virtual; abstract;
+    procedure MemView(const AExpression: String); virtual; abstract;
+    procedure MemView(const AnAddress: TDBGPtr); virtual; abstract;
 
     function DoCreateBreakPoint(const AFilename: string; ALine: integer;
                                 WarnIfNoDebugger: boolean): TModalResult; virtual; abstract;
@@ -247,6 +252,7 @@ type
     {$ENDIF}
     property CurrentWatches: TCurrentWatches read FCurrentWatches; // for the hint
     property HintWatchPrinter: TWatchResultPrinter read FHintWatchPrinter;
+    property TargetWidth: Integer read GetTargetWidth;
   end;
 
 

@@ -70,8 +70,10 @@ type
     actCopyAddr: TAction;
     actCopyEntry: TAction;
     actCopyAll: TAction;
-    actWath: TAction;
+    actMemView: TAction;
+    actWatch: TAction;
     ActionList1: TActionList;
+    MenuItem5: TMenuItem;
     ToolBar1: TToolBar;
     ToolButtonPower: TToolButton;
     ToolButton2: TToolButton;
@@ -98,7 +100,8 @@ type
     procedure actEvaluateExecute(Sender: TObject);
     procedure actInspectExecute(Sender: TObject);
     procedure actInspectUpdate(Sender: TObject);
-    procedure actWathExecute(Sender: TObject);
+    procedure actMemViewExecute(Sender: TObject);
+    procedure actWatchExecute(Sender: TObject);
     procedure btnShowDataAddrClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure ToolButtonPowerClick(Sender: TObject);
@@ -348,7 +351,8 @@ begin
   vtLocals.Header.Columns[1].Text:= lisValue;
   vtLocals.Header.Columns[2].Text := dlgValueDataAddr;
   actInspect.Caption := lisInspect;
-  actWath.Caption := lisWatch;
+  actMemView.Caption := lisMenuViewMemViewer;
+  actWatch.Caption := lisWatch;
   actEvaluate.Caption     := lisEvaluateModify;
   actCopyName.Caption     := lisLocalsDlgCopyName;
   actCopyValue.Caption    := lisLocalsDlgCopyValue;
@@ -395,7 +399,13 @@ begin
   (Sender as TAction).Enabled := Assigned(GetSelected);
 end;
 
-procedure TLocalsDlg.actWathExecute(Sender: TObject);
+procedure TLocalsDlg.actMemViewExecute(Sender: TObject);
+begin
+  if GetSelected <> nil then
+    DebugBoss.MemView(GetSelected.Name);
+end;
+
+procedure TLocalsDlg.actWatchExecute(Sender: TObject);
 var
   S: String;
   Watch: TCurrentWatch;

@@ -29,7 +29,7 @@ type
   TWatchResultValue = object
   protected
     function GetIsDephtlessData: Boolean; inline;
-    function GetAsString: String; inline;
+    function GetAsString: RawByteString; inline;
     function GetAsWideString: WideString; inline;
     function GetAsQWord: QWord; inline;
     function GetAsInt64: Int64; inline;
@@ -69,15 +69,34 @@ type
 
   TWatchResultValueTextBase = object(TWatchResultValue)
   private
-    FText: String;
+    FText: RawByteString;
   protected
     function GetIsDephtlessData: Boolean; inline; // TODO: if the debugger introduces different len -limits depending on depth....
-    property GetAsString: String read FText;
+    property GetAsString: RawByteString read FText;
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: string;
                                     const AnEntryTemplate: TWatchResultData;
                                     var AnOverrideTemplate: TOverrideTemplateData;
                                     AnAsProto: Boolean);
     procedure SaveDataToXMLConfig(const AConfig: TXMLConfig; const APath: string; AnAsProto: Boolean);
+  end;
+
+  { TWatchResultValueMemDump }
+
+  TWatchResultValueMemDump = object(TWatchResultValue)
+  private
+    FText: RawByteString;
+    FAddress: TDBGPtr;
+  protected const
+    VKind = rdkMemDump;
+  protected
+    function GetIsDephtlessData: Boolean; inline; // TODO: if the debugger introduces different len -limits depending on depth....
+    property GetAsString: RawByteString read FText;
+    procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: string;
+                                    const AnEntryTemplate: TWatchResultData;
+                                    var AnOverrideTemplate: TOverrideTemplateData;
+                                    AnAsProto: Boolean);
+    procedure SaveDataToXMLConfig(const AConfig: TXMLConfig; const APath: string; AnAsProto: Boolean);
+    property GetDataAddress: TDBGPtr read FAddress;
   end;
 
   { TWatchResultValuePrePrinted }
@@ -114,7 +133,7 @@ type
   protected
     function GetIsDephtlessData: Boolean; inline; // TODO: if the debugger introduces different len -limits depending on depth....
     property GetAsWideString: WideString read FWideText;
-    function GetAsString: String; inline;
+    function GetAsString: RawByteString; inline;
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: string;
                                     const AnEntryTemplate: TWatchResultData;
                                     var AnOverrideTemplate: TOverrideTemplateData;
@@ -159,7 +178,7 @@ type
   protected const
     VKind = rdkSignedNumVal;
   protected
-    function GetAsString: String; inline;
+    function GetAsString: RawByteString; inline;
   end;
 
   { TWatchResultValueUnsignedNum }
@@ -168,7 +187,7 @@ type
   protected const
     VKind = rdkUnsignedNumVal;
   protected
-    function GetAsString: String; inline;
+    function GetAsString: RawByteString; inline;
   end;
 
   { TWatchResultValueChar }
@@ -177,7 +196,7 @@ type
   protected const
     VKind = rdkChar;
   protected
-    function GetAsString: String; inline;
+    function GetAsString: RawByteString; inline;
     function GetAsWideString: WideString; inline;
   end;
 
@@ -188,7 +207,7 @@ type
     VKind = rdkPointerVal;
   protected
     //function GetIsDephtlessData: Boolean; inline; // Done in TWatchResultDataPointer
-    function GetAsString: String; inline;
+    function GetAsString: RawByteString; inline;
     property GetDataAddress: TDBGPtr read FNumValue;
   end;
 
@@ -200,7 +219,7 @@ type
   protected
     property GetDerefData: TWatchResultData read FDerefData;
     property GetEntryTemplate: TWatchResultData read FDerefData;
-    function GetAsString: String; inline;
+    function GetAsString: RawByteString; inline;
     procedure AfterAssign(ATypeOnly: Boolean = False);
     procedure DoFree;
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: string;
@@ -220,7 +239,7 @@ type
   protected
     function GetIsDephtlessData: Boolean; inline;
     property GetAsFloat: Extended read FFloatValue;
-    function GetAsString: String; inline;
+    function GetAsString: RawByteString; inline;
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: string;
                                     const AnEntryTemplate: TWatchResultData;
                                     var AnOverrideTemplate: TOverrideTemplateData;
@@ -235,7 +254,7 @@ type
     FFloatPrecission: TLzDbgFloatPrecission;
   protected
     property GetFloatPrecission: TLzDbgFloatPrecission read FFloatPrecission;
-    function GetAsString: String; inline;
+    function GetAsString: RawByteString; inline;
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: string;
                                     const AnEntryTemplate: TWatchResultData;
                                     var AnOverrideTemplate: TOverrideTemplateData;
@@ -249,16 +268,16 @@ type
   protected const
     VKind = rdkBool;
   protected
-    function GetAsString: String; inline;
+    function GetAsString: RawByteString; inline;
   end;
 
   { TWatchResultValueEnumBase }
 
   TWatchResultValueEnumBase = object(TWatchResultValueOrdNumBase)
   private
-    FName: String;
+    FName: RawByteString;
   protected
-    property GetAsString: String read FName;
+    property GetAsString: RawByteString read FName;
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: string;
                                     const AnEntryTemplate: TWatchResultData;
                                     var AnOverrideTemplate: TOverrideTemplateData;
@@ -311,10 +330,10 @@ type
   private
     FVariantData: TWatchResultData; // This may contain "Value"-Data. Will be stored in NestedStorage
     FVisibility: TLzDbgFieldVisibility;
-    FName: String;
+    FName: RawByteString;
   protected
     property GetDerefData: TWatchResultData read FVariantData;
-    property GetAsString: String read FName;
+    property GetAsString: RawByteString read FName;
     procedure AfterAssign(ATypeOnly: Boolean = False);
     procedure DoFree;
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: string;
@@ -526,9 +545,9 @@ type
 
   TWatchResultTypeProc = object(TWatchResultValue)
   private
-    FText: String;
+    FText: RawByteString;
   protected
-    property GetAsString: String read FText;
+    property GetAsString: RawByteString read FText;
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: string;
                                     const AnEntryTemplate: TWatchResultData;
                                     var AnOverrideTemplate: TOverrideTemplateData;
@@ -676,6 +695,7 @@ type
     wdProc,      // TWatchResultDataProc,
     wdFuncRef,   // TWatchResultDataFuncRef,
     wdProcRef,   // TWatchResultDataProcRef,
+    wdMemDump,   // TWatchResultDataMemDump
     wdErr        // TWatchResultDataError
   );
 
@@ -740,7 +760,7 @@ type
     function GetTypeName: String; virtual;
     function GetIsFullDephtEvaluated: Boolean; virtual;
 
-    function GetAsString: String; virtual; abstract;
+    function GetAsString: RawByteString; virtual; abstract;
     function GetAsDesc: String; virtual; abstract;
     function GetAsWideString: WideString; virtual; abstract;
     function GetAsQWord: QWord; virtual; abstract;
@@ -805,7 +825,7 @@ type
     property TypeName: String read GetTypeName;
     property IsFullDephtEvaluated: Boolean read GetIsFullDephtEvaluated;
 
-    property AsString: String read GetAsString;
+    property AsString: RawByteString read GetAsString;
     property AsDesc: String read GetAsDesc;
     property AsWideString: WideString read GetAsWideString;
     property AsQWord: QWord read GetAsQWord;
@@ -993,7 +1013,7 @@ type
     function GetValueKind: TWatchResultDataKind; override;
     function GetIsFullDephtEvaluated: Boolean; override;
 
-    function GetAsString: String; override;
+    function GetAsString: RawByteString; override;
     function GetAsDesc: String; override;
     function GetAsWideString: WideString; override;
     function GetAsQWord: QWord; override;
@@ -1071,6 +1091,19 @@ type
     constructor Create(APrintedVal: String);
   end;
 
+  { TWatchResultDataMemDump }
+
+  TWatchResultDataMemDump = class(specialize TGenericWatchResultData<TWatchResultValueMemDump>)
+  private
+    function GetClassID: TWatchResultDataClassID; override;
+  protected
+    function GetHasDataAddress: Boolean; override;
+    function GetDataAddress: TDBGPtr; override;
+    procedure SetDataAddress(AnAddr: TDbgPtr); override;
+  public
+    constructor Create(APrintedVal: RawByteString);
+  end;
+
   { TWatchResultDataString }
 
   TWatchResultDataString = class(specialize TGenericWatchResultData<TWatchResultValueString>)
@@ -1141,7 +1174,7 @@ type
   protected
     function GetIsFullDephtEvaluated: Boolean; override;
     function GetHasDataAddress: Boolean; override;
-    function GetAsString: String; override;
+    function GetAsString: RawByteString; override;
     function GetDerefData: TWatchResultData; override;
     class function GetStorageClass: TWatchResultStorageClass; override;
     function CreateStorage: TWatchResultStorage; override;
@@ -1496,7 +1529,7 @@ type
 
   generic TGenericWatchResultDataProc<_DATA> = class(specialize TGenericWatchResultDataWithType<_DATA, TWatchResultTypeProc>)
   protected
-    function GetAsString: String; override; // TODO
+    function GetAsString: RawByteString; override; // TODO
     function GetAsDesc: String; override;
   public
     constructor Create(AnAddr: QWord; ALoc, ADesc: String);
@@ -1591,6 +1624,7 @@ const
     TWatchResultDataProc,          // wdProc
     TWatchResultDataFuncRef,       // wdFuncRef
     TWatchResultDataProcRef,       // wdProcRef
+    TWatchResultDataMemDump,       // wdMemDump
     TWatchResultDataError          // wdErr
   );
 
@@ -1601,7 +1635,7 @@ begin
   Result := False;
 end;
 
-function TWatchResultValue.GetAsString: String;
+function TWatchResultValue.GetAsString: RawByteString;
 begin
   Result := '';
 end;
@@ -1748,6 +1782,81 @@ begin
   AConfig.SetValue(APath + 'Value', FText);
 end;
 
+{ TWatchResultDataMemDump }
+
+function TWatchResultValueMemDump.GetIsDephtlessData: Boolean;
+begin
+  Result := True;
+end;
+
+procedure TWatchResultValueMemDump.LoadDataFromXMLConfig(
+  const AConfig: TXMLConfig; const APath: string;
+  const AnEntryTemplate: TWatchResultData;
+  var AnOverrideTemplate: TOverrideTemplateData; AnAsProto: Boolean);
+var
+  t: RawByteString;
+  i, d: Integer;
+  c: Char;
+begin
+  inherited LoadDataFromXMLConfig(AConfig, APath, AnEntryTemplate, AnOverrideTemplate, AnAsProto);
+
+  t := AConfig.GetValue(APath + 'Value', '');
+  SetLength(FText, Length(t) div 2);
+  for i := 1 to Length(FText) do begin
+    c := t[i*2-1];
+    if c in ['0'..'9'] then d := ord(c) - ord('0')
+    else d := ord(c) - ord('A');
+    d := d * 16;
+    c := t[i*2];
+    if c in ['0'..'9'] then d := d + ord(c) - ord('0')
+    else d := d + ord(c) - ord('A');
+    FText[i] := char(d and 255);
+  end;
+end;
+
+procedure TWatchResultValueMemDump.SaveDataToXMLConfig(
+  const AConfig: TXMLConfig; const APath: string; AnAsProto: Boolean);
+const
+  HDIG = '0123456789ABCDEF';
+var
+  t: RawByteString;
+  i: Integer;
+begin
+  inherited SaveDataToXMLConfig(AConfig, APath, AnAsProto);
+  SetLength(t, Length(FText)*2);
+  for i := 1 to Length(FText) do begin
+    t[i*2-1] := HDIG[(ord(FText[i]) div 16)+1];
+    t[i*2]   := HDIG[(ord(FText[i]) and 15)+1];
+  end;
+  AConfig.SetValue(APath + 'Value', t);
+end;
+
+function TWatchResultDataMemDump.GetClassID: TWatchResultDataClassID;
+begin
+  Result := wdMemDump;
+end;
+
+function TWatchResultDataMemDump.GetHasDataAddress: Boolean;
+begin
+  Result := True;
+end;
+
+function TWatchResultDataMemDump.GetDataAddress: TDBGPtr;
+begin
+  Result := FData.GetDataAddress;
+end;
+
+procedure TWatchResultDataMemDump.SetDataAddress(AnAddr: TDbgPtr);
+begin
+  FData.FAddress := AnAddr;
+end;
+
+constructor TWatchResultDataMemDump.Create(APrintedVal: RawByteString);
+begin
+  inherited Create;
+  FData.FText := APrintedVal;
+end;
+
 { TWatchResultValueString }
 
 procedure TWatchResultValueString.LoadDataFromXMLConfig(
@@ -1773,9 +1882,12 @@ begin
   Result := True;
 end;
 
-function TWatchResultValueWideString.GetAsString: String;
+function TWatchResultValueWideString.GetAsString: RawByteString;
+var
+  t: AnsiString;
 begin
-  Result := FWideText;
+  t := FWideText;
+  Result := t;
 end;
 
 procedure TWatchResultValueWideString.LoadDataFromXMLConfig(
@@ -1843,21 +1955,21 @@ end;
 
 { TWatchResultValueSignedNum }
 
-function TWatchResultValueSignedNum.GetAsString: String;
+function TWatchResultValueSignedNum.GetAsString: RawByteString;
 begin
   Result := IntToStr(Int64(FNumValue));
 end;
 
 { TWatchResultValueUnsignedNum }
 
-function TWatchResultValueUnsignedNum.GetAsString: String;
+function TWatchResultValueUnsignedNum.GetAsString: RawByteString;
 begin
   Result := IntToStr(QWord(FNumValue));
 end;
 
 { TWatchResultValueChar }
 
-function TWatchResultValueChar.GetAsString: String;
+function TWatchResultValueChar.GetAsString: RawByteString;
 begin
   Result := WideChar(FNumValue);
 end;
@@ -1869,14 +1981,14 @@ end;
 
 { TWatchResultValuePointer }
 
-function TWatchResultValuePointer.GetAsString: String;
+function TWatchResultValuePointer.GetAsString: RawByteString;
 begin
   Result := '$'+IntToHex(QWord(FNumValue), HexDigicCount(FNumValue, 0, True));
 end;
 
 { TWatchResultTypePointer }
 
-function TWatchResultTypePointer.GetAsString: String;
+function TWatchResultTypePointer.GetAsString: RawByteString;
 begin
   if FDerefData = nil then
     Result := ''
@@ -1933,7 +2045,7 @@ begin
   Result := True;
 end;
 
-function TWatchResultValueFloat.GetAsString: String;
+function TWatchResultValueFloat.GetAsString: RawByteString;
 begin
   Result := FloatToStr(FFloatValue);
 end;
@@ -1956,7 +2068,7 @@ end;
 
 { TWatchResultTypeFloat }
 
-function TWatchResultTypeFloat.GetAsString: String;
+function TWatchResultTypeFloat.GetAsString: RawByteString;
 begin
   WriteStr(Result, FFloatPrecission);
 end;
@@ -1979,7 +2091,7 @@ end;
 
 { TWatchResultValueBoolean }
 
-function TWatchResultValueBoolean.GetAsString: String;
+function TWatchResultValueBoolean.GetAsString: RawByteString;
 begin
   if FNumValue <> 0 then
     Result := 'True'
@@ -3295,7 +3407,7 @@ begin
   Result := FData.GetIsDephtlessData;
 end;
 
-function TGenericWatchResultData.GetAsString: String;
+function TGenericWatchResultData.GetAsString: RawByteString;
 begin
   Result := FData.GetAsString;
 end;
@@ -3746,7 +3858,7 @@ begin
   Result := True;
 end;
 
-function TWatchResultDataPointer.GetAsString: String;
+function TWatchResultDataPointer.GetAsString: RawByteString;
 begin
   Result := FData.GetAsString + FType.GetAsString;
 end;
@@ -4928,7 +5040,7 @@ end;
 
 { TGenericWatchResultDataProc }
 
-function TGenericWatchResultDataProc.GetAsString: String;
+function TGenericWatchResultDataProc.GetAsString: RawByteString;
 begin
   Result := FData.FLoc;
 end;
