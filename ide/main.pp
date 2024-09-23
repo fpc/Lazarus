@@ -8865,6 +8865,7 @@ begin
   APackageList:=nil;
   AIgnoreList:=nil;
   LFMLoaded:=nil;
+  SourceEditorManager.IncUpdateLock;
   try
     InvalidateFileStateCache;
 
@@ -8980,6 +8981,7 @@ begin
 
     Result:=mrOk;
   finally
+    SourceEditorManager.DecUpdateLock;
     CheckFilesOnDiskEnabled:=True;
     LFMLoaded.Free;
     BufferList.Free;
