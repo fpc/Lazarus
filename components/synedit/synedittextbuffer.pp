@@ -241,6 +241,7 @@ type
     procedure DetachSynEdit(AEdit: TSynEditBase);
     function  AttachedSynEditCount: Integer;
     property  AttachedSynEdits[Index: Integer]: TSynEditBase read GetAttachedSynEdits;
+    procedure CopyHanlders(OtherLines: TSynEditStringList; AOwner: TObject = nil); deprecated 'Use "CopyHandlers" / Will be removed in 4.99';
     procedure CopyHandlers(OtherLines: TSynEditStringList; AOwner: TObject = nil);
     procedure SendCachedNotify; // ToDO: review caching versus changes to topline and other values
   public
@@ -1045,6 +1046,11 @@ end;
 function TSynEditStringList.AttachedSynEditCount: Integer;
 begin
   Result := FAttachedSynEditList.Count;
+end;
+
+procedure TSynEditStringList.CopyHanlders(OtherLines: TSynEditStringList; AOwner: TObject);
+begin
+  CopyHandlers(OtherLines, AOwner);
 end;
 
 function TSynEditStringList.GetObject(Index: integer): TObject;

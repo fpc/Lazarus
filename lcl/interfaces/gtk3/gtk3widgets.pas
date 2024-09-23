@@ -4521,7 +4521,7 @@ begin
   FPageLabel:= TGtkLabel.new(PChar(Params.Caption));
   FPageLabel^.set_use_underline(true);
   Self.FHasPaint:=true;
-  // ref it to save it in case TabVisble is set to false
+  // ref it to save it in case TabVisible is set to false
   FPageLabel^.ref;
   Result := TGtkHBox.new(GTK_ORIENTATION_HORIZONTAL, 0);
   FCentralWidget := TGtkFixed.new;

@@ -248,6 +248,7 @@ type
     vmNeverMoveToVisible,
     vmOnlyMoveOffScreenToVisible   // Only make visible, if offscreen (with a threshold)
   );
+  TLayoutMoveToVisbleMode = TLayoutMoveToVisibleMode deprecated 'Use "TLayoutMoveToVisibleMode" / Will be removed in 4.99';
 
   TSimpleWindowLayoutList = class
   private

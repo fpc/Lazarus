@@ -804,7 +804,7 @@ begin
     CommentStartsAtBOL := GetCommentStartCol = 1 + GetIndentForLine(nil, CurrentLines[ToIdx(GetFirstCommentLine)], False);
 
 
-  // Aply indent before prefix
+  // Apply indent before prefix
   if Matching or (FCommentMode[FoldTyp] = sccPrefixAlways) or (sciApplyIndentForNoMatch in FIndentMode[FoldTyp])
   then begin
     IndentTypeBackup := IndentType;
