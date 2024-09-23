@@ -1823,7 +1823,9 @@ msgid "Language"
 msgstr "Kalba"
 
 #: lazarusidestrconsts.dlgenvlanguagehint
-msgid "Language of all IDE strings. Restart IDE after changing it for best result."
+#, fuzzy
+#| msgid "Language of all IDE strings. Restart IDE after changing it for best result."
+msgid "Restart the IDE to complete the language change"
 msgstr "Visų IKA tekstų kalba. Kad įsigaliotų pakeitimai IKA būtina startuoti iš naujo."
 
 #: lazarusidestrconsts.dlgenvlguidelines
@@ -11682,6 +11684,11 @@ msgstr "Keisti IKA sparčiųjų mygtukų matomumą"
 msgid "View Local Variables"
 msgstr "Rodyti „Vietiniai kintamieji“"
 
+#: lazarusidestrconsts.liskmtoggleviewmemviewer
+msgctxt "lazarusidestrconsts.liskmtoggleviewmemviewer"
+msgid "View Mem viewer"
+msgstr ""
+
 #: lazarusidestrconsts.liskmtoggleviewmessages
 msgid "Toggle view Messages"
 msgstr "Keisti „Pranešimai“ matomumą"
@@ -21315,6 +21322,11 @@ msgstr "Įjungti ar išjungti žymeklį %d"
 #: lazarusidestrconsts.srkmectogglemarkupword
 msgid "Toggle Current-Word highlight"
 msgstr "Įjungti ar išjungti dabartinio žodžio paryškinimą"
+
+#: lazarusidestrconsts.srkmectogglememviewer
+msgctxt "lazarusidestrconsts.srkmectogglememviewer"
+msgid "View Mem viewer"
+msgstr ""
 
 #: lazarusidestrconsts.srkmectogglemessages
 msgid "View messages"

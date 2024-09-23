@@ -1822,7 +1822,9 @@ msgid "Language"
 msgstr "Lingua"
 
 #: lazarusidestrconsts.dlgenvlanguagehint
-msgid "Language of all IDE strings. Restart IDE after changing it for best result."
+#, fuzzy
+#| msgid "Language of all IDE strings. Restart IDE after changing it for best result."
+msgid "Restart the IDE to complete the language change"
 msgstr "Lingua per tutte le scritte dell'IDE. Dopo un cambiamento, riavviare l'IDE per il miglior risultato."
 
 #: lazarusidestrconsts.dlgenvlguidelines
@@ -11754,6 +11756,11 @@ msgstr "Mostra/nascondi speed button dell'IDE"
 msgid "View Local Variables"
 msgstr "Mostra variabili locali"
 
+#: lazarusidestrconsts.liskmtoggleviewmemviewer
+msgctxt "lazarusidestrconsts.liskmtoggleviewmemviewer"
+msgid "View Mem viewer"
+msgstr ""
+
 #: lazarusidestrconsts.liskmtoggleviewmessages
 msgid "Toggle view Messages"
 msgstr "Mostra/nascondi messaggi"
@@ -21375,6 +21382,11 @@ msgstr "Inverti marker %d"
 #: lazarusidestrconsts.srkmectogglemarkupword
 msgid "Toggle Current-Word highlight"
 msgstr "Inverti evidenziazione della parola corrente"
+
+#: lazarusidestrconsts.srkmectogglememviewer
+msgctxt "lazarusidestrconsts.srkmectogglememviewer"
+msgid "View Mem viewer"
+msgstr ""
 
 #: lazarusidestrconsts.srkmectogglemessages
 msgid "View messages"

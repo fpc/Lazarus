@@ -1818,7 +1818,9 @@ msgid "Language"
 msgstr "言語"
 
 #: lazarusidestrconsts.dlgenvlanguagehint
-msgid "Language of all IDE strings. Restart IDE after changing it for best result."
+#, fuzzy
+#| msgid "Language of all IDE strings. Restart IDE after changing it for best result."
+msgid "Restart the IDE to complete the language change"
 msgstr "すべてのIDE文字列の言語。最良の結果を得るために、変更後はIDEを再起動して下さい。"
 
 #: lazarusidestrconsts.dlgenvlguidelines
@@ -11654,6 +11656,11 @@ msgstr "IDEのスピードボタンの表示の切り替え"
 msgid "View Local Variables"
 msgstr "ローカル変数を表示"
 
+#: lazarusidestrconsts.liskmtoggleviewmemviewer
+msgctxt "lazarusidestrconsts.liskmtoggleviewmemviewer"
+msgid "View Mem viewer"
+msgstr ""
+
 #: lazarusidestrconsts.liskmtoggleviewmessages
 msgid "Toggle view Messages"
 msgstr "メッセージ表示の切り替え"
@@ -21277,6 +21284,11 @@ msgstr "ブックマーク %d の切り替え"
 #: lazarusidestrconsts.srkmectogglemarkupword
 msgid "Toggle Current-Word highlight"
 msgstr "現在の単語強調を切り替え"
+
+#: lazarusidestrconsts.srkmectogglememviewer
+msgctxt "lazarusidestrconsts.srkmectogglememviewer"
+msgid "View Mem viewer"
+msgstr ""
 
 #: lazarusidestrconsts.srkmectogglemessages
 msgid "View messages"

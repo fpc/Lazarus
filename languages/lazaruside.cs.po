@@ -1791,7 +1791,9 @@ msgid "Language"
 msgstr "Jazyk"
 
 #: lazarusidestrconsts.dlgenvlanguagehint
-msgid "Language of all IDE strings. Restart IDE after changing it for best result."
+#, fuzzy
+#| msgid "Language of all IDE strings. Restart IDE after changing it for best result."
+msgid "Restart the IDE to complete the language change"
 msgstr "Jazyk všech řetězců IDE. Pro nejlepší výsledek restartovat po změně IDE."
 
 #: lazarusidestrconsts.dlgenvlguidelines
@@ -11576,6 +11578,11 @@ msgstr "Přepnout zobrazení Rychlých tlačítek IDE"
 msgid "View Local Variables"
 msgstr "Zobrazit Místní proměnné"
 
+#: lazarusidestrconsts.liskmtoggleviewmemviewer
+msgctxt "lazarusidestrconsts.liskmtoggleviewmemviewer"
+msgid "View Mem viewer"
+msgstr ""
+
 #: lazarusidestrconsts.liskmtoggleviewmessages
 msgid "Toggle view Messages"
 msgstr "Přepnout zobrazení Zpráv"
@@ -21129,6 +21136,11 @@ msgstr "Přepnout záložku %d"
 #: lazarusidestrconsts.srkmectogglemarkupword
 msgid "Toggle Current-Word highlight"
 msgstr "Prohodit zvýraznění aktuálního slova"
+
+#: lazarusidestrconsts.srkmectogglememviewer
+msgctxt "lazarusidestrconsts.srkmectogglememviewer"
+msgid "View Mem viewer"
+msgstr ""
 
 #: lazarusidestrconsts.srkmectogglemessages
 msgid "View messages"

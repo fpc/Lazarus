@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-08-27 15:40+0300\n"
+"PO-Revision-Date: 2024-09-23 16:32+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -1766,8 +1766,8 @@ msgid "Language"
 msgstr "Язык"
 
 #: lazarusidestrconsts.dlgenvlanguagehint
-msgid "Language of all IDE strings. Restart IDE after changing it for best result."
-msgstr "Язык интерфейса IDE. Для корректного переключения требуется перезапуск."
+msgid "Restart the IDE to complete the language change"
+msgstr "Перезапустите IDE для завершения переключения языка"
 
 #: lazarusidestrconsts.dlgenvlguidelines
 msgid "Guide lines"
@@ -11444,6 +11444,11 @@ msgstr "Показывать кнопки быстрого запуска IDE"
 msgid "View Local Variables"
 msgstr "Показать локальные переменные"
 
+#: lazarusidestrconsts.liskmtoggleviewmemviewer
+msgctxt "lazarusidestrconsts.liskmtoggleviewmemviewer"
+msgid "View Mem viewer"
+msgstr "Показать средство просмотра памяти"
+
 #: lazarusidestrconsts.liskmtoggleviewmessages
 msgid "Toggle view Messages"
 msgstr "Показать окно сообщений"
@@ -20909,6 +20914,11 @@ msgstr "Переключить закладку %d"
 #: lazarusidestrconsts.srkmectogglemarkupword
 msgid "Toggle Current-Word highlight"
 msgstr "Переключение режима подсветки текущего слова"
+
+#: lazarusidestrconsts.srkmectogglememviewer
+msgctxt "lazarusidestrconsts.srkmectogglememviewer"
+msgid "View Mem viewer"
+msgstr "Показать средство просмотра памяти"
 
 #: lazarusidestrconsts.srkmectogglemessages
 msgid "View messages"

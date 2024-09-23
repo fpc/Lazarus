@@ -1770,7 +1770,9 @@ msgid "Language"
 msgstr "语言"
 
 #: lazarusidestrconsts.dlgenvlanguagehint
-msgid "Language of all IDE strings. Restart IDE after changing it for best result."
+#, fuzzy
+#| msgid "Language of all IDE strings. Restart IDE after changing it for best result."
+msgid "Restart the IDE to complete the language change"
 msgstr "所有IDE字符串的语言.为获得最佳结果在更改后重新启动IDE."
 
 #: lazarusidestrconsts.dlgenvlguidelines
@@ -11508,6 +11510,11 @@ msgstr "切换查看IDE快速按钮"
 msgid "View Local Variables"
 msgstr "查看局部变量"
 
+#: lazarusidestrconsts.liskmtoggleviewmemviewer
+msgctxt "lazarusidestrconsts.liskmtoggleviewmemviewer"
+msgid "View Mem viewer"
+msgstr ""
+
 #: lazarusidestrconsts.liskmtoggleviewmessages
 msgid "Toggle view Messages"
 msgstr "切换至消息"
@@ -20993,6 +21000,11 @@ msgstr "设置书签 %d"
 #: lazarusidestrconsts.srkmectogglemarkupword
 msgid "Toggle Current-Word highlight"
 msgstr "切换当前单词高亮"
+
+#: lazarusidestrconsts.srkmectogglememviewer
+msgctxt "lazarusidestrconsts.srkmectogglememviewer"
+msgid "View Mem viewer"
+msgstr ""
 
 #: lazarusidestrconsts.srkmectogglemessages
 msgid "View messages"
