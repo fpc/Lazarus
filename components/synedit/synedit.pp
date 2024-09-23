@@ -2050,7 +2050,7 @@ end;
 function TCustomSynEdit.RowToScreenRow(PhysicalRow: integer): integer;
 // returns -1 for lines above visible screen (<TopLine)
 // 0 for the first line
-// 0 to LinesInWindow for visible lines (incl last partial visble line)
+// 0 to LinesInWindow for visible lines (incl last partial visible line)
 // and returns LinesInWindow+1 for lines below visible screen
 begin
   Result := ToPos(FTheLinesView.TextToViewIndex(ToIdx(PhysicalRow))) - TopView;

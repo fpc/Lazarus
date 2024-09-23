@@ -200,7 +200,7 @@ type
     procedure SetStopAfterErrCount(const AValue: integer);
     procedure SetStripSymbols(const AValue: Boolean);
     procedure SetSyntaxMode(const AValue: string);
-    procedure SetTargetFilenameAppplyConventions(const AValue: boolean);
+    procedure SetTargetFilenameApplyConventions(const AValue: boolean);
     procedure SetTrashVariables(const AValue: Boolean);
     procedure SetUncertainOpt(const AValue: Boolean);
     procedure SetUseAnsiStr(const AValue: Boolean);
@@ -271,7 +271,7 @@ type
     FUseExternalDbgSyms : Boolean;
     fTargetFileExt: string;
     fTargetFilename: string;
-    FTargetFilenameAppplyConventions: boolean;
+    FTargetFilenameApplyConventions: boolean;
     // Messages:
     fShowWarn: Boolean;
     fShowNotes: Boolean;
@@ -392,7 +392,7 @@ type
     // target:
     property TargetFileExt: string read FTargetFileExt write SetTargetFileExt; // empty for default
     property TargetFilename: string read fTargetFilename write SetTargetFilename; // empty for default
-    property TargetFilenameApplyConventions: boolean read FTargetFilenameAppplyConventions write SetTargetFilenameAppplyConventions;
+    property TargetFilenameApplyConventions: boolean read FTargetFilenameApplyConventions write SetTargetFilenameApplyConventions;
 
     // parsing:
     property SyntaxMode: string read FSyntaxMode write SetSyntaxMode;
@@ -890,11 +890,11 @@ begin
   IncreaseChangeStamp;
 end;
 
-procedure TLazCompilerOptions.SetTargetFilenameAppplyConventions(
+procedure TLazCompilerOptions.SetTargetFilenameApplyConventions(
   const AValue: boolean);
 begin
-  if FTargetFilenameAppplyConventions=AValue then exit;
-  FTargetFilenameAppplyConventions:=AValue;
+  if FTargetFilenameApplyConventions=AValue then exit;
+  FTargetFilenameApplyConventions:=AValue;
   IncreaseChangeStamp;
 end;
 
@@ -1001,7 +1001,7 @@ begin
   fOnChanged:=TMethodList.Create;
   FChangeStamp:=InvalidChangeStamp;
   FSavedChangeStamp:=FChangeStamp;
-  FTargetFilenameAppplyConventions:=true;
+  FTargetFilenameApplyConventions:=true;
   FOwner := TheOwner;
 end;
 

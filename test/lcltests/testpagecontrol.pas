@@ -820,7 +820,7 @@ begin
   s3.TabVisible := False;
   Application.ProcessMessages;
 
-  // TabRect takes an indek into VISBLE-only tabs
+  // TabRect takes an indek into VISIBLE-only tabs
   T2Recta := PageControl.TabRect(2); // the old tab 2, since tab3 is hidden
   T2RectaScr.TopLeft := PageControl.ClientToScreen(T2Recta.TopLeft);
   T2RectaScr.BottomRight := PageControl.ClientToScreen(T2Recta.BottomRight);

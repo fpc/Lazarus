@@ -94,7 +94,7 @@ end;
 
 destructor TSynGutterLineNumber.Destroy;
 begin
-  ViewedTextBuffer.RemoveHanlders(self);
+  ViewedTextBuffer.RemoveHandlers(self);
   FTextDrawer.UnRegisterOnFontChangeHandler(@FontChanged);
   inherited Destroy;
 end;

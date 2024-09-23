@@ -507,7 +507,8 @@ type
     procedure AddEditHandler(AHandler: TStringListLineEditEvent);
     procedure RemoveEditHandler(AHandler: TStringListLineEditEvent);
 
-    procedure RemoveHanlders(AOwner: TObject);
+    procedure RemoveHanlders(AOwner: TObject); deprecated 'Use "RemoveHandlers" / Will be removed in 4.99';
+    procedure RemoveHandlers(AOwner: TObject);
 
     //function GetPhysicalCharWidths(Line: PChar; LineLen, Index: Integer): TPhysicalCharWidths; override;
     property NextLines: TSynEditStrings read fSynStrings write SetSynStrings;
@@ -548,7 +549,7 @@ type
   protected
     procedure AddManagedHandler(AReason: TSynEditNotifyReason; AHandler: TMethod); virtual; abstract;
     procedure RemoveManagedHandler(AReason: TSynEditNotifyReason; AHandler: TMethod); virtual; abstract;
-    procedure RemoveManagedHanlders(AOwner: TObject); virtual; abstract;
+    procedure RemoveManagedHandlers(AOwner: TObject); virtual; abstract;
   end;
 
   { TSynTextViewsManager }
@@ -567,7 +568,7 @@ type
   protected
     procedure AddGenericHandler(AReason: TSynEditNotifyReason; AHandler: TMethod);
     procedure RemoveGenericHandler(AReason: TSynEditNotifyReason; AHandler: TMethod);
-    procedure RemoveHanlders(AOwner: TObject);
+    procedure RemoveHandlers(AOwner: TObject);
     property TextBuffer: TSynEditStringListBase read FTextBuffer write SetTextBuffer;
   public
     constructor Create(ATextBuffer: TSynEditStringListBase; ATopViewChangedCallback: TNotifyEvent);
@@ -1786,7 +1787,12 @@ end;
 
 procedure TSynEditStringsLinked.RemoveHanlders(AOwner: TObject);
 begin
-  Manager.RemoveHanlders(AOwner);
+  RemoveHandlers(AOwner);
+end;
+
+procedure TSynEditStringsLinked.RemoveHandlers(AOwner: TObject);
+begin
+  Manager.RemoveHandlers(AOwner);
 end;
 
 function TSynEditStringsLinked.LogicPosAddChars(const ALine: String; ALogicalPos,
@@ -1941,14 +1947,14 @@ begin
     FTextBuffer.RemoveManagedHandler(AReason, AHandler);
 end;
 
-procedure TSynTextViewsManager.RemoveHanlders(AOwner: TObject);
+procedure TSynTextViewsManager.RemoveHandlers(AOwner: TObject);
 var
   i: TSynEditNotifyReason;
 begin
   for i := low(TSynEditNotifyReason) to high(TSynEditNotifyReason) do
     FNotifyLists[i].RemoveAllMethodsOfObject(AOwner);
   if FTextBuffer <> nil then
-    FTextBuffer.RemoveManagedHanlders(AOwner);
+    FTextBuffer.RemoveManagedHandlers(AOwner);
 end;
 
 constructor TSynTextViewsManager.Create(ATextBuffer: TSynEditStringListBase;

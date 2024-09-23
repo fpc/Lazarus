@@ -2260,7 +2260,7 @@ changed.
 </short>
 <descr>
 <p>
-Calls the inherited method on entry to signal assigned OnVisbleChanging event 
+Calls the inherited method on entry to signal assigned OnVisibleChanging event
 handlers in the control or form hierarchy. Updates the Visible property in 
 each of the editor controls to match the property value in the 
 TCompositeCellEditor instance. When displaying the editor controls, their 

@@ -574,7 +574,7 @@ type
     procedure Clear; override;
     procedure LoadFromXMLConfig(AXMLConfig: TXMLConfig; const Path: string); override;
     procedure SaveToXMLConfig(AXMLConfig: TXMLConfig; const Path: string); override;
-    function CanBeDefaulForProject: boolean; override;
+    function CanBeDefaultForProject: boolean; override;
     function GetOwnerName: string; override;
     function GetDefaultMainSourceFileName: string; override;
     function GetDefaultWriteConfigFilePath: string; override;
@@ -6661,7 +6661,7 @@ begin
   inherited Clear;
 end;
 
-function TProjectCompilerOptions.CanBeDefaulForProject: boolean;
+function TProjectCompilerOptions.CanBeDefaultForProject: boolean;
 begin
   Result:=true;
 end;

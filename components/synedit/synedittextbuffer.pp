@@ -214,7 +214,7 @@ type
                 AHandler: TMethod); override;
     procedure RemoveManagedHandler(AReason: TSynEditNotifyReason;
                 AHandler: TMethod); override;
-    procedure RemoveManagedHanlders(AOwner: TObject); override;
+    procedure RemoveManagedHandlers(AOwner: TObject); override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -241,7 +241,8 @@ type
     procedure DetachSynEdit(AEdit: TSynEditBase);
     function  AttachedSynEditCount: Integer;
     property  AttachedSynEdits[Index: Integer]: TSynEditBase read GetAttachedSynEdits;
-    procedure CopyHanlders(OtherLines: TSynEditStringList; AOwner: TObject = nil);
+    procedure CopyHanlders(OtherLines: TSynEditStringList; AOwner: TObject = nil); deprecated 'Use "CopyHandlers" / Will be removed in 4.99';
+    procedure CopyHandlers(OtherLines: TSynEditStringList; AOwner: TObject = nil);
     procedure SendCachedNotify; // ToDO: review caching versus changes to topline and other values
   public
     property DosFileFormat: boolean read fDosFileFormat write fDosFileFormat;    
@@ -1047,6 +1048,11 @@ begin
   Result := FAttachedSynEditList.Count;
 end;
 
+procedure TSynEditStringList.CopyHanlders(OtherLines: TSynEditStringList; AOwner: TObject);
+begin
+  CopyHandlers(OtherLines, AOwner);
+end;
+
 function TSynEditStringList.GetObject(Index: integer): TObject;
 begin
   if (Index >= 0) and (Index < Count) then
@@ -1366,7 +1372,7 @@ begin
   FNotifyLists[AReason].Remove(AHandler);
 end;
 
-procedure TSynEditStringList.CopyHanlders(OtherLines: TSynEditStringList; AOwner: TObject = nil);
+procedure TSynEditStringList.CopyHandlers(OtherLines: TSynEditStringList; AOwner: TObject = nil);
 var
   i: TSynEditNotifyReason;
 begin
@@ -1374,7 +1380,7 @@ begin
     FNotifyLists[i].AddCopyFrom(OtherLines.FNotifyLists[i], AOwner);
 end;
 
-procedure TSynEditStringList.RemoveManagedHanlders(AOwner: TObject);
+procedure TSynEditStringList.RemoveManagedHandlers(AOwner: TObject);
 var
   i: TSynEditNotifyReason;
 begin

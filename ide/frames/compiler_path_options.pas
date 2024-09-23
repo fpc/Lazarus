@@ -723,7 +723,7 @@ begin
   UnitOutputDirEdit.Text := FCompilerOpts.UnitOutputDirectory;
   SetPathTextAndHint(FCompilerOpts.DebugPath, DebugPathEdit);
 
-  chkUseAsDefault.Visible := FCompilerOpts.CanBeDefaulForProject;
+  chkUseAsDefault.Visible := FCompilerOpts.CanBeDefaultForProject;
 end;
 
 procedure TCompilerPathOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);

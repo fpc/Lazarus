@@ -243,11 +243,12 @@ type
   end;
 
   { TSimpleWindowLayoutList }
-  TLayoutMoveToVisbleMode = (
+  TLayoutMoveToVisibleMode = (
     vmAlwaysMoveToVisible,
     vmNeverMoveToVisible,
     vmOnlyMoveOffScreenToVisible   // Only make visible, if offscreen (with a threshold)
   );
+  TLayoutMoveToVisbleMode = TLayoutMoveToVisibleMode deprecated 'Use "TLayoutMoveToVisibleMode" / Will be removed in 4.99';
 
   TSimpleWindowLayoutList = class
   private
@@ -262,7 +263,7 @@ type
     procedure Delete(Index: Integer);
     procedure ApplyAndShow(Sender: TObject; AForm: TCustomForm;
                            BringToFront: boolean;
-                           AMoveToVisbleMode: TLayoutMoveToVisbleMode = vmOnlyMoveOffScreenToVisible);
+                           AMoveToVisibleMode: TLayoutMoveToVisibleMode = vmOnlyMoveOffScreenToVisible);
     procedure StoreWindowPositions;
     procedure SetDefaultPosition(const AForm: TCustomForm);
     procedure MoveToTop(const AFormID: string);
@@ -413,7 +414,7 @@ type
     function GetForm(aFormName: string; AutoCreate: boolean;
                                DisableAutoSizing: boolean = false): TCustomForm;
     procedure ShowForm(AForm: TCustomForm; BringToFront: boolean;
-                       AMoveToVisbleMode: TLayoutMoveToVisbleMode = vmOnlyMoveOffScreenToVisible); overload;
+                       AMoveToVisibleMode: TLayoutMoveToVisibleMode = vmOnlyMoveOffScreenToVisible); overload;
     function ShowForm(AFormName: string; BringToFront: boolean): TCustomForm; overload;
     procedure CreateForm(var AForm; AFormClass: TCustomFormClass;
                          DoDisableAutoSizing: boolean; TheOwner: TComponent); // utility function to create a form with delayed autosizing
@@ -1694,12 +1695,12 @@ begin
 end;
 
 procedure TSimpleWindowLayoutList.ApplyAndShow(Sender: TObject; AForm: TCustomForm;
-  BringToFront: boolean; AMoveToVisbleMode: TLayoutMoveToVisbleMode);
+  BringToFront: boolean; AMoveToVisibleMode: TLayoutMoveToVisibleMode);
 
   procedure AdjustShowing;
   begin
-    if (AMoveToVisbleMode = vmAlwaysMoveToVisible)
-    or ((AMoveToVisbleMode = vmOnlyMoveOffScreenToVisible) and IsFormStatic(AForm))
+    if (AMoveToVisibleMode = vmAlwaysMoveToVisible)
+    or ((AMoveToVisibleMode = vmOnlyMoveOffScreenToVisible) and IsFormStatic(AForm))
     then
       AForm.MakeFullyVisible(nil, True);
     AForm.ShowOnTop;
@@ -1797,7 +1798,7 @@ begin
       NewBounds.Right:=Max(NewBounds.Left+100,NewBounds.Right);
       NewBounds.Bottom:=Max(NewBounds.Top+100,NewBounds.Bottom);
       AForm.BoundsRect:=NewBounds;
-      AMoveToVisbleMode := vmOnlyMoveOffScreenToVisible;
+      AMoveToVisibleMode := vmOnlyMoveOffScreenToVisible;
     end;
   finally
     // do not change Visible property while designing form. issue #20602
@@ -2238,7 +2239,7 @@ begin
 end;
 
 procedure TIDEWindowCreatorList.ShowForm(AForm: TCustomForm; BringToFront: boolean;
-  AMoveToVisbleMode: TLayoutMoveToVisbleMode);
+  AMoveToVisibleMode: TLayoutMoveToVisibleMode);
 var
   Layout: TSimpleWindowLayout;
 begin
@@ -2262,7 +2263,7 @@ begin
     if (IDETabMaster <> nil) and IsFormDesign(AForm) then
       IDETabMaster.ShowForm(AForm)
     else
-      SimpleLayoutStorage.ApplyAndShow(Self,AForm,BringToFront,AMoveToVisbleMode);
+      SimpleLayoutStorage.ApplyAndShow(Self,AForm,BringToFront,AMoveToVisibleMode);
 end;
 
 function TIDEWindowCreatorList.ShowForm(AFormName: string; BringToFront: boolean): TCustomForm;

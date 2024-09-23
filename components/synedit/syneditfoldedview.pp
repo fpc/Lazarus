@@ -3642,7 +3642,7 @@ begin
   if not assigned(hl) then
     exit(0);
   // AStartIndex is 0-based
-  // FoldTree is 1-based AND first line remains visble
+  // FoldTree is 1-based AND first line remains visible
   c := hl.FoldNodeInfo[AStartIndex].CountEx([sfaOpen, sfaFold]);
   if c = 0 then
     exit(-1);
@@ -4001,7 +4001,7 @@ begin
   top := TopTextIndex;
 
   // AStartIndex is 0-based
-  // FoldTree is 1-based AND first line remains visble
+  // FoldTree is 1-based AND first line remains visible
   NodeCount := FoldProvider.FoldOpenCount(AStartIndex);
   if ColCount = 0 then
     ColCount := NodeCount;
@@ -4170,7 +4170,7 @@ begin
       c := hl.FoldBlockOpeningCount(i) -1;
       fldinf := FoldProvider.InfoForFoldAtTextIndex(i, c);
       // i is 0-based
-      // FoldTree is 1-based AND first line remains visble
+      // FoldTree is 1-based AND first line remains visible
       fFoldTree.InsertNewFold(i+2, c, fldinf.Column, fldinf.ColumnLen, fldinf.LineCount, 1,
                               fldinf.Classification, fldinf.FoldTypeCompatible); // TODO: hide too? currently VisibleLines=1
       if IgnoreNested then

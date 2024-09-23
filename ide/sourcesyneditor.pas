@@ -2172,7 +2172,7 @@ end;
 
 destructor TIDESynGutterLOvProviderPascal.Destroy;
 begin
-  ViewedTextBuffer.RemoveHanlders(self);
+  ViewedTextBuffer.RemoveHandlers(self);
   inherited Destroy;
 end;
 
