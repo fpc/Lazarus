@@ -74,6 +74,8 @@ type
 // translate all resource strings
 procedure TranslateResourceStrings(const LazarusDir, CustomLang: string);
 
+function GetLazIdePoFile(const LazarusDir, CustomLang: string): TPOFile;
+
 // get language name for ID
 function GetLazarusLanguageLocalizedName(const ID: string): String;
 
@@ -525,6 +527,19 @@ begin
   // LCL (needed to translate button captions in a dialog about config directory belonging to another Lazarus instance)
   TranslateUnitResourceStrings('LCLStrConsts',
     Dir+'lcl/languages/lclstrconsts'+Ext,Lang,FallbackLang);
+end;
+
+
+function GetLazIdePoFile(const LazarusDir, CustomLang: string): TPOFile;
+const
+  Ext = '.%s.po';
+var
+  AFilename: String;
+begin
+  Result := nil;
+  AFilename:=Format(AppendPathDelim(LazarusDir)+'languages/lazaruside'+Ext, [CustomLang]);
+  if FileExistsUTF8(AFilename) then
+    Result := TPOFile.Create(AFilename);
 end;
 
 { TLazarusTranslations }

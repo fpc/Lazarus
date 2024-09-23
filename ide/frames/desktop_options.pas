@@ -27,9 +27,9 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  Forms, StdCtrls, Dialogs, ExtCtrls, Spin,
+  Forms, StdCtrls, Dialogs, Controls, ExtCtrls, Spin,
   // LazUtils
-  FileUtil, LazUTF8, LazLoggerBase,
+  FileUtil, LazUTF8, LazLoggerBase, Translations,
   // LazControls
   DividerBevel,
   // IdeIntf
@@ -50,6 +50,7 @@ type
     AutoSaveIntervalInSecsComboBox: TComboBox;
     AutoSaveIntervalInSecsLabel: TLabel;
     AutoSaveProjectCheckBox: TCheckBox;
+    lblLangChangeHint: TLabel;
     lblDropDownCount: TLabel;
     lblComboBoxes: TDividerBevel;
     lblCheckAndAutoSave: TDividerBevel;
@@ -79,7 +80,9 @@ type
     spDropDownCount: TSpinEdit;
     procedure ExportDesktopButtonClick(Sender: TObject);
     procedure ImportDesktopButtonClick(Sender: TObject);
+    procedure LanguageComboBoxChange(Sender: TObject);
   private
+    fCurrentLang: TCaption;
     function LangIDToCaption(const LangID: string): string;
     function CaptionToLangID(const ACaption: string): string;
     procedure DoLoadSettings(AOptions: TAbstractIDEOptions);
@@ -109,9 +112,11 @@ var
   LangID: String;
   sl: TStringListUTF8Fast;
 begin
+  fCurrentLang := '';
+
   // language
   lblLanguage.Caption := dlgEnvLanguage;
-  LanguageComboBox.Hint := dlgEnvLanguageHint;
+  lblLangChangeHint.Caption := dlgEnvLanguageHint;
 
   // languages: first the automatic, then sorted the rest
   sl:=TStringListUTF8Fast.Create;
@@ -183,6 +188,7 @@ begin
   begin
     // language
     LanguageComboBox.Text:=LangIDToCaption(EnvOpt.LanguageID);
+    fCurrentLang := LanguageComboBox.Text;
     //debugln('TEnvironmentOptionsDialog.ReadSettings LanguageComboBox.ItemIndex=',dbgs(LanguageComboBox.ItemIndex),' LanguageID="',LanguageID,'" LanguageComboBox.Text="',LanguageComboBox.Text,'"');
 
     // mouse action
@@ -344,6 +350,24 @@ begin
     end;
   finally
     OpenDialog.Free;
+  end;
+end;
+
+procedure TDesktopOptionsFrame.LanguageComboBoxChange(Sender: TObject);
+var
+  po: TPOFile;
+  s: String;
+begin
+  lblLangChangeHint.Visible := LanguageComboBox.Text <> fCurrentLang;
+  po := GetLazIdePoFile(EnvironmentOptions.GetParsedLazarusDirectory,
+                        CaptionToLangID(LanguageComboBox.Text));
+  if po <> nil then begin
+    s := po.Translate('lazarusidestrconsts.dlgEnvLanguageHint','');
+    if s <> '' then
+      lblLangChangeHint.Caption := s
+    else
+      lblLangChangeHint.Caption := dlgEnvLanguageHint;
+    po.Free;
   end;
 end;
 

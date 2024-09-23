@@ -1242,7 +1242,7 @@ resourcestring
 
   // IDE General options
   dlgEnvLanguage = 'Language';
-  dlgEnvLanguageHint = 'Language of all IDE strings. Restart IDE after changing it for best result.';
+  dlgEnvLanguageHint = 'Restart the IDE to complete the language change';
   dlgCheckAndAutoSaveFiles = 'Check and Auto Save Files';
   lisAskBeforeSavingProjectSSession = 'Ask before saving project''s session';
   lisIfOnlySessionInfoChangedThenAsk = 'If only the session info changed, ask about saving it.';
