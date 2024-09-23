@@ -117,5 +117,9 @@ begin
   end;
 end;
 
+initialization
+
+finalization
+  _settings.Free;
 end.
 
