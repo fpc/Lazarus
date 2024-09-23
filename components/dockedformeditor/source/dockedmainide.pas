@@ -239,6 +239,7 @@ var
 begin
   {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TDockedTabMaster.ShowCode'); {$ENDIF}
   if ASourceEditor = nil then Exit;
+  SourceEditorManagerIntf.ActiveEditor := ASourceEditor;
   LPageCtrl := SourceWindows.FindPageControl(ASourceEditor);
   LPageCtrl.ShowCode;
   ASourceEditor.EditorControl.SetFocus;
@@ -250,6 +251,7 @@ var
 begin
   {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TDockedTabMaster.ShowDesigner'); {$ENDIF}
   if ASourceEditor = nil then Exit;
+  SourceEditorManagerIntf.ActiveEditor := ASourceEditor;
   LPageCtrl := SourceWindows.FindPageControl(ASourceEditor);
   LPageCtrl.ShowDesigner(AIndex);
 end;
