@@ -1431,8 +1431,6 @@ type
 
   {%region      *****  Register  *****   }
 
-  TStringArray = Array of string;
-
   TGDBMIRegisterSupplier = class;
 
   { TGDBMIDebuggerCommandRegisterUpdate }

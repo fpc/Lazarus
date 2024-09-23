@@ -5,7 +5,7 @@ unit TestHighlightXml;
 interface
 
 uses
-  testregistry, TestBase, TestHighlightFoldBase, SynHighlighterXML,
+  SysUtils, testregistry, TestBase, TestHighlightFoldBase, SynHighlighterXML,
   SynEditHighlighterFoldBase;
 
 type

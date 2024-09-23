@@ -12,8 +12,6 @@ uses
 
 type
 
-  TStringArray = array of string;
-
   TTestSetSelFlag = (
     tssEmptyFirst,
     tssSkipUndoBlock,

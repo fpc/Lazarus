@@ -428,10 +428,7 @@ type
 var
   FontCollection: TCustomFreeTypeFontCollection;
 
-type
-  ArrayOfString = array of string;
-
-function StylesToArray(AStyles: string): ArrayOfString;
+function StylesToArray(AStyles: string): TStringArray;
 
 const FreeTypeMinPointSize = 1;
 
@@ -453,7 +450,7 @@ begin
   result.NotifyProc := ANotifyProc;
 end;
 
-function StylesToArray(AStyles: string): ArrayOfString;
+function StylesToArray(AStyles: string): TStringArray;
 var
   StartIndex, EndIndex: integer;
   Count: integer;

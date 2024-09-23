@@ -8,10 +8,6 @@ uses
   Classes, SysUtils, fpcunit, testutils, testregistry, LazLoggerBase, LazLogger, LazClasses;
 
 type
-  TStringArray = array of string;
-
-  { TTestLazLogger }
-
   TTestLazLogger = class(TTestCase)
   protected
     FTheLogger: TLazLoggerFile;
