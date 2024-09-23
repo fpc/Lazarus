@@ -29,7 +29,7 @@ uses
   // LCL
   Forms, StdCtrls, Dialogs, Controls, ExtCtrls, Spin,
   // LazUtils
-  FileUtil, LazUTF8, LazLoggerBase,
+  FileUtil, LazUTF8, LazLoggerBase, Translations,
   // LazControls
   DividerBevel,
   // IdeIntf
@@ -354,8 +354,21 @@ begin
 end;
 
 procedure TDesktopOptionsFrame.LanguageComboBoxChange(Sender: TObject);
+var
+  po: TPOFile;
+  s: String;
 begin
   lblLangChangeHint.Visible := LanguageComboBox.Text <> fCurrentLang;
+  po := GetLazIdePoFile(EnvironmentOptions.GetParsedLazarusDirectory,
+                        CaptionToLangID(LanguageComboBox.Text));
+  if po <> nil then begin
+    s := po.Translate('lazarusidestrconsts.dlgEnvLanguageHint','');
+    if s <> '' then
+      lblLangChangeHint.Caption := s
+    else
+      lblLangChangeHint.Caption := dlgEnvLanguageHint;
+    po.Free;
+  end;
 end;
 
 function TDesktopOptionsFrame.LangIDToCaption(const LangID: string): string;
