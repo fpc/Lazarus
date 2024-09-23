@@ -1,0 +1,48 @@
+object SchemaEditorSettingsDialog: TSchemaEditorSettingsDialog
+  Left = 417
+  Height = 214
+  Top = 162
+  Width = 408
+  Caption = 'Schema editor settings'
+  ClientHeight = 214
+  ClientWidth = 408
+  Position = poScreenCenter
+  LCLVersion = '3.99.0.0'
+  OnClose = FormClose
+  OnShow = FormShow
+  object GBConnections: TGroupBox
+    Left = 0
+    Height = 73
+    Top = 0
+    Width = 408
+    Align = alTop
+    Caption = 'Connections'
+    ClientHeight = 56
+    ClientWidth = 406
+    TabOrder = 0
+    object cbDisableVersionCheck: TCheckBox
+      Left = 16
+      Height = 23
+      Top = 8
+      Width = 246
+      Caption = 'Disable MySQL Library version check'
+      TabOrder = 0
+    end
+  end
+  object BPSettings: TButtonPanel
+    Left = 6
+    Height = 38
+    Top = 170
+    Width = 396
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel]
+  end
+end

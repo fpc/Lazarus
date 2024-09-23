@@ -58,6 +58,17 @@ Const
 Type
   TOnGetSQLConnection = Procedure (Sender : TObject; aConnName : String; Out aConn : TSQLConnection) of object;
 
+  { TSchemaConnector }
+
+  TSchemaConnector = Class(TSQLConnector)
+  private
+    FDisableLibraryCheck: Boolean;
+  Public
+    Procedure CreateProxy; override;
+    Property DisableLibraryCheck : Boolean Read FDisableLibraryCheck Write FDisableLibraryCheck;
+  end;
+
+
   { TBaseEditFrame }
 
   TBaseEditFrame = Class(TFrame)
@@ -107,6 +118,7 @@ Type
   Protected
     Function CreateResourceList: TSQLDBRestResourceList; override;
   end;
+
   { TMySQLDBRestConnection }
 
   TMySQLDBRestConnection = Class(TSQLDBRestConnection)
@@ -214,6 +226,19 @@ Resourcestring
 
 implementation
 
+uses typinfo, schemaeditorconf;
+
+{ TSchemaConnector }
+
+procedure TSchemaConnector.CreateProxy;
+begin
+  inherited CreateProxy;
+  if pos('mysql',LowerCase(Self.ConnectorType))>0 then
+    if DisableLibraryCheck and IsPublishedProp(Proxy,'SkipLibraryVersionCheck') then
+      SetOrdProp(Proxy,'SkipLibraryVersionCheck',Ord(True));
+end;
+
+
 {$IFNDEF HAS_PARAMS}
 
 { TSQLDBRestResourceHelper }
@@ -294,7 +319,8 @@ begin
     Result:=C.SingleConnection;
     if Result=Nil then
       begin
-      Result:=TSQLConnector.Create(Self.Owner);
+      Result:=TSchemaConnector.Create(Self.Owner);
+      TSchemaConnector(Result).DisableLibraryCheck:=SchemaSettings.DisableMySQLVersionCheck;
       Result.Transaction:=TSQLTransaction.Create(Self.Owner);
       Result.Transaction.DataBase:=Result;
       C.ConfigConnection(Result);
@@ -378,10 +404,11 @@ end;
 
 procedure TMySQLDBRestConnection.CreateConnection;
 
-
 begin
   FreeAndNil(FMyConnection);
-  FMyConnection:=TSQLConnector.Create(Nil);
+  FMyConnection:=TSchemaConnector.Create(Nil);
+  if SchemaSettings.DisableMySQLVersionCheck then
+    TSchemaConnector(FMyConnection).DisableLibraryCheck:=SchemaSettings.DisableMySQLVersionCheck;
   FMyTransaction:=TSQLTransaction.Create(nil);
   FMyConnection.Transaction:=FMyTransaction;
   ConfigConnection(FMyConnection);

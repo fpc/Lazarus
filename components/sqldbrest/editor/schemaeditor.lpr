@@ -7,11 +7,12 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, frmMain, schemaconns;
+  Forms, frmMain, schemaeditorconf, schemaconns;
 
 {$R *.res}
 
 begin
+  SchemaSettings.LoadFromFile(TSchemaSettings.DefaultFileName);
   RequireDerivedFormResource:=True;
   Application.Scaled:=True;
   Application.Initialize;

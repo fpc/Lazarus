@@ -13,6 +13,7 @@ type
   { TMainForm }
 
   TMainForm = class(TForm)
+    AShowSettings: TAction;
     aQuit: TAction;
     ASchemaNew: TAction;
     ASaveSchemaAs: TAction;
@@ -23,6 +24,7 @@ type
     alMain: TActionList;
     ILMain: TImageList;
     IPSMain: TIniPropStorage;
+    MIShowSettings: TMenuItem;
     MIRecent: TMenuItem;
     MFile: TMenuItem;
     MIReadConnections: TMenuItem;
@@ -49,6 +51,7 @@ type
     procedure ASaveSchemaAsExecute(Sender: TObject);
     procedure ASaveSchemaExecute(Sender: TObject);
     procedure ASchemaNewExecute(Sender: TObject);
+    procedure AShowSettingsExecute(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure IPSMainRestoreProperties(Sender: TObject);
@@ -65,6 +68,7 @@ type
     Procedure LoadSchemaFile(const aFileName : String);
     Procedure SaveSchemaFile(const aFileName : String);
     Procedure SetCaption;
+    procedure ShowSettingsForm;
   public
 
   end;
@@ -74,10 +78,9 @@ var
 
 implementation
 
-
 {$R *.lfm}
 
-uses sqldbrestbridge, sqldbrestini;
+uses dlgeditorsettings,sqldbrestbridge, sqldbrestini;
 
 resourcestring
   SSchemaChanged = 'Schema changed';
@@ -219,6 +222,22 @@ begin
     fraEditor.ClearSchema;
     FFileName:='';
     SetCaption;
+    end;
+end;
+
+procedure TMainForm.AShowSettingsExecute(Sender: TObject);
+begin
+  ShowSettingsForm;
+end;
+
+procedure TMainForm.ShowSettingsForm;
+
+begin
+  With TSchemaEditorSettingsDialog.Create(Self) do
+    try
+      ShowModal;
+    finally
+      Free;
     end;
 end;
 

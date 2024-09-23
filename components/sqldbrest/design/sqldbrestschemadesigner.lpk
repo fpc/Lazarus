@@ -10,7 +10,7 @@
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
-    <Files Count="26">
+    <Files Count="28">
       <Item1>
         <Filename Value="dlgrestfieldoptions.lfm"/>
         <Type Value="LFM"/>
@@ -127,6 +127,14 @@
         <Filename Value="frasqldbrestparamedit.pp"/>
         <UnitName Value="frasqldbrestparamedit"/>
       </Item26>
+      <Item27>
+        <Filename Value="schemaeditorconf.pas"/>
+        <UnitName Value="schemaeditorconf"/>
+      </Item27>
+      <Item28>
+        <Filename Value="dlgeditorsettings.pas"/>
+        <UnitName Value="dlgeditorsettings"/>
+      </Item28>
     </Files>
     <CompatibilityMode Value="True"/>
     <RequiredPkgs Count="3">

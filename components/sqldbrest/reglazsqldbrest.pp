@@ -124,6 +124,7 @@ uses
   frmsqldbrestdispatchini,
   frmsqldbrestselecttables,
   dlgeditsqldbrestschema,
+  schemaeditorconf,
   reslazsqldbrest;
 
 Var
@@ -150,7 +151,7 @@ begin
     TSQLDBRestBusinessProcessor,'ResourceName',TSQLDBRestResourceNamePropertyEditor);
   RegisterComponentEditor(TSQLDBRESTSchema,TSQLDBRESTSchemaComponentEditor);
   RegisterComponentEditor(TSQLDBRestDispatcher,TSQLDBRestDispatcherComponentEditor);
-
+  SchemaSettings.LoadFromFile(IncludeTrailingPathDelimiter(LazarusIDE.GetPrimaryConfigPath)+'schemaeditor.ini');
   FileDescriptorRestModule:=TFileRestModule.Create;
   RegisterProjectFileDescriptor(FileDescriptorRestModule);
   FormEditingHook.RegisterDesignerBaseClass(TSQLDBRestModule);
