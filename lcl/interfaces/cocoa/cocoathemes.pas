@@ -208,6 +208,7 @@ begin
     begin
       SetButtonCellToDetails(b, Details);
       CellDrawStart(DC, R, cur, nsr);
+      b.setBackgroundColor( NSColor.controlBackgroundColor );
       CellDrawFrame(b, nsr);
       CellDrawEnd(DC, cur);
       Exit;
