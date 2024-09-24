@@ -1971,7 +1971,7 @@ begin
      (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader] = [rsWasInProcHeader]) and
      (TopPascalCodeFoldBlockType in ProcModifierAllowed)
   then begin
-    Result := tkModifier;
+    Result := tkKey;
     FRange := FRange + [rsInProcHeader];
   end
   else
