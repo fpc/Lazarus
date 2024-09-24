@@ -365,7 +365,7 @@ begin
     {$ENDIF}
     s:='';
     //IDEMessageDialog('Unknown Macro','Macro not defined: "'+s+'".',mtError,[mbAbort],0);
-    Handled:=true;
+    Handled:=false;
     exit;
   end;
 end;
