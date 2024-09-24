@@ -206,6 +206,7 @@ const
   ErrorLoadProjectFailed  = 5;
   ErrorInvalidSyntax      = 6;
   ErrorInitialization     = 7;
+  ErrorExpandMacro        = 8;
   VersionStr = {$I packages/ideconfig/version.inc};
 
 procedure FilterConfigFileContent;
@@ -848,6 +849,13 @@ var
 
     if HasLongOptIgnoreCase('get',S) or
        HasLongOptIgnoreCase('get-expand-text',S) then begin
+      // check for empty text
+      if S = '' then
+      begin
+        writeln('');            // print empty text as well
+        halt(ErrorExpandMacro); // exit with error
+      end;
+
       // check for macros
       HasMacro := false;
       for i := 1 to length(S) - 1 do // skip last char
@@ -859,7 +867,13 @@ var
       if not HasMacro then
         S := '$(' + S + ')';
       // expand
-      Project1.MacroEngine.SubstituteStr(S);
+      Project1.MacroEngine.MarkUnhandledMacros := false;
+      if not Project1.MacroEngine.SubstituteStr(S) then
+      begin
+        writeln(S);             // print partially expanded text
+        halt(ErrorExpandMacro); // exit with error
+      end;
+      // print result
       WriteLn(S);
       exit(true);
     end;
