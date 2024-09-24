@@ -98,7 +98,6 @@ type
     function isInitializing( tv: NSTableView ): Boolean; virtual; abstract;
     function getLCLControlCanvas( tv:NSTableView ): TCanvas; virtual; abstract;
     procedure onReloadData( tv: NSTableView ); virtual; abstract;
-    procedure onSelectOneItem( tv: NSTableView; selection: NSIndexSet ); virtual; abstract;
     procedure onSelectionChanged( tv: NSTableView ); virtual; abstract;
     procedure onOwnerDrawItem( rowView: NSView ); virtual abstract;
   end;
@@ -110,7 +109,6 @@ type
     function getCallback( tv: NSTableView ): TLCLListControlCallback;
   public
     procedure onReloadData( tv: NSTableView ); override;
-    procedure onSelectOneItem( tv: NSTableView; selection: NSIndexSet ); override;
     procedure onOwnerDrawItem( rowView: NSView ); override;
   end;
 
@@ -214,19 +212,6 @@ begin
     tv, ObjcSelector('restoreFromStableSelection'), nil );
   tv.performSelector_withObject_afterDelay(
     ObjcSelector('restoreFromStableSelection'), nil, 0 );
-end;
-
-procedure TCocoaTableListControlProcessor.onSelectOneItem(tv: NSTableView;
-  selection: NSIndexSet);
-var
-  lclcb: TLCLListControlCallback;
-begin
-  lclcb:= self.getCallback(tv);
-  if NOT Assigned(lclcb) then
-    Exit;
-
-  lclcb.selectionIndexSet.removeAllIndexes;
-  lclcb.selectionIndexSet.addIndexes( selection );
 end;
 
 procedure TCocoaTableListControlProcessor.onOwnerDrawItem( rowView: NSView );
