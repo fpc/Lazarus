@@ -1608,7 +1608,7 @@ end;
 
 function TSynPasSyn.Func59: TtkTokenKind;
 begin
-  if KeyComp('Safecall') and
+  if (KeyComp('Safecall') or KeyComp('cppdecl')) and
      (PasCodeFoldRange.BracketNestLevel in [0, 1]) and
      (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader] = [rsWasInProcHeader]) and
      (TopPascalCodeFoldBlockType in ProcModifierAllowed)
@@ -1965,6 +1965,14 @@ begin
       fRange := fRange + [rsAtClass];
       StartPascalCodeFoldBlock(cfbtClass);
     end;
+  end
+  else if KeyComp('oldfpccall') and
+     (PasCodeFoldRange.BracketNestLevel in [0, 1]) and
+     (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader] = [rsWasInProcHeader]) and
+     (TopPascalCodeFoldBlockType in ProcModifierAllowed)
+  then begin
+    Result := tkModifier;
+    FRange := FRange + [rsInProcHeader];
   end
   else
     Result := tkIdentifier;
