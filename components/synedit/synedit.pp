@@ -983,9 +983,10 @@ type
     // BoorMark
     procedure ClearBookMark(BookMark: Integer);
     function  GetBookMark(BookMark: integer; var X, Y: integer): boolean;
+    function  GetBookMark(BookMark: integer; var X, Y, ALeft, ATop: integer): boolean;
     procedure GotoBookMark(BookMark: Integer);
     function  IsBookmark(BookMark: integer): boolean;
-    procedure SetBookMark(BookMark: Integer; X: Integer; Y: Integer);
+    procedure SetBookMark(BookMark: Integer; X: Integer; Y: Integer; AnLeft: Integer = -1; AnTop: Integer = -1);
     property Marks: TSynEditMarkList read fMarkList;
 
     // Undo/Redo
@@ -6451,11 +6452,19 @@ end;
 procedure TCustomSynEdit.GotoBookMark(BookMark: Integer);
 var
   LogCaret: TPoint;
+  m: TSynEditBookMark;
 begin
   if (BookMark in [0..9]) and assigned(fBookMarks[BookMark])
     and (fBookMarks[BookMark].Line <= fLines.Count)
   then begin
-    LogCaret:=Point(fBookMarks[BookMark].Column, fBookMarks[BookMark].Line);
+    m := TSynEditBookMark(fBookMarks[BookMark]);
+    if (eoBookmarkRestoresScroll in FOptions2) and (m.TopLeftMark <> nil) and
+       (m.TopLeftMark.Line > 0)
+    then begin
+      TopLine := m.TopLeftMark.Line;
+      LeftChar := m.TopLeftMark.Column;
+    end;
+    LogCaret:=Point(m.Column, m.Line);
     DoIncPaintLock(Self); // No editing is taking place
     FCaret.ChangeOnTouch;
     FCaret.LineBytePos := LogCaret;
@@ -6470,14 +6479,15 @@ begin
     FOnMouseLink(Self, X1, Y, Result);
 end;
 
-procedure TCustomSynEdit.SetBookMark(BookMark: Integer; X: Integer; Y: Integer);
+procedure TCustomSynEdit.SetBookMark(BookMark: Integer; X: Integer; Y: Integer; AnLeft: Integer;
+  AnTop: Integer);
 var
   i: Integer;
-  mark: TSynEditMark;
+  mark: TSynEditBookMark;
 begin
   if (BookMark in [0..9]) and (Y >= 1) and (Y <= Max(1, fLines.Count)) then
   begin
-    mark := TSynEditMark.Create(self);
+    mark := TSynEditBookMark.Create(self);
     X := PhysicalToLogicalPos(Point(X, Y)).x;
     with mark do begin
       Line := Y;
@@ -6486,6 +6496,8 @@ begin
       BookmarkNumber := Bookmark;
       Visible := true;
       InternalImage := (BookMarkOptions.BookmarkImages = nil);
+      if AnLeft > 0 then
+        mark.SetTopLeft(AnTop, AnLeft);
     end;
     for i := 0 to 9 do
       if assigned(fBookMarks[i]) and (fBookMarks[i].Line = Y) then
@@ -7448,9 +7460,10 @@ begin
                          or (fBookMarks[CX].Line <> CaretY);
               ClearBookMark(CX);
               if moveBkm then
-                SetBookMark(CX, CaretX, CaretY);
+                SetBookMark(CX, CaretX, CaretY, LeftChar, TopLine);
             end else
-              SetBookMark(CX, CaretX, CaretY);
+              //SetBookMark(CX, CaretX, CaretY);
+              SetBookMark(CX, CaretX, CaretY, LeftChar, TopLine);
           end; // if BookMarkOptions.EnableKeys
         end;
       ecCut:
@@ -8049,6 +8062,28 @@ begin
         X := Marks[i].Column;
         Y := Marks[i].Line;
         X := LogicalToPhysicalPos(Point(X, Y)).x;
+        Result := true;
+        Exit;
+      end;
+end;
+
+function TCustomSynEdit.GetBookMark(BookMark: integer; var X, Y, ALeft, ATop: integer): boolean;
+var
+  i: integer;
+  m: TSynEditMark;
+begin
+  Result := false;
+  if assigned(Marks) then
+    for i := 0 to Marks.Count - 1 do
+      if Marks[i].IsBookmark and (Marks[i].BookmarkNumber = BookMark) then begin
+        m := Marks[i];
+        X := m.Column;
+        Y := m.Line;
+        X := LogicalToPhysicalPos(Point(X, Y)).x;
+        if (m is TSynEditBookMark) and (TSynEditBookMark(m).TopLeftMark <> nil) then begin
+          ALeft := TSynEditBookMark(m).TopLeftMark.Column;
+          ATop  := TSynEditBookMark(m).TopLeftMark.Line;
+        end;
         Result := true;
         Exit;
       end;

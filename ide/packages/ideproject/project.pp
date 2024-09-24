@@ -432,6 +432,7 @@ type
     procedure ClearUnitComponentDependencies(ClearTypes: TUnitCompDependencyTypes);
     // Bookmarks
     function  AddBookmark(X, Y, ID: integer):integer;
+    function  AddBookmark(X, Y, ALeft, ATop, ID: integer):integer;
     procedure DeleteBookmark(ID: integer);
     // EditorInfo
     // At any time, any UnitInfo has at least one EditorInfo
@@ -1112,6 +1113,7 @@ type
 
     // bookmarks
     function  AddBookmark(X, Y, ID: Integer; AUnitInfo:TUnitInfo):integer;
+    function  AddBookmark(X, Y, ALeft, ATop, ID: Integer; AUnitInfo:TUnitInfo):integer;
     procedure DeleteBookmark(ID: Integer);
   public
     property ActiveBuildMode: TProjectBuildMode read FActiveBuildMode
@@ -1837,7 +1839,7 @@ procedure TUnitInfo.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
   SaveData, SaveSession: boolean; UsePathDelim: TPathDelimSwitch);
 var
   AFilename: String;
-  i, X, Y: Integer;
+  i, X, Y, L, T: Integer;
   s: String;
   BM: TFileBookmark;
 begin
@@ -1894,8 +1896,11 @@ begin
         then
           Bookmarks.Delete(i)
         else
-        if OpenEditorInfo[0].EditorComponent.GetBookMark(BM.ID, X, Y) then
+        if OpenEditorInfo[0].EditorComponent.GetBookMark(BM.ID, X, Y, L, T) then begin
           BM.CursorPos := Point(X, Y);
+          BM.Top  := T;
+          BM.Left := L;
+        end;
       end;
     FBookmarks.SaveToXMLConfig(XMLConfig,Path+'Bookmarks/');
     XMLConfig.SetDeleteValue(Path+'Loaded/Value',Loaded,false);
@@ -2091,7 +2096,7 @@ begin
           BM := Bookmarks[i];
           j := Project1.Bookmarks.IndexOfID(BM.ID);
           if (j < 0) then
-            OpenEditorInfo[0].EditorComponent.SetBookMark(BM.ID, BM.CursorPos.X, BM.CursorPos.Y);
+            OpenEditorInfo[0].EditorComponent.SetBookMark(BM.ID, BM.CursorPos.X, BM.CursorPos.Y, BM.Left, BM.Top);
         end;
       finally
         dec(FSetBookmarLock);
@@ -2433,6 +2438,16 @@ begin
     Result := -1;
   SessionModified := True;
   Project1.AddBookmark(X, Y, ID, Self);
+end;
+
+function TUnitInfo.AddBookmark(X, Y, ALeft, ATop, ID: integer): integer;
+begin
+  if FSetBookmarLock = 0 then
+    Result := Bookmarks.Add(X, Y, ALeft, ATop, ID)
+  else
+    Result := -1;
+  SessionModified := True;
+  Project1.AddBookmark(X, Y, ALeft, ATop, ID, Self);
 end;
 
 procedure TUnitInfo.DeleteBookmark(ID: integer);
@@ -5539,6 +5554,12 @@ end;
 function TProject.AddBookmark(X, Y, ID: Integer; AUnitInfo:TUnitInfo): integer;
 begin
   Result := Bookmarks.Add(X, Y, ID, AUnitInfo);
+  SessionModified := true;
+end;
+
+function TProject.AddBookmark(X, Y, ALeft, ATop, ID: Integer; AUnitInfo: TUnitInfo): integer;
+begin
+  Result := Bookmarks.Add(X, Y, ALeft, ATop, ID, AUnitInfo);
   SessionModified := true;
 end;
 

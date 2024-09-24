@@ -196,8 +196,9 @@ type
     eoScrollPastEolAddPage,    // Allows caret to go into empty space beyond end-of-line position
                                // - Limit to length of longest line + width of one page
                                // if eoScrollPastEol also is set, the bigger of the 2 limits is used
-    eoScrollPastEolAutoCaret   // Allows caret to go into empty space beyond end-of-line position
+    eoScrollPastEolAutoCaret,  // Allows caret to go into empty space beyond end-of-line position
                                // Limit will follow the caret / scrollbar-range extends when caret goes further
+    eoBookmarkRestoresScroll   // Bookmarks also restore scroll pos
   );
   TSynEditorOptions2 = set of TSynEditorOption2;
 

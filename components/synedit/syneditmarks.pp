@@ -57,8 +57,9 @@ type
     FOldLine: integer;
     FOwnerEdit: TSynEditBase;
     function GetLine: integer;
+    procedure SetBookmarkNum(AValue: integer);
     procedure SetMarkLine(const AValue: TSynEditMarkLine);
-    procedure SetMarkList(const AValue: TSynEditMarkList);
+    procedure SetMarkList(const AValue: TSynEditMarkList); virtual;
     procedure SetOwnerEdit(const AValue: TSynEditBase);
   protected
     FColumn, FImage, FPriority: Integer;
@@ -73,7 +74,7 @@ type
     procedure SetPriority(const AValue: integer); virtual;
     procedure SetVisible(const Value: boolean); virtual;
     procedure SetInternalImage(const Value: boolean);
-    function  GetIsBookmark: boolean;
+    function  GetIsBookmark: boolean; virtual;
 
     procedure DoChange(AChanges: TSynEditMarkChangeReasons); virtual;
     procedure ForceChange(AChanges: TSynEditMarkChangeReasons);
@@ -94,7 +95,7 @@ type
     property Priority: integer read FPriority write SetPriority;
     property Visible: boolean read FVisible write SetVisible;
 
-    property BookmarkNumber: integer read FBookmarkNum write fBookmarkNum;
+    property BookmarkNumber: integer read FBookmarkNum write SetBookmarkNum;
     property IsBookmark: boolean read GetIsBookmark;
 
     // InternalImage: Use Internal bookmark image 0..9;
@@ -105,6 +106,31 @@ type
     // ImageList:     If assigned, then use instead of "BookMarkOpt.BookmarkImages"
     //                Must have same width as "BookMarkOpt.BookmarkImages"
     property ImageList: TCustomImageList read FImageList write FImageList;
+  end;
+
+  { TSynEditBookMark }
+
+  TSynEditBookMark = class(TSynEditMark)
+  private type
+
+    { TSynEditTopLeftMark }
+
+    TSynEditTopLeftMark = class(TSynEditMark)
+    private
+      FBookMark: TSynEditBookMark;
+    public
+      destructor Destroy; override;
+    end;
+
+  private
+    FTopLeftMark: TSynEditMark;
+    procedure SetMarkList(const AValue: TSynEditMarkList); override;
+  protected
+    function  GetIsBookmark: boolean; override;
+  public
+    destructor Destroy; override;
+    procedure SetTopLeft(ATop, ALeft: integer);
+    property TopLeftMark: TSynEditMark read FTopLeftMark;
   end;
 
   { TSynEditMarkLine }
@@ -349,6 +375,12 @@ begin
     Result := FLine;
 end;
 
+procedure TSynEditMark.SetBookmarkNum(AValue: integer);
+begin
+  assert(Self is TSynEditBookMark, 'TSynEditMark.SetBookmarkNum: Self is TSynEditBookMark');
+  FBookmarkNum := AValue;
+end;
+
 procedure TSynEditMark.SetMarkLine(const AValue: TSynEditMarkLine);
 begin
   if FMarkLine = AValue then exit;
@@ -360,7 +392,7 @@ end;
 
 function TSynEditMark.GetIsBookmark: boolean;
 begin
-  Result := (fBookmarkNum >= 0);
+  Result := False;
 end;
 
 procedure TSynEditMark.DoChange(AChanges: TSynEditMarkChangeReasons);
@@ -458,6 +490,51 @@ begin
   dec(FChangeLock);
   if (FChangeLock = 0) and (FChanges <> []) then
     DoChange(FChanges);
+end;
+
+{ TSynEditBookMark }
+
+procedure TSynEditBookMark.SetMarkList(const AValue: TSynEditMarkList);
+begin
+  inherited SetMarkList(AValue);
+  if (FMarkList <> nil) and (FTopLeftMark <> nil) then
+    FMarkList.Add(FTopLeftMark);
+end;
+
+function TSynEditBookMark.GetIsBookmark: boolean;
+begin
+  Result := True;
+end;
+
+destructor TSynEditBookMark.Destroy;
+begin
+  if FTopLeftMark <> nil then begin
+    TSynEditTopLeftMark(FTopLeftMark).FBookMark := nil;
+    FTopLeftMark.Free;
+  end;
+  inherited Destroy;
+end;
+
+procedure TSynEditBookMark.SetTopLeft(ATop, ALeft: integer);
+begin
+  if (ATop <= 0) or (ALeft <= 0) then
+    exit;
+  FTopLeftMark := TSynEditTopLeftMark.Create(OwnerEdit);
+  TSynEditTopLeftMark(FTopLeftMark).FBookMark := Self;
+  FTopLeftMark.Line := ATop;
+  FTopLeftMark.Column := ALeft;
+
+  if (FMarkList <> nil) then
+    FMarkList.Add(FTopLeftMark);
+end;
+
+{ TSynEditBookMark.TSynEditTopLeftMark }
+
+destructor TSynEditBookMark.TSynEditTopLeftMark.Destroy;
+begin
+  if FBookMark <> nil then
+    FBookMark.FTopLeftMark := nil;
+  inherited Destroy;
 end;
 
 { TSynEditMarkLine }

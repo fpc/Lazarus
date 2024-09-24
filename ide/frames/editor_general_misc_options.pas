@@ -122,9 +122,10 @@ begin
     Items.Add(dlgCopyWordAtCursorOnCopyNone); // 3
     Items.Add(dlgCopyPasteKeepFolds);         // 4
     Items.Add(dlgEditExportBackColor);        // 5
+    Items.Add(dlgBookmarkSetScroll);          // 6
 
     {$IFDEF WinIME} // Keep last, or all subsequnt indexes will depend on it
-    Items.Add(dlgUseMinimumIme);              // 6
+    Items.Add(dlgUseMinimumIme);              // 7
     {$ENDIF}
   end;
   EditorTrimSpaceTypeComboBox.Items.Add(dlgTrimSpaceTypeLeaveLine);
@@ -160,8 +161,9 @@ begin
       Checked[3] := CopyWordAtCursorOnCopyNone;
       Checked[4] := eoFoldedCopyPaste in SynEditOptions2;
       Checked[5] := ExportHtmlWithBackground;
+      Checked[6] := eoBookmarkRestoresScroll in SynEditOptions2;
       {$IFDEF WinIME}
-      Checked[6] := UseMinimumIme;
+      Checked[7] := UseMinimumIme;
       {$ENDIF}
 
       with ScrollOnEditLeftOptions do begin
@@ -212,8 +214,12 @@ begin
       SynEditOptions2 := SynEditOptions2 - [eoFoldedCopyPaste];
     TrimSpaceType := TSynEditStringTrimmingType(EditorTrimSpaceTypeComboBox.ItemIndex);
     ExportHtmlWithBackground := EditorOptionsGroupBox.Checked[5];
+    if EditorOptionsGroupBox.Checked[6] then
+      SynEditOptions2 := SynEditOptions2 + [eoBookmarkRestoresScroll]
+    else
+      SynEditOptions2 := SynEditOptions2 - [eoBookmarkRestoresScroll];
     {$IFDEF WinIME}
-    UseMinimumIme := EditorOptionsGroupBox.Checked[6];
+    UseMinimumIme := EditorOptionsGroupBox.Checked[7];
     {$ENDIF}
 
       with ScrollOnEditLeftOptions do begin

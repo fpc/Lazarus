@@ -47,8 +47,8 @@ object EditorGeneralMiscOptionsFrame: TEditorGeneralMiscOptionsFrame
     ChildSizing.ControlsPerLine = 1
     ColumnLayout = clVerticalThenHorizontal
     Columns = 2
-    OnItemClick = EditorOptionsGroupBoxItemClick
     TabOrder = 0
+    OnItemClick = EditorOptionsGroupBoxItemClick
   end
   object EditorTrimSpaceTypeComboBox: TComboBox
     AnchorSideLeft.Control = Owner

@@ -1833,6 +1833,7 @@ resourcestring
   dlgCopyPasteKeepFolds = 'Copy/Paste with fold info';
   dlgUseMinimumIme = 'IME handled by System';
   dlgEditExportBackColor = 'Use Background color in HTML export';
+  dlgBookmarkSetScroll = 'Bookmarks restore scroll position';
   dlgUndoLimit = 'Undo limit';
   dlgTabWidths = 'Tab widths';
   dlgMarginGutter = 'Margin and gutter';

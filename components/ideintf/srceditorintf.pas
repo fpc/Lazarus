@@ -132,7 +132,8 @@ type
     procedure CopyToClipboard; virtual; abstract;
     procedure CutToClipboard; virtual; abstract;
     function GetBookMark(BookMark: Integer; out X, Y: Integer): Boolean; virtual; abstract;
-    procedure SetBookMark(BookMark: Integer; X, Y: Integer); virtual; abstract;
+    function GetBookMark(BookMark: Integer; out X, Y, ALeft, ATop: Integer): Boolean; virtual; abstract;
+    procedure SetBookMark(BookMark: Integer; X, Y: Integer; AnLeft: Integer = -1; AnTop: Integer = -1); virtual; abstract;
 
     // screen and text position mapping
     function LineCount: Integer; virtual; abstract;

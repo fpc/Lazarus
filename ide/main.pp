@@ -11240,7 +11240,11 @@ var
   UnitInfo: TUnitInfo;
 begin
   UnitInfo := Project1.UnitWithEditorComponent(TSourceEditor(Sender));
-  UnitInfo.AddBookmark(Mark.Column, Mark.Line, Mark.BookmarkNumber);
+  if (Mark is TSynEditBookMark) and (TSynEditBookMark(Mark).TopLeftMark <> nil) then
+    UnitInfo.AddBookmark(Mark.Column, Mark.Line,
+      TSynEditBookMark(Mark).Column, TSynEditBookMark(Mark).Line, Mark.BookmarkNumber)
+  else
+    UnitInfo.AddBookmark(Mark.Column, Mark.Line, Mark.BookmarkNumber);
 end;
 
 procedure TMainIDE.SrcNotebookEditorClearBookmark(Sender: TObject; var Mark: TSynEditMark);
@@ -11315,7 +11319,7 @@ Begin
       SetMark:=false;
   end;
   if SetMark then
-    ActEdit.EditorComponent.SetBookMark(ID,NewXY.X,NewXY.Y);
+    ActEdit.EditorComponent.SetBookMark(ID,NewXY.X,NewXY.Y, ActEdit.EditorComponent.LeftChar, ActEdit.EditorComponent.TopLine);
 
   {$push}{$overflowchecks off}
   Inc(BookmarksStamp);
