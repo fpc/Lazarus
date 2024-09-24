@@ -308,7 +308,7 @@ type
     fSourceChangeStep: LongInt;
     FSourceDirectoryReferenced: boolean;
     fLastDirectoryReferenced: string;
-    FSetBookmarLock: Integer;
+    FSetBookmarkLock: Integer;
     FUnitResourceFileformat: TUnitResourcefileFormatClass;
 
     function ComponentLFMOnDiskHasChanged: boolean;
@@ -1768,7 +1768,7 @@ end;
 procedure TUnitInfo.Clear;
 begin
   FBookmarks.Clear;
-  FSetBookmarLock := 0;
+  FSetBookmarkLock := 0;
   BuildFileIfActive:=false;
   fComponent := nil;
   fComponentName := '';
@@ -2088,7 +2088,7 @@ begin
   if Assigned(Project1) and Assigned(Project1.Bookmarks) then
   begin
     if OpenEditorInfoCount > 0 then begin
-      inc(FSetBookmarLock);
+      inc(FSetBookmarkLock);
       try
         // Adjust bookmarks
         for i := Bookmarks.Count-1 downto 0 do
@@ -2099,7 +2099,7 @@ begin
             OpenEditorInfo[0].EditorComponent.SetBookMark(BM.ID, BM.CursorPos.X, BM.CursorPos.Y, BM.Left, BM.Top);
         end;
       finally
-        dec(FSetBookmarLock);
+        dec(FSetBookmarkLock);
       end;
     end
     else // OpenEditorInfoCount = 0
@@ -2432,7 +2432,7 @@ end;
 
 function TUnitInfo.AddBookmark(X, Y, ID: integer): integer;
 begin
-  if FSetBookmarLock = 0 then
+  if FSetBookmarkLock = 0 then
     Result := Bookmarks.Add(X, Y, ID)
   else
     Result := -1;
@@ -2442,7 +2442,7 @@ end;
 
 function TUnitInfo.AddBookmark(X, Y, ALeft, ATop, ID: integer): integer;
 begin
-  if FSetBookmarLock = 0 then
+  if FSetBookmarkLock = 0 then
     Result := Bookmarks.Add(X, Y, ALeft, ATop, ID)
   else
     Result := -1;
