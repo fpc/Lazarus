@@ -392,6 +392,7 @@ type
     procedure UpdateDisplay;
     procedure UpdateFormatOverrides;
     procedure UpdateFormat;
+    procedure UpdateConstraints;
     procedure CreateHandle; override;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -1693,6 +1694,29 @@ begin
   end;
 end;
 
+procedure TDisplayFormatFrame.UpdateConstraints;
+var
+  i, px, py: Integer;
+  c: TControl;
+begin
+  DisableAutoSizing;
+  try
+    for i := 0 to ComponentCount - 1 do
+      if Components[i] is TControl then begin
+        c := TControl(Components[i]);
+        if not ( (c is TLabel) and
+                 ( TLabel(c).WordWrap or (TLabel(c).Caption='') )  )
+        then begin
+          c.GetPreferredSize(px, py);
+          if px > c.Constraints.MinWidth then
+            c.Constraints.MinWidth := px;
+        end;
+      end;
+  finally
+    EnableAutoSizing;
+  end;
+end;
+
 procedure TDisplayFormatFrame.CreateHandle;
 begin
   inc(FUpdatingDisplay); // gtk2 send extra events
@@ -1701,6 +1725,7 @@ begin
   finally
     dec(FUpdatingDisplay);
   end;
+  UpdateConstraints;
   UpdateDisplay;
 end;
 
@@ -2462,7 +2487,6 @@ begin
 
   DividerBevelMemDump.Caption       := '';
   cbMemDump.Caption             := DispFormatCategoryMemDump;
-
 end;
 
 procedure TDisplayFormatFrame.BeginUdpate;

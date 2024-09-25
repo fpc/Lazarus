@@ -1,26 +1,28 @@
 object DisplayFormatFrame: TDisplayFormatFrame
   Left = 0
-  Height = 754
+  Height = 780
   Top = 0
   Width = 592
+  HorzScrollBar.Increment = 1
   HorzScrollBar.Page = 1
-  HorzScrollBar.Visible = False
+  HorzScrollBar.Smooth = True
+  HorzScrollBar.Tracking = True
   VertScrollBar.Increment = 1
   VertScrollBar.Page = 1
   VertScrollBar.Smooth = True
   VertScrollBar.Tracking = True
   AutoScroll = True
   AutoSize = True
-  ClientHeight = 754
+  ClientHeight = 780
   ClientWidth = 592
-  Constraints.MaxWidth = 850
-  Constraints.MinWidth = 480
+  Constraints.MaxWidth = 1200
+  Constraints.MinWidth = 500
   TabOrder = 0
   DesignLeft = 430
   DesignTop = 14
   object ToolBar1: TToolBar
     Left = 0
-    Height = 31
+    Height = 27
     Top = 0
     Width = 592
     AutoSize = True
@@ -29,9 +31,9 @@ object DisplayFormatFrame: TDisplayFormatFrame
     TabOrder = 0
     object tbCurrent: TSpeedButton
       Left = 1
-      Height = 29
+      Height = 25
       Top = 2
-      Width = 60
+      Width = 50
       AllowAllUp = True
       AutoSize = True
       Caption = 'Current'
@@ -42,7 +44,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       OnClick = tbCurrentClick
     end
     object ToolButton2: TToolButton
-      Left = 61
+      Left = 51
       Height = 22
       Top = 2
       Caption = 'ToolButton2'
@@ -50,10 +52,10 @@ object DisplayFormatFrame: TDisplayFormatFrame
       Style = tbsSeparator
     end
     object tbAll: TSpeedButton
-      Left = 69
-      Height = 29
+      Left = 59
+      Height = 25
       Top = 2
-      Width = 27
+      Width = 24
       AllowAllUp = True
       AutoSize = True
       Caption = 'All'
@@ -64,7 +66,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       OnClick = tbAllClick
     end
     object ToolButton4: TToolButton
-      Left = 96
+      Left = 83
       Height = 22
       Top = 2
       Caption = 'ToolButton4'
@@ -72,10 +74,10 @@ object DisplayFormatFrame: TDisplayFormatFrame
       Style = tbsSeparator
     end
     object tbNumber: TSpeedButton
-      Left = 104
-      Height = 29
+      Left = 91
+      Height = 25
       Top = 2
-      Width = 71
+      Width = 59
       AllowAllUp = True
       AutoSize = True
       Caption = 'Numbers'
@@ -86,10 +88,10 @@ object DisplayFormatFrame: TDisplayFormatFrame
       OnClick = tbFormatClick
     end
     object tbEnum: TSpeedButton
-      Left = 183
-      Height = 29
+      Left = 158
+      Height = 25
       Top = 2
-      Width = 48
+      Width = 41
       AllowAllUp = True
       AutoSize = True
       Caption = 'Enum'
@@ -100,10 +102,10 @@ object DisplayFormatFrame: TDisplayFormatFrame
       OnClick = tbFormatClick
     end
     object tbBool: TSpeedButton
-      Left = 239
-      Height = 29
+      Left = 207
+      Height = 25
       Top = 2
-      Width = 39
+      Width = 34
       AllowAllUp = True
       AutoSize = True
       Caption = 'Bool'
@@ -114,10 +116,10 @@ object DisplayFormatFrame: TDisplayFormatFrame
       OnClick = tbFormatClick
     end
     object tbChar: TSpeedButton
-      Left = 286
-      Height = 29
+      Left = 249
+      Height = 25
       Top = 2
-      Width = 41
+      Width = 35
       AllowAllUp = True
       AutoSize = True
       Caption = 'Char'
@@ -128,10 +130,10 @@ object DisplayFormatFrame: TDisplayFormatFrame
       OnClick = tbFormatClick
     end
     object tbFloat: TSpeedButton
-      Left = 335
-      Height = 29
+      Left = 292
+      Height = 25
       Top = 2
-      Width = 43
+      Width = 36
       AllowAllUp = True
       AutoSize = True
       Caption = 'Float'
@@ -142,10 +144,10 @@ object DisplayFormatFrame: TDisplayFormatFrame
       OnClick = tbFormatClick
     end
     object tbStruct: TSpeedButton
-      Left = 386
-      Height = 29
+      Left = 336
+      Height = 25
       Top = 2
-      Width = 78
+      Width = 63
       AllowAllUp = True
       AutoSize = True
       Caption = 'Structures'
@@ -156,10 +158,10 @@ object DisplayFormatFrame: TDisplayFormatFrame
       OnClick = tbFormatClick
     end
     object tbPointer: TSpeedButton
-      Left = 472
-      Height = 29
+      Left = 407
+      Height = 25
       Top = 2
-      Width = 58
+      Width = 48
       AllowAllUp = True
       AutoSize = True
       Caption = 'Pointer'
@@ -170,10 +172,10 @@ object DisplayFormatFrame: TDisplayFormatFrame
       OnClick = tbFormatClick
     end
     object tbArray: TSpeedButton
-      Left = 530
-      Height = 29
+      Left = 455
+      Height = 25
       Top = 2
-      Width = 46
+      Width = 38
       AllowAllUp = True
       AutoSize = True
       Caption = 'Array'
@@ -184,7 +186,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       OnClick = tbFormatClick
     end
     object ToolButton12: TToolButton
-      Left = 175
+      Left = 150
       Height = 22
       Top = 2
       Caption = 'ToolButton12'
@@ -193,7 +195,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       Visible = False
     end
     object ToolButton13: TToolButton
-      Left = 231
+      Left = 199
       Height = 22
       Top = 2
       Caption = 'ToolButton13'
@@ -202,7 +204,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       Visible = False
     end
     object ToolButton14: TToolButton
-      Left = 278
+      Left = 241
       Height = 22
       Top = 2
       Caption = 'ToolButton14'
@@ -211,7 +213,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       Visible = False
     end
     object ToolButton15: TToolButton
-      Left = 327
+      Left = 284
       Height = 22
       Top = 2
       Caption = 'ToolButton15'
@@ -220,7 +222,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       Visible = False
     end
     object ToolButton16: TToolButton
-      Left = 378
+      Left = 328
       Height = 22
       Top = 2
       Caption = 'ToolButton16'
@@ -229,7 +231,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       Visible = False
     end
     object ToolButton17: TToolButton
-      Left = 464
+      Left = 399
       Height = 22
       Top = 2
       Caption = 'ToolButton17'
@@ -238,7 +240,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       Visible = False
     end
     object ToolButton5: TToolButton
-      Left = 576
+      Left = 493
       Height = 22
       Top = 2
       Caption = 'ToolButton5'
@@ -246,10 +248,10 @@ object DisplayFormatFrame: TDisplayFormatFrame
       Style = tbsSeparator
     end
     object tbIndent: TSpeedButton
-      Left = 1
-      Height = 29
-      Top = 24
-      Width = 51
+      Left = 501
+      Height = 25
+      Top = 2
+      Width = 44
       AllowAllUp = True
       AutoSize = True
       Caption = 'Indent'
@@ -267,8 +269,8 @@ object DisplayFormatFrame: TDisplayFormatFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 95
-    Top = 31
+    Height = 79
+    Top = 27
     Width = 592
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -278,7 +280,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     ChildSizing.ShrinkHorizontal = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 2
-    ClientHeight = 95
+    ClientHeight = 79
     ClientWidth = 592
     TabOrder = 1
     object Spacer1: TLabel
@@ -320,9 +322,9 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideRight.Control = Spacer1
       AnchorSideRight.Side = asrBottom
       Left = 0
-      Height = 23
+      Height = 17
       Top = 3
-      Width = 23
+      Width = 18
       BorderSpacing.CellAlignHorizontal = ccaLeftTop
       Font.Style = [fsBold]
       ParentFont = False
@@ -335,10 +337,10 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideTop.Control = cbOverrideNumBase
       AnchorSideRight.Control = Spacer1
       AnchorSideRight.Side = asrBottom
-      Left = 23
-      Height = 38
+      Left = 18
+      Height = 15
       Top = 3
-      Width = 84
+      Width = 89
       Anchors = [akTop, akLeft, akRight]
       Caption = 'lbOverrideNumBase'
       Font.Style = [fsBold]
@@ -353,7 +355,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideRight.Control = Spacer2
       AnchorSideRight.Side = asrBottom
       Left = 111
-      Height = 23
+      Height = 19
       Top = 3
       Width = 481
       Anchors = [akTop, akLeft, akRight]
@@ -363,7 +365,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       ChildSizing.ShrinkHorizontal = crsSameSize
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 6
-      ClientHeight = 23
+      ClientHeight = 19
       ClientWidth = 481
       ParentBackground = False
       ParentColor = False
@@ -371,7 +373,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       TabOrder = 1
       object rbNumDec: TRadioButton
         Left = 0
-        Height = 23
+        Height = 19
         Top = 0
         Width = 80
         AutoSize = False
@@ -379,11 +381,12 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Checked = True
         ParentColor = False
         TabOrder = 0
+        TabStop = True
         OnChange = FormatRadioChanged
       end
       object rbNumHex: TRadioButton
         Left = 80
-        Height = 23
+        Height = 19
         Top = 0
         Width = 80
         AutoSize = False
@@ -393,7 +396,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       end
       object rbNumOct: TRadioButton
         Left = 160
-        Height = 23
+        Height = 19
         Top = 0
         Width = 81
         AutoSize = False
@@ -403,7 +406,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       end
       object rbNumBin: TRadioButton
         Left = 241
-        Height = 23
+        Height = 19
         Top = 0
         Width = 80
         AutoSize = False
@@ -413,7 +416,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       end
       object rbNumChar: TRadioButton
         Left = 321
-        Height = 23
+        Height = 19
         Top = 0
         Width = 80
         AutoSize = False
@@ -445,8 +448,8 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideRight.Control = Spacer2
       AnchorSideRight.Side = asrBottom
       Left = 111
-      Height = 23
-      Top = 26
+      Height = 19
+      Top = 22
       Width = 481
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
@@ -455,23 +458,24 @@ object DisplayFormatFrame: TDisplayFormatFrame
       ChildSizing.ShrinkHorizontal = crsSameSize
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 3
-      ClientHeight = 23
+      ClientHeight = 19
       ClientWidth = 481
       TabOrder = 2
       object rbSignAuto: TRadioButton
         Left = 0
-        Height = 23
+        Height = 19
         Top = 0
         Width = 160
         AutoSize = False
         Caption = 'rbSignAuto'
         Checked = True
         TabOrder = 0
+        TabStop = True
         OnChange = FormatRadioChanged
       end
       object rbSignSigned: TRadioButton
         Left = 160
-        Height = 23
+        Height = 19
         Top = 0
         Width = 161
         AutoSize = False
@@ -481,7 +485,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       end
       object rbSignUnsigned: TRadioButton
         Left = 321
-        Height = 23
+        Height = 19
         Top = 0
         Width = 160
         AutoSize = False
@@ -506,8 +510,8 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideRight.Control = Spacer2
       AnchorSideRight.Side = asrBottom
       Left = 111
-      Height = 46
-      Top = 49
+      Height = 38
+      Top = 41
       Width = 481
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
@@ -516,19 +520,19 @@ object DisplayFormatFrame: TDisplayFormatFrame
       ChildSizing.ShrinkHorizontal = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 2
-      ClientHeight = 46
+      ClientHeight = 38
       ClientWidth = 481
       TabOrder = 3
       object DigitSpacer2: TLabel
         Left = 0
-        Height = 19
+        Height = 15
         Top = 0
         Width = 321
         Caption = '  '
       end
       object DigitSpacer1: TLabel
         Left = 321
-        Height = 19
+        Height = 15
         Top = 0
         Width = 160
         Caption = ' '
@@ -538,9 +542,9 @@ object DisplayFormatFrame: TDisplayFormatFrame
         AnchorSideTop.Control = SpinDigits
         AnchorSideTop.Side = asrCenter
         Left = 321
-        Height = 19
-        Top = 9
-        Width = 82
+        Height = 15
+        Top = 4
+        Width = 67
         BorderSpacing.CellAlignHorizontal = ccaLeftTop
         BorderSpacing.CellAlignVertical = ccaCenter
         Caption = 'lbNumDigits'
@@ -551,8 +555,8 @@ object DisplayFormatFrame: TDisplayFormatFrame
         AnchorSideTop.Control = PanelNumDigits
         AnchorSideRight.Control = DigitSpacer1
         AnchorSideRight.Side = asrBottom
-        Left = 406
-        Height = 36
+        Left = 391
+        Height = 23
         Top = 0
         Width = 70
         Alignment = taRightJustify
@@ -575,7 +579,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         AnchorSideRight.Control = DigitSpacer2
         AnchorSideRight.Side = asrBottom
         Left = 0
-        Height = 23
+        Height = 19
         Top = 0
         Width = 317
         Anchors = [akTop, akLeft, akRight]
@@ -589,9 +593,9 @@ object DisplayFormatFrame: TDisplayFormatFrame
         AnchorSideTop.Control = PanelNumSepGroup
         AnchorSideTop.Side = asrCenter
         Left = 0
-        Height = 19
-        Top = 25
-        Width = 108
+        Height = 15
+        Top = 21
+        Width = 89
         Caption = 'lbNumSepGroup'
       end
       object PanelNumSepGroup: TPanel
@@ -601,10 +605,10 @@ object DisplayFormatFrame: TDisplayFormatFrame
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = DigitSpacer2
         AnchorSideRight.Side = asrBottom
-        Left = 111
-        Height = 23
-        Top = 23
-        Width = 206
+        Left = 92
+        Height = 19
+        Top = 19
+        Width = 225
         Anchors = [akTop, akLeft, akRight]
         AutoSize = True
         BorderSpacing.Left = 3
@@ -615,42 +619,43 @@ object DisplayFormatFrame: TDisplayFormatFrame
         ChildSizing.ShrinkHorizontal = crsScaleChilds
         ChildSizing.Layout = cclLeftToRightThenTopToBottom
         ChildSizing.ControlsPerLine = 4
-        ClientHeight = 23
-        ClientWidth = 206
+        ClientHeight = 19
+        ClientWidth = 225
         TabOrder = 1
         object rbNumSepNone: TRadioButton
           Left = 4
-          Height = 23
+          Height = 19
           Top = 0
-          Width = 49
+          Width = 54
           Caption = 'rbNumSepNone'
           Checked = True
           TabOrder = 0
+          TabStop = True
           OnChange = FormatNumGroupChanged
         end
         object rbNumSepByte: TRadioButton
-          Left = 55
-          Height = 23
+          Left = 60
+          Height = 19
           Top = 0
-          Width = 46
+          Width = 50
           Caption = 'rbNumSepByte'
           TabOrder = 1
           OnChange = FormatNumGroupChanged
         end
         object rbNumSepWord: TRadioButton
-          Left = 103
-          Height = 23
+          Left = 112
+          Height = 19
           Top = 0
-          Width = 50
+          Width = 54
           Caption = 'rbNumSepWord'
           TabOrder = 2
           OnChange = FormatNumGroupChanged
         end
         object rbNumSepLong: TRadioButton
-          Left = 155
-          Height = 23
+          Left = 168
+          Height = 19
           Top = 0
-          Width = 47
+          Width = 53
           Caption = 'rbNumSepLong'
           TabOrder = 3
           OnChange = FormatNumGroupChanged
@@ -671,7 +676,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         AnchorSideBottom.Control = SpinDigits
         AnchorSideBottom.Side = asrBottom
         Left = 317
-        Height = 29
+        Height = 16
         Top = 3
         Width = 2
         Anchors = [akTop, akRight, akBottom]
@@ -694,7 +699,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideBottom.Control = PanelNumBase
       AnchorSideBottom.Side = asrBottom
       Left = 107
-      Height = 19
+      Height = 15
       Top = 5
       Width = 2
       Anchors = [akTop, akRight, akBottom]
@@ -716,8 +721,8 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideBottom.Control = PanelNumSign
       AnchorSideBottom.Side = asrBottom
       Left = 107
-      Height = 19
-      Top = 28
+      Height = 15
+      Top = 24
       Width = 2
       Anchors = [akTop, akRight, akBottom]
       BorderSpacing.Top = 2
@@ -737,8 +742,8 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideBottom.Control = PanelNumDigits
       AnchorSideBottom.Side = asrBottom
       Left = 107
-      Height = 42
-      Top = 51
+      Height = 34
+      Top = 43
       Width = 2
       Anchors = [akTop, akRight, akBottom]
       BorderSpacing.Top = 2
@@ -760,8 +765,8 @@ object DisplayFormatFrame: TDisplayFormatFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 118
-    Top = 130
+    Height = 98
+    Top = 110
     Width = 592
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -771,7 +776,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     ChildSizing.ShrinkHorizontal = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 3
-    ClientHeight = 118
+    ClientHeight = 98
     ClientWidth = 592
     TabOrder = 2
     object Spacer13: TLabel
@@ -812,9 +817,9 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideTop.Control = DividerBevelNum2
       AnchorSideTop.Side = asrBottom
       Left = 0
-      Height = 23
+      Height = 17
       Top = 3
-      Width = 23
+      Width = 18
       Font.Style = [fsBold]
       ParentFont = False
       TabOrder = 0
@@ -826,10 +831,10 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideTop.Control = cbOverrideNum2Base
       AnchorSideRight.Control = Spacer13
       AnchorSideRight.Side = asrBottom
-      Left = 23
-      Height = 38
+      Left = 18
+      Height = 15
       Top = 3
-      Width = 84
+      Width = 89
       Anchors = [akTop, akLeft, akRight]
       Caption = 'lbOverrideNum2Base'
       Font.Style = [fsBold]
@@ -844,7 +849,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideRight.Control = Spacer14
       AnchorSideRight.Side = asrBottom
       Left = 111
-      Height = 23
+      Height = 19
       Top = 3
       Width = 481
       Anchors = [akTop, akLeft, akRight]
@@ -854,7 +859,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       ChildSizing.ShrinkHorizontal = crsSameSize
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 3
-      ClientHeight = 23
+      ClientHeight = 19
       ClientWidth = 481
       ParentBackground = False
       ParentColor = False
@@ -862,7 +867,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       TabOrder = 1
       object cbNum2Visibile: TCheckBox
         Left = 0
-        Height = 23
+        Height = 19
         Top = 0
         Width = 481
         Caption = 'cbNum2Visibile'
@@ -877,19 +882,19 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideRight.Control = Spacer14
       AnchorSideRight.Side = asrBottom
       Left = 111
-      Height = 92
-      Top = 26
+      Height = 76
+      Top = 22
       Width = 481
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
       BevelOuter = bvNone
-      ClientHeight = 92
+      ClientHeight = 76
       ClientWidth = 481
       TabOrder = 2
       object PanelNum2Base: TPanel
         AnchorSideRight.Side = asrBottom
         Left = 0
-        Height = 23
+        Height = 19
         Top = 0
         Width = 481
         Align = alTop
@@ -899,7 +904,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         ChildSizing.ShrinkHorizontal = crsSameSize
         ChildSizing.Layout = cclLeftToRightThenTopToBottom
         ChildSizing.ControlsPerLine = 6
-        ClientHeight = 23
+        ClientHeight = 19
         ClientWidth = 481
         ParentBackground = False
         ParentColor = False
@@ -907,7 +912,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         TabOrder = 0
         object rbNum2Dec: TRadioButton
           Left = 0
-          Height = 23
+          Height = 19
           Top = 0
           Width = 80
           AutoSize = False
@@ -915,11 +920,12 @@ object DisplayFormatFrame: TDisplayFormatFrame
           Checked = True
           ParentColor = False
           TabOrder = 0
+          TabStop = True
           OnChange = FormatRadioChanged
         end
         object rbNum2Hex: TRadioButton
           Left = 80
-          Height = 23
+          Height = 19
           Top = 0
           Width = 80
           AutoSize = False
@@ -929,7 +935,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         end
         object rbNum2Oct: TRadioButton
           Left = 160
-          Height = 23
+          Height = 19
           Top = 0
           Width = 81
           AutoSize = False
@@ -939,7 +945,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         end
         object rbNum2Bin: TRadioButton
           Left = 241
-          Height = 23
+          Height = 19
           Top = 0
           Width = 80
           AutoSize = False
@@ -949,7 +955,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         end
         object rbNum2Char: TRadioButton
           Left = 321
-          Height = 23
+          Height = 19
           Top = 0
           Width = 80
           AutoSize = False
@@ -983,8 +989,8 @@ object DisplayFormatFrame: TDisplayFormatFrame
         AnchorSideRight.Control = PanelNum2All
         AnchorSideRight.Side = asrBottom
         Left = 0
-        Height = 23
-        Top = 23
+        Height = 19
+        Top = 19
         Width = 481
         Anchors = [akTop, akLeft, akRight]
         AutoSize = True
@@ -993,23 +999,24 @@ object DisplayFormatFrame: TDisplayFormatFrame
         ChildSizing.ShrinkHorizontal = crsSameSize
         ChildSizing.Layout = cclLeftToRightThenTopToBottom
         ChildSizing.ControlsPerLine = 3
-        ClientHeight = 23
+        ClientHeight = 19
         ClientWidth = 481
         TabOrder = 1
         object rbSign2Auto: TRadioButton
           Left = 0
-          Height = 23
+          Height = 19
           Top = 0
           Width = 160
           AutoSize = False
           Caption = 'rbSignAuto'
           Checked = True
           TabOrder = 0
+          TabStop = True
           OnChange = FormatRadioChanged
         end
         object rbSign2Signed: TRadioButton
           Left = 160
-          Height = 23
+          Height = 19
           Top = 0
           Width = 161
           AutoSize = False
@@ -1019,7 +1026,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         end
         object rbSign2Unsigned: TRadioButton
           Left = 321
-          Height = 23
+          Height = 19
           Top = 0
           Width = 160
           AutoSize = False
@@ -1045,8 +1052,8 @@ object DisplayFormatFrame: TDisplayFormatFrame
         AnchorSideRight.Control = PanelNum2All
         AnchorSideRight.Side = asrBottom
         Left = 0
-        Height = 46
-        Top = 46
+        Height = 38
+        Top = 38
         Width = 481
         Anchors = [akTop, akLeft, akRight]
         AutoSize = True
@@ -1055,19 +1062,19 @@ object DisplayFormatFrame: TDisplayFormatFrame
         ChildSizing.ShrinkHorizontal = crsScaleChilds
         ChildSizing.Layout = cclLeftToRightThenTopToBottom
         ChildSizing.ControlsPerLine = 2
-        ClientHeight = 46
+        ClientHeight = 38
         ClientWidth = 481
         TabOrder = 2
         object DigitSpacer4: TLabel
           Left = 0
-          Height = 19
+          Height = 15
           Top = 0
           Width = 321
           Caption = '  '
         end
         object DigitSpacer3: TLabel
           Left = 321
-          Height = 19
+          Height = 15
           Top = 0
           Width = 160
           Caption = ' '
@@ -1077,9 +1084,9 @@ object DisplayFormatFrame: TDisplayFormatFrame
           AnchorSideTop.Control = Spin2Digits
           AnchorSideTop.Side = asrCenter
           Left = 321
-          Height = 19
-          Top = 9
-          Width = 90
+          Height = 15
+          Top = 4
+          Width = 73
           BorderSpacing.CellAlignHorizontal = ccaLeftTop
           BorderSpacing.CellAlignVertical = ccaCenter
           Caption = 'lbNum2Digits'
@@ -1090,10 +1097,10 @@ object DisplayFormatFrame: TDisplayFormatFrame
           AnchorSideTop.Control = PanelNum2Digits
           AnchorSideRight.Control = DigitSpacer3
           AnchorSideRight.Side = asrBottom
-          Left = 414
-          Height = 36
+          Left = 397
+          Height = 23
           Top = 0
-          Width = 62
+          Width = 70
           Alignment = taRightJustify
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Left = 3
@@ -1114,7 +1121,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
           AnchorSideRight.Control = DigitSpacer4
           AnchorSideRight.Side = asrBottom
           Left = 0
-          Height = 23
+          Height = 19
           Top = 0
           Width = 321
           Anchors = [akTop, akLeft, akRight]
@@ -1127,9 +1134,9 @@ object DisplayFormatFrame: TDisplayFormatFrame
           AnchorSideTop.Control = PanelNum2SepGroup
           AnchorSideTop.Side = asrCenter
           Left = 0
-          Height = 19
-          Top = 25
-          Width = 76
+          Height = 15
+          Top = 21
+          Width = 62
           Caption = 'lbSepGroup'
         end
         object PanelNum2SepGroup: TPanel
@@ -1139,10 +1146,10 @@ object DisplayFormatFrame: TDisplayFormatFrame
           AnchorSideTop.Side = asrBottom
           AnchorSideRight.Control = DigitSpacer4
           AnchorSideRight.Side = asrBottom
-          Left = 79
-          Height = 23
-          Top = 23
-          Width = 242
+          Left = 65
+          Height = 19
+          Top = 19
+          Width = 256
           Anchors = [akTop, akLeft, akRight]
           AutoSize = True
           BorderSpacing.Left = 3
@@ -1152,42 +1159,43 @@ object DisplayFormatFrame: TDisplayFormatFrame
           ChildSizing.ShrinkHorizontal = crsScaleChilds
           ChildSizing.Layout = cclLeftToRightThenTopToBottom
           ChildSizing.ControlsPerLine = 4
-          ClientHeight = 23
-          ClientWidth = 242
+          ClientHeight = 19
+          ClientWidth = 256
           TabOrder = 1
           object rbNum2SepNone: TRadioButton
             Left = 4
-            Height = 23
+            Height = 19
             Top = 0
-            Width = 58
+            Width = 62
             Caption = 'rbNumSepNone'
             Checked = True
             TabOrder = 0
+            TabStop = True
             OnChange = FormatNumGroupChanged
           end
           object rbNum2SepByte: TRadioButton
-            Left = 64
-            Height = 23
+            Left = 68
+            Height = 19
             Top = 0
-            Width = 55
+            Width = 58
             Caption = 'rbNumSepByte'
             TabOrder = 1
             OnChange = FormatNumGroupChanged
           end
           object rbNum2SepWord: TRadioButton
-            Left = 121
-            Height = 23
+            Left = 128
+            Height = 19
             Top = 0
-            Width = 59
+            Width = 62
             Caption = 'rbNumSepWord'
             TabOrder = 2
             OnChange = FormatNumGroupChanged
           end
           object rbNum2SepLong: TRadioButton
-            Left = 182
-            Height = 23
+            Left = 192
+            Height = 19
             Top = 0
-            Width = 56
+            Width = 60
             Caption = 'rbNumSepLong'
             TabOrder = 3
             OnChange = FormatNumGroupChanged
@@ -1213,8 +1221,8 @@ object DisplayFormatFrame: TDisplayFormatFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 50
-    Top = 252
+    Height = 42
+    Top = 212
     Width = 592
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -1224,7 +1232,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     ChildSizing.ShrinkHorizontal = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 2
-    ClientHeight = 50
+    ClientHeight = 42
     ClientWidth = 592
     TabOrder = 3
     object Spacer3: TLabel
@@ -1264,9 +1272,9 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideTop.Control = DividerBevelEnum
       AnchorSideTop.Side = asrBottom
       Left = 0
-      Height = 23
+      Height = 17
       Top = 3
-      Width = 23
+      Width = 18
       Font.Style = [fsBold]
       ParentFont = False
       TabOrder = 0
@@ -1278,10 +1286,10 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideTop.Control = cbOverrideEnum
       AnchorSideRight.Control = Spacer3
       AnchorSideRight.Side = asrBottom
-      Left = 23
-      Height = 38
+      Left = 18
+      Height = 15
       Top = 3
-      Width = 84
+      Width = 89
       Anchors = [akTop, akLeft, akRight]
       Caption = 'lbOverrideEnum'
       Font.Style = [fsBold]
@@ -1296,7 +1304,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideRight.Control = Spacer4
       AnchorSideRight.Side = asrBottom
       Left = 111
-      Height = 23
+      Height = 19
       Top = 3
       Width = 481
       Anchors = [akTop, akLeft, akRight]
@@ -1306,23 +1314,24 @@ object DisplayFormatFrame: TDisplayFormatFrame
       ChildSizing.ShrinkHorizontal = crsSameSize
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 3
-      ClientHeight = 23
+      ClientHeight = 19
       ClientWidth = 481
       TabOrder = 1
       object rbEnumName: TRadioButton
         Left = 0
-        Height = 23
+        Height = 19
         Top = 0
         Width = 160
         AutoSize = False
         Caption = 'rbEnumName'
         Checked = True
         TabOrder = 0
+        TabStop = True
         OnChange = FormatRadioChanged
       end
       object rbEnumOrd: TRadioButton
         Left = 160
-        Height = 23
+        Height = 19
         Top = 0
         Width = 161
         AutoSize = False
@@ -1332,7 +1341,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       end
       object rbEnumNameAndOrd: TRadioButton
         Left = 321
-        Height = 23
+        Height = 19
         Top = 0
         Width = 160
         AutoSize = False
@@ -1358,8 +1367,8 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideRight.Control = Spacer4
       AnchorSideRight.Side = asrBottom
       Left = 111
-      Height = 24
-      Top = 26
+      Height = 20
+      Top = 22
       Width = 481
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
@@ -1368,7 +1377,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       ChildSizing.ShrinkHorizontal = crsSameSize
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 6
-      ClientHeight = 24
+      ClientHeight = 20
       ClientWidth = 481
       ParentBackground = False
       ParentColor = False
@@ -1376,7 +1385,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       TabOrder = 2
       object rbENumDec: TRadioButton
         Left = 0
-        Height = 23
+        Height = 19
         Top = 0
         Width = 80
         AutoSize = False
@@ -1384,11 +1393,12 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Checked = True
         ParentColor = False
         TabOrder = 0
+        TabStop = True
         OnChange = FormatRadioChanged
       end
       object rbENumHex: TRadioButton
         Left = 80
-        Height = 23
+        Height = 19
         Top = 0
         Width = 80
         AutoSize = False
@@ -1398,7 +1408,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       end
       object rbENumOct: TRadioButton
         Left = 160
-        Height = 23
+        Height = 19
         Top = 0
         Width = 81
         AutoSize = False
@@ -1408,7 +1418,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       end
       object rbENumBin: TRadioButton
         Left = 241
-        Height = 23
+        Height = 19
         Top = 0
         Width = 80
         AutoSize = False
@@ -1418,7 +1428,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       end
       object rbENumChar: TRadioButton
         Left = 321
-        Height = 23
+        Height = 19
         Top = 0
         Width = 80
         AutoSize = False
@@ -1429,7 +1439,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       end
       object cbEnumSign: TCheckBox
         Left = 401
-        Height = 23
+        Height = 19
         Top = 0
         Width = 80
         Caption = 'cbEnumSign'
@@ -1439,7 +1449,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       object lbEnumBaseSpace: TLabel
         Left = 0
         Height = 1
-        Top = 23
+        Top = 19
         Width = 80
         Constraints.MaxHeight = 1
         Visible = False
@@ -1450,7 +1460,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         AnchorSideBottom.Control = cbEnumSign
         AnchorSideBottom.Side = asrBottom
         Left = 397
-        Height = 19
+        Height = 15
         Top = 2
         Width = 2
         Anchors = [akTop, akRight, akBottom]
@@ -1482,7 +1492,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideBottom.Control = PanelEnumRb1
       AnchorSideBottom.Side = asrBottom
       Left = 107
-      Height = 19
+      Height = 15
       Top = 5
       Width = 2
       Anchors = [akTop, akRight, akBottom]
@@ -1503,8 +1513,8 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideBottom.Control = PanelENumBase
       AnchorSideBottom.Side = asrBottom
       Left = 107
-      Height = 20
-      Top = 28
+      Height = 16
+      Top = 24
       Width = 2
       Anchors = [akTop, akRight, akBottom]
       BorderSpacing.Top = 2
@@ -1526,8 +1536,8 @@ object DisplayFormatFrame: TDisplayFormatFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 50
-    Top = 306
+    Height = 42
+    Top = 258
     Width = 592
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -1537,7 +1547,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     ChildSizing.ShrinkHorizontal = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 2
-    ClientHeight = 50
+    ClientHeight = 42
     ClientWidth = 592
     TabOrder = 9
     Visible = False
@@ -1579,9 +1589,9 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideTop.Control = DividerBevelEnumVal
       AnchorSideTop.Side = asrBottom
       Left = 0
-      Height = 23
+      Height = 17
       Top = 3
-      Width = 23
+      Width = 18
       Font.Style = [fsBold]
       ParentFont = False
       TabOrder = 0
@@ -1593,10 +1603,10 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideTop.Control = cbOverrideEnumVal
       AnchorSideRight.Control = Spacer15
       AnchorSideRight.Side = asrBottom
-      Left = 23
-      Height = 38
+      Left = 18
+      Height = 15
       Top = 3
-      Width = 84
+      Width = 89
       Anchors = [akTop, akLeft, akRight]
       Caption = 'lbOverrideEnum'
       Font.Style = [fsBold]
@@ -1611,7 +1621,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideRight.Control = Spacer16
       AnchorSideRight.Side = asrBottom
       Left = 111
-      Height = 23
+      Height = 19
       Top = 3
       Width = 481
       Anchors = [akTop, akLeft, akRight]
@@ -1621,23 +1631,24 @@ object DisplayFormatFrame: TDisplayFormatFrame
       ChildSizing.ShrinkHorizontal = crsSameSize
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 3
-      ClientHeight = 23
+      ClientHeight = 19
       ClientWidth = 481
       TabOrder = 1
       object rbEnumValName: TRadioButton
         Left = 0
-        Height = 23
+        Height = 19
         Top = 0
         Width = 160
         AutoSize = False
         Caption = 'rbEnumName'
         Checked = True
         TabOrder = 0
+        TabStop = True
         OnChange = FormatRadioChanged
       end
       object rbEnumValOrd: TRadioButton
         Left = 160
-        Height = 23
+        Height = 19
         Top = 0
         Width = 161
         AutoSize = False
@@ -1647,7 +1658,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       end
       object rbEnumValNameAndOrd: TRadioButton
         Left = 321
-        Height = 23
+        Height = 19
         Top = 0
         Width = 160
         AutoSize = False
@@ -1673,8 +1684,8 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideRight.Control = Spacer16
       AnchorSideRight.Side = asrBottom
       Left = 111
-      Height = 24
-      Top = 26
+      Height = 20
+      Top = 22
       Width = 481
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
@@ -1683,7 +1694,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       ChildSizing.ShrinkHorizontal = crsSameSize
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 6
-      ClientHeight = 24
+      ClientHeight = 20
       ClientWidth = 481
       ParentBackground = False
       ParentColor = False
@@ -1691,7 +1702,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       TabOrder = 2
       object rbENumValDec: TRadioButton
         Left = 0
-        Height = 23
+        Height = 19
         Top = 0
         Width = 80
         AutoSize = False
@@ -1699,11 +1710,12 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Checked = True
         ParentColor = False
         TabOrder = 0
+        TabStop = True
         OnChange = FormatRadioChanged
       end
       object rbENumValHex: TRadioButton
         Left = 80
-        Height = 23
+        Height = 19
         Top = 0
         Width = 80
         AutoSize = False
@@ -1713,7 +1725,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       end
       object rbENumValOct: TRadioButton
         Left = 160
-        Height = 23
+        Height = 19
         Top = 0
         Width = 81
         AutoSize = False
@@ -1723,7 +1735,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       end
       object rbENumValBin: TRadioButton
         Left = 241
-        Height = 23
+        Height = 19
         Top = 0
         Width = 80
         AutoSize = False
@@ -1733,7 +1745,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       end
       object rbENumValChar: TRadioButton
         Left = 321
-        Height = 23
+        Height = 19
         Top = 0
         Width = 80
         AutoSize = False
@@ -1744,7 +1756,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       end
       object cbEnumValSign: TCheckBox
         Left = 401
-        Height = 23
+        Height = 19
         Top = 0
         Width = 80
         Caption = 'cbEnumSign'
@@ -1754,7 +1766,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       object lbEnumValBaseSpace: TLabel
         Left = 0
         Height = 1
-        Top = 23
+        Top = 19
         Width = 80
         Constraints.MaxHeight = 1
         Visible = False
@@ -1778,8 +1790,8 @@ object DisplayFormatFrame: TDisplayFormatFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 41
-    Top = 360
+    Height = 26
+    Top = 304
     Width = 592
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -1789,7 +1801,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     ChildSizing.ShrinkHorizontal = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 2
-    ClientHeight = 41
+    ClientHeight = 26
     ClientWidth = 592
     TabOrder = 4
     object Spacer5: TLabel
@@ -1829,9 +1841,9 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideTop.Control = DividerBevelFloat
       AnchorSideTop.Side = asrBottom
       Left = 0
-      Height = 23
+      Height = 17
       Top = 3
-      Width = 23
+      Width = 18
       Font.Style = [fsBold]
       ParentFont = False
       TabOrder = 0
@@ -1843,10 +1855,10 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideTop.Control = cbOverrideFloat
       AnchorSideRight.Control = Spacer5
       AnchorSideRight.Side = asrBottom
-      Left = 23
-      Height = 38
+      Left = 18
+      Height = 15
       Top = 3
-      Width = 84
+      Width = 89
       Anchors = [akTop, akLeft, akRight]
       Caption = 'lbOverrideFloat'
       Font.Style = [fsBold]
@@ -1861,7 +1873,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideRight.Control = Spacer6
       AnchorSideRight.Side = asrBottom
       Left = 111
-      Height = 36
+      Height = 23
       Top = 3
       Width = 481
       Anchors = [akTop, akLeft, akRight]
@@ -1871,23 +1883,24 @@ object DisplayFormatFrame: TDisplayFormatFrame
       ChildSizing.ShrinkHorizontal = crsSameSize
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 3
-      ClientHeight = 36
+      ClientHeight = 23
       ClientWidth = 481
       TabOrder = 1
       object rbFloatPoint: TRadioButton
         Left = 0
-        Height = 23
+        Height = 19
         Top = 0
         Width = 160
         AutoSize = False
         Caption = 'rbFloatPoint'
         Checked = True
         TabOrder = 0
+        TabStop = True
         OnChange = FormatRadioChanged
       end
       object rbFloatScience: TRadioButton
         Left = 160
-        Height = 23
+        Height = 19
         Top = 0
         Width = 161
         AutoSize = False
@@ -1897,9 +1910,9 @@ object DisplayFormatFrame: TDisplayFormatFrame
       end
       object lbFloatPrec: TLabel
         Left = 321
-        Height = 19
+        Height = 15
         Top = 2
-        Width = 75
+        Width = 59
         BorderSpacing.CellAlignHorizontal = ccaLeftTop
         BorderSpacing.CellAlignVertical = ccaCenter
         Caption = 'lbFloatPrec'
@@ -1910,8 +1923,8 @@ object DisplayFormatFrame: TDisplayFormatFrame
         AnchorSideTop.Control = PanelFloatRb
         AnchorSideRight.Control = PanelFloatRb
         AnchorSideRight.Side = asrBottom
-        Left = 399
-        Height = 36
+        Left = 383
+        Height = 23
         Top = 0
         Width = 70
         Alignment = taRightJustify
@@ -1944,8 +1957,8 @@ object DisplayFormatFrame: TDisplayFormatFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 51
-    Top = 405
+    Height = 43
+    Top = 334
     Width = 592
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -1955,7 +1968,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     ChildSizing.ShrinkHorizontal = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 2
-    ClientHeight = 51
+    ClientHeight = 43
     ClientWidth = 592
     TabOrder = 5
     object Spacer7: TLabel
@@ -1995,9 +2008,9 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideTop.Control = DividerBevelStruct
       AnchorSideTop.Side = asrBottom
       Left = 0
-      Height = 23
+      Height = 17
       Top = 3
-      Width = 23
+      Width = 18
       Font.Style = [fsBold]
       ParentFont = False
       TabOrder = 0
@@ -2009,10 +2022,10 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideTop.Control = cbOverrideStruct
       AnchorSideRight.Control = Spacer7
       AnchorSideRight.Side = asrBottom
-      Left = 23
-      Height = 38
+      Left = 18
+      Height = 15
       Top = 3
-      Width = 84
+      Width = 89
       Anchors = [akTop, akLeft, akRight]
       Caption = 'lbOverrideStruct'
       Font.Style = [fsBold]
@@ -2027,7 +2040,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideRight.Control = Spacer8
       AnchorSideRight.Side = asrBottom
       Left = 111
-      Height = 23
+      Height = 19
       Top = 3
       Width = 481
       Anchors = [akTop, akLeft, akRight]
@@ -2038,24 +2051,25 @@ object DisplayFormatFrame: TDisplayFormatFrame
       ChildSizing.ShrinkHorizontal = crsSameSize
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 4
-      ClientHeight = 23
+      ClientHeight = 19
       ClientWidth = 481
       ParentBackground = False
       TabOrder = 1
       object rbStructValOnly: TRadioButton
         Left = 0
-        Height = 23
+        Height = 19
         Top = 0
         Width = 120
         AutoSize = False
         Caption = 'rbStructValOnly'
         Checked = True
         TabOrder = 0
+        TabStop = True
         OnChange = FormatRadioChanged
       end
       object rbStructFields: TRadioButton
         Left = 120
-        Height = 23
+        Height = 19
         Top = 0
         Width = 120
         AutoSize = False
@@ -2065,7 +2079,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       end
       object rbStructFull: TRadioButton
         Left = 240
-        Height = 23
+        Height = 19
         Top = 0
         Width = 121
         AutoSize = False
@@ -2085,7 +2099,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       end
       object lbStructAddrTypedFiller: TLabel
         Left = 361
-        Height = 23
+        Height = 19
         Top = 0
         Width = 120
         Visible = False
@@ -2098,8 +2112,8 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideRight.Control = Spacer8
       AnchorSideRight.Side = asrBottom
       Left = 111
-      Height = 23
-      Top = 28
+      Height = 19
+      Top = 24
       Width = 481
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
@@ -2108,24 +2122,25 @@ object DisplayFormatFrame: TDisplayFormatFrame
       ChildSizing.ShrinkHorizontal = crsSameSize
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 4
-      ClientHeight = 23
+      ClientHeight = 19
       ClientWidth = 481
       ParentBackground = False
       TabOrder = 2
       object rbStructAddrOff: TRadioButton
         Left = 0
-        Height = 23
+        Height = 19
         Top = 0
         Width = 120
         AutoSize = False
         Caption = 'rbStructAddrOff'
         Checked = True
         TabOrder = 0
+        TabStop = True
         OnChange = FormatRadioChanged
       end
       object rbStructAddrOn: TRadioButton
         Left = 120
-        Height = 23
+        Height = 19
         Top = 0
         Width = 120
         AutoSize = False
@@ -2135,7 +2150,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       end
       object rbStructAddrOnly: TRadioButton
         Left = 240
-        Height = 23
+        Height = 19
         Top = 0
         Width = 121
         AutoSize = False
@@ -2145,7 +2160,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       end
       object cbStructAddrTyped: TCheckBox
         Left = 361
-        Height = 23
+        Height = 19
         Top = 0
         Width = 120
         Caption = 'cbStructAddrTyped'
@@ -2172,8 +2187,8 @@ object DisplayFormatFrame: TDisplayFormatFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 41
-    Top = 460
+    Height = 22
+    Top = 381
     Width = 592
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -2183,7 +2198,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     ChildSizing.ShrinkHorizontal = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 2
-    ClientHeight = 41
+    ClientHeight = 22
     ClientWidth = 592
     TabOrder = 6
     object Spacer9: TLabel
@@ -2223,9 +2238,9 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideTop.Control = DividerBevelPointerDeref
       AnchorSideTop.Side = asrBottom
       Left = 0
-      Height = 23
+      Height = 17
       Top = 3
-      Width = 23
+      Width = 18
       Font.Style = [fsBold]
       ParentFont = False
       TabOrder = 0
@@ -2237,10 +2252,10 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideTop.Control = cbOverridePointerDeref
       AnchorSideRight.Control = Spacer9
       AnchorSideRight.Side = asrBottom
-      Left = 23
-      Height = 38
+      Left = 18
+      Height = 15
       Top = 3
-      Width = 84
+      Width = 89
       Anchors = [akTop, akLeft, akRight]
       Caption = 'lbOverridePointerDeref'
       Font.Style = [fsBold]
@@ -2255,7 +2270,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideRight.Control = Spacer10
       AnchorSideRight.Side = asrBottom
       Left = 111
-      Height = 23
+      Height = 19
       Top = 3
       Width = 481
       Anchors = [akTop, akLeft, akRight]
@@ -2265,23 +2280,24 @@ object DisplayFormatFrame: TDisplayFormatFrame
       ChildSizing.ShrinkHorizontal = crsSameSize
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 4
-      ClientHeight = 23
+      ClientHeight = 19
       ClientWidth = 481
       TabOrder = 1
       object rbPointerDerefOn: TRadioButton
         Left = 0
-        Height = 23
+        Height = 19
         Top = 0
         Width = 120
         AutoSize = False
         Caption = 'rbPointerDerefOn'
         Checked = True
         TabOrder = 0
+        TabStop = True
         OnChange = FormatRadioChanged
       end
       object rbPointerDerefOff: TRadioButton
         Left = 120
-        Height = 23
+        Height = 19
         Top = 0
         Width = 120
         AutoSize = False
@@ -2291,7 +2307,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       end
       object rbPointerDerefOnly: TRadioButton
         Left = 240
-        Height = 23
+        Height = 19
         Top = 0
         Width = 121
         AutoSize = False
@@ -2301,7 +2317,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       end
       object cbPointerAddrTyped: TCheckBox
         Left = 361
-        Height = 23
+        Height = 19
         Top = 0
         Width = 120
         Caption = 'cbPointerAddrTyped'
@@ -2328,8 +2344,8 @@ object DisplayFormatFrame: TDisplayFormatFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 72
-    Top = 505
+    Height = 60
+    Top = 407
     Width = 592
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -2339,7 +2355,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     ChildSizing.ShrinkHorizontal = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 2
-    ClientHeight = 72
+    ClientHeight = 60
     ClientWidth = 592
     TabOrder = 7
     object Spacer11: TLabel
@@ -2379,9 +2395,9 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideTop.Control = DividerBevelAddressFormat
       AnchorSideTop.Side = asrBottom
       Left = 0
-      Height = 23
+      Height = 17
       Top = 3
-      Width = 23
+      Width = 18
       Font.Style = [fsBold]
       ParentFont = False
       TabOrder = 0
@@ -2393,10 +2409,10 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideTop.Control = cbOverrideAddressFormat
       AnchorSideRight.Control = Spacer11
       AnchorSideRight.Side = asrBottom
-      Left = 23
-      Height = 57
+      Left = 18
+      Height = 15
       Top = 3
-      Width = 84
+      Width = 89
       Anchors = [akTop, akLeft, akRight]
       Caption = 'lbOverrideAddressFormat'
       Font.Style = [fsBold]
@@ -2411,7 +2427,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideRight.Control = Spacer12
       AnchorSideRight.Side = asrBottom
       Left = 111
-      Height = 23
+      Height = 19
       Top = 3
       Width = 481
       Anchors = [akTop, akLeft, akRight]
@@ -2421,23 +2437,24 @@ object DisplayFormatFrame: TDisplayFormatFrame
       ChildSizing.ShrinkHorizontal = crsSameSize
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 3
-      ClientHeight = 23
+      ClientHeight = 19
       ClientWidth = 481
       TabOrder = 1
       object rbAddressPlain: TRadioButton
         Left = 0
-        Height = 23
+        Height = 19
         Top = 0
         Width = 160
         AutoSize = False
         Caption = 'rbAddressPlain'
         Checked = True
         TabOrder = 0
+        TabStop = True
         OnChange = FormatRadioChanged
       end
       object rbAddressTyped: TRadioButton
         Left = 160
-        Height = 23
+        Height = 19
         Top = 0
         Width = 161
         AutoSize = False
@@ -2470,8 +2487,8 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideRight.Control = Spacer12
       AnchorSideRight.Side = asrBottom
       Left = 111
-      Height = 23
-      Top = 26
+      Height = 19
+      Top = 22
       Width = 481
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
@@ -2480,23 +2497,24 @@ object DisplayFormatFrame: TDisplayFormatFrame
       ChildSizing.ShrinkHorizontal = crsSameSize
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 6
-      ClientHeight = 23
+      ClientHeight = 19
       ClientWidth = 481
       TabOrder = 2
       object rbAddrNumHex: TRadioButton
         Left = 0
-        Height = 23
+        Height = 19
         Top = 0
         Width = 80
         AutoSize = False
         Caption = 'rbAddrNumHex'
         Checked = True
         TabOrder = 0
+        TabStop = True
         OnChange = FormatRadioChanged
       end
       object rbAddrNumDec: TRadioButton
         Left = 80
-        Height = 23
+        Height = 19
         Top = 0
         Width = 80
         AutoSize = False
@@ -2506,7 +2524,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       end
       object rbAddrNumOct: TRadioButton
         Left = 160
-        Height = 23
+        Height = 19
         Top = 0
         Width = 81
         AutoSize = False
@@ -2516,7 +2534,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       end
       object rbAddrNumBin: TRadioButton
         Left = 241
-        Height = 23
+        Height = 19
         Top = 0
         Width = 80
         AutoSize = False
@@ -2533,7 +2551,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       end
       object cbAddrSign: TCheckBox
         Left = 401
-        Height = 23
+        Height = 19
         Top = 0
         Width = 80
         Caption = 'cbAddrSign'
@@ -2558,8 +2576,8 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideRight.Control = Spacer12
       AnchorSideRight.Side = asrBottom
       Left = 111
-      Height = 23
-      Top = 49
+      Height = 19
+      Top = 41
       Width = 481
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
@@ -2568,12 +2586,12 @@ object DisplayFormatFrame: TDisplayFormatFrame
       ChildSizing.ShrinkHorizontal = crsSameSize
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 6
-      ClientHeight = 23
+      ClientHeight = 19
       ClientWidth = 481
       TabOrder = 3
       object cbAddrNoLeadZero: TCheckBox
         Left = 0
-        Height = 23
+        Height = 19
         Top = 0
         Width = 481
         Caption = 'cbAddrNoLeadZero'
@@ -2590,6 +2608,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         AutoSize = False
         Checked = True
         TabOrder = 1
+        TabStop = True
       end
     end
   end
@@ -2600,8 +2619,8 @@ object DisplayFormatFrame: TDisplayFormatFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 113
-    Top = 581
+    Height = 74
+    Top = 471
     Width = 592
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -2611,7 +2630,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     ChildSizing.ShrinkHorizontal = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 2
-    ClientHeight = 113
+    ClientHeight = 74
     ClientWidth = 592
     TabOrder = 10
     object Spacer17: TLabel
@@ -2652,9 +2671,9 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideTop.Control = DividerBevelPointerDeref1
       AnchorSideTop.Side = asrBottom
       Left = 0
-      Height = 23
+      Height = 17
       Top = 3
-      Width = 23
+      Width = 18
       Font.Style = [fsBold]
       ParentFont = False
       TabOrder = 0
@@ -2666,10 +2685,10 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideTop.Control = cbOverrideIndent
       AnchorSideRight.Control = Spacer17
       AnchorSideRight.Side = asrBottom
-      Left = 23
-      Height = 38
+      Left = 18
+      Height = 15
       Top = 3
-      Width = 84
+      Width = 89
       Anchors = [akTop, akLeft, akRight]
       Caption = 'lbOverrideIndent'
       Font.Style = [fsBold]
@@ -2684,7 +2703,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideRight.Control = Spacer18
       AnchorSideRight.Side = asrBottom
       Left = 111
-      Height = 36
+      Height = 23
       Top = 3
       Width = 481
       Anchors = [akTop, akLeft, akRight]
@@ -2693,16 +2712,16 @@ object DisplayFormatFrame: TDisplayFormatFrame
       ChildSizing.EnlargeHorizontal = crsSameSize
       ChildSizing.ShrinkHorizontal = crsSameSize
       ChildSizing.ControlsPerLine = 4
-      ClientHeight = 36
+      ClientHeight = 23
       ClientWidth = 481
       TabOrder = 1
       object lbMaxWrapLvl: TLabel
         AnchorSideTop.Control = SpinIndentMaxWrap
         AnchorSideTop.Side = asrCenter
         Left = 0
-        Height = 19
-        Top = 9
-        Width = 94
+        Height = 15
+        Top = 4
+        Width = 75
         BorderSpacing.Right = 3
         Caption = 'lbMaxWrapLvl'
       end
@@ -2710,8 +2729,8 @@ object DisplayFormatFrame: TDisplayFormatFrame
         AnchorSideLeft.Control = lbMaxWrapLvl
         AnchorSideLeft.Side = asrBottom
         AnchorSideRight.Side = asrBottom
-        Left = 97
-        Height = 36
+        Left = 78
+        Height = 23
         Top = 0
         Width = 60
         Alignment = taRightJustify
@@ -2729,8 +2748,8 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideRight.Control = Spacer18
       AnchorSideRight.Side = asrBottom
       Left = 111
-      Height = 74
-      Top = 39
+      Height = 48
+      Top = 26
       Width = 481
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
@@ -2741,7 +2760,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       ChildSizing.ShrinkHorizontal = crsHomogenousChildResize
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 7
-      ClientHeight = 74
+      ClientHeight = 48
       ClientWidth = 481
       TabOrder = 2
       object cbForceSingleLine: TCheckBox
@@ -2749,16 +2768,16 @@ object DisplayFormatFrame: TDisplayFormatFrame
         AnchorSideTop.Control = fill1
         AnchorSideTop.Side = asrCenter
         Left = 0
-        Height = 23
-        Top = 7
-        Width = 145
+        Height = 19
+        Top = 2
+        Width = 114
         Caption = 'cbForceSingleLine'
         TabOrder = 4
         OnChange = cbArrayShowPrefixChange
       end
       object fill1: TLabel
         Left = 0
-        Height = 36
+        Height = 23
         Top = 0
         Width = 15
         Constraints.MaxWidth = 15
@@ -2766,21 +2785,21 @@ object DisplayFormatFrame: TDisplayFormatFrame
       end
       object fill10: TLabel
         Left = 18
-        Height = 36
+        Height = 23
         Top = 0
         Width = 107
       end
       object fill2: TLabel
         Left = 128
-        Height = 36
+        Height = 23
         Top = 0
         Width = 45
       end
       object lbForceSingleLineStructFld: TLabel
         AnchorSideRight.Side = asrBottom
         Left = 176
-        Height = 19
-        Top = 8
+        Height = 15
+        Top = 4
         Width = 103
         BorderSpacing.CellAlignVertical = ccaCenter
         Caption = 'lbForceSingleLineStructFld'
@@ -2788,7 +2807,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       object spinForceSingleLineStructFld: TSpinEdit
         AnchorSideRight.Side = asrBottom
         Left = 282
-        Height = 36
+        Height = 23
         Top = 0
         Width = 45
         Alignment = taRightJustify
@@ -2801,8 +2820,8 @@ object DisplayFormatFrame: TDisplayFormatFrame
       object lbForceSingleLineArrayLen: TLabel
         AnchorSideRight.Side = asrBottom
         Left = 330
-        Height = 19
-        Top = 8
+        Height = 15
+        Top = 4
         Width = 103
         BorderSpacing.CellAlignVertical = ccaCenter
         Caption = 'lbForceSingleLineArrayLen'
@@ -2810,7 +2829,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       object spinForceSingleLineArrayLen: TSpinEdit
         AnchorSideRight.Side = asrBottom
         Left = 436
-        Height = 36
+        Height = 23
         Top = 0
         Width = 45
         Alignment = taRightJustify
@@ -2822,15 +2841,15 @@ object DisplayFormatFrame: TDisplayFormatFrame
       end
       object fill3: TLabel
         Left = 0
-        Height = 36
-        Top = 38
+        Height = 23
+        Top = 25
         Width = 15
       end
       object lbForceSingleLineRevDepth: TLabel
         AnchorSideRight.Side = asrBottom
         Left = 18
-        Height = 19
-        Top = 46
+        Height = 15
+        Top = 29
         Width = 107
         BorderSpacing.CellAlignVertical = ccaCenter
         Caption = 'lbForceSingleLineRevDepth'
@@ -2838,8 +2857,8 @@ object DisplayFormatFrame: TDisplayFormatFrame
       object spinForceSingleLineRevDepth: TSpinEdit
         AnchorSideRight.Side = asrBottom
         Left = 128
-        Height = 36
-        Top = 38
+        Height = 23
+        Top = 25
         Width = 45
         Alignment = taRightJustify
         Constraints.MaxWidth = 65
@@ -2853,8 +2872,8 @@ object DisplayFormatFrame: TDisplayFormatFrame
       object lbForceSingleLineEach: TLabel
         AnchorSideRight.Side = asrBottom
         Left = 176
-        Height = 19
-        Top = 46
+        Height = 15
+        Top = 29
         Width = 103
         BorderSpacing.CellAlignVertical = ccaCenter
         Caption = 'lbForceSingleLineEach'
@@ -2862,8 +2881,8 @@ object DisplayFormatFrame: TDisplayFormatFrame
       object spinForceSingleLineEach: TSpinEdit
         AnchorSideRight.Side = asrBottom
         Left = 282
-        Height = 36
-        Top = 38
+        Height = 23
+        Top = 25
         Width = 45
         Alignment = taRightJustify
         Constraints.MaxWidth = 65
@@ -2875,8 +2894,8 @@ object DisplayFormatFrame: TDisplayFormatFrame
       object lbForceSingleLineLen: TLabel
         AnchorSideRight.Side = asrBottom
         Left = 330
-        Height = 19
-        Top = 46
+        Height = 15
+        Top = 29
         Width = 103
         BorderSpacing.CellAlignVertical = ccaCenter
         Caption = 'lbForceSingleLineLen'
@@ -2884,8 +2903,8 @@ object DisplayFormatFrame: TDisplayFormatFrame
       object spinForceSingleLineLen: TSpinEdit
         AnchorSideRight.Side = asrBottom
         Left = 436
-        Height = 36
-        Top = 38
+        Height = 23
+        Top = 25
         Width = 45
         Alignment = taRightJustify
         Constraints.MaxWidth = 65
@@ -2903,8 +2922,8 @@ object DisplayFormatFrame: TDisplayFormatFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 136
-    Top = 698
+    Height = 93
+    Top = 549
     Width = 592
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -2914,7 +2933,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     ChildSizing.ShrinkHorizontal = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 2
-    ClientHeight = 136
+    ClientHeight = 93
     ClientWidth = 592
     TabOrder = 12
     object Spacer21: TLabel
@@ -2955,9 +2974,9 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideTop.Control = DividerBevelArray
       AnchorSideTop.Side = asrBottom
       Left = 0
-      Height = 23
+      Height = 17
       Top = 3
-      Width = 23
+      Width = 18
       Font.Style = [fsBold]
       ParentFont = False
       TabOrder = 0
@@ -2969,10 +2988,10 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideTop.Control = cbOverrideArray
       AnchorSideRight.Control = Spacer21
       AnchorSideRight.Side = asrBottom
-      Left = 23
-      Height = 38
+      Left = 18
+      Height = 15
       Top = 3
-      Width = 84
+      Width = 89
       Anchors = [akTop, akLeft, akRight]
       Caption = 'lbOverrideArray'
       Font.Style = [fsBold]
@@ -2987,7 +3006,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideRight.Control = Spacer22
       AnchorSideRight.Side = asrBottom
       Left = 111
-      Height = 36
+      Height = 23
       Top = 3
       Width = 481
       Anchors = [akTop, akLeft, akRight]
@@ -2997,12 +3016,12 @@ object DisplayFormatFrame: TDisplayFormatFrame
       ChildSizing.ShrinkHorizontal = crsSameSize
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 3
-      ClientHeight = 36
+      ClientHeight = 23
       ClientWidth = 481
       TabOrder = 1
       object cbArrayShowPrefix: TCheckBox
         Left = 0
-        Height = 23
+        Height = 19
         Top = 0
         Width = 160
         Caption = 'cbArrayShowPrefix'
@@ -3011,7 +3030,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       end
       object cbArrayShowPrefixEmbedded: TCheckBox
         Left = 160
-        Height = 23
+        Height = 19
         Top = 0
         Width = 161
         Caption = 'cbArrayShowPrefixEmbedded'
@@ -3020,9 +3039,9 @@ object DisplayFormatFrame: TDisplayFormatFrame
       end
       object lbArrayLenMaxNest: TLabel
         Left = 321
-        Height = 19
+        Height = 15
         Top = 2
-        Width = 130
+        Width = 104
         BorderSpacing.CellAlignHorizontal = ccaLeftTop
         BorderSpacing.CellAlignVertical = ccaCenter
         Caption = 'lbArrayLenMaxNest'
@@ -3033,10 +3052,10 @@ object DisplayFormatFrame: TDisplayFormatFrame
         AnchorSideTop.Control = PanelArrayShowPrefix
         AnchorSideRight.Control = PanelArrayShowPrefix
         AnchorSideRight.Side = asrBottom
-        Left = 454
-        Height = 36
+        Left = 428
+        Height = 23
         Top = 0
-        Width = 45
+        Width = 48
         Alignment = taRightJustify
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 3
@@ -3054,9 +3073,9 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideTop.Control = PanelArrayPrefixCombine
       AnchorSideTop.Side = asrCenter
       Left = 111
-      Height = 19
-      Top = 41
-      Width = 106
+      Height = 15
+      Top = 28
+      Width = 87
       Caption = 'lbArrayCombine'
     end
     object PanelArrayPrefixCombine: TPanel
@@ -3066,10 +3085,10 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = Spacer22
       AnchorSideRight.Side = asrBottom
-      Left = 220
-      Height = 23
-      Top = 39
-      Width = 372
+      Left = 201
+      Height = 19
+      Top = 26
+      Width = 391
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
       BorderSpacing.Left = 3
@@ -3078,45 +3097,46 @@ object DisplayFormatFrame: TDisplayFormatFrame
       ChildSizing.ShrinkHorizontal = crsSameSize
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 4
-      ClientHeight = 23
-      ClientWidth = 372
+      ClientHeight = 19
+      ClientWidth = 391
       TabOrder = 2
       object rbArrayCombineNone: TRadioButton
         Left = 0
-        Height = 23
+        Height = 19
         Top = 0
-        Width = 93
+        Width = 98
         AutoSize = False
         Caption = 'rbSignAuto'
         Checked = True
         TabOrder = 0
+        TabStop = True
         OnChange = FormatRadioChanged
       end
       object rbArrayCombineAll: TRadioButton
-        Left = 93
-        Height = 23
+        Left = 98
+        Height = 19
         Top = 0
-        Width = 93
+        Width = 98
         AutoSize = False
         Caption = 'rbSignSigned'
         TabOrder = 1
         OnChange = FormatRadioChanged
       end
       object rbArrayCombineStat: TRadioButton
-        Left = 186
-        Height = 23
+        Left = 196
+        Height = 19
         Top = 0
-        Width = 93
+        Width = 97
         AutoSize = False
         Caption = 'rbSignUnsigned'
         TabOrder = 2
         OnChange = FormatRadioChanged
       end
       object rbArrayCombineDyn: TRadioButton
-        Left = 279
-        Height = 23
+        Left = 293
+        Height = 19
         Top = 0
-        Width = 93
+        Width = 98
         AutoSize = False
         Caption = 'rbSignUnsigned'
         TabOrder = 4
@@ -3139,8 +3159,8 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideRight.Control = Spacer22
       AnchorSideRight.Side = asrBottom
       Left = 111
-      Height = 74
-      Top = 62
+      Height = 48
+      Top = 45
       Width = 481
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
@@ -3151,7 +3171,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       ChildSizing.ShrinkHorizontal = crsHomogenousChildResize
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 7
-      ClientHeight = 74
+      ClientHeight = 48
       ClientWidth = 481
       TabOrder = 3
       object cbArrayHideLen: TCheckBox
@@ -3159,16 +3179,16 @@ object DisplayFormatFrame: TDisplayFormatFrame
         AnchorSideTop.Control = fill7
         AnchorSideTop.Side = asrCenter
         Left = 0
-        Height = 23
-        Top = 7
-        Width = 131
+        Height = 19
+        Top = 2
+        Width = 103
         Caption = 'cbArrayHideLen'
         TabOrder = 4
         OnChange = cbArrayShowPrefixChange
       end
       object fill7: TLabel
         Left = 0
-        Height = 36
+        Height = 23
         Top = 0
         Width = 15
         Constraints.MaxWidth = 15
@@ -3176,41 +3196,41 @@ object DisplayFormatFrame: TDisplayFormatFrame
       end
       object fill8: TLabel
         Left = 18
-        Height = 36
+        Height = 23
         Top = 0
-        Width = 109
+        Width = 110
       end
       object fill6: TLabel
-        Left = 130
-        Height = 36
+        Left = 131
+        Height = 23
         Top = 0
         Width = 45
       end
       object fill5: TLabel
-        Left = 178
-        Height = 36
+        Left = 179
+        Height = 23
         Top = 0
-        Width = 107
+        Width = 104
       end
       object fill4: TLabel
-        Left = 288
-        Height = 36
+        Left = 286
+        Height = 23
         Top = 0
         Width = 45
       end
       object lbArrayHideLenIfLess: TLabel
         AnchorSideRight.Side = asrBottom
-        Left = 336
-        Height = 19
-        Top = 8
-        Width = 97
+        Left = 334
+        Height = 15
+        Top = 4
+        Width = 99
         BorderSpacing.CellAlignVertical = ccaCenter
         Caption = 'lbArrayHideLenIfLess'
       end
       object spinArrayHideLenIfLess: TSpinEdit
         AnchorSideRight.Side = asrBottom
         Left = 436
-        Height = 36
+        Height = 23
         Top = 0
         Width = 45
         Alignment = taRightJustify
@@ -3222,24 +3242,24 @@ object DisplayFormatFrame: TDisplayFormatFrame
       end
       object fill9: TLabel
         Left = 0
-        Height = 36
-        Top = 38
+        Height = 23
+        Top = 25
         Width = 15
       end
       object lbArrayHideLenKeepDepth: TLabel
         AnchorSideRight.Side = asrBottom
         Left = 18
-        Height = 19
-        Top = 46
-        Width = 109
+        Height = 15
+        Top = 29
+        Width = 110
         BorderSpacing.CellAlignVertical = ccaCenter
         Caption = 'lbArrayHideLenKeepDepth'
       end
       object spinArrayHideLenRevDepth: TSpinEdit
         AnchorSideRight.Side = asrBottom
-        Left = 130
-        Height = 36
-        Top = 38
+        Left = 131
+        Height = 23
+        Top = 25
         Width = 45
         Alignment = taRightJustify
         Constraints.MaxWidth = 65
@@ -3250,18 +3270,18 @@ object DisplayFormatFrame: TDisplayFormatFrame
       end
       object lbArrayHideLenThresEach: TLabel
         AnchorSideRight.Side = asrBottom
-        Left = 178
-        Height = 19
-        Top = 46
-        Width = 107
+        Left = 179
+        Height = 15
+        Top = 29
+        Width = 104
         BorderSpacing.CellAlignVertical = ccaCenter
         Caption = 'lbArrayHideLenThresEach'
       end
       object spinArrayHideLenThresEach: TSpinEdit
         AnchorSideRight.Side = asrBottom
-        Left = 288
-        Height = 36
-        Top = 38
+        Left = 286
+        Height = 23
+        Top = 25
         Width = 45
         Alignment = taRightJustify
         Constraints.MaxWidth = 65
@@ -3272,18 +3292,18 @@ object DisplayFormatFrame: TDisplayFormatFrame
       end
       object lbArrayHideLenThresLen: TLabel
         AnchorSideRight.Side = asrBottom
-        Left = 336
-        Height = 19
-        Top = 46
-        Width = 97
+        Left = 334
+        Height = 15
+        Top = 29
+        Width = 99
         BorderSpacing.CellAlignVertical = ccaCenter
         Caption = 'lbArrayHideLenThresLen'
       end
       object spinArrayHideLenThresLen: TSpinEdit
         AnchorSideRight.Side = asrBottom
         Left = 436
-        Height = 36
-        Top = 38
+        Height = 23
+        Top = 25
         Width = 45
         Alignment = taRightJustify
         Constraints.MaxWidth = 65
@@ -3301,8 +3321,8 @@ object DisplayFormatFrame: TDisplayFormatFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 41
-    Top = 838
+    Height = 26
+    Top = 646
     Width = 592
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -3312,7 +3332,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     ChildSizing.ShrinkHorizontal = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 2
-    ClientHeight = 41
+    ClientHeight = 26
     ClientWidth = 592
     TabOrder = 11
     object Spacer19: TLabel
@@ -3353,9 +3373,9 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideTop.Control = DividerBevelArrayNavBar
       AnchorSideTop.Side = asrBottom
       Left = 0
-      Height = 23
+      Height = 17
       Top = 3
-      Width = 23
+      Width = 18
       Font.Style = [fsBold]
       ParentFont = False
       TabOrder = 0
@@ -3367,10 +3387,10 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideTop.Control = cbOverrideArrayNavBar
       AnchorSideRight.Control = Spacer19
       AnchorSideRight.Side = asrBottom
-      Left = 23
-      Height = 38
+      Left = 18
+      Height = 15
       Top = 3
-      Width = 84
+      Width = 89
       Anchors = [akTop, akLeft, akRight]
       Caption = 'lbOverrideArrayNavBar'
       Font.Style = [fsBold]
@@ -3385,7 +3405,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideRight.Control = Spacer20
       AnchorSideRight.Side = asrBottom
       Left = 111
-      Height = 36
+      Height = 23
       Top = 3
       Width = 481
       Anchors = [akTop, akLeft, akRight]
@@ -3395,12 +3415,12 @@ object DisplayFormatFrame: TDisplayFormatFrame
       ChildSizing.ShrinkHorizontal = crsSameSize
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 3
-      ClientHeight = 36
+      ClientHeight = 23
       ClientWidth = 481
       TabOrder = 1
       object cbArrayNavAutoHide: TCheckBox
         Left = 0
-        Height = 23
+        Height = 19
         Top = 0
         Width = 160
         Caption = 'cbArrayNavAutoHide'
@@ -3409,7 +3429,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       end
       object cbArrayNavEnforceBounds: TCheckBox
         Left = 160
-        Height = 23
+        Height = 19
         Top = 0
         Width = 161
         Caption = 'cbArrayNavEnforceBounds'
@@ -3418,9 +3438,9 @@ object DisplayFormatFrame: TDisplayFormatFrame
       end
       object lbPageSize: TLabel
         Left = 321
-        Height = 19
+        Height = 15
         Top = 2
-        Width = 72
+        Width = 56
         BorderSpacing.CellAlignHorizontal = ccaLeftTop
         BorderSpacing.CellAlignVertical = ccaCenter
         Caption = 'lbPageSize'
@@ -3431,8 +3451,8 @@ object DisplayFormatFrame: TDisplayFormatFrame
         AnchorSideTop.Control = PanelArrayNavBarOpts
         AnchorSideRight.Control = PanelArrayNavBarOpts
         AnchorSideRight.Side = asrBottom
-        Left = 396
-        Height = 36
+        Left = 380
+        Height = 23
         Top = 0
         Width = 70
         Alignment = taRightJustify
@@ -3457,14 +3477,14 @@ object DisplayFormatFrame: TDisplayFormatFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 42
-    Top = 883
+    Height = 34
+    Top = 676
     Width = 592
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Bottom = 1
     BevelOuter = bvNone
-    ClientHeight = 42
+    ClientHeight = 34
     ClientWidth = 592
     TabOrder = 8
     object DividerBevelMemDump: TDividerBevel
@@ -3472,7 +3492,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideRight.Control = PanelMemDump
       AnchorSideRight.Side = asrBottom
       Left = 0
-      Height = 19
+      Height = 15
       Top = 0
       Width = 592
       Anchors = [akTop, akLeft, akRight]
@@ -3486,8 +3506,8 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideRight.Control = PanelMemDump
       AnchorSideRight.Side = asrBottom
       Left = 5
-      Height = 23
-      Top = 19
+      Height = 19
+      Top = 15
       Width = 582
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 5
