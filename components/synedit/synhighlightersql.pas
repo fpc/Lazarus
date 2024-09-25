@@ -1405,31 +1405,30 @@ begin
     NullProc
   else begin
     fTokenID := tkString;
-    // else it's end of multiline string
+    if (fRange = rsString) and (fLine[Run] = #39) then begin
+      // End of a string after linebreak
+      Inc(Run);
+      fRange := rsUnknown;
+    end
+    else
     if SQLDialect <> sqlMySql then begin
-      if (Run > 0) or (fRange <> rsString) or (fLine[Run] <> #39) then begin
-        fRange := rsString;
-        repeat
-          Inc(Run);
-        until fLine[Run] in [#0, #10, #13, #39];
-      end;
+      fRange := rsString;
+      repeat
+        Inc(Run);
+      until fLine[Run] in [#0, #10, #13, #39];
       if fLine[Run] = #39 then begin
         Inc(Run);
         fRange := rsUnknown;
       end;
     end
     else begin
-      if (Run > 0) or (fRange <> rsString) or ((fLine[Run] <> #39) and (fLine[Run-1] <> '\')) then begin
-        fRange := rsString;
-        repeat
-          if (fLine[Run] <> '\') and (fLine[Run+1] = #39) then begin
-            Inc(Run);
-            break;
-          end;
+      fRange := rsString;
+      repeat
+        if (fLine[Run] = '\') and (fLine[Run+1] in [#39, '\']) then
           Inc(Run);
-        until fLine[Run] in [#0, #10, #13];
-      end;
-      if (fLine[Run] = #39) and not(fLine[Run-1] = '\') then begin
+        Inc(Run);
+      until fLine[Run] in [#0, #10, #13, #39];
+      if fLine[Run] = #39 then begin
         Inc(Run);
         fRange := rsUnknown;
       end;
@@ -1578,7 +1577,7 @@ begin
   Inc(Run);
   while not (fLine[Run] in [#0, #10, #13]) do begin
     case fLine[Run] of
-      '\': if fLine[Run + 1] = #34 then
+      '\': if fLine[Run + 1] in [#34, '\'] then
              Inc(Run);
       #34: if fLine[Run + 1] <> #34 then
            begin
