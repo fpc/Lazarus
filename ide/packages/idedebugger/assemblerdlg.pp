@@ -641,7 +641,9 @@ begin
   Result := ALine >= FTopLine;
   if not Result then
     exit;
+  {$PUSH}{$Q-}{$R-} // if FTopLine is close to Low(integer) it can overflow
   ALine := ALine - FTopLine;
+  {$POP}
   Result := (ALine > 0) and (ALine < length(FLineMap));
   if Result then
     AnEntry := FLineMap[ALine];
