@@ -15,7 +15,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
   AutoSize = True
   ClientHeight = 780
   ClientWidth = 592
-  Constraints.MaxWidth = 1200
+  Constraints.MaxWidth = 1400
   Constraints.MinWidth = 500
   TabOrder = 0
   DesignLeft = 430
@@ -2619,7 +2619,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 74
+    Height = 79
     Top = 471
     Width = 592
     Anchors = [akTop, akLeft, akRight]
@@ -2630,7 +2630,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     ChildSizing.ShrinkHorizontal = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 2
-    ClientHeight = 74
+    ClientHeight = 79
     ClientWidth = 592
     TabOrder = 10
     object Spacer17: TLabel
@@ -2749,10 +2749,11 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideRight.Side = asrBottom
       Left = 111
       Height = 48
-      Top = 26
+      Top = 31
       Width = 481
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
+      BorderSpacing.Top = 5
       BevelOuter = bvNone
       ChildSizing.HorizontalSpacing = 3
       ChildSizing.VerticalSpacing = 2
@@ -2801,6 +2802,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Height = 15
         Top = 4
         Width = 103
+        Alignment = taRightJustify
         BorderSpacing.CellAlignVertical = ccaCenter
         Caption = 'lbForceSingleLineStructFld'
       end
@@ -2823,6 +2825,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Height = 15
         Top = 4
         Width = 103
+        Alignment = taRightJustify
         BorderSpacing.CellAlignVertical = ccaCenter
         Caption = 'lbForceSingleLineArrayLen'
       end
@@ -2851,6 +2854,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Height = 15
         Top = 29
         Width = 107
+        Alignment = taRightJustify
         BorderSpacing.CellAlignVertical = ccaCenter
         Caption = 'lbForceSingleLineRevDepth'
       end
@@ -2875,6 +2879,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Height = 15
         Top = 29
         Width = 103
+        Alignment = taRightJustify
         BorderSpacing.CellAlignVertical = ccaCenter
         Caption = 'lbForceSingleLineEach'
       end
@@ -2897,6 +2902,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Height = 15
         Top = 29
         Width = 103
+        Alignment = taRightJustify
         BorderSpacing.CellAlignVertical = ccaCenter
         Caption = 'lbForceSingleLineLen'
       end
@@ -2922,8 +2928,8 @@ object DisplayFormatFrame: TDisplayFormatFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 93
-    Top = 549
+    Height = 98
+    Top = 554
     Width = 592
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -2933,7 +2939,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     ChildSizing.ShrinkHorizontal = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 2
-    ClientHeight = 93
+    ClientHeight = 98
     ClientWidth = 592
     TabOrder = 12
     object Spacer21: TLabel
@@ -3160,10 +3166,11 @@ object DisplayFormatFrame: TDisplayFormatFrame
       AnchorSideRight.Side = asrBottom
       Left = 111
       Height = 48
-      Top = 45
+      Top = 50
       Width = 481
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
+      BorderSpacing.Top = 5
       BevelOuter = bvNone
       ChildSizing.HorizontalSpacing = 3
       ChildSizing.VerticalSpacing = 2
@@ -3224,6 +3231,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Height = 15
         Top = 4
         Width = 99
+        Alignment = taRightJustify
         BorderSpacing.CellAlignVertical = ccaCenter
         Caption = 'lbArrayHideLenIfLess'
       end
@@ -3252,6 +3260,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Height = 15
         Top = 29
         Width = 110
+        Alignment = taRightJustify
         BorderSpacing.CellAlignVertical = ccaCenter
         Caption = 'lbArrayHideLenKeepDepth'
       end
@@ -3274,6 +3283,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Height = 15
         Top = 29
         Width = 104
+        Alignment = taRightJustify
         BorderSpacing.CellAlignVertical = ccaCenter
         Caption = 'lbArrayHideLenThresEach'
       end
@@ -3296,6 +3306,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Height = 15
         Top = 29
         Width = 99
+        Alignment = taRightJustify
         BorderSpacing.CellAlignVertical = ccaCenter
         Caption = 'lbArrayHideLenThresLen'
       end
@@ -3322,7 +3333,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 26
-    Top = 646
+    Top = 656
     Width = 592
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -3478,7 +3489,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 34
-    Top = 676
+    Top = 686
     Width = 592
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
