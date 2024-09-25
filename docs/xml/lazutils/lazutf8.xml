@@ -1320,25 +1320,57 @@ Number of characters (or codepoints) to remove in the procedure.
 
 <element name="UTF8Insert">
 <short>
-Inserts the specified values into a string at the given position.
+Inserts the specified UTF-8 values into a string at the specified character 
+position.
 </short>
 <descr>
 <p>
-Inserts the specified values into a string at the given position. The value 
-in <var>StartCharIndex</var> starts at <b>1</b>, and represents the n-th 
-codepoint in the string where values are inserted.
+<var>UTF8Insert</var> inserts the specified values into a string at the 
+specified character position. UTF8Insert is an overloaded procedure. The 
+variants allow the string arguments to be specified as either String or 
+UTF8String types.
+</p>
+<p>
+<var>source</var> is the UTF-8-encoded values inserted in the routine.
+</p>
+<p>
+<var>s</var> is the string where the values from source are inserted at the 
+specified character position.
+</p>
+<p>
+The value in <var>StartCharIndex</var> starts at <b>1</b>, and represents the 
+n-th codepoint (or character) in the destination string (s) where the values 
+are inserted.
+</p>
+<p>
+UTF8Insert calls UTF8CodepointStart to determine the position in s where the 
+codepoint represented by StartCharIndex is located. No actions are performed in 
+the routine if a valid codepoint is not found at the position specified in 
+StartCharIndex. The RTL Insert routine is called to insert the UTF-8-encoded 
+values from source into s.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="UTF8CodepointStart"/>
+<link id="UTF8Delete"/>
+<link id="UTF8Pos"/>
+</seealso>
 </element>
 <element name="UTF8Insert.source">
-<short>UTF-8 String where values are inserted.</short>
+<short>
+String with the values inserted in the routine.
+</short>
 </element>
 <element name="UTF8Insert.s">
-<short>Values to insert into the original string.</short>
+<short>
+String where the values from source are inserted.
+</short>
 </element>
 <element name="UTF8Insert.StartCharIndex">
-<short>Starting character position (1-based) for the new values.</short>
+<short>
+Starting character position (1-based) where the inserted values from source are 
+stored in s.
+</short>
 </element>
 
 <element name="UTF8StringReplace">
