@@ -863,6 +863,10 @@ msgstr "Таби, потім пробіли"
 msgid "Block indent (tabs)"
 msgstr "Відступ блока (таби)"
 
+#: lazarusidestrconsts.dlgbookmarksetscroll
+msgid "Restore scroll position for bookmarks"
+msgstr ""
+
 #: lazarusidestrconsts.dlgborderspacecanbesetinanchoreditor
 msgid "Border space can be set in Anchor editor. A colored line is shown if spacing > 0."
 msgstr "Проміжок можна задати в редакторі якорів. Якщо проміжок > 0, виводиться кольорова лінія."

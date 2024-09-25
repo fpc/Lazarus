@@ -851,6 +851,10 @@ msgstr ""
 msgid "Block indent (tabs)"
 msgstr ""
 
+#: lazarusidestrconsts.dlgbookmarksetscroll
+msgid "Restore scroll position for bookmarks"
+msgstr ""
+
 #: lazarusidestrconsts.dlgborderspacecanbesetinanchoreditor
 msgid "Border space can be set in Anchor editor. A colored line is shown if spacing > 0."
 msgstr ""

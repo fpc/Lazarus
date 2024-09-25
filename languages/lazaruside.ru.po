@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-09-23 16:32+0300\n"
+"PO-Revision-Date: 2024-09-25 18:07+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -860,6 +860,10 @@ msgstr "ТАБы, затем пробелы"
 #: lazarusidestrconsts.dlgblocktabindent
 msgid "Block indent (tabs)"
 msgstr "Отступ блока в ТАБах"
+
+#: lazarusidestrconsts.dlgbookmarksetscroll
+msgid "Restore scroll position for bookmarks"
+msgstr "Восстанавливать положение прокрутки для закладок"
 
 #: lazarusidestrconsts.dlgborderspacecanbesetinanchoreditor
 msgid "Border space can be set in Anchor editor. A colored line is shown if spacing > 0."

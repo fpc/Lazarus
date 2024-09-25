@@ -862,6 +862,10 @@ msgstr "制表符，然后是空格"
 msgid "Block indent (tabs)"
 msgstr "块缩进（制表符）"
 
+#: lazarusidestrconsts.dlgbookmarksetscroll
+msgid "Restore scroll position for bookmarks"
+msgstr ""
+
 #: lazarusidestrconsts.dlgborderspacecanbesetinanchoreditor
 msgid "Border space can be set in Anchor editor. A colored line is shown if spacing > 0."
 msgstr "边界空间可以在锚点编辑器中设置.如果空间>0,那么一个红线将被显示."

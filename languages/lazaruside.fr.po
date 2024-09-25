@@ -862,6 +862,10 @@ msgstr "Tabulations puis espaces"
 msgid "Block indent (tabs)"
 msgstr "Indentation de bloc (tabulations)"
 
+#: lazarusidestrconsts.dlgbookmarksetscroll
+msgid "Restore scroll position for bookmarks"
+msgstr ""
+
 #: lazarusidestrconsts.dlgborderspacecanbesetinanchoreditor
 #, fuzzy
 #| msgid "Border space can be set in Anchor editor. A red line is shown if spacing > 0."
