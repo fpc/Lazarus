@@ -5495,8 +5495,29 @@ var
         {$POP}
       else
       if (Oper.Value = '%s') and (not(ofMemory in Oper.Flags))
-      then
+      then begin
         AVal := TDBGPtr(OpVal)  // constant
+      end
+      else
+      if (ofMemory in Oper.Flags) then begin
+        FullName := FullRegisterName(Oper.Value);
+        AVal := 0;
+        if (LowerCase(FullName)+'%s' = LowerCase(Oper.Value)) then begin
+          r := ARegisterValueList.FindRegisterByName(FullName);
+          if r = nil then
+            exit(False);
+
+          AVal := r.NumValue;
+          {$PUSH}{$R-}{$Q-}
+          if (AVal >= NewStack) and (AVal < NewStack + 8192) then // only trust data from the stack
+            AVal := AVal + OpVal
+          else
+            AVal := 0;
+          {$POP}
+        end;
+        if AVal = 0 then
+          exit(False);
+      end
       else
         exit(False);
     end
@@ -5691,8 +5712,9 @@ begin
              not(ofMemory in Instr.X86Instruction.Operand[1].Flags)
           then begin
             if not ValueFromOperand(instr.X86Instruction.Operand[2], Tmp) then
-              exit;
-            NewFrame := Tmp;
+              NewFrame := 0
+            else
+              NewFrame := Tmp;
           end
           else begin
             FullName := LowerCase(FullRegisterName(instr.X86Instruction.Operand[1].Value));
@@ -5728,6 +5750,10 @@ begin
               {$PUSH}{$R-}{$Q-}
               NewFrame := NewFrame + Val;
               {$POP}
+            end
+            else
+            if ValueFromOperand(instr.X86Instruction.Operand[2], Tmp, True) then begin
+              NewFrame := Tmp;
             end;
           end
           else
@@ -5750,6 +5776,10 @@ begin
               {$PUSH}{$R-}{$Q-}
               NewStack := NewFrame + Val;
               {$POP}
+            end
+            else
+            if ValueFromOperand(instr.X86Instruction.Operand[2], Tmp, True) then begin
+              NewStack := Tmp;
             end
             else
               exit;
@@ -5794,6 +5824,32 @@ begin
               exit;
             {$PUSH}{$R-}{$Q-}
             NewFrame := NewFrame + int64(Tmp);
+            {$POP}
+          end;
+        end;
+      OPsub:
+        begin
+          if instr.X86Instruction.OperCnt <> 2 then
+            exit;
+          ClearRecValList := False;
+          ClearRegister(instr.X86Instruction.Operand[1].Value);
+
+          if IsRegister(instr.X86Instruction.Operand[1].Value, 'sp') and
+             not(ofMemory in Instr.X86Instruction.Operand[1].Flags)
+          then begin
+            if not ValueFromOperand(instr.X86Instruction.Operand[2], Tmp) then
+              exit;
+            {$PUSH}{$R-}{$Q-}
+            NewStack := NewStack - int64(Tmp);
+            {$POP}
+          end;
+          if IsRegister(instr.X86Instruction.Operand[1].Value, 'bp') and
+             not(ofMemory in Instr.X86Instruction.Operand[1].Flags)
+          then begin
+            if not ValueFromOperand(instr.X86Instruction.Operand[2], Tmp) then
+              exit;
+            {$PUSH}{$R-}{$Q-}
+            NewFrame := NewFrame - int64(Tmp);
             {$POP}
           end;
         end;
