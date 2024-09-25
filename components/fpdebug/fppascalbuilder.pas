@@ -287,8 +287,10 @@ var
     while (i < c) and Result do begin
       m := ADbgSymbol.NestedSymbol[i];
       AddVisibility(m.MemberVisibility, i= 0);
-      if tdfStopAfterPointer in ANewFlags then
-        r := GetTypeName(s, m)
+      if tdfStopAfterPointer in ANewFlags then begin
+        r := GetTypeName(s, m);
+        s := m.Name + ': ' + s;
+      end
       else
         r := GetTypeAsDeclaration(s, m, [tdfIncludeVarName, tdfStopAfterPointer] + ANewFlags, AnIndent + 4);
       if r then
