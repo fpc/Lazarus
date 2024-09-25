@@ -81,7 +81,7 @@ type
     fLoadSaveThread: TCodyUDLoadSaveThread;
     fCritSec: TRTLCriticalSection;
     fLoaded: boolean; // has loaded the file
-    fStartTime: TDateTime;
+    fStartTime: QWord;
     fClosing: boolean;
     fCheckFiles: TStringToStringTree;
     procedure CheckFiles;
@@ -537,6 +537,7 @@ var
   UnitSet: TFPCUnitSetCache;
   CfgCache: TPCTargetConfigCache;
   DefaultFile: String;
+  t: QWord;
 begin
   // check without critical section if currently loading/saving
   if fLoadSaveThread<>nil then
@@ -648,7 +649,10 @@ begin
 
     if (not fLoaded) and (fLoadSaveThread=nil) then begin
       // nothing to do, maybe it's time to load the database
-      if (Abs(Now-fStartTime)*86400>=LoadAfterStartInS) then begin
+      {$PUSH}{$R-}{$Q-}
+      t := GetTickCount64-fStartTime;
+      {$POP}
+      if (t >= LoadAfterStartInS*1000) then begin
         StartLoadSaveThread;
       end
       else begin
@@ -657,7 +661,7 @@ begin
           fTimer.OnTimer:=@OnTimer;
         end;
         if fTimer<>nil then begin
-          fTimer.Interval:=Max(10, LoadAfterStartInS*1000 - Trunc(Now-fStartTime)*86400);
+          fTimer.Interval:=LoadAfterStartInS*1000 - t;
           fTimer.Enabled:=true;
         end;
       end;
@@ -799,7 +803,7 @@ begin
   CodeToolBoss.AddHandlerToolTreeChanging(@ToolTreeChanged);
   LazarusIDE.AddHandlerOnIDEClose(@OnIDEClose);
   CodyOptions.AddHandlerApply(@OnApplyOptions);
-  fStartTime:=Now;
+  fStartTime:=GetTickCount64;
 end;
 
 destructor TCodyUnitDictionary.Destroy;
