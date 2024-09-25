@@ -15,13 +15,17 @@ type
   { TFileBrowserOptionsFrame }
 
   TFileBrowserOptionsFrame = class(TAbstractIDEOptionsEditor)
-    CBShowFilesInline: TCheckBox;
     CBShowDirectoriesBeforeFiles: TCheckBox;
+    CBShowFilesInline: TCheckBox;
     CBSyncCurrentEditor: TCheckBox;
+    CBMatchOnlyFilename: TCheckBox;
+    CBUseAbsoluteFilenames: TCheckBox;
     DEStartDir: TDirectoryEdit;
     DERootDir: TDirectoryEdit;
     GBStartDir: TGroupBox;
     GBStartDir1: TGroupBox;
+    GBSearch: TGroupBox;
+    GBFileTree: TGroupBox;
     RBLastDir: TRadioButton;
     RBRootFileSystemRoot: TRadioButton;
     RBRootUserDir: TRadioButton;
@@ -104,6 +108,8 @@ begin
   CBShowFilesInline.Checked:=C.FilesInTree;
   CBShowDirectoriesBeforeFiles.Checked:=C.DirectoriesBeforeFiles;
   CBSyncCurrentEditor.Checked:=C.SyncCurrentEditor;
+  CBUseAbsoluteFilenames.Checked:=fsoAbsolutePaths in C.SearchOptions;
+  CBMatchOnlyFilename.Checked:=fsoMatchOnlyFileName in C.SearchOptions;
   CheckDirsBeforeFiles;
 end;
 
@@ -112,11 +118,13 @@ var
   C : TFileBrowserController;
   SD : TStartDir;
   RD : TRootDir;
-
+  SO : TFileSearchOptions;
+  lRootDir: String;
 begin
   C:=LazarusIDE.OwningComponent.FindComponent('IDEFileBrowserController') as TFileBrowserController;
   if not Assigned(C) then
     exit;
+  lRootDir:=C.GetResolvedRootDir;
   if RBUseProjectDir.Checked then
     SD:=sdProjectDir
   else if RBLastDir.Checked then
@@ -144,6 +152,15 @@ begin
     C.CustomRootDir:='';
   C.FilesInTree:=CBShowFilesInline.Checked;
   C.SyncCurrentEditor:=CBSyncCurrentEditor.Checked;
+  SO:=[];
+  if CBUseAbsoluteFilenames.Checked then
+    Include(SO,fsoAbsolutePaths);
+  if CBMatchOnlyFilename.Checked then
+    Include(SO,fsoMatchOnlyFileName);
+  C.SearchOptions:=SO;
+  // Re-index
+  if lRootDir<>C.GetResolvedRootDir then
+    C.IndexRootDir;
 end;
 
 class function TFileBrowserOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

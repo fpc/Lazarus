@@ -16,7 +16,7 @@ procedure Register;
 
 implementation
 
-uses filebrowsertypes;
+uses lcltype,frmfilesearcher,filebrowsertypes;
 
 var
   FileBrowserOptionsFrameID: integer = 2000;
@@ -26,6 +26,32 @@ procedure ShowFileBrowser(Sender: TObject);
 begin
   IDEWindowCreators.ShowForm(FileBrowserCreator.FormName,true);
 end;
+
+procedure ShowFileSearcher(Sender: TObject);
+
+var
+  Entries : TFileEntryArray;
+
+var
+  C: TFileBrowserController;
+
+begin
+  Entries:=[];
+  With TFileSearcherForm.Create(Application) do
+    try
+      if ShowModal=mrOK then
+        Entries:=GetSelectedItems;
+    finally
+      Free;
+    end;
+  if Length(Entries)>0 then
+    begin
+    C := LazarusIDE.OwningComponent.FindComponent('IDEFileBrowserController') as TFileBrowserController;
+    if Assigned(C) then
+      C.OpenFiles(Entries);
+    end;
+end;
+
 
 procedure CreateFileBrowser(Sender: TObject; aFormName: string; var AForm: TCustomForm; DoDisableAutoSizing: boolean);
 
@@ -48,6 +74,7 @@ begin
     AForm.EnableAutoSizing;
 end;
 
+
 procedure CreateController;
 
 var
@@ -59,6 +86,8 @@ begin
     begin
     C := TFileBrowserController.Create(LazarusIDE.OwningComponent);
     C.Name:='IDEFileBrowserController';
+    if C.GetResolvedRootDir<>'' then
+      C.IndexRootDir;
     end;
   C.ConfigFrame:=TFileBrowserOptionsFrame;
 end;
@@ -68,7 +97,7 @@ procedure Register;
 var
   CmdCatViewMenu: TIDECommandCategory;
   ViewFileBrowserCommand: TIDECommand;
-
+  ViewFileSearcherCommand: TIDECommand;
 begin
   // search shortcut category
   CmdCatViewMenu:=IDECommandList.FindCategoryByName(CommandCategoryViewName);
@@ -76,10 +105,17 @@ begin
   ViewFileBrowserCommand:=RegisterIDECommand(CmdCatViewMenu,
     'ViewFileBrowser',SFileBrowserIDEMenuCaption,
     CleanIDEShortCut,nil,@ShowFileBrowser);
+  // register shortcut
+  ViewFileSearcherCommand:=RegisterIDECommand(CmdCatViewMenu,
+    'ViewFileSearcher',SFileSearcherIDEMenuCaption,
+    IDEShortCut(Ord('P'), [ssctrl], VK_UNKNOWN,[]),nil,@ShowFileSearcher);
   // register menu item in View menu
   RegisterIDEMenuCommand(itmViewMainWindows,
     ViewFileBrowserCommand.Name,
     SFileBrowserIDEMenuCaption, nil, nil, ViewFileBrowserCommand);
+  RegisterIDEMenuCommand(itmViewMainWindows,
+    ViewFileSearcherCommand.Name,
+    SFileSearcherIDEMenuCaption, nil, nil, ViewFileSearcherCommand);
 
   CreateController;
 
@@ -87,10 +123,8 @@ begin
   FileBrowserCreator:=IDEWindowCreators.Add(
     'FileBrowser',
     @CreateFileBrowser,nil,
-    '200','100','400','400'  // default place at left=200, top=100, right=400, bottom=400
-     // you can also define percentage values of screen or relative positions, see wiki
+    '200','100','400','400'
     );
-
   // add IDE options frame
   FileBrowserOptionsFrameID:=RegisterIDEOptionsEditor(GroupEnvironment,TFileBrowserOptionsFrame,
                                               FileBrowserOptionsFrameID)^.Index;

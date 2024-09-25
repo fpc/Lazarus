@@ -19,7 +19,7 @@
     <Description Value="File browsing window for the Lazarus IDE"/>
     <License Value="Modified LGPL"/>
     <Version Minor="2"/>
-    <Files Count="6">
+    <Files Count="7">
       <Item1>
         <Filename Value="frmfilebrowser.lfm"/>
         <Type Value="LFM"/>
@@ -45,6 +45,10 @@
         <Filename Value="filebrowsertypes.pas"/>
         <UnitName Value="filebrowsertypes"/>
       </Item6>
+      <Item7>
+        <Filename Value="frmfilesearcher.pas"/>
+        <UnitName Value="frmfilesearcher"/>
+      </Item7>
     </Files>
     <CompatibilityMode Value="True"/>
     <RequiredPkgs Count="3">

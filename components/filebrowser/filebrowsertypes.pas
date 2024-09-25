@@ -46,6 +46,7 @@ Type
     Property Name : String Read FName;
     Property Parent : TFileSystemEntry Read FParent;
   end;
+  TFileSystemEntryArray = Array of TFileSystemEntry;
 
   { TSymlinkEntry }
 
@@ -82,6 +83,22 @@ Type
   TFileEntry = Class(TFileSystemEntry)
     Class function EntryType : TEntryType; override;
   end;
+  TFileEntryArray = Array of TFileEntry;
+
+  TTreeDoneEvent = procedure (Sender : TThread; aTree : TDirectoryEntry) of object;
+
+  { TTreeCreatorThread }
+
+  TTreeCreatorThread = Class(TThread)
+  Private
+    FRootDir : String;
+    FOptions : TReadEntryOptions;
+    FOnDone : TTreeDoneEvent;
+    procedure FillNode(N: TDirectoryEntry);
+  Public
+    constructor Create(aRootDir: String; aOptions: TReadEntryOptions; aOnDone: TTreeDoneEvent);
+    procedure execute; override;
+  end;
 
 
 const
@@ -101,9 +118,12 @@ const
   KeyFilesInTree      = 'FilesInTree';
   KeyDirectoriesBeforeFiles     = 'DirectoriesBeforeFiles';
   KeySyncCurrentEditor = 'SyncCurrentEditor';
+  KeySearchMatchOnlyFilename = 'MatchOnlyFileNames';
+  KeySearchAbsoluteFilenames = 'AbsoluteFileNames';
 
 resourcestring
   SFileBrowserIDEMenuCaption = 'File Browser';
+  SFileSearcherIDEMenuCaption = 'File Searcher';
 
 
 implementation
@@ -345,6 +365,55 @@ end;
 class function TFileEntry.EntryType: TEntryType;
 begin
   Result:=etFile;
+end;
+
+{ TTreeCreatorThread }
+
+constructor TTreeCreatorThread.Create(aRootDir: String; aOptions: TReadEntryOptions; aOnDone : TTreeDoneEvent);
+begin
+  FRootDir:=aRootDir;
+  FOptions:=aOptions;
+  FOnDone:=aOnDone;
+  Inherited Create(false);
+end;
+
+procedure TTreeCreatorThread.FillNode(N : TDirectoryEntry);
+
+var
+  i : integer;
+
+begin
+  N.ReadEntries(FOptions);
+  For I:=0 to N.EntryCount-1 do
+    begin
+    if terminated then
+      break;
+    if N.Entries[I].EntryType=etDirectory then
+      FillNode(TDirectoryEntry(N.Entries[I]));
+    end;
+end;
+
+procedure TTreeCreatorThread.execute;
+
+var
+  FNode : TDirectoryEntry;
+
+begin
+  FNode:=TDirectoryEntry.Create(Nil,FRootDir);
+  try
+    FillNode(FNode);
+    if Not Terminated then
+      begin
+      if Assigned(FOnDOne) then
+        begin
+        FOnDone(Self,FNode);
+        // Caller is responsible for freeing now...
+        FNode:=Nil;
+        end;
+      end;
+  finally
+    FNode.Free;
+  end;
 end;
 
 end.
