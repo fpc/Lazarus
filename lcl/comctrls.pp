@@ -3981,6 +3981,8 @@ type
     property Left: Integer read GetLeft;
     property Right: Integer read GetRight;
     property State: THeaderSectionState read FState write SetState;
+    //index which doesn't change when the user reorders the sections
+    property OriginalIndex: Integer read FOriginalIndex;
   published
     property Alignment: TAlignment read FAlignment write SetAlignment;
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex default -1;
@@ -3989,8 +3991,6 @@ type
     property Text: TCaption read FText write SetText;
     property Width: Integer read GetWidth write SetWidth;
     property Visible: Boolean read FVisible write SetVisible;
-    //index which doesn't change when the user reorders the sections
-    property OriginalIndex: Integer read FOriginalIndex;
   end;
   
   THeaderSectionClass = class of THeaderSection;
