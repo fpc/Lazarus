@@ -264,22 +264,22 @@ object DisplayFormatDefaultsConfigFrame: TDisplayFormatDefaultsConfigFrame
     Top = 65
     Width = 504
     Align = alClient
+    BevelOuter = bvNone
     ClientHeight = 410
     ClientWidth = 504
     Constraints.MinWidth = 350
     TabOrder = 2
     inline DisplayFormatFrame1: TDisplayFormatFrame
-      Left = 1
-      Height = 380
-      Top = 29
-      Width = 502
+      Height = 384
+      Top = 26
+      Width = 504
       HorzScrollBar.Increment = 48
-      HorzScrollBar.Page = 485
+      HorzScrollBar.Page = 487
       VertScrollBar.Increment = 36
-      VertScrollBar.Page = 363
+      VertScrollBar.Page = 367
       Align = alClient
-      ClientHeight = 363
-      ClientWidth = 485
+      ClientHeight = 367
+      ClientWidth = 487
       inherited ToolBar1: TToolBar
         Width = 545
         inherited ToolButton2: TToolButton
@@ -1151,23 +1151,24 @@ object DisplayFormatDefaultsConfigFrame: TDisplayFormatDefaultsConfigFrame
       end
     end
     object pnlPresetOpts: TPanel
-      Left = 1
-      Height = 25
-      Top = 1
-      Width = 502
+      Left = 0
+      Height = 23
+      Top = 0
+      Width = 504
       Align = alTop
       AutoSize = True
       BorderSpacing.Bottom = 3
-      ClientHeight = 25
-      ClientWidth = 502
+      BevelOuter = bvNone
+      ClientHeight = 23
+      ClientWidth = 504
       TabOrder = 1
       object lblPreName: TLabel
         AnchorSideLeft.Control = pnlPresetOpts
         AnchorSideTop.Control = edPreName
         AnchorSideTop.Side = asrCenter
-        Left = 1
+        Left = 0
         Height = 15
-        Top = 5
+        Top = 4
         Width = 62
         BorderSpacing.Right = 3
         Caption = 'lblPreName'
@@ -1178,10 +1179,10 @@ object DisplayFormatDefaultsConfigFrame: TDisplayFormatDefaultsConfigFrame
         AnchorSideTop.Control = pnlPresetOpts
         AnchorSideRight.Control = pnlPresetOpts
         AnchorSideRight.Side = asrBottom
-        Left = 66
+        Left = 65
         Height = 23
-        Top = 1
-        Width = 435
+        Top = 0
+        Width = 439
         Anchors = [akTop, akLeft, akRight]
         TabOrder = 0
         OnEditingDone = edPreNameEditingDone
