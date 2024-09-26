@@ -19,7 +19,6 @@ Type
       FCustomStartDir: string;
       FDirectoriesBeforeFiles: Boolean;
       FLastOpenedDir: string;
-      FMatchOnlyFileName: Boolean;
       FRoot: TFileSystemEntry;
       FSearchOptions: TFileSearchOptions;
       FStartDir: TStartDir;
@@ -45,11 +44,13 @@ Type
       procedure SetFilesInTree(AValue: Boolean);
       procedure SetLastOpenedDir(AValue: string);
       procedure SetRootDir(AValue: TRootDir);
+      procedure SetSearchOptions(AValue: TFileSearchOptions);
       procedure SetSplitterPos(AValue: integer);
       procedure SetStartDir(AValue: TStartDir);
       procedure SetSyncCurrentEditor(AValue: Boolean);
       procedure OnFormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
       procedure TreeFillDone(Sender: TThread; aTree: TDirectoryEntry);
+      procedure TreeFillError(Sender: TThread; const aError: String);
     protected
       { Called by file browser window }
       procedure DoOpenFile(Sender: TObject; const AFileName: string); virtual;
@@ -80,15 +81,22 @@ Type
       Property FilesInTree : Boolean Read FFilesInTree Write SetFilesInTree;
       Property DirectoriesBeforeFiles : Boolean Read FDirectoriesBeforeFiles Write SetDirectoriesBeforeFiles;
       Property ConfigFrame : TAbstractIDEOptionsEditorClass Read FConfigFrame Write FConfigFrame;
-      property SearchOptions : TFileSearchOptions Read FSearchOptions Write FSearchOptions;
+      property SearchOptions : TFileSearchOptions Read FSearchOptions Write SetSearchOptions;
     end;
 
 
 implementation
 
-uses StrUtils, LazConfigStorage;
+uses Controls, StrUtils, IDEMsgIntf, IDEExternToolIntf, LazConfigStorage;
 
 { TFileBrowserController }
+
+
+procedure TFileBrowserController.TreeFillError(Sender: TThread; const aError : String);
+
+begin
+  AddIDEMessage(mluError,Format(SErrSearching,[GetResolvedRootDir,aError]),'',0,0,SViewFilebrowser);
+end;
 
 procedure TFileBrowserController.TreeFillDone(Sender: TThread; aTree: TDirectoryEntry);
 
@@ -98,6 +106,7 @@ begin
   FreeAndNil(FRoot);
   FRoot:=aTree;
   CreateFileList(fsoAbsolutePaths in SearchOptions);
+  AddIDEMessage(mluProgress,Format(SFilesFound,[FFileList.Count,GetResolvedRootDir]),'',0,0,SViewFilebrowser);
 end;
 
 procedure TFileBrowserController.AddFileNodes(List : TStrings; aNode : TFileSystemEntry; aDir : String);
@@ -216,6 +225,13 @@ begin
   FNeedSave:=True;
 end;
 
+procedure TFileBrowserController.SetSearchOptions(AValue: TFileSearchOptions);
+begin
+  if FSearchOptions=AValue then Exit;
+  FSearchOptions:=AValue;
+  FNeedSave:=True;
+end;
+
 procedure TFileBrowserController.SetSplitterPos(AValue: integer);
 begin
   if FSplitterPos=AValue then Exit;
@@ -270,18 +286,22 @@ end;
 
 procedure TFileBrowserController.IndexRootDir;
 
+var
+  lDir : String;
 begin
   if FillingTree then
     Exit;
+  lDir:=GetResolvedRootDir;
   // Do not recurse, thread handles it, it needs to react to terminate...
-  FTreeFiller:=TTreeCreatorThread.Create(GetResolvedRootDir,[],@TreeFillDone);
+  FTreeFiller:=TTreeCreatorThread.Create(lDir,[],@TreeFillDone,@TreeFillError);
+  AddIDEMessage(mluVerbose,Format(SSearchingFiles,[lDir]),'',0,0,SViewFilebrowser);
 end;
 
 function TFileBrowserController.FindFiles(aPattern: String; aList: TStrings; aMatchOnlyFileName: boolean; aMask: TMaskList
   ): Integer;
 
 var
-  s,fn,ptrn : String;
+  s,ptrn : String;
   i,ps : integer;
 
 begin
@@ -387,6 +407,7 @@ var
   aPath : String;
 
 begin
+  Result:=mrOK;
   if Assigned(FileBrowserForm) then
     begin
     APath:=ExcludeTrailingPathDelimiter(ExtractFilePath(aProject.ProjectInfoFile));
