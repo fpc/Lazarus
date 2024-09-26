@@ -1,0 +1,188 @@
+object MiniMapConfigFrame: TMiniMapConfigFrame
+  Left = 0
+  Height = 303
+  Top = 0
+  Width = 600
+  ClientHeight = 303
+  ClientWidth = 600
+  TabOrder = 0
+  DesignLeft = 652
+  DesignTop = 343
+  object cbEnabled: TCheckBox
+    AnchorSideTop.Control = Owner
+    Left = 152
+    Height = 23
+    Top = 8
+    Width = 123
+    BorderSpacing.Top = 8
+    Caption = 'Show minimap'
+    TabOrder = 0
+  end
+  object lblMapWidth: TLabel
+    AnchorSideTop.Control = seWidth
+    AnchorSideRight.Control = seWidth
+    AnchorSideBottom.Control = seWidth
+    AnchorSideBottom.Side = asrBottom
+    Left = 16
+    Height = 34
+    Top = 70
+    Width = 128
+    Alignment = taRightJustify
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoSize = False
+    BorderSpacing.Right = 8
+    Caption = 'Map width'
+    FocusControl = seWidth
+    Layout = tlCenter
+  end
+  object seWidth: TSpinEditEx
+    AnchorSideLeft.Control = cbEnabled
+    AnchorSideTop.Control = cbAlignLeft
+    AnchorSideTop.Side = asrBottom
+    Left = 152
+    Height = 34
+    Top = 70
+    Width = 64
+    BorderSpacing.Top = 8
+    MaxLength = 0
+    SpinButtonWidth = 17
+    TabOrder = 1
+    MaxValue = 500
+    MinValue = 100
+    NullValue = 0
+    Value = 100
+  end
+  object seInitialFontSize: TSpinEditEx
+    AnchorSideLeft.Control = cbEnabled
+    AnchorSideTop.Control = seWidth
+    AnchorSideTop.Side = asrBottom
+    Left = 152
+    Height = 34
+    Top = 112
+    Width = 60
+    BorderSpacing.Top = 8
+    MaxLength = 0
+    SpinButtonWidth = 17
+    TabOrder = 2
+    MaxValue = 24
+    MinValue = 1
+    NullValue = 0
+    Value = 1
+  end
+  object lblInitialFontSize: TLabel
+    AnchorSideTop.Control = seInitialFontSize
+    AnchorSideRight.Control = seInitialFontSize
+    AnchorSideBottom.Control = seInitialFontSize
+    AnchorSideBottom.Side = asrBottom
+    Left = 16
+    Height = 34
+    Top = 112
+    Width = 128
+    Alignment = taRightJustify
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoSize = False
+    BorderSpacing.Right = 8
+    Caption = 'Initial font size'
+    FocusControl = seInitialFontSize
+    Layout = tlCenter
+  end
+  object cbViewWindow: TColorBox
+    AnchorSideLeft.Control = cbEnabled
+    AnchorSideTop.Control = seInitialFontSize
+    AnchorSideTop.Side = asrBottom
+    Left = 152
+    Height = 29
+    Top = 154
+    Width = 128
+    Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeNone, cbCustomColor]
+    ColorDialog = CDView
+    BorderSpacing.Top = 8
+    ItemHeight = 0
+    TabOrder = 3
+  end
+  object lblViewWindowColor: TLabel
+    AnchorSideTop.Control = cbViewWindow
+    AnchorSideRight.Control = cbViewWindow
+    AnchorSideBottom.Control = cbViewWindow
+    AnchorSideBottom.Side = asrBottom
+    Left = 16
+    Height = 29
+    Top = 154
+    Width = 125
+    Alignment = taRightJustify
+    Anchors = [akTop, akLeft, akBottom]
+    AutoSize = False
+    BorderSpacing.Right = 8
+    Caption = 'View window color'
+    Layout = tlCenter
+  end
+  object lblViewWindowTextColor: TLabel
+    AnchorSideTop.Control = cbViewText
+    AnchorSideRight.Control = cbViewText
+    AnchorSideBottom.Control = cbViewText
+    AnchorSideBottom.Side = asrBottom
+    Left = 16
+    Height = 29
+    Top = 191
+    Width = 128
+    Alignment = taRightJustify
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoSize = False
+    BorderSpacing.Right = 8
+    Caption = 'View text color'
+    Layout = tlCenter
+  end
+  object cbViewText: TColorBox
+    AnchorSideLeft.Control = cbEnabled
+    AnchorSideTop.Control = cbViewWindow
+    AnchorSideTop.Side = asrBottom
+    Left = 152
+    Height = 29
+    Top = 191
+    Width = 123
+    Style = [cbStandardColors, cbSystemColors, cbIncludeNone, cbCustomColor]
+    ColorDialog = CDView
+    BorderSpacing.Top = 8
+    ItemHeight = 0
+    TabOrder = 4
+  end
+  object cbAlignLeft: TCheckBox
+    AnchorSideLeft.Control = cbEnabled
+    AnchorSideTop.Control = cbEnabled
+    AnchorSideTop.Side = asrBottom
+    Left = 152
+    Height = 23
+    Top = 39
+    Width = 428
+    BorderSpacing.Top = 8
+    Caption = 'Put map left of editor (requires IDE restart for existing tabs)'
+    TabOrder = 5
+  end
+  object CDView: TColorDialog
+    Color = clBlack
+    CustomColors.Strings = (
+      'ColorA=000000'
+      'ColorB=000080'
+      'ColorC=008000'
+      'ColorD=008080'
+      'ColorE=800000'
+      'ColorF=800080'
+      'ColorG=808000'
+      'ColorH=808080'
+      'ColorI=C0C0C0'
+      'ColorJ=0000FF'
+      'ColorK=00FF00'
+      'ColorL=00FFFF'
+      'ColorM=FF0000'
+      'ColorN=FF00FF'
+      'ColorO=FFFF00'
+      'ColorP=FFFFFF'
+      'ColorQ=C0DCC0'
+      'ColorR=F0CAA6'
+      'ColorS=F0FBFF'
+      'ColorT=A4A0A0'
+    )
+    Left = 301
+    Top = 124
+  end
+end
