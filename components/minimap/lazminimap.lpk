@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="5">
+    <Name Value="lazminimap"/>
+    <Type Value="DesignTime"/>
+    <Author Value="Michael Van Canneyt"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+    </CompilerOptions>
+    <Description Value="Mini Map of source code editor.
+"/>
+    <License Value="Standard Lazarus Modified LGPL"/>
+    <Version Major="1"/>
+    <Files>
+      <Item>
+        <Filename Value="reglazminimap.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="RegLazMiniMap"/>
+      </Item>
+      <Item>
+        <Filename Value="pnlminimap.pas"/>
+        <UnitName Value="PnlMiniMap"/>
+      </Item>
+      <Item>
+        <Filename Value="framinimapconfig.pas"/>
+        <UnitName Value="FraMiniMapConfig"/>
+      </Item>
+      <Item>
+        <Filename Value="strminimap.pas"/>
+        <UnitName Value="StrMiniMap"/>
+      </Item>
+      <Item>
+        <Filename Value="ctrlminimap.pas"/>
+        <UnitName Value="CtrlMiniMap"/>
+      </Item>
+    </Files>
+    <RequiredPkgs>
+      <Item>
+        <PackageName Value="LazControlDsgn"/>
+      </Item>
+      <Item>
+        <PackageName Value="LCL"/>
+      </Item>
+      <Item>
+        <PackageName Value="SynEdit"/>
+      </Item>
+      <Item>
+        <PackageName Value="IDEIntf"/>
+      </Item>
+      <Item>
+        <PackageName Value="FCL"/>
+      </Item>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

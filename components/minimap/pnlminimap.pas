@@ -1,0 +1,252 @@
+{
+ *****************************************************************************
+  See the file COPYING.modifiedLGPL.txt, included in this distribution,
+  for details about the license.
+ *****************************************************************************
+
+  Abstract:
+    Mini-Map panel control
+}
+unit PnlMiniMap;
+
+{$mode objfpc}{$H+}
+
+interface
+
+uses
+  Classes, SysUtils, Controls, ExtCtrls, SynEdit, SrcEditorIntf, Graphics,
+  SynEditMarkupSpecialLine, SynEditTypes, SynEditMiscClasses, SynEditMarkupBracket;
+
+Const
+  DefaultViewFontSize        = 3;
+  DefaultViewWindowColor     = TColor($00E3F33F);
+  DefaultViewWindowTextColor = clNone;
+  DefaultMapWidth            = 200;
+
+Type
+
+  { TMiniMapControl }
+
+  TMiniMapControl = Class(TPanel)
+  Private
+    FMiniSynEdit: TSynEdit;
+    FSourceEditor: TSourceEditorInterface;
+    FSourceSynEdit: TCustomSynEdit;
+    FViewWindowColor:TColor;
+    FViewWindowTextColor:TColor;
+    FViewFontSize: Integer;
+    procedure ConfigMiniEdit;
+    procedure SetSourceEditor(AValue: TSourceEditorInterface);
+    procedure SetViewFontSize(AValue: Integer);
+    procedure SetViewWindowColor(AValue: TColor);
+    procedure SetViewWindowTextColor(AValue: TColor);
+    procedure SyncMiniMapProps;
+    procedure UnHook;
+  Protected
+    // Event handlers
+    procedure HandleLineMarkup(Sender: TObject; Line: integer; var Special: boolean; Markup: TSynSelectedColor); virtual;
+    procedure HandleStatusChange(Sender: TObject; Changes: TSynStatusChanges); virtual;
+    Procedure HandleClick(aSender : TObject); virtual;
+    procedure HandleEditorDestroy(Sender: TObject); virtual;
+    Procedure SyncViewWindow;
+    Property MiniSynEdit : TSynEdit Read FMiniSynEdit;
+    Property SourceSynEdit : TCustomSynEdit Read FSourceSynEdit;
+  Public
+    constructor create(aOwner : TComponent); override;
+    destructor destroy; override;
+    Property SourceEditor: TSourceEditorInterface Read FSourceEditor Write SetSourceEditor;
+    Property ViewWindowColor : TColor Read FViewWindowColor Write SetViewWindowColor;
+    Property ViewWindowTextColor:TColor Read FViewWindowTextColor Write SetViewWindowTextColor;
+    Property ViewFontSize : Integer Read FViewFontSize Write SetViewFontSize;
+  end;
+
+implementation
+
+{ TMiniMapControl }
+
+procedure TMiniMapControl.HandleLineMarkup(Sender: TObject; Line: integer;
+  var Special: boolean; Markup: TSynSelectedColor);
+
+var
+  TopLine,BottomLine: Integer;
+
+begin
+  TopLine:=FSourceSynEdit.TopLine;
+  BottomLine:=TopLine+FSourceSynEdit.LinesInWindow;
+  if (Line>=TopLine) and (Line<=BottomLine) then
+    begin
+    Markup.Background:=FViewWindowColor;
+    Markup.Foreground:=FViewWindowTextColor;
+    Special:=True;
+    end;
+end;
+
+procedure TMiniMapControl.HandleStatusChange(Sender: TObject;
+  Changes: TSynStatusChanges);
+begin
+  SyncViewWindow;
+end;
+
+procedure TMiniMapControl.SetSourceEditor(AValue: TSourceEditorInterface);
+begin
+  if FSourceEditor=AValue then Exit;
+  FSourceEditor:=AValue;
+  FSourceSynEdit:=TCustomSynEdit(FSourceEditor.EditorControl);
+  if Assigned(FSourceSynEdit) then
+    begin
+    SyncMiniMapProps;
+    SyncViewWindow;
+    end;
+end;
+
+procedure TMiniMapControl.SetViewFontSize(AValue: Integer);
+begin
+  if ViewFontSize=AValue then Exit;
+  FViewFontSize:=AValue;
+  FMiniSynEdit.Font.Size:=FViewFontSize;
+end;
+
+procedure TMiniMapControl.SetViewWindowColor(AValue: TColor);
+begin
+  if FViewWindowColor=AValue then Exit;
+  FViewWindowColor:=AValue;
+  FMiniSynEdit.Invalidate;
+end;
+
+procedure TMiniMapControl.SetViewWindowTextColor(AValue: TColor);
+begin
+  if FViewWindowTextColor=AValue then Exit;
+  FViewWindowTextColor:=AValue;
+  FMiniSynEdit.Invalidate;
+end;
+
+procedure TMiniMapControl.HandleClick(aSender: TObject);
+begin
+  SourceSynEdit.TopLine:=FMiniSynEdit.CaretY-(FSourceSynEdit.LinesInWindow div 2); //centered.
+  SyncViewWindow;
+end;
+
+procedure TMiniMapControl.SyncViewWindow;
+
+var
+  CurrTop,CurrBottom : Integer;
+
+begin
+  if (FSourceSynEdit=nil) then
+    Exit;
+  CurrTop:=FSourceSynEdit.TopLine;
+  CurrBottom:=CurrTop+FSourceSynEdit.LinesInWindow;
+  if (CurrTop<FMiniSynEdit.TopLine) then
+    FMiniSynEdit.TopLine:=CurrTop
+  else if (CurrBottom>(FMiniSynEdit.TopLine+FMiniSynEdit.LinesInWindow)) then
+    FMiniSynEdit.TopLine:=CurrBottom-FMiniSynEdit.LinesInWindow;
+  FMiniSynEdit.Invalidate;
+end;
+
+
+procedure TMiniMapControl.SyncMiniMapProps;
+begin
+  With FMiniSynEdit do
+    begin
+    Font:=FSourceSynEdit.Font;
+    Font.Size:=FViewFontSize;
+    ShareTextBufferFrom(FSourceSynEdit);
+    Highlighter:=FSourceSynEdit.Highlighter;
+    RightEdge:=FSourceSynEdit.RightEdge;
+    RightEdgeColor:=FSourceSynEdit.RightEdgeColor;
+    Color:=FSourceSynEdit.Color;
+    FSourceSynEdit.RegisterStatusChangedHandler(@HandleStatusChange,[scTopLine, scLinesInWindow]);
+    end;
+end;
+
+procedure TMiniMapControl.ConfigMiniEdit;
+
+var
+  I : integer;
+
+begin
+  With FMiniSynEdit do
+    begin
+    Left:=0;
+    Top:=0;
+    Align:=alClient;
+    ParentColor:=False;
+    ParentFont:=False;
+    Font.Name := 'Courier New';
+    Font.Pitch := fpFixed;
+    Font.Quality := fqNonAntialiased;
+    Gutter.Visible := False;
+    Gutter.Width := 57;
+    RightGutter.Width := 0;
+    VisibleSpecialChars := [vscSpace, vscTabAtLast]  ;
+    SelectedColor.BackPriority := 50;
+    SelectedColor.ForePriority := 50;
+    SelectedColor.FramePriority := 50;
+    SelectedColor.BoldPriority := 50;
+    SelectedColor.ItalicPriority := 50;
+    SelectedColor.UnderlinePriority := 50;
+    SelectedColor.StrikeOutPriority := 50;
+    BracketHighlightStyle := sbhsBoth;
+    BracketMatchColor.Background := clNone;
+    BracketMatchColor.Foreground := clNone;
+    BracketMatchColor.Style := [fsBold];
+    FoldedCodeColor.Background := clNone;
+    FoldedCodeColor.Foreground := clGray;
+    FoldedCodeColor.FrameColor := clGray;
+    MouseLinkColor.Background := clNone;
+    MouseLinkColor.Foreground := clBlue;
+    LineHighlightColor.Background := clNone;
+    LineHighlightColor.Foreground := clNone;
+    end;
+  SourceEditorManagerIntf.GetEditorControlSettings(FMiniSynEdit);
+  FMiniSynEdit.Font.Size:=FViewFontSize;
+  FMiniSynEdit.ReadOnly := True;
+  FMiniSynEdit.Gutter.Visible := False;
+  FMiniSynEdit.OnClick := @HandleClick;
+  FMiniSynEdit.OnSpecialLineMarkup := @HandleLineMarkup;
+  For I:=0 to FMiniSynEdit.Gutter.Parts.Count-1 do
+    FMiniSynEdit.Gutter.Parts[I].Visible:=True;
+//  FMiniSynEdit.Gutter.Parts[4].Visible := False; // code folding disabled.
+end;
+
+procedure TMiniMapControl.HandleEditorDestroy(Sender : TObject);
+
+begin
+  if (Sender=FSourceEditor) then
+    Unhook;
+end;
+
+constructor TMiniMapControl.create(aOwner: TComponent);
+begin
+  Inherited;
+  BevelInner:=bvNone;
+  BevelOuter:=bvNone;
+  FMiniSynEdit:=TSynEdit.Create(Self);
+  FMiniSynEdit.Parent:=Self;
+  FViewFontSize:=DefaultViewFontSize;
+  FViewWindowColor:=DefaultViewWindowColor;
+  FViewWindowTextColor:=DefaultViewWindowTextColor;
+  SourceEditorManagerIntf.RegisterChangeEvent(semEditorDestroy, @HandleEditorDestroy);
+  ConfigMiniEdit;
+end;
+
+
+procedure TMiniMapControl.UnHook;
+
+begin
+  if Not Assigned(FSourceSynEdit) then
+    exit;
+  FMiniSynedit.UnShareTextBuffer;
+  FSourceSynEdit.UnRegisterStatusChangedHandler(@HandleStatusChange);
+  FSourceSynEdit:=nil;
+  FSourceEditor:=nil;
+end;
+
+destructor TMiniMapControl.destroy;
+begin
+  Unhook;
+  inherited destroy;
+end;
+
+end.
+
