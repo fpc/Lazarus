@@ -925,6 +925,7 @@ type
     function IndexOfEditorInShareWith(AnOtherEditor: TSourceEditorInterface): Integer; override;
     procedure MoveEditor(OldPageIndex, NewPageIndex: integer);
     procedure MoveEditor(OldPageIndex, NewWindowIndex, NewPageIndex: integer);
+    procedure AddControlToEditor(aSourceEditor : TSourceEditorInterface; aControl : TControl; aAlign : TAlign); override;
 
     procedure UpdateStatusBar;
     function AddStatusPanel(AnOwner: TClass; ATag: PtrUInt = 0): TSourceEditorStatusPanelInterface; override;
@@ -8503,6 +8504,28 @@ begin
 
   DoActiveEditorChanged;
   Manager.ActiveEditor := Edit;
+end;
+
+procedure TSourceNotebook.AddControlToEditor(
+  aSourceEditor: TSourceEditorInterface; aControl: TControl; aAlign: TAlign);
+
+var
+  I,lPageIndex : Integer;
+  TabSheet : TTabSheet;
+
+begin
+  for i := 0 to EditorCount - 1 do
+    if Editors[i]=aSourceEditor then
+      begin
+      lPageIndex:=Editors[i].PageIndex;
+      TabSheet:=GetNoteBookPage(lPageIndex);
+      if Assigned(TabSheet) then
+        begin
+        aControl.Parent:=TabSheet;
+        // Force alignment
+        aControl.Align:=aAlign;
+        end;
+      end;
 end;
 
 procedure TSourceNotebook.CopyEditor(OldPageIndex, NewWindowIndex,

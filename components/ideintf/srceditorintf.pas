@@ -312,6 +312,7 @@ type
     // Editor Page Caption update
     procedure AddUpdateEditorPageCaptionHandler(AEvent: TNotifyEvent; const AsLast: Boolean = True); virtual; abstract;
     procedure RemoveUpdateEditorPageCaptionHandler(AEvent: TNotifyEvent); virtual; abstract;
+    procedure AddControlToEditor(aSourceEditor : TSourceEditorInterface; aControl : TControl; aAlign : TAlign); virtual; abstract;
     property BaseCaption: String read GetBaseCaption write SetBaseCaption;
 
     function AddStatusPanel(AnOwner: TClass; ATag: PtrUInt = 0): TSourceEditorStatusPanelInterface; virtual; abstract;
