@@ -187,11 +187,13 @@ const
   // No need to localise keywords!
 
   // List of keywords
-  KEYWORDCOUNT = 29;
+  KEYWORDCOUNT = 33;
   KEYWORDSIdents: array [1..KEYWORDCOUNT] of string =
     (
     'and',
     'assert',
+    'async',
+    'await',
     'break',
     'class',
     'continue',
@@ -210,6 +212,7 @@ const
     'in',
     'is',
     'lambda',
+    'nonlocal',
     'not',
     'or',
     'pass',
@@ -218,6 +221,7 @@ const
     'return',
     'try',
     'while',
+    'with',
     'yield'
     );
 
