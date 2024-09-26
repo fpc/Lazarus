@@ -788,7 +788,7 @@ end;
 
 // some hack to get access to fpc internals
 procedure fpc_AddRef(Data, TypeInfo: Pointer); external name 'FPC_ADDREF';
-procedure fpc_DecRef(Data, TypeInfo: Pointer); external name 'FPC_DECREF';
+procedure fpc_Finalize(Data, TypeInfo: Pointer); external name 'FPC_FINALIZE';
 
 procedure TTypedMap.Add(const AId, AData);
 begin
@@ -883,13 +883,13 @@ begin
   if not Result then Exit;
 
   fpc_AddRef(@AData, FtypeInfo);
-  fpc_DecRef(Data, FTypeInfo);
+  fpc_Finalize(Data, FTypeInfo);
   FreeMem(Data);
 end;
 
 procedure TTypedMap.ReleaseData(ADataPtr: Pointer);
 begin
-  fpc_DecRef(ADataPtr, FTypeInfo);
+  fpc_Finalize(ADataPtr, FTypeInfo);
 end;
 
 function TTypedMap.SetData(const AId, AData): Boolean;
