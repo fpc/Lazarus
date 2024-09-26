@@ -14,7 +14,7 @@ unit PnlMiniMap;
 interface
 
 uses
-  Classes, SysUtils, Controls, ExtCtrls, SynEdit, SrcEditorIntf, Graphics,
+  Classes, SysUtils, Controls, ExtCtrls, SynEdit, SrcEditorIntf, Graphics, lclType,
   SynEditMarkupSpecialLine, SynEditTypes, SynEditMiscClasses, SynEditMarkupBracket;
 
 Const
@@ -61,6 +61,8 @@ Type
   end;
 
 implementation
+
+uses SynEditKeyCmds;
 
 { TMiniMapControl }
 
@@ -161,6 +163,16 @@ end;
 
 procedure TMiniMapControl.ConfigMiniEdit;
 
+  Procedure AddKey(aCommand : TSynEditorCommand; aShortCut : TShortCut);
+
+  begin
+    With FMiniSynEdit.Keystrokes.Add do
+      begin
+      Command:=aCommand;
+      ShortCut:=aShortCut;
+      end;
+  end;
+
 var
   I : integer;
 
@@ -172,6 +184,7 @@ begin
     Align:=alClient;
     ParentColor:=False;
     ParentFont:=False;
+
     Font.Name := 'Courier New';
     Font.Pitch := fpFixed;
     Font.Quality := fqNonAntialiased;
@@ -199,11 +212,28 @@ begin
     LineHighlightColor.Foreground := clNone;
     end;
   SourceEditorManagerIntf.GetEditorControlSettings(FMiniSynEdit);
+//  FMiniSynEdit.SelectionMode:=;
+  FMiniSynEdit.Keystrokes.Clear;
+  AddKey(ecUp,KeyToShortCut(VK_UP,[]));
+  AddKey(ecScrollUp,KeyToShortCut(VK_UP,[ssCtrl]));
+  AddKey(ecDown,KeyToShortCut(VK_DOWN,[ssCtrl]));
+  AddKey(ecPageDown,KeyToShortCut(VK_NEXT,[]));
+  AddKey(ecPageBottom,KeyToShortCut(VK_NEXT,[ssCtrl]));
+  AddKey(ecPageUp,KeyToShortCut(VK_PRIOR,[]));
+  AddKey(ecPageTop,KeyToShortCut(VK_PRIOR,[ssCtrl]));
+  AddKey(ecEditorTop,KeyToShortCut(VK_HOME,[]));
+  AddKey(ecEditorBottom,KeyToShortCut(VK_END,[]));
+
   FMiniSynEdit.Font.Size:=FViewFontSize;
   FMiniSynEdit.ReadOnly := True;
   FMiniSynEdit.Gutter.Visible := False;
   FMiniSynEdit.OnClick := @HandleClick;
   FMiniSynEdit.OnSpecialLineMarkup := @HandleLineMarkup;
+  FMiniSynEdit.Options:=[eoNoCaret,eoNoSelection];
+  FMiniSynEdit.Options2:=[];
+  FMiniSynEdit.BookMarkOptions.EnableKeys:=False;
+  FMiniSynEdit.BookMarkOptions.GlyphsVisible:=False;
+  FMiniSynEdit.BookMarkOptions.DrawBookmarksFirst:=False;
   For I:=0 to FMiniSynEdit.Gutter.Parts.Count-1 do
     FMiniSynEdit.Gutter.Parts[I].Visible:=True;
 //  FMiniSynEdit.Gutter.Parts[4].Visible := False; // code folding disabled.
@@ -238,6 +268,7 @@ begin
     exit;
   FMiniSynedit.UnShareTextBuffer;
   FSourceSynEdit.UnRegisterStatusChangedHandler(@HandleStatusChange);
+  SourceEditorManagerIntf.UnRegisterChangeEvent(semEditorDestroy, @HandleEditorDestroy);
   FSourceSynEdit:=nil;
   FSourceEditor:=nil;
 end;

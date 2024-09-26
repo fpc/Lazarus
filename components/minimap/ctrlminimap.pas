@@ -155,6 +155,7 @@ begin
   If aFull then
     aPanel.ViewFontSize:=InitialViewFontSize;
 end;
+
 constructor TMinimapController.Create(aOwner: TComponent);
 begin
   Inherited;
@@ -228,7 +229,6 @@ var
   I : Integer;
 
 begin
-  Writeln('ReconfigurePanels');
   For I:=0 to FList.Count-1 do
     ConfigPanel(TMiniMapControl(Flist[i]),False);
 end;

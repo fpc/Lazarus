@@ -23,7 +23,7 @@ begin
   MiniMapController.ConfigFrame:=TMiniMapConfigFrame;
   MiniMapController.LoadConfig;
   // add IDE options frame
-  MiniMapOptionsFrameID:=RegisterIDEOptionsEditor(GroupEnvironment,TMiniMapConfigFrame,
+  MiniMapOptionsFrameID:=RegisterIDEOptionsEditor(GroupEditor,TMiniMapConfigFrame,
                                               MiniMapOptionsFrameID)^.Index;
 end;
 
