@@ -9,8 +9,11 @@ uses
   LazIDEIntf, MenuIntf, IDECommands, ProjectIntf, IDEOptEditorIntf, IDEWindowIntf, BaseIDEIntf;
 
 Type
-    TFileSearchOption = (fsoMatchOnlyFileName,fsoAbsolutePaths);
+    TFileSearchOption = (fsoMatchOnlyFileName,fsoAbsolutePaths,fsoUseLetters);
     TFileSearchOptions = Set of TFileSearchOption;
+
+    TFilenameMatchOption = (fmoFileNameOnly,fmoLetters);
+    TFilenameMatchOptions = set of TFilenameMatchOption;
 
    { TFileBrowserController }
     TFileBrowserController = class(TComponent)
@@ -68,7 +71,7 @@ Type
       procedure WriteConfig; virtual;
       procedure ReadConfig; virtual;
       procedure IndexRootDir;
-      function FindFiles(aPattern: String; aList: TStrings; aMatchOnlyFileName: boolean; aMask : TMaskList): Integer;
+      function FindFiles(aPattern: String; aOutFileList: TStrings; aMatchOptions : TFilenameMatchOptions; aExtMask : TMaskList): Integer;
       procedure Notification(AComponent: TComponent; Operation: TOperation); override;
       Property Root : TFileSystemEntry Read FRoot;
       property StartDir: TStartDir read FStartDir write SetStartDir;
@@ -176,6 +179,8 @@ begin
         Include(Opts,fsoMatchOnlyFileName);
       if GetValue(KeySearchAbsoluteFilenames,False) then
         Include(Opts,fsoAbsolutePaths);
+      if GetValue(KeySearchLetters,False) then
+        Include(Opts,fsoUseLetters);
       SearchOptions:=Opts;
     finally
       Free;
@@ -272,6 +277,7 @@ begin
       SetDeleteValue(KeySyncCurrentEditor,FSyncCurrentEditor, DefaultSyncCurrentEditor);
       SetDeleteValue(KeySearchMatchOnlyFilename,fsoMatchOnlyFileName in SearchOptions,False);
       SetDeleteValue(KeySearchAbsoluteFilenames,fsoAbsolutePaths in SearchOptions,False);
+      SetDeleteValue(KeySearchLetters,fsoUseLetters in SearchOptions,False);
       FNeedSave := False;
     finally
       Free;
@@ -297,28 +303,57 @@ begin
   AddIDEMessage(mluVerbose,Format(SSearchingFiles,[lDir]),'',0,0,SViewFilebrowser);
 end;
 
-function TFileBrowserController.FindFiles(aPattern: String; aList: TStrings; aMatchOnlyFileName: boolean; aMask: TMaskList
-  ): Integer;
+function TFileBrowserController.FindFiles(aPattern: String; aOutFileList: TStrings;
+  aMatchOptions : TFilenameMatchOptions; aExtMask: TMaskList): Integer;
+  
+  function MatchesPattern(const aName: string; aStartPos: Integer; const aPtrn: string): Boolean;
+  var
+    lPtrnLen,lNameLen,lPtrnPos, lNamePos: Integer;
+  begin
+    lPtrnPos := 1;
+    lPtrnLen := Length(aPtrn);
+    lNameLen := Length(aName);
+    lNamePos := aStartPos;
+
+    while (lPtrnPos <= lPtrnLen) and (lNamePos <= lNameLen) do
+    begin
+      if aName[lNamePos] = aPtrn[lPtrnPos] then
+        Inc(lPtrnPos);
+      Inc(lNamePos);
+    end;
+
+    Result := (lPtrnPos > lPtrnLen);
+  end;
 
 var
-  s,ptrn : String;
-  i,ps : integer;
+  lPtrn, lFilename : String;
+  lStartPos,lFileIdx: Integer;
+  isMatch : Boolean;
 
 begin
   Result:=0;
   if (FFileList=Nil) or (Length(aPattern)<2) then exit;
-  ptrn:=LowerCase(aPattern);
-  For I:=0 to FFileList.Count-1 do
-    begin
-    S:=FFileList[i];
-    if aMatchOnlyFileName then
-      ps:=rpos(PathDelim,S)
+
+  lPtrn := Lowercase(aPattern);
+
+  For lFileIdx:=0 to FFileList.Count-1 do
+  begin
+    lFilename := Lowercase(FFileList[lFileIdx]);
+    if fmoFileNameOnly in aMatchOptions then
+      lStartPos:=rpos(PathDelim,lFileName)+1
     else
-      ps:=1;
-    if (Pos(ptrn,LowerCase(S),Ps)>0) then
-      if (aMask=Nil) or (aMask.Matches(ExtractFileName(S))) then
-        aList.AddObject(S,FFileList.Objects[i]);
+      lStartPos:=1;
+
+    if (aExtMask=Nil) or (aExtMask.Matches(lFilename)) then
+    begin
+      if fmoLetters in aMatchOptions then
+        isMatch:=MatchesPattern(lFilename, lStartPos, lPtrn)
+      else
+        IsMatch:=(Pos(lPtrn,lFileName,lStartPos)>0);
+      if IsMatch then
+        aOutFileList.AddObject(FFileList[lFileIdx], FFileList.Objects[lFileIdx]);
     end;
+  end;
 end;
 
 procedure TFileBrowserController.ConfigWindow(AForm: TFileBrowserForm);

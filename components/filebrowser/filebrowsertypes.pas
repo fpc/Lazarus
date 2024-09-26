@@ -127,6 +127,7 @@ const
   KeySyncCurrentEditor = 'SyncCurrentEditor';
   KeySearchMatchOnlyFilename = 'MatchOnlyFileNames';
   KeySearchAbsoluteFilenames = 'AbsoluteFileNames';
+  KeySearchLetters = 'SearchLetters';
 
   SViewFilebrowser = 'File browser';
 

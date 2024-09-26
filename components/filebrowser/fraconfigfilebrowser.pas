@@ -20,6 +20,7 @@ type
     CBSyncCurrentEditor: TCheckBox;
     CBMatchOnlyFilename: TCheckBox;
     CBUseAbsoluteFilenames: TCheckBox;
+    CBUseLetters: TCheckBox;
     DEStartDir: TDirectoryEdit;
     DERootDir: TDirectoryEdit;
     GBStartDir: TGroupBox;
@@ -110,6 +111,7 @@ begin
   CBSyncCurrentEditor.Checked:=C.SyncCurrentEditor;
   CBUseAbsoluteFilenames.Checked:=fsoAbsolutePaths in C.SearchOptions;
   CBMatchOnlyFilename.Checked:=fsoMatchOnlyFileName in C.SearchOptions;
+  CBUseLetters.Checked:=fsoUseLetters in C.SearchOptions;
   CheckDirsBeforeFiles;
 end;
 
@@ -157,10 +159,13 @@ begin
     Include(SO,fsoAbsolutePaths);
   if CBMatchOnlyFilename.Checked then
     Include(SO,fsoMatchOnlyFileName);
+  if CBUseLetters.Checked then
+    Include(SO,fsoUseLetters);
   C.SearchOptions:=SO;
   // Re-index
   if lRootDir<>C.GetResolvedRootDir then
     C.IndexRootDir;
+  C.WriteConfig;
 end;
 
 class function TFileBrowserOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

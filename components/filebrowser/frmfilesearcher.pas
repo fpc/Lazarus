@@ -51,13 +51,22 @@ end;
 
 procedure TFileSearcherForm.DoFilter;
 
+var
+  lMatchOptions : TFilenameMatchOptions;
+
 begin
   if Not Assigned(FController) or (Length(edtSearch.Text)<2) then
     exit;
+  lMatchOptions:=[];
+  if (fsoMatchOnlyFileName in FController.SearchOptions) then
+    Include(lMatchOptions,fmoFileNameOnly);
+  if (fsoUseLetters in FController.SearchOptions) then
+    Include(lMatchOptions,fmoLetters);
+
   LBFiles.Items.BeginUpdate;
   try
     LBFiles.Items.Clear;
-    FController.FindFiles(edtSearch.Text,LBFiles.Items,(fsoMatchOnlyFileName in FController.SearchOptions),FMask);
+    FController.FindFiles(edtSearch.Text,LBFiles.Items,lMatchOptions,FMask);
   finally
     LBFiles.Items.EndUpdate;
   end;
