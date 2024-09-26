@@ -426,7 +426,6 @@ end;
 
 procedure TFileBrowserForm.SetRootDir(const Value: string);
 var
-  Dir : String;
   DoShowFiles : Boolean;
 
 begin
