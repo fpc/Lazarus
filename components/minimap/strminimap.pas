@@ -8,6 +8,7 @@ const
   SConfigFile = 'minimap.xml';
 
   KeyEnabled = 'Enabled';
+  KeyAlignLeft = 'AlignLeft';
   KeyWidth = 'Width';
   KeyViewWindowColor = 'ViewWindowColor';
   KeyViewWindowTextColor = 'ViewWindowTextColor';

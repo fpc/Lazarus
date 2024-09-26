@@ -18,6 +18,7 @@ uses
 
 const
   DefaultEnabled = True;
+  DefaultAlignLeft = False;
 
 type
 
@@ -25,6 +26,7 @@ type
 
   TMinimapController = Class(TComponent)
   private
+    FAlignLeft: Boolean;
     FConfigFrame: TAbstractIDEOptionsEditorClass;
     FList: TFPList;
     FEnabled: Boolean;
@@ -33,6 +35,7 @@ type
     FMapWidth: Integer;
     FViewWindowColor: TColor;
     FViewWindowTextColor: TColor;
+    procedure SetAlignLeft(AValue: Boolean);
     procedure SetEnabled(AValue: Boolean);
     procedure SetInitialViewFontSize(AValue: Integer);
     procedure SetMapWidth(AValue: Integer);
@@ -52,6 +55,7 @@ type
 
     Property Enabled : Boolean Read FEnabled Write SetEnabled;
     Property MapWidth : Integer Read FMapWidth Write SetMapWidth;
+    Property AlignLeft : Boolean Read FAlignLeft Write SetAlignLeft;
     Property InitialViewFontSize : Integer Read FInitialViewFontSize Write SetInitialViewFontSize;
     Property ViewWindowColor : TColor Read FViewWindowColor Write SetViewWindowColor;
     Property ViewWindowTextColor : TColor Read FViewWindowTextColor Write SetViewWindowTextColor;
@@ -77,6 +81,13 @@ begin
       SourceEditorManagerIntf.RegisterChangeEvent(semEditorCreate,@NewEditorCreated)
     else
       SourceEditorManagerIntf.UnRegisterChangeEvent(semEditorCreate,@NewEditorCreated);
+end;
+
+procedure TMinimapController.SetAlignLeft(AValue: Boolean);
+begin
+  if FAlignLeft=AValue then Exit;
+  FAlignLeft:=AValue;
+  FNeedSave:=True;
 end;
 
 procedure TMinimapController.SetInitialViewFontSize(AValue: Integer);
@@ -110,6 +121,9 @@ end;
 procedure TMinimapController.NewEditorCreated(Sender: TObject);
 
 var
+  Aligns : Array[Boolean] of TAlign = (alRight,alLeft);
+
+var
   Editor : TSourceEditorInterface absolute Sender;
   EditorWindow : TSourceEditorWindowInterface;
   Panel : TMiniMapControl;
@@ -121,7 +135,7 @@ begin
   Panel.FreeNotification(Self);
   Panel.SourceEditor:=Editor;
   ConfigPanel(Panel,True);
-  EditorWindow.AddControlToEditor(Editor,Panel,alRight);
+  EditorWindow.AddControlToEditor(Editor,Panel,Aligns[AlignLeft]);
 end;
 
 procedure TMinimapController.Notification(AComponent: TComponent;
@@ -149,6 +163,7 @@ begin
   FInitialViewFontSize:=DefaultViewFontSize;
   FViewWindowColor:=DefaultViewWindowColor;
   FViewWindowTextColor:=DefaultViewWindowTextColor;
+  FAlignLeft:=DefaultAlignLeft;
   Enabled:=True;
 end;
 
@@ -170,6 +185,7 @@ begin
   with Storage do
     try
       Enabled:=GetValue(KeyEnabled,DefaultEnabled);
+      AlignLeft:=GetValue(KeyAlignLeft,DefaultAlignLeft);
       MapWidth:=GetValue(KeyWidth,DefaultMapWidth);
       ViewWindowColor:=GetValue(KeyViewWindowColor,DefaultViewWindowColor);
       ViewWindowTextColor:=GetValue(KeyViewWindowTextColor,DefaultViewWindowTextColor);
@@ -188,6 +204,7 @@ begin
   with Storage do
     try
       SetDeleteValue(KeyEnabled,Enabled,DefaultEnabled);
+      SetDeleteValue(KeyAlignLeft,AlignLeft,DefaultAlignLeft);
       SetDeleteValue(KeyWidth,MapWidth,DefaultMapWidth);
       SetDeleteValue(KeyViewWindowColor,ViewWindowColor,DefaultViewWindowColor);
       SetDeleteValue(KeyViewWindowTextColor,ViewWindowTextColor,DefaultViewWindowTextColor);

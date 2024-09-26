@@ -26,6 +26,7 @@ type
     cbViewWindow: TColorBox;
     cbViewText: TColorBox;
     CDView: TColorDialog;
+    cbAlignLeft: TCheckBox;
     lblViewWindowColor: TLabel;
     lblViewWindowTextColor: TLabel;
     lblMapWidth: TLabel;
@@ -67,6 +68,7 @@ var
 begin
   C:=MiniMapController;
   cbEnabled.Checked:=C.Enabled;
+  cbAlignLeft.Checked:=C.AlignLeft;
   seWidth.Value:=C.MapWidth;
   seInitialFontSize.Value:=C.InitialViewFontSize;
   cbViewWindow.Selected:=C.ViewWindowColor;
@@ -80,6 +82,7 @@ var
 begin
   C:=MiniMapController;
   C.Enabled:=cbEnabled.Checked;
+  C.AlignLeft:=cbAlignLeft.Checked;
   C.MapWidth:=seWidth.Value;
   C.InitialViewFontSize:=seInitialFontSize.Value;
   C.ViewWindowColor:=cbViewWindow.Selected;
