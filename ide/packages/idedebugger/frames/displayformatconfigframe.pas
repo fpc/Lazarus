@@ -1723,6 +1723,7 @@ begin
 
       px := 0;
       py := 0;
+      if c is TWinControl then TWinControl(c).Handle;
       c.InvalidatePreferredSize;
       c.GetPreferredSize(px, py);
       if (px > c.Constraints.MinWidth) and
