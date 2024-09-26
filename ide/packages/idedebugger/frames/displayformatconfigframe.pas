@@ -1328,8 +1328,6 @@ begin
     lbOverrideAddressFormat.Caption := {DispFormatDlgBtnAdrFormat+ ': ' +} DispFormatDlgBtnStruct + ', ' + DispFormatDlgBtnPointer
   else
     lbOverrideAddressFormat.Caption := DispFormatDlgBtnAdrFormat;
-
-  UpdateConstraints;
 end;
 
 procedure TDisplayFormatFrame.UpdateNumDigitPanel;
@@ -1715,13 +1713,17 @@ begin
       if (not (Components[i] is TControl)) then
         Continue;
       c := TControl(Components[i]);
-      if (Trim(c.Caption) = '') or
+      if (not ((c is TCheckBox) or (c is TRadioButton) or (c is TLabel) or (c is TCustomEdit))) or
+         (Trim(c.Caption) = '') or
          (not c.IsVisible) or
          (c.Constraints.MinWidth > 0) or
          ((c is TLabel) and (TLabel(c).WordWrap))
       then
         Continue;
 
+      px := 0;
+      py := 0;
+      c.InvalidatePreferredSize;
       c.GetPreferredSize(px, py);
       if (px > c.Constraints.MinWidth) and
          ((c.Constraints.MaxWidth = 0) or (px < c.Constraints.MaxWidth))
@@ -2221,6 +2223,7 @@ begin
 
     cbMemDump.State := BoolsetToCBState(FormatIsMemDump, False);
 
+    UpdateConstraints;
   finally
     EnableAutoSizing;
 

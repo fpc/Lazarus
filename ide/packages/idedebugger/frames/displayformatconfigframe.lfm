@@ -597,6 +597,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
         Top = 21
         Width = 89
         Caption = 'lbNumSepGroup'
+        Constraints.MinWidth = 1
       end
       object PanelNumSepGroup: TPanel
         AnchorSideLeft.Control = lbNumSepGroup
@@ -629,6 +630,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
           Width = 54
           Caption = 'rbNumSepNone'
           Checked = True
+          Constraints.MinWidth = 1
           TabOrder = 0
           TabStop = True
           OnChange = FormatNumGroupChanged
@@ -639,6 +641,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
           Top = 0
           Width = 50
           Caption = 'rbNumSepByte'
+          Constraints.MinWidth = 1
           TabOrder = 1
           OnChange = FormatNumGroupChanged
         end
@@ -648,6 +651,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
           Top = 0
           Width = 54
           Caption = 'rbNumSepWord'
+          Constraints.MinWidth = 1
           TabOrder = 2
           OnChange = FormatNumGroupChanged
         end
@@ -657,6 +661,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
           Top = 0
           Width = 53
           Caption = 'rbNumSepLong'
+          Constraints.MinWidth = 1
           TabOrder = 3
           OnChange = FormatNumGroupChanged
         end
@@ -1138,6 +1143,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
           Top = 21
           Width = 62
           Caption = 'lbSepGroup'
+          Constraints.MinWidth = 1
         end
         object PanelNum2SepGroup: TPanel
           AnchorSideLeft.Control = lbNum2SepGroup
@@ -1169,6 +1175,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
             Width = 62
             Caption = 'rbNumSepNone'
             Checked = True
+            Constraints.MinWidth = 1
             TabOrder = 0
             TabStop = True
             OnChange = FormatNumGroupChanged
@@ -1179,6 +1186,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
             Top = 0
             Width = 58
             Caption = 'rbNumSepByte'
+            Constraints.MinWidth = 1
             TabOrder = 1
             OnChange = FormatNumGroupChanged
           end
@@ -1188,6 +1196,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
             Top = 0
             Width = 62
             Caption = 'rbNumSepWord'
+            Constraints.MinWidth = 1
             TabOrder = 2
             OnChange = FormatNumGroupChanged
           end
@@ -1197,6 +1206,7 @@ object DisplayFormatFrame: TDisplayFormatFrame
             Top = 0
             Width = 60
             Caption = 'rbNumSepLong'
+            Constraints.MinWidth = 1
             TabOrder = 3
             OnChange = FormatNumGroupChanged
           end
