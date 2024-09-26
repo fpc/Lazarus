@@ -3984,13 +3984,13 @@ type
     //index which doesn't change when the user reorders the sections
     property OriginalIndex: Integer read FOriginalIndex;
   published
-    property Alignment: TAlignment read FAlignment write SetAlignment;
+    property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex default -1;
     property MaxWidth: Integer read FMaxWidth write SetMaxWidth default 10000;
     property MinWidth: Integer read FMinWidth write SetMinWidth default 0;
     property Text: TCaption read FText write SetText;
     property Width: Integer read GetWidth write SetWidth;
-    property Visible: Boolean read FVisible write SetVisible;
+    property Visible: Boolean read FVisible write SetVisible default true;
   end;
   
   THeaderSectionClass = class of THeaderSection;
