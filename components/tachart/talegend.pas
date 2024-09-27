@@ -172,7 +172,7 @@ type
     FRowCount: Integer;
   end;
 
-  TLegendColumnCount = 1..MaxInt;
+  TLegendColumnCount = 0..MaxInt;
   TLegendItemFillOrder = (lfoColRow, lfoRowCol);
 
   TChartLegendGridPen = class(TChartPen)
