@@ -172,9 +172,9 @@ resourcestring
     'info file after build. If not specified, build number will be incremented '+
     'if configured.';
 
-  lisExtraOpts = 'Pass additional options to the compiler. If compilation '+
-    'options are also specified in --build-ide, then the options from --opt '+
-    'will be added after them.';
+  lisExtraOpts = 'Pass additional options to the compiler, can be specified '+
+    'multiple times. If compilation options are also specified in --build-ide, '+
+    'then the options from --opt will be added after them.';
   lisGetExpandText = 'Print the result of substituting macros in the text. '+
     'The absence of macros in the text means the name of the macro. '+
     'By default, active build mode is used.';
