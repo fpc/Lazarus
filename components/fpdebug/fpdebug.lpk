@@ -65,10 +65,6 @@ File(s) with other licenses (see also header in file(s):
         <UnitName Value="FpDbgPETypes"/>
       </Item>
       <Item>
-        <Filename Value="fpdbgsymbols.pas"/>
-        <UnitName Value="FpDbgSymbols"/>
-      </Item>
-      <Item>
         <Filename Value="fpdbgutil.pp"/>
         <UnitName Value="FpDbgUtil"/>
       </Item>
@@ -239,11 +235,11 @@ File(s) with other licenses (see also header in file(s):
       </Item>
       <Item>
         <Filename Value="fpdbgdisasriscv.pas"/>
-        <UnitName Value="fpdbgdisasriscv"/>
+        <UnitName Value="FpDbgDisasRiscv"/>
       </Item>
       <Item>
         <Filename Value="fpdbgriscvclasses.pas"/>
-        <UnitName Value="fpdbgriscvclasses"/>
+        <UnitName Value="FpDbgRiscvClasses"/>
       </Item>
       <Item>
         <Filename Value="fpdbgdisasxtensa.pas"/>

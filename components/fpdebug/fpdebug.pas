@@ -8,15 +8,13 @@ unit fpdebug;
 interface
 
 uses
-  FpDbgClasses, FpDbgDisasX86, FpDbgDwarf, FpDbgDwarfConst, FpDbgLoader, 
-  FpDbgPETypes, FpDbgSymbols, FpDbgUtil, FpImgReaderWinPE, FpImgReaderElf, 
-  FpImgReaderElfTypes, FpImgReaderBase, FpPascalParser, macho, 
-  FpImgReaderMachoFile, FpImgReaderMacho, FpPascalBuilder, FpDbgInfo, 
-  FpdMemoryTools, FpErrorMessages, FPDbgController, FpDbgDwarfVerbosePrinter, 
-  FpDbgDwarfDataClasses, FpDbgDwarfFreePascal, fpDbgSymTableContext, 
-  fpDbgSymTable, FpDbgAvrClasses, FpDbgDisasAvr, FpDbgRsp, FpDbgCommon, 
-  FpImgReaderWinPETypes, FpDbgHardcodedFreepascalInfo, FpDbgCallContextInfo, 
-  FpWatchResultData, FpDbgDwarfCFI, FpDbgCpuX86, FpDbgRspClasses, 
+  FpDbgClasses, FpDbgDisasX86, FpDbgDwarf, FpDbgDwarfConst, FpDbgLoader, FpDbgPETypes, FpDbgUtil, 
+  FpImgReaderWinPE, FpImgReaderElf, FpImgReaderElfTypes, FpImgReaderBase, FpPascalParser, macho, 
+  FpImgReaderMachoFile, FpImgReaderMacho, FpPascalBuilder, FpDbgInfo, FpdMemoryTools, 
+  FpErrorMessages, FPDbgController, FpDbgDwarfVerbosePrinter, FpDbgDwarfDataClasses, 
+  FpDbgDwarfFreePascal, fpDbgSymTableContext, fpDbgSymTable, FpDbgAvrClasses, FpDbgDisasAvr, 
+  FpDbgRsp, FpDbgCommon, FpImgReaderWinPETypes, FpDbgHardcodedFreepascalInfo, 
+  FpDbgCallContextInfo, FpWatchResultData, FpDbgDwarfCFI, FpDbgCpuX86, FpDbgRspClasses, 
   FpDbgDisasRiscv, FpDbgRiscvClasses, FpDbgDisasXtensa, FpDbgXtensaClasses;
 
 implementation
