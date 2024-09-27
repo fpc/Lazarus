@@ -400,6 +400,15 @@ var
   GConsoleTty: string;
   GSlavePTyFd: cint;
 
+type
+  Tprocess_vm_readv = function(pid: pid_t; const local_iov: piovec;
+    liovcnt: NativeUInt; const remote_iov: piovec; riovcnt: NativeUInt;
+    flags: NativeUInt): ssize_t; cdecl;
+
+var
+  process_vm_lib: TLibHandle = 0;
+  process_vm_readv: Tprocess_vm_readv = nil;
+
 Function WIFSTOPPED(Status: Integer): Boolean;
 begin
   WIFSTOPPED:=((Status and $FF)=$7F);
@@ -1357,8 +1366,26 @@ var
   AVal: TDbgPtr;
   buf: pbyte;
   AAdressAlign: TDBGPtr;
+  localiov, remoteiov: iovec;
 begin
   {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgLinuxProcess.ReadData');{$ENDIF}
+
+  // since kernel >= 3.2
+  // https://kernelnewbies.org/Linux_3.2#Cross_memory_attach
+  if Assigned(process_vm_readv) then
+  begin
+    localiov.iov_base := @AData;
+    localiov.iov_len := ASize;
+    remoteiov.iov_base := Pointer(AAdress);
+    remoteiov.iov_len := ASize;
+    Result := process_vm_readv(ProcessID, @localiov, 1, @remoteiov, 1, 0) = ASize;
+    if Result then
+    begin
+      MaskBreakpointsInReadData(AAdress, ASize, AData);
+      Exit;
+    end;
+  end;
+
   result := false;
   fpseterrno(0);
   BytesDone := 0;
@@ -2015,10 +2042,21 @@ initialization
   DBG_WARNINGS := DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS' {$IFDEF DBG_WARNINGS} , True {$ENDIF} );
   FPDBG_LINUX := DebugLogger.FindOrRegisterLogGroup('FPDBG_LINUX' {$IFDEF DebuglnLinuxDebugEvents} , True {$ENDIF} );
 
+  process_vm_lib := LoadLibrary('libc.' + SharedSuffix);
+  if process_vm_lib = 0 then
+    process_vm_lib := LoadLibrary('libc.' + SharedSuffix + '.6');
+  if process_vm_lib <> 0 then
+    process_vm_readv := Tprocess_vm_readv(GetProcAddress(process_vm_lib, 'process_vm_readv'));
+
   RegisterDbgOsClasses(TOSDbgClasses.Create(
     TDbgLinuxProcess,
     TDbgLinuxThread,
     TX86AsmDecoder
   ));
+
+finalization
+
+  if process_vm_lib <> 0 then
+    FreeLibrary(process_vm_lib);
 
 end.
