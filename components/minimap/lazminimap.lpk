@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Package Version="5">
-    <Name Value="lazminimap"/>
+    <Name Value="LazMinimap"/>
     <Type Value="DesignTime"/>
     <Author Value="Michael Van Canneyt"/>
     <CompilerOptions>
