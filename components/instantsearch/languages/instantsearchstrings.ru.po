@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
-"X-Generator: Poedit 2.4.3\n"
+"X-Generator: Poedit 2.3.1\n"
 
 #: instantsearchstrings.lrsabortoperation
 msgid "No, abort operation"
@@ -222,7 +222,7 @@ msgstr "Индексирование проекта \"%s\" прервано. О�
 #: instantsearchstrings.lrsindexingtreefilecount
 #, object-pascal-format
 msgid "Tree \"%s\", indexed file count: %d"
-msgstr ""
+msgstr "Дерево \"%s\", количество проиндексированных файлов: %d"
 
 #: instantsearchstrings.lrsindexlater
 msgid "No, do not index now"
