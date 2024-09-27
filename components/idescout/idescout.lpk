@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Package Version="4">
-    <Name Value="idescout"/>
+    <Name Value="IDEScout"/>
     <Type Value="DesignTime"/>
     <Author Value="Michael Van Canneyt"/>
     <CompilerOptions>
