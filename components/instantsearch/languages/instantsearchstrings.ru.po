@@ -219,6 +219,11 @@ msgstr "Индексирование и поиск"
 msgid "Indexing project \"%s\" was terminated. Processed %d files."
 msgstr "Индексирование проекта \"%s\" прервано. Обработано файлов: %d."
 
+#: instantsearchstrings.lrsindexingtreefilecount
+#, object-pascal-format
+msgid "Tree \"%s\", indexed file count: %d"
+msgstr ""
+
 #: instantsearchstrings.lrsindexlater
 msgid "No, do not index now"
 msgstr "Нет, не индексировать сейчас"

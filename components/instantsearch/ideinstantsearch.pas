@@ -235,6 +235,8 @@ Type
   TInstantSearchIndexTreeThread = class(TInstantSearchIndexThread)
   private
     FTrees : TSourceTreeDefinitionList;
+    FCurrentTree : string;
+    FProcessedCount : Integer;
     procedure DoCheckTerminate(Sender: TObject; const aFileName: String;  var aContinue: Boolean);
     function IndexTree(aTree: TSourceTreeDefinition): Integer;
   Public
@@ -400,6 +402,9 @@ end;
 procedure TInstantSearchIndexTreeThread.DoCheckTerminate(Sender: TObject;
   const aFileName: String; var aContinue: Boolean);
 begin
+  inc(FProcessedCount);
+  if (FProcessedCount mod 100)=0 then
+    DoLog(mlkProgress,lrsIndexingTreeFileCount,[FCurrentTree,FProcessedCount]);
   if Terminated then
     aContinue:=False;
 end;
@@ -410,20 +415,21 @@ procedure TInstantSearchIndexTreeThread.Execute;
 var
   I,aCount : Integer;
   aTree : TSourceTreeDefinition;
-  aName : string;
+
 begin
   For I:=0 to FTrees.Count-1 do
     try
+      FProcessedCount:=0;
       aTree:=FTrees[i];
-      aName:=aTree.Name;
-      DoLog(mlkProgress,lrsStartIndexingTree,[aName,aTree.BaseDir]);
+      FCurrentTree:=aTree.Name;
+      DoLog(mlkProgress,lrsStartIndexingTree,[FCurrentTree,aTree.BaseDir]);
       aCount:=IndexTree(aTree);
-      DoLog(mlkProgress,lrsFinishedIndexingTree,[aName,aCount]);
+      DoLog(mlkProgress,lrsFinishedIndexingTree,[FCurrentTree,aCount]);
       if Terminated then
         Break;
     except
       On E : exception do
-        DoLog(mlkError,'Exception %s while indexing tree %s : %s',[E.ClassName,aName,E.Message]);
+        DoLog(mlkError,'Exception %s while indexing tree %s : %s',[E.ClassName,FCurrentTree,E.Message]);
     end;
 end;
 

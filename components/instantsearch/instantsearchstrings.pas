@@ -109,6 +109,7 @@ Resourcestring
   lrsCannotIndexIndexInProgress = 'Cannot start an index operation while another one is in progress.';
   lrsFinishedIndexingTree = 'Finished indexing tree "%s". Processed %d files.';
   lrsStartIndexingTree = 'Start indexing tree "%s", directory: "%s"';
+  lrsIndexingTreeFileCount = 'Tree "%s", indexed file count: %d';
   lrsFinishedIndexingProject = 'Finished indexing project "%s". Processed %d files.';
   lrsIndexingProjectTerminated = 'Indexing project "%s" was terminated. Processed %d files.';
   lrsStartIndexingProject = 'Start indexing project "%s", directory: "%s"';
