@@ -1550,7 +1550,7 @@ begin
         BinaryStrToText(StaticPackage^.Name),'"');
       continue;
     end;
-    // check RegisterFCLBaseComponents procedure
+    // check Register procedure
     if (StaticPackage^.RegisterProc=nil) then begin
       DebugLn('Warning: (lazarus) [TPkgManager.LoadStaticCustomPackages]',
         ' Package "',StaticPackage^.Name,'" has no register procedure.');
