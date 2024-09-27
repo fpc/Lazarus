@@ -573,8 +573,9 @@ function TManticoreSearchSources.CreateHTTPCmdURL(aCmd : String) : string;
 
 
 Const
-  BaseURL = 'http://%s:%d/cli?%s';
-
+  // BaseURL = 'http://%s:%d/cli?%s';
+  // Use SQL query, to return JSON
+  BaseURL = 'http://%s:%d/sql?mode=raw&query=%s';
 Var
   lCmd,lHostName : String;
 
