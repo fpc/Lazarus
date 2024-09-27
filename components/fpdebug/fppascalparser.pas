@@ -34,7 +34,8 @@ unit FpPascalParser;
 interface
 
 uses
-  Classes, sysutils, math, fgl, DbgIntfBaseTypes, FpDbgInfo, FpdMemoryTools, FpErrorMessages,
+  Classes, sysutils, math, fgl, DbgIntfBaseTypes, LazDebuggerIntfFloatTypes,
+  FpDbgInfo, FpdMemoryTools, FpErrorMessages,
   FpDbgDwarf, FpWatchResultData, FpDbgClasses,
   {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif},
   LazClasses;
@@ -85,8 +86,6 @@ type
   TFpPascalExpressionSharedData = class(TRefCountedObject)
   // Data used while EVALUATING the expression result
   strict private
-    FFpuMask: TFPUExceptionMask;
-
     FTextExpression: String;
     FScope: TFpDbgSymbolScope;
     FError: TFpError;
@@ -4274,8 +4273,7 @@ begin
   inherited Create;
   AddReference;
 
-  FFpuMask := GetExceptionMask;
-  SetExceptionMask([low(TFPUExceptionMask)..high(TFPUExceptionMask)]);
+  DisableFloatExceptions;
 
   FTextExpression := ATextExpression;
   FScope := AScope;
@@ -4285,11 +4283,10 @@ end;
 
 destructor TFpPascalExpressionSharedData.Destroy;
 begin
+  EnableFloatExceptions;
+
   inherited Destroy;
   FScope.ReleaseReference;
-
-  ClearExceptions(False);
-  SetExceptionMask(FFpuMask);
 end;
 
 function TFpPascalExpressionSharedData.GetDbgSymbolForIdentifier(AnIdent: String;

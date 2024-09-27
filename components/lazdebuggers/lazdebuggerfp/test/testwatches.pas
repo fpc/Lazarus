@@ -723,10 +723,10 @@ procedure TTestWatches.TestWatchesValue;
     t.Add(AName, p+'Single'+e,     weSingle(100.125+n,              x+'Single'     ));
     t.Add(AName, p+'Double'+e,     weDouble(1000.125+n,             x+'Double'     ));
     t.Add(AName, p+'Extended'+e,   weFloat(10000.175+n,             ''   )); // Double ?
-    {$IFDEF cpu64}
-    if Compiler.CpuBitType = cpu32 then // a 64bit debugger does has no 10byte extended type // TODO: check for error
-      t.Tests[-1]^.AddFlag(ehExpectError); // TODO: check error msg
-    {$ENDIF}
+//    {$IFDEF cpu64}
+//    if Compiler.CpuBitType = cpu32 then // a 64bit debugger does has no 10byte extended type // TODO: check for error
+//      t.Tests[-1]^.AddFlag(ehExpectError); // TODO: check error msg
+//    {$ENDIF}
     //t.Add(p+'Comp'+e,       weInteger(150.125+n,              'Comp'       ));
 //TODO: currency // integer is wrong, but lets check it
     t.Add(AName,         p+'Currency'+e,   weInteger(1251230+n*10000,  x+'Currency', SIZE_8 ))
@@ -739,10 +739,10 @@ procedure TTestWatches.TestWatchesValue;
       t.Add(AName, p+'Single_2'+e,   weSingle(-100.125+n,             x+'Single'     ));
       t.Add(AName, p+'Double_2'+e,   weDouble(-1000.125+n,            x+'Double'     ));
       t.Add(AName, p+'Extended_2'+e, weFloat(-10000.175+n,            ''   )); // Double ?
-      {$IFDEF cpu64}
-      if Compiler.CpuBitType = cpu32 then // a 64bit debugger does has no 10byte extended type // TODO: check for error
-        t.Tests[-1]^.AddFlag(ehExpectError); // TODO: check error msg
-      {$ENDIF}
+//      {$IFDEF cpu64}
+//      if Compiler.CpuBitType = cpu32 then // a 64bit debugger does has no 10byte extended type // TODO: check for error
+//        t.Tests[-1]^.AddFlag(ehExpectError); // TODO: check error msg
+//      {$ENDIF}
       //t.Add(p+'Comp_2'+e,     weFloat(-150.125+n,             'Comp'       ));
       t.Add(AName+'-TODO', p+'Currency_2'+e, weFloat(-125.123+n,              x+'Currency'   ))^.AddFlag([ehNotImplementedData])
         .SkipIf(ALoc = tlPointerAny);

@@ -6,9 +6,12 @@ unit FpWatchResultData;
 interface
 
 uses
+  // DbgIntf
+  LazDebuggerIntfFloatTypes, DbgIntfBaseTypes, LazDebuggerIntf,
+  //
   FpDbgInfo, FpPascalBuilder, FpdMemoryTools, FpErrorMessages, FpDbgDwarf,
-  FpDbgDwarfDataClasses, DbgIntfBaseTypes, LazClasses, {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, fgl, Math,
-  SysUtils, LazDebuggerIntf;
+  FpDbgDwarfDataClasses, LazClasses, {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, fgl, Math,
+  SysUtils;
 
 type
 
@@ -323,21 +326,13 @@ end;
 
 function TFpWatchResultConvertor.FloatToResData(AnFpValue: TFpValue;
   AnResData: IDbgWatchDataIntf): Boolean;
-var
-  p: TLzDbgFloatPrecission;
-  s: TFpDbgValueSize;
 begin
   Result := True;
-
-  p := dfpSingle;
-  if AnFpValue.GetSize(s) then begin
-    if SizeToFullBytes(s) > SizeOf(Double) then
-      p := dfpExtended
-    else
-    if SizeToFullBytes(s) > SizeOf(Single) then
-      p := dfpDouble
+  case AnFpValue.FloatPrecission of
+    fpSingle:   AnResData.CreateFloatValue(AnFpValue.AsSingle);
+    fpDouble:   AnResData.CreateFloatValue(AnFpValue.AsDouble);
+    fpExtended: AnResData.CreateFloatValue(AnFpValue.AsExtended);
   end;
-  AnResData.CreateFloatValue(AnFpValue.AsFloat, p);
   AddTypeNameToResData(AnFpValue, AnResData);
 end;
 

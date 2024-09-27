@@ -49,6 +49,10 @@ See LCL license for details."/>
         <Filename Value="lazdebuggerutils.pas"/>
         <UnitName Value="LazDebuggerUtils"/>
       </Item>
+      <Item>
+        <Filename Value="lazdebuggerintffloattypes.pas"/>
+        <UnitName Value="LazDebuggerIntfFloatTypes"/>
+      </Item>
     </Files>
     <LazDoc Paths="docs"/>
     <RequiredPkgs>

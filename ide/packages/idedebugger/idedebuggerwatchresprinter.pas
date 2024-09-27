@@ -8,7 +8,8 @@ interface
 uses
   Classes, SysUtils, Math, IdeDebuggerWatchResult, IdeDebuggerUtils, IdeDebuggerDisplayFormats,
   IdeDebuggerBase, IdeDebuggerStringConstants, IdeDebuggerValueFormatter, IdeDebuggerWatchResUtils,
-  LazDebuggerIntf, LazUTF8, IdeDebuggerWatchValueIntf, StrUtils, LazDebuggerUtils;
+  LazDebuggerIntf, LazUTF8, IdeDebuggerWatchValueIntf, StrUtils, LazDebuggerUtils,
+  LazDebuggerIntfFloatTypes;
 
 type
 
@@ -1542,32 +1543,37 @@ function TWatchResultPrinter.PrintWatchValue(AResValue: TWatchResultData;
 var
   Res: TStringBuilderPart;
 begin
-  FNextValueFormatter := nil;
-  if FOnlyValueFormatter <> nil then
-    FDefaultValueFormatter := FOnlyValueFormatter
-  else
-    FDefaultValueFormatter := GlobalValueFormatterSelectorList;
+  DisableFloatExceptions;
+  try
+    FNextValueFormatter := nil;
+    if FOnlyValueFormatter <> nil then
+      FDefaultValueFormatter := FOnlyValueFormatter
+    else
+      FDefaultValueFormatter := GlobalValueFormatterSelectorList;
 
-  if rpfSkipValueFormatter in FormatFlags then
-    FCurrentValueFormatter := nil
-  else
-    FCurrentValueFormatter := FDefaultValueFormatter;
+    if rpfSkipValueFormatter in FormatFlags then
+      FCurrentValueFormatter := nil
+    else
+      FCurrentValueFormatter := FDefaultValueFormatter;
 
-  if rpfMultiLine in FFormatFlags then
-    FLineSeparator := LineEnding
-  else
-    FLineSeparator := ' ';
+    if rpfMultiLine in FFormatFlags then
+      FLineSeparator := LineEnding
+    else
+      FLineSeparator := ' ';
 
-  FWatchedVarName := UpperCase(AWatchedExpr);
-  FParentResValue := nil;
-  FCurrentResValue := nil;
-  FElementCount := 0;
-  FCurrentMultilineLvl := 0;
-  FDeepestMultilineLvl := 0;
-  FDeepestArray := 0;
-  Res := PrintWatchValueEx(AResValue, ADispFormat, -1, FWatchedVarName);
-  Result := Res.GetFullString;
-  Res.FreeAll;
+    FWatchedVarName := UpperCase(AWatchedExpr);
+    FParentResValue := nil;
+    FCurrentResValue := nil;
+    FElementCount := 0;
+    FCurrentMultilineLvl := 0;
+    FDeepestMultilineLvl := 0;
+    FDeepestArray := 0;
+    Res := PrintWatchValueEx(AResValue, ADispFormat, -1, FWatchedVarName);
+    Result := Res.GetFullString;
+    Res.FreeAll;
+  finally
+    EnableFloatExceptions;
+  end;
 end;
 
 function TWatchResultPrinter.PrintWatchValueIntf(AResValue: IWatchResultDataIntf;

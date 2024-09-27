@@ -50,9 +50,9 @@ unit FpDbgDwarf;
 interface
 
 uses
-  Classes, SysUtils, types, math, FpDbgInfo, FpDbgDwarfDataClasses,
-  FpdMemoryTools, FpErrorMessages, FpDbgUtil, FpDbgDwarfConst, FpDbgCommon,
-  DbgIntfBaseTypes, LazUTF8, {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, LazClasses;
+  Classes, SysUtils, types, math, FpDbgInfo, FpDbgDwarfDataClasses, FpdMemoryTools,
+  FpErrorMessages, FpDbgUtil, FpDbgDwarfConst, FpDbgCommon, DbgIntfBaseTypes, LazUTF8,
+  LazLoggerBase, LazClasses, LazDebuggerIntfFloatTypes;
 
 type
   TFpDwarfInfo = FpDbgDwarfDataClasses.TFpDwarfInfo;
@@ -270,7 +270,7 @@ type
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetAsCardinal: QWord; override;
     function GetAsInteger: Int64; override;
-    function GetAsFloat: Extended; override;
+    function GetAsExtended: TDbgExtended; override;
     procedure SetAsInteger(AValue: Int64); override;
     procedure SetAsCardinal(AValue: QWord); override;
   end;
@@ -283,7 +283,7 @@ type
   protected
     function GetAsCardinal: QWord; override;
     function GetAsInteger: Int64; override;
-    function GetAsFloat: Extended; override;
+    function GetAsExtended: TDbgExtended; override;
     procedure SetAsCardinal(AValue: QWord); override;
     function GetFieldFlags: TFpValueFieldFlags; override;
   end;
@@ -293,10 +293,21 @@ type
   TFpValueDwarfFloat = class(TFpValueDwarfNumeric) // TDbgDwarfSymbolValue
   // TODO: typecasts to int should convert
   private
-    FValue: Extended;
+    FFloatPrecission: TFpFloatPrecission;
+    FValue: record
+      case TFpFloatPrecission of
+        fpSingle:   ( FValueExt: TDbgExtended;  );
+        fpDouble:   ( FValueDouble: Double;  );
+        fpExtended: ( FValueSingle: Single;  );
+    end;
   protected
+    procedure ReadFloatValue;
     function GetFieldFlags: TFpValueFieldFlags; override;
-    function GetAsFloat: Extended; override;
+    function GetAsSingle: Single; override;
+    function GetAsDouble: Double; override;
+    function GetAsExtended: TDbgExtended; override;
+    function GetFloatPrecission: TFpFloatPrecission; override;
+    function GetAsFloat: Extended; override; deprecated;
   end;
 
   { TFpValueDwarfBoolean }
@@ -2349,7 +2360,7 @@ begin
   FIntValue := Result;
 end;
 
-function TFpValueDwarfInteger.GetAsFloat: Extended;
+function TFpValueDwarfInteger.GetAsExtended: TDbgExtended;
 begin
   Result := GetAsInteger;
 end;
@@ -2405,7 +2416,7 @@ begin
   Result := Int64(GetAsCardinal);
 end;
 
-function TFpValueDwarfCardinal.GetAsFloat: Extended;
+function TFpValueDwarfCardinal.GetAsExtended: TDbgExtended;
 begin
   Result := GetAsInteger;
 end;
@@ -2436,36 +2447,128 @@ end;
 
 { TFpValueDwarfFloat }
 
+procedure TFpValueDwarfFloat.ReadFloatValue;
+var
+  Size: TFpDbgValueSize;
+  FullSize: Int64;
+begin
+  if doneFloat in FEvaluated then
+    exit;
+  Include(FEvaluated, doneFloat);
+
+  FullSize := 0;
+  if GetSize(Size) and IsByteSize(Size) then
+    FullSize := SizeToFullBytes(Size);
+
+  FFloatPrecission := fpDouble;
+  FValue.FValueDouble := 0;
+  case FullSize of
+    {$IF DBG_HAS_EXTENDED}
+    DBG_EXTENDED_SIZE: begin
+      if not Context.ReadExtended(OrdOrDataAddr, Size, FValue.FValueExt) then
+        SetLastError(Context.LastMemError)
+      else
+        FFloatPrecission := fpExtended;
+    end;
+    {$ENDIF}
+    SizeOf(double): begin
+      if not Context.ReadDouble(OrdOrDataAddr, Size, FValue.FValueDouble) then begin
+        SetLastError(Context.LastMemError);
+        FValue.FValueDouble := 0;
+      end
+      else
+        FFloatPrecission := fpDouble;
+    end;
+    SizeOf(Single): begin
+      if not Context.ReadSingle(OrdOrDataAddr, Size, FValue.FValueSingle) then
+        SetLastError(Context.LastMemError)
+      else
+        FFloatPrecission := fpSingle;
+    end;
+    SizeOf(Real48): begin
+      if not Context.ReadDouble(OrdOrDataAddr, Size, FValue.FValueDouble) then begin
+        SetLastError(Context.LastMemError);
+        FValue.FValueDouble := 0;
+      end
+      else
+        FFloatPrecission := fpDouble;
+    end;
+    else begin
+      SetLastError(CreateError(fpErrorBadFloatSize));
+    end;
+  end;
+end;
+
 function TFpValueDwarfFloat.GetFieldFlags: TFpValueFieldFlags;
 begin
   Result := inherited GetFieldFlags;
   Result := Result + [svfFloat] - [svfOrdinal];
 end;
 
-function TFpValueDwarfFloat.GetAsFloat: Extended;
-var
-  Size: TFpDbgValueSize;
+function TFpValueDwarfFloat.GetAsSingle: Single;
 begin
-  if doneFloat in FEvaluated then begin
-    Result := FValue;
-    exit;
+  DisableFloatExceptions;
+  try
+    ReadFloatValue;
+    case FFloatPrecission of
+      fpSingle:   Result := FValue.FValueSingle;
+      fpDouble:   Result := FValue.FValueDouble;
+      fpExtended: Result := FValue.FValueExt;
+    end;
+  finally
+    EnableFloatExceptions;
   end;
-  Include(FEvaluated, doneUInt);
+end;
 
-  if not GetSize(Size) then
-    Result := 0
-  else
-  if (Size <= 0) or (Size > SizeOf(Result)) then begin
-    Result := 0;
-    SetLastError(CreateError(fpErrorBadFloatSize));
-  end
-  else
-  if not Context.ReadFloat(OrdOrDataAddr, Size, Result) then begin
-    Result := 0; // TODO: error
-    SetLastError(Context.LastMemError);
+function TFpValueDwarfFloat.GetAsDouble: Double;
+begin
+  DisableFloatExceptions;
+  try
+    ReadFloatValue;
+    case FFloatPrecission of
+      fpSingle:   Result := FValue.FValueSingle;
+      fpDouble:   Result := FValue.FValueDouble;
+      fpExtended: Result := FValue.FValueExt;
+    end;
+  finally
+    EnableFloatExceptions;
   end;
+end;
 
-  FValue := Result;
+function TFpValueDwarfFloat.GetAsExtended: TDbgExtended;
+begin
+  DisableFloatExceptions;
+  try
+    ReadFloatValue;
+    case FFloatPrecission of
+      fpSingle:   Result := FValue.FValueSingle;
+      fpDouble:   Result := FValue.FValueDouble;
+      fpExtended: Result := FValue.FValueExt;
+    end;
+  finally
+    EnableFloatExceptions;
+  end;
+end;
+
+function TFpValueDwarfFloat.GetFloatPrecission: TFpFloatPrecission;
+begin
+  ReadFloatValue;
+  Result := FFloatPrecission;
+end;
+
+function TFpValueDwarfFloat.GetAsFloat: Extended;
+begin
+  DisableFloatExceptions;
+  try
+    ReadFloatValue;
+    case FFloatPrecission of
+      fpSingle:   Result := FValue.FValueSingle;
+      fpDouble:   Result := FValue.FValueDouble;
+      fpExtended: Result := FValue.FValueExt;
+    end;
+  finally
+    EnableFloatExceptions;
+  end;
 end;
 
 { TFpValueDwarfBoolean }

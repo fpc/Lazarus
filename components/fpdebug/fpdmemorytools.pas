@@ -28,7 +28,7 @@ interface
 
 uses
   Classes, SysUtils, math, DbgIntfBaseTypes, DbgIntfDebuggerBase, FpErrorMessages, LazClasses,
-  AVL_Tree, LazDebuggerUtils,
+  AVL_Tree, LazDebuggerUtils, LazDebuggerIntfFloatTypes,
   {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif};
 
 const
@@ -220,10 +220,16 @@ type
     //function ReadSet        (const ALocation: TFpDbgMemLocation; ASize: TFpDbgValueSize;
     //                         out AValue: TBytes;
     //                         AnOpts: TFpDbgMemReadOptions): Boolean; inline;
+    function ReadSingle      (const ALocation: TFpDbgMemLocation; ASize: TFpDbgValueSize;
+                             out AValue: Single): Boolean; inline;
+    function ReadDouble      (const ALocation: TFpDbgMemLocation; ASize: TFpDbgValueSize;
+                             out AValue: Double): Boolean; inline;
+    function ReadExtended    (const ALocation: TFpDbgMemLocation; ASize: TFpDbgValueSize;
+                             out AValue: TDbgExtended): Boolean; inline;
     function ReadFloat      (const ALocation: TFpDbgMemLocation; ASize: TFpDbgValueSize;
-                             out AValue: Extended): Boolean; inline;
+                             out AValue: TDbgExtended): Boolean; inline; deprecated;
     //function ReadFloat      (const ALocation: TFpDbgMemLocation; ASize: TFpDbgValueSize;
-    //                         out AValue: Extended;
+    //                         out AValue: TDbgExtended;
     //                         AnOpts: TFpDbgMemReadOptions): Boolean; inline;
 
     function ReadString(const ALocation: TFpDbgMemLocation; ALen: Int64; out AValue: RawByteString; AnIgnoreMaxStringLen: boolean = False): Boolean;
@@ -1297,10 +1303,28 @@ begin
   Result := MemManager.WriteMemory(rdtSet, ALocation, ASize, @AValue[0], Length(AValue), Self);
 end;
 
-function TFpDbgLocationContext.ReadFloat(const ALocation: TFpDbgMemLocation;
-  ASize: TFpDbgValueSize; out AValue: Extended): Boolean;
+function TFpDbgLocationContext.ReadSingle(const ALocation: TFpDbgMemLocation;
+  ASize: TFpDbgValueSize; out AValue: Single): Boolean;
 begin
   Result := MemManager.ReadMemory(rdtfloat, ALocation, ASize, @AValue, (SizeOf(AValue)), Self);
+end;
+
+function TFpDbgLocationContext.ReadDouble(const ALocation: TFpDbgMemLocation;
+  ASize: TFpDbgValueSize; out AValue: Double): Boolean;
+begin
+  Result := MemManager.ReadMemory(rdtfloat, ALocation, ASize, @AValue, (SizeOf(AValue)), Self);
+end;
+
+function TFpDbgLocationContext.ReadExtended(const ALocation: TFpDbgMemLocation;
+  ASize: TFpDbgValueSize; out AValue: TDbgExtended): Boolean;
+begin
+  Result := MemManager.ReadMemory(rdtfloat, ALocation, ASize, @AValue, Min(SizeOf(AValue), DBG_EXTENDED_SIZE), Self);
+end;
+
+function TFpDbgLocationContext.ReadFloat(const ALocation: TFpDbgMemLocation;
+  ASize: TFpDbgValueSize; out AValue: TDbgExtended): Boolean;
+begin
+  Result := MemManager.ReadMemory(rdtfloat, ALocation, ASize, @AValue, Min(SizeOf(AValue), DBG_EXTENDED_SIZE), Self);
 end;
 
 function TFpDbgLocationContext.ReadString(const ALocation: TFpDbgMemLocation; ALen: Int64; out
@@ -1469,10 +1493,14 @@ begin
     rdtAddress, rdtSignedInt, rdtUnsignedInt,
     rdtEnum, rdtSet: ;
     rdtfloat:
-      // TODO: reading float from register / or mlfConstant...;
-      Result := IsByteSize(AConvData.SourceSize) and // only support exact size for FLOAT
-                (AConvData.DestSize = SizeOf(Extended)) and // only can read to extended... TODO (if need more)
-                ( (AConvData.SourceSize.Size = SizeOf(Extended)) or
+      Result := IsByteSize(AConvData.SourceSize) and
+                ( (AConvData.SourceFullSize = AConvData.DestSize) or
+                  ( (AConvData.SourceFullSize = SizeOf(Real48)) and
+                    (AConvData.SourceSize.Size = SizeOf(Double))
+                  )
+                ) and
+                ( (AConvData.SourceSize.Size = DBG_EXTENDED_SIZE) or
+                  (AConvData.SourceSize.Size = SizeOf(Extended)) or
                   (AConvData.SourceSize.Size = SizeOf(Double)) or
                   (AConvData.SourceSize.Size = SizeOf(Single)) or
                   (AConvData.SourceSize.Size = SizeOf(real48))
@@ -1535,18 +1563,62 @@ begin
         end;
       end;
     rdtfloat: begin
-      assert((AConvData.DestSize = SizeOf(Extended)));
-      if (AConvData.SourceFullSize = SizeOf(Extended)) then
-        //
+      // Currently we have matching sizes, except for real48
+
+      if (AConvData.SourceFullSize = DBG_EXTENDED_SIZE) then begin
+        case AConvData.DestSize of
+          {$IF DBG_HAS_EXTENDED}
+          DBG_EXTENDED_SIZE: PDbgExtended(ADest)^ := PDbgExtended(ADest)^;
+          {$ENDIF}
+          SizeOf(double):       PDouble(ADest)^      := PDbgExtended(ADest)^;
+          SizeOf(Single):       PSingle(ADest)^      := PDbgExtended(ADest)^;
+          else assert(False, 'TFpDbgMemConvertorLittleEndian.FinishTargetRead: TargetSize not matching');
+        end;
+      end
       else
-      if (AConvData.SourceFullSize = SizeOf(Double)) then
-        PExtended(ADest)^ := PDouble(ADest)^
+      if (AConvData.SourceFullSize = SizeOf(Extended)) then begin
+        case AConvData.DestSize of
+          {$IF DBG_HAS_EXTENDED}
+          DBG_EXTENDED_SIZE: PDbgExtended(ADest)^ := PExtended(ADest)^;
+          {$ENDIF}
+          SizeOf(double):       PDouble(ADest)^      := PExtended(ADest)^;
+          SizeOf(Single):       PSingle(ADest)^      := PExtended(ADest)^;
+          else assert(False, 'TFpDbgMemConvertorLittleEndian.FinishTargetRead: TargetSize not matching');
+        end;
+      end
       else
-      if (AConvData.SourceFullSize = SizeOf(real48)) then
-        PExtended(ADest)^ := Preal48(ADest)^
+      if (AConvData.SourceFullSize = SizeOf(Double)) then begin
+        case AConvData.DestSize of
+          {$IF DBG_HAS_EXTENDED}
+          DBG_EXTENDED_SIZE: PDbgExtended(ADest)^ := PDouble(ADest)^;
+          {$ENDIF}
+          SizeOf(double):       PDouble(ADest)^      := PDouble(ADest)^;
+          SizeOf(Single):       PSingle(ADest)^      := PDouble(ADest)^;
+          else assert(False, 'TFpDbgMemConvertorLittleEndian.FinishTargetRead: TargetSize not matching');
+        end;
+      end
       else
-      if (AConvData.SourceFullSize = SizeOf(Single)) then
-        PExtended(ADest)^ := PSingle(ADest)^
+      if (AConvData.SourceFullSize = SizeOf(Real48)) then begin
+        case AConvData.DestSize of
+          {$IF DBG_HAS_EXTENDED}
+          DBG_EXTENDED_SIZE: PDbgExtended(ADest)^ := double(Preal48(ADest)^);
+          {$ENDIF}
+          SizeOf(double):       PDouble(ADest)^      := Preal48(ADest)^;
+          //SizeOf(Single):       PSingle(ADest)^      := Preal48(ADest)^;
+          else assert(False, 'TFpDbgMemConvertorLittleEndian.FinishTargetRead: TargetSize not matching');
+        end;
+      end
+      else
+      if (AConvData.SourceFullSize = SizeOf(Single)) then begin
+        case AConvData.DestSize of
+          {$IF DBG_HAS_EXTENDED}
+          DBG_EXTENDED_SIZE: PDbgExtended(ADest)^ := PSingle(ADest)^;
+          {$ENDIF}
+          SizeOf(double):       PDouble(ADest)^      := PSingle(ADest)^;
+          SizeOf(Single):       PSingle(ADest)^      := PSingle(ADest)^;
+          else assert(False, 'TFpDbgMemConvertorLittleEndian.FinishTargetRead: TargetSize not matching');
+        end;
+      end
       else
         Result := False;
     end;

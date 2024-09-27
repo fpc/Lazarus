@@ -8,7 +8,7 @@ interface
 uses
   Classes, SysUtils, Types,
   // LazDebuggerIntf
-  LazDebuggerIntf, LazDebuggerIntfBaseTypes,
+  LazDebuggerIntf, LazDebuggerIntfBaseTypes, LazDebuggerIntfFloatTypes,
   // IdeIntf
   IdeDebuggerWatchValueIntf,
   // LclBase
@@ -33,6 +33,9 @@ type
     function GetAsWideString: WideString; inline;
     function GetAsQWord: QWord; inline;
     function GetAsInt64: Int64; inline;
+    function GetAsSingle: Single; inline;
+    function GetAsDouble: Double; inline;
+    function GetAsExtended: TDbgExtended; inline;
     function GetAsFloat: Extended; inline;
     function GetByteSize: Integer; inline;                         // Int, Enum
     function GetFloatPrecission: TLzDbgFloatPrecission; inline;
@@ -231,20 +234,55 @@ type
 
   { TWatchResultValueFloat }
 
-  TWatchResultValueFloat = object(TWatchResultValue)
+  { TWatchResultValueFloatBase }
+
+  { TGenericWatchResultValueFloat }
+
+  generic TGenericWatchResultValueFloat<TFLOAT> = object(TWatchResultValue)
   protected const
     VKind = rdkFloatVal;
   private
-    FFloatValue: Extended;
+    FFloatValue: TFLOAT;
   protected
     function GetIsDephtlessData: Boolean; inline;
-    property GetAsFloat: Extended read FFloatValue;
+    function GetAsSingle: Single; inline;
+    function GetAsDouble: Double; inline;
+    function GetAsExtended: TDbgExtended; inline;
+    function GetAsFloat: Extended;
     function GetAsString: RawByteString; inline;
+    procedure SetFromString(s: string); inline;
+
+    (* Once Saved/Loaded precission may be lowered *)
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: string;
                                     const AnEntryTemplate: TWatchResultData;
                                     var AnOverrideTemplate: TOverrideTemplateData;
                                     AnAsProto: Boolean);
     procedure SaveDataToXMLConfig(const AConfig: TXMLConfig; const APath: string; AnAsProto: Boolean);
+  end;
+
+  { TWatchResultValueFloat }
+
+  TWatchResultValueFloat = specialize TGenericWatchResultValueFloat<Extended>;
+
+  { TWatchResultValueSingle }
+
+  TWatchResultValueSingle = object(specialize TGenericWatchResultValueFloat<Single>)
+  protected
+    function GetFloatPrecission: TLzDbgFloatPrecission; inline;
+  end;
+
+  { TWatchResultValueDouble }
+
+  TWatchResultValueDouble = object(specialize TGenericWatchResultValueFloat<Double>)
+  protected
+    function GetFloatPrecission: TLzDbgFloatPrecission; inline;
+  end;
+
+  { TWatchResultValueExtended }
+
+  TWatchResultValueExtended = object(specialize TGenericWatchResultValueFloat<TDbgExtended>)
+  protected
+    function GetFloatPrecission: TLzDbgFloatPrecission; inline;
   end;
 
   { TWatchResultTypeFloat }
@@ -765,7 +803,10 @@ type
     function GetAsWideString: WideString; virtual; abstract;
     function GetAsQWord: QWord; virtual; abstract;
     function GetAsInt64: Int64; virtual; abstract;
-    function GetAsFloat: Extended; virtual; abstract;
+    function GetAsSingle: Single; virtual; abstract;
+    function GetAsDouble: Double; virtual; abstract;
+    function GetAsExtended: TDbgExtended; virtual; abstract;
+    function GetAsFloat: Extended; virtual; abstract; deprecated;
 
     function GetByteSize: Integer; virtual; abstract;
     function GetFloatPrecission: TLzDbgFloatPrecission; virtual; abstract;
@@ -830,7 +871,10 @@ type
     property AsWideString: WideString read GetAsWideString;
     property AsQWord: QWord read GetAsQWord;
     property AsInt64: Int64 read GetAsInt64;
-    property AsFloat: Extended read GetAsFloat;
+    property AsSingle:   Single  read GetAsSingle;
+    property AsDouble:   Double read GetAsDouble;
+    property AsExtended: TDbgExtended  read GetAsExtended;
+    property AsFloat: Extended read GetAsFloat; deprecated;
 
     property ByteSize: Integer read GetByteSize;
     property FloatPrecission: TLzDbgFloatPrecission read GetFloatPrecission;
@@ -1018,7 +1062,10 @@ type
     function GetAsWideString: WideString; override;
     function GetAsQWord: QWord; override;
     function GetAsInt64: Int64; override;
-    function GetAsFloat: Extended; override;
+    function GetAsSingle: Single; override;
+    function GetAsDouble: Double; override;
+    function GetAsExtended: TDbgExtended; override;
+    function GetAsFloat: Extended; override; deprecated;
 
     function GetByteSize: Integer; override;
     function GetFloatPrecission: TLzDbgFloatPrecission; override;
@@ -1205,6 +1252,35 @@ type
     function GetClassID: TWatchResultDataClassID; override;
   public
     constructor Create(AFloatValue: Extended; APrecission: TLzDbgFloatPrecission);
+  end;
+
+  { TWatchResultDataFloatSized }
+
+  //generic TWatchResultDataFloatSized<TFLOAT> = class(specialize TGenericWatchResultData<specialize TGenericWatchResultValueFloat<TFLOAT> >)
+  generic TWatchResultDataFloatSized<_DATA> = class(specialize TGenericWatchResultData<_DATA>)
+  private
+    function GetClassID: TWatchResultDataClassID; override;
+  end;
+
+  { TWatchResultDataSingle }
+
+  TWatchResultDataSingle = class(specialize TWatchResultDataFloatSized<TWatchResultValueSingle>)
+  public
+    constructor Create(AFloatValue: Single);
+  end;
+
+  { TWatchResultDataDouble }
+
+  TWatchResultDataDouble = class(specialize TWatchResultDataFloatSized<TWatchResultValueDouble>)
+  public
+    constructor Create(AFloatValue: Double);
+  end;
+
+  { TWatchResultDataExtended }
+
+  TWatchResultDataExtended = class(specialize TWatchResultDataFloatSized<TWatchResultValueExtended>)
+  public
+    constructor Create(AFloatValue: TDbgExtended);
   end;
 
   { TWatchResultDataBoolean }
@@ -1591,6 +1667,12 @@ type
 
 function dbgs(AResKind: TWatchResultDataKind): String; overload;
 
+
+function FloatToStr(Value: TDbgExtended; const FormatSettings: TFormatSettings): String; overload;
+var
+  _TGenericWatchResultValueFloat_FPointSettings: TFormatSettings; // generics force this to be in interface
+
+
 implementation
 
 function dbgs(AResKind: TWatchResultDataKind): String;
@@ -1651,6 +1733,21 @@ begin
 end;
 
 function TWatchResultValue.GetAsInt64: Int64;
+begin
+  Result := 0;
+end;
+
+function TWatchResultValue.GetAsSingle: Single;
+begin
+  Result := 0;
+end;
+
+function TWatchResultValue.GetAsDouble: Double;
+begin
+  Result := 0;
+end;
+
+function TWatchResultValue.GetAsExtended: TDbgExtended;
 begin
   Result := 0;
 end;
@@ -2038,32 +2135,91 @@ begin
     AConfig.DeletePath(APath + 'Deref');
 end;
 
-{ TWatchResultValueFloat }
+{ TGenericWatchResultValueFloat }
 
-function TWatchResultValueFloat.GetIsDephtlessData: Boolean;
+function FloatToStr(Value: TDbgExtended; const FormatSettings: TFormatSettings): String; overload;
+begin
+  {$IF DBG_HAS_EXTENDED}
+  Result := SysUtils.FloatToStr(double(Value), FormatSettings);
+  {$ELSE}
+  Result := SysUtils.FloatToStr(Value, FormatSettings);
+  {$ENDIF}
+end;
+
+function TGenericWatchResultValueFloat.GetIsDephtlessData: Boolean;
 begin
   Result := True;
 end;
 
-function TWatchResultValueFloat.GetAsString: RawByteString;
+function TGenericWatchResultValueFloat.GetAsSingle: Single;
 begin
-  Result := FloatToStr(FFloatValue);
+  Result := FFloatValue;
 end;
 
-procedure TWatchResultValueFloat.LoadDataFromXMLConfig(
-  const AConfig: TXMLConfig; const APath: string;
-  const AnEntryTemplate: TWatchResultData;
+function TGenericWatchResultValueFloat.GetAsDouble: Double;
+begin
+  Result := FFloatValue;
+end;
+
+function TGenericWatchResultValueFloat.GetAsExtended: TDbgExtended;
+begin
+  Result := FFloatValue;
+end;
+
+function TGenericWatchResultValueFloat.GetAsFloat: Extended;
+begin
+  Result := FFloatValue;
+end;
+
+function TGenericWatchResultValueFloat.GetAsString: RawByteString;
+begin
+  DisableFloatExceptions;
+  try
+    Result := FloatToStr(FFloatValue, _TGenericWatchResultValueFloat_FPointSettings);
+  finally
+    EnableFloatExceptions;
+  end;
+end;
+
+procedure TGenericWatchResultValueFloat.SetFromString(s: string);
+begin
+  FFloatValue := StrToFloatDef(s, 0, _TGenericWatchResultValueFloat_FPointSettings);
+end;
+
+procedure TGenericWatchResultValueFloat.LoadDataFromXMLConfig(const AConfig: TXMLConfig;
+  const APath: string; const AnEntryTemplate: TWatchResultData;
   var AnOverrideTemplate: TOverrideTemplateData; AnAsProto: Boolean);
 begin
   inherited LoadDataFromXMLConfig(AConfig, APath, AnEntryTemplate, AnOverrideTemplate, AnAsProto);
-  FFloatValue := AConfig.GetExtendedValue(APath + 'Value', 0);
+  SetFromString(AConfig.GetValue(APath + 'Value', '0'));
 end;
 
-procedure TWatchResultValueFloat.SaveDataToXMLConfig(const AConfig: TXMLConfig;
+procedure TGenericWatchResultValueFloat.SaveDataToXMLConfig(const AConfig: TXMLConfig;
   const APath: string; AnAsProto: Boolean);
 begin
   inherited SaveDataToXMLConfig(AConfig, APath, AnAsProto);
-  AConfig.SetExtendedValue(APath + 'Value', FFloatValue);
+  AConfig.SetValue(APath + 'Value', GetAsString);
+end;
+
+{ TWatchResultValueSingle }
+
+function TWatchResultValueSingle.GetFloatPrecission: TLzDbgFloatPrecission;
+begin
+  Result := dfpSingle; //, dfpDouble, dfpExtended
+end;
+
+{ TWatchResultValueDouble }
+
+function TWatchResultValueDouble.GetFloatPrecission: TLzDbgFloatPrecission;
+begin
+  Result := dfpDouble;
+end;
+
+{ TWatchResultValueExtended }
+
+function TWatchResultValueExtended.GetFloatPrecission: TLzDbgFloatPrecission;
+begin
+  Result := dfpExtended;
 end;
 
 { TWatchResultTypeFloat }
@@ -3432,6 +3588,21 @@ begin
   Result := FData.GetAsInt64;
 end;
 
+function TGenericWatchResultData.GetAsSingle: Single;
+begin
+  Result := FData.GetAsSingle;
+end;
+
+function TGenericWatchResultData.GetAsDouble: Double;
+begin
+  Result := FData.GetAsDouble;
+end;
+
+function TGenericWatchResultData.GetAsExtended: TDbgExtended;
+begin
+  Result := FData.GetAsExtended;
+end;
+
 function TGenericWatchResultData.GetAsFloat: Extended;
 begin
   Result := FData.GetAsFloat;
@@ -3984,6 +4155,34 @@ begin
   inherited Create;
   FData.FFloatValue := AFloatValue;
   FType.FFloatPrecission := APrecission;
+end;
+
+{ TWatchResultDataFloatSized }
+
+function TWatchResultDataFloatSized.GetClassID: TWatchResultDataClassID;
+begin
+  Result := wdFloat;
+end;
+
+{ TWatchResultDataSingle }
+
+constructor TWatchResultDataSingle.Create(AFloatValue: Single);
+begin
+  FData.FFloatValue := AFloatValue;
+end;
+
+{ TWatchResultDataDouble }
+
+constructor TWatchResultDataDouble.Create(AFloatValue: Double);
+begin
+  FData.FFloatValue := AFloatValue;
+end;
+
+{ TWatchResultDataExtended }
+
+constructor TWatchResultDataExtended.Create(AFloatValue: TDbgExtended);
+begin
+  FData.FFloatValue := AFloatValue;
 end;
 
 { TWatchResultDataBoolean }
@@ -5127,6 +5326,11 @@ begin
   inherited Create;
   FData.FText := APrintedVal;
 end;
+
+initialization
+  _TGenericWatchResultValueFloat_FPointSettings := DefaultFormatSettings;
+  _TGenericWatchResultValueFloat_FPointSettings.DecimalSeparator := '.';
+  _TGenericWatchResultValueFloat_FPointSettings.ThousandSeparator := ',';
 
 end.
 

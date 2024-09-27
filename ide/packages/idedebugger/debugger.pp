@@ -46,7 +46,7 @@ uses
   // DebuggerIntf
   DbgIntfBaseTypes, DbgIntfMiscClasses, DbgIntfDebuggerBase,
   IdeDebuggerWatchValueIntf, LazDebuggerIntf, LazDebuggerIntfBaseTypes,
-  LazDebuggerValueConverter, LazDebuggerTemplate, IdeDebuggerBase,
+  LazDebuggerValueConverter, LazDebuggerTemplate, LazDebuggerIntfFloatTypes, IdeDebuggerBase,
   IdeDebuggerWatchResult, IdeDebuggerOpts, IdeDebuggerBackendValueConv,
   IdeDebuggerUtils, IdeDebuggerValueFormatter, IdeDebuggerDisplayFormats, ProjectDebugLink;
 
@@ -723,19 +723,22 @@ type
     procedure DebugPrint(AText: String);
   public
     {%region ***** IDbgWatchDataIntf ***** }
-    procedure CreatePrePrinted(AVal: String);  virtual; // ATypes: TLzDbgWatchDataTypes);
-    procedure CreateString(AVal: String);  virtual;// AnEncoding // "pchar data"
-    procedure CreateWideString(AVal: WideString); virtual;
-    procedure CreateCharValue(ACharValue: QWord; AByteSize: Integer = 0); virtual;
-    procedure CreateNumValue(ANumValue: QWord; ASigned: Boolean; AByteSize: Integer = 0); virtual;
-    procedure CreatePointerValue(AnAddrValue: TDbgPtr); virtual;
-    procedure CreateFloatValue(AFloatValue: Extended; APrecission: TLzDbgFloatPrecission); virtual;
+    procedure CreatePrePrinted(AVal: String);   // ATypes: TLzDbgWatchDataTypes);
+    procedure CreateString(AVal: String);       // AnEncoding // "pchar data"
+    procedure CreateWideString(AVal: WideString);
+    procedure CreateCharValue(ACharValue: QWord; AByteSize: Integer = 0);
+    procedure CreateNumValue(ANumValue: QWord; ASigned: Boolean; AByteSize: Integer = 0);
+    procedure CreatePointerValue(AnAddrValue: TDbgPtr);
+    procedure CreateFloatValue(AFloatValue: Single);
+    procedure CreateFloatValue(AFloatValue: Double);
+    procedure CreateFloatValue(AFloatValue: TDbgExtended);
+    procedure CreateFloatValue(AFloatValue: Extended; APrecission: TLzDbgFloatPrecission); deprecated;
     function  CreateProcedure(AVal: TDBGPtr; AnIsFunction: Boolean; ALoc, ADesc: String): IDbgWatchDataIntf;
     function  CreateProcedureRef(AVal: TDBGPtr; AnIsFunction: Boolean; ALoc, ADesc: String): IDbgWatchDataIntf;
     function  CreateArrayValue(AnArrayType: TLzDbgArrayType;
                                ATotalCount: Integer = 0;
                                ALowIdx: Integer = 0
-                              ): IDbgWatchDataIntf; virtual;
+                              ): IDbgWatchDataIntf;
     procedure CreateBoolValue(AnOrdBoolValue: QWord; AByteSize: Integer = 0);
     procedure CreateEnumValue(ANumValue: QWord; AName: String; AByteSize: Integer = 0; AnIsEnumIdent: Boolean = False);
 //    //procedure CreateEnumValue(ANumValue: QWord; const ANames: TStringDynArray; const AOrdValues: TIntegerDynArray);
@@ -750,7 +753,7 @@ type
     function CreateValueHandlerResult(AValueHandler: ILazDbgValueConverterIntf): IDbgWatchDataIntf;
 
     procedure CreateMemDump(AVal: RawByteString);
-    procedure CreateError(AVal: String); virtual;
+    procedure CreateError(AVal: String);
 
     function  SetPCharShouldBeStringValue: IDbgWatchDataIntf;
     procedure SetTypeName(ATypeName: String);
@@ -3785,11 +3788,44 @@ begin
   AfterDataCreated;
 end;
 
+procedure TCurrentResData.CreateFloatValue(AFloatValue: Single);
+begin
+  BeforeCreateValue;
+  assert((FNewResultData=nil) or (FNewResultData is TWatchResultDataSingle), 'TCurrentResData.CreateFloatValue: (FNewResultData=nil) or (FNewResultData.ValueKind=rdkString)');
+  if FNewResultData = nil then
+    FNewResultData := TWatchResultDataSingle.Create(AFloatValue)
+  else
+    TWatchResultDataSingle(FNewResultData).Create(AFloatValue);
+  AfterDataCreated;
+end;
+
+procedure TCurrentResData.CreateFloatValue(AFloatValue: Double);
+begin
+  BeforeCreateValue;
+  assert((FNewResultData=nil) or (FNewResultData is TWatchResultDataDouble), 'TCurrentResData.CreateFloatValue: (FNewResultData=nil) or (FNewResultData.ValueKind=rdkString)');
+  if FNewResultData = nil then
+    FNewResultData := TWatchResultDataDouble.Create(AFloatValue)
+  else
+    TWatchResultDataDouble(FNewResultData).Create(AFloatValue);
+  AfterDataCreated;
+end;
+
+procedure TCurrentResData.CreateFloatValue(AFloatValue: TDbgExtended);
+begin
+  BeforeCreateValue;
+  assert((FNewResultData=nil) or (FNewResultData is TWatchResultDataExtended), 'TCurrentResData.CreateFloatValue: (FNewResultData=nil) or (FNewResultData.ValueKind=rdkString)');
+  if FNewResultData = nil then
+    FNewResultData := TWatchResultDataExtended.Create(AFloatValue)
+  else
+    TWatchResultDataExtended(FNewResultData).Create(AFloatValue);
+  AfterDataCreated;
+end;
+
 procedure TCurrentResData.CreateFloatValue(AFloatValue: Extended;
   APrecission: TLzDbgFloatPrecission);
 begin
   BeforeCreateValue;
-  assert((FNewResultData=nil) or (FNewResultData.ValueKind=rdkFloatVal), 'TCurrentResData.CreateFloatValue: (FNewResultData=nil) or (FNewResultData.ValueKind=rdkString)');
+  assert((FNewResultData=nil) or (FNewResultData is TWatchResultDataFloat), 'TCurrentResData.CreateFloatValue: (FNewResultData=nil) or (FNewResultData.ValueKind=rdkString)');
   if FNewResultData = nil then
     FNewResultData := TWatchResultDataFloat.Create(AFloatValue, APrecission)
   else

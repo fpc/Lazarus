@@ -44,7 +44,7 @@ uses
   Classes, SysUtils, DbgIntfBaseTypes, FpDbgLoader, FpdMemoryTools, FpErrorMessages,
   {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, LazClasses, FpDbgCommon,
   // Register all image reader classes
-  FpImgReaderWinPE, FpImgReaderElf, FpImgReaderMacho;
+  FpImgReaderWinPE, FpImgReaderElf, FpImgReaderMacho, LazDebuggerIntfFloatTypes;
 
 type
 
@@ -111,6 +111,8 @@ type
   );
   TFpValueFlags = set of TFpValueFlag;
 
+  TFpFloatPrecission = (fpSingle, fpDouble, fpExtended);
+
   TFindExportedSymbolsFlag = (fsfIgnoreEnumVals, fsfMatchUnitName);
   TFindExportedSymbolsFlags = set of TFindExportedSymbolsFlag;
 
@@ -138,7 +140,11 @@ type
     function GetAsInteger: Int64; virtual;
     function GetAsString: AnsiString; virtual;
     function GetAsWideString: WideString; virtual;
-    function GetAsFloat: Extended; virtual;
+    function GetAsSingle:   Single; virtual;
+    function GetAsDouble:   Double; virtual;
+    function GetAsExtended: TDbgExtended; virtual;
+    function GetFloatPrecission: TFpFloatPrecission; virtual;
+    function GetAsFloat: Extended; virtual; deprecated;
 
     procedure SetAsCardinal(AValue: QWord); virtual;
     procedure SetAsInteger(AValue: Int64); virtual;
@@ -198,7 +204,11 @@ type
     property AsBool: Boolean read GetAsBool write SetAsBool;
     property AsString: AnsiString read GetAsString write SetAsString;
     property AsWideString: WideString read GetAsWideString;
-    property AsFloat: Extended read GetAsFloat;
+    property AsSingle:   Single       read GetAsSingle;
+    property AsDouble:   Double       read GetAsDouble;
+    property AsExtended: TDbgExtended read GetAsExtended;
+    property FloatPrecission: TFpFloatPrecission read GetFloatPrecission;
+    property AsFloat: Extended read GetAsFloat; deprecated;
 
     (* * Address/Size
          Address of the variable (as returned by the "@" address of operator
@@ -299,7 +309,7 @@ type
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetAsCardinal: QWord; override;
     function GetAsInteger: Int64; override;
-    function GetAsFloat: Extended; override;
+    function GetAsExtended: TDbgExtended; override;
   public
     constructor Create(AValue: QWord; ASigned: Boolean = True);
   end;
@@ -360,14 +370,14 @@ type
 
   TFpValueConstFloat = class(TFpValueConstWithType)
   private
-    FValue: Extended;
+    FValue: TDbgExtended;
   protected
-    property Value: Extended read FValue write FValue;
+    property Value: TDbgExtended read FValue write FValue;
     function GetKind: TDbgSymbolKind; override;
     function GetFieldFlags: TFpValueFieldFlags; override;
-    function GetAsFloat: Extended; override;
+    function GetAsExtended: TDbgExtended; override;
   public
-    constructor Create(AValue: Extended);
+    constructor Create(AValue: TDbgExtended);
   end;
 
   { TFpValueConstBool}
@@ -1027,6 +1037,26 @@ begin
   Result := '';
 end;
 
+function TFpValue.GetAsSingle: Single;
+begin
+  Result := GetAsExtended;
+end;
+
+function TFpValue.GetAsDouble: Double;
+begin
+  Result := GetAsExtended;
+end;
+
+function TFpValue.GetAsExtended: TDbgExtended;
+begin
+  Result := 0;
+end;
+
+function TFpValue.GetFloatPrecission: TFpFloatPrecission;
+begin
+  Result := fpDouble;
+end;
+
 function TFpValue.GetDbgSymbol: TFpSymbol;
 begin
   Result := nil;
@@ -1106,7 +1136,7 @@ end;
 
 function TFpValue.GetAsFloat: Extended;
 begin
-  Result := 0;
+  Result := GetAsExtended;
 end;
 
 function TFpValue.GetParentTypeInfo: TFpSymbol;
@@ -1428,7 +1458,7 @@ begin
   {$pop}
 end;
 
-function TFpValueConstNumber.GetAsFloat: Extended;
+function TFpValueConstNumber.GetAsExtended: TDbgExtended;
 begin
   Result := GetAsInteger;
 end;
@@ -1453,12 +1483,12 @@ begin
   Result := Result + inherited GetFieldFlags;
 end;
 
-function TFpValueConstFloat.GetAsFloat: Extended;
+function TFpValueConstFloat.GetAsExtended: TDbgExtended;
 begin
   Result := FValue;
 end;
 
-constructor TFpValueConstFloat.Create(AValue: Extended);
+constructor TFpValueConstFloat.Create(AValue: TDbgExtended);
 begin
   inherited Create;
   FValue := AValue;
