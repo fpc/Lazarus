@@ -39978,6 +39978,34 @@ selected) or pressed (selected).
 </short>
 </element>
 
+<element name="THeaderSection.OriginalIndex">
+<short>
+Index position which does not change when the user reorders the sections on a 
+header control.
+</short>
+<descr>
+<p>
+<var>OriginalIndex</var> is an <var>Integer</var> property which contains the 
+index order for the section when it was added to its Owner collection. The 
+property value is assigned when the class instance is created in the AddItem 
+method in THeaderSections. It normally contains the value in Index unless the 
+value is already in use in the collection.
+</p>
+<p>
+OriginalIndex may be updated when Delete in the THeaderSections is used to 
+remove a header section from the collection.
+</p>
+</descr>
+<version>
+Modified in LCL version 4.0; changed to public visibility.
+</version>
+<seealso>
+<link id="THeaderSections.AddItem"/>
+<link id="THeaderSections.Delete"/>
+<link id="#rtl.classes.TCollectionItem.Index">TCollectionItem.Index</link>
+</seealso>
+</element>
+
 <element name="THeaderSection.Alignment">
 <short>
 <var>Alignment</var> - whether text is to be left or right justified or 
@@ -39987,9 +40015,9 @@ centered.
 <p>
 <var>Alignment</var> is a <var>TAlignment</var> property which indicates the 
 horizontal alignment used to display the Text for the header section. The 
-default value for the property is taLeftJustify as assigned in the Create 
-constructor. See <link id="#rtl.classes.TAlignment">TAlignment</link> for the 
-values allowed in the property.
+default value for the property is taLeftJustify. See 
+<link id="#rtl.classes.TAlignment">TAlignment</link> for the values allowed in 
+the property.
 </p>
 <p>
 Changing the value for the property causes the Changed method to be called to 
@@ -40186,35 +40214,9 @@ the section cannot be drawn using the TCustomHeaderControl.PaintSection
 method, and the Width for the section is 0.
 </p>
 <p>
-The default value for the property is <b>True</b>, as set in the constructor 
-for the class instance.
+The default value for the property is <b>True</b>.
 </p>
 </descr>
-</element>
-
-<element name="THeaderSection.OriginalIndex">
-<short>
-Index position which does not change when the user reorders the sections on a 
-header control.
-</short>
-<descr>
-<p>
-<var>OriginalIndex</var> is an <var>Integer</var> property which contains the 
-index order for the section when it was added to its Owner collection. The 
-property value is assigned when the class instance is created in the AddItem 
-method in THeaderSections. It normally contains the value in Index unless the 
-value is already in use in the collection.
-</p>
-<p>
-OriginalIndex may be updated when Delete in the THeaderSections is used to 
-remove a header section from the collection.
-</p>
-</descr>
-<seealso>
-<link id="THeaderSections.AddItem"/>
-<link id="THeaderSections.Delete"/>
-<link id="#rtl.classes.TCollectionItem.Index">TCollectionItem.Index</link>
-</seealso>
 </element>
 
 <element name="THeaderSectionClass">
