@@ -1600,6 +1600,8 @@ begin
   OpenDialog1.Title := lisLoadMacroFrom;
   mnImport.Caption := lisDlgImport;
   mnExport.Caption := lisDlgExport;
+
+  UpdateDisplay;
 end;
 
 { TEditorMacroList }
