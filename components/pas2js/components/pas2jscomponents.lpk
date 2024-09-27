@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Package Version="5">
-    <Name Value="pas2jscomponents"/>
+    <Name Value="Pas2jsComponents"/>
     <Type Value="DesignTime"/>
     <Author Value="Michael Van Canneyt"/>
     <CompilerOptions>
