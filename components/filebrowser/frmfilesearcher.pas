@@ -27,6 +27,8 @@ type
   private
     FMask : TMaskList;
     FController: TFileBrowserController;
+    FResults: TFileSearchResults;
+
     procedure DoFilter;
   public
     Function GetSelectedItems : TFileEntryArray;
@@ -53,6 +55,8 @@ procedure TFileSearcherForm.DoFilter;
 
 var
   lMatchOptions : TFilenameMatchOptions;
+  Idx : Integer;
+  lMatch : TFileSearchMatch;
 
 begin
   if Not Assigned(FController) or (Length(edtSearch.Text)<2) then
@@ -62,11 +66,16 @@ begin
     Include(lMatchOptions,fmoFileNameOnly);
   if (fsoUseLetters in FController.SearchOptions) then
     Include(lMatchOptions,fmoLetters);
-
+  FResults.Clear;
   LBFiles.Items.BeginUpdate;
   try
     LBFiles.Items.Clear;
-    FController.FindFiles(edtSearch.Text,LBFiles.Items,lMatchOptions,FMask);
+    FController.FindFiles(edtSearch.Text,FResults,lMatchOptions,FMask);
+    for Idx:=0 to FResults.Count-1 do
+      begin
+      lMatch:=FResults[Idx];
+      LBFiles.Items.AddObject(lMatch.FileName,lMatch);
+      end;
   finally
     LBFiles.Items.EndUpdate;
   end;
@@ -103,11 +112,13 @@ begin
   FController:=LazarusIDE.OwningComponent.FindComponent('IDEFileBrowserController') as TFileBrowserController;
   if cbFilter.Mask<>'' then
     FMask:=TMaskList.Create(cbFilter.Mask);
+  FResults:=TFileSearchResults.Create;
 end;
 
 procedure TFileSearcherForm.FormDestroy(Sender: TObject);
 begin
   FreeAndNil(FMask);
+  FreeAndNil(FResults);
 end;
 
 procedure TFileSearcherForm.LBFilesDblClick(Sender: TObject);
@@ -118,33 +129,33 @@ end;
 procedure TFileSearcherForm.LBFilesDrawItem(Control: TWinControl; Index: Integer; ARect: TRect; State: TOwnerDrawState);
 
 Var
-  W,L,P : Integer;
+  W,L : Integer;
   lRect : TRect;
   C : TColor;
-  ls,S,Term : String;
+  S,Term : String;
   lCanvas : TCanvas;
+  lMatch : TFileSearchMatch;
+  lPos : TMatchPosition;
 
 begin
   lCanvas:=LBFiles.Canvas;
-  S:=LBFiles.Items[Index];
-  LS:=LowerCase(S);
-  Term:=LowerCase(EdtSearch.Text);
+  lMatch:=fResults[Index];
+  S:=lMatch.FileName;
   lRect:=aRect;
   if not (odSelected in State) then
     begin
     c:=lCanvas.Brush.Color;
     lCanvas.Brush.Color:=clHighlight;
-    W:=lCanvas.TextWidth(Term);
-    P:=Pos(Term,LS);
-    While P<>0 do
+    for lPos in lMatch.MatchPositions do
       begin
-      L:=lCanvas.TextWidth(Copy(S,1,P-1));
+      Term:=Copy(S,lPos.Pos,lPos.Len);
+      W:=lCanvas.TextWidth(Term);
+      L:=lCanvas.TextWidth(Copy(S,1,lPos.Pos-1));
       lRect.Left:=aRect.Left+L;
       lRect.Right:=aRect.Left+L+W;
       if lrect.Right>aRect.Right then
         lrect.Right:=aRect.Right;
       lCanvas.FillRect(lRect);
-      P:=Pos(term,LS,P+Length(term));
       end;
     lCanvas.Brush.Color:=C;
     end;

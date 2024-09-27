@@ -5,7 +5,7 @@ unit ctrlfilebrowser;
 interface
 
 uses
-  Classes, SysUtils, frmFileBrowser, forms, filebrowsertypes, SrcEditorIntf, Masks,
+  Classes, SysUtils, contnrs, frmFileBrowser, forms, filebrowsertypes, SrcEditorIntf, Masks,
   LazIDEIntf, MenuIntf, IDECommands, ProjectIntf, IDEOptEditorIntf, IDEWindowIntf, BaseIDEIntf;
 
 Type
@@ -14,6 +14,36 @@ Type
 
     TFilenameMatchOption = (fmoFileNameOnly,fmoLetters);
     TFilenameMatchOptions = set of TFilenameMatchOption;
+
+    TMatchPosition = record
+      pos,len : Integer;
+    end;
+    TMatchPositionArray = Array of TMatchPosition;
+
+    { TFileSearchMatch }
+
+    TFileSearchMatch = Class(TObject)
+    Private
+      FEntry : TFileEntry;
+      FFileName: string;
+      FMatchPositions : TMatchPositionArray;
+    Public
+      Constructor create(const aFileName : string; aEntry : TFileEntry; aPositions : TMatchPositionArray);
+      Property FileName : string Read FFileName;
+      Property Entry : TFileEntry Read FEntry;
+      Property MatchPositions : TMatchPositionArray Read FMatchPositions;
+    end;
+
+    { TFileSearchResults }
+
+    TFileSearchResults = Class(TFPObjectList)
+    private
+      function GetMatch(aIndex : Integer): TFileSearchMatch;
+    Public
+      Constructor Create;
+      function Add(aMatch : TFileSearchMatch) : Integer;
+      Property Match [aIndex : Integer] : TFileSearchMatch Read GetMatch; default;
+    end;
 
    { TFileBrowserController }
     TFileBrowserController = class(TComponent)
@@ -71,7 +101,7 @@ Type
       procedure WriteConfig; virtual;
       procedure ReadConfig; virtual;
       procedure IndexRootDir;
-      function FindFiles(aPattern: String; aOutFileList: TStrings; aMatchOptions : TFilenameMatchOptions; aExtMask : TMaskList): Integer;
+      function FindFiles(aPattern: String; aOutFileList: TFileSearchResults; aMatchOptions : TFilenameMatchOptions; aExtMask : TMaskList): Integer;
       procedure Notification(AComponent: TComponent; Operation: TOperation); override;
       Property Root : TFileSystemEntry Read FRoot;
       property StartDir: TStartDir read FStartDir write SetStartDir;
@@ -91,6 +121,33 @@ Type
 implementation
 
 uses Controls, StrUtils, IDEMsgIntf, IDEExternToolIntf, LazConfigStorage;
+
+{ TFileSearchMatch }
+
+constructor TFileSearchMatch.create(const aFileName: string;
+  aEntry: TFileEntry; aPositions: TMatchPositionArray);
+begin
+  FFileName:=aFileName;
+  FEntry:=aEntry;
+  FMatchPositions:=aPositions;
+end;
+
+{ TFileSearchResults }
+
+function TFileSearchResults.GetMatch(aIndex : Integer): TFileSearchMatch;
+begin
+  Result:=TFileSearchMatch(Items[aIndex]);
+end;
+
+constructor TFileSearchResults.Create;
+begin
+  Inherited Create(True);
+end;
+
+function TFileSearchResults.Add(aMatch: TFileSearchMatch): Integer;
+begin
+  Result:=Inherited Add(aMatch);
+end;
 
 { TFileBrowserController }
 
@@ -303,32 +360,48 @@ begin
   AddIDEMessage(mluVerbose,Format(SSearchingFiles,[lDir]),'',0,0,SViewFilebrowser);
 end;
 
-function TFileBrowserController.FindFiles(aPattern: String; aOutFileList: TStrings;
-  aMatchOptions : TFilenameMatchOptions; aExtMask: TMaskList): Integer;
+function TFileBrowserController.FindFiles(aPattern: String;
+  aOutFileList: TFileSearchResults; aMatchOptions: TFilenameMatchOptions;
+  aExtMask: TMaskList): Integer;
   
-  function MatchesPattern(const aName: string; aStartPos: Integer; const aPtrn: string): Boolean;
+  function MatchesPattern(const aName: string; aStartPos: Integer; const aPtrn: string; var aPositions : TMatchPositionArray): Integer;
   var
+    wasMatch : boolean;
     lPtrnLen,lNameLen,lPtrnPos, lNamePos: Integer;
   begin
+    Result:=0;
     lPtrnPos := 1;
     lPtrnLen := Length(aPtrn);
     lNameLen := Length(aName);
     lNamePos := aStartPos;
+    wasMatch := false;
 
     while (lPtrnPos <= lPtrnLen) and (lNamePos <= lNameLen) do
     begin
       if aName[lNamePos] = aPtrn[lPtrnPos] then
+        begin
+        if WasMatch then
+          Inc(aPositions[Result].Len)
+        else
+          begin
+          aPositions[Result].Pos:=lNamePos;
+          aPositions[Result].Len:=1;
+          Inc(Result);
+          end;
         Inc(lPtrnPos);
+        end;
       Inc(lNamePos);
     end;
-
-    Result := (lPtrnPos > lPtrnLen);
+    if (lPtrnPos < lPtrnLen) then
+      Result := 0;
   end;
 
 var
   lPtrn, lFilename : String;
-  lStartPos,lFileIdx: Integer;
+  lMatchLen,lStartPos,lFileIdx: Integer;
   isMatch : Boolean;
+  Match : TFileSearchMatch;
+  lPositions : TMatchPositionArray;
 
 begin
   Result:=0;
@@ -338,6 +411,13 @@ begin
 
   For lFileIdx:=0 to FFileList.Count-1 do
   begin
+    // Reset positions array.
+    lPositions:=[];
+    if fmoLetters in aMatchOptions then
+      SetLength(lPositions,Length(lPtrn))
+    else
+      SetLength(lPositions,1);
+    // Determine Start position
     lFilename := Lowercase(FFileList[lFileIdx]);
     if fmoFileNameOnly in aMatchOptions then
       lStartPos:=rpos(PathDelim,lFileName)+1
@@ -347,11 +427,23 @@ begin
     if (aExtMask=Nil) or (aExtMask.Matches(lFilename)) then
     begin
       if fmoLetters in aMatchOptions then
-        isMatch:=MatchesPattern(lFilename, lStartPos, lPtrn)
+        begin
+        lMatchLen:=MatchesPattern(lFilename, lStartPos, lPtrn, lPositions);
+        isMatch:=lMatchLen>0;
+        if IsMatch then
+          SetLength(lPositions,lMatchLen);
+        end
       else
-        IsMatch:=(Pos(lPtrn,lFileName,lStartPos)>0);
+        begin
+        lPositions[0].Pos:=Pos(lPtrn,lFileName,lStartPos);
+        lPositions[0].Len:=Length(lPtrn);
+        IsMatch:=(lPositions[0].Pos>0);
+        end;
       if IsMatch then
-        aOutFileList.AddObject(FFileList[lFileIdx], FFileList.Objects[lFileIdx]);
+        begin
+        Match:=TFileSearchMatch.Create(FFileList[lFileIdx],TFileEntry(FFileList.Objects[lFileIdx]),lPositions);
+        aOutFileList.Add(Match);
+        end;
     end;
   end;
 end;

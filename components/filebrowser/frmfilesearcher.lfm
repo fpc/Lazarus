@@ -15,8 +15,8 @@ object FileSearcherForm: TFileSearcherForm
   OnDestroy = FormDestroy
   object bpFileSearch: TButtonPanel
     Left = 6
-    Height = 38
-    Top = 170
+    Height = 56
+    Top = 152
     Width = 544
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -35,7 +35,7 @@ object FileSearcherForm: TFileSearcherForm
     AnchorSideBottom.Control = edtSearch
     AnchorSideBottom.Side = asrBottom
     Left = 28
-    Height = 28
+    Height = 34
     Top = 4
     Width = 68
     Alignment = taRightJustify
@@ -47,7 +47,7 @@ object FileSearcherForm: TFileSearcherForm
   end
   object edtSearch: TEdit
     Left = 104
-    Height = 28
+    Height = 34
     Top = 4
     Width = 299
     Anchors = [akTop, akLeft, akRight]
@@ -74,7 +74,7 @@ object FileSearcherForm: TFileSearcherForm
     AnchorSideBottom.Control = edtSearch
     AnchorSideBottom.Side = asrBottom
     Left = 412
-    Height = 28
+    Height = 34
     Top = 4
     Width = 137
     Anchors = [akTop, akRight, akBottom]
