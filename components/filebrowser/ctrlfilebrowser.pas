@@ -28,7 +28,7 @@ Type
       FFileName: string;
       FMatchPositions : TMatchPositionArray;
     Public
-      Constructor create(const aFileName : string; aEntry : TFileEntry; aPositions : TMatchPositionArray);
+      Constructor create(const aFileName : string; aEntry : TFileEntry; const aPositions : TMatchPositionArray);
       Property FileName : string Read FFileName;
       Property Entry : TFileEntry Read FEntry;
       Property MatchPositions : TMatchPositionArray Read FMatchPositions;
@@ -125,7 +125,7 @@ uses Controls, StrUtils, IDEMsgIntf, IDEExternToolIntf, LazConfigStorage;
 { TFileSearchMatch }
 
 constructor TFileSearchMatch.create(const aFileName: string;
-  aEntry: TFileEntry; aPositions: TMatchPositionArray);
+  aEntry: TFileEntry; const aPositions: TMatchPositionArray);
 begin
   FFileName:=aFileName;
   FEntry:=aEntry;
