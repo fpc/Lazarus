@@ -608,14 +608,14 @@ begin
     CurProf.TargetPlatform:=DirNameToLCLPlatform(WidgetSetOverride)
   else
     CurProf.TargetPlatform:=GetBuildLCLWidgetType;
-  if BuildIDEOptions<>'' then
-  begin
-    s:=CurProf.ExtraOptions;
-    if s<>'' then
-      s+=' ';
-    s+=BuildIDEOptions;
-    CurProf.ExtraOptions:=s;
-  end;
+
+  // add custom options from --build-ide after build mode options
+  if BuildIDEOptions <> '' then
+    CurProf.ExtraOptions := MergeCustomOptions(CurProf.ExtraOptions, BuildIDEOptions);
+  // add parameters from the --opt option after --build-ide, as higher priority
+  if HasLongOptIgnoreCase('opt', s) then
+    CurProf.ExtraOptions := MergeCustomOptions(CurProf.ExtraOptions, s);
+
   if BuildAll then
     CurProf.IdeBuildMode:=bmCleanAllBuild;
   MainBuildBoss.SetBuildTargetIDE;

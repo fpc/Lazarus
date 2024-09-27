@@ -172,7 +172,9 @@ resourcestring
     'info file after build. If not specified, build number will be incremented '+
     'if configured.';
 
-  lisExtraOpts = 'Pass additional options to the compiler';
+  lisExtraOpts = 'Pass additional options to the compiler. If compilation '+
+    'options are also specified in --build-ide, then the options from --opt '+
+    'will be added after them.';
   lisGetExpandText = 'Print the result of substituting macros in the text. '+
     'The absence of macros in the text means the name of the macro. '+
     'By default, active build mode is used.';
@@ -5339,7 +5341,9 @@ resourcestring
     +'list of installed packages (combine with --build-ide to rebuild IDE).';
   lisWriteWhatPackageFilesAreS = 'Write what package files are searched and '
     +'found.';
-  lisBuildIDEWithPackages = 'Build IDE with packages.';
+  lisBuildIDEWithPackages = 'Build IDE with packages. Optional compiler options '+
+    'can be specified to be passed after the build mode options, or they can be '+
+    'specified with the --opt option';
   lisShowVersionAndExit = 'Show version and exit.';
   lisBeLessVerboseCanBeGivenMultipleTimes = 'Be less verbose. Can be given '
     +'multiple times.';
