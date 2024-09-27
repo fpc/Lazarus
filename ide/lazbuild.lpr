@@ -471,6 +471,7 @@ function TLazBuildApplication.BuildPackage(const AFilename: string): boolean;
 var
   APackage: TLazPackage;
   Flags: TPkgCompileFlags;
+  S: String;
 begin
   Result:=false;
   
@@ -498,6 +499,9 @@ begin
     APackage.CompilerOptions.TargetCPU:=CPUOverride;
   if SubtargetOverride then
     APackage.CompilerOptions.Subtarget:=SubtargetOverrideValue;
+  if HasLongOptIgnoreCase('opt', S) then
+    with APackage.CompilerOptions do
+      CustomOptions := MergeCustomOptions(CustomOptions, S);
 
   if CreateMakefile then
     DoCreateMakefile(APackage)
@@ -807,6 +811,10 @@ var
       MatrixOption.MacroName:='LCLWidgetType';
       MatrixOption.Value:=WidgetSetOverride;
     end;
+    if HasLongOptIgnoreCase('opt', S) then
+      with Project1.CompilerOptions do
+        CustomOptions := MergeCustomOptions(CustomOptions, S);
+
     // apply options
     MainBuildBoss.SetBuildTargetProject1(true,smsfsSkip);
 
@@ -1583,6 +1591,7 @@ begin
     LongOptions.Add('subtarget:');
     LongOptions.Add('bm:');
     LongOptions.Add('build-mode:');
+    LongOptions.Add('opt:');
     LongOptions.Add('compiler:');
     LongOptions.Add('lazarusdir:');
     LongOptions.Add('create-makefile');
@@ -1819,6 +1828,9 @@ begin
   writeln('');
   writeln('--bm=<project/IDE build mode>, --build-mode=<project/IDE build mode>');
   w(lisOverrideTheProjectBuildMode);
+  writeln('');
+  writeln('--opt=<extra-options>');
+  w(lisExtraOpts);
   writeln('');
   writeln('--compiler=<ppcXXX>');
   w(lisOverrideTheDefaultCompilerEGPpc386Ppcx64PpcppcEtcD);

@@ -172,6 +172,7 @@ resourcestring
     'info file after build. If not specified, build number will be incremented '+
     'if configured.';
 
+  lisExtraOpts = 'Pass additional options to the compiler';
   lisGetExpandText = 'Print the result of substituting macros in the text. '+
     'The absence of macros in the text means the name of the macro. '+
     'By default, active build mode is used.';
