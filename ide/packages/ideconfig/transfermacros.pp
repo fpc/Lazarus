@@ -295,7 +295,10 @@ begin
       //debugln(['TTransferMacroList.SubstituteStr FUNC ',MacroName]);
       MacroEnd:=SearchBracketClose(MacroEnd)+1;
       if MacroEnd>sLen+1 then
+      begin
+        result := false;
         break; // missing closing bracket
+      end;
       OldMacroLen:=MacroEnd-MacroStart;
       MacroStr:=copy(s,MacroStart,OldMacroLen);
       // Macro found
@@ -322,6 +325,8 @@ begin
       ExecuteMacro(MacroName,MacroParam,Data,Handled,Abort,Depth+1);
       if Abort then
         exit(false);
+      if not Handled then
+        result := false; // set error, but continue parsing
       MacroStr:=MacroParam;
 
       // substitute result

@@ -176,8 +176,10 @@ resourcestring
     'multiple times. If compilation options are also specified in --build-ide, '+
     'then the options from --opt will be added after them.';
   lisGetExpandText = 'Print the result of substituting macros in the text. '+
-    'The absence of macros in the text means the name of the macro. '+
-    'By default, active build mode is used.';
+    'The absence of macros means the name of the macro. '+
+    'In case of an error, returns only the text with partially expanded macros '+
+    'and sets the error code (also for an empty string). '+
+    'Takes into account the active build mode (or specified via "--bm").';
   lisGetBuildModes = 'Print a list of build modes in the project. Active mode is listed first.';
 
   lisLazbuildOptionsSyntax = 'lazbuild [options] <project/package filename or package name>';
