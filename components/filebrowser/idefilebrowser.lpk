@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Package Version="5">
-    <Name Value="idefilebrowser"/>
+    <Name Value="IDEFileBrowser"/>
     <Type Value="DesignTime"/>
     <AddToProjectUsesSection Value="True"/>
     <Author Value="Graeme Geldenhuys"/>
