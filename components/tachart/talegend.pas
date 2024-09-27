@@ -704,10 +704,16 @@ var
           drawer.SetPenParams(psClear, clTAColor);
         x := 0;
         y := 0;
-        case ItemFillOrder of
-          lfoColRow: DivMod(i, FRowCount, x, y);
-          lfoRowCol: DivMod(i, FColCount, y, x);
-        end;
+        if FColumnCount = 0 then
+          case Alignment of
+            laBottomCenter, laTopCenter: DivMod(i, FColCount, y, x);
+            else DivMod(i, FRowCount, x, y);
+          end
+        else
+          case ItemFillOrder of
+            lfoColRow: DivMod(i, FRowCount, x, y);
+            lfoRowCol: DivMod(i, FColCount, y, x);
+          end;
         if isRTL then
           r := Bounds(
             FBounds.Right - space - x * (FItemSize.X + space) - symwid,
@@ -806,10 +812,16 @@ begin
       FItems[i].UpdateFont(FDrawer, prevFont);
       x := 0;
       y := 0;
-      case ItemFillOrder of
-        lfoColRow: DivMod(i, FRowCount, x, y);
-        lfoRowCol: DivMod(i, FColCount, y, x);
-      end;
+      if (FColumnCount = 0) then
+        case Alignment of
+          laBottomCenter, laTopCenter: DivMod(i, FColCount, y, x);
+          else DivMod(i, FRowCount, x, y);
+        end
+      else
+        case ItemFillOrder of
+          lfoColRow: DivMod(i, FRowCount, x, y);
+          lfoRowCol: DivMod(i, FColCount, y, x);
+        end;
       w := FDrawer.TextExtent(FItems[i].Text, FItems[i].TextFormat).X;
       if isRTL then
         r := Bounds(
@@ -860,6 +872,37 @@ end;
 
 procedure TChartLegend.Prepare(
   var AData: TChartLegendDrawingData; var AClipRect: TRect);
+
+  procedure CalcColRowCount(AItemSize: TPoint; ASpace, AMarginX, AMarginY: Integer;
+    var AColCount, ARowCount: Integer);
+  var
+    w, h, dw, dh: Integer;
+  begin
+    if FColumnCount <= 0 then
+    begin
+      case Alignment of
+        laTopCenter, laBottomCenter:
+          begin
+            w := AClipRect.Right - AClipRect.Left - 2*AMarginX - ASpace;
+            dw := AItemSize.X + ASpace;
+            AColCount := Max(Min(w div dw, AData.FItems.Count), 1);
+            ARowCount := (AData.FItems.Count - 1) div AColCount + 1;
+          end;
+        else
+          begin
+            h := AClipRect.Bottom - AClipRect.Top - 2*MarginY - ASpace;
+            dh := AItemSize.Y + ASpace;
+            ARowCount := Max(Min(h div dh, AData.FItems.Count), 1);
+            AColCount := (AData.FItems.Count - 1) div ARowCount + 1;
+          end;
+      end;
+    end else
+    begin
+      AColCount := Max(Min(ColumnCount, AData.FItems.Count), 1);
+      ARowCount := (AData.FItems.Count - 1) div AColCount + 1;
+    end;
+  end;
+
 var
   x, y: Integer;
   sidebar, legendSize: TPoint;
@@ -869,9 +912,8 @@ begin
     margX := FDrawer.Scale(MarginX);
     margY := FDrawer.Scale(MarginY);
     space := FDrawer.Scale(Spacing);
-    FColCount := Max(Min(ColumnCount, FItems.Count), 1);
-    FRowCount := (FItems.Count - 1) div FColCount + 1;
     FItemSize := MeasureItem(FDrawer, FItems);
+    CalcColRowCount(FItemSize, space, margX, margY, FColCount, FRowCount);
     Self.FItemSize := FItemSize;
     Self.FColCount := FColCount;
     Self.FRowCount := FRowCount;
