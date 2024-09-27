@@ -2528,7 +2528,12 @@ begin
   list.callback := cb;
 
   column := NSTableColumn.alloc.init.autorelease;
-  if lclListBox.ScrollWidth > 0 then
+  // if column.ResizingMask is set when column.Width < TableView.Width,
+  // it is not only meaningless, but also causes problems in the
+  // vertical direction of the TableView. we can scroll the TableView until
+  // the last row appears at the top.
+  // Note: It is not clear whether this is a feature of Cocoa or a bug.
+  if lclListBox.ScrollWidth > lclListBox.Width then
   begin
     column.setResizingMask(NSTableColumnNoResizing);
     column.setWidth(lclListBox.ScrollWidth);
@@ -2715,15 +2720,12 @@ begin
   if not Assigned(view) then Exit;
   view.ScrollWidth := AScrollWidth;
   column := NSTableColumn(view.tableColumns.objectAtIndex(0));
-  if AScrollWidth = 0 then
-  begin
-    column.setResizingMask(NSTableColumnAutoresizingMask);
-    view.sizeLastColumnToFit;
-  end
-  else
-  begin
+  if AScrollWidth > ACustomListBox.Width then begin
     column.setResizingMask(NSTableColumnNoResizing);
     column.setWidth(AScrollWidth);
+  end else begin
+    column.setResizingMask(NSTableColumnAutoresizingMask or NSTableColumnUserResizingMask);
+    view.sizeLastColumnToFit;
   end;
 end;
 
