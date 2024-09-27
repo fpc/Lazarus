@@ -415,7 +415,10 @@ begin
         exit;
     except
       On E: Exception do
+        begin
         ShowMessage(Format(lrsConnectionTestFailed,[E.Message]));
+        exit;
+        end;
     end;
     ShowMessage(lrsConnectionTestOK);
     cbIndexName.Items:=L;
