@@ -723,17 +723,20 @@ begin
 end;
 
 procedure TSynEditMarkLine.Clear(FreeMarks: Boolean = False);
+var
+  m: TSynEditMark;
 begin
   inc(FLockChangeSize);
   try
     while Count > 0 do begin
-      if FreeMarks then begin
-        Items[0].MarkList := nil; // stop destroy from removing item from list
-        Items[0].FMarkLine := nil; // stop destroy from removing item from self
-        Items[0].Free
-      end else
-        Items[0].MarkLine := nil;
+      m := Items[0];
       FMarks.Delete(0);
+      if FreeMarks then begin
+        m.MarkList := nil; // stop destroy from removing item from list
+        m.FMarkLine := nil; // stop destroy from removing item from self
+        m.Free
+      end else
+        m.MarkLine := nil;
     end;
   finally
     dec(FLockChangeSize);
