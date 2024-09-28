@@ -116,7 +116,7 @@ begin
 
   // language
   lblLanguage.Caption := dlgEnvLanguage;
-  lblLangChangeHint.Caption := dlgEnvLanguageHint;
+  lblLangChangeHint.Caption := dlgEnvLanguageRestartHint;
 
   // languages: first the automatic, then sorted the rest
   sl:=TStringListUTF8Fast.Create;
@@ -362,11 +362,11 @@ begin
   po := GetLazIdePoFile(EnvironmentOptions.GetParsedLazarusDirectory,
                         CaptionToLangID(LanguageComboBox.Text));
   if po <> nil then begin
-    s := po.Translate('lazarusidestrconsts.dlgEnvLanguageHint','');
+    s := po.Translate('lazarusidestrconsts.dlgEnvLanguageRestartHint','Restart the IDE to complete the language change');
     if s <> '' then
       lblLangChangeHint.Caption := s
     else
-      lblLangChangeHint.Caption := dlgEnvLanguageHint;
+      lblLangChangeHint.Caption := dlgEnvLanguageRestartHint;
     po.Free;
   end;
 end;
