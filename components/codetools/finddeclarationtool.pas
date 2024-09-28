@@ -4811,7 +4811,7 @@ var
       CurLevel:=0;
       while (ThisNamespaceNode<>nil) and (TargetNamespaceNode<>nil) do
       begin
-        if CompareIdentifierPtrs(
+        if CompareIdentifiers(
           @Src[ThisNamespaceNode.StartPos],
           @Src[TargetNamespaceNode.StartPos]) <> 0
         then Break;
@@ -7649,10 +7649,10 @@ begin
         debugln(['TFindDeclarationTool.FindClassOfMethod ',TypeNode.DescAsString,' ',dbgstr(ExtractNode(TypeNode,[]),1,40)]);
         {$ENDIF}
         if ((TypeNode.Desc=ctnTypeDefinition)
-        and (CompareIdentifierPtrs(CurClassName,@Src[TypeNode.StartPos])=0))
+        and (CompareIdentifiers(CurClassName,@Src[TypeNode.StartPos])=0))
         or ((TypeNode.Desc=ctnGenericType)
         and (TypeNode.FirstChild<>nil)
-        and (CompareIdentifierPtrs(CurClassName,@Src[TypeNode.FirstChild.StartPos])=0))
+        and (CompareIdentifiers(CurClassName,@Src[TypeNode.FirstChild.StartPos])=0))
         then begin
           repeat
             // type with same name found
@@ -7746,19 +7746,19 @@ begin
       continue;
     end
     else if Node.Desc in AllSimpleIdentifierDefinitions then begin
-      if CompareIdentifierPtrs(@Src[Node.StartPos],Identifier)=0 then
+      if CompareIdentifiers(@Src[Node.StartPos],Identifier)=0 then
         exit(Node);
     end else if Node.Desc=ctnProperty then begin
       CurIdentifier:=GetPropertyNameIdentifier(Node);
-      if CompareIdentifierPtrs(CurIdentifier,Identifier)=0 then
+      if CompareIdentifiers(CurIdentifier,Identifier)=0 then
         exit(Node);
     end else if Node.Desc=ctnProcedure then begin
       CurIdentifier:=GetProcNameIdentifier(Node);
-      if CompareIdentifierPtrs(CurIdentifier,Identifier)=0 then
+      if CompareIdentifiers(CurIdentifier,Identifier)=0 then
         exit(Node);
     end else if Node.Desc=ctnGenericType then begin
       if (Node.FirstChild<>nil)
-      and (CompareIdentifierPtrs(@Src[Node.FirstChild.StartPos],Identifier)=0) then
+      and (CompareIdentifiers(@Src[Node.FirstChild.StartPos],Identifier)=0) then
         exit(Node);
     end;
     // next

@@ -4234,12 +4234,12 @@ var
     and (Definitions.FindKey(Identifier,@CompareIdentifierWithCodeTreeNodeExt)<>nil)
     then exit(true);
     for i:=Low(PreDefinedH2PasTypes) to High(PreDefinedH2PasTypes) do begin
-      if CompareIdentifierPtrs(Identifier,Pointer(PreDefinedH2PasTypes[i]))=0 then
+      if CompareIdentifiers(Identifier,PChar(PreDefinedH2PasTypes[i]))=0 then
         exit(true);
       // check for predefined pointer types
       if (Identifier^ in ['p','P'])
       and (IsIdentChar[Identifier[1]])
-      and (CompareIdentifierPtrs(@Identifier[1],Pointer(PreDefinedH2PasTypes[i]))=0)
+      and (CompareIdentifiers(@Identifier[1],PChar(PreDefinedH2PasTypes[i]))=0)
       then
         exit(true);
     end;

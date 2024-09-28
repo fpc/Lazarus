@@ -633,7 +633,7 @@ var
   NodeExt: TCodeTreeNodeExtension absolute NodeData;
 begin
   NodeExt:=TCodeTreeNodeExtension(NodeData);
-  Result:=CompareIdentifierPtrs(p,Pointer(NodeExt.Txt));
+  Result:=CompareIdentifiers(p,PChar(NodeExt.Txt));
 end;
 
 function CompareCodeTreeNodeExt(NodeData1, NodeData2: pointer): integer;

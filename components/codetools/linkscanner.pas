@@ -4423,7 +4423,7 @@ begin
   cmp:=0;
   while l<=r do begin
     m:=(l+r) div 2;
-    cmp:=CompareIdentifierPtrs(MacroName,FMacros[m].Name);
+    cmp:=CompareIdentifiers(MacroName,FMacros[m].Name);
     if cmp<0 then
       r:=m-1
     else if cmp>0 then

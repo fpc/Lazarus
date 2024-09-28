@@ -498,7 +498,7 @@ var
   Item2: TIdentifierListItem absolute Data2;
 begin
   // sort alpabetically (lower is better)
-  Result:=CompareIdentifierPtrs(Pointer(Item2.Identifier),Pointer(Item1.Identifier));
+  Result:=CompareIdentifiers(PChar(Item2.Identifier),PChar(Item1.Identifier));
   if Result<>0 then exit;
 
   // then sort for ParamList (lower is better)
@@ -511,7 +511,7 @@ var
   TheItem: TIdentifierListItem absolute Item;
 begin
   // sort alpabetically (lower is better)
-  Result:=CompareIdentifierPtrs(Pointer(TheItem.Identifier),TheSearchItem.Identifier);
+  Result:=CompareIdentifiers(PChar(TheItem.Identifier),TheSearchItem.Identifier);
   if Result<>0 then exit;
 
   // then sort for ParamList (lower is better)
@@ -524,7 +524,7 @@ var
   TheItem: TIdentifierListItem absolute Item;
 begin
   // sort alpabetically (lower is better)
-  Result:=CompareIdentifierPtrs(Pointer(TheItem.Identifier),TheSearchItem.Identifier);
+  Result:=CompareIdentifiers(PChar(TheItem.Identifier),TheSearchItem.Identifier);
 end;
 
 function CompareIdentHistListItem(Data1, Data2: Pointer): integer;
@@ -534,8 +534,8 @@ var
   Item1: TIdentHistListItem absolute Data1;
   Item2: TIdentHistListItem absolute Data2;
 begin
-  Result:=CompareIdentifierPtrs(Pointer(Item2.Identifier),
-                                Pointer(Item1.Identifier));
+  Result:=CompareIdentifiers(PChar(Item2.Identifier),
+                             PChar(Item1.Identifier));
   if Result<>0 then exit;
 
   //debugln('CompareIdentHistListItem ',Item2.Identifier,'=',Item1.Identifier);
@@ -549,8 +549,8 @@ var
   IdentItem: TIdentifierListItem absolute Data1;
   HistItem: TIdentHistListItem absolute Data2;
 begin
-  Result:=CompareIdentifierPtrs(Pointer(HistItem.Identifier),
-                                Pointer(IdentItem.Identifier));
+  Result:=CompareIdentifiers(PChar(HistItem.Identifier),
+                             PChar(IdentItem.Identifier));
   if Result<>0 then exit;
 
   //debugln('CompareIdentItemWithHistListItem ',HistItem.Identifier,'=',GetIdentifier(IdentItem.Identifier));
@@ -650,7 +650,7 @@ begin
     end;
   end;
 
-  Result:=CompareIdentifierPtrs(Pointer(Item2.Identifier),Pointer(Item1.Identifier));
+  Result:=CompareIdentifiers(PChar(Item2.Identifier),PChar(Item1.Identifier));
   if Result<>0 then exit;
 
   // then sort for ParamList (lower is better)

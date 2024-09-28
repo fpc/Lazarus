@@ -529,7 +529,7 @@ begin
     end else if (Node is TLFMObjectNode)
     and (RestParts<>'') then begin
       ObjNode:=TLFMObjectNode(Node);
-      if CompareIdentifierPtrs(Pointer(ObjNode.Name),Pointer(FirstPart))=0 then
+      if CompareIdentifiers(PChar(ObjNode.Name),PChar(FirstPart))=0 then
       begin
         Result:=FindProperty(RestParts,ObjNode);
         exit;

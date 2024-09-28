@@ -308,7 +308,7 @@ begin
     ReadRawNextPascalAtom(p,AtomStart,nil,false,true);
     if (p=AtomStart) then break;
     if IsIdentStartChar[AtomStart^]
-    and (CompareIdentifierPtrs(PChar(OldName),AtomStart)=0)
+    and (CompareIdentifiers(PChar(OldName),AtomStart)=0)
     then begin
       SrcPos:=PtrUInt(AtomStart-PChar(Src))+1;
 

@@ -296,13 +296,13 @@ end;
 
 function CompareUnitFiles(UnitFile1, UnitFile2: PUnitFile): integer;
 begin
-  Result:=CompareIdentifierPtrs(Pointer(UnitFile1^.FileUnitName),
-                                Pointer(UnitFile2^.FileUnitName));
+  Result:=CompareIdentifiers(PChar(UnitFile1^.FileUnitName),
+                             PChar(UnitFile2^.FileUnitName));
 end;
 
 function CompareUnitNameAndUnitFile(UnitName: PChar; UnitFile: PUnitFile): integer;
 begin
-  Result:=CompareIdentifierPtrs(Pointer(UnitName),Pointer(UnitFile^.FileUnitName));
+  Result:=CompareIdentifiers(PChar(UnitName),PChar(UnitFile^.FileUnitName));
 end;
 
 procedure OnCompilerParseStampIncreased;

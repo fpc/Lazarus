@@ -498,14 +498,14 @@ end;
 
 function CompareH2PNodePascalNames(Data1, Data2: Pointer): integer;
 begin
-  Result:=CompareIdentifierPtrs(Pointer(TH2PNode(Data1).PascalName),
-                                Pointer(TH2PNode(Data2).PascalName));
+  Result:=CompareIdentifiers(PChar(TH2PNode(Data1).PascalName),
+                             PChar(TH2PNode(Data2).PascalName));
 end;
 
 function CompareStringWithH2PNodePascalName(AString, ANode: Pointer): integer;
 begin
-  Result:=CompareIdentifierPtrs(Pointer(AString),
-                                Pointer(TH2PNode(ANode).PascalName));
+  Result:=CompareIdentifiers(PChar(AString),
+                             PChar(TH2PNode(ANode).PascalName));
 end;
 
 function CompareH2PNodeCNames(Data1, Data2: Pointer): integer;
@@ -522,14 +522,13 @@ end;
 
 function CompareH2PMacroStats(Data1, Data2: Pointer): integer;
 begin
-  Result:=CompareIdentifierPtrs(Pointer(TH2PMacroStats(Data1).Name),
-                                Pointer(TH2PMacroStats(Data2).Name));
+  Result:=CompareIdentifiers(PChar(TH2PMacroStats(Data1).Name),
+                             PChar(TH2PMacroStats(Data2).Name));
 end;
 
 function ComparePCharWithH2PMacroStats(Name, MacroStats: Pointer): integer;
 begin
-  Result:=CompareIdentifierPtrs(Name,
-                                Pointer(TH2PMacroStats(MacroStats).Name));
+  Result:=CompareIdentifiers(Name,PChar(TH2PMacroStats(MacroStats).Name));
 end;
 
 function H2PDirectiveNodeDescriptionAsString(Desc: TCodeTreeNodeDesc): string;

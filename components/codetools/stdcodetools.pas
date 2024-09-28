@@ -653,7 +653,7 @@ var
   begin
     Result:=Low(SpecialUnits);
     while Result<=High(SpecialUnits) do begin
-      if CompareIdentifierPtrs(Pointer(Identifier),Pointer(SpecialUnits[Result]))=0 then
+      if CompareIdentifiers(PChar(Identifier),PChar(SpecialUnits[Result]))=0 then
         exit;
       inc(Result);
     end;

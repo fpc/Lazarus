@@ -2376,9 +2376,9 @@ begin
     if Node.Desc in [ctnTypeDefinition,ctnGenericType] then begin
       if (Node.LastChild<>nil) and (Node.LastChild.Desc in AllClasses) then begin
         if ((Node.Desc=ctnTypeDefinition)
-          and (CompareIdentifierPtrs(p,@Src[Node.StartPos])=0))
+          and (CompareIdentifiers(p,@Src[Node.StartPos])=0))
         or ((Node.FirstChild.Desc=ctnGenericName)
-          and (CompareIdentifierPtrs(p,@Src[Node.FirstChild.StartPos])=0))
+          and (CompareIdentifiers(p,@Src[Node.FirstChild.StartPos])=0))
         then begin
           // class found
           Node:=Node.LastChild;
@@ -3312,9 +3312,9 @@ begin
     ReadNextAtom;
     if UpAtomIs('DEFAULT') or UpAtomIs('NODEFAULT') or UpAtomIs('DEPRECATED')
     then begin
-      if CompareIdentifierPtrs(@Src[CurPos.StartPos],Pointer(UpperKeyword))=0 then exit(true);
+      if CompareIdentifiers(@Src[CurPos.StartPos],PChar(UpperKeyword))=0 then exit(true);
     end else if UpAtomIs('ENUMERATOR') then begin
-      if CompareIdentifierPtrs(@Src[CurPos.StartPos],Pointer(UpperKeyword))=0 then exit(true);
+      if CompareIdentifiers(@Src[CurPos.StartPos],PChar(UpperKeyword))=0 then exit(true);
       ReadNextAtom;
       if not AtomIsIdentifier then exit;
     end else

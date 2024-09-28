@@ -156,24 +156,24 @@ implementation
 
 function ComparePPUMembersByUnitName(Member1, Member2: Pointer): integer;
 begin
-  Result:=CompareIdentifierPtrs(Pointer(TPPUMember(Member1).Unit_Name),
-                                Pointer(TPPUMember(Member2).Unit_Name));
+  Result:=CompareIdentifiers(PChar(TPPUMember(Member1).Unit_Name),
+                             PChar(TPPUMember(Member2).Unit_Name));
 end;
 
 function CompareNameWithPPUMemberName(NamePChar, Member: Pointer): integer;
 begin
-  Result:=CompareIdentifierPtrs(NamePChar,Pointer(TPPUMember(Member).Unit_Name));
+  Result:=CompareIdentifiers(NamePChar,PChar(TPPUMember(Member).Unit_Name));
 end;
 
 function ComparePPUGroupsByName(Group1, Group2: Pointer): integer;
 begin
-  Result:=CompareIdentifierPtrs(Pointer(TPPUGroup(Group1).Name),
-                                Pointer(TPPUGroup(Group2).Name));
+  Result:=CompareIdentifiers(PChar(TPPUGroup(Group1).Name),
+                             PChar(TPPUGroup(Group2).Name));
 end;
 
 function CompareNameWithPPUGroupName(NamePChar, Group: Pointer): integer;
 begin
-  Result:=CompareIdentifierPtrs(NamePChar,Pointer(TPPUGroup(Group).Name));
+  Result:=CompareIdentifiers(NamePChar,PChar(TPPUGroup(Group).Name));
 end;
 
 function PPUGroupObjectAsString(Obj: TObject): string;

@@ -327,26 +327,24 @@ const
   
 function CompareDefineValues(Data1, Data2: Pointer): integer;
 begin
-  Result:=CompareIdentifierPtrs(Pointer(TDefineValue(Data1).Name),
-                                Pointer(TDefineValue(Data2).Name));
+  Result:=CompareIdentifiers(PChar(TDefineValue(Data1).Name),
+                             PChar(TDefineValue(Data2).Name));
 end;
 
 function ComparePCharWithDefineValue(Name, DefValue: Pointer): integer;
 begin
-  Result:=CompareIdentifierPtrs(Name,
-                                Pointer(TDefineValue(DefValue).Name));
+  Result:=CompareIdentifiers(Name,PChar(TDefineValue(DefValue).Name));
 end;
 
 function CompareCompilerMacroStats(Data1, Data2: Pointer): integer;
 begin
-  Result:=CompareIdentifierPtrs(Pointer(TCompilerMacroStats(Data1).Name),
-                                Pointer(TCompilerMacroStats(Data2).Name));
+  Result:=CompareIdentifiers(PChar(TCompilerMacroStats(Data1).Name),
+                             PChar(TCompilerMacroStats(Data2).Name));
 end;
 
 function ComparePCharWithCompilerMacroStats(Name, MacroStats: Pointer): integer;
 begin
-  Result:=CompareIdentifierPtrs(Name,
-                                Pointer(TCompilerMacroStats(MacroStats).Name));
+  Result:=CompareIdentifiers(Name,PChar(TCompilerMacroStats(MacroStats).Name));
 end;
 
 function CompareH2PasFuncByNameAndPos(Data1, Data2: Pointer): integer;
@@ -356,7 +354,7 @@ var
 begin
   F1:=TH2PasFunction(Data1);
   F2:=TH2PasFunction(Data2);
-  Result:=CompareIdentifierPtrs(Pointer(F1.Name),Pointer(F2.Name));
+  Result:=CompareIdentifiers(PChar(F1.Name),PChar(F2.Name));
   if Result<>0 then exit;
   if F1.HeaderStart>F2.HeaderStart then
     exit(1)
@@ -368,7 +366,7 @@ end;
 
 function ComparePCharWithH2PasFuncName(Name, H2PasFunc: Pointer): integer;
 begin
-  Result:=CompareIdentifierPtrs(Name,Pointer(TH2PasFunction(H2PasFunc).Name));
+  Result:=CompareIdentifiers(Name,PChar(TH2PasFunction(H2PasFunc).Name));
 end;
 
 function CDNodeDescAsString(Desc: TCompilerDirectiveNodeDesc): string;
@@ -1034,11 +1032,8 @@ var
     // check if MacroName was already changed
     Change:=Stack[StackPointer];
     while (Change<>nil) do begin
-      if (CompareIdentifierPtrs(Pointer(MacroName),Pointer(Change^.Name))=0)
-      then begin
-        // old status is already saved
-        exit;
-      end;
+      if CompareIdentifiers(PChar(MacroName),PChar(Change^.Name))=0 then
+        exit;  // old status is already saved
       Change:=Change^.Next;
     end;
   
@@ -2499,12 +2494,10 @@ begin
   while (p<=SrcLen) do begin
     if Src[p]='}' then exit;
     if IsIdentStartChar[Src[p]] then begin
-      if CompareIdentifierPtrs(@Src[p],Identifier)=0 then
+      if CompareIdentifiers(@Src[p],Identifier)=0 then
         exit(p);
-      if (Node.SubDesc=cdnsIfdef) or (Node.SubDesc=cdnsIfndef) then begin
-        // IFDEF and IFNDEF have only one word
-        exit;
-      end;
+      if (Node.SubDesc=cdnsIfdef) or (Node.SubDesc=cdnsIfndef) then
+        exit;  // IFDEF and IFNDEF have only one word
       while (p<=SrcLen) and (IsIdentChar[Src[p]]) do inc(p);
     end else begin
       inc(p);
@@ -2559,7 +2552,7 @@ begin
   while (p<=SrcLen) and (IsSpaceChar[Src[p]]) do inc(p);
   // check name
   if p>SrcLen then exit;
-  Result:=CompareIdentifierPtrs(@Src[p],Identifier)=0;
+  Result:=CompareIdentifiers(@Src[p],Identifier)=0;
 end;
 
 function TCompilerDirectivesTree.NodeIsEmpty(Node: TCodeTreeNode;
