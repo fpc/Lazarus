@@ -30,21 +30,27 @@ type
     FConfigFrame: TAbstractIDEOptionsEditorClass;
     FList: TFPList;
     FEnabled: Boolean;
+    FMiniMapCount: Integer;
     FNeedSave : Boolean;
     FInitialViewFontSize: Integer;
     FMapWidth: Integer;
     FViewWindowColor: TColor;
     FViewWindowTextColor: TColor;
+    procedure EditorReconfigured(Sender: TObject);
+    function GetMiniMap(aIndex : Integer): TMiniMapControl;
     procedure SetAlignLeft(AValue: Boolean);
     procedure SetEnabled(AValue: Boolean);
     procedure SetInitialViewFontSize(AValue: Integer);
     procedure SetMapWidth(AValue: Integer);
+    procedure SetMiniMapCount(AValue: Integer);
     procedure SetViewWindowColor(AValue: TColor);
     procedure SetViewWindowTextColor(AValue: TColor);
   protected
     procedure NewEditorCreated(Sender: TObject);
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure ConfigPanel(aPanel: TMiniMapControl; aFull: Boolean = False);
+    Property MiniMaps[aIndex : Integer] : TMiniMapControl Read GetMiniMap;
+    Property MiniMapCount : Integer read FMiniMapCount write SetMiniMapCount;
   Public
     Constructor Create(aOwner : TComponent); override;
     Destructor Destroy; override;
@@ -82,12 +88,14 @@ begin
       SourceEditorManagerIntf.RegisterChangeEvent(semEditorCreate,@NewEditorCreated);
       SourceEditorManagerIntf.RegisterChangeEvent(semEditorMoved,@NewEditorCreated);
       SourceEditorManagerIntf.RegisterChangeEvent(semEditorCloned,@NewEditorCreated);
+      SourceEditorManagerIntf.RegisterChangeEvent(semEditorReConfigured,@EditorReconfigured);
       end
     else
       begin
       SourceEditorManagerIntf.UnRegisterChangeEvent(semEditorCreate,@NewEditorCreated);
       SourceEditorManagerIntf.UnRegisterChangeEvent(semEditorMoved,@NewEditorCreated);
       SourceEditorManagerIntf.UnRegisterChangeEvent(semEditorCloned,@NewEditorCreated);
+      SourceEditorManagerIntf.UnRegisterChangeEvent(semEditorReConfigured,@EditorReconfigured);
       end;
 end;
 
@@ -96,6 +104,26 @@ begin
   if FAlignLeft=AValue then Exit;
   FAlignLeft:=AValue;
   FNeedSave:=True;
+end;
+
+procedure TMinimapController.EditorReconfigured(Sender: TObject);
+
+var
+  Idx : integer;
+  MiniMap : TMiniMapControl;
+
+begin
+  For Idx:=0 to MiniMapCount-1 do
+    begin
+    MiniMap:=MiniMaps[Idx];
+    if MiniMap.SourceEditor=Sender then
+      MiniMap.Reconfigure;
+    end;
+end;
+
+function TMinimapController.GetMiniMap(aIndex : Integer): TMiniMapControl;
+begin
+  Result:=TMiniMapControl(FList[aIndex]);
 end;
 
 procedure TMinimapController.SetInitialViewFontSize(AValue: Integer);
@@ -110,6 +138,12 @@ begin
   if FMapWidth=AValue then Exit;
   FMapWidth:=AValue;
   FNeedSave:=True;
+end;
+
+procedure TMinimapController.SetMiniMapCount(AValue: Integer);
+begin
+  if FMiniMapCount=AValue then Exit;
+  FMiniMapCount:=AValue;
 end;
 
 procedure TMinimapController.SetViewWindowColor(AValue: TColor);

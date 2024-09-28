@@ -1178,6 +1178,7 @@ type
     procedure SendEditorDestroyed(AEditor: TSourceEditor);
     procedure SendEditorMoved(AEditor: TSourceEditor);
     procedure SendEditorCloned(AEditor: TSourceEditor);
+    procedure SendEditorReconfigured(AEditor: TSourceEditor);
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure RemoveWindow(AWindow: TSourceNotebook);
   public
@@ -5068,9 +5069,9 @@ begin
       FEditor.Beautifier := nil; // use default
     EditorOpts.GetSynEditSettings(FEditor, nil);
   end;
-
   FSyntaxHighlighterId:=AHighlighterId;
   SourceNotebook.UpdateActiveEditColors(FEditor);
+  SourceEditorManager.SendEditorReconfigured(Self);
 end;
 
 procedure TSourceEditor.SetErrorLine(NewLine: integer);
@@ -10949,6 +10950,13 @@ procedure TSourceEditorManager.SendEditorDestroyed(AEditor: TSourceEditor);
 begin
   FChangeNotifyLists[semEditorDestroy].CallNotifyEvents(AEditor);
 end;
+
+procedure TSourceEditorManager.SendEditorReconfigured(AEditor: TSourceEditor);
+begin
+  FChangeNotifyLists[semEditorReConfigured].CallNotifyEvents(AEditor);
+end;
+
+
 
 procedure TSourceEditorManager.Notification(AComponent: TComponent;
   Operation: TOperation);

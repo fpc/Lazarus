@@ -54,6 +54,7 @@ Type
   Public
     constructor create(aOwner : TComponent); override;
     destructor destroy; override;
+    Procedure Reconfigure;
     Property SourceEditor: TSourceEditorInterface Read FSourceEditor Write SetSourceEditor;
     Property ViewWindowColor : TColor Read FViewWindowColor Write SetViewWindowColor;
     Property ViewWindowTextColor:TColor Read FViewWindowTextColor Write SetViewWindowTextColor;
@@ -277,6 +278,11 @@ destructor TMiniMapControl.destroy;
 begin
   Unhook;
   inherited destroy;
+end;
+
+procedure TMiniMapControl.Reconfigure;
+begin
+  FMiniSynEdit.Highlighter:=FSourceSynEdit.Highlighter;
 end;
 
 end.
