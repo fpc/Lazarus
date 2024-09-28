@@ -78,9 +78,17 @@ begin
   FNeedSave:=True;
   if SourceEditorManagerIntf <> nil then
     if AValue then
-      SourceEditorManagerIntf.RegisterChangeEvent(semEditorCreate,@NewEditorCreated)
+      begin
+      SourceEditorManagerIntf.RegisterChangeEvent(semEditorCreate,@NewEditorCreated);
+      SourceEditorManagerIntf.RegisterChangeEvent(semEditorMoved,@NewEditorCreated);
+      SourceEditorManagerIntf.RegisterChangeEvent(semEditorCloned,@NewEditorCreated);
+      end
     else
+      begin
       SourceEditorManagerIntf.UnRegisterChangeEvent(semEditorCreate,@NewEditorCreated);
+      SourceEditorManagerIntf.UnRegisterChangeEvent(semEditorMoved,@NewEditorCreated);
+      SourceEditorManagerIntf.UnRegisterChangeEvent(semEditorCloned,@NewEditorCreated);
+      end;
 end;
 
 procedure TMinimapController.SetAlignLeft(AValue: Boolean);

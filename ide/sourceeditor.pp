@@ -1176,6 +1176,8 @@ type
     procedure EditorRemoved(AEditor: TSourceEditor);
     procedure SendEditorCreated(AEditor: TSourceEditor);
     procedure SendEditorDestroyed(AEditor: TSourceEditor);
+    procedure SendEditorMoved(AEditor: TSourceEditor);
+    procedure SendEditorCloned(AEditor: TSourceEditor);
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure RemoveWindow(AWindow: TSourceNotebook);
   public
@@ -8490,6 +8492,7 @@ begin
       DestWin.UpdateActiveEditColors(Edit.EditorComponent);
       DestWin.UpdateStatusBar;
       DestWin.NotebookPageChanged(nil); // make sure page SynEdit willl be visible
+      SourceEditorManager.SendEditorMoved(Edit);
     finally
       DestWin.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.MoveEdito DestWinr'){$ENDIF};
       DestWin.DecUpdateLock;
@@ -8556,6 +8559,7 @@ begin
   UpdatePageNames;
   UpdateProjectFiles;
   DestWin.UpdateProjectFiles(NewEdit);
+  SourceEditorManager.SendEditorCloned(NewEdit);
   // Creating a shared edit invalidates the tree in SynMarkup. Force setting it for all editors
   for i := 0 to SrcEdit.SharedEditorCount - 1 do
     SrcEdit.SharedEditors[i].UpdateIfDefNodeStates(True);
@@ -10929,6 +10933,16 @@ end;
 procedure TSourceEditorManager.SendEditorCreated(AEditor: TSourceEditor);
 begin
   FChangeNotifyLists[semEditorCreate].CallNotifyEvents(AEditor);
+end;
+
+procedure TSourceEditorManager.SendEditorMoved(AEditor: TSourceEditor);
+begin
+  FChangeNotifyLists[semEditorMoved].CallNotifyEvents(AEditor);
+end;
+
+procedure TSourceEditorManager.SendEditorCloned(AEditor: TSourceEditor);
+begin
+  FChangeNotifyLists[semEditorCloned].CallNotifyEvents(AEditor);
 end;
 
 procedure TSourceEditorManager.SendEditorDestroyed(AEditor: TSourceEditor);

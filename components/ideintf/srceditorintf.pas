@@ -335,7 +335,9 @@ type
     semEditorActivate,  // Editor is ActiveEditor
     semEditorStatus,    // any status change of the editor (Caret, Selection, topline, ...)
     semEditorMouseDown,
-    semEditorMouseUp
+    semEditorMouseUp,
+    semEditorMoved,     // Called when moved to a new window
+    semEditorCloned     // Called when cloned to a new window.
   );
 
   TSemSelectionMode = (
