@@ -77,6 +77,7 @@ uses
   {$IFDEF LCLCocoa} CocoaConfig, CocoaIDEFormConfig,{$ENDIF}
   // SynEdit
   SynEdit, AllSynEdit, SynEditKeyCmds, SynEditMarks, SynEditHighlighter, SynHighlighterPas,
+  SynEditTypes,
   // BuildIntf
   BaseIDEIntf, MacroIntf, NewItemIntf, IDEExternToolIntf, LazMsgWorker,
   PackageIntf, ProjectIntf, CompOptsIntf, IDEOptionsIntf, ComponentReg,
@@ -11486,7 +11487,7 @@ begin
   try
     AnEditor.BeginUpdate;
     AnEditor.EditorComponent.GotoBookMark(ID);
-    if not AnEditor.IsLocked then
+    if not (AnEditor.IsLocked or (eoBookmarkRestoresScroll in AnEditor.EditorComponent.Options2)) then
       AnEditor.CenterCursor(True);
   finally
     AnEditor.EndUpdate;
