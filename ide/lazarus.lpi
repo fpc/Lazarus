@@ -23,7 +23,7 @@
     <VersionInfo>
       <UseVersionInfo Value="True"/>
       <MajorVersionNr Value="3"/>
-      <MinorVersionNr Value="5"/>
+      <MinorVersionNr Value="6"/>
       <CharSet Value="04B0"/>
       <StringTable ProductName="Lazarus IDE"/>
     </VersionInfo>
@@ -54,7 +54,7 @@
       </Item>
       <Item>
         <PackageName Value="LCLBase"/>
-        <MinVersion Major="1" Release="1" Valid="True"/>
+        <MinVersion Major="1" Release="1"/>
       </Item>
       <Item>
         <PackageName Value="LazControls"/>
