@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils,
   // LazUtils
-  LazFileUtils, LazStringUtils;
+  LazFileUtils;
 
 type
 
@@ -108,12 +108,12 @@ implementation
 
 function IsValidUnitName(AUnitName: String): Boolean;
 begin
-  Result := LazIsValidIdent(AUnitName, True, True);
+  Result := IsValidIdent(AUnitName, True, True);
 end;
 
 function IsValidPkgName(APkgName: String): Boolean;
 begin
-  Result := LazIsValidIdent(APkgName, True, True);
+  Result := IsValidIdent(APkgName, True, True);
 end;
 
 function PackageFileNameIsValid(const AFilename: string): boolean;

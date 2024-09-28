@@ -1847,7 +1847,7 @@ begin
       else
         continue;
       CurUnitName:=ExtractFilenameOnly(CurFilename);
-      if not LazIsValidIdent(CurUnitName) then
+      if not IsValidIdent(CurUnitName) then
         continue;
       //DebugLn(['TBuildManager.CheckUnitPathForAmbiguousPascalFiles ',CurUnitName,' ',CurFilename]);
       // check if unit already found

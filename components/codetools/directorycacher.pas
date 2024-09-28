@@ -726,7 +726,7 @@ begin
     UnitLinkLen:=UnitLinkEnd-UnitLinkStart;
     if UnitLinkLen>0 then begin
       TheUnitName:=copy(UnitLinks,UnitLinkStart,UnitLinkLen);
-      if LazIsValidIdent(TheUnitName,true,true) then begin
+      if IsValidIdent(TheUnitName,true,true) then begin
         UnitLinkStart:=UnitLinkEnd+1;
         UnitLinkEnd:=UnitLinkStart;
         while (UnitLinkEnd<=length(UnitLinks))
@@ -1761,7 +1761,7 @@ begin
             aNameSpace:=NameSpaces;
             NameSpaces:='';
           end;
-          if LazIsValidIdent(aNameSpace,true,true) then begin
+          if IsValidIdent(aNameSpace,true,true) then begin
             aName:=aNameSpace+'.'+AUnitName;
             Result:=FindUnitSourceInCompletePath(aName,InFilename,AnyCase,
               FPCSrcSearchRequiresPPU,'');

@@ -37,7 +37,7 @@ uses
   // LazControls
   CheckBoxThemed,
   // LazUtils
-  FileUtil, StringHashList, LazMethodList, LazLoggerBase, LazUtilities, LazStringUtils,
+  FileUtil, StringHashList, LazMethodList, LazLoggerBase, LazUtilities,
   GraphType, FPCAdds, // for StrToQWord in older fpc versions
   // IdeIntf
   ObjInspStrConsts, PropEditUtils, TextTools,
@@ -5485,7 +5485,7 @@ var
 begin
   NewMethodName := GetValue;
   {$IFDEF VerboseMethodPropEdit}
-  debugln(['TMethodPropertyEditor.Edit OldValue="',NewMethodName,'" FromLookupRoot=',(LazIsValidIdent(NewMethodName, True, True) and PropertyHook.MethodFromLookupRoot(GetMethodValue))]);
+  debugln(['TMethodPropertyEditor.Edit OldValue="',NewMethodName,'" FromLookupRoot=',(IsValidIdent(NewMethodName, True, True) and PropertyHook.MethodFromLookupRoot(GetMethodValue))]);
   DumpStack;
   {$ENDIF}
   if IsValidIdent(NewMethodName)
@@ -7017,7 +7017,7 @@ var
 begin
   Result.Code := nil;
   Result.Data := nil;
-  if LazIsValidIdent(aName,true,true) and Assigned(ATypeInfo) then
+  if IsValidIdent(aName,true,true) and Assigned(ATypeInfo) then
   begin
     i := GetHandlerCount(htCreateMethod);
     while GetNextHandlerIndex(htCreateMethod, i) do

@@ -66,7 +66,7 @@ uses
   LCLType, LclIntf, Forms, Controls, StdCtrls, Dialogs, ComCtrls,
   ActnList, XMLPropStorage, ExtCtrls,
   // LazUtils
-  LazFileUtils, LazStringUtils, LazFileCache, LazLoggerBase, LazTracer,
+  LazFileUtils, LazFileCache, LazLoggerBase, LazTracer,
   // Codetools
   CodeToolManager, FileProcs,
   // IDEIntf
@@ -389,7 +389,7 @@ begin
   CurOwner:=nil;
   CurProject:=nil;
   CurPkg:=nil;
-  if LazIsValidIdent(IDEItem,true) then begin
+  if IsValidIdent(IDEItem,true,true) then begin
     // package
     CurPkg:=PackageEditingInterface.FindPackageWithName(IDEItem);
     CurOwner:=CurPkg;

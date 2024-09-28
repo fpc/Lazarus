@@ -3003,7 +3003,7 @@ begin
   {$ENDIF}
   if (TreeOfPCodeXYPosition=nil) or (TreeOfPCodeXYPosition.Count=0) then
     exit(true);
-  if not LazIsValidIdent(NewIdentifier,True,True) then exit;
+  if not IsValidIdent(NewIdentifier,True,True) then exit;
 
   ClearCurCodeTool;
   SourceChangeCache.Clear;

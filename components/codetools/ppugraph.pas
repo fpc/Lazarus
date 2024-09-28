@@ -35,9 +35,9 @@ uses
   dynlibs,
   {$ENDIF}
   // LazUtils
-  LazStringUtils, LazUTF8,
+  LazUTF8, LazFileUtils,
   // Codetools
-  PPUParser, CodeTree, FileProcs, LazFileUtils, BasicCodeTools, CodeGraph,
+  PPUParser, CodeTree, FileProcs, BasicCodeTools, CodeGraph,
   CodeToolManager, CodeToolsStructs;
 
 const
@@ -671,7 +671,7 @@ begin
             System.Delete(GroupName,i,1);
         if (Groupname='') then continue;
         Groupname:=FPCPPUGroupPrefix+LowerCase(Groupname);
-        if (not LazIsValidIdent(Groupname,true,true)) then continue;
+        if (not IsValidIdent(Groupname,true,true)) then continue;
         AddFPCGroup(GroupName,AppendPathDelim(FPCPPUBaseDir)+FileInfo.Name);
       end;
     until FindNextUTF8(FileInfo)<>0;
@@ -700,7 +700,7 @@ begin
       if not FilenameExtIs(Filename,'ppu',true) then continue;
       AUnitName:=ExtractFileNameOnly(Filename);
       Filename:=AppendPathDelim(Directory)+Filename;
-      if not LazIsValidIdent(AUnitName,true,true) then begin
+      if not IsValidIdent(AUnitName,true,true) then begin
         DebugLn(['TPPUGroups.AddFPCGroup NOTE: invalid ppu name: ',Filename]);
         continue;
       end;
