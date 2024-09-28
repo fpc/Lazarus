@@ -37,6 +37,7 @@ type
     FViewWindowColor: TColor;
     FViewWindowTextColor: TColor;
     procedure EditorReconfigured(Sender: TObject);
+    function FindMiniMapForEditor(aEditor: TSourceEditorInterface): TMiniMapControl;
     function GetMiniMap(aIndex : Integer): TMiniMapControl;
     procedure SetAlignLeft(AValue: Boolean);
     procedure SetEnabled(AValue: Boolean);
@@ -106,6 +107,23 @@ begin
   FNeedSave:=True;
 end;
 
+function TMinimapController.FindMiniMapForEditor(aEditor : TSourceEditorInterface) : TMiniMapControl;
+
+var
+  Idx : integer;
+
+begin
+  Result:=Nil;
+  Idx:=MiniMapCount-1;
+  While (Result=Nil) and (Idx>=0) do
+    begin
+    Result:=MiniMaps[Idx];
+    if Result.SourceEditor<>aEditor then
+      Result:=Nil;
+    Dec(Idx);
+    end;
+end;
+
 procedure TMinimapController.EditorReconfigured(Sender: TObject);
 
 var
@@ -171,6 +189,8 @@ var
   Panel : TMiniMapControl;
 
 begin
+  if FindMiniMapForEditor(Editor)<>Nil then
+    exit;
   EditorWindow:=SourceEditorManagerIntf.SourceWindowWithEditor(Editor);
   Panel:=TMiniMapControl.Create(EditorWindow);
   FList.Add(Panel);
