@@ -61,7 +61,7 @@ uses
   SynEditHighlighter, SynEditHighlighterFoldBase, SynHighlighterPas,
   SynEditMarkupHighAll, SynEditKeyCmds, SynEditMarkupIfDef, SynEditMiscProcs,
   SynPluginMultiCaret, SynEditPointClasses,
-  SynEditMarkupFoldColoring, SynEditTextTabExpander,
+  SynEditMarkupFoldColoring, SynEditTextTabExpander, SynEditMouseCmds,
   etSrcEditMarks, LazarusIDEStrConsts;
 
 type
@@ -258,6 +258,7 @@ type
     FOnIfdefNodeStateRequest: TSynMarkupIfdefStateRequest;
     FMarkupIfDef: TSourceSynEditMarkupIfDef;
     FTopInfoDisplay: TSourceLazSynTopInfoView;
+    FMouseTopLineDownPos: TPoint;
     FTopInfoLastTopLine: Integer;
     FSrcSynCaretChangedLock, FSrcSynCaretChangedNeeded: boolean;
     FExtraMarkupLine: TSynEditMarkupSpecialLine;
@@ -265,6 +266,8 @@ type
     FTopInfoMarkup: TSynSelectedColor;
     FUserWordsList: TFPList;
 
+    function CatchMouseForTopInforLine(var AnInfo: TSynEditMouseActionInfo;
+      HandleActionProc: TSynEditMouseActionHandler): Boolean;
     function DoIfDefNodeStateRequest(Sender: TObject; LinePos,
       XStartPos: Integer; CurrentState: TSynMarkupIfdefNodeStateEx): TSynMarkupIfdefNodeState;
     function GetHighlightUserWordCount: Integer;
@@ -1714,6 +1717,38 @@ begin
     Result := idnInvalid;
 end;
 
+function TIDESynEditor.CatchMouseForTopInforLine(var AnInfo: TSynEditMouseActionInfo;
+  HandleActionProc: TSynEditMouseActionHandler): Boolean;
+var
+  p: TPoint;
+  l: LongInt;
+begin
+  Result :=
+    AnInfo.MouseY < TSourceLazSynSurfaceManager(FPaintArea).ExtraManager.Bounds.Bottom;
+  if not Result then
+    exit;
+
+  if AnInfo.Button <> TSynMouseButton.mbLeft then
+    exit;
+
+  p := TSourceLazSynSurfaceManager(FPaintArea).ExtraManager.TextArea.PixelsToRowColumn(Point(AnInfo.MouseX, AnInfo.MouseY), []);
+
+  if AnInfo.Dir = cdDown then begin
+    FMouseTopLineDownPos := p;
+    exit;
+  end;
+
+  if (p.y <> FMouseTopLineDownPos.Y) or (abs(p.X - FMouseTopLineDownPos.x) > 1) then
+    exit;
+
+  if (p.y < 0) or (p.y >= FTopInfoDisplay.LineMapCount) then
+    exit;
+
+  l := ToPos(FTopInfoDisplay.LineMap[p.y]);
+  TopLine := l+1;
+  CaretXY := Point(p.X, l);
+end;
+
 procedure TIDESynEditor.InvalidateAllIfdefNodes;
 begin
   FMarkupIfDef.InvalidateAll;
@@ -1819,6 +1854,7 @@ begin
   TSourceLazSynSurfaceManager(FPaintArea).TopLineCount := 0;
 //  TSourceLazSynSurfaceManager(FPaintArea).ExtraManager.TextArea.BackgroundColor := clSilver;
   TSourceLazSynSurfaceManager(FPaintArea).ExtraManager.DisplayView := FTopInfoDisplay;
+  RegisterMouseActionSearchHandler(@CatchMouseForTopInforLine);
 
   FTopInfoNestList := TLazSynEditNestedFoldsList.Create(TextBuffer);
   FTopInfoNestList.ResetFilter;
@@ -1849,6 +1885,7 @@ end;
 
 destructor TIDESynEditor.Destroy;
 begin
+  UnRegisterMouseActionSearchHandler(@CatchMouseForTopInforLine);
   ViewedTextBuffer.RemoveChangeHandler(senrHighlightChanged, @DoHighlightChanged);
   HighlightUserWordCount := 0;
   Highlighter := nil;
