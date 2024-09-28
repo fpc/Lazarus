@@ -110,8 +110,8 @@ Type
     // For search
     function DoMySQLResultCommand(const aCmd: String;  aOnResult: TMCSearchResultCallBack; aData: Pointer) : Integer;
     // HTTP-based commands
-    function CreateHTTPCmdURL(aCmd: String): string;
-    function ExecuteHTTPCommand(const aCommand: String): String; virtual;
+    function CreateHTTPCmdURL(aCmd: String; IsSelect: Boolean): string;
+    function ExecuteHTTPCommand(const aCommand: String; IsSelect: Boolean): String; virtual;
     function ExecuteHTTPCommandResult(const aCmd: String): TJSONArray;
     Procedure DoHTTPSingleColCommand(const aCmd: String; aList : TStrings);
     // For search
@@ -152,7 +152,7 @@ Type
     // Delete the source tree in the index.
     Procedure DeleteTree(const aTree : String);
     // Execute an arbitrary ManticoreSearch command
-    procedure ExecuteCommand(const aCommand: String);
+    procedure ExecuteCommand(const aCommand: String; IsSelect: Boolean);
     // See if extension is in list of extensions
     function AllowExtension(aExtension: String): Boolean;
     // Index a source file aFile in source tree aTree.
@@ -203,7 +203,7 @@ Const
 
 implementation
 
-uses fphttpclient;
+uses fphttpclient, httpprotocol;
 
 { TMCToArrayConverter }
 
@@ -520,7 +520,7 @@ var
 
 begin
   aData:=Nil;
-  lJSON:=ExecuteHTTPCommand(aCmd);
+  lJSON:=ExecuteHTTPCommand(aCmd,True);
   try
     aData:=GetJSON(lJSON);
     if aData is TJSONArray then
@@ -562,33 +562,37 @@ begin
       end;
 end;
 
-function TManticoreSearchSources.CreateHTTPCmdURL(aCmd : String) : string;
+function TManticoreSearchSources.CreateHTTPCmdURL(aCmd : String; IsSelect : Boolean) : string;
 
 
   Function EscapeHTML(aCmd : string) : String;
 
   begin
-    Result:=StringReplace(aCmd,' ','%20',[rfReplaceAll]);
+    Result:=HTTPEncode(aCmd);
   end;
 
 
 Const
-  // BaseURL = 'http://%s:%d/cli?%s';
   // Use SQL query, to return JSON
-  BaseURL = 'http://%s:%d/sql?mode=raw&query=%s';
+  BaseSelectURL = 'http://%s:%d/sql?mode=raw&query=%s';
+  BaseCliURL = 'http://%s:%d/cli?%s';
+
 Var
-  lCmd,lHostName : String;
+  lBase,lCmd,lHostName : String;
 
 begin
+  if IsSelect then
+    lBase:=BaseSelectURL
+  else
+    lBase:=BaseCliURL;
   lHostName:=HostName;
   if lHostName='' then
     lHostName:='127.0.0.1';
   lCmd:=EscapeHTML(aCmd);
-  Result:=Format(BaseURL,[lHostName,GetTransportPort(mctHttp),lCmd]);
+  Result:=Format(lBase,[lHostName,GetTransportPort(mctHttp),lCmd]);
 end;
 
-function TManticoreSearchSources.ExecuteHTTPCommand(
-  const aCommand: String) : String;
+function TManticoreSearchSources.ExecuteHTTPCommand(const aCommand: String; IsSelect : Boolean) : String;
 
 Var
   HTTP : TFPHTTPClient;
@@ -599,7 +603,7 @@ begin
   EM:=nil;
   HTTP:=TFPHTTPClient.Create(Self);
   try
-    aURL:=CreateHTTPCmdURL(aCommand);
+    aURL:=CreateHTTPCmdURL(aCommand,IsSelect);
     DoLog(mlkDebug,'Getting URL: '+aURL);
     Result:=HTTP.Get(aURL);
   except
@@ -611,14 +615,14 @@ begin
     Raise EM;
 end;
 
-procedure TManticoreSearchSources.ExecuteCommand(const aCommand: String);
+procedure TManticoreSearchSources.ExecuteCommand(const aCommand: String; IsSelect : Boolean);
 
 begin
   DoLog(mlkDebug,'Executing command '+aCommand);
   if FProtocol=mctMysql then
     ExecuteMySQLCommand(aCommand)
   else
-    ExecuteHTTPCommand(aCommand);
+    ExecuteHTTPCommand(aCommand, isSelect);
 end;
 
 
@@ -685,7 +689,7 @@ begin
       Inc(aLineNo);
       ReadLn(F,aLine);
       lSQL:=Format(SQL,[IndexName,lTree,lFile,aLineNo,Escape(aLine)]);
-      ExecuteCommand(lsql);
+      ExecuteCommand(lsql,False);
       end;
     CloseFile(F);
     if DoTrans then
@@ -1002,12 +1006,12 @@ begin
   lIndex:=aIndexName;
   if lIndex='' then
     lIndex:=Self.IndexName;
-  ExecuteCommand('CREATE TABLE '+lIndex+' '+GetIndexSQL);
+  ExecuteCommand('CREATE TABLE '+lIndex+' '+GetIndexSQL,False);
 end;
 
 procedure TManticoreSearchSources.TruncateIndex;
 begin
-  ExecuteCommand('TRUNCATE TABLE '+IndexName);
+  ExecuteCommand('TRUNCATE TABLE '+IndexName,False);
 end;
 
 procedure TManticoreSearchSources.DeleteIndex;
@@ -1017,7 +1021,7 @@ end;
 
 procedure TManticoreSearchSources.DeleteIndex(const aIndexName : string);
 begin
-  ExecuteCommand('DROP TABLE '+aIndexName);
+  ExecuteCommand('DROP TABLE '+aIndexName,False);
 end;
 
 
@@ -1063,7 +1067,7 @@ end;
 
 procedure TManticoreSearchSources.DeleteTree(const aTree: String);
 begin
-  ExecuteCommand('DELETE FROM '+IndexName+' where (tree='''+Escape(aTree)+''');');
+  ExecuteCommand('DELETE FROM '+IndexName+' where (tree='''+Escape(aTree)+''');',False);
 end;
 
 end.

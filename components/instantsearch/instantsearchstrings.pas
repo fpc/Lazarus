@@ -107,7 +107,7 @@ Resourcestring
   lrsSave = 'Yes, save settings';
   lrsIndexOperationFailed = 'Failed to start index operation.';
   lrsCannotIndexIndexInProgress = 'Cannot start an index operation while another one is in progress.';
-  lrsFinishedIndexingTree = 'Finished indexing tree "%s". Processed %d files.';
+  lrsFinishedIndexingTree = 'Finished indexing tree "%s". Processed %d files in %d minutes.';
   lrsStartIndexingTree = 'Start indexing tree "%s", directory: "%s"';
   lrsIndexingTreeFileCount = 'Tree "%s", indexed file count: %d';
   lrsFinishedIndexingProject = 'Finished indexing project "%s". Processed %d files.';

@@ -210,7 +210,7 @@ Function IDEInstantSearchManager : TIDEInstantSearchManager;
 
 implementation
 
-uses TypInfo, Strutils, IDEExternToolIntf, MacroIntf, IDEOptionsIntf, instantsearchstrings;
+uses TypInfo, DateUtils, Strutils, IDEExternToolIntf, MacroIntf, IDEOptionsIntf, instantsearchstrings;
 
 function IDEInstantSearchManager: TIDEInstantSearchManager;
 begin
@@ -415,7 +415,7 @@ procedure TInstantSearchIndexTreeThread.Execute;
 var
   I,aCount : Integer;
   aTree : TSourceTreeDefinition;
-
+  aStart,aEnd : TDateTime;
 begin
   For I:=0 to FTrees.Count-1 do
     try
@@ -423,8 +423,10 @@ begin
       aTree:=FTrees[i];
       FCurrentTree:=aTree.Name;
       DoLog(mlkProgress,lrsStartIndexingTree,[FCurrentTree,aTree.BaseDir]);
+      aStart:=Now;
       aCount:=IndexTree(aTree);
-      DoLog(mlkProgress,lrsFinishedIndexingTree,[FCurrentTree,aCount]);
+      aEnd:=Now;
+      DoLog(mlkProgress,lrsFinishedIndexingTree,[FCurrentTree,aCount,MinutesBetween(aEnd,aStart)]);
       if Terminated then
         Break;
     except
