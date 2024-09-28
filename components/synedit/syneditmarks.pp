@@ -519,13 +519,22 @@ procedure TSynEditBookMark.SetTopLeft(ATop, ALeft: integer);
 begin
   if (ATop <= 0) or (ALeft <= 0) then
     exit;
-  FTopLeftMark := TSynEditTopLeftMark.Create(OwnerEdit);
-  TSynEditTopLeftMark(FTopLeftMark).FBookMark := Self;
-  FTopLeftMark.Line := ATop;
-  FTopLeftMark.Column := ALeft;
 
-  if (FMarkList <> nil) then
-    FMarkList.Add(FTopLeftMark);
+  if FTopLeftMark = nil then begin
+    FTopLeftMark := TSynEditTopLeftMark.Create(OwnerEdit);
+    TSynEditTopLeftMark(FTopLeftMark).FBookMark := Self;
+
+    FTopLeftMark.Line := ATop;
+    FTopLeftMark.Column := ALeft;
+
+    if (FMarkList <> nil) then
+      FMarkList.Add(FTopLeftMark);
+  end
+  else
+  if (FTopLeftMark.Line <> ATop) or (FTopLeftMark.Column <> ALeft) then begin
+    FTopLeftMark.Line   := ATop;
+    FTopLeftMark.Column := ALeft;
+  end;
 end;
 
 { TSynEditBookMark.TSynEditTopLeftMark }
