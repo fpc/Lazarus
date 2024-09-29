@@ -212,6 +212,7 @@ begin
   if Assigned(Map) then
     begin
     Map.UnHook;
+    Map.Hide;
     Application.ReleaseComponent(Map);
     end;
 end;
