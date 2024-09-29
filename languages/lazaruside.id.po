@@ -1814,8 +1814,9 @@ msgctxt "lazarusidestrconsts.dlgenvlanguage"
 msgid "Language"
 msgstr "Bahasa"
 
-#: lazarusidestrconsts.dlgenvlanguagehint
-msgid "Restart the IDE to complete the language change"
+#: lazarusidestrconsts.dlgenvlanguagerestarthint
+msgctxt "lazarusidestrconsts.dlgenvlanguagerestarthint"
+msgid "Restart the IDE to complete the language change."
 msgstr ""
 
 #: lazarusidestrconsts.dlgenvlguidelines
@@ -5730,7 +5731,7 @@ msgid "Build IDE"
 msgstr ""
 
 #: lazarusidestrconsts.lisbuildidewithpackages
-msgid "Build IDE with packages."
+msgid "Build IDE with packages. Optional compiler options will be passed after the options from used build mode and can be specified here or with the --opt option."
 msgstr ""
 
 #: lazarusidestrconsts.lisbuilding
@@ -9799,6 +9800,10 @@ msgctxt "lazarusidestrconsts.lisextractprocedure"
 msgid "Extract Procedure"
 msgstr "Ekstraks prosedur"
 
+#: lazarusidestrconsts.lisextraopts
+msgid "Pass additional options to the compiler. Can be given multiple times. If compilation options are also specified in --build-ide, then the options from --opt will be added after them."
+msgstr ""
+
 #: lazarusidestrconsts.lisextremelyverbose
 msgid "Extremely Verbose"
 msgstr ""
@@ -10435,7 +10440,7 @@ msgid "Print a list of build modes in the project. Active mode is listed first."
 msgstr ""
 
 #: lazarusidestrconsts.lisgetexpandtext
-msgid "Print the result of substituting macros in the text. The absence of macros in the text means the name of the macro. By default, active build mode is used."
+msgid "Print the result of substituting macros in the text. The absence of macros means the name of the macro. In case of an error, returns only the text with partially expanded macros and sets the error code (also for an empty string). Takes into account the active (or specified via --bm option) build mode."
 msgstr ""
 
 #: lazarusidestrconsts.lisgetwordatcurrentcursorposition

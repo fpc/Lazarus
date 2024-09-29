@@ -1794,11 +1794,10 @@ msgctxt "lazarusidestrconsts.dlgenvlanguage"
 msgid "Language"
 msgstr "Jazyk"
 
-#: lazarusidestrconsts.dlgenvlanguagehint
-#, fuzzy
-#| msgid "Language of all IDE strings. Restart IDE after changing it for best result."
-msgid "Restart the IDE to complete the language change"
-msgstr "Jazyk všech řetězců IDE. Pro nejlepší výsledek restartovat po změně IDE."
+#: lazarusidestrconsts.dlgenvlanguagerestarthint
+msgctxt "lazarusidestrconsts.dlgenvlanguagerestarthint"
+msgid "Restart the IDE to complete the language change."
+msgstr ""
 
 #: lazarusidestrconsts.dlgenvlguidelines
 msgid "Guide lines"
@@ -5601,7 +5600,7 @@ msgstr "Sestavit IDE"
 #: lazarusidestrconsts.lisbuildidewithpackages
 #, fuzzy
 #| msgid "build IDE with packages"
-msgid "Build IDE with packages."
+msgid "Build IDE with packages. Optional compiler options will be passed after the options from used build mode and can be specified here or with the --opt option."
 msgstr "sestavit IDE s balíčky"
 
 #: lazarusidestrconsts.lisbuilding
@@ -9621,6 +9620,10 @@ msgctxt "lazarusidestrconsts.lisextractprocedure"
 msgid "Extract Procedure"
 msgstr "Rozbalit proceduru"
 
+#: lazarusidestrconsts.lisextraopts
+msgid "Pass additional options to the compiler. Can be given multiple times. If compilation options are also specified in --build-ide, then the options from --opt will be added after them."
+msgstr ""
+
 #: lazarusidestrconsts.lisextremelyverbose
 msgid "Extremely Verbose"
 msgstr "Extrémně výřečný"
@@ -10261,7 +10264,7 @@ msgid "Print a list of build modes in the project. Active mode is listed first."
 msgstr ""
 
 #: lazarusidestrconsts.lisgetexpandtext
-msgid "Print the result of substituting macros in the text. The absence of macros in the text means the name of the macro. By default, active build mode is used."
+msgid "Print the result of substituting macros in the text. The absence of macros means the name of the macro. In case of an error, returns only the text with partially expanded macros and sets the error code (also for an empty string). Takes into account the active (or specified via --bm option) build mode."
 msgstr ""
 
 #: lazarusidestrconsts.lisgetwordatcurrentcursorposition
