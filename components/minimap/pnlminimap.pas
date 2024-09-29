@@ -47,7 +47,6 @@ Type
     procedure HandleLineMarkup(Sender: TObject; Line: integer; var Special: boolean; Markup: TSynSelectedColor); virtual;
     procedure HandleStatusChange(Sender: TObject; {%H-}Changes: TSynStatusChanges); virtual;
     Procedure HandleClick({%H-}aSender : TObject); virtual;
-    procedure HandleEditorDestroy(Sender: TObject); virtual;
     Procedure SyncViewWindow;
     Property MiniSynEdit : TSynEdit Read FMiniSynEdit;
     Property SourceSynEdit : TCustomSynEdit Read FSourceSynEdit;
@@ -241,12 +240,6 @@ begin
 //  FMiniSynEdit.Gutter.Parts[4].Visible := False; // code folding disabled.
 end;
 
-procedure TMiniMapControl.HandleEditorDestroy(Sender : TObject);
-
-begin
-  if (Sender=FSourceEditor) then
-    Unhook;
-end;
 
 constructor TMiniMapControl.Create(aOwner: TComponent);
 begin
