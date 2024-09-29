@@ -172,14 +172,14 @@ resourcestring
     'info file after build. If not specified, build number will be incremented '+
     'if configured.';
 
-  lisExtraOpts = 'Pass additional options to the compiler, can be specified '+
+  lisExtraOpts = 'Pass additional options to the compiler. Can be given '+
     'multiple times. If compilation options are also specified in --build-ide, '+
     'then the options from --opt will be added after them.';
   lisGetExpandText = 'Print the result of substituting macros in the text. '+
     'The absence of macros means the name of the macro. '+
     'In case of an error, returns only the text with partially expanded macros '+
     'and sets the error code (also for an empty string). '+
-    'Takes into account the active build mode (or specified via "--bm").';
+    'Takes into account the active (or specified via --bm option) build mode.';
   lisGetBuildModes = 'Print a list of build modes in the project. Active mode is listed first.';
 
   lisLazbuildOptionsSyntax = 'lazbuild [options] <project/package filename or package name>';
@@ -1247,7 +1247,7 @@ resourcestring
 
   // IDE General options
   dlgEnvLanguage = 'Language';
-  dlgEnvLanguageRestartHint = 'Restart the IDE to complete the language change'; // If changed update the copy in procedure TDesktopOptionsFrame.LanguageComboBoxChange
+  dlgEnvLanguageRestartHint = 'Restart the IDE to complete the language change.'; // If changed update the copy in procedure TDesktopOptionsFrame.LanguageComboBoxChange
   dlgCheckAndAutoSaveFiles = 'Check and Auto Save Files';
   lisAskBeforeSavingProjectSSession = 'Ask before saving project''s session';
   lisIfOnlySessionInfoChangedThenAsk = 'If only the session info changed, ask about saving it.';
@@ -5344,8 +5344,8 @@ resourcestring
   lisWriteWhatPackageFilesAreS = 'Write what package files are searched and '
     +'found.';
   lisBuildIDEWithPackages = 'Build IDE with packages. Optional compiler options '+
-    'can be specified to be passed after the build mode options, or they can be '+
-    'specified with the --opt option';
+    'will be passed after the options from used build mode and can be specified here or '+
+    'with the --opt option.';
   lisShowVersionAndExit = 'Show version and exit.';
   lisBeLessVerboseCanBeGivenMultipleTimes = 'Be less verbose. Can be given '
     +'multiple times.';
