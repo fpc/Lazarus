@@ -2920,6 +2920,8 @@ resourcestring
   uepSelNorm='Def';
   uepSelLine='Line';
   uepSelCol ='Col';
+  uepSelChars ='%d chars';
+  uepSelCxChars ='%d * %d';
   lisUEFontWith = 'Font without UTF-8';
   lisUETheCurre = 'The current editor font does not support UTF-8 but your system seems to use it.'
     +'%sThat means non ASCII characters will probably be shown incorrectly.'

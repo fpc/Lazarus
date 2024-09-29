@@ -9152,6 +9152,7 @@ var
   PanelXY: string;
   PanelFileMode, PanelSelMode: string;
   CurEditor: TSynEdit;
+  bb, be: TPoint;
 begin
   if FUpdateLock > 0 then begin
     include(FUpdateFlags, ufStatusBar);
@@ -9230,8 +9231,20 @@ begin
       smLine:   PanelSelMode := uepSelLine;
       smColumn: PanelSelMode := uepSelCol;
     end;
-    if (PanelSelMode<>'') and not CurEditor.SelAvail then
-      PanelSelMode := '('+PanelSelMode+')';
+    if CurEditor.SelAvail then begin
+      PanelSelMode := PanelSelMode + ': ';
+      case CurEditor.SelectionMode of
+        smNormal: PanelSelMode := PanelSelMode + Format(uepSelChars, [Length(CurEditor.SelText)]);
+        smLine:   PanelSelMode := PanelSelMode + Format(uepSelChars, [Length(CurEditor.SelText)]);
+        smColumn: begin
+          bb := CurEditor.LogicalToPhysicalPos(CurEditor.BlockBegin);
+          be := CurEditor.LogicalToPhysicalPos(CurEditor.BlockEnd);
+          PanelSelMode := PanelSelMode + Format(uepSelCxChars, [abs(be.X - bb.X), abs(be.Y - bb.Y)+1]);
+        end;
+      end;
+    end
+    else
+      PanelSelMode := PanelSelMode + ': -';
     if CurEditor.IsStickySelecting then
       PanelSelMode := '* '+PanelSelMode;
 
@@ -9249,6 +9262,9 @@ begin
     Statusbar.Panels[4].Text := PanelSelMode;
     if PanelSelMode = '' then
       Statusbar.Panels[4].Width := 0
+    else
+    if CurEditor.SelAvail then
+      Statusbar.Panels[4].Width := 100
     else
       Statusbar.Panels[4].Width := 50;
     Statusbar.Panels[5].Text := PanelFilename;
