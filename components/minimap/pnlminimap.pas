@@ -15,7 +15,8 @@ interface
 
 uses
   Classes, SysUtils, Controls, ExtCtrls, SynEdit, SrcEditorIntf, Graphics, lclType,
-  SynEditMarkupSpecialLine, SynEditTypes, SynEditMiscClasses, SynEditMarkupBracket, LazLogger;
+  SynEditMarkupSpecialLine, SynEditTypes, SynEditMiscClasses, SynEditMarkupBracket, LazLogger,
+  LazLoggerBase;
 
 Const
   DefaultViewFontSize        = 3;
@@ -41,7 +42,6 @@ Type
     procedure SetViewWindowColor(AValue: TColor);
     procedure SetViewWindowTextColor(AValue: TColor);
     procedure SyncMiniMapProps;
-    procedure UnHook;
   Protected
     // Event handlers
     procedure HandleLineMarkup(Sender: TObject; Line: integer; var Special: boolean; Markup: TSynSelectedColor); virtual;
@@ -55,6 +55,7 @@ Type
     constructor Create(aOwner : TComponent); override;
     destructor Destroy; override;
     Procedure Reconfigure;
+    procedure UnHook;
     Property SourceEditor: TSourceEditorInterface Read FSourceEditor Write SetSourceEditor;
     Property ViewWindowColor : TColor Read FViewWindowColor Write SetViewWindowColor;
     Property ViewWindowTextColor:TColor Read FViewWindowTextColor Write SetViewWindowTextColor;
@@ -257,7 +258,6 @@ begin
   FViewFontSize:=DefaultViewFontSize;
   FViewWindowColor:=DefaultViewWindowColor;
   FViewWindowTextColor:=DefaultViewWindowTextColor;
-  SourceEditorManagerIntf.RegisterChangeEvent(semEditorDestroy, @HandleEditorDestroy);
   ConfigMiniEdit;
 end;
 
@@ -269,7 +269,6 @@ begin
     exit;
   FMiniSynedit.UnShareTextBuffer;
   FSourceSynEdit.UnRegisterStatusChangedHandler(@HandleStatusChange);
-  SourceEditorManagerIntf.UnRegisterChangeEvent(semEditorDestroy, @HandleEditorDestroy);
   FSourceSynEdit:=nil;
   FSourceEditor:=nil;
 end;
