@@ -15,7 +15,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, StdCtrls, ColorBox, Dialogs, SpinEx,
-  IDEOptionsIntf, IDEOptEditorIntf, IDEUtils, IDEDialogs;
+  IDEOptionsIntf, IDEOptEditorIntf;
 
 type
 

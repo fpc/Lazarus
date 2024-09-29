@@ -15,7 +15,7 @@ interface
 
 uses
   Classes, SysUtils, Controls, ExtCtrls, SynEdit, SrcEditorIntf, Graphics, lclType,
-  SynEditMarkupSpecialLine, SynEditTypes, SynEditMiscClasses, SynEditMarkupBracket;
+  SynEditMarkupSpecialLine, SynEditTypes, SynEditMiscClasses, SynEditMarkupBracket, LazLogger;
 
 Const
   DefaultViewFontSize        = 3;
@@ -45,15 +45,15 @@ Type
   Protected
     // Event handlers
     procedure HandleLineMarkup(Sender: TObject; Line: integer; var Special: boolean; Markup: TSynSelectedColor); virtual;
-    procedure HandleStatusChange(Sender: TObject; Changes: TSynStatusChanges); virtual;
-    Procedure HandleClick(aSender : TObject); virtual;
+    procedure HandleStatusChange(Sender: TObject; {%H-}Changes: TSynStatusChanges); virtual;
+    Procedure HandleClick({%H-}aSender : TObject); virtual;
     procedure HandleEditorDestroy(Sender: TObject); virtual;
     Procedure SyncViewWindow;
     Property MiniSynEdit : TSynEdit Read FMiniSynEdit;
     Property SourceSynEdit : TCustomSynEdit Read FSourceSynEdit;
   Public
-    constructor create(aOwner : TComponent); override;
-    destructor destroy; override;
+    constructor Create(aOwner : TComponent); override;
+    destructor Destroy; override;
     Procedure Reconfigure;
     Property SourceEditor: TSourceEditorInterface Read FSourceEditor Write SetSourceEditor;
     Property ViewWindowColor : TColor Read FViewWindowColor Write SetViewWindowColor;
@@ -186,7 +186,7 @@ begin
     ParentColor:=False;
     ParentFont:=False;
 
-    Font.Name := 'Courier New';
+    Font.Name := SynDefaultFontName;
     Font.Pitch := fpFixed;
     Font.Quality := fqNonAntialiased;
     Gutter.Visible := False;
@@ -247,7 +247,7 @@ begin
     Unhook;
 end;
 
-constructor TMiniMapControl.create(aOwner: TComponent);
+constructor TMiniMapControl.Create(aOwner: TComponent);
 begin
   Inherited;
   BevelInner:=bvNone;
@@ -274,7 +274,7 @@ begin
   FSourceEditor:=nil;
 end;
 
-destructor TMiniMapControl.destroy;
+destructor TMiniMapControl.Destroy;
 begin
   Unhook;
   inherited destroy;

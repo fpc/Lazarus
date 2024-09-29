@@ -14,7 +14,8 @@ unit CtrlMiniMap;
 interface
 
 uses
-  Classes, SysUtils, Graphics, IDEOptEditorIntf, SrcEditorIntf, LazConfigStorage, pnlMiniMap;
+  Classes, SysUtils, Graphics, IDEOptEditorIntf, SrcEditorIntf, LazConfigStorage, LazLogger,
+  pnlMiniMap;
 
 const
   DefaultEnabled = True;
@@ -214,7 +215,7 @@ begin
   aPanel.Width:=MapWidth;
   aPanel.ViewWindowColor:=ViewWindowColor;
   aPanel.ViewWindowTextColor:=ViewWindowTextColor;
-  If aFull then
+  if aFull then
     aPanel.ViewFontSize:=InitialViewFontSize;
 end;
 
@@ -229,7 +230,6 @@ begin
   FAlignLeft:=DefaultAlignLeft;
   Enabled:=True;
 end;
-
 
 destructor TMinimapController.Destroy;
 begin

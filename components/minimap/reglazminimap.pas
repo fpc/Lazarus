@@ -7,7 +7,7 @@ interface
 uses
   CtrlMiniMap, Forms;
 
-procedure register;
+procedure Register;
 
 implementation
 
@@ -16,7 +16,7 @@ uses fraMiniMapConfig, IDEOptionsIntf, IDEOptEditorIntf;
 var
   MiniMapOptionsFrameID : integer = 2100;
 
-procedure register;
+procedure Register;
 
 begin
   MiniMapController:=TMinimapController.Create(Application);
