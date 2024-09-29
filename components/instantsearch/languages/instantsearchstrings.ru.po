@@ -184,10 +184,9 @@ msgid "Finished indexing project \"%s\". Processed %d files."
 msgstr "Индексирование проекта \"%s\" завершено. Обработано файлов: %d."
 
 #: instantsearchstrings.lrsfinishedindexingtree
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Finished indexing tree \"%s\". Processed %d files."
+#, object-pascal-format
 msgid "Finished indexing tree \"%s\". Processed %d files in %d minutes."
-msgstr "Индексирование дерева \"%s\" завершено. Обработано файлов: %d."
+msgstr "Индексирование дерева \"%s\" завершено. Файлы (%d шт.) обработаны за %d мин."
 
 #: instantsearchstrings.lrshost
 msgid "Hostname"
