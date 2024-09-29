@@ -706,7 +706,6 @@ var
 begin
   FAppIdleLocked := True;
   try
-    I := 0;
     xDelete := False;
     for I := 0 to FPanel.ControlCount-1 do
     begin
