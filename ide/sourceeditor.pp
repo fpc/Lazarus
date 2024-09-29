@@ -9244,6 +9244,7 @@ begin
       end;
     end
     else
+    if PanelSelMode <> '' then
       PanelSelMode := PanelSelMode + ': -';
     if CurEditor.IsStickySelecting then
       PanelSelMode := '* '+PanelSelMode;
