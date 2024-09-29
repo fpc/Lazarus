@@ -49,6 +49,7 @@ type
     procedure SetViewWindowTextColor(AValue: TColor);
   protected
     procedure NewEditorCreated(Sender: TObject);
+    procedure EditorDestroyed(Sender: TObject);
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure ConfigPanel(aPanel: TMiniMapControl; aFull: Boolean = False);
     Property MiniMaps[aIndex : Integer] : TMiniMapControl Read GetMiniMap;
@@ -91,6 +92,7 @@ begin
       SourceEditorManagerIntf.RegisterChangeEvent(semEditorMoved,@NewEditorCreated);
       SourceEditorManagerIntf.RegisterChangeEvent(semEditorCloned,@NewEditorCreated);
       SourceEditorManagerIntf.RegisterChangeEvent(semEditorReConfigured,@EditorReconfigured);
+      SourceEditorManagerIntf.RegisterChangeEvent(semEditorDestroy,@EditorDestroyed);
       end
     else
       begin
@@ -98,6 +100,7 @@ begin
       SourceEditorManagerIntf.UnRegisterChangeEvent(semEditorMoved,@NewEditorCreated);
       SourceEditorManagerIntf.UnRegisterChangeEvent(semEditorCloned,@NewEditorCreated);
       SourceEditorManagerIntf.UnRegisterChangeEvent(semEditorReConfigured,@EditorReconfigured);
+      SourceEditorManagerIntf.UnRegisterChangeEvent(semEditorDestroy,@EditorDestroyed);
       end;
 end;
 
@@ -199,6 +202,16 @@ begin
   Panel.SourceEditor:=Editor;
   ConfigPanel(Panel,True);
   EditorWindow.AddControlToEditor(Editor,Panel,Aligns[AlignLeft]);
+end;
+
+procedure TMinimapController.EditorDestroyed(Sender: TObject);
+var
+  Editor : TSourceEditorInterface absolute Sender;
+  Map : TMiniMapControl;
+begin
+  Map:=FindMiniMapForEditor(Editor);
+  if Assigned(Map) then
+    Application.ReleaseComponent(Map);
 end;
 
 procedure TMinimapController.Notification(AComponent: TComponent;
