@@ -1248,9 +1248,10 @@ var
   AForm: TCustomForm;
   W: PGtkWidget;
   Flags: TGdkWindowState;
-  B: Boolean;
   act: PGdkWindow;
-  nact: PGdkWindow;
+  ActTopLvlWnd: PGdkWindow;
+  FoundAct: Boolean;
+  //x,y, width, height, depth: Gint;
 begin
   Result := True;
   if StayOnTopList = nil then
@@ -1259,43 +1260,69 @@ begin
   // todo: all screens should be evaluated
   // depending on the screen of a window
   act:=gdk_screen_get_active_window(gdk_screen_get_default);
-  // act is typically returned for X11. other systems might
-  // not implement it.
-  nact:=act;
+  try
+    // act is typically returned for X11. other systems might
+    // not implement it.
 
-  for i := 0 to Screen.CustomFormZOrderCount - 1 do
-  begin
-    AForm := Screen.CustomFormsZOrdered[i];
-    if AForm.HandleAllocated then
+    ActTopLvlWnd:=act;
+    if ActTopLvlWnd<>nil then
+      ActTopLvlWnd:=gdk_window_get_toplevel(ActTopLvlWnd);
+
+    FoundAct:=false;
+    for i := 0 to Screen.CustomFormCount - 1 do
     begin
-      W := {%H-}PGtkWidget(AForm.Handle);
-      // do not raise assertion in case of invalid PGdkWindow
-      B := GDK_IS_WINDOW(W^.Window);
-      if B then
-        Flags := gdk_window_get_state(W^.Window);
-      if B and (AForm.Parent = nil) and
-        not (csDesigning in AForm.ComponentState) and
-        (AForm.FormStyle in TGtk2TopForms[ASystemTopAlso]) and
-         GTK_WIDGET_VISIBLE(W) and
-         not gtk_window_get_modal(PGtkWindow(W)) and
-         (Flags and GDK_WINDOW_STATE_ICONIFIED = 0) then
+      AForm := Screen.CustomFormsZOrdered[i];
+      if AForm.HandleAllocated and (AForm.Parent=nil) then
       begin
-        gdk_window_set_keep_above(W^.Window, False);
-        if Assigned(nact) then
-        begin
-          gdk_window_restack(W^.Window, nact, False);
-          nact:=W^.Window;
-        end
-        else begin
-          gdk_window_lower(W^.Window); // send to the bottom
-          gdk_window_raise(W^.Window); // restore back
-        end;
-        if not StayOnTopList.HasId(W) then
-          StayOnTopList.Add(W, W);
+        W := {%H-}PGtkWidget(AForm.Handle);
+        if W^.window=ActTopLvlWnd then
+          FoundAct:=true;
       end;
     end;
+
+    if (ActTopLvlWnd<>nil) and not FoundAct then
+    begin
+      // The active gdkwindow is not a form.
+      // The gdk_window_restack might kill us if we feed it junk, see issue 41041
+      // For example on LinuxMint 21 it was a window with geoemtry x=4502902 y=0 1x0
+      //gdk_window_get_geometry(ActTopLvlWnd,@x,@y,@width,@height,@depth);
+      //writeln('TGtk2WidgetSet.AppRemoveStayOnTopFlags x=',x,' y=',y,' ',width,'x',height);
+      ActTopLvlWnd:=nil;
+    end;
+
+    for i := 0 to Screen.CustomFormZOrderCount - 1 do
+    begin
+      AForm := Screen.CustomFormsZOrdered[i];
+      if AForm.HandleAllocated and (AForm.Parent=nil) then
+      begin
+        W := {%H-}PGtkWidget(AForm.Handle);
+        // do not raise assertion in case of invalid PGdkWindow
+        if not GDK_IS_WINDOW(W^.Window) then continue;
+        Flags := gdk_window_get_state(W^.Window);
+        if not (csDesigning in AForm.ComponentState) and
+          (AForm.FormStyle in TGtk2TopForms[ASystemTopAlso]) and
+           GTK_WIDGET_VISIBLE(W) and
+           not gtk_window_get_modal(PGtkWindow(W)) and
+           (Flags and GDK_WINDOW_STATE_ICONIFIED = 0) then
+        begin
+          gdk_window_set_keep_above(W^.Window, False);
+          if Assigned(ActTopLvlWnd) then
+          begin
+            gdk_window_restack(W^.Window, ActTopLvlWnd, False);
+            ActTopLvlWnd:=W^.Window;
+          end
+          else begin
+            gdk_window_lower(W^.Window); // send to the bottom
+            gdk_window_raise(W^.Window); // restore back
+          end;
+          if not StayOnTopList.HasId(W) then
+            StayOnTopList.Add(W, W);
+        end;
+      end;
+    end;
+  finally
+    if Assigned(act) then g_object_unref(act);
   end;
-  if Assigned(act) then g_object_unref(act);
 end;
 
 function TGtk2WidgetSet.AppRestoreStayOnTopFlags(const ASystemTopAlso: Boolean
@@ -1305,7 +1332,6 @@ var
   AForm: TCustomForm;
   W: PGtkWidget;
   Flags: TGdkWindowState;
-  B: Boolean;
 begin
   Result := True;
   if StayOnTopList = nil then
@@ -1313,15 +1339,13 @@ begin
   for i := Screen.CustomFormZOrderCount - 1 downto 0 do
   begin
     AForm := Screen.CustomFormsZOrdered[i];
-    if AForm.HandleAllocated then
+    if AForm.HandleAllocated and (AForm.Parent = nil) then
     begin
       W := {%H-}PGtkWidget(AForm.Handle);
       // do not raise assertion in case of invalid PGdkWindow
-      B := GDK_IS_WINDOW(W^.Window);
-      if B then
-        Flags := gdk_window_get_state(W^.Window);
-      if B and (AForm.Parent = nil) and
-        not (csDesigning in AForm.ComponentState) and
+      if not GDK_IS_WINDOW(W^.Window) then continue;
+      Flags := gdk_window_get_state(W^.Window);
+      if not (csDesigning in AForm.ComponentState) and
         (AForm.FormStyle in TGtk2TopForms[ASystemTopAlso]) and
          GTK_WIDGET_VISIBLE(W) and
          not gtk_window_get_modal(PGtkWindow(W)) and
