@@ -708,7 +708,7 @@ begin
   try
     I := 0;
     xDelete := False;
-    while I < FPanel.ControlCount do
+    for I := 0 to FPanel.ControlCount-1 do
     begin
       if xDelete then
       begin
@@ -721,8 +721,6 @@ begin
       end else
       if FPanel.Controls[I] = AGroupLabel then
         xDelete := True;
-
-      Inc(I);
     end;
   finally
     FAppIdleLocked := False;
