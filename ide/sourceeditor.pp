@@ -9153,6 +9153,7 @@ var
   PanelFileMode, PanelSelMode: string;
   CurEditor: TSynEdit;
   bb, be: TPoint;
+  m: TSynSelectionMode;
 begin
   if FUpdateLock > 0 then begin
     include(FUpdateFlags, ufStatusBar);
@@ -9225,7 +9226,11 @@ begin
     end;
 
     PanelSelMode := '';
-    case CurEditor.SelectionMode of
+    if CurEditor.SelAvail then
+      m := CurEditor.SelectionMode
+    else
+      m := CurEditor.DefaultSelectionMode;
+    case m of
       smNormal: if CurEditor.IsStickySelecting or CurEditor.SelAvail then
                   PanelSelMode := uepSelNorm;
       smLine:   PanelSelMode := uepSelLine;
