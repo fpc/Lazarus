@@ -4448,6 +4448,9 @@ begin
       end;
     end;
 
+  ecStickySelection, ecStickySelectionCol, ecStickySelectionLine:
+    FSourceNoteBook.UpdateStatusBar;
+
   else
     begin
       Handled:=false;
@@ -8713,6 +8716,7 @@ procedure TSourceNotebook.StatusBarDrawPanel(AStatusBar: TStatusBar; APanel: TSt
   const ARect: TRect);
 var
   pnl: TSourceEditorStatusPanel;
+  cl: TColor;
 begin
   if APanel = StatusBar.Panels[1] then begin
     IDEImages.Images_16.ResolutionForControl[16, AStatusBar]
@@ -8934,7 +8938,7 @@ end;
 
 procedure TSourceNotebook.OpenFolderMenuItemClick(Sender: TObject);
 begin
-  OpenDocument(ExtractFilePath(Statusbar.Panels[4].Text));
+  OpenDocument(ExtractFilePath(Statusbar.Panels[5].Text));
 end;
 
 procedure TSourceNotebook.ExecuteEditorItemClick(Sender: TObject);
@@ -8964,9 +8968,9 @@ begin
     end;
     W := 0;
     for i := 0 to StatusBar.Panels.Count - 1 do
-      if i <> 4 then
+      if i <> 5 then
         w := w + StatusBar.Panels[i].Width;
-    StatusBar.Panels[4].Width := Max(150, StatusBar.Width - W);
+    StatusBar.Panels[5].Width := Max(150, StatusBar.Width - W);
   finally
     StatusBar.EndUpdate;
   end;
@@ -9146,7 +9150,7 @@ var
   PanelFilename: String;
   PanelCharMode: string;
   PanelXY: string;
-  PanelFileMode: string;
+  PanelFileMode, PanelSelMode: string;
   CurEditor: TSynEdit;
 begin
   if FUpdateLock > 0 then begin
@@ -9219,6 +9223,18 @@ begin
       PanelFileMode := PanelFileMode + ueLocked;
     end;
 
+    PanelSelMode := '';
+    case CurEditor.SelectionMode of
+      smNormal: if CurEditor.IsStickySelecting or CurEditor.SelAvail then
+                  PanelSelMode := uepSelNorm;
+      smLine:   PanelSelMode := uepSelLine;
+      smColumn: PanelSelMode := uepSelCol;
+    end;
+    if (PanelSelMode<>'') and not CurEditor.SelAvail then
+      PanelSelMode := '('+PanelSelMode+')';
+    if CurEditor.IsStickySelecting then
+      PanelSelMode := '* '+PanelSelMode;
+
     PanelXY := Format(' %6d:%4d',
                  [TempEditor.CurrentCursorYLine,TempEditor.CurrentCursorXLine]);
 
@@ -9230,7 +9246,12 @@ begin
     Statusbar.Panels[0].Text := PanelXY;
     StatusBar.Panels[2].Text := PanelFileMode;
     Statusbar.Panels[3].Text := PanelCharMode;
-    Statusbar.Panels[4].Text := PanelFilename;
+    Statusbar.Panels[4].Text := PanelSelMode;
+    if PanelSelMode = '' then
+      Statusbar.Panels[4].Width := 0
+    else
+      Statusbar.Panels[4].Width := 50;
+    Statusbar.Panels[5].Text := PanelFilename;
     if(EditorMacroForRecording.IsRecording(CurEditor)) then
       Statusbar.Panels[1].Width := IDEImages.ScaledSize(20)
     else

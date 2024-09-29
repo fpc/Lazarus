@@ -608,6 +608,7 @@ type
     FPendingFoldState: String;
 
     procedure DoTopViewChanged(Sender: TObject);
+    function GetIsStickySelecting: Boolean;
     procedure SetScrollOnEditLeftOptions(AValue: TSynScrollOnEditOptions);
     procedure SetScrollOnEditRightOptions(AValue: TSynScrollOnEditOptions);
     procedure SetTabViewClass(AValue: TSynEditStringTabExpanderClass);
@@ -1169,6 +1170,7 @@ type
     // Selection
     property DefaultSelectionMode: TSynSelectionMode read GetDefSelectionMode write SetDefSelectionMode default smNormal;
     property SelectionMode: TSynSelectionMode read GetSelectionMode write SetSelectionMode default smNormal;
+    property IsStickySelecting: Boolean read GetIsStickySelecting;
 
     // Cursor
     procedure UpdateCursorOverride; override;
@@ -2171,6 +2173,11 @@ begin
   FInternalBlockSelection.Lines := FTheLinesView;
   FMarkupManager.Lines := FTheLinesView;
   FTextArea.TheLinesView := FTheLinesView;
+end;
+
+function TCustomSynEdit.GetIsStickySelecting: Boolean;
+begin
+  Result := FBlockSelection.StickyAutoExtend;
 end;
 
 procedure TCustomSynEdit.SetScrollOnEditLeftOptions(
