@@ -82,8 +82,8 @@ procedure TTestLazUtils.TestSplitCmdLineParams;
     try
       SplitCmdLineParams(Params,ParamList,ReadBackslash);
       for i:=0 to ParamList.Count-1 do begin
-        if i>0 then Result+='|';
-        Result+=ParamList[i];
+        if i>0 then Result:=Result+'|';
+        Result:=Result+ParamList[i];
       end;
     finally
       ParamList.Free;
