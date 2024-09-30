@@ -6917,6 +6917,7 @@ begin
     Result := Items[i];
     if Result.FPanel = APanel then
       exit;
+    dec(i);
   end;
   Result := nil;
 end;
@@ -9287,6 +9288,7 @@ begin
       Statusbar.Panels[CStatusPanelMacro].Width := 0;
 
   end;
+  CalculateStatusBarSizes;
   Statusbar.EndUpdate;
 
   CheckCurrentCodeBufferChanged;
