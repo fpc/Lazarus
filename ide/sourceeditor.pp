@@ -8715,7 +8715,6 @@ begin
   else
   if i >= 0 {CStatusPanelCustomFirst} then begin
     pnl := FStatusPanels.GetItemForPanel(StatusBar.Panels[i]);
-    DebugLn(['TSourceNotebook.StatusBarContextPopup: pnl=', pnl]);
     if (pnl <> nil) and (pnl.OnContextPopup <> nil) then
       pnl.OnContextPopup(Self, MousePos, Handled);
   end;
