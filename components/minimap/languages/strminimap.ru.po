@@ -1,0 +1,42 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.3.1\n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+"Language: ru\n"
+
+#: strminimap.sinitialfontsize
+msgid "Initial font size"
+msgstr "Начальный размер шрифта"
+
+#: strminimap.smapwidth
+msgid "Minimap width"
+msgstr "Ширина миникарты"
+
+#: strminimap.sminimapconfigtitle
+msgid "Minimap"
+msgstr "Миникарта"
+
+#: strminimap.sputmapleftofeditorre
+msgid "Put minimap left of editor (requires IDE restart for existing tabs)"
+msgstr "Разместить миникарту слева от редактора (требует перезапуска IDE для существующих вкладок)"
+
+#: strminimap.sshowminimap
+msgid "Show minimap"
+msgstr "Показывать миникарту"
+
+#: strminimap.sviewwindowcolor
+msgid "View window color"
+msgstr "Цвет окна просмотра"
+
+#: strminimap.sviewwindowtextcolor
+msgid "View window text color"
+msgstr "Цвет текста окна просмотра"
+
