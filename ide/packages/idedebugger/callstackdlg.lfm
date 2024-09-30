@@ -1,15 +1,15 @@
 object CallStackDlg: TCallStackDlg
-  Left = 306
+  Left = 413
   Height = 246
-  Top = 130
+  Top = 116
   Width = 562
   BorderStyle = bsSizeToolWin
   Caption = 'CallStack'
   ClientHeight = 246
   ClientWidth = 562
-  OnCreate = FormCreate
   LCLVersion = '3.99.0.0'
   Visible = True
+  OnCreate = FormCreate
   object lvCallStack: TListView
     Left = 0
     Height = 220
@@ -92,14 +92,14 @@ object CallStackDlg: TCallStackDlg
       Style = tbsDropDown
     end
     object ToolButtonGoto: TToolButton
-      Left = 248
+      Left = 294
       Top = 2
       Action = actViewGoto
       ImageIndex = 4
       ShowCaption = False
     end
     object ToolButtonCopyAll: TToolButton
-      Left = 279
+      Left = 325
       Top = 2
       Action = actCopyAll
       ImageIndex = 5
@@ -126,15 +126,27 @@ object CallStackDlg: TCallStackDlg
       ImageIndex = 2
       ShowCaption = False
     end
-    object ToolButtonBottom: TToolButton
+    object ToolButtonUp: TToolButton
       Left = 175
+      Top = 2
+      Action = actViewUp
+      ShowCaption = False
+    end
+    object ToolButtonDown: TToolButton
+      Left = 198
+      Top = 2
+      Action = actViewDown
+      ShowCaption = False
+    end
+    object ToolButtonBottom: TToolButton
+      Left = 221
       Top = 2
       Action = actViewBottom
       ImageIndex = 3
       ShowCaption = False
     end
     object Panel1: TPanel
-      Left = 198
+      Left = 244
       Height = 22
       Top = 2
       Width = 50
@@ -147,9 +159,9 @@ object CallStackDlg: TCallStackDlg
         Height = 23
         Top = 0
         Width = 46
-        OnKeyPress = txtGotoKeyPress
         TabOrder = 0
         Text = '0'
+        OnKeyPress = txtGotoKeyPress
       end
     end
     object ToolButtonPower: TToolButton
@@ -159,12 +171,12 @@ object CallStackDlg: TCallStackDlg
       AutoSize = True
       Caption = 'ToolButtonPower'
       Down = True
-      OnClick = ToolButtonPowerClick
       ShowCaption = False
       Style = tbsCheck
+      OnClick = ToolButtonPowerClick
     end
     object ToolButton2: TToolButton
-      Left = 271
+      Left = 317
       Height = 22
       Top = 2
       Caption = 'ToolButton2'
@@ -209,11 +221,11 @@ object CallStackDlg: TCallStackDlg
     Top = 80
     object actShow: TAction
       Caption = 'Show'
-      OnExecute = actShowClick
       SecondaryShortCuts.Strings = (
         'enter'
       )
       ShortCut = 16470
+      OnExecute = actShowClick
     end
     object actViewMore: TAction
       Category = 'View'
@@ -235,19 +247,14 @@ object CallStackDlg: TCallStackDlg
       Caption = 'Top'
       OnExecute = actViewTopExecute
     end
-    object actViewBottom: TAction
-      Category = 'View'
-      Caption = 'Bottom'
-      OnExecute = actViewBottomExecute
-    end
     object actSetCurrent: TAction
       Caption = 'Current'
       OnExecute = actSetAsCurrentClick
     end
     object actCopyLine: TAction
       Caption = 'Copy line'
-      OnExecute = actCopyLineClick
       ShortCut = 16451
+      OnExecute = actCopyLineClick
     end
     object actCopyAll: TAction
       Caption = 'Copy All'
@@ -255,12 +262,27 @@ object CallStackDlg: TCallStackDlg
     end
     object actToggleBreakPoint: TAction
       Caption = 'Toggle Breakpoint'
-      OnExecute = actToggleBreakPointExecute
       ShortCut = 116
+      OnExecute = actToggleBreakPointExecute
     end
     object actShowDisass: TAction
       Caption = 'actShowDisass'
       OnExecute = actShowDisassExecute
+    end
+    object actViewUp: TAction
+      Category = 'View'
+      Caption = 'actViewUp'
+      OnExecute = actViewUpExecute
+    end
+    object actViewDown: TAction
+      Category = 'View'
+      Caption = 'actViewDown'
+      OnExecute = actViewDownExecute
+    end
+    object actViewBottom: TAction
+      Category = 'View'
+      Caption = 'Bottom'
+      OnExecute = actViewBottomExecute
     end
   end
   object mnuLimit: TPopupMenu

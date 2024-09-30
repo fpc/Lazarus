@@ -177,6 +177,8 @@ resourcestring
   lisIndex = 'Index';
   lisFunction = 'Function';
   lisCSTop = 'Top';
+  lisCSDown = 'Page down';
+  lisCSUp = 'Page up';
   lisCSBottom = 'Bottom';
   lisCallStackNotEvaluated = 'Stack not evaluated';
 

@@ -1080,8 +1080,16 @@ msgstr ""
 msgid "Bottom"
 msgstr ""
 
+#: idedebuggerstringconstants.liscsdown
+msgid "Page down"
+msgstr ""
+
 #: idedebuggerstringconstants.liscstop
 msgid "Top"
+msgstr ""
+
+#: idedebuggerstringconstants.liscsup
+msgid "Page up"
 msgstr ""
 
 #: idedebuggerstringconstants.liscurrent

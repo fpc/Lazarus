@@ -1101,10 +1101,18 @@ msgctxt "lazarusidestrconsts.liscsbottom"
 msgid "Bottom"
 msgstr "Abajo"
 
+#: idedebuggerstringconstants.liscsdown
+msgid "Page down"
+msgstr ""
+
 #: idedebuggerstringconstants.liscstop
 msgctxt "lazarusidestrconsts.liscstop"
 msgid "Top"
 msgstr "Arriba"
+
+#: idedebuggerstringconstants.liscsup
+msgid "Page up"
+msgstr ""
 
 #: idedebuggerstringconstants.liscurrent
 msgctxt "lazarusidestrconsts.liscurrent"

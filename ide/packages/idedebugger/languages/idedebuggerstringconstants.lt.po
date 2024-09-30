@@ -1098,10 +1098,18 @@ msgctxt "lazarusidestrconsts.liscsbottom"
 msgid "Bottom"
 msgstr "Apačion"
 
+#: idedebuggerstringconstants.liscsdown
+msgid "Page down"
+msgstr ""
+
 #: idedebuggerstringconstants.liscstop
 msgctxt "lazarusidestrconsts.liscstop"
 msgid "Top"
 msgstr "Viršun"
+
+#: idedebuggerstringconstants.liscsup
+msgid "Page up"
+msgstr ""
 
 #: idedebuggerstringconstants.liscurrent
 msgctxt "lazarusidestrconsts.liscurrent"

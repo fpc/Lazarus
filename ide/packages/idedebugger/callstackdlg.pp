@@ -60,6 +60,8 @@ type
     aclActions: TActionList;
     actCopyAll: TAction;
     actCopyLine: TAction;
+    actViewDown: TAction;
+    actViewUp: TAction;
     actShowDisass: TAction;
     actToggleBreakPoint: TAction;
     actViewBottom: TAction;
@@ -73,6 +75,8 @@ type
     popShowDisass: TMenuItem;
     popToggle: TMenuItem;
     Separator1: TMenuItem;
+    ToolButtonUp: TToolButton;
+    ToolButtonDown: TToolButton;
     ToolButtonPower: TToolButton;
     ToolButton2: TToolButton;
     ToolButtonTop: TToolButton;
@@ -102,10 +106,12 @@ type
     procedure actShowDisassExecute(Sender: TObject);
     procedure actToggleBreakPointExecute(Sender: TObject);
     procedure actViewBottomExecute(Sender: TObject);
+    procedure actViewDownExecute(Sender: TObject);
     procedure actViewGotoExecute(Sender: TObject);
     procedure actViewMoreExecute(Sender: TObject);
     procedure actViewLimitExecute(Sender: TObject);
     procedure actViewTopExecute(Sender: TObject);
+    procedure actViewUpExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure lvCallStackClick(Sender: TObject);
     procedure popCountClick(Sender: TObject);
@@ -370,7 +376,7 @@ begin
       if FWantedViewStart = MaxInt then
         Count := CStack.Count
       else
-        Count := CStack.CountLimited(FWantedViewStart);
+        Count := CStack.CountLimited(FWantedViewStart+FViewLimit);
 
       if (Count > 0) or (CStack.CountValidity = ddsValid) then begin
         FViewStart := Min(FWantedViewStart, Count - FViewLimit);
@@ -739,6 +745,22 @@ begin
   end;
 end;
 
+procedure TCallStackDlg.actViewDownExecute(Sender: TObject);
+begin
+  try
+    DisableAllActions;
+    BeginUpdate;
+
+    if GetSelectedCallstack = nil then
+      SetViewStart(0)
+    else
+      SetViewStart(FViewStart + ViewLimit);
+  finally
+    EndUpdate;
+    EnableAllActions;
+  end;
+end;
+
 procedure TCallStackDlg.actToggleBreakPointExecute(Sender: TObject);
 begin
   ToggleBreakpoint(lvCallStack.Selected);
@@ -787,6 +809,22 @@ begin
   end;
 end;
 
+procedure TCallStackDlg.actViewUpExecute(Sender: TObject);
+begin
+  try
+    DisableAllActions;
+    BeginUpdate;
+
+    if GetSelectedCallstack = nil then
+      SetViewStart(0)
+    else
+      SetViewStart(Max(0, FViewStart - ViewLimit));
+  finally
+    EndUpdate;
+    EnableAllActions;
+  end;
+end;
+
 procedure TCallStackDlg.BreakPointChanged(const ASender: TIDEBreakPoints;
   const ABreakpoint: TIDEBreakPoint);
 var
@@ -827,6 +865,8 @@ begin
     mnuLimit.Items[i].Caption:= Format(lisMaxS, [mnuLimit.Items[i].Tag]);
   actViewMore.Caption := lisMore;
   actViewTop.Caption := lisCSTop;
+  actViewUp.Caption := lisCSUp;
+  actViewDown.Caption := lisCSDown;
   actViewBottom.Caption := lisCSBottom;
   actViewGoto.Caption := lisGotoSelected;
   actShow.Caption := lisViewSource;
@@ -838,6 +878,8 @@ begin
 
   actViewMore.Hint := lisMore;
   actViewTop.Hint := lisCSTop;
+  actViewUp.Hint := lisCSUp;
+  actViewDown.Hint := lisCSDown;
   actViewBottom.Hint := lisCSBottom;
   actViewGoto.Hint := lisGotoSelected;
   actShow.Hint := lisViewSource;
@@ -871,8 +913,10 @@ begin
   ToolBar1.Images := IDEImages.Images_16;
   ToolButtonShow.ImageIndex := IDEImages.LoadImage('callstack_show');
   ToolButtonMore.ImageIndex := IDEImages.LoadImage('callstack_more');
-  ToolButtonTop.ImageIndex := IDEImages.LoadImage('callstack_top');
-  ToolButtonBottom.ImageIndex := IDEImages.LoadImage('callstack_bottom');
+  ToolButtonTop.ImageIndex := IDEImages.LoadImage('NavArrow_T');
+  ToolButtonUp.ImageIndex := IDEImages.LoadImage('NavArrow_U');
+  ToolButtonDown.ImageIndex := IDEImages.LoadImage('NavArrow_D');
+  ToolButtonBottom.ImageIndex := IDEImages.LoadImage('NavArrow_B');
   ToolButtonGoto.ImageIndex := IDEImages.LoadImage('callstack_goto');
   ToolButtonCopyAll.ImageIndex := IDEImages.LoadImage('laz_copy');
   ToolButtonCurrent.ImageIndex := IDEImages.LoadImage('debugger_current_line');
