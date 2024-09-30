@@ -4448,7 +4448,7 @@ begin
       end;
     end;
 
-  ecStickySelection, ecStickySelectionCol, ecStickySelectionLine:
+  ecStickySelection, ecStickySelectionCol, ecStickySelectionLine, ecStickySelectionStop:
     FSourceNoteBook.UpdateStatusBar;
 
   else
@@ -8683,7 +8683,7 @@ begin
   i := StatusBar.GetPanelIndexAt(P.X, P.Y);
   case StatusBar.GetPanelIndexAt(P.X, P.Y) of  // Based on panel:
     0: GoToLineMenuItemClick(Nil);    // Show "Goto Line" dialog.
-    4: OpenFolderMenuItemClick(Nil);  // Show system file manager on file's folder.
+    5: OpenFolderMenuItemClick(Nil);  // Show system file manager on file's folder.
     else
       if i >= 0 then begin
         pnl := FStatusPanels.GetItemForPanel(StatusBar.Panels[i]);
@@ -8717,7 +8717,6 @@ procedure TSourceNotebook.StatusBarDrawPanel(AStatusBar: TStatusBar; APanel: TSt
   const ARect: TRect);
 var
   pnl: TSourceEditorStatusPanel;
-  cl: TColor;
 begin
   if APanel = StatusBar.Panels[1] then begin
     IDEImages.Images_16.ResolutionForControl[16, AStatusBar]
@@ -9227,7 +9226,7 @@ begin
     end;
 
     PanelSelMode := '';
-    if CurEditor.SelAvail then
+    if CurEditor.SelAvail or CurEditor.IsStickySelecting then
       m := CurEditor.SelectionMode
     else
       m := CurEditor.DefaultSelectionMode;
