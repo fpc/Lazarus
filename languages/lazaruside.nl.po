@@ -22107,6 +22107,31 @@ msgstr "OVR"
 msgid "Readonly"
 msgstr "Niet wijzigbaar"
 
+#: lazarusidestrconsts.uepselchars
+#, object-pascal-format
+msgid "%d"
+msgstr ""
+
+#: lazarusidestrconsts.uepselcol
+msgid "COL"
+msgstr ""
+
+#: lazarusidestrconsts.uepselcxchars
+#, object-pascal-format
+msgid "%d * %d"
+msgstr ""
+
+#: lazarusidestrconsts.uepselline
+#, fuzzy
+#| msgid "Line"
+msgctxt "lazarusidestrconsts.uepselline"
+msgid "LINE"
+msgstr "Regel"
+
+#: lazarusidestrconsts.uepselnorm
+msgid "DEF"
+msgstr ""
+
 #: lazarusidestrconsts.unitdepoptionsforpackage
 msgid "Options for Package graph"
 msgstr ""

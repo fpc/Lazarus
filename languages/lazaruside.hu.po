@@ -21553,6 +21553,31 @@ msgstr "OVR"
 msgid "Readonly"
 msgstr "Csak olvasható"
 
+#: lazarusidestrconsts.uepselchars
+#, object-pascal-format
+msgid "%d"
+msgstr ""
+
+#: lazarusidestrconsts.uepselcol
+msgid "COL"
+msgstr ""
+
+#: lazarusidestrconsts.uepselcxchars
+#, object-pascal-format
+msgid "%d * %d"
+msgstr ""
+
+#: lazarusidestrconsts.uepselline
+#, fuzzy
+#| msgid "Line"
+msgctxt "lazarusidestrconsts.uepselline"
+msgid "LINE"
+msgstr "Sor"
+
+#: lazarusidestrconsts.uepselnorm
+msgid "DEF"
+msgstr ""
+
 #: lazarusidestrconsts.unitdepoptionsforpackage
 msgid "Options for Package graph"
 msgstr "Csomag-fa beállításai"

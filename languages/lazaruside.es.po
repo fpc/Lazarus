@@ -21815,6 +21815,31 @@ msgstr "SOB"
 msgid "Readonly"
 msgstr "Sólo lectura"
 
+#: lazarusidestrconsts.uepselchars
+#, object-pascal-format
+msgid "%d"
+msgstr ""
+
+#: lazarusidestrconsts.uepselcol
+msgid "COL"
+msgstr ""
+
+#: lazarusidestrconsts.uepselcxchars
+#, object-pascal-format
+msgid "%d * %d"
+msgstr ""
+
+#: lazarusidestrconsts.uepselline
+#, fuzzy
+#| msgid "Line"
+msgctxt "lazarusidestrconsts.uepselline"
+msgid "LINE"
+msgstr "Línea"
+
+#: lazarusidestrconsts.uepselnorm
+msgid "DEF"
+msgstr ""
+
 #: lazarusidestrconsts.unitdepoptionsforpackage
 msgid "Options for Package graph"
 msgstr "Opciones para el gráfico de paquete"

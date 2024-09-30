@@ -21584,6 +21584,31 @@ msgstr "OVR"
 msgid "Readonly"
 msgstr "Somente leitura"
 
+#: lazarusidestrconsts.uepselchars
+#, object-pascal-format
+msgid "%d"
+msgstr ""
+
+#: lazarusidestrconsts.uepselcol
+msgid "COL"
+msgstr ""
+
+#: lazarusidestrconsts.uepselcxchars
+#, object-pascal-format
+msgid "%d * %d"
+msgstr ""
+
+#: lazarusidestrconsts.uepselline
+#, fuzzy
+#| msgid "Line"
+msgctxt "lazarusidestrconsts.uepselline"
+msgid "LINE"
+msgstr "Linha"
+
+#: lazarusidestrconsts.uepselnorm
+msgid "DEF"
+msgstr ""
+
 #: lazarusidestrconsts.unitdepoptionsforpackage
 msgid "Options for Package graph"
 msgstr "Opções para o gráfico de pacotes"

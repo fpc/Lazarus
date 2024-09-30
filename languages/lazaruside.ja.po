@@ -21778,6 +21778,31 @@ msgstr "上書き"
 msgid "Readonly"
 msgstr "読み取り専用"
 
+#: lazarusidestrconsts.uepselchars
+#, object-pascal-format
+msgid "%d"
+msgstr ""
+
+#: lazarusidestrconsts.uepselcol
+msgid "COL"
+msgstr ""
+
+#: lazarusidestrconsts.uepselcxchars
+#, object-pascal-format
+msgid "%d * %d"
+msgstr ""
+
+#: lazarusidestrconsts.uepselline
+#, fuzzy
+#| msgid "Line"
+msgctxt "lazarusidestrconsts.uepselline"
+msgid "LINE"
+msgstr "行"
+
+#: lazarusidestrconsts.uepselnorm
+msgid "DEF"
+msgstr ""
+
 #: lazarusidestrconsts.unitdepoptionsforpackage
 msgid "Options for Package graph"
 msgstr ""
