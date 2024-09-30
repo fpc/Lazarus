@@ -716,6 +716,7 @@ type
     FIsClosing: Boolean;
     FSrcEditsSortedForFilenames: TAvlTree; // TSourceEditorInterface sorted for Filename
     TabPopUpMenu, SrcPopUpMenu, DbgPopUpMenu: TPopupMenu;
+
     FStatusPanels: TSourceEditorStatusPanelList;
     procedure ApplyPageIndex;
     procedure ExecuteEditorItemClick(Sender: TObject);
@@ -1706,6 +1707,9 @@ begin
   {%endregion}
 end;
 
+var
+  DbgPopUpStandAlone: TIDEMenuSection = nil;
+
 procedure RegisterStandardSourceEditorMenuItems;
 var
   AParent: TIDEMenuSection;
@@ -1844,6 +1848,7 @@ begin
     // register the Debug submenu
     SrcEditSubMenuDebug:=RegisterIDESubMenu(SrcEditMenuSectionDebug,
                                             'Debug', uemDebugWord, nil, nil, 'debugger');
+
     AParent:=SrcEditSubMenuDebug;
 
       // register the Debug submenu items
@@ -1864,6 +1869,8 @@ begin
           'Run to cursor', lisMenuRunToCursor, nil, nil, nil, 'menu_run_cursor');
       SrcEditMenuViewCallStack:=RegisterIDEMenuCommand(AParent,
           'View Call Stack', uemViewCallStack, nil, @ExecuteIdeMenuClick, nil, 'debugger_call_stack');
+
+    DbgPopUpStandAlone := RegisterIDEMenuRoot(SourceEditorMenuRootName+'Dbg');
   {%endregion}
 
   {%region *** Source Section ***}
@@ -7408,6 +7415,18 @@ var
 begin
   IDECommandList.ExecuteUpdateEvents;
 
+  if SrcEditMenuToggleBreakpoint.Section <> SrcEditSubMenuDebug then begin
+    SrcEditSubMenuDebug.AddLast(SrcEditMenuToggleBreakpoint);
+    SrcEditSubMenuDebug.AddLast(SrcEditMenuEvaluateModify);
+    SrcEditSubMenuDebug.AddLast(SrcEditMenuAddWatchAtCursor);
+    SrcEditSubMenuDebug.AddLast(SrcEditMenuAddWatchPointAtCursor);
+    SrcEditSubMenuDebug.AddLast(SrcEditMenuInspect);
+    SrcEditSubMenuDebug.AddLast(SrcEditMenuStepToCursor);
+    SrcEditSubMenuDebug.AddLast(SrcEditMenuRunToCursor);
+    SrcEditSubMenuDebug.AddLast(SrcEditMenuViewCallStack);
+  end;
+
+
   SourceEditorMenuRoot.MenuItem:=SrcPopupMenu.Items;
   RemoveUserDefinedMenuItems;
   RemoveContextMenuItems;
@@ -7493,7 +7512,18 @@ end;
 
 procedure TSourceNotebook.DbgPopUpMenuPopup(Sender: TObject);
 begin
-  SrcEditSubMenuDebug.MenuItem:=DbgPopUpMenu.Items;
+  if SrcEditMenuToggleBreakpoint.Section <> DbgPopUpStandAlone then begin
+    DbgPopUpStandAlone.AddLast(SrcEditMenuToggleBreakpoint);
+    DbgPopUpStandAlone.AddLast(SrcEditMenuEvaluateModify);
+    DbgPopUpStandAlone.AddLast(SrcEditMenuAddWatchAtCursor);
+    DbgPopUpStandAlone.AddLast(SrcEditMenuAddWatchPointAtCursor);
+    DbgPopUpStandAlone.AddLast(SrcEditMenuInspect);
+    DbgPopUpStandAlone.AddLast(SrcEditMenuStepToCursor);
+    DbgPopUpStandAlone.AddLast(SrcEditMenuRunToCursor);
+    DbgPopUpStandAlone.AddLast(SrcEditMenuViewCallStack);
+  end;
+
+  DbgPopUpStandAlone.MenuItem:=DbgPopUpMenu.Items;
 end;
 
 procedure TSourceNotebook.NotebookShowTabHint(Sender: TObject;
