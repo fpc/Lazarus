@@ -1551,6 +1551,14 @@ const
   SoftCenterMinimum = 1;
   SoftCenterMaximum = 8;
 
+  CStatusPanelXY = 0;
+  CStatusPanelMacro = 1;
+  CStatusPanelFileMode = 2;
+  CStatusPanelCharMode = 3;
+  CStatusPanelSel = 4;
+  CStatusPanelFile = 5;
+  CStatusPanelCustomFirst = 6;
+
 var
   AutoStartCompletionBoxTimer: TIdleTimer = nil;
   SourceCompletionCaretXY: TPoint;
@@ -8663,10 +8671,10 @@ var
 begin
   P := StatusBar.ScreenToClient(Mouse.CursorPos);
   i := StatusBar.GetPanelIndexAt(P.X, P.Y);
-  if i = 1  then
+  if i = CStatusPanelMacro  then
     EditorMacroForRecording.Stop;
 
-  if i >= 0 then begin
+  if i >= 0 {CStatusPanelCustomFirst} then begin
     pnl := FStatusPanels.GetItemForPanel(StatusBar.Panels[i]);
     if (pnl <> nil) and (pnl.OnClick <> nil) then
       pnl.OnClick(Self);
@@ -8682,10 +8690,10 @@ begin
   P := StatusBar.ScreenToClient(Mouse.CursorPos);
   i := StatusBar.GetPanelIndexAt(P.X, P.Y);
   case StatusBar.GetPanelIndexAt(P.X, P.Y) of  // Based on panel:
-    0: GoToLineMenuItemClick(Nil);    // Show "Goto Line" dialog.
-    5: OpenFolderMenuItemClick(Nil);  // Show system file manager on file's folder.
-    else
-      if i >= 0 then begin
+    CStatusPanelXY: GoToLineMenuItemClick(Nil);    // Show "Goto Line" dialog.
+    CStatusPanelFile: OpenFolderMenuItemClick(Nil);  // Show system file manager on file's folder.
+    else 
+      if i >= 0 {CStatusPanelCustomFirst} then begin
         pnl := FStatusPanels.GetItemForPanel(StatusBar.Panels[i]);
         if (pnl <> nil) and (pnl.OnDoubleClick <> nil) then
           pnl.OnDoubleClick(Self);
@@ -8700,12 +8708,12 @@ var
   pnl: TSourceEditorStatusPanel;
 begin
   i := StatusBar.GetPanelIndexAt(MousePos.X, MousePos.Y);
-  GoToLineMenuItem.Visible := i=0;
-  OpenFolderMenuItem.Visible := i=5;
-  if i in [0, 5] then
+  GoToLineMenuItem.Visible := i=CStatusPanelXY;
+  OpenFolderMenuItem.Visible := i=CStatusPanelFile;
+  if i in [CStatusPanelXY, CStatusPanelFile] then
     StatusPopUpMenu.PopUp
   else
-  if i >= 0 then begin
+  if i >= 0 {CStatusPanelCustomFirst} then begin
     pnl := FStatusPanels.GetItemForPanel(StatusBar.Panels[i]);
     DebugLn(['TSourceNotebook.StatusBarContextPopup: pnl=', pnl]);
     if (pnl <> nil) and (pnl.OnContextPopup <> nil) then
@@ -8718,7 +8726,7 @@ procedure TSourceNotebook.StatusBarDrawPanel(AStatusBar: TStatusBar; APanel: TSt
 var
   pnl: TSourceEditorStatusPanel;
 begin
-  if APanel = StatusBar.Panels[1] then begin
+  if APanel = StatusBar.Panels[CStatusPanelMacro] then begin
     IDEImages.Images_16.ResolutionForControl[16, AStatusBar]
       .Draw(StatusBar.Canvas, ARect.Left,  ARect.Top, FStopBtnIdx);
   end
@@ -8938,7 +8946,7 @@ end;
 
 procedure TSourceNotebook.OpenFolderMenuItemClick(Sender: TObject);
 begin
-  OpenDocument(ExtractFilePath(Statusbar.Panels[5].Text));
+  OpenDocument(ExtractFilePath(Statusbar.Panels[CStatusPanelFile].Text));
 end;
 
 procedure TSourceNotebook.ExecuteEditorItemClick(Sender: TObject);
@@ -9262,22 +9270,22 @@ begin
     else
       PanelCharMode := uepOvr;
 
-    Statusbar.Panels[0].Text := PanelXY;
-    StatusBar.Panels[2].Text := PanelFileMode;
-    Statusbar.Panels[3].Text := PanelCharMode;
-    Statusbar.Panels[4].Text := PanelSelMode;
+    StatusBar.Panels[CStatusPanelXY].Text := PanelXY;
+    StatusBar.Panels[CStatusPanelFileMode].Text := PanelFileMode;
+    StatusBar.Panels[CStatusPanelCharMode].Text := PanelCharMode;
+    Statusbar.Panels[CStatusPanelSel].Text := PanelSelMode;
     if PanelSelMode = '' then
-      Statusbar.Panels[4].Width := 0
+      Statusbar.Panels[CStatusPanelSel].Width := 0
     else
     if CurEditor.SelAvail then
-      Statusbar.Panels[4].Width := 100
+      Statusbar.Panels[CStatusPanelSel].Width := 100
     else
-      Statusbar.Panels[4].Width := 50;
+      Statusbar.Panels[CStatusPanelSel].Width := 50;
     Statusbar.Panels[5].Text := PanelFilename;
     if(EditorMacroForRecording.IsRecording(CurEditor)) then
-      Statusbar.Panels[1].Width := IDEImages.ScaledSize(20)
+      Statusbar.Panels[CStatusPanelMacro].Width := IDEImages.ScaledSize(20)
     else
-      Statusbar.Panels[1].Width := 0;
+      Statusbar.Panels[CStatusPanelMacro].Width := 0;
 
   end;
   Statusbar.EndUpdate;
