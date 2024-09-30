@@ -528,7 +528,7 @@ procedure TFpThreadWorkerPrepareCallStackEntryList.PrepareCallStackEntryList(
   AFrameRequired: Integer; AThread: TDbgThread);
 var
   ThreadCallStack: TDbgCallstackEntryList;
-  CurCnt, ReqCnt: Integer;
+  CurCnt, ReqCnt, AllCnt: Integer;
 begin
   ThreadCallStack := AThread.CallStackEntryList;
 
@@ -542,11 +542,14 @@ begin
   FDebugger.LockList.GetLockFor(ThreadCallStack);
   try
     CurCnt := ThreadCallStack.Count;
+    AllCnt := FRequiredMinCount;
+    if AllCnt < 0 then
+      AllCnt := high(AllCnt)-1;
     while (not StopRequested) and
-          ( (FRequiredMinCount > CurCnt) or (FRequiredMinCount < 0) ) and
+          (AllCnt > CurCnt)  and
           (not ThreadCallStack.HasReadAllAvailableFrames)
     do begin
-      ReqCnt := Min(CurCnt + 5, FRequiredMinCount);
+      ReqCnt := Min(CurCnt + 25, AllCnt);
       AThread.PrepareCallStackEntryList(ReqCnt);
       CurCnt := ThreadCallStack.Count;
       if CurCnt < ReqCnt then
