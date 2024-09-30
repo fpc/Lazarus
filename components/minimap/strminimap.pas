@@ -14,8 +14,15 @@ const
   KeyViewWindowTextColor = 'ViewWindowTextColor';
   KeyInitialFontSize = 'InitialFontSize';
 
-Resourcestring
-  SMinimapConfigTitle = 'MiniMap';
+resourcestring
+  SMinimapConfigTitle = 'Minimap';
+  SShowMinimap = 'Show minimap';
+  SPutMapLeftOfEditorRe = 'Put minimap left of editor (requires IDE restart for '
+    +'existing tabs)';
+  SMapWidth = 'Minimap width';
+  SInitialFontSize = 'Initial font size';
+  SViewWindowColor = 'View window color';
+  SViewWindowTextColor = 'View window text color';
 
 
 implementation

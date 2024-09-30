@@ -1,0 +1,31 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: strminimap.sinitialfontsize
+msgid "Initial font size"
+msgstr ""
+
+#: strminimap.smapwidth
+msgid "Minimap width"
+msgstr ""
+
+#: strminimap.sminimapconfigtitle
+msgid "Minimap"
+msgstr ""
+
+#: strminimap.sputmapleftofeditorre
+msgid "Put minimap left of editor (requires IDE restart for existing tabs)"
+msgstr ""
+
+#: strminimap.sshowminimap
+msgid "Show minimap"
+msgstr ""
+
+#: strminimap.sviewwindowcolor
+msgid "View window color"
+msgstr ""
+
+#: strminimap.sviewwindowtextcolor
+msgid "View window text color"
+msgstr ""
+

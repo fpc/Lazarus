@@ -52,12 +52,17 @@ uses CtrlMiniMap, StrMiniMap;
 
 function TMiniMapConfigFrame.GetTitle: String;
 begin
-  Result:=SMinimapConfigTitle
+  Result:=SMinimapConfigTitle;
 end;
 
 procedure TMiniMapConfigFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  // nothing
+  cbEnabled.Caption:=SShowMinimap;
+  cbAlignLeft.Caption:=SPutMapLeftOfEditorRe;
+  lblMapWidth.Caption:=SMapWidth;
+  lblInitialFontSize.Caption:=SInitialFontSize;
+  lblViewWindowColor.Caption:=SViewWindowColor;
+  lblViewWindowTextColor.Caption:=SViewWindowTextColor;
 end;
 
 procedure TMiniMapConfigFrame.ReadSettings(AOptions: TAbstractIDEOptions);
