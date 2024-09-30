@@ -5982,6 +5982,12 @@ procedure TIDEBreakPoint.DoHit(const ACount: Integer; var AContinue,
   ANeedInternalPause: Boolean);
 begin
   inherited DoHit(ACount, AContinue, ANeedInternalPause);
+
+  if (BreakHitcount > 0) and (ACount < BreakHitcount) then begin
+    AContinue := True;
+    exit;
+  end;
+
   AContinue := AContinue or not (bpaStop in Actions);
   if bpaLogMessage in Actions
   then Master.DoLogMessage(FLogMessage);
