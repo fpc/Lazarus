@@ -8701,12 +8701,13 @@ var
 begin
   i := StatusBar.GetPanelIndexAt(MousePos.X, MousePos.Y);
   GoToLineMenuItem.Visible := i=0;
-  OpenFolderMenuItem.Visible := i=4;
-  if i in [0, 4] then
+  OpenFolderMenuItem.Visible := i=5;
+  if i in [0, 5] then
     StatusPopUpMenu.PopUp
   else
   if i >= 0 then begin
     pnl := FStatusPanels.GetItemForPanel(StatusBar.Panels[i]);
+    DebugLn(['TSourceNotebook.StatusBarContextPopup: pnl=', pnl]);
     if (pnl <> nil) and (pnl.OnContextPopup <> nil) then
       pnl.OnContextPopup(Self, MousePos, Handled);
   end;
