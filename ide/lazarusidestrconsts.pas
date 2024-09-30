@@ -2917,10 +2917,10 @@ resourcestring
   uepReadonly= 'Readonly';
   uepIns='INS';
   uepOvr='OVR';
-  uepSelNorm='Def';
-  uepSelLine='Line';
-  uepSelCol ='Col';
-  uepSelChars ='%d chars';
+  uepSelNorm='DEF';
+  uepSelLine='LINE';
+  uepSelCol ='COL';
+  uepSelChars ='%d';
   uepSelCxChars ='%d * %d';
   lisUEFontWith = 'Font without UTF-8';
   lisUETheCurre = 'The current editor font does not support UTF-8 but your system seems to use it.'
