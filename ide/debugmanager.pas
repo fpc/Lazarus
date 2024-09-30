@@ -1476,10 +1476,10 @@ begin
     then FSnapshots.DoStateChange(OldState);
   end;
 
-  UnlockDialogs;
-
   for i := 0 to FStateNotificationList.Count-1 do
     TDebuggerStateChangeNotification(FStateNotificationList[i])(ADebugger, OldState);
+
+  UnlockDialogs;
 
   if FDebugger.State = dsInternalPause
   then exit;
@@ -2074,10 +2074,12 @@ var
   TheDialog: TCallStackDlg;
 begin
   TheDialog := TCallStackDlg(FDialogs[ddtCallStack]);
+  TheDialog.BeginUpdate;
   TheDialog.CallStackMonitor := FCallStack;
   TheDialog.BreakPoints := FBreakPoints;
   TheDialog.ThreadsMonitor := FThreads;
   TheDialog.SnapshotManager := FSnapshots;
+  TheDialog.EndUpdate;
 end;
 
 procedure TDebugManager.InitEvaluateDlg;
@@ -3629,6 +3631,7 @@ begin
     FSignals.Master := nil;
     FRegisters.Supplier := nil;
     FSnapshots.Debugger := nil;
+    FCallStack.Debugger := nil;
   end
   else begin
     TManagedBreakpoints(FBreakpoints).Master := FDebugger.BreakPoints;
@@ -3643,6 +3646,7 @@ begin
     FSignals.Master := FDebugger.Signals;
     FRegisters.Supplier := FDebugger.Registers;
     FSnapshots.Debugger := FDebugger;
+    FCallStack.Debugger := FDebugger;
 
     FDebugger.Exceptions := FExceptions;
   end;

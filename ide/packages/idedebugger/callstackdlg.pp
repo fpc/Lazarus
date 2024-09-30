@@ -248,6 +248,7 @@ procedure TCallStackDlg.CallStackCtxChanged(Sender: TObject);
 begin
   DebugLn(DBG_DATA_MONITORS, ['DebugDataWindow: TCallStackDlg.CallStackCtxChanged from ',  DbgSName(Sender), ' Upd:', IsUpdating]);
   if (not ToolButtonPower.Down) or FInUpdateView then exit;
+
   FWantedViewStart := 0;
   if FViewStart = 0
   then UpdateView
@@ -565,25 +566,31 @@ end;
 
 procedure TCallStackDlg.CopyToClipBoard;
 var
-  n: integer;
+  n, MaxCnt: integer;
   Entry: TIdeCallStackEntry;
   S: String;
+  CStack: TIdeCallStack;
 begin
-  if (GetSelectedCallstack=nil) or (GetSelectedCallstack.Count=0) then
+  CStack := GetSelectedCallstack;
+  MaxCnt := FViewStart + FViewLimit;
+
+  if (CStack=nil) or (CStack.CountLimited(MaxCnt)=0) then
     exit;
 
-  Clipboard.Clear;
 
   S := '';
-  // GetSelectedCallstack.PrepareRange();
-  for n:= 0 to GetSelectedCallstack.Count-1 do
+  for n:= 0 to CStack.CountLimited(MaxCnt)-1 do
   begin
-    Entry:=GetSelectedCallstack.Entries[n];
-    if Entry <> nil
-    then S := S + format('#%d %s at %s:%d', [n, GetFunction(Entry), Entry.Source, Entry.Line])
-    else S := S + format('#%d ????', [n]);
+    Entry:=nil;
+    if CStack.HasEntry(n) then
+      Entry:=CStack.Entries[n];
+    if (Entry <> nil) and (Entry.Validity = ddsValid) then
+      S := S + format('#%d %s at %s:%d', [n, GetFunction(Entry), Entry.Source, Entry.Line])
+    else
+      S := S + format('#%d ????', [n]);
     S := S + LineEnding;
   end;
+  Clipboard.Clear;
   ClipBoard.AsText := S;
 end;
 
@@ -720,12 +727,14 @@ procedure TCallStackDlg.actViewBottomExecute(Sender: TObject);
 begin
   try
     DisableAllActions;
+    BeginUpdate;
 
     if GetSelectedCallstack = nil then
       SetViewStart(0)
     else
       SetViewStart(MaxInt);
   finally
+    EndUpdate;
     EnableAllActions;
   end;
 end;
@@ -758,8 +767,6 @@ procedure TCallStackDlg.actViewMoreExecute(Sender: TObject);
 begin
   try
     DisableAllActions;
-    ToolButtonPower.Down := True;
-    ToolButtonPowerClick(nil);
     ViewLimit := ViewLimit + FViewCount;
   finally
     EnableAllActions;
@@ -770,10 +777,12 @@ procedure TCallStackDlg.actViewTopExecute(Sender: TObject);
 begin
   try
     DisableAllActions;
+    BeginUpdate;
     ToolButtonPower.Down := True;
     ToolButtonPowerClick(nil);
     SetViewStart(0);
   finally
+    EndUpdate;
     EnableAllActions;
   end;
 end;
@@ -909,35 +918,40 @@ var
 begin
   FWantedViewStart := 0;
   if GetSelectedCallstack = nil then Exit;
-  ToolButtonPower.Down := True;
-  ToolButtonPowerClick(nil);
+  BeginUpdate;
+  try
+    ToolButtonPower.Down := True;
+    ToolButtonPowerClick(nil);
 
-  CStack := GetSelectedCallstack;
-  if AStart = MaxInt then begin
-    CntLim := CStack.Count;
-    if (CStack.CountValidity = ddsValid) then
-      AStart := CntLim - FViewLimit
+    CStack := GetSelectedCallstack;
+    if AStart = MaxInt then begin
+      CntLim := CStack.Count;
+      if (CStack.CountValidity = ddsValid) then
+        AStart := CntLim - FViewLimit
+      else
+        CntLim := 0;
+    end
     else
-      CntLim := 0;
-  end
-  else
-    CntLim := CStack.CountLimited(AStart+FViewLimit);
+      CntLim := CStack.CountLimited(AStart+FViewLimit);
 
-  if (CntLim = 0) and (CStack.CountValidity <> ddsValid) and (DebugBoss.State = dsPause) then begin
-    FWantedViewStart := AStart;
-  end
-  else begin
-    if (AStart > CntLim - FViewLimit) then
-      AStart := CStack.Count - FViewLimit;
-    if AStart < 0 then
-      AStart := 0;
+    if (CntLim = 0) and (CStack.CountValidity <> ddsValid) and (DebugBoss.State = dsPause) then begin
+      FWantedViewStart := AStart;
+    end
+    else begin
+      if (AStart > CntLim - FViewLimit) then
+        AStart := CStack.Count - FViewLimit;
+      if AStart < 0 then
+        AStart := 0;
 
-    if FViewStart = AStart then
-      Exit;
+      if FViewStart = AStart then
+        Exit;
 
-    FViewStart:= AStart;
-    txtGoto.Text:= IntToStr(AStart);
-    UpdateView;
+      FViewStart:= AStart;
+      txtGoto.Text:= IntToStr(AStart);
+      UpdateView;
+    end;
+  finally
+    EndUpdate;
   end;
 end;
 
@@ -949,20 +963,26 @@ begin
 end;
 
 procedure TCallStackDlg.SetViewLimit(const AValue: Integer);
+var
+  CStack: TIdeCallStack;
+  CntLimit: Integer;
 begin
+  BeginUpdate;
   ToolButtonPower.Down := True;
   ToolButtonPowerClick(nil);
-  if FViewLimit = AValue then Exit;
-  if (GetSelectedCallstack <> nil)
-  and (FViewStart + FViewLimit >= GetSelectedCallstack.CountLimited(FViewStart + FViewLimit+1))
-  and (AValue > FViewLimit)
-  then begin
-    FViewStart := GetSelectedCallstack.Count - AValue;
-    // TODO: check count validity
-    if FViewStart < 0 then FViewStart := 0;
+  if FViewLimit = AValue then
+    Exit;
+  CStack := GetSelectedCallstack;
+  if (CStack <> nil) then begin
+    CntLimit := GetSelectedCallstack.CountLimited(FViewStart + FViewLimit+1);
+    if (CntLimit > 0) and (FViewStart + FViewLimit >= CntLimit) and (AValue > FViewLimit) then begin
+      FViewStart := CntLimit - AValue;
+      if FViewStart < 0 then FViewStart := 0;
+    end;
   end;
   FViewLimit := AValue;
   UpdateView;
+  EndUpdate;
 end;
 
 function TCallStackDlg.GetFunction(const Entry: TIdeCallStackEntry): string;
