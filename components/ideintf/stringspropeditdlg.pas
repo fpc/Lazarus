@@ -60,6 +60,7 @@ begin
   StatusLabel.Caption := ois0Lines0Chars;
   SortButton.Caption := oisSort;
   ClearButton.Caption := oisClear;
+  SaveButton.Caption := oisSave;
   AddButtons;
   IDEDialogLayoutList.ApplyLayout(Self);
 end;
