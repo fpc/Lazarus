@@ -224,7 +224,7 @@ const
   COL_BREAK_ACTION    = 5;
   COL_BREAK_PASS      = 6;
   COL_BREAK_GROUP     = 7;
-  COL_WIDTHS: Array[0..6] of integer = ( 50, 150, 100,  75, 150, 100, 80);
+  COL_WIDTHS: Array[0..6] of integer = ( 60, 150, 100,  75, 150, 100, 80);
 
 function BreakPointDlgColSizeGetter(AForm: TCustomForm; AColId: Integer; var ASize: Integer): Boolean;
 begin
