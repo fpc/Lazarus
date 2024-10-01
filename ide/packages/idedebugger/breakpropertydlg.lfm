@@ -14,9 +14,9 @@ object BreakPropertyDlg: TBreakPropertyDlg
   ClientHeight = 577
   ClientWidth = 450
   Constraints.MinWidth = 450
-  OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '3.99.0.0'
+  OnCreate = FormCreate
   object lblFileName: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = edtFilename
@@ -75,7 +75,7 @@ object BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideTop.Side = asrCenter
     Left = 6
     Height = 15
-    Top = 230
+    Top = 259
     Width = 36
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
@@ -88,7 +88,7 @@ object BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideTop.Side = asrCenter
     Left = 6
     Height = 15
-    Top = 201
+    Top = 230
     Width = 103
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
@@ -102,7 +102,7 @@ object BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideTop.Side = asrCenter
     Left = 205
     Height = 15
-    Top = 201
+    Top = 230
     Width = 24
     BorderSpacing.Left = 6
     Caption = '(ms)'
@@ -111,16 +111,16 @@ object BreakPropertyDlg: TBreakPropertyDlg
   object edtAutocontinueMS: TEdit
     AnchorSideLeft.Control = lblAutoContinue
     AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = edtCounter
+    AnchorSideTop.Control = edtPassCount
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     Left = 139
     Height = 23
-    Top = 197
+    Top = 226
     Width = 60
     BorderSpacing.Left = 24
     BorderSpacing.Around = 6
-    TabOrder = 6
+    TabOrder = 8
     Text = 'edtAutocontinueMS'
   end
   object edtCounter: TEdit
@@ -137,8 +137,40 @@ object BreakPropertyDlg: TBreakPropertyDlg
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 24
     BorderSpacing.Around = 6
-    TabOrder = 5
+    TabOrder = 6
     Text = 'edtCounter'
+  end
+  object lblPassCount: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = edtPassCount
+    AnchorSideTop.Side = asrCenter
+    Left = 6
+    Height = 15
+    Top = 201
+    Width = 57
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 6
+    Caption = 'Passcount:'
+    ParentColor = False
+  end
+  object edtPassCount: TEdit
+    AnchorSideLeft.Control = lblAutoContinue
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = edtCounter
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 139
+    Height = 23
+    Top = 197
+    Width = 305
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 24
+    BorderSpacing.Around = 6
+    Color = clInactiveCaption
+    ReadOnly = True
+    TabOrder = 7
+    Text = 'edtPassCount'
   end
   object edtFilename: TEdit
     AnchorSideLeft.Control = lblAutoContinue
@@ -167,18 +199,18 @@ object BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideRight.Side = asrBottom
     Left = 139
     Height = 23
-    Top = 226
+    Top = 255
     Width = 305
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 24
     BorderSpacing.Around = 6
     ItemHeight = 15
+    TabOrder = 9
+    Text = 'cmbGroup'
     OnChange = cmbGroupEditingDone
     OnEditingDone = cmbGroupEditingDone
     OnExit = cmbGroupEditingDone
     OnKeyPress = cmbGroupKeyPress
-    TabOrder = 7
-    Text = 'cmbGroup'
   end
   object gbActions: TGroupBox
     AnchorSideLeft.Control = Owner
@@ -188,7 +220,7 @@ object BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 215
-    Top = 276
+    Top = 305
     Width = 438
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -196,7 +228,7 @@ object BreakPropertyDlg: TBreakPropertyDlg
     Caption = 'Actions'
     ClientHeight = 195
     ClientWidth = 434
-    TabOrder = 8
+    TabOrder = 10
     object chkActionBreak: TCheckBox
       AnchorSideLeft.Control = gbActions
       AnchorSideTop.Control = gbActions
@@ -219,8 +251,8 @@ object BreakPropertyDlg: TBreakPropertyDlg
       BorderSpacing.Left = 6
       BorderSpacing.Right = 6
       Caption = 'Enable goups'
-      OnChange = chkEnableGroupsChange
       TabOrder = 1
+      OnChange = chkEnableGroupsChange
     end
     object chkDisableGroups: TCheckBox
       AnchorSideLeft.Control = gbActions
@@ -233,8 +265,8 @@ object BreakPropertyDlg: TBreakPropertyDlg
       BorderSpacing.Left = 6
       BorderSpacing.Right = 6
       Caption = 'Disable groups'
-      OnChange = chkDisableGroupsChange
       TabOrder = 3
+      OnChange = chkDisableGroupsChange
     end
     object edtEnableGroups: TEditButton
       AnchorSideLeft.Control = chkEvalExpression
@@ -256,9 +288,9 @@ object BreakPropertyDlg: TBreakPropertyDlg
       Enabled = False
       MaxLength = 0
       NumGlyphs = 1
-      OnButtonClick = edtEnableGroupsButtonClick
       PasswordChar = #0
       TabOrder = 2
+      OnButtonClick = edtEnableGroupsButtonClick
     end
     object edtDisableGroups: TEditButton
       AnchorSideLeft.Control = chkEvalExpression
@@ -280,9 +312,9 @@ object BreakPropertyDlg: TBreakPropertyDlg
       Enabled = False
       MaxLength = 0
       NumGlyphs = 1
-      OnButtonClick = edtDisableGroupsButtonClick
       PasswordChar = #0
       TabOrder = 4
+      OnButtonClick = edtDisableGroupsButtonClick
     end
     object chkEvalExpression: TCheckBox
       AnchorSideLeft.Control = gbActions
@@ -295,8 +327,8 @@ object BreakPropertyDlg: TBreakPropertyDlg
       BorderSpacing.Left = 6
       BorderSpacing.Right = 6
       Caption = 'Eval expression'
-      OnChange = chkEvalExpressionChange
       TabOrder = 5
+      OnChange = chkEvalExpressionChange
     end
     object chkLogMessage: TCheckBox
       AnchorSideLeft.Control = gbActions
@@ -309,8 +341,8 @@ object BreakPropertyDlg: TBreakPropertyDlg
       BorderSpacing.Left = 6
       BorderSpacing.Right = 6
       Caption = 'Log message'
-      OnChange = chkLogMessageChange
       TabOrder = 7
+      OnChange = chkLogMessageChange
     end
     object edtEvalExpression: TEdit
       AnchorSideLeft.Control = chkEvalExpression
@@ -360,8 +392,8 @@ object BreakPropertyDlg: TBreakPropertyDlg
       Width = 89
       BorderSpacing.Left = 6
       Caption = 'Log call stack'
-      OnChange = chkLogCallStackChange
       TabOrder = 9
+      OnChange = chkLogCallStackChange
     end
     object edtLogCallStack: TSpinEdit
       AnchorSideLeft.Control = chkEvalExpression
@@ -410,8 +442,8 @@ object BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideTop.Control = gbActions
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 74
-    Top = 497
+    Height = 45
+    Top = 526
     Width = 438
     Anchors = [akTop, akLeft, akRight, akBottom]
     OKButton.Name = 'OKButton'
@@ -425,7 +457,7 @@ object BreakPropertyDlg: TBreakPropertyDlg
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
     CancelButton.DefaultCaption = True
-    TabOrder = 9
+    TabOrder = 11
     ShowButtons = [pbOK, pbCancel, pbHelp]
     ShowBevel = False
   end
@@ -444,7 +476,7 @@ object BreakPropertyDlg: TBreakPropertyDlg
     BorderSpacing.Left = 24
     BorderSpacing.Around = 6
     ItemHeight = 15
-    TabOrder = 4
+    TabOrder = 5
     Text = 'edtCondition'
   end
   object edtLine: TSpinEdit
@@ -610,7 +642,7 @@ object BreakPropertyDlg: TBreakPropertyDlg
     BorderSpacing.Left = 24
     BorderSpacing.Around = 6
     Caption = 'chkEnabled'
-    TabOrder = 10
+    TabOrder = 4
   end
   object lblBadGroupName: TLabel
     AnchorSideLeft.Control = cmbGroup
@@ -620,7 +652,7 @@ object BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideRight.Side = asrBottom
     Left = 139
     Height = 15
-    Top = 255
+    Top = 284
     Width = 305
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6

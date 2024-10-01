@@ -36,6 +36,7 @@ type
     chkActionBreak: TCheckBox;
     cmbGroup: TComboBox;
     edtCondition: TComboBox;
+    edtPassCount: TEdit;
     edtEvalExpression: TEdit;
     edtLine: TSpinEdit;
     edtLogMessage: TEdit;
@@ -47,6 +48,7 @@ type
     gbActions: TGroupBox;
     Label1: TLabel;
     lblBadGroupName: TLabel;
+    lblPassCount: TLabel;
     lblWatchKind: TLabel;
     lblWatchScope: TLabel;
     lblLogCallStackLimit: TLabel;
@@ -367,6 +369,7 @@ begin
   chkEnabled.Checked := FBreakpoint.Enabled;
   // hitcount
   edtCounter.Text := IntToStr(FBreakpoint.BreakHitCount);
+  edtPassCount.Text := IntToStr(FBreakpoint.HitCount);
   // auto continue
   edtAutocontinueMS.Text := IntToStr(FBreakpoint.AutoContinueTime);
   // group
@@ -449,6 +452,7 @@ begin
   chkEnabled.Caption := lisBPSEnabled;
   lblCondition.Caption := lisCondition + ':';
   lblHitCount.Caption := lisHitCount + ':';
+  lblPassCount.Caption := lisPassCount + ':';
   lblAutoContinue.Caption := lisAutoContinueAfter;
   lblMS.Caption := lisMS;
   lblGroup.Caption := lisGroup + ':';
