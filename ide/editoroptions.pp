@@ -2280,7 +2280,7 @@ begin
   if AGutterPart = nil then exit;
 
   if FGClass = TSynGutterMarks then begin
-    TSynGutterMarks(AGutterPart).SetWidthForColumns(FWidth);
+    TSynGutterMarks(AGutterPart).ColumnCount := FWidth;
   end
   else
   if FGClass = TSynGutterLineNumber then begin

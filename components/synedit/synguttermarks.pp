@@ -31,7 +31,9 @@ type
     FInternalImage: TSynInternalImage;
     FNoInternalImage: Boolean;
     function GetColumnWidth: Integer; inline;
+    function GetColumnWidthFromImgList: Integer; inline;
     procedure SetColumnWidth(AValue: Integer);
+    procedure SetColumnCount(AValue: Integer);
   protected type
     TSynEditMarkDrawInfo = record
       Mark: TSynEditMark;
@@ -42,6 +44,7 @@ type
   protected
     FBookMarkOpt: TSynBookMarkOpt;
     FTempDrawInfo: TSynEditMarkDrawInfoArray;
+    procedure SetAutoSize(const AValue: boolean); override;
     procedure Init; override;
     function  PreferedWidth: Integer; override;
     function  LeftMarginAtCurrentPPI: Integer;
@@ -54,15 +57,15 @@ type
                        var aFirstCustomColumnIdx: integer): Boolean;
     Procedure PaintLine(aScreenLine: Integer; Canvas : TCanvas; AClip : TRect); virtual;
     property WantedColumns: integer read FWantedColumns;
+    property UserColumnWidth: integer read FUserColumnWidth;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
     procedure Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer); override;
-    procedure SetWidthForColumns(AValue: Integer);
     property DebugMarksImageIndex: Integer read FDebugMarksImageIndex write FDebugMarksImageIndex;
-    property ColumnWidth: Integer read GetColumnWidth write SetColumnWidth; // zeru for auto-size by bookmarks
-    property ColumnCount: Integer read FColumnCount;
+    property ColumnWidth: Integer read FColumnWidth write SetColumnWidth; // zero for auto-size by bookmarks
+    property ColumnCount: Integer read FColumnCount write SetColumnCount;
   published
     // Max amount of marks show in addition to ColumnCount
     property MaxExtraMarksColums: Integer read FMaxExtraMarksColums write FMaxExtraMarksColums;
@@ -100,26 +103,24 @@ begin
 end;
 
 function TSynGutterMarks.GetColumnWidth: Integer;
-var
-  tmp: Integer;
 begin
   Result := FUserColumnWidth;
   if Result > 0 then
     exit;
 
-  if assigned(FBookMarkOpt) and assigned(FBookMarkOpt.BookmarkImages) and
-     assigned(FriendEdit) and FriendEdit.HandleAllocated
-  then begin
-    tmp := FUserColumnWidth;
-    FUserColumnWidth := FBookMarkOpt.BookmarkImages.Width;
-    if FUserColumnWidth > 0 then
-      Result := GetImgListRes(FriendEdit.Canvas, FBookMarkOpt.BookmarkImages).Width
-    else
-      Result := Width;
-    FUserColumnWidth := tmp;
-  end
-  else
+  Result := GetColumnWidthFromImgList;
+  if Result < 0 then
     Result := Width;
+end;
+
+function TSynGutterMarks.GetColumnWidthFromImgList: Integer;
+begin
+  Result := -1;
+  if assigned(FBookMarkOpt) and assigned(FBookMarkOpt.BookmarkImages) and
+     assigned(FriendEdit) and FriendEdit.HandleAllocated and
+     (FColumnWidth > 0)
+  then
+    Result := GetImgListRes(FriendEdit.Canvas, FBookMarkOpt.BookmarkImages).Width;
 end;
 
 procedure TSynGutterMarks.Init;
@@ -129,14 +130,28 @@ begin
 end;
 
 function TSynGutterMarks.PreferedWidth: Integer;
+var
+  tmp: Integer;
 begin
-  Result := 22 + FBookMarkOpt.LeftMargin;
+  if FUserColumnWidth > 0 then begin
+    Result := FUserColumnWidth;
+  end
+  else
   if FWantedColumns > 0 then begin
-    if assigned(FBookMarkOpt) and assigned(FBookMarkOpt.BookmarkImages) then begin
-      FColumnWidth := GetColumnWidth;
-      Result := FWantedColumns*FColumnWidth;
+    tmp := FColumnWidth;
+    FColumnWidth := 22;
+    Result := GetColumnWidthFromImgList;
+    FColumnWidth := tmp;
+    if Result < 0 then begin
+      Result := 22;
     end;
-  end;
+  end
+  else
+    Result := 22;
+
+  if FWantedColumns > 0 then
+    Result := Result * FWantedColumns;
+  Result := Result + FBookMarkOpt.LeftMargin;
 end;
 
 function TSynGutterMarks.LeftMarginAtCurrentPPI: Integer;
@@ -239,6 +254,8 @@ begin
       ADrawInfo[aFirstCustomColumnIdx].IconIdx := 0;
       ADrawInfo[aFirstCustomColumnIdx].Images  := nil;
       inc(Result);
+      if Length(ADrawInfo) < Result then
+        SetLength(ADrawInfo, Result); // Expand to max needed (for further runs)
       inc(aFirstCustomColumnIdx);
     end;
 
@@ -433,7 +450,7 @@ begin
   end;
 end;
 
-procedure TSynGutterMarks.SetWidthForColumns(AValue: Integer);
+procedure TSynGutterMarks.SetColumnCount(AValue: Integer);
 begin
   if FWantedColumns = AValue then
     exit;
@@ -442,6 +459,13 @@ begin
     AutoSize := True
   else
     DoAutoSize;
+end;
+
+procedure TSynGutterMarks.SetAutoSize(const AValue: boolean);
+begin
+  inherited SetAutoSize(AValue);
+  if not AValue then
+    FWantedColumns := 0;
 end;
 
 end.
