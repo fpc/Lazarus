@@ -2747,15 +2747,21 @@ msgid "Delete list \"%s\"?"
 msgstr "リスト\"%s\"を削除しますか？"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeyadd
-msgid "Add Word or Term"
+#, fuzzy
+#| msgid "Add Word or Term"
+msgid "Add Word or Term by key"
 msgstr "単語もしくは用語を追加"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeyremove
-msgid "Remove Word or Term"
+#, fuzzy
+#| msgid "Remove Word or Term"
+msgid "Remove Word or Term by key"
 msgstr "単語もしくは用語を削除"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeytoggle
-msgid "Toggle Word or Term"
+#, fuzzy
+#| msgid "Toggle Word or Term"
+msgid "Toggle Word or Term by key"
 msgstr "単語もしくは用語をトグル"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedduplicate
@@ -2829,7 +2835,9 @@ msgid "Select ..."
 msgstr "選択 ..."
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedpagekeys
-msgid "Key Settings"
+#, fuzzy
+#| msgid "Key Settings"
+msgid "Key mappings"
 msgstr "キー設定"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedpagemain

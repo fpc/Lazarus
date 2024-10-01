@@ -2644,15 +2644,21 @@ msgid "Delete list \"%s\"?"
 msgstr "Listeyi sil \"%s\"?"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeyadd
-msgid "Add Word or Term"
+#, fuzzy
+#| msgid "Add Word or Term"
+msgid "Add Word or Term by key"
 msgstr "Kelime veya Terim Ekle"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeyremove
-msgid "Remove Word or Term"
+#, fuzzy
+#| msgid "Remove Word or Term"
+msgid "Remove Word or Term by key"
 msgstr "Kelimeyi veya Terimi Kaldır"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeytoggle
-msgid "Toggle Word or Term"
+#, fuzzy
+#| msgid "Toggle Word or Term"
+msgid "Toggle Word or Term by key"
 msgstr "Kelimeyi veya Terimi Değiştir"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedduplicate
@@ -2726,7 +2732,9 @@ msgid "Select ..."
 msgstr "Seç ..."
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedpagekeys
-msgid "Key Settings"
+#, fuzzy
+#| msgid "Key Settings"
+msgid "Key mappings"
 msgstr "Tuş Ayarları"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedpagemain

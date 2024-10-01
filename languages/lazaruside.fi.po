@@ -2664,15 +2664,21 @@ msgid "Delete list \"%s\"?"
 msgstr "Poista luettelo \"%s\"?"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeyadd
-msgid "Add Word or Term"
+#, fuzzy
+#| msgid "Add Word or Term"
+msgid "Add Word or Term by key"
 msgstr "Lisää sana tai termi"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeyremove
-msgid "Remove Word or Term"
+#, fuzzy
+#| msgid "Remove Word or Term"
+msgid "Remove Word or Term by key"
 msgstr "Poista sana tai termi"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeytoggle
-msgid "Toggle Word or Term"
+#, fuzzy
+#| msgid "Toggle Word or Term"
+msgid "Toggle Word or Term by key"
 msgstr "Vaihda sana tai termi"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedduplicate
@@ -2746,7 +2752,9 @@ msgid "Select ..."
 msgstr "Valitse ..."
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedpagekeys
-msgid "Key Settings"
+#, fuzzy
+#| msgid "Key Settings"
+msgid "Key mappings"
 msgstr "Näppäinasetukset"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedpagemain

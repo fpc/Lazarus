@@ -2707,15 +2707,21 @@ msgid "Delete list \"%s\"?"
 msgstr "Odstranit seznam \"%s\"?"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeyadd
-msgid "Add Word or Term"
+#, fuzzy
+#| msgid "Add Word or Term"
+msgid "Add Word or Term by key"
 msgstr "Přidat slovo nebo označení"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeyremove
-msgid "Remove Word or Term"
+#, fuzzy
+#| msgid "Remove Word or Term"
+msgid "Remove Word or Term by key"
 msgstr "Odebrat slovo nebo označneí"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeytoggle
-msgid "Toggle Word or Term"
+#, fuzzy
+#| msgid "Toggle Word or Term"
+msgid "Toggle Word or Term by key"
 msgstr "Přehodit slovo nebo označení"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedduplicate
@@ -2789,7 +2795,9 @@ msgid "Select ..."
 msgstr "Vybrat ..."
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedpagekeys
-msgid "Key Settings"
+#, fuzzy
+#| msgid "Key Settings"
+msgid "Key mappings"
 msgstr "Nastavení kláves"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedpagemain

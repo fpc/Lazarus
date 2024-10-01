@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-09-30 18:22+0300\n"
+"PO-Revision-Date: 2024-10-01 17:39+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -2670,16 +2670,16 @@ msgid "Delete list \"%s\"?"
 msgstr "Удалить список \"%s\"?"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeyadd
-msgid "Add Word or Term"
-msgstr "Добавление слова или терма"
+msgid "Add Word or Term by key"
+msgstr "Добавление слова или терма клавишами"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeyremove
-msgid "Remove Word or Term"
-msgstr "Удаление слова или терма"
+msgid "Remove Word or Term by key"
+msgstr "Удаление слова или терма клавишами"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeytoggle
-msgid "Toggle Word or Term"
-msgstr "Переключение слова или терма"
+msgid "Toggle Word or Term by key"
+msgstr "Переключение слова или терма клавишами"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedduplicate
 msgid "Duplicate Term"
@@ -2752,8 +2752,8 @@ msgid "Select ..."
 msgstr "Выбрать ..."
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedpagekeys
-msgid "Key Settings"
-msgstr "Параметры клавиш"
+msgid "Key mappings"
+msgstr "Комбинации клавиш"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedpagemain
 msgid "Main settings"

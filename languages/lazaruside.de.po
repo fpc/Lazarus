@@ -2723,15 +2723,21 @@ msgid "Delete list \"%s\"?"
 msgstr "Liste \"%s\" löschen?"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeyadd
-msgid "Add Word or Term"
+#, fuzzy
+#| msgid "Add Word or Term"
+msgid "Add Word or Term by key"
 msgstr "Wort oder Ausdruck hinzufügen"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeyremove
-msgid "Remove Word or Term"
+#, fuzzy
+#| msgid "Remove Word or Term"
+msgid "Remove Word or Term by key"
 msgstr "Wort oder Ausdruck entfernen"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeytoggle
-msgid "Toggle Word or Term"
+#, fuzzy
+#| msgid "Toggle Word or Term"
+msgid "Toggle Word or Term by key"
 msgstr "Wort oder Ausdruck umschalten"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedduplicate
@@ -2805,7 +2811,9 @@ msgid "Select ..."
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedpagekeys
-msgid "Key Settings"
+#, fuzzy
+#| msgid "Key Settings"
+msgid "Key mappings"
 msgstr "Tasteneinstellungen"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedpagemain

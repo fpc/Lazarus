@@ -2674,15 +2674,21 @@ msgid "Delete list \"%s\"?"
 msgstr "删除列表\"%s\"?"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeyadd
-msgid "Add Word or Term"
+#, fuzzy
+#| msgid "Add Word or Term"
+msgid "Add Word or Term by key"
 msgstr "添加单词或词条"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeyremove
-msgid "Remove Word or Term"
+#, fuzzy
+#| msgid "Remove Word or Term"
+msgid "Remove Word or Term by key"
 msgstr "移除单词或词条"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeytoggle
-msgid "Toggle Word or Term"
+#, fuzzy
+#| msgid "Toggle Word or Term"
+msgid "Toggle Word or Term by key"
 msgstr "切换单词或词条"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedduplicate
@@ -2756,7 +2762,9 @@ msgid "Select ..."
 msgstr "选择 ..."
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedpagekeys
-msgid "Key Settings"
+#, fuzzy
+#| msgid "Key Settings"
+msgid "Key mappings"
 msgstr "快捷键设置"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedpagemain

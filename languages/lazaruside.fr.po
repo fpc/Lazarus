@@ -2685,15 +2685,21 @@ msgid "Delete list \"%s\"?"
 msgstr "Voulez-vous supprimer la liste \"%s\" ?"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeyadd
-msgid "Add Word or Term"
+#, fuzzy
+#| msgid "Add Word or Term"
+msgid "Add Word or Term by key"
 msgstr "Ajouter un mot ou un terme"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeyremove
-msgid "Remove Word or Term"
+#, fuzzy
+#| msgid "Remove Word or Term"
+msgid "Remove Word or Term by key"
 msgstr "Retirer un mot ou un terme"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeytoggle
-msgid "Toggle Word or Term"
+#, fuzzy
+#| msgid "Toggle Word or Term"
+msgid "Toggle Word or Term by key"
 msgstr "Inverser un mot ou un terme"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedduplicate
@@ -2767,7 +2773,9 @@ msgid "Select ..."
 msgstr "Sélectionner..."
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedpagekeys
-msgid "Key Settings"
+#, fuzzy
+#| msgid "Key Settings"
+msgid "Key mappings"
 msgstr "Paramètres des touches"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedpagemain

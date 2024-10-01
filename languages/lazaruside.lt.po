@@ -2749,15 +2749,21 @@ msgid "Delete list \"%s\"?"
 msgstr "Šalinti sąrašą „%s“?"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeyadd
-msgid "Add Word or Term"
+#, fuzzy
+#| msgid "Add Word or Term"
+msgid "Add Word or Term by key"
 msgstr "Pridėti žodį arba termą"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeyremove
-msgid "Remove Word or Term"
+#, fuzzy
+#| msgid "Remove Word or Term"
+msgid "Remove Word or Term by key"
 msgstr "Pašalinti žodį arba termą"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeytoggle
-msgid "Toggle Word or Term"
+#, fuzzy
+#| msgid "Toggle Word or Term"
+msgid "Toggle Word or Term by key"
 msgstr "Įjungti ar išjungti žodį arba termą"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedduplicate
@@ -2831,7 +2837,9 @@ msgid "Select ..."
 msgstr "Žymėti…"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedpagekeys
-msgid "Key Settings"
+#, fuzzy
+#| msgid "Key Settings"
+msgid "Key mappings"
 msgstr "Klavišų nuostatos"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedpagemain

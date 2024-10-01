@@ -2672,15 +2672,21 @@ msgid "Delete list \"%s\"?"
 msgstr "Вилучити список \"%s\"?"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeyadd
-msgid "Add Word or Term"
+#, fuzzy
+#| msgid "Add Word or Term"
+msgid "Add Word or Term by key"
 msgstr "Додати слово або термін"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeyremove
-msgid "Remove Word or Term"
+#, fuzzy
+#| msgid "Remove Word or Term"
+msgid "Remove Word or Term by key"
 msgstr "Вилучити слово або термін"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeytoggle
-msgid "Toggle Word or Term"
+#, fuzzy
+#| msgid "Toggle Word or Term"
+msgid "Toggle Word or Term by key"
 msgstr "Перемкнути слово або термін"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedduplicate
@@ -2754,7 +2760,9 @@ msgid "Select ..."
 msgstr "Виберіть ..."
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedpagekeys
-msgid "Key Settings"
+#, fuzzy
+#| msgid "Key Settings"
+msgid "Key mappings"
 msgstr "Параметри клавіш"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedpagemain
