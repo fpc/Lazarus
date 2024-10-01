@@ -570,7 +570,7 @@ end;
 
 procedure TCallStackDlg.CopyToClipBoard;
 var
-  n, MaxCnt: integer;
+  n, MaxCnt, InvalCnt: integer;
   Entry: TIdeCallStackEntry;
   S: String;
   CStack: TIdeCallStack;
@@ -583,16 +583,24 @@ begin
 
 
   S := '';
+  InvalCnt := 0;
   for n:= 0 to CStack.CountLimited(MaxCnt)-1 do
   begin
     Entry:=nil;
     if CStack.HasEntry(n) then
       Entry:=CStack.Entries[n];
-    if (Entry <> nil) and (Entry.Validity = ddsValid) then
-      S := S + format('#%d %s at %s:%d', [n, GetFunction(Entry), Entry.Source, Entry.Line])
-    else
-      S := S + format('#%d ????', [n]);
-    S := S + LineEnding;
+    if (Entry <> nil) and (Entry.Validity = ddsValid) then begin
+      InvalCnt := 0;
+      S := S + format('#%d %s at %s:%d', [n, GetFunction(Entry), Entry.Source, Entry.Line])+ LineEnding;
+    end
+    else begin
+      inc(InvalCnt);
+      if InvalCnt < 5 then
+        S := S + format('#%d ????', [n])+ LineEnding
+      else
+      if InvalCnt = 5 then
+        S := S + '...'+ LineEnding;
+    end;
   end;
   Clipboard.Clear;
   ClipBoard.AsText := S;
@@ -600,9 +608,7 @@ end;
 
 procedure TCallStackDlg.LineToClipBoard;
 var
-  n: integer;
   Entry: TIdeCallStackEntry;
-  S: String;
 begin
   Entry := GetCurrentEntry;
   if not Assigned(Entry) then
