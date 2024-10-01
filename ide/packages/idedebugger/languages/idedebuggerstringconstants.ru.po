@@ -1090,7 +1090,7 @@ msgstr "Вниз"
 
 #: idedebuggerstringconstants.liscsdown
 msgid "Page down"
-msgstr ""
+msgstr "На страницу вниз"
 
 #: idedebuggerstringconstants.liscstop
 msgctxt "lazarusidestrconsts.liscstop"
@@ -1099,7 +1099,7 @@ msgstr "Вверх"
 
 #: idedebuggerstringconstants.liscsup
 msgid "Page up"
-msgstr ""
+msgstr "На страницу вверх"
 
 #: idedebuggerstringconstants.liscurrent
 msgctxt "lazarusidestrconsts.liscurrent"
