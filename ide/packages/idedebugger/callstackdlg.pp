@@ -470,13 +470,11 @@ end;
 procedure TCallStackDlg.DoBeginUpdate;
 begin
   DisableAllActions;
-  lvCallStack.BeginUpdate;
 end;
 
 procedure TCallStackDlg.DoEndUpdate;
 begin
   if ufNeedUpdating in FUpdateFlags then UpdateView;
-  lvCallStack.EndUpdate;
   EnableAllActions;
 end;
 
@@ -832,6 +830,8 @@ var
   Entry: TIdeCallStackEntry;
   Stack: TIdeCallStack;
 begin
+  if (not ToolButtonPower.Down) or FInUpdateView then exit;
+
   if {(DebugBoss.State <> dsPause) or} (lvCallStack.Items.Count = 0) then
     exit;
   DebugLn(DBG_DATA_MONITORS, ['DebugDataWindow: TCallStackDlg.BreakPointChanged ',  DbgSName(ASender), '  Upd:', IsUpdating]);
@@ -840,6 +840,8 @@ begin
     Exit;
 
   Stack.CountLimited(FViewStart + FViewLimit + 1);
+  lvCallStack.BeginUpdate;
+  try
   for i := 0 to lvCallStack.Items.Count - 1 do
   begin
     idx := FViewStart + lvCallStack.Items[i].Index;
@@ -850,6 +852,9 @@ begin
       lvCallStack.Items[i].ImageIndex := GetImageIndex(Entry)
     else
       lvCallStack.Items[i].ImageIndex := imgNoSourceLine;
+  end;
+  finally
+    lvCallStack.EndUpdate;
   end;
 end;
 

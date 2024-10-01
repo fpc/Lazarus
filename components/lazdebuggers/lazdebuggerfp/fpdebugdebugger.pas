@@ -1813,7 +1813,7 @@ begin
         e.Validity := ddsInvalid
       else
       begin
-        if IT.EOM or ((i and 7) = 0) or
+        if IT.EOM or ((i and 31) = 0) or
            (e.Index = ACallstack.HighestUnknown)
         then
           WorkItem := TFpThreadWorkerCallEntryUpdate.Create(FpDebugger, t, e, ACallstack)

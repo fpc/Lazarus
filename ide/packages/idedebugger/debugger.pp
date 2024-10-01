@@ -1570,6 +1570,7 @@ type
   private
     FNotificationList: TList;
     FMaster: TDBGDisassembler;
+    FInChange: Boolean;
     procedure DisassemblerChanged(Sender: TObject);
     procedure SetMaster(AMaster: TDBGDisassembler);
   protected
@@ -9291,6 +9292,10 @@ var
   n: Integer;
   Notification: TIDEDisassemblerNotification;
 begin
+  if FInChange then
+    exit;
+
+  LockChanged;
   if FMaster <> nil
   then begin
     SetCountBefore(FMaster.CountBefore);
@@ -9298,6 +9303,10 @@ begin
     SetBaseAddr(FMaster.BaseAddr);
   end
   else Clear;
+
+  FInChange := True;
+  UnlockChanged;
+  FInChange := False;
 
   for n := 0 to FNotificationList.Count - 1 do
   begin

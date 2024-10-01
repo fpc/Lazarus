@@ -136,6 +136,7 @@ type
     FHistory: TDBGPtrList;
     FHistoryIdx: Integer;
     FHistoryLock: boolean;
+    FInternalUpdateLock: integer;
 
     FTopLine: Integer;
     FLastTopLine: Integer;
@@ -640,6 +641,10 @@ end;
 
 procedure TAssemblerDlg.DoEndUpdate;
 begin
+  if FInternalUpdateLock > 0 then
+    exit;
+  inc(FInternalUpdateLock);
+  try
   inherited DoEndUpdate;
   if FVisibleChanged then begin
     DoEditorOptsChanged(nil);
@@ -647,6 +652,11 @@ begin
       UpdateLocation(FCurrentLocation);
   end;
   FVisibleChanged := False;
+
+  finally
+    dec(FInternalUpdateLock);
+    UpdateView;
+  end;
 end;
 
 procedure TAssemblerDlg.UpdateShowing;
@@ -934,16 +944,21 @@ end;
 
 procedure TAssemblerDlg.UpdateView;
 begin
-  if not ToolButtonPower.Down
-  then exit;
+  if (not ToolButtonPower.Down) or (FInternalUpdateLock > 0) then
+    exit;
 
-  if (FDisassembler <> nil) and (FCurrentLocation <> 0)
-  then begin
-    FDisassembler.PrepareRange(FCurrentLocation, Max(0, -(FTopLine - 5)), Max(0, FTopLine + FLineCount + 1 + 5));
-    UpdateLineData;
-  end
-  else ClearLineMap;
-  pbAsm.Invalidate;
+    if (FDisassembler <> nil) and (FCurrentLocation <> 0)
+    then begin
+      inc(FInternalUpdateLock);
+      try
+        FDisassembler.PrepareRange(FCurrentLocation, Max(0, -(FTopLine - 5)), Max(0, FTopLine + FLineCount + 1 + 5));
+      finally
+        dec(FInternalUpdateLock);
+      end;
+      UpdateLineData;
+    end
+    else ClearLineMap;
+    pbAsm.Invalidate;
 end;
 
 procedure TAssemblerDlg.UpdateActionEnabled;
@@ -1332,6 +1347,8 @@ var
   LineIsSrc, HasLineOutOfRange: Boolean;
   s: String;
 begin
+  if FInternalUpdateLock > 0 then
+    exit;
   if (FDebugger = nil) or (FDisassembler = nil) or (FDebugger.State <> dsPause)
   then begin
     ClearLineMap;  // set all to lmsUnknown;
