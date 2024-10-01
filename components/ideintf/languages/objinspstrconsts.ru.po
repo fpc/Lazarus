@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-07-03 15:32+0300\n"
+"PO-Revision-Date: 2024-10-01 17:46+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -951,7 +951,7 @@ msgstr "Показывать строку состояния"
 
 #: objinspstrconsts.oissort
 msgid "Sort"
-msgstr "Сортировка"
+msgstr "Сортировать"
 
 #: objinspstrconsts.oisstdactionlisteditor
 msgid "Standard Action Classes"
