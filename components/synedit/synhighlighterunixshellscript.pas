@@ -66,7 +66,11 @@ type
   TtkTokenKind = (tkComment, tkIdentifier, tkKey, tkNull, tkNumber, tkSecondKey,
     tkSpace, tkString, tkSymbol, tkVariable, tkUnknown);
 
-  TRangeState = (rsUnknown, rsAnsi, rsPasStyle, rsCStyle);
+  TRangeState = (
+    rsUnknown,
+    rsString, rsStringEsc, rsStringDbl, rsStringDblEsc
+    //rsAnsi, rsPasStyle, rsCStyle
+  );
 
   TProcTableProc = procedure of object;
 
@@ -630,13 +634,31 @@ procedure TSynUNIXShellScriptSyn.DoStringProc(AnEndChar: Char; AnEscape: Boolean
   );
 begin
   fTokenID := tkString;
+  fRange := rsUnknown;
 
   repeat
     case FLine[Run] of
       #0, #10, #13:
         break;
       '\':
-        if AnEscape then inc(Run);
+        if AnEscape then begin
+          inc(Run);
+          if FLine[Run] in [#0, #10, #13] then begin
+            if AnEndChar = '"' then begin
+              if AnEscape
+              then fRange := rsStringDblEsc
+              else fRange := rsStringDbl;
+            end
+            else begin
+              if AnEscape
+              then fRange := rsStringEsc
+              else fRange := rsString;
+            end;
+            if FLine[Run] = #0 then
+              dec(Run);
+            break;
+          end;
+        end;
     end;
     inc(Run);
   until FLine[Run] = AnEndChar;
@@ -664,13 +686,17 @@ end;
 procedure TSynUNIXShellScriptSyn.Next;
 begin
   fTokenPos := Run;
-  case fRange of
-    rsAnsi: AnsiProc;
-    rsPasStyle: PasStyleProc;
-    rsCStyle: CStyleProc;
-  else
-    fProcTable[fLine[Run]];
+  if Run = 0 then begin
+    case fRange of
+      rsString:       DoStringProc('''', False);
+      rsStringEsc:    DoStringProc('''', True);
+      rsStringDbl:    DoStringProc('"',  False);
+      rsStringDblEsc: DoStringProc('"',  True);
+      else fProcTable[fLine[Run]];
+    end;
+    exit;
   end;
+  fProcTable[fLine[Run]];
 end;
 
 function TSynUNIXShellScriptSyn.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
