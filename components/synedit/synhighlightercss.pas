@@ -262,6 +262,7 @@ type
     procedure SlashProc;
     procedure SpaceProc;
     procedure StringProc;
+    procedure StringDblProc;
     procedure UnknownProc;
     function AltFunc: TtkTokenKind;
     procedure InitIdent;
@@ -1776,7 +1777,8 @@ begin
       '}'                         : FProcTable[chI] := @CurlyCloseProc;
       ';'                         : FProcTable[chI] := @SymbolProc;
       ':'                         : FProcTable[chI] := @ColonProc;
-      '.', '*', ',','>','+','~'   : FProcTable[chI] := @SelectorProc;
+      '.', '*', ',','>','+','~', '[', ']', '='
+                                  : FProcTable[chI] := @SelectorProc;
       '%'                         : FProcTable[chI] := @PercentProc;
       #13                         : FProcTable[chI] := @CRProc;
       '-'                         : FProcTable[chI] := @DashProc;
@@ -1790,6 +1792,7 @@ begin
       '/'                         : FProcTable[chI] := @SlashProc;
       #1..#9, #11, #12, #14..#32  : FProcTable[chI] := @SpaceProc;
       #39                         : FProcTable[chI] := @StringProc;
+      '"'                         : FProcTable[chI] := @StringDblProc;
     else
       FProcTable[chI] := @UnknownProc;
     end;
@@ -2016,7 +2019,20 @@ begin
     end;
     Inc(Run);
   until FLine[Run] = #39;
-  if FLine[Run] <> #0 then
+  if FLine[Run+1] <> #0 then
+    Inc(Run);
+end;
+
+procedure TSynCssSyn.StringDblProc;
+begin
+  FTokenID := tkString;
+  repeat
+    case FLine[Run] of
+      #0, #10, #13: Break;
+    end;
+    Inc(Run);
+  until FLine[Run] = '"';
+  if FLine[Run+1] <> #0 then
     Inc(Run);
 end;
 
