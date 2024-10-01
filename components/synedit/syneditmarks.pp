@@ -214,6 +214,7 @@ type
   private
     FMarkList: TSynEditMarkList;
     FIndexIterator: TSynEditMarkIterator;
+    FInClear: boolean;
     // marks
     function  GetMark(Index : Integer): TSynEditMark;
     function  GetMarkCount: Integer;
@@ -276,7 +277,7 @@ type
     {$ENDIF}
 
 
-    function  Add(Item: TSynEditMark): Integer;
+    procedure Add(Item: TSynEditMark);
     procedure Delete(Index: Integer);
     function  Remove(Item: TSynEditMark): Integer;
     function  IndexOf(Item: TSynEditMark): Integer;
@@ -510,7 +511,8 @@ destructor TSynEditBookMark.Destroy;
 begin
   if FTopLeftMark <> nil then begin
     TSynEditTopLeftMark(FTopLeftMark).FBookMark := nil;
-    FTopLeftMark.Free;
+    if FMarkList <> nil then // Otherwise TSynEditMarkLineList.Clear will take care.
+      FTopLeftMark.Free;
   end;
   inherited Destroy;
 end;
@@ -877,6 +879,8 @@ end;
 
 procedure TSynEditMarkLineList.Remove(Item: TSynEditMarkLine; FreeMarks: Boolean);
 begin
+  if FInClear then
+    exit;
   Item.Clear(FreeMarks);
   RemoveNode(Item);
   Item.Free;
@@ -897,8 +901,10 @@ procedure TSynEditMarkLineList.Clear(FreeMarks: Boolean);
     DisposeNode(TSynSizedDifferentialAVLNode(ANode));
   end;
 begin
+  FInClear := True;
   if FRoot <> nil then DeleteNode(TSynEditMarkLine(FRoot));
   SetRoot(nil);
+  FInClear := False;
 end;
 
 function TSynEditMarkLineList.GetOrAddLine(LineNum: Integer): TSynEditMarkLine;
@@ -946,9 +952,9 @@ end;
 
 { TSynEditMarkList }
 
-function TSynEditMarkList.Add(Item: TSynEditMark): Integer;
+procedure TSynEditMarkList.Add(Item: TSynEditMark);
 begin
-  Result := FMarkLines.AddMark(Item);
+  FMarkLines.AddMark(Item);
   Item.MarkList := Self;
   DoChange;
 end;
