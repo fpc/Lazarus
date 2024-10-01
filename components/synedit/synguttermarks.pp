@@ -26,10 +26,12 @@ type
     FMaxExtraMarksColums: Integer;
     FOptions: TSynGutterMarksOptions;
     FWantedColumns: integer;
-    FColumnWidth: Integer;
+    FColumnWidth, FUserColumnWidth: Integer;
     FDebugMarksImageIndex: Integer;
     FInternalImage: TSynInternalImage;
     FNoInternalImage: Boolean;
+    function GetColumnWidth: Integer; inline;
+    procedure SetColumnWidth(AValue: Integer);
   protected type
     TSynEditMarkDrawInfo = record
       Mark: TSynEditMark;
@@ -59,7 +61,7 @@ type
     procedure Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer); override;
     procedure SetWidthForColumns(AValue: Integer);
     property DebugMarksImageIndex: Integer read FDebugMarksImageIndex write FDebugMarksImageIndex;
-    property ColumnWidth: Integer read FColumnWidth; // initialized in Paint
+    property ColumnWidth: Integer read GetColumnWidth write SetColumnWidth; // zeru for auto-size by bookmarks
     property ColumnCount: Integer read FColumnCount;
   published
     // Max amount of marks show in addition to ColumnCount
@@ -81,6 +83,45 @@ begin
   inherited Create(AOwner);
 end;
 
+procedure TSynGutterMarks.SetColumnWidth(AValue: Integer);
+begin
+  if FColumnWidth = AValue then
+    Exit;
+  if AValue < 0 then
+    AValue := 0;
+
+  FUserColumnWidth := AValue;
+  FColumnWidth := GetColumnWidth;
+
+  if FColumnWidth = 0 then
+    FColumnCount := 0
+  else
+    FColumnCount := Max((Width+1) div FColumnWidth, 1); // full columns
+end;
+
+function TSynGutterMarks.GetColumnWidth: Integer;
+var
+  tmp: Integer;
+begin
+  Result := FUserColumnWidth;
+  if Result > 0 then
+    exit;
+
+  if assigned(FBookMarkOpt) and assigned(FBookMarkOpt.BookmarkImages) and
+     assigned(FriendEdit) and FriendEdit.HandleAllocated
+  then begin
+    tmp := FUserColumnWidth;
+    FUserColumnWidth := FBookMarkOpt.BookmarkImages.Width;
+    if FUserColumnWidth > 0 then
+      Result := GetImgListRes(FriendEdit.Canvas, FBookMarkOpt.BookmarkImages).Width
+    else
+      Result := Width;
+    FUserColumnWidth := tmp;
+  end
+  else
+    Result := Width;
+end;
+
 procedure TSynGutterMarks.Init;
 begin
   inherited Init;
@@ -92,7 +133,7 @@ begin
   Result := 22 + FBookMarkOpt.LeftMargin;
   if FWantedColumns > 0 then begin
     if assigned(FBookMarkOpt) and assigned(FBookMarkOpt.BookmarkImages) then begin
-      FColumnWidth := GetImgListRes(FriendEdit.Canvas, FBookMarkOpt.BookmarkImages).Width;
+      FColumnWidth := GetColumnWidth;
       Result := FWantedColumns*FColumnWidth;
     end;
   end;
@@ -363,10 +404,7 @@ begin
   if not Visible then exit;
   PaintBackground(Canvas, AClip);
 
-  if assigned(FBookMarkOpt) and assigned(FBookMarkOpt.BookmarkImages) then
-    FColumnWidth := GetImgListRes(Canvas, FBookMarkOpt.BookmarkImages).Width
-  else
-    FColumnWidth := Width;
+  FColumnWidth := GetColumnWidth;
   if FColumnWidth = 0 then
     FColumnCount := 0
   else
