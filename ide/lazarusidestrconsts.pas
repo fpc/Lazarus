@@ -1989,13 +1989,13 @@ resourcestring
   dlgMarkupUserDefinedListNew = 'Add list';
   dlgMarkupUserDefinedListDel = 'Delete list';
   dlgMarkupUserDefinedPageMain = 'Main settings';
-  dlgMarkupUserDefinedPageKeys = 'Key Settings';
+  dlgMarkupUserDefinedPageKeys = 'Key mappings';
   dlgMarkupUserDefinedMatchCase = 'Case sensitive';
   dlgMarkupUserDefinedMatchStartBound = 'Set bound at term start';
   dlgMarkupUserDefinedMatchEndBound = 'Set bound at term end';
-  dlgMarkupUserDefinedDivKeyAdd = 'Add Word or Term';
-  dlgMarkupUserDefinedDivKeyRemove = 'Remove Word or Term';
-  dlgMarkupUserDefinedDivKeyToggle = 'Toggle Word or Term';
+  dlgMarkupUserDefinedDivKeyAdd = 'Add Word or Term by key';
+  dlgMarkupUserDefinedDivKeyRemove = 'Remove Word or Term by key';
+  dlgMarkupUserDefinedDivKeyToggle = 'Toggle Word or Term by key';
   dlgMarkupUserDefinedDelCaption = 'Delete';
   dlgMarkupUserDefinedDelPrompt = 'Delete list "%s"?';
   dlgMarkupUserDefinedListName = 'Name';
