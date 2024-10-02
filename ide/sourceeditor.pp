@@ -7994,6 +7994,7 @@ procedure TSourceNotebook.AcceptEditor(AnEditor: TSourceEditor; SendEvent: Boole
 begin
   FSourceEditorList.Add(AnEditor);
   FSrcEditsSortedForFilenames.Add(AnEditor);
+  StatusBar.Visible := FSourceEditorList.Count > 0;
 
   AnEditor.EditorComponent.BeginUpdate;
   AnEditor.PopupMenu := SrcPopupMenu;
@@ -8014,6 +8015,7 @@ procedure TSourceNotebook.ReleaseEditor(AnEditor: TSourceEditor; SendEvent: Bool
 begin
   FSourceEditorList.Remove(AnEditor);
   FSrcEditsSortedForFilenames.RemovePointer(AnEditor);
+  StatusBar.Visible := FSourceEditorList.Count > 0;
   if SendEvent then
     Manager.SendEditorDestroyed(AnEditor);
 end;
