@@ -1251,12 +1251,13 @@ var
   act: PGdkWindow;
   ActTopLvlWnd: PGdkWindow;
   FoundAct: Boolean;
-  //x,y, width, height, depth: Gint;
+  x,y, width, height, depth: Gint;
 begin
   Result := True;
   if StayOnTopList = nil then
     StayOnTopList := TMap.Create(TMapIdType(ituPtrSize), SizeOf(TGtkWidget));
 
+  //debugln(['TGtk2WidgetSet.AppRemoveStayOnTopFlags START']);
   // todo: all screens should be evaluated
   // depending on the screen of a window
   act:=gdk_screen_get_active_window(gdk_screen_get_default);
@@ -1285,9 +1286,12 @@ begin
       // The active gdkwindow is not a form.
       // The gdk_window_restack might kill us if we feed it junk, see issue 41041
       // For example on LinuxMint 21 it was a window with geoemtry x=4502902 y=0 1x0
-      //gdk_window_get_geometry(ActTopLvlWnd,@x,@y,@width,@height,@depth);
-      //writeln('TGtk2WidgetSet.AppRemoveStayOnTopFlags x=',x,' y=',y,' ',width,'x',height);
-      ActTopLvlWnd:=nil;
+      gdk_window_get_geometry(ActTopLvlWnd,@x,@y,@width,@height,@depth);
+      if (width<=0) or (height<=0) or (abs(x)>100000) or (y>100000) then
+      begin
+        debugln(['Hint: [TGtk2WidgetSet.AppRemoveStayOnTopFlags] ignoring active window: x=',x,' y=',y,' ',width,'x',height]);
+        ActTopLvlWnd:=nil;
+      end;
     end;
 
     for i := 0 to Screen.CustomFormZOrderCount - 1 do
@@ -1295,6 +1299,7 @@ begin
       AForm := Screen.CustomFormsZOrdered[i];
       if AForm.HandleAllocated and (AForm.Parent=nil) then
       begin
+        //debugln(['TGtk2WidgetSet.AppRemoveStayOnTopFlags ',AForm.Name]);
         W := {%H-}PGtkWidget(AForm.Handle);
         // do not raise assertion in case of invalid PGdkWindow
         if not GDK_IS_WINDOW(W^.Window) then continue;
@@ -1305,6 +1310,7 @@ begin
            not gtk_window_get_modal(PGtkWindow(W)) and
            (Flags and GDK_WINDOW_STATE_ICONIFIED = 0) then
         begin
+          //debugln(['TGtk2WidgetSet.AppRemoveStayOnTopFlags ',AForm.Name,' set keep above FALSE']);
           gdk_window_set_keep_above(W^.Window, False);
           if Assigned(ActTopLvlWnd) then
           begin
@@ -1312,8 +1318,8 @@ begin
             ActTopLvlWnd:=W^.Window;
           end
           else begin
-            gdk_window_lower(W^.Window); // send to the bottom
-            gdk_window_raise(W^.Window); // restore back
+            //gdk_window_lower(W^.Window); // send to the bottom
+            //gdk_window_raise(W^.Window); // restore back
           end;
           if not StayOnTopList.HasId(W) then
             StayOnTopList.Add(W, W);
@@ -1336,11 +1342,13 @@ begin
   Result := True;
   if StayOnTopList = nil then
     exit;
+  //debugln(['TGtk2WidgetSet.AppRestoreStayOnTopFlags START']);
   for i := Screen.CustomFormZOrderCount - 1 downto 0 do
   begin
     AForm := Screen.CustomFormsZOrdered[i];
     if AForm.HandleAllocated and (AForm.Parent = nil) then
     begin
+      //debugln(['TGtk2WidgetSet.AppRestoreStayOnTopFlags ',AForm.Name]);
       W := {%H-}PGtkWidget(AForm.Handle);
       // do not raise assertion in case of invalid PGdkWindow
       if not GDK_IS_WINDOW(W^.Window) then continue;
@@ -1351,6 +1359,7 @@ begin
          not gtk_window_get_modal(PGtkWindow(W)) and
          (Flags and GDK_WINDOW_STATE_ICONIFIED = 0) then
       begin
+        //debugln(['TGtk2WidgetSet.AppRestoreStayOnTopFlags ',AForm.Name,' restore: ',StayOnTopList.HasId(W)]);
         if StayOnTopList.HasId(W) then
           gdk_window_set_keep_above(W^.Window, True);
       end;
