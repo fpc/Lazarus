@@ -178,7 +178,7 @@ type
 
     procedure DebugLn(const s: string = ''); overload;
     procedure DebugLn(const Args: array of const); overload;
-    procedure DebugLn(const S: String; Args: array of const); overload;// similar to Format(s,Args)
+    procedure DebugLn(const S: String; const Args: array of const); overload;// similar to Format(s,Args)
     procedure DebugLn(const s1, s2: string; const s3: string = '';
                       const s4: string = ''; const s5: string = ''; const s6: string = '';
                       const s7: string = ''; const s8: string = ''; const s9: string = '';
@@ -942,7 +942,7 @@ begin
   DoDebugLn(ArgsToString(Args));
 end;
 
-procedure TLazLogger.DebugLn(const S: String; Args: array of const);
+procedure TLazLogger.DebugLn(const S: String; const Args: array of const);
 begin
   DoDebugLn(Format(S, Args));
 end;
