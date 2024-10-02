@@ -959,7 +959,7 @@ begin
   FLinePos := 1;
   FCharPos := 1;
   FBytePos := 1;
-  FFlags := [];
+  FFlags := FFlags - [scCharPosValid, scBytePosValid, scViewedPosValid, scfUpdateLastCaretX];
 end;
 
 procedure TSynEditBaseCaret.InvalidateBytePos;
@@ -1103,7 +1103,8 @@ end;
 procedure TSynEditCaret.DoLock;
 begin
   FTouched := False;
-  ValidateCharPos;
+  if FFlags * [scBytePosValid, scViewedPosValid] <> [] then
+    ValidateCharPos;
   //ValidateBytePos;
   FOldCharPos := FCharPos;
   FOldLinePos := FLinePos;
@@ -1917,6 +1918,7 @@ begin
           FInternalCaret.Invalidate;
           FInternalCaret.LineBytePos := FirstLineBytePos;
           C1 := FInternalCaret.CharPos;
+          FInternalCaret.Invalidate;
           FInternalCaret.LineBytePos := LastLineBytePos;
           C2 := FInternalCaret.CharPos;
           if C1 > C2 then
@@ -1924,8 +1926,10 @@ begin
 
           TotalLen := 0;
           for i := First to Last do begin
+            FInternalCaret.Invalidate;
             FInternalCaret.LineCharPos := Point(C1, i + 1);
             Col[i - First] := FInternalCaret.BytePos;
+            FInternalCaret.Invalidate;
             FInternalCaret.LineCharPos := Point(C2, i + 1);
             Len[i - First] := Max(0, FInternalCaret.BytePos - Col[i - First]);
             Inc(TotalLen, Len[i - First]);
@@ -2224,6 +2228,7 @@ var
                 end;
 
                 if (BB.Y = BE.Y) and (BB.X = BE.X) then begin
+                  FInternalCaret.Invalidate;
                   FInternalCaret.LineBytePos := BB;
                   exit;
                 end;
@@ -2245,27 +2250,33 @@ var
             if BE.X <> BB.X then
               FLines.EditDelete(BB.X, BB.Y, BE.X - BB.X);
           end;
+          FInternalCaret.Invalidate;
           FInternalCaret.LineBytePos := BB;
         end;
       smColumn:
         begin
           // AReplace has no effect
+          FInternalCaret.Invalidate;
           FInternalCaret.LineBytePos := BB;
           l := FInternalCaret.CharPos;
+          FInternalCaret.Invalidate;
           FInternalCaret.LineBytePos := BE;
           r := FInternalCaret.CharPos;
           // swap l, r if needed
           if l > r then
             SwapInt(l, r);
           for y := BB.Y to BE.Y do begin
+            FInternalCaret.Invalidate;
             FInternalCaret.LineCharPos := Point(l, y);
             xb := FInternalCaret.BytePos;
+            FInternalCaret.Invalidate;
             FInternalCaret.LineCharPos := Point(r, y);
 //            xe := Min(FInternalCaret.BytePos, 1 + length(FInternalCaret.LineText));
             xe := FInternalCaret.BytePos;
             if xe > xb then
               FLines.EditDelete(xb, y, xe - xb);
           end;
+          FInternalCaret.Invalidate;
           FInternalCaret.LineCharPos := Point(l, BB.Y);
           BB := FInternalCaret.LineBytePos;
           // Column deletion never removes a line entirely,
@@ -2455,6 +2466,7 @@ begin
     if FCaret <> nil then
       StartLineBytePos := FCaret.LineBytePos;
 
+    FInternalCaret.Invalidate;
     FInternalCaret.LineBytePos := StartLineBytePos;
     if (Value <> nil) and (Value[0] <> #0) then begin
       InsertText;
@@ -2766,6 +2778,7 @@ begin
     FInternalCaret.Invalidate;
     FInternalCaret.LineBytePos := FirstLineBytePos;
     FLeftCharPos := FInternalCaret.CharPos;
+    FInternalCaret.Invalidate;
     FInternalCaret.LineBytePos := LastLineBytePos;
     FRightCharPos := FInternalCaret.CharPos;
     if FLeftCharPos > FRightCharPos then
@@ -2780,6 +2793,7 @@ begin
     FInternalCaret.Invalidate;
     FInternalCaret.LineBytePos := FirstLineBytePos;
     FLeftCharPos := FInternalCaret.CharPos;
+    FInternalCaret.Invalidate;
     FInternalCaret.LineBytePos := LastLineBytePos;
     FRightCharPos := FInternalCaret.CharPos;
     if FLeftCharPos > FRightCharPos then

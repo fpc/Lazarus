@@ -3774,6 +3774,7 @@ var
   Info: TSynEditMouseActionInfo;
 begin
   FInternalCaret.AssignFrom(FCaret);
+  FInternalCaret.Invalidate;
   FInternalCaret.LineCharPos := PixelsToRowColumn(Point(X,Y));
   with Info do begin
     NewCaret := FInternalCaret;
@@ -3962,10 +3963,12 @@ begin
        (Y <  FTextArea.Bounds.Bottom)
     then begin
       FInternalCaret.AssignFrom(FCaret);
+      FInternalCaret.Invalidate;
       FInternalCaret.LineCharPos := PixelsToRowColumn(Point(X,Y));
 
       if (FMouseSelectionCmd in [emcStartSelectTokens, emcStartSelectWords, emcStartSelectLines])
       then begin
+        FInternalCaret.Invalidate;
         FInternalCaret.LineCharPos := PixelsToRowColumn(Point(X,Y), [scmForceLeftSidePos]);
         forw := ComparePoints(FInternalCaret.LineBytePos, FBlockSelection.StartLineBytePos) >= 0;
         s := FInternalCaret.LineText;
@@ -3998,6 +4001,7 @@ begin
             end;
           end;
           if p1.X < 1 then p1.X := i;
+          FInternalCaret.Invalidate;
           FInternalCaret.LineBytePos := p1;
       end;
 
@@ -6586,6 +6590,7 @@ begin
       //  ComputeCaret(FMouseDownX, FMouseDownY)
       //else //position caret under the mouse cursor
       FInternalCaret.AssignFrom(FCaret);
+      FInternalCaret.Invalidate;
       FInternalCaret.LineCharPos := PixelsToRowColumn(Point(X,Y));
       Accept := CheckDragDropAccecpt(FInternalCaret.LineBytePos, Source, DropMove);
 
@@ -8485,6 +8490,7 @@ begin
         end;
       end;
       if ZeroLen then begin
+        FInternalCaret.Invalidate;
         FInternalCaret.LineBytePos := ptStart;
         if bBackward then begin
           if not FInternalCaret.MoveHoriz(-1) then
