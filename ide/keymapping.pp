@@ -555,6 +555,8 @@ begin
     ecToggleMode              : Result:= srkmecToggleMode;
     ecBlockIndent             : Result:= srkmecBlockIndent;
     ecBlockUnindent           : Result:= srkmecBlockUnindent;
+    ecBlockIndentMove         : Result:= srkmecBlockIndentMove;
+    ecBlockUnindentMove       : Result:= srkmecBlockUnindentMove;
     ecTab                     : Result:= lisTab;
     ecShiftTab                : Result:= srkmecShiftTab;
     ecMatchBracket            : Result:= srkmecMatchBracket;
@@ -1264,6 +1266,8 @@ begin
   // editing
   ecBlockIndent:         SetCombo(VK_I,[XCtrl],VK_UNKNOWN,[], VK_K,[XCtrl],VK_I,[]);
   ecBlockUnindent:       SetCombo(VK_U,[XCtrl],VK_UNKNOWN,[], VK_K,[XCtrl],VK_U,[]);
+  ecBlockIndentMove:     SetSingle(VK_I,[XCtrl, ssShift]);
+  ecBlockUnindentMove:   SetSingle(VK_U,[XCtrl, ssShift]);
   ecDeleteLastChar:      SetSingle(VK_BACK,[], VK_BACK,[ssShift]); // ctrl H used for scroll window.
   ecDeleteChar:          SetSingle(VK_DELETE,[]); // ctrl G conflicts with GO
   ecDeleteWord:          SetSingle(VK_T,[XCtrl], VK_DELETE,[XCtrl]);
@@ -2916,6 +2920,8 @@ begin
   AddDefault(C, 'Line selection mode', srkmecLineSelect, ecLineSelect);
   AddDefault(C, 'Indent block', srkmecBlockIndent, ecBlockIndent);
   AddDefault(C, 'Unindent block', srkmecBlockUnindent, ecBlockUnindent);
+  AddDefault(C, 'Indent block move', srkmecBlockIndentMove, ecBlockIndentMove);
+  AddDefault(C, 'Unindent block move', srkmecBlockUnindentMove, ecBlockUnindentMove);
   AddDefault(C, 'Uppercase selection', lisMenuUpperCaseSelection, ecSelectionUpperCase);
   AddDefault(C, 'Lowercase selection', lisMenuLowerCaseSelection, ecSelectionLowerCase);
   AddDefault(C, 'Swap case in selection', lisMenuSwapCaseSelection, ecSelectionSwapCase);

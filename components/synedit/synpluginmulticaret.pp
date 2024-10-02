@@ -165,6 +165,7 @@ type
     property MainCaretIndex: Integer read GetMainCaretIndex;
 
   private
+    FAdjustOnlyAfterInsertColumn: Boolean;
     FCurrenCaret, FBeforeNextCaret: PCaretData;
     FIterationDoneCount: Integer;
     FLowCaret, FHighCaret: PCaretData;  // used in AdjustAfterChange
@@ -186,6 +187,7 @@ type
     function  PeekCaretY(AIndexOffset: Integer): Integer; inline;
     function  PeekCaretFull(AIndexOffset: Integer): TLogCaretPoint; inline;
     //procedure AbortIterator;
+    property  AdjustOnlyAfterInsertColumn: Boolean read FAdjustOnlyAfterInsertColumn write FAdjustOnlyAfterInsertColumn;
 
     property CurrentCaretFull: TLogCaretPoint read GetCurrentCaretFull write SetCurrentCaretFull;
     property CurrentCaretKeepX: Integer read GetCurrentCaretKeepX write SetCurrentCaretKeepX;
@@ -1028,7 +1030,9 @@ begin
     end
     else begin // aCount >= 0
       for i := lowest to FHighIndex do begin
-        if (FCarets[i].y = aLinePos) and (FCarets[i].x >= aBytePos) then
+        if (FCarets[i].y = aLinePos) and (FCarets[i].x >= aBytePos) and
+           ((not FAdjustOnlyAfterInsertColumn) or (FCarets[i].x > aBytePos))
+        then
           FCarets[i].x := FCarets[i].x + aCount
         else
           break;
@@ -2572,6 +2576,18 @@ var
 begin
   // hcfFinish
   if AfterProcessing then begin
+    case Command of
+      ecTab..ecShiftTab:
+        if (not Editor.ReadOnly) and Editor.SelAvail and (eoTabIndent in Editor.Options) and
+           (SelectionObj.ActiveSelectionMode = smColumn)
+        then
+          ClearCarets;
+      ecBlockIndent, ecBlockUnindent, ecBlockIndentMove, ecBlockUnindentMove:
+        if (not Editor.ReadOnly) and Editor.SelAvail and (SelectionObj.ActiveSelectionMode = smColumn)
+        then
+          ClearCarets;
+    end;
+
     if (FNestedCommandProcessor > 0) then begin
       dec(FNestedCommandProcessor);
       exit;
@@ -2682,25 +2698,21 @@ begin
         StartEditing;
         if Editor.ReadOnly then exit;
         if (eoTabIndent in Editor.Options) and Editor.SelAvail then begin
-          if (SelectionObj.ActiveSelectionMode = smColumn) then begin
-            // no indent for column mode, when multicaret
-            Editor.BeginUpdate(True);
-            try
-              AddCaret(Editor.LogicalCaretXY.x, Editor.CaretY, CaretObj.BytePosOffset, [cfMainCaret, cfNoneVisual, cfAddDuplicate]);
-              Editor.SelText := '';
-              if Carets.MainCaretIndex >= 0 then begin
-                Editor.LogicalCaretXY := Carets.Caret[Carets.MainCaretIndex];
-                RemoveCaret(Carets.MainCaretIndex);
-              end
-              else
-                assert(False, 'TSynCustomPluginMultiCaret.ProcessAllSynCommand: Maincaret index not found');
-              ExecCommandRepeated;
-            finally
-              Editor.EndUpdate;
-            end;
-          end
-          else // exec once and adjust
-            exit;
+          if (SelectionObj.ActiveSelectionMode = smColumn) then
+            ClearCarets;
+          exit;
+        end
+        else
+          ExecCommandRepeated;
+      end;
+    ecBlockIndent, ecBlockUnindent, ecBlockIndentMove, ecBlockUnindentMove:
+      begin
+        StartEditing;
+        if Editor.ReadOnly then exit;
+        if Editor.SelAvail then begin
+          if (SelectionObj.ActiveSelectionMode = smColumn) then
+            ClearCarets;
+          exit;
         end
         else
           ExecCommandRepeated;

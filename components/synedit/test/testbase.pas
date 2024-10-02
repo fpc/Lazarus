@@ -149,15 +149,17 @@ type
     procedure TestIsCaretLogAndFullText(Name: String; X, Y, Offs: Integer; Lines: Array of String; Repl: Array of const); // logical caret
   end;
 
-  function MyDbg(t: String): String;
+  function MyDbg(t: String; AnEsc: Boolean = false): String;
 
 implementation
 
-function MyDbg(t: String): String;
+function MyDbg(t: String; AnEsc: Boolean): String;
 begin
   Result := '';
   while(pos(LineEnding, t) > 0) do begin
-    Result := Result +  '"' + copy(t, 1, pos(LineEnding, t)-1) + '"   Len='+IntTostr(pos(LineEnding, t)-1) + DbgStr(copy(t, 1, pos(LineEnding, t)-1)) + LineEnding;
+    if AnEsc
+    then Result := Result +  DbgStr(copy(t, 1, pos(LineEnding, t)-1)) + ' //   Len='+IntTostr(pos(LineEnding, t)-1) + DbgStr(copy(t, 1, pos(LineEnding, t)-1)) + LineEnding
+    else Result := Result +  '"' + copy(t, 1, pos(LineEnding, t)-1) + '"   Len='+IntTostr(pos(LineEnding, t)-1) + DbgStr(copy(t, 1, pos(LineEnding, t)-1)) + LineEnding;
     system.Delete(t, 1, pos(LineEnding, t)-1+length(LineEnding));
   end;
   Result := Result + '"' + t + '"   Len='+IntTostr(length(t)) + DbgStr(t);

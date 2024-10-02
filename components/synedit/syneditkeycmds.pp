@@ -294,6 +294,8 @@ const
   ecString          = 640;  //Insert a whole string
 
   ecAutoCompletion  = 650;
+  ecBlockIndentMove             = 651;  // Indent selection (indent before column-sel, therefore moving the column-sel)
+  ecBlockUnindentMove           = 652;  // Unindent selection (indent before column-sel, therefore moving the column-sel)
 
   ecGotFocus        = 700;
   ecLostFocus       = 701;
@@ -514,7 +516,7 @@ end;
 { Command mapping routines }
 
 const
-  EditorCommandStrs: array[0..172] of TIdentMapEntry = (
+  EditorCommandStrs: array[0..174] of TIdentMapEntry = (
     (Value: ecNone; Name: 'ecNone'),
     (Value: ecLeft; Name: 'ecLeft'),
     (Value: ecRight; Name: 'ecRight'),
@@ -627,6 +629,8 @@ const
     (Value: ecToggleMode; Name: 'ecToggleMode'),
     (Value: ecBlockIndent; Name: 'ecBlockIndent'),
     (Value: ecBlockUnindent; Name: 'ecBlockUnindent'),
+    (Value: ecBlockIndentMove; Name: 'ecBlockIndentMove'),
+    (Value: ecBlockUnindentMove; Name: 'ecBlockUnindentMove'),
     (Value: ecTab; Name: 'ecTab'),
     (Value: ecShiftTab; Name: 'ecShiftTab'),
     (Value: ecMatchBracket; Name: 'ecMatchBracket'),
