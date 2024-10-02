@@ -7534,8 +7534,10 @@ function TProjectBuildModes.CreateExtraModes(aCurMode: TProjectBuildMode): TProj
 
   procedure AssignAndSetBooleans(aMode: TProjectBuildMode; IsDebug: Boolean);
   begin
+    // Clone from current mode
     if Assigned(aCurMode) then
-      aMode.Assign(aCurMode);              // clone from currently selected mode
+      aMode.Assign(aCurMode);
+    // Change only some options
     with aMode.CompilerOptions do
     begin
       // Smart linking
@@ -7551,9 +7553,9 @@ function TProjectBuildModes.CreateExtraModes(aCurMode: TProjectBuildMode): TProj
       // Debug flags
       GenerateDebugInfo:=IsDebug;
       RunWithoutDebug:=not IsDebug;
-      UseExternalDbgSyms:=IsDebug;
       UseHeaptrc:=IsDebug;
       TrashVariables:=IsDebug;
+      StripSymbols:=not IsDebug;
     end;
   end;
 
@@ -7563,13 +7565,15 @@ begin
   // Create Debug mode
   Result:=Add(DebugModeName);
   AssignAndSetBooleans(Result, True);
-  Result.CompilerOptions.OptimizationLevel:=1;    // Optimization
+  Result.CompilerOptions.OptimizationLevel:=1;    // Low optimization
   Result.CompilerOptions.DebugInfoType:=dsDwarf3; // Debug
   // Create Release mode
   RelMode:=Add(ReleaseModeName);
   AssignAndSetBooleans(RelMode, False);
-  RelMode.CompilerOptions.OptimizationLevel:=3; // Slow but safe optimization, -O4 is dangerous
-  RelMode.CompilerOptions.DebugInfoType:=dsAuto;  // No Debug
+  RelMode.CompilerOptions.OptimizationLevel:=3;  // High but safe optimization, -O4 is dangerous
+  RelMode.CompilerOptions.DebugInfoType:=dsAuto; // No Debug
+  RelMode.CompilerOptions.UseValgrind:=false;
+  RelMode.CompilerOptions.GenGProfCode:=false;
 end;
 
 // Methods for LoadFromXMLConfig
