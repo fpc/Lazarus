@@ -7552,6 +7552,8 @@ function TProjectBuildModes.CreateExtraModes(aCurMode: TProjectBuildMode): TProj
       VerifyObjMethodCall:=IsDebug;
       // Debug flags
       GenerateDebugInfo:=IsDebug;
+      if not IsDebug then
+        UseExternalDbgSyms := False;
       RunWithoutDebug:=not IsDebug;
       UseHeaptrc:=IsDebug;
       TrashVariables:=IsDebug;
