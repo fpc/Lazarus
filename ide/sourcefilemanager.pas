@@ -368,7 +368,7 @@ implementation
 function CreateSrcEditPageName(const AnUnitName, AFilename: string;
   IgnoreEditor: TSourceEditor): string;
 begin
-  Result:=AnUnitName;
+  Result := StringReplace(AnUnitName, '&', '', [rfReplaceAll]);
   if Result='' then
     Result:=ExtractFileName(AFilename);
   Result:=SourceEditorManager.FindUniquePageName(Result,IgnoreEditor);
