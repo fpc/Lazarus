@@ -2137,6 +2137,18 @@ procedure TSynEditSelection.DoLinesEdited(Sender: TSynEditStrings; aLinePos,
     end;
   end;
 
+  procedure AdjustColumnX;
+  var
+    p: TPoint;
+  begin
+    p := AdjustPoint(Point(FStartBytePos, FStartLinePos), True);
+    FStartBytePos := p.x;
+    FStartLinePos := p.y;
+    p := AdjustPoint(Point(FEndBytePos, FEndLinePos), True);
+    FEndBytePos := p.x;
+    FEndLinePos := p.y;
+  end;
+
 var
   empty, back: Boolean;
 begin
@@ -2146,22 +2158,22 @@ begin
   if FPersistent or (FPersistentLock > 0) or
      ((FCaret <> nil) and (not FCaret.Locked))
   then begin
-    if FActiveSelectionMode <> smColumn then begin // TODO: adjust ypos, height in smColumn mode
-      empty := (FStartBytePos = FEndBytePos) and (FStartLinePos = FEndLinePos);
-      back := IsBackwardSel;
-      AdjustStartLineBytePos(AdjustPoint(StartLineBytePos, not back));
-      if empty then
-        EndLineBytePos := StartLineBytePos
-      else
-        EndLineBytePos := AdjustPoint(EndLineBytePos, back);
-    end;
-    // Todo: Change Lines in smColumn
+    empty := (FStartBytePos = FEndBytePos) and (FStartLinePos = FEndLinePos);
+    back := IsBackwardSel;
+    AdjustStartLineBytePos(AdjustPoint(StartLineBytePos, not back));
+    if empty then
+      EndLineBytePos := StartLineBytePos
+    else
+      EndLineBytePos := AdjustPoint(EndLineBytePos, back);
   end
   else begin
-    // Change the Selection, if change was made by owning SynEdit (Caret.Locked)
+    // Clear the Selection, if change was made by owning SynEdit (Caret.Locked)
     // (InternalSelection has no Caret)
-    if (FCaret <> nil) and (FCaret.Locked) then
-      StartLineBytePos := FCaret.LineBytePos;
+    if (FCaret <> nil) and (FCaret.Locked) then begin
+      if FActiveSelectionMode = smColumn then
+        AdjustColumnX; // prevent SelAvail from accessing invalid x in phys/log
+      StartLineBytePos := StartLineBytePos; // caret may not yet be up to date
+    end;
   end;
 end;
 

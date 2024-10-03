@@ -35,6 +35,8 @@ type
                             );
     procedure SimulatePaintText;
     procedure InvalidateLines(FirstLine, LastLine: integer); reintroduce;
+    procedure TestDoIncForeignPaintLock(Sender: TObject);
+    procedure TestDoDecForeignPaintLock(Sender: TObject);
     property ViewedTextBuffer;
     property TextBuffer;
     property TextView; // foldedview
@@ -66,6 +68,7 @@ type
     procedure SetClipBoardText(const AValue: String);
   protected
     FSynEdit : TTestSynEdit;
+    FSharedSynEdit : TTestSynEdit;
     function  LinesToText(Lines: Array of String; Separator: String = LineEnding;
                           SeparatorAtEnd: Boolean = False): String;
     (* Relpl,must be an alteration of LineNum, LineText+
@@ -78,6 +81,7 @@ type
     function  LinesReplaceText(Lines: Array of String; Repl: Array of const): String;
   protected
     procedure ReCreateEdit;
+    function GetSharedSynEdit: TTestSynEdit;
     procedure SetSynEditHeight(Lines: Integer; PartLinePixel: Integer = 3);
     procedure SetSynEditWidth(Chars: Integer; PartCharPixel: Integer = 2);
     procedure SetLines(Lines: Array of String);
@@ -107,6 +111,7 @@ type
     procedure IncFixedBaseTestNames;
     procedure DecFixedBaseTestNames;
     property  SynEdit: TTestSynEdit read FSynEdit;
+    property  SharedSynEdit: TTestSynEdit read GetSharedSynEdit;
     property  Form: TForm read FForm;
     procedure ClearClipBoard;
     property  ClipBoardText: String read GetClipBoardText write SetClipBoardText;
@@ -267,6 +272,16 @@ begin
   inherited;
 end;
 
+procedure TTestSynEdit.TestDoIncForeignPaintLock(Sender: TObject);
+begin
+  DoIncForeignPaintLock(Sender);
+end;
+
+procedure TTestSynEdit.TestDoDecForeignPaintLock(Sender: TObject);
+begin
+  DoDecForeignPaintLock(Sender);
+end;
+
 { TTestBase }
 
 procedure TTestBase.SetUp;
@@ -288,6 +303,7 @@ procedure TTestBase.TearDown;
 begin
   inherited TearDown;
   Clipboard.Close;
+  FreeAndNil(FSharedSynEdit);
   FreeAndNil(FSynEdit);
   FreeAndNil(FForm);
 end;
@@ -603,6 +619,7 @@ end;
 
 procedure TTestBase.ReCreateEdit;
 begin
+  FreeAndNil(FSharedSynEdit);
   FreeAndNil(FSynEdit);
   FSynEdit := TTestSynEdit.Create(FScroll);
   FSynEdit.Parent := FForm;
@@ -610,6 +627,24 @@ begin
   FSynEdit.Left := 0;
   FSynEdit.Width:= 500;
   FSynEdit.Height := 250; // FSynEdit.Font.Height * 20 + 2;
+end;
+
+function TTestBase.GetSharedSynEdit: TTestSynEdit;
+begin
+  Result := FSharedSynEdit;
+  if Result <> nil then
+    exit;
+
+  FSharedSynEdit := TTestSynEdit.Create(FScroll);
+  FSharedSynEdit.Parent := FForm;
+  FSharedSynEdit.Top := 0;
+  FSharedSynEdit.Left := 0;
+  FSharedSynEdit.Width:= 500;
+  FSharedSynEdit.Height := 250; // FSharedSynEdit.Font.Height * 20 + 2;
+  FSharedSynEdit.ShareOptions := [eosShareMarks];
+  FSharedSynEdit.ShareTextBufferFrom(FSynEdit);
+
+  Result := FSharedSynEdit;
 end;
 
 procedure TTestBase.SetSynEditHeight(Lines: Integer; PartLinePixel: Integer);

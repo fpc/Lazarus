@@ -1553,11 +1553,18 @@ var
 
   function GetTheText: TStringArray;
   begin
-    SetLength(Result, 4);
+    SetLength(Result, 11);
     Result[0] := ' ABC def';
     Result[1] := 'XYZ 123';
     Result[2] := '';
     Result[3] := '';
+    Result[4] := ' ÄÖÜäöü';
+    Result[5] := ' abcüüü';
+    Result[6] := ' ａｂcde';
+    Result[7] := ' ÄÖÜäöü';
+    Result[8] := ' abcüüü';
+    Result[9] := ' ａｂcde';
+    Result[10] := '';
   end;
 
   procedure DoTest(AName: String;
@@ -1592,35 +1599,60 @@ var
     SelBX, SelBY,  SelEX, SelEY,
     TextX, TextY,  TextX2, TextY2,
     ExpBx, ExpBy, ExpEx, ExpEy: Integer;
-    aFlags: TSynEditTextFlags = []; aCaretMode: TSynCaretAdjustMode = scamIgnore);
+    aFlags: TSynEditTextFlags = []; aCaretMode: TSynCaretAdjustMode = scamIgnore;
+    ASelMode: TSynSelectionMode = smNormal;
+    AnUseShared: boolean = False  // simulate edit from shared editor
+    );
   var
     s: Boolean;
     p, p2: TPoint;
+    Syn: TTestSynEdit;
   begin
     PopPushBaseName(AName);
     SetLines(TheText);
     if Length(TheText) = 0 then SynEdit.Lines.Clear;
 
-    SetCaretAndSel(SelBx, SelBy, SelEx,SelEy);
+    SetCaretAndSel(SelBx, SelBy, SelEx,SelEy, ASelMode=smColumn, ASelMode);
     s := SynEdit.SelAvail;
     p := Point(Textx,TextY);
     p2 := Point(Textx2,TextY2);
-    SynEdit.SetTextBetweenPoints(p, p2, TheInsert, aFlags, aCaretMode);
-    debugln(['Caret ', dbgs(SynEdit.CaretXY), ' Sel ', dbgs(SynEdit.BlockBegin), ' ',dbgs(SynEdit.BlockEnd)]);
+    if AnUseShared
+    then Syn := SharedSynEdit
+    else Syn := SynEdit;
 
-    TestIsBlock('After Replace', ExpBx,ExpBy, ExpEx,ExpEy);
+    Syn.SetTextBetweenPoints(p, p2, TheInsert, aFlags, aCaretMode);
+    debugln(['Caret ', dbgs(Syn.CaretXY), ' Sel ', dbgs(Syn.BlockBegin), ' ',dbgs(Syn.BlockEnd)]);
 
-    SynEdit.Undo;
+    if ExpBx < 0 then
+      TestIsNoBlock('After Replace - no')
+    else
+      TestIsBlock('After Replace', ExpBx,ExpBy, ExpEx,ExpEy);
+
+    Syn.Undo;
     if s
     then TestIsBlock('After Undo', SelBx, SelBy, SelEx,SelEy)
     else TestIsNoBlock('After Undo');
 
-    SynEdit.Redo;
+    Syn.Redo;
     TestIsBlock('After Redo', ExpBx,ExpBy, ExpEx,ExpEy);
   end;
 
+  function IncIf(AVal: Integer; ABool: Boolean): integer;
+  begin
+    Result := AVal;
+    if ABool then inc(Result);
+  end;
+  function DecIf(AVal: Integer; ABool: Boolean): integer;
+  begin
+    Result := AVal;
+    if ABool then dec(Result);
+  end;
+
+const
+  CL1: array[5..10] of integer = (  6 {Üä}, 4 {cü}, 5 {ｂ},    6 {Üä}, 4 {cü}, 5 {ｂ} );
+  CL2: array[5..10] of integer = ( 10 {Üä}, 7 {cü}, 8 {ｂ},   10 {Üä}, 7 {cü}, 8 {ｂ} );
 var
-  p: TPoint;
+  y1, y2: Integer;
 begin
   PushBaseName('');
   TheText := GetTheText;
@@ -1753,6 +1785,39 @@ begin
   DoTest('setExtendBlock - BlockBegin B',       2,1, 6,1,   1,1, 2,1,   1,1, 5,1,   [setExtendBlock], scamAdjust);
   DoTest('setExtendBlock - BlockEnd A',         2,1, 6,1,   5,1, 6,1,   2,1, 5,1,   [setExtendBlock], scamAdjust); // so caret will not destroy selection
   DoTest('setExtendBlock - BlockEnd B',         2,1, 6,1,   6,1, 7,1,   2,1, 6,1,   [setExtendBlock], scamAdjust); // so caret will not destroy selection
+
+
+// Currently selection will be cleared // TODO
+  // ÖÜ bc ｂ
+  for y1 := 5 to 10 do
+  for y2 := 5 to 10 do
+  begin
+    TheInsert := 'X';
+    //DoTest('column ',    y1,CL1[y1], y2,CL2[y2],   1,y1, 1,y1,   -7,5, 7,7,   [setPersistentBlock], scamAdjust, smColumn, sh);
+    DoTest('column ',    CL1[y1],y1, CL2[y2],y2,   1,y1, 1,y1,   -7,5, 7,7,   [], scamAdjust, smColumn, False);
+    DoTest('column ',    CL2[y1],y1, CL1[y2],y2,   1,y1, 1,y1,   -7,5, 7,7,   [], scamAdjust, smColumn, False);
+    DoTest('column ',    CL1[y1],y1, CL2[y2],y2,   1,y2, 1,y2,   -7,5, 7,7,   [], scamAdjust, smColumn, False);
+    DoTest('column ',    CL2[y1],y1, CL1[y2],y2,   1,y2, 1,y2,   -7,5, 7,7,   [], scamAdjust, smColumn, False);
+
+    DoTest('column ',    CL1[y1],y1, CL2[y2],y2,   1,y1, 1,y1,   IncIf(CL1[y1],y1=y1),y1, IncIf(CL2[y2],y2=y1),y2,   [], scamAdjust, smColumn, True);
+    DoTest('column ',    CL2[y1],y1, CL1[y2],y2,   1,y1, 1,y1,   IncIf(CL2[y1],y1=y1),y1, IncIf(CL1[y2],y2=y1),y2,   [], scamAdjust, smColumn, True);
+    DoTest('column ',    CL1[y1],y1, CL2[y2],y2,   1,y2, 1,y2,   IncIf(CL1[y1],y1=y2),y1, IncIf(CL2[y2],y2=y2),y2,   [], scamAdjust, smColumn, True);
+    DoTest('column ',    CL2[y1],y1, CL1[y2],y2,   1,y2, 1,y2,   IncIf(CL2[y1],y1=y2),y1, IncIf(CL1[y2],y2=y2),y2,   [], scamAdjust, smColumn, True);
+
+    TheInsert := '';
+    DoTest('column ',    CL1[y1],y1, CL2[y2],y2,   1,y1, 2,y1,   -7,5, 7,7,   [], scamAdjust, smColumn, False);
+    DoTest('column ',    CL2[y1],y1, CL1[y2],y2,   1,y1, 2,y1,   -7,5, 7,7,   [], scamAdjust, smColumn, False);
+    DoTest('column ',    CL1[y1],y1, CL2[y2],y2,   1,y2, 2,y2,   -7,5, 7,7,   [], scamAdjust, smColumn, False);
+    DoTest('column ',    CL2[y1],y1, CL1[y2],y2,   1,y2, 2,y2,   -7,5, 7,7,   [], scamAdjust, smColumn, False);
+
+    DoTest('column ',    CL1[y1],y1, CL2[y2],y2,   1,y1, 2,y1,   DecIf(CL1[y1],y1=y1),y1, DecIf(CL2[y2],y2=y1),y2,   [], scamAdjust, smColumn, True);
+    DoTest('column ',    CL2[y1],y1, CL1[y2],y2,   1,y1, 2,y1,   DecIf(CL2[y1],y1=y1),y1, DecIf(CL1[y2],y2=y1),y2,   [], scamAdjust, smColumn, True);
+    DoTest('column ',    CL1[y1],y1, CL2[y2],y2,   1,y2, 2,y2,   DecIf(CL1[y1],y1=y2),y1, DecIf(CL2[y2],y2=y2),y2,   [], scamAdjust, smColumn, True);
+    DoTest('column ',    CL2[y1],y1, CL1[y2],y2,   1,y2, 2,y2,   DecIf(CL2[y1],y1=y2),y1, DecIf(CL1[y2],y2=y2),y2,   [], scamAdjust, smColumn, True);
+
+// no selection / check caret / with without adjust
+
+  end;
 
 
   TheText := nil; // empty text
