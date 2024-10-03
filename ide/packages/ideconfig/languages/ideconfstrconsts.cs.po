@@ -95,7 +95,7 @@ msgid "Function: remove trailing path delimiter"
 msgstr "Funkce: odstranit oddělovač cesty na konci"
 
 #: ideconfstrconsts.listmfunctionenclosebrackets
-msgid "Function: Enclose in ()"
+msgid "Function: enclose in ()"
 msgstr ""
 
 #: ideconfstrconsts.listmfunctionextractfileextension

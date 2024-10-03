@@ -98,7 +98,7 @@ msgid "Function: remove trailing path delimiter"
 msgstr "Fungsi: chomp delimiter path"
 
 #: ideconfstrconsts.listmfunctionenclosebrackets
-msgid "Function: Enclose in ()"
+msgid "Function: enclose in ()"
 msgstr ""
 
 #: ideconfstrconsts.listmfunctionextractfileextension

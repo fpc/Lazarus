@@ -95,7 +95,7 @@ msgid "Function: remove trailing path delimiter"
 msgstr "函数:移除追踪(trailing)路径分隔符"
 
 #: ideconfstrconsts.listmfunctionenclosebrackets
-msgid "Function: Enclose in ()"
+msgid "Function: enclose in ()"
 msgstr ""
 
 #: ideconfstrconsts.listmfunctionextractfileextension

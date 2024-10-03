@@ -95,7 +95,7 @@ msgid "Function: remove trailing path delimiter"
 msgstr "機能：終端のパスの区切り記号を削除"
 
 #: ideconfstrconsts.listmfunctionenclosebrackets
-msgid "Function: Enclose in ()"
+msgid "Function: enclose in ()"
 msgstr ""
 
 #: ideconfstrconsts.listmfunctionextractfileextension
