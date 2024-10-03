@@ -2519,39 +2519,14 @@ function TQtWidgetSet.GetCapture: HWND;
 var
   w: QWidgetH;
   Widget: TQtWidget;
-  {$IFDEF MSWINDOWSQT4}
-  AWin: HWND;
-  {$ENDIF}
 begin
-  {$IFDEF MSWINDOWSQT4}
-  AWin := Windows.GetCapture;
-  if AWin <> 0 then
-    w := QWidget_find(AWin)
-  else
-    w := nil;
-
-  if (w = nil) and (QGUIApplication_mouseButtons() > 0) then
-    w := QApplication_focusWidget()
-  else
-    if (w <> QWidget_mouseGrabber) and (QWidget_mouseGrabber <> nil) then
-      w := QWidget_mouseGrabber;
-
-  {$ELSE}
   w := QWidget_mouseGrabber();
-  {$ENDIF}
 
   if w <> nil then
   begin
     // Capture widget can be child of complex control. In any case we should return TQtWidget as result.
     // So we will look for parent while not found apropriate LCL handle.
     Widget := GetFirstQtObjectFromWidgetH(w);
-    {$IFDEF MSWINDOWSQT4}
-    if Widget <> nil then
-    begin
-      if Widget is TQtCustomControl then
-        Widget := TQtCustomControl(Widget).Viewport;
-    end;
-    {$ENDIF}
     Result := HWND(Widget);
   end
   else
@@ -5462,16 +5437,7 @@ begin
   w := TQtWidget(GetCapture);
   Result := w <> nil;
   if Result then
-  begin
-    {$IFDEF MSWINDOWSQT4}
-    if (w is TQtMainWindow) then
-      w.releaseMouse()
-    else
-      windows.ReleaseCapture;
-    {$ELSE}
     w.releaseMouse();
-    {$ENDIF}
-  end;
   {$ifdef VerboseQtWinAPI}
   WriteLn('[WinAPI ReleaseCapture] Capture = ', TLCLHandle(w));
   {$endif}
@@ -5910,13 +5876,6 @@ begin
       ReleaseCapture;
     if IsValidHandle(AHandle) then
     begin
-      {$IFDEF MSWINDOWSQT4}
-      if TQtWidget(AHandle) is TQtCustomControl then
-      begin
-        Windows.SetCapture(QWidget_winID(TQtCustomControl(AHandle).Viewport.Widget))
-      end else
-        Windows.SetCapture(QWidget_winID(TQtWidget(AHandle).Widget));
-      {$ELSE}
       if qtwsInsideMouseDoubleClickEvent in TQtWidget(AHandle).WidgetState then
         // issue #27384
         {$IFDEF DebugQtFocus}
@@ -5924,7 +5883,6 @@ begin
         {$ENDIF}
       else
         TQtWidget(AHandle).grabMouse();
-      {$ENDIF}
     end;
     {$ifdef VerboseQtWinAPI}
       WriteLn('[WinAPI SetCapture] Capture = ', Result, ' New capture = ', AHandle);
