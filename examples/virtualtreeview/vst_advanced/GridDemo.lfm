@@ -7,8 +7,8 @@ object GridForm: TGridForm
   Caption = 'GridForm'
   ClientHeight = 393
   ClientWidth = 736
+  LCLVersion = '3.99.0.0'
   OnCreate = FormCreate
-  LCLVersion = '2.1.0.0'
   object Label15: TLabel
     AnchorSideLeft.Control = VST5
     AnchorSideLeft.Side = asrBottom
@@ -64,7 +64,7 @@ object GridForm: TGridForm
       'Virtual Tree Data'
     )
     Colors.BorderColor = clWindowText
-    Colors.HotColor = clBlack
+    Colors.HotColor = clBtnText
     DefaultNodeHeight = 19
     DefaultText = 'Node'
     DragMode = dmAutomatic
@@ -136,16 +136,16 @@ object GridForm: TGridForm
     AnchorSideLeft.Side = asrCenter
     AnchorSideBottom.Control = VST5
     AnchorSideBottom.Side = asrBottom
-    Left = 568
+    Left = 569
     Height = 19
     Top = 366
-    Width = 107
+    Width = 105
     Anchors = [akLeft, akBottom]
     Caption = 'Toggle grid lines'
     Checked = True
-    OnClick = GridLineCheckBoxClick
     State = cbChecked
     TabOrder = 1
+    OnClick = GridLineCheckBoxClick
   end
   object TreeImages: TImageList
     Left = 22

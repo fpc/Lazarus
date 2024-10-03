@@ -170,7 +170,7 @@ begin
   if ((Column <> Sender.FocusedColumn) or (Node <> Sender.FocusedNode)) and
     ((Column - 2) = (Integer(Node.Index) mod (VST5.Header.Columns.Count - 1))) then
   begin
-    TargetCanvas.Brush.Color := $E0E0E0;
+    TargetCanvas.Brush.Color := $777777; //$E0E0E0;
     TargetCanvas.FillRect(CellRect);
   end;
 end;
