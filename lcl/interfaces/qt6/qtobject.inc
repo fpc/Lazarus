@@ -54,7 +54,9 @@ begin
   {$J-}
   FCachedMenuBarHeight := -1;
   FAppEvenFilterHook := nil;
+  {$IFDEF QTUSEFOCUSCHANGEDHOOK}
   FAppFocusChangedHook := nil;
+  {$ENDIF}
   FAppEventApplicationStateHook := nil;
   FPenForSetPixel := nil;
   FInGetPixel := False;
@@ -215,9 +217,10 @@ begin
   QObject_hook_hook_events(FAppEvenFilterHook, @EventFilter);
 
     // install focus change slot
-
+  {$IFDEF QTUSEFOCUSCHANGEDHOOK}
   FAppFocusChangedHook := QApplication_hook_create(App);
   QApplication_hook_hook_focusChanged(FAppFocusChangedHook, @FocusChanged);
+  {$ENDIF}
 
   FAppEventApplicationStateHook := QGuiApplication_hook_Create(App);
   QGuiApplication_hook_hook_applicationStateChanged(FAppEventApplicationStateHook, @AppStateChanged);
@@ -347,12 +350,14 @@ begin
   // free hooks
   if Assigned(FAppEvenFilterHook) then
     QObject_hook_destroy(FAppEvenFilterHook);
+  {$IFDEF QTUSEFOCUSCHANGEDHOOK}
   if Assigned(FAppFocusChangedHook) then
     QApplication_hook_destroy(FAppFocusChangedHook);
+  FAppFocusChangedHook := nil;
+  {$ENDIF}
   if Assigned(FAppEventApplicationStateHook) then
     QGuiApplication_hook_Destroy(FAppEventApplicationStateHook);
   FAppEvenFilterHook := nil;
-  FAppFocusChangedHook := nil;
   FAppEventApplicationStateHook := nil;
   // do not quit application if we are library
   if not FIsLibraryInstance then
@@ -669,6 +674,12 @@ var
   AParent: QWidgetH;
   R: TRect;
   AQtPoint: TQtPoint;
+  {$IFNDEF QTUSEFOCUSCHANGEDHOOK}
+  OldWidget, NewWidget: TQtWidget;
+  Msg: TLMessage;
+  FocusedQtWidget: QWidgetH;
+  FocusedTQtWidget: TQtWidget;
+  {$ENDIF}
 
   function IsAnyWindowActive: Boolean;
   begin
@@ -847,6 +858,65 @@ begin
           FreeSysColorBrushes(True);
         end;
       end;
+    {$IFNDEF QTUSEFOCUSCHANGEDHOOK}
+    QEventFocusIn:
+    begin
+      if not QObject_isWidgetType(Sender) then
+        exit;
+      FocusedQtWidget := QApplication_focusWidget();
+      // writeln('FocusedWidget ? ',Assigned(FocusedQtWidget),' Sender ? ',QObject_isWidgetType(Sender));
+      if Assigned(FocusedQtWidget) and (QWidgetH(Sender) <> FocusedQtWidget) then
+      begin
+        OldWidget := TQtWidget(HwndFromWidgetH(FocusedQtWidget));
+        if OldWidget <> nil then
+        begin
+          NewWidget := TQtWidget(HwndFromWidgetH(QWidgetH(Sender)));
+          Msg := Default(TLMessage);
+          Msg.msg := LM_KILLFOCUS;
+          Msg.wParam := PtrInt(NewWidget);
+          OldWidget.DeliverMessage(Msg);
+          {$IFDEF DebugQtFocus}
+          writeln('OldWidget(1) deliver focus out =',DbgSName(OldWidget));
+          {$ENDIF}
+        end;
+      end;
+      NewWidget := TQtWidget(HwndFromWidgetH(QWidgetH(Sender)));
+      // writeln('NewWidget=',DbgSName(NewWidget),' Ptr=',PtrUInt(NewWidget));
+      Msg := Default(TLMessage);
+      Msg.msg := LM_SETFOCUS;
+      if Assigned(FocusedQtWidget) and (FocusedQtWidget <> QWidgetH(Sender)) then
+        OldWidget := TQtWidget(HWndFromWidgetH(FocusedQtWidget))
+      else
+        OldWidget := nil;
+      // writeln('OldWidget=',DbgSName(OldWidget),' Ptr=',PtrUInt(OldWidget));
+      Msg.WParam := PtrInt(OldWidget);
+      if Assigned(NewWidget) then
+      begin
+        {$IFDEF DebugQtFocus}
+        writeln('Deliver focus IN for ',dbgsName(NewWidget));
+        {$ENDIF}
+        NewWidget.DeliverMessage(Msg);
+      end;
+    end;
+
+    QEventFocusOut:
+    begin
+      if not QObject_isWidgetType(Sender) then
+        exit;
+      FocusedQtWidget := QWidgetH(Sender);
+      OldWidget := TQtWidget(HwndFromWidgetH(FocusedQtWidget));
+      if Assigned(OldWidget) then
+      begin
+        Msg := Default(TLMessage);
+        Msg.msg := LM_KILLFOCUS;
+        Msg.wParam := 0; // PtrInt(NewWidget);
+        OldWidget.DeliverMessage(Msg);
+        {$IFDEF DebugQtFocus}
+        writeln('DELIVER focus OUT for ',dbgsName(OldWidget));
+        {$ENDIF}
+      end;
+    end;
+    {$ENDIF}
     QEventShow,
     QEventHide:
       begin
@@ -870,6 +940,7 @@ begin
   end;
 end;
 
+{$IFDEF QTUSEFOCUSCHANGEDHOOK}
 procedure TQtWidgetSet.FocusChanged(aold: QWidgetH; anew: QWidgetH); cdecl;
 var
   OldWidget, NewWidget: TQtWidget;
@@ -1146,6 +1217,7 @@ begin
       NewWidget.DeliverMessage(Msg);
   end;
 end;
+{$ENDIF}
 
 procedure TQtWidgetSet.AppStateChanged(AState: QtApplicationState); cdecl;
 begin

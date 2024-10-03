@@ -75,7 +75,9 @@ type
     SysTrayIconsList: TFPList;
     // global hooks
     FAppEvenFilterHook: QObject_hookH;
+    {$IFDEF QTUSEFOCUSCHANGEDHOOK}
     FAppFocusChangedHook: QApplication_hookH;
+    {$ENDIF}
     FAppSessionQuit: QGUIApplication_hookH;
     FAppSaveSessionRequest: QGUIApplication_hookH;
 
@@ -127,7 +129,9 @@ type
 
     function CreateThemeServices: TThemeServices; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+    {$IFDEF QTUSEFOCUSCHANGEDHOOK}
     procedure FocusChanged(aold: QWidgetH; anew: QWidgetH); cdecl;
+    {$ENDIF}
     procedure OnWakeMainThread(Sender: TObject);
     {$ifndef QT_NO_SESSIONMANAGER}
     procedure SlotCommitDataRequest(sessionManager: QSessionManagerH); cdecl;

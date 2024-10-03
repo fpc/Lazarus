@@ -77,7 +77,9 @@ type
     // global hooks
     FAppEventApplicationStateHook: QGuiApplication_hookH;
     FAppEvenFilterHook: QObject_hookH;
+    {$IFDEF QTUSEFOCUSCHANGEDHOOK}
     FAppFocusChangedHook: QApplication_hookH;
+    {$ENDIF}
     FAppSessionQuit: QGUIApplication_hookH;
     FAppSaveSessionRequest: QGUIApplication_hookH;
 
@@ -130,7 +132,9 @@ type
 
     function CreateThemeServices: TThemeServices; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+    {$IFDEF QTUSEFOCUSCHANGEDHOOK}
     procedure FocusChanged(aold: QWidgetH; anew: QWidgetH); cdecl;
+    {$ENDIF}
     procedure AppStateChanged(AState: QtApplicationState); cdecl;
     procedure OnWakeMainThread(Sender: TObject);
     {$ifndef QT_NO_SESSIONMANAGER}
