@@ -558,6 +558,7 @@ procedure TBuildManager.TranslateMacros;
 begin
   tr('Project',lisProjectMacroProperties);
   tr('BuildMode',lisNameOfActiveBuildMode);
+  tr('BuildModeCaption',lisCaptionOfActiveBuildMode);
   tr('LCLWidgetType',lisLCLWidgetType);
   tr('TargetCPU',lisTargetCPU);
   tr('TargetOS',lisTargetOS);
@@ -605,6 +606,7 @@ begin
   tr('NameOnly',lisTMFunctionExtractFileNameOnly);
   tr('MakeDir',lisTMFunctionAppendPathDelimiter);
   tr('MakeFile',lisTMFunctionChompPathDelimiter);
+  tr('EncloseBracket', lisTMFunctionEncloseBrackets);
 end;
 
 procedure TBuildManager.SetupExternalTools(aToolsClass: TExternalToolsClass);

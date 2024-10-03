@@ -169,7 +169,7 @@ begin
   Add(TTransferMacro.Create('NameOnly', '', lisTMFunctionExtractFileNameOnly, @MF_NameOnly,[]));
   Add(TTransferMacro.Create('MakeDir', '', lisTMFunctionAppendPathDelimiter, @MF_MakeDir,[]));
   Add(TTransferMacro.Create('MakeFile', '', lisTMFunctionChompPathDelimiter, @MF_MakeFile,[]));
-  Add(TTransferMacro.Create('EncloseBracket', '', lisTMFunctionChompPathDelimiter, @MF_EncloseBracket,[]));
+  Add(TTransferMacro.Create('EncloseBracket', '', lisTMFunctionEncloseBrackets, @MF_EncloseBracket,[]));
 end;
 
 destructor TTransferMacroList.Destroy;

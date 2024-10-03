@@ -85,7 +85,7 @@ begin
   TitleStartsWithProjectCheckBox.Hint:=lisTitleInTaskbarShowsForExampleProject1LpiLazarus;
   TitleShowsProjectDirCheckBox.Caption:=lisIDETitleShowsProjectDir;
   TitleShowsProjectDirCheckBox.Hint:=lisProjectDirectoryIsShowedInIdeTitleBar;
-  lblTitleBar.Caption:=lisIDETitleCustum;
+  lblTitleBar.Caption:=lisIDETitleCustom;
   NameForDesignedFormListCheckBox.Caption:=lisWindowMenuWithNameForDesignedForm;
   NameForDesignedFormListCheckBox.Hint:=lisWindowMenuWithNameForDesignedFormHint;
   AutoAdjustIDEHeightCheckBox.Caption:=lisAutoAdjustIDEHeight;
