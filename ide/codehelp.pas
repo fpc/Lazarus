@@ -311,6 +311,7 @@ type
     function GetElementChain(Code: TCodeBuffer; X, Y: integer; Complete: boolean;
                              out Chain: TCodeHelpElementChain;
                              out CacheWasUsed: boolean): TCodeHelpParseResult;
+    function GetHTMLStub(out BaseURL, HTMLHint: string): TCodeHelpParseResult;
     function GetHTMLHint(Code: TCodeBuffer; X, Y: integer; Options: TCodeHelpHintOptions;
                      out BaseURL, HTMLHint, PropDetails: string;
                      out CacheWasUsed: boolean): TCodeHelpParseResult;
@@ -2439,6 +2440,16 @@ begin
       FreeAndNil(Chain);
     CodeToolBoss.DeactivateWriteLock;
   end;
+end;
+
+function TCodeHelpManager.GetHTMLStub(out BaseURL, HTMLHint: string): TCodeHelpParseResult;
+begin
+  Result:=chprSuccess;
+  BaseURL:='lazdoc://';
+  HTMLHint:='<html><head><link rel="stylesheet" href="lazdoc://lazarus/lazdoc.css" type="text/css">'+LineEnding
+        +'<meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>'+LineEnding
+        +'<body>'+ LineEnding
+        +'</body></html>';
 end;
 
 function TCodeHelpManager.GetHTMLHint(Code: TCodeBuffer; X, Y: integer;

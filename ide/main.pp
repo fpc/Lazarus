@@ -11698,6 +11698,8 @@ begin
       HasHint:=true;
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.SrcNotebookShowHintForSource B');{$ENDIF}
   end;
+  if SmartHintStr = '' then
+    CodeHelpBoss.GetHTMLStub(BaseURL, SmartHintStr);
 
   if HasHint then
   begin
