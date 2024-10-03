@@ -2,27 +2,28 @@ object MainForm: TMainForm
   Left = 546
   Height = 583
   Top = 210
-  Width = 973
+  Width = 1153
   HorzScrollBar.Page = 979
   VertScrollBar.Page = 565
   ActiveControl = PageScroller1
   Caption = 'Virtual Treeview features demo'
   ClientHeight = 583
-  ClientWidth = 973
+  ClientWidth = 1153
+  Position = poScreenCenter
+  LCLVersion = '3.99.0.0'
   OnCreate = FormCreate
   OnShow = FormShow
-  Position = poScreenCenter
-  LCLVersion = '2.1.0.0'
   object PageScroller1: TPanel
     Left = 0
     Height = 76
     Top = 0
-    Width = 973
+    Width = 1153
     Align = alTop
     AutoSize = True
     ClientHeight = 76
-    ClientWidth = 973
-    Color = clWhite
+    ClientWidth = 1153
+    Color = clWindow
+    ParentBackground = False
     ParentColor = False
     ParentShowHint = False
     ShowHint = True
@@ -36,8 +37,7 @@ object MainForm: TMainForm
       BevelOuter = bvNone
       ClientHeight = 74
       ClientWidth = 968
-      Color = clWhite
-      ParentColor = False
+      ParentBackground = False
       TabOrder = 0
       object SpeedDemoButton: TSpeedButton
         AnchorSideLeft.Control = Label2
@@ -1994,14 +1994,14 @@ object MainForm: TMainForm
     Left = 0
     Height = 23
     Top = 560
-    Width = 973
+    Width = 1153
     Panels = <>
   end
   object ContainerPanel: TPanel
     Left = 0
     Height = 484
     Top = 76
-    Width = 973
+    Width = 1153
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1

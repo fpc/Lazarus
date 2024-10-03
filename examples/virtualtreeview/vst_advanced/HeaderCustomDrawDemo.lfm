@@ -2,14 +2,14 @@ object HeaderOwnerDrawForm: THeaderOwnerDrawForm
   Left = 240
   Height = 440
   Top = 275
-  Width = 776
+  Width = 819
   ActiveControl = HeaderCustomDrawTree
   Caption = 'HeaderOwnerDrawForm'
   ClientHeight = 440
-  ClientWidth = 776
+  ClientWidth = 819
+  LCLVersion = '3.99.0.0'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '2.1.0.0'
   object Label8: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideRight.Control = Owner
@@ -19,7 +19,7 @@ object HeaderOwnerDrawForm: THeaderOwnerDrawForm
     Left = 8
     Height = 60
     Top = 372
-    Width = 760
+    Width = 803
     Anchors = [akLeft, akRight, akBottom]
     BorderSpacing.Around = 8
     Caption = 'This page demonstrates the advance custom draw mode for a tree''s header. The left column is drawn as usual while with the other columns more and more details are customized by the applicaiton. Note: Virtual Treeview allows to customize the header fully or only parts of it and draws all standard elements as normal if they are not handled by the application. This allows very flexible designs but avoids full custom draw if only a small details must be drawn differently.'
@@ -36,7 +36,7 @@ object HeaderOwnerDrawForm: THeaderOwnerDrawForm
     Left = 8
     Height = 356
     Top = 8
-    Width = 760
+    Width = 803
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 8
     CheckImageKind = ckDarkTick
@@ -86,7 +86,7 @@ object HeaderOwnerDrawForm: THeaderOwnerDrawForm
       item
         Alignment = taCenter
         BiDiMode = bdLeftToRight
-        Color = 14811135
+        Color = 37887
         ImageIndex = 0
         Options = [coAllowClick, coDraggable, coEnabled, coResizable, coShowDropMark, coVisible]
         Position = 2
