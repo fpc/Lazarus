@@ -97,6 +97,10 @@ msgstr "Functie: toevoegen pad scheidingsteken"
 msgid "Function: remove trailing path delimiter"
 msgstr "Functie: afhakken pad scheidingsteken"
 
+#: ideconfstrconsts.listmfunctionenclosebrackets
+msgid "Function: Enclose in ()"
+msgstr ""
+
 #: ideconfstrconsts.listmfunctionextractfileextension
 msgid "Function: extract file extension"
 msgstr "Functie: destilleer bestandsextensie"

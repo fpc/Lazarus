@@ -21,6 +21,7 @@ resourcestring
   lisTMFunctionExtractFileNameOnly = 'Function: extract file name only';
   lisTMFunctionAppendPathDelimiter = 'Function: append path delimiter';
   lisTMFunctionChompPathDelimiter = 'Function: remove trailing path delimiter';
+  lisTMFunctionEncloseBrackets = 'Function: Enclose in ()';
   lisTMunknownMacro = '(unknown macro: %s)';
   lisEndlessLoopInMacros = 'Endless loop in macros';
   // Component Name Validity

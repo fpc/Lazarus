@@ -94,6 +94,10 @@ msgstr "Funktio: lisää polkuerotin"
 msgid "Function: remove trailing path delimiter"
 msgstr "Funktio: poista polkuerotin lopusta"
 
+#: ideconfstrconsts.listmfunctionenclosebrackets
+msgid "Function: Enclose in ()"
+msgstr ""
+
 #: ideconfstrconsts.listmfunctionextractfileextension
 msgid "Function: extract file extension"
 msgstr "Funktio: erota tiedoston pääte"

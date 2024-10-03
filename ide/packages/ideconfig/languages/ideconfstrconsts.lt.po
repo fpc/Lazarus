@@ -94,6 +94,10 @@ msgstr "Funkcija: kelio gale pridėti kelio skirtuką"
 msgid "Function: remove trailing path delimiter"
 msgstr "Funkcija: pašalinti kelio gale esantį skirtuką"
 
+#: ideconfstrconsts.listmfunctionenclosebrackets
+msgid "Function: Enclose in ()"
+msgstr ""
+
 #: ideconfstrconsts.listmfunctionextractfileextension
 msgid "Function: extract file extension"
 msgstr "Funkcija: ištraukti tik failo plėtinį"

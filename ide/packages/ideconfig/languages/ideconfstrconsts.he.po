@@ -98,6 +98,10 @@ msgstr "פונקציה: הוסף את תוחם הנתיב"
 msgid "Function: remove trailing path delimiter"
 msgstr "פונקציה: חתוך את תוחם הנתיב"
 
+#: ideconfstrconsts.listmfunctionenclosebrackets
+msgid "Function: Enclose in ()"
+msgstr ""
+
 #: ideconfstrconsts.listmfunctionextractfileextension
 msgid "Function: extract file extension"
 msgstr "פונקציה: חלץ את סיומת הקובץ"

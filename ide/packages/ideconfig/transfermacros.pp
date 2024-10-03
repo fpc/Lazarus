@@ -69,6 +69,7 @@ type
     function MF_NameOnly(const Filename:string; const {%H-}Data: PtrInt; var {%H-}Abort: boolean):string; virtual;
     function MF_MakeDir(const Filename:string; const {%H-}Data: PtrInt; var {%H-}Abort: boolean):string; virtual;
     function MF_MakeFile(const Filename:string; const {%H-}Data: PtrInt; var {%H-}Abort: boolean):string; virtual;
+    function MF_EncloseBracket(const Text:string; const {%H-}Data: PtrInt; var {%H-}Abort: boolean):string; virtual;
     function MF_Trim(const Filename:string; const {%H-}Data: PtrInt; var {%H-}Abort: boolean):string; virtual;
     procedure DoSubstitution(TheMacro: TTransferMacro; const MacroName: string;
       var s:string; const Data: PtrInt; var Handled, Abort: boolean;
@@ -168,6 +169,7 @@ begin
   Add(TTransferMacro.Create('NameOnly', '', lisTMFunctionExtractFileNameOnly, @MF_NameOnly,[]));
   Add(TTransferMacro.Create('MakeDir', '', lisTMFunctionAppendPathDelimiter, @MF_MakeDir,[]));
   Add(TTransferMacro.Create('MakeFile', '', lisTMFunctionChompPathDelimiter, @MF_MakeFile,[]));
+  Add(TTransferMacro.Create('EncloseBracket', '', lisTMFunctionChompPathDelimiter, @MF_EncloseBracket,[]));
 end;
 
 destructor TTransferMacroList.Destroy;
@@ -481,6 +483,14 @@ begin
   if ChompLen>0 then
     Result:=LeftStr(Result,length(Filename)-ChompLen);
   Result:=TrimFilename(Result);
+end;
+
+function TTransferMacroList.MF_EncloseBracket(const Text: string; const Data: PtrInt;
+  var Abort: boolean): string;
+begin
+  Result := Text;
+  if Result <> '' then
+    Result := '(' + Result + ')';
 end;
 
 function TTransferMacroList.MF_Trim(const Filename: string; const Data: PtrInt;

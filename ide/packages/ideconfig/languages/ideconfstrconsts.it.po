@@ -94,6 +94,10 @@ msgstr "Funzione: aggiunge in fondo il delimitatore di percorso"
 msgid "Function: remove trailing path delimiter"
 msgstr "Funzione: elimina i delimitatori di percorso"
 
+#: ideconfstrconsts.listmfunctionenclosebrackets
+msgid "Function: Enclose in ()"
+msgstr ""
+
 #: ideconfstrconsts.listmfunctionextractfileextension
 msgid "Function: extract file extension"
 msgstr "Funzione: estrae estensione file"

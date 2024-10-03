@@ -1313,7 +1313,7 @@ resourcestring
     +' one button per window.';
   lisIDETitleStartsWithProjectName = 'IDE title starts with project name';
   lisIDETitleShowsProjectDir = 'IDE title shows project directory';
-  lisIDETitleShowsBuildMode = 'IDE title shows selected build mode';
+  lisIDETitleCustum = 'Customize IDE window title';
   lisAutoAdjustIDEHeight = 'Automatically adjust IDE main window height';
   lisAutoAdjustIDEHeightHint = '';
   lisAutoAdjustIDEHeightFullComponentPalette = 'Show complete component palette';
@@ -1324,8 +1324,6 @@ resourcestring
   lisWindowMenuWithNameForDesignedFormHint = 'Useful especially if the caption is left empty.';
   lisTitleInTaskbarShowsForExampleProject1LpiLazarus = 'Title in taskbar '
     +'shows for example: project1 - Lazarus';
-  lisBuildModeInTitleInExample = 'Title in taskbar '
-    +'shows for example: project1 - Release - Lazarus';
   lisProjectDirectoryIsShowedInIdeTitleBar = 'Title in taskbar '
     +'shows also directory path of the project';
 
@@ -1447,6 +1445,7 @@ resourcestring
   dlgReferenceColor = 'Reference';
   lisAllBuildModes = '<All build modes>';
   lisNameOfActiveBuildMode = 'Name of active build mode';
+  lisCaptionOfActiveBuildMode = 'Caption of active build mode';
   dlfReadOnlyColor = 'Read Only';
   dlgHighlightColor = 'Highlight Color';
   dlgHighlightFontColor = 'Highlight Font Color';

@@ -50,13 +50,14 @@ uses
   ModeMatrixOpts;
 
 const
-  EnvOptsVersion: integer = 110;
+  EnvOptsVersion: integer = 112;
   // 107 added Lazarus version.
   // 108 added LastCalledByLazarusFullPath.
   // 109 changed paths for desktop settings, supporting multiple desktops.
   // 110 changed BackupType to string instead of integer.
   // 111 refactored code dealing with options, split into many units,
   //     removed LCL dependency from EnvironmentOpts.
+  // 112 Changed Window (sub) options: Added IDETitleBarCustomText
   {$IFDEF Windows}
   DefaultMakefilename = '$Path($(CompPath))make.exe';
   {$ELSE}
@@ -381,6 +382,7 @@ type
     property Filename: string read FFilename write SetFilename;
     function GetDefaultConfigFilename: string;
     procedure CreateConfig;
+    property FileVersion: integer read FFileVersion;
     property OldLazarusVersion: string read FOldLazarusVersion;
 
     function GetParsedLazarusDirectory: string; override;

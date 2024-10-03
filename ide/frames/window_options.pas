@@ -42,11 +42,12 @@ type
 
   TWindowOptionsFrame = class(TAbstractIDEOptionsEditor)
     AutoAdjustIDEHeightFullCompPalCheckBox: TCheckBox;
+    EdTitleBar: TComboBox;
+    lblTitleBar: TLabel;
     ProjectInspectorShowPropsCheckBox: TCheckBox;
     lblShowingWindows: TDividerBevel;
     NameForDesignedFormListCheckBox: TCheckBox;
     AutoAdjustIDEHeightCheckBox: TCheckBox;
-    TitleShowsBuildModeCheckBox: TCheckBox;
     HideIDEOnRunCheckBox: TCheckBox;
     SingleTaskBarButtonCheckBox: TCheckBox;
     TitleStartsWithProjectCheckBox: TCheckBox;
@@ -82,10 +83,9 @@ begin
   HideIDEOnRunCheckBox.Hint := dlgHideIDEOnRunHint;
   TitleStartsWithProjectCheckBox.Caption:=lisIDETitleStartsWithProjectName;
   TitleStartsWithProjectCheckBox.Hint:=lisTitleInTaskbarShowsForExampleProject1LpiLazarus;
-  TitleShowsBuildModeCheckBox.Caption:=lisIDETitleShowsBuildMode;
-  TitleShowsBuildModeCheckBox.Hint:=lisBuildModeInTitleInExample;
   TitleShowsProjectDirCheckBox.Caption:=lisIDETitleShowsProjectDir;
   TitleShowsProjectDirCheckBox.Hint:=lisProjectDirectoryIsShowedInIdeTitleBar;
+  lblTitleBar.Caption:=lisIDETitleCustum;
   NameForDesignedFormListCheckBox.Caption:=lisWindowMenuWithNameForDesignedForm;
   NameForDesignedFormListCheckBox.Hint:=lisWindowMenuWithNameForDesignedFormHint;
   AutoAdjustIDEHeightCheckBox.Caption:=lisAutoAdjustIDEHeight;
@@ -93,6 +93,17 @@ begin
   AutoAdjustIDEHeightFullCompPalCheckBox.Caption:=lisAutoAdjustIDEHeightFullComponentPalette;
   AutoAdjustIDEHeightFullCompPalCheckBox.Hint:=lisAutoAdjustIDEHeightFullComponentPaletteHint;
   ProjectInspectorShowPropsCheckBox.Caption:=lisProjectInspectorShowProps;
+
+  EdTitleBar.AddItem('$project(TitleNew)', nil);
+  EdTitleBar.AddItem('$project(TitleNew) $EncloseBracket($project(infodir))', nil);
+  EdTitleBar.AddItem('$(BuildModeCaption)', nil);
+  EdTitleBar.AddItem('$project(TitleNew) $EncloseBracket($project(infodir)) $(BuildModeCaption)', nil);
+  EdTitleBar.AddItem('$(FPCTarget)', nil);
+  EdTitleBar.AddItem('$TargetCPU(Param)-$TargetOS(Param)-$SubTarget(Param)', nil);
+  EdTitleBar.AddItem('$(LCLWidgetType)', nil);
+  EdTitleBar.AddItem('$(FPCVer)', nil);
+  EdTitleBar.AddItem('$project(TitleNew) $EncloseBracket($project(infodir)) $(BuildModeCaption) $(LCLWidgetType) $(FPCTarget)', nil);
+  EdTitleBar.AddItem('$(EdFile)', nil);
 end;
 
 procedure TWindowOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -108,8 +119,8 @@ begin
     SingleTaskBarButtonCheckBox.Checked := SingleTaskBarButton;
     HideIDEOnRunCheckBox.Checked := HideIDEOnRun;
     TitleStartsWithProjectCheckBox.Checked := IDETitleStartsWithProject;
-    TitleShowsBuildModeCheckBox.Checked := IDETitleShowsBuildMode;
     TitleShowsProjectDirCheckBox.Checked := IDETitleShowsProjectDir;
+    EdTitleBar.Text := IDETitleBarCustomText;
     NameForDesignedFormListCheckBox.Checked := IDENameForDesignedFormList;
     AutoAdjustIDEHeightCheckBox.Checked := AutoAdjustIDEHeight;
     AutoAdjustIDEHeightFullCompPalCheckBox.Checked := AutoAdjustIDEHeightFullCompPal;
@@ -130,8 +141,8 @@ begin
     SingleTaskBarButton := SingleTaskBarButtonCheckBox.Checked;
     HideIDEOnRun := HideIDEOnRunCheckBox.Checked;
     IDETitleStartsWithProject := TitleStartsWithProjectCheckBox.Checked;
-    IDETitleShowsBuildMode := TitleShowsBuildModeCheckBox.Checked;
     IDETitleShowsProjectDir := TitleShowsProjectDirCheckBox.Checked;
+    IDETitleBarCustomText := EdTitleBar.Text;
     IDENameForDesignedFormList := NameForDesignedFormListCheckBox.Checked;
     AutoAdjustIDEHeight := AutoAdjustIDEHeightCheckBox.Checked;
     AutoAdjustIDEHeightFullCompPal := AutoAdjustIDEHeightFullCompPalCheckBox.Checked;

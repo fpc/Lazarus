@@ -97,6 +97,10 @@ msgstr "Funkcia: pripojiť oddeľovač cesty"
 msgid "Function: remove trailing path delimiter"
 msgstr "Funkcia: odstrániť oddeľovač cesty"
 
+#: ideconfstrconsts.listmfunctionenclosebrackets
+msgid "Function: Enclose in ()"
+msgstr ""
+
 #: ideconfstrconsts.listmfunctionextractfileextension
 msgid "Function: extract file extension"
 msgstr "Funkcia: vybrať príponu súboru"

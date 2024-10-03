@@ -150,6 +150,7 @@ type
     FIDETitleStartsWithProject: boolean;
     FIDETitleShowsBuildMode: boolean;
     FIDETitleShowsProjectDir: boolean;
+    FIDETitleBarCustomText: string;
     // IDE Coolbar
     FIDECoolBarOptions: TIDECoolBarOptions;
     // Editor Toolbar
@@ -187,10 +188,11 @@ type
     property CompletionWindowHeight: Integer read FCompletionWindowHeight write FCompletionWindowHeight;
     property IDETitleStartsWithProject: boolean read FIDETitleStartsWithProject
                                                write FIDETitleStartsWithProject;
-    property IDETitleShowsBuildMode: boolean read FIDETitleShowsBuildMode
-                                            write FIDETitleShowsBuildMode;
+    property IDETitleShowsBuildMode: boolean read FIDETitleShowsBuildMode;
     property IDETitleShowsProjectDir: boolean read FIDETitleShowsProjectDir
                                              write FIDETitleShowsProjectDir;
+    property IDETitleBarCustomText: string read FIDETitleBarCustomText
+                                             write FIDETitleBarCustomText;
     property IDECoolBarOptions: TIDECoolBarOptions read FIDECoolBarOptions;
     property EditorToolBarOptions: TEditorToolBarOptions read FEditorToolBarOptions;
     property ComponentPaletteOptions: TCompPaletteOptions read FComponentPaletteOptions;
@@ -571,6 +573,7 @@ begin
   FIDETitleStartsWithProject:=true;
   FIDETitleShowsBuildMode:=true;
   FIDETitleShowsProjectDir:=true;
+  FIDETitleBarCustomText:='';
   // IDE Coolbar
   FIDECoolBarOptions:=TIDECoolBarOptions.Create;
   // Editor Toolbar
@@ -638,6 +641,7 @@ begin
   FIDETitleStartsWithProject := Source.FIDETitleStartsWithProject;
   FIDETitleShowsBuildMode := Source.FIDETitleShowsBuildMode;
   FIDETitleShowsProjectDir := Source.FIDETitleShowsProjectDir;
+  FIDETitleBarCustomText:= Source.FIDETitleBarCustomText;
   // IDE Coolbar
   FIDECoolBarOptions.Assign(Source.FIDECoolBarOptions);
   // Editor Toolbar
@@ -671,6 +675,15 @@ begin
   FIDETitleStartsWithProject:=FXMLCfg.GetValue(Path+'IDETitleStartsWithProject/Value',true);
   FIDETitleShowsBuildMode:=FXMLCfg.GetValue(Path+'IDETitleShowsBuildMode/Value',true);
   FIDETitleShowsProjectDir:=FXMLCfg.GetValue(Path+'IDETitleShowsProjectDir/Value',true);
+  FIDETitleBarCustomText:=FXMLCfg.GetValue(Path+'IDETitleBarCustomText/Value','');
+  if (EnvironmentOptions.FileVersion < 112) and (FIDETitleBarCustomText = '')
+  then begin
+    FIDETitleBarCustomText := '$project(TitleNew)';
+    if FIDETitleShowsProjectDir then
+      FIDETitleBarCustomText := FIDETitleBarCustomText + ' $EncloseBracket($project(infodir))';
+    if FIDETitleShowsBuildMode then
+      FIDETitleBarCustomText := FIDETitleBarCustomText + ' $(BuildModeCaption)';
+  end;
   // CompletionWindow
   FCompletionWindowWidth:=FXMLCfg.GetValue(Path+'CompletionWindowOptions/Width/Value', FCompletionWindowWidth);
   FCompletionWindowHeight:=FXMLCfg.GetValue(Path+'CompletionWindowOptions/Height/Value', 6);
@@ -723,6 +736,7 @@ begin
   FXMLCfg.SetDeleteValue(Path+'IDETitleStartsWithProject/Value',FIDETitleStartsWithProject,true);
   FXMLCfg.SetDeleteValue(Path+'IDETitleShowsBuildMode/Value',FIDETitleShowsBuildMode,true);
   FXMLCfg.SetDeleteValue(Path+'IDETitleShowsProjectDir/Value',FIDETitleShowsProjectDir,true);
+  FXMLCfg.SetDeleteValue(Path+'IDETitleBarCustomText/Value',FIDETitleBarCustomText,'');
   // CompletionWindow
   FXMLCfg.SetValue(Path+'CompletionWindowOptions/Width/Value',FCompletionWindowWidth);
   FXMLCfg.SetDeleteValue(Path+'CompletionWindowOptions/Height/Value',FCompletionWindowHeight, 6);

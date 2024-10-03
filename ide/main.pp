@@ -9012,7 +9012,7 @@ procedure TMainIDE.UpdateCaption;
   end;
 
 var
-  rev, NewCaption, NewTitle, ProjectName, DirName: String;
+  rev, NewCaption, NewTitle, ProjectName, DirName, CustomnCaption: String;
 begin
   if MainIDEBar = nil then Exit;
   if ToolStatus = itExiting then Exit;
@@ -9041,13 +9041,21 @@ begin
       end
       else
         ProjectName := lisnewProject;
-      NewTitle := AddToCaption(NewCaption, ProjectName);
-      if EnvironmentGuiOpts.Desktop.IDETitleShowsBuildMode
-      and (Project1.BuildModes.Count > 1) then
-        ProjectName:= ProjectName + ' - ' +Project1.ActiveBuildMode.GetCaption;
-      NewCaption := AddToCaption(NewCaption, ProjectName);
+      NewTitle := AddToCaption(NewTitle, ProjectName);
     end;
   end;
+
+  if (GlobalMacroList <> nil) then begin
+    CustomnCaption := EnvironmentGuiOpts.Desktop.IDETitleBarCustomText;
+    if CustomnCaption <> '' then begin
+      if not GlobalMacroList.SubstituteStr(CustomnCaption) then
+        CustomnCaption := EnvironmentGuiOpts.Desktop.IDETitleBarCustomText;
+      if CustomnCaption <> '' then begin
+        NewCaption := AddToCaption(NewCaption, CustomnCaption);
+      end;
+    end;
+  end;
+
   case ToolStatus of
     itBuilder: NewCaption := Format(liscompiling, [NewCaption]);
     itDebugger:
@@ -11499,6 +11507,7 @@ procedure TMainIDE.SrcNotebookEditorChanged(Sender: TObject);
 begin
   if SourceEditorManager.SourceEditorCount = 0 then Exit;
   UpdateSaveMenuItemsAndButtons(false);
+  UpdateCaption;
 end;
 
 procedure TMainIDE.SrcNotebookUpdateProjectFile(Sender: TObject;

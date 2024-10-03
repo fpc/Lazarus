@@ -94,6 +94,10 @@ msgstr "Funktion: Pfadtrenner anhängen"
 msgid "Function: remove trailing path delimiter"
 msgstr "Funktion: Pfadtrenner entfernen"
 
+#: ideconfstrconsts.listmfunctionenclosebrackets
+msgid "Function: Enclose in ()"
+msgstr ""
+
 #: ideconfstrconsts.listmfunctionextractfileextension
 msgid "Function: extract file extension"
 msgstr "Funktion: Dateiendung extrahieren"

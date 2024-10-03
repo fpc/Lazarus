@@ -94,6 +94,10 @@ msgstr "Művelet: útvonal-elválasztó hozzáfűzése"
 msgid "Function: remove trailing path delimiter"
 msgstr "Művelet: bevezető útvonal-elválasztó törlése"
 
+#: ideconfstrconsts.listmfunctionenclosebrackets
+msgid "Function: Enclose in ()"
+msgstr ""
+
 #: ideconfstrconsts.listmfunctionextractfileextension
 msgid "Function: extract file extension"
 msgstr "Művelet: fájlkiterjesztés kibontása"

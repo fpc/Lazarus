@@ -94,6 +94,10 @@ msgstr "Fonksiyon: yol sınırlayıcı ekleme"
 msgid "Function: remove trailing path delimiter"
 msgstr "Fonksiyon: sondaki yol sınırlayıcı kaldır"
 
+#: ideconfstrconsts.listmfunctionenclosebrackets
+msgid "Function: Enclose in ()"
+msgstr ""
+
 #: ideconfstrconsts.listmfunctionextractfileextension
 msgid "Function: extract file extension"
 msgstr "Fonksiyon: dosya uzantısını ayıklayın"

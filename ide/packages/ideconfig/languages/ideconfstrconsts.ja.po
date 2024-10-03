@@ -94,6 +94,10 @@ msgstr "機能：パスの区切り記号を添える"
 msgid "Function: remove trailing path delimiter"
 msgstr "機能：終端のパスの区切り記号を削除"
 
+#: ideconfstrconsts.listmfunctionenclosebrackets
+msgid "Function: Enclose in ()"
+msgstr ""
+
 #: ideconfstrconsts.listmfunctionextractfileextension
 msgid "Function: extract file extension"
 msgstr "機能：ファイルの拡張子を抽出"

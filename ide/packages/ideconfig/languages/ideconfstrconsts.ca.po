@@ -97,6 +97,10 @@ msgstr "Funció: afegir el delimitador de la trajectòria"
 msgid "Function: remove trailing path delimiter"
 msgstr "Funció: eliminar el delimitador de la trajectòria"
 
+#: ideconfstrconsts.listmfunctionenclosebrackets
+msgid "Function: Enclose in ()"
+msgstr ""
+
 #: ideconfstrconsts.listmfunctionextractfileextension
 msgid "Function: extract file extension"
 msgstr "Funció: extreure l'extensió del fitxer"

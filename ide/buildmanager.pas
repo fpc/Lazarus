@@ -63,7 +63,7 @@ uses
   MiscOptions, ExtTools, etFPCMsgParser, etPas2jsMsgParser, Compiler,
   FPCSrcScan, PackageDefs, PackageSystem, Project, ProjectIcon, BaseBuildManager,
   ApplicationBundle, RunParamsOpts, IdeTransferMacros, SearchPathProcs, RunParamOptions;
-  
+
 const
   cInvalidCompiler = 'InvalidCompiler';
 
@@ -107,6 +107,8 @@ type
                                       const UnparsedValue: string;
                                       PlatformIndependent: boolean): string;
     function MacroFuncBuildMode(const {%H-}Param: string; const {%H-}Data: PtrInt;
+                             var {%H-}Abort: boolean): string;
+    function MacroFuncBuildModeCaption(const {%H-}Param: string; const {%H-}Data: PtrInt;
                              var {%H-}Abort: boolean): string;
     function MacroFuncEnv(const Param: string; const {%H-}Data: PtrInt;
                           var {%H-}Abort: boolean): string;
@@ -272,7 +274,7 @@ type
     property FPCSrcScans: TFPCSrcScans read FFPCSrcScans;
     property BuildTarget: TProject read FBuildTarget; // TProject or nil
   end;
-  
+
 var
   MainBuildBoss: TBuildManager = nil;
   TheCompiler: TCompiler = nil;
@@ -387,6 +389,15 @@ begin
   Result:=GetActiveBuildModeName;
 end;
 
+function TBuildManager.MacroFuncBuildModeCaption(const Param: string; const Data: PtrInt;
+  var Abort: boolean): string;
+begin
+  if (Project1 <> nil) and (Project1.BuildModes.Count > 1) then
+    Result := Project1.ActiveBuildMode.GetCaption
+  else
+    Result:='';
+end;
+
 constructor TBuildManager.Create(AOwner: TComponent);
 begin
   EnvironmentOptions := TEnvironmentOptions.Create;
@@ -450,6 +461,8 @@ begin
                       lisProjectMacroProperties,@MacroFuncProject,[]));
   GlobalMacroList.Add(TTransferMacro.Create('BuildMode','',
                       lisNameOfActiveBuildMode, @MacroFuncBuildMode, []));
+  GlobalMacroList.Add(TTransferMacro.Create('BuildModeCaption','',
+                      lisCaptionOfActiveBuildMode, @MacroFuncBuildModeCaption, []));
   GlobalMacroList.Add(TTransferMacro.Create('LCLWidgetType','',
                       lisLCLWidgetType,@MacroFuncLCLWidgetType,[]));
   GlobalMacroList.Add(TTransferMacro.Create('TargetCPU','',
@@ -1047,7 +1060,7 @@ begin
   end;
   if ResetBuildTarget then
     SetBuildTarget('','','','',smsfsSkip,true);
-  
+
   // start the compiler and ask for his settings
   // provide an english message file
   UpdateEnglishErrorMsgFilename;
@@ -2132,7 +2145,7 @@ begin
   if Project1.MainUnitID>=0 then
     Project1.ProjResources.Regenerate(Project1.MainFileName, False, True, TestDir);
   AnUnitInfo := Project1.FirstPartOfProject;
-  while AnUnitInfo<>nil do 
+  while AnUnitInfo<>nil do
   begin
     if AnUnitInfo.HasResources then begin
       case GetResourceType(AnUnitInfo) of
@@ -2228,6 +2241,15 @@ begin
       Result:=Project1.CompilerOptions.GetUnitPath(false)
     else if SysUtils.CompareText(Param,'InfoFile')=0 then
       Result:=Project1.ProjectInfoFile
+    else if SysUtils.CompareText(Param,'InfoDir')=0 then
+      Result:=ExtractFileDir(Project1.ProjectInfoFile)
+    else if SysUtils.CompareText(Param,'Title')=0 then
+      Result:=Project1.GetTitleOrName
+    else if SysUtils.CompareText(Param,'TitleNew')=0 then begin
+      Result:=Project1.GetTitleOrName;
+      if Result = '' then
+        Result := lisnewProject;
+    end
     else if SysUtils.CompareText(Param,'OutputDir')=0 then
       Result:=Project1.CompilerOptions.GetUnitOutPath(false)
     else begin
