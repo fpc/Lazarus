@@ -56,6 +56,7 @@ type
     ConflictsTreeView: TTreeView;
     KeyMapSplitter: TSplitter;
     KeyMapTreePanel: TPanel;
+    pnlKeys: TPanel;
     SchemeLabel: TLabel;
     ResetKeyFilterBtn: TSpeedButton;
     TreeView: TTreeView;
