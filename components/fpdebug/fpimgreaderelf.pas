@@ -36,7 +36,7 @@ uses
   LazUTF8, {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif},
   DbgIntfBaseTypes,
   // FpDebug
-  FpImgReaderBase, fpDbgSymTable, FpImgReaderElfTypes, FpDbgCommon;
+  FpImgReaderBase, fpDbgSymTable, FpImgReaderElfTypes, FpDbgCommon, FpDbgLoader;
 
 type
   TElfSection = packed record
@@ -74,17 +74,21 @@ type
     FFileLoader     : TDbgFileLoader;
     fOwnSource  : Boolean;
     fElfFile    : TElfFile;
+    FImgLoaderDbgFile: TDbgImageLoader;
   protected
     function GetSection(const AName: String): PDbgImageSection; override;
     function GetSection(const ID: integer): PDbgImageSection; override;
     procedure LoadSections;
     procedure ClearSections;
+    procedure ClearSectionsButInterP;
   public
     class function isValid(ASource: TDbgFileLoader): Boolean; override;
     class function UserName: AnsiString; override;
     constructor Create(ASource: TDbgFileLoader; ADebugMap: TObject; ALoadedTargetImageAddr: TDbgPtr; OwnSource: Boolean); override;
+    constructor CreateForDbgFile(ASource: TDbgFileLoader; ADebugMap: TObject; ALoadedTargetImageAddr: TDbgPtr; OwnSource: Boolean);
     destructor Destroy; override;
     procedure ParseSymbolTable(AFpSymbolInfo: TfpSymbolList); override;
+    procedure AddSubFilesToLoaderList(ALoaderList: TObject; PrimaryLoader: TObject); override;
 
     //function GetSectionInfo(const SectionName: AnsiString; var Size: int64): Boolean; override;
     //function GetSectionData(const SectionName: AnsiString; Offset, Size: Int64; var Buf: array of byte): Int64; override;
@@ -381,6 +385,21 @@ begin
   FSections.Clear;
 end;
 
+procedure TElfDbgSource.ClearSectionsButInterP;
+var
+  i: Integer;
+begin
+  i := 0;
+  while i < FSections.Count do begin
+    if FSections[i] <> '.interp' then begin
+      Freemem(FSections.Objects[i]);
+      FSections.Delete(i);
+    end
+    else
+      inc(i);
+  end;
+end;
+
 class function TElfDbgSource.isValid(ASource: TDbgFileLoader): Boolean;
 var
   buf : array [0..3+sizeof(Elf32_EHdr)] of byte;
@@ -408,6 +427,7 @@ var
   DbgFileName, SourceFileName: String;
   crc: Cardinal;
   NewFileLoader: TDbgFileLoader;
+  ImgReadeDbgFile: TElfDbgSource;
 begin
   inherited Create(ASource, ADebugMap, ALoadedTargetImageAddr, OwnSource);
 
@@ -435,20 +455,37 @@ begin
       SourceFileName := ExtractFilePath(SourceFileName);
     NewFileLoader := LoadGnuDebugLink(SourceFileName, DbgFileName, crc);
     if NewFileLoader <> nil then begin
-      if fOwnSource then
-        FFileLoader.Free;
+      ImgReadeDbgFile := TElfDbgSource.CreateForDbgFile(NewFileLoader, ADebugMap, ALoadedTargetImageAddr, True);
+      FImgLoaderDbgFile := TDbgImageLoader.Create(ImgReadeDbgFile);
 
-      FFileLoader := NewFileLoader;
-      fOwnSource := True;
-
-      fElfFile.Free;
-      fElfFile := TElfFile.Create;
-      fElfFile.LoadFromFile(FFileLoader);
-
-      ClearSections;
-      LoadSections;
+      ClearSectionsButInterP;
     end;
   end;
+
+  FTargetInfo := fElfFile.FTargetInfo;
+end;
+
+constructor TElfDbgSource.CreateForDbgFile(ASource: TDbgFileLoader; ADebugMap: TObject;
+  ALoadedTargetImageAddr: TDbgPtr; OwnSource: Boolean);
+begin
+  inherited Create(ASource, ADebugMap, ALoadedTargetImageAddr, OwnSource);
+
+  FSections := TStringListUTF8Fast.Create;
+  FSections.Sorted := True;
+  //FSections.Duplicates := dupError;
+  FSections.CaseSensitive := False;
+
+  // Elf-binaries do not have an internal offset encoded into the binary (ImageBase)
+  // so their reloction-offset is just equal to the location at which the binary
+  // has been loaded into memory. (The LoadedTargetImageAddr)
+  SetRelocationOffset(ALoadedTargetImageAddr);
+
+  FFileLoader := ASource;
+  fOwnSource := OwnSource;
+  fElfFile := TElfFile.Create;
+  fElfFile.LoadFromFile(FFileLoader);
+
+  LoadSections;
 
   FTargetInfo := fElfFile.FTargetInfo;
 end;
@@ -541,6 +578,13 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TElfDbgSource.AddSubFilesToLoaderList(ALoaderList: TObject; PrimaryLoader: TObject);
+begin
+  inherited AddSubFilesToLoaderList(ALoaderList, PrimaryLoader);
+  if FImgLoaderDbgFile <> nil then
+    TDbgImageLoaderList(ALoaderList).Add(FImgLoaderDbgFile);
 end;
 
 initialization

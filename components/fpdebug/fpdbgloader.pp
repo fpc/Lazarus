@@ -76,6 +76,7 @@ type
     constructor Create; virtual;
     constructor Create(AFileName: String; ADebugMap: TObject = nil;
       ALoadedTargetImageAddr: TDBGPtr = 0);
+    constructor Create(AnImageReader: TDbgImageReader);
     {$ifdef USE_WIN_FILE_MAPPING}
     constructor Create(AFileHandle: THandle; ADebugMap: TObject = nil;
       ALoadedTargetImageAddr: TDBGPtr = 0);
@@ -281,6 +282,12 @@ begin
   FImgReader := GetImageReader(FFileLoader, ADebugMap, ALoadedTargetImageAddr, False);
   if not Assigned(FImgReader) then
     FreeAndNil(FFileLoader);
+end;
+
+constructor TDbgImageLoader.Create(AnImageReader: TDbgImageReader);
+begin
+  inherited Create;
+  FImgReader := AnImageReader;
 end;
 
 {$ifdef USE_WIN_FILE_MAPPING}
