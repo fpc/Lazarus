@@ -520,6 +520,9 @@ begin
   // IDEConfig package (needed to enable translations e. g. of Ext() macro caption in `Run` -> `Configure Build+Run File`)
   TranslateUnitResourceStrings('IdeConfStrConsts',
     Dir+'ide/packages/ideconfig/languages/ideconfstrconsts'+Ext,Lang,FallbackLang);
+  // IDEPackager package (needed to enable translations e. g. of PkgDir() macro caption in `Run` -> `Configure Build+Run File`)
+  TranslateUnitResourceStrings('IdePackagerStrConsts',
+    Dir+'ide/packages/idepackager/languages/idepackagerstrconsts'+Ext,Lang,FallbackLang);
   // IDEIntf common strings (needed to load translation earlier, when menu captions are initialized).
   // Affected captions are in `Messages popup`->`Copy`, `Messages popup`->`Help`.
   TranslateUnitResourceStrings('IdeIntfStrConsts',
