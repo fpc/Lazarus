@@ -5704,12 +5704,6 @@ msgstr "他の構築モードとの違い"
 msgid "Mode:"
 msgstr "モード："
 
-#: lazarusidestrconsts.lisbuildmodeintitleinexample
-#, fuzzy
-#| msgid "Title in taskbar shows for example: project1.lpi - Release - Lazarus"
-msgid "Title in taskbar shows for example: project1 - Release - Lazarus"
-msgstr "タスクバーのタイトルは例えば project1.lpi - Release - Lazarusのように表示されます。"
-
 #: lazarusidestrconsts.lisbuildmodes
 #, fuzzy
 #| msgid "Build modes"
@@ -5818,6 +5812,10 @@ msgstr "有効な%s.ppuが見つかりません"
 #: lazarusidestrconsts.liscaptioncomparefiles
 msgid "Compare files (not for creating patches)"
 msgstr "ファイルを比較（パッチを作成するためではなく）"
+
+#: lazarusidestrconsts.liscaptionofactivebuildmode
+msgid "Caption of active build mode"
+msgstr ""
 
 #: lazarusidestrconsts.liscbpfiles
 #, object-pascal-format
@@ -10618,9 +10616,9 @@ msgstr "識別子が次を含む ..."
 msgid "IDE Options:"
 msgstr "IDE オプション"
 
-#: lazarusidestrconsts.lisidetitleshowsbuildmode
-msgid "IDE title shows selected build mode"
-msgstr "IDEが選択された構築モードを表示"
+#: lazarusidestrconsts.lisidetitlecustom
+msgid "Custom IDE window title"
+msgstr ""
 
 #: lazarusidestrconsts.lisidetitleshowsprojectdir
 msgid "IDE title shows project directory"

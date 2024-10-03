@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-10-01 17:39+0300\n"
+"PO-Revision-Date: 2024-10-03 22:53+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -5548,10 +5548,6 @@ msgstr "Отличия от других режимов сборки"
 msgid "Mode:"
 msgstr "Режим:"
 
-#: lazarusidestrconsts.lisbuildmodeintitleinexample
-msgid "Title in taskbar shows for example: project1 - Release - Lazarus"
-msgstr "Пример отображаемых данных в заголовке в панели задач: project1 - Release - Lazarus"
-
 #: lazarusidestrconsts.lisbuildmodes
 msgid "Build mode"
 msgstr "Режим сборки"
@@ -5658,6 +5654,10 @@ msgstr "Невозможно найти корректный %s.ppu"
 #: lazarusidestrconsts.liscaptioncomparefiles
 msgid "Compare files (not for creating patches)"
 msgstr "Сравнение файлов (не для создания файлов разницы)"
+
+#: lazarusidestrconsts.liscaptionofactivebuildmode
+msgid "Caption of active build mode"
+msgstr "Заголовок активного режима сборки"
 
 #: lazarusidestrconsts.liscbpfiles
 #, object-pascal-format
@@ -10388,9 +10388,9 @@ msgstr "Идентификатор содержит ..."
 msgid "IDE Options:"
 msgstr "Параметры IDE:"
 
-#: lazarusidestrconsts.lisidetitleshowsbuildmode
-msgid "IDE title shows selected build mode"
-msgstr "Отображать в заголовке IDE выбранный режим сборки"
+#: lazarusidestrconsts.lisidetitlecustom
+msgid "Custom IDE window title"
+msgstr "Пользовательский заголовок окна IDE"
 
 #: lazarusidestrconsts.lisidetitleshowsprojectdir
 msgid "IDE title shows project directory"

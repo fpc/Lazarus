@@ -5597,12 +5597,6 @@ msgstr "Différences avec d'autres modes de création"
 msgid "Mode:"
 msgstr "Mode :"
 
-#: lazarusidestrconsts.lisbuildmodeintitleinexample
-#, fuzzy
-#| msgid "Title in taskbar shows for example: project1.lpi - Release - Lazarus"
-msgid "Title in taskbar shows for example: project1 - Release - Lazarus"
-msgstr "Le titre dans la barre des tâches indique par exemple : Project1.lpi - Release - Lazarus"
-
 #: lazarusidestrconsts.lisbuildmodes
 #, fuzzy
 #| msgid "Build modes"
@@ -5711,6 +5705,10 @@ msgstr "Impossible de trouver un \"%s.ppu\" correct"
 #: lazarusidestrconsts.liscaptioncomparefiles
 msgid "Compare files (not for creating patches)"
 msgstr "Comparer les fichiers (pas pour créer des patches)"
+
+#: lazarusidestrconsts.liscaptionofactivebuildmode
+msgid "Caption of active build mode"
+msgstr ""
 
 #: lazarusidestrconsts.liscbpfiles
 #, object-pascal-format
@@ -10479,9 +10477,9 @@ msgstr "L'identificateur contient..."
 msgid "IDE Options:"
 msgstr "Options de l'EDI :"
 
-#: lazarusidestrconsts.lisidetitleshowsbuildmode
-msgid "IDE title shows selected build mode"
-msgstr "Le titre de l'EDI indique le mode de construction choisi"
+#: lazarusidestrconsts.lisidetitlecustom
+msgid "Custom IDE window title"
+msgstr ""
 
 #: lazarusidestrconsts.lisidetitleshowsprojectdir
 msgid "IDE title shows project directory"

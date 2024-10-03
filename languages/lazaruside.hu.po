@@ -5596,12 +5596,6 @@ msgstr "Különbségek más építési módoktól"
 msgid "Mode:"
 msgstr "Mód:"
 
-#: lazarusidestrconsts.lisbuildmodeintitleinexample
-#, fuzzy
-#| msgid "Title in taskbar shows for example: project1.lpi - Release - Lazarus"
-msgid "Title in taskbar shows for example: project1 - Release - Lazarus"
-msgstr "A cím a tálcán így jelenik meg: projekt1.lpi - Kiadás - Lazarus"
-
 #: lazarusidestrconsts.lisbuildmodes
 #, fuzzy
 #| msgid "Build modes"
@@ -5710,6 +5704,10 @@ msgstr "Nem található érvényes %s.ppu"
 #: lazarusidestrconsts.liscaptioncomparefiles
 msgid "Compare files (not for creating patches)"
 msgstr "Fájlok összehasonlítása (nem foltok létrehozásához)"
+
+#: lazarusidestrconsts.liscaptionofactivebuildmode
+msgid "Caption of active build mode"
+msgstr ""
 
 #: lazarusidestrconsts.liscbpfiles
 #, object-pascal-format
@@ -10489,9 +10487,9 @@ msgstr "Azonosító tartalmazza ..."
 msgid "IDE Options:"
 msgstr "IDE beállítások:"
 
-#: lazarusidestrconsts.lisidetitleshowsbuildmode
-msgid "IDE title shows selected build mode"
-msgstr "Az IDE címe megjeleníti a kiválasztott építési módot"
+#: lazarusidestrconsts.lisidetitlecustom
+msgid "Custom IDE window title"
+msgstr ""
 
 #: lazarusidestrconsts.lisidetitleshowsprojectdir
 msgid "IDE title shows project directory"

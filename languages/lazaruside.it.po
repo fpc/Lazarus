@@ -5715,12 +5715,6 @@ msgstr "Differenza con altri modi di costruzione"
 msgid "Mode:"
 msgstr "Modo:"
 
-#: lazarusidestrconsts.lisbuildmodeintitleinexample
-#, fuzzy
-#| msgid "Title in taskbar shows for example: project1.lpi - Release - Lazarus"
-msgid "Title in taskbar shows for example: project1 - Release - Lazarus"
-msgstr "Il titolo nella barra applicazioni mostra, per esempio: project1.lpi - Release - Lazarus"
-
 #: lazarusidestrconsts.lisbuildmodes
 #, fuzzy
 #| msgid "Build modes"
@@ -5829,6 +5823,10 @@ msgstr "Impossibile trovare un valido %s.ppu"
 #: lazarusidestrconsts.liscaptioncomparefiles
 msgid "Compare files (not for creating patches)"
 msgstr "Paragona file (non per creare toppe)"
+
+#: lazarusidestrconsts.liscaptionofactivebuildmode
+msgid "Caption of active build mode"
+msgstr ""
 
 #: lazarusidestrconsts.liscbpfiles
 #, object-pascal-format
@@ -10646,9 +10644,9 @@ msgstr "L'identificatore contiene ..."
 msgid "IDE Options:"
 msgstr "Opzioni IDE:"
 
-#: lazarusidestrconsts.lisidetitleshowsbuildmode
-msgid "IDE title shows selected build mode"
-msgstr "Il titolo dell'IDE mostra il modo di costruzione prescelto"
+#: lazarusidestrconsts.lisidetitlecustom
+msgid "Custom IDE window title"
+msgstr ""
 
 #: lazarusidestrconsts.lisidetitleshowsprojectdir
 msgid "IDE title shows project directory"

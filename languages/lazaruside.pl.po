@@ -5704,10 +5704,6 @@ msgstr "Różnice między różnymi trybami budowania"
 msgid "Mode:"
 msgstr "Tryb:"
 
-#: lazarusidestrconsts.lisbuildmodeintitleinexample
-msgid "Title in taskbar shows for example: project1 - Release - Lazarus"
-msgstr ""
-
 #: lazarusidestrconsts.lisbuildmodes
 #, fuzzy
 #| msgid "Build modes"
@@ -5816,6 +5812,10 @@ msgstr "Nie można znaleźć prawidłowego %s.ppu"
 #: lazarusidestrconsts.liscaptioncomparefiles
 msgid "Compare files (not for creating patches)"
 msgstr "Porównaj pliki (nie nadaje się do tworzenia łat)"
+
+#: lazarusidestrconsts.liscaptionofactivebuildmode
+msgid "Caption of active build mode"
+msgstr ""
 
 #: lazarusidestrconsts.liscbpfiles
 #, object-pascal-format
@@ -10611,9 +10611,9 @@ msgstr "Identyfikator zawiera..."
 msgid "IDE Options:"
 msgstr "IDE Options:"
 
-#: lazarusidestrconsts.lisidetitleshowsbuildmode
-msgid "IDE title shows selected build mode"
-msgstr "Tytul IDE zawiera bieżący tryb budowania"
+#: lazarusidestrconsts.lisidetitlecustom
+msgid "Custom IDE window title"
+msgstr ""
 
 #: lazarusidestrconsts.lisidetitleshowsprojectdir
 msgid "IDE title shows project directory"

@@ -5636,12 +5636,6 @@ msgstr "Rozdíly s ostatními sestavovacími režimy"
 msgid "Mode:"
 msgstr "Mód:"
 
-#: lazarusidestrconsts.lisbuildmodeintitleinexample
-#, fuzzy
-#| msgid "Title in taskbar shows for example: project1.lpi - Release - Lazarus"
-msgid "Title in taskbar shows for example: project1 - Release - Lazarus"
-msgstr "Titulek v taskbaru ukazuje například: project1.lpi - Release - Lazarus"
-
 #: lazarusidestrconsts.lisbuildmodes
 #, fuzzy
 #| msgid "Build modes"
@@ -5750,6 +5744,10 @@ msgstr "Nelze najít validní %s.ppu"
 #: lazarusidestrconsts.liscaptioncomparefiles
 msgid "Compare files (not for creating patches)"
 msgstr "Porovnat soubory (nevytvářet záplaty)"
+
+#: lazarusidestrconsts.liscaptionofactivebuildmode
+msgid "Caption of active build mode"
+msgstr ""
 
 #: lazarusidestrconsts.liscbpfiles
 #, object-pascal-format
@@ -10543,9 +10541,9 @@ msgstr "Identifikátor obsahuje..."
 msgid "IDE Options:"
 msgstr "Volby IDE:"
 
-#: lazarusidestrconsts.lisidetitleshowsbuildmode
-msgid "IDE title shows selected build mode"
-msgstr "Titulek IDE zobrazuje vybraný mód sestavení"
+#: lazarusidestrconsts.lisidetitlecustom
+msgid "Custom IDE window title"
+msgstr ""
 
 #: lazarusidestrconsts.lisidetitleshowsprojectdir
 msgid "IDE title shows project directory"

@@ -5709,12 +5709,6 @@ msgstr "Skirtumai lyginant su kitomis darymo veiksenomis"
 msgid "Mode:"
 msgstr "Veiksena:"
 
-#: lazarusidestrconsts.lisbuildmodeintitleinexample
-#, fuzzy
-#| msgid "Title in taskbar shows for example: project1.lpi - Release - Lazarus"
-msgid "Title in taskbar shows for example: project1 - Release - Lazarus"
-msgstr "Antraštė užduočių juostoje rodo pavyzdžiui: projektas1.lpi - laida - Lazarus"
-
 #: lazarusidestrconsts.lisbuildmodes
 #, fuzzy
 #| msgid "Build modes"
@@ -5823,6 +5817,10 @@ msgstr "Nepavyko rasti tinkamo „%s.ppu“"
 #: lazarusidestrconsts.liscaptioncomparefiles
 msgid "Compare files (not for creating patches)"
 msgstr "Palyginti failus (ne pataisų kūrimui)"
+
+#: lazarusidestrconsts.liscaptionofactivebuildmode
+msgid "Caption of active build mode"
+msgstr ""
 
 #: lazarusidestrconsts.liscbpfiles
 #, object-pascal-format
@@ -10621,9 +10619,9 @@ msgstr "Identifikatoriuje yra…"
 msgid "IDE Options:"
 msgstr "IKA parinktys:"
 
-#: lazarusidestrconsts.lisidetitleshowsbuildmode
-msgid "IDE title shows selected build mode"
-msgstr "IKA antraštėje rodomas parinktas darymo režimas"
+#: lazarusidestrconsts.lisidetitlecustom
+msgid "Custom IDE window title"
+msgstr ""
 
 #: lazarusidestrconsts.lisidetitleshowsprojectdir
 msgid "IDE title shows project directory"

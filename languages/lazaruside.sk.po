@@ -5600,10 +5600,6 @@ msgstr "Rozdiely oproti ostatným režimom vybudovania"
 msgid "Mode:"
 msgstr "Režim:"
 
-#: lazarusidestrconsts.lisbuildmodeintitleinexample
-msgid "Title in taskbar shows for example: project1 - Release - Lazarus"
-msgstr ""
-
 #: lazarusidestrconsts.lisbuildmodes
 #, fuzzy
 #| msgid "Build modes"
@@ -5712,6 +5708,10 @@ msgstr ""
 #: lazarusidestrconsts.liscaptioncomparefiles
 msgid "Compare files (not for creating patches)"
 msgstr "Porovnať súbory (nie na vytváranie záplat)"
+
+#: lazarusidestrconsts.liscaptionofactivebuildmode
+msgid "Caption of active build mode"
+msgstr ""
 
 #: lazarusidestrconsts.liscbpfiles
 #, object-pascal-format
@@ -10471,8 +10471,8 @@ msgstr "Identifikátor obsahuje ..."
 msgid "IDE Options:"
 msgstr "Voľby IDE:"
 
-#: lazarusidestrconsts.lisidetitleshowsbuildmode
-msgid "IDE title shows selected build mode"
+#: lazarusidestrconsts.lisidetitlecustom
+msgid "Custom IDE window title"
 msgstr ""
 
 #: lazarusidestrconsts.lisidetitleshowsprojectdir

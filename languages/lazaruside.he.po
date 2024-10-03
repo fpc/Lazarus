@@ -5867,10 +5867,6 @@ msgstr "הבדלים מאופני בנייה אחרים"
 msgid "Mode:"
 msgstr "אופן:"
 
-#: lazarusidestrconsts.lisbuildmodeintitleinexample
-msgid "Title in taskbar shows for example: project1 - Release - Lazarus"
-msgstr ""
-
 #: lazarusidestrconsts.lisbuildmodes
 #, fuzzy
 #| msgid "Build modes"
@@ -5984,6 +5980,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liscaptioncomparefiles
 msgid "Compare files (not for creating patches)"
+msgstr ""
+
+#: lazarusidestrconsts.liscaptionofactivebuildmode
+msgid "Caption of active build mode"
 msgstr ""
 
 #: lazarusidestrconsts.liscbpfiles
@@ -10884,8 +10884,8 @@ msgstr "מזהה מכיל ..."
 msgid "IDE Options:"
 msgstr "אפשרויות IDE"
 
-#: lazarusidestrconsts.lisidetitleshowsbuildmode
-msgid "IDE title shows selected build mode"
+#: lazarusidestrconsts.lisidetitlecustom
+msgid "Custom IDE window title"
 msgstr ""
 
 #: lazarusidestrconsts.lisidetitleshowsprojectdir

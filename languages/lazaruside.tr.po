@@ -5526,12 +5526,6 @@ msgstr "Diğer oluşturma modlarından farklar"
 msgid "Mode:"
 msgstr "Mod:"
 
-#: lazarusidestrconsts.lisbuildmodeintitleinexample
-#, fuzzy
-#| msgid "Title in taskbar shows for example: project1.lpi - Release - Lazarus"
-msgid "Title in taskbar shows for example: project1 - Release - Lazarus"
-msgstr "Görev çubuğundaki başlık örneğin şunları gösterir: project1.lpi - Release - Lazarus"
-
 #: lazarusidestrconsts.lisbuildmodes
 msgid "Build mode"
 msgstr "Yapı modu"
@@ -5638,6 +5632,10 @@ msgstr "Geçerli bir %s.ppu bulunamadı"
 #: lazarusidestrconsts.liscaptioncomparefiles
 msgid "Compare files (not for creating patches)"
 msgstr "Dosyaları karşılaştır (yamalar oluşturmak için değil)"
+
+#: lazarusidestrconsts.liscaptionofactivebuildmode
+msgid "Caption of active build mode"
+msgstr ""
 
 #: lazarusidestrconsts.liscbpfiles
 #, object-pascal-format
@@ -10374,9 +10372,9 @@ msgstr "Tanımlayıcı içeriyor ..."
 msgid "IDE Options:"
 msgstr "IDE Seçenekleri:"
 
-#: lazarusidestrconsts.lisidetitleshowsbuildmode
-msgid "IDE title shows selected build mode"
-msgstr "IDE başlığında seçilen yapı modunu göster"
+#: lazarusidestrconsts.lisidetitlecustom
+msgid "Custom IDE window title"
+msgstr ""
 
 #: lazarusidestrconsts.lisidetitleshowsprojectdir
 msgid "IDE title shows project directory"
