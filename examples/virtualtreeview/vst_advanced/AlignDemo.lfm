@@ -8,9 +8,9 @@ object AlignForm: TAlignForm
   ClientHeight = 470
   ClientWidth = 768
   Constraints.MinWidth = 590
+  LCLVersion = '3.99.0.0'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '2.1.0.0'
   object Label8: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -185,6 +185,7 @@ object AlignForm: TAlignForm
     TreeOptions.PaintOptions = [toHideFocusRect, toShowButtons, toShowDropmark, toShowRoot, toShowTreeLines, toThemeAware]
     TreeOptions.SelectionOptions = [toExtendedFocus, toMultiSelect]
     OnFocusChanged = AlignTreeFocusChanged
+    OnFreeNode = AlignTreeFreeNode
     OnGetText = AlignTreeGetText
     OnPaintText = AlignTreePaintText
     OnGetImageIndex = AlignTreeGetImageIndex
@@ -210,9 +211,9 @@ object AlignForm: TAlignForm
       'Right'
       'Center'
     )
-    OnChange = AlignComboChange
     Style = csDropDownList
     TabOrder = 1
+    OnChange = AlignComboChange
   end
   object AlignCombo1: TComboBox
     Tag = 1
@@ -229,9 +230,9 @@ object AlignForm: TAlignForm
       'Right'
       'Center'
     )
-    OnChange = AlignComboChange
     Style = csDropDownList
     TabOrder = 2
+    OnChange = AlignComboChange
   end
   object AlignCombo2: TComboBox
     Tag = 2
@@ -250,9 +251,9 @@ object AlignForm: TAlignForm
       'Right'
       'Center'
     )
-    OnChange = AlignComboChange
     Style = csDropDownList
     TabOrder = 3
+    OnChange = AlignComboChange
   end
   object BidiGroup0: TRadioGroup
     AnchorSideLeft.Control = AlignCombo0
@@ -283,8 +284,8 @@ object AlignForm: TAlignForm
       'left-to-right'
       'right-to-left'
     )
-    OnClick = BidiGroupClick
     TabOrder = 4
+    OnClick = BidiGroupClick
   end
   object BidiGroup1: TRadioGroup
     Tag = 1
@@ -314,8 +315,8 @@ object AlignForm: TAlignForm
       'left-to-right'
       'right-to-left'
     )
-    OnClick = BidiGroupClick
     TabOrder = 5
+    OnClick = BidiGroupClick
   end
   object BidiGroup2: TRadioGroup
     Tag = 2
@@ -347,8 +348,8 @@ object AlignForm: TAlignForm
       'left-to-right'
       'right-to-left'
     )
-    OnClick = BidiGroupClick
     TabOrder = 6
+    OnClick = BidiGroupClick
   end
   object GroupBox1: TGroupBox
     AnchorSideLeft.Control = Owner
@@ -370,50 +371,50 @@ object AlignForm: TAlignForm
       Left = 0
       Height = 19
       Top = 0
-      Width = 87
+      Width = 85
       Caption = 'Show glyphs'
-      OnClick = OptionBoxClick
       TabOrder = 0
+      OnClick = OptionBoxClick
     end
     object HotTrackOptionBox: TCheckBox
       Tag = 1
       Left = 0
       Height = 19
       Top = 21
-      Width = 69
+      Width = 67
       Caption = 'Hot track'
-      OnClick = OptionBoxClick
       TabOrder = 1
+      OnClick = OptionBoxClick
     end
     object ShowTextOptionBox: TCheckBox
       Tag = 2
       Left = 0
       Height = 19
       Top = 42
-      Width = 72
+      Width = 70
       Caption = 'Show text'
-      OnClick = OptionBoxClick
       TabOrder = 2
+      OnClick = OptionBoxClick
     end
     object VisibleOptionBox: TCheckBox
       Tag = 3
       Left = 0
       Height = 19
       Top = 63
-      Width = 54
+      Width = 52
       Caption = 'Visible'
-      OnClick = OptionBoxClick
       TabOrder = 3
+      OnClick = OptionBoxClick
     end
     object EnabledOptionBox: TCheckBox
       Tag = 4
       Left = 0
       Height = 19
       Top = 84
-      Width = 62
+      Width = 60
       Caption = 'Enabled'
-      OnClick = OptionBoxClick
       TabOrder = 4
+      OnClick = OptionBoxClick
     end
   end
   object LayoutCombo: TComboBox
@@ -434,9 +435,9 @@ object AlignForm: TAlignForm
       'Glyph top'
       'Glyph bottom'
     )
-    OnChange = LayoutComboChange
     Style = csDropDownList
     TabOrder = 8
+    OnChange = LayoutComboChange
   end
   object TreeImages: TImageList
     Left = 544

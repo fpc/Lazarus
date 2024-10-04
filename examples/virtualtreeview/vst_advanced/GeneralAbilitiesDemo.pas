@@ -49,6 +49,7 @@ type
     ImageList1: TImageList;
     procedure TreeFontButtonClick(Sender: TObject);
     procedure ButtonFillModeComboChange(Sender: TObject);
+    procedure VST2FreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure VST2InitNode(Sender: TBaseVirtualTree; ParentNode, Node: PVirtualNode;
       var InitialStates: TVirtualNodeInitStates);
     procedure VST2InitChildren(Sender: TBaseVirtualTree; Node: PVirtualNode; var ChildCount: Cardinal);
@@ -357,9 +358,24 @@ begin
   end;
 end;
 
+//----------------------------------------------------------------------------------------------------------------------
+
 procedure TGeneralForm.ButtonFillModeComboChange(Sender: TObject);
 begin
   VST2.ButtonFillMode := TVTButtonFillMode(ButtonFillModeCombo.ItemIndex);
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+procedure TGeneralForm.VST2FreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode
+  );
+var
+  Data: PNodeData2;
+begin
+  Data := Sender.GetNodeData(Node);
+  Data^.Caption := '';
+  Data^.StaticText := '';
+  Data^.ForeignText := '';
 end;
 
 //----------------------------------------------------------------------------------------------------------------------

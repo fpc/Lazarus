@@ -123,6 +123,7 @@ object GeneralForm: TGeneralForm
     TreeOptions.StringOptions = [toSaveCaptions, toShowStaticText, toAutoAcceptEditChange]
     OnDragOver = VST2DragOver
     OnFocusChanging = VST2FocusChanging
+    OnFreeNode = VST2FreeNode
     OnGetText = VST2GetText
     OnPaintText = VST2PaintText
     OnGetImageIndexEx = VST2GetImageIndexEx

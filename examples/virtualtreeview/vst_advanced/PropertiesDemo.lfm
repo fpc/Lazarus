@@ -7,8 +7,8 @@ object PropertiesForm: TPropertiesForm
   Caption = 'PropertiesForm'
   ClientHeight = 389
   ClientWidth = 637
+  LCLVersion = '3.99.0.0'
   OnCreate = FormCreate
-  LCLVersion = '2.1.0.0'
   object Label9: TLabel
     AnchorSideLeft.Control = VST3
     AnchorSideLeft.Side = asrBottom
@@ -91,6 +91,7 @@ object PropertiesForm: TPropertiesForm
     OnChange = VST3Change
     OnCreateEditor = VST3CreateEditor
     OnEditing = VST3Editing
+    OnFreeNode = VST3FreeNode
     OnGetText = VST3GetText
     OnPaintText = VST3PaintText
     OnGetImageIndex = VST3GetImageIndex
@@ -129,8 +130,8 @@ object PropertiesForm: TPropertiesForm
       'Forward'
       'Backward'
     )
-    OnClick = RadioGroup1Click
     TabOrder = 1
+    OnClick = RadioGroup1Click
   end
   object TreeImages: TImageList
     Left = 504

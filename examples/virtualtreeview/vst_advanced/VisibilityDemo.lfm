@@ -7,10 +7,10 @@ object VisibilityForm: TVisibilityForm
   Caption = 'VisibilityForm'
   ClientHeight = 536
   ClientWidth = 969
+  LCLVersion = '3.99.0.0'
   OnCreate = FormCreate
   OnHide = FormHide
   OnShow = FormShow
-  LCLVersion = '2.1.0.0'
   object Label17: TLabel
     AnchorSideLeft.Control = VST1
     AnchorSideLeft.Side = asrBottom
@@ -103,7 +103,7 @@ object VisibilityForm: TVisibilityForm
     Left = 528
     Height = 108
     Top = 87
-    Width = 192
+    Width = 190
     AutoFill = True
     AutoSize = True
     BorderSpacing.Top = 16
@@ -117,7 +117,7 @@ object VisibilityForm: TVisibilityForm
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
     ClientHeight = 88
-    ClientWidth = 188
+    ClientWidth = 186
     ItemIndex = 0
     Items.Strings = (
       'show all nodes'
@@ -125,8 +125,8 @@ object VisibilityForm: TVisibilityForm
       'hide nodes with children only'
       'hide all nodes'
     )
-    OnClick = RadioGroup1Click
     TabOrder = 2
+    OnClick = RadioGroup1Click
   end
   object Panel2: TPanel
     AnchorSideLeft.Control = Owner
@@ -4201,6 +4201,7 @@ object VisibilityForm: TVisibilityForm
       OnChange = VST2Change
       OnCollapsed = VSTCollapsedExpanded
       OnExpanded = VSTCollapsedExpanded
+      OnFreeNode = VST2FreeNode
       OnGetText = VST2GetText
       OnInitChildren = VST2InitChildren
       OnInitNode = VST1InitNode
@@ -8272,6 +8273,7 @@ object VisibilityForm: TVisibilityForm
       OnChange = VST2Change
       OnCollapsed = VSTCollapsedExpanded
       OnExpanded = VSTCollapsedExpanded
+      OnFreeNode = VST3FreeNode
       OnGetText = VST2GetText
       OnInitChildren = VST2InitChildren
       OnInitNode = VST1InitNode
