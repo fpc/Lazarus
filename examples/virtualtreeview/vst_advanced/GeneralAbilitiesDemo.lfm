@@ -2,11 +2,11 @@ object GeneralForm: TGeneralForm
   Left = 291
   Height = 536
   Top = 185
-  Width = 804
+  Width = 817
   ActiveControl = TreeFontButton
   Caption = 'GeneralForm'
   ClientHeight = 536
-  ClientWidth = 804
+  ClientWidth = 817
   KeyPreview = True
   ShowHint = True
   LCLVersion = '3.99.0.0'
@@ -15,7 +15,7 @@ object GeneralForm: TGeneralForm
     AnchorSideLeft.Control = DrawSelectionModeRadioGroup
     AnchorSideTop.Control = DrawSelectionModeRadioGroup
     AnchorSideTop.Side = asrBottom
-    Left = 575
+    Left = 588
     Height = 15
     Top = 387
     Width = 113
@@ -27,7 +27,7 @@ object GeneralForm: TGeneralForm
     AnchorSideLeft.Control = CheckMarkCombo
     AnchorSideTop.Control = CheckMarkCombo
     AnchorSideTop.Side = asrBottom
-    Left = 575
+    Left = 588
     Height = 15
     Top = 437
     Width = 112
@@ -41,7 +41,7 @@ object GeneralForm: TGeneralForm
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = SaveButton
     AnchorSideRight.Side = asrBottom
-    Left = 575
+    Left = 588
     Height = 60
     Top = 48
     Width = 221
@@ -53,10 +53,10 @@ object GeneralForm: TGeneralForm
   end
   object VST2: TLazVirtualStringTree
     AnchorSideRight.Control = Label8
-    Left = 5
+    Left = 11
     Height = 523
     Top = 8
-    Width = 562
+    Width = 569
     Anchors = [akTop, akLeft, akRight, akBottom]
     AutoExpandDelay = 300
     BorderSpacing.Right = 8
@@ -67,6 +67,7 @@ object GeneralForm: TGeneralForm
       'Unicode text'
       'Virtual Tree Data'
     )
+    Color = clBtnFace
     Colors.BorderColor = clScrollBar
     Colors.DropTargetColor = clActiveBorder
     Colors.DropTargetBorderColor = clActiveCaption
@@ -83,7 +84,6 @@ object GeneralForm: TGeneralForm
       item
         ImageIndex = 10
         Position = 1
-        Spacing = 20
         Text = 'Initial main column'
         Width = 300
       end    
@@ -100,10 +100,10 @@ object GeneralForm: TGeneralForm
         ImageIndex = 4
         Options = [coAllowClick, coEnabled, coParentColor, coResizable, coShowDropMark, coVisible, coAllowFocus]
         Position = 2
-        Spacing = 20
         Text = 'Language column'
         Width = 300
       end>
+    Header.Height = 32
     Header.Options = [hoColumnResize, hoDblClickResize, hoDrag, hoHotTrack, hoShowHint, hoVisible]
     Header.ParentFont = True
     Header.Style = hsFlatButtons
@@ -138,7 +138,7 @@ object GeneralForm: TGeneralForm
     AnchorSideLeft.Control = DrawSelectionModeRadioGroup
     AnchorSideTop.Control = SwitchCheckImagesLabel
     AnchorSideTop.Side = asrBottom
-    Left = 575
+    Left = 588
     Height = 23
     Top = 404
     Width = 211
@@ -165,7 +165,7 @@ object GeneralForm: TGeneralForm
     AnchorSideLeft.Control = SwitchMainColumnLabel
     AnchorSideTop.Control = SwitchMainColumnLabel
     AnchorSideTop.Side = asrBottom
-    Left = 575
+    Left = 588
     Height = 21
     Top = 454
     Width = 41
@@ -182,7 +182,7 @@ object GeneralForm: TGeneralForm
   object TreeFontButton: TBitBtn
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = SaveButton
-    Left = 575
+    Left = 588
     Height = 34
     Hint = 'Pick a font to be used by this tree.'
     Top = 8
@@ -216,7 +216,7 @@ object GeneralForm: TGeneralForm
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = ThemeRadioGroup
     AnchorSideRight.Side = asrBottom
-    Left = 575
+    Left = 588
     Height = 93
     Top = 204
     Width = 221
@@ -257,7 +257,7 @@ object GeneralForm: TGeneralForm
         'transparent color'
       )
       Style = csDropDownList
-      TabOrder = 3
+      TabOrder = 2
       Text = 'tree''s background color'
       OnChange = ButtonFillModeComboChange
     end
@@ -268,7 +268,7 @@ object GeneralForm: TGeneralForm
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = TreeButtonLookRadioGroup
     AnchorSideRight.Side = asrBottom
-    Left = 575
+    Left = 588
     Height = 70
     Top = 307
     Width = 221
@@ -301,7 +301,7 @@ object GeneralForm: TGeneralForm
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = SaveButton
     AnchorSideRight.Side = asrBottom
-    Left = 575
+    Left = 588
     Height = 70
     Top = 124
     Width = 221
@@ -333,7 +333,7 @@ object GeneralForm: TGeneralForm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = TreeFontButton
     AnchorSideBottom.Side = asrBottom
-    Left = 700
+    Left = 713
     Height = 34
     Top = 8
     Width = 96
@@ -349,7 +349,7 @@ object GeneralForm: TGeneralForm
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = MainColumnUpDown
     AnchorSideTop.Side = asrCenter
-    Left = 624
+    Left = 637
     Height = 15
     Top = 457
     Width = 98

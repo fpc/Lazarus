@@ -21,7 +21,7 @@ interface
 uses
   LCLIntf, LCLType, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, Buttons, Laz.VTHeaderPopup, Laz.VirtualTrees, ComCtrls, ExtCtrls, Menus,
-   ActnList,  LResources, ImgList;
+  ActnList,  LResources, ImgList;
 
 type                                        
   TGeneralForm = class(TForm)
@@ -426,11 +426,13 @@ begin
     begin
       VST2.TreeOptions.PaintOptions := VST2.TreeOptions.PaintOptions + [toShowTreeLines];
       VST2.ButtonStyle := bsRectangle;
+      ButtonFillModeCombo.Enabled := (Sender as TRadioGroup).Enabled;
     end
     else
     begin
       VST2.TreeOptions.PaintOptions := VST2.TreeOptions.PaintOptions - [toShowTreeLines];
       VST2.ButtonStyle := bsTriangle;
+      ButtonFillModeCombo.Enabled := false;
     end;
 end;
 
