@@ -8,8 +8,8 @@ object WindowsXPForm: TWindowsXPForm
   ClientHeight = 449
   ClientWidth = 844
   Font.CharSet = ANSI_CHARSET
+  LCLVersion = '3.99.0.0'
   OnCreate = FormCreate
-  LCLVersion = '2.3.0.0'
   object Label1: TLabel
     AnchorSideLeft.Control = XPTree
     AnchorSideLeft.Side = asrBottom
@@ -17,7 +17,7 @@ object WindowsXPForm: TWindowsXPForm
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 567
-    Height = 147
+    Height = 75
     Top = 34
     Width = 273
     Anchors = [akTop, akLeft, akRight]
@@ -33,8 +33,8 @@ object WindowsXPForm: TWindowsXPForm
     AnchorSideRight.Control = Label1
     AnchorSideRight.Side = asrBottom
     Left = 567
-    Height = 147
-    Top = 213
+    Height = 75
+    Top = 141
     Width = 273
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 32
@@ -49,8 +49,8 @@ object WindowsXPForm: TWindowsXPForm
     AnchorSideRight.Side = asrBottom
     Cursor = crHandPoint
     Left = 567
-    Height = 168
-    Top = 392
+    Height = 90
+    Top = 248
     Width = 273
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 32
@@ -129,6 +129,7 @@ object WindowsXPForm: TWindowsXPForm
     TreeOptions.PaintOptions = [toHideFocusRect, toShowButtons, toShowDropmark, toShowRoot]
     TreeOptions.SelectionOptions = [toMultiSelect]
     OnCompareNodes = XPTreeCompareNodes
+    OnFreeNode = XPTreeFreeNode
     OnGetText = XPTreeGetText
     OnGetImageIndex = XPTreeGetImageIndex
     OnGetHint = XPTreeGetHint
@@ -156,41 +157,41 @@ object WindowsXPForm: TWindowsXPForm
       Style = tbsDropDown
     end
     object ToolButton10: TToolButton
-      Left = 47
+      Left = 50
       Top = 2
       ImageIndex = 10
       Style = tbsDropDown
     end
     object ToolButton11: TToolButton
-      Left = 93
+      Left = 99
       Top = 2
       ImageIndex = 18
     end
     object ToolButton12: TToolButton
-      Left = 127
+      Left = 136
       Top = 2
       ImageIndex = 14
     end
     object ToolButton13: TToolButton
-      Left = 161
+      Left = 173
       Top = 2
       ImageIndex = 21
     end
     object ToolButton14: TToolButton
-      Left = 195
+      Left = 210
       Top = 2
       ImageIndex = 8
       Style = tbsDropDown
     end
     object ToolButton15: TToolButton
-      Left = 241
+      Left = 259
       Height = 32
       Top = 2
       Caption = 'ToolButton15'
       Style = tbsSeparator
     end
     object ToolButton16: TToolButton
-      Left = 249
+      Left = 267
       Top = 2
       Caption = 'Click here to print the treeview.'
       ImageIndex = 24

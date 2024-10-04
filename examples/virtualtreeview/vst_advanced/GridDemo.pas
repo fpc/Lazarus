@@ -34,6 +34,7 @@ type
     procedure VST5CreateEditor(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; out EditLink: IVTEditLink);
     procedure VST5FocusChanging(Sender: TBaseVirtualTree; OldNode, NewNode: PVirtualNode; OldColumn,
       NewColumn: TColumnIndex; var Allowed: Boolean);
+    procedure VST5FreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure VST5GetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
       var CellText: String);
     procedure VST5InitNode(Sender: TBaseVirtualTree; ParentNode, Node: PVirtualNode;
@@ -94,6 +95,16 @@ procedure TGridForm.VST5FocusChanging(Sender: TBaseVirtualTree; OldNode, NewNode
 begin
   // Do not allow focusing the indicator column (which is a fixed column).
   Allowed := NewColumn > 0;
+end;
+
+procedure TGridForm.VST5FreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
+var
+  Data: PGridData;
+begin
+  Data := Sender.GetNodeData(Node);
+  Data.Value[0] := '';
+  Data.Value[1] := '';
+  Data.Value[2] := '';
 end;
 
 //----------------------------------------------------------------------------------------------------------------------

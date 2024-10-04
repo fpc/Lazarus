@@ -33,8 +33,10 @@ type
       var InitialStates: TVirtualNodeInitStates);
     procedure FormCreate(Sender: TObject);
     procedure RadioGroup1Click(Sender: TObject);
+    procedure VST2FreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure VST2GetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
       var CellText: String);
+    procedure VST3FreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure VST3Scroll(Sender: TBaseVirtualTree; DeltaX, DeltaY: Integer);
     procedure VST2InitChildren(Sender: TBaseVirtualTree; Node: PVirtualNode; var ChildCount: Cardinal);
     procedure VST2Scroll(Sender: TBaseVirtualTree; DeltaX, DeltaY: Integer);
@@ -166,6 +168,15 @@ begin
   end;
 end;
 
+procedure TVisibilityForm.VST2FreeNode(Sender: TBaseVirtualTree; Node:
+  PVirtualNode);
+var
+  Data: PLinkData;
+begin
+  Data := Sender.GetNodeData(Node);
+  Data^.Caption := '';
+end;
+
 //----------------------------------------------------------------------------------------------------------------------
 
 procedure TVisibilityForm.VST2GetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex;
@@ -180,6 +191,15 @@ begin
     Data.Caption := 'Node ' + IntToStr(Sender.AbsoluteIndex(Node));
 
   CellText := Data.Caption;
+end;
+
+procedure TVisibilityForm.VST3FreeNode(Sender: TBaseVirtualTree; Node:
+  PVirtualNode);
+var
+  Data: PLinkData;
+begin
+  Data := Sender.GetNodeData(Node);
+  Data^.Caption := '';
 end;
 
 //----------------------------------------------------------------------------------------------------------------------

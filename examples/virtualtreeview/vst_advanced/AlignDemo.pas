@@ -41,6 +41,7 @@ type
     EnabledOptionBox: TCheckBox;
     Label5: TLabel;
     LayoutCombo: TComboBox;
+    procedure AlignTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure AlignTreeGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex;
       var Ghosted: Boolean; var Index: Integer);
     procedure AlignTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
@@ -199,6 +200,17 @@ begin
     Data := Sender.GetNodeData(Node);
     Index := Data.ImageIndex;
   end;
+end;
+
+procedure TAlignForm.AlignTreeFreeNode(Sender: TBaseVirtualTree; Node:
+  PVirtualNode);
+var
+  Data: PAlignData;
+begin
+  Data := Sender.GetNodeData(Node);
+  Data.MainColumnText := '';
+  Data.GreekText := '';
+  Data.RTLText := '';
 end;
 
 //----------------------------------------------------------------------------------------------------------------------

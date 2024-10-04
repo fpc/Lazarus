@@ -34,6 +34,7 @@ type
     Label2: TLabel;
     Label4: TLabel;
     PrintDialog: TPrintDialog;
+    procedure XPTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure XPTreeGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind;
       Column: TColumnIndex; var Ghosted: Boolean; var Index: Integer);
     procedure FormCreate(Sender: TObject);
@@ -116,6 +117,15 @@ begin
             Index := 21;
       end;
   end;
+end;
+
+procedure TWindowsXPForm.XPTreeFreeNode(Sender: TBaseVirtualTree; Node:
+  PVirtualNode);
+var
+  Data: PEntry;
+begin
+  Data := Sender.GetNodeData(Node);
+  Data.Caption := '';
 end;
 
 //----------------------------------------------------------------------------------------------------------------------

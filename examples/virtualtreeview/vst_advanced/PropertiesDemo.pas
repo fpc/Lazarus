@@ -28,6 +28,7 @@ type
     procedure VST3Change(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure VST3CreateEditor(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; out EditLink: IVTEditLink);
     procedure VST3Editing(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; var Allowed: Boolean);
+    procedure VST3FreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure VST3GetHint(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex;
       var LineBreakStyle: TVTTooltipLineBreakStyle; var HintText: String);
     procedure VST3GetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex;
@@ -183,6 +184,17 @@ begin
     Data := GetNodeData(Node);
     Allowed := (Node.Parent <> RootNode) and (Column = 1) and (Data.ValueType <> vtNone);
   end;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+procedure TPropertiesForm.VST3FreeNode(Sender: TBaseVirtualTree;
+  Node: PVirtualNode);
+var
+  data: PPropertyData;
+begin
+  data := Sender.GetNodeData(Node);
+  data^.Value := '';
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
