@@ -25,7 +25,8 @@ uses
 {$R extraresources.res}
 
 begin
-  Application.Title:='';
+  Application.Scaled := True;
+  Application.Title := '';
   Application.Initialize;
   Application.CreateForm(TMainForm, MainForm);
   Application.CreateForm(TStateForm, StateForm);

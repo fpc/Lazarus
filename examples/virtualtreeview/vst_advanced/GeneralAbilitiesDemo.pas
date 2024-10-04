@@ -25,12 +25,14 @@ uses
 
 type                                        
   TGeneralForm = class(TForm)
+    ButtonFillModeCombo: TComboBox;
+    MainColumnLabel: TLabel;
     VST2: TLazVirtualStringTree;
     CheckMarkCombo: TComboBox;
-    Label18: TLabel;
+    SwitchCheckImagesLabel: TLabel;
     MainColumnUpDown: TUpDown;        
-    Label19: TLabel;
-    BitBtn1: TBitBtn;
+    SwitchMainColumnLabel: TLabel;
+    TreeFontButton: TBitBtn;
     Label8: TLabel;
     TreeImages: TImageList;
     FontDialog1: TFontDialog;
@@ -38,14 +40,15 @@ type
     Onemenuitem1: TMenuItem;
     forrightclickselection1: TMenuItem;
     withpopupmenu1: TMenuItem;
-    RadioGroup1: TRadioGroup;
-    RadioGroup2: TRadioGroup;
+    TreeButtonLookRadioGroup: TRadioGroup;
+    DrawSelectionModeRadioGroup: TRadioGroup;
     VTHPopup: TLazVTHeaderPopupMenu;
     ThemeRadioGroup: TRadioGroup;
     SaveButton: TBitBtn;
     SaveDialog: TSaveDialog;
     ImageList1: TImageList;
-    procedure BitBtn1Click(Sender: TObject);
+    procedure TreeFontButtonClick(Sender: TObject);
+    procedure ButtonFillModeComboChange(Sender: TObject);
     procedure VST2InitNode(Sender: TBaseVirtualTree; ParentNode, Node: PVirtualNode;
       var InitialStates: TVirtualNodeInitStates);
     procedure VST2InitChildren(Sender: TBaseVirtualTree; Node: PVirtualNode; var ChildCount: Cardinal);
@@ -62,10 +65,10 @@ type
       var AskParent: Boolean; var PopupMenu: TPopupMenu);
     procedure VST2KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure RadioGroup1Click(Sender: TObject);
+    procedure TreeButtonLookRadioGroupClick(Sender: TObject);
     procedure VST2FocusChanging(Sender: TBaseVirtualTree; OldNode, NewNode: PVirtualNode; OldColumn,
       NewColumn: TColumnIndex; var Allowed: Boolean);
-    procedure RadioGroup2Click(Sender: TObject);
+    procedure DrawSelectionModeRadioGroupClick(Sender: TObject);
     procedure ThemeRadioGroupClick(Sender: TObject);
     procedure SaveButtonClick(Sender: TObject);
     procedure VST2StateChange(Sender: TBaseVirtualTree; Enter,
@@ -116,7 +119,7 @@ var
 begin
   // Determine if we are running on Windows XP.
   {$ifdef LCLWin32}
-  ThemeRadioGroup.Enabled := (Win32MajorVersion >= 5) and (Win32MinorVersion >= 1);
+  ThemeRadioGroup.Enabled := CheckWin32Version(5, 1);
   {$else}
   ThemeRadioGroup.Enabled := False;
   {$endif}
@@ -124,6 +127,8 @@ begin
     ThemeRadioGroup.ItemIndex := 0;
 
   CheckMarkCombo.ItemIndex := 3;
+  ButtonFillModeCombo.ItemIndex := ord(VST2.ButtonFillMode);
+  MainColumnLabel.Caption := IntToStr(VST2.Header.MainColumn);
 
   // Add a second line of hint text for column headers (not possible in the object inspector).
   with VST2.Header do
@@ -341,7 +346,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TGeneralForm.BitBtn1Click(Sender: TObject);
+procedure TGeneralForm.TreeFontButtonClick(Sender: TObject);
 
 begin
   with FontDialog1 do
@@ -350,6 +355,11 @@ begin
     if Execute then
       VST2.Font := Font;
   end;
+end;
+
+procedure TGeneralForm.ButtonFillModeComboChange(Sender: TObject);
+begin
+  VST2.ButtonFillMode := TVTButtonFillMode(ButtonFillModeCombo.ItemIndex);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -366,6 +376,7 @@ procedure TGeneralForm.MainColumnUpDownChanging(Sender: TObject; var AllowChange
 
 begin
   VST2.Header.MainColumn := MainColumnUpDown.Position;
+  MainColumnLabel.Caption := IntToStr(VST2.Header.MainColumn);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -407,7 +418,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TGeneralForm.RadioGroup1Click(Sender: TObject);
+procedure TGeneralForm.TreeButtonLookRadioGroupClick(Sender: TObject);
 
 begin
   with Sender as TRadioGroup do
@@ -434,7 +445,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TGeneralForm.RadioGroup2Click(Sender: TObject);
+procedure TGeneralForm.DrawSelectionModeRadioGroupClick(Sender: TObject);
 
 begin                                     
   with Sender as TRadioGroup do
@@ -459,9 +470,9 @@ begin
     else
       PaintOptions := PaintOptions - [toThemeAware];
 
-  RadioGroup1.Enabled := ThemeRadioGroup.ItemIndex = 1;
-  RadioGroup2.Enabled := ThemeRadioGroup.ItemIndex = 1;
-  Label18.Enabled := ThemeRadioGroup.ItemIndex = 1;
+  TreeButtonLookRadioGroup.Enabled := ThemeRadioGroup.ItemIndex = 1;
+  DrawSelectionModeRadioGroup.Enabled := ThemeRadioGroup.ItemIndex = 1;
+  SwitchCheckImagesLabel.Enabled := ThemeRadioGroup.ItemIndex = 1;
   CheckMarkCombo.Enabled := ThemeRadioGroup.ItemIndex = 1;
 end;
 
