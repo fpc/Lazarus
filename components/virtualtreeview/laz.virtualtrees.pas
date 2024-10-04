@@ -93,6 +93,7 @@ uses
   TypInfo,   // for migration stuff
   ActnList,
   StdActns,  // for standard action support
+  FPImage, IntfGraphics, LazCanvas,  // for alpha-transparent bitmaps
   GraphType
   {$ifdef LCLCocoa}
   ,CocoaGDIObjects // hack: while using buffered drawing, multiply the context
@@ -2166,6 +2167,7 @@ type
     FCustomCheckImages: TCustomImageList;        // application defined check images
     FCheckImageKind: TCheckImageKind;            // light or dark, cross marks or tick marks
     FCheckImages: TCustomImageList;              // Reference to global image list to be used for the check images.
+    FButtonSize: Integer;                        // Size of the expand/collapse buttons
     FImageChangeLink,
     FStateChangeLink,
     FCustomCheckChangeLink: TChangeLink;         // connections to the image lists
@@ -4192,11 +4194,6 @@ const
   //Copyright: string = 'Virtual Treeview © 1999, 2010 Mike Lischke';
 
 var
-  //Workaround to LCL bug 8553
-  {$ifndef LCLWin32}
-  pf32bit: TPixelFormat = pfDevice;
-  {$endif}
-
   StandardOLEFormat: TFormatEtc = (
     // Format must later be set.
     cfFormat: 0;
@@ -6238,7 +6235,7 @@ begin
   else
     BlendMode := bmMasterAlpha;
   with FDragImage do
-    AlphaBlend(Canvas.Handle, FAlphaImage.Canvas.Handle, Rect(0, 0, Width, Height), Point(0, 0), BlendMode,
+    laz.VTGraphics.AlphaBlend(Canvas.Handle, FAlphaImage.Canvas.Handle, Rect(0, 0, Width, Height), Point(0, 0), BlendMode,
       FTransparency, FPostBlendBias);
 
   with FAlphaImage do
@@ -6600,7 +6597,7 @@ begin
       with FDragImage do
         BitBlt(Canvas.Handle, 0, 0, Width, Height, DragImage.Canvas.Handle, 0, 0, SRCCOPY)
     else
-      AlphaBlend(DragImage.Canvas.Handle, FDragImage.Canvas.Handle, Rect(0, 0, Width, Height), Point(0, 0),
+      laz.VTGraphics.AlphaBlend(DragImage.Canvas.Handle, FDragImage.Canvas.Handle, Rect(0, 0, Width, Height), Point(0, 0),
         bmConstantAlpha, 255, FPreBlendBias);
 
     // Create a proper alpha channel also if no fading is required (transparent parts).
@@ -12366,6 +12363,7 @@ begin
   FDragImageKind := diComplete;
   FLastSelectionLevel := -1;
   FSelectionBlendFactor := 128;
+  FButtonSize := 9;
 
   {$IF LCL_FullVersion >= 1080000}
   FDefaultNodeHeight := Scale96ToFont(DEFAULT_NODE_HEIGHT);
@@ -12387,6 +12385,11 @@ begin
   FHotPlusBM := TBitmap.Create;
   FMinusBM := TBitmap.Create;
   FHotMinusBM := TBitmap.Create;
+
+  FPlusBM.PixelFormat := pf32Bit;
+  FHotPlusBM.PixelFormat := pf32Bit;
+  FMinusBM.PixelFormat := pf32Bit;
+  FHotMinusBM.PixelFormat := pf32Bit;
 
   BorderStyle := bsSingle;
   FButtonStyle := bsRectangle;
@@ -14329,6 +14332,7 @@ const
   LineBitsSolid: array [0..7] of Word = (0, 0, 0, 0, 0, 0, 0, 0);
 
 var
+  p9, p8, p6, p4, p2, p1: Integer;
   PatternBitmap: HBITMAP;
   Bits: Pointer;
   Size: TSize;
@@ -14339,7 +14343,7 @@ var
   {$EndIf ThemeSupport}
     R: TRect;
  
-  //--------------- local function --------------------------------------------
+  //--------------- local functions -------------------------------------------
 
   procedure FillBitmap (ABitmap: TBitmap);
   begin
@@ -14364,29 +14368,80 @@ var
     end;
   end;
 
+  procedure PaintButtonBitmap(ABitmap: TBitmap; BtnStyle: TVTButtonStyle; IsPlus: Boolean);
+  var
+    img: TLazIntfImage;
+    canv: TLazCanvas;
+    m, c: Integer;
+  begin
+    img := ABitmap.CreateIntfImage;
+    canv := TLazCanvas.Create(img);
+    try
+      img.FillPixels(colTransparent);
+      c := Img.Width div 2;
+      case BtnStyle of
+        bsRectangle:
+          begin
+            if FButtonFillMode in [fmTreeColor, fmWindowColor, fmTransparent] then
+            begin
+              case FButtonFillMode of
+                fmTreeColor:
+                  canv.Brush.FPColor := TColorToFPColor(ColorToRGB(FColors.BackGroundColor));
+                fmWindowColor:
+                  canv.Brush.FPColor := TColorToFPColor(ColorToRGB(clWindow));
+                fmTransparent:
+                  canv.Brush.Style := bsClear;
+              end;
+              canv.Pen.FPColor := TColorToFPColor(ColorToRGB(clWindowText));
+              m := c div 2; //FButtonSize div 2; //FButtonSize div 8;
+              if m = 0 then m := 1;
+              canv.Rectangle(0, 0, img.Width, img.Height);
+              canv.Line(c-m, c, c+m, c);
+              if IsPlus then
+                canv.Line(c, c-m, c, c+m);
+            end else
+            begin
+              if IsPlus then
+                LoadBitmapFromResource(FMinusBM, 'laz_vt_xpbuttonplus')
+              else
+                LoadBitmapFromResource(FMinusBM, 'laz_vt_xpbuttonminus');
+            end;
+          end;
+
+        bsTriangle:
+          begin
+            canv.Brush.FPColor := TColorToFPColor(ColorToRGB(clWindowText));
+            canv.Pen.FPColor := canv.Brush.FPColor;
+            if IsPlus then
+            begin
+              m := Img.Width * 7 div 10;
+              if BiDiMode = bdLeftToRight then
+                canv.Polygon([Point(0, 0), Point(0, Img.Height-1), Point(m, c)])
+              else
+                canv.Polygon([Point(Img.Width-1-m, c), Point(Img.Width-1, Img.Height-1), Point(Img.Width-1, 0)]);
+            end else
+            begin
+              m := Img.Width * 7 div 20;
+              if BiDiMode = bdLeftToRight then
+                canv.Polygon([Point(c-m, c+m), Point(c+m, c+m), Point(c+m, c-m)])
+              else
+                canv.Polygon([Point(c-m, c-m), Point(c-m, c+m), Point(c+m, c+m)]);
+            end;
+          end;
+      end;
+
+      ABitmap.LoadFromIntfImage(img);
+    finally
+      canv.Free;
+      img.Free;
+    end;
+  end;
+
   //--------------- end local function ----------------------------------------
 
-var
-   p9, p8, p6, p4, p2, p1: Integer;
 begin
-  {$IF LCL_FullVersion >= 1080000}
-  p1 := Scale96ToFont(1);
-  p2 := Scale96ToFont(2);
-  p4 := p2 + p2;
-  p6 := p4 + p2;
-  p8 := p4 + p4;
-  p9 := p8 + p1;
-  if not odd(p9) then dec(p9);
-  {$ELSE}
-  p9 := 9;
-  p8 := 8;
-  p6 := 6;
-  p4 := 4;
-  p2 := 2;
-  p1 := 1;
-  {$IFEND}
-  Size.cx := p9;
-  Size.cy := Size.cx;
+  Size.cx := FButtonSize;
+  Size.cy := FButtonSize;
 
   {$ifdef ThemeSupport}
   {$ifdef LCLWin}
@@ -14409,102 +14464,33 @@ begin
 
   if NeedButtons then
   begin
-     with FMinusBM, Canvas do
-     begin
-      // box is always of odd size
-      FillBitmap(FMinusBM);
-      FillBitmap(FHotMinusBM);
-      // Weil die selbstgezeichneten Bitmaps sehen im Vcl Style schei? aus
-      if (not VclStyleEnabled) {or (Theme = 0)} then
+    // box is always of odd size
+    FillBitmap(FMinusBM);
+    FillBitmap(FHotMinusBM);
+    if (not VclStyleEnabled) {or (Theme = 0)} then
+    begin
+      if not(tsUseExplorerTheme in FStates) then
       begin
-        if not(tsUseExplorerTheme in FStates) then
-        begin
-          if FButtonStyle = bsTriangle then
-          begin
-            Brush.Color := clBlack;
-            Pen.Color := clBlack;
-            if BiDiMode = bdLeftToRight then
-              Polygon([Point(p1, p8-p1), Point(p8-p1, p8-p1), Point(p8-p1, p1)])
-            else
-              Polygon([Point(p1, p1), Point(p1, p8-p1), Point(p8-p1, p8-p1)]);
-
-            // or?
-            //Polygon([Point(0, p2), Point(p8, p2), Point(p4, p6)]);
-          end
-          else
-          begin
-            // Button style is rectangular. Now ButtonFillMode determines how to fill the interior.
-            if FButtonFillMode in [fmTreeColor, fmWindowColor, fmTransparent] then
-            begin
-              case FButtonFillMode of
-                fmTreeColor:
-                  Brush.Color := FColors.BackGroundColor;
-                fmWindowColor:
-                  Brush.Color := clWindow;
-              end;
-              Pen.Color := FColors.TreeLineColor;
-              Rectangle(0, 0, Width, Height);
-              Pen.Color := FColors.NodeFontColor;
-              MoveTo(p2, Width div 2);
-              LineTo(Width - p2, Width div 2);
-            end
-            else
-              LoadBitmapFromResource(FMinusBM, 'laz_vt_xpbuttonminus');
-            FHotMinusBM.Canvas.Draw(0, 0, FMinusBM);
-          end;
-        end;
+        PaintButtonBitmap(FMinusBM, FButtonStyle, false);
+        FHotMinusBM.Canvas.Draw(0, 0, FMinusBM);
       end;
     end;
 
-    with FPlusBM, Canvas do
+    FillBitmap(FPlusBM);
+    FillBitmap(FHotPlusBM);
+    if (not VclStyleEnabled) {or (Theme = 0)} then
     begin
-      FillBitmap(FPlusBM);
-      FillBitmap(FHotPlusBM);
-      if (not VclStyleEnabled) {or (Theme = 0)} then
+      if not(tsUseExplorerTheme in FStates) then
       begin
-        if not(tsUseExplorerTheme in FStates) then
-        begin
-          if FButtonStyle = bsTriangle then
-          begin
-            Brush.Color := clBlack;
-            Pen.Color := clBlack;
-            if BiDiMode = bdLeftToRight then
-              Polygon([Point(p2, 0), Point(p6, p4), Point(p2, p8)])
-            else
-              Polygon([Point(p2, p4), Point(p6, 0), Point(p6, p8)])
-          end
-          else
-          begin
-            // Button style is rectangular. Now ButtonFillMode determines how to fill the interior.
-            if FButtonFillMode in [fmTreeColor, fmWindowColor, fmTransparent] then
-            begin
-              case FButtonFillMode of
-                fmTreeColor:
-                  Brush.Color := FColors.BackGroundColor;
-                fmWindowColor:
-                  Brush.Color := clWindow;
-              end;
-
-              Pen.Color := FColors.TreeLineColor;
-              Rectangle(0, 0, Width, Height);
-              Pen.Color := FColors.NodeFontColor;
-              MoveTo(p2, Width div 2);
-              LineTo(Width - p2, Width div 2);
-              MoveTo(Width div 2, p2);
-              LineTo(Width div 2, Width - p2);
-            end
-            else
-              LoadBitmapFromResource(FPlusBM, 'laz_vt_xpbuttonplus');
-            FHotPlusBM.Canvas.Draw(0, 0, FPlusBM);
-          end;
-        end;
+        PaintButtonBitmap(FPlusBM, FButtonstyle, true);
+        FHotPlusBM.Canvas.Draw(0, 0, FPlusBM);
       end;
     end;
 
     {$ifdef ThemeSupport}
     {$ifdef LCLWin}
       // Overwrite glyph images if theme is active.
-      if (tsUseThemes in FStates) and (Theme <> 0) then
+      if ((tsUseThemes in FStates) and (Theme <> 0)) then
       begin
         R := Rect(0, 0, Size.cx, Size.cy);
         DrawThemeBackground(Theme, FPlusBM.Canvas.Handle, TVP_GLYPH, GLPS_CLOSED, R, nil);
@@ -14550,9 +14536,6 @@ begin
   {$endif}
   {$endif ThemeSupport}
 end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -24693,7 +24676,7 @@ begin
     if IntersectRect({%H-}BlendRect, OrderRect(SelectionRect), TargetRect) then
     begin
       OffsetRect(BlendRect, -WindowOrgX, 0);
-      AlphaBlend(0, Target.Handle, BlendRect, Point(0, 0), bmConstantAlphaAndColor, FSelectionBlendFactor,
+      laz.VTGraphics.AlphaBlend(0, Target.Handle, BlendRect, Point(0, 0), bmConstantAlphaAndColor, FSelectionBlendFactor,
         ColorToRGB(FColors.SelectionRectangleBlendColor));
 
       Target.Brush.Color := FColors.SelectionRectangleBorderColor;
@@ -24738,7 +24721,7 @@ var
       R.Left := 0;
     if R.Right > MaxWidth then
       R.Right := MaxWidth;
-    AlphaBlend(0, PaintInfo.Canvas.Handle, R, Point(0, 0), bmConstantAlphaAndColor,
+    laz.VTGraphics.AlphaBlend(0, PaintInfo.Canvas.Handle, R, Point(0, 0), bmConstantAlphaAndColor,
       FSelectionBlendFactor, ColorToRGB(Color));
   end;
 
@@ -26937,6 +26920,8 @@ begin
       if IsDragWidthStored then
         FDragWidth := Round(FDragWidth * AXProportion);
       FHeader.AutoAdjustLayout(AXProportion, AYProportion);
+      FButtonSize := Round(FButtonSize * AXProportion);
+      if not Odd(FButtonSize) then dec(FButtonSize);
     finally
       EnableAutoSizing;
     end;
