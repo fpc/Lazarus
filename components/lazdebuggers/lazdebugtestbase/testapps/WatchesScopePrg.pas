@@ -243,7 +243,23 @@ begin
   BreakDummy := 1; // TEST_BREAKPOINT=FuncFoo
 end;
 
-
+procedure TestFin;
+var
+  FinFoo1, FinFoo2, FinFoo3: integer;
+  a: Integer;
+begin
+  try
+    FinFoo1 := 123;
+    FinFoo2 := 456;
+    FinFoo3 := 789;
+  finally
+    a := FinFoo1;           // TEST_BREAKPOINT=FuncFin1
+    a := a + FinFoo2 + 1;
+    a := a + FinFoo3 + 2;   // TEST_BREAKPOINT=FuncFin2
+    a := a + FinFoo1;
+    FinFoo1 := a;           // TEST_BREAKPOINT=FuncFin3
+  end;
+end;
 
 begin
   Unit1Init;
@@ -266,4 +282,6 @@ begin
   TestClassMainChild.MethodMainBaseBase();
 
   BreakDummy := 1; // TEST_BREAKPOINT=Prg
+
+  TestFin;
 end.

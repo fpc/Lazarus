@@ -518,6 +518,10 @@ begin
     Debugger.SetBreakPoint(Src, 'WatchesScopeUnit2.pas', 'MethodMainBaseBase');
 
     Debugger.SetBreakPoint(Src, 'Prg');
+
+    Debugger.SetBreakPoint(Src, 'FuncFin1');
+    Debugger.SetBreakPoint(Src, 'FuncFin2');
+    Debugger.SetBreakPoint(Src, 'FuncFin3');
     AssertDebuggerNotInErrorState;
 
     (* ************ Nested Functions ************* *)
@@ -603,6 +607,37 @@ begin
     AddWatchesForFoo(t, 'Scope in Prg', 3);
     t.EvaluateWatches;
     t.CheckResults;
+
+
+    (* ************ finally ************* *)
+
+    Debugger.RunToNextPause(dcRun);
+    AssertDebuggerState(dsPause);
+    t.Clear;
+    t.Add('FinFoo1', 'FinFoo1' , 123);
+    t.Add('FinFoo2', 'FinFoo2' , 456);
+    t.Add('FinFoo3', 'FinFoo3' , 789);
+    t.EvaluateWatches;
+    t.CheckResults;
+
+    Debugger.RunToNextPause(dcRun);
+    AssertDebuggerState(dsPause);
+    t.Clear;
+    t.Add('FinFoo1', 'FinFoo1' , 123);
+    t.Add('FinFoo2', 'FinFoo2' , 456);
+    t.Add('FinFoo3', 'FinFoo3' , 789);
+    t.EvaluateWatches;
+    t.CheckResults;
+
+    Debugger.RunToNextPause(dcRun);
+    AssertDebuggerState(dsPause);
+    t.Clear;
+    t.Add('FinFoo1', 'FinFoo1' , 123);
+    t.Add('FinFoo2', 'FinFoo2' , 456);
+    t.Add('FinFoo3', 'FinFoo3' , 789);
+    t.EvaluateWatches;
+    t.CheckResults;
+
 
   finally
     Debugger.RunToNextPause(dcStop);

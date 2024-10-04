@@ -1111,6 +1111,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
 
     property DbgInfo: TFpDwarfInfo read FDwarf;
     property ProcAddress: TDBGPtr read FAddress;
+    property AddressInfo: PDwarfAddressInfo read FAddressInfo;
   public
     constructor Create(ACompilationUnit: TDwarfCompilationUnit; AInfo: PDwarfAddressInfo; AAddress: TDbgPtr; ADbgInfo: TFpDwarfInfo = nil); overload;
     destructor Destroy; override;
