@@ -511,7 +511,6 @@ begin
   scrollBar:= TCocoaScrollBar(TCocoaScrollBar.alloc);
   manager:= TCocoaScrollStyleManagerLegacy.createForScrollBar;
   scrollBar.setManager( manager );
-  scrollBar.autorelease;
 end;
 
 function allocScroller(parent: TCocoaManualScrollView; dst: NSRect; aVisible: Boolean)
