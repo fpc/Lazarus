@@ -5909,17 +5909,6 @@ procedure TCustomSynEdit.RedoItem(Item: TSynEditUndoItem);
 var
   Line, StrToDelete: PChar;
   x, y, Len, Len2: integer;
-
-  function GetLeadWSLen : integer;
-  var
-    Run : PChar;
-  begin
-    Run := Line;
-    while (Run[0] in [' ', #9]) do
-      Inc(Run);
-    Result := Run - Line;
-  end;
-
 begin
   if Assigned(Item) then
   try
@@ -5949,7 +5938,7 @@ begin
       x := -1;
       for y := TSynEditUndoUnIndent(Item).FPosY1 to TSynEditUndoUnIndent(Item).FPosY2 do begin
         Line := PChar(FTheLinesView[y - 1]);
-        Len := GetLeadWSLen;
+        Len := CountLeadWhiteSpace(Line);
         Len2 := GetEOL(StrToDelete) - StrToDelete;
         if (Len2 > 0) and (Len >= Len2) then
           FTheLinesView.EditDelete(1+Len-Len2, y, Len2);
@@ -6032,17 +6021,6 @@ var
   Line, OldText: PChar;
   y, Len, Len2, LenT: integer;
   s: String;
-
-  function GetLeadWSLen : integer;
-  var
-    Run : PChar;
-  begin
-    Run := Line;
-    while (Run[0] in [' ', #9]) do
-      Inc(Run);
-    Result := Run - Line;
-  end;
-
 begin
   if Assigned(Item) then try
     FCaret.IncForcePastEOL;
@@ -6059,7 +6037,7 @@ begin
       for y := TSynEditUndoIndent(Item).FPosY1 to TSynEditUndoIndent(Item).FPosY2 do begin
         Line := PChar(FTheLinesView[y - 1]);
         if Len2 > 0 then begin
-          Len := GetLeadWSLen;
+          Len := CountLeadWhiteSpace(Line);
           FTheLinesView.EditDelete(Len+1-Len2, y, Len2);
         end;
         if LenT > 0 then
@@ -6080,7 +6058,7 @@ begin
         Len2 := GetEOL(OldText) - OldText;
         if Len2 > 0 then begin
           Line := PChar(FTheLinesView[y - 1]);
-          Len := GetLeadWSLen;
+          Len := CountLeadWhiteSpace(Line);
           SetLength(s, Len2);
           Move(OldText^, s[1], Len2);
           FTheLinesView.EditInsert(Len+1, y, s);
@@ -9114,17 +9092,6 @@ var
   Line : PChar;
   Len, e, y: integer;
   Spaces, Tabs: String;
-
-  function GetLeadWSLen : integer;
-  var
-    Run : PChar;
-  begin
-    Run := Line;
-    while (Run[0] in [' ', #9]) do
-      Inc(Run);
-    Result := Run - Line;
-  end;
-
 begin
   IncPaintLock;
   FBlockSelection.IncPersistentLock;
@@ -9150,7 +9117,7 @@ begin
       for y := BB.Y to e do
       begin
         Line := PChar(FTheLinesView[y - 1]);
-        Len := GetLeadWSLen;
+        Len := CountLeadWhiteSpace(Line);
         FTheLinesView.EditInsert(Len + 1, y, Spaces);
         FTheLinesView.EditInsert(1,       y, Tabs);
       end;
@@ -9179,20 +9146,6 @@ var
   i, i2, j: Integer;
   SomethingDeleted : Boolean;
   HasTab: Boolean;
-
-  function GetLeadWSLen : integer;
-  var
-    Run : PChar;
-  begin
-    Run := Line;
-    HasTab := False;
-    while (Run[0] in [' ', #9]) do begin
-      HasTab := HasTab or (Run[0] = #9);
-      Inc(Run);
-    end;
-    Result := Run - Line;
-  end;
-
 begin
   if not SelAvail then begin
     BB := CaretXY;
@@ -9225,7 +9178,7 @@ begin
     for y := BB.Y to e do
     begin
       Line := PChar(FTheLinesView[y - 1]);
-      Len := GetLeadWSLen;
+      Len := CountLeadWhiteSpace(Line, HasTab);
       LogP1 := Len + 1;
       if HasTab and (Len > 0) then begin
         // LogP1, PhyP1 log and phys of the first none-whitespace

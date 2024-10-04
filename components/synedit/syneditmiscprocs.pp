@@ -82,6 +82,10 @@ function ToPos(AIdx: Integer): Integer; inline;
 function YToIdx(APointWithYPos: TPoint): TPoint; inline;
 function YToPos(APointWithYIdx: TPoint): TPoint; inline;
 
+function CountLeadWhiteSpace(AText: PChar): integer; inline;
+function CountLeadWhiteSpace(AText: PChar; out AnHasTab: boolean): integer; inline;
+
+
 implementation
 
 function ToIdx(APos: Integer): Integer; inline;
@@ -104,6 +108,29 @@ function YToPos(APointWithYIdx: TPoint): TPoint; inline;
 begin
   Result := APointWithYIdx;
   inc(Result.Y);
+end;
+
+function CountLeadWhiteSpace(AText: PChar): integer;
+var
+  Run : PChar;
+begin
+  Run := AText;
+  while (Run^ in [' ', #9]) do
+    Inc(Run);
+  Result := Run - AText;
+end;
+
+function CountLeadWhiteSpace(AText: PChar; out AnHasTab: boolean): integer;
+var
+  Run : PChar;
+begin
+  Run := AText;
+  while (Run^ = ' ') do
+    Inc(Run);
+  AnHasTab := Run^ = #9;
+  while (Run^ in [' ', #9]) do
+    Inc(Run);
+  Result := Run - AText;
 end;
 
 {* fontstyle utilities *}
