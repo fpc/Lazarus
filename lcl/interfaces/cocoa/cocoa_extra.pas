@@ -641,8 +641,8 @@ const
   //NSAppKitVersionNumber10_14 = 1641.10; // Mojave's beta?
   NSAppKitVersionNumber10_14 = 1671;
   NSAppKitVersionNumber11_0  = 2022; // 2000 starts with beta?
-
-
+  NSAppKitVersionNumber12_0  = 2113;
+  NSAppKitVersionNumber13_0  = 2299;
 
 function NSNormalWindowLevel: NSInteger; inline;
 function NSFloatingWindowLevel: NSInteger; inline;
