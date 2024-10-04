@@ -42,6 +42,7 @@ type
 
   TWindowOptionsFrame = class(TAbstractIDEOptionsEditor)
     AutoAdjustIDEHeightFullCompPalCheckBox: TCheckBox;
+    bvWindowTitle: TDividerBevel;
     EdTitleBar: TComboBox;
     lblTitleBar: TLabel;
     ProjectInspectorShowPropsCheckBox: TCheckBox;
@@ -85,7 +86,9 @@ begin
   TitleStartsWithProjectCheckBox.Hint:=lisTitleInTaskbarShowsForExampleProject1LpiLazarus;
   TitleShowsProjectDirCheckBox.Caption:=lisIDETitleShowsProjectDir;
   TitleShowsProjectDirCheckBox.Hint:=lisProjectDirectoryIsShowedInIdeTitleBar;
+  bvWindowTitle.Caption:=lisIDETitleOptions;
   lblTitleBar.Caption:=lisIDETitleCustom;
+  EdTitleBar.Hint := lisIDECaptionCustomHint;
   NameForDesignedFormListCheckBox.Caption:=lisWindowMenuWithNameForDesignedForm;
   NameForDesignedFormListCheckBox.Hint:=lisWindowMenuWithNameForDesignedFormHint;
   AutoAdjustIDEHeightCheckBox.Caption:=lisAutoAdjustIDEHeight;
