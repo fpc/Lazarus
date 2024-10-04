@@ -1305,7 +1305,7 @@ resourcestring
   // Window options
   dlgShowingWindows = 'Showing Windows';
   dlgSingleTaskBarButton  = 'Show single button in TaskBar';
-  dlgHideIDEOnRun = 'Hide IDE windows on run';
+  dlgHideIDEOnRun = 'Hide IDE windows on Run/Debug';
   dlgHideIDEOnRunHint = 'Do not show the IDE at all while program is running.';
   lisShowOnlyOneButtonInTheTaskbarForTheWholeIDEInstead = 'Show only one '
     +'button in the taskbar for the whole IDE instead of one per window. Some'
