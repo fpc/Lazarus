@@ -389,5 +389,9 @@ initialization
   CocoaConfigMenu.menuItem.defaultRadioImageName:= NSSTR('NSDatePickerCalendarHome');
 
   CocoaConfigFocusRing:= TCocoaConfigFocusRing.Create;
+
+finalization
+  FreeAndNil( CocoaConfigFocusRing );
+
 end.
 

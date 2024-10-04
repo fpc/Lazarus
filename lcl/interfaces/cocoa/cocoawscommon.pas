@@ -2076,8 +2076,5 @@ begin
   sv.setBorderType( NSBorderStyle[astyle] );
 end;
 
-initialization
-  ASyncLCLControlAdjustSizer:= TASyncLCLControlAdjustSizer.Create;
-
 end.
 

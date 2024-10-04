@@ -6,11 +6,11 @@ unit CocoaWSScrollers;
 interface
 
 uses
-  Classes, LCLType, Controls, Forms,
+  Classes, SysUtils, LCLType, Controls, Forms,
   CocoaAll, CocoaPrivate, CocoaCustomControl, CocoaScrollers, CocoaUtils;
 
 type
-  { ASyncLCLControlAdjustSizer }
+  { TASyncLCLControlAdjustSizer }
 
   TASyncLCLControlAdjustSizer = class
   private
@@ -153,6 +153,9 @@ end;
 
 initialization
   ASyncLCLControlAdjustSizer:= TASyncLCLControlAdjustSizer.Create;
+
+finalization
+  FreeAndNil( ASyncLCLControlAdjustSizer );
 
 end.
 
