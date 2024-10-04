@@ -2519,7 +2519,6 @@ begin
   // On Windows: If in an SEH finally block, try to get the real procedure
   // Look for the line, before the finally statement.
   // TODO: This needs to move to a win-specific class, and ideally a FPC specific class too.
-debugln(['=========== !!!!!!!! ',Name ]);
   if ( ('$fin' = copy(Name,1, 4)) or ('fin$' = copy(Name,1, 4)) ) and
      CompilationUnit.GetProcStartEnd(ProcAddress, StartPC, EndPC) and
      (StartPC <> 0)
@@ -2529,22 +2528,18 @@ debugln(['=========== !!!!!!!! ',Name ]);
     TheStartLine := 0;
     SM1 := AddressInfo^.StateMachine.Clone;
     ThePrologueLineNum := SM1.Line;
-debugln(['=========== !!!!!!!! PL ', ThePrologueLineNum]);
     SM1.NextLine;
     if not SM1.EndSequence then begin
       TheStartLine := SM1.Line;
-debugln(['=========== !!!!!!!! SL ', TheStartLine]);
       if (TheStartLine=0) or (TheStartLine=ThePrologueLineNum) then begin
         SM1.NextLine;
         if not SM1.EndSequence then
           TheStartLine := SM1.Line;
-debugln(['=========== !!!!!!!! SL ', TheStartLine]);
       end;
     end;
     if (TheStartLine > ThePrologueLineNum) or (TheStartLine = 0) then
       TheStartLine := ThePrologueLineNum;
     SM1.Free;
-debugln(['=========== !!!!!!!! SL <<<< ', TheStartLine]);
 
 
     if EndPC < StartPC then
@@ -2554,7 +2549,6 @@ debugln(['=========== !!!!!!!! SL <<<< ', TheStartLine]);
     if CompilationUnit.Owner.GetLineAddresses(FileName, TheStartLine, AnAddresses, fsBefore, @FndLine) and
        (Length(AnAddresses) > 1)  // may be an internal finally on the begin/end line, sharing a line number
     then begin
-debugln(['=========== !!!!!!!! AAAA ', Length(AnAddresses) ]);
       for i := 0 to Length(AnAddresses) - 1 do
         if (AnAddresses[i] < StartPC) or (AnAddresses[i] > EndPC) then begin
           TFpSymbol(HelpSymbol2) := DbgInfo.FindProcSymbol(AnAddresses[i]);
@@ -2574,7 +2568,6 @@ debugln(['=========== !!!!!!!! AAAA ', Length(AnAddresses) ]);
     AnAddresses := nil;
     if CompilationUnit.Owner.GetLineAddresses(FileName, TheStartLine-1, AnAddresses, fsBefore)
     then begin
-debugln(['=========== !!!!!!!! BBB', Length(AnAddresses) ]);
 
       TFpSymbol(HelpSymbol2) := DbgInfo.FindProcSymbol(AnAddresses[0]);
       if (HelpSymbol2 <> nil) and (HelpSymbol2.CompilationUnit = CompilationUnit) and
