@@ -2583,6 +2583,7 @@ begin
            (SelectionObj.ActiveSelectionMode = smColumn)
         then
           ClearCarets;
+      ecColumnBlockShiftRight, ecColumnBlockMoveRight, ecColumnBlockShiftLeft, ecColumnBlockMoveLeft,
       ecBlockIndent, ecBlockUnindent, ecBlockIndentMove, ecBlockUnindentMove:
         if (not Editor.ReadOnly) and Editor.SelAvail and (SelectionObj.ActiveSelectionMode = smColumn)
         then
@@ -2706,6 +2707,7 @@ begin
         else
           ExecCommandRepeated;
       end;
+    ecColumnBlockShiftRight, ecColumnBlockMoveRight, ecColumnBlockShiftLeft, ecColumnBlockMoveLeft,
     ecBlockIndent, ecBlockUnindent, ecBlockIndentMove, ecBlockUnindentMove:
       begin
         StartEditing;

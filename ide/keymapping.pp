@@ -554,6 +554,10 @@ begin
     ecBlockUnindent           : Result:= srkmecBlockUnindent;
     ecBlockIndentMove         : Result:= srkmecBlockIndentMove;
     ecBlockUnindentMove       : Result:= srkmecBlockUnindentMove;
+    ecColumnBlockShiftRight   : Result:= srkmecColumnBlockShiftRight;
+    ecColumnBlockMoveRight    : Result:= srkmecColumnBlockMoveRight;
+    ecColumnBlockShiftLeft    : Result:= srkmecColumnBlockShiftLeft;
+    ecColumnBlockMoveLeft     : Result:= srkmecColumnBlockMoveLeft;
     ecTab                     : Result:= lisTab;
     ecShiftTab                : Result:= srkmecShiftTab;
     ecMatchBracket            : Result:= srkmecMatchBracket;
@@ -2882,6 +2886,10 @@ begin
   AddDefault(C, 'Unindent block', srkmecBlockUnindent, ecBlockUnindent);
   AddDefault(C, 'Indent block move', srkmecBlockIndentMove, ecBlockIndentMove);
   AddDefault(C, 'Unindent block move', srkmecBlockUnindentMove, ecBlockUnindentMove);
+  AddDefault(C, 'Shift right column block', srkmecColumnBlockShiftRight, ecColumnBlockShiftRight);
+  AddDefault(C, 'Move right column block', srkmecColumnBlockMoveRight, ecColumnBlockMoveRight);
+  AddDefault(C, 'Shift left column block', srkmecColumnBlockShiftLeft, ecColumnBlockShiftLeft);
+  AddDefault(C, 'Move left column block', srkmecColumnBlockMoveLeft, ecColumnBlockMoveLeft);
   AddDefault(C, 'Uppercase selection', lisMenuUpperCaseSelection, ecSelectionUpperCase);
   AddDefault(C, 'Lowercase selection', lisMenuLowerCaseSelection, ecSelectionLowerCase);
   AddDefault(C, 'Swap case in selection', lisMenuSwapCaseSelection, ecSelectionSwapCase);

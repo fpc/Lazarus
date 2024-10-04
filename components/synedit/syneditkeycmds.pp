@@ -299,6 +299,11 @@ const
   ecBlockIndentMove             = 651;  // Indent selection (indent before column-sel, therefore moving the column-sel)
   ecBlockUnindentMove           = 652;  // Unindent selection (indent before column-sel, therefore moving the column-sel)
 
+  ecColumnBlockShiftRight      = 653;  // Right Shift (Indent) column selection and delete right side inside selectio
+  ecColumnBlockMoveRight       = 654;  // Right Shift (Indent) column selection and overwrite text behind it
+  ecColumnBlockShiftLeft       = 655;  // Left Shift (Unindent) column selection and delete left side inside selectio
+  ecColumnBlockMoveLeft        = 656;  // Left Shift (Unindent) column selection and overwrite text at start of it
+
   ecGotFocus        = 700 deprecated 'Not used / To be removed in Lazarus 5.99';
   ecLostFocus       = 701 deprecated 'Not used / To be removed in Lazarus 5.99';
 
@@ -431,7 +436,7 @@ implementation
 { Command mapping routines }
 
 const
-  EditorCommandStrs: array[0..179] of TIdentMapEntry = (
+  EditorCommandStrs: array[0..183] of TIdentMapEntry = (
     (Value: ecNone; Name: 'ecNone'),
     (Value: ecLeft; Name: 'ecLeft'),
     (Value: ecRight; Name: 'ecRight'),
@@ -547,6 +552,10 @@ const
     (Value: ecBlockUnindent; Name: 'ecBlockUnindent'),
     (Value: ecBlockIndentMove; Name: 'ecBlockIndentMove'),
     (Value: ecBlockUnindentMove; Name: 'ecBlockUnindentMove'),
+    (Value: ecColumnBlockShiftRight; Name: 'ecColumnBlockShiftRight'),
+    (Value: ecColumnBlockMoveRight;  Name: 'ecColumnBlockMoveRight'),
+    (Value: ecColumnBlockShiftLeft;  Name: 'ecColumnBlockShiftLeft'),
+    (Value: ecColumnBlockMoveLeft;   Name: 'ecColumnBlockMoveLeft'),
     (Value: ecTab; Name: 'ecTab'),
     (Value: ecShiftTab; Name: 'ecShiftTab'),
     (Value: ecMatchBracket; Name: 'ecMatchBracket'),

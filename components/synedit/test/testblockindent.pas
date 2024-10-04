@@ -6,7 +6,9 @@ interface
 
 uses
   SysUtils, testregistry, TestBase, math, Types,
-  SynEdit, SynEditKeyCmds, SynEditTypes;
+  SynEdit, SynEditKeyCmds, SynEditTypes, Forms,
+  LazLoggerDummy;
+  //LazLogger;
 
 type
 
@@ -681,7 +683,11 @@ var
     PushBaseName('');
 
     SetSelect(x1,y1, x2,y2);
+    DebugLn();
+    DebugLn('#############################################');
+    DebugLn(MyDbg(SynEdit.Text, True));Application.ProcessMessages;
     SynEdit.CommandProcessor(TheCommand, '', nil);
+    DebugLn(MyDbg(SynEdit.Text, True));Application.ProcessMessages;
     TestColSelAndText('indend',  ExpectSelStartX,y1, ExpCaretX,y2, TestTextSub );
     if ATestUndoRedo = 0 then exit;
 
@@ -715,6 +721,7 @@ var
       DoTest(AName, x1, y1, x2, y2, ExpectSelStartX1, ExpCaretX1, AnInsText, AnXPos1, undo);
 
       SynEdit.CommandProcessor(TheCommand, '', nil);
+      DebugLn(MyDbg(SynEdit.Text, True)); Application.ProcessMessages;
       TestColSelAndText('indend 2',  ExpectSelStartX2,y1, ExpCaretX2,y2, TestTextSub2 );
 
       SynEdit.CommandProcessor(ecUndo, '', nil);
@@ -928,19 +935,27 @@ var
     PushBaseName('');
 
     SetSelect(x1,y1, x2,y2);
+    DebugLn();
+    DebugLn('#############################################');
+    DebugLn(MyDbg(SynEdit.Text, True));Application.ProcessMessages;
     SynEdit.CommandProcessor(TheCommand, '', nil);
+    DebugLn(MyDbg(SynEdit.Text, True));Application.ProcessMessages;
     TestColSelAndText('unindend',  ExpectSelStartX,y1, ExpCaretX,y2, TestTextSub );
     if ATestUndoRedo = 0 then exit;
 
     SynEdit.CommandProcessor(ecUndo, '', nil);
+Application.ProcessMessages;
     TestColSelAndText('undo 1',  x1,y1, x2,y2, TestTextColumn2  );
     SynEdit.CommandProcessor(ecRedo, '', nil);
+Application.ProcessMessages;
     TestColSelAndText('redo 1',  ExpectSelStartX,y1, ExpCaretX,y2, TestTextSub );
     if ATestUndoRedo = 1 then exit;
 
     SynEdit.CommandProcessor(ecUndo, '', nil);
+Application.ProcessMessages;
     TestColSelAndText('undo 2',  x1,y1, x2,y2, TestTextColumn2 );
     SynEdit.CommandProcessor(ecRedo, '', nil);
+Application.ProcessMessages;
     TestColSelAndText('redo 2',  ExpectSelStartX,y1, ExpCaretX,y2, TestTextSub );
 
     PopBaseName;
@@ -968,6 +983,7 @@ var
       DoTest(AName, x1, y1, x2, y2, ExpectSelStartX1, ExpCaretX1, AnXDelPos1, AnInsText1, AnXPos1, undo);
 
       SynEdit.CommandProcessor(TheCommand, '', nil);
+      DebugLn(MyDbg(SynEdit.Text, True)); Application.ProcessMessages;
       TestColSelAndText('unindend 2',  ExpectSelStartX2,y1, ExpCaretX2,y2, TestTextSub2 );
 
       SynEdit.CommandProcessor(ecUndo, '', nil);
@@ -1034,8 +1050,16 @@ ABCDEFGHIJKLMNOPQRSTUABCDEFGHIJKLMNOPQRSTU';
   SynEdit.BlockTabIndent := 1;
   DoTest2('', 15,2,  4,3,  12, 4,   9, 4, [0,0, 11,3, 4,4], [0,0, 8,3, 4,2], #9'',[0,0,4], '',[], False);
 
+  SynEdit.TabWidth := 1;
+  SynEdit.BlockIndent    := 0;
+  SynEdit.BlockTabIndent := 2;
+  DoTest2('', 11,3,  4,3,   9, 4,   7, 4, [0,0, 0,0, 4,2], [0,0, 0,0, 4,2], '',[], '',[], False);
+  SynEdit.BlockTabIndent := 3;
+  DoTest2('', 11,3,  4,3,   8, 4,   5, 4, [0,0, 0,0, 4,3], [0,0, 0,0, 4,3], '',[], '',[], False);
+
 
   SynEdit.Options := SynEdit.Options + [eoGroupUndo] + [eoShowSpecialChars];
+  SynEdit.TabWidth := 5;
   SynEdit.BlockIndent    := 2;
   SynEdit.BlockTabIndent := 0;
 
