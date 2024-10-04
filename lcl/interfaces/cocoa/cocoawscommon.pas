@@ -1986,8 +1986,5 @@ begin
   end;
 end;
 
-initialization
-  ASyncLCLControlAdjustSizer:= TASyncLCLControlAdjustSizer.Create;
-
 end.
 
