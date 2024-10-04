@@ -3,43 +3,41 @@ object GeneralForm: TGeneralForm
   Height = 536
   Top = 185
   Width = 804
-  ActiveControl = BitBtn1
+  ActiveControl = TreeFontButton
   Caption = 'GeneralForm'
   ClientHeight = 536
   ClientWidth = 804
   KeyPreview = True
-  OnCreate = FormCreate
   ShowHint = True
-  LCLVersion = '2.1.0.0'
-  object Label18: TLabel
-    AnchorSideLeft.Control = RadioGroup2
-    AnchorSideTop.Control = RadioGroup2
+  LCLVersion = '3.99.0.0'
+  OnCreate = FormCreate
+  object SwitchCheckImagesLabel: TLabel
+    AnchorSideLeft.Control = DrawSelectionModeRadioGroup
+    AnchorSideTop.Control = DrawSelectionModeRadioGroup
     AnchorSideTop.Side = asrBottom
-    Left = 576
+    Left = 575
     Height = 15
-    Top = 374
+    Top = 387
     Width = 113
-    Anchors = [akTop, akRight]
-    BorderSpacing.Top = 20
+    BorderSpacing.Top = 10
     Caption = 'Switch check images:'
     ParentColor = False
   end
-  object Label19: TLabel
+  object SwitchMainColumnLabel: TLabel
     AnchorSideLeft.Control = CheckMarkCombo
     AnchorSideTop.Control = CheckMarkCombo
     AnchorSideTop.Side = asrBottom
-    Left = 572
+    Left = 575
     Height = 15
-    Top = 434
+    Top = 437
     Width = 112
-    Anchors = [akTop, akRight]
-    BorderSpacing.Top = 20
+    BorderSpacing.Top = 10
     Caption = 'Switch main column:'
     ParentColor = False
   end
   object Label8: TLabel
-    AnchorSideLeft.Control = BitBtn1
-    AnchorSideTop.Control = BitBtn1
+    AnchorSideLeft.Control = TreeFontButton
+    AnchorSideTop.Control = TreeFontButton
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = SaveButton
     AnchorSideRight.Side = asrBottom
@@ -54,13 +52,15 @@ object GeneralForm: TGeneralForm
     WordWrap = True
   end
   object VST2: TLazVirtualStringTree
+    AnchorSideRight.Control = Label8
     Left = 5
     Height = 523
     Top = 8
-    Width = 556
+    Width = 562
     Anchors = [akTop, akLeft, akRight, akBottom]
     AutoExpandDelay = 300
-    ButtonFillMode = fmWindowColor
+    BorderSpacing.Right = 8
+    ButtonFillMode = fmTransparent
     CheckImageKind = ckDarkTick
     ClipboardFormats.Strings = (
       'HTML Format'
@@ -72,7 +72,7 @@ object GeneralForm: TGeneralForm
     Colors.DropTargetBorderColor = clActiveCaption
     Colors.HotColor = clBlack
     Colors.UnfocusedSelectionBorderColor = clBtnShadow
-    DefaultNodeHeight = 24
+    DefaultNodeHeight = 25
     DefaultText = 'Node'
     DragCursor = crHelp
     DrawSelectionMode = smBlendedRectangle
@@ -93,7 +93,7 @@ object GeneralForm: TGeneralForm
         Options = [coEnabled, coParentBidiMode, coVisible]
         Position = 0
         Spacing = 0
-        Width = 22
+        Width = 15
       end    
       item
         BiDiMode = bdLeftToRight
@@ -104,14 +104,13 @@ object GeneralForm: TGeneralForm
         Text = 'Language column'
         Width = 300
       end>
-    Header.DefaultHeight = 17
-    Header.Height = 45
     Header.Options = [hoColumnResize, hoDblClickResize, hoDrag, hoHotTrack, hoShowHint, hoVisible]
     Header.ParentFont = True
     Header.Style = hsFlatButtons
     HintMode = hmTooltip
     HotCursor = crHandPoint
     Images = TreeImages
+    ParentBiDiMode = False
     ParentFont = False
     RootNodeCount = 5
     ScrollBarOptions.VerticalIncrement = 19
@@ -136,12 +135,12 @@ object GeneralForm: TGeneralForm
     OnStateChange = VST2StateChange
   end
   object CheckMarkCombo: TComboBox
-    AnchorSideLeft.Control = RadioGroup2
-    AnchorSideTop.Control = Label18
+    AnchorSideLeft.Control = DrawSelectionModeRadioGroup
+    AnchorSideTop.Control = SwitchCheckImagesLabel
     AnchorSideTop.Side = asrBottom
     Left = 575
     Height = 23
-    Top = 391
+    Top = 404
     Width = 211
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 2
@@ -157,31 +156,30 @@ object GeneralForm: TGeneralForm
       'System flat check images'
       'System default check images'
     )
-    OnChange = CheckMarkComboChange
     PopupMenu = PopupMenu1
     Style = csDropDownList
     TabOrder = 1
+    OnChange = CheckMarkComboChange
   end
   object MainColumnUpDown: TUpDown
-    AnchorSideLeft.Control = Label19
-    AnchorSideTop.Control = Label19
+    AnchorSideLeft.Control = SwitchMainColumnLabel
+    AnchorSideTop.Control = SwitchMainColumnLabel
     AnchorSideTop.Side = asrBottom
-    Left = 572
-    Height = 16
-    Top = 451
-    Width = 35
-    Anchors = [akTop, akLeft, akRight]
+    Left = 575
+    Height = 21
+    Top = 454
+    Width = 41
     BorderSpacing.Top = 2
     Increment = 2
     Max = 2
     Min = 0
-    OnChanging = MainColumnUpDownChanging
     Orientation = udHorizontal
     Position = 2
     TabOrder = 2
     Wrap = True
+    OnChanging = MainColumnUpDownChanging
   end
-  object BitBtn1: TBitBtn
+  object TreeFontButton: TBitBtn
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = SaveButton
     Left = 575
@@ -209,17 +207,17 @@ object GeneralForm: TGeneralForm
       33333300C000CC0333333333333330CCCCCCCC03333333333333300000000033
       3333333333333333333333333333333333333333333333333333
     }
-    OnClick = BitBtn1Click
     TabOrder = 3
+    OnClick = TreeFontButtonClick
   end
-  object RadioGroup1: TRadioGroup
+  object TreeButtonLookRadioGroup: TRadioGroup
     AnchorSideLeft.Control = ThemeRadioGroup
     AnchorSideTop.Control = ThemeRadioGroup
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = ThemeRadioGroup
     AnchorSideRight.Side = asrBottom
     Left = 575
-    Height = 70
+    Height = 93
     Top = 204
     Width = 221
     Anchors = [akTop, akLeft, akRight]
@@ -235,25 +233,44 @@ object GeneralForm: TGeneralForm
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 50
+    ClientHeight = 73
     ClientWidth = 217
     ItemIndex = 0
     Items.Strings = (
       'Usual +/- buttons and lines'
       'Little triangles without lines'
     )
-    OnClick = RadioGroup1Click
     TabOrder = 4
+    OnClick = TreeButtonLookRadioGroupClick
+    object ButtonFillModeCombo: TComboBox
+      Left = 6
+      Height = 23
+      Hint = 'Applies only to +/- buttons'
+      Top = 44
+      Width = 205
+      ItemHeight = 15
+      ItemIndex = 0
+      Items.Strings = (
+        'tree''s background color'
+        'clWindow'
+        'color gradient, Windows XP style (legacy code, use toThemeAware on Windows XP instead)'
+        'transparent color'
+      )
+      Style = csDropDownList
+      TabOrder = 3
+      Text = 'tree''s background color'
+      OnChange = ButtonFillModeComboChange
+    end
   end
-  object RadioGroup2: TRadioGroup
-    AnchorSideLeft.Control = RadioGroup1
-    AnchorSideTop.Control = RadioGroup1
+  object DrawSelectionModeRadioGroup: TRadioGroup
+    AnchorSideLeft.Control = TreeButtonLookRadioGroup
+    AnchorSideTop.Control = TreeButtonLookRadioGroup
     AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = RadioGroup1
+    AnchorSideRight.Control = TreeButtonLookRadioGroup
     AnchorSideRight.Side = asrBottom
     Left = 575
     Height = 70
-    Top = 284
+    Top = 307
     Width = 221
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
@@ -275,11 +292,11 @@ object GeneralForm: TGeneralForm
       'Dotted rectangle'
       'Alpha blended rectangle'
     )
-    OnClick = RadioGroup2Click
     TabOrder = 5
+    OnClick = DrawSelectionModeRadioGroupClick
   end
   object ThemeRadioGroup: TRadioGroup
-    AnchorSideLeft.Control = BitBtn1
+    AnchorSideLeft.Control = TreeFontButton
     AnchorSideTop.Control = Label8
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = SaveButton
@@ -307,14 +324,14 @@ object GeneralForm: TGeneralForm
       'Theme aware'
       'Not theme aware'
     )
-    OnClick = ThemeRadioGroupClick
     TabOrder = 6
+    OnClick = ThemeRadioGroupClick
   end
   object SaveButton: TBitBtn
-    AnchorSideTop.Control = BitBtn1
+    AnchorSideTop.Control = TreeFontButton
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = BitBtn1
+    AnchorSideBottom.Control = TreeFontButton
     AnchorSideBottom.Side = asrBottom
     Left = 700
     Height = 34
@@ -324,12 +341,24 @@ object GeneralForm: TGeneralForm
     AutoSize = True
     BorderSpacing.Right = 8
     Caption = 'Save as text...'
-    OnClick = SaveButtonClick
     TabOrder = 7
+    OnClick = SaveButtonClick
+  end
+  object MainColumnLabel: TLabel
+    AnchorSideLeft.Control = MainColumnUpDown
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = MainColumnUpDown
+    AnchorSideTop.Side = asrCenter
+    Left = 624
+    Height = 15
+    Top = 457
+    Width = 98
+    BorderSpacing.Left = 8
+    Caption = 'MainColumnLabel'
   end
   object TreeImages: TImageList
-    Left = 22
-    Top = 148
+    Left = 168
+    Top = 232
     Bitmap = {
       4C7A120000001000000010000000200400000000000078DAED9A8B9283200C45
       F3F17CDBFE16BB6E4B1B631E37C1BA75AD338C7D7812406E0828D13B1CAD2F65
@@ -372,11 +401,11 @@ object GeneralForm: TGeneralForm
     Font.Name = 'MS Sans Serif'
     MinFontSize = 0
     MaxFontSize = 0
-    Left = 84
-    Top = 148
+    Left = 240
+    Top = 88
   end
   object PopupMenu1: TPopupMenu
-    Left = 116
+    Left = 168
     Top = 148
     object Onemenuitem1: TMenuItem
       Caption = 'Menu items'
@@ -391,14 +420,14 @@ object GeneralForm: TGeneralForm
   object SaveDialog: TSaveDialog
     Filter = 'HTML file in UTF-8 (*.htm; *.html)|*.htm;*.html|Unicode UTF-16 text file (*.uni)|*.uni|Rich text UTF-16 file (*.rtf)|*.rtf|Comma separated values ANSI text file (*.csv)|*.csv|Unicode UTF-8 text file (*.txt)|*.txt|Plain ANSI text file (*.txt)|*.txt'
     Options = [ofOverwritePrompt, ofHideReadOnly, ofExtensionDifferent, ofEnableSizing]
-    Left = 148
+    Left = 240
     Top = 148
   end
   object ImageList1: TImageList
     Height = 24
     Width = 24
-    Left = 32
-    Top = 200
+    Left = 168
+    Top = 296
     Bitmap = {
       4C7A510000001800000018000000B5DD00000000000078DAEC9D075814D7D7FF
       2355EC3DD19898C4C49698A8D1A8A996148D89D1C498C4184D31F6167B8935C6
