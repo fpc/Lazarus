@@ -2347,7 +2347,9 @@ msgid "Height:"
 msgstr "高度:"
 
 #: lazarusidestrconsts.dlghideideonrun
-msgid "Hide IDE windows on run"
+#, fuzzy
+#| msgid "Hide IDE windows on run"
+msgid "Hide IDE windows on Run/Debug"
 msgstr "在运行时隐藏 IDE 窗口"
 
 #: lazarusidestrconsts.dlghideideonrunhint
@@ -10435,6 +10437,10 @@ msgstr "IDE"
 msgid "IDE build options"
 msgstr "IDE构建选项"
 
+#: lazarusidestrconsts.lisidecaptioncustomhint
+msgid "The caption of the main IDE window"
+msgstr ""
+
 #: lazarusidestrconsts.lisidecompileandrestart
 msgid "The IDE will be recompiled and restarted during installation/uninstallation of packages."
 msgstr "在安装/卸载软件包的过程中，IDE 将被重新编译和重新启动。"
@@ -10477,7 +10483,11 @@ msgid "IDE Options:"
 msgstr "IDE 选项："
 
 #: lazarusidestrconsts.lisidetitlecustom
-msgid "Custom IDE window title"
+msgid "Custom IDE title"
+msgstr ""
+
+#: lazarusidestrconsts.lisidetitleoptions
+msgid "IDE main window title"
 msgstr ""
 
 #: lazarusidestrconsts.lisidetitleshowsprojectdir
@@ -19822,6 +19832,10 @@ msgstr "隐藏语句块"
 msgid "Indent block"
 msgstr "缩进语句块"
 
+#: lazarusidestrconsts.srkmecblockindentmove
+msgid "Indent (move) block"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecblockmove
 msgid "Move Block"
 msgstr "移动语句块"
@@ -19845,6 +19859,10 @@ msgstr "切换语句块"
 #: lazarusidestrconsts.srkmecblockunindent
 msgid "Unindent block"
 msgstr "反向缩进语句块"
+
+#: lazarusidestrconsts.srkmecblockunindentmove
+msgid "Unindent (move) block"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecbreakpointproperties
 msgid "show breakpoint properties"

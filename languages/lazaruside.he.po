@@ -2461,7 +2461,9 @@ msgid "Height:"
 msgstr "גובה:"
 
 #: lazarusidestrconsts.dlghideideonrun
-msgid "Hide IDE windows on run"
+#, fuzzy
+#| msgid "Hide IDE windows on run"
+msgid "Hide IDE windows on Run/Debug"
 msgstr "הסתר את חלונות ה IDE בזמן ריצה"
 
 #: lazarusidestrconsts.dlghideideonrunhint
@@ -10843,6 +10845,10 @@ msgstr "IDE"
 msgid "IDE build options"
 msgstr "אפשרויות הבניה של ה IDE "
 
+#: lazarusidestrconsts.lisidecaptioncustomhint
+msgid "The caption of the main IDE window"
+msgstr ""
+
 #: lazarusidestrconsts.lisidecompileandrestart
 msgid "The IDE will be recompiled and restarted during installation/uninstallation of packages."
 msgstr ""
@@ -10885,7 +10891,11 @@ msgid "IDE Options:"
 msgstr "אפשרויות IDE"
 
 #: lazarusidestrconsts.lisidetitlecustom
-msgid "Custom IDE window title"
+msgid "Custom IDE title"
+msgstr ""
+
+#: lazarusidestrconsts.lisidetitleoptions
+msgid "IDE main window title"
 msgstr ""
 
 #: lazarusidestrconsts.lisidetitleshowsprojectdir
@@ -20840,6 +20850,10 @@ msgstr "הסתר בלוק"
 msgid "Indent block"
 msgstr "הזכך בלוק"
 
+#: lazarusidestrconsts.srkmecblockindentmove
+msgid "Indent (move) block"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecblockmove
 msgid "Move Block"
 msgstr "הזז בלוק"
@@ -20863,6 +20877,10 @@ msgstr "החלף בלוק"
 #: lazarusidestrconsts.srkmecblockunindent
 msgid "Unindent block"
 msgstr "בטל זיהוי בלוק"
+
+#: lazarusidestrconsts.srkmecblockunindentmove
+msgid "Unindent (move) block"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecbreakpointproperties
 msgid "show breakpoint properties"

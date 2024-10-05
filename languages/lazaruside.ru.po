@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-10-03 22:53+0300\n"
+"PO-Revision-Date: 2024-10-05 22:24+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -2343,8 +2343,8 @@ msgid "Height:"
 msgstr "Высота:"
 
 #: lazarusidestrconsts.dlghideideonrun
-msgid "Hide IDE windows on run"
-msgstr "Скрывать окна IDE при запуске"
+msgid "Hide IDE windows on Run/Debug"
+msgstr "Скрывать окна IDE при запуске/отладке"
 
 #: lazarusidestrconsts.dlghideideonrunhint
 msgid "Do not show the IDE at all while program is running."
@@ -10347,6 +10347,10 @@ msgstr "IDE"
 msgid "IDE build options"
 msgstr "Параметры сборки IDE"
 
+#: lazarusidestrconsts.lisidecaptioncustomhint
+msgid "The caption of the main IDE window"
+msgstr "Заголовок главного окна IDE"
+
 #: lazarusidestrconsts.lisidecompileandrestart
 msgid "The IDE will be recompiled and restarted during installation/uninstallation of packages."
 msgstr "При установке/удалении пакетов IDE будет пересобрана и перезапущена."
@@ -10389,8 +10393,12 @@ msgid "IDE Options:"
 msgstr "Параметры IDE:"
 
 #: lazarusidestrconsts.lisidetitlecustom
-msgid "Custom IDE window title"
-msgstr "Пользовательский заголовок окна IDE"
+msgid "Custom IDE title"
+msgstr "Пользовательский заголовок IDE"
+
+#: lazarusidestrconsts.lisidetitleoptions
+msgid "IDE main window title"
+msgstr "Заголовок главного окна IDE"
 
 #: lazarusidestrconsts.lisidetitleshowsprojectdir
 msgid "IDE title shows project directory"
@@ -19732,6 +19740,10 @@ msgstr "Скрыть выделенное"
 msgid "Indent block"
 msgstr "Увеличить отступ выделенного"
 
+#: lazarusidestrconsts.srkmecblockindentmove
+msgid "Indent (move) block"
+msgstr "Увеличить отступ блока (сдвинуть)"
+
 #: lazarusidestrconsts.srkmecblockmove
 msgid "Move Block"
 msgstr "Переместить выделенное"
@@ -19755,6 +19767,10 @@ msgstr "Переключить видимость выделенного"
 #: lazarusidestrconsts.srkmecblockunindent
 msgid "Unindent block"
 msgstr "Уменьшить отступ выделенного"
+
+#: lazarusidestrconsts.srkmecblockunindentmove
+msgid "Unindent (move) block"
+msgstr "Уменьшить отступ блока (сдвинуть)"
 
 #: lazarusidestrconsts.srkmecbreakpointproperties
 msgid "show breakpoint properties"

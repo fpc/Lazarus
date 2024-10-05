@@ -2320,7 +2320,9 @@ msgid "Height:"
 msgstr "Yükseklik:"
 
 #: lazarusidestrconsts.dlghideideonrun
-msgid "Hide IDE windows on run"
+#, fuzzy
+#| msgid "Hide IDE windows on run"
+msgid "Hide IDE windows on Run/Debug"
 msgstr "Çalıştırıldığında IDE pencerelerini gizle"
 
 #: lazarusidestrconsts.dlghideideonrunhint
@@ -10331,6 +10333,10 @@ msgstr "IDE"
 msgid "IDE build options"
 msgstr "IDE kurulum seçenekleri"
 
+#: lazarusidestrconsts.lisidecaptioncustomhint
+msgid "The caption of the main IDE window"
+msgstr ""
+
 #: lazarusidestrconsts.lisidecompileandrestart
 msgid "The IDE will be recompiled and restarted during installation/uninstallation of packages."
 msgstr "Paketlerin yüklenmesi/kaldırılması sırasında IDE yeniden derlenecek ve yeniden başlatılacaktır."
@@ -10373,7 +10379,11 @@ msgid "IDE Options:"
 msgstr "IDE Seçenekleri:"
 
 #: lazarusidestrconsts.lisidetitlecustom
-msgid "Custom IDE window title"
+msgid "Custom IDE title"
+msgstr ""
+
+#: lazarusidestrconsts.lisidetitleoptions
+msgid "IDE main window title"
 msgstr ""
 
 #: lazarusidestrconsts.lisidetitleshowsprojectdir
@@ -19666,6 +19676,10 @@ msgstr "Bloğu Gizle"
 msgid "Indent block"
 msgstr "Girinti bloğu"
 
+#: lazarusidestrconsts.srkmecblockindentmove
+msgid "Indent (move) block"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecblockmove
 msgid "Move Block"
 msgstr "Bloğu Taşı"
@@ -19689,6 +19703,10 @@ msgstr "Bloğu değiştir"
 #: lazarusidestrconsts.srkmecblockunindent
 msgid "Unindent block"
 msgstr "Girintisiz blok"
+
+#: lazarusidestrconsts.srkmecblockunindentmove
+msgid "Unindent (move) block"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecbreakpointproperties
 msgid "show breakpoint properties"

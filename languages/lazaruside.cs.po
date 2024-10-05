@@ -2372,7 +2372,9 @@ msgid "Height:"
 msgstr "Výška:"
 
 #: lazarusidestrconsts.dlghideideonrun
-msgid "Hide IDE windows on run"
+#, fuzzy
+#| msgid "Hide IDE windows on run"
+msgid "Hide IDE windows on Run/Debug"
 msgstr "Skrýt okna IDE při spuštění"
 
 #: lazarusidestrconsts.dlghideideonrunhint
@@ -10500,6 +10502,10 @@ msgstr "IDE"
 msgid "IDE build options"
 msgstr "Volby sestavení IDE"
 
+#: lazarusidestrconsts.lisidecaptioncustomhint
+msgid "The caption of the main IDE window"
+msgstr ""
+
 #: lazarusidestrconsts.lisidecompileandrestart
 msgid "The IDE will be recompiled and restarted during installation/uninstallation of packages."
 msgstr "IDE bude znovu přeloženo a restartováno během instalace/odinstalace balíčků."
@@ -10542,7 +10548,11 @@ msgid "IDE Options:"
 msgstr "Volby IDE:"
 
 #: lazarusidestrconsts.lisidetitlecustom
-msgid "Custom IDE window title"
+msgid "Custom IDE title"
+msgstr ""
+
+#: lazarusidestrconsts.lisidetitleoptions
+msgid "IDE main window title"
 msgstr ""
 
 #: lazarusidestrconsts.lisidetitleshowsprojectdir
@@ -19958,6 +19968,10 @@ msgstr "Skrýt blok"
 msgid "Indent block"
 msgstr "Odsadit blok"
 
+#: lazarusidestrconsts.srkmecblockindentmove
+msgid "Indent (move) block"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecblockmove
 msgid "Move Block"
 msgstr "Přesunout blok"
@@ -19981,6 +19995,10 @@ msgstr "Přepnout blok"
 #: lazarusidestrconsts.srkmecblockunindent
 msgid "Unindent block"
 msgstr "Vrátit odsazení bloku"
+
+#: lazarusidestrconsts.srkmecblockunindentmove
+msgid "Unindent (move) block"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecbreakpointproperties
 msgid "show breakpoint properties"

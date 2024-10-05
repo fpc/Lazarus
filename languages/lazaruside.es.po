@@ -2409,7 +2409,9 @@ msgid "Height:"
 msgstr "Altura:"
 
 #: lazarusidestrconsts.dlghideideonrun
-msgid "Hide IDE windows on run"
+#, fuzzy
+#| msgid "Hide IDE windows on run"
+msgid "Hide IDE windows on Run/Debug"
 msgstr "Esconder ventanas del IDE al ejecutar"
 
 #: lazarusidestrconsts.dlghideideonrunhint
@@ -10589,6 +10591,10 @@ msgstr "IDE"
 msgid "IDE build options"
 msgstr "Opciones de construcción del IDE"
 
+#: lazarusidestrconsts.lisidecaptioncustomhint
+msgid "The caption of the main IDE window"
+msgstr ""
+
 #: lazarusidestrconsts.lisidecompileandrestart
 msgid "The IDE will be recompiled and restarted during installation/uninstallation of packages."
 msgstr "Durante la instalación/desinstalación de paquetes se recompilará y reiniciará el IDE."
@@ -10631,7 +10637,11 @@ msgid "IDE Options:"
 msgstr "Opciones del IDE:"
 
 #: lazarusidestrconsts.lisidetitlecustom
-msgid "Custom IDE window title"
+msgid "Custom IDE title"
+msgstr ""
+
+#: lazarusidestrconsts.lisidetitleoptions
+msgid "IDE main window title"
 msgstr ""
 
 #: lazarusidestrconsts.lisidetitleshowsprojectdir
@@ -20144,6 +20154,10 @@ msgstr "Esconder Bloque"
 msgid "Indent block"
 msgstr "Sangrar bloque"
 
+#: lazarusidestrconsts.srkmecblockindentmove
+msgid "Indent (move) block"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecblockmove
 msgid "Move Block"
 msgstr "Mover Bloque"
@@ -20167,6 +20181,10 @@ msgstr "Intercabiar Bloque"
 #: lazarusidestrconsts.srkmecblockunindent
 msgid "Unindent block"
 msgstr "Desangrar Bloque"
+
+#: lazarusidestrconsts.srkmecblockunindentmove
+msgid "Unindent (move) block"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecbreakpointproperties
 msgid "show breakpoint properties"

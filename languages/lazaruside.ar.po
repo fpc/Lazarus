@@ -2354,7 +2354,7 @@ msgid "Height:"
 msgstr "الإرتفاع"
 
 #: lazarusidestrconsts.dlghideideonrun
-msgid "Hide IDE windows on run"
+msgid "Hide IDE windows on Run/Debug"
 msgstr ""
 
 #: lazarusidestrconsts.dlghideideonrunhint
@@ -10367,6 +10367,10 @@ msgstr ""
 msgid "IDE build options"
 msgstr ""
 
+#: lazarusidestrconsts.lisidecaptioncustomhint
+msgid "The caption of the main IDE window"
+msgstr ""
+
 #: lazarusidestrconsts.lisidecompileandrestart
 msgid "The IDE will be recompiled and restarted during installation/uninstallation of packages."
 msgstr ""
@@ -10409,7 +10413,11 @@ msgid "IDE Options:"
 msgstr ""
 
 #: lazarusidestrconsts.lisidetitlecustom
-msgid "Custom IDE window title"
+msgid "Custom IDE title"
+msgstr ""
+
+#: lazarusidestrconsts.lisidetitleoptions
+msgid "IDE main window title"
 msgstr ""
 
 #: lazarusidestrconsts.lisidetitleshowsprojectdir
@@ -19708,6 +19716,10 @@ msgstr ""
 msgid "Indent block"
 msgstr ""
 
+#: lazarusidestrconsts.srkmecblockindentmove
+msgid "Indent (move) block"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecblockmove
 msgid "Move Block"
 msgstr ""
@@ -19730,6 +19742,10 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecblockunindent
 msgid "Unindent block"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecblockunindentmove
+msgid "Unindent (move) block"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecbreakpointproperties

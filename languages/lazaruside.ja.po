@@ -2404,7 +2404,9 @@ msgid "Height:"
 msgstr "高さ:"
 
 #: lazarusidestrconsts.dlghideideonrun
-msgid "Hide IDE windows on run"
+#, fuzzy
+#| msgid "Hide IDE windows on run"
+msgid "Hide IDE windows on Run/Debug"
 msgstr "実行中はIDEウィンドウを隠す"
 
 #: lazarusidestrconsts.dlghideideonrunhint
@@ -10574,6 +10576,10 @@ msgstr "IDE"
 msgid "IDE build options"
 msgstr "IDE 構築オプション"
 
+#: lazarusidestrconsts.lisidecaptioncustomhint
+msgid "The caption of the main IDE window"
+msgstr ""
+
 #: lazarusidestrconsts.lisidecompileandrestart
 msgid "The IDE will be recompiled and restarted during installation/uninstallation of packages."
 msgstr "パッケージのインストール／アンインストールの過程で、IDE は再コンパイルされて再起動されます。"
@@ -10617,7 +10623,11 @@ msgid "IDE Options:"
 msgstr "IDE オプション"
 
 #: lazarusidestrconsts.lisidetitlecustom
-msgid "Custom IDE window title"
+msgid "Custom IDE title"
+msgstr ""
+
+#: lazarusidestrconsts.lisidetitleoptions
+msgid "IDE main window title"
 msgstr ""
 
 #: lazarusidestrconsts.lisidetitleshowsprojectdir
@@ -20104,6 +20114,10 @@ msgstr "ブロックを隠す"
 msgid "Indent block"
 msgstr "ブロックをインデント"
 
+#: lazarusidestrconsts.srkmecblockindentmove
+msgid "Indent (move) block"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecblockmove
 msgid "Move Block"
 msgstr "ブロックを移動"
@@ -20127,6 +20141,10 @@ msgstr "ブロックをトグル"
 #: lazarusidestrconsts.srkmecblockunindent
 msgid "Unindent block"
 msgstr "ブロックのインデントを戻す"
+
+#: lazarusidestrconsts.srkmecblockunindentmove
+msgid "Unindent (move) block"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecbreakpointproperties
 msgid "show breakpoint properties"

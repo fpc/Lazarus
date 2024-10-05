@@ -2406,7 +2406,9 @@ msgid "Height:"
 msgstr "Aukštis:"
 
 #: lazarusidestrconsts.dlghideideonrun
-msgid "Hide IDE windows on run"
+#, fuzzy
+#| msgid "Hide IDE windows on run"
+msgid "Hide IDE windows on Run/Debug"
 msgstr "Startuojant programą slėpti IKA langus"
 
 #: lazarusidestrconsts.dlghideideonrunhint
@@ -10577,6 +10579,10 @@ msgstr "IKA"
 msgid "IDE build options"
 msgstr "IKA darymo parinktys"
 
+#: lazarusidestrconsts.lisidecaptioncustomhint
+msgid "The caption of the main IDE window"
+msgstr ""
+
 #: lazarusidestrconsts.lisidecompileandrestart
 msgid "The IDE will be recompiled and restarted during installation/uninstallation of packages."
 msgstr "Įdiegiant arba išdiegiant paketus IKA kompiliuotas ir paleistas iš naujo."
@@ -10620,7 +10626,11 @@ msgid "IDE Options:"
 msgstr "IKA parinktys:"
 
 #: lazarusidestrconsts.lisidetitlecustom
-msgid "Custom IDE window title"
+msgid "Custom IDE title"
+msgstr ""
+
+#: lazarusidestrconsts.lisidetitleoptions
+msgid "IDE main window title"
 msgstr ""
 
 #: lazarusidestrconsts.lisidetitleshowsprojectdir
@@ -20144,6 +20154,10 @@ msgstr "Slėpti bloką"
 msgid "Indent block"
 msgstr "Suteikti blokui įtrauką"
 
+#: lazarusidestrconsts.srkmecblockindentmove
+msgid "Indent (move) block"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecblockmove
 msgid "Move Block"
 msgstr "Perkelti bloką"
@@ -20167,6 +20181,10 @@ msgstr "Įjungti ar išjungti bloką"
 #: lazarusidestrconsts.srkmecblockunindent
 msgid "Unindent block"
 msgstr "Naikinti bloko įtrauką"
+
+#: lazarusidestrconsts.srkmecblockunindentmove
+msgid "Unindent (move) block"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecbreakpointproperties
 msgid "show breakpoint properties"

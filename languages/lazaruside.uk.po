@@ -2345,7 +2345,9 @@ msgid "Height:"
 msgstr "Висота:"
 
 #: lazarusidestrconsts.dlghideideonrun
-msgid "Hide IDE windows on run"
+#, fuzzy
+#| msgid "Hide IDE windows on run"
+msgid "Hide IDE windows on Run/Debug"
 msgstr "Приховати вікна ІСР при пуску"
 
 #: lazarusidestrconsts.dlghideideonrunhint
@@ -10416,6 +10418,10 @@ msgstr "ІСР"
 msgid "IDE build options"
 msgstr "Параметри збирання ІСР"
 
+#: lazarusidestrconsts.lisidecaptioncustomhint
+msgid "The caption of the main IDE window"
+msgstr ""
+
 #: lazarusidestrconsts.lisidecompileandrestart
 msgid "The IDE will be recompiled and restarted during installation/uninstallation of packages."
 msgstr "Під час встановлення/видалення пакунків ІСР буде перекомпільовано і перезапущено."
@@ -10458,7 +10464,11 @@ msgid "IDE Options:"
 msgstr "Параметри ІСР:"
 
 #: lazarusidestrconsts.lisidetitlecustom
-msgid "Custom IDE window title"
+msgid "Custom IDE title"
+msgstr ""
+
+#: lazarusidestrconsts.lisidetitleoptions
+msgid "IDE main window title"
 msgstr ""
 
 #: lazarusidestrconsts.lisidetitleshowsprojectdir
@@ -19849,6 +19859,10 @@ msgstr "Сховати блок"
 msgid "Indent block"
 msgstr "Зсунути блок вправо"
 
+#: lazarusidestrconsts.srkmecblockindentmove
+msgid "Indent (move) block"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecblockmove
 msgid "Move Block"
 msgstr "Перемістити блок"
@@ -19872,6 +19886,10 @@ msgstr "Перемкнути блок"
 #: lazarusidestrconsts.srkmecblockunindent
 msgid "Unindent block"
 msgstr "Скасувати зсув блока вправо"
+
+#: lazarusidestrconsts.srkmecblockunindentmove
+msgid "Unindent (move) block"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecbreakpointproperties
 msgid "show breakpoint properties"

@@ -2331,7 +2331,9 @@ msgid "Height:"
 msgstr "Korkeus:"
 
 #: lazarusidestrconsts.dlghideideonrun
-msgid "Hide IDE windows on run"
+#, fuzzy
+#| msgid "Hide IDE windows on run"
+msgid "Hide IDE windows on Run/Debug"
 msgstr "Piilota IDEn ikkunat ohjelmaa suoritettaessa"
 
 #: lazarusidestrconsts.dlghideideonrunhint
@@ -10409,6 +10411,10 @@ msgstr ""
 msgid "IDE build options"
 msgstr "IDEn kokoamisen asetukset"
 
+#: lazarusidestrconsts.lisidecaptioncustomhint
+msgid "The caption of the main IDE window"
+msgstr ""
+
 #: lazarusidestrconsts.lisidecompileandrestart
 msgid "The IDE will be recompiled and restarted during installation/uninstallation of packages."
 msgstr "IDE käännetään ja käynnistetään pakettien asennuksen/poistamisen aikana."
@@ -10451,7 +10457,11 @@ msgid "IDE Options:"
 msgstr "IDEn asetukset:"
 
 #: lazarusidestrconsts.lisidetitlecustom
-msgid "Custom IDE window title"
+msgid "Custom IDE title"
+msgstr ""
+
+#: lazarusidestrconsts.lisidetitleoptions
+msgid "IDE main window title"
 msgstr ""
 
 #: lazarusidestrconsts.lisidetitleshowsprojectdir
@@ -19768,6 +19778,10 @@ msgstr "Piilota lohko"
 msgid "Indent block"
 msgstr "Sisennä lohko"
 
+#: lazarusidestrconsts.srkmecblockindentmove
+msgid "Indent (move) block"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecblockmove
 msgid "Move Block"
 msgstr "Siirrä lohkoa"
@@ -19791,6 +19805,10 @@ msgstr "Vaihda lohko"
 #: lazarusidestrconsts.srkmecblockunindent
 msgid "Unindent block"
 msgstr "Poista lohkon sisennys"
+
+#: lazarusidestrconsts.srkmecblockunindentmove
+msgid "Unindent (move) block"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecbreakpointproperties
 msgid "show breakpoint properties"

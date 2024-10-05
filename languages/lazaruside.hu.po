@@ -2358,7 +2358,9 @@ msgid "Height:"
 msgstr "Magasság:"
 
 #: lazarusidestrconsts.dlghideideonrun
-msgid "Hide IDE windows on run"
+#, fuzzy
+#| msgid "Hide IDE windows on run"
+msgid "Hide IDE windows on Run/Debug"
 msgstr "IDE ablakok elrejtése futtatás közben"
 
 #: lazarusidestrconsts.dlghideideonrunhint
@@ -10446,6 +10448,10 @@ msgstr "IDE"
 msgid "IDE build options"
 msgstr "IDE építési beállítások"
 
+#: lazarusidestrconsts.lisidecaptioncustomhint
+msgid "The caption of the main IDE window"
+msgstr ""
+
 #: lazarusidestrconsts.lisidecompileandrestart
 msgid "The IDE will be recompiled and restarted during installation/uninstallation of packages."
 msgstr "Az IDE újra lesz fordítva és indítva a csomagok telepítése/eltávolítása folyamán."
@@ -10488,7 +10494,11 @@ msgid "IDE Options:"
 msgstr "IDE beállítások:"
 
 #: lazarusidestrconsts.lisidetitlecustom
-msgid "Custom IDE window title"
+msgid "Custom IDE title"
+msgstr ""
+
+#: lazarusidestrconsts.lisidetitleoptions
+msgid "IDE main window title"
 msgstr ""
 
 #: lazarusidestrconsts.lisidetitleshowsprojectdir
@@ -19883,6 +19893,10 @@ msgstr "Blokk elrejtése"
 msgid "Indent block"
 msgstr "Blokk behúzás növelése"
 
+#: lazarusidestrconsts.srkmecblockindentmove
+msgid "Indent (move) block"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecblockmove
 msgid "Move Block"
 msgstr "Blokk mozgatása"
@@ -19906,6 +19920,10 @@ msgstr "Blokk átkapcsolása"
 #: lazarusidestrconsts.srkmecblockunindent
 msgid "Unindent block"
 msgstr "Blokk behúzás csökkentése"
+
+#: lazarusidestrconsts.srkmecblockunindentmove
+msgid "Unindent (move) block"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecbreakpointproperties
 msgid "show breakpoint properties"
