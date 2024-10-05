@@ -1266,8 +1266,8 @@ begin
   // editing
   ecBlockIndent:         SetCombo(VK_I,[XCtrl],VK_UNKNOWN,[], VK_K,[XCtrl],VK_I,[]);
   ecBlockUnindent:       SetCombo(VK_U,[XCtrl],VK_UNKNOWN,[], VK_K,[XCtrl],VK_U,[]);
-  ecBlockIndentMove:     SetSingle(VK_I,[XCtrl, ssShift]);
-  ecBlockUnindentMove:   SetSingle(VK_U,[XCtrl, ssShift]);
+  ecBlockIndentMove:     SetSingle(VK_I,[XCtrl, ssAlt]);
+  ecBlockUnindentMove:   SetSingle(VK_U,[XCtrl, ssAlt]);
   ecDeleteLastChar:      SetSingle(VK_BACK,[], VK_BACK,[ssShift]); // ctrl H used for scroll window.
   ecDeleteChar:          SetSingle(VK_DELETE,[]); // ctrl G conflicts with GO
   ecDeleteWord:          SetSingle(VK_T,[XCtrl], VK_DELETE,[XCtrl]);
