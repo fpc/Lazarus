@@ -3190,7 +3190,7 @@ begin
     AAHeight := AAHeight and (Align in [alNone, alTop, alBottom])
       and not((akTop in Anchors) and (akBottom in Anchors));
 
-    if (Align=alNone) and (akLeft in Anchors) then
+    if (Align in [alNone, alRight]) and (akLeft in Anchors) then
       NewLeft := Round(NewLeft * AXProportion);
     if (Align=alNone) and (akRight in Anchors) and (Parent<>nil)
     and (AnchorSideRight.Control=nil) then
@@ -3206,7 +3206,7 @@ begin
       end;
     end;
 
-    if (Align=alNone) and (akTop in Anchors) then
+    if (Align in [alNone, alBottom]) and (akTop in Anchors) then
       NewTop := Round(NewTop * AYProportion);
     if (Align=alNone) and (akBottom in Anchors) and (Parent<>nil)
     and (AnchorSideBottom.Control=nil) then
