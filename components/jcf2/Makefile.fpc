@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for jcfbase 1.0
 #
-#   This file was generated on 3-9-23
+#   This file was generated on 5-10-24
 
 [package]
 name=jcfbase
@@ -11,7 +11,6 @@ version=1.0
 [compiler]
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)
 unitdir=. Parse Parse/PreProcessor Process Process/Align Process/Capitalisation Process/Indent Process/Info Process/Obfuscate Process/Onceoffs Process/Returns Process/Spacing Process/Transform Process/Warnings ReadWrite Settings Settings/Streams Ui Utils ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET)
-includedir=Include
 options=-MObjFPC -Scghi -O1 -g -gl -l -vewnhibq $(DBG_OPTIONS)
 
 [target]
