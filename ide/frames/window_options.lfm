@@ -145,27 +145,26 @@ object WindowOptionsFrame: TWindowOptionsFrame
   end
   object lblTitleBar: TLabel
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = EdTitleBar
-    AnchorSideTop.Side = asrCenter
+    AnchorSideTop.Control = TitleShowsProjectDirCheckBox
+    AnchorSideTop.Side = asrBottom
     Left = 0
     Height = 15
-    Top = 188
-    Width = 52
+    Top = 185
+    Width = 53
+    BorderSpacing.Top = 3
     Caption = 'lblTitleBar'
   end
   object EdTitleBar: TComboBox
     AnchorSideLeft.Control = lblTitleBar
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = TitleShowsProjectDirCheckBox
+    AnchorSideTop.Control = lblTitleBar
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 57
+    Left = 0
     Height = 23
-    Top = 184
-    Width = 515
+    Top = 202
+    Width = 572
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Left = 5
     BorderSpacing.Top = 2
     BorderSpacing.Right = 1
     ItemHeight = 15

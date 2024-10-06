@@ -1314,7 +1314,7 @@ resourcestring
   lisIDETitleStartsWithProjectName = 'IDE title starts with project name';
   lisIDETitleShowsProjectDir = 'IDE title shows project directory';
   lisIDETitleOptions = 'IDE main window title';
-  lisIDETitleCustom = 'Custom IDE title';
+  lisIDETitleCustom = 'Custom IDE title:';
   lisIDECaptionCustomHint = 'The caption of the main IDE window';
   lisAutoAdjustIDEHeight = 'Automatically adjust IDE main window height';
   lisAutoAdjustIDEHeightHint = '';
