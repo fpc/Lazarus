@@ -1347,7 +1347,7 @@ begin
     if prop.os2^.version >= 2 then
       FCapHeight:=prop.os2^.sCapHeight
     else
-      FCapHeight:=FAscentValue;
+      FCapHeight:=0;
 
     FAscentValue /= FUnitsPerEM;
     FDescentValue /= -FUnitsPerEM;
