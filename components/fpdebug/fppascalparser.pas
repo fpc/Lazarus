@@ -2801,6 +2801,7 @@ var
   Expr: TFpPascalExpressionPart;
   HighIdx, i: Integer;
   ff: TFpValueFieldFlags;
+  deref: TFpDbgMemLocation;
 begin
   Result := nil;
   if IsError(ExpressionData.Error) then
@@ -2814,8 +2815,11 @@ begin
     Result := Expr.GetResultValue;
     if (Result <> nil) and (not IsError(ExpressionData.Error)) then begin
       ff := Result.FieldFlags;
+      deref := Result.DerefAddress;
       if ( (not (svfAddress in ff))     or (IsReadableLoc(Result.Address))     ) and
-         ( (not (svfDataAddress in ff)) or (IsReadableLoc(Result.DataAddress)) )
+         ( (not (svfDataAddress in ff)) or (IsReadableLoc(Result.DataAddress)) ) and
+         // if deref returned invalid, then its not a pointer
+         ( (not IsValidLoc(deref))      or (IsReadableLoc(deref)) )
       then begin
         Result.AddReference;
         exit;
