@@ -294,6 +294,12 @@ var // Clipboard format IDs used in OLE drag'n drop and clipboard transfers.
 
   UtilityImageSize: Integer = cUtilityImageSize;
 
+{$ifdef gtk}
+// Workaround LCL bug 8553
+var
+  pf32bit: TPixelFormat = pfDevice;
+{$endif}
+
 type
   // The exception used by the trees.
   EVirtualTreeError = class(Exception);
