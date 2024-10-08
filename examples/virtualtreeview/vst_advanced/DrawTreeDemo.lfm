@@ -7,7 +7,7 @@ object DrawTreeForm: TDrawTreeForm
   Caption = 'DrawTreeForm'
   ClientHeight = 453
   ClientWidth = 710
-  LCLVersion = '3.99.0.0'
+  LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
   object Label7: TLabel
     Left = 8
