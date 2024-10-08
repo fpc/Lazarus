@@ -826,11 +826,15 @@ type
   TFpPasParserValue = class(TFpValue)
   private
     FContext: TFpDbgSimpleLocationContext;
-    FExpressionPart: TFpPascalExpressionPart;
+    // Pos and Text from expressionpart / used in errors
+    FExprPos: Integer;
+    FExprText: String;
   protected
     function DebugText(AIndent: String): String; virtual;
+    function  CreateErrorWithPos(AnErrorCode: TFpErrorCode; AData: array of const): TFpError;
   public
     constructor Create(AnExpressionPart: TFpPascalExpressionPart);
+    constructor Create(AContext: TFpDbgSimpleLocationContext; AnExprPos: Integer; AnExprText: String);
     property Context: TFpDbgSimpleLocationContext read FContext;
   end;
 
@@ -841,6 +845,7 @@ type
     FLowBoundIndex: TFpPasParserValueSlicedArrayIndex;
     FArraySlice: TFpPascalExpressionPartOperatorArraySliceController;
     FOwnsController: Boolean;
+    FExpressionPartInValue: TFpPascalExpressionPart;
   protected
     //function DebugText(AIndent: String): String; override;
     function SlicePart: TFpPascalExpressionPartOperatorArraySlice; inline;
@@ -913,15 +918,18 @@ type
 
   TPasParserSymbolPointer = class(TFpSymbol)
   private
-    FExpressionPart: TFpPascalExpressionPart;
     FPointerLevels: Integer;
     FPointedTo: TFpSymbol;
-    FContext: TFpDbgLocationContext;
+    FContext: TFpDbgSimpleLocationContext;
+    // Pos and Text from expressionpart / used in errors
+    FExprPos: Integer;
+    FExprText: String;
   protected
     // NameNeeded //  "^TPointedTo"
     procedure TypeInfoNeeded; override;
     function DoReadSize(const AValueObj: TFpValue; out ASize: TFpDbgValueSize): Boolean; override;
   public
+    constructor Create(const APointedTo: TFpSymbol; AContext: TFpDbgSimpleLocationContext; AnExprPos: Integer; AnExprText: String; APointerLevels: Integer);
     constructor Create(const APointedTo: TFpSymbol; AnExpressionPart: TFpPascalExpressionPart; APointerLevels: Integer);
     constructor Create(const APointedTo: TFpSymbol; AnExpressionPart: TFpPascalExpressionPart);
     destructor Destroy; override;
@@ -932,14 +940,13 @@ type
 
   TPasParserSymbolArrayDeIndex = class(TFpSymbolForwarder) // 1 index level off
   private
-    FExpressionPart: TFpPascalExpressionPart;
     FArray: TFpSymbol;
   protected
     //procedure ForwardToSymbolNeeded; override;
     function GetNestedSymbolCount: Integer; override;
     function GetNestedSymbol(AIndex: Int64): TFpSymbol; override;
   public
-    constructor Create(AnExpressionPart: TFpPascalExpressionPart; const AnArray: TFpSymbol);
+    constructor Create(const AnArray: TFpSymbol);
     destructor Destroy; override;
   end;
 
@@ -968,7 +975,7 @@ type
     function GetDerefAddress: TFpDbgMemLocation; override;
     function GetMember(AIndex: Int64): TFpValue; override;
   public
-    constructor Create(AValue: TFpValue; ATypeInfo: TFpSymbol; AnExpressionPart: TFpPascalExpressionPart);
+    constructor Create(AValue: TFpValue; ATypeInfo: TFpSymbol; AContext: TFpDbgSimpleLocationContext; AnExprPos: Integer; AnExprText: String);
     destructor Destroy; override;
   end;
 
@@ -1141,7 +1148,7 @@ end;
 function ValueToExprText(AnValue: TFpValue; AMaxLen: Integer = 0): String;
 begin
   if AnValue is TFpPasParserValue then
-    Result := TFpPasParserValue(AnValue).FExpressionPart.GetFullText(AMaxLen)
+    Result := TFpPasParserValue(AnValue).FExprText
   else
   if AnValue.DbgSymbol <> nil then
     Result := AnValue.DbgSymbol.Name
@@ -1206,10 +1213,28 @@ begin
   Result := AIndent + DbgSName(Self)  + '  DbsSym='+DbgSName(DbgSymbol)+' Type='+DbgSName(TypeInfo) + LineEnding;
 end;
 
+function TFpPasParserValue.CreateErrorWithPos(AnErrorCode: TFpErrorCode;
+  AData: array of const): TFpError;
+begin
+  if FExprPos = 1
+  then Result := CreateError(AnErrorCode, AData, CreateError(fpErrPasParser_AtStart,  []      ))
+  else Result := CreateError(AnErrorCode, AData, CreateError(fpErrPasParser_Position, [FExprPos]));
+end;
+
 constructor TFpPasParserValue.Create(AnExpressionPart: TFpPascalExpressionPart);
 begin
-  FExpressionPart := AnExpressionPart;
-  FContext := AnExpressionPart.ExpressionData.Scope.LocationContext;
+  Create(AnExpressionPart.ExpressionData.Scope.LocationContext,
+    AnExpressionPart.GetPos,
+    AnExpressionPart.GetText(MAX_ERR_EXPR_QUOTE_LEN));
+  inherited Create;
+end;
+
+constructor TFpPasParserValue.Create(AContext: TFpDbgSimpleLocationContext; AnExprPos: Integer;
+  AnExprText: String);
+begin
+  FContext  := AContext;
+  FExprPos  := AnExprPos;
+  FExprText := AnExprText;
   inherited Create;
 end;
 
@@ -1276,7 +1301,7 @@ begin
   end
   else begin
     if FValue is TFpPasParserValue then
-      SetLastError(FExpressionPart.CreateErrorWithPos(fpErrCannotCastToPointer_p,
+      SetLastError(CreateErrorWithPos(fpErrCannotCastToPointer_p,
         [ValueToExprText(FValue, MAX_ERR_EXPR_QUOTE_LEN)]
       ));
   end;
@@ -1380,7 +1405,7 @@ begin
   ti := FTypeSymbol.TypeInfo;
   addr := DerefAddress;
   if not IsTargetAddr(addr) then begin
-    SetLastError(FExpressionPart.CreateErrorWithPos(fpErrCannotDeref_p,
+    SetLastError(CreateErrorWithPos(fpErrCannotDeref_p,
       [ValueToExprText(FValue, MAX_ERR_EXPR_QUOTE_LEN)]
     ));
     exit;
@@ -1409,10 +1434,10 @@ begin
     Result := Tmp;
 end;
 
-constructor TFpPasParserValueCastToPointer.Create(AValue: TFpValue;
-  ATypeInfo: TFpSymbol; AnExpressionPart: TFpPascalExpressionPart);
+constructor TFpPasParserValueCastToPointer.Create(AValue: TFpValue; ATypeInfo: TFpSymbol;
+  AContext: TFpDbgSimpleLocationContext; AnExprPos: Integer; AnExprText: String);
 begin
-  inherited Create(AnExpressionPart);
+  inherited Create(AContext, AnExprPos, AnExprText);
   FValue := AValue;
   FValue.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FValue, 'TPasParserSymbolValueCastToPointer'){$ENDIF};
   FTypeSymbol := ATypeInfo;
@@ -1440,7 +1465,7 @@ end;
 function TFpPasParserValueMakeReftype.GetDbgSymbol: TFpSymbol;
 begin
   if FTypeSymbol = nil then begin
-    FTypeSymbol := TPasParserSymbolPointer.Create(FSourceTypeSymbol, FExpressionPart, FRefLevel);
+    FTypeSymbol := TPasParserSymbolPointer.Create(FSourceTypeSymbol, FContext, FExprPos, FExprText, FRefLevel);
     {$IFDEF WITH_REFCOUNT_DEBUG}FTypeSymbol.DbgRenameReference(@FSourceTypeSymbol, 'TPasParserSymbolValueMakeReftype'){$ENDIF};
   end;
   Result := FTypeSymbol;
@@ -1633,7 +1658,7 @@ begin
   if FValue.TypeInfo = nil then
     exit;
 
-  FTypeInfo := TPasParserSymbolPointer.Create(FValue.TypeInfo, FExpressionPart);
+  FTypeInfo := TPasParserSymbolPointer.Create(FValue.TypeInfo, FContext, FExprPos, FExprText, 1);
   {$IFDEF WITH_REFCOUNT_DEBUG}FTypeInfo.DbgRenameReference(@FTypeInfo, 'TPasParserAddressOfSymbolValue');{$ENDIF}
   Result := FTypeInfo;
 end;
@@ -1900,10 +1925,8 @@ begin
   Result := inherited GetNestedSymbol(AIndex + 1);
 end;
 
-constructor TPasParserSymbolArrayDeIndex.Create(
-  AnExpressionPart: TFpPascalExpressionPart; const AnArray: TFpSymbol);
+constructor TPasParserSymbolArrayDeIndex.Create(const AnArray: TFpSymbol);
 begin
-  FExpressionPart := AnExpressionPart;
   FArray := AnArray;
   FArray.AddReference;
   inherited Create('');
@@ -1928,7 +1951,7 @@ begin
     exit;
   end;
   assert(FPointerLevels > 1, 'TPasParserSymbolPointer.TypeInfoNeeded: FPointerLevels > 1');
-  t := TPasParserSymbolPointer.Create(FPointedTo, FExpressionPart, FPointerLevels-1);
+  t := TPasParserSymbolPointer.Create(FPointedTo, FContext, FExprPos, FExprText, FPointerLevels-1);
   SetTypeInfo(t);
   t.ReleaseReference;
 end;
@@ -1941,11 +1964,13 @@ begin
 end;
 
 constructor TPasParserSymbolPointer.Create(const APointedTo: TFpSymbol;
-  AnExpressionPart: TFpPascalExpressionPart; APointerLevels: Integer);
+  AContext: TFpDbgSimpleLocationContext; AnExprPos: Integer; AnExprText: String;
+  APointerLevels: Integer);
 begin
+  FContext  := AContext;
+  FExprPos  := AnExprPos;
+  FExprText := AnExprText;
   inherited Create('');
-  FExpressionPart := AnExpressionPart;
-  FContext := FExpressionPart.ExpressionData.Scope.LocationContext;
   FPointerLevels := APointerLevels;
   FPointedTo := APointedTo;
   FPointedTo.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(FPointedTo, 'TPasParserSymbolPointer'){$ENDIF};
@@ -1953,6 +1978,15 @@ begin
     SetTypeInfo(APointedTo);
   SetKind(skPointer);
   SetSymbolType(stType);
+end;
+
+constructor TPasParserSymbolPointer.Create(const APointedTo: TFpSymbol;
+  AnExpressionPart: TFpPascalExpressionPart; APointerLevels: Integer);
+begin
+  Create(APointedTo, AnExpressionPart.ExpressionData.Scope.LocationContext,
+    AnExpressionPart.GetPos, AnExpressionPart.GetText(MAX_ERR_EXPR_QUOTE_LEN),
+    APointerLevels
+  );
 end;
 
 constructor TPasParserSymbolPointer.Create(const APointedTo: TFpSymbol;
@@ -1969,7 +2003,7 @@ end;
 
 function TPasParserSymbolPointer.TypeCastValue(AValue: TFpValue): TFpValue;
 begin
-  Result := TFpPasParserValueCastToPointer.Create(AValue, Self, FExpressionPart);
+  Result := TFpPasParserValueCastToPointer.Create(AValue, Self, FContext, FExprPos, FExprText );
 end;
 
 
@@ -7442,7 +7476,7 @@ begin
     // Some evaluation errors (such as deref nil) are marked on the Expression,
     // rather than on the value(s).
     // If this code is called, the Expression should have been valid before.
-    FExpressionPart.ExpressionData.ClearError;
+    FExpressionPartInValue.ExpressionData.ClearError;
   end;
   Result := FArraySlice.Items[0].ResultValue;
 
@@ -7456,7 +7490,7 @@ begin
       Result.Flags := Result.Flags + [vfVariant];
   end;
 
-  FExpressionPart.ExpressionData.ClearError;
+  FExpressionPartInValue.ExpressionData.ClearError;
 end;
 
 function TFpPasParserValueSlicedArray.GetMemberCount: Integer;
@@ -7482,6 +7516,7 @@ end;
 constructor TFpPasParserValueSlicedArray.Create(
   ASlice: TFpPascalExpressionPartOperatorArraySliceController; AnOwnsController: boolean);
 begin
+  FExpressionPartInValue := ASlice;
   inherited Create(ASlice);
   FArraySlice := ASlice;
   FOwnsController := AnOwnsController;
