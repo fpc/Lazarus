@@ -8,13 +8,13 @@ object CategoriesFrm: TCategoriesFrm
   ClientHeight = 411
   ClientWidth = 341
   KeyPreview = True
+  PopupMode = pmExplicit
+  Position = poOwnerFormCenter
+  LCLVersion = '4.99.0.0'
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnKeyPress = FormKeyPress
-  PopupMode = pmExplicit
-  Position = poOwnerFormCenter
-  LCLVersion = '2.1.0.0'
   object pnMessage: TPanel
     Left = 0
     Height = 47

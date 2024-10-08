@@ -124,13 +124,13 @@ begin
                if FLazCompatibility = '' then
                  FLazCompatibility := Data^.FName
                else
-                 FLazCompatibility := FLazCompatibility + ', ' + Data^.FName;
+                 FLazCompatibility :=  Data^.FName + ', ' + FLazCompatibility;  // youngest version first
              end;
           3: begin
                if FFPCCompatibility = '' then
                  FFPCCompatibility := Data^.FName
                else
-                 FFPCCompatibility := FFPCCompatibility + ', ' + Data^.FName;
+                 FFPCCompatibility := Data^.FName + ', ' + FFPCCompatibility;   // youngest version first
              end;
           4: begin
                if FSupportedWidgetSets = '' then

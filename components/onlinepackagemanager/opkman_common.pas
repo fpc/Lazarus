@@ -111,19 +111,19 @@ const
     'Other',
     'Games and Game Engines');
 
-  MaxLazVersions = 4;
+  MaxLazVersions = 7;
   LazVersions: array [0..MaxLazVersions - 1] of String = (
-    '2.2.0', '2.2.4',
-    '3.0.0',
+    '2.2.0', '2.2.4',                                       // order from old to young
+    '3.0.0', '3.2.0', '3.4.0', '3.6.0',
     'Trunk');
-  LazDefVersions = '2.2.0, 2.2.4, 3.0.0';
-  LazTrunk = '3.99.0';
+  LazDefVersions = '3.6.0, 3.4.0, 3.2.0, 3.0.0';
+  LazTrunk = '4.99.0';
 
-  MaxFPCVersions = 4;
+  MaxFPCVersions = 7;
   FPCVersions: array [0..MaxFPCVersions - 1] of String = (
-    '3.2.0', '3.2.2', '3.2.4',
+    '3.0.0', '3.0.2', '3.0.4', '3.2.0', '3.2.2', '3.2.4',   // order from old to young
     'Trunk');
-  FPCDefVersion = '3.2.0, 3.2.2, 3.2.4';
+  FPCDefVersion = '3.2.2, 3.2.0';
   FPCTrunk = '3.3.1';
 
   DefWidgetSets = 'gtk2, win32/win64';
