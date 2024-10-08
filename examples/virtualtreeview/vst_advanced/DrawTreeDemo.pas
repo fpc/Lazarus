@@ -387,8 +387,9 @@ begin
             Data.Properties := Data.Properties + ', 64K colors';
           pf24bit:
             Data.Properties := Data.Properties + ', 16M colors';
-          pf32bit:
-            Data.Properties := Data.Properties + ', 16M+ colors';
+          else
+            if Picture.Bitmap.PixelFormat = pf32bit then
+              Data.Properties := Data.Properties + ', 16M+ colors';
         end;
         if Cardinal(Data.Image.Height) + 4 > TLazVirtualDrawTree(Sender).DefaultNodeHeight then
             Sender.NodeHeight[Node] := Data.Image.Height + 4;
