@@ -5990,6 +5990,7 @@ begin
   end;
 
   tmp := Items[0].ResultValue;
+  if (tmp = nil) then exit;
   ff := tmp.FieldFlags;
   if      (ff * [svfBoolean] <> [])               then b := tmp.AsBool
   else if (ff * [svfCardinal, svfOrdinal] <> [])  then b := tmp.AsCardinal <> 0
