@@ -3221,6 +3221,7 @@ var
     TmpNew: TFpValue;
     LBnd: Int64;
   begin
+    //       Seen.Add(DA, -2 - FList.Count); // array seen
     LBnd := ACurrentVal.OrdLowBound;
     Cnt := ACurrentVal.MemberCount;
     if Cnt > 1 then begin
@@ -3531,14 +3532,14 @@ begin
   Seen.Capacity := 256;
   TpSym := FirstVal.TypeInfo;
   try
-    DA := FirstVal.DataAddress;
-    Seen.Add(DA);
-
     if (FirstVal.Kind = skArray) then begin
       FlattenArray(FirstVal, nil, 0, -1, '', Max(1, ExpandArrayDepth));
     end
     else begin
+      DA := FirstVal.DataAddress;
+      Seen.Add(DA, 0);
       InternalAdd(FirstVal, 0, -1, '');
+
       if not IsReadableLoc(DA) then
         exit;
       if IsError(ExpressionData.Error) then
