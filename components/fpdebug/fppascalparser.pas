@@ -3223,8 +3223,6 @@ var
             Res.Flags := Res.Flags + [vfArrayOfVariant];
         end;
       end;
-      if ResIdx < 0 then
-        ResIdx := Res.FList.Count; // the index for the firs element of the array (if any)
 
       if IsNilLoc(DA) or
          ( (not IsReadableLoc(DA)) and ((not DoExpArray) or HasDtAddr) )
@@ -3233,17 +3231,18 @@ var
         exit;
       end;
 
-      s := Seen.Add(DA, ResIdx);
-      if DoExpArray then
-        Result := FlattenArray(ACurrentVal, AMapExpr, ACurDepth + 1, ACurKeyIdx, ACurKey, AnExpandDepth)
-      else
+      if DoExpArray then begin
+        Result := FlattenArray(ACurrentVal, AMapExpr, ACurDepth + 1, ACurKeyIdx, ACurKey, AnExpandDepth);
+      end
+      else begin
+        s := Seen.Add(DA, ResIdx);
         Result := FlattenRecurse(ACurrentVal, ACurDepth+1, ACurKey);
-
+        if (iffShowSeen in Flags) then
+          Seen.Data[s] := -1-ResIdx
+        else
+          Seen.Delete(s);
+      end;
       ReleaseRefAndNil(ACurrentVal);
-      if (iffShowSeen in Flags) then
-        Seen.Data[s] := -1-ResIdx
-      else
-        Seen.Delete(s);
 
     finally
       DisplayVal.ReleaseReference;
