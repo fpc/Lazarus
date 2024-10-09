@@ -3003,6 +3003,7 @@ var
   MaxCnt, ExpandArrayDepth: integer;
   TpSym: TFpSymbol;
   CacheKey: TFpPascalExpressionCacheFlattenKey;
+  SkipCache: Boolean;
 
 
   function FlattenRecurse(ACurrentVal: TFpValue; ACurDepth: integer; ACurKey: String): boolean; forward;
@@ -3014,6 +3015,8 @@ var
     TmpVal: TFpValueConstStruct;
     TmpVal2: TFpValue;
   begin
+    if ACurrentVal is TFpPasParserValueSlicedArray then
+      SkipCache := True;
     if iffObj1 in Flags then begin
       TmpVal := TFpValueConstStruct.Create;
       TmpVal2 := TFpValueConstNumber.Create(ACurDepth, False);
@@ -3396,7 +3399,7 @@ var
   OptSet: TFpPascalExpressionPartBracketSet absolute LastParam;
   i: Integer;
   OName: String;
-  OVal, CustomMaxCnt, LastParamNeg, SkipCache: Boolean;
+  OVal, CustomMaxCnt, LastParamNeg: Boolean;
   PParent: TFpPascalExpressionPartContainer;
   ListCache: TFpPascalExpressionCacheFlatten;
 begin
