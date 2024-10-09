@@ -98,7 +98,6 @@ type
     function GetTextExpressionAddr: PChar; inline;
     function GetValid: Boolean;
   protected
-    FNotCacheAble: Boolean;
     FHasPCharIndexAccess: Boolean;
   public
     constructor Create(ATextExpression: String; AScope: TFpDbgSymbolScope);
@@ -3510,7 +3509,15 @@ begin
   end;
 
   ListCache := nil;
-  SkipCache := ExpressionData.FNotCacheAble;
+  SkipCache := False;
+  if (ExpressionData.GlobalCache <> nil) then begin
+    Itm := TopParent;
+    while (not SkipCache) and (Itm is TFpPascalExpressionPartOperatorArraySliceController)
+    do begin
+      SkipCache := TFpPascalExpressionPartOperatorArraySliceController(Itm).SlicePart.FindInParents(Self.Parent);
+      Itm := TFpPascalExpressionPartContainer(Itm).Items[0];
+    end;
+  end;
 
   if (not SkipCache) and (ExpressionData.GlobalCache <> nil) then begin
     CacheKey.CtxThread := ExpressionData.Scope.LocationContext.ThreadId;
@@ -4488,12 +4495,9 @@ var
       inc(TokenEndPtr);
     case TokenEndPtr - CurPtr of
       1: AddPart(TFpPascalExpressionPartOperatorMemberOf);
-      2: begin
-        FSharedData.FNotCacheAble := True;
-        if CurPart.SurroundingBracket is TFpPascalExpressionPartBracketIndex
+      2: if CurPart.SurroundingBracket is TFpPascalExpressionPartBracketIndex
         then AddPart(TFpPascalExpressionPartOperatorArraySlice)
         else SetParserError(fpErrPasParserUnexpectedToken_p);
-      end;
       otherwise
         SetParserError(fpErrPasParserUnexpectedToken_p);
     end;
