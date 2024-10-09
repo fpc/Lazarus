@@ -1319,8 +1319,10 @@ var
     if Mediator<>nil then
     begin
       NewSize:=Mediator.GetDefaultSize;
-      NewWidth:=NewSize.X;
-      NewHeight:=NewSize.Y;
+      if NewWidth=0 then
+        NewWidth:=NewSize.X;
+      if NewHeight=0 then
+        NewHeight:=NewSize.Y;
     end;
   end;
 
