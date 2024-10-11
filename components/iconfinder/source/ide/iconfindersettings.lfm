@@ -13,9 +13,10 @@ object IconFinderSettingsFrame: TIconFinderSettingsFrame
   DesignTop = 215
   object ToolBar: TToolBar
     Left = 0
-    Height = 26
+    Height = 22
     Top = 0
     Width = 372
+    AutoSize = True
     Caption = 'ToolBar'
     EdgeBorders = []
     List = True
