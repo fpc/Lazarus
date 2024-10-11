@@ -20,6 +20,7 @@ unit IconViewer;
 interface
 
 uses
+  // RTL/FCL
   Classes, SysUtils,
   // LazUtils
   LazFileUtils, LazLoggerBase,
@@ -61,6 +62,7 @@ type
     procedure IconDetailsPanelResize(Sender: TObject);
   private
     FIconViewer: TIconThumbnailViewer;
+    FOnChange: TNotifyEvent;
     FOnFilter: TNotifyEvent;
     FOnIconDblClick: TNotifyEvent;
     function GetFilteredCount: Integer;
@@ -88,6 +90,7 @@ type
     procedure AddIconFolder(AFolder: String; Hidden: Boolean = false);
     procedure CopyMetadataToNameBase(AIcon: TIconItem);
     procedure DeleteSelectedIcon;
+    procedure FocusKeywordFilter;
     procedure GetKeywordsHistory(AList: TStrings);
     procedure ReadIconFolders(AList: TStrings);
     procedure SetKeywordsHistory(AList: TStrings);
@@ -104,6 +107,7 @@ type
     property SizeFilter: String read GetSizeFilter write SetSizeFilter;
     property StyleFilter: String read GetStyleFilter write SetStyleFilter;
     property TotalCount: Integer read GetTotalCount;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnFilter: TNotifyEvent read FOnFilter write FOnFilter;
     property OnIconDblClick: TNotifyEvent read FOnIconDblClick write FOnIconDblClick;
 
@@ -267,6 +271,14 @@ end;
 procedure TIconViewerFrame.DoIconViewerSelect(Sender: TObject);
 begin
   UpdateIconDetails;
+  if Assigned(FOnChange) then
+    FOnChange(self);
+end;
+
+procedure TIconViewerFrame.FocusKeywordFilter;
+begin
+  if HandleAllocated and cmbFilterByKeywords.CanFocus then
+    cmbFilterByKeywords.SetFocus;
 end;
 
 function TIconViewerFrame.GetFilteredCount: Integer;

@@ -162,6 +162,7 @@ begin
 
   HorzScrollbar.Tracking := true;
   VertScrollbar.Tracking := true;
+  TabStop := true;
 end;
 
 destructor TBasicThumbnailviewer.Destroy;
@@ -387,6 +388,8 @@ begin
         else
           SelectedIndex := SelectedIndex + (ThumbnailCount - 1 - SelectedIndex) div FColCount * FColCount;
       end;
+    VK_TAB:
+      exit;
   end;
   Key := 0; // discard key... not handled in TWinControl or handled here
 end;

@@ -13,17 +13,21 @@ type
   { TIconFinderForm }
 
   TIconFinderForm = class(TForm)
+    Bevel1:TBevel;
     btnSelect: TButton;
     btnCancel: TButton;
     Panel1: TPanel;
     procedure btnSelectClick(Sender: TObject);
+    procedure FormActivate(Sender:TObject);
     procedure FormCreate(Sender: TObject);
   private
     FViewer: TIconViewerFrame;
     FImageList: TCustomImageList;
     FImageIndex: Integer;
+    FActivated: Boolean;
     procedure SetImageIndex(AValue: Integer);
     procedure IconDblClickHandler(Sender: TObject);
+    procedure IconViewerChangeHandler(Sender: TObject);
   public
     property ImageList: TCustomImageList read FImageList write FImageList;
     property ImageIndex: Integer read FImageIndex write SetImageIndex;
@@ -38,26 +42,15 @@ implementation
 {$R *.lfm}
 
 const
+  // Please adjust LAZ_DIR to the location of your Lazarus installation
   {$IFDEF MSWINDOWS}
-  GENERAL_PURPOSE_IMAGES = 'C:\Lazarus\lazarus-main_fpc3.2.2\images\general_purpose';
+  LAZ_DIR = 'C:\Lazarus\lazarus-main_fpc3.2.2\';
   {$ELSE}
-  GENERAL_PURPOSE_IMAGES = '/home/werner/Laz-main/images/general_purpose';
+  LAZ_DIR = '/home/werner/Laz-main/';
   {$ENDIF}
+  GENERAL_PURPOSE_IMAGES = LAZ_DIR + 'images/general_purpose';
 
 { TIconFinderForm }
-
-procedure TIconFinderForm.FormCreate(Sender: TObject);
-begin
-  FImageIndex := -1;
-  FViewer := TIconViewerFrame.Create(self);
-  FViewer.Parent := Self;
-  FViewer.Align := alClient;
-  FViewer.BorderSpacing.Top := 6;
-  FViewer.OnIconDblClick := @IconDblClickHandler;
-  FViewer.AddIconFolder(GENERAL_PURPOSE_IMAGES);
-  FViewer.IconViewer.FilterByIconSize := '16 x 16';
-  FViewer.cmbFilterBySize.ItemIndex := FViewer.cmbFilterBySize.Items.IndexOf(FViewer.IconViewer.FilterByIconSize);
-end;
 
 procedure TIconFinderForm.btnSelectClick(Sender: TObject);
 var
@@ -73,10 +66,40 @@ begin
   end;
 end;
 
+procedure TIconFinderForm.FormActivate(Sender:TObject);
+begin
+  if not FActivated then
+  begin
+    FActivated := true;
+    FViewer.FocusKeywordFilter;
+  end;
+end;
+
+procedure TIconFinderForm.FormCreate(Sender: TObject);
+begin
+  FImageIndex := -1;
+  FViewer := TIconViewerFrame.Create(self);
+  FViewer.Parent := Self;
+  FViewer.Align := alClient;
+  FViewer.BorderSpacing.Top := 6;
+  FViewer.OnChange := @IconViewerChangeHandler;
+  FViewer.OnIconDblClick := @IconDblClickHandler;
+  FViewer.AddIconFolder(GENERAL_PURPOSE_IMAGES);
+  FViewer.IconViewer.FilterByIconSize := '16 x 16';
+  FViewer.cmbFilterBySize.ItemIndex := FViewer.cmbFilterBySize.Items.IndexOf(FViewer.IconViewer.FilterByIconSize);
+  FViewer.TabStop := true;
+  FViewer.TabOrder := 0;
+end;
+
 procedure TIconFinderForm.IconDblClickHandler(Sender: TObject);
 begin
   btnSelectClick(nil);
   Modalresult := mrYes;
+end;
+
+procedure TIconFinderForm.IconViewerChangeHandler(Sender: TObject);
+begin
+  btnSelect.Enabled := FViewer.SelectedIcon <> nil;
 end;
 
 procedure TIconFinderForm.SetImageIndex(AValue: Integer);

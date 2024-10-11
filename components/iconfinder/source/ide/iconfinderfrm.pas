@@ -33,6 +33,7 @@ type
 
   TIconFinderForm = class(TForm)
     ButtonPanel: TButtonPanel;
+    procedure FormActivate(Sender:TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormCreate(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
@@ -41,8 +42,10 @@ type
     FOnIconSelectClick: TNotifyEvent;
     FOnIconDblClick: TNotifyEvent;
     FSettingsNodeName: String;
+    FActivated: Boolean;
   protected
     procedure AddDefaultIconFolder;
+    procedure IconViewerChangeHandler(Sender: TObject);
     procedure IconViewerDblClickHandler(Sender: TObject);
     procedure IconViewerFilterHandler(Sender: TObject);
     procedure IconSelectHandler(Sender: TObject);
@@ -62,6 +65,15 @@ implementation
 
 { TIconFinderForm }
 
+procedure TIconFinderForm.FormActivate(Sender:TObject);
+begin
+  if not FActivated then
+  begin
+    FActivated := true;
+    FViewer.FocusKeywordFilter;
+  end;
+end;
+
 procedure TIconFinderForm.FormCreate(Sender: TObject);
 begin
   FViewer := TIconViewerFrame.Create(self);
@@ -75,6 +87,8 @@ begin
   FViewer.BorderSpacing.Top := 6;
   FViewer.OnIconDblClick := @IconViewerDblClickHandler;
   FViewer.OnFilter := @IconViewerFilterHandler;
+  FViewer.OnChange := @IconViewerChangeHandler;
+  ButtonPanel.OKButton.Enabled := false;
   ButtonPanel.OKButton.Caption := RSIconFinderIDE_Select;
 end;
 
@@ -98,6 +112,11 @@ procedure TIconFinderForm.IconSelectHandler(Sender: TObject);
 begin
   if Assigned(FOnIconSelectClick) then
     FOnIconSelectClick(Sender);
+end;
+
+procedure TIconFinderForm.IconViewerChangeHandler(Sender: TObject);
+begin
+  ButtonPanel.OKButton.Enabled := FViewer.SelectedIcon <> nil;
 end;
 
 procedure TIconFinderForm.IconViewerDblClickHandler(Sender: TObject);

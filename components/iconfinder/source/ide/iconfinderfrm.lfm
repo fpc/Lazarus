@@ -6,7 +6,8 @@ object IconFinderForm: TIconFinderForm
   Caption = 'Icon Finder'
   ClientHeight = 600
   ClientWidth = 800
-  LCLVersion = '3.99.0.0'
+  LCLVersion = '4.99.0.0'
+  OnActivate = FormActivate
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   object ButtonPanel: TButtonPanel
