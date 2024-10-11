@@ -43,6 +43,15 @@ inherited ImageListEditorDlgEx: TImageListEditorDlgEx
   end
   inherited ToolBar: TToolBar
     Width = 592
+    inherited tbSeparator1: TToolButton
+      Height = 40
+    end
+    inherited tbSeparator2: TToolButton
+      Height = 40
+    end
+    inherited tbSeparator3: TToolButton
+      Height = 40
+    end
   end
   inherited Splitter1: TSplitter
     Height = 389

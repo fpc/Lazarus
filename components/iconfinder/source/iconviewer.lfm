@@ -2,9 +2,9 @@ object IconViewerFrame: TIconViewerFrame
   Left = 0
   Height = 291
   Top = 0
-  Width = 468
+  Width = 606
   ClientHeight = 291
-  ClientWidth = 468
+  ClientWidth = 606
   TabOrder = 0
   DesignLeft = 319
   DesignTop = 171
@@ -12,66 +12,69 @@ object IconViewerFrame: TIconViewerFrame
     Left = 0
     Height = 31
     Top = 0
-    Width = 468
+    Width = 606
     Align = alTop
     AutoSize = True
     BevelOuter = bvNone
     ClientHeight = 31
-    ClientWidth = 468
+    ClientWidth = 606
     ParentBackground = False
     ParentColor = False
     TabOrder = 0
     object cmbFilterBySize: TComboBox
-      AnchorSideLeft.Control = FilterPanel
       AnchorSideTop.Control = FilterPanel
+      AnchorSideRight.Control = cmbFilterByStyle
       AnchorSideBottom.Side = asrBottom
-      Left = 6
+      Left = 318
       Height = 23
       Top = 2
-      Width = 150
+      Width = 134
+      Anchors = [akTop, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 2
       DropDownCount = 24
       ItemHeight = 15
       Style = csDropDownList
-      TabOrder = 0
+      TabOrder = 1
       OnChange = cmbFilterBySizeChange
     end
     object cmbFilterByStyle: TComboBox
-      AnchorSideLeft.Control = cmbFilterBySize
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = cmbFilterBySize
       AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = FilterPanel
+      AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
-      Left = 162
+      Left = 458
       Height = 23
       Top = 2
-      Width = 150
+      Width = 142
+      Anchors = [akTop, akRight]
       BorderSpacing.Left = 6
+      BorderSpacing.Right = 6
       DropDownCount = 24
       ItemHeight = 15
       Style = csDropDownList
-      TabOrder = 1
+      TabOrder = 2
       OnChange = cmbFilterByStyleChange
     end
     object cmbFilterByKeywords: TComboBox
-      AnchorSideLeft.Control = cmbFilterByStyle
-      AnchorSideLeft.Side = asrBottom
+      AnchorSideLeft.Control = FilterPanel
       AnchorSideTop.Control = cmbFilterBySize
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Control = btnKeywordEditor
       AnchorSideBottom.Side = asrBottom
-      Left = 318
+      Left = 6
       Height = 23
       Top = 2
-      Width = 66
+      Width = 228
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Right = 2
       BorderSpacing.Bottom = 6
       DropDownCount = 24
       ItemHeight = 15
-      TabOrder = 2
+      TabOrder = 0
       TextHint = 'Enter keywords here'
       OnEditingDone = cmbFilterByKeywordsEditingDone
     end
@@ -79,7 +82,7 @@ object IconViewerFrame: TIconViewerFrame
       AnchorSideTop.Control = cmbFilterByKeywords
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Control = btnClearFilter
-      Left = 386
+      Left = 236
       Height = 24
       Top = 1
       Width = 24
@@ -91,9 +94,8 @@ object IconViewerFrame: TIconViewerFrame
     object btnExecuteFilter: TSpeedButton
       AnchorSideTop.Control = cmbFilterByKeywords
       AnchorSideTop.Side = asrCenter
-      AnchorSideRight.Control = FilterPanel
-      AnchorSideRight.Side = asrBottom
-      Left = 438
+      AnchorSideRight.Control = cmbFilterBySize
+      Left = 288
       Height = 24
       Top = 1
       Width = 24
@@ -105,7 +107,7 @@ object IconViewerFrame: TIconViewerFrame
       AnchorSideTop.Control = cmbFilterByKeywords
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Control = btnExecuteFilter
-      Left = 412
+      Left = 262
       Height = 24
       Top = 1
       Width = 24
@@ -118,7 +120,7 @@ object IconViewerFrame: TIconViewerFrame
     Left = 6
     Height = 68
     Top = 223
-    Width = 456
+    Width = 594
     Align = alBottom
     AutoSize = True
     BorderSpacing.Left = 6
@@ -126,7 +128,7 @@ object IconViewerFrame: TIconViewerFrame
     BorderSpacing.Right = 6
     BevelOuter = bvNone
     ClientHeight = 68
-    ClientWidth = 456
+    ClientWidth = 594
     TabOrder = 1
     OnResize = IconDetailsPanelResize
     object CaptionPanel: TPanel
@@ -238,7 +240,7 @@ object IconViewerFrame: TIconViewerFrame
       Left = 66
       Height = 15
       Top = 51
-      Width = 390
+      Width = 528
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 2
       Caption = 'infoKeywords'
@@ -249,7 +251,7 @@ object IconViewerFrame: TIconViewerFrame
     Left = 0
     Height = 4
     Top = 213
-    Width = 468
+    Width = 606
     Align = alBottom
     Shape = bsBottomLine
   end
@@ -257,7 +259,7 @@ object IconViewerFrame: TIconViewerFrame
     Left = 0
     Height = 2
     Top = 31
-    Width = 468
+    Width = 606
     Align = alTop
     Shape = bsBottomLine
   end

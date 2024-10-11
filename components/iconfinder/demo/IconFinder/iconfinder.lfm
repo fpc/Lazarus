@@ -6,7 +6,8 @@ object IconFinderForm: TIconFinderForm
   Caption = 'Icon Finder'
   ClientHeight = 396
   ClientWidth = 681
-  LCLVersion = '3.99.0.0'
+  LCLVersion = '4.99.0.0'
+  OnActivate = FormActivate
   OnCreate = FormCreate
   object Panel1: TPanel
     Left = 6
@@ -30,6 +31,7 @@ object IconFinderForm: TIconFinderForm
       Anchors = [akTop, akRight]
       BorderSpacing.Right = 6
       Caption = 'Select'
+      Enabled = False
       ModalResult = 6
       TabOrder = 0
       OnClick = btnSelectClick
@@ -47,5 +49,13 @@ object IconFinderForm: TIconFinderForm
       ModalResult = 2
       TabOrder = 1
     end
+  end
+  object Bevel1: TBevel
+    Left = 0
+    Height = 8
+    Top = 351
+    Width = 681
+    Align = alBottom
+    Shape = bsBottomLine
   end
 end
