@@ -26,7 +26,7 @@ uses
   LCLType, Forms, Controls, Buttons, StdCtrls, Dialogs, Menus, Graphics,
   ButtonPanel, Clipbrd,
   // LazUtils
-  FileUtil, LazFileUtils, LazStringUtils, LazFileCache, LazUTF8,
+  FileUtil, LazFileUtils, LazStringUtils, LazFileCache, LazUTF8, LazLoggerBase,
   // LazControls
   ShortPathEdit,
   // IdeIntf
@@ -265,10 +265,14 @@ begin
 end;
 
 procedure TPathEditorDialog.ReplaceButtonClick(Sender: TObject);
+var
+  i: Integer;
 begin
   with PathListBox do begin
-    Items[ItemIndex]:=BaseRelative(DirectoryEdit.Text);
-    Items.Objects[ItemIndex]:=PathMayExist(DirectoryEdit.Text);
+    i:=ItemIndex;
+    if i<0 then exit;
+    Items[i]:=BaseRelative(DirectoryEdit.Text);
+    Items.Objects[i]:=PathMayExist(DirectoryEdit.Text);
     UpdateButtons;
   end;
 end;
