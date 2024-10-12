@@ -24,14 +24,14 @@ unit frmOptions;
 interface
 
 uses
-  Forms, ButtonPanel, StdCtrls;
+  Forms, ButtonPanel, StdCtrls, Classes;
 
 type
 
   { TOptionsForm }
 
   TOptionsForm = class(TForm)
-    ButtonPanel1: TButtonPanel;
+    ButtonPanel:TButtonPanel;
     CBNewVisible: TCheckBox;
     CBCleanLogOnNewProcess: TCheckBox;
     CBShowOnStartUp: TCheckBox;
@@ -39,7 +39,9 @@ type
     CBNewAtBottom: TCheckBox;
     GBWindow: TGroupBox;
     GBMessages: TGroupBox;
+    procedure FormActivate(Sender:TObject);
   private
+    FActivated: boolean;
     function GetB(AIndex: integer): Boolean;
     function GetCB(AIndex: Integer): TCheckBox;
     procedure SetB(AIndex: integer; const AValue: Boolean);
@@ -60,8 +62,20 @@ implementation
 
 { TOptionsForm }
 
-function TOptionsForm.GetCB(AIndex : Integer) : TCheckBox;
+procedure TOptionsForm.FormActivate(Sender:TObject);
+begin
+  if not FActivated then
+  begin
+    FActivated := true;
+    AutoSize := false;
+    ClientHeight := GBMessages.Top + GBMessages.Height +
+      GBMessages.BorderSpacing.Around + GBMessages.BorderSpacing.Bottom +
+      ButtonPanel.Height;
+    ClientWidth := GBMessages.Left + GBMessages.Width + GBMessages.BorderSpacing.Around;
+  end;
+end;
 
+function TOptionsForm.GetCB(AIndex : Integer) : TCheckBox;
 begin
   Case AIndex of
     0 : Result:=CBShowOnStartUp;

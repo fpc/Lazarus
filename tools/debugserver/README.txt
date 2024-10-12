@@ -46,3 +46,9 @@ The indentation of the messages (by SendMethodEnter) is intentional: if an
 exception occurs, then the SendMethodExit does not happen, and you see that
 something is wrong visually.
 
+-------------------------
+
+Icons used by this application were provided by Roland Hahn (https://www.rhsoft.de/)
+under Creative Commons CC0 1.0 Universal License
+(freely available, no restrictions in usage).
+
