@@ -164,6 +164,7 @@ end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
+  FormatSettings.LongTimeFormat := 'hh:nn:ss.zzz';
   LoadSettings;
   If Not FShowOnStartup Then
     Hide;
