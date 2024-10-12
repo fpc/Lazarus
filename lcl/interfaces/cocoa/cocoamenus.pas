@@ -523,6 +523,12 @@ begin
     rsMacOSMenuPreferences,
     VK_OEM_COMMA, [ssMeta]);
 
+  // Custom onCreate
+  if Assigned( CocoaConfigMenu.appMenu.onCreate ) then begin
+    submenu.addItem( NSMenuItem.separatorItem );
+    CocoaConfigMenu.appMenu.onCreate( submenu );
+  end;
+
   // Auto Create App Menu below?
   if CocoaConfigMenu.appMenu.dontAutoCreateItems then
     Exit;
