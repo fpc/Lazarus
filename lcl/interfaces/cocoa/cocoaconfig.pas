@@ -115,6 +115,8 @@ type
     defaultRadioImageName: NSString;
   end;
 
+  TCocoaConfigAppMenuOnCreate = procedure ( appMenu: NSMenu );
+
   // Application interface provided to facilitate APP to operate App Menu.
   // it's easy to set About, Preferences, and customized menus,
   // only the LCL TMenuItem is needed to pass in.
@@ -124,6 +126,7 @@ type
     aboutItem: TMenuItem;
     preferencesItem: TMenuItem;
     customMenus: TMenuItem;
+    onCreate: TCocoaConfigAppMenuOnCreate;
     dontAutoCreateItems: Boolean;
   end;
 

@@ -21,6 +21,7 @@ var
       aboutItem: nil;
       preferencesItem: nil;
       customMenus: nil;
+      onCreate: nil;
       dontAutoCreateItems: False;
     );
 
