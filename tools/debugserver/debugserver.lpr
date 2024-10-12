@@ -13,6 +13,7 @@ uses
 {$R *.res}
 
 begin
+  Application.Scaled:=True;
   Application.Title:='FPC/Lazarus debug message server';
   Application.Initialize;
   Application.CreateForm(TMainForm, MainForm);
