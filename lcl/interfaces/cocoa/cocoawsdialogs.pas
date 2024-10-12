@@ -441,28 +441,7 @@ var
       editMenuTitle:= CocoaConst.NSSTR_EDIT_MENU;
     end;
 
-    editMenu:= NSMenuItem.alloc.init;
-    mainMenu.insertItem_atIndex(editMenu, editMenuIndex);
-    editMenu.release;
-
-    editSubmenu:= NSMenu.alloc.initWithTitle(editMenuTitle);
-    editMenu.setSubmenu(editSubmenu);
-    editSubmenu.release;
-
-    editSubmenu.addItemWithTitle_action_keyEquivalent(
-      CocoaConst.NSSTR_EDIT_MENU_UNDO, objcselector('undo:'), NSSTR('z'));
-    editSubmenu.addItemWithTitle_action_keyEquivalent(
-      CocoaConst.NSSTR_EDIT_MENU_REDO, objcselector('redo:'), NSSTR('Z'));
-    editSubmenu.addItem(NSMenuItem.separatorItem);
-
-    editSubmenu.addItemWithTitle_action_keyEquivalent(
-      CocoaConst.NSSTR_EDIT_MENU_CUT, objcselector('cut:'), NSSTR('x'));
-    editSubmenu.addItemWithTitle_action_keyEquivalent(
-      CocoaConst.NSSTR_EDIT_MENU_COPY, objcselector('copy:'), NSSTR('c'));
-    editSubmenu.addItemWithTitle_action_keyEquivalent(
-      CocoaConst.NSSTR_EDIT_MENU_PASTE, objcselector('paste:'), NSSTR('v'));
-    editSubmenu.addItemWithTitle_action_keyEquivalent(
-      CocoaConst.NSSTR_EDIT_MENU_SELECTALL, objcselector('selectAll:'), NSSTR('a'));
+    AttachEditMenu( mainMenu, editMenuIndex, editMenuTitle );
   end;
 
   class procedure RestoreEditMenu();

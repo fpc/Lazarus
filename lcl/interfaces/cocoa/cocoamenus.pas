@@ -85,6 +85,7 @@ function ToggleAppMenu(ALogicalEnabled: Boolean): Boolean;
 procedure Do_SetCheck(const ANSMenuItem: NSMenuItem; const Checked: boolean);
 
 function FindEditMenu(const menu:NSMenu; const title:NSString): NSMenuItem;
+procedure AttachEditMenu(const menu:NSMenu; const index:Integer; const title:NSString );
 procedure NSMenuAddItemsFromLCLMenu(menu: NSMenu; lclMenu: TMenuItem);
 
 implementation
@@ -299,6 +300,37 @@ begin
   end;
 
   Result:= FindEditMenuByKeyEquivalent(menu, NSSTR('c')); // Command+C
+end;
+
+procedure AttachEditMenu(const menu: NSMenu; const index: Integer;
+  const title: NSString);
+var
+  editMenu: NSMenuItem;
+  editSubmenu: NSMenu;
+begin
+  editMenu:= NSMenuItem.alloc.init;
+  editMenu.setTitle( title );
+  menu.insertItem_atIndex(editMenu, index);
+  editMenu.release;
+
+  editSubmenu:= NSMenu.alloc.initWithTitle(title);
+  editMenu.setSubmenu(editSubmenu);
+  editSubmenu.release;
+
+  editSubmenu.addItemWithTitle_action_keyEquivalent(
+    CocoaConst.NSSTR_EDIT_MENU_UNDO, objcselector('undo:'), NSSTR('z'));
+  editSubmenu.addItemWithTitle_action_keyEquivalent(
+    CocoaConst.NSSTR_EDIT_MENU_REDO, objcselector('redo:'), NSSTR('Z'));
+  editSubmenu.addItem(NSMenuItem.separatorItem);
+
+  editSubmenu.addItemWithTitle_action_keyEquivalent(
+    CocoaConst.NSSTR_EDIT_MENU_CUT, objcselector('cut:'), NSSTR('x'));
+  editSubmenu.addItemWithTitle_action_keyEquivalent(
+    CocoaConst.NSSTR_EDIT_MENU_COPY, objcselector('copy:'), NSSTR('c'));
+  editSubmenu.addItemWithTitle_action_keyEquivalent(
+    CocoaConst.NSSTR_EDIT_MENU_PASTE, objcselector('paste:'), NSSTR('v'));
+  editSubmenu.addItemWithTitle_action_keyEquivalent(
+    CocoaConst.NSSTR_EDIT_MENU_SELECTALL, objcselector('selectAll:'), NSSTR('a'));
 end;
 
 procedure NSMenuAddItemsFromLCLMenu(menu: NSMenu; lclMenu: TMenuItem);
