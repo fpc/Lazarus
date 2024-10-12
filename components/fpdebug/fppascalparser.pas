@@ -335,6 +335,7 @@ type
     function DoGetResultValue: TFpValue; override;
     property OnGetSymbol: TFpPascalParserGetSymbolForIdentProc read FOnGetSymbol write FOnGetSymbol;
     procedure Assign(ASourcePart: TFpPascalExpressionPart); override;
+    procedure ResetEvaluation; override;
   end;
 
   { TFpPascalExpressionPartCpuRegister }
@@ -2745,6 +2746,14 @@ begin
         FOnGetSymbol := @TFpPascalExpressionPartIntrinsic(p).DoGetMemberForFlattenExpr;
     end;
   end;
+end;
+
+procedure TFpPascalExpressionPartIdentifier.ResetEvaluation;
+begin
+  if (FResultValue <> nil) and (FOnGetSymbol = nil) then
+    FResultValue.Reset
+  else
+    inherited ResetEvaluation;
 end;
 
 function GetFirstToken(AText: PChar): String;
