@@ -886,8 +886,11 @@ begin
       end else
       begin
         // Item without appendix
-        Result := item;
-        exit;
+        if ((item.Width = AWidth) and (item.Height = AHeight)) or ((AWidth = -1) and (AHeight = -1)) then
+        begin
+          Result := item;
+          exit;
+        end;
       end;
     end;
   end;
