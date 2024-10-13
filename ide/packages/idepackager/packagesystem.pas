@@ -47,7 +47,7 @@ uses
   Classes, SysUtils, Contnrs, StrUtils, AVL_Tree, fpmkunit, System.UITypes,
   // LazUtils
   FileUtil, LazFileCache, LazLoggerBase, LazUtilities, LazFileUtils, LazUTF8,
-  Laz2_XMLCfg, Laz2_XMLRead, LazStringUtils, LazTracer, AvgLvlTree, FPCAdds,
+  Laz2_XMLCfg, Laz2_XMLRead, LazStringUtils, LazTracer, AvgLvlTree, FPCAdds, UTF8Process,
   // codetools
   FileProcs, DefineTemplates, CodeToolManager, CodeCache, DirectoryCacher,
   BasicCodeTools, NonPascalCodeTools, SourceChanger,
@@ -151,6 +151,7 @@ type
     CompilerFilename: string;
     CompilerParams: TStrings;
     ErrorMessage: string;
+    Run: integer;
     constructor Create(aKind, aModuleName, aFilename: string); override;
     destructor Destroy; override;
   end;
@@ -2175,16 +2176,19 @@ begin
 
   if Data.ErrorMessage<>'' then exit;
 
-  // update .po files
-  if (APackage.POOutputDirectory<>'') then begin
-    MsgResult:=ConvertPackageRSTFiles(APackage);
-    if MsgResult<>mrOk then begin
-      Data.ErrorMessage:='ConvertPackageRSTFiles failed';
-      PkgCompileTool.ErrorMessage:=Data.ErrorMessage;
-      DebugLn('Error: (lazarus) failed to update .po files: ',APackage.IDAsString);
-      SrcF:=Format(lisUpdatingPoFilesFailedForPackage, [APackage.IDAsString]);
-      FOnShowMessage(mluError, SrcF, '', 0, 0, '');
-      exit;
+  if Data.Run=0 then
+  begin
+    // update .po files
+    if (APackage.POOutputDirectory<>'') then begin
+      MsgResult:=ConvertPackageRSTFiles(APackage);
+      if MsgResult<>mrOk then begin
+        Data.ErrorMessage:='ConvertPackageRSTFiles failed';
+        PkgCompileTool.ErrorMessage:=Data.ErrorMessage;
+        DebugLn('Error: (lazarus) failed to update .po files: ',APackage.IDAsString);
+        SrcF:=Format(lisUpdatingPoFilesFailedForPackage, [APackage.IDAsString]);
+        FOnShowMessage(mluError, SrcF, '', 0, 0, '');
+        exit;
+      end;
     end;
   end;
 end;
@@ -4336,17 +4340,64 @@ function TLazPackageGraph.CompilePackage(APackage: TLazPackage;
     Result:='install_package_compile_failed:'+APackage.Filename;
   end;
 
+  procedure SetupCompileTool(Run: integer; var PkgCompileTool: TAbstractExternalTool;
+    var ExtToolData: TLazPkgGraphExtToolData;
+    const Title, Note, CompilerFilename: string; CompilerParams: TStrings; NeedBuildAll: boolean);
+  var
+    Proc: TProcessUTF8;
+    i: Integer;
+    FPCParser: TFPCParser;
+  begin
+    ExtToolData:=TLazPkgGraphExtToolData.Create(IDEToolCompilePackage,
+      APackage.Name,APackage.Filename);
+    ExtToolData.Pkg:=APackage;
+    ExtToolData.SrcPPUFilename:=APackage.GetSrcPPUFilename;
+    ExtToolData.CompilerFilename:=CompilerFilename;
+    ExtToolData.CompilerParams.Assign(CompilerParams);
+    ExtToolData.Run:=Run;
+
+    PkgCompileTool:=ExternalToolList.Add(Title);
+    PkgCompileTool.Data:=ExtToolData;
+    PkgCompileTool.FreeData:=true;
+    if BuildItem<>nil then
+      BuildItem.Add(PkgCompileTool)
+    else
+      PkgCompileTool.Reference(Self,Classname);
+    FPCParser:=TFPCParser(PkgCompileTool.AddParsers(SubToolFPC));
+    //debugln(['TLazPackageGraph.CompilePackage ',APackage.Name,' ',APackage.CompilerOptions.ShowHintsForUnusedUnitsInMainSrc,' ',APackage.MainUnit.Filename]);
+    if (APackage.MainUnit<>nil)
+    and (not APackage.CompilerOptions.ShowHintsForUnusedUnitsInMainSrc) then
+      FPCParser.FilesToIgnoreUnitNotUsed.Add(APackage.MainUnit.Filename);
+    FPCParser.HideHintsSenderNotUsed:=not APackage.CompilerOptions.ShowHintsForSenderNotUsed;
+    FPCParser.HideHintsUnitNotUsedInMainSource:=not APackage.CompilerOptions.ShowHintsForUnusedUnitsInMainSrc;
+    PkgCompileTool.AddParsers(SubToolMake);
+    Proc:=PkgCompileTool.Process;
+    Proc.CurrentDirectory:=APackage.Directory;
+    Proc.Executable:=CompilerFilename;
+    Proc.Parameters:=CompilerParams;
+    if NeedBuildAll then
+      PkgCompileTool.Process.Parameters.Add('-B')
+    else if Run>0 then
+    begin
+      for i:=Proc.Parameters.Count-1 downto 0 do
+        if Proc.Parameters[i]='-B' then
+          Proc.Parameters.Delete(i);
+    end;
+    PkgCompileTool.Hint:=Note;
+    PkgCompileTool.AddHandlerOnStopped(@ExtToolBuildStopped);
+  end;
+
 var
-  PkgCompileTool: TAbstractExternalTool;
+  PkgCompileTool, PkgCompileTool2: TAbstractExternalTool;
   FPCParser: TFPCParser;
   CompilerFilename: String;
   CompilePolicy: TPackageUpdatePolicy;
-  NeedBuildAllFlag, NeedBuildAll: Boolean;
+  NeedBuildAllFlag, NeedBuildAll, CompileTwice: Boolean;
   CompilerParams, CmdLineParams: TStrings;
   Note: String;
   WorkingDir: String;
-  ToolTitle, CfgFilename: String;
-  ExtToolData: TLazPkgGraphExtToolData;
+  ToolTitle, CfgFilename, aTitle: String;
+  ExtToolData, ExtToolData2: TLazPkgGraphExtToolData;
   BuildMethod: TBuildMethod;
   CfgCode: TCodeBuffer;
 begin
@@ -4522,51 +4573,55 @@ begin
           FHasCompiledFpmakePackages := True;
         end;
 
-        ExtToolData:=TLazPkgGraphExtToolData.Create(IDEToolCompilePackage,
-          APackage.Name,APackage.Filename);
+        CompileTwice:={$IFDEF EnableCompilePkgTwice}true{$ELSE}false{$ENDIF};
 
-        PkgCompileTool:=ExternalToolList.Add(Format(lisPkgMangCompilePackage, [APackage.IDAsString]));
-        PkgCompileTool.Data:=ExtToolData;
-        PkgCompileTool.FreeData:=true;
-        if BuildItem<>nil then
-          BuildItem.Add(PkgCompileTool)
-        else
-          PkgCompileTool.Reference(Self,Classname);
+        ExtToolData:=nil;
+        ExtToolData2:=nil;
+        PkgCompileTool:=nil;
+        PkgCompileTool2:=nil;
         try
-          FPCParser:=TFPCParser(PkgCompileTool.AddParsers(SubToolFPC));
-          //debugln(['TLazPackageGraph.CompilePackage ',APackage.Name,' ',APackage.CompilerOptions.ShowHintsForUnusedUnitsInMainSrc,' ',APackage.MainUnit.Filename]);
-          if (APackage.MainUnit<>nil)
-          and (not APackage.CompilerOptions.ShowHintsForUnusedUnitsInMainSrc) then
-            FPCParser.FilesToIgnoreUnitNotUsed.Add(APackage.MainUnit.Filename);
-          FPCParser.HideHintsSenderNotUsed:=not APackage.CompilerOptions.ShowHintsForSenderNotUsed;
-          FPCParser.HideHintsUnitNotUsedInMainSource:=not APackage.CompilerOptions.ShowHintsForUnusedUnitsInMainSrc;
-          PkgCompileTool.AddParsers(SubToolMake);
-          PkgCompileTool.Process.CurrentDirectory:=APackage.Directory;
-          PkgCompileTool.Process.Executable:=CompilerFilename;
-          PkgCompileTool.Process.Parameters:=CompilerParams;
-          if NeedBuildAll then
-            PkgCompileTool.Process.Parameters.Add('-B');
-          PkgCompileTool.Hint:=Note;
-          ExtToolData.Pkg:=APackage;
-          ExtToolData.SrcPPUFilename:=APackage.GetSrcPPUFilename;
-          ExtToolData.CompilerFilename:=CompilerFilename;
-          ExtToolData.CompilerParams.Assign(CompilerParams);
-          PkgCompileTool.AddHandlerOnStopped(@ExtToolBuildStopped);
+          aTitle:=Format(lisPkgMangCompilePackage, [APackage.IDAsString]);
+          if CompileTwice then
+            aTitle:=aTitle+' (first time)';
+          SetupCompileTool(0,PkgCompileTool,ExtToolData,aTitle,Note,CompilerFilename,CompilerParams,NeedBuildAll);
+
+          if CompileTwice then
+          begin
+            aTitle:=Format(lisPkgMangCompilePackage, [APackage.IDAsString])+' (second time)';
+            SetupCompileTool(1,PkgCompileTool2,ExtToolData2,aTitle,Note,CompilerFilename,CompilerParams,NeedBuildAll);
+            PkgCompileTool2.AddHandlerOnStopped(@ExtToolBuildStopped);
+          end;
+
           if BuildItem<>nil then
           begin
             // run later
           end else begin
             // run now
             PkgCompileTool.Execute;
-            //debugln(['TLazPackageGraph.CompilePackage BEFORE WaitForExit: ',APackage.IDAsString]);
+            //debugln(['TLazPackageGraph.CompilePackage BEFORE 1 WaitForExit: ',APackage.IDAsString]);
             PkgCompileTool.WaitForExit;
-            //debugln(['TLazPackageGraph.CompilePackage AFTER WaitForExit: ',APackage.IDAsString,' ExtToolData.ErrorMessage=',ExtToolData.ErrorMessage]);
+            //debugln(['TLazPackageGraph.CompilePackage AFTER 1 WaitForExit: ',APackage.IDAsString,' ExtToolData.ErrorMessage=',ExtToolData.ErrorMessage]);
             if ExtToolData.ErrorMessage<>'' then
               exit(mrCancel);
+
+            if PkgCompileTool2<>nil then
+            begin
+              PkgCompileTool2.Execute;
+              //debugln(['TLazPackageGraph.CompilePackage BEFORE 2 WaitForExit: ',APackage.IDAsString]);
+              PkgCompileTool2.WaitForExit;
+              //debugln(['TLazPackageGraph.CompilePackage AFTER 2 WaitForExit: ',APackage.IDAsString,' ExtToolData.ErrorMessage=',ExtToolData.ErrorMessage]);
+              if ExtToolData2.ErrorMessage<>'' then
+                exit(mrCancel);
+            end;
           end;
         finally
           if BuildItem=nil then
-            PkgCompileTool.Release(Self);
+          begin
+            if PkgCompileTool<>nil then
+              PkgCompileTool.Release(Self);
+            if PkgCompileTool2<>nil then
+              PkgCompileTool2.Release(Self);
+          end;
         end;
       end;
 
