@@ -131,7 +131,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="4" Minor="99"/>
-    <Files Count="556">
+    <Files Count="569">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -2739,6 +2739,71 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Gtk3Boxes"/>
       </Item556>
+      <Item557>
+        <Filename Value="testmock/alllclintfunits.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="AllLCLIntfUnits"/>
+      </Item557>
+      <Item558>
+        <Filename Value="testmock/interfaces.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Interfaces"/>
+      </Item558>
+      <Item559>
+        <Filename Value="testmock/testmockint.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="TestMockInt"/>
+      </Item559>
+      <Item560>
+        <Filename Value="testmock/testmockwscontrols.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="TestMockWSControls"/>
+      </Item560>
+      <Item561>
+        <Filename Value="testmock/testmockwsfactory.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="TestMockWSFactory"/>
+      </Item561>
+      <Item562>
+        <Filename Value="testmock/testmockwsforms.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="TestMockWSForms"/>
+      </Item562>
+      <Item563>
+        <Filename Value="testmock/testmockwsmenus.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="TestMockWSMenus"/>
+      </Item563>
+      <Item564>
+        <Filename Value="testmock/mock_winapih.inc"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="mock_winapih"/>
+      </Item564>
+      <Item565>
+        <Filename Value="testmock/mock_lclintfh.inc"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="mock_lclintfh"/>
+      </Item565>
+      <Item566>
+        <Filename Value="testmock/mock_winapi.inc"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="mock_winapi"/>
+      </Item566>
+      <Item567>
+        <Filename Value="testmock/mock_lclintf.inc"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="mock_lclintf"/>
+      </Item567>
+      <Item568>
+        <Filename Value="testmock/testmockmiscclasses.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="TestMockMiscClasses"/>
+      </Item568>
+      <Item569>
+        <Filename Value="testmock/testmockmessages.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="TestMockMessages"/>
+      </Item569>
     </Files>
     <CompatibilityMode Value="True"/>
     <LazDoc Paths="../../docs/xml/lcl"/>
