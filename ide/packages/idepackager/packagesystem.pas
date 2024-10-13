@@ -70,6 +70,8 @@ const
   MakefileCompileVersion = 2;
   // 2 : changed macro format from %() to $()
 
+  FPCMsgIDCompiling = 3104;
+
 type
   TFindPackageFlag = (
     fpfSearchInInstalledPckgs,
@@ -151,7 +153,7 @@ type
     CompilerFilename: string;
     CompilerParams: TStrings;
     ErrorMessage: string;
-    Run: integer;
+    Pass: integer; // when compiling multiple times, this is the pass number
     constructor Create(aKind, aModuleName, aFilename: string); override;
     destructor Destroy; override;
   end;
@@ -2146,13 +2148,18 @@ begin
 end;
 
 procedure TLazPackageGraph.ExtToolBuildStopped(Sender: TObject);
+const
+  FPCCompilingPattern = '(3104) Compiling ';
 var
   PkgCompileTool: TAbstractExternalTool;
   Data: TLazPkgGraphExtToolData;
   aPackage: TLazPackage;
-  SrcF: String;
-  SrcPPUFileExists: Boolean;
+  SrcF, MainFilename, aFilename: String;
+  SrcPPUFileExists, FoundCompiling: Boolean;
   MsgResult: TModalResult;
+  Msgs: TMessageLines;
+  i: Integer;
+  Msg: TMessageLine;
 begin
   PkgCompileTool:=Sender as TAbstractExternalTool;
   Data:=PkgCompileTool.Data as TLazPkgGraphExtToolData;
@@ -2176,7 +2183,7 @@ begin
 
   if Data.ErrorMessage<>'' then exit;
 
-  if Data.Run=0 then
+  if Data.Pass=0 then
   begin
     // update .po files
     if (APackage.POOutputDirectory<>'') then begin
@@ -2188,6 +2195,44 @@ begin
         SrcF:=Format(lisUpdatingPoFilesFailedForPackage, [APackage.IDAsString]);
         FOnShowMessage(mluError, SrcF, '', 0, 0, '');
         exit;
+      end;
+    end;
+  end else begin
+    // check for recompiled units on second compile
+    Msgs:=PkgCompileTool.WorkerMessages;
+    MainFilename:=aPackage.GetSrcFilename;
+    FoundCompiling:=false;
+    // check using parser data. Note: lazbuild skips parsers
+    for i:=0 to Msgs.Count-1 do
+    begin
+      Msg:=Msgs[i];
+      if (Msg.SubTool=SubToolFPC) and (Msg.MsgID=FPCMsgIDCompiling) then
+      begin
+        FoundCompiling:=true;
+        if CompareFilenames(Msg.Filename,MainFilename)<>0 then
+        begin
+          debugln(['Warning: (lazarus) [TLazPackageGraph.ExtToolBuildStopped] on second compile of "',aPackage.Name,'" the unit "',Msg.GetShortFilename,'" was recompiled']);
+          break;
+        end;
+      end;
+    end;
+    if not FoundCompiling then
+    begin
+      // check direct message texts
+      MainFilename:=ExtractFilename(MainFilename);
+      for i:=0 to Msgs.Count-1 do
+      begin
+        Msg:=Msgs[i];
+        if (LeftStr(Msg.Msg,length(FPCCompilingPattern))=FPCCompilingPattern) then
+        begin
+          FoundCompiling:=true;
+          aFilename:=ExtractFilename(copy(Msg.Msg,length(FPCCompilingPattern)+1));
+          if CompareFilenames(aFilename,MainFilename)<>0 then
+          begin
+            debugln(['Warning: (lazarus) [TLazPackageGraph.ExtToolBuildStopped] on second compile of "',aPackage.Name,'" the unit "',aFilename,'" was recompiled']);
+            break;
+          end;
+        end;
       end;
     end;
   end;
@@ -4354,7 +4399,7 @@ function TLazPackageGraph.CompilePackage(APackage: TLazPackage;
     ExtToolData.SrcPPUFilename:=APackage.GetSrcPPUFilename;
     ExtToolData.CompilerFilename:=CompilerFilename;
     ExtToolData.CompilerParams.Assign(CompilerParams);
-    ExtToolData.Run:=Run;
+    ExtToolData.Pass:=Run;
 
     PkgCompileTool:=ExternalToolList.Add(Title);
     PkgCompileTool.Data:=ExtToolData;
