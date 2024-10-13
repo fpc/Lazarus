@@ -240,6 +240,7 @@ type
   TPkgCompileFlag = (
     pcfOnlyIfNeeded,
     pcfCleanCompile,  // append -B to the compiler options
+    pcfCompileTwice, // compile a second time and check if some unit was compiled again
     pcfGroupCompile,
     pcfDoNotCompileDependencies,
     pcfDoNotCompilePackage,

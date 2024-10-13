@@ -429,7 +429,7 @@ type
                      {%H-}Flags: TPkgCompileFlags; ShowAbort: boolean): TModalResult;
     function CompileRequiredPackages(APackage: TLazPackage;
                                 FirstDependency: TPkgDependency;
-                                SkipDesignTimePackages: boolean;
+                                SkipDesignTimePackages, BuildTwice: boolean;
                                 Policy: TPackageUpdatePolicy): TModalResult;
     function CompilePackage(APackage: TLazPackage; Flags: TPkgCompileFlags;
                             ShowAbort: boolean;
@@ -2210,10 +2210,7 @@ begin
       begin
         FoundCompiling:=true;
         if CompareFilenames(Msg.Filename,MainFilename)<>0 then
-        begin
           debugln(['Warning: (lazarus) [TLazPackageGraph.ExtToolBuildStopped] on second compile of "',aPackage.Name,'" the unit "',Msg.GetShortFilename,'" was recompiled']);
-          break;
-        end;
       end;
     end;
     if not FoundCompiling then
@@ -2228,10 +2225,7 @@ begin
           FoundCompiling:=true;
           aFilename:=ExtractFilename(copy(Msg.Msg,length(FPCCompilingPattern)+1));
           if CompareFilenames(aFilename,MainFilename)<>0 then
-          begin
             debugln(['Warning: (lazarus) [TLazPackageGraph.ExtToolBuildStopped] on second compile of "',aPackage.Name,'" the unit "',aFilename,'" was recompiled']);
-            break;
-          end;
         end;
       end;
     end;
@@ -4155,7 +4149,7 @@ begin
 end;
 
 function TLazPackageGraph.CompileRequiredPackages(APackage: TLazPackage;
-  FirstDependency: TPkgDependency; SkipDesignTimePackages: boolean;
+  FirstDependency: TPkgDependency; SkipDesignTimePackages, BuildTwice: boolean;
   Policy: TPackageUpdatePolicy): TModalResult;
 var
   BuildItems: TObjectList;
@@ -4217,6 +4211,8 @@ begin
         Flags:=[pcfDoNotCompileDependencies,pcfDoNotSaveEditorFiles,pcfGroupCompile];
         if SkipDesignTimePackages then
           Include(Flags,pcfSkipDesignTimePackages);
+        if BuildTwice then
+          Include(Flags,pcfCompileTwice);
         if Policy=pupAsNeeded then
           Include(Flags,pcfOnlyIfNeeded)
         else
@@ -4421,8 +4417,8 @@ function TLazPackageGraph.CompilePackage(APackage: TLazPackage;
     Proc.Executable:=CompilerFilename;
     Proc.Parameters:=CompilerParams;
     if NeedBuildAll then
-      PkgCompileTool.Process.Parameters.Add('-B')
-    else if Run>0 then
+      PkgCompileTool.Process.Parameters.Add('-B');
+    if Run>0 then
     begin
       for i:=Proc.Parameters.Count-1 downto 0 do
         if Proc.Parameters[i]='-B' then
@@ -4437,7 +4433,7 @@ var
   FPCParser: TFPCParser;
   CompilerFilename: String;
   CompilePolicy: TPackageUpdatePolicy;
-  NeedBuildAllFlag, NeedBuildAll, CompileTwice: Boolean;
+  NeedBuildAllFlag, NeedBuildAll: Boolean;
   CompilerParams, CmdLineParams: TStrings;
   Note: String;
   WorkingDir: String;
@@ -4464,7 +4460,8 @@ begin
       else
         CompilePolicy:=pupAsNeeded;
       Result:=CompileRequiredPackages(APackage,nil,
-                            pcfSkipDesignTimePackages in Flags,CompilePolicy);
+                    pcfSkipDesignTimePackages in Flags,pcfCompileTwice in Flags,
+                    CompilePolicy);
       if Result<>mrOk then begin
         DebugLn(['Error: (lazarus) Compile required packages failed: ',APackage.IDAsString]);
         exit;
@@ -4618,19 +4615,17 @@ begin
           FHasCompiledFpmakePackages := True;
         end;
 
-        CompileTwice:={$IFDEF EnableCompilePkgTwice}true{$ELSE}false{$ENDIF};
-
         ExtToolData:=nil;
         ExtToolData2:=nil;
         PkgCompileTool:=nil;
         PkgCompileTool2:=nil;
         try
           aTitle:=Format(lisPkgMangCompilePackage, [APackage.IDAsString]);
-          if CompileTwice then
+          if pcfCompileTwice in Flags then
             aTitle:=aTitle+' (first time)';
           SetupCompileTool(0,PkgCompileTool,ExtToolData,aTitle,Note,CompilerFilename,CompilerParams,NeedBuildAll);
 
-          if CompileTwice then
+          if pcfCompileTwice in Flags then
           begin
             aTitle:=Format(lisPkgMangCompilePackage, [APackage.IDAsString])+' (second time)';
             SetupCompileTool(1,PkgCompileTool2,ExtToolData2,aTitle,Note,CompilerFilename,CompilerParams,NeedBuildAll);

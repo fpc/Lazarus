@@ -4167,6 +4167,7 @@ begin
       Result:=PackageGraph.CompileRequiredPackages(nil,
                                 AProject.FirstRequiredDependency,
                                 not (pfUseDesignTimePackages in AProject.Flags),
+                                pcfCompileTwice in Flags,
                                 CompilePolicy);
       if Result<>mrOk then exit;
     end;
@@ -6170,7 +6171,7 @@ begin
     CompilePolicy:=pupAsNeeded;
     if pcfCompileDependenciesClean in Flags then
       CompilePolicy:=pupOnRebuildingAll;
-    Result:=PackageGraph.CompileRequiredPackages(nil,Dependencies,false,
+    Result:=PackageGraph.CompileRequiredPackages(nil,Dependencies,false,pcfCompileTwice in Flags,
                                                  CompilePolicy);
     if Result<>mrOk then begin
       if ConsoleVerbosity>0 then

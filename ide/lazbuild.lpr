@@ -69,6 +69,7 @@ type
     FBuildIDEOptions: string;
     FBuildModeOverride: String;
     FBuildRecursive: boolean;
+    FBuildTwice: boolean;
     fCompilerInCfg: string;
     fCompilerOverride: String;
     fCPUOverride: String;
@@ -175,6 +176,7 @@ type
 
     property PackageAction: TPkgAction read FPackageAction write FPackageAction;
     property BuildAll: boolean read FBuildAll write FBuildAll;// build all files of project/package
+    property BuildTwice: boolean read FBuildTwice write FBuildTwice;// build all packages twice
     property BuildRecursive: boolean read FBuildRecursive // apply BuildAll flag to dependencies
                                      write FBuildRecursive;
     property SkipDependencies: boolean read FSkipDependencies
@@ -517,6 +519,8 @@ begin
     Include(Flags,pcfCleanCompile)
   else
     Include(Flags,pcfOnlyIfNeeded);
+  if BuildTwice then
+    Include(Flags,pcfCompileTwice);
   if BuildRecursive and BuildAll then
     Include(Flags,pcfCompileDependenciesClean);
   if SkipDependencies then
@@ -731,7 +735,7 @@ begin
     if (BuildRecursive and BuildAll) or Clean then
       CompilePolicy:=pupOnRebuildingAll;
     CurResult:=PackageGraph.CompileRequiredPackages(nil,
-                   PackageGraph.FirstInstallDependency,false,CompilePolicy);
+                   PackageGraph.FirstInstallDependency,false,BuildTwice,CompilePolicy);
     if CurResult<>mrOk then exit;
 
   finally
@@ -892,7 +896,7 @@ var
           CompilePolicy:=pupOnRebuildingAll;
         if PackageGraph.CompileRequiredPackages(nil,Project1.FirstRequiredDependency,
                                   not (pfUseDesignTimePackages in Project1.Flags),
-                                  CompilePolicy)<>mrOk
+                                  BuildTwice,CompilePolicy)<>mrOk
         then
           PrintErrorAndHalt(ErrorBuildFailed, 'Project dependencies of "' + AFilename + '"');
       end;
@@ -1622,7 +1626,8 @@ begin
     LongOptions.Add('add-package');
     LongOptions.Add('add-package-link');
     LongOptions.Add('build-all');
-    LongOptions.Add('build-ide::');
+    LongOptions.Add('build-ide::'); // value is optional
+    LongOptions.Add('build-twice');
     LongOptions.Add('recursive');
     LongOptions.Add('skip-dependencies');
     LongOptions.Add('widgetset:');
@@ -1707,6 +1712,10 @@ begin
     if HasShortOrLongOpt('B','build-all') then begin
       BuildAll:=true;
       PrintInfo('Parameter: --build-all');
+    end;
+    if HasOption('build-twice') then begin
+      BuildTwice:=true;
+      PrintInfo('Parameter: --build-twice');
     end;
     if HasShortOrLongOpt('r','recursive') then begin
       BuildAll:=true;
@@ -1816,6 +1825,9 @@ begin
   writeln('');
   writeln('-B, --build-all');
   w(lisBuildAllFilesOfProjectPackageIDE);
+  writeln('');
+  writeln('--build-twice');
+  w('compile package twice and check if any unit was compiled again');
   writeln('');
   writeln('-r, --recursive');
   w(lisApplyBuildFlagsBToDependenciesToo);
