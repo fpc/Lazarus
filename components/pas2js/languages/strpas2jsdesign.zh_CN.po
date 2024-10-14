@@ -349,6 +349,10 @@ msgstr "选择 Atom 软件包模板目录"
 msgid "Select browser executable"
 msgstr "选择浏览器可执行文件"
 
+#: strpas2jsdesign.pjsdselectdirectorywheretoextractpas2js
+msgid "Select directory where to extract Pas2js"
+msgstr ""
+
 #: strpas2jsdesign.pjsdselectelectronexecutable
 msgid "Select Electron executable"
 msgstr ""

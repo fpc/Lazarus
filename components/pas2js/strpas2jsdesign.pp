@@ -27,6 +27,7 @@ Resourcestring
   pjsdDownloadedBytes = 'Downloaded %s bytes';
   pjsdDownloadPas2jsRelease = 'Download Pas2JS Release?';
   pjsdUnableToCreateDirectory = 'Unable to create directory "%s".';
+  pjsdSelectDirectoryWhereToExtractPas2js = 'Select directory where to extract Pas2js';
   pjsdConfirmation = 'Confirmation';
   pjsdChangeSimpleWebServerFromTo = 'Change Simple Web Server from%s"%s"%sto%s'
     +'"%s"%s?';
