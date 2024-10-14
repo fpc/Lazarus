@@ -1827,7 +1827,7 @@ begin
   w(lisBuildAllFilesOfProjectPackageIDE);
   writeln('');
   writeln('--build-twice');
-  w('compile package twice and check if any unit was compiled again');
+  w(lisCompilePackageTwiceAndCheckIfAnyUnitWasCompiledAga);
   writeln('');
   writeln('-r, --recursive');
   w(lisApplyBuildFlagsBToDependenciesToo);
