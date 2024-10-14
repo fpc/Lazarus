@@ -279,7 +279,6 @@ type
     FOptionsShownOfFile: TPkgFile;
     fUpdateLock: integer;
     fForcedFlags: TPEFlags;
-    procedure ActiveEditorChanged(Sender: TObject);
     procedure DoAddNewFile(NewItem: TNewIDEItemTemplate);
     function CreateToolButton(AName, ACaption, AHint, AImageName: String;
       AOnClick: TNotifyEvent): TToolButton;
@@ -447,6 +446,7 @@ type
     function CreateMakefile(APackage: TLazPackage): TModalResult;
     function CreateFpmakeFile(APackage: TLazPackage): TModalResult;
     function TreeViewToPkgEditor(TV: TTreeView): TPackageEditorForm;
+    procedure ActiveEditorChanged(Sender: TObject);
   public
     property Editors[Index: integer]: TPackageEditorForm read GetEditors;
     property OnAddToProject: TOnAddPkgToProject read FOnAddToProject
@@ -1477,16 +1477,12 @@ begin
   ShowDirectoryHierarchy := EnvironmentOptions.PackageEditorShowDirHierarchy;
   if OPMInterface <> nil then
     OPMInterface.AddPackageListNotification(@PackageListAvailable);
-  if SourceEditorManagerIntf <> nil then
-    SourceEditorManagerIntf.RegisterChangeEvent(semEditorActivate,@ActiveEditorChanged);
 end;
 
 procedure TPackageEditorForm.FormDestroy(Sender: TObject);
 begin
   if OPMInterface <> nil then
     OPMInterface.RemovePackageListNotification(@PackageListAvailable);
-  if SourceEditorManagerIntf <> nil then
-    SourceEditorManagerIntf.UnRegisterChangeEvent(semEditorActivate,@ActiveEditorChanged);
   IdleConnected:=false;
   FreeAndNil(FNextSelectedPart);
   EnvironmentOptions.PackageEditorSortAlphabetically := SortAlphabetically;
@@ -3092,8 +3088,15 @@ begin
 end;
 
 procedure TPackageEditorForm.FilterEditAfterFilter(Sender: TObject);
+var
+  LPackage: TIDEPackage;
 begin
-  ActiveEditorChanged(Sender)
+  if Assigned(SourceEditorManagerIntf) and Assigned(PackageEditingInterface) and Assigned(SourceEditorManagerIntf.ActiveEditor) then
+  begin
+    PackageEditingInterface.GetPackageOfSourceEditor(LPackage, SourceEditorManagerIntf.ActiveEditor);
+    if (LPackage is TLazPackage) and (TLazPackage(LPackage).Editor = Self) then
+      SelectFileNode(SourceEditorManagerIntf.ActiveEditor.FileName);
+  end;
 end;
 
 function TPackageEditorForm.FirstRequiredDependency: TPkgDependency;
@@ -3301,12 +3304,6 @@ end;
 constructor TPackageEditorForm.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-end;
-
-procedure TPackageEditorForm.ActiveEditorChanged(Sender: TObject);
-begin
-  if Assigned(SourceEditorManagerIntf.ActiveEditor) then
-    SelectFileNode(SourceEditorManagerIntf.ActiveEditor.FileName);
 end;
 
 destructor TPackageEditorForm.Destroy;
@@ -3553,8 +3550,26 @@ begin
   FItems:=TFPList.Create;
 end;
 
+procedure TPackageEditors.ActiveEditorChanged(Sender: TObject);
+var
+  LPackage: TIDEPackage;
+  LForm: TPackageEditorForm;
+begin
+  if Assigned(SourceEditorManagerIntf.ActiveEditor) then
+  begin
+    PackageEditingInterface.GetPackageOfSourceEditor(LPackage, SourceEditorManagerIntf.ActiveEditor);
+    if (LPackage is TLazPackage) and (TLazPackage(LPackage).Editor is TPackageEditorForm) then
+    begin
+      LForm := TPackageEditorForm(TLazPackage(LPackage).Editor);
+      LForm.SelectFileNode(SourceEditorManagerIntf.ActiveEditor.FileName);
+    end;
+  end;
+end;
+
 destructor TPackageEditors.Destroy;
 begin
+  if SourceEditorManagerIntf <> nil then
+    SourceEditorManagerIntf.UnRegisterChangeEvent(semEditorActivate,@ActiveEditorChanged);
   Clear;
   FreeAndNil(FItems);
   inherited Destroy;

@@ -109,7 +109,7 @@ uses
   DbgIntfDebuggerBase, DbgIntfProcess, LazDebuggerIntf, LazDebuggerIntfBaseTypes,
   idedebuggerpackage, FpDebugValueConvertors, IdeDebuggerBackendValueConv, IdeDebuggerBase,
   // packager
-  PackageSystem, PkgManager, BasePkgManager, LPKCache, LazarusPackageIntf,
+  PackageSystem, PkgManager, BasePkgManager, LPKCache, LazarusPackageIntf, PackageEditor,
   // source editing
   SourceEditor, CodeToolsOptions, IDEOptionDefs,
   CodeToolsDefines, DiffDialog, UnitInfoDlg, EditorOptions,
@@ -2330,6 +2330,7 @@ begin
 
   SourceEditorManager.InitMacros(GlobalMacroList);
   EditorMacroListViewer.OnKeyMapReloaded := @SourceEditorManager.ReloadEditorOptions;
+  SourceEditorManager.RegisterChangeEvent(semEditorActivate,@PackageEditors.ActiveEditorChanged);
 end;
 
 procedure TMainIDE.SetupCodeMacros;
