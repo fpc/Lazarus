@@ -645,6 +645,9 @@ type
     procedure UpdateScopeList(var AScopeList: TDwarfScopeList); // To be called ONLY before the thread starts
   end;
 
+  TWaitRequirement = (wrScan, wrAddrMap);
+  TWaitRequirements = set of TWaitRequirement;
+
   { TDwarfCompilationUnit }
 
   TDwarfCompilationUnitClass = class of TDwarfCompilationUnit;
@@ -653,9 +656,6 @@ type
     FWaitForScopeScanSection: TWaitableSection;
     FWaitForComputeHashesSection: TWaitableSection;
     FBuildAddressMapSection: TWaitableSection;
-  private type
-    TWaitRequirement = (wrScan, wrAddrMap);
-    TWaitRequirements = set of TWaitRequirement;
   private
     FOwner: TFpDwarfInfo;
     FDebugFile: PDwarfDebugFile;
@@ -721,7 +721,8 @@ type
     function GetFirstScope: TDwarfScopeInfo; inline;
     procedure DoWaitForScopeScan;
     procedure DoWaitForComputeHashes;
-    procedure BuildAddressMap;
+    procedure BuildAddressMap; inline;
+    procedure _Internal_BuildAddressMap;
     function GetAddressMap: TMap;
     function GetKnownNameHashes: PKnownNameHashesArray; inline;
     function GetUnitName: String;
@@ -805,7 +806,13 @@ type
 
   TFpDwarfInfo = class(TDbgInfo)
   strict private
+//TODO: FCompilationUnits sort by start address
     FCompilationUnits: TList; // any access must be guarded by Item[n].WaitForScopeScan
+    FCompilationUnitsByAddr: array of record
+      MinPc, GreatestMaxPC: TDBGPtr;
+      CU: TDwarfCompilationUnit;
+    end;
+    FCompilationUnitsByAddrHighestUnknown: integer;
     FCallFrameInformationList: TList;
     FWorkQueue: TFpGlobalThreadWorkerQueue;
     FFiles: array of TDwarfDebugFile;
@@ -836,7 +843,8 @@ type
     function GetLineAddressMap(const AFileName: String): PDWarfLineMap;
     procedure LoadCallFrameInstructions;
     function LoadCompilationUnits: Integer;
-    function CompilationUnitForAddr(AnAddr: TDBGPtr): TDwarfCompilationUnit;
+    function HighIndexOfCompilationUnitForAddr(AnAddr: TDBGPtr): integer; inline;
+    function CompilationUnitForAddr(AnAddr: TDBGPtr; AWaitFor: TWaitRequirements = []): TDwarfCompilationUnit;
     function CompilationUnitsCount: Integer; inline;
     property CompilationUnits[AIndex: Integer]: TDwarfCompilationUnit read GetCompilationUnit;
 
@@ -3838,6 +3846,7 @@ var
   n: integer;
 begin
   FWorkQueue.DecRef;
+  FCompilationUnitsByAddr := nil;
   for n := 0 to FCompilationUnits.Count - 1 do
     TObject(FCompilationUnits[n]).Free;
   FreeAndNil(FCompilationUnits);
@@ -3921,9 +3930,17 @@ var
   Info: PDwarfAddressInfo;
 begin
   Result := nil;
-  for n := 0 to FCompilationUnits.Count - 1 do
-  begin
-    CU := TDwarfCompilationUnit(FCompilationUnits[n]);
+
+  n := HighIndexOfCompilationUnitForAddr(AAddress) + 1;
+  while n > 0 do begin
+    dec(n);
+    if FCompilationUnitsByAddr[n].GreatestMaxPC < AAddress then begin
+      n := FCompilationUnitsByAddrHighestUnknown;
+      if n < 0 then
+        break;
+    end;
+
+    CU := FCompilationUnitsByAddr[n].CU;
     if not CU.HasAddress(AAddress, [wrAddrMap]) then
       Continue;
 
@@ -3960,9 +3977,17 @@ var
   CU: TDwarfCompilationUnit;
 begin
   Result := False;
-  for n := 0 to FCompilationUnits.Count - 1 do
-  begin
-    CU := TDwarfCompilationUnit(FCompilationUnits[n]);
+
+  n := HighIndexOfCompilationUnitForAddr(AAddress) + 1;
+  while n > 0 do begin
+    dec(n);
+    if FCompilationUnitsByAddr[n].GreatestMaxPC < AAddress then begin
+      n := FCompilationUnitsByAddrHighestUnknown;
+      if n < 0 then
+        break;
+    end;
+
+    CU := FCompilationUnitsByAddr[n].CU;
     if not CU.HasAddress(AAddress, [wrAddrMap]) then
       Continue;
 
@@ -3980,9 +4005,17 @@ var
   SM: TDwarfLineInfoStateMachine;
 begin
   Result := nil;
-  for n := 0 to FCompilationUnits.Count - 1 do
-  begin
-    CU := TDwarfCompilationUnit(FCompilationUnits[n]);
+
+  n := HighIndexOfCompilationUnitForAddr(AAddress) + 1;
+  while n > 0 do begin
+    dec(n);
+    if FCompilationUnitsByAddr[n].GreatestMaxPC < AAddress then begin
+      n := FCompilationUnitsByAddrHighestUnknown;
+      if n < 0 then
+        break;
+    end;
+
+    CU := FCompilationUnitsByAddr[n].CU;
     if not CU.HasAddress(AAddress, [wrAddrMap]) then
       Continue;
 
@@ -4063,17 +4096,12 @@ var
   InfoEntry: TDwarfInformationEntry;
 begin
   Result := nil;
-  for n := 0 to FCompilationUnits.Count - 1 do
-  begin
-    CU := TDwarfCompilationUnit(FCompilationUnits[n]);
-    if not CU.HasAddress(AAddress, [wrScan]) then
-      continue;
-
-    InfoEntry := TDwarfInformationEntry.Create(CU, CU.FCompUnitScope);
-    Result := Cu.DwarfSymbolClassMap.CreateUnitSymbol(CU, InfoEntry, Self);
-    InfoEntry.ReleaseReference;
-    break;
-  end;
+  CU := CompilationUnitForAddr(AAddress, [wrScan]);
+  if CU = nil then
+    exit;
+  InfoEntry := TDwarfInformationEntry.Create(CU, CU.FCompUnitScope);
+  Result := Cu.DwarfSymbolClassMap.CreateUnitSymbol(CU, InfoEntry, Self);
+  InfoEntry.ReleaseReference;
 end;
 
 function TFpDwarfInfo.GetLineAddresses(const AFileName: String; ALine: Cardinal;
@@ -4335,10 +4363,11 @@ var
   CU: TDwarfCompilationUnit;
   CUClass: TDwarfCompilationUnitClass;
   inf: TDwarfSectionInfo;
-  i: integer;
+  i,j: integer;
   DataOffs, DataLen: QWord;
   AbbrevOffset: QWord;
   AddressSize: Byte;
+  MinPc, GreatestMaxPC: TDBGPtr;
 begin
   CUClass := GetCompilationUnitClass;
   for i := 0 to high(FFiles) do
@@ -4428,20 +4457,80 @@ begin
   end;
   Result := FCompilationUnits.Count;
 
-  for i := 0 to Result - 1 do
-    if TDwarfCompilationUnit(FCompilationUnits[i]).FComputeNameHashesWorker <> nil then
-      TDwarfCompilationUnit(FCompilationUnits[i]).FComputeNameHashesWorker.MarkReadyToRun;
+  SetLength(FCompilationUnitsByAddr, Result);
+  FCompilationUnitsByAddrHighestUnknown := 0;
+  for i := 0 to Result - 1 do begin
+    CU := TDwarfCompilationUnit(FCompilationUnits[i]);
+    MinPc := CU.FMinPC;
+    if CU.FMaxPC = MinPc then begin
+      MinPc := 0;
+      inc(FCompilationUnitsByAddrHighestUnknown);
+    end;
+    j := i-1;
+    while (j>=0) and (FCompilationUnitsByAddr[j].MinPc > MinPc) do begin
+      FCompilationUnitsByAddr[j+1] := FCompilationUnitsByAddr[j];
+      dec(j);
+    end;
+    FCompilationUnitsByAddr[j+1].CU    := CU;
+    FCompilationUnitsByAddr[j+1].MinPc := MinPc;
+    FCompilationUnitsByAddr[j+1].GreatestMaxPC := high(TDBGPtr);
+
+    if CU.FComputeNameHashesWorker <> nil then
+      CU.FComputeNameHashesWorker.MarkReadyToRun;
+  end;
+
+  GreatestMaxPC := 0;
+  for i := FCompilationUnitsByAddrHighestUnknown to Result - 1 do begin
+    if FCompilationUnitsByAddr[i].CU.FMaxPC > GreatestMaxPC then
+      GreatestMaxPC := FCompilationUnitsByAddr[i].CU.FMaxPC;
+    FCompilationUnitsByAddr[i].GreatestMaxPC := GreatestMaxPC;
+  end;
+
+  dec(FCompilationUnitsByAddrHighestUnknown); // High() / not Count
 end;
 
-function TFpDwarfInfo.CompilationUnitForAddr(AnAddr: TDBGPtr
+function TFpDwarfInfo.HighIndexOfCompilationUnitForAddr(AnAddr: TDBGPtr): integer;
+var
+  H, L: Integer;
+  Cnt: SizeInt;
+begin
+  // Find the last with: MinPc < AnAddr
+  // -1 for not in list
+  Cnt := Length(FCompilationUnitsByAddr)-1;
+  Result := Cnt;
+  L := FCompilationUnitsByAddrHighestUnknown + 1;
+  H := Cnt;
+  while L<H do begin
+    Result := (L + H) div 2;
+    if FCompilationUnitsByAddr[Result].MinPc < AnAddr then begin
+      inc(Result);
+      L := Result;
+    end
+    else
+      H := Result;
+  end;
+
+  while (Result < Cnt) and (FCompilationUnitsByAddr[Result+1].MinPc <= AnAddr) do
+    inc(Result);
+end;
+
+function TFpDwarfInfo.CompilationUnitForAddr(AnAddr: TDBGPtr; AWaitFor: TWaitRequirements
   ): TDwarfCompilationUnit;
 var
   n: Integer;
 begin
-  for n := 0 to FCompilationUnits.Count - 1 do
-  begin
-    Result := TDwarfCompilationUnit(FCompilationUnits[n]);
-    if  Result.HasAddress(AnAddr, []) then
+  n := HighIndexOfCompilationUnitForAddr(AnAddr) + 1;
+
+  while n > 0 do begin
+    dec(n);
+    if FCompilationUnitsByAddr[n].GreatestMaxPC < AnAddr then begin
+      n := FCompilationUnitsByAddrHighestUnknown;
+      if n < 0 then
+        break;
+    end;
+
+    Result := FCompilationUnitsByAddr[n].CU;
+    if  Result.HasAddress(AnAddr, AWaitFor) then
       exit;
   end;
   Result := nil;
@@ -5062,6 +5151,12 @@ begin
 end;
 
 procedure TDwarfCompilationUnit.BuildAddressMap;
+begin
+  if FAddressMapBuild then Exit;
+  _Internal_BuildAddressMap;
+end;
+
+procedure TDwarfCompilationUnit._Internal_BuildAddressMap;
 var
   AttribList: TAttribPointerList;
   Attrib: Pointer;
@@ -5071,8 +5166,6 @@ var
   ScopeIdx: Integer;
   Abbrev: TDwarfAbbrev;
 begin
-  if FAddressMapBuild then Exit;
-
   if FBuildAddressMapSection.EnterOrWait(CachedRtlEvent) then begin
     if not FAddressMapBuild then begin
 
