@@ -500,7 +500,7 @@ constructor TPackageTabButton.Create(aOwner: TComponent);
 begin
   inherited Create(aOwner);
 
-  Transparent := True;
+  Transparent := False;
   Flat := True;
   AutoSize := True;
   GroupIndex := 1;
