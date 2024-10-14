@@ -120,6 +120,7 @@ type
     procedure Apply;
     procedure CheckSimpleWebserver(SetServerIfEmpty: boolean);
     function ShowProgressDialog(aCaption, ANote: string; const OnExecute: TNotifyEvent): boolean;
+    function DirectoryIsEmpty(aDir: string): boolean;
   protected
   public
     procedure Init;
@@ -349,18 +350,28 @@ begin
   try
     //InputHistories.ApplyFileDialogSettings(aDialog);
     //aDialog.Options:=aDialog.Options+[ofPathMustExist];
-    aDialog.Title:='Select directory where to extract Pas2js';
-    if not aDialog.Execute then exit;
-    aDir:=CleanAndExpandDirectory(aDialog.Filename);
-    if not DirectoryExists(aDir) then
+    aDir:=CleanAndExpandDirectory(Pas2jsSrcDirComboBox.Text);
+    if (not DirectoryExists(aDir)) or (not DirectoryIsEmpty(aDir)) then
     begin
-      if not ForceDirectoriesUTF8(aDir) then
+      // ask for a directory
+      aDialog.Title:=pjsdSelectDirectoryWhereToExtractPas2js;
+      if aDir<>'' then
+        aDialog.InitialDir:=aDir;
+      if not aDialog.Execute then exit;
+      aDir:=CleanAndExpandDirectory(aDialog.Filename);
+      if not DirectoryExists(aDir) then
       begin
-        s:=Format(pjsdUnableToCreateDirectory, [aDir]);
-        DetailsMemo.Lines.Add(Format(pjsdError2, [s]));
-        IDEMessageDialog(pjsdError, s, mtError, [mbOk]);
-        exit;
+        if not ForceDirectoriesUTF8(aDir) then
+        begin
+          s:=Format(pjsdUnableToCreateDirectory, [aDir]);
+          DetailsMemo.Lines.Add(Format(pjsdError2, [s]));
+          IDEMessageDialog(pjsdError, s, mtError, [mbOk]);
+          exit;
+        end;
       end;
+
+      // set Pas2jsSrcDir
+      SetComboBoxText(Pas2jsSrcDirComboBox,aDir,cstFilename,30);
     end;
 
     // download
@@ -378,9 +389,6 @@ begin
 
     // unzip
     UnzipRelease(aDir);
-
-    // set Pas2jsSrcDir
-    SetComboBoxText(Pas2jsSrcDirComboBox,aDir,cstFilename,30);
 
     // set Pas2js compile exe
     if FFoundPas2jsExe='' then
@@ -732,6 +740,25 @@ begin
   end;
 end;
 
+function TPas2jsInstallerDialog.DirectoryIsEmpty(aDir: string): boolean;
+var
+  Info: TRawByteSearchRec;
+begin
+  aDir:=AppendPathDelim(aDir);
+  if FindFirst(aDir+GetAllFilesMask,faAnyFile,Info)=0 then
+  begin
+    repeat
+      case Info.Name of
+      '','.','..': ;
+      else
+        Result:=false;
+        break;
+      end;
+    until FindNext(Info)<>0;
+  end;
+  FindCloseUTF8(Info);
+end;
+
 procedure TPas2jsInstallerDialog.Init;
 begin
   FOldPas2jsExe:=PJSOptions.CompilerFilename;
@@ -749,6 +776,8 @@ begin
   FReleaseURL+='windows/pas2js-win64-x86_64-current.zip';
   {$ELSEIF defined(Darwin) and defined(CPU64)}
   FReleaseURL+='darwin/pas2js-darwin-x86_64-current.zip';
+  {$ELSEIF defined(Darwin) and defined(CPUAarch64)}
+  FReleaseURL+='darwin/pas2js-darwin-aarch64-current.zip';
   {$ELSEIF defined(Linux) and defined(CPU64)}
   FReleaseURL+='linux/pas2js-linux-x86_64-current.zip';
   {$ELSE}

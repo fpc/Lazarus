@@ -350,6 +350,10 @@ msgstr "Selecionar diretório de modelos de pacote do Atom"
 msgid "Select browser executable"
 msgstr "Selecionar executável do navegador"
 
+#: strpas2jsdesign.pjsdselectdirectorywheretoextractpas2js
+msgid "Select directory where to extract Pas2js"
+msgstr ""
+
 #: strpas2jsdesign.pjsdselectelectronexecutable
 msgid "Select Electron executable"
 msgstr ""
