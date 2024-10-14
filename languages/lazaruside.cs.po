@@ -7264,6 +7264,10 @@ msgstr "Sestavit následující režimy"
 msgid "Compile normally"
 msgstr ""
 
+#: lazarusidestrconsts.liscompilepackagetwiceandcheckifanyunitwascompiledaga
+msgid "Compile package twice and check if any unit was compiled again."
+msgstr ""
+
 #: lazarusidestrconsts.liscompileproject
 msgid "Compile Project"
 msgstr "Přeložit projekt"

@@ -7140,6 +7140,10 @@ msgstr "Aşağıdaki modları derleyin"
 msgid "Compile normally"
 msgstr "Normal şekilde derle"
 
+#: lazarusidestrconsts.liscompilepackagetwiceandcheckifanyunitwascompiledaga
+msgid "Compile package twice and check if any unit was compiled again."
+msgstr ""
+
 #: lazarusidestrconsts.liscompileproject
 msgid "Compile Project"
 msgstr "Projeyi Derle"

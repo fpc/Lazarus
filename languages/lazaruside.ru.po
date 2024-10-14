@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-10-05 22:24+0300\n"
+"PO-Revision-Date: 2024-10-14 22:27+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -7154,6 +7154,10 @@ msgstr "Компилировать в следующих режимах"
 #: lazarusidestrconsts.liscompilenormally
 msgid "Compile normally"
 msgstr "Собрать как обычно"
+
+#: lazarusidestrconsts.liscompilepackagetwiceandcheckifanyunitwascompiledaga
+msgid "Compile package twice and check if any unit was compiled again."
+msgstr "Собрать пакет дважды и проверить, компилировался ли какой-нибудь модуль повторно."
 
 #: lazarusidestrconsts.liscompileproject
 msgid "Compile Project"
