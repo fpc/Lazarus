@@ -62,6 +62,8 @@ type
     procedure CalculatePreferredSize(var PreferredWidth,
       PreferredHeight: integer; WithThemeSpace: Boolean); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseEnter; override;
+    procedure MouseLeave; override;
   public
     constructor Create(aOwner: TComponent); override;
   public
@@ -565,6 +567,20 @@ begin
   end;
 end;
 
+procedure TGroupTabLabel.MouseEnter;
+begin
+  inherited MouseEnter;
+
+  Font.Style := Font.Style + [fsUnderline];
+end;
+
+procedure TGroupTabLabel.MouseLeave;
+begin
+  inherited MouseLeave;
+
+  Font.Style := Font.Style - [fsUnderline];
+end;
+
 { TGroupItem }
 
 constructor TGroupItem.Create(AType: TGroupType; const ATitle: string;
@@ -933,10 +949,7 @@ begin
           xBtn.PopupMenu := FTabButtonMenu;
           xBtn.Down := xEditor = xOldActive;
           if xBtn.Down then
-          begin
             xActBtn := xBtn;
-            xBtn.Font.Style := xBtn.Font.Style + [fsUnderline];
-          end;
           xBtn.IsOtherFile := xPkgItem.&Type = gtOther;
         end;
       end;
@@ -991,13 +1004,9 @@ begin
     begin
       xBtn := TPackageTabButton(FPanel.Controls[I]);
       xBtn.Down := xBtn.Editor = xActEditor;
-      xBtn.Font.Style := xBtn.Font.Style - [fsUnderline];
       if xBtn.Editor = xActEditor then
         xActBtn := xBtn;
     end;
-
-  if xActBtn <> nil then
-    xActBtn.Font.Style := xActBtn.Font.Style + [fsUnderline];
 
   if (xActBtn<>nil) and (FPanel is TPackageTabScrollBox) then
     TPackageTabScrollBox(FPanel).ScrollInView(xActBtn);
