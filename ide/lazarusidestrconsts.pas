@@ -5345,8 +5345,8 @@ resourcestring
   lisObjectPascalDefault = 'Object Pascal - default';
   lisVerifyMethodCalls = 'Verify method calls';
   lisBuildAllFilesOfProjectPackageIDE = 'Build all files of project/package/IDE.';
-  lisCompilePackageTwiceAndCheckIfAnyUnitWasCompiledAga = 'compile package twice and check if any '
-    +'unit was compiled again';
+  lisCompilePackageTwiceAndCheckIfAnyUnitWasCompiledAga = 'Compile package twice and check if any '
+    +'unit was compiled again.';
   lisApplyBuildFlagsBToDependenciesToo = 'Apply build flags (-B) to dependencies too.';
   lisDoNotCompileDependencies = 'Do not compile dependencies.';
   lisAddPackageSToListOfInstalledPackagesCombineWithBui = 'Add package(s) to the '
