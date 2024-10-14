@@ -351,7 +351,7 @@ msgid "Select browser executable"
 msgstr "Selecionar executável do navegador"
 
 #: strpas2jsdesign.pjsdselectdirectorywheretoextractpas2js
-msgid "Select directory where to extract Pas2js"
+msgid "Select directory where to extract Pas2JS"
 msgstr ""
 
 #: strpas2jsdesign.pjsdselectelectronexecutable
