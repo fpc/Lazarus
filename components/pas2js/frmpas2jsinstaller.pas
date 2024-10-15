@@ -394,8 +394,8 @@ begin
   // check if there is an URL
   if ReleaseURL='' then
   begin
-    s:=Format(pjsdThereIsNoReleaseForTarget, [GetCompiledTargetCPU,
-      GetCompiledTargetOS]);
+    s:=Format(pjsdThereIsNoReleaseForTarget, [FPCAdds.GetCompiledTargetCPU,
+      FPCAdds.GetCompiledTargetOS]);
     DetailsMemo.Lines.Add(Format(pjsdError2, [s]));
     IDEMessageDialog(pjsdError, s, mtError, [mbOk, mbCancel]);
     exit;
@@ -839,10 +839,10 @@ begin
   FReleaseURL+='windows/pas2js-win64-x86_64-current.zip';
   {$ELSEIF defined(Darwin) and defined(CPU64)}
   FReleaseURL+='darwin/pas2js-darwin-x86_64-current.zip';
-  {$ELSEIF defined(Darwin) and defined(CPUAarch64)}
+  {$ELSEIF defined(Darwin)}
   FReleaseURL+='darwin/pas2js-darwin-aarch64-current.zip';
-  {$ELSEIF defined(Linux) and defined(CPU64)}
-  FReleaseURL+='linux/pas2js-linux-x86_64-current.zip';
+  {$ELSEIF defined(Linux)}
+  FReleaseURL+='linux/pas2js-linux-'+FPCAdds.GetCompiledTargetCPU+'-current.zip';
   {$ELSE}
   FReleaseURL:='';
   {$ENDIF}
