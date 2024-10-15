@@ -2634,7 +2634,7 @@ the values for internal members in the class instance.
 <var>GetHotSpot</var> is an overridden <var>TPoint</var> function which gets 
 the <var>HotSpot</var> for the image list resolution. GetHotSpot uses the 
 value from the <var>DragHotspot</var> property. It contains the screen 
-coordinates where the Drag and Drop operation was started. X is is the 
+coordinates where the Drag and Drop operation was started. X is the 
 horizontal position, and Y is the vertical position in the <var>TPoint</var> 
 type.
 </p>
@@ -17078,10 +17078,10 @@ WMLButtonTripleClk, WMLButtonQuadClk, et. al.
 <descr>
 <p>
 <var>ClientHeight</var> is an <var>Integer</var> property with the number of 
-pixels needed for client area on the control. The property contains the value 
-from the Bottom member in ClientRect. Changing the value for ClientHeight 
-causes SetClientSize to be called to apply the existing ClientWidth and the 
-new value for the property.
+pixels needed for the vertical client area on the control. The property 
+contains the value from the Bottom member in ClientRect. Changing the value for 
+ClientHeight causes SetClientSize to be called to apply the existing 
+ClientWidth and the new value for the property.
 </p>
 <p>
 The value for ClientHeight is not stored or used to set the Height for the 
@@ -17090,10 +17090,29 @@ is restored and when auto-layout policies using Anchors are applied to the
 control. For example, when Anchors is set to [akBottom] the value in 
 ClientHeight is needed / used.
 </p>
+<remark>
+In the LCL, ClientHeight has the same value as Height. Derived classes (like 
+TCustomForm or TForm) may implement a ClientHeight property that differs from 
+Height - but in the current LCL version, they do not. This differs from the 
+behavior in the Delphi VCL where a TForm instance adjusts the value in 
+ClientHeight to remove pixels used in non-client areas like the title bar, 
+borders, frames, and scroll bars. LCL uses this approach because there is no 
+reliable way to determine the sizes for all of the non-client areas on all of 
+the platforms where LCL is supported. Without a reliable way, the LCL would 
+needlessly move the forms around on the screen or resize them endlessly. In the 
+LCL, neither Height nor ClientHeight include the non-client area on a form 
+instance. The height of a TMainMenu instance is omitted from both values as 
+well.
+</remark>
+<p>
+Use ClientWidth to access the number of pixels needed for the horizontal client 
+area on the control.
+</p>
 </descr>
 <seealso>
 <link id="TControl.ClientRect"/>
 <link id="TControl.ClientWidth"/>
+<link id="TControl.Height"/>
 <link id="TControl.AutoSizing"/>
 <link id="TControl.EnableAutoSizing"/>
 <link id="TControl.AutoAdjustLayout"/>
@@ -17162,8 +17181,8 @@ for the control.
 <descr>
 <p>
 <var>ClientWidth</var> is an <var>Integer</var> property with the number of 
-pixels need for the width of the client area on the control. The property 
-contains the value from the Right member in ClientRect. Changing the value 
+pixels need for the horizontal client area on the control. The property 
+contains the value from the Right member in ClientRect. Changing the value
 for ClientWidth causes SetClientSize to be called to apply the new property 
 value and the existing ClientHeight for the control.
 </p>
@@ -17174,10 +17193,27 @@ is restored and when auto-layout policies using Anchors are applied to the
 control. For example, when Anchors is set to [akRight] the value in 
 ClientWidth is needed / used.
 </p>
+<remark>
+In the LCL, ClientWidth has the same value as Width. Derived classes (like 
+TCustomForm or TForm) may implement a ClientWidth property that differs from 
+Width - but in the current LCL version, they do not. This differs from the 
+behavior in the Delphi VCL where a TForm instance adjusts the value in 
+ClientWidth to remove pixels used in non-client areas like the borders, frames, 
+and scroll bars. LCL uses this approach because there is no reliable way to 
+determine the sizes for all of the non-client areas on all of the platforms 
+where LCL is supported. Without a reliable way, the LCL would needlessly move 
+the forms around on the screen or resize them endlessly. In the LCL, neither 
+Width nor ClientWidth include the non-client area on a form instance.
+</remark>
+<p>
+Use ClientHeight to access the number of pixels needed for the vertical client 
+area on the control.
+</p>
 </descr>
 <seealso>
 <link id="TControl.ClientRect"/>
 <link id="TControl.ClientHeight"/>
+<link id="TControl.Width"/>
 <link id="TControl.AutoSizing"/>
 <link id="TControl.EnableAutoSizing"/>
 <link id="TControl.AutoAdjustLayout"/>
@@ -18017,11 +18053,13 @@ property along with the existing values in Top, Width, and Height.
 </element>
 
 <element name="TControl.Height">
-<short>The vertical size for the control.</short>
+<short>
+The vertical size for the control.
+</short>
 <descr>
 <p>
-Height is an Integer property with the vertical size for the control in 
-pixels.
+<var>Height</var> is an <var>Integer</var> property with the vertical size for 
+the control in pixels.
 </p>
 <p>
 Setting a negative value in Height is not allowed, and the property defaults 
@@ -18031,9 +18069,8 @@ IDE).
 </p>
 <p>
 Setting a new value for the property causes SetBounds and ChangeBounds to be 
-called. This ensures that the new value is is the range allowed in 
-Constraints, and that the control is aligned on its Parent using the Anchors 
-for the control.
+called. This ensures that the new value is in the range allowed in Constraints, 
+and that the control is aligned on its Parent using the Anchors for the control.
 </p>
 <p>
 A value assigned to Height is ignored when AutoSize is set to <b>True</b>; 
@@ -18045,8 +18082,22 @@ Values in Top, Left, Width, and Height are used to calculate the display area
 for the control in GetClientRect. They determine the clipping rectangle used 
 when the control is drawn on its Parent.
 </p>
+<remark>
+In the LCL, Height has the same value as ClientHeight. Derived classes (like 
+TCustomForm or TForm) may implement a ClientHeight property that differs from 
+Height - but in the current LCL version, they do not. This differs from the 
+behavior in the Delphi VCL where the value in Height includes pixels used in 
+non-client areas like the title bar, borders, frames, and scroll bars. LCL 
+uses  this approach because there is no reliable way to determine the sizes for 
+all of the non-client areas on all of the platforms where LCL is supported. 
+Without a reliable way, the LCL would needlessly move the forms around on the 
+screen or resize them endlessly. In the LCL, neither Height nor ClientHeight 
+include the non-client area on a form instance. The height of a TMainMenu 
+instance is omitted from both values as well.
+</remark>
 </descr>
 <seealso>
+<link id="TControl.ClientHeight"/>
 <link id="TControl.Left"/>
 <link id="TControl.Top"/>
 <link id="TControl.Width"/>
@@ -18121,7 +18172,9 @@ property along with the existing values in Left, Width, and Height.
 </element>
 
 <element name="TControl.Width">
-<short>The horizontal size for the control.</short>
+<short>
+The horizontal size for the control.
+</short>
 <descr>
 <p>
 <var>Width</var> is an <var>Integer</var> property with the horizontal size 
@@ -18134,9 +18187,8 @@ to <b>0</b> (zero). At design-time, setting Width to a value not in the range
 </p>
 <p>
 Setting a new value for the property causes SetBounds and ChangeBounds to be 
-called. This ensures that the new value is is the range allowed in 
-Constraints, and that the control is aligned on its Parent using the Anchors 
-for the control.
+called. This ensures that the new value is in the range allowed in Constraints, 
+and that the control is aligned on its Parent using the Anchors for the control.
 </p>
 <p>
 A value assigned to Width is ignored when AutoSize is set to <b>True</b>; the 
@@ -18147,8 +18199,21 @@ Values in Top, Left, Width, and Height are used to calculate the display area
 for the control in GetClientRect. They determine the clipping rectangle used 
 when the control is drawn on its Parent.
 </p>
+<remark>
+In the LCL, Width has the same value as ClientWidth. Derived classes (like 
+TCustomForm or TForm) may implement a ClientWidth property that differs from 
+Width - but in the current LCL version, they do not. This differs from the 
+behavior in the Delphi VCL where the value in Width includes pixels used in 
+non-client areas like the borders, frames, and scroll bars. LCL uses this 
+approach because there is no reliable way to determine the sizes for all of the 
+non-client areas on all of the platforms where LCL is supported. Without a 
+reliable way, the LCL would needlessly move the forms around on the screen or 
+resize them endlessly. In the LCL, neither Width nor ClientWidth include the 
+non-client area on a form instance.
+</remark>
 </descr>
 <seealso>
+<link id="TControl.ClientWidth"/>
 <link id="TControl.Height"/>
 <link id="TControl.Left"/>
 <link id="TControl.Top"/>
