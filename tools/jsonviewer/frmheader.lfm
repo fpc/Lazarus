@@ -8,11 +8,11 @@ object HeaderForm: THeaderForm
   Caption = 'Request header'
   ClientHeight = 138
   ClientWidth = 318
+  SessionProperties = 'CBName.Items;CBValue.Items'
+  LCLVersion = '4.99.0.0'
   OnClose = FormClose
   OnCloseQuery = FormCloseQuery
   OnShow = FormShow
-  SessionProperties = 'CBName.Items;CBValue.Items'
-  LCLVersion = '1.9.0.0'
   object LCBName: TLabel
     Left = 16
     Height = 25
@@ -38,11 +38,10 @@ object HeaderForm: THeaderForm
     ParentColor = False
   end
   object BPHeader: TButtonPanel
-    Left = 0
-    Height = 42
-    Top = 96
-    Width = 318
-    BorderSpacing.Around = 0
+    Left = 6
+    Height = 34
+    Top = 98
+    Width = 306
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
@@ -56,31 +55,31 @@ object HeaderForm: THeaderForm
   end
   object CBName: TComboBox
     Left = 64
-    Height = 29
+    Height = 23
     Top = 8
     Width = 236
     Anchors = [akTop, akLeft, akRight]
     AutoComplete = True
     AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
-    ItemHeight = 0
-    OnChange = CBNameChange
+    ItemHeight = 15
     TabOrder = 1
+    OnChange = CBNameChange
   end
   object CBValue: TComboBox
     Left = 64
-    Height = 29
+    Height = 23
     Top = 40
     Width = 236
     Anchors = [akTop, akLeft, akRight]
     AutoComplete = True
     AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
-    ItemHeight = 0
-    OnChange = CBValueChange
+    ItemHeight = 15
     TabOrder = 2
+    OnChange = CBValueChange
   end
   object PSHeaders: TIniPropStorage
     StoredValues = <>
-    left = 111
-    top = 80
+    Left = 111
+    Top = 80
   end
 end

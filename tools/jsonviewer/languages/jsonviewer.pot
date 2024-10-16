@@ -101,12 +101,10 @@ msgid "Visual"
 msgstr ""
 
 #: tauthenticationform.caption
-msgctxt "tauthenticationform.caption"
 msgid "HTTP Authentication"
 msgstr ""
 
 #: tauthenticationform.lcbusername.caption
-msgctxt "tauthenticationform.lcbusername.caption"
 msgid "&Username"
 msgstr ""
 
@@ -193,6 +191,10 @@ msgstr ""
 msgid "&Close"
 msgstr ""
 
+#: tmainform.aclose.hint
+msgid "Close file"
+msgstr ""
+
 #: tmainform.acopy.caption
 msgid "&Copy"
 msgstr ""
@@ -203,7 +205,12 @@ msgstr ""
 
 #: tmainform.acreatecode.caption
 msgctxt "tmainform.acreatecode.caption"
-msgid "Create pascal code"
+msgid "Create Pascal code"
+msgstr ""
+
+#: tmainform.acreatecode.hint
+msgctxt "tmainform.acreatecode.hint"
+msgid "Create Pascal code"
 msgstr ""
 
 #: tmainform.acut.caption
@@ -242,8 +249,16 @@ msgstr ""
 msgid "&Find"
 msgstr ""
 
+#: tmainform.afind.hint
+msgid "Find"
+msgstr ""
+
 #: tmainform.afindnext.caption
 msgid "Find &next occurrence"
+msgstr ""
+
+#: tmainform.afindnext.hint
+msgid "Find next"
 msgstr ""
 
 #: tmainform.anew.caption
@@ -368,7 +383,6 @@ msgid "&File"
 msgstr ""
 
 #: tmainform.miallowcomments.caption
-msgctxt "tmainform.miallowcomments.caption"
 msgid "Allow comments"
 msgstr ""
 
@@ -532,7 +546,6 @@ msgid "Send request"
 msgstr ""
 
 #: trestframe.cbusecurrenttabcontent.caption
-msgctxt "trestframe.cbusecurrenttabcontent.caption"
 msgid "Use current tab as content"
 msgstr ""
 

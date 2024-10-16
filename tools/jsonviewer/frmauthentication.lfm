@@ -7,13 +7,12 @@ object AuthenticationForm: TAuthenticationForm
   ClientHeight = 123
   ClientWidth = 332
   SessionProperties = 'EPassword.Text;CBUserName.Items'
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '4.99.0.0'
   object BPHeader: TButtonPanel
-    Left = 0
+    Left = 6
     Height = 34
-    Top = 89
-    Width = 332
-    BorderSpacing.Around = 0
+    Top = 83
+    Width = 320
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
@@ -70,7 +69,7 @@ object AuthenticationForm: TAuthenticationForm
   end
   object PSHeaders: TIniPropStorage
     StoredValues = <>
-    left = 128
-    top = 80
+    Left = 96
+    Top = 72
   end
 end

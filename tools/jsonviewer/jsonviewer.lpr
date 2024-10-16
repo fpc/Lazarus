@@ -14,6 +14,7 @@ uses
 {$R *.res}
 
 begin
+  Application.Scaled:=True;
   Application.Title:='JSON Data viewer';
   Application.Initialize;
   Application.CreateForm(TMainForm, MainForm);
