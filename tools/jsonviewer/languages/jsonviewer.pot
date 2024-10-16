@@ -113,7 +113,6 @@ msgid "&Password"
 msgstr ""
 
 #: tcreatecodeform.caption
-msgctxt "tcreatecodeform.caption"
 msgid "Create pascal code"
 msgstr ""
 

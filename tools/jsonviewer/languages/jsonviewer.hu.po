@@ -205,6 +205,10 @@ msgstr "Kérés hozzáadása a kedvencekhez"
 msgid "&Close"
 msgstr "Bezárás"
 
+#: tmainform.aclose.hint
+msgid "Close file"
+msgstr ""
+
 #: tmainform.acopy.caption
 msgid "&Copy"
 msgstr "&Másolás"
@@ -214,9 +218,16 @@ msgid "Copy selected node to clipboard as JSON"
 msgstr "A kijelölt csomópont másolása a vágólapra JSON-ként"
 
 #: tmainform.acreatecode.caption
+#, fuzzy
+#| msgid "Create pascal code"
 msgctxt "tmainform.acreatecode.caption"
-msgid "Create pascal code"
+msgid "Create Pascal code"
 msgstr "Pascal kód létrehozása"
+
+#: tmainform.acreatecode.hint
+msgctxt "tmainform.acreatecode.hint"
+msgid "Create Pascal code"
+msgstr ""
 
 #: tmainform.acut.caption
 msgid "C&ut"
@@ -254,9 +265,17 @@ msgstr "Minden csomópont kibontása a jelenlegi objektumban/tömbben"
 msgid "&Find"
 msgstr "Keresés"
 
+#: tmainform.afind.hint
+msgid "Find"
+msgstr ""
+
 #: tmainform.afindnext.caption
 msgid "Find &next occurrence"
 msgstr "Következő előfordulás keresése"
+
+#: tmainform.afindnext.hint
+msgid "Find next"
+msgstr ""
 
 #: tmainform.anew.caption
 msgid "&New"

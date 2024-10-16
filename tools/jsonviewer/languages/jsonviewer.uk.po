@@ -208,6 +208,10 @@ msgstr "Додати запит до обраних"
 msgid "&Close"
 msgstr "&Закрити"
 
+#: tmainform.aclose.hint
+msgid "Close file"
+msgstr ""
+
 #: tmainform.acopy.caption
 msgid "&Copy"
 msgstr "&Копіювати"
@@ -217,9 +221,16 @@ msgid "Copy selected node to clipboard as JSON"
 msgstr "Копіювати вибраний вузол в буфер як JSON"
 
 #: tmainform.acreatecode.caption
+#, fuzzy
+#| msgid "Create pascal code"
 msgctxt "tmainform.acreatecode.caption"
-msgid "Create pascal code"
+msgid "Create Pascal code"
 msgstr "Створити код на Паскалі"
+
+#: tmainform.acreatecode.hint
+msgctxt "tmainform.acreatecode.hint"
+msgid "Create Pascal code"
+msgstr ""
 
 #: tmainform.acut.caption
 msgid "C&ut"
@@ -257,9 +268,17 @@ msgstr "Розгорнути всі вузли в поточному об'єкт
 msgid "&Find"
 msgstr "&Знайти"
 
+#: tmainform.afind.hint
+msgid "Find"
+msgstr ""
+
 #: tmainform.afindnext.caption
 msgid "Find &next occurrence"
 msgstr "Знайти &наступну появу"
+
+#: tmainform.afindnext.hint
+msgid "Find next"
+msgstr ""
 
 #: tmainform.anew.caption
 msgid "&New"

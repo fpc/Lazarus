@@ -209,6 +209,10 @@ msgstr ""
 msgid "&Close"
 msgstr ""
 
+#: tmainform.aclose.hint
+msgid "Close file"
+msgstr ""
+
 #: tmainform.acopy.caption
 msgid "&Copy"
 msgstr "&Copia"
@@ -219,7 +223,12 @@ msgstr "copia il nodo scelto negli appunti come JSON"
 
 #: tmainform.acreatecode.caption
 msgctxt "tmainform.acreatecode.caption"
-msgid "Create pascal code"
+msgid "Create Pascal code"
+msgstr ""
+
+#: tmainform.acreatecode.hint
+msgctxt "tmainform.acreatecode.hint"
+msgid "Create Pascal code"
 msgstr ""
 
 #: tmainform.acut.caption
@@ -258,9 +267,17 @@ msgstr "Espandi tutti i nodi nell'oggetto/array corrente"
 msgid "&Find"
 msgstr "&Trova"
 
+#: tmainform.afind.hint
+msgid "Find"
+msgstr ""
+
 #: tmainform.afindnext.caption
 msgid "Find &next occurrence"
 msgstr "Trova la &prossima occorrenza"
+
+#: tmainform.afindnext.hint
+msgid "Find next"
+msgstr ""
 
 #: tmainform.anew.caption
 msgid "&New"

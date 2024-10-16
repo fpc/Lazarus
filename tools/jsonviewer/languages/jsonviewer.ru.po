@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.3.1\n"
 
 #: msgjsonviewer.sarray
 #, object-pascal-format
@@ -205,6 +205,10 @@ msgstr "Добавить запрос в избранное"
 msgid "&Close"
 msgstr "&Закрыть"
 
+#: tmainform.aclose.hint
+msgid "Close file"
+msgstr "Закрыть файл"
+
 #: tmainform.acopy.caption
 msgid "&Copy"
 msgstr "К&опировать"
@@ -215,7 +219,12 @@ msgstr "Копировать выбранный элемент в буфер о�
 
 #: tmainform.acreatecode.caption
 msgctxt "tmainform.acreatecode.caption"
-msgid "Create pascal code"
+msgid "Create Pascal code"
+msgstr "Создать код на Паскале"
+
+#: tmainform.acreatecode.hint
+msgctxt "tmainform.acreatecode.hint"
+msgid "Create Pascal code"
 msgstr "Создать код на Паскале"
 
 #: tmainform.acut.caption
@@ -254,9 +263,17 @@ msgstr "Развернуть все элементы в текущем объе�
 msgid "&Find"
 msgstr "&Найти"
 
+#: tmainform.afind.hint
+msgid "Find"
+msgstr "Найти"
+
 #: tmainform.afindnext.caption
 msgid "Find &next occurrence"
 msgstr "Найти следующий экземпл&яр"
+
+#: tmainform.afindnext.hint
+msgid "Find next"
+msgstr "Найти далее"
 
 #: tmainform.anew.caption
 msgid "&New"

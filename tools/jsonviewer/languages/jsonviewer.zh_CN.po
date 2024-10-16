@@ -209,6 +209,10 @@ msgstr ""
 msgid "&Close"
 msgstr ""
 
+#: tmainform.aclose.hint
+msgid "Close file"
+msgstr ""
+
 #: tmainform.acopy.caption
 msgid "&Copy"
 msgstr "复制(&C)"
@@ -219,7 +223,12 @@ msgstr "复制选择的节点到剪贴板作为JSON"
 
 #: tmainform.acreatecode.caption
 msgctxt "tmainform.acreatecode.caption"
-msgid "Create pascal code"
+msgid "Create Pascal code"
+msgstr ""
+
+#: tmainform.acreatecode.hint
+msgctxt "tmainform.acreatecode.hint"
+msgid "Create Pascal code"
 msgstr ""
 
 #: tmainform.acut.caption
@@ -258,9 +267,17 @@ msgstr "展开使用节点在当前对象/数组"
 msgid "&Find"
 msgstr "查找(&F)"
 
+#: tmainform.afind.hint
+msgid "Find"
+msgstr ""
+
 #: tmainform.afindnext.caption
 msgid "Find &next occurrence"
 msgstr "查找下一个事件(&)"
+
+#: tmainform.afindnext.hint
+msgid "Find next"
+msgstr ""
 
 #: tmainform.anew.caption
 msgid "&New"

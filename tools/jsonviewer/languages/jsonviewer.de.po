@@ -207,6 +207,10 @@ msgstr ""
 msgid "&Close"
 msgstr ""
 
+#: tmainform.aclose.hint
+msgid "Close file"
+msgstr ""
+
 #: tmainform.acopy.caption
 msgid "&Copy"
 msgstr "Kopieren"
@@ -216,9 +220,16 @@ msgid "Copy selected node to clipboard as JSON"
 msgstr ""
 
 #: tmainform.acreatecode.caption
+#, fuzzy
+#| msgid "Create pascal code"
 msgctxt "tmainform.acreatecode.caption"
-msgid "Create pascal code"
+msgid "Create Pascal code"
 msgstr "Pascal Code erstellen"
+
+#: tmainform.acreatecode.hint
+msgctxt "tmainform.acreatecode.hint"
+msgid "Create Pascal code"
+msgstr ""
 
 #: tmainform.acut.caption
 msgid "C&ut"
@@ -256,8 +267,16 @@ msgstr ""
 msgid "&Find"
 msgstr "Suchen"
 
+#: tmainform.afind.hint
+msgid "Find"
+msgstr ""
+
 #: tmainform.afindnext.caption
 msgid "Find &next occurrence"
+msgstr ""
+
+#: tmainform.afindnext.hint
+msgid "Find next"
 msgstr ""
 
 #: tmainform.anew.caption
