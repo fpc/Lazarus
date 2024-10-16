@@ -206,6 +206,10 @@ msgstr "Ajouter la requête aux favoris"
 msgid "&Close"
 msgstr "&Fermer"
 
+#: tmainform.aclose.hint
+msgid "Close file"
+msgstr ""
+
 #: tmainform.acopy.caption
 msgid "&Copy"
 msgstr "&Copier"
@@ -215,9 +219,16 @@ msgid "Copy selected node to clipboard as JSON"
 msgstr "Copier le nœud sélectionné dans le presse-papiers au format JSON"
 
 #: tmainform.acreatecode.caption
+#, fuzzy
+#| msgid "Create pascal code"
 msgctxt "tmainform.acreatecode.caption"
-msgid "Create pascal code"
+msgid "Create Pascal code"
 msgstr "Créer du code Pascal"
+
+#: tmainform.acreatecode.hint
+msgctxt "tmainform.acreatecode.hint"
+msgid "Create Pascal code"
+msgstr ""
 
 #: tmainform.acut.caption
 msgid "C&ut"
@@ -255,9 +266,17 @@ msgstr "Développer tous les nœuds de l'objet/du tableau en cours"
 msgid "&Find"
 msgstr "&Chercher"
 
+#: tmainform.afind.hint
+msgid "Find"
+msgstr ""
+
 #: tmainform.afindnext.caption
 msgid "Find &next occurrence"
 msgstr "&Occurrence suivante"
+
+#: tmainform.afindnext.hint
+msgid "Find next"
+msgstr ""
 
 #: tmainform.anew.caption
 msgid "&New"
