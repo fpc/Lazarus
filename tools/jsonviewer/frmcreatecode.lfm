@@ -1,17 +1,17 @@
 object CreateCodeForm: TCreateCodeForm
   Left = 528
-  Height = 538
+  Height = 535
   Top = 226
   Width = 614
   Caption = 'Create pascal code'
-  ClientHeight = 538
+  ClientHeight = 535
   ClientWidth = 614
+  LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
-  LCLVersion = '2.1.0.0'
   object PCCode: TPageControl
     AnchorSideRight.Control = LFECode
     Left = 0
-    Height = 487
+    Height = 489
     Top = 0
     Width = 614
     ActivePage = TSOptions
@@ -22,15 +22,15 @@ object CreateCodeForm: TCreateCodeForm
     object TSOptions: TTabSheet
       AnchorSideRight.Control = LFECode
       Caption = 'Options'
-      ClientHeight = 456
-      ClientWidth = 604
+      ClientHeight = 461
+      ClientWidth = 606
       object SEIndent: TSpinEdit
         AnchorSideLeft.Control = FECode
         AnchorSideTop.Control = FECode
         AnchorSideTop.Side = asrBottom
         Left = 152
-        Height = 29
-        Top = 45
+        Height = 23
+        Top = 39
         Width = 80
         BorderSpacing.Top = 8
         TabOrder = 0
@@ -38,9 +38,9 @@ object CreateCodeForm: TCreateCodeForm
       end
       object FECode: TFileNameEdit
         Left = 152
-        Height = 29
+        Height = 23
         Top = 8
-        Width = 451
+        Width = 453
         DialogKind = dkSave
         DialogOptions = [ofPathMustExist, ofEnableSizing]
         FilterIndex = 0
@@ -57,7 +57,7 @@ object CreateCodeForm: TCreateCodeForm
         AnchorSideBottom.Control = FECode
         AnchorSideBottom.Side = asrBottom
         Left = 8
-        Height = 29
+        Height = 23
         Top = 8
         Width = 136
         Alignment = taRightJustify
@@ -76,8 +76,8 @@ object CreateCodeForm: TCreateCodeForm
         AnchorSideBottom.Control = SEIndent
         AnchorSideBottom.Side = asrBottom
         Left = 17
-        Height = 21
-        Top = 53
+        Height = 15
+        Top = 47
         Width = 127
         Alignment = taRightJustify
         Anchors = [akTop, akLeft, akRight, akBottom]
@@ -91,8 +91,8 @@ object CreateCodeForm: TCreateCodeForm
         AnchorSideTop.Control = SEIndent
         AnchorSideTop.Side = asrBottom
         Left = 152
-        Height = 29
-        Top = 82
+        Height = 23
+        Top = 70
         Width = 241
         BorderSpacing.Top = 8
         TabOrder = 2
@@ -104,8 +104,8 @@ object CreateCodeForm: TCreateCodeForm
         AnchorSideBottom.Control = EUnitName
         AnchorSideBottom.Side = asrBottom
         Left = 12
-        Height = 29
-        Top = 82
+        Height = 23
+        Top = 70
         Width = 132
         Alignment = taRightJustify
         Anchors = [akTop, akLeft, akRight, akBottom]
@@ -120,8 +120,8 @@ object CreateCodeForm: TCreateCodeForm
         AnchorSideBottom.Control = EFieldPrefix
         AnchorSideBottom.Side = asrBottom
         Left = 8
-        Height = 28
-        Top = 157
+        Height = 22
+        Top = 133
         Width = 136
         Alignment = taRightJustify
         Anchors = [akTop, akLeft, akRight, akBottom]
@@ -135,8 +135,8 @@ object CreateCodeForm: TCreateCodeForm
         AnchorSideTop.Control = ETopLevelClassName
         AnchorSideTop.Side = asrBottom
         Left = 152
-        Height = 29
-        Top = 156
+        Height = 23
+        Top = 132
         Width = 88
         BorderSpacing.Top = 8
         TabOrder = 3
@@ -146,8 +146,8 @@ object CreateCodeForm: TCreateCodeForm
         AnchorSideTop.Control = EFieldPrefix
         AnchorSideTop.Side = asrBottom
         Left = 152
-        Height = 29
-        Top = 193
+        Height = 23
+        Top = 163
         Width = 87
         BorderSpacing.Top = 8
         TabOrder = 4
@@ -159,8 +159,8 @@ object CreateCodeForm: TCreateCodeForm
         AnchorSideBottom.Control = EPropertyTypeSuffixEdit
         AnchorSideBottom.Side = asrBottom
         Left = 12
-        Height = 29
-        Top = 193
+        Height = 23
+        Top = 163
         Width = 132
         Alignment = taRightJustify
         Anchors = [akTop, akLeft, akRight, akBottom]
@@ -174,9 +174,9 @@ object CreateCodeForm: TCreateCodeForm
         AnchorSideTop.Control = EPropertyTypeSuffixEdit
         AnchorSideTop.Side = asrBottom
         Left = 152
-        Height = 29
-        Top = 230
-        Width = 450
+        Height = 23
+        Top = 194
+        Width = 452
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Top = 8
         TabOrder = 5
@@ -188,8 +188,8 @@ object CreateCodeForm: TCreateCodeForm
         AnchorSideBottom.Control = EConstructorArgs
         AnchorSideBottom.Side = asrBottom
         Left = -23
-        Height = 29
-        Top = 230
+        Height = 23
+        Top = 194
         Width = 167
         Alignment = taRightJustify
         Anchors = [akTop, akLeft, akRight, akBottom]
@@ -202,9 +202,9 @@ object CreateCodeForm: TCreateCodeForm
         AnchorSideTop.Control = LEConstructorArgsLabel1
         AnchorSideTop.Side = asrBottom
         Left = 152
-        Height = 29
-        Top = 267
-        Width = 450
+        Height = 23
+        Top = 225
+        Width = 452
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Top = 8
         TabOrder = 6
@@ -217,8 +217,8 @@ object CreateCodeForm: TCreateCodeForm
         AnchorSideBottom.Control = EExtraUnitNames
         AnchorSideBottom.Side = asrBottom
         Left = 8
-        Height = 29
-        Top = 267
+        Height = 23
+        Top = 225
         Width = 136
         Alignment = taRightJustify
         Anchors = [akTop, akLeft, akRight, akBottom]
@@ -231,9 +231,9 @@ object CreateCodeForm: TCreateCodeForm
         AnchorSideTop.Control = EExtraUnitNames
         AnchorSideTop.Side = asrBottom
         Left = 152
-        Height = 29
-        Top = 304
-        Width = 450
+        Height = 23
+        Top = 256
+        Width = 452
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Top = 8
         TabOrder = 7
@@ -245,8 +245,8 @@ object CreateCodeForm: TCreateCodeForm
         AnchorSideBottom.Control = EDefaultParentName
         AnchorSideBottom.Side = asrBottom
         Left = 8
-        Height = 29
-        Top = 304
+        Height = 23
+        Top = 256
         Width = 136
         Alignment = taRightJustify
         Anchors = [akTop, akLeft, akRight, akBottom]
@@ -260,8 +260,8 @@ object CreateCodeForm: TCreateCodeForm
         AnchorSideTop.Side = asrBottom
         Left = 152
         Height = 105
-        Top = 341
-        Width = 444
+        Top = 287
+        Width = 446
         Anchors = [akTop, akLeft, akRight]
         AutoFill = True
         BorderSpacing.Top = 8
@@ -274,7 +274,7 @@ object CreateCodeForm: TCreateCodeForm
         ChildSizing.ShrinkVertical = crsScaleChilds
         ChildSizing.Layout = cclLeftToRightThenTopToBottom
         ChildSizing.ControlsPerLine = 2
-        ClientHeight = 87
+        ClientHeight = 85
         ClientWidth = 442
         Columns = 2
         Items.Strings = (
@@ -295,8 +295,8 @@ object CreateCodeForm: TCreateCodeForm
         AnchorSideTop.Control = EUnitName
         AnchorSideTop.Side = asrBottom
         Left = 152
-        Height = 29
-        Top = 119
+        Height = 23
+        Top = 101
         Width = 187
         BorderSpacing.Top = 8
         TabOrder = 9
@@ -309,8 +309,8 @@ object CreateCodeForm: TCreateCodeForm
         AnchorSideBottom.Control = ETopLevelClassName
         AnchorSideBottom.Side = asrBottom
         Left = 0
-        Height = 29
-        Top = 119
+        Height = 23
+        Top = 101
         Width = 144
         Alignment = taRightJustify
         Anchors = [akTop, akLeft, akRight, akBottom]
@@ -321,13 +321,13 @@ object CreateCodeForm: TCreateCodeForm
     end
     object TSCode: TTabSheet
       Caption = 'Preview'
-      ClientHeight = 456
-      ClientWidth = 604
+      ClientHeight = 461
+      ClientWidth = 606
       inline SECode: TSynEdit
         Left = 0
-        Height = 412
+        Height = 461
         Top = 0
-        Width = 608
+        Width = 606
         Align = alClient
         Font.Height = 13
         Font.Name = 'DejaVu Sans Mono'
@@ -336,7 +336,7 @@ object CreateCodeForm: TCreateCodeForm
         ParentColor = False
         ParentFont = False
         TabOrder = 0
-        Gutter.Width = 57
+        Gutter.Width = 55
         Gutter.MouseActions = <>
         RightGutter.Width = 0
         RightGutter.MouseActions = <>
@@ -792,9 +792,11 @@ object CreateCodeForm: TCreateCodeForm
           object SynGutterMarks1: TSynGutterMarks
             Width = 24
             MouseActions = <>
+            MaxExtraMarksColums = 0
+            Options = [sgmoDeDuplicateMarksOnOverflow]
           end
           object SynGutterLineNumber1: TSynGutterLineNumber
-            Width = 17
+            Width = 15
             MouseActions = <>
             MarkupInfo.Background = clBtnFace
             MarkupInfo.Foreground = clNone
@@ -828,8 +830,8 @@ object CreateCodeForm: TCreateCodeForm
   end
   object BPCode: TButtonPanel
     Left = 6
-    Height = 39
-    Top = 493
+    Height = 34
+    Top = 495
     Width = 602
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -848,7 +850,8 @@ object CreateCodeForm: TCreateCodeForm
     CompilerMode = pcmObjFPC
     NestedComments = True
     TypeHelpers = False
-    left = 127
-    top = 58
+    StringMultilineMode = []
+    Left = 127
+    Top = 58
   end
 end

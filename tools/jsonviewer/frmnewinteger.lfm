@@ -2,21 +2,21 @@ object NewNumberForm: TNewNumberForm
   Left = 451
   Height = 240
   Top = 247
-  Width = 305
+  Width = 300
   ActiveControl = EName
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'New number value'
   ClientHeight = 240
-  ClientWidth = 305
-  OnCloseQuery = FormCloseQuery
+  ClientWidth = 300
   Position = poMainFormCenter
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '4.99.0.0'
+  OnCloseQuery = FormCloseQuery
   object BPNewNumber: TButtonPanel
     Left = 6
-    Height = 42
-    Top = 192
-    Width = 293
+    Height = 34
+    Top = 200
+    Width = 288
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
@@ -32,7 +32,7 @@ object NewNumberForm: TNewNumberForm
   end
   object EName: TEdit
     Left = 96
-    Height = 27
+    Height = 23
     Top = 10
     Width = 185
     TabOrder = 0
@@ -52,8 +52,8 @@ object NewNumberForm: TNewNumberForm
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 87
-    ClientWidth = 183
+    ClientHeight = 85
+    ClientWidth = 181
     Items.Strings = (
       'Float'
       'Integer'
@@ -63,25 +63,25 @@ object NewNumberForm: TNewNumberForm
   end
   object EValue: TEdit
     Left = 96
-    Height = 27
+    Height = 23
     Top = 159
     Width = 184
     TabOrder = 2
   end
   object Label1: TLabel
     Left = 12
-    Height = 17
+    Height = 15
     Top = 10
-    Width = 34
+    Width = 32
     Caption = '&Name'
     FocusControl = EName
     ParentColor = False
   end
   object Label2: TLabel
     Left = 12
-    Height = 17
+    Height = 15
     Top = 159
-    Width = 31
+    Width = 28
     Caption = 'Value'
     ParentColor = False
   end

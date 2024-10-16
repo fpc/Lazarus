@@ -9,28 +9,28 @@ object NewStringForm: TNewStringForm
   Caption = 'New String value'
   ClientHeight = 140
   ClientWidth = 320
-  OnCloseQuery = FormCloseQuery
   Position = poMainFormCenter
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '4.99.0.0'
+  OnCloseQuery = FormCloseQuery
   object EName: TEdit
     Left = 88
-    Height = 27
+    Height = 23
     Top = 16
     Width = 216
     TabOrder = 0
   end
   object EValue: TEdit
     Left = 88
-    Height = 27
+    Height = 23
     Top = 48
     Width = 216
     TabOrder = 1
   end
   object Label1: TLabel
     Left = 8
-    Height = 17
+    Height = 15
     Top = 16
-    Width = 34
+    Width = 32
     Alignment = taRightJustify
     Caption = '&Name'
     FocusControl = EName
@@ -39,9 +39,9 @@ object NewStringForm: TNewStringForm
   end
   object Label2: TLabel
     Left = 8
-    Height = 17
+    Height = 15
     Top = 49
-    Width = 31
+    Width = 28
     Alignment = taRightJustify
     Caption = '&Value'
     FocusControl = EValue
@@ -50,8 +50,8 @@ object NewStringForm: TNewStringForm
   end
   object BPNewString: TButtonPanel
     Left = 6
-    Height = 42
-    Top = 92
+    Height = 34
+    Top = 100
     Width = 308
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
