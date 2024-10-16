@@ -156,10 +156,11 @@
   <CompilerOptions>
     <Version Value="11"/>
     <Target>
-      <Filename Value="JsonViewer"/>
+      <Filename Value="jsonviewer"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
+      <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Parsing>
       <SyntaxOptions>
