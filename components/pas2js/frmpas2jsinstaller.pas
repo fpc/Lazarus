@@ -22,7 +22,9 @@ interface
 
 uses
   Classes, SysUtils, fphttpclient, Zipper,
+  {$IFDEF HasSSL}
   opensslsockets, // opensslsockets is needed for https download on windows
+  {$ENDIF}
   LazFileUtils, FPCAdds, LazLoggerBase, FileUtil,
   Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls, ComCtrls,
   IDEUtils, IDEDialogs,
