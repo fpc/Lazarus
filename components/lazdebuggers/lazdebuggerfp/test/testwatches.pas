@@ -4078,6 +4078,7 @@ begin
     RunToPause(BrkPrg);
 
     t.Clear;
+
     // test mem leaks // json content
     t.Add('json ', '''[1,2]''',     weAnsiStr('[1,2]','')).IgnTypeName.IgnKind;
     t.Add('json ', '''[1,2,}]''',     weAnsiStr('[1,2,}]','')).IgnTypeName.IgnKind;
@@ -4262,6 +4263,64 @@ begin
     t.Add('Pointer-Op: ', 'gvPtr2 - gvPtr1',     weInteger(1001));
     t.Add('Pointer-Op: ', '@gv_sa_Word[2] - @gv_sa_Word[1]',     weInteger(1));
     t.Add('Pointer-Op: ', 'pointer(@gv_sa_Word[2]) - pointer(@gv_sa_Word[1])',     weInteger(2));
+
+
+    t.Add('Set + ', '[]+[]', weSet([])).IgnTypeName;
+    t.Add('Set + ', '[]+[EnVal4]', weSet(['EnVal4'])).IgnTypeName;
+    t.Add('Set + ', '[EnVal1]+[]', weSet(['EnVal1'])).IgnTypeName;
+    t.Add('Set + ', '[EnVal1]+[EnVal4]', weSet(['EnVal1', 'EnVal4'])).IgnTypeName;
+    t.Add('Set + ', '[EnVal1]+[EnVal2, EnVal4]', weSet(['EnVal1', 'EnVal2', 'EnVal4'])).IgnTypeName;
+    t.Add('Set + ', '[EnVal1, EnVal3]+[EnVal2, EnVal4]', weSet(['EnVal1', 'EnVal3', 'EnVal2', 'EnVal4'])).IgnTypeName;
+
+    t.Add('Set + ', 'gvSet+gvSet2', weSet(['EnVal2', 'EnVal4', 'EnVal1'])).IgnTypeName.Skip([stDwarf]);
+    t.Add('Set + ', 'gvSet+[EnVal3]', weSet(['EnVal2', 'EnVal4', 'EnVal3'])).IgnTypeName.Skip([stDwarf]);
+    t.Add('Set + ', '[EnVal3]+gvSet', weSet(['EnVal3', 'EnVal2', 'EnVal4'])).IgnTypeName.Skip([stDwarf]);
+
+    t.Add('Set + ', '[1,2]+[3,4]', weSet(['1','2','3','4'])).IgnTypeName;
+
+    t.Add('Set - ', '[]-[]', weSet([])).IgnTypeName;
+    t.Add('Set - ', '[]-[EnVal4]', weSet([])).IgnTypeName;
+    t.Add('Set - ', '[EnVal1]-[]', weSet(['EnVal1'])).IgnTypeName;
+    t.Add('Set - ', '[EnVal1]-[EnVal4]', weSet(['EnVal1'])).IgnTypeName;
+    t.Add('Set - ', '[EnVal1, EnVal4]-[EnVal4]', weSet(['EnVal1'])).IgnTypeName;
+
+    t.Add('Set >< ', '[]><[]', weSet([])).IgnTypeName;
+    t.Add('Set >< ', '[EnVal4]><[EnVal4]', weSet([])).IgnTypeName;
+    t.Add('Set >< ', '[]><[EnVal4]', weSet(['EnVal4'])).IgnTypeName;
+    t.Add('Set >< ', '[EnVal1]><[]', weSet(['EnVal1'])).IgnTypeName;
+
+
+    t.Add('IN: ', '1 in [1,2]',      weBool(True)).IgnTypeName;
+    t.Add('IN: ', '1 in [01,2]',     weBool(True)).IgnTypeName;
+    t.Add('IN: ', '1 in [-1,2,1]',   weBool(True)).IgnTypeName;
+    t.Add('IN: ', '-1 in [-1,2,1]',  weBool(True)).IgnTypeName;
+    t.Add('IN: ', '1 in [2,3]',      weBool(False)).IgnTypeName;
+    t.Add('IN: ', '1 in []',        weBool(False)).IgnTypeName;
+
+    t.Add('IN: ', 'gvWord in [-1, 101, 2]',   weBool(True)).IgnTypeName;
+    t.Add('IN: ', 'gvWord in [-1, 1010, 2]',  weBool(False)).IgnTypeName;
+    t.Add('IN: ', 'gvWord in []',             weBool(False)).IgnTypeName;
+
+    t.Add('IN: ', '101 in [-1, gvWord, 2]',     weBool(True)).IgnTypeName;
+    t.Add('IN: ', '102 in [-1, gvWord+1, 2]',   weBool(True)).IgnTypeName;
+    t.Add('IN: ', '102 in [-1, gvWord, 2]',     weBool(False)).IgnTypeName;
+    t.Add('IN: ', '101 in [-1, gvWord+1, 2]',   weBool(False)).IgnTypeName;
+
+    t.Add('IN: ', '''a'' in [''a'', ''b'']',      weBool(True)).IgnTypeName;
+    t.Add('IN: ', '''c'' in [''a'', ''b'']',      weBool(False)).IgnTypeName;
+    t.Add('IN: ', '''c'' in []',                  weBool(False)).IgnTypeName;
+
+    t.Add('IN: ', 'gvChar3 in [''a'', '' '']',      weBool(True)).IgnTypeName;
+    t.Add('IN: ', 'gvChar3 in [''a'', ''d'']',      weBool(False)).IgnTypeName;
+    t.Add('IN: ', 'gvChar3 in []',                  weBool(False)).IgnTypeName;
+
+
+    t.Add('IN: ', 'EnVal1 in [EnVal1, EnVal2]',      weBool(True)).IgnTypeName;
+    t.Add('IN: ', 'EnVal1 in [EnVal2, EnVal3]',      weBool(False)).IgnTypeName;
+    t.Add('IN: ', 'EnVal1 in []',                    weBool(False)).IgnTypeName;
+
+    t.Add('IN: ', 'EnVal1 in gvSet2',      weBool(True)).IgnTypeName.Skip([stDwarf]);
+    t.Add('IN: ', 'EnVal3 in gvSet2',      weBool(False)).IgnTypeName.Skip([stDwarf]);
 
     AddWatches(t, 'glob',   'gv', 001, 'B', '', tlAny,     'gv', 001, 'B', '', tlAny);
     AddWatches(t, 'glob',   'gc', 000, 'A', '', tlConst,   'gv', 001, 'B', '', tlAny);

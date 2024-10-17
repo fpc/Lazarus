@@ -2329,8 +2329,17 @@ end;
 { TFpPascalExpressionPartBracketSet }
 
 function TFpPascalExpressionPartBracketSet.DoGetResultValue: TFpValue;
+var
+  i: Integer;
+  itm: TFpPascalExpressionPart;
+  m: TFpValue;
 begin
-  Result := TFpValueConstSet.Create(TFpPascalExpressionPartListForwarder.Create(Self, 0, Count));
+  Result := TFpValueConstSet.Create;
+  for i := 0 to Count - 1 do begin
+    itm := Items[i];
+    m := itm.ResultValue;
+    TFpValueConstSet(Result).AddVal(m);
+  end;
 end;
 
 function TFpPascalExpressionPartBracketSet.HandleNextPartInBracket(APart: TFpPascalExpressionPart): TFpPascalExpressionPart;
@@ -6307,30 +6316,44 @@ function TFpPascalExpressionPartOperatorPlusMinus.DoGetResultValue: TFpValue;
   end;
   function AddSets(ASetVal, AOtherVal: TFpValue): TFpValue;
   var
-    r: TStringList;
-    i: Integer;
-    m: TFpValue;
-    s: String;
+    i, j: Integer;
+    m, m2: TFpValue;
+    f: TFpValueFieldFlags;
+    r: Boolean;
   begin
     Result := nil;
     case AOtherVal.Kind of
       skSet: begin
-        r := TStringList.Create;
-        r.CaseSensitive := False;
+        Result := TFpValueConstSet.Create;
         for i := 0 to ASetVal.MemberCount - 1 do begin
           m := ASetVal.Member[i];
-          s := m.AsString;
+          TFpValueConstSet(Result).AddVal(m);
           m.ReleaseReference;
-          r.Add(s);
         end;
+
         for i := 0 to AOtherVal.MemberCount - 1 do begin
           m := AOtherVal.Member[i];
-          s := m.AsString;
+          j := ASetVal.MemberCount - 1;
+          while j >= 0 do begin
+            m2 := ASetVal.Member[j];
+            f := m.FieldFlags * m2.FieldFlags;
+            if svfOrdinal in f then
+              r := m.AsCardinal = m2.AsCardinal
+            else
+            if svfIdentifier in f then
+              r := m.AsString = m2.AsString
+            else
+              r := False;
+            m2.ReleaseReference;
+            if r then
+              break;
+            dec(j);
+          end;
+
+          if j < 0 then
+            TFpValueConstSet(Result).AddVal(m);
           m.ReleaseReference;
-          if r.IndexOf(s) < 0 then
-            r.Add(s);
         end;
-        Result := TFpValueConstSet.Create(r);
       end;
       else SetError('Operator +: set union requires a set as 2nd operator');
     end;
@@ -6374,31 +6397,38 @@ function TFpPascalExpressionPartOperatorPlusMinus.DoGetResultValue: TFpValue;
   end;
   function SubtractSets(ASetVal, AOtherVal: TFpValue): TFpValue;
   var
-    r: TStringList;
     i, j: Integer;
-    m: TFpValue;
-    s: String;
+    m, m2: TFpValue;
+    f: TFpValueFieldFlags;
+    r: Boolean;
   begin
     Result := nil;
     case AOtherVal.Kind of
       skSet: begin
-        r := TStringList.Create;
-        r.CaseSensitive := False;
+        Result := TFpValueConstSet.Create;
         for i := 0 to ASetVal.MemberCount - 1 do begin
           m := ASetVal.Member[i];
-          s := m.AsString;
+          j := AOtherVal.MemberCount - 1;
+          while j >= 0 do begin
+            m2 := AOtherVal.Member[j];
+            f := m.FieldFlags * m2.FieldFlags;
+            if svfOrdinal in f then
+              r := m.AsCardinal = m2.AsCardinal
+            else
+            if svfIdentifier in f then
+              r := m.AsString = m2.AsString
+            else
+              r := False;
+            m2.ReleaseReference;
+            if r then
+              break;
+            dec(j);
+          end;
+
+          if j < 0 then
+            TFpValueConstSet(Result).AddVal(m);
           m.ReleaseReference;
-          r.Add(s);
         end;
-        for i := 0 to AOtherVal.MemberCount - 1 do begin
-          m := AOtherVal.Member[i];
-          s := m.AsString;
-          m.ReleaseReference;
-          j := r.IndexOf(s);
-          if j >= 0 then
-            r.Delete(j);
-        end;
-        Result := TFpValueConstSet.Create(r);
       end;
       else SetError('Operator -: set diff requires a set as 2nd operator');
     end;
@@ -6497,29 +6527,38 @@ function TFpPascalExpressionPartOperatorMulDiv.DoGetResultValue: TFpValue;
   end;
   function MultiplySets(ASetVal, AOtherVal: TFpValue): TFpValue;
   var
-    r: TStringList;
     i, j: Integer;
-    m: TFpValue;
-    s, s1, s2: String;
+    m, m2: TFpValue;
+    f: TFpValueFieldFlags;
+    r: Boolean;
   begin
     Result := nil;
     case AOtherVal.Kind of
       skSet: begin
-        r := TStringList.Create;
+        Result := TFpValueConstSet.Create;
         for i := 0 to ASetVal.MemberCount - 1 do begin
           m := ASetVal.Member[i];
-          s := m.AsString;
-          s1 := LowerCase(s);
-          m.ReleaseReference;
-          for j := 0 to AOtherVal.MemberCount - 1 do begin
-            m := AOtherVal.Member[j];
-            s2 := LowerCase(m.AsString);
-            m.ReleaseReference;
-            if s1 = s2 then
-              r.Add(s);
+          j := AOtherVal.MemberCount - 1;
+          while j >= 0 do begin
+            m2 := AOtherVal.Member[j];
+            f := m.FieldFlags * m2.FieldFlags;
+            if svfOrdinal in f then
+              r := m.AsCardinal = m2.AsCardinal
+            else
+            if svfIdentifier in f then
+              r := m.AsString = m2.AsString
+            else
+              r := False;
+            m2.ReleaseReference;
+            if r then
+              break;
+            dec(j);
           end;
+
+          if j >= 0 then
+            TFpValueConstSet(Result).AddVal(m);
+          m.ReleaseReference;
         end;
-        Result := TFpValueConstSet.Create(r);
       end;
       else SetError('Operator *: set intersection requires a set as 2nd operator');
     end;
@@ -7151,37 +7190,60 @@ function TFpPascalExpressionPartOperatorCompare.DoGetResultValue: TFpValue;
 
   function SymDiffSets(ASetVal, AOtherVal: TFpValue): TFpValue;
   var
-    r: TStringList;
-    i, j, c: Integer;
-    m: TFpValue;
-    s: String;
+    i, j: Integer;
+    m, m2: TFpValue;
+    f: TFpValueFieldFlags;
+    r: Boolean;
   begin
-    Result := nil;
-    r := TStringList.Create;
-    r.CaseSensitive := False;
+    Result := TFpValueConstSet.Create;
+
     for i := 0 to ASetVal.MemberCount - 1 do begin
       m := ASetVal.Member[i];
-      s := m.AsString;
+      j := AOtherVal.MemberCount - 1;
+      while j >= 0 do begin
+        m2 := AOtherVal.Member[j];
+        f := m.FieldFlags * m2.FieldFlags;
+        if svfOrdinal in f then
+          r := m.AsCardinal = m2.AsCardinal
+        else
+        if svfIdentifier in f then
+          r := m.AsString = m2.AsString
+        else
+          r := False;
+        m2.ReleaseReference;
+        if r then
+          break;
+        dec(j);
+      end;
+
+      if j < 0 then
+        TFpValueConstSet(Result).AddVal(m);
       m.ReleaseReference;
-      if r.IndexOf(s) < 0 then
-        r.Add(s);
     end;
-    c := r.Count;
+
     for i := 0 to AOtherVal.MemberCount - 1 do begin
       m := AOtherVal.Member[i];
-      s := m.AsString;
-      m.ReleaseReference;
-      j := r.IndexOf(s);
-      if j < c then begin // otherwise the 2nd set has duplicate idents
-        if j >= 0 then begin
-          r.Delete(j);
-          dec(c)
-        end
+      j := ASetVal.MemberCount - 1;
+      while j >= 0 do begin
+        m2 := ASetVal.Member[j];
+        f := m.FieldFlags * m2.FieldFlags;
+        if svfOrdinal in f then
+          r := m.AsCardinal = m2.AsCardinal
         else
-          r.Add(s);
+        if svfIdentifier in f then
+          r := m.AsString = m2.AsString
+        else
+          r := False;
+        m2.ReleaseReference;
+        if r then
+          break;
+        dec(j);
       end;
+
+      if j < 0 then
+        TFpValueConstSet(Result).AddVal(m);
+      m.ReleaseReference;
     end;
-    Result := TFpValueConstSet.Create(r);
   end;
 {$POP}
 var
@@ -7398,8 +7460,11 @@ end;
 function TFpPascalExpressionPartOperatorMemberIn.DoGetResultValue: TFpValue;
 var
   AVal, ASet, m: TFpValue;
-  s, s2: String;
+  s: String;
   i: Integer;
+  f, af: TFpValueFieldFlags;
+  r: Boolean;
+  v: QWord;
 begin
   Result := nil;
   if Count <> 2 then begin
@@ -7420,31 +7485,67 @@ begin
   end;
 
 
-  if AVal.Kind <> skEnumValue then begin
-    SetError('"in" requires an enum');
+  if (AVal.Kind in [skEnum, skEnumValue]) then begin
+    s := '';
+    v := 0;
+    af := AVal.FieldFlags;
+    if svfIdentifier in af then
+      s := LowerCase(AVal.AsString);
+    if svfOrdinal in af then
+      v := AVal.AsCardinal;
+
+    r := False;
+    for i := 0 to ASet.MemberCount-1 do begin
+      m := ASet.Member[i];
+      f := m.FieldFlags * af;
+      if svfIdentifier in f then
+        r := LowerCase(m.AsString) = s
+      else
+      if svfOrdinal in f then
+        r := m.AsCardinal = v
+      else
+        r := False;
+      m.ReleaseReference;
+
+      if r then
+        break;
+    end;
+
+    Result := TFpValueConstBool.Create(r);
+    {$IFDEF WITH_REFCOUNT_DEBUG}
+    if Result <> nil then
+      Result.DbgRenameReference(nil, 'DoGetResultValue');{$ENDIF}
     exit;
   end;
 
 
-  s := LowerCase(AVal.AsString);
 
-  for i := 0 to ASet.MemberCount-1 do begin
-    m := ASet.Member[i];
-    s2 := LowerCase(m.AsString);
-    m.ReleaseReference;
-    if s = s2 then begin
-      Result := TFpValueConstBool.Create(True);
-      {$IFDEF WITH_REFCOUNT_DEBUG}
-      if Result <> nil then
-        Result.DbgRenameReference(nil, 'DoGetResultValue');{$ENDIF}
-      exit;
+  if (AVal.Kind in [skChar, skSimple, skCardinal, skInteger]) and
+     (svfOrdinal in AVal.FieldFlags)
+  then begin
+    v := AVal.AsCardinal;
+    r := False;
+    for i := 0 to ASet.MemberCount-1 do begin
+      m := ASet.Member[i];
+      f := m.FieldFlags;
+      if svfOrdinal in m.FieldFlags then
+        r := m.AsCardinal = v
+      else
+        r := False;
+      m.ReleaseReference;
+
+      if r then
+        break;
     end;
+
+    Result := TFpValueConstBool.Create(r);
+    {$IFDEF WITH_REFCOUNT_DEBUG}
+    if Result <> nil then
+      Result.DbgRenameReference(nil, 'DoGetResultValue');{$ENDIF}
+    exit;
   end;
 
-  Result := TFpValueConstBool.Create(False);
-  {$IFDEF WITH_REFCOUNT_DEBUG}
-  if Result <> nil then
-    Result.DbgRenameReference(nil, 'DoGetResultValue');{$ENDIF}
+  SetError('"in" requires an enum');
 end;
 
 { TFpPasParserValueSlicedArrayIndex }

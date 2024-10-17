@@ -427,27 +427,33 @@ type
   TFpValueConstEnumValue = class(TFpValueConstWithType)
   private
     FEnumName: String;
+    FEnumVal: QWord;
+    FHasVal: Boolean;
   protected
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetKind: TDbgSymbolKind; override;
     function GetAsString: AnsiString; override;
+    function GetAsCardinal: QWord; override;
+    function GetAsInteger: Int64; override;
   public
-    constructor Create(AName: String);
+    constructor Create(AName: String); overload;
+    constructor Create(AName: String; AVal: QWord); overload;
   end;
 
   { TFpValueConstSet }
 
   TFpValueConstSet = class(TFpValueConstWithType)
   private
-    FNames: TStrings;
+    FList: TRefCntObjList;
   protected
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetKind: TDbgSymbolKind; override;
     function GetMember(AIndex: Int64): TFpValue; override;
     function GetMemberCount: Integer; override;
   public
-    constructor Create(ANames: TStrings);
+    constructor Create;
     destructor Destroy; override;
+    procedure AddVal(AVal: TFpValue);
   end;
 
   { TFpValueConstStruct }
@@ -1579,7 +1585,10 @@ end;
 function TFpValueConstEnumValue.GetFieldFlags: TFpValueFieldFlags;
 begin
   Result := inherited GetFieldFlags;
-  Result := Result + [{svfOrdinal,} svfIdentifier];
+  if FEnumName <> '' then
+    Result := Result + [svfIdentifier];
+  if FHasVal then
+    Result := Result + [svfOrdinal];
 end;
 
 function TFpValueConstEnumValue.GetKind: TDbgSymbolKind;
@@ -1592,10 +1601,28 @@ begin
   Result := FEnumName;
 end;
 
+function TFpValueConstEnumValue.GetAsCardinal: QWord;
+begin
+  Result := FEnumVal;
+end;
+
+function TFpValueConstEnumValue.GetAsInteger: Int64;
+begin
+  Result := int64(FEnumVal);
+end;
+
 constructor TFpValueConstEnumValue.Create(AName: String);
 begin
   inherited Create;
   FEnumName := AName;
+  FHasVal   := False;
+end;
+
+constructor TFpValueConstEnumValue.Create(AName: String; AVal: QWord);
+begin
+  FEnumName := AName;
+  FEnumVal  := AVal;
+  FHasVal   := True;
 end;
 
 { TFpValueConstSet }
@@ -1613,24 +1640,30 @@ end;
 
 function TFpValueConstSet.GetMember(AIndex: Int64): TFpValue;
 begin
-  Result := TFpValueConstEnumValue.Create(FNames[AIndex]);
+  Result := TFpValue(FList[AIndex]);
+  Result.AddReference;
 end;
 
 function TFpValueConstSet.GetMemberCount: Integer;
 begin
-  Result := FNames.Count;
+  Result := FList.Count;
 end;
 
-constructor TFpValueConstSet.Create(ANames: TStrings);
+constructor TFpValueConstSet.Create;
 begin
+  FList := TRefCntObjList.Create;
   inherited Create;
-  FNames := ANames;
 end;
 
 destructor TFpValueConstSet.Destroy;
 begin
   inherited Destroy;
-  FNames.Free;
+  FList.Free;
+end;
+
+procedure TFpValueConstSet.AddVal(AVal: TFpValue);
+begin
+  FList.Add(AVal);
 end;
 
 { TFpValueConstStruct }
