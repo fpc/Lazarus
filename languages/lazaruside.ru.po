@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-10-14 22:27+0300\n"
+"PO-Revision-Date: 2024-10-17 18:45+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -19741,12 +19741,12 @@ msgid "Hide Block"
 msgstr "Скрыть выделенное"
 
 #: lazarusidestrconsts.srkmecblockindent
-msgid "Indent block"
-msgstr "Увеличить отступ выделенного"
+msgid "Indent line/block"
+msgstr "Увеличить отступ строки/блока"
 
 #: lazarusidestrconsts.srkmecblockindentmove
-msgid "Indent (move) block"
-msgstr "Увеличить отступ блока (сдвинуть)"
+msgid "Indent line/block (move columns)"
+msgstr "Увеличить отступ строки/блока (сдвинуть столбцы)"
 
 #: lazarusidestrconsts.srkmecblockmove
 msgid "Move Block"
@@ -19769,12 +19769,12 @@ msgid "Toggle block"
 msgstr "Переключить видимость выделенного"
 
 #: lazarusidestrconsts.srkmecblockunindent
-msgid "Unindent block"
-msgstr "Уменьшить отступ выделенного"
+msgid "Unindent line/block"
+msgstr "Уменьшить отступ строки/блока"
 
 #: lazarusidestrconsts.srkmecblockunindentmove
-msgid "Unindent (move) block"
-msgstr "Уменьшить отступ блока (сдвинуть)"
+msgid "Unindent line/block (move columns)"
+msgstr "Уменьшить отступ строки/блока (сдвинуть столбцы)"
 
 #: lazarusidestrconsts.srkmecbreakpointproperties
 msgid "show breakpoint properties"
