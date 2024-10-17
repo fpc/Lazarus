@@ -46,6 +46,8 @@ function ParseNewThreadLocation(AnInput: String; out AnId: Integer;
   out AFuncName: String; out AnArgs: TStringList; out AFile, AFullFile: String;
   out ALine: Integer; out AReminder: String): Boolean;
 
+function RemoveLineBreaks(const s: String): String;
+
 implementation
 
 function LastPos(ASearch, AString: string): Integer;
@@ -356,6 +358,17 @@ begin
 
   Result := ParseFrameOrThread(AnInput, AnAddr, AnStack, AnFrame,
     AFuncName, AnArgs, AFile, AFullFile, ALine, AReminder);
+end;
+
+function RemoveLineBreaks(const s: String): String;
+var
+  i: Integer;
+begin
+  Result := s;
+  UniqueString(Result);
+  for i := 1 to Length(Result) do
+    if Result[i] in [#0..#31] then
+      pchar(Result)[i-1] := ' ';
 end;
 
 end.
