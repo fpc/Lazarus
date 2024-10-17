@@ -19890,11 +19890,13 @@ msgid "Hide Block"
 msgstr "Blokk elrejtése"
 
 #: lazarusidestrconsts.srkmecblockindent
-msgid "Indent block"
+#, fuzzy
+#| msgid "Indent block"
+msgid "Indent line/block"
 msgstr "Blokk behúzás növelése"
 
 #: lazarusidestrconsts.srkmecblockindentmove
-msgid "Indent (move) block"
+msgid "Indent line/block (move columns)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecblockmove
@@ -19918,11 +19920,13 @@ msgid "Toggle block"
 msgstr "Blokk átkapcsolása"
 
 #: lazarusidestrconsts.srkmecblockunindent
-msgid "Unindent block"
+#, fuzzy
+#| msgid "Unindent block"
+msgid "Unindent line/block"
 msgstr "Blokk behúzás csökkentése"
 
 #: lazarusidestrconsts.srkmecblockunindentmove
-msgid "Unindent (move) block"
+msgid "Unindent line/block (move columns)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecbreakpointproperties

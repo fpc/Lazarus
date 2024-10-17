@@ -20847,11 +20847,13 @@ msgid "Hide Block"
 msgstr "הסתר בלוק"
 
 #: lazarusidestrconsts.srkmecblockindent
-msgid "Indent block"
+#, fuzzy
+#| msgid "Indent block"
+msgid "Indent line/block"
 msgstr "הזכך בלוק"
 
 #: lazarusidestrconsts.srkmecblockindentmove
-msgid "Indent (move) block"
+msgid "Indent line/block (move columns)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecblockmove
@@ -20875,11 +20877,13 @@ msgid "Toggle block"
 msgstr "החלף בלוק"
 
 #: lazarusidestrconsts.srkmecblockunindent
-msgid "Unindent block"
+#, fuzzy
+#| msgid "Unindent block"
+msgid "Unindent line/block"
 msgstr "בטל זיהוי בלוק"
 
 #: lazarusidestrconsts.srkmecblockunindentmove
-msgid "Unindent (move) block"
+msgid "Unindent line/block (move columns)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecbreakpointproperties

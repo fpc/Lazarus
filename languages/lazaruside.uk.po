@@ -19856,11 +19856,13 @@ msgid "Hide Block"
 msgstr "Сховати блок"
 
 #: lazarusidestrconsts.srkmecblockindent
-msgid "Indent block"
+#, fuzzy
+#| msgid "Indent block"
+msgid "Indent line/block"
 msgstr "Зсунути блок вправо"
 
 #: lazarusidestrconsts.srkmecblockindentmove
-msgid "Indent (move) block"
+msgid "Indent line/block (move columns)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecblockmove
@@ -19884,11 +19886,13 @@ msgid "Toggle block"
 msgstr "Перемкнути блок"
 
 #: lazarusidestrconsts.srkmecblockunindent
-msgid "Unindent block"
+#, fuzzy
+#| msgid "Unindent block"
+msgid "Unindent line/block"
 msgstr "Скасувати зсув блока вправо"
 
 #: lazarusidestrconsts.srkmecblockunindentmove
-msgid "Unindent (move) block"
+msgid "Unindent line/block (move columns)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecbreakpointproperties
