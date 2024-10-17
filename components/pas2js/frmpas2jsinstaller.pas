@@ -23,7 +23,7 @@ interface
 uses
   Classes, SysUtils, fphttpclient, Zipper,
   {$IFDEF HasSSL}
-  opensslsockets, // opensslsockets is needed for https download on windows
+  opensslsockets, ssockets, sslsockets, // opensslsockets is needed for https download on windows
   {$ENDIF}
   LazFileUtils, FPCAdds, LazLoggerBase, FileUtil,
   Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls, ComCtrls,
@@ -228,9 +228,9 @@ begin
   FHTTPClient.OnHeaders:=@OnWorkerHeaders;
   FHTTPClient.IOTimeout:=30000;
   FHTTPClient.ConnectTimeout:=60000;
-  Client.VerifySSlCertificate:=True;
-  Client.OnVerifySSLCertificate:=@DoVerifyCertificate;
-  Client.AfterSocketHandlerCreate:=@DoHaveSocketHandler;
+  FHTTPClient.VerifySSlCertificate:=True;
+  FHTTPClient.OnVerifySSLCertificate:=@DoVerifyCertificate;
+  FHTTPClient.AfterSocketHandlerCreate:=@DoHaveSocketHandler;
 
   try
     HttpClient.Get(URL,Stream);
