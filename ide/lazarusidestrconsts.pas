@@ -3104,10 +3104,10 @@ resourcestring
   srkmecInsertMode            = 'Insert Mode';
   srkmecOverwriteMode         = 'Overwrite Mode';
   srkmecToggleMode            = 'Toggle Mode';
-  srkmecBlockIndent           = 'Indent block';
-  srkmecBlockUnindent         = 'Unindent block';
-  srkmecBlockIndentMove       = 'Indent (move) block';
-  srkmecBlockUnindentMove     = 'Unindent (move) block';
+  srkmecBlockIndent           = 'Indent line/block';
+  srkmecBlockUnindent         = 'Unindent line/block';
+  srkmecBlockIndentMove       = 'Indent line/block (move columns)';
+  srkmecBlockUnindentMove     = 'Unindent line/block (move columns)';
   srkmecPluginMultiCaretSetCaret         = 'Add extra caret';
   srkmecPluginMultiCaretUnsetCaret       = 'Remove extra caret';
   srkmecPluginMultiCaretToggleCaret      = 'Toggle extra caret';
