@@ -2592,12 +2592,26 @@ begin
 end;
 
 procedure TLldbDebuggerCommandEvaluate.DoExecute;
+var
+  s: String;
 begin
   if FWatchValue <> nil then
-    FInstr := TLldbInstructionExpression.Create(FWatchValue.Expression, FWatchValue.ThreadId, FWatchValue.StackFrame)
+    s := FWatchValue.Expression
+  else
+    s := FExpr;
+
+  s := Trim(RemoveLineBreaks(s));
+  if s = '' then begin
+    EvalInstructionFailed(nil);
+    exit;
+  end;
+
+
+  if FWatchValue <> nil then
+    FInstr := TLldbInstructionExpression.Create(s, FWatchValue.ThreadId, FWatchValue.StackFrame)
   else
     // todo: only if FCallback ?
-    FInstr := TLldbInstructionExpression.Create(FExpr, Debugger.FCurrentThreadId, Debugger.FCurrentStackFrame);
+    FInstr := TLldbInstructionExpression.Create(s, Debugger.FCurrentThreadId, Debugger.FCurrentStackFrame);
   FInstr.OnSuccess := @EvalInstructionSucceeded;
   FInstr.OnFailure := @EvalInstructionFailed;
   QueueInstruction(FInstr);

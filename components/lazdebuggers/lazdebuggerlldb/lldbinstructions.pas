@@ -1137,6 +1137,8 @@ constructor TLldbInstructionExpression.Create(AnExpression: String; AThread,
   AFrame: Integer);
 begin
 //  inherited Create(Format('expression -R -- %s', [UpperCase(AnExpression)]));
+  AnExpression := Trim(RemoveLineBreaks(AnExpression));
+  if AnExpression = '' then AnExpression := '0-()'; // some error as last resort
   inherited Create(Format('expression -T -- %s', [UpperCase(AnExpression)]), AThread, AFrame);
 end;
 
