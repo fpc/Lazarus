@@ -71,12 +71,12 @@ type
 
 implementation
 
-var
+threadvar
   EM: TFPUExceptionMask;
   {$ifdef HAS_SOFT_EXTENDED}
   SEM: TFPUExceptionMask;
   {$endif}
-  FloatExceptionLock: integer = 0;
+  FloatExceptionLock: integer;
 
 
 procedure DisableFloatExceptions;
