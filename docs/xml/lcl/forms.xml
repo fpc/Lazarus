@@ -4865,17 +4865,39 @@ Dispatches the value in Message to all Components on the form.
 </element>
 
 <element name="TCustomForm.CMIconChanged">
-<short>Handles the CM_ICONCHANGED control message for the form.</short>
+<short>
+Handles the CM_ICONCHANGED control message for the form.
+</short>
 <descr>
 <p>
-Frees and re-creates handle(s) for icons used on the form, and notifies the 
-widgetset class by calling its SetIcon method.
+CMIconChanged is a method used to perform actions needed when the 
+CM_ICONCHANGED control message is handled for a form. CMIconChanged calls a 
+private method (IconChanged) to free and re-create handle(s) for icons used on 
+the form.
+</p>
+<p>
+The CM_ICONCHANGED control message occurs when a new value is assigned to the 
+Icon property, and when the BorderStyle property is changed. At run-time, the 
+widgetset class is notified by calling its SetIcon method when BorderStyle 
+contains a value that allows icons. bsDialog and bsNone do not display icons.
 </p>
 </descr>
-<seealso/>
+<version>
+Modified in LCL version 4.0 to use assigned handles in SmallIconHandle and 
+BigIconHandle when BorderStyle is changed to a value other than bsNone or 
+bsDialog.
+</version>
+<seealso>
+<link id="TCustomForm.BorderStyle"/>
+<link id="TCustomForm.Icon"/>
+<link id="TCustomForm.SmallIconHandle"/>
+<link id="TCustomForm.BigIconHandle"/>
+</seealso>
 </element>
 <element name="TCustomForm.CMIconChanged.Message">
-<short>Control message for the notification.</short>
+<short>
+Control message for the notification.
+</short>
 </element>
 
 <element name="TCustomForm.CMRelease">
@@ -6771,14 +6793,14 @@ Modified in LCL version 3.6 to include the overloaded variant which stores the
 image to an existing bitmap instance.
 </version>
 <seealso>
-<link id="TCustomForm.ClientHeight"/>
-<link id="TCustomForm.ClientWidth"/>
 <link id="#lcl.graphics.TCustomBitmap">TCustomBitmap</link>
 <link id="#lcl.graphics.TBitmap">TBitmap</link>
 <link id="#lcl.graphics.TJpegImage">TJpegImage</link>
 <link id="#lcl.graphics.TPortableNetworkGraphic">TTPortableNetworkGraphic</link>
 <link id="#lcl.controls.TWinControl.GetClientOrigin">TWinControl.GetClientOrigin</link>
 <link id="#lcl.controls.TWinControl.PaintTo">TWinControl.PaintTo</link>
+<link id="#lcl.controls.TControl.ClientHeight">TControl.ClientHeight</link>
+<link id="#lcl.controls.TControl.ClientWidth">TControl.ClientWidth</link>
 <link id="#lcl.lclintf.GetWindowRect">GetWindowRect</link>
 </seealso>
 </element>
@@ -7877,26 +7899,57 @@ specific border style.
 
 <element name="TCustomForm.BorderStyle">
 <short>
-The border style affects the title bar, border and resize behavior of the 
-form.
+The border style affects the title bar, border, icon(s), and resize behavior 
+for the form.
 </short>
 <descr>
 <p>
-Use BorderStyle to get or set the appearance of the form's border.
+<var>BorderStyle</var> is a <var>TFormBorderStyle</var> property used to 
+control the appearance of the border on a form. The default value is bsSizeable 
+and displays the standard border for a sizeable window. But it could, for 
+example, be a dialog form or a tool window, or could be non-sizeable. See 
+TFormBorderStyle for the enumeration values allowed in the property and their 
+meanings.
 </p>
 <p>
-By default it is a sizeable window, but it could, for example, be a dialog 
-form or a tool window, or could be non-sizeable.
+Changing the value for the property causes other properties in the form 
+instance to be updated:
 </p>
+<dl>
+<dt>AutoScroll</dt>
+<dd>
+Disabled when the property contains a value other than bsSizeable or 
+bsSizeToolWin.
+</dd>
+<dt>BorderIcons</dt>
+<dd>
+Updated at run-time when the new property value requires a different set of 
+default border icons than the previous value.
+</dd>
+<dt>Icon, SmallIconHandle, BigIconHandle</dt>
+<dd>
+Updated at run-time by performing the CM_ICONCHANGED control message.
+</dd>
+<dt>Menu</dt>
+<dd>
+Updated at run-time to create (or re-create) the window handle for a TMainMenu 
+instance using the Handle for the form.
+</dd>
+</dl>
 <p>
-This property is slightly different (has a different base type) from the 
-<var>TCustomControl.BorderStyle</var> property. When the form is put into 
-another control the window borders depend on the widgetset. There are no 
-borders under GTK.
+In TCustomForm (and TForm), BorderStyle is slightly different (has a different 
+base type) from the <var>TCustomControl.BorderStyle</var> property. When the 
+form is put into another control the window borders depend on the widgetset. 
+There are no borders under GTK.
 </p>
 </descr>
 <seealso>
 <link id="TCustomForm.AutoScroll"/>
+<link id="TCustomForm.Icon"/>
+<link id="TCustomForm.SmallIconHandle"/>
+<link id="TCustomForm.BigIconHandle"/>
+<link id="TCustomForm.CMIconChanged"/>
+<link id="TCustomForm.Menu"/>
 <link id="#lcl.controls.TFormBorderStyle">TFormBorderStyle</link>
 <link id="#lcl.controls.TBorderStyle">TBorderStyle</link>
 <link id="#lcl.controls.TCustomControl.BorderStyle">TCustomControl.BorderStyle</link>
@@ -9638,13 +9691,13 @@ when BorderStyle is changed to another value.
 
 <element name="TCustomDockForm.BorderStyle">
 <short>
-The border style affects the title bar, border and resize behavior of the 
-form.
+The border style affects the title bar, border, icons, and resize behavior of 
+the form.
 </short>
 <descr>
 <p>
-Use BorderStyle to get or set the appearance of the form's border. The 
-default value in TCustomDockForm is bsSizeToolWin.
+Use BorderStyle to get or set the appearance of the border on a form. 
+The default value in TCustomDockForm is bsSizeToolWin.
 </p>
 <p>
 This property is slightly different (has a different base type) than the 
