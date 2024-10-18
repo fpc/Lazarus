@@ -906,7 +906,7 @@ begin
     FHintWindow.Color := HintInfo.HintColor;
     //DebugLn(['TApplication.ShowHintWindow FHintWindow.Color=',dbgs(FHintWindow.Color),' HintInfo.HintColor=',dbgs(HintInfo.HintColor)]);
 
-    FHintWindow.ActivateHint(HintWinRect, HintInfo.HintStr);
+    FHintWindow.ActivateHintData(HintWinRect, HintInfo.HintStr, HintInfo.HintData);
     FHintRect := HintInfo.CursorRect;
     // start hide timer
     if HintInfo.ReshowTimeout>0 then
