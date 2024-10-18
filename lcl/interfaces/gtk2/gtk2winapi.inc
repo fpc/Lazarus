@@ -6536,7 +6536,7 @@ begin
   if GtkWindow = nil then
     Exit;
 
-  Result := (PGtkWidget(GtkWindow)^.Window<>nil)
+  Result := (PGtkWidget(GtkWindow)^.Window<>nil) and GDK_IS_WINDOW(PGtkWidget(GtkWindow)^.Window)
       and (gdk_window_get_state(PGtkWidget(GtkWindow)^.Window)
            and GDK_WINDOW_STATE_ICONIFIED <> 0);
 end;
@@ -6600,7 +6600,7 @@ begin
   if GtkWindow = nil then
     Exit;
 
-  Result := gdk_window_get_state(PGtkWidget(GtkWindow)^.Window) and GDK_WINDOW_STATE_MAXIMIZED <> 0;
+  Result := GDK_IS_WINDOW(PGtkWidget(GtkWindow)^.Window) and (gdk_window_get_state(PGtkWidget(GtkWindow)^.Window) and GDK_WINDOW_STATE_MAXIMIZED <> 0);
 end;
 
 {------------------------------------------------------------------------------

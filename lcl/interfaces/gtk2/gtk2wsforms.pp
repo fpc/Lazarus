@@ -794,7 +794,7 @@ begin
       (AForm.PopupParent = nil) then
     begin
       TempGdkWindow := {%H-}PGdkWindow(Gtk2WidgetSet.GetForegroundWindow);
-      if (TempGdkWindow <> nil) and (GdkWindowObject_modal_hint(GDK_WINDOW_OBJECT(TempGdkWindow)^) = 0) then
+      if (TempGdkWindow <> nil) and GDK_IS_WINDOW(TempGdkWindow) and (GdkWindowObject_modal_hint(GDK_WINDOW_OBJECT(TempGdkWindow)^) = 0) then
       begin
         if ((gdk_window_get_state(TempGdkWindow) and GDK_WINDOW_STATE_ABOVE) = GDK_WINDOW_STATE_ABOVE) or
           GTK2WidgetSet.GetAlwaysOnTopX11(TempGdkWindow) then
