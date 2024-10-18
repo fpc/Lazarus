@@ -1091,6 +1091,7 @@ type
 
     property OnChange;
     property OnClick;
+    property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
