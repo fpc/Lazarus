@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Forms, FPImage, Controls, Dialogs, StdCtrls, EditBtn, FileUtil,
   LazUTF8, LazFileUtils, LCLIntf, LCLType, Buttons, Menus, IniFiles,
-  SynEdit, SynHighlighterHTML;
+  SynEdit, SynHighlighterHTML, DefaultTranslator;
 
 type
 
@@ -57,6 +57,20 @@ function CustomSortProc(List: TStringList; X1, X2: Integer): Integer;
 implementation
 
 {$R *.lfm}
+
+resourcestring
+  rsInformation = 'Information';
+  rsError = 'Error';
+  rsTheConfigurationCouldNotBeSaved = 'The configuration could not be saved.';
+  rsTheTempFileCouldNotBeDeleted = 'The temp file could not be deleted.';
+  rsTheFileCouldNotBeSavedAs = 'The file could not be saved as: %s';
+  rsSavedAs = 'Saved as: %s';
+  rsNoPngImageFilesFoundIn = 'No png image files found in %s';
+  rsNoMatchingPngImageFilesFoundIn = 'No matching png image files found in %s';
+  rsTheFolderDoesNotExist = 'The folder [%s] does not exist or is currently not available.'#13#13'Should it be removed from the list?';
+  rsThisFolderContains = 'This folder contains %0:d icons in %1:d icon groups with %2:d icon sizes.';
+  rsSize = 'Size';
+  rsName = 'Name';
 
 const
   ConfigFileName = 'IconTableConfig.ini';
@@ -165,7 +179,7 @@ begin
 
       Config.WriteBool('Options', 'DarkMode', cbDarkMode.Checked);
     except
-      ShowMsg('Error', 'The configuration could not be saved.');
+      ShowMsg(rsError, rsTheConfigurationCouldNotBeSaved);
     end;
   finally
     Config.Free;
@@ -175,7 +189,7 @@ begin
     if FileExists(Application.Location + TempFileName) then
       DeleteFile(Application.Location + TempFileName);
   except
-    ShowMsg('Error', 'The temp file could not be deleted.');
+    ShowMsg(rsError, rsTheTempFileCouldNotBeDeleted);
   end;
 end;
 
@@ -205,7 +219,7 @@ begin
   try
     HTMLLines.SaveToFile(Application.Location + TempFileName);
   except
-    ShowMsg('Error', 'The file could not be saved as: ' + Application.Location + TempFileName);
+    ShowMsg(rsError, Format(rsTheFileCouldNotBeSavedAs, [Application.Location + TempFileName]));
   end;
   HTMLLines.Free;
 
@@ -219,9 +233,9 @@ procedure TMainForm.bbtnSaveClick(Sender: TObject);
 begin
   try
     SynEdit.Lines.SaveToFile(ImgDirectory + IconTableFileName);
-    ShowMsg('Information', 'Saved as: ' + ImgDirectory + IconTableFileName);
+    ShowMsg(rsInformation, Format(rsSavedAs, [ImgDirectory + IconTableFileName]));
   except
-    ShowMsg('Error', 'The file could not be saved as: ' + ImgDirectory + IconTableFileName);
+    ShowMsg(rsError, Format(rsTheFileCouldNotBeSavedAs, [ImgDirectory + IconTableFileName]));
   end;
 end;
 
@@ -268,7 +282,7 @@ begin
 
     if AllFileList.Count = 0 then
     begin
-      ShowMsg('Error', 'No png image files found in ' + ImgDirectory);
+      ShowMsg(rsError, Format(rsNoPngImageFilesFoundIn, [ImgDirectory]));
       Exit;
     end;
 
@@ -299,7 +313,7 @@ begin
 
     if IcoFileList.Count = 0 then
     begin
-      ShowMsg('Error', 'No matching png image files found in ' + ImgDirectory);
+      ShowMsg(rsError, Format(rsNoMatchingPngImageFilesFoundIn, [ImgDirectory]));
       Exit;
     end;
 
@@ -335,10 +349,10 @@ begin
     HTMLLines.Add('<table>');
     HTMLLines.Add('  <tr class="no_border">');
     HTMLLines.Add('    <td class="colorset1 right_border"></td>');
-    HTMLLines.Add('    <td class="colorset2 text_center" colspan="' + PixSizeList.Count.ToString + '">Size</td>');
+    HTMLLines.Add('    <td class="colorset2 text_center" colspan="' + PixSizeList.Count.ToString + '">' + rsSize + '</td>');
     HTMLLines.Add('  </tr>');
     HTMLLines.Add('  <tr>');
-    HTMLLines.Add('    <td class="colorset1 right_border">Name</td>');
+    HTMLLines.Add('    <td class="colorset1 right_border">' + rsName + '</td>');
     for i := 0 to PixSizeList.Count - 1 do
       HTMLLines.Add('    <td class="colorset2 text_center">' + PixSizeList[i] + '</td>');
     HTMLLines.Add('  </tr>');
@@ -369,7 +383,7 @@ begin
     HTMLLines.Add('</table>');
 
     HTMLLines.Add('<div class="infobox colorset2">');
-    HTMLLines.Add('This folder contains ' + IcoFileList.Count.ToString + ' icons in ' + IconGroups.ToString + ' icon groups with ' + PixSizeList.Count.ToString + ' icon sizes.');
+    HTMLLines.Add(Format(rsThisFolderContains, [IcoFileList.Count, IconGroups, PixSizeList.Count]));
     if FileExists(ImgDirectory + InfoTextFileName) then
     begin
       try
@@ -420,13 +434,12 @@ begin
   end
   else
   begin
-    TaskDialog.Caption := 'Information';
+    TaskDialog.Caption := rsInformation;
     TaskDialog.MainIcon := tdiInformation;
-    TaskDialog.Title := 'Information';
+    TaskDialog.Title := rsInformation;
     TaskDialog.CommonButtons := [tcbYes, tcbNo];
     TaskDialog.DefaultButton := tcbNo;
-    TaskDialog.Text := 'The folder [' + TMenuItem(Sender).Caption + '] does not exist or is currently not available.' +
-      LineEnding + LineEnding + 'Should it be removed from the list?';
+    TaskDialog.Text := Format(rsTheFolderDoesNotExist, [TMenuItem(Sender).Caption]);
     TaskDialog.Execute;
     if TaskDialog.ModalResult = mrYes then
       UpdateLastDirs(TMenuItem(Sender).Caption, True);
@@ -467,7 +480,7 @@ end;
 
 procedure TMainForm.ShowMsg(const AMsgCaption: String; const AMsg: String);
 begin
-  if AMsgCaption = 'Error' then
+  if AMsgCaption = rsError then
     TaskDialog.MainIcon := tdiError
   else
     TaskDialog.MainIcon := tdiInformation;

@@ -11,7 +11,7 @@ object MainForm: TMainForm
   Constraints.MinWidth = 700
   Position = poScreenCenter
   ShowHint = True
-  LCLVersion = '3.99.0.0'
+  LCLVersion = '4.99.0.0'
   OnClose = FormClose
   OnCreate = FormCreate
   OnDropFiles = FormDropFiles

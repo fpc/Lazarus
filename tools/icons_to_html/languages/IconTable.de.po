@@ -1,0 +1,120 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.4.4\n"
+
+#: main.rserror
+msgid "Error"
+msgstr "Fehler"
+
+#: main.rsinformation
+msgid "Information"
+msgstr "Information"
+
+#: main.rsname
+msgid "Name"
+msgstr "Name"
+
+#: main.rsnomatchingpngimagefilesfoundin
+#, object-pascal-format
+msgid "No matching png image files found in %s"
+msgstr "Keine passenden png-Bilddateien gefunden in %s"
+
+#: main.rsnopngimagefilesfoundin
+#, object-pascal-format
+msgid "No png image files found in %s"
+msgstr "Keine png-Bilddateien gefunden in %s"
+
+#: main.rssavedas
+#, object-pascal-format
+msgid "Saved as: %s"
+msgstr "Gespeichert als: %s"
+
+#: main.rssize
+msgid "Size"
+msgstr "Größe"
+
+#: main.rstheconfigurationcouldnotbesaved
+msgid "The configuration could not be saved."
+msgstr "Die Konfiguration konnte nicht gespeichert werden."
+
+#: main.rsthefilecouldnotbesavedas
+#, object-pascal-format
+msgid "The file could not be saved as: %s"
+msgstr "Die Datei konnte nicht gespeichert werden als: %s"
+
+#: main.rsthefolderdoesnotexist
+#, object-pascal-format
+msgid ""
+"The folder [%s] does not exist or is currently not available.\n"
+"\n"
+"Should it be removed from the list?"
+msgstr ""
+"Der Order [%s] existiert nicht oder ist derzeit nicht verfügbar.\n"
+"\n"
+"Soll er von der Liste gestrichen werden?"
+
+#: main.rsthetempfilecouldnotbedeleted
+msgid "The temp file could not be deleted."
+msgstr "Die Temporär-Datei konnte nicht gelöscht werden."
+
+#: main.rsthisfoldercontains
+#, object-pascal-format
+msgid "This folder contains %0:d icons in %1:d icon groups with %2:d icon sizes."
+msgstr "Dieser Ordner enthält %0:d Icons in %1:d Icon-Gruppen mit %2:d Icon-Größen."
+
+#: tmainform.bbtnclose.caption
+msgid "Close"
+msgstr "Beenden"
+
+#: tmainform.bbtnclose.hint
+msgid "Closes the application"
+msgstr "Beendet das Programm"
+
+#: tmainform.bbtncreatehtml.caption
+msgid "Create HTML"
+msgstr "HTML erzeugen"
+
+#: tmainform.bbtncreatehtml.hint
+msgid "Create a html page for the images found in the selected directory"
+msgstr "Erzeugt den HTML-Code für die im ausgewählten Ordner gefundenen Icons"
+
+#: tmainform.bbtnpreview.caption
+msgid "Preview"
+msgstr "Vorschau"
+
+#: tmainform.bbtnsave.caption
+msgid "Save"
+msgstr "Speichern"
+
+#: tmainform.bbtnsave.hint
+msgid "Save the generated html text as file \"IconTable.html\" in the specified folder"
+msgstr "Speichert den generierten HTML-Code in der Datei \"IconTable.html\" im angegebenen Ordner"
+
+#: tmainform.caption
+msgid "IconTable"
+msgstr "Icon-Tabelle"
+
+#: tmainform.cbdarkmode.caption
+msgid "Dark Mode"
+msgstr "Dunkler Modus"
+
+#: tmainform.cbdarkmode.hint
+msgid "Creates an html page with dark background"
+msgstr "Erzeugt eine HTML-Seite mit dunklem Hintergrund"
+
+#: tmainform.directoryedit.hint
+msgid "Folder with images for which the html preview should be created"
+msgstr "Ordner mit den Bildern, für die der HTML-Code erzeugt werden soll"
+
+#: tmainform.sbtnlastdirs.hint
+msgid "Last used"
+msgstr "Zuletzt benutzt"
