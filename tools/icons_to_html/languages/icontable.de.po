@@ -118,3 +118,4 @@ msgstr "Ordner mit den Bildern, für die der HTML-Code erzeugt werden soll"
 #: tmainform.sbtnlastdirs.hint
 msgid "Last used"
 msgstr "Zuletzt benutzt"
+
