@@ -7,6 +7,7 @@
       <Flags>
         <CompatibilityMode Value="True"/>
       </Flags>
+      <SessionStorage Value="InProjectDir"/>
       <Title Value="IconTable"/>
       <Scaled Value="True"/>
       <ResourceType Value="res"/>
@@ -26,14 +27,14 @@
       <MinorVersionNr Value="3"/>
       <StringTable CompanyName="Lazarus and Free Pascal" InternalName="IconTable" LegalCopyright="Lazarus and Free Pascal - Roland Hahn" OriginalFilename="IconTable.exe" ProductName="IconTable" ProductVersion="1.3"/>
     </VersionInfo>
-    <BuildModes Count="2" Active="Release">
+    <BuildModes Count="2">
       <Item1 Name="Debug" Default="True"/>
       <Item2 Name="Release">
         <CompilerOptions>
           <Version Value="11"/>
           <PathDelim Value="\"/>
           <Target>
-            <Filename Value="IconTable"/>
+            <Filename Value="icontable"/>
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
@@ -79,13 +80,10 @@
         <PackageName Value="LCL"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="5">
+    <Units Count="2">
       <Unit0>
         <Filename Value="IconTable.lpr"/>
         <IsPartOfProject Value="True"/>
-        <CursorPos X="73" Y="15"/>
-        <UsageCount Value="42"/>
-        <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="main.pas"/>
@@ -93,160 +91,8 @@
         <ComponentName Value="MainForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="1"/>
-        <TopLine Value="354"/>
-        <CursorPos X="3" Y="273"/>
-        <UsageCount Value="42"/>
-        <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
       </Unit1>
-      <Unit2>
-        <Filename Value="..\..\..\lcl\dialogs.pp"/>
-        <UnitName Value="Dialogs"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="525"/>
-        <CursorPos X="50" Y="549"/>
-        <UsageCount Value="10"/>
-      </Unit2>
-      <Unit3>
-        <Filename Value="..\..\..\lazarus-3.0-fpc-3.2.2\fpc\3.2.2\source\packages\fcl-image\src\fpimage.pp"/>
-        <UnitName Value="FPImage"/>
-        <EditorIndex Value="3"/>
-        <TopLine Value="108"/>
-        <CursorPos X="3" Y="96"/>
-        <UsageCount Value="11"/>
-        <Loaded Value="True"/>
-      </Unit3>
-      <Unit4>
-        <Filename Value="..\..\lcl\defaulttranslator.pas"/>
-        <UnitName Value="DefaultTranslator"/>
-        <EditorIndex Value="2"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit4>
     </Units>
-    <JumpHistory Count="30" HistoryIndex="29">
-      <Position1>
-        <Filename Value="main.pas"/>
-        <Caret Line="496" Column="36" TopLine="482"/>
-      </Position1>
-      <Position2>
-        <Filename Value="main.pas"/>
-        <Caret Line="500" Column="51" TopLine="482"/>
-      </Position2>
-      <Position3>
-        <Filename Value="main.pas"/>
-        <Caret Line="527" Column="2" TopLine="494"/>
-      </Position3>
-      <Position4>
-        <Filename Value="main.pas"/>
-        <Caret Line="514" Column="8" TopLine="496"/>
-      </Position4>
-      <Position5>
-        <Filename Value="main.pas"/>
-        <Caret Line="24" Column="24"/>
-      </Position5>
-      <Position6>
-        <Filename Value="main.pas"/>
-        <Caret Line="205" Column="18" TopLine="188"/>
-      </Position6>
-      <Position7>
-        <Filename Value="main.pas"/>
-        <Caret Line="47" Column="15" TopLine="13"/>
-      </Position7>
-      <Position8>
-        <Filename Value="main.pas"/>
-        <Caret Line="514" TopLine="497"/>
-      </Position8>
-      <Position9>
-        <Filename Value="main.pas"/>
-        <Caret Line="8" Column="29"/>
-      </Position9>
-      <Position10>
-        <Filename Value="main.pas"/>
-        <Caret Line="197" Column="48" TopLine="168"/>
-      </Position10>
-      <Position11>
-        <Filename Value="main.pas"/>
-        <Caret Line="47" Column="15" TopLine="12"/>
-      </Position11>
-      <Position12>
-        <Filename Value="main.pas"/>
-        <Caret Line="507" Column="16" TopLine="491"/>
-      </Position12>
-      <Position13>
-        <Filename Value="main.pas"/>
-        <Caret Line="61" Column="38" TopLine="42"/>
-      </Position13>
-      <Position14>
-        <Filename Value="main.pas"/>
-        <Caret Line="201" Column="10" TopLine="201"/>
-      </Position14>
-      <Position15>
-        <Filename Value="main.pas"/>
-        <Caret Line="290" Column="72" TopLine="262"/>
-      </Position15>
-      <Position16>
-        <Filename Value="main.pas"/>
-        <Caret Line="69" Column="78" TopLine="67"/>
-      </Position16>
-      <Position17>
-        <Filename Value="main.pas"/>
-        <Caret Line="357" Column="117" TopLine="326"/>
-      </Position17>
-      <Position18>
-        <Filename Value="main.pas"/>
-        <Caret Line="392" TopLine="357"/>
-      </Position18>
-      <Position19>
-        <Filename Value="main.pas"/>
-        <Caret Line="445" TopLine="411"/>
-      </Position19>
-      <Position20>
-        <Filename Value="main.pas"/>
-        <Caret Line="70" TopLine="56"/>
-      </Position20>
-      <Position21>
-        <Filename Value="main.pas"/>
-        <Caret Line="464" Column="5" TopLine="426"/>
-      </Position21>
-      <Position22>
-        <Filename Value="main.pas"/>
-        <Caret Line="462" Column="14" TopLine="453"/>
-      </Position22>
-      <Position23>
-        <Filename Value="main.pas"/>
-        <Caret Line="47" Column="15" TopLine="27"/>
-      </Position23>
-      <Position24>
-        <Filename Value="main.pas"/>
-        <Caret Line="511" Column="3" TopLine="502"/>
-      </Position24>
-      <Position25>
-        <Filename Value="main.pas"/>
-        <Caret Line="50" Column="13" TopLine="44"/>
-      </Position25>
-      <Position26>
-        <Filename Value="main.pas"/>
-      </Position26>
-      <Position27>
-        <Filename Value="main.pas"/>
-        <Caret Line="36" Column="20" TopLine="10"/>
-      </Position27>
-      <Position28>
-        <Filename Value="main.pas"/>
-        <Caret Line="122" Column="34" TopLine="104"/>
-      </Position28>
-      <Position29>
-        <Filename Value="main.pas"/>
-        <Caret Line="66" Column="68" TopLine="43"/>
-      </Position29>
-      <Position30>
-        <Filename Value="main.pas"/>
-        <Caret Line="44" Column="26" TopLine="38"/>
-      </Position30>
-    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="11"/>
@@ -256,7 +102,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <OtherUnitFiles Value="D:\LazarusProg\rhsUnit\"/>
+      <OtherUnitFiles Value="D:\LazarusProg\rhsUnit"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Parsing>
