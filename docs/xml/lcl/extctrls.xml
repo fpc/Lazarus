@@ -7291,6 +7291,7 @@ and anchoring mechanisms for the composite control.
 <element name="TLabeledEdit.Visible" link="#lcl.controls.TControl.Visible"/>
 <element name="TLabeledEdit.OnChange" link="#lcl.stdctrls.TCustomEdit.OnChange"/>
 <element name="TLabeledEdit.OnClick" link="#lcl.controls.TControl.OnClick"/>
+<element name="TLabeledEdit.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
 <element name="TLabeledEdit.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
 <element name="TLabeledEdit.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
 <element name="TLabeledEdit.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
