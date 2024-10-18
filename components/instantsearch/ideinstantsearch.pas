@@ -644,7 +644,7 @@ begin
     I:=GetEnumValue(TypeInfo(TMCMySQLClientVersion),S);
     if I<>-1 then
       Findexer.MySQLVersion:=TMCMySQLClientVersion(I);
-    Cfg.GetValue('Trees/Names',List);
+    List:=Cfg.GetValue('Trees/Names','');
     For I:=SourceTrees.Count-1 downto 0 do
       if Not SourceTrees[i].System then
          SourceTrees.Delete(I);
