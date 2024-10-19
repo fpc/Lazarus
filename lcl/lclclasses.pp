@@ -92,9 +92,6 @@ var
 
 implementation
 
-uses
-  InterfaceBase;
-
 type
   TLCLComponentClass = class of TLCLComponent;
 
