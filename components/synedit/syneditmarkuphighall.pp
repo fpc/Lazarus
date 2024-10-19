@@ -78,9 +78,11 @@ type
     *)
     function IndexOfFirstMatchForLine(ALine: Integer): Integer;
     function IndexOfLastMatchForLine(ALine: Integer): Integer;
+    function IndexOf(APoint: TPoint): Integer; // Either containing APoint, or first after APoint
     procedure Delete(AIndex: Integer; ACount: Integer = 1);
     procedure Insert(AIndex: Integer; ACount: Integer = 1);
     procedure Insert(AIndex: Integer; AStartPoint, AEndPoint: TPoint);
+    function Insert(AStartPoint, AEndPoint: TPoint): integer;
     property Match [const Index : Integer] : TSynMarkupHighAllMatch read GetMatch write SetMatch; default;
     property StartPoint [const Index : Integer] : TPoint read GetStartPoint write SetStartPoint;
     property EndPoint   [const Index : Integer] : TPoint read GetEndPoint write SetEndPoint;
@@ -130,6 +132,28 @@ type
                                          const aStartCol: TLazSynDisplayTokenBound;
                                          const AnRtlInfo: TLazSynDisplayRtlInfo;
                                          out   ANextPhys, ANextLog: Integer); override;
+  end;
+
+
+  { TSynEditMarkupHighlightMultiMatches }
+
+  TSynEditMarkupHighlightMultiMatches = class(TSynEditMarkupHighlightMatches)
+  private
+    FMarkupInfos: array of TSynSelectedColor;
+    function GetMarkupInfoCount: integer;
+    function GetMarkupInfos(AnIndex: Integer): TSynSelectedColor;
+    function GetMatches: TSynMarkupHighAllMultiMatchList;
+    procedure SetMarkupInfoCount(AValue: integer);
+  protected
+    function  CreateMatchList: TSynMarkupHighAllMatchList; override;
+    function  MarkupIdForMatch(Idx: Integer): Integer; override;
+    function  MarkupInfoForId(Idx: Integer): TSynSelectedColor; override;
+
+    property  Matches: TSynMarkupHighAllMultiMatchList read GetMatches;
+  public
+    destructor Destroy; override;
+    property MarkupInfoCount: integer read GetMarkupInfoCount write SetMarkupInfoCount;
+    property MarkupInfos[AnIndex: Integer]: TSynSelectedColor read GetMarkupInfos;
   end;
 
 
@@ -613,6 +637,64 @@ begin
     exit;
 
   ANextLog := fMatches.Point[FCurrentRowNextPosIdx].x;
+end;
+
+{ TSynEditMarkupHighlightMultiMatches }
+
+function TSynEditMarkupHighlightMultiMatches.GetMarkupInfoCount: integer;
+begin
+  Result := Length(FMarkupInfos);
+end;
+
+function TSynEditMarkupHighlightMultiMatches.GetMarkupInfos(AnIndex: Integer): TSynSelectedColor;
+begin
+  Result := FMarkupInfos[AnIndex];
+end;
+
+function TSynEditMarkupHighlightMultiMatches.GetMatches: TSynMarkupHighAllMultiMatchList;
+begin
+  Result := TSynMarkupHighAllMultiMatchList(inherited Matches);
+end;
+
+procedure TSynEditMarkupHighlightMultiMatches.SetMarkupInfoCount(AValue: integer);
+var
+  l, i: integer;
+begin
+  l := Length(FMarkupInfos);
+  if l = AValue then
+    exit;
+
+  for i := AValue to l - 1 do
+    FMarkupInfos[i].Free;
+  SetLength(FMarkupInfos, AValue);
+  for i := l to AValue - 1 do begin
+    FMarkupInfos[i] := TSynSelectedColor.Create;
+    FMarkupInfos[i].Clear;
+  end;
+end;
+
+function TSynEditMarkupHighlightMultiMatches.CreateMatchList: TSynMarkupHighAllMatchList;
+begin
+  Result := TSynMarkupHighAllMultiMatchList.Create;
+end;
+
+function TSynEditMarkupHighlightMultiMatches.MarkupIdForMatch(Idx: Integer): Integer;
+begin
+  Result := Matches.GetMarkupId(Idx);
+end;
+
+function TSynEditMarkupHighlightMultiMatches.MarkupInfoForId(Idx: Integer): TSynSelectedColor;
+begin
+  if (Idx < 0) or (Idx >= Length(FMarkupInfos)) then
+    Result := MarkupInfo
+   else
+    Result := FMarkupInfos[Idx];
+end;
+
+destructor TSynEditMarkupHighlightMultiMatches.Destroy;
+begin
+  MarkupInfoCount := 0;
+  inherited Destroy;
 end;
 
 { TSynSearchTermDict }
@@ -1829,6 +1911,22 @@ begin
     dec(Result);
 end;
 
+function TSynMarkupHighAllMatchList.IndexOf(APoint: TPoint): Integer;
+var
+  C: Integer;
+  S: TPoint;
+begin
+  Result := IndexOfFirstMatchForLine(APoint.Y);
+  C := Count;
+  while (Result < C) do begin
+    S := StartPoint[Result];
+    if (S.Y = APoint.Y) and (S.X < APoint.X) then
+      inc(Result)
+    else
+      break;
+  end;
+end;
+
 procedure TSynMarkupHighAllMatchList.Delete(AIndex: Integer; ACount: Integer);
 begin
   if AIndex >= Count then
@@ -1853,6 +1951,15 @@ begin
   Insert(AIndex);
   PSynMarkupHighAllMatch(ItemPointer[AIndex])^.StartPoint := AStartPoint;
   PSynMarkupHighAllMatch(ItemPointer[AIndex])^.EndPoint   := AEndPoint;
+end;
+
+function TSynMarkupHighAllMatchList.Insert(AStartPoint, AEndPoint: TPoint): integer;
+var
+  C: Integer;
+  S: TPoint;
+begin
+  Result := IndexOf(AStartPoint);
+  Insert(Result, AStartPoint, AEndPoint);
 end;
 
 procedure TSynMarkupHighAllMatchList.SetCount(const AValue : Integer);
