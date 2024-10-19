@@ -3354,6 +3354,12 @@ procedure TMainIDE.mnuRevertClicked(Sender: TObject);
 begin
   if (SourceEditorManager.ActiveSourceWindowIndex < 0)
   or (SourceEditorManager.ActiveSourceWindow.PageIndex < 0) then exit;
+
+  if IDEMessageDialog(lisConfirm, Format(lisMenuRevertConfirm, [LineEnding,
+    SourceEditorManager.ActiveSourceWindow.ActiveEditor.FileName,
+    LineEnding + LineEnding]), mtConfirmation, mbYesNoCancel) <> mrYes
+  then exit;
+
   DoOpenEditorFile('', SourceEditorManager.ActiveSourceWindow.PageIndex,
     SourceEditorManager.ActiveSourceWindowIndex, [ofRevert]);
 end;

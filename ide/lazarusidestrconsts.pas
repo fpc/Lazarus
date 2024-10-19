@@ -272,6 +272,7 @@ resourcestring
   lisMenuOpen = '&Open ...';
   lisMenuOpenUnit = 'Open Unit ...';
   lisMenuRevert = 'Revert';
+  lisMenuRevertConfirm = 'Discard all unsaved changes in this file?%s  %s%sThis action will affect all tabs with the same file and it cannot be undone.';
   lisPESavePackageAs = 'Save Package As ...';
   lisPkgEditPublishPackage = 'Publish Package';
   lisPERevertPackage = 'Revert Package';
