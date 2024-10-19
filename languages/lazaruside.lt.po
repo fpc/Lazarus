@@ -5387,7 +5387,7 @@ msgstr "Projekto modulis neturi būti naudojamas kituose paketuose/projektuose"
 msgid "Borderspace around the control. The other four borderspaces are added to this value."
 msgstr ""
 "Pagrindinis kraštinės plotis apie komponentę.\n"
-"Ši vertė bus pridedama prie kitų kraštinių pločių.\n"
+"Ši vertė bus pridedama prie kitų kraštinių pločių."
 
 #: lazarusidestrconsts.lisaskbeforereplacingeachfoundtext
 msgid "Ask before replacing each found text"
@@ -5598,7 +5598,7 @@ msgstr "Apačia"
 msgid "Bottom borderspace. This value is added to base borderspace and used for the space below the control."
 msgstr ""
 "Apatinės kraštinės plotis.\n"
-"Ši vertė, pridėta prie pagrindinio kraštinės pločio, nusakys bendrą apatinės kraštinės plotį.\n"
+"Ši vertė, pridėta prie pagrindinio kraštinės pločio, nusakys bendrą apatinės kraštinės plotį."
 
 #: lazarusidestrconsts.lisbottomgroupboxcaption
 msgid "Bottom anchoring"
@@ -12023,7 +12023,7 @@ msgstr "Kairysis_Kairysis"
 msgid "Left borderspace. This value is added to base borderspace and used for the space left to the control."
 msgstr ""
 "Kairės kraštinės plotis.\n"
-"Ši vertė, pridėta prie pagrindinio kraštinės pločio, nusakys bendrą kairiosios kraštinės plotį.\n"
+"Ši vertė, pridėta prie pagrindinio kraštinės pločio, nusakys bendrą kairiosios kraštinės plotį."
 
 #: lazarusidestrconsts.lisleftgroupboxcaption
 msgid "Left anchoring"
@@ -16886,7 +16886,7 @@ msgstr "Dešinės prieraiša"
 msgid "Right borderspace. This value is added to base borderspace and used for the space right to the control."
 msgstr ""
 "Dešinės kraštinės plotis.\n"
-"Ši vertė, pridėta prie pagrindinio kraštinės pločio, nusakys bendrą dešiniosios kraštinės plotį.\n"
+"Ši vertė, pridėta prie pagrindinio kraštinės pločio, nusakys bendrą dešiniosios kraštinės plotį."
 
 #: lazarusidestrconsts.lisrightgutter
 #, fuzzy
@@ -18611,7 +18611,7 @@ msgstr "Viršaus prieraiša"
 msgid "Top borderspace. This value is added to base borderspace and used for the space above the control."
 msgstr ""
 "Viršutinės kraštinės plotis.\n"
-"Ši vertė, pridėta prie pagrindinio kraštinės pločio, nusakys bendrą viršutinės kraštinės plotį.\n"
+"Ši vertė, pridėta prie pagrindinio kraštinės pločio, nusakys bendrą viršutinės kraštinės plotį."
 
 #: lazarusidestrconsts.listopinfoview
 #, fuzzy
