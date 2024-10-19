@@ -4,11 +4,8 @@
     <Version Value="12"/>
     <PathDelim Value="\"/>
     <General>
-      <Flags>
-        <CompatibilityMode Value="True"/>
-      </Flags>
       <SessionStorage Value="InProjectDir"/>
-      <Title Value="IconTable"/>
+      <Title Value="icontable"/>
       <Scaled Value="True"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
@@ -27,9 +24,9 @@
       <MinorVersionNr Value="3"/>
       <StringTable CompanyName="Lazarus and Free Pascal" InternalName="IconTable" LegalCopyright="Lazarus and Free Pascal - Roland Hahn" OriginalFilename="IconTable.exe" ProductName="IconTable" ProductVersion="1.3"/>
     </VersionInfo>
-    <BuildModes Count="2">
-      <Item1 Name="Debug" Default="True"/>
-      <Item2 Name="Release">
+    <BuildModes>
+      <Item Name="Debug" Default="True"/>
+      <Item Name="Release">
         <CompilerOptions>
           <Version Value="11"/>
           <PathDelim Value="\"/>
@@ -60,7 +57,7 @@
             </Options>
           </Linking>
         </CompilerOptions>
-      </Item2>
+      </Item>
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
@@ -69,40 +66,39 @@
     <RunParams>
       <FormatVersion Value="2"/>
     </RunParams>
-    <RequiredPackages Count="3">
-      <Item1>
+    <RequiredPackages>
+      <Item>
         <PackageName Value="SynEditDsgn"/>
-      </Item1>
-      <Item2>
+      </Item>
+      <Item>
         <PackageName Value="SynEdit"/>
-      </Item2>
-      <Item3>
+      </Item>
+      <Item>
         <PackageName Value="LCL"/>
-      </Item3>
+      </Item>
     </RequiredPackages>
-    <Units Count="2">
-      <Unit0>
-        <Filename Value="IconTable.lpr"/>
+    <Units>
+      <Unit>
+        <Filename Value="icontable.lpr"/>
         <IsPartOfProject Value="True"/>
-      </Unit0>
-      <Unit1>
+      </Unit>
+      <Unit>
         <Filename Value="main.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="MainForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-      </Unit1>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="11"/>
     <PathDelim Value="\"/>
     <Target>
-      <Filename Value="IconTable"/>
+      <Filename Value="icontable"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <OtherUnitFiles Value="D:\LazarusProg\rhsUnit"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Parsing>
@@ -136,16 +132,16 @@
     </Linking>
   </CompilerOptions>
   <Debugging>
-    <Exceptions Count="3">
-      <Item1>
+    <Exceptions>
+      <Item>
         <Name Value="EAbort"/>
-      </Item1>
-      <Item2>
+      </Item>
+      <Item>
         <Name Value="ECodetoolError"/>
-      </Item2>
-      <Item3>
+      </Item>
+      <Item>
         <Name Value="EFOpenError"/>
-      </Item3>
+      </Item>
     </Exceptions>
   </Debugging>
 </CONFIG>
