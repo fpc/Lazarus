@@ -56,11 +56,9 @@ type
   public
     property PageIndex: Integer read GetPageIndex;
   published
-    // Lazarus-specific TPage events
     // OnBeforeShow occurs before a page is displayed, so that
     // preparations can be executed in it's user interface, for example
     property OnBeforeShow: TBeforeShowPageEvent read FOnBeforeShow write FOnBeforeShow;
-    // Other events and properties
     property BiDiMode;
     property ChildSizing;
     property Color;
@@ -146,12 +144,10 @@ type
     property ActivePageComponent: TPage read GetActivePageComponent;// write SetActivePage; // should not be published because the read can raise an exception
     property Page[Index: Integer]: TPage read GetPage;
     property PageCount: integer read GetPageCount;
-//    property PageList: TList read FPageList;
   published
-    // LCL TNotebook specific properties
     property PageIndex: Integer read GetPageIndex write SetPageIndex default -1;
     property Pages: TStrings read FPages write SetPages stored False;
-    // Generic properties
+
     property Align;
     property AutoSize;
     property Anchors;
@@ -162,16 +158,11 @@ type
     property DragCursor;
     property DragMode;
     property Enabled;
-//    property Options;
-//    property PageIndex;
     property ParentBiDiMode;
     property PopupMenu;
     property TabOrder;
     property TabStop;
-
-    //    property OnChange;
     property OnChangeBounds;
-//    property OnChanging;
     property OnContextPopup;
     property OnDragDrop;
     property OnDragOver;
@@ -487,7 +478,6 @@ type
     property Color;
     property Constraints;
     property DragCursor;
-//    property DragKind;
     property DragMode;
     property Enabled;
     property Font;
@@ -504,7 +494,6 @@ type
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
-//    property OnEndDock;
     property OnEndDrag;
     property OnMouseDown;
     property OnMouseEnter;
@@ -519,7 +508,6 @@ type
     property OnMouseWheelRight;
     property OnPaint;
     property OnResize;
-//    property OnStartDock;
     property OnStartDrag;
   end;
 
@@ -1011,8 +999,6 @@ type
     property OnMouseWheel;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
-    //property OnEnter;
-    //property OnExit;
     property OnStartDrag;
   end;
 

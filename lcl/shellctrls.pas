@@ -154,7 +154,6 @@ type
     property Anchors;
     property AutoExpand;
     property BorderSpacing;
-    //property BiDiMode;
     property BackgroundColor;
     property BorderStyle;
     property BorderWidth;
@@ -170,7 +169,6 @@ type
     property Images;
     property Indent;
     property MultiSelectStyle;
-    //property ParentBiDiMode;
     property ParentColor default False;
     property ParentFont;
     property ParentShowHint;
@@ -312,36 +310,25 @@ type
   published
     { TCustomListView properties
       The same as TListView excluding data properties }
+
     property Align;
     property AutoSizeColumns;
     property Anchors;
     property BorderSpacing;
     property BorderStyle;
     property BorderWidth;
-//    property Checkboxes;
     property Color default clWindow;
-//    property ColumnClick;
     property Constraints;
     property DragCursor;
     property DragMode;
-//    property DefaultItemHeight;
-//    property DropTarget;
     property Enabled;
-//    property FlatScrollBars;
     property Font;
-//    property FullDrag;
-//    property GridLines;
     property HideSelection;
-//    property HotTrack;
-//    property HotTrackStyles;
-//    property HoverTime;
     property LargeImages;
     property LargeImagesWidth;
     property Mask;
     property MaskCaseSensitivity;
     property MultiSelect;
-//    property OwnerData;
-//    property OwnerDraw;
     property ParentColor default False;
     property ParentFont;
     property ParentShowHint;
@@ -351,7 +338,6 @@ type
     property ScrollBars;
     property ShowColumnHeaders;
     property ShowHint;
-//    property ShowWorkAreas;
     property SmallImages;
     property SmallImagesWidth;
     property SortColumn;
@@ -366,18 +352,11 @@ type
     property ObjectTypes;
     property Root;
     property ShellTreeView;
-
-//    property OnAdvancedCustomDraw;
-//    property OnAdvancedCustomDrawItem;
-//    property OnAdvancedCustomDrawSubItem;
     property OnChange;
     property OnClick;
     property OnColumnClick;
     property OnCompare;
     property OnContextPopup;
-//    property OnCustomDraw;
-//    property OnCustomDrawItem;
-//    property OnCustomDrawSubItem;
     property OnDblClick;
     property OnDeletion;
     property OnDragDrop;

@@ -628,7 +628,6 @@ type
     property ImagesWidth;
     property MultiLine;
     property Options;
-    //property OwnerDraw;
     property ParentBiDiMode;
     property ParentFont;
     property ParentShowHint;
@@ -654,7 +653,6 @@ type
     property OnDockOver;
     property OnDragDrop;
     property OnDragOver;
-    //property OnDrawTab;
     property OnEndDock;
     property OnEndDrag;
     property OnEnter;
@@ -888,7 +886,7 @@ type
     property Tabs: TStrings read FTabs write SetTabs;
     property TabStop: Boolean read GetTabStop write SetTabStop default true; // workaround, see #30305
     property TabWidth: Smallint read FTabWidth write SetTabWidth default 0;
-    //
+
     property Align;
     property Anchors;
     property BiDiMode;
@@ -4135,7 +4133,6 @@ type
     property ParentShowHint;
     property PopupMenu;
     property Visible;
-    // events
     property OnContextPopup;
     property OnCreateSectionClass;
     property OnDragDrop;

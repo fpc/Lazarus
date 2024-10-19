@@ -505,8 +505,6 @@ Type
     property DragCursor;
     property DragKind;
     property DragMode;
-//    property ExtendedSelect;
-//    property ItemHeight;
     property Enabled;
     property Font;
     property KeyField: string read GetKeyField write SetKeyField;
@@ -517,7 +515,6 @@ Type
     property NullValueKey: TShortCut read GetNullValueKey write SetNullValueKey default 0;
     property EmptyValue: String read GetEmptyValue write SetEmptyValue;
     property DisplayEmpty: String read GetDisplayEmpty write SetDisplayEmpty;
-//    property MultiSelect;
     property Options;
     property ParentBiDiMode;
     property ParentDoubleBuffered;
@@ -527,7 +524,6 @@ Type
     property ScrollListDataset: Boolean read GetScrollListDataset write SetScrollListDataset default False;
     property ShowHint;
     property Sorted;
-//    property Style;
     property TabOrder;
     property TabStop;
     property TopIndex;
@@ -538,7 +534,6 @@ Type
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
-//    property OnDrawItem;
     property OnEditingDone;
     property OnEndDrag;
     property OnEnter;
@@ -919,7 +914,6 @@ Type
     property Anchors;
     property ArrowKeysTraverseList;
     property AutoComplete;
-    //property AutoCompleteText;
     property AutoDropDown;
     property AutoSelect;
     property AutoSize;
@@ -938,14 +932,11 @@ Type
     property DropDownRows: Integer read GetDropDownRows write SetDropDownRows default 7;
     property Enabled;
     property Font;
-//    property ItemHeight;
-//    property ItemWidth;
     property KeyField: string read GetKeyField write SetKeyField;
     property ListField: string read GetListField write SetListField;
     property ListFieldIndex: Integer read GetListFieldIndex write SetListFieldIndex;
     property ListSource: TDataSource read GetListSource write SetListSource;
     property LookupCache: boolean read GetLookupCache  write SetLookupCache;
-//    property MaxLength default -1;
     property NullValueKey: TShortCut read GetNullValueKey write SetNullValueKey default 0;
     property EmptyValue: String read GetEmptyValue write SetEmptyValue;
     property DisplayEmpty: String read GetDisplayEmpty write SetDisplayEmpty;
