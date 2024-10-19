@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2015-04-14 07:54+0100\n"
-"PO-Revision-Date: 2021-11-25 13:59+0100\n"
+"PO-Revision-Date: 2024-10-19 08:53+0200\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
-"MIME-Version: 1.0\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"X-Generator: Poedit 3.0\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.5\n"
 
 #: anchordockstr.adrsafreesideofasplittermustnotbeanchorednodetypeancho
 #, object-pascal-format
@@ -96,11 +96,11 @@ msgstr "Nom vide : "
 
 #: anchordockstr.adrsenableanchordock
 msgid "Enable docking of IDE Windows (Requires IDE restart)"
-msgstr ""
+msgstr "Activer l'ancrage des fenêtres de l'EDI (nécessite le redémarrage de l'EDI)"
 
 #: anchordockstr.adrsenableanchordockhint
 msgid "This option allows to organize groups of windows (or all windows) into a single window. For a \"classic\" IDE with only floating windows turn the option off."
-msgstr ""
+msgstr "Cette option permet d'organiser des groupes de fenêtres (ou toutes les fenêtres) en une seule fenêtre. Pour un EDI \"classique\" avec uniquement des fenêtres flottantes, désactivez l'option."
 
 #: anchordockstr.adrsenlargeside
 #, object-pascal-format
@@ -117,11 +117,11 @@ msgstr "Remplir les en-têtes des contrôles amarrés"
 
 #: anchordockstr.adrsflatheadersbuttons
 msgid "Flat header buttons"
-msgstr ""
+msgstr "Boutons d'en-tête plats"
 
 #: anchordockstr.adrsflatheadersbuttonshint
 msgid "Flat buttons in headers of docked controls"
-msgstr ""
+msgstr "Boutons plats dans les en-têtes des contrôles ancrés"
 
 #: anchordockstr.adrsflattenheaders
 msgid "Flatten headers"
@@ -307,33 +307,33 @@ msgstr "Désamarrer"
 
 #: anchordockstr.setupmultiwindowideclassic
 msgid "Classic IDE (Multi-Window):"
-msgstr ""
+msgstr "IDE classique (multi-fenêtres) :"
 
 #: anchordockstr.setupmultiwindowideinfo
 msgid "The \"modern\" single Window mode still allows you to undock individual Windows and have several groups of Windows. The IDE will show additional \"Dock-Handles\" in each Window, which will allow you to change layout, but also require additional space."
-msgstr ""
+msgstr "Le mode \"moderne\" à fenêtre unique vous permet toujours de déverrouiller des fenêtres individuelles et d'avoir plusieurs groupes de fenêtres. L'EDI affichera des \"poignées d'ancrage\" supplémentaires dans chaque fenêtre, ce qui vous permettra de modifier la disposition, mais nécessitera également de l'espace supplémentaire."
 
 #: anchordockstr.setupmultiwindowidemodern
 msgid "Modern IDE (Single-Window):"
-msgstr ""
+msgstr "EDI moderne (fenêtre unique) :"
 
 #: anchordockstr.setupmultiwindowideoption
 msgid "You can change this in the IDE options under: \"Anchordocking\""
-msgstr ""
+msgstr "Vous pouvez modifier cela dans les options de l'EDI avec : \"Ancrage\""
 
 #: anchordockstr.setupmultiwindowideseperatewindows
 msgid "There are separate windows for each part of the IDE (Editor, Components, Debug,...). They can all be individually moved around on the screen."
-msgstr ""
+msgstr "Il y a des fenêtres séparées pour chaque partie de l'EDI (éditeur, composants, débogage...). Elles peuvent toutes être déplacées individuellement sur l'écran."
 
 #: anchordockstr.setupmultiwindowidesinglewindow
 msgid "The IDE consists out of a single Window. Different parts of the IDE are shown in panels of that Window. Some can be reached through a tabbed interface."
-msgstr ""
+msgstr "L'EDI se compose d'une seule fenêtre. Les différentes parties de l'EDI sont affichées dans des panneaux de cette fenêtre. Certaines parties sont accessibles via une interface à onglets."
 
 #: anchordockstr.sidelayout
 msgid "IDE Layout"
-msgstr ""
+msgstr "Présentation de l'EDI"
 
 #: anchordockstr.ssinglemultiwindow
 msgid "Single/Multi Window"
-msgstr ""
+msgstr "Fenêtre(s) unique/multiple(s)"
 
