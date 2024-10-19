@@ -15325,24 +15325,65 @@ DoOnMouseMove is called from the NotifyUserInputHandler method.
 </element>
 
 <element name="TApplication.ShowHintWindow">
-<short>Shows or hides the Hint window for the application.</short>
+<short>
+Shows or hides the hint window for a control in the application.
+</short>
 <descr>
 <p>
-When a parented HintControl has been assigned, handler routines are signalled 
-to check whether the hint can be display in the event handler. The OnShowHint 
-event handler is signalled first (when assigned). Additional application 
-handlers assigned using AddOnShowHintHandler are signalled next.
+<var>ShowHintWindow</var> performs actions needed to display hint text in a 
+pop-up window for the control represented by the mouse coordinates in the 
+<var>Info</var> argument. No actions are performed in the method if ShowHint 
+has not been enabled, or a valid hint control cannot be determined for the 
+application.
 </p>
 <p>
-If the hint text is not empty, it is displayed and its timer is started. 
-Otherwise the HideHint method is called to hide the hint window.
+ShowHintWindow maintains an internal THintInfo structure used to store  
+information with the text for the hint, configuration information about its 
+display window, and the control for the hint.
+</p>
+<p>
+For a valid parented hint control, handler routines are signalled to check 
+whether the hint can be displayed for the application. The OnShowHint event 
+handler(s) are signalled first (when assigned) to determine the hint text or 
+hint data. Additional OnShowHint handlers assigned using AddOnShowHintHandler 
+are signalled next.
+</p>
+<p>
+If the hint text or hint data was not assigned in the event handlers, the hint 
+text for the hovered control is used. Only the first "|"-delimited line of text 
+in TControl.Hint is used for the hint.
+</p>
+<p>
+The hint window for the application is created (or re-created) and configured 
+as needed, and the show hint command is performed for the hint control. The 
+ActivateHintData method in the hint window is called to display (or hide) the 
+hint window and activate (or reset) the auto-hide timer.
+</p>
+<p>
+If the hint control is no longer valid or the hint text is empty, the HideHint 
+method is called to hide an existing hint window.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TApplication.ShowHint"/>
+<link id="TApplication.HideHint"/>
+<link id="TApplication.OnShowHint"/>
+<link id="TApplication.StartHintTimer"/>
+<link id="THintWindow.ActivateHintData"/>
+<link id="THintWindow.ActivateHint"/>
+<link id="HintWindowClass"/>
+<link id="#lcl.controls.TControl.Hint">TControl.Hint</link>
+<link id="#lcl.controls.THintInfo">THintInfo</link>
+</seealso>
 </element>
+<version>
+Modified in LCL version 4.0 to call ActivateHintData for the hint window 
+(instead of ActivateHint).
+</version>
 <element name="TApplication.ShowHintWindow.Info">
 <short>
-Updated with the Hint-related information for a parent control or form.
+Contains information about the hint control, its mouse coordinates, and the 
+hint text used in the method.
 </short>
 </element>
 
