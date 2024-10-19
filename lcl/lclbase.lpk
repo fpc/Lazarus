@@ -26,7 +26,7 @@
 "/>
     <License Value="modified LGPL-2
 "/>
-    <Version Major="4" Build="1"/>
+    <Version Major="4" Build="2"/>
     <Files Count="289">
       <Item1>
         <Filename Value="checklst.pas"/>
