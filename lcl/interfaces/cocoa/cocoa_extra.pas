@@ -643,6 +643,7 @@ const
   NSAppKitVersionNumber11_0  = 2022; // 2000 starts with beta?
   NSAppKitVersionNumber12_0  = 2113;
   NSAppKitVersionNumber13_0  = 2299;
+  NSAppKitVersionNumber14_0  = 2487;
 
 function NSNormalWindowLevel: NSInteger; inline;
 function NSFloatingWindowLevel: NSInteger; inline;
