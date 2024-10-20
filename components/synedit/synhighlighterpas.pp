@@ -47,11 +47,12 @@ advanced features found in Object Pascal in Delphi 4.
 unit SynHighlighterPas;
 
 {$I synedit.inc}
+{$ModeSwitch advancedrecords}
 
 interface
 
 uses
-  SysUtils, Classes, Registry, Graphics, SynEditHighlighterFoldBase,
+  SysUtils, Classes, fgl, Registry, Graphics, SynEditHighlighterFoldBase,
   SynEditMiscProcs, SynEditTypes, SynEditHighlighter, SynEditTextBase,
   SynEditStrConst, SynEditMiscClasses, LazLoggerBase;
 
@@ -63,6 +64,7 @@ type
   TtkTokenKind = (tkAsm, tkComment, tkIdentifier, tkKey, tkModifier, tkNull, tkNumber,
     tkSpace, tkString, tkSymbol, tkDirective, tkIDEDirective,
     tkUnknown);
+  TtkTokenKinds= set of TtkTokenKind;
 
   TRangeState = (
     rsAnsiMultiDQ,  // Multi line double quoted string
@@ -306,6 +308,30 @@ const
 
 type
 
+  { TSynPasSynCustomToken }
+
+  TSynPasSynCustomToken = class
+  private
+    FOnChange: TNotifyEvent;
+    FOnMarkupChange: TNotifyEvent;
+    procedure DoMarkupChaged(Sender: TObject);
+    procedure DoTokensChanged(Sender: TObject);
+  private
+    FMarkup: TSynHighlighterAttributesModifier;
+    FMatchTokenKinds: TtkTokenKinds;
+    FTokens: TStrings;
+
+    procedure SetMatchTokenKinds(AValue: TtkTokenKinds);
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property OnMarkupChange: TNotifyEvent read FOnMarkupChange write FOnMarkupChange;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    property MatchTokenKinds: TtkTokenKinds read FMatchTokenKinds write SetMatchTokenKinds;
+    property Tokens: TStrings read FTokens;
+    property Markup: TSynHighlighterAttributesModifier read FMarkup;
+  end;
+
  TSynPasRangeInfo = record
     EndLevelIfDef: Smallint;
     MinLevelIfDef: Smallint;
@@ -364,7 +390,29 @@ type
   { TSynPasSyn }
 
   TSynPasSyn = class(TSynCustomFoldHighlighter)
+  private type
+
+    { TSynPasSynCustomTokenInfo }
+
+    TSynPasSynCustomTokenInfo = record
+      MatchTokenKinds: TtkTokenKinds;
+      Word: String;
+      Token: TSynPasSynCustomToken;
+      class operator = (a, b: TSynPasSynCustomTokenInfo): boolean;
+    end;
+    PSynPasSynCustomTokenInfo = ^TSynPasSynCustomTokenInfo;
+    PPSynPasSynCustomTokenInfo = ^PSynPasSynCustomTokenInfo;
+    TSynPasSynCustomTokenInfoList = specialize TFPGList<TSynPasSynCustomTokenInfo>;
   private
+    FSynCustomTokens: array of TSynPasSynCustomToken;
+    FNeedCustomTokenBuild: boolean;
+    FCustomTokenInfo: array [byte] of record
+      MatchTokenKinds: TtkTokenKinds;
+      List: TSynPasSynCustomTokenInfoList;
+    end;
+    FCustomTokenMarkup: TSynHighlighterAttributesModifier;
+    FCustomTokenMergedMarkup: TSynSelectedColorMergeResult;
+
     fAsmStart: Boolean;
     FExtendedKeywordsMode: Boolean;
     FNestedComments: boolean;
@@ -396,6 +444,7 @@ type
     fIdentFuncTable: array[0..220] of TIdentFuncTableFunc;
     fTokenPos: Integer;// start of current token in fLine
     FTokenID: TtkTokenKind;
+    FTokenHashKey: Integer;
     FTokenFlags: set of (tfProcName);
     FTokenIsCaseLabel: Boolean;
     fStringAttri: TSynHighlighterAttributes;
@@ -418,6 +467,11 @@ type
     // Divider
     FDividerDrawConfig: Array [TSynPasDividerDrawLocation] of TSynDividerDrawConfig;
 
+    procedure DoCustomTokenChanged(Sender: TObject);
+    procedure RebuildCustomTokenInfo;
+    function  GetCustomTokenCount: integer;
+    procedure SetCustomTokenCount(AValue: integer);
+    function  GetCustomTokens(AnIndex: integer): TSynPasSynCustomToken;
     function GetPasCodeFoldRange: TSynPasSynRange;
     procedure PasDocAttrChanged(Sender: TObject);
     procedure SetCompilerMode(const AValue: TPascalCompilerMode);
@@ -669,6 +723,8 @@ type
     function FoldLineLength(ALineIndex, FoldIndex: Integer): integer; override; // accesses FoldNodeInfo
     function FoldEndLine(ALineIndex, FoldIndex: Integer): integer; override;    // accesses FoldNodeInfo
 
+    property CustomTokenCount: integer read GetCustomTokenCount write SetCustomTokenCount;
+    property CustomTokens[AnIndex: integer]: TSynPasSynCustomToken read GetCustomTokens;
   published
     property AsmAttri: TSynHighlighterAttributes read fAsmAttri write fAsmAttri;
     property CommentAttri: TSynHighlighterAttributes read fCommentAttri
@@ -1107,6 +1163,75 @@ end;
 function TSynPasSyn.GetPasCodeFoldRange: TSynPasSynRange;
 begin
   Result := TSynPasSynRange(CodeFoldRange);
+end;
+
+function TSynPasSyn.GetCustomTokenCount: integer;
+begin
+  Result := Length(FSynCustomTokens);
+end;
+
+procedure TSynPasSyn.DoCustomTokenChanged(Sender: TObject);
+begin
+  FNeedCustomTokenBuild := True;
+end;
+
+procedure TSynPasSyn.RebuildCustomTokenInfo;
+var
+  i, j, h: Integer;
+  ti: TSynPasSynCustomTokenInfo;
+  t: String;
+begin
+  FNeedCustomTokenBuild := False;
+  for i := 0 to 255 do begin
+    FreeAndNil(FCustomTokenInfo[i].List);
+    FCustomTokenInfo[i].MatchTokenKinds := [];
+  end;
+  for i := 0 to Length(FSynCustomTokens) - 1 do begin
+    for j := 0 to FSynCustomTokens[i].FTokens.Count - 1 do begin
+      if FSynCustomTokens[i].MatchTokenKinds = [] then
+        continue;
+      t := FSynCustomTokens[i].FTokens[j];
+      if t = '' then
+        continue;
+      fLine    := PChar(t);
+      fLineLen := Length(t);
+      fToIdent := 0;
+      h := KeyHash and 255;
+
+      if FCustomTokenInfo[h].List = nil then
+        FCustomTokenInfo[h].List := TSynPasSynCustomTokenInfoList.Create;
+
+      ti.MatchTokenKinds := FSynCustomTokens[i].MatchTokenKinds;
+      ti.Word := UpperCase(t);
+      ti.Token := FSynCustomTokens[i];
+      FCustomTokenInfo[h].MatchTokenKinds := FCustomTokenInfo[h].MatchTokenKinds + FSynCustomTokens[i].MatchTokenKinds;
+      FCustomTokenInfo[h].List.Add(ti);
+    end;
+  end;
+end;
+
+procedure TSynPasSyn.SetCustomTokenCount(AValue: integer);
+var
+  l: SizeInt;
+  i: Integer;
+begin
+  l := Length(FSynCustomTokens);
+  if AValue = l then
+    exit;
+
+  for i := AValue to l - 1 do
+    FSynCustomTokens[i].Free;
+  SetLength(FSynCustomTokens, AValue);
+  for i := l to AValue - 1 do begin
+    FSynCustomTokens[i] := TSynPasSynCustomToken.Create;
+    FSynCustomTokens[i].OnMarkupChange := @DefHighlightChange;
+    FSynCustomTokens[i].OnChange := @DoCustomTokenChanged;
+  end;
+end;
+
+function TSynPasSyn.GetCustomTokens(AnIndex: integer): TSynPasSynCustomToken;
+begin
+  Result := FSynCustomTokens[AnIndex];
 end;
 
 procedure TSynPasSyn.PasDocAttrChanged(Sender: TObject);
@@ -3157,13 +3282,11 @@ begin
 end;
 
 function TSynPasSyn.IdentKind(p: integer): TtkTokenKind;
-var
-  HashKey: Integer;
 begin
   fToIdent := p;
-  HashKey := KeyHash;
-  if HashKey <= High(fIdentFuncTable) then
-    Result := fIdentFuncTable[HashKey]()
+  FTokenHashKey := KeyHash;
+  if FTokenHashKey <= High(fIdentFuncTable) then
+    Result := fIdentFuncTable[FTokenHashKey]()
   else
     Result := tkIdentifier;
 end;
@@ -3270,6 +3393,8 @@ begin
   FCurPasDocAttri := TSynSelectedColorMergeResult.Create(@SYNS_AttrCaseLabel, SYNS_XML_AttrCaseLabel);
   FPasDocWordList := TStringList.Create;
 
+  FCustomTokenMergedMarkup := TSynSelectedColorMergeResult.Create;
+
   CompilerMode:=pcmDelphi;
   SetAttributesOnChange(@DefHighlightChange);
   fPasDocKeyWordAttri.OnChange := @PasDocAttrChanged;
@@ -3285,13 +3410,19 @@ begin
 end; { Create }
 
 destructor TSynPasSyn.Destroy;
+var
+  i: Integer;
 begin
   DestroyDividerDrawConfig;
   FreeAndNil(FCurCaseLabelAttri);
   FreeAndNil(FCurIDEDirectiveAttri);
   FreeAndNil(FCurProcedureHeaderNameAttr);
   FreeAndNil(FCurPasDocAttri);
+  FreeAndNil(FCustomTokenMergedMarkup);
   FreeAndNil(FPasDocWordList);
+  CustomTokenCount := 0;
+  for i := 0 to 255 do
+    FCustomTokenInfo[i].List.Free;
   inherited Destroy;
 end;
 
@@ -3311,6 +3442,9 @@ end;
 procedure TSynPasSyn.SetLine(const NewValue: string; LineNumber:Integer);
 begin
   //DebugLn(['TSynPasSyn.SetLine START LineNumber=',LineNumber,' Line="',NewValue,'"']);
+  if FNeedCustomTokenBuild then
+    RebuildCustomTokenInfo;
+
   fLineStr := NewValue;
   fLineLen:=length(fLineStr);
   fLine:=PChar(Pointer(fLineStr));
@@ -4243,7 +4377,10 @@ end;
 procedure TSynPasSyn.Next;
 var
   IsAtCaseLabel: Boolean;
-  OldNestLevel: Integer;
+  OldNestLevel, i: Integer;
+  CustTk: TSynPasSynCustomTokenInfoList;
+  CustTkList: PPSynPasSynCustomTokenInfo;
+  UpperTk: String;
 begin
   fAsmStart := False;
   FIsPasDocKey := False;
@@ -4251,6 +4388,7 @@ begin
   FIsPasUnknown := False;
   FTokenIsCaseLabel := False;
   fTokenPos := Run;
+  FCustomTokenMarkup := nil;
   if Run>=fLineLen then begin
     NullProc;
     exit;
@@ -4284,7 +4422,27 @@ begin
 
         IsAtCaseLabel := rsAtCaseLabel in fRange;
 
+        FTokenHashKey := 0;
         fProcTable[fLine[Run]];
+
+        if FTokenID in FCustomTokenInfo[FTokenHashKey and 255].MatchTokenKinds then begin
+          CustTk := FCustomTokenInfo[FTokenHashKey and 255].List;
+          if CustTk <> nil then begin
+            UpperTk := '';
+            CustTkList := CustTk.List;
+            for i := 0 to CustTk.Count - 1 do begin
+              if (FTokenID in CustTkList^^.MatchTokenKinds) then begin
+                if UpperTk = '' then
+                  UpperTk := UpperCase(GetToken);
+                if (UpperTk = CustTkList^^.Word) then begin
+                  FCustomTokenMarkup := CustTkList^^.Token.FMarkup;
+                  break;
+                end
+              end;
+              inc(CustTkList);
+            end;
+          end;
+        end;
 
         if (FTokenID = tkIdentifier) and (FTokenState = tsAtProcName) then begin
           if rsInProcHeader in fRange then
@@ -4454,6 +4612,12 @@ begin
     FCurProcedureHeaderNameAttr.Assign(Result);
     FCurProcedureHeaderNameAttr.Merge(FProcedureHeaderNameAttr);
     Result := FCurProcedureHeaderNameAttr;
+  end;
+
+  if FCustomTokenMarkup <> nil then begin
+    FCustomTokenMergedMarkup.Assign(Result);
+    FCustomTokenMergedMarkup.Merge(FCustomTokenMarkup);
+    Result := FCustomTokenMergedMarkup;
   end;
 end;
 
@@ -5774,6 +5938,15 @@ begin
   FD4syntax := Value;
 end;
 
+{ TSynPasSyn.TSynPasSynCustomTokenInfo }
+
+class operator TSynPasSyn.TSynPasSynCustomTokenInfo. = (a, b: TSynPasSynCustomTokenInfo): boolean;
+begin
+  Result := (a.MatchTokenKinds = b.MatchTokenKinds) and
+            (a.Token = b.Token) and
+            (a.Word = b.Word);
+end;
+
 { TSynFreePascalSyn }
 
 constructor TSynFreePascalSyn.Create(AOwner: TComponent);
@@ -5857,6 +6030,43 @@ end;
 procedure TSynPasSynRange.DecLastLinePasFoldFix;
 begin
   dec(FPasFoldFixLevel);
+end;
+
+{ TSynPasSynCustomToken }
+
+procedure TSynPasSynCustomToken.DoTokensChanged(Sender: TObject);
+begin
+  if FOnChange <> nil then
+    FOnChange(Self);
+end;
+
+procedure TSynPasSynCustomToken.SetMatchTokenKinds(AValue: TtkTokenKinds);
+begin
+  if FMatchTokenKinds = AValue then Exit;
+  FMatchTokenKinds := AValue;
+  DoTokensChanged(Self);
+end;
+
+procedure TSynPasSynCustomToken.DoMarkupChaged(Sender: TObject);
+begin
+  if FOnMarkupChange <> nil then
+    FOnMarkupChange(Self);
+end;
+
+constructor TSynPasSynCustomToken.Create;
+begin
+    FMarkup := TSynHighlighterAttributesModifier.Create;
+    FMarkup.OnChange := @DoMarkupChaged;
+    FTokens := TStringList.Create;
+    TStringList(FTokens).OnChange := @DoTokensChanged;
+    FMatchTokenKinds := [];
+end;
+
+destructor TSynPasSynCustomToken.Destroy;
+begin
+  inherited Destroy;
+  FMarkup.Free;
+  FTokens.Free;
 end;
 
 { TSynHighlighterPasRangeList }

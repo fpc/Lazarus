@@ -331,10 +331,32 @@ type
     FInitializationLine, FFinalizationLine: Integer;
   end;
 
+  { TSynHighlighterLazCustumPasAttribute }
+
+  TSynHighlighterLazCustumPasAttribute = class(TSynHighlighterAttributesModifier)
+  private
+    FCustomWords: TStrings;
+    FCustomWordTokenKind: TtkTokenKind;
+    procedure DoWordsChanged(Sender: TObject);
+    procedure SetCustomWordTokenKind(AValue: TtkTokenKind);
+  protected
+    procedure AssignFrom(Src: TLazSynCustomTextAttributes); override;
+    procedure DoClear; override;
+    procedure Init; override;
+  public
+    destructor Destroy; override;
+    property CustomWords: TStrings read FCustomWords;
+  published
+    property CustomWordTokenKind: TtkTokenKind read FCustomWordTokenKind write SetCustomWordTokenKind;
+  end;
+
   { TIDESynPasSyn }
 
   TIDESynPasSyn = class(TSynPasSyn)
   private
+    FCustomAttribs: array[0..9] of TSynHighlighterLazCustumPasAttribute;
+
+    procedure DoBuildCustomPasAttr(Sender: TObject);
     function GetFinalizationLine: Integer;
     function GetImplementationLine: Integer;
     function GetInitializationLine: Integer;
@@ -345,6 +367,10 @@ type
       IncreaseLevel: Boolean = true; ForceDisabled: Boolean = False
       ): TSynCustomCodeFoldBlock; override;
   public
+    constructor Create(AOwner: TComponent); override;
+    //procedure DefHighlightChange(Sender: TObject);
+
+
     procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: string;
       LineNumber: Integer); override;
     property InterfaceLine: Integer read GetInterfaceLine;
@@ -1925,10 +1951,85 @@ begin
   Ime.InvalidateLinesMethod := @InvalidateLines;
   ImeHandler := Ime;
 end;
-
 {$ENDIF}
 
+{ TSynHighlighterLazCustumPasAttribute }
+
+procedure TSynHighlighterLazCustumPasAttribute.SetCustomWordTokenKind(AValue: TtkTokenKind);
+begin
+  if FCustomWordTokenKind = AValue then Exit;
+  FCustomWordTokenKind := AValue;
+  Changed;
+end;
+
+procedure TSynHighlighterLazCustumPasAttribute.DoWordsChanged(Sender: TObject);
+begin
+  Changed;
+end;
+
+procedure TSynHighlighterLazCustumPasAttribute.AssignFrom(Src: TLazSynCustomTextAttributes);
+begin
+  inherited AssignFrom(Src);
+  if Src is TSynHighlighterLazCustumPasAttribute then begin
+    FCustomWords.Assign(TSynHighlighterLazCustumPasAttribute(Src).FCustomWords);
+    FCustomWordTokenKind := TSynHighlighterLazCustumPasAttribute(Src).FCustomWordTokenKind;
+  end
+  else begin
+    FCustomWords.Clear;
+    FCustomWordTokenKind := tkIdentifier;
+  end;
+end;
+
+procedure TSynHighlighterLazCustumPasAttribute.DoClear;
+begin
+  inherited DoClear;
+  if FCustomWords <> nil then
+    FCustomWords.Clear;
+  FCustomWordTokenKind := tkIdentifier;
+end;
+
+procedure TSynHighlighterLazCustumPasAttribute.Init;
+begin
+  FCustomWords := TStringList.Create;
+  FCustomWordTokenKind := tkIdentifier;
+  TStringList(FCustomWords).OnChange := @DoWordsChanged;
+  inherited Init;
+end;
+
+destructor TSynHighlighterLazCustumPasAttribute.Destroy;
+begin
+  inherited Destroy;
+  FCustomWords.Destroy;
+end;
+
 { TIDESynPasSyn }
+
+procedure TIDESynPasSyn.DoBuildCustomPasAttr(Sender: TObject);
+var
+  c, i: Integer;
+begin
+  c := 0;
+  for i := 0 to 9 do
+    if FCustomAttribs[i].IsEnabled and
+       (trim(FCustomAttribs[i].CustomWords.Text) <> '')
+    then
+      inc(c);
+
+  CustomTokenCount := c;
+  c := 0;
+  for i := 0 to 9 do
+    if FCustomAttribs[i].IsEnabled and
+       (trim(FCustomAttribs[i].CustomWords.Text) <> '')
+    then begin
+      CustomTokens[c].Markup.Assign(FCustomAttribs[i]);
+      CustomTokens[c].MatchTokenKinds := [FCustomAttribs[i].CustomWordTokenKind];
+      CustomTokens[c].Tokens.Assign(FCustomAttribs[i].CustomWords);
+      inc(c);
+    end;
+
+
+  DefHighlightChange(Sender);
+end;
 
 function TIDESynPasSyn.GetFinalizationLine: Integer;
 begin
@@ -1975,6 +2076,19 @@ begin
       TIDESynHighlighterPasRangeList(CurrentRanges).FFinalizationLine := LineIndex  + 1;
   end;
   Result := inherited;
+end;
+
+constructor TIDESynPasSyn.Create(AOwner: TComponent);
+var
+  i: Integer;
+begin
+  inherited Create(AOwner);
+
+  for i := 0 to 9 do begin
+    FCustomAttribs[i] := TSynHighlighterLazCustumPasAttribute.Create('Custom '+IntToStr(i), 'CustomToken_'+IntToStr(i));
+    AddAttribute(FCustomAttribs[i]);
+    FCustomAttribs[i].OnChange := @DoBuildCustomPasAttr;
+  end;
 end;
 
 procedure TIDESynPasSyn.SetLine(const NewValue: string; LineNumber: Integer);

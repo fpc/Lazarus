@@ -169,6 +169,7 @@ type
 
     procedure AssignFrom(Src: TLazSynCustomTextAttributes); override;
     procedure DoChange; override;
+    procedure Init; virtual;
     property ConstName: string read FConstName write FConstName; // internal accessor
   public
     constructor Create;
@@ -1290,9 +1291,15 @@ begin
     fOnChange(Self);
 end;
 
+procedure TSynHighlighterAttributes.Init;
+begin
+  //
+end;
+
 constructor TSynHighlighterAttributes.Create;
 begin
   inherited Create;
+  Init;
   InternalSaveDefaultValues;
 end;
 

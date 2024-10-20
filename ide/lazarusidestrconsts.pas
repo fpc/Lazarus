@@ -6291,6 +6291,9 @@ resourcestring
   optDispGutterNoCurrentLineColor = 'No current line color';
   optDispGutterUseCurrentLineColor = 'Use current line color';
   optDispGutterUseCurrentLineNumberColor = 'Use current line number color';
+  dlgMatchWords = 'Match words';
+  dlgKeyWord = 'KeyWord';
+  dlgModifier = 'Modifier';
 
 implementation
 

@@ -10,7 +10,7 @@ uses
   LCLIntf, Forms, StdCtrls, ExtCtrls, Graphics, GraphUtil,
   ColorBox, Dialogs, Menus, Spin,
   // SynEdit
-  SynEditTypes, SynTextDrawer,
+  SynEditTypes, SynTextDrawer, SynHighlighterPas,
   // IdeConfig
   EnvironmentOpts,
   // IDE
@@ -25,9 +25,20 @@ type
     BackPriorSpin: TSpinEdit;
     BackGroundColorBox: TColorBox;
     BackGroundLabel: TLabel;
-    ColumnPosBevel: TPanel;
+    dropCustomWordKind: TComboBox;
     ForePriorLabel: TLabel;
     ForePriorSpin: TSpinEdit;
+    lbFiller1: TLabel;
+    lbCustomWords: TLabel;
+    lbFiller10: TLabel;
+    lbFiller2: TLabel;
+    lbFiller3: TLabel;
+    lbFiller4: TLabel;
+    lbFiller5: TLabel;
+    lbFiller6: TLabel;
+    lbFiller7: TLabel;
+    lbFiller8: TLabel;
+    lbFiller9: TLabel;
     lblInfo: TLabel;
     MarkupFoldStyleBox: TComboBox;
     MarkupFoldAlphaSpin: TSpinEdit;
@@ -45,6 +56,34 @@ type
     ForeAlphaLabel: TLabel;
     BackAlphaLabel: TLabel;
     FrameAlphaLabel: TLabel;
+    edCustomWord: TMemo;
+    Panel1: TPanel;
+    Panel10: TPanel;
+    Panel11: TPanel;
+    Panel12: TPanel;
+    Panel13: TPanel;
+    Panel14: TPanel;
+    Panel15: TPanel;
+    Panel16: TPanel;
+    Panel17: TPanel;
+    Panel18: TPanel;
+    Panel19: TPanel;
+    Panel2: TPanel;
+    Panel20: TPanel;
+    Panel21: TPanel;
+    Panel22: TPanel;
+    pnlWords: TPanel;
+    Panel3: TPanel;
+    Panel4: TPanel;
+    Panel5: TPanel;
+    Panel6: TPanel;
+    Panel7: TPanel;
+    Panel8: TPanel;
+    Panel9: TPanel;
+    pnlFrameHost2: TPanel;
+    pnlFrameHost1: TPanel;
+    pnlForegroundName: TPanel;
+    pnlBackgroundName: TPanel;
     pnlUnderline: TPanel;
     pnlBold: TPanel;
     pnlItalic: TPanel;
@@ -68,6 +107,8 @@ type
     TextUnderlineRadioPanel: TPanel;
     ForeGroundLabel: TLabel;
     ForeGroundUseDefaultCheckBox: TCheckBox;
+    procedure dropCustomWordKindChange(Sender: TObject);
+    procedure edCustomWordChange(Sender: TObject);
     procedure GeneralAlphaSpinOnChange(Sender: TObject);
     procedure GeneralAlphaSpinOnEnter(Sender: TObject);
     procedure GeneralColorBoxOnChange(Sender: TObject);
@@ -199,6 +240,25 @@ begin
   DoChanged;
 end;
 
+procedure TSynColorAttrEditor.edCustomWordChange(Sender: TObject);
+begin
+  if (FCurHighlightElement = nil) then
+    exit;
+
+  FCurHighlightElement.CustomWords.Text := trim(edCustomWord.Text);
+end;
+
+procedure TSynColorAttrEditor.dropCustomWordKindChange(Sender: TObject);
+begin
+  case dropCustomWordKind.ItemIndex of
+    0: FCurHighlightElement.CustomWordTokenKind := tkIdentifier;
+    1: FCurHighlightElement.CustomWordTokenKind := tkKey;
+    2: FCurHighlightElement.CustomWordTokenKind := tkModifier;
+    3: FCurHighlightElement.CustomWordTokenKind := tkNumber;
+    4: FCurHighlightElement.CustomWordTokenKind := tkSymbol;
+  end;
+end;
+
 procedure TSynColorAttrEditor.GeneralAlphaSpinOnEnter(Sender: TObject);
 begin
   UpdatingColor := True;
@@ -278,29 +338,19 @@ end;
 
 procedure TSynColorAttrEditor.DoResized;
 var
-  S: TSpinEdit;
+  EdCustWidth: Integer;
 begin
-  S := FramePriorSpin;
-  if not S.Visible then
-    S := FrameAlphaSpin;
-  if Width > S.Left + S.Width + FrameStyleBox.Width + FrameEdgesBox.Width + 15 then
-  begin
-    //FrameEdgesBox.AnchorSide[akTop].Control := S;
-    FrameEdgesBox.AnchorSide[akTop].Side := asrTop;
-    FrameEdgesBox.AnchorSide[akLeft].Control := S;
-    FrameEdgesBox.AnchorSide[akLeft].Side := asrBottom;
-    FrameEdgesBox.BorderSpacing.Top := 0;
-    FrameEdgesBox.BorderSpacing.Left := 6;
-    MarkupFoldColorBox.AnchorSide[akTop].Control := FrameColorBox;
+  EdCustWidth := 0;
+  if edCustomWord.Visible then
+    EdCustWidth := edCustomWord.Width;
+
+  if Width > Panel1.Width + EdCustWidth - pnlFrameHost1.Width + Max(pnlFrameHost1.Width, pnlFrameHost2.Width) + 15 then begin
+    FrameEdgesBox.Parent := pnlFrameHost1;
+    FrameStyleBox.Parent := pnlFrameHost1;
   end
   else begin
-    //FrameEdgesBox.AnchorSide[akTop].Control := FrameColorBox;
-    FrameEdgesBox.AnchorSide[akTop].Side := asrBottom;
-    FrameEdgesBox.AnchorSide[akLeft].Control := FrameColorBox;
-    FrameEdgesBox.AnchorSide[akLeft].Side := asrTop;
-    FrameEdgesBox.BorderSpacing.Top := 3;
-    FrameEdgesBox.BorderSpacing.Left := 0;
-    MarkupFoldColorBox.AnchorSide[akTop].Control := FrameEdgesBox;
+    FrameEdgesBox.Parent := pnlFrameHost2;
+    FrameStyleBox.Parent := pnlFrameHost2;
   end;
 end;
 
@@ -432,37 +482,14 @@ end;
 
 procedure TSynColorAttrEditor.pnlElementAttributesResize(Sender: TObject);
 var
-  MinAnchor: TControl;
-  MinWidth: Integer;
-  S: TSpinEdit;
-
-  procedure CheckControl(Other: TControl);
-  var w,h: Integer;
-  begin
-    if not Other.Visible then exit;
-    h:=0;
-    w:=0;
-    Other.GetPreferredSize(w,h);
-    if w <= MinWidth then exit;
-    MinAnchor := Other;
-    MinWidth := w;
-  end;
+  EdCustWidth: Integer;
 begin
-  MinWidth := -1;
-  MinAnchor := ForeGroundLabel;
-  CheckControl(ForeGroundLabel);
-  CheckControl(BackGroundLabel);
-  CheckControl(ForeGroundUseDefaultCheckBox);
-  CheckControl(BackGroundUseDefaultCheckBox);
-  CheckControl(FrameColorUseDefaultCheckBox);
-  CheckControl(MarkupFoldColorUseDefaultCheckBox);
+  EdCustWidth := 0;
+  if edCustomWord.Visible then
+    EdCustWidth := edCustomWord.Width;
 
-  ColumnPosBevel.AnchorSide[akLeft].Control := MinAnchor;
-  Constraints.MinHeight := lblInfo.Top + lblInfo.Height;
-  S := BackPriorSpin;
-  if not S.Visible then
-    S := BackAlphaSpin;
-  Constraints.MinWidth := S.Left + S.Width;
+  //Constraints.MinHeight := lblInfo.Top + lblInfo.Height;
+  Constraints.MinWidth := Panel1.Width + EdCustWidth - pnlFrameHost1.Width + 15;
 end;
 
 procedure TSynColorAttrEditor.TextStyleRadioOnChange(Sender: TObject);
@@ -743,10 +770,24 @@ begin
       TextUnderlineCheckBox.Checked := fsUnderline in FCurHighlightElement.Style;
     end;
 
-    lblInfo.Visible := False;
+    lblInfo.Caption := '';
     if IsAhaElement(FCurHighlightElement, ahaCaretColor) then begin
       lblInfo.Caption := dlgCaretColorInfo;
       lblInfo.Visible := True;
+    end;
+
+    // custom words
+    lbCustomWords.Visible      := hafCustomWords in FCurHighlightElement.Features;
+    edCustomWord.Visible       := hafCustomWords in FCurHighlightElement.Features;
+    dropCustomWordKind.Visible := hafCustomWords in FCurHighlightElement.Features;
+    edCustomWord.Text := FCurHighlightElement.CustomWords.Text;
+
+    case FCurHighlightElement.CustomWordTokenKind of
+      tkIdentifier: dropCustomWordKind.ItemIndex := 0;
+      tkKey:        dropCustomWordKind.ItemIndex := 1;
+      tkModifier:   dropCustomWordKind.ItemIndex := 2;
+      tkNumber:     dropCustomWordKind.ItemIndex := 3;
+      tkSymbol:     dropCustomWordKind.ItemIndex := 4;
     end;
 
     UpdatingColor := False;
@@ -792,7 +833,6 @@ end;
 procedure TSynColorAttrEditor.Setup;
 begin
   UpdatingColor := False;
-  ColumnPosBevel.Height := 1;
   ForeGroundLabel.Caption := dlgForecolor;
   BackGroundLabel.Caption := dlgBackColor;
   ForeGroundUseDefaultCheckBox.Caption := dlgForecolor;
@@ -822,11 +862,19 @@ begin
   TextUnderlineRadioOff.Caption := dlgEdOff;
   TextUnderlineRadioInvert.Caption := dlgEdInvert;
 
-  Constraints.MinHeight := max(Constraints.MinHeight,
-                               pnlUnderline.Top + pnlUnderline.Height +
-                               Max(pnlUnderline.BorderSpacing.Around,
-                                   pnlUnderline.BorderSpacing.Bottom)
-                              );
+  lbCustomWords.Caption := dlgMatchWords;
+  dropCustomWordKind.Items.Add(lisCodeToolsOptsIdentifier);
+  dropCustomWordKind.Items.Add(dlgKeyWord);
+  dropCustomWordKind.Items.Add(dlgModifier);
+  dropCustomWordKind.Items.Add(lisCodeToolsOptsNumber);
+  dropCustomWordKind.Items.Add(lisCodeToolsOptsSymbol);
+  dropCustomWordKind.ItemIndex := 0;
+
+  //Constraints.MinHeight := max(Constraints.MinHeight,
+  //                             pnlUnderline.Top + pnlUnderline.Height +
+  //                             Max(pnlUnderline.BorderSpacing.Around,
+  //                                 pnlUnderline.BorderSpacing.Bottom)
+  //                            );
 end;
 
 end.

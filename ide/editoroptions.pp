@@ -100,7 +100,8 @@ type
     ( hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior,
       hafStyle, hafStyleMask,
       hafFrameStyle, hafFrameEdges,
-      hafMarkupFoldColor // for the MarkupFoldColor module
+      hafMarkupFoldColor, // for the MarkupFoldColor module
+      hafCustomWords
     );
   TColorSchemeAttributeFeatures = set of TColorSchemeAttributeFeature;
 
@@ -283,7 +284,7 @@ type
 
   { TColorSchemeAttribute }
 
-  TColorSchemeAttribute = class(TSynHighlighterAttributesModifier)
+  TColorSchemeAttribute = class(TSynHighlighterLazCustumPasAttribute)
   private
     FFeatures: TColorSchemeAttributeFeatures;
     FGroup: TAhaGroupName;
@@ -6985,6 +6986,10 @@ begin
       TSynHighlighterAttributesModifier(aDest).ForeAlpha := Src.ForeAlpha;
       TSynHighlighterAttributesModifier(aDest).BackAlpha := Src.BackAlpha;
       TSynHighlighterAttributesModifier(aDest).FrameAlpha := Src.FrameAlpha;
+      if aDest is TSynHighlighterLazCustumPasAttribute then begin
+        TSynHighlighterLazCustumPasAttribute(aDest).CustomWords.Assign(CustomWords);
+        TSynHighlighterLazCustumPasAttribute(aDest).CustomWordTokenKind := CustomWordTokenKind;
+      end;
     end;
 
     if hafPrior in Src.Features then begin
@@ -7026,6 +7031,8 @@ begin
   inherited Assign(Src);
   FFeatures := [hafBackColor, hafForeColor, hafFrameColor,
                 hafStyle, hafFrameStyle, hafFrameEdges, hafPrior];
+  if Src is TSynHighlighterLazCustumPasAttribute then
+    FFeatures := FFeatures + [hafCustomWords];
   if Src is TSynHighlighterAttributesModifier then
     FFeatures := FFeatures + [hafAlpha, hafStyleMask];
 
@@ -7103,8 +7110,10 @@ begin
   Assert(Version > 4, 'TColorSchemeAttribute.LoadFromXml: Version ('+IntToStr(Version)+' < 5.');
   if StoredName = '' then exit;
   Path := aPath + StrToValidXMLName(StoredName) + '/';
-  if aXMLConfig.HasPath(Path, False) then
-    aXMLConfig.ReadObject(Path, Self, Defaults)
+  if aXMLConfig.HasPath(Path, False) then begin
+    aXMLConfig.ReadObject(Path, Self, Defaults);
+    CustomWords.Text := aXMLConfig.GetValue(Path+'CustomWords', '');
+  end
   else begin
     if (Defaults <> Self) and (Defaults <> nil) then begin
       // do not copy (Stored)Name or Features ...
@@ -7122,14 +7131,16 @@ begin
       BoldPriority      := Defaults.BoldPriority;
       ItalicPriority    := Defaults.ItalicPriority;
       UnderlinePriority := Defaults.UnderlinePriority;
+      CustomWords.Text  := Defaults.CustomWords.Text;
     end;
   end;
 end;
 
-procedure TColorSchemeAttribute.SaveToXml(aXMLConfig: TRttiXMLConfig;
-  const aPath: String; Defaults: TColorSchemeAttribute);
+procedure TColorSchemeAttribute.SaveToXml(aXMLConfig: TRttiXMLConfig; const aPath: String;
+  Defaults: TColorSchemeAttribute);
 var
   AttriName: String;
+  Path: String;
 begin
   if StoredName = '' then
     exit;
@@ -7138,7 +7149,9 @@ begin
   if AttriName <> '' then
     aXMLConfig.DeletePath(aPath + StrToValidXMLName(AttriName));
 
-  aXMLConfig.WriteObject(aPath + StrToValidXMLName(StoredName) + '/', Self, Defaults);
+  Path := aPath + StrToValidXMLName(StoredName) + '/';
+  aXMLConfig.WriteObject(Path, Self, Defaults);
+  aXMLConfig.SetDeleteValue(Path + 'CustomWords', CustomWords.Text, '');
 end;
 
 { TColorSchemeLanguage }
@@ -7258,6 +7271,9 @@ begin
       csa.Assign(hla);
       csa.Group := agnLanguage;
       if (FHighlighter <> nil) and (FHighlighter is TNonSrcIDEHighlighter) then
+        if hla is TSynHighlighterLazCustumPasAttribute then
+          csa.Features := [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafStyle, hafStyleMask, hafCustomWords]
+        else
         if hla is TSynHighlighterAttributesModifier then
           csa.Features := [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafStyle, hafStyleMask]
         else

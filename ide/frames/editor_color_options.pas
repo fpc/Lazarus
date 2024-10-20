@@ -1176,11 +1176,18 @@ begin
         agnDefault, //  continue; // default is currently not shown
         agnLanguage:
           begin
-            if FIsEditingDefaults then
-              ParentName := AdditionalHighlightGroupNames[agnDefault]
-            else
-              ParentName := FCurrentHighlighter.LanguageName;
             ParentNode := ColorElementTree.Items.GetFirstNode;
+            if FIsEditingDefaults then begin
+              ParentName := AdditionalHighlightGroupNames[agnDefault];
+            end
+            else
+            if hafCustomWords in Attr.Features then begin
+              ParentName := FCurrentHighlighter.LanguageName + ' (Custom)';
+              ParentNode := ColorElementTree.Items.FindTopLvlNode(ParentName);
+            end
+            else begin
+              ParentName := FCurrentHighlighter.LanguageName;
+            end;
           end;
         else
           begin
