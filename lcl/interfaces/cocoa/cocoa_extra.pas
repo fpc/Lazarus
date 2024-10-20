@@ -698,6 +698,38 @@ const
   NSTableViewAnimationSlideLeft  = $30; // Animates a row in by sliding from the left. Animates a row out by sliding towards the left.
   NSTableViewAnimationSlideRight = $40; // Animates a row in by sliding from the right. Animates a row out by sliding towards the right.
 
+{ NSVisualEffectView }
+// Taken from macOS 10.10 headers at https://github.com/genericptr/MacOS_10_10
+type
+  NSVisualEffectMaterial = NSInteger;
+  NSVisualEffectMaterialPtr = ^NSVisualEffectMaterial;
+const
+  NSVisualEffectMaterialAppearanceBased = 0 deprecated;
+  NSVisualEffectMaterialLight = 1 deprecated;
+  NSVisualEffectMaterialDark = 2 deprecated;
+  NSVisualEffectMaterialTitlebar = 3;
+  NSVisualEffectMaterialSelection = 4;
+  // 10.11
+  NSVisualEffectMaterialMenu = 5;
+  NSVisualEffectMaterialPopover = 6;
+  NSVisualEffectMaterialSidebar =  7;
+  NSVisualEffectMaterialMediumLight = 8 deprecated;
+  NSVisualEffectMaterialUltraDark = 9 deprecated;
+  // 10.14
+  NSVisualEffectMaterialHeaderView = 10;
+  NSVisualEffectMaterialSheet = 11;
+  NSVisualEffectMaterialWindowBackground = 12;
+  NSVisualEffectMaterialHUDWindow = 13;
+  NSVisualEffectMaterialFullScreenUI = 15;
+  NSVisualEffectMaterialToolTip = 17;
+  NSVisualEffectMaterialContentBackground = 18;
+  NSVisualEffectMaterialUnderWindowBackground = 21;
+  NSVisualEffectMaterialUnderPageBackground = 22;
+type
+  NSColorFix = objccategory external (NSColor)
+    class function linkColor: NSColor; message 'linkColor';
+  end;
+
 
 // all of the sudden those are gone! in FPC 3.2.0rc
 const
