@@ -9011,6 +9011,7 @@ procedure TMainIDE.UpdateCaption;
 
 var
   rev, NewCaption, NewTitle, ProjectName, DirName, CustomnCaption: String;
+  OldMarkUnhandledMacros: boolean;
 begin
   if MainIDEBar = nil then Exit;
   if ToolStatus = itExiting then Exit;
@@ -9046,11 +9047,13 @@ begin
   if (GlobalMacroList <> nil) then begin
     CustomnCaption := EnvironmentGuiOpts.Desktop.IDETitleBarCustomText;
     if CustomnCaption <> '' then begin
-      if not GlobalMacroList.SubstituteStr(CustomnCaption) then
-        CustomnCaption := EnvironmentGuiOpts.Desktop.IDETitleBarCustomText;
+      OldMarkUnhandledMacros := GlobalMacroList.MarkUnhandledMacros;
+      GlobalMacroList.MarkUnhandledMacros := false;
+      GlobalMacroList.SubstituteStr(CustomnCaption);
       if CustomnCaption <> '' then begin
         NewCaption := AddToCaption(NewCaption, CustomnCaption);
       end;
+      GlobalMacroList.MarkUnhandledMacros := OldMarkUnhandledMacros;
     end;
   end;
 
