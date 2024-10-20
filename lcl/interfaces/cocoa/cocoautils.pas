@@ -34,6 +34,7 @@ function GetNSSize(width, height: CGFloat): NSSize; inline;
 
 function GetNSPoint(x,y: single): NSPoint; inline;
 function LCLToNSPoint(APt: TPoint; ParentHeight: Single): NSPoint;
+function NSPointToLCL(APt: NSPoint; ParentHeight: Single): TPoint;
 
 function GetCGRect(x1, y1, x2, y2: Integer): CGRect; inline;
 function GetCGRectSorted(X1, Y1, X2, Y2: Integer): CGRect;
@@ -71,6 +72,7 @@ function NSStringUtf8(const s: String): NSString;
 function StrToNSString(const s: string; AutoRelease: Boolean = true): NSString;
 function StrToNSStr(const s: string; AutoRelease: Boolean = true): NSString; inline;
 function NSStringToString(ns: NSString): String;
+function NSStringToUnicodeString(ns: NSString): UnicodeString;
 
 function NSStringRemoveLineBreak(const str: NSString): NSString;
 function StringRemoveAcceleration(const str: String): String;
@@ -119,7 +121,7 @@ const
   DEFAULT_CFSTRING_ENCODING = kCFStringEncodingUTF8;
 
 function CFStringToStr(AString: CFStringRef; Encoding: CFStringEncoding = DEFAULT_CFSTRING_ENCODING): String;
-function CFStringToString(AString: CFStringRef): String;
+function CFStringToString(AString: CFStringRef): String; inline;
 
 function VirtualKeyCodeToMacString(AKey: Word): NSString;
 
@@ -712,6 +714,12 @@ begin
   Result.Y := ParentHeight - APt.Y;
 end;
 
+function NSPointToLCL(APt: NSPoint; ParentHeight: Single): TPoint;
+begin
+  Result.X := Round(APt.X);
+  Result.Y := Round(ParentHeight - APt.Y);
+end;
+
 function GetNSRect(x, y, width, height: Integer): NSRect;
 begin
   with Result do
@@ -983,6 +991,12 @@ begin
   Result := CFStringToStr(CFStringRef(ns));
 end;
 
+function NSStringToUnicodeString(ns: NSString): UnicodeString;
+begin
+  SetLength(Result, ns.length);
+  ns.getCharacters_range(unicharPtr(Result), NSMakeRange(0, ns.length));
+end;
+
 function NSStringRemoveLineBreak(const str: NSString): NSString;
 begin
   Result:= str.stringByReplacingOccurrencesOfString_withString( NSSTR_LINE_FEED, NSString.string_ );
@@ -1229,24 +1243,17 @@ begin
     Exit;
   end;
 
-  // Try the quick way first
-  Str := CFStringGetCStringPtr(AString, Encoding);
-  if Str <> nil then
-    Result := PChar(Str)
-  else
-  begin
-    // if that doesn't work this will
-    StrRange.location := 0;
-    StrRange.length := CFStringGetLength(AString);
+  // Don't use CFStringGetCStringPtr since it doens't support embedded #0
+  StrRange.location := 0;
+  StrRange.length := CFStringGetLength(AString);
 
+  CFStringGetBytes(AString, StrRange, Encoding,
+    Ord('?'), False, nil, 0, StrSize);
+  SetLength(Result, StrSize);
+
+  if StrSize > 0 then
     CFStringGetBytes(AString, StrRange, Encoding,
-      Ord('?'), False, nil, 0, StrSize);
-    SetLength(Result, StrSize);
-
-    if StrSize > 0 then
-      CFStringGetBytes(AString, StrRange, Encoding,
-        Ord('?'), False, @Result[1], StrSize, StrSize);
-  end;
+      Ord('?'), False, @Result[1], StrSize, StrSize);
 end;
 
 {------------------------------------------------------------------------------
