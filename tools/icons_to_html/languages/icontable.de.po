@@ -24,13 +24,15 @@ msgid "Name"
 msgstr "Name"
 
 #: main.rsnomatchingpngimagefilesfoundin
-#, object-pascal-format
-msgid "No matching png image files found in %s"
+#, object-pascal-format, fuzzy
+#| msgid "No matching png image files found in %s"
+msgid "No matching PNG image files found in %s"
 msgstr "Keine passenden png-Bilddateien gefunden in %s"
 
 #: main.rsnopngimagefilesfoundin
-#, object-pascal-format
-msgid "No png image files found in %s"
+#, object-pascal-format, fuzzy
+#| msgid "No png image files found in %s"
+msgid "No PNG image files found in %s"
 msgstr "Keine png-Bilddateien gefunden in %s"
 
 #: main.rssavedas
@@ -43,7 +45,9 @@ msgid "Size"
 msgstr "Größe"
 
 #: main.rstheconfigurationcouldnotbesaved
-msgid "The configuration could not be saved."
+#, fuzzy
+#| msgid "The configuration could not be saved."
+msgid "Configuration file could not be saved."
 msgstr "Die Konfiguration konnte nicht gespeichert werden."
 
 #: main.rsthefilecouldnotbesavedas
@@ -52,9 +56,13 @@ msgid "The file could not be saved as: %s"
 msgstr "Die Datei konnte nicht gespeichert werden als: %s"
 
 #: main.rsthefolderdoesnotexist
-#, object-pascal-format
+#, object-pascal-format, fuzzy
+#| msgid ""
+#| "The folder [%s] does not exist or is currently not available.\n"
+#| "\n"
+#| "Should it be removed from the list?"
 msgid ""
-"The folder [%s] does not exist or is currently not available.\n"
+"Folder \"%s\" does not exist or is currently not available.\n"
 "\n"
 "Should it be removed from the list?"
 msgstr ""
@@ -63,7 +71,9 @@ msgstr ""
 "Soll er von der Liste gestrichen werden?"
 
 #: main.rsthetempfilecouldnotbedeleted
-msgid "The temp file could not be deleted."
+#, fuzzy
+#| msgid "The temp file could not be deleted."
+msgid "Temporary file could not be deleted."
 msgstr "Die Temporär-Datei konnte nicht gelöscht werden."
 
 #: main.rsthisfoldercontains
@@ -75,16 +85,14 @@ msgstr "Dieser Ordner enthält %0:d Icons in %1:d Icon-Gruppen mit %2:d Icon-Gr�
 msgid "Close"
 msgstr "Beenden"
 
-#: tmainform.bbtnclose.hint
-msgid "Closes the application"
-msgstr "Beendet das Programm"
-
 #: tmainform.bbtncreatehtml.caption
 msgid "Create HTML"
 msgstr "HTML erzeugen"
 
 #: tmainform.bbtncreatehtml.hint
-msgid "Create a html page for the images found in the selected directory"
+#, fuzzy
+#| msgid "Create a html page for the images found in the selected directory"
+msgid "Create HTML page for images found in the selected directory"
 msgstr "Erzeugt den HTML-Code für die im ausgewählten Ordner gefundenen Icons"
 
 #: tmainform.bbtnpreview.caption
@@ -96,7 +104,9 @@ msgid "Save"
 msgstr "Speichern"
 
 #: tmainform.bbtnsave.hint
-msgid "Save the generated html text as file \"IconTable.html\" in the specified folder"
+#, fuzzy
+#| msgid "Save the generated html text as file \"IconTable.html\" in the specified folder"
+msgid "Save created HTML page as \"IconTable.html\" file in the specified folder"
 msgstr "Speichert den generierten HTML-Code in der Datei \"IconTable.html\" im angegebenen Ordner"
 
 #: tmainform.caption
@@ -108,11 +118,15 @@ msgid "Dark Mode"
 msgstr "Dunkler Modus"
 
 #: tmainform.cbdarkmode.hint
-msgid "Creates an html page with dark background"
+#, fuzzy
+#| msgid "Creates an html page with dark background"
+msgid "Create HTML page with dark background"
 msgstr "Erzeugt eine HTML-Seite mit dunklem Hintergrund"
 
 #: tmainform.directoryedit.hint
-msgid "Folder with images for which the html preview should be created"
+#, fuzzy
+#| msgid "Folder with images for which the html preview should be created"
+msgid "Folder with images for which the HTML preview should be created"
 msgstr "Ordner mit den Bildern, für die der HTML-Code erzeugt werden soll"
 
 #: tmainform.sbtnlastdirs.hint

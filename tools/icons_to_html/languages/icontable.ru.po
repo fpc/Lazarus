@@ -1,0 +1,117 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"X-Generator: Poedit 2.3.1\n"
+
+#: main.rserror
+msgid "Error"
+msgstr "Ошибка"
+
+#: main.rsinformation
+msgid "Information"
+msgstr "Сведения"
+
+#: main.rsname
+msgid "Name"
+msgstr "Имя"
+
+#: main.rsnomatchingpngimagefilesfoundin
+#, object-pascal-format
+msgid "No matching PNG image files found in %s"
+msgstr "Не найдено соответствующих файлов изображений PNG в %s"
+
+#: main.rsnopngimagefilesfoundin
+#, object-pascal-format
+msgid "No PNG image files found in %s"
+msgstr "Не найдено файлов изображений PNG в %s"
+
+#: main.rssavedas
+#, object-pascal-format
+msgid "Saved as: %s"
+msgstr "Сохранено в %s"
+
+#: main.rssize
+msgid "Size"
+msgstr "Размер"
+
+#: main.rstheconfigurationcouldnotbesaved
+msgid "Configuration file could not be saved."
+msgstr "Невозможно сохранить файл настройки."
+
+#: main.rsthefilecouldnotbesavedas
+#, object-pascal-format
+msgid "The file could not be saved as: %s"
+msgstr "Невозможно сохранить файл %s"
+
+#: main.rsthefolderdoesnotexist
+#, object-pascal-format
+msgid ""
+"Folder \"%s\" does not exist or is currently not available.\n"
+"\n"
+"Should it be removed from the list?"
+msgstr ""
+"Каталог \"%s\" не существует либо в настоящий момент недоступен.\n"
+"\n"
+"Удалить его из списка?"
+
+#: main.rsthetempfilecouldnotbedeleted
+msgid "Temporary file could not be deleted."
+msgstr "Невозможно удалить временный файл."
+
+#: main.rsthisfoldercontains
+#, object-pascal-format
+msgid "This folder contains %0:d icons in %1:d icon groups with %2:d icon sizes."
+msgstr "Этот каталог содержит значки в количестве %0:d шт. (групп: %1:d; размеров: %2:d)."
+
+#: tmainform.bbtnclose.caption
+msgid "Close"
+msgstr "Закрыть"
+
+#: tmainform.bbtncreatehtml.caption
+msgid "Create HTML"
+msgstr "Создать HTML"
+
+#: tmainform.bbtncreatehtml.hint
+msgid "Create HTML page for images found in the selected directory"
+msgstr "Создать страницу HTML для изображений из выбранного каталога"
+
+#: tmainform.bbtnpreview.caption
+msgid "Preview"
+msgstr "Предпросмотр"
+
+#: tmainform.bbtnsave.caption
+msgid "Save"
+msgstr "Сохранить"
+
+#: tmainform.bbtnsave.hint
+msgid "Save created HTML page as \"IconTable.html\" file in the specified folder"
+msgstr "Сохранить созданную страницу HTML в файле \"IconTable.html\" указанного каталога"
+
+#: tmainform.caption
+msgid "IconTable"
+msgstr "Таблица значков IconTable"
+
+#: tmainform.cbdarkmode.caption
+msgid "Dark Mode"
+msgstr "Тёмный режим"
+
+#: tmainform.cbdarkmode.hint
+msgid "Create HTML page with dark background"
+msgstr "Создать страницу HTML с тёмным фоном"
+
+#: tmainform.directoryedit.hint
+msgid "Folder with images for which the HTML preview should be created"
+msgstr "Каталог с изображениями для создания страницы предпросмотра HTML"
+
+#: tmainform.sbtnlastdirs.hint
+msgid "Last used"
+msgstr "Недавние"
+

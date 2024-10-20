@@ -15,12 +15,12 @@ msgstr ""
 
 #: main.rsnomatchingpngimagefilesfoundin
 #, object-pascal-format
-msgid "No matching png image files found in %s"
+msgid "No matching PNG image files found in %s"
 msgstr ""
 
 #: main.rsnopngimagefilesfoundin
 #, object-pascal-format
-msgid "No png image files found in %s"
+msgid "No PNG image files found in %s"
 msgstr ""
 
 #: main.rssavedas
@@ -33,7 +33,7 @@ msgid "Size"
 msgstr ""
 
 #: main.rstheconfigurationcouldnotbesaved
-msgid "The configuration could not be saved."
+msgid "Configuration file could not be saved."
 msgstr ""
 
 #: main.rsthefilecouldnotbesavedas
@@ -44,13 +44,13 @@ msgstr ""
 #: main.rsthefolderdoesnotexist
 #, object-pascal-format
 msgid ""
-"The folder [%s] does not exist or is currently not available.\n"
+"Folder \"%s\" does not exist or is currently not available.\n"
 "\n"
 "Should it be removed from the list?"
 msgstr ""
 
 #: main.rsthetempfilecouldnotbedeleted
-msgid "The temp file could not be deleted."
+msgid "Temporary file could not be deleted."
 msgstr ""
 
 #: main.rsthisfoldercontains
@@ -62,16 +62,12 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
-#: tmainform.bbtnclose.hint
-msgid "Closes the application"
-msgstr ""
-
 #: tmainform.bbtncreatehtml.caption
 msgid "Create HTML"
 msgstr ""
 
 #: tmainform.bbtncreatehtml.hint
-msgid "Create a html page for the images found in the selected directory"
+msgid "Create HTML page for images found in the selected directory"
 msgstr ""
 
 #: tmainform.bbtnpreview.caption
@@ -83,7 +79,7 @@ msgid "Save"
 msgstr ""
 
 #: tmainform.bbtnsave.hint
-msgid "Save the generated html text as file \"IconTable.html\" in the specified folder"
+msgid "Save created HTML page as \"IconTable.html\" file in the specified folder"
 msgstr ""
 
 #: tmainform.caption
@@ -95,11 +91,11 @@ msgid "Dark Mode"
 msgstr ""
 
 #: tmainform.cbdarkmode.hint
-msgid "Creates an html page with dark background"
+msgid "Create HTML page with dark background"
 msgstr ""
 
 #: tmainform.directoryedit.hint
-msgid "Folder with images for which the html preview should be created"
+msgid "Folder with images for which the HTML preview should be created"
 msgstr ""
 
 #: tmainform.sbtnlastdirs.hint
