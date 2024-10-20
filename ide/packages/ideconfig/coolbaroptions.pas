@@ -7,7 +7,7 @@ interface
 uses
   SysUtils, fgl,
   // LazUtils
-  Laz2_XMLCfg,
+  Laz2_XMLCfg, LazLoggerBase,
   // IdeConfig
   ToolBarOptionsBase;
 
@@ -54,19 +54,27 @@ type
     FToolBars: TIDEToolBarOptionList;
     procedure CreateDefaultToolbars;
   public
+    const
+      cDefaultVisible = true;
+      cDefaultWidth = 230;
+      cDefaultGrabStyle = 1;
+      cDefaultGrabWidth = 5;
+      cDefaultBorderstyle = 1;
+  public
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
     procedure Assign(Source: TIDECoolBarOptions);
+    function Equals(Obj: TObject): boolean; override;
     function EqualToolbars(Opts: TIDECoolBarOptions): boolean;
     procedure Load(XMLConfig: TXMLConfig; Path: String);
     procedure Save(XMLConfig: TXMLConfig; Path: String);
   public
-    property Visible: Boolean read FVisible write FVisible;
-    property Width: Integer read FWidth write FWidth;
-    property GrabStyle: Integer read FGrabStyle write FGrabStyle;
-    property GrabWidth: Integer read FGrabWidth write FGrabWidth;
-    property BorderStyle: Integer read FBorderStyle write FBorderStyle;
+    property Visible: Boolean read FVisible write FVisible default cDefaultVisible;
+    property Width: Integer read FWidth write FWidth default cDefaultWidth;
+    property GrabStyle: Integer read FGrabStyle write FGrabStyle default cDefaultGrabStyle;
+    property GrabWidth: Integer read FGrabWidth write FGrabWidth default cDefaultGrabWidth;
+    property BorderStyle: Integer read FBorderStyle write FBorderStyle default cDefaultBorderstyle;
     property ToolBars: TIDEToolBarOptionList read FToolBars;
   end;
 
@@ -138,6 +146,12 @@ constructor TIDECoolBarOptions.Create;
 begin
   inherited Create;
   FToolBars := TIDEToolBarOptionList.Create;
+  FVisible := cDefaultVisible;
+  FWidth := cDefaultWidth;
+  FGrabStyle := cDefaultGrabStyle;
+  FGrabWidth := cDefaultGrabWidth;
+  FBorderStyle := cDefaultBorderstyle;
+  CreateDefaultToolbars;
 end;
 
 destructor TIDECoolBarOptions.Destroy;
@@ -159,6 +173,23 @@ begin
   FGrabWidth := Source.FGrabWidth;
   FBorderStyle := Source.FBorderStyle;
   FToolBars.Assign(Source.FToolBars);
+end;
+
+function TIDECoolBarOptions.Equals(Obj: TObject): boolean;
+var
+  Src: TIDECoolBarOptions;
+begin
+  if Obj is TIDECoolBarOptions then
+  begin
+    Src:=TIDECoolBarOptions(Obj);
+    Result:=(Visible=Src.Visible)
+    and (Width=Src.Width)
+    and (GrabStyle=Src.GrabStyle)
+    and (GrabWidth=Src.GrabWidth)
+    and (BorderStyle=Src.BorderStyle)
+    and EqualToolbars(Src);
+  end else
+    Result:=inherited Equals(Obj);
 end;
 
 function TIDECoolBarOptions.EqualToolbars(Opts: TIDECoolBarOptions): boolean;
@@ -224,11 +255,11 @@ begin
   ToolbarCount := XMLConfig.GetValue(Path + 'Count', 0);
   if ToolBarCount = 0 then  // Old format
     ToolbarCount := XMLConfig.GetValue(Path + 'ToolBarCount/Value', 0);
-  FVisible := XMLConfig.GetValue(Path + 'Visible/Value', True);
-  FWidth := XMLConfig.GetValue(Path + 'Width/Value', 230);
-  FGrabStyle := XMLConfig.GetValue(Path + 'GrabStyle/Value', 1);
-  FGrabWidth := XMLConfig.GetValue(Path + 'GrabWidth/Value', 5);
-  FBorderStyle := XMLConfig.GetValue(Path + 'BorderStyle/Value', 1);
+  FVisible := XMLConfig.GetValue(Path + 'Visible/Value', cDefaultVisible);
+  FWidth := XMLConfig.GetValue(Path + 'Width/Value', cDefaultWidth);
+  FGrabStyle := XMLConfig.GetValue(Path + 'GrabStyle/Value', cDefaultGrabStyle);
+  FGrabWidth := XMLConfig.GetValue(Path + 'GrabWidth/Value', cDefaultGrabWidth);
+  FBorderStyle := XMLConfig.GetValue(Path + 'BorderStyle/Value', cDefaultBorderstyle);
   if ToolBarCount > 0 then
   begin
     FToolBars.Clear;
@@ -253,15 +284,15 @@ begin
   try
     Path := Path + BasePath;
     XMLConfig.DeletePath(Path);
-    XMLConfig.SetDeleteValue(Path + 'Visible/Value', FVisible, True);
-    XMLConfig.SetDeleteValue(Path + 'Width/Value', FWidth, 0);
-    XMLConfig.SetDeleteValue(Path + 'GrabStyle/Value', FGrabStyle, 1);
-    XMLConfig.SetDeleteValue(Path + 'GrabWidth/Value', FGrabWidth, 5);
-    XMLConfig.SetDeleteValue(Path + 'BorderStyle/Value', FBorderStyle, 1);
+    XMLConfig.SetDeleteValue(Path + 'Visible/Value', FVisible, cDefaultVisible);
+    XMLConfig.SetDeleteValue(Path + 'Width/Value', FWidth, cDefaultWidth);
+    XMLConfig.SetDeleteValue(Path + 'GrabStyle/Value', FGrabStyle, cDefaultGrabStyle);
+    XMLConfig.SetDeleteValue(Path + 'GrabWidth/Value', FGrabWidth, cDefaultGrabWidth);
+    XMLConfig.SetDeleteValue(Path + 'BorderStyle/Value', FBorderStyle, cDefaultBorderstyle);
     if EqualToolbars(DefaultOpts) then Exit;
+    XMLConfig.SetDeleteValue(Path + 'Count', FToolBars.Count, 0);
     if FToolBars.Count > 0 then
     begin
-      XMLConfig.SetDeleteValue(Path + 'Count', FToolBars.Count, 0);
       for I := 0 to FToolBars.Count - 1 do
         FToolBars[I].Save(XMLConfig, Path + 'ToolBar' + IntToStr(I+1) + '/');
     end;
@@ -276,11 +307,11 @@ constructor TDefaultCoolBarOptions.Create;
 begin
   inherited Create;
   //coolbar defaults
-  FVisible := True;
-  FWidth := 230;
-  FGrabStyle := 1;
-  FGrabWidth := 5;
-  FBorderStyle := 1;
+  FVisible := cDefaultVisible;
+  FWidth := cDefaultWidth;
+  FGrabStyle := cDefaultGrabStyle;
+  FGrabWidth := cDefaultGrabWidth;
+  FBorderStyle := cDefaultBorderstyle;
   //toolbar defaults
   CreateDefaultToolbars;
 end;
