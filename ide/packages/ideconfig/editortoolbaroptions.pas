@@ -22,6 +22,10 @@ type
     FVisible: Boolean;
     FPosition: string;
   public
+    const
+      cDefaultVisible = true;
+      cDefaultPosition = 'Top';
+  public
     constructor Create;
     //destructor Destroy; override;
     procedure Clear;
@@ -48,18 +52,16 @@ const
 constructor TEditorToolBarOptions.Create;
 begin
   inherited Create;
-  FVisible := True;
+  FVisible := cDefaultVisible;
+  FPosition := cDefaultPosition;
+  CreateDefaults;
 end;
-{
-destructor TEditorToolBarOptions.Destroy;
-begin
-  inherited Destroy;
-end;
-}
+
 procedure TEditorToolBarOptions.Clear;
 begin
   inherited Clear;
-  FVisible := True;
+  FVisible := cDefaultVisible;
+  FPosition := cDefaultPosition;
 end;
 
 function TEditorToolBarOptions.Equals(Opts: TEditorToolBarOptions): boolean;
@@ -94,8 +96,8 @@ begin
   Path := Path + BasePath;
   if XMLConfig.HasPath(Path + 'Count', True) then
   begin
-    FVisible := XMLConfig.GetValue(Path + 'Visible', True);
-    FPosition := XMLConfig.GetValue(Path + 'Position', 'Top');
+    FVisible := XMLConfig.GetValue(Path + 'Visible', cDefaultVisible);
+    FPosition := XMLConfig.GetValue(Path + 'Position', cDefaultPosition);
     LoadButtonNames(XMLConfig, Path);
   end
   else begin
@@ -128,8 +130,8 @@ end;
 procedure TEditorToolBarOptions.Save(XMLConfig: TXMLConfig; Path: String);
 begin
   Path := Path + BasePath;
-  XMLConfig.SetDeleteValue(Path + 'Visible', FVisible, True);
-  XMLConfig.SetDeleteValue(Path + 'Position', FPosition, 'Top');
+  XMLConfig.SetDeleteValue(Path + 'Visible', FVisible, cDefaultVisible);
+  XMLConfig.SetDeleteValue(Path + 'Position', FPosition, cDefaultPosition);
   SaveButtonNames(XMLConfig, Path);
 end;
 
