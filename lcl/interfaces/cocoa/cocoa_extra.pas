@@ -469,6 +469,8 @@ type
     function backingScaleFactor: CGFloat; message 'backingScaleFactor';
     function isRestorable: LCLObjCBoolean; message 'isRestorable';
     procedure setRestorable(ARestore: LCLObjCBoolean); message 'setRestorable:';
+    // 10.11
+    procedure performWindowDragWithEvent(event: NSEvent); message 'performWindowDragWithEvent:';
     // 10.12
     procedure setTabbingMode(amode: NSWindowTabbingMode); message 'setTabbingMode:';
     function tabbingMode: NSWindowTabbingMode; message 'tabbingMode';
