@@ -15,24 +15,48 @@ msgstr ""
 msgid "Error"
 msgstr "Fehler"
 
+#: main.rsfreelyavailable
+msgid "freely available, no restrictions in usage"
+msgstr "Frei verwendbar ohne Einschränkungen"
+
+#: main.rsimageswereprovidedby
+#, object-pascal-format
+msgid "The images were kindly provided by Roland Hahn (%s)."
+msgstr "Die Bilder wurden freundlicherweise von Roland Hahn zur Verfügung gestellt (%s)."
+
 #: main.rsinformation
 msgid "Information"
 msgstr "Information"
+
+#: main.rsinfotext1
+msgid "The images in this folder can be used in Lazarus applications as toolbar or button icons."
+msgstr "Die Bilder in diesem Ordner können in Lazarus-Anwendungen als Toolbar- oder Button-Icons verwendet werden."
+
+#: main.rsinfotext2
+msgid "The different sizes as required by LCL scaling for high-dpi screens can be used like this, for example:"
+msgstr "Die verschiedenen, für LCL-Skalierung auf hochaufgelösten Bildschirmen benötigten Größen können beispielsweise wie folgt eingesetzt werden:"
+
+#: main.rslicense
+#, object-pascal-format
+msgid ""
+"License:\n"
+"%s"
+msgstr ""
+"Lizenz:\n"
+"%s"
 
 #: main.rsname
 msgid "Name"
 msgstr "Name"
 
 #: main.rsnomatchingpngimagefilesfoundin
-#, object-pascal-format, fuzzy
-#| msgid "No matching png image files found in %s"
-msgid "No matching PNG image files found in %s"
+#, object-pascal-format
+msgid "No matching png image files found in %s"
 msgstr "Keine passenden png-Bilddateien gefunden in %s"
 
 #: main.rsnopngimagefilesfoundin
-#, object-pascal-format, fuzzy
-#| msgid "No png image files found in %s"
-msgid "No PNG image files found in %s"
+#, object-pascal-format
+msgid "No png image files found in %s"
 msgstr "Keine png-Bilddateien gefunden in %s"
 
 #: main.rssavedas
@@ -44,10 +68,20 @@ msgstr "Gespeichert als: %s"
 msgid "Size"
 msgstr "Größe"
 
+#: main.rssizeinfolarge
+msgid "32x32, 48x48 and 64x64 pixels for \"large\" images."
+msgstr "32x32, 48x48 und 64x64 Pixel für \"große\" Bilder."
+
+#: main.rssizeinfomedium
+msgid "24x24, 36x36 and 48x48 pixels for \"medium\" sized images,"
+msgstr "24x24, 36x36 und 48x48 Pixel für Bilder \"mittlerer\" Größe,"
+
+#: main.rssizeinfosmall
+msgid "16x16, 24x24 and 32x32 pixels for \"small\" images,"
+msgstr "16x16, 24x24 und 32x32 Pixel für \"kleine\" Bilder,"
+
 #: main.rstheconfigurationcouldnotbesaved
-#, fuzzy
-#| msgid "The configuration could not be saved."
-msgid "Configuration file could not be saved."
+msgid "The configuration file could not be saved."
 msgstr "Die Konfiguration konnte nicht gespeichert werden."
 
 #: main.rsthefilecouldnotbesavedas
@@ -56,13 +90,9 @@ msgid "The file could not be saved as: %s"
 msgstr "Die Datei konnte nicht gespeichert werden als: %s"
 
 #: main.rsthefolderdoesnotexist
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "The folder [%s] does not exist or is currently not available.\n"
-#| "\n"
-#| "Should it be removed from the list?"
+#, object-pascal-format
 msgid ""
-"Folder \"%s\" does not exist or is currently not available.\n"
+"The folder [%s] does not exist or is currently not available.\n"
 "\n"
 "Should it be removed from the list?"
 msgstr ""
@@ -71,9 +101,7 @@ msgstr ""
 "Soll er von der Liste gestrichen werden?"
 
 #: main.rsthetempfilecouldnotbedeleted
-#, fuzzy
-#| msgid "The temp file could not be deleted."
-msgid "Temporary file could not be deleted."
+msgid "The temp file could not be deleted."
 msgstr "Die Temporär-Datei konnte nicht gelöscht werden."
 
 #: main.rsthisfoldercontains
@@ -90,8 +118,6 @@ msgid "Create HTML"
 msgstr "HTML erzeugen"
 
 #: tmainform.bbtncreatehtml.hint
-#, fuzzy
-#| msgid "Create a html page for the images found in the selected directory"
 msgid "Create HTML page for images found in the selected directory"
 msgstr "Erzeugt den HTML-Code für die im ausgewählten Ordner gefundenen Icons"
 
@@ -104,8 +130,6 @@ msgid "Save"
 msgstr "Speichern"
 
 #: tmainform.bbtnsave.hint
-#, fuzzy
-#| msgid "Save the generated html text as file \"IconTable.html\" in the specified folder"
 msgid "Save created HTML page as \"IconTable.html\" file in the specified folder"
 msgstr "Speichert den generierten HTML-Code in der Datei \"IconTable.html\" im angegebenen Ordner"
 
@@ -118,18 +142,25 @@ msgid "Dark Mode"
 msgstr "Dunkler Modus"
 
 #: tmainform.cbdarkmode.hint
-#, fuzzy
-#| msgid "Creates an html page with dark background"
 msgid "Create HTML page with dark background"
 msgstr "Erzeugt eine HTML-Seite mit dunklem Hintergrund"
 
+#: tmainform.cbtranslatedhtml.caption
+msgid "Translated HTML text"
+msgstr "Übersetzter HTML-Text"
+
+#: tmainform.cbtranslatedhtml.hint
+msgid ""
+"Unchecked: Use the GUI language in the HTML text\n"
+"Checked: Write the HTML text in English"
+msgstr ""
+"Nicht markiert: HTML-Text in der Sprache der Benutzeroberfläche speicher\n"
+"Markiert: HTML-Text auf Englisch erzeugen"
+
 #: tmainform.directoryedit.hint
-#, fuzzy
-#| msgid "Folder with images for which the html preview should be created"
 msgid "Folder with images for which the HTML preview should be created"
 msgstr "Ordner mit den Bildern, für die der HTML-Code erzeugt werden soll"
 
 #: tmainform.sbtnlastdirs.hint
 msgid "Last used"
 msgstr "Zuletzt benutzt"
-

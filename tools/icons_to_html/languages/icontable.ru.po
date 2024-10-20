@@ -15,22 +15,48 @@ msgstr ""
 msgid "Error"
 msgstr "Ошибка"
 
+#: main.rsfreelyavailable
+msgid "freely available, no restrictions in usage"
+msgstr ""
+
+#: main.rsimageswereprovidedby
+#, object-pascal-format
+msgid "The images were kindly provided by Roland Hahn (%s)."
+msgstr ""
+
 #: main.rsinformation
 msgid "Information"
 msgstr "Сведения"
+
+#: main.rsinfotext1
+msgid "The images in this folder can be used in Lazarus applications as toolbar or button icons."
+msgstr ""
+
+#: main.rsinfotext2
+msgid "The different sizes as required by LCL scaling for high-dpi screens can be used like this, for example:"
+msgstr ""
+
+#: main.rslicense
+#, object-pascal-format
+msgid ""
+"License:\n"
+"%s"
+msgstr ""
 
 #: main.rsname
 msgid "Name"
 msgstr "Имя"
 
 #: main.rsnomatchingpngimagefilesfoundin
-#, object-pascal-format
-msgid "No matching PNG image files found in %s"
+#, object-pascal-format, fuzzy
+#| msgid "No matching PNG image files found in %s"
+msgid "No matching png image files found in %s"
 msgstr "Не найдено соответствующих файлов изображений PNG в %s"
 
 #: main.rsnopngimagefilesfoundin
-#, object-pascal-format
-msgid "No PNG image files found in %s"
+#, object-pascal-format, fuzzy
+#| msgid "No PNG image files found in %s"
+msgid "No png image files found in %s"
 msgstr "Не найдено файлов изображений PNG в %s"
 
 #: main.rssavedas
@@ -42,8 +68,22 @@ msgstr "Сохранено в %s"
 msgid "Size"
 msgstr "Размер"
 
+#: main.rssizeinfolarge
+msgid "32x32, 48x48 and 64x64 pixels for \"large\" images."
+msgstr ""
+
+#: main.rssizeinfomedium
+msgid "24x24, 36x36 and 48x48 pixels for \"medium\" sized images,"
+msgstr ""
+
+#: main.rssizeinfosmall
+msgid "16x16, 24x24 and 32x32 pixels for \"small\" images,"
+msgstr ""
+
 #: main.rstheconfigurationcouldnotbesaved
-msgid "Configuration file could not be saved."
+#, fuzzy
+#| msgid "Configuration file could not be saved."
+msgid "The configuration file could not be saved."
 msgstr "Невозможно сохранить файл настройки."
 
 #: main.rsthefilecouldnotbesavedas
@@ -52,9 +92,13 @@ msgid "The file could not be saved as: %s"
 msgstr "Невозможно сохранить файл %s"
 
 #: main.rsthefolderdoesnotexist
-#, object-pascal-format
+#, object-pascal-format, fuzzy
+#| msgid ""
+#| "Folder \"%s\" does not exist or is currently not available.\n"
+#| "\n"
+#| "Should it be removed from the list?"
 msgid ""
-"Folder \"%s\" does not exist or is currently not available.\n"
+"The folder [%s] does not exist or is currently not available.\n"
 "\n"
 "Should it be removed from the list?"
 msgstr ""
@@ -63,7 +107,9 @@ msgstr ""
 "Удалить его из списка?"
 
 #: main.rsthetempfilecouldnotbedeleted
-msgid "Temporary file could not be deleted."
+#, fuzzy
+#| msgid "Temporary file could not be deleted."
+msgid "The temp file could not be deleted."
 msgstr "Невозможно удалить временный файл."
 
 #: main.rsthisfoldercontains
@@ -106,6 +152,16 @@ msgstr "Тёмный режим"
 #: tmainform.cbdarkmode.hint
 msgid "Create HTML page with dark background"
 msgstr "Создать страницу HTML с тёмным фоном"
+
+#: tmainform.cbtranslatedhtml.caption
+msgid "Translated HTML text"
+msgstr ""
+
+#: tmainform.cbtranslatedhtml.hint
+msgid ""
+"Unchecked: Use the GUI language in the HTML text\n"
+"Checked: Write the HTML text in English"
+msgstr ""
 
 #: tmainform.directoryedit.hint
 msgid "Folder with images for which the HTML preview should be created"

@@ -660,6 +660,21 @@ object MainForm: TMainForm
     TabOrder = 4
     OnClick = bbtnPreviewClick
   end
+  object cbTranslatedHTML: TCheckBox
+    AnchorSideLeft.Control = cbDarkMode
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = cbDarkMode
+    Left = 115
+    Height = 19
+    Hint = 'Unchecked: Use the GUI language in the HTML text'#13#10'Checked: Write the HTML text in English'
+    Top = 483
+    Width = 130
+    BorderSpacing.Left = 24
+    Caption = 'Translated HTML text'
+    Checked = True
+    State = cbChecked
+    TabOrder = 7
+  end
   object TaskDialog: TTaskDialog
     Buttons = <>
     RadioButtons = <>

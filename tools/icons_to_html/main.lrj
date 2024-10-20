@@ -9,5 +9,7 @@
 {"hash":366789,"name":"tmainform.bbtnsave.caption","sourcebytes":[83,97,118,101],"value":"Save"},
 {"hash":119190121,"name":"tmainform.bbtncreatehtml.hint","sourcebytes":[67,114,101,97,116,101,32,72,84,77,76,32,112,97,103,101,32,102,111,114,32,105,109,97,103,101,115,32,102,111,117,110,100,32,105,110,32,116,104,101,32,115,101,108,101,99,116,101,100,32,100,105,114,101,99,116,111,114,121],"value":"Create HTML page for images found in the selected directory"},
 {"hash":171857052,"name":"tmainform.bbtncreatehtml.caption","sourcebytes":[67,114,101,97,116,101,32,72,84,77,76],"value":"Create HTML"},
-{"hash":126668695,"name":"tmainform.bbtnpreview.caption","sourcebytes":[80,114,101,118,105,101,119],"value":"Preview"}
+{"hash":126668695,"name":"tmainform.bbtnpreview.caption","sourcebytes":[80,114,101,118,105,101,119],"value":"Preview"},
+{"hash":91817512,"name":"tmainform.cbtranslatedhtml.hint","sourcebytes":[85,110,99,104,101,99,107,101,100,58,32,85,115,101,32,116,104,101,32,71,85,73,32,108,97,110,103,117,97,103,101,32,105,110,32,116,104,101,32,72,84,77,76,32,116,101,120,116,13,10,67,104,101,99,107,101,100,58,32,87,114,105,116,101,32,116,104,101,32,72,84,77,76,32,116,101,120,116,32,105,110,32,69,110,103,108,105,115,104],"value":"Unchecked: Use the GUI language in the HTML text\r\nChecked: Write the HTML text in English"},
+{"hash":64243252,"name":"tmainform.cbtranslatedhtml.caption","sourcebytes":[84,114,97,110,115,108,97,116,101,100,32,72,84,77,76,32,116,101,120,116],"value":"Translated HTML text"}
 ]}
