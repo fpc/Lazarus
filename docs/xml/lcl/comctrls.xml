@@ -3660,7 +3660,7 @@ OnChange is signalled for the active page.
 </version>
 <seealso>
 <link id="TCustomTabControl.ActivePage"/>
-<link id="TCustomTabControl.ActivateFirstControlOnPage"/>
+<link id="TCustomTabControl.MaybeSelectFirstControlOnPage"/>
 <link id="TCustomTabControl.PageIndex"/>
 <link id="TCustomTabControl.TabIndex"/>
 <link id="TCustomTabControl.DoChange"/>
