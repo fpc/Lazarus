@@ -48,15 +48,13 @@ msgid "Name"
 msgstr "Имя"
 
 #: main.rsnomatchingpngimagefilesfoundin
-#, object-pascal-format, fuzzy
-#| msgid "No matching PNG image files found in %s"
-msgid "No matching png image files found in %s"
+#, object-pascal-format
+msgid "No matching PNG image files found in %s"
 msgstr "Не найдено соответствующих файлов изображений PNG в %s"
 
 #: main.rsnopngimagefilesfoundin
-#, object-pascal-format, fuzzy
-#| msgid "No PNG image files found in %s"
-msgid "No png image files found in %s"
+#, object-pascal-format
+msgid "No PNG image files found in %s"
 msgstr "Не найдено файлов изображений PNG в %s"
 
 #: main.rssavedas
@@ -81,9 +79,7 @@ msgid "16x16, 24x24 and 32x32 pixels for \"small\" images,"
 msgstr ""
 
 #: main.rstheconfigurationcouldnotbesaved
-#, fuzzy
-#| msgid "Configuration file could not be saved."
-msgid "The configuration file could not be saved."
+msgid "Configuration file could not be saved."
 msgstr "Невозможно сохранить файл настройки."
 
 #: main.rsthefilecouldnotbesavedas
@@ -92,13 +88,9 @@ msgid "The file could not be saved as: %s"
 msgstr "Невозможно сохранить файл %s"
 
 #: main.rsthefolderdoesnotexist
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "Folder \"%s\" does not exist or is currently not available.\n"
-#| "\n"
-#| "Should it be removed from the list?"
+#, object-pascal-format
 msgid ""
-"The folder [%s] does not exist or is currently not available.\n"
+"Folder \"%s\" does not exist or is currently not available.\n"
 "\n"
 "Should it be removed from the list?"
 msgstr ""
@@ -107,9 +99,7 @@ msgstr ""
 "Удалить его из списка?"
 
 #: main.rsthetempfilecouldnotbedeleted
-#, fuzzy
-#| msgid "Temporary file could not be deleted."
-msgid "The temp file could not be deleted."
+msgid "Temporary file could not be deleted."
 msgstr "Невозможно удалить временный файл."
 
 #: main.rsthisfoldercontains

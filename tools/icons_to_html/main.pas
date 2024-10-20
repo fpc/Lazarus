@@ -74,13 +74,13 @@ const
 resourcestring
   rsInformation = 'Information';
   rsError = 'Error';
-  rsTheConfigurationCouldNotBeSaved = 'The configuration file could not be saved.';
-  rsTheTempFileCouldNotBeDeleted = 'The temp file could not be deleted.';
+  rsTheConfigurationCouldNotBeSaved = 'Configuration file could not be saved.';
+  rsTheTempFileCouldNotBeDeleted = 'Temporary file could not be deleted.';
   rsTheFileCouldNotBeSavedAs = 'The file could not be saved as: %s';
   rsSavedAs = 'Saved as: %s';
-  rsNoPngImageFilesFoundIn = 'No png image files found in %s';
-  rsNoMatchingPngImageFilesFoundIn = 'No matching png image files found in %s';
-  rsTheFolderDoesNotExist = 'The folder [%s] does not exist or is currently not available.'#13#13'Should it be removed from the list?';
+  rsNoPngImageFilesFoundIn = 'No PNG image files found in %s';
+  rsNoMatchingPngImageFilesFoundIn = 'No matching PNG image files found in %s';
+  rsTheFolderDoesNotExist = 'Folder "%s" does not exist or is currently not available.'+LineEnding+LineEnding+'Should it be removed from the list?';
   rsThisFolderContains = ThisFolderContains;
   rsSize = 'Size';
   rsName = 'Name';

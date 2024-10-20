@@ -39,12 +39,12 @@ msgstr ""
 
 #: main.rsnomatchingpngimagefilesfoundin
 #, object-pascal-format
-msgid "No matching png image files found in %s"
+msgid "No matching PNG image files found in %s"
 msgstr ""
 
 #: main.rsnopngimagefilesfoundin
 #, object-pascal-format
-msgid "No png image files found in %s"
+msgid "No PNG image files found in %s"
 msgstr ""
 
 #: main.rssavedas
@@ -69,7 +69,7 @@ msgid "16x16, 24x24 and 32x32 pixels for \"small\" images,"
 msgstr ""
 
 #: main.rstheconfigurationcouldnotbesaved
-msgid "The configuration file could not be saved."
+msgid "Configuration file could not be saved."
 msgstr ""
 
 #: main.rsthefilecouldnotbesavedas
@@ -80,13 +80,13 @@ msgstr ""
 #: main.rsthefolderdoesnotexist
 #, object-pascal-format
 msgid ""
-"The folder [%s] does not exist or is currently not available.\n"
+"Folder \"%s\" does not exist or is currently not available.\n"
 "\n"
 "Should it be removed from the list?"
 msgstr ""
 
 #: main.rsthetempfilecouldnotbedeleted
-msgid "The temp file could not be deleted."
+msgid "Temporary file could not be deleted."
 msgstr ""
 
 #: main.rsthisfoldercontains

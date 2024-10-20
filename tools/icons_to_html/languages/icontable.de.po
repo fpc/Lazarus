@@ -50,13 +50,15 @@ msgid "Name"
 msgstr "Name"
 
 #: main.rsnomatchingpngimagefilesfoundin
-#, object-pascal-format
-msgid "No matching png image files found in %s"
+#, object-pascal-format, fuzzy
+#| msgid "No matching png image files found in %s"
+msgid "No matching PNG image files found in %s"
 msgstr "Keine passenden png-Bilddateien gefunden in %s"
 
 #: main.rsnopngimagefilesfoundin
-#, object-pascal-format
-msgid "No png image files found in %s"
+#, object-pascal-format, fuzzy
+#| msgid "No png image files found in %s"
+msgid "No PNG image files found in %s"
 msgstr "Keine png-Bilddateien gefunden in %s"
 
 #: main.rssavedas
@@ -81,7 +83,9 @@ msgid "16x16, 24x24 and 32x32 pixels for \"small\" images,"
 msgstr "16x16, 24x24 und 32x32 Pixel für \"kleine\" Bilder,"
 
 #: main.rstheconfigurationcouldnotbesaved
-msgid "The configuration file could not be saved."
+#, fuzzy
+#| msgid "The configuration file could not be saved."
+msgid "Configuration file could not be saved."
 msgstr "Die Konfiguration konnte nicht gespeichert werden."
 
 #: main.rsthefilecouldnotbesavedas
@@ -90,9 +94,13 @@ msgid "The file could not be saved as: %s"
 msgstr "Die Datei konnte nicht gespeichert werden als: %s"
 
 #: main.rsthefolderdoesnotexist
-#, object-pascal-format
+#, object-pascal-format, fuzzy
+#| msgid ""
+#| "The folder [%s] does not exist or is currently not available.\n"
+#| "\n"
+#| "Should it be removed from the list?"
 msgid ""
-"The folder [%s] does not exist or is currently not available.\n"
+"Folder \"%s\" does not exist or is currently not available.\n"
 "\n"
 "Should it be removed from the list?"
 msgstr ""
@@ -101,7 +109,9 @@ msgstr ""
 "Soll er von der Liste gestrichen werden?"
 
 #: main.rsthetempfilecouldnotbedeleted
-msgid "The temp file could not be deleted."
+#, fuzzy
+#| msgid "The temp file could not be deleted."
+msgid "Temporary file could not be deleted."
 msgstr "Die Temporär-Datei konnte nicht gelöscht werden."
 
 #: main.rsthisfoldercontains
@@ -164,3 +174,4 @@ msgstr "Ordner mit den Bildern, für die der HTML-Code erzeugt werden soll"
 #: tmainform.sbtnlastdirs.hint
 msgid "Last used"
 msgstr "Zuletzt benutzt"
+
