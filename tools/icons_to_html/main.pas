@@ -61,13 +61,13 @@ implementation
 resourcestring
   rsInformation = 'Information';
   rsError = 'Error';
-  rsTheConfigurationCouldNotBeSaved = 'Configuration file could not be saved.';
-  rsTheTempFileCouldNotBeDeleted = 'Temporary file could not be deleted.';
+  rsTheConfigurationCouldNotBeSaved = 'The configuration file could not be saved.';
+  rsTheTempFileCouldNotBeDeleted = 'The temp file could not be deleted.';
   rsTheFileCouldNotBeSavedAs = 'The file could not be saved as: %s';
   rsSavedAs = 'Saved as: %s';
-  rsNoPngImageFilesFoundIn = 'No PNG image files found in %s';
-  rsNoMatchingPngImageFilesFoundIn = 'No matching PNG image files found in %s';
-  rsTheFolderDoesNotExist = 'Folder "%s" does not exist or is currently not available.'+LineEnding+LineEnding+'Should it be removed from the list?';
+  rsNoPngImageFilesFoundIn = 'No png image files found in %s';
+  rsNoMatchingPngImageFilesFoundIn = 'No matching png image files found in %s';
+  rsTheFolderDoesNotExist = 'The folder [%s] does not exist or is currently not available.'#13#13'Should it be removed from the list?';
   rsThisFolderContains = 'This folder contains %0:d icons in %1:d icon groups with %2:d icon sizes.';
   rsSize = 'Size';
   rsName = 'Name';
@@ -289,25 +289,32 @@ begin
     AllFileList.Sort;
     for i := 0 to AllFileList.Count - 1 do
     begin
-      IcoFile := ChangeFileExt(ExtractFileName(AllFileList.Strings[i]), '');
-      GetPixSize(AllFileList.Strings[i], IcoWidth, IcoHeight);
-      IcoSize := IntToStr(IcoWidth);
+      try
+        GetPixSize(AllFileList.Strings[i], IcoWidth, IcoHeight);
+        IcoSize := IntToStr(IcoWidth);
+      except
+        IcoSize := '';
+      end;
 
-      DPos := LastDelimiter('_', IcoFile);
-      if TryStrToInt(RightStr(IcoFile, Utf8Length(IcoFile) - DPos), IntDummy) then
-        IcoName := Utf8Copy(IcoFile, 1, DPos - 1)
-      else
-        IcoName := IcoFile;
+      if IcoSize <> '' then
+      begin
+        IcoFile := ChangeFileExt(ExtractFileName(AllFileList.Strings[i]), '');
+        DPos := LastDelimiter('_', IcoFile);
+        if TryStrToInt(RightStr(IcoFile, Utf8Length(IcoFile) - DPos), IntDummy) then
+          IcoName := Utf8Copy(IcoFile, 1, DPos - 1)
+        else
+          IcoName := IcoFile;
 
-      if Preview then
-        IcoFileList.Add('file:///' + ImgDirectory + IcoFile)
-      else
-        IcoFileList.Add(IcoFile);
+        if Preview then
+          IcoFileList.Add('file:///' + ImgDirectory + IcoFile)
+        else
+          IcoFileList.Add(IcoFile);
 
-      IcoNameList.Add(IcoName);
-      IcoSizeList.Add(IcoSize);
-      if PixSizeList.IndexOf(IcoSize) = -1 then
-        PixSizeList.Add(IcoSize);
+        IcoNameList.Add(IcoName);
+        IcoSizeList.Add(IcoSize);
+        if PixSizeList.IndexOf(IcoSize) = -1 then
+          PixSizeList.Add(IcoSize);
+      end;
     end;
     PixSizeList.CustomSort(@CustomSortProc);
 
@@ -510,7 +517,7 @@ var
 begin
   stream := TFileStream.Create(FileName, fmOpenRead + fmShareDenyWrite);
   try
-    reader :=  TFPCustomImage.FindReaderFromStream(stream);
+    reader := TFPCustomImage.FindReaderFromStream(stream);
     with reader.ImageSize(stream) do
     begin
       PixWidth := X;
