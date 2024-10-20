@@ -1477,7 +1477,7 @@ var
 begin
   // Implement Color property
   lTarget := TWinControl(GetTarget());
-  if (lTarget.Color <> clDefault) and (lTarget.Color <> clBtnFace) then
+  if (lTarget.Color <> clDefault) and (lTarget.Color <> clBtnFace)  and (lTarget.Color <> clNone) then
   begin
     ColorToNSColor(ColorToRGB(lTarget.Color)).set_();
     // NSRectFill() always requires the coordinate system of the lower left corner
