@@ -2454,6 +2454,90 @@ msgstr "Klawisz Home przenosi do najbliższego początku"
 msgid "Host application"
 msgstr "Główna aplikacja"
 
+#: lazarusidestrconsts.dlgiahadentifiercomplentryabstractprocfunc
+msgid "Abstract proc/func"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrycodetemplate
+msgid "Template"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryconst
+msgid "Const"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryenum
+msgid "Enum"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryfunc
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryfunc"
+msgid "Function"
+msgstr "Funkcja"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryident
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryident"
+msgid "Identifier"
+msgstr "Identyfikator"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrykeyword
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentrykeyword"
+msgid "Keyword"
+msgstr "Słowo kluczowe"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrylabel
+msgid "Label"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrylowervisibilityprocfunc
+msgid "Lower visibility proc/func"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrynamespace
+msgid "Namespace"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryother
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryother"
+msgid "Other"
+msgstr "Inne"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryproc
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryproc"
+msgid "Procedure"
+msgstr "Procedura"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryproperty
+msgid "Property"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrytext
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentrytext"
+msgid "Text"
+msgstr "Tekst"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrytype
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentrytype"
+msgid "Type"
+msgstr "Typ"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryunit
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryunit"
+msgid "Unit"
+msgstr "Moduł"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryvar
+msgid "Var"
+msgstr ""
+
 #: lazarusidestrconsts.dlgidentifiercompletion
 msgctxt "lazarusidestrconsts.dlgidentifiercompletion"
 msgid "Identifier Completion"
@@ -2619,6 +2703,12 @@ msgstr "Klawisze skrótów"
 #: lazarusidestrconsts.dlgkeymappingerrors
 msgid "Key mapping errors"
 msgstr "Błędne klawisze skrótu"
+
+#: lazarusidestrconsts.dlgkeyword
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgkeyword"
+msgid "Keyword"
+msgstr "Słowo kluczowe"
 
 #: lazarusidestrconsts.dlgkeywordpolicy
 msgid "Keyword policy"
@@ -2884,6 +2974,10 @@ msgstr ""
 msgid "Trim spaces (when highlighting current selection)"
 msgstr "Spacje końcowe (gdy podświetlone bieżące zaznaczenie)"
 
+#: lazarusidestrconsts.dlgmatchwords
+msgid "Match words"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmaxcntr
 msgid "Maximum counter"
 msgstr "Maksymalny licznik"
@@ -2919,6 +3013,10 @@ msgstr "Mieszanie metod i właściwości"
 #: lazarusidestrconsts.dlgmode
 msgid "Mode"
 msgstr "Tryb"
+
+#: lazarusidestrconsts.dlgmodifier
+msgid "Modifier"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmouseaction
 msgid "Mouse Action"
@@ -7237,6 +7335,7 @@ msgid "Identifier"
 msgstr "Identyfikator"
 
 #: lazarusidestrconsts.liscodetoolsoptskeyword
+msgctxt "lazarusidestrconsts.liscodetoolsoptskeyword"
 msgid "Keyword"
 msgstr "Słowo kluczowe"
 

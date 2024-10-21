@@ -2376,6 +2376,82 @@ msgstr ""
 msgid "Host application"
 msgstr ""
 
+#: lazarusidestrconsts.dlgiahadentifiercomplentryabstractprocfunc
+msgid "Abstract proc/func"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrycodetemplate
+msgid "Template"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryconst
+msgid "Const"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryenum
+msgid "Enum"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryfunc
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryfunc"
+msgid "Function"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryident
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryident"
+msgid "Identifier"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrykeyword
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentrykeyword"
+msgid "Keyword"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrylabel
+msgid "Label"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrylowervisibilityprocfunc
+msgid "Lower visibility proc/func"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrynamespace
+msgid "Namespace"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryother
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryother"
+msgid "Other"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryproc
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryproc"
+msgid "Procedure"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryproperty
+msgid "Property"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrytext
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentrytext"
+msgid "Text"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrytype
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentrytype"
+msgid "Type"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryunit
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryunit"
+msgid "Unit"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryvar
+msgid "Var"
+msgstr ""
+
 #: lazarusidestrconsts.dlgidentifiercompletion
 msgctxt "lazarusidestrconsts.dlgidentifiercompletion"
 msgid "Identifier Completion"
@@ -2529,6 +2605,11 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgkeymappingerrors
 msgid "Key mapping errors"
+msgstr ""
+
+#: lazarusidestrconsts.dlgkeyword
+msgctxt "lazarusidestrconsts.dlgkeyword"
+msgid "Keyword"
 msgstr ""
 
 #: lazarusidestrconsts.dlgkeywordpolicy
@@ -2772,6 +2853,10 @@ msgstr ""
 msgid "Trim spaces (when highlighting current selection)"
 msgstr ""
 
+#: lazarusidestrconsts.dlgmatchwords
+msgid "Match words"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmaxcntr
 msgid "Maximum counter"
 msgstr ""
@@ -2806,6 +2891,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgmode
 msgid "Mode"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmodifier
+msgid "Modifier"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmouseaction
@@ -7041,6 +7130,7 @@ msgid "Identifier"
 msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsoptskeyword
+msgctxt "lazarusidestrconsts.liscodetoolsoptskeyword"
 msgid "Keyword"
 msgstr ""
 

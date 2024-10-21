@@ -2394,6 +2394,90 @@ msgstr "Home posúva na najbližší začiatok"
 msgid "Host application"
 msgstr "Hosťovská aplikácia"
 
+#: lazarusidestrconsts.dlgiahadentifiercomplentryabstractprocfunc
+msgid "Abstract proc/func"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrycodetemplate
+msgid "Template"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryconst
+msgid "Const"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryenum
+msgid "Enum"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryfunc
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryfunc"
+msgid "Function"
+msgstr "Funkcia"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryident
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryident"
+msgid "Identifier"
+msgstr "Identifikátor"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrykeyword
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentrykeyword"
+msgid "Keyword"
+msgstr "Kľúčové slovo"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrylabel
+msgid "Label"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrylowervisibilityprocfunc
+msgid "Lower visibility proc/func"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrynamespace
+msgid "Namespace"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryother
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryother"
+msgid "Other"
+msgstr "Ostatné"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryproc
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryproc"
+msgid "Procedure"
+msgstr "Procedúra"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryproperty
+msgid "Property"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrytext
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentrytext"
+msgid "Text"
+msgstr "Text"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrytype
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentrytype"
+msgid "Type"
+msgstr "Typ"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryunit
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryunit"
+msgid "Unit"
+msgstr "Jednotka"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryvar
+msgid "Var"
+msgstr ""
+
 #: lazarusidestrconsts.dlgidentifiercompletion
 msgctxt "lazarusidestrconsts.dlgidentifiercompletion"
 msgid "Identifier Completion"
@@ -2548,6 +2632,12 @@ msgstr "Mapovanie klávesov"
 #: lazarusidestrconsts.dlgkeymappingerrors
 msgid "Key mapping errors"
 msgstr "Chyba mapovania klávesov"
+
+#: lazarusidestrconsts.dlgkeyword
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgkeyword"
+msgid "Keyword"
+msgstr "Kľúčové slovo"
 
 #: lazarusidestrconsts.dlgkeywordpolicy
 msgid "Keyword policy"
@@ -2792,6 +2882,10 @@ msgstr ""
 msgid "Trim spaces (when highlighting current selection)"
 msgstr ""
 
+#: lazarusidestrconsts.dlgmatchwords
+msgid "Match words"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmaxcntr
 msgid "Maximum counter"
 msgstr "Maximum počítadla"
@@ -2827,6 +2921,10 @@ msgstr "Zmiešané metódy a vlastnosti"
 #: lazarusidestrconsts.dlgmode
 msgid "Mode"
 msgstr "Režim"
+
+#: lazarusidestrconsts.dlgmodifier
+msgid "Modifier"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmouseaction
 msgid "Mouse Action"
@@ -7123,6 +7221,7 @@ msgid "Identifier"
 msgstr "Identifikátor"
 
 #: lazarusidestrconsts.liscodetoolsoptskeyword
+msgctxt "lazarusidestrconsts.liscodetoolsoptskeyword"
 msgid "Keyword"
 msgstr "Kľúčové slovo"
 

@@ -2450,6 +2450,89 @@ msgstr "La tecla d'inici salta al començament més proper"
 msgid "Host application"
 msgstr "Aplicació de l'amfitrió"
 
+#: lazarusidestrconsts.dlgiahadentifiercomplentryabstractprocfunc
+msgid "Abstract proc/func"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrycodetemplate
+msgid "Template"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryconst
+msgid "Const"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryenum
+msgid "Enum"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryfunc
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryfunc"
+msgid "Function"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryident
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryident"
+msgid "Identifier"
+msgstr "Identificador"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrykeyword
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentrykeyword"
+msgid "Keyword"
+msgstr "Paraula clau"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrylabel
+msgid "Label"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrylowervisibilityprocfunc
+msgid "Lower visibility proc/func"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrynamespace
+msgid "Namespace"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryother
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryother"
+msgid "Other"
+msgstr "Altres"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryproc
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryproc"
+msgid "Procedure"
+msgstr "Procediment"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryproperty
+msgid "Property"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrytext
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentrytext"
+msgid "Text"
+msgstr "Text"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrytype
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentrytype"
+msgid "Type"
+msgstr "Tipus"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryunit
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryunit"
+msgid "Unit"
+msgstr "Unitat"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryvar
+msgid "Var"
+msgstr ""
+
 #: lazarusidestrconsts.dlgidentifiercompletion
 #, fuzzy
 #| msgid "Identifier completion"
@@ -2606,6 +2689,12 @@ msgstr "Accessos ràpids"
 #: lazarusidestrconsts.dlgkeymappingerrors
 msgid "Key mapping errors"
 msgstr "Errors dels accessos ràpids"
+
+#: lazarusidestrconsts.dlgkeyword
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgkeyword"
+msgid "Keyword"
+msgstr "Paraula clau"
 
 #: lazarusidestrconsts.dlgkeywordpolicy
 msgid "Keyword policy"
@@ -2860,6 +2949,10 @@ msgstr ""
 msgid "Trim spaces (when highlighting current selection)"
 msgstr ""
 
+#: lazarusidestrconsts.dlgmatchwords
+msgid "Match words"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmaxcntr
 msgid "Maximum counter"
 msgstr "Número màxim de comptador"
@@ -2894,6 +2987,10 @@ msgstr "Barreja els mètodes i les propietats"
 
 #: lazarusidestrconsts.dlgmode
 msgid "Mode"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmodifier
+msgid "Modifier"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmouseaction
@@ -7263,6 +7360,7 @@ msgid "Identifier"
 msgstr "Identificador"
 
 #: lazarusidestrconsts.liscodetoolsoptskeyword
+msgctxt "lazarusidestrconsts.liscodetoolsoptskeyword"
 msgid "Keyword"
 msgstr "Paraula clau"
 
@@ -10352,6 +10450,7 @@ msgid "Full"
 msgstr ""
 
 #: lazarusidestrconsts.lisfunction
+msgctxt "lazarusidestrconsts.lisfunction"
 msgid "Function"
 msgstr ""
 

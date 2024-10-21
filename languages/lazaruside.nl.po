@@ -2456,6 +2456,89 @@ msgstr "Home toets springt naar dichtsbijzijnde begin"
 msgid "Host application"
 msgstr "Host applicatie"
 
+#: lazarusidestrconsts.dlgiahadentifiercomplentryabstractprocfunc
+msgid "Abstract proc/func"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrycodetemplate
+msgid "Template"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryconst
+msgid "Const"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryenum
+msgid "Enum"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryfunc
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryfunc"
+msgid "Function"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryident
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryident"
+msgid "Identifier"
+msgstr "Identifier"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrykeyword
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentrykeyword"
+msgid "Keyword"
+msgstr "Sleutelwoord"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrylabel
+msgid "Label"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrylowervisibilityprocfunc
+msgid "Lower visibility proc/func"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrynamespace
+msgid "Namespace"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryother
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryother"
+msgid "Other"
+msgstr "Ander"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryproc
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryproc"
+msgid "Procedure"
+msgstr "Procedure"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryproperty
+msgid "Property"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrytext
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentrytext"
+msgid "Text"
+msgstr "Tekst"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrytype
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentrytype"
+msgid "Type"
+msgstr "Type"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryunit
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryunit"
+msgid "Unit"
+msgstr "Unit"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryvar
+msgid "Var"
+msgstr ""
+
 #: lazarusidestrconsts.dlgidentifiercompletion
 #, fuzzy
 #| msgid "Identifier completion"
@@ -2612,6 +2695,12 @@ msgstr "Toets mapping"
 #: lazarusidestrconsts.dlgkeymappingerrors
 msgid "Key mapping errors"
 msgstr "Toets mapping fouten"
+
+#: lazarusidestrconsts.dlgkeyword
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgkeyword"
+msgid "Keyword"
+msgstr "Sleutelwoord"
 
 #: lazarusidestrconsts.dlgkeywordpolicy
 msgid "Keyword policy"
@@ -2866,6 +2955,10 @@ msgstr ""
 msgid "Trim spaces (when highlighting current selection)"
 msgstr ""
 
+#: lazarusidestrconsts.dlgmatchwords
+msgid "Match words"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmaxcntr
 msgid "Maximum counter"
 msgstr "Maximum teller"
@@ -2900,6 +2993,10 @@ msgstr "Mix methodes en properties"
 
 #: lazarusidestrconsts.dlgmode
 msgid "Mode"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmodifier
+msgid "Modifier"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmouseaction
@@ -7294,6 +7391,7 @@ msgid "Identifier"
 msgstr "Identifier"
 
 #: lazarusidestrconsts.liscodetoolsoptskeyword
+msgctxt "lazarusidestrconsts.liscodetoolsoptskeyword"
 msgid "Keyword"
 msgstr "Sleutelwoord"
 
@@ -10391,6 +10489,7 @@ msgid "Full"
 msgstr ""
 
 #: lazarusidestrconsts.lisfunction
+msgctxt "lazarusidestrconsts.lisfunction"
 msgid "Function"
 msgstr ""
 

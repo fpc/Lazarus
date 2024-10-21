@@ -2390,6 +2390,90 @@ msgstr "Home переводить до найближчого старту"
 msgid "Host application"
 msgstr "Основний застосунок"
 
+#: lazarusidestrconsts.dlgiahadentifiercomplentryabstractprocfunc
+msgid "Abstract proc/func"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrycodetemplate
+msgid "Template"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryconst
+msgid "Const"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryenum
+msgid "Enum"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryfunc
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryfunc"
+msgid "Function"
+msgstr "Функція"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryident
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryident"
+msgid "Identifier"
+msgstr "Ідентифікатор"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrykeyword
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentrykeyword"
+msgid "Keyword"
+msgstr "Ключове слово"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrylabel
+msgid "Label"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrylowervisibilityprocfunc
+msgid "Lower visibility proc/func"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrynamespace
+msgid "Namespace"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryother
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryother"
+msgid "Other"
+msgstr "Інше"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryproc
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryproc"
+msgid "Procedure"
+msgstr "Процедура"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryproperty
+msgid "Property"
+msgstr ""
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrytext
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentrytext"
+msgid "Text"
+msgstr "Текст"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrytype
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentrytype"
+msgid "Type"
+msgstr "Тип"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryunit
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryunit"
+msgid "Unit"
+msgstr "Модуль"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryvar
+msgid "Var"
+msgstr ""
+
 #: lazarusidestrconsts.dlgidentifiercompletion
 msgctxt "lazarusidestrconsts.dlgidentifiercompletion"
 msgid "Identifier Completion"
@@ -2546,6 +2630,12 @@ msgstr "Клавіші"
 #: lazarusidestrconsts.dlgkeymappingerrors
 msgid "Key mapping errors"
 msgstr "Помилки комбінацій клавіш"
+
+#: lazarusidestrconsts.dlgkeyword
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgkeyword"
+msgid "Keyword"
+msgstr "Ключове слово"
 
 #: lazarusidestrconsts.dlgkeywordpolicy
 msgid "Keyword policy"
@@ -2796,6 +2886,10 @@ msgstr ""
 msgid "Trim spaces (when highlighting current selection)"
 msgstr "Обрізати пробіли (при підсвічуванні поточного вибору)"
 
+#: lazarusidestrconsts.dlgmatchwords
+msgid "Match words"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmaxcntr
 msgid "Maximum counter"
 msgstr "Максимум лічильника"
@@ -2831,6 +2925,10 @@ msgstr "Змішування методів і властивостей"
 #: lazarusidestrconsts.dlgmode
 msgid "Mode"
 msgstr "Режим"
+
+#: lazarusidestrconsts.dlgmodifier
+msgid "Modifier"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmouseaction
 msgid "Mouse Action"
@@ -7098,6 +7196,7 @@ msgid "Identifier"
 msgstr "Ідентифікатор"
 
 #: lazarusidestrconsts.liscodetoolsoptskeyword
+msgctxt "lazarusidestrconsts.liscodetoolsoptskeyword"
 msgid "Keyword"
 msgstr "Ключове слово"
 

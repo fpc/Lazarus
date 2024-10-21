@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-10-17 18:45+0300\n"
+"PO-Revision-Date: 2024-10-22 00:36+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -2386,6 +2386,82 @@ msgstr "Home переводит к началу текста в строке"
 msgid "Host application"
 msgstr "Главное приложение"
 
+#: lazarusidestrconsts.dlgiahadentifiercomplentryabstractprocfunc
+msgid "Abstract proc/func"
+msgstr "Абстрактная процедура/функция"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrycodetemplate
+msgid "Template"
+msgstr "Слово Template"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryconst
+msgid "Const"
+msgstr "Слово Const"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryenum
+msgid "Enum"
+msgstr "Слово Enum"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryfunc
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryfunc"
+msgid "Function"
+msgstr "Слово Function"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryident
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryident"
+msgid "Identifier"
+msgstr "Идентификатор"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrykeyword
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentrykeyword"
+msgid "Keyword"
+msgstr "Слово Keyword"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrylabel
+msgid "Label"
+msgstr "Слово Label"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrylowervisibilityprocfunc
+msgid "Lower visibility proc/func"
+msgstr "Менее видимая процедура/функция"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrynamespace
+msgid "Namespace"
+msgstr "Слово Namespace"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryother
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryother"
+msgid "Other"
+msgstr "Прочие"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryproc
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryproc"
+msgid "Procedure"
+msgstr "Слово Procedure"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryproperty
+msgid "Property"
+msgstr "Слово Property"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrytext
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentrytext"
+msgid "Text"
+msgstr "Слово Text"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentrytype
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentrytype"
+msgid "Type"
+msgstr "Слово Type"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryunit
+msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryunit"
+msgid "Unit"
+msgstr "Слово Unit"
+
+#: lazarusidestrconsts.dlgiahadentifiercomplentryvar
+msgid "Var"
+msgstr "Слово Var"
+
 #: lazarusidestrconsts.dlgidentifiercompletion
 msgctxt "lazarusidestrconsts.dlgidentifiercompletion"
 msgid "Identifier Completion"
@@ -2542,6 +2618,11 @@ msgstr "Комбинации клавиш"
 #: lazarusidestrconsts.dlgkeymappingerrors
 msgid "Key mapping errors"
 msgstr "Ошибки комбинаций клавиш"
+
+#: lazarusidestrconsts.dlgkeyword
+msgctxt "lazarusidestrconsts.dlgkeyword"
+msgid "Keyword"
+msgstr "Ключевое слово"
 
 #: lazarusidestrconsts.dlgkeywordpolicy
 msgid "Keyword policy"
@@ -2784,6 +2865,10 @@ msgstr "Автоматически подсвечивать текущее сл�
 msgid "Trim spaces (when highlighting current selection)"
 msgstr "Обрезать пробелы (при подсветке текущего выделения)"
 
+#: lazarusidestrconsts.dlgmatchwords
+msgid "Match words"
+msgstr "Обрабатывать слова"
+
 #: lazarusidestrconsts.dlgmaxcntr
 msgid "Maximum counter"
 msgstr "Максимум счетчика"
@@ -2819,6 +2904,10 @@ msgstr "Смешивать методы и свойства"
 #: lazarusidestrconsts.dlgmode
 msgid "Mode"
 msgstr "Режим"
+
+#: lazarusidestrconsts.dlgmodifier
+msgid "Modifier"
+msgstr "Модификатор"
 
 #: lazarusidestrconsts.dlgmouseaction
 msgid "Mouse Action"
@@ -7056,6 +7145,7 @@ msgid "Identifier"
 msgstr "Идентификатор"
 
 #: lazarusidestrconsts.liscodetoolsoptskeyword
+msgctxt "lazarusidestrconsts.liscodetoolsoptskeyword"
 msgid "Keyword"
 msgstr "Ключевое слово"
 
