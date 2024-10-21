@@ -78,6 +78,7 @@ begin
   ButtonCount := XMLConfig.GetValue(SubPath + 'Count', 0);
   if (FileVersion < 1) and (ButtonCount = 0) then  // Old format
     ButtonCount := XMLConfig.GetValue(SubPath + 'ButtonCount/Value', 0);
+  ButtonNames.Clear;
   for I := 1 to ButtonCount do
   begin
     ButtonName := XMLConfig.GetValue(SubPath + 'Button' + IntToStr(I) + '/Name', '');
