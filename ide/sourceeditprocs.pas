@@ -495,7 +495,7 @@ begin
           ImageIndexCC := IDEImages.LoadImage('cc_enum')
         else
           begin
-            AColor:=Colors.Color[ahaIdentComplWindowEntryIdent].Foreground;
+            AColor:=Colors.Color[ahaIdentComplWindowEntryEnum].Foreground;
             s:='enum';
           end;
       end;
