@@ -863,6 +863,7 @@ begin
   itmRunMenuRun.Enabled:=aAllow;
   itmRunMenuCompile.Enabled:=aAllow;
   itmRunMenuBuild.Enabled:=aAllow;
+  itmRunMenuBuildManyModes.Enabled:=aAllow;
   itmRunMenuQuickCompile.Enabled:=aAllow;
   itmRunMenuCleanUpAndBuild.Enabled:=aAllow;
   itmRunMenuAbortBuild.Enabled:=not aAllow;

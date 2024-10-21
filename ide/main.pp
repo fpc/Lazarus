@@ -4230,8 +4230,10 @@ begin
   if not UpdateProjectCommandsStamp.Changed(AUnitInfo) then
     Exit;
 
-  IDECommandList.FindIDECommand(ecAddCurUnitToProj).Enabled:=Assigned(AUnitInfo) and not AUnitInfo.IsPartOfProject;
-  IDECommandList.FindIDECommand(ecBuildManyModes).Enabled:=(Project1<>nil) and (Project1.BuildModes.Count>1);
+  IDECommandList.FindIDECommand(ecAddCurUnitToProj).Enabled :=
+    Assigned(AUnitInfo) and not AUnitInfo.IsPartOfProject;
+  IDECommandList.FindIDECommand(ecBuildManyModes).Enabled :=
+    Assigned(Project1) and (Project1.BuildModes.Count>1) and (ToolStatus <> itBuilder);
 
   // project change build mode
   ACmd := IDECommandList.FindIDECommand(ecProjectChangeBuildMode);
