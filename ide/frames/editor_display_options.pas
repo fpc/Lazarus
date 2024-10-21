@@ -185,8 +185,10 @@ begin
         end;
         for j := 0 to FCurGutterRightPartList.Count - 1 do begin
           FCurGutterRightPartList[j].ApplyTo(PreviewEdits[i].RightGutter.Parts.ByClass[FCurGutterRightPartList[j].GClass, 0]);
-          FCurGutterRightPartList[j].ApplyIndexTo(PreviewEdits[i].RightGutter.Parts.ByClass[FCurGutterRightPartList[j].GClass, 0]);
+          //TODO: currently separators are not managed => index is not correct
+          //FCurGutterRightPartList[j].ApplyIndexTo(PreviewEdits[i].RightGutter.Parts.ByClass[FCurGutterRightPartList[j].GClass, 0]);
         end;
+        // TODO: visibility of separators
       end;
   col := TEditorColorOptionsFrame(FDialog.FindEditor(TEditorColorOptionsFrame));
   if col <> nil then

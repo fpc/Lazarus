@@ -6825,8 +6825,11 @@ begin
     GutterRightPartList.Sort;
     for i := 0 to GutterRightPartList.Count - 1 do begin
       GutterRightPartList[i].ApplyTo(ASynEdit.RightGutter.Parts.ByClass[GutterRightPartList[i].GClass, 0]);
-      GutterRightPartList[i].ApplyIndexTo(ASynEdit.RightGutter.Parts.ByClass[GutterRightPartList[i].GClass, 0]);
+      //TODO: currently separators are not managed => index is not correct
+      //GutterRightPartList[i].ApplyIndexTo(ASynEdit.RightGutter.Parts.ByClass[GutterRightPartList[i].GClass, 0]);
     end;
+    for i := 0 to ASynEdit.RightGutter.Parts.ByClassCount[TSynGutterSeparator] - 1 do
+      ASynEdit.RightGutter.Parts.ByClass[TSynGutterSeparator, i].Visible := FGutterPartOver.Visible;
 
     ASynEdit.ScrollOnEditLeftOptions.Assign(ScrollOnEditLeftOptions);
     ASynEdit.ScrollOnEditRightOptions.Assign(ScrollOnEditRightOptions);
