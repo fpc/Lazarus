@@ -7689,44 +7689,9 @@ begin
     begin
       IDESynEdit := TIDESynEditor(ASynEdit);
 
-      Attri := GetUsedAttr(ahaIdentComplWindow);
-      if Attri<>nil then
-      begin
-        IDESynEdit.MarkupIdentComplWindow.TextColor := Attri.Foreground;
-        IDESynEdit.MarkupIdentComplWindow.WindowColor:= Attri.Background;
-      end else
-      begin
-        IDESynEdit.MarkupIdentComplWindow.TextColor := clNone;
-        IDESynEdit.MarkupIdentComplWindow.WindowColor:= clNone;
-      end;
-
-      Attri := GetUsedAttr(ahaIdentComplWindowBorder);
-      if Attri<>nil then
-        IDESynEdit.MarkupIdentComplWindow.BorderColor:= Attri.Foreground
-      else
-        IDESynEdit.MarkupIdentComplWindow.BorderColor:= clNone;
-
-      Attri := GetUsedAttr(ahaIdentComplRecent);
-      if Attri<>nil then
-        IDESynEdit.MarkupIdentComplWindow.HistoryTextColor := Attri.Foreground
-      else
-        IDESynEdit.MarkupIdentComplWindow.HistoryTextColor := clNone;
-
-      Attri := GetUsedAttr(ahaIdentComplWindowHighlight);
-      if Attri<>nil then
-        IDESynEdit.MarkupIdentComplWindow.HighlightColor:= Attri.Foreground
-      else
-        IDESynEdit.MarkupIdentComplWindow.HighlightColor:= clNone;
-
-      Attri := GetUsedAttr(ahaIdentComplWindowSelection);
-      if Attri<>nil then
-      begin
-        IDESynEdit.MarkupIdentComplWindow.TextSelectedColor:= Attri.Foreground;
-        IDESynEdit.MarkupIdentComplWindow.BackgroundSelectedColor:= Attri.Background;
-      end else
-      begin
-        IDESynEdit.MarkupIdentComplWindow.TextSelectedColor := clNone;
-        IDESynEdit.MarkupIdentComplWindow.BackgroundSelectedColor:= clNone;
+      for aha := low(TIdentWindowAhaColorRange) to high(TIdentWindowAhaColorRange) do begin
+        Attri := GetUsedAttr(aha);
+        Attri.ApplyTo(IDESynEdit.MarkupIdentComplWindow.Color[aha]);
       end;
     end;
 

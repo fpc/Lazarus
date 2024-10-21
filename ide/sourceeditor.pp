@@ -129,6 +129,7 @@ type
     FIdentCompletionJumpToError: boolean;
     ccSelection: String;
     // colors for the completion form (popup form, e.g. word completion)
+    FColors: TSynMarkupIdentComplWindow;
 
     FActiveEditBackgroundColor: TColor;
     FActiveEditBackgroundSelectedColor: TColor;
@@ -167,6 +168,7 @@ type
     function GetCompletionFormClass: TSynBaseCompletionFormClass; override;
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     property IdentCompletionJumpToError: Boolean
       read FIdentCompletionJumpToError write FIdentCompletionJumpToError;
   end;
@@ -2443,7 +2445,6 @@ var
   Prefix: String;
   I: Integer;
   NewStr: String;
-  SynEditor: TIDESynEditor;
   Template: TTemplate;
   A: TIdentComplSortMethod;
 Begin
@@ -2478,13 +2479,12 @@ Begin
         A=CodeToolBoss.IdentifierList.SortMethodForCompletion;
   end;
 
-  FActiveHistoryTextColor := clNone;
-  FActiveEditTextColor := Editor.Font.Color;
-  FActiveEditBorderColor := RGBToColor(200, 200, 200);
-  FActiveEditBackgroundColor := Editor.Color;
-  FActiveEditTextSelectedColor := TSynEdit(Editor).SelectedColor.Foreground;
-  FActiveEditBackgroundSelectedColor := TSynEdit(Editor).SelectedColor.Background;
-  FActiveEditTextHighLightColor := clNone;
+  FColors.Clear;
+  FColors.Color[ahaIdentComplWindow].Foreground := Editor.Font.Color;
+  FColors.Color[ahaIdentComplWindow].Background := Editor.Color;
+  FColors.Color[ahaIdentComplWindowBorder].Foreground := RGBToColor(200, 200, 200);
+  FColors.Color[ahaIdentComplWindowSelection].Foreground := TSynEdit(Editor).SelectedColor.Foreground;
+  FColors.Color[ahaIdentComplWindowSelection].Background := TSynEdit(Editor).SelectedColor.Background;
 
   if Editor.Highlighter<>nil
   then begin
@@ -2492,30 +2492,16 @@ Begin
       if IdentifierAttribute<>nil
       then begin
         if IdentifierAttribute.ForeGround<>clNone then
-          FActiveEditTextColor:=IdentifierAttribute.ForeGround;
+          FColors.Color[ahaIdentComplWindow].Foreground := IdentifierAttribute.ForeGround;
         if IdentifierAttribute.BackGround<>clNone then
-          FActiveEditBackgroundColor:=IdentifierAttribute.BackGround;
+          FColors.Color[ahaIdentComplWindow].Background := IdentifierAttribute.BackGround;
       end;
     end;
   end;
 
   if Editor is TIDESynEditor then
   begin
-    SynEditor := TIDESynEditor(Editor);
-    if SynEditor.MarkupIdentComplWindow.TextColor<>clNone then
-      FActiveEditTextColor := SynEditor.MarkupIdentComplWindow.TextColor;
-    if SynEditor.MarkupIdentComplWindow.BorderColor<>clNone then
-      FActiveEditBorderColor := SynEditor.MarkupIdentComplWindow.BorderColor;
-    if SynEditor.MarkupIdentComplWindow.WindowColor<>clNone then
-      FActiveEditBackgroundColor := SynEditor.MarkupIdentComplWindow.WindowColor;
-    if SynEditor.MarkupIdentComplWindow.TextSelectedColor<>clNone then
-      FActiveEditTextSelectedColor := SynEditor.MarkupIdentComplWindow.TextSelectedColor;
-    if SynEditor.MarkupIdentComplWindow.BackgroundSelectedColor<>clNone then
-      FActiveEditBackgroundSelectedColor := SynEditor.MarkupIdentComplWindow.BackgroundSelectedColor;
-    if SynEditor.MarkupIdentComplWindow.HighlightColor<>clNone then
-      FActiveEditTextHighLightColor := SynEditor.MarkupIdentComplWindow.HighlightColor;
-    if SynEditor.MarkupIdentComplWindow.HistoryTextColor<>clNone then
-      FActiveHistoryTextColor:=SynEditor.MarkupIdentComplWindow.HistoryTextColor;
+    FColors.Merge(TIDESynEditor(Editor).MarkupIdentComplWindow);
   end;
 
   SL := TStringList.Create;
@@ -2563,12 +2549,12 @@ Begin
   // set colors
   if (Editor<>nil) and (TheForm<>nil) then begin
     with TheForm as TSourceEditCompletionForm do begin
-      DrawBorderColor   := FActiveEditBorderColor;
-      BackgroundColor   := FActiveEditBackgroundColor;
-      clSelect          := FActiveEditBackgroundSelectedColor;
-      TextColor         := FActiveEditTextColor;
-      TextSelectedColor := FActiveEditTextSelectedColor;
-      TextHighLightColor:= FActiveEditTextHighLightColor;
+      DrawBorderColor   := FColors[ahaIdentComplWindowBorder].Foreground;
+      BackgroundColor   := FColors[ahaIdentComplWindow].Background;
+      clSelect          := FColors[ahaIdentComplWindowSelection].Background;
+      TextColor         := FColors[ahaIdentComplWindow].Foreground;
+      TextSelectedColor := FColors[ahaIdentComplWindowSelection].Foreground;
+      TextHighLightColor:= FColors[ahaIdentComplWindowHighlight].Foreground;
       //debugln('TSourceEditCompletion.ccExecute A Color=',DbgS(Color),
       // ' clSelect=',DbgS(clSelect),
       // ' TextColor=',DbgS(TextColor),
@@ -2766,7 +2752,6 @@ var
   MaxX: Integer;
   t: TCompletionType;
   hl: TSynCustomHighlighter;
-  Colors: TPaintCompletionItemColors;
 begin
   try
     with ACanvas do begin
@@ -2779,20 +2764,12 @@ begin
       Font.Style:=[];
     end;
 
-    if (CurrentCompletionType = ctIdentCompletion) and
+    FColors.UseRecent :=
+       (CurrentCompletionType = ctIdentCompletion) and
        (CodeToolBoss.IdentifierList.SortForHistory) and
        (iliIsRecentItem in CodeToolBoss.IdentifierList.FilteredItems[Index].Flags) and
-       (FActiveHistoryTextColor <> clNone)
-    then  begin
-      Colors.TextColor := FActiveHistoryTextColor; // - to display history items
-    end else begin
-      Colors.TextColor := FActiveEditTextColor;
-    end;
+       (FColors[ahaIdentComplRecent].Foreground <> clNone);
 
-    Colors.BackgroundColor := FActiveEditBackgroundColor;
-    Colors.BackgroundSelectedColor := FActiveEditBackgroundSelectedColor;
-    Colors.TextSelectedColor := FActiveEditTextSelectedColor;
-    Colors.TextHilightColor := FActiveEditTextHighLightColor;
     MaxX:=TheForm.ClientWidth;
     t:=CurrentCompletionType;
     if Manager.ActiveCompletionPlugin<>nil then
@@ -2807,7 +2784,7 @@ begin
     hl := nil;
     if Editor <> nil then
       hl := Editor.Highlighter;
-    PaintCompletionItem(AKey, ACanvas, X, Y, MaxX, ItemSelected, Index, self, t, hl, @Colors);
+    PaintCompletionItem(AKey, ACanvas, X, Y, MaxX, ItemSelected, Index, self, t, hl, FColors);
     Result:=true;
   except
     DebugLn('OnSynCompletionPaintItem failed');
@@ -3122,6 +3099,7 @@ end;
 constructor TSourceEditCompletion.Create(AOwner: TComponent);
 begin
   inherited;
+  FColors := TSynMarkupIdentComplWindow.Create;
   EndOfTokenChr:='()[].,;:-+=^*<>/';
   Width:=400;
   OnExecute := @ccExecute;
@@ -3141,6 +3119,12 @@ begin
   TheForm.Width := Max(50, EnvironmentGuiOpts.Desktop.CompletionWindowWidth);
   TheForm.NbLinesInWindow := Max(3, EnvironmentGuiOpts.Desktop.CompletionWindowHeight);
   TheForm.OnDragResized  := @CompletionFormResized;
+end;
+
+destructor TSourceEditCompletion.Destroy;
+begin
+  inherited Destroy;
+  FColors.Free;
 end;
 
 { TSourceEditorSharedValues }

@@ -50,7 +50,7 @@ uses
   // IdeIntf
   LazIDEIntf, IDEImagesIntf, TextTools, IDETextConverter,
   // IDE
-  DialogProcs, EditorOptions, CodeToolsOptions;
+  DialogProcs, EditorOptions, CodeToolsOptions, SourceSynEditor;
 
 type
 
@@ -110,20 +110,11 @@ type
     icvNone
     );
 
-  TPaintCompletionItemColors = record
-    BackgroundColor: TColor;
-    BackgroundSelectedColor: TColor;
-    TextColor: TColor;
-    TextSelectedColor: TColor;
-    TextHilightColor: TColor;
-  end;
-  PPaintCompletionItemColors = ^TPaintCompletionItemColors;
-
 // completion form and functions
 function PaintCompletionItem(const AKey: string; ACanvas: TCanvas;
   X, Y, MaxX: integer; ItemSelected: boolean; Index: integer;
   {%H-}aCompletion : TSynCompletion; CurrentCompletionType: TCompletionType;
-  Highlighter: TSrcIDEHighlighter; Colors: PPaintCompletionItemColors;
+  Highlighter: TSrcIDEHighlighter; Colors: TSynMarkupIdentComplWindow;
   MeasureOnly: Boolean = False): TPoint;
 
 function GetIdentCompletionValue(aCompletion : TSynCompletion;
@@ -155,11 +146,10 @@ begin
   FreeAndNil(TextConverterToolClasses);
 end;
 
-function PaintCompletionItem(const AKey: string; ACanvas: TCanvas; X, Y,
-  MaxX: integer; ItemSelected: boolean; Index: integer;
-  aCompletion: TSynCompletion; CurrentCompletionType: TCompletionType;
-  Highlighter: TSrcIDEHighlighter; Colors: PPaintCompletionItemColors;
-  MeasureOnly: Boolean): TPoint;
+function PaintCompletionItem(const AKey: string; ACanvas: TCanvas; X, Y, MaxX: integer;
+  ItemSelected: boolean; Index: integer; aCompletion: TSynCompletion;
+  CurrentCompletionType: TCompletionType; Highlighter: TSrcIDEHighlighter;
+  Colors: TSynMarkupIdentComplWindow; MeasureOnly: Boolean): TPoint;
 
 const
   HintModifierImage: array[TPascalHintModifier] of String = (
@@ -343,19 +333,26 @@ begin
   begin
     if ItemSelected then
     begin
-      AllowFontColor := Colors^.TextSelectedColor=clNone;
-      if AllowFontColor then
-        ForegroundColor := ColorToRGB(Colors^.TextColor)
+      AllowFontColor := Colors.TextSelectedColor=clNone;
+      if AllowFontColor then begin
+        if Colors.UseRecent then
+          ForegroundColor := ColorToRGB(Colors.RecentColor)
+        else
+          ForegroundColor := ColorToRGB(Colors.TextColor);
+      end
       else
-        ForegroundColor := ColorToRGB(Colors^.TextSelectedColor);
-      BackgroundColor:=ColorToRGB(Colors^.BackgroundSelectedColor);
+        ForegroundColor := ColorToRGB(Colors.TextSelectedColor);
+      BackgroundColor:=ColorToRGB(Colors.BackgroundSelectedColor);
     end else
     begin
-      ForegroundColor := ColorToRGB(Colors^.TextColor);
+      if Colors.UseRecent then
+        ForegroundColor := ColorToRGB(Colors.RecentColor)
+      else
+        ForegroundColor := ColorToRGB(Colors.TextColor);
       AllowFontColor := True;
-      BackgroundColor:=ColorToRGB(Colors^.BackgroundColor);
+      BackgroundColor:=ColorToRGB(Colors.BackgroundColor);
     end;
-    TextHilightColor:=ColorToRGB(Colors^.TextHilightColor);
+    TextHilightColor:=ColorToRGB(Colors.TextHilightColor);
   end else
   begin
     ForegroundColor := clBlack;

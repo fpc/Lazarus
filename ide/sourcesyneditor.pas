@@ -62,7 +62,7 @@ uses
   SynEditMarkupHighAll, SynEditKeyCmds, SynEditMarkupIfDef, SynEditMiscProcs,
   SynPluginMultiCaret, SynEditPointClasses,
   SynEditMarkupFoldColoring, SynEditTextTabExpander, SynEditMouseCmds,
-  etSrcEditMarks, LazarusIDEStrConsts;
+  etSrcEditMarks, LazarusIDEStrConsts, SourceMarks;
 
 type
 
@@ -220,25 +220,33 @@ type
     property IfDefTree;
   end;
 
+  TIdentWindowAhaColorRange = ahaIdentComplWindow..ahaIdentComplWindowHighlight;
+
+  { TSynMarkupIdentComplWindow }
+
   TSynMarkupIdentComplWindow = class // don't inherit from TSynEditMarkup, no regular markup
   private
-    FBackgroundSelectedColor: TColor;
-    FBorderColor: TColor;
-    FHighlightColor: TColor;
-    FTextColor: TColor;
-    FHistoryTextColor: TColor;
-    FTextSelectedColor: TColor;
-    FWindowColor: TColor;
+    FColor: array[TIdentWindowAhaColorRange] of TSynHighlighterAttributes;
+    FUseRecent: boolean;
+
+    function GetColor(AnIndex: TIdentWindowAhaColorRange): TSynHighlighterAttributes;
+    function GetForegroundColor(AnIndex: TAdditionalHilightAttribute): TColor;
+    function GetBackgroundColor(AnIndex: TAdditionalHilightAttribute): TColor;
   public
     constructor Create;
+    destructor Destroy; override;
+    procedure  Clear;
+    procedure  Merge(AColors: TSynMarkupIdentComplWindow);
   public
-    property WindowColor: TColor read FWindowColor write FWindowColor;
-    property TextColor: TColor read FTextColor write FTextColor;
-    property HistoryTextColor: TColor read FHistoryTextColor write FHistoryTextColor;
-    property BorderColor: TColor read FBorderColor write FBorderColor;
-    property HighlightColor: TColor read FHighlightColor write FHighlightColor;
-    property TextSelectedColor: TColor read FTextSelectedColor write FTextSelectedColor;
-    property BackgroundSelectedColor: TColor read FBackgroundSelectedColor write FBackgroundSelectedColor;
+    property Color [AnIndex: TIdentWindowAhaColorRange]: TSynHighlighterAttributes read GetColor; default;
+
+    property TextColor:               TColor index ahaIdentComplWindow read GetForegroundColor;
+    property BackgroundColor:         TColor index ahaIdentComplWindow read GetBackgroundColor;
+    property TextSelectedColor:       TColor index ahaIdentComplWindowSelection read GetForegroundColor;
+    property BackgroundSelectedColor: TColor index ahaIdentComplWindowSelection read GetBackgroundColor;
+    property TextHilightColor :       TColor index ahaIdentComplWindowHighlight read GetForegroundColor;
+    property RecentColor:             TColor index ahaIdentComplRecent read GetForegroundColor;
+    property UseRecent: boolean read FUseRecent write FUseRecent;
   end;
 
   { TIDESynEditor }
@@ -543,21 +551,69 @@ type
 
 implementation
 
-uses SourceMarks;
 
 { TSynMarkupIdentComplWindow }
 
+function TSynMarkupIdentComplWindow.GetColor(AnIndex: TIdentWindowAhaColorRange
+  ): TSynHighlighterAttributes;
+begin
+  Result := FColor[AnIndex];
+end;
+
+function TSynMarkupIdentComplWindow.GetForegroundColor(AnIndex: TAdditionalHilightAttribute
+  ): TColor;
+begin
+  Result := FColor[AnIndex].Foreground;
+end;
+
+function TSynMarkupIdentComplWindow.GetBackgroundColor(AnIndex: TAdditionalHilightAttribute
+  ): TColor;
+begin
+  Result := FColor[AnIndex].Background
+end;
+
 constructor TSynMarkupIdentComplWindow.Create;
+var
+  i: TIdentWindowAhaColorRange;
 begin
   inherited Create;
 
-  FBackgroundSelectedColor := clNone;
-  FBorderColor := clNone;
-  FHighlightColor := clNone;
-  FTextColor := clNone;
-  FHistoryTextColor := clNone;
-  FTextSelectedColor := clNone;
-  FWindowColor := clNone;
+  for i := low(TIdentWindowAhaColorRange) to high(TIdentWindowAhaColorRange) do
+    FColor[i] := TSynHighlighterAttributes.Create;
+  Clear;
+end;
+
+destructor TSynMarkupIdentComplWindow.Destroy;
+var
+  i: TIdentWindowAhaColorRange;
+begin
+  inherited Destroy;
+
+  for i := low(TIdentWindowAhaColorRange) to high(TIdentWindowAhaColorRange) do
+    FColor[i].Free;
+end;
+
+procedure TSynMarkupIdentComplWindow.Clear;
+var
+  i: TIdentWindowAhaColorRange;
+begin
+  FUseRecent := False;
+  for i := low(TIdentWindowAhaColorRange) to high(TIdentWindowAhaColorRange) do begin
+    FColor[i].Foreground := clNone;
+    FColor[i].Background := clNone;
+  end;
+end;
+
+procedure TSynMarkupIdentComplWindow.Merge(AColors: TSynMarkupIdentComplWindow);
+var
+  i: TIdentWindowAhaColorRange;
+begin
+  for i := low(TIdentWindowAhaColorRange) to high(TIdentWindowAhaColorRange) do begin
+    if AColors[i].Foreground <> clNone then
+      FColor[i].Foreground := AColors.FColor[i].Foreground;
+    if AColors[i].Background <> clNone then
+      FColor[i].Background := AColors.FColor[i].Background;
+  end;
 end;
 
 { TSourceSynSearchTermDict }
