@@ -419,31 +419,33 @@ begin
       IcoFileList.Count, IconGroups, PixSizeList.Count
     ]));
 
-    if cbTranslatedHTML.Checked then
-    begin
-      HTMLLines.Add('<hr>');
-      HTMLLines.Add('<p>' + rsInfoText1 + '</p>');
-      HTMLLines.Add('<p>' + rsInfoText2 + '</p>');
-      HTMLLines.Add('<ul>');
-      HTMLLines.Add('  <li>' + rsSizeInfoSmall + '</li>');
-      HTMLLines.Add('  <li>' + rsSizeInfoMedium + '</li>');
-      HTMLLines.Add('  <li>' + rsSizeInfoLarge + '</li>');
-      HTMLLines.Add('</ul>');
-      HTMLLines.Add('<p>' + Format(rsImagesWereProvidedBy, [Link(URL_RolandHahn, URL_RolandHahn)]) + '</p>');
-      HTMLLines.Add('<p>' + Format(rsLicense, [License_CC0]) + '<br>');
-      HTMLLines.Add(Link(URL_CC0, URL_CC0) + '<br>');
-      HTMLLines.Add(rsFreelyAvailable + '</p>');
-    end else
     if FileExists(ImgDirectory + InfoTextFileName) then
     begin
-      try
-        InfoTxtList := TStringList.Create;
-        InfoTxtList.LoadFromFile(ImgDirectory + InfoTextFileName);
+      if cbTranslatedHTML.Checked then
+      begin
         HTMLLines.Add('<hr>');
-        for i := 0 to InfoTxtList.Count - 1 do
-          HTMLLines.Add(InfoTxtList[i] + '<br>');
-      finally
-        InfoTxtList.Free;
+        HTMLLines.Add('<p>' + rsInfoText1 + '</p>');
+        HTMLLines.Add('<p>' + rsInfoText2 + '</p>');
+        HTMLLines.Add('<ul>');
+        HTMLLines.Add('  <li>' + rsSizeInfoSmall + '</li>');
+        HTMLLines.Add('  <li>' + rsSizeInfoMedium + '</li>');
+        HTMLLines.Add('  <li>' + rsSizeInfoLarge + '</li>');
+        HTMLLines.Add('</ul>');
+        HTMLLines.Add('<p>' + Format(rsImagesWereProvidedBy, [Link(URL_RolandHahn, URL_RolandHahn)]) + '</p>');
+        HTMLLines.Add('<p>' + Format(rsLicense, [License_CC0]) + '<br>');
+        HTMLLines.Add(Link(URL_CC0, URL_CC0) + '<br>');
+        HTMLLines.Add(rsFreelyAvailable + '</p>');
+      end else
+      begin
+        InfoTxtList := TStringList.Create;
+        try
+          InfoTxtList.LoadFromFile(ImgDirectory + InfoTextFileName);
+          HTMLLines.Add('<hr>');
+          for i := 0 to InfoTxtList.Count - 1 do
+            HTMLLines.Add(InfoTxtList[i] + '<br>');
+        finally
+          InfoTxtList.Free;
+        end;
       end;
     end;
     HTMLLines.Add('</div>');
