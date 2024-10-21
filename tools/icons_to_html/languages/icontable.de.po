@@ -50,14 +50,12 @@ msgid "Name"
 msgstr "Name"
 
 #: main.rsnomatchingpngimagefilesfoundin
-#, object-pascal-format, fuzzy
-#| msgid "No matching png image files found in %s"
+#, object-pascal-format
 msgid "No matching PNG image files found in %s"
 msgstr "Keine passenden png-Bilddateien gefunden in %s"
 
 #: main.rsnopngimagefilesfoundin
-#, object-pascal-format, fuzzy
-#| msgid "No png image files found in %s"
+#, object-pascal-format
 msgid "No PNG image files found in %s"
 msgstr "Keine png-Bilddateien gefunden in %s"
 
@@ -83,8 +81,6 @@ msgid "16x16, 24x24 and 32x32 pixels for \"small\" images,"
 msgstr "16x16, 24x24 und 32x32 Pixel für \"kleine\" Bilder,"
 
 #: main.rstheconfigurationcouldnotbesaved
-#, fuzzy
-#| msgid "The configuration file could not be saved."
 msgid "Configuration file could not be saved."
 msgstr "Die Konfiguration konnte nicht gespeichert werden."
 
@@ -94,11 +90,7 @@ msgid "The file could not be saved as: %s"
 msgstr "Die Datei konnte nicht gespeichert werden als: %s"
 
 #: main.rsthefolderdoesnotexist
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "The folder [%s] does not exist or is currently not available.\n"
-#| "\n"
-#| "Should it be removed from the list?"
+#, object-pascal-format
 msgid ""
 "Folder \"%s\" does not exist or is currently not available.\n"
 "\n"
@@ -109,8 +101,6 @@ msgstr ""
 "Soll er von der Liste gestrichen werden?"
 
 #: main.rsthetempfilecouldnotbedeleted
-#, fuzzy
-#| msgid "The temp file could not be deleted."
 msgid "Temporary file could not be deleted."
 msgstr "Die Temporär-Datei konnte nicht gelöscht werden."
 
@@ -164,7 +154,7 @@ msgid ""
 "Unchecked: Use the GUI language in the HTML text\n"
 "Checked: Write the HTML text in English"
 msgstr ""
-"Nicht markiert: HTML-Text in der Sprache der Benutzeroberfläche speicher\n"
+"Nicht markiert: HTML-Text in der Sprache der Benutzeroberfläche speichern\n"
 "Markiert: HTML-Text auf Englisch erzeugen"
 
 #: tmainform.directoryedit.hint
@@ -174,4 +164,3 @@ msgstr "Ordner mit den Bildern, für die der HTML-Code erzeugt werden soll"
 #: tmainform.sbtnlastdirs.hint
 msgid "Last used"
 msgstr "Zuletzt benutzt"
-
