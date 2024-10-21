@@ -260,9 +260,9 @@ begin
   FGrabStyle := XMLConfig.GetValue(Path + 'GrabStyle/Value', cDefaultGrabStyle);
   FGrabWidth := XMLConfig.GetValue(Path + 'GrabWidth/Value', cDefaultGrabWidth);
   FBorderStyle := XMLConfig.GetValue(Path + 'BorderStyle/Value', cDefaultBorderstyle);
+  FToolBars.Clear;
   if ToolBarCount > 0 then
   begin
-    FToolBars.Clear;
     for I := 0 to ToolbarCount-1 do
     begin
       ToolBarOpt := TIDEToolBarOptions.Create;
@@ -289,7 +289,11 @@ begin
     XMLConfig.SetDeleteValue(Path + 'GrabStyle/Value', FGrabStyle, cDefaultGrabStyle);
     XMLConfig.SetDeleteValue(Path + 'GrabWidth/Value', FGrabWidth, cDefaultGrabWidth);
     XMLConfig.SetDeleteValue(Path + 'BorderStyle/Value', FBorderStyle, cDefaultBorderstyle);
-    if EqualToolbars(DefaultOpts) then Exit;
+    if EqualToolbars(DefaultOpts) then
+    begin
+      XMLConfig.SetDeleteValue(Path + 'Count', 0, 0);
+      Exit;
+    end;
     XMLConfig.SetDeleteValue(Path + 'Count', FToolBars.Count, 0);
     if FToolBars.Count > 0 then
     begin
