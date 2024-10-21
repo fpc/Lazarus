@@ -385,6 +385,7 @@ begin
 
     // first write the type
     // var, procedure, property, function, type, const
+    AColor := clNone;
     case IdentItem.GetDesc of
 
     ctnVarDefinition, ctnRecordCase:
@@ -392,7 +393,8 @@ begin
         if UseImages then
           ImageIndexCC := IDEImages.LoadImage('cc_variable')
         else begin
-          AColor:=Colors.Color[ahaIdentComplWindowEntryVar].Foreground;
+          if Colors <> nil then
+            AColor:=Colors.Color[ahaIdentComplWindowEntryVar].Foreground;
           s:='var';
         end;
       end;
@@ -420,14 +422,16 @@ begin
         end
         else
         begin
-          AColor:=Colors.Color[ahaIdentComplWindowEntryType].Foreground;
+          if Colors <> nil then
+            AColor:=Colors.Color[ahaIdentComplWindowEntryType].Foreground;
           s:='type';
         end;
       end;
 
     ctnConstDefinition,ctnConstant:
       begin
-        AColor:=Colors.Color[ahaIdentComplWindowEntryConst].Foreground;
+        if Colors <> nil then
+          AColor:=Colors.Color[ahaIdentComplWindowEntryConst].Foreground;
         s:='const';
         if UseImages then
           ImageIndexCC := IDEImages.LoadImage('cc_constant');
@@ -450,12 +454,14 @@ begin
         begin
           if IdentItem.IsFunction then
             begin
-              AColor:=Colors.Color[ahaIdentComplWindowEntryFunc].Foreground;
+              if Colors <> nil then
+                AColor:=Colors.Color[ahaIdentComplWindowEntryFunc].Foreground;
               s:='function';
             end
           else
             begin
-              AColor:=Colors.Color[ahaIdentComplWindowEntryProc].Foreground;
+              if Colors <> nil then
+                AColor:=Colors.Color[ahaIdentComplWindowEntryProc].Foreground;
               if IdentItem.IsConstructor then
                 s := 'constructor'
               else if IdentItem.IsDestructor then
@@ -463,10 +469,12 @@ begin
               else
                 s:='procedure';
             end;
-          if IdentItem.TryIsAbstractMethod then
-            AColor:=Colors.Color[ahaIdentComplWindowEntryMethAbstract].Foreground;
-          if iliHasLowerVisibility in IdentItem.Flags then
-            AColor:=Colors.Color[ahaIdentComplWindowEntryMethodLowVis].Foreground;
+          if Colors <> nil then begin
+            if IdentItem.TryIsAbstractMethod then
+              AColor:=Colors.Color[ahaIdentComplWindowEntryMethAbstract].Foreground;
+            if iliHasLowerVisibility in IdentItem.Flags then
+              AColor:=Colors.Color[ahaIdentComplWindowEntryMethodLowVis].Foreground;
+          end;
         end;
       end;
       
@@ -482,7 +490,8 @@ begin
           end
         else
           begin
-            AColor:=Colors.Color[ahaIdentComplWindowEntryProp].Foreground;
+            if Colors <> nil then
+              AColor:=Colors.Color[ahaIdentComplWindowEntryProp].Foreground;
             s:='property';
             if IsReadOnly then
               ImageIndex:=IDEImages.LoadImage('ce_property_readonly');
@@ -495,7 +504,8 @@ begin
           ImageIndexCC := IDEImages.LoadImage('cc_enum')
         else
           begin
-            AColor:=Colors.Color[ahaIdentComplWindowEntryEnum].Foreground;
+            if Colors <> nil then
+              AColor:=Colors.Color[ahaIdentComplWindowEntryEnum].Foreground;
             s:='enum';
           end;
       end;
@@ -506,7 +516,8 @@ begin
           ImageIndexCC := IDEImages.LoadImage('cc_label')
         else
           begin
-            AColor:=Colors.Color[ahaIdentComplWindowEntryLabel].Foreground;
+            if Colors <> nil then
+              AColor:=Colors.Color[ahaIdentComplWindowEntryLabel].Foreground;
             s:='label';
           end;
       end;
@@ -517,7 +528,8 @@ begin
           ImageIndexCC := IDEImages.LoadImage('cc_unit')
         else
           begin
-            AColor:=Colors.Color[ahaIdentComplWindowEntryUnit].Foreground;
+            if Colors <> nil then
+              AColor:=Colors.Color[ahaIdentComplWindowEntryUnit].Foreground;
             s:='unit';
           end;
       end;
@@ -528,20 +540,23 @@ begin
           ImageIndexCC := IDEImages.LoadImage('cc_namespace')
         else
           begin
-            AColor:=Colors.Color[ahaIdentComplWindowEntryNameSpace].Foreground;
+            if Colors <> nil then
+              AColor:=Colors.Color[ahaIdentComplWindowEntryNameSpace].Foreground;
             s:='namespace';
           end;
       end;
 
     ctnWord:
       begin
-        AColor:=Colors.Color[ahaIdentComplWindowEntryText].Foreground;
+        if Colors <> nil then
+          AColor:=Colors.Color[ahaIdentComplWindowEntryText].Foreground;
         s:='text';
       end;
 
     ctnCodeTemplate:
       begin
-        AColor:=Colors.Color[ahaIdentComplWindowEntryTempl].Foreground;
+        if Colors <> nil then
+          AColor:=Colors.Color[ahaIdentComplWindowEntryTempl].Foreground;
         s:='template';
       end;
 
@@ -549,16 +564,19 @@ begin
       if not UseImages then
       begin
         if iliKeyword in IdentItem.Flags then begin
-          AColor:=Colors.Color[ahaIdentComplWindowEntryKeyword].Foreground;
+          if Colors <> nil then
+            AColor:=Colors.Color[ahaIdentComplWindowEntryKeyword].Foreground;
           s:='keyword';
         end else begin
-          AColor:=Colors.Color[ahaIdentComplWindowEntryUnknown].Foreground;
+          if Colors <> nil then
+            AColor:=Colors.Color[ahaIdentComplWindowEntryUnknown].Foreground;
           s:='';
         end;
       end;
 
     else
-      AColor:=Colors.Color[ahaIdentComplWindowEntryUnknown].Foreground;
+      if Colors <> nil then
+        AColor:=Colors.Color[ahaIdentComplWindowEntryUnknown].Foreground;
       s:='';
     end;
     if AColor = clNone then
