@@ -6292,7 +6292,7 @@ resourcestring
   optDispGutterUseCurrentLineColor = 'Use current line color';
   optDispGutterUseCurrentLineNumberColor = 'Use current line number color';
   dlgMatchWords = 'Match words';
-  dlgKeyWord = 'KeyWord';
+  dlgKeyWord = 'Keyword';
   dlgModifier = 'Modifier';
   dlgIAhadentifierComplEntryVar = 'Var';
   dlgIAhadentifierComplEntryType = 'Type';
@@ -6307,7 +6307,7 @@ resourcestring
   dlgIAhadentifierComplEntryUnit = 'Unit';
   dlgIAhadentifierComplEntryNamespace = 'Namespace';
   dlgIAhadentifierComplEntryText = 'Text';
-  dlgIAhadentifierComplEntryCodeTemplate = 'Code-Template';
+  dlgIAhadentifierComplEntryCodeTemplate = 'Template';
   dlgIAhadentifierComplEntryKeyword = 'Keyword';
   dlgIAhadentifierComplEntryOther = 'Other';
   dlgIAhadentifierComplEntryEnum = 'Enum';
