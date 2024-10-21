@@ -46,6 +46,23 @@
           <ahaOverviewGutter Foreground="13948116" Background="15263976" FrameColor="12632256"/>
           <ahaIdentComplWindowHighlight Foreground="191"/>
           <ahaIdentComplRecent Foreground="clGreen"/>
+          <ahaIdentComplWindowEntryConst Foreground="clOlive"/>
+          <ahaIdentComplWindowEntryFunc Foreground="clTeal"/>
+          <ahaIdentComplWindowEntryIdent Foreground="clBlack"/>
+          <ahaIdentComplWindowEntryKeyword Foreground="clBlack"/>
+          <ahaIdentComplWindowEntryEnum Foreground="clOlive"/>
+          <ahaIdentComplWindowEntryLabel Foreground="clOlive"/>
+          <ahaIdentComplWindowEntryMethAbstract Foreground="clRed"/>
+          <ahaIdentComplWindowEntryMethodLowVis Foreground="clGray"/>
+          <ahaIdentComplWindowEntryNameSpace Foreground="clBlack"/>
+          <ahaIdentComplWindowEntryProc Foreground="clNavy"/>
+          <ahaIdentComplWindowEntryProp Foreground="clPurple"/>
+          <ahaIdentComplWindowEntryTempl Foreground="clGray"/>
+          <ahaIdentComplWindowEntryText Foreground="clGray"/>
+          <ahaIdentComplWindowEntryType Foreground="clLime"/>
+          <ahaIdentComplWindowEntryUnit Foreground="clBlack"/>
+          <ahaIdentComplWindowEntryUnknown Foreground="clGray"/>
+          <ahaIdentComplWindowEntryVar Foreground="clMaroon"/>
           <ahaOutlineLevel1Color Foreground="clRed"/>
           <ahaOutlineLevel2Color Foreground="39159"/>
           <ahaOutlineLevel3Color Foreground="2280512"/>

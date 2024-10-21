@@ -1132,7 +1132,7 @@ end;
 procedure TEditorColorOptionsFrame.FindCurHighlightElement;
 begin
   if (ColorElementTree.Selected <> nil) and
-     (ColorElementTree.Selected.Parent = nil) and
+//     (ColorElementTree.Selected.Parent = nil) and
      (ColorElementTree.Selected.GetFirstChild <> nil)
   then
     ColorElementTree.Selected.GetFirstChild.Selected := True;
@@ -1148,12 +1148,12 @@ end;
 
 procedure TEditorColorOptionsFrame.FillColorElementListBox;
 var
-  i: Integer;
+  i, AttriIdx: Integer;
   ParentName: String;
   ParentNode: TTreeNode;
   j: TAhaGroupName;
   Attr: TColorSchemeAttribute;
-  NewNode, DefNode: TTreeNode;
+  NewNode, DefNode, p, ComplWindowEntryParentNode: TTreeNode;
 begin
   ColorElementTree.BeginUpdate;
   ColorElementTree.Items.Clear;
@@ -1168,6 +1168,7 @@ begin
       ColorElementTree.Items.Add(nil, AdditionalHighlightGroupNames[j]).Visible := False;
 
   // Fill Attributes in
+  ComplWindowEntryParentNode := nil;
   DefNode := nil;
   for i := 0 to FCurrentColorScheme.AttributeCount - 1 do begin
     Attr := FCurrentColorScheme.AttributeAtPos[i];
@@ -1191,8 +1192,21 @@ begin
           end;
         else
           begin
+            AttriIdx := GetEnumValue(TypeInfo(TAdditionalHilightAttribute), Attr.StoredName);
             ParentName := AdditionalHighlightGroupNames[Attr.Group];
             ParentNode := ColorElementTree.Items.FindTopLvlNode(ParentName);
+            if (AttriIdx >= ord(ahaIdentComplWindowEntryVar)) and (AttriIdx <= ord(ahaIdentComplWindowEntryUnknown))
+            then begin
+              if ComplWindowEntryParentNode = nil then begin
+                p := ParentNode;
+                if p = nil then
+                  p := ColorElementTree.Items.Add(nil, ParentName);
+                ParentName := ParentName + ' (entry type)';
+                ParentNode := ColorElementTree.Items.AddChild(p, ParentName);
+                ComplWindowEntryParentNode := ParentNode;
+              end;
+              ParentNode := ComplWindowEntryParentNode;
+            end;
           end;
       end;
       if ParentNode = nil then
@@ -1217,6 +1231,7 @@ begin
 
   FCurHighlightElement := nil;
   FindCurHighlightElement;
+  ComplWindowEntryParentNode.Collapse(True);
 end;
 
 procedure TEditorColorOptionsFrame.SetColorElementsToDefaults(OnlySelected: Boolean);

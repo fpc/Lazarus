@@ -68,6 +68,12 @@ type
      ahaIfDefBlockInactive, ahaIfDefBlockActive, ahaIfDefBlockTmpActive,
      ahaIfDefNodeInactive, ahaIfDefNodeActive, ahaIfDefNodeTmpActive,
      ahaIdentComplWindow, ahaIdentComplWindowBorder, ahaIdentComplRecent, ahaIdentComplWindowSelection, ahaIdentComplWindowHighlight,
+     ahaIdentComplWindowEntryVar, ahaIdentComplWindowEntryType, ahaIdentComplWindowEntryConst,
+     ahaIdentComplWindowEntryProc, ahaIdentComplWindowEntryFunc, ahaIdentComplWindowEntryMethAbstract, ahaIdentComplWindowEntryMethodLowVis,
+     ahaIdentComplWindowEntryProp, ahaIdentComplWindowEntryIdent, ahaIdentComplWindowEntryLabel,
+     ahaIdentComplWindowEntryEnum, ahaIdentComplWindowEntryUnit, ahaIdentComplWindowEntryNameSpace,
+     ahaIdentComplWindowEntryText, ahaIdentComplWindowEntryTempl, ahaIdentComplWindowEntryKeyword,
+     ahaIdentComplWindowEntryUnknown,
      ahaOutlineLevel1Color, ahaOutlineLevel2Color, ahaOutlineLevel3Color, ahaOutlineLevel4Color, ahaOutlineLevel5Color, ahaOutlineLevel6Color, ahaOutlineLevel7Color, ahaOutlineLevel8Color, ahaOutlineLevel9Color, ahaOutlineLevel10Color
      );
 

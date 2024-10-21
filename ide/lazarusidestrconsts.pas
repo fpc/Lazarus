@@ -6294,6 +6294,23 @@ resourcestring
   dlgMatchWords = 'Match words';
   dlgKeyWord = 'KeyWord';
   dlgModifier = 'Modifier';
+  dlgIAhadentifierComplEntryVar = 'Var';
+  dlgIAhadentifierComplEntryType = 'Type';
+  dlgIAhadentifierComplEntryConst = 'Const';
+  dlgIAhadentifierComplEntryProc = 'Procedure';
+  dlgIAhadentifierComplEntryFunc = 'Function';
+  dlgIAhadentifierComplEntryAbstractProcFunc = 'Abstract proc/func';
+  dlgIAhadentifierComplEntryLowerVisibilityProcFunc = 'Lower visibility proc/func';
+  dlgIAhadentifierComplEntryProperty = 'Property';
+  dlgIAhadentifierComplEntryIdent = 'Identifier';
+  dlgIAhadentifierComplEntryLabel = 'Label';
+  dlgIAhadentifierComplEntryUnit = 'Unit';
+  dlgIAhadentifierComplEntryNamespace = 'Namespace';
+  dlgIAhadentifierComplEntryText = 'Text';
+  dlgIAhadentifierComplEntryCodeTemplate = 'Code-Template';
+  dlgIAhadentifierComplEntryKeyword = 'Keyword';
+  dlgIAhadentifierComplEntryOther = 'Other';
+  dlgIAhadentifierComplEntryEnum = 'Enum';
 
 implementation
 

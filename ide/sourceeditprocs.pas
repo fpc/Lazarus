@@ -50,7 +50,7 @@ uses
   // IdeIntf
   LazIDEIntf, IDEImagesIntf, TextTools, IDETextConverter,
   // IDE
-  DialogProcs, EditorOptions, CodeToolsOptions, SourceSynEditor;
+  DialogProcs, EditorOptions, CodeToolsOptions, SourceSynEditor, SourceMarks;
 
 type
 
@@ -392,7 +392,7 @@ begin
         if UseImages then
           ImageIndexCC := IDEImages.LoadImage('cc_variable')
         else begin
-          AColor:=clMaroon;
+          AColor:=Colors.Color[ahaIdentComplWindowEntryVar].Foreground;
           s:='var';
         end;
       end;
@@ -420,14 +420,14 @@ begin
         end
         else
         begin
-          AColor:=clLime;
+          AColor:=Colors.Color[ahaIdentComplWindowEntryType].Foreground;
           s:='type';
         end;
       end;
 
     ctnConstDefinition,ctnConstant:
       begin
-        AColor:=clOlive;
+        AColor:=Colors.Color[ahaIdentComplWindowEntryConst].Foreground;
         s:='const';
         if UseImages then
           ImageIndexCC := IDEImages.LoadImage('cc_constant');
@@ -450,12 +450,12 @@ begin
         begin
           if IdentItem.IsFunction then
             begin
-              AColor:=clTeal;
+              AColor:=Colors.Color[ahaIdentComplWindowEntryFunc].Foreground;
               s:='function';
             end
           else
             begin
-              AColor:=clNavy;
+              AColor:=Colors.Color[ahaIdentComplWindowEntryProc].Foreground;
               if IdentItem.IsConstructor then
                 s := 'constructor'
               else if IdentItem.IsDestructor then
@@ -464,9 +464,9 @@ begin
                 s:='procedure';
             end;
           if IdentItem.TryIsAbstractMethod then
-            AColor:=clRed;
+            AColor:=Colors.Color[ahaIdentComplWindowEntryMethAbstract].Foreground;
           if iliHasLowerVisibility in IdentItem.Flags then
-            AColor:=clGray;
+            AColor:=Colors.Color[ahaIdentComplWindowEntryMethodLowVis].Foreground;
         end;
       end;
       
@@ -482,7 +482,7 @@ begin
           end
         else
           begin
-            AColor:=clPurple;
+            AColor:=Colors.Color[ahaIdentComplWindowEntryProp].Foreground;
             s:='property';
             if IsReadOnly then
               ImageIndex:=IDEImages.LoadImage('ce_property_readonly');
@@ -495,7 +495,7 @@ begin
           ImageIndexCC := IDEImages.LoadImage('cc_enum')
         else
           begin
-            AColor:=clOlive;
+            AColor:=Colors.Color[ahaIdentComplWindowEntryIdent].Foreground;
             s:='enum';
           end;
       end;
@@ -506,7 +506,7 @@ begin
           ImageIndexCC := IDEImages.LoadImage('cc_label')
         else
           begin
-            AColor:=clOlive;
+            AColor:=Colors.Color[ahaIdentComplWindowEntryLabel].Foreground;
             s:='label';
           end;
       end;
@@ -517,7 +517,7 @@ begin
           ImageIndexCC := IDEImages.LoadImage('cc_unit')
         else
           begin
-            AColor:=clBlack;
+            AColor:=Colors.Color[ahaIdentComplWindowEntryUnit].Foreground;
             s:='unit';
           end;
       end;
@@ -528,20 +528,20 @@ begin
           ImageIndexCC := IDEImages.LoadImage('cc_namespace')
         else
           begin
-            AColor:=clBlack;
+            AColor:=Colors.Color[ahaIdentComplWindowEntryNameSpace].Foreground;
             s:='namespace';
           end;
       end;
 
     ctnWord:
       begin
-        AColor:=clGray;
+        AColor:=Colors.Color[ahaIdentComplWindowEntryText].Foreground;
         s:='text';
       end;
 
     ctnCodeTemplate:
       begin
-        AColor:=clGray;
+        AColor:=Colors.Color[ahaIdentComplWindowEntryTempl].Foreground;
         s:='template';
       end;
 
@@ -549,18 +549,20 @@ begin
       if not UseImages then
       begin
         if iliKeyword in IdentItem.Flags then begin
-          AColor:=clBlack;
+          AColor:=Colors.Color[ahaIdentComplWindowEntryKeyword].Foreground;
           s:='keyword';
         end else begin
-          AColor:=clGray;
+          AColor:=Colors.Color[ahaIdentComplWindowEntryUnknown].Foreground;
           s:='';
         end;
       end;
 
     else
-      AColor:=clGray;
+      AColor:=Colors.Color[ahaIdentComplWindowEntryUnknown].Foreground;
       s:='';
     end;
+    if AColor = clNone then
+      AColor := ForegroundColor;
 
     ScaledImgList := GetImgListRes(IDEImages.Images_16, Result.Y);
 

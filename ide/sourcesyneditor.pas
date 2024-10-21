@@ -220,7 +220,7 @@ type
     property IfDefTree;
   end;
 
-  TIdentWindowAhaColorRange = ahaIdentComplWindow..ahaIdentComplWindowHighlight;
+  TIdentWindowAhaColorRange = ahaIdentComplWindow..ahaIdentComplWindowEntryUnknown;
 
   { TSynMarkupIdentComplWindow }
 
