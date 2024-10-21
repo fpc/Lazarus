@@ -49,7 +49,7 @@ uses
   // BuildIntf
   ComponentReg,
   // IDEIntf
-  MenuIntf, LazIDEIntf, IDEWindowIntf, IDEImagesIntf,
+  MenuIntf, LazIDEIntf, IDEWindowIntf, IDEImagesIntf, IDECommands,
   // IdeConfig
   CoolBarOptions,
   // IDE
@@ -872,6 +872,8 @@ begin
   itmToolRescanFPCSrcDir.Enabled:=aAllow;
   itmToolBuildLazarus.Enabled:=aAllow;
   //itmToolConfigureBuildLazarus.Enabled:=aAllow;
+  // IDE CoolBar
+  IDECommandList.FindIDECommand(ecProjectChangeBuildMode).Enabled := aAllow;
 end;
 
 end.
