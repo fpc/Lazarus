@@ -98,6 +98,10 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
+#: tmainform.bbtnclose.hint
+msgid "Close application"
+msgstr ""
+
 #: tmainform.bbtncreatehtml.caption
 msgid "Create HTML"
 msgstr ""
@@ -122,29 +126,23 @@ msgstr ""
 msgid "IconTable"
 msgstr ""
 
-#: tmainform.cbdarkmode.caption
-msgid "Dark Mode"
-msgstr ""
-
-#: tmainform.cbdarkmode.hint
-msgid "Create HTML page with dark background"
-msgstr ""
-
-#: tmainform.cbtranslatedhtml.caption
-msgid "Translated HTML text"
-msgstr ""
-
-#: tmainform.cbtranslatedhtml.hint
-msgid ""
-"Unchecked: Use the GUI language in the HTML text\n"
-"Checked: Write the HTML text in English"
-msgstr ""
-
 #: tmainform.directoryedit.hint
 msgid "Folder with images for which the HTML preview should be created"
 msgstr ""
 
+#: tmainform.menudarkhtmlpage.caption
+msgid "Dark HTML page"
+msgstr ""
+
+#: tmainform.menuhtmlpageenglish.caption
+msgid "HTML page in English"
+msgstr ""
+
 #: tmainform.sbtnlastdirs.hint
 msgid "Last used"
+msgstr ""
+
+#: tmainform.sbtnmenu.hint
+msgid "Options"
 msgstr ""
 

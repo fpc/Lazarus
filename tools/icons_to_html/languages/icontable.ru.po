@@ -111,6 +111,10 @@ msgstr "Этот каталог содержит значки в количес�
 msgid "Close"
 msgstr "Закрыть"
 
+#: tmainform.bbtnclose.hint
+msgid "Close application"
+msgstr ""
+
 #: tmainform.bbtncreatehtml.caption
 msgid "Create HTML"
 msgstr "Создать HTML"
@@ -135,29 +139,25 @@ msgstr "Сохранить созданную страницу HTML в файл�
 msgid "IconTable"
 msgstr "Таблица значков IconTable"
 
-#: tmainform.cbdarkmode.caption
-msgid "Dark Mode"
-msgstr "Тёмный режим"
-
-#: tmainform.cbdarkmode.hint
-msgid "Create HTML page with dark background"
-msgstr "Создать страницу HTML с тёмным фоном"
-
-#: tmainform.cbtranslatedhtml.caption
-msgid "Translated HTML text"
-msgstr ""
-
-#: tmainform.cbtranslatedhtml.hint
-msgid ""
-"Unchecked: Use the GUI language in the HTML text\n"
-"Checked: Write the HTML text in English"
-msgstr ""
-
 #: tmainform.directoryedit.hint
 msgid "Folder with images for which the HTML preview should be created"
 msgstr "Каталог с изображениями для создания страницы предпросмотра HTML"
 
+#: tmainform.menudarkhtmlpage.caption
+msgctxt "tmainform.menudarkhtmlpage.caption"
+msgid "Dark HTML page"
+msgstr ""
+
+#: tmainform.menuhtmlpageenglish.caption
+msgctxt "tmainform.menuhtmlpageenglish.caption"
+msgid "HTML page in English"
+msgstr ""
+
 #: tmainform.sbtnlastdirs.hint
 msgid "Last used"
 msgstr "Недавние"
+
+#: tmainform.sbtnmenu.hint
+msgid "Options"
+msgstr ""
 

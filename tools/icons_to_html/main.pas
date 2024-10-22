@@ -5,7 +5,7 @@ unit main;
 interface
 
 uses
-  Classes, SysUtils, StrUtils, Forms, FPImage, Controls, Dialogs, StdCtrls, EditBtn, FileUtil,
+  Classes, SysUtils, StrUtils, Forms, FPImage, Controls, Dialogs, EditBtn, FileUtil,
   LazUTF8, LazFileUtils, LCLIntf, LCLType, Buttons, Menus, IniFiles,
   SynEdit, SynHighlighterHTML, DefaultTranslator;
 
@@ -18,12 +18,14 @@ type
     bbtnCreateHTML: TBitBtn;
     bbtnSave: TBitBtn;
     bbtnPreview: TBitBtn;
-    cbDarkMode: TCheckBox;
-    cbTranslatedHTML: TCheckBox;
     DirectoryEdit: TDirectoryEdit;
     ImageList: TImageList;
+    menuDarkHTMLpage: TMenuItem;
+    menuHTMLpageEnglish: TMenuItem;
     popLastDirs: TPopupMenu;
+    popMenu: TPopupMenu;
     sbtnLastDirs: TSpeedButton;
+    sbtnMenu: TSpeedButton;
     SynEdit: TSynEdit;
     SynHTMLSyn: TSynHTMLSyn;
     TaskDialog: TTaskDialog;
@@ -33,12 +35,15 @@ type
     procedure bbtnSaveClick(Sender: TObject);
     procedure cbDarkModeChange(Sender: TObject);
     procedure DirectoryEditChange(Sender: TObject);
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDropFiles(Sender: TObject; const FileNames: array of String);
     procedure FormShow(Sender: TObject);
     procedure LastDirClick(Sender: TObject);
+    procedure menuDarkHTMLpageClick(Sender: TObject);
+    procedure menuHTMLpageEnglishClick(Sender: TObject);
     procedure sbtnLastDirsClick(Sender: TObject);
+    procedure sbtnMenuClick(Sender: TObject);
   private
     ImgDirectory: String;
     function GetImgDirectory(P: String): String;
@@ -80,7 +85,7 @@ resourcestring
   rsSavedAs = 'Saved as: %s';
   rsNoPngImageFilesFoundIn = 'No PNG image files found in %s';
   rsNoMatchingPngImageFilesFoundIn = 'No matching PNG image files found in %s';
-  rsTheFolderDoesNotExist = 'Folder "%s" does not exist or is currently not available.'+LineEnding+LineEnding+'Should it be removed from the list?';
+  rsTheFolderDoesNotExist = 'Folder "%s" does not exist or is currently not available.' + LineEnding + LineEnding + 'Should it be removed from the list?';
   rsThisFolderContains = ThisFolderContains;
   rsSize = 'Size';
   rsName = 'Name';
@@ -137,8 +142,8 @@ begin
       popLastDirs.Items[i].Visible := popLastDirs.Items[i].Caption > '';
     end;
 
-    cbDarkMode.Checked := Config.ReadBool('Options', 'DarkMode', False);
-    cbTranslatedHTML.Checked := Config.ReadBool('Options', 'TranslatedHTML', true);
+    menuDarkHTMLpage.Checked := Config.ReadBool('Options', 'DarkMode', menuDarkHTMLpage.Checked);
+    menuHTMLpageEnglish.Checked := Config.ReadBool('Options', 'HTMLpageEnglish', menuHTMLpageEnglish.Checked);
   finally
     Config.Free;
   end;
@@ -192,8 +197,8 @@ begin
       for i := 0 to LastDirsMax do
         Config.WriteString('LastDirs', 'LastDir' + i.ToString, popLastDirs.Items[i].Caption);
 
-      Config.WriteBool('Options', 'DarkMode', cbDarkMode.Checked);
-      Config.WriteBool('Options', 'TranslatedHTML', cbTranslatedHTML.Checked);
+      Config.WriteBool('Options', 'DarkMode', menuDarkHTMLpage.Checked);
+      Config.WriteBool('Options', 'HTMLpageEnglish', menuHTMLpageEnglish.Checked);
     except
       ShowMsg(rsError, rsTheConfigurationCouldNotBeSaved);
     end;
@@ -262,7 +267,7 @@ end;
 
 procedure TMainForm.CreateHTML(HTMLLines: TStrings; Preview: Boolean);
 
-  function Link(URL, AText: String): string;
+  function Link(URL, AText: String): String;
   begin
     Result := Format('<a href="%s">%s</a>', [URL, AText]);
   end;
@@ -279,7 +284,6 @@ var
   IcoSize: String;
   IcoName: String;
   translated: Boolean;
-  ThisFolderContainsStr: String;
   IcoWidth: Integer = 0;
   IcoHeight: Integer = 0;
   DPos: Integer;
@@ -301,7 +305,7 @@ begin
   IcoSizeList := TStringList.Create;
   PixSizeList := TStringList.Create;
   try
-    translated := cbTranslatedHTML.Checked;
+    translated := not menuHTMLpageEnglish.Checked;
 
     FindAllFiles(AllFileList, ImgDirectory, '*.png', False);
 
@@ -349,7 +353,7 @@ begin
       Exit;
     end;
 
-    if cbDarkMode.Checked then
+    if menuDarkHTMLpage.Checked then
     begin
       ColorSet1 := 'color: #ffffff; background-color: #5c0000;}';
       ColorSet2 := 'color: #ffffff; background-color: #000057;}';
@@ -415,13 +419,11 @@ begin
     HTMLLines.Add('</table>');
 
     HTMLLines.Add('<div class="infobox colorset2">');
-    HTMLLines.Add(Format(IfThen(translated, rsThisFolderContains, ThisFolderContains), [
-      IcoFileList.Count, IconGroups, PixSizeList.Count
-    ]));
+    HTMLLines.Add(Format(IfThen(translated, rsThisFolderContains, ThisFolderContains), [IcoFileList.Count, IconGroups, PixSizeList.Count]));
 
     if FileExists(ImgDirectory + InfoTextFileName) then
     begin
-      if cbTranslatedHTML.Checked then
+      if not menuHTMLpageEnglish.Checked then
       begin
         HTMLLines.Add('<hr>');
         HTMLLines.Add('<p>' + rsInfoText1 + '</p>');
@@ -435,7 +437,8 @@ begin
         HTMLLines.Add('<p>' + Format(rsLicense, [License_CC0]) + '<br>');
         HTMLLines.Add(Link(URL_CC0, URL_CC0) + '<br>');
         HTMLLines.Add(rsFreelyAvailable + '</p>');
-      end else
+      end
+      else
       begin
         InfoTxtList := TStringList.Create;
         try
@@ -498,12 +501,34 @@ begin
   end;
 end;
 
+procedure TMainForm.menuDarkHTMLpageClick(Sender: TObject);
+begin
+  menuDarkHTMLpage.Checked := not menuDarkHTMLpage.Checked;
+  if (bbtnCreateHTML.Enabled) and (SynEdit.Text <> '') then
+    bbtnCreateHTML.Click;
+end;
+
+procedure TMainForm.menuHTMLpageEnglishClick(Sender: TObject);
+begin
+  menuHTMLpageEnglish.Checked := not menuHTMLpageEnglish.Checked;
+  if (bbtnCreateHTML.Enabled) and (SynEdit.Text <> '') then
+    bbtnCreateHTML.Click;
+end;
+
 procedure TMainForm.sbtnLastDirsClick(Sender: TObject);
 var
   pt: TPoint;
 begin
   pt := sbtnLastDirs.ClientToScreen(Point(sbtnLastDirs.Width, sbtnLastDirs.Height));
   popLastDirs.PopUp(pt.X, pt.Y);
+end;
+
+procedure TMainForm.sbtnMenuClick(Sender: TObject);
+var
+  pt: TPoint;
+begin
+  pt := sbtnMenu.ClientToScreen(Point(sbtnMenu.Width, sbtnMenu.Height));
+  popMenu.PopUp(pt.X, pt.Y);
 end;
 
 procedure TMainForm.UpdateLastDirs(ImgDir: String; Delete: Boolean);

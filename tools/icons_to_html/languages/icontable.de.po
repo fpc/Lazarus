@@ -52,12 +52,12 @@ msgstr "Name"
 #: main.rsnomatchingpngimagefilesfoundin
 #, object-pascal-format
 msgid "No matching PNG image files found in %s"
-msgstr "Keine passenden png-Bilddateien gefunden in %s"
+msgstr "Keine passenden PNG-Bilddateien gefunden in %s"
 
 #: main.rsnopngimagefilesfoundin
 #, object-pascal-format
 msgid "No PNG image files found in %s"
-msgstr "Keine png-Bilddateien gefunden in %s"
+msgstr "Keine PNG-Bilddateien gefunden in %s"
 
 #: main.rssavedas
 #, object-pascal-format
@@ -113,6 +113,10 @@ msgstr "Dieser Ordner enthält %0:d Icons in %1:d Icon-Gruppen mit %2:d Icon-Gr�
 msgid "Close"
 msgstr "Beenden"
 
+#: tmainform.bbtnclose.hint
+msgid "Close application"
+msgstr "Programm beenden"
+
 #: tmainform.bbtncreatehtml.caption
 msgid "Create HTML"
 msgstr "HTML erzeugen"
@@ -135,32 +139,26 @@ msgstr "Speichert den generierten HTML-Code in der Datei \"IconTable.html\" im a
 
 #: tmainform.caption
 msgid "IconTable"
-msgstr "Icon-Tabelle"
-
-#: tmainform.cbdarkmode.caption
-msgid "Dark Mode"
-msgstr "Dunkler Modus"
-
-#: tmainform.cbdarkmode.hint
-msgid "Create HTML page with dark background"
-msgstr "Erzeugt eine HTML-Seite mit dunklem Hintergrund"
-
-#: tmainform.cbtranslatedhtml.caption
-msgid "Translated HTML text"
-msgstr "Übersetzter HTML-Text"
-
-#: tmainform.cbtranslatedhtml.hint
-msgid ""
-"Unchecked: Use the GUI language in the HTML text\n"
-"Checked: Write the HTML text in English"
 msgstr ""
-"Nicht markiert: HTML-Text in der Sprache der Benutzeroberfläche speichern\n"
-"Markiert: HTML-Text auf Englisch erzeugen"
 
 #: tmainform.directoryedit.hint
 msgid "Folder with images for which the HTML preview should be created"
 msgstr "Ordner mit den Bildern, für die der HTML-Code erzeugt werden soll"
 
+#: tmainform.menudarkhtmlpage.caption
+msgctxt "tmainform.menudarkhtmlpage.caption"
+msgid "Dark HTML page"
+msgstr "Dunkle HTML-Seite"
+
+#: tmainform.menuhtmlpageenglish.caption
+msgctxt "tmainform.menuhtmlpageenglish.caption"
+msgid "HTML page in English"
+msgstr "HTML-Seite auf Englisch"
+
 #: tmainform.sbtnlastdirs.hint
 msgid "Last used"
 msgstr "Zuletzt benutzt"
+
+#: tmainform.sbtnmenu.hint
+msgid "Options"
+msgstr "Optionen"

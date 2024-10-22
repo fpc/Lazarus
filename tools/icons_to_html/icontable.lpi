@@ -81,6 +81,7 @@
       <Unit>
         <Filename Value="icontable.lpr"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="IconTable"/>
       </Unit>
       <Unit>
         <Filename Value="main.pas"/>
