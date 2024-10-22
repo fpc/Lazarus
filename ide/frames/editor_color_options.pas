@@ -1231,7 +1231,8 @@ begin
 
   FCurHighlightElement := nil;
   FindCurHighlightElement;
-  ComplWindowEntryParentNode.Collapse(True);
+  if assigned(ComplWindowEntryParentNode) then
+    ComplWindowEntryParentNode.Collapse(True);
 end;
 
 procedure TEditorColorOptionsFrame.SetColorElementsToDefaults(OnlySelected: Boolean);
