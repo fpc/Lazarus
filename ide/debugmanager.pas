@@ -2339,7 +2339,7 @@ end;
 procedure TDebugManager.UpdateButtonsAndMenuItems;
 var
   DebuggerIsValid: boolean;
-  CanRun: Boolean;
+  CanRun, CanRunOrCont, CanRunOrIsRunning: Boolean;
   AvailCommands: TDBGCommands;
   CurState: TDBGState;
 begin
@@ -2350,32 +2350,37 @@ begin
     CurState := FDebugger.State;
   AvailCommands := GetAvailableCommands;
   DebuggerIsValid:=(MainIDE.ToolStatus in [itNone, itDebugger]);
-  CanRun := CanRunDebugger;
+  CanRun := CanRunDebugger; // This may be wrong, if the project is not run-able, but the debugger was started with attach
+  CanRunOrCont := CanRun or (CurState in [dsPause, dsInternalPause]);
+  CanRunOrIsRunning := CanRun or (CurState = dsRun);
   with MainIDEBar do begin
     // For 'run' and 'step' bypass 'idle', so we can set the filename later
     // Run
-    itmRunMenuRun.Enabled                 := (CanRun and (dcRun in AvailCommands)) or
+    itmRunMenuRun.Enabled                 := (CanRunOrCont and (dcRun in AvailCommands)) or
                                              ((Project1<>nil) and Project1.CompilerOptions.RunWithoutDebug);
     itmRunMenuRunWithDebugging.Enabled    := CanRun and (dcRun in AvailCommands);
     itmRunMenuRunWithDebugging.Visible    := (Project1<>nil) and Project1.CompilerOptions.RunWithoutDebug;
     itmRunMenuRunWithoutDebugging.Visible := (Project1<>nil) and (not Project1.CompilerOptions.RunWithoutDebug);
     // Pause
-    itmRunMenuPause.Enabled        := CanRun and ((dcPause in AvailCommands) or FAutoContinueTimer.Enabled);
+    itmRunMenuPause.Enabled        := CanRunOrIsRunning and ((dcPause in AvailCommands) or FAutoContinueTimer.Enabled);
     // Show execution point
-    itmRunMenuShowExecutionPoint.Enabled := CanRun and (CurState = dsPause);
+    itmRunMenuShowExecutionPoint.Enabled := CanRunOrCont and (CurState = dsPause);
     // Step into
-    itmRunMenuStepInto.Enabled     := CanRun and (dcStepInto in AvailCommands);
+    itmRunMenuStepInto.Enabled     := CanRunOrCont and (dcStepInto in AvailCommands);
     // Step over
-    itmRunMenuStepOver.Enabled     := CanRun and (dcStepOver in AvailCommands);
+    itmRunMenuStepOver.Enabled     := CanRunOrCont and (dcStepOver in AvailCommands);
     // Step out
-    itmRunMenuStepOut.Enabled      := CanRun and (dcStepOut in AvailCommands) and (CurState = dsPause);
+    itmRunMenuStepOut.Enabled      := CanRunOrCont and (dcStepOut in AvailCommands) and (CurState = dsPause);
     // Step to cursor
-    itmRunMenuStepToCursor.Enabled := CanRun and (dcStepTo in AvailCommands);
+    itmRunMenuStepToCursor.Enabled := CanRunOrCont and (dcStepTo in AvailCommands);
     // Run to cursor
-    itmRunMenuRunToCursor.Enabled  := CanRun and (dcRunTo in AvailCommands);
+    itmRunMenuRunToCursor.Enabled  := CanRunOrCont and (dcRunTo in AvailCommands);
     // Stop
-    itmRunMenuStop.Enabled         := (CanRun and (MainIDE.ToolStatus = itDebugger) and
-      (CurState in [dsPause, dsInternalPause, dsInit, dsRun, dsError])) or
+    itmRunMenuStop.Enabled         :=
+      ( (CanRunOrCont or CanRunOrIsRunning) and
+        (MainIDE.ToolStatus = itDebugger) and
+        (CurState in [dsPause, dsInternalPause, dsInit, dsRun, dsError])
+      ) or
       (MainIDE.ToolStatus = itBuilder);
 
     //Attach / Detach
@@ -2383,9 +2388,9 @@ begin
     itmRunMenuDetach.Enabled          := DebuggerIsValid and (dcDetach in AvailCommands);
 
     // Evaluate
-    itmRunMenuEvaluate.Enabled        := CanRun and (dcEvaluate in AvailCommands);
+    itmRunMenuEvaluate.Enabled        := CanRunOrCont and (dcEvaluate in AvailCommands);
     // Evaluate / modify
-    SrcEditMenuEvaluateModify.Enabled := CanRun and (dcEvaluate in AvailCommands);
+    SrcEditMenuEvaluateModify.Enabled := CanRunOrCont and (dcEvaluate in AvailCommands);
     // Add watch
     itmRunMenuAddWatch.Enabled        := True; // always allow to add a watch
 
