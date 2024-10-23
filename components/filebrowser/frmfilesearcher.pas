@@ -93,7 +93,7 @@ begin
   For I:=0 to LBFiles.Count-1 do
     if LBFiles.Selected[I] then
       begin
-      Result[Idx]:=TFileEntry(LBFiles.Items.Objects[i]);
+      Result[Idx]:=TFileSearchMatch(LBFiles.Items.Objects[i]).Entry;
       Inc(Idx);
       end;
 end;
