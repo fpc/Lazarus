@@ -1,0 +1,179 @@
+Name:           fpc-laz
+Version:        1.2.3
+Release:        1
+Summary:        Free Pascal Compiler
+
+# Because this rpm is used on different systems, with different names
+# of packages/dependencies. Do not add dependencies automatically.
+AutoReqProv: no
+
+Group:          Development/Languages
+License:        GPL2 and modified LGPL2
+URL:            https://www.freepascal.org/
+Source:         ftp://ftp.freepascal.org/pub/fpc/dist/source-%{version}/fpc-%{version}-%{release}.source.tar.gz
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+
+Requires:       glibc, binutils
+BuildRequires:  binutils, glibc-devel
+Conflicts:      fpc, fpc-ide, fpc-units
+
+%define _source_payload w9.bzdio
+%define _binary_payload w9.bzdio
+%define _build_id_links none
+%undefine _missing_build-ids_terminate_build
+
+%description
+
+Free Pascal is a mature, versatile, open source Pascal compiler.
+It can target many processor architectures: Intel x86 (16 and 32 bit),
+AMD64/x86-64, PowerPC, PowerPC64, SPARC, SPARC64, ARM, AArch64, MIPS,
+Motorola 68k, AVR, and the JVM. Supported operating systems include
+Windows (16/32/64 bit, CE, and native NT), Linux,
+Mac OS X/iOS/iPhoneSimulator/Darwin, FreeBSD and other BSD flavors,
+DOS (16 bit, or 32 bit DPMI), OS/2, AIX, Android, Haiku,
+Nintendo GBA/DS/Wii, AmigaOS, MorphOS, AROS, Atari TOS,
+and various embedded platforms. Additionally, support for RISC-V (32/64),
+Xtensa, and Z80 architectures, and for the LLVM compiler infrastructure
+is available in the development version.
+
+%ifarch ppc
+%define ppcname ppcppc
+%else
+%ifarch x86_64
+%define ppcname ppcx64
+%else
+%ifarch aarch64
+%define ppcname ppca64
+%else
+%ifarch amd64
+%define ppcname ppcx64
+%else
+%define ppcname ppc386
+%endif
+%endif
+%endif
+%endif
+
+
+%prep
+%setup -q -n %{name}
+
+%build
+rm -rf packages/extra/amunits
+rm -rf packages/extra/winunits
+
+if [ -z "$STARTPP" ]; then
+  STARTPP=`which %{ppcname}`
+fi
+NEWPP=`pwd`/compiler/%{ppcname}
+DATA2INC=`pwd`/utils/data2inc
+make distclean all FPC=${STARTPP}
+
+# disable the debuginfo package
+%define debug_package %{nil}
+%define __spec_install_post /usr/lib/rpm/brp-compress
+
+%install 
+rm -rf %{buildroot}
+FPCMAKE=`pwd`/utils/fpcm/fpcmake
+if [ -f "$FPCMAKE" ]; then
+    echo found fpcmake: $FPCMAKE
+else
+    FPCMAKE=`pwd`/utils/fpcm/bin/*-linux/fpcmake
+    FPCMAKE=`echo $FPCMAKE`
+fi
+if [ -f "$FPCMAKE" ]; then
+    echo found fpcmake: $FPCMAKE
+else
+    echo Error: fpcmake not found: $FPCMAKE
+    exit 1
+fi
+DATA2INC=`pwd`/utils/data2inc
+NEWPP=`pwd`/compiler/%{ppcname}
+FPCVERSION=`${NEWPP} -iV`
+FPCFULLVERSION=`${NEWPP} -iW`
+INSTALLOPTS="FPC=${NEWPP} FPCMAKE=${FPCMAKE} DATA2INC=${DATA2INC} \
+               INSTALL_PREFIX=%{buildroot}%{_prefix} \
+               INSTALL_LIBDIR=%{buildroot}%{_libdir} \
+               INSTALL_BASEDIR=%{buildroot}%{_libdir}/fpc/${FPCVERSION} \
+               INSTALL_BINDIR=%{buildroot}%{_bindir}"
+make install ${INSTALLOPTS}
+%ifarch x86_64
+    if [ -f %{buildroot}%{_libdir}/../lib/libpas2jslib.so ]; then
+        mv %{buildroot}%{_libdir}/../lib/libpas2jslib.so %{buildroot}%{_libdir}/libpas2jslib.so
+    fi
+%endif
+
+# create link /usr/bin/ppc*
+ln -sf %{_libdir}/fpc/${FPCVERSION}/%{ppcname} %{buildroot}%{_bindir}/%{ppcname}
+# install /usr/bin/fpcmkcfg
+install `pwd`/utils/fpcmkcfg/bin/%{_arch}-linux/fpcmkcfg %{buildroot}%{_bindir}/fpcmkcfg
+
+# Workaround:
+# newer rpm versions do not allow garbage
+rm -rf %{buildroot}%{_libdir}/fpc/lexyacc
+rm -rf %{buildroot}%{_prefix}/lib/fpc/lexyacc
+rm -rf %{buildroot}%{_defaultdocdir}/fpc-libc-*
+rm -rf %{buildroot}%{_defaultdocdir}/fpc-symbolic-*
+# 2.7.1 ignores the INSTALL_DOC variable and writes some files directly to /usr/share/doc
+rm -rf %{buildroot}/usr/share/doc/fpc-*
+
+%clean
+rm -rf %{buildroot}
+
+%post
+# Create a version independent config
+%define fpcversion 1.2.3
+%{_libdir}/fpc/%{fpcversion}/samplecfg %{_libdir}/fpc/%{fpcversion} > /dev/null
+
+%files
+%defattr(-,root,root,-)
+%{_bindir}/*
+%{_libdir}/fpc
+# since fpc 3.1.1:
+%{_libdir}/libpas2jslib.so
+
+%changelog
+* Wed Oct 23 2024 Mattias Gaertner <mattias@freepascal.org> 3.2.2
+- renamed to fpc-laz, conflicts with fpc, fpc-ide, fpc-units
+
+* Sat May 2 2020 Mattias Gaertner <mattias@freepascal.org> 3.0.4
+- commented libpas2jslib.so, added fpcmkcfg
+
+* Sat Nov 10 2018 Mattias Gaertner <mattias@freepascal.org> 3.3.1
+- added libpas2jslib.so
+
+* Sat Feb 25 2017 Mattias Gaertner <mattias@freepascal.org> 3.0.2
+- 64bit
+- removed src and doc
+
+* Thu Jul 28 2005 Joost van der Sluis <joost@cnoc.nl> 2.0.0-1
+- Added some requirements
+- Added COPYING-info to %%doc
+
+* Tue Jun 28 2005 Joost van der Sluis <joost@cnoc.nl> 2.0.0-0.6
+- Only rtl, fcl and packages are added to src-subpackage
+- Silenced post-script
+- disabled the debuginfo-package
+
+* Sun Jun 5 2005 Joost van der Sluis <joost@cnoc.nl> 2.0.0-0.5
+- Added doc-subpackage
+- Added src-subpackage
+
+* Fri Jun 3 2005 Joost van der Sluis <joost@cnoc.nl> 2.0.0-0.4
+- New fix for lib64 on x86_64
+- small patches from Jens Petersen <petersen@redhat.com>
+
+* Thu May 26 2005 Joost van der Sluis <joost@cnoc.nl> 2.0.0-0.3
+- replaced 'lib' and 'lib64' by %%{_lib}
+
+* Tue May 24 2005 Joost van der Sluis <joost@cnoc.nl> 2.0.0-0.2
+- Fixed for lib64 on x86_64
+- Changed summary, description and license
+- Removed examples from installation
+- Make clean removed from clean-section
+- Clean-up
+- replaced $RPM_BUILD_ROOT by %%{buildroot}
+
+* Mon May 23 2005 Joost van der Sluis <joost@cnoc.nl> 2.0.0-0.1
+- Initial build.
