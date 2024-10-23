@@ -60,13 +60,13 @@ Day=$(date +%d)
 
 # get installed fpc version
 echo "getting installed fpc version ..."
-FPCRPM=$(rpm -qa | egrep '^fpc-[0-9]')
+FPCRPM=$(rpm -qa | egrep '^fpc-laz-[0-9]')
 if [ "x$FPCRPM" = "x" ]; then
   echo ERROR: fpc rpm not installed
   exit
 fi
 # remove from the fpc version the architecture i386, i686, x86_64
-FPCRPMVersion=$(echo $FPCRPM | sed -e 's/fpc-//g' -e 's/\.[a-z0-9_]\+$//g')
+FPCRPMVersion=$(echo $FPCRPM | sed -e 's/fpc-laz-//g' -e 's/\.[a-z0-9_]\+$//g')
 echo "installed fpc version: $FPCRPMVersion"
 FPCSRCRPMVersion=$(echo $FPCRPMVersion | cut -d- -f1)
 
@@ -93,7 +93,7 @@ echo "creating lazarus tgz ..."
 # create spec file
 echo "creating lazarus spec file ..."
 CHMCOMMENT="# "
-cat rpm/lazarus.spec.template | \
+cat rpm/lazarus-project.spec.template | \
   sed -e "s/LAZVERSION/$LazVersion/g" \
       -e "s/LAZRELEASE/$LazRelease/g" \
       -e "s/LAZSOURCE/$Src/g" \
@@ -106,6 +106,6 @@ cat rpm/lazarus.spec.template | \
 echo "building rpm ..."
 rpm -ba $SpecFile || rpmbuild -ba $SpecFile
 
-echo "The new rpm can be found at $RPMSrcDir/RPMS/$Arch/lazarus-$LazVersion-$LazRelease.$Arch.rpm"
+echo "The new rpm can be found at $RPMSrcDir/RPMS/$Arch/lazarus-project-$LazVersion-$LazRelease.$Arch.rpm"
 
 # end.
