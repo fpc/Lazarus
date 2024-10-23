@@ -1,3 +1,6 @@
 fpc.spec
 fpc-src.spec
+fpc-laz.spec
+fpc-src-laz.spec
 lazarus-*.spec
+
