@@ -83,10 +83,7 @@ CompilerVersionStr="$CompilerVersion.$CompilerRelease.$CompilerPatch"
 FPCVersion="$CompilerVersion.$CompilerRelease.$CompilerPatch"
 echo " $CompilerVersionStr-$FPCRelease"
 
-Arch=$(rpm --eval "%{_arch}")
-if [ "$Arch" = "i386" ]; then
-  Arch=i686
-fi
+Arch=$(rpm --eval "%{_target_cpu}")
 
 #------------------------------------------------------------------------------
 # patch sources
