@@ -26,7 +26,7 @@ fi
 Arch=$(rpm --eval "%{_target_cpu}")
 
 # retrieve the version information
-echo -n "getting FPC version from local svn ..."
+echo -n "getting FPC version from local git ..."
 VersionFile="$FPCSourceDir/compiler/version.pas"
 CompilerVersion=`cat $VersionFile | grep ' *version_nr *=.*;' | sed -e 's/[^0-9]//g'`
 CompilerRelease=`cat $VersionFile | grep ' *release_nr *=.*;' | sed -e 's/[^0-9]//g'`
@@ -35,15 +35,15 @@ CompilerVersionStr="$CompilerVersion.$CompilerRelease.$CompilerPatch"
 LazVersion=$CompilerVersionStr
 echo " $CompilerVersionStr-$LazRelease"
 
-FPCTGZ=$(rpm/get_rpm_source_dir.sh)/SOURCES/fpc-src-$CompilerVersionStr-$LazRelease.source.tar.gz
+FPCTGZ=$(rpm/get_rpm_source_dir.sh)/SOURCES/fpc-src-laz-$CompilerVersionStr-$LazRelease.source.tar.gz
 CurDir=`pwd`
 
 # pack the directory
 sh create_fpc_tgz_from_local_dir.sh $FPCSourceDir $FPCTGZ
 
-# build fpc-src rpm
+# build fpc-src-laz rpm
 
-echo "building fpc-src rpm ..."
+echo "building fpc-src-laz rpm ..."
 
 # copy custom rpm scripts
 TmpDir=$HOME/tmp
@@ -54,14 +54,14 @@ cp do_nothing.sh $TmpDir/do_nothing.sh
 chmod a+x $TmpDir/do_nothing.sh
 
 # create spec file
-SpecFile=rpm/fpc-src-$LazVersion-$LazRelease.spec
-cat rpm/fpc-src.spec | \
+SpecFile=rpm/fpc-src-laz-$LazVersion-$LazRelease.spec
+cat rpm/fpc-src-laz.spec | \
   sed -e "s/LAZVERSION/$LazVersion/g" -e "s/LAZRELEASE/$LazRelease/g" -e "s#LAZSCRIPTDIR#$TmpDir#g" \
   > $SpecFile
   
 # build rpm
 rpmbuild -ba $SpecFile || rpm -ba $SpecFile
-RPMFile=$(./rpm/get_rpm_source_dir.sh)/RPMS/$Arch/fpc-src-$LazVersion-$LazRelease.$Arch.rpm
+RPMFile=$(./rpm/get_rpm_source_dir.sh)/RPMS/$Arch/fpc-src-laz-$LazVersion-$LazRelease.$Arch.rpm
 
 echo "The new rpm can be found in $RPMFile"
 

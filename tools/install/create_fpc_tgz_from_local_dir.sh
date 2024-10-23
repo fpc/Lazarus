@@ -40,7 +40,15 @@ if [ -d $FPCSrcDir/.svn ]; then
   echo "extracting FPC from local svn ..."
   svn export $FPCSrcDir $TmpDir
 else
-  cp -a $FPCSrcDir $TmpDir
+  if [ -d $FPCSrcDir/.git ]; then
+    echo "extracting FPC from local git ..."
+    mkdir $TmpDir
+    cp -a $FPCSrcDir/.git $TmpDir/
+    git -C $TmpDir restore $TmpDir
+    rm -rf $TmpDir/.git*
+  else
+    cp -a $FPCSrcDir $TmpDir
+  fi
 fi
 
 if [ $RenameSmart = "yes" ]; then
@@ -57,6 +65,7 @@ cd -
 mv $TmpBaseDir/fpc_src.tgz $OutputFile
 rm -rf $TmpDir
 
+exit 0
 
 # end.
 
