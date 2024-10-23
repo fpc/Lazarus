@@ -62,4 +62,6 @@ fi
 %{fpcsrcdir}
 
 %changelog
+* Wed Oct 23 2024 Mattias Gaertner <mattias@freepascal.org> 3.2.2
+- renamed to fpc-src-laz, conflicts with fpc-src
 
