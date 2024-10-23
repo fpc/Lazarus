@@ -6,7 +6,7 @@ set -e
 #------------------------------------------------------------------------------
 # parse parameters
 #------------------------------------------------------------------------------
-Usage="Usage: $0 [nodocs] [notemp] <FPCSrcDir> [release]"
+Usage="Usage: $0 [nodocs] [notemp] [hasbuildid] <FPCSrcDir> [release]"
 
 PkgName=fpc-laz
 
@@ -21,6 +21,13 @@ if [ "x$1" = "xnotemp" ]; then
   WithTempDir=no
   shift
 fi
+
+HasBuildID=no
+if [ "x$1" = "xhasbuildid" ]; then
+  HasBuildID=yes
+  shift
+fi
+
 
 PkgType=rpm
 
@@ -77,7 +84,9 @@ FPCVersion="$CompilerVersion.$CompilerRelease.$CompilerPatch"
 echo " $CompilerVersionStr-$FPCRelease"
 
 Arch=$(rpm --eval "%{_arch}")
-
+if [ "$Arch" = "i386" ]; then
+  Arch=i686
+fi
 
 #------------------------------------------------------------------------------
 # patch sources
@@ -107,7 +116,11 @@ cat $SpecFileTemplate | \
         -e 's/^\%{fpcdir}\/samplecfg .*/%{fpcdir}\/samplecfg %{_libdir}\/fpc\/\\\$version/' \
     > $SpecFile
 #      -e 's/\(%define builddocdir.*\)/%define __strip smart_strip.sh\n\n\1/' \
-  
+if [ "$HasBuildID" = "yes" ]; then
+  sed -e 's/%undefine _missing_build-ids_terminate_build//' -i $SpecFile
+fi
+
+
 SrcTGZ=$(rpm/get_rpm_source_dir.sh)/SOURCES/fpc-$CompilerVersionStr-$FPCRelease.source.tar.gz
 echo "creating $SrcTGZ ..."
 tar czf $SrcTGZ -C $TmpDir $PkgName

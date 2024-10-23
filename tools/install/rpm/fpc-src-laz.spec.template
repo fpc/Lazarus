@@ -6,7 +6,7 @@ Group: Development/Languages
 Source: %{name}-%{version}-%{release}.source.tar.gz
 Summary: FreePascal sources
 Packager: Mattias Gaertner (mattias@freepascal.org)
-URL: http://www.freepascal.org/
+URL: https://www.freepascal.org/
 BuildRoot: %{_tmppath}/%{name}-build%{version}
 Conflicts: fpc-src
 
