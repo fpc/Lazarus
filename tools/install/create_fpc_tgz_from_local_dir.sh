@@ -44,7 +44,7 @@ else
     echo "extracting FPC from local git ..."
     mkdir $TmpDir
     cp -a $FPCSrcDir/.git $TmpDir/
-    git -C $TmpDir restore $TmpDir
+    git -C $TmpDir checkout $TmpDir
     rm -rf $TmpDir/.git*
   else
     cp -a $FPCSrcDir $TmpDir
