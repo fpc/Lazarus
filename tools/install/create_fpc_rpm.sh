@@ -57,10 +57,11 @@ if [ "$WithTempDir" = "yes" ]; then
   if [ -d $TmpDir ]; then
     rm -rf $TmpDir
   fi
-  mkdir -p $TmpDir/$PkgName
-
   echo "extracting FPC from local git ..."
-  git -C $FPCSrcDir --work-tree=$TmpDir/$PkgName restore .
+  mkdir -p $TmpDir/$PkgName
+  cp -a $FPCSrcDir/.git $TmpDir/$PkgName/
+  git -C $TmpDir/$PkgName checkout $TmpDir/$PkgName
+  rm -rf $TmpDir/$PkgName/.git*
 else
   TmpDir=$FPCSrcDir
 fi
