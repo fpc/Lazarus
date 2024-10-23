@@ -54,8 +54,8 @@ cp do_nothing.sh $TmpDir/do_nothing.sh
 chmod a+x $TmpDir/do_nothing.sh
 
 # create spec file
-SpecFile=rpm/fpc-src-laz-$LazVersion-$LazRelease.spec
-cat rpm/fpc-src-laz.spec | \
+SpecFile=rpm/fpc-src-laz.spec
+cat rpm/fpc-src-laz.spec.template | \
   sed -e "s/LAZVERSION/$LazVersion/g" -e "s/LAZRELEASE/$LazRelease/g" -e "s#LAZSCRIPTDIR#$TmpDir#g" \
   > $SpecFile
   
