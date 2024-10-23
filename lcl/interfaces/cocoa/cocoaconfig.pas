@@ -303,6 +303,11 @@ type
   end;
 
 type
+  TCocoaConfigMouse = record
+    controlLeftToRightClick: Boolean;
+  end;
+
+type
   TCocoaConfigNotification = record
     alwaysPresent: Boolean;
   end;

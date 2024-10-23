@@ -226,6 +226,7 @@ type
 
 var
   LastMouse: TLastMouseInfo;
+  LastMouseLeftButtonAsRight: Boolean;
 
 function ButtonStateToShiftState(BtnState: PtrUInt): TShiftState;
 begin
@@ -963,6 +964,22 @@ begin
   lEventType := Event.type_;
   if AForceAsMouseUp then
     lEventType := NSLeftMouseUp;
+
+  if CocoaConfigMouse.controlLeftToRightClick then begin
+    // treat ctrl+left button as right button
+    if (lEventType = NSLeftMouseDown) and
+       (Event.modifierFlags and NSControlKeyMask <> 0) then
+      LastMouseLeftButtonAsRight := True;
+    if LastMouseLeftButtonAsRight then
+    begin
+      if MButton = 0 then
+        MButton := 1;
+      if Msg.Keys and MK_LBUTTON <> 0 then
+        Msg.Keys := (Msg.Keys or MK_RBUTTON) and not MK_LBUTTON;
+      if lEventType = NSLeftMouseUp then
+        LastMouseLeftButtonAsRight := False;
+    end;
+  end;
 
   Result := Result or (BlockCocoaUpDown and not AOverrideBlock);
   mc := CocoaWidgetSet.ModalCounter;

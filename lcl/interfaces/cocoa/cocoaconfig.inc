@@ -159,6 +159,13 @@ var
   );
 
 var
+  CocoaConfigMouse: TCocoaConfigMouse = (
+    // False: Control-Left-Click passes straight through
+    // True: Control-Left-Click will become Right Click
+    controlLeftToRightClick: False;
+  );
+
+var
   CocoaConfigNotification: TCocoaConfigNotification = (
     // by default on macOS, Notification is only Presented when the APP is
     // in the background.
