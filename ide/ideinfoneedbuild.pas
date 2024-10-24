@@ -302,6 +302,7 @@ begin
       else if Item.Target is TProject then begin
         AProject:=TProject(Item.Target);
         Item.Note:='';
+        NeedBuildAll:=false;
         NeedBuild:=MainBuildBoss.DoCheckIfProjectNeedsCompilation(AProject,
                                          NeedBuildAll,Item.Note);
         if NeedBuild=mrYes then begin
@@ -314,6 +315,7 @@ begin
       else if Item.Target is TLazPackage then begin
         Pkg:=TLazPackage(Item.Target);
         Item.Note:='';
+        NeedBuildAll:=false;
         NeedBuild:=PackageGraph.CheckIfPackageNeedsCompilation(
                         Pkg,SkipDesignTimePackages,true,NeedBuildAll,Item.Note);
         if NeedBuild=mrYes then begin

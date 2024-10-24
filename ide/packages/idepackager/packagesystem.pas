@@ -3609,7 +3609,7 @@ var
 begin
   Result:=mrYes;
   {$IFDEF VerbosePkgCompile}
-  debugln('TLazPackageGraph.CheckIfPackageNeedsCompilation A ',APackage.IDAsString);
+  debugln(['TLazPackageGraph.CheckIfPackageNeedsCompilation A ',APackage.IDAsString,' NeedBuildAllFlag=',NeedBuildAllFlag]);
   {$ENDIF}
   ForceBuild:=NeedBuildAllFlag;
   if ForceBuild then begin
