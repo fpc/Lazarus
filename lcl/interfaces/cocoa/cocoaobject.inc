@@ -364,28 +364,11 @@ begin
 end;
 
 function TCocoaWidgetSet.CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): TLCLHandle;
-var
-  timer : NSTimer;
-  user  : TCocoaTimerObject;
 begin
   {$IFDEF VerboseObject}
     DebugLn('TCocoaWidgetSet.CreateTimer');
   {$ENDIF}
-  user:=TCocoaTimerObject.newWithFunc(TimerFunc);
-
-  timer:=NSTimer.timerWithTimeInterval_target_selector_userInfo_repeats(
-    Interval/1000, user, objcselector(user.timerEvent), user, True);
-
-  // adding timer to all "common" loop mode.
-  NSRunLoop.currentRunLoop.addTimer_forMode(timer, NSDefaultRunLoopMode);
-  NSRunLoop.currentRunLoop.addTimer_forMode(timer, NSModalPanelRunLoopMode);
-  NSRunLoop.currentRunLoop.addTimer_forMode(timer, NSEventTrackingRunLoopMode);
-
-  {user is retained (twice, because it's target), by the timer and }
-  {released (twice) on timer invalidation}
-  user.release;
-
-  Result:=TLCLHandle(timer);
+  Result:=TLCLHandle(TCocoaTimerObject.alloc.initWithInterval_func(Interval, TimerFunc));
 end;
 
 function TCocoaWidgetSet.DestroyTimer(TimerHandle: TLCLHandle): boolean;
@@ -397,12 +380,13 @@ begin
   {$ENDIF}
   obj:=NSObject(TimerHandle);
   try
-    Result:= Assigned(obj) and obj.isKindOfClass_(NSTimer);
+    Result:= Assigned(obj) and obj.isKindOfClass_(TCocoaTimerObject);
   except
     Result:=false;
   end;
   if not Result then Exit;
-  NSTimer(obj).invalidate;
+  TCocoaTimerObject(obj).invalidate;
+  obj.release;
 end;
 
 procedure TCocoaWidgetSet.InitStockItems;
@@ -586,15 +570,36 @@ end;
 
 { TCocoaTimerObject }
 
-procedure TCocoaTimerObject.timerEvent;
+function TCocoaTimerObject.initWithInterval_func(interval: integer;
+  timerFunc: TWSTimerProc): id;
 begin
-  if Assigned(@func) then func;
+  Self:=TCocoaTimerObject(inherited init);
+  Result:=Self;
+  if not Assigned(Result) then Exit;
+  func:=timerFunc;
+  // timer maintains a strong reference to Self until it's invalidate is called
+  timer:=NSTimer.timerWithTimeInterval_target_selector_userInfo_repeats(
+    interval/1000, Self, objcselector(timerFireMethod), nil, True);
+  if timer = nil then Exit;
+  timer.retain;
+  // adding timer to all "common" loop mode.
+  NSRunLoop.currentRunLoop.addTimer_forMode(timer, NSDefaultRunLoopMode);
+  NSRunLoop.currentRunLoop.addTimer_forMode(timer, NSModalPanelRunLoopMode);
+  NSRunLoop.currentRunLoop.addTimer_forMode(timer, NSEventTrackingRunLoopMode);
 end;
 
-class function TCocoaTimerObject.newWithFunc(afunc: TWSTimerProc): TCocoaTimerObject;
+procedure TCocoaTimerObject.invalidate;
 begin
-  Result:=alloc;
-  Result.func:=afunc;
+  if timer=nil then Exit;
+  func:=nil;
+  timer.invalidate;
+  timer.release;
+  timer:=nil;
+end;
+
+procedure TCocoaTimerObject.timerFireMethod(atimer: NSTimer);
+begin
+  if Assigned(func) then func;
 end;
 
 procedure TAppDelegate.application_openFiles(sender: NSApplication; filenames: NSArray);
