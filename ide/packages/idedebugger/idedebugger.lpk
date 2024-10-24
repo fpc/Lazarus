@@ -319,7 +319,10 @@
     </i18n>
     <RequiredPkgs>
       <Item>
-        <PackageName Value="SynEditDsgn"/>
+        <PackageName Value="SynEdit"/>
+      </Item>
+      <Item>
+        <PackageName Value="laz.virtualtreeview_package"/>
       </Item>
       <Item>
         <PackageName Value="IdeProject"/>
@@ -328,25 +331,13 @@
         <PackageName Value="LazDebuggerGdbmi"/>
       </Item>
       <Item>
-        <PackageName Value="SynEdit"/>
-      </Item>
-      <Item>
         <PackageName Value="IdeConfig"/>
       </Item>
       <Item>
         <PackageName Value="LazDebuggerFp"/>
       </Item>
       <Item>
-        <PackageName Value="LazControlDsgn"/>
-      </Item>
-      <Item>
-        <PackageName Value="laz.virtualtreeview_package"/>
-      </Item>
-      <Item>
         <PackageName Value="DebuggerIntf"/>
-      </Item>
-      <Item>
-        <PackageName Value="FCL"/>
       </Item>
     </RequiredPkgs>
     <UsageOptions>
