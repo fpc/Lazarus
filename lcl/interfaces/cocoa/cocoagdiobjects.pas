@@ -410,6 +410,7 @@ type
     procedure BackgroundFill(dirtyRect:NSRect);
     procedure Ellipse(X1, Y1, X2, Y2: Integer);
     procedure TextOut(X, Y: Integer; Options: Longint; Rect: PRect; UTF8Chars: PChar; Count: Integer; CharsDelta: PInteger);
+    procedure TextOut(X, Y: CGFloat; Options: Longint; Rect: PRect; UTF8Chars: PChar; Count: Integer; CharsDelta: CGFloatPtr);
     procedure DrawEdge(var Rect: TRect; edge: Cardinal; grfFlags: Cardinal);
     procedure Frame(const R: TRect);
     procedure Frame3dClassic(var ARect: TRect; const FrameWidth: integer; const Style: TBevelCut);
@@ -1789,6 +1790,21 @@ begin
 end;
 
 procedure TCocoaContext.TextOut(X, Y: Integer; Options: Longint; Rect: PRect; UTF8Chars: PChar; Count: Integer; CharsDelta: PInteger);
+var
+  CharsDeltaFloat: Array of CGFloat;
+  i: integer;
+begin
+  if CharsDelta <> nil then begin
+    SetLength(CharsDeltaFloat, Count);
+    for i := 0 to Count - 1 do
+      CharsDeltaFloat[i] := CharsDelta[i];
+    TextOut(X,Y,Options, Rect, UTF8Chars, Count, @CharsDeltaFloat[0]);
+  end
+  else
+    TextOut(X,Y,Options, Rect, UTF8Chars, Count, CGFloatPtr(nil));
+end;
+
+procedure TCocoaContext.TextOut(X, Y: CGFloat; Options: Longint; Rect: PRect; UTF8Chars: PChar; Count: Integer; CharsDelta: CGFloatPtr);
 const
   UnderlineStyle = NSUnderlineStyleSingle or NSUnderlinePatternSolid;
 var
