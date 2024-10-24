@@ -1266,17 +1266,15 @@ begin
   AddDefaultRecentProjects;            // Add some initial recent projects.
 
   // read language and lazarusdir parameters, needed for translation
-  if Application.HasOption('language') then
+  if GetParamOptionPlusValue('--language=',s) then
   begin
-    debugln('Hint: (lazarus) [TMainIDE.LoadGlobalOptions] overriding language with command line: ',
-      Application.GetOptionValue('language'));
-    EnvironmentOptions.LanguageID := Application.GetOptionValue('language');
+    debugln('Hint: (lazarus) [TMainIDE.LoadGlobalOptions] overriding language with command line: ',s);
+    EnvironmentOptions.LanguageID := s;
   end;
-  if Application.HasOption('lazarusdir') then
+  if GetParamOptionPlusValue('--lazarusdir=',s) then
   begin
-    debugln('Hint: (lazarus) [TMainIDE.LoadGlobalOptions] overriding Lazarusdir with command line: ',
-      Application.GetOptionValue('lazarusdir'));
-    EnvironmentOptions.Lazarusdirectory:= Application.GetOptionValue('lazarusdir');
+    debugln('Hint: (lazarus) [TMainIDE.LoadGlobalOptions] overriding Lazarusdir with command line: ',s);
+    EnvironmentOptions.Lazarusdirectory:= s;
   end;
 
   // translate IDE resourcestrings
