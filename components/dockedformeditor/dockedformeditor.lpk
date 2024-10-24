@@ -12,12 +12,6 @@
         <OtherUnitFiles Value="source"/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\$(LCLWidgetType)"/>
       </SearchPaths>
-      <Linking>
-        <Debugging>
-          <UseValgrind Value="True"/>
-          <UseExternalDbgSyms Value="True"/>
-        </Debugging>
-      </Linking>
       <Other>
         <CustomOptions Value="$(IDEBuildOptions)"/>
       </Other>
