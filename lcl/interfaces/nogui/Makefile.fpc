@@ -14,7 +14,7 @@ DBG_OPTIONS=-gw
 endif
 
 [compiler]
-options=-gl -dnogui $(DBG_OPTIONS)
+options=-MObjFPC -Scghi -O1 -g -gl -l -vewnhibq -dnogui $(DBG_OPTIONS)
 unitdir=../../units/$(CPU_TARGET)-$(OS_TARGET) \
     ../../../packager/units/$(CPU_TARGET)-$(OS_TARGET) \
     ../../../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) \
