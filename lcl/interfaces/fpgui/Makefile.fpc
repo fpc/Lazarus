@@ -22,7 +22,7 @@ fpGUIPlatform=gdi
 endif
 
 [compiler]
-options=-gl -dfpgui
+options=-MObjFPC -Scghi -O1 -g -gl -l -vewnhibq -dfpgui
 unitdir=../../units/$(CPU_TARGET)-$(OS_TARGET) \
     ../../../packager/units/$(CPU_TARGET)-$(OS_TARGET) \
     ../../../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) \
