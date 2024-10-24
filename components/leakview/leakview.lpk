@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="4">
+  <Package Version="5">
     <PathDelim Value="\"/>
     <Name Value="leakview"/>
     <Type Value="RunAndDesignTime"/>
@@ -18,12 +18,6 @@
           <UseAnsiStrings Value="False"/>
         </SyntaxOptions>
       </Parsing>
-      <Linking>
-        <Debugging>
-          <GenerateDebugInfo Value="False"/>
-          <UseLineInfoUnit Value="False"/>
-        </Debugging>
-      </Linking>
       <Other>
         <CustomOptions Value="$(IDEBuildOptions)"/>
       </Other>
@@ -49,6 +43,7 @@
         <UnitName Value="DbgInfoReader"/>
       </Item4>
     </Files>
+    <CompatibilityMode Value="True"/>
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
