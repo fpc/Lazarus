@@ -42,8 +42,10 @@ type
 
   TCocoaTimerObject = objcclass(NSObject)
     func: TWSTimerProc;
-    procedure timerEvent; message 'timerEvent';
-    class function newWithFunc(afunc: TWSTimerProc): TCocoaTimerObject; message 'newWithFunc:';
+    timer: NSTimer;
+    function initWithInterval_func(interval: integer; timerFunc: TWSTimerProc): id; message 'initWithInterval:func:';
+    procedure invalidate; message 'invalidate';
+    procedure timerFireMethod(atimer: NSTimer); message 'timerFireMethod:';
   end;
 
   { TAppDelegate }
