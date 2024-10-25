@@ -31,7 +31,7 @@ uses
   // LazControls
   DividerBevel,
   // IDEIntf
-  EditorSyntaxHighlighterDef, IDEOptionsIntf, IDEOptEditorIntf,
+  EditorSyntaxHighlighterDef, IDEOptionsIntf, IDEOptEditorIntf, IDECommands,
   // SynEdit
   SynEdit, SynHighlighterPas, SynEditKeyCmds, SynEditHighlighterFoldBase,
   // IDE
