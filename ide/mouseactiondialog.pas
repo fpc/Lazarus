@@ -61,6 +61,8 @@ type
     FKeyMap: TKeyCommandRelationList;
     procedure AddMouseCmd(const S: string);
     procedure FillListbox;
+  protected
+    procedure CreateHandle; override;
   public
     { public declarations }
     Procedure ResetInputs;
@@ -111,12 +113,9 @@ begin
 end;
 
 procedure TMouseaActionDialog.FillListbox;
-const
-  cCheckSize=35;
 var
   r: TSynMAUpRestriction;
   s: string;
-  i, Len: integer;
 begin
   for r := low(TSynMAUpRestriction) to high(TSynMAUpRestriction) do
     case r of
@@ -131,7 +130,15 @@ begin
         chkUpRestrict.AddItem(s, nil);
       end;
     end;
+end;
 
+procedure TMouseaActionDialog.CreateHandle;
+const
+  cCheckSize=35;
+var
+  Len, i: Integer;
+begin
+  inherited CreateHandle;
   // update scrollbar
   Len := 0;
   with chkUpRestrict do
