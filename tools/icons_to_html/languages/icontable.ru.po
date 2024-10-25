@@ -16,13 +16,13 @@ msgid "Error"
 msgstr "Ошибка"
 
 #: main.rsfreelyavailable
-msgid "freely available, no restrictions in usage"
-msgstr ""
+msgid "(freely available, no restrictions in usage)"
+msgstr "(свободно доступны, использование без ограничений)"
 
 #: main.rsimageswereprovidedby
 #, object-pascal-format
 msgid "The images were kindly provided by Roland Hahn (%s)."
-msgstr ""
+msgstr "Изображения любезно предоставлены Roland Hahn (%s)."
 
 #: main.rsinformation
 msgid "Information"
@@ -30,11 +30,11 @@ msgstr "Сведения"
 
 #: main.rsinfotext1
 msgid "The images in this folder can be used in Lazarus applications as toolbar or button icons."
-msgstr ""
+msgstr "Изображения в этом каталоге могут использоваться в приложениях Lazarus в качестве значков инструментальных панелей и кнопок."
 
 #: main.rsinfotext2
-msgid "The different sizes as required by LCL scaling for high-dpi screens can be used like this, for example:"
-msgstr ""
+msgid "The different sizes as required by LCL scaling for Hi-DPI screens can be used like this, for example:"
+msgstr "Разные размеры, необходимые LCL для масштабирования на экранах Hi-DPI, могут использоваться, например, следующим образом:"
 
 #: main.rslicense
 #, object-pascal-format
@@ -42,6 +42,8 @@ msgid ""
 "License:\n"
 "%s"
 msgstr ""
+"Лицензия:\n"
+"%s"
 
 #: main.rsname
 msgid "Name"
@@ -68,15 +70,15 @@ msgstr "Размер"
 
 #: main.rssizeinfolarge
 msgid "32x32, 48x48 and 64x64 pixels for \"large\" images."
-msgstr ""
+msgstr "32x32, 48x48 и 64x64 пикселя для \"больших\" изображений."
 
 #: main.rssizeinfomedium
 msgid "24x24, 36x36 and 48x48 pixels for \"medium\" sized images,"
-msgstr ""
+msgstr "24x24, 36x36 и 48x48 пикселей для \"средних\" изображений,"
 
 #: main.rssizeinfosmall
 msgid "16x16, 24x24 and 32x32 pixels for \"small\" images,"
-msgstr ""
+msgstr "16x16, 24x24 и 32x32 пикселя для \"малых\" изображений,"
 
 #: main.rstheconfigurationcouldnotbesaved
 msgid "Configuration file could not be saved."
@@ -113,7 +115,7 @@ msgstr "Закрыть"
 
 #: tmainform.bbtnclose.hint
 msgid "Close application"
-msgstr ""
+msgstr "Закрыть приложение"
 
 #: tmainform.bbtncreatehtml.caption
 msgid "Create HTML"
@@ -146,12 +148,12 @@ msgstr "Каталог с изображениями для создания с�
 #: tmainform.menudarkhtmlpage.caption
 msgctxt "tmainform.menudarkhtmlpage.caption"
 msgid "Dark HTML page"
-msgstr ""
+msgstr "Страница HTML с тёмным фоном"
 
 #: tmainform.menuhtmlpageenglish.caption
 msgctxt "tmainform.menuhtmlpageenglish.caption"
 msgid "HTML page in English"
-msgstr ""
+msgstr "Страница HTML на английском языке"
 
 #: tmainform.sbtnlastdirs.hint
 msgid "Last used"
@@ -159,5 +161,5 @@ msgstr "Недавние"
 
 #: tmainform.sbtnmenu.hint
 msgid "Options"
-msgstr ""
+msgstr "Параметры"
 

@@ -6,7 +6,7 @@ msgid "Error"
 msgstr ""
 
 #: main.rsfreelyavailable
-msgid "freely available, no restrictions in usage"
+msgid "(freely available, no restrictions in usage)"
 msgstr ""
 
 #: main.rsimageswereprovidedby
@@ -23,7 +23,7 @@ msgid "The images in this folder can be used in Lazarus applications as toolbar 
 msgstr ""
 
 #: main.rsinfotext2
-msgid "The different sizes as required by LCL scaling for high-dpi screens can be used like this, for example:"
+msgid "The different sizes as required by LCL scaling for Hi-DPI screens can be used like this, for example:"
 msgstr ""
 
 #: main.rslicense
