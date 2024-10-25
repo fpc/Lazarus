@@ -13,6 +13,14 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0\n"
 "X-Generator: Easy Po 0.9.2\n"
 
+#: lazarusidestrconsts.cocoamfstbicommand
+msgid "Command"
+msgstr ""
+
+#: lazarusidestrconsts.cocoamfstbisearch
+msgid "Search Instantly"
+msgstr ""
+
 #: lazarusidestrconsts.dbgasmwindowlinktarget
 msgid "Link target line"
 msgstr ""

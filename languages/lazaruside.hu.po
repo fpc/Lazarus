@@ -11,6 +11,14 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 2.0.6\n"
 
+#: lazarusidestrconsts.cocoamfstbicommand
+msgid "Command"
+msgstr ""
+
+#: lazarusidestrconsts.cocoamfstbisearch
+msgid "Search Instantly"
+msgstr ""
+
 #: lazarusidestrconsts.dbgasmwindowlinktarget
 msgid "Link target line"
 msgstr ""

@@ -6,7 +6,7 @@ interface
 uses
   Classes, SysUtils,
   Forms, Menus,
-  SourceEditor, SynEditTypes,
+  LazarusIDEStrConsts, SourceEditor, SynEditTypes,
   CocoaAll, CocoaConfig, CocoaToolBar, Cocoa_Extra;
 
 implementation
@@ -75,7 +75,7 @@ var
   function createSearchMenuItem: TMenuItem;
   begin
     Result:= TMenuItem.Create( menu );
-    Result.Caption:= 'Search Instantly';
+    Result.Caption:= cocoaMFSTBISearch;
     Result.OnClick:= @IDEMainFormHandler.doFocusSearchField;
     Result.ShortCut:= ShortCut( Word('F'), [ssCtrl, ssMeta] );
   end;
@@ -93,8 +93,8 @@ const
     priority: NSToolbarItemVisibilityPriorityHigh;
     navigational: True;
     iconName: 'arrow.left';
-    title: 'Back';
-    tips: 'Jump Back';
+    title: lisMenuJumpBack;
+    tips: lisMenuJumpBack;
     bordered: True;
     onAction: @jumpBackAction;
   );
@@ -104,31 +104,18 @@ const
     priority: NSToolbarItemVisibilityPriorityHigh;
     navigational: True;
     iconName: 'arrow.right';
-    title: 'Forward';
-    tips: 'Jump Forward';
+    title: lisMenuJumpForward;
+    tips: lisMenuJumpForward;
     bordered: True;
     onAction: @jumpForwardAction;
-  );
-
-  commandItemConfig: TCocoaConfigToolBarItemMenu = (
-    identifier: 'MainIDE.Command';
-    iconName: 'ellipsis.circle';
-    title: 'Command';
-    tips: '';
-    bordered: True;
-    onAction: nil;
-
-    showsIndicator: False;
-    menu: nil;
-    onGetMenu: @onGetCommandMenu;
   );
 
   searchItemConfig: TCocoaConfigToolBarItemSearch = (
     identifier: 'MainIDE.Search';
     priority: NSToolbarItemVisibilityPriorityLow;
     iconName: '';
-    title: 'Search';
-    tips: 'Search Instantly';
+    title: cocoaMFSTBISearch;
+    tips: cocoaMFSTBISearch;
     bordered: True;
     onAction: @searchAction;
 
@@ -136,6 +123,19 @@ const
     sendImmediately: False;
     resignsWithCancel: True;
     preferredWidth: 200;
+  );
+
+  commandItemConfig: TCocoaConfigToolBarItemMenu = (
+    identifier: 'MainIDE.Command';
+    iconName: 'ellipsis.circle';
+    title: cocoaMFSTBICommand;
+    tips: '';
+    bordered: True;
+    onAction: nil;
+
+    showsIndicator: False;
+    menu: nil;
+    onGetMenu: @onGetCommandMenu;
   );
 
   // 1. for docked IDE, integrate with MainIDEBar
