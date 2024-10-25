@@ -1798,7 +1798,7 @@ begin
     SetLength(CharsDeltaFloat, Count);
     for i := 0 to Count - 1 do
       CharsDeltaFloat[i] := CharsDelta[i];
-    TextOut(X,Y,Options, Rect, UTF8Chars, Count, @CharsDeltaFloat[0]);
+    TextOut(X,Y,Options, Rect, UTF8Chars, Count, CGFloatPtr(@CharsDeltaFloat[0]));
   end
   else
     TextOut(X,Y,Options, Rect, UTF8Chars, Count, CGFloatPtr(nil));
