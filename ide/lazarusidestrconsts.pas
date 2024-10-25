@@ -5231,6 +5231,10 @@ resourcestring
   lisIncludeRecursive = 'Include, recursive';
   lisExclude = 'Exclude';
 
+  // cocoa Modern Form Style ToolBar Item Config
+  cocoaMFSTBISearch = 'Search Instantly';
+  cocoaMFSTBICommand = 'Command';
+
   // version info tab
   VersionInfoTitle = 'Version Info';
   
