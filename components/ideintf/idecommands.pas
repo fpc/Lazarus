@@ -966,31 +966,27 @@ begin
 end;
 
 function KeyValuesToCaptionStr(const ShortcutA, ShortcutB: TIDEShortCut; Brackets: Char): String;
-  function AddBrakets(S: String): String;
+  //
+  function GetShortCut(aShortCut: TIDEShortCut): String;
   begin
+    Result := KeyAndShiftStateToEditorKeyString(aShortCut);
     if Brackets = '[' then
-      Result := '[' + S + ']'
+      Result := '[' + Result + ']'
     else if Brackets = '(' then
-      Result := '(' + S + ')'
+      Result := '(' + Result + ')'
     else if Brackets > #0 then
-      Result := Brackets + S + Brackets
-    else
-      Result := S;
+      Result := Brackets + Result + Brackets;
   end;
+  //
 begin
-  Result := '';
   if (ShortcutA.Key1 = VK_UNKNOWN) and (ShortcutB.Key1 = VK_UNKNOWN) then
-    Result := Result{ + lisNone2 }
+    Result := ''
+  else if ShortcutA.Key1 = VK_UNKNOWN then
+    Result := GetShortCut(ShortcutB)
+  else if ShortcutB.Key1 = VK_UNKNOWN then
+    Result := GetShortCut(ShortcutA)
   else
-  if (ShortcutA.Key1 = VK_UNKNOWN) then
-    Result := Result + AddBrakets(KeyAndShiftStateToEditorKeyString(ShortcutB))
-  else
-  if (ShortcutB.Key1 = VK_UNKNOWN) then
-    Result := Result + AddBrakets(KeyAndShiftStateToEditorKeyString(ShortcutA))
-  else
-    Result := Result + AddBrakets(KeyAndShiftStateToEditorKeyString(ShortcutA))
-                     + ' / ' +
-                       AddBrakets(KeyAndShiftStateToEditorKeyString(ShortcutB));
+    Result := GetShortCut(ShortcutA) + ' / ' + GetShortCut(ShortcutB);
 end;
 
 type
