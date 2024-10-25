@@ -90,13 +90,13 @@ resourcestring
   rsSize = 'Size';
   rsName = 'Name';
   rsInfoText1 = 'The images in this folder can be used in Lazarus applications as toolbar or button icons.';
-  rsInfoText2 = 'The different sizes as required by LCL scaling for high-dpi screens can be used like this, for example:';
+  rsInfoText2 = 'The different sizes as required by LCL scaling for Hi-DPI screens can be used like this, for example:';
   rsSizeInfoSmall = '16x16, 24x24 and 32x32 pixels for "small" images,';
   rsSizeInfoMedium = '24x24, 36x36 and 48x48 pixels for "medium" sized images,';
   rsSizeInfoLarge = '32x32, 48x48 and 64x64 pixels for "large" images.';
   rsImagesWereProvidedBy = 'The images were kindly provided by Roland Hahn (%s).';
-  rsLicense = 'License:'#13'%s';
-  rsFreelyAvailable = 'freely available, no restrictions in usage';
+  rsLicense = 'License:' + LineEnding + '%s';
+  rsFreelyAvailable = '(freely available, no restrictions in usage)';
 
 
 { TMainForm }
