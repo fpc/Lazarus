@@ -14,9 +14,10 @@
         <Item3 Value="/opt/fpc/_PPCARCH_"/>
       </History>
     </CompilerFilename>
-    <FPCSourceDirectory Value="/usr/local/share/fpcsrc/">
-      <History Count="1">
+    <FPCSourceDirectory Value="$(LazarusDir)/fpc/$(FPCVer)/sources/">
+      <History Count="2">
         <Item1 Value="/usr/local/share/fpcsrc/"/>
+        <Item2 Value="$(LazarusDir)/fpc/$(FPCVer)/sources/"/>
       </History>
     </FPCSourceDirectory>
     <MakeFilename>
