@@ -232,7 +232,6 @@ type
   end;
 
 function IDEShortCutEmpty(const Key: TIDEShortCut): boolean;
-function KeyAndShiftStateToEditorKeyString(const Key: TIDEShortCut): String;
 function EditorCommandToDescriptionString(cmd: word): String;
 function EditorMouseCommandToDescriptionString(cmd: TSynEditorMouseCommand): String;
 function EditorMouseCommandToConfigString(cmd: TSynEditorMouseCommand): String;
@@ -241,8 +240,6 @@ function KeySchemeNameToSchemeType(const SchemeName: string): TKeyMapScheme;
 
 function ShiftStateToCfgStr(Shift: TShiftState): string;
 function KeyValuesToCfgStr(const ShortcutA, ShortcutB: TIDEShortCut): string;
-function KeyValuesToCaptionStr(const ShortcutA, ShortcutB: TIDEShortCut;
-  Brackets: Char = '['): String;
 function CfgStrToShiftState(const s: string): TShiftState;
 
 function CompareLoadedKeyCommands(Data1, Data2: Pointer): integer;
@@ -1002,45 +999,9 @@ begin
   Result := '';
 end;
 
-function KeyValuesToCaptionStr(const ShortcutA, ShortcutB: TIDEShortCut;
-  Brackets: Char): String;
-  function AddBrakets(S: String): String;
-  begin
-    if Brackets = '[' then
-      Result := '[' + S + ']'
-    else if Brackets = '(' then
-      Result := '(' + S + ')'
-    else if Brackets > #0 then
-      Result := Brackets + S + Brackets
-    else
-      Result := S;
-  end;
-begin
-  Result := '';
-  if (ShortcutA.Key1 = VK_UNKNOWN) and (ShortcutB.Key1 = VK_UNKNOWN) then
-    Result := Result{ + lisNone2 }
-  else
-  if (ShortcutA.Key1 = VK_UNKNOWN) then
-    Result := Result + AddBrakets(KeyAndShiftStateToEditorKeyString(ShortcutB))
-  else
-  if (ShortcutB.Key1 = VK_UNKNOWN) then
-    Result := Result + AddBrakets(KeyAndShiftStateToEditorKeyString(ShortcutA))
-  else
-    Result := Result + AddBrakets(KeyAndShiftStateToEditorKeyString(ShortcutA))
-                     + '  '+lisOr+'  ' +
-                       AddBrakets(KeyAndShiftStateToEditorKeyString(ShortcutB));
-end;
-
 function IDEShortCutEmpty(const Key: TIDEShortCut): boolean;
 begin
   Result:=(Key.Key1=VK_UNKNOWN) and (Key.Key2=VK_UNKNOWN);
-end;
-
-function KeyAndShiftStateToEditorKeyString(const Key: TIDEShortCut): String;
-begin
-  Result := KeyAndShiftStateToKeyString(Key.Key1, Key.Shift1);
-  if (Key.Key2 <> VK_UNKNOWN) then
-    Result := Result + ', ' + KeyAndShiftStateToKeyString(Key.Key2, Key.Shift2);
 end;
 
 { TKeyStrokeList }
