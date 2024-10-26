@@ -14,35 +14,33 @@ msgstr ""
 
 #: lazarusidestrconsts.cocoamfstbicommand
 msgid "Command"
-msgstr ""
+msgstr "命令"
 
 #: lazarusidestrconsts.cocoamfstbijumpback
-#, fuzzy
 msgctxt "lazarusidestrconsts.cocoamfstbijumpback"
 msgid "Jump Back"
-msgstr "转到上一个(&B)"
+msgstr "转到上一个"
 
 #: lazarusidestrconsts.cocoamfstbijumpforward
-#, fuzzy
 msgctxt "lazarusidestrconsts.cocoamfstbijumpforward"
 msgid "Jump Forward"
-msgstr "转到下一个(&F)"
+msgstr "转到下一个"
 
 #: lazarusidestrconsts.cocoamfstbisearch
 msgid "Search Instantly"
-msgstr ""
+msgstr "即时搜索"
 
 #: lazarusidestrconsts.dbgasmwindowlinktarget
 msgid "Link target line"
-msgstr ""
+msgstr "链接目标行"
 
 #: lazarusidestrconsts.dbgasmwindowsourcefunc
 msgid "Function name"
-msgstr ""
+msgstr "函数名称"
 
 #: lazarusidestrconsts.dbgasmwindowsourceline
 msgid "Source line"
-msgstr ""
+msgstr "源代码行"
 
 #: lazarusidestrconsts.dbgeventbreakaddressbreakpoint
 #, object-pascal-format
@@ -805,13 +803,12 @@ msgid "Auto save active desktop"
 msgstr "自动保存活动桌面"
 
 #: lazarusidestrconsts.dlgautosaveactivedesktophint
-#, fuzzy
 msgid ""
 "Save active desktop on IDE close\n"
 "Save debug desktop on IDE close and debug end"
 msgstr ""
 "在IDE关闭时保存活动桌面\n"
-"在IDE关闭和调试结束时,保存调试桌面\n"
+"在IDE关闭和调试结束时，保存调试桌面\n"
 
 #: lazarusidestrconsts.dlgavailableforms
 msgid "Available forms:"
@@ -2429,19 +2426,16 @@ msgid "Enum"
 msgstr ""
 
 #: lazarusidestrconsts.dlgiahadentifiercomplentryfunc
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryfunc"
 msgid "Function"
 msgstr "函数"
 
 #: lazarusidestrconsts.dlgiahadentifiercomplentryident
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryident"
 msgid "Identifier"
 msgstr "标识符"
 
 #: lazarusidestrconsts.dlgiahadentifiercomplentrykeyword
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentrykeyword"
 msgid "Keyword"
 msgstr "关键字"
@@ -2459,38 +2453,33 @@ msgid "Namespace"
 msgstr ""
 
 #: lazarusidestrconsts.dlgiahadentifiercomplentryother
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryother"
 msgid "Other"
 msgstr "其他"
 
 #: lazarusidestrconsts.dlgiahadentifiercomplentryproc
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryproc"
 msgid "Procedure"
-msgstr "Procedure"
+msgstr "过程"
 
 #: lazarusidestrconsts.dlgiahadentifiercomplentryproperty
 msgid "Property"
 msgstr ""
 
 #: lazarusidestrconsts.dlgiahadentifiercomplentrytext
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentrytext"
 msgid "Text"
 msgstr "文本"
 
 #: lazarusidestrconsts.dlgiahadentifiercomplentrytype
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentrytype"
 msgid "Type"
 msgstr "类型"
 
 #: lazarusidestrconsts.dlgiahadentifiercomplentryunit
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryunit"
 msgid "Unit"
-msgstr "Unit"
+msgstr "单元"
 
 #: lazarusidestrconsts.dlgiahadentifiercomplentryvar
 msgid "Var"
@@ -2654,7 +2643,6 @@ msgid "Key mapping errors"
 msgstr "键盘映射错误"
 
 #: lazarusidestrconsts.dlgkeyword
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgkeyword"
 msgid "Keyword"
 msgstr "关键字"
@@ -2786,20 +2774,14 @@ msgid "Delete list \"%s\"?"
 msgstr "删除列表\"%s\"?"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeyadd
-#, fuzzy
-#| msgid "Add Word or Term"
 msgid "Add Word or Term by key"
 msgstr "添加单词或词条"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeyremove
-#, fuzzy
-#| msgid "Remove Word or Term"
 msgid "Remove Word or Term by key"
 msgstr "移除单词或词条"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeytoggle
-#, fuzzy
-#| msgid "Toggle Word or Term"
 msgid "Toggle Word or Term by key"
 msgstr "切换单词或词条"
 
@@ -2874,8 +2856,6 @@ msgid "Select ..."
 msgstr "选择 ..."
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedpagekeys
-#, fuzzy
-#| msgid "Key Settings"
 msgid "Key mappings"
 msgstr "快捷键设置"
 
