@@ -55,9 +55,10 @@ type
   3) turn to CrLf
   4) pick 2 or 3 depending on the Host OS, preference, ie CrLf for win, Cr for 'nix
 }
-type
   TReturnChars = (rcLeaveAsIs, rcLinefeed, rcCrLf, rcPlatform);
 
+  TIndentLabels = (eLabelIndentStatement,eLabelIndentDontIndent,eLabelIndentPrevLevel,
+    eLabelIndentToProcedure,eLabelIndentX0);
 
 implementation
 

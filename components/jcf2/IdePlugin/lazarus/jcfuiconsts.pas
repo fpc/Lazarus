@@ -113,6 +113,12 @@ resourcestring
   lisIndentIndentNestedTypes = 'Indent nested types';
   lisIndentIndentVarAndConstInClass = 'Indent var and const in class';
   lisIndentExtraIndentForInterfaceGuid = 'Extra Indent for interface GUID';
+  lisIndentLabels = 'Indent labels';
+  lisIndentLabelsStatement = 'Indent statement';
+  lisIndentLabelsDontIndent = 'Don''t indent';
+  lisIndentLabelsIndentPrevLevel = 'Indent to prior level';
+  lisIndentLabelslIndentToProcedure = 'Indent to procedure level';
+  lisIndentLabelsIndentX0 = 'Indent to first column position';
 
   //Blank lines tab
   lisBLBlankLines = 'Blank Lines';

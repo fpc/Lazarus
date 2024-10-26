@@ -29,7 +29,7 @@ unit SetIndent;
 
 interface
 
-uses JcfSetBase, SettingsStream;
+uses JcfSetBase, SettingsStream, SettingsTypes;
 
 type
 
@@ -55,7 +55,7 @@ type
     fbIndentNestedTypes: Boolean;
     fbIndentVarAndConstInClass: Boolean;
     fbIndentInterfaceGuid: boolean;
-
+    fbIndentLabels:TIndentLabels;
   protected
   public
     constructor Create;
@@ -93,6 +93,7 @@ type
 
     property IndentNestedTypes: Boolean read fbIndentNestedTypes write fbIndentNestedTypes;
     property IndentVarAndConstInClass: Boolean read fbIndentVarAndConstInClass write fbIndentVarAndConstInClass;
+    property IndentLabels:TIndentLabels read fbIndentLabels write fbIndentLabels;
   end;
 
 implementation
@@ -120,6 +121,7 @@ const
   REG_INDENT_VAR_AND_CONST_IN_CLASS = 'IndentVarAndConstInClass';
   REG_INDENT_NESTED_TYPES = 'IndentNestedTypes';
   REG_INDENT_INTERFACE_GUID = 'IndentInterfaceGuid';
+  REG_INDENT_LABELS = 'IndentLabels';
 
 constructor TSetIndent.Create;
 begin
@@ -158,7 +160,7 @@ begin
   fbIndentNestedTypes := pcStream.Read(REG_INDENT_NESTED_TYPES, False);
   fbIndentVarAndConstInClass := pcStream.Read(REG_INDENT_VAR_AND_CONST_IN_CLASS, False);
   fbIndentInterfaceGuid := pcStream.Read(REG_INDENT_INTERFACE_GUID, True);
-
+  fbIndentLabels := TIndentLabels(pcStream.Read(REG_INDENT_LABELS,Ord(eLabelIndentStatement)));
 end;
 
 procedure TSetIndent.WriteToStream(const pcOut: TSettingsOutput);
@@ -188,6 +190,7 @@ begin
   pcOut.Write(REG_INDENT_NESTED_TYPES, fbIndentNestedTypes);
   pcOut.Write(REG_INDENT_VAR_AND_CONST_IN_CLASS, fbIndentVarAndConstInClass);
   pcOut.Write(REG_INDENT_INTERFACE_GUID, fbIndentInterfaceGuid);
+  pcOut.Write(REG_INDENT_LABELS, Ord(fbIndentLabels));
 end;
 
 function TSetIndent.SpacesForIndentLevel(const piLevel: integer): integer;

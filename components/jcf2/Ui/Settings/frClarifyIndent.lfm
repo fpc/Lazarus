@@ -1,9 +1,9 @@
 object fClarifyIndent: TfClarifyIndent
   Left = 0
-  Height = 426
+  Height = 458
   Top = 0
   Width = 430
-  ClientHeight = 426
+  ClientHeight = 458
   ClientWidth = 430
   TabOrder = 0
   DesignLeft = 737
@@ -41,13 +41,13 @@ object fClarifyIndent: TfClarifyIndent
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 385
+    Height = 417
     Top = 35
     Width = 418
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Options'
-    ClientHeight = 365
+    ClientHeight = 397
     ClientWidth = 414
     TabOrder = 1
     object cbIndentBeginEnd: TCheckBox
@@ -286,6 +286,33 @@ object fClarifyIndent: TfClarifyIndent
       BorderSpacing.Bottom = 6
       Caption = 'Extra Indent for interface guid'
       TabOrder = 15
+    end
+    object lbIndentLabels: TLabel
+      AnchorSideLeft.Control = gbOptions
+      AnchorSideTop.Control = cbIndentInterfaceGuid
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 15
+      Top = 368
+      Width = 67
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 12
+      Caption = 'Indent labels'
+    end
+    object cbIndentLabels: TComboBox
+      AnchorSideLeft.Control = lbIndentLabels
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = lbIndentLabels
+      AnchorSideTop.Side = asrCenter
+      Left = 79
+      Height = 23
+      Top = 364
+      Width = 257
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      ItemHeight = 15
+      Style = csDropDownList
+      TabOrder = 16
     end
   end
 end

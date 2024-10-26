@@ -714,10 +714,37 @@ begin
     Inc(liIndentCount);
 
   // indent statement after label
-  if ( not lbHasIndentedRunOnLine) and
-    (pt.Nestings.GetLevel(nlStatementLabel) > 0) and
-    ( not pt.HasParentNode(nStatementLabel)) then
-    Inc(liIndentCount);
+  if (not lbHasIndentedRunOnLine) and (pt.Nestings.GetLevel(nlStatementLabel) > 0) then
+  begin
+    if (not pt.HasParentNode(nStatementLabel)) then
+    begin
+      if FormattingSettings.Indent.IndentLabels = eLabelIndentStatement then
+        Inc(liIndentCount);
+    end
+    else
+    begin
+      case FormattingSettings.Indent.IndentLabels of
+        eLabelIndentStatement: ;
+        eLabelIndentDontIndent: {keep indent};
+        eLabelIndentPrevLevel:
+        begin
+          if liIndentCount > 0 then
+            Dec(liIndentCount);
+        end;
+        eLabelIndentToProcedure:
+        begin
+          if liIndentCount = 1 then
+            liIndentCount := 0   // program or library top level procs
+          else
+            liIndentCount := pt.Nestings.GetLevel(nlStatementLabel);
+        end;
+        eLabelIndentX0:
+        begin
+          liIndentCount := 0;
+        end;
+      end;
+    end;
+  end;
 
   // program or library top level procs
   // re bug 1898723 - Identination of procedures in library

@@ -40,6 +40,7 @@ type
   TfClarifyIndent = class(TAbstractIDEOptionsEditor)
     cbIndentCaseLabels: TCheckBox;
     cbIndentInterfaceGuid: TCheckBox;
+    cbIndentLabels: TComboBox;
     Label2: TLabel;
     edtIndentSpaces: TSpinEdit;
     gbOptions: TGroupBox;
@@ -57,6 +58,7 @@ type
     cbIndentProcedureBody: TCheckBox;
     cbIndentNestedTypes: TCheckBox;
     cbIndentVarAndConstInClass: TCheckBox;
+    lbIndentLabels: TLabel;
     procedure cbIndentBeginEndClick(Sender: TObject);
     procedure cbHasFirstLevelIndentClick(Sender: TObject);
   public
@@ -74,7 +76,7 @@ implementation
 {$R *.lfm}
 
 uses
-  JcfSettings, JcfUIConsts, JcfIdeRegister;
+  JcfSettings, JcfUIConsts, JcfIdeRegister, SettingsTypes;
 
 constructor TfClarifyIndent.Create(AOwner: TComponent);
 begin
@@ -108,6 +110,13 @@ begin
   cbIndentNestedTypes.Caption := lisIndentIndentNestedTypes;
   cbIndentVarAndConstInClass.Caption := lisIndentIndentVarAndConstInClass;
   cbIndentInterfaceGuid.Caption := lisIndentExtraIndentForInterfaceGuid;
+
+  cbIndentLabels.Items.Clear;
+  cbIndentLabels.Items.Add(lisIndentLabelsStatement);
+  cbIndentLabels.Items.Add(lisIndentLabelsDontIndent);
+  cbIndentLabels.Items.Add(lisIndentLabelsIndentPrevLevel);;
+  cbIndentLabels.Items.Add(lisIndentLabelslIndentToProcedure);
+  cbIndentLabels.Items.Add(lisIndentLabelsIndentX0);
 end;
 
 {-------------------------------------------------------------------------------
@@ -138,6 +147,7 @@ begin
     cbIndentNestedTypes.Checked := IndentNestedTypes;
     cbIndentVarAndConstInClass.Checked := IndentVarAndConstInClass;
     cbIndentInterfaceGuid.Checked := IndentInterfaceGuid;
+    cbIndentLabels.ItemIndex := Ord(IndentLabels);
   end;
 
   cbIndentBeginEndClick(nil);
@@ -170,6 +180,7 @@ begin
     IndentNestedTypes := cbIndentNestedTypes.Checked;
     IndentVarAndConstInClass := cbIndentVarAndConstInClass.Checked;
     IndentInterfaceGuid := cbIndentInterfaceGuid.Checked;
+    IndentLabels := TIndentLabels(cbIndentLabels.ItemIndex);
   end;
 end;
 

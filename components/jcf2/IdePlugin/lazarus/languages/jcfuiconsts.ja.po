@@ -700,6 +700,30 @@ msgstr "グローバル内の 1 行コメントをコードに合わせる"
 msgid "Keep single-line comments with code in procedures"
 msgstr "手続き内の 1 行コメントをコードに合わせる"
 
+#: jcfuiconsts.lisindentlabels
+msgid "Indent labels"
+msgstr ""
+
+#: jcfuiconsts.lisindentlabelsdontindent
+msgid "Don't indent"
+msgstr ""
+
+#: jcfuiconsts.lisindentlabelsindentprevlevel
+msgid "Indent to prior level"
+msgstr ""
+
+#: jcfuiconsts.lisindentlabelsindentx0
+msgid "Indent to first column position"
+msgstr ""
+
+#: jcfuiconsts.lisindentlabelslindenttoprocedure
+msgid "Indent to procedure level"
+msgstr ""
+
+#: jcfuiconsts.lisindentlabelsstatement
+msgid "Indent statement"
+msgstr ""
+
 #: jcfuiconsts.lisindentoptions
 msgid "Options"
 msgstr "オプション"
