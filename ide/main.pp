@@ -1605,6 +1605,8 @@ begin
   MainBuildBoss.SetupExternalTools(TExternalToolsIDE);
   MainBuildBoss.EnvOptsChanged;
 
+  {$IFDEF LCLCOCOA}initIDECocoaConfigForms;{$ENDIF}
+
   // build and position the MainIDE form
   Application.CreateForm(TMainIDEBar,MainIDEBar);
   MainIDEBar.Name := NonModalIDEWindowNames[nmiwMainIDE];
