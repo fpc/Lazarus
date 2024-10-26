@@ -307,7 +307,13 @@ begin
       Exec.LoadDebugData(FCachedCompiledDbg);
     end
     else begin
-      Exec.Cleanup;
+      if FPrivateExec = nil then begin
+        if not Exec.LoadData(FCachedCompiled) then // Load the data from the Data string.
+          exit;
+        Exec.LoadDebugData(FCachedCompiledDbg);
+      end
+      else
+        Exec.Cleanup;
     end;
 
     Exec.SynEdit := aEditor as TCustomSynEdit;
