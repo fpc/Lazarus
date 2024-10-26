@@ -5232,6 +5232,8 @@ resourcestring
   lisExclude = 'Exclude';
 
   // cocoa Modern Form Style ToolBar Item Config
+  cocoaMFSTBIJumpBack = 'Jump Back';
+  cocoaMFSTBIJumpForward = 'Jump Forward';
   cocoaMFSTBISearch = 'Search Instantly';
   cocoaMFSTBICommand = 'Command';
 

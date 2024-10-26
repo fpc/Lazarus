@@ -9,6 +9,8 @@ uses
   LazarusIDEStrConsts, SourceEditor, SynEditTypes,
   CocoaAll, CocoaConfig, CocoaToolBar, Cocoa_Extra;
 
+procedure initIDECocoaConfigForms;
+
 implementation
 
 type
@@ -93,8 +95,8 @@ const
     priority: NSToolbarItemVisibilityPriorityHigh;
     navigational: True;
     iconName: 'arrow.left';
-    title: lisMenuJumpBack;
-    tips: lisMenuJumpBack;
+    title: cocoaMFSTBIJumpBack;
+    tips: cocoaMFSTBIJumpBack;
     bordered: True;
     onAction: @jumpBackAction;
   );
@@ -104,8 +106,8 @@ const
     priority: NSToolbarItemVisibilityPriorityHigh;
     navigational: True;
     iconName: 'arrow.right';
-    title: lisMenuJumpForward;
-    tips: lisMenuJumpForward;
+    title: cocoaMFSTBIJumpForward;
+    tips: cocoaMFSTBIJumpForward;
     bordered: True;
     onAction: @jumpForwardAction;
   );
@@ -176,8 +178,11 @@ const
     );
   );
 
-procedure initCocoaConfigForms;
+procedure initIDECocoaConfigForms;
 begin
+  if NSAppKitVersionNumber < NSAppKitVersionNumber11_0 then
+    Exit;
+
   mainIDEFormConfig.toolBar.items:= [
     TCocoaToolBarUtils.toClass(backItemConfig),
     TCocoaToolBarUtils.toClass(forwardItemConfig),
@@ -189,10 +194,6 @@ begin
 
   IDEMainFormHandler:= TCocoaIDEMainFormHandler.create;
 end;
-
-initialization
-  if NSAppKitVersionNumber >= NSAppKitVersionNumber11_0 then
-    initCocoaConfigForms;
 
 end.
 

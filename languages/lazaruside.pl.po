@@ -16,6 +16,18 @@ msgstr ""
 msgid "Command"
 msgstr ""
 
+#: lazarusidestrconsts.cocoamfstbijumpback
+#, fuzzy
+msgctxt "lazarusidestrconsts.cocoamfstbijumpback"
+msgid "Jump Back"
+msgstr "Przeskocz do ostatniej pozycji"
+
+#: lazarusidestrconsts.cocoamfstbijumpforward
+#, fuzzy
+msgctxt "lazarusidestrconsts.cocoamfstbijumpforward"
+msgid "Jump Forward"
+msgstr "Przeskocz do początkowej pozycji"
+
 #: lazarusidestrconsts.cocoamfstbisearch
 msgid "Search Instantly"
 msgstr ""
@@ -13282,10 +13294,12 @@ msgid "&Inspect ..."
 msgstr "Badaj..."
 
 #: lazarusidestrconsts.lismenujumpback
+msgctxt "lazarusidestrconsts.lismenujumpback"
 msgid "Jump Back"
 msgstr "Przeskocz do ostatniej pozycji"
 
 #: lazarusidestrconsts.lismenujumpforward
+msgctxt "lazarusidestrconsts.lismenujumpforward"
 msgid "Jump Forward"
 msgstr "Przeskocz do początkowej pozycji"
 
