@@ -11381,11 +11381,16 @@ msgid "Run program"
 msgstr "Program futtatása"
 
 #: lazarusidestrconsts.liskmsaveall
-msgid "SaveAll"
+#, fuzzy
+#| msgid "SaveAll"
+msgctxt "lazarusidestrconsts.liskmsaveall"
+msgid "Save All"
 msgstr "Minden mentése"
 
 #: lazarusidestrconsts.liskmsaveas
-msgid "SaveAs"
+#, fuzzy
+#| msgid "SaveAs"
+msgid "Save As"
 msgstr "Mentés másként"
 
 #: lazarusidestrconsts.liskmsaveproject
@@ -14554,10 +14559,6 @@ msgstr "Beállítások"
 #: lazarusidestrconsts.lisoptionvalueignored
 msgid "ignored"
 msgstr "kihagyva"
-
-#: lazarusidestrconsts.lisor
-msgid "or"
-msgstr "vagy"
 
 #: lazarusidestrconsts.lisos
 #, object-pascal-format

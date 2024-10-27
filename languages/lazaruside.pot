@@ -11219,11 +11219,12 @@ msgid "Run program"
 msgstr ""
 
 #: lazarusidestrconsts.liskmsaveall
-msgid "SaveAll"
+msgctxt "lazarusidestrconsts.liskmsaveall"
+msgid "Save All"
 msgstr ""
 
 #: lazarusidestrconsts.liskmsaveas
-msgid "SaveAs"
+msgid "Save As"
 msgstr ""
 
 #: lazarusidestrconsts.liskmsaveproject
@@ -14341,10 +14342,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisoptionvalueignored
 msgid "ignored"
-msgstr ""
-
-#: lazarusidestrconsts.lisor
-msgid "or"
 msgstr ""
 
 #: lazarusidestrconsts.lisos

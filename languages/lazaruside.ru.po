@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-10-17 18:45+0300\n"
+"PO-Revision-Date: 2024-10-27 18:28+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -11273,11 +11273,12 @@ msgid "Run program"
 msgstr "Запустить программу"
 
 #: lazarusidestrconsts.liskmsaveall
-msgid "SaveAll"
+msgctxt "lazarusidestrconsts.liskmsaveall"
+msgid "Save All"
 msgstr "Сохранить всё"
 
 #: lazarusidestrconsts.liskmsaveas
-msgid "SaveAs"
+msgid "Save As"
 msgstr "Сохранить как"
 
 #: lazarusidestrconsts.liskmsaveproject
@@ -14432,10 +14433,6 @@ msgstr "Параметры"
 #: lazarusidestrconsts.lisoptionvalueignored
 msgid "ignored"
 msgstr "игнорируется"
-
-#: lazarusidestrconsts.lisor
-msgid "or"
-msgstr "или"
 
 #: lazarusidestrconsts.lisos
 #, object-pascal-format

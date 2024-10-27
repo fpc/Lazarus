@@ -11519,11 +11519,16 @@ msgid "Run program"
 msgstr "Startuoti programą"
 
 #: lazarusidestrconsts.liskmsaveall
-msgid "SaveAll"
+#, fuzzy
+#| msgid "SaveAll"
+msgctxt "lazarusidestrconsts.liskmsaveall"
+msgid "Save All"
 msgstr "Įrašyti visus"
 
 #: lazarusidestrconsts.liskmsaveas
-msgid "SaveAs"
+#, fuzzy
+#| msgid "SaveAs"
+msgid "Save As"
 msgstr "Įrašyti taip"
 
 #: lazarusidestrconsts.liskmsaveproject
@@ -14751,10 +14756,6 @@ msgstr "Parinktys"
 #: lazarusidestrconsts.lisoptionvalueignored
 msgid "ignored"
 msgstr "ignoruojamas"
-
-#: lazarusidestrconsts.lisor
-msgid "or"
-msgstr "arba"
 
 #: lazarusidestrconsts.lisos
 #, object-pascal-format

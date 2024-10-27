@@ -11413,11 +11413,16 @@ msgid "Run program"
 msgstr "Spustit program"
 
 #: lazarusidestrconsts.liskmsaveall
-msgid "SaveAll"
+#, fuzzy
+#| msgid "SaveAll"
+msgctxt "lazarusidestrconsts.liskmsaveall"
+msgid "Save All"
 msgstr "UložitVše"
 
 #: lazarusidestrconsts.liskmsaveas
-msgid "SaveAs"
+#, fuzzy
+#| msgid "SaveAs"
+msgid "Save As"
 msgstr "UložitJako"
 
 #: lazarusidestrconsts.liskmsaveproject
@@ -14629,10 +14634,6 @@ msgstr "Volby"
 #: lazarusidestrconsts.lisoptionvalueignored
 msgid "ignored"
 msgstr "ignorováno"
-
-#: lazarusidestrconsts.lisor
-msgid "or"
-msgstr "nebo"
 
 #: lazarusidestrconsts.lisos
 #, object-pascal-format

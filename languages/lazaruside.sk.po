@@ -11340,11 +11340,16 @@ msgid "Run program"
 msgstr "Spustiť program"
 
 #: lazarusidestrconsts.liskmsaveall
-msgid "SaveAll"
+#, fuzzy
+#| msgid "SaveAll"
+msgctxt "lazarusidestrconsts.liskmsaveall"
+msgid "Save All"
 msgstr "Uložiť všetky"
 
 #: lazarusidestrconsts.liskmsaveas
-msgid "SaveAs"
+#, fuzzy
+#| msgid "SaveAs"
+msgid "Save As"
 msgstr "Uložiť ako"
 
 #: lazarusidestrconsts.liskmsaveproject
@@ -14512,10 +14517,6 @@ msgstr "Voľby"
 #: lazarusidestrconsts.lisoptionvalueignored
 msgid "ignored"
 msgstr ""
-
-#: lazarusidestrconsts.lisor
-msgid "or"
-msgstr "alebo"
 
 #: lazarusidestrconsts.lisos
 #, object-pascal-format

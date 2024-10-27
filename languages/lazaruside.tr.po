@@ -11258,11 +11258,16 @@ msgid "Run program"
 msgstr "Programı çalıştır"
 
 #: lazarusidestrconsts.liskmsaveall
-msgid "SaveAll"
+#, fuzzy
+#| msgid "SaveAll"
+msgctxt "lazarusidestrconsts.liskmsaveall"
+msgid "Save All"
 msgstr "Hepsini kaydet"
 
 #: lazarusidestrconsts.liskmsaveas
-msgid "SaveAs"
+#, fuzzy
+#| msgid "SaveAs"
+msgid "Save As"
 msgstr "Farklı kaydet"
 
 #: lazarusidestrconsts.liskmsaveproject
@@ -14398,10 +14403,6 @@ msgstr "Seçenekler"
 msgid "ignored"
 msgstr "yoksay"
 
-#: lazarusidestrconsts.lisor
-msgid "or"
-msgstr "veya"
-
 #: lazarusidestrconsts.lisos
 #, object-pascal-format
 msgid ", OS: %s"
@@ -16594,6 +16595,7 @@ msgid "Save"
 msgstr "Kaydet"
 
 #: lazarusidestrconsts.lissaveall
+msgctxt "lazarusidestrconsts.lissaveall"
 msgid "Save All"
 msgstr "Hepsini kaydet"
 

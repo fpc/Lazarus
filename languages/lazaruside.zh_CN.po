@@ -11345,11 +11345,16 @@ msgid "Run program"
 msgstr "运行程序"
 
 #: lazarusidestrconsts.liskmsaveall
-msgid "SaveAll"
+#, fuzzy
+#| msgid "SaveAll"
+msgctxt "lazarusidestrconsts.liskmsaveall"
+msgid "Save All"
 msgstr "保存所有"
 
 #: lazarusidestrconsts.liskmsaveas
-msgid "SaveAs"
+#, fuzzy
+#| msgid "SaveAs"
+msgid "Save As"
 msgstr "另存为"
 
 #: lazarusidestrconsts.liskmsaveproject
@@ -14505,10 +14510,6 @@ msgstr "选项(&O)"
 #: lazarusidestrconsts.lisoptionvalueignored
 msgid "ignored"
 msgstr "忽略"
-
-#: lazarusidestrconsts.lisor
-msgid "or"
-msgstr ""
 
 #: lazarusidestrconsts.lisos
 #, object-pascal-format

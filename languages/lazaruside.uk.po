@@ -11351,11 +11351,16 @@ msgid "Run program"
 msgstr "Виконати програму"
 
 #: lazarusidestrconsts.liskmsaveall
-msgid "SaveAll"
+#, fuzzy
+#| msgid "SaveAll"
+msgctxt "lazarusidestrconsts.liskmsaveall"
+msgid "Save All"
 msgstr "ЗберегтиВсе"
 
 #: lazarusidestrconsts.liskmsaveas
-msgid "SaveAs"
+#, fuzzy
+#| msgid "SaveAs"
+msgid "Save As"
 msgstr "ЗберегтиЯк"
 
 #: lazarusidestrconsts.liskmsaveproject
@@ -14513,10 +14518,6 @@ msgstr "Параметри"
 #: lazarusidestrconsts.lisoptionvalueignored
 msgid "ignored"
 msgstr "знехтувано"
-
-#: lazarusidestrconsts.lisor
-msgid "or"
-msgstr "або"
 
 #: lazarusidestrconsts.lisos
 #, object-pascal-format

@@ -11426,11 +11426,16 @@ msgid "Run program"
 msgstr "Programm starten"
 
 #: lazarusidestrconsts.liskmsaveall
-msgid "SaveAll"
+#, fuzzy
+#| msgid "SaveAll"
+msgctxt "lazarusidestrconsts.liskmsaveall"
+msgid "Save All"
 msgstr "Alles speichern"
 
 #: lazarusidestrconsts.liskmsaveas
-msgid "SaveAs"
+#, fuzzy
+#| msgid "SaveAs"
+msgid "Save As"
 msgstr "Speichern als"
 
 #: lazarusidestrconsts.liskmsaveproject
@@ -14607,10 +14612,6 @@ msgstr "Einstellungen"
 #: lazarusidestrconsts.lisoptionvalueignored
 msgid "ignored"
 msgstr "ignoriert"
-
-#: lazarusidestrconsts.lisor
-msgid "or"
-msgstr "oder"
 
 #: lazarusidestrconsts.lisos
 #, object-pascal-format
