@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 607
+  Left = 904
   Height = 515
-  Top = 222
+  Top = 149
   Width = 700
   AllowDropFiles = True
   Caption = 'IconTable'
@@ -9,46 +9,23 @@ object MainForm: TMainForm
   ClientWidth = 700
   Constraints.MinHeight = 515
   Constraints.MinWidth = 700
-  Position = poScreenCenter
-  ShowHint = True
   OnClose = FormClose
   OnCreate = FormCreate
   OnDropFiles = FormDropFiles
   OnShow = FormShow
-  object DirectoryEdit: TDirectoryEdit
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = sbtnLastDirs
-    AnchorSideTop.Side = asrCenter
-    AnchorSideRight.Control = sbtnLastDirs
-    Left = 10
-    Height = 33
-    Hint = 'Folder with images for which the HTML preview should be created'
-    Top = 5
-    Width = 630
-    ShowHidden = False
-    ButtonWidth = 23
-    NumGlyphs = 1
-    Images = ImageList
-    ImageIndex = 1
-    Flat = True
-    Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Left = 10
-    BorderSpacing.Top = 10
-    BorderSpacing.Right = 2
-    MaxLength = 0
-    TabOrder = 0
-    OnChange = DirectoryEditChange
-  end
+  Position = poScreenCenter
+  ShowHint = True
+  LCLVersion = '3.6.0.0'
   inline SynEdit: TSynEdit
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = DirectoryEdit
+    AnchorSideTop.Control = ToolBar
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = bbtnClose
     Left = 0
-    Height = 415
-    Top = 48
+    Height = 425
+    Top = 44
     Width = 700
     BorderSpacing.Top = 10
     BorderSpacing.Bottom = 10
@@ -59,7 +36,7 @@ object MainForm: TMainForm
     Font.Quality = fqCleartype
     ParentColor = False
     ParentFont = False
-    TabOrder = 1
+    TabOrder = 6
     TabStop = False
     Gutter.Width = 0
     Gutter.MouseActions = <>
@@ -515,33 +492,16 @@ object MainForm: TMainForm
     inline SynLeftGutterPartList1: TSynGutterPartList
     end
   end
-  object sbtnLastDirs: TSpeedButton
-    AnchorSideTop.Control = sbtnMenu
-    AnchorSideTop.Side = asrCenter
-    AnchorSideRight.Control = sbtnMenu
-    Left = 642
-    Height = 23
-    Hint = 'Last used'
-    Top = 10
-    Width = 23
-    Anchors = [akTop, akRight]
-    BorderSpacing.Right = 2
-    Flat = True
-    Images = ImageList
-    ImageIndex = 2
-    Spacing = -1
-    OnClick = sbtnLastDirsClick
-  end
   object bbtnClose: TBitBtn
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 619
-    Height = 32
+    Left = 614
+    Height = 26
     Hint = 'Close application'
-    Top = 473
-    Width = 71
+    Top = 479
+    Width = 76
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Right = 10
@@ -550,19 +510,21 @@ object MainForm: TMainForm
     Caption = 'Close'
     Images = ImageList
     ImageIndex = 6
+    OnClick = bbtnCloseClick
+    ParentShowHint = False
+    ShowHint = True
     Spacing = 5
     TabOrder = 5
-    OnClick = bbtnCloseClick
   end
   object bbtnSave: TBitBtn
     AnchorSideTop.Control = bbtnClose
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = bbtnClose
-    Left = 544
-    Height = 32
+    Left = 535
+    Height = 26
     Hint = 'Save created HTML page as "IconTable.html" file in the specified folder'
-    Top = 473
-    Width = 67
+    Top = 479
+    Width = 71
     Anchors = [akTop, akRight]
     AutoSize = True
     BorderSpacing.Right = 8
@@ -570,18 +532,18 @@ object MainForm: TMainForm
     Enabled = False
     Images = ImageList
     ImageIndex = 5
+    OnClick = bbtnSaveClick
     Spacing = 5
     TabOrder = 4
-    OnClick = bbtnSaveClick
   end
   object bbtnCreateHTML: TBitBtn
     AnchorSideTop.Control = bbtnPreview
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = bbtnPreview
-    Left = 329
-    Height = 32
+    Left = 316
+    Height = 26
     Hint = 'Create HTML page for images found in the selected directory'
-    Top = 473
+    Top = 479
     Width = 116
     Anchors = [akTop, akRight]
     AutoSize = True
@@ -591,17 +553,17 @@ object MainForm: TMainForm
     Enabled = False
     Images = ImageList
     ImageIndex = 3
+    OnClick = bbtnCreateHTMLClick
     Spacing = 5
     TabOrder = 2
-    OnClick = bbtnCreateHTMLClick
   end
   object bbtnPreview: TBitBtn
     AnchorSideTop.Control = bbtnSave
     AnchorSideRight.Control = bbtnSave
-    Left = 453
-    Height = 32
-    Top = 473
-    Width = 83
+    Left = 440
+    Height = 26
+    Top = 479
+    Width = 87
     Anchors = [akTop, akRight]
     AutoSize = True
     BorderSpacing.Right = 8
@@ -609,44 +571,86 @@ object MainForm: TMainForm
     Enabled = False
     Images = ImageList
     ImageIndex = 4
-    TabOrder = 3
     OnClick = bbtnPreviewClick
+    TabOrder = 3
   end
-  object sbtnMenu: TSpeedButton
+  object ToolBar: TToolBar
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 667
-    Height = 23
-    Hint = 'Options'
+    Left = 641
+    Height = 24
     Top = 10
-    Width = 23
+    Width = 49
+    Align = alNone
     Anchors = [akTop, akRight]
+    AutoSize = True
     BorderSpacing.Top = 10
     BorderSpacing.Right = 10
-    Flat = True
+    ButtonHeight = 24
+    ButtonWidth = 24
+    EdgeBorders = []
+    EdgeInner = esNone
+    EdgeOuter = esNone
     Images = ImageList
-    ImageIndex = 7
-    Spacing = -1
-    OnClick = sbtnMenuClick
+    TabOrder = 1
+    TabStop = True
+    Transparent = True
+    Wrapable = False
+    object tbLastDirs: TToolButton
+      Left = 1
+      Hint = 'Last used'
+      Top = 0
+      DropdownMenu = popLastDirs
+      ImageIndex = 2
+    end
+    object tbMenu: TToolButton
+      AnchorSideRight.Side = asrBottom
+      Left = 25
+      Hint = 'Options'
+      Top = 0
+      DropdownMenu = popMenu
+      ImageIndex = 7
+    end
+  end
+  object DirectoryEdit: TDirectoryEdit
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ToolBar
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = ToolBar
+    Left = 10
+    Height = 23
+    Hint = 'Folder with images for which the HTML preview should be created'
+    Top = 11
+    Width = 631
+    ShowHidden = False
+    ButtonWidth = 23
+    NumGlyphs = 1
+    Images = ImageList
+    ImageIndex = 1
+    Flat = True
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 10
+    MaxLength = 0
+    TabOrder = 0
+    OnChange = DirectoryEditChange
   end
   object TaskDialog: TTaskDialog
     Buttons = <>
     RadioButtons = <>
-    QueryItemIndex = 0
     Left = 96
-    Top = 64
+    Top = 104
   end
   object SynHTMLSyn: TSynHTMLSyn
     DefaultFilter = 'HTML Document (*.htm,*.html)|*.htm;*.html'
     Enabled = False
     Left = 176
-    Top = 64
+    Top = 104
   end
   object ImageList: TImageList
     Scaled = True
     Left = 256
-    Top = 64
+    Top = 104
     Bitmap = {
       4C7A080000001000000010000000950700000000000078DAED587B70536516FF
       7C002952677C21E00C33A0B3EEE8AAE3BAEBAAA332CA435D15055C11C5D91D59
@@ -933,13 +937,12 @@ object MainForm: TMainForm
   end
   object popLastDirs: TPopupMenu
     Images = ImageList
-    Alignment = paRight
     Left = 330
-    Top = 64
+    Top = 104
   end
   object popMenu: TPopupMenu
     Left = 408
-    Top = 64
+    Top = 104
     object menuDarkHTMLpage: TMenuItem
       Caption = 'Dark HTML page'
       OnClick = menuDarkHTMLpageClick

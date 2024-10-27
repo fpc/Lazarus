@@ -1,7 +1,5 @@
 {"version":1,"strings":[
 {"hash":104478853,"name":"tmainform.caption","sourcebytes":[73,99,111,110,84,97,98,108,101],"value":"IconTable"},
-{"hash":150702596,"name":"tmainform.directoryedit.hint","sourcebytes":[70,111,108,100,101,114,32,119,105,116,104,32,105,109,97,103,101,115,32,102,111,114,32,119,104,105,99,104,32,116,104,101,32,72,84,77,76,32,112,114,101,118,105,101,119,32,115,104,111,117,108,100,32,98,101,32,99,114,101,97,116,101,100],"value":"Folder with images for which the HTML preview should be created"},
-{"hash":174562100,"name":"tmainform.sbtnlastdirs.hint","sourcebytes":[76,97,115,116,32,117,115,101,100],"value":"Last used"},
 {"hash":146468846,"name":"tmainform.bbtnclose.hint","sourcebytes":[67,108,111,115,101,32,97,112,112,108,105,99,97,116,105,111,110],"value":"Close application"},
 {"hash":4863637,"name":"tmainform.bbtnclose.caption","sourcebytes":[67,108,111,115,101],"value":"Close"},
 {"hash":121132146,"name":"tmainform.bbtnsave.hint","sourcebytes":[83,97,118,101,32,99,114,101,97,116,101,100,32,72,84,77,76,32,112,97,103,101,32,97,115,32,34,73,99,111,110,84,97,98,108,101,46,104,116,109,108,34,32,102,105,108,101,32,105,110,32,116,104,101,32,115,112,101,99,105,102,105,101,100,32,102,111,108,100,101,114],"value":"Save created HTML page as \"IconTable.html\" file in the specified folder"},
@@ -9,7 +7,9 @@
 {"hash":119190121,"name":"tmainform.bbtncreatehtml.hint","sourcebytes":[67,114,101,97,116,101,32,72,84,77,76,32,112,97,103,101,32,102,111,114,32,105,109,97,103,101,115,32,102,111,117,110,100,32,105,110,32,116,104,101,32,115,101,108,101,99,116,101,100,32,100,105,114,101,99,116,111,114,121],"value":"Create HTML page for images found in the selected directory"},
 {"hash":171857052,"name":"tmainform.bbtncreatehtml.caption","sourcebytes":[67,114,101,97,116,101,32,72,84,77,76],"value":"Create HTML"},
 {"hash":126668695,"name":"tmainform.bbtnpreview.caption","sourcebytes":[80,114,101,118,105,101,119],"value":"Preview"},
-{"hash":108725763,"name":"tmainform.sbtnmenu.hint","sourcebytes":[79,112,116,105,111,110,115],"value":"Options"},
+{"hash":174562100,"name":"tmainform.tblastdirs.hint","sourcebytes":[76,97,115,116,32,117,115,101,100],"value":"Last used"},
+{"hash":108725763,"name":"tmainform.tbmenu.hint","sourcebytes":[79,112,116,105,111,110,115],"value":"Options"},
+{"hash":150702596,"name":"tmainform.directoryedit.hint","sourcebytes":[70,111,108,100,101,114,32,119,105,116,104,32,105,109,97,103,101,115,32,102,111,114,32,119,104,105,99,104,32,116,104,101,32,72,84,77,76,32,112,114,101,118,105,101,119,32,115,104,111,117,108,100,32,98,101,32,99,114,101,97,116,101,100],"value":"Folder with images for which the HTML preview should be created"},
 {"hash":157953765,"name":"tmainform.menudarkhtmlpage.caption","sourcebytes":[68,97,114,107,32,72,84,77,76,32,112,97,103,101],"value":"Dark HTML page"},
 {"hash":2540136,"name":"tmainform.menuhtmlpageenglish.caption","sourcebytes":[72,84,77,76,32,112,97,103,101,32,105,110,32,69,110,103,108,105,115,104],"value":"HTML page in English"}
 ]}

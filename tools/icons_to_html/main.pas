@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, StrUtils, Forms, FPImage, Controls, Dialogs, EditBtn, FileUtil,
   LazUTF8, LazFileUtils, LCLIntf, LCLType, Buttons, Menus, IniFiles,
-  SynEdit, SynHighlighterHTML, DefaultTranslator;
+  SynEdit, SynHighlighterHTML, DefaultTranslator, ComCtrls;
 
 type
 
@@ -24,11 +24,12 @@ type
     menuHTMLpageEnglish: TMenuItem;
     popLastDirs: TPopupMenu;
     popMenu: TPopupMenu;
-    sbtnLastDirs: TSpeedButton;
-    sbtnMenu: TSpeedButton;
     SynEdit: TSynEdit;
     SynHTMLSyn: TSynHTMLSyn;
     TaskDialog: TTaskDialog;
+    ToolBar: TToolBar;
+    tbLastDirs: TToolButton;
+    tbMenu: TToolButton;
     procedure bbtnCloseClick(Sender: TObject);
     procedure bbtnCreateHTMLClick(Sender: TObject);
     procedure bbtnPreviewClick(Sender: TObject);
@@ -42,8 +43,6 @@ type
     procedure LastDirClick(Sender: TObject);
     procedure menuDarkHTMLpageClick(Sender: TObject);
     procedure menuHTMLpageEnglishClick(Sender: TObject);
-    procedure sbtnLastDirsClick(Sender: TObject);
-    procedure sbtnMenuClick(Sender: TObject);
   private
     ImgDirectory: String;
     function GetImgDirectory(P: String): String;
@@ -97,7 +96,6 @@ resourcestring
   rsImagesWereProvidedBy = 'The images were kindly provided by Roland Hahn (%s).';
   rsLicense = 'License:' + LineEnding + '%s';
   rsFreelyAvailable = '(freely available, no restrictions in usage)';
-
 
 { TMainForm }
 
@@ -161,7 +159,7 @@ begin
   if DirectoryExists(popLastDirs.Items[0].Caption) then
     DirectoryEdit.Directory := popLastDirs.Items[0].Caption;
 
-  sbtnLastDirs.Enabled := popLastDirs.Items[0].Caption > '';
+  tbLastDirs.Enabled := popLastDirs.Items[0].Caption > '';
 end;
 
 procedure TMainForm.FormDropFiles(Sender: TObject; const FileNames: array of String);
@@ -225,9 +223,12 @@ begin
   SynEdit.Lines.Clear;
   CreateHTML(SynEdit.Lines, False);
 
-  bbtnPreview.Enabled := True;
-  bbtnSave.Enabled := True;
-  bbtnPreview.SetFocus;
+  if SynEdit.Text > '' then
+  begin
+    bbtnPreview.Enabled := True;
+    bbtnSave.Enabled := True;
+    bbtnPreview.SetFocus;
+  end;
   UpdateLastDirs(ImgDirectory, False);
 end;
 
@@ -515,22 +516,6 @@ begin
     bbtnCreateHTML.Click;
 end;
 
-procedure TMainForm.sbtnLastDirsClick(Sender: TObject);
-var
-  pt: TPoint;
-begin
-  pt := sbtnLastDirs.ClientToScreen(Point(sbtnLastDirs.Width, sbtnLastDirs.Height));
-  popLastDirs.PopUp(pt.X, pt.Y);
-end;
-
-procedure TMainForm.sbtnMenuClick(Sender: TObject);
-var
-  pt: TPoint;
-begin
-  pt := sbtnMenu.ClientToScreen(Point(sbtnMenu.Width, sbtnMenu.Height));
-  popMenu.PopUp(pt.X, pt.Y);
-end;
-
 procedure TMainForm.UpdateLastDirs(ImgDir: String; Delete: Boolean);
 var
   i: Integer;
@@ -552,7 +537,7 @@ begin
     popLastDirs.Items[LastDirsMax].Visible := True;
     popLastDirs.Items[LastDirsMax].MenuIndex := 0;
   end;
-  sbtnLastDirs.Enabled := popLastDirs.Items[0].Caption > '';
+  tbLastDirs.Enabled := popLastDirs.Items[0].Caption > '';
 end;
 
 procedure TMainForm.ShowMsg(const AMsgCaption: String; const AMsg: String);
