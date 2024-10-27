@@ -892,7 +892,15 @@ begin
     IsDebug := False;
     RefreshAssociatedDebugList(nil);
   end;
-  SetActiveDesktopAction.Enabled := HasSel and not IsActive;
+  SetActiveDesktopAction.Enabled := HasSel;
+  if HasSel and IsActive then
+  begin
+    SetActiveDesktopAction.Caption := dlgResetActiveDesktopBtnCaption;
+    SetActiveDesktopAction.Hint    := dlgResetActiveDesktopBtnHint;
+  end else begin
+    SetActiveDesktopAction.Caption := dlgSetActiveDesktopBtnCaption;
+    SetActiveDesktopAction.Hint    := dlgSetActiveDesktopBtnHint;
+  end;
   SetDebugDesktopAction.Enabled := HasSel and not IsDebug;
   RenameAction.Enabled := HasSel;
   DeleteAction.Enabled := HasSel and not (IsActive or IsDebug);
@@ -942,9 +950,7 @@ end;
 
 procedure TDesktopForm.SetActiveDesktopActionClick(Sender: TObject);
 begin
-  if (DesktopListBox.ItemIndex = -1) or
-     (EnvironmentGuiOpts.ActiveDesktopName = DesktopListBox.Items[DesktopListBox.ItemIndex])
-  then
+  if DesktopListBox.ItemIndex < 0 then
     Exit;
 
   if not EnvironmentGuiOpts.Desktops[DesktopListBox.ItemIndex].Compatible then

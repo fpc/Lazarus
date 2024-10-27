@@ -1284,6 +1284,8 @@ resourcestring
   dlgNewDesktop = 'New desktop ...';
   dlgSetActiveDesktopBtnCaption = 'Set active';
   dlgSetActiveDesktopBtnHint = 'Set active';
+  dlgResetActiveDesktopBtnCaption = 'Restore active';
+  dlgResetActiveDesktopBtnHint = 'Restore active window layout';
   dlgToggleDebugDesktopBtnCaption = 'Toggle as debug desktop';
   dlgToggleDebugDesktopBtnHint = 'Toggle as debug desktop';
   dlgDesktopName = 'Desktop name';
