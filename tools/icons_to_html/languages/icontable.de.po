@@ -16,10 +16,8 @@ msgid "Error"
 msgstr "Fehler"
 
 #: main.rsfreelyavailable
-#, fuzzy
-#| msgid "freely available, no restrictions in usage"
 msgid "(freely available, no restrictions in usage)"
-msgstr "Frei verwendbar ohne Einschränkungen"
+msgstr "(Frei verwendbar ohne Einschränkungen)"
 
 #: main.rsimageswereprovidedby
 #, object-pascal-format
@@ -35,8 +33,6 @@ msgid "The images in this folder can be used in Lazarus applications as toolbar 
 msgstr "Die Bilder in diesem Ordner können in Lazarus-Anwendungen als Toolbar- oder Button-Icons verwendet werden."
 
 #: main.rsinfotext2
-#, fuzzy
-#| msgid "The different sizes as required by LCL scaling for high-dpi screens can be used like this, for example:"
 msgid "The different sizes as required by LCL scaling for Hi-DPI screens can be used like this, for example:"
 msgstr "Die verschiedenen, für LCL-Skalierung auf hochaufgelösten Bildschirmen benötigten Größen können beispielsweise wie folgt eingesetzt werden:"
 
@@ -159,11 +155,11 @@ msgctxt "tmainform.menuhtmlpageenglish.caption"
 msgid "HTML page in English"
 msgstr "HTML-Seite auf Englisch"
 
-#: tmainform.sbtnlastdirs.hint
+#: tmainform.tblastdirs.hint
 msgid "Last used"
 msgstr "Zuletzt benutzt"
 
-#: tmainform.sbtnmenu.hint
+#: tmainform.tbmenu.hint
 msgid "Options"
 msgstr "Optionen"
 

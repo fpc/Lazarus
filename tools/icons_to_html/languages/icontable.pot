@@ -138,11 +138,13 @@ msgstr ""
 msgid "HTML page in English"
 msgstr ""
 
-#: tmainform.sbtnlastdirs.hint
+#: tmainform.tblastdirs.hint
+msgctxt "tmainform.tblastdirs.hint"
 msgid "Last used"
 msgstr ""
 
-#: tmainform.sbtnmenu.hint
+#: tmainform.tbmenu.hint
+msgctxt "tmainform.tbmenu.hint"
 msgid "Options"
 msgstr ""
 
