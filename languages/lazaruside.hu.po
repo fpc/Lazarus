@@ -3812,6 +3812,14 @@ msgctxt "lazarusidestrconsts.dlgreset"
 msgid "Reset"
 msgstr "Alaphelyzet"
 
+#: lazarusidestrconsts.dlgresetactivedesktopbtncaption
+msgid "Restore active"
+msgstr ""
+
+#: lazarusidestrconsts.dlgresetactivedesktopbtnhint
+msgid "Restore window layout of active desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgresetall
 msgid "Reset all"
 msgstr "Az összes visszaállítása"
@@ -11504,11 +11512,16 @@ msgid "Run program"
 msgstr "Program futtatása"
 
 #: lazarusidestrconsts.liskmsaveall
-msgid "SaveAll"
+#, fuzzy
+#| msgid "SaveAll"
+msgctxt "lazarusidestrconsts.liskmsaveall"
+msgid "Save All"
 msgstr "Minden mentése"
 
 #: lazarusidestrconsts.liskmsaveas
-msgid "SaveAs"
+#, fuzzy
+#| msgid "SaveAs"
+msgid "Save As"
 msgstr "Mentés másként"
 
 #: lazarusidestrconsts.liskmsaveproject
@@ -13430,6 +13443,15 @@ msgstr "Hibakereső visszaállítása"
 msgid "Revert"
 msgstr "Visszaállítás"
 
+#: lazarusidestrconsts.lismenurevertconfirm
+#, object-pascal-format
+msgid ""
+"Discard all unsaved changes in\n"
+"\"%s\"?\n"
+"\n"
+"This action cannot be undone and will affect all editor tabs with the file."
+msgstr ""
+
 #: lazarusidestrconsts.lismenurun
 msgctxt "lazarusidestrconsts.lismenurun"
 msgid "&Run"
@@ -14679,10 +14701,6 @@ msgstr "Beállítások"
 #: lazarusidestrconsts.lisoptionvalueignored
 msgid "ignored"
 msgstr "kihagyva"
-
-#: lazarusidestrconsts.lisor
-msgid "or"
-msgstr "vagy"
 
 #: lazarusidestrconsts.lisos
 #, object-pascal-format

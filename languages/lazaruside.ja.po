@@ -3895,6 +3895,14 @@ msgctxt "lazarusidestrconsts.dlgreset"
 msgid "Reset"
 msgstr "リセット"
 
+#: lazarusidestrconsts.dlgresetactivedesktopbtncaption
+msgid "Restore active"
+msgstr ""
+
+#: lazarusidestrconsts.dlgresetactivedesktopbtnhint
+msgid "Restore window layout of active desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgresetall
 msgid "Reset all"
 msgstr ""
@@ -11614,11 +11622,16 @@ msgid "Run program"
 msgstr "プログラムを実行"
 
 #: lazarusidestrconsts.liskmsaveall
-msgid "SaveAll"
+#, fuzzy
+#| msgid "SaveAll"
+msgctxt "lazarusidestrconsts.liskmsaveall"
+msgid "Save All"
 msgstr "すべて保存"
 
 #: lazarusidestrconsts.liskmsaveas
-msgid "SaveAs"
+#, fuzzy
+#| msgid "SaveAs"
+msgid "Save As"
 msgstr "名前を付けて保存"
 
 #: lazarusidestrconsts.liskmsaveproject
@@ -13567,6 +13580,15 @@ msgstr "デバッガをリセット"
 msgid "Revert"
 msgstr "元に戻す"
 
+#: lazarusidestrconsts.lismenurevertconfirm
+#, object-pascal-format
+msgid ""
+"Discard all unsaved changes in\n"
+"\"%s\"?\n"
+"\n"
+"This action cannot be undone and will affect all editor tabs with the file."
+msgstr ""
+
 #: lazarusidestrconsts.lismenurun
 msgctxt "lazarusidestrconsts.lismenurun"
 msgid "&Run"
@@ -14840,10 +14862,6 @@ msgstr "オプション"
 #: lazarusidestrconsts.lisoptionvalueignored
 msgid "ignored"
 msgstr "無視"
-
-#: lazarusidestrconsts.lisor
-msgid "or"
-msgstr "または"
 
 #: lazarusidestrconsts.lisos
 #, object-pascal-format

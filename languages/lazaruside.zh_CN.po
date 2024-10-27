@@ -3782,6 +3782,14 @@ msgctxt "lazarusidestrconsts.dlgreset"
 msgid "Reset"
 msgstr "重置"
 
+#: lazarusidestrconsts.dlgresetactivedesktopbtncaption
+msgid "Restore active"
+msgstr ""
+
+#: lazarusidestrconsts.dlgresetactivedesktopbtnhint
+msgid "Restore window layout of active desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgresetall
 msgid "Reset all"
 msgstr "重置所有"
@@ -11448,11 +11456,16 @@ msgid "Run program"
 msgstr "运行程序"
 
 #: lazarusidestrconsts.liskmsaveall
-msgid "SaveAll"
+#, fuzzy
+#| msgid "SaveAll"
+msgctxt "lazarusidestrconsts.liskmsaveall"
+msgid "Save All"
 msgstr "保存所有"
 
 #: lazarusidestrconsts.liskmsaveas
-msgid "SaveAs"
+#, fuzzy
+#| msgid "SaveAs"
+msgid "Save As"
 msgstr "另存为"
 
 #: lazarusidestrconsts.liskmsaveproject
@@ -13368,6 +13381,15 @@ msgstr "重置调试器(&I)"
 msgid "Revert"
 msgstr "重新打开(&R)"
 
+#: lazarusidestrconsts.lismenurevertconfirm
+#, object-pascal-format
+msgid ""
+"Discard all unsaved changes in\n"
+"\"%s\"?\n"
+"\n"
+"This action cannot be undone and will affect all editor tabs with the file."
+msgstr ""
+
 #: lazarusidestrconsts.lismenurun
 msgctxt "lazarusidestrconsts.lismenurun"
 msgid "&Run"
@@ -14610,10 +14632,6 @@ msgstr "选项(&O)"
 #: lazarusidestrconsts.lisoptionvalueignored
 msgid "ignored"
 msgstr "忽略"
-
-#: lazarusidestrconsts.lisor
-msgid "or"
-msgstr ""
 
 #: lazarusidestrconsts.lisos
 #, object-pascal-format

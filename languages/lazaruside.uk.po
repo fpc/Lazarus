@@ -3799,6 +3799,14 @@ msgctxt "lazarusidestrconsts.dlgreset"
 msgid "Reset"
 msgstr "Скинути"
 
+#: lazarusidestrconsts.dlgresetactivedesktopbtncaption
+msgid "Restore active"
+msgstr ""
+
+#: lazarusidestrconsts.dlgresetactivedesktopbtnhint
+msgid "Restore window layout of active desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgresetall
 msgid "Reset all"
 msgstr "Скинути все"
@@ -11474,11 +11482,16 @@ msgid "Run program"
 msgstr "Виконати програму"
 
 #: lazarusidestrconsts.liskmsaveall
-msgid "SaveAll"
+#, fuzzy
+#| msgid "SaveAll"
+msgctxt "lazarusidestrconsts.liskmsaveall"
+msgid "Save All"
 msgstr "ЗберегтиВсе"
 
 #: lazarusidestrconsts.liskmsaveas
-msgid "SaveAs"
+#, fuzzy
+#| msgid "SaveAs"
+msgid "Save As"
 msgstr "ЗберегтиЯк"
 
 #: lazarusidestrconsts.liskmsaveproject
@@ -13394,6 +13407,15 @@ msgstr "Скинути зневаджувач"
 msgid "Revert"
 msgstr "Зворотний експорт"
 
+#: lazarusidestrconsts.lismenurevertconfirm
+#, object-pascal-format
+msgid ""
+"Discard all unsaved changes in\n"
+"\"%s\"?\n"
+"\n"
+"This action cannot be undone and will affect all editor tabs with the file."
+msgstr ""
+
 #: lazarusidestrconsts.lismenurun
 msgctxt "lazarusidestrconsts.lismenurun"
 msgid "&Run"
@@ -14638,10 +14660,6 @@ msgstr "Параметри"
 #: lazarusidestrconsts.lisoptionvalueignored
 msgid "ignored"
 msgstr "знехтувано"
-
-#: lazarusidestrconsts.lisor
-msgid "or"
-msgstr "або"
 
 #: lazarusidestrconsts.lisos
 #, object-pascal-format

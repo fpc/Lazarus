@@ -3894,6 +3894,14 @@ msgctxt "lazarusidestrconsts.dlgreset"
 msgid "Reset"
 msgstr ""
 
+#: lazarusidestrconsts.dlgresetactivedesktopbtncaption
+msgid "Restore active"
+msgstr ""
+
+#: lazarusidestrconsts.dlgresetactivedesktopbtnhint
+msgid "Restore window layout of active desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgresetall
 msgid "Reset all"
 msgstr ""
@@ -11729,11 +11737,16 @@ msgid "Run program"
 msgstr "Jalankan program"
 
 #: lazarusidestrconsts.liskmsaveall
-msgid "SaveAll"
+#, fuzzy
+#| msgid "SaveAll"
+msgctxt "lazarusidestrconsts.liskmsaveall"
+msgid "Save All"
 msgstr "Simpan Semua"
 
 #: lazarusidestrconsts.liskmsaveas
-msgid "SaveAs"
+#, fuzzy
+#| msgid "SaveAs"
+msgid "Save As"
 msgstr "SimpanS ebagai"
 
 #: lazarusidestrconsts.liskmsaveproject
@@ -13819,6 +13832,15 @@ msgstr "Reset debugger"
 msgid "Revert"
 msgstr "Kembalikan"
 
+#: lazarusidestrconsts.lismenurevertconfirm
+#, object-pascal-format
+msgid ""
+"Discard all unsaved changes in\n"
+"\"%s\"?\n"
+"\n"
+"This action cannot be undone and will affect all editor tabs with the file."
+msgstr ""
+
 #: lazarusidestrconsts.lismenurun
 #, fuzzy
 msgctxt "lazarusidestrconsts.lismenurun"
@@ -15123,10 +15145,6 @@ msgstr "Opsi"
 #: lazarusidestrconsts.lisoptionvalueignored
 msgid "ignored"
 msgstr ""
-
-#: lazarusidestrconsts.lisor
-msgid "or"
-msgstr "atau"
 
 #: lazarusidestrconsts.lisos
 #, object-pascal-format

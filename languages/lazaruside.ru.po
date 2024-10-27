@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-10-22 00:36+0300\n"
+"PO-Revision-Date: 2024-10-27 15:57+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -14,23 +14,21 @@ msgstr ""
 
 #: lazarusidestrconsts.cocoamfstbicommand
 msgid "Command"
-msgstr ""
+msgstr "Команда"
 
 #: lazarusidestrconsts.cocoamfstbijumpback
-#, fuzzy
 msgctxt "lazarusidestrconsts.cocoamfstbijumpback"
 msgid "Jump Back"
 msgstr "Перейти назад"
 
 #: lazarusidestrconsts.cocoamfstbijumpforward
-#, fuzzy
 msgctxt "lazarusidestrconsts.cocoamfstbijumpforward"
 msgid "Jump Forward"
 msgstr "Перейти вперёд"
 
 #: lazarusidestrconsts.cocoamfstbisearch
 msgid "Search Instantly"
-msgstr ""
+msgstr "Найти мгновенно"
 
 #: lazarusidestrconsts.dbgasmwindowlinktarget
 msgid "Link target line"
@@ -3775,6 +3773,14 @@ msgstr "Отчёт"
 msgctxt "lazarusidestrconsts.dlgreset"
 msgid "Reset"
 msgstr "Сбросить"
+
+#: lazarusidestrconsts.dlgresetactivedesktopbtncaption
+msgid "Restore active"
+msgstr "Восстановить активный"
+
+#: lazarusidestrconsts.dlgresetactivedesktopbtnhint
+msgid "Restore window layout of active desktop"
+msgstr "Восстановить вид активного рабочего стола"
 
 #: lazarusidestrconsts.dlgresetall
 msgid "Reset all"
@@ -11387,11 +11393,12 @@ msgid "Run program"
 msgstr "Запустить программу"
 
 #: lazarusidestrconsts.liskmsaveall
-msgid "SaveAll"
+msgctxt "lazarusidestrconsts.liskmsaveall"
+msgid "Save All"
 msgstr "Сохранить всё"
 
 #: lazarusidestrconsts.liskmsaveas
-msgid "SaveAs"
+msgid "Save As"
 msgstr "Сохранить как"
 
 #: lazarusidestrconsts.liskmsaveproject
@@ -13304,6 +13311,19 @@ msgstr "Сбросить отладчик"
 msgid "Revert"
 msgstr "Возвратить"
 
+#: lazarusidestrconsts.lismenurevertconfirm
+#, object-pascal-format
+msgid ""
+"Discard all unsaved changes in\n"
+"\"%s\"?\n"
+"\n"
+"This action cannot be undone and will affect all editor tabs with the file."
+msgstr ""
+"Отбросить все несохранённые изменения в\n"
+"\"%s\"?\n"
+"\n"
+"Это действие не может быть отменено и затронет все вкладки редакторов с файлом."
+
 #: lazarusidestrconsts.lismenurun
 msgctxt "lazarusidestrconsts.lismenurun"
 msgid "&Run"
@@ -14548,10 +14568,6 @@ msgstr "Параметры"
 #: lazarusidestrconsts.lisoptionvalueignored
 msgid "ignored"
 msgstr "игнорируется"
-
-#: lazarusidestrconsts.lisor
-msgid "or"
-msgstr "или"
 
 #: lazarusidestrconsts.lisos
 #, object-pascal-format

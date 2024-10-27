@@ -3910,6 +3910,14 @@ msgctxt "lazarusidestrconsts.dlgreset"
 msgid "Reset"
 msgstr ""
 
+#: lazarusidestrconsts.dlgresetactivedesktopbtncaption
+msgid "Restore active"
+msgstr ""
+
+#: lazarusidestrconsts.dlgresetactivedesktopbtnhint
+msgid "Restore window layout of active desktop"
+msgstr ""
+
 #: lazarusidestrconsts.dlgresetall
 msgid "Reset all"
 msgstr "Zresetuj wszystko"
@@ -11622,11 +11630,13 @@ msgid "Run program"
 msgstr "Uruchom program"
 
 #: lazarusidestrconsts.liskmsaveall
-msgid "SaveAll"
-msgstr ""
+#, fuzzy
+msgctxt "lazarusidestrconsts.liskmsaveall"
+msgid "Save All"
+msgstr "Zapisz wszystko"
 
 #: lazarusidestrconsts.liskmsaveas
-msgid "SaveAs"
+msgid "Save As"
 msgstr ""
 
 #: lazarusidestrconsts.liskmsaveproject
@@ -13553,6 +13563,15 @@ msgstr "Zresetuj odpluskwiacz"
 msgid "Revert"
 msgstr "Przywróć"
 
+#: lazarusidestrconsts.lismenurevertconfirm
+#, object-pascal-format
+msgid ""
+"Discard all unsaved changes in\n"
+"\"%s\"?\n"
+"\n"
+"This action cannot be undone and will affect all editor tabs with the file."
+msgstr ""
+
 #: lazarusidestrconsts.lismenurun
 msgctxt "lazarusidestrconsts.lismenurun"
 msgid "&Run"
@@ -14801,10 +14820,6 @@ msgstr "Opcje"
 #: lazarusidestrconsts.lisoptionvalueignored
 msgid "ignored"
 msgstr "ignorowany"
-
-#: lazarusidestrconsts.lisor
-msgid "or"
-msgstr ""
 
 #: lazarusidestrconsts.lisos
 #, object-pascal-format, fuzzy, badformat
