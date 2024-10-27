@@ -3612,6 +3612,7 @@ begin
   ecCleanUpAndBuild:          mnuCleanUpAndBuildProjectClicked(nil);
   ecQuickCompile:             DoQuickCompile;
   ecAbortBuild:               DoAbortBuild(false);
+  ecStopProgram:              mnuStopProjectClicked(self);
   ecBuildFile:                DoBuildFile(false);
   ecRunFile:                  DoRunFile;
   ecFindInFiles:              DoFindInFiles;
