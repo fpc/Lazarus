@@ -880,6 +880,9 @@ function RegisterIDECommandScope(const Name: string): TIDECommandScope;
 procedure CreateStandardIDECommandScopes;
 
 
+function KeyAndShiftStateToEditorKeyString(const Key: TIDEShortCut): String;
+function KeyValuesToCaptionStr(const ShortcutA, ShortcutB: TIDEShortCut; Brackets: Char = '['): String;
+
 function CompareIDEShortCuts(Data1, Data2: Pointer): integer;
 function CompareIDEShortCutKey1s(Data1, Data2: Pointer): integer;
 function IdentToIDECommand(const Ident: string; var Cmd: longint): boolean;
@@ -953,6 +956,37 @@ begin
   IDECmdScopeSrcEditOnlySyncroEditOff:=RegisterIDECommandScope('SourceEditorOnlySyncroEdit');
   IDECmdScopeDesignerOnly:=RegisterIDECommandScope('DesignerOnly');
   IDECmdScopeObjectInspectorOnly:=RegisterIDECommandScope('ObjectInspectorOnly');
+end;
+
+function KeyAndShiftStateToEditorKeyString(const Key: TIDEShortCut): String;
+begin
+  Result := KeyAndShiftStateToKeyString(Key.Key1, Key.Shift1);
+  if Key.Key2 <> VK_UNKNOWN then
+    Result := Result + ', ' + KeyAndShiftStateToKeyString(Key.Key2, Key.Shift2);
+end;
+
+function KeyValuesToCaptionStr(const ShortcutA, ShortcutB: TIDEShortCut; Brackets: Char): String;
+  //
+  function GetShortCut(aShortCut: TIDEShortCut): String;
+  begin
+    Result := KeyAndShiftStateToEditorKeyString(aShortCut);
+    if Brackets = '[' then
+      Result := '[' + Result + ']'
+    else if Brackets = '(' then
+      Result := '(' + Result + ')'
+    else if Brackets > #0 then
+      Result := Brackets + Result + Brackets;
+  end;
+  //
+begin
+  if (ShortcutA.Key1 = VK_UNKNOWN) and (ShortcutB.Key1 = VK_UNKNOWN) then
+    Result := ''
+  else if ShortcutA.Key1 = VK_UNKNOWN then
+    Result := GetShortCut(ShortcutB)
+  else if ShortcutB.Key1 = VK_UNKNOWN then
+    Result := GetShortCut(ShortcutA)
+  else
+    Result := GetShortCut(ShortcutA) + ' / ' + GetShortCut(ShortcutB);
 end;
 
 type
@@ -1732,9 +1766,9 @@ function TIDESpecialCommand.GetShortcut: String;
 begin
   Result := '';
   if Assigned(FCommand) then
-    Result := ShortCutToText(FCommand.AsShortCut);
+    Result := KeyValuesToCaptionStr(FCommand.ShortcutA, FCommand.ShortcutB);
   if Result <> '' then
-    Result := ' (' + Result + ')';
+    Result := ' ' + Result;
 end;
 
 procedure TIDESpecialCommand.SetCaption(aCaption: string);
