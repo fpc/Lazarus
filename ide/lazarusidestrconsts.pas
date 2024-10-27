@@ -335,7 +335,6 @@ resourcestring
   lisMenuInsertCVSKeyword = 'Insert CVS Keyword';
   lisMenuInsertGeneral = 'Insert General';
   lisGeneral = 'General';
-  lisOr = 'or';
   lisUnitPaths = 'Unit paths';
   lisIncludePaths = 'Include paths';
   lisSourcePaths = 'Source paths';
