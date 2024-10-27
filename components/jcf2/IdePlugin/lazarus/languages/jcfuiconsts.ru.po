@@ -692,27 +692,27 @@ msgstr "Оставлять однострочные комментарии с к
 
 #: jcfuiconsts.lisindentlabels
 msgid "Indent labels"
-msgstr ""
+msgstr "Отступ для меток"
 
 #: jcfuiconsts.lisindentlabelsdontindent
 msgid "Don't indent"
-msgstr ""
+msgstr "Не добавлять"
 
 #: jcfuiconsts.lisindentlabelsindentprevlevel
 msgid "Indent to prior level"
-msgstr ""
+msgstr "По предыдущему уровню"
 
 #: jcfuiconsts.lisindentlabelsindentx0
 msgid "Indent to first column position"
-msgstr ""
+msgstr "По положению первого столбца"
 
 #: jcfuiconsts.lisindentlabelslindenttoprocedure
 msgid "Indent to procedure level"
-msgstr ""
+msgstr "По уровню процедуры"
 
 #: jcfuiconsts.lisindentlabelsstatement
 msgid "Indent statement"
-msgstr ""
+msgstr "Добавить для оператора"
 
 #: jcfuiconsts.lisindentoptions
 msgid "Options"
