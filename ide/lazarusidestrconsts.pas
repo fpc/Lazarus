@@ -272,7 +272,7 @@ resourcestring
   lisMenuOpen = '&Open ...';
   lisMenuOpenUnit = 'Open Unit ...';
   lisMenuRevert = 'Revert';
-  lisMenuRevertConfirm = 'Discard all unsaved changes in this file?%s  %s%sThis action will affect all tabs with the same file and it cannot be undone.';
+  lisMenuRevertConfirm = 'Discard all unsaved changes in' + LineEnding + '"%s"?' + LineEnding + LineEnding + 'This action cannot be undone and will affect all editor tabs with the file.';
   lisPESavePackageAs = 'Save Package As ...';
   lisPkgEditPublishPackage = 'Publish Package';
   lisPERevertPackage = 'Revert Package';
@@ -1285,7 +1285,7 @@ resourcestring
   dlgSetActiveDesktopBtnCaption = 'Set active';
   dlgSetActiveDesktopBtnHint = 'Set active';
   dlgResetActiveDesktopBtnCaption = 'Restore active';
-  dlgResetActiveDesktopBtnHint = 'Restore active window layout';
+  dlgResetActiveDesktopBtnHint = 'Restore window layout of active desktop';
   dlgToggleDebugDesktopBtnCaption = 'Toggle as debug desktop';
   dlgToggleDebugDesktopBtnHint = 'Toggle as debug desktop';
   dlgDesktopName = 'Desktop name';
