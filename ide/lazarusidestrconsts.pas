@@ -278,8 +278,8 @@ resourcestring
   lisMenuOpenRecent = 'Open &Recent';
   lisMenuSave = '&Save';
   lisMenuSaveAs = 'Save &As ...';
-  lisKMSaveAs = 'SaveAs';
-  lisKMSaveAll = 'SaveAll';
+  lisKMSaveAs = 'Save As';
+  lisKMSaveAll = 'Save All';
   lisDiscardChanges = 'Discard changes';
   lisDiscardChangesAll = 'Discard all changes';
   lisDoNotCloseTheProject = 'Do not close the project';
