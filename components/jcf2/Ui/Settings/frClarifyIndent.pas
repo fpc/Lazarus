@@ -111,6 +111,8 @@ begin
   cbIndentVarAndConstInClass.Caption := lisIndentIndentVarAndConstInClass;
   cbIndentInterfaceGuid.Caption := lisIndentExtraIndentForInterfaceGuid;
 
+  lbIndentLabels.Caption := lisIndentLabels;
+
   cbIndentLabels.Items.Clear;
   cbIndentLabels.Items.Add(lisIndentLabelsStatement);
   cbIndentLabels.Items.Add(lisIndentLabelsDontIndent);
