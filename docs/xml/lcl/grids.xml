@@ -17531,11 +17531,62 @@ implementation. It is used in DoRowSizing only.
 
 <element name="TCustomGrid.ExtendedSelect">
 <short>
-Indicates whether a selection can extend beyond the visible boundary for the 
-grid.
+Controls whether extending the current cell selection(s) on the control is 
+enabled.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>ExtendedSelect</var> is a <var>Boolean</var> property which controls 
+whether selected cells can be extended beyond the current value(s) in Selection 
+and SelectedRange. The default value for the property is <b>True</b> and allows 
+Selection / SelectedRange to be extended when range selection is enabled for 
+the grid control. ExtendedSelect has no effect if goRangeSelect has not been 
+included in the Options property.
+</p>
+<p>
+ExtendedSelect is used when the value in SelectActive property is changed. It 
+prevents SelectActive from being enabled when range selection is not enabled, 
+or a cell editor is already (or always) active for a cell in the current 
+selection.
+</p>
+<p>
+ExtendedSelect is used in MouseDown when a mouse click is detected for a cell. 
+It causes an active cell editor (or its associated cell editor button) to be 
+deactivated before the selection is extended. It is also used in MouseMove when 
+logical cell coordinates are retrieved for a selection at the current mouse 
+position.
+</p>
+<p>
+Use Options to enable range selection (goRangeSelect) or to control use of cell 
+editors (goEditing, goAlwaysShowEditor).
+</p>
+<p>
+Use RangeSelectMode to control whether multi-selections are enabled for the 
+control. Use Selection to access a single selected range for the grid. Use 
+SelectedRange and SelectedRangeCount to access multi-selection ranges on the 
+control.
+</p>
+<p>
+Use FixedGrid to determine whether editable, non-fixed columns or rows are 
+available on the grid control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomGrid.SelectActive"/>
+<link id="TCustomGrid.MouseDown"/>
+<link id="TCustomGrid.MouseMove"/>
+<link id="TCustomGrid.FixedGrid"/>
+<link id="TCustomGrid.Options"/>
+<link id="TCustomGrid.RangeSelectMode"/>
+<link id="TCustomGrid.Selection"/>
+<link id="TCustomGrid.SelectedRange"/>
+<link id="TCustomGrid.SelectedRangeCount"/>
+<link id="TCustomGrid.Columns"/>
+<link id="TGridColumns"/>
+<link id="TGridColumn"/>
+<link id="TGridOptions"/>
+<link id="TGridOption"/>
+</seealso>
 </element>
 
 <element name="TCustomGrid.FastEditing">
@@ -19431,7 +19482,7 @@ cell editors, and loads any bitmaps required for the control.
 </p>
 <remark>
 The inherited method calls SetBounds and VisualChange, so the grid needs to 
-be fully instantiated before it is called.
+be fully instantiated before the inherited method is called.
 </remark>
 </descr>
 <seealso>
