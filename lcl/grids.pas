@@ -9989,6 +9989,7 @@ begin
   FAutoEdit := True;
   FFocusRectVisible := True;
   FDefaultDrawing := True;
+  FExtendedSelect := True;
   FOptions:=
     [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect,
      goSmoothScroll ];
@@ -12088,7 +12089,6 @@ begin
     Clipping := True;
     //WordBreak := False
   end;
-  ExtendedSelect := True;
   SaveOptions := [soContent];
 end;
 
