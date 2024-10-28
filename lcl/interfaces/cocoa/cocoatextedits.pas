@@ -47,6 +47,7 @@ const
   COMBOBOX_RO_SMALL_HEIGHT = 17;
   COMBOBOX_RO_MINI_HEIGHT  = 15;
 
+  COMBOBOX_RO_BUTTON_WIDTH = 20;
 
 type
 
@@ -1760,8 +1761,9 @@ begin
       //       (however, one should be careful and take layout offsets into account!)
       //       on the other hand, "cells" themselves are being deprecated...
       dr := lclFrame;
+      dr.Width:= dr.Width - COMBOBOX_RO_BUTTON_WIDTH;
       Types.OffsetRect(dr, -dr.Left, -dr.Top);
-      SubLayoutFromFrame( lclGetFrameToLayoutDelta, dr);
+      //SubLayoutFromFrame( lclGetFrameToLayoutDelta, dr);
       ctx.InitDraw(dr.Width, dr.Height);
 
       // magic offsets are based on the macOS 10.13.6 visual style
