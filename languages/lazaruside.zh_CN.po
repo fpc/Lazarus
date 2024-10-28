@@ -10438,7 +10438,7 @@ msgid "IDE build options"
 msgstr "IDE构建选项"
 
 #: lazarusidestrconsts.lisidecaptioncustomhint
-msgid "The caption of the main IDE window"
+msgid "Additional info to display in the IDE title"
 msgstr ""
 
 #: lazarusidestrconsts.lisidecompileandrestart
@@ -10487,15 +10487,13 @@ msgid "Custom IDE title"
 msgstr ""
 
 #: lazarusidestrconsts.lisidetitleoptions
-msgid "IDE main window title"
+msgid "IDE main window and taskbar title"
 msgstr ""
 
-#: lazarusidestrconsts.lisidetitleshowsprojectdir
-msgid "IDE title shows project directory"
-msgstr "IDE 标题显示项目目录"
-
 #: lazarusidestrconsts.lisidetitlestartswithprojectname
-msgid "IDE title starts with project name"
+#, fuzzy
+#| msgid "IDE title starts with project name"
+msgid "Show custom IDE title before built-in IDE title or info"
 msgstr "IDE 标题以项目名称开头"
 
 #: lazarusidestrconsts.lisiecoallbuildmodes
@@ -16021,10 +16019,6 @@ msgctxt "lazarusidestrconsts.lisprojectdirectory"
 msgid "Project directory"
 msgstr "项目目录"
 
-#: lazarusidestrconsts.lisprojectdirectoryisshowedinidetitlebar
-msgid "Title in taskbar shows also directory path of the project"
-msgstr "在任务栏中的标题(Title)也显示项目的目录路径"
-
 #: lazarusidestrconsts.lisprojectfilename
 msgid "Project filename"
 msgstr "项目文件名称"
@@ -18247,7 +18241,7 @@ msgstr "标题(Title)(&T)"
 #: lazarusidestrconsts.listitleintaskbarshowsforexampleproject1lpilazarus
 #, fuzzy
 #| msgid "Title in taskbar shows for example: project1.lpi - Lazarus"
-msgid "Title in taskbar shows for example: project1 - Lazarus"
+msgid "Show the custom IDE title before the IDE's name and other info in the title. Example: project1 - Lazarus."
 msgstr "在任务栏中显示的标题,例如: project1.lpi  - Lazarus"
 
 #: lazarusidestrconsts.listitleleaveemptyfordefault

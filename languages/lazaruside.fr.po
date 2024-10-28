@@ -10355,7 +10355,7 @@ msgid "IDE build options"
 msgstr "Options de création de l'EDI"
 
 #: lazarusidestrconsts.lisidecaptioncustomhint
-msgid "The caption of the main IDE window"
+msgid "Additional info to display in the IDE title"
 msgstr ""
 
 #: lazarusidestrconsts.lisidecompileandrestart
@@ -10406,15 +10406,13 @@ msgid "Custom IDE title"
 msgstr "Titre personnalisé de la fenêtre de l'EDI"
 
 #: lazarusidestrconsts.lisidetitleoptions
-msgid "IDE main window title"
+msgid "IDE main window and taskbar title"
 msgstr ""
 
-#: lazarusidestrconsts.lisidetitleshowsprojectdir
-msgid "IDE title shows project directory"
-msgstr "Le titre de l'EDI indique le répertoire du projet"
-
 #: lazarusidestrconsts.lisidetitlestartswithprojectname
-msgid "IDE title starts with project name"
+#, fuzzy
+#| msgid "IDE title starts with project name"
+msgid "Show custom IDE title before built-in IDE title or info"
 msgstr "Le titre de l'EDI débute avec le nom du projet"
 
 #: lazarusidestrconsts.lisiecoallbuildmodes
@@ -15948,10 +15946,6 @@ msgctxt "lazarusidestrconsts.lisprojectdirectory"
 msgid "Project directory"
 msgstr "Répertoire du projet"
 
-#: lazarusidestrconsts.lisprojectdirectoryisshowedinidetitlebar
-msgid "Title in taskbar shows also directory path of the project"
-msgstr "Le titre dans la barre des tâches affiche aussi le chemin du répertoire du projet"
-
 #: lazarusidestrconsts.lisprojectfilename
 msgid "Project filename"
 msgstr "Nom de fichier du projet"
@@ -18173,7 +18167,9 @@ msgid "&Title"
 msgstr "&Titre"
 
 #: lazarusidestrconsts.listitleintaskbarshowsforexampleproject1lpilazarus
-msgid "Title in taskbar shows for example: project1 - Lazarus"
+#, fuzzy
+#| msgid "Title in taskbar shows for example: project1 - Lazarus"
+msgid "Show the custom IDE title before the IDE's name and other info in the title. Example: project1 - Lazarus."
 msgstr "Le titre de la barre des tâches montre par exemple : project1 - Lazarus"
 
 #: lazarusidestrconsts.listitleleaveemptyfordefault

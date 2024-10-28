@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-10-27 18:28+0300\n"
+"PO-Revision-Date: 2024-10-28 19:05+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -10348,8 +10348,8 @@ msgid "IDE build options"
 msgstr "Параметры сборки IDE"
 
 #: lazarusidestrconsts.lisidecaptioncustomhint
-msgid "The caption of the main IDE window"
-msgstr "Заголовок главного окна IDE"
+msgid "Additional info to display in the IDE title"
+msgstr "Дополнительные сведения для отображения в заголовке IDE"
 
 #: lazarusidestrconsts.lisidecompileandrestart
 msgid "The IDE will be recompiled and restarted during installation/uninstallation of packages."
@@ -10397,16 +10397,12 @@ msgid "Custom IDE title"
 msgstr "Пользовательский заголовок IDE"
 
 #: lazarusidestrconsts.lisidetitleoptions
-msgid "IDE main window title"
-msgstr "Заголовок главного окна IDE"
-
-#: lazarusidestrconsts.lisidetitleshowsprojectdir
-msgid "IDE title shows project directory"
-msgstr "Отображать в заголовке IDE каталог проекта"
+msgid "IDE main window and taskbar title"
+msgstr "Заголовок IDE в главном окне и в панели задач"
 
 #: lazarusidestrconsts.lisidetitlestartswithprojectname
-msgid "IDE title starts with project name"
-msgstr "Начинать заголовок IDE с имени проекта"
+msgid "Show custom IDE title before built-in IDE title or info"
+msgstr "Показывать пользовательский заголовок перед встроенным в IDE и иными сведениями"
 
 #: lazarusidestrconsts.lisiecoallbuildmodes
 msgid "All build modes"
@@ -15932,10 +15928,6 @@ msgctxt "lazarusidestrconsts.lisprojectdirectory"
 msgid "Project directory"
 msgstr "Имя каталога проекта"
 
-#: lazarusidestrconsts.lisprojectdirectoryisshowedinidetitlebar
-msgid "Title in taskbar shows also directory path of the project"
-msgstr "Отображать в заголовке в панели задач также путь к каталогу проекта"
-
 #: lazarusidestrconsts.lisprojectfilename
 msgid "Project filename"
 msgstr "Имя файла проекта"
@@ -18157,8 +18149,8 @@ msgid "&Title"
 msgstr "&Заголовок"
 
 #: lazarusidestrconsts.listitleintaskbarshowsforexampleproject1lpilazarus
-msgid "Title in taskbar shows for example: project1 - Lazarus"
-msgstr "Пример отображаемых данных в заголовке в панели задач: project1 - Lazarus"
+msgid "Show the custom IDE title before the IDE's name and other info in the title. Example: project1 - Lazarus."
+msgstr "Показывать пользовательский заголовок перед именем IDE и иными сведениями. Пример: project1 - Lazarus."
 
 #: lazarusidestrconsts.listitleleaveemptyfordefault
 msgid "Title (leave empty for default)"
