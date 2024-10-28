@@ -131,6 +131,8 @@ type
   { TDesktopOpt }
 
   TDesktopOpt = class(TCustomDesktopOpt)
+  private const
+    DEFAULT_CUSTOM_TITLE = '$project(TitleNew) $EncloseBracket($project(infodir)) $(BuildModeCaption)';
   private
     // window layout
     FIDEWindowCreatorsLayoutList: TSimpleWindowLayoutList;
@@ -674,8 +676,8 @@ begin
   FIDETitleStartsWithProject:=FXMLCfg.GetValue(Path+'IDETitleStartsWithProject/Value',true);
   FIDETitleShowsBuildMode:=FXMLCfg.GetValue(Path+'IDETitleShowsBuildMode/Value',true);
   FIDETitleShowsProjectDir:=FXMLCfg.GetValue(Path+'IDETitleShowsProjectDir/Value',true);
-  FIDETitleBarCustomText:=FXMLCfg.GetValue(Path+'IDETitleBarCustomText/Value','');
-  if (EnvironmentOptions.FileVersion < 112) and (FIDETitleBarCustomText = '')
+  FIDETitleBarCustomText:=FXMLCfg.GetValue(Path+'IDETitleBarCustomText/Value',DEFAULT_CUSTOM_TITLE);
+  if (EnvironmentOptions.FileVersion < 112) and (FIDETitleBarCustomText = DEFAULT_CUSTOM_TITLE)
   then begin
     FIDETitleBarCustomText := '$project(TitleNew)';
     if FIDETitleShowsProjectDir then
@@ -735,7 +737,7 @@ begin
   FXMLCfg.SetDeleteValue(Path+'IDETitleStartsWithProject/Value',FIDETitleStartsWithProject,true);
   FXMLCfg.SetDeleteValue(Path+'IDETitleShowsBuildMode/Value',FIDETitleShowsBuildMode,true);
   FXMLCfg.SetDeleteValue(Path+'IDETitleShowsProjectDir/Value',FIDETitleShowsProjectDir,true);
-  FXMLCfg.SetDeleteValue(Path+'IDETitleBarCustomText/Value',FIDETitleBarCustomText,'');
+  FXMLCfg.SetDeleteValue(Path+'IDETitleBarCustomText/Value',FIDETitleBarCustomText,DEFAULT_CUSTOM_TITLE);
   // CompletionWindow
   FXMLCfg.SetValue(Path+'CompletionWindowOptions/Width/Value',FCompletionWindowWidth);
   FXMLCfg.SetDeleteValue(Path+'CompletionWindowOptions/Height/Value',FCompletionWindowHeight, 6);
