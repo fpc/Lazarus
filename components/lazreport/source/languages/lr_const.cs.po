@@ -460,6 +460,10 @@ msgstr "COPY(<Textový řezězec>, <Pozice>, <Délka>)/Vrací <Délka> znaků z 
 msgid "COUNT(<BandName>)/Returns count of data rows given in the <BandName>. "
 msgstr "COUNT(<NázevSkupiny>)/Vrací počet datových řádků zadaných v <NázevSkupiny>. "
 
+#: lr_const.sdescriptioncrlf
+msgid "CRLF/Returns lineending character sequence."
+msgstr ""
+
 #: lr_const.sdescriptiondayof
 msgid "DAYOF(<Date>)/Returns day number (1..31) of given <Date>."
 msgstr "DAYOF(<Datum>)/Vrací číslo dne (1..31) zadaného <Datum>."
