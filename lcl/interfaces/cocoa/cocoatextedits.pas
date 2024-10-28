@@ -216,8 +216,6 @@ type
       const r: TRect; isSelected: Boolean);
   end;
 
-  { TCocoaComboBox }
-
   { TCocoaComboBoxItemCell }
 
   // represents an item in the combobox dropdown
@@ -243,6 +241,8 @@ type
     //procedure tableView_willDisplayCell_forTableColumn_row(tableView: NSTableView; cell: id; tableColumn: NSTableColumn; row: NSInteger); message 'tableView:willDisplayCell:forTableColumn:row:';
     //function tableView_heightOfRow(tableView: NSTableView; row: NSInteger): CGFloat; message 'tableView:heightOfRow:';
   end;
+
+  { TCocoaComboBox }
 
   TCocoaComboBox = objcclass(NSComboBox, NSComboBoxDataSourceProtocol, NSComboBoxDelegateProtocol)
   private
@@ -288,13 +288,17 @@ type
   { TCocoaReadOnlyView }
 
   TCocoaReadOnlyView = objcclass (NSView)
+  private
     itemIndex: Integer;
     combobox: TCocoaReadOnlyComboBox;
     isMouseOver: Boolean;
+    trackingArea: NSTrackingArea;
+  public
     procedure drawRect(dirtyRect: NSRect); override;
     procedure mouseUp(event: NSEvent); override;
     procedure mouseEntered(theEvent: NSEvent); override;
     procedure mouseExited(theEvent: NSEvent); override;
+    procedure lclUpdateTrackingAreas; message 'lclUpdateTrackingAreas';
   end;
 
   { TCocoaReadOnlyComboBoxList }
@@ -306,6 +310,7 @@ type
     FOwner: TCocoaReadOnlyComboBox;
     procedure InsertItem(Index: Integer; const S: string; O: TObject); override;
     procedure Put(Index: Integer; const S: string); override;
+    procedure UpdateItemSize;
   public
     // Pass only 1 owner and nil for the other ones
     constructor Create(AOwner: TCocoaReadOnlyComboBox);
@@ -331,6 +336,7 @@ type
     isComboBoxEx: Boolean;
 
     function initWithFrame(frameRect: NSRect): id; override;
+    procedure setFrameSize(newSize: NSSize); override;
     procedure dealloc; override;
 
     function lclGetItemHeight( row: Integer ): Integer; message 'lclGetItemHeight:';
@@ -488,7 +494,6 @@ var
   astr     : NSString;
   mn       : NSMenuItem;
   menuItem : TCocoaReadOnlyView;
-  track: NSTrackingArea;
 begin
   inherited InsertItem(Index, S, O);
 
@@ -528,15 +533,9 @@ begin
   begin
     menuItem := TCocoaReadOnlyView.alloc.initWithFrame(
       NSMakeRect(0,0, FOwner.frame.size.width, FOwner.lclGetItemHeight(index)) );
+    menuItem.lclUpdateTrackingAreas;
     menuItem.itemIndex := Index;
     menuItem.combobox := FOwner;
-
-    track:=NSTrackingArea(NSTrackingArea.alloc).initWithRect_options_owner_userInfo(
-      menuItem.bounds
-      , NSTrackingMouseEnteredAndExited or NSTrackingActiveAlways
-      , menuItem, nil);
-    menuItem.addTrackingArea(track);
-    track.release;
     mn.setView(menuItem);
     menuItem.release;
   end;
@@ -554,6 +553,21 @@ begin
     astr := NSStringUtf8(S);
     mn.setTitle(astr);
     astr.release;
+  end;
+end;
+
+procedure TCocoaReadOnlyComboBoxList.UpdateItemSize;
+var
+  menuItem: NSMenuItem;
+  itemView: TCocoaReadOnlyView;
+  size: NSSize;
+begin
+  size.width:= FOwner.frame.size.width;
+  for menuItem in FOwner.menu.itemArray do begin
+    itemView:= TCocoaReadOnlyView( menuItem.view );
+    size.height:= itemView.frame.size.height;
+    itemView.setFrameSize( size );
+    itemView.lclUpdateTrackingAreas;
   end;
 end;
 
@@ -710,6 +724,24 @@ begin
   isMouseOver := false;
   inherited mouseExited(theEvent);
   lclInvalidate;
+end;
+
+procedure TCocoaReadOnlyView.lclUpdateTrackingAreas;
+const
+  options: NSTrackingAreaOptions = NSTrackingMouseEnteredAndExited
+                                or NSTrackingActiveAlways;
+begin
+  if Assigned(self.trackingArea) then begin
+    removeTrackingArea(self.trackingArea);
+    self.trackingArea.release;
+  end;
+
+  self.trackingArea:= NSTrackingArea.alloc.initWithRect_options_owner_userInfo(
+    self.bounds,
+    options,
+    self,
+    nil );
+  self.addTrackingArea( self.trackingArea );
 end;
 
 { TCocoaComboBoxItemCell }
@@ -1601,6 +1633,12 @@ function TCocoaReadOnlyComboBox.initWithFrame(frameRect: NSRect): id;
 begin
   Result:=inherited initWithFrame(frameRect);
   _defaultItemHeight:= CocoaConfigComboBox.readOnly.item.defaultHeight;
+end;
+
+procedure TCocoaReadOnlyComboBox.setFrameSize(newSize: NSSize);
+begin
+  inherited setFrameSize(newSize);
+  TCocoaReadOnlyComboBoxList(self.list).UpdateItemSize;
 end;
 
 procedure TCocoaReadOnlyComboBox.dealloc;
