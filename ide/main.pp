@@ -9029,7 +9029,7 @@ begin
     if CustomnCaption <> '' then begin
       OldMarkUnhandledMacros := GlobalMacroList.MarkUnhandledMacros;
       GlobalMacroList.MarkUnhandledMacros := false;
-      GlobalMacroList.SubstituteStr(CustomnCaption);
+      GlobalMacroList.SubstituteStr(CustomnCaption, 0, 0, True);
       if CustomnCaption <> '' then begin
         NewCaption := AddToCaption(NewCaption, CustomnCaption);
       end;

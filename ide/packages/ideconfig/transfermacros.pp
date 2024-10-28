@@ -85,10 +85,10 @@ type
     procedure Add(NewMacro: TTransferMacro);
     function FindByName(const MacroName: string): TTransferMacro;
     function SubstituteStr(var s: string; const Data: PtrInt = 0;
-      Depth: integer = 0): boolean;
+      Depth: integer = 0; SkipInteractive: Boolean = False): boolean;
     procedure ExecuteMacro(const MacroName: string;
       var MacroParam: string; const Data: PtrInt; out Handled, Abort: boolean;
-      Depth: integer);
+      Depth: integer; SkipInteractive: boolean = False);
     class function StrHasMacros(const s: string): boolean;
     property OnSubstitution: TOnSubstitution read fOnSubstitution write fOnSubstitution;
     // error handling and loop detection
@@ -247,8 +247,8 @@ begin
   //  debugln('TTransferMacroList.Add A ',NewMacro.Name);
 end;
 
-function TTransferMacroList.SubstituteStr(var s:string; const Data: PtrInt;
-  Depth: integer): boolean;
+function TTransferMacroList.SubstituteStr(var s: string; const Data: PtrInt; Depth: integer;
+  SkipInteractive: Boolean): boolean;
 
   function SearchBracketClose(Position: integer): integer;
   var BracketClose: char;
@@ -324,7 +324,7 @@ begin
       // find macro and get value
       Handled:=false;
       Abort:=false;
-      ExecuteMacro(MacroName,MacroParam,Data,Handled,Abort,Depth+1);
+      ExecuteMacro(MacroName,MacroParam,Data,Handled,Abort,Depth+1, SkipInteractive);
       if Abort then
         exit(false);
       if not Handled then
@@ -362,15 +362,16 @@ begin
   end;
 end;
 
-procedure TTransferMacroList.ExecuteMacro(const MacroName: string;
-  var MacroParam: string; const Data: PtrInt; out Handled, Abort: boolean;
-  Depth: integer);
+procedure TTransferMacroList.ExecuteMacro(const MacroName: string; var MacroParam: string;
+  const Data: PtrInt; out Handled, Abort: boolean; Depth: integer; SkipInteractive: boolean);
 var
   Macro: TTransferMacro;
 begin
   Handled:=false;
   Abort:=false;
   Macro:=FindByName(MacroName);
+  if SkipInteractive and (Macro <> nil) and (tmfInteractive in Macro.Flags) then
+    exit;
   DoSubstitution(Macro,MacroName,MacroParam,Data,Handled,Abort,Depth);
   if Abort or Handled then exit;
   if Macro=nil then exit;
