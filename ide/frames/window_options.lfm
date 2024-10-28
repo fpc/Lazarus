@@ -158,5 +158,56 @@ object WindowOptionsFrame: TWindowOptionsFrame
     ParentShowHint = False
     ShowHint = True
     TabOrder = 7
+    OnChange = EdTitleBarChange
+  end
+  object lbTitlePreviewHeader: TLabel
+    AnchorSideLeft.Control = EdTitleBar
+    AnchorSideTop.Control = EdTitleBar
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 15
+    Top = 216
+    Width = 573
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 10
+    Caption = 'lbTitlePreviewHeader'
+  end
+  object pnlTitlePreview: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = lbTitlePreviewHeader
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 25
+    Top = 231
+    Width = 573
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BevelInner = bvRaised
+    BevelOuter = bvLowered
+    ClientHeight = 25
+    ClientWidth = 573
+    Color = clWindow
+    ParentBackground = False
+    ParentColor = False
+    TabOrder = 8
+    object lbTitlePreview: TLabel
+      AnchorSideLeft.Control = pnlTitlePreview
+      AnchorSideTop.Control = pnlTitlePreview
+      AnchorSideRight.Control = pnlTitlePreview
+      AnchorSideRight.Side = asrBottom
+      Left = 5
+      Height = 15
+      Top = 5
+      Width = 563
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 3
+      Caption = 'lbTitlePreview'
+      Transparent = False
+      WordWrap = True
+    end
   end
 end
