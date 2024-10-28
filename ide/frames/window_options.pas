@@ -52,7 +52,6 @@ type
     HideIDEOnRunCheckBox: TCheckBox;
     SingleTaskBarButtonCheckBox: TCheckBox;
     TitleStartsWithProjectCheckBox: TCheckBox;
-    TitleShowsProjectDirCheckBox: TCheckBox;
   public
     function GetTitle: String; override;
     procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
@@ -84,8 +83,6 @@ begin
   HideIDEOnRunCheckBox.Hint := dlgHideIDEOnRunHint;
   TitleStartsWithProjectCheckBox.Caption:=lisIDETitleStartsWithProjectName;
   TitleStartsWithProjectCheckBox.Hint:=lisTitleInTaskbarShowsForExampleProject1LpiLazarus;
-  TitleShowsProjectDirCheckBox.Caption:=lisIDETitleShowsProjectDir;
-  TitleShowsProjectDirCheckBox.Hint:=lisProjectDirectoryIsShowedInIdeTitleBar;
   bvWindowTitle.Caption:=lisIDETitleOptions;
   lblTitleBar.Caption:=lisIDETitleCustom;
   EdTitleBar.Hint := lisIDECaptionCustomHint;
@@ -122,7 +119,6 @@ begin
     SingleTaskBarButtonCheckBox.Checked := SingleTaskBarButton;
     HideIDEOnRunCheckBox.Checked := HideIDEOnRun;
     TitleStartsWithProjectCheckBox.Checked := IDETitleStartsWithProject;
-    TitleShowsProjectDirCheckBox.Checked := IDETitleShowsProjectDir;
     EdTitleBar.Text := IDETitleBarCustomText;
     NameForDesignedFormListCheckBox.Checked := IDENameForDesignedFormList;
     AutoAdjustIDEHeightCheckBox.Checked := AutoAdjustIDEHeight;
@@ -144,7 +140,6 @@ begin
     SingleTaskBarButton := SingleTaskBarButtonCheckBox.Checked;
     HideIDEOnRun := HideIDEOnRunCheckBox.Checked;
     IDETitleStartsWithProject := TitleStartsWithProjectCheckBox.Checked;
-    IDETitleShowsProjectDir := TitleShowsProjectDirCheckBox.Checked;
     IDETitleBarCustomText := EdTitleBar.Text;
     IDENameForDesignedFormList := NameForDesignedFormListCheckBox.Checked;
     AutoAdjustIDEHeight := AutoAdjustIDEHeightCheckBox.Checked;

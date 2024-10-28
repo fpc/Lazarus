@@ -1313,11 +1313,10 @@ resourcestring
     +'button in the taskbar for the whole IDE instead of one per window. Some'
     +' Linux Window Managers like Cinnamon do not support this and always show'
     +' one button per window.';
-  lisIDETitleStartsWithProjectName = 'IDE title starts with project name';
-  lisIDETitleShowsProjectDir = 'IDE title shows project directory';
-  lisIDETitleOptions = 'IDE main window title';
+  lisIDETitleStartsWithProjectName = 'Show custom IDE title before buildin IDE title or info';
+  lisIDETitleOptions = 'IDE main-window and taskbar title';
   lisIDETitleCustom = 'Custom IDE title';
-  lisIDECaptionCustomHint = 'The caption of the main IDE window';
+  lisIDECaptionCustomHint = 'Additional info to display in the IDE title';
   lisAutoAdjustIDEHeight = 'Automatically adjust IDE main window height';
   lisAutoAdjustIDEHeightHint = '';
   lisAutoAdjustIDEHeightFullComponentPalette = 'Show complete component palette';
@@ -1326,10 +1325,9 @@ resourcestring
   lisProjectInspectorShowProps = 'Show properties pane in Project Inspector';
   lisWindowMenuWithNameForDesignedForm = 'Window menu shows designed form''s name instead of caption';
   lisWindowMenuWithNameForDesignedFormHint = 'Useful especially if the caption is left empty.';
-  lisTitleInTaskbarShowsForExampleProject1LpiLazarus = 'Title in taskbar '
+  lisTitleInTaskbarShowsForExampleProject1LpiLazarus = 'Show the  custom IDE title ' +
+    'before the IDE''s name and other before other info shown in the title'
     +'shows for example: project1 - Lazarus';
-  lisProjectDirectoryIsShowedInIdeTitleBar = 'Title in taskbar '
-    +'shows also directory path of the project';
 
   // Message window options
   dlgShowMessagesIcons = 'Show Messages Icons';

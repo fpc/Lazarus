@@ -148,8 +148,8 @@ type
     FCompletionWindowHeight: Integer;
     // title
     FIDETitleStartsWithProject: boolean;
-    FIDETitleShowsBuildMode: boolean;
-    FIDETitleShowsProjectDir: boolean;
+    FIDETitleShowsBuildMode: boolean;   // deprecated: ONLY read from XML for upgrade to IDETitleBarCustomText
+    FIDETitleShowsProjectDir: boolean;  // deprecated: ONLY read from XML for upgrade to IDETitleBarCustomText
     FIDETitleBarCustomText: string;
     // IDE Coolbar
     FIDECoolBarOptions: TIDECoolBarOptions;
@@ -188,9 +188,8 @@ type
     property CompletionWindowHeight: Integer read FCompletionWindowHeight write FCompletionWindowHeight;
     property IDETitleStartsWithProject: boolean read FIDETitleStartsWithProject
                                                write FIDETitleStartsWithProject;
-    property IDETitleShowsBuildMode: boolean read FIDETitleShowsBuildMode;
-    property IDETitleShowsProjectDir: boolean read FIDETitleShowsProjectDir
-                                             write FIDETitleShowsProjectDir;
+    property IDETitleShowsBuildMode: boolean read FIDETitleShowsBuildMode;    // deprecated: ONLY read from XML for upgrade to IDETitleBarCustomText
+    property IDETitleShowsProjectDir: boolean read FIDETitleShowsProjectDir;  // deprecated: ONLY read from XML for upgrade to IDETitleBarCustomText
     property IDETitleBarCustomText: string read FIDETitleBarCustomText
                                              write FIDETitleBarCustomText;
     property IDECoolBarOptions: TIDECoolBarOptions read FIDECoolBarOptions;
