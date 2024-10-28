@@ -10543,7 +10543,7 @@ msgid "IDE build options"
 msgstr "IDEn kokoamisen asetukset"
 
 #: lazarusidestrconsts.lisidecaptioncustomhint
-msgid "The caption of the main IDE window"
+msgid "Additional info to display in the IDE title"
 msgstr ""
 
 #: lazarusidestrconsts.lisidecompileandrestart
@@ -10592,15 +10592,13 @@ msgid "Custom IDE title"
 msgstr ""
 
 #: lazarusidestrconsts.lisidetitleoptions
-msgid "IDE main window title"
+msgid "IDE main window and taskbar title"
 msgstr ""
 
-#: lazarusidestrconsts.lisidetitleshowsprojectdir
-msgid "IDE title shows project directory"
-msgstr "IDEn otsikko näyttää projektihakemiston"
-
 #: lazarusidestrconsts.lisidetitlestartswithprojectname
-msgid "IDE title starts with project name"
+#, fuzzy
+#| msgid "IDE title starts with project name"
+msgid "Show custom IDE title before built-in IDE title or info"
 msgstr "IDEn otsikko alkaa projektin nimellä"
 
 #: lazarusidestrconsts.lisiecoallbuildmodes
@@ -16109,10 +16107,6 @@ msgctxt "lazarusidestrconsts.lisprojectdirectory"
 msgid "Project directory"
 msgstr "Projektihakemisto"
 
-#: lazarusidestrconsts.lisprojectdirectoryisshowedinidetitlebar
-msgid "Title in taskbar shows also directory path of the project"
-msgstr "Tehtäväpalkin otsikko näyttää myös projektin polun"
-
 #: lazarusidestrconsts.lisprojectfilename
 msgid "Project filename"
 msgstr "Projektin tiedostonimi"
@@ -18335,7 +18329,7 @@ msgstr "&Otsikko"
 #: lazarusidestrconsts.listitleintaskbarshowsforexampleproject1lpilazarus
 #, fuzzy
 #| msgid "Title in taskbar shows for example: project1.lpi - Lazarus"
-msgid "Title in taskbar shows for example: project1 - Lazarus"
+msgid "Show the custom IDE title before the IDE's name and other info in the title. Example: project1 - Lazarus."
 msgstr "Tehtäväpalkin otsikko näyttää esim: project1.lpi - Lazarus"
 
 #: lazarusidestrconsts.listitleleaveemptyfordefault

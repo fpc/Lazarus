@@ -10484,7 +10484,7 @@ msgid "IDE build options"
 msgstr ""
 
 #: lazarusidestrconsts.lisidecaptioncustomhint
-msgid "The caption of the main IDE window"
+msgid "Additional info to display in the IDE title"
 msgstr ""
 
 #: lazarusidestrconsts.lisidecompileandrestart
@@ -10533,15 +10533,11 @@ msgid "Custom IDE title"
 msgstr ""
 
 #: lazarusidestrconsts.lisidetitleoptions
-msgid "IDE main window title"
-msgstr ""
-
-#: lazarusidestrconsts.lisidetitleshowsprojectdir
-msgid "IDE title shows project directory"
+msgid "IDE main window and taskbar title"
 msgstr ""
 
 #: lazarusidestrconsts.lisidetitlestartswithprojectname
-msgid "IDE title starts with project name"
+msgid "Show custom IDE title before built-in IDE title or info"
 msgstr ""
 
 #: lazarusidestrconsts.lisiecoallbuildmodes
@@ -16088,10 +16084,6 @@ msgctxt "lazarusidestrconsts.lisprojectdirectory"
 msgid "Project directory"
 msgstr ""
 
-#: lazarusidestrconsts.lisprojectdirectoryisshowedinidetitlebar
-msgid "Title in taskbar shows also directory path of the project"
-msgstr ""
-
 #: lazarusidestrconsts.lisprojectfilename
 msgid "Project filename"
 msgstr "Projek lêer"
@@ -18316,7 +18308,7 @@ msgid "&Title"
 msgstr "&Titel"
 
 #: lazarusidestrconsts.listitleintaskbarshowsforexampleproject1lpilazarus
-msgid "Title in taskbar shows for example: project1 - Lazarus"
+msgid "Show the custom IDE title before the IDE's name and other info in the title. Example: project1 - Lazarus."
 msgstr ""
 
 #: lazarusidestrconsts.listitleleaveemptyfordefault
