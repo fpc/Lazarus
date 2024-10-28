@@ -116,19 +116,6 @@ object WindowOptionsFrame: TWindowOptionsFrame
     ShowHint = True
     TabOrder = 6
   end
-  object TitleShowsProjectDirCheckBox: TCheckBox
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = TitleStartsWithProjectCheckBox
-    AnchorSideTop.Side = asrBottom
-    Left = 0
-    Height = 19
-    Top = 163
-    Width = 179
-    Caption = 'TitleShowsProjectDirCheckBox'
-    ParentShowHint = False
-    ShowHint = True
-    TabOrder = 7
-  end
   object lblShowingWindows: TDividerBevel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -145,12 +132,12 @@ object WindowOptionsFrame: TWindowOptionsFrame
   end
   object lblTitleBar: TLabel
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = TitleShowsProjectDirCheckBox
+    AnchorSideTop.Control = TitleStartsWithProjectCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 0
     Height = 15
-    Top = 185
-    Width = 53
+    Top = 166
+    Width = 52
     BorderSpacing.Top = 3
     Caption = 'lblTitleBar'
   end
@@ -162,7 +149,7 @@ object WindowOptionsFrame: TWindowOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 23
-    Top = 202
+    Top = 183
     Width = 572
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 2
@@ -170,6 +157,6 @@ object WindowOptionsFrame: TWindowOptionsFrame
     ItemHeight = 15
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 8
+    TabOrder = 7
   end
 end
