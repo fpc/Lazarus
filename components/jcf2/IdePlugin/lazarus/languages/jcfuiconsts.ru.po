@@ -637,7 +637,7 @@ msgstr "Другой отступ для блоков первого уровн�
 #: jcfuiconsts.lisindentendtryblockascode
 msgctxt "jcfuiconsts.lisindentendtryblockascode"
 msgid "Indent end try block as code"
-msgstr ""
+msgstr "Отступ конечных блоков try как у кода"
 
 #: jcfuiconsts.lisindentextraindentforbeginend
 msgid "Extra indent for begin/end inside procedures"
@@ -661,7 +661,7 @@ msgstr "Дополнительный отступ для GUID интерфейс
 
 #: jcfuiconsts.lisindentextraorphantryblocks
 msgid "Extra Indent for orphan try blocks"
-msgstr ""
+msgstr "Дополнительный отступ для \"висячих\" блоков try"
 
 #: jcfuiconsts.lisindentindentation
 msgid "Indentation"
@@ -729,7 +729,7 @@ msgstr "Параметры"
 
 #: jcfuiconsts.lisindenttryfinallyexcept
 msgid "Indent try/finally/except"
-msgstr ""
+msgstr "Отступ try/finally/except"
 
 #: jcfuiconsts.lisjcfformatsettings
 msgid "JCF Format Settings"
