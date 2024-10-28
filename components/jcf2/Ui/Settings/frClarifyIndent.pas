@@ -38,9 +38,13 @@ type
   { TfClarifyIndent }
 
   TfClarifyIndent = class(TAbstractIDEOptionsEditor)
+    cbIndentEndTryBlockAsCode: TCheckBox;
+    cbIndentExtraOrphanTryBlocks: TCheckBox;
+    cbIndentExtraTryBlockKeywords: TCheckBox;
     cbIndentCaseLabels: TCheckBox;
     cbIndentInterfaceGuid: TCheckBox;
     cbIndentLabels: TComboBox;
+    eIndentTryFinallyExceptSpaces: TSpinEdit;
     Label2: TLabel;
     edtIndentSpaces: TSpinEdit;
     gbOptions: TGroupBox;
@@ -61,6 +65,7 @@ type
     lbIndentLabels: TLabel;
     procedure cbIndentBeginEndClick(Sender: TObject);
     procedure cbHasFirstLevelIndentClick(Sender: TObject);
+    procedure cbIndentExtraTryBlockKeywordsClick(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
 
@@ -119,6 +124,10 @@ begin
   cbIndentLabels.Items.Add(lisIndentLabelsIndentPrevLevel);;
   cbIndentLabels.Items.Add(lisIndentLabelslIndentToProcedure);
   cbIndentLabels.Items.Add(lisIndentLabelsIndentX0);
+
+  cbIndentExtraTryBlockKeywords.Caption := lisIndentTryFinallyExcept;
+  cbIndentEndTryBlockAsCode.Caption := lisIndentEndTryBlockAsCode;
+  cbIndentExtraOrphanTryBlocks.Caption := lisIndentExtraOrphanTryBlocks;
 end;
 
 {-------------------------------------------------------------------------------
@@ -150,6 +159,12 @@ begin
     cbIndentVarAndConstInClass.Checked := IndentVarAndConstInClass;
     cbIndentInterfaceGuid.Checked := IndentInterfaceGuid;
     cbIndentLabels.ItemIndex := Ord(IndentLabels);
+
+    cbIndentExtraTryBlockKeywords.Checked := IndentExtraTryBlockKeyWords;
+    eIndentTryFinallyExceptSpaces.Value := IndentExtraTryBlockKeyWordsSpaces;
+    eIndentTryFinallyExceptSpaces.Enabled := IndentExtraTryBlockKeyWords;
+    cbIndentEndTryBlockAsCode.Checked := IndentEndTryBlockAsCode;
+    cbIndentExtraOrphanTryBlocks.Checked := IndentExtraOrphanTryBlocks;
   end;
 
   cbIndentBeginEndClick(nil);
@@ -183,6 +198,12 @@ begin
     IndentVarAndConstInClass := cbIndentVarAndConstInClass.Checked;
     IndentInterfaceGuid := cbIndentInterfaceGuid.Checked;
     IndentLabels := TIndentLabels(cbIndentLabels.ItemIndex);
+
+    IndentExtraTryBlockKeyWords := cbIndentExtraTryBlockKeywords.Checked;
+    IndentExtraTryBlockKeyWordsSpaces := eIndentTryFinallyExceptSpaces.Value;
+    IndentEndTryBlockAsCode := cbIndentEndTryBlockAsCode.Checked;
+    IndentExtraOrphanTryBlocks := cbIndentExtraOrphanTryBlocks.Checked;
+
   end;
 end;
 
@@ -202,6 +223,11 @@ end;
 procedure TfClarifyIndent.cbHasFirstLevelIndentClick(Sender: TObject);
 begin
   eFirstLevelIndent.Enabled := cbHasFirstLevelIndent.Checked;
+end;
+
+procedure TfClarifyIndent.cbIndentExtraTryBlockKeywordsClick(Sender: TObject);
+begin
+  eIndentTryFinallyExceptSpaces.Enabled := cbIndentExtraTryBlockKeywords.Checked;
 end;
 
 initialization

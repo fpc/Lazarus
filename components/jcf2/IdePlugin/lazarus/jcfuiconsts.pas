@@ -119,6 +119,9 @@ resourcestring
   lisIndentLabelsIndentPrevLevel = 'Indent to prior level';
   lisIndentLabelslIndentToProcedure = 'Indent to procedure level';
   lisIndentLabelsIndentX0 = 'Indent to first column position';
+  lisIndentTryFinallyExcept = 'Indent try/finally/except';
+  lisIndentEndTryBlockAsCode = 'Indent end try block as code';
+  lisIndentExtraOrphanTryBlocks = 'Extra Indent for orphan try blocks';
 
   //Blank lines tab
   lisBLBlankLines = 'Blank Lines';

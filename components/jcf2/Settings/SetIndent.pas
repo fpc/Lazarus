@@ -56,6 +56,10 @@ type
     fbIndentVarAndConstInClass: Boolean;
     fbIndentInterfaceGuid: boolean;
     fbIndentLabels:TIndentLabels;
+    fbIndentExtraTryBlockKeyWords:boolean;
+    fiIndentExtraTryBlockKeyWordsSpaces:integer;
+    fbIndentEndTryBlockAsCode:boolean;
+    fbIndentExtraOrphanTryBlocks:boolean;
   protected
   public
     constructor Create;
@@ -94,6 +98,10 @@ type
     property IndentNestedTypes: Boolean read fbIndentNestedTypes write fbIndentNestedTypes;
     property IndentVarAndConstInClass: Boolean read fbIndentVarAndConstInClass write fbIndentVarAndConstInClass;
     property IndentLabels:TIndentLabels read fbIndentLabels write fbIndentLabels;
+    property IndentExtraTryBlockKeyWords:boolean read fbIndentExtraTryBlockKeyWords write fbIndentExtraTryBlockKeyWords;
+    property IndentExtraTryBlockKeyWordsSpaces:integer read fiIndentExtraTryBlockKeyWordsSpaces write fiIndentExtraTryBlockKeyWordsSpaces;
+    property IndentEndTryBlockAsCode:boolean read fbIndentEndTryBlockAsCode write fbIndentEndTryBlockAsCode;
+    property IndentExtraOrphanTryBlocks:boolean read fbIndentExtraOrphanTryBlocks write fbIndentExtraOrphanTryBlocks;
   end;
 
 implementation
@@ -122,6 +130,10 @@ const
   REG_INDENT_NESTED_TYPES = 'IndentNestedTypes';
   REG_INDENT_INTERFACE_GUID = 'IndentInterfaceGuid';
   REG_INDENT_LABELS = 'IndentLabels';
+  REG_INDENT_EXTRA_TRY_BLOCK_KEYWORDS = 'IndentExtraTryBlockKeyWords';
+  REG_INDENT_EXTRA_TRY_BLOCK_KEYWORDS_SPACES = 'IndentExtraTryBlockKeyWordsSpaces';
+  REG_INDENT_END_TRY_BLOCK_AS_CODE = 'IndentEndTryBlockAsCode';
+  REG_INDENT_EXTRA_ORPHAN_TRY_BLOCKS = 'IndentExtraOrphanTryBlocks';
 
 constructor TSetIndent.Create;
 begin
@@ -140,6 +152,17 @@ begin
 
   fbIndentBeginEnd := pcStream.Read(REG_INDENT_BEGIN_END, False);
   fiIndentBeginEndSpaces := pcStream.Read(REG_INDENT_BEGIN_END_SPACES, 1);
+
+  if pcStream.HasTag(REG_INDENT_EXTRA_TRY_BLOCK_KEYWORDS) then
+  begin
+    fbIndentExtraTryBlockKeyWords := pcStream.Read(REG_INDENT_EXTRA_TRY_BLOCK_KEYWORDS, False);
+    fiIndentExtraTryBlockKeyWordsSpaces :=pcStream.Read(REG_INDENT_EXTRA_TRY_BLOCK_KEYWORDS_SPACES, 1);
+  end
+  else
+  begin
+    fbIndentExtraTryBlockKeyWords := pcStream.Read(REG_INDENT_EXTRA_TRY_BLOCK_KEYWORDS, fbIndentBeginEnd);
+    fiIndentExtraTryBlockKeyWordsSpaces := pcStream.Read(REG_INDENT_EXTRA_TRY_BLOCK_KEYWORDS_SPACES, fiIndentBeginEndSpaces);
+  end;
 
   fbIndentLibraryProcs := pcStream.Read(REG_INDENT_LIBRARY_PROCS, True);
   fbIndentProcedureBody := pcStream.Read(REG_INDENT_PROCEDURE_BODY, False);
@@ -161,6 +184,8 @@ begin
   fbIndentVarAndConstInClass := pcStream.Read(REG_INDENT_VAR_AND_CONST_IN_CLASS, False);
   fbIndentInterfaceGuid := pcStream.Read(REG_INDENT_INTERFACE_GUID, True);
   fbIndentLabels := TIndentLabels(pcStream.Read(REG_INDENT_LABELS,Ord(eLabelIndentStatement)));
+  fbIndentEndTryBlockAsCode := pcStream.Read(REG_INDENT_END_TRY_BLOCK_AS_CODE, False);
+  fbIndentExtraOrphanTryBlocks := pcStream.Read(REG_INDENT_EXTRA_ORPHAN_TRY_BLOCKS, False);
 end;
 
 procedure TSetIndent.WriteToStream(const pcOut: TSettingsOutput);
@@ -173,7 +198,9 @@ begin
   pcOut.Write(REG_HAS_FIRST_LEVEL_INDENT, fbHasFirstLevelIndent);
 
   pcOut.Write(REG_INDENT_BEGIN_END, fbIndentBeginEnd);
+  pcOut.Write(REG_INDENT_EXTRA_TRY_BLOCK_KEYWORDS, fbIndentExtraTryBlockKeyWords);
   pcOut.Write(REG_INDENT_BEGIN_END_SPACES, fiIndentBeginEndSpaces);
+  pcOut.Write(REG_INDENT_EXTRA_TRY_BLOCK_KEYWORDS_SPACES, fiIndentExtraTryBlockKeyWordsSpaces);
 
   pcOut.Write(REG_INDENT_LIBRARY_PROCS, fbIndentLibraryProcs);
   pcOut.Write(REG_INDENT_PROCEDURE_BODY, fbIndentProcedureBody);
@@ -191,6 +218,8 @@ begin
   pcOut.Write(REG_INDENT_VAR_AND_CONST_IN_CLASS, fbIndentVarAndConstInClass);
   pcOut.Write(REG_INDENT_INTERFACE_GUID, fbIndentInterfaceGuid);
   pcOut.Write(REG_INDENT_LABELS, Ord(fbIndentLabels));
+  pcOut.Write(REG_INDENT_END_TRY_BLOCK_AS_CODE, fbIndentEndTryBlockAsCode);
+  pcOut.Write(REG_INDENT_EXTRA_ORPHAN_TRY_BLOCKS, fbIndentExtraOrphanTryBlocks);
 end;
 
 function TSetIndent.SpacesForIndentLevel(const piLevel: integer): integer;

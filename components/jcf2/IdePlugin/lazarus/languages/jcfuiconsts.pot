@@ -620,6 +620,11 @@ msgstr ""
 msgid "Different indent for first level"
 msgstr ""
 
+#: jcfuiconsts.lisindentendtryblockascode
+msgctxt "jcfuiconsts.lisindentendtryblockascode"
+msgid "Indent end try block as code"
+msgstr ""
+
 #: jcfuiconsts.lisindentextraindentforbeginend
 msgid "Extra indent for begin/end inside procedures"
 msgstr ""
@@ -638,6 +643,10 @@ msgstr ""
 
 #: jcfuiconsts.lisindentextraindentforinterfaceguid
 msgid "Extra Indent for interface GUID"
+msgstr ""
+
+#: jcfuiconsts.lisindentextraorphantryblocks
+msgid "Extra Indent for orphan try blocks"
 msgstr ""
 
 #: jcfuiconsts.lisindentindentation
@@ -702,6 +711,10 @@ msgstr ""
 
 #: jcfuiconsts.lisindentoptions
 msgid "Options"
+msgstr ""
+
+#: jcfuiconsts.lisindenttryfinallyexcept
+msgid "Indent try/finally/except"
 msgstr ""
 
 #: jcfuiconsts.lisjcfformatsettings

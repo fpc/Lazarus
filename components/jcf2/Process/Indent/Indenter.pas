@@ -338,6 +338,32 @@ begin
   end;
 end;
 
+function IsEndOfFinallyOrExceptBlock(const pt:TSourceToken):boolean;
+begin
+  result := (pt.TokenType = ttEnd) and (pt.HasParentNode(nFinallyBlock,1) or pt.HasParentNode(nExceptBlock));
+end;
+
+function OrphanTryBlocksCount(const pt: TSourceToken): integer;
+var
+  lcParent: TParseTreeNode;
+begin
+  Result := 0;
+  lcParent := pt;
+  while (lcParent <> nil) do
+  begin
+    if lcParent.NodeType = nTryAndHandlerBlock then
+    begin
+      lcParent := lcParent.Parent;
+      if (lcParent <> nil) and (lcParent.NodeType = nStatement) then
+        lcParent := lcParent.Parent;
+      if (lcParent <> nil) and (lcParent.NodeType <> nStatementList) then
+        Inc(Result);
+    end;
+    if lcParent <> nil then
+      lcParent := lcParent.Parent;
+  end;
+end;
+
 function CalculateIndent(const pt: TSourceToken;aAlignPreprocessor:boolean=true): integer;forward;
 
 //Align {$ENDIF}/{$IFEND}/{$ELSE}/{$ELSEIF} with his  {$IF}/{$IFDEF}/{$$IFNDEF}/{$IFOPT}
@@ -648,8 +674,21 @@ begin
 
     if FormattingSettings.Indent.IndentElse then
       liIndentCount := liIndentCount + ElseDepth(pt);
-    
 
+    //increment indent for orphan try blocks
+    // if condition then   while condition do ...
+    //   try
+    //   finally
+    //   end
+    if FormattingSettings.Indent.IndentExtraOrphanTryBlocks then
+    begin
+      if pt.HasParentNode(nTryAndHandlerBlock) then
+      begin
+        liIndentCount := liIndentCount + OrphanTryBlocksCount(pt);
+      end;
+    end;
+    if (pt.TokenType=ttEnd) and FormattingSettings.Indent.IndentEndTryBlockAsCode and IsEndOfFinallyOrExceptBlock(pt) then
+      inc(liIndentCount);
   end; // procedures
 
   { record declaration stuph }
@@ -794,12 +833,29 @@ begin
   // IndentBeginEnd option to indent begin/end words a bit extra
   if FormattingSettings.Indent.IndentBeginEnd then
   begin
-    if (pt.TokenType in [ttTry, ttExcept, ttFinally, ttBegin, ttEnd]) and InStatements(pt) then
+    if (pt.TokenType in [ttBegin, ttEnd]) and InStatements(pt) then
     begin
-      // filter out the begin/end that starts and ends a procedure
-      if not pt.HasParentNode(nBlock, 2) then
+      if not IsEndOfFinallyOrExceptBlock(pt) then
       begin
-        Result := Result + FormattingSettings.Indent.IndentBeginEndSpaces;
+        // filter out the begin/end that starts and ends a procedure
+        if not pt.HasParentNode(nBlock, 2) then
+        begin
+          Result := Result + FormattingSettings.Indent.IndentBeginEndSpaces;
+        end;
+      end;
+    end;
+  end;
+  if FormattingSettings.Indent.IndentExtraTryBlockKeyWords then
+  begin
+    if ((pt.TokenType in [ttTry, ttExcept, ttFinally]) or IsEndOfFinallyOrExceptBlock(pt)) and InStatements(pt) then
+    begin
+      if not ((pt.TokenType=ttEnd) and FormattingSettings.Indent.IndentEndTryBlockAsCode) then
+      begin
+        // filter out the begin/end that starts and ends a procedure
+        if not pt.HasParentNode(nBlock, 2) then
+        begin
+          Result := Result + FormattingSettings.Indent.IndentExtraTryBlockKeyWordsSpaces;
+        end;
       end;
     end;
   end;

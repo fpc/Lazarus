@@ -643,6 +643,11 @@ msgstr "Blokkbehúzás szóközeinek száma"
 msgid "Different indent for first level"
 msgstr "Eltérő behúzás az első szinten"
 
+#: jcfuiconsts.lisindentendtryblockascode
+msgctxt "jcfuiconsts.lisindentendtryblockascode"
+msgid "Indent end try block as code"
+msgstr ""
+
 #: jcfuiconsts.lisindentextraindentforbeginend
 msgid "Extra indent for begin/end inside procedures"
 msgstr "Extra behúzás a begin/end számára eljárásokban"
@@ -661,6 +666,10 @@ msgstr "Extra behúzás az If...Else számára"
 
 #: jcfuiconsts.lisindentextraindentforinterfaceguid
 msgid "Extra Indent for interface GUID"
+msgstr ""
+
+#: jcfuiconsts.lisindentextraorphantryblocks
+msgid "Extra Indent for orphan try blocks"
 msgstr ""
 
 #: jcfuiconsts.lisindentindentation
@@ -728,6 +737,10 @@ msgstr ""
 #: jcfuiconsts.lisindentoptions
 msgid "Options"
 msgstr "Beállítások"
+
+#: jcfuiconsts.lisindenttryfinallyexcept
+msgid "Indent try/finally/except"
+msgstr ""
 
 #: jcfuiconsts.lisjcfformatsettings
 msgid "JCF Format Settings"
