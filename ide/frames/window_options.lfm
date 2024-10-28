@@ -115,6 +115,7 @@ object WindowOptionsFrame: TWindowOptionsFrame
     ParentShowHint = False
     ShowHint = True
     TabOrder = 6
+    OnChange = TitleStartsWithProjectCheckBoxChange
   end
   object lblShowingWindows: TDividerBevel
     AnchorSideLeft.Control = Owner

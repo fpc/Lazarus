@@ -56,6 +56,7 @@ type
     SingleTaskBarButtonCheckBox: TCheckBox;
     TitleStartsWithProjectCheckBox: TCheckBox;
     procedure EdTitleBarChange(Sender: TObject);
+    procedure TitleStartsWithProjectCheckBoxChange(Sender: TObject);
   public
     function GetTitle: String; override;
     procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
@@ -106,6 +107,11 @@ begin
   end;
 
   lbTitlePreview.Caption := NewCaption;
+end;
+
+procedure TWindowOptionsFrame.TitleStartsWithProjectCheckBoxChange(Sender: TObject);
+begin
+  EdTitleBarChange(nil);
 end;
 
 function TWindowOptionsFrame.GetTitle: String;
