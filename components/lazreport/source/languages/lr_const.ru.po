@@ -5,11 +5,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2021-08-05 00:13+0300\n"
+"PO-Revision-Date: 2024-10-28 18:29+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
-"X-Generator: Poedit 2.4.3\n"
+"X-Generator: Poedit 2.3.1\n"
 
 #: lr_const.saboutformcapt
 msgid "About FastReport"
@@ -453,7 +453,7 @@ msgstr "COUNT(<BandName>)/Возвращает число строк данны�
 
 #: lr_const.sdescriptioncrlf
 msgid "CRLF/Returns lineending character sequence."
-msgstr ""
+msgstr "CRLF/Возвращает последовательность символов конца строки."
 
 #: lr_const.sdescriptiondayof
 msgid "DAYOF(<Date>)/Returns day number (1..31) of given <Date>."
