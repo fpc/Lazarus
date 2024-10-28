@@ -454,6 +454,10 @@ msgstr "COPY(<Tekstas>, <Vieta>, <Ilgis>)/Grąžina <Ilgis> simbolių iš <Tekst
 msgid "COUNT(<BandName>)/Returns count of data rows given in the <BandName>. "
 msgstr "COUNT(<JuostosPavadinimas>)/Grąžina duotame <JuostosPavadinimas> esančių eilučių kiekį."
 
+#: lr_const.sdescriptioncrlf
+msgid "CRLF/Returns lineending character sequence."
+msgstr ""
+
 #: lr_const.sdescriptiondayof
 msgid "DAYOF(<Date>)/Returns day number (1..31) of given <Date>."
 msgstr "DAYOF(<Data>)/Grąžina duotos <Data> dienos numerį (1..31)."

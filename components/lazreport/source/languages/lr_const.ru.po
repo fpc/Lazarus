@@ -451,6 +451,10 @@ msgstr "COPY(<String>, <Position>, <Length>)/Возвращает <Length> си�
 msgid "COUNT(<BandName>)/Returns count of data rows given in the <BandName>. "
 msgstr "COUNT(<BandName>)/Возвращает число строк данных в <BandName>. "
 
+#: lr_const.sdescriptioncrlf
+msgid "CRLF/Returns lineending character sequence."
+msgstr ""
+
 #: lr_const.sdescriptiondayof
 msgid "DAYOF(<Date>)/Returns day number (1..31) of given <Date>."
 msgstr "DAYOF(<Date>)/Возвращает номер дня (1..31) для заданной <Date>."

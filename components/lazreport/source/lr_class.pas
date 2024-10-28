@@ -10380,6 +10380,12 @@ begin
               aValue:= frVariables[s];
               Exit;
             end else
+            if s1 = 'CRLF' then
+            begin
+              aValue := LineEnding;
+              Exit;
+            end
+            else
             if s1 = 'REPORTTITLE' then
             begin
               aValue := Title;
@@ -12622,6 +12628,7 @@ begin
   // internal functions/operators
   Add('COPY', true);
   Add('STR', true);
+  Add('CRLF', true);
   Add('INT', true);
   Add('ROUND', true);
   Add('FRAC', true);
@@ -12661,6 +12668,7 @@ begin
   AddFunctionDesc('POS', SStringCategory, SDescriptionPOS);
   AddFunctionDesc('COPY', SStringCategory, SDescriptionCOPY);
   AddFunctionDesc('STR', SStringCategory, SDescriptionSTR);
+  AddFunctionDesc('CRLF', SStringCategory, SDescriptionCRLF);
 
   AddFunctionDesc('INPUT', SOtherCategory, SDescriptionINPUT);
   AddFunctionDesc('MESSAGEBOX', SOtherCategory, SDescriptionMESSAGEBOX);

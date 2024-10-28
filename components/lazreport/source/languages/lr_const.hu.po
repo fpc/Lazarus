@@ -451,6 +451,10 @@ msgstr "COPY(<Karakterlánc>, <Kezdet>, <Hossz>)/A <Karakterlánc> <Hossz> hossz
 msgid "COUNT(<BandName>)/Returns count of data rows given in the <BandName>. "
 msgstr "COUNT(<Sávnév>)/A <Sávnév> oszlopban található adatsorok számát adja vissza."
 
+#: lr_const.sdescriptioncrlf
+msgid "CRLF/Returns lineending character sequence."
+msgstr ""
+
 #: lr_const.sdescriptiondayof
 msgid "DAYOF(<Date>)/Returns day number (1..31) of given <Date>."
 msgstr "DAYOF(<Dátum>)/A nap számát (1..31) adja vissza a <Dátum>-ból."

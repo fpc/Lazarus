@@ -769,6 +769,9 @@ resourcestring
   SDescriptionSTR = 'STR(<Value>)/'+
     'Converts the given (numeric) <Value> in string.';
 
+  SDescriptionCRLF = 'CRLF/'+
+    'Returns lineending character sequence.';
+
   SDescriptionINT = 'INT(<Value>)/'+
     'Returns the integer part of floating point <Value>.';
 
