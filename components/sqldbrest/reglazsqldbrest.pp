@@ -117,6 +117,7 @@ implementation
 uses
   // Lazarus
   LResources, codecache, Controls, Forms, Dialogs, SrcEditorIntf,  lazideintf, FormEditingIntf, codetoolmanager,
+  IDEOptionsIntf, IDEOptEditorIntf,
   // FPC
   sqldbrestini,
   // This package
@@ -125,10 +126,12 @@ uses
   frmsqldbrestselecttables,
   dlgeditsqldbrestschema,
   schemaeditorconf,
-  reslazsqldbrest;
+  reslazsqldbrest,
+  fraidesqldbrestsettings;
 
 Var
   FileDescriptorRestModule: TFileRestModule;
+  SQLDBRestOptionsFrameID : Integer = 2100;
 
 Procedure Register;
 
@@ -155,7 +158,9 @@ begin
   FileDescriptorRestModule:=TFileRestModule.Create;
   RegisterProjectFileDescriptor(FileDescriptorRestModule);
   FormEditingHook.RegisterDesignerBaseClass(TSQLDBRestModule);
-
+  // add IDE options frame
+  SQLDBRestOptionsFrameID:=RegisterIDEOptionsEditor(GroupEnvironment,TSQLDBRestConfigFrame,
+                                              SQLDBRestOptionsFrameID)^.Index;
 end;
 
 { TSQLDBRestSchemaComponentEditor }

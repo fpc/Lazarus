@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="4">
+  <Package Version="5">
     <Name Value="lazsqldbrest"/>
     <Type Value="RunAndDesignTime"/>
     <CompilerOptions>
@@ -9,7 +9,7 @@
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
-    <Files Count="6">
+    <Files Count="7">
       <Item1>
         <Filename Value="reglazsqldbrest.pp"/>
         <HasRegisterProc Value="True"/>
@@ -38,7 +38,12 @@
         <Filename Value="dlgeditsqldbrestschema.pp"/>
         <UnitName Value="dlgeditsqldbrestschema"/>
       </Item6>
+      <Item7>
+        <Filename Value="fraidesqldbrestsettings.pas"/>
+        <UnitName Value="fraidesqldbrestsettings"/>
+      </Item7>
     </Files>
+    <CompatibilityMode Value="True"/>
     <RequiredPkgs Count="6">
       <Item1>
         <PackageName Value="sqldbrestschemadesigner"/>
