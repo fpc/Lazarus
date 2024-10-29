@@ -292,14 +292,9 @@ type
   private
     itemIndex: Integer;
     combobox: TCocoaReadOnlyComboBox;
-    isMouseOver: Boolean;
-    trackingArea: NSTrackingArea;
   public
     procedure drawRect(dirtyRect: NSRect); override;
     procedure mouseUp(event: NSEvent); override;
-    procedure mouseEntered(theEvent: NSEvent); override;
-    procedure mouseExited(theEvent: NSEvent); override;
-    procedure lclUpdateTrackingAreas; message 'lclUpdateTrackingAreas';
   end;
 
   { TCocoaReadOnlyComboBoxList }
@@ -319,10 +314,19 @@ type
     procedure Clear; override;
   end;
 
+  { TCocoaReadOnlyComboBoxMenuDelegate }
+
+  TCocoaReadOnlyComboBoxMenuDelegate = objcclass( NSObject, NSMenuDelegateProtocol )
+  private
+    _lastHightlightItem: NSMenuItem;
+    procedure menu_willHighlightItem (menu: NSMenu; item: NSMenuItem);
+  end;
+
   { TCocoaReadOnlyComboBox }
 
   TCocoaReadOnlyComboBox = objcclass(NSPopUpButton)
   private
+    _menuDelegate: TCocoaReadOnlyComboBoxMenuDelegate;
     _textColorAttribs: NSDictionary;
     _defaultItemHeight: Integer;
   public
@@ -534,7 +538,6 @@ begin
   begin
     menuItem := TCocoaReadOnlyView.alloc.initWithFrame(
       NSMakeRect(0,0, FOwner.frame.size.width, FOwner.lclGetItemHeight(index)) );
-    menuItem.lclUpdateTrackingAreas;
     menuItem.itemIndex := Index;
     menuItem.combobox := FOwner;
     mn.setView(menuItem);
@@ -568,7 +571,6 @@ begin
     itemView:= TCocoaReadOnlyView( menuItem.view );
     size.height:= itemView.frame.size.height;
     itemView.setFrameSize( size );
-    itemView.lclUpdateTrackingAreas;
   end;
 end;
 
@@ -686,16 +688,19 @@ procedure TCocoaReadOnlyView.drawRect(dirtyRect: NSRect);
 var
   ctx : TCocoaContext;
   ctxRect: TRect;
+  isHighlighted: Boolean;
 begin
   inherited drawRect(dirtyRect);
 
   if not Assigned(combobox) then Exit;
 
+  isHighlighted:= self.combobox.itemAtIndex(itemIndex).isHighlighted;
+
   ctx := TCocoaContext.Create(NSGraphicsContext.currentContext);
   try
     ctxRect:= NSRectToRect( bounds );
     ctx.InitDraw( ctxRect.Width, ctxRect.Height );
-    combobox.callback.ComboBoxDrawItem(itemIndex, ctx, ctxRect, isMouseOver);
+    combobox.callback.ComboBoxDrawItem(itemIndex, ctx, ctxRect, isHighlighted);
   finally
     ctx.Free;
   end;
@@ -711,38 +716,6 @@ begin
     combobox.menu.performActionForItemAtIndex(itemIndex);
     combobox.menu.cancelTracking;
   end;
-end;
-
-procedure TCocoaReadOnlyView.mouseEntered(theEvent: NSEvent);
-begin
-  isMouseOver := true;
-  inherited mouseEntered(theEvent);
-  lclInvalidate;
-end;
-
-procedure TCocoaReadOnlyView.mouseExited(theEvent: NSEvent);
-begin
-  isMouseOver := false;
-  inherited mouseExited(theEvent);
-  lclInvalidate;
-end;
-
-procedure TCocoaReadOnlyView.lclUpdateTrackingAreas;
-const
-  options: NSTrackingAreaOptions = NSTrackingMouseEnteredAndExited
-                                or NSTrackingActiveAlways;
-begin
-  if Assigned(self.trackingArea) then begin
-    removeTrackingArea(self.trackingArea);
-    self.trackingArea.release;
-  end;
-
-  self.trackingArea:= NSTrackingArea.alloc.initWithRect_options_owner_userInfo(
-    self.bounds,
-    options,
-    self,
-    nil );
-  self.addTrackingArea( self.trackingArea );
 end;
 
 { TCocoaComboBoxItemCell }
@@ -1634,6 +1607,8 @@ function TCocoaReadOnlyComboBox.initWithFrame(frameRect: NSRect): id;
 begin
   Result:=inherited initWithFrame(frameRect);
   _defaultItemHeight:= CocoaConfigComboBox.readOnly.item.defaultHeight;
+  _menuDelegate:= TCocoaReadOnlyComboBoxMenuDelegate.new;
+  self.menu.setDelegate( _menuDelegate );
 end;
 
 procedure TCocoaReadOnlyComboBox.setFrameSize(newSize: NSSize);
@@ -1645,6 +1620,7 @@ end;
 procedure TCocoaReadOnlyComboBox.dealloc;
 begin
   FreeAndNil( list );
+  _menuDelegate.release;
   _textColorAttribs.release;
   if resultNS <> nil then resultNS.release;
   inherited dealloc;
@@ -1879,6 +1855,16 @@ procedure TCocoaReadOnlyComboBox.scrollWheel(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.scrollWheel(event) then
     inherited scrollWheel(event);
+end;
+
+{ TCocoaReadOnlyComboBoxMenuDelegate }
+
+procedure TCocoaReadOnlyComboBoxMenuDelegate.menu_willHighlightItem(
+  menu: NSMenu; item: NSMenuItem);
+begin
+  if Assigned(_lastHightlightItem) then
+    _lastHightlightItem.view.setNeedsDisplay_( True );
+  _lastHightlightItem:= item;
 end;
 
 { TCocoaSpinEdit }
