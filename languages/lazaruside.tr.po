@@ -686,7 +686,9 @@ msgid "Syncronized Cells"
 msgstr "Senkronize Hücreler"
 
 #: lazarusidestrconsts.dlgaddhiattrtextblock
-msgid "Text block"
+#, fuzzy
+#| msgid "Text block"
+msgid "Selected text"
 msgstr "Metin bloğu"
 
 #: lazarusidestrconsts.dlgaddhiattrunknownbreakpoint

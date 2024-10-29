@@ -680,7 +680,9 @@ msgid "Syncronized Cells"
 msgstr "同步Cells"
 
 #: lazarusidestrconsts.dlgaddhiattrtextblock
-msgid "Text block"
+#, fuzzy
+#| msgid "Text block"
+msgid "Selected text"
 msgstr "文本语句块"
 
 #: lazarusidestrconsts.dlgaddhiattrunknownbreakpoint

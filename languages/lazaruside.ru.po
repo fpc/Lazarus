@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-10-28 19:05+0300\n"
+"PO-Revision-Date: 2024-10-30 01:47+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -680,8 +680,8 @@ msgid "Syncronized Cells"
 msgstr "Синхронизируемые поля"
 
 #: lazarusidestrconsts.dlgaddhiattrtextblock
-msgid "Text block"
-msgstr "Выделение текста"
+msgid "Selected text"
+msgstr "Выделенный текст"
 
 #: lazarusidestrconsts.dlgaddhiattrunknownbreakpoint
 msgid "Unknown breakpoint"

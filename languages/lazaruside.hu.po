@@ -681,7 +681,9 @@ msgid "Syncronized Cells"
 msgstr "Szinkronizált cellák"
 
 #: lazarusidestrconsts.dlgaddhiattrtextblock
-msgid "Text block"
+#, fuzzy
+#| msgid "Text block"
+msgid "Selected text"
 msgstr "Szöveg blokk"
 
 #: lazarusidestrconsts.dlgaddhiattrunknownbreakpoint
