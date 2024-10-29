@@ -2085,7 +2085,7 @@ resourcestring
   dlgFoldDiffChunkSect = 'Chunk section';
 
   dlgAddHiAttrDefault             = 'Default Text';
-  dlgAddHiAttrTextBlock           = 'Text block';
+  dlgAddHiAttrTextBlock           = 'Selected text';
   dlgAddHiAttrExecutionPoint      = 'Execution point';
   dlgAddHiAttrEnabledBreakpoint   = 'Enabled breakpoint';
   dlgAddHiAttrDisabledBreakpoint  = 'Disabled breakpoint';
