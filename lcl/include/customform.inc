@@ -222,10 +222,11 @@ begin
   if HandleAllocated then
   begin
     FreeIconHandles;
-    if not (BorderStyle in [bsDialog, bsNone]) then    // bsNone as workaround for #41189
-      TWSCustomFormClass(WidgetSetClass).SetIcon(Self, SmallIconHandle, BigIconHandle)
-    else
-      TWSCustomFormClass(WidgetSetClass).SetIcon(Self, 0, 0);
+    if (Self = Application.MainForm) or  // main form must have icon anyway
+         not (BorderStyle in [bsDialog, bsNone]) then  // bsNone as workaround for #41189
+       TWSCustomFormClass(WidgetSetClass).SetIcon(Self, SmallIconHandle, BigIconHandle)
+     else
+       TWSCustomFormClass(WidgetSetClass).SetIcon(Self, 0, 0);
   end;
 end;
 
