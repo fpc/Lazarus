@@ -2,14 +2,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
+"PO-Revision-Date: 2024-10-28 23:10+0300\n"
 "Last-Translator: Onur ERÇELEN <onur2x@gmail.com>\n"
-"Language-Team: \n"
+"Language-Team: Onur2x\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.1.1\n"
+"X-Poedit-Flags-xgettext: --add-comments=\"TRANSLATORS:ONUR ERÇELEN\"\n"
+"X-Poedit-SourceCharset: UTF-8\n"
 
 #: dockedstrconsts.sallowsizingcaption
 msgid "Allow size changing"
@@ -17,7 +20,7 @@ msgstr "Boyut değiştirmeye izin ver"
 
 #: dockedstrconsts.sallowsizinghint
 msgid "Grips can change size in Anchor Editor"
-msgstr "Tutamaklar Çapa Düzenleyicide boyut değiştirebilir"
+msgstr "Çapalar Anchor Editor'da boyut değiştirebilir"
 
 #: dockedstrconsts.sanchorbottomcolorcaption
 msgid "Bottom Anchor"
@@ -25,60 +28,61 @@ msgstr "Alt Çapa"
 
 #: dockedstrconsts.sanchorcontrolbordercaption
 msgid "Border Around Control"
-msgstr "Sınır Çevresi Kontrolü"
+msgstr "Kontrol Etrafında Kenarlık"
 
 #: dockedstrconsts.sanchorcontrolcolorcaption
 msgid "Control Background"
-msgstr "Kontrol arkaplanı"
+msgstr "Kontrol Arka Planı"
 
 #: dockedstrconsts.sanchorleftcolorcaption
 msgid "Left Anchor"
-msgstr "Sol Tutucu"
+msgstr "Sol Çapa"
 
 #: dockedstrconsts.sanchorrightcolorcaption
 msgid "Right Anchor"
-msgstr "Sağ tutucu"
+msgstr "Sağ Çapa"
 
 #: dockedstrconsts.sanchors
 msgid "Anchors"
-msgstr "Tutucular"
+msgstr "Çapalar"
 
 #: dockedstrconsts.sanchortabvisiblecaption
 msgid "Show Anchors Tab"
-msgstr "Çapaları Göster Sekmesi"
+msgstr "Çapalar Sekmesini Göster"
 
 #: dockedstrconsts.sanchortabvisiblehint
 msgid "Show Anchor Editor"
-msgstr "Çapa Editörünü Göster"
+msgstr "Anchor Editor'u Göster"
 
 #: dockedstrconsts.sanchortargetcolorcaption
 msgid "Anchor Target"
-msgstr "Tutucu hedefi"
+msgstr "Çapa Hedefi"
 
 #: dockedstrconsts.sanchortopcolorcaption
 msgid "Top Anchor"
-msgstr "Üst tutucu"
+msgstr "Üst Çapa"
 
 #: dockedstrconsts.sargumentoutofrange
+#, fuzzy
 msgctxt "dockedstrconsts.sargumentoutofrange"
 msgid "Argument out of range."
-msgstr "Argüman menzil dışında."
+msgstr "Argüman aralık dışında."
 
 #: dockedstrconsts.sattachcontrol
 msgid "Attach Control"
-msgstr "Kontrolü Tuttur"
+msgstr "Kontrolü Bağla"
 
 #: dockedstrconsts.sattachpoint
 msgid "Attach Control Sides"
-msgstr "Kontrolü Taraflara Tuttur"
+msgstr "Kontrol Kenarlarını Bağla"
 
 #: dockedstrconsts.sattachside
 msgid "Attach Control Side"
-msgstr "Kontrolü Tarafa Tuttur"
+msgstr "Kontrol Kenarını Bağla"
 
 #: dockedstrconsts.scaptiondockedformeditor
 msgid "Docked Form Editor"
-msgstr "Yerleştirilmiş Form Düzenleyici"
+msgstr "Yerleştirilmiş Form Editörü"
 
 #: dockedstrconsts.scapturedistancecaption
 msgid "Capture Distance"
@@ -86,13 +90,14 @@ msgstr "Yakalama Mesafesi"
 
 #: dockedstrconsts.scapturedistancehint
 msgid "Minimal distance to capture a control with mouse"
-msgstr "Fare ile bir kontrolü yakalamak için minimum mesafe"
+msgstr "Bir kontrolü fare ile yakalamak için asgari mesafe"
 
 #: dockedstrconsts.scirculardependency
 msgid "This will create a circular dependency."
-msgstr "Bu dairesel bağımlılık yaratacaktır."
+msgstr "Bu, dairesel bir bağımlılık oluşturacak."
 
 #: dockedstrconsts.scode
+#, fuzzy
 msgctxt "dockedstrconsts.scode"
 msgid "Code"
 msgstr "Kod"
@@ -102,65 +107,66 @@ msgid "Colors"
 msgstr "Renkler"
 
 #: dockedstrconsts.sdesigner
+#, fuzzy
 msgctxt "dockedstrconsts.sdesigner"
 msgid "Form"
-msgstr "Tasarım"
+msgstr "Form"
 
 #: dockedstrconsts.sdetachcontrol
 msgid "Detach Control"
-msgstr "Ayırma Kontrolü"
+msgstr "Kontrolü Ayır"
 
 #: dockedstrconsts.sdetachpoint
 msgid "Detach Control Sides"
-msgstr "Kontrol Taraflarını Ayırın"
+msgstr "Kontrol Kenarlarını Ayır"
 
 #: dockedstrconsts.sdetachside
 msgid "Detach Control Side"
-msgstr "Kontrol Tarafını Ayırın"
+msgstr "Kontrol Kenarını Ayır"
 
 #: dockedstrconsts.senabledockeddsgner
 msgid "Show the form-editor as (docked) tab in the editor window (Requires IDE restart)"
-msgstr ""
+msgstr "Form düzenleyicisini editör penceresinde (yerleştirilmiş) sekme olarak göster (IDE yeniden başlatılması gerekir)"
 
 #: dockedstrconsts.setupdesignerclassic
 msgid "Classic Form Editor (floating):"
-msgstr ""
+msgstr "Klasik Form Editörü (yüzer):"
 
 #: dockedstrconsts.setupdesignerdocked
 msgid "The form editor is part of the IDE's source editor (tabbed interface)."
-msgstr ""
+msgstr "Form editörü, IDE'nin kaynak düzenleyicisinin (sekme arayüzünün) bir parçasıdır."
 
 #: dockedstrconsts.setupdesignerfloat
 msgid "The form editor shows the edited form as a normal window."
-msgstr ""
+msgstr "Form editörü, düzenlenmiş formu normal bir pencere olarak gösterir."
 
 #: dockedstrconsts.setupdesignerinfo
 msgid "The \"classic\" designer can be positioned on your screen independent of other parts of the IDE. The \"modern\" docked designer will be embedded into the source-edit window, and you will have a tab to toggle between source and form. You can open a 2nd source-edit window to see both at the same time."
-msgstr ""
+msgstr "\"Klasik\" tasarımcıyı, IDE'nin diğer parçalarından bağımsız olarak ekranınıza yerleştirebilirsiniz. \"Modern\" yerleştirilmiş tasarımcı, kaynak düzenleme penceresine gömülecek ve kaynak ile form arasında geçiş yapmak için bir sekmeniz olacak. Her ikisini de aynı anda görmek için ikinci bir kaynak düzenleme penceresi açabilirsiniz."
 
 #: dockedstrconsts.setupdesignermodern
 msgid "Modern Form Editor (docked/tabbed):"
-msgstr ""
+msgstr "Modern Form Editörü (yerleştirilmiş/sekme):"
 
 #: dockedstrconsts.setupmultiwindowideoption
 msgid "You can change this in the IDE options under: \"Docked Form Editor\""
-msgstr ""
+msgstr "Bunu, IDE seçeneklerinde \"Docked Form Editor\" altında değiştirebilirsiniz."
 
 #: dockedstrconsts.sforcerefreshingcaption
 msgid "Force Refreshing At Sizing"
-msgstr "İndirme ve çıkartma için her zaman zorla"
+msgstr "Boyutlandırmada Zorunlu Yenileme"
 
 #: dockedstrconsts.sforcerefreshinghint
 msgid "Force refreshing form when user is sizing it"
-msgstr "Kullanıcı boyutlandırırken formu yenilemeye zorla"
+msgstr "Kullanıcı boyutlandırırken formu zorunlu olarak yenile"
 
 #: dockedstrconsts.sformeditor
 msgid "Form editor / Designer"
-msgstr ""
+msgstr "Form editörü / Tasarımcı"
 
 #: dockedstrconsts.sidelayout
 msgid "IDE Layout"
-msgstr ""
+msgstr "IDE Düzeni"
 
 #: dockedstrconsts.smouseborderfactorcaption
 msgid "Mouse cursor factor for BorderSpacing property"
@@ -168,7 +174,7 @@ msgstr "BorderSpacing özelliği için fare imleci faktörü"
 
 #: dockedstrconsts.smouseborderfactorhint
 msgid "Mouse cursor factor is used to set small values of BorderSpacing property more precisely"
-msgstr "Fare imleci faktörü, BorderSpacing özelliğinin küçük değerlerini daha hassas ayarlamak için kullanılır"
+msgstr "Fare imleci faktörü, BorderSpacing özelliğinin küçük değerlerini daha kesin olarak ayarlamak için kullanılır"
 
 #: dockedstrconsts.sresizercolorcaption
 msgid "Resizer Color"
@@ -176,7 +182,7 @@ msgstr "Yeniden Boyutlandırıcı Renk"
 
 #: dockedstrconsts.sresizercolorhint
 msgid "Color of resizer bars"
-msgstr "Yeniden boyutlandırma çubuklarının rengi"
+msgstr "Yeniden boyutlandırıcı çubukların rengi"
 
 #: dockedstrconsts.stabpositionbottom
 msgid "Bottom"
@@ -188,7 +194,7 @@ msgstr "Sekme Pozisyonu"
 
 #: dockedstrconsts.stabpositionhint
 msgid "Position of Code, Form, Anchors tabs"
-msgstr "Kod, Form, Ankraj sekmelerinin konumu"
+msgstr "Kod, Form, Çapalar sekmelerinin pozisyonu"
 
 #: dockedstrconsts.stabpositionleft
 msgid "Left"
@@ -204,21 +210,21 @@ msgstr "Üst"
 
 #: dockedstrconsts.streataligncaption
 msgid "Automatically treat Align properties"
-msgstr "Hizala özelliklerini otomatik olarak işleme"
+msgstr "Hizalama özelliklerini otomatik olarak işleyin"
 
 #: dockedstrconsts.streatalignhint
 msgid "Automatically replace Align properties with appropriate Anchors"
-msgstr "Hizala özelliklerini uygun Çapalarla otomatik olarak değiştir"
+msgstr "Hizalama özelliklerini uygun çapalarla otomatik olarak değiştirin"
 
 #: dockedstrconsts.streatbordercaption
 msgid "Automatically treat BorderSpacing properties"
-msgstr "BorderSpacing özelliklerini otomatik olarak işleme"
+msgstr "BorderSpacing özelliklerini otomatik olarak işleyin"
 
 #: dockedstrconsts.streatborderhint
 msgid "Automatically replace BorderSpacing.Around properties of controls and adapt BorderSpacing.Left/Right/Top/Bottom if needed"
-msgstr "Kontrollerin BorderSpacing.Around özelliklerini otomatik olarak değiştirin ve gerekirse BorderSpacing.Left/Right/Top/Bottom'ı uyarlayın"
+msgstr "Kontrollerin BorderSpacing.Around özelliklerini otomatik olarak değiştirin ve gerekirse BorderSpacing.Left/Right/Top/Bottom ayarlayın"
 
 #: dockedstrconsts.swarningcaption
 msgid "Warning"
-msgstr "Dikkat"
+msgstr "Uyarı"
 

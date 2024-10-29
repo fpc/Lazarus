@@ -304,9 +304,9 @@ msgid "Distance"
 msgstr "Uzaklık"
 
 #: codystrconsts.crsdvisakeyword
-#, object-pascal-format, fuzzy, badformat
+#, object-pascal-format
 msgid "\"%s\" is a keyword."
-msgstr "\"% s\" bir anahtar kelimedir."
+msgstr "\"%s\" bir anahtar kelimedir."
 
 #: codystrconsts.crserror
 #, object-pascal-format
@@ -387,10 +387,8 @@ msgid "Frameworks"
 msgstr "Çerçeveler"
 
 #: codystrconsts.crsgbytes
-#, fuzzy
-#| msgid "Gbytes"
 msgid "GB"
-msgstr "Gbytes"
+msgstr "GB"
 
 #: codystrconsts.crshelp
 msgid "&Help"
@@ -476,10 +474,8 @@ msgid "Jump to"
 msgstr "Atla"
 
 #: codystrconsts.crskbytes
-#, fuzzy
-#| msgid "kbytes"
 msgid "KB"
-msgstr "kbytes"
+msgstr "KB"
 
 #: codystrconsts.crslinkedfiles
 msgid "Linked files"
@@ -505,10 +501,8 @@ msgid "Main source file: %s"
 msgstr "Ana kaynak dosyası : %s"
 
 #: codystrconsts.crsmbytes
-#, fuzzy
-#| msgid "Mbytes"
 msgid "MB"
-msgstr "Mbytes"
+msgstr "MB"
 
 #: codystrconsts.crsmemberof
 #, object-pascal-format

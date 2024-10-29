@@ -1,10 +1,9 @@
-# karam <onur2x@gmail.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: debuggerintf\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: 2022-10-21 23:10+0300\n"
-"Last-Translator: karam <onur2x@gmail.com>\n"
+"Last-Translator: Onur ERÇELEN <onur2x@gmail.com>\n"
 "Language-Team: Onur2x\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
@@ -21,7 +20,7 @@ msgstr "Aritmetik taşma hatası"
 
 #: dbgintfcommonstrings.rsrunerrorassertionfailederror
 msgid "Assertion failed error"
-msgstr "Onaylama başarısız hatası"
+msgstr "Doğrulama hatası"
 
 #: dbgintfcommonstrings.rsrunerrorbaddriverequeststructleng
 msgid "Bad drive request struct length"
@@ -29,7 +28,7 @@ msgstr "Hatalı sürücü isteği yapı uzunluğu"
 
 #: dbgintfcommonstrings.rsrunerrorcalltoabstractmethod
 msgid "Call to abstract method"
-msgstr "Soyut yönteme çağrı"
+msgstr "Soyut metoda çağrı"
 
 #: dbgintfcommonstrings.rsrunerrorcannotremovecurrentdirect
 msgid "Cannot remove current directory"
@@ -41,7 +40,7 @@ msgstr "Sürücüler arasında yeniden adlandırma yapılamıyor"
 
 #: dbgintfcommonstrings.rsrunerrorcollectionindexoutofrange
 msgid "Collection index out of range"
-msgstr "Koleksiyon dizini aralık dışında"
+msgstr "Koleksiyon indeksi aralık dışında"
 
 #: dbgintfcommonstrings.rsrunerrorcollectionoverflowerror
 msgid "Collection overflow error"
@@ -77,7 +76,7 @@ msgstr "Yazma hatası"
 
 #: dbgintfcommonstrings.rsrunerrordivisionbyzero
 msgid "Division by zero"
-msgstr "Sıfıra bölüm"
+msgstr "Sıfıra bölüme"
 
 #: dbgintfcommonstrings.rsrunerrordrivenotready
 msgid "Drive not ready"
@@ -85,7 +84,7 @@ msgstr "Sürücü hazır değil"
 
 #: dbgintfcommonstrings.rsrunerrorexceptionstackcorrupted
 msgid "Exception stack corrupted"
-msgstr "Yığın boyutu"
+msgstr "Özel durum yığını bozuldu"
 
 #: dbgintfcommonstrings.rsrunerrorfileaccessdenied
 msgid "File access denied"
@@ -113,11 +112,11 @@ msgstr "Dosya çıktı için açık değil"
 
 #: dbgintfcommonstrings.rsrunerrorfloatingpointoverflow
 msgid "Floating point overflow"
-msgstr "Kayan nokta taşması"
+msgstr "Virgüllü sayı taşması"
 
 #: dbgintfcommonstrings.rsrunerrorfloatingpointunderflow
 msgid "Floating point underflow"
-msgstr "Kayan nokta debisi"
+msgstr "Virgüllü sayı taşması"
 
 #: dbgintfcommonstrings.rsrunerrorgeneralprotectionfault
 msgid "General Protection fault"
@@ -149,7 +148,7 @@ msgstr "Geçersiz dosya tanıtıcısı"
 
 #: dbgintfcommonstrings.rsrunerrorinvalidfloatingpointopera
 msgid "Invalid floating point operation"
-msgstr "Geçersiz kayan nokta işlemi"
+msgstr "Geçersiz virgüllü sayı işlemi"
 
 #: dbgintfcommonstrings.rsrunerrorinvalidfunctionnumber
 msgid "Invalid function number"
@@ -165,7 +164,7 @@ msgstr "Geçersiz işaretçi işlemi"
 
 #: dbgintfcommonstrings.rsrunerrorinvalidtypecast
 msgid "Invalid typecast"
-msgstr "Geçersiz typecast"
+msgstr "Geçersiz tür dönüşümü"
 
 #: dbgintfcommonstrings.rsrunerrorinvalidvaluespecified
 msgid "Invalid value specified"
@@ -181,7 +180,7 @@ msgstr "Yol bulunamadı"
 
 #: dbgintfcommonstrings.rsrunerrorprinteroutofpaper
 msgid "Printer out of paper"
-msgstr "Yazıcı kağıdı bitti"
+msgstr "Yazıcıda kağıt yok"
 
 #: dbgintfcommonstrings.rsrunerrorrangecheckerror
 msgid "Range check error"
@@ -205,23 +204,23 @@ msgstr "Akış kaydı hatası"
 
 #: dbgintfcommonstrings.rsrunerrorthreadsnotsupported
 msgid "Threads not supported"
-msgstr "Konular desteklenmiyor"
+msgstr "İş parçacıkları desteklenmiyor"
 
 #: dbgintfcommonstrings.rsrunerrortoomanyopenfiles
 msgid "Too many open files"
-msgstr "Çok fazla dosya açma"
+msgstr "Çok fazla dosya açık"
 
 #: dbgintfcommonstrings.rsrunerrorunhandledexceptionoccurre
 msgid "Unhandled exception occurred"
-msgstr "İşlenmeyen özel durum oluştu"
+msgstr "İşlenmemiş bir istisna oluştu"
 
 #: dbgintfcommonstrings.rsrunerrorunknownmediatype
 msgid "Unknown media type"
-msgstr "Bilinmeyen ortam türü"
+msgstr "Bilinmeyen medya türü"
 
 #: dbgintfcommonstrings.rsrunerrorvararrayboundscheckerror
 msgid "Var Array Bounds check error"
-msgstr "Var Array Bounds denetim hatası"
+msgstr "Var Array Sınır kontrol hatası"
 
 #: dbgintfcommonstrings.rsrunerrorvariantarraycreate
 msgid "Variant array create"

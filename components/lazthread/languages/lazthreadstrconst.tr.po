@@ -1,0 +1,40 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: debuggerintf\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2022-10-21 23:10+0300\n"
+"Last-Translator: Onur ERÇELEN <onur2x@gmail.com>\n"
+"Language-Team: Onur2x\n"
+"Language: tr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.1.1\n"
+"X-Poedit-Flags-xgettext: --add-comments=\"TRANSLATORS:ONUR ERÇELEN\"\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#: lazthreadstrconst.screateunitbuttoncaption
+msgid "Create Unit"
+msgstr "Birim Oluştur"
+
+#: lazthreadstrconst.soptionsgroupboxcaption
+msgid "Options"
+msgstr "Seçenekler"
+
+#: lazthreadstrconst.sthreaddescription
+msgid "A Pascal unit with a subclass of TThread class."
+msgstr "TThread sınıfının bir alt sınıfına sahip bir Pascal birimi."
+
+#: lazthreadstrconst.sthreaddialogtitle
+msgid "Thread Class Options"
+msgstr "Thread Sınıfı Seçenekleri"
+
+#: lazthreadstrconst.sthreadname
+msgid "Thread Object"
+msgstr "Thread Nesnesi"
+
+#: lazthreadstrconst.sthreadnamelabelcaption
+msgid "Thread Class Name"
+msgstr "Thread Sınıf Adı"
+

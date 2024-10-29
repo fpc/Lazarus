@@ -1,0 +1,1107 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2024-10-29 14:07+0000\n"
+"Last-Translator: Onur ERÇELEN <onur2x@gmail.com>\n"
+"Language-Team: Turkish\n"
+"Language: tr\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Loco-Source-Locale: tr_TR\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Parser: loco_parse_po"
+
+#: jcfuiconsts.format_about_menu
+msgid "&About ..."
+msgstr "&Hakkında"
+
+#: jcfuiconsts.format_category_idecmd
+msgid "JEDI Code Format"
+msgstr "JEDI Kod Formatı"
+
+#: jcfuiconsts.format_current_idecmd
+msgid "Format code in current editor window"
+msgstr "Geçerli düzenleyici penceresinde kodu biçimlendir"
+
+#: jcfuiconsts.format_current_menu
+msgid "&Current Editor Window"
+msgstr "&Mevcut Editör Penceresi"
+
+#: jcfuiconsts.format_menu
+msgid "JEDI Code &Format"
+msgstr "Jedi Kod &Formatı"
+
+#: jcfuiconsts.format_open_menu
+msgid "All &Open Windows"
+msgstr "Tüm &Pencereleri Aç"
+
+#: jcfuiconsts.format_project_menu
+msgid "&All Files in Project"
+msgstr "Projedeki &Tüm Dosyalar"
+
+#: jcfuiconsts.format_reg_settings_menu
+msgid "Global Settings ..."
+msgstr "Genel Ayarlar ..."
+
+#: jcfuiconsts.format_settings_menu
+msgid "&Format Settings ..."
+msgstr "For&mat Ayarları ..."
+
+#: jcfuiconsts.lisaboutaboutjedicodeformat
+msgid "About JEDI Code Format"
+msgstr "Jedi Kod Formatı Hakkında"
+
+#: jcfuiconsts.lisaboutfindmoreinformationonthewebat
+#, object-pascal-format
+msgid "Find more information on the web at: %s"
+msgstr "Daha fazla bilgiyi web'de bulabilirsiniz: %s"
+
+#: jcfuiconsts.lisaboutthisprogramisopensource
+msgid "This program is open source software. It is released under the Mozilla Public Licence (MPL).  http://www.mozilla.org/MPL"
+msgstr "Bu program açık kaynak kodlu bir yazılımdır. Mozilla Kamu Lisansı (MPL) altında yayınlanmaktadır. http://www.mozilla.org/MPL"
+
+#: jcfuiconsts.lisaboutthisprogramisstillunderdevelopment
+msgid "This program is still under development. In spite of thorough testing and removal of reported bugs, no guarantees are given. Please make backups, or better yet use a source control system."
+msgstr "Bu program halen geliştirilme aşamasındadır. Kapsamlı testlere ve bildirilen hataların giderilmesine rağmen, hiçbir garanti verilmemektedir. Lütfen yedekleme yapın ya da daha iyisi bir kaynak kontrol sistemi kullanın."
+
+#: jcfuiconsts.lisaboutversion
+#, object-pascal-format
+msgid "Version $VERSION$%s%sThis program attempts to standardise and make readable the layout of any Object Pascal source code.%s%sCopyright Anthony Steele 1999-2008"
+msgstr "Sürüm $VERSION$%s%sBu program herhangi bir Object Pascal kaynak kodunun düzenini standartlaştırmaya ve okunabilir hale getirmeye çalışır.%s%sTelif Hakkı Anthony Steele 1999-2008"
+
+#: jcfuiconsts.lisalignalign
+msgid "Align"
+msgstr "Hizala"
+
+#: jcfuiconsts.lisalignassign
+msgid "Assign"
+msgstr "Atama"
+
+#: jcfuiconsts.lisalignclassandrecordfields
+msgid "Class and record fields"
+msgstr "Sınıf ve kayıt alanları"
+
+#: jcfuiconsts.lisaligncomments
+msgid "Comments"
+msgstr "Açıklamalar"
+
+#: jcfuiconsts.lisalignconst
+msgid "Const"
+msgstr "Sabitler"
+
+#: jcfuiconsts.lisaligninterfaceonly
+msgid "Interface Only"
+msgstr "Sadece interface"
+
+#: jcfuiconsts.lisalignmaxcolumn
+msgid "Max Column"
+msgstr "Maks Sutün"
+
+#: jcfuiconsts.lisalignmaxunaligned
+msgid "Max unaligned"
+msgstr "Maks hizalanmamış"
+
+#: jcfuiconsts.lisalignmaxvariance
+msgid "Max Variance"
+msgstr "Max Varyans"
+
+#: jcfuiconsts.lisalignmaxvarianceinterface
+msgid "Max Variance Interface"
+msgstr "Maks Varyans Arayüzü"
+
+#: jcfuiconsts.lisalignmincolumn
+msgid "Min Column"
+msgstr "Min Sütun"
+
+#: jcfuiconsts.lisaligntypedefs
+msgid "Type defs"
+msgstr "Tür tanımları"
+
+#: jcfuiconsts.lisalignvardeclarations
+msgid "Var declarations"
+msgstr "Var bildirimleri"
+
+#: jcfuiconsts.lisalignwhattoalign
+msgid "What to Align"
+msgstr "Ne Hizalanmalı"
+
+#: jcfuiconsts.lisasmasm
+msgid "Asm"
+msgstr "Asm"
+
+#: jcfuiconsts.lisasmbreaksafterlabel
+msgid "&Breaks after label"
+msgstr "&Etiketten sonra kırılır"
+
+#: jcfuiconsts.lisasmcapitalization
+msgid "&Capitalization"
+msgstr "&Kapitalizasyon"
+
+#: jcfuiconsts.lisasmenabled
+msgid "&Enabled"
+msgstr "&Aktif"
+
+#: jcfuiconsts.lisasmenabled2
+msgid "E&nabled"
+msgstr "Ak&tif"
+
+#: jcfuiconsts.lisasmenabled3
+msgid "En&abled"
+msgstr "Akt&if"
+
+#: jcfuiconsts.lisasmindent
+msgid "Indent"
+msgstr "Girinti"
+
+#: jcfuiconsts.lisasmnumberofbreaks
+msgid "N&umber of breaks"
+msgstr "Mola &sayısı"
+
+#: jcfuiconsts.lisasmparamsindents
+msgid "&Params Indents"
+msgstr "&Girinti parametleri"
+
+#: jcfuiconsts.lisasmstatementindents
+msgid "&Statement Indents"
+msgstr "B&eyan Girintileri"
+
+#: jcfuiconsts.lisblafterprocedureheader
+msgid "After procedure header"
+msgstr "Prosedür başlığından sonra"
+
+#: jcfuiconsts.lisblatstartandendofbeginendblock
+msgid "At start and end of Begin...End block"
+msgstr "Begin...End bloğunun başında ve sonunda"
+
+#: jcfuiconsts.lisblblanklines
+msgid "Blank Lines"
+msgstr "Boş Satırlar"
+
+#: jcfuiconsts.lisblinprocedurevarsection
+msgid "In procedure var section"
+msgstr "Prosedür var bölümünde"
+
+#: jcfuiconsts.lisbllinesbeforeprocedure
+msgid "Lines before procedure"
+msgstr "Prosedür öncesi çizgiler"
+
+#: jcfuiconsts.lisblmaxconsecutiveblanklinesanywhere
+msgid "Max consecutive blank lines anywhere"
+msgstr "Herhangi bir yerde maksimum ardışık boş satır"
+
+#: jcfuiconsts.lisblmaxconsecutiveblanklinesbeforeremoval
+msgid "Max consecutive blank lines before removal"
+msgstr "Kaldırılmadan önce maksimum ardışık boş satır"
+
+#: jcfuiconsts.lisblnumberofreturnsaftertheunitsfinalend
+msgid "Number of returns after the unit's final End."
+msgstr "Birimin son Bitişinden sonraki iade sayısı."
+
+#: jcfuiconsts.lisblocksbetweenelseandif
+msgid "Between else and if"
+msgstr "if ve else arasında"
+
+#: jcfuiconsts.lisblocksbetweenendandelse
+msgid "Between end and else"
+msgstr "Else ve end arasında"
+
+#: jcfuiconsts.lisblocksblocks
+msgid "Blocks"
+msgstr "Blok"
+
+#: jcfuiconsts.lisblocksblockwithbegin
+msgid "Block with begin"
+msgstr "Begin ile blok"
+
+#: jcfuiconsts.lisblocksblockwithoutbegin
+msgid "Block without begin"
+msgstr "Begin siz blok"
+
+#: jcfuiconsts.lisblockselsebegin
+msgid "Else begin"
+msgstr "Else begin"
+
+#: jcfuiconsts.lisblocksuseanewlineinblocksat
+msgid "Use a new line in blocks at:"
+msgstr "Bloklar halinde yeni bir satır kullanın:"
+
+#: jcfuiconsts.lisblremoveblanklines
+msgid "Remove blank lines"
+msgstr "Boş satırları kaldır"
+
+#: jcfuiconsts.lisblremoveconsecutiveblanklines
+msgid "Remove consecutive blank lines"
+msgstr "Ardışık boş satırları kaldırın"
+
+#: jcfuiconsts.liscapsanywordanyword
+msgid "Any Word"
+msgstr "Herhangi bir Kelime"
+
+#: jcfuiconsts.liscapsanywordenable
+msgid "Enable"
+msgstr "Aktif"
+
+#: jcfuiconsts.liscapsanywordsetcapitalisationonthesewords
+msgid "Set capitalisation on these words:"
+msgstr "Bu kelimelerde büyük harf kullanımını ayarlayın:"
+
+#: jcfuiconsts.liscapscapitalisation
+msgid "Capitalisation"
+msgstr "Kapitalizasyon"
+
+#: jcfuiconsts.liscapsconstants
+msgid "Constants"
+msgstr "Sabitler"
+
+#: jcfuiconsts.liscapsdirectives
+msgid "Directives"
+msgstr "Direktifler"
+
+#: jcfuiconsts.liscapsenablecapitalisationfixing
+msgid "Enable capitalisation fixing"
+msgstr "Büyük harf düzeltmesini etkinleştirin"
+
+#: jcfuiconsts.liscapsidentifiersidentifiers
+msgid "Identifiers"
+msgstr "Tanımlayıcılar"
+
+#: jcfuiconsts.liscapsidentifierssetcapitalisationontheseidentifiers
+msgid "Set capitalisation on these identifiers:"
+msgstr "Bu tanımlayıcılarda büyük harf kullanımını ayarlayın:"
+
+#: jcfuiconsts.liscapsnormalizecapitalisation
+msgid "Normalization of capitalisation"
+msgstr "Büyük harf kullanımının normalleştirilmesi"
+
+#: jcfuiconsts.liscapsnormalizecapitalisationonenamespace
+msgid "Use only one namespace"
+msgstr "Yalnızca bir ad alanı kullanın"
+
+#: jcfuiconsts.liscapsnotidentifiersnotidentifiers
+msgid "Non-identifiers"
+msgstr "Tanımlayıcı olmayanlar"
+
+#: jcfuiconsts.liscapsnotidentifierssetcapitalisationonthesenonidentifiers
+msgid "Set capitalisation on these non-identifiers:"
+msgstr "Bu tanımlayıcı olmayanlarda büyük harf kullanımını ayarlayın:"
+
+#: jcfuiconsts.liscapsoperators
+msgid "Operators"
+msgstr "Operatörler"
+
+#: jcfuiconsts.liscapsreservedwords
+msgid "Reserved words"
+msgstr "Ayrılmış kelimeler"
+
+#: jcfuiconsts.liscapstypes
+msgid "Types"
+msgstr "Tipler"
+
+#: jcfuiconsts.liscapsunitnamessetcapitalisationontheseunitnames
+msgid "Set capitalisation on these unit names:"
+msgstr "Bu birim adlarında büyük harf kullanımını ayarlayın:"
+
+#: jcfuiconsts.liscapsunitnamesunitnames
+msgid "Unit Names"
+msgstr "Birim Adları"
+
+#: jcfuiconsts.liscaseblocksalways
+msgctxt "jcfuiconsts.liscaseblocksalways"
+msgid "Always"
+msgstr "Herzaman"
+
+#: jcfuiconsts.liscaseblockscaseblocks
+msgid "Case Blocks"
+msgstr "Case blokları"
+
+#: jcfuiconsts.liscaseblockscasewithbegin
+msgid "Case with begin"
+msgstr "Case begin ile"
+
+#: jcfuiconsts.liscaseblockscasewithoutbegin
+msgid "Case without begin"
+msgstr "Case begin olmadan"
+
+#: jcfuiconsts.liscaseblockselsecasewithbegin
+msgid "Else case with begin"
+msgstr "Case else begin ile"
+
+#: jcfuiconsts.liscaseblockselsecasewithoutbegin
+msgid "Else case without begin"
+msgstr "Case else begin olmadan"
+
+#: jcfuiconsts.liscaseblockslabelwithbegin
+msgid "Label with begin"
+msgstr "Label begin ile"
+
+#: jcfuiconsts.liscaseblockslabelwithoutbegin
+msgid "Label without begin"
+msgstr "Label begin olmadan"
+
+#: jcfuiconsts.liscaseblocksleaveasis
+msgctxt "jcfuiconsts.liscaseblocksleaveasis"
+msgid "Leave as is"
+msgstr "Olduğu gibi bırak"
+
+#: jcfuiconsts.liscaseblocksnever
+msgctxt "jcfuiconsts.liscaseblocksnever"
+msgid "Never"
+msgstr "Asla"
+
+#: jcfuiconsts.liscaseblocksuseanewlineincaseblocksat
+msgid "Use a new line in Case blocks at:"
+msgstr "Case bloklarında yeni satır kullan:"
+
+#: jcfuiconsts.liscdcompilerdirectives
+msgid "Compiler Directives"
+msgstr "Derleyici direktifleri"
+
+#: jcfuiconsts.liscdotherplaces
+msgid "Other places"
+msgstr "Diğer yerler"
+
+#: jcfuiconsts.liscdstatements
+msgid "Statements"
+msgstr "İfadeler"
+
+#: jcfuiconsts.liscduseanewlineaftercompilerdirectives
+msgid "Use a new line after compiler directives:"
+msgstr "Derleyici direktiflerinden sonra yeni bir satır kullanın:"
+
+#: jcfuiconsts.liscduseanewlinebeforecompilerdirectives
+msgid "Use a new line before compiler directives:"
+msgstr "Derleyici direktiflerinden önce yeni bir satır kullanın:"
+
+#: jcfuiconsts.liscdusesclause
+msgid "Uses clause"
+msgstr "Uses bildirimi"
+
+#: jcfuiconsts.lisclarifyclarify
+msgid "Clarify"
+msgstr "Açıklama"
+
+#: jcfuiconsts.lisclarifydonotrun
+msgid "Do &not run"
+msgstr "Çalıştı&rma"
+
+#: jcfuiconsts.lisclarifydorun
+msgid "Do &run"
+msgstr "Ça&lıştır"
+
+#: jcfuiconsts.lisclarifyfileextensionstoformat
+msgid "File extensions to format:"
+msgstr "Biçimlendirilecek dosya uzantıları:"
+
+#: jcfuiconsts.lisclarifyrunonceoffs
+msgid "Run once-offs"
+msgstr "Bir kerelik çalıştırma"
+
+#: jcfuiconsts.lisclarifyrunonlythese
+msgid "Run &only these"
+msgstr "Yalnızca bunları çalıştırın"
+
+#: jcfuiconsts.liscnfcaption
+msgid "JCF Global Settings"
+msgstr "JCF Genel Ayarlar"
+
+#: jcfuiconsts.liscnfexcludedirs
+msgid "Directories to exclude from batch processing:"
+msgstr "Toplu işlemeden hariç tutulacak dizinler:"
+
+#: jcfuiconsts.liscnfexcludefiles
+msgid "Individual files to exclude from batch processing:"
+msgstr "Toplu işlemden hariç tutulacak münferit dosyalar:"
+
+#: jcfuiconsts.liscnfgenalways
+msgctxt "jcfuiconsts.liscnfgenalways"
+msgid "Always"
+msgstr "Herzaman"
+
+#: jcfuiconsts.liscnfgenconvertsettingsfile
+msgid "Convert settings file"
+msgstr "Ayar dosyasını dönüştür"
+
+#: jcfuiconsts.liscnfgenfail
+msgid "Fail quietly"
+msgstr "Sessizce başarısız ol"
+
+#: jcfuiconsts.liscnfgennever
+msgctxt "jcfuiconsts.liscnfgennever"
+msgid "Never"
+msgstr "Asla"
+
+#: jcfuiconsts.liscnfgenonparseerror
+msgid "On parse error"
+msgstr "Ayrıştırma hatasında"
+
+#: jcfuiconsts.liscnfgenshowparsetree
+msgid "Show parse &tree during parse"
+msgstr "Ayrıştır&ma sırasında ayrıştırma ağacını göster"
+
+#: jcfuiconsts.liscnfgenwritesettings
+msgid "&Write settings file"
+msgstr "Ayar d&osyasına yaz"
+
+#: jcfuiconsts.liscnflogapplication
+#, object-pascal-format
+msgid "Application: %s"
+msgstr "Uygulama: %s"
+
+#: jcfuiconsts.liscnflogbackupfileext
+msgid "Backup file extension"
+msgstr "Yedek doya uzantısı"
+
+#: jcfuiconsts.liscnflogdetaillevel
+msgid "Log file detail level"
+msgstr "Günlük dosyası ayrıntı düzeyi"
+
+#: jcfuiconsts.liscnflogerrorsonly
+msgid "Errors only"
+msgstr "Sadece hata"
+
+#: jcfuiconsts.liscnflogfile
+msgid "File"
+msgstr "Dosya"
+
+#: jcfuiconsts.liscnflogfiledir
+msgid "Log file directory"
+msgstr "Günlük dosya dizini"
+
+#: jcfuiconsts.liscnflogoutputfileext
+msgid "Output file extension"
+msgstr "Dosya çıktı uzantısı "
+
+#: jcfuiconsts.liscnflogselectdir
+msgid "Select specified directory"
+msgstr "Belirtilen dizini seçin"
+
+#: jcfuiconsts.liscnflogspecified
+#, object-pascal-format
+msgid "Specified: %s"
+msgstr "Belirtildi: %s"
+
+#: jcfuiconsts.liscnflogtemp
+#, object-pascal-format
+msgid "Temp: %s"
+msgstr "Geçici: %s"
+
+#: jcfuiconsts.liscnflogtime
+msgid "Log time taken to process"
+msgstr "İşlem için geçen süreyi günlüğe kaydetme"
+
+#: jcfuiconsts.liscnflogtoken
+msgid "Token"
+msgstr "Token"
+
+#: jcfuiconsts.liscnflogviewlog
+msgid "View log after each run"
+msgstr "Her çalıştırmadan sonra günlüğü görüntüleme"
+
+#: jcfuiconsts.liscnflogviewlognow
+msgid "View Log now"
+msgstr "Günlüğü şimdi görüntüle"
+
+#: jcfuiconsts.liscnftabexclusions
+msgid "Exclusions"
+msgstr "İstisnalar"
+
+#: jcfuiconsts.liscnftabgeneral
+msgid "General"
+msgstr "Genel"
+
+#: jcfuiconsts.liscnftablogfile
+msgid "Log file"
+msgstr "Log dosyası"
+
+#: jcfuiconsts.liscommentsremoveemptycurlybracescomments
+msgid "Remove empty '{ }' comments"
+msgstr "Boş yorumları kaldır '{}'"
+
+#: jcfuiconsts.liscommentsremoveemptyslashcomments
+msgid "Remove empty '//' comments"
+msgstr "Boş yorumları kaldır '//'"
+
+#: jcfuiconsts.lisedatlinecol
+#, object-pascal-format
+msgid "%sAt line %s col %s"
+msgstr "%sSatır %s sütun %s'de"
+
+#: jcfuiconsts.lisederror
+msgctxt "jcfuiconsts.lisederror"
+msgid "Error"
+msgstr "Hata"
+
+#: jcfuiconsts.lisedexception
+#, object-pascal-format
+msgid "Exception %s"
+msgstr "İstisna %s"
+
+#: jcfuiconsts.lisedin
+#, object-pascal-format
+msgid "%s in %s"
+msgstr "%s içinde %s"
+
+#: jcfuiconsts.lisedjcfparseerror
+msgid "JCF Parse error"
+msgstr "JCF ayrıştırma hatası"
+
+#: jcfuiconsts.lisednear
+#, object-pascal-format
+msgid "%s near %s"
+msgstr "%s yakınında %s"
+
+#: jcfuiconsts.lisedtype
+#, object-pascal-format
+msgid "Type: %s%s"
+msgstr "Tip: %s%s"
+
+#: jcfuiconsts.liserroract
+msgctxt "jcfuiconsts.liserroract"
+msgid "Error"
+msgstr "Hata"
+
+#: jcfuiconsts.lisfindreplaceenablefindandreplace
+msgid "Enable find and replace"
+msgstr "Bul ve değiştir özelliğini etkinleştirin"
+
+#: jcfuiconsts.lisfindreplacefindandreplace
+msgid "Find and Replace"
+msgstr "Ara ve Değiştir"
+
+#: jcfuiconsts.lisfindreplacewordlist
+msgid "Word list:"
+msgstr "Kelime listesi:"
+
+#: jcfuiconsts.lisfrfileconfirmformat
+msgid "Show confirmation dialog before format"
+msgstr "Biçimlendirmeden önce onay iletişim kutusunu göster"
+
+#: jcfuiconsts.lisfrfilesdatefilewritten
+#, object-pascal-format
+msgid "Date file written: %s"
+msgstr "Dosyanın yazıldığı tarih: %s"
+
+#: jcfuiconsts.lisfrfilesdescription
+msgid "Description:"
+msgstr "Açıklama:"
+
+#: jcfuiconsts.lisfrfilesfileisreadonly
+msgid "File is read only"
+msgstr "Dosya salt okunur"
+
+#: jcfuiconsts.lisfrfilesfileiswritable
+msgid "File is writable"
+msgstr "Dosya yazılabilir"
+
+#: jcfuiconsts.lisfrfilesfilenotfound
+msgid "File not found"
+msgstr "Dosya bulunamadı"
+
+#: jcfuiconsts.lisfrfilesopenfolder
+msgid "Open folder"
+msgstr "Klasörü aç"
+
+#: jcfuiconsts.lisfrfilessettingsfile
+msgid "Settings File"
+msgstr "Ayarlar dosyası"
+
+#: jcfuiconsts.lisfrfilessettingsfileis
+msgid "Settings file is:"
+msgstr "Ayarlar dosyası:"
+
+#: jcfuiconsts.lisfrfilesversionthatwrotethisfile
+#, object-pascal-format
+msgid "Version that wrote this file: %s"
+msgstr "Bu dosyayı yazan sürüm: %s"
+
+#: jcfuiconsts.lishintapplicationdefault
+msgid "Application Default: "
+msgstr "Uygulama Varsayılanı: "
+
+#: jcfuiconsts.lisimbalancedcommentact
+msgid "Imbalanced comment action"
+msgstr "Dengesiz yorum eylemi"
+
+#: jcfuiconsts.lisindentblockindentationspaces
+msgid "Block indentation spaces"
+msgstr "Blok girinti boşlukları"
+
+#: jcfuiconsts.lisindentdifferentindentforfirstlevel
+msgid "Different indent for first level"
+msgstr "İlk seviye için farklı girinti"
+
+#: jcfuiconsts.lisindentextraindentforbeginend
+msgid "Extra indent for begin/end inside procedures"
+msgstr "Prosedürlerin içinde begin/end için ekstra girinti"
+
+#: jcfuiconsts.lisindentextraindentforcaseelseblocks
+msgid "Extra Indent for Case...Else blocks"
+msgstr "Case...Else blokları için ekstra girinti"
+
+#: jcfuiconsts.lisindentextraindentforcaselabels
+msgid "Extra Indent for Case labels"
+msgstr "Case etiketleri için ekstra girinti"
+
+#: jcfuiconsts.lisindentextraindentforifelseblocks
+msgid "Extra Indent for If...Else blocks"
+msgstr "If...Else blokları için ekstra girinti"
+
+#: jcfuiconsts.lisindentextraindentforinterfaceguid
+msgid "Extra Indent for interface GUID"
+msgstr "Interface GUID'si için Ekstra Girinti"
+
+#: jcfuiconsts.lisindentindentation
+msgid "Indentation"
+msgstr "Girinti"
+
+#: jcfuiconsts.lisindentindentforprocedurebody
+msgid "Indent for procedure body"
+msgstr "Prosedür gövdesi için girinti"
+
+#: jcfuiconsts.lisindentindentforproceduresinlibrary
+msgid "Indent for procedures in program/library"
+msgstr "Program/library prosedürler için girinti"
+
+#: jcfuiconsts.lisindentindentnestedtypes
+msgid "Indent nested types"
+msgstr "İç içe geçmiş türleri girintileme"
+
+#: jcfuiconsts.lisindentindentvarandconstinclass
+msgid "Indent var and const in class"
+msgstr "Sınıf içinde var ve const girintisi"
+
+#: jcfuiconsts.lisindentkeepsinglelinecommentswithcodeelsewhere
+msgid "Keep single-line comments with code elsewhere"
+msgstr "Tek satırlık yorumları başka bir yerde kodla birlikte tutun"
+
+#: jcfuiconsts.lisindentkeepsinglelinecommentswithcodeinclassdefs
+msgid "Keep single-line comments with code in class definitions"
+msgstr "Sınıf tanımlarında kodla birlikte tek satırlık açıklamalar bulundurun"
+
+#: jcfuiconsts.lisindentkeepsinglelinecommentswithcodeinglobals
+msgid "Keep single-line comments with code in globals"
+msgstr "Tek satırlık açıklamaları globallerdeki kodlarla birlikte tutun"
+
+#: jcfuiconsts.lisindentkeepsinglelinecommentswithcodeinprocs
+msgid "Keep single-line comments with code in procedures"
+msgstr "Yordamlarda kodla birlikte tek satırlık açıklamalar bulundurun"
+
+#: jcfuiconsts.lisindentoptions
+msgid "Options"
+msgstr "Özellikler"
+
+#: jcfuiconsts.lisjcfformatsettings
+msgid "JCF Format Settings"
+msgstr "JCF Formatı Ayarları"
+
+#: jcfuiconsts.lisjedicodeformatallopenwindow
+msgid "JEDI Code Format of all open windows?"
+msgstr "JEDI Kodu Formatı tüm açık pencerelere uygulansın mı?"
+
+#: jcfuiconsts.lisjedicodeformatofareyousurethatyouwanttoformatallfi
+#, object-pascal-format
+msgid "JEDI Code Format of %sAre you sure that you want to format all %s files in the project?"
+msgstr "JEDI Kodu Formatı %s'nin Projedeki tüm %s dosyalarını biçimlendirmek istediğinizden emin misiniz?"
+
+#: jcfuiconsts.lisjedicodeformatofstartformatting
+#, object-pascal-format
+msgid "JEDI Code Format of %sStart formatting?"
+msgstr "JEDI Kodu Formatı Biçimlendirmeyi %sbaşlat?"
+
+#: jcfuiconsts.lislbbreaklinesthatarelongerthanmaxlinelength
+msgid "&Break lines that are longer than max line length"
+msgstr "Maks satır &uzunluğundan daha uzun satırları kırın"
+
+#: jcfuiconsts.lislblinebreaking
+msgid "Line Breaking"
+msgstr "Satır kırma"
+
+#: jcfuiconsts.lislbmaxlinelength
+msgid "Max line length"
+msgstr "Maks satır uzunluğu"
+
+#: jcfuiconsts.lislbnever
+msgid "&Never"
+msgstr "As&la"
+
+#: jcfuiconsts.lislbsometimesifagoodplacetobreakisfound
+msgid "&Sometimes, if a good place to break is found"
+msgstr "Ba&zen, mola vermek için iyi bir yer bulunursa"
+
+#: jcfuiconsts.lislbusuallyunlessthereisnoacceptableplacetobreak
+msgid "&Usually, unless there is no acceptable place to break"
+msgstr "Genellikle, mola vermek için k&abul edilebilir bir yer olmadığı sürece"
+
+#: jcfuiconsts.lisobfsallcapitals
+msgid "ALL CAPITALS"
+msgstr "TÜMÜ BÜYÜKHARF"
+
+#: jcfuiconsts.lisobfsalllowercase
+msgid "all lowercase"
+msgstr "tümü küçükharf"
+
+#: jcfuiconsts.lisobfsleavealone
+msgid "Leave alone"
+msgstr "Yalnız bırakın."
+
+#: jcfuiconsts.lisobfsmixedcase
+msgid "Mixed Case"
+msgstr "Karışık Case"
+
+#: jcfuiconsts.lisobfsobfuscate
+msgid "Obfuscate"
+msgstr "Gizleme"
+
+#: jcfuiconsts.lisobfsobfuscatemode
+msgid "&Obfuscate mode"
+msgstr "Gizleme mo&du"
+
+#: jcfuiconsts.lisobfsobfuscatewordcaps
+msgid "Obfuscate word &caps"
+msgstr "Kelime büyük harflerini &gizleme"
+
+#: jcfuiconsts.lisobfsrebreaklines
+msgid "Rebreak &lines"
+msgstr "Yeniden kır&ma hatları"
+
+#: jcfuiconsts.lisobfsremovecomments
+msgid "Remove c&omments"
+msgstr "Açıklamayı &kaldır"
+
+#: jcfuiconsts.lisobfsremoveindent
+msgid "Remove &indent"
+msgstr "Gi&rintiyi kaldır"
+
+#: jcfuiconsts.lisobfsremovewhitespace
+msgctxt "jcfuiconsts.lisobfsremovewhitespace"
+msgid "Remove &white space"
+msgstr "Beyaz alanı k&aldırın"
+
+#: jcfuiconsts.lisprpcompileroptionsdefinedforconditionalcompilation
+msgid "Compiler options defined for conditional compilation:"
+msgstr "Koşullu derleme için tanımlanan derleyici seçenekleri:"
+
+#: jcfuiconsts.lisprpenablepreprocessorparsing
+msgid "Enable preprocessor parsing"
+msgstr "Ön işlemci ayrıştırmayı etkinleştir"
+
+#: jcfuiconsts.lisprppreprocessor
+msgid "PreProcessor"
+msgstr "Önişlemci"
+
+#: jcfuiconsts.lisprpsymbolsdefinedforconditionalcompilation
+msgid "Symbols defined for conditional compilation:"
+msgstr "Koşullu derleme için tanımlanan semboller:"
+
+#: jcfuiconsts.lisreturnsafteruses
+msgid "After uses"
+msgstr "Uses den sonra"
+
+#: jcfuiconsts.lisreturnsconverttocarriagereturn
+msgid "Convert to Carriage Return (UNIX)"
+msgstr "Satırbaşı + Satır Beslemeye Dönüştür (Unix)"
+
+#: jcfuiconsts.lisreturnsconverttocarriagereturnlinefeed
+msgid "Convert to Carriage Return + Linefeed (DOS/Windows)"
+msgstr "Satırbaşı + Satır Beslemeye Dönüştür (DOS/Windows)"
+
+#: jcfuiconsts.lisreturnsinexpressions
+msgid "In expressions"
+msgstr "İfadelerde"
+
+#: jcfuiconsts.lisreturnsinmiscbadplaces
+msgid "In misc. bad places"
+msgstr "Çeşitli şekillerde. kötü yerler"
+
+#: jcfuiconsts.lisreturnsinmiscgoodplaces
+msgid "In misc. good places"
+msgstr "Çeşitli şekillerde. iyi yerler"
+
+#: jcfuiconsts.lisreturnsinproceduredefinitions
+msgid "In procedure definitions"
+msgstr "Prosedür tanımlarında"
+
+#: jcfuiconsts.lisreturnsinproperties
+msgid "In properties"
+msgstr "Property de"
+
+#: jcfuiconsts.lisreturnsinsertreturns
+msgid "Insert returns"
+msgstr "Dönüş ekle"
+
+#: jcfuiconsts.lisreturnsinvariabledeclarations
+msgid "In variable declarations"
+msgstr "değişken bildiriminde"
+
+#: jcfuiconsts.lisreturnsleaveasis
+msgctxt "jcfuiconsts.lisreturnsleaveasis"
+msgid "Leave as is"
+msgstr "Olduğu gibi bırakın"
+
+#: jcfuiconsts.lisreturnsoneusesclauseitemperline
+msgid "One uses clause item per line"
+msgstr "Satır başına bir uses maddesi öğesi"
+
+#: jcfuiconsts.lisreturnsremovereturns
+msgid "Remove returns"
+msgstr "Dönüşleri kaldırın"
+
+#: jcfuiconsts.lisreturnsreturnchars
+msgid "Return chars"
+msgstr "Dönüş karakterleri"
+
+#: jcfuiconsts.lisreturnsreturns
+msgid "Returns"
+msgstr "Dönüşler"
+
+#: jcfuiconsts.lisspacesafteropen
+msgid "After open"
+msgstr "Açtıktan sonra"
+
+#: jcfuiconsts.lisspacesalways
+msgctxt "jcfuiconsts.lisspacesalways"
+msgid "Always"
+msgstr "Herzaman"
+
+#: jcfuiconsts.lisspacesbeforeend
+msgid "Before end"
+msgstr "End den önce"
+
+#: jcfuiconsts.lisspacesbeforeinexpression
+msgid "Before [ in expression"
+msgstr "Önce [ ifade içinde"
+
+#: jcfuiconsts.lisspacescaselabel
+msgid "Case l&abel"
+msgstr "Case e&tiketinde"
+
+#: jcfuiconsts.lisspacesclassvariables
+msgid "&Class variables"
+msgstr "Sınıf değişke&nlerinde"
+
+#: jcfuiconsts.lisspacesconstdeclarations
+msgid "C&onst declarations"
+msgstr "Sab&itler bildiriminde"
+
+#: jcfuiconsts.lisspacesfixspacing
+msgid "Fix &spacing"
+msgstr "Aralıkları dü&zeltin"
+
+#: jcfuiconsts.lisspacesfunctionreturntypes
+msgid "&Function return types"
+msgstr "Fonksiyon dönüş tipin&de"
+
+#: jcfuiconsts.lisspacesinfunctioncall
+msgid "In function &call"
+msgstr "Fonksiyon çağrı&larında"
+
+#: jcfuiconsts.lisspacesinfunctiondeclaration
+msgid "In function &declaration"
+msgstr "Fonksiyon &bildiriminde"
+
+#: jcfuiconsts.lisspacesingeneric
+msgid "In &generic"
+msgstr "&Jenerik olarak"
+
+#: jcfuiconsts.lisspacesinsertspacebeforebracket
+msgid "&Insert space before bracket"
+msgstr "&Parantezden önce boşluk ekleyin"
+
+#: jcfuiconsts.lisspacesinsertspaceinsidebrackets
+msgid "Insert space inside brackets"
+msgstr "Parantezlerin içine boşluk ekleyin"
+
+#: jcfuiconsts.lisspaceslabel
+msgid "&Label"
+msgstr "&Etiket"
+
+#: jcfuiconsts.lisspacesleaveasis
+msgctxt "jcfuiconsts.lisspacesleaveasis"
+msgid "Leave as is"
+msgstr "Olduğu gibi bırakın"
+
+#: jcfuiconsts.lisspacesmaxspacesincode
+msgid "&Max spaces in code"
+msgstr "&Koddaki maksimum boşluklar"
+
+#: jcfuiconsts.lisspacesmovespacestobeforecolon
+msgid "Move spaces to before colon"
+msgstr "Boşlukları iki nokta üst üste işaretinden önceye taşı"
+
+#: jcfuiconsts.lisspacesnever
+msgctxt "jcfuiconsts.lisspacesnever"
+msgid "Never"
+msgstr "Asla"
+
+#: jcfuiconsts.lisspacesprocedureparameters
+msgid "&Procedure parameters"
+msgstr "Prosedur parame&treleri"
+
+#: jcfuiconsts.lisspacesrecordfields
+msgid "&Record fields"
+msgstr "&Kayıt alanları"
+
+#: jcfuiconsts.lisspacesspacebeforeclassheritage
+msgid "Space before class &heritage"
+msgstr "Sınıf mirasından önce &boşluk"
+
+#: jcfuiconsts.lisspacesspaces
+msgid "Spaces"
+msgstr "Boşluklar"
+
+#: jcfuiconsts.lisspacesspacesaroundoperators
+msgid "Spaces around &operators"
+msgstr "&Operatörlerin etrafındaki boşluklar"
+
+#: jcfuiconsts.lisspacesspacesbeforecolonin
+msgid "Spaces &before colon in"
+msgstr "İki nokta üst üste işaret&inden önceki boşluklar"
+
+#: jcfuiconsts.lisspacesspacesfortab
+msgid "Spaces for tab"
+msgstr "Sekme için boşluk"
+
+#: jcfuiconsts.lisspacesspacespertab
+msgid "Spaces per tab"
+msgstr "Sekme başına boşluk"
+
+#: jcfuiconsts.lisspacestabcharacters
+msgid "&Tab characters"
+msgstr "&Tab karakteri"
+
+#: jcfuiconsts.lisspacesturnspacestotabs
+msgid "Turn spaces to tabs"
+msgstr "Boşlukları sekmelere dönüştürme"
+
+#: jcfuiconsts.lisspacesturntabstospaces
+msgid "Turn tabs to spaces"
+msgstr "Sekmeleri boşluğa dönüştürme"
+
+#: jcfuiconsts.lisspacesvardeclarations
+msgid "&Var declarations"
+msgstr "&Var bildirimleri"
+
+#: jcfuiconsts.listransformaddbeginandendtosinglestatements
+msgid "Add begin and end to single statements"
+msgstr "Tekli ifadelere begin ve end ekleme"
+
+#: jcfuiconsts.listransformaddorremovebeginandendfromsinglestatements
+msgid "Add or Remove &begin and end from single statements"
+msgstr "Tekli ifadelere be&gin ve end ekleme veya kaldırma"
+
+#: jcfuiconsts.listransformadvancedsettings
+msgid "Advanced settings"
+msgstr "Gelişmiş ayarlar"
+
+#: jcfuiconsts.listransformalphabetic
+msgid "Alphabetic"
+msgstr "Alfabetik"
+
+#: jcfuiconsts.listransformbreakoncomment
+msgid "Break on &comment"
+msgstr "Yorumda du&raklat"
+
+#: jcfuiconsts.listransformbreakonreturn
+msgid "Break on &return"
+msgstr "Dönüşte d&uraklat"
+
+#: jcfuiconsts.listransformleavebeginandendasis
+msgid "Leave begin and end as is"
+msgstr "Begin ve end i olduğu gibi brıak"
+
+#: jcfuiconsts.listransformlongesttoshortest
+msgid "Longest to shortest"
+msgstr "En uzundan en kısaya"
+
+#: jcfuiconsts.listransformonlywithnocomments
+msgid "Only with no comments"
+msgstr "Sadece yorumsuz"
+
+#: jcfuiconsts.listransformputsemicolonsafterlaststatementinablock
+msgid "Put &semicolons after last statement in a block"
+msgstr "Bir bloktaki son ifadeden &sonra noktalı virgül koyun"
+
+#: jcfuiconsts.listransformremovebeginandendfromaroundsinglestatements
+msgid "Remove begin and end from around single statements"
+msgstr "Tekli ifadelerin etrafından begin ve end'i kaldırın"
+
+#: jcfuiconsts.listransformreversealphabetic
+msgid "Reverse Alphabetic"
+msgstr "Ters Alfabetik"
+
+#: jcfuiconsts.listransformshortesttolongest
+msgid "Shortest to longest"
+msgstr "En kısadan en uzuna"
+
+#: jcfuiconsts.listransformsortimplementationuses
+msgid "Sort i&mplementation uses"
+msgstr "Implementation uses i sırala"
+
+#: jcfuiconsts.listransformsortinterfaceuses
+msgid "Sort i&nterface uses"
+msgstr "Inter&face uses i sırala"
+
+#: jcfuiconsts.listransformsortprogramuses
+msgid "Sort &program uses"
+msgstr "Program uses i sırala"
+
+#: jcfuiconsts.listransformsortusesclauses
+msgid "Sort &uses clauses"
+msgstr "Uses sı&rala"
+
+#: jcfuiconsts.listransformtransform
+msgid "Transform"
+msgstr "Dönüştür"
+
+#: jcfuiconsts.listransformusessortorder
+msgid "Uses sort &order"
+msgstr "Uses sıra&la"
+
+#: jcfuiconsts.listransformwarningsortusesclauses
+msgid "WARNING: changing order of uses clauses may break your code."
+msgstr "UYARI: Uses cümlelerinin sırasını değiştirmek kodunuzu bozabilir."
+
+#: jcfuiconsts.lisusesinsertintoimplementation
+msgid "Insert into Implementation"
+msgstr "Implementation a ekle"
+
+#: jcfuiconsts.lisusesinsertintointerface
+msgid "Insert into Interface"
+msgstr "Interface ye Ekle"
+
+#: jcfuiconsts.lisusesremove
+msgid "Remove"
+msgstr "Kaldır"
+
+#: jcfuiconsts.lisusesreplace
+msgid "Replace"
+msgstr "Değiştir"
+
+#: jcfuiconsts.lisusesuses
+msgid "Uses"
+msgstr "Uses"
+
+#: jcfuiconsts.liswarnact
+msgid "Warn"
+msgstr "Uyarı"
+
+#: jcfuiconsts.liswarningsignoreunusedparametersnamed
+msgid "&Ignore unused parameters named:"
+msgstr "Adlandırılmış &kullanılmayan parametreleri yoksay:"
+
+#: jcfuiconsts.liswarningswarnaboutunusedparameters
+msgid "Warn about &unused parameters"
+msgstr "Kullanılmayan par&ametreler hakkında uyar"
+
+#: jcfuiconsts.liswarningswarnings
+msgid "Warnings"
+msgstr "Uyarılar"
+
+#: jcfuiconsts.liswarningswarningson
+msgid "&Warnings On"
+msgstr "&Uyarılar Açık"
+
