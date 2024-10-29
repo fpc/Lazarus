@@ -230,8 +230,6 @@ msgid "Gutter"
 msgstr "Randleiste"
 
 #: lazarusidestrconsts.dlfmousesimplerightmovecaret
-#, fuzzy
-#| msgid "Right mouse includes caret move"
 msgid "Right button click includes caret move"
 msgstr "Rechte Maustaste bewegt auch den Cursor"
 
@@ -700,10 +698,8 @@ msgid "Alphabetically"
 msgstr "alphabetisch"
 
 #: lazarusidestrconsts.dlgalwaysvisiblecursor
-#, fuzzy
-#| msgid "Always visible cursor"
 msgid "Always keep caret in visible area of editor"
-msgstr "Ständig sichtbarer Cursor"
+msgstr "Cursor immer im sichtbaren Bereich des Editors halten"
 
 #: lazarusidestrconsts.dlgambigfileact
 msgid "Ambiguous file action:"
@@ -759,10 +755,8 @@ msgid "Auto Display Function Prototypes"
 msgstr "Zeige Funktions-Prototypen automatisch"
 
 #: lazarusidestrconsts.dlgautohidecursor
-#, fuzzy
-#| msgid "Hide mouse when typing"
 msgid "Hide mouse pointer when typing"
-msgstr "Maus beim Tippen verbergen"
+msgstr "Mauspfeil beim Tippen verbergen"
 
 #: lazarusidestrconsts.dlgautoindent
 msgctxt "lazarusidestrconsts.dlgautoindent"
@@ -884,10 +878,8 @@ msgid "Bracket highlight"
 msgstr "Klammerhervorhebung"
 
 #: lazarusidestrconsts.dlgbracketmatchgroup
-#, fuzzy
-#| msgid "Matching bracket pairs"
 msgid "Matching bracket and quote pairs"
-msgstr "Korrespondierende Klammernpaare"
+msgstr "Korrespondierende Klammer- und Anführungszeichenpaare"
 
 #: lazarusidestrconsts.dlgcannotusedockedundockeddesktop
 msgid "You cannot use docked desktop in undocked environment and vice versa."
@@ -898,11 +890,9 @@ msgid "Secondary carets (multi-caret mode)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcaretcolor
-#, fuzzy
-#| msgid "Caret"
 msgctxt "lazarusidestrconsts.dlgcaretcolor"
 msgid "Caret (Text-Cursor)"
-msgstr "Cursor"
+msgstr "Text-Cursor"
 
 #: lazarusidestrconsts.dlgcaretcolorinfo
 msgid "The caret color depends on the colors of text and background under the caret. Each pixel's RGB are bitwise inverted and XOR'ed with the chosen color's RGB."
@@ -1105,10 +1095,8 @@ msgid "Reverse fold-order in Popup"
 msgstr "Umgek. Faltungsreihenfolge im Popup"
 
 #: lazarusidestrconsts.dlgcogdb
-#, fuzzy
-#| msgid "Generate debugging info for GDB (slower / increases exe-size)"
 msgid "Generate info for the debugger (slower / increases exe-size)"
-msgstr "Debugger-Informationen für GDB erzeugen (Verlangsamt das Kompilieren)"
+msgstr "Debugger-Informationen erzeugen (Verlangsamt das Kompilieren)"
 
 #: lazarusidestrconsts.dlgcoheaptrc
 msgid "Use Heaptrc unit (check for mem-leaks)"
@@ -1119,10 +1107,8 @@ msgid "Include files (-Fi):"
 msgstr "Include-Dateien (-Fi):"
 
 #: lazarusidestrconsts.dlgcoinfoforgdb
-#, fuzzy
-#| msgid "Info for GDB"
 msgid "Debugger info"
-msgstr "Info für GDB"
+msgstr "Debugger-Info"
 
 #: lazarusidestrconsts.dlgcolibraries
 msgid "Libraries (-Fl):"
@@ -1248,10 +1234,8 @@ msgid "Do not indent prefix"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcommentindentgroupoptions
-#, fuzzy
-#| msgid "Comments"
 msgid "Comments and Strings"
-msgstr "Kommentare"
+msgstr "Kommentare und Strings"
 
 #: lazarusidestrconsts.dlgcommentshlashextendalways
 msgid "Extend if matched or not matched"
@@ -1318,10 +1302,8 @@ msgid "Copy/Paste with fold info"
 msgstr "Kopieren/Einfügen mit Faltungsinformationen"
 
 #: lazarusidestrconsts.dlgcopywordatcursoroncopynone
-#, fuzzy
-#| msgid "Copy word on copy none"
 msgid "Copy current word when no selection exists"
-msgstr "Ohne Markierung Wort kopieren"
+msgstr "Aktuelles Wort auch ohne Auswahl kopieren"
 
 #: lazarusidestrconsts.dlgcorange
 msgctxt "lazarusidestrconsts.dlgcorange"
@@ -1366,22 +1348,16 @@ msgid "Automatic"
 msgstr "Automatisch"
 
 #: lazarusidestrconsts.dlgcosymboltypedwarf2
-#, fuzzy
-#| msgid "Dwarf2"
 msgid "Dwarf 2"
-msgstr "Dwarf2"
+msgstr "Dwarf 2"
 
 #: lazarusidestrconsts.dlgcosymboltypedwarf2set
-#, fuzzy
-#| msgid "Dwarf with sets"
 msgid "Dwarf 2 with sets"
-msgstr "Dwarf mit Sets"
+msgstr "Dwarf 2 mit Sets"
 
 #: lazarusidestrconsts.dlgcosymboltypedwarf3
-#, fuzzy
-#| msgid "Dwarf3 (beta)"
 msgid "Dwarf 3 (beta)"
-msgstr "Dwarf3 (Beta)"
+msgstr "Dwarf 3 (Beta)"
 
 #: lazarusidestrconsts.dlgcosymboltypestabs
 msgid "Stabs"
@@ -1428,14 +1404,10 @@ msgid "Caret left/right clears selection (no move)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcursorskipsselection
-#, fuzzy
-#| msgid "Cursor skips selection"
 msgid "Caret skips selection"
 msgstr "Cursor überspringt Auswahl"
 
 #: lazarusidestrconsts.dlgcursorskipstab
-#, fuzzy
-#| msgid "Cursor skips tabs"
 msgid "Caret skips tabs"
 msgstr "Cursor überspringt Tabulatoren"
 
@@ -1476,7 +1448,6 @@ msgid "Delete mode"
 msgstr ""
 
 #: lazarusidestrconsts.dlgdeleteselecteddesktopbtncaption
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgdeleteselecteddesktopbtncaption"
 msgid "Delete"
 msgstr "Löschen"
@@ -1684,8 +1655,6 @@ msgid "This option will check if there is an editor for the target file in the c
 msgstr "Diese Option prüft, ob es im aktuellen Fenster einen Editor für die Zieldatei gibt und falls ja, wird dieser Editor genommen, selbst wenn er gesperrt ist oder wenn gescrollt werden muß."
 
 #: lazarusidestrconsts.dlgeditaccessdesclockedinview
-#, fuzzy
-#| msgid "This option will use a locked (and only a locked) Editor, which does not need to scroll in order to display the target jump point (target jump point is already in visible screen area)."
 msgid "This option will use a locked (and only a locked) Editor which does not need to scroll in order to display the target jump point (target jump point is already in visible screen area)."
 msgstr "Diese Option wählt einen gesperrten Editor, der das Sprungziel ohne Scrollen darstellen kann (das Ziel ist bereits im angezeigten Bildschirmbereich)."
 
@@ -1694,14 +1663,10 @@ msgid "This option will use any not locked Editor."
 msgstr "Diese Option wählt einen beliebigen nicht-gesperrten Editor."
 
 #: lazarusidestrconsts.dlgeditaccessdescunlockedinsoftview
-#, fuzzy
-#| msgid "This option will use a not locked Editor, which does not need to scroll in order to display the target jump point (target jump point is already in visible screen center area, excluding 2-5 lines at the top/bottom)."
 msgid "This option will use a not locked Editor which does not need to scroll in order to display the target jump point (target jump point is already in visible screen center area, excluding 2-5 lines at the top/bottom)."
 msgstr "Diese Option wählt einen nicht gesperrten Editor der ohne scrollen den Zielsprungpunkt anzeigen kann (das Ziel befindet sich bereits in der Mitte des sichtbaren Bereichs, nicht in den ersten/letzten 2-5 Zeilen)."
 
 #: lazarusidestrconsts.dlgeditaccessdescunlockedopennewinanywin
-#, fuzzy
-#| msgid "This option will open a new Tab in an existing or new Window, if no unlocked tab is found. This option will always succeed, further options are never tested."
 msgid "This option will open a new Tab in an existing or new Window if no unlocked tab is found. This option will always succeed, further options are never tested."
 msgstr "Diese Option öffnet einen neuen Reiter in einem vorhandenen oder neuen Fenster falls kein entsperrter Reiter gefunden wurde. Diese Option hat immer Erfolg und es werden keine weiteren Optionen mehr geprüft."
 
@@ -1710,8 +1675,6 @@ msgid "If no unlocked tab is found, then this option will open a new Tab in a ne
 msgstr "Diese Option öffnet einen neuen Reiter immer in einem neuen Fenster falls kein entsperrter Reiter gefunden wurde. Diese Option hat immer Erfolg und es werden keine weiteren Optionen geprüft."
 
 #: lazarusidestrconsts.dlgeditaccessdescunlockedopennewinoldwin
-#, fuzzy
-#| msgid "If no unlocked tab is found, then this option will open a new Tab in an existing (and only in an existing) Window. A tab is only opened if a window exists, that has not yet an editor for the target file."
 msgid "If no unlocked tab is found, then this option will open a new Tab in an existing (and only in an existing) Window. A tab is only opened if there is a window that has no editor for the target file yet."
 msgstr "Diese Option öffnet einen neuen Reiter in einem vorhandenen Fenster, falls kein entsperrter Reiter gefunden wird. Ein Reiter wird nur geöffnet, wenn ein Fenster verfügbar ist, das noch keinen Editor für die Zieldatei enthält."
 
@@ -1741,8 +1704,6 @@ msgid "Scheme globals"
 msgstr "Globale Schemata"
 
 #: lazarusidestrconsts.dlgedmisc
-#, fuzzy
-#| msgid "Misc"
 msgctxt "lazarusidestrconsts.dlgedmisc"
 msgid "Miscellaneous"
 msgstr "Verschiedenes"
@@ -1845,8 +1806,6 @@ msgid "Focus messages at compilation"
 msgstr "Nachrichtenfenster während Kompilierung fokussieren"
 
 #: lazarusidestrconsts.dlgextracharspacing
-#, fuzzy
-#| msgid "Extra char spacing"
 msgid "Extra character spacing"
 msgstr "Zusätzlicher Zeichenabstand"
 
@@ -1855,10 +1814,8 @@ msgid "Extra line spacing"
 msgstr "Zusätzlicher Zeilenabstand"
 
 #: lazarusidestrconsts.dlgextsymb
-#, fuzzy
-#| msgid "Use external gdb debug symbols file"
 msgid "Use external debug symbols file"
-msgstr "Externe Datei mit gdb-Debugsymbolen nutzen"
+msgstr "Externe Debugsymboldatei verwenden"
 
 #: lazarusidestrconsts.dlgfileassociationinos
 msgid "Opening Files from OS"
@@ -2254,10 +2211,8 @@ msgid "From b&eginning"
 msgstr "Vom B&eginn"
 
 #: lazarusidestrconsts.dlgfromcursor
-#, fuzzy
-#| msgid "&From cursor"
 msgid "From c&ursor"
-msgstr "Ab &Cursorposition"
+msgstr "Ab C&ursorposition"
 
 #: lazarusidestrconsts.dlgglobal
 msgid "&Global"
@@ -2388,10 +2343,8 @@ msgid "Height:"
 msgstr "Höhe:"
 
 #: lazarusidestrconsts.dlghideideonrun
-#, fuzzy
-#| msgid "Hide IDE windows on run"
 msgid "Hide IDE windows on Run/Debug"
-msgstr "IDE-Fenster beim Start verstecken"
+msgstr "IDE-Fenster bei Start/Debug verstecken"
 
 #: lazarusidestrconsts.dlghideideonrunhint
 msgid "Do not show the IDE at all while program is running."
@@ -2410,14 +2363,10 @@ msgid "Highlight Font Color"
 msgstr "Hervorhebungsschriftfarbe"
 
 #: lazarusidestrconsts.dlghighlightleftofcursor
-#, fuzzy
-#| msgid "Left Of Cursor"
 msgid "Left Of Caret"
 msgstr "Links vom Cursor"
 
 #: lazarusidestrconsts.dlghighlightrightofcursor
-#, fuzzy
-#| msgid "Right Of Cursor"
 msgid "Right Of Caret"
 msgstr "Rechts vom Cursor"
 
@@ -2579,10 +2528,8 @@ msgid "Jump directly to method body"
 msgstr "Direkt zum Methodenrumpf springen"
 
 #: lazarusidestrconsts.dlgkeepcursorx
-#, fuzzy
-#| msgid "Keep cursor X position"
 msgid "Keep caret X position when navigating up/down"
-msgstr "X-Position des Cursors beibehalten"
+msgstr "Cursorposition X beim Navigieren nach oben/unten beibehalten"
 
 #: lazarusidestrconsts.dlgkeylink
 msgid "(Edit Key)"
@@ -2696,10 +2643,8 @@ msgid "Vertical-mark"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupgroup
-#, fuzzy
-#| msgid "Highlight of Word under Caret"
 msgid "Highlight all occurrences of Word under Caret"
-msgstr "Wort unter Cursor hervorheben"
+msgstr "Alle Vorkommen von Wort unter Caret hervorheben"
 
 #: lazarusidestrconsts.dlgmarkupoutline
 msgid "Outline (global)"
@@ -2725,22 +2670,16 @@ msgid "Delete list \"%s\"?"
 msgstr "Liste \"%s\" löschen?"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeyadd
-#, fuzzy
-#| msgid "Add Word or Term"
 msgid "Add Word or Term by key"
-msgstr "Wort oder Ausdruck hinzufügen"
+msgstr "Wort oder Ausdruck mit Taste hinzufügen"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeyremove
-#, fuzzy
-#| msgid "Remove Word or Term"
 msgid "Remove Word or Term by key"
-msgstr "Wort oder Ausdruck entfernen"
+msgstr "Wort oder Ausdruck mit Taste entfernen"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeytoggle
-#, fuzzy
-#| msgid "Toggle Word or Term"
 msgid "Toggle Word or Term by key"
-msgstr "Wort oder Ausdruck umschalten"
+msgstr "Wort oder Ausdruck mit Taste umschalten"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedduplicate
 msgid "Duplicate Term"
@@ -2813,20 +2752,16 @@ msgid "Select ..."
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedpagekeys
-#, fuzzy
-#| msgid "Key Settings"
 msgid "Key mappings"
-msgstr "Tasteneinstellungen"
+msgstr "Tastenbelegung"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedpagemain
 msgid "Main settings"
 msgstr "Haupteinstellungen"
 
 #: lazarusidestrconsts.dlgmarkupwordbracket
-#, fuzzy
-#| msgid "Word Brackets on caret (global)"
 msgid "Keyword brackets on caret (global)"
-msgstr "Wortklammern am Cursor (global)"
+msgstr "Schlüsselwortklammern am Cursor (global)"
 
 #: lazarusidestrconsts.dlgmarkupwordfulllen
 msgid "Match whole words, if length is less or equal to:"
@@ -3262,8 +3197,6 @@ msgid "Multi Select"
 msgstr "Mehrfachauswahl"
 
 #: lazarusidestrconsts.dlgmultiwinaccessgroup
-#, fuzzy
-#| msgid "Find Editor for Jump Targets"
 msgid "Jump target priority between multiple editors"
 msgstr "Editorauswahl für Sprungziele"
 
@@ -3386,7 +3319,6 @@ msgid "Overview Gutter"
 msgstr ""
 
 #: lazarusidestrconsts.dlgoverviewgutterpagecolor
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgoverviewgutterpagecolor"
 msgid "Page"
 msgstr "Seite"
@@ -3459,10 +3391,8 @@ msgid "Persistent block"
 msgstr "Persistenter Block"
 
 #: lazarusidestrconsts.dlgpersistentcursor
-#, fuzzy
-#| msgid "Persistent cursor"
 msgid "Visible caret in unfocused editor"
-msgstr "Persistenter Cursor"
+msgstr "Einfügemarke im unfokussierten Editor sichtbar"
 
 #: lazarusidestrconsts.dlgpersistentcursornoblink
 msgid "Caret in unfocused editor does not blink"
@@ -3489,7 +3419,6 @@ msgid "Create Application Bundle"
 msgstr "Anwendungsbundle erzeugen"
 
 #: lazarusidestrconsts.dlgpodebugger
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgpodebugger"
 msgid "Debugger"
 msgstr "Debugger"
@@ -3713,7 +3642,6 @@ msgid "Rename desktop"
 msgstr "Desktop umbenennen"
 
 #: lazarusidestrconsts.dlgrenameselecteddesktopbtncaption
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgrenameselecteddesktopbtncaption"
 msgid "Rename"
 msgstr "Umbenennen"
@@ -3773,12 +3701,7 @@ msgid "Rubberband Selection"
 msgstr "Auswahl"
 
 #: lazarusidestrconsts.dlgrunninginstancemodalerror
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "The running Lazarus instance cannot accept any files.\n"
-#| "Do you want to open them in a new IDE instance?\n"
-#| "\n"
-#| "%s\n"
+#, object-pascal-format
 msgid ""
 "The running Lazarus instance cannot accept any files.\n"
 "Do you want to open them in a new IDE instance?\n"
@@ -3897,8 +3820,6 @@ msgid "Scroll past end of file"
 msgstr "Über das Dateiende hinaus scrollen"
 
 #: lazarusidestrconsts.dlgscrollpastendline
-#, fuzzy
-#| msgid "Allow caret to move past end of line"
 msgid "Allow Caret to move past the end of line"
 msgstr "Über das Zeilenende hinaus scrollen"
 
@@ -3936,13 +3857,11 @@ msgid "&Selected text"
 msgstr "Au&sgewählter Text"
 
 #: lazarusidestrconsts.dlgsetactivedesktopbtncaption
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgsetactivedesktopbtncaption"
 msgid "Set active"
 msgstr "aktivieren"
 
 #: lazarusidestrconsts.dlgsetactivedesktopbtnhint
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgsetactivedesktopbtnhint"
 msgid "Set active"
 msgstr "aktivieren"
@@ -4195,14 +4114,12 @@ msgstr "Verzeichnis für das Anlegen von Testprojekten"
 
 #: lazarusidestrconsts.dlgtextstyle
 msgid "Text-Style"
-msgstr ""
+msgstr "Text-Stil"
 
 #: lazarusidestrconsts.dlgtexttofind
-#, fuzzy
-#| msgid "&Text to find"
 msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "Search s&tring"
-msgstr "Such&text"
+msgstr "&Suchtext"
 
 #: lazarusidestrconsts.dlgthiselementusescolor
 msgid "The element uses (and edits) the schemes:"
@@ -4321,16 +4238,12 @@ msgid "Failed to load user-scheme file %s"
 msgstr "Laden von Benutzer-Schemadatei %s fehlgeschlagen"
 
 #: lazarusidestrconsts.dlguseschemedefaults
-#, fuzzy
-#| msgid "Use (and edit) global scheme settings"
 msgid "- Scheme globals -"
-msgstr "Globale Schema-Einstellungen verwenden"
+msgstr "- Globale Schemata -"
 
 #: lazarusidestrconsts.dlguseschemelocal
-#, fuzzy
-#| msgid "Use local scheme settings"
 msgid "selected language"
-msgstr "Lokale Schema-Einstellungen verwenden"
+msgstr "ausgewählte Sprache"
 
 #: lazarusidestrconsts.dlgusesyntaxhighlight
 msgid "Use syntax highlight"
@@ -4570,7 +4483,6 @@ msgid "Create a new recommended backend"
 msgstr ""
 
 #: lazarusidestrconsts.initdlgdebugcurrent
-#, fuzzy
 msgctxt "lazarusidestrconsts.initdlgdebugcurrent"
 msgid "Current"
 msgstr "Aktuell"
@@ -4590,7 +4502,6 @@ msgid "Default for your OS/Arch is: \"%s\"."
 msgstr ""
 
 #: lazarusidestrconsts.initdlgdebugignore
-#, fuzzy
 msgctxt "lazarusidestrconsts.initdlgdebugignore"
 msgid "Ignore"
 msgstr "Übergehen"
@@ -4600,7 +4511,6 @@ msgid "Keep backend"
 msgstr ""
 
 #: lazarusidestrconsts.initdlgdebugnew
-#, fuzzy
 msgctxt "lazarusidestrconsts.initdlgdebugnew"
 msgid "New"
 msgstr "Neu"
@@ -4684,8 +4594,6 @@ msgid "Ambiguous Unit Name"
 msgstr "Mehrdeutiger Unit-Name"
 
 #: lazarusidestrconsts.lisa2pancestortype
-#, fuzzy
-#| msgid "Ancestor Type"
 msgid "Ancestor type"
 msgstr "Basisklasse"
 
@@ -4798,8 +4706,6 @@ msgid "Page Name too long"
 msgstr "Name des Reiters zu lang"
 
 #: lazarusidestrconsts.lisa2ppalettepage
-#, fuzzy
-#| msgid "Palette Page:"
 msgid "Palette page:"
 msgstr "Palettenseite:"
 
@@ -4848,8 +4754,7 @@ msgid "The file \"%s\" is part of the current project.%sIt is a bad idea to shar
 msgstr "Die Datei \"%s\" ist Teil des aktuellen Projekts.%sEs ist keine gute Idee, Dateien zwischen Projekten und Packages auszutauschen."
 
 #: lazarusidestrconsts.lisa2pthefilenameisambiguouspleasespecifiyafilename
-#, object-pascal-format, fuzzy
-#| msgid "The filename \"%s\" is ambiguous, because the package has no default directory yet.%sPlease specify a filename with full path."
+#, object-pascal-format
 msgid "The filename \"%s\" is ambiguous because the package has no default directory yet.%sPlease specify a filename with full path."
 msgstr "Der Dateiname \"%s\" ist unklar, da für das Package noch kein Verzeichnis voreingestellt ist.%sBitte geben Sie den kompletten Pfad zum Dateinamen mit an."
 
@@ -4889,8 +4794,6 @@ msgid "The unit name \"%s\" is the same as a registered component.%sUsing this c
 msgstr "Der Unit-Name \"%s\" ist gleich wie eine registrierte Komponente.%sSeine Verwendung kann zu heftigen Fehlermeldungen führen."
 
 #: lazarusidestrconsts.lisa2punitname
-#, fuzzy
-#| msgid "Unit Name:"
 msgid "Unit name:"
 msgstr "Unit-Name:"
 
@@ -4937,10 +4840,9 @@ msgid "About Lazarus"
 msgstr "Über Lazarus"
 
 #: lazarusidestrconsts.lisaboutlazarusmsg
-#, object-pascal-format, fuzzy
-#| msgid "License: GPL/LGPL. See Lazarus and Free Pascal sources for license details.%sLazarus is an IDE to create graphical and console applications with Free Pascal. Free Pascal is Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
+#, object-pascal-format
 msgid "License: GPL/LGPL. See Lazarus and Free Pascal sources for license details.%sLazarus is an IDE to create graphical and console applications with Free Pascal. Free Pascal is a Pascal and Object Pascal compiler that runs on Windows, Linux, macOS, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi-like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing, we need more developers."
-msgstr "Lizenz: GPL/LGPL%sLazarus ist eine integrierte Entwicklungsumgebung für das Schreiben grafischer und Konsolenanwendungen mit Free Pascal. Free Pascal ist ein Pascal- und Object-Pascal-Compiler unter (L)GPL für (unter anderem) Windows, Linux, Mac OS X und FreeBSD.%sLazarus ist das fehlende Stück des Puzzles, um Programme für die oben genannten Plattformen in einer Delphi-artigen Umgebung zu entwickeln. Die IDE ist ein RAD-Werkzeug mit einem Formulardesigner.%sMit der Weiterentwicklung von Lazarus brauchen wir zusätzliche Unterstützung."
+msgstr "Lizenz: GPL/LGPL. Siehe Lazarus und Free Pascal Quellen für Lizenzdetails.%sLazarus ist eine integrierte Entwicklungsumgebung für das Schreiben grafischer und Konsolenanwendungen mit Free Pascal. Free Pascal ist ein Pascal- und Object Pascal-Compiler, der unter Windows, Linux, macOS, FreeBSD und mehr läuft.%sLazarus ist das fehlende Stück des Puzzles, um Programme für die oben genannten Plattformen in einer Delphi-artigen Umgebung zu entwickeln. Die IDE ist ein RAD-Werkzeug mit einem Formulardesigner.%sFür die Weiterentwicklung von Lazarus brauchen wir zusätzliche Unterstützung."
 
 #: lazarusidestrconsts.lisaboutnocontributors
 msgid "Cannot find contributors list."
@@ -4951,8 +4853,7 @@ msgid "Official:"
 msgstr "Offiziell:"
 
 #: lazarusidestrconsts.lisacannotholdtcontrolsyoucanonlyputnonvisualcomponen
-#, object-pascal-format, fuzzy
-#| msgid "A %s cannot hold TControls.%sYou can only put non visual components on it."
+#, object-pascal-format
 msgid "A %s cannot hold TControls.%sYou can only put nonvisual components on it."
 msgstr "%s darf keine TControls enthalten.%sSie können hier nur nichtvisuelle Komponenten ablegen."
 
@@ -5076,8 +4977,6 @@ msgid "Add package requirement?"
 msgstr "Paketabhängigkeit hinzufügen?"
 
 #: lazarusidestrconsts.lisaddpackagestolistofinstalledpackagescombinewithbui
-#, fuzzy
-#| msgid "add package(s) to list of installed packages (combine with --build-ide to rebuild IDE)."
 msgid "Add package(s) to the list of installed packages (combine with --build-ide to rebuild IDE)."
 msgstr "Package(s) zur Liste der installierten Packages hinzufügen (in Verbindung mit --build-ide um die IDE zu rekompilieren)"
 
@@ -5189,10 +5088,9 @@ msgid "All inherited options"
 msgstr "Alle übernommenen Einstellungen"
 
 #: lazarusidestrconsts.lisalloptions
-#, object-pascal-format, fuzzy, badformat
-#| msgid "All Options"
+#, object-pascal-format
 msgid "All options of FPC%s (\"%s\")"
-msgstr "Alle Einstellungen"
+msgstr "Alle Optionen von FPC%s (\"%s\")"
 
 #: lazarusidestrconsts.lisallowsearchingformultiplelines
 msgid "Allow searching for multiple lines"
@@ -5321,10 +5219,8 @@ msgid "Apply"
 msgstr "Übernehmen"
 
 #: lazarusidestrconsts.lisapplybuildflagsbtodependenciestoo
-#, fuzzy
-#| msgid "apply build flags (-B) to dependencies too"
 msgid "Apply build flags (-B) to dependencies too."
-msgstr "Build-Flag (-B) auf für die Abhängigkeiten setzen"
+msgstr "Build-Flag (-B) für die Abhängigkeiten setzen."
 
 #: lazarusidestrconsts.lisapplyconventions
 msgid "Apply conventions"
@@ -5460,10 +5356,8 @@ msgid "Available for installation"
 msgstr "Verfügbar für Installation"
 
 #: lazarusidestrconsts.lisavailableprojectbuildmodes
-#, fuzzy
-#| msgid "Available project build modes:"
 msgid "Available project build modes"
-msgstr "Verfügbare Projekt-Erstellmodi:"
+msgstr "Verfügbare Projekt-Erstellmodi"
 
 #: lazarusidestrconsts.lisbackupchangedfiles
 msgid "Make backup of changed files"
@@ -5556,8 +5450,6 @@ msgid "Bottoms"
 msgstr "Untere Kanten"
 
 #: lazarusidestrconsts.lisbottomsiblingcomboboxhint
-#, fuzzy
-#| msgid "This is the sibling control to which the bottom side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
 msgid "This is the sibling control to which the bottom side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
 msgstr "Das ist das Geschwistercontrol, an das die Unterseite verankert wurde. Für den Parent leerlassen."
 
@@ -5611,10 +5503,8 @@ msgid "Build"
 msgstr "Neu kompilieren"
 
 #: lazarusidestrconsts.lisbuildallfilesofprojectpackageide
-#, fuzzy
-#| msgid "build all files of project/package/IDE"
 msgid "Build all files of project/package/IDE."
-msgstr "alle Dateien des Projekts/Packages/IDE kompilieren"
+msgstr "Alle Dateien des Projekts/Packages/IDE kompilieren."
 
 #: lazarusidestrconsts.lisbuildcaption
 msgctxt "lazarusidestrconsts.lisbuildcaption"
@@ -5630,10 +5520,8 @@ msgid "Build IDE"
 msgstr "IDE erstellen"
 
 #: lazarusidestrconsts.lisbuildidewithpackages
-#, fuzzy
-#| msgid "build IDE with packages"
 msgid "Build IDE with packages. Optional compiler options will be passed after the options from used build mode and can be specified here or with the --opt option."
-msgstr "IDE mit allen Packages kompilieren"
+msgstr "IDE mit allen Packages kompilieren. Optionale Compiler-Optionen werden nach den Optionen des verwendeten Build-Modus übergeben und können hier oder mit der Option --opt angegeben werden."
 
 #: lazarusidestrconsts.lisbuilding
 msgid "Building"
@@ -5661,8 +5549,6 @@ msgid "Mode:"
 msgstr "Modus:"
 
 #: lazarusidestrconsts.lisbuildmodes
-#, fuzzy
-#| msgid "Build modes"
 msgid "Build mode"
 msgstr "Erstellmodi"
 
@@ -6866,10 +6752,8 @@ msgid "Create Defines for Free Pascal Compiler"
 msgstr "Definitionen für den Free Pascal Compiler anlegen"
 
 #: lazarusidestrconsts.liscodetoolsdefscreatedefinesforfreepascalsvnsources
-#, fuzzy
-#| msgid "Create Defines for Free Pascal SVN Sources"
 msgid "Create Defines for Free Pascal Git Sources"
-msgstr "Definitionen für Free-Pascal-SVN-Quelltexte anlegen"
+msgstr "Definitionen für Free-Pascal-Git-Quelltexte anlegen"
 
 #: lazarusidestrconsts.liscodetoolsdefscreatedefinesforproject
 #, object-pascal-format
@@ -6920,10 +6804,8 @@ msgid "ElseIf"
 msgstr "ElseIf"
 
 #: lazarusidestrconsts.liscodetoolsdefsfpcsvnsourcedirectory
-#, fuzzy
-#| msgid "FPC SVN source directory"
 msgid "FPC Git source directory"
-msgstr "FPC-SVN-Quelltextverzeichnis"
+msgstr "FPC-Git-Quelltextverzeichnis"
 
 #: lazarusidestrconsts.liscodetoolsdefsif
 msgid "If"
@@ -6987,10 +6869,8 @@ msgid "Insert Free Pascal Project Template"
 msgstr "Free-Pascal-Projektvorlage einfügen"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertfreepascalsvnsource
-#, fuzzy
-#| msgid "Insert Free Pascal SVN Source Template"
 msgid "Insert Free Pascal Git Source Template"
-msgstr "Free-Pascal-SVN-Quellenverzeichnis einfügen"
+msgstr "Free-Pascal-Git-Quellenverzeichnis einfügen"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertkylix3compilertemp
 msgid "Insert Kylix 3 Compiler Template"
@@ -7094,20 +6974,16 @@ msgid "Selected Node:"
 msgstr "Gewählter Knoten:"
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalcvssourcedirectory
-#, fuzzy
-#| msgid "The Free Pascal SVN source directory. Not required. This will improve find declaration and debugging."
 msgid "The Free Pascal Git source directory. Not required. This will improve find declaration and debugging."
-msgstr "Das Free-Pascal-SVN-Quellverzeichnis. Nicht unbedingt benötigt. Diese Angabe verbessert das Finden von Deklarationen und das Debugging."
+msgstr "Das Free-Pascal-Git-Quellverzeichnis. Nicht unbedingt benötigt. Diese Angabe verbessert das Finden von Deklarationen und das Debugging."
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalprojectdirectory
 msgid "The Free Pascal project directory."
 msgstr "Das Free-Pascal-Projektverzeichnis"
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalsvnsourcedir
-#, fuzzy
-#| msgid "The Free Pascal SVN source directory."
 msgid "The Free Pascal Git source directory."
-msgstr "Das Free-Pascal-SVN-Quellverzeichnis"
+msgstr "Das Free-Pascal-Git-Quellverzeichnis"
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforexample
 #, object-pascal-format
@@ -7115,10 +6991,8 @@ msgid "The path to the Free Pascal compiler.%s For example %s/usr/bin/%s -n%s or
 msgstr "Der Pfad zum Free-Pascal-Compiler.%s Zum Beispiel %s/usr/bin/%s -n%s oder %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthisproject
-#, fuzzy
-#| msgid "The path to the Free Pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
 msgid "The path to the Free Pascal compiler for this project. Only required if you set the FPC Git source below. Used to autocreate macros."
-msgstr "Der Pfad zum Free-Pascal-Compiler für dieses Projekt. Nur benötigt, wenn unten die FPC-SVN-Quelle gesetzt ist. Wird verwendet, um Makros automatisch zu erzeugen."
+msgstr "Der Pfad zum Free-Pascal-Compiler für dieses Projekt. Nur benötigt, wenn unten die FPC-Git-Quelle gesetzt ist. Wird verwendet, um Makros automatisch zu erzeugen."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthissourceusedtoa
 #, object-pascal-format
@@ -7235,10 +7109,8 @@ msgid "Collapse"
 msgstr ""
 
 #: lazarusidestrconsts.liscollapseall
-#, fuzzy
-#| msgid "Collapse All (/)"
 msgid "Collapse All [Ctrl+Minus]"
-msgstr "Alle falten (/)"
+msgstr "Alle falten [Ctrl+Minus]"
 
 #: lazarusidestrconsts.liscollapseall2
 msgid "Collapse All"
@@ -8402,10 +8274,9 @@ msgid "Debugger"
 msgstr "Debugger"
 
 #: lazarusidestrconsts.lisdebuggererrorooopsthedebuggerenteredtheerrorstate
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
+#, object-pascal-format
 msgid "The debugger encountered an internal error.%0:s%0:sSave your work.%0:sYou may then hit \"Stop\", or \"Reset debugger\" to terminate the debug session."
-msgstr "Debuggerfehler%sDer Debugger ist abgestürzt mit Status%sSpeichern Sie Ihre Arbeit jetzt!%sDrücken Sie »Stop« und hoffen Sie auf einen Fix für diesen Fehler."
+msgstr "Der Debugger ist auf einen internen Fehler gestoßen.%0:s%0:sSpeichern Sie Ihre Arbeit.%0:sSie können dann \"Stop\" oder \"Reset debugger\" drücken, um die Debug-Sitzung zu beenden."
 
 #: lazarusidestrconsts.lisdebuggerinvalid
 msgid "Debugger invalid"
@@ -8528,14 +8399,11 @@ msgid "Module"
 msgstr "Modul"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmname
-#, fuzzy
 msgctxt "lazarusidestrconsts.lisdebugoptionsfrmname"
 msgid "Name:"
 msgstr "Name:"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmnotifyonlazarusexceptions
-#, fuzzy
-#| msgid "Notify on Lazarus Exceptions"
 msgid "Notify on Exceptions"
 msgstr "Bei Lazarus-Ausnahmen benachrichtigen"
 
@@ -8904,26 +8772,20 @@ msgid "Do not change"
 msgstr "unverändert"
 
 #: lazarusidestrconsts.lisdonotcheckifanotherideinstanceisalreadyrunning
-#, fuzzy
-#| msgid "%sDo not check if another IDE instance is already running"
 msgid "Do not check if another IDE instance is already running."
-msgstr "%sNicht prüfen, ob eine andere Lazarus-Instanz bereits läuft"
+msgstr "Nicht prüfen, ob eine andere Lazarus-Instanz bereits läuft."
 
 #: lazarusidestrconsts.lisdonotclosetheproject
 msgid "Do not close the project"
 msgstr "Schließen Sie das Projekt nicht"
 
 #: lazarusidestrconsts.lisdonotcompiledependencies
-#, fuzzy
-#| msgid "do not compile dependencies"
 msgid "Do not compile dependencies."
-msgstr "Abhängigkeiten nicht kompilieren"
+msgstr "Abhängigkeiten nicht kompilieren."
 
 #: lazarusidestrconsts.lisdonotshowsplashscreen
-#, fuzzy
-#| msgid "Do not show splash screen"
 msgid "Do not show splash screen."
-msgstr "Startbildschirm nicht anzeigen"
+msgstr "Startbildschirm nicht anzeigen."
 
 #: lazarusidestrconsts.lisdonotshowthisdialogforthisproject
 msgid "Do not show this dialog for this project"
@@ -9417,8 +9279,7 @@ msgid "Error in the \"unit output directory\":"
 msgstr "Fehler im \"Unit-Ausgabeverzeichnis\":"
 
 #: lazarusidestrconsts.liserrorinvalidbuildmode
-#, object-pascal-format, fuzzy
-#| msgid "Error: (lazarus) invalid build mode \"%s\""
+#, object-pascal-format
 msgid "Error: invalid build mode \"%s\""
 msgstr "Fehler: Ungültiger Erstellmodus \"%s\""
 
@@ -9504,10 +9365,8 @@ msgid "Error writing package list to file%s%s%s%s"
 msgstr "Fehler beim Schreiben der Package-Liste in die Datei%s%s%s%s"
 
 #: lazarusidestrconsts.liseverynthlinenumber
-#, fuzzy
-#| msgid "Every n-th line number"
 msgid "Show every n-th line number"
-msgstr "Jede n-te Zeile:"
+msgstr "Zeige jede n-te Zeile:"
 
 #: lazarusidestrconsts.lisexamplefile
 msgid "Example file:"
@@ -9573,10 +9432,8 @@ msgid "Expand"
 msgstr ""
 
 #: lazarusidestrconsts.lisexpandall
-#, fuzzy
-#| msgid "Expand All (*)"
 msgid "Expand All [Ctrl+Plus]"
-msgstr "Alle ausklappen (*)"
+msgstr "Alle ausklappen [Ctrl+Plus]"
 
 #: lazarusidestrconsts.lisexpandall2
 msgid "Expand All"
@@ -9625,10 +9482,8 @@ msgid "Export / Import"
 msgstr "Export / Import"
 
 #: lazarusidestrconsts.lisexportpackagelistxml
-#, fuzzy
-#| msgid "Export package list (*.xml)"
 msgid "Export package list"
-msgstr "Package-Liste exportieren (*.xml)"
+msgstr "Package-Liste exportieren"
 
 #: lazarusidestrconsts.lisexportselected
 msgid "Export selected"
@@ -9825,8 +9680,7 @@ msgid "Files in ASCII or UTF-8 encoding"
 msgstr "Dateien in ASCII- oder UTF-8-Kodierung"
 
 #: lazarusidestrconsts.lisfilesisconvertedtotextformat
-#, object-pascal-format, fuzzy
-#| msgid "File %s is converted to text format."
+#, object-pascal-format
 msgid "File %s was converted to text format."
 msgstr "Datei %s wurde ins Textformat umgewandelt."
 
@@ -9835,10 +9689,8 @@ msgid "Files not in ASCII nor UTF-8 encoding"
 msgstr "Dateien sind weder ASCII- nach UTF-8-kodiert"
 
 #: lazarusidestrconsts.lisfilewheredebugoutputiswritten
-#, fuzzy
-#| msgid "file, where debug output is written to. If it is not specified, debug output is written to the console."
 msgid "File where debug output is written to. Default is write to the console."
-msgstr "Datei, in die Debug-Ausgaben geschrieben werden. Falls nichts angegeben ist, werden Debug-Ausgaben auf die Konsole geschrieben."
+msgstr "Datei, in die Debug-Ausgaben geschrieben werden. Die Voreinstellung ist Schreiben auf die Konsole."
 
 #: lazarusidestrconsts.lisfilter
 msgid "Filter"
@@ -9932,38 +9784,28 @@ msgid "This file contains characters that have different lengths in upper and lo
 msgstr ""
 
 #: lazarusidestrconsts.lisfindfilesearchallfilesinproject
-#, fuzzy
-#| msgid "search all files in &project"
 msgid "all files in &project"
-msgstr "Alle &Projektdateien durchsuchen"
+msgstr "Alle Dateien im &Projekt"
 
 #: lazarusidestrconsts.lisfindfilesearchallopenfiles
-#, fuzzy
-#| msgid "search all &open files"
 msgid "all &open files"
-msgstr "alle &offenen Dateien durchsuchen"
+msgstr "alle &offenen Dateien"
 
 #: lazarusidestrconsts.lisfindfilesearchinactivefile
-#, fuzzy
-#| msgid "search in &active file"
 msgid "&active file"
-msgstr "&aktive Datei durchsuchen"
+msgstr "&aktive Datei"
 
 #: lazarusidestrconsts.lisfindfilesearchindirectories
-#, fuzzy
-#| msgid "search in &directories"
 msgid "&directories"
-msgstr "Suche in &Verzeichnissen"
+msgstr "&Verzeichnisse"
 
 #: lazarusidestrconsts.lisfindfilessearchinprojectgroup
 msgid "project &group"
 msgstr ""
 
 #: lazarusidestrconsts.lisfindfilewhere
-#, fuzzy
-#| msgid "Where"
 msgid "Search location"
-msgstr "Wo"
+msgstr "Ort suchen"
 
 #: lazarusidestrconsts.lisfindkeycombination
 msgid "Find key combination"
@@ -10309,17 +10151,6 @@ msgid "Goto Line"
 msgstr "Zu Zeile springen"
 
 #: lazarusidestrconsts.lisgplnotice
-#, fuzzy
-#| msgid ""
-#| "<description>\n"
-#| "\n"
-#| "Copyright (C) <year> <name of author> <contact>\n"
-#| "\n"
-#| "This source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. \n"
-#| "\n"
-#| "This code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. \n"
-#| "\n"
-#| "A copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.\n"
 msgid ""
 "<description>\n"
 "\n"
@@ -10339,7 +10170,7 @@ msgstr ""
 "\n"
 "This code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. \n"
 "\n"
-"A copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. \n"
+"A copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
 #: lazarusidestrconsts.lisgroup
 msgid "Group"
@@ -10350,8 +10181,6 @@ msgid "Group automatically defined local variables"
 msgstr "Automatisch definierte lokale Variablen gruppieren"
 
 #: lazarusidestrconsts.lisgroupsfordebugoutput
-#, fuzzy
-#| msgid "Enable or Disable groups of debug output. Valid Options are:"
 msgid "Enable or disable groups of debug output. Valid options are:"
 msgstr "Gruppen von Debuggerausgaben aktivieren oder deaktivieren. Gültige Optionen sind:"
 
@@ -10528,8 +10357,7 @@ msgid "The IDE will be recompiled and restarted during installation/uninstallati
 msgstr "Die IDE wird neu kompiliert und neu gestartet während der (De-)Installation von Packages."
 
 #: lazarusidestrconsts.lisideconficurationfoundmaybelongtootherlazarus
-#, object-pascal-format, fuzzy
-#| msgid "Welcome to Lazarus.%0:sThe IDE configuration found was previously used by another installation of Lazarus.%0:sIf you have two or more separate installations of Lazarus, they should not share the same configuration. This may lead to conflicts, and your Lazarus installations may become unusable.%0:s%0:sIf you have only one installation and copied or moved the Lazarus executable, then you may upgrade this configuration.%0:s%1:s%0:s%0:sChoose:%0:s%0:s* Update info: Use this configuration and update it for being used with this Lazarus in future. The old installation will no longer use this.%0:s* Ignore: Use this configuration, but keep the warning. This may lead to conflicts with the other installation.%0:s* Abort: Exit now. You can then fix the problem by starting this Lazarus with the correct configuration.%0:s%0:sAdditional information:%0:sThis configuration is at: %2:s%0:sIt belongs to the Lazarus installation at: %3:s%0:sThe current IDE was started from: %4:s%0:s"
+#, object-pascal-format
 msgid "Welcome to Lazarus.%0:sThe IDE configuration found was previously used by another installation of Lazarus.%0:sIf you have two or more separate installations of Lazarus, they should not share the same configuration. This may lead to conflicts and your Lazarus installations may become unusable.%0:s%0:sIf you have only one installation and copied or moved the Lazarus executable, then you may upgrade this configuration.%0:s%1:s%0:s%0:sChoose:%0:s%0:s* Update info: Use this configuration and update it for being used with this Lazarus in future. The old installation will no longer use this.%0:s* Ignore: Use this configuration but keep the warning. This may lead to conflicts with the other installation.%0:s* Abort: Exit now. You can then fix the problem by starting this Lazarus with the correct configuration.%0:s%0:sAdditional information:%0:sThis configuration is at: %2:s%0:sIt belongs to the Lazarus installation at: %3:s%0:sThe current IDE was started from: %4:s%0:s"
 msgstr "Willkommen zu Lazarus.%0:sDie gefundene IDE-Konfiguration wurde zuvor von einer anderen Lazarus-Installation verwendet.%0:sWenn Sie zwei oder mehr separate Lazarus-Installationen haben, dann sollten sie nicht die selbe Konfiguration teilen. Dies könnte zu Konflikten führen und Ihre Lazarus-Installationen können unbenutzbar werden.%0:s%0:sWenn Sie nur eine Installation haben und die ausführbare Datei kopiert oder verschoben haben, dann können Sie diese Konfiguration aktualisieren.%0:s%1:s%0:s%0:sWählen Sie:%0:s%0:s* Aktualisierungsinformation: Verwenden Sie diese Konfiguration und aktualisieren Sie sie, um sie in Zukunft mit diesem Lazarus zu verwenden. Die alte Installation wird sie nicht länger verwenden.%0:s* Ignorieren: Verwenden Sie diese Konfiguration, aber behalten Sie die Warnung bei. Dies kann zu Konflikten mit der anderen Installation führen.%0:s* Abbruch: Jetzt beenden. Sie können dann das Problem beheben, indem Sie dieses Lazarus mit der korrekten Konfiguration starten.%0:s%0:sZusätzliche Informationen:%0:sDiese Konfiguration befindet sich in: %2:s%0:sSie gehört zur Lazarus-Installation bei: %3:s%0:sDie aktuelle IDE wurde gestartet von: %4:s%0:s"
 
@@ -10684,10 +10512,8 @@ msgid "Importing BuildModes is not supported for packages."
 msgstr "Der Import von Erstellmodi wird nicht unterstützt für Packages."
 
 #: lazarusidestrconsts.lisimportpackagelistxml
-#, fuzzy
-#| msgid "Import package list (*.xml)"
 msgid "Import package list"
-msgstr "Package-Liste importieren (*.xml)"
+msgstr "Package-Liste importieren"
 
 #: lazarusidestrconsts.lisimpossible
 msgid "Impossible"
@@ -10903,8 +10729,6 @@ msgid "Install/Uninstall Packages"
 msgstr "Packages de-/installieren"
 
 #: lazarusidestrconsts.lisinsteadofcompilepackagecreateasimplemakefile
-#, fuzzy
-#| msgid "Instead of compile package create a simple Makefile."
 msgid "Instead of compiling a package create a simple Makefile."
 msgstr "Erzeuge eine einfache Make-Datei anstatt das Package zu kompilieren"
 
@@ -11091,14 +10915,10 @@ msgid "Keep open"
 msgstr "Offen halten"
 
 #: lazarusidestrconsts.liskeeprelativeindentationofmultilinetemplate
-#, fuzzy
-#| msgid "Keep relative indentation of multi line template"
 msgid "Keep absolute indentation, regardless of the current cursor indentation in the text."
-msgstr "Behalte die Einrückung der mehrzeiligen Vorlage bei"
+msgstr "Absolute Einrückung beibehalten, unabhängig von der aktuellen Cursoreinrückung im Text."
 
 #: lazarusidestrconsts.liskeepsubindentation
-#, fuzzy
-#| msgid "Keep indentation"
 msgid "Absolute indentation"
 msgstr "Einrückung beibehalten"
 
@@ -11424,15 +11244,11 @@ msgid "Run program"
 msgstr "Programm starten"
 
 #: lazarusidestrconsts.liskmsaveall
-#, fuzzy
-#| msgid "SaveAll"
 msgctxt "lazarusidestrconsts.liskmsaveall"
 msgid "Save All"
 msgstr "Alles speichern"
 
 #: lazarusidestrconsts.liskmsaveas
-#, fuzzy
-#| msgid "SaveAs"
 msgid "Save As"
 msgstr "Speichern als"
 
@@ -11631,11 +11447,9 @@ msgid "Toggle view Object Inspector"
 msgstr "Ansicht des Objektinspektors umschalten"
 
 #: lazarusidestrconsts.liskmtoggleviewpseudoterminal
-#, fuzzy
-#| msgid "View Terminal Output"
 msgctxt "lazarusidestrconsts.liskmtoggleviewpseudoterminal"
 msgid "View Console In/Output"
-msgstr "Terminalausgabe anzeigen"
+msgstr "Zeige die Ein/Ausgaben der Konsole"
 
 #: lazarusidestrconsts.liskmtoggleviewregisters
 msgid "View Registers"
@@ -11700,10 +11514,8 @@ msgid "Lazarus sources. This path is relative to primary config directory (%s)."
 msgstr ""
 
 #: lazarusidestrconsts.lislazarusdiroverride
-#, fuzzy
-#| msgid "directory, to be used as a basedirectory"
 msgid "Directory to be used as a basedirectory."
-msgstr "Verzeichnis, wird als Basisordner festgelegt"
+msgstr "Verzeichnis wird als Basisordner festgelegt"
 
 #: lazarusidestrconsts.lislazaruseditorv
 #, object-pascal-format
@@ -11938,16 +11750,13 @@ msgid "Left anchoring"
 msgstr "Linke Verankerung"
 
 #: lazarusidestrconsts.lisleftgutter
-#, fuzzy
 msgctxt "lazarusidestrconsts.lisleftgutter"
 msgid "Left"
 msgstr "Links"
 
 #: lazarusidestrconsts.lisleftsiblingcomboboxhint
-#, fuzzy
-#| msgid "This is the sibling control to which the left side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
 msgid "This is the sibling control to which the left side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
-msgstr "Das ist das Geschwistercontro,l an das die linke Seite verankert wurde. Für den Parent leerlassen."
+msgstr "Das ist das Geschwistercontro, an das die linke Seite verankert wurde. Für den Parent leerlassen."
 
 #: lazarusidestrconsts.lisleftsides
 msgid "Left sides"
@@ -11984,17 +11793,6 @@ msgid "LFM is ok"
 msgstr "LFM ist ok"
 
 #: lazarusidestrconsts.lislgplnotice
-#, fuzzy
-#| msgid ""
-#| "<description>\n"
-#| "\n"
-#| "Copyright (C) <year> <name of author> <contact>\n"
-#| "\n"
-#| "This library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. \n"
-#| "\n"
-#| "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. \n"
-#| "\n"
-#| "You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.\n"
 msgid ""
 "<description>\n"
 "\n"
@@ -12014,17 +11812,15 @@ msgstr ""
 "\n"
 "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. \n"
 "\n"
-"You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.\n"
+"You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
 #: lazarusidestrconsts.lislibrarypath
 msgid "library path"
 msgstr "Bibliothekspfad"
 
 #: lazarusidestrconsts.lislibraryprogramdescriptor
-#, fuzzy
-#| msgid "A Free Pascal shared library (.dll under Windows, .so under Linux, .dylib under MacOS X)."
 msgid "A Free Pascal shared library (.dll under Windows, .so under Linux, .dylib under macOS)."
-msgstr "Eine mit Free Pascal erstellte dynamische Bibliothek (.dll unter Windows, .so unter Linux, .dylib unter MacOS X)."
+msgstr "Eine mit Free Pascal erstellte dynamische Bibliothek (.dll unter Windows, .so unter Linux, .dylib unter MacOS)."
 
 #: lazarusidestrconsts.lislink
 msgid "Link:"
@@ -12358,8 +12154,6 @@ msgid "Convert Delphi Unit to Lazarus Unit ..."
 msgstr "Delphi- in Lazarus-Unit umwandeln ..."
 
 #: lazarusidestrconsts.lismenuconvertdfmtolfm
-#, fuzzy
-#| msgid "Convert Binary DFM to Text LFM + Check Syntax ..."
 msgid "Convert Binary DFM to LFM ..."
 msgstr "DFM- in LFM-Datei umwandeln ..."
 
@@ -12658,8 +12452,7 @@ msgid "GroupIndex: %d"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorgroupindexvaluess
-#, object-pascal-format, fuzzy
-#| msgid "GroupIndex value(s): %s"
+#, object-pascal-format
 msgid "Values in use: %s"
 msgstr "GroupIndex-Wert(e): %s"
 
@@ -12939,16 +12732,13 @@ msgid "TSCList.GetScanListCompName: invalid index %d for FScanList"
 msgstr "TSCList.GetScanListCompName: ungültiger Index %d für FScanList"
 
 #: lazarusidestrconsts.lismenueditoryouhavetochangetheshortcutfromsstoavoidaconflict
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "You have to change the shortcut from %s\n"
-#| "to avoid a conflict\n"
+#, object-pascal-format
 msgid ""
 "You have to change the shortcut from %s\n"
 "to avoid a conflict"
 msgstr ""
 "Sie müssen den Tastaturbefehl von %s ändern,\n"
-"um einen Konflikt zu vermeiden\n"
+"um einen Konflikt zu vermeiden"
 
 #: lazarusidestrconsts.lismenueditoryoumustentertextforthecaption
 msgid "You must enter text for the Caption"
@@ -13178,11 +12968,9 @@ msgid "Lowercase Selection"
 msgstr "Auswahl kleinschreiben"
 
 #: lazarusidestrconsts.lismenumacrolistview
-#, fuzzy
-#| msgid "Editor Macros ..."
 msgctxt "lazarusidestrconsts.lismenumacrolistview"
 msgid "Editor Macros"
-msgstr "Editormakros ..."
+msgstr "Editormakros"
 
 #: lazarusidestrconsts.lismenumakeresourcestring
 msgid "Make Resource String ..."
@@ -13346,7 +13134,7 @@ msgstr "Bezeichner umbenennen ..."
 
 #: lazarusidestrconsts.lismenurenamelowercase
 msgid "Rename Unit Files to LowerCase ..."
-msgstr ""
+msgstr "Unit-Dateien in Kleinbuchstaben umbenennen..."
 
 #: lazarusidestrconsts.lismenureportingbug
 msgctxt "lazarusidestrconsts.lismenureportingbug"
@@ -13573,11 +13361,9 @@ msgid "&View Project Source"
 msgstr ".lpr-Datei anzeigen"
 
 #: lazarusidestrconsts.lismenuviewpseudoterminal
-#, fuzzy
-#| msgid "Terminal Output"
 msgctxt "lazarusidestrconsts.lismenuviewpseudoterminal"
 msgid "Console In/Output"
-msgstr "Terminal-Ausgabe"
+msgstr "Terminal-Ein/Ausgabe"
 
 #: lazarusidestrconsts.lismenuviewregisters
 msgctxt "lazarusidestrconsts.lismenuviewregisters"
@@ -13708,11 +13494,9 @@ msgid "Search Unit Path"
 msgstr "Unit-Pfade durchsuchen"
 
 #: lazarusidestrconsts.lismissingunitsskip
-#, fuzzy
-#| msgid "Skip this Unit"
 msgctxt "lazarusidestrconsts.lismissingunitsskip"
 msgid "Skip"
-msgstr "Diese Unit überspringen"
+msgstr "Überspringen"
 
 #: lazarusidestrconsts.lismitnotice
 msgid ""
@@ -13787,14 +13571,12 @@ msgid "Exclude all packages matching name \"%s\""
 msgstr "Schließe alle Packages aus, die \"%s\" entsprechen"
 
 #: lazarusidestrconsts.lismmexpectedaftermacronamebutfound
-#, object-pascal-format, fuzzy
-#| msgid "expected \":=\" after macro name, but found \"%s\""
+#, object-pascal-format
 msgid "expected \":=\" after macro name but found \"%s\""
 msgstr "\":=\" nach Makroname erwartet, aber \"%s\" gefunden"
 
 #: lazarusidestrconsts.lismmexpectedmacronamebutfound
-#, object-pascal-format, fuzzy
-#| msgid "expected macro name, but found \"%s\""
+#, object-pascal-format
 msgid "expected macro name but found \"%s\""
 msgstr "Makroname erwartet, aber \"%s\" gefunden"
 
@@ -14631,8 +14413,6 @@ msgid "Output filename of project"
 msgstr ""
 
 #: lazarusidestrconsts.lisoverridelanguage
-#, fuzzy
-#| msgid "Override language. For example --language=de. For possible values see files in the languages directory."
 msgid "Override language. For possible values see files in the \"languages\" directory. Example: \"--language=de\"."
 msgstr "Sprache überschreiben. Beispielsweise --language=de. Für die möglichen Werte siehe die Dateien im Verzeichnis »languages«."
 
@@ -14641,38 +14421,31 @@ msgid "Override function result string types with the first parameter expression
 msgstr "Funktionsergebnis-Stringtypen mit erstem Parameter-Ausdruckstyp überschreiben"
 
 #: lazarusidestrconsts.lisoverridethedefaultcompileregppc386ppcx64ppcppcetcd
-#, fuzzy
-#| msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in environmentoptions.xml"
 msgid "Override the default compiler. For example: ppc386 ppcx64 ppcppc. Default value is stored in environmentoptions.xml."
-msgstr "%süberschreibt den voreingestellten Compiler, z.B. ppc386, ppcx64, ppcppc etc. Die Voreinstellung ist in environmentoptions.xm abgelegt"
+msgstr "Überschreibt den voreingestellten Compiler, z.B. ppc386, ppcx64, ppcppc etc. Die Voreinstellung ist in environmentoptions.xm abgelegt"
 
 #: lazarusidestrconsts.lisoverridetheprojectbuildmode
-#, fuzzy
-#| msgid "%soverride the project or IDE build mode."
 msgid "Override the project or IDE build mode."
-msgstr "%shebt den Projekt- oder IDE-Erstellmodus auf"
+msgstr "Überschreibt den Projekt- oder IDE-Erstellmodus"
 
 #: lazarusidestrconsts.lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64
-#, object-pascal-format, fuzzy, badformat
-#| msgid "%soverride the project cpu. e.g. i386 x86_64 powerpc powerpc_64 etc. default: %s"
+#, object-pascal-format
 msgid "Override the project CPU. For example: i386 x86_64 powerpc powerpc_64. Default: %s."
-msgstr "%süberschreibt die Projekt-CPU, z.B. i386, x86_64, powerpc, powerpc_64 usw. Voreinstellung: %s"
+msgstr "Überschreibt die Projekt-CPU, z.B. i386, x86_64, powerpc, powerpc_64 usw. Voreinstellung: %s"
 
 #: lazarusidestrconsts.lisoverridetheprojectoperatingsystemegwin32linuxdefau
-#, object-pascal-format, fuzzy, badformat
-#| msgid "%soverride the project operating system. e.g. win32 linux. default: %s"
+#, object-pascal-format
 msgid "Override the project operating system. For example: win32 linux. Default: %s."
-msgstr "%süberschreibt das Betriebssystem des Projekts, z.B. win32, linux. Voreinstellung: %s"
+msgstr "Überschreibt das Betriebssystem des Projekts, z.B. win32, linux. Voreinstellung: %s"
 
 #: lazarusidestrconsts.lisoverridetheprojectsubtarg
 msgid "Override the project subtarget."
 msgstr ""
 
 #: lazarusidestrconsts.lisoverridetheprojectwidgetseteggtkgtk2qtwin32carbond
-#, object-pascal-format, fuzzy, badformat
-#| msgid "%soverride the project widgetset. e.g. gtk gtk2 qt win32 carbon. default: %s"
+#, object-pascal-format
 msgid "Override the project widgetset. For example: gtk gtk2 qt win32 carbon. Default: %s."
-msgstr "%sÜberschreibt das Widget-Set des Projekts. z.B. GTK, GTK2, Qt, Win32, Carbon. Voreinstellung: %s"
+msgstr "Überschreibt das Widget-Set des Projekts. z.B. GTK, GTK2, Qt, Win32, Carbon. Voreinstellung: %s"
 
 #: lazarusidestrconsts.lisownerisalreadyusedbytreadertwriterpleasechooseanot
 msgid "'Owner' is already used by TReader/TWriter. Please choose another name."
@@ -15567,16 +15340,13 @@ msgid "One or more required packages were not found. See package graph for detai
 msgstr "Ein oder mehrere benötigte Packages wurden nicht gefunden. Siehe Package-Graph für Details."
 
 #: lazarusidestrconsts.lispkgmangsaveasalreadyopenedpackage
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "The package %s is already open in the IDE.\n"
-#| "You cannot save a package with the same name.\n"
+#, object-pascal-format
 msgid ""
 "The package %s is already open in the IDE.\n"
 "You cannot save a package with the same name."
 msgstr ""
 "Das Package %s ist bereits in der IDE geöffnet.\n"
-"Sie können kein Package mit dem selben Namen speichern.\n"
+"Sie können kein Package mit dem selben Namen speichern."
 
 #: lazarusidestrconsts.lispkgmangsavepackage
 msgid "Save package?"
@@ -15646,20 +15416,17 @@ msgid "The package %s is a runtime only package.%sRuntime only packages cannot b
 msgstr "Das Package %s ist ein Nur-Laufzeit-Package.%sLaufzeit-Packages können nicht in die IDE installiert werden."
 
 #: lazarusidestrconsts.lispkgmangthepackageiscompiledautomaticallyanditsoutputdirec
-#, object-pascal-format, fuzzy
-#| msgid "The package \"%s\" is compiled automatically and its output directory is \"%s\", which is in the default unit search path of the compiler. The package uses other packages which also use the default unit search of the compiler. This creates an endless loop.%sYou can fix this issue by removing the path from your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of this package or by removing dependencies."
+#, object-pascal-format
 msgid "The package \"%s\" is compiled automatically and its output directory is \"%s\" which is in the default unit search path of the compiler. The package uses other packages which also use the default unit search of the compiler. This creates an endless loop.%sYou can fix this issue by removing the path from your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of this package or by removing dependencies."
 msgstr "Das Package \"%s\" wird automatisch kompiliert und sein Ausgabeverzeichnis ist \"%s\", was dem vorgegebenen Unit-Suchpfad des Compilers entspricht. Das Package benutzt andere Packages, welche ebenfalls den vorgegebenen Unit-Suchpfad des Compilers verwenden. Dadurch entsteht ein Zirkularbezug.%sSie beseitigen dieses Problem, indem Sie den Pfad aus Ihrer Compilerkonfiguration (z.B. fpc.cfg) entfernen%soder indem Sie das automatische Update dieses Packages deaktivieren oder durch Beseitigen der Abhängigkeiten."
 
 #: lazarusidestrconsts.lispkgmangthepackageismarkedforinstallationbutcannotbefound
-#, object-pascal-format, fuzzy
-#| msgid "The package \"%s\" is marked for installation, but cannot be found.%sRemove dependency from the installation list of packages?"
+#, object-pascal-format
 msgid "The package \"%s\" is marked for installation but cannot be found.%sRemove dependency from the installation list of packages?"
 msgstr "Das Package \"%s\" ist für die Installation vorgemerkt, kann aber nicht gefunden werden.%sSoll die Abhängigkeit von der Installationsliste der Packages entfernt werden?"
 
 #: lazarusidestrconsts.lispkgmangthepackageisrequiredbywhichismarkedforinstallation
-#, object-pascal-format, fuzzy
-#| msgid "The package %s is required by %s, which is marked for installation.%sSee package graph."
+#, object-pascal-format
 msgid "The package %s is required by %s which is marked for installation.%sSee package graph."
 msgstr "Das Package %s wird von %s benötigt, das für Installation vermerkt ist.%Siehe Package-Graph."
 
@@ -15782,8 +15549,6 @@ msgid "Select a package"
 msgstr "Wählen Sie ein Package"
 
 #: lazarusidestrconsts.lispkgthefollowingdependenciesarenotneededbecauseoftheau
-#, fuzzy
-#| msgid "The following dependencies are not needed, because of the automatic transitivity between package dependencies."
 msgid "The following dependencies are not needed because of the automatic transitivity between package dependencies."
 msgstr "Die folgenden Abhängigkeiten werden nicht benötigt wegen der automatischen Transitivität zwischen den Package-Abhängigkeiten."
 
@@ -15843,8 +15608,6 @@ msgid "User"
 msgstr "Benutzer"
 
 #: lazarusidestrconsts.lispleasefixtheerrorinthemessagewindow
-#, fuzzy
-#| msgid "Please fix the error shown in the message window, which is normally below the source editor."
 msgid "Please fix the error shown in the message window which is normally below the source editor."
 msgstr "Bitte berichtigen Sie den Fehler, der im Nachrichtenfenster angezeigt wird. Dieses befindet sich normalerweise unterhalb des Quelltexteditors."
 
@@ -15950,10 +15713,9 @@ msgid "Preceding word"
 msgstr "Vorheriges Wort"
 
 #: lazarusidestrconsts.lisprimaryconfigdirectorywherelazarusstoresitsconfig
-#, object-pascal-format, fuzzy, badformat
-#| msgid "primary config directory, where Lazarus stores its config files. Default is "
+#, object-pascal-format
 msgid "Primary config directory where Lazarus stores its config files. Default is \"%s\"."
-msgstr "primäres Konfigurationsverzeichnis in dem Lazarus seine Konfigurationsdateien speichert. Voreinstellung ist "
+msgstr "primäres Konfigurationsverzeichnis in dem Lazarus seine Konfigurationsdateien speichert. Voreinstellung ist \"%s\"."
 
 #: lazarusidestrconsts.lisprimaryconfigpath
 msgid "Primary config path"
@@ -15978,8 +15740,7 @@ msgid "Private Method"
 msgstr "Private Methode"
 
 #: lazarusidestrconsts.lisprobablyyouneedtoinstallsomepackagesforbeforeconti
-#, object-pascal-format, fuzzy
-#| msgid "Probably you need to install some packages before continuing.%sWarning:%sThe project uses the following design time packages, which might be needed to open the form in the designer. If you continue, you might get errors about missing components and the form loading will probably create very unpleasant results.%sIt is recommended to cancel and install these packages first."
+#, object-pascal-format
 msgid "Probably you need to install some packages before continuing.%sWarning:%sThe project uses the following design time packages which might be needed to open the form in the designer. If you continue, you might get errors about missing components and the form loading will probably create very unpleasant results.%sIt is recommended to cancel and install these packages first."
 msgstr "Möglicherweise müssen sie einige Packages installieren, um fortfahren zu können.%sWarnung:%sDas Projekt bezieht sich auf Packages, die Units mit Register-Prozeduren enthalten. Die Register-Prozedur dient normalerweise dazu, Komponenten in der IDE zu installieren. Aber die folgenden Units gehören zu Packages, die noch nicht in der IDE installiert sind. Wenn Sie versuchen, ein Form in der IDE zu öffnen, das solche Komponenten einbindet, werden Sie Fehlermeldungen wegen nicht gefundener Komponenten erhalten und der Ladeprozeß des Forms wird mit möglicherweise unschönen Ergebnissen enden.%sDas hat keinen Einfluß auf das Öffnen des Projekts oder beliebiger zugehörigen Quellen. Es bedeutet nur, daß es keine gute Idee ist, das Form für das Design zu öffnen bevor die bemängelten Packages installiert wurden."
 
@@ -16674,12 +16435,6 @@ msgid ""
 msgstr ""
 
 #: lazarusidestrconsts.lisreturnslistofallvaluesofcasevariableinfrontofvaria
-#, fuzzy
-#| msgid ""
-#| "Return the list of all values of case variable in front of variable.\n"
-#| "\n"
-#| "Optional Parameters (comma separated):\n"
-#| "WithoutExtraIndent    // the case list will be generated without extra indentation\n"
 msgid ""
 "Return the list of all values of case variable in front of variable.\n"
 "\n"
@@ -16689,7 +16444,7 @@ msgstr ""
 "gibt die Liste aller Werte der Case-Variable vor der Variable zurück\n"
 "\n"
 "Optionale Parameter (kommasepariert):\n"
-"WithoutExtraIndent    // the case list will be generated without extra indentation\n"
+"WithoutExtraIndent    // the case list will be generated without extra indentation"
 
 #: lazarusidestrconsts.lisrevertfailed
 msgid "Revert failed"
@@ -16713,14 +16468,11 @@ msgid "Right borderspace. This value is added to base borderspace and used for t
 msgstr "Rechter Randabstand. Der Wert wird zum Grund-Randabstand addiert und für den Platz rechts vom Element verwendet."
 
 #: lazarusidestrconsts.lisrightgutter
-#, fuzzy
 msgctxt "lazarusidestrconsts.lisrightgutter"
 msgid "Right"
 msgstr "Rechts"
 
 #: lazarusidestrconsts.lisrightsiblingcomboboxhint
-#, fuzzy
-#| msgid "This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
 msgid "This is the sibling control to which the right side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
 msgstr "Das ist das Geschwistercontrol, an das die rechte Seite verankert wurde. Für den Parent leerlassen."
 
@@ -16854,16 +16606,12 @@ msgid "Save All/Original Messages to File ..."
 msgstr "Alle/Originale Nachrichten in Datei speichern ..."
 
 #: lazarusidestrconsts.lissaveandexitdialog
-#, fuzzy
-#| msgid "Save and exit dialog"
 msgid "Only Save"
-msgstr "Speichern und Dialog beenden"
+msgstr "Nur Speichern"
 
 #: lazarusidestrconsts.lissaveandrebuildide
-#, fuzzy
-#| msgid "Save and rebuild IDE"
 msgid "Rebuild IDE"
-msgstr "Speichern und IDE rekompilieren"
+msgstr "IDE rekompilieren"
 
 #: lazarusidestrconsts.lissavechangedfiles
 msgid "Save changed files?"
@@ -16983,10 +16731,9 @@ msgid "Search Unit \"%s\""
 msgstr "Suche Unit \"%s\""
 
 #: lazarusidestrconsts.lissecondaryconfigdirectorywherelazarussearchesfor
-#, object-pascal-format, fuzzy, badformat
-#| msgid "secondary config directory, where Lazarus searches for config template files. Default is "
+#, object-pascal-format
 msgid "Secondary config directory where Lazarus searches for config template files. Default is \"%s\"."
-msgstr "sekundäres Konfigurationsverzeichnis in dem Lazarus nach Vorlagendateien sucht. Voreinstellung ist "
+msgstr "sekundäres Konfigurationsverzeichnis in dem Lazarus nach Vorlagendateien sucht. Voreinstellung ist \"%s\"."
 
 #: lazarusidestrconsts.lissecondaryconfigpath
 msgid "Secondary config path"
@@ -17216,8 +16963,6 @@ msgid "Show only modified"
 msgstr "Nur geänderte anzeigen"
 
 #: lazarusidestrconsts.lisshowonlyonebuttoninthetaskbarforthewholeideinstead
-#, fuzzy
-#| msgid "Show only one button in the taskbar for the whole IDE, instead of one per window. Some Linux Window Managers like Cinnamon do not support this and always show one button per window."
 msgid "Show only one button in the taskbar for the whole IDE instead of one per window. Some Linux Window Managers like Cinnamon do not support this and always show one button per window."
 msgstr "Zeigt nur einen Schalter in der Taskbar für die ganze IDE anstatt einen pro Fenster. Einige Linux-Fenstermanager wie Cinnamon unterstützen das nicht und zeigen immer einen Schalter pro Fenster."
 
@@ -17226,8 +16971,6 @@ msgid "Show output"
 msgstr ""
 
 #: lazarusidestrconsts.lisshowoverviewgutter
-#, fuzzy
-#| msgid "Show overview Gutter"
 msgid "Show overview gutter"
 msgstr "Übersichtssteg anzeigen"
 
@@ -17260,8 +17003,6 @@ msgid "A box at the bottom shows description for the selected property."
 msgstr ""
 
 #: lazarusidestrconsts.lisshowsetupdialogformostimportantsettings
-#, fuzzy
-#| msgid "Show setup dialog for most important settings"
 msgid "Show setup dialog for most important settings."
 msgstr "Zeige Einrichtungsdialog für die wichtigsten Einstellungen"
 
@@ -17294,8 +17035,6 @@ msgid "Show value hints while debugging"
 msgstr "Werte-Hinweise während des Debuggens anzeigen"
 
 #: lazarusidestrconsts.lisshowversionandexit
-#, fuzzy
-#| msgid "show version and exit"
 msgid "Show version and exit."
 msgstr "Version anzeigen und Ende"
 
@@ -17332,8 +17071,6 @@ msgid "Skip file and continue loading"
 msgstr "Datei übergehen und das Laden fortsetzen"
 
 #: lazarusidestrconsts.lisskiploadinglastproject
-#, fuzzy
-#| msgid "Skip loading last project"
 msgid "Skip loading last project."
 msgstr "Das Laden des letzten Projekts übergehen"
 
@@ -17732,8 +17469,7 @@ msgid "The compiler file \"%s\" does not look correct:%s%s"
 msgstr "Die Compiler-Datei \"%s\" sieht nicht korrekt aus:%s%s"
 
 #: lazarusidestrconsts.listhecomponentcannotbedeletedbecauseitisnotownedby
-#, object-pascal-format, fuzzy
-#| msgid "The component %s can not be deleted, because it is not owned by %s."
+#, object-pascal-format
 msgid "The component %s can not be deleted because it is not owned by %s."
 msgstr "Die Komponente %s kann nicht gelöscht werden, da sie nicht %s gehört."
 
@@ -17911,8 +17647,6 @@ msgid "The Lazarus sources use a different list of base packages.%sIt is recomme
 msgstr ""
 
 #: lazarusidestrconsts.listhelfmlazarusformfilecontainsinvalidpropertiesthis
-#, fuzzy
-#| msgid "The LFM (Lazarus form) file contains invalid properties. This means for example it contains some properties/classes, which do not exist in the current LCL. The normal fix is to remove these properties from the lfm and fix the Pascal code manually."
 msgid "The LFM (Lazarus form) file contains invalid properties. This means for example it contains some properties/classes which do not exist in the current LCL. The normal fix is to remove these properties from the lfm and fix the Pascal code manually."
 msgstr "Die LFM-Datei (Lazarus Form) enthält ungültige Eigenschaften. Das bedeutet beispielsweise, daß einige Eigenschaften/Klassen nicht in der aktuellen LCL enthalten sind. Das wird normalerweise behoben, indem diese Eigenschaften aus der LFM-Datei entfernt und der Pascal-Quelltext manuell korrigiert wird."
 
@@ -17997,20 +17731,17 @@ msgid "The package already contains a unit with this name."
 msgstr "Das Package enthält bereits eine Unit mit diesem Namen."
 
 #: lazarusidestrconsts.listhepackagecannotbeinstalledbecauseitrequireswhichi
-#, object-pascal-format, fuzzy
-#| msgid "The package %s cannot be installed, because it requires the package \"%s\", which is a runtime only package."
+#, object-pascal-format
 msgid "The package %s cannot be installed because it requires the package \"%s\" which is a runtime only package."
 msgstr "Das Package %s kann nicht installiert werden, weil es vom Package \"%s\" abhängt, welches ein Nur-Laufzeit-Package ist."
 
 #: lazarusidestrconsts.listhepackagecannotbeuninstalledbecauseitisneededbyth
-#, object-pascal-format, fuzzy
-#| msgid "The package %s can not be uninstalled, because it is needed by the IDE itself."
+#, object-pascal-format
 msgid "The package %s can not be uninstalled because it is needed by the IDE itself."
 msgstr "Das Package %s kann nicht deinstalliert werden, da es von der IDE selbst benötigt wird."
 
 #: lazarusidestrconsts.listhepackagedoesnothaveanyregisterprocedurewhichtypi
-#, object-pascal-format, fuzzy
-#| msgid "The package %s does not have any \"Register\" procedure, which typically means, it does not provide any IDE addon. Installing it will probably only increase the size of the IDE and may even make it unstable.%sHint: If you want to use a package in your project, use the \"Add to project\" menu item."
+#, object-pascal-format
 msgid "The package %s does not have any \"Register\" procedure which typically means it does not provide any IDE addon. Installing it will probably only increase the size of the IDE and may even make it unstable.%sHint: If you want to use a package in your project, use the \"Add to project\" menu item."
 msgstr "Das Package %s hat keine \"Register\"-Prozedur, was meistens bedeutet, dass es kein IDE-Addon darstellt. Seine Installation erhöht vermutlich nur die Größe der IDE und könnte sie sogar instabil machen.%sHinweis: Falls Sie ein Package in Ihrem Projekt verwenden wollen, benutzen Sie den Menüpunkt \"Zum Projekt hinzufügen\"."
 
@@ -18094,8 +17825,6 @@ msgid "The project must be saved before building%sIf you set the Test Directory 
 msgstr "Das Projekt muß vor dem Kompilieren gesichert werden.%sWenn Sie das Testverzeichnis in den Umgebungseinstellungen setzen,%skönnen Sie neue Projekte erzeugen und sofort kompilieren.%sProjekt speichern?"
 
 #: lazarusidestrconsts.listheprojectusesfpcresourceswhichrequireatleast
-#, fuzzy
-#| msgid "The project uses FPC resources, which require at least FPC 2.4"
 msgid "The project uses FPC resources which require at least FPC 2.4"
 msgstr "Das Projekt benutzt FPC-Ressourcen, die mindestens FPC 2.4 benötigen"
 
@@ -18324,8 +18053,6 @@ msgid "This function needs an open .lfm file in the source editor."
 msgstr "Diese Funktion benötigt eine geöffnete .lfm Datei im Quelltexteditor."
 
 #: lazarusidestrconsts.listhishelpmessage
-#, fuzzy
-#| msgid "this help message"
 msgid "This help message."
 msgstr "Diese Hilfeanzeige"
 
@@ -18334,8 +18061,7 @@ msgid "This is a test project for a design time package, testing it outside the 
 msgstr "Dies ist ein Testprojekt für ein Entwicklungszeit-Package. Testen sie es außerhalb der IDE."
 
 #: lazarusidestrconsts.listhislookslikeapascalfileitisrecommendedtouselowerc
-#, object-pascal-format, fuzzy
-#| msgid "This looks like a Pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
+#, object-pascal-format
 msgid "This looks like a Pascal file.%sIt is recommended to use lower case filenames to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
 msgstr "Das sieht wie eine Pascal-Datei aus.%sEs wird empfohlen, Dateinamen in Kleinbuchstaben anzugeben, um diverse Probleme auf einigen Dateisystemen und mit verschiedenen Compilern aus dem Weg zu gehen.%sIn Kleinbuchstaben umbenennen?"
 
@@ -18376,7 +18102,7 @@ msgstr "&Titel"
 
 #: lazarusidestrconsts.listitleintaskbarshowsforexampleproject1lpilazarus
 #, fuzzy
-#| msgid "Title in taskbar shows for example: project1.lpi - Lazarus"
+#| msgid "Title in taskbar shows for example: project1 - Lazarus"
 msgid "Show the custom IDE title before the IDE's name and other info in the title. Example: project1 - Lazarus."
 msgstr "Der Titel in der Taskbar zeigt z.B.: project1.lpi - Lazarus"
 
@@ -18437,8 +18163,6 @@ msgid "Top borderspace. This value is added to base borderspace and used for the
 msgstr "Oberer Randabstand. Der Wert wird zum Grund-Randabstand addiert und für den Platz über dem Element verwendet."
 
 #: lazarusidestrconsts.listopinfoview
-#, fuzzy
-#| msgid "Show Class/Proc Hint"
 msgid "Show Class/Procedure hint"
 msgstr "Klassen/Prozeduren-Hinweis anzeigen"
 
@@ -18447,8 +18171,6 @@ msgid "Tops"
 msgstr "Obere Kanten"
 
 #: lazarusidestrconsts.listopsiblingcomboboxhint
-#, fuzzy
-#| msgid "This is the sibling control to which the top side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide does not matter)."
 msgid "This is the sibling control to which the top side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
 msgstr "Das ist das Geschwistercontrol, an das die Oberseite verankert wurde. Für den Parent leerlassen."
 
@@ -18657,8 +18379,7 @@ msgid "Search string '%s' not found!"
 msgstr "Suchbegriff »%s« nicht gefunden!"
 
 #: lazarusidestrconsts.lisuethecurre
-#, object-pascal-format, fuzzy
-#| msgid "The current editor font does not support UTF-8, but your system seems to use it.%sThat means non ASCII characters will probably be shown incorrectly.%sYou can select another font in the editor options."
+#, object-pascal-format
 msgid "The current editor font does not support UTF-8 but your system seems to use it.%sThat means non ASCII characters will probably be shown incorrectly.%sYou can select another font in the editor options."
 msgstr "Die aktuelle Editorschriftart unterstützt UTF-8 nicht, aber das System scheint das zu tun.%sDas bedeutet, daß Nicht-ASCII-Zeichen möglicherweise falsch angezeigt werden.%sSie sollten in den Editoreinstellungen eine andere Schriftart einstellen."
 
@@ -18728,8 +18449,7 @@ msgid "Unable to add resource T%s:FORMDATA to resource file %s\"%s\".%sProbably 
 msgstr "Kann die Ressource T%s:FORMDATA nicht zur Ressourcendatei %s\"%s\"hinzufügen.%sMöglicherweise ein Syntaxfehler."
 
 #: lazarusidestrconsts.lisunabletoaddthedependencybecausethepackagehasalread
-#, object-pascal-format, fuzzy
-#| msgid "Unable to add the dependency %s, because the package %s has already a dependency %s"
+#, object-pascal-format
 msgid "Unable to add the dependency %s because the package %s has already a dependency %s"
 msgstr "Kann Abhängigkeit %s nicht hinzufügen, weil das Package %s bereits eine Abhängigkeit %s besitzt"
 
@@ -18739,8 +18459,7 @@ msgid "Unable to add the dependency %s because this would create a circular depe
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletoaddtoprojectbecausethereisalreadyaunitwith
-#, object-pascal-format, fuzzy
-#| msgid "Unable to add %s to project, because there is already a unit with the same name in the Project."
+#, object-pascal-format
 msgid "Unable to add %s to project because there is already a unit with the same name in the Project."
 msgstr "Kann %s nicht zum Projekt hinzufügen. Das Projekt enthält bereits eine Unit mit dem gleichen Namen."
 
@@ -18794,8 +18513,6 @@ msgid "Unable to convert to encoding \"%s\""
 msgstr "Kann nicht zur Kodierung \"%s\" konvertieren"
 
 #: lazarusidestrconsts.lisunabletocreatenewfilebecausethereisalreadyadirecto
-#, fuzzy
-#| msgid "Unable to create new file, because there is already a directory with this name."
 msgid "Unable to create new file because there is already a directory with this name."
 msgstr "Kann neue Datei nicht erstellen, da es bereits ein Verzeichnis mit diesem Namen gibt."
 
@@ -18870,8 +18587,7 @@ msgid "Unable to load package \"%s\""
 msgstr "Fehler beim Laden von Package \"%s\""
 
 #: lazarusidestrconsts.lisunabletoloadthecomponentclassbecauseitdependsonits
-#, object-pascal-format, fuzzy
-#| msgid "Unable to load the component class \"%s\", because it depends on itself."
+#, object-pascal-format
 msgid "Unable to load the component class \"%s\" because it depends on itself."
 msgstr "Kann die Komponentenklasse \"%s\" nicht laden. Sie hängt von sich selbst ab."
 
@@ -19330,8 +19046,6 @@ msgid "When a unit is renamed, update references"
 msgstr "Wenn eine Unit umbenannt wird, Referenzen aktualisieren ..."
 
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew
-#, fuzzy
-#| msgid "When enabled the current options are saved to the template, which is used when creating new projects"
 msgid "When enabled the current options are saved to the template which is used when creating new projects"
 msgstr "Wenn eingeschaltet, werden die derzeit gewählten Optionen in ein Template für das Anlegen neuer Projekte gespeichert"
 
@@ -19518,7 +19232,6 @@ msgid "Info"
 msgstr ""
 
 #: lazarusidestrconsts.lvlgraphoptlevels
-#, fuzzy
 msgctxt "lazarusidestrconsts.lvlgraphoptlevels"
 msgid "Levels"
 msgstr "Stufen"
@@ -19581,7 +19294,6 @@ msgid "Merge at target"
 msgstr ""
 
 #: lazarusidestrconsts.lvlgraphsplitnone
-#, fuzzy
 msgctxt "lazarusidestrconsts.lvlgraphsplitnone"
 msgid "None"
 msgstr "Keine"
@@ -19659,10 +19371,8 @@ msgid "Close all pages"
 msgstr ""
 
 #: lazarusidestrconsts.rsclosecurrentpage
-#, fuzzy
-#| msgid "Close current page"
 msgid "Close current page (Ctrl+F4)∥(Ctrl+W)"
-msgstr "Aktuelle Seite schließen"
+msgstr "Aktuelle Seite schließen (Ctrl+F4)∥(Ctrl+W)"
 
 #: lazarusidestrconsts.rscloseleft
 msgid "Close page(s) on the left"
@@ -19693,8 +19403,6 @@ msgid "Filter the lines in list with a string (Ctrl+F)"
 msgstr ""
 
 #: lazarusidestrconsts.rsfoundbutnotlistedhere
-#, fuzzy
-#| msgid "Found, but not listed here: "
 msgid "Found but not listed here: "
 msgstr "Gefunden aber hier nicht aufgeführt: "
 
@@ -19789,7 +19497,6 @@ msgid "Absolute path"
 msgstr ""
 
 #: lazarusidestrconsts.rsshowfilename
-#, fuzzy
 msgctxt "lazarusidestrconsts.rsshowfilename"
 msgid "File name"
 msgstr "Dateiname"
@@ -19973,8 +19680,6 @@ msgid "Hide Block"
 msgstr "Block verbergen"
 
 #: lazarusidestrconsts.srkmecblockindent
-#, fuzzy
-#| msgid "Indent block"
 msgid "Indent line/block"
 msgstr "Block einrücken"
 
@@ -20003,8 +19708,6 @@ msgid "Toggle block"
 msgstr "Block umschalten"
 
 #: lazarusidestrconsts.srkmecblockunindent
-#, fuzzy
-#| msgid "Unindent block"
 msgid "Unindent line/block"
 msgstr "Block ausrücken"
 
@@ -21260,11 +20963,9 @@ msgid "View History"
 msgstr "Historie anzeigen"
 
 #: lazarusidestrconsts.srkmecviewpseudoterminal
-#, fuzzy
-#| msgid "View Terminal Output"
 msgctxt "lazarusidestrconsts.srkmecviewpseudoterminal"
 msgid "View console in/output"
-msgstr "Zeige die Terminalausgaben"
+msgstr "Zeige die Ein/Ausgaben der Konsole"
 
 #: lazarusidestrconsts.srkmecviewtaborder
 msgid "View Tab Order"
@@ -21682,8 +21383,6 @@ msgid "%d * %d"
 msgstr ""
 
 #: lazarusidestrconsts.uepselline
-#, fuzzy
-#| msgid "Line"
 msgctxt "lazarusidestrconsts.uepselline"
 msgid "LINE"
 msgstr "Zeile"
