@@ -1977,8 +1977,6 @@ begin
     if not Assigned(rocmb) then Exit;
     rocmb.isComboBoxEx:= AWinControl is TCustomComboBoxEx;
     rocmb.list:=TCocoaReadOnlyComboBoxList.Create(rocmb);
-    rocmb.setTarget(rocmb);
-    rocmb.setAction(objcselector('comboboxAction:'));
     rocmb.lastSelectedItemIndex:= -1;
     TComboBoxAsyncHelper.SetLastIndex(rocmb);
     rocmb.callback:=TLCLComboboxCallback.Create(rocmb, AWinControl);

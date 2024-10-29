@@ -319,7 +319,9 @@ type
   TCocoaReadOnlyComboBoxMenuDelegate = objcclass( NSObject, NSMenuDelegateProtocol )
   private
     _lastHightlightItem: NSMenuItem;
+    _comboBox: NSPopUpButton;
     procedure menu_willHighlightItem (menu: NSMenu; item: NSMenuItem);
+    procedure menuDidClose (menu: NSMenu);
   end;
 
   { TCocoaReadOnlyComboBox }
@@ -712,8 +714,6 @@ begin
   if Assigned(combobox) then
   begin
     combobox.selectItemAtIndex(itemIndex);
-    combobox.callback.ComboBoxSelectionDidChange;
-    combobox.menu.performActionForItemAtIndex(itemIndex);
     combobox.menu.cancelTracking;
   end;
 end;
@@ -1608,6 +1608,7 @@ begin
   Result:=inherited initWithFrame(frameRect);
   _defaultItemHeight:= CocoaConfigComboBox.readOnly.item.defaultHeight;
   _menuDelegate:= TCocoaReadOnlyComboBoxMenuDelegate.new;
+  _menuDelegate._comboBox:= self;
   self.menu.setDelegate( _menuDelegate );
 end;
 
@@ -1865,6 +1866,11 @@ begin
   if Assigned(_lastHightlightItem) then
     _lastHightlightItem.view.setNeedsDisplay_( True );
   _lastHightlightItem:= item;
+end;
+
+procedure TCocoaReadOnlyComboBoxMenuDelegate.menuDidClose(menu: NSMenu);
+begin
+  TCocoaReadOnlyComboBox(_comboBox).comboboxAction( nil );
 end;
 
 { TCocoaSpinEdit }
