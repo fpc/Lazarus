@@ -1,144 +1,148 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
+"PO-Revision-Date: 2024-10-29 18:00+0000\n"
 "Last-Translator: Onur ERÇELEN <onur2x@gmail.com>\n"
-"Language-Team: \n"
-"MIME-Version: 1.0\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Language-Team: Turkish\n"
 "Language: tr\n"
-"X-Generator: Poedit 2.2.3\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Loco-Source-Locale: tr_TR\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Parser: loco_parse_po"
 
 #: strpas2jsdesign.pjscreateajavascriptmoduleinsteadofascript
 msgid "Create a javascript module instead of a script"
-msgstr ""
+msgstr "Komut dosyası yerine javascript modülü oluşturma"
 
 #: strpas2jsdesign.pjsdapply
 msgid "Apply"
-msgstr ""
+msgstr "Uygula"
 
 #: strpas2jsdesign.pjsdatompackagetemplatedirectory
 msgid "Atom package template directory"
-msgstr ""
+msgstr "Atom paketi şablon dizini"
 
 #: strpas2jsdesign.pjsdawebapplicationusingelectrontorunasdesktopapplicat
 msgid "A pas2js Web Application using Electron to run as desktop application."
-msgstr ""
+msgstr "Masaüstü uygulaması olarak çalıştırmak için Electron kullanan bir pas2js Web Uygulaması."
 
 #: strpas2jsdesign.pjsdbrowse
 msgid "Browse"
-msgstr ""
+msgstr "Gözat"
 
 #: strpas2jsdesign.pjsdbtnselectfile
 msgid "Select the file"
-msgstr ""
+msgstr "Dosyayı seçin"
 
 #: strpas2jsdesign.pjsdbuttoncancel
 msgid "Cancel refresh"
-msgstr ""
+msgstr "Yenilemeyi iptal et"
 
 #: strpas2jsdesign.pjsdcancel
 msgid "Cancel"
-msgstr ""
+msgstr "İptal"
 
 #: strpas2jsdesign.pjsdchangesimplewebserverfromto
 #, object-pascal-format
 msgid "Change Simple Web Server from%s\"%s\"%sto%s\"%s\"%s?"
-msgstr ""
+msgstr "Basit Web Sunucusunu %s\"%s\"%sdan%s\"%s\"%s olarak değiştirin?"
 
 #: strpas2jsdesign.pjsdclose
 msgid "Close"
-msgstr ""
+msgstr "Kapat"
 
 #: strpas2jsdesign.pjsdconfirmation
 msgid "Confirmation"
-msgstr ""
+msgstr "Onaylama"
 
 #: strpas2jsdesign.pjsdcreateinitialhtmlpage
 msgid "Create initial HTML page"
-msgstr ""
+msgstr "İlk HTML sayfasını oluşturma"
 
 #: strpas2jsdesign.pjsddetails
 msgid "Details"
-msgstr ""
+msgstr "Detaylar"
 
 #: strpas2jsdesign.pjsddirectorynotfound
 #, object-pascal-format
 msgid "directory \"%s\" not found"
-msgstr ""
+msgstr "Dizin \"%s\" bulunamadı"
 
 #: strpas2jsdesign.pjsddownloadedbytes
 #, object-pascal-format
 msgid "Downloaded %s bytes"
-msgstr ""
+msgstr "İndirilen %s bayt"
 
 #: strpas2jsdesign.pjsddownloaderror
 #, object-pascal-format
 msgid "Download error:%s"
-msgstr ""
+msgstr "İndirme hatası:%s"
 
 #: strpas2jsdesign.pjsddownloading
 #, object-pascal-format
 msgid "Downloading \"%s\" ..."
-msgstr ""
+msgstr "İndiriliyor \"%s\" ..."
 
 #: strpas2jsdesign.pjsddownloading2
 msgid "Downloading"
-msgstr ""
+msgstr "İndiriliyor"
 
 #: strpas2jsdesign.pjsddownloadpas2jsrelease
 msgid "Download Pas2JS Release?"
-msgstr ""
+msgstr "Pas2JS Sürümünü İndirin?"
 
 #: strpas2jsdesign.pjsddownloadrelease
 msgid "Download Release"
-msgstr ""
+msgstr "İndirme Sürümü"
 
 #: strpas2jsdesign.pjsdelectronwebapplication
 msgid "Electron Web Application"
-msgstr ""
+msgstr "Electron Web Uygulaması"
 
 #: strpas2jsdesign.pjsderror
 msgid "Error"
-msgstr ""
+msgstr "Hata"
 
 #: strpas2jsdesign.pjsderror2
 #, object-pascal-format
 msgid "Error: %s"
-msgstr ""
+msgstr "Hata: %s"
 
 #: strpas2jsdesign.pjsdfilenamedoesnotstartwithpas2js
 msgid "filename does not start with \"pas2js\""
-msgstr ""
+msgstr "dosya adı \"pas2js\" ile başlamıyor"
 
 #: strpas2jsdesign.pjsdfilenotexecutable
 #, object-pascal-format
 msgid "file \"%s\" not executable"
-msgstr ""
+msgstr "\"%s\" dosyası çalıştırılabilir değil"
 
 #: strpas2jsdesign.pjsdfilenotfound
 #, object-pascal-format
 msgid "file \"%s\" not found"
-msgstr ""
+msgstr "\"%s\" dosyası bulunamadı"
 
 #: strpas2jsdesign.pjsdfound
 #, object-pascal-format
 msgid "Found %s"
-msgstr ""
+msgstr "Bulundu %s"
 
 #: strpas2jsdesign.pjsdfpcexecutable
 msgid "FPC executable:"
-msgstr ""
+msgstr "FPC çalıştırılabilir:"
 
 #: strpas2jsdesign.pjsdfpcsourcedirectory
 msgid "FPC source directory:"
-msgstr ""
+msgstr "FPC kaynak dizini:"
 
 #: strpas2jsdesign.pjsdfreepascalcompilerusedforcompilingtoolsandpas2jsit
 msgid "Free Pascal Compiler used for compiling tools and pas2js itself"
-msgstr ""
+msgstr "Araçları ve pas2js'nin kendisini derlemek için kullanılan Free Pascal Derleyicisi"
 
 #: strpas2jsdesign.pjsdhtmlfilenotfound
 #, object-pascal-format
@@ -147,77 +151,78 @@ msgid ""
 "%s\n"
 "Would you like to select the file from disk?"
 msgstr ""
+"Sınıf için HTML Kaynak dosyası %s biriminde bulunamıyor: \n"
+"%s \n"
+"Dosyayı diskten seçmek ister misiniz?"
 
 #: strpas2jsdesign.pjsdhtmlfilter
 msgid "HTML Files|*.html|All files|*.*"
-msgstr ""
+msgstr "HTML Dosyaları|*.html|Tüm Dosyalar|*.*"
 
 #: strpas2jsdesign.pjsdhtmlsourcefilenotfound
 msgid "HTML Source not found"
-msgstr ""
+msgstr "HTML Kaynağı bulunamadı"
 
 #: strpas2jsdesign.pjsdinstallupdatepas2js
 msgid "Install/Update Pas2JS"
-msgstr ""
+msgstr "Pas2JS Yükle/Güncelle"
 
 #: strpas2jsdesign.pjsdletrtlshowuncaughtexceptions
 msgid "Let RTL show uncaught exceptions"
-msgstr ""
+msgstr "RTL'nin yakalanmamış istisnaları göstermesine izin verin"
 
 #: strpas2jsdesign.pjsdlocationonsimplewebserver
 msgid "Location on Simple Web Server"
-msgstr ""
+msgstr "Basit Web Sunucusundaki Konum"
 
 #: strpas2jsdesign.pjsdmaintainhtmlpage
 msgid "Maintain HTML page"
-msgstr ""
+msgstr "HTML sayfasını koruyun"
 
 #: strpas2jsdesign.pjsdmissing
 msgid "Missing"
-msgstr ""
+msgstr "Eksik"
 
 #: strpas2jsdesign.pjsdmissing2
 #, object-pascal-format
 msgid "Missing %s"
-msgstr ""
+msgstr "Eksik %s"
 
 #: strpas2jsdesign.pjsdmissingpathtopas2js
 msgid "missing path to pas2js"
-msgstr ""
+msgstr "pas2js için eksik yol"
 
 #: strpas2jsdesign.pjsdmoduleappdescription
 msgid "A pas2js library that is transpiled to a JavaScript module."
-msgstr ""
+msgstr "Bir JavaScript modülüne aktarılan bir pas2js kütüphanesi."
 
 #: strpas2jsdesign.pjsdmoduleapplication
 msgid "Pas2JS Library / JavaScript module"
-msgstr ""
+msgstr "Pas2JS Kütüphanesi / JavaScript modülü"
 
 #: strpas2jsdesign.pjsdnewatompackage
 msgid "Atom package"
-msgstr ""
+msgstr "Atom paketi"
 
 #: strpas2jsdesign.pjsdnewatompackagedescr
 msgid "A pas2js program running as Atom package."
-msgstr ""
+msgstr "Atom paketi olarak çalışan bir pas2js programı."
 
 #: strpas2jsdesign.pjsdnewprojectfile
 msgid "New project file"
-msgstr ""
+msgstr "Yeni proje dosyası"
 
 #: strpas2jsdesign.pjsdnewvscodeextension
 msgid "Visual Studio Code extension"
-msgstr ""
+msgstr "Visual Studio Code uzantısı"
 
 #: strpas2jsdesign.pjsdnewvscodeextensiondescr
 msgid "A pas2js program running as Visual Studio Code extension."
-msgstr ""
+msgstr "Visual Studio Code uzantısı olarak çalışan bir pas2js programı."
 
 #: strpas2jsdesign.pjsdnodejsappdescription
-#, fuzzy
-#| msgid "A pas2js program running in node.js"
 msgid "A pas2js program running in node.js."
-msgstr "Node.js içinde çalışan bir pas2js programı"
+msgstr "Node.js içinde çalışan bir pas2js programı."
 
 #: strpas2jsdesign.pjsdnodejsapplication
 msgid "Node.js Application"
@@ -225,237 +230,235 @@ msgstr "Node.js uygulaması"
 
 #: strpas2jsdesign.pjsdnodejsprojectoptions
 msgid "NodeJS project options"
-msgstr ""
+msgstr "NodeJS proje seçenekleri"
 
 #: strpas2jsdesign.pjsdnote
 #, object-pascal-format
 msgid "Note: %s"
-msgstr ""
+msgstr "Not: %s"
 
 #: strpas2jsdesign.pjsdnote2
 msgid "Note"
-msgstr ""
+msgstr "Not"
 
 #: strpas2jsdesign.pjsdoverwrite
 msgid "Overwrite?"
-msgstr ""
+msgstr "Üzerine Yaz?"
 
 #: strpas2jsdesign.pjsdoverwritefiles
 msgid "Overwrite files:"
-msgstr ""
+msgstr "Dosyaların üzerine yaz:"
 
 #: strpas2jsdesign.pjsdpas2jsbrowserprojectoptions
 msgid "Pas2JS Browser project options"
-msgstr ""
+msgstr "Pas2JS Tarayıcı proje seçenekleri"
 
 #: strpas2jsdesign.pjsdpas2jscurrentprojecturl
 msgid "Pas2JS current project URL"
-msgstr ""
+msgstr "Pas2JS mevcut proje URL'si"
 
 #: strpas2jsdesign.pjsdpas2jsexecutable
 msgid "Pas2JS executable"
-msgstr ""
+msgstr "Pas2JS çalıştırılabilir"
 
 #: strpas2jsdesign.pjsdpas2jsinstaller
 msgid "Pas2JS Installer"
-msgstr ""
+msgstr "Pas2JS Kurulumu"
 
 #: strpas2jsdesign.pjsdpas2jsisnotexecutableat
 #, object-pascal-format
 msgid "\"%s\" is not an executable"
-msgstr ""
+msgstr "\"%s\" bir yürütülebilir dosya değil"
 
 #: strpas2jsdesign.pjsdpas2jsselectedbrowserexecutable
 msgid "Pas2JS selected browser executable"
-msgstr ""
+msgstr "Pas2JS seçilen tarayıcı yürütülebilir"
 
 #: strpas2jsdesign.pjsdpas2jsselectedelectronexcutable
 msgid "Pas2JS selected Electron excutable"
-msgstr ""
+msgstr "Pas2JS Electron excutable'ı seçti"
 
 #: strpas2jsdesign.pjsdpas2jsselectednodejsexcutable
 msgid "Pas2JS selected NodeJS excutable"
-msgstr ""
+msgstr "Pas2JS seçildi NodeJS excutable"
 
 #: strpas2jsdesign.pjsdpas2jssourcedirectory
 msgid "Pas2JS source directory"
-msgstr ""
+msgstr "Pas2JS kaynak dizini"
 
 #: strpas2jsdesign.pjsdpathofelectronexecutablemacropas2jselectron
 msgid "Path of Electron executable, macro $(Pas2JSElectron)"
-msgstr ""
+msgstr "Electron yürütülebilir dosyasının yolu, makro $(Pas2JSElectron)"
 
 #: strpas2jsdesign.pjsdpathofnodejsexecutable
 msgid "Path of Node.js executable, macro $(Pas2JSNodeJS)"
-msgstr ""
+msgstr "Node.js çalıştırılabilir dosyasının yolu, makro $(Pas2JSNodeJS)"
 
 #: strpas2jsdesign.pjsdpathofxmacropas2js
 #, object-pascal-format
 msgctxt "strpas2jsdesign.pjsdpathofxmacropas2js"
 msgid "Path of %s, macro $(pas2js)"
-msgstr ""
+msgstr "%s'nin yolu, makro $(pas2js)"
 
 #: strpas2jsdesign.pjsdpleasechooseafilewithfullpath
 msgid "Please choose a file with full path."
-msgstr ""
+msgstr "Lütfen tam yolu olan bir dosya seçin."
 
 #: strpas2jsdesign.pjsdportnumbertostartallocatingfrom
 msgid "Port number to start allocating from, macro $(Pas2JSWebServerPort)"
-msgstr ""
+msgstr "Tahsise başlanacak port numarası, makro $(Pas2JSWebServerPort)"
 
 #: strpas2jsdesign.pjsdprogressivewebappdescription
 msgid "A pas2js Web Application using a service worker, a manifest, and more to be installable."
-msgstr ""
+msgstr "Yüklenebilir olmak için bir hizmet çalışanı, bir manifesto ve daha fazlasını kullanan bir pas2js Web Uygulaması."
 
 #: strpas2jsdesign.pjsdprogressivewebapplication
 msgid "Progressive Web Application"
-msgstr ""
+msgstr "Aşamalı Web Uygulaması"
 
 #: strpas2jsdesign.pjsdprojecthtmlpage
 msgid "Project HTML page:"
-msgstr ""
+msgstr "Proje HTML sayfası:"
 
 #: strpas2jsdesign.pjsdprojectisawebbrowserpas2jsproject
 msgid "Project is a Web Browser (pas2js) project"
-msgstr ""
+msgstr "Proje bir Web Tarayıcı (pas2js) projesidir"
 
 #: strpas2jsdesign.pjsdprojectpascalfile
 msgid "Project Pascal file"
-msgstr ""
+msgstr "Pascal Proje dosyası"
 
 #: strpas2jsdesign.pjsdresetcompilecommand
 msgid "Reset Compile command"
-msgstr ""
+msgstr "Derleme Komutunu sıfırla"
 
 #: strpas2jsdesign.pjsdresetruncommand
 msgid "Reset Run command"
-msgstr ""
+msgstr "Çalıştır komutunu sıfırla"
 
 #: strpas2jsdesign.pjsdrun
 msgid "Run"
-msgstr ""
+msgstr "Çalıştır"
 
 #: strpas2jsdesign.pjsdrunrtlwhenallpageresourcesarefullyloaded
 msgid "Run RTL when all page resources are fully loaded"
-msgstr ""
+msgstr "Tüm sayfa kaynakları tamamen yüklendiğinde RTL'yi çalıştırın"
 
 #: strpas2jsdesign.pjsdselectatomtemplatedir
 msgid "Select Atom package template directory"
-msgstr ""
+msgstr "Atom paketi şablon dizinini seçin"
 
 #: strpas2jsdesign.pjsdselectbrowserexecutable
 msgid "Select browser executable"
-msgstr ""
+msgstr "Tarayıcı yürütülebilir dosyasını seçin"
 
 #: strpas2jsdesign.pjsdselectdirectorywheretoextractpas2js
 msgid "Select directory where to extract Pas2JS"
-msgstr ""
+msgstr "Pas2JS'nin çıkarılacağı dizini seçin"
 
 #: strpas2jsdesign.pjsdselectelectronexecutable
 msgid "Select Electron executable"
-msgstr ""
+msgstr "Electron yürütülebilir dosyasını seçin"
 
 #: strpas2jsdesign.pjsdselectfreepascalcompilerexecutable
 msgid "Select Free Pascal Compiler executable"
-msgstr ""
+msgstr "Free Pascal Compiler çalıştırılabilir dosyasını seçin"
 
 #: strpas2jsdesign.pjsdselectfreepascalsourcedirectory
 msgid "Select Free Pascal source directory"
-msgstr ""
+msgstr "Free Pascal kaynak dizinini seçin"
 
 #: strpas2jsdesign.pjsdselectnodejsexecutable
 msgid "Select Node.js executable"
-msgstr ""
+msgstr "Node.js yürütülebilir dosyasını seçin"
 
 #: strpas2jsdesign.pjsdselectpas2jsexecutable
 msgid "Select pas2js executable"
-msgstr ""
+msgstr "pas2js yürütülebilir dosyasını seçin"
 
 #: strpas2jsdesign.pjsdselectpas2jssourcedirectory
 msgid "Select pas2js source directory"
-msgstr ""
+msgstr "pas2js kaynak dizinini seçin"
 
 #: strpas2jsdesign.pjsdselectvscodetemplatedir
 msgid "Select Visual Studio Code extension template directory"
-msgstr ""
+msgstr "Visual Studio Code uzantı şablonu dizinini seçin"
 
 #: strpas2jsdesign.pjsdserverinstanceswillbestartedwithaportstartingfromt
 msgid "Server instances will be started with a port starting from this number, increasing per new project"
-msgstr ""
+msgstr "Sunucu örnekleri bu numaradan başlayan ve yeni proje başına artan bir port ile başlatılacaktır"
 
 #: strpas2jsdesign.pjsdserviceworker
 msgid "Pas2JS Service Worker"
-msgstr ""
+msgstr "Pas2JS Hizmet Çalışanı"
 
 #: strpas2jsdesign.pjsdserviceworkerdescription
 msgid "A pas2js program running as cache for a web app. It does not run standalone."
-msgstr ""
+msgstr "Bir web uygulaması için önbellek olarak çalışan bir pas2js programı. Tek başına çalışmaz."
 
 #: strpas2jsdesign.pjsdstarthttpserveronport
 msgid "Start HTTP Server on port"
-msgstr ""
+msgstr "HTTP Sunucusunu bağlantı noktasında başlat"
 
 #: strpas2jsdesign.pjsdthepas2jsexecutablefilenamedoesnotlooklikepas2js
 #, object-pascal-format
 msgid "The executable filename \"%s\" does not look like pas2js."
-msgstr ""
+msgstr "Çalıştırılabilir dosya adı \"%s\" pas2js gibi görünmüyor."
 
 #: strpas2jsdesign.pjsdthereisnoreleasefortarget
 #, object-pascal-format
 msgid "There is no release for target \"%s-%s\"."
-msgstr ""
+msgstr "\"%s-%s\" hedefi için bir sürüm yok."
 
 #: strpas2jsdesign.pjsdthesimplewebserverisautomaticallystartedonrunthelo
 msgid "The Simple Web Server is automatically started on Run. The location is like a subfolder in the URL serving the disk folder of the HTML file."
-msgstr ""
+msgstr "Basit Web Sunucusu Çalıştırıldığında otomatik olarak başlatılır. Konum, HTML dosyasının disk klasörüne hizmet eden URL'deki bir alt klasör gibidir."
 
 #: strpas2jsdesign.pjsdunabletocreatedirectory
 #, object-pascal-format
 msgid "Unable to create directory \"%s\"."
-msgstr ""
+msgstr "\"%s\" dizini oluşturulamıyor."
 
 #: strpas2jsdesign.pjsdunabletofindpas2jsat
 #, object-pascal-format
 msgid "Unable to find \"%s\""
-msgstr ""
+msgstr "\"%s\" bulunamıyor"
 
 #: strpas2jsdesign.pjsdusebrowserapplicationobject
 msgid "Use Browser Application object"
-msgstr ""
+msgstr "Tarayıcı Uygulaması nesnesini kullanma"
 
 #: strpas2jsdesign.pjsdusebrowserconsoleunittodisplaywritelnoutput
 msgid "Use BrowserConsole unit to display writeln() output"
-msgstr ""
+msgstr "Writeln() çıktısını görüntülemek için BrowserConsole birimini kullanın"
 
 #: strpas2jsdesign.pjsdusenodejsapplicationobject
 msgid "Use NodeJS Application object"
-msgstr ""
+msgstr "NodeJS Uygulama nesnesini kullanma"
 
 #: strpas2jsdesign.pjsdusethisurltostartapplication
 msgid "Use this URL to start application"
-msgstr ""
+msgstr "Uygulamayı başlatmak için bu URL'yi kullanın"
 
 #: strpas2jsdesign.pjsdusethiswhenyoustartyourownhttpserver
 msgid "Use this when you start your own HTTP server"
-msgstr ""
+msgstr "Kendi HTTP sunucunuzu başlattığınızda bunu kullanın"
 
 #: strpas2jsdesign.pjsdusewasiapplicationobject
 msgid "Run WebAssembly program:"
-msgstr ""
+msgstr "WebAssembly programını çalıştırın:"
 
 #: strpas2jsdesign.pjsdvisualstudiocodeextensiontemplatedirectory
 msgid "Visual Studio Code extension template directory"
-msgstr ""
+msgstr "Visual Studio Code uzantı şablonu dizini"
 
 #: strpas2jsdesign.pjsdwarning
 msgid "Warning"
-msgstr ""
+msgstr "Uyarı"
 
 #: strpas2jsdesign.pjsdwebappdescription
-#, fuzzy
-#| msgid "A pas2js program running in the browser"
 msgid "A pas2js program running in the browser."
-msgstr "Tarayıcıda çalışan bir pas2js programı"
+msgstr "Tarayıcıda çalışan bir pas2js programı."
 
 #: strpas2jsdesign.pjsdwebapplication
 msgid "Web Browser Application"
@@ -463,59 +466,59 @@ msgstr "Web Tarayıcı Uygulaması"
 
 #: strpas2jsdesign.pjsdwebprojectpas2js
 msgid "Web Project (pas2js)"
-msgstr ""
+msgstr "Web Projesi (pas2js)"
 
 #: strpas2jsdesign.pjsdwebserverandbrowseroptions
 msgid "Web server and browser options"
-msgstr ""
+msgstr "Web sunucusu ve tarayıcı seçenekleri"
 
 #: strpas2jsdesign.pjsdyoucanuseidemacroslikemakeexewithoutafullpathissea
 #, object-pascal-format
 msgid "You can use IDE macros like $MakeExe(). Without a full path, %s is searched in PATH."
-msgstr ""
+msgstr "$MakeExe() gibi IDE makrolarını kullanabilirsiniz. Tam yol olmadan, PATH içinde %s aranır."
 
 #: strpas2jsdesign.pjsexecuterunparameters
 msgid "Execute Run Parameters"
-msgstr ""
+msgstr "Çalıştırma Parametrelerini Yürüt"
 
 #: strpas2jsdesign.pjsmakepas2jsproject
 msgid "Make pas2js project"
-msgstr ""
+msgstr "pas2js projesi oluşturun"
 
 #: strpas2jsdesign.pjsrefreshallclassesfromhtml
 msgid "Refresh all classes from HTML source"
-msgstr ""
+msgstr "HTML kaynağından tüm sınıfları yenileyin"
 
 #: strpas2jsdesign.pjsrefreshclassfromhtml
 msgid "Refresh class from HTML source"
-msgstr ""
+msgstr "Sınıfı HTML kaynağından yenileme"
 
 #: strpas2jsdesign.pjswasiprogramfiletexthint
 msgid "Name of your WebAssembly file"
-msgstr ""
+msgstr "WebAssembly dosyanızın adı"
 
 #: strpas2jsdesign.rscreateclassfromhtmldescription
 msgid "Create a Pas2JS \"form\" class definition from HTML file using ID attributes in the HTML file."
-msgstr ""
+msgstr "HTML dosyasındaki ID niteliklerini kullanarak HTML dosyasından bir Pas2JS \"form\" sınıf tanımı oluşturun."
 
 #: strpas2jsdesign.rscreateclassfromhtmlname
 msgid "Pas2JS class definition from HTML file"
-msgstr ""
+msgstr "HTML dosyasından Pas2JS sınıf tanımı"
 
 #: strpas2jsdesign.rscreateunitfromtypescript
 msgid "Pas2JS import unit from TypeScript declaration module"
-msgstr ""
+msgstr "TypeScript bildirim modülünden Pas2JS içe aktarma birimi"
 
 #: strpas2jsdesign.rscreateunitfromtypescriptdescription
 msgid "Create a Pas2JS import unit from a TypeScript declaration module."
-msgstr ""
+msgstr "TypeScript bildirim modülünden bir Pas2JS içe aktarma birimi oluşturun."
 
 #: strpas2jsdesign.rsdtsdidnotproduceoutput
 msgid "The DTS2pas tool did not produce an output file."
-msgstr ""
+msgstr "DTS2pas aracı bir çıktı dosyası üretmedi."
 
 #: strpas2jsdesign.rshttprequestfailed
 #, object-pascal-format
 msgid "HTML request to service URL %s failed: %s"
-msgstr ""
+msgstr "Hizmet URL'si %s'ye yönelik HTML isteği başarısız oldu: %s"
 

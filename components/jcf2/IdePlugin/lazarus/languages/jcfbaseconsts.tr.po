@@ -1,0 +1,40 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-10-29 09:44+0000\n"
+"PO-Revision-Date: 2024-10-29 09:50+0000\n"
+"Last-Translator: \n"
+"Language-Team: Unknown\n"
+"Language: zxx\n"
+"Plural-Forms: nplurals=2; plural=n!=1;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Loco-Source-Locale: tr_TR\n"
+"X-Loco-Parser: loco_parse_po\n"
+"X-Generator: Loco https://localise.biz/"
+
+#: jcfbaseconsts.liserrorwritingsettingsexception
+#, object-pascal-format
+msgctxt "Ayar dosyası %s:%s%s yazılırken hata oluştu"
+msgid "Error writing settings file %s:%s%s"
+msgstr "Ayar dosyası %s:%s%s yazılırken hata oluştu"
+
+#: jcfbaseconsts.liserrorwritingsettingsfilereadonly
+#, object-pascal-format
+msgctxt "Ayar dosyası yazılırken hata oluştu: %s yalnızca okunur"
+msgid "Error writing settings file: %s is read only"
+msgstr "Ayar dosyası yazılırken hata oluştu: %s yalnızca okunur"
+
+#: jcfbaseconsts.lisnosettingsfound
+msgctxt "Ayar bulunamadı"
+msgid "No settings found"
+msgstr "Ayar bulunamadı"
+
+#: jcfbaseconsts.listhesettingsfiledoesnotexist
+#, object-pascal-format
+msgctxt ""%s" ayar dosyası mevcut değil.%sBiçimlendirici geçerli bir ayar dosyası kullanacak şekilde yapılandırılırsa daha iyi çalışacaktır"
+msgid "The settings file \"%s\" does not exist.%sThe formatter will work better if it is configured to use a valid settings file"
+msgstr "\"%s\" ayar dosyası mevcut değil.%sBiçimlendirici geçerli bir ayar dosyası kullanacak şekilde yapılandırılırsa daha iyi çalışacaktır"
+

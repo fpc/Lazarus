@@ -1,15 +1,19 @@
 msgid ""
 msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2024-10-29 14:07+0000\n"
+"Last-Translator: Onur ERÇELEN <onur2x@gmail.com>\n"
+"Language-Team: Turkish\n"
+"Language: tr\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Project-Id-Version: \n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: Onur ERÇELEN <onur2x@gmail.com>\n"
-"Language-Team: \n"
-"Language: tr\n"
-"X-Generator: Poedit 2.2.3\n"
+"X-Loco-Source-Locale: tr_TR\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Parser: loco_parse_po"
 
 #: lr_const.saboutformcapt
 msgid "About FastReport"
@@ -106,7 +110,7 @@ msgstr "Çapraz altbilgisi"
 #: lr_const.sband22
 msgctxt "lr_const.sband22"
 msgid "Child"
-msgstr ""
+msgstr "Çocuk"
 
 #: lr_const.sband23
 msgctxt "lr_const.sband23"
@@ -215,7 +219,7 @@ msgstr "Bitmap dosyası"
 
 #: lr_const.sbreaked
 msgid "Breaked"
-msgstr ""
+msgstr "Parantez"
 
 #: lr_const.scancel
 msgid "Cancel"
@@ -242,11 +246,11 @@ msgstr "Saat"
 
 #: lr_const.scateg5
 msgid "Boolean"
-msgstr ""
+msgstr "Boolean"
 
 #: lr_const.scharset
 msgid "0"
-msgstr ""
+msgstr "0"
 
 #: lr_const.sclassobjectnotfound
 #, object-pascal-format
@@ -279,7 +283,7 @@ msgstr "Sayısı"
 
 #: lr_const.scrosseditorcyan
 msgid "Cyan"
-msgstr ""
+msgstr "Camgöbeği"
 
 #: lr_const.scrosseditorgray
 msgid "Gray"
@@ -635,7 +639,7 @@ msgstr "&Inc"
 
 #: lr_const.sdesoptionsforminplace
 msgid "Use inplace editor"
-msgstr ""
+msgstr "Yerinde düzenleyiciyi kullan"
 
 #: lr_const.sdesoptionsformmm
 msgid "&MM"
@@ -643,7 +647,7 @@ msgstr "&MM"
 
 #: lr_const.sdesoptionsformobj
 msgid "Object moving"
-msgstr ""
+msgstr "Hareket eden nesne"
 
 #: lr_const.sdesoptionsformopt
 msgctxt "lr_const.sdesoptionsformopt"
@@ -661,11 +665,11 @@ msgstr "&Pixeller"
 
 #: lr_const.sdesoptionsformshape
 msgid "S&hape"
-msgstr ""
+msgstr "Şe&kil"
 
 #: lr_const.sdesoptionsformshowband
 msgid "Show band &titles"
-msgstr ""
+msgstr "Grup &başlıklarını göster"
 
 #: lr_const.sdesoptionsformshowgrd
 msgid "&Show grid"
@@ -697,7 +701,7 @@ msgstr "Minör"
 
 #: lr_const.sdocoptform2pass
 msgid "&Two-pass report"
-msgstr ""
+msgstr "&İki geçişli rapor"
 
 #: lr_const.sdocoptformcomments
 msgid "Comments"
@@ -723,11 +727,11 @@ msgstr "Yazıcı"
 
 #: lr_const.sdocoptformselect
 msgid "&Select when report loaded"
-msgstr ""
+msgstr "&Raporun ne zaman yükleneceğini seç"
 
 #: lr_const.sdocoptformsubject
 msgid "Subject"
-msgstr ""
+msgstr "Konu"
 
 #: lr_const.sdocoptformtitle
 msgid "Title"
@@ -735,7 +739,7 @@ msgstr "Başlık"
 
 #: lr_const.sdocrelease
 msgid "Release"
-msgstr ""
+msgstr "Serbest Bırak"
 
 #: lr_const.sdocversion
 msgid "Version"
@@ -744,7 +748,7 @@ msgstr "Sürüm"
 #: lr_const.sduplicatedobjectname
 #, object-pascal-format
 msgid "An object named \"%s\" already exists"
-msgstr ""
+msgstr "\"%s\" adlı bir nesne zaten mevcut"
 
 #: lr_const.seditor
 msgid "Editor"
@@ -778,11 +782,11 @@ msgstr "&Not"
 
 #: lr_const.seditorformscr
 msgid "S&cript"
-msgstr ""
+msgstr "Se&naryo"
 
 #: lr_const.seditorformscript
 msgid "&Script"
-msgstr ""
+msgstr "&Senaryo"
 
 #: lr_const.seditorformvar
 msgctxt "lr_const.seditorformvar"
@@ -827,7 +831,7 @@ msgstr "Beklenen \";\" veya \"until\""
 
 #: lr_const.serrlabelgoto
 msgid "Label in goto must be a number"
-msgstr ""
+msgstr "Goto'daki etiket bir sayı olmalıdır"
 
 #: lr_const.serrline
 msgid "Line"
@@ -835,11 +839,11 @@ msgstr "Satır"
 
 #: lr_const.serrneeddo
 msgid "Need \"do\" here"
-msgstr ""
+msgstr "Burada \"yapmak\" gerekiyor"
 
 #: lr_const.serrneedto
 msgid "Need \"to\" here"
-msgstr ""
+msgstr "Burada \"için\" gerekiyor"
 
 #: lr_const.serror
 msgid "Error"
@@ -847,87 +851,83 @@ msgstr "Hata"
 
 #: lr_const.serroroccurred
 msgid "An error occurred during calculation"
-msgstr ""
+msgstr "Hesaplama sırasında bir hata oluştu"
 
 #: lr_const.sevformcapt
 msgid "Variables editor"
-msgstr ""
+msgstr "Değişken editörü"
 
 #: lr_const.sevformcopy
 msgid "Copy variables"
-msgstr ""
+msgstr "Değişkenleri kopyala"
 
 #: lr_const.sevformexp
 msgid "&Expression"
-msgstr ""
+msgstr "&İfade"
 
 #: lr_const.sevformpaste
 msgid "Paste variables"
-msgstr ""
+msgstr "Değişkenleri yapıştır"
 
 #: lr_const.sevformvalue
 msgid "Va&lue"
-msgstr ""
+msgstr "Değ&er"
 
 #: lr_const.sevformvar
-#, fuzzy
 msgctxt "lr_const.sevformvar"
 msgid "&Variable"
 msgstr "&Değişken"
 
 #: lr_const.sevformvars
 msgid "Va&riables ..."
-msgstr ""
+msgstr "Değiş&kenler ..."
 
 #: lr_const.sexportfilterindexerror
 msgid "Export filter index out of range"
-msgstr ""
+msgstr "Filtre indeksi dışa aktarma aralığı dışında"
 
 #: lr_const.sfieldsformaviabledb
 msgid "&Available DB's"
-msgstr ""
+msgstr "&Mevcut DB'ler"
 
 #: lr_const.sfieldsforminsert
-#, fuzzy
 msgctxt "lr_const.sfieldsforminsert"
 msgid "Insert DB field"
 msgstr "DB alan ekle"
 
 #: lr_const.sfilenotfound
 msgid "File not found"
-msgstr ""
+msgstr "Dosya bulunamadı"
 
 #: lr_const.sfilter
 msgid "Filter properties"
-msgstr ""
+msgstr "Filtre özellikleri"
 
 #: lr_const.sfilterparam
 msgid "Average font height:"
-msgstr ""
+msgstr "Ortalama yazı tipi yüksekliği:"
 
 #: lr_const.sfindtextcaption
-#, fuzzy
 msgctxt "lr_const.sfindtextcaption"
 msgid "Find text"
 msgstr "Metni Bul"
 
 #: lr_const.sfindtextcase
 msgid "&Case sensitive"
-msgstr ""
+msgstr "&Harf duyarlı"
 
 #: lr_const.sfindtextcurrentpg
-#, fuzzy
 msgctxt "lr_const.sfindtextcurrentpg"
 msgid "Current &page"
 msgstr "Geçerli &sayfa"
 
 #: lr_const.sfindtextfirstpg
 msgid "&1st page"
-msgstr ""
+msgstr "1nci s&ayfa"
 
 #: lr_const.sfindtextnotfound
 msgid "Search text not found."
-msgstr ""
+msgstr "Aranan metin bulunamadı"
 
 #: lr_const.sfindtextoptions
 msgctxt "lr_const.sfindtextoptions"
@@ -936,41 +936,40 @@ msgstr "Seçenekler"
 
 #: lr_const.sfindtextorg
 msgid "Origin"
-msgstr ""
+msgstr "Kaynak"
 
 #: lr_const.sfindtexttext
 msgid "Text to &find"
-msgstr ""
+msgstr "Met&in ara"
 
 #: lr_const.sfirstpass
 msgid "Performing 1st pass:"
-msgstr ""
+msgstr "1. geçişin gerçekleştirilmesi:"
 
 #: lr_const.sfmtformdecid
 msgid "&Decimal digits"
-msgstr ""
+msgstr "&Ondalık basamaklar"
 
 #: lr_const.sfmtformfrac
 msgid "Fraction &symbol"
-msgstr ""
+msgstr "Kesir sembolü"
 
 #: lr_const.sfmtformfrmt
-#, fuzzy
 msgctxt "lr_const.sfmtformfrmt"
 msgid "&Format"
 msgstr "&Biçim"
 
 #: lr_const.sfmtformfrmtvar
 msgid "Variable formatting"
-msgstr ""
+msgstr "Değişken formatlanıyor"
 
 #: lr_const.sfmtformvarfmt
 msgid "Variable format"
-msgstr ""
+msgstr "Değişken formatı"
 
 #: lr_const.sfont
 msgid "Font ..."
-msgstr ""
+msgstr "Yazıtipi ..."
 
 #: lr_const.sformat11
 msgctxt "lr_const.sformat11"
@@ -991,10 +990,9 @@ msgstr "1 234,5"
 
 #: lr_const.sformat24
 msgid "1 234,50"
-msgstr ""
+msgstr "1 234,50"
 
 #: lr_const.sformat25
-#, fuzzy
 msgctxt "lr_const.sformat25"
 msgid "Custom"
 msgstr "Özel"
@@ -1064,65 +1062,64 @@ msgstr "Özel"
 
 #: lr_const.sformfile
 msgid "FastReport form"
-msgstr ""
+msgstr "FastReport formu"
 
 #: lr_const.sformnewpage
 msgid "Force new page"
-msgstr ""
+msgstr "Yeni sayfaya zorla"
 
 #: lr_const.sfrdesignerdatainsp
 msgid "Data inspector"
-msgstr ""
+msgstr "Veri denetçisi"
 
 #: lr_const.sfrdesignerexists
 msgid "You already have one TfrDesigner component"
-msgstr ""
+msgstr "Zaten bir TfrDesigner bileşeniniz var"
 
 #: lr_const.sfrdesignerformaddpg
-#, fuzzy
 msgctxt "lr_const.sfrdesignerformaddpg"
 msgid "Add page"
 msgstr "Sayfa ekle"
 
 #: lr_const.sfrdesignerformalign
 msgid "Alignment"
-msgstr ""
+msgstr "Hizalama"
 
 #: lr_const.sfrdesignerformalignbottoms
 msgid "Align bottoms"
-msgstr ""
+msgstr "Altları hizala"
 
 #: lr_const.sfrdesignerformalignetop
 msgid "Align tops"
-msgstr ""
+msgstr "Üstleri hizalayın"
 
 #: lr_const.sfrdesignerformalignhorzcenter
 msgid "Align horizontal centers"
-msgstr ""
+msgstr "Yatay merkezleri hizalayın"
 
 #: lr_const.sfrdesignerformalignleftedge
 msgid "Align left edges"
-msgstr ""
+msgstr "Sol kenarları hizala"
 
 #: lr_const.sfrdesignerformalignrightedge
 msgid "Align right edges"
-msgstr ""
+msgstr "Sağ kenarları hizala"
 
 #: lr_const.sfrdesignerformalignvertcenter
 msgid "Align vertical centers"
-msgstr ""
+msgstr "Dikey merkezleri hizalayın"
 
 #: lr_const.sfrdesignerformallframe
 msgid "All frame lines"
-msgstr ""
+msgstr "Tüm çerçeve çizgileri"
 
 #: lr_const.sfrdesignerformback
 msgid "Send to back"
-msgstr ""
+msgstr "Arkaya gönder"
 
 #: lr_const.sfrdesignerformbackcolor
 msgid "Background color"
-msgstr ""
+msgstr "Arkaplan rengi"
 
 #: lr_const.sfrdesignerformbold
 msgid "Bold"
@@ -1130,15 +1127,15 @@ msgstr "Kalın"
 
 #: lr_const.sfrdesignerformbottomalign
 msgid "Bottom align"
-msgstr ""
+msgstr "Alt hizalama"
 
 #: lr_const.sfrdesignerformbottomframe
 msgid "Bottom frame line"
-msgstr ""
+msgstr "Alt çerçeve çizgisi"
 
 #: lr_const.sfrdesignerformbring
 msgid "Bring to front"
-msgstr ""
+msgstr "Öne getir"
 
 #: lr_const.sfrdesignerformcapt
 msgctxt "lr_const.sfrdesignerformcapt"
@@ -1147,15 +1144,15 @@ msgstr "Tasarımcı"
 
 #: lr_const.sfrdesignerformceneralign
 msgid "Center align"
-msgstr ""
+msgstr "Ortaya hizala"
 
 #: lr_const.sfrdesignerformcenterhwind
 msgid "Center horizontally in window"
-msgstr ""
+msgstr "Pencerede yatay olarak ortala"
 
 #: lr_const.sfrdesignerformcentervertwing
 msgid "Center vertically in window"
-msgstr ""
+msgstr "Pencerede dikey olarak ortala"
 
 #: lr_const.sfrdesignerformclose
 msgid "Close"
@@ -1175,11 +1172,11 @@ msgstr "Kes"
 
 #: lr_const.sfrdesignerformdrawline
 msgid "Draw lines"
-msgstr ""
+msgstr "Çizgi çiz"
 
 #: lr_const.sfrdesignerformfitgrid
 msgid "Fit to grid"
-msgstr ""
+msgstr "Izgaraya sığdır"
 
 #: lr_const.sfrdesignerformfont
 msgid "Font color"
@@ -1208,12 +1205,12 @@ msgstr "Izgara"
 
 #: lr_const.sfrdesignerformgridalign
 msgid "Grid align"
-msgstr ""
+msgstr "Izgaraya hizala"
 
 #: lr_const.sfrdesignerformhightlight
 msgctxt "lr_const.sfrdesignerformhightlight"
 msgid "Highlight attributes"
-msgstr ""
+msgstr "Nitelikleri vurgulayın"
 
 #: lr_const.sfrdesignerforminsband
 msgid "Insert band"
@@ -1225,11 +1222,11 @@ msgstr "Resim ekle"
 
 #: lr_const.sfrdesignerforminsrect
 msgid "Insert rectangle object"
-msgstr ""
+msgstr "Dikdörtgen nesnesi ekle"
 
 #: lr_const.sfrdesignerforminssub
 msgid "Insert subreport"
-msgstr ""
+msgstr "Alt rapor ekle"
 
 #: lr_const.sfrdesignerformitalic
 msgid "Italic"
@@ -1237,11 +1234,11 @@ msgstr "İtalik"
 
 #: lr_const.sfrdesignerformleftalign
 msgid "Left align"
-msgstr ""
+msgstr "Sola hizala"
 
 #: lr_const.sfrdesignerformleftframe
 msgid "Left frame line"
-msgstr ""
+msgstr "Sol çerçeve çizgisi"
 
 #: lr_const.sfrdesignerformnewrp
 msgctxt "lr_const.sfrdesignerformnewrp"
@@ -1254,7 +1251,7 @@ msgstr "Çerçeve yok"
 
 #: lr_const.sfrdesignerformnormaltext
 msgid "Normal text / 90 degrees"
-msgstr ""
+msgstr "Normal yazı/ 90 derece"
 
 #: lr_const.sfrdesignerformobj
 msgid "Objects"
@@ -1281,11 +1278,11 @@ msgstr "Raporu Önizle"
 #: lr_const.sfrdesignerformrect
 msgctxt "lr_const.sfrdesignerformrect"
 msgid "Rectangle"
-msgstr ""
+msgstr "Dikdörtgen"
 
 #: lr_const.sfrdesignerformredo
 msgid "Redo cancelled action"
-msgstr ""
+msgstr "İptal edilen eylemi yinele"
 
 #: lr_const.sfrdesignerformremovepg
 msgid "Remove page"
@@ -1293,11 +1290,11 @@ msgstr "Sayfayı kaldır"
 
 #: lr_const.sfrdesignerformrightalign
 msgid "Right align"
-msgstr ""
+msgstr "Sağa hizala"
 
 #: lr_const.sfrdesignerformrightframe
 msgid "Right frame line"
-msgstr ""
+msgstr "Sağ çerçeve çizgisi"
 
 #: lr_const.sfrdesignerformsaverp
 msgctxt "lr_const.sfrdesignerformsaverp"
@@ -1310,19 +1307,19 @@ msgstr "Hepsini seç"
 
 #: lr_const.sfrdesignerformselectsameclass
 msgid "Select same class objects"
-msgstr ""
+msgstr "Aynı sınıf nesneleri seçin"
 
 #: lr_const.sfrdesignerformselobj
 msgid "Select object"
-msgstr ""
+msgstr "Obje seç"
 
 #: lr_const.sfrdesignerformspace
 msgid "Space equally, horizontally"
-msgstr ""
+msgstr "Yatay olarak eşit boşluk bırakın"
 
 #: lr_const.sfrdesignerformspaceeqvert
 msgid "Space equally, vertically"
-msgstr ""
+msgstr "Dikey olarak eşit boşluk bırakın"
 
 #: lr_const.sfrdesignerformstd
 msgid "Standard"
@@ -1339,15 +1336,15 @@ msgstr "Araçlar"
 
 #: lr_const.sfrdesignerformtopalign
 msgid "Top align"
-msgstr ""
+msgstr "Üste hizala"
 
 #: lr_const.sfrdesignerformtopframe
 msgid "Top frame line"
-msgstr ""
+msgstr "Üst çerçeve çizgisi"
 
 #: lr_const.sfrdesignerformunabletocreatetemplatedir
 msgid "Unable to create template directory"
-msgstr ""
+msgstr "Şablon dizini oluşturulamıyor"
 
 #: lr_const.sfrdesignerformunderline
 msgid "Underline"
@@ -1355,15 +1352,15 @@ msgstr "Altı çizili"
 
 #: lr_const.sfrdesignerformundo
 msgid "Undo last action"
-msgstr ""
+msgstr "Son aksiyonu gerial"
 
 #: lr_const.sfrdesignerformvertcenter
 msgid "Vertical center"
-msgstr ""
+msgstr "Dikey orta"
 
 #: lr_const.sfrdesignerformwidthalign
 msgid "Width align"
-msgstr ""
+msgstr "Genişlik hizalama"
 
 #: lr_const.sfrdesignerform_about
 msgid "&About ..."
@@ -1375,19 +1372,19 @@ msgstr "&Sayfa ekle"
 
 #: lr_const.sfrdesignerform_alignpalette
 msgid "&Alignment palette"
-msgstr ""
+msgstr "&Hizalama paleti"
 
 #: lr_const.sfrdesignerform_back
 msgid "Send to &back"
-msgstr ""
+msgstr "Arkaya &gönder"
 
 #: lr_const.sfrdesignerform_beforeprintscript
 msgid "&Before print script ..."
-msgstr ""
+msgstr "&Yazdırma komut dosyasından önce ..."
 
 #: lr_const.sfrdesignerform_bring
 msgid "Bring to &front"
-msgstr ""
+msgstr "&Öne getir"
 
 #: lr_const.sfrdesignerform_copy
 msgid "&Copy"
@@ -1399,7 +1396,7 @@ msgstr "K&es"
 
 #: lr_const.sfrdesignerform_datainsp
 msgid "&Data inspector"
-msgstr ""
+msgstr "&Veri denetçisi"
 
 #: lr_const.sfrdesignerform_delete
 msgid "&Delete"
@@ -1433,7 +1430,7 @@ msgstr "&Yardım İçeriği"
 
 #: lr_const.sfrdesignerform_help2
 msgid "Help &tool"
-msgstr ""
+msgstr "Yar&dım aracı"
 
 #: lr_const.sfrdesignerform_insp
 msgid "Object &Inspector"
@@ -1441,11 +1438,11 @@ msgstr "Nesne de&netçisi"
 
 #: lr_const.sfrdesignerform_line
 msgid "Line style"
-msgstr ""
+msgstr "Satır sitili"
 
 #: lr_const.sfrdesignerform_modified
 msgid "Modified"
-msgstr ""
+msgstr "Değiştirilmiş"
 
 #: lr_const.sfrdesignerform_new
 msgid "&New ..."
@@ -1477,7 +1474,7 @@ msgstr "Öni&zleme"
 
 #: lr_const.sfrdesignerform_rect
 msgid "&Rectangle"
-msgstr ""
+msgstr "&Dikdörtgen"
 
 #: lr_const.sfrdesignerform_redo
 msgid "&Redo"
@@ -1539,19 +1536,19 @@ msgstr "Değişken &listesi..."
 
 #: lr_const.sfrom
 msgid "from"
-msgstr ""
+msgstr "dan"
 
 #: lr_const.sfrvariables
 msgid "FR variables"
-msgstr ""
+msgstr "FR değişkenleri"
 
 #: lr_const.sfunctioneditor
 msgid "Function editor"
-msgstr ""
+msgstr "Fonksiyon editörü"
 
 #: lr_const.sfunctions
 msgid "Functions"
-msgstr ""
+msgstr "Fonksiyonlar"
 
 #: lr_const.sgeditorformcapt
 msgid "Picture"
@@ -1566,731 +1563,726 @@ msgid "&Load ..."
 msgstr "&Yükle..."
 
 #: lr_const.sgeditorformmemo
-#, fuzzy
 msgctxt "lr_const.sgeditorformmemo"
 msgid "&Memo"
 msgstr "&Not"
 
 #: lr_const.sgeditorformstretch
 msgid "&Stretch"
-msgstr ""
+msgstr "&Uzatmak"
 
 #: lr_const.sgroupeditorformadddbfield
-#, fuzzy
 msgctxt "lr_const.sgroupeditorformadddbfield"
 msgid "Insert DB field"
 msgstr "DB alan ekle"
 
 #: lr_const.sgroupeditorformcapt
 msgid "Group"
-msgstr ""
+msgstr "Grup"
 
 #: lr_const.sgroupeditorformcond
 msgctxt "lr_const.sgroupeditorformcond"
 msgid "Condition"
-msgstr ""
+msgstr "Durum"
 
 #: lr_const.shidezerovalues
 msgid "Hide zero values"
-msgstr ""
+msgstr "Sıfır değerini gizle"
 
 #: lr_const.shilightformback
 msgid "Background"
-msgstr ""
+msgstr "Arkaplan"
 
 #: lr_const.shilightformbold
 msgid "&Bold"
-msgstr ""
+msgstr "&Kalın"
 
 #: lr_const.shilightformcolor
 msgid "C&olor ..."
-msgstr ""
+msgstr "Ren&k ..."
 
 #: lr_const.shilightformcolor2
 msgid "Co&lor ..."
-msgstr ""
+msgstr "R&enk ..."
 
 #: lr_const.shilightformcond
 msgctxt "lr_const.shilightformcond"
 msgid "Condition"
-msgstr ""
+msgstr "Durum"
 
 #: lr_const.shilightformfont
 msgid "Font"
-msgstr ""
+msgstr "Yazıtipi"
 
 #: lr_const.shilightformhilitattr
 msgctxt "lr_const.shilightformhilitattr"
 msgid "Highlight attributes"
-msgstr ""
+msgstr "Nitelikleri vurgulayın"
 
 #: lr_const.shilightformitalic
 msgid "&Italic"
-msgstr ""
+msgstr "&İtalik"
 
 #: lr_const.shilightformother
 msgid "Ot&her"
-msgstr ""
+msgstr "Diğ&er"
 
 #: lr_const.shilightformtransp
 msgid "&Transparent"
-msgstr ""
+msgstr "&Şeffaf"
 
 #: lr_const.shilightformunder
 msgid "&Underline"
-msgstr ""
+msgstr "&Altı Çizili"
 
 #: lr_const.shtmfile
 msgid "HTML file"
-msgstr ""
+msgstr "HTML dosyası"
 
 #: lr_const.sinches
 msgid "Inches"
-msgstr ""
+msgstr "İnç"
 
 #: lr_const.sinsbarcode
 msgid "Insert Barcode object"
-msgstr ""
+msgstr "Barcode nesnesini ekle"
 
 #: lr_const.sinschart
 msgid "Insert Chart object"
-msgstr ""
+msgstr "Chart nesnesini ekle"
 
 #: lr_const.sinscheckbox
 msgid "Insert CheckBox object"
-msgstr ""
+msgstr "CheckBox nesnesini ekle"
 
 #: lr_const.sinscrosstab
 msgid "Insert Cross-tab object"
-msgstr ""
+msgstr "Çapraz sekme nesnesi ekle"
 
 #: lr_const.sinsert
 msgid "Insert"
-msgstr ""
+msgstr "Ekle"
 
 #: lr_const.sinsertexpression
 msgid "Insert Expression"
-msgstr ""
+msgstr "İfade Ekle"
 
 #: lr_const.sinsertfields
 msgid "Insert DB fields"
-msgstr ""
+msgstr "DB alanları ekle"
 
 #: lr_const.sinsertfieldsdbnofields
 msgid "Database without fields"
-msgstr ""
+msgstr "Alansız veritabanı"
 
 #: lr_const.sinsertfieldsformaviabledset
 msgid "&Available datasets"
-msgstr ""
+msgstr "&Mevcut veri setleri"
 
 #: lr_const.sinsertfieldsformband
 msgid "Include &bands"
-msgstr ""
+msgstr "&Grupları dahil et"
 
 #: lr_const.sinsertfieldsformcapt
 msgid "Insert fields"
-msgstr ""
+msgstr "Alan ekle"
 
 #: lr_const.sinsertfieldsformheader
 msgid "&Include headers"
-msgstr ""
+msgstr "&Başlıkları dahil et"
 
 #: lr_const.sinsertfieldsformhorz
 msgid "&Horizontal"
-msgstr ""
+msgstr "&Yatay"
 
 #: lr_const.sinsertfieldsformplace
 msgid "Placement"
-msgstr ""
+msgstr "Yerleştirme"
 
 #: lr_const.sinsertfieldsformvert
 msgid "&Vertical"
-msgstr ""
+msgstr "&Dikey"
 
 #: lr_const.sinsroundrect
 msgid "Insert a RoundRect with shadow area"
-msgstr ""
+msgstr "Gölge alanlı bir RoundRect ekle"
 
 #: lr_const.sinsshape
 msgid "Insert Shape object"
-msgstr ""
+msgstr "Şekil nesnesi ekle"
 
 #: lr_const.sinterpretator
 msgid "Interpretator"
-msgstr ""
+msgstr "Tercüman"
 
 #: lr_const.sinvalidfrfreport
 msgid "Invalid binary report"
-msgstr ""
+msgstr "Geçersiz ikili rapor"
 
 #: lr_const.sinvalidfrfversion
 msgid "Invalid report version"
-msgstr ""
+msgstr "Geçersiz rapor sürümü"
 
 #: lr_const.sinvalidlrfreport
 msgid "Invalid report format"
-msgstr ""
+msgstr "Geçersiz rapor formatı"
 
 #: lr_const.sinvalidvariablename
 #, object-pascal-format
 msgid "\"%s\" is not a valid variable name."
-msgstr ""
+msgstr "\"%s\" geçerli bir değişken adı değil."
 
 #: lr_const.skeepaspectratio
 msgid "Keep aspect ratio"
-msgstr ""
+msgstr "En boy oranını koru"
 
 #: lr_const.skeepchild
 msgid "Keep child together with parent"
-msgstr ""
+msgstr "Çocuğu ebeveyniyle bir arada tutun"
 
 #: lr_const.slazformfile
 msgid "LazReport form"
-msgstr ""
+msgstr "LazReport formu"
 
 #: lr_const.slaztemplatefile
 msgid "LazReport template"
-msgstr ""
+msgstr "LazReport şablonu"
 
 #: lr_const.smathcategory
 msgid "Math"
-msgstr ""
+msgstr "Matematik"
 
 #: lr_const.smemoeditor
 msgid "Memo editor"
-msgstr ""
+msgstr "Not editörü"
 
 #: lr_const.smm
 msgid "MM"
-msgstr ""
+msgstr "MM"
 
 #: lr_const.snewtemplate
 msgid "New template"
-msgstr ""
+msgstr "Yeni şablon"
 
 #: lr_const.snotassigned
-#, fuzzy
 msgctxt "lr_const.snotassigned"
 msgid "[None]"
 msgstr "[Yok]"
 
 #: lr_const.snovalidexportfilenamewassupplied
 msgid "No valid export filename was supplied"
-msgstr ""
+msgstr "Geçerli bir dışa aktarma dosya adı sağlanmadı"
 
 #: lr_const.snovalidfilterclasswassupplied
 msgid "No valid filterclass was supplied"
-msgstr ""
+msgstr "Geçerli bir filterclass sağlanmadı"
 
 #: lr_const.sobjectinspector
 msgid "Object inspector"
-msgstr ""
+msgstr "Nesne denetçisi"
 
 #: lr_const.sobjectnotfound
 #, object-pascal-format
 msgid "Object \"%s\" not found"
-msgstr ""
+msgstr "Nesne \"%s\" bulunamadı"
 
 #: lr_const.sok
 msgid "Ok"
-msgstr ""
+msgstr "Tamam"
 
 #: lr_const.sonfirstpage
 msgid "On first page"
-msgstr ""
+msgstr "İlk sayfada"
 
 #: lr_const.sonlastpage
 msgid "On last page"
-msgstr ""
+msgstr "Son sayfada"
 
 #: lr_const.sother
 msgid "Other ..."
-msgstr ""
+msgstr "Diğer ..."
 
 #: lr_const.sothercategory
-#, fuzzy
 msgctxt "lr_const.sothercategory"
 msgid "Other"
 msgstr "Diğer"
 
 #: lr_const.spagepreparing
 msgid "Processing page:"
-msgstr ""
+msgstr "İşlem sayfası:"
 
 #: lr_const.spageprinting
 msgid "Printing page:"
-msgstr ""
+msgstr "Baskı sayfası:"
 
 #: lr_const.spaper1
 msgid "Letter, 8 1/2 x 11\""
-msgstr ""
+msgstr "Letter, 8 1/2 x 11\""
 
 #: lr_const.spaper10
 msgid "A4 small sheet, 210 x 297 mm"
-msgstr ""
+msgstr "A4 small sheet, 210 x 297 mm"
 
 #: lr_const.spaper100
 msgid "DMPAPER_PENV_5 110X220"
-msgstr ""
+msgstr "DMPAPER_PENV_5 110X220"
 
 #: lr_const.spaper101
 msgid "DMPAPER_PENV_6 120X230"
-msgstr ""
+msgstr "DMPAPER_PENV_6 120X230"
 
 #: lr_const.spaper102
 msgid "DMPAPER_PENV_7 160X230"
-msgstr ""
+msgstr "DMPAPER_PENV_7 160X230"
 
 #: lr_const.spaper103
 msgid "DMPAPER_PENV_8 120X309"
-msgstr ""
+msgstr "DMPAPER_PENV_8 120X309"
 
 #: lr_const.spaper104
 msgid "DMPAPER_PENV_9 229X324"
-msgstr ""
+msgstr "DMPAPER_PENV_9 229X324"
 
 #: lr_const.spaper105
 msgid "DMPAPER_PENV_10 324X458"
-msgstr ""
+msgstr "DMPAPER_PENV_10 324X458"
 
 #: lr_const.spaper106
 msgid "DMPAPER_P16K_ROTATED 215X146"
-msgstr ""
+msgstr "DMPAPER_P16K_ROTATED 215X146"
 
 #: lr_const.spaper107
 msgid "DMPAPER_P32K_ROTATED 151X97"
-msgstr ""
+msgstr "DMPAPER_P32K_ROTATED 151X97"
 
 #: lr_const.spaper108
 msgid "DMPAPER_P32KBIG_ROTATED 151X97"
-msgstr ""
+msgstr "DMPAPER_P32KBIG_ROTATED 151X97"
 
 #: lr_const.spaper109
 msgid "DMPAPER_PENV_1_ROTATED 165X102"
-msgstr ""
+msgstr "DMPAPER_PENV_1_ROTATED 165X102"
 
 #: lr_const.spaper11
 msgid "A5 148 x 210 mm"
-msgstr ""
+msgstr "A5 148 x 210 mm"
 
 #: lr_const.spaper110
 msgid "DMPAPER_PENV_2_ROTATED 176X102"
-msgstr ""
+msgstr "DMPAPER_PENV_2_ROTATED 176X102"
 
 #: lr_const.spaper111
 msgid "DMPAPER_PENV_3_ROTATED 176X125"
-msgstr ""
+msgstr "DMPAPER_PENV_3_ROTATED 176X125"
 
 #: lr_const.spaper112
 msgid "DMPAPER_PENV_4_ROTATED 208X110"
-msgstr ""
+msgstr "DMPAPER_PENV_4_ROTATED 208X110"
 
 #: lr_const.spaper113
 msgid "DMPAPER_PENV_5_ROTATED 220X110"
-msgstr ""
+msgstr "DMPAPER_PENV_5_ROTATED 220X110"
 
 #: lr_const.spaper114
 msgid "DMPAPER_PENV_6_ROTATED 230X120"
-msgstr ""
+msgstr "DMPAPER_PENV_6_ROTATED 230X120"
 
 #: lr_const.spaper115
 msgid "DMPAPER_PENV_7_ROTATED 230X160"
-msgstr ""
+msgstr "DMPAPER_PENV_7_ROTATED 230X160"
 
 #: lr_const.spaper116
 msgid "DMPAPER_PENV_8_ROTATED 309X120"
-msgstr ""
+msgstr "DMPAPER_PENV_8_ROTATED 309X120"
 
 #: lr_const.spaper117
 msgid "DMPAPER_PENV_9_ROTATED 324X229"
-msgstr ""
+msgstr "DMPAPER_PENV_9_ROTATED 324X229"
 
 #: lr_const.spaper118
 msgid "DMPAPER_PENV_10_ROTATED 458X324"
-msgstr ""
+msgstr "DMPAPER_PENV_10_ROTATED 458X324"
 
 #: lr_const.spaper12
 msgid "B4 250 x 354 mm"
-msgstr ""
+msgstr "B4 250 x 354 mm"
 
 #: lr_const.spaper13
 msgid "B5 182 x 257 mm"
-msgstr ""
+msgstr "B5 182 x 257 mm"
 
 #: lr_const.spaper14
 msgid "Folio, 8 1/2 x 13\""
-msgstr ""
+msgstr "Folio, 8 1/2 x 13\""
 
 #: lr_const.spaper15
 msgid "Quarto Sheet, 215 x 275 mm"
-msgstr ""
+msgstr "Quarto Sheet, 215 x 275 mm"
 
 #: lr_const.spaper16
 msgid "10 x 14\""
-msgstr ""
+msgstr "10 x 14\""
 
 #: lr_const.spaper17
 msgid "11 x 17\""
-msgstr ""
+msgstr "11 x 17\""
 
 #: lr_const.spaper18
 msgid "Note, 8 1/2 x 11\""
-msgstr ""
+msgstr "Not, 8 1/2 x 11\""
 
 #: lr_const.spaper19
 msgid "9 Envelope, 3 7/8 x 8 7/8\""
-msgstr ""
+msgstr "9 Envelope, 3 7/8 x 8 7/8\""
 
 #: lr_const.spaper2
 msgid "Letter small, 8 1/2 x 11\""
-msgstr ""
+msgstr "Letter small, 8 1/2 x 11\""
 
 #: lr_const.spaper20
 msgid "#10 Envelope, 4 1/8  x 9 1/2\""
-msgstr ""
+msgstr "#10 Envelope, 4 1/8  x 9 1/2\""
 
 #: lr_const.spaper21
 msgid "#11 Envelope, 4 1/2 x 10 3/8\""
-msgstr ""
+msgstr "#11 Envelope, 4 1/2 x 10 3/8\""
 
 #: lr_const.spaper22
 msgid "#12 Envelope, 4 3/4 x 11\""
-msgstr ""
+msgstr "#12 Envelope, 4 3/4 x 11\""
 
 #: lr_const.spaper23
 msgid "#14 Envelope, 5 x 11 1/2\""
-msgstr ""
+msgstr "#14 Envelope, 5 x 11 1/2\""
 
 #: lr_const.spaper24
 msgid "C Sheet, 17 x 22\""
-msgstr ""
+msgstr "C Sheet, 17 x 22\""
 
 #: lr_const.spaper25
 msgid "D Sheet, 22 x 34\""
-msgstr ""
+msgstr "D Sheet, 22 x 34\""
 
 #: lr_const.spaper256
-#, fuzzy
 msgctxt "lr_const.spaper256"
 msgid "Custom"
 msgstr "Özel"
 
 #: lr_const.spaper26
 msgid "E Sheet, 34 x 44\""
-msgstr ""
+msgstr "E Sheet, 34 x 44\""
 
 #: lr_const.spaper27
 msgid "DL Envelope, 110 x 220 mm"
-msgstr ""
+msgstr "DL Envelope, 110 x 220 mm"
 
 #: lr_const.spaper28
 msgid "C5 Envelope, 162 x 229 mm"
-msgstr ""
+msgstr "C5 Envelope, 162 x 229 mm"
 
 #: lr_const.spaper29
 msgid "C3 Envelope,  324 x 458 mm"
-msgstr ""
+msgstr "C3 Envelope,  324 x 458 mm"
 
 #: lr_const.spaper3
 msgid "Tabloid, 11 x 17\""
-msgstr ""
+msgstr "Tabloid, 11 x 17\""
 
 #: lr_const.spaper30
 msgid "C4 Envelope,  229 x 324 mm"
-msgstr ""
+msgstr "C4 Envelope,  229 x 324 mm"
 
 #: lr_const.spaper31
 msgid "C6 Envelope,  114 x 162 mm"
-msgstr ""
+msgstr "C6 Envelope,  114 x 162 mm"
 
 #: lr_const.spaper32
 msgid "C65 Envelope, 114 x 229 mm"
-msgstr ""
+msgstr "C65 Envelope, 114 x 229 mm"
 
 #: lr_const.spaper33
 msgid "B4 Envelope,  250 x 353 mm"
-msgstr ""
+msgstr "B4 Envelope,  250 x 353 mm"
 
 #: lr_const.spaper34
 msgid "B5 Envelope,  176 x 250 mm"
-msgstr ""
+msgstr "B5 Envelope,  176 x 250 mm"
 
 #: lr_const.spaper35
 msgid "B6 Envelope,  176 x 125 mm"
-msgstr ""
+msgstr "B6 Envelope,  176 x 125 mm"
 
 #: lr_const.spaper36
 msgid "Italy Envelope, 110 x 230 mm"
-msgstr ""
+msgstr "Italy Envelope, 110 x 230 mm"
 
 #: lr_const.spaper37
 msgid "Monarch Envelope, 3 7/8 x 7 1/2\""
-msgstr ""
+msgstr "Monarch Envelope, 3 7/8 x 7 1/2\""
 
 #: lr_const.spaper38
 msgid "6 3/4 Envelope, 3 5/8 x 6 1/2\""
-msgstr ""
+msgstr "6 3/4 Envelope, 3 5/8 x 6 1/2\""
 
 #: lr_const.spaper39
 msgid "US Std Fanfold, 14 7/8 x 11\""
-msgstr ""
+msgstr "US Std Fanfold, 14 7/8 x 11\""
 
 #: lr_const.spaper4
 msgid "Ledger, 17 x 11\""
-msgstr ""
+msgstr "Ledger, 17 x 11\""
 
 #: lr_const.spaper40
 msgid "German Std Fanfold, 8 1/2 x 12\""
-msgstr ""
+msgstr "German Std Fanfold, 8 1/2 x 12\""
 
 #: lr_const.spaper41
 msgid "German Legal Fanfold, 8 1/2 x 13\""
-msgstr ""
+msgstr "German Legal Fanfold, 8 1/2 x 13\""
 
 #: lr_const.spaper42
 msgid "B4 (ISO) 250 x 353 mm"
-msgstr ""
+msgstr "B4 (ISO) 250 x 353 mm"
 
 #: lr_const.spaper43
 msgid "Japanese Postcard 100 x 148 mm"
-msgstr ""
+msgstr "Japanese Postcard 100 x 148 mm"
 
 #: lr_const.spaper44
 msgid "9 x 11\""
-msgstr ""
+msgstr "9 x 11\""
 
 #: lr_const.spaper45
 msgid "10 x 11\""
-msgstr ""
+msgstr "10 x 11\""
 
 #: lr_const.spaper46
 msgid "15 x 11\""
-msgstr ""
+msgstr "15 x 11\""
 
 #: lr_const.spaper47
 msgid "Envelope Invite 220 x 220 mm"
-msgstr ""
+msgstr "Envelope Invite 220 x 220 mm"
 
 #: lr_const.spaper5
 msgid "Legal, 8 1/2 x 14\""
-msgstr ""
+msgstr "Legal, 8 1/2 x 14\""
 
 #: lr_const.spaper50
 msgid "Letter Extra 9/275 x 12\""
-msgstr ""
+msgstr "Letter Extra 9/275 x 12\""
 
 #: lr_const.spaper51
 msgid "Legal Extra 9/275 x 15\""
-msgstr ""
+msgstr "Legal Extra 9/275 x 15\""
 
 #: lr_const.spaper52
 msgid "Tabloid Extra 11.69 x 18\""
-msgstr ""
+msgstr "Tabloid Extra 11.69 x 18\""
 
 #: lr_const.spaper53
 msgid "A4 Extra 9.27 x 12.69\""
-msgstr ""
+msgstr "A4 Extra 9.27 x 12.69\""
 
 #: lr_const.spaper54
 msgid "Letter Transverse 8/275 x 11\""
-msgstr ""
+msgstr "Letter Transverse 8/275 x 11\""
 
 #: lr_const.spaper55
 msgid "A4 Transverse 210 x 297 mm"
-msgstr ""
+msgstr "A4 Transverse 210 x 297 mm"
 
 #: lr_const.spaper56
 msgid "Letter Extra Transverse 9/275 x 12\""
-msgstr ""
+msgstr "Letter Extra Transverse 9/275 x 12\""
 
 #: lr_const.spaper57
 msgid "SuperASuperAA4 227 x 356 mm"
-msgstr ""
+msgstr "SuperASuperAA4 227 x 356 mm"
 
 #: lr_const.spaper58
 msgid "SuperBSuperBA3 305 x 487 mm"
-msgstr ""
+msgstr "SuperBSuperBA3 305 x 487 mm"
 
 #: lr_const.spaper59
 msgid "Letter Plus 8.5 x 12.69\""
-msgstr ""
+msgstr "Letter Plus 8.5 x 12.69\""
 
 #: lr_const.spaper6
 msgid "Statement, 5 1/2 x 8 1/2\""
-msgstr ""
+msgstr "Statement, 5 1/2 x 8 1/2\""
 
 #: lr_const.spaper60
 msgid "A4 Plus 210 x 330 mm"
-msgstr ""
+msgstr "A4 Plus 210 x 330 mm"
 
 #: lr_const.spaper61
 msgid "A5 Transverse 148 x 210 mm"
-msgstr ""
+msgstr "A5 Transverse 148 x 210 mm"
 
 #: lr_const.spaper62
 msgid "B5 (JIS) Transverse 182 x 257 mm"
-msgstr ""
+msgstr "B5 (JIS) Transverse 182 x 257 mm"
 
 #: lr_const.spaper63
 msgid "A3 Extra 322 x 445 mm"
-msgstr ""
+msgstr "A3 Extra 322 x 445 mm"
 
 #: lr_const.spaper64
 msgid "A5 Extra 174 x 235 mm"
-msgstr ""
+msgstr "A5 Extra 174 x 235 mm"
 
 #: lr_const.spaper65
 msgid "B5 (ISO) Extra 201 x 276 mm"
-msgstr ""
+msgstr "B5 (ISO) Extra 201 x 276 mm"
 
 #: lr_const.spaper66
 msgid "A2 420 x 594 mm"
-msgstr ""
+msgstr "A2 420 x 594 mm"
 
 #: lr_const.spaper67
 msgid "A3 Transverse 297 x 420 mm"
-msgstr ""
+msgstr "A3 Transverse 297 x 420 mm"
 
 #: lr_const.spaper68
 msgid "A3 Extra Transverse 322 x 445 mm"
-msgstr ""
+msgstr "A3 Extra Transverse 322 x 445 mm"
 
 #: lr_const.spaper69
 msgid "Double Japanese Postcard 200 x 148 mm"
-msgstr ""
+msgstr "Double Japanese Postcard 200 x 148 mm"
 
 #: lr_const.spaper7
 msgid "Executive, 7 1/4 x 10 1/2\""
-msgstr ""
+msgstr "Executive, 7 1/4 x 10 1/2\""
 
 #: lr_const.spaper70
 msgid "A6 105x148 mm"
-msgstr ""
+msgstr "A6 105x148 mm"
 
 #: lr_const.spaper71
 msgid "DMPAPER_JENV_KAKU2 240X132"
-msgstr ""
+msgstr "DMPAPER_JENV_KAKU2 240X132"
 
 #: lr_const.spaper72
 msgid "DMPAPER_JENV_KAKU3 216X277"
-msgstr ""
+msgstr "DMPAPER_JENV_KAKU3 216X277"
 
 #: lr_const.spaper73
 msgid "DMPAPER_JENV_CHOU3 120X235"
-msgstr ""
+msgstr "DMPAPER_JENV_CHOU3 120X235"
 
 #: lr_const.spaper74
 msgid "DMPAPER_JENV_CHOU4 90X205"
-msgstr ""
+msgstr "DMPAPER_JENV_CHOU4 90X205"
 
 #: lr_const.spaper75
 msgid "DMPAPER_LETTER_ROTATED 279.4x215.9"
-msgstr ""
+msgstr "DMPAPER_LETTER_ROTATED 279.4x215.9"
 
 #: lr_const.spaper76
 msgid "DMPAPER_A3_ROTATED 420x297"
-msgstr ""
+msgstr "DMPAPER_A3_ROTATED 420x297"
 
 #: lr_const.spaper77
 msgid "DMPAPER_A4_ROTATED 297X210"
-msgstr ""
+msgstr "DMPAPER_A4_ROTATED 297X210"
 
 #: lr_const.spaper78
 msgid "DMPAPER_A5_ROTATED 210X148"
-msgstr ""
+msgstr "DMPAPER_A5_ROTATED 210X148"
 
 #: lr_const.spaper79
 msgid "DMPAPER_B4_JIS_ROTATED 364X257"
-msgstr ""
+msgstr "DMPAPER_B4_JIS_ROTATED 364X257"
 
 #: lr_const.spaper8
 msgid "A3 297 x 420 mm"
-msgstr ""
+msgstr "A3 297 x 420 mm"
 
 #: lr_const.spaper80
 msgid "DMPAPER_B5_JIS_ROTATED 257X182"
-msgstr ""
+msgstr "DMPAPER_B5_JIS_ROTATED 257X182"
 
 #: lr_const.spaper81
 msgid "DMPAPER_JAPANESE_POSTCARD_ROTATED 148X100"
-msgstr ""
+msgstr "DMPAPER_JAPANESE_POSTCARD_ROTATED 148X100"
 
 #: lr_const.spaper82
 msgid "DMPAPER_DBL_JAPANESE_POSTCARD_ROTATED 148X200"
-msgstr ""
+msgstr "DMPAPER_DBL_JAPANESE_POSTCARD_ROTATED 148X200"
 
 #: lr_const.spaper83
 msgid "DMPAPER_A6_ROTATED 148X105"
-msgstr ""
+msgstr "DMPAPER_A6_ROTATED 148X105"
 
 #: lr_const.spaper84
 msgid "DMPAPER_JENV_KAKU2_ROTATED 332X240"
-msgstr ""
+msgstr "DMPAPER_JENV_KAKU2_ROTATED 332X240"
 
 #: lr_const.spaper85
 msgid "DMPAPER_JENV_KAKU3_ROTATED 277X216"
-msgstr ""
+msgstr "DMPAPER_JENV_KAKU3_ROTATED 277X216"
 
 #: lr_const.spaper86
 msgid "DMPAPER_JENV_CHOU3_ROTATED 235X120"
-msgstr ""
+msgstr "DMPAPER_JENV_CHOU3_ROTATED 235X120"
 
 #: lr_const.spaper87
 msgid "DMPAPER_JENV_CHOU4_ROTATED 205X90"
-msgstr ""
+msgstr "DMPAPER_JENV_CHOU4_ROTATED 205X90"
 
 #: lr_const.spaper88
 msgid "DMPAPER_B6_JIS 128X122"
-msgstr ""
+msgstr "DMPAPER_B6_JIS 128X122"
 
 #: lr_const.spaper89
 msgid "DMPAPER_B6_JIS_ROTATED 182X128"
-msgstr ""
+msgstr "DMPAPER_B6_JIS_ROTATED 182X128"
 
 #: lr_const.spaper9
 msgid "A4 210 x 297 mm"
-msgstr ""
+msgstr "A4 210 x 297 mm"
 
 #: lr_const.spaper90
 msgid "DMPAPER_12X11 304.8X279.4"
-msgstr ""
+msgstr "DMPAPER_12X11 304.8X279.4"
 
 #: lr_const.spaper91
 msgid "DMPAPER_JENV_YOU4 105X235"
-msgstr ""
+msgstr "DMPAPER_JENV_YOU4 105X235"
 
 #: lr_const.spaper92
 msgid "DMPAPER_JENV_YOU4_ROTATED 235X105"
-msgstr ""
+msgstr "DMPAPER_JENV_YOU4_ROTATED 235X105"
 
 #: lr_const.spaper93
 msgid "DMPAPER_P16K 146X215"
-msgstr ""
+msgstr "DMPAPER_P16K 146X215"
 
 #: lr_const.spaper94
 msgid "DMPAPER_P32K 97X151"
-msgstr ""
+msgstr "DMPAPER_P32K 97X151"
 
 #: lr_const.spaper95
 msgid "DMPAPER_P32KBIG 97X151"
-msgstr ""
+msgstr "DMPAPER_P32KBIG 97X151"
 
 #: lr_const.spaper96
 msgid "DMPAPER_PENV_1 102X165"
-msgstr ""
+msgstr "DMPAPER_PENV_1 102X165"
 
 #: lr_const.spaper97
 msgid "DMPAPER_PENV_2 102X176"
-msgstr ""
+msgstr "DMPAPER_PENV_2 102X176"
 
 #: lr_const.spaper98
 msgid "DMPAPER_PENV_3 125X176"
-msgstr ""
+msgstr "DMPAPER_PENV_3 125X176"
 
 #: lr_const.spaper99
 msgid "DMPAPER_PENV_4 110X208"
-msgstr ""
+msgstr "DMPAPER_PENV_4 110X208"
 
 #: lr_const.spg
 msgid "Page"
@@ -2302,11 +2294,11 @@ msgstr "&Alt, mm"
 
 #: lr_const.spgoptformbycolumns
 msgid "By Colum&ns"
-msgstr ""
+msgstr "Sütunlara &Göre"
 
 #: lr_const.spgoptformbyrows
 msgid "By Row&s"
-msgstr ""
+msgstr "Sa&tırlara Göre"
 
 #: lr_const.spgoptformcapt
 msgctxt "lr_const.spgoptformcapt"
@@ -2315,11 +2307,11 @@ msgstr "Sayfa Seçenekleri"
 
 #: lr_const.spgoptformcolgap
 msgid "&Column gap, mm"
-msgstr ""
+msgstr "&Kolon boşluğu, mm"
 
 #: lr_const.spgoptformcolumn
 msgid "Columns"
-msgstr ""
+msgstr "Sütunlar"
 
 #: lr_const.spgoptformdontuse
 msgid "&Don't use"
@@ -2331,15 +2323,15 @@ msgstr "&Yükseklik, mm"
 
 #: lr_const.spgoptforminvalidcustompapersize
 msgid "Invalid custom paper size."
-msgstr ""
+msgstr "Geçersiz özel kağıt boyutu."
 
 #: lr_const.spgoptformland
 msgid "&Landscape"
-msgstr ""
+msgstr "&Manzara"
 
 #: lr_const.spgoptformlayoutorder
 msgid "Layout Order"
-msgstr ""
+msgstr "Yerleşim Sırası"
 
 #: lr_const.spgoptformleft
 msgid "&Left, mm"
@@ -2347,7 +2339,7 @@ msgstr "&Sol, mm"
 
 #: lr_const.spgoptformmargins
 msgid "Margins"
-msgstr ""
+msgstr "Kenarlıklar"
 
 #: lr_const.spgoptformnumber
 msgid "&Number"
@@ -2360,11 +2352,11 @@ msgstr "Seçenekler"
 
 #: lr_const.spgoptformor
 msgid "Orientation"
-msgstr ""
+msgstr "Oryantasyon"
 
 #: lr_const.spgoptformpaper
 msgid "Paper"
-msgstr ""
+msgstr "Kağıt"
 
 #: lr_const.spgoptformpgmargins
 msgid "Page margins"
@@ -2372,11 +2364,11 @@ msgstr "Sayfa boşlukları"
 
 #: lr_const.spgoptformport
 msgid "&Portrait"
-msgstr ""
+msgstr "&Portre"
 
 #: lr_const.spgoptformprint
 msgid "&Print to previous page"
-msgstr ""
+msgstr "&Önceki sayfaya yazdır"
 
 #: lr_const.spgoptformright
 msgid "&Right, mm"
@@ -2464,19 +2456,19 @@ msgstr "Raporu kaydet"
 
 #: lr_const.spreviewformscale
 msgid "Scale"
-msgstr ""
+msgstr "Skala"
 
 #: lr_const.spreviewformwhole
 msgid "&Whole page"
-msgstr ""
+msgstr "&Tüm sayfa"
 
 #: lr_const.sprintchildifnotvisible
 msgid "Print child if not visible"
-msgstr ""
+msgstr "Görünmüyorsa çocuğu yazdır"
 
 #: lr_const.sprintererror
 msgid "Selected printer is not valid"
-msgstr ""
+msgstr "Seçilen yazıcı geçerli değil"
 
 #: lr_const.sprintformall
 msgid "&All"
@@ -2484,7 +2476,7 @@ msgstr "&Tümü"
 
 #: lr_const.sprintformcollate
 msgid "Collate"
-msgstr ""
+msgstr "Harmanla"
 
 #: lr_const.sprintformcopy
 msgid "&Copies:"
@@ -2497,7 +2489,7 @@ msgstr "Geçerli &sayfa"
 
 #: lr_const.sprintforminfo
 msgid "Enter page numbers and/or page ranges, separated by commas. For example, 1,3,5-12"
-msgstr ""
+msgstr "Sayfa numaralarını ve/veya sayfa aralıklarını virgülle ayırarak girin. Örneğin, 1,3,5-12"
 
 #: lr_const.sprintformnumber
 msgid "&Numbers:"
@@ -2522,53 +2514,53 @@ msgstr "Özellikler"
 
 #: lr_const.sprintifsubsetempty
 msgid "Print if detail empty"
-msgstr ""
+msgstr "Detay boşsa yazdır"
 
 #: lr_const.sremovepg
 msgid "Remove this page?"
-msgstr ""
+msgstr "Sayfa kaldırılsın mı?"
 
 #: lr_const.srepeatheader
 msgid "Show on all pages"
-msgstr ""
+msgstr "Tüm sayfalarda göster"
 
 #: lr_const.srepfile
 msgid "Report file"
-msgstr ""
+msgstr "Rapor dosyası"
 
 #: lr_const.sreportcorruptoldknowversion
 #, object-pascal-format
 msgid "This report is corrupt, it probably needs \"LRE_OLDV%d_FRF_READ\"=true"
-msgstr ""
+msgstr "Bu rapor bozuk, muhtemelen \"LRE_OLDV%d_FRF_READ\"=true olması gerekiyor"
 
 #: lr_const.sreportcorruptunknownversion
 #, object-pascal-format
 msgid "This report is corrupt, frVersion=%d"
-msgstr ""
+msgstr "Bu rapor bozuk, frVersion=%d"
 
 #: lr_const.sreportcreatedate
 msgid "Report creation date"
-msgstr ""
+msgstr "Rapor oluşturma tarihi"
 
 #: lr_const.sreportlastmodifydate
 msgid "Report last modification date"
-msgstr ""
+msgstr "Rapor son değişiklik tarihi"
 
 #: lr_const.sreportloadingerror
 msgid "Error while loading report"
-msgstr ""
+msgstr "Rapor yüklenirken hata oluştu"
 
 #: lr_const.sreportpreparing
 msgid "Preparing report"
-msgstr ""
+msgstr "Rapor hazırlama"
 
 #: lr_const.sroundrectformbegincolor
 msgid "Begin color"
-msgstr ""
+msgstr "Başlangıç rengi"
 
 #: lr_const.sroundrectformcaption
 msgid "Property editor"
-msgstr ""
+msgstr "Özellik editörü"
 
 #: lr_const.sroundrectformcolor
 msgid "Color"
@@ -2576,7 +2568,7 @@ msgstr "Renk"
 
 #: lr_const.sroundrectformcurve
 msgid "Curve"
-msgstr ""
+msgstr "Eğri"
 
 #: lr_const.sroundrectformdata
 msgid "Data .."
@@ -2584,29 +2576,27 @@ msgstr "Veri ..."
 
 #: lr_const.sroundrectformendcolor
 msgid "End Color"
-msgstr ""
+msgstr "Son rengi"
 
 #: lr_const.sroundrectformframed
 msgid "Framed zone"
-msgstr ""
+msgstr "Çerçeveli bölge"
 
 #: lr_const.sroundrectformgradient
 msgid "Gradient"
-msgstr ""
+msgstr "Gradyan"
 
 #: lr_const.sroundrectformhint
 msgid "Click here to define the shadow color or gradient colors"
-msgstr ""
+msgstr "Gölge rengini veya degrade renklerini tanımlamak için burayı tıklayın"
 
 #: lr_const.sroundrectformsample
-#, fuzzy
-#| msgid "Sample :"
 msgid "Sample :"
 msgstr "Örnek :"
 
 #: lr_const.sroundrectformshadow
 msgid "Shadow width"
-msgstr ""
+msgstr "Gölge genişliği"
 
 #: lr_const.sroundrectformstyle
 msgid "Style"
@@ -2614,21 +2604,19 @@ msgstr "Stil"
 
 #: lr_const.sroundrectformstyledif
 msgid "Vertical,Horizontal,Elliptic,Rectangle,Horiz._Center,Vert._Center"
-msgstr ""
+msgstr "Dikey,Yatay,Eliptik,Dikdörtgen,Yatay._Orta,Dikey._Orta"
 
 #: lr_const.sroundrectformvar
-#, fuzzy
-#| msgid "Variables ..."
 msgid "Variables ..."
 msgstr "Değişkenler ..."
 
 #: lr_const.sroundrectsqrcorners
 msgid "Squared corners"
-msgstr ""
+msgstr "Kare köşeler"
 
 #: lr_const.srtffile
 msgid "Rich Text file"
-msgstr ""
+msgstr "Zengin Metin dosyası"
 
 #: lr_const.ssavechanges
 msgid "Save changes"
@@ -2636,40 +2624,40 @@ msgstr "Değişiklikleri Kaydet"
 
 #: lr_const.sscripteditor
 msgid "Script editor"
-msgstr ""
+msgstr "Senaryo editörü"
 
 #: lr_const.sshape1
 msgctxt "lr_const.sshape1"
 msgid "Rectangle"
-msgstr ""
+msgstr "Dikdörtgen"
 
 #: lr_const.sshape2
 msgid "Rounded rectangle"
-msgstr ""
+msgstr "Yuvarlak dikdörtgen"
 
 #: lr_const.sshape3
 msgid "Ellipse"
-msgstr ""
+msgstr "Elips"
 
 #: lr_const.sshape4
 msgid "Triangle"
-msgstr ""
+msgstr "Üçgen"
 
 #: lr_const.sshape5
 msgid "Diagonal1"
-msgstr ""
+msgstr "Çapraz1"
 
 #: lr_const.sshape6
 msgid "Diagonal2"
-msgstr ""
+msgstr "Çapraz2"
 
 #: lr_const.sshapeformcaption
 msgid "Shape"
-msgstr ""
+msgstr "Şekil"
 
 #: lr_const.sshapeformkind
 msgid "Shape kind"
-msgstr ""
+msgstr "Şekil türü"
 
 #: lr_const.sspecval
 msgctxt "lr_const.sspecval"
@@ -2678,27 +2666,27 @@ msgstr "Diğer"
 
 #: lr_const.sstretched
 msgid "Stretched"
-msgstr ""
+msgstr "Gerilmiş"
 
 #: lr_const.sstringcategory
 msgid "String"
-msgstr ""
+msgstr "String"
 
 #: lr_const.ssubreportonpage
 msgid "SubReport on page"
-msgstr ""
+msgstr "Alt Rapor sayfa"
 
 #: lr_const.stemplemptydesc
 msgid "New report based on empty template"
-msgstr ""
+msgstr "Boş şablonu temel alan yeni rapor"
 
 #: lr_const.stemplemtpyrp
 msgid "Empty template"
-msgstr ""
+msgstr "Boş şablon"
 
 #: lr_const.stemplfile
 msgid "FastReport template"
-msgstr ""
+msgstr "FastReport şablonu"
 
 #: lr_const.stemplformdesc
 msgid "Description"
@@ -2711,35 +2699,35 @@ msgstr "Yeni Rapor"
 
 #: lr_const.stextfile
 msgid "ASCII Text file"
-msgstr ""
+msgstr "ASCII metin dosyası"
 
 #: lr_const.stimeformat1
 msgid "hh:nn:ss"
-msgstr ""
+msgstr "hh:nn:ss"
 
 #: lr_const.stimeformat2
 msgid "h:nn:ss"
-msgstr ""
+msgstr "h:nn:ss"
 
 #: lr_const.stimeformat3
 msgid "hh:nn"
-msgstr ""
+msgstr "hh:nn"
 
 #: lr_const.stimeformat4
 msgid "h:nn"
-msgstr ""
+msgstr "h:nn"
 
 #: lr_const.sto
 msgid "to"
-msgstr ""
+msgstr "den"
 
 #: lr_const.stransparent
 msgid "Transparent"
-msgstr ""
+msgstr "Şeffaf"
 
 #: lr_const.sunabletoreadversion
 msgid "Unable to read report version"
-msgstr ""
+msgstr "Rapor sürümü okunamıyor"
 
 #: lr_const.suntitled
 msgid "Untitled"
@@ -2747,15 +2735,15 @@ msgstr "Adsız"
 
 #: lr_const.susefixedfontsettings
 msgid "Use fixed font settings"
-msgstr ""
+msgstr "Sabit yazı tipi ayarlarını kullanın"
 
 #: lr_const.susememofontsettings
 msgid "Use Memo font settings"
-msgstr ""
+msgstr "Not yazı tipi ayarlarını kullanın"
 
 #: lr_const.susesyntaxhighlight
 msgid "Use syntax highlight"
-msgstr ""
+msgstr "Sözdizimi vurgusunu kullanma"
 
 #: lr_const.svar1
 msgid "Page#"
@@ -2763,7 +2751,7 @@ msgstr "Sayfa#"
 
 #: lr_const.svar2
 msgid "Expression"
-msgstr ""
+msgstr "İfade"
 
 #: lr_const.svar3
 msgctxt "lr_const.svar3"
@@ -2781,7 +2769,7 @@ msgstr "Satır#"
 
 #: lr_const.svar6
 msgid "Line through#"
-msgstr ""
+msgstr "Satır geçiş#"
 
 #: lr_const.svar7
 msgid "Column#"
@@ -2797,15 +2785,15 @@ msgstr "ToplamSayfa"
 
 #: lr_const.svaredformcapt
 msgid "Variables list"
-msgstr ""
+msgstr "Değişken lsitesi"
 
 #: lr_const.svaredformcat
 msgid "&Categories and variables"
-msgstr ""
+msgstr "&Kategori ve değişkenler"
 
 #: lr_const.svarformat
 msgid "Variable format ..."
-msgstr ""
+msgstr "Değişken formatı ..."
 
 #: lr_const.svarformcapt
 msgctxt "lr_const.svarformcapt"
@@ -2818,15 +2806,15 @@ msgstr "&Kategori:"
 
 #: lr_const.svariable
 msgid "Variable"
-msgstr ""
+msgstr "Değişken"
 
 #: lr_const.svbandeditorformbnd
 msgid "Bands"
-msgstr ""
+msgstr "Bantlar"
 
 #: lr_const.svbandeditorformcapt
 msgid "Band data sources"
-msgstr ""
+msgstr "Bant veri kaynakları"
 
 #: lr_const.svbandeditorformdatasource
 msgctxt "lr_const.svbandeditorformdatasource"
@@ -2840,11 +2828,11 @@ msgstr "&Kayıt sayısı"
 
 #: lr_const.svirtualdataset
 msgid "Virtual Dataset"
-msgstr ""
+msgstr "Sanal Dataseti"
 
 #: lr_const.swordbreak
 msgid "Word break"
-msgstr ""
+msgstr "Kelime sonu"
 
 #: lr_const.swordwrap
 msgid "Word wrap"

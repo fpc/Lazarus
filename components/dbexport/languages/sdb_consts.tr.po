@@ -1,0 +1,97 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2024-10-28 09:54+0000\n"
+"Last-Translator: Onur ERÇELEN <onur2x@gmail.com>\n"
+"Language-Team: Turkish\n"
+"Language: tr\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Loco-Source-Locale: tr_TR\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Parser: loco_parse_po"
+
+#: sdb_consts.scancelrecordsexported
+#, object-pascal-format, fuzzy
+msgctxt "sdb_consts.scancelrecordsexported"
+msgid "Exported %d before user canceled."
+msgstr "%d adet kayıt dışa aktarıldı, kullanıcı iptal etti."
+
+#: sdb_consts.sdb_availableexportformats
+msgid "Available export formats:"
+msgstr "Mevcut dışa aktarma formatları:"
+
+#: sdb_consts.sdb_cancel
+msgid "&Cancel"
+msgstr "&İptal"
+
+#: sdb_consts.sdb_configuredataexport
+msgid "Configure data export"
+msgstr "Veri dışa aktarmayı yapılandır"
+
+#: sdb_consts.sdb_exportprogress
+msgid "Export progress"
+msgstr "Dışa aktarma ilerlemesi"
+
+#: sdb_consts.sdb_fields
+msgid "Fields"
+msgstr "Alanlar"
+
+#: sdb_consts.sdb_filename
+msgid "Filename:"
+msgstr "Dosya adı:"
+
+#: sdb_consts.sdb_formatting
+msgid "Formatting"
+msgstr "Biçimlendirme"
+
+#: sdb_consts.sdb_moveselectedfielddown
+msgid "Move selected field down"
+msgstr "Seçilen alanı aşağı taşı"
+
+#: sdb_consts.sdb_moveselectedfieldup
+msgid "Move selected field up"
+msgstr "Seçilen alanı yukarı taşı"
+
+#: sdb_consts.sdb_propertiesforselectedfield
+msgid "Properties for selected field:"
+msgstr "Seçilen alanın özellikleri:"
+
+#: sdb_consts.sdb_selectdataexportformat
+msgid "Select data export Format"
+msgstr "Veri dışa aktarma formatını seç"
+
+#: sdb_consts.sdb_selectfieldstoexport
+msgid "Select fi&elds to export"
+msgstr "Dışa aktarılacak alanları seç"
+
+#: sdb_consts.serrnodatasetassigned
+msgid "DataExporter has no Dataset assigned."
+msgstr "DataExporter'a veri kümesi atanmadı."
+
+#: sdb_consts.serropeningdataset
+#, object-pascal-format, fuzzy
+msgctxt "sdb_consts.serropeningdataset"
+msgid "Could not open dataset for exporting: %s"
+msgstr "Dışa aktarma için veri kümesi açılamadı: %s"
+
+#: sdb_consts.sexecute
+msgid "Execute ..."
+msgstr "Çalıştır ..."
+
+#: sdb_consts.snrecordsexported
+#, object-pascal-format, fuzzy
+msgctxt "sdb_consts.snrecordsexported"
+msgid "Successfully exported %d records."
+msgstr "%d kayıt başarıyla dışa aktarıldı."
+
+#: sdb_consts.sprogress
+#, object-pascal-format, fuzzy
+msgctxt "sdb_consts.sprogress"
+msgid "Exporting %d records"
+msgstr "%d kayıt dışa aktarılıyor"
+

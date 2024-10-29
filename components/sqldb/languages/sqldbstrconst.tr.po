@@ -1,0 +1,239 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-10-29 18:06+0000\n"
+"PO-Revision-Date: 2024-10-29 18:15+0000\n"
+"Last-Translator: \n"
+"Language-Team: Unknown\n"
+"Language: zxx\n"
+"Plural-Forms: nplurals=2; plural=n!=1;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Loco-Source-Locale: tr_TR\n"
+"X-Loco-Parser: loco_parse_po\n"
+"X-Generator: Loco https://localise.biz/"
+
+#: sqldbstrconst.lrsgeneratesqlstatements
+msgid "Edit/Generate SQL Statements"
+msgstr "SQL İfadelerini Düzenleme/ Oluşturma"
+
+#: sqldbstrconst.lrssqldatasetopen
+#, object-pascal-format
+msgid "Dataset not open: %s"
+msgstr "Veri kümesi açık değil: %s"
+
+#: sqldbstrconst.lrssqlgenselect
+msgid "You must select fields to be updated and key fields."
+msgstr "Güncellenecek alanları ve anahtar alanları seçmelisiniz."
+
+#: sqldbstrconst.screatestringconstant
+msgid "Create string constant"
+msgstr "String sabiti oluşturma"
+
+#: sqldbstrconst.seditsql
+msgid "Edit SQL ..."
+msgstr "SQL Düzenle ..."
+
+#: sqldbstrconst.seditupdatesql
+msgid "Edit all SQL statements"
+msgstr "Tüm SQL ifadelerini düzenleyin"
+
+#: sqldbstrconst.serrconnectionnotassigned
+msgid "Database not assigned. Assign Database first."
+msgstr "Veritabanı atanmamış. Önce Veritabanını atayın."
+
+#: sqldbstrconst.sfirebirddatabases
+msgid "Firebird databases"
+msgstr "Firebird veritabanları"
+
+#: sqldbstrconst.sgenerateupdatesql
+msgid "Generate update SQL"
+msgstr "Güncelleme SQL'i oluşturma"
+
+#: sqldbstrconst.sinterbasedatabases
+msgid "Interbase databases"
+msgstr "Interbase veritabanları"
+
+#: sqldbstrconst.slibraries
+msgid "Shared libraries"
+msgstr "Paylaşılan kütüphaneler"
+
+#: sqldbstrconst.sloadsqlcodehint
+msgid "Load SQL code ..."
+msgstr "SQL Kodu yükle ..."
+
+#: sqldbstrconst.smetacolumns
+msgid "Columns"
+msgstr "Sütunlar"
+
+#: sqldbstrconst.smetapleasespecifyatableintheobjectfield
+msgid "Please specify a table in the object field."
+msgstr "Lütfen nesne alanında bir tablo belirtin."
+
+#: sqldbstrconst.smetaprocedures
+msgid "Procedures"
+msgstr "Prosedurler"
+
+#: sqldbstrconst.smetasystables
+msgid "SysTables"
+msgstr "SysTabloları"
+
+#: sqldbstrconst.smetatabcaption
+msgid "Metadata"
+msgstr "Metaverileri"
+
+#: sqldbstrconst.smetatables
+msgid "Tables"
+msgstr "Tablolar"
+
+#: sqldbstrconst.sqlsyntaxok
+msgid "No syntax errors in SQL statement found."
+msgstr "SQL deyiminde sözdizimi hatası bulunamadı."
+
+#: sqldbstrconst.squickcheckofsqlsyntaxhint
+msgid "Quick check of SQL syntax"
+msgstr "SQL sözdiziminin hızlı kontrolü"
+
+#: sqldbstrconst.sresulttabcaption
+msgid "Results"
+msgstr "Sonuç"
+
+#: sqldbstrconst.srunsqlcodehint
+msgid "Run SQL code"
+msgstr "SQL Kodu çalıştır"
+
+#: sqldbstrconst.ssavesqlcodehint
+msgid "Save SQL code ..."
+msgstr "SQL Kodu kaydet..."
+
+#: sqldbstrconst.ssqlbrackets
+msgctxt "sqldbstrconst.ssqlbrackets"
+msgid "Brackets"
+msgstr "Parantezler"
+
+#: sqldbstrconst.ssqldelimitersforfieldtablenames
+msgctxt "sqldbstrconst.ssqldelimitersforfieldtablenames"
+msgid "Delimiters for field/table names"
+msgstr "Alan/tablo adları için sınırlayıcılar"
+
+#: sqldbstrconst.ssqledit
+msgid "Edit SQL Script ..."
+msgstr "SQL Script Düzenle ..."
+
+#: sqldbstrconst.ssqlerror
+msgid "Probable SQL error"
+msgstr "Muhtemel SQL hatası"
+
+#: sqldbstrconst.ssqlfullyqualifiedfields
+msgctxt "sqldbstrconst.ssqlfullyqualifiedfields"
+msgid "Fully qualified fields"
+msgstr "Tam nitelikli alanlar"
+
+#: sqldbstrconst.ssqlgenerated
+msgid "SQL statements successfully generated."
+msgstr "SQL deyimleri başarıyla oluşturuldu."
+
+#: sqldbstrconst.ssqlgeneratesql
+msgctxt "sqldbstrconst.ssqlgeneratesql"
+msgid "Generate SQL"
+msgstr "SQL Oluştur"
+
+#: sqldbstrconst.ssqlindent
+msgctxt "sqldbstrconst.ssqlindent"
+msgid "Indent"
+msgstr "Girinti"
+
+#: sqldbstrconst.ssqlite3databases
+msgid "SQLite3 databases"
+msgstr "SQLite3 veritabanı"
+
+#: sqldbstrconst.ssqlkeyfields
+msgctxt "sqldbstrconst.ssqlkeyfields"
+msgid "Key fields"
+msgstr "Anahtar alanlar"
+
+#: sqldbstrconst.ssqllinelength
+msgctxt "sqldbstrconst.ssqllinelength"
+msgid "Line length"
+msgstr "Satır uzunluğu"
+
+#: sqldbstrconst.ssqlnosqlgenerated
+msgctxt "sqldbstrconst.ssqlnosqlgenerated"
+msgid "No SQL statements were generated. Do you really want to close?"
+msgstr "Hiçbir SQL ifadesi oluşturulmadı. Gerçekten kapatmak istiyor musunuz?"
+
+#: sqldbstrconst.ssqlnotable
+msgid "No table is selected for generation of SQL statements."
+msgstr "SQL deyimlerinin oluşturulması için hiçbir tablo seçilmemiştir."
+
+#: sqldbstrconst.ssqlok
+msgid "Quick SQL check OK"
+msgstr "Hızlı SQL kontrolü Tamam"
+
+#: sqldbstrconst.ssqlonefieldperline
+msgctxt "sqldbstrconst.ssqlonefieldperline"
+msgid "One field per line"
+msgstr "Satır başına bir alan"
+
+#: sqldbstrconst.ssqlquotechar
+msgctxt "sqldbstrconst.ssqlquotechar"
+msgid "Quote character"
+msgstr "Alıntı karakteri"
+
+#: sqldbstrconst.ssqlscript
+msgid "SQL Script file"
+msgstr "SQL Script dosyası"
+
+#: sqldbstrconst.ssqlscriptdesc
+msgid "Create a new SQL Script file"
+msgstr "Yeni bir SQL Script dosyası oluştur"
+
+#: sqldbstrconst.ssqlselectupdateinsertfields
+msgctxt "sqldbstrconst.ssqlselectupdateinsertfields"
+msgid "\"Select\"/\"Update\"/\"Insert\" fields"
+msgstr "\"Select\"/\"Update\"/\"Insert\" alanları"
+
+#: sqldbstrconst.ssqlshowsystemtables
+msgctxt "sqldbstrconst.ssqlshowsystemtables"
+msgid "Show system tables"
+msgstr "Sistem tablolarını göster"
+
+#: sqldbstrconst.ssqlsource
+msgid "Insert your SQL statements here"
+msgstr "SQL ifadelerinizi buraya ekleyin"
+
+#: sqldbstrconst.ssqlstringspropertyeditordlgtitle
+#, object-pascal-format
+msgid "Statement Editor (%s)"
+msgstr "Açıklama Editörü (%s)"
+
+#: sqldbstrconst.ssqlsyntaxerror
+#, object-pascal-format
+msgid ""
+"Probable syntax error in SQL statement:\n"
+"%s"
+msgstr ""
+"SQL deyiminde olası sözdizimi hatası: ,\n"
+"%s"
+
+#: sqldbstrconst.ssqltabcaption
+msgid "SQL Code"
+msgstr "SQL Kodu"
+
+#: sqldbstrconst.ssqltable
+msgctxt "sqldbstrconst.ssqltable"
+msgid "Table"
+msgstr "Tablo"
+
+#: sqldbstrconst.ssqltablesandfields
+msgctxt "sqldbstrconst.ssqltablesandfields"
+msgid "Tables and Fields"
+msgstr "Tablolar ve Alanlar"
+
+#: sqldbstrconst.ssqluppercasekeywords
+msgctxt "sqldbstrconst.ssqluppercasekeywords"
+msgid "Uppercase keywords"
+msgstr "Büyük harf anahtar kelimeler"
+

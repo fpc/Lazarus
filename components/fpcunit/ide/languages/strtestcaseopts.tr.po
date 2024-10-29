@@ -1,16 +1,18 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
+"Project-Id-Version: debuggerintf\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"Language: tr_TR\n"
+"PO-Revision-Date: 2022-10-21 23:10+0300\n"
+"Last-Translator: Onur ERÇELEN <onur2x@gmail.com>\n"
+"Language-Team: Onur2x\n"
+"Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.2\n"
+"X-Generator: Poedit 3.1.1\n"
+"X-Poedit-Flags-xgettext: --add-comments=\"TRANSLATORS:ONUR ERÇELEN\"\n"
+"X-Poedit-SourceCharset: UTF-8\n"
 
 #: strtestcaseopts.rsalltests
 msgid "All Tests"
@@ -18,42 +20,49 @@ msgstr ""
 
 #: strtestcaseopts.rsautomaticallyfetchtestlistonopen
 msgid "Automatically fetch test list on open"
-msgstr ""
+msgstr "Açıldığında test listesini otomatik olarak getir"
 
 #: strtestcaseopts.rscouldnotdete
-#, object-pascal-format
+#, object-pascal-format, fuzzy
+msgctxt "strtestcaseopts.rscouldnotdete"
 msgid "Could not determine class and method from test path \"%s\""
-msgstr ""
+msgstr "Test yolundan sınıf ve yöntemi belirleyemedi: \"%s\""
 
 #: strtestcaseopts.rserrors
-#, object-pascal-format
+#, object-pascal-format, fuzzy
+msgctxt "strtestcaseopts.rserrors"
 msgid "%s    Errors: %s"
-msgstr ""
+msgstr "%s    Hatalar: %s"
 
 #: strtestcaseopts.rsexception
-#, object-pascal-format
+#, object-pascal-format, fuzzy
+msgctxt "strtestcaseopts.rsexception"
 msgid "Exception: %s"
-msgstr ""
+msgstr "İstisna: %s"
 
 #: strtestcaseopts.rsexceptioncla
-#, object-pascal-format
+#, object-pascal-format, fuzzy
+msgctxt "strtestcaseopts.rsexceptioncla"
 msgid "Exception class: %s"
-msgstr ""
+msgstr "İstisna sınıfı: %s"
 
 #: strtestcaseopts.rsexceptionmes
-#, object-pascal-format
+#, object-pascal-format, fuzzy
+msgctxt "strtestcaseopts.rsexceptionmes"
 msgid "Exception message: %s"
-msgstr ""
+msgstr "İstisna mesajı: %s"
 
 #: strtestcaseopts.rsfailures
-#, object-pascal-format
+#, object-pascal-format, fuzzy
+msgctxt "strtestcaseopts.rsfailures"
 msgid "%s     Failures: %s"
-msgstr ""
+msgstr "%s     Başarısızlıklar: %s"
 
 #: strtestcaseopts.rsmessage
-#, object-pascal-format
+#, object-pascal-format, fuzzy
+msgctxt "strtestcaseopts.rsmessage"
 msgid "Message: %s"
-msgstr ""
+msgstr "Mesaj: %s"
 
 #: strtestcaseopts.rsnexterror
 msgid "Next error"
@@ -64,74 +73,76 @@ msgid "Previous error"
 msgstr ""
 
 #: strtestcaseopts.rsruns
-#, object-pascal-format
+#, object-pascal-format, fuzzy
+msgctxt "strtestcaseopts.rsruns"
 msgid "Runs: %s/%s"
-msgstr ""
+msgstr "Çalıştırma: %s/%s"
 
 #: strtestcaseopts.rsserverpath
 msgid "Server path"
-msgstr ""
+msgstr "Sunucu yolu"
 
 #: strtestcaseopts.rsserverport
 msgid "Server port"
-msgstr ""
+msgstr "Sunucu portu"
 
 #: strtestcaseopts.rstestinsighttitle
 msgid "Test Insight"
-msgstr ""
+msgstr "Test Bilgisi"
 
 #: strtestcaseopts.sactcheckall
 msgid "Select all tests"
-msgstr ""
+msgstr "Tüm testleri seç"
 
 #: strtestcaseopts.sactcheckcurrentsuite
 msgid "Select current suite"
-msgstr ""
+msgstr "Mevcut takımı seç"
 
 #: strtestcaseopts.sactcloseform
 msgid "Quit"
-msgstr ""
+msgstr "Çık"
 
 #: strtestcaseopts.sactcloseformh
 msgid "Quit testing"
-msgstr ""
+msgstr "Testi bırak"
 
 #: strtestcaseopts.sactcopyalltoclipboard
 msgid "Copy text to clipboard"
-msgstr ""
+msgstr "Metni panoya kopyala"
 
 #: strtestcaseopts.sactcopyalltoclipboardh
 msgid "Copy the entire text to clipboard"
-msgstr ""
+msgstr "Tüm metni panoya kopyala"
 
 #: strtestcaseopts.sactcopymessagetoclipboard
+#, fuzzy
 msgctxt "strtestcaseopts.sactcopymessagetoclipboard"
 msgid "Copy message to clipboard"
-msgstr ""
+msgstr "Mesajı panoya kopyala"
 
 #: strtestcaseopts.sactrunaction
 msgid "&Run all"
-msgstr ""
+msgstr "&Tümünü çalıştır"
 
 #: strtestcaseopts.sactrunactionh
 msgid "Run all checked tests"
-msgstr ""
+msgstr "İşaretli tüm testleri çalıştır"
 
 #: strtestcaseopts.sactrunhighlightedtest
 msgid "Run selected"
-msgstr ""
+msgstr "Seçili olanı çalıştır"
 
 #: strtestcaseopts.sactrunhighlightedtesth
 msgid "Run selected test"
-msgstr ""
+msgstr "Seçili testi çalıştır"
 
 #: strtestcaseopts.sactuncheckall
 msgid "Deselect all tests"
-msgstr ""
+msgstr "Tüm testlerin işaretlerini kaldır"
 
 #: strtestcaseopts.sactuncheckcurrentsuite
 msgid "Deselect current suite"
-msgstr ""
+msgstr "Mevcut takımın işaretlerini kaldır"
 
 #: strtestcaseopts.sbtncreate
 msgid "Create unit"
@@ -147,15 +158,15 @@ msgstr "TearDown yöntemi oluştur"
 
 #: strtestcaseopts.screatefirsttestcase
 msgid "&Create first test case"
-msgstr ""
+msgstr "&İlk test vakasını oluştur"
 
 #: strtestcaseopts.sdefault
 msgid "Default"
-msgstr ""
+msgstr "Varsayılan"
 
 #: strtestcaseopts.sdefaultoutputformat
 msgid "Default output &format"
-msgstr ""
+msgstr "Varsayılan çıktı &formatı"
 
 #: strtestcaseopts.sfpcunconsoletestapp
 msgid "FPCUnit Console Test Application"
@@ -179,11 +190,11 @@ msgstr "FPCUnit Test Senaryosu"
 
 #: strtestcaseopts.sfpcuntestcasedesc
 msgid "A unit containing a FPCUnit Test Case."
-msgstr "FPCUnit Test Case içeren bir birim."
+msgstr "FPCUnit Test Senaryosu içeren bir birim."
 
 #: strtestcaseopts.sfrmguitest
 msgid "FPCUnit - run unit test"
-msgstr ""
+msgstr "FPCUnit - birim testi çalıştır"
 
 #: strtestcaseopts.sfrmtest
 msgid "TestCase Options"
@@ -199,7 +210,7 @@ msgstr "Adlar"
 
 #: strtestcaseopts.slatex
 msgid "LaTeX"
-msgstr ""
+msgstr "LaTeX"
 
 #: strtestcaseopts.slbldefault
 msgid "Default Test Name"
@@ -207,44 +218,47 @@ msgstr "Varsayılan Test Adı"
 
 #: strtestcaseopts.smiactions
 msgid "Actions"
-msgstr ""
+msgstr "Eylemler"
 
 #: strtestcaseopts.smicollapsenodes
 msgid "Collapse Nodes"
-msgstr ""
+msgstr "Düğümleri Daralt"
 
 #: strtestcaseopts.smiedit
 msgid "Edit"
-msgstr ""
+msgstr "Düzenle"
 
 #: strtestcaseopts.smiexpandnodes
 msgid "Expand Nodes"
-msgstr ""
+msgstr "Düğümleri Genişlet"
 
 #: strtestcaseopts.smitesttree
 msgid "Test tree"
-msgstr ""
+msgstr "Test ağacı"
 
 #: strtestcaseopts.snavigationnotavailable
 msgid "Source navigation not available."
-msgstr ""
+msgstr "Kaynak navigasyonu mevcut değil."
 
 #: strtestcaseopts.snewfpcunitprogramtor
+#, fuzzy
+msgctxt "strtestcaseopts.snewfpcunitprogramtor"
 msgid "New FPCUnit console testrunner program"
-msgstr ""
+msgstr "Yeni FPCUnit konsol test programı"
 
 #: strtestcaseopts.snoexecutableavailable
-#, object-pascal-format
+#, object-pascal-format, fuzzy
+msgctxt "strtestcaseopts.snoexecutableavailable"
 msgid "Test executable is not available: \"%s\""
-msgstr ""
+msgstr "Test yürütülebilir dosyası mevcut değil: \"%s\""
 
 #: strtestcaseopts.snotestprojectconfigured
 msgid "No test project configured."
-msgstr ""
+msgstr "Hiçbir test projesi yapılandırılmadı."
 
 #: strtestcaseopts.splaintext
 msgid "Plain text"
-msgstr ""
+msgstr "Düz metin"
 
 #: strtestcaseopts.splaintextwithouttimi
 msgid "Plain text without timings"
@@ -252,17 +266,17 @@ msgstr ""
 
 #: strtestcaseopts.srunalltests
 msgid "&Run all tests by default"
-msgstr ""
+msgstr "Varsayılan olarak tüm testleri &çalıştır"
 
 #: strtestcaseopts.susetextinsight
 msgid "Use &Test Insight to communicate results to the IDE"
-msgstr ""
+msgstr "Sonuçları IDE'ye iletmek için &Test Insight'ı kullan"
 
 #: strtestcaseopts.swriteyourowntest
 msgid "Write your own test"
-msgstr "Kendi testini yaz"
+msgstr "Kendi testinizi yazın"
 
 #: strtestcaseopts.sxml
 msgid "XML"
-msgstr ""
+msgstr "XML"
 

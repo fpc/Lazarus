@@ -1,0 +1,88 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-10-29 18:16+0000\n"
+"PO-Revision-Date: 2024-10-29 18:19+0000\n"
+"Last-Translator: \n"
+"Language-Team: Unknown\n"
+"Language: zxx\n"
+"Plural-Forms: nplurals=2; plural=n!=1;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Loco-Source-Locale: tr_TR\n"
+"X-Loco-Parser: loco_parse_po\n"
+"X-Generator: Loco https://localise.biz/"
+
+#: sqlitecompstrings.sadd
+msgid "Add"
+msgstr "Ekle"
+
+#: sqlitecompstrings.satablenamedalreadyexistsareyousureyouwanttoreplace
+#, object-pascal-format
+msgid "A Table named \"%s\" already exists. Are you sure you want to replace this table?%sAll data stored will be lost."
+msgstr "\"%s\" adında bir tablo zaten mevcut. %sBu tabloyu değiştirmek istediğinizden emin misiniz? Saklanan tüm veriler kaybolacaktır."
+
+#: sqlitecompstrings.sclose
+msgid "Close"
+msgstr "Kapat"
+
+#: sqlitecompstrings.screateedittable
+msgid "Create/Edit Table"
+msgstr "Tabloyu Oluştur/Düzenle"
+
+#: sqlitecompstrings.screatetable
+msgid "Create Table"
+msgstr "Tablo Oluştur"
+
+#: sqlitecompstrings.sdelete
+msgid "Delete"
+msgstr "Sil"
+
+#: sqlitecompstrings.sfieldname
+msgid "Field Name"
+msgstr "Alan Adı"
+
+#: sqlitecompstrings.sfieldtype
+msgid "Field Type"
+msgstr "Alan Tipi"
+
+#: sqlitecompstrings.sfilenamenotsetitsnotpossibletocreateeditatable
+msgid "File name not set: it's not possible to create/edit a table."
+msgstr "Dosya adı ayarlanmamış: tablo oluşturmak/düzenlemek mümkün değil."
+
+#: sqlitecompstrings.sfilepath
+#, object-pascal-format
+msgid "File Path: %s"
+msgstr "Dosya yolu: %s"
+
+#: sqlitecompstrings.sitsnotallowedfieldswiththesamename
+msgid "Fields with identical names are not allowed."
+msgstr "Aynı isimlere sahip alanlara izin verilmez."
+
+#: sqlitecompstrings.sitwasnotpossibletocreatethetable
+msgid "It was not possible to create the table."
+msgstr "Tabloyu oluşturmak mümkün olmadı."
+
+#: sqlitecompstrings.snofieldsaddedtablewillnotbecreated
+msgid "No fields added. Table will not be created."
+msgstr "Hiçbir alan eklenmedi. Tablo oluşturulmayacaktır."
+
+#: sqlitecompstrings.stablecreatedsuccessfully
+msgid "Table created successfully."
+msgstr "Tablo başarıyla oluşturuldu."
+
+#: sqlitecompstrings.stableeditorfieldtypenotrecognized
+msgid "Field type not recognized."
+msgstr "Alan türü tanınmadı."
+
+#: sqlitecompstrings.stablename
+#, object-pascal-format
+msgid "Table Name: %s"
+msgstr "Tablo adı: %s"
+
+#: sqlitecompstrings.stablenamenotsetitsnotpossibletocreateeditatable
+msgid "Table name not set: it's not possible to create/edit a table."
+msgstr "Tablo adı ayarlanmamış: bir tablo oluşturmak/düzenlemek mümkün değil."
+

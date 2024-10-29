@@ -1,16 +1,19 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Language-Team: \n"
-"MIME-Version: 1.0\n"
-"Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.2.3\n"
+"PO-Revision-Date: 2024-10-29 18:39+0000\n"
 "Last-Translator: Onur ERÇELEN <onur2x@gmail.com>\n"
+"Language-Team: Turkish (Turkey)\n"
+"Language: tr-TR\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Language: tr_TR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Loco-Source-Locale: tr_TR\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Parser: loco_parse_po"
 
 #: syneditstrconst.scannotpause
 msgid "Can only pause when recording"
@@ -58,7 +61,7 @@ msgstr "Parantez"
 
 #: syneditstrconst.syns_attrcaselabel
 msgid "Case label"
-msgstr ""
+msgstr "Case Etiketi"
 
 #: syneditstrconst.syns_attrcdata
 msgid "CDATA"
@@ -74,19 +77,19 @@ msgstr "Karakter"
 
 #: syneditstrconst.syns_attrchunkmarker
 msgid "Diff Chunk Marker"
-msgstr ""
+msgstr "Diff Yığın İşaretleyici"
 
 #: syneditstrconst.syns_attrchunkmixed
 msgid "Diff Chunk Line Counts"
-msgstr ""
+msgstr "Diff Yığın Satır Sayıları"
 
 #: syneditstrconst.syns_attrchunknew
 msgid "Diff Chunk New Line Count"
-msgstr ""
+msgstr "Diff Yığın Yeni Satır Sayısı"
 
 #: syneditstrconst.syns_attrchunkorig
 msgid "Diff Chunk Original Line Count"
-msgstr ""
+msgstr "Diff Yığın Orijinal Satır Sayısı"
 
 #: syneditstrconst.syns_attrclass
 msgid "Class"
@@ -142,11 +145,11 @@ msgstr "Gömülü metin"
 
 #: syneditstrconst.syns_attrentityreference
 msgid "Entity Reference"
-msgstr ""
+msgstr "Varlık Referansı"
 
 #: syneditstrconst.syns_attrescapeampersand
 msgid "Escape ampersand"
-msgstr ""
+msgstr "Kaçış işareti"
 
 #: syneditstrconst.syns_attrevent
 msgid "Event"
@@ -174,235 +177,235 @@ msgstr "İşlev(fonksiyon)"
 
 #: syneditstrconst.syns_attrhexadecimal
 msgid "Hexadecimal"
-msgstr ""
+msgstr "Hexadecimal"
 
 #: syneditstrconst.syns_attricon
 msgid "Icon reference"
-msgstr ""
+msgstr "Simge referansı"
 
 #: syneditstrconst.syns_attridedirective
 msgid "IDE Directive"
-msgstr ""
+msgstr "IDE Direktifi"
 
 #: syneditstrconst.syns_attridentifier
 msgid "Identifier"
-msgstr ""
+msgstr "Tanımlayıcı"
 
 #: syneditstrconst.syns_attrillegalchar
 msgid "Illegal char"
-msgstr ""
+msgstr "Geçersiz karakter"
 
 #: syneditstrconst.syns_attrinclude
 msgid "Include"
-msgstr ""
+msgstr "Dahili"
 
 #: syneditstrconst.syns_attrindirect
 msgid "Indirect"
-msgstr ""
+msgstr "Dolaylı"
 
 #: syneditstrconst.syns_attrinternalfunction
 msgid "Internal function"
-msgstr ""
+msgstr "Dahili fonksiyon"
 
 #: syneditstrconst.syns_attrinvalidsymbol
 msgid "Invalid symbol"
-msgstr ""
+msgstr "Geçersiz sembol"
 
 #: syneditstrconst.syns_attrkey
 msgid "Key"
-msgstr ""
+msgstr "Anahtar"
 
 #: syneditstrconst.syns_attrlabel
 msgid "Label"
-msgstr ""
+msgstr "Etiket"
 
 #: syneditstrconst.syns_attrlineadded
 msgid "Diff Added line"
-msgstr ""
+msgstr "Diff Satır ekle"
 
 #: syneditstrconst.syns_attrlinechanged
 msgid "Diff Changed Line"
-msgstr ""
+msgstr "Diff Değişen Hat"
 
 #: syneditstrconst.syns_attrlinecontext
 msgid "Diff Context Line"
-msgstr ""
+msgstr "Diff Bağlam Hattı"
 
 #: syneditstrconst.syns_attrlineremoved
 msgid "Diff Removed Line"
-msgstr ""
+msgstr "Diff Çıkarılmış Hat"
 
 #: syneditstrconst.syns_attrmacro
 msgid "Macro"
-msgstr ""
+msgstr "Makro"
 
 #: syneditstrconst.syns_attrmarker
 msgid "Marker"
-msgstr ""
+msgstr "İşaretleyici"
 
 #: syneditstrconst.syns_attrmathmode
 msgid "Math Mode"
-msgstr ""
+msgstr "Matematik Modu"
 
 #: syneditstrconst.syns_attrmeasurementunitvalue
 msgid "Measurement unit"
-msgstr ""
+msgstr "Ölçüm birimi"
 
 #: syneditstrconst.syns_attrmessage
 msgid "Message"
-msgstr ""
+msgstr "Mesaj"
 
 #: syneditstrconst.syns_attrmiscellaneous
 msgid "Miscellaneous"
-msgstr ""
+msgstr "Çeşitli"
 
 #: syneditstrconst.syns_attrmodifier
 msgid "Modifier"
-msgstr ""
+msgstr "Değiştirici"
 
 #: syneditstrconst.syns_attrnamespaceattrname
 msgid "Namespace Attribute Name"
-msgstr ""
+msgstr "Ad Alanı Öznitelik Adı"
 
 #: syneditstrconst.syns_attrnamespaceattrvalue
 msgid "Namespace Attribute Value"
-msgstr ""
+msgstr "Ad Alanı Öznitelik Değeri"
 
 #: syneditstrconst.syns_attrnewfile
 msgid "Diff New File"
-msgstr ""
+msgstr "Diff Yeni Dosya"
 
 #: syneditstrconst.syns_attrnonreservedkeyword
 msgid "Non-reserved keyword"
-msgstr ""
+msgstr "Ayrılmamış anahtar kelime"
 
 #: syneditstrconst.syns_attrnull
 msgid "Null"
-msgstr ""
+msgstr "Boş"
 
 #: syneditstrconst.syns_attrnumber
 msgid "Number"
-msgstr ""
+msgstr "Numara"
 
 #: syneditstrconst.syns_attroctal
 msgid "Octal"
-msgstr ""
+msgstr "Sekizli"
 
 #: syneditstrconst.syns_attroperator
 msgid "Operator"
-msgstr ""
+msgstr "Operatör"
 
 #: syneditstrconst.syns_attrorigfile
 msgid "Diff Original File"
-msgstr ""
+msgstr "Diff Orijinal Dosya"
 
 #: syneditstrconst.syns_attrpasdockey
 msgid "PasDoc Keyword"
-msgstr ""
+msgstr "PasDoc Anahtar Kelime"
 
 #: syneditstrconst.syns_attrpasdocsymbol
 msgid "PasDoc Symbol"
-msgstr ""
+msgstr "PasDoc Sembolü"
 
 #: syneditstrconst.syns_attrpasdocunknown
 msgid "PasDoc Unknown"
-msgstr ""
+msgstr "PasDoc Bilinmiyor"
 
 #: syneditstrconst.syns_attrplsql
 msgid "Reserved word (PL/SQL)"
-msgstr ""
+msgstr "Ayrılmış sözcük (PL/SQL)"
 
 #: syneditstrconst.syns_attrpragma
 msgid "Pragma"
-msgstr ""
+msgstr "Pragma"
 
 #: syneditstrconst.syns_attrpreprocessor
 msgid "Preprocessor"
-msgstr ""
+msgstr "Önişlemci"
 
 #: syneditstrconst.syns_attrprevvalue
 msgid "Previous value"
-msgstr ""
+msgstr "Önceki değer"
 
 #: syneditstrconst.syns_attrprocedureheadername
 msgid "Procedure header name"
-msgstr ""
+msgstr "Prosedür başlığı adı"
 
 #: syneditstrconst.syns_attrprocessinginstr
 msgid "Processing Instruction"
-msgstr ""
+msgstr "İşleme Talimatı"
 
 #: syneditstrconst.syns_attrqualifier
 msgid "Qualifier"
-msgstr ""
+msgstr "Eleme"
 
 #: syneditstrconst.syns_attrregister
 msgid "Register"
-msgstr ""
+msgstr "Kayıt"
 
 #: syneditstrconst.syns_attrreservedword
 msgid "Reserved word"
-msgstr ""
+msgstr "Ayrılmış kelime"
 
 #: syneditstrconst.syns_attrroundbracket
 msgid "Round Bracket"
-msgstr ""
+msgstr "Yuvarlak parantez"
 
 #: syneditstrconst.syns_attrrpl
 msgid "Rpl"
-msgstr ""
+msgstr "Rpl"
 
 #: syneditstrconst.syns_attrrplcomment
 msgid "Rpl comment"
-msgstr ""
+msgstr "Rpl açıklaması"
 
 #: syneditstrconst.syns_attrrplkey
 msgid "Rpl key"
-msgstr ""
+msgstr "Rpl anahtarı"
 
 #: syneditstrconst.syns_attrsasm
 msgid "SASM"
-msgstr ""
+msgstr "SASM"
 
 #: syneditstrconst.syns_attrsasmcomment
 msgid "SASM Comment"
-msgstr ""
+msgstr "SASM Açıklaması"
 
 #: syneditstrconst.syns_attrsasmkey
 msgid "SASM Key"
-msgstr ""
+msgstr "SASM anahtarı"
 
 #: syneditstrconst.syns_attrsecondreservedword
 msgid "Second reserved word"
-msgstr ""
+msgstr "İkinci ayrılmış sözcük"
 
 #: syneditstrconst.syns_attrsection
 msgid "Section"
-msgstr ""
+msgstr "Seçim"
 
 #: syneditstrconst.syns_attrselectorvalue
 msgid "Selector"
-msgstr ""
+msgstr "Seçici"
 
 #: syneditstrconst.syns_attrspace
 msgid "Space"
-msgstr ""
+msgstr "Boşluk"
 
 #: syneditstrconst.syns_attrspecialvariable
 msgid "Special variable"
-msgstr ""
+msgstr "Özel değişken"
 
 #: syneditstrconst.syns_attrsqlkey
 msgid "SQL keyword"
-msgstr ""
+msgstr "SQL anahtar sözcüğü"
 
 #: syneditstrconst.syns_attrsqlplus
 msgid "SQL*Plus command"
-msgstr ""
+msgstr "SQL*Plus komutu"
 
 #: syneditstrconst.syns_attrsquarebracket
 msgid "Square Bracket"
-msgstr ""
+msgstr "Köşeli Parantez"
 
 #: syneditstrconst.syns_attrstring
 msgid "String"
@@ -414,11 +417,11 @@ msgstr "Sembol"
 
 #: syneditstrconst.syns_attrsyntaxerror
 msgid "SyntaxError"
-msgstr ""
+msgstr "SözdizimiHatası"
 
 #: syneditstrconst.syns_attrsystem
 msgid "System functions and variables"
-msgstr ""
+msgstr "Sistem fonksiyonları ve değişkenleri"
 
 #: syneditstrconst.syns_attrsystemvalue
 msgid "System value"
@@ -430,11 +433,11 @@ msgstr "Tablo adı"
 
 #: syneditstrconst.syns_attrterminator
 msgid "Terminator"
-msgstr ""
+msgstr "Terminatör"
 
 #: syneditstrconst.syns_attrtexcommand
 msgid "TeX Command"
-msgstr ""
+msgstr "TeX Komutu"
 
 #: syneditstrconst.syns_attrtext
 msgid "Text"
@@ -442,15 +445,15 @@ msgstr "Metin"
 
 #: syneditstrconst.syns_attrtextmathmode
 msgid "Text in Math Mode"
-msgstr ""
+msgstr "Matematik Modunda Metin"
 
 #: syneditstrconst.syns_attrunknownword
 msgid "Unknown word"
-msgstr ""
+msgstr "Bilinmeyen kelime"
 
 #: syneditstrconst.syns_attruser
 msgid "User functions and variables"
-msgstr ""
+msgstr "Kullanıcı fonksiyonları ve değişkenleri"
 
 #: syneditstrconst.syns_attruserfunction
 msgid "User functions"
@@ -466,28 +469,28 @@ msgstr "Değişken"
 
 #: syneditstrconst.syns_attrwhitespace
 msgid "Whitespace"
-msgstr ""
+msgstr "BeyazBoşluk"
 
 #: syneditstrconst.syns_copy
 msgid "&Copy"
-msgstr ""
+msgstr "&Kopyala"
 
 #: syneditstrconst.syns_cut
 msgid "C&ut"
-msgstr ""
+msgstr "K&es"
 
 #: syneditstrconst.syns_delete
 msgid "&Delete"
-msgstr ""
+msgstr "&Sil"
 
 #: syneditstrconst.syns_duplicateshortcutmsg
 #, object-pascal-format
 msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
-msgstr ""
+msgstr "\"%s\" tuş vuruşu zaten başka bir düzenleyici komutuna atanmış. (%s)"
 
 #: syneditstrconst.syns_eduplicateshortcut
 msgid "Mouse-Shortcut already exists"
-msgstr ""
+msgstr "Mouse-Kısayolu zaten var"
 
 #: syneditstrconst.syns_emcbreakpointtoggle
 msgid "Toggle Breakpoint"
@@ -495,95 +498,95 @@ msgstr "Kesme noktası değiştir"
 
 #: syneditstrconst.syns_emccodefoldcollaps
 msgid "Fold Code"
-msgstr ""
+msgstr "Kodu Katla"
 
 #: syneditstrconst.syns_emccodefoldcollaps_opt
 msgid "Nodes,One,\"All on line\",\"At Caret\",\"Current Node\""
-msgstr ""
+msgstr "Düğümler,Bir, \"Tümü hatta\", \"İşarette\", \"Geçerli Düğüm\""
 
 #: syneditstrconst.syns_emccodefoldcontextmenu
 msgid "Fold Menu"
-msgstr ""
+msgstr "Katlama Menüsü"
 
 #: syneditstrconst.syns_emccodefoldexpand
 msgid "Unfold Code"
-msgstr ""
+msgstr "Kodu Aç"
 
 #: syneditstrconst.syns_emccodefoldexpand_opt
 msgid "Nodes,One,\"All on line\""
-msgstr ""
+msgstr "Düğümler,Bir, \"Hepsi hatta\""
 
 #: syneditstrconst.syns_emccontextmenu
 msgid "Popup Menu"
-msgstr ""
+msgstr "Popup Menu"
 
 #: syneditstrconst.syns_emccontextmenucaretmove_opt
 msgid "\"Move caret, when selection exists\", Never, \"Click outside\", Always"
-msgstr ""
+msgstr "\"Seçim mevcut olduğunda imleci taşı\", Hiçbir zaman, \"Dışarıya tıkla\", Her zaman"
 
 #: syneditstrconst.syns_emcmouselink
 msgid "Source Link"
-msgstr ""
+msgstr "Kaynak Linki"
 
 #: syneditstrconst.syns_emcmouselink_opt
 msgid "Underline,yes, no"
-msgstr ""
+msgstr "Altı çizili, evet, hayır"
 
 #: syneditstrconst.syns_emcnone
 msgid "No Action"
-msgstr ""
+msgstr "Eylem Yok"
 
 #: syneditstrconst.syns_emcoverviewguttergotomark
 msgid "Jump to Mark (Overview Gutter)"
-msgstr ""
+msgstr "İşarete Atla (Oluğa Genel Bakış)"
 
 #: syneditstrconst.syns_emcoverviewgutterscrollto
 msgid "Scroll (Overview Gutter)"
-msgstr ""
+msgstr "Kaydırma (Oluğa Genel Bakış)"
 
 #: syneditstrconst.syns_emcpasteselection
 msgid "Quick Paste Selection"
-msgstr ""
+msgstr "Hızlı Yapıştırma Seçimi"
 
 #: syneditstrconst.syns_emcpluginmulticaretselectiontocarets
 msgid "Set carets at EOL in selected lines"
-msgstr ""
+msgstr "Seçilen satırlarda EOL'de karet ayarlayın"
 
 #: syneditstrconst.syns_emcpluginmulticarettogglecaret
 msgid "Toggle extra caret"
-msgstr ""
+msgstr "Ekstra şapkayı değiştir"
 
 #: syneditstrconst.syns_emcselection_opt
 msgid "Mode,Begin,Continue"
-msgstr ""
+msgstr "Mod, Başla, Devam Et"
 
 #: syneditstrconst.syns_emcselectline
 msgid "Select Line"
-msgstr ""
+msgstr "Satır Seçin"
 
 #: syneditstrconst.syns_emcselectline_opt
 msgid "\"Include spaces\",no,yes"
-msgstr ""
+msgstr "\"Boşlukları dahil et\",hayır,evet"
 
 #: syneditstrconst.syns_emcselectpara
 msgid "Select Paragraph"
-msgstr ""
+msgstr "Paragraf Seçiniz"
 
 #: syneditstrconst.syns_emcselectword
 msgid "Select Word"
-msgstr ""
+msgstr "Kelime Seçin"
 
 #: syneditstrconst.syns_emcstartcolumnselections
 msgid "Column Selection"
-msgstr ""
+msgstr "Sütun Seçimi"
 
 #: syneditstrconst.syns_emcstartdragmove
 msgid "Drag Selection"
-msgstr ""
+msgstr "Seçimi Sürükle"
 
 #: syneditstrconst.syns_emcstartdragmove_opt
 msgid "\"Caret on up if not dragged\",yes,no"
-msgstr ""
+msgstr "\"Sürüklenmiyorsanız yukarı çıkın\", evet, hayır"
 
 #: syneditstrconst.syns_emcstartlineselections
 msgid "Line Selection"
@@ -599,15 +602,15 @@ msgstr "Seçilen"
 
 #: syneditstrconst.syns_emcstartselectlines
 msgid "Selection (lines)"
-msgstr ""
+msgstr "Seçim (Satırlar)"
 
 #: syneditstrconst.syns_emcstartselecttokens
 msgid "Selection (tokens) "
-msgstr ""
+msgstr "Seçim (jetonlar)"
 
 #: syneditstrconst.syns_emcstartselectwords
 msgid "Selection (words)"
-msgstr ""
+msgstr "Seçim (kelimeler)"
 
 #: syneditstrconst.syns_emcsyneditcommand
 msgid "IDE Command"
@@ -631,7 +634,7 @@ msgstr "Tekerlek yukarı kaydırma"
 
 #: syneditstrconst.syns_emcwheelscroll_opt
 msgid "Speed,\"System settings\",Lines,Pages,\"Pages (less one line)\""
-msgstr ""
+msgstr "Hız, \"Sistem ayarları\",Satırlar,Sayfalar, \"Sayfalar (bir satır eksik)\""
 
 #: syneditstrconst.syns_emcwheelvertscrolldown
 msgid "Wheel scroll down (Vertical)"
@@ -643,15 +646,15 @@ msgstr "Tekerlek yukarı kaydırma(dikey)"
 
 #: syneditstrconst.syns_emcwheelzoomin
 msgid "Wheel zoom in"
-msgstr ""
+msgstr "Tekerlek yakınlaştırma"
 
 #: syneditstrconst.syns_emcwheelzoomnorm
 msgid "Wheel zoom default"
-msgstr ""
+msgstr "Tekerlek yakınlaştırma varsayılanı"
 
 #: syneditstrconst.syns_emcwheelzoomout
 msgid "Wheel zoom out"
-msgstr ""
+msgstr "Tekerlek uzaklaştırma"
 
 #: syneditstrconst.syns_exporterformathtml
 msgid "HTML"
@@ -735,7 +738,7 @@ msgstr "XML Document (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*
 
 #: syneditstrconst.syns_paste
 msgid "&Paste"
-msgstr ""
+msgstr "&Yapıştır"
 
 #: syneditstrconst.syns_previewscrollinfofmt
 #, object-pascal-format
@@ -744,7 +747,7 @@ msgstr "Sayfa: %d"
 
 #: syneditstrconst.syns_redo
 msgid "&Redo"
-msgstr ""
+msgstr "İ&leri"
 
 #: syneditstrconst.syns_scrollinfofmt
 #, object-pascal-format
@@ -758,7 +761,7 @@ msgstr "Üst satır:%d"
 
 #: syneditstrconst.syns_selectall
 msgid "Select &all"
-msgstr ""
+msgstr "Tümünü &Seç"
 
 #: syneditstrconst.syns_shortcutnone
 msgid "<none>"
@@ -766,7 +769,7 @@ msgstr "<yok>"
 
 #: syneditstrconst.syns_undo
 msgid "&Undo"
-msgstr ""
+msgstr "&GeriAl"
 
 #: syneditstrconst.syns_untitled
 msgid "Untitled"

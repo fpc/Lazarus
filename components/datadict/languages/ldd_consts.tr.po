@@ -1,0 +1,221 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2024-10-28 09:54+0000\n"
+"Last-Translator: Onur ERÇELEN <onur2x@gmail.com>\n"
+"Language-Team: Turkish\n"
+"Language: tr\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Loco-Source-Locale: tr_TR\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Parser: loco_parse_po"
+
+#: ldd_consts.ldd_availablecodegenerators
+msgid "Available code generators"
+msgstr "Mevcut kod oluşturucu"
+
+#: ldd_consts.ldd_cancel
+msgid "&Cancel"
+msgstr "İ&ptal"
+
+#: ldd_consts.ldd_close
+msgid "&Close"
+msgstr "&Kapat"
+
+#: ldd_consts.ldd_configuredatadictionary
+msgid "Configure Data Dictionary"
+msgstr "Veri Sözlüğünü Yapılandır"
+
+#: ldd_consts.ldd_configuregeneratedcode
+msgid "Configure generated code"
+msgstr "Oluşturulan kodu yapılandırın"
+
+#: ldd_consts.ldd_databasedesktopapplication
+msgid "Database desktop application"
+msgstr "Veritabanı masaüstü uygulaması"
+
+#: ldd_consts.ldd_datadictionary
+msgid "Data dictionary &file:"
+msgstr "Veri sözlüğü &dosya:"
+
+#: ldd_consts.ldd_defaultdatadictdirectory
+msgid "Default data dictionary directory"
+msgstr "Varsayılan veri sözlüğü dizini"
+
+#: ldd_consts.ldd_fields
+msgid "Fields"
+msgstr "Alanlar"
+
+#: ldd_consts.ldd_fieldstogeneratecodefor
+msgid "Fields to generate code for"
+msgstr "Kod oluşturulacak alanlar"
+
+#: ldd_consts.ldd_filenameapplicationsfilter
+msgid "Applications|*.exe|Any file|*.*"
+msgstr "Uygulamalar|*.exe|Herhangi bir dosya|*.*"
+
+#: ldd_consts.ldd_filenameedit
+msgid "Data dictionary|*.fdd|Any file|*.*"
+msgstr "Veri sözlüğü|*.fdd|Herhangi bir dosya|*.*"
+
+#: ldd_consts.ldd_generatedcode
+msgid "Generated code"
+msgstr "Kod oluştur"
+
+#: ldd_consts.ldd_knowndatadictionary
+msgid "Known data dictionary"
+msgstr "Bilinen veri sözlüğü"
+
+#: ldd_consts.ldd_ok
+msgid "&OK"
+msgstr "&TAMAM"
+
+#: ldd_consts.ldd_openexistingfile
+msgid "Open existing file"
+msgstr "Mevcut dosyayı aç"
+
+#: ldd_consts.ldd_options
+msgid "Options"
+msgstr "Seçenekler"
+
+#: ldd_consts.ldd_propertiesforselected
+msgid "Properties for selected fields"
+msgstr "Seçili alanların özellikleri"
+
+#: ldd_consts.ldd_save
+msgid "&Save"
+msgstr "&Kaydet"
+
+#: ldd_consts.ldd_saveto
+msgid "Save to"
+msgstr "Şuraya kaydet"
+
+#: ldd_consts.ldd_sdcodefilter
+msgid "Pascal files|*.pp;*.pas;*.inc|All files|*.*"
+msgstr "Pascal dosyaları|*.pp;*.pas;*.inc|Tüm dosyalar|*.*"
+
+#: ldd_consts.ldd_sdcodetitle
+msgid "Save file as"
+msgstr "Dosyayı farklı kaydet"
+
+#: ldd_consts.ldd_selectcodetobegenerated
+msgid "Select code to be generated"
+msgstr "Oluşturulacak kodu seçin"
+
+#: ldd_consts.ldd_setprojectdatadictionary
+msgid "Set project Data Dictionary"
+msgstr "Proje Veri Sözlüğünü Ayarla"
+
+#: ldd_consts.ldd_showgeneratedcode
+msgid "Show generated code"
+msgstr "Oluşturulan kodu göster"
+
+#: ldd_consts.ldd_usedatadictionary
+msgid "&Use Data dictionary for this project"
+msgstr "&Bu proje için Veri sözlüğünü kullanın"
+
+#: ldd_consts.sapplicationfilter
+msgid "Applications|*"
+msgstr "Uygulamalar"
+
+#: ldd_consts.sapplyingddtodataset
+#, object-pascal-format
+msgid "Applying data dictionary to dataset %s"
+msgstr "Veri sözlüğünü %s veri kümesine uygulama"
+
+#: ldd_consts.sapplyingddtofield
+#, object-pascal-format
+msgid "Applying data dictionary to field %s"
+msgstr "Veri sözlüğünü %s alanına uygulama"
+
+#: ldd_consts.serrnodatadesktopdoselect
+msgid ""
+"Could not locate the database desktop application.\n"
+"Would you like to select it ?"
+msgstr ""
+"Veritabanı masaüstü uygulaması bulunamadı.\n"
+"Seçmek ister misiniz?"
+
+#: ldd_consts.serrnodatadictactive
+msgid ""
+"No datadictionary active.\n"
+"Please set a data dictionary for the project"
+msgstr ""
+"Veri sözlüğü etkin değil.\n"
+"Lütfen proje için bir veri sözlüğü ayarlayın"
+
+#: ldd_consts.serrselectdd
+msgid "Please select a known data dictionary"
+msgstr "Lütfen bilinen bir veri sözlüğü seçin"
+
+#: ldd_consts.serrselectdir
+msgid "Please select an existing directory"
+msgstr "Lütfen mevcut bir dizini seçin"
+
+#: ldd_consts.serrselectexe
+msgid "Please select an existing database desktop application"
+msgstr "Lütfen mevcut bir veritabanı masaüstü uygulamasını seçin"
+
+#: ldd_consts.serrselectfile
+msgid "Please select an existing data dictionary file"
+msgstr "Lütfen mevcut bir veri sözlüğü dosyasını seçin"
+
+#: ldd_consts.sfromfile
+msgid "from file: "
+msgstr "dosyadan: "
+
+#: ldd_consts.sloadingdatadict
+msgid "Loading data dictionary "
+msgstr "Veri sözlüğü yükleniyor"
+
+#: ldd_consts.smenuconfdatadict
+msgid "Configuration"
+msgstr "Yapılandırma"
+
+#: ldd_consts.smenuconfprojdatadict
+msgid "Set ..."
+msgstr "Ayarla ..."
+
+#: ldd_consts.smenudatadesktop
+msgid "Database Desktop"
+msgstr "Veritanabı Masaüstü"
+
+#: ldd_consts.smenudatadict
+msgid "Data dictionary"
+msgstr "Veri sözlüğü"
+
+#: ldd_consts.smenudatadictapply
+msgid "Apply"
+msgstr "Uygula"
+
+#: ldd_consts.smenudatadictcreatecode
+msgid "Create code from dataset"
+msgstr "Veri kümesinden kod oluştur"
+
+#: ldd_consts.smenudatadictdesignsql
+msgid "Design SQL"
+msgstr "SQL Tasarla"
+
+#: ldd_consts.smenuopendatadict
+msgid "Open"
+msgstr "Aç"
+
+#: ldd_consts.snotyetimplemted
+msgid "Not yet implemented"
+msgstr "Henüz uygulanmadı"
+
+#: ldd_consts.swarningnoddforfield
+#, object-pascal-format
+msgid "Warning: No definition in data dictionary for field %s"
+msgstr "Uyarı: %s alanı için veri sözlüğünde tanım yok"
+
+#: ldd_consts.swrongselection
+#, object-pascal-format
+msgid "Wrong selection count : %d"
+msgstr "Yanlış seçim sayısı : %d"
+

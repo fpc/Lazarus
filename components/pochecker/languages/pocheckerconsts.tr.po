@@ -1,15 +1,19 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
+"PO-Revision-Date: 2024-10-29 18:02+0000\n"
 "Last-Translator: Onur ERÇELEN <onur2x@gmail.com>\n"
-"Language-Team: \n"
-"MIME-Version: 1.0\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Language-Team: Turkish\n"
 "Language: tr\n"
-"X-Generator: Poedit 2.2.3\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Loco-Source-Locale: tr_TR\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Parser: loco_parse_po"
 
 #: pocheckerconsts.rspochecker
 msgid "Check PO Files ..."
@@ -33,7 +37,7 @@ msgstr "Katalan"
 
 #: pocheckerconsts.rs_lang_co
 msgid "Corsican"
-msgstr ""
+msgstr "Korsikalı"
 
 #: pocheckerconsts.rs_lang_cs
 msgid "Czech"
@@ -188,15 +192,12 @@ msgstr "Dosya: %s"
 
 #: pocheckerconsts.sfilesnotfoundandremoved
 #, object-pascal-format, fuzzy, badformat
-#| msgid ""
-#| "The following non-existent files were removed from the list:\n"
-#| "%s\n"
 msgid ""
 "The following non-existent files were removed from the list:\n"
 "%s"
 msgstr ""
 "Aşağıdaki varolmayan dosyalar listeden kaldırıldı:\n"
-"% s\n"
+"% s"
 
 #: pocheckerconsts.sfuzzystrings
 msgid "Fuzzy strings"
@@ -280,24 +281,16 @@ msgid "Found %d warnings."
 msgstr "%d uyarı bulundu."
 
 #: pocheckerconsts.sopenfail
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "Unable to open file:\n"
-#| "\"%s\"\n"
+#, object-pascal-format
 msgid ""
 "Unable to open file:\n"
 "\"%s\""
 msgstr ""
 "Dosya açılamıyor:\n"
-"\"%s\"\n"
+"\"%s\""
 
 #: pocheckerconsts.sopenfailexternal
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "Unable to open file\n"
-#| "\"%s\"\n"
-#| "in external editor\n"
-#| "\"%s\"\n"
+#, object-pascal-format
 msgid ""
 "Unable to open file\n"
 "\"%s\"\n"
@@ -307,7 +300,7 @@ msgstr ""
 "Dosya açılamıyor\n"
 "\"%s\"\n"
 "harici düzenleyicide\n"
-"\"%s\"\n"
+"\"%s\""
 
 #: pocheckerconsts.sopenfileinexternaleditor
 msgid "Open file in external editor"
@@ -370,16 +363,13 @@ msgid "Save &As ..."
 msgstr "&Farklı kaydet ..."
 
 #: pocheckerconsts.ssaveerror
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "Error saving file:\n"
-#| "%s\n"
+#, object-pascal-format
 msgid ""
 "Error saving file:\n"
 "%s"
 msgstr ""
 "Dosya kaydedilirken hata oluştu:\n"
-"%s\n"
+"%s"
 
 #: pocheckerconsts.sscandir
 msgid "Scan a folder"
@@ -399,7 +389,7 @@ msgstr "He&psini seç"
 
 #: pocheckerconsts.sselectedtranslationsarenotavailable
 msgid "Selected translations are not available."
-msgstr ""
+msgstr "Seçilmiş çeviriler mevcut değildir."
 
 #: pocheckerconsts.sselecttesttypes
 msgid "Select test types"
@@ -410,12 +400,7 @@ msgid "Show statistics graph"
 msgstr "İstatistik grafiğini göster"
 
 #: pocheckerconsts.sstathint
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "Translated: %d (%.1f%%)\n"
-#| "Untranslated: %d (%.1f%%)\n"
-#| "Fuzzy: %d (%.1f%%)\n"
-#| "Errors in selected tests: %d\n"
+#, object-pascal-format
 msgid ""
 "Translated: %d (%.1f%%)\n"
 "Untranslated: %d (%.1f%%)\n"
@@ -425,7 +410,7 @@ msgstr ""
 "Çevrilen: %d (%.1f%%)\n"
 "Çevrilmemiş: %d (%.1f%%)\n"
 "Bulanık: %d (%.1f%%)\n"
-"Seçilen testlerdeki hatalar: %d\n"
+"Seçilen testlerdeki hatalar: %d"
 
 #: pocheckerconsts.sthefollowingmissingmasterpofileswereremoved
 #, object-pascal-format

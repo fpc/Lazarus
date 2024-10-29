@@ -1,15 +1,19 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
+"PO-Revision-Date: 2024-10-29 08:49+0000\n"
 "Last-Translator: Onur ERÇELEN <onur2x@gmail.com>\n"
-"Language-Team: \n"
+"Language-Team: Turkish\n"
 "Language: tr\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.4.1\n"
+"X-Loco-Source-Locale: tr_TR\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Parser: loco_parse_po"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -569,7 +573,7 @@ msgstr "%d satırı, %d karakteri"
 
 #: objinspstrconsts.oisenablesetshint
 msgid "Only affects the EnableSets property of the Test Input"
-msgstr ""
+msgstr "Sadece Test Girdi'sinin EnableSets özelliğini etkiler."
 
 #: objinspstrconsts.oisenumeration
 msgid "Enumeration"
@@ -595,7 +599,7 @@ msgstr "Resim yüklenirken hata oluştu \"%s\":%s%s"
 #: objinspstrconsts.oiserrorreadingsamplefile
 #, object-pascal-format
 msgid "Error reading file %s"
-msgstr ""
+msgstr "Dosya %s okunurken hata oluştu."
 
 #: objinspstrconsts.oiserrorwhiledeletingaction
 #, object-pascal-format
@@ -645,7 +649,7 @@ msgstr "Maske gir:"
 
 #: objinspstrconsts.oisinputmaskeditor
 msgid "Input Mask Editor"
-msgstr ""
+msgstr "Girdi Maskesi Düzenleyicisi"
 
 #: objinspstrconsts.oisinsertpagename
 msgid "Insert Page Name"
@@ -704,7 +708,7 @@ msgstr "Maske...."
 
 #: objinspstrconsts.oismasksamplefilter
 msgid "Input mask sample files (*.lem;*.dem)|*.lem;*.dem|All files|*"
-msgstr ""
+msgstr "Girdi maskesi örnek dosyaları (.lem;.dem)|.lem;.dem|Tüm dosyalar|*"
 
 #: objinspstrconsts.oismethod
 msgid "Method"
@@ -888,7 +892,7 @@ msgstr "&Seçilmiş Özellikler"
 
 #: objinspstrconsts.oisselectinputmasksample
 msgid "Select input mask sample file"
-msgstr ""
+msgstr "Girdi maskesi örnek dosyasını seçin"
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"
@@ -1293,11 +1297,11 @@ msgstr "Bilinmeyen"
 
 #: objinspstrconsts.oisunload
 msgid "Unload"
-msgstr ""
+msgstr "Boşalt"
 
 #: objinspstrconsts.oisunloadhint
 msgid "Unloads the current sample file"
-msgstr ""
+msgstr "Mevcut örnek dosyasını boşaltır"
 
 #: objinspstrconsts.oisunselectall
 msgid "&Unselect all"
@@ -1403,42 +1407,34 @@ msgid "Sections Editor ..."
 msgstr "Bölüm Editörü ..."
 
 #: objinspstrconsts.sccsiledtadd
-#, fuzzy
-#| msgid "&Add ..."
 msgctxt "objinspstrconsts.sccsiledtadd"
 msgid "Add"
-msgstr "&Ekle ..."
+msgstr "Ekle"
 
 #: objinspstrconsts.sccsiledtaddimg
 msgid "Add image ..."
-msgstr ""
+msgstr "Resim ekle ..."
 
 #: objinspstrconsts.sccsiledtaddmoreresolutions
-#, fuzzy
-#| msgid "Add more resolutions ..."
 msgid "Add image with multiple resolutions ..."
-msgstr "Daha fazla çözünürlük ekle ..."
+msgstr "Birden fazla çözünürlüğe sahip görüntü ekle ..."
 
 #: objinspstrconsts.sccsiledtaddnewresolution
-#, fuzzy
-#| msgid "New resolution ..."
 msgid "Register new resolution (image size) ..."
-msgstr "Yeni çözünürlük ..."
+msgstr "Yeni çözünürlük (görüntü boyutu) kaydet ..."
 
 #: objinspstrconsts.sccsiledtaddsingleresolution
 msgctxt "objinspstrconsts.sccsiledtaddsingleresolution"
 msgid "Add image(s) with single resolution..."
-msgstr ""
+msgstr "Tek çözünürlüklü görüntü(ler) ekle..."
 
 #: objinspstrconsts.sccsiledtaddsliced
 msgid "Add sliced ..."
 msgstr "Dilim ekle ..."
 
 #: objinspstrconsts.sccsiledtaddslicediconerror
-#, fuzzy
-#| msgid "Adding sliced icons is not supported."
 msgid "Adding sliced images is not supported."
-msgstr "Dilimlenmiş simgeler ekleme desteklenmez."
+msgstr "Dilimlenmiş görüntü ekleme desteklenmiyor."
 
 #: objinspstrconsts.sccsiledtadjustment
 msgid "Adjustment"
@@ -1466,34 +1462,26 @@ msgid "Center"
 msgstr "Ortala"
 
 #: objinspstrconsts.sccsiledtclear
-#, fuzzy
-#| msgid "&Clear"
 msgctxt "objinspstrconsts.sccsiledtclear"
 msgid "&Clear list"
-msgstr "&Temizle"
+msgstr "&Listeyi temizle"
 
 #: objinspstrconsts.sccsiledtcrop
 msgid "Crop"
 msgstr "Kırp"
 
 #: objinspstrconsts.sccsiledtdelete
-#, fuzzy
-#| msgid "&Delete"
 msgctxt "objinspstrconsts.sccsiledtdelete"
 msgid "&Delete image"
-msgstr "&Sil"
+msgstr "&Resmi sil"
 
 #: objinspstrconsts.sccsiledtdeleteresolution
-#, fuzzy
-#| msgid "Delete resolution ..."
 msgid "Delete resolution (image size) ..."
-msgstr "Çözünürlüğü sil...."
+msgstr "Çözünürlüğü (görüntü boyutunu) sil ..."
 
 #: objinspstrconsts.sccsiledtdeleteresolutionconfirmation
-#, fuzzy
-#| msgid "Select the resolution to delete."
 msgid "Select the resolution (image size) to delete."
-msgstr "Silinecek çözünürlüğü seçin."
+msgstr "Görüntüyü silebilmek için çözünürlüğü (görüntü boyutunu) seçin."
 
 #: objinspstrconsts.sccsiledtgrplcaption
 msgid "Images"
@@ -1504,10 +1492,8 @@ msgid "Selected Image"
 msgstr "Seçilen Resim"
 
 #: objinspstrconsts.sccsiledtimagewidthofnewresolution
-#, fuzzy
-#| msgid "Image width of the new resolution:"
 msgid "Image width of the new resolution:"
-msgstr "Yeni çözünürlüğün görüntü genişliği:"
+msgstr "Yeni çözünürlüğün görüntü genişliği: "
 
 #: objinspstrconsts.sccsiledtmovedown
 msgctxt "objinspstrconsts.sccsiledtmovedown"
@@ -1533,7 +1519,7 @@ msgstr "Yeni resim"
 
 #: objinspstrconsts.sccsiledtpastefromclipboard
 msgid "Paste image from clipboard"
-msgstr ""
+msgstr "Panodan görüntü yapıştır"
 
 #: objinspstrconsts.sccsiledtransparentcolor
 msgid "Transparent Color:"
@@ -1541,48 +1527,39 @@ msgstr "Transparent Renk:"
 
 #: objinspstrconsts.sccsiledtremove
 msgid "Remove"
-msgstr ""
+msgstr "Kaldır"
 
 #: objinspstrconsts.sccsiledtreplace
-#, fuzzy
-#| msgid "&Replace ..."
 msgctxt "objinspstrconsts.sccsiledtreplace"
 msgid "Replace"
-msgstr "&Değiştir ..."
+msgstr "Değiştir"
 
 #: objinspstrconsts.sccsiledtreplaceallresolutions
-#, fuzzy
-#| msgid "Replace all resolutions ..."
 msgid "Replace all resolutions of an image ..."
-msgstr "Tüm çözünürlükleri değiştir ..."
+msgstr "Tüm çözünürlükleri değiştirin ..."
 
 #: objinspstrconsts.sccsiledtreplaceimg
 msgid "Replace image ..."
-msgstr ""
+msgstr "Resmi değiştir ..."
 
 #: objinspstrconsts.sccsiledtreplacesingleresolution
 msgid "Replace single resolution of an image ..."
-msgstr ""
+msgstr "Tek bir çözünürlüğü değiştir ..."
 
 #: objinspstrconsts.sccsiledtresolutionsbtn
 msgid "Resolutions"
-msgstr ""
+msgstr "Çözünürlükler"
 
 #: objinspstrconsts.sccsiledtsave
-#, fuzzy
-#| msgid "&Save ..."
 msgctxt "objinspstrconsts.sccsiledtsave"
 msgid "&Save image ..."
-msgstr "&Kaydet.."
+msgstr "&Resmi kaydet .."
 
 #: objinspstrconsts.sccsiledtsaveall
-#, fuzzy
-#| msgid "Save All ..."
 msgid "Save all ..."
-msgstr "Hepsini kaydet.."
+msgstr "Hepsini kaydet ..."
 
 #: objinspstrconsts.sccsiledtsavebtn
-#, fuzzy
 msgctxt "objinspstrconsts.sccsiledtsavebtn"
 msgid "Save"
 msgstr "Kaydet"
@@ -1649,7 +1626,7 @@ msgstr "Durum dizini:"
 
 #: objinspstrconsts.sccslvedtmsgownerdata
 msgid "List items cannot be edited at design-time when OwnerData is enabled. Use Items.Count and OnData at run-time instead."
-msgstr ""
+msgstr "Liste öğeleri, OwnerData etkinleştirildiğinde tasarım zamanında düzenlenemez. Bunun yerine, çalışma zamanında Items.Count ve OnData kullanın."
 
 #: objinspstrconsts.sccslvedtnewitem
 msgctxt "objinspstrconsts.sccslvedtnewitem"
@@ -1771,10 +1748,9 @@ msgid "Apply"
 msgstr "Uygula"
 
 #: objinspstrconsts.sccstredtcancel
-#, fuzzy
 msgctxt "objinspstrconsts.sccstredtcancel"
 msgid "&Cancel"
-msgstr "İptal"
+msgstr "&İptal"
 
 #: objinspstrconsts.sccstredtcaption
 msgid "TreeView Items Editor"
@@ -1782,21 +1758,21 @@ msgstr "TreeView Öğe düzenleyici"
 
 #: objinspstrconsts.sccstredtconfirmationcaption
 msgid "Confirmation"
-msgstr ""
+msgstr "Onay"
 
 #: objinspstrconsts.sccstredtconfirmationfilereplace
 msgctxt "objinspstrconsts.sccstredtconfirmationfilereplace"
 msgid "The file already exists, replace it?"
-msgstr ""
+msgstr "Dosya zaten var, değiştirmek istiyor musunuz?"
 
 #: objinspstrconsts.sccstredtconfirmationimagesloss
 msgctxt "objinspstrconsts.sccstredtconfirmationimagesloss"
 msgid "Information about node images cannot be stored in the file. Continue anyway?"
-msgstr ""
+msgstr "Düğüm görüntüleri hakkında bilgiler dosyada saklanamaz. Yine de devam etmek istiyor musunuz?"
 
 #: objinspstrconsts.sccstredtconfirmationtreereplace
 msgid "The current tree will be overwritten, continue?"
-msgstr ""
+msgstr "Mevcut ağaç üzerine yazılacak, devam etmek istiyor musunuz?"
 
 #: objinspstrconsts.sccstredtdelete
 msgctxt "objinspstrconsts.sccstredtdelete"
@@ -1806,12 +1782,12 @@ msgstr "Sil"
 #: objinspstrconsts.sccstredtimagelistnotassigned
 #, object-pascal-format
 msgid "\"%s\" not assigned"
-msgstr ""
+msgstr "\"%s\" atanmadı."
 
 #: objinspstrconsts.sccstredtinvalidindex
 #, object-pascal-format
 msgid "\"%s\" has only %d images"
-msgstr ""
+msgstr "\"%s\" sadece %d görüntü içeriyor."
 
 #: objinspstrconsts.sccstredtitem
 msgctxt "objinspstrconsts.sccstredtitem"
@@ -1819,24 +1795,21 @@ msgid "Item"
 msgstr "Öğe"
 
 #: objinspstrconsts.sccstredtlabelimageindex
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Image Index"
+#, object-pascal-format
 msgctxt "objinspstrconsts.sccstredtlabelimageindex"
 msgid "Image Index%s:"
-msgstr "Resim Dizini"
+msgstr "Resim indeksi%s:"
 
 #: objinspstrconsts.sccstredtlabelselindex
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Selected Index"
+#, object-pascal-format
 msgid "Selected Index%s:"
-msgstr "Seçilen dizin"
+msgstr "Seçilen indeks%s:"
 
 #: objinspstrconsts.sccstredtlabelstateindex
-#, object-pascal-format, fuzzy, badformat
-#| msgid "State Index"
+#, object-pascal-format
 msgctxt "objinspstrconsts.sccstredtlabelstateindex"
 msgid "State Index%s:"
-msgstr "Durum dizini"
+msgstr "Durum indeksi%s:"
 
 #: objinspstrconsts.sccstredtnewitem
 msgctxt "objinspstrconsts.sccstredtnewitem"
@@ -1850,11 +1823,11 @@ msgstr "Yeni alt öğe"
 
 #: objinspstrconsts.sccstredtno
 msgid "&No"
-msgstr ""
+msgstr "&Hayır"
 
 #: objinspstrconsts.sccstredtopen
 msgid "Open file"
-msgstr ""
+msgstr "Dosya aç"
 
 #: objinspstrconsts.sccstredtopendialog
 msgctxt "objinspstrconsts.sccstredtopendialog"
@@ -1862,17 +1835,14 @@ msgid "Open"
 msgstr "Aç"
 
 #: objinspstrconsts.sccstredtrename
-#, fuzzy
 msgctxt "objinspstrconsts.sccstredtrename"
 msgid "Rename"
-msgstr "Yeniden Adlandır"
+msgstr "Yeniden adlandır "
 
 #: objinspstrconsts.sccstredtsave
-#, fuzzy
-#| msgid "Save"
 msgctxt "objinspstrconsts.sccstredtsave"
 msgid "Save to file"
-msgstr "Kaydet"
+msgstr "Dosyayı kaydet"
 
 #: objinspstrconsts.sccstredtsavedialog
 msgctxt "objinspstrconsts.sccstredtsavedialog"
@@ -1881,7 +1851,7 @@ msgstr "Kaydet"
 
 #: objinspstrconsts.sccstredtyes
 msgid "&Yes"
-msgstr ""
+msgstr "&Evet"
 
 #: objinspstrconsts.srgrabkey
 msgid "Grab key"

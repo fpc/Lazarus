@@ -1,0 +1,89 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-10-29 14:17+0000\n"
+"PO-Revision-Date: 2024-10-29 14:20+0000\n"
+"Last-Translator: \n"
+"Language-Team: Unknown\n"
+"Language: zxx\n"
+"Plural-Forms: nplurals=2; plural=n!=1;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Loco-Source-Locale: tr_TR\n"
+"X-Loco-Parser: loco_parse_po\n"
+"X-Generator: Loco https://localise.biz/"
+
+#: lremailexportfilter.saccount
+msgid "Account"
+msgstr "Hesap"
+
+#: lremailexportfilter.sadress
+msgid "Adress"
+msgstr "Adres"
+
+#: lremailexportfilter.sapplicationname
+msgid "Application name"
+msgstr "Uygulama adı"
+
+#: lremailexportfilter.sattachment
+msgid "Attachment"
+msgstr "Ek"
+
+#: lremailexportfilter.sdirectsend
+msgid "Direct send"
+msgstr "Direkt gönder"
+
+#: lremailexportfilter.semail
+msgid "Email"
+msgstr "Email"
+
+#: lremailexportfilter.sformat
+msgid "Format"
+msgstr "Biçim"
+
+#: lremailexportfilter.sfromadress
+msgid "From adress"
+msgstr "Adresten"
+
+#: lremailexportfilter.sfromname
+msgid "From name"
+msgstr "Kimden"
+
+#: lremailexportfilter.shost
+msgid "Host"
+msgstr "Host"
+
+#: lremailexportfilter.slogin
+msgid "Login"
+msgstr "Giriş"
+
+#: lremailexportfilter.smessage
+msgid "Message"
+msgstr "Mesaj"
+
+#: lremailexportfilter.spassword
+msgid "Password"
+msgstr "Şifre"
+
+#: lremailexportfilter.sport
+msgid "Port"
+msgstr "Port"
+
+#: lremailexportfilter.ssendtoemail
+msgid "Send to email..."
+msgstr "Email gönder..."
+
+#: lremailexportfilter.ssubject
+msgid "Subject"
+msgstr "Konu"
+
+#: lremailexportfilter.stext
+msgid "Text"
+msgstr "Metin"
+
+#: lremailexportfilter.susemailprogram
+msgid "Use mail program"
+msgstr "Mail programı kullan"
+
