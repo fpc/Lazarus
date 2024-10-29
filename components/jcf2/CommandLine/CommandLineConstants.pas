@@ -31,15 +31,23 @@ interface
 
 uses
   JcfStringUtils,
-  JcfVersionConsts;
+  JcfVersionConsts,
+  lazversion;
 
 const
   ABOUT_COMMANDLINE =
+    'JEDI Code Format [lazarus fork] V' + laz_version + NativeLineBreak +
+    'Build date: ' + {$Include %Date%} + NativeLineBreak +
+    'Program source code at: ' + 'https://gitlab.com/freepascal.org/lazarus/lazarus'+ NativeLineBreak +
+    'In folder: /components/jcf2'+ NativeLineBreak +
+    'This is a fork of: ' + NativeLineBreak + NativeLineBreak +
+    '-----------------------------------' + NativeLineBreak +
     'JEDI Code Format V' + PROGRAM_VERSION + NativeLineBreak +
     ' ' + PROGRAM_DATE + NativeLineBreak +
     ' A Delphi Object-Pascal Source code formatter' + NativeLineBreak +
     ' A GUI version of this program is also available' + NativeLineBreak +
     ' Latest version at ' + PROGRAM_HOME_PAGE + NativeLineBreak + NativeLineBreak +
+    '-----------------------------------' + NativeLineBreak + NativeLineBreak +
     'Syntax: jcf [options] path/filename ' + NativeLineBreak +
     ' Parameters to the command-line program: ' + NativeLineBreak + NativeLineBreak +
 
