@@ -267,7 +267,7 @@ const
   DEFAULT_MARGIN = 4;
   DEFAULT_NODE_HEIGHT = 18;
   DEFAULT_SPACING = 3;
-  DEFAULT_MINHEIGHT = 10;
+  DEFAULT_MIN_HEIGHT = 10;
 
   LIS_NORMAL = 1;
   {$EXTERNALSYM LIS_NORMAL}
@@ -6921,8 +6921,13 @@ begin
 
   inherited Create(Collection);
 
+  {$IF LCL_FullVersion >= 1080000}
+  FMargin := Owner.Header.TreeView.Scale96ToFont(DEFAULT_MARGIN);
+  FSpacing := Owner.Header.TreeView.Scale96ToFont(DEFAULT_SPACING);
+  {$ELSE}
   FMargin := DEFAULT_MARGIN;
   FSpacing := DEFAULT_SPACING;
+  {$IFEND}
 
   FWidth := Owner.FDefaultWidth;
   FLastWidth := Owner.FDefaultWidth;
@@ -7042,14 +7047,22 @@ end;
 
 function TVirtualTreeColumn.IsMarginStored: Boolean;
 begin
+  {$IF LCL_FullVersion >= 1080000}
+  Result := FMargin <> Owner.Header.TreeView.Scale96ToFont(DEFAULT_MARGIN);
+  {$ELSE}
   Result := FMargin <> DEFAULT_MARGIN;
+  {$IFEND}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
 function TVirtualTreeColumn.IsSpacingStored: Boolean;
 begin
+  {$IF LCL_FullVersion >= 1080000}
+  Result := FSpacing <> Owner.Header.TreeView.Scale96ToFont(DEFAULT_SPACING);
+  {$ELSE}
   Result := FSpacing <> DEFAULT_SPACING;
+  {$IFEND}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -8086,7 +8099,11 @@ begin
   FClickIndex := NoColumn;
   FDropTarget := NoColumn;
   FTrackIndex := NoColumn;
+  {$IF LCL_FullVersion >= 1080000}
+  FDefaultWidth := Header.TreeView.Scale96ToFont(DEFAULT_COLUMN_WIDTH);
+  {$ELSE}
   FDefaultWidth := DEFAULT_COLUMN_WIDTH;
+  {$IFEND}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -8133,7 +8150,11 @@ end;
 
 function TVirtualTreeColumns.IsDefaultWidthStored: Boolean;
 begin
+  {$IF LCL_FullVersion >= 1080000}
+  Result := FDefaultWidth <> Header.TreeView.Scale96ToFont(DEFAULT_COLUMN_WIDTH);
+  {$ELSE}
   Result := FDefaultWidth <> DEFAULT_COLUMN_WIDTH;
+  {$IFEND}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -9845,9 +9866,15 @@ begin
   inherited Create;
   FOwner := AOwner;
   FColumns := GetColumnsClass.Create(Self);
+  {$IF LCL_FullVersion >= 1080000}
+  FHeight := FOwner.Scale96ToFont(DEFAULT_HEADER_HEIGHT);
+  FDefaultHeight := FOwner.Scale96ToFont(DEFAULT_HEADER_HEIGHT);
+  FMinHeight := FOwner.Scale96ToFont(DEFAULT_MIN_HEIGHT);
+  {$ELSE}
   FHeight := DEFAULT_HEADER_HEIGHT;
   FDefaultHeight := DEFAULT_HEADER_HEIGHT;
-  FMinHeight := DEFAULT_MINHEIGHT;
+  FMinHeight := 10;
+  {$IFEND}
   FMaxHeight := 10000;
   FFont := TFont.Create;
   FFont.OnChange := FontChanged;
@@ -9941,7 +9968,11 @@ end;
 
 function TVTHeader.IsDefaultHeightStored: Boolean;
 begin
+  {$IF LCL_FullVersion >= 1080000}
+  Result := FDefaultHeight <> FOwner.Scale96ToFont(DEFAULT_HEADER_HEIGHT);
+  {$ELSE}
   Result := FDefaultHeight <> DEFAULT_HEADER_HEIGHT;
+  {$IFEND}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -9956,15 +9987,25 @@ end;
 
 function TVTHeader.IsHeightStored: Boolean;
 begin
+  {$IF LCL_FullVersion >= 1080000}
+  Result := FHeight <> FOwner.Scale96ToFont(DEFAULT_HEADER_HEIGHT);
+  {$ELSE}
   Result := FHeight <> DEFAULT_HEADER_HEIGHT;
+  {$IFEND}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
 function TVTHeader.IsMinHeightStored: Boolean;
 begin
-  Result := FMinHeight <> DEFAULT_MINHEIGHT;
+  {$IF LCL_FullVersion >= 1080000}
+  Result := FMinHeight <> FOwner.Scale96ToFont(DEFAULT_Min_HEIGHT);
+  {$ELSE}
+  Result := FMinHeight <> DEFAULT_MIN_HEIGHT;
+  {$IFEND}
 end;
+
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TVTHeader.SetAutoSizeIndex(Value: TColumnIndex);
 
@@ -11470,17 +11511,18 @@ var
   i: Integer;
   col: TVirtualTreeColumn;
 begin
-//  if not (toAutoChangeScale in Treeview.TreeOptions.AutoOptions) then
-//  begin
-  {
-    if IsDefaultHeightStored then
-      FDefaultHeight := Round(FDefaultHeight * AYProportion);
-  }
-  FMinHeight := Round(FMinHeight * AYProportion);
-  {
-    if Columns.IsDefaultWidthStored then
-      Columns.DefaultWidth := Round(Columns.DefaultWidth * AXProportion);
-}
+  if IsDefaultHeightStored then
+    FDefaultHeight := Round(FDefaultHeight * AYProportion);
+
+  if IsHeightStored then
+    FHeight := Round(FHeight * AYProportion);
+
+  if IsMinHeightStored then
+    FMinHeight := Round(FMinHeight * AYProportion);
+
+  if Columns.IsDefaultWidthStored then
+    Columns.DefaultWidth := Round(Columns.DefaultWidth * AXProportion);
+
   for i := 0 to Columns.Count-1 do begin
     col := Columns[i];
     if col.IsWidthStored then
@@ -11490,10 +11532,6 @@ begin
     if col.IsMarginStored then
       col.Margin := Round(col.Margin * AXProportion);
   end;
-
-//  FontChanged(nil);
-  if IsHeightStored then
-    FHeight := Round(FHeight * AYProportion);
 end;
 {$IFEND}
 
@@ -12348,12 +12386,22 @@ begin
   FLastSelectionLevel := -1;
   FSelectionBlendFactor := 128;
 
+
+  {$IF LCL_FullVersion >= 1080000}
+  FDefaultNodeHeight := Scale96ToFont(DEFAULT_NODE_HEIGHT);
+  FIndent := Scale96ToFont(DEFAULT_INDENT);
+  FMargin := Scale96ToFont(DEFAULT_MARGIN);
+  FTextMargin := Scale96ToFont(DEFAULT_MARGIN);
+  FDragHeight := Scale96ToFont(DEFAULT_DRAG_HEIGHT);
+  FDragWidth := Scale96ToFont(DEFAULT_DRAG_WIDTH);
+  {$ELSE}
   FDefaultNodeHeight := DEFAULT_NODE_HEIGHT;
   FIndent := DEFAULT_INDENT;
   FMargin := DEFAULT_MARGIN;
   FTextMargin := DEFAULT_MARGIN;
   FDragHeight := DEFAULT_DRAG_HEIGHT;
   FDragWidth := DEFAULT_DRAG_WIDTH;
+  {$IFEND}
 
   FPlusBM := TBitmap.Create;
   FHotPlusBM := TBitmap.Create;
@@ -14032,7 +14080,11 @@ end;
 
 function TBaseVirtualTree.IsDefaultNodeHeightStored: Boolean;
 begin
+  {$IF LCL_FullVersion >= 1080000}
+  Result := FDefaultNodeHeight <> Scale96ToFont(DEFAULT_NODE_HEIGHT);
+  {$ELSE}
   Result := FDefaultNodeHeight <> DEFAULT_NODE_HEIGHT;
+  {$IFEND}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -14075,28 +14127,44 @@ end;
 
 function TBaseVirtualTree.IsDragHeightStored: Boolean;
 begin
+  {$IF LCL_FullVersion >= 1080000}
+  Result := FDragHeight <> Scale96ToFont(DEFAULT_DRAG_HEIGHT);
+  {$ELSE}
   Result := FDragHeight <> DEFAULT_DRAG_HEIGHT;
+  {$IFEND}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
 function TBaseVirtualTree.IsDragWidthStored: Boolean;
 begin
+  {$IF LCL_FullVersion >= 1080000}
+  Result := FDragWidth <> Scale96ToFont(DEFAULT_DRAG_WIDTH);
+  {$ELSE}
   Result := FDragWidth <> DEFAULT_DRAG_WIDTH;
+  {$IFEND}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
 function TBaseVirtualTree.IsIndentStored: Boolean;
 begin
+  {$IF LCL_FullVersion >= 1080000}
+  Result := FIndent <> Scale96ToFont(DEFAULT_INDENT);
+  {$ELSE}
   Result := FIndent <> DEFAULT_INDENT;
+  {$IFEND}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
 function TBaseVirtualTree.IsMarginStored: Boolean;
 begin
+  {$IF LCL_FullVersion >= 1080000}
+  Result := FMargin <> Scale96ToFont(DEFAULT_MARGIN);
+  {$ELSE}
   Result := FMargin <> DEFAULT_MARGIN;
+  {$IFEND}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -14110,7 +14178,11 @@ end;
 
 function TBaseVirtualTree.IsTextMarginStored: Boolean;
 begin
+  {$IF LCL_FullVersion >= 1080000}
+  Result := FTextMargin <> Scale96ToFont(DEFAULT_MARGIN);
+  {$ELSE}
   Result := FTextMargin <> DEFAULT_MARGIN;
+  {$IFEND}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -14851,7 +14923,11 @@ procedure TBaseVirtualTree.SetDefaultNodeHeight(Value: Cardinal);
 
 begin
   if Value = 0 then
+    {$IF LCL_FullVersion >= 2000000}
+    Value := Scale96ToFont(DEFAULT_NODE_HEIGHT);
+    {$ELSE}
     Value := DEFAULT_NODE_HEIGHT;
+    {$IFEND}
   if FDefaultNodeHeight <> Value then
   begin
     Inc(Integer(FRoot.TotalHeight), Integer(Value) - Integer(FDefaultNodeHeight));
@@ -24289,7 +24365,11 @@ var
 begin
   {$ifdef DEBUG_VTV}Logger.EnterMethod([lcCheck],'PaintCheckImage');{$endif}
 
+  {$if LCL_FullVersion >= 1080000}
+  checkSize := Scale96ToFont(DEFAULT_CHECK_WIDTH);
+  {$else}
   checkSize := DEFAULT_CHECK_WIDTH;
+  {$ifend}
 
   with ImageInfo do
   begin
