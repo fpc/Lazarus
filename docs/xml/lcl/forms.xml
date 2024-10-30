@@ -4209,12 +4209,48 @@ in the widgetset class.
 
 <element name="TCustomForm.IconChanged">
 <short>
-Loads the new form icons, and notifies the widgetset and all forms.
+Resets icon handle(s) for the form when CMIconChanged is called for the class 
+instance.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>IconChanged</var> is a method used to to perform actions needed when the 
+CMIconChanged method is executed to handle a CM_ICONCHANGED message for the 
+form. It is assigned in the CreateNew constructor as the OnChange event handler 
+for the Icon property in the class instance.
+</p>
+<p>
+IconChanged recreates handles for icons used on the form instance. If the 
+handle for the form instance has been allocated, values in SmallIconHandle and 
+BigIconHandle are reset to the unassigned handle value (0). IconChanged calls 
+SetIcon in the widgetset class to send modified values to the widget. If the 
+form is the MainForm for the Application, or the form has a BorderStyle 
+<b>other than</b> bsDialog or bsNone, the values in SmallIconHandle and 
+BigIconHandle are sent to the widget. For form instances with a different value 
+in BorderStyle, the unassigned handle value (0) is used for both icon handles.
+</p>
+<p>
+Changing the value in BorderStyle or Icon at run-time causes IconChanged to be 
+performed for the form instance.
+</p>
+</descr>
+<seealso>
+<link id="TCustomForm.SmallIconHandle"/>
+<link id="TCustomForm.BigIconHandle"/>
+<link id="TCustomForm.Icon"/>
+<link id="TCustomForm.BorderStyle"/>
+<link id="TCustomForm.CreateNew"/>
+<link id="TApplication.MainForm"/>
+<link id="Application"/>
+<link id="#lcl.graphics.TIcon.OnChange">TIcon.OnChange</link>
+<link id="#lcl.controls.TWinControl.HandleAllocated">TWinControl.HandleAllocated</link>
+</seealso>
 </element>
-<element name="TCustomForm.IconChanged.Sender"/>
+<element name="TCustomForm.IconChanged.Sender">
+<short>
+Object instance (TCustomForm) for the change notification.
+</short>
+</element>
 
 <element name="TCustomForm.DelayedEvent">
 <short>
