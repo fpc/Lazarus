@@ -75,7 +75,7 @@ type
     destructor Destroy; override;
 
   public
-    procedure ClipRectChanged; virtual; virtual;
+    procedure ClipRectChanged; virtual;
     procedure Draw(ADrawer: IChartDrawer); virtual; abstract;
     function GetAxisBounds(AAxis: TChartAxis; out AMin, AMax: Double): boolean; virtual; abstract;
     function GetGraphBounds: TDoubleRect; virtual; abstract;
