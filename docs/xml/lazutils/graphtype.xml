@@ -1336,10 +1336,9 @@ boundaries.
 <short>Controls the appearance of disabled images.</short>
 <descr>
 <p>
-This variable controls how <link id="TRawImage.PerformEffect"/> 
-represents <link id="TGraphicsDrawEffect.gdeDisabled">gdeDisabled</link>.
-Applications should set it based on the background color for their 
-interfaces.
+This variable controls how <link id="TRawImage.PerformEffect"/> represents 
+<link id="TGraphicsDrawEffect">gdeDisabled</link>. 
+Applications should set it based on the background color for their interfaces.
 </p>
 </descr>
 </element>
