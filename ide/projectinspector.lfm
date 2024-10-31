@@ -138,12 +138,13 @@ object ProjectInspectorForm: TProjectInspectorForm
   end
   object PropsGroupBox: TGroupBox
     Left = 0
-    Height = 141
+    Height = 140
     Top = 344
     Width = 463
     Align = alBottom
     Caption = 'PropsGroupBox'
     TabOrder = 3
+    OnResize = PropsGroupBoxResize
   end
   object Splitter1: TSplitter
     Cursor = crVSplit
