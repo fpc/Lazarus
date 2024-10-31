@@ -25,7 +25,7 @@ type
   TCocoaToolBarItemCreator = function ( const identifier: String;
     const items: TCocoaConfigToolBarItems ): NSToolbarItem;
   TCocoaToolBarItemActionHandler = procedure ( const Sender: id );
-  TCocoaToolBarItemMenuOnGetMenu = function: TMenuItem;
+  TCocoaToolBarItemMenuOnGetMenu = procedure ( const menu: TMenu );
   TCocoaToolBarItemSharingOnGetItems = function ( item: NSToolBarItem ): TStringArray;
 
 type
@@ -67,7 +67,8 @@ type
 
   TCocoaConfigToolBarItemMenu = object( TCocoaConfigToolBarItemWithAction )
     showsIndicator: Boolean;
-    menu: TMenuItem;
+    dynamic: Boolean;   // dynamically load each time before displaying the menu
+    menu: TMenu;
     onGetMenu: TCocoaToolBarItemMenuOnGetMenu;
   end;
 
