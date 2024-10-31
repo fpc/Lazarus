@@ -70,10 +70,7 @@ begin
   SourceEditorManager.JumpForwardClicked( nil );
 end;
 
-function onGetCommandMenu: TMenuItem;
-var
-  menu: TMenuItem;
-
+procedure onGetCommandMenu( const menu: TMenu );
   function createSearchMenuItem: TMenuItem;
   begin
     Result:= TMenuItem.Create( menu );
@@ -83,9 +80,7 @@ var
   end;
 
 begin
-  menu:= TMenuItem.Create( nil );
-  menu.Add( createSearchMenuItem );
-  Result:= menu;
+  menu.Items.Add( createSearchMenuItem );
 end;
 
 
