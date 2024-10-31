@@ -106,7 +106,8 @@ type
   TCocoaConfigToolBarItemClassMenu = class( TCocoaConfigToolBarItemClassWithAction )
   protected
     _showsIndicator: Boolean;
-    _menu: TMenuItem;
+    _dynamic: Boolean;
+    _menu: TMenu;
     _onGetMenu: TCocoaToolBarItemMenuOnGetMenu;
   public
     constructor Create( const itemConfig: TCocoaConfigToolBarItemMenu );
@@ -175,10 +176,15 @@ type
   TCocoaToolBarItemMenu = objcclass( NSMenuToolBarItem )
   private
     _handler: TCocoaToolBarItemActionHandler;
+    _dynamic: Boolean;
+    _onGetMenu: TCocoaToolBarItemMenuOnGetMenu;
     procedure lclItemAction( sender: id ); message 'lclItemAction:';
   public
     procedure lclSetHandler( const handler: TCocoaToolBarItemActionHandler );
       message 'lclSetHandler:';
+    procedure lclSetDynamic( const dynamic: Boolean ); message 'lclSetDynamic:';
+    procedure lclSetOnGetMenu( const onGetMenu: TCocoaToolBarItemMenuOnGetMenu);
+      message 'lclSetOnGetMenu:';
   end;
 
   { TCocoaToolBarItemGroupWrapper }
@@ -247,6 +253,7 @@ type
       TCocoaToolBar;
     class function findItemByIdentifier( const form: TCustomForm;
       const identifier: String ): NSToolbarItem;
+    class function getNSView( const cocoaItem: NSToolBarItem ): NSView;
   end;
 
   function defaultToolBarItemCreatorImplement( const identifier: String;
@@ -359,6 +366,12 @@ begin
   end;
 end;
 
+class function TCocoaToolBarUtils.getNSView(const cocoaItem: NSToolBarItem
+  ): NSView;
+begin
+  Result:= cocoaItem.valueForKey( NSSTR('_itemViewer') );
+end;
+
 function defaultToolBarItemCreatorImplement( const identifier: String;
   const items: TCocoaConfigToolBarItems ): NSToolbarItem;
 begin
@@ -429,13 +442,38 @@ end;
 { TCocoaToolBarItemMenu }
 
 procedure TCocoaToolBarItemMenu.lclItemAction(sender: id);
+  procedure popupDynamicMenu;
+  var
+    menu: TPopupMenu;
+  begin
+    menu:= TPopupMenu.Create( nil );
+    _onGetMenu( menu );
+    NSMenu(menu.handle).popUpMenuPositioningItem_atLocation_inView(
+      nil, NSMakePoint(0,0), TCocoaToolBarUtils.getNSView(self) );
+    menu.Free;
+  end;
+
 begin
-  _handler( sender );
+  if _dynamic then
+    popupDynamicMenu
+  else
+    _handler( sender );
 end;
 
 procedure TCocoaToolBarItemMenu.lclSetHandler( const handler: TCocoaToolBarItemActionHandler );
 begin
   _handler:= handler;
+end;
+
+procedure TCocoaToolBarItemMenu.lclSetDynamic(const dynamic: Boolean);
+begin
+  _dynamic:= dynamic;
+end;
+
+procedure TCocoaToolBarItemMenu.lclSetOnGetMenu(
+  const onGetMenu: TCocoaToolBarItemMenuOnGetMenu);
+begin
+  _onGetMenu:= onGetMenu;
 end;
 
 { TCocoaToolBarItemGroupWrapper }
@@ -714,6 +752,7 @@ constructor TCocoaConfigToolBarItemClassMenu.Create(
 begin
   self.toClassConfig( @itemConfig );
   _showsIndicator:= itemConfig.showsIndicator;
+  _dynamic:= itemConfig.dynamic;
   _menu:= itemConfig.menu;
   _onGetMenu:= itemConfig.onGetMenu;
 end;
@@ -721,24 +760,36 @@ end;
 function TCocoaConfigToolBarItemClassMenu.createItem: NSToolBarItem;
 var
   cocoaItem: TCocoaToolBarItemMenu;
-  cocoaMenu: NSMenu;
+
+  procedure createStaticMenu;
+  begin
+    if NOT Assigned(_onAction) then
+      cocoaItem.setAction( nil );
+
+    if NOT Assigned(_menu) then begin
+      if Assigned(_onGetMenu) then begin
+        _menu:= TMenu.Create( nil );
+        _onGetMenu( _menu );
+      end;
+    end;
+
+    if Assigned(_menu) then begin
+      cocoaItem.setMenu( NSMenu(_menu.Handle) );
+    end;
+  end;
+
 begin
   cocoaItem:= TCocoaToolBarItemMenu.alloc.initWithItemIdentifier( self.identifier );
   self.setItemAttribs( cocoaItem );
-  if NOT Assigned(_onAction) then
-    cocoaItem.setAction( nil );
+  cocoaItem.lclSetDynamic( _dynamic );
+  cocoaItem.lclSetOnGetMenu( _onGetMenu );
+
+  // only static menu needs to be created in advance
+  // for dynamic menu, it's created in TCocoaToolBarItemMenu.lclItemAction()
+  if NOT _dynamic then
+    createStaticMenu;
+
   cocoaItem.setShowsIndicator( _showsIndicator );
-
-  if NOT Assigned(_menu) then begin
-    if Assigned(_onGetMenu) then
-      _menu:= _onGetMenu();
-  end;
-
-  if Assigned(_menu) then begin
-    cocoaMenu:= NSMenuItem(_menu.Handle).submenu;
-    cocoaItem.setMenu( cocoaMenu );
-  end;
-
   cocoaItem.autorelease;
   Result:= cocoaItem;
 end;
