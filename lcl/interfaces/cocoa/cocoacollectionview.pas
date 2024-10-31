@@ -56,6 +56,7 @@ type
     procedure mouseEntered(theEvent: NSEvent); override;
     procedure mouseExited(theEvent: NSEvent); override;
     procedure drawRect(dirtyRect: NSRect); override;
+    procedure dealloc; override;
   end;
 
   { TCocoaCollectionView }
@@ -720,6 +721,14 @@ begin
   if self.item.isSelected then begin
     NSColor.selectedControlColor.set_;
     NSRectFill( dirtyRect );
+  end;
+end;
+
+procedure TCocoaCollectionItemView.dealloc;
+begin
+  if Assigned(self.trackingArea) then begin
+    removeTrackingArea(self.trackingArea);
+    self.trackingArea.release;
   end;
 end;
 
