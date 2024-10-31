@@ -253,6 +253,7 @@ type
       TCocoaToolBar;
     class function findItemByIdentifier( const form: TCustomForm;
       const identifier: String ): NSToolbarItem;
+    class function getNSView( const cocoaItem: NSToolBarItem ): NSView;
   end;
 
   function defaultToolBarItemCreatorImplement( const identifier: String;
@@ -365,6 +366,12 @@ begin
   end;
 end;
 
+class function TCocoaToolBarUtils.getNSView(const cocoaItem: NSToolBarItem
+  ): NSView;
+begin
+  Result:= cocoaItem.valueForKey( NSSTR('_itemViewer') );
+end;
+
 function defaultToolBarItemCreatorImplement( const identifier: String;
   const items: TCocoaConfigToolBarItems ): NSToolbarItem;
 begin
@@ -437,14 +444,12 @@ end;
 procedure TCocoaToolBarItemMenu.lclItemAction(sender: id);
   procedure popupDynamicMenu;
   var
-    view: NSView;
     menu: TPopupMenu;
   begin
-    view:= self.valueForKey( NSSTR('_itemViewer') );
     menu:= TPopupMenu.Create( nil );
     _onGetMenu( menu );
     NSMenu(menu.handle).popUpMenuPositioningItem_atLocation_inView(
-      nil, NSMakePoint(0,0), view );
+      nil, NSMakePoint(0,0), TCocoaToolBarUtils.getNSView(self) );
     menu.Free;
   end;
 
