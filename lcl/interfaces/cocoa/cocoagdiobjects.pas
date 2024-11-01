@@ -9,7 +9,7 @@ interface
 
 uses
   MacOSAll, // for CGContextRef
-  LCLtype, LCLProc, Graphics, Controls, fpcanvas,
+  LCLtype, LCLProc, Graphics, Controls, fpcanvas, ImgList,
   CocoaAll, CocoaUtils,
   cocoa_extra,
   {$ifndef CocoaUseHITheme}
@@ -491,6 +491,8 @@ function CheckDC(dc: HDC; Str: string): Boolean;
 function CheckGDIOBJ(obj: HGDIOBJ): TCocoaGDIObject;
 function CheckBitmap(ABitmap: HBITMAP; AStr: string): Boolean;
 
+function AllocMultiResImageFromImageList(lst: TCustomImageList; width, imgIdx: Integer): NSImage;
+
 type
 
   { LCLNSGraphicsContext }
@@ -540,6 +542,63 @@ end;
 function CheckBitmap(ABitmap: HBITMAP; AStr: string): Boolean;
 begin
   Result := ABitmap <> 0;
+end;
+
+function AllocMultiResImageFromImageList(lst: TCustomImageList;
+  width, imgIdx: Integer): NSImage;
+var
+  bmp : TBitmap;
+  lstres: TCustomImageListResolution;
+  w   : Integer;
+  sz  : NSSize;
+  x,y : integer;
+  img : NSImage;
+  rep : NSBitmapImageRep;
+  cb  : TCocoaBitmap;
+begin
+  img := nil;
+  w := lst.WidthForPPI[width, 96];
+  sz.width := w;
+  sz.height := lst.HeightForWidth[w];
+  bmp := TBitmap.Create;
+  try
+    for lstres in lst.Resolutions do begin
+      lstres.GetBitmap(imgIdx, bmp);
+
+      if bmp.Handle = 0 then
+        Continue;
+
+      // Bitmap Handle should be nothing but TCocoaBitmap
+      cb := TCocoaBitmap(bmp.Handle);
+
+      // There's NSBitmapImageRep in TCocoaBitmap, but it depends on the availability
+      // of memory buffer stored with TCocoaBitmap. As soon as TCocoaBitmap is freed
+      // pixels are not available. For this reason, we're making a copy of the bitmapdata
+      // allowing Cocoa to allocate its own buffer (by passing nil for planes parameter)
+      rep := NSBitmapImageRep(NSBitmapImageRep.alloc).initWithBitmapDataPlanes_pixelsWide_pixelsHigh__colorSpaceName_bitmapFormat_bytesPerRow_bitsPerPixel(
+        nil, // planes, BitmapDataPlanes
+        Round(cb.ImageRep.size.Width), // width, pixelsWide
+        Round(cb.ImageRep.size.Height),// height, PixelsHigh
+        cb.ImageRep.bitsPerSample,// bitsPerSample, bps
+        cb.ImageRep.samplesPerPixel, // samplesPerPixel, spp
+        cb.ImageRep.hasAlpha, // hasAlpha
+        False, // isPlanar
+        cb.ImageRep.colorSpaceName, // colorSpaceName
+        cb.ImageRep.bitmapFormat, // bitmapFormat
+        cb.ImageRep.bytesPerRow, // bytesPerRow
+        cb.ImageRep.BitsPerPixel //bitsPerPixel
+      );
+      System.Move( cb.ImageRep.bitmapData^, rep.bitmapData^, cb.ImageRep.bytesPerRow * Round(cb.ImageRep.size.height));
+      if img = nil then
+        img := NSImage(NSImage.alloc).initWithSize( sz );
+      img.addRepresentation(rep);
+      rep.release;
+    end;
+
+  finally
+    bmp.Free;
+  end;
+  Result := img;
 end;
 
 procedure GetWindowViewTranslate(const AWindowOfs, AViewOfs: TPoint; out dx, dy: Integer); inline;
