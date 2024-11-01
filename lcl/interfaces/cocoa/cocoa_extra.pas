@@ -351,6 +351,18 @@ type
     procedure setEnabled_(aenabled: ObjCBool); message 'setEnabled:';
   end;
 
+type
+  NSFontWeight = CGFloat;
+const
+  NSFontWeightRegular = 0.0;
+
+type
+  NSFontFix = objccategory external (NSFont)
+    // available in 10.15+
+    class function monospacedSystemFontOfSize_weight (fontSize: CGFloat; weight: NSFontWeight): NSFont;
+      message 'monospacedSystemFontOfSize:weight:';
+  end;
+
   NSApplicationFix = objccategory external (NSApplication)
     {$ifdef BOOLFIX}
     procedure activateIgnoringOtherApps_(flag: ObjCBool); message 'activateIgnoringOtherApps:';
@@ -642,6 +654,7 @@ const
   NSAppKitVersionNumber10_13 = 1561;
   //NSAppKitVersionNumber10_14 = 1641.10; // Mojave's beta?
   NSAppKitVersionNumber10_14 = 1671;
+  NSAppKitVersionNumber10_15 = 1894;
   NSAppKitVersionNumber11_0  = 2022; // 2000 starts with beta?
   NSAppKitVersionNumber12_0  = 2113;
   NSAppKitVersionNumber13_0  = 2299;
