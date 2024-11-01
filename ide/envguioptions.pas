@@ -133,6 +133,7 @@ type
   TDesktopOpt = class(TCustomDesktopOpt)
   private const
     DEFAULT_CUSTOM_TITLE = '$project(TitleNew) $EncloseBracket($project(infodir)) $(BuildModeCaption)';
+    cDefaultPropsPanelHeight = 140;
   private
     // window layout
     FIDEWindowCreatorsLayoutList: TSimpleWindowLayoutList;
@@ -143,6 +144,7 @@ type
     FAutoAdjustIDEHeight: boolean;
     FAutoAdjustIDEHeightFullCompPal: boolean;
     FProjectInspectorShowProps: boolean;
+    FProjectInspectorPropsPanelHeight: integer;
     // window menu
     FIDENameForDesignedFormList: boolean;
     // CompletionWindow
@@ -200,6 +202,8 @@ type
     property ObjectInspectorOptions: TDesktopOIOptions read FObjectInspectorOptions;
     property ProjectInspectorShowProps: boolean read FProjectInspectorShowProps
                                                write FProjectInspectorShowProps;
+    property ProjectInspectorPropsPanelHeight: integer read FProjectInspectorPropsPanelHeight
+                                                      write FProjectInspectorPropsPanelHeight;
   end;
 
   { TUnsupportedDesktopOpt }
@@ -585,6 +589,7 @@ begin
   FObjectInspectorOptions:=TDesktopOIOptions.Create;
   // project inspector
   FProjectInspectorShowProps := true;
+  FProjectInspectorPropsPanelHeight := cDefaultPropsPanelHeight;
   // Windows layout
   InitLayoutList;
 
@@ -653,6 +658,7 @@ begin
   FObjectInspectorOptions.Assign(Source.FObjectInspectorOptions);
   // project inspector
   FProjectInspectorShowProps := Source.FProjectInspectorShowProps;
+  FProjectInspectorPropsPanelHeight := Source.FProjectInspectorPropsPanelHeight;
 
   if IsCompatible and Assigned(FDockedOpt) then
     FDockedOpt.Assign(Source.FDockedOpt);
@@ -690,6 +696,7 @@ begin
   FCompletionWindowHeight:=FXMLCfg.GetValue(Path+'CompletionWindowOptions/Height/Value', 6);
   // Project Inspector
   FProjectInspectorShowProps := FXMLCfg.GetValue(Path+'ProjectInspectorShowProps/Value', true);
+  FProjectInspectorPropsPanelHeight := FXMLCfg.GetValue(Path+'ProjectInspectorPropsPanelHeight/Value', cDefaultPropsPanelHeight);
 
   if not FXMLCfg.HasPath(Path+'IDECoolBarOptions/', True) then
     Path := '';             // Toolbars and palette were at the top level in XML.
@@ -743,6 +750,7 @@ begin
   FXMLCfg.SetDeleteValue(Path+'CompletionWindowOptions/Height/Value',FCompletionWindowHeight, 6);
   // Project Inspector
   FXMLCfg.SetDeleteValue(Path+'ProjectInspectorShowProps/Value', FProjectInspectorShowProps, true);
+  FXMLCfg.SetDeleteValue(Path+'ProjectInspectorPropsPanelHeight/Value', FProjectInspectorPropsPanelHeight, cDefaultPropsPanelHeight);
   // IDE Coolbar
   FIDECoolBarOptions.Save(FXMLCfg, Path);
   // Editor Toolbar
