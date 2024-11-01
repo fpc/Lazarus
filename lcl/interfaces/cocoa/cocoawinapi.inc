@@ -1398,6 +1398,8 @@ begin
       ALogFont^.lfFaceName := AFont.Name;
       ALogFont^.lfHeight := -AFont.Size; // Cocoa supports only full height (with leading) that corresponds with a negative value in WinAPI
       Traits := NSFontManager.sharedFontManager.traitsOfFont(AFont.Font);
+      if AFont.Font.isFixedPitch then
+        ALogFont^.lfPitchAndFamily := FIXED_PITCH;
       if (Traits and NSFontBoldTrait) <> 0 then
         ALogFont^.lfWeight := FW_BOLD
       else

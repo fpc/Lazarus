@@ -615,7 +615,19 @@ begin
     // If this is not a "systemFont" Create the font ourselves
     if IsDefault then
     begin
-      FFont := NSFont.systemFontOfSize( FSize );
+      if ALogFont.lfPitchAndFamily = FIXED_PITCH then
+      begin
+        if NSAppKitVersionNumber >= NSAppKitVersionNumber10_15 then
+          FFont := NSFont.monospacedSystemFontOfSize_weight(FSize, NSFontWeightRegular)
+        else
+          FFont := NSFont.fontWithName_size(NSSTR('Menlo'), FSize);
+        if cfs_Bold in Style then
+          FFont := NSFontManager.sharedFontManager.convertFont_toHaveTrait(FFont, NSBoldFontMask);
+      end
+      else if cfs_Bold in Style then
+        FFont := NSFont.boldSystemFontOfSize( FSize )
+      else
+        FFont := NSFont.systemFontOfSize( FSize );
     end else begin
       FontName := NSStringUTF8(FName);
       FFont := NSFont.fontWithName_size(FontName, FSize);
