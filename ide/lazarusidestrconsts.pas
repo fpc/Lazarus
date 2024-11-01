@@ -2770,6 +2770,7 @@ resourcestring
   lisPLDOnlinePackagesCannotBeDeleted = 'Online packages cannot be deleted';
   lisPESortFilesAlphabetically = 'Sort files alphabetically';
   lisPEShowDirectoryHierarchy = 'Show directory hierarchy';
+  lisPEShowPropsPanel = 'Show properties panel';
   lisClearFilter = 'Clear filter';
   dlgCaseSensitive = '&Case sensitive';
   lisDistinguishBigAndSmallLettersEGAAndA = 'Distinguish big and small letters e.g. A and a';
