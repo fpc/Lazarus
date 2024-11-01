@@ -67,7 +67,9 @@ type
     procedure DrawEdge({%H-}DC: HDC; {%H-}Details: TThemedElementDetails; const {%H-}R: TRect; {%H-}Edge, {%H-}Flags: Cardinal; {%H-}AContentRect: PRect); override;
     procedure DrawIcon({%H-}DC: HDC; {%H-}Details: TThemedElementDetails; const {%H-}R: TRect; {%H-}himl: HIMAGELIST; {%H-}Index: Integer); override;
     procedure DrawText({%H-}DC: HDC; {%H-}Details: TThemedElementDetails; const {%H-}S: String; {%H-}R: TRect; {%H-}Flags, {%H-}Flags2: Cardinal); override;
-
+*)
+    procedure DrawText(ACanvas: TPersistent; Details: TThemedElementDetails; const S: String; R: TRect; Flags, Flags2: Cardinal); override;
+(*
     function ContentRect({%H-}DC: HDC; Details: TThemedElementDetails; BoundingRect: TRect): TRect; override;
     function HasTransparentParts({%H-}Details: TThemedElementDetails): Boolean; override;
 *)
@@ -432,7 +434,7 @@ begin
       case Details.State of
         TREIS_NORMAL: lColor := ColorToNSColor(ColorToRGB(clWindow));
         TREIS_HOT: lColor := ColorToNSColor(ColorToRGB(clHotLight));
-        TREIS_SELECTED: lColor := ColorToNSColor(ColorToRGB(clHighlight));
+        TREIS_SELECTED: lColor := NSColor.alternateSelectedControlColor;
         TREIS_DISABLED: lColor := ColorToNSColor(ColorToRGB(clWindow));
         TREIS_SELECTEDNOTFOCUS: lColor := NSColor.secondarySelectedControlColor;
         TREIS_HOTSELECTED: lColor := ColorToNSColor(ColorToRGB(clHighlight));
@@ -874,6 +876,26 @@ begin
   //
 end;
 *)
+
+procedure TCocoaThemeServices.DrawText(ACanvas: TPersistent;
+  Details: TThemedElementDetails; const S: String; R: TRect;
+  Flags, Flags2: Cardinal);
+var
+  Canvas: TCanvas absolute ACanvas;
+  OldColor: TColor;
+begin
+  if (Details.Element = teTreeview) and (Details.Part = TVP_TREEITEM) and
+     (Details.State = TREIS_SELECTED) then
+  begin
+    OldColor := Canvas.Font.Color;
+    Canvas.Font.Color := NSColorToColorRef(NSColor.alternateSelectedControlTextColor);
+    Details.Part := 0; // Keep inherited from changing font color
+    inherited;
+    Canvas.Font.Color := OldColor;
+  end
+  else
+    inherited;
+end;
 
 function TCocoaThemeServices.SetButtonCellType(btn: NSButtonCell; Details: TThemedElementDetails): Boolean;
 var
