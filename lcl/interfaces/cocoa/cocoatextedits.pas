@@ -47,7 +47,8 @@ const
   COMBOBOX_RO_SMALL_HEIGHT = 17;
   COMBOBOX_RO_MINI_HEIGHT  = 15;
 
-  COMBOBOX_RO_BUTTON_WIDTH = 20;
+  COMBOBOX_RO_ROUND_SIZE = 7;
+  COMBOBOX_RO_BUTTON_WIDTH = 18;
 
 type
 
@@ -214,7 +215,7 @@ type
 
     procedure GetRowHeight(rowidx: integer; var h: Integer);
     procedure ComboBoxDrawItem(itemIndex: Integer; ctx: TCocoaContext;
-      const r: TRect; isSelected: Boolean);
+      const r: TRect; isSelected: Boolean; backgroundPainted: Boolean );
   end;
 
   { TCocoaComboBoxItemCell }
@@ -702,7 +703,7 @@ begin
   try
     ctxRect:= NSRectToRect( bounds );
     ctx.InitDraw( ctxRect.Width, ctxRect.Height );
-    combobox.callback.ComboBoxDrawItem(itemIndex, ctx, ctxRect, isHighlighted);
+    combobox.callback.ComboBoxDrawItem(itemIndex, ctx, ctxRect, isHighlighted, false);
   finally
     ctx.Free;
   end;
@@ -1738,19 +1739,20 @@ begin
       //       (however, one should be careful and take layout offsets into account!)
       //       on the other hand, "cells" themselves are being deprecated...
       dr := lclFrame;
-      dr.Width:= dr.Width - COMBOBOX_RO_BUTTON_WIDTH;
+
+      // crop the drawing rectangle according to the
+      // rounded corners and popup button of the ComboBox.
+      // the APP can get better effect by drawing in the cropped rectangle.
+      // the APP can also expand the rectangle if it knows what it is doing.
       Types.OffsetRect(dr, -dr.Left, -dr.Top);
-      //SubLayoutFromFrame( lclGetFrameToLayoutDelta, dr);
+      inc( dr.Left, COMBOBOX_RO_ROUND_SIZE );
+      inc( dr.Top, 2 );
+      dec( dr.Right, COMBOBOX_RO_BUTTON_WIDTH );
+      inc( dr.Bottom, 1 );
+
       ctx.InitDraw(dr.Width, dr.Height);
 
-      // magic offsets are based on the macOS 10.13.6 visual style
-      // but hard-coding is never reliable
-      //inc(dr.Left, 11);
-      //inc(dr.Top, 5);
-      //dec(dr.Right,18);
-      //dec(dr.Bottom, 2);
-
-      callback.ComboBoxDrawItem(lastSelectedItemIndex, ctx, dr, false);
+      callback.ComboBoxDrawItem(lastSelectedItemIndex, ctx, dr, False, True);
     finally
       ctx.Free;
     end;
