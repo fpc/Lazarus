@@ -855,24 +855,25 @@ end;
 
 procedure TMainIDEBar.AllowCompilation(aAllow: Boolean);
 // Enables or disables IDE GUI controls associated with compiling and building.
-// Does it interfere with DebugBoss.UpdateButtonsAndMenuItems? Maybe should be refactored and combined.
+// ToDo: Perhaps it is worth combining with TDebugManager.UpdateButtonsAndMenuItems and TMainIDE.UpdateProjectCommands?
 begin
   // Run menu
-  itmRunMenuRunWithoutDebugging.Enabled:=aAllow;
-  itmRunMenuRunWithDebugging.Enabled:=aAllow;
-  itmRunMenuRun.Enabled:=aAllow;
-  itmRunMenuCompile.Enabled:=aAllow;
-  itmRunMenuBuild.Enabled:=aAllow;
-  itmRunMenuBuildManyModes.Enabled:=aAllow;
-  itmRunMenuQuickCompile.Enabled:=aAllow;
-  itmRunMenuCleanUpAndBuild.Enabled:=aAllow;
-  itmRunMenuAbortBuild.Enabled:=not aAllow;
+  itmRunMenuRunWithoutDebugging.Enabled := aAllow;
+  itmRunMenuRunWithDebugging   .Enabled := aAllow;
+  itmRunMenuRun                .Enabled := aAllow;
+  itmRunMenuCompile            .Enabled := aAllow;
+  itmRunMenuBuild              .Enabled := aAllow;
+  itmRunMenuBuildManyModes     .Enabled := aAllow;
+  itmRunMenuQuickCompile       .Enabled := aAllow;
+  itmRunMenuCleanUpAndBuild    .Enabled := aAllow;
+  itmRunMenuAbortBuild         .Enabled := not aAllow;
   // Package menu
-  itmPkgEditInstallPkgs.Enabled:=aAllow;
+  itmPkgEditInstallPkgs        .Enabled := aAllow;
   // Tools menu
-  itmToolRescanFPCSrcDir.Enabled:=aAllow;
-  itmToolBuildLazarus.Enabled:=aAllow;
-  //itmToolConfigureBuildLazarus.Enabled:=aAllow;
+  itmToolRescanFPCSrcDir       .Enabled := aAllow;
+  itmToolBuildLazarus          .Enabled := aAllow;
+  //itmToolConfigureBuildLazarus .Enabled := aAllow; // this dialog itself disables build buttons
+
   // IDE CoolBar
   IDECommandList.FindIDECommand(ecProjectChangeBuildMode).Enabled := aAllow;
 end;
