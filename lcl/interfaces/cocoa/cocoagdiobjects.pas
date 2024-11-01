@@ -642,20 +642,17 @@ begin
     // we could use NSFontTraitsAttribute to request the desired font style (Bold/Italic)
     // but in this case we may get NIL as result. This way is safer.
     if cfs_Italic in Style then
-      FFont := NSFontManager.sharedFontManager.convertFont_toHaveTrait(FFont, NSItalicFontMask)
-    else
-      FFont := NSFontManager.sharedFontManager.convertFont_toNotHaveTrait(FFont, NSItalicFontMask);
-    if cfs_Bold in Style then
-      FFont := NSFontManager.sharedFontManager.convertFont_toHaveTrait(FFont, NSBoldFontMask)
-    else
-      FFont := NSFontManager.sharedFontManager.convertFont_toNotHaveTrait(FFont, NSBoldFontMask);
-    case ALogFont.lfPitchAndFamily and $F of
-      FIXED_PITCH, MONO_FONT:
-        FFont := NSFontManager.sharedFontManager.convertFont_toHaveTrait(FFont, NSFixedPitchFontMask);
-      VARIABLE_PITCH:
-        FFont := NSFontManager.sharedFontManager.convertFont_toNotHaveTrait(FFont, NSFixedPitchFontMask);
+      FFont := NSFontManager.sharedFontManager.convertFont_toHaveTrait(FFont, NSItalicFontMask);
+    if not IsDefault then
+    begin
+      if cfs_Bold in Style then
+        FFont := NSFontManager.sharedFontManager.convertFont_toHaveTrait(FFont, NSBoldFontMask);
+      case ALogFont.lfPitchAndFamily and $F of
+        FIXED_PITCH, MONO_FONT:
+          FFont := NSFontManager.sharedFontManager.convertFont_toHaveTrait(FFont, NSFixedPitchFontMask);
+      end;
     end;
-    if Win32Weight <> FW_DONTCARE then
+    if (Win32Weight <> FW_DONTCARE) and (not IsDefault or (Win32Weight <> FW_BOLD)) then
     begin
       // currently if we request the desired weight by Attributes we may get a nil font
       // so we need to get font weight and to convert it to lighter/heavier
