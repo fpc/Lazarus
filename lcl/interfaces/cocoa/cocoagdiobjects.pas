@@ -123,6 +123,14 @@ type
 
   { TCocoaBrush }
 
+  TCocoaPatternInfo = record
+    image: CGImageRef;
+    bgColor: TColorRef;
+    fgColor: TColorRef;
+    colorMode:  TCocoaPatternColorMode;
+  end;
+  PCocoaPatternInfo = ^TCocoaPatternInfo;
+
   TCocoaBrush = class(TCocoaColorObject)
   strict private
     FCGPattern: CGPatternRef;
@@ -132,10 +140,9 @@ type
     FFgColor: TColorRef;
   private
     FImage: CGImageRef;
-    procedure DrawPattern(c: CGContextRef);
   strict protected
     procedure Clear;
-
+    procedure CreateCGPattern(ARect: CGRect; IsColored: ShortInt);
     procedure SetHatchStyle(AHatch: PtrInt);
     procedure SetBitmap(ABitmap: TCocoaBitmap);
     procedure SetImage(AImage: NSImage);
@@ -2973,9 +2980,53 @@ end;
 
 procedure DrawBitmapPattern(info: UnivPtr; c: CGContextRef); MWPascal;
 var
-  ABrush: TCocoaBrush absolute info;
+  R: CGRect;
+  sR, sG, sB: single;
+  APatternInfoPtr: PCocoaPatternInfo;
 begin
-  ABrush.DrawPattern(c);
+  APatternInfoPtr := PCocoaPatternInfo(Info);
+  R:= CGRectMake(0, 0, CGImageGetWidth(APatternInfoPtr^.image),
+      CGImageGetHeight(APatternInfoPtr^.image));
+  if APatternInfoPtr^.colorMode = cpmContextColor then
+  begin
+    ColorToRGBFloat(APatternInfoPtr^.bgColor, sR, sG, sB);
+    CGContextSetRGBFillColor(c, sR, sG, sB, 1);
+    CGContextFillRect(c, R);
+    ColorToRGBFloat(APatternInfoPtr^.fgColor, sR, sG, sB);
+    CGContextSetRGBFillColor(c, sR, sG, sB, 1);
+  end;
+  CGContextDrawImage(c, R, APatternInfoPtr^.image);
+end;
+
+procedure PatternReleaseInfo(info: UnivPtr ); MWPascal;
+begin
+  CGImageRelease(PCocoaPatternInfo(info)^.image);
+  Freemem(info);
+end;
+
+{ TCocoaBrush }
+
+procedure TCocoaBrush.CreateCGPattern(ARect: CGRect; IsColored: ShortInt);
+var
+  APatternInfoPtr: PCocoaPatternInfo;
+  Callbacks: CGPatternCallbacks;
+begin
+  if FCGPattern <> nil then CGPatternRelease(FCGPattern);
+
+  APatternInfoPtr := GetMem(sizeof(TCocoapatternInfo));
+  APatternInfoPtr^.image := FImage;
+  CGImageRetain(APatternInfoPtr^.image);
+  APatternInfoPtr^.bgColor := RGBToColorFloat(Red/255, Green/255, Blue/255);
+  APatternInfoPtr^.fgColor := FFgColor;
+  APatternInfoPtr^.colorMode := FPatternColorMode;
+
+  FillChar(CallBacks, SizeOf(CallBacks), 0);
+  Callbacks.drawPattern := @DrawBitmapPattern;
+  Callbacks.releaseInfo := @PatternReleaseInfo;
+
+  FCGPattern := CGPatternCreate(APatternInfoPtr, ARect, CGAffineTransformIdentity,
+    ARect.size.width, ARect.size.height, kCGPatternTilingConstantSpacing,
+    IsColored, Callbacks);
 end;
 
 procedure TCocoaBrush.SetHatchStyle(AHatch: PtrInt);
@@ -2990,13 +3041,10 @@ const
  { HS_DIAGCROSS  } ($7E, $BD, $DB, $E7, $E7, $DB, $BD, $7E)
   );
 var
-  ACallBacks: CGPatternCallbacks;
   CGDataProvider: CGDataProviderRef;
 begin
   if AHatch in [HS_HORIZONTAL..HS_DIAGCROSS] then
   begin
-    FillChar(ACallBacks, SizeOf(ACallBacks), 0);
-    ACallBacks.drawPattern := @DrawBitmapPattern;
     if (FBitmap <> nil) then FBitmap.Release;
     FBitmap := TCocoaBitmap.Create(8, 8, 1, 1, cbaByte, cbtMask, @HATCH_DATA[AHatch]);
     if FImage <> nil then CGImageRelease(FImage);
@@ -3004,23 +3052,17 @@ begin
     FImage := CGImageMaskCreate(8, 8, 1, 1, 1, CGDataProvider, nil, 0);
     CGDataProviderRelease(CGDataProvider);
     FPatternColorMode := cpmBrushColor;
-    if FCGPattern <> nil then CGPatternRelease(FCGPattern);
-    FCGPattern := CGPatternCreate(Self, GetCGRect(0, 0, 8, 8),
-      CGAffineTransformIdentity, 8.0, 8.0, kCGPatternTilingConstantSpacing,
-      0, ACallBacks);
+    CreateCGPattern(GetCGRect(0 , 0, 8, 8), 0);
   end;
 end;
 
 procedure TCocoaBrush.SetBitmap(ABitmap: TCocoaBitmap);
 var
   AWidth, AHeight: Integer;
-  ACallBacks: CGPatternCallbacks;
   CGDataProvider: CGDataProviderRef;
 begin
   AWidth := ABitmap.Width;
   AHeight := ABitmap.Height;
-  FillChar(ACallBacks, SizeOf(ACallBacks), 0);
-  ACallBacks.drawPattern := @DrawBitmapPattern;
   if (FBitmap <> nil) then FBitmap.Release;
   FBitmap := TCocoaBitmap.Create(ABitmap);
   if FImage <> nil then CGImageRelease(FImage);
@@ -3039,29 +3081,20 @@ begin
     FImage := CGImageCreateCopy(MacOSAll.CGImageRef( FBitmap.imageRep.CGImageForProposedRect_context_hints(nil, nil, nil)));
     FPatternColorMode := cpmBitmap;
   end;
-  if FCGPattern <> nil then CGPatternRelease(FCGPattern);
-  FCGPattern := CGPatternCreate(Self, GetCGRect(0, 0, AWidth, AHeight),
-    CGAffineTransformIdentity, CGFloat(AWidth), CGFloat(AHeight), kCGPatternTilingConstantSpacing,
-    Ord(FPatternColorMode = cpmBitmap), ACallBacks);
+  CreateCGPattern(GetCGRect(0, 0, AWidth, AHeight), Ord(FPatternColorMode = cpmBitmap));
 end;
 
 procedure TCocoaBrush.SetImage(AImage: NSImage);
 var
-  ACallBacks: CGPatternCallbacks;
   Rect: CGRect;
 begin
-  FillChar(ACallBacks, SizeOf(ACallBacks), 0);
-  ACallBacks.drawPattern := @DrawBitmapPattern;
   if FImage <> nil then CGImageRelease(FImage);
   FImage := CGImageCreateCopy(MacOSAll.CGImageRef( AImage.CGImageForProposedRect_context_hints(nil, nil, nil)));
   FPatternColorMode := cpmBitmap;
   Rect.origin.x := 0;
   Rect.origin.y := 0;
   Rect.size := CGSize(AImage.size);
-  if FCGPattern <> nil then CGPatternRelease(FCGPattern);
-  FCGPattern := CGPatternCreate(Self, Rect,
-    CGAffineTransformIdentity, Rect.size.width, Rect.size.height, kCGPatternTilingConstantSpacing,
-    1, ACallBacks);
+  CreateCGPattern(Rect, 1);
 end;
 
 procedure TCocoaBrush.SetColor(AColor: NSColor);
@@ -3167,22 +3200,6 @@ begin
   else // bsClear
     inherited Create(AColor, False, AGlobal);
   end;
-end;
-
-procedure TCocoaBrush.DrawPattern(c: CGContextRef);
-var
-  R: CGRect;
-  sR, sG, sB: single;
-begin
-  R:=CGRectMake(0, 0, CGImageGetWidth(FImage), CGImageGetHeight(FImage));
-  if FPatternColorMode = cpmContextColor then
-  begin
-    CGContextSetRGBFillColor(c, Red/255, Green/255, Blue/255, 1);
-    CGContextFillRect(c, R);
-    ColorToRGBFloat(FFgColor, sR, sG, sB);
-    CGContextSetRGBFillColor(c, sR, sG, sB, 1);
-  end;
-  CGContextDrawImage(c, R, FImage);
 end;
 
 procedure TCocoaBrush.Clear;
