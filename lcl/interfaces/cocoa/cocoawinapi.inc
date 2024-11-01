@@ -1440,37 +1440,24 @@ end;
 function TCocoaWidgetSet.InitStockFont(AFont: TObject; AStockFont: TStockFont): Boolean;
 var
   Font: TFont absolute AFont;
-  CTFont: CTFontRef;
-  CTFontName: CFStringRef;
-  CTFontSize: CGFloat;
-  CTFontType: CTFontUIFontType;
+  FontSize: CGFloat;
 begin
   Result := False;
 
   case AStockFont of
     sfSystem:  // stock system font
-      CTFontType := kCTFontSystemFontType;
+     FontSize := NSFont.systemFontSize;
     sfHint:    // stock hint font
-      CTFontType := kCTFontToolTipFontType;
+      FontSize := NSFont.toolTipsFontOfSize(0).pointSize;
     sfIcon:    // stock icon font
-      CTFontType := kCTFontViewsFontType;
-    sfMenu:     // stock menu font
-      CTFontType := kCTFontMenuItemFontType;
+      FontSize := NSFont.controlContentFontOfSize(0).pointSize;
+    sfMenu:    // stock menu font
+      FontSize := NSFont.menuFontOfSize(0).pointSize;
+    else
+      Exit;
   end;
-
-  CTFont :=  CTFontCreateUIFontForLanguage(CTFontType, 0, nil);
-  try
-    CTFontName := CTFontCopyFamilyName(CTFont);
-    try
-      Font.Name := CFStringToStr(CTFontName);
-      finally
-      CFRelease(CTFontName);
-      end;
-    CTFontSize := CTFontGetSize(CTFont);
-    Font.Height := -Round(CTFontSize);
-    finally
-    CFRelease(CTFont);
-    end;
+  Font.Name := 'default';
+  Font.Height := -Round(FontSize);
   Result := True;
 end;
 
