@@ -33,6 +33,14 @@ var
   );
 
 var
+  CocoaConfigApplication: TCocoaConfigApplication = (
+    event: (
+      // highest priority event handler
+      highestHandler: nil;
+    );
+  );
+
+var
   CocoaConfigGlobal: TCocoaConfigGlobal = (
     // for compatiblity with LCL 1.8 release. The macOS base is 72ppi
     basePPI: 96;

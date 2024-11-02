@@ -144,6 +144,18 @@ type
   end;
 
 type
+  // return True for event Handled, bypass post system processing
+  TCocoaApplicationEventHandler = function( event: NSEvent ): Boolean of object;
+
+  TCocoaConfigApplicationEvent = record
+    highestHandler: TCocoaApplicationEventHandler;
+  end;
+
+  TCocoaConfigApplication = record
+    event: TCocoaConfigApplicationEvent;
+  end;
+
+type
   TCocoaConfigGlobal = record
     basePPI: Integer;
     useIcon: Boolean;
