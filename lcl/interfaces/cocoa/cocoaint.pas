@@ -666,6 +666,18 @@ begin
     expiration, mode, deqFlag);
   {$endif}
 
+  {
+    Monitors from NSEvent.addLocalMonitorForEvents aren't called until
+    NSApplication.sendEvent, so it's not early enough to capture the tracking
+    run loop behavior below or to prevent key events going into KeyEvBefore, and
+    Application.OnUserInput doesn't allow filtering messages.
+    see also !351
+  }
+  if Assigned(Result) and Assigned(CocoaConfigApplication.event.highestHandler) then begin
+    if CocoaConfigApplication.event.highestHandler(Result) then
+      Exit;
+  end;
+
   if (Result.type_=NSApplicationDefined) and (Result.subtype=LazarusApplicationDefinedSubtypeWakeup) then
     Result:= nil;
 
