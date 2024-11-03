@@ -161,6 +161,7 @@ type
     function FindLargestIcon(AIcon: TIconItem): TIconItem;
     procedure GetIconSizesAsStrings(AList: TStrings);
     procedure GetKeywordsAsStrings(AList: TStrings);
+    function IndexOfFolder(AFolder: String): Integer;
     function IndexOfThumbnail(AIcon: TIconItem): Integer;
     procedure LockFilter;
     procedure PopulateIconFoldersMenu(AMenu: TMenu);
@@ -995,6 +996,14 @@ begin
 //  finally
 //    UnlockFilter;
 //  end;
+end;
+
+function TIconThumbnailViewer.IndexOfFolder(AFolder: String): Integer;
+begin
+  for Result := 0 to FIconFolders.Count-1 do
+    if FIconFolders[Result].FolderName = AFolder then
+      exit;
+  Result := -1;
 end;
 
 function TIconThumbnailViewer.IndexOfThumbnail(AIcon: TIconItem): Integer;

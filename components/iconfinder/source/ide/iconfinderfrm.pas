@@ -182,7 +182,7 @@ begin
   try
     Config := GetIDEConfigStorage(ICONFINDER_CONFIG_FILENAME, true);
     try
-      GlobalReadSettings(Config, FViewer, ANodeName);
+      ReadIconFinderSettings(Config, FViewer, ANodeName);
     finally
       Config.Free;
     end;
@@ -202,7 +202,7 @@ begin
   try
     Config := GetIDEConfigStorage(ICONFINDER_CONFIG_FILENAME, true); //, false);
     try
-      GlobalWriteSettings(Config, FViewer, FSettingsNodeName);
+      WriteIconFinderSettings(Config, FViewer, FSettingsNodeName);
       Config.WriteToDisk;
     finally
       Config.Free;
