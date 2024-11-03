@@ -45,7 +45,6 @@ type
   private
 
   public
-    constructor Create(const {%H-}pbReadRegFile: boolean);
     destructor Destroy; override;
     class function GetGroupCaption: String; override;
     class function GetInstance: TAbstractIDEOptions; override;
@@ -85,8 +84,8 @@ type
     procedure RestoreSettings({%H-}AOptions: TAbstractIDEOptions); override;
   end;
 
-procedure GlobalReadSettings(AConfig: TConfigStorage; AViewer: TIconViewerFrame; ANodeName: String);
-procedure GlobalWriteSettings(AConfig: TConfigStorage; AViewer: TIconViewerFrame; ANodeName: String);
+procedure ReadIconFinderSettings(AConfig: TConfigStorage; AViewer: TIconViewerFrame; ANodeName: String);
+procedure WriteIconFinderSettings(AConfig: TConfigStorage; AViewer: TIconViewerFrame; ANodeName: String);
 
 var
   IconFinderOptionsGroup: integer = 260;
@@ -99,11 +98,6 @@ implementation
 {$R *.lfm}
 
 { TIconFinderSettings }
-
-constructor TIconFinderSettings.Create(const pbReadRegFile: boolean);
-begin
-  // inherited Create;
-end;
 
 destructor TIconFinderSettings.Destroy;
 begin
@@ -248,7 +242,7 @@ begin
   try
     Config := GetIDEConfigStorage(ICONFINDER_CONFIG_FILENAME, true);
     try
-      GlobalReadSettings(Config, FViewer, 'IDEOptions');
+      ReadIconFinderSettings(Config, FViewer, 'IDEOptions');
       if FViewer.IconViewer.IconFolders.Count = 0 then
         AddDefaultFolder;
     finally
@@ -301,7 +295,7 @@ begin
   try
      Config := GetIDEConfigStorage(ICONFINDER_CONFIG_FILENAME, true); //, false);
      try
-       GlobalWriteSettings(Config, FViewer, 'IDEOptions');
+       WriteIconFinderSettings(Config, FViewer, 'IDEOptions');
      finally
        Config.Free;
      end;
@@ -319,10 +313,11 @@ end;
 
 {------------------------------------------------------------------------------}
 
-procedure GlobalReadSettings(AConfig: TConfigStorage; AViewer: TIconViewerFrame;
+procedure ReadIconFinderSettings(AConfig: TConfigStorage; AViewer: TIconViewerFrame;
   ANodeName: String);
 var
   folder: String;
+  folderIdx: Integer;
   isHidden: Boolean;
   n, i: Integer;
   s: String;
@@ -335,7 +330,13 @@ begin
     folder := AConfig.GetValue(Format('IconFinder/Folders/Item%d/Value', [i]), '');
     isHidden := AConfig.GetValue(Format('IconFinder/Folders/Item%d/Hidden', [i]), false);
     if (folder <> '') and DirectoryExists(folder) then
-      AViewer.AddIconFolder(folder, isHidden);
+    begin
+      folderIdx := AViewer.IndexOfIconFolder(folder);
+      if folderIdx = -1 then
+        AViewer.AddIconFolder(folder, isHidden)
+      else
+        AViewer.IconViewer.IconFolders[folderIdx].Hidden := isHidden;
+    end;
   end;
 
   // Keyword filter history list
@@ -362,7 +363,7 @@ begin
   end;
 end;
 
-procedure GlobalWriteSettings(AConfig: TConfigStorage; AViewer: TIconViewerFrame;
+procedure WriteIconFinderSettings(AConfig: TConfigStorage; AViewer: TIconViewerFrame;
   ANodeName: String);
 var
   i: Integer;

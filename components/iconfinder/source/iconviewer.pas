@@ -6,8 +6,8 @@
   for details about the license.
  *****************************************************************************
 
- A frame composed of the essential controls for viewer thumbnails and filtering
- them.
+ A frame composed of the essential controls for viewing thumbnails and
+ filtering them.
 
  Is used by the imagelist component editor, by the graphic property editor
  and by the IDE settings page.
@@ -92,6 +92,7 @@ type
     procedure DeleteSelectedIcon;
     procedure FocusKeywordFilter;
     procedure GetKeywordsHistory(AList: TStrings);
+    function IndexOfIconFolder(AFolder: String): Integer;
     procedure ReadIconFolders(AList: TStrings);
     procedure SetKeywordsHistory(AList: TStrings);
     procedure UpdateIconSizes(ASizeIndex: Integer);
@@ -334,6 +335,11 @@ begin
     infoFileName.Hint := FIconViewer.SelectedIcon.FileName;
     infoFileName.Caption := MinimizeName(infoFileName.Hint, infoFileName.Canvas, IconDetailsPanel.Width - infoFileName.Left);
   end;
+end;
+
+function TIconViewerFrame.IndexOfIconFolder(AFolder: String): Integer;
+begin
+  Result := FIconViewer.IndexOfFolder(AFolder);
 end;
 
 { Reads the icons from the directories contained in AList and adds them to the
