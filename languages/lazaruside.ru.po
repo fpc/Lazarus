@@ -14,23 +14,21 @@ msgstr ""
 
 #: lazarusidestrconsts.cocoamfstbicommand
 msgid "Command"
-msgstr ""
+msgstr "Команда"
 
 #: lazarusidestrconsts.cocoamfstbijumpback
-#, fuzzy
 msgctxt "lazarusidestrconsts.cocoamfstbijumpback"
 msgid "Jump Back"
 msgstr "Перейти назад"
 
 #: lazarusidestrconsts.cocoamfstbijumpforward
-#, fuzzy
 msgctxt "lazarusidestrconsts.cocoamfstbijumpforward"
 msgid "Jump Forward"
 msgstr "Перейти вперёд"
 
 #: lazarusidestrconsts.cocoamfstbisearch
 msgid "Search Instantly"
-msgstr ""
+msgstr "Найти мгновенно"
 
 #: lazarusidestrconsts.dbgasmwindowlinktarget
 msgid "Link target line"

@@ -2409,82 +2409,6 @@ msgstr "Home 键跳转到最近的起点"
 msgid "Host application"
 msgstr "宿主程序"
 
-#: lazarusidestrconsts.dlgiahadentifiercomplentryabstractprocfunc
-msgid "Abstract proc/func"
-msgstr ""
-
-#: lazarusidestrconsts.dlgiahadentifiercomplentrycodetemplate
-msgid "Template"
-msgstr ""
-
-#: lazarusidestrconsts.dlgiahadentifiercomplentryconst
-msgid "Const"
-msgstr ""
-
-#: lazarusidestrconsts.dlgiahadentifiercomplentryenum
-msgid "Enum"
-msgstr ""
-
-#: lazarusidestrconsts.dlgiahadentifiercomplentryfunc
-msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryfunc"
-msgid "Function"
-msgstr "函数"
-
-#: lazarusidestrconsts.dlgiahadentifiercomplentryident
-msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryident"
-msgid "Identifier"
-msgstr "标识符"
-
-#: lazarusidestrconsts.dlgiahadentifiercomplentrykeyword
-msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentrykeyword"
-msgid "Keyword"
-msgstr "关键字"
-
-#: lazarusidestrconsts.dlgiahadentifiercomplentrylabel
-msgid "Label"
-msgstr ""
-
-#: lazarusidestrconsts.dlgiahadentifiercomplentrylowervisibilityprocfunc
-msgid "Lower visibility proc/func"
-msgstr ""
-
-#: lazarusidestrconsts.dlgiahadentifiercomplentrynamespace
-msgid "Namespace"
-msgstr ""
-
-#: lazarusidestrconsts.dlgiahadentifiercomplentryother
-msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryother"
-msgid "Other"
-msgstr "其他"
-
-#: lazarusidestrconsts.dlgiahadentifiercomplentryproc
-msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryproc"
-msgid "Procedure"
-msgstr "过程"
-
-#: lazarusidestrconsts.dlgiahadentifiercomplentryproperty
-msgid "Property"
-msgstr ""
-
-#: lazarusidestrconsts.dlgiahadentifiercomplentrytext
-msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentrytext"
-msgid "Text"
-msgstr "文本"
-
-#: lazarusidestrconsts.dlgiahadentifiercomplentrytype
-msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentrytype"
-msgid "Type"
-msgstr "类型"
-
-#: lazarusidestrconsts.dlgiahadentifiercomplentryunit
-msgctxt "lazarusidestrconsts.dlgiahadentifiercomplentryunit"
-msgid "Unit"
-msgstr "单元"
-
-#: lazarusidestrconsts.dlgiahadentifiercomplentryvar
-msgid "Var"
-msgstr ""
-
 #: lazarusidestrconsts.dlgidentifiercompletion
 msgctxt "lazarusidestrconsts.dlgidentifiercompletion"
 msgid "Identifier Completion"
@@ -2641,11 +2565,6 @@ msgstr "键盘映射"
 #: lazarusidestrconsts.dlgkeymappingerrors
 msgid "Key mapping errors"
 msgstr "键盘映射错误"
-
-#: lazarusidestrconsts.dlgkeyword
-msgctxt "lazarusidestrconsts.dlgkeyword"
-msgid "Keyword"
-msgstr "关键字"
 
 #: lazarusidestrconsts.dlgkeywordpolicy
 msgid "Keyword policy"
