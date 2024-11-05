@@ -708,30 +708,41 @@ Original author: Chris Rorden
 </element>
 
 <element name="ScaleImg">
-<short>Scales the specified image to the required dimensions.</short>
+<short>
+Scales the specified bitmap image to the required dimensions.
+</short>
 <descr>
 <p>
-<var>ScaleImg</var> is a procedure used to scale the image in 
+<var>ScaleImg</var> is a procedure used to scale the bitmap in 
 <var>AImage</var> to the dimensions in <var>AWidth</var> and 
 <var>AWidth</var>.
 </p>
 <p>
+No actions are performed in the routine if the image already has the dimensions 
+specified in AWidth and AHeight.
+</p>
+<p>
 ScaleImg calls the <var>CreateIntfImage</var> method in <var>AImage</var> to 
-get a <var>TLazIntfImage</var> instance with the original content. A 
-temporary <var>TLazCanvas</var> instance is created for the source image, and 
-its <var>StretchDraw</var> method is called to resize and draw the interface 
-image on the Canvas. AImage is updated with the resized content, and its 
+get a <var>TLazIntfImage</var> instance with the original content. A temporary 
+<var>TLazCanvas</var> instance is created for the source image, and its 
+<var>StretchDraw</var> method is called to resize and draw the interface image 
+on its Canvas. AImage is updated with the resized content, and its 
 <var>Height</var> and <var>Width</var> properties are set to the parameter 
 values.
 </p>
 </descr>
-<seealso></seealso>
+<seealso>
+<link id="#lcl.graphics.TCustomBitmap.CreateIntfImage">TCustomBitmap.CreateIntfImage</link>
+<link id="#lcl.graphics.TRasterImage.LoadFromIntfImage">TRasterImage.LoadFromIntfImage</link>
+<link id="#lcl.lazcanvas.TLazCanvas">TLazCanvas</link>
+<link id="#lcl.intfgraphics.TLazIntfImage">TLazIntfImage</link>
+</seealso>
 </element>
 <element name="ScaleImg.AImage">
-<short>Bitmap image resize in the routine.</short>
+<short>Bitmap image resized in the routine.</short>
 </element>
 <element name="ScaleImg.AWidth">
-<short>New Width requested for the image.</short>
+<short>New width requested for the image.</short>
 </element>
 <element name="ScaleImg.AHeight">
 <short>New height requested for the image.</short>
@@ -739,8 +750,8 @@ values.
 
 <element name="ColorRGBToHLS">
 <short>
-Converts an RGB color value to Hue, Lightness, and Saturation values
-.</short>
+Converts an RGB color value to Hue, Luminance, and Saturation values.
+</short>
 <descr></descr>
 <errors/>
 <seealso></seealso>
@@ -770,10 +781,10 @@ Converts an RGB color value to Hue, Lightness, and Saturation values
 <element name="ColorHLSToRGB.Hue">
 <short></short>
 </element>
-<element name="ColorHLSToRGB.Luminance">
+<element name="ColorHLSToRGB.Saturation">
 <short></short>
 </element>
-<element name="ColorHLSToRGB.Saturation">
+<element name="ColorHLSToRGB.Luminance">
 <short></short>
 </element>
 
