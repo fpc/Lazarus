@@ -371,6 +371,9 @@ var
   srcImg: TLazIntfImage = nil;
   destCanvas: TLazCanvas = nil;
 begin
+  if (AImage.Width = AWidth) and (AImage.Height = AHeight) then
+    exit;
+
   try
     // Create the source LazIntfImage
     srcImg := AImage.CreateIntfImage;
