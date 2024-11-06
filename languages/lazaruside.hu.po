@@ -15413,6 +15413,10 @@ msgstr "Könyvtárszerkezet megjelenítése"
 msgid "Show Missing Files"
 msgstr "Hiányzó fájlok megjelenítése"
 
+#: lazarusidestrconsts.lispeshowpropspanel
+msgid "Show properties panel"
+msgstr ""
+
 #: lazarusidestrconsts.lispesortfiles
 msgid "Sort Files Permanently"
 msgstr "Fájlok végleges rendezése"

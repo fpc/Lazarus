@@ -15371,6 +15371,10 @@ msgstr "Zobraziť hierarchiu adresárov"
 msgid "Show Missing Files"
 msgstr "Zobraziť chýbajúce súbory"
 
+#: lazarusidestrconsts.lispeshowpropspanel
+msgid "Show properties panel"
+msgstr ""
+
 #: lazarusidestrconsts.lispesortfiles
 msgid "Sort Files Permanently"
 msgstr "Zoradiť súbory natrvalo"

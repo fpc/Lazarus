@@ -15424,6 +15424,10 @@ msgstr "Exibir hierarquia de diretórios"
 msgid "Show Missing Files"
 msgstr "Exibir arquivos faltando"
 
+#: lazarusidestrconsts.lispeshowpropspanel
+msgid "Show properties panel"
+msgstr ""
+
 #: lazarusidestrconsts.lispesortfiles
 msgid "Sort Files Permanently"
 msgstr "Ordenar arquivos permanentemente"

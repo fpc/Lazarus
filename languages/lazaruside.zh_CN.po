@@ -15346,6 +15346,10 @@ msgstr "显示目录层次(hierarchy)"
 msgid "Show Missing Files"
 msgstr "显示缺少文件"
 
+#: lazarusidestrconsts.lispeshowpropspanel
+msgid "Show properties panel"
+msgstr ""
+
 #: lazarusidestrconsts.lispesortfiles
 msgid "Sort Files Permanently"
 msgstr "永久地排序文件"

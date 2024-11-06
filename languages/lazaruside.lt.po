@@ -15611,6 +15611,10 @@ msgstr "Rodyti aplanko hierarchiją"
 msgid "Show Missing Files"
 msgstr "Rodyti kokių failų trūksta"
 
+#: lazarusidestrconsts.lispeshowpropspanel
+msgid "Show properties panel"
+msgstr ""
+
 #: lazarusidestrconsts.lispesortfiles
 msgid "Sort Files Permanently"
 msgstr "Rūšiuoti failus"

@@ -15488,6 +15488,10 @@ msgstr "Zobrazit adresářovou strukturu"
 msgid "Show Missing Files"
 msgstr "Zobrazit chybějící soubory"
 
+#: lazarusidestrconsts.lispeshowpropspanel
+msgid "Show properties panel"
+msgstr ""
+
 #: lazarusidestrconsts.lispesortfiles
 msgid "Sort Files Permanently"
 msgstr "Řadit soubory trvale"

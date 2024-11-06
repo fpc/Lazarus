@@ -15309,6 +15309,10 @@ msgstr "Näytä hakemistorakenne"
 msgid "Show Missing Files"
 msgstr "Näytä puuttuvat tiedostot"
 
+#: lazarusidestrconsts.lispeshowpropspanel
+msgid "Show properties panel"
+msgstr ""
+
 #: lazarusidestrconsts.lispesortfiles
 msgid "Sort Files Permanently"
 msgstr "Järjestä tiedostot pysyvästi"

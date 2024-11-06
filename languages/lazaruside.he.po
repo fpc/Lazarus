@@ -16177,6 +16177,10 @@ msgstr "הראה מידרג תיקיות"
 msgid "Show Missing Files"
 msgstr "הראה קבצים חסרים"
 
+#: lazarusidestrconsts.lispeshowpropspanel
+msgid "Show properties panel"
+msgstr ""
+
 #: lazarusidestrconsts.lispesortfiles
 #, fuzzy
 #| msgid "Sort Files"

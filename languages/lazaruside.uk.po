@@ -15372,6 +15372,10 @@ msgstr "Показати структуру тек"
 msgid "Show Missing Files"
 msgstr "Показати загублені файли"
 
+#: lazarusidestrconsts.lispeshowpropspanel
+msgid "Show properties panel"
+msgstr ""
+
 #: lazarusidestrconsts.lispesortfiles
 msgid "Sort Files Permanently"
 msgstr "Сортувати файли остаточно"

@@ -15575,6 +15575,10 @@ msgstr "ディレクトリ階層を表示"
 msgid "Show Missing Files"
 msgstr "見つからないファイルを表示"
 
+#: lazarusidestrconsts.lispeshowpropspanel
+msgid "Show properties panel"
+msgstr ""
+
 #: lazarusidestrconsts.lispesortfiles
 msgid "Sort Files Permanently"
 msgstr "ファイルソートを行う（修正あり）"

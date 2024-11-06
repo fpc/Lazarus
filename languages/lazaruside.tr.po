@@ -15241,6 +15241,10 @@ msgstr "Dizin hiyerarşisini göster"
 msgid "Show Missing Files"
 msgstr "Eksik Dosyaları Göster"
 
+#: lazarusidestrconsts.lispeshowpropspanel
+msgid "Show properties panel"
+msgstr ""
+
 #: lazarusidestrconsts.lispesortfiles
 msgid "Sort Files Permanently"
 msgstr "Dosyaları Kalıcı Olarak Sırala"
