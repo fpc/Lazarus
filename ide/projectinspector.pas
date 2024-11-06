@@ -129,6 +129,7 @@ type
     ItemsTreeView: TTreeView;
     ItemsPopupMenu: TPopupMenu;
     SortAlphabeticallyButton: TSpeedButton;
+    ShowPropsPanelButton: TSpeedButton;
     Splitter1: TSplitter;
     // toolbar
     ToolBar: TToolBar;
@@ -174,6 +175,7 @@ type
     procedure ReAddMenuItemClick(Sender: TObject);
     procedure RemoveBitBtnClick(Sender: TObject);
     procedure RemoveNonExistingFilesMenuItemClick(Sender: TObject);
+    procedure ShowPropsPanelButtonClick(Sender: TObject);
     procedure SortAlphabeticallyButtonClick(Sender: TObject);
     procedure EnableI18NForLFMMenuItemClick(Sender: TObject);
     procedure DisableI18NForLFMMenuItemClick(Sender: TObject);
@@ -1207,6 +1209,13 @@ begin
   end;
 end;
 
+procedure TProjectInspectorForm.ShowPropsPanelButtonClick(Sender: TObject);
+begin
+  with EnvironmentGuiOpts.Desktop do
+    ProjectInspectorShowProps := not ProjectInspectorShowProps;
+  OptionsChanged(Sender, false);
+end;
+
 procedure TProjectInspectorForm.SelectFileNode(const AFileName: string);
   function _FindInChildren(_Parent: TTreeNode): TTreeNode;
   var
@@ -1392,6 +1401,7 @@ end;
 procedure TProjectInspectorForm.OptionsChanged(Sender: TObject; Restore: boolean);
 begin
   PropsGroupBox.Visible := EnvironmentGuiOpts.Desktop.ProjectInspectorShowProps;
+  ShowPropsPanelButton.Down := PropsGroupBox.Visible;
   PropsGroupBox.Height := EnvironmentGuiOpts.Desktop.ProjectInspectorPropsPanelHeight;
   Splitter1.Visible := PropsGroupBox.Visible;
 end;
@@ -1428,6 +1438,8 @@ begin
   IDEImages.AssignImage(SortAlphabeticallyButton, 'pkg_sortalphabetically');
   DirectoryHierarchyButton.Hint:=lisPEShowDirectoryHierarchy;
   IDEImages.AssignImage(DirectoryHierarchyButton, 'pkg_hierarchical');
+  ShowPropsPanelButton.Hint:=lisPEShowPropsPanel;
+  IDEImages.AssignImage(ShowPropsPanelButton, 'item_todo');
 
   FPropGui.OnGetPkgDep := @GetDependencyToUpdate;
   FPropGui.ApplyDependencyButton.OnClick := @ApplyDependencyButtonClick;

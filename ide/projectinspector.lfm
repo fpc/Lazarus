@@ -105,14 +105,14 @@ object ProjectInspectorForm: TProjectInspectorForm
       OnClick = SortAlphabeticallyButtonClick
     end
     object FilterEdit: TTreeFilterEdit
-      AnchorSideLeft.Control = SortAlphabeticallyButton
+      AnchorSideLeft.Control = ShowPropsPanelButton
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = SortAlphabeticallyButton
       AnchorSideTop.Side = asrCenter
-      Left = 95
+      Left = 122
       Height = 23
       Top = 3
-      Width = 365
+      Width = 338
       OnAfterFilter = FilterEditAfterFilter
       ButtonWidth = 23
       Anchors = [akTop, akLeft, akRight]
@@ -123,6 +123,25 @@ object ProjectInspectorForm: TProjectInspectorForm
       TabOrder = 0
       OnKeyDown = FilterEditKeyDown
       FilteredTreeview = ItemsTreeView
+    end
+    object ShowPropsPanelButton: TSpeedButton
+      AnchorSideLeft.Control = SortAlphabeticallyButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = OpenButton
+      AnchorSideTop.Side = asrCenter
+      Left = 94
+      Height = 25
+      Top = 2
+      Width = 25
+      AllowAllUp = True
+      AutoSize = True
+      BorderSpacing.Around = 2
+      Constraints.MinHeight = 25
+      Constraints.MinWidth = 25
+      GroupIndex = 2
+      ShowHint = True
+      ParentShowHint = False
+      OnClick = ShowPropsPanelButtonClick
     end
   end
   object ToolBar: TToolBar
