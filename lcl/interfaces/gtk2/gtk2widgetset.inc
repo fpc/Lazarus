@@ -1143,12 +1143,10 @@ function gdk_screen_get_resolution(screen:PGdkScreen):gdouble; cdecl; external g
  ------------------------------------------------------------------------------}
 procedure TGtk2WidgetSet.AppInit(var ScreenInfo: TScreenInfo);
 begin
-  {$if defined(cpui386) or defined(cpux86_64)}
   // needed otherwise some gtk theme engines crash with division by zero
   {$IFNDEF DisableGtkDivZeroFix}
     SetExceptionMask(GetExceptionMask + [exOverflow,exZeroDivide,exInvalidOp]);
   {$ENDIF}
-  {$ifend}
 
   InitKeyboardTables;
   { Compute pixels per inch variable }
