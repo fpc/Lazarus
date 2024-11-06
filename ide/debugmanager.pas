@@ -1754,17 +1754,19 @@ begin
 
   // jump editor to execution line
   Flags := [jfAddJumpPoint, jfSearchVirtualFullPath];
-  if (FCurrentBreakPoint = nil) or (FCurrentBreakPoint.AutoContinueTime = 0)
-  then include(Flags, jfFocusEditor);
+  if ( (not FAsmStepping) or (FDialogs[ddtAssembler] = nil) or
+       (not FDialogs[ddtAssembler].IsVisible) or (not FDialogs[ddtAssembler].Active)
+     ) and
+     ( (FCurrentBreakPoint = nil) or (FCurrentBreakPoint.AutoContinueTime = 0) )
+  then
+    include(Flags, jfFocusEditor);
   i := SrcLine;
   if (Editor <> nil) then
     i := Editor.DebugToSourceLine(i);
-  if not (FAsmStepping and (FDialogs[ddtAssembler] <> nil) and
-     FDialogs[ddtAssembler].IsVisible and FDialogs[ddtAssembler].Active )
-  then
-    if MainIDE.DoJumpToCodePosition(nil,nil,NewSource,1,i,-1,-1,-1,Flags)<>mrOk
-    then exit;
   FAsmStepping := False;
+
+  if MainIDE.DoJumpToCodePosition(nil,nil,NewSource,1,i,-1,-1,-1,Flags)<>mrOk
+  then exit;
 
   // mark execution line
   if (Editor = nil) and (SourceEditorManager <> nil) then
