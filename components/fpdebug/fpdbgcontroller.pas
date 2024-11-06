@@ -989,7 +989,7 @@ begin
   if FHiddenBreakpoint <> nil then
     Finished := IsAtOrOutOfHiddenBreakFrame
   else
-    Finished := not (AnEvent in [deInternalContinue, deLoadLibrary]);
+    Finished := not (AnEvent in [deInternalContinue, deLoadLibrary, deUnloadLibrary]);
   if Finished then
   begin
     AnEvent := deFinishedStep;
