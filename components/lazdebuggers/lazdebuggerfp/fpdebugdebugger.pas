@@ -3089,7 +3089,7 @@ begin
     Eax  := CurrentThread.RegisterValueList.FindRegisterByDwarfIndex(0).NumValue;
     FAddressFrameListSehW32Finally.RemoveOutOfScopeFrames(EAX, FBreakPoints[bplSehW32Finally]);
 
-    if (ACurCommand is TDbgControllerLineStepBaseCmd) and
+    if (ACurCommand is TDbgControllerHiddenBreakStepBaseCmd) and
        not CheckCommandFinishesInFrame(Eax)
     then
       exit;
@@ -3200,7 +3200,7 @@ begin
     if (not CurrentProcess.ReadAddress(R8 + 160, Base)) or (Base = 0) then // RPB at finally
       exit;
 
-    if ( (FState = esIgnoredRaise) or (ACurCommand is TDbgControllerLineStepBaseCmd) ) and
+    if ( (FState = esIgnoredRaise) or (ACurCommand is TDbgControllerHiddenBreakStepBaseCmd) ) and
        not CheckCommandFinishesInFrame(Base)
     then
       exit;
@@ -3312,7 +3312,7 @@ begin
       FBreakPoints[bplSehW64Finally].RemoveAddress(PC);
 
     // At the start of a finally the BasePointer is in RCX // reg 2
-    if (ACurCommand is TDbgControllerLineStepBaseCmd) and
+    if (ACurCommand is TDbgControllerHiddenBreakStepBaseCmd) and
        not CheckCommandFinishesInFrame(CurrentThread.RegisterValueList.FindRegisterByDwarfIndex(2).NumValue)
     then
       exit;
