@@ -305,7 +305,7 @@ var
   ScaleFactor: Double;
 begin
   LogoImage.Picture.LoadFromResourceName(HInstance, 'splash_logo', TPortableNetworkGraphic);
-  ScaleFactor := GetCanvasScaleFactor; // Usually 1.0, but on macOS = 2.0
+  ScaleFactor := GetCanvasScaleFactor;
   W := round(LogoImage.Width * ScaleFactor);
   H := round(LogoImage.Height * ScaleFactor);
   ScaleImg(LogoImage.Picture.Bitmap, W, H);

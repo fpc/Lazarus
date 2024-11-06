@@ -10,13 +10,13 @@ object AboutForm: TAboutForm
   ClientWidth = 470
   Constraints.MinHeight = 390
   Constraints.MinWidth = 470
-  PopupMenu = PopupMenu1
-  Position = poScreenCenter
-  ShowHint = True
-  LCLVersion = '4.99.0.0'
   OnClose = FormClose
   OnCreate = AboutFormCreate
   OnShow = FormShow
+  PopupMenu = PopupMenu1
+  Position = poScreenCenter
+  ShowHint = True
+  LCLVersion = '3.7.0.0'
   object Notebook: TPageControl
     Left = 0
     Height = 340
@@ -40,6 +40,8 @@ object AboutForm: TAboutForm
         Height = 300
         Top = 6
         Width = 450
+        Proportional = True
+        Stretch = True
       end
       object VersionLabel: TLabel
         AnchorSideLeft.Control = LogoImage

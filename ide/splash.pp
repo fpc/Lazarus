@@ -129,11 +129,17 @@ begin
 end;
 
 procedure TSplashForm.Show;
+var
+  W, H: Integer;
+  ScaleFactor: Double;
 begin
   inherited;
 
   LoadSplash;
-  ScaleImg(Image.Picture.Bitmap, Width, Height);
+  ScaleFactor := GetCanvasScaleFactor;
+  W := round(Image.Width * ScaleFactor);
+  H := round(Image.Height * ScaleFactor);
+  ScaleImg(Image.Picture.Bitmap, W, H);
 end;
 
 end.
