@@ -16,6 +16,8 @@ object SplashForm: TSplashForm
     Top = 0
     Width = 450
     Align = alClient
+    Proportional = True
+    Stretch = True
     OnPaint = ImagePaint
   end
 end
