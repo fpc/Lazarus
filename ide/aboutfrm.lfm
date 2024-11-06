@@ -40,6 +40,8 @@ object AboutForm: TAboutForm
         Height = 300
         Top = 6
         Width = 450
+        Proportional = True
+        Stretch = True
       end
       object VersionLabel: TLabel
         AnchorSideLeft.Control = LogoImage

@@ -135,11 +135,17 @@ begin
 end;
 
 procedure TSplashForm.DoFirstShow;
+var
+  W, H: Integer;
+  ScaleFactor: Double;
 begin
   inherited DoFirstShow;
 
   LoadSplash;
-  ScaleImg(Image.Picture.Bitmap, Width, Height);
+  ScaleFactor := GetCanvasScaleFactor; // Usually 1.0, but on macOS = 2.0
+  W := round(Image.Width * ScaleFactor);
+  H := round(Image.Height * ScaleFactor);
+  ScaleImg(Image.Picture.Bitmap, W, H);
 end;
 
 end.

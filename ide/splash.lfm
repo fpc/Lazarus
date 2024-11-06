@@ -9,7 +9,7 @@ object SplashForm: TSplashForm
   ClientWidth = 450
   FormStyle = fsSplash
   Position = poScreenCenter
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '4.99.0.0'
   object Image: TImage
     Left = 0
     Height = 300
