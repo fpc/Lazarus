@@ -1526,7 +1526,9 @@ begin
     Result := Assigned(cbi);
     if not Result then Exit;
 
-    Result:= NSObject(handle).isKindOfClass(TCocoaWindowContent);
+    obj := cbi.GetCallbackObject;
+    Result :=  (obj is TLCLCommonCallback)
+       and (HWND(TLCLCommonCallback(obj).HandleFrame)=handle);
   end
   else
     Result := False;
