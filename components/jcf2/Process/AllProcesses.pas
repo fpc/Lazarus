@@ -79,7 +79,7 @@ uses
   //GlobalInclude,
   { obfuscate}
   FixCase, RemoveComment, RemoveBlankLine, RemoveReturn, ReduceWhiteSpace,
-  RemoveConsecutiveWhiteSpace, RemoveUnneededWhiteSpace, RebreakLines,
+  RemoveConsecutiveWhiteSpace, RemoveUnneededWhiteSpace, RebreakLines, SettingsTypes,
   { transform }
   FindReplace, UsesClauseInsert, UsesClauseRemove, UsesClauseFindReplace,
   RemoveEmptyComment, AddBeginEnd, AddBlockEndSemicolon, SortUses,
@@ -218,19 +218,31 @@ end;
 
 procedure TAllProcesses.Obfuscate;
 begin
-  // apply them all
-  ApplyVisitorType(TFixCase);
-  ApplyVisitorType(TRemoveComment, [TVisitSetXY]);
-  ApplyVisitorType(TRemoveBlankLine, [TVisitSetXY]);
-  ApplyVisitorType(TRemoveReturn);
-  ApplyVisitorType(TReduceWhiteSpace);
-  ApplyVisitorType(TRemoveConsecutiveWhiteSpace);
+  if FormattingSettings.Obfuscate.Caps <> ctLeaveAlone then
+    ApplyVisitorType(TFixCase);
 
-  ApplyVisitorType(TRemoveUnneededWhiteSpace);
+  if FormattingSettings.Obfuscate.RemoveComments then
+    ApplyVisitorType(TRemoveComment, [TVisitSetXY]);
 
-  ApplyVisitorType(TVisitSetXY);
-  ApplyVisitorType(TVisitStripEmptySpace);
-  ApplyVisitorType(TRebreakLines);
+  if FormattingSettings.Obfuscate.RemoveWhiteSpace then
+  begin
+    ApplyVisitorType(TRemoveBlankLine, [TVisitSetXY]);
+    ApplyVisitorType(TRemoveReturn);
+    ApplyVisitorType(TReduceWhiteSpace);
+    ApplyVisitorType(TRemoveConsecutiveWhiteSpace);
+  end;
+
+  if FormattingSettings.Obfuscate.RemoveIndent then
+    ApplyVisitorType(TRemoveUnneededWhiteSpace);
+
+  if FormattingSettings.Obfuscate.RemoveWhiteSpace then
+  begin
+    ApplyVisitorType(TVisitSetXY);
+    ApplyVisitorType(TVisitStripEmptySpace);
+  end;
+
+  if FormattingSettings.Obfuscate.RebreakLines then
+    ApplyVisitorType(TRebreakLines);
 end;
 
 procedure TAllProcesses.ClarifySetup;
