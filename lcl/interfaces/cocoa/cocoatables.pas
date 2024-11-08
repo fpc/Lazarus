@@ -443,9 +443,6 @@ end;
 procedure TCocoaTableListView.backend_reloadData;
 begin
   self.reloadData;
-  if Assigned(self.callback) then begin
-    self.selectRowIndexesByProgram( self.callback.selectionIndexSet );
-  end;
 end;
 
 procedure TCocoaTableListView.backend_onInit;
@@ -1448,7 +1445,6 @@ begin
   self.callback.checkedIndexSet.shiftIndexesStartingAtIndex_by( AIndex, 1 );
   self.callback.mixedCheckedIndexSet.shiftIndexesStartingAtIndex_by( AIndex, 1 );
   self.callback.selectionIndexSet.shiftIndexesStartingAtIndex_by( AIndex, 1 );
-  self.selectRowIndexesByProgram( self.callback.selectionIndexSet );
   self.reloadData;
   self.sizeToFit();
 end;
@@ -1461,7 +1457,6 @@ begin
   self.callback.checkedIndexSet.shiftIndexesStartingAtIndex_by( AIndex+1, -1);
   self.callback.mixedCheckedIndexSet.shiftIndexesStartingAtIndex_by( AIndex+1, -1);
   self.callback.selectionIndexSet.shiftIndexesStartingAtIndex_by( AIndex+1, -1 );
-  self.selectRowIndexesByProgram( self.callback.selectionIndexSet );
   self.reloadData;
 end;
 
