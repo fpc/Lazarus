@@ -771,7 +771,7 @@ procedure DebugWriteChildAnchors(RootNode: TAnchorDockLayoutTreeNode);
               ,',h=',dbgs(Node.BoundsRect.Bottom-Node.BoundsRect.Top));
     if Node.WindowState<>wsNormal then
       DbgOut(' WindowState=',dbgs(Node.WindowState));
-    if Node.Monitor<>0 then
+    if Node.Monitor<>-1 then
       DbgOut(' Monitor=',dbgs(Node.Monitor));
     if Node.BoundSplitterPos<>0 then
       DbgOut(' SplitterPos=',dbgs(Node.BoundSplitterPos));
@@ -1064,7 +1064,7 @@ begin
   while Count>0 do Nodes[Count-1].Free;
   NodeType:=adltnNone;
   WindowState:=wsNormal;
-  Monitor:=0;
+  Monitor:=-1;
   Align:=alNone;
   HeaderPosition:=adlhpAuto;
   TabPosition:=tpTop;
@@ -1203,7 +1203,7 @@ begin
   HeaderPosition:=NameToADLHeaderPosition(Config.GetValue('Header/Position',ADLHeaderPositionNames[adlhpAuto]));
   TabPosition:=NameToADLTabPosition(Config.GetValue('Header/TabPosition',ADLTabPostionNames[tpTop]));
   PageIndex:=Config.GetValue('Header/PageIndex',0);
-  Monitor:=Config.GetValue('Monitor',0);
+  Monitor:=Config.GetValue('Monitor',-1);
   NewCount:=Config.GetValue('ChildCount',0);
   PixelsPerInch:=Config.GetValue('PixelsPerInch',96);
   for i:=1 to NewCount do begin
@@ -1240,7 +1240,7 @@ begin
   HeaderPosition:=NameToADLHeaderPosition(Config.GetValue(Path+'Header/Position',ADLHeaderPositionNames[adlhpAuto]));
   TabPosition:=NameToADLTabPosition(Config.GetValue(Path+'Header/TabPosition',ADLTabPostionNames[tpTop]));
   PageIndex:=Config.GetValue(Path+'Header/PageIndex',0);
-  Monitor:=Config.GetValue(Path+'Monitor',0);
+  Monitor:=Config.GetValue(Path+'Monitor',-1);
   NewCount:=Config.GetValue(Path+'ChildCount',0);
   PixelsPerInch:=Config.GetValue(Path+'PixelsPerInch',96);
   for i:=1 to NewCount do
@@ -1277,7 +1277,7 @@ begin
                                              ADLTabPostionNames[tpTop]);
   Config.SetDeleteValue('Header/PageIndex',PageIndex,0);
   Config.SetDeleteValue('Minimized',Minimized,False);
-  Config.SetDeleteValue('Monitor',Monitor,0);
+  Config.SetDeleteValue('Monitor',Monitor,-1);
   Config.SetDeleteValue('ChildCount',Count,0);
   Config.SetDeleteValue('PixelsPerInch',PixelsPerInch,96);
   for i:=1 to Count do begin
@@ -1313,7 +1313,7 @@ begin
                                                   ADLTabPostionNames[tpTop]);
   Config.SetDeleteValue(Path+'Header/PageIndex',PageIndex,0);
   Config.SetDeleteValue(Path+'Minimized',Minimized,False);
-  Config.SetDeleteValue(Path+'Monitor',Monitor,0);
+  Config.SetDeleteValue(Path+'Monitor',Monitor,-1);
   Config.SetDeleteValue(Path+'ChildCount',Count,0);
   Config.SetDeleteValue(Path+'PixelsPerInch',PixelsPerInch,96);
   for i:=1 to Count do
