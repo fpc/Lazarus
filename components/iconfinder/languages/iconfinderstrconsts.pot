@@ -74,6 +74,11 @@ msgstr ""
 msgid "Hide all"
 msgstr ""
 
+#: iconfinderstrconsts.rsiconviewer_iconcountinfo
+#, object-pascal-format
+msgid "%0:d icons (out of %1:d)"
+msgstr ""
+
 #: iconfinderstrconsts.rsiconviewer_keywordslbl
 msgid "Keywords:"
 msgstr ""

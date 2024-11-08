@@ -24,8 +24,9 @@ uses
   Classes, SysUtils,
   // LazUtils
   LazFileUtils, LazLoggerBase,
-  // LCL
-  Forms, Controls, Graphics, StdCtrls, ExtCtrls, FileCtrl, Buttons, Dialogs, ImgList,
+  // LCL/LazControls
+  Forms, Controls, Graphics, StdCtrls, ExtCtrls, FileCtrl, Buttons, Dialogs,
+  ImgList, DividerBevel,
   // Icon Finder
   IconFinderStrConsts, IconThumbnails, IconKeywordFilterEditor;
 
@@ -34,12 +35,12 @@ type
   { TIconViewerFrame }
 
   TIconViewerFrame = class(TFrame)
-    Bevel1: TBevel;
     Bevel2: TBevel;
     btnKeywordEditor: TSpeedButton;
     cmbFilterByKeywords: TComboBox;
     cmbFilterBySize: TComboBox;
     cmbFilterByStyle: TComboBox;
+    DividerBevel1: TDividerBevel;
     FilterPanel: TPanel;
     infoFileName: TLabel;
     infoKeywords: TLabel;
@@ -95,6 +96,7 @@ type
     function IndexOfIconFolder(AFolder: String): Integer;
     procedure ReadIconFolders(AList: TStrings);
     procedure SetKeywordsHistory(AList: TStrings);
+    procedure UpdateIconCount;
     procedure UpdateIconSizes(ASizeIndex: Integer);
     procedure UpdateIconStyles(AStyleIndex: Integer);
     procedure UpdateLanguage;
@@ -155,6 +157,7 @@ begin
   UpdateIconSizes(filterBySize);
   UpdateIconStyles(filterByStyle);
   UpdateIconDetails;
+  UpdateIconCount;
   UpdateCmds;
 end;
 
@@ -216,6 +219,7 @@ begin
   FIconViewer.FilterByIconKeywords := filter;
   AddKeywordFilterToHistory(filter);
   cmbFilterByKeywords.Text := filter;   // Must be after AddKeywordFilterToHistory!
+  UpdateIconCount;
 end;
 
 procedure TIconViewerFrame.cmbFilterByKeywordsEditingDone(Sender: TObject);
@@ -230,12 +234,14 @@ begin
   else
     FIconViewer.FilterByIconSize := cmbFilterBySize.Items[cmbFilterBySize.ItemIndex];
   FIconViewer.Invalidate;
+  UpdateIconCount;
 end;
 
 procedure TIconViewerFrame.cmbFilterByStyleChange(Sender: TObject);
 begin
   FIconViewer.FilterByIconStyle := TIconStyle(cmbFilterByStyle.ItemIndex);
   FIconViewer.Invalidate;
+  UpdateIconCount;
 end;
 
 procedure TIconViewerFrame.CopyMetadataToNameBase(AIcon: TIconItem);
@@ -265,6 +271,7 @@ end;
 
 procedure TIconViewerFrame.DoIconViewerFilter(Sender: TObject);
 begin
+  UpdateIconCount;
   if Assigned(FOnFilter) then
     FOnFilter(Self);
 end;
@@ -420,6 +427,13 @@ end;
 procedure TIconViewerFrame.UpdateCmds;
 begin
   btnKeywordEditor.Enabled := TotalCount > 0;
+end;
+
+procedure TIconViewerFrame.UpdateIconCount;
+begin
+  DividerBevel1.Caption := Format(RSIconViewer_IconCountInfo,
+    [ FIconViewer.ThumbnailCount, FIconViewer.IconCount ]
+  );
 end;
 
 procedure TIconViewerFrame.UpdateIconDetails;

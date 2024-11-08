@@ -17,7 +17,7 @@ uses
 
 begin
   RequireDerivedFormResource:=True;
-  Application.Scaled := True;
+  Application.Scaled:=True;
   Application.{%H-}MainFormOnTaskbar:=True;
   Application.Initialize;
   Application.CreateForm(TMainForm, MainForm);

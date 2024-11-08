@@ -118,8 +118,8 @@ object IconViewerFrame: TIconViewerFrame
   end
   object IconDetailsPanel: TPanel
     Left = 6
-    Height = 68
-    Top = 223
+    Height = 87
+    Top = 204
     Width = 594
     Align = alBottom
     AutoSize = True
@@ -127,16 +127,17 @@ object IconViewerFrame: TIconViewerFrame
     BorderSpacing.Top = 6
     BorderSpacing.Right = 6
     BevelOuter = bvNone
-    ClientHeight = 68
+    ClientHeight = 87
     ClientWidth = 594
     TabOrder = 1
     OnResize = IconDetailsPanelResize
     object CaptionPanel: TPanel
       AnchorSideLeft.Control = IconDetailsPanel
-      AnchorSideTop.Control = IconDetailsPanel
+      AnchorSideTop.Control = DividerBevel1
+      AnchorSideTop.Side = asrBottom
       Left = 0
       Height = 68
-      Top = 0
+      Top = 19
       Width = 58
       AutoSize = True
       BorderSpacing.Right = 8
@@ -199,10 +200,12 @@ object IconViewerFrame: TIconViewerFrame
     object infoFileName: TLabel
       AnchorSideLeft.Control = CaptionPanel
       AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = DividerBevel1
+      AnchorSideTop.Side = asrBottom
       AnchorSideRight.Side = asrBottom
       Left = 66
       Height = 15
-      Top = 0
+      Top = 19
       Width = 71
       Caption = 'infoFileName'
     end
@@ -213,7 +216,7 @@ object IconViewerFrame: TIconViewerFrame
       AnchorSideTop.Side = asrBottom
       Left = 66
       Height = 15
-      Top = 17
+      Top = 36
       Width = 41
       BorderSpacing.Top = 2
       Caption = 'infoSize'
@@ -225,7 +228,7 @@ object IconViewerFrame: TIconViewerFrame
       AnchorSideTop.Side = asrBottom
       Left = 66
       Height = 15
-      Top = 34
+      Top = 53
       Width = 46
       BorderSpacing.Top = 2
       Caption = 'infoStyle'
@@ -239,21 +242,24 @@ object IconViewerFrame: TIconViewerFrame
       AnchorSideRight.Side = asrBottom
       Left = 66
       Height = 15
-      Top = 51
+      Top = 70
       Width = 528
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 2
       Caption = 'infoKeywords'
       WordWrap = True
     end
-  end
-  object Bevel1: TBevel
-    Left = 0
-    Height = 4
-    Top = 213
-    Width = 606
-    Align = alBottom
-    Shape = bsBottomLine
+    object DividerBevel1: TDividerBevel
+      Left = 0
+      Height = 15
+      Top = 0
+      Width = 594
+      Caption = 'DividerBevel1'
+      Align = alTop
+      BorderSpacing.Bottom = 4
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
   end
   object Bevel2: TBevel
     Left = 0

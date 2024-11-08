@@ -5,6 +5,7 @@ unit main;
 interface
 
 uses
+  LazLogger,
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, ImgList,
   StdCtrls, Types, IconThumbnails;
 
