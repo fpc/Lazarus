@@ -5091,6 +5091,7 @@ begin
 end;
 
 {$IF FPC_FullVersion < 30301}
+{ Workaround for TFPReaderBMP not implementing InternalSize in FPC before 3.3.1}
 class function TLazReaderBMP.InternalSize (Stream: TStream): TPoint;
 var
   fileHdr: TBitmapFileHeader;
