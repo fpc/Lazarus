@@ -2175,6 +2175,7 @@ var
   R, R1: TRect;
   ALayout: QtLayoutDirection;
   B: boolean;
+  APen: QPenH;
 
   procedure DoDrawCharByChar(const AClipped: Boolean);
   var
@@ -2245,6 +2246,11 @@ begin
     else
       WideStr := Str;
 
+    //optimization
+    APen := QPen_Create(QPainter_pen(QtDC.Widget));
+    QtDC.SetTextPen;
+    QtDC.PenTextInternal := False;
+
     if (Options and ETO_CLIPPED <> 0) then
     begin
       QtDC.save;
@@ -2265,6 +2271,9 @@ begin
       else
         QtDC.drawText(X, Y, @WideStr);
     end;
+    QPainter_setPen(QtDC.Widget, APen);
+    QPen_destroy(APen);
+    QtDC.PenTextInternal := True;
     if Options and ETO_RTLREADING <> 0 then
       QPainter_setLayoutDirection(QtDC.Widget, ALayout);
   end;

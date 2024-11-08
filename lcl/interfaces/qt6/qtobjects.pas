@@ -369,6 +369,7 @@ type
 
   TQtDeviceContext = class(TObject)
   private
+    FPenTextInternal: boolean;
     FSupportRasterOps: TRop2OrCompositionSupport;
     FSupportComposition: TRop2OrCompositionSupport;
     FRopMode: Integer;
@@ -385,7 +386,6 @@ type
     function DeviceSupportsComposition: Boolean;
     function DeviceSupportsRasterOps: Boolean;
     function R2ToQtRasterOp(AValue: Integer): QPainterCompositionMode;
-    procedure SetTextPen;
     procedure SetRop(const AValue: Integer);
   public
     { public fields }
@@ -416,6 +416,7 @@ type
     procedure setImage(AImage: TQtImage);
     procedure CorrectCoordinates(var ARect: TRect);
     function GetLineLastPixelPos(PrevPos, NewPos: TPoint): TPoint;
+    procedure SetTextPen;
   public
     { Qt functions }
     
@@ -486,6 +487,7 @@ type
     property Metrics: TQtFontMetrics read GetMetrics;
     property Rop2: Integer read GetRop write SetRop;
     property UserDC: boolean read FUserDC write FUserDC; {if context is created from GetDC() and it's not default DC.}
+    property PenTextInternal: boolean read FPenTextInternal write FPenTextInternal; {optimization for ExtTextOut}
   end;
   
   { TQtPixmap }
@@ -2292,6 +2294,7 @@ begin
 
   {NOTE FOR QT DEVELOPERS: Whenever you call TQtDeviceContext.Create() outside
    of TQtWidgetSet.BeginPaint() SET APaintEvent TO FALSE !}
+  FPenTextInternal := True;
   FUserDC := False;
   Parent := nil;
   ParentPixmap := nil;
@@ -2333,6 +2336,7 @@ end;
 
 constructor TQtDeviceContext.CreatePrinterContext(ADevice: QPrinterH);
 begin
+  FPenTextInternal := True;
   FUserDC := False;
   SelFont := nil;
   SelBrush := nil;
@@ -2353,6 +2357,7 @@ end;
 
 constructor TQtDeviceContext.CreateFromPainter(APainter: QPainterH);
 begin
+  FPenTextInternal := True;
   FUserDC := False;
   SelFont := nil;
   SelBrush := nil;
@@ -2899,16 +2904,23 @@ begin
   // what about Metrics.descent and Metrics.leading ?
   y := y + Metrics.ascent;
 
-  APen := QPen_create(QPainter_pen(Widget));
-  SetTextPen;
+  if FPenTextInternal then
+  begin
+    APen := QPen_create(QPainter_pen(Widget));
+    SetTextPen;
+  end;
   // The ascent is only applied here, because it also needs
   // to be rotated
   if Font.Angle <> 0 then
     QPainter_drawText(Widget, 0, Metrics.ascent, s)
   else
     QPainter_drawText(Widget, x, y, s);
-  QPainter_setPen(Widget, APen);
-  QPen_destroy(APen);
+
+  if FPenTextInternal then
+  begin
+    QPainter_setPen(Widget, APen);
+    QPen_destroy(APen);
+  end;
   // Restore previous angle
   if Font.Angle <> 0 then
   begin
@@ -2944,14 +2956,22 @@ begin
     Rotate(-0.1 * Font.Angle);
   end;
 
-  APen := QPen_create(QPainter_pen(Widget));
-  SetTextPen;
+  if FPenTextInternal then
+  begin
+    APen := QPen_create(QPainter_pen(Widget));
+    SetTextPen;
+  end;
+
   if Font.Angle <> 0 then
     QPainter_DrawText(Widget, 0, 0, w, h, Flags, s)
   else
     QPainter_DrawText(Widget, x, y, w, h, Flags, s);
-  QPainter_setPen(Widget, APen);
-  QPen_destroy(APen);
+
+  if FPenTextInternal then
+  begin
+    QPainter_setPen(Widget, APen);
+    QPen_destroy(APen);
+  end;
 
   // Restore previous angle
   if Font.Angle <> 0 then
@@ -2993,16 +3013,23 @@ begin
   // what about Metrics.descent and Metrics.leading ?
   y := y + Metrics.ascent;
 
-  APen := QPen_create(QPainter_pen(Widget));
-  SetTextPen;
+  if FPenTextInternal then
+  begin
+    APen := QPen_create(QPainter_pen(Widget));
+    SetTextPen;
+  end;
   // The ascent is only applied here, because it also needs
   // to be rotated
   if Font.Angle <> 0 then
     QPainter_drawText(Widget, 0, Metrics.ascent, s)
   else
     QPainter_drawText(Widget, x, y, s);
-  QPainter_setPen(Widget, APen);
-  QPen_destroy(APen);
+
+  if FPenTextInternal then
+  begin
+    QPainter_setPen(Widget, APen);
+    QPen_destroy(APen);
+  end;
   // Restore previous angle
   if Font.Angle <> 0 then
   begin
@@ -3037,15 +3064,21 @@ begin
     Translate(x, y);
     Rotate(-0.1 * Font.Angle);
   end;
-
-  APen := QPen_create(QPainter_pen(Widget));
-  SetTextPen;
+  if FPenTextInternal then
+  begin
+    APen := QPen_create(QPainter_pen(Widget));
+    SetTextPen;
+  end;
   if Font.Angle <> 0 then
     QPainter_DrawText(Widget, 0, 0, w, h, Flags, s)
   else
     QPainter_DrawText(Widget, x, y, w, h, Flags, s);
-  QPainter_setPen(Widget, APen);
-  QPen_destroy(APen);
+
+  if FPenTextInternal then
+  begin
+    QPainter_setPen(Widget, APen);
+    QPen_destroy(APen);
+  end;
 
   // Restore previous angle
   if Font.Angle <> 0 then
