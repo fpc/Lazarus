@@ -35,7 +35,6 @@ begin
   LMap.Init;
   for i := 0 to Length(l) - 1 do
     LMap.SetAddressForLine(l[i], l[i]);
-  LMap.Compress;
 end;
 
 procedure TTestLineMap.CheckNotFound(ASearch: Integer; AFindSibling: TGetLineAddrFindSibling;
