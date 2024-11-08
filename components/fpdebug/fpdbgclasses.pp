@@ -1693,11 +1693,13 @@ var
 begin
   for MapEnumData in BreakMap do begin
     // Does break instruction fall completely outside AData
+    {$PUSH}{$R-}{$Q-}
     if (MapEnumData.Location + SizeOf(_BRK_STORE) <= AAdress) or
        (MapEnumData.Location >= (AAdress + ASize)) or
        (MapEnumData.MapDataPtr^.ErrorSetting)
     then
       continue;
+    {$POP}
 
     if (MapEnumData.Location >= AAdress) and (MapEnumData.Location + SizeOf(_BRK_STORE) <= (AAdress + ASize)) then begin
       // Breakpoint is completely inside AData
