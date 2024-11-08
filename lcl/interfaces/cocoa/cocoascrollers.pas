@@ -1086,18 +1086,20 @@ begin
 
   inherited setFrame(aframe);
 
-  lclControl:= TScrollingWinControl(lclGetTarget);
-  newDocSize:= contentSize;
+  if lclGetTarget is TScrollingWinControl then begin
+    lclControl:= TScrollingWinControl(lclGetTarget);
+    newDocSize:= contentSize;
 
-  lclBar:= lclControl.HorzScrollBar;
-  if lclBar.Visible and (lclBar.Range<>0) and (lclBar.Range>lclBar.Page) then
-    newDocSize.Width:= lclBar.Range;
+    lclBar:= lclControl.HorzScrollBar;
+    if lclBar.Visible and (lclBar.Range<>0) and (lclBar.Range>lclBar.Page) then
+      newDocSize.Width:= lclBar.Range;
 
-  lclBar:= lclControl.VertScrollBar;
-  if lclBar.Visible and (lclBar.Range<>0) and (lclBar.Range>lclBar.Page) then
-    newDocSize.Height:= lclBar.Range;
+    lclBar:= lclControl.VertScrollBar;
+    if lclBar.Visible and (lclBar.Range<>0) and (lclBar.Range>lclBar.Page) then
+      newDocSize.Height:= lclBar.Range;
 
-  documentView.setFrameSize(newDocSize);
+    documentView.setFrameSize(newDocSize);
+  end;
 
   if lclHorzScrollInfo.fMask<>0 then
     applyScrollInfo(SB_Horz, lclHorzScrollInfo);
