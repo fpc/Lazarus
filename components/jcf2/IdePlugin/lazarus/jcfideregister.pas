@@ -72,6 +72,7 @@ const
   FORMAT_CURRENT_NAME      = 'jcfCurrentEditorWindow';
   FORMAT_PROJECT_MENU_NAME = 'jcfAllFilesinProject';
   FORMAT_OPEN_MENU_NAME    = 'jcfAllOpenWindows';
+  FORMAT_REMOVE_COMMENTS_NAME = 'jcfRemoveComments';
   FORMAT_SETTINGS_MENU_NAME = 'jcfFormatSettings';
   FORMAT_REG_SETTINGS_MENU_NAME = 'jcfRegSettings';
   FORMAT_ABOUT_MENU_NAME   = 'jcfAbout';
@@ -139,6 +140,12 @@ begin
 
   RegisterIDEMenuCommand(fcMainMenu, FORMAT_OPEN_MENU_NAME, FORMAT_OPEN_MENU,
     lcJCFIDE.DoFormatOpen);
+
+  Key := IDEShortCut(VK_UNKNOWN,[],VK_UNKNOWN, []);
+  Cmd := RegisterIDECommand(Cat, FORMAT_REMOVE_COMMENTS_NAME, FORMAT_REMOVE_COMMENTS,
+    Key, lcJCFIDE.DoRemoveCommentsInCurrentIDEWindow);
+  RegisterIDEMenuCommand(fcMainMenu, FORMAT_REMOVE_COMMENTS_NAME, FORMAT_REMOVE_COMMENTS,
+    lcJCFIDE.DoRemoveCommentsInCurrentIDEWindow, nil, Cmd);
 
   // settings
   SubSection := RegisterIDEMenuSection(fcMainMenu, FORMAT_MENU_SECTION1);

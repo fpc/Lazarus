@@ -47,6 +47,10 @@ msgstr "Все файлы &проекта"
 msgid "Global Settings ..."
 msgstr "Глобальные параметры ..."
 
+#: jcfuiconsts.format_remove_comments
+msgid "Remove comments in current editor window"
+msgstr ""
+
 #: jcfuiconsts.format_settings_menu
 msgid "&Format Settings ..."
 msgstr "П&араметры форматирования ..."

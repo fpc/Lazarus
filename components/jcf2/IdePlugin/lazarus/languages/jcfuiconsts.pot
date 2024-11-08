@@ -33,6 +33,10 @@ msgstr ""
 msgid "Global Settings ..."
 msgstr ""
 
+#: jcfuiconsts.format_remove_comments
+msgid "Remove comments in current editor window"
+msgstr ""
+
 #: jcfuiconsts.format_settings_menu
 msgid "&Format Settings ..."
 msgstr ""

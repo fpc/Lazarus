@@ -10,6 +10,7 @@ resourcestring
   FORMAT_CURRENT_IDECMD   = 'Format code in current editor window';
   FORMAT_PROJECT_MENU     = '&All Files in Project';
   FORMAT_OPEN_MENU        = 'All &Open Windows';
+  FORMAT_REMOVE_COMMENTS  = 'Remove comments in current editor window';
   FORMAT_SETTINGS_MENU    = '&Format Settings ...';
   FORMAT_REG_SETTINGS_MENU= 'Global Settings ...';
   FORMAT_ABOUT_MENU       = '&About ...';

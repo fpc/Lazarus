@@ -46,7 +46,7 @@ uses
   // local
   EditorConverter, FileConverter, Converter, ConvertTypes,
   JcfUIConsts, JcfStringUtils, JcfSettings, fAbout, frFiles,
-  JcfRegistrySettings, fRegistrySettings;
+  JcfRegistrySettings, fRegistrySettings, SettingsTypes;
 
 type
 
@@ -77,6 +77,7 @@ type
     procedure DoFormatCurrentIDEWindow(Sender: TObject);
     procedure DoFormatProject(Sender: TObject);
     procedure DoFormatOpen(Sender: TObject);
+    procedure DoRemoveCommentsInCurrentIDEWindow(Sender: TObject);
     procedure DoRegistrySettings(Sender: TObject);
     procedure DoFormatSettings(Sender: TObject);
     procedure DoAbout(Sender: TObject);
@@ -215,6 +216,37 @@ begin
   fcEditorConverter.AfterConvert;
 end;
 
+procedure TJcfIdeMain.DoRemoveCommentsInCurrentIDEWindow(Sender: TObject);
+var
+  lcCaps : TCapitalisationType;
+  lbEnabled,lbRemoveComments,lbRemoveWhiteSpace,lbRemoveIndent,lbRebreakLines:boolean;
+begin
+  try
+    lbEnabled := FormattingSettings.Obfuscate.Enabled;
+    lcCaps := FormattingSettings.Obfuscate.Caps;
+    lbRemoveComments := FormattingSettings.Obfuscate.RemoveComments;
+    lbRemoveWhiteSpace := FormattingSettings.Obfuscate.RemoveWhiteSpace;
+    lbRemoveIndent := FormattingSettings.Obfuscate.RemoveIndent;
+    lbRebreakLines := FormattingSettings.Obfuscate.RebreakLines;
+
+    FormattingSettings.Obfuscate.Enabled := True;
+    FormattingSettings.Obfuscate.Caps := ctLeaveAlone;
+    FormattingSettings.Obfuscate.RemoveComments := True;
+    FormattingSettings.Obfuscate.RemoveWhiteSpace := False;
+    FormattingSettings.Obfuscate.RemoveIndent := False;
+    FormattingSettings.Obfuscate.RebreakLines := False;
+
+    DoFormatCurrentIDEWindow(Sender);
+  finally
+    //restore settings.
+    FormattingSettings.Obfuscate.Enabled := lbEnabled;
+    FormattingSettings.Obfuscate.Caps := lcCaps;
+    FormattingSettings.Obfuscate.RemoveComments := lbRemoveComments;
+    FormattingSettings.Obfuscate.RemoveWhiteSpace := lbRemoveWhiteSpace;
+    FormattingSettings.Obfuscate.RemoveIndent := lbRemoveIndent;
+    FormattingSettings.Obfuscate.RebreakLines := lbRebreakLines;
+  end;
+end;
 
 procedure TJcfIdeMain.FormatFile(const psFileName: string);
 begin
