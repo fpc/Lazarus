@@ -18,8 +18,8 @@ unit IconThumbNails;
 interface
 
 uses
-  Classes, SysUtils, fgl, contnrs, FPImage, StrUtils, LazLoggerBase,
-  laz2_dom, laz2_xmlread, laz2_xmlwrite,
+  Classes, SysUtils, fgl, contnrs, FPImage, FPReadBMP, StrUtils, LazLoggerBase,
+  laz2_dom, laz2_xmlread, laz2_xmlwrite, IntfGraphics,
   FileUtil, LazFileUtils, Graphics, Controls, Dialogs, Menus, Forms,
   IconFinderStrConsts, BasicThumbnails;
 
@@ -267,6 +267,8 @@ begin
   begin
     x := (Viewer.ThumbnailWidth - pic.Width) div 2;
     y := (Viewer.ThumbnailHeight - pic.Height) div 2;
+    if Assigned(pic.Bitmap) then
+      pic.Bitmap.Transparent := true;
     ACanvas.Draw(ARect.Left + x, ARect.Top + y, pic.Bitmap);
   end;
 end;
@@ -1149,6 +1151,11 @@ begin
         reader := TFPCustomImage.FindReaderFromStream(stream);
         if reader <> nil then
         begin
+          {$if FPC_FullVersion < 30301}
+          // Workaround for FPReaderBMP not implementing "ImageSize"
+          if reader = TFPReaderBMP then
+            reader := TLazReaderBMP;
+          {$ifend}
           stream.Position := 0;
           with reader.ImageSize(stream) do
           begin
