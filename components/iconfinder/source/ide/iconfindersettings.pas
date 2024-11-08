@@ -293,7 +293,7 @@ var
   Config: TConfigStorage;
 begin
   try
-     Config := GetIDEConfigStorage(ICONFINDER_CONFIG_FILENAME, true); //, false);
+     Config := GetIDEConfigStorage(ICONFINDER_CONFIG_FILENAME, true);
      try
        WriteIconFinderSettings(Config, FViewer, 'IDEOptions');
      finally

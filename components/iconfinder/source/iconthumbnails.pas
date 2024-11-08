@@ -13,11 +13,12 @@ unit IconThumbNails;
 
 {$mode ObjFPC}{$H+}
 {$define OVERLAY_ICONS}
+{$define SPEED_TIMER}
 {$WARN 6058 off : Call to subroutine "$1" marked as inline is not inlined}
 interface
 
 uses
-  Classes, SysUtils, fgl, FPImage, StrUtils, LazLoggerBase,
+  Classes, SysUtils, fgl, contnrs, FPImage, StrUtils, LazLoggerBase,
   laz2_dom, laz2_xmlread, laz2_xmlwrite,
   FileUtil, LazFileUtils, Graphics, Controls, Dialogs, Menus, Forms,
   IconFinderStrConsts, BasicThumbnails;
@@ -84,9 +85,13 @@ type
     property Width: Integer read FWidth;
   end;
 
-  TIconList = class(specialize TFPGObjectList<TIconItem>)
+  TIconList = class(TFPHashObjectList)
+  private
+    function GetItem(AIndex: Integer): TIconItem;
+    procedure SetItem(AIndex: Integer; AValue: TIconItem);
   public
     function IndexOfFileName(AFileName: String): Integer;
+    property Items[AIndex: Integer]: TIconItem read GetItem write SetItem; default;
   end;
 
   TIconFolderItem = class
@@ -191,7 +196,6 @@ function StrToIconStyle(AText: String): TIconStyle;
 
 const
   IMAGES_MASK = '*.png;*.bmp';
-
 
 implementation
 
@@ -436,21 +440,19 @@ end;
 
 { TIconList }
 
-function TIconList.IndexOfFileName(AFileName: String): Integer;
-var
-  i: Integer;
-  item: TIconItem;
+function TIconList.GetItem(AIndex: Integer): TIconItem;
 begin
-  for i := 0 to Count-1 do
-  begin
-    item := Items[i];
-    if item.FileName = AFileName then
-    begin
-      Result := i;
-      exit;
-    end;
-  end;
-  Result := -1;
+  Result := TIconItem(inherited Items[AIndex]);
+end;
+
+function TIconList.IndexOfFileName(AFileName: String): Integer;
+begin
+  Result := FindIndexOf(AFileName);
+end;
+
+procedure TIconList.SetItem(AIndex: Integer; AValue: TIconItem);
+begin
+  inherited Items[AIndex] := AValue;
 end;
 
 
@@ -683,7 +685,7 @@ begin
   begin
     Result := TIconItem.Create(AFileName, AKeywords, AStyle, AWidth, AHeight);
     Result.FViewer := Self;
-    FIconList.Add(Result);
+    FIconList.Add(AFileName, Result);
   end else
     Result := FIconList[idx];
 
@@ -730,7 +732,7 @@ begin
   for i := 0 to FIconList.Count-1 do
   begin
     item := FIconList[i];
-    itemDir := FIconList[i].Directory;
+    itemDir := item.Directory;
     if SameText(iconNameBase, item.NameBase) and SameText(iconDir, itemDir) and (item <> AIcon) then
       item.CopyMetadataFrom(AIcon);
   end;
@@ -1164,7 +1166,8 @@ begin
   end;
 end;
 
-procedure TIconThumbnailViewer.ReadMetadataFile(AFileName: String; AHidden: Boolean);
+procedure TIconThumbnailViewer.ReadMetadataFile(AFileName: String;
+  AHidden: Boolean);
 var
   doc: TXMLDocument = nil;
   iconsNode, iconNode: TDOMNode;
@@ -1175,10 +1178,16 @@ var
   style: TIconStyle;
   s: String;
   keywords: String;
-  files: TStringList;
+  files: TStringList = nil;
   stream: TStream;
   reader: TFPCustomImageReaderClass;
+  {$ifdef SPEED_TIMER}
+  t1, t2: TDateTime;
+  {$endif}
 begin
+  {$ifdef SPEED_TIMER}
+  t1 := Now();
+  {$endif}
   folder := ExtractFilePath(AFileName);
   files := TStringList.Create;
   try
@@ -1187,6 +1196,9 @@ begin
     ReadXMLFile(doc, AFileName);
     iconsNode := doc.DocumentElement.FindNode('icons');
     iconNode := iconsNode.FindNode('icon');
+    {$ifdef SPEED_TIMER}
+    t2 := Now();
+    {$endif}
     while iconNode <> nil do begin
       fn := '';
       style := isAnystyle;
@@ -1223,8 +1235,8 @@ begin
           AddIcon(fn, keywords, style, w, h).Hidden := AHidden;
 
         // Delete the processed filename from the files list
-        i := files.IndexOf(fn);
-        if i > -1 then files.Delete(i);
+        if files.Find(fn, i) then
+          files.Delete(i);
       end;
 
       iconNode := iconNode.NextSibling;
@@ -1254,10 +1266,20 @@ begin
       end;
     end;
 
+    {$ifdef SPEED_TIMER}
+    t2 := Now()-t2;
+    {$endif}
+
   finally
     doc.Free;
     files.Free;
   end;
+
+  {$ifdef SPEED_TIMER}
+  t1 := Now() - t1;
+  DebugLn(['[TIconThumbnailViewer.ReadMetadataFile] Total time=', FormatDateTime('s.zzz "sec"', t1), ', Loop time=', FormatdateTime('s.zzz "sec"', t2)]);
+  {$endif}
+
 end;
 
 procedure TIconThumbnailViewer.SetFilterByIconKeywords(AValue: String);
