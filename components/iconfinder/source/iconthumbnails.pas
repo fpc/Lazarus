@@ -13,7 +13,7 @@ unit IconThumbNails;
 
 {$mode ObjFPC}{$H+}
 {$define OVERLAY_ICONS}
-{$define SPEED_TIMER}
+{.$define SPEED_TIMER}
 {$WARN 6058 off : Call to subroutine "$1" marked as inline is not inlined}
 interface
 
@@ -712,6 +712,7 @@ end;
 
 procedure TIconThumbnailViewer.Clear;
 begin
+  SelectedIndex := -1;
   inherited;
   FLargestIconWidth := 0;
   FLargestIconHeight := 0;
@@ -1114,7 +1115,7 @@ var
   isHidden: Boolean;
 begin
   if SelectedIcon <> nil then
-    selectedIconFileName := SelectedIcon.FileName;;
+    selectedIconFileName := SelectedIcon.FileName;
   SelectedIndex := -1;  // this sets FSelectedIcon to nil.
   FIconFolders.Clear;
   FIconList.Clear;
@@ -1127,8 +1128,12 @@ begin
     TIconFolderList(FIconFolders).AddFolder(folder, isHidden);
     ReadIconFolder(AList[i]);
   end;
-  FilterIcons;
-  SelectIconInFile(selectedIconFileName);
+
+  if not FilterLocked then
+  begin
+    FilterIcons;
+    SelectIconInFile(selectedIconFileName);
+  end;
 end;
 
 { Looks for image files (*.png, *.bmp) in the given folder and adds them to

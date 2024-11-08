@@ -347,11 +347,14 @@ end;
 procedure TIconViewerFrame.ReadIconFolders(AList: TStrings);
 var
   sizeFilt, styleFilt: Integer;
+  selectedIconFileName: String = '';
 begin
   styleFilt := cmbFilterByStyle.ItemIndex;
   if styleFilt = -1 then styleFilt := 0;
   sizeFilt := cmbFilterBySize.ItemIndex;
   if sizeFilt = -1 then sizeFilt := 0;
+  if Assigned(IconViewer.SelectedIcon) then
+    selectedIconFileName := IconViewer.SelectedIcon.FileName;
 
   IconViewer.LockFilter;
   try
@@ -360,6 +363,7 @@ begin
     UpdateIconStyles(stylefilt);
   finally
     IconViewer.UnlockFilter;
+    IconViewer.SelectIconInFile(selectedIconFileName);;
   end;
 end;
 
