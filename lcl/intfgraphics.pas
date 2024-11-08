@@ -522,7 +522,8 @@ type
     property MaskMode: TLazReaderMaskMode read FMaskMode write FMaskMode;
     property UpdateDescription: Boolean read GetUpdateDescription write SetUpdateDescription;
   end;
-  
+
+
   { TLazReaderBMP }
 
   TLazReaderBMP = class(TLazReaderDIB)
@@ -531,6 +532,9 @@ type
   protected
     function  InternalCheck(Stream: TStream) : boolean; override;
     procedure InternalReadHead; override;
+    {$IF FPC_FullVersion < 30301}
+    class function InternalSize(Stream: TStream): TPoint; override;
+    {$IFEND}
   end;
 
   { TLazWriterBMP }
@@ -5085,6 +5089,34 @@ begin
   if FDataOffset <> 0
   then TheStream.Position := FDataOffset;
 end;
+
+{$IF FPC_FullVersion < 30301}
+class function TLazReaderBMP.InternalSize (Stream: TStream): TPoint;
+var
+  fileHdr: TBitmapFileHeader;
+  infoHdr: TBitmapInfoHeader;
+  n: Int64;
+  StartPos: Int64;
+begin
+  Result := Point(0, 0);
+
+  StartPos := Stream.Position;
+  try
+    n := Stream.Read(fileHdr, SizeOf(fileHdr));
+    if n <> SizeOf(fileHdr) then exit;
+    if {$IFDEF ENDIAN_BIG}swap(fileHdr.bfType){$ELSE}fileHdr.bfType{$ENDIF} <> BMmagic then exit;
+    n := Stream.Read(infoHdr, SizeOf(infoHdr));
+    if n <> SizeOf(infoHdr) then exit;
+    {$IFDEF ENDIAN_BIG}
+    Result := Point(swap(infoHdr.biWidth), swap(infoHdr.biHeight));
+    {$ELSE}
+    Result := Point(infoHdr.biWidth, infoHdr.biHeight);
+    {$ENDIF}
+  finally
+    Stream.Position := StartPos;
+  end;
+end;
+{$IFEND}
 
 { TLazWriterBMP }
 
