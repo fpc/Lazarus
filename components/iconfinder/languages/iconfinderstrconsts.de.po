@@ -9,14 +9,12 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.4.4\n"
+"X-Generator: Poedit 3.5\n"
 
 #: iconfinderstrconsts.rsfolders_add
-#, fuzzy
-#| msgid "Add..."
 msgctxt "iconfinderstrconsts.rsfolders_add"
 msgid "Add ..."
-msgstr "Neu..."
+msgstr "Neu ..."
 
 #: iconfinderstrconsts.rsfolders_confirmdeletefoldermsg
 msgctxt "iconfinderstrconsts.rsfolders_confirmdeletefoldermsg"
@@ -69,11 +67,9 @@ msgid "Enter/edit a keyword filter"
 msgstr "Filter nach Suchbegriffen eingeben/bearbeiten"
 
 #: iconfinderstrconsts.rsiconviewer_enterkeywordshere
-#, fuzzy
-#| msgid "Enter keywords here..."
 msgctxt "iconfinderstrconsts.rsiconviewer_enterkeywordshere"
 msgid "Enter keywords here"
-msgstr "Suchbegriffe hier eintragen..."
+msgstr "Suchbegriffe hier eintragen"
 
 #: iconfinderstrconsts.rsiconviewer_expressiontofilterbykeywordshint
 msgctxt "iconfinderstrconsts.rsiconviewer_expressiontofilterbykeywordshint"
@@ -96,8 +92,6 @@ msgid "Filter by icon style"
 msgstr "Nach Icon-Stil filtern"
 
 #: iconfinderstrconsts.rsiconviewer_filterbykeywordshint
-#, fuzzy
-#| msgid "Filters by keywords"
 msgctxt "iconfinderstrconsts.rsiconviewer_filterbykeywordshint"
 msgid "Filter by keywords"
 msgstr "Nach Suchbegriffen filtern"
@@ -106,6 +100,11 @@ msgstr "Nach Suchbegriffen filtern"
 msgctxt "iconfinderstrconsts.rsiconviewer_hideall"
 msgid "Hide all"
 msgstr "Alle verbergen"
+
+#: iconfinderstrconsts.rsiconviewer_iconcountinfo
+#, object-pascal-format
+msgid "%0:d icons (out of %1:d)"
+msgstr "%0:d Icons (von %1:d)"
 
 #: iconfinderstrconsts.rsiconviewer_keywordslbl
 msgctxt "iconfinderstrconsts.rsiconviewer_keywordslbl"
@@ -193,8 +192,6 @@ msgid "(any style)"
 msgstr "(beliebig)"
 
 #: iconfinderstrconsts.rsmetadata_caption
-#, fuzzy
-#| msgid "Edit Icon Metadata"
 msgctxt "iconfinderstrconsts.rsmetadata_caption"
 msgid "Icon Metadata Editor"
 msgstr "Icon-Metadaten bearbeiten"
@@ -228,4 +225,3 @@ msgstr "Außenlinie"
 msgctxt "iconfinderstrconsts.rsmetadata_style"
 msgid "Style"
 msgstr "Stil"
-

@@ -2,9 +2,9 @@ object IconFinderSettingsFrame: TIconFinderSettingsFrame
   Left = 0
   Height = 230
   Top = 0
-  Width = 372
+  Width = 433
   ClientHeight = 230
-  ClientWidth = 372
+  ClientWidth = 433
   ParentFont = False
   ParentShowHint = False
   ShowHint = True
@@ -15,7 +15,7 @@ object IconFinderSettingsFrame: TIconFinderSettingsFrame
     Left = 0
     Height = 22
     Top = 0
-    Width = 372
+    Width = 433
     AutoSize = True
     Caption = 'ToolBar'
     EdgeBorders = []

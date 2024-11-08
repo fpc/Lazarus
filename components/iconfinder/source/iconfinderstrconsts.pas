@@ -26,6 +26,7 @@ resourcestring
   RSIconViewer_StyleLbl = 'Style:';
   RSIconViewer_KeywordsLbl = 'Keywords:';
   RSIconViewer_ConfirmDeleteIconMsg = 'Do you really want to delete the selected icon from the library?';
+  RSIconViewer_IconCountInfo = '%0:d icons (out of %1:d)';
 
   // IconFinderMetadata
   RSMetadata_Caption = 'Icon Metadata Editor';
