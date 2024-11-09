@@ -13,7 +13,7 @@ unit IconThumbNails;
 
 {$mode ObjFPC}{$H+}
 {$define OVERLAY_ICONS}
-{.$define SPEED_TIMER}
+{$define SPEED_TIMER}
 {$WARN 6058 off : Call to subroutine "$1" marked as inline is not inlined}
 interface
 
@@ -1185,7 +1185,7 @@ var
   iconsNode, iconNode: TDOMNode;
   keywordsNode, keywordNode: TDOMNode;
   folder, fn: String;
-  i: Integer;
+  i, idx: Integer;
   w, h: Integer;
   style: TIconStyle;
   s: String;
@@ -1219,32 +1219,44 @@ begin
         begin
           s := iconNode.Attributes[i].NodeValue;
           case iconNode.Attributes[i].NodeName of
-            'filename': fn := s;
-            'width': w := StrToIntDef(s, 0);
-            'height': h := StrToIntDef(s, 0);
-            'style': style := StrToIconStyle(s);
+            'filename':
+              begin
+                fn := folder + s;
+                // Check existence of icon file fn
+                if not files.Find(fn, idx) then   // faster than FileExists(fn)
+                begin
+                  fn := '';
+                  break;
+                end;
+              end;
+            'width':
+              w := StrToIntDef(s, 0);
+            'height':
+              h := StrToIntDef(s, 0);
+            'style':
+              style := StrToIconStyle(s);
           end;
         end;
-      keywords := '';
-      keywordsNode := iconNode.FindNode('keywords');
-      if keywordsNode <> nil then
-      begin
-        keywordNode := keywordsNode.FindNode('keyword');
-        while keywordNode <> nil do
-        begin
-          s := keywordNode.TextContent;
-          keywords := keywords + ';' + s;
-          keywordNode := keywordNode.NextSibling;
-        end;
-      end;
-      if keywords <> '' then
-        System.Delete(keywords, 1, 1);
 
-      if (fn <> '') then
+      // ignore metadata entries for which the icon files do not exist.
+      if fn <> '' then
       begin
-        fn := folder + fn;
-        if FileExists(fn) then   // ignore metadata entries for which the icon files do not exist.
-          AddIcon(fn, keywords, style, w, h).Hidden := AHidden;
+        keywords := '';
+        keywordsNode := iconNode.FindNode('keywords');
+        if keywordsNode <> nil then
+        begin
+          keywordNode := keywordsNode.FindNode('keyword');
+          while keywordNode <> nil do
+          begin
+            s := keywordNode.TextContent;
+            keywords := keywords + ';' + s;
+            keywordNode := keywordNode.NextSibling;
+          end;
+        end;
+        if keywords <> '' then
+          System.Delete(keywords, 1, 1);
+
+        AddIcon(fn, keywords, style, w, h).Hidden := AHidden;
 
         // Delete the processed filename from the files list
         if files.Find(fn, i) then
