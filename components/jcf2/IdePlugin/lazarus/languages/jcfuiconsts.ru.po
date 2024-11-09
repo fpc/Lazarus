@@ -49,7 +49,7 @@ msgstr "Глобальные параметры ..."
 
 #: jcfuiconsts.format_remove_comments
 msgid "Remove comments in current editor window"
-msgstr ""
+msgstr "Удалить комментарии в текущей вкладке редактора"
 
 #: jcfuiconsts.format_settings_menu
 msgid "&Format Settings ..."
