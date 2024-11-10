@@ -6,8 +6,8 @@ interface
 
 uses
   FpDbgDwarf, FpDbgUtil, FpdMemoryTools, FpDbgInfo, TestHelperClasses,
-  {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, LazUTF8, LazClasses, DbgIntfBaseTypes, sysutils, fpcunit,
-  testregistry;
+  {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$ENDIF}, LazUTF8, LazClasses,
+  DbgIntfBaseTypes, LazDebuggerIntfFloatTypes, sysutils, fpcunit, testregistry;
 
 type
 
@@ -69,7 +69,7 @@ var
   i, j: Integer;
   TestBaseName: String;
   Data: QWord;
-  DataExt: Extended;
+  DataExt: TDbgExtended;
   DataDouble: Double;
   DataSingle: Single;
   MemValue: QWord;
@@ -77,7 +77,7 @@ var
   GotInt: Int64;
   GotUInt: QWord;
   GotAddr: TFpDbgMemLocation;
-  GotExt: Extended;
+  GotExt: TDbgExtended;
 
 
   procedure SetData(Aval:  QWord);
@@ -254,24 +254,24 @@ begin
 
   FCurrentTestName := 'Extended';
   DataExt := 1.7722;
-  GotRes := FDummyContext.ReadFloat(TargetLoc(TDbgPtr(@DataExt)), SizeVal(SizeOf(Extended)), GotExt);
+  GotRes := FDummyContext.ReadFloat(TargetLoc(TDbgPtr(@DataExt)), SizeVal(DBG_EXTENDED_SIZE), GotExt);
   AssertTrue(FCurrentTestName +  'Read OK', GotRes);
-  AssertEquals(FCurrentTestName + 'target not changed', 1.7722, DataExt);
-  AssertEquals(FCurrentTestName + 'Val', DataExt, GotExt);
+  AssertEquals(FCurrentTestName + 'target not changed', 1.7722, double(DataExt));
+  AssertEquals(FCurrentTestName + 'Val', double(DataExt), double(GotExt));
 
   FCurrentTestName := 'Double';
   DataDouble := 1.7722;
   GotRes := FDummyContext.ReadFloat(TargetLoc(TDbgPtr(@DataDouble)), SizeVal(SizeOf(Double)), GotExt);
   AssertTrue(FCurrentTestName +  'Read OK', GotRes);
   AssertEquals(FCurrentTestName + 'target not changed', 1.7722, DataDouble);
-  AssertEquals(FCurrentTestName + 'Val', DataDouble, GotExt);
+  AssertEquals(FCurrentTestName + 'Val', DataDouble, double(GotExt));
 
   FCurrentTestName := 'Single';
   DataSingle := 1.7722;
   GotRes := FDummyContext.ReadFloat(TargetLoc(TDbgPtr(@DataSingle)), SizeVal(SizeOf(Single)), GotExt);
   AssertTrue(FCurrentTestName +  'Read OK', GotRes);
   AssertEquals(FCurrentTestName + 'target not changed', 1.7722, DataSingle);
-  AssertEquals(FCurrentTestName + 'Val', DataSingle, GotExt);
+  AssertEquals(FCurrentTestName + 'Val', DataSingle, double(GotExt));
 
 
 end;

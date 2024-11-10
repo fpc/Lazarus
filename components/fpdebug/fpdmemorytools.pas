@@ -1494,11 +1494,6 @@ begin
     rdtEnum, rdtSet: ;
     rdtfloat:
       Result := IsByteSize(AConvData.SourceSize) and
-                ( (AConvData.SourceFullSize = AConvData.DestSize) or
-                  ( (AConvData.SourceFullSize = SizeOf(Real48)) and
-                    (AConvData.SourceSize.Size = SizeOf(Double))
-                  )
-                ) and
                 ( (AConvData.SourceSize.Size = DBG_EXTENDED_SIZE) or
                   (AConvData.SourceSize.Size = SizeOf(Extended)) or
                   (AConvData.SourceSize.Size = SizeOf(Double)) or
