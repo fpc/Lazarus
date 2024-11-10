@@ -312,6 +312,8 @@ type
     procedure CalcMemSize(Stats: TCTMemStats); override;
   end;
 
+function dbgs(Group: TPascalMethodGroup): string; overload;
+
 function CompareMethodHeaders(
   const Method1Name: string; Method1Group: TPascalMethodGroup; const Method1ResultType: string;
   const Method2Name: string; Method2Group: TPascalMethodGroup; const Method2ResultType: string): Integer; overload;
@@ -323,6 +325,11 @@ function SameMethodHeaders(const Method1Head: TPascalMethodHeader; const Method2
 function CompareCodeTreeNodeExtMethodHeaders(NodeData1, NodeData2: pointer): integer;
 
 implementation
+
+function dbgs(Group: TPascalMethodGroup): string;
+begin
+  str(Group,Result);
+end;
 
 function CompareMethodHeaders(const Method1Name: string;
   Method1Group: TPascalMethodGroup; const Method1ResultType: string;
@@ -2880,25 +2887,20 @@ end;
 
 function TPascalReaderTool.ExtractFuncResultType(ProcNode: TCodeTreeNode;
   Attr: TProcHeadAttributes): string;
+var
+  aNode: TCodeTreeNode;
 begin
   Result := '';
   if (ProcNode=nil) then exit;
   if ProcNode.Desc=ctnProcedure then
     ProcNode:=ProcNode.FirstChild;
-  if (ProcNode=nil) or(ProcNode.Desc<>ctnProcedureHead) then
+  if (ProcNode=nil) or (ProcNode.Desc<>ctnProcedureHead) then
     Exit;
-  MoveCursorToCleanPos(ProcNode.EndPos);
-  CurNode:=ProcNode;
-  ReadPriorAtom;
-  if CurPos.Flag<>cafSemicolon then
-    Exit;
-  ReadPriorAtom;
-  if CurPos.Flag<>cafWord then
-    Exit;
-  if phpInUpperCase in Attr then
-    Result := GetUpAtom
-  else
-    Result := GetAtom;
+  aNode:=ProcNode.LastChild;
+  if aNode=nil then exit;
+  if aNode.Desc in [ctnIdentifier,ctnSpecialize] then begin
+    Result:=ExtractNode(aNode,Attr);
+  end;
 end;
 
 function TPascalReaderTool.ExtractDefinitionName(DefinitionNode: TCodeTreeNode

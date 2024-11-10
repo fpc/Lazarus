@@ -1346,6 +1346,7 @@ function TPascalParserTool.KeyWordFuncClassMethod: boolean;
    class operator Inc(Rec: TRec1): TRec1;
    class operator Initialize(var Rec: TRec1);
    class operator Finalize(var Rec: TRec1);
+   class operator +(a,b:T):W; inline;
 
  proc specifiers without parameters:
    stdcall, virtual, abstract, dynamic, overload, override, cdecl, inline,
@@ -1407,7 +1408,7 @@ begin
   ReadNextAtom;
   if IsGeneric or (Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE]) then
     ReadGenericParamList(IsGeneric,true);
-  if (CurPos.Flag<>cafPoint) then begin
+  if (CurPos.Flag<>cafPoint) or (pphIsOperator in ParseAttr) then begin
     // read rest
     ReadTilProcedureHeadEnd(ParseAttr,HasForwardModifier);
   end else begin
@@ -1777,7 +1778,7 @@ function TPascalParserTool.ReadTilProcedureHeadEnd(
    procedure Intf.Method = ImplementingMethodName;
    function CommitUrlCacheEntry; // only Delphi
    procedure MacProcName(c: char; ...); external;
-   operator + (dp1: TPoint; dp2: TPoint) dps: TPoint;
+   operator + (dp1: TPoint; dp2: TPoint) dps: TPoint; inline;
    Add('Inc(Rec: TRec1): TRec1;
    generic function RandomFrom<T>(const AValues:array of T):T;
 

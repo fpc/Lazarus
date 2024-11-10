@@ -70,14 +70,14 @@ interface
 {$I codetools.inc}
 
 {off $DEFINE CTDEBUG}
-{$DEFINE VerboseCompletionAdds}
+{off $DEFINE VerboseCompletionAdds}
 {off $DEFINE VerboseUpdateProcBodySignatures}
 {off $DEFINE VerboseCompleteMethod}
 {off $DEFINE VerboseCreateMissingClassProcBodies}
 {off $DEFINE VerboseCompleteLocalVarAssign}
 {off $DEFINE VerboseCompleteEventAssign}
 {off $DEFINE EnableCodeCompleteTemplates}
-{$DEFINE VerboseGetPossibleInitsForVariable}
+{off $DEFINE VerboseGetPossibleInitsForVariable}
 {off $DEFINE VerboseGuessTypeOfIdentifier}
 
 uses
@@ -9417,7 +9417,7 @@ begin
       RaiseException(20170421201833,'oops, I lost your class');
     ProcNode:=FindProcNode(CursorNode,FJumpToProcHead,[phpInUpperCase,phpIgnoreForwards]);
     if ProcNode=nil then begin
-      debugln(['TCodeCompletionCodeTool.ApplyChangesAndJumpToFirstNewProc Proc="',FJumpToProcHead.Name,'"']);
+      debugln(['TCodeCompletionCodeTool.ApplyChangesAndJumpToFirstNewProc Proc="',FJumpToProcHead.Name,'":"',FJumpToProcHead.ResultType,'" ',dbgs(FJumpToProcHead.Group)]);
       RaiseException(20170421201835,ctsNewProcBodyNotFound);
     end;
     Result:=FindJumpPointInProcNode(ProcNode,NewPos,NewTopLine, BlockTopLine, BlockBottomLine);

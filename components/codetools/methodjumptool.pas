@@ -839,6 +839,7 @@ begin
               Txt:=CurProcName;
               Flags:=Ord(ExtractProcedureGroup(ANode));
               if TPascalMethodGroup(Flags)=mgClassOperator then
+                // for class operator the result type is part of the signature
                 ExtTxt4:=ExtractFuncResultType(ANode,Attr);
             end;
             Result.Add(NewNodeExt);
