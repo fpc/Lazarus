@@ -169,7 +169,9 @@ begin
     +'begin'+LineEnding
     +'  RequireDerivedFormResource:=True;'+LineEnding
     +'  Application.Scaled:=True;'+LineEnding
-    +'  Application.{%H-}MainFormOnTaskbar:=True;'+LineEnding
+    +'  {$PUSH}{$WARN 5044 OFF}'+LineEnding
+    +'  Application.MainFormOnTaskbar:=True;'+LineEnding
+    +'  {$POP}'+LineEnding
     +'  Application.Initialize;'+LineEnding
     +'  Application.Run;'+LineEnding
     +'end.'+LineEnding
