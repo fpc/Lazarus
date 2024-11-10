@@ -38,10 +38,12 @@ procedure TTestPascalParser.CreateExpr(t: string; ExpValid: Boolean;
   SkipExpValid: Boolean);
 var
   s: String;
-  ctx: TFpDbgLocationContext; // TFpDbgSimpleLocationContext
+  ctx: TFpDbgSimpleLocationContext;
   sc: TFpDbgSymbolScope;
+  mm: TFpDbgMemManager;
 begin
-  ctx := TFpDbgLocationContext.Create();
+  mm := TFpDbgMemManager.Create(nil, nil, nil, nil);
+  ctx := TFpDbgSimpleLocationContext.Create(mm, 0, 8, 0, 0);
   sc := TFpDbgSymbolScope.Create(ctx);
   FreeAndNil(CurrentTestExprObj);
   CurrentTestExprText := t;
