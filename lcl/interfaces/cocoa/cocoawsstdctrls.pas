@@ -2565,7 +2565,7 @@ begin
     Result := 0;
     Exit;
   end;
-  cb.HandleFrame := scroll;
+  cb.SetHandleFrame(scroll);
   scroll.callback := list.callback;
   scroll.setHasVerticalScroller(true);
   scroll.setHasHorizontalScroller(true);

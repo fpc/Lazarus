@@ -1517,21 +1517,18 @@ end;
 
 function TCocoaWidgetSet.IsWindow(handle: HWND): boolean;
 var
-  cbi : ICommonCallback;
-  obj : TObject;
+  cb: ICommonCallback;
 begin
-  if handle <> 0 then
-  begin
-    cbi := NSObject(handle).lclGetCallback;
-    Result := Assigned(cbi);
-    if not Result then Exit;
+  Result:= False;
 
-    obj := cbi.GetCallbackObject;
-    Result :=  (obj is TLCLCommonCallback)
-       and (HWND(TLCLCommonCallback(obj).HandleFrame)=handle);
-  end
-  else
-    Result := False;
+  if handle = 0 then
+    Exit;
+
+  cb:= NSObject(handle).lclGetCallback;
+  if NOT Assigned(cb) then
+    Exit;
+
+  Result:= ( HWND(cb.HandleFrame) = handle );
 end;
 
 function TCocoaWidgetSet.WindowFromPoint(Point: TPoint): HWND;
