@@ -82,6 +82,8 @@ type
 
     procedure InputClientInsertText(const utf8: string);
 
+    function HandleFrame: NSView;
+
     // properties
     property HasCaret: Boolean read GetHasCaret write SetHasCaret;
     property IsOpaque: Boolean read GetIsOpaque write SetIsOpaque;

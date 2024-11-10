@@ -45,6 +45,7 @@ type
     _isCocoaOnlyState: Boolean;
     _UTF8Character : array [0..7] of TUTF8Char;
     _UTF8Charcount : Integer;
+    _handleFrame: NSView; // HWND and "frame" (rectangle) of the a control
   private
     procedure send_UTF8KeyPress();
     procedure send_CN_CHAR_Message();
@@ -60,7 +61,6 @@ type
     procedure KeyEvPrepare(Event: NSEvent); virtual;
   public
     Owner: NSObject;
-    HandleFrame: NSView; // HWND and "frame" (rectangle) of the a control
     BlockCocoaUpDown: Boolean;
     BlockCocoaKeyBeep: Boolean;
     BlockCocoaMouseMove: Boolean;
@@ -112,6 +112,9 @@ type
     procedure RemoveTarget; virtual;
 
     procedure InputClientInsertText(const utf8: string);
+
+    function HandleFrame: NSView;
+    procedure SetHandleFrame( AHandleFrame: NSView );
 
     property HasCaret: Boolean read GetHasCaret write SetHasCaret;
     property Target: TWinControl read FTarget;
@@ -398,9 +401,9 @@ begin
   inherited Create;
   Owner := AOwner;
   if Assigned(AHandleFrame) then
-    HandleFrame := AHandleFrame
+    _handleFrame := AHandleFrame
   else if Owner.isKindOfClass(NSView) then
-    HandleFrame := NSView(AOwner);
+    _handleFrame := NSView(AOwner);
   FTarget := ATarget;
   FContext := nil;
   FHasCaret := False;
@@ -476,7 +479,7 @@ begin
   ContextMenuHandled := false;
   FillChar(MsgContext, SizeOf(MsgContext), #0);
   MsgContext.Msg := LM_CONTEXTMENU;
-  MsgContext.hWnd := HWND(HandleFrame);
+  MsgContext.hWnd := HWND(_handleFrame);
   MousePos := Event.locationInWindow;
   ScreenMousePos(MousePos);
   MsgContext.XPos := Round(MousePos.X);
@@ -1557,6 +1560,16 @@ begin
 
 end;
 
+function TLCLCommonCallback.HandleFrame: NSView;
+begin
+  Result:= _handleFrame;
+end;
+
+procedure TLCLCommonCallback.SetHandleFrame(AHandleFrame: NSView);
+begin
+  _handleFrame:= AHandleFrame;
+end;
+
 function TLCLCommonCallback.GetIsOpaque: Boolean;
 begin
   Result:= FIsOpaque;
@@ -2035,7 +2048,7 @@ begin
 
   hs := EmbedInManualScrollHost(sl);
   hs.callback := ctrl.callback;
-  lcl.HandleFrame:=hs;
+  lcl.SetHandleFrame(hs);
 
   ScrollViewSetBorderStyle(hs, TCustomControl(AWinControl).BorderStyle );
 
