@@ -26,6 +26,7 @@ type
     procedure TestCompleteMethodBody_GenericFunctionResultDelphi;
     procedure TestCompleteMethodBody_ParamGenericObjFPC;
     procedure TestCompleteMethodBody_ParamGenericDelphi;
+    procedure TestCompleteMethodBody_Record_ClassOperator;
     // class completion: sync method arg name to body
     procedure TestMethodUpdateArgName_GenericObjFPC;
     procedure TestMethodUpdateArgName_GenericDelphi;
@@ -679,6 +680,42 @@ begin
     'end;',
     '',
     'procedure TBird.DoIt2(i: TGenList<TGenObject<longint>>);',
+    'begin',
+    'end;',
+    '',
+    'end.']);
+end;
+
+procedure TTestCodeCompletion.TestCompleteMethodBody_Record_ClassOperator;
+begin
+  Test('TestCompleteMethodBody_Record_ClassOperator',
+    ['unit test1;',
+    '{$mode objfpc}',
+    '{$ModeSwitch advancedrecords}',
+    'interface',
+    'type',
+    '  TBird = record',
+    '    Foo: Integer;',
+    '    class operator + (a,b:TBird):TBird; inline;',
+    '  end;',
+    'implementation',
+    'end.'],
+    7,1,
+    ['unit test1;',
+    '{$mode objfpc}',
+    '{$ModeSwitch advancedrecords}',
+    'interface',
+    'type',
+    '',
+    '  { TBird }',
+    '',
+    '  TBird = record',
+    '    Foo: Integer;',
+    '    class operator + (a,b:TBird):TBird; inline;',
+    '  end;',
+    'implementation',
+    '',
+    'class operator TBird.+(a,b:TBird):TBird;',
     'begin',
     'end;',
     '',
