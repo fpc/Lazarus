@@ -139,11 +139,11 @@ var
     if ExpFoundLine = -1 then ExpFoundLine := ALine;
     r := Ctrl.CurrentProcess.DbgInfo.GetLineAddresses('StepOverPrg.pas',
       ALine, ResLst, AFindSibling, @FndLine, @FndFile, AMaxAfter);
-    AssertTrue(AName, r);
-    AssertTrue(AName, FndFile);
-    AssertEquals(AName, ExpFoundLine, FndLine);
-    AssertTrue(AName, Length(ResLst) > 0);
-    AssertTrue(AName, ResLst[0] <> 0);
+    TestTrue(AName, r);
+    TestTrue(AName, FndFile);
+    TestEquals(AName, ExpFoundLine, FndLine);
+    TestTrue(AName, Length(ResLst) > 0);
+    TestTrue(AName, ResLst[0] <> 0);
   end;
 
   procedure TestLineNotFound(ALine: Cardinal; AFindSibling: TGetLineAddrFindSibling;
@@ -157,7 +157,7 @@ var
     AName := 'Found '+IntToStr(ALine);
     r := Ctrl.CurrentProcess.DbgInfo.GetLineAddresses('StepOverPrg.pas',
       ALine, ResLst, AFindSibling, @FndLine, @FndFile, AMaxAfter);
-    AssertFalse(AName, r);
+    TestFalse(AName, r);
     //AssertTrue(AName, FndFile);
   end;
 
@@ -259,10 +259,12 @@ begin
 
     dbg.Stop;
   finally
-    Debugger.ClearDebuggerMonitors;
-    Debugger.FreeDebugger;
-
-    AssertTestErrors;
+    try
+      Debugger.ClearDebuggerMonitors;
+      Debugger.FreeDebugger;
+    finally
+      AssertTestErrors;
+    end;
   end;
 end;
 
@@ -278,7 +280,7 @@ begin
   Src := GetCommonSourceFor(AppDir + 'BreakPointPrg.pas');
   TestCompile(Src, ExeName);
 
-  AssertTrue('Start debugger', Debugger.StartDebugger(AppDir, ExeName));
+  TestTrue('Start debugger', Debugger.StartDebugger(AppDir, ExeName));
   dbg := Debugger.LazDebugger;
 
   try
