@@ -2124,7 +2124,12 @@ begin
           FPartialReadResultLenght := SourceReadSize;
 
         if SourceReadSize > ConvData.SourceSize.Size then
-          SourceReadSize := ConvData.SourceSize.Size;
+          SourceReadSize := ConvData.SourceSize.Size
+        else
+        if SourceReadSize <= ConvData.SourceSize.Size then begin
+          ConvData.SourceSize         := SizeVal(SourceReadSize);
+          ConvData.SourceFullSize     := SourceReadSize;
+        end;
 
         ReadData := @TmpVal;
 
