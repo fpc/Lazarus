@@ -63,61 +63,41 @@
         <PackageName Value="FCL"/>
       </Item5>
     </RequiredPackages>
-    <Units Count="11">
+    <Units Count="7">
       <Unit0>
         <Filename Value="FpTest.lpr"/>
         <IsPartOfProject Value="True"/>
       </Unit0>
       <Unit1>
-        <Filename Value="testtypeinfo.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="TestTypeInfo"/>
-      </Unit1>
-      <Unit2>
         <Filename Value="testhelperclasses.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestHelperClasses"/>
-      </Unit2>
-      <Unit3>
-        <Filename Value="testdwarfsetup1.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="TestDwarfSetup1"/>
-      </Unit3>
-      <Unit4>
-        <Filename Value="testdwarfsetupbasic.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="TestDwarfSetupBasic"/>
-      </Unit4>
-      <Unit5>
+      </Unit1>
+      <Unit2>
         <Filename Value="testdwarfvarious.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestDwarfVarious"/>
-      </Unit5>
-      <Unit6>
-        <Filename Value="testdwarfsetuparray.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="TestDwarfSetupArray"/>
-      </Unit6>
-      <Unit7>
+      </Unit2>
+      <Unit3>
         <Filename Value="testmemmanager.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestMemManager"/>
-      </Unit7>
-      <Unit8>
+      </Unit3>
+      <Unit4>
         <Filename Value="testpascalparser.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestPascalParser"/>
-      </Unit8>
-      <Unit9>
+      </Unit4>
+      <Unit5>
         <Filename Value="testerrorhandler.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestErrorHandler"/>
-      </Unit9>
-      <Unit10>
+      </Unit5>
+      <Unit6>
         <Filename Value="testlinemap.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestLineMap"/>
-      </Unit10>
+      </Unit6>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
