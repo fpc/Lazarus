@@ -304,6 +304,7 @@ function Gtk3DefaultContext: TGtk3DeviceContext;
 function Gtk3ScreenContext: TGtk3DeviceContext;
 
 function ReplaceAmpersandsWithUnderscores(const S: string): string; inline;
+function ReplaceUnderscoresWithAmpersands(const S: string): string; inline;
 
 implementation
 
@@ -2409,12 +2410,50 @@ begin
 end;
 
 
-//various routines for text , copied from gtk2.
+//various routines for text
+
+// LCL denotes accelerator keys by '&', while Gtk denotes them with '_'.
+// LCL allows to show literal '&' by escaping (doubling) it.
+// Gtk allows to show literal '_' by escaping (doubling) it.
+// As the situation for LCL and Gtk is symmetric, conversion is made by generic function.
+function TransformAmpersandsAndUnderscores(const S: string; const FromChar, ToChar: char): string;
+var
+  i: Integer;
+begin
+  Result := '';
+  i := 1;
+  while i <= Length(S) do
+  begin
+    if S[i] = ToChar then
+      Result := Result + ToChar + ToChar
+    else
+      if S[i] = FromChar then
+        if i < Length(S) then
+        begin
+          if S[i + 1] = FromChar then
+          begin
+            Result := Result + FromChar;
+            inc(i);
+          end
+          else
+            Result := Result + ToChar;
+        end
+        else
+          Result := Result + FromChar
+      else
+        Result := Result + S[i];
+    inc(i);
+  end;
+end;
 
 function ReplaceAmpersandsWithUnderscores(const S: string): string; inline;
 begin
-  Result := StringReplace(S, '_', '__', [rfReplaceAll]);
-  Result := StringReplace(Result, '&', '_', [rfReplaceAll]);
+  Result := TransformAmpersandsAndUnderscores(S, '&', '_');
+end;
+
+function ReplaceUnderscoresWithAmpersands(const S: string): string; inline;
+begin
+  Result := TransformAmpersandsAndUnderscores(S, '_', '&');
 end;
 
 {-------------------------------------------------------------------------------

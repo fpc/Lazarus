@@ -3423,7 +3423,7 @@ begin
   begin
     if PGtkFrame(Widget)^.get_label_widget = nil then
       exit;
-    Result := PGtkFrame(Widget)^.get_label;
+    Result := ReplaceUnderscoresWithAmpersands(PGtkFrame(Widget)^.get_label);
   end;
 end;
 
@@ -3438,7 +3438,7 @@ begin
     begin
       if PGtkFrame(Widget)^.get_label_widget = nil then
         PGtkFrame(Widget)^.set_label_widget(TGtkLabel.new(''));
-      PGtkFrame(Widget)^.set_label(PgChar(AValue));
+      PGtkFrame(Widget)^.set_label(PgChar(ReplaceAmpersandsWithUnderscores(AValue)));
     end;
   end;
 end;
@@ -7029,7 +7029,7 @@ end;
 function TGtk3Button.getText: String;
 begin
   if IsWidgetOK then
-    Result := PGtkButton(FWidget)^.get_label
+    Result := ReplaceUnderscoresWithAmpersands(PGtkButton(FWidget)^.get_label())
   else
     Result := '';
 end;
