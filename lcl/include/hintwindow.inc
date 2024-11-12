@@ -241,6 +241,8 @@ procedure THintWindow.ActivateHint(const AHint: String);
 begin
   if FActivating then exit;
 
+  AdjustBoundsForMonitor;
+
   if Visible and (Caption=AHint)
   and EqualRect(FHintRect, BoundsRect) then
   begin
@@ -263,7 +265,6 @@ end;
 procedure THintWindow.ActivateHint(ARect: TRect; const AHint: String);
 begin
   HintRect := ARect;
-  AdjustBoundsForMonitor;
   ActivateHint(AHint);
 end;
 
