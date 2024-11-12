@@ -56,7 +56,7 @@
     </i18n>
     <RequiredPkgs Count="2">
       <Item1>
-        <PackageName Value="LazControlDsgn"/>
+        <PackageName Value="LazControls"/>
       </Item1>
       <Item2>
         <PackageName Value="LCL"/>
