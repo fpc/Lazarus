@@ -257,7 +257,7 @@ begin
   end;
 
   LWidth  := FDesignForm.Width  + 2 * ResizeControl.SizerGripSize;
-  LHeight := FDesignForm.Height + 2 * ResizeControl.SizerGripSize;
+  LHeight := FDesignForm.Height + 2 * ResizeControl.SizerGripSize + ResizeControl.FakeMenu.Height;
   {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TResizer.AdjustResizer Resizer Width:', DbgS(LWidth), ' Height:', DbgS(LHeight)); {$ENDIF}
 
   FPostponedAdjustResizeControl := True;
