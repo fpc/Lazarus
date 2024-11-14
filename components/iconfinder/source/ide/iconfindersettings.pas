@@ -76,6 +76,7 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    function Check: Boolean; override;
     function GetTitle: String; override;
     procedure ReadSettings({%H-}AOptions: TAbstractIDEOptions); override;
     procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
@@ -172,6 +173,11 @@ var
 begin
   P := ClientToScreen(Point(Left + (Width - AForm.Width) div 2, Top + (Height - AForm.Height) div 2));
   AForm.SetBounds(P.X, P.Y, AForm.Width, AForm.Height);
+end;
+
+function TIconFinderSettingsFrame.Check: Boolean;
+begin
+  Result := not FViewer.cmbFilterByKeywords.Focused;
 end;
 
 procedure TIconFinderSettingsFrame.EditFolders;
