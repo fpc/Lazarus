@@ -732,7 +732,7 @@ values.
 </p>
 </descr>
 <seealso>
-<link id="#lcl.graphics.TCustomBitmap.CreateIntfImage">TCustomBitmap.CreateIntfImage</link>
+<link id="#lcl.graphics.TRasterImage.CreateIntfImage">TRasterImage.CreateIntfImage</link>
 <link id="#lcl.graphics.TRasterImage.LoadFromIntfImage">TRasterImage.LoadFromIntfImage</link>
 <link id="#lcl.lazcanvas.TLazCanvas">TLazCanvas</link>
 <link id="#lcl.intfgraphics.TLazIntfImage">TLazIntfImage</link>
