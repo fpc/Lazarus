@@ -10091,21 +10091,23 @@ Shows the hint window with the specified hint text.
 </short>
 <descr>
 <p>
-<var>ActivateHint</var> is an overloaded procedure used to position and display 
-the Hint text specified in <var>AHint</var> in a pop-up window. An overloaded 
-variant allows the display area for the hint window to be specified in the 
-<var>ARect</var> argument.
-</p>
-<p>
-ActivateHint ensures that the display rectangle for the hint window fits within 
-the work area for the monitor where the hint window is displayed. Values in 
-HintRect are adjusted as needed to position the window before being applied to 
-the bounds for the hint window when the window becomes visible.
+<var>ActivateHint</var> is an overloaded procedure used to display a pop-up 
+hint window with the text specified in <var>AHint</var>. ActivateSub is called 
+to set the bounds for the hint window to the values in HintRect, display the 
+hint window, and enable its auto-hide timer.
 </p>
 <remark>
-No actions are performed in the method if <var>ActivateHint</var> has been 
-previously called with the same hint text and display rectangle.
+No actions are performed in the method if ActivateHint has been previously 
+called with the same hint text (Caption) and display area in HintRect.
 </remark>
+<p>
+An overloaded variant allows the display area for the hint window to be 
+specified using its <var>ARect</var> argument. This variant updates HintRect to 
+the argument value and ensures that the display rectangle for the hint window 
+fits within the work area for the monitor where the hint window is located. 
+Member values in HintRect are adjusted as needed to position the window before 
+it becomes Visible.
+</p>
 <p>
 ActivateHint is used in the implementation of methods like ActivateWithBounds 
 and ActivateHintData.
@@ -10115,7 +10117,7 @@ Use CalcHintRect to get the display rectangle for a hint window with a
 specified width, hint text, or other associated hint data.
 </p>
 <p>
-For example:
+Example usage:
 </p>
 <code>
 HintWindow := THintWindow.Create(nil);
@@ -10140,14 +10142,20 @@ HintWindow.ActivateHint(Rect,'This is the hint');
 </element>
 
 <element name="THintWindow.ActivateWithBounds">
-<short>Sets the bounds in HintRect and activates the hint window.</short>
+<short>
+Sets the bounds in HintRect and activates the hint window.
+</short>
 <descr>
 <p>
-<var>ActivateWithBounds</var> is a procedure used to update the location and 
-text for the hint window. ActivateWithBounds sets the value in 
-<var>HintRect</var> to the value in the <var>ARect</var> argument. 
-ActivateWithBounds calls <var>ActivateHint</var> using the value in 
-<var>AHint</var> as the text displayed in the hint window.
+<var>ActivateWithBounds</var> is a procedure used to display a hint window 
+without adjusting its position or size using the private AdjustBoundsForMonitor 
+method. ActivateWithBounds sets the value in <var>HintRect</var> to the value 
+in the <var>ARect</var> argument. ActivateWithBounds calls ActivateHint using 
+the value in <var>AHint</var> as the text displayed in the hint window.
+</p>
+<p>
+ActivateWithBounds is used in controls (like TSynEdit) where the bounds for the 
+hint window use predetermined screen coordinates.
 </p>
 </descr>
 <seealso>
@@ -10164,24 +10172,31 @@ ActivateWithBounds calls <var>ActivateHint</var> using the value in
 
 <element name="THintWindow.ActivateHintData">
 <short>
-An extended version of ActivateHint with additional data used for the hint 
+An alternate version of ActivateHint with additional data used for the hint 
 display.
 </short>
 <descr>
 <p>
-<var>ActivateHintData</var> is an extended version of 
-<var>ActivateHint</var>. It provides the additional <var>AData</var> argument 
-which contains a pointer to values which can be used to construct the text 
-displayed in the hint window.
+<var>ActivateHintData</var> is an alternate version of <var>ActivateHint</var>. 
+It provides the additional <var>AData</var> argument which contains a pointer 
+to values which can be used to construct the text displayed in the hint window.
 </p>
 <p>
-The implementation in <var>THintWindow</var> does not use the values in 
-<var>AData</var>. The method must be overridden in a descendent class to use 
-the additional hint data in <var>AData</var>.
+ActivateHintData stores the value in ARect to the HintRect for the hint window. 
+It ensures that the display rectangle fits within the work area for the monitor 
+where the hint window is displayed. Values in HintRect are adjusted as needed 
+to position and size the window before the hint window becomes visible. 
+ActivateHint is called to display the window with the specified hint text.
 </p>
+<remark>
+The ActivateHintData implementation in <var>THintWindow</var> does not use the 
+value in <var>AData</var>. The method must be overridden in a descendent class 
+to use the additional hint data in the <var>AData</var> argument.
+</remark>
 </descr>
 <seealso>
 <link id="THintWindow.ActivateHint"/>
+<link id="THintWindow.HintRect"/>
 </seealso>
 </element>
 <element name="THintWindow.ActivateHintData.ARect">
@@ -10195,15 +10210,48 @@ the additional hint data in <var>AData</var>.
 </element>
 
 <element name="THintWindow.CalcHintRect">
-<short>Determines the rectangle required for the hint display.</short>
+<short>
+Determines the display rectangle needed the specified hint text.
+</short>
 <descr>
 <p>
-CalcHintRect determines the display rectangle required for the hint display. 
-CalcHintRect uses the larger of the values in the length of the hint text, 
-and the width of the hint window.
+CalcHintRect is a TRect function used to determine the display rectangle 
+required for the hint window.
 </p>
 <p>
-For example:
+<var>MaxWidth</var> indicates the maximum width for the hint window (in pixels) 
+after hint borders and spacing are applied. If MaxWidth is 0 (zero) or a 
+negative number, the width for the Monitor where the Top and Left coordinates 
+are located is used. The value excludes any space needed for borders and 
+spacing on the hint window.
+</p>
+<p>
+<var>AHint</var> contains the hint text displayed in the Window.
+</p>
+<p>
+<var>AData</var> is a Pointer to additional data used to construct the hint 
+text displayed in the window. Please note that AData is not used in the current 
+implementation. An overridden ActivateHintData method (in a descendent class) 
+can be used for the purpose though.
+</p>
+<p>
+The return value is a TRect instance which contains the Top, Left, Right, and 
+Bottom screen coordinates for the client area in the hint window. An empty 
+rectangle (0, 0, 0, 0) is returned when AHint is an empty string ('').
+</p>
+<p>
+CalcHintRect automatically scales the hint window when Scaled is enabled for 
+both the Application and the form instance, and when PixelsPerInch in the hint 
+window does not match the PixelsPerInch capability for the target Monitor. 
+The width for the text in AHint is calculated using the hint window font, and 
+the Right and Bottom members in the return value are updated accordingly.
+</p>
+<p>
+Use the ActivateHint method to display the hint window using the coordinates in 
+the return value.
+</p>
+<p>
+Example usage:
 </p>
 <code>
 HintWindow := THintWindow.Create(nil);
@@ -10211,19 +10259,36 @@ Rect := HintWindow.CalcHintRect(0,'This is the hint', Nil);
 HintWindow.ActivateHint(Rect,'This is the hint');
 </code>
 </descr>
-<seealso/>
+<seealso>
+<link id="THintWindow.ActivateSub"/>
+<link id="THintWindow.ActivateHint"/>
+<link id="TApplication.Scaled"/>
+<link id="TCustomDesignControl.Scaled"/>
+<link id="Application"/>
+<link id="TScreen.MonitorFromPoint"/>
+<link id="TScreen.Monitors"/>
+<link id="Screen"/>
+</seealso>
 </element>
 <element name="THintWindow.CalcHintRect.Result">
 <short>Display area needed for the hint display.</short>
 </element>
 <element name="THintWindow.CalcHintRect.MaxWidth">
-<short>Greater than zero, otherwise the full monitor width is used.</short>
+<short>
+Maximum width for the hint display when greater than zero, otherwise the full 
+monitor width is used.
+</short>
 </element>
 <element name="THintWindow.CalcHintRect.AHint">
-<short>Hint text used to derive the display area.</short>
+<short>
+Hint text used to calculate the display area.
+</short>
 </element>
 <element name="THintWindow.CalcHintRect.AData">
-<short>Pointer to additional data used to construct the hint text.</short>
+<short>
+Pointer to additional data used to construct the hint text. Mot used in the 
+method.
+</short>
 </element>
 
 <element name="THintWindow.OffsetHintRect">
