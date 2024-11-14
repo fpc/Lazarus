@@ -630,8 +630,7 @@ begin
         if (APopupParent <> nil) then
         begin
           Widget.setParent(TQtWidget(APopupParent.Handle).Widget);
-          {use direct X11 call instead of QtTool flag.issue #29253}
-          SetTransientForHint(Widget.Widget, TQtWidget(APopupParent.Handle).Widget);
+          Widget.setWindowFlags(Widget.windowFlags or QtDialog); // issue #41241
         end;
       end;
       {$ENDIF}
