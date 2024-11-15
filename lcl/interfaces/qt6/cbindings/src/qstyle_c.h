@@ -1,5 +1,5 @@
 //******************************************************************************
-//  Copyright (c) 2005-2013 by Jan Van hijfte
+//  Copyright (c) 2005-2024 by Jan Van hijfte, Željan Rikalo
 //
 //  See the included file COPYING.TXT for details about the copyright.
 //
@@ -46,5 +46,6 @@ C_EXPORT void QStyle_alignedRect(PRect retval, Qt::LayoutDirection direction, un
 C_EXPORT int QStyle_layoutSpacing(QStyleH handle, QSizePolicy::ControlType control1, QSizePolicy::ControlType control2, Qt::Orientation orientation, const QStyleOptionH option, const QWidgetH widget);
 C_EXPORT int QStyle_combinedLayoutSpacing(QStyleH handle, unsigned int controls1, unsigned int controls2, Qt::Orientation orientation, QStyleOptionH option, QWidgetH widget);
 C_EXPORT const QStyleH QStyle_proxy(QStyleH handle);
+C_EXPORT void QStyle_name(QStyleH handle, PWideString retval);
 
 #endif

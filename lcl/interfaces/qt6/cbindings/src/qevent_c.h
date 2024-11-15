@@ -194,6 +194,7 @@ C_EXPORT int QKeyEvent_count(QKeyEventH handle);
 C_EXPORT quint32 QKeyEvent_nativeScanCode(QKeyEventH handle);
 C_EXPORT quint32 QKeyEvent_nativeVirtualKey(QKeyEventH handle);
 C_EXPORT quint32 QKeyEvent_nativeModifiers(QKeyEventH handle);
+C_EXPORT void QKeyEvent_keyCombination(QKeyEventH handle, QKeyCombinationH retval);
 C_EXPORT QFocusEventH QFocusEvent_Create(QEvent::Type type, Qt::FocusReason reason);
 C_EXPORT void QFocusEvent_Destroy(QFocusEventH handle);
 C_EXPORT bool QFocusEvent_gotFocus(QFocusEventH handle);

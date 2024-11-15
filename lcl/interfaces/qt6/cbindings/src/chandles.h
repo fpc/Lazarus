@@ -43,6 +43,8 @@ typedef struct QWidget__ { PTRINT dummy; } *QWidgetH;
 typedef struct QLCLOpenGLWidget__ { PTRINT dummy; } *QLCLOpenGLWidgetH;
 typedef struct QRadialGradient__ { PTRINT dummy; } *QRadialGradientH;
 typedef struct QStyle__ { PTRINT dummy; } *QStyleH;
+typedef struct QCommonStyle__ { PTRINT dummy; } *QCommonStyleH;
+typedef struct QLCLProxyStyle__ { PTRINT dummy; } *QLCLProxyStyleH;
 typedef struct QFontComboBox_hook__ { PTRINT dummy; } *QFontComboBox_hookH;
 typedef struct QWhatsThisClickedEvent__ { PTRINT dummy; } *QWhatsThisClickedEventH;
 typedef struct QSwipeGesture__ { PTRINT dummy; } *QSwipeGestureH;
@@ -125,6 +127,7 @@ typedef struct QPrinter__ { PTRINT dummy; } *QPrinterH;
 
 typedef struct QLCLMessageEvent__ { PTRINT dummy; } *QLCLMessageEventH;
 typedef struct QKeySequence__ { PTRINT dummy; } *QKeySequenceH;
+typedef struct QKeyCombination__ { PTRINT dummy; } *QKeyCombinationH;
 typedef struct QToolBar_hook__ { PTRINT dummy; } *QToolBar_hookH;
 typedef struct QStyleOptionComplex__ { PTRINT dummy; } *QStyleOptionComplexH;
 
@@ -274,6 +277,7 @@ typedef struct QDragMoveEvent__ { PTRINT dummy; } *QDragMoveEventH;
 typedef struct QTabWidget__ { PTRINT dummy; } *QTabWidgetH;
 typedef struct QTableWidgetSelectionRange__ { PTRINT dummy; } *QTableWidgetSelectionRangeH;
 typedef struct QBrush__ { PTRINT dummy; } *QBrushH;
+typedef struct QInputMethod_hook__ { PTRINT dummy; } *QInputMethod_hookH;
 typedef struct QInputMethod__ { PTRINT dummy; } *QInputMethodH;
 typedef struct QIconEngine__ { PTRINT dummy; } *QIconEngineH;
 typedef struct QSplitter__ { PTRINT dummy; } *QSplitterH;

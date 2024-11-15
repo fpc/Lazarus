@@ -372,6 +372,11 @@ qreal QFontMetricsF_horizontalAdvance2(QFontMetricsFH handle, PWideChar AnonPara
 	return (qreal) ((QFontMetricsF *)handle)->horizontalAdvance(*(QChar *)AnonParam1);
 }
 
+qreal QFontMetricsF_horizontalAdvance3(QFontMetricsFH handle, const QStringH text, int len)
+{
+  return (qreal) ((QFontMetricsF *)handle)->horizontalAdvance(*(const QString *)text, len);
+}
+
 void QFontMetricsF_boundingRect(QFontMetricsFH handle, QRectFH retval, PWideString string)
 {
 	QString t_string;
@@ -412,11 +417,6 @@ void QFontMetricsF_elidedText(QFontMetricsFH handle, PWideString retval, PWideSt
 	copyPWideStringToQString(text, t_text);
 	t_retval = ((QFontMetricsF *)handle)->elidedText(t_text, mode, width, flags);
 	copyQStringToPWideString(t_retval, retval);
-}
-
-int QFontMetricsF_horizontalAdvance3(QFontMetricsFH handle, const QStringH text, int len)
-{
-  return (int) ((QFontMetricsF *)handle)->horizontalAdvance(*(const QString *)text, len);
 }
 
 void QFontMetricsF_boundingRect5(QFontMetricsFH handle, QRectFH retval, const QStringH text)
