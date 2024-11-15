@@ -8934,7 +8934,7 @@ function QFontMetricsF_overlinePos(handle: QFontMetricsFH): qreal; cdecl; extern
 function QFontMetricsF_strikeOutPos(handle: QFontMetricsFH): qreal; cdecl; external Qt6PasLib name 'QFontMetricsF_strikeOutPos';
 function QFontMetricsF_lineWidth(handle: QFontMetricsFH): qreal; cdecl; external Qt6PasLib name 'QFontMetricsF_lineWidth';
 
-function QFontMetricsF_horizontalAdvance(handle: QFontMetricsH; AnonParam1: QStringH; len: Integer = -1): integer; cdecl; external Qt6PasLib name 'QFontMetricsF_horizontalAdvance3';
+//function QFontMetricsF_horizontalAdvance(handle: QFontMetricsH; AnonParam1: QStringH; len: Integer = -1): integer; cdecl; external Qt6PasLib name 'QFontMetricsF_horizontalAdvance3';
 procedure QFontMetricsF_boundingRect(handle: QFontMetricsFH; retval: QRectFH; _string: QStringH); cdecl; external Qt6PasLib name 'QFontMetricsF_boundingRect5';
 procedure QFontMetricsF_boundingRect(handle: QFontMetricsFH; retval: QRectFH; r: QRectFH; flags: Integer; _string: QStringH; tabstops: Integer = 0; tabarray: PInteger = nil); cdecl; external Qt6PasLib name 'QFontMetricsF_boundingRect6';
 procedure QFontMetricsF_size(handle: QFontMetricsFH; retval: QSizeFH; flags: Integer; str: QStringH; tabstops: Integer = 0; tabarray: PInteger = nil); cdecl; external Qt6PasLib name 'QFontMetricsF_size2';
