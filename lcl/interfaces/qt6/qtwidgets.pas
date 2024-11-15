@@ -551,10 +551,12 @@ type
   private
     FClickedHook: QAbstractButton_hookH;
     FToggledHook: QAbstractButton_hookH;
+    procedure PushButtonUnblock(Data: PtrInt);
   protected
     function CreateWidget(const AParams: TCreateParams): QWidgetH; override;
   public
     procedure preferredSize(var PreferredWidth, PreferredHeight: integer; {%H-}WithThemeSpace: Boolean); override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
   public
     procedure SetDefault(const ADefault: Boolean);
     procedure AttachEvents; override;
@@ -6197,6 +6199,30 @@ begin
     Size := AutoSizeButtonFromStyle(Size);
   PreferredWidth := Size.cx;
   PreferredHeight := Size.cy;
+end;
+
+procedure TQtPushButton.PushButtonUnblock(Data: PtrInt);
+begin
+  QObject_blockSignals(QObjectH(Data), False);
+end;
+
+function TQtPushButton.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
+  cdecl;
+begin
+  Result := False;
+  case QEvent_type(Event) of
+    QEventMouseButtonRelease:
+      begin
+        Result := SlotMouse(Sender, Event);
+        if not QWidget_hasFocus(Widget) and (QMouseEvent_button(QMouseEventH(Event)) = QtLeftButton) then
+        begin
+          QObject_blockSignals(Sender, True);
+          Application.QueueAsyncCall(@PushButtonUnblock, PtrInt(Sender));
+        end;
+      end;
+    else
+      Result := inherited EventFilter(Sender, Event);
+  end;
 end;
 
 procedure TQtPushButton.SetDefault(const ADefault: Boolean);
