@@ -1060,14 +1060,14 @@ begin
           gtk_editable_get_selection_bounds(PGtkEditable(Widget),@AStart, @AEnd);
           Info^.CursorPos := Min(AStart, AEnd);
           Info^.SelLength := Abs(AEnd - AStart);
-          // Copy text to X-clipboard (paste = middle mouse button).
-          p := gtk_editable_get_chars(PGtkEditable(Widget), AStart, AEnd);
-          if AStart <> AEnd then
-            gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY), p, -1);
-          g_free(p);
-          // Show the text properly when tabbing between controls.
-          gtk_editable_select_region(PGtkEditable(Widget), 0, 0);
         end;
+        // Copy text to X-clipboard (paste = middle mouse button).
+        p := gtk_editable_get_chars(PGtkEditable(Widget), AStart, AEnd);
+        if AStart <> AEnd then
+          gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY), p, -1);
+        g_free(p);
+        // Show the text properly when tabbing between controls.
+        gtk_editable_select_region(PGtkEditable(Widget), 0, 0);
       end;
     end;
   end;
