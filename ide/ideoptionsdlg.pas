@@ -366,11 +366,6 @@ begin
     CancelButtonClick(Sender);
     Key := 0;
   end
-  else if (Key = VK_RETURN) and (Shift = [ssCtrl]) then
-  begin
-    OkButtonClick(Sender);
-    Key := 0;
-  end
   else if (Key = VK_RETURN) and (Shift = [ssShift]) then
   begin
     ApplyButtonClick(Sender);

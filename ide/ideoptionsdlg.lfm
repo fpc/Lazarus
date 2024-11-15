@@ -24,7 +24,7 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
     BorderSpacing.Bottom = 6
     BorderSpacing.Around = 0
     OKButton.Name = 'OKButton'
-    OKButton.Hint = '[Ctrl+Enter]'
+    OKButton.Hint = '[Enter]'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
     HelpButton.Hint = '[F1]'
