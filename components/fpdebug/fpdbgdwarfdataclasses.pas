@@ -44,7 +44,7 @@ unit FpDbgDwarfDataClasses;
 interface
 
 uses
-  Classes, Types, SysUtils, Contnrs, Math, fgl,
+  Classes, Types, SysUtils, Contnrs, Math, fgl, Generics.Collections,
   // LazUtils
   Maps, LazClasses, LazFileUtils, LazUTF8, LazCollections,
   {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif},
@@ -808,7 +808,7 @@ type
     property KnownNameHashes: PKnownNameHashesArray read GetKnownNameHashes; // Only for TOP-LEVEL entries
   end;
 
-  TLineNumberFileMap = specialize TFPGMap<AnsiString, PDWarfLineMap>;
+  TLineNumberFileMap = specialize TDictionary<AnsiString, PDWarfLineMap>;
 
   { TFpDwarfInfo }
 
@@ -3852,13 +3852,11 @@ end;
 destructor TFpDwarfInfo.Destroy;
   procedure FreeLineNumberMap;
   var
-    n: Integer;
     m: PDWarfLineMap;
   begin
     if FLineNumberMap = nil then
       exit;
-    for n := 0 to FLineNumberMap.Count - 1 do begin
-      m := FLineNumberMap.Data[n];
+    for m in FLineNumberMap.Values do begin
       m^.Free;
       Dispose(m);
     end;
@@ -4147,29 +4145,10 @@ begin
 end;
 
 function TFpDwarfInfo.GetLineAddressMap(const AFileName: String): PDWarfLineMap;
-
-
-  function FindIndex: Integer;
-  var
-    Name: String;
-  begin
-    // try fullname first
-    Result := FLineNumberMap.IndexOf(AFileName);
-    if Result <> -1 then Exit;
-
-    Name := ExtractFileName(AFileName);
-    Result := FLineNumberMap.IndexOf(Name);
-    if Result <> -1 then Exit;
-
-    for Result := 0 to FLineNumberMap.Count - 1 do
-      if AnsiCompareText(Name, ExtractFileName(FLineNumberMap.Keys[Result])) = 0 then
-        Exit;
-    Result := -1;
-  end;
-
 var
-  n, idx: Integer;
+  n: Integer;
   CU: TDwarfCompilationUnit;
+  BaseName, k: String;
 begin
   Result := nil;
   if FLineNumberMap = nil then Exit;
@@ -4186,10 +4165,21 @@ begin
     FLineNumberMapDone := True;
   end;
 
-  idx := FindIndex;
-  if idx = -1 then Exit;
+  if FLineNumberMap.TryGetValue(AFileName, Result) then
+    exit;
 
-  Result := FLineNumberMap.Data[idx];
+  BaseName := ExtractFileName(AFileName);
+  if FLineNumberMap.TryGetValue(BaseName, Result) then
+    exit;
+
+  for k in FLineNumberMap.Keys do begin
+    if AnsiCompareText(BaseName, ExtractFileName(k)) = 0 then begin
+      Result := FLineNumberMap[k];
+      Exit;
+    end;
+  end;
+
+  Result := nil;
 end;
 
 procedure TFpDwarfInfo.LoadCallFrameInstructions;
@@ -5019,7 +5009,6 @@ procedure TDwarfCompilationUnit.BuildLineInfo(AAddressInfo: PDwarfAddressInfo; A
 var
   Iter: TMapIterator;
   Info, NextInfo: PDwarfAddressInfo;
-  idx: Integer;
   LineMap: PDWarfLineMap;
   Line: Cardinal;
   CurrentFileName: String;
@@ -5035,7 +5024,7 @@ begin
 
   BuildAddressMap;
   Iter := TMapIterator.Create(FAddressMap);
-  idx := -1;
+  CurrentFileName := '';
   Info := nil;
   NextInfo := nil;
 
@@ -5044,18 +5033,15 @@ begin
   begin
     Line := FLineInfo.StateMachine.Line;
 
-    if (idx < 0) or (CurrentFileName <> FLineInfo.StateMachine.FileName) then begin
-      idx := FOwner.FLineNumberMap.IndexOf(FLineInfo.StateMachine.FileName);
-      if idx = -1
-      then begin
+    if (CurrentFileName = '') or (CurrentFileName <> FLineInfo.StateMachine.FileName) then begin
+      CurrentFileName := FLineInfo.StateMachine.FileName;
+      if CurrentFileName = '' then
+        Continue;
+      if not FOwner.FLineNumberMap.TryGetValue(CurrentFileName, LineMap) then begin
         LineMap := New(PDWarfLineMap);
         LineMap^.Init;
-        FOwner.FLineNumberMap.Add(FLineInfo.StateMachine.FileName, LineMap);
-      end
-      else begin
-        LineMap := FOwner.FLineNumberMap.Data[idx];
+        FOwner.FLineNumberMap.Add(CurrentFileName, LineMap);
       end;
-      CurrentFileName := FLineInfo.StateMachine.FileName;
     end;
 
     addr := FLineInfo.StateMachine.Address;
