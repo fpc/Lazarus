@@ -13,8 +13,11 @@ type
   { TTestLineMap }
 
   TTestLineMap = class(TTestCase)
+  private const
+    MAX_PAGE_LINE = 1000000; // from TDWarfLineMap
   private
     LMap: TDWarfLineMap;
+    FTestOffset: integer;
 
     procedure InitMap(l: array of integer);
     procedure CheckNotFound(ASearch: Integer; AFindSibling: TGetLineAddrFindSibling; AMaxSiblingDistance: integer = 0);
@@ -34,7 +37,7 @@ begin
   LMap := Default(TDWarfLineMap);
   LMap.Init;
   for i := 0 to Length(l) - 1 do
-    LMap.SetAddressForLine(l[i], l[i]);
+    LMap.SetAddressForLine(l[i]+FTestOffset, l[i]);
 end;
 
 procedure TTestLineMap.CheckNotFound(ASearch: Integer; AFindSibling: TGetLineAddrFindSibling;
@@ -45,7 +48,7 @@ var
   fl: Integer;
 begin
   fl := -1;
-  r := LMap.GetAddressesForLine(ASearch, a, False, AFindSibling, @fl, AMaxSiblingDistance);
+  r := LMap.GetAddressesForLine(ASearch+FTestOffset, a, False, AFindSibling, @fl, AMaxSiblingDistance);
   AssertFalse('not found '+IntToStr(ASearch), r);
 end;
 
@@ -57,119 +60,143 @@ var
   fl: Integer;
 begin
   fl := -1;
-  r := LMap.GetAddressesForLine(ASearch, a, False, AFindSibling, @fl, AMaxSiblingDistance);
+  r := LMap.GetAddressesForLine(ASearch+FTestOffset, a, False, AFindSibling, @fl, AMaxSiblingDistance);
   AssertTrue('found '+IntToStr(ASearch), r);
   AssertTrue('found (data) for '+IntToStr(ASearch), Length(a) = 1);
-  AssertEquals('found '+IntToStr(ASearch), AExp, fl);
+  AssertEquals('found '+IntToStr(ASearch), AExp+FTestOffset, fl);
   AssertEquals('found (addr) '+IntToStr(ASearch), AExp, a[0]);
 end;
 
 procedure TTestLineMap.TestLineMapFsNone;
+var
+  i: Integer;
 begin
-  InitMap([10]);
+  for i := -1 to 30 do begin
+    FTestOffset := 0;
+    if i >= 0 then FTestOffset := MAX_PAGE_LINE - 21 +i; // -21 start with line 20 before MAX
 
-  CheckFound(10, 10, fsNone);
-  CheckNotFound( 9, fsNone);
-  CheckNotFound(11, fsNone);
+    InitMap([10]);
 
-  InitMap([1000]);
-  CheckNotFound(1, fsNone);
-  CheckNotFound(99999, fsNone);
+    CheckFound(10, 10, fsNone);
+    CheckNotFound( 9, fsNone);
+    CheckNotFound(11, fsNone);
+
+    InitMap([1000]);
+    CheckNotFound(1, fsNone);
+    CheckNotFound(99999, fsNone);
 
 
-  InitMap([10, 20]);
+    InitMap([10, 20]);
 
-  CheckFound(10, 10, fsNone);
-  CheckFound(20, 20, fsNone);
-  CheckNotFound( 9, fsNone);
-  CheckNotFound(19, fsNone);
-  CheckNotFound(21, fsNone);
+    CheckFound(10, 10, fsNone);
+    CheckFound(20, 20, fsNone);
+    CheckNotFound( 9, fsNone);
+    CheckNotFound(19, fsNone);
+    CheckNotFound(21, fsNone);
 
-  InitMap([10, 2000]);
+    InitMap([10, 2000]);
 
-  CheckFound(10, 10, fsNone);
-  CheckFound(2000, 2000, fsNone);
-  CheckNotFound( 9, fsNone);
-  CheckNotFound(1999, fsNone);
-  CheckNotFound(2001, fsNone);
+    CheckFound(10, 10, fsNone);
+    CheckFound(2000, 2000, fsNone);
+    CheckNotFound( 9, fsNone);
+    CheckNotFound(1999, fsNone);
+    CheckNotFound(2001, fsNone);
+  end;
 end;
 
 procedure TTestLineMap.TestLineMapFsBefore;
+var
+  i: Integer;
 begin
-  InitMap([10]);
+  for i := -1 to 30 do begin
+    FTestOffset := 0;
+    if i >= 0 then FTestOffset := MAX_PAGE_LINE - 21 +i; // -21 start with line 20 before MAX
 
-  CheckFound(10, 10, fsBefore);
-  CheckFound(11, 10, fsBefore);
-  CheckFound(19, 10, fsBefore);
-  CheckFound(19, 10, fsBefore, 9);
-  CheckNotFound(19,  fsBefore, 8);
-  CheckNotFound( 9,  fsBefore);
+    InitMap([10]);
 
-  InitMap([910, 920]);
+    CheckFound(10, 10, fsBefore);
+    CheckFound(11, 10, fsBefore);
+    CheckFound(19, 10, fsBefore);
+    CheckFound(19, 10, fsBefore, 9);
+    CheckNotFound(19,  fsBefore, 8);
+    CheckNotFound( 9,  fsBefore);
 
-  CheckFound(910, 910, fsBefore);
-  CheckFound(911, 910, fsBefore);
-  CheckFound(919, 910, fsBefore);
-  CheckFound(919, 910, fsBefore, 9);
-  CheckNotFound(919,  fsBefore, 8);
+    if i >= 1 then FTestOffset := MAX_PAGE_LINE - 922 +i; // -21 start with line 20 before MAX
 
-  CheckFound(920, 920, fsBefore);
-  CheckFound(921, 920, fsBefore);
-  CheckFound(929, 920, fsBefore);
-  CheckFound(929, 920, fsBefore, 9);
-  CheckNotFound(929,  fsBefore, 8);
+    InitMap([910, 920]);
 
-  CheckFound(2920, 920, fsBefore);
-  CheckNotFound(909,  fsBefore);
-  CheckNotFound(9,  fsBefore);
+    CheckFound(910, 910, fsBefore);
+    CheckFound(911, 910, fsBefore);
+    CheckFound(919, 910, fsBefore);
+    CheckFound(919, 910, fsBefore, 9);
+    CheckNotFound(919,  fsBefore, 8);
 
-  InitMap([511]);
-  CheckFound(2920, 511, fsBefore);
-  InitMap([512]);
-  CheckFound(2920, 512, fsBefore);
+    CheckFound(920, 920, fsBefore);
+    CheckFound(921, 920, fsBefore);
+    CheckFound(929, 920, fsBefore);
+    CheckFound(929, 920, fsBefore, 9);
+    CheckNotFound(929,  fsBefore, 8);
 
+    CheckFound(2920, 920, fsBefore);
+    CheckNotFound(909,  fsBefore);
+    CheckNotFound(9,  fsBefore);
+
+    InitMap([511]);
+    CheckFound(2920, 511, fsBefore);
+    InitMap([512]);
+    CheckFound(2920, 512, fsBefore);
+  end;
 end;
 
 procedure TTestLineMap.TestLineMapFsNext;
+var
+  i: Integer;
 begin
-  InitMap([10]);
+  for i := -1 to 30 do begin
+    FTestOffset := 0;
+    if i >= 0 then FTestOffset := MAX_PAGE_LINE - 21 +i; // -21 start with line 20 before MAX
 
-  CheckFound(10, 10, fsNext);
-  CheckFound( 9, 10, fsNext);
-  CheckFound( 1, 10, fsNext);
-  CheckFound( 1, 10, fsNext, 9);
-  CheckNotFound(11,  fsNext, 8);
-  CheckNotFound(11,  fsNext);
+    InitMap([10]);
 
-  InitMap([910, 920]);
+    CheckFound(10, 10, fsNext);
+    CheckFound( 9, 10, fsNext);
+    CheckFound( 1, 10, fsNext);
+    CheckFound( 1, 10, fsNext, 9);
+    CheckNotFound(11,  fsNext, 8);
+    CheckNotFound(11,  fsNext);
 
-  CheckFound(910, 910, fsNext);
-  CheckFound(909, 910, fsNext);
-  CheckFound(901, 910, fsNext);
-  CheckFound(901, 910, fsNext, 9);
-  CheckNotFound(901,  fsNext, 8);
+    if i >= 1 then FTestOffset := MAX_PAGE_LINE - 922 +i; // -21 start with line 20 before MAX
 
-  CheckFound(920, 920, fsNext);
-  CheckFound(919, 920, fsNext);
-  CheckFound(911, 920, fsNext);
-  CheckFound(911, 920, fsNext, 9);
-  CheckNotFound(918,  fsNext, 1);
-  CheckNotFound(911,  fsNext, 8);
+    InitMap([910, 920]);
 
-  CheckFound(1, 910, fsNext);
+    CheckFound(910, 910, fsNext);
+    CheckFound(909, 910, fsNext);
+    CheckFound(901, 910, fsNext);
+    CheckFound(901, 910, fsNext, 9);
+    CheckNotFound(901,  fsNext, 8);
 
-  CheckNotFound(921,  fsNext);
-  CheckNotFound(1921,  fsNext);
+    CheckFound(920, 920, fsNext);
+    CheckFound(919, 920, fsNext);
+    CheckFound(911, 920, fsNext);
+    CheckFound(911, 920, fsNext, 9);
+    CheckNotFound(918,  fsNext, 1);
+    CheckNotFound(911,  fsNext, 8);
 
-  InitMap([10, 2000]);
-  CheckFound(11, 2000, fsNext);
-  CheckFound(311, 2000, fsNext);
-  CheckNotFound(11,  fsNext, 500);
+    CheckFound(1, 910, fsNext);
 
-  InitMap([255]);
-  CheckFound(11, 255, fsNext);
-  InitMap([256]);
-  CheckFound(11, 256, fsNext);
+    CheckNotFound(921,  fsNext);
+    CheckNotFound(1921,  fsNext);
+
+    InitMap([10, 2000]);
+    CheckFound(11, 2000, fsNext);
+    CheckFound(311, 2000, fsNext);
+    CheckNotFound(11,  fsNext, 500);
+
+    InitMap([255]);
+    CheckFound(11, 255, fsNext);
+    InitMap([256]);
+    CheckFound(11, 256, fsNext);
+  end;
 end;
 
 

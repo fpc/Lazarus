@@ -494,6 +494,7 @@ type
     PAGE_SHIFT = 7;
     PAGE_MASK  = 127;
     LIST_FLAG = $80;
+    MAX_PAGE_LINE = 1000000;  // safety cap - don't grow the array for unlikely high numbers
   private type
     TLineMapPage = record
       AddrCnt: Int16;
@@ -501,8 +502,26 @@ type
       Addresses: array [0..PAGE_SIZE-1] of TDBGPtr;
     end;
     PLineMapPage = ^TLineMapPage;
+
+    TLineNumberAddrMapEntry = packed record
+      Addr: TDBGPtr;
+      IsList: ByteBool;
+    end;
+    TLineNumberAddrMap = specialize TDictionary<Cardinal, TLineNumberAddrMapEntry>;
   private
     FLinePageList: Array of PLineMapPage;
+    FHighNumberMap: TLineNumberAddrMap;
+    FHighNumberMin, FHighNumberMax: Cardinal;
+  protected
+    function CheckIsSameProc(const IsList: Boolean; const FndAddr: TDBGPtr;
+      const ADbgInfo: TFpDwarfInfo; const ALine: Cardinal): Boolean;
+    function  GetAddressesForHighLine(ALine: Cardinal; var AResultList: TDBGPtrArray;
+      NoData: Boolean = False;
+      AFindSibling: TGetLineAddrFindSibling = fsNone;
+      AFoundLine: PInteger = nil;
+      AMaxSiblingDistance: integer = 0;
+      ADbgInfo: TFpDwarfInfo = nil
+    ): Boolean; inline;
   public
     procedure Init;
     procedure Free;
@@ -512,7 +531,8 @@ type
       AFindSibling: TGetLineAddrFindSibling = fsNone;
       AFoundLine: PInteger = nil;
       AMaxSiblingDistance: integer = 0;
-      ADbgInfo: TFpDwarfInfo = nil
+      ADbgInfo: TFpDwarfInfo = nil;
+      ASkipHighLines: Boolean = False
     ): Boolean; inline;
       // NoData: only return True/False, but nothing in AResultList
   end;
@@ -3566,9 +3586,36 @@ end;
 
 { TDWarfLineMap }
 
+function TDWarfLineMap.CheckIsSameProc(const IsList: Boolean; const FndAddr: TDBGPtr;
+  const ADbgInfo: TFpDwarfInfo; const ALine: Cardinal): Boolean;
+var
+  TmpResList: TDBGPtrArray;
+  FirstAddr: TDBGPtr;
+  Addr2: TDBGPtr;
+  Addr1: TDBGPtr;
+begin
+  // check same function
+  Result := False;
+  if ADbgInfo = nil then
+    exit;
+
+  FirstAddr := FndAddr;
+  if IsList then
+    FirstAddr := PDBGPtr(FndAddr)[1];
+  if not ADbgInfo.FindProcStartEndPC(FirstAddr, Addr1, Addr2) then
+    exit;
+
+  if GetAddressesForLine(ALine, TmpResList, False, fsBefore) then begin
+    if (Length(TmpResList) = 0) or (TmpResList[0] < Addr1) or (TmpResList[0] > Addr2) then
+      exit;
+  end;
+  Result := True;
+end;
+
 procedure TDWarfLineMap.Init;
 begin
   SetLength(FLinePageList, 32);
+  FHighNumberMap := nil;
 end;
 
 procedure TDWarfLineMap.Free;
@@ -3576,6 +3623,7 @@ var
   idx, j: Integer;
   CurPage: PLineMapPage;
   MappedOffset: Word;
+  HighEntry: TLineNumberAddrMapEntry;
 begin
   for idx := 0 to Length(FLinePageList) - 1 do begin
     CurPage := FLinePageList[idx];
@@ -3588,16 +3636,79 @@ begin
       Dispose(CurPage);
     end
   end;
+  if FHighNumberMap <> nil then begin
+    for HighEntry in FHighNumberMap.Values do begin
+      if HighEntry.IsList then
+        Freemem(pointer(HighEntry.Addr));
+    end;
+    FreeAndNil(FHighNumberMap);
+  end;
 end;
 
 procedure TDWarfLineMap.SetAddressForLine(ALine: Cardinal; AnAddress: TDBGPtr);
+  function IsListDuplicate(AList: PDBGPtr; AnAddress: TDBGPtr): Boolean; inline;
+  var
+    i: TDBGPtr;
+  begin
+    i := AList[0];
+    while (i > 0) and (AList[i] <> AnAddress) do
+      dec(i);
+    Result := i > 0;
+  end;
+
 var
   idx, offset: integer;
   i: integer;
   CurPage: PLineMapPage;
   AddrList: PDBGPtr;
   MappedOffset: Byte;
+  HighEntry: TLineNumberAddrMapEntry;
 begin
+  if ALine >= MAX_PAGE_LINE then begin
+    if FHighNumberMap = nil then begin
+      FHighNumberMap := TLineNumberAddrMap.Create;
+      FHighNumberMin := ALine;
+      FHighNumberMax := ALine;
+    end
+    else begin
+      if ALine < FHighNumberMin then FHighNumberMin := ALine;
+      if ALine > FHighNumberMax then FHighNumberMax := ALine;
+    end;
+    if FHighNumberMap.TryGetValue(ALine, HighEntry) then begin
+      if HighEntry.IsList then begin
+        AddrList := PDBGPtr(HighEntry.Addr);
+        if IsListDuplicate(AddrList, AnAddress) then
+          exit;
+
+        i := AddrList[0]+1;
+        if (i and 1) = 0 then begin
+          AddrList := ReAllocMem(AddrList, SizeOf(TDBGPtr)*(i+2));
+          HighEntry.Addr   := TDBGPtr(AddrList);
+        end;
+        AddrList[0] := i;
+        AddrList[i] := AnAddress;
+        FHighNumberMap[ALine] := HighEntry;
+      end
+      else
+      if HighEntry.Addr <> AnAddress then begin
+        AddrList := GetMem(SizeOf(TDBGPtr)*4);
+        AddrList[0] := 2;
+        AddrList[1] := HighEntry.Addr;
+        AddrList[2] := AnAddress;
+        HighEntry.Addr   := TDBGPtr(AddrList);
+        HighEntry.IsList := True;
+        FHighNumberMap[ALine] := HighEntry;
+      end;
+    end
+    else begin
+      HighEntry.Addr   := AnAddress;
+      HighEntry.IsList := False;
+      FHighNumberMap.Add(ALine, HighEntry);
+    end;
+    exit;
+  end;
+
+
   idx    := ALine SHR PAGE_SHIFT;
   offset := ALine AND PAGE_MASK;
   i := Length(FLinePageList);
@@ -3616,10 +3727,7 @@ begin
   if (MappedOffset and LIST_FLAG) <> 0 then begin
     MappedOffset := MappedOffset and PAGE_MASK;
     AddrList := PDBGPtr(CurPage^.Addresses[MappedOffset]);
-    i := AddrList[0];
-    while (i > 0) and (AddrList[i] <> AnAddress) do
-      dec(i);
-    if i > 0 then  // address already exists
+    if IsListDuplicate(AddrList, AnAddress) then
       exit;
 
     i := AddrList[0]+1;
@@ -3668,19 +3776,153 @@ begin
   end;
 end;
 
-function TDWarfLineMap.GetAddressesForLine(ALine: Cardinal; var AResultList: TDBGPtrArray;
+function TDWarfLineMap.GetAddressesForHighLine(ALine: Cardinal; var AResultList: TDBGPtrArray;
   NoData: Boolean; AFindSibling: TGetLineAddrFindSibling; AFoundLine: PInteger;
   AMaxSiblingDistance: integer; ADbgInfo: TFpDwarfInfo): Boolean;
 var
+  HighEntry: TLineNumberAddrMapEntry;
+  i: integer;
+  j: TDBGPtr;
+  FndLine, BoundLine, TmpLine: Cardinal;
+  k: SizeInt;
+begin
+  Result := (FHighNumberMap <> nil) and
+            ( (ALine <= FHighNumberMax) or
+              ( (AFindSibling = fsBefore) and
+                ( (AMaxSiblingDistance = 0) or (AMaxSiblingDistance >= ALine - FHighNumberMax) )
+              ) );
+  if not Result then begin
+    if AFindSibling = fsBefore then
+      Result := GetAddressesForLine(ALine, AResultList, NoData, AFindSibling,
+        AFoundLine, AMaxSiblingDistance, ADbgInfo, True);
+    exit;
+  end;
+
+  Result := FHighNumberMap.TryGetValue(ALine, HighEntry);
+  FndLine := ALine;
+
+  if not Result then begin
+    i := AMaxSiblingDistance;
+    if (i = 0) or (i > 100) then
+      i := 30;
+    case AFindSibling of
+      fsBefore:
+      begin
+        if i > ALine - FHighNumberMin then
+          i := ALine - FHighNumberMin;
+        while (i > 0) and not Result do begin
+          dec(FndLine);
+          dec(i);
+          Result := FHighNumberMap.TryGetValue(FndLine, HighEntry);
+        end;
+
+        if (not Result) and (FndLine > FHighNumberMin) then begin
+          FndLine := 0;
+          BoundLine := 0;
+          if (AMaxSiblingDistance > 0) and (ALine > AMaxSiblingDistance) then
+            BoundLine := ALine - AMaxSiblingDistance;
+          for TmpLine in FHighNumberMap.Keys do begin
+            if (TmpLine > BoundLine) and (TmpLine < ALine) then begin
+              FndLine := TmpLine;
+              BoundLine := TmpLine;
+              if FndLine = ALine - 1 then
+                break;
+            end
+          end;
+          Result := (FndLine <> 0) and FHighNumberMap.TryGetValue(FndLine, HighEntry);
+        end;
+
+        if (not result) and
+           ((AMaxSiblingDistance = 0) or (AMaxSiblingDistance > ALine-MAX_PAGE_LINE))
+        then begin
+          Result := GetAddressesForLine(ALine, AResultList, NoData, AFindSibling,
+            AFoundLine, AMaxSiblingDistance, ADbgInfo, True);
+          exit;
+        end;
+      end;
+      fsNext, fsNextFunc, fsNextFuncLazy:
+      begin
+        if i > FHighNumberMax - ALine then
+          i := FHighNumberMax - ALine;
+        while (i > 0) and not Result do begin
+          inc(FndLine);
+          dec(i);
+          Result := FHighNumberMap.TryGetValue(FndLine, HighEntry);
+        end;
+
+        if (not Result) and (FndLine < FHighNumberMax) then begin
+          FndLine := 0;
+          BoundLine := High(ALine);
+          if (AMaxSiblingDistance > 0) and (High(ALine)-ALine >= AMaxSiblingDistance) then
+            BoundLine := ALine + AMaxSiblingDistance;
+          for TmpLine in FHighNumberMap.Keys do begin
+            if (TmpLine < BoundLine) and (TmpLine > ALine) then begin
+              FndLine := TmpLine;
+              BoundLine := TmpLine;
+              if FndLine = ALine + 1 then
+                break;
+            end;
+          end;
+          Result := (FndLine <> 0) and FHighNumberMap.TryGetValue(FndLine, HighEntry);
+        end;
+      end;
+    end;
+    if not Result then
+      exit;
+  end;
+
+  if (FndLine <> ALine) then begin
+    if (AFindSibling = fsNextFunc) or
+       ( (AFindSibling = fsNextFuncLazy) and (FndLine - ALine > 1) )
+    then begin
+      if not CheckIsSameProc(HighEntry.IsList, HighEntry.Addr, ADbgInfo, ALine) then
+        exit(False);
+    end;
+
+    if (AFoundLine <> nil) and (AFoundLine^ <> -1) then begin
+      if (FndLine > AFoundLine^) then exit; // already have better match
+      if (FndLine < AFoundLine^) then
+        AResultList := nil;  // found better match
+    end;
+  end;
+
+  if AFoundLine <> nil then
+    AFoundLine^ := FndLine;
+
+  if NoData then
+    exit;
+
+  k := Length(AResultList);
+  if (not HighEntry.IsList) then begin
+    SetLength(AResultList, k + 1);
+    AResultList[k] := HighEntry.Addr;
+  end
+  else begin
+    j := PDBGPtr(HighEntry.Addr)[0];
+    SetLength(AResultList, k + j);
+    move(PDBGPtr(HighEntry.Addr)[1], AResultList[k], j*SizeOf(TDBGPtr));
+  end;
+end;
+
+function TDWarfLineMap.GetAddressesForLine(ALine: Cardinal; var AResultList: TDBGPtrArray;
+  NoData: Boolean; AFindSibling: TGetLineAddrFindSibling; AFoundLine: PInteger;
+  AMaxSiblingDistance: integer; ADbgInfo: TFpDwarfInfo; ASkipHighLines: Boolean): Boolean;
+var
   idx, offset: integer;
-  Addr1, Addr2, FndAddr, FirstAddr: TDBGPtr;
+  FndAddr: TDBGPtr;
   MappedOffset: Byte;
   j, k, ln, PageIdxBound: Integer;
-  TmpResList: TDBGPtrArray;
   CurPage: PLineMapPage;
   IsList, OffsetExist: Boolean;
 begin
   Result := False;
+
+  if (ALine >= MAX_PAGE_LINE) and not ASkipHighLines then begin
+    Result := GetAddressesForHighLine(ALine, AResultList, NoData, AFindSibling, AFoundLine,
+      AMaxSiblingDistance, ADbgInfo);
+    exit;
+  end;
+
   idx    := ALine SHR PAGE_SHIFT;
   offset := ALine AND PAGE_MASK;
 
@@ -3703,6 +3945,11 @@ begin
       idx := Length(FLinePageList)-1;
       offset := PAGE_SIZE-1;
     end
+    else if AFindSibling in [fsNext, fsNextFunc, fsNextFuncLazy] then begin
+      Result := GetAddressesForHighLine(ALine, AResultList, NoData, AFindSibling, AFoundLine,
+        AMaxSiblingDistance, ADbgInfo);
+      exit;
+    end
     else
       exit;
   end;
@@ -3722,8 +3969,13 @@ begin
           end;
         fsNext, fsNextFunc, fsNextFuncLazy: begin
             inc(idx);
-            if idx >= PageIdxBound then
+            if idx >= PageIdxBound then begin
+              if (AMaxSiblingDistance = 0) or (ALine + AMaxSiblingDistance >= MAX_PAGE_LINE) then
+                Result := GetAddressesForHighLine(ALine, AResultList, NoData, AFindSibling, AFoundLine,
+                  AMaxSiblingDistance, ADbgInfo);
               exit;
+            end;
+
             offset := 0;
             Continue;
           end;
@@ -3787,16 +4039,8 @@ begin
         if (AFindSibling = fsNextFunc) or
            ((AFindSibling = fsNextFuncLazy) and (ln - ALine > 1))
         then begin
-          // check same function
-          if ADbgInfo = nil then exit;
-          FirstAddr := FndAddr;
-          if IsList then
-            FirstAddr := PDBGPtr(FndAddr)[1];
-          if not ADbgInfo.FindProcStartEndPC(FirstAddr, Addr1, Addr2) then exit;
-          if GetAddressesForLine(ALine, TmpResList, False, fsBefore) then begin
-            if (Length(TmpResList) = 0) or (TmpResList[0] < Addr1) or (TmpResList[0] > Addr2) then
-              exit;
-          end;
+          if not CheckIsSameProc(IsList, FndAddr, ADbgInfo, ALine) then
+            exit
         end;
 
         if (AFoundLine <> nil) and (AFoundLine^ <> -1) then begin
