@@ -28,6 +28,8 @@ Author: Mattias Gaertner
 </p>
 </descr>
 
+<!-- TODO: Most topics in this module need content. -->
+
 <element name="Classes"/>
 <element name="SysUtils"/>
 <element name="Math"/>
@@ -2954,6 +2956,44 @@ Some bitmaps can specify the data offset.
 <short/>
 <descr/>
 <seealso/>
+</element>
+
+<element name="TLazReaderBMP.InternalReadHead">
+<short>
+Performs actions needed to read the header for the bitmap and return the width 
+and height as a TPoint value.
+</short>
+<descr>
+<p>
+<var>InternalReadHead</var> is an overridden <var>TPoint</var> class function. 
+The return value contains the width and height for the bitmap read from the 
+header. The X member contains the width for the bitmap. The Y member contains 
+the height for the bitmap. The return value is an empty TPoint instance (X=0, 
+Y=0) if the bitmap file header does not contain the bitmap magic word "BM" in 
+the header type.
+</p>
+<p>
+InternalReadHead is conditionally defined for FPC compiler versions prior to 
+3.3.1 where the InternalSize function was not implemented in an ancestor class 
+to use values in the bitmap header.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0. It is conditionally defined for FPC compiler versions 
+prior to 3.3.1 <b>only</b>.
+</version>
+<seealso/>
+</element>
+<element name="TLazReaderBMP.InternalReadHead.Result">
+<short>
+TPoint instance with the width and height read from the bitmap header, or an 
+empty point when dimensions are not found in the header.
+</short>
+</element>
+<element name="TLazReaderBMP.InternalReadHead.Stream">
+<short>
+TStream instance with the bitmap resources examined in the method.
+</short>
 </element>
 
 <element name="TLazWriterBMP">
