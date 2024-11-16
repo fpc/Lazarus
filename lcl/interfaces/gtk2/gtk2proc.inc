@@ -8132,13 +8132,11 @@ begin
     else
       If CompareText(WName,LazGtkStyleNames[lgsStatusBar])=0 then begin
         lgs:=lgsStatusBar;
-        AddToStyleWindow:=true;
         StyleObject^.Widget := gtk_statusbar_new;
       end
     else
       If CompareText(WName,LazGtkStyleNames[lgsCalendar])=0 then begin
         lgs:=lgsCalendar;
-        AddToStyleWindow:=true;
         StyleObject^.Widget := gtk_calendar_new;
       end
     else
@@ -8185,6 +8183,7 @@ begin
         WidgetName := 'gtk-tooltip-lcl';
         StyleObject^.Owner := Tp;
         Tp := nil;
+        AddToStyleWindow:=false;
       end
     else
       If CompareText(WName,LazGtkStyleNames[lgsHScale])=0 then begin
