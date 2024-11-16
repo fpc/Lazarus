@@ -3674,8 +3674,8 @@ function TDWarfLineMap.GetAddressesForLine(ALine: Cardinal; var AResultList: TDB
 var
   idx, offset: integer;
   Addr1, Addr2, FndAddr, FirstAddr: TDBGPtr;
-  o, MappedOffset: Byte;
-  i, j, k, l, ln: Integer;
+  MappedOffset: Byte;
+  j, k, ln, PageIdxBound: Integer;
   TmpResList: TDBGPtrArray;
   CurPage: PLineMapPage;
   IsList, OffsetExist: Boolean;
@@ -3684,6 +3684,20 @@ begin
   idx    := ALine SHR PAGE_SHIFT;
   offset := ALine AND PAGE_MASK;
 
+  case AFindSibling of
+    fsBefore:
+      if AMaxSiblingDistance > 0 then
+        PageIdxBound := Max(0, idx - AMaxSiblingDistance div PAGE_SIZE - 1)
+      else
+        PageIdxBound := 0;
+    fsNext, fsNextFunc, fsNextFuncLazy:
+      if AMaxSiblingDistance > 0 then
+        PageIdxBound := Min(Length(FLinePageList), idx + AMaxSiblingDistance div PAGE_SIZE + 1)
+      else
+        PageIdxBound := Length(FLinePageList);
+    else
+      PageIdxBound := 0;
+  end;
   if idx >= Length(FLinePageList) then begin
     if AFindSibling  = fsBefore then begin
       idx := Length(FLinePageList)-1;
@@ -3694,14 +3708,13 @@ begin
   end;
 
   repeat
-// TODO: check AMaxSiblingDistance against page size distance
     CurPage := FLinePageList[idx];
     if CurPage = nil then
       case AFindSibling of
         fsNone:
             exit;
         fsBefore: begin
-            if idx = 0 then
+            if idx <= PageIdxBound then
               exit;
             dec(idx);
             offset := PAGE_SIZE-1;
@@ -3709,7 +3722,7 @@ begin
           end;
         fsNext, fsNextFunc, fsNextFuncLazy: begin
             inc(idx);
-            if idx >= Length(FLinePageList) then
+            if idx >= PageIdxBound then
               exit;
             offset := 0;
             Continue;
