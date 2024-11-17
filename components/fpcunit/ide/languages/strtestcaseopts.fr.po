@@ -1,136 +1,136 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2015-04-16 07:54+0100\n"
-"PO-Revision-Date: 2015-04-16 07:54+0100\n"
+"PO-Revision-Date: 2024-11-17 18:57+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: \n"
-"MIME-Version: 1.0\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"X-Generator: Poedit 1.7.5\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.5\n"
 
 #: strtestcaseopts.rsalltests
 msgid "All Tests"
-msgstr ""
+msgstr "Tous les tests"
 
 #: strtestcaseopts.rsautomaticallyfetchtestlistonopen
 msgid "Automatically fetch test list on open"
-msgstr ""
+msgstr "Récupérer automatiquement la liste de tests à l'ouverture"
 
 #: strtestcaseopts.rscouldnotdete
 #, object-pascal-format
 msgid "Could not determine class and method from test path \"%s\""
-msgstr ""
+msgstr "Impossible de déterminer la classe et la méthode à partir du chemin de test \"%s\""
 
 #: strtestcaseopts.rserrors
 #, object-pascal-format
 msgid "%s    Errors: %s"
-msgstr ""
+msgstr "%s    Erreurs : %s"
 
 #: strtestcaseopts.rsexception
 #, object-pascal-format
 msgid "Exception: %s"
-msgstr ""
+msgstr "Exception : %s"
 
 #: strtestcaseopts.rsexceptioncla
 #, object-pascal-format
 msgid "Exception class: %s"
-msgstr ""
+msgstr "Classe d'exception : %s"
 
 #: strtestcaseopts.rsexceptionmes
 #, object-pascal-format
 msgid "Exception message: %s"
-msgstr ""
+msgstr "Message d'exception : %s"
 
 #: strtestcaseopts.rsfailures
 #, object-pascal-format
 msgid "%s     Failures: %s"
-msgstr ""
+msgstr "%s    Échecs : %s"
 
 #: strtestcaseopts.rsmessage
 #, object-pascal-format
 msgid "Message: %s"
-msgstr ""
+msgstr "Message : %s"
 
 #: strtestcaseopts.rsnexterror
 msgid "Next error"
-msgstr ""
+msgstr "Erreur suivante"
 
 #: strtestcaseopts.rspreviouserror
 msgid "Previous error"
-msgstr ""
+msgstr "Erreur précédente"
 
 #: strtestcaseopts.rsruns
 #, object-pascal-format
 msgid "Runs: %s/%s"
-msgstr ""
+msgstr "Exécutions : %s%s"
 
 #: strtestcaseopts.rsserverpath
 msgid "Server path"
-msgstr ""
+msgstr "Chemin du serveur"
 
 #: strtestcaseopts.rsserverport
 msgid "Server port"
-msgstr ""
+msgstr "Port du serveur"
 
 #: strtestcaseopts.rstestinsighttitle
 msgid "Test Insight"
-msgstr ""
+msgstr "Aperçu des tests"
 
 #: strtestcaseopts.sactcheckall
 msgid "Select all tests"
-msgstr ""
+msgstr "Cocher tous les tests"
 
 #: strtestcaseopts.sactcheckcurrentsuite
 msgid "Select current suite"
-msgstr ""
+msgstr "Cocher l'ensemble en cours"
 
 #: strtestcaseopts.sactcloseform
 msgid "Quit"
-msgstr ""
+msgstr "Quitter"
 
 #: strtestcaseopts.sactcloseformh
 msgid "Quit testing"
-msgstr ""
+msgstr "Arrêter les tests"
 
 #: strtestcaseopts.sactcopyalltoclipboard
 msgid "Copy text to clipboard"
-msgstr ""
+msgstr "Copier le texte dans le presse-papiers"
 
 #: strtestcaseopts.sactcopyalltoclipboardh
 msgid "Copy the entire text to clipboard"
-msgstr ""
+msgstr "Copie l’ensemble du texte dans le presse-papiers"
 
 #: strtestcaseopts.sactcopymessagetoclipboard
 msgctxt "strtestcaseopts.sactcopymessagetoclipboard"
 msgid "Copy message to clipboard"
-msgstr ""
+msgstr "Copier le message dans le presse-papier"
 
 #: strtestcaseopts.sactrunaction
 msgid "&Run all"
-msgstr ""
+msgstr "&Tout exécuter"
 
 #: strtestcaseopts.sactrunactionh
 msgid "Run all checked tests"
-msgstr ""
+msgstr "Exécuter tous les tests cochés"
 
 #: strtestcaseopts.sactrunhighlightedtest
 msgid "Run selected"
-msgstr ""
+msgstr "Exécuter la sélection"
 
 #: strtestcaseopts.sactrunhighlightedtesth
 msgid "Run selected test"
-msgstr ""
+msgstr "Exécutez le test sélectionné"
 
 #: strtestcaseopts.sactuncheckall
 msgid "Deselect all tests"
-msgstr ""
+msgstr "Décocher tous les tests"
 
 #: strtestcaseopts.sactuncheckcurrentsuite
 msgid "Deselect current suite"
-msgstr ""
+msgstr "Décocher l'ensemble en cours"
 
 #: strtestcaseopts.sbtncreate
 msgid "Create unit"
@@ -146,49 +146,43 @@ msgstr "Créer la méthode de démontage"
 
 #: strtestcaseopts.screatefirsttestcase
 msgid "&Create first test case"
-msgstr ""
+msgstr "&Créer le premier cas de test"
 
 #: strtestcaseopts.sdefault
 msgid "Default"
-msgstr ""
+msgstr "Par défaut"
 
 #: strtestcaseopts.sdefaultoutputformat
 msgid "Default output &format"
-msgstr ""
+msgstr "&Format de sortie par défaut"
 
 #: strtestcaseopts.sfpcunconsoletestapp
 msgid "FPCUnit Console Test Application"
 msgstr "Unité FPC - Application console de test"
 
 #: strtestcaseopts.sfpcunconsoletestdesc
-#, fuzzy
-#| msgid "FPCUnit Console Test Application%sAn application to run FPCUnit test cases in console mode.%sThe application source is automatically maintained by Lazarus."
 msgid "An application to run FPCUnit test cases in console mode."
-msgstr "Unité FPC - Application console de test%sUne application pour exécuter les tests types des unités FPC en mode console.%sLe code source de l'application est automatiquement mis à jour par Lazarus."
+msgstr "Une application pour exécuter les cas de test FPCUnit en mode console."
 
 #: strtestcaseopts.sfpcuntestapp
 msgid "FPCUnit Test Application"
 msgstr "Unité FPC - Application de test"
 
 #: strtestcaseopts.sfpcuntestappdesc
-#, fuzzy
-#| msgid "FPCUnit Test Application%sAn application to run FPCUnit test cases.%sThe application source is automatically maintained by Lazarus."
 msgid "An application to run FPCUnit test cases."
-msgstr "Unité FPC - Application de test%sUne application pour exécuter les tests types des unités de FPC.%sLe code source de l'application est automatiquement mis à jour par Lazarus."
+msgstr "Une application pour exécuter les cas de test FPCUnit."
 
 #: strtestcaseopts.sfpcuntestcase
 msgid "FPCUnit Test Case"
 msgstr "Unité de FPC - Test type"
 
 #: strtestcaseopts.sfpcuntestcasedesc
-#, fuzzy
-#| msgid "FPCUnit Test Case%sA unit containing a FPCUnit Test Case."
 msgid "A unit containing a FPCUnit Test Case."
-msgstr "Unité FPC - Test type%sUne unité contenant un test type des unités FPC."
+msgstr "Une unité contenant un cas de test FPCUnit."
 
 #: strtestcaseopts.sfrmguitest
 msgid "FPCUnit - run unit test"
-msgstr ""
+msgstr "Unité FPC - exécuter le test de l'unité"
 
 #: strtestcaseopts.sfrmtest
 msgid "TestCase Options"
@@ -204,7 +198,7 @@ msgstr "Noms"
 
 #: strtestcaseopts.slatex
 msgid "LaTeX"
-msgstr ""
+msgstr "LaTeX"
 
 #: strtestcaseopts.slbldefault
 msgid "Default Test Name"
@@ -212,56 +206,56 @@ msgstr "Nom de test par défaut"
 
 #: strtestcaseopts.smiactions
 msgid "Actions"
-msgstr ""
+msgstr "Actions"
 
 #: strtestcaseopts.smicollapsenodes
 msgid "Collapse Nodes"
-msgstr ""
+msgstr "Réduire les nœuds"
 
 #: strtestcaseopts.smiedit
 msgid "Edit"
-msgstr ""
+msgstr "Éditer"
 
 #: strtestcaseopts.smiexpandnodes
 msgid "Expand Nodes"
-msgstr ""
+msgstr "Développer les nœuds"
 
 #: strtestcaseopts.smitesttree
 msgid "Test tree"
-msgstr ""
+msgstr "Arborescence du test"
 
 #: strtestcaseopts.snavigationnotavailable
 msgid "Source navigation not available."
-msgstr ""
+msgstr "La navigation dans le source n'est pas disponible."
 
 #: strtestcaseopts.snewfpcunitprogramtor
 msgid "New FPCUnit console testrunner program"
-msgstr ""
+msgstr "Nouveau programme de test de la console FPCUnit"
 
 #: strtestcaseopts.snoexecutableavailable
 #, object-pascal-format
 msgid "Test executable is not available: \"%s\""
-msgstr ""
+msgstr "L'exécutable de test n'est pas disponible : \"%s\""
 
 #: strtestcaseopts.snotestprojectconfigured
 msgid "No test project configured."
-msgstr ""
+msgstr "Aucun projet de test n'est configuré."
 
 #: strtestcaseopts.splaintext
 msgid "Plain text"
-msgstr ""
+msgstr "Texte brut"
 
 #: strtestcaseopts.splaintextwithouttimi
 msgid "Plain text without timings"
-msgstr ""
+msgstr "Texte brut sans le temps"
 
 #: strtestcaseopts.srunalltests
 msgid "&Run all tests by default"
-msgstr ""
+msgstr "&Exécuter tous les tests par défaut"
 
 #: strtestcaseopts.susetextinsight
 msgid "Use &Test Insight to communicate results to the IDE"
-msgstr ""
+msgstr "Utiliser &Test Insight pour communiquer les résultats à l'EDI"
 
 #: strtestcaseopts.swriteyourowntest
 msgid "Write your own test"
@@ -269,5 +263,5 @@ msgstr "Écrivez votre propre test"
 
 #: strtestcaseopts.sxml
 msgid "XML"
-msgstr ""
+msgstr "XML"
 
