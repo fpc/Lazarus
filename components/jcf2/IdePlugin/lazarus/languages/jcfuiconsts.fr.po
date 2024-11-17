@@ -1,21 +1,19 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: h.mira@free.fr\n"
 "Language-Team: http://lazarus.developpez.com/\n"
-"MIME-Version: 1.0\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"X-Generator: Poedit 2.2.1\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.5\n"
 
 #: jcfuiconsts.format_about_menu
-#, fuzzy
-#| msgid "&About"
 msgid "&About ..."
-msgstr "&À propos"
+msgstr "&À propos..."
 
 #: jcfuiconsts.format_category_idecmd
 msgctxt "jcfideregister.format_category_idecmd"
@@ -47,13 +45,11 @@ msgstr "Tous les fichiers d&ans le projet"
 
 #: jcfuiconsts.format_reg_settings_menu
 msgid "Global Settings ..."
-msgstr ""
+msgstr "Paramètres globaux ..."
 
 #: jcfuiconsts.format_settings_menu
-#, fuzzy
-#| msgid "&Format Settings"
 msgid "&Format Settings ..."
-msgstr "Paramètres de &formatage"
+msgstr "Paramètres de &formatage..."
 
 #: jcfuiconsts.lisaboutaboutjedicodeformat
 msgid "About JEDI Code Format"
@@ -73,10 +69,9 @@ msgid "This program is still under development. In spite of thorough testing and
 msgstr "Ce programme est encore en développement. En dépit de tests approfondis et de l'élimination des bogues rapportés, aucune garantie n'est donnée. Veuillez faire des sauvegardes, ou mieux encore utiliser un système de contrôle de code source."
 
 #: jcfuiconsts.lisaboutversion
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Version $VERSION$%s$DATE$%s%sThis program attempts to standardise and make readable the layout of any Delphi Object-Pascal source code.%s%sCopyright Anthony Steele 1999-2008"
+#, object-pascal-format
 msgid "Version $VERSION$%s%sThis program attempts to standardise and make readable the layout of any Object Pascal source code.%s%sCopyright Anthony Steele 1999-2008"
-msgstr "Version $VERSION$%s$DATE$%s%sCe programme tente d'uniformiser et de rendre lisible la disposition de tout code source Delphi Object-Pascal.%s%sCopyright Anthony Steele 1999-2008"
+msgstr "Version $VERSION$%s%sCe programme tente d'uniformiser et de rendre lisible la disposition de tout code source Delphi Object-Pascal.%s%sCopyright Anthony Steele 1999-2008"
 
 #: jcfuiconsts.lisalignalign
 msgid "Align"
@@ -188,7 +183,7 @@ msgstr "Lignes blanches"
 
 #: jcfuiconsts.lisblinprocedurevarsection
 msgid "In procedure var section"
-msgstr "dans la section \"var\" de la procédure"
+msgstr "Dans la section \"var\" de la procédure"
 
 #: jcfuiconsts.lisbllinesbeforeprocedure
 msgid "Lines before procedure"
@@ -280,11 +275,11 @@ msgstr "Définir la mise en majuscules de ces identificateurs:"
 
 #: jcfuiconsts.liscapsnormalizecapitalisation
 msgid "Normalization of capitalisation"
-msgstr ""
+msgstr "Normalisation de la capitalisation"
 
 #: jcfuiconsts.liscapsnormalizecapitalisationonenamespace
 msgid "Use only one namespace"
-msgstr ""
+msgstr "Utiliser un seul espace de nommage"
 
 #: jcfuiconsts.liscapsnotidentifiersnotidentifiers
 msgid "Non-identifiers"
@@ -411,118 +406,116 @@ msgstr "N'exécuter que ceux-ci"
 
 #: jcfuiconsts.liscnfcaption
 msgid "JCF Global Settings"
-msgstr ""
+msgstr "Paramètres globaux JCF"
 
 #: jcfuiconsts.liscnfexcludedirs
 msgid "Directories to exclude from batch processing:"
-msgstr ""
+msgstr "Répertoires à exclure du traitement par lots :"
 
 #: jcfuiconsts.liscnfexcludefiles
 msgid "Individual files to exclude from batch processing:"
-msgstr ""
+msgstr "Fichiers individuels à exclure du traitement par lots :"
 
 #: jcfuiconsts.liscnfgenalways
-#, fuzzy
 msgctxt "jcfuiconsts.liscnfgenalways"
 msgid "Always"
 msgstr "Toujours"
 
 #: jcfuiconsts.liscnfgenconvertsettingsfile
 msgid "Convert settings file"
-msgstr ""
+msgstr "Convertir le fichier de paramètres"
 
 #: jcfuiconsts.liscnfgenfail
 msgid "Fail quietly"
-msgstr ""
+msgstr "Échouer discrètement"
 
 #: jcfuiconsts.liscnfgennever
-#, fuzzy
 msgctxt "jcfuiconsts.liscnfgennever"
 msgid "Never"
 msgstr "Jamais"
 
 #: jcfuiconsts.liscnfgenonparseerror
 msgid "On parse error"
-msgstr ""
+msgstr "En cas d'erreur d'analyse"
 
 #: jcfuiconsts.liscnfgenshowparsetree
 msgid "Show parse &tree during parse"
-msgstr ""
+msgstr "Afficher l'&arbre d'analyse pendant l'analyse"
 
 #: jcfuiconsts.liscnfgenwritesettings
 msgid "&Write settings file"
-msgstr ""
+msgstr "É&crire le fichier de paramètres"
 
 #: jcfuiconsts.liscnflogapplication
 #, object-pascal-format
 msgid "Application: %s"
-msgstr ""
+msgstr "Application : %s"
 
 #: jcfuiconsts.liscnflogbackupfileext
 msgid "Backup file extension"
-msgstr ""
+msgstr "Extension du fichier de sauvegarde"
 
 #: jcfuiconsts.liscnflogdetaillevel
 msgid "Log file detail level"
-msgstr ""
+msgstr "Niveau de détail du fichier journal"
 
 #: jcfuiconsts.liscnflogerrorsonly
 msgid "Errors only"
-msgstr ""
+msgstr "Erreurs uniquement"
 
 #: jcfuiconsts.liscnflogfile
 msgid "File"
-msgstr ""
+msgstr "Fichier"
 
 #: jcfuiconsts.liscnflogfiledir
 msgid "Log file directory"
-msgstr ""
+msgstr "Répertoire des fichiers journaux"
 
 #: jcfuiconsts.liscnflogoutputfileext
 msgid "Output file extension"
-msgstr ""
+msgstr "Extension du fichier de sortie"
 
 #: jcfuiconsts.liscnflogselectdir
 msgid "Select specified directory"
-msgstr ""
+msgstr "Sélectionner le répertoire spécifié"
 
 #: jcfuiconsts.liscnflogspecified
 #, object-pascal-format
 msgid "Specified: %s"
-msgstr ""
+msgstr "Spécifié : %s"
 
 #: jcfuiconsts.liscnflogtemp
 #, object-pascal-format
 msgid "Temp: %s"
-msgstr ""
+msgstr "Temporaire : %s"
 
 #: jcfuiconsts.liscnflogtime
 msgid "Log time taken to process"
-msgstr ""
+msgstr "Enregistrer le temps nécessaire au traitement"
 
 #: jcfuiconsts.liscnflogtoken
 msgid "Token"
-msgstr ""
+msgstr "Élément"
 
 #: jcfuiconsts.liscnflogviewlog
 msgid "View log after each run"
-msgstr ""
+msgstr "Afficher le journal après chaque exécution"
 
 #: jcfuiconsts.liscnflogviewlognow
 msgid "View Log now"
-msgstr ""
+msgstr "Afficher le journal maintenant"
 
 #: jcfuiconsts.liscnftabexclusions
 msgid "Exclusions"
-msgstr ""
+msgstr "Exclusions"
 
 #: jcfuiconsts.liscnftabgeneral
 msgid "General"
-msgstr ""
+msgstr "Général"
 
 #: jcfuiconsts.liscnftablogfile
 msgid "Log file"
-msgstr ""
+msgstr "Fichier journal"
 
 #: jcfuiconsts.liscommentsremoveemptycurlybracescomments
 msgid "Remove empty '{ }' comments"
@@ -567,7 +560,6 @@ msgid "Type: %s%s"
 msgstr "Type : %s%s"
 
 #: jcfuiconsts.liserroract
-#, fuzzy
 msgctxt "jcfuiconsts.liserroract"
 msgid "Error"
 msgstr "Erreur"
@@ -628,11 +620,11 @@ msgstr "Version d'écriture de ce fichier : %s"
 
 #: jcfuiconsts.lishintapplicationdefault
 msgid "Application Default: "
-msgstr ""
+msgstr "Application par défaut :"
 
 #: jcfuiconsts.lisimbalancedcommentact
 msgid "Imbalanced comment action"
-msgstr ""
+msgstr "Action de commentaire déséquilibrée"
 
 #: jcfuiconsts.lisindentblockindentationspaces
 msgid "Block indentation spaces"
@@ -652,7 +644,7 @@ msgstr "Retrait supplémentaire dans les blocs \"Case...Else\""
 
 #: jcfuiconsts.lisindentextraindentforcaselabels
 msgid "Extra Indent for Case labels"
-msgstr ""
+msgstr "Indentation supplémentaire pour les étiquettes de cas"
 
 #: jcfuiconsts.lisindentextraindentforifelseblocks
 msgid "Extra Indent for If...Else blocks"
@@ -660,7 +652,7 @@ msgstr "Retrait supplémentaire pour les blocs \"If...Else\""
 
 #: jcfuiconsts.lisindentextraindentforinterfaceguid
 msgid "Extra Indent for interface GUID"
-msgstr ""
+msgstr "Indentation supplémentaire pour le GUID de l'interface"
 
 #: jcfuiconsts.lisindentindentation
 msgid "Indentation"
@@ -671,10 +663,8 @@ msgid "Indent for procedure body"
 msgstr "Indenter le corps des procédures"
 
 #: jcfuiconsts.lisindentindentforproceduresinlibrary
-#, fuzzy
-#| msgid "Indent for procedures in library"
 msgid "Indent for procedures in program/library"
-msgstr "Indenter les procédures dans les bibliothèques"
+msgstr "Indenter les procédures dans les programmes/bibliothèques"
 
 #: jcfuiconsts.lisindentindentnestedtypes
 msgid "Indent nested types"
@@ -760,7 +750,7 @@ msgstr "Laisser seul"
 
 #: jcfuiconsts.lisobfsmixedcase
 msgid "Mixed Case"
-msgstr "Casses mixtes "
+msgstr "Casses mixtes"
 
 #: jcfuiconsts.lisobfsobfuscate
 msgid "Obfuscate"
@@ -1005,7 +995,7 @@ msgstr "Ajouter ou enlèver \"&begin\" et \"end\" des instructions uniques"
 
 #: jcfuiconsts.listransformadvancedsettings
 msgid "Advanced settings"
-msgstr ""
+msgstr "Paramètres avancés"
 
 #: jcfuiconsts.listransformalphabetic
 msgid "Alphabetic"
@@ -1073,7 +1063,7 @@ msgstr "&Ordre de tri de \"uses\""
 
 #: jcfuiconsts.listransformwarningsortusesclauses
 msgid "WARNING: changing order of uses clauses may break your code."
-msgstr ""
+msgstr "ATTENTION : la modification de l'ordre des clauses \"uses\" peut entraîner un dysfonctionnement de votre code."
 
 #: jcfuiconsts.lisusesinsertintoimplementation
 msgid "Insert into Implementation"
@@ -1097,7 +1087,7 @@ msgstr "Uses"
 
 #: jcfuiconsts.liswarnact
 msgid "Warn"
-msgstr ""
+msgstr "Avertir"
 
 #: jcfuiconsts.liswarningsignoreunusedparametersnamed
 msgid "&Ignore unused parameters named:"

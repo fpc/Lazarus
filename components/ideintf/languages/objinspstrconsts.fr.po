@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-02-17 23:22+0100\n"
+"PO-Revision-Date: 2024-11-02 10:44+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "Language: fr_FR\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Generator: Poedit 3.4.1\n"
+"X-Generator: Poedit 3.5\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -570,7 +570,7 @@ msgstr "%d lignes, %d caractères"
 
 #: objinspstrconsts.oisenablesetshint
 msgid "Only affects the EnableSets property of the Test Input"
-msgstr ""
+msgstr "N'affecte que la propriété EnableSets de l'entrée de test"
 
 #: objinspstrconsts.oisenumeration
 msgid "Enumeration"
@@ -596,7 +596,7 @@ msgstr "Erreur au chargement de l'image \"%s\" :%s%s"
 #: objinspstrconsts.oiserrorreadingsamplefile
 #, object-pascal-format
 msgid "Error reading file %s"
-msgstr ""
+msgstr "Erreur de lecture du fichier %s"
 
 #: objinspstrconsts.oiserrorwhiledeletingaction
 #, object-pascal-format
@@ -638,7 +638,7 @@ msgstr "Méthode incompatible"
 #: objinspstrconsts.oisinfinitynotsupported
 msgctxt "objinspstrconsts.oisinfinitynotsupported"
 msgid "Setting a floating point property to positive or negative Infinity at design time is not supported"
-msgstr ""
+msgstr "La définition d'une propriété en virgule flottante à l'infini positif ou négatif lors de la conception n'est pas prise en charge"
 
 #: objinspstrconsts.oisinputmask
 msgid "Input Mask:"
@@ -646,7 +646,7 @@ msgstr "Masque de saisie :"
 
 #: objinspstrconsts.oisinputmaskeditor
 msgid "Input Mask Editor"
-msgstr ""
+msgstr "Editeur de masque d'entrée"
 
 #: objinspstrconsts.oisinsertpagename
 msgid "Insert Page Name"
@@ -705,7 +705,7 @@ msgstr "Masques..."
 
 #: objinspstrconsts.oismasksamplefilter
 msgid "Input mask sample files (*.lem;*.dem)|*.lem;*.dem|All files|*"
-msgstr ""
+msgstr "Fichiers d'exemples du masque d'entrée (*.lem;*.dem)|*.lem;*.dem|Tous les fichiers|*"
 
 #: objinspstrconsts.oismethod
 msgid "Method"
@@ -734,7 +734,7 @@ msgstr "Déplacer le champ vers le haut"
 
 #: objinspstrconsts.oisnannotsupported
 msgid "Setting a floating point property to NaN at design time is not supported"
-msgstr ""
+msgstr "La définition d'une propriété en virgule flottante à NaN au moment de la conception n'est pas prise en charge"
 
 #: objinspstrconsts.oisnew
 msgid "&New"
@@ -889,7 +889,7 @@ msgstr "Propriétés &sélectionnées"
 
 #: objinspstrconsts.oisselectinputmasksample
 msgid "Select input mask sample file"
-msgstr ""
+msgstr "Sélectionner le fichier d'exemple du masque d'entrée"
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"
@@ -1294,11 +1294,11 @@ msgstr "Inconnu"
 
 #: objinspstrconsts.oisunload
 msgid "Unload"
-msgstr ""
+msgstr "Décharger"
 
 #: objinspstrconsts.oisunloadhint
 msgid "Unloads the current sample file"
-msgstr ""
+msgstr "Décharge le fichier d'exemple en cours"
 
 #: objinspstrconsts.oisunselectall
 msgid "&Unselect all"
@@ -1314,7 +1314,7 @@ msgstr "Valeur :"
 
 #: objinspstrconsts.oisvalueoutofrange
 msgid "Property value out of range."
-msgstr ""
+msgstr "La valeur de la propriété est hors limites."
 
 #: objinspstrconsts.oisvariant
 msgid "Variant"
@@ -1404,42 +1404,34 @@ msgid "Sections Editor ..."
 msgstr "Éditeur de sections..."
 
 #: objinspstrconsts.sccsiledtadd
-#, fuzzy
-#| msgid "&Add ..."
 msgctxt "objinspstrconsts.sccsiledtadd"
 msgid "Add"
-msgstr "&Ajouter..."
+msgstr "Ajouter"
 
 #: objinspstrconsts.sccsiledtaddimg
 msgid "Add image ..."
-msgstr ""
+msgstr "Ajouter une image..."
 
 #: objinspstrconsts.sccsiledtaddmoreresolutions
-#, fuzzy
-#| msgid "Add more resolutions ..."
 msgid "Add image with multiple resolutions ..."
-msgstr "Ajouter de nouvelles résolutions..."
+msgstr "Ajouter une image en résolutions multiples..."
 
 #: objinspstrconsts.sccsiledtaddnewresolution
-#, fuzzy
-#| msgid "New resolution ..."
 msgid "Register new resolution (image size) ..."
-msgstr "Nouvelle résolution..."
+msgstr "Enregistrer la nouvelle résolution (taille de l'image) ..."
 
 #: objinspstrconsts.sccsiledtaddsingleresolution
 msgctxt "objinspstrconsts.sccsiledtaddsingleresolution"
 msgid "Add image(s) with single resolution..."
-msgstr ""
+msgstr "Ajouter une ou plusieurs images avec une résolution unique..."
 
 #: objinspstrconsts.sccsiledtaddsliced
 msgid "Add sliced ..."
 msgstr "Ajouter des icônes en morceaux..."
 
 #: objinspstrconsts.sccsiledtaddslicediconerror
-#, fuzzy
-#| msgid "Adding sliced icons is not supported."
 msgid "Adding sliced images is not supported."
-msgstr "L'ajout d'icônes en morceaux n'est pas pris en charge."
+msgstr "L'ajout d'images découpées n'est pas pris en charge."
 
 #: objinspstrconsts.sccsiledtadjustment
 msgid "Adjustment"
@@ -1467,34 +1459,26 @@ msgid "Center"
 msgstr "Centrer"
 
 #: objinspstrconsts.sccsiledtclear
-#, fuzzy
-#| msgid "&Clear"
 msgctxt "objinspstrconsts.sccsiledtclear"
 msgid "&Clear list"
-msgstr "&Effacer"
+msgstr "&Effacer la liste"
 
 #: objinspstrconsts.sccsiledtcrop
 msgid "Crop"
 msgstr "Rogner"
 
 #: objinspstrconsts.sccsiledtdelete
-#, fuzzy
-#| msgid "&Delete"
 msgctxt "objinspstrconsts.sccsiledtdelete"
 msgid "&Delete image"
-msgstr "&Supprimer"
+msgstr "&Supprimer l'image"
 
 #: objinspstrconsts.sccsiledtdeleteresolution
-#, fuzzy
-#| msgid "Delete resolution ..."
 msgid "Delete resolution (image size) ..."
-msgstr "Supprimer la résolution..."
+msgstr "Supprimer la résolution (taille d'image)..."
 
 #: objinspstrconsts.sccsiledtdeleteresolutionconfirmation
-#, fuzzy
-#| msgid "Select the resolution to delete."
 msgid "Select the resolution (image size) to delete."
-msgstr "Choisissez la résolution à supprimer."
+msgstr "Choisissez la résolution (taille de l'image) à supprimer."
 
 #: objinspstrconsts.sccsiledtgrplcaption
 msgid "Images"
@@ -1505,8 +1489,6 @@ msgid "Selected Image"
 msgstr "Image sélectionnée"
 
 #: objinspstrconsts.sccsiledtimagewidthofnewresolution
-#, fuzzy
-#| msgid "Image width of the new resolution:"
 msgid "Image width of the new resolution:"
 msgstr "Largeur d'image de la nouvelle résolution :"
 
@@ -1534,7 +1516,7 @@ msgstr "Nouvelle Image"
 
 #: objinspstrconsts.sccsiledtpastefromclipboard
 msgid "Paste image from clipboard"
-msgstr ""
+msgstr "Coller une image à partir du presse-papiers"
 
 #: objinspstrconsts.sccsiledtransparentcolor
 msgid "Transparent Color:"
@@ -1542,48 +1524,39 @@ msgstr "Couleur de transparence :"
 
 #: objinspstrconsts.sccsiledtremove
 msgid "Remove"
-msgstr ""
+msgstr "Supprimer"
 
 #: objinspstrconsts.sccsiledtreplace
-#, fuzzy
-#| msgid "&Replace ..."
 msgctxt "objinspstrconsts.sccsiledtreplace"
 msgid "Replace"
-msgstr "&Remplacer..."
+msgstr "Remplacer"
 
 #: objinspstrconsts.sccsiledtreplaceallresolutions
-#, fuzzy
-#| msgid "Replace all resolutions ..."
 msgid "Replace all resolutions of an image ..."
-msgstr "Remplacer toutes les résolutions..."
+msgstr "Remplacer toutes les résolutions d'une image ..."
 
 #: objinspstrconsts.sccsiledtreplaceimg
 msgid "Replace image ..."
-msgstr ""
+msgstr "Remplacer l'image ..."
 
 #: objinspstrconsts.sccsiledtreplacesingleresolution
 msgid "Replace single resolution of an image ..."
-msgstr ""
+msgstr "Remplacer la résolution unique d'une image ..."
 
 #: objinspstrconsts.sccsiledtresolutionsbtn
 msgid "Resolutions"
-msgstr ""
+msgstr "Résolutions"
 
 #: objinspstrconsts.sccsiledtsave
-#, fuzzy
-#| msgid "&Save ..."
 msgctxt "objinspstrconsts.sccsiledtsave"
 msgid "&Save image ..."
-msgstr "&Enregistrer..."
+msgstr "&Enregistrer l'image..."
 
 #: objinspstrconsts.sccsiledtsaveall
-#, fuzzy
-#| msgid "Save All ..."
 msgid "Save all ..."
 msgstr "Tout enregistrer..."
 
 #: objinspstrconsts.sccsiledtsavebtn
-#, fuzzy
 msgctxt "objinspstrconsts.sccsiledtsavebtn"
 msgid "Save"
 msgstr "Enregistrer"
@@ -1650,7 +1623,7 @@ msgstr "État de l'index :"
 
 #: objinspstrconsts.sccslvedtmsgownerdata
 msgid "List items cannot be edited at design-time when OwnerData is enabled. Use Items.Count and OnData at run-time instead."
-msgstr ""
+msgstr "Les éléments de la liste ne peuvent pas être modifiés au moment de la conception lorsque OwnerData est activé. Utilisez plutôt Items.Count et OnData au moment de l'exécution."
 
 #: objinspstrconsts.sccslvedtnewitem
 msgctxt "objinspstrconsts.sccslvedtnewitem"
@@ -1690,37 +1663,37 @@ msgstr "Nettoyer"
 #: objinspstrconsts.sccssgedtcolrowinfo
 #, object-pascal-format
 msgid "(%d columns, %d rows)"
-msgstr ""
+msgstr "(%d colonnes, %d lignes)"
 
 #: objinspstrconsts.sccssgedtdelcol
 msgid "Delete column"
-msgstr ""
+msgstr "Supprimer la colonne"
 
 #: objinspstrconsts.sccssgedtdelcolno
 #, object-pascal-format
 msgid "Delete column #%d?"
-msgstr ""
+msgstr "Supprimer la colonne #%d ?"
 
 #: objinspstrconsts.sccssgedtdelrow
 msgid "Delete row"
-msgstr ""
+msgstr "Supprimer la ligne"
 
 #: objinspstrconsts.sccssgedtdelrowno
 #, object-pascal-format
 msgid "Delete row #%d?"
-msgstr ""
+msgstr "Supprimer la ligne #%d ?"
 
 #: objinspstrconsts.sccssgedteditcoltitle
 msgid "Edit column title"
-msgstr ""
+msgstr "Modifier le titre de la colonne"
 
 #: objinspstrconsts.sccssgedteditfixedcoltitle
 msgid "Edit fixed column title"
-msgstr ""
+msgstr "Modifier le titre d'une colonne fixe"
 
 #: objinspstrconsts.sccssgedteditrowheader
 msgid "Edit row header"
-msgstr ""
+msgstr "Modifier l'en-tête de ligne"
 
 #: objinspstrconsts.sccssgedtgrp
 msgid "String Grid"
@@ -1728,19 +1701,17 @@ msgstr "Grille de chaînes"
 
 #: objinspstrconsts.sccssgedtinscol
 msgid "Insert column"
-msgstr ""
+msgstr "Insérer une colonne"
 
 #: objinspstrconsts.sccssgedtinsrow
 msgid "Insert row"
-msgstr ""
+msgstr "Insérer une ligne"
 
 #: objinspstrconsts.sccssgedtload
 msgid "Load ..."
 msgstr "Charger..."
 
 #: objinspstrconsts.sccssgedtmoverowscols
-#, fuzzy
-#| msgid "Move Rows/Cols"
 msgid "Move rows/columns"
 msgstr "Déplacer les rangées/colonnes"
 
@@ -1761,7 +1732,7 @@ msgstr "Enregistrer"
 
 #: objinspstrconsts.sccssgedttitle
 msgid "Title"
-msgstr ""
+msgstr "Titre"
 
 #: objinspstrconsts.sccstredt
 msgctxt "objinspstrconsts.sccstredt"
@@ -1774,7 +1745,6 @@ msgid "Apply"
 msgstr "Appliquer"
 
 #: objinspstrconsts.sccstredtcancel
-#, fuzzy
 msgctxt "objinspstrconsts.sccstredtcancel"
 msgid "&Cancel"
 msgstr "&Annuler"
@@ -1785,21 +1755,21 @@ msgstr "Éditeur d'éléments TreeView"
 
 #: objinspstrconsts.sccstredtconfirmationcaption
 msgid "Confirmation"
-msgstr ""
+msgstr "Confirmation"
 
 #: objinspstrconsts.sccstredtconfirmationfilereplace
 msgctxt "objinspstrconsts.sccstredtconfirmationfilereplace"
 msgid "The file already exists, replace it?"
-msgstr ""
+msgstr "Le fichier existe déjà, voulez-vous le remplacer ?"
 
 #: objinspstrconsts.sccstredtconfirmationimagesloss
 msgctxt "objinspstrconsts.sccstredtconfirmationimagesloss"
 msgid "Information about node images cannot be stored in the file. Continue anyway?"
-msgstr ""
+msgstr "Les informations relatives aux images de nœuds ne peuvent pas être stockées dans le fichier. Continuer quand même ?"
 
 #: objinspstrconsts.sccstredtconfirmationtreereplace
 msgid "The current tree will be overwritten, continue?"
-msgstr ""
+msgstr "L'arbre en cours sera écrasé, voulez-vous continuer ?"
 
 #: objinspstrconsts.sccstredtdelete
 msgctxt "objinspstrconsts.sccstredtdelete"
@@ -1809,12 +1779,12 @@ msgstr "Supprimer"
 #: objinspstrconsts.sccstredtimagelistnotassigned
 #, object-pascal-format
 msgid "\"%s\" not assigned"
-msgstr ""
+msgstr "\"%s\" non attribué"
 
 #: objinspstrconsts.sccstredtinvalidindex
 #, object-pascal-format
 msgid "\"%s\" has only %d images"
-msgstr ""
+msgstr "\"%s\" n'a que %d images"
 
 #: objinspstrconsts.sccstredtitem
 msgctxt "objinspstrconsts.sccstredtitem"
@@ -1822,24 +1792,21 @@ msgid "Item"
 msgstr "Élément"
 
 #: objinspstrconsts.sccstredtlabelimageindex
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Image Index"
+#, object-pascal-format
 msgctxt "objinspstrconsts.sccstredtlabelimageindex"
 msgid "Image Index%s:"
-msgstr "Index d'image"
+msgstr "Index d'image %s :"
 
 #: objinspstrconsts.sccstredtlabelselindex
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Selected Index"
+#, object-pascal-format
 msgid "Selected Index%s:"
-msgstr "Index sélectionné"
+msgstr "Index sélectionné %s :"
 
 #: objinspstrconsts.sccstredtlabelstateindex
-#, object-pascal-format, fuzzy, badformat
-#| msgid "State Index"
+#, object-pascal-format
 msgctxt "objinspstrconsts.sccstredtlabelstateindex"
 msgid "State Index%s:"
-msgstr "Index d'état"
+msgstr "Index d'état %s :"
 
 #: objinspstrconsts.sccstredtnewitem
 msgctxt "objinspstrconsts.sccstredtnewitem"
@@ -1853,11 +1820,11 @@ msgstr "Nouveau sous-élément"
 
 #: objinspstrconsts.sccstredtno
 msgid "&No"
-msgstr ""
+msgstr "&Non"
 
 #: objinspstrconsts.sccstredtopen
 msgid "Open file"
-msgstr ""
+msgstr "Ouvrir un fichier"
 
 #: objinspstrconsts.sccstredtopendialog
 msgctxt "objinspstrconsts.sccstredtopendialog"
@@ -1865,17 +1832,14 @@ msgid "Open"
 msgstr "Ouvrir"
 
 #: objinspstrconsts.sccstredtrename
-#, fuzzy
 msgctxt "objinspstrconsts.sccstredtrename"
 msgid "Rename"
 msgstr "Renommer"
 
 #: objinspstrconsts.sccstredtsave
-#, fuzzy
-#| msgid "Save"
 msgctxt "objinspstrconsts.sccstredtsave"
 msgid "Save to file"
-msgstr "Enregistrer"
+msgstr "Enregistrer le fichier"
 
 #: objinspstrconsts.sccstredtsavedialog
 msgctxt "objinspstrconsts.sccstredtsavedialog"
@@ -1884,7 +1848,7 @@ msgstr "Enregistrer"
 
 #: objinspstrconsts.sccstredtyes
 msgid "&Yes"
-msgstr ""
+msgstr "&Oui"
 
 #: objinspstrconsts.srgrabkey
 msgid "Grab key"

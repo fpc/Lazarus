@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2021-11-25 14:35+0100\n"
+"PO-Revision-Date: 2024-10-29 08:30+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language: fr_FR\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Generator: Poedit 3.0\n"
+"X-Generator: Poedit 3.5\n"
 
 #: dockedstrconsts.sallowsizingcaption
 msgid "Allow size changing"
@@ -121,31 +121,31 @@ msgstr "Détacher le côté du contrôle"
 
 #: dockedstrconsts.senabledockeddsgner
 msgid "Show the form-editor as (docked) tab in the editor window (Requires IDE restart)"
-msgstr ""
+msgstr "Afficher l'éditeur de formulaire sous forme d'onglet (ancré) dans la fenêtre de l'éditeur (nécessite le redémarrage de l'EDI)"
 
 #: dockedstrconsts.setupdesignerclassic
 msgid "Classic Form Editor (floating):"
-msgstr ""
+msgstr "Éditeur de fiche classique (flottant) :"
 
 #: dockedstrconsts.setupdesignerdocked
 msgid "The form editor is part of the IDE's source editor (tabbed interface)."
-msgstr ""
+msgstr "L'éditeur de fiche fait partie de l'éditeur de source de l'EDI (interface à onglets)."
 
 #: dockedstrconsts.setupdesignerfloat
 msgid "The form editor shows the edited form as a normal window."
-msgstr ""
+msgstr "L'éditeur de fiche affiche la fiche éditée comme une fenêtre normale."
 
 #: dockedstrconsts.setupdesignerinfo
 msgid "The \"classic\" designer can be positioned on your screen independent of other parts of the IDE. The \"modern\" docked designer will be embedded into the source-edit window, and you will have a tab to toggle between source and form. You can open a 2nd source-edit window to see both at the same time."
-msgstr ""
+msgstr "Le concepteur \"classique\" peut être positionné sur votre écran indépendamment des autres parties de l'EDI. Le concepteur \"moderne\" sera intégré dans la fenêtre d'édition des sources, et vous disposerez d'un onglet pour basculer entre le code source et le formulaire. Vous pouvez ouvrir une deuxième fenêtre d'édition de source pour voir les deux en même temps."
 
 #: dockedstrconsts.setupdesignermodern
 msgid "Modern Form Editor (docked/tabbed):"
-msgstr ""
+msgstr "Éditeur de fiche moderne (ancré/avec onglets) :"
 
 #: dockedstrconsts.setupmultiwindowideoption
 msgid "You can change this in the IDE options under: \"Docked Form Editor\""
-msgstr ""
+msgstr "Vous pouvez changer cela dans les options de l'EDI sous : \"Éditeur de fiche ancré\""
 
 #: dockedstrconsts.sforcerefreshingcaption
 msgid "Force Refreshing At Sizing"
@@ -157,11 +157,11 @@ msgstr "Forcer l'actualisation de la fiche lorsque l'utilisateur la dimensionne"
 
 #: dockedstrconsts.sformeditor
 msgid "Form editor / Designer"
-msgstr ""
+msgstr "Éditeur de fiche / Concepteur"
 
 #: dockedstrconsts.sidelayout
 msgid "IDE Layout"
-msgstr ""
+msgstr "Disposition de l'EDI"
 
 #: dockedstrconsts.smouseborderfactorcaption
 msgid "Mouse cursor factor for BorderSpacing property"
