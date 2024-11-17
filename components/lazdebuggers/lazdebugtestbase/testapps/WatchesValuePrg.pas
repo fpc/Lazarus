@@ -274,6 +274,14 @@ type
     E8Val50, E8Val51, E8Val52, E8Val53, E8Val54, E8Val55, E8Val56, E8Val57, E8Val58, E8Val59, E8Val5A, E8Val5B
   );
 
+  TEnumX0 = (EnXVal01= -503, EnXVal02= 4, EnXVal03= 7, EnXVal04= 510);
+  {$PackEnum 1}
+  TEnumX1 = (EnXVal11=   -3, EnXVal12= 4, EnXVal13= 7, EnXVal14=  10);
+  {$PackEnum 2}
+  TEnumX2 = (EnXVal21= -203, EnXVal22= 4, EnXVal23= 7, EnXVal24= 210);
+  {$PackEnum default}
+
+
   TSet   = set of TEnum;
   TSet3  = set of TEnum3;
   TSmallRangeSet = set of TSmallRange;
