@@ -421,6 +421,13 @@
   pre__Enum16{e}  _OP_ TEnum16(ExVal23);         //@@ _pre3_Enum16{e3};
   pre__Enum16A{e} _OP_ TEnum16(ExValX5);         //@@ _pre3_Enum16A{e3};
 
+  pre__EnumX0a{e}  _OP_ TEnumX0(EnXVal01);          //@@ _pre3_EnumX0a{e3};
+  pre__EnumX0b{e}  _OP_ TEnumX0(EnXVal04);          //@@ _pre3_EnumX0b{e3};
+  pre__EnumX1a{e}  _OP_ TEnumX1(EnXVal11);          //@@ _pre3_EnumX1a{e3};
+  pre__EnumX1b{e}  _OP_ TEnumX1(EnXVal14);          //@@ _pre3_EnumX1b{e3};
+  pre__EnumX2a{e}  _OP_ TEnumX2(EnXVal21);          //@@ _pre3_EnumX2a{e3};
+  pre__EnumX2b{e}  _OP_ TEnumX2(EnXVal24);          //@@ _pre3_EnumX2b{e3};
+
   pre__Set{e}      _OP_ TSet([EnVal2, EnVal4]);          //@@ _pre3_Set{e3};
   pre__SmallSet{e} _OP_ TSmallRangeSet([22, 24,25]);     //@@ _pre3_SmallSet{e3};
 
