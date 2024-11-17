@@ -59,7 +59,8 @@ type
     FSortAlphabetically: boolean;
     procedure CloseListItem(ListIndex: integer);
     procedure PopulateList;
-    function SrcEditorByListItem(ListIndex: integer): TSourceEditor;
+    function SrcWinAndEditorByListItem(ListIndex: integer;
+      out SourceWindow: TSourceNotebook): TSourceEditor;
     procedure SetSortAlphabetically(AValue: boolean);
     procedure UpdateCheckAllCaption;
     procedure UpdateButtons;
@@ -186,12 +187,13 @@ end;
 
 procedure TEditorFileManagerForm.SaveCheckedButtonClick(Sender: TObject);
 var
-  i: Integer;
+  SrcWindow: TSourceNotebook;
   SrcEdit: TSourceEditor;
+  i: Integer;
 begin
   for i:=CheckListBox1.Count-1 downto 0 do
     if CheckListBox1.Checked[i] then begin
-      SrcEdit:=SrcEditorByListItem(i);
+      SrcEdit:=SrcWinAndEditorByListItem(i, SrcWindow);
       Assert(Assigned(SrcEdit), 'TEditorFileManagerForm.SaveCheckedButtonClick: SrcEdit is not assigned.');
       if (not SrcEdit.CodeBuffer.IsVirtual) and (LazarusIDE.DoSaveEditorFile(SrcEdit, []) <> mrOk) then
         DebugLn(['TSourceNotebook.EncodingClicked LazarusIDE.DoSaveEditorFile failed']);
@@ -276,17 +278,18 @@ end;
 
 procedure TEditorFileManagerForm.MoveDownBtnClick(Sender: TObject);
 var
+  SrcWindow: TSourceNotebook;
   SrcEdit: TSourceEditor;
   i: Integer;
 begin
   i:=CheckListBox1.ItemIndex;
   if (i>-1) and (i<CheckListBox1.Items.Count-1)
   and (FilterEdit.Filter='') and not SortAlphabetically then begin
-    SrcEdit:=SrcEditorByListItem(i);
+    SrcEdit:=SrcWinAndEditorByListItem(i, SrcWindow);
     Assert(Assigned(SrcEdit), 'TEditorFileManagerForm.MoveDownBtnClick: SrcEdit is not assigned.');
-    if SrcEdit.PageIndex < SrcEdit.SourceNotebook.PageCount-1 then begin
+    if SrcEdit.PageIndex < SrcWindow.PageCount-1 then begin
       // First move the source editor tab
-      SrcEdit.SourceNotebook.MoveEditor(SrcEdit.PageIndex, SrcEdit.PageIndex+1);
+      SrcWindow.MoveEditor(SrcEdit.PageIndex, SrcEdit.PageIndex+1);
       // Then switch the list items
       FilterEdit.Items.Exchange(i, i+1);
       FilterEdit.InvalidateFilter;
@@ -297,16 +300,17 @@ end;
 
 procedure TEditorFileManagerForm.MoveUpBtnClick(Sender: TObject);
 var
+  SrcWindow: TSourceNotebook;
   SrcEdit: TSourceEditor;
   i: Integer;
 begin
   i := CheckListBox1.ItemIndex;
   if (i > 0) and (FilterEdit.Filter='') and not SortAlphabetically then begin
-    SrcEdit:=SrcEditorByListItem(i);
+    SrcEdit:=SrcWinAndEditorByListItem(i, SrcWindow);
     Assert(Assigned(SrcEdit), 'TEditorFileManagerForm.MoveUpBtnClick: SrcEdit is not assigned.');
     if SrcEdit.PageIndex > 0 then begin
       // First move the source editor tab
-      SrcEdit.SourceNotebook.MoveEditor(SrcEdit.PageIndex, SrcEdit.PageIndex-1);
+      SrcWindow.MoveEditor(SrcEdit.PageIndex, SrcEdit.PageIndex-1);
       // Then switch the list items
       FilterEdit.Items.Exchange(i, i-1);
       FilterEdit.InvalidateFilter;
@@ -317,14 +321,16 @@ end;
 
 procedure TEditorFileManagerForm.ActivateButtonClick(Sender: TObject);
 var
-  i: Integer;
+  SrcWindow: TSourceNotebook;
   SrcEdit: TSourceEditor;
+  i: Integer;
 begin
   for i:=0 to CheckListBox1.Count-1 do
     if CheckListBox1.Selected[i] then begin       // Find first selected.
-      SrcEdit:=SrcEditorByListItem(CheckListBox1.ItemIndex);
+      SrcEdit:=SrcWinAndEditorByListItem(CheckListBox1.ItemIndex, SrcWindow);
       Assert(Assigned(SrcEdit), 'TEditorFileManagerForm.ActivateButtonClick: SrcEdit is not assigned.');
       SrcEdit.Activate;
+      SrcWindow.FocusEditor;
       Break;
     end;
 end;
@@ -333,9 +339,10 @@ end;
 
 procedure TEditorFileManagerForm.CloseListItem(ListIndex: integer);
 var
+  SrcWindow: TSourceNotebook;
   SrcEdit: TSourceEditor;
 begin
-  SrcEdit:=SrcEditorByListItem(ListIndex);
+  SrcEdit:=SrcWinAndEditorByListItem(ListIndex, SrcWindow);
   Assert(Assigned(SrcEdit), 'TEditorFileManagerForm.CloseListItem: SrcEdit is not assigned.');
   LazarusIDE.DoCloseEditorFile(SrcEdit, [cfSaveFirst]);
 end;
@@ -343,37 +350,60 @@ end;
 procedure TEditorFileManagerForm.PopulateList;
 // Populate the list with all open editor file names
 var
+  SrcWindow: TSourceNotebook;
   SrcEdit: TSourceEditor;
+  Modi, Suffix: String;
   i, j: Integer;
-  sw: TSourceNotebook;
-  Modi: String;
 begin
   FilterEdit.Items.Clear;
   with SourceEditorManager do
     for i:=0 to SourceWindowCount-1 do begin
-      sw:=SourceWindows[i];
-      Assert(sw.PageCount=sw.EditorCount, 'sw.PageCount<>sw.EditorCount');
-      for j:=0 to sw.EditorCount-1 do begin
-        SrcEdit:=sw.FindSourceEditorWithPageIndex(j);
+      SrcWindow:=SourceWindows[i];
+      Assert(SrcWindow.PageCount=SrcWindow.EditorCount, 'sw.PageCount<>sw.EditorCount');
+      if SourceWindowCount>1 then
+        Suffix:=Format(' [%d]', [i+1])
+      else
+        Suffix:='';
+      for j:=0 to SrcWindow.EditorCount-1 do begin
+        SrcEdit:=SrcWindow.FindSourceEditorWithPageIndex(j);
         if SrcEdit.Modified then
           Modi:='* '
         else
           Modi:='';
-        FilterEdit.Items.Add(Modi+SrcEdit.FileName);
+        FilterEdit.Items.Add(Modi+SrcEdit.FileName+Suffix);
       end;
     end;
   FilterEdit.InvalidateFilter;
   FileCountLabel.Caption:=Format(dlgFiles,[IntToStr(SourceEditorManager.SourceEditorCount)]);
 end;
 
-function TEditorFileManagerForm.SrcEditorByListItem(ListIndex: integer): TSourceEditor;
+function TEditorFileManagerForm.SrcWinAndEditorByListItem(ListIndex: integer;
+  out SourceWindow: TSourceNotebook): TSourceEditor;
 var
-  s: String;
+  s, WinS: String;
+  i, WinNro: Integer;
 begin
+  SourceWindow:=Nil;
   s:=CheckListBox1.Items[ListIndex];
-  if (s<>'') and (s[1]='*') then        // Modified indicator
+  if s='' then Exit(Nil);
+  if s[1]='*' then                      // Modified indicator
     delete(s, 1, 2);
-  Result:=SourceEditorManager.SourceEditorIntfWithFilename(s);
+  WinS:='';
+  WinNro:=0;
+  i:=Length(s);
+  if s[i]=']' then begin                // Editor window number at the end
+    repeat
+      Dec(i);
+      if (i<=0) or (s[i]='[') then break;
+      Insert(s[i],WinS,1);
+    until false;
+    if i<=0 then Exit(Nil);             // Something went wrong
+    Dec(i,2);                           // Skip a space and '['
+    SetLength(s,i);
+    WinNro:=StrToInt(WinS)-1;
+  end;
+  SourceWindow:=SourceEditorManager.SourceWindows[WinNro];
+  Result:=SourceWindow.SourceEditorIntfWithFilename(s) as TSourceEditor;
 end;
 
 procedure TEditorFileManagerForm.SetSortAlphabetically(AValue: boolean);
@@ -402,6 +432,7 @@ end;
 
 procedure TEditorFileManagerForm.UpdateMoveButtons(ListIndex: integer);
 var
+  SrcWindow: TSourceNotebook;
   SrcEdit: TSourceEditor;
   UpEnabled, DownEnabled: Boolean;
 begin
@@ -410,10 +441,10 @@ begin
   if (ListIndex>-1) and (ListIndex<CheckListBox1.Items.Count)
   and (FilterEdit.Filter='') and not SortAlphabetically then begin
     //DebugLn(['TEditorFileManagerForm.UpdateMoveButtons: Filename', CheckListBox1.Items[ListIndex], ', ListIndex:', ListIndex]);
-    SrcEdit:=SrcEditorByListItem(ListIndex);
+    SrcEdit:=SrcWinAndEditorByListItem(ListIndex, SrcWindow);
     if Assigned(SrcEdit) then begin
       DownEnabled:=(ListIndex<CheckListBox1.Items.Count-1)
-               and (SrcEdit.PageIndex<SrcEdit.SourceNotebook.PageCount-1);
+               and (SrcEdit.PageIndex<SrcWindow.PageCount-1);
       UpEnabled:=(ListIndex>0) and (SrcEdit.PageIndex>0);
     end;
   end;
