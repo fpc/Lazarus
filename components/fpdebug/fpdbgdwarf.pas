@@ -3126,7 +3126,7 @@ end;
 
 function TFpValueDwarfEnumMember.GetAsCardinal: QWord;
 begin
-  Result := FOwnerVal.OrdinalValue;
+  Result := QWord(FOwnerVal.OrdinalValue);
 end;
 
 function TFpValueDwarfEnumMember.GetAsInteger: Int64;
