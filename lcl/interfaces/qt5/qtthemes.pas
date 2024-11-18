@@ -435,6 +435,10 @@ begin
                 opt := QStyleOptionTabWidgetFrame_create();
                 // need widget to draw gradient
               end;
+            QStylePE_FrameTabBarBase:
+              begin
+                opt := QStyleOptionTabBarBase_Create();
+              end;
             QStylePE_FrameFocusRect:
               begin
                 opt := QStyleOptionFocusRect_create();
