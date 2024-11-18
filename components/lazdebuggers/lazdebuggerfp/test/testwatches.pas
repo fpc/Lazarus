@@ -757,7 +757,8 @@ procedure TTestWatches.TestWatchesValue;
     t.Add(AName, p+'Real'+e,       weFloat(50.25+n,                 x+'Real'       ));
     t.Add(AName, p+'Single'+e,     weSingle(100.125+n,              x+'Single'     ));
     t.Add(AName, p+'Double'+e,     weDouble(1000.125+n,             x+'Double'     ));
-    t.Add(AName, p+'Extended'+e,   weFloat(10000.175+n,             ''   )); // Double ?
+    t.Add(AName, p+'Extended'+e,   weFloat(10000.175+n,             ''   )) // Double ?
+    .IgnAll([], Compiler.Version <= 030202);
 //    {$IFDEF cpu64}
 //    if Compiler.CpuBitType = cpu32 then // a 64bit debugger does has no 10byte extended type // TODO: check for error
 //      t.Tests[-1]^.AddFlag(ehExpectError); // TODO: check error msg
@@ -773,7 +774,8 @@ procedure TTestWatches.TestWatchesValue;
       t.Add(AName, p+'Real_2'+e,     weFloat(-50.25+n,                x+'Real'       ));
       t.Add(AName, p+'Single_2'+e,   weSingle(-100.125+n,             x+'Single'     ));
       t.Add(AName, p+'Double_2'+e,   weDouble(-1000.125+n,            x+'Double'     ));
-      t.Add(AName, p+'Extended_2'+e, weFloat(-10000.175+n,            ''   )); // Double ?
+      t.Add(AName, p+'Extended_2'+e, weFloat(-10000.175+n,            ''   )) // Double ?
+    .IgnAll([], Compiler.Version <= 030202);
 //      {$IFDEF cpu64}
 //      if Compiler.CpuBitType = cpu32 then // a 64bit debugger does has no 10byte extended type // TODO: check for error
 //        t.Tests[-1]^.AddFlag(ehExpectError); // TODO: check error msg
@@ -1780,6 +1782,11 @@ begin
 
 
     t.Clear;
+    (*
+:ord
+gvBitPackEnumArray
+TEnumX1
+    *)
 
     t.Add('refcnt', PREFIX+'refcnt(SRef0)',     weInteger( 0, #1, 0)).IgnTypeName().IgnAll(stDwarf2);
     t.Add('refcnt', PREFIX+'refcnt(SRef1)',     weInteger(-1, #1, 0)).IgnTypeName().IgnAll(stDwarf2);
@@ -4082,6 +4089,7 @@ procedure TTestWatches.TestWatchesExpression;
       t.Add('Signed ENUM-Cmp: ', enx01+' < '+enx02,       weBool((i and $FFFC) < (j and $FFFC)));
       t.Add('Signed ENUM-Cmp: ', enx01+' <> '+enx02,      weBool((i and $FFFC) <> (j and $FFFC)));
       t.Add('Signed ENUM-Cmp: ', enx01+' = '+enx02,       weBool((i and $FFFC) = (j and $FFFC)));
+//      t.Add('Signed ENUM-Cmp: ', enx01+' in ['+enx02+']', weBool((i and $FFFC) = (j and $FFFC)));
     end;
 
     for i := 0 to 39 do
@@ -4116,6 +4124,7 @@ procedure TTestWatches.TestWatchesExpression;
       t.Add('Signed ENUM-Cmp: ', enx01+' < '+enx02,       weBool((i and $FFFC) < (j and $FFFC)));
       t.Add('Signed ENUM-Cmp: ', enx01+' <> '+enx02,      weBool((i and $FFFC) <> (j and $FFFC)));
       t.Add('Signed ENUM-Cmp: ', enx01+' = '+enx02,       weBool((i and $FFFC) = (j and $FFFC)));
+//      t.Add('Signed ENUM-Cmp: ', enx01+' in ['+enx02+']', weBool((i and $FFFC) = (j and $FFFC)));
     end;
 
     for i := 0 to t.Count-1 do

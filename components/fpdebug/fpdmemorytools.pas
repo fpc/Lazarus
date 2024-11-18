@@ -1318,13 +1318,21 @@ end;
 function TFpDbgLocationContext.ReadExtended(const ALocation: TFpDbgMemLocation;
   ASize: TFpDbgValueSize; out AValue: TDbgExtended): Boolean;
 begin
+  {$IF DBG_HAS_EXTENDED}
   Result := MemManager.ReadMemory(rdtfloat, ALocation, ASize, @AValue, Min(SizeOf(AValue), DBG_EXTENDED_SIZE), Self);
+  {$ELSE}
+  Result := MemManager.ReadMemory(rdtfloat, ALocation, ASize, @AValue, Min(SizeOf(AValue), SizeOf(TDbgExtended)), Self);
+  {$ENDIF}
 end;
 
 function TFpDbgLocationContext.ReadFloat(const ALocation: TFpDbgMemLocation;
   ASize: TFpDbgValueSize; out AValue: TDbgExtended): Boolean;
 begin
+  {$IF DBG_HAS_EXTENDED}
   Result := MemManager.ReadMemory(rdtfloat, ALocation, ASize, @AValue, Min(SizeOf(AValue), DBG_EXTENDED_SIZE), Self);
+  {$ELSE}
+  Result := MemManager.ReadMemory(rdtfloat, ALocation, ASize, @AValue, Min(SizeOf(AValue), SizeOf(TDbgExtended)), Self);
+  {$ENDIF}
 end;
 
 function TFpDbgLocationContext.ReadString(const ALocation: TFpDbgMemLocation; ALen: Int64; out
