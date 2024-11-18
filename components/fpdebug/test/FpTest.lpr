@@ -4,8 +4,7 @@ program FpTest;
 {off $DEFINE TESTGUI}
 
 uses
-  Interfaces, Forms,
-  {$ifdef TESTGUI} GuiTestRunner, {$ELSE}  consoletestrunner, {$ENDIF}
+  {$ifdef TESTGUI} Interfaces, Forms, GuiTestRunner, {$ELSE}  consoletestrunner, {$ENDIF}
   TestHelperClasses,
   TestDwarfVarious, TestMemManager, TestPascalParser,
   TestErrorHandler, TestLineMap;
