@@ -8,7 +8,7 @@ uses
   {$ifdef TESTGUI} GuiTestRunner, {$ELSE}  consoletestrunner, {$ENDIF}
   TestHelperClasses,
   TestDwarfVarious, TestMemManager, TestPascalParser,
-  TestErrorHandler, TestLineMap;
+  TestErrorHandler, TestLineMap, TestAsm;
 
 {$R *.res}
 

@@ -5,9 +5,8 @@ unit TestAsm;
 interface
 
 uses
-  Classes, SysUtils, FpPascalBuilder, FpDbgDisasX86, FpDbgClasses, FpDbgLoader, FpDbgUtil,
-  FpDbgCpuX86, LazLoggerBase, TestOutputLogger, TestDbgTestSuites, fpcunit, testutils,
-  testregistry, RegExpr;
+  SysUtils, FpDbgDisasX86, FpDbgClasses, FpDbgUtil,
+  FpDbgCpuX86, LazLoggerBase, fpcunit, testregistry, RegExpr;
 
 type
 
@@ -54,12 +53,7 @@ var
     p := @s[1];
     DisAss.Disassemble(p, codeBytes, asmInstr);
 
-
-
-debugln([AName, ' // ',
-codeBytes, '  ', asmInstr,
-'  ', p-@s[1] ,' == ',Length(AData)
-]);
+    //debugln([AName, ' // ', codeBytes, '  ', asmInstr, '  ', p-@s[1] ,' == ',Length(AData)]);
 
     AssertEquals(AName+' Cnt bytes', Length(AData), p-@s[1]);
 
