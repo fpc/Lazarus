@@ -254,7 +254,10 @@ begin
 
   FCurrentTestName := 'Extended';
   DataExt := 1.7722;
-  GotRes := FDummyContext.ReadFloat(TargetLoc(TDbgPtr(@DataExt)), SizeVal(DBG_EXTENDED_SIZE), GotExt);
+  if DBG_HAS_EXTENDED then
+    GotRes := FDummyContext.ReadFloat(TargetLoc(TDbgPtr(@DataExt)), SizeVal(DBG_EXTENDED_SIZE), GotExt)
+  else
+    GotRes := FDummyContext.ReadFloat(TargetLoc(TDbgPtr(@DataExt)), SizeVal(SizeOf(DataExt)), GotExt);
   AssertTrue(FCurrentTestName +  'Read OK', GotRes);
   AssertEquals(FCurrentTestName + 'target not changed', 1.7722, double(DataExt));
   AssertEquals(FCurrentTestName + 'Val', double(DataExt), double(GotExt));
