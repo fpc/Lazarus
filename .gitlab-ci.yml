@@ -331,6 +331,24 @@ tests-codetools: # run Codetools tests and output results in JUnit format (for t
     - !reference [.runscheduled, rules]
     - !reference [.onsuccessjob, rules]
 
+tests-fpdebug: # run FPDebug tests and output results in JUnit format (for this FPC 3.3.1 and up is needed)
+  stage: build
+  variables:
+    OUTPUT_FILE: testresults_fpdebug.xml
+  script:
+    - make lazbuild FPC=/usr/lib/fpc/$FPC_MAIN_VER/ppcx64
+    - cd components/fpdebug/test
+    - $CI_PROJECT_DIR/lazbuild --compiler=/usr/lib/fpc/$FPC_MAIN_VER/ppcx64 --lazarusdir=$CI_PROJECT_DIR FpTest.lpi
+    - ./fptest --all --format=junit --file=$CI_PROJECT_DIR/$OUTPUT_FILE
+  artifacts:
+    when: always
+    paths:
+      - $OUTPUT_FILE
+    reports:
+      junit: $OUTPUT_FILE
+  rules:
+    - !reference [.manualjob, rules]
+
 tests-lcl: # run LCL tests and output results in JUnit format (for this FPC 3.3.1 and up is needed)
   stage: build
   variables:
