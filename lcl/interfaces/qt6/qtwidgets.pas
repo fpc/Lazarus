@@ -5438,6 +5438,7 @@ begin
     QtKey_QuoteLeft: Result := VK_OEM_3;
     QtKey_BraceLeft,
     QtKey_BracketLeft: Result := VK_OEM_4;
+    QtKey_Bar: Result := VK_LCL_BACKSLASH;
     QtKey_BackSlash: Result := VK_OEM_5;
     QtKey_BraceRight,
     QtKey_BracketRight: Result := VK_OEM_6;
