@@ -846,14 +846,14 @@ begin
               end;
             end;
           gptBox:
-            gtk_paint_box(
+            gtk_paint_shadow(
               Style, Window,
               State, Shadow,
               @ClipArea, Widget, PChar(Detail),
               Area.x, Area.y,
               Area.Width, Area.Height);
           gptBoxGap:
-            gtk_paint_box_gap(
+            gtk_paint_shadow_gap(
               Style, Window,
               State, Shadow,
               @ClipArea, Widget, PChar(Detail),
