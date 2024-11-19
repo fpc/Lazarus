@@ -1582,6 +1582,8 @@ var
   TWI: QTreeWidgetItemH;
   Str: WideString;
   AAlignment: QtAlignment;
+  ABmp: TBitmap;
+  AListItem: QListWidgetItemH;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemSetText') then
     Exit;
@@ -1597,6 +1599,18 @@ begin
     if (TCustomListViewHack(ALV).Columns.Count > 0) and (ASubIndex < TCustomListViewHack(ALV).Columns.Count)  then
       AAlignment := AlignmentToQtAlignmentMap[ALV.Column[ASubIndex].Alignment];
     QtListWidget.setItemText(AIndex, AText, AAlignment);
+    if (TCustomListViewHack(ALV).ViewStyle = vsIcon) and (AItem.ImageIndex < 0) and
+      Assigned(TListView(ALV).LargeImages) then
+    begin
+      ABmp := TBitmap.Create;
+      ABmp.PixelFormat := pf32bit;
+      ABmp.SetSize(TListView(ALV).LargeImages.Width, TListView(ALV).LargeImages.Height);
+      ABmp.Canvas.Brush.Color := clNone;
+      ABmp.Canvas.FillRect(Rect(0, 0, ABmp.Width, ABmp.Height));
+      AListItem := QtListWidget.getItem(AIndex);
+      QListWidgetItem_setIcon(AListItem, TQtImage(ABmp.Handle).AsIcon);
+      ABmp.Free;
+    end;
   end else
   begin
     QtTreeWidget := TQtTreeWidget(ALV.Handle);
