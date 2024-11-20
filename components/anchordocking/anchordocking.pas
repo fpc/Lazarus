@@ -243,6 +243,7 @@ type
     property DockParentClientSize: TSize read FDockParentClientSize;
     procedure UpdateDockBounds;
     property AsyncUpdateDockBounds: boolean read FAsyncUpdateDockBounds write SetAsyncUpdateDockBounds;
+    procedure ConstrainBounds(var ALeft, ATop, AWidth, AHeight: integer);
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: integer); override; // any normal movement sets the DockBounds
     procedure SetBoundsPercentually;
     procedure SetBoundsKeepDockBounds(ALeft, ATop, AWidth, AHeight: integer); // movement for scaling keeps the DockBounds
@@ -7974,6 +7975,24 @@ begin
     UpdatePercentPosition;
 end;
 
+procedure TAnchorDockSplitter.ConstrainBounds(var ALeft, ATop, AWidth, AHeight: integer);
+begin
+  if Parent = nil then
+    exit;
+  if not (akRight in Anchors) then begin
+    if ALeft + AWidth > Parent.ClientWidth then
+      ALeft := Parent.ClientWidth - AWidth;
+    if ALeft < 0 then
+      ALeft := 0;
+  end;
+  if not (akBottom in Anchors) then begin
+    if ATop + AHeight > Parent.ClientHeight then
+      ATop := Parent.ClientHeight - AHeight;
+    if ATop < 0 then
+      ATop := 0;
+  end;
+end;
+
 procedure TAnchorDockSplitter.UpdatePercentPosition;
 begin
   case ResizeAnchor of
@@ -8004,6 +8023,7 @@ procedure TAnchorDockSplitter.SetBounds(ALeft, ATop, AWidth, AHeight: integer);
 begin
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockSplitter.SetBounds'){$ENDIF};
   try
+    ConstrainBounds(ALeft, ATop, AWidth, AHeight);
     inherited SetBounds(ALeft, ATop, AWidth, AHeight);
     UpdateDockBounds;
   finally
@@ -8013,6 +8033,7 @@ end;
 
 procedure TAnchorDockSplitter.SetBoundsKeepDockBounds(ALeft, ATop, AWidth, AHeight: integer);
 begin
+  ConstrainBounds(ALeft, ATop, AWidth, AHeight);
   inherited SetBounds(ALeft,ATop,AWidth,AHeight);
 end;
 
