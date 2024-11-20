@@ -159,7 +159,7 @@ void QWindow_mask(QWindowH handle, QRegionH retval)
 	*(QRegion *)retval = ((QWindow *)handle)->mask();
 }
 
-bool QWindow_isActiveWindow(QWindowH handle)
+bool QWindow_isActive(QWindowH handle)
 {
 	return (bool) ((QWindow *)handle)->isActive();
 }
