@@ -10,13 +10,13 @@
 
 
 
-# Binding Release Version 1.2.15 against Qt5 5.6 LTS release.
+# Binding Release Version 1.2.16 against Qt5 5.6 LTS release.
 # WebKit widgets are disabled until webenginewidgets are implemented.
 
-VERSION = 1.2.15
+VERSION = 1.2.16
 VER_MAJ = 1
 VER_MIN = 2
-VER_PAT = 15
+VER_PAT = 16
 win32:VERSION_PE_HEADER = 1.2
 
 QT += gui network printsupport
