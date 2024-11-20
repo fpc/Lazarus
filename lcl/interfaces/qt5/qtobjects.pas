@@ -2358,15 +2358,18 @@ begin
 
   vBrush := TQtBrush.Create(False);
   vBrush.Owner := Self;
+  vBrush.FShared := True;
 
   vPen := TQtPen.Create(False);
   vPen.Owner := Self;
+  vPen.FShared := True;
 
   vRegion := TQtRegion.Create(False);
   vRegion.Owner := Self;
 
   vBackgroundBrush := TQtBrush.Create(False);
   vBackgroundBrush.Owner := Self;
+  vBackgroundBrush.FShared := True;
 
   vTextColor := ColorToRGB(clWindowText);
 
@@ -2379,9 +2382,9 @@ begin
   //vFont.Widget := nil;
   FreeAndNil(vFont);
   //WriteLn('Destroying brush: ', PtrUInt(vBrush), ' ', ClassName, ' ', PtrUInt(Self));
-  vBrush.FHandle := nil;
+  //vBrush.FHandle := nil;
   FreeAndNil(vBrush);
-  vPen.FHandle := nil;
+  // vPen.FHandle := nil;
   FreeAndNil(vPen);
   if vRegion.FHandle <> nil then
   begin
@@ -2389,7 +2392,7 @@ begin
     vRegion.FHandle := nil;
   end;
   FreeAndNil(vRegion);
-  vBackgroundBrush.FHandle := nil;
+  // vBackgroundBrush.FHandle := nil;
   FreeAndNil(vBackgroundBrush);
 end;
 
