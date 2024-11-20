@@ -25133,6 +25133,35 @@ Use OnKeyUp to perform actions needed when the key is released.
 Use OnKeyPress or OnUTF8KeyPress to implement a handler routine for printable 
 character values.
 </p>
+<remark>
+Some key combinations are used as global shortcut keys for a given widgetset 
+(QT, GTK, Cocoa), window manager (KDE, Gnome, Windows), or display protocol 
+(X11, Wayland, WinAPI). These global shortcuts are platform-specific and 
+generally perform system navigation or window management. They may be handled 
+by the desktop / window manager and not forwarded to an application, form, or
+control. Some common examples include: Ctrl+F4, Alt+F4, Ctrl+Command+Q, and 
+others. For more details, please refer to the developer documentation for the
+platform (widgetset) or desktop window manager.
+</remark>
+<ul>
+<li>
+https://docs.kde.org/stable5/en/khelpcenter/fundamentals/kbd.html
+</li>
+<li>
+https://help.gnome.org/users/gnome-help/stable/shell-keyboard-shortcuts.html.en</li>
+<li>
+https://developer.gnome.org/hig/reference/keyboard.html
+</li>
+<li>
+https://support.microsoft.com/en-us/windows/keyboard-shortcuts-in-windows-dcc61a57-8ff0-cffe-9796-cb9706c75eec
+</li>
+<li>
+https://support.apple.com/en-us/102650
+</li>
+<li>
+https://en.wikipedia.org/wiki/Table_of_keyboard_shortcuts#Comparison_of_keyboard_shortcuts
+</li>
+</ul>
 </descr>
 <seealso>
 <link id="TWinControl.KeyDown"/>
