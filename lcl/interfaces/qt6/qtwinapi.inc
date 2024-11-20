@@ -2007,7 +2007,6 @@ begin
       Result := SIMPLEREGION
     else
       Result := COMPLEXREGION;
-
   finally
     QRegion_destroy(ClipRegion);
     QRegion_destroy(Region);
@@ -6030,7 +6029,7 @@ begin
   {$note this should return current system active window, not
     application one, if our app isn''t active.
     This is per MSDN and pretty win32 specific}
-  if WindowManagerName = 'metacity' then
+  if not IsWayland and (WindowManagerName = 'metacity') then
     Result := HwndFromWidgetH(X11GetActivewindow)
   else
     Result := GetActiveWindow;
@@ -6045,7 +6044,9 @@ begin
   if HWND <> 0 then
   begin
     Result := TQtWidget(HWND).IsActiveWindow;
-    TQtWidget(HWnd).Activate;
+    if (TQtWidget(Hwnd).getWindowState and QtWindowMinimized) = QtWindowMinimized then
+      TQtWidget(Hwnd).ShowNormal;
+    TQtWidget(HWnd).BringToFront;
   end;
 end;
 
