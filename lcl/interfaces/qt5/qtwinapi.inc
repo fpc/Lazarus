@@ -5812,10 +5812,13 @@ end;
 function TQtWidgetSet.SetActiveWindow(Handle: HWND): HWND;
 begin
   Result := GetActiveWindow;
-
-  if Handle <> 0 then
-    TQtWidget(Handle).Activate
-  else
+  if IsValidHandle(Handle) and QWidget_isTopLevel(TQtWidget(Handle).Widget) then
+  begin
+    if QGuiApplication_applicationState = QtApplicationActive then
+      SetForegroundWindow(Handle)
+    else
+      TQtWidget(Handle).Activate;
+  end else
     Result := 0; // error
 end;
 
@@ -6009,10 +6012,15 @@ begin
   Result := False;
   if HWND <> 0 then
   begin
-    Result := TQtWidget(HWND).IsActiveWindow;
     if (TQtWidget(Hwnd).getWindowState and QtWindowMinimized) = QtWindowMinimized then
       TQtWidget(Hwnd).ShowNormal;
+
     TQtWidget(HWnd).BringToFront;
+
+    if QGuiApplication_applicationState <> QtApplicationActive then
+      QCoreApplication_processEvents();
+
+    Result := TQtWidget(HWND).IsActiveWindow;
   end;
 end;
 
