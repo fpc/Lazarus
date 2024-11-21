@@ -1838,7 +1838,7 @@ begin
   if Widgets^.MainView <> nil then
     g_object_set_data(Pointer(Widgets^.MainView), 'widgetinfo', nil);
 
-  TWSWinControlClass(ClassParent).DestroyHandle(AWinControl);
+  TGtk2WSWinControl.DestroyHandle(AWinControl);
 end;
 
 class procedure TGtk2WSCustomListView.BeginUpdate(const ALV: TCustomListView);
