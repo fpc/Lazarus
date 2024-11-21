@@ -341,8 +341,8 @@ begin
             Inc(DstRowPtr, Rowstride);
             Dec(y);
           end;
-        end
-        else begin
+        end else
+        begin
           // components are in place
 
           // gtkPixbuf doesn't like invalid dataSize/MaskSize < 32. issue #8553.
@@ -352,7 +352,7 @@ begin
             ADivResult := 0;
             ARemainder := 0;
             DivMod(ARawImage.DataSize, ARawImage.MaskSize, ADivResult, ARemainder);
-            CreateWithAlpha := ARemainder = 0;
+            CreateWithAlpha := (ARemainder = 0) and ARawImage.IsMasked(True);
             {$IFDEF VerboseRawImage}
             if not CreateWithAlpha then
               DebugLn('TGtk2WidgetSet.CreateBitmapFromRawImage B WARNING: This image have invalid DataSize / MaskSize.');
