@@ -5161,28 +5161,27 @@ function TQtWidgetSet.MonitorFromPoint(ptScreenCoords: TPoint; dwFlags: DWord
   ): HMONITOR;
 var
   AQtPoint: TQtPoint;
-  Monitor, ACount, i: Integer;
+  Monitor: Integer;
   AScreen: QScreenH;
-  ascreens: TPtrIntArray;
 begin
   Result := MONITOR_UNIMPL;
+  Monitor := -1;
+
   AQtPoint := QtPoint(ptScreenCoords.x, ptScreenCoords.y);
   AScreen := QGuiApplication_screenAt(@AQtPoint);
-  if Assigned(AScreen) then
+
+  if (AScreen = nil) then
   begin
-    QGuiApplication_screens(@ascreens);
-    ACount := length(ascreens);
-    for i := 0 to ACount - 1 do
-    begin
-      if QScreenH(ascreens[i]) = AScreen then
-      begin
-        Monitor := i;
-        break;
-      end;
-    end;
-  end else
-    Monitor := 0; {$warning fixme Qt6}
-  // QDesktopWidget_screenNumber(QApplication_desktop(), PQtPoint(@AQtPoint));
+    if (dwFlags and MONITOR_DEFAULTTOPRIMARY = MONITOR_DEFAULTTOPRIMARY) then
+      AScreen := QGuiApplication_primaryScreen()
+    else
+    if (dwFlags and MONITOR_DEFAULTTONEAREST = MONITOR_DEFAULTTONEAREST) then
+      AScreen := QGuiApplication_primaryScreen(); // TODO: find nearest monitor
+  end;
+
+  if AScreen <> nil then
+    Monitor := QGuiApplication_screenNumber(AScreen);
+
   if (Monitor >= 0) then
     Result := HMONITOR(Monitor + 1);
 end;
@@ -5192,37 +5191,55 @@ function TQtWidgetSet.MonitorFromRect(lprcScreenCoords: PRect; dwFlags: DWord
 var
   AQtPoint: TQtPoint;
   Monitor: Integer;
+  AScreen: QScreenH;
 begin
   Result := MONITOR_UNIMPL;
   Monitor := -1;
+  AScreen := nil;
+
   if lprcScreenCoords <> nil then
   begin
     AQtPoint := QtPoint(lprcScreenCoords^.Left, lprcScreenCoords^.Top);
-    Monitor := MonitorFromPoint(Point(AQtPoint.x, AQtPoint.y), dwFlags);
-    {$warning fixme Qt6}
-    // QDesktopWidget_screenNumber(QApplication_desktop(), PQtPoint(@AQtPoint));
+    AScreen := QGuiApplication_screenAt(@AQtPoint);
   end;
-  //   if (Monitor >= 0) then
-  //  Result := HMONITOR(Monitor + 1);
+
+  if (AScreen = nil) then
+  begin
+    if (dwFlags and MONITOR_DEFAULTTOPRIMARY = MONITOR_DEFAULTTOPRIMARY) then
+      AScreen := QGuiApplication_primaryScreen()
+    else
+    if (dwFlags and MONITOR_DEFAULTTONEAREST = MONITOR_DEFAULTTONEAREST) then
+      AScreen := QGuiApplication_primaryScreen(); // TODO: find nearest monitor
+  end;
+
+  if AScreen <> nil then
+    Monitor := QGuiApplication_screenNumber(AScreen);
+
+  if (Monitor >= 0) then
+    Result := HMONITOR(Monitor + 1);
 end;
 
 function TQtWidgetSet.MonitorFromWindow(hWnd: HWND; dwFlags: DWord): HMONITOR;
 var
   Monitor: Integer;
-  AWin: QWindowH;
   AScreen: QScreenH;
 begin
   Result := MONITOR_UNIMPL;
   Monitor := -1;
   if (hwnd > 0) and IsValidHandle(hWnd) then
-    Monitor := -1; {$warning fixme Qt6}
-    AWin := QWidget_windowHandle(TQtWidget(hWnd).Widget);
-    // QDesktopWidget_screenNumber(QApplication_desktop(), TQtWidget(hWnd).Widget);
-    if Assigned(AWin) then
+  begin
+    AScreen := QWidget_screen(TQtWidget(hWnd).Widget);
+    if (AScreen = nil) then
     begin
-      AScreen := QWindow_screen(AWin);
-      Monitor := QGuiApplication_screenNumber(AScreen);
+      if (dwFlags and MONITOR_DEFAULTTOPRIMARY = MONITOR_DEFAULTTOPRIMARY) then
+        AScreen := QGuiApplication_primaryScreen()
+      else
+      if (dwFlags and MONITOR_DEFAULTTONEAREST = MONITOR_DEFAULTTONEAREST) then
+        AScreen := QGuiApplication_primaryScreen(); // TODO: find nearest monitor
     end;
+    if AScreen <> nil then
+      Monitor := QGuiApplication_screenNumber(AScreen);
+  end;
   if (Monitor >= 0) then
     Result := HMONITOR(Monitor + 1);
 end;
