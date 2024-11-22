@@ -1,5 +1,5 @@
 //******************************************************************************
-//  Copyright (c) 2005-2013 by Jan Van hijfte
+//  Copyright (c) 2005-2024 by Jan Van hijfte, Željan Rikalo
 //
 //  See the included file COPYING.TXT for details about the copyright.
 //
@@ -196,5 +196,12 @@ int QStyle_combinedLayoutSpacing(QStyleH handle, unsigned int controls1, unsigne
 const QStyleH QStyle_proxy(QStyleH handle)
 {
 	return (const QStyleH) ((QStyle *)handle)->proxy();
+}
+
+void QStyle_name(QStyleH handle, PWideString retval)
+{
+	QString t_retval;
+	t_retval = ((QStyle *)handle)->name();
+	copyQStringToPWideString(t_retval, retval);
 }
 

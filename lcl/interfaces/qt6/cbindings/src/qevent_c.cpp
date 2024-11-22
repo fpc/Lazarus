@@ -861,6 +861,11 @@ quint32 QKeyEvent_nativeModifiers(QKeyEventH handle)
 	return (quint32) ((QKeyEvent *)handle)->nativeModifiers();
 }
 
+void QKeyEvent_keyCombination(QKeyEventH handle, QKeyCombinationH retval)
+{
+ *(QKeyCombination *) retval = ((QKeyEvent *)handle)->keyCombination();
+}
+
 QFocusEventH QFocusEvent_Create(QEvent::Type type, Qt::FocusReason reason)
 {
 	return (QFocusEventH) new QFocusEvent(type, reason);

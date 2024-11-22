@@ -85,8 +85,9 @@ C_EXPORT bool QFontMetricsF_inFont(QFontMetricsFH handle, PWideChar AnonParam1);
 C_EXPORT bool QFontMetricsF_inFontUcs4(QFontMetricsFH handle, uint ucs4);
 C_EXPORT qreal QFontMetricsF_leftBearing(QFontMetricsFH handle, PWideChar AnonParam1);
 C_EXPORT qreal QFontMetricsF_rightBearing(QFontMetricsFH handle, PWideChar AnonParam1);
-C_EXPORT qreal QFontMetricsF_horizontalAdvance(QFontMetricsH handle, PWideString AnonParam1, int len);
-C_EXPORT qreal QFontMetricsF_horizontalAdvance2(QFontMetricsH handle, PWideChar AnonParam1);
+C_EXPORT qreal QFontMetricsF_horizontalAdvance(QFontMetricsFH handle, PWideString AnonParam1, int len);
+C_EXPORT qreal QFontMetricsF_horizontalAdvance2(QFontMetricsFH handle, PWideChar AnonParam1);
+C_EXPORT qreal QFontMetricsF_horizontalAdvance3(QFontMetricsFH handle, const QStringH text, int len);
 C_EXPORT void QFontMetricsF_boundingRect(QFontMetricsFH handle, QRectFH retval, PWideString string);
 C_EXPORT void QFontMetricsF_boundingRect2(QFontMetricsFH handle, QRectFH retval, PWideChar AnonParam1);
 C_EXPORT void QFontMetricsF_boundingRect3(QFontMetricsFH handle, QRectFH retval, const QRectFH r, int flags, PWideString string, int tabstops, int* tabarray);
@@ -94,12 +95,11 @@ C_EXPORT void QFontMetricsF_size(QFontMetricsFH handle, QSizeFH retval, int flag
 C_EXPORT void QFontMetricsF_tightBoundingRect(QFontMetricsFH handle, QRectFH retval, PWideString text);
 C_EXPORT void QFontMetricsF_elidedText(QFontMetricsFH handle, PWideString retval, PWideString text, Qt::TextElideMode mode, qreal width, int flags);
 
-C_EXPORT int QFontMetricsF_horizontalAdvance3(QFontMetricsH handle, const QStringH text, int len);
-C_EXPORT void QFontMetricsF_boundingRect5(QFontMetricsH handle, QRectFH retval, const QStringH text);
-C_EXPORT void QFontMetricsF_boundingRect6(QFontMetricsH handle, QRectFH retval, QRectFH r, int flags, const QStringH text, int tabstops, int* tabarray);
-C_EXPORT void QFontMetricsF_size2(QFontMetricsH handle, QSizeFH retval, int flags, const QStringH str, int tabstops, int* tabarray);
-C_EXPORT void QFontMetricsF_tightBoundingRect2(QFontMetricsH handle, QRectFH retval, const QStringH text);
-C_EXPORT void QFontMetricsF_elidedText2(QFontMetricsH handle, QStringH retval, const QStringH text, Qt::TextElideMode mode, int width, int flags);
+C_EXPORT void QFontMetricsF_boundingRect5(QFontMetricsFH handle, QRectFH retval, const QStringH text);
+C_EXPORT void QFontMetricsF_boundingRect6(QFontMetricsFH handle, QRectFH retval, QRectFH r, int flags, const QStringH text, int tabstops, int* tabarray);
+C_EXPORT void QFontMetricsF_size2(QFontMetricsFH handle, QSizeFH retval, int flags, const QStringH str, int tabstops, int* tabarray);
+C_EXPORT void QFontMetricsF_tightBoundingRect2(QFontMetricsFH handle, QRectFH retval, const QStringH text);
+C_EXPORT void QFontMetricsF_elidedText2(QFontMetricsFH handle, QStringH retval, const QStringH text, Qt::TextElideMode mode, int width, int flags);
 
 C_EXPORT qreal QFontMetricsF_underlinePos(QFontMetricsFH handle);
 C_EXPORT qreal QFontMetricsF_overlinePos(QFontMetricsFH handle);
