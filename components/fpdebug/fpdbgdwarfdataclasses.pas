@@ -4261,13 +4261,21 @@ begin
     FCallFrameInformationList.Add(CFI);
     p := inf.RawData;
     pe := inf.RawData + inf.Size;
-    while (p <> nil) and (p < pe) do
+    while (p <> nil) and (p <= pe - SizeOf(TDwarfCIEEntryHeader32.Length)) do
       begin
       // The first fields in the CIE and FDE structures are the same.
       // First check if it is a 64-bit format. Then
       // detect whether it is a CIE or FDE.
       if CIE64^.Signature = DWARF_HEADER64_SIGNATURE then
         begin
+        if (p + SizeOf(TDwarfCIEEntryHeader64.Signature) + SizeOf(TDwarfCIEEntryHeader64.Length) >= pe) or
+           (CIE64^.Length > pe - (p + SizeOf(TDwarfCIEEntryHeader64.Signature) + SizeOf(TDwarfCIEEntryHeader64.Length))) or
+           (CIE64^.Length <= SizeOf(TDwarfCIEEntryHeader64.CIEId))
+        then begin
+          debugln(FPDBG_DWARF_ERRORS, 'CFI data exceeds section length');
+          break; // exceeding the available data
+        end;
+
         if CIE64^.CIEId = QWord($ffffffffffffffff) then
           begin
           // It is a CIE
@@ -4292,7 +4300,21 @@ begin
         Inc(p, Length);
         end
       else
+      if CIE32^.Length = 0 then
         begin
+        p := @CIE32^.CIEId;
+        end
+      else
+        begin
+        if (p + SizeOf(TDwarfCIEEntryHeader32.Length) >= pe) or
+           (CIE32^.Length > pe - (p + SizeOf(TDwarfCIEEntryHeader32.Length))) or
+           (CIE32^.Length <= SizeOf(TDwarfCIEEntryHeader32.CIEId)) or
+           (CIE32^.Length >= $fffffff0) // resered values / cannot handle
+        then begin
+          debugln(FPDBG_DWARF_ERRORS, 'CFI data exceeds section length');
+          break; // exceeding the available data
+        end;
+
         if CIE32^.CIEId = $ffffffff then
           begin
           // It is a CIE
