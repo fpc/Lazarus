@@ -410,6 +410,14 @@ var
   process_vm_lib: TLibHandle = 0;
   process_vm_readv: Tprocess_vm_readv = nil;
 
+function dbgsThreadId(AThread: TDbgThread): string;
+begin
+  if AThread = nil then
+    result := 'nil'
+  else
+    result := inttostr(AThread.ID);
+end;
+
 Function WIFSTOPPED(Status: Integer): Boolean;
 begin
   WIFSTOPPED:=((Status and $FF)=$7F);
@@ -1669,12 +1677,12 @@ begin
   if (FSOLibEventBreakpoint <> nil) and not FSOLibEventBreakpoint.Enabled then
     FSOLibEventBreakpoint.Enabled:=True;
   {$IFDEF DebuglnLinuxDebugEvents}
-  debuglnEnter(['>>>>> TDbgLinuxProcess.Continue TID:', AThread.ID, ' SingleStep:', SingleStep ]); try
+  debuglnEnter(['>>>>> TDbgLinuxProcess.Continue TID:', dbgsThreadId(AThread), ' SingleStep:', SingleStep ]); try
   {$ENDIF}
   FSingleSteppingThreadID := -1;
 
   // Terminating process and all threads
-  if FIsTerminating then begin
+  if FIsTerminating and (AThread <> nil) then begin
     fpseterrno(0);
     AThread.BeforeContinue;
     fpPTrace(PTRACE_KILL, AThread.ID, pointer(1), nil);
@@ -1683,7 +1691,7 @@ begin
     exit;
   end;
 
-  if TDbgLinuxThread(AThread).FIsPaused then  // in case of deInternal, it may not be paused and can be ignored
+  if (AThread <> nil) and TDbgLinuxThread(AThread).FIsPaused then  // in case of deInternal, it may not be paused and can be ignored
     AThread.NextIsSingleStep:=SingleStep;
 
   // check for pending events in other threads
@@ -1742,7 +1750,7 @@ begin
     exit;
   end;
 
-  if TDbgLinuxThread(AThread).FIsPaused then  // in case of deInternal, it may not be paused and can be ignored
+  if (AThread <> nil) and TDbgLinuxThread(AThread).FIsPaused then  // in case of deInternal, it may not be paused and can be ignored
   if HasInsertedBreakInstructionAtLocation(AThread.GetInstructionPointerRegisterValue) then begin
     TempRemoveBreakInstructionCode(AThread.GetInstructionPointerRegisterValue);
     TDbgLinuxThread(AThread).FIsSteppingBreakPoint := True;
@@ -1777,7 +1785,7 @@ begin
     end;
   end;
 
-  if TDbgLinuxThread(AThread).FIsPaused then  // in case of deInternal, it may not be paused and can be ignored
+  if (AThread <> nil) and TDbgLinuxThread(AThread).FIsPaused then  // in case of deInternal, it may not be paused and can be ignored
   if not FIsTerminating then begin
     fpseterrno(0);
     //AThread.BeforeContinue;
