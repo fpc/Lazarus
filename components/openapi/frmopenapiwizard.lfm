@@ -1,0 +1,78 @@
+object OpenapiWizardForm: TOpenapiWizardForm
+  Left = 579
+  Height = 594
+  Top = 250
+  Width = 719
+  Caption = 'OpenAPI to code'
+  ClientHeight = 594
+  ClientWidth = 719
+  LCLVersion = '4.99.0.0'
+  OnClose = FormClose
+  OnCreate = FormCreate
+  inline fraSettings: TGeneratorSettingsFrame
+    Height = 510
+    Width = 719
+    Align = alClient
+    ClientHeight = 510
+    ClientWidth = 719
+  end
+  object bpOpenAPICodegen: TButtonPanel
+    Left = 6
+    Height = 38
+    Top = 550
+    Width = 707
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object pnlBottom: TPanel
+    Left = 0
+    Height = 34
+    Top = 510
+    Width = 719
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 34
+    ClientWidth = 719
+    TabOrder = 2
+    object edtBaseFileName: TFileNameEdit
+      Left = 192
+      Height = 28
+      Top = 4
+      Width = 511
+      FileName = 'edtbaseOutput'
+      DialogKind = dkSave
+      DialogOptions = [ofPathMustExist, ofEnableSizing, ofViewDetail]
+      FilterIndex = 0
+      HideDirectories = False
+      ButtonWidth = 23
+      NumGlyphs = 1
+      Anchors = [akTop, akLeft, akRight]
+      MaxLength = 0
+      TabOrder = 0
+      Text = 'edtbaseOutput'
+    end
+    object lblBaseOutput: TLabel
+      AnchorSideTop.Control = edtBaseFileName
+      AnchorSideRight.Control = edtBaseFileName
+      AnchorSideBottom.Control = edtBaseFileName
+      AnchorSideBottom.Side = asrBottom
+      Left = 16
+      Height = 28
+      Top = 4
+      Width = 168
+      Alignment = taRightJustify
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Right = 8
+      Caption = 'Base for output filenames'
+      Layout = tlCenter
+    end
+  end
+end

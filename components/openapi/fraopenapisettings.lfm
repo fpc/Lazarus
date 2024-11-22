@@ -1,0 +1,698 @@
+object GeneratorSettingsFrame: TGeneratorSettingsFrame
+  Left = 0
+  Height = 500
+  Top = 0
+  Width = 711
+  ClientHeight = 500
+  ClientWidth = 711
+  TabOrder = 0
+  DesignLeft = 495
+  DesignTop = 272
+  object edtFile: TFileNameEdit
+    Left = 104
+    Height = 28
+    Top = 8
+    Width = 591
+    FileName = 'edtFile'
+    DialogOptions = [ofFileMustExist, ofEnableSizing, ofViewDetail]
+    Filter = 'JSON files|*.json|All files|*.*'
+    FilterIndex = 0
+    HideDirectories = False
+    ButtonWidth = 23
+    NumGlyphs = 1
+    Anchors = [akTop, akLeft, akRight]
+    MaxLength = 0
+    TabOrder = 0
+    Text = 'edtFile'
+  end
+  object lblOpenAPIFile: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = edtFile
+    AnchorSideRight.Control = edtFile
+    AnchorSideBottom.Control = edtFile
+    AnchorSideBottom.Side = asrBottom
+    Left = 16
+    Height = 28
+    Top = 8
+    Width = 80
+    Alignment = taRightJustify
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoSize = False
+    BorderSpacing.Left = 16
+    BorderSpacing.Right = 8
+    Caption = 'OpenAPI file'
+    Layout = tlCenter
+  end
+  object cbGenServer: TCheckBox
+    AnchorSideLeft.Control = CBGenClient
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = CBGenClient
+    Left = 141
+    Height = 23
+    Top = 44
+    Width = 121
+    BorderSpacing.Left = 8
+    Caption = 'Generate server'
+    TabOrder = 1
+  end
+  object CBGenClient: TCheckBox
+    AnchorSideLeft.Control = lblOpenAPIFile
+    AnchorSideTop.Control = edtFile
+    AnchorSideTop.Side = asrBottom
+    Left = 16
+    Height = 23
+    Top = 44
+    Width = 117
+    BorderSpacing.Top = 8
+    Caption = 'Generate client'
+    TabOrder = 2
+  end
+  object PCSettings: TPageControl
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = CBGenClient
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 16
+    Height = 409
+    Top = 75
+    Width = 679
+    ActivePage = TSGeneral
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 16
+    BorderSpacing.Top = 8
+    BorderSpacing.Right = 16
+    BorderSpacing.Bottom = 16
+    TabIndex = 0
+    TabOrder = 3
+    object TSGeneral: TTabSheet
+      Caption = 'General'
+      ClientHeight = 379
+      ClientWidth = 669
+      object CBDelphiCode: TCheckBox
+        AnchorSideLeft.Control = TSGeneral
+        AnchorSideTop.Control = TSGeneral
+        Left = 16
+        Height = 23
+        Top = 8
+        Width = 98
+        BorderSpacing.Left = 16
+        BorderSpacing.Top = 8
+        Caption = 'Delphi code'
+        TabOrder = 0
+      end
+      object CBVerboseHeader: TCheckBox
+        AnchorSideLeft.Control = CBDelphiCode
+        AnchorSideTop.Control = CBDelphiCode
+        AnchorSideTop.Side = asrBottom
+        Left = 16
+        Height = 23
+        Top = 39
+        Width = 120
+        BorderSpacing.Top = 8
+        Caption = 'Verbose header'
+        TabOrder = 1
+      end
+      object CBEnums: TCheckBox
+        AnchorSideLeft.Control = CBVerboseHeader
+        AnchorSideTop.Control = CBVerboseHeader
+        AnchorSideTop.Side = asrBottom
+        Left = 16
+        Height = 23
+        Top = 70
+        Width = 160
+        BorderSpacing.Top = 8
+        Caption = 'Use enumerated types'
+        TabOrder = 2
+      end
+      object GBAutoNaming: TGroupBox
+        AnchorSideLeft.Control = CBEnums
+        AnchorSideTop.Control = CBEnums
+        AnchorSideTop.Side = asrBottom
+        Left = 16
+        Height = 147
+        Top = 101
+        Width = 560
+        BorderSpacing.Top = 8
+        Caption = 'Automatic file naming'
+        ClientHeight = 130
+        ClientWidth = 558
+        TabOrder = 3
+        object edtUnitSuffix: TEdit
+          AnchorSideLeft.Control = lblUnitSuffix
+          AnchorSideTop.Control = lblUnitSuffix
+          AnchorSideTop.Side = asrBottom
+          Left = 16
+          Height = 28
+          Top = 32
+          Width = 176
+          BorderSpacing.Top = 8
+          TabOrder = 0
+          Text = 'edtUnitSuffix'
+        end
+        object lblUnitSuffix: TLabel
+          AnchorSideLeft.Control = GBAutoNaming
+          AnchorSideTop.Control = GBAutoNaming
+          Left = 16
+          Height = 16
+          Top = 8
+          Width = 156
+          BorderSpacing.Left = 16
+          BorderSpacing.Top = 8
+          Caption = 'Unit name suffix template'
+        end
+        object edtUnitExtension: TEdit
+          AnchorSideLeft.Control = lblUnitNameExtension
+          AnchorSideTop.Control = lblUnitNameExtension
+          AnchorSideTop.Side = asrBottom
+          Left = 16
+          Height = 28
+          Top = 92
+          Width = 80
+          BorderSpacing.Top = 8
+          TabOrder = 1
+          Text = 'edtUnitExtension'
+        end
+        object lblUnitNameExtension: TLabel
+          AnchorSideLeft.Control = edtUnitSuffix
+          AnchorSideTop.Control = edtUnitSuffix
+          AnchorSideTop.Side = asrBottom
+          Left = 16
+          Height = 16
+          Top = 68
+          Width = 123
+          BorderSpacing.Top = 8
+          Caption = 'Unit name extension'
+        end
+      end
+      object edtServiceNameSuffix: TEdit
+        AnchorSideLeft.Control = lblServiceNameSuffix
+        AnchorSideTop.Control = lblServiceNameSuffix
+        AnchorSideTop.Side = asrBottom
+        Left = 16
+        Height = 28
+        Top = 280
+        Width = 136
+        BorderSpacing.Top = 8
+        TabOrder = 4
+        Text = 'edtServiceNameSuffix'
+      end
+      object edtServiceNamePrefix: TEdit
+        AnchorSideLeft.Control = Label1
+        AnchorSideTop.Control = Label1
+        AnchorSideTop.Side = asrBottom
+        Left = 16
+        Height = 28
+        Top = 340
+        Width = 144
+        BorderSpacing.Top = 8
+        TabOrder = 5
+        Text = 'edtServiceNamePrefix'
+      end
+      object lblServiceNameSuffix: TLabel
+        AnchorSideLeft.Control = GBAutoNaming
+        AnchorSideTop.Control = GBAutoNaming
+        AnchorSideTop.Side = asrBottom
+        Left = 16
+        Height = 16
+        Top = 256
+        Width = 116
+        BorderSpacing.Top = 8
+        Caption = 'Service name suffix'
+      end
+      object Label1: TLabel
+        AnchorSideLeft.Control = edtServiceNameSuffix
+        AnchorSideTop.Control = edtServiceNameSuffix
+        AnchorSideTop.Side = asrBottom
+        Left = 16
+        Height = 16
+        Top = 316
+        Width = 117
+        BorderSpacing.Top = 8
+        Caption = 'Service name prefix'
+      end
+    end
+    object TSData: TTabSheet
+      Caption = 'Data'
+      ClientHeight = 379
+      ClientWidth = 669
+      object edtDtoUnit: TEdit
+        AnchorSideLeft.Control = lblDtoUnitName
+        AnchorSideTop.Control = lblDtoUnitName
+        AnchorSideTop.Side = asrBottom
+        Left = 16
+        Height = 28
+        Top = 32
+        Width = 160
+        BorderSpacing.Top = 8
+        TabOrder = 0
+        Text = 'edtDtoUnit'
+      end
+      object edtSerializeUnit: TEdit
+        AnchorSideLeft.Control = lblDtoUnitName
+        AnchorSideTop.Control = lblSerializeUnit
+        AnchorSideTop.Side = asrBottom
+        Left = 16
+        Height = 28
+        Top = 92
+        Width = 160
+        BorderSpacing.Top = 8
+        TabOrder = 1
+        Text = 'edtSerializeUnit'
+      end
+      object lblDtoUnitName: TLabel
+        AnchorSideLeft.Control = TSData
+        AnchorSideTop.Control = TSData
+        Left = 16
+        Height = 16
+        Top = 8
+        Width = 86
+        BorderSpacing.Left = 16
+        BorderSpacing.Top = 8
+        Caption = 'Dto unit name'
+      end
+      object lblSerializeUnit: TLabel
+        AnchorSideLeft.Control = lblDtoUnitName
+        AnchorSideTop.Control = edtDtoUnit
+        AnchorSideTop.Side = asrBottom
+        Left = 16
+        Height = 16
+        Top = 68
+        Width = 81
+        BorderSpacing.Top = 8
+        Caption = 'Serializer unit'
+      end
+    end
+    object TSClient: TTabSheet
+      Caption = 'Client'
+      ClientHeight = 379
+      ClientWidth = 669
+      object CBAsyncService: TCheckBox
+        AnchorSideLeft.Control = TSClient
+        AnchorSideTop.Control = TSClient
+        Left = 16
+        Height = 23
+        Top = 8
+        Width = 172
+        BorderSpacing.Left = 16
+        BorderSpacing.Top = 8
+        Caption = 'Asynchrone service calls'
+        TabOrder = 0
+        OnChange = HandleSyncCheck
+      end
+      object cbCancelRequest: TCheckBox
+        AnchorSideLeft.Control = CBAsyncService
+        AnchorSideTop.Control = CBAsyncService
+        AnchorSideTop.Side = asrBottom
+        Left = 40
+        Height = 23
+        Top = 39
+        Width = 299
+        BorderSpacing.Left = 24
+        BorderSpacing.Top = 8
+        Caption = 'Generate CancelRequest (asynchronous only)'
+        TabOrder = 1
+      end
+      object edtClientServiceImplementationUnit: TEdit
+        AnchorSideLeft.Control = CBAsyncService
+        AnchorSideTop.Control = lblClientServiceImplementationUnit
+        AnchorSideTop.Side = asrBottom
+        Left = 16
+        Height = 28
+        Top = 154
+        Width = 208
+        BorderSpacing.Top = 8
+        TabOrder = 2
+        Text = 'edtClientServiceImplementationUnit'
+      end
+      object edtClientServiceInterfaceUnit: TEdit
+        AnchorSideLeft.Control = CBAsyncService
+        AnchorSideTop.Control = lblClientServiceInterfaceUnit
+        AnchorSideTop.Side = asrBottom
+        Left = 16
+        Height = 28
+        Top = 94
+        Width = 208
+        BorderSpacing.Top = 8
+        TabOrder = 3
+        Text = 'edtClientServiceInterfaceUnit'
+      end
+      object lblClientServiceInterfaceUnit: TLabel
+        AnchorSideLeft.Control = CBAsyncService
+        AnchorSideTop.Control = cbCancelRequest
+        AnchorSideTop.Side = asrBottom
+        Left = 16
+        Height = 16
+        Top = 70
+        Width = 198
+        BorderSpacing.Top = 8
+        Caption = 'Client service interface unit name'
+      end
+      object lblClientServiceImplementationUnit: TLabel
+        AnchorSideLeft.Control = CBAsyncService
+        AnchorSideTop.Control = edtClientServiceInterfaceUnit
+        AnchorSideTop.Side = asrBottom
+        Left = 16
+        Height = 16
+        Top = 130
+        Width = 278
+        BorderSpacing.Top = 8
+        Caption = 'Client service proxy implementation unit name'
+      end
+      object edtClientServiceParentClass: TEdit
+        AnchorSideLeft.Control = CBAsyncService
+        AnchorSideTop.Control = lblClientServiceParentClass
+        AnchorSideTop.Side = asrBottom
+        Left = 16
+        Height = 28
+        Top = 214
+        Width = 208
+        BorderSpacing.Top = 8
+        TabOrder = 4
+        Text = 'edtClientServiceParentClass'
+      end
+      object edtClientServiceParentUnit: TEdit
+        AnchorSideLeft.Control = CBAsyncService
+        AnchorSideTop.Control = lblClientServiceParentUnit
+        AnchorSideTop.Side = asrBottom
+        Left = 16
+        Height = 28
+        Top = 274
+        Width = 208
+        BorderSpacing.Top = 8
+        TabOrder = 5
+        Text = 'edtClientServiceParentUnit'
+      end
+      object lblClientServiceParentClass: TLabel
+        AnchorSideLeft.Control = CBAsyncService
+        AnchorSideTop.Control = edtClientServiceImplementationUnit
+        AnchorSideTop.Side = asrBottom
+        Left = 16
+        Height = 16
+        Top = 190
+        Width = 154
+        BorderSpacing.Top = 8
+        Caption = 'Client service parent class'
+      end
+      object lblClientServiceParentUnit: TLabel
+        AnchorSideLeft.Control = CBAsyncService
+        AnchorSideTop.Control = edtClientServiceParentClass
+        AnchorSideTop.Side = asrBottom
+        Left = 16
+        Height = 16
+        Top = 250
+        Width = 185
+        BorderSpacing.Top = 8
+        Caption = 'Client service parent unit name'
+      end
+    end
+    object TSServer: TTabSheet
+      Caption = 'Server'
+      ClientHeight = 379
+      ClientWidth = 669
+      object CBSkipImplementation: TCheckBox
+        AnchorSideLeft.Control = CBAbstractCalls
+        AnchorSideTop.Control = CBAbstractCalls
+        AnchorSideTop.Side = asrBottom
+        Left = 40
+        Height = 23
+        Top = 39
+        Width = 302
+        BorderSpacing.Left = 24
+        BorderSpacing.Top = 8
+        Caption = 'Skip implementation unit (only when abstract)'
+        TabOrder = 0
+      end
+      object CBAbstractCalls: TCheckBox
+        AnchorSideLeft.Control = TSServer
+        AnchorSideTop.Control = TSServer
+        Left = 16
+        Height = 23
+        Top = 8
+        Width = 356
+        BorderSpacing.Left = 16
+        BorderSpacing.Top = 8
+        Caption = 'Generate abstract service calls in HTTP handler module'
+        TabOrder = 1
+        OnChange = HandleAbstract
+      end
+      object edtServerHandlerUnitName: TEdit
+        AnchorSideLeft.Control = CBAbstractCalls
+        AnchorSideTop.Control = lblServerHandlerUnitName
+        AnchorSideTop.Side = asrBottom
+        Left = 16
+        Height = 28
+        Top = 94
+        Width = 242
+        BorderSpacing.Top = 8
+        TabOrder = 2
+        Text = 'edtServerHandlerUnitName'
+      end
+      object edtServerImplementationUnitName: TEdit
+        AnchorSideLeft.Control = CBAbstractCalls
+        AnchorSideTop.Control = lblServerImplementationUnitName
+        AnchorSideTop.Side = asrBottom
+        Left = 16
+        Height = 28
+        Top = 154
+        Width = 240
+        BorderSpacing.Top = 8
+        TabOrder = 3
+        Text = 'edtServerImplementationUnitName'
+      end
+      object edtServerServiceParentClass: TEdit
+        AnchorSideLeft.Control = CBAbstractCalls
+        AnchorSideTop.Control = lblServerServiceParentClass
+        AnchorSideTop.Side = asrBottom
+        Left = 16
+        Height = 28
+        Top = 214
+        Width = 216
+        BorderSpacing.Top = 8
+        TabOrder = 4
+        Text = 'edtServerServiceParentClass'
+      end
+      object edtServerServiceParentUnit: TEdit
+        AnchorSideLeft.Control = CBAbstractCalls
+        AnchorSideTop.Control = lblServerServiceParentUnit
+        AnchorSideTop.Side = asrBottom
+        Left = 16
+        Height = 28
+        Top = 275
+        Width = 208
+        BorderSpacing.Top = 8
+        TabOrder = 5
+        Text = 'edtServerServiceParentUnit'
+      end
+      object lblServerHandlerUnitName: TLabel
+        AnchorSideLeft.Control = CBAbstractCalls
+        AnchorSideTop.Control = CBSkipImplementation
+        AnchorSideTop.Side = asrBottom
+        Left = 16
+        Height = 16
+        Top = 70
+        Width = 151
+        BorderSpacing.Top = 8
+        Caption = 'Server handler unit name'
+      end
+      object lblServerImplementationUnitName: TLabel
+        AnchorSideLeft.Control = CBAbstractCalls
+        AnchorSideTop.Control = edtServerHandlerUnitName
+        AnchorSideTop.Side = asrBottom
+        Left = 16
+        Height = 16
+        Top = 130
+        Width = 199
+        BorderSpacing.Top = 8
+        Caption = 'Server implementation unit name'
+      end
+      object lblServerServiceParentClass: TLabel
+        AnchorSideLeft.Control = CBAbstractCalls
+        AnchorSideTop.Control = edtServerImplementationUnitName
+        AnchorSideTop.Side = asrBottom
+        Left = 16
+        Height = 16
+        Top = 190
+        Width = 157
+        BorderSpacing.Top = 8
+        Caption = 'Server service parent class'
+      end
+      object lblServerServiceParentUnit: TLabel
+        AnchorSideLeft.Control = CBAbstractCalls
+        AnchorSideTop.Control = edtServerServiceParentClass
+        AnchorSideTop.Side = asrBottom
+        Left = 16
+        Height = 16
+        Top = 251
+        Width = 187
+        BorderSpacing.Top = 9
+        Caption = 'server service parent unit name'
+      end
+    end
+    object TSUUIDMap: TTabSheet
+      Caption = 'GUID map'
+      ClientHeight = 379
+      ClientWidth = 669
+      object VLEUUIDMap: TValueListEditor
+        Left = 8
+        Height = 316
+        Top = 16
+        Width = 653
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        DefaultColWidth = 200
+        FixedCols = 0
+        RowCount = 2
+        TabOrder = 0
+        DisplayOptions = [doColumnTitles, doAutoColResize]
+        KeyOptions = [keyEdit, keyAdd, keyDelete, keyUnique]
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goEditing, goAutoAddRows, goAlwaysShowEditor, goThumbTracking]
+        TitleCaptions.Strings = (
+          'Interface'
+          'GUID'
+        )
+        ColWidths = (
+          325
+          324
+        )
+      end
+      object edtUUIDMap: TFileNameEdit
+        Left = 112
+        Height = 28
+        Top = 343
+        Width = 461
+        DialogKind = dkSave
+        DialogOptions = [ofPathMustExist, ofEnableSizing, ofViewDetail]
+        FilterIndex = 0
+        HideDirectories = False
+        ButtonWidth = 23
+        NumGlyphs = 1
+        Anchors = [akLeft, akRight, akBottom]
+        BorderSpacing.Right = 8
+        MaxLength = 0
+        TabOrder = 1
+      end
+      object lblUUIDMap: TLabel
+        AnchorSideTop.Control = edtUUIDMap
+        AnchorSideRight.Control = edtUUIDMap
+        AnchorSideBottom.Control = edtUUIDMap
+        AnchorSideBottom.Side = asrBottom
+        Left = 8
+        Height = 28
+        Top = 343
+        Width = 96
+        Alignment = taRightJustify
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        BorderSpacing.Right = 8
+        Caption = 'GUID Map file'
+        Layout = tlCenter
+      end
+      object btnLoadUUIDMap: TButton
+        Left = 586
+        Height = 25
+        Top = 343
+        Width = 75
+        Anchors = [akRight, akBottom]
+        Caption = 'Load'
+        TabOrder = 2
+        OnClick = btnLoadUUIDMapClick
+      end
+    end
+    object TSServiceMap: TTabSheet
+      Caption = 'Service name map'
+      ClientHeight = 379
+      ClientWidth = 669
+      object VLEServiceMap: TValueListEditor
+        Left = 8
+        Height = 316
+        Top = 16
+        Width = 653
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        DefaultColWidth = 200
+        FixedCols = 0
+        RowCount = 2
+        TabOrder = 0
+        DisplayOptions = [doColumnTitles, doAutoColResize]
+        KeyOptions = [keyEdit, keyAdd, keyDelete, keyUnique]
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goEditing, goAutoAddRows, goAlwaysShowEditor, goThumbTracking]
+        TitleCaptions.Strings = (
+          'Interface'
+          'GUID'
+        )
+        ColWidths = (
+          325
+          324
+        )
+      end
+      object lblUUIDMap1: TLabel
+        AnchorSideTop.Control = edtServiceMapFile
+        AnchorSideRight.Control = edtServiceMapFile
+        AnchorSideBottom.Control = edtServiceMapFile
+        AnchorSideBottom.Side = asrBottom
+        Left = 8
+        Height = 28
+        Top = 343
+        Width = 96
+        Alignment = taRightJustify
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        BorderSpacing.Right = 8
+        Caption = 'Service Map file'
+        Layout = tlCenter
+      end
+      object edtServiceMapFile: TFileNameEdit
+        Left = 112
+        Height = 28
+        Top = 343
+        Width = 461
+        DialogKind = dkSave
+        DialogOptions = [ofPathMustExist, ofEnableSizing, ofViewDetail]
+        FilterIndex = 0
+        HideDirectories = False
+        ButtonWidth = 23
+        NumGlyphs = 1
+        Anchors = [akLeft, akRight, akBottom]
+        BorderSpacing.Right = 8
+        MaxLength = 0
+        TabOrder = 1
+      end
+      object btnLoadUUIDMap1: TButton
+        Left = 586
+        Height = 25
+        Top = 343
+        Width = 75
+        Anchors = [akRight, akBottom]
+        Caption = 'Load'
+        TabOrder = 2
+        OnClick = btnLoadUUIDMap1Click
+      end
+    end
+  end
+  object cbOpenFiles: TCheckBox
+    AnchorSideLeft.Control = cbGenServer
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = CBGenClient
+    Left = 270
+    Height = 23
+    Top = 44
+    Width = 192
+    BorderSpacing.Left = 8
+    Caption = 'Open generated files in IDE'
+    TabOrder = 4
+  end
+  object cbAddToProject: TCheckBox
+    AnchorSideLeft.Control = cbOpenFiles
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = CBGenClient
+    AnchorSideBottom.Control = CBGenClient
+    AnchorSideBottom.Side = asrBottom
+    Left = 470
+    Height = 23
+    Top = 44
+    Width = 114
+    Anchors = [akTop, akLeft, akBottom]
+    BorderSpacing.Left = 8
+    Caption = 'Add To Project'
+    TabOrder = 5
+  end
+end
