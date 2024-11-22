@@ -360,6 +360,8 @@ var
 begin
   if not WSCheckHandleAllocated(AWincontrol, 'SetText') then
     Exit;
+  if not QtWidgetSet.IsValidHandle(AWinControl.Handle) then
+    exit;
   Wdgt := TQtWidget(AWinControl.Handle);
   Wdgt.BeginUpdate;
   Wdgt.setText(AText{%H-});
