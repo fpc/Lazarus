@@ -10,13 +10,13 @@
 
 
 
-# Binding Release Version 6.2.8 against Qt6 6.2 LTS release.
+# Binding Release Version 6.2.9 against Qt6 6.2 LTS release.
 
-win32:VERSION = 6.2.8.0
-else:VERSION = 6.2.8
+win32:VERSION = 6.2.9.0
+else:VERSION = 6.2.9
 VER_MAJ = 6
 VER_MIN = 2
-VER_PAT = 8
+VER_PAT = 9
 win32:VERSION_PE_HEADER = 6.2
 
 QT += gui printsupport
@@ -149,6 +149,9 @@ HEADERS +=  \
            qfilesystemwatcher_hook.h \
            qpalette_c.h \
            qkeysequence_c.h \
+           qkeycombination_c.h \
+           qinputmethod_c.h \
+           qinputmethod_hook.h \
            qevent_c.h \
            qlclmessageevent_c.h \
            qcursor_c.h \
@@ -381,6 +384,7 @@ HEADERS +=  \
            qstackedlayout_hook_c.h \
            qaction_hook_c.h \
            qactiongroup_hook_c.h \
+           qinputmethod_hook_c.h \
            qshortcut_hook_c.h \
            qabstracttextdocumentlayout_hook_c.h \
            qstandarditemmodel_hook_c.h \
@@ -482,6 +486,8 @@ SOURCES +=  \
            qfilesystemwatcher_c.cpp \
            qpalette_c.cpp \
            qkeysequence_c.cpp \
+           qkeycombination_c.cpp \
+           qinputmethod_c.cpp \
            qevent_c.cpp \
            qlclmessageevent_c.cpp \
            qcursor_c.cpp \
@@ -645,6 +651,7 @@ SOURCES +=  \
            qstackedlayout_hook_c.cpp \
            qaction_hook_c.cpp \
            qactiongroup_hook_c.cpp \
+           qinputmethod_hook_c.cpp \
            qshortcut_hook_c.cpp \
            qabstracttextdocumentlayout_hook_c.cpp \
            qstandarditemmodel_hook_c.cpp \
