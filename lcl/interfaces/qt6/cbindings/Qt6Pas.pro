@@ -1,5 +1,5 @@
 #******************************************************************************
-#  Copyright (c) 2005-2022 by Jan Van hijfte, Željan Rikalo
+#  Copyright (c) 2005-2024 by Jan Van hijfte, Željan Rikalo
 #  
 #  See the included file COPYING.TXT for details about the copyright.
 #
@@ -10,13 +10,13 @@
 
 
 
-# Binding Release Version 6.2.9 against Qt6 6.2 LTS release.
+# Binding Release Version 6.2.10 against Qt6 6.2 LTS release.
 
-win32:VERSION = 6.2.9.0
-else:VERSION = 6.2.9
+win32:VERSION = 6.2.10.0
+else:VERSION = 6.2.10
 VER_MAJ = 6
 VER_MIN = 2
-VER_PAT = 9
+VER_PAT = 10
 win32:VERSION_PE_HEADER = 6.2
 
 QT += gui printsupport
