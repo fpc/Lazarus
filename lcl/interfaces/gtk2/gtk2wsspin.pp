@@ -196,7 +196,6 @@ var
   wHandle: HWND;
   SpinWidget: PGtkSpinButton;
   AMin, AMax: Double;
-  Mess: TLMessage;
 begin
   //DebugLn(['TGtkWSCustomFloatSpinEdit.UpdateControl ',dbgsName(ACustomFloatSpinEdit)]);
   if not WSCheckHandleAllocated(ACustomFloatSpinEdit, 'UpdateControl') then
@@ -233,10 +232,6 @@ begin
   end;
 
   SetReadOnly(TCustomEdit(ACustomFloatSpinEdit), ACustomFloatSpinEdit.ReadOnly);
-
-  FillByte(Mess{%H-},SizeOf(Mess),0);
-  Mess.Msg := CM_TEXTCHANGED;
-  DeliverMessage(ACustomFloatSpinEdit, Mess);
 end;
 
 class function TGtk2WSCustomFloatSpinEdit.CreateHandle(
