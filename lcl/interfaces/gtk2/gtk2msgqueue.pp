@@ -58,12 +58,12 @@ type
     fLock: integer;
     {$ENDIF}
   protected
-    function CreateItem : TLinkListItem;override;
+    function CreateItem : TLinkListItem; override;
     function CalculateHash(ParWnd : Hwnd):integer;
     function HashPaintMessage(p: pointer): integer;
   public
     constructor Create;
-    destructor destroy;override;
+    destructor destroy; override;
     procedure  Lock;
     procedure  UnLock;
     function   FirstMessageItem: TGtkMessageQueueItem;

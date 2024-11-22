@@ -53,8 +53,8 @@ type
     fContext:TGtk3DeviceContext;
   public
     constructor Create; override;
-    function Select(ACtx:TGtk3DeviceContext):TGtk3ContextObject;virtual;
-    function Get(szbuf:integer;pbuf:pointer):integer;virtual;abstract;
+    function Select(ACtx:TGtk3DeviceContext):TGtk3ContextObject; virtual;
+    function Get(szbuf:integer;pbuf:pointer):integer; virtual;abstract;
     property Shared: Boolean read FShared write FShared;
   end;
 
@@ -69,8 +69,8 @@ type
   public
     constructor Create(ACairo: Pcairo_t; AWidget: PGtkWidget = nil);
     constructor Create(ALogFont: TLogFont; const ALongFontName: String);
-    function Select(ACtx:TGtk3DeviceContext):TGtk3ContextObject;override;
-    function Get(szbuf:integer;pbuf:pointer):integer;override;
+    function Select(ACtx:TGtk3DeviceContext):TGtk3ContextObject; override;
+    function Get(szbuf:integer;pbuf:pointer):integer; override;
     destructor Destroy; override;
     procedure UpdateLogFont;
     property FontName: String read FFontName write FFontName;
@@ -92,9 +92,9 @@ type
     pat_buf:pdword;
     LogBrush: TLogBrush;
     constructor Create; override;
-    function Select(ACtx:TGtk3DeviceContext):TGtk3ContextObject;override;
-    function Get(szbuf:integer;pbuf:pointer):integer;override;
-    destructor Destroy;override;
+    function Select(ACtx:TGtk3DeviceContext):TGtk3ContextObject; override;
+    function Get(szbuf:integer;pbuf:pointer):integer; override;
+    destructor Destroy; override;
     procedure UpdatePattern;
     property Color: TColor read FColor write SetColor;
     property Context: TGtk3DeviceContext read FContext write FContext;
@@ -119,8 +119,8 @@ type
   public
     LogPen: TLogPen;
     constructor Create; override;
-    function Select(ACtx:TGtk3DeviceContext):TGtk3ContextObject;override;
-    function Get(szbuf:integer;pbuf:pointer):integer;override;
+    function Select(ACtx:TGtk3DeviceContext):TGtk3ContextObject; override;
+    function Get(szbuf:integer;pbuf:pointer):integer; override;
     property Color: TColor read FColor write SetColor;
     property Context: TGtk3DeviceContext read FContext write FContext;
 
@@ -144,8 +144,8 @@ type
     constructor Create({%H-}CreateHandle: Boolean; X1,Y1,X2,Y2: Integer); virtual; overload;
     constructor Create(X1,Y1,X2,Y2,nW,nH: Integer); virtual; overload;
     constructor CreateEllipse(X1,Y1,X2,Y2: Integer); virtual; overload;
-    function Select(ACtx:TGtk3DeviceContext):TGtk3ContextObject;override;
-    function Get(szbuf:integer;pbuf:pointer):integer;override;
+    function Select(ACtx:TGtk3DeviceContext):TGtk3ContextObject; override;
+    function Get(szbuf:integer;pbuf:pointer):integer; override;
     destructor Destroy; override;
     function GetExtents: TRect;
     function ContainsRect(ARect: TRect): Boolean;
@@ -165,8 +165,8 @@ type
     constructor Create(vHandle: PGdkPixbuf); overload;
     constructor Create(AData: PByte; width: Integer; height: Integer; format: Tcairo_format_t; const ADataOwner: Boolean = False); overload;
     constructor Create(AData: PByte; width: Integer; height: Integer; bytesPerLine: Integer; format: Tcairo_format_t; const ADataOwner: Boolean = False); overload;
-    function Select(ACtx:TGtk3DeviceContext):TGtk3ContextObject;override;
-    function Get(szbuf:integer;pbuf:pointer):integer;override;
+    function Select(ACtx:TGtk3DeviceContext):TGtk3ContextObject; override;
+    function Get(szbuf:integer;pbuf:pointer):integer; override;
     destructor Destroy; override;
     procedure CopyFrom(AImage: PGdkPixbuf; x, y, w, h: integer);
     function height: Integer;
@@ -187,10 +187,10 @@ type
   private
     fHandle:PGdkCursor;
   public
-    constructor Create(ACur:integer);overload;
-    constructor Create(pixbuf:PGdkPixbuf;x,y:gint);overload;
-    constructor Create(img:TGtk3Image);overload;
-    destructor Destroy;override;
+    constructor Create(ACur:integer); overload;
+    constructor Create(pixbuf:PGdkPixbuf;x,y:gint); overload;
+    constructor Create(img:TGtk3Image); overload;
+    destructor Destroy; override;
     property Handle:PGdkCursor read fHandle;
   end;
 

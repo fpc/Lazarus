@@ -25,7 +25,7 @@ function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSr
 
 function CallNextHookEx(hHk: HHOOK; ncode : Integer; wParam: WParam; lParam : LParam) : Integer; override;
 function CallWindowProc(lpPrevWndFunc : TFarProc; Handle : HWND; Msg : UINT; wParam: WParam; lParam : lParam) : Integer; override;
-function ClientToScreen(Handle : HWND; var P : TPoint) : Boolean;override;
+function ClientToScreen(Handle : HWND; var P : TPoint) : Boolean; override;
 
 // clipboard
 function ClipboardFormatToMimeType(FormatID: TClipboardFormat): string; override;

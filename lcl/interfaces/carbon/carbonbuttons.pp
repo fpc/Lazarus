@@ -109,7 +109,7 @@ type
     procedure SetGlyph(Glyph: CGImageRef); virtual;
     procedure SetLayout(APlacement: ControlButtonTextPlacement; ATextAlign: ControlButtonTextAlignment); virtual;
     procedure SetDefault({%H-}ADefault: Boolean); override;
-    function GetBounds(var ARect:TRect):Boolean;override;
+    function GetBounds(var ARect: TRect): Boolean; override;
     function SetBounds(const ARect: TRect): Boolean; override;
   end;
 
@@ -557,7 +557,7 @@ begin
   // not supported
 end;
 
-function TCarbonBitBtn.GetBounds(var ARect:TRect):Boolean;
+function TCarbonBitBtn.GetBounds(var ARect: TRect): Boolean;
 begin
   Result:=inherited GetBounds(ARect);
   inc(ARect.Bottom, PushBtnAddV);

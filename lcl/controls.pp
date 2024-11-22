@@ -365,7 +365,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure FreeHandle;override;
+    procedure FreeHandle; override;
     function ControlIsPainting: Boolean;
     property Control: TControl read FControl write SetControl;
   end;
@@ -644,7 +644,7 @@ type
     function Dragging(AControl: TControl): Boolean; virtual;abstract;
     procedure RegisterDockSite(Site: TWinControl; DoRegister: Boolean); virtual;abstract;
 
-    procedure DragStart(AControl: TControl; AImmediate: Boolean; AThreshold: Integer; StartFromCurrentMouse:Boolean=False);virtual;abstract;
+    procedure DragStart(AControl: TControl; AImmediate: Boolean; AThreshold: Integer; StartFromCurrentMouse:Boolean=False); virtual;abstract;
     procedure DragMove(APosition: TPoint); virtual;abstract;
     procedure DragStop(ADrop: Boolean); virtual;abstract;
 
@@ -1462,7 +1462,7 @@ type
     function GetFloatingDockSiteClass: TWinControlClass; virtual;
     procedure BeforeDragStart; virtual;
     procedure BeginAutoDrag; virtual;
-    procedure DoFloatMsg(ADockSource: TDragDockObject);virtual;//CM_FLOAT
+    procedure DoFloatMsg(ADockSource: TDragDockObject); virtual;//CM_FLOAT
     procedure DockTrackNoTarget(Source: TDragDockObject; X, Y: Integer); virtual;
     procedure DoDock(NewDockSite: TWinControl; var ARect: TRect); virtual;
     function DoDragMsg(ADragMessage: TDragMessage; APosition: TPoint; ADragObject: TDragObject; ATarget: TControl; ADocking: Boolean):LRESULT; virtual;//Cm_Drag
@@ -1694,7 +1694,7 @@ type
     procedure FixDesignFontsPPI(const ADesignTimePPI: Integer); virtual;
     procedure ScaleFontsPPI(const AToPPI: Integer; const AProportion: Double); virtual;
   public
-    constructor Create(TheOwner: TComponent);override;
+    constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure BeforeDestruction; override;
     procedure EditingDone; virtual;
@@ -2389,7 +2389,7 @@ type
       AToPPI, AOldFormWidth, ANewFormWidth: Integer); override;
     procedure FixDesignFontsPPIWithChildren(const ADesignTimePPI: Integer);
   public
-    constructor Create(TheOwner: TComponent);override;
+    constructor Create(TheOwner: TComponent); override;
     constructor CreateParented(AParentWindow: HWND);
     class function CreateParentedControl(AParentWindow: HWND): TWinControl;
     destructor Destroy; override;

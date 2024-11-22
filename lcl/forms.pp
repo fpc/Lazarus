@@ -646,7 +646,7 @@ type
     procedure InitializeWnd; override;
     procedure Loaded; override;
     procedure ChildHandlesCreated; override;
-    procedure Notification(AComponent: TComponent; Operation : TOperation);override;
+    procedure Notification(AComponent: TComponent; Operation : TOperation); override;
     procedure PaintWindow(dc : Hdc); override;
     procedure RequestAlign; override;
     procedure Resizing(State: TWindowState); override;
@@ -672,7 +672,7 @@ type
     procedure SetScaled(const AScaled: Boolean); override;
     procedure DoAddActionList(List: TCustomActionList);
     procedure DoRemoveActionList(List: TCustomActionList);
-    procedure ProcessResource;virtual;
+    procedure ProcessResource; virtual;
   protected
     // drag and dock
     procedure BeginAutoDrag; override;

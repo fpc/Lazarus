@@ -115,7 +115,7 @@ type
     constructor CreateFrom(const AWinControl: TWinControl; AWidget: PGtkWidget); virtual;
 
     procedure InitializeWidget; virtual;
-    procedure UpdateWidgetConstraints;virtual;
+    procedure UpdateWidgetConstraints; virtual;
     procedure DeInitializeWidget;
     procedure RecreateWidget;
     procedure DestroyNotify({%H-}AWidget: PGtkWidget); virtual;
@@ -159,8 +159,8 @@ type
     function getClientRect: TRect; virtual;
     function getClientBounds: TRect; virtual;
 
-    procedure SetBounds(ALeft,ATop,AWidth,AHeight:integer);virtual;
-    procedure SetLclFont(const AFont:TFont);virtual;
+    procedure SetBounds(ALeft,ATop,AWidth,AHeight:integer); virtual;
+    procedure SetLclFont(const AFont:TFont); virtual;
 
     function GetContainerWidget: PGtkWidget; virtual;
     function GetPosition(out APoint: TPoint): Boolean; virtual;
@@ -225,9 +225,9 @@ type
     procedure setText(const AValue: String); override;
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
   public
-    procedure SetBounds(Left,Top,Width,Height:integer);override;
+    procedure SetBounds(Left,Top,Width,Height:integer); override;
     procedure InitializeWidget; override;
-    procedure UpdateWidgetConstraints;override;
+    procedure UpdateWidgetConstraints; override;
     procedure SetEchoMode(AVisible: Boolean);
     procedure SetMaxLength(AMaxLength: Integer);
     procedure SetPasswordChar(APasswordChar: Char);
@@ -293,7 +293,7 @@ type
   protected
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
   public
-    procedure SetBounds(ALeft,ATop,AWidth,AHeight:integer);override;
+    procedure SetBounds(ALeft,ATop,AWidth,AHeight:integer); override;
     function GetTrackBarOrientation: TTrackBarOrientation;
     procedure SetScalePos(AValue: TTrackBarScalePos);
     procedure SetTickMarks(AValue: TTickMark; ATickStyle: TTickStyle);
@@ -377,7 +377,7 @@ type
     function CreateWidget(const Params: TCreateParams):PGtkWidget; override;
     procedure DestroyWidget; override;
   public
-    function getClientOffset:TPoint;override;
+    function getClientOffset:TPoint; override;
     function getClientRect: TRect; override;
   end;
 
@@ -387,7 +387,7 @@ type
   protected
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
   public
-    procedure InitializeWidget;override;
+    procedure InitializeWidget; override;
     function getClientRect: TRect; override;
     function getPagesCount: integer;
     procedure InsertPage(ACustomPage: TCustomPage; AIndex: Integer);
@@ -499,7 +499,7 @@ type
     procedure ButtonClicked(data: gPointer); cdecl;
     procedure ClearGlyphs;
   public
-    destructor Destroy;override;
+    destructor Destroy; override;
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
   end;
 
@@ -637,7 +637,7 @@ type
     procedure DoBeforeLCLPaint; override;
     procedure setText(const AValue: String); override;
   public
-    procedure UpdateWidgetConstraints;override;
+    procedure UpdateWidgetConstraints; override;
     property BorderStyle: TBorderStyle read FBorderStyle write FBorderStyle;
   end;
 
@@ -699,7 +699,7 @@ type
     procedure setText(const AValue: String); override;
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
   public
-    destructor Destroy;override;
+    destructor Destroy; override;
     function IsWidgetOk: Boolean; override;
     procedure SetDefault(const ADefault: Boolean);
     property Layout: Integer read getLayout write SetLayout;
@@ -797,7 +797,7 @@ type
     procedure UpdateWindowState; // LCL WindowState
     class function decoration_flags(Aform: TCustomForm): TGdkWMDecoration;
   public
-    procedure SetBounds(ALeft,ATop,AWidth,AHeight:integer);override;
+    procedure SetBounds(ALeft,ATop,AWidth,AHeight:integer); override;
     destructor Destroy; override;
     procedure Activate; override;
     procedure Gtk3ActivateWindow(AEvent: PGdkEvent);
@@ -830,14 +830,14 @@ type
     class function ResponseCB(response_id:gint; dlg: TGtk3Dialog): GBoolean; cdecl;
     class function RealizeCB(dlg:TGtk3Dialog): GBoolean; cdecl;
   protected
-    function response_handler(response_id:TGtkResponseType):boolean;virtual;
-    function close_handler():boolean;virtual;
-    procedure SetCallbacks;virtual;
+    function response_handler(response_id:TGtkResponseType):boolean; virtual;
+    function close_handler():boolean; virtual;
+    procedure SetCallbacks; virtual;
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
   public
     CommonDialog: TCommonDialog;
     procedure InitializeWidget; override;
-    procedure CloseDialog;virtual;
+    procedure CloseDialog; virtual;
   end;
 
   { TGtk3FileDialog }
@@ -872,10 +872,10 @@ type
 
   TGtk3newColorSelectionDialog = class(TGtk3Dialog)
   protected
-    function response_handler(resp_id:TGtkResponseType):boolean;override;
+    function response_handler(resp_id:TGtkResponseType):boolean; override;
   public
     constructor Create(const ACommonDialog: TCommonDialog); virtual; overload;
-    procedure InitializeWidget;override;
+    procedure InitializeWidget; override;
     class procedure color_to_rgba(clr:TColor;out rgba:TgdkRGBA);
     class function rgba_to_color(const rgba:TgdkRGBA):TColor;
   end;

@@ -47,11 +47,11 @@ type
     function FixPath(const APath: String): String; virtual;
     Property XMLConfig: TPropStorageXMLConfig Read FXML;
   public
-    procedure StorageNeeded(ReadOnly: Boolean);override;
+    procedure StorageNeeded(ReadOnly: Boolean); override;
     procedure FreeStorage; override;
     function  DoReadString(const Section, Ident, TheDefault: string): string; override;
     procedure DoWriteString(const Section, Ident, Value: string); override;
-    procedure DoEraseSections(const ARootSection: String);override;
+    procedure DoEraseSections(const ARootSection: String); override;
   public
     property FileName: String Read FFileName Write FFileName;
     property RootNodePath: String Read FRootNodePath Write FRootNodePath;

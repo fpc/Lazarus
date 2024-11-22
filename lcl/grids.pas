@@ -1107,7 +1107,7 @@ type
       var ImageIndex: TImageIndex; var Bitmap: TBitmap); virtual;
     function  GetScrollBarPosition(Which: integer): Integer;
     function  GetSmoothScroll(Which: Integer): Boolean; virtual;
-    procedure GetSBVisibility(out HsbVisible,VsbVisible:boolean);virtual;
+    procedure GetSBVisibility(out HsbVisible,VsbVisible:boolean); virtual;
     procedure GetSBRanges(const HsbVisible,VsbVisible: boolean;
                   out HsbRange,VsbRange,HsbPage,VsbPage,HsbPos,VsbPos:Integer); virtual;
     procedure GetSelectedState(AState: TGridDrawState; out IsSelected:boolean); virtual;

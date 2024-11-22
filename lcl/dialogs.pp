@@ -467,13 +467,13 @@ type
 
     function GetHeight: Integer; override;
     function GetWidth: Integer; override;
-    procedure DoCloseForm(Sender: TObject; var CloseAction: TCloseAction);virtual;
-    procedure DoShowForm(Sender: TObject);virtual;
+    procedure DoCloseForm(Sender: TObject; var CloseAction: TCloseAction); virtual;
+    procedure DoShowForm(Sender: TObject); virtual;
     procedure Find; virtual;
     procedure Help; virtual;
     procedure Replace; virtual;
-    function CreateForm:TForm;virtual;
-    procedure SetFormValues;virtual;
+    function CreateForm:TForm; virtual;
+    procedure SetFormValues; virtual;
     procedure GetFormValues; virtual;
     Procedure CalcPosition(aForm:Tform);
     property ReplaceText: string read GetReplaceText write SetReplaceText;

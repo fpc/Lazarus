@@ -144,7 +144,7 @@ type
     procedure Draw; override;
     procedure GetInfo(out AImageSize, AViewSize, ALineSize: HISize; out AOrigin: HIPoint); virtual;
     procedure ScrollTo(const ANewOrigin: HIPoint); virtual;
-    procedure Invalidate(Rect:PRect=nil);override;
+    procedure Invalidate(Rect:PRect=nil); override;
   public
     procedure AddToWidget(AParent: TCarbonWidget); override;
     procedure SetColor(const {%H-}AColor: TColor); override;

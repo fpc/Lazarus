@@ -139,14 +139,14 @@ Type
     function  DoReadString(const Section, Ident, DefaultValue: string): string; Virtual; Abstract;
     procedure DoWriteString(const Section, Ident, Value: string); Virtual; Abstract;
     procedure DoWriteInteger(const Section, Ident : String; Value: Integer); Virtual;
-    procedure DoEraseSections(const ARootSection : String);virtual;abstract;
+    procedure DoEraseSections(const ARootSection : String); virtual; abstract;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Save; virtual;
     procedure Restore; virtual;
     // Public Read/Write methods
-    procedure StorageNeeded(ReadOnly: Boolean);Virtual;
+    procedure StorageNeeded(ReadOnly: Boolean); Virtual;
     procedure FreeStorage; Virtual;
     function  ReadBoolean(const Ident: string; DefaultValue: Boolean): Boolean;
     function  ReadString(const Ident, DefaultValue: string): string;

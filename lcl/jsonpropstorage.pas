@@ -38,7 +38,7 @@ type
     procedure FreeStorage; override;
     function  DoReadString(const Section, Ident, Default: String): String; override;
     procedure DoWriteString(const Section, Ident, Value: String); override;
-    procedure DoEraseSections(const ARootObjectPath : String);override;
+    procedure DoEraseSections(const ARootObjectPath : String); override;
   public
     property JSONFileName: String read FJSONFileName write FJSONFileName;
     property RootObjectPath: String read FRootObjectPath write FRootObjectPath;

@@ -104,7 +104,7 @@ type
   { TAbstractTranslator}
   TAbstractTranslator = class(TObject)//Should it be somewhat more than TObject?
   public
-    procedure TranslateStringProperty(Sender:TObject; const Instance: TPersistent; PropInfo: PPropInfo; var Content:string);virtual;abstract;
+    procedure TranslateStringProperty(Sender:TObject; const Instance: TPersistent; PropInfo: PPropInfo; var Content:string); virtual;abstract;
    //seems like we need nothing more here
   end;
 

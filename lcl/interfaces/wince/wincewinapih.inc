@@ -34,13 +34,13 @@
 //function Arc(DC: HDC; Left, Top, Right, Bottom, Angle1, Angle2: Integer): Boolean; override;
 //function AngleChord(DC: HDC; x,y,width,height,angle1,angle2 : Integer): Boolean; override;
 
-function BeginPaint(Handle : hwnd; var PS : TPaintStruct): hdc;override;
+function BeginPaint(Handle : hwnd; var PS : TPaintStruct): hdc; override;
 function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean; override;
 
-procedure CallDefaultWndHandler(Sender: TObject; var Message);override;
+procedure CallDefaultWndHandler(Sender: TObject; var Message); override;
 //function CallNextHookEx(hHk: HHOOK; ncode : Integer; wParam: WParam; lParam : LParam) : Integer; override;
 function CallWindowProc(lpPrevWndFunc : TFarProc; Handle : HWND; Msg : UINT; wParam: WParam; lParam : lParam) : Integer; override;
-function ClientToScreen(Handle : HWND; var P : TPoint) : Boolean;override;
+function ClientToScreen(Handle : HWND; var P : TPoint) : Boolean; override;
 
 // clipboard
 function ClipboardFormatToMimeType(FormatID: TClipboardFormat): String; override;
@@ -126,7 +126,7 @@ function GetProp(Handle : hwnd; Str : PChar): Pointer; override;
 //function GetROP2(DC: HDC): Integer; override;
 {function GetScrollBarSize(Handle: HWND; BarKind: Integer): integer; override;}
 function GetScrollbarVisible(Handle: HWND; SBStyle: Integer): boolean; override;
-function GetScrollInfo(Handle: HWND; BarFlag: Integer; var ScrollInfo: TScrollInfo): Boolean;override;
+function GetScrollInfo(Handle: HWND; BarFlag: Integer; var ScrollInfo: TScrollInfo): Boolean; override;
 function GetStockObject(Value: Integer): THandle; override;
 function GetSysColor(nIndex: Integer): DWORD; override;
 function GetSysColorBrush(nIndex: Integer): HBrush; override;
@@ -227,7 +227,7 @@ function SystemParametersInfo(uiAction: DWord; uiParam: DWord; pvParam: Pointer;
 
 function TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean; override;
 
-function UpdateWindow(Handle: HWND): Boolean;override;
+function UpdateWindow(Handle: HWND): Boolean; override;
 
 function WindowFromPoint(Point : TPoint) : HWND; override;
 

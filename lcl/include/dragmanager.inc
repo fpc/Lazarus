@@ -94,7 +94,7 @@ type
     //Support methods
     function IsDragging: boolean; override;
     function Dragging(AControl: TControl): boolean; override;
-    procedure RegisterDockSite(Site: TWinControl; DoRegister: Boolean);override;
+    procedure RegisterDockSite(Site: TWinControl; DoRegister: Boolean); override;
 
     //The Drag and Drop routines
     procedure DragStart(AControl: TControl; AImmediate: Boolean; AThreshold: Integer; StartFromCurrentMouse:Boolean=False); override;

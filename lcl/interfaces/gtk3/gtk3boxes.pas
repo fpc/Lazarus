@@ -43,7 +43,7 @@ type
     constructor CreateMsgBox1(hWnd: HWND; lpText, lpCaption: PChar;
        uType: Cardinal);
     class function tr(UseWidgetStr: boolean; const TranslatedStr, WidgetStr: String): string;
-    destructor Destroy;override;
+    destructor Destroy; override;
     procedure run;
     function btn_coll_info(ndx:integer):longint;
     function btn_ptr_info(ndx:integer):longint;

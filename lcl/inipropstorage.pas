@@ -42,7 +42,7 @@ type
     procedure FreeStorage; override;
     function  DoReadString(const Section, Ident, default: string): string; override;
     procedure DoWriteString(const Section, Ident, Value: string); override;
-    procedure DoEraseSections(const ARootSection : string);override;
+    procedure DoEraseSections(const ARootSection: string); override;
   public
     property IniFileName: string read FIniFileName write FIniFileName;
     property IniSection: string read FIniSection write FIniSection;

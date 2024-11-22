@@ -477,7 +477,7 @@ type
     function  GetSmoothScroll(Which: Integer): Boolean; override;
     function  GetTruncCellHintText(aCol, aRow: Integer): string; override;
     function  GridCanModify: boolean;
-    procedure GetSBVisibility(out HsbVisible,VsbVisible:boolean);override;
+    procedure GetSBVisibility(out HsbVisible,VsbVisible:boolean); override;
     procedure GetSBRanges(const HsbVisible,VsbVisible: boolean;
                   out HsbRange,VsbRange,HsbPage,VsbPage,HsbPos,VsbPos:Integer); override;
     procedure HeaderClick(IsColumn: Boolean; index: Integer); override;

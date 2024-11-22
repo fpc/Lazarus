@@ -112,7 +112,7 @@ type
     // create and destroy
     function CreateTimer(Interval: integer; TimerFunc: TWSTimerProc) : TLCLHandle; override;
     function DestroyTimer(TimerHandle: TLCLHandle) : boolean; override;
-    procedure DestroyLCLComponent(Sender: TObject);virtual;
+    procedure DestroyLCLComponent(Sender: TObject); virtual;
 
     {$I muiwinapih.inc}
   public

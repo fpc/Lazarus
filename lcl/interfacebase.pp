@@ -130,7 +130,7 @@ type
     procedure SetAppHandle(const AValue: TLCLHandle); virtual;
   public
     constructor Create; virtual;
-    procedure BeforeDestruction;override;
+    procedure BeforeDestruction; override;
 
     procedure AppInit(var ScreenInfo: TScreenInfo); virtual; abstract;
     procedure AppRun(const ALoop: TApplicationMainLoop); virtual;
