@@ -3927,8 +3927,8 @@ procedure TTestWatches.TestWatchesExpression;
     APrefix2: String; AOffs2: Integer; AChr12: Char; APostFix2: String; ALoc2: TTestLoc
   );
   var
-    p, e, p2, e2, enx01, enx02: String;
-    n, i, j, n2: Integer;
+    p, e, p2, e2: String;
+    n, n2: Integer;
   begin
     p := APrefix;
     e := APostFix;
@@ -4056,87 +4056,14 @@ procedure TTestWatches.TestWatchesExpression;
     t.Add('ENUM-Cmp: ', p+'Enum > TEnum(2)',        weBool(False));
     t.Add('ENUM-Cmp: ', p+'Enum > TEnum(1)',        weBool(True));
     t.Add('ENUM-Cmp: ', p+'Enum > TEnum(-1)',       weBool(True));
-
-    for i := 0 to 39 do
-    for j := 0 to 39 do begin
-      case i of
-         0..3: enx01 := 'TEnumX0(-504)';
-         4: enx01 := 'TEnumX0(-503)';    5: enx01 := 'EnXVal01';   6..7: enx01 := p+'EnumX0a';
-         8..11: enx01 := 'TEnumX0(-502)';
-        12..15: enx01 := 'TEnumX0(-1)';
-        16..19: enx01 := 'TEnumX0(0)';
-        20..23: enx01 := 'TEnumX0(1)';
-        24: enx01 := 'TEnumX0(4)';    25..27: enx01 := 'EnXVal02';
-        28: enx01 := 'TEnumX0(7)';    29..31: enx01 := 'EnXVal03';
-        32: enx01 := 'TEnumX0(510)';  33: enx01 := 'EnXVal04';   34..35: enx01 := p+'EnumX0b';
-        36..39: enx01 := 'TEnumX0(5000)';
-      end;
-      case j of
-         0..3: enx02 := 'TEnumX0(-504)';
-         4: enx02 := 'TEnumX0(-503)';    5: enx02 := 'EnXVal01';   6..7: enx02 := p+'EnumX0a';
-         8..11: enx02 := 'TEnumX0(-502)';
-        12..15: enx02 := 'TEnumX0(-1)';
-        16..19: enx02 := 'TEnumX0(0)';
-        20..23: enx02 := 'TEnumX0(1)';
-        24: enx02 := 'TEnumX0(4)';    25..27: enx02 := 'EnXVal02';
-        28: enx02 := 'TEnumX0(7)';    29..31: enx02 := 'EnXVal03';
-        32: enx02 := 'TEnumX0(510)';  33: enx02 := 'EnXVal04';   34..35: enx02 := p+'EnumX0b';
-        36..39: enx02 := 'TEnumX0(5000)';
-      end;
-
-
-      t.Add('Signed ENUM-Cmp: ', enx01+' > '+enx02,       weBool((i and $FFFC) > (j and $FFFC)));
-      t.Add('Signed ENUM-Cmp: ', enx01+' < '+enx02,       weBool((i and $FFFC) < (j and $FFFC)));
-      t.Add('Signed ENUM-Cmp: ', enx01+' <> '+enx02,      weBool((i and $FFFC) <> (j and $FFFC)));
-      t.Add('Signed ENUM-Cmp: ', enx01+' = '+enx02,       weBool((i and $FFFC) = (j and $FFFC)));
-//      t.Add('Signed ENUM-Cmp: ', enx01+' in ['+enx02+']', weBool((i and $FFFC) = (j and $FFFC)));
-    end;
-
-    for i := 0 to 39 do
-    for j := 0 to 39 do begin
-      case i of
-         0..3: enx01 := 'TEnumX1(-4)';
-         4: enx01 := 'TEnumX1(-3)';    5: enx01 := 'EnXVal11';   6..7: enx01 := p+'EnumX1a';
-         8..11: enx01 := 'TEnumX1(-2)';
-        12..15: enx01 := 'TEnumX1(-1)';
-        16..19: enx01 := 'TEnumX1(0)';
-        20..23: enx01 := 'TEnumX1(1)';
-        24: enx01 := 'TEnumX1(4)';    25..27: enx01 := 'EnXVal12';
-        28: enx01 := 'TEnumX1(7)';    29..31: enx01 := 'EnXVal13';
-        32: enx01 := 'TEnumX1(10)';  33: enx01 := 'EnXVal14';   34..35: enx01 := p+'EnumX1b';
-        36..39: enx01 := 'TEnumX1(50)';
-      end;
-      case j of
-         0..3: enx02 := 'TEnumX1(-4)';
-         4: enx02 := 'TEnumX1(-3)';    5: enx02 := 'EnXVal11';   6..7: enx02 := p+'EnumX1a';
-         8..11: enx02 := 'TEnumX1(-2)';
-        12..15: enx02 := 'TEnumX1(-1)';
-        16..19: enx02 := 'TEnumX1(0)';
-        20..23: enx02 := 'TEnumX1(1)';
-        24: enx02 := 'TEnumX1(4)';    25..27: enx02 := 'EnXVal12';
-        28: enx02 := 'TEnumX1(7)';    29..31: enx02 := 'EnXVal13';
-        32: enx02 := 'TEnumX1(10)';  33: enx02 := 'EnXVal14';   34..35: enx02 := p+'EnumX1b';
-        36..39: enx02 := 'TEnumX1(50)';
-      end;
-
-
-      t.Add('Signed ENUM-Cmp: ', enx01+' > '+enx02,       weBool((i and $FFFC) > (j and $FFFC)));
-      t.Add('Signed ENUM-Cmp: ', enx01+' < '+enx02,       weBool((i and $FFFC) < (j and $FFFC)));
-      t.Add('Signed ENUM-Cmp: ', enx01+' <> '+enx02,      weBool((i and $FFFC) <> (j and $FFFC)));
-      t.Add('Signed ENUM-Cmp: ', enx01+' = '+enx02,       weBool((i and $FFFC) = (j and $FFFC)));
-//      t.Add('Signed ENUM-Cmp: ', enx01+' in ['+enx02+']', weBool((i and $FFFC) = (j and $FFFC)));
-    end;
-
-    for i := 0 to t.Count-1 do
-      t.Tests[i].IgnTypeName();
   end;
 
 var
-  ExeName: String;
+  ExeName, enx01, enx02: String;
   t: TWatchExpectationList;
   Src: TCommonSource;
   BrkPrg: TDBGBreakPoint;
-  i: Integer;
+  i,j, i2, j2: Integer;
 begin
   if SkipTest then exit;
   if not TestControlCanTest(ControlTestExpression) then exit;
@@ -4357,12 +4284,159 @@ begin
     AddWatches(t, 'glob',   'gc', 000, 'A', '', tlConst,   'gv', 001, 'B', '', tlAny);
     AddWatches(t, 'glob',   'gv', 001, 'B', '', tlAny,     'gc', 000, 'A', '', tlConst);
 
-    for i := 0 to t.Count - 1 do
+    for i := 0 to 9 do
+    for i2 := 0 to 3 do
+    for j := 0 to 9 do
+    for j2 := 0 to 3 do
+    if ( (i2 = 0) or
+         ((i in [6,7]) and (i2 < 2)) or
+         (i in [1,8])
+       ) and
+       ( (j2 = 0) or
+         ((j in [6,7]) and (j2 < 2)) or
+         (j in [1,8])
+       )
+    then
+    begin
+      case i of
+        0: enx01 := 'TEnumX0(-504)';
+        1: case i2 of
+          0: enx01 := 'TEnumX0(-503)';
+          1: enx01 := 'EnXVal01';
+          2: enx01 := 'gvEnumX0a';
+          3: enx01 := 'gcEnumX0a';
+        end;
+        2: enx01 := 'TEnumX0(-502)';
+        3: enx01 := 'TEnumX0(-1)';
+        4: enx01 := 'TEnumX0(0)';
+        5: enx01 := 'TEnumX0(1)';
+        6: case i2 of
+          0: enx01 := 'TEnumX0(4)';
+          1: enx01 := 'EnXVal02';
+        end;
+        7: case i2 of
+          0: enx01 := 'TEnumX0(7)';
+          1: enx01 := 'EnXVal03';
+        end;
+        8: case i2 of
+          0: enx01 := 'TEnumX0(510)';
+          1: enx01 := 'EnXVal04';
+          2: enx01 := 'gvEnumX0b';
+          3: enx01 := 'gcEnumX0b';
+        end;
+        9: enx01 := 'TEnumX0(5000)';
+      end;
+      case j of
+        0: enx02 := 'TEnumX0(-504)';
+        1: case j2 of
+          0: enx02 := 'TEnumX0(-503)';
+          1: enx02 := 'EnXVal01';
+          2: enx02 := 'gvEnumX0a';
+          3: enx02 := 'gcEnumX0a';
+        end;
+        2: enx02 := 'TEnumX0(-502)';
+        3: enx02 := 'TEnumX0(-1)';
+        4: enx02 := 'TEnumX0(0)';
+        5: enx02 := 'TEnumX0(1)';
+        6: case j2 of
+          0: enx02 := 'TEnumX0(4)';
+          1: enx02 := 'EnXVal02';
+        end;
+        7: case j2 of
+          0: enx02 := 'TEnumX0(7)';
+          1: enx02 := 'EnXVal03';
+        end;
+        8: case j2 of
+          0: enx02 := 'TEnumX0(510)';
+          1: enx02 := 'EnXVal04';
+          2: enx02 := 'gvEnumX0b';
+          3: enx02 := 'gcEnumX0b';
+        end;
+        9: enx02 := 'TEnumX0(5000)';
+      end;
+
+      t.Add('Signed TEnumX0-Cmp > : ', enx01+' > '+enx02,       weBool(i >  j ));
+      t.Add('Signed TEnumX0-Cmp < : ', enx01+' < '+enx02,       weBool(i <  j ));
+      t.Add('Signed TEnumX0-Cmp <>: ', enx01+' <> '+enx02,      weBool(i <> j ));
+      t.Add('Signed TEnumX0-Cmp = : ', enx01+' = '+enx02,       weBool(i =  j ));
+//      t.Add('Signed ENUM-Cmp: ', enx01+' in ['+enx02+']', weBool((i and $FFFC) = (j and $FFFC)));
+
+
+      case i of
+        0: enx01 := 'TEnumX1(-4)';
+        1: case i2 of
+          0: enx01 := 'TEnumX1(-3)';
+          1: enx01 := 'EnXVal11';
+          2: enx01 := 'gvEnumX1a';
+          3: enx01 := 'gcEnumX1a';
+        end;
+        2: enx01 := 'TEnumX1(-2)';
+        3: enx01 := 'TEnumX1(-1)';
+        4: enx01 := 'TEnumX1(0)';
+        5: enx01 := 'TEnumX1(1)';
+        6: case i2 of
+          0: enx01 := 'TEnumX1(4)';
+          1: enx01 := 'EnXVal12';
+        end;
+        7: case i2 of
+          0: enx01 := 'TEnumX1(7)';
+          1: enx01 := 'EnXVal13';
+        end;
+        8: case i2 of
+          0: enx01 := 'TEnumX1(10)';
+          1: enx01 := 'EnXVal14';
+          2: enx01 := 'gvEnumX1b';
+          3: enx01 := 'gcEnumX1b';
+        end;
+        9: enx01 := 'TEnumX1(50)';
+      end;
+      case j of
+        0: enx02 := 'TEnumX1(-4)';
+        1: case j2 of
+          0: enx02 := 'TEnumX1(-3)';
+          1: enx02 := 'EnXVal11';
+          2: enx02 := 'gvEnumX1a';
+          3: enx02 := 'gcEnumX1a';
+        end;
+        2: enx02 := 'TEnumX1(-2)';
+        3: enx02 := 'TEnumX1(-1)';
+        4: enx02 := 'TEnumX1(0)';
+        5: enx02 := 'TEnumX1(1)';
+        6: case j2 of
+          0: enx02 := 'TEnumX1(4)';
+          1: enx02 := 'EnXVal12';
+        end;
+        7: case j2 of
+          0: enx02 := 'TEnumX1(7)';
+          1: enx02 := 'EnXVal13';
+        end;
+        8: case j2 of
+          0: enx02 := 'TEnumX1(10)';
+          1: enx02 := 'EnXVal14';
+          2: enx02 := 'gvEnumX1b';
+          3: enx02 := 'gcEnumX1b';
+        end;
+        9: enx02 := 'TEnumX1(50)';
+      end;
+
+      t.Add('Signed TEnumX1-Cmp > : ', enx01+' > '+enx02,       weBool(i >  j ));
+      t.Add('Signed TEnumX1-Cmp < : ', enx01+' < '+enx02,       weBool(i <  j ));
+      t.Add('Signed TEnumX1-Cmp <>: ', enx01+' <> '+enx02,      weBool(i <> j ));
+      t.Add('Signed TEnumX1-Cmp = : ', enx01+' = '+enx02,       weBool(i =  j ));
+//      t.Add('Signed ENUM-Cmp: ', enx01+' in ['+enx02+']', weBool((i and $FFFC) = (j and $FFFC)));
+
+    end;
+
+
+    for i := 0 to t.Count - 1 do begin
+      t.Tests[i].IgnTypeName();
+
       if (t.Tests[i]^.TstExpected.ExpResultKind = rkInteger) then
         t.Tests[i]^.TstExpected.ExpIntSize := -1
       else
       if (t.Tests[i]^.TstExpected.ExpResultKind = rkCardinal) then
         t.Tests[i]^.TstExpected.ExpCardinalSize := -1;
+    end;
 
     t.EvaluateWatches;
     t.CheckResults;
