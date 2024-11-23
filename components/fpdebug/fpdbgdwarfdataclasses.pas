@@ -5569,7 +5569,7 @@ constructor TDwarfCompilationUnit.Create(AOwner: TFpDwarfInfo; ADebugFile: PDwar
         oldFpc := (Length(s) = 5) and (
           (s[1] = '2') or                                   // fpc 2.x
           ( (s[1] = '3') and (s[3] in ['0', '1']) ) or      // fpc 3.0 / 3.1
-          ( (s[1] = '3') and (s[3] = '2') and (s[5] in ['0', '1', '2', '3']) ) // fpc 3.2.[0123]]
+          ( (s[1] = '3') and (s[3] = '2') and (s[5] in ['0', '1', '2']) ) // fpc 3.2.[012]]
         );
       end;
       if not oldFpc then begin
