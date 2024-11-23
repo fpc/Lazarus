@@ -12246,6 +12246,13 @@ begin
       FMouseCaptureFix := True
     else
       FMouseCaptureFix := False;
+
+    {issue #41255}
+    if (QEvent_type(Event) = QEventMouseMove) and (QMouseEvent_buttons(QMouseEventH(Event)) = 0) then
+    begin
+      inherited EventFilter(Sender, Event);
+      exit(True);
+    end;
   end;
 
   Result := inherited EventFilter(Sender, Event);
