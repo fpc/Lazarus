@@ -543,15 +543,11 @@ function TSynEditMarkupFoldColors.GetFirstCharacterColumn(pIndex: Integer
   ): TColumnCacheEntry;
 var
   l: String;
-  s, p: Integer;
+  p: Integer;
 begin
   l := SynEdit.Lines[pIndex];
-  s := length(l);
-  p := 1;
-  while (p <= s)
-  //and (l[p] in [#9, #32, '/']) do inc(p);
-  and (l[p] in [#9, #32]) do inc(p);
-  if p > s then
+  p := CountLeadWhiteSpace(PChar(l)) + 1;
+  if p > length(l) then
     exit(high(Result));
   Result := SynEdit.LogicalToPhysicalPos(Point(p, toPos(pIndex))).x;
 end;

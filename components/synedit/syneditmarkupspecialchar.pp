@@ -27,7 +27,7 @@ interface
 
 uses
   Classes, SysUtils, Graphics, Controls,
-  SynEditMarkup, SynEditTypes, SynEditMiscClasses;
+  SynEditMarkup, SynEditTypes, SynEditMiscClasses, SynEditMiscProcs;
 
 type
 
@@ -87,9 +87,10 @@ end;
 function TSynEditMarkupSpecialChar.IsSpecial(pos: Integer): Boolean;
 begin
   if (pos < 1) or (pos > Length(FCurLine)) then exit(False);
-  Result := ( (vscSpace in FVisibleSpecialChars) and (FCurLine[pos] in [' ']) ) or
-            ( (FVisibleSpecialChars*[vscTabAtFirst, vscTabAtLast] <> []) and (FCurLine[pos] in [#9]) )
-            ;
+  Result := ( ( (vscSpace in FVisibleSpecialChars) and (FCurLine[pos] in [' ']) ) or
+              ( (FVisibleSpecialChars*[vscTabAtFirst, vscTabAtLast] <> []) and (FCurLine[pos] in [#9]) )
+            ) and
+            (not IsCombiningCodePoint(PChar(FCurLine)+pos));
 end;
 
 constructor TSynEditMarkupSpecialChar.Create(ASynEdit : TSynEditBase);

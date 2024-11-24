@@ -35,6 +35,7 @@ type
     ExpandedExtraBytes: Integer;         // tab and space expansion
     HasTabs: Boolean;                    // ExtraWidth may still be 0
     HasDoubleWidth: Boolean;
+    NeedsEto: Boolean;
 
     NextPos: TLazSynDisplayTokenBound;   // Next toxen, may be BIDI
     NextRtlInfo: TLazSynDisplayRtlInfo;
@@ -463,6 +464,7 @@ begin
     ATokenInfo.ExpandedExtraBytes := 0;
     ATokenInfo.HasTabs            := False;
     ATokenInfo.HasDoubleWidth     := False; // TODO: True, but needs charwidth for painter
+    ATokenInfo.NeedsEto           := False;
   end
   else begin
     if ATokenInfo.NextRtlInfo.IsRtl <> FCurMarkupNextRtlInfo.IsRtl then begin
@@ -740,7 +742,7 @@ var
   PrevLogicIdx, PrevPhysPos: Integer;
   PhysTokenStop: Integer;
   TabExtra: Integer;
-  HasTabs, HasDouble: Boolean;
+  HasTabs, HasDouble, NeedsEto: Boolean;
 begin
   ATokenInfo.Attr := nil;
   while True do begin
@@ -762,6 +764,7 @@ begin
     LogicEnd := LogicIdx + FCurViewToken.TokenLength;
     //assert(GetCharWidthData(LogicIdx)<>0, 'GetNextHighlighterTokenFromView: Token starts with char');
 
+    NeedsEto := False;
     case FCurViewinRTL of
       False: // Left To Right
         begin
@@ -812,8 +815,13 @@ begin
               else
               if j > 1 then
                 HasDouble := True;
-              if c = ' ' then
+              if c = ' ' then begin
                 inc(TabExtra, FSpaceExtraByteCount);
+                {$IfDef WINDOWS}
+                if not NeedsEto then
+                  NeedsEto := IsCombiningCodePoint(FCurViewToken.TokenStart + i + 1);
+                {$ENDIF}
+              end;
             end;
 
             repeat
@@ -851,6 +859,7 @@ begin
           ATokenInfo.ExpandedExtraBytes := TabExtra;
           ATokenInfo.HasTabs            := HasTabs;
           ATokenInfo.HasDoubleWidth     := HasDouble;
+          ATokenInfo.NeedsEto           := NeedsEto;
           assert(ATokenInfo.StartPos.Offset >= 0, 'FCurViewScannerPos.Offset >= 0');
           assert(ATokenInfo.EndPos.Offset   <= 0, 'FCurViewToken.EndPos.Offset <= 0');
 
@@ -937,8 +946,13 @@ begin
               else
               if j > 1 then
                 HasDouble := True;
-              if c = ' ' then
+              if c = ' ' then begin
                 inc(TabExtra, FSpaceExtraByteCount);
+                {$IfDef WINDOWS}
+                if not NeedsEto then
+                  NeedsEto := IsCombiningCodePoint(FCurViewToken.TokenStart + i + 1);
+                {$ENDIF}
+              end;
             end;
 
             repeat
@@ -979,6 +993,7 @@ begin
           ATokenInfo.ExpandedExtraBytes := TabExtra;
           ATokenInfo.HasTabs            := HasTabs;
           ATokenInfo.HasDoubleWidth     := HasDouble;
+          ATokenInfo.NeedsEto           := NeedsEto;
           assert(ATokenInfo.StartPos.Offset >= 0, 'FCurViewScannerPos.Offset >= 0');
           assert(ATokenInfo.EndPos.Offset   <= 0, 'FCurViewToken.EndPos.Offset <= 0');
 
@@ -1634,7 +1649,7 @@ var
     end;
 
     NeedExpansion := (ATokenInfo.ExpandedExtraBytes > 0) or (ATokenInfo.HasTabs);
-    NeedTransform := FTextDrawer.NeedsEto or ATokenInfo.HasDoubleWidth or NeedExpansion
+    NeedTransform := FTextDrawer.NeedsEto or ATokenInfo.HasDoubleWidth or ATokenInfo.NeedsEto or NeedExpansion
                      {$IFDEF Windows} or ATokenInfo.RtlInfo.IsRtl {$ENDIF}
                      ;
     Len := ATokenInfo.Tk.TokenLength;
@@ -1663,7 +1678,7 @@ var
       end;
 
       // Prepare FETOBuf
-      if FTextDrawer.NeedsEto or ATokenInfo.HasDoubleWidth
+      if FTextDrawer.NeedsEto or ATokenInfo.HasDoubleWidth or ATokenInfo.NeedsEto
          {$IFDEF Windows} or ATokenInfo.RtlInfo.IsRtl {$ENDIF}  // RTL may have script with ligature
       then begin
         FEtoBuf := FTextDrawer.Eto;
@@ -1705,7 +1720,9 @@ var
                   if FetoBuf <> nil then FEtoBuf.EtoData[e] := c;
                   inc(e);
                 end;
-                if (vscTabAtLast in FVisibleSpecialChars) and ((pl-1)^=' ') and (j < CWLen) then begin
+                if (vscTabAtLast in FVisibleSpecialChars) and ((pl-1)^=' ') and (j < CWLen) and
+                   (not IsCombiningCodePoint(pt+1))
+                then begin
                   (pl-1)^ := #194;
                   pl^ := #187; inc(pl);
                   if FetoBuf <> nil then FEtoBuf.EtoData[e] := c;
@@ -1713,7 +1730,9 @@ var
                 end;
               end;
             ' ': begin
-                if (vscSpace in FVisibleSpecialChars) and (j < CWLen) then begin
+                if (vscSpace in FVisibleSpecialChars) and (j < CWLen) and
+                   (not IsCombiningCodePoint(pt+1))
+                then begin
                   pl^ := #194; inc(pl);
                   pl^ := #183; inc(pl);
                 end

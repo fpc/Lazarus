@@ -5805,9 +5805,7 @@ begin
     ALine:=FTheLinesView[FBlockSelection.StartLinePos - 1];
     x2:=length(ALine)+1;
     if not WithLeadSpaces then begin
-      x := FBlockSelection.StartBytePos;
-      while (x<length(ALine)) and (ALine[x] in [' ',#9]) do
-        inc(x);
+      x := CountLeadWhiteSpace(PChar(ALine)) + 1;
       FBlockSelection.StartLineBytePos := Point(x,MinMax(Value.y, 1, FTheLinesView.Count));
       while (x2 > x) and (ALine[X2-1] in [' ',#9]) do
         dec(x2);
@@ -7476,7 +7474,9 @@ begin
           Temp := Clipboard.AsText;
           Helper := SelText;
           if (Temp <> '') and (not (Temp[Length(Temp)] in [#10,#13, #9, #32])) and
-             (not (Helper[1] in [#10,#13, #9, #32]))
+             not( (Helper[1] in [#10,#13, #9, #32]) and
+                   ( (Length(Helper) = 1) or (not IsCombiningCodePoint(PChar(Helper)+1)))
+                )
           then
             Temp := Temp + ' ';
           Clipboard.AsText := Temp + Helper;
@@ -9010,6 +9010,8 @@ begin
           // scan over whitespaces
           while (p^ in [#9, #32]) do
             inc(p);
+          if IsCombiningCodePoint(p) then
+            dec(p);
           i := LogicalToPhysicalCol(PrevLine, iLine, p-@PrevLine[1]+1) - CaretX;
         end;
       end;
@@ -9321,7 +9323,7 @@ begin
       j := 0;
       for i := 1 to FBlockTabIndent do begin
         i2 := fTabWidth;
-        while (i2 > 0) and (Line[j] = #32) do begin
+        while (i2 > 0) and IsSpaceChar(Line+j)  do begin
           dec(i2);
           inc(j);
         end;
@@ -9537,9 +9539,7 @@ begin
       s := FTheLinesView[CaretXY.Y - 1];
 
       // search first non blank char pos
-      FirstNonBlank := 1;
-      while (FirstNonBlank <= length(s)) and (s[FirstNonBlank] in [#32, #9]) do
-        inc(FirstNonBlank);
+      FirstNonBlank := CountLeadWhiteSpace(PChar(s)) + 1;
       if FirstNonBlank > length(s) then
         FirstNonBlank := -1;
     end else

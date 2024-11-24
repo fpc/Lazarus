@@ -206,7 +206,6 @@ type
     procedure UndoEditLinesDelete(LogY, ACount: Integer);
     procedure IncreaseTextChangeStamp;
     procedure DoGetPhysicalCharWidths(Line: PChar; LineLen, Index: Integer; PWidths: PPhysicalCharWidth); override;
-    function  LogicPosIsCombining(const AChar: PChar): Boolean; inline;
 
     function GetDisplayView: TLazSynDisplayView; override;
 
@@ -979,7 +978,7 @@ begin
       #$80..#$BF:
         PWidths^ := 0;
       else
-        if LogicPosIsCombining(Line) then
+        if IsCombiningCodePoint(Line) then
           PWidths^ := 0
         else
           PWidths^ := 1;
@@ -1010,21 +1009,6 @@ begin
     inc(Line);
   end;
 
-end;
-
-function TSynEditStringList.LogicPosIsCombining(const AChar: PChar): Boolean;
-begin
-  Result := (
-   ( (AChar[0] = #$CC) ) or                                                       // Combining Diacritical Marks (belongs to previos char) 0300-036F
-   ( (AChar[0] = #$CD) and (AChar[1] in [#$80..#$AF]) ) or                        // Combining Diacritical Marks
-   ( (AChar[0] = #$D8) and (AChar[1] in [#$90..#$9A]) ) or                        // Arabic 0610 (d890)..061A (d89a)
-   ( (AChar[0] = #$D9) and (AChar[1] in [#$8b..#$9f, #$B0]) ) or                  // Arabic 064B (d98b)..065F (d99f) // 0670 (d9b0)
-   ( (AChar[0] = #$DB) and (AChar[1] in [#$96..#$9C, #$9F..#$A4, #$A7..#$A8, #$AA..#$AD]) ) or // Arabic 06D6 (db96)..  .. ..06EA (dbaa)
-   ( (AChar[0] = #$E0) and (AChar[1] = #$A3) and (AChar[2] in [#$A4..#$BE]) ) or  // Arabic 08E4 (e0a3a4) ..08FE (e0a3be)
-   ( (AChar[0] = #$E1) and (AChar[1] = #$B7) ) or                                 // Combining Diacritical Marks Supplement 1DC0-1DFF
-   ( (AChar[0] = #$E2) and (AChar[1] = #$83) and (AChar[2] in [#$90..#$FF]) ) or  // Combining Diacritical Marks for Symbols 20D0-20FF
-   ( (AChar[0] = #$EF) and (AChar[1] = #$B8) and (AChar[2] in [#$A0..#$AF]) )     // Combining half Marks FE20-FE2F
-  );
 end;
 
 function TSynEditStringList.GetDisplayView: TLazSynDisplayView;
@@ -1240,7 +1224,7 @@ begin
     while (Result < l) and (ACount > 0) do begin
       inc(Result);
       if (ALine[Result] in [#0..#127, #192..#255]) and
-         ( (lpStopAtCodePoint in AFlags) or (not LogicPosIsCombining(@ALine[Result])) )
+         ( (lpStopAtCodePoint in AFlags) or (not IsCombiningCodePoint(@ALine[Result])) )
       then
         dec(ACount);
     end;
@@ -1250,7 +1234,7 @@ begin
     if (Result <= l) then
       while (Result > 1) and
             ( (not(ALine[Result] in [#0..#127, #192..#255])) or
-              ( (not(lpStopAtCodePoint in AFlags)) and LogicPosIsCombining(@ALine[Result]) )
+              ( (not(lpStopAtCodePoint in AFlags)) and IsCombiningCodePoint(@ALine[Result]) )
             )
       do
         dec(Result);
@@ -1259,7 +1243,7 @@ begin
       dec(Result);
       if (Result > l) or (Result = 1) or
          ( (ALine[Result] in [#0..#127, #192..#255]) and
-           ( (lpStopAtCodePoint in AFlags) or (not LogicPosIsCombining(@ALine[Result])) )
+           ( (lpStopAtCodePoint in AFlags) or (not IsCombiningCodePoint(@ALine[Result])) )
          )
       then
         inc(ACount);
@@ -1278,7 +1262,7 @@ begin
   if Result then
     Result := (ALogicalPos = 1) or
               (lpStopAtCodePoint in AFlags) or
-              (not LogicPosIsCombining(@ALine[ALogicalPos]));
+              (not IsCombiningCodePoint(@ALine[ALogicalPos]));
 end;
 
 function TSynEditStringList.LogicPosAdjustToChar(const ALine: String; ALogicalPos: integer;
@@ -1292,7 +1276,7 @@ begin
     while (Result <= length(ALine)) and
       ( (not(ALine[Result] in [#0..#127, #192..#255])) or
         ((Result <> 1) and
-         (not(lpStopAtCodePoint in AFlags)) and LogicPosIsCombining(@ALine[Result])
+         (not(lpStopAtCodePoint in AFlags)) and IsCombiningCodePoint(@ALine[Result])
         )
       )
     do
@@ -1305,7 +1289,7 @@ begin
 
   while (Result > 1) and
     ( (not(ALine[Result] in [#0..#127, #192..#255])) or
-      ( (not(lpStopAtCodePoint in AFlags)) and LogicPosIsCombining(@ALine[Result]) )
+      ( (not(lpStopAtCodePoint in AFlags)) and IsCombiningCodePoint(@ALine[Result]) )
     )
   do
     dec(Result);

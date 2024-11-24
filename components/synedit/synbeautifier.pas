@@ -43,7 +43,7 @@ uses
   Classes, SysUtils,
   LazStringUtils,
   SynEditMiscClasses, LazSynEditText, SynEditPointClasses,
-  SynEditKeyCmds, SynEditTypes;
+  SynEditKeyCmds, SynEditTypes, SynEditMiscProcs;
 
 type
 
@@ -672,11 +672,7 @@ var
 begin
   p := PChar(Line);
   if Assigned(p) then begin
-    Result := 0;
-    while p^ in [#1..#32] do begin
-      Inc(p);
-      Inc(Result);
-    end;
+    Result := CountLeadWhiteSpace(p);
     if Physical and (Result>0) then
       Result := FCurrentLines.LogicalToPhysicalCol(Line, -1, Result+1)-1; // TODO, Need the real index of the line
   end else
