@@ -921,7 +921,7 @@ begin
   for I := #0 to #255 do
   begin
     case I of
-      '_', '0'..'9', 'a'..'z', 'A'..'Z': Identifiers[I] := True;
+      '_', '0'..'9', 'a'..'z', 'A'..'Z', #128..#255: Identifiers[I] := True;
     else Identifiers[I] := False;
     end;
     J := UpCase(I);
@@ -4304,8 +4304,20 @@ end;
 procedure TSynPasSyn.SpaceProc;
 begin
   inc(Run);
+  if IsCombiningCodePoint(fLine+Run) then begin
+    IdentProc;
+    exit;
+  end;
+
   fTokenID := tkSpace;
+
+  if not IsSpaceChar[FLine[Run]] then
+    exit;
+
+  inc(Run);
   while IsSpaceChar[FLine[Run]] do inc(Run);
+  if IsCombiningCodePoint(fLine+Run) then
+    dec(Run);
 end;
 
 procedure TSynPasSyn.StringProc;
