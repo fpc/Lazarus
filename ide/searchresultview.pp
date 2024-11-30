@@ -798,8 +798,7 @@ begin
   lTree := GetCurrentTree;
   if assigned(lTree) and not (csDestroying in lTree.ComponentState) then
   begin
-    SearchInListEdit.FilteredTreeview := lTree;
-    SearchInListEdit.Filter := lTree.SearchInListPhrases;
+    SearchInListEdit.SetTreeFilterSilently(lTree, lTree.SearchInListPhrases);
     if FFocusTreeViewInOnChange then
       ActivateControl(lTree);
   end;
