@@ -382,15 +382,13 @@ begin
   else
     CurrentUnitName := '';
   // Add available unit names to list
-  ProjFile:=Project1.FirstPartOfProject;
-  while ProjFile <> nil do begin
+  for TLazProjectFile(ProjFile) in Project1.UnitsBelongingToProject do begin
     s := ProjFile.Unit_Name;
     if s = CurrentUnitName then       // current unit
       s := '';
     if (ProjFile <> Project1.MainUnitInfo) and (s <> '') then
       if not FMainUsedUnits.Find(s, x) then
         FProjUnits.AddObject(s, ProjFile);
-    ProjFile := ProjFile.NextPartOfProject;
   end;
   FProjUnits.Sorted := True;
 end;

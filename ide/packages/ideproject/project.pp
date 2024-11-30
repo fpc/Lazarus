@@ -326,17 +326,7 @@ type
     function GetLoadingComponent: boolean;
     function GetMarked: boolean;
     function GetModified: boolean;
-    function GetNextAutoRevertLockedUnit: TUnitInfo;
-    function GetNextLoadedUnit: TUnitInfo;
-    function GetNextPartOfProject: TUnitInfo;
-    function GetNextUnitWithComponent: TUnitInfo;
-    function GetNextUnitWithEditorIndex: TUnitInfo;
     function GetOpenEditorInfo(Index: Integer): TUnitEditorInfo;
-    function GetPrevAutoRevertLockedUnit: TUnitInfo;
-    function GetPrevLoadedUnit: TUnitInfo;
-    function GetPrevPartOfProject: TUnitInfo;
-    function GetPrevUnitWithComponent: TUnitInfo;
-    function GetPrevUnitWithEditorIndex: TUnitInfo;
     function GetRunFileIfActive: boolean;
     function GetSessionModified: boolean;
     function GetUnitResourceFileformat: TUnitResourcefileFormatClass;
@@ -447,18 +437,6 @@ type
   public
     { Properties }
     property UnitResourceFileformat: TUnitResourcefileFormatClass read GetUnitResourceFileformat;
-
-    // Unit lists
-    property NextUnitWithEditorIndex: TUnitInfo read GetNextUnitWithEditorIndex;
-    property PrevUnitWithEditorIndex: TUnitInfo read GetPrevUnitWithEditorIndex;
-    property NextUnitWithComponent: TUnitInfo read GetNextUnitWithComponent;
-    property PrevUnitWithComponent: TUnitInfo read GetPrevUnitWithComponent;
-    property NextLoadedUnit: TUnitInfo read GetNextLoadedUnit;
-    property PrevLoadedUnit: TUnitInfo read GetPrevLoadedUnit;
-    property NextAutoRevertLockedUnit: TUnitInfo read GetNextAutoRevertLockedUnit;
-    property PrevAutoRevertLockedUnit: TUnitInfo read GetPrevAutoRevertLockedUnit;
-    property NextPartOfProject: TUnitInfo read GetNextPartOfProject;
-    property PrevPartOfProject: TUnitInfo read GetPrevPartOfProject;
   public
     property Bookmarks: TFileBookmarks read FBookmarks write FBookmarks;
     property BuildFileIfActive: boolean read GetBuildFileIfActive
@@ -514,6 +492,39 @@ type
                                              write SetAutoReferenceSourceDir;
   end;
 
+
+  { TIdeLazProjectFileList }
+
+  TIdeLazProjectFileList = class(TLazProjectFileList)
+  public type
+
+    { TIdeLazProjectFileListEnumerator }
+
+    TIdeLazProjectFileListEnumerator = object(TLazProjectFileListEnumerator)
+    private
+      function GetCurrent: TLazProjectFile; virtual;
+    public
+      constructor Create(AList: TLazProjectFileList; AData: TUnitInfoList);
+      function MoveNext: Boolean; virtual;
+      property Current: TLazProjectFile read GetCurrent;
+    end;
+
+    { TIdeLazProjectFileListEnumeration }
+
+    TIdeLazProjectFileListEnumeration = object(TLazProjectFileListEnumeration)
+    public
+      constructor Create(AList: TLazProjectFileList; AData: TUnitInfoList);
+      function GetEnumerator: TLazProjectFileListEnumerator; virtual;
+    end;
+  protected
+    function GetFilesBelongingToProject: TLazProjectFileListEnumeration; override;
+    function GetFilesLoaded: TLazProjectFileListEnumeration; override;
+    function GetFilesWithComponent: TLazProjectFileListEnumeration; override;
+    function GetFilesWithEditorIndex: TLazProjectFileListEnumeration; override;
+    function GetFilesWithRevertLock: TLazProjectFileListEnumeration; override;
+  public
+    constructor Create(AnOwner: TLazProject);
+  end;
 
   //---------------------------------------------------------------------------
 
@@ -822,7 +833,7 @@ type
     FStateFileDate: longint;
     FStateFlags: TLazProjectStateFlags;
     FStorePathDelim: TPathDelimSwitch;
-    FUnitList: TFPList;  // list of _all_ units (TUnitInfo)
+    FUnitList: TIdeLazProjectFileList;  // list of _all_ units (TUnitInfo)
     FOtherDefines: TStrings; // list of user selectable defines for custom options
     FUpdateLock: integer;
     FUseAsDefault: Boolean;
@@ -837,10 +848,11 @@ type
     function GetAllEditorsInfo(Index: Integer): TUnitEditorInfo;
     function GetCompilerOptions: TProjectCompilerOptions;
     function GetBaseCompilerOptions: TBaseCompilerOptions;
-    function GetFirstAutoRevertLockedUnit: TUnitInfo;
-    function GetFirstLoadedUnit: TUnitInfo;
-    function GetFirstPartOfProject: TUnitInfo;
-    function GetFirstUnitWithComponent: TUnitInfo;
+    function GetFilesBelongingToProject: TIdeLazProjectFileList.TLazProjectFileListEnumeration;
+    function GetFilesLoaded: TIdeLazProjectFileList.TLazProjectFileListEnumeration;
+    function GetFilesWithComponent: TIdeLazProjectFileList.TLazProjectFileListEnumeration;
+    function GetFilesWithEditorIndex: TIdeLazProjectFileList.TLazProjectFileListEnumeration;
+    function GetFilesWithRevertLock: TIdeLazProjectFileList.TLazProjectFileListEnumeration;
     function GetFirstUnitWithEditorIndex: TUnitInfo;
     function GetIDEOptions: TProjectIDEOptions;
     function GetMainFilename: String;
@@ -1137,12 +1149,8 @@ type
     property I18NExcludedOriginals: TStrings read FI18NExcludedOriginals;
     property UseLegacyLists: Boolean read GetUseLegacyLists;
     property ForceUpdatePoFiles: Boolean read FForceUpdatePoFiles write FForceUpdatePoFiles;
-    property FirstAutoRevertLockedUnit: TUnitInfo read GetFirstAutoRevertLockedUnit;
-    property FirstLoadedUnit: TUnitInfo read GetFirstLoadedUnit;
-    property FirstPartOfProject: TUnitInfo read GetFirstPartOfProject;
     property FirstRemovedDependency: TPkgDependency read FFirstRemovedDependency;
     property FirstRequiredDependency: TPkgDependency read FFirstRequiredDependency;
-    property FirstUnitWithComponent: TUnitInfo read GetFirstUnitWithComponent;
     property FirstUnitWithEditorIndex: TUnitInfo read GetFirstUnitWithEditorIndex;
     property IDAsString: string read GetIDAsString;
     property IDAsWord: string read GetIDAsWord;
@@ -1188,6 +1196,11 @@ type
     property OtherDefines: TStrings read FOtherDefines;
     property UpdateLock: integer read FUpdateLock;
     property UseAsDefault: Boolean read FUseAsDefault write FUseAsDefault; // for dialog only (used to store options once)
+    property UnitsBelongingToProject: TIdeLazProjectFileList.TLazProjectFileListEnumeration read GetFilesBelongingToProject;
+    property UnitsWithEditorIndex: TIdeLazProjectFileList.TLazProjectFileListEnumeration read GetFilesWithEditorIndex;
+    property UnitsWithComponent: TIdeLazProjectFileList.TLazProjectFileListEnumeration read GetFilesWithComponent;
+    property UnitsLoaded: TIdeLazProjectFileList.TLazProjectFileListEnumeration read GetFilesLoaded;
+    property UnitsWithRevertLock: TIdeLazProjectFileList.TLazProjectFileListEnumeration read GetFilesWithRevertLock;
   end;
 
 
@@ -2577,59 +2590,9 @@ begin
     or ((Source<>nil) and (Source.ChangeStep<>fSourceChangeStep));
 end;
 
-function TUnitInfo.GetNextAutoRevertLockedUnit: TUnitInfo;
-begin
-  Result:=fNext[uilAutoRevertLocked];
-end;
-
-function TUnitInfo.GetNextLoadedUnit: TUnitInfo;
-begin
-  Result:=fNext[uilLoaded];
-end;
-
-function TUnitInfo.GetNextPartOfProject: TUnitInfo;
-begin
-  Result:=fNext[uilPartOfProject];
-end;
-
-function TUnitInfo.GetNextUnitWithComponent: TUnitInfo;
-begin
-  Result:=fNext[uilWithComponent];
-end;
-
-function TUnitInfo.GetNextUnitWithEditorIndex: TUnitInfo;
-begin
-  Result:=fNext[uilWithEditorIndex];
-end;
-
 function TUnitInfo.GetOpenEditorInfo(Index: Integer): TUnitEditorInfo;
 begin
   Result := FEditorInfoList.OpenEditorInfos[Index];
-end;
-
-function TUnitInfo.GetPrevAutoRevertLockedUnit: TUnitInfo;
-begin
-  Result:=fPrev[uilAutoRevertLocked];
-end;
-
-function TUnitInfo.GetPrevLoadedUnit: TUnitInfo;
-begin
-  Result:=fPrev[uilLoaded];
-end;
-
-function TUnitInfo.GetPrevPartOfProject: TUnitInfo;
-begin
-  Result:=fPrev[uilPartOfProject];
-end;
-
-function TUnitInfo.GetPrevUnitWithComponent: TUnitInfo;
-begin
-  Result:=fPrev[uilWithComponent];
-end;
-
-function TUnitInfo.GetPrevUnitWithEditorIndex: TUnitInfo;
-begin
-  Result:=fPrev[uilWithEditorIndex];
 end;
 
 function TUnitInfo.GetRunFileIfActive: boolean;
@@ -2901,6 +2864,77 @@ begin
     Exclude(FFlags, uifSessionModified);
 end;
 
+{ TIdeLazProjectFileList.TIdeLazProjectFileListEnumerator }
+
+function TIdeLazProjectFileList.TIdeLazProjectFileListEnumerator.GetCurrent: TLazProjectFile;
+begin
+  Result := FCurrent;
+end;
+
+constructor TIdeLazProjectFileList.TIdeLazProjectFileListEnumerator.Create(
+  AList: TLazProjectFileList; AData: TUnitInfoList);
+begin
+  FList := AList;
+  FData := ord(AData);
+  FCurrent := nil;
+end;
+
+function TIdeLazProjectFileList.TIdeLazProjectFileListEnumerator.MoveNext: Boolean;
+begin
+  if FCurrent = nil then
+    FCurrent := (FList.Owner as TProject).fFirst[TUnitInfoList(FData)]
+  else
+    FCurrent := FNext;
+  Result := FCurrent <> nil;
+  if Result then
+    FNext := (FCurrent as TUnitInfo).fNext[TUnitInfoList(FData)];
+end;
+
+{ TIdeLazProjectFileList.TIdeLazProjectFileListEnumeration }
+
+constructor TIdeLazProjectFileList.TIdeLazProjectFileListEnumeration.Create(
+  AList: TLazProjectFileList; AData: TUnitInfoList);
+begin
+  TIdeLazProjectFileListEnumerator(FEnumerator).Create(AList, AData);
+end;
+
+function TIdeLazProjectFileList.TIdeLazProjectFileListEnumeration.GetEnumerator: TLazProjectFileListEnumerator;
+begin
+  Result := FEnumerator;
+end;
+
+{ TIdeLazProjectFileList }
+
+function TIdeLazProjectFileList.GetFilesBelongingToProject: TLazProjectFileListEnumeration;
+begin
+  TIdeLazProjectFileListEnumeration(Result).Create(Self, uilPartOfProject);
+end;
+
+function TIdeLazProjectFileList.GetFilesLoaded: TLazProjectFileListEnumeration;
+begin
+  TIdeLazProjectFileListEnumeration(Result).Create(Self, uilLoaded);
+end;
+
+function TIdeLazProjectFileList.GetFilesWithComponent: TLazProjectFileListEnumeration;
+begin
+  TIdeLazProjectFileListEnumeration(Result).Create(Self, uilWithComponent);
+end;
+
+function TIdeLazProjectFileList.GetFilesWithEditorIndex: TLazProjectFileListEnumeration;
+begin
+  TIdeLazProjectFileListEnumeration(Result).Create(Self, uilWithEditorIndex);
+end;
+
+function TIdeLazProjectFileList.GetFilesWithRevertLock: TLazProjectFileListEnumeration;
+begin
+  TIdeLazProjectFileListEnumeration(Result).Create(Self, uilAutoRevertLocked);
+end;
+
+constructor TIdeLazProjectFileList.Create(AnOwner: TLazProject);
+begin
+  FOwner := AnOwner;
+  inherited Create;
+end;
 
 { TProjectIDEOptions }
 
@@ -2981,7 +3015,7 @@ begin
   FPublishOptions:=TPublishProjectOptions.Create(Self);
   FRunParameters:=TRunParamsOptions.Create;
   Title := '';
-  FUnitList := TFPList.Create;  // list of TUnitInfo
+  FUnitList := TIdeLazProjectFileList.Create(Self);  // list of TUnitInfo
   FOtherDefines := TStringList.Create;
   FEnableI18N := False;
   FEnableI18NForLFM := True;
@@ -4552,25 +4586,10 @@ begin
   else Result:='';
 end;
 
-function TProject.GetFirstPartOfProject: TUnitInfo;
-begin
-  Result:=FFirst[uilPartOfProject];
-end;
-
-function TProject.GetFirstLoadedUnit: TUnitInfo;
-begin
-  Result:=fFirst[uilLoaded];
-end;
-
 procedure TProject.EmbeddedObjectModified(Sender: TObject);
 begin
   if ProjResources.Modified then
     Modified := True;
-end;
-
-function TProject.GetFirstAutoRevertLockedUnit: TUnitInfo;
-begin
-  Result:=fFirst[uilAutoRevertLocked];
 end;
 
 function TProject.GetAllEditorsInfo(Index: Integer): TUnitEditorInfo;
@@ -4589,6 +4608,31 @@ begin
   Result := TBaseCompilerOptions(FLazCompilerOptions);
 end;
 
+function TProject.GetFilesBelongingToProject: TIdeLazProjectFileList.TLazProjectFileListEnumeration;
+begin
+  Result := FUnitList.FilesBelongingToProject;
+end;
+
+function TProject.GetFilesLoaded: TIdeLazProjectFileList.TLazProjectFileListEnumeration;
+begin
+  Result := FUnitList.FilesLoaded;
+end;
+
+function TProject.GetFilesWithComponent: TIdeLazProjectFileList.TLazProjectFileListEnumeration;
+begin
+  Result := FUnitList.FilesWithComponent;
+end;
+
+function TProject.GetFilesWithEditorIndex: TIdeLazProjectFileList.TLazProjectFileListEnumeration;
+begin
+  Result := FUnitList.FilesWithEditorIndex;
+end;
+
+function TProject.GetFilesWithRevertLock: TIdeLazProjectFileList.TLazProjectFileListEnumeration;
+begin
+  Result := FUnitList.FilesWithRevertLock;
+end;
+
 procedure TProject.ClearBuildModes;
 begin
   ActiveBuildMode:=nil;
@@ -4600,11 +4644,6 @@ end;
 function TProject.GetActiveBuildModeID: string;
 begin
   Result := ActiveBuildMode.Identifier;
-end;
-
-function TProject.GetFirstUnitWithComponent: TUnitInfo;
-begin
-  Result:=fFirst[uilWithComponent];
 end;
 
 function TProject.GetFirstUnitWithEditorIndex: TUnitInfo;
@@ -4823,11 +4862,9 @@ procedure TProject.GetAutoRevertLockedFiles(var ACodeBufferList: TFPList);
 var
   AnUnitInfo: TUnitInfo;
 begin
-  AnUnitInfo:=fFirst[uilAutoRevertLocked];
-  while (AnUnitInfo<>nil) do begin
+  for TLazProjectFile(AnUnitInfo) in FUnitList.FilesWithRevertLock do begin
     Add(AnUnitInfo.Source);
     Add(AnUnitInfo.SourceLFM);
-    AnUnitInfo:=AnUnitInfo.fNext[uilAutoRevertLocked];
   end;
 end;
 
@@ -5164,12 +5201,10 @@ begin
     DebugLn(['TProject.UpdateUnitComponentDependencies checking properties ...']);
     {$ENDIF}
     // find property dependencies
-    AnUnitInfo:=FirstUnitWithComponent;
-    while AnUnitInfo<>nil do begin
+    for TLazProjectFile(AnUnitInfo) in UnitsWithComponent do begin
       Search(AnUnitInfo,AnUnitInfo.Component);
       for i:=AnUnitInfo.Component.ComponentCount-1 downto 0 do
         Search(AnUnitInfo,AnUnitInfo.Component.Components[i]);
-      AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
     end;
     //WriteDebugReportUnitComponentDependencies('P ');
   end;
@@ -5181,8 +5216,7 @@ begin
     DebugLn(['TProject.UpdateUnitComponentDependencies checking designers ...']);
     {$ENDIF}
     // find designer dependencies
-    AnUnitInfo:=FirstUnitWithComponent;
-    while AnUnitInfo<>nil do begin
+    for TLazProjectFile(AnUnitInfo) in UnitsWithComponent do begin
       AnUnitInfo.FFlags:=AnUnitInfo.FFlags-
         [uifMarked,uifComponentIndirectlyUsedByDesigner,uifComponentUsedByDesigner];
       if FindRootDesigner(AnUnitInfo.Component)<>nil then begin
@@ -5191,17 +5225,14 @@ begin
         {$ENDIF}
         Include(AnUnitInfo.FFlags,uifComponentUsedByDesigner);
       end;
-      AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
     end;
     // mark all units that are used indirectly by a designer
-    AnUnitInfo:=FirstUnitWithComponent;
-    while AnUnitInfo<>nil do begin
+    for TLazProjectFile(AnUnitInfo) in UnitsWithComponent do begin
       if (uifComponentUsedByDesigner in AnUnitInfo.FFlags) then
       begin
         // mark all that use indirectly this designer
         DFSRequiredDesigner(AnUnitInfo,AnUnitInfo);
       end;
-      AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
     end;
     {$IFDEF VerboseTFrame}
     WriteDebugReportUnitComponentDependencies('UUCD ');
@@ -5280,15 +5311,13 @@ begin
       OwnerComponent:=OwnerComponent.Owner;
   end else
     OwnerComponent:=nil;
-  AnUnitInfo:=FirstUnitWithComponent;
-  while AnUnitInfo<>nil do begin
+  for TLazProjectFile(AnUnitInfo) in UnitsWithComponent do begin
     if csDestroying in AnUnitInfo.Component.ComponentState then continue;
     if AnUnitInfo.Component<>OwnerComponent then begin
       Search(AnUnitInfo,AnUnitInfo.Component);
       for i:=AnUnitInfo.Component.ComponentCount-1 downto 0 do
         Search(AnUnitInfo,AnUnitInfo.Component.Components[i]);
     end;
-    AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
   end;
 end;
 
@@ -5722,15 +5751,13 @@ begin
       DebugLn(['TProject.SomeDataModified CompilerOptions/BuildModes']);
     Exit;
   end;
-  AnUnitInfo:=FirstPartOfProject;
-  while AnUnitInfo<>nil do begin
+  for TLazProjectFile(AnUnitInfo) in UnitsBelongingToProject do begin
     if AnUnitInfo.Modified then
     begin
       if Verbose then
         DebugLn('TProject.SomeDataModified PartOfProject ',AnUnitInfo.Filename);
       Exit;
     end;
-    AnUnitInfo:=AnUnitInfo.NextPartOfProject;
   end;
   Result:=false;
 end;
@@ -6022,19 +6049,16 @@ begin
     SearchedFilename:=ExtractFilenameOnly(SearchedFilename);
 
   // search in files which are part of the project
-  Result:=FirstPartOfProject;
-  while Result<>nil do begin
+  for TLazProjectFile(Result) in UnitsBelongingToProject do begin
     if FilenameFits(Result.Filename) then exit;
-    Result:=Result.NextPartOfProject;
   end;
   // search in files opened in editor
   if not (siffDoNotCheckOpenFiles in SearchFlags) then begin
-    Result:=FirstUnitWithEditorIndex;
-    while Result<>nil do begin
+    for TLazProjectFile(Result) in UnitsWithEditorIndex do begin
       if FilenameFits(Result.Filename) then exit;
-      Result:=Result.NextUnitWithEditorIndex;
     end;
   end;
+  Result := nil;
 end;
 
 function TProject.FindFile(const AFilename: string;
@@ -6310,8 +6334,7 @@ begin
   end;
 
   if BestUnitInfo=nil then begin
-    AnUnitInfo:=FirstPartOfProject;
-    while AnUnitInfo<>nil do begin
+    for TLazProjectFile(AnUnitInfo) in UnitsBelongingToProject do begin
       if FileExistsCached(AnUnitInfo.Filename) then begin
         if (BestUnitInfo=nil)
         or (FilenameHasPascalExt(AnUnitInfo.Filename)
@@ -6320,7 +6343,6 @@ begin
           BestUnitInfo:=AnUnitInfo;
         end;
       end;
-      AnUnitInfo:=AnUnitInfo.NextPartOfProject;
     end;
   end;
   if BestUnitInfo<>nil then begin

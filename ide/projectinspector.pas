@@ -1184,21 +1184,17 @@ end;
 procedure TProjectInspectorForm.RemoveNonExistingFilesMenuItemClick(Sender: TObject);
 var
   AnUnitInfo: TUnitInfo;
-  NextUnitInfo: TUnitInfo;
   HasChanged: Boolean;
 begin
   if LazProject.IsVirtual then exit;
   BeginUpdate;
   try
     HasChanged:=false;
-    AnUnitInfo:=LazProject.FirstPartOfProject;
-    while AnUnitInfo<>nil do begin
-      NextUnitInfo:=AnUnitInfo.NextPartOfProject;
+    for TLazProjectFile(AnUnitInfo) in LazProject.UnitsBelongingToProject do begin
       if not (AnUnitInfo.IsVirtual or FileExistsUTF8(AnUnitInfo.Filename)) then begin
         AnUnitInfo.IsPartOfProject:=false;
         HasChanged:=true;
       end;
-      AnUnitInfo:=NextUnitInfo;
     end;
     if HasChanged then begin
       LazProject.Modified:=true;
@@ -1497,14 +1493,12 @@ begin
     FilterEdit.SortData:=SortAlphabetically;
     FilterEdit.ImageIndexDirectory:=ImageIndexDirectory;
     // collect and sort files
-    CurFile:=LazProject.FirstPartOfProject;
-    while CurFile<>nil do begin
+    for TLazProjectFile(CurFile) in LazProject.UnitsBelongingToProject do begin
       Filename:=CurFile.GetShortFilename(true);
       if Filename<>'' then Begin
         ANodeData:=FPropGui.CreateNodeData(penFile, CurFile.Filename, False);
         FilesBranch.AddNodeData(Filename, ANodeData, CurFile.Filename);
       end;
-      CurFile:=CurFile.NextPartOfProject;
     end;
   end;
   FilterEdit.InvalidateFilter;            // Data is shown by FilterEdit.

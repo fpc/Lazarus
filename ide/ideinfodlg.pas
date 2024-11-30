@@ -41,7 +41,7 @@ uses
   // IdeConfig
   TransferMacros, EnvironmentOpts, LazConf,
   // BuildIntf
-  MacroDefIntf, IDEExternToolIntf,
+  MacroDefIntf, IDEExternToolIntf, ProjectIntf,
   // IdeIntf
   IDEHelpIntf, IDEWindowIntf, LazIDEIntf,
   // IDE
@@ -398,8 +398,7 @@ begin
 
   // details
   HeaderWritten:=false;
-  aFile:=AProject.FirstPartOfProject;
-  while aFile<>nil do begin
+  for TLazProjectFile(aFile) in AProject.UnitsBelongingToProject do begin
     if aFile.Modified or aFile.SessionModified
     or ((aFile.Source<>nil) and aFile.Source.Modified)
     then begin
@@ -416,7 +415,6 @@ begin
         s:=s+' Source.Modified';
       sl.Add(s);
     end;
-    aFile:=aFile.NextPartOfProject;
   end;
   if HeaderWritten then
     sl.Add('');

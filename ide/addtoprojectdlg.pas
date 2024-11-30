@@ -42,7 +42,7 @@ uses
   // IDEIntf
   IDEWindowIntf,
   // IDE
-  LazarusIDEStrConsts, IDEDialogs, Project, ProjPackChecks;
+  LazarusIDEStrConsts, IDEDialogs, ProjectIntf, Project, ProjPackChecks;
   
 type
   { TAddToProjectDialog }
@@ -168,15 +168,13 @@ var
 begin
   AddFileListView.Items.BeginUpdate;
   if fProject<>nil then begin
-    CurFile:=fProject.FirstUnitWithEditorIndex;
-    while CurFile<>nil do begin
+    for TLazProjectFile(CurFile) in fProject.UnitsWithEditorIndex do begin
       if (not CurFile.IsPartOfProject) and (not CurFile.IsVirtual) then begin
         NewFilename:=CreateRelativePath(CurFile.Filename,fProject.Directory);
         NewListItem:=AddFileListView.Items.Add;
         NewListItem.Caption:=NewFilename;
         NewListItem.Selected:=True;
       end;
-      CurFile:=CurFile.NextUnitWithEditorIndex;
     end;
   end;
   AddFileListView.Items.EndUpdate;

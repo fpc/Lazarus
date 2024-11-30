@@ -58,7 +58,7 @@ uses
   LazFileUtils, LazUTF8, AvgLvlTree,
   // IDEIntf
   IDEWindowIntf, SrcEditorIntf, IDEMsgIntf, IDEDialogs, LazConfigStorage,
-  IDEHelpIntf, PackageIntf, IDECommands, LazIDEIntf, IDEExternToolIntf,
+  IDEHelpIntf, PackageIntf, IDECommands, LazIDEIntf, IDEExternToolIntf, ProjectIntf,
   IDEImagesIntf,
   // IDE
   Project, DialogProcs, PackageSystem, PackageDefs, LazarusIDEStrConsts,
@@ -1402,14 +1402,12 @@ var
     AnUnitInfo: TUnitInfo;
   begin
     if AProject=nil then exit;
-    AnUnitInfo:=AProject.FirstPartOfProject;
     //DebugLn(['AddFilesOfProject ',AnUnitInfo<>nil]);
-    while AnUnitInfo<>nil do begin
+    for TLazProjectFile(AnUnitInfo) in AProject.UnitsBelongingToProject do begin
       //DebugLn(['AddFilesOfProject ',AnUnitInfo.Filename]);
       if FilenameIsPascalUnit(AnUnitInfo.Filename)
       or (AnUnitInfo=aProject.MainUnitInfo) then
         AddFile(AnUnitInfo.Filename,false);
-      AnUnitInfo:=AnUnitInfo.NextPartOfProject;
     end;
   end;
   

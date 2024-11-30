@@ -4754,11 +4754,9 @@ begin
       end;
     end else if CurOwner is TProject then begin
       CurProject:=TProject(CurOwner);
-      CurUnit:=CurProject.FirstPartOfProject;
-      while CurUnit<>nil do begin
+      for TLazProjectFile(CurUnit) in CurProject.UnitsBelongingToProject do begin
         if FilenameIsPascalSource(CurUnit.Filename) then
           AddFile(CurOwner,CurUnit.Filename);
-        CurUnit:=CurUnit.NextPartOfProject;
       end;
     end;
   end;
@@ -6341,10 +6339,8 @@ begin
   FMainUnitInfoValid:=false;
   if (MainOwner=nil) or (MainUnitInfo=nil) then exit;
   // search all open designer forms (can be hidden)
-  AnUnitInfo:=Project1.FirstUnitWithComponent;
-  while AnUnitInfo<>nil do begin
+  for TLazProjectFile(AnUnitInfo) in Project1.UnitsWithComponent do begin
     CheckUnit(AnUnitInfo);
-    AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
   end;
 end;
 

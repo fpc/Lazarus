@@ -16,7 +16,7 @@ unit ProjectIntf;
 interface
 
 uses
-  Classes, SysUtils, Contnrs, System.UITypes,
+  Classes, SysUtils, fgl, Contnrs, System.UITypes,
   // LazUtils
   FileUtil, LazFileUtils, LazFileCache, LazMethodList, AvgLvlTree,
   // BuildIntf
@@ -496,6 +496,43 @@ type
     function IndexOf(anIdentifier: string): integer;
     property ChangeStamp: integer read FChangeStamp;
     property BuildModes[Index: integer]: TLazProjectBuildMode read GetLazBuildModes;
+  end;
+
+  { TLazProjectFileList }
+
+  TLazProjectFileList = class(specialize TFPGList<TLazProjectFile>)
+  public type
+    TLazProjectFileListEnumerator = object abstract
+    protected
+      FList: TLazProjectFileList;
+      FData: integer;
+      FCurrent, FNext: TLazProjectFile;
+      function GetCurrent: TLazProjectFile; virtual; abstract;
+    public
+      function MoveNext: Boolean; virtual; abstract;
+      property Current: TLazProjectFile read GetCurrent;
+    end;
+    TLazProjectFileListEnumeration = object abstract
+    protected
+      FEnumerator: TLazProjectFileListEnumerator;
+    public
+      //constructor Create;
+      function GetEnumerator: TLazProjectFileListEnumerator; virtual; abstract;
+    end;
+  protected
+    FOwner: TLazProject;
+    function GetFilesBelongingToProject: TLazProjectFileListEnumeration; virtual; abstract;
+    function GetFilesLoaded: TLazProjectFileListEnumeration; virtual; abstract;
+    function GetFilesWithComponent: TLazProjectFileListEnumeration; virtual; abstract;
+    function GetFilesWithEditorIndex: TLazProjectFileListEnumeration; virtual; abstract;
+    function GetFilesWithRevertLock: TLazProjectFileListEnumeration; virtual; abstract;
+  public
+    property Owner: TLazProject read FOwner;
+    property FilesBelongingToProject: TLazProjectFileListEnumeration read GetFilesBelongingToProject;
+    property FilesWithEditorIndex: TLazProjectFileListEnumeration read GetFilesWithEditorIndex;
+    property FilesWithComponent: TLazProjectFileListEnumeration read GetFilesWithComponent;
+    property FilesLoaded: TLazProjectFileListEnumeration read GetFilesLoaded;
+    property FilesWithRevertLock: TLazProjectFileListEnumeration read GetFilesWithRevertLock;
   end;
 
   { TLazProject - interface class to a Lazarus project }

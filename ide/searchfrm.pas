@@ -41,7 +41,7 @@ uses
   FileUtil, LazFileUtils, LazFileCache, LazTracer, LazUTF8,
   // IDEIntf
   IdeIntfStrConsts, IDEWindowIntf, LazIDEIntf, SrcEditorIntf, IDEDialogs,
-  ProjectGroupIntf, InputHistory,
+  ProjectGroupIntf, ProjectIntf, InputHistory,
   // IdeUtils
   IdeUtilsPkgStrConsts,
   // IdeConfig
@@ -1064,13 +1064,11 @@ var
 begin
   try
     TheFileList:= TStringList.Create;
-    AnUnitInfo:=AProject.FirstPartOfProject;
-    while AnUnitInfo<>nil do begin
+    for TLazProjectFile(AnUnitInfo) in AProject.UnitsBelongingToProject do begin
       //Only if file exists on disk.
       if FilenameIsAbsolute(AnUnitInfo.FileName)
       and FileExistsCached(AnUnitInfo.FileName) then
         TheFileList.Add(AnUnitInfo.FileName);
-      AnUnitInfo:=AnUnitInfo.NextPartOfProject;
     end;
     SearchFileList:= TheFileList;
     DoSearchAndAddToSearchResults;

@@ -1871,8 +1871,7 @@ begin
     end;
 
     // removed directories still used for ObsoleteUnitPaths, ObsoleteIncPaths
-    AnUnitInfo:=Project1.FirstPartOfProject;
-    while AnUnitInfo<>nil do begin
+    for TLazProjectFile(AnUnitInfo) in Project1.UnitsBelongingToProject do begin
       if FilenameIsAbsolute(AnUnitInfo.Filename) then begin
         UnitPath:=ChompPathDelim(ExtractFilePath(AnUnitInfo.Filename));
         if FilenameIsPascalUnit(AnUnitInfo.Filename) then
@@ -1880,7 +1879,6 @@ begin
         if FilenameExtIs(AnUnitInfo.Filename,'inc') then
           ObsoleteIncPaths:=RemoveSearchPaths(ObsoleteIncPaths,UnitPath);
       end;
-      AnUnitInfo:=AnUnitInfo.NextPartOfProject;
     end;
 
     // check if compiler options contain paths of ObsoleteUnitPaths
@@ -3544,12 +3542,9 @@ begin
       end;
       if (fuooListed in Flags) then begin
         // add listed units (i.e. units in project inspector)
-        AnUnitInfo:=aProject.FirstPartOfProject;
-        while AnUnitInfo<>nil do
-        begin
+        for TLazProjectFile(AnUnitInfo) in aProject.UnitsBelongingToProject do begin
           if FilenameIsPascalUnit(AnUnitInfo.Filename) then
             Add(AnUnitInfo.Filename);
-          AnUnitInfo:=AnUnitInfo.NextPartOfProject;
         end;
       end;
       if (fuooListed in Flags) and (fuooPackages in Flags) then
@@ -4334,8 +4329,7 @@ begin
       DebugLn(['SaveProject - unit not found for page ',i,' File="',SrcEdit.FileName,'" SrcEdit=',dbgsname(SrcEdit),'=',dbgs(Pointer(SrcEdit))]);
       DumpStack;
       debugln(['SaveProject Project1 has the following information about the source editor:']);
-      AnUnitInfo:=Project1.FirstUnitWithEditorIndex;
-      while AnUnitInfo<>nil do begin
+      for TLazProjectFile(AnUnitInfo) in Project1.UnitsWithEditorIndex do begin
         for j:=0 to AnUnitInfo.EditorInfoCount-1 do begin
           dbgout(['  ',AnUnitInfo.Filename,' ',j,'/',AnUnitInfo.EditorInfoCount,' Component=',dbgsname(AnUnitInfo.EditorInfo[j].EditorComponent),'=',dbgs(Pointer(AnUnitInfo.EditorInfo[j].EditorComponent))]);
           if AnUnitInfo.EditorInfo[j].EditorComponent<>nil then
@@ -4343,7 +4337,6 @@ begin
           debugln;
         end;
         debugln(['  ',AnUnitInfo.EditorInfoCount]);
-        AnUnitInfo:=AnUnitInfo.NextUnitWithEditorIndex;
       end;
     end else begin
       if AnUnitInfo.IsVirtual then begin
@@ -7695,9 +7688,8 @@ function CloseUnitComponent(AnUnitInfo: TUnitInfo; Flags: TCloseFlags): TModalRe
   var
     CompUnitInfo: TUnitInfo;
   begin
-    CompUnitInfo:=Project1.FirstUnitWithComponent;
     Project1.UpdateUnitComponentDependencies;
-    while CompUnitInfo<>nil do begin
+    for TLazProjectFile(CompUnitInfo) in Project1.UnitsWithComponent do begin
       //DebugLn(['FreeUnusedComponents ',CompUnitInfo.Filename,' ',dbgsName(CompUnitInfo.Component),' UnitComponentIsUsed=',UnitComponentIsUsed(CompUnitInfo,true)]);
       if not UnitComponentIsUsed(CompUnitInfo,true) then begin
         // close the unit component
@@ -7705,7 +7697,6 @@ function CloseUnitComponent(AnUnitInfo: TUnitInfo; Flags: TCloseFlags): TModalRe
         // this has recursively freed all components, so exit here
         exit;
       end;
-      CompUnitInfo:=CompUnitInfo.NextUnitWithComponent;
     end;
   end;
 
@@ -8121,8 +8112,7 @@ var
   AnUnitInfo: TUnitInfo;
   LFMFilename: String;
 begin
-  AnUnitInfo:=Project1.FirstPartOfProject;
-  while AnUnitInfo<>nil do begin
+  for TLazProjectFile(AnUnitInfo) in Project1.UnitsBelongingToProject do begin
     if (not AnUnitInfo.HasResources)
     and (not AnUnitInfo.IsVirtual) and FilenameHasPascalExt(AnUnitInfo.Filename)
     then begin
@@ -8131,7 +8121,6 @@ begin
         LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.dfm');
       AnUnitInfo.HasResources:=FileExistsCached(LFMFilename);
     end;
-    AnUnitInfo:=AnUnitInfo.NextPartOfProject;
   end;
 end;
 

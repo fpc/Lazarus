@@ -49,7 +49,7 @@ uses
   // Codetools
   CodeCache, CodeTree, CodeToolManager, FindDeclarationTool,
   // BuildIntf
-  ComponentReg,
+  ComponentReg, ProjectIntf,
   // IDEIntf
   PropEdits, PropEditUtils, ObjectInspector, FormEditingIntf,
   UnitResources, IDEOptEditorIntf, IDEDialogs, ComponentEditors,
@@ -2407,8 +2407,7 @@ begin
     ComponentClass:=RegComp.ComponentClass;
   end else begin
     // search in open and hidden designer forms (e.g. nested frames)
-    AnUnitInfo:=Project1.FirstUnitWithComponent;
-    while AnUnitInfo<>nil do begin
+    for TLazProjectFile(AnUnitInfo) in Project1.UnitsWithComponent do begin
       Component:=AnUnitInfo.Component;
       if CompareText(Component.ClassName,ComponentClassName)=0 then
       begin
@@ -2416,7 +2415,6 @@ begin
         ComponentClass:=TComponentClass(Component.ClassType);
         break;
       end;
-      AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
     end;
   end;
   //if ComponentClass=nil then
