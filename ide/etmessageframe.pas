@@ -1827,6 +1827,12 @@ begin
   inherited KeyDown(Key, Shift);
 
   case Key of
+  VK_RETURN:
+    begin
+      OpenSelection;
+      Key := VK_UNKNOWN;
+    end;
+
   VK_DOWN:
     begin
       SelectNextShown(+1);
