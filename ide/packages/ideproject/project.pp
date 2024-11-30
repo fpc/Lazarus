@@ -957,7 +957,7 @@ type
     function SomeDataModified(Verbose: boolean = false): boolean;
     function SomeSessionModified(Verbose: boolean = false): boolean;
     procedure MainSourceFilenameChanged;
-    procedure GetSourcesChangedOnDisk(var ACodeBufferList: TFPList);
+    procedure GetAutoRevertLockedFiles(var ACodeBufferList: TFPList);
     function HasProjectInfoFileChangedOnDisk: boolean;
     procedure IgnoreProjectInfoFileOnDisk;
     function ReadProject(const NewProjectInfoFile: string;
@@ -4810,7 +4810,7 @@ begin
   ExtendPath(SrcPathMacroName,CompilerOptions.SrcPath);
 end;
 
-procedure TProject.GetSourcesChangedOnDisk(var ACodeBufferList: TFPList);
+procedure TProject.GetAutoRevertLockedFiles(var ACodeBufferList: TFPList);
 
   procedure Add(aCode: TCodeBuffer);
   begin
