@@ -82,8 +82,8 @@ type
     fFirstPassedNode: TTreeNode;
     fOnGetImageIndex: TImageIndexEvent;
     fOnFilterNode: TFilterNodeEvent;
-    procedure SetFilteredTreeview(const AValue: TCustomTreeview);
-    procedure SetShowDirHierarchy(const AValue: Boolean);
+    procedure SetFilteredTreeview(AValue: TCustomTreeview);
+    procedure SetShowDirHierarchy(AValue: Boolean);
     function FilterTree(Node: TTreeNode): Boolean;
     procedure OnBeforeTreeDestroy(Sender: TObject);
   protected
@@ -102,6 +102,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure SetTreeFilterSilently(ATree: TCustomTreeview; AFilter: string);
     procedure StoreSelection; override;
     procedure RestoreSelection; override;
     function GetExistingBranch(ARootNode: TTreeNode): TTreeFilterBranch;
@@ -446,7 +447,7 @@ begin
   FreeAndNil(fBranches);
 end;
 
-procedure TTreeFilterEdit.SetFilteredTreeview(const AValue: TCustomTreeview);
+procedure TTreeFilterEdit.SetFilteredTreeview(AValue: TCustomTreeview);
 begin
   if fFilteredTreeview = AValue then Exit;
   if fFilteredTreeview <> nil then
@@ -463,7 +464,16 @@ begin
   end;
 end;
 
-procedure TTreeFilterEdit.SetShowDirHierarchy(const AValue: Boolean);
+procedure TTreeFilterEdit.SetTreeFilterSilently(ATree: TCustomTreeview; AFilter: string);
+begin  // The tree is already filtered, the same FilterEdit is used for many.
+  fAlreadyFiltered:=True;
+  SetFilteredTreeview(ATree);
+  InternalSetFilter(AFilter);
+  fAlreadyFiltered:=False;
+  Text:=AFilter;     // This will trigger filtering if Text differs from AFilter.
+end;
+
+procedure TTreeFilterEdit.SetShowDirHierarchy(AValue: Boolean);
 begin
   if fShowDirHierarchy=AValue then exit;
   if not Assigned(fFilteredTreeview) then

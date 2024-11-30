@@ -241,8 +241,9 @@ type
     procedure OnAsync(Data: PtrInt);
     function IsTextHintStored: Boolean;
   protected
-    fNeedUpdate: Boolean;
+    fAlreadyFiltered: Boolean;
     fIsFirstUpdate: Boolean;
+    fNeedUpdate: Boolean;
     fSelectedPart: TObject;         // Select this node on next update
     fOnFilterItem: TFilterItemEvent;
     fOnFilterItemEx: TFilterItemExEvent;
@@ -1348,6 +1349,7 @@ end;
 
 procedure TCustomControlFilterEdit.InvalidateFilter;
 begin
+  if fAlreadyFiltered then Exit;
   fNeedUpdate:=true;
   IdleConnected:=true;
 end;

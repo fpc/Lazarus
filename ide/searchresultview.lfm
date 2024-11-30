@@ -10,9 +10,9 @@ object SearchResultsView: TSearchResultsView
   Constraints.MinHeight = 100
   Constraints.MinWidth = 400
   KeyPreview = True
+  LCLVersion = '4.99.0.0'
   OnCreate = Form1Create
   OnKeyDown = FormKeyDown
-  LCLVersion = '2.3.0.0'
   object ControlBar1: TPanel
     Left = 0
     Height = 26
