@@ -1290,15 +1290,22 @@ the default value in the <var>rsFilter</var> resource string.
 </short>
 </element>
 
-<element name="TCustomControlFilterEdit.fNeedUpdate">
+<element name="TCustomControlFilterEdit.fAlreadyFiltered">
 <short>
-Flag which indicates that the filter has been updated and needs to be applied.
+Flag which indicates the filter value has already been applied to the filtered 
+control.
 </short>
 </element>
 
 <element name="TCustomControlFilterEdit.fIsFirstUpdate">
 <short>
 Flag indicating if the filter has ever been applied.
+</short>
+</element>
+
+<element name="TCustomControlFilterEdit.fNeedUpdate">
+<short>
+Flag which indicates that the filter has been updated and needs to be applied.
 </short>
 </element>
 
@@ -1700,34 +1707,55 @@ well as its internal flags, including:
 
 <element name="TCustomControlFilterEdit.Destroy">
 <short>Destructor for the class instance.</short>
-<descr></descr>
-<seealso></seealso>
+<descr>
+<p>
+<var>Destroy</var> is the overridden destructor for the class instance. It 
+ensures that the IdleConnected property is set to <b>False</b> to remove the 
+asynchronous event handler signalled to apply the Filter to its associated 
+control. 
+</p>
+<p>
+Destroy calls the inherited destructor prior to exit.
+</p>
+</descr>
+<seealso>  
+<link id="TCustomControlFilterEdit.Filter"/>
+<link id="TCustomControlFilterEdit.InvalidateFilter"/>
+<link id="TCustomControlFilterEdit.IdleConnected"/>
+</seealso>
 </element>
 
 <element name="TCustomControlFilterEdit.InvalidateFilter">
 <short>
-Sets flags and property to indicate that the filter must be reapplied for the 
+Sets flags and properties to indicate that the filter must be reapplied for the 
 control.
 </short>
 <descr>
 <p>
-<var>InvalidateFilter</var> is a method used to indicate that updates to the 
-Filter value are pending for the control. It sets the internal flag used to 
-track pending filter updates, and sets the IdelConnected property to 
-<b>True</b> to enable the asynchronous event handler routine for the control.
+<var>InvalidateFilter</var> is a method used to indicate that the value in 
+Filter needs to be applied for the control. It sets the internal flag used to
+indicate that updates are pending for the filter value, and sets the 
+IdleConnected property to <b>True</b> to enable the asynchronous event handler 
+routine for the control.
+</p>
+<p>
+No actions are performed in the method if an internal flag is set which 
+indicates that the Filter has already been applied to the associated control; 
+this flag is set in descendent classes like TTreeFilterEdit found in the 
+LazControls package.
 </p>
 <p>
 InvalidateFilter is called from the private ApplyFilter method when the Filter 
 value is not immediately applied. InvalidateFilter is also called when a new 
-value is applied to the Filter or SortData properties, or when the 
-FilterOptions are modified for the control.
+value is applied to the Filter or SortData properties, or when FilterOptions 
+is modified for the control.
 </p>
 </descr>
 <seealso>
 <link id="TCustomControlFilterEdit.Filter"/>
+<link id="TCustomControlFilterEdit.FilterOptions"/>
 <link id="TCustomControlFilterEdit.IdleConnected"/>
 <link id="TCustomControlFilterEdit.SortData"/>
-<link id="TCustomControlFilterEdit.FilterOptions"/>
 </seealso>
 </element>
 
