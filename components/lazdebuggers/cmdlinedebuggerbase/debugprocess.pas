@@ -37,7 +37,7 @@ unit DebugProcess;
 interface
 
 uses
-  Classes, sysutils, InterfaceBase, process,
+  Classes, sysutils, LCLIntf, InterfaceBase, process,
   Pipes, {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, UTF8Process;
 
 type
