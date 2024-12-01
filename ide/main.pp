@@ -8882,7 +8882,7 @@ begin
     end;
 
     AIgnoreList := TFPList.Create;
-    Project1.GetAutoRevertLockedFiles(BufferList);
+    Project1.GetSourcesChangedOnDisk(BufferList);
     PkgBoss.GetPackagesChangedOnDisk(APackageList, True);
     if (BufferList=nil) and (APackageList=nil) then exit;
     Reload:=ShowDiskDiffsDialog(BufferList,APackageList,AIgnoreList);

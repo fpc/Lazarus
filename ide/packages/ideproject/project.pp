@@ -969,7 +969,7 @@ type
     function SomeDataModified(Verbose: boolean = false): boolean;
     function SomeSessionModified(Verbose: boolean = false): boolean;
     procedure MainSourceFilenameChanged;
-    procedure GetAutoRevertLockedFiles(var ACodeBufferList: TFPList);
+    procedure GetSourcesChangedOnDisk(var ACodeBufferList: TFPList);
     function HasProjectInfoFileChangedOnDisk: boolean;
     procedure IgnoreProjectInfoFileOnDisk;
     function ReadProject(const NewProjectInfoFile: string;
@@ -4847,7 +4847,7 @@ begin
   ExtendPath(SrcPathMacroName,CompilerOptions.SrcPath);
 end;
 
-procedure TProject.GetAutoRevertLockedFiles(var ACodeBufferList: TFPList);
+procedure TProject.GetSourcesChangedOnDisk(var ACodeBufferList: TFPList);
 
   procedure Add(aCode: TCodeBuffer);
   begin
@@ -4875,41 +4875,49 @@ end;
 
 function TProject.HasProjectInfoFileChangedOnDisk: boolean;
 var
-  AnUnitInfo: TUnitInfo;
-  Code: TCodeBuffer;
+  aFilename: String;
 begin
   Result:=false;
   if IsVirtual or Modified then exit;
-  AnUnitInfo:=UnitInfoWithFilename(ProjectInfoFile,[pfsfOnlyEditorFiles]);
-  if (AnUnitInfo<>nil) then begin
-    // user is editing the lpi file in source editor
+  aFilename:=ProjectInfoFile;
+
+  if (fProjectInfoFileBuffer<>nil)
+      and (CompareFilenames(fProjectInfoFileBuffer.Filename,aFilename)=0) then
+  begin
+    if fProjectInfoFileBuffer.FileOnDiskHasChanged then
+    begin
+      // lpi file on disk has changed
+      if FileExistsCached(aFilename)
+          and (fProjectInfoFileDate=FileAgeCached(aFilename)) then
+      begin
+        // ignore this disk change
+        exit;
+      end;
+
+      // Ask to reopen project, even if editing the lpi in the source editor
+      exit(true);
+    end;
+
+    if fProjectInfoFileBuffer.ChangeStep<>fProjectInfoFileBufChangeStamp then
+    begin
+      // e.g. lpi was edited in the source editor -> do not ask to reopen project
+    end;
+
     exit;
   end;
-  AnUnitInfo:=fFirst[uilAutoRevertLocked];
-  while (AnUnitInfo<>nil) do begin
-    if CompareFilenames(AnUnitInfo.Filename,ProjectInfoFile)=0 then begin
-      // revert is locked for this file
-      exit;
-    end;
-    AnUnitInfo:=AnUnitInfo.fNext[uilAutoRevertLocked];
-  end;
 
-  if not FileExistsCached(ProjectInfoFile) then exit;
-  if fProjectInfoFileDate=FileAgeCached(ProjectInfoFile) then exit;
+  if not FileExistsCached(aFilename) then exit;
+  if fProjectInfoFileDate=FileAgeCached(aFilename) then exit;
 
-  // file on disk has changed, check content
-  Code:=CodeToolBoss.LoadFile(ProjectInfoFile,true,true);
-  if (Code<>nil) and (Code=fProjectInfoFileBuffer)
-    and (Code.ChangeStep=fProjectInfoFileBufChangeStamp)
-  then exit;
-
-  //DebugLn(['TProject.HasProjectInfoFileChangedOnDisk ',ProjectInfoFile,' fProjectInfoFileDate=',fProjectInfoFileDate,' ',FileAgeUTF8(ProjectInfoFile)]);
+  //DebugLn(['TProject.HasProjectInfoFileChangedOnDisk ',aFilename,' fProjectInfoFileDate=',fProjectInfoFileDate,' ',FileAgeUTF8(aFilename)]);
   Result:=true;
 end;
 
 procedure TProject.IgnoreProjectInfoFileOnDisk;
 begin
   fProjectInfoFileDate:=FileAgeCached(ProjectInfoFile);
+  if fProjectInfoFileBuffer<>nil then
+    fProjectInfoFileBufChangeStamp:=fProjectInfoFileBuffer.ChangeStep;
 end;
 
 function TProject.FindDependencyByName(const PackageName: string): TPkgDependency;
