@@ -17,6 +17,7 @@ object PackageEditorForm: TPackageEditorForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnDropFiles = FormDropFiles
+  OnResize = FormResize
   object ToolBar: TToolBar
     Left = 0
     Height = 48
@@ -38,6 +39,7 @@ object PackageEditorForm: TPackageEditorForm
     Caption = 'PropsGroupBox'
     ClientHeight = 196
     ClientWidth = 460
+    Constraints.MinHeight = 20
     ParentFont = False
     TabOrder = 3
     object PropsPageControl: TPageControl
