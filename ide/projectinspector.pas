@@ -148,6 +148,7 @@ type
     procedure FormDeactivate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormDropFiles(Sender: TObject; const FileNames: array of String);
+    procedure FormResize(Sender: TObject);
     procedure ItemsPopupMenuPopup(Sender: TObject);
     procedure ItemsTreeViewAdvancedCustomDrawItem(Sender: TCustomTreeView;
       Node: TTreeNode; {%H-}State: TCustomDrawState; Stage: TCustomDrawStage;
@@ -901,6 +902,11 @@ begin
   finally
     EndUpdate;
   end;
+end;
+
+procedure TProjectInspectorForm.FormResize(Sender: TObject);
+begin
+  PropsGroupBox.Constraints.MaxHeight := self.Height - FilterPanel.Height - ToolBar.Height - 20;
 end;
 
 procedure TProjectInspectorForm.ItemsPopupMenuPopup(Sender: TObject);
