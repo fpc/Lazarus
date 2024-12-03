@@ -15,6 +15,7 @@ object ProjectInspectorForm: TProjectInspectorForm
   OnDeactivate = FormDeactivate
   OnDestroy = FormDestroy
   OnDropFiles = FormDropFiles
+  OnResize = FormResize
   object ItemsTreeView: TTreeView
     Left = 0
     Height = 261
@@ -162,6 +163,7 @@ object ProjectInspectorForm: TProjectInspectorForm
     Width = 463
     Align = alBottom
     Caption = 'PropsGroupBox'
+    Constraints.MinHeight = 20
     TabOrder = 3
     OnResize = PropsGroupBoxResize
   end
