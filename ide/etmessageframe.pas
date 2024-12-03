@@ -1824,56 +1824,59 @@ end;
 
 procedure TMessagesCtrl.KeyDown(var Key: Word; Shift: TShiftState);
 begin
-  inherited KeyDown(Key, Shift);
+  if (Key = VK_RETURN) and (Shift = []) then
+  begin
+    OpenSelection;
+    Key := 0;
+  end
 
-  case Key of
-  VK_RETURN:
-    begin
-      OpenSelection;
-      Key := VK_UNKNOWN;
-    end;
+  else if (Key = VK_DOWN) and (Shift = []) then
+  begin
+    SelectNextShown(+1);
+    Key := 0;
+  end
+  else if (Key = VK_UP) and (Shift = []) then
+  begin
+    SelectNextShown(-1);
+    Key := 0;
+  end
 
-  VK_DOWN:
-    begin
-      SelectNextShown(+1);
-      Key:=VK_UNKNOWN;
-    end;
+  else if (Key = VK_HOME) and (Shift = []) then
+  begin
+    SelectFirst(true, true);
+    Key := 0;
+  end
+  else if (Key = VK_END) and (Shift = []) then
+  begin
+    SelectLast(true, true);
+    Key := 0;
+  end
 
-  VK_UP:
-    begin
-      SelectNextShown(-1);
-      Key:=VK_UNKNOWN;
-    end;
+  // [PageDown]
+  else if (Key = VK_NEXT) and (Shift = []) then
+  begin
+    SelectNextShown(+Max(1, ClientHeight div ItemHeight));
+    Key := 0;
+  end
+  // [PageUp]
+  else if (Key = VK_PRIOR) and (Shift = []) then
+  begin
+    SelectNextShown(-Max(1, ClientHeight div ItemHeight));
+    Key := 0;
+  end
 
-  VK_HOME:
+  // [Ctrl+C] - copy HintData to clipboard
+  else if (Key = VK_C) and (Shift = [ssCtrl]) then
+  begin
+    if assigned(FHintLastView) then
     begin
-      SelectFirst(true,true);
-      Key:=VK_UNKNOWN;
-    end;
-
-  VK_END:
-    begin
-      SelectLast(true,true);
-      Key:=VK_UNKNOWN;
-    end;
-
-  VK_PRIOR: // Page Up
-    begin
-      SelectNextShown(-Max(1,ClientHeight div ItemHeight));
-      Key:=VK_UNKNOWN;
-    end;
-
-  VK_NEXT: // Page Down
-    begin
-      SelectNextShown(Max(1,ClientHeight div ItemHeight));
-      Key:=VK_UNKNOWN;
-    end;
-  VK_C:    // Ctrl+'C' -> copy HintData to clipboard
-    if (Shift = [ssCtrl]) and Assigned(FHintLastView) then begin
-      ClipBoard.AsText := FHintLastView.AsHintString(Self.FHintLastLine);
-      Key := VK_UNKNOWN;
+      Clipboard.AsText := FHintLastView.AsHintString(self.FHintLastLine);
+      Key := 0;
     end;
   end;
+
+  if Key <> 0 then
+    inherited KeyDown(Key, Shift);
 end;
 
 procedure TMessagesCtrl.DoAllViewsStopped;
@@ -3156,8 +3159,11 @@ end;
 procedure TMessagesFrame.SearchEditKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if (Key=VK_ESCAPE) then
+  if (Key = VK_ESCAPE) and (Shift = []) then
+  begin
     HideSearch;
+    Key := 0;
+  end;
 end;
 
 procedure TMessagesFrame.SearchNextSpeedButtonClick(Sender: TObject);
