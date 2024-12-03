@@ -133,7 +133,7 @@ type
   TDesktopOpt = class(TCustomDesktopOpt)
   private const
     DEFAULT_CUSTOM_TITLE = '$project(TitleNew) $EncloseBracket($project(infodir)) $(BuildModeCaption)';
-    cDefaultPropsPanelHeight = 140;
+    cDefaultPropsPanelHeight = 140; // 96 ppi
   private
     // window layout
     FIDEWindowCreatorsLayoutList: TSimpleWindowLayoutList;

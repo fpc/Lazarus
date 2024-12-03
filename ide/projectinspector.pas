@@ -676,7 +676,7 @@ end;
 procedure TProjectInspectorForm.PropsGroupBoxResize(Sender: TObject);
 begin
   if PropsGroupBox.Visible then
-    EnvironmentGuiOpts.Desktop.ProjectInspectorPropsPanelHeight := PropsGroupBox.Height;
+    EnvironmentGuiOpts.Desktop.ProjectInspectorPropsPanelHeight := ScaleFormTo96(PropsGroupBox.Height);
 end;
 
 procedure TProjectInspectorForm.SetDependencyDefaultFilenameMenuItemClick(Sender: TObject);
@@ -1398,7 +1398,7 @@ procedure TProjectInspectorForm.OptionsChanged(Sender: TObject; Restore: boolean
 begin
   PropsGroupBox.Visible := EnvironmentGuiOpts.Desktop.ProjectInspectorShowProps;
   ShowPropsPanelButton.Down := PropsGroupBox.Visible;
-  PropsGroupBox.Height := EnvironmentGuiOpts.Desktop.ProjectInspectorPropsPanelHeight;
+  PropsGroupBox.Height := Scale96ToForm(EnvironmentGuiOpts.Desktop.ProjectInspectorPropsPanelHeight);
   Splitter1.Visible := PropsGroupBox.Visible;
 end;
 
