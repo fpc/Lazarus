@@ -1829,6 +1829,60 @@ begin
     OpenSelection;
     Key := 0;
   end
+  else if (Key = VK_F1) and (Shift = []) then
+  begin
+    TMessagesFrame(Owner).HelpMenuItemClick(nil);
+    Key := 0;
+  end
+  else if (Key = VK_S) and (Shift = [ssCtrl, ssShift]) then
+  begin
+    TMessagesFrame(Owner).SaveAllToFileMenuItemClick(nil);
+    Key := 0;
+  end
+  else if (Key = VK_F) and (Shift = [ssCtrl]) then
+  begin
+    TMessagesFrame(Owner).FindMenuItemClick(nil);
+    Key := 0;
+  end
+  else if (Key in [VK_0..VK_5]) and (Shift = [ssCtrl]) then
+  begin
+    with TMessagesFrame(Owner) do
+      case Key of
+        VK_0: FilterUrgencyMenuItemClick(MsgFilterNoneMenuItem);
+        VK_1: FilterUrgencyMenuItemClick(MsgFilterDebugMenuItem);
+        VK_2: FilterUrgencyMenuItemClick(MsgFilterVerboseMenuItem);
+        VK_3: FilterUrgencyMenuItemClick(MsgFilterHintsMenuItem);
+        VK_4: FilterUrgencyMenuItemClick(MsgFilterNotesMenuItem);
+        VK_5: FilterUrgencyMenuItemClick(MsgFilterWarningsMenuItem);
+      end;
+    Key := 0;
+  end
+
+  { Clipboard }
+
+  // [Ctrl+C] - copy selected messages
+  else if (Key = VK_C) and (Shift = [ssCtrl]) then
+  begin
+    TMessagesFrame(Owner).CopyMsgMenuItemClick(nil);
+    Key := 0;
+  end
+  // [Ctrl+Shift+C] - copy all original messages
+  else if (Key = VK_C) and (Shift = [ssCtrl, ssShift]) then
+  begin
+    TMessagesFrame(Owner).CopyAllMenuItemClick(nil);
+    Key := 0;
+  end
+  // [Alt+C] - copy the displayed message hint
+  else if (Key = VK_C) and (Shift = [ssAlt]) then
+  begin
+    if assigned(FHintLastView) then
+    begin
+      Clipboard.AsText := FHintLastView.AsHintString(self.FHintLastLine);
+      Key := 0;
+    end;
+  end
+
+  { Selection }
 
   else if (Key = VK_DOWN) and (Shift = []) then
   begin
@@ -1863,17 +1917,9 @@ begin
   begin
     SelectNextShown(-Max(1, ClientHeight div ItemHeight));
     Key := 0;
-  end
-
-  // [Ctrl+C] - copy HintData to clipboard
-  else if (Key = VK_C) and (Shift = [ssCtrl]) then
-  begin
-    if assigned(FHintLastView) then
-    begin
-      Clipboard.AsText := FHintLastView.AsHintString(self.FHintLastLine);
-      Key := 0;
-    end;
   end;
+
+  { Inherited }
 
   if Key <> 0 then
     inherited KeyDown(Key, Shift);
@@ -3163,6 +3209,17 @@ begin
   begin
     HideSearch;
     Key := 0;
+  end
+
+  else if (Key = VK_F3) and (Shift = []) then
+  begin
+    MessagesCtrl.SelectNextOccurrence(true);
+    Key := 0;
+  end
+  else if (Key = VK_F3) and (Shift = [ssShift]) then
+  begin
+    MessagesCtrl.SelectNextOccurrence(false);
+    Key := 0;
   end;
 end;
 
@@ -3689,9 +3746,9 @@ begin
   SearchPanel.Visible:=false; // by default the search is hidden
   HideSearchSpeedButton.Hint:=lisHideSearch;
   IDEImages.AssignImage(HideSearchSpeedButton, 'debugger_power');
-  SearchNextSpeedButton.Hint:=lisUDSearchNextOccurrenceOfThisPhrase;
+  SearchNextSpeedButton.Hint:=lisUDSearchNextOccurrenceOfThisPhrase + ' [F3]';
   IDEImages.AssignImage(SearchNextSpeedButton, 'callstack_bottom');
-  SearchPrevSpeedButton.Hint:=lisUDSearchPreviousOccurrenceOfThisPhrase;
+  SearchPrevSpeedButton.Hint:=lisUDSearchPreviousOccurrenceOfThisPhrase + ' [Shift+F3]';
   IDEImages.AssignImage(SearchPrevSpeedButton, 'callstack_top');
   SearchEdit.TextHint:=lisUDSearch;
 end;
