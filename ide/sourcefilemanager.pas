@@ -333,8 +333,8 @@ function GetDsgnComponentBaseClassname(aCompClass: TClass): string;
       LRSCode, LFMCode: TCodeBuffer; Flags: TSaveFlags): TModalResult;
   function RemoveLooseEvents(AnUnitInfo: TUnitInfo): TModalResult;
   function RenameUnit(AnUnitInfo: TUnitInfo; NewFilename, NewUnitName: string;
-      var LFMCode, LRSCode: TCodeBuffer): TModalResult;
-  function RenameUnitLowerCase(AnUnitInfo: TUnitInfo; AskUser: boolean): TModalresult;
+      var LFMCode, LRSCode: TCodeBuffer; AutoRemoveOldFile: boolean = False): TModalResult;
+  function RenameUnitLowerCase(AnUnitInfo: TUnitInfo; AskUser, AutoRemoveOldFile: boolean): TModalresult;
   function ReplaceUnitUse(OldFilename, OldUnitName, NewFilename, NewUnitName: string;
                           IgnoreErrors, Quiet, Confirm: boolean): TModalResult;
 //designer
@@ -1936,9 +1936,7 @@ begin
     if AnUnitInfo.Source=nil then
       AnUnitInfo.ReadUnitSource(false,false);
     // Marked here means to remove old files silently.
-    AnUnitInfo.Marked:=True;
-    Result:=RenameUnitLowerCase(AnUnitInfo, false);
-    AnUnitInfo.Marked:=False;
+    Result:=RenameUnitLowerCase(AnUnitInfo, false,True);
     if Result<>mrOK then exit;
   end;
   ShowMessage(Format(lisDFilesWereRenamedToL, [fUnitInfos.Count]));
@@ -2121,7 +2119,7 @@ begin
   if IsPascal and (EnvironmentOptions.CharcaseFileAction<>ccfaIgnore) then
   begin
     // ask user to apply naming conventions
-    Result:=RenameUnitLowerCase(ActiveUnitInfo,true);
+    Result:=RenameUnitLowerCase(ActiveUnitInfo,true,false);
     if Result=mrIgnore then Result:=mrOk;
     if Result<>mrOk then begin
       DebugLn('AddUnitToProject A RenameUnitLowerCase failed ',ActiveUnitInfo.Filename);
@@ -5753,8 +5751,8 @@ begin
   end;
 end;
 
-function RenameUnit(AnUnitInfo: TUnitInfo; NewFilename, NewUnitName: string;
-  var LFMCode, LRSCode: TCodeBuffer): TModalResult;
+function RenameUnit(AnUnitInfo: TUnitInfo; NewFilename, NewUnitName: string; var LFMCode,
+  LRSCode: TCodeBuffer; AutoRemoveOldFile: boolean): TModalResult;
 var
   NewSource: TCodeBuffer;
   NewFilePath, OldFilePath: String;
@@ -5943,7 +5941,7 @@ begin
           S:=Format(lisDeleteOldFile, [ExtractFilename(OldFilename)]);
           OldFileRemoved:=true;
           // Marked here means to remove an old file silently.
-          if AnUnitInfo.Marked then
+          if AutoRemoveOldFile then
             Silence:=true;
         end
         else
@@ -6004,7 +6002,8 @@ begin
   Result:=mrOk;
 end;
 
-function RenameUnitLowerCase(AnUnitInfo: TUnitInfo; AskUser: boolean): TModalresult;
+function RenameUnitLowerCase(AnUnitInfo: TUnitInfo; AskUser, AutoRemoveOldFile: boolean
+  ): TModalresult;
 var
   OldFilename: String;
   OldShortFilename: String;
@@ -6039,7 +6038,7 @@ begin
   end;
   LFMCode:=nil;
   LRSCode:=nil;
-  Result:=RenameUnit(AnUnitInfo,NewFilename,NewUnitName,LFMCode,LRSCode);
+  Result:=RenameUnit(AnUnitInfo,NewFilename,NewUnitName,LFMCode,LRSCode,AutoRemoveOldFile);
 end;
 
 function CheckLFMInEditor(LFMUnitInfo: TUnitInfo; Quiet: boolean): TModalResult;

@@ -324,7 +324,6 @@ type
     function GetLoaded: Boolean;
     function GetLoadedDesigner: Boolean;
     function GetLoadingComponent: boolean;
-    function GetMarked: boolean;
     function GetModified: boolean;
     function GetOpenEditorInfo(Index: Integer): TUnitEditorInfo;
     function GetRunFileIfActive: boolean;
@@ -344,7 +343,6 @@ type
     procedure SetLoaded(const AValue: Boolean);
     procedure SetLoadedDesigner(const AValue: Boolean);
     procedure SetLoadingComponent(AValue: boolean);
-    procedure SetMarked(AValue: boolean);
     procedure SetModified(const AValue: boolean);
     procedure SetProject(const AValue: TProject);
     procedure SetRunFileIfActive(const AValue: boolean);
@@ -473,7 +471,6 @@ type
     property Loaded: Boolean read GetLoaded write SetLoaded;
     property LoadedDesigner: Boolean read GetLoadedDesigner write SetLoadedDesigner;
     property LoadingComponent: boolean read GetLoadingComponent write SetLoadingComponent;
-    property Marked: boolean read GetMarked write SetMarked;
     property Modified: boolean read GetModified write SetModified;// not Session data
     property SessionModified: boolean read GetSessionModified write SetSessionModified;
     property OnFileBackup: TOnFileBackup read fOnFileBackup write fOnFileBackup;
@@ -2579,11 +2576,6 @@ begin
   Result:=uifHasErrorInLFM in FFlags;
 end;
 
-function TUnitInfo.GetMarked: boolean;
-begin
-  Result:=uifMarked in FFlags;
-end;
-
 function TUnitInfo.GetModified: boolean;
 begin
   Result:=(uifModified in FFlags)
@@ -2789,14 +2781,6 @@ begin
     Include(FFlags, uifLoadingComponent)
   else
     Exclude(FFlags, uifLoadingComponent);
-end;
-
-procedure TUnitInfo.SetMarked(AValue: boolean);
-begin
-  if AValue then
-    Include(FFlags, uifMarked)
-  else
-    Exclude(FFlags, uifMarked);
 end;
 
 procedure TUnitInfo.SetModified(const AValue: boolean);
