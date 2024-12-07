@@ -770,6 +770,43 @@ Frees resource allocated in the class instance for:
 <seealso/>
 </element>
 
+<element name="TTreeFilterEdit.SetTreeFilterSilently">
+<short>
+Silently applies the filter for a specified tree view in the edit control.
+</short>
+<descr>
+<p>
+<var>SetTreeFilterSilently</var> is a method used to apply the filter value in 
+<var>AFilter</var> to the tree view control in <var>ATree</var>. 
+SetTreeFilterSilently ensures that the FilteredTreeview property is set to the 
+value in ATree, but does not force the tree view to be re-filtered (and its 
+nodes to be expanded) unless the value in AFilter differs from an existing 
+filter applied to the tree view. It allows one filtered edit control to be used 
+to filter more than one tree view control - but does not refresh the tree view 
+control unless the filter value has been explicitly changed. It suppresses node 
+expansion in an associated tree view control which may already be filtered by 
+the specified value.
+</p>
+<p>
+SetTreeFilterSilently sets an internal flag to prevent refreshing the tree view 
+in aTree simply because it is not the existing control in FilteredTreeview. The 
+value in AFilter is applied to the Filter property, but does not force the 
+nodes in the tree to be re-displayed / expanded unless the new filter value is 
+different than the filter value already applied to the tree view control.
+</p>
+<p>
+An example of its usage can be found in the 
+<url href="https://gitlab.com/freepascal.org/lazarus/lazarus/-/blob/main/ide/searchresultview.pp">Search Results view</url> in the Lazarus IDE.
+</p>
+</descr>
+<seealso>
+<link id="TTreeFilterEdit.FilteredTreeview"/>
+<link id="#lcl.editbtn.TCustomControlFilterEdit.Filter">TCustomControlFilterEdit.Filter</link>
+<link id="#lcl.editbtn.TCustomControlFilterEdit.InvalidateFilter">TCustomControlFilterEdit.InvalidateFilter</link>
+<link id="#lcl.editbtn.TCustomControlFilterEdit.InternalSetFilter">TCustomControlFilterEdit.InternalSetFilter</link>
+</seealso>
+</element>
+
 <element name="TTreeFilterEdit.StoreSelection">
 <short>
 Stores the first visible node for the selected tree node in FilteredTreeview 
