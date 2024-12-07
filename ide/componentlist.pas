@@ -89,6 +89,8 @@ type
     SelectionToolButton: TSpeedButton;
     procedure chbKeepOpenChange(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure TreeMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     procedure ListTreeSelectionChanged(Sender: TObject);
     procedure miCollapseAllClick(Sender: TObject);
     procedure miCollapseClick(Sender: TObject);
@@ -111,6 +113,7 @@ type
   private
     FOnOpenPackage: TNotifyEvent;
     FOnOpenUnit: TNotifyEvent;
+    FOnClassSelected: TNotifyEvent;
     PrevChangeStamp: Integer;
     FInitialized: Boolean;
     FIgnoreSelection: Boolean;
@@ -138,6 +141,7 @@ type
     function GetSelectedPkgComp: TPkgComponent;
     property OnOpenPackage: TNotifyEvent read FOnOpenPackage write FOnOpenPackage;
     property OnOpenUnit: TNotifyEvent read FOnOpenUnit write FOnOpenUnit;
+    property OnClassSelected: TNotifyEvent read FOnClassSelected write FOnClassSelected;
   end;
   
 var
@@ -611,6 +615,16 @@ begin
   end
 end;
 
+procedure TComponentListForm.TreeMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  // ignore right click to bring up context menu
+  if (Button <> mbLeft) or IsDocked or chbKeepOpen.Checked then Exit;
+  // show form editor
+  if assigned(OnClassSelected) then
+    OnClassSelected(self);
+end;
+
 procedure TComponentListForm.TreeKeyPress(Sender: TObject; var Key: char);
 // This is used for all 3 treeviews
 begin
@@ -748,8 +762,8 @@ begin
   if (OldFocusedControl<>nil) and OldFocusedControl.CanSetFocus then
     OldFocusedControl.SetFocus; // AddComponent in docked mode steals focus to designer, get it back
 
-  if not IsDocked and not chbKeepOpen.Checked then
-    Close;
+  if IsDocked or chbKeepOpen.Checked then Exit;
+  Close;
 end;
 
 procedure TComponentListForm.miCollapseAllClick(Sender: TObject);
@@ -861,6 +875,10 @@ procedure TComponentListForm.SelectionToolButtonClick(Sender: TObject);
 begin
   SelectionToolButton.Down := True;
   IDEComponentPalette.SetSelectedComp(nil, False);
+  if IsDocked or chbKeepOpen.Checked then Exit;
+  // show form editor
+  if assigned(OnClassSelected) then
+    OnClassSelected(self);
 end;
 
 end.

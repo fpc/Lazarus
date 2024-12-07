@@ -54,6 +54,7 @@ object ComponentListForm: TComponentListForm
           TabOrder = 0
           OnDblClick = ComponentsDblClick
           OnKeyPress = TreeKeyPress
+          OnMouseDown = TreeMouseDown
           OnSelectionChanged = ListTreeSelectionChanged
           Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRowSelect, tvoToolTips]
         end
@@ -90,6 +91,7 @@ object ComponentListForm: TComponentListForm
           TabOrder = 0
           OnDblClick = ComponentsDblClick
           OnKeyPress = TreeKeyPress
+          OnMouseDown = TreeMouseDown
           OnSelectionChanged = ListTreeSelectionChanged
           Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowButtons, tvoShowRoot, tvoToolTips]
         end
@@ -126,6 +128,7 @@ object ComponentListForm: TComponentListForm
           TabOrder = 0
           OnDblClick = ComponentsDblClick
           OnKeyPress = TreeKeyPress
+          OnMouseDown = TreeMouseDown
           OnSelectionChanged = ListTreeSelectionChanged
           Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
         end
