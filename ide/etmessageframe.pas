@@ -262,6 +262,8 @@ type
     // select, search
     procedure ToggleSelectedLine(View: TLMsgWndView; LineNumber: integer);
     procedure ExtendSelection(View: TLMsgWndView; LineNumber: integer);
+    procedure ExtendSelByOffset(Offset: integer);
+    procedure MoveWithoutSelecting(Offset: integer);
     function SearchNext(StartView: TLMsgWndView; StartLine: integer;
       SkipStart, Downwards: boolean;
       out View: TLMsgWndView; out LineNumber: integer): boolean;
@@ -1591,10 +1593,8 @@ var
   end;
 
 var
-  i: Integer;
+  i, j, y: Integer;
   View: TLMsgWndView;
-  y: Integer;
-  j: Integer;
   Line: TMessageLine;
   Indent: Integer;
   NodeRect: TRect;
@@ -1848,38 +1848,87 @@ begin
 
   { Selection }
 
-  else if (Key = VK_DOWN) and (Shift = []) then
+  // [Ctrl-A]
+  else if (Key = VK_A) and (Shift = [ssCtrl]) then
   begin
-    SelectNextShown(+1);
+    Select(SelectedView,-1,false,false);
+    ExtendSelection(SelectedView,SelectedView.Lines.Count-1);
     Key := 0;
   end
+  // [Up]
   else if (Key = VK_UP) and (Shift = []) then
   begin
     SelectNextShown(-1);
     Key := 0;
   end
-
+  else if (Key = VK_UP) and (Shift = [ssShift]) then
+  begin
+    ExtendSelByOffset(-1);
+    Key := 0;
+  end
+  else if (Key = VK_UP) and (Shift = [ssCtrl]) then
+  begin
+    MoveWithoutSelecting(-1);
+    Key := 0;
+  end
+  // [Down]
+  else if (Key = VK_DOWN) and (Shift = []) then
+  begin
+    SelectNextShown(+1);
+    Key := 0;
+  end
+  else if (Key = VK_DOWN) and (Shift = [ssShift]) then
+  begin
+    ExtendSelByOffset(+1);
+    Key := 0;
+  end
+  else if (Key = VK_DOWN) and (Shift = [ssCtrl]) then
+  begin
+    MoveWithoutSelecting(+1);
+    Key := 0;
+  end
+  // [Home]
   else if (Key = VK_HOME) and (Shift = []) then
   begin
     SelectFirst(true, true);
     Key := 0;
   end
+  else if (Key = VK_HOME) and (Shift = [ssShift]) then
+  begin
+    ExtendSelection(SelectedView,-1);
+    Key := 0;
+  end
+  // [End]
   else if (Key = VK_END) and (Shift = []) then
   begin
     SelectLast(true, true);
     Key := 0;
   end
-
-  // [PageDown]
-  else if (Key = VK_NEXT) and (Shift = []) then
+  else if (Key = VK_END) and (Shift = [ssShift]) then
   begin
-    SelectNextShown(+Max(1, ClientHeight div ItemHeight));
+    ExtendSelection(SelectedView,SelectedView.Lines.Count-1);
     Key := 0;
   end
   // [PageUp]
   else if (Key = VK_PRIOR) and (Shift = []) then
   begin
     SelectNextShown(-Max(1, ClientHeight div ItemHeight));
+    Key := 0;
+  end
+  else if (Key = VK_PRIOR) and (Shift = [ssShift]) then
+  begin
+    ExtendSelByOffset(-Max(1, ClientHeight div ItemHeight));
+    Key := 0;
+  end
+  // [PageDown]
+  else if (Key = VK_NEXT) and (Shift = []) then
+  begin
+    SelectNextShown(+Max(1, ClientHeight div ItemHeight));
+    Key := 0;
+  end
+  else if (Key = VK_NEXT) and (Shift = [ssShift]) then
+  begin
+    ExtendSelByOffset(+Max(1, ClientHeight div ItemHeight));
     Key := 0;
   end;
 
@@ -2073,19 +2122,53 @@ var
 begin
   BeginUpdate;
   SelectedView:=View;
+  if SelectedView=nil then
+    SelectFirst(true,true);
   Empty:=FSelectedLines.Count=0;
   FSelectedLines.Count:=1; // Delete possible earlier selections except first one.
   if Empty then
     FSelectedLines[0]:=LineNumber  // No earlier selection.
   else if LineNumber<FSelectedLines[0] then
-    for i:=LineNumber to FSelectedLines[0]-1 do
+    for i:=FSelectedLines[0]-1 downto LineNumber do
       FSelectedLines.Add(i)
   else if LineNumber>FSelectedLines[0] then
     for i:=FSelectedLines[0]+1 to LineNumber do
       FSelectedLines.Add(i);
   // if LineNumber=FSelectedLines[0] then do nothing.
+  ScrollToLine(SelectedView,LineNumber,True);
   Invalidate;
   EndUpdate;
+end;
+
+procedure TMessagesCtrl.ExtendSelByOffset(Offset: integer);
+var
+  LineNro: Integer;
+begin
+  Assert(Offset<>0, 'TMessagesCtrl.ExtendSelByOffset: Offset=0');
+  if SelectedView=nil then
+    SelectFirst(true,true);
+  if ( (Offset<0) and (FSelectedLines.Last=-1) )
+  or ( (Offset>0) and (FSelectedLines.Last=SelectedView.Lines.Count-1) ) then
+  begin
+    {$IFDEF VerboseMsgCtrlSelection}
+    debugln(['TMessagesCtrl.ExtendSelByOffset: Cannot extend more. Offset=', Offset,
+             ', Last=', FSelectedLines.Last]);
+    {$ENDIF}
+    Exit;
+  end;
+  LineNro:=FSelectedLines.Last+Offset;  // The last selection + offset.
+  if LineNro<-1 then
+    LineNro:=-1
+  else if LineNro>=SelectedView.Lines.Count then
+    LineNro:=SelectedView.Lines.Count-1;
+  ExtendSelection(SelectedView, LineNro);
+end;
+
+procedure TMessagesCtrl.MoveWithoutSelecting(Offset: integer);
+begin
+{ #todo -oJuha : Move cursor without changing the selection.
+  Cursor position must be indicated somehow in the Paint procedure.
+}
 end;
 
 procedure TMessagesCtrl.Select(View: TLMsgWndView; LineNumber: integer;
@@ -2721,8 +2804,7 @@ begin
     if View.FPaintStamp<>FPaintStamp then continue;
     if (View.fPaintTop>Y) or (View.fPaintBottom<Y) then continue;
     Line:=((Y-View.fPaintTop) div ItemHeight)-1;
-    Result:=true;
-    exit;
+    exit(true);
   end;
   View:=nil;
   Line:=-1;
