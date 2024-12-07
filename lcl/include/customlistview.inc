@@ -1629,7 +1629,8 @@ end;
 procedure TCustomListView.SetDropTarget(const AValue: TListItem);
 begin
   if not HandleAllocated then Exit;
-  TWSCustomListViewClass(WidgetSetClass).ItemSetState(Self, AValue.Index, AValue, lisDropTarget, True);
+  if AValue <> nil then
+    TWSCustomListViewClass(WidgetSetClass).ItemSetState(Self, AValue.Index, AValue, lisDropTarget, True);
 end;
 
 procedure TCustomListView.SetFocused(const AValue: TListItem);
