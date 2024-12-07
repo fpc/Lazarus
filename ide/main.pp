@@ -6165,6 +6165,7 @@ begin
        State=iwgfDisabled,OwningComponent);
     ComponentListForm.OnOpenPackage:=@PkgBoss.IDEComponentPaletteOpenPackage;
     ComponentListForm.OnOpenUnit:=@PkgBoss.IDEComponentPaletteOpenUnit;
+    ComponentListForm.OnClassSelected:=@ComponentPaletteClassSelected;
   end else if State=iwgfDisabled then
     ComponentListForm.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TMainIDE.DoShowComponentList'){$ENDIF};
   if State>=iwgfShow then
