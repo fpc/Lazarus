@@ -2416,6 +2416,92 @@ Owner of the class instance used in notification events.
 </short>
 </element>
 
+<element name="TColorDialogOption">
+<short>
+Represents the options which can be enabled during execution of a color dialog.
+</short>
+<descr>
+<p>
+Values from the enumeration are stored in the TColorDialogOptions set type used 
+to implement the TColorDialog.Options property.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TColorDialogOptions"/>
+<link id="TColorDialog.Options"/>
+</seealso>
+</element>
+<element name="TColorDialogOption.cdFullOpen">
+<short>
+Causes the dialog box to display the additional controls that allow the user to 
+create custom colors.
+</short>
+</element>
+<element name="TColorDialogOption.cdPreventFullOpen">
+<short>
+Disables the "Define Custom Color" button.
+</short>
+</element>
+<element name="TColorDialogOption.cdShowHelp">
+<short>
+Causes the dialog box to display the Help button.
+</short>
+</element>
+<element name="TColorDialogOption.cdSolidColor">
+<short>
+Causes the dialog box to display only solid colors in the set of basic colors.
+</short>
+</element>
+<element name="TColorDialogOption.cdAnyColor">
+<short>
+Causes the dialog box to display all available colors in the set of basic 
+colors.
+</short>
+</element>
+
+<element name="TColorDialogOptions">
+<short>
+Set type used to store values from the TColorDialogOption enumeration.
+</short>
+<descr>
+<p>
+<var>TColorDialogOptions</var> is used to zero (0) for more values from the 
+<var>TColorDialogOption</var> enumeration. TColorDialogOptions is the typed 
+used to implement the Options property in TColorDialog. It contains the options 
+which are enabled at run-time when the TColorDialog is executed.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TColorDialogOption"/>
+<link id="TColorDialog.Options"/>
+</seealso>
+</element>
+
+<element name="DefaultColorDialogOptions">
+<short>
+Specifies the default options enabled in TColorDialog.
+</short>
+<descr>
+<p>
+Provided for compatibility with previous LCL versions. This is probably not 
+Delphi compatible.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TColorDialogOption"/>
+<link id="TColorDialogOptions"/>
+</seealso>
+</element>
+
 <element name="TColorDialog">
 <short>
 Implements a dialog used to select a TColor value.
@@ -2519,12 +2605,15 @@ Returns the values defined in the rsSelectcolorTitle constant.
 </element>
 
 <element name="TColorDialog.Create">
-<short>Constructor for the class instance.</short>
+<short>
+Constructor for the class instance.
+</short>
 <descr>
 <p>
 <var>Create</var> is the constructor for <var>TColorDialog</var>, and calls 
-the inherited <var>Create</var> method. Create allocates resources and 
-initializes the Color and CustomColors properties.
+the inherited <var>Create</var> method. Create allocates resources for and 
+initializes the default values for the CustomColors and Options properties. 
+Component style flags are also updated in the method.
 </p>
 </descr>
 <seealso>
@@ -2624,6 +2713,42 @@ method was called.
 <seealso>
 <link id="TColorDialog.Color"/>
 <link id="TCommonDialog.Execute"/>
+</seealso>
+</element>
+
+<element name="TColorDialog.Options">
+<short>
+Indicates the optional features enabled (or disabled) for the color dialog.
+</short>
+<descr>
+<p>
+<var>Options</var> is a <var>TColorDialogOptions</var> property which contains 
+the optional features used when the color dialog is executed. It contains zero 
+(0) or more values from the <link id="TColorDialogOption"/> enumeration; when a 
+value is present in the set type, the feature is enabled for the dialog.
+</p>
+<p>
+The default value for the property is defined in the 
+<link id="DefaultColorDialogOptions"/> constant.
+</p>
+<p>
+Options is used by the widgetset to create the flag values associated with the 
+Handle created for the dialog.
+</p>
+<remark>
+Options is currently enabled for the Windows widgetset only. Its implementation 
+is modeled on the use of flag values in the CHOOSECOLOR function from the 
+Windows API.
+(https://learn.microsoft.com/en-us/windows/win32/api/commdlg/ns-commdlg-choosecolora-r1)
+</remark>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TColorDialogOption"/>
+<link id="TColorDialogOptions"/>
+<link id="DefaultColorDialogOptions"/>
 </seealso>
 </element>
 
