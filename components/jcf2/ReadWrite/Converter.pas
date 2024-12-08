@@ -51,7 +51,7 @@ type
     fsInputCode, fsOutputCode: String;
     fsFileName: String;
     fiFirstLineNumber: integer;  //used by ConvertUsingFakeUnit
-
+    fiFirstSelectionLineNumber: integer;
     { classes to lex and parse the source }
     fcTokeniser:      TBuildTokenList;
     fcBuildParseTree: TBuildParseTree;
@@ -89,6 +89,8 @@ type
     procedure Convert;
     procedure ConvertPart(const piStartIndex, piEndIndex: Integer;
                           aOnlyOutputSelection: boolean=false);
+    procedure ConvertRange(piStartLineNumber, piEndLineNumber: Integer;
+      aOnlyOutputSelection: Boolean = false);
     procedure ConvertUsingFakeUnit(AFirstLineNumber:integer = 1);
 
     procedure CollectOutput(const pcRoot: TParseTreeNode);
@@ -139,6 +141,7 @@ begin
   fcSingleProcess  := nil;
   fbGuiMessages    := True; // use Ui to show parse errors by default
   fiFirstLineNumber := 1;
+  fiFirstSelectionLineNumber:= MaxInt;
 end;
 
 destructor TConverter.Destroy;
@@ -255,6 +258,8 @@ begin
       end;
     end;
   finally
+    fiFirstLineNumber := 1;
+    fiFirstSelectionLineNumber:= MaxInt;
     if lcTokenList<>nil then
     begin
       lcTokenList.OwnsObjects := True;
@@ -377,13 +382,19 @@ end;
 procedure TConverter.SendStatusMessage(const psUnit, psMessage: String; const peMessageType: TStatusMessageType; const piY, piX: Integer);
 var
   lsUnit: string;
+  liY:integer;
 begin
   if Assigned(fOnStatusMessage) then
   begin
     lsUnit := psUnit;
     if lsUnit = '' then
       lsUnit := fsFileName;
-    fOnStatusMessage(lsUnit, psMessage, peMessageType, piY + fiFirstLineNumber - 1, piX);
+    // adjust error line number in selection formating.
+    // error due jcf special added comments
+    liY := piY + fiFirstLineNumber - 1;
+    if piY > fiFirstSelectionLineNumber then
+      Dec(liY);
+    fOnStatusMessage(lsUnit, psMessage, peMessageType, liY, piX);
   end;
 end;
 
@@ -442,6 +453,23 @@ begin
     lsNewOutput := lsNewOutput + StrRestOf(fsInputCode, liRealInputEnd + Length(FORMAT_START) + Length(FORMAT_END));
   end;
   fsOutputCode := lsNewOutput;
+end;
+
+procedure TConverter.ConvertRange(piStartLineNumber, piEndLineNumber: Integer;
+  aOnlyOutputSelection: Boolean);
+var
+  lineStartOffset,lineEndOffset: Integer;
+  liAux: Integer;
+begin
+  if piStartLineNumber > piEndLineNumber then
+  begin
+    liAux := piEndLineNumber;
+    piEndLineNumber := piStartLineNumber;
+    piStartLineNumber := liAux;
+  end;
+  FindLineOffsets(fsInputCode,piStartLineNumber, piEndLineNumber,lineStartOffset,lineEndOffset);
+  fiFirstSelectionLineNumber:= piStartLineNumber;
+  ConvertPart(lineStartOffset, lineEndOffset, aOnlyOutputSelection);
 end;
 
 { position on we insert selected CODE depending if the CODE contains interface

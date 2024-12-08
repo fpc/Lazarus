@@ -294,7 +294,6 @@ var
   sourceCode: string;
   BlockBegin, BlockEnd: TPoint;
   fcConverter: TConverter;
-  lineStartOffset,lineEndOffset: integer;
   wi,EndY: integer;
   outputstr: string;
 begin
@@ -316,8 +315,7 @@ begin
     fcConverter.GuiMessages := false; //true;
     fcConverter.FileName := SourceEditorManagerIntf.ActiveEditor.FileName;
     fcConverter.OnIncludeFile := OnIncludeFile;
-    FindLineOffsets(sourceCode,BlockBegin.Y,BlockEnd.Y,lineStartOffset,lineEndOffset);
-    fcConverter.ConvertPart(lineStartOffset, lineEndOffset, True);
+    fcConverter.ConvertRange(BlockBegin.Y, BlockEnd.Y, true);
     if not fcConverter.ConvertError then
     begin
       wI := length(fcConverter.OutputCode);
