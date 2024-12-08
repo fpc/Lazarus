@@ -52,6 +52,7 @@ begin
   // add default colors
   GetColorValues(@AddDefaultColor);
   fCompStyle := csColorDialog;
+  FOptions := DefaultColorDialogOptions;
 end;
 
 destructor TColorDialog.Destroy;

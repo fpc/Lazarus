@@ -114,6 +114,8 @@ type
   { TWin32WSColorDialog }
 
   TWin32WSColorDialog = class(TWSColorDialog)
+  public
+    class function ColorDialogOptionsToFlags(Options: TColorDialogOptions): DWORD;
   published
     class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
@@ -369,6 +371,18 @@ begin
   Result := 0;
 end;
 
+class function TWin32WSColorDialog.ColorDialogOptionsToFlags(Options: TColorDialogOptions): DWORD;
+const
+  CC_ANYCOLOR = $00000100;
+begin
+  Result := 0;
+  if cdFullOpen in Options then Result := Result or CC_FULLOPEN;
+  if cdPreventFullOpen in Options then Result := Result or CC_PREVENTFULLOPEN;
+  if cdShowHelp in Options then Result := Result or CC_SHOWHELP;
+  if cdSolidColor in Options then Result := Result or CC_SOLIDCOLOR;
+  if cdAnyColor in Options then Result := Result or CC_ANYCOLOR;
+end;
+
 class function TWin32WSColorDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
 var
   CC: PChooseColor;
@@ -398,7 +412,8 @@ begin
     FillCustomColors;
     lCustData := LParam(ACommonDialog);
     lpfnHook := @CCHookProc;
-    Flags := CC_FULLOPEN or CC_RGBINIT or CC_ENABLEHOOK;
+    Flags := {CC_FULLOPEN or }CC_RGBINIT or CC_ENABLEHOOK;
+    Flags := Flags or ColorDialogOptionsToFlags(ColorDialog.Options);
   end;
   Result := THandle(CC);
 end;

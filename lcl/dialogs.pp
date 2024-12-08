@@ -287,12 +287,27 @@ type
     constructor Create(AOwner: TComponent); override;
   end;
 
+  TColorDialogOption = (
+    cdFullOpen,         // Causes the dialog box to display the additional controls that allow the user to create custom colors.
+    cdPreventFullOpen,  // Disables the Define Custom Color button.
+    cdShowHelp,         // Causes the dialog box to display the Help button.
+    cdSolidColor,       // Causes the dialog box to display only solid colors in the set of basic colors.
+    cdAnyColor          // Causes the dialog box to display all available colors in the set of basic colors.
+    );
+  TColorDialogOptions = set of TColorDialogOption;
+
+const
+  DefaultColorDialogOptions = [cdFullOpen]; //for backwards compatibility, probably not Delphi compatible
+
   { TColorDialog }
-  
+type
+
   TColorDialog = class(TCommonDialog)
   private
     FColor: TColor;
     FCustomColors: TStrings;
+    FOptions: TColorDialogOptions;
+
     procedure SetCustomColors(const AValue: TStrings);
     procedure AddDefaultColor(const s: AnsiString);
   protected
@@ -306,6 +321,7 @@ type
     property Color: TColor read FColor write FColor;
     // entry looks like ColorA = FFFF00 ... ColorX = C0C0C0
     property CustomColors: TStrings read FCustomColors write SetCustomColors;
+    property Options: TColorDialogOptions read FOptions write FOptions default DefaultColorDialogOptions;
   end;
 
 
