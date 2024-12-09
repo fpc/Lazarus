@@ -7211,7 +7211,7 @@ begin
   if SrcEdit=nil then exit;
   if Sender is TIDEMenuItem then begin
     IDEMenuItem:=TIDEMenuItem(Sender);
-    i:=IDEMenuItem.SectionIndex;
+    i:=IDEMenuItem.Tag;
     if (i>=0) and (i<EditorOpts.HighlighterList.Count) then begin
       SrcEdit.SyntaxHighlighterId:=i;
       SrcEdit.UpdateProjectFile([sepuChangedHighlighter]);
@@ -7670,6 +7670,8 @@ var
 begin
   SrcEditSubMenuHighlighter.ChildrenAsSubMenu:=true;
   for i := 0 to EditorOpts.HighlighterList.Count - 1 do begin
+    if EditorOpts.HighlighterList.SharedSynInstances[i] is TNonSrcIDEHighlighter then
+      continue;
     CurName:='Highlighter'+IntToStr(i);
     CurCaption:= EditorOpts.HighlighterList.Captions[i];
     if SrcEditSubMenuHighlighter.Count=i then begin
@@ -7679,6 +7681,7 @@ begin
     end else begin
       IDEMenuItem:=SrcEditSubMenuHighlighter[i];
       IDEMenuItem.Caption:=CurCaption;
+      IDEMenuItem.Tag:=i;
       IDEMenuItem.OnClick:=@HighlighterClicked;
     end;
     if IDEMenuItem is TIDEMenuCommand then
