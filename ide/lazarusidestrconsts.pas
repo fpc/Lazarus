@@ -3431,6 +3431,7 @@ resourcestring
   srkmCatSelection      = 'Text selection commands';
   srkmCatColSelection   = 'Text column selection commands';
   srkmCatEditing        = 'Text editing commands';
+  srkmCatClipboard      = 'Clipboard commands';
   lisKMDeleteLastChar   = 'Delete last char';
   srkmCatCmdCmd         = 'Command commands';
   srkmCatMultiCaret     = 'Multi caret commands';

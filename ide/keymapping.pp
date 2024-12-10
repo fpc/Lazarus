@@ -2865,17 +2865,6 @@ begin
   AddDefault(C, 'Select cursor up', srkmecSelUp, ecSelUp);
   AddDefault(C, 'Select cursor down', srkmecSelDown, ecSelDown);
 
-  AddDefault(C, 'Copy selection to clipboard', srkmecCopy, ecCopy);
-  AddDefault(C, 'Cut selection to clipboard', srkmecCut, ecCut);
-  AddDefault(C, 'Paste clipboard to current position', srkmecPaste, ecPaste);
-  AddDefault(C, 'Paste clipboard (as columns) to current position', srkmecPasteAsColumns, ecPasteAsColumns);
-  AddDefault(C, 'Copy - Add to Clipboard', srkmecCopyAdd, ecCopyAdd);
-  AddDefault(C, 'Cut - Add to Clipboard', srkmecCutAdd, ecCutAdd);
-  AddDefault(C, 'Copy current line', srkmecCopyCurrentLine, ecCopyCurrentLine);
-  AddDefault(C, 'Copy current line - Add to Clipboard', srkmecCopyAddCurrentLine, ecCopyAddCurrentLine);
-  AddDefault(C, 'Cut current line', srkmecCutCurrentLine, ecCutCurrentLine);
-  AddDefault(C, 'Cut current line - Add to Clipboard', srkmecCutAddCurrentLine, ecCutAddCurrentLine);
-  AddDefault(C, 'Multi paste clipboard to current position', srkmecMultiPaste, ecMultiPaste);
   AddDefault(C, 'Normal selection mode', srkmecNormalSelect, ecNormalSelect);
   AddDefault(C, 'Column selection mode', srkmecColumnSelect, ecColumnSelect);
   AddDefault(C, 'Line selection mode', srkmecLineSelect, ecLineSelect);
@@ -3005,6 +2994,20 @@ begin
   AddDefault(C, 'Insert CVS keyword Source', srkmecInsertCVSSource, ecInsertCVSSource);
   AddDefault(C, 'Insert a GUID',srkmecInsertGUID, ecInsertGUID);
   AddDefault(C, 'Insert full Filename',srkmecInsertFilename, ecInsertFilename);
+
+  // clipboard commands
+  C:=Categories[AddCategory('Clipboard',srkmCatClipboard,IDECmdScopeSrcEditOnly)];
+  AddDefault(C, 'Copy selection to clipboard', srkmecCopy, ecCopy);
+  AddDefault(C, 'Cut selection to clipboard', srkmecCut, ecCut);
+  AddDefault(C, 'Paste clipboard to current position', srkmecPaste, ecPaste);
+  AddDefault(C, 'Paste clipboard (as columns) to current position', srkmecPasteAsColumns, ecPasteAsColumns);
+  AddDefault(C, 'Copy - Add to Clipboard', srkmecCopyAdd, ecCopyAdd);
+  AddDefault(C, 'Cut - Add to Clipboard', srkmecCutAdd, ecCutAdd);
+  AddDefault(C, 'Copy current line', srkmecCopyCurrentLine, ecCopyCurrentLine);
+  AddDefault(C, 'Copy current line - Add to Clipboard', srkmecCopyAddCurrentLine, ecCopyAddCurrentLine);
+  AddDefault(C, 'Cut current line', srkmecCutCurrentLine, ecCutCurrentLine);
+  AddDefault(C, 'Cut current line - Add to Clipboard', srkmecCutAddCurrentLine, ecCutAddCurrentLine);
+  AddDefault(C, 'Multi paste clipboard to current position', srkmecMultiPaste, ecMultiPaste);
 
   // command commands
   C:=Categories[AddCategory('CommandCommands',srkmCatCmdCmd,nil)];
