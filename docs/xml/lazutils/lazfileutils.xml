@@ -3804,6 +3804,17 @@ platform.
 <short>File name for the event notification.</short>
 </element>
 
+<element name="GetLazNormalizedFilename">
+<short>Gets a normalized form of the Filename</short>
+<descr>
+<p>
+<var>GetLazNormalizedFilename </var> returns a normalized string for the filename 
+for non-representative purposes (e.g. comparison).The normalization isplatform- 
+and/or OS-specific. It consider whether the file system is case sensitive or when 
+UTF-8 encoding is supported.
+</p>
+</descr>
+</element>
 </module>
 <!-- LazFileUtils -->
 </package>
