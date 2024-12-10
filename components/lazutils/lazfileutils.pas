@@ -37,6 +37,7 @@ function CompareFileExt(const Filename, Ext: string): integer;
 function FilenameExtIs(const Filename,Ext: string; CaseSensitive: boolean=false): boolean;
 function FilenameExtIn(const Filename: string; Exts: array of string;
   CaseSensitive: boolean=false): boolean;
+function GetLazNormalizedFilename(const Filename: string): string;
 
 function DirPathExists(DirectoryName: string): boolean;
 function DirectoryIsWritable(const DirectoryName: string): boolean;
@@ -469,6 +470,18 @@ begin
     if Result then exit;
   end;
   Result := False;
+end;
+
+function GetLazNormalizedFilename(const Filename: string): string;
+begin
+  {$IFDEF CaseInsensitiveFilenames}
+  Result:=UTF8UpperCase(Filename);
+  {$ELSE}
+  Result:=Filename;
+  {$ENDIF}
+  {$IFDEF darwin}
+  Result := GetDarwinNormalizedFilename(Result);
+  {$ENDIF}
 end;
 
 {$IFDEF darwin}
