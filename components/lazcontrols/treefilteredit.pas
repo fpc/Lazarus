@@ -20,7 +20,7 @@ uses
   // LCL
   LCLType, Graphics, ComCtrls, EditBtn,
   // LazUtils
-  LazFileUtils, LazUTF8, LazLoggerBase, AvgLvlTree;
+  LazFileUtils, LazUTF8, LazLoggerBase, AvgLvlTree, LazClasses, LazUtilities;
 
 type
   TImageIndexEvent = function (Str: String; Data: TObject;
@@ -33,18 +33,69 @@ type
 
   // A branch in the tree which can be sorted and filtered
   TTreeFilterBranch = class
+  private type
+
+    TTreeFilterBranchStringListItem = class(TRefCountedObject)
+      Name, FullName, ComparableName: String;
+      Data: TObject;
+    end;
+    PTreeFilterBranchStringListItem = ^TTreeFilterBranchStringListItem;
+
+    { TTreeFilterBranchStringListItemList }
+
+    TTreeFilterBranchStringListItemList = class(specialize TFPGList<TTreeFilterBranchStringListItem>)
+    protected
+      procedure Deref(Item: Pointer); override;
+    end;
+
+    { TTreeFilterBranchStringList }
+
+    TTreeFilterBranchStringList = class(TStrings)
+    private
+      FList: TTreeFilterBranchStringListItemList;
+      FModified: boolean;
+      function GetComparableName(AnIndex: Integer): string;
+      function GetFullName(AnIndex: Integer): string;
+      function GetInternalItem(AnIndex: Integer): TTreeFilterBranchStringListItem;
+      procedure SetComparableName(AnIndex: Integer; AValue: string);
+      procedure SetFullName(AnIndex: Integer; AValue: string);
+    protected
+      function Get(Index: Integer): string; override;
+      function GetCount: Integer; override;
+      function GetCapacity: Integer; override;
+      function GetObject(Index: Integer): TObject; override;
+      procedure Put(Index: Integer; const S: string); override;
+      procedure PutObject(Index: Integer; AObject: TObject); override;
+      procedure SetCapacity(NewCapacity: Integer); override;
+      function Add(const AnInternalItem: TTreeFilterBranchStringListItem): Integer;
+      property InternalItem[AnIndex: Integer]: TTreeFilterBranchStringListItem read GetInternalItem;
+    public
+      constructor Create;
+      destructor Destroy; override;
+      function Add(const S: string): Integer; override; overload;
+      function AddObject(const S: string; AObject: TObject): Integer; override; overload;
+      function AddObject(const S, FullName: string; AObject: TObject): Integer; overload;
+      procedure Assign(Source: TPersistent); override;
+      procedure Clear; override;
+      procedure Delete(Index: Integer); override;
+      procedure Insert(Index: Integer; const S: string); override;
+      procedure InsertObject(Index: Integer; const S: string; AObject: TObject);
+      procedure InsertObject(Index: Integer; const S, FullName: string; AObject: TObject);
+      property  FullName[AnIndex: Integer]: string read GetFullName write SetFullName;
+      property  ComparableName[AnIndex: Integer]: string read GetComparableName write SetComparableName;
+      property  Modified: boolean read FModified write FModified;
+    end;
+
   private
     fOwner: TTreeFilterEdit;
     fRootNode: TTreeNode;
-    fOriginalData: TStringList;       // Data supplied by caller.
-    fSortedData: TStringListUTF8Fast; // Data sorted for viewing.
+    fOriginalData: TTreeFilterBranchStringList;       // Data supplied by caller.
+    fSortedData: TTreeFilterBranchStringList;     // Data sorted for viewing.
+    fFilteredData: TTreeFilterBranchStringList;   // Data sorted and filtered for viewing. (only if filter is set)
+    fDisplayedData: TTreeFilterBranchStringList;  // reference to either Sorted or Filtered data (depends on filter is set or not)
     fImgIndex: Integer;
-    // Full filename in node data is needed when showing the directory hierarchy.
-    // It is stored automatically if AFullFilename is passed to contructor.
-    fNodeTextToFullFilenameMap: TStringToStringTree;
-    fNodeTextToDataMap: TStringToPointerTree;
     fTVNodeStack: TList;
-    function CompareFNs(AFilename1,AFilename2: string): integer;
+    function GetOriginalData: TStrings;
     procedure SortAndFilter;
     procedure ApplyFilter;
     procedure TVDeleteUnneededNodes(p: integer);
@@ -61,7 +112,7 @@ type
     procedure InvalidateBranch;
     procedure Move(CurIndex, NewIndex: integer);
   public
-    property Items: TStringList read fOriginalData;
+    property Items: TStrings read GetOriginalData;
   end;
 
   TBranchList = specialize TFPGObjectList<TTreeFilterBranch>;
@@ -146,67 +197,81 @@ begin
   inherited Create;
   fOwner:=AOwner;
   fRootNode:=ARootNode; // RootNode can also be Nil. Then all items are at top level.
-  fOriginalData:=TStringListUTF8Fast.Create;
-  fSortedData:=TStringListUTF8Fast.Create;
-  fNodeTextToFullFilenameMap:=TStringToStringTree.Create(True);
-  fNodeTextToDataMap:=TStringToPointerTree.Create(True);
+  fOriginalData:=TTreeFilterBranchStringList.Create;
+  fSortedData:=TTreeFilterBranchStringList.Create;
+  fFilteredData:=TTreeFilterBranchStringList.Create;
+  fDisplayedData:=fSortedData;
   fImgIndex:=-1;
 end;
 
 destructor TTreeFilterBranch.Destroy;
 begin
   ClearNodeData;
-  FreeAndNil(fNodeTextToFullFilenameMap);
-  FreeAndNil(fNodeTextToDataMap);
   FreeAndNil(fSortedData);
   FreeAndNil(fOriginalData);
+  FreeAndNil(fFilteredData);
   inherited Destroy;
 end;
 
 procedure TTreeFilterBranch.AddNodeData(ANodeText: string; AData: TObject; AFullFilename: string);
 begin
-  fOriginalData.AddObject(ANodeText, AData);
-  fNodeTextToDataMap[ANodeText]:=AData;
-  if AFullFilename <> '' then
-    fNodeTextToFullFilenameMap[ANodeText]:=AFullFilename;
+  fOriginalData.AddObject(ANodeText, AFullFilename, AData);
 end;
 
 function TTreeFilterBranch.GetData(AIndex: integer): TObject;
 begin
-  if AIndex<fSortedData.Count then
-    Result:=fSortedData.Objects[AIndex]
+  if AIndex<fDisplayedData.Count then
+    Result:=fDisplayedData.Objects[AIndex]
   else
     Result:=Nil;
 end;
 
-function TTreeFilterBranch.CompareFNs(AFilename1,AFilename2: string): integer;
+function TTreeFilterBranch.GetOriginalData: TStrings;
 begin
-  if fOwner.SortData then
-    Result:=CompareFilenames(AFilename1, AFilename2)
-  else if fOwner.fShowDirHierarchy then
-    Result:=CompareFilenames(ExtractFilePath(AFilename1), ExtractFilePath(AFilename2))
-  else
-    Result:=0;
+  Result := fOriginalData;
+end;
+
+function DoCompFN(Item1, Item2: Pointer): Integer;
+var
+  I1: TTreeFilterBranch.TTreeFilterBranchStringListItem absolute Item1;
+  I2: TTreeFilterBranch.TTreeFilterBranchStringListItem absolute Item2;
+begin
+  Result := CompareStr(I1.ComparableName, I2.ComparableName);
 end;
 
 procedure TTreeFilterBranch.SortAndFilter;
 // Copy data from fOriginalData to fSortedData in sorted order
 var
-  Origi, i: Integer;
-  s: string;
+  i: Integer;
+  o: TTreeFilterBranchStringListItem;
 begin
-  fSortedData.Clear;
-  for Origi:=0 to fOriginalData.Count-1 do begin
-    s:=fOriginalData[Origi];
-    if (fOwner.Filter='') or
-        fOwner.DoFilterItem(s, nil) then begin
-      i:=fSortedData.Count-1;
-      while i>=0 do begin
-        if CompareFNs(s,fSortedData[i]) >= 0 then break;
-        dec(i);
-      end;
-      fSortedData.InsertObject(i+1, s, fOriginalData.Objects[Origi]);
+  fFilteredData.Clear;
+
+  if fOriginalData.Modified then begin
+    fSortedData.Assign(fOriginalData);
+    if fOwner.SortData then begin
+      for i := 0 to fSortedData.Count - 1 do
+        fSortedData.ComparableName[i] := GetLazNormalizedFilename(fSortedData[i]);
+      MergeSortWithLen(PPointer(fSortedData.FList.List^), fSortedData.Count, @DoCompFN);
+    end
+    else
+    if fOwner.fShowDirHierarchy then begin
+      for i := 0 to fSortedData.Count - 1 do
+        fSortedData.ComparableName[i] := GetLazNormalizedFilename(ExtractFilePath(fSortedData[i]));
+      MergeSortWithLen(PPointer(fSortedData.FList.List^), fSortedData.Count, @DoCompFN);
     end;
+    fOriginalData.Modified := False; // fSortedData is up to date
+  end;
+  fDisplayedData:=fSortedData;
+
+  if (fOwner.Filter<>'') then begin
+    fFilteredData.Capacity := fSortedData.Count div 2;
+    for i := 0 to fSortedData.Count - 1 do begin
+      o := fSortedData.InternalItem[i];
+      if fOwner.DoFilterItem(o.Name, nil) then
+        fFilteredData.Add(o);
+    end;
+    fDisplayedData:=fFilteredData;
   end;
 end;
 
@@ -226,8 +291,8 @@ begin
     fOwner.fFilteredTreeview.Items.Clear;
   if fOwner.ShowDirHierarchy then
     fTVNodeStack:=TList.Create;
-  for i:=0 to fSortedData.Count-1 do begin
-    FileN:=fSortedData[i];
+  for i:=0 to fDisplayedData.Count-1 do begin
+    FileN:=fDisplayedData[i];
     if fOwner.ShowDirHierarchy then begin
       TVClearUnneededAndCreateHierachy(FileN);
       TVNode:=TTreeNode(fTVNodeStack[fTVNodeStack.Count-1]);
@@ -235,13 +300,12 @@ begin
     else
       TVNode:=fOwner.fFilteredTreeview.Items.AddChild(fRootNode,FileN);
     // Save the long filename to Node.Data
-    AObject := TObject(fNodeTextToDataMap[FileN]);
-    if fNodeTextToFullFilenameMap.Count > 0 then begin
-      s:=FileN;
-      if fNodeTextToFullFilenameMap.Contains(FileN) then
-        s:=fNodeTextToFullFilenameMap[FileN];           // Full file name.
+    AObject := fDisplayedData.Objects[i];
+    s := fDisplayedData.FullName[i];
+    if s = '' then
+      s:=FileN
+    else
       AObject := TFileNameItem.Create(s, AObject);
-    end;
     If AObject is TTFENodeData then Begin
       TTFENodeData(AObject).Node := TVNode;
       TTFENodeData(AObject).Branch := Self;
@@ -250,7 +314,7 @@ begin
     // Get ImageIndex for Node
     ena := True;
     if Assigned(fOwner.OnGetImageIndex) then
-      fImgIndex:=fOwner.OnGetImageIndex(FileN, fSortedData.Objects[i], ena);
+      fImgIndex:=fOwner.OnGetImageIndex(FileN, fDisplayedData.Objects[i], ena);
     TVNode.ImageIndex:=fImgIndex;
     TVNode.SelectedIndex:=fImgIndex;
   end;
@@ -351,6 +415,7 @@ begin
   FreeNodeData(ANode);
   DeleteFromList(fOriginalData);
   DeleteFromList(fSortedData);
+  DeleteFromList(fFilteredData);
   fOwner.FilteredTreeview.Items.Delete(ANode);
 end;
 
@@ -408,6 +473,210 @@ begin
   item.Index := NewIndex;
   item.MakeVisible;
   fOriginalData.Move(CurIndex, NewIndex);
+end;
+
+{ TTreeFilterBranch.TTreeFilterBranchStringListItemList }
+
+procedure TTreeFilterBranch.TTreeFilterBranchStringListItemList.Deref(Item: Pointer);
+begin
+  TTreeFilterBranchStringListItem(Item^).ReleaseReference;
+end;
+
+{ TTreeFilterBranch.TTreeFilterBranchStringList }
+
+function TTreeFilterBranch.TTreeFilterBranchStringList.GetComparableName(AnIndex: Integer): string;
+begin
+  Result := FList[AnIndex].ComparableName;
+end;
+
+function TTreeFilterBranch.TTreeFilterBranchStringList.GetFullName(AnIndex: Integer): string;
+begin
+  Result := FList[AnIndex].FullName;
+end;
+
+function TTreeFilterBranch.TTreeFilterBranchStringList.GetInternalItem(AnIndex: Integer
+  ): TTreeFilterBranchStringListItem;
+begin
+  Result := FList[AnIndex];
+end;
+
+procedure TTreeFilterBranch.TTreeFilterBranchStringList.SetComparableName(AnIndex: Integer;
+  AValue: string);
+begin
+  FList[AnIndex].ComparableName := AValue;
+end;
+
+procedure TTreeFilterBranch.TTreeFilterBranchStringList.SetFullName(AnIndex: Integer;
+  AValue: string);
+begin
+  FList[AnIndex].FullName := AValue;
+end;
+
+function TTreeFilterBranch.TTreeFilterBranchStringList.Get(Index: Integer): string;
+begin
+  Result := FList[Index].Name;
+end;
+
+function TTreeFilterBranch.TTreeFilterBranchStringList.GetCount: Integer;
+begin
+  Result := FList.Count;
+end;
+
+function TTreeFilterBranch.TTreeFilterBranchStringList.GetCapacity: Integer;
+begin
+  Result := FList.Capacity;
+end;
+
+function TTreeFilterBranch.TTreeFilterBranchStringList.GetObject(Index: Integer): TObject;
+begin
+  Result := FList[Index].Data;
+end;
+
+procedure TTreeFilterBranch.TTreeFilterBranchStringList.Put(Index: Integer; const S: string);
+begin
+  FList[Index].Name := S;
+  FModified := True;
+end;
+
+procedure TTreeFilterBranch.TTreeFilterBranchStringList.PutObject(Index: Integer; AObject: TObject
+  );
+begin
+  FList[Index].Data := AObject;
+  FModified := True;
+end;
+
+procedure TTreeFilterBranch.TTreeFilterBranchStringList.SetCapacity(NewCapacity: Integer);
+begin
+  FList.SetCapacity(NewCapacity);
+end;
+
+function TTreeFilterBranch.TTreeFilterBranchStringList.Add(
+  const AnInternalItem: TTreeFilterBranchStringListItem): Integer;
+begin
+  FList.Add(AnInternalItem);
+  AnInternalItem.AddReference;
+  FModified := True;
+end;
+
+constructor TTreeFilterBranch.TTreeFilterBranchStringList.Create;
+begin
+  FList := TTreeFilterBranchStringListItemList.Create;
+  inherited Create;
+end;
+
+destructor TTreeFilterBranch.TTreeFilterBranchStringList.Destroy;
+begin
+  inherited Destroy;
+  FList.Free;
+end;
+
+function TTreeFilterBranch.TTreeFilterBranchStringList.Add(const S: string): Integer;
+var
+  o: TTreeFilterBranchStringListItem;
+begin
+  o := TTreeFilterBranch.TTreeFilterBranchStringListItem.Create;
+  o.AddReference;
+  o.Name := S;
+  FList.Add(o);
+  FModified := True;
+end;
+
+function TTreeFilterBranch.TTreeFilterBranchStringList.AddObject(const S: string; AObject: TObject
+  ): Integer;
+var
+  o: TTreeFilterBranchStringListItem;
+begin
+  o := TTreeFilterBranch.TTreeFilterBranchStringListItem.Create;
+  o.AddReference;
+  o.Name := S;
+  o.Data := AObject;
+  FList.Add(o);
+  FModified := True;
+end;
+
+function TTreeFilterBranch.TTreeFilterBranchStringList.AddObject(const S, FullName: string;
+  AObject: TObject): Integer;
+var
+  o: TTreeFilterBranchStringListItem;
+begin
+  o := TTreeFilterBranch.TTreeFilterBranchStringListItem.Create;
+  o.AddReference;
+  o.Name := S;
+  o.FullName := FullName;
+  o.Data := AObject;
+  FList.Add(o);
+  FModified := True;
+end;
+
+procedure TTreeFilterBranch.TTreeFilterBranchStringList.Assign(Source: TPersistent);
+var
+  Other: TTreeFilterBranch.TTreeFilterBranchStringList absolute Source;
+  o: TTreeFilterBranchStringListItem;
+  i: Integer;
+begin
+  if Source is TTreeFilterBranchStringList then begin
+    FList.Clear;
+    FList.Capacity := Other.FList.Count;
+    for i := 0 to Other.FList.Count - 1 do begin
+      o := Other.FList[i];
+      o.AddReference;
+      FList.Add(o);
+    end;
+  end
+  else
+    inherited Assign(Source);
+  FModified := True;
+end;
+
+procedure TTreeFilterBranch.TTreeFilterBranchStringList.Clear;
+begin
+  if FList.Count > 0 then
+    FModified := True;
+  FList.Clear;
+end;
+
+procedure TTreeFilterBranch.TTreeFilterBranchStringList.Delete(Index: Integer);
+begin
+  FList.Delete(Index);
+  FModified := True;
+end;
+
+procedure TTreeFilterBranch.TTreeFilterBranchStringList.Insert(Index: Integer; const S: string);
+var
+  o: TTreeFilterBranchStringListItem;
+begin
+  o := TTreeFilterBranch.TTreeFilterBranchStringListItem.Create;
+  o.AddReference;
+  o.Name := S;
+  FList.Insert(Index, o);
+  FModified := True;
+end;
+
+procedure TTreeFilterBranch.TTreeFilterBranchStringList.InsertObject(Index: Integer;
+  const S: string; AObject: TObject);
+var
+  o: TTreeFilterBranchStringListItem;
+begin
+  o := TTreeFilterBranch.TTreeFilterBranchStringListItem.Create;
+  o.AddReference;
+  o.Name := S;
+  o.Data := AObject;
+  FList.Insert(Index, o);
+  FModified := True;
+end;
+
+procedure TTreeFilterBranch.TTreeFilterBranchStringList.InsertObject(Index: Integer; const S,
+  FullName: string; AObject: TObject);
+var
+  o: TTreeFilterBranchStringListItem;
+begin
+  o := TTreeFilterBranch.TTreeFilterBranchStringListItem.Create;
+  o.AddReference;
+  o.Name := S;
+  o.FullName := FullName;
+  o.Data := AObject;
+  FList.Insert(Index, o);
+  FModified := True;
 end;
 
 { TFileNameItem }
