@@ -63,7 +63,7 @@ type
     function GetIncludedBy: string;
   end;
 
-function ShowUnitInfoDlg(const AnUnitName, AType: string;
+function ShowUnitInfoDlg(const AnUnitName: string;
   IsPartOfProject: boolean; SizeInBytes, UnitSizeWithIncludeFiles, UnitSizeParsed,
   LineCount, UnitLineCountWithIncludes, UnitLineCountParsed: integer;
   const FilePath: string; const IncludedBy: string; out ClearIncludedBy: boolean;
@@ -73,7 +73,7 @@ implementation
 
 {$R *.lfm}
 
-function ShowUnitInfoDlg(const AnUnitName, AType: string;
+function ShowUnitInfoDlg(const AnUnitName: string;
   IsPartOfProject: boolean; SizeInBytes, UnitSizeWithIncludeFiles,
   UnitSizeParsed, LineCount, UnitLineCountWithIncludes,
   UnitLineCountParsed: integer; const FilePath: string;
@@ -91,7 +91,6 @@ begin
     FFilePath:=FilePath;
 
     ListValues.Items[0].SubItems[0]:=AnUnitName;
-    ListValues.Items[1].SubItems[0]:=AType;
 
     if IsPartOfProject then s:=lisUIDyes else s:=lisUIDno;
     ListValues.Items[2].SubItems[0]:=s;
@@ -153,7 +152,7 @@ begin
   with ListValues do
   begin
     with Items.Add do begin Caption:= lisUIDName; SubItems.Add(''); end;
-    with Items.Add do begin Caption:= lisUIDType; SubItems.Add(''); end;
+    with Items.Add do begin Caption:= ''{lisUIDType}; SubItems.Add(''); end;
     with Items.Add do begin Caption:= lisUIDinProject; SubItems.Add(''); end;
     with Items.Add do begin Caption:= lisUIDSize; SubItems.Add(''); end;
     with Items.Add do begin Caption:= lisUIDLines; SubItems.Add(''); end;

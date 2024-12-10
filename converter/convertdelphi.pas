@@ -1580,8 +1580,6 @@ begin
     // add .lpr file to project as main unit
     MainUnitInfo:=TUnitInfo.Create(fMainUnitConverter.fPascalBuffer);
     Assert(Assigned(IDEEditorOptions), 'TConvertDelphiProject.CreateMainSourceFile: IDEEditorOptions is Nil.');
-    MainUnitInfo.DefaultSyntaxHighlighter:=
-      IdeSyntaxHighlighters.GetIdForFileExtension(fMainUnitConverter.LazFileExt);
     MainUnitInfo.IsPartOfProject:=true;
     LazProject.AddFile(MainUnitInfo,false);
     LazProject.MainFileID:=0;

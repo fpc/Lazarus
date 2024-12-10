@@ -1766,7 +1766,7 @@ begin
         ASrcEdit := SourceEditorManager.SourceEditors[i];
         AnEditorInfo:=Project1.EditorInfoWithEditorComponent(ASrcEdit);
         if AnEditorInfo <> nil then
-          ASrcEdit.SyntaxHighlighterId := AnEditorInfo.SyntaxHighlighter;
+          ASrcEdit.SyntaxHighlighterId := AnEditorInfo.CustomSyntaxHighlighter;
       end;
     end;
   end

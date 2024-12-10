@@ -41,7 +41,9 @@ type
   end;
 
 const
-  IdeHighlighterNoneID = TIdeSyntaxHighlighterID(0);
+  IdeHighlighterUnknownId      = TIdeSyntaxHighlighterID(-2); // Name not in list
+  IdeHighlighterNotSpecifiedId = TIdeSyntaxHighlighterID(-1); // No Name given
+  IdeHighlighterNoneID         = TIdeSyntaxHighlighterID(0);
   IdeHighlighterStartId = TIdeSyntaxHighlighterID(1); // first regulor Highlighter in IdeSyntaxHighlighters (lowest index)
 
   LazSyntaxHighlighterNames: array[TLazSyntaxHighlighter] of String =

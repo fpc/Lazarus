@@ -3231,9 +3231,13 @@ end;
 
 function TEditOptLangList.GetIdForName(AName: String): TIdeSyntaxHighlighterID;
 begin
+  if AName = '' then
+    exit(IdeHighlighterNotSpecifiedId);
   Result := Count - 1;
   while (Result >= 0) and (CompareText(AName, Names[Result]) <> 0) do
     dec(Result);
+  if Result < 0 then
+    Result := IdeHighlighterUnknownId;
 end;
 
 function TEditOptLangList.GetCaptions(AnID: TIdeSyntaxHighlighterID): String;
@@ -3256,6 +3260,9 @@ var
   h: TEditOptLanguageInfo;
   i: SizeInt;
 begin
+  if AnID = IdeHighlighterNotSpecifiedId then // IdeHighlighterNoneID
+    Result := ''
+  else
   if AnID <= 0 then // IdeHighlighterNoneID
     Result := LazSyntaxHighlighterNames{%H-}[lshNone]
   else begin

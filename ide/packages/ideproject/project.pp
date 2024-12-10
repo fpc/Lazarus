@@ -172,7 +172,6 @@ type
     uifBuildFileIfActive,
     uifComponentUsedByDesigner,
     uifComponentIndirectlyUsedByDesigner,
-    uifCustomDefaultHighlighter,
     uifDisableI18NForLFM,
     uifFileReadOnly,
     uifHasErrorInLFM,
@@ -204,15 +203,13 @@ type
     FTopLine: integer;
     FCursorPos: TPoint;  // physical (screen) position
     FFoldState: String;
-    // Todo: FCustomHighlighter is only ever set to false, and not stored in XML
-    FCustomHighlighter: boolean; // do not change highlighter on file extension change
-    FSyntaxHighlighter: TIdeSyntaxHighlighterID;
+    FCustomSyntaxHighlighter: TIdeSyntaxHighlighterID;
     procedure SetCursorPos(const AValue: TPoint);
     procedure SetFoldState(AValue: String);
     procedure SetIsLocked(const AValue: Boolean);
     procedure SetPageIndex(const AValue: Integer);
     procedure SetIsVisibleTab(const AValue: Boolean);
-    procedure SetSyntaxHighlighter(AValue: TIdeSyntaxHighlighterID);
+    procedure SetCustomSyntaxHighlighter(AValue: TIdeSyntaxHighlighterID);
     procedure SetTopLine(const AValue: Integer);
     procedure SetWindowIndex(const AValue: Integer);
   protected
@@ -233,8 +230,7 @@ type
     property CursorPos: TPoint read FCursorPos write SetCursorPos;
     property FoldState: String read FFoldState write SetFoldState;
     property IsLocked: Boolean read FIsLocked  write SetIsLocked;
-    property CustomHighlighter: Boolean read FCustomHighlighter write FCustomHighlighter; // SetCustomHighlighter
-    property SyntaxHighlighter: TIdeSyntaxHighlighterID read FSyntaxHighlighter write SetSyntaxHighlighter; // SetSyntaxHighlighter
+    property CustomSyntaxHighlighter: TIdeSyntaxHighlighterID read FCustomSyntaxHighlighter write SetCustomSyntaxHighlighter; // User-set HL to override default
   end;
 
   { TUnitEditorInfoList }
@@ -275,7 +271,6 @@ type
   private
     FComponentTypesToClasses: TStringToPointerTree;
     FComponentVarsToClasses: TStringToPointerTree;
-    FDefaultSyntaxHighlighter: TIdeSyntaxHighlighterID;
     FEditorInfoList: TUnitEditorInfoList;
     fAutoRevertLockCount: integer;// =0 means, codetools can auto update from disk
     fBookmarks: TFileBookmarks;
@@ -314,7 +309,6 @@ type
     function ComponentLFMOnDiskHasChanged: boolean;
     function GetAutoReferenceSourceDir: boolean;
     function GetBuildFileIfActive: boolean;
-    function GetCustomDefaultHighlighter: boolean;
     function GetDisableI18NForLFM: boolean;
     function GetEditorInfo(Index: Integer): TUnitEditorInfo;
     function GetFileReadOnly: Boolean;
@@ -332,8 +326,6 @@ type
     function GetUserReadOnly: Boolean;
     procedure SetAutoReferenceSourceDir(const AValue: boolean);
     procedure SetBuildFileIfActive(const AValue: boolean);
-    procedure SetCustomDefaultHighlighter(AValue: boolean);
-    procedure SetDefaultSyntaxHighlighter(const AValue: TIdeSyntaxHighlighterID);
     procedure SetDisableI18NForLFM(const AValue: boolean);
     procedure SetFileReadOnly(const AValue: Boolean);
     procedure SetComponent(const AValue: TComponent);
@@ -359,7 +351,6 @@ type
     procedure SetInternalFilename(const NewFilename: string);
     procedure SetUnitName(const AValue: string); override;
 
-    procedure UpdateHasCustomHighlighter(aDefaultHighlighter: TIdeSyntaxHighlighterID);
     procedure UpdatePageIndex;
   public
     constructor Create(ACodeBuffer: TCodeBuffer);
@@ -430,8 +421,6 @@ type
     property OpenEditorInfo[Index: Integer]: TUnitEditorInfo read GetOpenEditorInfo;
     function GetClosedOrNewEditorInfo: TUnitEditorInfo;
     procedure SetLastUsedEditor(AEditor:TSourceEditorInterface);
-    // Highlighter
-    procedure UpdateDefaultHighlighter(aDefaultHighlighter: TIdeSyntaxHighlighterID);
   public
     { Properties }
     property UnitResourceFileformat: TUnitResourcefileFormatClass read GetUnitResourceFileformat;
@@ -457,8 +446,6 @@ type
              read FComponentLastLRSStreamSize write FComponentLastLRSStreamSize;
     property ComponentLastLFMStreamSize: TStreamSeekType
              read FComponentLastLFMStreamSize write FComponentLastLFMStreamSize;
-    property CustomDefaultHighlighter: boolean
-             read GetCustomDefaultHighlighter write SetCustomDefaultHighlighter;
     property Directives: TStrings read FDirectives write FDirectives;
     property DisableI18NForLFM: boolean read GetDisableI18NForLFM write SetDisableI18NForLFM;
     property FileReadOnly: Boolean read GetFileReadOnly write SetFileReadOnly;
@@ -482,8 +469,6 @@ type
     property RunFileIfActive: boolean read GetRunFileIfActive write SetRunFileIfActive;
     property Source: TCodeBuffer read fSource write SetSource;
     property SourceLFM: TCodeBuffer read FSourceLFM write SetSourceLFM;
-    property DefaultSyntaxHighlighter: TIdeSyntaxHighlighterID
-                               read FDefaultSyntaxHighlighter write SetDefaultSyntaxHighlighter;
     property UserReadOnly: Boolean read GetUserReadOnly write SetUserReadOnly;
     property AutoReferenceSourceDir: boolean read GetAutoReferenceSourceDir
                                              write SetAutoReferenceSourceDir;
@@ -1113,10 +1098,6 @@ type
     function SaveStateFile(const CompilerFilename: string; CompilerParams: TStrings;
                            Complete: boolean): TModalResult;
 
-    // source editor
-    procedure UpdateAllCustomHighlighter;
-    procedure UpdateAllSyntaxHighlighter;
-    
     // i18n
     function GetPOOutDirectory: string;
 
@@ -1212,7 +1193,6 @@ const
 var
   Project1: TProject absolute LazProject1;// the main project
   
-function FilenameToLazSyntaxHighlighter(Filename: String): TIdeSyntaxHighlighterID;
 function AddCompileReasonsDiff(const PropertyName: string;
        const Old, New: TCompileReasons; Tool: TCompilerDiffTool = nil): boolean;
 function dbgs(aType: TUnitCompDependencyType): string; overload;
@@ -1226,14 +1206,6 @@ const
   ProjectInfoFileVersion = 12;
   ProjOptionsPath = 'ProjectOptions/';
 
-
-function FilenameToLazSyntaxHighlighter(Filename: String): TIdeSyntaxHighlighterID;
-var
-  CompilerMode: TCompilerMode;
-begin
-  CompilerMode:=CodeToolBoss.GetCompilerModeForDirectory(ExtractFilePath(Filename));
-  Result := IdeSyntaxHighlighters.GetIdForFileExtension(ExtractFileExt(Filename), CompilerMode in [cmDELPHI,cmTP]);
-end;
 
 function AddCompileReasonsDiff(const PropertyName: string;
   const Old, New: TCompileReasons; Tool: TCompilerDiffTool): boolean;
@@ -1347,11 +1319,10 @@ begin
   FUnitInfo.SessionModified := True;
 end;
 
-procedure TUnitEditorInfo.SetSyntaxHighlighter(AValue: TIdeSyntaxHighlighterID);
+procedure TUnitEditorInfo.SetCustomSyntaxHighlighter(AValue: TIdeSyntaxHighlighterID);
 begin
-  if FSyntaxHighlighter = AValue then Exit;
-  FSyntaxHighlighter := AValue;
-  FCustomHighlighter := FSyntaxHighlighter <> FUnitInfo.DefaultSyntaxHighlighter;
+  if FCustomSyntaxHighlighter = AValue then Exit;
+  FCustomSyntaxHighlighter := AValue;
   FUnitInfo.SessionModified := True;
 end;
 
@@ -1378,8 +1349,7 @@ begin
   FCursorPos.X := -1;
   FCursorPos.Y := -1;
   FFoldState := '';
-  FSyntaxHighlighter := FUnitInfo.DefaultSyntaxHighlighter;
-  FCustomHighlighter := FUnitInfo.CustomDefaultHighlighter;
+  FCustomSyntaxHighlighter := IdeHighlighterNotSpecifiedId;
 end;
 
 constructor TUnitEditorInfo.Create(aUnitInfo: TUnitInfo);
@@ -1411,9 +1381,11 @@ begin
   FFoldState := XMLConfig.GetValue(Path+'FoldState/Value', '');
   FIsLocked := XMLConfig.GetValue(Path+'IsLocked/Value', False);
   if IdeSyntaxHighlighters <> nil then
-    FSyntaxHighlighter := IdeSyntaxHighlighters.GetIdForName(
+    FCustomSyntaxHighlighter := IdeSyntaxHighlighters.GetIdForName(
                      XMLConfig.GetValue(Path+'SyntaxHighlighter/Value',
-                     IdeSyntaxHighlighters.Names[UnitInfo.DefaultSyntaxHighlighter]));
+                     IdeSyntaxHighlighters.Names[IdeHighlighterNotSpecifiedId]))
+  else
+    FCustomSyntaxHighlighter := IdeHighlighterUnknownId;
 end;
 
 procedure TUnitEditorInfo.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
@@ -1430,10 +1402,11 @@ begin
     XMLConfig.SetDeleteValue(Path+'FoldState/Value', FoldState, '')
   else
     XMLConfig.DeletePath(Path+'FoldState');
-  if IdeSyntaxHighlighters <> nil then
+  if (FCustomSyntaxHighlighter <> IdeHighlighterUnknownId) and // Don't overwrite, if the value is currently not registerd
+     (IdeSyntaxHighlighters <> nil)
+  then
     XMLConfig.SetDeleteValue(Path+'SyntaxHighlighter/Value',
-                           IdeSyntaxHighlighters.Names[fSyntaxHighlighter],
-                           IdeSyntaxHighlighters.Names[UnitInfo.DefaultSyntaxHighlighter]);
+                             IdeSyntaxHighlighters.Names[FCustomSyntaxHighlighter], '');
 end;
 
 { TUnitEditorInfoList }
@@ -1784,9 +1757,7 @@ begin
   fComponentName := '';
   fComponentResourceName := '';
   FComponentState := wsNormal;
-  FDefaultSyntaxHighlighter := IdeHighlighterNoneID;
   DisableI18NForLFM:=false;
-  CustomDefaultHighlighter := False;
   FEditorInfoList.ClearEachInfo;
   fFilename := '';
   FileReadOnly := false;
@@ -1922,10 +1893,6 @@ begin
                              RunFileIfActive,false);
     // save custom session data
     SaveStringToStringTree(XMLConfig,CustomSessionData,Path+'CustomSessionData/');
-    if IdeSyntaxHighlighters <> nil then
-      XMLConfig.SetDeleteValue(Path+'DefaultSyntaxHighlighter/Value',
-                             IdeSyntaxHighlighters.Names[FDefaultSyntaxHighlighter],
-                             IdeSyntaxHighlighters.Names[IdeSyntaxHighlighters.GetIdForLazSyntaxHighlighter(lshFreePascal)]);
   end;
 end;
 
@@ -1978,10 +1945,6 @@ begin
   end;
 
   // session data
-  if IdeSyntaxHighlighters <> nil then
-    FDefaultSyntaxHighlighter := IdeSyntaxHighlighters.GetIdForName(
-      XMLConfig.GetValue(Path+'DefaultSyntaxHighlighter/Value',
-                       IdeSyntaxHighlighters.Names[IdeSyntaxHighlighters.GetIdForLazSyntaxHighlighter(lshFreePascal)]));
   FEditorInfoList.Clear;
   FEditorInfoList.NewEditorInfo;
   FEditorInfoList[0].LoadFromXMLConfig(XMLConfig, Path);
@@ -2064,20 +2027,7 @@ begin
   end;
   
   fFileName:=NewFilename;
-  if IDEEditorOptions<>nil then
-    UpdateDefaultHighlighter(FilenameToLazSyntaxHighlighter(FFilename));
   UpdateSourceDirectoryReference;
-end;
-
-procedure TUnitInfo.UpdateHasCustomHighlighter(
-  aDefaultHighlighter: TIdeSyntaxHighlighterID);
-var
-  i: Integer;
-begin
-  CustomDefaultHighlighter := FDefaultSyntaxHighlighter <> aDefaultHighlighter;
-  for i := 0 to FEditorInfoList.Count - 1 do
-    FEditorInfoList[i].CustomHighlighter :=
-      FEditorInfoList[i].SyntaxHighlighter <> aDefaultHighlighter;
 end;
 
 procedure TUnitInfo.UpdatePageIndex;
@@ -2115,20 +2065,6 @@ begin
     else // OpenEditorInfoCount = 0
       Project1.Bookmarks.DeleteAllWithUnitInfo(Self);
   end;
-end;
-
-procedure TUnitInfo.UpdateDefaultHighlighter(
-  aDefaultHighlighter: TIdeSyntaxHighlighterID);
-var
-  i: Integer;
-begin
-  //debugln(['TUnitInfo.UpdateDefaultHighlighter ',Filename,' ',ord(aDefaultHighlighter)]);
-  if not CustomDefaultHighlighter then
-    DefaultSyntaxHighlighter := aDefaultHighlighter
-  else
-    for i := 0 to FEditorInfoList.Count - 1 do
-      if not FEditorInfoList[i].CustomHighlighter then
-        FEditorInfoList[i].SyntaxHighlighter := aDefaultHighlighter;
 end;
 
 function TUnitInfo.GetFileName: string;
@@ -2236,11 +2172,6 @@ end;
 function TUnitInfo.GetBuildFileIfActive: boolean;
 begin
   Result:=uifBuildFileIfActive in FFlags;
-end;
-
-function TUnitInfo.GetCustomDefaultHighlighter: boolean;
-begin
-  Result:=uifCustomDefaultHighlighter in FFlags;
 end;
 
 function TUnitInfo.GetDisableI18NForLFM: boolean;
@@ -2647,26 +2578,6 @@ begin
   else
     Exclude(FFlags, uifBuildFileIfActive);
   SessionModified:=true;
-end;
-
-procedure TUnitInfo.SetCustomDefaultHighlighter(AValue: boolean);
-begin
-  if AValue then
-    Include(FFlags, uifCustomDefaultHighlighter)
-  else
-    Exclude(FFlags, uifCustomDefaultHighlighter);
-end;
-
-procedure TUnitInfo.SetDefaultSyntaxHighlighter(
-  const AValue: TIdeSyntaxHighlighterID);
-var
-  i: Integer;
-begin
-  if FDefaultSyntaxHighlighter = AValue then exit;
-  FDefaultSyntaxHighlighter := AValue;
-  for i := 0 to FEditorInfoList.Count - 1 do
-    if not FEditorInfoList[i].CustomHighlighter then
-      FEditorInfoList[i].SyntaxHighlighter := AValue;
 end;
 
 procedure TUnitInfo.SetDisableI18NForLFM(const AValue: boolean);
@@ -3996,8 +3907,6 @@ var
 begin
   NewBuf:=CodeToolBoss.CreateFile(Filename);
   AnUnitInfo:=TUnitInfo.Create(NewBuf);
-  if IDEEditorOptions<>nil then
-    AnUnitInfo.DefaultSyntaxHighlighter := FilenameToLazSyntaxHighlighter(NewBuf.Filename);
   Result:=AnUnitInfo;
 end;
 
@@ -5515,24 +5424,6 @@ begin
     end;
   end;
   Result:=mrOk;
-end;
-
-procedure TProject.UpdateAllCustomHighlighter;
-var
-  i: Integer;
-begin
-  if IDEEditorOptions=nil then exit;
-  for i:=0 to UnitCount-1 do
-    Units[i].UpdateHasCustomHighlighter(FilenameToLazSyntaxHighlighter(Units[i].Filename));
-end;
-
-procedure TProject.UpdateAllSyntaxHighlighter;
-var
-  i: Integer;
-begin
-  if IDEEditorOptions=nil then exit;
-  for i:=0 to UnitCount-1 do
-    Units[i].UpdateDefaultHighlighter(FilenameToLazSyntaxHighlighter(Units[i].Filename));
 end;
 
 function TProject.GetPOOutDirectory: string;

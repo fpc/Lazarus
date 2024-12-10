@@ -620,12 +620,6 @@ begin
   else
     SrcNotebook := SourceEditorManager.SourceWindows[FWindowIndex];
 
-  // get syntax highlighter type
-  if (uifInternalFile in AnUnitInfo.Flags) then
-    AnUnitInfo.UpdateDefaultHighlighter(IdeSyntaxHighlighters.GetIdForLazSyntaxHighlighter(lshFreePascal))
-  else
-    AnUnitInfo.UpdateDefaultHighlighter(FilenameToLazSyntaxHighlighter(AFilename));
-
   SrcNotebook.IncUpdateLock;
   try
     //DebugLn(['TFileOpener.OpenFileInSourceEditor Revert=',ofRevert in Flags,' ',AnUnitInfo.Filename,' PageIndex=',PageIndex]);
@@ -673,7 +667,7 @@ begin
 
     // restore source editor settings
     DebugBossMgr.DoRestoreDebuggerMarks(AnUnitInfo);
-    NewSrcEdit.SyntaxHighlighterId := AnEditorInfo.SyntaxHighlighter;
+    NewSrcEdit.SyntaxHighlighterId := AnEditorInfo.CustomSyntaxHighlighter;
     NewSrcEdit.EditorComponent.AfterLoadFromFile;
     try
       NewSrcEdit.EditorComponent.FoldState := FoldState;
@@ -925,7 +919,6 @@ begin
       if MacroListViewer.MacroByFullName(FFileName) <> nil then
         NewBuf.Source := MacroListViewer.MacroByFullName(FFileName).GetAsSource;
       FNewUnitInfo:=TUnitInfo.Create(NewBuf);
-      FNewUnitInfo.DefaultSyntaxHighlighter := IdeSyntaxHighlighters.GetIdForLazSyntaxHighlighter(lshFreePascal);
       Project1.AddFile(FNewUnitInfo,false);
     end
     else begin
@@ -2495,7 +2488,7 @@ begin
       CreateSrcEditPageName(NewUnitInfo.Unit_Name, NewUnitInfo.Filename, AShareEditor),
       NewUnitInfo.Source, True, AShareEditor);
     MainIDEBar.itmFileClose.Enabled:=True;
-    NewSrcEdit.SyntaxHighlighterId:=NewUnitInfo.EditorInfo[0].SyntaxHighlighter;
+    NewSrcEdit.SyntaxHighlighterId:=NewUnitInfo.EditorInfo[0].CustomSyntaxHighlighter;
     NewUnitInfo.GetClosedOrNewEditorInfo.EditorComponent := NewSrcEdit;
     NewSrcEdit.EditorComponent.CaretXY := Point(1,1);
 
@@ -5757,7 +5750,6 @@ var
   NewSource: TCodeBuffer;
   NewFilePath, OldFilePath: String;
   OldFilename, OldLFMFilename, NewLFMFilename, S: String;
-  NewHighlighter: TIdeSyntaxHighlighterID;
   AmbiguousFiles: TStringList;
   i: Integer;
   DirRelation: TSPFileMaskRelation;
@@ -5899,15 +5891,10 @@ begin
         DebugLn(['RenameUnit CodeToolBoss.RenameMainInclude failed: AnUnitInfo.Source="',AnUnitInfo.Source,'" ResourceCode="',ExtractFilename(LRSCode.Filename),'"']);
     end;
 
-    // change syntax highlighter
-    NewHighlighter:=FilenameToLazSyntaxHighlighter(NewFilename);
-    AnUnitInfo.UpdateDefaultHighlighter(NewHighlighter);
     for i := 0 to AnUnitInfo.EditorInfoCount - 1 do
-      if (AnUnitInfo.EditorInfo[i].EditorComponent <> nil) and
-         (not AnUnitInfo.EditorInfo[i].CustomHighlighter)
-      then
+      if (AnUnitInfo.EditorInfo[i].EditorComponent <> nil) then
         TSourceEditor(AnUnitInfo.EditorInfo[i].EditorComponent).SyntaxHighlighterId :=
-          AnUnitInfo.EditorInfo[i].SyntaxHighlighter;
+          AnUnitInfo.EditorInfo[i].CustomSyntaxHighlighter;
 
     // save file
     if not NewSource.IsVirtual then begin

@@ -452,7 +452,6 @@ type
     procedure EnvironmentOptionsBeforeRead(Sender: TObject);
     procedure EnvironmentOptionsBeforeWrite(Sender: TObject; Restore: boolean);
     procedure EnvironmentOptionsAfterWrite(Sender: TObject; Restore: boolean);
-    procedure EditorOptionsBeforeRead(Sender: TObject);
     procedure EditorOptionsAfterWrite(Sender: TObject; Restore: boolean);
     procedure CodetoolsOptionsAfterWrite(Sender: TObject; Restore: boolean);
     procedure CodeExplorerOptionsAfterWrite(Sender: TObject; Restore: boolean);
@@ -1381,7 +1380,6 @@ begin
 
   EditorOpts := TEditorOptions.Create;
   IDEEditorOptions := EditorOpts;
-  EditorOpts.OnBeforeRead := @EditorOptionsBeforeRead;
   EditorOpts.OnAfterWrite := @EditorOptionsAfterWrite;
   SetupIDECommands;
   // Only after EditorOpts.KeyMap.DefineCommandCategories; in SetupIDECommands
@@ -5226,19 +5224,11 @@ begin
   UpdateCaption;
 end;
 
-procedure TMainIDE.EditorOptionsBeforeRead(Sender: TObject);
-begin
-  // update editor options?
-  if Project1=nil then exit;
-  Project1.UpdateAllCustomHighlighter;
-end;
-
 procedure TMainIDE.EditorOptionsAfterWrite(Sender: TObject; Restore: boolean);
 begin
   if Restore then exit;
-  if Project1<>nil then
-    Project1.UpdateAllSyntaxHighlighter;
   SourceEditorManager.BeginGlobalUpdate;
+  SourceEditorManager.UpdateDefaultDefaultSyntaxHighlighterId;
   try
     UpdateHighlighters(True);
     SourceEditorManager.ReloadEditorOptions;
@@ -5313,8 +5303,8 @@ begin
       Project1.WriteProject([pwfSkipSeparateSessionInfo,pwfIgnoreModified],
         aFilename,EnvironmentOptions.BuildMatrixOptions);
     end;
-    Project1.UpdateAllSyntaxHighlighter;
     SourceEditorManager.BeginGlobalUpdate;
+    SourceEditorManager.UpdateDefaultDefaultSyntaxHighlighterId;
     try
       UpdateHighlighters(True);
       SourceEditorManager.ReloadEditorOptions;
@@ -6080,7 +6070,6 @@ begin
   end;
 
   DlgResult:=ShowUnitInfoDlg(ShortUnitName,
-    IdeSyntaxHighlighters.Captions[ActiveUnitInfo.DefaultSyntaxHighlighter],
     ActiveUnitInfo.IsPartOfProject,
     SizeInBytes,UnitSizeWithIncludeFiles,UnitSizeParsed,
     LineCount,UnitLineCountWithIncludes,UnitLineCountParsed,
@@ -11511,7 +11500,7 @@ begin
   end;
 
   if AnUpdates * [sepuNewShared, sepuChangedHighlighter] <> [] then begin
-    p.SyntaxHighlighter := SrcEdit.SyntaxHighlighterId;
+    p.CustomSyntaxHighlighter := SrcEdit.SyntaxHighlighterId;
   end;
 
   p.PageIndex := SrcEdit.PageIndex;

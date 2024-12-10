@@ -267,7 +267,8 @@ type
 
     FPopUpMenu: TPopupMenu;
     FMouseActionPopUpMenu: TPopupMenu;
-    FSyntaxHighlighterId: TIdeSyntaxHighlighterID;
+    FSyntaxHighlighterId, FDefaultSyntaxHighlighterId: TIdeSyntaxHighlighterID;
+    FDefaultSyntaxHighlighterIdFilename: string;
     FErrorLine: integer;
     FErrorColumn: integer;
     FLineInfoNotification: TIDELineInfoNotification;
@@ -571,6 +572,7 @@ type
     property SourceNotebook: TSourceNotebook read FSourceNoteBook;
     property SyntaxHighlighterId: TIdeSyntaxHighlighterID
        read fSyntaxHighlighterId write SetSyntaxHighlighterId;
+    procedure UpdateDefaultDefaultSyntaxHighlighterId(AForce: boolean = False);
     property SyncroLockCount: Integer read FSyncroLockCount;
     function SharedEditorCount: Integer;
     property SharedEditors[Index: Integer]: TSourceEditor read GetSharedEditors;
@@ -775,6 +777,7 @@ type
     procedure IncrementalSearch(ANext, ABackward: Boolean);
     procedure UpdatePageNames;
     procedure UpdateProjectFiles(ACurrentEditor: TSourceEditor = nil);
+    procedure UpdateDefaultDefaultSyntaxHighlighterId;
 
     property NoteBookPage[Index: Integer]: TTabSheet read GetNoteBookPage;
     procedure NoteBookInsertPage(Index: Integer; const S: string);
@@ -1174,6 +1177,7 @@ type
     procedure SetWindowByIDAndPage(AWindowID, APageIndex: integer);
     function  SourceEditorIntfWithFilename(const Filename: string): TSourceEditor; reintroduce;
     function FindSourceEditorWithEditorComponent(EditorComp: TComponent): TSourceEditor; // With SynEdit
+    procedure UpdateDefaultDefaultSyntaxHighlighterId;
   protected
     procedure NewEditorCreated(AEditor: TSourceEditor);
     procedure EditorRemoved(AEditor: TSourceEditor);
@@ -1504,6 +1508,7 @@ procedure RegisterStandardSourceEditorMenuItems;
 function dbgSourceNoteBook(snb: TSourceNotebook): string;
 function CompareSrcEditIntfWithFilename(SrcEdit1, SrcEdit2: Pointer): integer;
 function CompareFilenameWithSrcEditIntf(FilenameStr, SrcEdit: Pointer): integer;
+function FilenameToLazSyntaxHighlighter(Filename: String): TIdeSyntaxHighlighterID;
 
 var
   EnglishGPLNotice: string;
@@ -1953,6 +1958,17 @@ var
   SE1: TSourceEditorInterface absolute SrcEdit;
 begin
   Result:=CompareFilenames(AnsiString(FileNameStr),SE1.FileName);
+end;
+
+function FilenameToLazSyntaxHighlighter(Filename: String): TIdeSyntaxHighlighterID;
+var
+  CompilerMode: TCompilerMode;
+begin
+  if LazStartsStr(EditorMacroVirtualDrive, FileName) then
+    exit(IdeSyntaxHighlighters.GetIdForLazSyntaxHighlighter(lshFreePascal));
+
+  CompilerMode:=CodeToolBoss.GetCompilerModeForDirectory(ExtractFilePath(Filename));
+  Result := IdeSyntaxHighlighters.GetIdForFileExtension(ExtractFileExt(Filename), CompilerMode in [cmDELPHI,cmTP]);
 end;
 
 { TToolButton_GotoBookmarks }
@@ -3640,6 +3656,7 @@ Begin
     FSourceNoteBook:=nil;
 
   FSyntaxHighlighterId:=IdeHighlighterNoneID;
+  FDefaultSyntaxHighlighterId := IdeHighlighterNotSpecifiedId;
   FErrorLine:=-1;
   FErrorColumn:=-1;
   FSyncroLockCount := 0;
@@ -5047,6 +5064,25 @@ begin
   end;
 end;
 
+procedure TSourceEditor.UpdateDefaultDefaultSyntaxHighlighterId(AForce: boolean);
+var
+  s: String;
+begin
+  s := FileName;
+  if s <> FDefaultSyntaxHighlighterIdFilename then
+    FDefaultSyntaxHighlighterId := IdeHighlighterNotSpecifiedId;
+  FDefaultSyntaxHighlighterIdFilename := s;
+
+  if (not AForce) and (FSyntaxHighlighterId >= 0) then begin
+    FDefaultSyntaxHighlighterId := IdeHighlighterNotSpecifiedId;
+  end
+  else begin
+    FDefaultSyntaxHighlighterId := FilenameToLazSyntaxHighlighter(Filename);
+    if FDefaultSyntaxHighlighterId = IdeHighlighterUnknownId then
+      FDefaultSyntaxHighlighterId := IdeHighlighterNoneID;
+  end;
+end;
+
 procedure TSourceEditor.SetSyntaxHighlighterId(
   AHighlighterId: TIdeSyntaxHighlighterID);
 var
@@ -5058,7 +5094,13 @@ begin
   OldHlIsPas := FEditor.Highlighter is TSynPasSyn;
   HlIsPas := False;
   if EditorOpts.UseSyntaxHighlight then begin
-    FEditor.Highlighter:=EditorOpts.HighlighterList.SharedSynInstances[AHighlighterId];
+    if AHighlighterId < 0 then begin
+      if FDefaultSyntaxHighlighterId = IdeHighlighterNotSpecifiedId then
+        UpdateDefaultDefaultSyntaxHighlighterId(True);
+      FEditor.Highlighter:=EditorOpts.HighlighterList.SharedSynInstances[FDefaultSyntaxHighlighterId];
+    end
+    else
+      FEditor.Highlighter:=EditorOpts.HighlighterList.SharedSynInstances[AHighlighterId];
     HlIsPas := FEditor.Highlighter is TSynPasSyn;
   end
   else
@@ -7212,8 +7254,8 @@ begin
   if Sender is TIDEMenuItem then begin
     IDEMenuItem:=TIDEMenuItem(Sender);
     i:=IDEMenuItem.Tag;
-    if (i>=0) and (i<EditorOpts.HighlighterList.Count) then begin
-      SrcEdit.SyntaxHighlighterId:=i;
+    if (i>=-1) and (i<EditorOpts.HighlighterList.Count) then begin
+      SrcEdit.SyntaxHighlighterId :=i;
       SrcEdit.UpdateProjectFile([sepuChangedHighlighter]);
     end;
   end;
@@ -7668,22 +7710,34 @@ var
   CurCaption: String;
   IDEMenuItem: TIDEMenuItem;
 begin
+  assert(IdeHighlighterNotSpecifiedId=-1, 'TSourceNotebook.UpdateHighlightMenuItems: IdeHighlighterNotSpecifiedId=-1');
+  if SrcEdit.FDefaultSyntaxHighlighterId = IdeHighlighterNotSpecifiedId then
+    SrcEdit.UpdateDefaultDefaultSyntaxHighlighterId(True);
+
   SrcEditSubMenuHighlighter.ChildrenAsSubMenu:=true;
-  for i := 0 to EditorOpts.HighlighterList.Count - 1 do begin
-    if EditorOpts.HighlighterList.SharedSynInstances[i] is TNonSrcIDEHighlighter then
+  for i := -1 to EditorOpts.HighlighterList.Count - 1 do begin
+    if (i >= 0) and (EditorOpts.HighlighterList.SharedSynInstances[i] is TNonSrcIDEHighlighter) then
       continue;
     CurName:='Highlighter'+IntToStr(i);
-    CurCaption:= EditorOpts.HighlighterList.Captions[i];
-    if SrcEditSubMenuHighlighter.Count=i then begin
+    if i = IdeHighlighterNotSpecifiedId then begin
+      if SrcEdit.FDefaultSyntaxHighlighterId <> IdeHighlighterNotSpecifiedId then
+        CurCaption:= Format('%s (%s)', [lisDefault, EditorOpts.HighlighterList.Captions[SrcEdit.FDefaultSyntaxHighlighterId]])
+      else
+        CurCaption:= lisDefault;
+    end
+    else
+      CurCaption:= EditorOpts.HighlighterList.Captions[i];
+
+    if SrcEditSubMenuHighlighter.Count=i+1 then begin
       // add new item
       IDEMenuItem:=RegisterIDEMenuCommand(SrcEditSubMenuHighlighter,
                              CurName,CurCaption,@HighlighterClicked);
     end else begin
-      IDEMenuItem:=SrcEditSubMenuHighlighter[i];
-      IDEMenuItem.Caption:=CurCaption;
-      IDEMenuItem.Tag:=i;
+      IDEMenuItem:=SrcEditSubMenuHighlighter[i+1];
       IDEMenuItem.OnClick:=@HighlighterClicked;
     end;
+    IDEMenuItem.Caption:=CurCaption;
+    IDEMenuItem.Tag:=i;
     if IDEMenuItem is TIDEMenuCommand then
       TIDEMenuCommand(IDEMenuItem).Checked:=(SrcEdit<>nil)
                                           and (SrcEdit.FSyntaxHighlighterId=i);
@@ -7748,6 +7802,14 @@ begin
   end;
   for i := 0 to EditorCount - 1 do
     Editors[i].UpdateProjectFile;
+end;
+
+procedure TSourceNotebook.UpdateDefaultDefaultSyntaxHighlighterId;
+var
+  i: Integer;
+begin
+  for i := 0 to EditorCount - 1 do
+    Editors[i].UpdateDefaultDefaultSyntaxHighlighterId;
 end;
 
 procedure TSourceNotebook.UpdateEncodingMenuItems(SrcEdit: TSourceEditor);
@@ -10985,6 +11047,14 @@ begin
     if Result <> nil then break;
     dec(i);
   end;
+end;
+
+procedure TSourceEditorManager.UpdateDefaultDefaultSyntaxHighlighterId;
+var
+  i: Integer;
+begin
+  for i := FSourceWindowList.Count - 1 downto 0 do
+    SourceWindows[i].UpdateDefaultDefaultSyntaxHighlighterId;
 end;
 
 procedure TSourceEditorManager.NewEditorCreated(AEditor: TSourceEditor);

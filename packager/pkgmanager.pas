@@ -2614,9 +2614,7 @@ var
         NewProjFile.ComponentResourceName:=OldProjFile.ComponentResourceName;
         NewProjFile.BuildFileIfActive:=OldProjFile.BuildFileIfActive;
         NewProjFile.RunFileIfActive:=OldProjFile.RunFileIfActive;
-        NewProjFile.DefaultSyntaxHighlighter:=OldProjFile.DefaultSyntaxHighlighter;
         NewProjFile.DisableI18NForLFM:=OldProjFile.DisableI18NForLFM;
-        NewProjFile.CustomDefaultHighlighter:=OldProjFile.CustomDefaultHighlighter;
       end;
       if (not SrcIsTarget)
       and (pfMainUnitHasUsesSectionForAllUnits in TargetProject.Flags) then
