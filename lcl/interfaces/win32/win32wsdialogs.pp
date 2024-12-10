@@ -372,8 +372,10 @@ begin
 end;
 
 class function TWin32WSColorDialog.ColorDialogOptionsToFlags(Options: TColorDialogOptions): DWORD;
+{$if fpc_fullversion < 30301}
 const
   CC_ANYCOLOR = $00000100;
+{$endif fpc_fullversion < 30301}
 begin
   Result := 0;
   if cdFullOpen in Options then Result := Result or CC_FULLOPEN;
