@@ -1967,8 +1967,15 @@ begin
   if LazStartsStr(EditorMacroVirtualDrive, FileName) then
     exit(IdeSyntaxHighlighters.GetIdForLazSyntaxHighlighter(lshFreePascal));
 
-  CompilerMode:=CodeToolBoss.GetCompilerModeForDirectory(ExtractFilePath(Filename));
-  Result := IdeSyntaxHighlighters.GetIdForFileExtension(ExtractFileExt(Filename), CompilerMode in [cmDELPHI,cmTP]);
+  Result := IdeSyntaxHighlighters.GetIdForFileExtension(ExtractFileExt(Filename));
+
+  if (Result > 0) and (IdeSyntaxHighlighters.SharedInstances[Result] is TIDESynPasSyn) then begin
+    CompilerMode:=CodeToolBoss.GetCompilerModeForDirectory(ExtractFilePath(Filename));
+    if CompilerMode in [cmDELPHI,cmTP] then
+      Result := IdeSyntaxHighlighters.GetIdForLazSyntaxHighlighter(lshDelphi)
+    else
+      Result := IdeSyntaxHighlighters.GetIdForLazSyntaxHighlighter(lshFreePascal);
+  end;
 end;
 
 { TToolButton_GotoBookmarks }
