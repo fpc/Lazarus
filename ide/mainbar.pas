@@ -355,7 +355,6 @@ type
       //itmCustomTools: TIDEMenuSection;
         itmToolConfigure: TIDEMenuCommand;
       //itmSecondaryTools: TIDEMenuSection;
-        itmToolManageDesktops: TIDEMenuCommand;
         itmToolDiff: TIDEMenuCommand;
       //itmDelphiConversion: TIDEMenuSection;
         itmToolCheckLFM: TIDEMenuCommand;
@@ -372,6 +371,7 @@ type
     //mnuWindow: TIDEMenuSection;
       //itmWindowManagers: TIDEMenuSection;
         itmWindowManager: TIDEMenuCommand;
+        itmWindowManageDesktops: TIDEMenuCommand;
 
     // help menu
     //mnuHelp: TIDEMenuSection;

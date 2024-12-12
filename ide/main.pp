@@ -383,7 +383,6 @@ type
     procedure mnuToolConvertDelphiProjectClicked(Sender: TObject);
     procedure mnuToolConvertDelphiPackageClicked(Sender: TObject);
     procedure mnuToolConvertEncodingClicked(Sender: TObject);
-    procedure mnuToolManageDesktopsClicked(Sender: TObject);
     procedure mnuToolBuildLazarusClicked(Sender: TObject);
     procedure mnuToolBuildAdvancedLazarusClicked(Sender: TObject);
     procedure mnuToolConfigBuildLazClicked(Sender: TObject);
@@ -398,6 +397,7 @@ type
 
     // windows menu
     procedure mnuWindowManagerClicked(Sender: TObject);
+    procedure mnuWindowManageDesktopsClicked(Sender: TObject);
 
     // help menu
     // see helpmanager.pas
@@ -2885,7 +2885,6 @@ begin
     itmEnvCodeToolsDefinesEditor.OnClick := @mnuEnvCodeToolsDefinesEditorClicked;
 
     itmToolConfigure.OnClick := @mnuToolConfigureUserExtToolsClicked;
-    itmToolManageDesktops.OnClick := @mnuToolManageDesktopsClicked;
 
     itmToolDiff.OnClick := @mnuToolDiffClicked;
 
@@ -2909,6 +2908,7 @@ procedure TMainIDE.SetupWindowsMenu;
 begin
   inherited SetupWindowsMenu;
   MainIDEBar.itmWindowManager.OnClick := @mnuWindowManagerClicked;
+  MainIDEBar.itmWindowManageDesktops.OnClick := @mnuWindowManageDesktopsClicked;
 end;
 
 procedure TMainIDE.SetupHelpMenu;
@@ -3158,7 +3158,7 @@ begin
 
     itmToolConfigure.Command:=GetIdeCmdRegToolBtn(ecExtToolSettings);
 
-    itmToolManageDesktops.Command:=GetCommand(ecManageDesktops, nil, TShowDesktopsToolButton);
+    itmWindowManageDesktops.Command:=GetCommand(ecManageDesktops, nil, TShowDesktopsToolButton);
 
     itmToolDiff.Command:=GetIdeCmdRegToolBtn(ecDiff);
 
@@ -4952,7 +4952,7 @@ begin
   ShowConvertEncodingDlg;
 end;
 
-procedure TMainIDE.mnuToolManageDesktopsClicked(Sender: TObject);
+procedure TMainIDE.mnuWindowManageDesktopsClicked(Sender: TObject);
 begin
   ShowDesktopManagerDlg;
 end;

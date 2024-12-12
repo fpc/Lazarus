@@ -1456,7 +1456,6 @@ begin
 
     CreateMenuSeparatorSection(mnuTools,itmSecondaryTools,'itmSecondaryTools');
     ParentMI:=itmSecondaryTools;
-    CreateMenuItem(ParentMI,itmToolManageDesktops,'itmToolManageDesktops', lisDesktops, 'menu_manage_desktops');
     CreateMenuItem(ParentMI,itmToolDiff,'itmToolDiff',lisMenuCompareFiles, 'menu_tool_diff');
 
     CreateMenuSeparatorSection(mnuTools,itmConversion,'itmConversion');
@@ -1487,6 +1486,7 @@ begin
     CreateMenuSeparatorSection(mnuWindow,itmWindowManagers,'itmWindowManagers');
     ParentMI:=itmWindowManagers;
     CreateMenuItem(ParentMI,itmWindowManager,'itmWindowManager', lisManageSourceEditors, 'menu_manage_source_editors');
+    CreateMenuItem(ParentMI,itmWindowManageDesktops,'itmWindowManageDesktops', lisDesktops, 'menu_manage_desktops');
     // Populated later with a list of editor names
     CreateMenuSeparatorSection(mnuWindow,itmWindowLists,'itmWindowLists');
     CreateMenuSeparatorSection(mnuWindow,itmCenterWindowLists,'itmCenterWindowLists');
