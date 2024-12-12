@@ -25,6 +25,11 @@ begin
   FLastWFPMousePos := Point(MaxInt, MaxInt);
   FLastWFPResult := 0;
   inherited Create;
+
+  {$J+}
+  QtVersionInt(QtVersionMajor, QtVersionMinor, QtVersionMicro);
+  {$J-}
+
   FIsLibraryInstance := QCoreApplication_instance() <> nil;
   if FIsLibraryInstance then
     App := QApplicationH(QCoreApplication_instance())
@@ -35,8 +40,13 @@ begin
     WStr := 'plugins';
     QCoreApplication_addLibraryPath(@WStr);
     {$ENDIF}
-    // issue #39610
-    // QCoreApplication_setAttribute(QtAA_DisableHighDpiScaling, True);
+    {$IF DEFINED(UNIX) AND NOT DEFINED(DARWIN)}
+    if (QtVersionMajor = 5) and (QtVersionMinor >= 14) then
+    begin
+      QCoreApplication_setAttribute(QtAA_EnableHighDpiScaling, False); // issue #39610, #41276
+      QCoreApplication_setAttribute(QtAA_DisableHighDpiScaling, True); // issue #39610, #41276
+    end;
+    {$ENDIF}
     App := QApplication_Create(@argc, argv);
   end;
   QCoreApplication_setAttribute(QtAA_DontCreateNativeWidgetSiblings, True);
@@ -46,9 +56,6 @@ begin
   {$IFDEF QtUseNativeEventLoop}
   FMainTimerID := -1;
   {$ENDIF}
-  {$J+}
-  QtVersionInt(QtVersionMajor, QtVersionMinor, QtVersionMicro);
-  {$J-}
   FCachedMenuBarHeight := -1;
   FAppEvenFilterHook := nil;
   {$IFDEF QTUSEFOCUSCHANGEDHOOK}
