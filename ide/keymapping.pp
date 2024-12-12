@@ -698,6 +698,8 @@ begin
     ecFindNext                : Result:= srkmecFindNext;
     ecFindPrevious            : Result:= srkmecFindPrevious;
     ecFindInFiles             : Result:= srkmecFindInFiles;
+    ecJumpToNextSearchResult  : Result:= srkmecJumpToNextSearchResult;
+    ecJumpToPrevSearchResult  : Result:= srkmecJumpToPrevSearchResult;
     ecReplace                 : Result:= srkmecReplace;
     ecIncrementalFind         : Result:= lisMenuIncrementalFind;
     ecFindProcedureDefinition : Result:= srkmecFindProcedureDefinition;
@@ -1268,6 +1270,8 @@ begin
   ecFindNext:            SetSingle(VK_F3,[],                   VK_L,[XCtrl]);
   ecFindPrevious:        SetSingle(VK_F3,[ssShift]);
   ecFindInFiles:         SetSingle(VK_F,[XCtrl,ssShift]);
+  ecJumpToNextSearchResult:SetSingle(VK_F3,[ssAlt]);
+  ecJumpToPrevSearchResult:SetSingle(VK_F3,[ssAlt,ssShift]);
   ecReplace:             SetCombo(VK_R,[XCtrl],VK_UNKNOWN,[], VK_Q,[XCtrl],VK_A,[]);
   ecIncrementalFind:     SetSingle(VK_E,[XCtrl]);
   ecGotoLineNumber:      SetCombo(VK_G,[XCtrl],VK_UNKNOWN,[], VK_Q,[XCtrl],VK_G,[]);
@@ -1744,6 +1748,8 @@ begin
   ecFindNext:            SetSingle(VK_L,[ssCtrl]);
   ecFindPrevious:        SetSingle(VK_UNKNOWN,[]);
   ecFindInFiles:         SetSingle(VK_UNKNOWN,[]);
+  ecJumpToNextSearchResult:SetSingle(VK_F3,[ssAlt]);
+  ecJumpToPrevSearchResult:SetSingle(VK_F3,[ssAlt,ssShift]);
   ecReplace:             SetCombo(VK_Q,[SSCtrl],VK_A,[]);
   ecIncrementalFind:     SetSingle(VK_UNKNOWN,[]);
   ecGotoLineNumber:      SetCombo(VK_Q,[ssCtrl],VK_G,[]);
@@ -2386,6 +2392,8 @@ begin
   ecFindNext:            SetSingle(VK_G,[ssMeta]);
   ecFindPrevious:        SetSingle(VK_G,[ssShift,ssMeta]);
   ecFindInFiles:         SetSingle(VK_F,[ssMeta,ssShift]);
+  ecJumpToNextSearchResult:SetSingle(VK_F3,[ssAlt]);
+  ecJumpToPrevSearchResult:SetSingle(VK_F3,[ssAlt,ssShift]);
   ecReplace:             SetSingle(VK_UNKNOWN,[]);
   ecIncrementalFind:     SetSingle(VK_E,[ssMeta]);
   ecGotoLineNumber:      SetSingle(VK_L,[ssMeta]);
@@ -3021,6 +3029,8 @@ begin
   AddDefault(C, 'Find next', srkmecFindNext, ecFindNext);
   AddDefault(C, 'Find previous', srkmecFindPrevious, ecFindPrevious);
   AddDefault(C, 'Find in files', srkmecFindInFiles, ecFindInFiles);
+  AddDefault(C, 'Jump to next search result', srkmecJumpToNextSearchResult, ecJumpToNextSearchResult);
+  AddDefault(C, 'Jump to prev search result', srkmecJumpToPrevSearchResult, ecJumpToPrevSearchResult);
   AddDefault(C, 'Replace text', srkmecReplace, ecReplace);
   AddDefault(C, 'Find incremental', lisKMFindIncremental, ecIncrementalFind);
   AddDefault(C, 'Go to line number', srkmecGotoLineNumber, ecGotoLineNumber);

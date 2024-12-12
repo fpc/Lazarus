@@ -67,28 +67,30 @@ const
   ecFindNextWordOccurrence  = ecFirstLazarus + 9;
   ecFindPrevWordOccurrence  = ecFirstLazarus + 10;
   ecFindInFiles             = ecFirstLazarus + 11;
-  ecJumpBack                = ecFirstLazarus + 12;
-  ecJumpForward             = ecFirstLazarus + 13;
-  ecAddJumpPoint            = ecFirstLazarus + 14;
-  ecViewJumpHistory         = ecFirstLazarus + 15;
-  ecJumpToNextError         = ecFirstLazarus + 16;
-  ecJumpToPrevError         = ecFirstLazarus + 17;
-  ecProcedureList           = ecFirstLazarus + 18;
+  ecJumpToNextSearchResult  = ecFirstLazarus + 12;
+  ecJumpToPrevSearchResult  = ecFirstLazarus + 13;
+  ecJumpBack                = ecFirstLazarus + 14;
+  ecJumpForward             = ecFirstLazarus + 15;
+  ecAddJumpPoint            = ecFirstLazarus + 16;
+  ecViewJumpHistory         = ecFirstLazarus + 17;
+  ecJumpToNextError         = ecFirstLazarus + 18;
+  ecJumpToPrevError         = ecFirstLazarus + 19;
+  ecProcedureList           = ecFirstLazarus + 20;
 
   // search code
-  ecFindDeclaration         = ecFirstLazarus + 20;
-  ecFindBlockOtherEnd       = ecFirstLazarus + 21;
-  ecFindBlockStart          = ecFirstLazarus + 22;
-  ecOpenFileAtCursor        = ecFirstLazarus + 23;
-  ecGotoIncludeDirective    = ecFirstLazarus + 24;
-  ecJumpToSection           = ecFirstLazarus + 25;
-  ecJumpToInterface         = ecFirstLazarus + 26;
-  ecJumpToInterfaceUses     = ecFirstLazarus + 27;
-  ecJumpToImplementation    = ecFirstLazarus + 28;
-  ecJumpToImplementationUses= ecFirstLazarus + 29;
-  ecJumpToInitialization    = ecFirstLazarus + 30;
-  ecJumpToProcedureHeader   = ecFirstLazarus + 31;
-  ecJumpToProcedureBegin    = ecFirstLazarus + 32;
+  ecFindDeclaration         = ecFirstLazarus + 30;
+  ecFindBlockOtherEnd       = ecFirstLazarus + 31;
+  ecFindBlockStart          = ecFirstLazarus + 32;
+  ecOpenFileAtCursor        = ecFirstLazarus + 33;
+  ecGotoIncludeDirective    = ecFirstLazarus + 34;
+  ecJumpToSection           = ecFirstLazarus + 35;
+  ecJumpToInterface         = ecFirstLazarus + 36;
+  ecJumpToInterfaceUses     = ecFirstLazarus + 37;
+  ecJumpToImplementation    = ecFirstLazarus + 38;
+  ecJumpToImplementationUses= ecFirstLazarus + 39;
+  ecJumpToInitialization    = ecFirstLazarus + 40;
+  ecJumpToProcedureHeader   = ecFirstLazarus + 41;
+  ecJumpToProcedureBegin    = ecFirstLazarus + 42;
 
   // edit selection
   ecSelectionUpperCase      = ecFirstLazarus + 50;
@@ -2019,7 +2021,7 @@ begin
 end;
 
 const
-  IDEEditorCommandStrs: array[0..337] of TIdentMapEntry = (
+  IDEEditorCommandStrs: array[0..339] of TIdentMapEntry = (
   // search
     (Value: ecFind;                                   Name: 'ecFind'),
     (Value: ecFindAgain;                              Name: 'ecFindAgain'),
@@ -2033,6 +2035,8 @@ const
     (Value: ecFindNextWordOccurrence;                 Name: 'ecFindNextWordOccurrence'),
     (Value: ecFindPrevWordOccurrence;                 Name: 'ecFindPrevWordOccurrence'),
     (Value: ecFindInFiles;                            Name: 'ecFindInFiles'),
+    (Value: ecJumpToNextSearchResult;                 Name: 'ecJumpToNextSearchResult'),
+    (Value: ecJumpToPrevSearchResult;                 Name: 'ecJumpToPrevSearchResult'),
     (Value: ecJumpBack;                               Name: 'ecJumpBack'),
     (Value: ecJumpForward;                            Name: 'ecJumpForward'),
     (Value: ecAddJumpPoint;                           Name: 'ecAddJumpPoint'),

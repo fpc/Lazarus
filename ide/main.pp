@@ -3618,6 +3618,8 @@ begin
   ecBuildFile:                DoBuildFile(false);
   ecRunFile:                  DoRunFile;
   ecFindInFiles:              DoFindInFiles;
+  ecJumpToNextSearchResult:   DoJumpToNextSearchResult(true);
+  ecJumpToPrevSearchResult:   DoJumpToNextSearchResult(false);
   ecFindProcedureDefinition,
   ecFindProcedureMethod:      DoJumpToOtherProcedureSection;
   ecFindDeclaration:          DoFindDeclarationAtCursor;

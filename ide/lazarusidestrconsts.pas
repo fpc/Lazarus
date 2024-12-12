@@ -3248,6 +3248,8 @@ resourcestring
   srkmecFindNext                  = 'Find Next';
   srkmecFindPrevious              = 'Find Previous';
   srkmecFindInFiles               = 'Find in Files';
+  srkmecJumpToNextSearchResult    = 'Jump to next search result';
+  srkmecJumpToPrevSearchResult    = 'Jump to previous search result';
   srkmecReplace                   = 'Replace Text';
   lisKMFindIncremental            = 'Find Incremental';
   srkmecFindProcedureDefinition   = 'Find Procedure Definiton';
