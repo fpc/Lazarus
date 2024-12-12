@@ -2183,18 +2183,24 @@ end;
 
 procedure TBasicChartTool.Activate;
 begin
-  FChart.FActiveToolIndex := Index;
-  FChart.MouseCapture := true;
-  FChart.FDisablePopupMenu := false;
-  FStartMousePos := Mouse.CursorPos;
+  if Assigned(FChart) then
+  begin
+    FChart.FActiveToolIndex := Index;
+    FChart.MouseCapture := true;
+    FChart.FDisablePopupMenu := false;
+    FStartMousePos := Mouse.CursorPos;
+  end;
 end;
 
 procedure TBasicChartTool.Deactivate;
 begin
-  FChart.MouseCapture := false;
-  FChart.FActiveToolIndex := -1;
-  if PopupMenuConflict then
-    FChart.FDisablePopupMenu := true;
+  if Assigned(FChart) then
+  begin
+    FChart.MouseCapture := false;
+    FChart.FActiveToolIndex := -1;
+    if PopupMenuConflict then
+      FChart.FDisablePopupMenu := true;
+  end;
 end;
 
 function TBasicChartTool.PopupMenuConflict: Boolean;
