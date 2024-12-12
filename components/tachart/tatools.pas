@@ -2202,7 +2202,7 @@ begin
       ADrawer.SetXor(false);
     end;
     tdmNormal:
-      FChart.StyleChanged(Self);
+      if Assigned(FChart) then FChart.StyleChanged(Self);
   end;
 end;
 
