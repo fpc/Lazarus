@@ -1559,26 +1559,26 @@ begin
   if Assigned(lSelNode.Data) then begin
     // file pos node
     if DirectionDown then
-      lNextNode := lSelNode.GetNextSibling
+      lNextNode := lSelNode.GetNextVisibleSibling
     else
-      lNextNode := lSelNode.GetPrevSibling;
+      lNextNode := lSelNode.GetPrevVisibleSibling;
 
     if not Assigned(lNextNode) then begin
       // if no more siblings, find first/last child of parent's sibling
       if DirectionDown then begin
         lNextNode := lSelNode.Parent;
         if Assigned(lNextNode) then begin
-          lNextNode := lNextNode.GetNextSibling;
+          lNextNode := lNextNode.GetNextVisibleSibling;
           if Assigned(lNextNode) then
-            lNextNode := lNextNode.GetFirstChild;
+            lNextNode := lNextNode.GetFirstVisibleChild;
         end;
       end
       else begin
         lNextNode := lSelNode.Parent;
         if Assigned(lNextNode) then begin
-          lNextNode := lNextNode.GetPrevSibling;
+          lNextNode := lNextNode.GetPrevVisibleSibling;
           if Assigned(lNextNode) then
-            lNextNode := lNextNode.GetLastChild;
+            lNextNode := lNextNode.GetLastVisibleChild;
         end;
       end;
     end;
@@ -1586,11 +1586,11 @@ begin
   else begin
     // file node - need to use first child or last child of prev sibling
     if DirectionDown then
-      lNextNode := lSelNode.GetFirstChild
+      lNextNode := lSelNode.GetFirstVisibleChild
     else begin
-      lNextNode := lSelNode.GetPrevSibling;
+      lNextNode := lSelNode.GetPrevVisibleSibling;
       if Assigned(lNextNode) then
-        lNextNode := lNextNode.GetLastChild;
+        lNextNode := lNextNode.GetLastVisibleChild;
     end;
   end;
 
