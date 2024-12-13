@@ -18,7 +18,7 @@ object AddWithBlockDialog: TAddWithBlockDialog
     HelpButton.Name = 'HelpButton'
     CloseButton.Name = 'CloseButton'
     CancelButton.Name = 'CancelButton'
-    TabOrder = 0
+    TabOrder = 1
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end
   object WithExprGroupBox: TGroupBox
@@ -31,7 +31,7 @@ object AddWithBlockDialog: TAddWithBlockDialog
     Caption = 'WithExprGroupBox'
     ClientHeight = 181
     ClientWidth = 346
-    TabOrder = 1
+    TabOrder = 0
     object WithExprStringGrid: TStringGrid
       Left = 0
       Height = 181
