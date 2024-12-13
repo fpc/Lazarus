@@ -226,7 +226,7 @@ begin
   PaintBox.Canvas.Pen.Cosmetic := cbCosmetic.Checked;
   PaintBox.Canvas.Pen.EndCap := TPenEndCap(CapsCombo.ItemIndex);
   PaintBox.Canvas.Pen.JoinStyle := TPenJoinStyle(JoinCombo.ItemIndex);
-  if PaintBox.Canvas.Pen.Style = psPattern then;
+  if PaintBox.Canvas.Pen.Style = psPattern then
     PaintBox.Canvas.Pen.SetPattern(Dashes);
 
   // Must be called before setting Brush.Bitmap since that will reset Style to bsSolid
