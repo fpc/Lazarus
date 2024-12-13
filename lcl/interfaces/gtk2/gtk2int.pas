@@ -325,7 +325,8 @@ type
     procedure HideAllHints;
     procedure RestoreAllHints;
     {$ENDIF}
-    procedure StartFocusTimer;
+    procedure StartAppFocusTimer;
+    procedure StopAppFocusTimer;
     property AppActive: Boolean read GetAppActive write SetAppActive;
     property IsLibraryInstance: Boolean read FIsLibraryInstance;
     property GtkIsTerminated: Boolean read FGtkTerminated;

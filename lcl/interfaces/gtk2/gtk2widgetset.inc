@@ -2776,18 +2776,24 @@ function gtkAppFocusTimer({%H-}Data: gPointer):gBoolean; cdecl;
 // needed by app activate/deactivate
 begin
   Result := CallBackDefaultReturn;
+  TGtk2WidgetSet(WidgetSet).StopAppFocusTimer;
   if TGtk2WidgetSet(WidgetSet).LastFocusIn = nil then
     TGtk2WidgetSet(WidgetSet).AppActive := False;
-  gtk_timeout_remove(TGtk2WidgetSet(WidgetSet).FocusTimer);
-  TGtk2WidgetSet(WidgetSet).FocusTimer := 0;
 end;
 
-procedure TGtk2WidgetSet.StartFocusTimer;
+procedure TGtk2WidgetSet.StartAppFocusTimer;
 begin
   FLastFocusIn := nil;
   if FocusTimer <> 0 then
     gtk_timeout_remove(TGtk2WidgetSet(WidgetSet).FocusTimer);
   FocusTimer := gtk_timeout_add(50, TGtkFunction(@gtkAppFocusTimer), nil);
+end;
+
+procedure TGtk2WidgetSet.StopAppFocusTimer;
+begin
+  if FocusTimer = 0 then exit;
+  gtk_timeout_remove(FocusTimer);
+  FocusTimer := 0;
 end;
 
 procedure TGtk2WidgetSet.InitStockItems;

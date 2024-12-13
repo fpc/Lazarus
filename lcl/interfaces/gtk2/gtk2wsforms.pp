@@ -269,31 +269,52 @@ begin
     GDK_FOCUS_CHANGE:
       begin
         ACtl := TWinControl(Data);
+
+        // Application.Activate/Deactivate is done via a timer
+        // Every time a form looses the focus a timer is started
+        // and every time focus is gained the timer is stopped.
+        // Note: It seems gtk2 itself does not always detect focus lost
+        //   For example in LinuxMint switching from a TEdit using Alt-Tab to another
+        //   app generates a focus out, but gtk2 still shows the TEdit focused
+        //   with blinking cursor.
+        //   Switching focus using the mouse to another app, also generates
+        //   a focus out, and gtk2 hides the blinking cursor and focus coloring.
+        //   Switching to another workspace does not generate a focus out event <sigh>.
         if PGdkEventFocus(event)^._in = 0 then
         begin
           {$IFDEF HASX}
-          XDisplay := gdk_display;
-          XGetInputFocus(XDisplay, @Window, @RevertStatus);
-          // Window - 1 is our frame  !
-          if (RevertStatus = RevertToParent) and
-            (GDK_WINDOW_XID(Widget^.Window) = Window - 1) then
-            exit(True);
+          if ACtl.Parent<>nil then
+          begin
+            XDisplay := gdk_display;
+            XGetInputFocus(XDisplay, @Window, @RevertStatus);
+            // Window - 1 is our frame  !
+            if (RevertStatus = RevertToParent) and
+              (GDK_WINDOW_XID(Widget^.Window) = Window - 1) then
+            begin
+              // Note: on LinuxMint switching via Alt-Tab to another window
+              //   generates RevertToParent. The above
+              //
+              exit(True);
+            end;
+          end;
           {$ENDIF}
           with Gtk2WidgetSet do
           begin
             LastFocusOut := {%H-}PGtkWidget(ACtl.Handle);
             if LastFocusOut = LastFocusIn then
-              StartFocusTimer;
+              StartAppFocusTimer;
           end;
         end else
         begin
           with Gtk2WidgetSet do
           begin
+            StopAppFocusTimer;
             LastFocusIn := {%H-}PGtkWidget(ACtl.Handle);
             if not AppActive then
               AppActive := True;
           end;
         end;
+
         if GTK_IS_WINDOW(Widget) and
           (g_object_get_data({%H-}PGObject(ACtl.Handle),'lcl_nonmodal_over_modal') <> nil) then
         begin
@@ -308,9 +329,14 @@ end;
 
 class procedure TGtk2WSCustomForm.SetCallbacks(const AWidget: PGtkWidget;
   const AWidgetInfo: PWidgetInfo);
+var
+  aLCLObj: TObject;
+  aLCLControl: TWinControl;
 begin
-  TGtk2WSWinControl.SetCallbacks(PGtkObject(AWidget), TComponent(AWidgetInfo^.LCLObject));
-  if (TWinControl(AWidgetInfo^.LCLObject).Parent = nil) and (TWinControl(AWidgetInfo^.LCLObject).ParentWindow = 0) then
+  aLCLObj:=AWidgetInfo^.LCLObject;
+  aLCLControl:=TWinControl(aLCLObj);
+  TGtk2WSWinControl.SetCallbacks(PGtkObject(AWidget), aLCLControl);
+  if (aLCLControl.Parent = nil) and (aLCLControl.ParentWindow = 0) then
     with TGTK2WidgetSet(Widgetset) do
     begin
       {$IFDEF HASX}
@@ -318,18 +344,18 @@ begin
       // see http://bugs.freepascal.org/view.php?id=17523
       if not compositeManagerRunning then
       {$ENDIF}
-         SetCallback(LM_CONFIGUREEVENT, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
-      SetCallback(LM_CLOSEQUERY, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
-      SetCallBack(LM_ACTIVATE, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
+         SetCallback(LM_CONFIGUREEVENT, PGtkObject(AWidget), aLCLObj);
+      SetCallback(LM_CLOSEQUERY, PGtkObject(AWidget), aLCLObj);
+      SetCallBack(LM_ACTIVATE, PGtkObject(AWidget), aLCLObj);
       if (gtk_major_version = 2) and (gtk_minor_version <= 8) then
       begin
-        SetCallback(LM_HSCROLL, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
-        SetCallback(LM_VSCROLL, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
+        SetCallback(LM_HSCROLL, PGtkObject(AWidget), aLCLObj);
+        SetCallback(LM_VSCROLL, PGtkObject(AWidget), aLCLObj);
       end;
     end;
 
   g_signal_connect(PGtkObject(AWidgetInfo^.CoreWidget), 'event',
-    gtk_signal_func(@Gtk2FormEvent), AWidgetInfo^.LCLObject);
+    gtk_signal_func(@Gtk2FormEvent), aLCLObj);
 end;
 
 class function TGtk2WSCustomForm.CanFocus(const AWinControl: TWinControl

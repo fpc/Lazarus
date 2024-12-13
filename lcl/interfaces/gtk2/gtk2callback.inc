@@ -971,7 +971,6 @@ begin
   {$ENDIF}
   //DebugLn('GTKKillFocusCB ',DbgSName(TObject(Data)),' ',GetWidgetDebugReport(Widget));
   {$IFDEF VerboseFocus}
-  NeedShiftUpdateAfternFocus := True;   // <- JRA: this doesn't look like simply log !!!
   LCLObject:=TObject(data);
   DebugLn(['GTKillFocusCB Widget=',DbgS(Widget),' Event^.theIn=',Event^._in,
     ' LCLObject=',dbgsName(LCLobject)]);
@@ -1002,7 +1001,6 @@ begin
   {$ENDIF}
   //DebugLn('GTKKillFocusCBAfter ',DbgSName(TObject(Data)),' ',GetWidgetDebugReport(Widget));
   {$IFDEF VerboseFocus}
-  NeedShiftUpdateAfternFocus := True;   // <- JRA: this doesn't look like simply log !!!
   LCLObject:=TObject(data);
   DebugLnEnter(['GTKillFocusCBAfter INIT Widget=',DbgS(Widget),' Event^.theIn=',Event^._in,
     ' LCLObject=',dbgsName(LCLObject)]);
