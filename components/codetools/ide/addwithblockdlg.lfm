@@ -55,6 +55,7 @@ object AddWithBlockDialog: TAddWithBlockDialog
       FixedCols = 0
       Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goDrawFocusSelected, goColSizing, goRowSelect, goColSpanning, goSmoothScroll]
       TabOrder = 0
+      OnDblClick = ButtonPanel1OKButtonClick
       ColWidths = (
         171
         171
