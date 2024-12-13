@@ -339,9 +339,9 @@ type
     FInitializationLine, FFinalizationLine: Integer;
   end;
 
-  { TSynHighlighterLazCustumPasAttribute }
+  { TSynHighlighterLazCustomPasAttribute }
 
-  TSynHighlighterLazCustumPasAttribute = class(TSynHighlighterAttributesModifier)
+  TSynHighlighterLazCustomPasAttribute = class(TSynHighlighterAttributesModifier)
   private
     FCustomWords: TStrings;
     FCustomWordTokenKind: TtkTokenKind;
@@ -362,7 +362,7 @@ type
 
   TIDESynPasSyn = class(TSynPasSyn)
   private
-    FCustomAttribs: array[0..9] of TSynHighlighterLazCustumPasAttribute;
+    FCustomAttribs: array[0..9] of TSynHighlighterLazCustomPasAttribute;
 
     procedure DoBuildCustomPasAttr(Sender: TObject);
     function GetFinalizationLine: Integer;
@@ -2009,26 +2009,26 @@ begin
 end;
 {$ENDIF}
 
-{ TSynHighlighterLazCustumPasAttribute }
+{ TSynHighlighterLazCustomPasAttribute }
 
-procedure TSynHighlighterLazCustumPasAttribute.SetCustomWordTokenKind(AValue: TtkTokenKind);
+procedure TSynHighlighterLazCustomPasAttribute.SetCustomWordTokenKind(AValue: TtkTokenKind);
 begin
   if FCustomWordTokenKind = AValue then Exit;
   FCustomWordTokenKind := AValue;
   Changed;
 end;
 
-procedure TSynHighlighterLazCustumPasAttribute.DoWordsChanged(Sender: TObject);
+procedure TSynHighlighterLazCustomPasAttribute.DoWordsChanged(Sender: TObject);
 begin
   Changed;
 end;
 
-procedure TSynHighlighterLazCustumPasAttribute.AssignFrom(Src: TLazSynCustomTextAttributes);
+procedure TSynHighlighterLazCustomPasAttribute.AssignFrom(Src: TLazSynCustomTextAttributes);
 begin
   inherited AssignFrom(Src);
-  if Src is TSynHighlighterLazCustumPasAttribute then begin
-    FCustomWords.Assign(TSynHighlighterLazCustumPasAttribute(Src).FCustomWords);
-    FCustomWordTokenKind := TSynHighlighterLazCustumPasAttribute(Src).FCustomWordTokenKind;
+  if Src is TSynHighlighterLazCustomPasAttribute then begin
+    FCustomWords.Assign(TSynHighlighterLazCustomPasAttribute(Src).FCustomWords);
+    FCustomWordTokenKind := TSynHighlighterLazCustomPasAttribute(Src).FCustomWordTokenKind;
   end
   else begin
     FCustomWords.Clear;
@@ -2036,7 +2036,7 @@ begin
   end;
 end;
 
-procedure TSynHighlighterLazCustumPasAttribute.DoClear;
+procedure TSynHighlighterLazCustomPasAttribute.DoClear;
 begin
   inherited DoClear;
   if FCustomWords <> nil then
@@ -2044,7 +2044,7 @@ begin
   FCustomWordTokenKind := tkIdentifier;
 end;
 
-procedure TSynHighlighterLazCustumPasAttribute.Init;
+procedure TSynHighlighterLazCustomPasAttribute.Init;
 begin
   FCustomWords := TStringList.Create;
   FCustomWordTokenKind := tkIdentifier;
@@ -2052,7 +2052,7 @@ begin
   inherited Init;
 end;
 
-destructor TSynHighlighterLazCustumPasAttribute.Destroy;
+destructor TSynHighlighterLazCustomPasAttribute.Destroy;
 begin
   inherited Destroy;
   FCustomWords.Destroy;
@@ -2141,7 +2141,7 @@ begin
   inherited Create(AOwner);
 
   for i := 0 to 9 do begin
-    FCustomAttribs[i] := TSynHighlighterLazCustumPasAttribute.Create('Custom '+IntToStr(i), 'CustomToken_'+IntToStr(i));
+    FCustomAttribs[i] := TSynHighlighterLazCustomPasAttribute.Create('Custom '+IntToStr(i), 'CustomToken_'+IntToStr(i));
     AddAttribute(FCustomAttribs[i]);
     FCustomAttribs[i].OnChange := @DoBuildCustomPasAttr;
   end;
