@@ -8,7 +8,7 @@ object WindowsXPForm: TWindowsXPForm
   ClientHeight = 449
   ClientWidth = 844
   Font.CharSet = ANSI_CHARSET
-  LCLVersion = '3.99.0.0'
+  LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
   object Label1: TLabel
     AnchorSideLeft.Control = XPTree

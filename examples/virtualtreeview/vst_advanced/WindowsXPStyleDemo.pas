@@ -277,7 +277,7 @@ procedure TWindowsXPForm.ToolButton9Click(Sender: TObject);
 
 begin
   //todo: implement Print support in VTV
-  //if PrintDialog.Execute then ;
+  //if PrintDialog.Execute then
   //  XPTree.Print(Printer, False);
 end;
 
