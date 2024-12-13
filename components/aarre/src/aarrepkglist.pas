@@ -453,7 +453,7 @@ begin
     end;
     if FindPathInSearchPath(PChar(CurPath),length(CurPath),
       PChar(NewPath),length(NewPath))=nil
-    then;
+    then
       NewPath+=';'+CurPath;
   end;
 end;
