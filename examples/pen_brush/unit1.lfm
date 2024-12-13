@@ -3,17 +3,17 @@ object Form1: TForm1
   Height = 604
   Top = 85
   Width = 461
-  HorzScrollBar.Page = 379
-  VertScrollBar.Page = 604
+  HorzScrollBar.Page = 338
+  VertScrollBar.Page = 586
   AutoScroll = True
   AutoSize = True
   Caption = 'Pen and Brush'
   ClientHeight = 604
-  ClientWidth = 440
+  ClientWidth = 461
+  Position = poScreenCenter
+  LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  Position = poScreenCenter
-  LCLVersion = '2.2.4.0'
   object PaintBox: TPaintBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -22,7 +22,7 @@ object Form1: TForm1
     Left = 11
     Height = 169
     Top = 7
-    Width = 418
+    Width = 439
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 11
     BorderSpacing.Top = 7
@@ -34,9 +34,9 @@ object Form1: TForm1
     AnchorSideTop.Control = WidthCombo
     AnchorSideTop.Side = asrCenter
     Left = 18
-    Height = 18
-    Top = 293
-    Width = 40
+    Height = 15
+    Top = 269
+    Width = 35
     BorderSpacing.Left = 7
     Caption = 'Width:'
     ParentColor = False
@@ -46,9 +46,9 @@ object Form1: TForm1
     AnchorSideTop.Control = CapsCombo
     AnchorSideTop.Side = asrCenter
     Left = 18
-    Height = 18
-    Top = 371
-    Width = 60
+    Height = 15
+    Top = 328
+    Width = 52
     BorderSpacing.Left = 7
     Caption = 'End Caps:'
     ParentColor = False
@@ -58,9 +58,9 @@ object Form1: TForm1
     AnchorSideTop.Control = JoinCombo
     AnchorSideTop.Side = asrCenter
     Left = 18
-    Height = 18
-    Top = 410
-    Width = 59
+    Height = 15
+    Top = 358
+    Width = 52
     BorderSpacing.Left = 7
     Caption = 'Join Style:'
     ParentColor = False
@@ -70,9 +70,9 @@ object Form1: TForm1
     AnchorSideTop.Control = PenColorBox
     AnchorSideTop.Side = asrCenter
     Left = 18
-    Height = 18
-    Top = 332
-    Width = 37
+    Height = 15
+    Top = 299
+    Width = 32
     BorderSpacing.Left = 7
     Caption = 'Color:'
     ParentColor = False
@@ -84,10 +84,10 @@ object Form1: TForm1
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 98
+    Left = 86
     Height = 3
-    Top = 230
-    Width = 331
+    Top = 219
+    Width = 364
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 10
     BorderSpacing.Right = 11
@@ -97,9 +97,9 @@ object Form1: TForm1
     AnchorSideTop.Control = FigureCombo
     AnchorSideTop.Side = asrBottom
     Left = 11
-    Height = 18
-    Top = 222
-    Width = 77
+    Height = 15
+    Top = 213
+    Width = 65
     BorderSpacing.Left = 11
     BorderSpacing.Top = 7
     Caption = 'Pen options'
@@ -112,9 +112,9 @@ object Form1: TForm1
     AnchorSideTop.Control = JoinCombo
     AnchorSideTop.Side = asrBottom
     Left = 11
-    Height = 18
-    Top = 442
-    Width = 91
+    Height = 15
+    Top = 384
+    Width = 76
     BorderSpacing.Left = 11
     BorderSpacing.Top = 7
     Caption = 'Brush options'
@@ -129,10 +129,10 @@ object Form1: TForm1
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 112
+    Left = 97
     Height = 3
-    Top = 450
-    Width = 317
+    Top = 390
+    Width = 353
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 10
     BorderSpacing.Right = 11
@@ -142,9 +142,9 @@ object Form1: TForm1
     AnchorSideTop.Control = PenStyleCombo
     AnchorSideTop.Side = asrCenter
     Left = 18
-    Height = 18
-    Top = 254
-    Width = 33
+    Height = 15
+    Top = 239
+    Width = 28
     BorderSpacing.Left = 7
     Caption = 'Style:'
     ParentColor = False
@@ -154,9 +154,9 @@ object Form1: TForm1
     AnchorSideTop.Control = BrushStyleCombo
     AnchorSideTop.Side = asrCenter
     Left = 18
-    Height = 18
-    Top = 474
-    Width = 33
+    Height = 15
+    Top = 410
+    Width = 28
     BorderSpacing.Left = 7
     Caption = 'Style:'
     ParentColor = False
@@ -166,9 +166,9 @@ object Form1: TForm1
     AnchorSideTop.Control = BrushColorBox
     AnchorSideTop.Side = asrCenter
     Left = 18
-    Height = 18
-    Top = 513
-    Width = 37
+    Height = 15
+    Top = 440
+    Width = 32
     BorderSpacing.Left = 7
     Caption = 'Color:'
     ParentColor = False
@@ -178,9 +178,9 @@ object Form1: TForm1
     AnchorSideTop.Control = FigureCombo
     AnchorSideTop.Side = asrCenter
     Left = 18
-    Height = 18
-    Top = 190
-    Width = 42
+    Height = 15
+    Top = 187
+    Width = 36
     BorderSpacing.Left = 7
     Caption = 'Figure:'
     ParentColor = False
@@ -192,9 +192,9 @@ object Form1: TForm1
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = BgColorBox
     AnchorSideBottom.Side = asrBottom
-    Left = 354
-    Height = 29
-    Top = 652
+    Left = 375
+    Height = 26
+    Top = 549
     Width = 75
     Anchors = [akTop, akRight]
     AutoSize = True
@@ -208,14 +208,14 @@ object Form1: TForm1
     AnchorSideTop.Control = PenStyleCombo
     AnchorSideTop.Side = asrBottom
     Left = 100
-    Height = 32
-    Top = 286
+    Height = 23
+    Top = 265
     Width = 140
     AutoSelect = False
     BorderSpacing.Left = 100
     BorderSpacing.Top = 7
     DropDownCount = 24
-    ItemHeight = 24
+    ItemHeight = 15
     ItemIndex = 0
     Items.Strings = (
       '1'
@@ -226,66 +226,66 @@ object Form1: TForm1
       '6'
       '7'
     )
-    OnChange = PenChange
     Style = csDropDownList
     TabOrder = 1
     Text = '1'
+    OnChange = PenChange
   end
   object CapsCombo: TComboBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = PenColorBox
     AnchorSideTop.Side = asrBottom
     Left = 100
-    Height = 32
-    Top = 364
+    Height = 23
+    Top = 324
     Width = 140
     AutoSelect = False
     BorderSpacing.Left = 100
     BorderSpacing.Top = 7
     DropDownCount = 24
-    ItemHeight = 24
+    ItemHeight = 15
     ItemIndex = 0
     Items.Strings = (
       'Round'
       'Square'
       'Flat'
     )
-    OnChange = PenChange
     Style = csDropDownList
     TabOrder = 2
     Text = 'Round'
+    OnChange = PenChange
   end
   object JoinCombo: TComboBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = CapsCombo
     AnchorSideTop.Side = asrBottom
     Left = 100
-    Height = 32
-    Top = 403
+    Height = 23
+    Top = 354
     Width = 140
     AutoSelect = False
     BorderSpacing.Left = 100
     BorderSpacing.Top = 7
     DropDownCount = 24
-    ItemHeight = 24
+    ItemHeight = 15
     ItemIndex = 0
     Items.Strings = (
       'Round'
       'Bevel'
       'Mitter'
     )
-    OnChange = PenChange
     Style = csDropDownList
     TabOrder = 3
     Text = 'Round'
+    OnChange = PenChange
   end
   object PenColorBox: TColorBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = WidthCombo
     AnchorSideTop.Side = asrBottom
     Left = 100
-    Height = 32
-    Top = 325
+    Height = 22
+    Top = 295
     Width = 140
     Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbCustomColor, cbPrettyNames]
     AutoSelect = False
@@ -293,50 +293,50 @@ object Form1: TForm1
     BorderSpacing.Top = 7
     DropDownCount = 24
     ItemHeight = 16
-    OnChange = PenChange
     TabOrder = 4
+    OnChange = PenChange
   end
   object PenStyleCombo: TComboBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Label1
     AnchorSideTop.Side = asrBottom
     Left = 100
-    Height = 32
-    Top = 247
+    Height = 23
+    Top = 235
     Width = 140
     AutoSelect = False
     BorderSpacing.Left = 100
     BorderSpacing.Top = 7
     DropDownCount = 24
-    ItemHeight = 18
-    OnChange = PenChange
+    ItemHeight = 15
     Style = csDropDownList
     TabOrder = 5
+    OnChange = PenChange
   end
   object BrushStyleCombo: TComboBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Label2
     AnchorSideTop.Side = asrBottom
     Left = 100
-    Height = 32
-    Top = 467
+    Height = 23
+    Top = 406
     Width = 140
     AutoSelect = False
     BorderSpacing.Left = 100
     BorderSpacing.Top = 7
     DropDownCount = 24
-    ItemHeight = 18
-    OnChange = BrushChange
+    ItemHeight = 15
     Style = csDropDownList
     TabOrder = 6
+    OnChange = BrushChange
   end
   object BrushColorBox: TColorBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = BrushStyleCombo
     AnchorSideTop.Side = asrBottom
     Left = 100
-    Height = 32
-    Top = 506
+    Height = 22
+    Top = 436
     Width = 140
     Selected = clRed
     Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbCustomColor, cbPrettyNames]
@@ -345,22 +345,22 @@ object Form1: TForm1
     BorderSpacing.Top = 7
     DropDownCount = 24
     ItemHeight = 16
-    OnChange = BrushChange
     TabOrder = 7
+    OnChange = BrushChange
   end
   object FigureCombo: TComboBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = PaintBox
     AnchorSideTop.Side = asrBottom
     Left = 100
-    Height = 32
+    Height = 23
     Top = 183
     Width = 140
     AutoSelect = False
     BorderSpacing.Left = 100
     BorderSpacing.Top = 7
     DropDownCount = 24
-    ItemHeight = 24
+    ItemHeight = 15
     ItemIndex = 0
     Items.Strings = (
       'Line'
@@ -370,10 +370,10 @@ object Form1: TForm1
       'Triangle'
       'Text'
     )
-    OnChange = FigureComboChange
     Style = csDropDownList
     TabOrder = 8
     Text = 'Line'
+    OnChange = FigureComboChange
   end
   object cbCosmetic: TCheckBox
     AnchorSideLeft.Control = WidthCombo
@@ -381,15 +381,15 @@ object Form1: TForm1
     AnchorSideTop.Control = WidthCombo
     AnchorSideTop.Side = asrCenter
     Left = 247
-    Height = 22
-    Top = 291
-    Width = 85
+    Height = 19
+    Top = 267
+    Width = 68
     BorderSpacing.Left = 7
     Caption = 'Cosmetic'
     Checked = True
-    OnChange = PenChange
     State = cbChecked
     TabOrder = 9
+    OnChange = PenChange
   end
   object cbAntialiasing: TCheckBox
     AnchorSideLeft.Control = FigureCombo
@@ -397,24 +397,24 @@ object Form1: TForm1
     AnchorSideTop.Control = FigureCombo
     AnchorSideTop.Side = asrCenter
     Left = 247
-    Height = 22
-    Top = 188
-    Width = 100
+    Height = 19
+    Top = 185
+    Width = 80
     AllowGrayed = True
     BorderSpacing.Left = 7
     BorderSpacing.Right = 11
     Caption = 'Antialiasing'
-    OnChange = cbAntialiasingChange
     TabOrder = 10
+    OnChange = cbAntialiasingChange
   end
   object LblBgColor: TLabel
     AnchorSideLeft.Control = Label1
     AnchorSideTop.Control = BgColorBox
     AnchorSideTop.Side = asrCenter
     Left = 18
-    Height = 18
-    Top = 616
-    Width = 78
+    Height = 15
+    Top = 520
+    Width = 67
     BorderSpacing.Left = 7
     Caption = 'Background:'
     ParentColor = False
@@ -424,8 +424,8 @@ object Form1: TForm1
     AnchorSideTop.Control = FontColorBox
     AnchorSideTop.Side = asrBottom
     Left = 100
-    Height = 32
-    Top = 609
+    Height = 22
+    Top = 516
     Width = 140
     Selected = clYellow
     Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbCustomColor, cbPrettyNames]
@@ -435,17 +435,17 @@ object Form1: TForm1
     BorderSpacing.Bottom = 11
     DropDownCount = 24
     ItemHeight = 16
-    OnChange = BrushChange
     TabOrder = 11
+    OnChange = BrushChange
   end
   object Label11: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = BrushColorBox
     AnchorSideTop.Side = asrBottom
     Left = 11
-    Height = 18
-    Top = 545
-    Width = 80
+    Height = 15
+    Top = 465
+    Width = 69
     BorderSpacing.Left = 11
     BorderSpacing.Top = 7
     Caption = 'Text options'
@@ -460,10 +460,10 @@ object Form1: TForm1
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 101
+    Left = 90
     Height = 3
-    Top = 553
-    Width = 328
+    Top = 471
+    Width = 360
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 10
     BorderSpacing.Right = 11
@@ -473,9 +473,9 @@ object Form1: TForm1
     AnchorSideTop.Control = FontColorBox
     AnchorSideTop.Side = asrCenter
     Left = 18
-    Height = 18
-    Top = 577
-    Width = 65
+    Height = 15
+    Top = 491
+    Width = 57
     BorderSpacing.Left = 7
     Caption = 'Font color:'
     ParentColor = False
@@ -485,8 +485,8 @@ object Form1: TForm1
     AnchorSideTop.Control = Label11
     AnchorSideTop.Side = asrBottom
     Left = 100
-    Height = 32
-    Top = 570
+    Height = 22
+    Top = 487
     Width = 140
     Selected = clBlue
     Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbCustomColor, cbPrettyNames]
@@ -495,8 +495,8 @@ object Form1: TForm1
     BorderSpacing.Top = 7
     DropDownCount = 24
     ItemHeight = 16
-    OnChange = BrushChange
     TabOrder = 12
+    OnChange = BrushChange
   end
   object cbOpaque: TCheckBox
     AnchorSideLeft.Control = WidthCombo
@@ -504,13 +504,13 @@ object Form1: TForm1
     AnchorSideTop.Control = BgColorBox
     AnchorSideTop.Side = asrCenter
     Left = 247
-    Height = 22
-    Top = 614
-    Width = 77
+    Height = 19
+    Top = 518
+    Width = 60
     BorderSpacing.Left = 7
     Caption = 'Opaque'
-    OnChange = cbOpaqueChange
     TabOrder = 13
+    OnChange = cbOpaqueChange
   end
   object PenStyleInfoBtn: TSpeedButton
     AnchorSideLeft.Control = PenStyleCombo
@@ -519,7 +519,7 @@ object Form1: TForm1
     AnchorSideTop.Side = asrCenter
     Left = 247
     Height = 22
-    Top = 252
+    Top = 235
     Width = 23
     BorderSpacing.Left = 7
     Caption = '?'
@@ -532,7 +532,7 @@ object Form1: TForm1
     AnchorSideTop.Side = asrCenter
     Left = 247
     Height = 22
-    Top = 472
+    Top = 406
     Width = 23
     BorderSpacing.Left = 7
     Caption = '?'
