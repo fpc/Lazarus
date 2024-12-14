@@ -879,6 +879,7 @@ var
   ReturnBool: Boolean;
   ATitle: WideString;
   ColorDialog: TColorDialog absolute ACommonDialog;
+  AOptions: QColorDialogColorDialogOptions;
   {$IFDEF HASX11}
   AWND: HWND;
   {$ENDIF}
@@ -903,7 +904,7 @@ var
 
 begin
   AColor := ColorToRgb(ColorDialog.Color);
-  AQColor.Alpha := $FFFF;
+  AQColor.Alpha := Word(ColorDialog.AlphaChannel) * $0101;
   AQColor.ColorSpec := 1;
   AQColor.Pad := 0;
   ColorRefToTQColor(AColor, AQColor);
@@ -915,11 +916,19 @@ begin
   {$ENDIF}
   ATitle := UTF8ToUTF16(ACommonDialog.Title);
   ARetColor := Default(TQColor);
+  AOptions := 0; // here we add possible options from ColorDialog.Options, see QColorDialogColorDialogOptions for possible options.
+  if (cdShowAlphaChannel in ColorDialog.Options) then
+    AOptions := AOptions or QColorDialogShowAlphaChannel;
+  if (cdNoButtons in ColorDialog.Options) then
+    AOptions := AOptions or QColorDialogNoButtons;
+  if (cdDontUseNativeDialog in ColorDialog.Options) then
+    AOptions := AOptions or QColorDialogDontUseNativeDialog;
   ReturnBool := QColorDialog_getColor(@ARetColor, @AQColor, TQtWSCommonDialog.GetDialogParent(ACommonDialog), @ATitle, QColorDialogShowAlphaChannel);
   if ReturnBool then
   begin
     TQColorToColorRef(ARetColor, AColor);
     ColorDialog.Color := TColor(AColor);
+    ColorDialog.AlphaChannel := ARetColor.Alpha and $FF;
   end;
   if ReturnBool then
     ACommonDialog.UserChoice := mrOk
