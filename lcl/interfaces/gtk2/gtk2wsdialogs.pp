@@ -441,6 +441,7 @@ var
   // colordialog
   colorsel : PGtkColorSelection;
   newColor : TGdkColor;
+  newAlpha : Word;
   // fontdialog
   FontName : String;
   ALogFont  : TLogFont;
@@ -542,6 +543,8 @@ begin
   begin
     colorSel := PGtkColorSelection(PGtkColorSelectionDialog(FPointer)^.colorsel);
     gtk_color_selection_get_current_color(colorsel, @newColor);
+    newAlpha := gtk_color_selection_get_current_alpha(colorsel);
+    TColorDialog(theDialog).AlphaChannel := newAlpha and $FF; //equivalent to divide by 0x0101
     TColorDialog(theDialog).Color := TGDKColorToTColor(newcolor);
     {$IFDEF VerboseColorDialog}
     DebugLn('gtkDialogOKclickedCB ',DbgS(TColorDialog(theDialog).Color));
@@ -1278,16 +1281,24 @@ end;
 class procedure TGtk2WSCommonDialog.ShowModal(const ACommonDialog: TCommonDialog);
 var
   GtkWindow: PGtkWindow;
+  colorsel: PGtkColorSelection;
+  ColorDialog: TColorDialog;
+  CurrentAlpha: Word;
 begin
   ReleaseMouseCapture;
   GtkWindow:={%H-}PGtkWindow(ACommonDialog.Handle);
   gtk_window_set_title(GtkWindow,PChar(ACommonDialog.Title));
   if ACommonDialog is TColorDialog then
   begin
+    ColorDialog := TColorDialog(ACommonDialog);
     SetColorDialogColor(PGtkColorSelectionDialog(GtkWindow),
-                        TColorDialog(ACommonDialog).Color);
+                        ColorDialog.Color);
     SetColorDialogPalette(PGtkColorSelectionDialog(GtkWindow),
-      TColorDialog(ACommonDialog).CustomColors);
+      ColorDialog.CustomColors);
+    colorsel := PGtkColorSelection(PGtkColorSelectionDialog(GtkWindow)^.colorsel);
+    gtk_color_selection_set_has_opacity_control(colorsel, (cdShowAlphaChannel in ColorDialog.Options));
+    CurrentAlpha := Word(ColorDialog.AlphaChannel) * $0101;
+    gtk_color_selection_set_current_alpha(colorsel, CurrentAlpha);
   end;
 
   gtk_window_set_position(GtkWindow, GTK_WIN_POS_CENTER);

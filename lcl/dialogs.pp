@@ -292,18 +292,20 @@ type
     cdPreventFullOpen,  // Disables the Define Custom Color button.
     cdShowHelp,         // Causes the dialog box to display the Help button.
     cdSolidColor,       // Causes the dialog box to display only solid colors in the set of basic colors.
-    cdAnyColor          // Causes the dialog box to display all available colors in the set of basic colors.
+    cdAnyColor,         // Causes the dialog box to display all available colors in the set of basic colors.
+    cdShowAlphaChannel  // Shows the AlphaChannel control (GTK2, QT, QT5, QT6)
     );
   TColorDialogOptions = set of TColorDialogOption;
 
 const
-  DefaultColorDialogOptions = [cdFullOpen]; //for backwards compatibility, probably not Delphi compatible
+  DefaultColorDialogOptions = [cdFullOpen, cdShowAlphaChannel]; //for backwards compatibility, probably not Delphi compatible
 
   { TColorDialog }
 type
 
   TColorDialog = class(TCommonDialog)
   private
+    FAlphaChannel: Byte;
     FColor: TColor;
     FCustomColors: TStrings;
     FOptions: TColorDialogOptions;
@@ -318,6 +320,7 @@ type
     destructor Destroy; override;
   published
     property Title;
+    property AlphaChannel: Byte read FAlphaChannel write FAlphaChannel default 255;
     property Color: TColor read FColor write FColor;
     // entry looks like ColorA = FFFF00 ... ColorX = C0C0C0
     property CustomColors: TStrings read FCustomColors write SetCustomColors;

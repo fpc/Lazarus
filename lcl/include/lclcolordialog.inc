@@ -48,6 +48,7 @@ end;
 constructor TColorDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+  FAlphaChannel := 255;
   FCustomColors := TStringList.Create;
   // add default colors
   GetColorValues(@AddDefaultColor);
