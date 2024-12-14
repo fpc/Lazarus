@@ -154,7 +154,7 @@ begin
     // center
     vCenter := Height div 2;
     // adjust center
-    if CurPageHeight > CurPageWidth then;
+    if CurPageHeight > CurPageWidth then
       vCenter := vCenter - (txtHeight + cDimLineHeight + cPadding) div 2;
     // compute height/width
     fHeight := Height - cTopBottomMargin * 2 - txtHeight - cDimLineHeight - cPadding;
