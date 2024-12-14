@@ -2423,7 +2423,8 @@ Represents the options which can be enabled during execution of a color dialog.
 <descr>
 <p>
 Values from the enumeration are stored in the TColorDialogOptions set type used 
-to implement the TColorDialog.Options property.
+to implement the TColorDialog.Options property. Please note that some options 
+are platform-specific, as indicated in their descriptions.
 </p>
 </descr>
 <version>
@@ -2461,6 +2462,27 @@ Causes the dialog box to display all available colors in the set of basic
 colors.
 </short>
 </element>
+<element name="TColorDialogOption.cdShowAlphaChannel">
+<short>
+Displays the AlphaChannel control on the dialog. (GTK2, QT4, QT5, QT6)
+</short>
+</element>
+<element name="TColorDialogOption.cdNoButtons">
+<short>
+Removes the buttons from the dialog. (QT4, QT5, QT6)
+</short>
+</element>
+<element name="TColorDialogOption.cdDontUseNativeDialog">
+<short>
+Use the QT dialog instead of the native dialog for the OS. (QT4, QT5, QT6)
+</short>
+</element>
+<element name="TColorDialogOption.cdNoEyeDropperButton">
+<short>
+Hides the Eye Dropper button (QT6). Available in QT6.6 or later. Current QT6 
+bindings are generated for version 6.2.
+</short>
+</element>
 
 <element name="TColorDialogOptions">
 <short>
@@ -2472,6 +2494,10 @@ Set type used to store values from the TColorDialogOption enumeration.
 <var>TColorDialogOption</var> enumeration. TColorDialogOptions is the typed 
 used to implement the Options property in TColorDialog. It contains the options 
 which are enabled at run-time when the TColorDialog is executed.
+</p>
+<p>
+Please note that some of the values may be platform-specific. See 
+<link id="TColorDialogOption">TColorDialogOption</link> for more information.
 </p>
 </descr>
 <version>
@@ -2524,6 +2550,10 @@ Use the CustomColors property to define color values using identifiers and
 hexadecimal RGB values for the custom colors.
 </p>
 <p>
+Use the Options property to control the features enabled or disabled when the 
+dialog is executed.
+</p>
+<p>
 Set the value for the Title property (when needed) prior to displaying the 
 color selection dialog.
 </p>
@@ -2538,18 +2568,28 @@ selection dialog was cancelled or closed without selecting a color value.
 <seealso>
 <link id="TColorDialog.Color"/>
 <link id="TColorDialog.CustomColors"/>
+<link id="TColorDialog.Options"/>
+<link id="TColorDialog.AlphaChannel"/>
 <link id="TCommonDialog.Title"/>
 <link id="TCommonDialog.Execute"/>
 <link id="TCommonDialog.UserChoice"/>
 </seealso>
 </element>
 
+<element name="TColorDialog.FAlpha">
+<short>Internal member used to store the value for the Alpha Channel.</short>
+</element>
+
 <element name="TColorDialog.FColor">
-<short>Internal member used to store the value for he selected color.</short>
+<short>Internal member used to store the value for the selected color.</short>
 </element>
 
 <element name="TColorDialog.FCustomColors">
 <short>Internal member used to store user-specified colors.</short>
+</element>
+
+<element name="TColorDialog.FOptions">
+<short>Internal member used to store the options enabled for the dialog.</short>
 </element>
 
 <element name="TColorDialog.SetCustomColors">
@@ -2610,9 +2650,26 @@ Constructor for the class instance.
 </short>
 <descr>
 <p>
-<var>Create</var> is the constructor for <var>TColorDialog</var>, and calls 
-the inherited <var>Create</var> method. Create allocates resources for and 
-initializes the default values for the CustomColors and Options properties. 
+<var>Create</var> is the constructor for <var>TColorDialog</var>, and calls the 
+inherited <var>Create</var> method. Create allocates resources and initializes 
+the default values for properties in the class instance, including:
+</p>
+<dl>
+<dt>AlphaChannel </dt>
+<dd>Set to 255 ($FF) for full opacity.</dd>
+<dt>CustomColors</dt>
+<dd>
+Set to the standard, extended, special, and system colors defined in the 
+<file>graphics.pp</file> unit.
+</dd>
+<dt>Options</dt>
+<dd>
+Set to the values in the 
+<link id="DefaultColorDialogOptions">DefaultColorDialogOptions</link> 
+constant.
+</dd>
+</dl>
+<p>
 Component style flags are also updated in the method.
 </p>
 </descr>
@@ -2654,6 +2711,38 @@ For the macOS Carbon widgetset, the Title property is not supported.
 <seealso>
 <link id="TCommonDialog.DefaultTitle"/>
 <link id="#lcl.dialogs.TCommonDialog.Title">TCommonDialog.Title</link>
+</seealso>
+</element>
+
+<element name="TColorDialog.AlphaChannel">
+<short>
+Indicates the opacity or transparency for the color on the dialog.
+</short>
+<descr>
+<p>
+<var>AlphaChannel</var> is a Byte property which normally contains a value in 
+the range 0 (transparent) to 255 (opaque). The default value for the property 
+is 255 ($FF)(fully opaque). The AlphaChannel in a color is used in images which 
+have a TransparentMode where partial transparency is supported.
+</p>
+<p>
+AlphaChannel is used in widgetsets where the value is supported, and is 
+extracted from or combined with the color value as needed for the native dialog.
+</p>
+<remark>
+On the Windows platform, a control is not displayed for AlphaChannel on the 
+native color selection dialog. Only solid, fully-opaque colors are supported on 
+the dialog.
+</remark>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TColorDialog.Color"/>
+<link id="TColorDialog.CustomColors"/>
+<link id="TColorDialog.Options"/>
+<link id="TColorDialogOption"/>
 </seealso>
 </element>
 
@@ -2702,8 +2791,8 @@ the color.
 </p>
 <p>
 The default values in CustomColors are assigned in the Create constructor to 
-the standard and extended colors for the platform. It does not include the 
-equivalents for clDefault and clNone.
+the standard, extended, special, and system colors for the platform. It does 
+not include the equivalents for clDefault and clNone.
 </p>
 <p>
 Use Color to get the TColor value selected using the dialog when the Execute 
@@ -2724,7 +2813,8 @@ Indicates the optional features enabled (or disabled) for the color dialog.
 <p>
 <var>Options</var> is a <var>TColorDialogOptions</var> property which contains 
 the optional features used when the color dialog is executed. It contains zero 
-(0) or more values from the <link id="TColorDialogOption"/> enumeration; when a 
+(0) or more values from the 
+<link id="TColorDialogOption">TColorDialogOption</link> enumeration; when a 
 value is present in the set type, the feature is enabled for the dialog.
 </p>
 <p>
@@ -2732,15 +2822,12 @@ The default value for the property is defined in the
 <link id="DefaultColorDialogOptions"/> constant.
 </p>
 <p>
-Options is used by the widgetset to create the flag values associated with the 
-Handle created for the dialog.
+Options is used by the widgetset to create flags or alter settings for the 
+dialog implementation on the platform. Please note that some option values are 
+platform-specific, and not implemented for all platforms. See 
+<link id="TColorDialogOption">TColorDialogOption</link> for more information 
+about the option values and the platforms where they are utilized.
 </p>
-<remark>
-Options is currently enabled for the Windows widgetset only. Its implementation 
-is modeled on the use of flag values in the CHOOSECOLOR function from the 
-Windows API.
-(https://learn.microsoft.com/en-us/windows/win32/api/commdlg/ns-commdlg-choosecolora-r1)
-</remark>
 </descr>
 <version>
 Added in LCL version 4.0.
