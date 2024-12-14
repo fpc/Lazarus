@@ -293,7 +293,9 @@ type
     cdShowHelp,         // Causes the dialog box to display the Help button.
     cdSolidColor,       // Causes the dialog box to display only solid colors in the set of basic colors.
     cdAnyColor,         // Causes the dialog box to display all available colors in the set of basic colors.
-    cdShowAlphaChannel  // Shows the AlphaChannel control (GTK2, QT, QT5, QT6)
+    cdShowAlphaChannel, // Shows the AlphaChannel control (GTK2, QT, QT5, QT6)
+    cdNoButtons,        // Removes the buttons from the dialog (QT, QT5, QT6)
+    cdDontUseNativeDialog // Use QT dialog, not the dialog of the OS (QT, QT5, Qt6)
     );
   TColorDialogOptions = set of TColorDialogOption;
 

@@ -897,6 +897,10 @@ begin
   AOptions := 0; // here we add possible options from ColorDialog.Options, see QColorDialogColorDialogOptions for possible options.
   if (cdShowAlphaChannel in ColorDialog.Options) then
     AOptions := AOptions or QColorDialogShowAlphaChannel;
+  if (cdNoButtons in ColorDialog.Options) then
+    AOptions := AOptions or QColorDialogNoButtons;
+  if (cdDontUseNativeDialog in ColorDialog.Options) then
+    AOptions := AOptions or QColorDialogDontUseNativeDialog;
   QColorDialog_getColor(PQColor(@AQColorRet), PQColor(@AQColor), TQtWSCommonDialog.GetDialogParent(ACommonDialog), @ATitle, AOptions);
 
   ReturnBool := AQColorRet.ColorSpec <> 0;
