@@ -324,7 +324,7 @@ type
 
   { TColorSchemeAttribute }
 
-  TColorSchemeAttribute = class(TSynHighlighterLazCustumPasAttribute)
+  TColorSchemeAttribute = class(TSynHighlighterLazCustomPasAttribute)
   private
     FFeatures: TColorSchemeAttributeFeatures;
     FGroup: TAhaGroupName;
@@ -7053,9 +7053,9 @@ begin
       TSynHighlighterAttributesModifier(aDest).ForeAlpha := Src.ForeAlpha;
       TSynHighlighterAttributesModifier(aDest).BackAlpha := Src.BackAlpha;
       TSynHighlighterAttributesModifier(aDest).FrameAlpha := Src.FrameAlpha;
-      if aDest is TSynHighlighterLazCustumPasAttribute then begin
-        TSynHighlighterLazCustumPasAttribute(aDest).CustomWords.Assign(CustomWords);
-        TSynHighlighterLazCustumPasAttribute(aDest).CustomWordTokenKind := CustomWordTokenKind;
+      if aDest is TSynHighlighterLazCustomPasAttribute then begin
+        TSynHighlighterLazCustomPasAttribute(aDest).CustomWords.Assign(CustomWords);
+        TSynHighlighterLazCustomPasAttribute(aDest).CustomWordTokenKind := CustomWordTokenKind;
       end;
     end;
 
@@ -7098,7 +7098,7 @@ begin
   inherited Assign(Src);
   FFeatures := [hafBackColor, hafForeColor, hafFrameColor,
                 hafStyle, hafFrameStyle, hafFrameEdges, hafPrior];
-  if Src is TSynHighlighterLazCustumPasAttribute then
+  if Src is TSynHighlighterLazCustomPasAttribute then
     FFeatures := FFeatures + [hafCustomWords];
   if Src is TSynHighlighterAttributesModifier then
     FFeatures := FFeatures + [hafAlpha, hafStyleMask];
@@ -7338,7 +7338,7 @@ begin
       csa.Assign(hla);
       csa.Group := agnLanguage;
       if (FHighlighter <> nil) and (FHighlighter is TNonSrcIDEHighlighter) then
-        if hla is TSynHighlighterLazCustumPasAttribute then
+        if hla is TSynHighlighterLazCustomPasAttribute then
           csa.Features := [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafStyle, hafStyleMask, hafCustomWords]
         else
         if hla is TSynHighlighterAttributesModifier then
