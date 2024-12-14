@@ -857,11 +857,11 @@ end;
 class procedure TQtWSColorDialog.ShowModal(const ACommonDialog: TCommonDialog);
 var
   AColor: TColorRef;
-  AQColor: TQColor;
-  AQtColor: QColorH;
-  ARgb: QRgb;
+  AQColor, AQColorRet: TQColor;
   ReturnBool: Boolean;
+  ATitle: WideString;
   ColorDialog: TColorDialog absolute ACommonDialog;
+  AOptions: QColorDialogColorDialogOptions;
   {$IFDEF HASX11}
   AWND: HWND;
   {$ENDIF}
@@ -881,30 +881,35 @@ var
 
 begin
   AColor := ColorToRgb(ColorDialog.Color);
-  AQColor.Alpha := $FFFF;
+  AQColor.Alpha := Word(ColorDialog.AlphaChannel) * $0101;
   AQColor.ColorSpec := 1;
   AQColor.Pad := 0;
   ColorRefToTQColor(AColor, AQColor);
-  AQtColor := QColor_create(PQColor(@AQColor));
-  ARgb := QColor_rgba(AQtColor);
+
   FillCustomColors;
 
-  ARgb := QColorDialog_getRgba(ARgb, @ReturnBool,
-    TQtWSCommonDialog.GetDialogParent(ACommonDialog));
+  {$IFDEF HASX11}
+  Clipboard.BeginX11SelectionLock;
+  {$ENDIF}
 
-  QColor_fromRgba(PQColor(AQtColor), ARgb);
-  try
-    QColor_toRgb(AQtColor, @AQColor);
-    TQColorToColorRef(AQColor, AColor);
-    ColorDialog.Color := TColor(AColor);
-  finally
-    QColor_destroy(AQtColor);
-  end;
+  ATitle := UTF8ToUTF16(ACommonDialog.Title);
+  AQColorRet := Default(TQColor);
+  AOptions := 0; // here we add possible options from ColorDialog.Options, see QColorDialogColorDialogOptions for possible options.
+  if (cdShowAlphaChannel in ColorDialog.Options) then
+    AOptions := AOptions or QColorDialogShowAlphaChannel;
+  QColorDialog_getColor(PQColor(@AQColorRet), PQColor(@AQColor), TQtWSCommonDialog.GetDialogParent(ACommonDialog), @ATitle, AOptions);
+
+  ReturnBool := AQColorRet.ColorSpec <> 0;
 
   if ReturnBool then
-    ACommonDialog.UserChoice := mrOk
-  else
-    ACommonDialog.UserChoice := mrCancel;
+  begin
+    TQColorToColorRef(AQColorRet, AColor);
+    ColorDialog.Color := AColor;
+    ColorDialog.AlphaChannel := AQColorRet.Alpha and $FF;
+    ColorDialog.UserChoice := mrOk
+  end else
+    ColorDialog.UserChoice := mrCancel;
+
   {$IFDEF HASX11}
   if (QtWidgetSet.WindowManagerName = 'xfwm4') and (QApplication_activeModalWidget() <> nil) then
   begin
