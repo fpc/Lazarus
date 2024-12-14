@@ -203,7 +203,7 @@ begin
   if DoNotWarnCheckBox.Checked then
   begin
     IgnoreIdentifier:=GetIgnorePathForCompOptsAndMainSrcDiffer(CompOpts);
-    if IgnoreIdentifier<>'' then;
+    if IgnoreIdentifier<>'' then
       InputHistories.Ignores.Add(IgnoreIdentifier,iiidForever);
   end;
 
