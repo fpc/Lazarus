@@ -295,7 +295,8 @@ type
     cdAnyColor,         // Causes the dialog box to display all available colors in the set of basic colors.
     cdShowAlphaChannel, // Shows the AlphaChannel control (GTK2, QT, QT5, QT6)
     cdNoButtons,        // Removes the buttons from the dialog (QT, QT5, QT6)
-    cdDontUseNativeDialog // Use QT dialog, not the dialog of the OS (QT, QT5, Qt6)
+    cdDontUseNativeDialog, // Use QT dialog, not the dialog of the OS (QT, QT5, Qt6)
+    cdNoEyeDropperButton // Hide the Eye Dropper button. QT6.6+
     );
   TColorDialogOptions = set of TColorDialogOption;
 

@@ -12545,6 +12545,7 @@ const
   QColorDialogShowAlphaChannel =   $00000001;
   QColorDialogNoButtons =   $00000002;
   QColorDialogDontUseNativeDialog =   $00000004;
+  QColorDialogNoEyeDropperButton = $00000008;
 
 function QColorDialog_Create(parent: QWidgetH = nil): QColorDialogH; cdecl; external Qt6PasLib name 'QColorDialog_Create';
 procedure QColorDialog_Destroy(handle: QColorDialogH); cdecl; external Qt6PasLib name 'QColorDialog_Destroy'; 

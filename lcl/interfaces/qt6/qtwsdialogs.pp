@@ -923,6 +923,8 @@ begin
     AOptions := AOptions or QColorDialogNoButtons;
   if (cdDontUseNativeDialog in ColorDialog.Options) then
     AOptions := AOptions or QColorDialogDontUseNativeDialog;
+  if (cdNoEyeDropperButton in ColorDialog.Options) then
+    AOptions := AOptions or QColorDialogNoEyeDropperButton;
   ReturnBool := QColorDialog_getColor(@ARetColor, @AQColor, TQtWSCommonDialog.GetDialogParent(ACommonDialog), @ATitle, QColorDialogShowAlphaChannel);
   if ReturnBool then
   begin
