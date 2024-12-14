@@ -1285,7 +1285,7 @@ begin
   if AWinControl.HandleObjectShouldBeVisible then
   begin
     CocoaWidgetSet.ShowWindow(AWinControl.Handle, WindowStateToFlags[form.WindowState] );
-    if form.WindowState<>wsMinimized then;
+    if form.WindowState<>wsMinimized then
       TCocoaWSWinControl.ShowHide(AWinControl);
     // ShowHide() also actives (sets focus to) the window
     if not w.isKindOfClass(NSPanel) then
