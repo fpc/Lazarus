@@ -915,6 +915,7 @@ begin
     ColorDialog.UserChoice := mrCancel;
 
   {$IFDEF HASX11}
+  Clipboard.EndX11SelectionLock;
   if (QtWidgetSet.WindowManagerName = 'xfwm4') and (QApplication_activeModalWidget() <> nil) then
   begin
     AWND := HwndFromWidgetH(QApplication_activeModalWidget());
