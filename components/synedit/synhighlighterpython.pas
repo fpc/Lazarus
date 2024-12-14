@@ -1060,7 +1060,7 @@ begin
         inc(Run);
         fRange:=rsUnknown;
         EXIT;
-      end else if FLine[Run]='\' then ;  {The same backslash stuff above...}
+      end else if FLine[Run]='\' then {The same backslash stuff above...}
           begin
              if FLine[Run + 1] = fStringStarter then
                begin
