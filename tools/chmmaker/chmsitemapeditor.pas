@@ -281,7 +281,7 @@ begin
   ChmSiteMap := TChmSiteMap.Create(FSiteMapType);
   AStream. Position := 0;
   
-  if AStream.Size > 0 then;
+  if AStream.Size > 0 then
     ChmSiteMap.LoadFromStream(AStream);
   
   SitemapTree.Items.Clear;
