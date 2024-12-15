@@ -2716,14 +2716,17 @@ For the macOS Carbon widgetset, the Title property is not supported.
 
 <element name="TColorDialog.AlphaChannel">
 <short>
-Indicates the opacity or transparency for the color on the dialog.
+Indicates the opacity or transparency for the selected color.
 </short>
 <descr>
 <p>
 <var>AlphaChannel</var> is a Byte property which normally contains a value in 
 the range 0 (transparent) to 255 (opaque). The default value for the property 
 is 255 ($FF)(fully opaque). The AlphaChannel in a color is used in images which 
-have a TransparentMode where partial transparency is supported.
+have a TransparentMode where partial transparency is supported. AlphaChannel 
+indicates the opacity for pixels using the color. It allows the color to be 
+combined over other colors using alpha compositing. The more opaque a color, 
+the more it hides the background against which the color is presented.
 </p>
 <p>
 AlphaChannel is used in widgetsets where the value is supported, and is 
