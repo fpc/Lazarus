@@ -325,7 +325,7 @@ end;
 
 procedure TAddPkgDependencyDialog.OKButtonClick(Sender: TObject);
 var
-  NewDependency: TPkgDependency;
+  NewDependency: TPkgDependency = nil;
   MinVerTest, MaxVerTest: TPkgVersion;
   MinMaxVerFlags: TPkgDependencyFlags;
   i: Integer;
