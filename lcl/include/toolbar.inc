@@ -100,6 +100,12 @@ begin
   FNewStyle := True;
   FWrapable := True;
   FButtons := TList.Create;
+  FMenuButtons := TList.Create;
+  FSubMenuItems := TList.Create;
+  FSubMenu := TPopupMenu.Create(Self);
+  FMenuObserver := TTMPObserver.Create;
+  FMenuObserver.DoOnChange := @UpdateMenuItem;
+  FMenuObserver.DoOnFree := @RemoveMenu;
   FIndent := 1;
   FList := False;
   FImageChangeLink := TChangeLink.Create;
@@ -122,7 +128,16 @@ begin
     if TControl(FButtons[I]) is TToolButton then
       TToolButton(FButtons[I]).FToolBar := nil;
 
+  for I := 0 to FMenuButtons.Count - 1 do
+    if TControl(FMenuButtons[I]) is TSpeedButton then
+      TSpeedButton(FMenuButtons[I]).Free;
+
+  if Assigned(FMenu) then FMenu.FPODetachObserver(FMenuObserver);
   FreeThenNil(FButtons);
+  FreeThenNil(FMenuButtons);
+  FreeAndNil(FSubMenu);
+  FreeThenNil(FSubMenuItems);
+  FreeAndNil(FMenuObserver);
   FreeThenNil(FHotImageChangeLink);
   FreeThenNil(FImageChangeLink);
   FreeThenNil(FDisabledImageChangeLink);
@@ -242,6 +257,104 @@ begin
   FButtons.Remove(Button);
 end;
 
+procedure TToolBar.UpdateMenuItem(Sender: TObject);
+var
+  i, xpos, wglyph: Integer;
+  tmpMenuButton: TSpeedButton;
+begin
+  xpos := 0;
+  while (FMenuButtons.Count > 0) do
+  begin
+    i := FMenuButtons.Count - 1;
+    tmpMenuButton := TSpeedButton(FMenuButtons.Items[i]);
+    FMenuButtons.Delete(i);
+    FreeAndNil(tmpMenuButton);
+  end;
+
+  if not Assigned(FMenu) then Exit;
+
+  for i := 0 to FMenu.Items.Count-1 do
+  if FMenu.Items[i].Visible then
+  begin
+    tmpMenuButton := TSpeedButton.Create(Self);
+    tmpMenuButton.AutoSize := False;
+    tmpMenuButton.Align := alNone;
+    tmpMenuButton.Alignment := taCenter;
+    tmpMenuButton.Height := FMenu.Height;
+    tmpMenuButton.Left := xpos;
+    tmpMenuButton.Flat := True;
+    tmpMenuButton.ParentFont := True;
+    tmpMenuButton.Color := Self.Color;
+    tmpMenuButton.ShowCaption := True;
+    tmpMenuButton.Caption := FMenu.Items[i].Caption;
+    tmpMenuButton.Enabled := FMenu.Items[i].Enabled;
+    tmpMenuButton.Visible := FMenu.Items[i].Visible;
+    tmpMenuButton.Margin := -1;
+    tmpMenuButton.Spacing := 7;
+    tmpMenuButton.Tag := i;
+    wglyph := 0;
+    tmpMenuButton.Images := nil;
+    if Assigned(FMenu.Images) and (FMenu.Items[i].ImageIndex >= 0) then
+      if FMenu.Items[i].ImageIndex < FMenu.Images.Count then
+      begin
+        FMenu.Images.GetBitmap(FMenu.Items[i].ImageIndex, tmpMenuButton.Glyph);
+        wglyph := tmpMenuButton.Glyph.Width + 5;
+      end;
+    tmpMenuButton.OnClick := @MenuButtonClick;
+    tmpMenuButton.Parent := Self;
+    if FMenu.Items[i].Default then tmpMenuButton.Font.Style := [fsBold];
+    tmpMenuButton.Width := Self.Canvas.TextWidth(FMenu.Items[i].Caption) + wglyph + 14;
+    tmpMenuButton.Constraints.MinWidth := tmpMenuButton.Width;
+    tmpMenuButton.Constraints.MaxWidth := tmpMenuButton.Width;
+    tmpMenuButton.Update;
+    Inc(xpos, tmpMenuButton.Width);
+    FMenuButtons.Add(tmpMenuButton);
+  end;
+end;
+
+procedure TToolBar.RemoveMenu(Sender: TObject);
+begin
+  FMenu.FPODetachObserver(FMenuObserver);
+  FMenu := nil;
+end;
+
+procedure TToolBar.SubMenuItemClick(Sender: TObject);
+var
+  tmpMI: TMenuItem;
+begin
+  tmpMI := TMenuItem(FSubMenuItems.Items[TMenuItem(Sender).Tag]);
+  if Assigned(tmpMI) then tmpMI.Click;
+end;
+
+procedure TToolBar.MenuButtonClick(Sender: TObject);
+var
+  MenuButton: TSpeedButton;
+  SubMenuPos: TPoint;
+
+  procedure PrepSubMenuItem(SubMenuItemIn, SubMenuItemOut: TMenuItem);
+  var
+    i: Integer;
+  begin
+    for i := 0 to SubMenuItemIn.Count - 1 do
+    begin
+      FSubMenuItems.Add(SubMenuItemIn.Items[i]);
+      SubMenuItemOut.Items[i].Tag := FSubMenuItems.Count - 1;
+      SubMenuItemOut.Items[i].OnClick := @SubMenuItemClick;
+      if SubMenuItemIn.Items[i].Count > 0 then PrepSubMenuItem(SubMenuItemIn.Items[i], SubMenuItemOut.Items[i]);
+    end;
+  end;
+
+begin
+  MenuButton := TSpeedButton(Sender);
+  if Assigned(FMenu.Items[MenuButton.Tag].OnClick) then FMenu.Items[MenuButton.Tag].Click;
+  if FMenu.Items[MenuButton.Tag].Count = 0 then Exit;
+  FSubMenu.Items.Assign(FMenu.Items[MenuButton.Tag]);
+  FSubMenuItems.Clear;
+  PrepSubMenuItem(FMenu.Items[MenuButton.Tag], FSubMenu.Items);
+  SubMenuPos := ClientToScreen(TPoint.Create(MenuButton.Left, MenuButton.Top + MenuButton.Height));
+  FSubMenu.PopUp(SubMenuPos.X, SubMenuPos.Y);
+end;
+
 function TToolBar.IsVertical: Boolean;
 begin
   case FOrientation of
@@ -304,6 +417,18 @@ begin
   UpdateVisibleBar;
 end;
 
+procedure TToolBar.SetMenu(AValue: TMainMenu);
+begin
+  if FMenu = AValue then Exit;
+  if Assigned(FMenu) then
+  begin
+    FMenu.FPODetachObserver(FMenuObserver);
+  end;
+  FMenu := AValue;
+  if Assigned(FMenu) then FMenu.FPOAttachObserver(FMenuObserver);
+  UpdateVisibleBar;
+end;
+
 procedure TToolBar.SetOrientation(AValue: TToolBarOrientation);
 begin
   if FOrientation = AValue then Exit;
@@ -341,6 +466,7 @@ begin
   inherited Notification(AComponent, Operation);
   if Operation = opRemove then
   begin
+    if AComponent = FMenu then Menu := nil;
     if AComponent = FImages then Images := nil;
     if AComponent = FHotImages then HotImages := nil;
     if AComponent = FDisabledImages then DisabledImages := nil;
@@ -434,6 +560,7 @@ begin
     Include(FToolBarFlags,tbfUpdateVisibleBarNeeded);
     Exit;
   end;
+  UpdateMenuItem(Self);
   for i := 0 to FButtons.Count - 1 do
   begin
     TControl(FButtons[i]).InvalidatePreferredSize;
@@ -472,6 +599,9 @@ begin
 end;
 
 procedure TToolBar.EndUpdate;
+var
+  i: Integer;
+  tmpMenuItem: TMenuItem;
 begin
   inherited EndUpdate;
   if FUpdateCount=0 then begin
@@ -1130,3 +1260,25 @@ begin
   Button.Click;
 end;
 
+{ TToolBar.TTMPObserver }
+
+procedure TToolBar.TTMPObserver.FPOObservedChanged(ASender: TObject;
+  Operation: TFPObservedOperation; Data: Pointer);
+begin
+  case Operation of
+    ooFree: if Assigned(DoOnFree) then DoOnFree(ASender);
+    ooChange: if Assigned(DoOnChange) then DoOnChange(ASender);
+  end;
+end;
+
+procedure TToolBar.TTMPObserver.SetDoOnChange(AValue: TNotifyEvent);
+begin
+  if FDoOnChange = AValue then Exit;
+  FDoOnChange := AValue;
+end;
+
+procedure TToolBar.TTMPObserver.SetDoOnFree(AValue: TNotifyEvent);
+begin
+  if FDoOnFree = AValue then Exit;
+  FDoOnFree := AValue;
+end;

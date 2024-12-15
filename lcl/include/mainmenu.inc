@@ -47,6 +47,7 @@ begin
   // pass CM_MENUCANGED to the form which own the menu
   if WindowHandle <> 0 then
     SendMessage(WindowHandle, CM_MENUCHANGED, 0, 0);
+  Self.FPONotifyObservers(Sender, ooChange, nil);
   inherited MenuChanged(Sender, Source, Rebuild);
 end;
 

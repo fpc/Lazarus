@@ -1269,6 +1269,7 @@ begin
   FCaption := AValue;
   if HandleAllocated and ((Parent <> nil) or (FMenu = nil)) then
     TWSMenuItemClass(WidgetSetClass).SetCaption(Self, AValue);
+  MenuChanged(False);
   OwnerFormDesignerModified(Self);
 end;
 
@@ -1620,6 +1621,7 @@ begin
     if MergedParent<>nil then
       MergedParent.InvalidateMergedItems;
   end;
+  MenuChanged(False);
 end;
 
 procedure TMenuItem.UpdateImage(forced: Boolean);
