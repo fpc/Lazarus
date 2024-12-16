@@ -247,7 +247,8 @@ var
 begin
   fFilteredData.Clear;
 
-  if fOriginalData.Modified then begin
+  // TODO: keep track of changes to FOwner>SortData / Filter => optimize if they have not changed
+  //if fOriginalData.Modified then begin
     fSortedData.Assign(fOriginalData);
     if fOwner.SortData then begin
       for i := 0 to fSortedData.Count - 1 do
@@ -261,7 +262,7 @@ begin
       MergeSortWithLen(PPointer(fSortedData.FList.List^), fSortedData.Count, @DoCompFN);
     end;
     fOriginalData.Modified := False; // fSortedData is up to date
-  end;
+  //end;
   fDisplayedData:=fSortedData;
 
   if (fOwner.Filter<>'') then begin
