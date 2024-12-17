@@ -89,6 +89,7 @@ type
   private
     fOwner: TTreeFilterEdit;
     fRootNode: TTreeNode;
+    fDataFlags: set of (fbDataSorted, fbDataShowDirHierarchy);
     fOriginalData: TTreeFilterBranchStringList;       // Data supplied by caller.
     fSortedData: TTreeFilterBranchStringList;     // Data sorted for viewing.
     fFilteredData: TTreeFilterBranchStringList;   // Data sorted and filtered for viewing. (only if filter is set)
@@ -244,11 +245,14 @@ procedure TTreeFilterBranch.SortAndFilter;
 var
   i: Integer;
   o: TTreeFilterBranchStringListItem;
+  NewFlags: set of low(fDataFlags)..high(fDataFlags);
 begin
   fFilteredData.Clear;
+  NewFlags := [];
+  if fOwner.SortData then Include(NewFlags, fbDataSorted);
+  if fOwner.fShowDirHierarchy then Include(NewFlags, fbDataShowDirHierarchy);
 
-  // TODO: keep track of changes to FOwner>SortData / Filter => optimize if they have not changed
-  //if fOriginalData.Modified then begin
+  if fOriginalData.Modified or (fDataFlags <> NewFlags) then begin
     fSortedData.Assign(fOriginalData);
     if fOwner.SortData then begin
       for i := 0 to fSortedData.Count - 1 do
@@ -262,8 +266,9 @@ begin
       MergeSortWithLen(PPointer(fSortedData.FList.List^), fSortedData.Count, @DoCompFN);
     end;
     fOriginalData.Modified := False; // fSortedData is up to date
-  //end;
+  end;
   fDisplayedData:=fSortedData;
+  fDataFlags := NewFlags;
 
   if (fOwner.Filter<>'') then begin
     fFilteredData.Capacity := fSortedData.Count div 2;
