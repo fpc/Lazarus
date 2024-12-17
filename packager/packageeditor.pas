@@ -2486,7 +2486,7 @@ begin
 
     // move up/down (only single selection)
     aVisible := (FilterEdit.Filter='')
-       and (not (SortAlphabetically or SingleSelectedRemoved))
+       and (not (SortAlphabetically or ShowDirectoryHierarchy or SingleSelectedRemoved))
        and ((SingleSelectedFile<>nil) or (SingleSelectedDep<>nil));
     MoveUpBtn.Enabled  :=aVisible and Assigned(SingleSelectedNode.GetPrevVisibleSibling);
     MoveDownBtn.Enabled:=aVisible and Assigned(SingleSelectedNode.GetNextVisibleSibling);
