@@ -265,6 +265,7 @@ type
     procedure SetShortCut(Value: TShortCut); virtual;
     procedure SetVisible(Value: Boolean); virtual;
   public
+    function Update: Boolean; override;
     function IsCaptionLinked: Boolean; virtual;
     function IsCheckedLinked: Boolean; virtual;
     function IsEnabledLinked: Boolean; virtual;
