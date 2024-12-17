@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-12-26 15:21+0100\n"
-"PO-Revision-Date: 2024-08-28 14:15+0200\n"
+"PO-Revision-Date: 2024-12-17 09:11+0100\n"
 "Last-Translator: Slavko <slavino@slavino.sk>\n"
 "Language-Team: Slovenský <sk@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1333,7 +1333,7 @@ msgstr "Rozsah"
 
 #: lazarusidestrconsts.dlgcorelocatable
 msgid "Relocatable"
-msgstr ""
+msgstr "Premiestniteľná"
 
 #: lazarusidestrconsts.dlgcosetasdefault
 msgid "Set compiler options as default"
@@ -1345,7 +1345,7 @@ msgstr "Zobraziť voľby"
 
 #: lazarusidestrconsts.dlgcosmartlinkable
 msgid "Smart linkable"
-msgstr "Smart linkovateľné"
+msgstr "Smart linkovateľná"
 
 #: lazarusidestrconsts.dlgcosources
 msgid "Other sources (.pp/.pas files, used only by IDE not by compiler)"
@@ -1398,7 +1398,7 @@ msgstr "Generovať kód pre valgrind"
 
 #: lazarusidestrconsts.dlgcoverbosity
 msgid "Verbosity"
-msgstr ""
+msgstr "Výrečnosť"
 
 #: lazarusidestrconsts.dlgcppinline
 msgid "C++ styled INLINE"
@@ -3490,10 +3490,8 @@ msgid "Outline"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpassoptslinker
-#, fuzzy
-#| msgid "Pass options to linker (delimiter is space)"
 msgid "Pass options to linker with \"-k\", delimiter is space"
-msgstr "Poslať voľby linkovaču (oddeľovač je medzera)"
+msgstr "Odovzdať voľby spojovaciemu programu s \"-k\" (oddeľovač je medzera)"
 
 #: lazarusidestrconsts.dlgpasstringkeywords
 msgid "Highlight \"String\" keyword(s)"
@@ -6336,7 +6334,7 @@ msgstr ""
 #: lazarusidestrconsts.lischeckfordiskfilechangesviacontent
 msgctxt "lazarusidestrconsts.lischeckfordiskfilechangesviacontent"
 msgid "Check for disk file changes via content rather than timestamp"
-msgstr ""
+msgstr "Kontrolovať zmeny súborov na disku prostredníctvom obsahu a nie časovej pečiatky"
 
 #: lazarusidestrconsts.lischeckifpackagecreatesppuchecknothingdeletesthisfil
 #, object-pascal-format
@@ -8904,11 +8902,11 @@ msgstr "Chyba čítania súboru: %s"
 
 #: lazarusidestrconsts.lisdiskdiffignorealldiskchanges
 msgid "Ignore all disk changes"
-msgstr ""
+msgstr "Ignorovať všetky zmeny na disku"
 
 #: lazarusidestrconsts.lisdiskdiffreloadcheckedfilesfromdisk
 msgid "Reload checked files from disk"
-msgstr ""
+msgstr "Znovu načítať začiarknuté súbory z disku"
 
 #: lazarusidestrconsts.lisdiskdiffsomefileshavechangedondisk
 msgid "Some files have changed on disk:"
@@ -10528,7 +10526,7 @@ msgstr "Vlastnosti:"
 
 #: lazarusidestrconsts.lishlpoptsviewers
 msgid "Viewers"
-msgstr "Prehliadača"
+msgstr "Prehliadače"
 
 #: lazarusidestrconsts.lishofpcdochtmlpath
 msgid "FPC Doc HTML Path"
@@ -10574,7 +10572,7 @@ msgstr "IDE bude znova preložené a reštartované počas inštalácie/odinšta
 #: lazarusidestrconsts.lisideconficurationfoundmaybelongtootherlazarus
 #, object-pascal-format
 msgid "Welcome to Lazarus.%0:sThe IDE configuration found was previously used by another installation of Lazarus.%0:sIf you have two or more separate installations of Lazarus, they should not share the same configuration. This may lead to conflicts and your Lazarus installations may become unusable.%0:s%0:sIf you have only one installation and copied or moved the Lazarus executable, then you may upgrade this configuration.%0:s%1:s%0:s%0:sChoose:%0:s%0:s* Update info: Use this configuration and update it for being used with this Lazarus in future. The old installation will no longer use this.%0:s* Ignore: Use this configuration but keep the warning. This may lead to conflicts with the other installation.%0:s* Abort: Exit now. You can then fix the problem by starting this Lazarus with the correct configuration.%0:s%0:sAdditional information:%0:sThis configuration is at: %2:s%0:sIt belongs to the Lazarus installation at: %3:s%0:sThe current IDE was started from: %4:s%0:s"
-msgstr ""
+msgstr "Vitajte v Lazarus IDE.%0:sNájdená konfigurácia IDE bola predtým použitá v inej inštalácii programu Lazarus.%0:sAk máte dve alebo viac samostatných inštalácií Lazarusu, nemali by zdieľať rovnakú konfiguráciu. To môže viesť ku konfliktom a inštalácie Lazarusu sa môžu stať nepoužiteľnými.%0:s%0:sAk máte len jednu inštaláciu a skopírovali ste alebo presunuli spustiteľný súbor Lazarus, môžete túto konfiguráciu aktualizovať.%0:s%1:s%0:s%0:sVyberte si:%0:s%0:s* Informácia o aktualizácii: Použiť túto konfiguráciu a aktualizovať ju pre použitie s týmto Lazarusom v budúcnosti. Stará inštalácia ju už nebude používať.%0:s* Ignorovať: Použiť túto konfiguráciu, ale ponechať upozornenie. Môže to viesť ku konfliktom s inou inštaláciou.%0:s* Prerušiť: Ukončiť hneď. Problém potom môžete vyriešiť spustením tohto programu Lazarus so správnou konfiguráciou.%0:s%0:sDoplňujúce informácie:%0:sTáto konfigurácia je na: %2:s%0:sPatrí k inštalácii Lazarus na: %3:s%0:sAktuálne IDE bolo spustené z: %4:s%0:s"
 
 #: lazarusidestrconsts.lisideinfoinformationabouttheide
 msgid "Information about the IDE"
@@ -12072,7 +12070,7 @@ msgstr "Odkaz:"
 
 #: lazarusidestrconsts.lislinkeroptions
 msgid "linker options"
-msgstr "voľby linkera"
+msgstr "voľby spojovacieho programu"
 
 #: lazarusidestrconsts.lislinktarget
 msgid "Link target"
@@ -12465,7 +12463,7 @@ msgstr "Pridať podmenu pod vybratú položku"
 
 #: lazarusidestrconsts.lismenueditoraddfromtemplate
 msgid "&Add from template ..."
-msgstr ""
+msgstr "Pridať zo šablóny ..."
 
 #: lazarusidestrconsts.lismenueditoraddiconfroms
 #, object-pascal-format
@@ -12498,7 +12496,7 @@ msgstr "Pridať &novú položku pod"
 
 #: lazarusidestrconsts.lismenueditoraddonclickhandler
 msgid "Add &OnClick handler"
-msgstr ""
+msgstr "Pridať obsluhu &OnClick"
 
 #: lazarusidestrconsts.lismenueditoraddseparatorafter
 msgid "Add separator &after"
@@ -12548,7 +12546,7 @@ msgstr ""
 #: lazarusidestrconsts.lismenueditorcaptioneditemss
 #, object-pascal-format
 msgid "Captioned items: %s"
-msgstr ""
+msgstr "Položky s titulkami: %s"
 
 #: lazarusidestrconsts.lismenueditorcaptionshouldnotbeblank
 msgid "Caption should not be blank"
@@ -12615,7 +12613,7 @@ msgstr ""
 #: lazarusidestrconsts.lismenueditordeepestnestedmenulevels
 #, object-pascal-format
 msgid "Deepest nested menu level: %s"
-msgstr ""
+msgstr "Najhlbšie vnorená úroveň menu: %s"
 
 #: lazarusidestrconsts.lismenueditordeleteitem
 msgid "&Delete item"
@@ -12623,11 +12621,11 @@ msgstr "Zmazať položku"
 
 #: lazarusidestrconsts.lismenueditordeletemenutemplate
 msgid "&Delete menu template ..."
-msgstr ""
+msgstr "Zmazať šablónu menu ..."
 
 #: lazarusidestrconsts.lismenueditordeletesavedmenutemplate
 msgid "Delete saved menu template"
-msgstr ""
+msgstr "Zmazať uloženú šablónu menu"
 
 #: lazarusidestrconsts.lismenueditordeleteselectedmenutemplate
 msgid "Delete selected menu template"
@@ -12643,7 +12641,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditoreditcaption
 msgid "Edit &Caption"
-msgstr ""
+msgstr "Upraviť titulok"
 
 #: lazarusidestrconsts.lismenueditoreditingcaptionofs
 #, object-pascal-format
@@ -12846,15 +12844,15 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditorsavedtemplates
 msgid "Saved templates"
-msgstr ""
+msgstr "Uložené šablóny"
 
 #: lazarusidestrconsts.lismenueditorsavemenuasatemplate
 msgid "&Save menu as a template ..."
-msgstr ""
+msgstr "Uložiť menu ako šablónu ..."
 
 #: lazarusidestrconsts.lismenueditorsavemenuastemplate
 msgid "Save menu as template"
-msgstr ""
+msgstr "Uložiť menu ako šablónu"
 
 #: lazarusidestrconsts.lismenueditorsavemenuastemplateforfutureuse
 msgid "Save menu as template for future use"
@@ -12876,7 +12874,7 @@ msgstr "Oddelovače"
 #: lazarusidestrconsts.lismenueditorshortcutitemss
 #, object-pascal-format
 msgid "Shortcut items: %s"
-msgstr ""
+msgstr "Položky so skratkami: %s"
 
 #: lazarusidestrconsts.lismenueditorshortcutnotyetchanged
 msgid "Shortcut not yet changed"
@@ -12884,11 +12882,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditorshortcuts
 msgid "Shortcuts"
-msgstr ""
+msgstr "Klávesové skratky"
 
 #: lazarusidestrconsts.lismenueditorshortcuts2
 msgid "Shortc&uts"
-msgstr ""
+msgstr "Klávesové skratky"
 
 #: lazarusidestrconsts.lismenueditorshortcutsandacceleratorkeys
 msgid "Shortcuts and Accelerator keys"
@@ -15228,7 +15226,7 @@ msgstr "Licencia"
 
 #: lazarusidestrconsts.lispckoptslinker
 msgid "Linker"
-msgstr "Linkovač"
+msgstr "Spojovací program"
 
 #: lazarusidestrconsts.lispckoptsmajor
 msgid "Major"
@@ -17819,7 +17817,7 @@ msgstr ""
 
 #: lazarusidestrconsts.listheconfigurationwillbedowngradedconverted
 msgid "The configuration will be downgraded/converted."
-msgstr ""
+msgstr "Konfigurácia bude znížená/konvertovaná."
 
 #: lazarusidestrconsts.listhecontainsanotexistingdirectory
 #, object-pascal-format
@@ -18002,7 +18000,7 @@ msgstr "Nová jednotka zatiaľ nie je v ceste hľadaní jednotiek.%sPridať adre
 
 #: lazarusidestrconsts.listheoldconfigurationwillbeupgraded
 msgid "The old configuration will be upgraded."
-msgstr ""
+msgstr "Stará konfigurácia bude aktualizovaná."
 
 #: lazarusidestrconsts.listheothersourcescontainsadirectorywhichisalreadyint
 #, object-pascal-format
@@ -18110,7 +18108,7 @@ msgstr "Spustenie aplikácie s debugerom"
 
 #: lazarusidestrconsts.listheprojectdoesnotusedwarf_taskdlg_footer
 msgid "This choice can be later changed in Project -> Project Options -> Compiler Options -> Debugging."
-msgstr ""
+msgstr "Táto voľba môže byť neskôr zmenená v Projekt -> Voľby projektu -> Voľby prekladača -> Ladenie."
 
 #: lazarusidestrconsts.listheprojectdoesnotusedwarf_taskdlg_nodebugbtn_caption
 msgid "Run with no debugger"
@@ -19178,11 +19176,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisupgrade
 msgid "Upgrade"
-msgstr ""
+msgstr "Aktualizácia"
 
 #: lazarusidestrconsts.lisupgradeconfiguration
 msgid "Upgrade configuration"
-msgstr ""
+msgstr "Aktualizácia konfigurácie"
 
 #: lazarusidestrconsts.lisuppercasestring
 msgid "uppercase string"
