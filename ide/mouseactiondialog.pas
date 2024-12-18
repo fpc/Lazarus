@@ -22,9 +22,9 @@ var
 
 type
 
-  { TMouseaActionDialog }
+  { TMouseActionDialog }
 
-  TMouseaActionDialog = class(TForm)
+  TMouseActionDialog = class(TForm)
     ActionBox: TComboBox;
     ActionLabel: TLabel;
     AltCheck: TCheckBox;
@@ -95,9 +95,9 @@ begin
   Result := -1;
 end;
 
-{ MouseaActionDialog }
+{ MouseActionDialog }
 
-procedure TMouseaActionDialog.AddMouseCmd(const S: string);
+procedure TMouseActionDialog.AddMouseCmd(const S: string);
 var
   i: Integer;
   s2: String;
@@ -112,7 +112,7 @@ begin
   end;
 end;
 
-procedure TMouseaActionDialog.FillListbox;
+procedure TMouseActionDialog.FillListbox;
 var
   r: TSynMAUpRestriction;
   s: string;
@@ -132,7 +132,7 @@ begin
     end;
 end;
 
-procedure TMouseaActionDialog.CreateHandle;
+procedure TMouseActionDialog.CreateHandle;
 const
   cCheckSize=35;
 var
@@ -149,7 +149,7 @@ begin
   end;
 end;
 
-procedure TMouseaActionDialog.FormCreate(Sender: TObject);
+procedure TMouseActionDialog.FormCreate(Sender: TObject);
 var
   mb: TSynMouseButton;
   cc: TSynMAClickCount;
@@ -200,7 +200,7 @@ begin
   OptBox.DropDownCount := EnvironmentOptions.DropDownCount;
 end;
 
-procedure TMouseaActionDialog.ResetInputs;
+procedure TMouseActionDialog.ResetInputs;
 var
   r: TSynMAUpRestriction;
 begin
@@ -218,20 +218,20 @@ begin
   OptBox.ItemIndex := 0;
 end;
 
-procedure TMouseaActionDialog.BtnDefaultClick(Sender: TObject);
+procedure TMouseActionDialog.BtnDefaultClick(Sender: TObject);
 begin
   ShiftCheck.State := cbGrayed;
   AltCheck.State := cbGrayed;
   CtrlCheck.State := cbGrayed;
 end;
 
-procedure TMouseaActionDialog.ButtonBoxChange(Sender: TObject);
+procedure TMouseActionDialog.ButtonBoxChange(Sender: TObject);
 begin
   DirCheck.Enabled := not(IndexToBtn[ButtonBox.ItemIndex] in [mbXWheelUp, mbXWheelDown, mbXWheelLeft, mbXWheelRight]);
   chkUpRestrict.Enabled := DirCheck.Enabled and DirCheck.Checked;
 end;
 
-procedure TMouseaActionDialog.ActionBoxChange(Sender: TObject);
+procedure TMouseActionDialog.ActionBoxChange(Sender: TObject);
 var
   ACmd: TSynEditorMouseCommand;
   i: Integer;
@@ -265,7 +265,7 @@ begin
   end;
 end;
 
-procedure TMouseaActionDialog.CapturePanelMouseDown(Sender: TObject;
+procedure TMouseActionDialog.CapturePanelMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   ButtonBox.ItemIndex := BtnToIndex[SynMouseButtonMap[Button]];
@@ -278,12 +278,12 @@ begin
   CtrlCheck.Checked  := ssCtrl in Shift;
 end;
 
-procedure TMouseaActionDialog.DirCheckChange(Sender: TObject);
+procedure TMouseActionDialog.DirCheckChange(Sender: TObject);
 begin
   chkUpRestrict.Enabled := DirCheck.Checked;
 end;
 
-procedure TMouseaActionDialog.PaintBox1MouseWheel(Sender: TObject; Shift: TShiftState;
+procedure TMouseActionDialog.PaintBox1MouseWheel(Sender: TObject; Shift: TShiftState;
   WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
 begin
   if WheelDelta > 0
@@ -295,7 +295,7 @@ begin
   CtrlCheck.Checked  := ssCtrl in Shift;
 end;
 
-procedure TMouseaActionDialog.PaintBox1MouseWheelHorz(Sender: TObject;
+procedure TMouseActionDialog.PaintBox1MouseWheelHorz(Sender: TObject;
   Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint;
   var Handled: Boolean);
 begin
@@ -308,7 +308,7 @@ begin
   CtrlCheck.Checked  := ssCtrl in Shift;
 end;
 
-procedure TMouseaActionDialog.ReadFromAction(MAct: TSynEditMouseAction);
+procedure TMouseActionDialog.ReadFromAction(MAct: TSynEditMouseAction);
 var
   r: TSynMAUpRestriction;
 begin
@@ -338,7 +338,7 @@ begin
   end;
 end;
 
-procedure TMouseaActionDialog.WriteToAction(MAct: TSynEditMouseAction);
+procedure TMouseActionDialog.WriteToAction(MAct: TSynEditMouseAction);
 var
   r: TSynMAUpRestriction;
 begin

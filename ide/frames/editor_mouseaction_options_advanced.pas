@@ -104,7 +104,7 @@ type
     FCurActions: TSynEditMouseActions;
 
     FSort, FOtherSort: Array [1..4] of Integer;
-    ChangeDlg: TMouseaActionDialog;
+    ChangeDlg: TMouseActionDialog;
 
     FColWidths: Array of Integer;
     FLastWidth: Integer;
@@ -598,7 +598,7 @@ end;
 constructor TEditorMouseOptionsAdvFrame.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  ChangeDlg := TMouseaActionDialog.Create(self);
+  ChangeDlg := TMouseActionDialog.Create(self);
 end;
 
 destructor TEditorMouseOptionsAdvFrame.Destroy;

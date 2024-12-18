@@ -43,13 +43,12 @@ object EditorMouseOptionsAdvFrame: TEditorMouseOptionsAdvFrame
     Align = alLeft
     AutoExpand = True
     Constraints.MinWidth = 50
-    DefaultItemHeight = 18
     ReadOnly = True
     ShowButtons = False
     ShowRoot = False
     TabOrder = 1
-    OnChange = ContextTreeChange
     Options = [tvoAutoExpand, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowLines, tvoToolTips, tvoNoDoubleClickExpand, tvoThemedDraw]
+    OnChange = ContextTreeChange
   end
   object Splitter1: TSplitter
     Left = 130
@@ -65,6 +64,7 @@ object EditorMouseOptionsAdvFrame: TEditorMouseOptionsAdvFrame
     Width = 610
     AutoSize = True
     ButtonHeight = 46
+    ButtonWidth = 23
     Caption = 'ToolBar1'
     EdgeBorders = []
     ShowCaptions = True
@@ -83,8 +83,8 @@ object EditorMouseOptionsAdvFrame: TEditorMouseOptionsAdvFrame
     end
     object ToolButton3: TToolButton
       Left = 139
+      Height = 5
       Top = 0
-      Width = 5
       Caption = 'ToolButton3'
       Style = tbsDivider
     end
@@ -148,9 +148,9 @@ object EditorMouseOptionsAdvFrame: TEditorMouseOptionsAdvFrame
         AutoSize = True
         Caption = 'OtherActToggleBox'
         Checked = True
-        OnChange = OtherActToggleBoxChange
         State = cbChecked
         TabOrder = 0
+        OnChange = OtherActToggleBoxChange
       end
     end
     object OtherActionGrid: TStringGrid
@@ -194,13 +194,13 @@ object EditorMouseOptionsAdvFrame: TEditorMouseOptionsAdvFrame
     DefaultExt = '.xml'
     Filter = 'xml|*.xml|any|*.*'
     Options = [ofOverwritePrompt, ofPathMustExist, ofEnableSizing, ofViewDetail]
-    left = 24
-    top = 184
+    Left = 24
+    Top = 184
   end
   object OpenDialog1: TOpenDialog
     DefaultExt = '.xml'
     Options = [ofPathMustExist, ofFileMustExist, ofEnableSizing, ofViewDetail]
-    left = 72
-    top = 184
+    Left = 72
+    Top = 184
   end
 end

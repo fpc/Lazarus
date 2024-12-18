@@ -1,16 +1,16 @@
-object MouseaActionDialog: TMouseaActionDialog
+object MouseActionDialog: TMouseActionDialog
   Left = 412
   Height = 449
   Top = 225
   Width = 627
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
-  Caption = 'MouseaActionDialog'
+  Caption = 'MouseActionDialog'
   ClientHeight = 449
   ClientWidth = 627
-  OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '4.99.0.0'
+  OnCreate = FormCreate
   object BtnLabel: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideRight.Control = ActionLabel
@@ -83,6 +83,7 @@ object MouseaActionDialog: TMouseaActionDialog
     ClientHeight = 68
     ClientWidth = 368
     Color = clBtnShadow
+    ParentBackground = False
     ParentColor = False
     TabOrder = 13
     OnMouseDown = CapturePanelMouseDown
@@ -148,8 +149,8 @@ object MouseaActionDialog: TMouseaActionDialog
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'BtnDefault'
-    OnClick = BtnDefaultClick
     TabOrder = 11
+    OnClick = BtnDefaultClick
   end
   object CaretCheck: TCheckBox
     AnchorSideLeft.Control = ActionBox
@@ -176,9 +177,9 @@ object MouseaActionDialog: TMouseaActionDialog
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
     ItemHeight = 15
-    OnChange = ActionBoxChange
     Style = csDropDownList
     TabOrder = 0
+    OnChange = ActionBoxChange
   end
   object ButtonPanel1: TButtonPanel
     AnchorSideLeft.Control = Owner
@@ -283,9 +284,9 @@ object MouseaActionDialog: TMouseaActionDialog
     Width = 147
     Anchors = [akTop, akLeft, akRight]
     ItemHeight = 15
-    OnChange = ButtonBoxChange
     Style = csDropDownList
     TabOrder = 5
+    OnChange = ButtonBoxChange
   end
   object ClickBox: TComboBox
     AnchorSideLeft.Control = ButtonBox
@@ -313,7 +314,7 @@ object MouseaActionDialog: TMouseaActionDialog
     Width = 68
     BorderSpacing.Top = 6
     Caption = 'DirCheck'
-    OnChange = DirCheckChange
     TabOrder = 7
+    OnChange = DirCheckChange
   end
 end
