@@ -661,6 +661,8 @@ end;
 procedure TCocoaManualScrollView.lclClearCallback;
 begin
   callback := nil;
+  if Assigned(self.documentView) then
+    self.documentView.lclClearCallback;
 end;
 
 function TCocoaManualScrollView.lclContentView: NSView;
@@ -1121,6 +1123,8 @@ end;
 procedure TCocoaScrollView.lclClearCallback;
 begin
   callback := nil;
+  if Assigned(self.documentView) then
+    self.documentView.lclClearCallback;
 end;
 
 { TCocoaScrollBar }
