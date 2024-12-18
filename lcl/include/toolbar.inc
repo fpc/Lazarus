@@ -330,6 +330,7 @@ procedure TToolBar.MenuButtonClick(Sender: TObject);
 var
   MenuButton: TSpeedButton;
   SubMenuPos: TPoint;
+  tmpMI: TMenuItem;
 
   procedure PrepSubMenuItem(SubMenuItemIn, SubMenuItemOut: TMenuItem);
   var
@@ -337,20 +338,40 @@ var
   begin
     for i := 0 to SubMenuItemIn.Count - 1 do
     begin
-      FSubMenuItems.Add(SubMenuItemIn.Items[i]);
-      SubMenuItemOut.Items[i].Tag := FSubMenuItems.Count - 1;
-      SubMenuItemOut.Items[i].OnClick := @SubMenuItemClick;
+      SubMenuItemOut.Add(NewItem(SubMenuItemIn.Items[i].Caption,
+                                 SubMenuItemIn.Items[i].ShortCut,
+                                 SubMenuItemIn.Items[i].Checked,
+                                 SubMenuItemIn.Items[i].Visible,
+                                 @SubMenuItemClick,
+                                 SubMenuItemIn.Items[i].HelpContext,
+                                 ''));
+      SubMenuItemOut.Items[i].AutoCheck := SubMenuItemIn.Items[i].AutoCheck;
+      SubMenuItemOut.Items[i].AutoLineReduction := SubMenuItemIn.Items[i].AutoLineReduction;
+      SubMenuItemOut.Items[i].Default := SubMenuItemIn.Items[i].Default;
+      SubMenuItemOut.Items[i].GlyphShowMode := SubMenuItemIn.Items[i].GlyphShowMode;
+      SubMenuItemOut.Items[i].GroupIndex := SubMenuItemIn.Items[i].GroupIndex;
+      SubMenuItemOut.Items[i].Hint := SubMenuItemIn.Items[i].Hint;
+      SubMenuItemOut.Items[i].ImageIndex := SubMenuItemIn.Items[i].ImageIndex;
+      SubMenuItemOut.Items[i].RadioItem := SubMenuItemIn.Items[i].RadioItem;
+      SubMenuItemOut.Items[i].RightJustify := SubMenuItemIn.Items[i].RightJustify;
+      SubMenuItemOut.Items[i].ShortCutKey2 := SubMenuItemIn.Items[i].ShortCutKey2;
+      SubMenuItemOut.Items[i].ShowAlwaysCheckable := SubMenuItemIn.Items[i].ShowAlwaysCheckable;
+      SubMenuItemOut.Items[i].SubMenuImages := SubMenuItemIn.Items[i].SubMenuImages;
+      SubMenuItemOut.Items[i].SubMenuImagesWidth := SubMenuItemIn.Items[i].SubMenuImagesWidth;
+      SubMenuItemOut.Items[i].Tag := PtrInt(Pointer(SubMenuItemIn.Items[i]));
       if SubMenuItemIn.Items[i].Count > 0 then PrepSubMenuItem(SubMenuItemIn.Items[i], SubMenuItemOut.Items[i]);
     end;
   end;
 
 begin
   MenuButton := TSpeedButton(Sender);
-  if Assigned(FMenu.Items[MenuButton.Tag].OnClick) then FMenu.Items[MenuButton.Tag].Click;
-  if FMenu.Items[MenuButton.Tag].Count = 0 then Exit;
-  FSubMenu.Items.Assign(FMenu.Items[MenuButton.Tag]);
-  FSubMenuItems.Clear;
-  PrepSubMenuItem(FMenu.Items[MenuButton.Tag], FSubMenu.Items);
+  tmpMI := FMenu.Items[MenuButton.Tag];
+  if not Assigned(tmpMI) then Exit;
+  tmpMI.Click;
+  FSubMenu.Items.Clear;
+  if tmpMI.Count = 0 then Exit;
+  FSubMenu.Images := tmpMI.GetImageList;
+  PrepSubMenuItem(tmpMI, FSubMenu.Items);
   SubMenuPos := ClientToScreen(TPoint.Create(MenuButton.Left, MenuButton.Top + MenuButton.Height));
   FSubMenu.PopUp(SubMenuPos.X, SubMenuPos.Y);
 end;

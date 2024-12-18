@@ -40,7 +40,7 @@ uses
   // RTL, FCL
   Classes, SysUtils, math,
   // LCL
-  Controls, ExtCtrls, Graphics, Menus;
+  Controls, ComCtrls, ExtCtrls, Graphics, Menus;
 
 type
 
@@ -193,7 +193,7 @@ type
   private
     FAnchorContainer: TWinControl;
     FBoundsRect: TRect;
-    FFakeMenu: TCustomControl;
+    FFakeMenu: TToolBar;
     FFormClient: TWinControl;
     FFormContainer: TResizeFormContainer;
     FParent: TWinControl;
@@ -208,7 +208,7 @@ type
   public
     property AnchorContainer: TWinControl read FAnchorContainer;
     property BoundsRect: TRect read FBoundsRect;
-    property FakeMenu: TCustomControl read FFakeMenu;
+    property FakeMenu: TToolBar read FFakeMenu;
     property FormClient: TWinControl read FFormClient;
     property FormContainer: TResizeFormContainer read FFormContainer;
     property Parent: TWinControl read FParent;
@@ -605,9 +605,11 @@ begin
   FResizeBars := TResizeBars.Create;
   FResizeBars.Parent := Parent;
 
-  FFakeMenu := TCustomControl.Create(Parent);
+  FFakeMenu := TToolBar.Create(Parent);
   FFakeMenu.Height := 0;
   FFakeMenu.Parent := Parent;
+  FFakeMenu.Align := alNone;
+  FFakeMenu.Indent := 0;
 
   FFormClient := TWinControl.Create(Parent);
   FFormClient.ControlStyle:= FFormClient.ControlStyle + [csOpaque];
