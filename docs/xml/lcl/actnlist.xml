@@ -2091,9 +2091,6 @@ Workaround for RTL TBasicActionLink nil deref issue (fixed in FPC 3.3.1). See
 issue #41063.
 </note>
 </notes>
-<version>
-Added in LCL version 4.0.
-</version>
 <seealso>
 <link id="TActionLink.Action"/>
 <link id="#rtl.classes.TBasicActionLink.Update">TBasicActionLink.Update</link>
