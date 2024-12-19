@@ -2081,7 +2081,8 @@ Calls the inherited method when Action has been assigned.
 It ensures that an Action is assigned in the class instance before calling the 
 inherited method. It addresses an issue in TBasicActionLink.Update for RTL 
 versions prior to 3.3.1 where the Action was not checked prior to calling the 
-Update method.
+Update method. For those FPC versions, the inherited method is <b>not</b> 
+called and the return value is always <b>False</b>.
 </p>
 </descr>
 <notes>
