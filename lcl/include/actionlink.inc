@@ -124,6 +124,7 @@ end;
 function TActionLink.Update: Boolean;
 begin
   {$IF FPC_Fullversion<30301} // Workaround for issue #41063 / Partial fix for actionlinks that inherit TActionLink only
+  Result := False;
   if Assigned(Action) then
   {$ENDIF}
   Result := inherited Update;
