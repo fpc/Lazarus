@@ -2092,14 +2092,13 @@ issue #41063.
 </note>
 </notes>
 <seealso>
-<link id="TActionLink.Action"/>
+<link id="#rtl.classes.TBasicActionLink.Action">TBasicActionLink.Action</link>
 <link id="#rtl.classes.TBasicActionLink.Update">TBasicActionLink.Update</link>
-<link id="#rtl.classes.TBasicActionLink.OnUpdate">TBasicActionLink.OnUpdate</link>
 </seealso>
 </element>
 <element name="TActionLink.Update.Result">
 <short>
-<b>True</b> if the OnUpdate event handler for the Action was executed.
+<b>True</b> if the Update method for the Action was executed.
 </short>
 </element>
 
