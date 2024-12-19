@@ -757,7 +757,10 @@ begin
   end;
   // Try to quit
   if not Cancel then
-    if Assigned(Application.MainForm) then
+  begin
+    if Assigned(CocoaConfigApplication.events.onQuitApp) then
+      CocoaConfigApplication.events.onQuitApp(PtrInt(nil))
+    else if Assigned(Application.MainForm) then
       Application.MainForm.Close
     else
       Application.Terminate;

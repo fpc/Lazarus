@@ -34,9 +34,11 @@ var
 
 var
   CocoaConfigApplication: TCocoaConfigApplication = (
-    event: (
+    events: (
       // highest priority event handler
       highestHandler: nil;
+      // Event to call when there is no MainForm with MainForm.close
+      onQuitApp: nil;
     );
   );
 

@@ -672,8 +672,8 @@ begin
     Application.OnUserInput doesn't allow filtering messages.
     see also !351
   }
-  if Assigned(Result) and Assigned(CocoaConfigApplication.event.highestHandler) then begin
-    if CocoaConfigApplication.event.highestHandler(Result) then
+  if Assigned(Result) and Assigned(CocoaConfigApplication.events.highestHandler) then begin
+    if CocoaConfigApplication.events.highestHandler(Result) then
       Exit;
   end;
 
