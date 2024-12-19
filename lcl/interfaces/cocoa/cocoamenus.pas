@@ -90,6 +90,9 @@ procedure NSMenuAddItemsFromLCLMenu(menu: NSMenu; lclMenu: TMenuItem);
 
 implementation
 
+uses
+  CocoaInt;
+
 type
   TCocoaMenuItem_HideApp = objcclass(NSMenuItem)
   public
@@ -703,7 +706,12 @@ begin
   {$endif}
   // Should be used instead of Application.Terminate when possible
   // to allow events to be sent, see bug 32148
-  if Assigned(Application.MainForm) then
+  if Assigned(CocoaConfigApplication.events.onQuitApp) then
+    { Don't call directly since key/mouse events need to unwind in case
+      OnQuitApp frees the caller }
+    Application.QueueAsyncCall(
+      TDataEvent(CocoaConfigApplication.events.onQuitApp), PtrInt(nil))
+  else if Assigned(Application.MainForm) then
     Application.MainForm.Close
   else
     Application.Terminate;

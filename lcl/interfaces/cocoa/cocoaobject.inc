@@ -757,10 +757,14 @@ begin
   end;
   // Try to quit
   if not Cancel then
-    if Assigned(Application.MainForm) then
+  begin
+    if Assigned(CocoaConfigApplication.events.onQuitApp) then
+      CocoaConfigApplication.events.onQuitApp(PtrInt(nil))
+    else if Assigned(Application.MainForm) then
       Application.MainForm.Close
     else
       Application.Terminate;
+  end;
   // Let caller know if the shutdown was cancelled
   if (not Application.Terminated) and (replyEvent.descriptorType <> typeNull) then
     replyEvent.setParamDescriptor_forKeyword(NSAppleEventDescriptor.descriptorWithInt32(userCanceledErr), keyErrorNumber);
