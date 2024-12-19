@@ -187,7 +187,7 @@ const
   // No need to localise keywords!
 
   // List of keywords
-  KEYWORDCOUNT = 33;
+  KEYWORDCOUNT = 34;
   KEYWORDSIdents: array [1..KEYWORDCOUNT] of string =
     (
     'and',
@@ -202,7 +202,7 @@ const
     'elif',
     'else',
     'except',
-    'exec',
+    'False',
     'finally',
     'for',
     'from',
@@ -212,13 +212,14 @@ const
     'in',
     'is',
     'lambda',
+    'None',
     'nonlocal',
     'not',
     'or',
     'pass',
-    'print',
     'raise',
     'return',
+    'True',
     'try',
     'while',
     'with',
@@ -226,7 +227,7 @@ const
     );
 
   // List of non-keyword identifiers
-  NONKEYWORDCOUNT = 66;
+  NONKEYWORDCOUNT = 65;
   NONKEYWORDS: array [1..NONKEYWORDCOUNT] of string =
     (
     '__future__',
@@ -246,8 +247,8 @@ const
     'dir',
     'divmod',
     'eval',
+    'exec',
     'execfile',
-    'False',
     'file',
     'filter',
     'float',
@@ -268,7 +269,6 @@ const
     'list',
     'locals',
     'long',
-    'None',
     'NotImplemented',
     'map',
     'max',
@@ -277,6 +277,7 @@ const
     'open',
     'ord',
     'pow',
+    'print',
     'range',
     'raw_input',
     'reduce',
@@ -287,7 +288,6 @@ const
     'setattr',
     'slice',
     'str',
-    'True',
     'tuple',
     'type',
     'unichr',
