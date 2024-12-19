@@ -588,7 +588,13 @@ begin
   colorPanel := NSColorPanel.sharedColorPanel();
   if (colorPanel.respondsToSelector(ObjCSelector('setRestorable:'))) then
     colorPanel.setRestorable(false);
-  colorPanel.setColor(ColorToNSColor(ColorDialog.Color));
+  if cdShowAlphaChannel in colorDialog.Options then begin
+    colorPanel.setShowsAlpha( True );
+    colorPanel.setColor( ColorAlphaToNSColor(ColorDialog.Color, ColorDialog.AlphaChannel) );
+  end else begin
+    colorPanel.setShowsAlpha( False );
+    colorPanel.setColor( ColorToNSColor(ColorDialog.Color) );
+  end;
 
   colorDelegate := TColorPanelDelegate.alloc.init();
   colorDelegate.colorPanel := colorPanel;
@@ -619,7 +625,6 @@ begin
 
   colorPanel.setDelegate(colorDelegate.autorelease);
   colorPanel.setAccessoryView(accessoryView.autorelease);
-  colorPanel.setShowsAlpha(False);
   colorPanel.setDefaultButtonCell(okButton.cell);
 
   // load user settings
@@ -829,8 +834,17 @@ begin
 end;
 
 procedure TColorPanelDelegate.doPickColor;
+var
+  lclColor: TColor;
+  alpha: Byte;
 begin
-  ColorDialog.Color := NSColorToColorRef(colorPanel.color);
+  if cdShowAlphaChannel in colorDialog.Options then begin
+    NSColorToColorAlpha( colorPanel.color, lclColor, alpha );
+    ColorDialog.Color:= lclColor;
+    ColorDialog.AlphaChannel:= alpha;
+  end else begin
+    ColorDialog.Color:= NSColorToColorRef(colorPanel.color);
+  end;
 end;
 
 procedure TColorPanelDelegate.pickColor;

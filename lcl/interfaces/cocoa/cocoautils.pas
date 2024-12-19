@@ -94,7 +94,9 @@ function RGBToColorFloat(r,g,b: Single): TColorRef; inline;
 function NSColorToRGB(const Color: NSColor): TColorRef; inline;
 // extract ColorRef from any NSColor
 function NSColorToColorRef(const Color: NSColor): TColorRef;
+procedure NSColorToColorAlpha(const Color: NSColor;var lclColor: TColor;var Alpha: Byte);
 function ColorToNSColor(const Color: TColorRef): NSColor; inline;
+function ColorAlphaToNSColor(const Color: TColorRef; const Alpha: Byte): NSColor;
 // convert to known NSColor or nil
 function SysColorToNSColor(nIndex: Integer): NSColor;
 
@@ -510,12 +512,30 @@ begin
   LocalPool.release;
 end;
 
+procedure NSColorToColorAlpha(const Color: NSColor; var lclColor: TColor;
+  var Alpha: Byte);
+begin
+  lclColor:= ((Round(Color.blueComponent*$FF)) shl 16) +
+             ((Round(Color.greenComponent*$FF)) shl 8) +
+             Round(Color.redComponent*$FF);
+  alpha:= Round(Color.alphaComponent*$FF);
+end;
+
 function ColorToNSColor(const Color: TColorRef): NSColor; inline;
 begin
   Result := NSColor.colorWithDeviceRed_green_blue_alpha(
     (Color and $FF) / $FF,
     ((Color shr 8) and $FF) / $FF,
     ((Color shr 16) and $FF) / $FF, 1);
+end;
+
+function ColorAlphaToNSColor(const Color: TColorRef; const Alpha: Byte): NSColor;
+begin
+  Result := NSColor.colorWithDeviceRed_green_blue_alpha(
+    (Color and $FF) / $FF,
+    ((Color shr 8) and $FF) / $FF,
+    ((Color shr 16) and $FF) / $FF,
+    Alpha / $FF );
 end;
 
 function SysColorToNSColor(nIndex: Integer): NSColor;
