@@ -8,7 +8,7 @@ unit CocoaConfig;
 interface
 
 uses
-  SysUtils,
+  Forms, SysUtils,
   Menus,
   CocoaAll, Cocoa_Extra, CocoaConst;
 
@@ -146,13 +146,16 @@ type
 type
   // return True for event Handled, bypass post system processing
   TCocoaApplicationEventHandler = function( event: NSEvent ): Boolean of object;
+  // Need to pass to QueueAsyncCall which takes TDataEvent
+  TCocoaApplicationOnAppQuitEvent = TDataEvent;
 
-  TCocoaConfigApplicationEvent = record
+  TCocoaConfigApplicationEvents = record
     highestHandler: TCocoaApplicationEventHandler;
+    onQuitApp: TCocoaApplicationOnAppQuitEvent;
   end;
 
   TCocoaConfigApplication = record
-    event: TCocoaConfigApplicationEvent;
+    events: TCocoaConfigApplicationEvents;
   end;
 
 type
