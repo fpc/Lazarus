@@ -187,9 +187,10 @@ const
   // No need to localise keywords!
 
   // List of keywords
-  KEYWORDCOUNT = 34;
+  KEYWORDCOUNT = 35;
   KEYWORDSIdents: array [1..KEYWORDCOUNT] of string =
     (
+    'as',
     'and',
     'assert',
     'async',
