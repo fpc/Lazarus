@@ -154,6 +154,8 @@ type
                                   var {%H-}Abort: boolean): string;
     function MacroFuncProjUnitPath(const {%H-}Param: string; const {%H-}Data: PtrInt;
                                    var {%H-}Abort: boolean): string;
+    function MacroFuncProjVer(const {%H-}Param: string; const {%H-}Data: PtrInt;
+                                   var {%H-}Abort: boolean): string;
     function MacroFuncRunCmdLine(const {%H-}Param: string; const {%H-}Data: PtrInt;
                                  var {%H-}Abort: boolean): string;
     function MacroFuncSrcOS(const {%H-}Param: string; const Data: PtrInt;
@@ -510,6 +512,8 @@ begin
                       lisProjectSrcPath,@MacroFuncProjSrcPath,[]));
   GlobalMacroList.Add(TTransferMacro.Create('ProjOutDir','',
                       lisProjectOutDir,@MacroFuncProjOutDir,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('ProjVer','',
+                      lisProjectVer,@MacroFuncProjVer,[]));
   GlobalMacroList.Add(TTransferMacro.Create('Env','',
                      lisEnvironmentVariableNameAsParameter, @MacroFuncEnv, []));
   GlobalMacroList.Add(TTransferMacro.Create('MakeExe','',
@@ -2549,6 +2553,44 @@ begin
     Result:=Project1.CompilerOptions.GetUnitOutPath(false)
   else
     Result:='';
+end;
+
+function TBuildManager.MacroFuncProjVer(const Param: string;
+  const Data: PtrInt; var Abort: boolean): string;
+const
+  cParamNames: array of string = ('', 'major', 'minor', 'rev', 'build');
+  cParamDefVals: array of string = ('0.0', '0', '0', '0', '0');
+var
+  i: integer;
+begin
+  for i := 0 to high(cParamNames) do
+    if CompareText(Param, cParamNames[i]) = 0 then
+    begin
+      // check the project and whether the version is used
+      result := cParamDefVals[i];
+      if Project1 = nil then exit;
+      if Project1.ProjResources = nil then exit;
+      if Project1.ProjResources.VersionInfo = nil then exit;
+      if Project1.ProjResources.VersionInfo.UseVersionInfo = false then exit;
+
+      // return version or specified number
+      with Project1.ProjResources.VersionInfo do
+        case i of
+          1: exit(IntToStr(MajorVersionNr));
+          2: exit(IntToStr(MinorVersionNr));
+          3: exit(IntToStr(RevisionNr    ));
+          4: exit(IntToStr(BuildNr       ));
+        else
+          // return the full version number, discarding the zero revision and build
+          if BuildNr <> 0 then
+            exit(Format('%d.%d.%d.%d', [MajorVersionNr, MinorVersionNr, RevisionNr, BuildNr]))
+          else if RevisionNr <> 0 then
+            exit(Format('%d.%d.%d'   , [MajorVersionNr, MinorVersionNr, RevisionNr]))
+          else
+            exit(Format('%d.%d'      , [MajorVersionNr, MinorVersionNr]));
+        end;
+    end;
+  result := ''; // invalid parameter
 end;
 
 function TBuildManager.MacroFuncEnv(const Param: string; const Data: PtrInt;
