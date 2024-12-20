@@ -764,6 +764,8 @@ begin
       Application.MainForm.Close
     else
       Application.Terminate;
+    if Assigned(WakeMainThread) then
+      WakeMainThread(nil);
   end;
   // Let caller know if the shutdown was cancelled
   if (not Application.Terminated) and (replyEvent.descriptorType <> typeNull) then
