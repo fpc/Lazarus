@@ -35,7 +35,7 @@ interface
 
 uses
   // RTL + FCL
-  Classes, SysUtils, Types, AVL_Tree, System.UITypes,
+  Classes, SysUtils, Types, AVL_Tree, System.UITypes, StrUtils,
   // LCL
   InterfaceBase, LCLPlatformDef,
   // CodeTools
@@ -2273,7 +2273,15 @@ end;
 function TBuildManager.MacroFuncLazVer(const Param: string; const Data: PtrInt;
   var Abort: boolean): string;
 begin
-  Result:=LazarusVersionStr;
+  if Param = '' then exit(LazarusVersionStr)
+  else if CompareText(Param, 'major') = 0 then result := ExtractDelimited(1, LazarusVersionStr, ['.'])
+  else if CompareText(Param, 'minor') = 0 then result := ExtractDelimited(2, LazarusVersionStr, ['.'])
+  else if CompareText(Param, 'rev'  ) = 0 then result := ExtractDelimited(3, LazarusVersionStr, ['.'])
+  else if CompareText(Param, 'build') = 0 then result := ExtractDelimited(4, LazarusVersionStr, ['.'])
+  else exit(''); // invalid parameter
+
+  if result = '' then
+    result := '0';
 end;
 
 function TBuildManager.MacroFuncTargetCPU(const Param: string;
