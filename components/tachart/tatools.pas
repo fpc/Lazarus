@@ -187,6 +187,7 @@ type
 
   TZoomDirection = (zdLeft, zdUp, zdRight, zdDown);
   TZoomDirectionSet = set of TZoomDirection;
+  TCalculateNewExtentEvent = procedure (ATool: TChartTool; var ANewExtent: TDoubleRect) of object;
 
   { TBasicZoomTool }
 
@@ -200,12 +201,16 @@ type
     FFullZoom: Boolean;
     FLimitToExtent: TZoomDirectionSet;
     FTimer: TCustomTimer;
+    FOnCalculateNewExtent: TCalculateNewExtentEvent;
 
     procedure OnTimer(ASender: TObject);
   protected
+    procedure DoCalculateNewExtent(var ANewExtent: TDoubleRect);
     procedure DoZoom(ANewExtent: TDoubleRect; AFull: Boolean);
     function IsAnimating: Boolean; inline;
     function IsProportional: Boolean; virtual;
+    property OnCalculateNewExtent: TCalculateNewExtentEvent
+      read FOnCalculateNewExtent write FOnCalculateNewExtent;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -269,6 +274,7 @@ type
       read FRestoreExtentOn write FRestoreExtentOn
       default [zreDragTopLeft, zreDragTopRight, zreDragBottomLeft, zreClick];
     property Transparency;
+    property OnCalculateNewExtent;
   end;
 
   TBasicZoomStepTool = class(TBasicZoomTool)
@@ -1186,6 +1192,15 @@ begin
   inherited Destroy;
 end;
 
+procedure TBasicZoomTool.DoCalculateNewExtent(var ANewExtent: TDoubleRect);
+begin
+  if Assigned(FOnCalculateNewExtent) then
+  begin
+    FOnCalculateNewExtent(Self, ANewExtent);
+    NormalizeRect(ANewExtent);
+  end;
+end;
+
 procedure TBasicZoomTool.DoZoom(ANewExtent: TDoubleRect; AFull: Boolean);
 
   procedure ValidateNewSize(LimitLo, LimitHi: TZoomDirection;
@@ -1278,6 +1293,8 @@ var
   ScaleX, ScaleY: Double;
   AllowProportionalAdjustmentX, AllowProportionalAdjustmentY: Boolean;
 begin
+  DoCalculateNewExtent(ANewExtent);
+
   if not AFull then
     // perform the actions below even when LimitToExtent is empty - this will
     // correct sub-pixel changes in viewport size (occuring due to limited
