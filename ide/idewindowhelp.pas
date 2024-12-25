@@ -477,7 +477,7 @@ var
   begin
     Result:=nil;
     NextParent:=TheControl.Parent;
-    if NextParent=nil then begin
+    if (NextParent=nil) or (NextParent.ClassName='TAnchorDockHostSite') then begin
       CurName:=TheControl.ClassName;
       ParentHelpNode:=Root;
     end else begin
