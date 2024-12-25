@@ -16,6 +16,7 @@ object ProjectInspectorForm: TProjectInspectorForm
   OnDestroy = FormDestroy
   OnDropFiles = FormDropFiles
   OnResize = FormResize
+  OnShow = FormShow
   object ItemsTreeView: TTreeView
     Left = 0
     Height = 261

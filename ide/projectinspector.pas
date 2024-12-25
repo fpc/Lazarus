@@ -149,6 +149,7 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure FormDropFiles(Sender: TObject; const FileNames: array of String);
     procedure FormResize(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure ItemsPopupMenuPopup(Sender: TObject);
     procedure ItemsTreeViewAdvancedCustomDrawItem(Sender: TCustomTreeView;
       Node: TTreeNode; {%H-}State: TCustomDrawState; Stage: TCustomDrawStage;
@@ -907,6 +908,11 @@ end;
 procedure TProjectInspectorForm.FormResize(Sender: TObject);
 begin
   PropsGroupBox.Constraints.MaxHeight := self.Height - FilterPanel.Height - ToolBar.Height - 20;
+end;
+
+procedure TProjectInspectorForm.FormShow(Sender: TObject);
+begin
+  UpdateTitle; // update title on dock/undock
 end;
 
 procedure TProjectInspectorForm.ItemsPopupMenuPopup(Sender: TObject);
@@ -1802,7 +1808,9 @@ var
 begin
   if not CanUpdate(pefNeedUpdateTitle,Immediately) then exit;
   Icon.Clear;
-  if LazProject=nil then
+  if (LazProject = nil) or
+     (assigned(HostDockSite) and assigned(HostDockSite.Parent)) // is docked
+  then
     Caption:=lisMenuProjectInspector
   else begin
     NewCaption:=LazProject.GetTitle;
