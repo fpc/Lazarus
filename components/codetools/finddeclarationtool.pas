@@ -6868,14 +6868,27 @@ var
 
     if AliasDeclarationNode<>nil then begin
       UseProcHead(AliasDeclarationNode);
-      if DeclarationTool=Self then begin
-        //debugln(['FindDeclarationNode adding alias node ...']);
-        AddNodeReference(AliasDeclarationNode);
+      Node:=DeclarationNode.Parent;
+      while (Node<>nil) do begin
+        if Node.Desc = ctnProcedure then begin //here context is clearly limited
+          if Node.EndPos<AliasDeclarationNode.StartPos then begin
+            AliasDeclarationNode:=nil; //alias candidate out of context
+            break;
+          end;
+        end;
+        Node:=Node.Parent;
       end;
-      if AliasDeclarationNode.StartPos>DeclarationNode.StartPos then begin
-        Node:=AliasDeclarationNode;
-        AliasDeclarationNode:=DeclarationNode;
-        DeclarationNode:=Node;
+
+      if AliasDeclarationNode<>nil then begin
+        if DeclarationTool=Self then begin
+          //debugln(['FindDeclarationNode adding alias node ...']);
+          AddNodeReference(AliasDeclarationNode);
+        end;
+        if AliasDeclarationNode.StartPos>DeclarationNode.StartPos then begin
+          Node:=AliasDeclarationNode;
+          AliasDeclarationNode:=DeclarationNode;
+          DeclarationNode:=Node;
+        end;
       end;
     end;
 
