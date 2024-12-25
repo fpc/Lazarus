@@ -1,0 +1,207 @@
+object MainForm: TMainForm
+  Left = 529
+  Height = 407
+  Top = 250
+  Width = 627
+  Caption = 'Stretched Zooming and Panning Demo'
+  ClientHeight = 407
+  ClientWidth = 627
+  LCLVersion = '4.99.0.0'
+  OnCreate = FormCreate
+  object Chart: TChart
+    Left = 0
+    Height = 307
+    Top = 0
+    Width = 627
+    AutoFocus = True
+    AxisList = <    
+      item
+        Grid.Color = 16053492
+        Grid.Style = psSolid
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Range.Max = 100
+        Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Grid.Color = 16053492
+        Grid.Style = psSolid
+        Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelBrush.Style = bsClear
+      end>
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Toolset = ChartToolset
+    Align = alClient
+    object RedSeries: TLineSeries
+      Title = 'Red'
+      LinePen.Color = clRed
+    end
+    object BlueSeries: TLineSeries
+      Title = 'Blue'
+      LinePen.Color = clBlue
+    end
+  end
+  object BottomPanel: TPanel
+    Left = 12
+    Height = 76
+    Top = 319
+    Width = 603
+    Align = alBottom
+    AutoSize = True
+    BorderSpacing.Around = 12
+    BevelOuter = bvNone
+    ClientHeight = 76
+    ClientWidth = 603
+    TabOrder = 1
+    object cbRotateAxes: TCheckBox
+      AnchorSideLeft.Control = BottomPanel
+      AnchorSideTop.Control = rbStretchedToAll
+      AnchorSideTop.Side = asrBottom
+      Left = 0
+      Height = 19
+      Top = 38
+      Width = 83
+      Caption = 'Axes rotated'
+      TabOrder = 0
+      OnChange = cbRotateAxesChange
+    end
+    object Label1: TLabel
+      AnchorSideLeft.Control = rbStretchedToBlue
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = BottomPanel
+      Left = 146
+      Height = 60
+      Top = 0
+      Width = 190
+      BorderSpacing.Left = 16
+      BorderSpacing.Right = 20
+      Caption = 'Zooming'#13#10'- Drag with left mouse button down'#13#10'- Ctrl+Click near chart border'#13#10'- Rotate mouse wheel'
+      WordWrap = True
+    end
+    object Label2: TLabel
+      AnchorSideLeft.Control = Label1
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = BottomPanel
+      AnchorSideRight.Side = asrBottom
+      Left = 356
+      Height = 60
+      Top = 0
+      Width = 198
+      BorderSpacing.Left = 20
+      BorderSpacing.Right = 20
+      Caption = 'Panning'#13#10'- Drag with right mouse button down'#13#10'- Shift+Click near chart border'#13#10'- Shift+Rotate mouse wheel'
+      WordWrap = True
+    end
+    object cbStretched: TCheckBox
+      AnchorSideLeft.Control = BottomPanel
+      AnchorSideTop.Control = BottomPanel
+      Left = 0
+      Height = 19
+      Top = 0
+      Width = 82
+      Caption = 'Stretched to'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnChange = cbRotateAxesChange
+    end
+    object rbStretchedToAll: TRadioButton
+      AnchorSideLeft.Control = cbStretched
+      AnchorSideTop.Control = cbStretched
+      AnchorSideTop.Side = asrBottom
+      Left = 12
+      Height = 19
+      Top = 19
+      Width = 30
+      BorderSpacing.Left = 12
+      Caption = 'all'
+      Checked = True
+      TabOrder = 2
+      TabStop = True
+    end
+    object rbStretchedToRed: TRadioButton
+      AnchorSideLeft.Control = rbStretchedToAll
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = rbStretchedToAll
+      Left = 48
+      Height = 19
+      Top = 19
+      Width = 35
+      BorderSpacing.Left = 6
+      BorderSpacing.Right = 6
+      Caption = 'red'
+      TabOrder = 3
+    end
+    object rbStretchedToBlue: TRadioButton
+      AnchorSideLeft.Control = rbStretchedToRed
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = rbStretchedToAll
+      Left = 89
+      Height = 19
+      Top = 19
+      Width = 41
+      Caption = 'blue'
+      TabOrder = 4
+    end
+    object cbAnimated: TCheckBox
+      AnchorSideLeft.Control = BottomPanel
+      AnchorSideTop.Control = cbRotateAxes
+      AnchorSideTop.Side = asrBottom
+      Left = 0
+      Height = 19
+      Top = 57
+      Width = 70
+      Caption = 'Animated'
+      TabOrder = 5
+      OnChange = cbAnimatedChange
+    end
+  end
+  object ChartToolset: TChartToolset
+    Left = 80
+    Top = 54
+    object ZoomDragTool: TZoomDragTool
+      Shift = [ssLeft]
+      AnimationSteps = 20
+      Brush.Color = clSilver
+      DrawingMode = tdmNormal
+      EscapeCancels = True
+      Frame.Visible = False
+      RatioLimit = zrlFixedY
+      Transparency = 128
+      OnCalculateNewExtent = ZoomDragToolCalculateNewExtent
+    end
+    object ZoomClickTool: TZoomClickTool
+      Shift = [ssCtrl, ssLeft]
+      ZoomFactor = 1.1
+      OnCalculateNewExtent = ZoomDragToolCalculateNewExtent
+    end
+    object ZoomMouseWheelTool: TZoomMouseWheelTool
+      ZoomFactor = 1.1
+      OnCalculateNewExtent = ZoomDragToolCalculateNewExtent
+    end
+    object PanDragTool: TPanDragTool
+      Shift = [ssRight]
+      Directions = [pdLeft, pdRight]
+      EscapeCancels = True
+      OnCalculateNewExtent = ZoomDragToolCalculateNewExtent
+    end
+    object PanClickTool: TPanClickTool
+      Shift = [ssShift, ssLeft]
+      Margins.Left = 20
+      Margins.Top = 20
+      Margins.Right = 20
+      Margins.Bottom = 20
+      OnCalculateNewExtent = ZoomDragToolCalculateNewExtent
+    end
+    object PanMouseWheelTool: TPanMouseWheelTool
+      Shift = [ssShift]
+      WheelUpDirection = pdLeft
+      OnCalculateNewExtent = ZoomDragToolCalculateNewExtent
+    end
+  end
+end

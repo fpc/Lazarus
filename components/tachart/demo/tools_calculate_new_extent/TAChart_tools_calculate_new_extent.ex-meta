@@ -1,0 +1,5 @@
+{ "TAChart_tools_calculate_new_extent" : {
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart", "Panning", "Zooming", "Extent"],
+   "Description" : "Demonstrates the usage of the OnCalculateNewExtent event in zoom/pan tools of TAChart with fixed RatioLimit in order to rescale the axes."}
+}
