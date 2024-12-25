@@ -2464,7 +2464,7 @@ colors.
 </element>
 <element name="TColorDialogOption.cdShowAlphaChannel">
 <short>
-Displays the AlphaChannel control on the dialog. (GTK2, QT4, QT5, QT6)
+Displays the AlphaChannel control on the dialog. (GTK2, QT4, QT5, QT6, Cocoa)
 </short>
 </element>
 <element name="TColorDialogOption.cdNoButtons">
