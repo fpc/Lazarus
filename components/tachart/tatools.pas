@@ -1304,6 +1304,7 @@ var
   ScaleX, ScaleY: Double;
   AllowProportionalAdjustmentX, AllowProportionalAdjustmentY: Boolean;
 begin
+  // Allow user to adjust the calculated new extent
   DoCalculateNewExtent(ANewExtent);
 
   if not AFull then
@@ -1511,6 +1512,7 @@ const
     (zreDragTopLeft, zreClick, zreDragBottomLeft),
     (zreClick, zreClick, zreClick),
     (zreDragTopRight, zreClick, zreDragBottomRight));
+  // Means: "direction relative to mouse-down point"
 var
   dragDir: TRestoreExtentOn;
 begin
@@ -1522,6 +1524,18 @@ begin
 
   with FSelectionRect do
     dragDir := DRAG_DIR[Sign(Right - Left), Sign(Bottom - Top)];
+
+  // More user-friendly drag direction for zoom-in in case of fixed RatioLimit
+  case RatioLimit of
+    zrlNone, zrlProportional: ;
+    zrlFixedX:
+      // drag down (not necessarily right)
+      if dragDir = zreDragBottomLeft then dragdir := zreDragBottomRight;
+    zrlFixedY:
+      // drag right (not necessarily down)
+      if dragDir = zreDragTopRight then dragdir := zreDragBottomRight;
+  end;
+
   if
     (dragDir in RestoreExtentOn) or
     (zreDifferentDrag in RestoreExtentOn) and
