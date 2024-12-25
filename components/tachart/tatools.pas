@@ -1399,6 +1399,18 @@ begin
     Result.TopLeft := Chart.GraphToImage(a);
     Result.BottomRight := Chart.GraphToImage(b);
   end;
+  case RatioLimit of
+    zrlFixedX:
+      begin
+        Result.Left := Chart.ClipRect.Left+1;
+        Result.Right := Chart.ClipRect.Right;
+      end;
+    zrlFixedY:
+      begin
+        Result.Top := Chart.ClipRect.Top+1;
+        Result.Bottom := Chart.ClipRect.Bottom;
+      end;
+  end;
 end;
 
 function TZoomDragTool.CalculateNewExtent: TDoubleRect;
