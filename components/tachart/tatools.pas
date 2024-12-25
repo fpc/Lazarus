@@ -205,7 +205,7 @@ type
 
     procedure OnTimer(ASender: TObject);
   protected
-    procedure DoCalculateNewExtent(var ANewExtent: TDoubleRect);
+    procedure DoCalculateNewExtent(var ANewExtent: TDoubleRect); virtual;
     procedure DoZoom(ANewExtent: TDoubleRect; AFull: Boolean);
     function IsAnimating: Boolean; inline;
     function IsProportional: Boolean; virtual;
@@ -301,12 +301,16 @@ type
   TZoomClickTool = class(TBasicZoomStepTool)
   public
     procedure MouseDown(APoint: TPoint); override;
+  published
+    property OnCalculateNewExtent;
   end;
 
   TZoomMouseWheelTool = class(TBasicZoomStepTool)
   public
     procedure MouseWheelDown(APoint: TPoint); override;
     procedure MouseWheelUp(APoint: TPoint); override;
+  published
+    property OnCalculateNewExtent;
   end;
 
   TPanDirection = (pdLeft, pdUp, pdRight, pdDown);
@@ -322,8 +326,12 @@ type
   TBasicPanTool = class(TChartTool)
   strict private
     FLimitToExtent: TPanDirectionSet;
+    FOnCalculateNewExtent: TCalculateNewExtentEvent;
   strict protected
+    procedure DoCalculateNewExtent(var ANewExtent: TDoubleRect); virtual;
     procedure PanBy(AOffset: TPoint);
+    property OnCalculateNewExtent: TCalculateNewExtentEvent
+      read FOnCalculateNewExtent write FOnCalculateNewExtent;
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -355,6 +363,7 @@ type
     property EscapeCancels;
     property MinDragRadius: Cardinal
       read FMinDragRadius write FMinDragRadius default 0;
+    property OnCalculateNewExtent;
   end;
 
   { TPanClickTool }
@@ -380,6 +389,7 @@ type
     property ActiveCursor default crSizeAll;
     property Interval: Cardinal read FInterval write FInterval default 0;
     property Margins: TChartMargins read FMargins write FMargins;
+    property OnCalculateNewExtent;
   end;
 
   { TPanMouseWheelTool }
@@ -398,6 +408,7 @@ type
     property Step: Cardinal read FStep write FStep default 10;
     property WheelUpDirection: TPanDirection
       read FWheelUpDirection write FWheelUpDirection default pdUp;
+    property OnCalculateNewExtent;
   end;
 
   TChartDistanceMode = (cdmXY, cdmOnlyX, cdmOnlyY);
@@ -1652,6 +1663,12 @@ begin
   ActiveCursor := crSizeAll;
 end;
 
+procedure TBasicPanTool.DoCalculateNewExtent(var ANewExtent: TDoubleRect);
+begin
+  if Assigned(FOnCalculateNewExtent) then
+    FOnCalculateNewExtent(Self, ANewExtent);
+end;
+
 procedure TBasicPanTool.PanBy(AOffset: TPoint);
 var
   dd: TDoublePoint;
@@ -1672,6 +1689,7 @@ begin
   end;
   ext.a += dd;
   ext.b += dd;
+  DoCalculateNewExtent(ext);
   FChart.LogicalExtent := ext;
 end;
 
