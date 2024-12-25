@@ -41,13 +41,22 @@ begin
     end
     else
     begin
-      code := Byte(c) shl 8;
-      c:=Src^;
-      Lbyte := byte(Src^);
-      if (c=#0) and (Src-PChar(s)>=len) then break;
-      code := code + Byte(c);
-      code1:=code;
-      Inc(Src);
+      // shift-jis halfwidth
+      if (CodeP=932) and (c in [#$a0..#$df,#$fd..#$ff]) then
+      begin
+        code := Byte(c);
+        code1:= code;
+      end
+      else
+      begin
+        code := Byte(c) shl 8;
+        c:=Src^;
+        Lbyte := byte(Src^);
+        if (c=#0) and (Src-PChar(s)>=len) then break;
+        code := code + Byte(c);
+        code1:=code;
+        Inc(Src);
+      end;
 
       code := ArrayUni[SearchTable(ArrayCP, code)];
       if code=0 then
