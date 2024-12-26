@@ -3008,19 +3008,38 @@ output.
 </element>
 
 <element name="CP932ToUTF8">
-<short>Converts a string value using Code Page 932 to UTF-8.</short>
+<short>
+Converts a string value using Code Page 932 to UTF-8.
+</short>
 <descr>
 <p>
-CP932ToUTF8 is defined for platforms where Asian code pages are enabled.
+<var>CP932ToUTF8</var> is defined for platforms where Asian code pages are 
+enabled. It uses the byte maps defined for the Japanese Shift-JIS Double Byte 
+Character Set as defined for the Microsoft Windows Code Page 932. The internal 
+implementation ensures that single-byte half-width Katakana characters are 
+handled properly when converted to UTF-8.
 </p>
+<p>
+Specifically, the characters with an initial byte in the ranges $A0..$DF and 
+$FD..$FF. $A0, $FD, $FE, $FF are not allowed as the initial byte in a 
+Shift-JIS character. Other values in these ranges are treated as single-byte 
+half-width characters.
 </descr>
+<version>
+Modified in LazUtils 4.0 to handle single-byte half-width Katakana character 
+ranges.
+</version>
 <seealso/>
 </element>
 <element name="CP932ToUTF8.Result">
-<short>String value after conversion to UTF-8 encoding.</short>
+<short>
+String value after conversion to UTF-8 encoding.
+</short>
 </element>
 <element name="CP932ToUTF8.s">
-<short>String value using code page 932.</short>
+<short>
+String value using code page 932.
+</short>
 </element>
 
 <element name="CP936ToUTF8">
