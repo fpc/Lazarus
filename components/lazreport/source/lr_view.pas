@@ -604,6 +604,7 @@ begin
   if not Assigned(Preview.EMFPages) then Exit;
   E:=TfrEMFPages(Preview.EMFPages);
   P:=Point(X - Preview.ofx, Y - Preview.ofy);
+  C:=Cursor;
   for i := 0 to E.Count - 1 do
     if PtInRect(E[i]^.R, P) then
     begin
