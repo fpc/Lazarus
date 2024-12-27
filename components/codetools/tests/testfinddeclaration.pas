@@ -1655,8 +1655,11 @@ var
               Fail('[20231230132715] Namespaced unit "'+FullFilename+'" includes missing "'+IncFilename+'"');
             end;
           end else begin
-            FoundFilename:=CodeToolBoss.DirectoryCachePool.FindIncludeFileInCompletePath(Dir,IncFilename);
-            if FoundFilename<>'' then continue;
+            FoundFilename:=CodeToolBoss.DirectoryCachePool.FindIncludeFileInDirectory(Dir,IncFilename);
+            if FoundFilename='' then
+              FoundFilename:=CodeToolBoss.DirectoryCachePool.FindIncludeFileInCompletePath(Dir,IncFilename);
+            if FoundFilename<>'' then
+              continue;
             if not FilenameIsPascalUnit(IncFilename) then begin
               Fail('[20231230132721] Namespaced unit "'+FullFilename+'" includes missing "'+IncFilename+'"');
             end;

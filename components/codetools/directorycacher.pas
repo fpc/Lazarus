@@ -72,7 +72,7 @@ type
     ctdcsUnitSet,
     ctdcsFPCUnitPath,  // unit paths reported by FPC
     ctdcsNamespaces,
-    ctdcsNamespacedIncludes // 1 = search include file via /namespaced/ parent folder
+    ctdcsNamespacedIncludes // non empty = search include file via /namespaced/ parent folder
     );
 
   TCTDirCacheStringRecord = record
@@ -1201,19 +1201,28 @@ begin
     if Files=nil then exit;
     Starts:=FListing.Starts;
 
+    // see fpc source scanner.pas function preproc_factor(eval: Boolean):texprvalue;
     // first search IncFilename
-    // if IncFilename has no ext, then seach IncFilename.inc, IncFilename.pp, IncFilename.pas
+    // if IncFilename has not an ext of .inc, .pp, .pas, then search IncFilename pus .inc,.pp,.pas
+    // Note: This means e.g. "a.b" will search "a.b.inc", "a.b.pp" and "a.b.pas"
 
     IncFilenameP:=PChar(IncFilename);
     l:=length(IncFilename);
     while (l>0) and (IncFilename[l]<>'.') do dec(l);
     if l>0 then begin
       IncExtP:=@IncFilename[l];
-      AUnitName:=LeftStr(IncFilename,l-1);
+      Ext:=IsPascalIncExt(IncExtP);
+      if Ext>pietNone then
+        AUnitName:=LeftStr(IncFilename,l-1)
+      else begin
+        IncExtP:=nil;
+        AUnitName:=IncFilename;
+      end;
     end else begin
       IncExtP:=nil;
       AUnitName:=IncFilename;
     end;
+
     // binary search the lowest filename matching the AUnitName
     {$IFDEF DebugDirCacheFindIncFile}
     //if (CompareText(AUnitName,DebugUnitName)=0) and (System.Pos(DebugDirPart,directory)>0) then
@@ -1332,8 +1341,7 @@ begin
   SearchPath:=Strings[ctdcsIncludePath];
   Result:=FindIncludeFileInCleanPath(IncFilename,SearchPath,AnyCase);
 
-  if (Result='') and FilenameIsPascalUnit(IncFilename)
-      and (Strings[ctdcsNamespacedIncludes]<>'') then begin
+  if (Result='') and (Strings[ctdcsNamespacedIncludes]<>'') then begin
     Result:=FindNamespacedIncludeFile(IncFilename);
   end;
 end;
@@ -1380,7 +1388,7 @@ end;
 
 function TCTDirectoryCache.FindNamespacedIncludeFile(const IncFilename: string
   ): string;
-// if Direcory contains a '/namespaced/' then search IncFilename in sibling folders
+// if Directory contains a '/namespaced/' then search IncFilename in sibling folders
 // e.g. Directory='/home/user/fpcsrc/rtl/namespaced/windows/', IncFilename='wintypes.pp'
 // search it in /home/user/fpcsrc/rtl/**
 const
