@@ -3015,15 +3015,15 @@ Converts a string value using Code Page 932 to UTF-8.
 <p>
 <var>CP932ToUTF8</var> is defined for platforms where Asian code pages are 
 enabled. It uses the byte maps defined for the Japanese Shift-JIS Double Byte 
-Character Set as defined for the Microsoft Windows Code Page 932. The internal 
-implementation ensures that single-byte half-width Katakana characters are 
-handled properly when converted to UTF-8.
+Character Set as defined for the Microsoft Windows Code Page 932.
 </p>
 <p>
-Specifically, the characters with an initial byte in the ranges $A0..$DF and 
-$FD..$FF. $A0, $FD, $FE, $FF are not allowed as the initial byte in a 
-Shift-JIS character. Other values in these ranges are treated as single-byte 
-half-width characters.
+The internal implementation ensures that single-byte half-width Katakana 
+characters are handled properly when converted to UTF-8. Specifically, the 
+characters with an initial byte in the ranges $A0..$DF and $FD..$FF. $A0, $FD, 
+$FE, $FF are not allowed as the initial byte in a Shift-JIS character. Values 
+in the range $A1..$DF are treated as single-byte half-width codepoints.
+</p>
 </descr>
 <version>
 Modified in LazUtils 4.0 to handle single-byte half-width Katakana character 
