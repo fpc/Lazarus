@@ -19,6 +19,21 @@ package.
 </p>
 </descr>
 
+<!-- used units -->
+<element name="Classes"/>
+<element name="SysUtils"/>
+<element name="fgl"/>
+<element name="LCLType"/>
+<element name="Graphics"/>
+<element name="ComCtrls"/>
+<element name="EditBtn"/>
+<element name="LazFileUtils"/>
+<element name="LazUTF8"/>
+<element name="LazLoggerBase"/>
+<element name="AvgLvlTree"/>
+<element name="LazClasses"/>
+<element name="LazUtilities"/>
+
 <element name="TImageIndexEvent">
 <short>
 Specifies an event handler used to get the position of the image for a tree node.
@@ -162,7 +177,7 @@ considered as top-level tree nodes.
 
 <element name="TTreeFilterBranch.AddNodeData">
 <short>
-Adds an entry in Items for a root node in a branch.
+Adds an entry in Items for a new node in a branch.
 </short>
 <descr>
 <p>
@@ -192,11 +207,17 @@ Removes the specified tree node from the data for the class instance.
 </short>
 <descr>
 <p>
-Removes the specified tree node from Items, the internal list for sorted 
-data, and the items in the FilteredTreeview for the owner control.
+<var>DeleteData</var> removes the specified tree node from the lists maintained in the class instance. This includes the original Items for the branch, as well as the internal lists for sorted data and filtered data. The TTreeFilterEdit which is the owner of the branch deletes the tree node from its associated FilteredTreeView control.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TTreeFilterBranch.Items"/>
+<link id="TTreeFilterBranch.FreeNodeData"/>
+<link id="TTreeFilterEdit.FilteredTreeview"/>
+<link id="#lcl.comctrls.TCustomTreeview.Items">TCustomTreeview.Items</link>
+<link id="#lcl.comctrls.TTreeNodes.Delete">TTreeNodes.Delete</link>
+<link id="#lcl.comctrls.TTreeNode">TTreeNodes</link>
+</seealso>
 </element>
 <element name="TTreeFilterBranch.DeleteData.ANode">
 <short>
@@ -219,21 +240,27 @@ Tree node freed in the method.
 
 <element name="TTreeFilterBranch.GetData">
 <short>
-Gets the object data for the node at the specified position in the sorted 
-data.
+Gets the object data for the node at the specified position in the visible  
+data for the branch.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<var>GetData</var> retrieves the object reference stored in the list of tree 
+nodes displayed for the branch. The return value can be a node in the sorted or the filtered data list, and depends on whether a filter is active for the owner control and its tree view. The return value is Nil if AIndex contains an ordinal position not located in the list of visible tree nodes.
+</descr>
+<seealso>
+<link id="TTreeFilter.FilteredTreeView"/>
+<link id="#lcl.editbtn.TCustomControlFilterEdit.Filter">TCustomControlFilterEdit.Filter</link>
+</seealso>
 </element>
 <element name="TTreeFilterBranch.GetData.Result">
 <short>
 TObject instance at the specified position, or Nil when AIndex does not exist 
-in the sorted data.
+in the visible data for the branch.
 </short>
 </element>
 <element name="TTreeFilterBranch.GetData.AIndex">
 <short>
-Ordinal position in the sorted data where the object instance is stored.
+Ordinal position in the displayed data where the object instance is stored.
 </short>
 </element>
 
@@ -241,17 +268,35 @@ Ordinal position in the sorted data where the object instance is stored.
 <short>
 Frees the specified tree node and all of its child nodes.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+Calls FreeNodeData for each of the tree nodes visited in the method.
+</p>
+</descr>
+<seealso>
+<link id="TTreeFilterBranch.FreeNodeData"/>
+<link id="TTFENodeData"/>
+</seealso>
 </element>
 
 <element name="TTreeFilterBranch.InvalidateBranch">
 <short>
-Causes nodes in the class instance to be sorted, filtered, and applied to the 
-owner control.
+Causes nodes in the class instance to be sorted and/or filtered, and then 
+applied as the visible items for the filtered tree view in the owner control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+InvalidateBranch can be used in application code to force the branch to be 
+updated when the branch or one of its nodes has modified or removed.
+</p>
+</descr>
+<seealso>
+<link id="TTreeFilterEdit.SortAndFilter"/>
+<link id="TTreeFilterEdit.ShowDirHierarchy"/>
+<link id="#lcl.editbtn.TCustomControlFilterEdit.SortData">TCustomControlFilterEdit.SortData</link>
+<link id="#lcl.editbtn.TCustomControlFilterEdit.Filter">TCustomControlFilterEdit.Filter</link>
+<link id="#lcl.editbtn.TCustomControlFilterEdit.FilterOptions">TCustomControlFilterEdit.FilterOptions</link>
+</seealso>
 </element>
 
 <element name="TTreeFilterBranch.Move">
@@ -309,17 +354,20 @@ Contains the original tree node data for the class instance.
 </short>
 <descr/>
 <p>
-<var>Items</var> is a read-only <var>TStringList</var> property which contains 
+<var>Items</var> is a read-only <var>TStrings</var> property which contains 
 the original data displayed for a branch in a filtered tree view control. It 
 contains data for the tree nodes stored using AddNodeData, and maintained 
-using GeteData / DeleteData / FreeNodeData / ClearNodeData. Items is used when 
-the tree nodes are sorted and filtered in the class instance.
+using GetData / DeleteData / FreeNodeData / ClearNodeData. Items is used when 
+the tree nodes are sorted and filtered in the tree view class instance.
 </p>
 <seealso>
 <link id="TTreeFilterBranch.AddNodeData"/>
 <link id="TTreeFilterBranch.GetData"/>
 <link id="TTreeFilterBranch.FreeNodeData"/>
 <link id="TTreeFilterBranch.ClearNodeData"/>
+<link id="TTreeFilterBranch.InvalidateBranch"/>
+<link id="TTreeFilter.FilteredTreeView"/>
+<link id="#lcl.editbtn.TCustomControlFilterEdit.Filter">TCustomControlFilterEdit.Filter</link>
 </seealso>
 </element>
 
@@ -344,7 +392,7 @@ Implements a filter edit control for an associated TTreeView control.
 </short>
 <descr>
 <p>
-This control has 2 different modes of operation. One mode maintains and 
+This control has two different modes of operation. One mode maintains and 
 filters sub-items of root-nodes in a tree. The other mode filters the whole 
 tree using the TreeNode.Visible property for each of the nodes.
 </p>
