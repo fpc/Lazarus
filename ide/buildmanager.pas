@@ -585,6 +585,7 @@ begin
   tr('ProjIncPath',lisProjectIncPath);
   tr('ProjSrcPath',lisProjectSrcPath);
   tr('ProjOutDir',lisProjectOutDir);
+  tr('ProjVer',lisProjectVer);
   tr('Env',lisEnvironmentVariableNameAsParameter);
   tr('FPCMsgFile',dlgFilterFPCMessageFile);
   tr('MakeExe',lisMakeExe);
