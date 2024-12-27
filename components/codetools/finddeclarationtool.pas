@@ -6868,7 +6868,11 @@ var
 
     if AliasDeclarationNode<>nil then begin
       UseProcHead(AliasDeclarationNode);
-      Node:=DeclarationNode.Parent;
+
+      if DeclarationNode.Desc = ctnProcedureHead then
+        Node:=DeclarationNode.Parent.Parent
+      else
+        Node:=DeclarationNode.Parent;
       while (Node<>nil) do begin
         if Node.Desc = ctnProcedure then begin //here context is clearly limited
           if Node.EndPos<AliasDeclarationNode.StartPos then begin
