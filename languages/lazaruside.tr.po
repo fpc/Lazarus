@@ -16144,6 +16144,10 @@ msgstr "proje birimi"
 msgid "Project Unit Path"
 msgstr "Proje Birimi Yolu"
 
+#: lazarusidestrconsts.lisprojectver
+msgid "Project version"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
 msgstr "Proje Sihirbazı"
@@ -19658,6 +19662,10 @@ msgstr "Seçenekleri göster"
 msgid "Help menu commands"
 msgstr "Yardım menüsü komutları"
 
+#: lazarusidestrconsts.srkmcatclipboard
+msgid "Clipboard commands"
+msgstr ""
+
 #: lazarusidestrconsts.srkmcatcmdcmd
 msgid "Command commands"
 msgstr "Komut komutları"
@@ -20303,6 +20311,14 @@ msgstr "denetle"
 msgctxt "lazarusidestrconsts.srkmecinvertassignment"
 msgid "Invert Assignment"
 msgstr "Atamayı Ters Çevir"
+
+#: lazarusidestrconsts.srkmecjumptonextsearchresult
+msgid "Jump to next search result"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecjumptoprevsearchresult
+msgid "Jump to previous search result"
+msgstr ""
 
 #: lazarusidestrconsts.srkmeckeymapleft
 msgctxt "lazarusidestrconsts.srkmeckeymapleft"

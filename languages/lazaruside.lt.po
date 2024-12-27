@@ -16530,6 +16530,10 @@ msgstr "projekto modulis"
 msgid "Project Unit Path"
 msgstr "Kelias iki projekto modulių"
 
+#: lazarusidestrconsts.lisprojectver
+msgid "Project version"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
 msgstr "Projekto vediklis"
@@ -20135,6 +20139,10 @@ msgstr ""
 msgid "Help menu commands"
 msgstr "Meniu „Žinynas“ komandos"
 
+#: lazarusidestrconsts.srkmcatclipboard
+msgid "Clipboard commands"
+msgstr ""
+
 #: lazarusidestrconsts.srkmcatcmdcmd
 msgid "Command commands"
 msgstr "Menių „Komandos“ komandos"
@@ -20782,6 +20790,14 @@ msgstr "inspektuoti"
 msgctxt "lazarusidestrconsts.srkmecinvertassignment"
 msgid "Invert Assignment"
 msgstr "Sukeisti priskyrimą"
+
+#: lazarusidestrconsts.srkmecjumptonextsearchresult
+msgid "Jump to next search result"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecjumptoprevsearchresult
+msgid "Jump to previous search result"
+msgstr ""
 
 #: lazarusidestrconsts.srkmeckeymapleft
 msgctxt "lazarusidestrconsts.srkmeckeymapleft"

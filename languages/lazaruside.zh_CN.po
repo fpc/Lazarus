@@ -16186,6 +16186,10 @@ msgstr "工程单元"
 msgid "Project Unit Path"
 msgstr "工程单元路径"
 
+#: lazarusidestrconsts.lisprojectver
+msgid "Project version"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
 msgstr "工程向导"
@@ -19715,6 +19719,10 @@ msgstr "显示选项"
 msgid "Help menu commands"
 msgstr "帮助菜单命令"
 
+#: lazarusidestrconsts.srkmcatclipboard
+msgid "Clipboard commands"
+msgstr ""
+
 #: lazarusidestrconsts.srkmcatcmdcmd
 msgid "Command commands"
 msgstr "命令(Command)命令"
@@ -20362,6 +20370,14 @@ msgstr "查看"
 msgctxt "lazarusidestrconsts.srkmecinvertassignment"
 msgid "Invert Assignment"
 msgstr "反转(Invert)分配"
+
+#: lazarusidestrconsts.srkmecjumptonextsearchresult
+msgid "Jump to next search result"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecjumptoprevsearchresult
+msgid "Jump to previous search result"
+msgstr ""
 
 #: lazarusidestrconsts.srkmeckeymapleft
 msgctxt "lazarusidestrconsts.srkmeckeymapleft"

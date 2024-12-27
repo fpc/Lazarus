@@ -16736,6 +16736,10 @@ msgstr ""
 msgid "Project Unit Path"
 msgstr "Project Unit pad"
 
+#: lazarusidestrconsts.lisprojectver
+msgid "Project version"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
 msgstr ""
@@ -20339,6 +20343,10 @@ msgstr ""
 msgid "Help menu commands"
 msgstr "Help menu acties"
 
+#: lazarusidestrconsts.srkmcatclipboard
+msgid "Clipboard commands"
+msgstr ""
+
 #: lazarusidestrconsts.srkmcatcmdcmd
 msgid "Command commands"
 msgstr "Opdrachtopdrachten"
@@ -21023,6 +21031,14 @@ msgstr "inspecteer"
 msgctxt "lazarusidestrconsts.srkmecinvertassignment"
 msgid "Invert Assignment"
 msgstr "Draai toekenning om"
+
+#: lazarusidestrconsts.srkmecjumptonextsearchresult
+msgid "Jump to next search result"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecjumptoprevsearchresult
+msgid "Jump to previous search result"
+msgstr ""
 
 #: lazarusidestrconsts.srkmeckeymapleft
 #, fuzzy

@@ -16301,6 +16301,10 @@ msgstr ""
 msgid "Project Unit Path"
 msgstr "Cesta k jednotkám projektu"
 
+#: lazarusidestrconsts.lisprojectver
+msgid "Project version"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
 msgstr "Sprievodca projektom"
@@ -19871,6 +19875,10 @@ msgstr "Zobraziť voľby"
 msgid "Help menu commands"
 msgstr "Príkazy menu Help"
 
+#: lazarusidestrconsts.srkmcatclipboard
+msgid "Clipboard commands"
+msgstr ""
+
 #: lazarusidestrconsts.srkmcatcmdcmd
 msgid "Command commands"
 msgstr "Príkazy Command"
@@ -20526,6 +20534,14 @@ msgstr "skontrolovať"
 msgctxt "lazarusidestrconsts.srkmecinvertassignment"
 msgid "Invert Assignment"
 msgstr "Otočiť priradenie"
+
+#: lazarusidestrconsts.srkmecjumptonextsearchresult
+msgid "Jump to next search result"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecjumptoprevsearchresult
+msgid "Jump to previous search result"
+msgstr ""
 
 #: lazarusidestrconsts.srkmeckeymapleft
 #, fuzzy

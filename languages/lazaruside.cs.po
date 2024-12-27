@@ -16399,6 +16399,10 @@ msgstr "jednotka projektu"
 msgid "Project Unit Path"
 msgstr "Cesta jednotek projektu"
 
+#: lazarusidestrconsts.lisprojectver
+msgid "Project version"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
 msgstr "Průvodce projektu"
@@ -19949,6 +19953,10 @@ msgstr ""
 msgid "Help menu commands"
 msgstr "Příkazy nabídky Nápověda"
 
+#: lazarusidestrconsts.srkmcatclipboard
+msgid "Clipboard commands"
+msgstr ""
+
 #: lazarusidestrconsts.srkmcatcmdcmd
 msgid "Command commands"
 msgstr "Příkazové příkazy"
@@ -20596,6 +20604,14 @@ msgstr "zkoumat"
 msgctxt "lazarusidestrconsts.srkmecinvertassignment"
 msgid "Invert Assignment"
 msgstr "Převrátit přiřazení"
+
+#: lazarusidestrconsts.srkmecjumptonextsearchresult
+msgid "Jump to next search result"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecjumptoprevsearchresult
+msgid "Jump to previous search result"
+msgstr ""
 
 #: lazarusidestrconsts.srkmeckeymapleft
 msgctxt "lazarusidestrconsts.srkmeckeymapleft"

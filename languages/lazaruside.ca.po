@@ -16637,6 +16637,10 @@ msgstr ""
 msgid "Project Unit Path"
 msgstr "Trajectòria de les unitats del projecte"
 
+#: lazarusidestrconsts.lisprojectver
+msgid "Project version"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
 msgstr ""
@@ -20220,6 +20224,10 @@ msgstr ""
 msgid "Help menu commands"
 msgstr "Ordres del menú de l'ajuda"
 
+#: lazarusidestrconsts.srkmcatclipboard
+msgid "Clipboard commands"
+msgstr ""
+
 #: lazarusidestrconsts.srkmcatcmdcmd
 msgid "Command commands"
 msgstr "Ordres de les instruccions"
@@ -20908,6 +20916,14 @@ msgstr "inspeccionar"
 msgctxt "lazarusidestrconsts.srkmecinvertassignment"
 msgid "Invert Assignment"
 msgstr "Inverteix l'assignació"
+
+#: lazarusidestrconsts.srkmecjumptonextsearchresult
+msgid "Jump to next search result"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecjumptoprevsearchresult
+msgid "Jump to previous search result"
+msgstr ""
 
 #: lazarusidestrconsts.srkmeckeymapleft
 #, fuzzy

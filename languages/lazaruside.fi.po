@@ -16220,6 +16220,10 @@ msgstr "projektin käännösyksikkö"
 msgid "Project Unit Path"
 msgstr "Projektin käännösyksikköjen polku"
 
+#: lazarusidestrconsts.lisprojectver
+msgid "Project version"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
 msgstr "Projektin valinta"
@@ -19759,6 +19763,10 @@ msgstr ""
 msgid "Help menu commands"
 msgstr "Ohjevalikon komennot"
 
+#: lazarusidestrconsts.srkmcatclipboard
+msgid "Clipboard commands"
+msgstr ""
+
 #: lazarusidestrconsts.srkmcatcmdcmd
 msgid "Command commands"
 msgstr "Komentojen komennot"
@@ -20406,6 +20414,14 @@ msgstr "tutki"
 msgctxt "lazarusidestrconsts.srkmecinvertassignment"
 msgid "Invert Assignment"
 msgstr "Käännä asettaminen"
+
+#: lazarusidestrconsts.srkmecjumptonextsearchresult
+msgid "Jump to next search result"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecjumptoprevsearchresult
+msgid "Jump to previous search result"
+msgstr ""
 
 #: lazarusidestrconsts.srkmeckeymapleft
 msgctxt "lazarusidestrconsts.srkmeckeymapleft"

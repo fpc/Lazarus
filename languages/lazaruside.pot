@@ -16078,6 +16078,10 @@ msgstr ""
 msgid "Project Unit Path"
 msgstr ""
 
+#: lazarusidestrconsts.lisprojectver
+msgid "Project version"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
 msgstr ""
@@ -19595,6 +19599,10 @@ msgstr ""
 msgid "Help menu commands"
 msgstr ""
 
+#: lazarusidestrconsts.srkmcatclipboard
+msgid "Clipboard commands"
+msgstr ""
+
 #: lazarusidestrconsts.srkmcatcmdcmd
 msgid "Command commands"
 msgstr ""
@@ -20237,6 +20245,14 @@ msgstr ""
 #: lazarusidestrconsts.srkmecinvertassignment
 msgctxt "lazarusidestrconsts.srkmecinvertassignment"
 msgid "Invert Assignment"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecjumptonextsearchresult
+msgid "Jump to next search result"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecjumptoprevsearchresult
+msgid "Jump to previous search result"
 msgstr ""
 
 #: lazarusidestrconsts.srkmeckeymapleft

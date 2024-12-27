@@ -16280,6 +16280,10 @@ msgstr "модуль проєкту"
 msgid "Project Unit Path"
 msgstr "Шлях до модулів проєкту"
 
+#: lazarusidestrconsts.lisprojectver
+msgid "Project version"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
 msgstr "Майстер Проєктів"
@@ -19840,6 +19844,10 @@ msgstr "Показати параметри"
 msgid "Help menu commands"
 msgstr "Команди меню Довідка"
 
+#: lazarusidestrconsts.srkmcatclipboard
+msgid "Clipboard commands"
+msgstr ""
+
 #: lazarusidestrconsts.srkmcatcmdcmd
 msgid "Command commands"
 msgstr "Команда команди"
@@ -20487,6 +20495,14 @@ msgstr "перевірити"
 msgctxt "lazarusidestrconsts.srkmecinvertassignment"
 msgid "Invert Assignment"
 msgstr "Інвертувати присвоєння"
+
+#: lazarusidestrconsts.srkmecjumptonextsearchresult
+msgid "Jump to next search result"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecjumptoprevsearchresult
+msgid "Jump to previous search result"
+msgstr ""
 
 #: lazarusidestrconsts.srkmeckeymapleft
 msgctxt "lazarusidestrconsts.srkmeckeymapleft"

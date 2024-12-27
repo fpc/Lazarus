@@ -16457,6 +16457,10 @@ msgstr "Ścieżka do modułów projektu"
 msgid "Project Unit Path"
 msgstr "Ścieżka do modułów projektu"
 
+#: lazarusidestrconsts.lisprojectver
+msgid "Project version"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
 msgstr "Kreator projektu"
@@ -20029,6 +20033,10 @@ msgstr ""
 msgid "Help menu commands"
 msgstr "Menu pomoc"
 
+#: lazarusidestrconsts.srkmcatclipboard
+msgid "Clipboard commands"
+msgstr ""
+
 #: lazarusidestrconsts.srkmcatcmdcmd
 msgid "Command commands"
 msgstr "Sterowanie"
@@ -20694,6 +20702,14 @@ msgstr "badaj"
 msgctxt "lazarusidestrconsts.srkmecinvertassignment"
 msgid "Invert Assignment"
 msgstr "Odwróć przyporządkowanie"
+
+#: lazarusidestrconsts.srkmecjumptonextsearchresult
+msgid "Jump to next search result"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecjumptoprevsearchresult
+msgid "Jump to previous search result"
+msgstr ""
 
 #: lazarusidestrconsts.srkmeckeymapleft
 msgctxt "lazarusidestrconsts.srkmeckeymapleft"

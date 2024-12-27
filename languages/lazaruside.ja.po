@@ -16494,6 +16494,10 @@ msgstr "プロジェクトユニット"
 msgid "Project Unit Path"
 msgstr "プロジェクトのユニットパス"
 
+#: lazarusidestrconsts.lisprojectver
+msgid "Project version"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
 msgstr "プロジェクトウィザード"
@@ -20095,6 +20099,10 @@ msgstr ""
 msgid "Help menu commands"
 msgstr "ヘルプメニューコマンド"
 
+#: lazarusidestrconsts.srkmcatclipboard
+msgid "Clipboard commands"
+msgstr ""
+
 #: lazarusidestrconsts.srkmcatcmdcmd
 msgid "Command commands"
 msgstr "コマンド コマンド"
@@ -20742,6 +20750,14 @@ msgstr "検査"
 msgctxt "lazarusidestrconsts.srkmecinvertassignment"
 msgid "Invert Assignment"
 msgstr "代入を反転"
+
+#: lazarusidestrconsts.srkmecjumptonextsearchresult
+msgid "Jump to next search result"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecjumptoprevsearchresult
+msgid "Jump to previous search result"
+msgstr ""
 
 #: lazarusidestrconsts.srkmeckeymapleft
 #, fuzzy

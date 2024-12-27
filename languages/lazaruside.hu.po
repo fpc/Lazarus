@@ -16321,6 +16321,10 @@ msgstr "projekt unit"
 msgid "Project Unit Path"
 msgstr "Projekt unit elérési útja"
 
+#: lazarusidestrconsts.lisprojectver
+msgid "Project version"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
 msgstr "Projekt varázsló"
@@ -19874,6 +19878,10 @@ msgstr "Beállítások megjelenítése"
 msgid "Help menu commands"
 msgstr "Súgó menü parancsai"
 
+#: lazarusidestrconsts.srkmcatclipboard
+msgid "Clipboard commands"
+msgstr ""
+
 #: lazarusidestrconsts.srkmcatcmdcmd
 msgid "Command commands"
 msgstr "Utasító parancsok"
@@ -20521,6 +20529,14 @@ msgstr "vizsgálat"
 msgctxt "lazarusidestrconsts.srkmecinvertassignment"
 msgid "Invert Assignment"
 msgstr "Hozzárendelés megfordítása"
+
+#: lazarusidestrconsts.srkmecjumptonextsearchresult
+msgid "Jump to next search result"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecjumptoprevsearchresult
+msgid "Jump to previous search result"
+msgstr ""
 
 #: lazarusidestrconsts.srkmeckeymapleft
 msgctxt "lazarusidestrconsts.srkmeckeymapleft"

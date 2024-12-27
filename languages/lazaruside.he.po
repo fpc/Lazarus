@@ -17137,6 +17137,10 @@ msgstr "יחידת הפרוייקט"
 msgid "Project Unit Path"
 msgstr "נתיב יחידות הפרויקט"
 
+#: lazarusidestrconsts.lisprojectver
+msgid "Project version"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
 msgstr "אשף הפרויקטים"
@@ -20823,6 +20827,10 @@ msgstr ""
 msgid "Help menu commands"
 msgstr "פקודות תפריט עזרה"
 
+#: lazarusidestrconsts.srkmcatclipboard
+msgid "Clipboard commands"
+msgstr ""
+
 #: lazarusidestrconsts.srkmcatcmdcmd
 msgid "Command commands"
 msgstr "פקודות פקודה"
@@ -21517,6 +21525,14 @@ msgstr "פקח"
 msgctxt "lazarusidestrconsts.srkmecinvertassignment"
 msgid "Invert Assignment"
 msgstr "החלף הצבה"
+
+#: lazarusidestrconsts.srkmecjumptonextsearchresult
+msgid "Jump to next search result"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecjumptoprevsearchresult
+msgid "Jump to previous search result"
+msgstr ""
 
 #: lazarusidestrconsts.srkmeckeymapleft
 #, fuzzy

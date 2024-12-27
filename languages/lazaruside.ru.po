@@ -1,16 +1,16 @@
 msgid ""
 msgstr ""
-"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Project-Id-Version: lazaruside\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2024-12-27 22:26+0300\n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-11-06 15:03+0300\n"
-"Language-Team: \n"
-"MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
-"Language: ru\n"
-"X-Generator: Poedit 2.3.1\n"
+"X-Generator: Poedit 3.5\n"
 
 #: lazarusidestrconsts.cocoamfstbicommand
 msgid "Command"
@@ -16174,6 +16174,10 @@ msgstr "модуль проекта"
 msgid "Project Unit Path"
 msgstr "Путь поиска модулей проекта"
 
+#: lazarusidestrconsts.lisprojectver
+msgid "Project version"
+msgstr "Версия проекта"
+
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
 msgstr "Мастер создания проекта"
@@ -19706,6 +19710,10 @@ msgstr "Показать параметры"
 msgid "Help menu commands"
 msgstr "Команды меню Справка"
 
+#: lazarusidestrconsts.srkmcatclipboard
+msgid "Clipboard commands"
+msgstr "Команды буфера обмена"
+
 #: lazarusidestrconsts.srkmcatcmdcmd
 msgid "Command commands"
 msgstr "Управляющие команды"
@@ -20349,6 +20357,14 @@ msgstr "просмотреть"
 msgctxt "lazarusidestrconsts.srkmecinvertassignment"
 msgid "Invert Assignment"
 msgstr "Обратить присваивание"
+
+#: lazarusidestrconsts.srkmecjumptonextsearchresult
+msgid "Jump to next search result"
+msgstr "Перейти к следующему результату поиска"
+
+#: lazarusidestrconsts.srkmecjumptoprevsearchresult
+msgid "Jump to previous search result"
+msgstr "Перейти к предыдущему результату поиска"
 
 #: lazarusidestrconsts.srkmeckeymapleft
 msgctxt "lazarusidestrconsts.srkmeckeymapleft"
