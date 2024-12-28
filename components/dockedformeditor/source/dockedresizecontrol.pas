@@ -344,19 +344,13 @@ end;
 
 procedure TResizeControl.TryBoundDesignForm;
 var
-  i, t: Integer;
+  f: Boolean;
 begin
   if DesignForm = nil then Exit;
-  if FakeMenuNeeded then
-  begin
-    FakeMenu.ButtonHeight := DesignForm.MainMenuHeight;
-    t := 0;
-    for i := 0 to FakeMenu.ComponentCount - 1 do  //For multi-line MainMenu
-      if FakeMenu.Components[i] is TSpeedButton then
-        if t < TSpeedButton(FakeMenu.Components[i]).Top then t := TSpeedButton(FakeMenu.Components[i]).Top;
-    FakeMenu.Height := t + FakeMenu.ButtonHeight;
-    FakeMenu.Update;
-  end else FakeMenu.Height := 0;
+  f := FakeMenuNeeded;
+  FakeMenu.AutoSize := f;
+  if not f then
+    FakeMenu.Height := 0;
 end;
 
 constructor TResizeControl.Create(TheOwner: TComponent);
