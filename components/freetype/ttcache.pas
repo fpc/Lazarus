@@ -298,7 +298,7 @@ var
   label
     Fail;
   begin
-    Result := False;
+    //Result := False;
     (* LOCK *)
     current := cache.idle;
     if current <> nil then
@@ -312,7 +312,9 @@ var
       begin
         (* if no object was found in the cache, create a new one *)
         obj:=nil;
-        if Alloc( obj, cache.clazz^.object_size ) then exit;
+
+        if Alloc( obj, cache.clazz^.object_size ) then
+          goto Fail;
 
         current := Element_New;
         if current = nil then goto Fail;
@@ -320,7 +322,11 @@ var
         current^.data := obj;
 
         error := cache.clazz^.init( obj, parent_data );
-        if error then goto Fail;
+        if error then
+        begin
+          Element_Done( current );
+          goto Fail;
+        end;
       end;
 
     (* LOCK *)
