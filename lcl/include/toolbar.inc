@@ -13,6 +13,30 @@
 
 }
 
+type
+
+  TToolBarSpeedButton = class(TSpeedButton)
+  private
+    FMenuItemIndex: integer;
+  end;
+
+  { TToolBarMenuItem }
+
+  TToolBarMenuItem = class(TMenuItem)
+  private
+    FOrigItem: TMenuItem;
+  protected
+    procedure DoClicked(var msg); message LM_ACTIVATE;
+  end;
+
+{ TToolBarMenuItem }
+
+procedure TToolBarMenuItem.DoClicked(var msg);
+begin
+  if FOrigItem <> nil then
+    FOrigItem.Dispatch(msg);
+end;
+
 function CompareToolBarControlHorz(Control1, Control2: TControl): integer;
 var
   ToolBar: TToolBar;
@@ -22,6 +46,16 @@ var
 begin
   Result := 0;
   if not (Control1.Parent is TToolBar) then Exit;
+
+  if Control1 is TToolBarSpeedButton then begin
+    if Control2 is TToolBarSpeedButton then
+      exit(TToolBarSpeedButton(Control1).FMenuItemIndex - TToolBarSpeedButton(Control2).FMenuItemIndex)
+    else
+      exit(-1);
+  end
+  else
+  if Control2 is TToolBarSpeedButton then
+    exit(1);
 
   ToolBar := TToolBar(Control1.Parent);
   BtnHeight := ToolBar.ButtonHeight;
@@ -54,6 +88,16 @@ var
 begin
   Result := 0;
   if not (Control1.Parent is TToolBar) then Exit;
+
+  if Control1 is TToolBarSpeedButton then begin
+    if Control2 is TToolBarSpeedButton then
+      exit(TToolBarSpeedButton(Control1).FMenuItemIndex - TToolBarSpeedButton(Control2).FMenuItemIndex)
+    else
+      exit(-1);
+  end
+  else
+  if Control2 is TToolBarSpeedButton then
+    exit(1);
 
   ToolBar := TToolBar(Control1.Parent);
   BtnWidth := ToolBar.ButtonWidth;
@@ -129,8 +173,8 @@ begin
       TToolButton(FButtons[I]).FToolBar := nil;
 
   for I := 0 to FMenuButtons.Count - 1 do
-    if TControl(FMenuButtons[I]) is TSpeedButton then
-      TSpeedButton(FMenuButtons[I]).Free;
+    if TControl(FMenuButtons[I]) is TToolBarSpeedButton then
+      TToolBarSpeedButton(FMenuButtons[I]).Free;
 
   if Assigned(FMenu) then FMenu.FPODetachObserver(FMenuObserver);
   FreeThenNil(FButtons);
@@ -260,13 +304,13 @@ end;
 procedure TToolBar.UpdateMenuItem(Sender: TObject);
 var
   i, xpos, wglyph: Integer;
-  tmpMenuButton: TSpeedButton;
+  tmpMenuButton: TToolBarSpeedButton;
 begin
   xpos := 0;
   while (FMenuButtons.Count > 0) do
   begin
     i := FMenuButtons.Count - 1;
-    tmpMenuButton := TSpeedButton(FMenuButtons.Items[i]);
+    tmpMenuButton := TToolBarSpeedButton(FMenuButtons.Items[i]);
     FMenuButtons.Delete(i);
     FreeAndNil(tmpMenuButton);
   end;
@@ -276,7 +320,7 @@ begin
   for i := 0 to FMenu.Items.Count-1 do
   if FMenu.Items[i].Visible then
   begin
-    tmpMenuButton := TSpeedButton.Create(Self);
+    tmpMenuButton := TToolBarSpeedButton.Create(Self);
     tmpMenuButton.AutoSize := False;
     tmpMenuButton.Align := alNone;
     tmpMenuButton.Alignment := taCenter;
@@ -291,7 +335,7 @@ begin
     tmpMenuButton.Visible := FMenu.Items[i].Visible;
     tmpMenuButton.Margin := -1;
     tmpMenuButton.Spacing := 7;
-    tmpMenuButton.Tag := i;
+    tmpMenuButton.FMenuItemIndex:= i;
     wglyph := 0;
     tmpMenuButton.Images := nil;
     if Assigned(FMenu.Images) and (FMenu.Items[i].ImageIndex >= 0) then
@@ -318,19 +362,26 @@ begin
   FMenu := nil;
 end;
 
-procedure TToolBar.SubMenuItemClick(Sender: TObject);
-var
-  tmpMI: TMenuItem;
-begin
-  tmpMI := TMenuItem(FSubMenuItems.Items[TMenuItem(Sender).Tag]);
-  if Assigned(tmpMI) then tmpMI.Click;
-end;
-
 procedure TToolBar.MenuButtonClick(Sender: TObject);
 var
-  MenuButton: TSpeedButton;
+  MenuButton: TToolBarSpeedButton;
   SubMenuPos: TPoint;
   tmpMI: TMenuItem;
+
+  function NewItem(const ACaption: string; AShortCut: TShortCut; AChecked,
+    TheEnabled: Boolean; hCtx: THelpContext;
+    const AName: string): TMenuItem;
+  begin
+    Result:=TToolBarMenuItem.Create(nil);
+    with Result do begin
+      Caption:=ACaption;
+      ShortCut:=AShortCut;
+      HelpContext:=hCtx;
+      Checked:=AChecked;
+      Enabled:=TheEnabled;
+      Name:=AName;
+    end;
+  end;
 
   procedure PrepSubMenuItem(SubMenuItemIn, SubMenuItemOut: TMenuItem);
   var
@@ -342,7 +393,6 @@ var
                                  SubMenuItemIn.Items[i].ShortCut,
                                  SubMenuItemIn.Items[i].Checked,
                                  SubMenuItemIn.Items[i].Visible,
-                                 @SubMenuItemClick,
                                  SubMenuItemIn.Items[i].HelpContext,
                                  ''));
       SubMenuItemOut.Items[i].AutoCheck := SubMenuItemIn.Items[i].AutoCheck;
@@ -358,14 +408,14 @@ var
       SubMenuItemOut.Items[i].ShowAlwaysCheckable := SubMenuItemIn.Items[i].ShowAlwaysCheckable;
       SubMenuItemOut.Items[i].SubMenuImages := SubMenuItemIn.Items[i].SubMenuImages;
       SubMenuItemOut.Items[i].SubMenuImagesWidth := SubMenuItemIn.Items[i].SubMenuImagesWidth;
-      SubMenuItemOut.Items[i].Tag := PtrInt(Pointer(SubMenuItemIn.Items[i]));
+      TToolBarMenuItem(SubMenuItemOut.Items[i]).FOrigItem := SubMenuItemIn.Items[i];
       if SubMenuItemIn.Items[i].Count > 0 then PrepSubMenuItem(SubMenuItemIn.Items[i], SubMenuItemOut.Items[i]);
     end;
   end;
 
 begin
-  MenuButton := TSpeedButton(Sender);
-  tmpMI := FMenu.Items[MenuButton.Tag];
+  MenuButton := TToolBarSpeedButton(Sender);
+  tmpMI := FMenu.Items[MenuButton.FMenuItemIndex];
   if not Assigned(tmpMI) then Exit;
   tmpMI.Click;
   FSubMenu.Items.Clear;

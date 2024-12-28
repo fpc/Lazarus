@@ -2349,7 +2349,6 @@ type
     procedure RemoveButton(Button: TToolButton);
     procedure UpdateMenuItem(Sender: TObject);
     procedure RemoveMenu(Sender: TObject);
-    procedure SubMenuItemClick(Sender: TObject);
     procedure MenuButtonClick(Sender: TObject);
   protected const
     cDefButtonWidth = 23;
