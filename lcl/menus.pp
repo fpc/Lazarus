@@ -572,7 +572,7 @@ begin
 
   for i:= 0 to ASrc.Count-1 do
   begin
-    mi:= TMenuItem.Create(ASrc.Owner);
+    mi:= TMenuItem.Create(ADest.Owner);
     MenuItem_Copy(ASrc.Items[i], mi);
     ADest.Add(mi);
   end;
