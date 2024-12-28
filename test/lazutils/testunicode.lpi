@@ -22,9 +22,7 @@
       <Version Value="2"/>
     </PublishOptions>
     <RunParams>
-      <local>
-        <FormatVersion Value="1"/>
-      </local>
+      <FormatVersion Value="2"/>
     </RunParams>
     <RequiredPackages Count="1">
       <Item1>

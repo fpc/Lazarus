@@ -1293,6 +1293,7 @@ begin
 end;
 
 function UTF8ProperCase(const AInStr: string; const WordDelims: TSysCharSet): string;
+// Capitalize the first letter of every word
 var
   P, PE : PChar;
   CharLen: Integer;
