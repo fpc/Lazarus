@@ -726,6 +726,7 @@ type
   private
   protected
     procedure Clear; virtual; abstract;
+    procedure SetProject(AValue: TProject); virtual; abstract;
     procedure BeforeReadProject; virtual; abstract;
     procedure AfterReadProject; virtual; abstract;
     procedure LoadFromLPI(aXMLConfig: TRttiXMLConfig; Path: string); virtual; abstract;
@@ -735,6 +736,7 @@ type
   public
     //constructor Create;
     //destructor Destroy; override;
+    property Project: TProject write SetProject;
   end;
 
   { TProject }
@@ -2933,6 +2935,8 @@ begin
   FDefineTemplates.Active := False;
   ActiveBuildMode:=nil;
   Clear;
+  if Assigned(FDebuggerLink) then
+    FDebuggerLink.Project := nil;
   FreeThenNil(FIDEOptions);
   FreeAndNil(FBuildModesBackup);
   FreeAndNil(FBuildModes);

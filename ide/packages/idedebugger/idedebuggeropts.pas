@@ -69,6 +69,7 @@ type
     function GetOpt(Index: Integer): TDebuggerPropertiesConfig;
   public
     constructor Create;
+    procedure Clear; override;
 
     function EntryByName(AConfName, AConfClass: String): TDebuggerPropertiesConfig;
     function EntryByUid(AnUid: String): TDebuggerPropertiesConfig;
@@ -566,6 +567,12 @@ begin
   inherited Create;
   OwnsObjects := True;
 
+end;
+
+procedure TDebuggerPropertiesConfigListBase.Clear;
+begin
+  inherited Clear;
+  FCurrentDebuggerPropertiesConfig := nil;
 end;
 
 function TDebuggerPropertiesConfigListBase.EntryByName(AConfName,

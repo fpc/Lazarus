@@ -44,7 +44,7 @@ type
     FValueFormatterConfig: TIdeDbgValueFormatterSelectorList;
     function GetCurrentDebuggerBackend: String;
     procedure SetDebuggerBackend(AValue: String);
-    procedure SetProject(AValue: TProject);
+    procedure SetProject(AValue: TProject); override;
     procedure SetStoreDebuggerClassConfInSession(AValue: boolean);
     procedure SetStoreBackendConverterConfigInSession(AValue: boolean);
     procedure SetStoreDisplayFormatConfigsInSession(AValue: boolean);
@@ -169,6 +169,8 @@ procedure TProjectDebugLink.SetProject(AValue: TProject);
 begin
   // A new project can have the same address as a previous freed project and this test
   //if FProject = AValue then Exit; // would prevent updating FProject.DebuggerLink.
+  if FProject <> AValue then
+    Clear;
   FProject := AValue;
   if Assigned(FProject) then
     FProject.DebuggerLink := Self;
