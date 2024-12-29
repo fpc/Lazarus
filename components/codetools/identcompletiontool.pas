@@ -1557,21 +1557,22 @@ begin
           PlaceForDotted:=
             ExtractIdentifierWithPoints(FoundContext.Node.Parent.StartPos,false);
           IsDottedIdent:=true;
-          Ident:=@(PlaceForDotted[1]);
+          Ident:=@PlaceForDotted[1];
           Node:=FoundContext.Node.Parent.LastChild;
         end;
       end;
     end;
-  ctnProgram..ctnUnit: begin
-    if (FoundContext.Tool=Self) then begin
-      PlaceForDotted:=ExtractSourceName;  //can apply name from file name if empty program header
-      if length(PlaceForDotted)>0 then begin
-        Ident:=@(PlaceForDotted[1]);
-        Node:=FoundContext.Node;
-        IsDottedIdent:=isIdentifierDotted(PlaceForDotted,false);
+  ctnProgram..ctnUnit:
+    begin
+      if (FoundContext.Tool=Self) then begin
+        PlaceForDotted:=ExtractSourceName;  //can apply name from file name if empty program header
+        if length(PlaceForDotted)>0 then begin
+          Ident:=@PlaceForDotted[1];
+          Node:=FoundContext.Node;
+          IsDottedIdent:=Pos('.',PlaceForDotted)>0;
+        end;
       end;
     end;
-  end;
   end;
   if Ident=nil then exit;
 

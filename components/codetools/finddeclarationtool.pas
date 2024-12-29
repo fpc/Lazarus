@@ -6810,7 +6810,7 @@ var
     IdentEndPos:=IdentStartPos;
     if Src[IdentEndPos]='&' then
       inc(IdentEndPos);
-    IsDotted:=IsIdentifierDotted(Identifier);
+    IsDotted:=Pos('.',Identifier)>0;
     dLen:=length(Identifier);
     if not IsDotted then begin
       IdentStripped:= ExtractIdentifier(IdentStartPos);

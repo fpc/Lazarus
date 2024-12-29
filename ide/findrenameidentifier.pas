@@ -91,7 +91,7 @@ type
     procedure SetFiles(const Files:TStringList);
     procedure UpdateRename;
     procedure GatherProhibited;
-    function NewIdentifierIsConflicted(var errMsg:string): boolean;
+    function NewIdentifierIsConflicted(var ErrMsg: string): boolean;
   public
     procedure LoadFromConfig;
     procedure SaveToConfig;
@@ -621,7 +621,7 @@ begin
     AddReferencesToResultView(DeclarationCode,DeclarationCaretXY,
                    TreeOfPCodeXYPosition,true,SearchPageIndex.PageIndex,
                    InsertedCommentsAllowed and
-                   IsIdentifierDotted(Identifier));
+                   IsDottedIdentifier(Identifier));
     OldSearchPageIndex:=SearchPageIndex;
     SearchPageIndex:=nil;
     Identifier:=EnforceAmp(Identifier);
@@ -1327,23 +1327,24 @@ begin
   end;
 end;
 
-function TFindRenameIdentifierDialog.NewIdentifierIsConflicted(var errMsg:string): boolean;
+function TFindRenameIdentifierDialog.NewIdentifierIsConflicted(var ErrMsg: string): boolean;
 var
   i: integer;
   anItem: TIdentifierListItem;
 begin
   Result:=false;
-  errMsg:='';
+  ErrMsg:='';
   if not AllowRename then exit;
   if not (FNode.Desc in [ctnProgram..ctnUnit,ctnUseUnit,
       ctnUseUnitNamespace,ctnUseUnitClearName]) and
-    IsIdentifierDotted(FNewIdentifier) then begin
-    errMsg:=Format(lisIdentifierCannotBeDotted,[FNewIdentifier]);
+    (Pos('.',FNewIdentifier)>0) then
+  begin
+    ErrMsg:=Format(lisIdentifierCannotBeDotted,[FNewIdentifier]);
     exit(true);
   end;
   if FForbidden=nil then exit;
   if FNewIdentifier='' then begin
-    errMsg:=lisIdentifierCannotBeEmpty;
+    ErrMsg:=lisIdentifierCannotBeEmpty;
     exit(true);
   end;
   i:=0;
@@ -1353,7 +1354,7 @@ begin
   Result:= i<=FForbidden.Count-1;
 
   if Result then begin
-    errMsg:=Format(lisIdentifierWasAlreadyUsed,[FNewIdentifier]);
+    ErrMsg:=Format(lisIdentifierWasAlreadyUsed,[FNewIdentifier]);
     exit;
   end;
   // checking if there are existing other identifiers conflited with the new

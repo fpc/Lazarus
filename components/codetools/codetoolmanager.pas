@@ -3118,8 +3118,8 @@ begin
   if (TreeOfPCodeXYPosition=nil) or (TreeOfPCodeXYPosition.Count=0) then
     exit(true);
   if not IsValidDottedIdent(NewIdentifier) then exit;
-  DottedIdents:= IsIdentifierDotted(OldIdentifier,True) or
-                 IsIdentifierDotted(NewIdentifier,True);
+  DottedIdents:= (Pos('.',OldIdentifier)>0) or
+                 (Pos('.',NewIdentifier)>0);
   ClearCurCodeTool;
   SourceChangeCache.Clear;
   //IdentLenDiff := length(NewIdentifier) - length(OldIdentifier);
