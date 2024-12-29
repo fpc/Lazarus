@@ -23053,6 +23053,32 @@ property in <var>TToolBar</var>.
 <short>Drawing state for the button.</short>
 </element>
 
+<element name="TToolBarOrientation">
+<short>
+Represents the orientations used in the TToolBar control.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TToolBarOrientation.tboAutomatic">
+<short>
+Indicates the tool bar orientation is determined automatically by its alignment 
+on a parent control or form.
+</short>
+</element>
+<element name="TToolBarOrientation.tboHorizontal">
+<short>
+Indicates the tool bar is oriented horizontally along the top or bottom edge of 
+a parent control or form.
+</short>
+</element>
+<element name="TToolBarOrientation.tboVertical">
+<short>
+Indicates the tool bar is oriented vertically along the left or right edge of 
+a parent control or form.
+</short>
+</element>
+
 <element name="TToolBarFlag">
 <short>
 Contains values used as status flags in the TToolBar control.
@@ -23139,6 +23165,7 @@ package.
 <element name="TToolBar.FOnPaint"/>
 <element name="TToolBar.FOnPaintButton"/>
 <element name="TToolBar.FButtonHeight"/>
+<element name="TToolBar.FOrientation"/>
 <element name="TToolBar.FRealizedButtonHeight"/>
 <element name="TToolBar.FRealizedButtonWidth"/>
 <element name="TToolBar.FRealizedDropDownWidth"/>
@@ -23239,6 +23266,9 @@ Called from the <var>FontChanged</var> method.
 <element name="TToolBar.SetList"/>
 <element name="TToolBar.SetList.AValue"/>
 
+<element name="TToolBar.SetOrientation"/>
+<element name="TToolBar.SetOrientation.AValue"/>
+
 <element name="TToolBar.SetShowCaptions"/>
 <element name="TToolBar.SetShowCaptions.AValue"/>
 
@@ -23295,24 +23325,46 @@ Indicates if the tool bar is oriented to display buttons and controls
 vertically.
 </short>
 <descr>
-<p>
+<p>  
 <var>IsVertical</var> is a <var>Boolean</var> function in <var>TToolBar</var> 
 used to determine if the tool bar displays its buttons or controls using a 
 vertical orientation. The return value is determined by the value in the 
-Align property, as follows:
+Orientation property, as follows:
 </p>
 <dl>
-<dt>alLeft, alRight</dt>
+<dt>tboVertical</dt>
 <dd>The return value is <b>True</b>.</dd>
-<dt>alNone, alClient, alCustom</dt>
-<dd>The return value is <b>True</b> when Height is larger than Width.</dd>
+<dt>tboHorizontal</dt>
+<dd>The return value is <b>False</b>.</dd>
+<dt>tboAutomatic</dt>
+<dd>
+Causes the value in <var>Align</var> to be used to determine the result. 
+alNone, alClient, and alCustom return <b>True</b> when the Height for the 
+control is larger than its Width. alLeft or alRight cause the result to be set 
+to <b>True</b>.
+</dd>
 </dl>
 <p>
 If the tool bar is parented by a <var>TCoolBar</var> control, the value in 
-its <var>Vertical</var> property is used as the return value.
+the <var>Vertical</var> property in the parent control is used as the return 
+value.
+</p>
+<p>
+IsVertical is used in the in the AlignControls and WrapButtons methods when the 
+position and layout for buttons on the control are calculated.
 </p>
 </descr>
-<seealso/>
+<version>
+Modified in LCL version 5.0 to use Orientation, <b>or</b> Align when 
+Orientation is tboAutomatic.
+</version>
+<seealso>
+<link id="TToolBar.Orientation"/>
+<link id="TToolBar.Align"/>
+<link id="TToolBar.AlignControls"/>
+<link id="TToolBarOrientation"/>
+<link id="#lcl.controls.TControl.Parent">TControl.Parent</link>
+</seealso>
 </element>
 <element name="TToolBar.IsVertical.Result">
 <short>
@@ -24530,6 +24582,41 @@ notification.
 <element name="TToolBar.OnResize" link="#lcl.controls.TControl.OnResize"/>
 <element name="TToolBar.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
 <element name="TToolBar.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
+
+<element name="TToolBar.Orientation">
+<short>
+Indicates the orientation and layout direction for the buttons on the tool bar.
+</short>
+<descr>
+<p>
+<var>TToolBar</var> is a <var>TToolBarOrientation</var> property which 
+indicates the orientation for the tool bar on a parent control or form. 
+TToolBar contains one of the values from the TTooBarOrientation property. The 
+default value is tboAutomatic and indicates the orientation is determined by 
+the setting used in the <var>Align</var> property.
+</p>
+<p>
+In short, using tboHorizontal or tboVertical causes Align to be ignored. Using 
+tboAutomatic allows Align to be used to determine the orientation for the tool 
+bar buttons. TToolbar instances on a TCoolBar parent control are oriented using 
+the Vertical property for the parent control.
+</p>
+<p>
+Changing the value for the property causes the control to be redrawn.
+</p>
+<p>
+Use IsVertical to determine whether tboVertical has been explicitly assigned to the Orientation property, or the Align property requires the orientation.
+</p>
+</descr>
+<version>
+Added in LCL version 5.0.
+</version>
+<seealso>
+<link id="TToolBar.Align"/>
+<link id="TToolBar.IsVertical"/>
+<link id="TToolBarOrientation"/>
+</seealso>
+</element>
 
 <element name="TGrabStyle">
 <short>
