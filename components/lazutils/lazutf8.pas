@@ -135,7 +135,7 @@ function UTF8LowerCaseFast(const AText: String): String;
 
 function UTF8SwapCase(const AInStr: string; const ALanguage: string=''): string;
 // Capitalize the first letter of every word
-function UTF8ProperCase(const AInStr: string; const WordDelims: TSysCharSet): string;
+function UTF8ProperCase(AInStr: string; const WordDelims: TSysCharSet): string;
 function FindInvalidUTF8Codepoint(p: PChar; Count: PtrInt; StopOnNonUTF8: Boolean = true): PtrInt;
 function FindInvalidUTF8Character(p: PChar; Count: PtrInt; StopOnNonUTF8: Boolean = true): PtrInt; deprecated 'Use FindInvalidUTF8Codepoint instead.';
 function UTF8StringOfChar(AUtf8Char: String; N: Integer): String;
@@ -1210,6 +1210,8 @@ end;
 
 function UTF8StringReplace(const S, OldPattern, NewPattern: String;
   Flags: TReplaceFlags; out Count: Integer; const ALanguage: string=''): String;
+// Replace OldPattern in S with NewPattern. With UTF-8 the challenge is to
+// support rfIgnoreCase flag. The length of upper/lower case codepoints may differ.
 var
   SrcS, OldPtrn: string;
   PSrc, POrig: PChar;
@@ -1260,64 +1262,66 @@ begin
   end;
 end;
 
-{
-  UTF8SwapCase - a "naive" implementation that uses UTF8UpperCase and UTF8LowerCase.
-    It serves its purpose and performs OK for short and resonably long strings
-    but it should be rewritten in the future if better performance and lower
-    memory consumption is needed.
-
-  AInStr - The input string.
-  ALanguage - The language. Use '' for maximum speed if one desires to ignore the language
-    (See UTF8LowerCase comment for more details on ALanguage parameter.)
-}
 function UTF8SwapCase(const AInStr: string; const ALanguage: string=''): string;
+// UTF8SwapCase - Turn UpperCase codepoints to LowerCase and vice versa.
+// AInStr - The input string.
+// ALanguage - The language. Use '' for maximum speed if one desires to ignore the language
+//   (See UTF8LowerCase comment for more details on ALanguage parameter.)
 var
-  xUpperCase: string;
-  xLowerCase: string;
-  I: Integer;
+  SCodepoint, LCodepoint: string;
+  P: PChar;
+  CharLen: Integer;
 begin
   if AInStr = '' then
     Exit('');
-
-  xUpperCase := UTF8UpperCase(AInStr, ALanguage);
-  xLowerCase := UTF8LowerCase(AInStr, ALanguage);
-  if (Length(xUpperCase) <> Length(AInStr)) or (Length(xLowerCase) <> Length(AInStr)) then
-    Exit(AInStr);//something went wrong -> the lengths of utf8 strings changed
-
-  SetLength(Result, Length(AInStr));
-  for I := 1 to Length(AInStr) do
-    if AInStr[I] <> xUpperCase[I] then
-      Result[I] := xUpperCase[I]
+  P := PChar(AInStr);
+  Result := '';
+  while P < PChar(AInStr) + Length(AInStr) do
+  begin
+    CharLen := UTF8CodepointSize(P);
+    SetLength(SCodepoint{%H-}, CharLen);
+    System.Move(P^, SCodepoint[1], CharLen);
+    LCodepoint := UTF8LowerCase(SCodepoint);
+    if LCodepoint <> SCodepoint then
+      Result := Result + LCodepoint   // Swap Upper/Lower Case
     else
-      Result[I] := xLowerCase[I];
+      Result := Result + UTF8UpperCase(SCodepoint);
+    Inc(P, CharLen);                  // Next Codepoint
+  end;
 end;
 
-function UTF8ProperCase(const AInStr: string; const WordDelims: TSysCharSet): string;
+function UTF8ProperCase(AInStr: string; const WordDelims: TSysCharSet): string;
 // Capitalize the first letter of every word
 var
+  Capital: string;
   P, PE : PChar;
   CharLen: Integer;
-  Capital: string;
 begin
-  Result := UTF8LowerCase(AInStr);
-  UniqueString(Result);
-  P := PChar(Result);
-  PE := P+Length(Result);
+  AInStr := UTF8LowerCase(AInStr);
+  P := PChar(AInStr);
+  PE := P+Length(AInStr);
+  Result := '';
   while (P<PE) do
   begin
     while (P<PE) and (P^ in WordDelims) do
+    begin
+      Result := Result + P^;                // Add WordDelims.
       inc(P);
+    end;
     if (P<PE) then
     begin
       CharLen := UTF8CodepointSize(P);
       SetLength(Capital{%H-}, CharLen);
       System.Move(P^, Capital[1], CharLen); // Copy one codepoint to Capital,
       Capital := UTF8UpperCase(Capital);    // UpperCase it
-      System.Move(Capital[1], P^, CharLen); // and copy it back.
+      Result := Result + Capital;
       Inc(P, CharLen);
     end;
     while (P<PE) and not (P^ in WordDelims) do
+    begin
+      Result := Result + P^;                // Add other lowercase characters.
       inc(P);
+    end;
   end;
 end;
 
