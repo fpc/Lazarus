@@ -108,7 +108,7 @@ type
     function ExtractIdentifierWithPointsOutEndPos(StartPos: integer;
         out EndPos: integer; StopAtLen: integer=0): string;
     function ExtractIdentifierWithPointsOutEndPos(StartPos: integer;
-        var Comment: string; out EndPos: integer; StopAtLen: integer=0): string;
+        out Comment: string; out EndPos: integer; StopAtLen: integer=0): string;
     function ExtractNextTypeRef(Add: boolean; const Attr: TProcHeadAttributes): boolean;
     function ExtractNextSpecializeParams(Add: boolean;
         const Attr: TProcHeadAttributes): boolean;
@@ -1637,7 +1637,7 @@ begin
 end;
 
 function TPascalReaderTool.ExtractIdentifierWithPointsOutEndPos(
-  StartPos: integer; var Comment: string; out EndPos: integer;
+  StartPos: integer; out Comment: string; out EndPos: integer;
   StopAtLen: integer=0): string;
 //the function intended to extract dotted identifier
 //and cumulative comment from source

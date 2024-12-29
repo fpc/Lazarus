@@ -112,7 +112,7 @@ function GetIdentifier(Identifier: PChar; const aSkipAmp: Boolean = True;
 function FindNextIdentifier(const Source: string; StartPos, MaxPos: integer): integer;
 function FindNextIdentifierSkipStrings(const Source: string;
     StartPos, MaxPos: integer): integer;
-function IsValidDottedIdent(const Ident: string; AllowDots: Boolean = True): Boolean; // as IsValidIdentifier, but faster and supports &
+function IsValidDottedIdent(const Ident: string; AllowDots: Boolean = True): Boolean; // as sysutils.IsValidIdent, but faster and supports &
 function IsValidIdentPair(const NamePair: string): boolean;
 function IsValidIdentPair(const NamePair: string; out First, Second: string): boolean;
 function ExtractPasIdentifier(const Ident: string; AllowDots: Boolean): string;
@@ -193,7 +193,7 @@ function dbgsDiff(Expected, Actual: string): string; overload;
 // dotted identifiers
 function DottedIdentifierLength(Identifier: PChar): integer;
 function GetDottedIdentifier(Identifier: PChar): string;
-function IsDottedIdentifier(const Identifier: string; WithAmp: boolean = True): boolean;
+function IsDottedIdentifier(const Identifier: string; AllowAmp: boolean = True): boolean;
 function IsIdentifierDotted(const Identifier: string; Validate: Boolean = False): boolean;
 function CompareDottedIdentifiers(Identifier1, Identifier2: PChar): integer;
 function CompareDottedIdentifiersCaseSensitive(Identifier1, Identifier2: PChar): integer;
@@ -5336,15 +5336,16 @@ begin
     Result:= Result and ((p-PChar(Identifier))=length(Identifier));
 end;
 
-function IsDottedIdentifier(const Identifier: string; WithAmp: boolean): boolean;
+function IsDottedIdentifier(const Identifier: string; AllowAmp: boolean): boolean;
 var
-  p: PChar;
+  p, StartP: PChar;
 begin
   Result:=false;
   if Identifier='' then exit;
   p:=PChar(Identifier);
+  StartP:=p;
   repeat
-    if WithAmp and (p^='&') then
+    if AllowAmp and (p^='&') then
       inc(p);
     if not IsIdentStartChar[p^] then exit;
     repeat
@@ -5353,7 +5354,7 @@ begin
     if p^<>'.' then break;
     inc(p);
   until false;
-  Result:=(p-PChar(Identifier))=length(Identifier);
+  Result:=(p-StartP)=length(Identifier);
 end;
 
 function CompareDottedIdentifiers(Identifier1, Identifier2: PChar): integer;

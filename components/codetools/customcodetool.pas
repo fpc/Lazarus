@@ -3265,7 +3265,7 @@ function TCustomCodeTool.ExtractIdentifierWithPointsOutEndPos( StartPos: integer
 //result = "dotted.ident.unit1" and comment = "{but contaminated}{comment}"
 var
   beforePos, aLen: integer;
-  commentAtom: string;
+  CommentAtom: string;
 begin
   Result:='';
   Comment:='';
@@ -3285,16 +3285,16 @@ begin
       exit;
     inc(aLen);
     if curPos.StartPos-beforePos>1 then begin //a comment was at least like {}
-      setlength(commentAtom,curPos.StartPos-beforePos);
-      move(src[beforePos],commentAtom[1],curPos.StartPos-beforePos);
-      Comment+=commentAtom;
+      setlength({%H-}CommentAtom,curPos.StartPos-beforePos);
+      move(src[beforePos],CommentAtom[1],curPos.StartPos-beforePos);
+      Comment+=CommentAtom;
     end;
     beforePos:=curPos.EndPos;
     ReadNextAtom;
     if curPos.StartPos-beforePos>1 then begin //a comment was at least like {}
-      setlength(commentAtom,curPos.StartPos-beforePos);
-      move(src[beforePos],commentAtom[1],curPos.StartPos-beforePos);
-      Comment+=commentAtom;
+      setlength(CommentAtom,curPos.StartPos-beforePos);
+      move(src[beforePos],CommentAtom[1],curPos.StartPos-beforePos);
+      Comment+=CommentAtom;
     end;
     Result+='.'+GetAtom;
     EndPos:=CurPos.EndPos;
