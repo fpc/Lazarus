@@ -23423,7 +23423,71 @@ setting in AutoSize.
 </seealso>
 </element>
 
-<element name="TToolBar.CalculatePreferredSize" link="#lcl.controls.TControl.CalculatePreferredSize"/>
+<element name="TToolBar.CalculatePreferredSize">
+<short>
+Calculates the preferred size (width and height) for the control.
+</short>
+<descr>
+<p>
+<var>CalculatePreferredSize</var> is an overridden method in 
+<var>TToolBar</var> used to get the preferred dimensions for the control. The 
+width and height values are used by the LCL auto-sizing and layout algorithms 
+as the default size. CalculatePreferredSize reimplements the method introduced 
+in ancestor classes, and does not call the inherited methods.
+</p>
+<p>
+In TToolBar, CalculatePreferredSize ensures that minimum and maximum widths 
+defined in Constraints are respected when the control is aligned to a 
+fixed-width parent control. If the control does not have a parent, or the 
+parent control is auto-sized, the Width size constraint for the Screen is used 
+instead.
+</p>
+<p>
+The sizes and positions for the <var>Buttons</var> on the tool bar are 
+determined for the width. The calculated width or height values are adjusted 
+(when needed) for the layout of the buttons.
+</p>
+<p>
+CalculatePreferredSize stores and returns the width and height values in the 
+<var>PreferredWidth</var> and <var>PreferredHeight</var> arguments. Only 
+positive values are valid. Negative or 0 (Zero) values are treated as 
+undefined, and the LCL uses other values to perform auto-sizing and layout.
+</p>
+<p>
+The WithThemeSpace parameter is not used in the method.
+</p>
+</descr>
+<seealso>
+<link id="TToolBar.Constraints"/>
+<link id="TToolBar.Anchors"/>
+<link id="TToolBar.AutoSize"/>
+<link id="TToolBar.WrapButtons"/>
+<link id="TToolBar.Buttons"/>
+<link id="TToolBar.ButtonWidth"/>
+<link id="TToolBar.ButtonHeight"/>
+<link id="TToolBar.Wrapable"/>
+<link id="TToolButton.CalculatePreferredSize"/>
+<link id="#lcl.controls.TWinControl.CalculatePreferredSize">TWinControl.CalculatePreferredSize</link>
+<link id="#lcl.controls.TControl.Parent">TControl.Parent</link>
+<link id="#lcl.controls.TAnchorSide.IsAnchoredToParent">TAnchorSide.IsAnchoredToParent</link>
+</seealso>
+</element>
+<element name="TToolBar.CalculatePreferredSize.PreferredWidth">
+<short>
+Preferred width for the control.
+</short>
+</element>
+<element name="TToolBar.CalculatePreferredSize.PreferredHeight">
+<short>
+Preferred height for the control.
+</short>
+</element>
+<element name="TToolBar.CalculatePreferredSize.WithThemeSpace">
+<short>
+Indicates whether additional space is reserved for theme element details. Not 
+used in the method.
+</short>
+</element>
 
 <element name="TToolBar.CheckMenuDropdown">
 <short>
@@ -41676,7 +41740,7 @@ completed.
 <p>
 <var>OnSectionResize</var> is a <var>TCustomSectionNotifyEvent</var> property 
 with the event handler signalled when one of the header Sections has been 
-resized by dragging the  separator for the section. It is signalled (when 
+resized by dragging the separator for the section. It is signalled (when 
 assigned) in the SectionResize method with arguments that identify the header 
 control and the header section for the event notification.
 </p>
