@@ -1211,9 +1211,9 @@ end;
 function UTF8StringReplace(const S, OldPattern, NewPattern: String;
   Flags: TReplaceFlags; out Count: Integer; const ALanguage: string=''): String;
 var
-  SrcS, OldPtrn, TempS: string;
+  SrcS, OldPtrn: string;
   PSrc, POrig: PChar;
-  CharLen, OldPatLen: Integer;
+  CharLen, OldPatLen, l: Integer;
   OkToReplace: Boolean;
 begin
   Count := 0;
@@ -1252,9 +1252,9 @@ begin
       Inc(PSrc, CharLen);             // Next Codepoint
       // Copy a codepoint from original string and move forward
       CharLen := UTF8CodepointSize(POrig);
-      SetLength(TempS{%H-}, CharLen);
-      System.Move(POrig^, TempS[1], CharLen);
-      Result := Result + TempS;       // Copy one codepoint from original string
+      l := Length(Result);
+      SetLength(Result, l+CharLen);   // Copy one codepoint from original string
+      System.Move(POrig^, Result[l+1], CharLen);
       Inc(POrig, CharLen);            // Next Codepoint
     end;
   end;
