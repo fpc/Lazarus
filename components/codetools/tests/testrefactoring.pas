@@ -40,6 +40,8 @@ type
     procedure TestRenameForwardProcedureArgUp;
     procedure TestRenameMethodArgDown;
     procedure TestRenameMethodArgUp;
+    procedure TestRenameNestProcDown;
+    procedure TestRenameNestProcUp;
   end;
 
 implementation
@@ -581,6 +583,102 @@ begin
   'procedure TBird.Fly(Width{#Rename}: word);',
   'begin',
   '  Width:=Width+1;',
+  'end;',
+  '',
+  'begin',
+  'end.',
+  '']);
+end;
+
+procedure TTestRefactoring.TestRenameNestProcDown;
+begin
+  StartProgram;
+  Add([
+  'type',
+  '  TBird = class',
+  '    procedure Fly;',
+  '  end;',
+  '',
+  'procedure TBird.Fly;',
+  '',
+  '  procedure Sub{#Rename}; forward;',
+  '  procedure Sub;',
+  '  begin',
+  '  end;',
+  'begin',
+  '  Sub;',
+  'end;',
+  '',
+  'begin',
+  'end.',
+  '']);
+  RenameReferences('Glide');
+  CheckDiff(Code,[
+  'program test1;',
+  '',
+  '{$mode objfpc}{$H+}',
+  '',
+  'type',
+  '  TBird = class',
+  '    procedure Fly;',
+  '  end;',
+  '',
+  'procedure TBird.Fly;',
+  '',
+  '  procedure Glide{#Rename}; forward;',
+  '  procedure Glide;',
+  '  begin',
+  '  end;',
+  'begin',
+  '  Glide;',
+  'end;',
+  '',
+  'begin',
+  'end.',
+  '']);
+end;
+
+procedure TTestRefactoring.TestRenameNestProcUp;
+begin
+  StartProgram;
+  Add([
+  'type',
+  '  TBird = class',
+  '    procedure Fly;',
+  '  end;',
+  '',
+  'procedure TBird.Fly;',
+  '',
+  '  procedure Sub; forward;',
+  '  procedure Sub{#Rename};',
+  '  begin',
+  '  end;',
+  'begin',
+  '  Sub;',
+  'end;',
+  '',
+  'begin',
+  'end.',
+  '']);
+  RenameReferences('Glide');
+  CheckDiff(Code,[
+  'program test1;',
+  '',
+  '{$mode objfpc}{$H+}',
+  '',
+  'type',
+  '  TBird = class',
+  '    procedure Fly;',
+  '  end;',
+  '',
+  'procedure TBird.Fly;',
+  '',
+  '  procedure Glide; forward;',
+  '  procedure Glide{#Rename};',
+  '  begin',
+  '  end;',
+  'begin',
+  '  Glide;',
   'end;',
   '',
   'begin',
