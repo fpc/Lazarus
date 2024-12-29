@@ -7115,16 +7115,15 @@ var
     end;
 
     // find alias declaration node
+    {$IFDEF VerboseFindReferences}
     debugln('FindDeclarationNode DeclarationNode=',NodePathAsString(DeclarationNode),' at ',DeclarationTool.CleanPosToStr(DeclarationNode.StartPos));
+    {$ENDIF}
     AliasDeclarationNode:=nil;
     case DeclarationNode.Desc of
 
     ctnProcedure,ctnProcedureHead:
       begin
-        Node:=DeclarationNode;
-        if DeclarationNode.Desc=ctnProcedureHead then
-          Node:=Node.Parent;
-        AliasDeclarationNode:=DeclarationTool.FindCorrespondingProcNode(Node);
+        AliasDeclarationNode:=DeclarationTool.FindCorrespondingProcNode(DeclarationNode);
       end;
 
     ctnVarDefinition:

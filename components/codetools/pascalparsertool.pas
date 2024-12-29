@@ -5837,6 +5837,8 @@ begin
   else begin
     Result:=Result.Parent;
     if Result=nil then exit;
+    if Result.Desc<>ctnInterface then
+      exit(nil);
     Result:=Result.NextBrother;
     while (Result<>nil) and (Result.FirstChild=nil) do
       Result:=Result.NextBrother;
@@ -5855,6 +5857,8 @@ begin
   else begin
     Result:=Result.Parent;
     if Result=nil then exit;
+    if Result.Desc<>ctnImplementation then
+      exit(nil);
     Result:=Result.PriorBrother;
     while (Result<>nil) and (Result.LastChild=nil) do
       Result:=Result.PriorBrother;

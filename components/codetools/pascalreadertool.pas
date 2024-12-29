@@ -205,6 +205,7 @@ type
     function NodeIsConstructor(ProcNode: TCodeTreeNode): boolean;
     function NodeIsDestructor(ProcNode: TCodeTreeNode): boolean;
     function NodeIsForwardProc(ProcNode: TCodeTreeNode): boolean;
+    function NodeIsNestedProc(ProcNode: TCodeTreeNode): boolean;
     function NodeIsOperator(ProcNode: TCodeTreeNode): boolean;
     function NodeIsResultIdentifier(Node: TCodeTreeNode): boolean;
     function NodeIsResultType(Node: TCodeTreeNode): boolean;
@@ -1089,7 +1090,9 @@ begin
   
   // check proc kind
   //debugln('TPascalReaderTool.FindCorrespondingProcNode Check kind');
-  ClassNode:=FindClassOrInterfaceNode(ProcNode);
+  ClassNode:=nil;
+  if not NodeIsNestedProc(ProcNode) then
+    ClassNode:=FindClassOrInterfaceNode(ProcNode);
   if ClassNode<>nil then begin
     //debugln('TPascalReaderTool.FindCorrespondingProcNode Class');
     // in a class definition -> search method body
@@ -1129,16 +1132,17 @@ begin
   ProcHead:=ExtractProcHeadWithGroup(ProcNode,Attr);
   //debugln('TPascalReaderTool.FindCorrespondingProcNode StartNode=',StartNode.DescAsString,' ProcHead=',dbgs(ProcHead),' ',dbgs(Attr),' ',StartNode.DescAsString);
   Result:=FindProcNode(StartNode,ProcHead,Attr);
-  //debugln(['TPascalReaderTool.FindCorrespondingProcNode proc found=',Result<>nil]);
+  //if Result<>nil then debugln(['TPascalReaderTool.FindCorrespondingProcNode First Result=',CleanPosToStr(Result.StartPos),' ',Result.DescAsString,' ',dbgstr(copy(Src,Result.StartPos,50))]);
   if Result=ProcNode then begin
     // found itself -> search further
     if Search=cpsUp then exit;
     StartNode:=FindNextNodeOnSameLvl(Result);
+    if StartNode<>nil then debugln(['TPascalReaderTool.FindCorrespondingProcNode StartNode=',CleanPosToStr(StartNode.StartPos),' ',dbgstr(copy(Src,StartNode.StartPos,50))]);
     Result:=FindProcNode(StartNode,ProcHead,Attr);
   end;
   if (Search=cpsUp) and (Result<>nil) and (Result.StartPos>ProcNode.StartPos) then
     Result:=nil;
-  //if Result<>nil then debugln(['TPascalReaderTool.FindCorrespondingProcNode Result=',CleanPosToStr(Result.StartPos),' ',dbgstr(copy(Src,Result.StartPos,50))]);
+  //if Result<>nil then debugln(['TPascalReaderTool.FindCorrespondingProcNode End Result=',CleanPosToStr(Result.StartPos),' ',dbgstr(copy(Src,Result.StartPos,50))]);
 end;
 
 function TPascalReaderTool.FindCorrespondingProcParamNode(ProcParamNode: TCodeTreeNode;
@@ -2941,6 +2945,13 @@ begin
     exit(true);
   // check if has forward
   if (ctnsForwardDeclaration and ProcNode.SubDesc)>0 then exit(true);
+end;
+
+function TPascalReaderTool.NodeIsNestedProc(ProcNode: TCodeTreeNode): boolean;
+begin
+  Result:=false;
+  if ProcNode.Parent.Desc=ctnProcedure then
+    Result:=true;
 end;
 
 function TPascalReaderTool.NodeIsOperator(ProcNode: TCodeTreeNode): boolean;

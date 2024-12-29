@@ -213,7 +213,6 @@ const
     [ctnEnumerationType,ctnInterface,ctnImplementation,ctnTypeType,
      ctnUseUnitNamespace,ctnUseUnitClearName,ctnRangedArrayType,ctnOpenArrayType];
 
-
   // CodeTreeNodeSubDescriptors
   ctnsNone                = 0;
   ctnsNeedJITParsing      = 1 shl 1;
