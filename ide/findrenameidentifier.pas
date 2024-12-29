@@ -31,7 +31,7 @@ interface
 
 uses
   // RTL + FCL
-  Classes, SysUtils, System.UITypes, AVL_Tree,
+  Classes, SysUtils, AVL_Tree,
   // LCL
   Forms, Controls, Dialogs, StdCtrls, ExtCtrls, ComCtrls, ButtonPanel, LclIntf, Graphics,
   // CodeTools
@@ -1004,14 +1004,14 @@ var
   anItem: TIdentifierListItem;
   tmpNode: TCodeTreeNode;
   X,Y: integer;
-  errInfo: string;
+  ErrInfo: string;
   isOK: boolean;
   CTB_IdentComplIncludeKeywords: Boolean;
   CTB_CodeCompletionTemplateFileName: string;
   CTB_IdentComplIncludeWords: TIdentComplIncludeWords;
   ContextPos: integer;
 
-  function GetCodePos(var aPos: integer; var X,Y:integer;
+  function GetCodePos(var aPos: integer; out X,Y:integer;
     pushBack: boolean = true):boolean;
   var
     CodeTool: TCodeTool;
@@ -1021,7 +1021,7 @@ var
     X:=0;
     Y:=0;
     Result:=false;
-    CodeToolBoss.Explore(AcodeBuffer,CodeTool,true);
+    CodeToolBoss.Explore(ACodeBuffer,CodeTool,true);
     if CodeTool<>nil then begin
       CodeTool.MoveCursorToCleanPos(aPos);
       CodeTool.ReadNextAtom;
@@ -1043,9 +1043,9 @@ var
     end;
   end;
 
-  function foundConflict():boolean;
+  function FindConflict: boolean;
   var
-    aNode:TCodeTreeNode;
+    aNode: TCodeTreeNode;
   begin
     anItem:=CodeToolBoss.IdentifierList.FindIdentifier(PChar(FNewIdentifier));
     Result:=(anItem<>nil) and
@@ -1053,12 +1053,12 @@ var
     if Result then begin
       if anItem.Node<>nil then begin
         ContextPos:=anItem.Node.StartPos;
-        errInfo:= Format(lisIdentifierWasAlreadyUsed,[FNewIdentifier]);
+        ErrInfo:= Format(lisIdentifierWasAlreadyUsed,[FNewIdentifier]);
       end else begin
         if anItem.ResultType='' then
-          errInfo:= Format(lisIdentifierIsDeclaredCompilerProcedure,[FNewIdentifier])
+          ErrInfo:= Format(lisIdentifierIsDeclaredCompilerProcedure,[FNewIdentifier])
         else
-          errInfo:= Format(lisIdentifierIsDeclaredCompilerFunction,[FNewIdentifier]);
+          ErrInfo:= Format(lisIdentifierIsDeclaredCompilerFunction,[FNewIdentifier]);
       end;
     end;
   end;
@@ -1095,7 +1095,7 @@ begin
           ContextPos:=tmpNode.Parent.EndPos;//can point at the end of "end;"
           if GetCodePos(ContextPos,X,Y) then
             CodeToolBoss.GatherIdentifiers(ACodeBuffer, X, Y);
-            isOK:=not foundConflict(); //errInfo is set inside the function
+            isOK:=not FindConflict; //ErrInfo is set inside the function
           end;
         tmpNode:=tmpNode.Parent;
       end;
@@ -1116,8 +1116,8 @@ begin
         NewGroupBox.Caption:=lisFRIRenaming;
         NewGroupBox.Font.Style:=NewGroupBox.Font.Style-[fsBold];
       end else begin
-        errInfo:=StringReplace(errInfo,'&','&&',[rfReplaceAll]);
-        NewGroupBox.Caption:=lisFRIRenaming+' - '+ errInfo;
+        ErrInfo:=StringReplace(ErrInfo,'&','&&',[rfReplaceAll]);
+        NewGroupBox.Caption:=lisFRIRenaming+' - '+ ErrInfo;
         NewGroupBox.Font.Style:=NewGroupBox.Font.Style+[fsBold];
       end;
     end;
@@ -1234,7 +1234,7 @@ procedure TFindRenameIdentifierDialog.GatherProhibited;
 var
   StartSrcEdit: TSourceEditorInterface;
   DeclCode, StartSrcCode: TCodeBuffer;
-  DeclX, DeclY, DeclTopLine, StartTopLine, i: integer;
+  DeclX, DeclY, DeclTopLine, i: integer;
   LogCaretXY, DeclarationCaretXY: TPoint;
   OwnerList: TFPList;
   ExtraFiles: TStrings;
@@ -1253,7 +1253,7 @@ begin
 
   StartSrcEdit:=SourceEditorManagerIntf.ActiveEditor;
   StartSrcCode:=TCodeBuffer(StartSrcEdit.CodeToolsBuffer);
-  StartTopLine:=StartSrcEdit.TopLine;
+  //StartTopLine:=StartSrcEdit.TopLine;
 
   // find the main declaration
   LogCaretXY:=StartSrcEdit.CursorTextXY;
@@ -1366,7 +1366,7 @@ function RenameUnitFromFileName(OldFileName: string; NewUnitName: string):
   TModalResult;
 var
   AUnitInfoOld, UnitInfo : TUnitInfo;
-  NewFileName, OldUnitName: string;
+  NewFileName: string;
   i:integer;
 begin
   Result:=mrCancel;
@@ -1374,7 +1374,7 @@ begin
   AUnitInfoOld:= Project1.UnitInfoWithFilename(OldFileName);
   if AUnitInfoOld=nil then Exit;
   AUnitInfoOld.ReadUnitSource(False,False);
-  OldUnitName:=AUnitInfoOld.Unit_Name;
+  //OldUnitName:=AUnitInfoOld.Unit_Name;
   NewFileName:= ExtractFilePath(OldFileName)+
     lowerCase(NewUnitName + ExtractFileExt(OldFilename));
   if CompareFileNames(AUnitInfoOld.Filename,NewFileName)=0 then Exit;
