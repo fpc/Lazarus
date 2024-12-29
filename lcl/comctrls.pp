@@ -2248,11 +2248,17 @@ type
 
   TToolBarOnPaintButton = procedure(Sender: TToolButton; State: integer) of object;
   
+  TToolBarOrientation = (
+    tboAutomatic,
+    tboHorizontal,
+    tboVertical
+  );
+
   TToolBarFlag = (
     tbfUpdateVisibleBarNeeded,
     tbfPlacingControls
     );
-  
+
   TToolBarFlags = set of TToolBarFlag;
   
   TToolBar = class(TToolWindow)
@@ -2260,6 +2266,7 @@ type
     FOnPaint: TNotifyEvent;
     FOnPaintButton: TToolBarOnPaintButton;
     FButtonHeight: Integer;
+    FOrientation: TToolBarOrientation;
     FRealizedButtonHeight,
     FRealizedButtonWidth,
     FRealizedDropDownWidth,
@@ -2308,6 +2315,7 @@ type
     procedure SetImagesWidth(const aImagesWidth: Integer);
     procedure SetIndent(const AValue: Integer);
     procedure SetList(const AValue: Boolean);
+    procedure SetOrientation(AValue: TToolBarOrientation);
     procedure SetShowCaptions(const AValue: Boolean);
     procedure SetTransparent(const AValue: Boolean);
     procedure SetWrapable(const AValue: Boolean);
@@ -2425,6 +2433,7 @@ type
     property OnResize;
     property OnChangeBounds;
     property OnStartDrag;
+    property Orientation: TToolBarOrientation read FOrientation write SetOrientation default tboAutomatic;
   end;
   
   { TCoolBar }

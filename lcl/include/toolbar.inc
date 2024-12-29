@@ -244,6 +244,11 @@ end;
 
 function TToolBar.IsVertical: Boolean;
 begin
+  case FOrientation of
+    tboHorizontal: exit(False);
+    tboVertical:   exit(True);
+  end;
+
   if (Parent is TCoolBar) then
     Exit(TCoolBar(Parent).Vertical);
 
@@ -297,6 +302,13 @@ begin
   if FList = AValue then exit;
   FList := AValue;
   UpdateVisibleBar;
+end;
+
+procedure TToolBar.SetOrientation(AValue: TToolBarOrientation);
+begin
+  if FOrientation = AValue then Exit;
+  FOrientation := AValue;
+  invalidate;
 end;
 
 procedure TToolBar.SetFlat(const AValue: Boolean);
