@@ -2506,8 +2506,8 @@ begin
     BuildTreeAndGetCleanPos(trTillCursor,lsrEnd,CursorPos,CleanCursorPos,
                   [btSetIgnoreErrorPos,btCursorPosOutAllowed]);
     {$IFDEF CTDEBUG}
-    debugLn('TFindDeclarationTool.FindDeclaration B CleanCursorPos=',dbgs(CleanCursorPos));
-    debugln(['TFindDeclarationTool.FindDeclaration C ',dbgtext(copy(Src,CleanCursorPos-30,30)),'|',dbgtext(copy(Src,CleanCursorPos,30))]);
+    debugLn('TFindDeclarationTool.FindDeclaration C CleanCursorPos=',dbgs(CleanCursorPos));
+    debugln(['TFindDeclarationTool.FindDeclaration D ',dbgtext(copy(Src,CleanCursorPos-30,30)),'|',dbgtext(copy(Src,CleanCursorPos,30))]);
     {$ENDIF}
 
     // find CodeTreeNode at cursor
@@ -2516,14 +2516,14 @@ begin
       if (fsfFindMainDeclaration in SearchSmartFlags)
       and CleanPosIsDeclarationIdentifier(CleanCursorPos,CursorNode)
       then begin
-        //DebugLn(['TFindDeclarationTool.FindDeclaration CleanPosIsDeclarationIdentifier']);
+        //DebugLn(['TFindDeclarationTool.FindDeclaration CleanPosIsDeclarationIdentifier ',CursorNode.DescAsString]);
         NewExprType.Desc:=xtContext;
         NewExprType.Context.Tool:=Self;
         NewExprType.Context.Node:=CursorNode;
         CleanCursorPos:=GetIdentStartPosition(Src,CleanCursorPos);
         if CursorNode.Desc=ctnVarDefinition then begin
           // if this is a parameter, try to find the corresponding declaration
-          NewExprType.Context.Node:=FindCorrespondingProcParamNode(NewExprType.Context.Node);
+          NewExprType.Context.Node:=FindCorrespondingProcParamNode(NewExprType.Context.Node,[],cpsUp);
           if (NewExprType.Context.Node<>nil) and (NewExprType.Context.Node.StartPos<CursorNode.StartPos) then
             CleanCursorPos:=NewExprType.Context.Node.StartPos
           else
@@ -2532,7 +2532,7 @@ begin
         if (CursorNode.Desc=ctnProcedureHead)
         and (NodeIsMethodBody(CursorNode.Parent)) then begin
           // if this is a procedure body, try to find the corresponding declaration
-          NewExprType.Context.Node:=FindCorrespondingProcNode(CursorNode.Parent);
+          NewExprType.Context.Node:=FindCorrespondingProcNode(CursorNode.Parent,[],cpsUp);
           if (NewExprType.Context.Node<>nil) and (NewExprType.Context.Node.Desc=ctnProcedure) then
             NewExprType.Context.Node:=NewExprType.Context.Node.FirstChild;
           if (NewExprType.Context.Node<>nil) and (NewExprType.Context.Node.StartPos<CursorNode.StartPos) then begin
@@ -6850,10 +6850,10 @@ var
     if (CursorNode<>nil) and
       (((CursorNode.Desc=ctnIdentifier) and (CursorNode.Parent.Desc=ctnSrcName))
       or (CursorNode.Desc in [ctnUseUnitNamespace,ctnUseUnitClearName]))
-      and  (IdentStartPos=CursorNode.Parent.StartPos) then begin
+      and  (IdentStartPos=CursorNode.Parent.StartPos) then
+    begin
       AddReference(IdentStartPos);
-    end else
-    if (DeclarationTool=Self)
+    end else if (DeclarationTool=Self)
     and ((IdentStartPos=CleanDeclCursorPos) or (CursorNode=AliasDeclarationNode))
     then begin
       // declaration itself found
@@ -7090,8 +7090,6 @@ var
   end;
   
   function FindDeclarationNode: boolean;
-  const
-    ProcAttr = [phpInUpperCase,phpAddClassName,phpWithVarModifiers];
   var
     Node: TCodeTreeNode;
     CommentStart: integer;
@@ -7117,7 +7115,7 @@ var
     end;
 
     // find alias declaration node
-    //debugln('FindDeclarationNode DeclarationNode=',NodePathAsString(DeclarationNode),' at ',DeclarationTool.CleanPosToStr(DeclarationNode.StartPos));
+    debugln('FindDeclarationNode DeclarationNode=',NodePathAsString(DeclarationNode),' at ',DeclarationTool.CleanPosToStr(DeclarationNode.StartPos));
     AliasDeclarationNode:=nil;
     case DeclarationNode.Desc of
 
@@ -7126,13 +7124,12 @@ var
         Node:=DeclarationNode;
         if DeclarationNode.Desc=ctnProcedureHead then
           Node:=Node.Parent;
-        AliasDeclarationNode:=DeclarationTool.FindCorrespondingProcNode(
-                     Node,ProcAttr);
+        AliasDeclarationNode:=DeclarationTool.FindCorrespondingProcNode(Node);
       end;
 
     ctnVarDefinition:
       if DeclarationNode.HasParentOfType(ctnProcedureHead) then begin
-        AliasDeclarationNode:=DeclarationTool.FindCorrespondingProcParamNode(DeclarationNode,ProcAttr);
+        AliasDeclarationNode:=DeclarationTool.FindCorrespondingProcParamNode(DeclarationNode);
       end;
 
     ctnTypeDefinition:
@@ -7148,32 +7145,25 @@ var
     if AliasDeclarationNode<>nil then begin
       UseProcHead(AliasDeclarationNode);
 
-      if DeclarationNode.Desc = ctnProcedureHead then
-        Node:=DeclarationNode.Parent.Parent
-      else
-        Node:=DeclarationNode.Parent;
-      while (Node<>nil) do begin
-        if Node.Desc = ctnProcedure then begin //here context is clearly limited
-          if Node.EndPos<AliasDeclarationNode.StartPos then begin
-            AliasDeclarationNode:=nil; //alias candidate out of context
-            break;
-          end;
-        end;
-        Node:=Node.Parent;
+      if DeclarationTool=Self then begin
+        //debugln(['FindDeclarationNode adding alias node ...']);
+        AddNodeReference(AliasDeclarationNode);
       end;
-
-      if AliasDeclarationNode<>nil then begin
-        if DeclarationTool=Self then begin
-          //debugln(['FindDeclarationNode adding alias node ...']);
-          AddNodeReference(AliasDeclarationNode);
-        end;
-        if AliasDeclarationNode.StartPos>DeclarationNode.StartPos then begin
-          Node:=AliasDeclarationNode;
-          AliasDeclarationNode:=DeclarationNode;
-          DeclarationNode:=Node;
-        end;
+      if AliasDeclarationNode.StartPos>DeclarationNode.StartPos then begin
+        Node:=AliasDeclarationNode;
+        AliasDeclarationNode:=DeclarationNode;
+        DeclarationNode:=Node;
       end;
+      {$IFDEF VerboseFindReferences}
+      debugln(['FindReferences Has Alias']);
+      debugln(['FindReferences DeclNode=',DeclarationNode.DescAsString,' at ',DeclarationTool.CleanPosToStr(DeclarationNode.StartPos)]);
+      debugln(['FindReferences AliasNode=',AliasDeclarationNode.DescAsString,' at ',DeclarationTool.CleanPosToStr(AliasDeclarationNode.StartPos)]);
+      {$ENDIF}
     end;
+    {$IFDEF VerboseFindReferences}
+    if AliasDeclarationNode=nil then
+      debugln(['FindReferences Has no Alias']);
+    {$ENDIF}
 
     // search comment in front of declaration
     //debugln(['FindDeclarationNode search comment in front: ',DeclarationTool=Self,' SkipComments=',SkipComments,' Identifier=',Identifier]);

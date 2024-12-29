@@ -4322,9 +4322,9 @@ var
 begin
   WriteStr(Result, Compatibility);
   if HasChilds then
-    Result:=Result+' HasChilds'
+    Result:=Result+' HasChildren'
   else
-    Result:=Result+' HasNoChilds';
+    Result:=Result+' HasNoChildren';
   Result:=Result+' History='+IntToStr(HistoryIndex);
   Result:=Result+' Ident='+Identifier;
   Result:=Result+' Lvl='+IntToStr(Level);

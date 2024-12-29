@@ -34,6 +34,12 @@ type
     procedure TestExplodeWith;
     procedure TestRenameReferences;
     procedure TestRenameProcReferences;
+    procedure TestRenameProcedureArg;
+    procedure TestRenameProcedureArgCaseSensitive;
+    procedure TestRenameForwardProcedureArgDown;
+    procedure TestRenameForwardProcedureArgUp;
+    procedure TestRenameMethodArgDown;
+    procedure TestRenameMethodArgUp;
   end;
 
 implementation
@@ -80,6 +86,9 @@ begin
   begin
     Fail('CodeToolBoss.FindMainDeclaration failed '+dbgs(DeclarationCaretXY)+' File='+Code.Filename);
   end;
+
+  //debugln(['TCustomTestRefactoring.RenameReferences ',DeclX,' ',DeclY,' "',Code.GetLine(DeclY-1,false),'"']);
+
   DeclarationCaretXY:=Point(DeclX,DeclY);
 
   CodeToolBoss.GetIdentifierAt(DeclCode,DeclarationCaretXY.X,DeclarationCaretXY.Y,OldIdentifier);
@@ -335,6 +344,246 @@ begin
   '  p:=@Bird;',
   '  test1.Bird;',
   '  p:=@test1.Bird;',
+  'end.',
+  '']);
+end;
+
+procedure TTestRefactoring.TestRenameProcedureArg;
+begin
+  StartProgram;
+  Add([
+  'procedure Fly(Size{#Rename}: word);',
+  '',
+  '  procedure Sub1;',
+  '  var Size: byte;',
+  '  begin',
+  '    Size:=3;',
+  '  end;',
+  '',
+  '  procedure Sub2(Size: word);',
+  '  begin',
+  '    Size:=4;',
+  '  end;',
+  'begin',
+  '  Size:=Size+1;',
+  'end;',
+  '',
+  'begin',
+  'end.',
+  '']);
+  RenameReferences('Bird');
+  CheckDiff(Code,[
+  'program test1;',
+  '',
+  '{$mode objfpc}{$H+}',
+  '',
+  'procedure Fly(Bird{#Rename}: word);',
+  '',
+  '  procedure Sub1;',
+  '  var Size: byte;',
+  '  begin',
+  '    Size:=3;',
+  '  end;',
+  '',
+  '  procedure Sub2(Size: word);',
+  '  begin',
+  '    Size:=4;',
+  '  end;',
+  'begin',
+  '  Bird:=Bird+1;',
+  'end;',
+  '',
+  'begin',
+  'end.',
+  '']);
+end;
+
+procedure TTestRefactoring.TestRenameProcedureArgCaseSensitive;
+begin
+  StartProgram;
+  Add([
+  'procedure Fly(Size{#Rename}: word);',
+  '',
+  '  procedure Sub1;',
+  '  var Size: byte;',
+  '  begin',
+  '    Size:=3;',
+  '  end;',
+  '',
+  '  procedure Sub2(Size: word);',
+  '  begin',
+  '    Size:=4;',
+  '  end;',
+  'begin',
+  '  Size:=Size+1;',
+  'end;',
+  '',
+  'begin',
+  'end.',
+  '']);
+  RenameReferences('siZe');
+  CheckDiff(Code,[
+  'program test1;',
+  '',
+  '{$mode objfpc}{$H+}',
+  '',
+  'procedure Fly(siZe{#Rename}: word);',
+  '',
+  '  procedure Sub1;',
+  '  var Size: byte;',
+  '  begin',
+  '    Size:=3;',
+  '  end;',
+  '',
+  '  procedure Sub2(Size: word);',
+  '  begin',
+  '    Size:=4;',
+  '  end;',
+  'begin',
+  '  siZe:=siZe+1;',
+  'end;',
+  '',
+  'begin',
+  'end.',
+  '']);
+end;
+
+procedure TTestRefactoring.TestRenameForwardProcedureArgDown;
+begin
+  StartProgram;
+  Add([
+  'procedure Fly(Size{#Rename}: word); forward;',
+  '',
+  'procedure Fly(Size: word);',
+  'begin',
+  '  Size:=Size+1;',
+  'end;',
+  '',
+  'begin',
+  'end.',
+  '']);
+  RenameReferences('Bird');
+  CheckDiff(Code,[
+  'program test1;',
+  '',
+  '{$mode objfpc}{$H+}',
+  '',
+  'procedure Fly(Bird{#Rename}: word); forward;',
+  '',
+  'procedure Fly(Bird: word);',
+  'begin',
+  '  Bird:=Bird+1;',
+  'end;',
+  '',
+  'begin',
+  'end.',
+  '']);
+end;
+
+procedure TTestRefactoring.TestRenameForwardProcedureArgUp;
+begin
+  StartProgram;
+  Add([
+  'procedure Fly(Size: word); forward;',
+  '',
+  'procedure Fly(Size{#Rename}: word);',
+  'begin',
+  '  Size:=Size+1;',
+  'end;',
+  '',
+  'begin',
+  'end.',
+  '']);
+  RenameReferences('Bird');
+  CheckDiff(Code,[
+  'program test1;',
+  '',
+  '{$mode objfpc}{$H+}',
+  '',
+  'procedure Fly(Bird: word); forward;',
+  '',
+  'procedure Fly(Bird{#Rename}: word);',
+  'begin',
+  '  Bird:=Bird+1;',
+  'end;',
+  '',
+  'begin',
+  'end.',
+  '']);
+end;
+
+procedure TTestRefactoring.TestRenameMethodArgDown;
+begin
+  StartProgram;
+  Add([
+  'type',
+  '  TBird = class',
+  '    procedure Fly(Size{#Rename}: word);',
+  '  end;',
+  '',
+  'procedure TBird.Fly(Size: word);',
+  'begin',
+  '  Size:=Size+1;',
+  'end;',
+  '',
+  'begin',
+  'end.',
+  '']);
+  RenameReferences('Width');
+  CheckDiff(Code,[
+  'program test1;',
+  '',
+  '{$mode objfpc}{$H+}',
+  '',
+  'type',
+  '  TBird = class',
+  '    procedure Fly(Width{#Rename}: word);',
+  '  end;',
+  '',
+  'procedure TBird.Fly(Width: word);',
+  'begin',
+  '  Width:=Width+1;',
+  'end;',
+  '',
+  'begin',
+  'end.',
+  '']);
+end;
+
+procedure TTestRefactoring.TestRenameMethodArgUp;
+begin
+  StartProgram;
+  Add([
+  'type',
+  '  TBird = class',
+  '    procedure Fly(Size: word);',
+  '  end;',
+  '',
+  'procedure TBird.Fly(Size{#Rename}: word);',
+  'begin',
+  '  Size:=Size+1;',
+  'end;',
+  '',
+  'begin',
+  'end.',
+  '']);
+  RenameReferences('Width');
+  CheckDiff(Code,[
+  'program test1;',
+  '',
+  '{$mode objfpc}{$H+}',
+  '',
+  'type',
+  '  TBird = class',
+  '    procedure Fly(Width: word);',
+  '  end;',
+  '',
+  'procedure TBird.Fly(Width{#Rename}: word);',
+  'begin',
+  '  Width:=Width+1;',
+  'end;',
+  '',
+  'begin',
   'end.',
   '']);
 end;

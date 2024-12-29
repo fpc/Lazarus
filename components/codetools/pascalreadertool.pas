@@ -80,6 +80,12 @@ type
     csvProtectedAndHigher,//ancestor class different unit
     csvPublicAndHigher);//other class other unit
 
+  TCorrespondingProcSearch = (
+    cpsAny,
+    cpsUp,
+    cpsDown
+    );
+
   TOnEachPRIdentifier = procedure(Sender: TPascalParserTool;
     IdentifierCleanPos: integer; Range: TEPRIRange;
     Node: TCodeTreeNode; Data: Pointer; var Abort: boolean) of object;
@@ -164,11 +170,11 @@ type
     function FindProcNode(StartNode: TCodeTreeNode; const AProcHead: TPascalMethodHeader;
         Attr: TProcHeadAttributes; Visibility: TClassSectionVisibility = csvEverything): TCodeTreeNode; overload;
     function FindCorrespondingProcNode(ProcNode: TCodeTreeNode;
-        Attr: TProcHeadAttributes = [phpWithoutClassKeyword,phpWithoutClassName]
-        ): TCodeTreeNode;
+        Attr: TProcHeadAttributes = [phpInUpperCase];
+        Search: TCorrespondingProcSearch = cpsAny): TCodeTreeNode;
     function FindCorrespondingProcParamNode(ProcParamNode: TCodeTreeNode;
-        Attr: TProcHeadAttributes = [phpInUpperCase,phpWithoutClassName,phpWithVarModifiers]
-        ): TCodeTreeNode;
+        Attr: TProcHeadAttributes = [phpInUpperCase];
+        Search: TCorrespondingProcSearch = cpsAny): TCodeTreeNode;
     function FindProcBody(ProcNode: TCodeTreeNode): TCodeTreeNode;
     function ProcBodyIsEmpty(ProcNode: TCodeTreeNode): boolean;
     function ExtractProcedureGroup(ProcNode: TCodeTreeNode): TPascalMethodGroup;
@@ -316,7 +322,9 @@ type
     procedure CalcMemSize(Stats: TCTMemStats); override;
   end;
 
+function dbgs(Search: TCorrespondingProcSearch): string; overload;
 function dbgs(Group: TPascalMethodGroup): string; overload;
+function dbgs(const ProcHead: TPascalMethodHeader): string; overload;
 
 function CompareMethodHeaders(
   const Method1Name: string; Method1Group: TPascalMethodGroup; const Method1ResultType: string;
@@ -330,9 +338,21 @@ function CompareCodeTreeNodeExtMethodHeaders(NodeData1, NodeData2: pointer): int
 
 implementation
 
+function dbgs(Search: TCorrespondingProcSearch): string;
+begin
+  str(Search,Result);
+end;
+
 function dbgs(Group: TPascalMethodGroup): string;
 begin
   str(Group,Result);
+end;
+
+function dbgs(const ProcHead: TPascalMethodHeader): string;
+begin
+  Result:=dbgs(ProcHead.Group)+' '+ProcHead.Name;
+  if ProcHead.ResultType<>'' then
+    Result:=Result+':'+ProcHead.ResultType;
 end;
 
 function CompareMethodHeaders(const Method1Name: string;
@@ -1051,7 +1071,7 @@ begin
 end;
 
 function TPascalReaderTool.FindCorrespondingProcNode(ProcNode: TCodeTreeNode;
-  Attr: TProcHeadAttributes): TCodeTreeNode;
+  Attr: TProcHeadAttributes; Search: TCorrespondingProcSearch): TCodeTreeNode;
 var
   ClassNode: TCodeTreeNode;
   StartNode: TCodeTreeNode;
@@ -1059,7 +1079,7 @@ var
 begin
   Result:=nil;
   // get ctnProcedure
-  //debugln('TPascalReaderTool.FindCorrespondingProcNode Start');
+  //debugln('TPascalReaderTool.FindCorrespondingProcNode Start ',dbgs(Search));
   if (ProcNode=nil) then exit;
   if ProcNode.Desc=ctnProcedureHead then begin
     ProcNode:=ProcNode.Parent;
@@ -1073,10 +1093,13 @@ begin
   if ClassNode<>nil then begin
     //debugln('TPascalReaderTool.FindCorrespondingProcNode Class');
     // in a class definition -> search method body
+    if Search=cpsUp then exit;
     StartNode:=ClassNode.GetTopMostNodeOfType(ctnTypeSection);
+    Attr:=Attr-[phpWithoutClassName]+[phpWithoutClassKeyword,phpAddClassName];
   end else if NodeIsMethodBody(ProcNode) then begin
     //debugln('TPascalReaderTool.FindCorrespondingProcNode Method ',ExtractClassNameOfProcNode(ProcNode));
     // in a method body -> search in class
+    if Search=cpsDown then exit;
     StartNode:=FindClassNodeInUnit(ExtractClassNameOfProcNode(ProcNode,true),
              true,false,false,true);
     if StartNode=nil then exit;
@@ -1092,26 +1115,34 @@ begin
         StartNode:=StartNode.NextBrother;
       end;
     end;
+    Attr:=Attr-[phpAddClassName]+[phpWithoutClassKeyword,phpWithoutClassName];
   end else begin
     //DebugLn('TPascalReaderTool.FindCorrespondingProcNode Normal');
     // else: search on same lvl
-    StartNode:=FindFirstNodeOnSameLvl(ProcNode);
+    if Search=cpsDown then
+      StartNode:=FindNextNodeOnSameLvl(ProcNode)
+    else
+      StartNode:=FindFirstNodeOnSameLvl(ProcNode);
   end;
   if StartNode=nil then exit;
 
   ProcHead:=ExtractProcHeadWithGroup(ProcNode,Attr);
-  //debugln('TPascalReaderTool.FindCorrespondingProcNode StartNode=',StartNode.DescAsString,' ProcHead=',dbgstr(ProcHead),' ',dbgs(Attr),' ',StartNode.DescAsString);
+  //debugln('TPascalReaderTool.FindCorrespondingProcNode StartNode=',StartNode.DescAsString,' ProcHead=',dbgs(ProcHead),' ',dbgs(Attr),' ',StartNode.DescAsString);
   Result:=FindProcNode(StartNode,ProcHead,Attr);
+  //debugln(['TPascalReaderTool.FindCorrespondingProcNode proc found=',Result<>nil]);
   if Result=ProcNode then begin
     // found itself -> search further
+    if Search=cpsUp then exit;
     StartNode:=FindNextNodeOnSameLvl(Result);
     Result:=FindProcNode(StartNode,ProcHead,Attr);
   end;
+  if (Search=cpsUp) and (Result<>nil) and (Result.StartPos>ProcNode.StartPos) then
+    Result:=nil;
   //if Result<>nil then debugln(['TPascalReaderTool.FindCorrespondingProcNode Result=',CleanPosToStr(Result.StartPos),' ',dbgstr(copy(Src,Result.StartPos,50))]);
 end;
 
-function TPascalReaderTool.FindCorrespondingProcParamNode(
-  ProcParamNode: TCodeTreeNode; Attr: TProcHeadAttributes): TCodeTreeNode;
+function TPascalReaderTool.FindCorrespondingProcParamNode(ProcParamNode: TCodeTreeNode;
+  Attr: TProcHeadAttributes; Search: TCorrespondingProcSearch): TCodeTreeNode;
 var
   ProcNode: TCodeTreeNode;
 begin
@@ -1124,7 +1155,7 @@ begin
     ProcNode:=ProcParamNode.GetNodeOfType(ctnProcedure);
     if ProcNode=nil then exit;
     // search alias for parameter
-    ProcNode:=FindCorrespondingProcNode(ProcNode,Attr);
+    ProcNode:=FindCorrespondingProcNode(ProcNode,Attr,Search);
     if ProcNode=nil then exit;
     BuildSubTreeForProcHead(ProcNode);
     Result:=ProcNode;

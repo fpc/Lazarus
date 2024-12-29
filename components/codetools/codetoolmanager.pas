@@ -3046,8 +3046,9 @@ begin
     // search in every file
     for i:=0 to Files.Count-1 do begin
       Filename:=Files[i];
-      if ExtractFileNameOnly(Filename)='' then
-        continue; // invalid filename
+      case ExtractFileNameOnly(Filename) of
+      '','.','..': continue; // invalid filename
+      end;
       //debugln(['TCodeToolManager.FindReferencesInFiles ',Filename]);
       j:=i-1;
       while (j>=0) and (CompareFilenames(Filename,Files[j])<>0) do dec(j);
@@ -3078,6 +3079,13 @@ begin
                                               TreeOfPCodeXYPosition,true,false);
       end;
     end;
+
+    {$IFDEF VerboseFindReferences}
+    if TreeOfPCodeXYPosition<>nil then
+      debugln(['TCodeToolManager.FindReferencesInFiles Tree.Count=',TreeOfPCodeXYPosition.Count])
+    else
+      debugln(['TCodeToolManager.FindReferencesInFiles nothing found']);
+    {$ENDIF}
 
     Result:=true;
   finally
@@ -3131,34 +3139,45 @@ begin
   // -> go from end of source to start of source, so that replacing does not
   // change any CodeXYPosition not yet processed
 
-  // final validation against existing identifiers confilicting to NewIdentifier
-  isOK:=true;
-  ANode:=TreeOfPCodeXYPosition.FindHighest;
-  while isOK and (ANode<>nil) do begin
-    CurCodePos:=PCodeXYPosition(ANode.Data);
-    Code:=CurCodePos^.Code;
-    Code.LineColToPosition(CurCodePos^.Y,CurCodePos^.X,IdentStartPos);
-    if IdentStartPos<1 then begin
+  if CompareIdentifiers(PChar(OldIdentifier),PChar(NewIdentifier))=0 then begin
+    // change in case or ampersands -> no check for conflict needed
+  end else begin
+    // check for conflicts
+    ANode:=TreeOfPCodeXYPosition.FindHighest;
+    isOK:=true;
+    while isOK and (ANode<>nil) do begin
+      CurCodePos:=PCodeXYPosition(ANode.Data);
+      Code:=CurCodePos^.Code;
+      Code.LineColToPosition(CurCodePos^.Y,CurCodePos^.X,IdentStartPos);
+      if IdentStartPos<1 then begin
+        ANode:=TreeOfPCodeXYPosition.FindPrecessor(ANode);
+        continue;
+      end;
+      GatherIdentifiers(Code,CurCodePos^.X,CurCodePos^.Y);
+      anItem:=IdentifierList.FindIdentifier(PChar(NewIdentifier));
+      isOK:= not ((anItem<>nil) and
+        (CompareDottedIdentifiers(PChar(OldIdentifier), PChar(NewIdentifier))<>0));
+      if not isOK then begin
+        {$IFDEF VerboseFindReferences}
+        debugln(['TCodeToolManager.RenameIdentifier conflict found for ',dbgs(CurCodePos),', conflicts with ',anItem.AsString]);
+        {$ENDIF}
+        break;
+      end;
       ANode:=TreeOfPCodeXYPosition.FindPrecessor(ANode);
-      continue;
     end;
-    GatherIdentifiers(Code,CurCodePos^.X,CurCodePos^.Y);
-    anItem:=IdentifierList.FindIdentifier(PChar(NewIdentifier));
-    isOK:= not ((anItem<>nil) and
-      (CompareDottedIdentifiers(PChar(OldIdentifier), PChar(NewIdentifier))<>0));
-    if not isOK then
-      break;
-    ANode:=TreeOfPCodeXYPosition.FindPrecessor(ANode);
-  end;
-  if not isOK then begin
-    isConflicted:=true;
-    exit;
+    if not isOK then begin
+      isConflicted:=true;
+      exit;
+    end;
   end;
 
   ANode:=TreeOfPCodeXYPosition.FindLowest;
   while ANode<>nil do begin
     // next position
     CurCodePos:=PCodeXYPosition(ANode.Data);
+    {$IFDEF VerboseFindReferences}
+    debugln(['TCodeToolManager.RenameIdentifier ',dbgs(CurCodePos^)]);
+    {$ENDIF}
     Code:=CurCodePos^.Code;
     Code.LineColToPosition(CurCodePos^.Y,CurCodePos^.X,IdentStartPos);
     // search absolute position in source
@@ -3183,8 +3202,12 @@ begin
       i:=CompareDottedIdentifiers(PChar(StrippedIdent),PChar(OldIdentifier));
     end else
       i:=CompareIdentifiers(@Code.Source[IdentStartPos],PChar(Pointer(OldIdentifier)));
-    if i<>0 then
+    if i<>0 then begin
+      {$IFDEF VerboseFindReferences}
+      debugln(['TCodeToolManager.RenameIdentifier old identifier "',OldIdentifier,'" missing at reference ',dbgs(CurCodePos^)]);
+      {$ENDIF}
       exit;
+    end;
 
     // change if needed
     if DottedIdents then begin //here are used CaseSensitive versions, intentionally
