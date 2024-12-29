@@ -112,7 +112,7 @@ function GetIdentifier(Identifier: PChar; const aSkipAmp: Boolean = True;
 function FindNextIdentifier(const Source: string; StartPos, MaxPos: integer): integer;
 function FindNextIdentifierSkipStrings(const Source: string;
     StartPos, MaxPos: integer): integer;
-function IsValidDottedIdent(const Ident: string; AllowDots: Boolean = True): Boolean;
+function IsValidDottedIdent(const Ident: string; AllowDots: Boolean = True): Boolean; // as IsValidIdentifier, but faster and supports &
 function IsValidIdentPair(const NamePair: string): boolean;
 function IsValidIdentPair(const NamePair: string; out First, Second: string): boolean;
 function ExtractPasIdentifier(const Ident: string; AllowDots: Boolean): string;
@@ -4931,42 +4931,27 @@ begin
 end;
 
 function IsValidDottedIdent(const Ident: string; AllowDots: Boolean = True): Boolean;
-const
-  Alpha = ['A'..'Z', 'a'..'z', '_'];
-  AlphaNum = Alpha + ['0'..'9'];
-  Dot = '.';
-  Amp = '&';
 var
-  First: Boolean;
-  i, Len: Integer;
+  p, StartP: PChar;
 begin
-  Len := Length(Ident);
-  if Len < 1 then
-    Exit(False);
-  First := True;
-  i:=1;
-  while i<= Len do
-  begin
-    if First then
-    begin
-      if (Ident[i]=Amp) then begin
-        inc(i);
-        Result := (i<=Len) and (Ident[i] in Alpha);
-      end else
-        Result := Ident[i] in Alpha;
-      First := False;
-    end
-    else if AllowDots and (Ident[i] = Dot) then
-    begin
-      Result := i < Len;
-      First := True;
-    end
+  Result:=false;
+  p:=PChar(Ident);
+  if p^=#0 then exit(false);
+  StartP:=p;
+  repeat
+    if p^='&' then
+      inc(p);
+    if not IsIdentStartChar[p^] then exit;
+    inc(p);
+    while IsIdentChar[p^] do inc(p);
+    case p^ of
+    #0: exit(p-StartP = length(Ident));
+    '.': if not AllowDots then exit;
     else
-      Result := Ident[i] in AlphaNum;
-    if not Result then
-      Break;
-    inc(i);
-  end;
+      exit;
+    end;
+    inc(p);
+  until false;
 end;
 
 function IsValidIdentPair(const NamePair: string): boolean;
