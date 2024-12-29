@@ -1006,19 +1006,26 @@ begin
 
   // i18n for lfm
   CanI18NforLFM:=LazProject.EnableI18N and LazProject.EnableI18NForLFM and (HasLFMCount>0);
-  SetItem(ProjInspMenuEnableI18NForLFM,@EnableI18NForLFMMenuItemClick,CanI18NforLFM,DisabledI18NForLFMCount>0);
-  SetItem(ProjInspMenuDisableI18NForLFM,@DisableI18NForLFMMenuItemClick,CanI18NforLFM,DisabledI18NForLFMCount<HasLFMCount);
+  SetItem(ProjInspMenuEnableI18NForLFM,@EnableI18NForLFMMenuItemClick,
+    CanI18NforLFM,DisabledI18NForLFMCount>0);
+  SetItem(ProjInspMenuDisableI18NForLFM,@DisableI18NForLFMMenuItemClick,
+    CanI18NforLFM,DisabledI18NForLFMCount<HasLFMCount);
 
   // Required packages section
   // undo delete
   SetItem(ProjInspMenuReAddDependency,@ReAddMenuItemClick,CanReAddCount>0);
   // move up/down
-  SetItem(ProjInspMenuMoveDependencyUp,@MoveDependencyUpClick,(SingleSelectedDep<>nil) and (SingleSelectedDep.PrevRequiresDependency<>nil));
-  SetItem(ProjInspMenuMoveDependencyDown,@MoveDependencyDownClick,(SingleSelectedDep<>nil) and (SingleSelectedDep.NextRequiresDependency<>nil));
+  SetItem(ProjInspMenuMoveDependencyUp,@MoveDependencyUpClick,
+    (SingleSelectedDep<>nil) and (SingleSelectedDep.PrevRequiresDependency<>nil), not SortAlphabetically);
+  SetItem(ProjInspMenuMoveDependencyDown,@MoveDependencyDownClick,
+    (SingleSelectedDep<>nil) and (SingleSelectedDep.NextRequiresDependency<>nil), not SortAlphabetically);
   // default and preferred filename
-  SetItem(ProjInspMenuStoreFilenameAsDefaultOfDependencyDown,@SetDependencyDefaultFilenameMenuItemClick,HasValidDep>0);
-  SetItem(ProjInspMenuStoreFilenameAsPreferredOfDependencyDown,@SetDependencyPreferredFilenameMenuItemClick,HasValidDep>0);
-  SetItem(ProjInspMenuClearPreferredFilenameOfDependencyDown,@ClearDependencyFilenameMenuItemClick,CanClearDep>0);
+  SetItem(ProjInspMenuStoreFilenameAsDefaultOfDependencyDown,@SetDependencyDefaultFilenameMenuItemClick,
+    HasValidDep>0);
+  SetItem(ProjInspMenuStoreFilenameAsPreferredOfDependencyDown,@SetDependencyPreferredFilenameMenuItemClick,
+    HasValidDep>0);
+  SetItem(ProjInspMenuClearPreferredFilenameOfDependencyDown,@ClearDependencyFilenameMenuItemClick,
+    CanClearDep>0);
   ProjectInspectorItemsMenuRoot.NotifySubSectionOnShow(Self);
 end;
 
