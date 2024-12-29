@@ -146,7 +146,7 @@ begin
   Result:=False;
   // Check unit name
   s:=ExtractFileNameOnly(Filename);
-  if (s='') or not IsDottedIdentifier(s) then
+  if (s='') or not IsDottedIdentifier(s, false) then
     exit;
   // Check extension
   s:=lowercase(ExtractFileExt(Filename));

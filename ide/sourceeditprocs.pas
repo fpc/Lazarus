@@ -534,16 +534,42 @@ begin
           end;
       end;
 
-    ctnUseUnitNamespace:
+    ctnUseUnitNamespace, ctnSrcName:
+      begin
+        if (IdentItem.Node<>nil) and (IdentItem.Node.Parent<>nil)
+        and (IdentItem.Node.Parent.desc in [ctnProgram..ctnUnit,ctnUseUnit]) then
+        begin
+          if UseImages then begin
+            if IdentItem.Node.IsNamespaceStart then
+              ImageIndexCC := IDEImages.LoadImage('cc_namespace')
+            else
+              ImageIndexCC := IDEImages.LoadImage('cc_unit') ;
+          end
+          else begin
+            if Colors <> nil then begin
+              if IdentItem.Node.IsNamespaceStart then
+                AColor:=Colors.Color[ahaIdentComplWindowEntryNameSpace].Foreground
+              else
+                AColor:=Colors.Color[ahaIdentComplWindowEntryUnit].Foreground
+            end;
+
+            if IdentItem.Node.IsNamespaceStart then
+              s:='namespace'
+            else
+              s:='unit';
+          end;
+        end;
+      end;
+
+    ctnProgram,ctnPackage,ctnLibrary:
       begin
         if UseImages then
-          ImageIndexCC := IDEImages.LoadImage('cc_namespace')
-        else
-          begin
-            if Colors <> nil then
-              AColor:=Colors.Color[ahaIdentComplWindowEntryNameSpace].Foreground;
-            s:='namespace';
-          end;
+          ImageIndexCC := IDEImages.LoadImage('cc_unit')
+        else  begin
+          if (ItemNode<>nil) and (Colors <> nil) then
+            AColor:=Colors.Color[ahaIdentComplWindowEntryNameSpace].Foreground;
+            s:=LowerCase(ItemNode.DescAsString);
+        end;
       end;
 
     ctnWord:
@@ -887,8 +913,8 @@ begin
   end;
 
   //Add the '&' character to prefixed identifiers
-  if (iliNeedsAmpersand in IdentItem.Flags) then
-    Result := '&' + Result;
+  //if (iliNeedsAmpersand in IdentItem.Flags) then
+  //  Result := '&' + Result;
 
   case ValueType of
   
@@ -995,6 +1021,7 @@ begin
   and (Dsc in [ctnUseUnitNamespace,ctnUseUnitClearName]) and (AddChar<>'.')
   and not IdentList.StartUpAtomBehindIs('.')//check if there is already a point
   then
+  if IsIdentChar[Result[Length(Result)]] then
     Result+='.';
 
   // add 'do'

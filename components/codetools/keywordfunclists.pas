@@ -97,6 +97,7 @@ type
 
   TKeyWordFunctionList = class(TBaseKeyWordFunctionList)
   public
+    function IsSaved(Identifier: PChar):boolean;
     function DoIdentifier(Identifier: PChar): boolean;
     function DoItCaseSensitive(const AKeyWord: shortstring): boolean;
     function DoItCaseInsensitive(const AKeyWord: shortstring): boolean;
@@ -183,7 +184,6 @@ var
 function UpperCaseStr(const s: string): string;
 function IsUpperCaseStr(const s: string): boolean;
 function CompareIdentifiers(Identifier1, Identifier2: PChar): integer;
-
 function CalcMemSize: PtrUInt;
 
 implementation
@@ -331,12 +331,18 @@ end;
 
 function TBaseKeyWordFunctionList.KeyWordToHashIndex(
   const AKeyWord: shortstring): integer;
-var KeyWordLen, i: integer;
+var KeyWordLen, i, j: integer;
 begin
   KeyWordLen:=length(AKeyWord);
   if KeyWordLen>20 then KeyWordLen:=20;
   Result:=0;
-  for i:=1 to KeyWordLen do
+  j:=1;
+  if AKeyWord[1]='&' then begin
+    inc(Result,CharToIHash[AKeyWord[1]]);
+    inc(j);
+  end;
+
+  for i:=j to KeyWordLen do
     inc(Result,CharToIHash[AKeyWord[i]]);
   if Result>FMaxHashIndex then Result:=-1;
 end;
@@ -348,6 +354,10 @@ begin
   if ALen>20 then ALen:=20;
   AEnd:=AStart+ALen-1;
   Result:=0;
+  if ASource[AStart]='&' then begin
+    inc(Result,CharToIHash[ASource[AStart]]);
+    inc(AStart);
+  end;
   for i:=AStart to AEnd do
     inc(Result,CharToIHash[ASource[i]]);
   if Result>FMaxHashIndex then Result:=-1;
@@ -358,6 +368,11 @@ var i: integer;
 begin
   Result:=0;
   i:=20;
+  if (Identifier[0]='&') and IsIdentStartChar[Identifier[1]] then begin
+    inc(Result,CharToIHash[Identifier[0]]);
+    dec(i);
+    inc(Identifier);
+  end;
   while (i>0) and IsIdentChar[Identifier[0]] do begin
     inc(Result,CharToIHash[Identifier[0]]);
     dec(i);
@@ -371,6 +386,11 @@ function TBaseKeyWordFunctionList.KeyWordToHashIndex(Start: PChar; Len: integer
 begin
   Result:=0;
   if Len>20 then Len:=20;
+  if (Start[0]='&') and IsIdentStartChar[Start[1]] then begin
+    inc(Result,CharToIHash[Start^]);
+    dec(Len);
+    inc(Start);
+  end;
   while (Len>0) do begin
     inc(Result,CharToIHash[Start^]);
     dec(Len);
@@ -554,6 +574,29 @@ begin
 end;
 
 { TKeyWordFunctionList }
+
+function TKeyWordFunctionList.IsSaved(Identifier: PChar): boolean;
+var i: integer;
+begin
+  Result:=False;
+  if not FHasOnlyIdentifiers then Exit;
+  if not FSorted then Sort;
+  i:=KeyWordToHashIndex(Identifier);
+  if i>=0 then begin
+    i:=FBucketStart[i];
+    if i>=0 then begin
+      repeat
+        if CompareIdentifiers(PChar(@FItems[i].KeyWord[1]),Identifier)=0 then begin
+          Result:=True;
+          exit;
+        end;
+
+        if FItems[i].IsLast then break;
+        inc(i);
+      until false;
+    end;
+  end;
+end;
 
 function TKeyWordFunctionList.DoIdentifier(Identifier: PChar): boolean;
 

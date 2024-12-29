@@ -313,6 +313,9 @@ type
     function GetLastNode: TCodeTreeNode;
     function DescAsString: string;
     function FindOwner: TObject;
+    function IsDottedIdentParent: boolean;
+    function IsDottedIdentChild: boolean;
+    function IsNamespaceStart: boolean;
     procedure Clear;
     constructor Create;
     procedure ConsistencyCheck;
@@ -974,6 +977,42 @@ end;
 function TCodeTreeNode.FindOwner: TObject;
 begin
   Result:=FindOwnerOfCodeTreeNode(Self);
+end;
+
+function TCodeTreeNode.IsDottedIdentParent: boolean;
+begin // TRUE means from this node.StartPos dotted Ident can be read
+  Result:=false;
+  if (Desc in [ctnUseUnit]) and (ChildCount>1) then
+    Result:=true
+  else
+  if  (Desc = ctnSrcName)  and (FirstChild<>nil) and (FirstChild.Desc=ctnIdentifier) then
+    Result:=((FirstChild.EndPos)<(EndPos-1));
+end;
+
+function TCodeTreeNode.IsDottedIdentChild: boolean;
+begin // TRUE means from this node.Parent.StartPos dotted Ident can be read
+  Result:=false;
+  if (Parent<>nil) then begin
+    if (Desc in [ctnUseUnitNamespace, ctnUseUnitClearName]) and (Parent.ChildCount>1) then
+      Result:=true
+    else
+    if (Desc = ctnIdentifier) and (Parent.Desc=ctnSrcName)
+        and (EndPos < Parent.EndPos-1) then
+      Result:=true;
+  end;
+end;
+
+function TCodeTreeNode.IsNamespaceStart: boolean;
+begin
+  Result:=false;
+  if (Parent<>nil) then begin
+    if (Desc = ctnUseUnitNamespace) and (PriorBrother=nil) then
+      Result:=true
+    else
+    if (Desc=ctnSrcName) and (FirstChild<>nil) and
+      (FirstChild.EndPos < EndPos-1) and (FirstChild.StartPos=StartPos) then
+      Result:=true;
+  end;
 end;
 
 { TCodeTree }

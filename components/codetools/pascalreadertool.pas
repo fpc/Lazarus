@@ -105,6 +105,10 @@ type
         Attr: TProcHeadAttributes): string;
     function ExtractIdentifierWithPoints(StartPos: integer;
         ExceptionOnError: boolean): string;
+    function ExtractIdentifierWithPointsOutEndPos(StartPos: integer;
+        out EndPos: integer; StopAtLen: integer=0): string;
+    function ExtractIdentifierWithPointsOutEndPos(StartPos: integer;
+        var Comment: string; out EndPos: integer; StopAtLen: integer=0): string;
     function ExtractNextTypeRef(Add: boolean; const Attr: TProcHeadAttributes): boolean;
     function ExtractNextSpecializeParams(Add: boolean;
         const Attr: TProcHeadAttributes): boolean;
@@ -1601,6 +1605,84 @@ begin
   until false;
 end;
 
+function TPascalReaderTool.ExtractIdentifierWithPointsOutEndPos(StartPos: integer;
+        out EndPos: integer; StopAtLen: integer=0): string;
+//the function intended to extract dotted identifier
+//e.g. "dotted{but contaminated}.ident.{comment}unit1" will be extracted to
+//result = "dotted.ident.unit1"
+var aLen: integer;
+begin
+  Result:='';
+  EndPos:=StartPos;
+  if src='' then exit;
+  MoveCursorToCleanPos(StartPos);
+
+  ReadNextAtom;
+  Result:=GetAtom;
+  EndPos:=curPos.EndPos;
+  aLen:=curPos.EndPos-curPos.StartPos;
+
+  if (StopAtLen>0) and (aLen>=StopAtLen) then exit;
+  repeat
+    ReadNextAtom;
+    if CurPos.Flag<>cafPoint then
+      exit;
+    inc(aLen);
+    ReadNextAtom;
+    Result+='.'+GetAtom;
+    EndPos:=CurPos.EndPos;
+    inc(aLen,CurPos.EndPos-CurPos.StartPos);
+    if (StopAtLen>0) and (aLen>=StopAtLen) then exit;
+  until false;
+end;
+
+function TPascalReaderTool.ExtractIdentifierWithPointsOutEndPos(
+  StartPos: integer; var Comment: string; out EndPos: integer;
+  StopAtLen: integer=0): string;
+//the function intended to extract dotted identifier
+//and cumulative comment from source
+//e.g. "dotted{but contaminated}.ident.{comment}unit1" will be extracted to
+//result = "dotted.ident.unit1" and comment = "{but contaminated}{comment}"
+var
+  beforePos, aLen: integer;
+  commentAtom: string;
+begin
+  Result:='';
+  Comment:='';
+  EndPos:=StartPos;
+  if src='' then exit;
+  aLen:=0;
+  MoveCursorToCleanPos(StartPos);
+  ReadNextAtom;
+  Result:=GetAtom;
+  EndPos:=curPos.EndPos;
+  aLen:=curPos.EndPos-curPos.StartPos;
+  if (StopAtLen>0) and (aLen>=StopAtLen) then exit;
+  repeat
+    beforePos:=curPos.EndPos;
+    ReadNextAtom;
+    if CurPos.Flag<>cafPoint then
+      exit;
+    inc(aLen);
+    if curPos.StartPos-beforePos>1 then begin //a comment was at least like {}
+      setlength(commentAtom,curPos.StartPos-beforePos);
+      move(src[beforePos],commentAtom[1],curPos.StartPos-beforePos);
+      Comment+=commentAtom;
+    end;
+    beforePos:=curPos.EndPos;
+    ReadNextAtom;
+    if curPos.StartPos-beforePos>1 then begin //a comment was at least like {}
+      setlength(commentAtom,curPos.StartPos-beforePos);
+      move(src[beforePos],commentAtom[1],curPos.StartPos-beforePos);
+      Comment+=commentAtom;
+    end;
+    Result+='.'+GetAtom;
+    EndPos:=CurPos.EndPos;
+    inc(aLen,CurPos.EndPos-CurPos.StartPos);
+    if (StopAtLen>0) and (aLen>=StopAtLen) then exit;
+  until false;
+end;
+
 function TPascalReaderTool.ExtractNextTypeRef(Add: boolean;
   const Attr: TProcHeadAttributes): boolean;
 begin
@@ -2692,7 +2774,7 @@ begin
   Result:='';
   if Tree.Root=nil then exit;
   if GetSourceNamePos(NamePos) then
-    Result:=copy(Src, NamePos.StartPos, NamePos.EndPos-NamePos.StartPos)
+    Result:=ExtractIdentifierWithPoints(NamePos.StartPos,false)
   else if Tree.Root.Desc=ctnProgram then
     // a program without the 'program' header uses the file name as name
     Result:=ExtractFileNameOnly(MainFilename)
@@ -2908,7 +2990,7 @@ function TPascalReaderTool.ExtractDefinitionName(DefinitionNode: TCodeTreeNode
 begin
   DefinitionNode:=FindDefinitionNameNode(DefinitionNode);
   if DefinitionNode<>nil then
-    Result:=GetIdentifier(@Src[DefinitionNode.StartPos])
+    Result:=GetIdentifier(@Src[DefinitionNode.StartPos],false)
   else
     Result:='';
 end;
@@ -3509,7 +3591,8 @@ begin
   while CurPos.Flag=cafWord do begin
     if Result<>'' then
       Result:=Result+'.';
-    Result:=Result+GetAtomIdentifier;
+    //Result:=Result+GetAtomIdentifier;
+    Result:=Result+GetAtom;//&-ident allowed - preferred "&begin.&end" over "begin.end"
     ReadNextAtom;
     if CurPos.Flag<>cafPoint then break;
     ReadNextAtom;

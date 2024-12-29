@@ -454,8 +454,8 @@ var
   NewUsesTerm: string;
 begin
   Result:=false;
-  if (not IsDottedIdentifier(OldUnitName))
-  or (not IsDottedIdentifier(NewUnitName)) then
+  if (not IsValidIdent(OldUnitName,true,true))
+  or (not IsValidIdent(NewUnitName,true,true)) then
     exit;
   if not FindUnitInAllUsesSections(OldUnitName,UnitPos,InPos) then begin
     //debugln('TStandardCodeTool.RenameUsedUnit not found: ',OldUnitName,' ');

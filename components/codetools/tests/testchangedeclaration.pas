@@ -46,6 +46,7 @@ var
   ListOfPCodeXYPosition: TFPList;
   Cache: TFindIdentifierReferenceCache;
   RefXYPos: TCodeXYPosition;
+  isConflicted: boolean;
 begin
   Cache:=nil;
   ListOfPCodeXYPosition:=nil;
@@ -116,7 +117,7 @@ begin
       Fail('TreeOfPCodeXYPosition empty');
 
     // rename references
-    if not CodeToolBoss.RenameIdentifier(TreeOfPCodeXYPosition,OldIdentifier,NewIdentifier,DeclCode,@DeclXY,false) then
+    if not CodeToolBoss.RenameIdentifier(TreeOfPCodeXYPosition,OldIdentifier,NewIdentifier,DeclCode,@DeclXY,isConflicted) then
       Fail('RenameIdentifier failed');
 
     // check all {%R} directives were replaced

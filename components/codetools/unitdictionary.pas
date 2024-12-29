@@ -795,7 +795,7 @@ var
 
       // read unit name
       StartP:=p;
-      while (p<EndP) and (p^ in ['0'..'9','A'..'Z','a'..'z','_','.']) do inc(p);
+      while (p<EndP) and (p^ in ['0'..'9','A'..'Z','a'..'z','_','.','&']) do inc(p);
       if (StartP=p) or (p^<>';') then
         e('unit name expected, but found "'+dbgstr(p^)+'"');
       SetLength(CurUnitName{%H-},p-StartP);

@@ -129,8 +129,9 @@ type
     sfCheckAmbiguousFiles,
     sfSaveNonProjectFiles,
     sfDoNotSaveVirtualFiles,
-    sfCanAbort,  // show 'Cancel all' button in error messages
-    sfQuietUnitCheck     // don't ask questions when adding unit dependency.
+    sfCanAbort,        // show 'Cancel all' button in error messages
+    sfQuietUnitCheck,  // don't ask questions when adding unit dependency.
+    sfSkipReferences   // to be updated without IDE control
     );
   TSaveFlags = set of TSaveFlag;
   

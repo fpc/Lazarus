@@ -8189,7 +8189,7 @@ procedure TPCTargetConfigCache.LoadFromXMLConfig(XMLConfig: TXMLConfig;
         Filename:=TrimFilename(FileList[i]);
         if IsUnit then begin
           File_Name:=ExtractFileNameOnly(Filename);
-          if (File_Name='') or not IsDottedIdentifier(File_Name) then begin
+          if (File_Name='') or not IsDottedIdentifier(File_Name, false) then begin
             DebugLn(['Warning: [TPCTargetConfigCache.LoadFromXMLConfig] invalid filename "',File_Name,'" in "',XMLConfig.Filename,'" at "',CurPath,'"']);
             continue;
           end;

@@ -212,7 +212,8 @@ type
         out CleanCursorPos: integer);
 
     function StringIsKeyWord(const Word: string): boolean;
-    
+    function IsStringKeyWord(const Word: string): boolean;
+
     // cursor moving
     procedure MoveCursorToNodeStart(ANode: TCodeTreeNode); {$IFDEF UseInline}inline;{$ENDIF}
     procedure MoveCursorToCleanPos(ACleanPos: integer);
@@ -278,9 +279,14 @@ type
     function CompareDottedSrcIdentifiers(CleanStartPos: integer;
       AnIdentifier: PChar): boolean;
     function CompareSrcIdentifiersMethod(Identifier1, Identifier2: Pointer): integer;
-    function ExtractIdentifier(CleanStartPos: integer): string;
-    function ExtractDottedIdentifier(CleanStartPos: integer): string;
+    function ExtractIdentifier(CleanStartPos: integer;
+      SkipAmp: Boolean = True): string;
 
+    function ExtractDottedIdentifier(CleanStartPos: integer): string;
+    function ExtractIdentifierWithPointsOutEndPos(StartPos: integer;
+        out EndPos: integer; StopAtLen: integer=0): string;
+    function ExtractIdentifierWithPointsOutEndPos( StartPos: integer;
+        var Comment: string; out EndPos: integer;  StopAtLen: integer=0): string;
     procedure CreateChildNode;
     procedure EndChildNode; {$IFDEF UseInline}inline;{$ENDIF}
     function DoAtom: boolean; virtual;
@@ -2365,6 +2371,11 @@ begin
   Result:=(Word<>'') and IsIdentStartChar[Word[1]]
                    and WordIsKeyWordFuncList.DoItUpperCase(Word,1,length(Word));
 end;
+function TCustomCodeTool.IsStringKeyWord(const Word: string): boolean;
+begin
+  Result:=(Word<>'') and IsIdentStartChar[Word[1]]
+    and (WordIsKeyWordFuncList.IndexOf(Word, true)>=0);
+end;
 
 procedure TCustomCodeTool.MoveCursorToNodeStart(ANode: TCodeTreeNode);
 begin
@@ -3185,12 +3196,20 @@ begin
   Result:=CompareIdentifiers(Identifier1,Identifier2);
 end;
 
-function TCustomCodeTool.ExtractIdentifier(CleanStartPos: integer): string;
+function TCustomCodeTool.ExtractIdentifier(CleanStartPos: integer;
+  SkipAmp: Boolean = True): string;
 var len: integer;
 begin
   if (CleanStartPos>=1) and (CleanStartPos<=SrcLen) then begin
     len:=0;
-    if Src[CleanStartPos]='&' then inc(CleanStartPos);
+    if SkipAmp then begin
+      if (Src[CleanStartPos]='&') then
+        inc(CleanStartPos);
+    end else begin
+      if Src[CleanStartPos]='&' then
+        inc(len);
+    end;
+
     while (CleanStartPos<=SrcLen)
     and (IsIdentChar[Src[CleanStartPos+len]]) do
       inc(len);
@@ -3204,6 +3223,84 @@ end;
 function TCustomCodeTool.ExtractDottedIdentifier(CleanStartPos: integer): string;
 begin
   Result:=GetDottedIdentifier(@Src[CleanStartPos]);
+end;
+
+function TCustomCodeTool.ExtractIdentifierWithPointsOutEndPos(StartPos: integer;
+        out EndPos: integer; StopAtLen: integer=0): string;
+//the function intended to extract dotted identifier
+//e.g. "dotted{but contaminated}.ident.{comment}unit1" will be extracted to
+//result = "dotted.ident.unit1"
+var aLen: integer;
+begin
+  Result:='';
+  EndPos:=StartPos;
+  if src='' then exit;
+  MoveCursorToCleanPos(StartPos);
+
+  ReadNextAtom;
+  Result:=GetAtom;
+  EndPos:=curPos.EndPos;
+
+  aLen:=curPos.EndPos-curPos.StartPos;
+
+  if (StopAtLen>0) and (aLen>=StopAtLen) then exit;
+  repeat
+    ReadNextAtom;
+    if CurPos.Flag<>cafPoint then
+      exit;
+    inc(aLen);
+    ReadNextAtom;
+    Result+='.'+GetAtom;
+    EndPos:=CurPos.EndPos;
+    inc(aLen,CurPos.EndPos-CurPos.StartPos);
+    if (StopAtLen>0) and (aLen>=StopAtLen) then exit;
+  until false;
+end;
+
+function TCustomCodeTool.ExtractIdentifierWithPointsOutEndPos( StartPos: integer;
+    var Comment: string; out EndPos: integer;  StopAtLen: integer=0): string;
+//the function intended to extract dotted identifier
+//and cumulative comment from source
+//e.g. "dotted{but contaminated}.ident.{comment}unit1" will be extracted to
+//result = "dotted.ident.unit1" and comment = "{but contaminated}{comment}"
+var
+  beforePos, aLen: integer;
+  commentAtom: string;
+begin
+  Result:='';
+  Comment:='';
+  EndPos:=StartPos;
+  if src='' then exit;
+  aLen:=0;
+  MoveCursorToCleanPos(StartPos);
+  ReadNextAtom;
+  Result:=GetAtom;
+  EndPos:=curPos.EndPos;
+  aLen:=curPos.EndPos-curPos.StartPos;
+  if (StopAtLen>0) and (aLen>=StopAtLen) then exit;
+  repeat
+    beforePos:=curPos.EndPos;
+    ReadNextAtom;
+    if CurPos.Flag<>cafPoint then
+      exit;
+    inc(aLen);
+    if curPos.StartPos-beforePos>1 then begin //a comment was at least like {}
+      setlength(commentAtom,curPos.StartPos-beforePos);
+      move(src[beforePos],commentAtom[1],curPos.StartPos-beforePos);
+      Comment+=commentAtom;
+    end;
+    beforePos:=curPos.EndPos;
+    ReadNextAtom;
+    if curPos.StartPos-beforePos>1 then begin //a comment was at least like {}
+      setlength(commentAtom,curPos.StartPos-beforePos);
+      move(src[beforePos],commentAtom[1],curPos.StartPos-beforePos);
+      Comment+=commentAtom;
+    end;
+    Result+='.'+GetAtom;
+    EndPos:=CurPos.EndPos;
+    inc(aLen,CurPos.EndPos-CurPos.StartPos);
+    if (StopAtLen>0) and (aLen>=StopAtLen) then exit;
+  until false;
 end;
 
 procedure TCustomCodeTool.DoDeleteNodes(StartNode: TCodeTreeNode);

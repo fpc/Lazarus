@@ -542,8 +542,10 @@ type
     // gather identifiers (i.e. all visible)
     function GatherUnitNames(Code: TCodeBuffer): Boolean;
     function GatherIdentifiers(Code: TCodeBuffer; X,Y: integer): boolean;
-    function GetIdentifierAt(Code: TCodeBuffer; X,Y: integer;
+    function GetIdentifierAt(Code: TCodeBuffer; var X,Y: integer;
           out Identifier: string): boolean;
+    function GetIdentifierAt(Code: TCodeBuffer; var X,Y: integer;
+          out Identifier: string; var ANode: TCodeTreeNode): boolean;
     function IdentItemCheckHasChilds(IdentItem: TIdentifierListItem): boolean;
     function FindAbstractMethods(Code: TCodeBuffer; X,Y: integer;
           out ListOfPCodeXYPosition: TFPList;
@@ -571,7 +573,7 @@ type
     function RenameIdentifier(TreeOfPCodeXYPosition: TAVLTree;
           const OldIdentifier, NewIdentifier: string;
           DeclarationCode: TCodeBuffer; DeclarationCaretXY: PPoint;
-          DottedIdents: Boolean): boolean;
+          out isConflicted: boolean): boolean;
     function ReplaceWord(Code: TCodeBuffer; const OldWord, NewWord: string;
           ChangeStrings: boolean): boolean;
     function RemoveIdentifierDefinition(Code: TCodeBuffer; X, Y: integer
@@ -2661,22 +2663,131 @@ begin
   {$ENDIF}
 end;
 
-function TCodeToolManager.GetIdentifierAt(Code: TCodeBuffer; X, Y: integer; out
-  Identifier: string): boolean;
+function TCodeToolManager.GetIdentifierAt(Code: TCodeBuffer; var X, Y: integer;
+  out Identifier: string): boolean;
 var
-  CleanPos: integer;
+  CleanPos,CleanPosAmd: integer;
+  CodeTool: TCodeTool;
+  CaretXY: TCodeXYPosition;
+  CodeNode: TCodeTreeNode;
+  CanBeDotted: boolean;
 begin
   Result:=false;
+  Identifier:='';
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.GetIdentifierAt A ',Code.Filename,' x=',dbgs(x),' y=',dbgs(y));
   {$ENDIF}
   Code.LineColToPosition(Y,X,CleanPos);
   if (CleanPos>0) and (CleanPos<=Code.SourceLength) then begin
-    Identifier:=GetIdentifier(@Code.Source[CleanPos]);
-    Result:=true;
-  end else begin
-    Identifier:='';
-    Result:=false;
+    CodeTool:=nil;
+    CaretXY:=CleanCodeXYPosition;
+    CaretXY.Code:=Code;
+    CaretXY.X:=X;
+    CaretXY.Y:=Y;
+    CodeNode:=nil;
+    if CodeToolBoss.Explore(Code,CodeTool,true) then
+    if CodeTool<>nil then begin
+      CodeTool.CaretToCleanPos(CaretXY,CleanPosAmd);
+      CodeNode:=CodeTool.FindDeepestNodeAtPos(CleanPosAmd,false);
+    end;
+    if (CodeNode<>nil) and (CodeNode.Parent<>nil) then begin
+      CanBeDotted := (CodeNode.Desc = ctnUseUnit) or
+                     (CodeNode.Desc = ctnUseUnitNamespace) or
+                     (CodeNode.Desc = ctnUseUnitClearName) or
+                     ((CodeNode.Parent.Desc = ctnSrcName) and
+                      (CodeNode.Desc = ctnIdentifier));
+      if CanBeDotted then begin
+        if CodeNode.Desc in [ctnIdentifier,ctnUseUnitNamespace, ctnUseUnitClearName]
+        then
+          CleanPosAmd:= CodeNode.Parent.StartPos
+        else
+          CleanPosAmd:= CodeNode.StartPos;
+        Code.AbsoluteToLineCol(CleanPosAmd,Y,X); //does anybody want to know it?
+        CodeTool.MoveCursorToCleanPos(CleanPosAmd);
+        CodeTool.ReadNextAtom;
+        repeat
+          if CodeTool.CurPos.Flag<>cafWord then
+            break;
+          Identifier:=Identifier+CodeTool.GetAtom;
+          CodeTool.ReadNextAtom;
+          if CodeTool.CurPos.Flag=cafPoint  then begin
+            Identifier:=Identifier+CodeTool.GetAtom;
+          end else
+            break;
+          CodeTool.ReadNextAtom;
+        until CodeTool.CurPos.StartPos>=CodeTool.SrcLen;
+      end else
+        Identifier:=GetIdentifier(@Code.Source[CleanPos],False);
+      Result:=true;
+      exit;
+    end;
+  end;
+end;
+
+function TCodeToolManager.GetIdentifierAt(Code: TCodeBuffer; var X, Y: integer;
+  out Identifier: string; var ANode: TCodeTreeNode): boolean;
+var
+  CleanPos,CleanPosAmd: integer;
+  CodeTool: TCodeTool;
+  CaretXY: TCodeXYPosition;
+  CodeNode: TCodeTreeNode;
+  CanBeDotted: boolean;
+begin
+  Result:=false;
+  Identifier:='';
+  ANode:=nil;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.GetIdentifierAt A ',Code.Filename,' x=',dbgs(x),' y=',dbgs(y));
+  {$ENDIF}
+  Code.LineColToPosition(Y,X,CleanPos);
+  if (CleanPos>0) and (CleanPos<=Code.SourceLength) then begin
+    CodeTool:=nil;
+    CaretXY:=CleanCodeXYPosition;
+    CaretXY.Code:=Code;
+    CaretXY.X:=X;
+    CaretXY.Y:=Y;
+    CodeNode:=nil;
+    if CodeToolBoss.Explore(Code,CodeTool,true) then
+    if CodeTool<>nil then begin
+      CodeTool.CaretToCleanPos(CaretXY,CleanPosAmd);
+      CodeNode:=CodeTool.FindDeepestNodeAtPos(CleanPosAmd,false);
+      ANode:=CodeNode;
+    end;
+    if (CodeNode<>nil) and (CodeNode.Parent<>nil) then begin
+      CanBeDotted := (CodeNode.Desc = ctnUseUnit) or
+                     (CodeNode.Desc = ctnUseUnitNamespace) or
+                     (CodeNode.Desc = ctnUseUnitClearName) or
+                     ((CodeNode.Parent.Desc = ctnSrcName) and
+                      (CodeNode.Desc = ctnIdentifier));
+      if CanBeDotted then begin
+        if  CodeNode.Parent.Desc = ctnSrcName then
+          ANode:= CodeNode.Parent.Parent; //ctnProgram..ctnUnit
+
+        if CodeNode.Desc in [ctnIdentifier,ctnUseUnitNamespace, ctnUseUnitClearName]
+        then
+          CleanPosAmd:= CodeNode.Parent.StartPos
+        else
+          CleanPosAmd:= CodeNode.StartPos;
+
+        Code.AbsoluteToLineCol(CleanPosAmd,Y,X);
+        CodeTool.MoveCursorToCleanPos(CleanPosAmd);
+        CodeTool.ReadNextAtom;
+        repeat
+          if CodeTool.CurPos.Flag<>cafWord then
+            break;
+          Identifier:=Identifier+CodeTool.GetAtom;
+          CodeTool.ReadNextAtom;
+          if CodeTool.CurPos.Flag=cafPoint  then begin
+            Identifier:=Identifier+CodeTool.GetAtom;
+          end else
+            break;
+          CodeTool.ReadNextAtom;
+        until CodeTool.CurPos.StartPos>=CodeTool.SrcLen;
+      end else
+        Identifier:=GetIdentifier(@Code.Source[CleanPos],False);
+      Result:=true;
+      exit;
+    end;
   end;
 end;
 
@@ -2979,8 +3090,18 @@ end;
 
 function TCodeToolManager.RenameIdentifier(TreeOfPCodeXYPosition: TAVLTree;
   const OldIdentifier, NewIdentifier: string; DeclarationCode: TCodeBuffer;
-  DeclarationCaretXY: PPoint; DottedIdents: Boolean): boolean;
-
+  DeclarationCaretXY: PPoint; out isConflicted: boolean): boolean;
+var
+  ANode: TAVLTreeNode;
+  CurCodePos: PCodeXYPosition;
+  IdentStartPos, IdentEndPos,IdentAmdPos: integer;
+  i,j: Integer;
+  Code:TCodeBuffer;
+  DottedIdents, isOK: Boolean;
+  StrippedIdent:string;
+  CodeTool:TCustomCodeTool;
+  anItem: TIdentifierListItem;
+  aComment: string;
   function GetIdent(Identifier: PChar): string;
   begin
     if DottedIdents then
@@ -2988,74 +3109,124 @@ function TCodeToolManager.RenameIdentifier(TreeOfPCodeXYPosition: TAVLTree;
     else
       Result:=GetIdentifier(Identifier);
   end;
-
-var
-  ANode: TAVLTreeNode;
-  CurCodePos: PCodeXYPosition;
-  IdentStartPos: integer;
-  IdentLen: Integer;
-  i: Integer;
-  Code: TCodeBuffer;
 begin
   Result:=false;
+  isConflicted:=false;
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.RenameIdentifier A Old=',OldIdentifier,' New=',NewIdentifier,' ',dbgs(TreeOfPCodeXYPosition<>nil));
   {$ENDIF}
   if (TreeOfPCodeXYPosition=nil) or (TreeOfPCodeXYPosition.Count=0) then
     exit(true);
-  if not IsValidIdent(NewIdentifier,True,True) then exit;
-
+  if not IsValidDottedIdent(NewIdentifier) then exit;
+  DottedIdents:= IsIdentifierDotted(OldIdentifier,True) or
+                 IsIdentifierDotted(NewIdentifier,True);
   ClearCurCodeTool;
   SourceChangeCache.Clear;
-  CurCodePos := nil;
-  IdentLen:=length(OldIdentifier);
+  //IdentLenDiff := length(NewIdentifier) - length(OldIdentifier);
   if DeclarationCode = nil then
     DeclarationCaretXY := nil;
   if DeclarationCaretXY = nil then
     DeclarationCode := nil;
-
   // the tree is sorted for descending line code positions
   // -> go from end of source to start of source, so that replacing does not
   // change any CodeXYPosition not yet processed
+
+  // final validation against existing identifiers confilicting to NewIdentifier
+  isOK:=true;
+  ANode:=TreeOfPCodeXYPosition.FindHighest;
+  while isOK and (ANode<>nil) do begin
+    CurCodePos:=PCodeXYPosition(ANode.Data);
+    Code:=CurCodePos^.Code;
+    Code.LineColToPosition(CurCodePos^.Y,CurCodePos^.X,IdentStartPos);
+    if IdentStartPos<1 then begin
+      ANode:=TreeOfPCodeXYPosition.FindPrecessor(ANode);
+      continue;
+    end;
+    GatherIdentifiers(Code,CurCodePos^.X,CurCodePos^.Y);
+    anItem:=IdentifierList.FindIdentifier(PChar(NewIdentifier));
+    isOK:= not ((anItem<>nil) and
+      (CompareDottedIdentifiers(PChar(OldIdentifier), PChar(NewIdentifier))<>0));
+    if not isOK then
+      break;
+    ANode:=TreeOfPCodeXYPosition.FindPrecessor(ANode);
+  end;
+  if not isOK then begin
+    isConflicted:=true;
+    exit;
+  end;
+
   ANode:=TreeOfPCodeXYPosition.FindLowest;
   while ANode<>nil do begin
     // next position
     CurCodePos:=PCodeXYPosition(ANode.Data);
     Code:=CurCodePos^.Code;
     Code.LineColToPosition(CurCodePos^.Y,CurCodePos^.X,IdentStartPos);
-    DebugLn('TCodeToolManager.RenameIdentifier File ',Code.Filename,
-            ' Line=',dbgs(CurCodePos^.Y),' Col=',dbgs(CurCodePos^.X),
-            ' Identifier=',GetIdent(@Code.Source[IdentStartPos]));
     // search absolute position in source
     if IdentStartPos<1 then begin
       SetError(20170421203205,Code, CurCodePos^.Y, CurCodePos^.X, ctsPositionNotInSource);
       exit;
     end;
+    aComment:='';
     // check if old identifier is there
-    if DottedIdents then
-      i:=CompareDottedIdentifiers(@Code.Source[IdentStartPos],PChar(Pointer(OldIdentifier)))
-    else
+    if DottedIdents then begin
+      CodeToolBoss.InitCurCodeTool(Code);
+      CodeTool:=CodeToolBoss.FindCodeToolForSource(Code);
+      if CodeTool=nil then begin
+        debugln(['TCodeToolManager.RenameIdentifier '+'CodeTool=nil']);
+        exit;
+      end;
+      CodeTool.CaretToCleanPos(CurCodePos^,IdentAmdPos);
+      StrippedIdent:=CodeTool.ExtractIdentifierWithPointsOutEndPos(IdentAmdPos,
+        aComment,IdentEndPos, length(OldIdentifier));
+      IdentEndPos:=IdentStartPos+IdentEndPos-IdentAmdPos;
+
+      i:=CompareDottedIdentifiers(PChar(StrippedIdent),PChar(OldIdentifier));
+    end else
       i:=CompareIdentifiers(@Code.Source[IdentStartPos],PChar(Pointer(OldIdentifier)));
-    if i<>0 then begin
-      debugln(['TCodeToolManager.RenameIdentifier CONSISTENCY ERROR ',Dbgs(CurCodePos^),' ']);
-      SetError(20170421203210,CurCodePos^.Code,CurCodePos^.Y,CurCodePos^.X,
-        Format(ctsStrExpectedButAtomFound,[OldIdentifier,GetIdent(@Code.Source[IdentStartPos])])
-        );
+    if i<>0 then
       exit;
-    end;
+
     // change if needed
-    if DottedIdents then
-      i:=CompareDottedIdentifiersCaseSensitive(@Code.Source[IdentStartPos],PChar(Pointer(NewIdentifier)))
-    else
-      i:=CompareIdentifiersCaseSensitive(@Code.Source[IdentStartPos],PChar(Pointer(NewIdentifier)));
+    if DottedIdents then begin //here are used CaseSensitive versions, intentionally
+      i:= CompareDottedIdentifiersCaseSensitive(PChar(StrippedIdent),
+        PChar(NewIdentifier));
+      if i=0 then begin
+        if length(StrippedIdent)<>length(NewIdentifier) then
+          i:=1
+        else begin
+          j:=1;
+          while j<=length(StrippedIdent) do begin
+            if StrippedIdent[j]<>NewIdentifier[j] then begin
+              i:=1;// "aaaa.&bbbb" must be different from "&aaaa.bbbb" anyway
+              break;
+            end;
+            inc(j);
+          end;
+        end;
+      end;
+    end
+    else begin
+      i:=CompareIdentifiersCaseSensitive(
+        @Code.Source[IdentStartPos],PChar(Pointer(NewIdentifier)));
+      IdentEndPos:=IdentStartPos+length(OldIdentifier);
+
+      if (UpCase(Code.Source[IdentStartPos])<>UpCase(OldIdentifier[1])) and
+      ((Code.Source[IdentStartPos]='&') or (OldIdentifier[1]='&')) then begin
+        if OldIdentifier[1]='&' then
+          dec(IdentEndPos)
+        else
+          inc(IdentEndPos);
+      end;
+    end;
     if i<>0 then begin
       DebugLn('TCodeToolManager.RenameIdentifier Change ');
       SourceChangeCache.ReplaceEx(gtNone,gtNone,1,1,Code,
-         IdentStartPos,IdentStartPos+IdentLen,NewIdentifier);
+        IdentStartPos,
+        IdentEndPos,
+        NewIdentifier+aComment);
     end else begin
       DebugLn('TCodeToolManager.RenameIdentifier KEPT ',GetIdent(@Code.Source[IdentStartPos]));
     end;
-
     ANode:=TreeOfPCodeXYPosition.FindSuccessor(ANode);
   end;
 

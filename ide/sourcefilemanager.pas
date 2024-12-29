@@ -328,7 +328,7 @@ function GetDsgnComponentBaseClassname(aCompClass: TClass): string;
   function NewUniqueComponentName(Prefix: string): string;
 //save unit
   function ShowSaveFileAsDialog(var AFilename: string; AnUnitInfo: TUnitInfo;
-      var LFMCode, LRSCode: TCodeBuffer; CanAbort: boolean): TModalResult;
+      var LFMCode, LRSCode: TCodeBuffer; CanAbort: boolean; Flags: TSaveFlags=[]): TModalResult;
   function SaveUnitComponent(AnUnitInfo: TUnitInfo;
       LRSCode, LFMCode: TCodeBuffer; Flags: TSaveFlags): TModalResult;
   function RemoveLooseEvents(AnUnitInfo: TUnitInfo): TModalResult;
@@ -355,20 +355,20 @@ function GetDsgnComponentBaseClassname(aCompClass: TClass): string;
   function LoadIDECodeBuffer(var ACodeBuffer: TCodeBuffer;
       const AFilename: string; Flags: TLoadBufferFlags; ShowAbort: boolean): TModalResult;
 //save project
-  function ShowSaveProjectAsDialog: TModalResult;
+  function ShowSaveProjectAsDialog(Flags: TSaveFlags=[]): TModalResult;
   function SaveProjectInfo(var Flags: TSaveFlags): TModalResult;
   procedure GetMainUnit(out MainUnitInfo: TUnitInfo; out MainUnitSrcEdit: TSourceEditor);
   procedure SaveSrcEditorProjectSpecificSettings(AnEditorInfo: TUnitEditorInfo);
   procedure SaveSourceEditorProjectSpecificSettings;
   procedure UpdateProjectResourceInfo;
 
-
 implementation
 
 function CreateSrcEditPageName(const AnUnitName, AFilename: string;
   IgnoreEditor: TSourceEditor): string;
 begin
-  Result := StringReplace(AnUnitName, '&', '', [rfReplaceAll]);
+  //Result := StringReplace(AnUnitName, '&', '', [rfReplaceAll]);
+  Result := AnUnitName;
   if Result='' then
     Result:=ExtractFileName(AFilename);
   Result:=SourceEditorManager.FindUniquePageName(Result,IgnoreEditor);
@@ -2167,6 +2167,7 @@ begin
     end else
       SourceName:='';
     PageName:=CreateSrcEditPageName(SourceName, AnUnitInfo.Filename, AEditor);
+    //debugln([i,': UpdateSourceNames ',AnUnitInfo.Filename]);
     AEditor.PageName := PageName;
   end;
 end;
@@ -2796,7 +2797,7 @@ begin
   if [sfSaveAs,sfSaveToTestDir]*Flags=[sfSaveAs] then begin
     // let user choose a filename
     NewFilename:=OldFilename;
-    Result:=ShowSaveFileAsDialog(NewFilename,AnUnitInfo,LFMCode,LRSCode,CanAbort);
+    Result:=ShowSaveFileAsDialog(NewFilename,AnUnitInfo,LFMCode,LRSCode,CanAbort,Flags);
     if not (Result in [mrIgnore,mrOk]) then
       exit;
   end;
@@ -2882,25 +2883,26 @@ begin
   TSourceEditor(AEditor).SourceNotebook.UpdateStatusBar;
 
   // fix all references
-  NewUnitName:='';
-  if FilenameIsPascalSource(AnUnitInfo.Filename) then
-    NewUnitName:=AnUnitInfo.ReadUnitNameFromSource(true);
-  NewFilename:=AnUnitInfo.Filename;
-  if (NewUnitName<>'')
-  and ((OldUnitName<>NewUnitName) or (CompareFilenames(OldFilename,NewFilename)<>0))
-  then begin
-    if EnvironmentOptions.UnitRenameReferencesAction<>urraNever then
-    begin
-      // silently update references of new units (references were auto created
-      // and keeping old references makes no sense)
-      Confirm:=(EnvironmentOptions.UnitRenameReferencesAction=urraAsk)
-               and (not WasVirtual);
-      Result:=ReplaceUnitUse(OldFilename,OldUnitName,NewFilename,NewUnitName,
-               false,false,Confirm);
-      if Result<>mrOk then exit;
+  if not (sfSkipReferences in Flags) then begin
+    NewUnitName:='';
+    if FilenameIsPascalSource(AnUnitInfo.Filename) then
+      NewUnitName:=AnUnitInfo.ReadUnitNameFromSource(true);
+    NewFilename:=AnUnitInfo.Filename;
+    if (NewUnitName<>'')
+    and ((OldUnitName<>NewUnitName) or (CompareFilenames(OldFilename,NewFilename)<>0))
+    then begin
+      if EnvironmentOptions.UnitRenameReferencesAction<>urraNever then
+      begin
+        // silently update references of new units (references were auto created
+        // and keeping old references makes no sense)
+        Confirm:=(EnvironmentOptions.UnitRenameReferencesAction=urraAsk)
+                 and (not WasVirtual);
+        Result:=ReplaceUnitUse(OldFilename,OldUnitName,NewFilename,NewUnitName,
+                 false,false,Confirm);
+        if Result<>mrOk then exit;
+      end;
     end;
   end;
-
   {$IFDEF IDE_VERBOSE}
   debugln(['SaveEditorFile END ',NewFilename,' AnUnitInfo.Modified=',AnUnitInfo.Modified,' AEditor.Modified=',AEditor.Modified]);
   {$ENDIF}
@@ -4894,7 +4896,7 @@ begin
 end;
 
 function ShowSaveFileAsDialog(var AFilename: string; AnUnitInfo: TUnitInfo;
-  var LFMCode, LRSCode: TCodeBuffer; CanAbort: boolean): TModalResult;
+  var LFMCode, LRSCode: TCodeBuffer; CanAbort: boolean; Flags: TSaveFlags = []): TModalResult;
 var
   SaveDialog: TSaveDialog;
   SrcEdit: TSourceEditor;
@@ -4927,7 +4929,10 @@ begin
   end else
     OldUnitName:='';
   //debugln('ShowSaveFileAsDialog sourceunitname=',OldUnitName);
-  SaveAsFilename:=OldUnitName;
+  if sfskipReferences in Flags then
+    SaveAsFilename:=LowerCase(StringReplace(OldUnitName,'&','',[rfReplaceAll]))
+  else
+    SaveAsFilename:=OldUnitName;
   if SaveAsFilename='' then
     SaveAsFilename:=ExtractFileNameOnly(AFilename);
   if SaveAsFilename='' then
@@ -4976,7 +4981,9 @@ begin
     APath:=PkgBoss.GetDefaultSaveDirectoryForFile(AFilename);
     if (APath<>'') and (not PathIsInPath(SaveDialog.InitialDir,APath)) then
       SaveDialog.InitialDir:=APath;
-
+    if (sfSkipReferences in Flags) then begin
+      NewFileName:= ExtractFilePath(AFileName)+SaveAsFileName+SaveAsFileExt;
+    end else
     repeat
       Result:=mrCancel;
       // show save dialog
@@ -5042,26 +5049,31 @@ begin
 
   // check filename
   if FilenameIsPascalUnit(NewFilename) then begin
-    AText:=ExtractFileName(NewFilename);
-    // check if file should be auto renamed
-    case EnvironmentOptions.CharcaseFileAction of
-    ccfaAsk:
-      if LowerCase(AText)<>AText then begin
-        Result:=IDEQuestionDialogAb(lisRenameFile,
-            Format(lisThisLooksLikeAPascalFileItIsRecommendedToUseLowerC,
-                   [LineEnding, LineEnding]),
-            mtWarning, [mrYes, lisRenameToLowercase,
-                        mrNo, lisKeepName,
-                        mrAbort, lisAbort], not CanAbort);
-        case Result of
-        mrYes: NewFileName:=ExtractFilePath(NewFilename)+lowercase(AText);
-        mrAbort, mrCancel: exit;
+    if sfSkipReferences in Flags then begin
+      //F2 forced lowercase filename
+      //NewFileName already set
+    end else begin
+      AText:=ExtractFileName(NewFilename);
+      // check if file should be auto renamed
+      case EnvironmentOptions.CharcaseFileAction of
+      ccfaAsk:
+        if LowerCase(AText)<>AText then begin
+          Result:=IDEQuestionDialogAb(lisRenameFile,
+              Format(lisThisLooksLikeAPascalFileItIsRecommendedToUseLowerC,
+                     [LineEnding, LineEnding]),
+              mtWarning, [mrYes, lisRenameToLowercase,
+                          mrNo, lisKeepName,
+                          mrAbort, lisAbort], not CanAbort);
+          case Result of
+          mrYes: NewFileName:=ExtractFilePath(NewFilename)+lowercase(AText);
+          mrAbort, mrCancel: exit;
+          end;
+          Result:=mrOk;
         end;
-        Result:=mrOk;
+      ccfaAutoRename:
+        NewFileName:=ExtractFilePath(NewFilename)+LowerCase(AText);
+      ccfaIgnore: ;
       end;
-    ccfaAutoRename:
-      NewFileName:=ExtractFilePath(NewFilename)+LowerCase(AText);
-    ccfaIgnore: ;
     end;
   end;
 
@@ -7994,7 +8006,7 @@ begin
     Include(Flags,sfSaveAs);
   if ([sfSaveAs,sfSaveToTestDir]*Flags=[sfSaveAs]) then begin
     // let user choose a filename
-    Result := ShowSaveProjectAsDialog;
+    Result := ShowSaveProjectAsDialog(Flags);
     if Result<>mrOk then begin
       debugln(['Info: (lazarus) [SaveProjectInfo] ShowSaveProjectAsDialog failed']);
       exit;
@@ -8195,35 +8207,50 @@ begin
   Result:=mrOk;
 end;
 
-function ShowSaveProjectAsDialog: TModalResult;
+function ShowSaveProjectAsDialog(Flags: TSaveFlags=[]): TModalResult;
 var
   SaveDialog: TSaveDialog;
   NewProgramName: String;
-  NewPath, NewLPIFilename, NewProgramFN: String;
+  NewPath, ANewPath, NewLPIFilename, NewProgramFN: String;
   AFilename, Ext, AText, ACaption, OldProjectDir: string;
 begin
   Project1.BeginUpdate(false);
   try
     OldProjectDir := Project1.Directory;
     // build a nice project info filename suggestion
-    if Assigned(Project1.MainUnitInfo) then
-      AFileName := Project1.MainUnitInfo.ReadUnitNameFromSource(false);
-    if AFilename = '' then
-      AFilename := ExtractFileName(Project1.ProjectInfoFile);
-    if AFilename = '' then
-      AFilename := Trim(Project1.GetTitle);
-    if AFilename = '' then
-      AFilename := 'Project1';
+    if Assigned(Project1.MainUnitInfo) then begin
+      NewProgramName := Project1.MainUnitInfo.ReadUnitNameFromSource(false);
+      ANewPath := ExtractFilePath(Project1.MainUnitInfo.Filename);
+      AFileName := StringReplace(NewProgramName,'&','',[rfReplaceAll]);
+    end;
+    if AFilename = '' then begin
+      NewProgramName := ExtractFileName(Project1.ProjectInfoFile);
+      ANewPath := ExtractFilePath(Project1.ProjectInfoFile);
+      AFilename := StringReplace(NewProgramName,'&','',[rfReplaceAll]);
+    end;
+    if AFilename = '' then begin
+      NewProgramName := Trim(Project1.GetTitle);
+      ANewPath := Project1.Directory;
+      AFilename := StringReplace(NewProgramName,'&','',[rfReplaceAll]);
+    end;
+    if AFilename = '' then begin
+      NewProgramName := 'Project1';
+      ANewPath := Project1.Directory;
+      AFilename := NewProgramName;
+    end;
     // Filename extension
     Ext := '.lpi';
     AFilename := AFilename + Ext;
+    if sfSkipReferences in Flags then
+      AFilename := LowerCase(AFilename);
 
     SaveDialog := IDESaveDialogClass.Create(nil);
     try
       InputHistories.ApplyFileDialogSettings(SaveDialog);
       SaveDialog.Title := Format(lisSaveProject, [Project1.GetTitleOrName, Ext]);
       // apply naming conventions, suggest lowercased name if user wants so
-      if EnvironmentOptions.LowercaseDefaultFilename then
+
+      if EnvironmentOptions.LowercaseDefaultFilename or (sfSkipReferences in Flags) then
         SaveDialog.FileName := LowerCase(AFilename)
       else
         SaveDialog.FileName := AFilename;
@@ -8238,31 +8265,42 @@ begin
         Result:=mrCancel;
         NewLPIFilename:='';     // the project info file name
         NewProgramFN:='';       // the program source filename
-
-        if not SaveDialog.Execute then
+        if not (sfSkipReferences in Flags) and not SaveDialog.Execute then
           exit;   // user cancels
-        AFilename := ExpandFileNameUTF8(SaveDialog.FileName);
+        if not (sfSkipReferences in Flags) then
+          AFilename := ExpandFileNameUTF8(SaveDialog.FileName);
 
         // check program name
-        NewProgramName:=ExtractFileNameOnly(AFilename);
-        if (NewProgramName='') or (not IsValidUnitName(NewProgramName)) then begin
+        if not (sfSkipReferences in Flags) then
+          NewProgramName:=ExtractFileNameOnly(AFilename);
+        if (NewProgramName='') or not IsValidDottedIdent(NewProgramName) then begin
+          if (sfSkipReferences in Flags) then begin
+            Result:=mrAbort;
+            exit;
+          end;
           Result:=IDEMessageDialog(lisInvalidProjectFilename,
             Format(lisisAnInvalidProjectNamePleaseChooseAnotherEGProject,[SaveDialog.Filename,LineEnding]),
             mtInformation,[mbRetry,mbAbort]);
           if Result=mrAbort then exit;
           continue; // try again
         end;
-
-        NewPath := ExtractFilePath(AFilename);
+        if (sfSkipReferences in Flags) then
+          NewPath :=ANewPath
+        else
+          NewPath := ExtractFilePath(AFilename);
         // append default extension
-        NewLPIFilename := NewPath + NewProgramName + '.lpi';
+        NewLPIFilename := NewPath +
+          StringReplace(NewProgramName,'&','',[rfReplaceAll]) +
+          '.lpi';
 
         if Project1.MainUnitID >= 0 then
         begin
           // check mainunit filename
           Ext := ExtractFileExt(Project1.MainUnitInfo.Filename);
           Assert(Ext<>'', 'ShowSaveProjectAsDialog: Ext is empty');
-          NewProgramFN := NewPath + NewProgramName + Ext;
+          NewProgramFN := NewPath +
+            StringReplace(NewProgramName,'&','',[rfReplaceAll]) +
+            Ext;
           if CompareFilenames(NewLPIFilename, NewProgramFN) = 0 then
           begin
             ACaption:=lisChooseADifferentName;
@@ -8458,6 +8496,7 @@ var
 begin
   Result:=mrCancel;
   ListOfPCodeXYPosition:=nil;
+  TreeOfPCodeXYPosition.Free;
   TreeOfPCodeXYPosition:=nil;
   try
     CleanUpFileList(Files);
@@ -8525,7 +8564,7 @@ var
   PascalReferences: TAVLTree;
   i: Integer;
   MsgResult: TModalResult;
-  OnlyEditorFiles: Boolean;
+  OnlyEditorFiles, isConflicted: Boolean;
   aFilename: String;
 begin
   // compare unitnames case sensitive, maybe only the case changed
@@ -8615,7 +8654,7 @@ begin
         end;
       end;
       if not CodeToolBoss.RenameIdentifier(PascalReferences,OldUnitName,NewUnitName,
-                                           Nil,Nil,True) then
+                                           Nil,Nil,isConflicted) then
       begin
         if (not IgnoreErrors) and (not Quiet) then
           MainIDE.DoJumpToCodeToolBossError;

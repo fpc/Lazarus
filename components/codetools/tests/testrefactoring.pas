@@ -54,6 +54,7 @@ var
   DeclarationCaretXY: TPoint;
   PascalReferences: TAVLTree;
   OldIdentifier: string;
+  isConflicted: boolean;
 begin
   if not IsValidIdent(NewIdentifier) then
     Fail('TCustomTestRefactoring.RenameReferences invalid NewName="'+NewIdentifier+'"');
@@ -111,9 +112,12 @@ begin
     end;
 
     if not CodeToolBoss.RenameIdentifier(PascalReferences,
-      OldIdentifier, NewIdentifier, DeclCode, @DeclarationCaretXY, false)
+      OldIdentifier, NewIdentifier, DeclCode, @DeclarationCaretXY, isConflicted)
     then begin
-      Fail('CodeToolBoss.RenameIdentifier failed');
+      if isConflicted then
+        Fail('CodeToolBoss.RenameIdentifier failed as a conflict found')
+      else
+        Fail('CodeToolBoss.RenameIdentifier failed');
     end;
 
   finally

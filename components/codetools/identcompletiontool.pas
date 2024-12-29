@@ -158,7 +158,8 @@ type
                        NewHasChilds: boolean; NewHistoryIndex: integer;
                        NewIdentifier: PChar; NewLevel: integer;
                        NewNode: TCodeTreeNode; NewTool: TFindDeclarationTool;
-                       NewDefaultDesc: TCodeTreeNodeDesc);
+                       NewDefaultDesc: TCodeTreeNodeDesc;
+                       IsDottedIdent: boolean=false);
     function IsProcNodeWithParams: boolean;
     function IsPropertyWithParams: boolean;
     function IsPropertyReadOnly: boolean;
@@ -498,7 +499,7 @@ var
   Item2: TIdentifierListItem absolute Data2;
 begin
   // sort alpabetically (lower is better)
-  Result:=CompareIdentifiers(PChar(Item2.Identifier),PChar(Item1.Identifier));
+  Result:=CompareDottedIdentifiers(PChar(Item2.Identifier),PChar(Item1.Identifier));
   if Result<>0 then exit;
 
   // then sort for ParamList (lower is better)
@@ -511,7 +512,7 @@ var
   TheItem: TIdentifierListItem absolute Item;
 begin
   // sort alpabetically (lower is better)
-  Result:=CompareIdentifiers(PChar(TheItem.Identifier),TheSearchItem.Identifier);
+  Result:=CompareDottedIdentifiers(PChar(TheItem.Identifier),TheSearchItem.Identifier);
   if Result<>0 then exit;
 
   // then sort for ParamList (lower is better)
@@ -524,7 +525,7 @@ var
   TheItem: TIdentifierListItem absolute Item;
 begin
   // sort alpabetically (lower is better)
-  Result:=CompareIdentifiers(PChar(TheItem.Identifier),TheSearchItem.Identifier);
+  Result:=CompareDottedIdentifiers(PChar(TheItem.Identifier),TheSearchItem.Identifier);
 end;
 
 function CompareIdentHistListItem(Data1, Data2: Pointer): integer;
@@ -534,7 +535,7 @@ var
   Item1: TIdentHistListItem absolute Data1;
   Item2: TIdentHistListItem absolute Data2;
 begin
-  Result:=CompareIdentifiers(PChar(Item2.Identifier),
+  Result:=CompareDottedIdentifiers(PChar(Item2.Identifier),
                              PChar(Item1.Identifier));
   if Result<>0 then exit;
 
@@ -549,7 +550,7 @@ var
   IdentItem: TIdentifierListItem absolute Data1;
   HistItem: TIdentHistListItem absolute Data2;
 begin
-  Result:=CompareIdentifiers(PChar(HistItem.Identifier),
+  Result:=CompareDottedIdentifiers(PChar(HistItem.Identifier),
                              PChar(IdentItem.Identifier));
   if Result<>0 then exit;
 
@@ -650,7 +651,7 @@ begin
     end;
   end;
 
-  Result:=CompareIdentifiers(PChar(Item2.Identifier),PChar(Item1.Identifier));
+  Result:=CompareDottedIdentifiers(PChar(Item2.Identifier),PChar(Item1.Identifier));
   if Result<>0 then exit;
 
   // then sort for ParamList (lower is better)
@@ -1048,7 +1049,7 @@ begin
   repeat
     AVLNode:=FIdentView.FindSuccessor(AVLNode);
     if (AVLNode=nil)
-    or (CompareIdentifiers(Identifier,PChar(TIdentifierListItem(AVLNode.Data).Identifier))<>0)
+    or (CompareDottedIdentifiers(Identifier,PChar(TIdentifierListItem(AVLNode.Data).Identifier))<>0)
     then break;
     if (TIdentifierListItem(AVLNode.Data).GetDesc in [ctnProcedure,ctnProcedureHead])=PreferProc
     then
@@ -1059,7 +1060,7 @@ begin
   repeat
     AVLNode:=FIdentView.FindPrecessor(AVLNode);
     if (AVLNode=nil)
-    or (CompareIdentifiers(Identifier,PChar(TIdentifierListItem(AVLNode.Data).Identifier))<>0)
+    or (CompareDottedIdentifiers(Identifier,PChar(TIdentifierListItem(AVLNode.Data).Identifier))<>0)
     then break;
     if (TIdentifierListItem(AVLNode.Data).GetDesc in [ctnProcedure,ctnProcedureHead])=PreferProc
     then
@@ -1072,7 +1073,7 @@ begin
   if Ident<>'' then begin
     Result:=FCreatedIdentifiers.Count-1;
     while (Result>=0)
-    and (CompareIdentifiers(PChar(Pointer(Ident)),
+    and (CompareDottedIdentifiers(PChar(Pointer(Ident)),
                             PChar(Pointer(FCreatedIdentifiers[Result])))<>0)
     do
       dec(Result);
@@ -1352,7 +1353,7 @@ var
     if FIDCTFoundPublicProperties=nil then begin
       // create tree
       FIDCTFoundPublicProperties:=
-                         TAVLTree.Create(TListSortCompare(@CompareIdentifiers))
+                         TAVLTree.Create(TListSortCompare(@CompareDottedIdentifiers))
     end else if FIDCTFoundPublicProperties.Find(Ident)<>nil then begin
       // identifier is already public
       exit;
@@ -1368,6 +1369,10 @@ var
   Lvl: LongInt;
   NamePos: TAtomPosition;
   HasLowerVisibility: Boolean;
+  IsDottedIdent: Boolean;
+  PlaceForDotted: string;
+  PlaceForNamespace: string;
+  i: integer;
 begin
   // proceed searching ...
   Result:=ifrProceedSearch;
@@ -1403,7 +1408,8 @@ begin
       // => do not show it
       exit;
     end;
-  end else begin
+  end
+  else if FoundContext.Node<>nil then begin
     // identifier is in another unit
     Node:=FoundContext.Node.Parent;
     if (Node<>nil) and (Node.Desc in AllClassSubSections) then
@@ -1449,8 +1455,9 @@ begin
       end;
     end;
   end;
-
+  Node:=nil;
   Ident:=nil;
+  PlaceForDotted:='';
   case FoundContext.Node.Desc of
   
   ctnTypeDefinition,ctnGenericType:
@@ -1540,17 +1547,39 @@ begin
     Ident:=@FoundContext.Tool.Src[Params.NewCleanPos];
 
   ctnUseUnitNamespace,ctnUseUnitClearName:
-    if (FoundContext.Tool=Self) then begin
-      Ident:=@Src[FoundContext.Node.StartPos];
+    if (FoundContext.Tool=Self) and  (FoundContext.Node.Parent<>nil) then begin
+      if (FoundContext.Node.Parent.ChildCount=1) then begin
+        IsDottedIdent:=false;
+        Ident:=@Src[FoundContext.Node.Parent.StartPos];
+        Node:=FoundContext.Node;
+      end else begin
+        if FoundContext.Node.IsNamespaceStart then begin
+          PlaceForDotted:=
+            ExtractIdentifierWithPoints(FoundContext.Node.Parent.StartPos,false);
+          IsDottedIdent:=true;
+          Ident:=@(PlaceForDotted[1]);
+          Node:=FoundContext.Node.Parent.LastChild;
+        end;
+      end;
     end;
-
-  ctnUnit,ctnProgram,ctnLibrary,ctnPackage:
-    if (FoundContext.Tool=Self)
-    and GetSourceNamePos(NamePos) then
-      Ident:=@Src[NamePos.StartPos];
-
+  ctnProgram..ctnUnit: begin
+    if (FoundContext.Tool=Self) then begin
+      PlaceForDotted:=ExtractSourceName;  //can apply name from file name if empty program header
+      if length(PlaceForDotted)>0 then begin
+        Ident:=@(PlaceForDotted[1]);
+        Node:=FoundContext.Node;
+        IsDottedIdent:=isIdentifierDotted(PlaceForDotted,false);
+      end;
+    end;
+  end;
   end;
   if Ident=nil then exit;
+
+  if not
+  (FoundContext.Node.Desc in [ctnUseUnitNamespace, ctnUseUnitClearName]) then
+    Node:=FoundContext.Node;
+
+
 
   NewItem:=CIdentifierListItem.Create(
                             icompUnknown,
@@ -1558,9 +1587,10 @@ begin
                             0,
                             Ident,
                             Lvl,
-                            FoundContext.Node,
+                            Node,
                             FoundContext.Tool,
-                            ctnNone);
+                            ctnNone,
+                            IsDottedIdent);
 
   //Add the '&' character to prefixed identifiers
   if (Ident^='&') and (IsIdentStartChar[Ident[1]]) then
@@ -1578,7 +1608,7 @@ begin
   if FoundContext.Tool=Self then
   DebugLn('  IDENT COLLECTED: ',NewItem.AsString);
   {$ENDIF}
-  
+
   CurrentIdentifierList.Add(NewItem);
 end;
 
@@ -4325,12 +4355,12 @@ constructor TIdentifierListItem.Create(
   NewCompatibility: TIdentifierCompatibility; NewHasChilds: boolean;
   NewHistoryIndex: integer; NewIdentifier: PChar; NewLevel: integer;
   NewNode: TCodeTreeNode; NewTool: TFindDeclarationTool;
-  NewDefaultDesc: TCodeTreeNodeDesc);
+  NewDefaultDesc: TCodeTreeNodeDesc; IsDottedIdent: boolean);
 begin
   Compatibility:=NewCompatibility;
   if NewHasChilds then Include(FLags,iliHasChilds);
   HistoryIndex:=NewHistoryIndex;
-  Identifier:=GetIdentifier(NewIdentifier);
+  Identifier:=GetIdentifier(NewIdentifier,False,IsDottedIdent);
   Level:=NewLevel;
   Tool:=NewTool;
   Node:=NewNode;

@@ -10,11 +10,10 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
   ClientWidth = 460
   Constraints.MinHeight = 450
   Constraints.MinWidth = 460
+  LCLVersion = '4.99.0.0'
   OnClose = FindRenameIdentifierDialogClose
   OnCreate = FindRenameIdentifierDialogCreate
   OnShow = FormShow
-  Position = poScreenCenter
-  LCLVersion = '1.5'
   object CurrentGroupBox: TGroupBox
     Left = 6
     Height = 100
@@ -38,7 +37,6 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
       ItemHeight = 0
       ScrollWidth = 430
       TabOrder = 0
-      TopIndex = -1
     end
   end
   object NewGroupBox: TGroupBox
@@ -67,6 +65,7 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
       BorderSpacing.Around = 6
       TabOrder = 2
       Text = 'NewEdit'
+      OnChange = ValidateNewName
     end
     object RenameCheckBox: TCheckBox
       Left = 6
@@ -76,8 +75,8 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
       Align = alTop
       BorderSpacing.Around = 6
       Caption = 'RenameCheckBox'
-      OnChange = RenameCheckBoxChange
       TabOrder = 0
+      OnChange = RenameCheckBoxChange
     end
     object ShowResultCheckBox: TCheckBox
       AnchorSideLeft.Control = NewGroupBox

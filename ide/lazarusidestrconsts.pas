@@ -5439,6 +5439,27 @@ resourcestring
   lisResult2 = 'Result:';
   lisTheIdentifierIsAUnitPleaseUseTheFileSaveAsFunction = 'The identifier is '
     +'a unit. Please use the File - Save as function to rename a unit.';
+  lisTheIdentifierIsAUnitProceedAnyway = 'The identifier is a %s.'
+    +'%sNew file(s) will be created, old can be deleted.'
+    +'%sProceed anyway?';
+  lisRenamingAborted = 'Renaming aborted';
+  lisRenamingConflict = 'Renaming conflict';
+  lisFileAlreadyExists = 'File '
+    + '"%s" already exists';
+  lisIdentifierWasAlreadyUsed = 'Identifier '
+    + '"%s" was already used';
+  lisIdentifierCannotBeDotted = 'Identifier '
+    + '"%s" cannot be dotted';
+  lisIdentifierCannotBeEmpty = 'Identifier cannot be empty';
+  lisIdentifierIsInvalid = 'Identifier '
+    + '"%s" is invalid';
+  lisIdentifierIsReservedWord = 'Identifier '
+    + '"%s" is a reserved word';
+  lisIdentifierIsDeclaredCompilerProcedure = 'Identifier '
+    + '"%s" is a declared compiler procedure';
+  lisIdentifierIsDeclaredCompilerFunction = 'Identifier '
+    + '"%s" is a declared compiler function';
+
   lisShowUnitsWithInitialization = 'Show units with initialization/finalization sections';
   lisShowUnitsWithInitializationHint = 'These units may initialize global data '
     +'used by the program/application. Remove with care.';

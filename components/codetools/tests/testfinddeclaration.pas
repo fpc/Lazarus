@@ -489,7 +489,8 @@ begin
                     if (iliNeedsAmpersand in IdentItem.Flags)
                        and (Marker = 'completion') // declaration=path.ident does not include the &
                     then
-                      s := '&' + s;
+                      if s[1]<>'&' then
+                        s := '&' + s;
                     l:=length(s);
                     if ((l=length(ExpexctedTerm)) or (ExpexctedTerm[length(ExpexctedTerm)-l]='.'))
                     and (CompareText(s,RightStr(ExpexctedTerm,l))=0)

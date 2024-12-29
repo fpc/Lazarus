@@ -2645,6 +2645,8 @@ procedure TSourceEditCompletion.ccComplete(var Value: string;
     while (StartPos>=1)
     and (Line[StartPos] in ['_','A'..'Z','a'..'z']) do
       dec(StartPos);
+    if (StartPos>=1) and (Line[StartPos]='&') then
+      dec(StartPos);
     while (StartPos>=1) and (Line[StartPos] in [' ',#9]) do
       dec(StartPos);
     if StartPos>=1 then
@@ -5531,6 +5533,8 @@ begin
   else begin
     while (i > 0) and (TextS[i] in ['a'..'z','A'..'Z','0'..'9','_']) do
       dec(i);
+    if (i>0) and (TextS[i]='&') then
+      dec(i);
     TextS2 := Trim(copy(TextS, i + 1, LogCaret.X - i - 1));
   end;
   UseWordCompletion:=false;
@@ -5572,6 +5576,8 @@ begin
     TextS2 := ''
   else begin
     while (i > 0) and (TextS[i] in ['a'..'z','A'..'Z','0'..'9','_']) do
+      dec(i);
+    if (i>0) and (TextS[i]='&') then
       dec(i);
     TextS2 := Trim(copy(TextS, i + 1, LogCaret.X - i - 1));
   end;

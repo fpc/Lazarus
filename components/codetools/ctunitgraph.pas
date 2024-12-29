@@ -616,7 +616,7 @@ begin
 
   Result:=true;
   if TargetAll then exit;
-  if (ExpDir='') and (FTargetDirs[1]=';') then
+  if (ExpDir='') and ((FTargetDirs='') or (FTargetDirs[1]=';')) then
     exit; // virtual directory
   Result:=FindPathInSearchPath(ExpDir,FTargetDirs)>0;
 end;

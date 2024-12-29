@@ -704,10 +704,15 @@ begin
       ScanTill:=Range;
       ScannedRange:=lsrInit;
       if ord(Range)<=ord(ScannedRange) then exit;
-
+      if Src='' then exit;
       //WriteDebugTreeReport;
       //debugln(['TPascalParserTool.BuildTree Src=',Src]);
-
+      //if not fileexists(TCodeBuffer(Scanner.MainCode).Filename) then begin
+      //  if TCodeBuffer(Scanner.MainCode).IsVirtual then
+      //    debugln(['virtual file: ', TCodeBuffer(Scanner.MainCode).Filename])
+      //  else
+      //    debugln(['non existing file: ', TCodeBuffer(Scanner.MainCode).Filename]);
+      //end;
       // skip existing nodes
       CurNode:=Tree.Root;
       if CurNode<>nil then

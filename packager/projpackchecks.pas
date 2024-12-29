@@ -111,7 +111,8 @@ begin
   if CodeBuffer<>nil then begin
     Unit_Name:=CodeToolBoss.GetSourceName(CodeBuffer,false);
     // Unit_Name can be empty if Codetools had problems parsing the source.
-    if (Unit_Name<>'') and (CompareText(Unit_Name, AUnitFilename)<>0)
+    if (Unit_Name<>'')
+    and (CompareText(StringReplace(Unit_Name,'&','',[rfReplaceAll]), AUnitFilename)<>0)
     and (IDEMessageDialog(lisA2PInvalidUnitName,
                           Format(lisA2PTheUnitNameAndFilenameDiffer,
                                  [Unit_Name,LineEnding,AUnitFilename]),
