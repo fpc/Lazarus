@@ -9,14 +9,14 @@ object ActionListEditor: TActionListEditor
   ClientHeight = 315
   ClientWidth = 404
   KeyPreview = True
+  Position = poScreenCenter
+  LCLVersion = '4.99.0.0'
   OnClose = ActionListEditorClose
   OnCreate = FormCreate
   OnHide = FormHide
   OnKeyDown = ActionListEditorKeyDown
   OnKeyPress = ActionListEditorKeyPress
   OnShow = FormShow
-  Position = poScreenCenter
-  LCLVersion = '2.3.0.0'
   object PanelDescr: TPanel
     Left = 0
     Height = 26
@@ -52,22 +52,6 @@ object ActionListEditor: TActionListEditor
     AutoSnap = False
     OnCanResize = SplitterCanResize
   end
-  object lstActionName: TListBox
-    Left = 157
-    Height = 261
-    Top = 54
-    Width = 247
-    Align = alClient
-    ItemHeight = 0
-    OnClick = lstActionNameClick
-    OnDblClick = lstActionNameDblClick
-    OnDrawItem = lstActionNameDrawItem
-    OnKeyDown = lstActionNameKeyDown
-    OnMouseDown = lstActionNameMouseDown
-    PopupMenu = PopMenuActions
-    Style = lbOwnerDrawFixed
-    TabOrder = 1
-  end
   object lstCategory: TListBox
     Left = 0
     Height = 261
@@ -75,10 +59,10 @@ object ActionListEditor: TActionListEditor
     Width = 152
     Align = alLeft
     ItemHeight = 0
+    PopupMenu = PopMenuActions
+    TabOrder = 1
     OnClick = lstCategoryClick
     OnMouseDown = lstActionNameMouseDown
-    PopupMenu = PopMenuActions
-    TabOrder = 2
   end
   object ToolBar1: TToolBar
     Left = 0
@@ -93,7 +77,7 @@ object ActionListEditor: TActionListEditor
     EdgeOuter = esNone
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 4
+    TabOrder = 3
     object btnAdd: TToolButton
       Left = 1
       Top = 0
@@ -114,12 +98,12 @@ object ActionListEditor: TActionListEditor
       Style = tbsDivider
     end
     object btnUp: TToolButton
-      Left = 70
+      Left = 68
       Top = 0
       Action = ActMoveUp
     end
     object btnDown: TToolButton
-      Left = 96
+      Left = 94
       Top = 0
       Action = ActMoveDown
     end
@@ -129,31 +113,31 @@ object ActionListEditor: TActionListEditor
     Top = 260
     object ActDelete: TAction
       Category = 'AddDelete'
+      ShortCut = 46
       OnExecute = ActDeleteExecute
       OnUpdate = ActDeleteUpdate
-      ShortCut = 46
     end
     object ActNew: TAction
       Category = 'AddDelete'
-      OnExecute = ActNewExecute
       ShortCut = 45
+      OnExecute = ActNewExecute
     end
     object ActNewStd: TAction
       Category = 'AddDelete'
-      OnExecute = ActNewStdExecute
       ShortCut = 16429
+      OnExecute = ActNewStdExecute
     end
     object ActMoveUp: TAction
       Category = 'MoveUpDown'
+      ShortCut = 16422
       OnExecute = ActMoveUpDownExecute
       OnUpdate = ActMoveUpUpdate
-      ShortCut = 16422
     end
     object ActMoveDown: TAction
       Category = 'MoveUpDown'
+      ShortCut = 16424
       OnExecute = ActMoveUpDownExecute
       OnUpdate = ActMoveDownUpdate
-      ShortCut = 16424
     end
     object ActPanelDescr: TAction
       Category = 'Panels'
