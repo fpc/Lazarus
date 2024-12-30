@@ -88,7 +88,6 @@ type
     lblCategory: TLabel;
     lblName: TLabel;
     lstCategory: TListBox;
-    lstActionName: TListBox;
     MenuItem1: TMenuItem;
     MenuItem2: TMenuItem;
     mItemActListPanelDescr: TMenuItem;
@@ -151,6 +150,7 @@ type
     FActionList: TActionList;
     FCompDesigner: TComponentEditorDesigner;
     FCompEditor: TActionListComponentEditor;
+    lstActionName: TListbox;
     procedure AddCategoryActions(aCategory: String);
     function CategoryIndexOf(Category: String): Integer;
     function IsValidCategory(Category: String): Boolean;
@@ -263,7 +263,28 @@ implementation
 
 var
   EditorForms : TList = nil;
-  
+
+type
+  TImgListbox = class(TListbox)
+  private
+    FImages: TCustomImageList;
+  public
+    function CalculateStandardItemHeight: Integer; override;
+    property Images: TCustomImageList read FImages write FImages;
+  end;
+
+function TImgListbox.CalculateStandardItemHeight: Integer;
+var
+  hImg: Integer;
+begin
+  Result := inherited;
+  if Assigned(FImages) and (Style <> lbOwnerDrawVariable) then
+  begin
+    hImg := FImages.HeightForPPI[0, Font.PixelsPerInch] + 4;
+    if hImg > Result then Result := hImg;
+  end;
+end;
+
 procedure InitFormsList;
 begin
   EditorForms:=TList.Create;
@@ -412,6 +433,20 @@ end;
 
 procedure TActionListEditor.FormCreate(Sender: TObject);
 begin
+  lstActionName := TImgListbox.Create(self);
+  with TImgListbox(lstActionName) do
+  begin
+    Parent := self;
+    Align := alClient;
+    PopupMenu := PopMenuActions;
+    Style := lbOwnerDrawFixed;
+    OnClick := @lstActionNameClick;
+    OnDblClick := @lstActionNameDblClick;
+    OnDrawItem := @lstActionNameDrawItem;
+    OnKeyDown := @lstActionNameKeyDown;
+    OnMouseDown := @lstActionNameMouseDown;
+  end;
+
   ToolBar1.Images := IDEImages.Images_16;
   btnAdd.ImageIndex := IDEImages.GetImageIndex('laz_add');
   btnDelete.ImageIndex := IDEImages.GetImageIndex('laz_delete');
@@ -762,6 +797,8 @@ var
   ACanvas: TCanvas;
   R: TRect;
   dh: Integer;
+  hImg: Integer;
+  ppi: Integer;
   Imgs: TCustomImageList;
   AAction: TCustomAction;
   S: String;
@@ -788,11 +825,15 @@ begin
     AAction := TCustomAction(lb.Items.Objects[Index]);
     R.Right := R.Left + dh;
     if AAction.ImageIndex <> -1 then
-      Imgs.Draw(ACanvas, R.Left, R.Top + (dh-Imgs.Height) div 2, AAction.ImageIndex);
+    begin
+      ppi := lb.Font.PixelsPerInch;
+      hImg := Imgs.HeightForPPI[0, ppi];
+      Imgs.DrawForPPI(ACanvas, R.Left, R.Top + (dh-hImg) div 2, AAction.ImageIndex, 0, ppi, lb.GetCanvasScaleFactor);
+    end;
     Inc(R.Left, dh + 2);
   end;
   S := lb.Items[Index];
-  ACanvas.TextOut(R.Left, R.Top + (dh-Canvas.TextHeight(S)) div 2, S);
+  ACanvas.TextOut(R.Left, R.Top + (dh-ACanvas.TextHeight(S)) div 2, S);
   if odFocused in State then
     ACanvas.DrawFocusRect(ARect);
 end;
@@ -908,8 +949,7 @@ begin
   if FActionList<>nil then
   begin
     FreeNotification(FActionList);
-    if FActionList.Images<>nil then
-      lstActionName.ItemHeight := FActionList.Images.Height + Scale96ToFont(4);
+    (lstActionName as TImgListbox).Images := FActionList.Images;
   end;
   FillCategories;
   //FillActionByCategory(-1);
