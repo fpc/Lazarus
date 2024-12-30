@@ -12216,21 +12216,31 @@ Gets the color used to represent transparent pixels in the image.
 <descr>
 <p>
 <var>RequestTransparentColor</var> is a <var>TColor</var> function used to 
-get the color for transparent pixels in the image. It is called when the 
-value <var>tmFixed</var> is assigned to the <var>TransparentMode</var> 
-property.
+resolve the color value for transparent pixels in the image. It is used to 
+translate the value clDefault in the TransparentColor property to an actual 
+color value.
 </p>
 <p>
-RequestTransparentColor examines pixels in the raw image data to get the 
-return value for the method. It gets the color for the pixel located at the 
-bottom-left corner of the image (x = 0, y - Height-1).
+When TransparentColor is set to clDefault, the return value for the method is 
+used as the color for transparent pixels. The return value is the pixel color 
+stored at the bottom-left corner of the image (x = 0, y = Height-1).
 </p>
 <p>
-When <var>Empty</var> returns <b>True</b> (raw image data is not available), 
-the return value is <var>clNone</var>.
+If TransparentColor contains a different TColor value, it is used in its 
+unmodified form.
+</p>
+<p>
+When <var>Empty</var> returns <b>True</b>, raw image data is not available and 
+the return value is set to <var>clNone</var>.
+</p>
+<p>
+RequestTransparentColor is also called when the value in TransparentMode is 
+changed to tmAuto. If TransparentMode is set to tmFixed, the TransparentColor 
+is used as specified.
 </p>
 </descr>
 <seealso>
+<link id="TRasterImage.TransparentColor"/>
 <link id="TRasterImage.TransparentMode"/>
 <link id="TGraphic.Empty"/>
 <link id="TTransparentMode"/>
@@ -13051,8 +13061,7 @@ platforms or widgetsets.
 <p>
 <var>TransparentColor</var> is a <var>TColor</var> property which indicates 
 the color used for transparent pixels in the raw image data. The default 
-value for the property is
-<var>clDefault</var>.
+value for the property is <var>clDefault</var>.
 </p>
 <p>
 TransparentColor is used along with <var>TransparentMode</var> to determine 
