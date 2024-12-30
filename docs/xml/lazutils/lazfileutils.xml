@@ -3805,16 +3805,25 @@ platform.
 </element>
 
 <element name="GetLazNormalizedFilename">
-<short>Gets a normalized form of the Filename</short>
+<short>Gets a normalized form of the Filename.</short>
 <descr>
 <p>
 <var>GetLazNormalizedFilename </var> returns a normalized string for the filename 
-for non-representative purposes (e.g. comparison).The normalization isplatform- 
-and/or OS-specific. It consider whether the file system is case sensitive or when 
+for non-representative purposes (e.g. comparison). The normalization is platform- 
+and/or OS-specific. It considers whether the file system is case sensitive or when 
 UTF-8 encoding is supported.
 </p>
 </descr>
 </element>
+<element name="GetLazNormalizedFilename.Filename">
+<short>File name examined in the routine.</short>
+</element>
+<element name="GetLazNormalizedFilename.Result">
+<short>
+File name after case conversion or composition / decomposition for the platform or OS.
+</short>
+</element>
+
 </module>
 <!-- LazFileUtils -->
 </package>
