@@ -24,7 +24,7 @@ type
     function GetAddToProject: Boolean;
     function GetBaseFileName: String;
     function GetOpenAPIFileName: String;
-    function GetOPenGeneratedFiles: Boolean;
+    function GetOpenGeneratedFiles: Boolean;
     procedure SetBaseFileName(AValue: String);
     procedure SetGenerator(AValue: TOpenAPICodeGen);
     procedure SetOpenAPIFileName(AValue: String);
@@ -33,7 +33,7 @@ type
     Property Generator : TOpenAPICodeGen read FGenerator Write SetGenerator;
     Property BaseFileName : String Read GetBaseFileName Write SetBaseFileName;
     Property OpenAPIFileName : String Read GetOpenAPIFileName Write SetOpenAPIFileName;
-    Property OpenGeneratedFiles : Boolean Read GetOPenGeneratedFiles;
+    Property OpenGeneratedFiles : Boolean Read GetOpenGeneratedFiles;
     Property AddToProject : Boolean Read GetAddToProject;
   end;
 
@@ -73,7 +73,7 @@ begin
   Result:=fraSettings.OpenAPIFileName;
 end;
 
-function TOpenapiWizardForm.GetOPenGeneratedFiles: Boolean;
+function TOpenapiWizardForm.GetOpenGeneratedFiles: Boolean;
 begin
   Result:=fraSettings.OpenGeneratedFiles;
 end;
