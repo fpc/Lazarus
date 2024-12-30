@@ -11,7 +11,7 @@ procedure register;
 
 implementation
 
-uses MenuIntf, frmopenapiwizard, forms, controls, fpopenapi.reader, fpopenapi.objects, fpopenapi.codegen;
+uses MenuIntf, frmopenapiwizard, forms, controls, fpopenapi.reader, fpopenapi.objects, fpopenapi.codegen, fpjson, fpyaml.parser, fpyaml.data, fpyaml.json;
 
 Resourcestring
   SCMDOpenAPIWizard = 'ShowOpenAPICodeGenerator';
@@ -25,18 +25,49 @@ Type
     Function ResolveFullFileName(aKind : TUnitKind) : String;
   end;
 
+Function GetJSONFromYAML(const aOpenAPIFile : string) : TJSONStringType;
+
+var
+  lParser : TYAMLParser;
+  lYAML : TYAMLStream;
+  lJSON : TJSONData;
+
+begin
+  lYAML:=Nil;
+  lJSON:=Nil;
+  lParser:=TYAMLParser.Create(aOpenAPIFile);
+  try
+    lYAML:=lParser.Parse;
+    lJSON:=YamlToJSON(lYAML);
+    Result:=lJSON.FormatJSON();
+  finally
+    lYAML.Free;
+    lJSON.Free;
+    lParser.Free;
+  end;
+end;
+
 Procedure GenerateFiles(const aOpenAPIFile, aBaseOutputFile : string; aGenerator : TLazOpenAPICodeGen);
 
 var
   Loader : TOpenAPIReader;
   API : TOpenAPI;
+  lJSON : String;
 
 begin
   Loader:=Nil;
   API:=TOpenAPI.Create;
   try
     Loader:=TOpenAPIReader.Create(Nil);
-    Loader.ReadFromFile(API,aOpenAPIFile);
+    if (ExtractFileExt(aOpenAPIFile)='.yaml') then
+      begin
+      lJSON:=GetJSONFromYAML(aOpenAPIFile);
+      Loader.ReadFromString(API,lJSON);
+      end
+    else
+      // Assume JSON
+      Loader.ReadFromFile(API,aOpenAPIFile);
+
     aGenerator.API:=API;
     aGenerator.BaseOutputFileName:=aBaseOutputFile;
     aGenerator.Execute;
