@@ -23068,14 +23068,14 @@ on a parent control or form.
 </element>
 <element name="TToolBarOrientation.tboHorizontal">
 <short>
-Indicates the tool bar is oriented horizontally along the top or bottom edge of 
-a parent control or form.
+Indicates the tool bar is oriented horizontally with buttons laid out in the 
+direction needed for the BiDiMode used on the tool bar.
 </short>
 </element>
 <element name="TToolBarOrientation.tboVertical">
 <short>
-Indicates the tool bar is oriented vertically along the left or right edge of 
-a parent control or form.
+Indicates the tool bar is oriented vertically with buttons laid out from top to 
+bottom.
 </short>
 </element>
 
@@ -23780,28 +23780,76 @@ implementation.
 
 <element name="TToolBar.WrapButtons">
 <short>
-Adjusts tool button sizes and positions, and handles wrapping to new rows or 
-columns.
+Calculates sizes and positions for buttons and controls, and handles wrapping 
+to new rows or columns (when enabled).
 </short>
 <descr>
 <p>
 <var>WrapButtons</var> is a <var>Boolean</var> function used to resize and 
-position buttons on the tool bar. WrapButtons positions buttons from left to 
-right in the client display area, and repositions any child control with its 
-<var>Align</var> property set to <var>clNone</var>.
+position tool buttons and child controls on the tool bar. When 
+<var>Simulate</var> is <b>True</b>, the child control sizes and positions are 
+calculated but not applied to the tool bar. The output parameters 
+<var>NewWidth</var> and <var>NewHeight</var> can be used to return the new size 
+for buttons on the control.
 </p>
 <p>
-When <var>Simulate</var> is <b>True</b>, the child control sizes and 
-positions are calculated but not applied to the tool bar.
+IsVertical determines the layout direction used for the child controls on the 
+tool bar. If IsVertical returns <b>True</b>, controls are positioned from top 
+to bottom with wrapped columns flowing towards the right edge of the control 
+(when enabled in Wrapable). If IsVertical returns <b>False</b>, child controls 
+are positioned horizontally in the direction indicated by 
+UseRightToLeftAlignment with wrapped rows flowing towards the bottom of the 
+control (when enabled).
+</p>
+<p>
+Use Orientation to specify the preferred orientation for the child controls on 
+the tool bar. tboAutomatic causes the dimensions for the toolbar or its Align 
+setting to be used for the purpose.
+</p>
+<p>
+WrapButtons examines child controls to determine their sizes and positions on 
+the tool bar. If a child control is <b>not</b> aligned (Align = alNone), it is 
+auto-sized and auto-positioned using Top and Left anchoring. If the child 
+controls is aligned (Align &lt;&gt; alNone), it will be positioned and sized 
+using the LCL layout routines but will not overlap a non-aligned child control.
+</p>
+<p>
+A child control with its Visible property set to <b>False</b> is not positioned 
+and/or resized in the method.
+</p>
+<p>
+ButtonWidth and ButtonHeight contain the initial dimensions used for child 
+controls which are not auto-sized. Child controls with AutoSize enabled use the 
+values in their Width or Height properties (depending on Orientation). Tool 
+buttons using divider or separator styles are not resized in the method; they 
+use the Width or Height property (depending on Orientation).
 </p>
 <p>
 Set Wrapable to <b>True</b> to allow a new row or column to be created when 
-the cumulative button width is larger than the width for the tool bar. Or set 
-the <var>Wrap</var> property in a specific tool button to <b>True</b> to 
-force it and subsequent controls onto a new row.
+the cumulative width or height needed for child controls is larger than the 
+width or height for the tool bar. Set the <var>Wrap</var> property in a 
+specific tool button to <b>True</b> to force it and subsequent child controls 
+onto a new row or column.
+</p>
+<p>
+WrapButtons is called from the AlignControls method using the Width or Height 
+needed for the Orientation on the tool bar. It is also called from the 
+CalculatePreferredSize method.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TToolBar.Orientation"/>
+<link id="TToolBar.IsVertical"/>
+<link id="TToolBar.Buttons"/>
+<link id="TToolBar.ButtonWidth"/>
+<link id="TToolBar.ButtonHeight"/>
+<link id="TToolBar.AlignControls"/>
+<link id="TToolBar.CalculatePreferredSize"/>
+<link id="TToolBar.Wrapable"/>
+<link id="TToolButton.Style"/>
+<link id="#lcl.controls.TWinControl.Controls">TWinControl.Controls</link>
+<link id="#lcl.controls.TWinControl.ControlCount">TWinControl.ControlCount</link>
+</seealso>
 </element>
 <element name="TToolBar.WrapButtons.Result">
 <short>
@@ -24591,15 +24639,17 @@ Indicates the orientation and layout direction for the buttons on the tool bar.
 <p>
 <var>TToolBar</var> is a <var>TToolBarOrientation</var> property which 
 indicates the orientation for the tool bar on a parent control or form. 
-TToolBar contains one of the values from the TTooBarOrientation property. The 
+TToolBar contains one of the values from the TTooBarOrientation property. The
 default value is tboAutomatic and indicates the orientation is determined by 
 the setting used in the <var>Align</var> property.
 </p>
 <p>
 In short, using tboHorizontal or tboVertical causes Align to be ignored. Using 
 tboAutomatic allows Align to be used to determine the orientation for the tool 
-bar buttons. TToolbar instances on a TCoolBar parent control are oriented using 
-the Vertical property for the parent control.
+bar buttons. When using tboAutomatic in Orientation and alNone in Align, the 
+tool bar orientation can be flipped when wrapping occurs and the dimensions for 
+the control are changed. TToolbar instances on a TCoolBar parent control are 
+oriented using the Vertical property for the parent control.
 </p>
 <p>
 Changing the value for the property causes the control to be redrawn.
@@ -24614,6 +24664,8 @@ Added in LCL version 5.0.
 <seealso>
 <link id="TToolBar.Align"/>
 <link id="TToolBar.IsVertical"/>
+<link id="TToolBar.WrapButtons"/>
+<link id="TToolBar.AlignControls"/>
 <link id="TToolBarOrientation"/>
 </seealso>
 </element>
