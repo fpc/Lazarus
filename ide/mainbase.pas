@@ -525,12 +525,10 @@ procedure TOpenFileToolButton.RefreshMenu(Sender: TObject);
   var
     i: integer;
   begin
-    i := 0;
-    while (i < List.Count) and (i < MaxCount) do
-    begin
+    if MaxCount <= 0 then
+      MaxCount := List.Count;
+    for i := 0 to Min(MaxCount, List.Count) - 1 do
       AddFile(List[i], AOnClick);
-      inc(i);
-    end;
   end;
 
 begin
