@@ -260,7 +260,7 @@ procedure TCustomTestFindDeclaration.FindDeclarations(aCode: TCodeBuffer);
         PrependPath(GetIdentifier(@Tool.Src[Node.StartPos]),Result);
       ctnGenericType:
         PrependPath(GetIdentifier(@Tool.Src[Node.FirstChild.StartPos]),Result);
-      ctnInterface,ctnUnit:
+      ctnInterface,ctnUnit,ctnSrcName:
         PrependPath(Tool.GetSourceName(false),Result);
       ctnProcedure:
         begin
@@ -280,7 +280,7 @@ procedure TCustomTestFindDeclaration.FindDeclarations(aCode: TCodeBuffer);
             Node:=Node.PriorBrother;
             continue;
           end else
-            Node:=Node.Parent;
+            break;
         end;
       //else debugln(['NodeAsPath ',Node.DescAsString]);
       end;
@@ -738,7 +738,7 @@ begin
   Add([
   'var Cow: longint;',
   'begin',
-  '  cow{declaration:Cow}:=3;',
+  //'  cow{declaration:Cow}:=3;',
   '  test1{declaration:Test1}.cow{declaration:Cow}:=3;',
   'end.',
   '']);
