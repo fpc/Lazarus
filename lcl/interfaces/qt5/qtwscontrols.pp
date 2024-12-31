@@ -73,6 +73,7 @@ type
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure Invalidate(const AWinControl: TWinControl); override;
     class procedure AddControl(const AControl: TControl); override;
+    class function GetCanvasScaleFactor(const AControl: TControl): Double; override;
     class function  GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
     class function  GetClientRect(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
     class function GetDesignInteractive(const AWinControl: TWinControl; AClientPos: TPoint): Boolean; override;
@@ -290,6 +291,15 @@ begin
       Child.EndUpdate;
     end;
   end;
+end;
+
+class function TQtWSWinControl.GetCanvasScaleFactor(const AControl: TControl
+  ): Double;
+begin
+  Result := 1;
+  if not WSCheckHandleAllocated(TWinControl(AControl), 'GetCanvasScaleFactor') then
+    Exit;
+  Result := QPaintDevice_devicePixelRatioF(QWidget_to_QPaintDevice(TQtWidget(TWinControl(AControl).Handle).Widget));
 end;
 
 class function TQtWSWinControl.GetClientBounds(const AWincontrol: TWinControl;
