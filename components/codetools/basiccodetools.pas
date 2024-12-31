@@ -113,7 +113,7 @@ function FindNextIdentifier(const Source: string; StartPos, MaxPos: integer): in
 function FindNextIdentifierSkipStrings(const Source: string;
     StartPos, MaxPos: integer): integer;
 function IsValidDottedIdent(const Ident: string; AllowDots: Boolean = True): Boolean; // as sysutils.IsValidIdent, but faster and supports &
-function IsValidIdentPair(const NamePair: string): boolean;
+function IsValidIdentPair(const NamePair: string): boolean; // true if exactly two identifiers separated by a dot
 function IsValidIdentPair(const NamePair: string; out First, Second: string): boolean;
 function ExtractPasIdentifier(const Ident: string; AllowDots: Boolean): string;
 
@@ -198,7 +198,6 @@ function CompareDottedIdentifiers(Identifier1, Identifier2: PChar): integer;
 function CompareDottedIdentifiersCaseSensitive(Identifier1, Identifier2: PChar): integer;
 function ChompDottedIdentifier(const Identifier: string): string;
 function SkipDottedIdentifierPart(var Identifier: PChar): boolean;
-function DottedIdentifiersMatch(Identifier1, Identifier2: PChar): boolean;
 function DottedIdentifierMatchesTo(Identifier, FitsTo: PChar): boolean;
 
 // space and special chars
@@ -4955,56 +4954,46 @@ end;
 
 function IsValidIdentPair(const NamePair: string): boolean;
 var
-  p: Integer;
+  p, StartP: PChar;
 begin
   Result:=false;
-  p:=1;
-  if (p>length(NamePair)) or (not IsIdentStartChar[NamePair[p]]) then exit;
-  repeat
-    inc(p);
-    if p>length(NamePair) then exit;
-    if NamePair[p]='.' then break;
-    if not IsIdentChar[NamePair[p]] then exit;
-  until false;
+  p:=PChar(NamePair);
+  StartP:=p;
+  if not IsIdentStartChar[p^] then exit;
   inc(p);
-  if (p>length(NamePair)) or (not IsIdentStartChar[NamePair[p]]) then exit;
-  repeat
-    inc(p);
-    if p>length(NamePair) then exit(true);
-    if not IsIdentChar[NamePair[p]] then exit;
-  until false;
+  while IsIdentChar[p^] do inc(p);
+  if p^<>'.' then exit;
+  inc(p);
+  if not IsIdentStartChar[p^] then exit;
+  inc(p);
+  while IsIdentChar[p^] do inc(p);
+  Result:=p-StartP = length(NamePair);
 end;
 
 function IsValidIdentPair(const NamePair: string; out First, Second: string
   ): boolean;
 var
-  p: Integer;
-  StartPos: LongInt;
+  p, StartP: PChar;
+  Start2: integer;
 begin
   Result:=false;
   First:='';
   Second:='';
-  p:=1;
-  if (p>length(NamePair)) or (not IsIdentStartChar[NamePair[p]]) then exit;
-  StartPos:=p;
-  repeat
-    inc(p);
-    if p>length(NamePair) then exit;
-    if NamePair[p]='.' then break;
-    if not IsIdentChar[NamePair[p]] then exit;
-  until false;
-  First:=copy(NamePair,StartPos,p-StartPos);
+
+  p:=PChar(NamePair);
+  StartP:=p;
+  if not IsIdentStartChar[p^] then exit;
   inc(p);
-  if (p>length(NamePair)) or (not IsIdentStartChar[NamePair[p]]) then exit;
-  StartPos:=p;
-  repeat
-    inc(p);
-    if p>length(NamePair) then begin
-      Second:=copy(NamePair,StartPos,p-StartPos);
-      exit(true);
-    end;
-    if not IsIdentChar[NamePair[p]] then exit;
-  until false;
+  while IsIdentChar[p^] do inc(p);
+  if p^<>'.' then exit;
+  First:=LeftStr(NamePair,p-StartP);
+  inc(p);
+  if not IsIdentStartChar[p^] then exit;
+  inc(p);
+  Start2:=p-StartP;
+  while IsIdentChar[p^] do inc(p);
+  Result:=p-StartP = length(NamePair);
+  Second:=copy(NamePair,Start2,length(NamePair));
 end;
 
 function ExtractPasIdentifier(const Ident: string; AllowDots: Boolean): string;
@@ -5418,44 +5407,9 @@ begin
   end;
 end;
 
-function DottedIdentifiersMatch(Identifier1, Identifier2: PChar): boolean;
-//not valid ident never matches
-//compare until shorter ends
-begin
-  Result:=false;
-  if (Identifier1=nil) or (Identifier2=nil) then
-    exit;
-  if Identifier1^='&' then
-    Inc(Identifier1);
-  if Identifier2^='&' then
-    Inc(Identifier2);
-  if not IsIdentStartChar[Identifier1^] or not IsIdentStartChar[Identifier2^] then
-    exit;
-  while IsDottedIdentChar[Identifier1^] do begin
-    if (UpChars[Identifier1^]=UpChars[Identifier2^]) then begin
-      if Identifier1^='.' then begin
-        inc(Identifier1);
-        inc(Identifier2);
-        if Identifier1^='&' then
-          Inc(Identifier1);
-        if Identifier2^='&' then
-          Inc(Identifier2);
-        if not IsIdentStartChar[Identifier1^] or
-          not IsIdentStartChar[Identifier2^] then
-          exit(False);
-      end else begin
-        inc(Identifier1);
-        inc(Identifier2);
-      end;
-    end else
-      break;
-  end;
-  Result:=not IsIdentChar[Identifier1^] and not IsIdentChar[Identifier2^];
-end;
-
 function DottedIdentifierMatchesTo(Identifier, FitsTo: PChar): boolean;
-//not valid Identifier never matches
-//compare until Identifier ends, if FitsTo is shorter - no matching
+// invalid Identifier never matches
+// compare until Identifier ends, if FitsTo is shorter - no matching
 begin
   Result:=false;
   if (Identifier=nil) or (FitsTo=nil) then
