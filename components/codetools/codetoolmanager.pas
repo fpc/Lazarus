@@ -545,7 +545,7 @@ type
     function GetIdentifierAt(Code: TCodeBuffer; var X,Y: integer;
           out Identifier: string): boolean;
     function GetIdentifierAt(Code: TCodeBuffer; var X,Y: integer;
-          out Identifier: string; var ANode: TCodeTreeNode): boolean;
+          out Identifier: string; out ANode: TCodeTreeNode): boolean;
     function IdentItemCheckHasChilds(IdentItem: TIdentifierListItem): boolean;
     function FindAbstractMethods(Code: TCodeBuffer; X,Y: integer;
           out ListOfPCodeXYPosition: TFPList;
@@ -2666,70 +2666,17 @@ end;
 function TCodeToolManager.GetIdentifierAt(Code: TCodeBuffer; var X, Y: integer;
   out Identifier: string): boolean;
 var
-  CleanPos,CleanPosAmd: integer;
-  CodeTool: TCodeTool;
-  CaretXY: TCodeXYPosition;
-  CodeNode: TCodeTreeNode;
-  CanBeDotted: boolean;
+  aNode: TCodeTreeNode;
 begin
-  Result:=false;
-  Identifier:='';
-  {$IFDEF CTDEBUG}
-  DebugLn('TCodeToolManager.GetIdentifierAt A ',Code.Filename,' x=',dbgs(x),' y=',dbgs(y));
-  {$ENDIF}
-  Code.LineColToPosition(Y,X,CleanPos);
-  if (CleanPos>0) and (CleanPos<=Code.SourceLength) then begin
-    CodeTool:=nil;
-    CaretXY:=CleanCodeXYPosition;
-    CaretXY.Code:=Code;
-    CaretXY.X:=X;
-    CaretXY.Y:=Y;
-    CodeNode:=nil;
-    if CodeToolBoss.Explore(Code,CodeTool,true) then
-    if CodeTool<>nil then begin
-      CodeTool.CaretToCleanPos(CaretXY,CleanPosAmd);
-      CodeNode:=CodeTool.FindDeepestNodeAtPos(CleanPosAmd,false);
-    end;
-    if (CodeNode<>nil) and (CodeNode.Parent<>nil) then begin
-      CanBeDotted := (CodeNode.Desc = ctnUseUnit) or
-                     (CodeNode.Desc = ctnUseUnitNamespace) or
-                     (CodeNode.Desc = ctnUseUnitClearName) or
-                     ((CodeNode.Parent.Desc = ctnSrcName) and
-                      (CodeNode.Desc = ctnIdentifier));
-      if CanBeDotted then begin
-        if CodeNode.Desc in [ctnIdentifier,ctnUseUnitNamespace, ctnUseUnitClearName]
-        then
-          CleanPosAmd:= CodeNode.Parent.StartPos
-        else
-          CleanPosAmd:= CodeNode.StartPos;
-        Code.AbsoluteToLineCol(CleanPosAmd,Y,X); //does anybody want to know it?
-        CodeTool.MoveCursorToCleanPos(CleanPosAmd);
-        CodeTool.ReadNextAtom;
-        repeat
-          if CodeTool.CurPos.Flag<>cafWord then
-            break;
-          Identifier:=Identifier+CodeTool.GetAtom;
-          CodeTool.ReadNextAtom;
-          if CodeTool.CurPos.Flag=cafPoint  then begin
-            Identifier:=Identifier+CodeTool.GetAtom;
-          end else
-            break;
-          CodeTool.ReadNextAtom;
-        until CodeTool.CurPos.StartPos>=CodeTool.SrcLen;
-      end else
-        Identifier:=GetIdentifier(@Code.Source[CleanPos],False);
-      Result:=true;
-      exit;
-    end;
-  end;
+  Result:=GetIdentifierAt(Code,X,Y,Identifier,aNode);
 end;
 
-function TCodeToolManager.GetIdentifierAt(Code: TCodeBuffer; var X, Y: integer;
-  out Identifier: string; var ANode: TCodeTreeNode): boolean;
+function TCodeToolManager.GetIdentifierAt(Code: TCodeBuffer; var X, Y: integer; out
+  Identifier: string; out ANode: TCodeTreeNode): boolean;
 var
-  CleanPos,CleanPosAmd: integer;
+  p,CleanPos, IdentStartPos: integer;
+  CodePos: TCodePosition;
   CodeTool: TCodeTool;
-  CaretXY: TCodeXYPosition;
   CodeNode: TCodeTreeNode;
   CanBeDotted: boolean;
 begin
@@ -2739,56 +2686,51 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.GetIdentifierAt A ',Code.Filename,' x=',dbgs(x),' y=',dbgs(y));
   {$ENDIF}
-  Code.LineColToPosition(Y,X,CleanPos);
-  if (CleanPos>0) and (CleanPos<=Code.SourceLength) then begin
-    CodeTool:=nil;
-    CaretXY:=CleanCodeXYPosition;
-    CaretXY.Code:=Code;
-    CaretXY.X:=X;
-    CaretXY.Y:=Y;
+  Code.LineColToPosition(Y,X,p);
+  if (p<0) or (p>Code.SourceLength) then
+    exit;
+  if CodeToolBoss.Explore(Code,CodeTool,true) then begin
+    CodePos.Code:=Code;
+    CodePos.P:=p;
     CodeNode:=nil;
-    if CodeToolBoss.Explore(Code,CodeTool,true) then
-    if CodeTool<>nil then begin
-      CodeTool.CaretToCleanPos(CaretXY,CleanPosAmd);
-      CodeNode:=CodeTool.FindDeepestNodeAtPos(CleanPosAmd,false);
+    if CodeTool.CodePosToCleanPos(CodePos,CleanPos)=0 then begin
+      CodeNode:=CodeTool.FindDeepestNodeAtPos(CleanPos,false);
       ANode:=CodeNode;
-    end;
-    if (CodeNode<>nil) and (CodeNode.Parent<>nil) then begin
-      CanBeDotted := (CodeNode.Desc = ctnUseUnit) or
-                     (CodeNode.Desc = ctnUseUnitNamespace) or
-                     (CodeNode.Desc = ctnUseUnitClearName) or
-                     ((CodeNode.Parent.Desc = ctnSrcName) and
-                      (CodeNode.Desc = ctnIdentifier));
-      if CanBeDotted then begin
-        if  CodeNode.Parent.Desc = ctnSrcName then
-          ANode:= CodeNode.Parent.Parent; //ctnProgram..ctnUnit
-
-        if CodeNode.Desc in [ctnIdentifier,ctnUseUnitNamespace, ctnUseUnitClearName]
-        then
-          CleanPosAmd:= CodeNode.Parent.StartPos
-        else
-          CleanPosAmd:= CodeNode.StartPos;
-
-        Code.AbsoluteToLineCol(CleanPosAmd,Y,X);
-        CodeTool.MoveCursorToCleanPos(CleanPosAmd);
-        CodeTool.ReadNextAtom;
-        repeat
-          if CodeTool.CurPos.Flag<>cafWord then
-            break;
-          Identifier:=Identifier+CodeTool.GetAtom;
+      if (CodeNode<>nil) and (CodeNode.Parent<>nil) then begin
+        CanBeDotted := (CodeNode.Desc in [ctnUseUnit,ctnUseUnitNamespace,ctnUseUnitClearName])
+          or ((CodeNode.Desc = ctnIdentifier) and (CodeNode.Parent.Desc = ctnSrcName));
+        if CanBeDotted then begin
+          if CodeNode.Parent.Desc = ctnSrcName then
+            ANode:= CodeNode.Parent.Parent; //ctnProgram..ctnUnit
+          if CodeNode.Desc in [ctnIdentifier,ctnUseUnitNamespace, ctnUseUnitClearName]
+          then
+            CleanPos:= CodeNode.Parent.StartPos
+          else
+            CleanPos:= CodeNode.StartPos;
+          Code.AbsoluteToLineCol(CleanPos,Y,X);
+          CodeTool.MoveCursorToCleanPos(CleanPos);
           CodeTool.ReadNextAtom;
-          if CodeTool.CurPos.Flag=cafPoint  then begin
+          repeat
+            if CodeTool.CurPos.Flag<>cafWord then
+              break;
             Identifier:=Identifier+CodeTool.GetAtom;
-          end else
-            break;
-          CodeTool.ReadNextAtom;
-        until CodeTool.CurPos.StartPos>=CodeTool.SrcLen;
-      end else
-        Identifier:=GetIdentifier(@Code.Source[CleanPos],False);
-      Result:=true;
-      exit;
+            CodeTool.ReadNextAtom;
+            if CodeTool.CurPos.Flag=cafPoint  then begin
+              Identifier:=Identifier+CodeTool.GetAtom;
+            end else
+              break;
+            CodeTool.ReadNextAtom;
+          until CodeTool.CurPos.StartPos>=CodeTool.SrcLen;
+          exit(true);
+        end;
+      end;
     end;
   end;
+  // fallback: extract from source
+  IdentStartPos:=GetIdentStartPosition(Code.Source,p);
+  Identifier:=GetIdentifier(@Code.Source[IdentStartPos],false);
+  Code.AbsoluteToLineCol(IdentStartPos,Y,X);
+  Result:=Identifier<>'';
 end;
 
 function TCodeToolManager.IdentItemCheckHasChilds(IdentItem: TIdentifierListItem

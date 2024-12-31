@@ -107,15 +107,15 @@ procedure GetIdentStartEndAtPosition(const Source:string; Position:integer;
     out IdentStart,IdentEnd:integer);
 function GetIdentStartPosition(const Source:string; Position:integer): integer;
 function GetIdentLen(Identifier: PChar): integer;
-function GetIdentifier(Identifier: PChar; const aSkipAmp: Boolean = True;
-    const IsDottedIdent: Boolean = False): string;
+function GetIdentifier(Identifier: PChar; aSkipAmp: Boolean = True;
+    IsDottedIdent: Boolean = False): string;
 function FindNextIdentifier(const Source: string; StartPos, MaxPos: integer): integer;
 function FindNextIdentifierSkipStrings(const Source: string;
     StartPos, MaxPos: integer): integer;
 function IsValidDottedIdent(const Ident: string; AllowDots: Boolean = True): Boolean; // as sysutils.IsValidIdent, but faster and supports &
 function IsValidIdentPair(const NamePair: string): boolean; // true if exactly two identifiers separated by a dot
 function IsValidIdentPair(const NamePair: string; out First, Second: string): boolean;
-function ExtractPasIdentifier(const Ident: string; AllowDots: Boolean): string;
+function ExtractPasIdentifier(const Ident: string; AllowDots: Boolean): string; // removes non identifier chars
 
 // line/code ends
 function SrcPosToLineCol(const s: string; Position: integer;
@@ -4848,8 +4848,7 @@ begin
   Result:='Expected: '+dbgstr(Expected,1,d-1)+'|'+dbgstr(Expected,d,length(Expected))+LineEnding
          +'Actual:   '+dbgstr(Actual,1,d-1)+'|'+dbgstr(Actual,d,length(Actual));
 end;
-function GetIdentifier(Identifier: PChar; const aSkipAmp: Boolean;
-    const IsDottedIdent: Boolean): string;
+function GetIdentifier(Identifier: PChar; aSkipAmp: Boolean; IsDottedIdent: Boolean): string;
 var len: integer;
 begin
   if (Identifier=nil) then begin
