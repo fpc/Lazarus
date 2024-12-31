@@ -640,6 +640,14 @@ procedure TWidgetSet.SendCachedLCLMessages;
 begin
 end;
 
+//This routine is used only by platforms which uses Scale instead of font DPI changes (or both).
+//Currently cocoa, qt5, qt6 and gtk3 are known to support this. Without proper scale ratio
+//setup on bitmap text rendering is blurred.See iphtml.pas, procedure TIpHtml.Render() how
+//we use it.
+procedure TWidgetSet.SetBitmapScaleRatio(aBmp: HBITMAP; const AScaleRatio: double);
+begin
+end;
+
 function TWidgetSet.SetCaretRespondToFocus(handle: HWND;
   ShowHideOnFocus: boolean): Boolean;
 begin
