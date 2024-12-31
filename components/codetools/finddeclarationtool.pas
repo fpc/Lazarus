@@ -2194,8 +2194,8 @@ var
     NewExprType.Desc:=xtContext;
   end;
 
-  function IdentifierIsUnitOrProjectName(): boolean;
-  //if returned True identifier is an unitname or a project name
+  function IdentifierIsModuleName: boolean;
+  //if returned True identifier is an unit, program or library name
   var
     CleanPos, CleanPosAmd, VisitedUses, UnitLen, CandidateLen, i: integer;
     LastUsesNode, Node: TCodeTreeNode;
@@ -2243,7 +2243,9 @@ var
       AnIdentifier:=AnIdentifier+'.'+getAtom(CurPos);
     until CurPos.EndPos>=SrcLen;
     if Tree<>nil then //was built previously
-      Node:=self.Tree.Root else Exit;
+      Node:=Tree.Root
+    else
+      Exit;
     if (Node<>nil) and (Node.Desc in [ctnProgram, ctnLibrary, ctnUnit]) then begin
       //ctnPackage - Delphi style not ready yet, "requires" and "contains" to be explored
       if (Node.Desc = ctnUnit) then VisitedUses:=0 else VisitedUses:=1;
@@ -2283,7 +2285,7 @@ var
         unitLen:=Length(ASourceName);
         if SourceName<>nil then begin
           if (candidateLen>=unitLen) and (LengthToCursor<=unitLen) then begin
-            if DottedIdentifierMatchesTo(Pchar(ASourceName),PChar(AnIdentifier))
+            if DottedIdentifierMatches(PChar(ASourceName),PChar(AnIdentifier))
             then begin
               AUnitName:= ASourceName;
               NewPos.Code:=FindUnitSource(AUnitName,'',true);
@@ -2332,7 +2334,7 @@ var
               AUnitName:=ExtractUsedUnitName(Node,@UnitInFilename);
               UnitLen:=length(AUnitName);
               if (CandidateLen>=unitLen) and (LengthToCursor<=unitLen) then begin
-                if DottedIdentifierMatchesTo(PChar(AUnitName),PChar(AnIdentifier))
+                if DottedIdentifierMatches(PChar(AUnitName),PChar(AnIdentifier))
                 then begin
                   if CleanPosAmd=Node.StartPos then begin //jump to unit
                     NewPos.Code:=FindUnitSource(AUnitName,UnitInFilename,true);
@@ -2587,7 +2589,7 @@ begin
     Debugln;
     {$ENDIF}
 
-    Result:=IdentifierIsUnitOrProjectName();
+    Result:=IdentifierIsModuleName();
     if Result then
       exit;
 
@@ -9965,17 +9967,17 @@ var
           delete(IdentifierString,FKnownIdentLength+1,length(IdentifierString));
         IdentLength:=Length(IdentifierString);
         if (SrcNameNode<>nil) and (IdentLength>=SrcNameLength)
-        and DottedIdentifierMatchesTo(PChar(SrcNameString),Pchar(IdentifierString))
+        and DottedIdentifierMatches(PChar(SrcNameString),Pchar(IdentifierString))
         then begin
           if IdentLength=SrcNameLength then begin
-            //it is the searched (may be dotted) identifier!
+            // it is the searched (may be dotted) identifier!
             ExprType.Desc:=xtContext;
             ExprType.Context.Tool:=Self;
             ExprType.Context.Node:=SrcNameNode.Parent;
             IdentFound:=true;
             EndPos:=-1;
           end else begin
-            //expression starts from source name identifier
+            // expression starts from source name identifier
             MoveCursorToCleanPos(StartPos);
             DotsNumber:=0;
             i:=1;
@@ -9984,7 +9986,7 @@ var
                 inc(DotsNumber);
               inc(i);
             end;
-             //normal and dotted name fits
+            // normal and dotted name fits
             i:=0;
             repeat
               ReadNextExpressionAtom;

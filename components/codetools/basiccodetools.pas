@@ -198,7 +198,7 @@ function CompareDottedIdentifiers(Identifier1, Identifier2: PChar): integer;
 function CompareDottedIdentifiersCaseSensitive(Identifier1, Identifier2: PChar): integer;
 function ChompDottedIdentifier(const Identifier: string): string;
 function SkipDottedIdentifierPart(var Identifier: PChar): boolean;
-function DottedIdentifierMatchesTo(Identifier, FitsTo: PChar): boolean;
+function DottedIdentifierMatches(Identifier1, Identifier2: PChar): boolean;
 
 // space and special chars
 function TrimCodeSpace(const ACode: string): string;
@@ -5407,40 +5407,40 @@ begin
   end;
 end;
 
-function DottedIdentifierMatchesTo(Identifier, FitsTo: PChar): boolean;
-// invalid Identifier never matches
-// compare until Identifier ends, if FitsTo is shorter - no matching
+function DottedIdentifierMatches(Identifier1, Identifier2: PChar): boolean;
+// invalid identifier never matches
+// must match exactly, except for case and ampersands
 begin
   Result:=false;
-  if (Identifier=nil) or (FitsTo=nil) then
+  if (Identifier1=nil) or (Identifier2=nil) then
     exit;
-  if Identifier^='&' then
-    Inc(Identifier);
-  if FitsTo^='&' then
-    Inc(FitsTo);
-  if not IsIdentStartChar[Identifier^] or not IsIdentStartChar[FitsTo^] then
+  if Identifier1^='&' then
+    Inc(Identifier1);
+  if Identifier2^='&' then
+    Inc(Identifier2);
+  if not IsIdentStartChar[Identifier1^] or not IsIdentStartChar[Identifier2^] then
     exit;
 
-  while IsDottedIdentChar[Identifier^] do begin
-    if (UpChars[Identifier^]=UpChars[FitsTo^]) then begin
-      if Identifier^='.' then begin
-        inc(Identifier);
-        inc(FitsTo);
-        if Identifier^='&' then
-          Inc(Identifier);
-        if FitsTo^='&' then
-          Inc(FitsTo);
-        if not IsIdentStartChar[Identifier^] or
-          not IsIdentStartChar[FitsTo^] then
+  while IsDottedIdentChar[Identifier1^] do begin
+    if (UpChars[Identifier1^]=UpChars[Identifier2^]) then begin
+      if Identifier1^='.' then begin
+        inc(Identifier1);
+        inc(Identifier2);
+        if Identifier1^='&' then
+          Inc(Identifier1);
+        if Identifier2^='&' then
+          Inc(Identifier2);
+        if not IsIdentStartChar[Identifier1^]
+            or not IsIdentStartChar[Identifier2^] then
           exit(False);
       end else begin
-        inc(Identifier);
-        inc(FitsTo);
+        inc(Identifier1);
+        inc(Identifier2);
       end;
     end else
       break;
   end;
-  Result:=not IsIdentChar[Identifier^] and  not IsIdentChar[FitsTo^];
+  Result:=not IsIdentChar[Identifier1^] and  not IsIdentChar[Identifier2^];
 end;
 
 function CompareDottedIdentifiersCaseSensitive(Identifier1, Identifier2: PChar): integer;
