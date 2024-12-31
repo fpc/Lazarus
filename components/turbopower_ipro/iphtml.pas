@@ -3383,6 +3383,8 @@ procedure TIpHtml.Render(TargetCanvas: TCanvas; TargetPageRect: TRect;
   APageTop, APageBottom: Integer; UsePaintBuffer: Boolean; const TopLeft: TPoint);
 var
   i : Integer;
+  AScale: Double;
+  R: TRect;
 begin
   FClientRect.TopLeft := TopLeft; {Point(0, 0);}
   FClientRect.Right := TargetPageRect.Right - TargetPageRect.Left;
@@ -3421,8 +3423,13 @@ begin
     or (PaintBufferBitmap.Height <> FClientRect.Bottom) then begin
       PaintBufferBitmap.Free;
       PaintBufferBitmap := TBitmap.Create;
-      PaintBufferBitmap.Width := FClientRect.Right;
-      PaintBufferBitmap.Height := FClientRect.Bottom;
+      if Assigned(Application.MainForm) then
+        AScale := Application.MainForm.GetCanvasScaleFactor
+      else
+        AScale := 1;
+      PaintBufferBitmap.Width := Round(FClientRect.Right * AScale);
+      PaintBufferBitmap.Height := Round(FClientRect.Bottom * AScale);
+      LCLIntf.SetBitmapScaleRatio(PaintBufferBitmap.Handle, AScale);
       PaintBuffer := PaintBufferBitmap.Canvas;
     end;
     FTarget := PaintBuffer;
@@ -3437,7 +3444,12 @@ begin
   for i := 0 to Pred(ControlList.Count) do
     TIpHtmlNode(ControlList[i]).HideUnmarkedControl;
   if UsePaintBuffer then
-    TargetCanvas.CopyRect(FClientRect, PaintBuffer, FClientRect)
+  begin
+    R := FClientRect;
+    R.Right := Round(R.Right * AScale);
+    R.Bottom := Round(R.Bottom * AScale);
+    TargetCanvas.CopyRect(R, PaintBuffer, R)
+  end
   else
     if PaintBufferBitmap <> nil then
       PaintBuffer := PaintBufferBitmap.Canvas
