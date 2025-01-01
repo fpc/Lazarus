@@ -887,10 +887,13 @@ begin
   // todo
 end;
 
-procedure TQtWidgetSet.SetBitmapScaleRatio(aBMP: HBITMAP; const AScaleRatio: double);
+procedure TQtWidgetSet.SetDeviceScaleRatio(aObj: HGDIOBJ; const AScaleRatio: double);
 begin
-  if IsValidGDIObject(aBmp) then
-    QImage_setDevicePixelRatio(TQtImage(aBmp).Handle, AScaleRatio);
+  if IsValidGDIObject(aObj) then
+  begin
+    if TObject(aObj) is TQtImage then
+      QImage_setDevicePixelRatio(TQtImage(aObj).Handle, AScaleRatio);
+  end;
 end;
 
 procedure TQtWidgetSet.SetEventHandlerFlags(AHandler: PEventHandler;

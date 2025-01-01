@@ -423,9 +423,9 @@ procedure SendCachedLCLMessages;
 begin
 end;
 
-procedure SetBitmapScaleRatio(aBmp: HBITMAP; const AScaleRatio: double);
+procedure SetDeviceScaleRatio(aObj: HGDIOBJ; const AScaleRatio: double);
 begin
-  WidgetSet.SetBitmapScaleRatio(aBmp, AScaleRatio);
+  WidgetSet.SetDeviceScaleRatio(aObj, AScaleRatio);
 end;
 
 function SetCaretRespondToFocus(Handle: hWnd; ShowHideOnFocus: boolean):Boolean;
