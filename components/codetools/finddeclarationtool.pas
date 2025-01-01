@@ -9835,15 +9835,16 @@ var
     if (Tree.Root.Desc in AllSourceTypes)
     and (Tree.Root.FirstChild<>nil)
     and (Tree.Root.FirstChild.Desc=ctnSrcName)
-    and CompareDottedSrcIdentifiers(Tree.Root.FirstChild.StartPos,PChar(DottedIdentifier))
+    and CompareSrcIdentifiers(Tree.Root.FirstChild.StartPos,PChar(DottedIdentifier)) // first identifier fits
     then begin
       // found candidate
+      // -> check the whole DottedIdentifier
       Level:=1;
-      Node:=Tree.Root.FirstChild.FirstChild;
+      Node:=Tree.Root.FirstChild.FirstChild; // child of ctnSrcName
       //debugln(['ResolveUseUnit Candidate SrcName']);
       p:=PChar(DottedIdentifier);
       repeat
-        //debugln('ResolveUseUnit SrcName p=',p,' Node=',ExtractNode(Node,[]));
+        //debugln('ResolveUseUnit SrcName p=',p,' Node=',Node.DescAsString,' "',ExtractNode(Node,[]),'"');
         if (Node.FirstChild=nil) or (Node.NextBrother.Desc<>ctnIdentifier) then begin
           // fits
           //debugln(['ResolveUseUnit FITS Level=',Level,' Best=',BestLevel]);

@@ -282,8 +282,10 @@ procedure TCustomTestFindDeclaration.FindDeclarations(aCode: TCodeBuffer);
           if Node.PriorBrother<>nil then begin
             Node:=Node.PriorBrother;
             continue;
-          end else
+          end else begin
+            PrependPath(Tool.GetSourceName(false),Result); // prepend src name to distinguish uses from unit
             break;
+          end;
         end;
       //else debugln(['NodeAsPath ',Node.DescAsString]);
       end;
