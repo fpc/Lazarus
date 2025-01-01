@@ -3285,6 +3285,7 @@ begin
   OldIndex:=RequiredBranch.Items.IndexOf(Dependency.AsString(False,True)+OPNote(Dependency));
   NewIndex:=OldIndex+Offset;
   RequiredBranch.Move(OldIndex,NewIndex);
+  LazPackage.Modified:=true;
   UpdatePEProperties;
   UpdateStatusBar;
 end;
