@@ -489,7 +489,7 @@ begin
                   while i>=0 do begin
                     IdentItem:=CodeToolBoss.IdentifierList.FilteredItems[i];
                     if IdentItem.Node<>nil then begin
-                      FoundPath:=NodeAsPath(FoundTool,FoundNode);
+                      FoundPath:=NodeAsPath(IdentItem.Tool,IdentItem.Node);
                       //debugln(['TTestFindDeclaration.FindDeclarations i=',i,' FoundPath="',FoundPath,'"']);
                       if SameText(ExpectedTerm,FoundPath) then
                         break;

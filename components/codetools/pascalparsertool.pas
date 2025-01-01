@@ -266,6 +266,7 @@ type
     ScannedRange: TLinkScannerRange; // excluding the section with a syntax error
     ScanTill: TLinkScannerRange;
     AddedNameSpace: string; // program, library and package namespace
+    HasNameSpaces: boolean; // the source name or a uses section uses namespaces
 
     procedure ValidateToolDependencies; virtual;
     procedure BuildTree(Range: TLinkScannerRange);
@@ -796,6 +797,7 @@ begin
             if CurPos.Flag=cafPoint then begin
               if aNameSpace<>'' then aNameSpace:=aNameSpace+'.';
               aNameSpace:=aNameSpace+aName;
+              HasNameSpaces:=true;
             end else
               break;
           until false;
@@ -2203,6 +2205,7 @@ begin
       ReadNextAtom;
       if CurPos.Flag<>cafPoint then break;
       LastUnitNode.Desc:=ctnUseUnitNamespace;
+      HasNameSpaces:=true;
       ReadNextAtom;
       AtomIsIdentifierSaveE(20180411194112);
     until false;
@@ -5699,6 +5702,8 @@ begin
       if Tree.Root<>nil then
         debugln(['TPascalParserTool.FetchScannerSource compiler clean all nodes, because compiler mode/values changed ',MainFilename]);
       {$ENDIF}
+      AddedNameSpace:='';
+      HasNameSpaces:=false;
     end else begin
       // find the first difference in source
       OldP:=PChar(Src);

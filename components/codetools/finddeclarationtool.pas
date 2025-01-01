@@ -9740,7 +9740,10 @@ var
   function ResolveUseUnit(StartUseUnitNode: TCodeTreeNode): TCodeTreeNode;
   // IsStart=true, NextAtomType=vatPoint,
   // StartUseUnitNameNode.Desc=ctnUseUnit
-  // -> Find the longest namespaced used unit (ctnUseUnitNamespace,ctnUseUnitClearName)
+  // The first dotted identifier matches a name in one of the uses sections.
+  // If any uses section or the source name has namespaces the longest fitting wins.
+  // Note: the uses section names hide all identifiers in the used unit interfaces.
+  // -> Find the longest (namespaced) used unit (ctnUseUnitNamespace,ctnUseUnitClearName)
   //    or the source name (ctnIdentifier), that fits the start of the
   //    current identifier a.b.c...
   //
@@ -9761,37 +9764,24 @@ var
 
   var
     UseUnitNode, Node, BestNode: TCodeTreeNode;
-    HasNamespace: Boolean;
-    Count, Level, BestLevel: Integer;
+    Level, BestLevel: Integer;
     p: PChar;
     DottedIdentifier: String;
   begin
     Result:=StartUseUnitNode.FirstChild;
-    //debugln(['ResolveUsenit START ',NextAtomType,' ',StartUseUnitNode.DescAsString,' "',GetIdentifier(@Src[CurAtom.StartPos]),'"']);
-    // find all candidates
-    Count:=0;
-    HasNamespace:=false;
-    UseUnitNode:=StartUseUnitNode;
-    repeat
-      if (UseUnitNode.FirstChild<>nil)
-      and CompareSrcIdentifiers(CurAtom.StartPos,UseUnitNode.StartPos) then begin
-        // found candidate
-        inc(Count);
-        //debugln(['ResolveUsenit candidate found']);
-        if UseUnitNode.FirstChild.Desc=ctnUseUnitNamespace then begin
-          HasNamespace:=true;
-        end;
-      end;
-      UseUnitNode:=GetPrevUseUnit(UseUnitNode);
-    until UseUnitNode=nil;
-    //debugln(['ResolveUsenit CandidateCount=',Count,' HasNamespace=',HasNamespace]);
-    if not HasNamespace then exit;
+    if not HasNameSpaces then exit;
 
+    DottedIdentifier:=GetIdentifier(@Src[CurAtom.StartPos]);
+
+    //debugln(['ResolveUseUnit START ',NextAtomType,' ',StartUseUnitNode.DescAsString,' "',GetIdentifier(@Src[CurAtom.StartPos]),'" Result=',Result.DescAsString]);
+    // find all candidates
+
+    BestNode:=nil;
+    BestLevel:=0;
     // multiple uses start with this identifier -> collect candidates
-    //debugln(['ResolveUsenit collect candidates ...']);
+    //debugln(['ResolveUseUnit collect candidates ...']);
 
     // read a.b.c...
-    DottedIdentifier:=GetIdentifier(@Src[CurAtom.StartPos]);
     MoveCursorToCleanPos(NextAtom.EndPos);
     Level:=1;
     repeat
@@ -9801,12 +9791,10 @@ var
       DottedIdentifier:=DottedIdentifier+'.'+GetAtom;
       ReadNextAtom;
     until CurPos.Flag<>cafPoint;
-    //debugln(['ResolveUsenit DottedIdentifier="',DottedIdentifier,'"']);
+    //debugln(['ResolveUseUnit DottedIdentifier="',DottedIdentifier,'"']);
 
     // find longest dotted unit name in uses and source name
     UseUnitNode:=StartUseUnitNode;
-    BestNode:=nil;
-    BestLevel:=0;
     repeat
       Node:=UseUnitNode.FirstChild; // ctnUseUnitNamespace or ctnUseUnitClearName
       UseUnitNode:=GetPrevUseUnit(UseUnitNode);
@@ -9892,7 +9880,10 @@ var
     end;
 
     Result:=BestNode;
-    if Result=nil then exit;
+    if Result=nil then begin
+      // ToDo: search in used interfaces
+      exit(nil);
+    end;
 
     // Result is now a ctnUseUnit
     Result:=Result.FirstChild;
@@ -10154,6 +10145,9 @@ var
         Params.Flags:=[fdfSearchInAncestors,fdfExceptionOnNotFound,fdfSearchInHelpers]
                       +(fdfGlobals*Params.Flags);
         Params.ContextNode:=Context.Node;
+        if Context.Node=nil then
+          RaiseException(20250101153139,'[TFindDeclarationTool.FindExpressionTypeOfTerm.ResolveIdentifier] internal error');
+
         SearchForwardToo:=false;
         if Context.Node=StartNode then begin
           // there is no special context -> search in parent contexts too
@@ -10166,25 +10160,22 @@ var
         end else begin
           // only search in special context
           Params.Flags:=Params.Flags+[fdfIgnoreUsedUnits];
-          if Assigned(Context.Node)  then begin
-            if (Context.Node.Desc=ctnImplementation) then
-              Params.Flags:=Params.Flags+[fdfSearchInParentNodes];
-            if (Context.Node.Desc=ctnObjCClass) then
-              Exclude(Params.Flags,fdfExceptionOnNotFound); // ObjCClass has predefined identifiers like 'alloc'
-          end;
+          if Context.Node.Desc=ctnImplementation then
+            Params.Flags:=Params.Flags+[fdfSearchInParentNodes];
+          if Context.Node.Desc=ctnObjCClass then
+            Exclude(Params.Flags,fdfExceptionOnNotFound); // ObjCClass has predefined identifiers like 'alloc'
         end;
 
         // check identifier for overloaded procs
-        if Assigned(Context.Node) then begin
-          if (IsEnd and (fdfIgnoreOverloadedProcs in StartFlags))
-          then
-            Include(Params.Flags,fdfIgnoreOverloadedProcs);
-          //debugln(['ResolveIdentifier ',IsEnd,' ',GetAtom(CurAtom),' ',Context.Node.DescAsString,' ',Context.Node.Parent.DescAsString,' ']);
-          if Assigned(Context.Node.Parent) and IsEnd and (Context.Node.Desc=ctnIdentifier)
-          and (Context.Node.Parent.Desc=ctnAttribParam)
-          and ResolveAttribute(Context) then begin
-            exit;
-          end;
+        if (IsEnd and (fdfIgnoreOverloadedProcs in StartFlags))
+        then
+          Include(Params.Flags,fdfIgnoreOverloadedProcs);
+        //debugln(['ResolveIdentifier ',IsEnd,' ',GetAtom(CurAtom),' ',Context.Node.DescAsString,' ',Context.Node.Parent.DescAsString,' ']);
+        if IsEnd and Assigned(Context.Node.Parent) and (Context.Node.Desc=ctnIdentifier)
+            and (Context.Node.Parent.Desc=ctnAttribParam)
+            and ResolveAttribute(Context) then
+        begin
+          exit;
         end;
 
         Params.SetIdentifier(Self,@Src[CurAtom.StartPos],@CheckSrcIdentifier
@@ -10239,9 +10230,15 @@ var
             // first identifier is a used unit -> find longest fitting unitname
             //debugln(['ResolveIdentifier UseUnit FindLongest... ',Params.NewNode.DescAsString,' ',ExtractNode(Params.NewNode,[])]);
             Params.NewNode:=ResolveUseUnit(Params.NewNode.Parent);
+            // this might return nil!
             //debugln(['ResolveIdentifier UseUnit FoundLongest: ',Params.NewNode.DescAsString,' ',ExtractNode(Params.NewNode,[])]);
           end;
-          ExprType.Context:=CreateFindContext(Params);
+
+          if Params.NewNode<>nil then
+            ExprType.Context:=CreateFindContext(Params)
+          else
+            ExprType.Desc:=xtNone;
+
           Params.Load(OldInput,true);
         end else begin
           // predefined identifier
