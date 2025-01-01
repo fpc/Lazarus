@@ -3052,6 +3052,7 @@ var
   CodeTool:TCustomCodeTool;
   anItem: TIdentifierListItem;
   aComment: string;
+
   function GetIdent(Identifier: PChar): string;
   begin
     if DottedIdents then
@@ -3059,6 +3060,7 @@ var
     else
       Result:=GetIdentifier(Identifier);
   end;
+
 begin
   Result:=false;
   isConflicted:=false;
@@ -3095,6 +3097,7 @@ begin
         ANode:=TreeOfPCodeXYPosition.FindPrecessor(ANode);
         continue;
       end;
+      // todo: replace GatherIdentifiers with something faster
       GatherIdentifiers(Code,CurCodePos^.X,CurCodePos^.Y);
       anItem:=IdentifierList.FindIdentifier(PChar(NewIdentifier));
       isOK:= not ((anItem<>nil) and

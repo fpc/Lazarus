@@ -43,6 +43,7 @@ type
     procedure TestRenameNestedProgramProcDown;
     procedure TestRenameNestedProgramProcUp;
     procedure TestRenameNestedUnitProcDown;
+    procedure TestRenameTypeAmp;
   end;
 
 implementation
@@ -65,7 +66,7 @@ var
   OldIdentifier: string;
   isConflicted: boolean;
 begin
-  if not IsValidIdent(NewIdentifier) then
+  if not IsDottedIdentifier(NewIdentifier) then
     Fail('TCustomTestRefactoring.RenameReferences invalid NewName="'+NewIdentifier+'"');
   // find marker #Rename
   ParseSimpleMarkers(Code);
@@ -793,6 +794,36 @@ begin
   'begin',
   'end.',
   '',
+  'end.',
+  '']);
+end;
+
+procedure TTestRefactoring.TestRenameTypeAmp;
+begin
+  StartUnit;
+  Add([
+  'type',
+  '  TFoo{#Rename} = word;',
+  '  TBar = low(TFoo)..high(TFoo);',
+  'implementation',
+  'type',
+  '  TBird = low(TFoo)..high(TFoo);',
+  'end.',
+  '']);
+  RenameReferences('&End');
+  CheckDiff(Code,[
+  'unit test1;',
+  '',
+  '{$mode objfpc}{$H+}',
+  '',
+  'interface',
+  '',
+  'type',
+  '  &End{#Rename} = word;',
+  '  TBar = low(&End)..high(&End);',
+  'implementation',
+  'type',
+  '  TBird = low(&End)..high(&End);',
   'end.',
   '']);
 end;
