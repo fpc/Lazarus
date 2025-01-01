@@ -490,11 +490,11 @@ begin
                     IdentItem:=CodeToolBoss.IdentifierList.FilteredItems[i];
                     if IdentItem.Node<>nil then begin
                       FoundPath:=NodeAsPath(FoundTool,FoundNode);
-                      //debugln(['TTestFindDeclaration.FindDeclarations FoundPath="',FoundPath,'"']);
+                      //debugln(['TTestFindDeclaration.FindDeclarations i=',i,' FoundPath="',FoundPath,'"']);
                       if SameText(ExpectedTerm,FoundPath) then
                         break;
                     end;
-                    //debugln(['TTestFindDeclaration.FindDeclarations ',IdentItem.Identifier]);
+                    //debugln(['TTestFindDeclaration.FindDeclarations i=',i,' Identifier=',IdentItem.Identifier]);
                     s := IdentItem.Identifier;
                     if (iliNeedsAmpersand in IdentItem.Flags)
                        and (Marker = 'completion') // declaration=path.ident does not include the &
@@ -523,7 +523,7 @@ begin
         end else if Marker='guesstype' then begin
           ExpectedType:=copy(Src,PathPos,CommentP-1-PathPos);
           {$IFDEF VerboseFindDeclarationTests}
-          debugln(['TTestFindDeclaration.FindDeclarations "',Marker,'" at ',Tool.CleanPosToStr(NameStartPos-1),' ExpectedType=',ExpectedType]);
+          debugln(['TTestFindDeclaration.FindDeclarations "',Marker,'" at ',MainTool.CleanPosToStr(NameStartPos-1),' ExpectedType=',ExpectedType]);
           {$ENDIF}
           MainTool.CleanPosToCaret(IdentifierStartPos,CursorPos);
 

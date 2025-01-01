@@ -60,7 +60,7 @@ end;
 function fun(
   &type: &tampersand.&var{completion:&var,xyz|completion:-1=&var,xyz|declaration:tampersand/var};
   &begin: tampersand.&end{declaration:tampersand/end}
-): &tampersand{completion:&tampersand,&program,xyz|completion:-1=&tampersand,&program,xyz|declaration!:tampersand}
+): &tampersand{completion:&tampersand,&program,xyz|completion:-1=&tampersand,&program,xyz|declaration!:&tampersand}
    .&program{completion:&program,xyz|completion:-1=&program,xyz|declaration:tampersand/program};
 var
   &then: &var;

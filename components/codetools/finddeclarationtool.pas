@@ -2598,6 +2598,41 @@ begin
     //Result:=IdentifierIsModuleName;
     //if Result then
     //  exit;
+    {$ELSE}
+    if (CursorNode.Desc = ctnUseUnitNamespace) then begin
+      NewExprType.Desc:=xtContext;
+      NewExprType.Context.Node:=CursorNode;
+      NewExprType.Context.Tool:=Self;
+      CleanPosToCaret(CursorNode.StartPos, NewPos);
+      NewTopLine := NewPos.Y;
+      BlockTopLine := NewTopLine;
+      CleanPosToCaret(CursorNode.EndPos, NewPos);
+      BlockBottomLine := NewPos.Y;
+      Result := True;
+      Exit;
+    end else if (CursorNode.Desc in [ctnUsesSection,ctnUseUnitClearName]) then begin
+      // in uses section -> jump to unit
+      //DebugLn(['TFindDeclarationTool.FindDeclaration IsUsesSection']);
+      Result:=FindDeclarationInUsesSection(CursorNode,CleanCursorPos,
+                                           NewPos,NewTopLine);
+      BlockTopLine:=NewPos.Y;
+      BlockBottomLine:=NewPos.Y;
+      NewExprType:=CleanExpressionType;
+      {$IFDEF VerboseFindDeclarationFail}
+      if not Result then begin
+        debugln(['TFindDeclarationTool.FindDeclaration cursor in uses and FindDeclarationInUsesSection failed']);
+      end;
+      {$ENDIF}
+      if Result and (fsfSearchSourceName in SearchSmartFlags) then begin
+        Result:=FindSourceName(NewPos.Code);
+        {$IFDEF VerboseFindDeclarationFail}
+        if not Result then begin
+          debugln(['TFindDeclarationTool.FindDeclaration cursor in uses and FindSourceName failed']);
+        end;
+        {$ENDIF}
+      end;
+      exit;
+    end;
     {$ENDIF}
 
     DirectSearch:=false;
@@ -4321,9 +4356,7 @@ begin
       begin
         // switch from ctnSrcName to ctnIdentifier
         ExprType.Context.Node:=ExprType.Context.Node.FirstChild;
-        Params.SetResult(ExprType.Context);
-      end else
-        Params.SetResult(CleanFindContext);
+      end;
     end else begin
       if (ExprType.Context.Node.Desc in [ctnUseUnitNamespace, ctnUseUnitClearName])
         and (KnownIdentLen=EndPos-StartPos) then
@@ -4331,8 +4364,8 @@ begin
         // switch to ctnUseUnit
         ExprType.Context.Node:=ExprType.Context.Node.Parent;
       end;
-      Params.SetResult(ExprType.Context);
     end;
+    Params.SetResult(ExprType.Context);
   end else
     Params.SetResult(CleanFindContext);
 
@@ -8703,7 +8736,7 @@ begin
   DebugLn(['TFindDeclarationTool.FindIdentifierInUsesSection ',MainFilename,' fdfIgnoreUsedUnits=',fdfIgnoreUsedUnits in Params.Flags]);
   {$ENDIF}
   Result:=false;
-  // first search the identifier in the uses section (not in the interfaces of the units)
+  // first search the identifier in the uses section itself (not in the interfaces of the units)
   if (Params.IdentifierTool=Self) then begin
     Node:=UsesNode.LastChild;
     while Node<>nil do begin
@@ -8718,8 +8751,8 @@ begin
           exit;
         end;
       end else if CompareSrcIdentifiers(Node.StartPos,Params.Identifier) then begin
-        // the searched identifier was a uses AUnitName, point to the identifier in
-        // the uses section
+        // the searched identifier was a uses unitname
+        // -> point to the identifier in the uses section
         // if the unit name has a namespace defined point to the namespace
         Params.SetResult(Self,Node.FirstChild);
         Result:=true;
