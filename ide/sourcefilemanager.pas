@@ -8273,34 +8273,33 @@ begin
         // check program name
         if not (sfSkipReferences in Flags) then
           NewProgramName:=ExtractFileNameOnly(AFilename);
-        if (NewProgramName='') or not IsValidDottedIdent(NewProgramName) then begin
+        if (NewProgramName='') then begin
           if (sfSkipReferences in Flags) then begin
             Result:=mrAbort;
             exit;
           end;
           Result:=IDEMessageDialog(lisInvalidProjectFilename,
             Format(lisisAnInvalidProjectNamePleaseChooseAnotherEGProject,[SaveDialog.Filename,LineEnding]),
-            mtInformation,[mbRetry,mbAbort]);
+            mtInformation,[mbRetry,mbIgnore,mbAbort]);
           if Result=mrAbort then exit;
           continue; // try again
         end;
+        if not IsValidDottedIdent(NewProgramName) then
+          NewProgramName:=ExtractPasIdentifier(NewProgramName,true);
+
         if (sfSkipReferences in Flags) then
           NewPath :=ANewPath
         else
           NewPath := ExtractFilePath(AFilename);
         // append default extension
-        NewLPIFilename := NewPath +
-          StringReplace(NewProgramName,'&','',[rfReplaceAll]) +
-          '.lpi';
+        NewLPIFilename:=NewPath+ExtractFileNameOnly(AFilename)+'.lpi';
 
         if Project1.MainUnitID >= 0 then
         begin
           // check mainunit filename
           Ext := ExtractFileExt(Project1.MainUnitInfo.Filename);
           Assert(Ext<>'', 'ShowSaveProjectAsDialog: Ext is empty');
-          NewProgramFN := NewPath +
-            StringReplace(NewProgramName,'&','',[rfReplaceAll]) +
-            Ext;
+          NewProgramFN := ChangeFileExt(NewLPIFilename,Ext);
           if CompareFilenames(NewLPIFilename, NewProgramFN) = 0 then
           begin
             ACaption:=lisChooseADifferentName;
