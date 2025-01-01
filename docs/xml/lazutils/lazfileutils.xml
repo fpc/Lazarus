@@ -1634,23 +1634,64 @@ needed.
 
 <element name="AppendPathDelim">
 <short>
-Adds a trailing path delimiter when needed.
+Adds a trailing path delimiter to the specified path (when needed).
 </short>
 <descr>
 <p>
-<var>AppendPathDelim</var> is a <var>String</var> function used to ensure 
-that a trailing path delimiter is included in the specified Path. The return 
-value includes the value in Path and the trailing path delimiter (when 
-needed).
+<var>AppendPathDelim</var> is a <var>String</var> function used to ensure that 
+a trailing path delimiter is included in the specified <var>Path</var>. 
+AppendPathDelim adds the platform-specific character in PathDelim to the end of 
+Path if it is not an empty string, and does not already end with one of the 
+values in AllowDirectorySeparators.
+</p>
+<p>
+The return value contains the path with the added trailing path delimiter 
+character, or the unmodified value in Path if a path delimiter was not added in 
+the routine.
+</p>
+<p>
+AppendPathDelim does not perform any type of resolution, expansion, or 
+validation of the value passed in Path. Use routines like ExpandFileName(), 
+DirectoryExists(), or FileExists() to perform these actions for a given path 
+value. For UTF-8-enabled paths use ExpandFileNameUTF8(), FileExistsUTF8(), or 
+DirectoryExistsUTF8().
+</p>
+<p>
+Use ChompPathDelim to remove a trailing path delimiter from a specified path.
+</p>
+<p>
+<b>Windows</b>
+</p>
+<p>
+Please note that a value like 'C:' in Path results in 'C:\' in the return 
+value. AppendPathDelim does <b>not</b> access the disk device to determine the 
+per-device current directory; it simply appends the trailing path delimiter to 
+the return value.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="ChompPathDelim"/>
+<link id="DirectoryExistsUTF8"/>
+<link id="ExpandFileNameUTF8"/>
+<link id="FileExistsUTF8"/>
+<link id="#rtl.sysutils.DirectoryExists">DirectoryExists</link>
+<link id="#rtl.sysutils.ExpandFileName">ExpandFileName</link>
+<link id="#rtl.sysutils.ExtractFilePath">ExtractFilePath</link>
+<link id="#rtl.sysutils.FileExists">FileExists</link>
+<link id="#rtl.sysutils.PathDelim">PathDelim</link>
+<link id="#rtl.system.DirectorySeparator">DirectorySeparator</link>
+<link id="#rtl.system.AllowDirectorySeparators">AllowDirectorySeparators</link>
+</seealso>
 </element>
 <element name="AppendPathDelim.Result">
-<short>Path value with a trailing path delimiter.</short>
+<short>
+A path value which includes a trailing path delimiter.
+</short>
 </element>
 <element name="AppendPathDelim.Path">
-<short>Path value to examine.</short>
+<short>
+Path value examined in the routine.
+</short>
 </element>
 
 <element name="ChompPathDelim">
