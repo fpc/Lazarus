@@ -3262,27 +3262,13 @@ begin
     RaiseException(20171214184519,'TFindDeclarationTool.FindUnitSource Invalid Data');
   if (Scanner.OnLoadSource=nil) then
     RaiseException(20171214184527,'TFindDeclarationTool.FindUnitSource Invalid Data');
-  // check project source name first
-  if (Tree<>nil) and (Tree.Root<>nil) then begin
-    Node:=Tree.Root.FirstChild;
-    if (Node<>nil) and
-      (Node.Parent.Desc in [ctnProgram, ctnLibrary,ctnPackage]) and
-      (Node.Desc=ctnSrcName) then begin
-      curSrc:= ExtractIdentifierWithPoints(Node.StartPos,false);
-      if (CompareDottedIdentifiers(PChar(curSrc),PChar(AnUnitName))=0)
-        and (Length(curSrc)=Length(AnUnitName)) then
-        Result:=TCodeBuffer(Scanner.OnLoadSource(Self,Scanner.MainFilename,true));
-    end;
-  end;
 
-  if Result=nil then begin  // original code, only units
-    NewUnitName:=AnUnitName;
-    NewInFilename:=AnUnitInFilename;
+  NewUnitName:=RemoveAmpersands(AnUnitName);
+  NewInFilename:=AnUnitInFilename;
 
-    AFilename:=DirectoryCache.FindUnitSourceInCompletePath(
-                            NewUnitName,NewInFilename,false,false,AddedNameSpace);
-    Result:=TCodeBuffer(Scanner.OnLoadSource(Self,AFilename,true));
-  end;
+  AFilename:=DirectoryCache.FindUnitSourceInCompletePath(
+                          NewUnitName,NewInFilename,false,false,AddedNameSpace);
+  Result:=TCodeBuffer(Scanner.OnLoadSource(Self,AFilename,true));
 
   if (Result=nil) and Assigned(OnFindUsedUnit) then begin
     // no unit found

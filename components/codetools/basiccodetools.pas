@@ -205,6 +205,7 @@ function TrimCodeSpace(const ACode: string): string;
 function CodeIsOnlySpace(const ACode: string; FromPos, ToPos: integer): boolean;
 function StringToPascalConst(const s: string): string;
 function UnicodeSpacesToASCII(const s: string): string;
+function RemoveAmpersands(const s: string): string;
 
 // string constants
 function SplitStringConstant(const StringConstant: string;
@@ -5766,6 +5767,15 @@ begin
       end;
     end;
   until false;
+end;
+
+function RemoveAmpersands(const s: string): string;
+var
+  i: SizeInt;
+begin
+  Result:=s;
+  for i:=length(Result) downto 1 do
+    if Result[i]='&' then Delete(Result,i,1);
 end;
 
 function SplitStringConstant(const StringConstant: string;

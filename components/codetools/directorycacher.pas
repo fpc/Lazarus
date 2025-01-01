@@ -1813,7 +1813,7 @@ begin
       if Result='' then begin
         // search in unit set
         {$IFDEF ShowTriedUnits}
-        DebugLn(['TCTDirectoryCache.FindUnitSourceInCompletePath unit ',AUnitName,' not found in SrcPath="',SrcPath,'"  Directory="',Directory,'" searchin in unitset ...']);
+        DebugLn(['TCTDirectoryCache.FindUnitSourceInCompletePath unit ',AUnitName,' not found in SrcPath="',SrcPath,'"  Directory="',Directory,'" searching in unitset ...']);
         {$ENDIF}
         Result:=FindUnitInUnitSet(AUnitName,FPCSrcSearchRequiresPPU);
         {$IFDEF ShowTriedUnits}
