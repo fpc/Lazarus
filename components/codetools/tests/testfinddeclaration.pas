@@ -304,8 +304,8 @@ var
   FoundNode: TCodeTreeNode;
   NameStartPos, i, j, l, IdentifierStartPos, IdentifierEndPos,
     BlockTopLine, BlockBottomLine, CommentEnd, StartOffs, TestLoop: Integer;
-  Marker, ExpectedType, NewType, ExpectedCompletion, ExpexctedTerm,
-    ExpectedCompletionPart, ExpexctedTermPart, s: String;
+  Marker, ExpectedType, NewType, ExpectedCompletion, ExpectedTerm,
+    ExpectedCompletionPart, ExpectedTermPart, s: String;
   IdentItem: TIdentifierListItem;
   ItsAKeyword, IsSubIdentifier, ExpInvert, ExpComment: boolean;
   ExistingDefinition: TFindContext;
@@ -479,14 +479,21 @@ begin
                 end;
                 continue;
               end else begin
-                for ExpexctedTermPart in ExpectedCompletion.Split(',') do begin
-                  ExpexctedTerm := ExpexctedTermPart;
-                  ExpInvert := (ExpexctedTerm <> '') and (ExpexctedTerm[1] = '!');
+                for ExpectedTermPart in ExpectedCompletion.Split(',') do begin
+                  ExpectedTerm := ExpectedTermPart;
+                  ExpInvert := (ExpectedTerm <> '') and (ExpectedTerm[1] = '!');
                   if ExpInvert then
-                    Delete(ExpexctedTerm, 1, 1);
+                    Delete(ExpectedTerm, 1, 1);
                   i:=CodeToolBoss.IdentifierList.GetFilteredCount-1;
+                  //debugln(['TCustomTestFindDeclaration.FindDeclarations ',i,' ExpectedTerm="',ExpectedTerm,'"']);
                   while i>=0 do begin
                     IdentItem:=CodeToolBoss.IdentifierList.FilteredItems[i];
+                    if IdentItem.Node<>nil then begin
+                      FoundPath:=NodeAsPath(FoundTool,FoundNode);
+                      //debugln(['TTestFindDeclaration.FindDeclarations FoundPath="',FoundPath,'"']);
+                      if SameText(ExpectedTerm,FoundPath) then
+                        break;
+                    end;
                     //debugln(['TTestFindDeclaration.FindDeclarations ',IdentItem.Identifier]);
                     s := IdentItem.Identifier;
                     if (iliNeedsAmpersand in IdentItem.Flags)
@@ -495,19 +502,19 @@ begin
                       if s[1]<>'&' then
                         s := '&' + s;
                     l:=length(s);
-                    if ((l=length(ExpexctedTerm)) or (ExpexctedTerm[length(ExpexctedTerm)-l]='.'))
-                    and (CompareText(s,RightStr(ExpexctedTerm,l))=0)
+                    if ((l=length(ExpectedTerm)) or (ExpectedTerm[length(ExpectedTerm)-l]='.'))
+                    and (CompareText(s,RightStr(ExpectedTerm,l))=0)
                     then break;
                     dec(i);
                   end;
                   if (i<0) and not ExpInvert then begin
                     WriteSource(StartOffs,MainTool);
-                    AssertEquals('GatherIdentifiers misses "'+ExpexctedTerm+'" at '+MainTool.CleanPosToStr(StartOffs,true),true,i>=0);
+                    AssertEquals('GatherIdentifiers misses "'+ExpectedTerm+'" at '+MainTool.CleanPosToStr(StartOffs,true),true,i>=0);
                   end
                   else
                   if ExpInvert and (i>=0) then begin
                     WriteSource(StartOffs,MainTool);
-                    AssertEquals('GatherIdentifiers should not have "'+ExpexctedTerm+'" at '+MainTool.CleanPosToStr(StartOffs,true),true,i>=0);
+                    AssertEquals('GatherIdentifiers should not have "'+ExpectedTerm+'" at '+MainTool.CleanPosToStr(StartOffs,true),true,i>=0);
                   end;
                 end;
               end;

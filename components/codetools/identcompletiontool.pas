@@ -529,14 +529,13 @@ begin
 end;
 
 function CompareIdentHistListItem(Data1, Data2: Pointer): integer;
-(* CompareIdentHistListItem and CompareIdentItemWithHistListItem must use
-   the same functions to compare each part of the data *)
+// CompareIdentHistListItem and CompareIdentItemWithHistListItem must use
+//   the same functions to compare each part of the data
 var
   Item1: TIdentHistListItem absolute Data1;
   Item2: TIdentHistListItem absolute Data2;
 begin
-  Result:=CompareDottedIdentifiers(PChar(Item2.Identifier),
-                             PChar(Item1.Identifier));
+  Result:=CompareDottedIdentifiers(PChar(Item2.Identifier),PChar(Item1.Identifier));
   if Result<>0 then exit;
 
   //debugln('CompareIdentHistListItem ',Item2.Identifier,'=',Item1.Identifier);
@@ -544,14 +543,13 @@ begin
 end;
 
 function CompareIdentItemWithHistListItem(Data1, Data2: Pointer): integer;
-(* CompareIdentHistListItem and CompareIdentItemWithHistListItem must use
-   the same functions to compare each part of the data *)
+// CompareIdentHistListItem and CompareIdentItemWithHistListItem must use
+// the same functions to compare each part of the data
 var
   IdentItem: TIdentifierListItem absolute Data1;
   HistItem: TIdentHistListItem absolute Data2;
 begin
-  Result:=CompareDottedIdentifiers(PChar(HistItem.Identifier),
-                             PChar(IdentItem.Identifier));
+  Result:=CompareDottedIdentifiers(PChar(HistItem.Identifier),PChar(IdentItem.Identifier));
   if Result<>0 then exit;
 
   //debugln('CompareIdentItemWithHistListItem ',HistItem.Identifier,'=',GetIdentifier(IdentItem.Identifier));
@@ -1455,7 +1453,7 @@ begin
       end;
     end;
   end;
-  Node:=nil;
+  Node:=FoundContext.Node;
   Ident:=nil;
   PlaceForDotted:='';
   case FoundContext.Node.Desc of
@@ -1576,12 +1574,6 @@ begin
   end;
   if Ident=nil then exit;
 
-  if not
-  (FoundContext.Node.Desc in [ctnUseUnitNamespace, ctnUseUnitClearName]) then
-    Node:=FoundContext.Node;
-
-
-
   NewItem:=CIdentifierListItem.Create(
                             icompUnknown,
                             false,
@@ -1593,7 +1585,7 @@ begin
                             ctnNone,
                             IsDottedIdent);
 
-  //Add the '&' character to prefixed identifiers
+  // Add the '&' character to prefixed identifiers
   if (Ident^='&') and (IsIdentStartChar[Ident[1]]) then
     Include(NewItem.Flags,iliNeedsAmpersand);
 
