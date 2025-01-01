@@ -161,6 +161,9 @@ type
     procedure TestFindDeclaration_IncludeSearch_StarStar;
     procedure TestFindDeclaration_FindFPCSrcNameSpacedUnits;
 
+    // unit namespaces
+    procedure TestFindDeclaration_LocalBeforeUses;
+
     // directives
     procedure TestFindDeclaration_DirectiveWithIn;
 
@@ -1685,6 +1688,40 @@ begin
   if not DirectoryExists(FPCSrcDir) then
     Fail('UnitSet.FPCSourceDirectory not found: "'+FPCSrcDir+'"');
   Traverse(FPCSrcDir,0,-1);
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_LocalBeforeUses;
+var
+  DotsUnit: TCodeBuffer;
+begin
+  DotsUnit:=nil;
+  try
+    DotsUnit:=CodeToolBoss.CreateFile('nsA.dots.pp');
+    DotsUnit.Source:='unit nsa.dots;'+LineEnding
+      +'interface'+LineEnding
+      +'implementation'+LineEnding
+      +'end.';
+
+    StartProgram;
+    Add([
+    'uses nsA.dots;',
+    'type',
+    '  TWing = record',
+    '    Size: word;',
+    '  end;',
+    '  TBird = record',
+    '    DoTs: TWing;',
+    '  end;',
+    'var NSA: TBird;',
+    'begin',
+    '  NSA.dots.Size{declaration:twing.Size}:=3',
+    'end.',
+    '']);
+    FindDeclarations(Code);
+  finally
+    if DotsUnit<>nil then
+      DotsUnit.IsDeleted:=true;
+  end;
 end;
 
 procedure TTestFindDeclaration.TestFindDeclaration_DirectiveWithIn;

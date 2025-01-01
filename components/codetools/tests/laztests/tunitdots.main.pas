@@ -5,7 +5,7 @@ unit tunitdots.main;
 interface
 
 uses
-  unitdots.dot, unitdots; // unit names (with or without namespaces) win over interface identifiers
+  unitdots.dot, unitdots; // unit names (with or without namespaces) win over used interface identifiers
                           // even though the 'unitdots.dot' is left of 'unitdots'
 
 implementation
