@@ -401,9 +401,9 @@ begin
         //debugln(['TTestFindDeclaration.FindDeclarations Marker="',Marker,'" params: ',dbgstr(MainTool.Src,p,CommentP-p)]);
         if (Marker='declaration') or (Marker='declaration!') or (Marker='completion') then begin
           ExpectedPath:=copy(Src,PathPos,CommentP-1-PathPos);
-          { $IFDEF VerboseFindDeclarationTests}
+          {$IFDEF VerboseFindDeclarationTests}
           debugln(['TTestFindDeclaration.FindDeclarations searching "',Marker,'" at ',MainTool.CleanPosToStr(NameStartPos-1),' ExpectedPath=',ExpectedPath]);
-          { $ENDIF}
+          {$ENDIF}
 
           if (Marker='declaration') or (Marker='declaration!') then begin
             MainTool.CleanPosToCaret(IdentifierStartPos,CursorPos);
