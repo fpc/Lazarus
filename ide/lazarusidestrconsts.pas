@@ -5444,12 +5444,10 @@ resourcestring
     +'%sProceed anyway?';
   lisRenamingAborted = 'Renaming aborted';
   lisRenamingConflict = 'Renaming conflict';
-  lisFileAlreadyExists = 'File '
-    + '"%s" already exists';
+  lisFileAlreadyExists = 'File "%s" already exists.';
   lisIdentifierWasAlreadyUsed = 'Identifier '
     + '"%s" was already used';
-  lisIdentifierCannotBeDotted = 'Identifier '
-    + '"%s" cannot be dotted';
+  lisIdentifierCannotBeDotted = 'Identifier "%s" cannot be dotted';
   lisIdentifierCannotBeEmpty = 'Identifier cannot be empty';
   lisIdentifierIsInvalid = 'Identifier '
     + '"%s" is invalid';
