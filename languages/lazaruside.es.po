@@ -9919,6 +9919,11 @@ msgstr "Archivo"
 msgid "File: "
 msgstr "Archivo: "
 
+#: lazarusidestrconsts.lisfilealreadyexists
+#, object-pascal-format
+msgid "File \"%s\" already exists."
+msgstr ""
+
 #: lazarusidestrconsts.lisfileextensionofprograms
 msgid "File extension of programs"
 msgstr "Extensión de archivo de programas"
@@ -10761,9 +10766,43 @@ msgstr "identificador"
 msgid "Identifier begins with ..."
 msgstr "El identificador comienza con ..."
 
+#: lazarusidestrconsts.lisidentifiercannotbedotted
+#, object-pascal-format
+msgid "Identifier \"%s\" cannot be dotted"
+msgstr ""
+
+#: lazarusidestrconsts.lisidentifiercannotbeempty
+msgid "Identifier cannot be empty"
+msgstr ""
+
 #: lazarusidestrconsts.lisidentifiercontains
 msgid "Identifier contains ..."
 msgstr "El identificador contiene ..."
+
+#: lazarusidestrconsts.lisidentifierisdeclaredcompilerfunction
+#, object-pascal-format
+msgid "Identifier \"%s\" is a declared compiler function"
+msgstr ""
+
+#: lazarusidestrconsts.lisidentifierisdeclaredcompilerprocedure
+#, object-pascal-format
+msgid "Identifier \"%s\" is a declared compiler procedure"
+msgstr ""
+
+#: lazarusidestrconsts.lisidentifierisinvalid
+#, object-pascal-format
+msgid "Identifier \"%s\" is invalid"
+msgstr ""
+
+#: lazarusidestrconsts.lisidentifierisreservedword
+#, object-pascal-format
+msgid "Identifier \"%s\" is a reserved word"
+msgstr ""
+
+#: lazarusidestrconsts.lisidentifierwasalreadyused
+#, object-pascal-format
+msgid "Identifier \"%s\" was already used"
+msgstr ""
 
 #: lazarusidestrconsts.lisideoptions
 msgid "IDE Options:"
@@ -16905,6 +16944,14 @@ msgstr "Renombrar a %s"
 msgid "Rename to lowercase"
 msgstr "Renombrar en minúsculas"
 
+#: lazarusidestrconsts.lisrenamingaborted
+msgid "Renaming aborted"
+msgstr ""
+
+#: lazarusidestrconsts.lisrenamingconflict
+msgid "Renaming conflict"
+msgstr ""
+
 #: lazarusidestrconsts.lisreopenproject
 msgid "Reopen project"
 msgstr "Reabrir proyecto"
@@ -18218,6 +18265,11 @@ msgstr "El IDE está contruyendo todavía."
 #: lazarusidestrconsts.listheidentifierisaunitpleaseusethefilesaveasfunction
 msgid "The identifier is a unit. Please use the File - Save as function to rename a unit."
 msgstr "El identificador es una Unidad. Favor de usar la función Archivo -> Guardar Como para renombrar una Unidad."
+
+#: lazarusidestrconsts.listheidentifierisaunitproceedanyway
+#, object-pascal-format
+msgid "The identifier is a %s.%sNew file(s) will be created, old can be deleted.%sProceed anyway?"
+msgstr ""
 
 #: lazarusidestrconsts.listhekeyisalreadyassignedtoremovetheoldassignmentand
 #, object-pascal-format, fuzzy

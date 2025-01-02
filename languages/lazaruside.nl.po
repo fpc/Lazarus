@@ -9965,6 +9965,11 @@ msgstr "Bestand"
 msgid "File: "
 msgstr ""
 
+#: lazarusidestrconsts.lisfilealreadyexists
+#, object-pascal-format
+msgid "File \"%s\" already exists."
+msgstr ""
+
 #: lazarusidestrconsts.lisfileextensionofprograms
 msgid "File extension of programs"
 msgstr ""
@@ -10792,8 +10797,42 @@ msgstr ""
 msgid "Identifier begins with ..."
 msgstr ""
 
+#: lazarusidestrconsts.lisidentifiercannotbedotted
+#, object-pascal-format
+msgid "Identifier \"%s\" cannot be dotted"
+msgstr ""
+
+#: lazarusidestrconsts.lisidentifiercannotbeempty
+msgid "Identifier cannot be empty"
+msgstr ""
+
 #: lazarusidestrconsts.lisidentifiercontains
 msgid "Identifier contains ..."
+msgstr ""
+
+#: lazarusidestrconsts.lisidentifierisdeclaredcompilerfunction
+#, object-pascal-format
+msgid "Identifier \"%s\" is a declared compiler function"
+msgstr ""
+
+#: lazarusidestrconsts.lisidentifierisdeclaredcompilerprocedure
+#, object-pascal-format
+msgid "Identifier \"%s\" is a declared compiler procedure"
+msgstr ""
+
+#: lazarusidestrconsts.lisidentifierisinvalid
+#, object-pascal-format
+msgid "Identifier \"%s\" is invalid"
+msgstr ""
+
+#: lazarusidestrconsts.lisidentifierisreservedword
+#, object-pascal-format
+msgid "Identifier \"%s\" is a reserved word"
+msgstr ""
+
+#: lazarusidestrconsts.lisidentifierwasalreadyused
+#, object-pascal-format
+msgid "Identifier \"%s\" was already used"
 msgstr ""
 
 #: lazarusidestrconsts.lisideoptions
@@ -17075,6 +17114,14 @@ msgstr ""
 msgid "Rename to lowercase"
 msgstr "Hernoemen in kleine letters"
 
+#: lazarusidestrconsts.lisrenamingaborted
+msgid "Renaming aborted"
+msgstr ""
+
+#: lazarusidestrconsts.lisrenamingconflict
+msgid "Renaming conflict"
+msgstr ""
+
 #: lazarusidestrconsts.lisreopenproject
 msgid "Reopen project"
 msgstr ""
@@ -18396,6 +18443,11 @@ msgstr ""
 
 #: lazarusidestrconsts.listheidentifierisaunitpleaseusethefilesaveasfunction
 msgid "The identifier is a unit. Please use the File - Save as function to rename a unit."
+msgstr ""
+
+#: lazarusidestrconsts.listheidentifierisaunitproceedanyway
+#, object-pascal-format
+msgid "The identifier is a %s.%sNew file(s) will be created, old can be deleted.%sProceed anyway?"
 msgstr ""
 
 #: lazarusidestrconsts.listhekeyisalreadyassignedtoremovetheoldassignmentand

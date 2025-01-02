@@ -9706,6 +9706,11 @@ msgstr "文件"
 msgid "File: "
 msgstr "文件: "
 
+#: lazarusidestrconsts.lisfilealreadyexists
+#, object-pascal-format
+msgid "File \"%s\" already exists."
+msgstr ""
+
 #: lazarusidestrconsts.lisfileextensionofprograms
 msgid "File extension of programs"
 msgstr "程序的文件扩展名"
@@ -10536,9 +10541,43 @@ msgstr "标识符"
 msgid "Identifier begins with ..."
 msgstr "标识符起始于..."
 
+#: lazarusidestrconsts.lisidentifiercannotbedotted
+#, object-pascal-format
+msgid "Identifier \"%s\" cannot be dotted"
+msgstr ""
+
+#: lazarusidestrconsts.lisidentifiercannotbeempty
+msgid "Identifier cannot be empty"
+msgstr ""
+
 #: lazarusidestrconsts.lisidentifiercontains
 msgid "Identifier contains ..."
 msgstr "标识符包含..."
+
+#: lazarusidestrconsts.lisidentifierisdeclaredcompilerfunction
+#, object-pascal-format
+msgid "Identifier \"%s\" is a declared compiler function"
+msgstr ""
+
+#: lazarusidestrconsts.lisidentifierisdeclaredcompilerprocedure
+#, object-pascal-format
+msgid "Identifier \"%s\" is a declared compiler procedure"
+msgstr ""
+
+#: lazarusidestrconsts.lisidentifierisinvalid
+#, object-pascal-format
+msgid "Identifier \"%s\" is invalid"
+msgstr ""
+
+#: lazarusidestrconsts.lisidentifierisreservedword
+#, object-pascal-format
+msgid "Identifier \"%s\" is a reserved word"
+msgstr ""
+
+#: lazarusidestrconsts.lisidentifierwasalreadyused
+#, object-pascal-format
+msgid "Identifier \"%s\" was already used"
+msgstr ""
 
 #: lazarusidestrconsts.lisideoptions
 msgid "IDE Options:"
@@ -16517,6 +16556,14 @@ msgstr "重命名到%s"
 msgid "Rename to lowercase"
 msgstr "重命名为小写"
 
+#: lazarusidestrconsts.lisrenamingaborted
+msgid "Renaming aborted"
+msgstr ""
+
+#: lazarusidestrconsts.lisrenamingconflict
+msgid "Renaming conflict"
+msgstr ""
+
 #: lazarusidestrconsts.lisreopenproject
 msgid "Reopen project"
 msgstr "重新打开工程"
@@ -17806,6 +17853,11 @@ msgstr "IDE仍然在构建."
 #: lazarusidestrconsts.listheidentifierisaunitpleaseusethefilesaveasfunction
 msgid "The identifier is a unit. Please use the File - Save as function to rename a unit."
 msgstr "该标识符是一个单元.请使用 文件-保存 作为函数来重命名单元."
+
+#: lazarusidestrconsts.listheidentifierisaunitproceedanyway
+#, object-pascal-format
+msgid "The identifier is a %s.%sNew file(s) will be created, old can be deleted.%sProceed anyway?"
+msgstr ""
 
 #: lazarusidestrconsts.listhekeyisalreadyassignedtoremovetheoldassignmentand
 #, object-pascal-format

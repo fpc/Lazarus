@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-12-27 22:26+0300\n"
+"PO-Revision-Date: 2025-01-03 02:07+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -9678,6 +9678,11 @@ msgstr "Файл"
 msgid "File: "
 msgstr "Файл: "
 
+#: lazarusidestrconsts.lisfilealreadyexists
+#, object-pascal-format
+msgid "File \"%s\" already exists."
+msgstr "Файл \"%s\" уже существует."
+
 #: lazarusidestrconsts.lisfileextensionofprograms
 msgid "File extension of programs"
 msgstr "Расширение файлов программ"
@@ -10504,9 +10509,43 @@ msgstr "идентификатор"
 msgid "Identifier begins with ..."
 msgstr "Идентификатор начинается с ..."
 
+#: lazarusidestrconsts.lisidentifiercannotbedotted
+#, object-pascal-format
+msgid "Identifier \"%s\" cannot be dotted"
+msgstr "Идентификатор \"%s\" не может содержать символ точки"
+
+#: lazarusidestrconsts.lisidentifiercannotbeempty
+msgid "Identifier cannot be empty"
+msgstr "Идентификатор не может быть пустым"
+
 #: lazarusidestrconsts.lisidentifiercontains
 msgid "Identifier contains ..."
 msgstr "Идентификатор содержит ..."
+
+#: lazarusidestrconsts.lisidentifierisdeclaredcompilerfunction
+#, object-pascal-format
+msgid "Identifier \"%s\" is a declared compiler function"
+msgstr "Идентификатор \"%s\" является объявленной функцией компилятора"
+
+#: lazarusidestrconsts.lisidentifierisdeclaredcompilerprocedure
+#, object-pascal-format
+msgid "Identifier \"%s\" is a declared compiler procedure"
+msgstr "Идентификатор \"%s\" является объявленной процедурой компилятора"
+
+#: lazarusidestrconsts.lisidentifierisinvalid
+#, object-pascal-format
+msgid "Identifier \"%s\" is invalid"
+msgstr "Идентификатор \"%s\" некорректен"
+
+#: lazarusidestrconsts.lisidentifierisreservedword
+#, object-pascal-format
+msgid "Identifier \"%s\" is a reserved word"
+msgstr "Идентификатор \"%s\" является зарезервированным словом"
+
+#: lazarusidestrconsts.lisidentifierwasalreadyused
+#, object-pascal-format
+msgid "Identifier \"%s\" was already used"
+msgstr "Идентификатор \"%s\" уже использован"
 
 #: lazarusidestrconsts.lisideoptions
 msgid "IDE Options:"
@@ -16505,6 +16544,14 @@ msgstr "Переименовать в %s"
 msgid "Rename to lowercase"
 msgstr "Преобразовать в нижний регистр"
 
+#: lazarusidestrconsts.lisrenamingaborted
+msgid "Renaming aborted"
+msgstr "Переименование прервано"
+
+#: lazarusidestrconsts.lisrenamingconflict
+msgid "Renaming conflict"
+msgstr "Конфликт при переименовании"
+
 #: lazarusidestrconsts.lisreopenproject
 msgid "Reopen project"
 msgstr "Переоткрыть проект"
@@ -17806,6 +17853,11 @@ msgstr "IDE всё ещё ведёт сборку."
 #: lazarusidestrconsts.listheidentifierisaunitpleaseusethefilesaveasfunction
 msgid "The identifier is a unit. Please use the File - Save as function to rename a unit."
 msgstr "Идентификатор является модулем. Для его переименования используйте функцию Файл -> Сохранить как."
+
+#: lazarusidestrconsts.listheidentifierisaunitproceedanyway
+#, object-pascal-format
+msgid "The identifier is a %s.%sNew file(s) will be created, old can be deleted.%sProceed anyway?"
+msgstr "Тип идентификатора: \"%s\".%sБудут созданы новые файлы, а старые могут быть удалены.%sПродолжить всё равно?"
 
 #: lazarusidestrconsts.listhekeyisalreadyassignedtoremovetheoldassignmentand
 #, object-pascal-format
