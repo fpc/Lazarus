@@ -109,7 +109,7 @@ procedure RemovePipeEventHandler(var AHandler: PPipeEventHandler); {$IFDEF IF_BA
 function RequestInput(const InputCaption, InputPrompt : String; MaskInput : Boolean; var Value : String) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 procedure SendCachedLCLMessages; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-procedure SetDeviceScaleRatio(aObj: HGDIOBJ; const AScaleRatio: double); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+procedure SetDeviceScaleRatio(DC: HDC; const AScaleRatio: double); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetCaretRespondToFocus(handle: HWND; ShowHideOnFocus: boolean): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetComboMinDropDownSize(Handle: HWND; MinItemsWidth, MinItemsHeight, MinItemCount: integer): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 procedure SetEventHandlerFlags(AHandler: PEventHandler; NewFlags: dword); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}

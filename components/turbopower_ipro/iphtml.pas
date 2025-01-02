@@ -3429,7 +3429,7 @@ begin
         AScale := Application.MainForm.GetCanvasScaleFactor;
       PaintBufferBitmap.Width := Round(FClientRect.Right * AScale);
       PaintBufferBitmap.Height := Round(FClientRect.Bottom * AScale);
-      LCLIntf.SetDeviceScaleRatio(PaintBufferBitmap.Handle, AScale);
+      LCLIntf.SetDeviceScaleRatio(PaintBufferBitmap.Canvas.Handle, AScale);
       PaintBuffer := PaintBufferBitmap.Canvas;
     end;
     FTarget := PaintBuffer;

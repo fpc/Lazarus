@@ -643,8 +643,8 @@ end;
 //This routine is used only by platforms which uses Scale instead of font DPI changes (or both).
 //Currently cocoa, qt5, qt6 and gtk3 are known to support this. Without proper scale ratio
 //setup, bitmap text rendering is blurred.See iphtml.pas, procedure TIpHtml.Render() how
-//we use it.Param aObj is TQtImage under qt5 and qt6, under cocoa it's TBitmapContext.
-procedure TWidgetSet.SetDeviceScaleRatio(aObj: HGDIOBJ; const AScaleRatio: double);
+//we use it.Param DC is device context with selected bitmap/image into.
+procedure TWidgetSet.SetDeviceScaleRatio(DC: HDC; const AScaleRatio: double);
 begin
 end;
 

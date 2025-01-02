@@ -887,12 +887,15 @@ begin
   // todo
 end;
 
-procedure TQtWidgetSet.SetDeviceScaleRatio(aObj: HGDIOBJ; const AScaleRatio: double);
+procedure TQtWidgetSet.SetDeviceScaleRatio(DC: HDC; const AScaleRatio: double);
+var
+  QtDc: TQtDeviceContext absolute DC;
 begin
-  if IsValidGDIObject(aObj) then
+  if IsValidDC(DC) and (QtDC.vImage <> nil) and (QtDC.vImage.Handle <> nil) then
   begin
-    if TObject(aObj) is TQtImage then
-      QImage_setDevicePixelRatio(TQtImage(aObj).Handle, AScaleRatio);
+    QPainter_end(QtDC.Widget);
+    QImage_setDevicePixelRatio(QtDC.vImage.Handle, AScaleRatio);
+    QPainter_begin(QtDC.Widget, QtDC.vImage.Handle);
   end;
 end;
 
