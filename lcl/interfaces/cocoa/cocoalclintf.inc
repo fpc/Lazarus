@@ -740,6 +740,14 @@ begin
   Result := True;
 end;
 
+procedure TCocoaWidgetSet.SetDeviceScaleRatio(DC: HDC; const AScaleRatio: double);
+var
+  ctx: TCocoaContext;
+begin
+  ctx := CheckDC(DC);
+  if Assigned(ctx) and (ctx is TCocoaBitmapContext) then
+    CGContextScaleCTM(ctx.CGContext, AScaleRatio, AScaleRatio);
+end;
 
 {------------------------------------------------------------------------------
   Function: RawImage_QueryDescription

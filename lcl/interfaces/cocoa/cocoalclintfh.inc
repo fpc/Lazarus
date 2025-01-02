@@ -50,3 +50,5 @@ function RawImage_FromDevice(out ARawImage: TRawImage; ADC: HDC; const ARect: TR
 
 {function ReleaseDesignerDC(Window: HWND; DC: HDC): Integer; override;}
 
+procedure SetDeviceScaleRatio(DC: HDC; const AScaleRatio: double); override;
+
