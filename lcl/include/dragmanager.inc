@@ -170,6 +170,7 @@ procedure TDragPerformer.DragMove(APosition: TPoint);
 var 
   ATarget: TControl;
   DragCursor: TCursor;
+  bAccepted: boolean;
 begin
   if FDragObject = nil then
     Exit;
@@ -190,7 +191,9 @@ begin
   //TODO: Need to rewrite this(or even delete it, back to the roots)
   if FDragObject.DragTarget <> nil then
     FDragObject.DragTargetPos := FDragObject.DragTarget.ScreenToClient(APosition);
-  DragCursor := FDragObject.GetDragCursor(SendCmDragMsg(FDragObject, dmDragMove),APosition.X, APosition.Y);
+  bAccepted := SendCmDragMsg(FDragObject, dmDragMove);
+  if not DragManager.IsDragging then Exit; // avoids crash: accessing FDragObject which is not valid
+  DragCursor := FDragObject.GetDragCursor(bAccepted, APosition.X, APosition.Y);
   if FDragImageList <> nil then
   begin
     if (ATarget = nil) or (csDisplayDragImage in ATarget.ControlStyle) or
