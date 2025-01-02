@@ -450,13 +450,14 @@ begin
       OldChange:=LazarusIDE.OpenEditorsOnCodeToolChange;
       LazarusIDE.OpenEditorsOnCodeToolChange:=true;
       try
+        isConflicted:=false; // todo: check for conflicts and show user list
         if not CodeToolBoss.RenameIdentifier(PascalReferences,
-          Identifier, Options.RenameTo, DeclCode, @DeclarationCaretXY, isConflicted)
+          Identifier, Options.RenameTo, DeclCode, @DeclarationCaretXY)
         then begin
           if isConflicted then
-          IDEMessageDialog(lisRenamingConflict,
-            Format(lisIdentifierWasAlreadyUsed,[Options.RenameTo]),
-            mtError,[mbOK])
+            IDEMessageDialog(lisRenamingConflict,
+              Format(lisIdentifierWasAlreadyUsed,[Options.RenameTo]),
+              mtError,[mbOK])
           else
             LazarusIDE.DoJumpToCodeToolBossError;
             debugln('Error: (lazarus) DoFindRenameIdentifier unable to commit');

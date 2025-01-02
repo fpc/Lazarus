@@ -8563,7 +8563,7 @@ var
   PascalReferences: TAVLTree;
   i: Integer;
   MsgResult: TModalResult;
-  OnlyEditorFiles, isConflicted: Boolean;
+  OnlyEditorFiles: Boolean;
   aFilename: String;
 begin
   // compare unitnames case sensitive, maybe only the case changed
@@ -8653,7 +8653,7 @@ begin
         end;
       end;
       if not CodeToolBoss.RenameIdentifier(PascalReferences,OldUnitName,NewUnitName,
-                                           Nil,Nil,isConflicted) then
+                                           Nil,Nil) then
       begin
         if (not IgnoreErrors) and (not Quiet) then
           MainIDE.DoJumpToCodeToolBossError;
