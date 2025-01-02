@@ -120,6 +120,7 @@ type
     procedure TestFindDeclaration_Program;
     procedure TestFindDeclaration_Basic;
     procedure TestFindDeclaration_Proc_BaseTypes;
+    procedure TestFindDeclaration_ProcMested;
     procedure TestFindDeclaration_With;
     procedure TestFindDeclaration_ClassOf;
     procedure TestFindDeclaration_NestedClasses;
@@ -400,9 +401,9 @@ begin
         //debugln(['TTestFindDeclaration.FindDeclarations Marker="',Marker,'" params: ',dbgstr(MainTool.Src,p,CommentP-p)]);
         if (Marker='declaration') or (Marker='declaration!') or (Marker='completion') then begin
           ExpectedPath:=copy(Src,PathPos,CommentP-1-PathPos);
-          {$IFDEF VerboseFindDeclarationTests}
+          { $IFDEF VerboseFindDeclarationTests}
           debugln(['TTestFindDeclaration.FindDeclarations searching "',Marker,'" at ',MainTool.CleanPosToStr(NameStartPos-1),' ExpectedPath=',ExpectedPath]);
-          {$ENDIF}
+          { $ENDIF}
 
           if (Marker='declaration') or (Marker='declaration!') then begin
             MainTool.CleanPosToCaret(IdentifierStartPos,CursorPos);
@@ -765,6 +766,33 @@ end;
 procedure TTestFindDeclaration.TestFindDeclaration_Proc_BaseTypes;
 begin
   FindDeclarations('moduletests/fdt_proc_basetypes.pas');
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_ProcMested;
+begin
+  StartProgram;
+  Add([
+  '{$mode objfpc}',
+  'procedure Fly(Size: word);',
+  '',
+  '  procedure Sub1;',
+  '  var Size: byte;',
+  '  begin',
+  '    Size{ declaration:Fly.Sub1.Size}:=3;',
+  '  end;',
+  '',
+  '  procedure Sub2(Size: word);',
+  '  begin',
+  '    Size{declaration:Fly.Sub2.Size}:=4;',
+  '  end;',
+  'begin',
+  '  Size{declaration:Fly.Size}:=Size{ declaration:Fly.Size}+1;',
+  'end;',
+  '',
+  'begin',
+  'end.',
+  '']);
+  FindDeclarations(Code);
 end;
 
 procedure TTestFindDeclaration.TestFindDeclaration_With;

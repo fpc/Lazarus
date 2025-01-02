@@ -13216,7 +13216,9 @@ begin
   LastNodeCache:=nil;
   // start with parent of deepest node and end parent of highest
   Node:=StartNode;
-  repeat
+  if Node.Desc in AllNodeCacheDescs then
+    Node:=Node.Parent; // e.g. if start was ctnProcedure, it was not searched inside
+  while Node<>nil do begin
     if (Node.Desc in AllNodeCacheDescs) then begin
       if (Node.Cache=nil) then
         CreateNewNodeCache(Node);
@@ -13237,11 +13239,12 @@ begin
           end;
           {$ENDIF}
           LastNodeCache:=CurNodeCache;
+          if (EndNode=Node) or EndNode.HasAsParent(Node) then break;
         end;
       end;
     end;
     Node:=Node.Parent;
-  until (Node=nil) or (EndNode=Node) or EndNode.HasAsParent(Node);
+  end;
   {$IFDEF ShowNodeCache}
   if BeVerbose then begin
     DebugLn('=========================))))))))))))))))))))))))))))))))');

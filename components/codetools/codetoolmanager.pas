@@ -572,8 +572,7 @@ type
           var TreeOfPCodeXYPosition: TAVLTree): boolean;
     function RenameIdentifier(TreeOfPCodeXYPosition: TAVLTree;
           const OldIdentifier, NewIdentifier: string;
-          DeclarationCode: TCodeBuffer; DeclarationCaretXY: PPoint;
-          out isConflicted: boolean): boolean;
+          DeclarationCode: TCodeBuffer; DeclarationCaretXY: PPoint): boolean;
     function ReplaceWord(Code: TCodeBuffer; const OldWord, NewWord: string;
           ChangeStrings: boolean): boolean;
     function RemoveIdentifierDefinition(Code: TCodeBuffer; X, Y: integer
@@ -3038,20 +3037,17 @@ begin
   end;
 end;
 
-function TCodeToolManager.RenameIdentifier(TreeOfPCodeXYPosition: TAVLTree;
-  const OldIdentifier, NewIdentifier: string; DeclarationCode: TCodeBuffer;
-  DeclarationCaretXY: PPoint; out isConflicted: boolean): boolean;
+function TCodeToolManager.RenameIdentifier(TreeOfPCodeXYPosition: TAVLTree; const OldIdentifier,
+  NewIdentifier: string; DeclarationCode: TCodeBuffer; DeclarationCaretXY: PPoint): boolean;
 var
   ANode: TAVLTreeNode;
   CurCodePos: PCodeXYPosition;
   IdentStartPos, IdentEndPos,IdentAmdPos: integer;
   i,j: Integer;
   Code:TCodeBuffer;
-  DottedIdents, isOK: Boolean;
-  StrippedIdent:string;
+  DottedIdents: Boolean;
+  StrippedIdent, aComment:string;
   CodeTool:TCustomCodeTool;
-  anItem: TIdentifierListItem;
-  aComment: string;
 
   function GetIdent(Identifier: PChar): string;
   begin
@@ -3063,7 +3059,6 @@ var
 
 begin
   Result:=false;
-  isConflicted:=false;
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.RenameIdentifier A Old=',OldIdentifier,' New=',NewIdentifier,' ',dbgs(TreeOfPCodeXYPosition<>nil));
   {$ENDIF}
@@ -3082,39 +3077,6 @@ begin
   // the tree is sorted for descending line code positions
   // -> go from end of source to start of source, so that replacing does not
   // change any CodeXYPosition not yet processed
-
-  if CompareIdentifiers(PChar(OldIdentifier),PChar(NewIdentifier))=0 then begin
-    // change in case or ampersands -> no check for conflict needed
-  end else begin
-    // check for conflicts
-    ANode:=TreeOfPCodeXYPosition.FindHighest;
-    isOK:=true;
-    while isOK and (ANode<>nil) do begin
-      CurCodePos:=PCodeXYPosition(ANode.Data);
-      Code:=CurCodePos^.Code;
-      Code.LineColToPosition(CurCodePos^.Y,CurCodePos^.X,IdentStartPos);
-      if IdentStartPos<1 then begin
-        ANode:=TreeOfPCodeXYPosition.FindPrecessor(ANode);
-        continue;
-      end;
-      // todo: replace GatherIdentifiers with something faster
-      GatherIdentifiers(Code,CurCodePos^.X,CurCodePos^.Y);
-      anItem:=IdentifierList.FindIdentifier(PChar(NewIdentifier));
-      isOK:= not ((anItem<>nil) and
-        (CompareDottedIdentifiers(PChar(OldIdentifier), PChar(NewIdentifier))<>0));
-      if not isOK then begin
-        {$IFDEF VerboseFindReferences}
-        debugln(['TCodeToolManager.RenameIdentifier conflict found for ',dbgs(CurCodePos),', conflicts with ',anItem.AsString]);
-        {$ENDIF}
-        break;
-      end;
-      ANode:=TreeOfPCodeXYPosition.FindPrecessor(ANode);
-    end;
-    if not isOK then begin
-      isConflicted:=true;
-      exit;
-    end;
-  end;
 
   ANode:=TreeOfPCodeXYPosition.FindLowest;
   while ANode<>nil do begin
