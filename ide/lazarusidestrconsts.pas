@@ -5375,8 +5375,8 @@ resourcestring
     +'multiple times.';
   lisOverrideTheProjectOperatingSystemEGWin32LinuxDefau = 'Override the '
     +'project operating system. For example: win32 linux. Default: %s.';
-  lisOverrideTheProjectWidgetsetEGGtkGtk2QtWin32CarbonD = 'Override the '
-    +'project widgetset. For example: gtk gtk2 qt win32 carbon. Default: %s.';
+  lisOverrideTheProjectWidgetsetEGDefault = 'Override the project widgetset. ' +
+    'For example: %s. Default: %s.';
   lisOverrideTheProjectCpuEGI386X86_64PowerpcPowerpc_64 = 'Override the '
     +'project CPU. For example: i386 x86_64 powerpc powerpc_64. Default: %s.';
   lisOverrideTheDefaultCompilerEGPpc386Ppcx64PpcppcEtcD = 'Override the '
