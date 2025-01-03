@@ -1595,7 +1595,9 @@ height items when enabled in settings for the control.
 </element>
 
 <element name="TCustomComboBox">
-<short>The base class for combo-box components.</short>
+<short>
+The base class for combo-box components.
+</short>
 <descr>
 <p>
 <var>TCustomComboBox</var> is a <var>TWinControl</var> descendant which 
@@ -1604,10 +1606,10 @@ Component Library).
 </p>
 <p>
 A combo-box is visually represented as an edit control and a scrollable list 
-of items which can be selected. The list can be always visible, or opened 
-when needed using a drop-down indicator. In addition, the items in the 
-control be drawn using using the built-in mechanisms for the widgetset class 
-or using an owner-drawn style.
+of items which can be selected. The list can always be visible, or opened 
+when needed using a drop-down indicator. In addition, the items displayed on 
+the control be drawn using using the built-in mechanisms for the widgetset 
+class or using an owner-drawn style.
 </p>
 <p>
 Despite similarities in appearance to <var>TCustomEdit</var> and 
@@ -1615,19 +1617,38 @@ Despite similarities in appearance to <var>TCustomEdit</var> and
 (Delphi compatible).
 </p>
 <p>
-Use the <var>Style</var> property to control the display style and drawing 
-mechanism enabled for Items in the control.
+Use <var>Items</var> to access the entries displayed in the drop-down list. Use 
+<var>AddItem</var> or <var>AddHistoryItem</var> to add entries to 
+the list of items. Use <var>OnGetItems</var> to dynamically populate the Items 
+in the control when the drop-down list is displayed.
 </p>
 <p>
-Use properties like <var>AutoComplete</var>, <var>AutoCompleteText</var>, and 
-<var>AutoDropDown</var> to control the behavior of the edit field or 
-drop-down list in the control.
+The selectable values in <var>Items</var> can be maintained at design-time by 
+clicking on the ellipsis character (<b>...</b>) displayed next to Items in the 
+Object Inspector.
 </p>
 <p>
-Use <var>Items</var> to access existing list items defined the control. Use 
-<var>AddItem</var> or <var>AddHistoryItem</var> to add entries to the list 
-items in the control. Use <var>OnGetItems</var> to dynamically populate the 
-Items in the control when the drop-down list is displayed.
+The <var>Text</var> property reflects the text entered directly into the edit 
+box, or selected either manually or by auto-completion from the Items in the 
+list. At run-time, the entry selected from the list replaces the text in the 
+edit box, and <var>ItemIndex</var> holds the (zero-based) index number of the 
+selected item. If no value is selected from the drop-down list, the default 
+text (if any) remains for any information typed directly into the control Text, 
+and ItemIndex takes the value of -1.
+</p>
+<p>
+Use <var>Style</var> to control the display style and drawing mechanism enabled 
+for the drop-down list on the control.
+</p>
+<p>
+Use <var>AutoDropDown</var>, <var>AutoComplete</var>, 
+<var>AutoCompleteText</var>, and <var>AutoDropDown</var> to control the
+behavior of the edit box and its interaction with the drop-down list on the 
+control.
+</p>
+<p>
+Use <var>ItemHeight</var> and <var>ItemWidth</var> to control the appearance 
+for the Items displayed on the drop-down list.
 </p>
 <p>
 Do not create instances of TCustomComboBox. Use one of the descendent 
@@ -1635,10 +1656,19 @@ classes, like <var>TComboBox</var> or <var>TComboBoxEx</var>.
 </p>
 <remark>
 The Height property in TCustomComboBox / TComboBox cannot be changed for some 
-platforms, including Windows and macOS Carbon. It is best to set AutoSize to 
+platforms, including Windows and macOS. It is best to set AutoSize to 
 <b>True</b> to ensure consistent size handling on the supported platforms.
 </remark>
+<remark>
+Changing the value in BorderStyle to bsNone has no effect for the Windows 
+widgetset. It is not possible to remove the border on the Windows platform.
+</remark>
 </descr>
+<seealso>
+<link id="TComboBox"/>
+<link id="TWinControl"/>
+<link id="#lcl.comboex.TComboBoxEx">TComboBoxEx</link>
+</seealso>
 </element>
 
 <element name="TCustomComboBox.FArrowKeysTraverseList"/>
@@ -4293,44 +4323,77 @@ set to <b>True</b> and the mouse is over the control.
 
 <element name="TComboBox">
 <short>
-A combination of an edit box and a (drop-down) list allowing one of several 
-options to be chosen.
+Implements a control with an edit box and a drop-down list allowing one of 
+several options to be chosen.
 </short>
 <descr>
 <p>
-The Text property reflects the text entered into the edit box, or selected 
-from the list.
+<var>TComboBox</var> is a <var>TCustomComboBox</var> descendant which 
+implements the a combo-box component in the LCL (Lazarus Component Library).
 </p>
 <p>
-The selectable values are kept in the <var>Items</var> list. Clicking on the 
-ellipsis character (<b>...</b>), next to <var>Items</var> in the Object 
-Inspector, opens an editor which allows the designer to populate the Items 
-list.
+A combo-box is visually represented as an edit control and a scrollable list 
+of items which can be selected. The list can always be visible, or opened 
+when needed using a drop-down indicator. In addition, the items displayed on 
+the control be drawn using using the built-in mechanisms for the widgetset 
+class or using an owner-drawn style.
 </p>
 <p>
-At run-time, the entry selected from the list replaces the text in the edit 
-box, and <var>ItemIndex</var> holds the (zero-based) index number of the 
-selected item.
+Despite similarities in appearance to <var>TCustomEdit</var> and 
+<var>TCustomList</var>, the class inherits no properties from these classes 
+(Delphi compatible).
 </p>
 <p>
-If no value is selected from the drop-down list, the default text (if any) 
-remains, or any information typed directly into <var>Text</var> will be 
-returned, and <var>ItemIndex</var> takes the value of -1.
+Use <var>Items</var> to access the entries displayed in the drop-down list. Use 
+<var>AddItem</var> or <var>AddHistoryItem</var> to add entries to 
+the list of items. Use <var>OnGetItems</var> to dynamically populate the Items 
+in the control when the drop-down list is displayed.
+</p>
+<p>
+The selectable values in <var>Items</var> can be maintained at design-time by 
+clicking on the ellipsis character (<b>...</b>) displayed next to Items in the 
+Object Inspector.
+</p>
+<p>
+The <var>Text</var> property reflects the text entered directly into the edit 
+box, or selected either manually or by auto-completion from the Items in the 
+list. At run-time, the entry selected from the list replaces the text in the 
+edit box, and <var>ItemIndex</var> holds the (zero-based) index number of the 
+selected item. If no value is selected from the drop-down list, the default 
+text (if any) remains for any information typed directly into the control Text, 
+and ItemIndex takes the value of -1.
+</p>
+<p>
+Use <var>Style</var> to control the display style and drawing mechanism enabled 
+for the drop-down list on the control.
+</p>
+<p>
+Use <var>AutoDropDown</var>, <var>AutoComplete</var>, 
+<var>AutoCompleteText</var>, and <var>AutoDropDown</var> to control the
+behavior of the edit box and its interaction with the drop-down list on the 
+control.
+</p>
+<p>
+Use <var>ItemHeight</var> and <var>ItemWidth</var> to control the appearance 
+for the Items displayed on the drop-down list.
 </p>
 <remark>
-The Height property in TComboBox cannot be changed for some platforms, like 
-Windows and macOS Carbon. It is best to set AutoSize to <b>True</b> to ensure 
-consistent size handling on the supported platforms.
+The Height property in TCustomComboBox / TComboBox cannot be changed for some 
+platforms, including Windows and macOS. It is best to set AutoSize to 
+<b>True</b> to ensure consistent size handling on the supported platforms.
 </remark>
 <remark>
 Changing the value in BorderStyle to bsNone has no effect for the Windows 
-widgetset. It is impossible to remove the border under Windows.
+widgetset. It is not possible to remove the border on the Windows platform.
 </remark>
 </descr>
 <seealso>
-<link id="HowToUseStdCtrls"/>
 <link id="TComboBox.Items"/>
 <link id="TComboBox.ItemIndex"/>
+<link id="TComboBox.Style"/>
+<link id="TComboBox.Text"/>
+<link id="#lcl.comboex.TComboBoxEx">TComboBoxEx</link>
+<link id="HowToUseStdCtrls"/>
 </seealso>
 </element>
 
