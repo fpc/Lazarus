@@ -520,9 +520,8 @@ procedure TCustomComboBox.WMChar(var Message: TLMChar);
 begin
   // all normal characters are handled by the ComboBox
   //debugln('TCustomEdit.WMChar ',DbgSName(Self),' ',dbgs(Message.CharCode));
-  if (Message.CharCode in [ord('A')..ord('Z'),ord('a')..ord('z')]) then
-    // eat normal keys, so they don't trigger accelerators
-    Message.Result := 1
+  if KeyDataToShiftState(Message.KeyData) * [ssCtrl, ssAlt] = [] then
+    Message.Result := 1  // eat normal keys, so they don't trigger accelerators
   else
     inherited WMChar(Message);
 end;
