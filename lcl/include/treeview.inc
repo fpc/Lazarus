@@ -2020,6 +2020,35 @@ begin
   end;
 end;
 
+{ Reads a node (and its children) from the Items.NodeData block written
+  by more recent versions of Delphi. See issue #41303. }
+procedure TTreeNode.ReadDelphiNodeData(Stream: TStream; ASignature: Byte);
+var
+  I, Size, ItemCount: Integer;
+  Info: TDelphiNodeDataInfo;
+  s: UnicodeString;
+begin
+  if ASignature <> 3 then
+    exit;
+  if Owner <> nil then Owner.ClearCache;
+  Stream.ReadBuffer(Size, SizeOf(Size));
+  Stream.ReadBuffer(Info, SizeOf(TDelphiNodeDataInfo));
+  SetLength(s, info.TextLen);
+  Stream.ReadBuffer(s[1], info.TextLen * SizeOf(WideChar));
+  Text := UTF8Encode(s);
+  ImageIndex := Info.ImageIndex;
+  SelectedIndex := Info.SelectedIndex;
+  StateIndex := Info.StateIndex;
+  OverlayIndex := Info.OverlayIndex;
+  ItemCount := Info.ChildCount;
+  Enabled := (Info.Enabled = 1);
+  if Owner <> nil then
+  begin
+    for I := 0 to ItemCount - 1 do
+      Owner.AddChild(Self, '').ReadDelphiNodeData(Stream, ASignature);
+  end;
+end;
+
 procedure TTreeNode.WriteData(Stream: TStream; StreamVersion: integer);
 var
   i: integer;
@@ -3031,6 +3060,7 @@ procedure TTreeNodes.DefineProperties(Filer: TFiler);
 begin
   inherited DefineProperties(Filer);
   Filer.DefineBinaryProperty('Data', @ReadData, @WriteData, WriteNodes);
+  Filer.DefineBinaryProperty('NodeData', @ReadDelphiNodeData, nil, false);
 end;
 
 procedure TTreeNodes.ReadData(Stream: TStream);
@@ -3055,6 +3085,23 @@ begin
     for I := 0 to NewCount - 1 do
       Add(nil, '').ReadDelphiData(Stream, @DelphiNodeInfo);
   end;
+end;
+
+{ Reads the Items.NodeData block from the dfm file written by more recent
+  versions of Delphi. Issue #41303 }
+procedure TTreeNodes.ReadDelphiNodeData(Stream: TStream);
+var
+  MagicNumber: Byte;
+  NewCount: Integer;
+  I: Integer;
+begin
+  // Read signature
+  Stream.ReadBuffer(MagicNumber, SizeOf(Byte));
+  // Read top level node count
+  Stream.ReadBuffer(NewCount, SizeOf(NewCount));
+  // Read top level nodes. Each node reads its children immediately after itself.
+  for I := 0 to NewCount - 1 do
+    Add(nil, '').ReadDelphiNodeData(Stream, MagicNumber);
 end;
 
 procedure TTreeNodes.WriteData(Stream: TStream);

@@ -3006,6 +3006,19 @@ type
     Text: string[255];
   end;
 
+  TDelphiNodeDataInfo = packed record
+    ImageIndex: Integer;
+    SelectedIndex: Integer;
+    StateIndex: Integer;
+    Unknown1: Integer;
+    OverlayIndex: Integer;
+    Unknown2: Integer;        // Data ?
+    ChildCount: Integer;
+    Enabled: Byte;
+    TextLen: Byte;
+    // here follows the wide text
+  end;
+
   { TTreeNode }
 
   TTreeNode = class(TPersistent)
@@ -3064,6 +3077,7 @@ type
     function IsNodeHeightFullVisible: Boolean;
     procedure ReadData(Stream: TStream; StreamVersion: integer);
     procedure ReadDelphiData(Stream: TStream; Info: PDelphiNodeInfo);
+    procedure ReadDelphiNodeData(Stream: TStream; ASignature: Byte);
     procedure SetCut(AValue: Boolean);
     procedure SetData(AValue: Pointer);
     procedure SetDropTarget(AValue: Boolean);
@@ -3234,6 +3248,7 @@ type
       Node: TTreeNode);
     procedure ReadData(Stream: TStream);
     procedure ReadExpandedState(Stream: TStream);
+    procedure ReadDelphiNodeData(Stream: TStream);
     procedure Repaint(ANode: TTreeNode);
     procedure ShrinkTopLvlItems;
     procedure SetTopLvlItems(Index: integer; AValue: TTreeNode);
