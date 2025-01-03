@@ -15131,9 +15131,9 @@ msgstr ""
 msgid "Override the project subtarget."
 msgstr ""
 
-#: lazarusidestrconsts.lisoverridetheprojectwidgetseteggtkgtk2qtwin32carbond
+#: lazarusidestrconsts.lisoverridetheprojectwidgetsetegdefault
 #, object-pascal-format
-msgid "Override the project widgetset. For example: gtk gtk2 qt win32 carbon. Default: %s."
+msgid "Override the project widgetset. For example: %s. Default: %s."
 msgstr ""
 
 #: lazarusidestrconsts.lisownerisalreadyusedbytreadertwriterpleasechooseanot

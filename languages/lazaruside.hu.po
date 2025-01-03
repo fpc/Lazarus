@@ -14798,11 +14798,10 @@ msgstr "%sA projekt cél operációs rendszerének felülbírálása.pl. win32 l
 msgid "Override the project subtarget."
 msgstr ""
 
-#: lazarusidestrconsts.lisoverridetheprojectwidgetseteggtkgtk2qtwin32carbond
-#, object-pascal-format, fuzzy, badformat
-#| msgid "%soverride the project widgetset. e.g. gtk gtk2 qt win32 carbon. default: %s"
-msgid "Override the project widgetset. For example: gtk gtk2 qt win32 carbon. Default: %s."
-msgstr "%sA projekt vezérlőkészletének felülbírálása. pl. gtk gtk2 qt win32 carbon. alapértelmezett: %s"
+#: lazarusidestrconsts.lisoverridetheprojectwidgetsetegdefault
+#, object-pascal-format
+msgid "Override the project widgetset. For example: %s. Default: %s."
+msgstr ""
 
 #: lazarusidestrconsts.lisownerisalreadyusedbytreadertwriterpleasechooseanot
 msgid "'Owner' is already used by TReader/TWriter. Please choose another name."

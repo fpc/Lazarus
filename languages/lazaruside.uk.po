@@ -14757,11 +14757,10 @@ msgstr "%sперевизначити операційну систему про�
 msgid "Override the project subtarget."
 msgstr ""
 
-#: lazarusidestrconsts.lisoverridetheprojectwidgetseteggtkgtk2qtwin32carbond
-#, object-pascal-format, fuzzy, badformat
-#| msgid "%soverride the project widgetset. e.g. gtk gtk2 qt win32 carbon. default: %s"
-msgid "Override the project widgetset. For example: gtk gtk2 qt win32 carbon. Default: %s."
-msgstr "%sперевизначити набір віджетів проєкту. напр. gtk gtk2 qt win32 carbon. типовий: %s"
+#: lazarusidestrconsts.lisoverridetheprojectwidgetsetegdefault
+#, object-pascal-format
+msgid "Override the project widgetset. For example: %s. Default: %s."
+msgstr ""
 
 #: lazarusidestrconsts.lisownerisalreadyusedbytreadertwriterpleasechooseanot
 msgid "'Owner' is already used by TReader/TWriter. Please choose another name."

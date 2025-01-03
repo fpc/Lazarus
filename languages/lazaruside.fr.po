@@ -14680,10 +14680,10 @@ msgstr "Redéfinit l' du projet. Par exemple : win32, linux. Par défaut : %s."
 msgid "Override the project subtarget."
 msgstr "Remplacer la sous-cible du projet."
 
-#: lazarusidestrconsts.lisoverridetheprojectwidgetseteggtkgtk2qtwin32carbond
+#: lazarusidestrconsts.lisoverridetheprojectwidgetsetegdefault
 #, object-pascal-format
-msgid "Override the project widgetset. For example: gtk gtk2 qt win32 carbon. Default: %s."
-msgstr "Redéfinir l'ensemble graphique du projet. Par exemple : gtk, gtk2, qt, win32, carbon. Par défaut : %s."
+msgid "Override the project widgetset. For example: %s. Default: %s."
+msgstr ""
 
 #: lazarusidestrconsts.lisownerisalreadyusedbytreadertwriterpleasechooseanot
 msgid "'Owner' is already used by TReader/TWriter. Please choose another name."
