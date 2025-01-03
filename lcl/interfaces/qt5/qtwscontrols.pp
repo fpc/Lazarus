@@ -426,6 +426,9 @@ begin
   if not WSCheckHandleAllocated(AWincontrol, 'PaintTo') or (ADC = 0) then
     Exit;
 
+  if not AWinControl.Visible or not TQtWidget(AWinControl.Handle).getVisible then
+    exit;
+
   Widget := TQtWidget(AWinControl.Handle);
   ARect := Widget.getFrameGeometry;
 
