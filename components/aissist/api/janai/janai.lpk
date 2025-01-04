@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="5">
+    <Name Value="janai"/>
+    <Type Value="RunAndDesignTime"/>
+    <Author Value="Michael Van Canneyt"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+    </CompilerOptions>
+    <Description Value="Provide an Jan AI REST AI protocol to the abstract AIssist client."/>
+    <License Value="Modified LGPL"/>
+    <Version Minor="9" Release="1"/>
+    <Files>
+      <Item>
+        <Filename Value="janai_v1.pas"/>
+        <UnitName Value="janai_v1"/>
+      </Item>
+      <Item>
+        <Filename Value="janaiprotocol.pas"/>
+        <UnitName Value="janaiprotocol"/>
+      </Item>
+    </Files>
+    <RequiredPkgs>
+      <Item>
+        <PackageName Value="aissist"/>
+      </Item>
+      <Item>
+        <PackageName Value="FCL"/>
+      </Item>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

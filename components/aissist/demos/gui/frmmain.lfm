@@ -1,0 +1,162 @@
+object MainChatForm: TMainChatForm
+  Left = 425
+  Height = 623
+  Top = 278
+  Width = 1073
+  Caption = 'AI Chat demo'
+  ClientHeight = 623
+  ClientWidth = 1073
+  SessionProperties = 'Left;Top;Width;Height;pnlPrompt.Height'
+  LCLVersion = '3.99.0.0'
+  OnCreate = FormCreate
+  object Button1: TButton
+    Left = 16
+    Height = 25
+    Top = 552
+    Width = 75
+    Caption = 'Button1'
+    TabOrder = 0
+    OnClick = handleConnect
+  end
+  object GBChat: TGroupBox
+    Left = 0
+    Height = 433
+    Top = 42
+    Width = 1073
+    Align = alClient
+    Caption = 'AI Chat'
+    Constraints.MinWidth = 200
+    TabOrder = 1
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 42
+    Top = 0
+    Width = 1073
+    Align = alTop
+    BevelOuter = bvNone
+    ClientHeight = 42
+    ClientWidth = 1073
+    TabOrder = 2
+    object edtURL: TEdit
+      Left = 144
+      Height = 28
+      Top = 8
+      Width = 376
+      Anchors = [akTop, akLeft, akRight]
+      TabOrder = 0
+      TextHint = 'Enter base URL for AI server API'
+      OnChange = edtURLChange
+    end
+    object lblURL: TLabel
+      AnchorSideTop.Control = edtURL
+      AnchorSideRight.Control = edtURL
+      AnchorSideBottom.Control = edtURL
+      AnchorSideBottom.Side = asrBottom
+      Left = 34
+      Height = 28
+      Top = 8
+      Width = 110
+      Anchors = [akTop, akLeft, akBottom]
+      AutoSize = False
+      BorderSpacing.Right = 8
+      Caption = 'Server API URL'
+      Layout = tlCenter
+    end
+    object cbModels: TComboBox
+      AnchorSideTop.Control = edtURL
+      AnchorSideBottom.Control = edtURL
+      AnchorSideBottom.Side = asrBottom
+      Left = 684
+      Height = 28
+      Top = 8
+      Width = 324
+      Anchors = [akTop, akRight, akBottom]
+      ItemHeight = 0
+      TabOrder = 1
+      OnChange = cbModelsChange
+    end
+    object lblModel: TLabel
+      AnchorSideTop.Control = edtURL
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = edtURL
+      AnchorSideBottom.Side = asrBottom
+      Left = 632
+      Height = 28
+      Top = 8
+      Width = 39
+      Anchors = [akTop, akRight, akBottom]
+      Caption = 'Model'
+      Layout = tlCenter
+    end
+    object btnConnect: TButton
+      AnchorSideLeft.Control = edtURL
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = edtURL
+      AnchorSideBottom.Control = edtURL
+      AnchorSideBottom.Side = asrBottom
+      Left = 528
+      Height = 28
+      Top = 8
+      Width = 75
+      Anchors = [akTop, akLeft, akBottom]
+      BorderSpacing.Left = 8
+      Caption = '&Connect'
+      TabOrder = 2
+      OnClick = handleConnect
+    end
+  end
+  object pnlPrompt: TPanel
+    Left = 0
+    Height = 143
+    Top = 480
+    Width = 1073
+    Align = alBottom
+    ClientHeight = 143
+    ClientWidth = 1073
+    TabOrder = 3
+    object Label1: TLabel
+      Left = 30
+      Height = 16
+      Top = 17
+      Width = 79
+      Caption = 'Your prompt:'
+    end
+    object mPrompt: TMemo
+      Left = 128
+      Height = 112
+      Top = 16
+      Width = 832
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      TabOrder = 0
+    end
+    object btnPrompt: TButton
+      Left = 976
+      Height = 25
+      Top = 17
+      Width = 88
+      Anchors = [akTop, akRight]
+      Caption = 'Prompt AI'
+      TabOrder = 1
+      OnClick = handlePrompt
+    end
+  end
+  object Splitter1: TSplitter
+    Cursor = crVSplit
+    Left = 0
+    Height = 5
+    Top = 475
+    Width = 1073
+    Align = alBottom
+    ResizeAnchor = akBottom
+    ResizeStyle = rsPattern
+  end
+  object psAI: TIniPropStorage
+    StoredValues = <>
+    Active = False
+    OnSaveProperties = psAISaveProperties
+    OnRestoreProperties = psAIRestoreProperties
+    Left = 421
+    Top = 110
+  end
+end

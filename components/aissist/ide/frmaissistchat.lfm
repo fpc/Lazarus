@@ -1,0 +1,85 @@
+object AIssistChatForm: TAIssistChatForm
+  Left = 544
+  Height = 477
+  Top = 278
+  Width = 786
+  Caption = 'AI Assistent conversation form'
+  ClientHeight = 477
+  ClientWidth = 786
+  LCLVersion = '4.99.0.0'
+  OnCreate = FormCreate
+  object pnlPrompt: TPanel
+    Left = 0
+    Height = 143
+    Top = 334
+    Width = 786
+    Align = alBottom
+    ClientHeight = 143
+    ClientWidth = 786
+    TabOrder = 0
+    object lblPrompt: TLabel
+      Left = 30
+      Height = 16
+      Top = 17
+      Width = 79
+      Caption = 'Your prompt:'
+    end
+    object mPrompt: TMemo
+      Left = 128
+      Height = 112
+      Top = 16
+      Width = 545
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      TabOrder = 0
+    end
+    object btnPrompt: TButton
+      Left = 689
+      Height = 25
+      Top = 17
+      Width = 88
+      Anchors = [akTop, akRight]
+      Caption = 'Prompt AI'
+      TabOrder = 1
+      OnClick = HandlePrompt
+    end
+    object btnConfigure: TButton
+      Left = 689
+      Height = 25
+      Top = 103
+      Width = 88
+      Anchors = [akRight, akBottom]
+      Caption = 'Configure...'
+      TabOrder = 2
+      OnClick = HandleConfigureClick
+    end
+  end
+  object GBChat: TGroupBox
+    Left = 0
+    Height = 329
+    Top = 0
+    Width = 786
+    Align = alClient
+    Caption = 'AI Conversation'
+    Constraints.MinWidth = 200
+    TabOrder = 1
+  end
+  object Splitter1: TSplitter
+    Cursor = crVSplit
+    Left = 0
+    Height = 5
+    Top = 329
+    Width = 786
+    Align = alBottom
+    ResizeAnchor = akBottom
+    ResizeStyle = rsPattern
+  end
+  object pmChat: TPopupMenu
+    OnPopup = pmChatPopup
+    Left = 107
+    Top = 82
+    object MICopy: TMenuItem
+      Caption = '&Copy'
+      OnClick = MICopyClick
+    end
+  end
+end
