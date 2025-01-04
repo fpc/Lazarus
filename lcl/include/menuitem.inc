@@ -1770,6 +1770,7 @@ end;
 procedure TMenuItem.BitmapChange(Sender: TObject);
 begin
   UpdateImage;
+  MenuChanged(False);
 end;
 
 function TMenuItem.GetAutoLineReduction: Boolean;
