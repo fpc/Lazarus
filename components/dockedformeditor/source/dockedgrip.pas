@@ -40,7 +40,7 @@ uses
   // RTL, FCL
   Classes, SysUtils, math,
   // LCL
-  Controls, ExtCtrls, Graphics, Menus;
+  Controls, ComCtrls, ExtCtrls, Graphics, Menus, Toolwin;
 
 type
 
@@ -193,7 +193,7 @@ type
   private
     FAnchorContainer: TWinControl;
     FBoundsRect: TRect;
-    FFakeMenu: TCustomControl;
+    FFakeMenu: TToolBar;
     FFormClient: TWinControl;
     FFormContainer: TResizeFormContainer;
     FParent: TWinControl;
@@ -208,7 +208,7 @@ type
   public
     property AnchorContainer: TWinControl read FAnchorContainer;
     property BoundsRect: TRect read FBoundsRect;
-    property FakeMenu: TCustomControl read FFakeMenu;
+    property FakeMenu: TToolBar read FFakeMenu;
     property FormClient: TWinControl read FFormClient;
     property FormContainer: TResizeFormContainer read FFormContainer;
     property Parent: TWinControl read FParent;
@@ -605,9 +605,17 @@ begin
   FResizeBars := TResizeBars.Create;
   FResizeBars.Parent := Parent;
 
-  FFakeMenu := TCustomControl.Create(Parent);
+  FFakeMenu := TToolBar.Create(Parent);
+  FFakeMenu.ParentFont := False;
+  FFakeMenu.Orientation := tboHorizontal;
+  FFakeMenu.EdgeBorders := [];
+  FFakeMenu.EdgeInner := esNone;
+  FFakeMenu.EdgeOuter := esNone;
   FFakeMenu.Height := 0;
   FFakeMenu.Parent := Parent;
+  FFakeMenu.Align := alNone;
+  FFakeMenu.AutoSize := True;
+  FFakeMenu.Indent := 0;
 
   FFormClient := TWinControl.Create(Parent);
   FFormClient.ControlStyle:= FFormClient.ControlStyle + [csOpaque];
@@ -645,11 +653,18 @@ begin
 end;
 
 procedure TResizeContainer.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
+var
+  w: Integer;
 begin
   FBoundsRect := Rect(ALeft, ATop, ALeft + AWidth, ATop + AHeight);
   FResizeGrips.SetBounds(FBoundsRect);
   FResizeBars.SetBounds(FBoundsRect);
-  FFakeMenu.SetBounds(ALeft + FResizeBars.BarSize, ATop + FResizeBars.BarSize, AWidth - FResizeBars.BarSize * 2, FFakeMenu.Height);
+  w := Max(0, AWidth - FResizeBars.BarSize * 2);
+  FFakeMenu.Visible := w > 0;
+  FFakeMenu.Constraints.MinWidth := w;
+  FFakeMenu.Constraints.MaxWidth := w;
+  FFakeMenu.Top  := ATop + FResizeBars.BarSize;
+  FFakeMenu.Left := ALeft + FResizeBars.BarSize;
   FFormClient.SetBounds(ALeft + FResizeBars.BarSize, ATop + FResizeBars.BarSize + FFakeMenu.Height, AWidth - FResizeBars.BarSize * 2, AHeight - FResizeBars.BarSize * 2 - FFakeMenu.Height);
   FAnchorContainer.SetBounds(ALeft + FResizeBars.BarSize, ATop + FResizeBars.BarSize + FFakeMenu.Height, AWidth - FResizeBars.BarSize * 2, AHeight - FResizeBars.BarSize * 2 - FFakeMenu.Height);
 end;

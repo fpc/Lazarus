@@ -20,8 +20,8 @@ uses
   // RTL
   Classes, Types, SysUtils, FPCanvas,
   // LCL
-  Forms, ExtCtrls, StdCtrls, Controls, LCLType, Menus, Graphics, LCLIntf,
-  LMessages, LCLProc,
+  Forms, ExtCtrls, StdCtrls, Controls, ComCtrls, LCLType, Menus, Graphics, LCLIntf,
+  LMessages, LCLProc, Buttons,
   // DockedFormEditor
   DockedOptionsIDE, DockedDesignForm, DockedGrip;
 
@@ -55,10 +55,9 @@ type
     procedure FakeKeyUp(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
     procedure FakeMenuEnter(Sender: TObject);
     function  FakeMenuNeeded: Boolean;
-    procedure FakeMenuPaint(Sender: TObject);
     procedure FakeUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
     function  GetAnchorContainer: TWinControl;
-    function  GetFakeMenu: TCustomControl;
+    function  GetFakeMenu: TToolBar;
     function  GetFormClient: TWinControl;
     function  GetFormContainer: TResizeFormContainer;
     function  GetSizerGripSize: Integer;
@@ -80,7 +79,7 @@ type
   public
     property AnchorContainer: TWinControl read GetAnchorContainer;
     property DesignForm: TDesignForm read FDesignForm write SetDesignForm;
-    property FakeMenu: TCustomControl read GetFakeMenu;
+    property FakeMenu: TToolBar read GetFakeMenu;
     property FormClient: TWinControl read GetFormClient;
     property FormContainer: TResizeFormContainer read GetFormContainer;
     property NewFormSize: TPoint read FNewFormSize;
@@ -128,7 +127,7 @@ begin
       Application.NotifyUserInputHandler(Self, 0); // force repaint invisible components
     end else
     if LFakeMenuNeeded then
-      FakeMenu.Invalidate; // always repaint menu on modification
+      TryBoundDesignForm; // always repaint menu on modification
     RefreshAnchorDesigner;
     FDesignerModified := False;
   end;
@@ -221,33 +220,7 @@ begin
   Result := False;
   if not Assigned(FDesignForm) then Exit;
   Result := FDesignForm.MainMenuFaked;
-end;
-
-procedure TResizeControl.FakeMenuPaint(Sender: TObject);
-var
-  MenuRect: Types.TRect;
-  Menu: TMainMenu;
-  X, Y, I: Integer;
-  LCanvas: TCanvas;
-begin
-  if not FakeMenuNeeded then Exit;
-
-  MenuRect := FakeMenu.ClientRect;
-  LCanvas := FakeMenu.Canvas;
-  LCanvas.Brush.Color := clMenuBar;
-  LCanvas.FillRect(MenuRect);
-
-  Menu := FDesignForm.Form.Menu;
-  LCanvas.Font.Color := clMenuText;
-
-  X := 5;
-  Y := (MenuRect.Top+MenuRect.Bottom-LCanvas.TextHeight('Hg')) div 2;
-  for I := 0 to Menu.Items.Count-1 do
-    if Menu.Items[I].Visible then
-    begin
-      LCanvas.TextOut(X, Y, Menu.Items[I].Caption);
-      Inc(X, LCanvas.TextWidth(Menu.Items[I].Caption) + 10);
-    end;
+  if Result then FakeMenu.Menu := FDesignForm.Form.Menu else FakeMenu.Menu := nil;
 end;
 
 procedure TResizeControl.FakeUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
@@ -265,7 +238,7 @@ begin
   Result := FResizeContainer.AnchorContainer;
 end;
 
-function TResizeControl.GetFakeMenu: TCustomControl;
+function TResizeControl.GetFakeMenu: TToolBar;
 begin
   Result := FResizeContainer.FakeMenu;
 end;
@@ -370,11 +343,13 @@ begin
 end;
 
 procedure TResizeControl.TryBoundDesignForm;
+var
+  f: Boolean;
 begin
   if DesignForm = nil then Exit;
-  if FakeMenuNeeded then
-    FakeMenu.Height := DesignForm.MainMenuHeight
-  else
+  f := FakeMenuNeeded;
+  FakeMenu.AutoSize := f;
+  if not f then
     FakeMenu.Height := 0;
 end;
 
@@ -403,7 +378,6 @@ begin
 
   CreateBarBitmaps;
 
-  FakeMenu.OnPaint := @FakeMenuPaint;
   FormClient.OnChangeBounds := @ClientChangeBounds;
   AnchorContainer.OnChangeBounds := @ClientChangeBounds;
   AdjustBounds(Point(0, 0));
@@ -422,6 +396,7 @@ var
   LWidth, LHeight: Integer;
 begin
   if FDesignForm = nil then Exit;
+  TryBoundDesignForm;
   LWidth := FDesignForm.Width + 2 * SizerGripSize;
   LHeight := FDesignForm.Height + 2 * SizerGripSize + FakeMenu.Height;
   {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TResizeControl.AdjustBounds: New ResizeControl Width:', DbgS(Width), ' Height: ', DbgS(Height)); {$ENDIF}
@@ -434,6 +409,7 @@ begin
   if (DesignForm = nil) then Exit;
   if not DockedOptions.ForceRefreshing and Resizing then Exit;
   {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TResizeControl.ClientChangeBounds Form Width:', DbgS(FormClient.Width), ' Height: ', DbgS(FormClient.Height)); {$ENDIF}
+  TryBoundDesignForm;
   if FormClient.Visible then
   begin
     FNewFormSize.X := FormClient.Width;
