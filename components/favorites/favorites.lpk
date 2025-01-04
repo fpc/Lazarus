@@ -28,7 +28,7 @@
         </Debugging>
       </Linking>
     </CompilerOptions>
-    <Description Value="Creates a third section (on the top) in the Open tool button drop-down menu where you can register your favorite projects."/>
+    <Description Value="Creates an additional section for favorite projects in the &quot;Open&quot; tool button drop-down menu."/>
     <License Value="GPL-2"/>
     <Version Minor="1" Release="1"/>
     <Files Count="2">
