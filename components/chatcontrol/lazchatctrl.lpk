@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="5">
+    <Name Value="lazchatctrl"/>
+    <Type Value="RunAndDesignTime"/>
+    <Author Value="Michael Van Canneyt"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+    </CompilerOptions>
+    <Description Value="Chat-like control, offering a simple messenger-like interface"/>
+    <License Value="modified LGPL-2
+"/>
+    <Version Minor="9" Release="1"/>
+    <Files>
+      <Item>
+        <Filename Value="chatcontrol.pas"/>
+        <UnitName Value="chatcontrol"/>
+      </Item>
+      <Item>
+        <Filename Value="typingindicator.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="typingindicator"/>
+      </Item>
+      <Item>
+        <Filename Value="regchatctrls.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="regchatctrls"/>
+      </Item>
+    </Files>
+    <RequiredPkgs>
+      <Item>
+        <PackageName Value="LCL"/>
+      </Item>
+      <Item>
+        <PackageName Value="FCL"/>
+      </Item>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

@@ -1,0 +1,162 @@
+object MainChatForm: TMainChatForm
+  Left = 662
+  Height = 637
+  Top = 201
+  Width = 1074
+  Caption = 'Chat control demo'
+  ClientHeight = 637
+  ClientWidth = 1074
+  SessionProperties = 'Left;Top;Width;Height;pnlPrompt.Height'
+  LCLVersion = '4.99.0.0'
+  OnCreate = FormCreate
+  object Button1: TButton
+    Left = 16
+    Height = 25
+    Top = 552
+    Width = 75
+    Caption = 'Button1'
+    TabOrder = 0
+  end
+  object GBChat: TGroupBox
+    Left = 0
+    Height = 489
+    Top = 0
+    Width = 1074
+    Align = alClient
+    Caption = 'Your Chat'
+    ClientHeight = 472
+    ClientWidth = 1072
+    Constraints.MinWidth = 200
+    TabOrder = 1
+    object ccMain: TChatControl
+      Left = 0
+      Height = 472
+      Top = 0
+      Width = 1072
+      HorzScrollBar.Page = 1068
+      VertScrollBar.Page = 96
+      CtrlSelects = False
+      OnItemClick = DoOnItemClick
+      LeftTyping = False
+      RightTyping = False
+      LeftBackground = 15790320
+      RightBackground = 11990434
+      LeftTextColor = clBlack
+      RightTextColor = clBlack
+      ItemSpacing = 8
+      ItemPadding = 8
+      ItemMargin = 4
+      Align = alClient
+      ClientHeight = 470
+      ClientWidth = 1070
+      Color = 13495248
+      ParentBackground = False
+      ParentColor = False
+      TabOrder = 0
+      OnMouseDown = ChatMouseDown
+    end
+  end
+  object pnlPrompt: TPanel
+    Left = 0
+    Height = 143
+    Top = 494
+    Width = 1074
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 143
+    ClientWidth = 1074
+    TabOrder = 2
+    object lblText: TLabel
+      Left = 30
+      Height = 16
+      Top = 17
+      Width = 58
+      Caption = 'Your text:'
+    end
+    object mPrompt: TMemo
+      Left = 128
+      Height = 112
+      Top = 16
+      Width = 800
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      TabOrder = 0
+      OnChange = mPromptChange
+    end
+    object btnAdd: TButton
+      Left = 936
+      Height = 25
+      Top = 16
+      Width = 88
+      Anchors = [akTop, akRight]
+      Caption = 'Add'
+      TabOrder = 1
+      OnClick = handlePrompt
+    end
+    object cbLeft: TCheckBox
+      Left = 936
+      Height = 23
+      Top = 104
+      Width = 94
+      Anchors = [akRight, akBottom]
+      Caption = 'Add to Left'
+      TabOrder = 2
+    end
+    object Button2: TButton
+      Left = 30
+      Height = 25
+      Top = 103
+      Width = 75
+      Caption = 'Random'
+      TabOrder = 3
+      OnClick = Button2Click
+    end
+    object cbCtrlSelects: TCheckBox
+      Left = 936
+      Height = 23
+      Top = 75
+      Width = 132
+      Anchors = [akRight, akBottom]
+      Caption = 'CTRL-Click selects'
+      TabOrder = 4
+      OnChange = cbCtrlSelectsChange
+    end
+  end
+  object Splitter1: TSplitter
+    Cursor = crVSplit
+    Left = 0
+    Height = 5
+    Top = 489
+    Width = 1074
+    Align = alBottom
+    ResizeAnchor = akBottom
+    ResizeStyle = rsPattern
+  end
+  object psChat: TIniPropStorage
+    StoredValues = <>
+    Active = False
+    OnSaveProperties = psChatSaveProperties
+    OnRestoreProperties = psChatRestoreProperties
+    Left = 421
+    Top = 110
+  end
+  object tmrTyping: TTimer
+    Enabled = False
+    Interval = 5000
+    OnTimer = tmrTypingTimer
+    Left = 62
+    Top = 86
+  end
+  object pmChat: TPopupMenu
+    OnPopup = pmChatPopup
+    Left = 206
+    Top = 124
+    object MICopy: TMenuItem
+      Caption = 'Copy'
+      OnClick = MICopyClick
+    end
+    object MIDelete: TMenuItem
+      Caption = 'Delete'
+      OnClick = MIDeleteClick
+    end
+  end
+end
