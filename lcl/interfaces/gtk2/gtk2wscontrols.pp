@@ -635,7 +635,7 @@ begin
   if not WSCheckHandleAllocated(AWinControl, 'SetBounds')
   then Exit;
   ResizeHandle(AWinControl);
-  InvalidateLastWFPResult(AWinControl, Rect(ALeft, ATop, AWidth, AHeight));
+  InvalidateLastWFPResult(AWinControl, Bounds(ALeft, ATop, AWidth, AHeight));
   if not AWinControl.Visible then // Gtk2WSForms.ShowHide will correct visibility
     exit;
   if (not (AWinControl is TCustomForm)) or (AWinControl.Parent<>nil)
