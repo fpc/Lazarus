@@ -7585,7 +7585,7 @@ end;
 procedure TfrPage.Clear;
 begin
   while Objects.Count > 0 do
-    Delete(0);
+    Objects.Delete(0);
 end;
 
 procedure TfrPage.Delete(Index: Integer);
