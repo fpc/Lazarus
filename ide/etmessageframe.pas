@@ -1857,6 +1857,16 @@ begin
       end;
     Key := 0;
   end
+  else if (Key = VK_P) and (Shift = [ssCtrl]) then
+    begin
+      with TMessagesFrame(Owner) do
+        case MessagesCtrl.FilenameStyle of
+          mwfsShort:    FileStyleMenuItemClick(MsgFileStyleRelativeMenuItem);
+          mwfsRelative: FileStyleMenuItemClick(MsgFileStyleFullMenuItem);
+          mwfsFull:     FileStyleMenuItemClick(MsgFileStyleShortMenuItem);
+        end;
+      Key := 0;
+    end
 
   { Clipboard }
 
