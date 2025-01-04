@@ -338,12 +338,18 @@ begin
     tmpMenuButton.FMenuItemIndex:= i;
     wglyph := 0;
     tmpMenuButton.Images := nil;
-    if Assigned(FMenu.Images) and (FMenu.Items[i].ImageIndex >= 0) then
+    if Assigned(FMenu.Images) and (FMenu.Items[i].ImageIndex >= 0) then begin
       if FMenu.Items[i].ImageIndex < FMenu.Images.Count then
       begin
         FMenu.Images.GetBitmap(FMenu.Items[i].ImageIndex, tmpMenuButton.Glyph);
         wglyph := tmpMenuButton.Glyph.Width + 5;
       end;
+    end
+    else
+    if Assigned(FMenu.Items[i].Bitmap) then begin
+      tmpMenuButton.Glyph := FMenu.Items[i].Bitmap;
+      wglyph := tmpMenuButton.Glyph.Width + 5;
+    end;
     tmpMenuButton.OnClick := @MenuButtonClick;
     tmpMenuButton.Parent := Self;
     if FMenu.Items[i].Default then tmpMenuButton.Font.Style := [fsBold];
@@ -401,6 +407,7 @@ var
       SubMenuItemOut.Items[i].GlyphShowMode := SubMenuItemIn.Items[i].GlyphShowMode;
       SubMenuItemOut.Items[i].GroupIndex := SubMenuItemIn.Items[i].GroupIndex;
       SubMenuItemOut.Items[i].Hint := SubMenuItemIn.Items[i].Hint;
+      SubMenuItemOut.Items[i].Bitmap := SubMenuItemIn.Items[i].Bitmap;
       SubMenuItemOut.Items[i].ImageIndex := SubMenuItemIn.Items[i].ImageIndex;
       SubMenuItemOut.Items[i].RadioItem := SubMenuItemIn.Items[i].RadioItem;
       SubMenuItemOut.Items[i].RightJustify := SubMenuItemIn.Items[i].RightJustify;
