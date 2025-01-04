@@ -358,7 +358,6 @@ function CanUseVistaDialogs(const AOpenDialog: TOpenDialog): Boolean;
 begin
   {$IFnDEF DisableVistaDialogs}
   Result := (WindowsVersion >= wvVista) and not (ofOldStyleDialog in AOpenDialog.Options);
-
   {$ELSE}
   Result := False;
   {$ENDIF}
@@ -995,11 +994,25 @@ end;
 
 class function TWin32WSOpenDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
 var
-  Dialog: IFileOpenDialog;
+  Dialog: IFileDialog; //IFileOpenDialog;
+  HRes: HRESULT;
+  DlgType: TIID;
+  CLS_ID: TGUID;
 begin
   if CanUseVistaDialogs(TOpenDialog(ACommonDialog)) then
   begin
-    if Succeeded(CoCreateInstance(CLSID_FileOpenDialog, nil, CLSCTX_INPROC_SERVER, IFileOpenDialog, Dialog)) and Assigned(Dialog) then
+    if (ACommonDialog is TSaveDialog) then
+    begin
+      CLS_ID := CLSID_FileSaveDialog;
+      DlgType := IFileSaveDialog;
+    end
+    else
+    begin
+      CLS_ID := CLSID_FileOpenDialog;
+      DlgType := IFileOpenDialog;
+    end;
+    HRes := CoCreateInstance(CLS_ID, nil, CLSCTX_INPROC_SERVER, DlgType, Dialog);
+    if Succeeded(HRes) and Assigned(Dialog) then
     begin
       Dialog._AddRef;
       SetupVistaFileDialog(Dialog, TOpenDialog(ACommonDialog));
@@ -1073,38 +1086,40 @@ end;
 { TWin32WSSaveDialog }
 
 class function TWin32WSSaveDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
-var
-  Dialog: IFileSaveDialog;
+//var
+//  Dialog: IFileSaveDialog;
 begin
-  if CanUseVistaDialogs(TOpenDialog(ACommonDialog)) then
-  begin
-    if Succeeded(CoCreateInstance(CLSID_FileSaveDialog, nil, CLSCTX_INPROC_SERVER, IFileSaveDialog, Dialog))
-    and Assigned(Dialog) then
-    begin
-      Dialog._AddRef;
-      TWin32WSOpenDialog.SetupVistaFileDialog(Dialog, TOpenDialog(ACommonDialog));
-      Result := THandle(Dialog);
-    end
-    else
-      Result := INVALID_HANDLE_VALUE;
-  end
-  else
-    Result := CreateFileDialogHandle(TOpenDialog(ACommonDialog));
+  Result := TWin32WSOpenDialog.CreateHandle(ACommonDialog);
+  //if CanUseVistaDialogs(TOpenDialog(ACommonDialog)) then
+  //begin
+  //  if Succeeded(CoCreateInstance(CLSID_FileSaveDialog, nil, CLSCTX_INPROC_SERVER, IFileSaveDialog, Dialog))
+  //  and Assigned(Dialog) then
+  //  begin
+  //    Dialog._AddRef;
+  //    TWin32WSOpenDialog.SetupVistaFileDialog(Dialog, TOpenDialog(ACommonDialog));
+  //    Result := THandle(Dialog);
+  //  end
+  //  else
+  //    Result := INVALID_HANDLE_VALUE;
+  //end
+  //else
+  //  Result := CreateFileDialogHandle(TOpenDialog(ACommonDialog));
 end;
 
 class procedure TWin32WSSaveDialog.DestroyHandle(const ACommonDialog: TCommonDialog);
-var
-  Dialog: IFileDialog;
+//var
+//  Dialog: IFileDialog;
 begin
-  if (ACommonDialog.Handle <> 0) and (ACommonDialog.Handle <> INVALID_HANDLE_VALUE) then
-    if CanUseVistaDialogs(TOpenDialog(ACommonDialog)) then
-    begin
-      Dialog := IFileDialog(ACommonDialog.Handle);
-      Dialog._Release;
-      Dialog := nil;
-    end
-    else
-      DestroyFileDialogHandle(ACommonDialog.Handle)
+  TWin32WSOpenDialog.DestroyHandle(ACommonDialog);
+  //if (ACommonDialog.Handle <> 0) and (ACommonDialog.Handle <> INVALID_HANDLE_VALUE) then
+  //  if CanUseVistaDialogs(TOpenDialog(ACommonDialog)) then
+  //  begin
+  //    Dialog := IFileDialog(ACommonDialog.Handle);
+  //    Dialog._Release;
+  //    Dialog := nil;
+  //  end
+  //  else
+  //    DestroyFileDialogHandle(ACommonDialog.Handle)
 end;
 
 class procedure TWin32WSSaveDialog.ShowModal(const ACommonDialog: TCommonDialog);
