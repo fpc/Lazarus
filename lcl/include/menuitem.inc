@@ -1639,7 +1639,7 @@ begin
     end
     else
     begin
-      if (forced) or (ImgList = nil) or (ImageIndex = -1) then
+      if forced or (ImgList = nil) then
       begin
         FreeAndNil(FBitmap);
         FBitmapIsValid := True;
