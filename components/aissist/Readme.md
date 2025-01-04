@@ -28,6 +28,8 @@ To install, install the following packages in the correct order:
       - The URL where the AI requests must be sent
       - The model you wish to use.
       - The maximum lengt of the AI replies
+   - A "source" menu entry 'AI explain selected code' which will launch the
+        AI and lets the AI provide an explanation of the selected code.
 
 The Demos directory contains a console and GUI demo of the AIClient class. 
 They serve to demonstrate the API and can be used separately from the IDE.
