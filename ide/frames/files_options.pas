@@ -52,7 +52,6 @@ type
   { TFilesOptionsFrame }
 
   TFilesOptionsFrame = class(TAbstractIDEOptionsEditor)
-    AutoCloseCompileDialogCheckBox: TCheckBox;
     CompilerTranslationFileButton:TButton;
     CompilerTranslationFileComboBox:TComboBox;
     CompilerTranslationFileLabel:TLabel;
@@ -73,7 +72,6 @@ type
     MaxRecentOpenFilesLabel: TLabel;
     MaxRecentProjectFilesSpin: TSpinEdit;
     MaxRecentProjectFilesLabel: TLabel;
-    ShowCompileDialogCheckBox: TCheckBox;
     TestBuildDirButton:TButton;
     TestBuildDirComboBox:TComboBox;
     TestBuildDirLabel:TLabel;
@@ -84,7 +82,6 @@ type
     procedure FilesButtonClick(Sender: TObject);
     procedure DirectoriesButtonClick(Sender: TObject);
     procedure FppkgConfigurationFileButtonClick(Sender: TObject);
-    procedure ShowCompileDialogCheckBoxChange(Sender: TObject);
   private
     FOldLazarusDir: string;
     FOldRealLazarusDir: string;
@@ -299,19 +296,12 @@ begin
   end;
 end;
 
-procedure TFilesOptionsFrame.ShowCompileDialogCheckBoxChange(Sender: TObject);
-begin
-  AutoCloseCompileDialogCheckBox.Enabled := ShowCompileDialogCheckBox.Checked;
-end;
-
 procedure TFilesOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   MaxRecentOpenFilesLabel.Caption:=dlgMaxRecentFiles;
   MaxRecentOpenFilesLabel.Hint:=dlgMaxRecentHint;
   MaxRecentProjectFilesLabel.Caption:=dlgMaxRecentProjs;
   MaxRecentProjectFilesLabel.Hint:=dlgMaxRecentHint;
-  ShowCompileDialogCheckBox.Visible:=false;
-  AutoCloseCompileDialogCheckBox.Visible:=false;
   LazarusDirLabel.Caption:=dlgLazarusDir;
   LazarusDirLabel.Hint:=Format(lisLazarusDirHint,[GetPrimaryConfigPath]);
   LazarusDirComboBox.Hint:=LazarusDirLabel.Hint;
