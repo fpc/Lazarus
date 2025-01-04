@@ -20,6 +20,7 @@ unit Win32WSDialogs;
 {$I win32defines.inc}
 
 {.$DEFINE VerboseTaskDialog}
+{.$define simulate_vistaf_filedialog_failure}
 
 interface
 
@@ -74,6 +75,13 @@ type
   end;
 
   { TWin32WSOpenDialog }
+{$ifdef simulate_vistaf_filedialog_failure}
+const
+  CLSID_FileOpenDialog                : TGUID = '{DC1C5A9C-E88A-4dde-A5A1-60F82A200000}';
+  CLSID_FileSaveDialog                : TGUID = '{C0B4E2F3-BA21-4773-8DBA-335EC9000000}';
+{$endif simulate_vistaf_filedialog_failure}
+
+type
 
   TWin32WSOpenDialog = class(TWSOpenDialog)
   public
@@ -1006,7 +1014,7 @@ class procedure TWin32WSOpenDialog.DestroyHandle(const ACommonDialog: TCommonDia
 var
   Dialog: IFileDialog;
 begin
-  if ACommonDialog.Handle <> 0 then
+  if (ACommonDialog.Handle <> 0) and (ACommonDialog.Handle <> INVALID_HANDLE_VALUE) then
     if CanUseVistaDialogs(TOpenDialog(ACommonDialog)) then
     begin
       Dialog := IFileDialog(ACommonDialog.Handle);
@@ -1086,7 +1094,7 @@ class procedure TWin32WSSaveDialog.DestroyHandle(const ACommonDialog: TCommonDia
 var
   Dialog: IFileDialog;
 begin
-  if ACommonDialog.Handle <> 0 then
+  if (ACommonDialog.Handle <> 0) and (ACommonDialog.Handle <> INVALID_HANDLE_VALUE) then
     if CanUseVistaDialogs(TOpenDialog(ACommonDialog)) then
     begin
       Dialog := IFileDialog(ACommonDialog.Handle);
@@ -1103,7 +1111,7 @@ var
   lOldWorkingDir, lInitialDir: string;
   Dialog: IFileSaveDialog;
 begin
-  if ACommonDialog.Handle <> 0 then
+  if (ACommonDialog.Handle <> 0) and (ACommonDialog.Handle <> INVALID_HANDLE_VALUE) then
   begin
     State := SaveApplicationState;
     lOldWorkingDir := GetCurrentDirUTF8;
