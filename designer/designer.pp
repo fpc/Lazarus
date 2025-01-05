@@ -3633,11 +3633,11 @@ begin
     // into account
     Icon := TBitmap.Create;
     try
+      TextSize := Icon.Canvas.TextExtent(AComponent.Name);
+      Icon.SetSize(Round(TextSize.cx * ScaleFactor), Round(TextSize.cy * ScaleFactor));
+      LCLIntf.SetDeviceScaleRatio(Icon.Canvas.Handle, ScaleFactor);
       Icon.Canvas.Font.Assign(FDDC.Canvas.Font);
       Icon.Canvas.Font.PixelsPerInch := FDDC.Canvas.Font.PixelsPerInch;
-      Icon.Canvas.Font.Height := Round(GetFontData(FDDC.Canvas.Font.Reference.Handle).Height*ScaleFactor);
-      TextSize := Icon.Canvas.TextExtent(AComponent.Name);
-      Icon.SetSize(TextSize.cx, TextSize.cy);
       TextRect := Rect(0, 0, TextSize.cx, TextSize.cy);
       if FDDC.Form <> nil then
         Icon.Canvas.Brush.Color := FDDC.Form.Brush.Color
@@ -3647,10 +3647,10 @@ begin
       Icon.Canvas.Font.Color := clWindowText;
       DrawText(Icon.Canvas.Handle, PChar(AComponent.Name), -1, TextRect,
         DT_CENTER or DT_VCENTER or DT_SINGLELINE or DT_NOCLIP);
-      TextRect.Left := (ItemLeft + ItemRight - LongInt(Round(TextSize.cx/ScaleFactor))) div 2;
+      TextRect.Left := (ItemLeft + ItemRight - TextSize.cx) div 2;
       TextRect.Top := (ItemBottom + NonVisualCompBorder + 2);
-      TextRect.Right := TextRect.Left + Round(TextSize.cx/ScaleFactor);
-      TextRect.Bottom := TextRect.Top + Round(TextSize.cy/ScaleFactor);
+      TextRect.Right := TextRect.Left + Icon.Width;
+      TextRect.Bottom := TextRect.Top + Icon.Height;
       FDDC.Canvas.StretchDraw(TextRect, Icon);
     finally
       Icon.Free;
