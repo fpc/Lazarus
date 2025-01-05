@@ -52,6 +52,7 @@ resourcestring
   lisBtnRename = '&Rename';
   lisRename2 = 'Rename ...';
   lisReplace = 'Replace';
+  lisConfirmReplace = 'Confirm Replace';
   lisBtnReplace = '&Replace';
   lisBtnDlgReplace = '&Replace ...';
   lisEdit = 'Edit';
@@ -1512,6 +1513,9 @@ resourcestring
 
   // open-dialog filters
   dlgFilterAll = 'All files';
+  lisInvalidDeclaration = 'Invalid Declaration';
+  lisPleasePlaceTheEditorCaretOnAnIdentifierIfThisIsANe = 'Please place the editor caret on an '
+    +'identifier. If this is a new unit, please save the file first.';
   dlgFilterXML = 'XML files';
   dlgFilterHTML = 'HTML files';
   dlgFilterPrograms = 'Programs';
