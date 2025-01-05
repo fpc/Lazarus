@@ -9244,9 +9244,9 @@ procedure TVirtualTreeColumns.PaintHeader(DC: HDC; const R: TRect; HOffset: Inte
 var
   VisibleFixedWidth: Integer;
   RTLOffset: Integer;
-  {$ifdef LCLCocoa}
+  {.$ifdef LCLCocoa}
   sc : Double;
-  {$endif}
+  {.$endif}
 
   procedure PaintFixedArea;
   
@@ -9258,20 +9258,16 @@ var
   end;
 
 begin
+  if Assigned(Header) and Assigned(Header.TreeView) then
+    sc := Header.Treeview.GetCanvasScaleFactor
+  else
+    sc := 1.0;
   // Adjust size of the header bitmap
   with TWithSafeRect(FHeader.Treeview.FHeaderRect) do
   begin
-    FHeaderBitmap.Width := Max(Right, R.Right - R.Left);
-    FHeaderBitmap.Height := Bottom;
-    {$ifdef LCLCocoa}
-    if Assigned(Header) and Assigned(Header.TreeView) then
-      sc := Header.Treeview.GetCanvasScaleFactor
-    else
-      sc := 1.0;
-    FHeaderBitmap.Width := Round(FHeaderBitmap.Width * sc);
-    FHeaderBitmap.Height := Round(FHeaderBitmap.Height * sc);
-    CGContextScaleCTM(TCocoaBitmapContext(FHeaderBitmap.Canvas.Handle).CGContext, sc, sc);
-    {$endif}
+    FHeaderBitmap.Clear;
+    FHeaderBitmap.SetSize(Round(Max(Right, R.Right - R.Left) * sc), Round(Bottom * sc));
+    LCLIntf.SetDeviceScaleRatio(FHeaderBitmap.Canvas.Handle, sc);
   end;
 
   VisibleFixedWidth := GetVisibleFixedWidth;
@@ -9296,15 +9292,7 @@ begin
 
   // Blit the result to target.
   with TWithSafeRect(R) do
-    {$ifdef LCLCocoa}
-    StretchBlt(DC, Left, Top, Right - Left, Bottom - Top,
-      FHeaderBitmap.Canvas.Handle,
-      Left, Top,
-      FHeaderBitmap.Width, FHeaderBitmap.Height,
-      SRCCOPY);
-    {$else}
-    BitBlt(DC, Left, Top, Right - Left, Bottom - Top, FHeaderBitmap.Canvas.Handle, Left, Top, SRCCOPY);
-    {$endif}
+    BitBlt(DC, Left, Top, Round((Right - Left) * sc), Round((Bottom - Top) * sc), FHeaderBitmap.Canvas.Handle, Left, Top, SRCCOPY);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
