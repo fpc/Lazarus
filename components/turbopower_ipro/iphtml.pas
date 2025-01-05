@@ -3448,7 +3448,7 @@ begin
     R := FClientRect;
     R.Right := Round(R.Right * AScale);
     R.Bottom := Round(R.Bottom * AScale);
-    TargetCanvas.CopyRect({$IFDEF LCLCocoa}FClientRect{$ELSE}R{$ENDIF}, PaintBuffer, R);
+    TargetCanvas.CopyRect(R, PaintBuffer, R);
     FClientRect := R;
   end
   else
