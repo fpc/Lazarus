@@ -1020,7 +1020,9 @@
       <Unit>
         <Filename Value="fpdoceditwindow.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="FPDocEditor"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="FPDocEditWindow"/>
       </Unit>
       <Unit>

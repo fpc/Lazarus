@@ -1606,7 +1606,7 @@ begin
   //DebugLn(['TFPDocEditForm.CopyFromInheritedButtonClick ']);
   if ShortEdit.Text<>'' then begin
     if IDEQuestionDialog(lisConfirmReplace,
-      GetContextTitle(fChain[0])+' already contains the help:'+LineEnding+ShortEdit.Text,
+      Format(lisAlreadyContainsTheHe, [GetContextTitle(fChain[0]), ShortEdit.Text]),
       mtConfirmation, [mrYes, lisReplace,
                        mrCancel]) <> mrYes then exit;
   end;

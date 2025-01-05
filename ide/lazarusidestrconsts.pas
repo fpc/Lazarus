@@ -52,7 +52,6 @@ resourcestring
   lisBtnRename = '&Rename';
   lisRename2 = 'Rename ...';
   lisReplace = 'Replace';
-  lisConfirmReplace = 'Confirm Replace';
   lisBtnReplace = '&Replace';
   lisBtnDlgReplace = '&Replace ...';
   lisEdit = 'Edit';
@@ -1511,11 +1510,14 @@ resourcestring
   lisQuickCheckFppkgConfigurationAtStart = 'Quick check Fppkg configuration at'
     +' start';
 
-  // open-dialog filters
-  dlgFilterAll = 'All files';
+  lisConfirmReplace = 'Confirm Replace';
+  lisAlreadyContainsTheHe = '%s already contains the help:'+LineEnding+'%s';
   lisInvalidDeclaration = 'Invalid Declaration';
   lisPleasePlaceTheEditorCaretOnAnIdentifierIfThisIsANe = 'Please place the editor caret on an '
     +'identifier. If this is a new unit, please save the file first.';
+
+  // open-dialog filters
+  dlgFilterAll = 'All files';
   dlgFilterXML = 'XML files';
   dlgFilterHTML = 'HTML files';
   dlgFilterPrograms = 'Programs';
