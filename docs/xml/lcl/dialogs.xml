@@ -1625,6 +1625,12 @@ SFGAO_STREAM or SFGAO_FILESYSTEM attributes. This flag cannot be combined with
 FOS_FORCEFILESYSTEM. (Windows Vista+)
 </short>
 </element>
+<element name="TOpenOptionEx.ofUseXPStyleAsFallBack">
+<short>
+Allows use XP-style dialog if creating Vista style dialog fails (e.g. when 
+running under Windows Recovery). (Windows Vista+)
+</short>
+</element>
 
 <element name="TOpenOptionsEx">
 <short>
@@ -2213,7 +2219,7 @@ for the property is an empty set ([]).
 OptionsEx is used in the widgetset class instance to apply values which cannot 
 be represented using TOpenOptions and TOpenOption, which are used on all of the 
 supported LCL platforms. In the current LCL version, OptionsEx is used for the 
-Windows platform and supports Windows Vista or later version.
+Windows platform and supports Windows Vista or later versions.
 </p>
 </descr>
 <seealso>
