@@ -222,8 +222,9 @@ type
     ofPickFolders,              //Windows Vista+ Turns the dialog into a TSelectDirectoryDialog
     ofOkButtonNeedsInteraction, //Windows Vista+ The OK button will be disabled until the user navigates the view or edits the filename (if applicable).
     ofForceFileSystem,          //Windows Vista+ Ensures that returned items are file system items
-    ofAllNonStorageItems        //Windows Vista+ Enables the user to choose any item in the Shell namespace, not just those with SFGAO_STREAM or SFAGO_FILESYSTEM attributes.
+    ofAllNonStorageItems,       //Windows Vista+ Enables the user to choose any item in the Shell namespace, not just those with SFGAO_STREAM or SFAGO_FILESYSTEM attributes.
                                 //               This flag cannot be combined with FOS_FORCEFILESYSTEM.
+    ofUseXPStyleAsFallBack      //Windows Vista+ Use XP style dialog if creating Vista style dialog fails (e.g. when running under Windows Recovery)
     // Intentionally not supported: ofDefaultNoMiniMode, ofHideMruPlaces: these values are not supported as of Windows 7.
   );
   TOpenOptionsEx = set of TOpenOptionEx;
