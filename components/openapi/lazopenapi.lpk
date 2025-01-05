@@ -32,8 +32,29 @@
         <HasRegisterProc Value="True"/>
         <UnitName Value="reglazopenapi"/>
       </Item>
+      <Item>
+        <Filename Value="frmopenapiproject.pas"/>
+        <UnitName Value="frmopenapiproject"/>
+        <ResourceBaseClass Value="Form"/>
+        <ResourceBaseClassname Value=""/>
+      </Item>
+      <Item>
+        <Filename Value="lazopenapictrl.pas"/>
+        <UnitName Value="lazopenapictrl"/>
+      </Item>
+      <Item>
+        <Filename Value="lazopenapistr.pas"/>
+        <UnitName Value="lazopenapistr"/>
+      </Item>
+      <Item>
+        <Filename Value="fraopenapiprojectsettings.pas"/>
+        <UnitName Value="fraopenapiprojectsettings"/>
+      </Item>
     </Files>
     <RequiredPkgs>
+      <Item>
+        <PackageName Value="CodeTools"/>
+      </Item>
       <Item>
         <PackageName Value="IDEIntf"/>
       </Item>

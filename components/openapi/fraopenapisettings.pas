@@ -5,7 +5,7 @@ unit fraopenapisettings;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, EditBtn, StdCtrls, ComCtrls, ValEdit, fpopenapi.codegen;
+  Classes, SysUtils, Forms, Controls, EditBtn, StdCtrls, ComCtrls, ValEdit, fpopenapi.codegen, Types;
 
 type
 
@@ -25,6 +25,10 @@ type
     CBSkipImplementation: TCheckBox;
     CBAbstractCalls: TCheckBox;
     cbAddToProject: TCheckBox;
+    cbGenerateServerProxyModule: TCheckBox;
+    cbProxyModuleFormFile: TCheckBox;
+    edtServerProxyUnit: TEdit;
+    edtServerProxyModule: TEdit;
     edtClientServiceImplementationUnit: TEdit;
     edtClientServiceInterfaceUnit: TEdit;
     edtClientServiceParentClass: TEdit;
@@ -42,7 +46,9 @@ type
     edtUUIDMap: TFileNameEdit;
     edtServiceMapFile: TFileNameEdit;
     GBAutoNaming: TGroupBox;
-    Label1: TLabel;
+    lblServerProxyUnit: TLabel;
+    lblServiceNamePrefix: TLabel;
+    Label2: TLabel;
     lblUUIDMap: TLabel;
     lblServerServiceParentUnit: TLabel;
     lblServerServiceParentClass: TLabel;
@@ -71,12 +77,15 @@ type
     VLEServiceMap: TValueListEditor;
     procedure btnLoadUUIDMap1Click(Sender: TObject);
     procedure btnLoadUUIDMapClick(Sender: TObject);
+    procedure cbGenerateServerProxyModuleChange(Sender: TObject);
     procedure HandleAbstract(Sender: TObject);
     procedure HandleSyncCheck(Sender: TObject);
+    procedure TSGeneralContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
   private
     FGenerator: TOpenAPICodeGen;
     procedure CheckAbstract;
     procedure CheckAsync;
+    procedure CheckProxyModule;
     function GetAddToProject: Boolean;
     function GetOpenAPIFileName: String;
     function GetOpenGeneratedFiles: Boolean;
@@ -85,9 +94,11 @@ type
     procedure SetOpenAPIFileName(AValue: String);
     procedure SetOpenGeneratedFiles(AValue: Boolean);
   public
+    procedure Clear;
     procedure InitFileNameEdits(Const aBaseDir : string);
     Procedure SaveSettings;
     procedure ShowSettings;
+    procedure HideAdditionalControls(ShowClient: Boolean;ShowServer: Boolean);
     function Modified : Boolean;
     Property OpenAPIFileName : String Read GetOpenAPIFileName Write SetOpenAPIFileName;
     Property OpenGeneratedFiles : Boolean Read GetOpenGeneratedFiles Write SetOpenGeneratedFiles;
@@ -132,6 +143,30 @@ begin
     edtDtoUnit.Text:=DtoUnit;
     edtUnitExtension.Text:=UnitExtension;
     edtUnitSuffix.Text:=UnitSuffix;
+    cbGenerateServerProxyModule.Checked:=GenerateServerProxyModule;
+    edtServerProxyModule.Text:=ServerProxyModuleName;
+    edtServerProxyUnit.Text:=ServerProxyUnit;
+    cbProxyModuleFormFile.Checked:=ServerProxyFormFile;
+    CheckProxyModule;
+    end;
+end;
+
+procedure TGeneratorSettingsFrame.HideAdditionalControls(ShowClient: Boolean; ShowServer: Boolean);
+begin
+  PCSettings.AnchorSideTop.Control:=edtFile;
+  CBGenClient.Visible:=False;
+  CBGenServer.Visible:=False;
+  cbOpenFiles.Visible:=False;
+  cbAddToProject.Visible:=False;
+  if not ShowClient then
+    begin
+    PCSettings.ActivePage:=TSServer;
+    TSClient.TabVisible:=False;
+    end;
+  if Not ShowServer then
+    begin
+    PCSettings.ActivePage:=TSClient;
+    TSServer.TabVisible:=False;
     end;
 end;
 
@@ -162,6 +197,13 @@ begin
     Result:=Result or (edtDtoUnit.Text<>DtoUnit);
     Result:=Result or (edtUnitExtension.Text<>UnitExtension);
     Result:=Result or (edtUnitSuffix.Text<>UnitSuffix);
+    Result:=Result or (cbGenerateServerProxyModule.Checked<>GenerateServerProxyModule);
+    if GenerateServerProxyModule then
+       begin
+       Result:=Result or (edtServerProxyModule.Text<>ServerProxyModuleName);
+       Result:=Result or (ServerProxyUnit<>edtServerProxyUnit.Text);
+       Result:=Result or (ServerProxyFormFile<>cbProxyModuleFormFile.Checked);
+       end;
     end;
 end;
 
@@ -197,6 +239,11 @@ begin
   CheckAsync
 end;
 
+procedure TGeneratorSettingsFrame.TSGeneralContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
+begin
+
+end;
+
 procedure TGeneratorSettingsFrame.HandleAbstract(Sender: TObject);
 begin
   CheckAbstract;
@@ -225,6 +272,28 @@ begin
   cbOpenFiles.Checked:=aValue;
 end;
 
+procedure TGeneratorSettingsFrame.Clear;
+begin
+  edtFile.FileName:='';
+  edtUUIDMap.FileName:='';
+  edtServiceMapFile.FileName:='';
+  edtClientServiceImplementationUnit.Text:='';
+  edtClientServiceInterfaceUnit.Text:='';
+  edtClientServiceParentClass.Text:='';
+  edtClientServiceParentUnit.Text:='';
+  edtServerHandlerUnitName.Text:='';
+  edtServerImplementationUnitName.Text:='';
+  edtServerServiceParentClass.Text:='';
+  edtServerServiceParentUnit.Text:='';
+  edtServerProxyModule.Text:='';
+  edtServiceNameSuffix.Text:='';
+  edtServiceNamePrefix.Text:='';
+  edtSerializeUnit.Text:='';
+  edtDtoUnit.Text:='';
+  edtUnitExtension.Text:='';
+  edtUnitSuffix.Text:='';
+end;
+
 procedure TGeneratorSettingsFrame.InitFileNameEdits(const aBaseDir: string);
 begin
   edtFile.InitialDir:=aBaseDir;
@@ -235,6 +304,25 @@ end;
 procedure TGeneratorSettingsFrame.btnLoadUUIDMapClick(Sender: TObject);
 begin
   LoadFileToEditor(VLEUUIDMap,edtUUIDMap.FileName,'GUID map');
+end;
+
+procedure TGeneratorSettingsFrame.cbGenerateServerProxyModuleChange(Sender: TObject);
+begin
+  CheckProxyModule;
+end;
+
+procedure TGeneratorSettingsFrame.CheckProxyModule;
+
+begin
+  edtServerProxyModule.Enabled:=cbGenerateServerProxyModule.Checked;
+  if not edtServerProxyModule.Enabled then
+    edtServerProxyModule.Text:='';
+  edtServerProxyUnit.Enabled:=cbGenerateServerProxyModule.Checked;
+  if not edtServerProxyUnit.Enabled then
+    edtServerProxyUnit.Text:='';
+  cbProxyModuleFormFile.Enabled:=cbGenerateServerProxyModule.Checked;
+  if not cbProxyModuleFormFile.Enabled then
+    cbProxyModuleFormFile.Checked:=False;
 end;
 
 procedure TGeneratorSettingsFrame.btnLoadUUIDMap1Click(Sender: TObject);
@@ -269,7 +357,11 @@ begin
     DtoUnit:=edtDtoUnit.Text;
     UnitExtension:=edtUnitExtension.Text;
     UnitSuffix:=edtUnitSuffix.Text;
-    end;
+    GenerateServerProxyModule:=cbGenerateServerProxyModule.Checked;
+    ServerProxyModuleName:=edtServerProxyModule.Text;
+    ServerProxyUnit:=edtServerProxyUnit.Text;
+    ServerProxyFormFile:=cbProxyModuleFormFile.Checked;
+  end;
 end;
 
 end.

@@ -8,7 +8,8 @@ unit lazopenapi;
 interface
 
 uses
-  fraopenapisettings, frmopenapiwizard, reglazopenapi, LazarusPackageIntf;
+  fraopenapisettings, frmopenapiwizard, reglazopenapi, frmopenapiproject, lazopenapictrl, lazopenapistr, 
+  fraopenapiprojectsettings, LazarusPackageIntf;
 
 implementation
 

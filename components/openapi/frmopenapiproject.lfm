@@ -1,0 +1,309 @@
+object OpenAPIProjectForm: TOpenAPIProjectForm
+  Left = 405
+  Height = 641
+  Top = 268
+  Width = 802
+  Caption = 'OpenAPI project'
+  ClientHeight = 641
+  ClientWidth = 802
+  LCLVersion = '4.99.0.0'
+  OnClose = FormClose
+  OnCloseQuery = FormCloseQuery
+  OnCreate = FormCreate
+  object PCProjects: TPageControl
+    AnchorSideTop.Control = edtUnitsBaseName
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = BPOpenAPIProject
+    Left = 16
+    Height = 501
+    Top = 88
+    Width = 754
+    ActivePage = TSServer
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Top = 8
+    BorderSpacing.Bottom = 8
+    TabIndex = 2
+    TabOrder = 0
+    object TSAPI: TTabSheet
+      Caption = 'API definitions'
+      ClientHeight = 471
+      ClientWidth = 744
+      inline fraSettings: TGeneratorSettingsFrame
+        Height = 471
+        Width = 744
+        Align = alClient
+        ClientHeight = 471
+        ClientWidth = 744
+        inherited edtFile: TFileNameEdit
+          Width = 602
+        end
+        inherited lblOpenAPIFile: TLabel
+          AnchorSideLeft.Control = fraSettings
+        end
+        inherited PCSettings: TPageControl
+          AnchorSideLeft.Control = fraSettings
+          AnchorSideRight.Control = fraSettings
+          AnchorSideBottom.Control = fraSettings
+          Height = 380
+          Width = 712
+          inherited TSGeneral: TTabSheet
+            ClientHeight = 347
+            ClientWidth = 702
+            inherited GBAutoNaming: TGroupBox
+              Width = 674
+              ClientWidth = 672
+            end
+          end
+          inherited TSData: TTabSheet
+            ClientHeight = 347
+            ClientWidth = 702
+          end
+          inherited TSClient: TTabSheet
+            ClientHeight = 347
+            ClientWidth = 702
+            inherited edtClientServiceImplementationUnit: TEdit
+              Left = 334
+            end
+            inherited edtClientServiceInterfaceUnit: TEdit
+              Left = 334
+            end
+            inherited lblClientServiceInterfaceUnit: TLabel
+              Left = 108
+              Width = 218
+            end
+            inherited lblClientServiceImplementationUnit: TLabel
+              Width = 310
+            end
+            inherited edtClientServiceParentClass: TEdit
+              Left = 334
+            end
+            inherited edtClientServiceParentUnit: TEdit
+              Left = 334
+            end
+            inherited lblClientServiceParentClass: TLabel
+              Width = 310
+            end
+            inherited lblClientServiceParentUnit: TLabel
+              Width = 310
+            end
+            inherited Label2: TLabel
+              Width = 310
+            end
+            inherited edtServerProxyModule: TEdit
+              Left = 334
+            end
+            inherited lblServerProxyUnit: TLabel
+              Width = 310
+            end
+            inherited edtServerProxyUnit: TEdit
+              Left = 334
+            end
+          end
+          inherited TSServer: TTabSheet
+            ClientHeight = 347
+            ClientWidth = 702
+          end
+          inherited TSUUIDMap: TTabSheet
+            ClientHeight = 347
+            ClientWidth = 702
+            inherited VLEUUIDMap: TValueListEditor
+              Height = 284
+              Width = 686
+              ColWidths = (
+                341
+                341
+              )
+            end
+            inherited edtUUIDMap: TFileNameEdit
+              Top = 311
+              Width = 494
+            end
+            inherited lblUUIDMap: TLabel
+              Top = 311
+            end
+            inherited btnLoadUUIDMap: TButton
+              Left = 619
+              Top = 311
+            end
+          end
+          inherited TSServiceMap: TTabSheet
+            ClientHeight = 347
+            ClientWidth = 702
+            inherited VLEServiceMap: TValueListEditor
+              Height = 284
+              Width = 686
+              ColWidths = (
+                341
+                341
+              )
+            end
+            inherited lblUUIDMap1: TLabel
+              Top = 311
+            end
+            inherited edtServiceMapFile: TFileNameEdit
+              Top = 311
+              Width = 494
+            end
+            inherited btnLoadUUIDMap1: TButton
+              Left = 619
+              Top = 311
+            end
+          end
+        end
+      end
+    end
+    object TSClient: TTabSheet
+      Caption = 'Client'
+      ClientHeight = 471
+      ClientWidth = 744
+      object rbClientGUI: TRadioButton
+        Left = 8
+        Height = 23
+        Top = 8
+        Width = 93
+        Caption = 'GUI project'
+        Checked = True
+        TabOrder = 0
+        TabStop = True
+      end
+      object rbClientCommandLine: TRadioButton
+        Left = 8
+        Height = 23
+        Top = 40
+        Width = 120
+        Caption = 'Console project'
+        TabOrder = 1
+      end
+    end
+    object TSServer: TTabSheet
+      Caption = 'Server'
+      ClientHeight = 471
+      ClientWidth = 744
+      object SEPort: TSpinEdit
+        Left = 81
+        Height = 28
+        Top = 112
+        Width = 112
+        MinValue = 1024
+        TabOrder = 0
+        Value = 8080
+      end
+      object lblPort: TLabel
+        Left = 8
+        Height = 16
+        Top = 120
+        Width = 62
+        Caption = 'HTTP Port'
+      end
+      object RBServerHTTP: TRadioButton
+        Left = 8
+        Height = 23
+        Top = 16
+        Width = 144
+        Caption = 'HTTP server project'
+        Checked = True
+        TabOrder = 1
+        TabStop = True
+      end
+      object RBServerGUI: TRadioButton
+        Left = 8
+        Height = 23
+        Top = 48
+        Width = 93
+        Caption = 'GUI Project'
+        TabOrder = 2
+      end
+      object CBServerConsole: TRadioButton
+        Left = 8
+        Height = 23
+        Top = 80
+        Width = 120
+        Caption = 'Console project'
+        TabOrder = 3
+      end
+      object cbThreadedServer: TCheckBox
+        Left = 7
+        Height = 23
+        Top = 152
+        Width = 125
+        Caption = 'Threaded Server'
+        Checked = True
+        State = cbChecked
+        TabOrder = 4
+      end
+    end
+  end
+  object BPOpenAPIProject: TButtonPanel
+    Left = 6
+    Height = 38
+    Top = 597
+    Width = 790
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object DEBaseDir: TDirectoryEdit
+    Left = 200
+    Height = 28
+    Top = 16
+    Width = 574
+    DialogOptions = [ofCreatePrompt, ofEnableSizing, ofViewDetail]
+    ShowHidden = False
+    ButtonWidth = 23
+    NumGlyphs = 1
+    Anchors = [akTop, akLeft, akRight]
+    MaxLength = 0
+    TabOrder = 2
+    OnEditingDone = DEBaseDirEditingDone
+  end
+  object lblBaseDir: TLabel
+    AnchorSideTop.Control = DEBaseDir
+    AnchorSideRight.Control = DEBaseDir
+    AnchorSideBottom.Control = DEBaseDir
+    AnchorSideBottom.Side = asrBottom
+    Left = 16
+    Height = 28
+    Top = 16
+    Width = 176
+    Alignment = taRightJustify
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoSize = False
+    BorderSpacing.Right = 8
+    Caption = 'Project base directory'
+    Layout = tlCenter
+  end
+  object edtUnitsBaseName: TEdit
+    AnchorSideTop.Control = DEBaseDir
+    AnchorSideTop.Side = asrBottom
+    Left = 200
+    Height = 28
+    Top = 52
+    Width = 128
+    BorderSpacing.Top = 8
+    TabOrder = 3
+  end
+  object lblUnitsBaseName: TLabel
+    AnchorSideTop.Control = edtUnitsBaseName
+    AnchorSideRight.Control = edtUnitsBaseName
+    AnchorSideBottom.Control = edtUnitsBaseName
+    AnchorSideBottom.Side = asrBottom
+    Left = 72
+    Height = 28
+    Top = 52
+    Width = 120
+    Alignment = taRightJustify
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoSize = False
+    BorderSpacing.Right = 8
+    Caption = 'Base name for units'
+    Layout = tlCenter
+  end
+end

@@ -1,0 +1,110 @@
+object LazOpenAPIProjectOptions: TLazOpenAPIProjectOptions
+  Left = 0
+  Height = 302
+  Top = 0
+  Width = 567
+  ClientHeight = 302
+  ClientWidth = 567
+  TabOrder = 0
+  DesignLeft = 468
+  DesignTop = 287
+  object lblOpenAPIFile: TLabel
+    AnchorSideTop.Control = FEOpenAPI
+    AnchorSideRight.Control = FEOpenAPI
+    AnchorSideBottom.Control = FEOpenAPI
+    AnchorSideBottom.Side = asrBottom
+    Left = 104
+    Height = 28
+    Top = 16
+    Width = 80
+    Alignment = taRightJustify
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoSize = False
+    BorderSpacing.Right = 8
+    Caption = 'Open API File'
+    Layout = tlCenter
+  end
+  object lblBaseUnitFile: TLabel
+    AnchorSideTop.Control = FEBaseUnitFile
+    AnchorSideRight.Control = FEBaseUnitFile
+    AnchorSideBottom.Control = FEBaseUnitFile
+    AnchorSideBottom.Side = asrBottom
+    Left = 67
+    Height = 28
+    Top = 88
+    Width = 117
+    Alignment = taRightJustify
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoSize = False
+    BorderSpacing.Right = 8
+    Caption = 'Base unit filename'
+    Layout = tlCenter
+  end
+  object lblConfig: TLabel
+    AnchorSideTop.Control = FEConfig
+    AnchorSideRight.Control = FEConfig
+    AnchorSideBottom.Control = FEConfig
+    AnchorSideBottom.Side = asrBottom
+    Left = 32
+    Height = 28
+    Top = 52
+    Width = 152
+    Alignment = taRightJustify
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoSize = False
+    BorderSpacing.Right = 8
+    Caption = 'Generator configuration'
+    Layout = tlCenter
+  end
+  object FEOpenAPI: TFileNameEdit
+    AnchorSideTop.Control = Owner
+    Left = 192
+    Height = 28
+    Top = 16
+    Width = 360
+    FilterIndex = 0
+    HideDirectories = False
+    ButtonWidth = 23
+    NumGlyphs = 1
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 16
+    MaxLength = 0
+    TabOrder = 0
+  end
+  object FEConfig: TFileNameEdit
+    AnchorSideTop.Control = FEOpenAPI
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = FEOpenAPI
+    AnchorSideRight.Side = asrBottom
+    Left = 192
+    Height = 28
+    Top = 52
+    Width = 360
+    FilterIndex = 0
+    HideDirectories = False
+    ButtonWidth = 23
+    NumGlyphs = 1
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 8
+    MaxLength = 0
+    TabOrder = 1
+  end
+  object FEBaseUnitFile: TFileNameEdit
+    AnchorSideTop.Control = FEConfig
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = FEConfig
+    AnchorSideRight.Side = asrBottom
+    Left = 192
+    Height = 28
+    Top = 88
+    Width = 360
+    FilterIndex = 0
+    HideDirectories = False
+    ButtonWidth = 23
+    NumGlyphs = 1
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 8
+    MaxLength = 0
+    TabOrder = 2
+  end
+end
