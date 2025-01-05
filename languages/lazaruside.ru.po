@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-01-03 22:18+0300\n"
+"PO-Revision-Date: 2025-01-05 23:07+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -5228,6 +5228,15 @@ msgstr "Все изменения в \"%s\"%sбудут утеряны и фай
 msgid "Alpha"
 msgstr "Прозрачность"
 
+#: lazarusidestrconsts.lisalreadycontainsthehe
+#, object-pascal-format
+msgid ""
+"%s already contains the help:\n"
+"%s"
+msgstr ""
+"%s уже содержит справочные сведения:\n"
+"%s"
+
 #: lazarusidestrconsts.lisalternativekey
 msgid "Alternative key"
 msgstr "Альтернативная клавиша"
@@ -7464,6 +7473,10 @@ msgstr "Новый набор пакетов"
 #: lazarusidestrconsts.lisconfirmpackageoldpackageset
 msgid "Old package set"
 msgstr "Старый набор пакетов"
+
+#: lazarusidestrconsts.lisconfirmreplace
+msgid "Confirm Replace"
+msgstr "Подтвердите замену"
 
 #: lazarusidestrconsts.lisconflict
 msgid "Conflict"
@@ -10927,6 +10940,10 @@ msgstr "Интерактивный режим"
 #, object-pascal-format
 msgid "internal error: %s"
 msgstr "внутренняя ошибка: %s"
+
+#: lazarusidestrconsts.lisinvaliddeclaration
+msgid "Invalid Declaration"
+msgstr "Некорректное объявление"
 
 #: lazarusidestrconsts.lisinvaliddelete
 msgid "Invalid delete"
@@ -15829,6 +15846,10 @@ msgstr "Исправьте ошибку, указанную в окне сооб
 #: lazarusidestrconsts.lispleaseopenaunitbeforerun
 msgid "Please open a unit before run."
 msgstr "Откройте модуль перед запуском."
+
+#: lazarusidestrconsts.lispleaseplacetheeditorcaretonanidentifierifthisisane
+msgid "Please place the editor caret on an identifier. If this is a new unit, please save the file first."
+msgstr "Поместите курсор редактора на идентификатор. Если модуль вновь создан, сначала сохраните его."
 
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."

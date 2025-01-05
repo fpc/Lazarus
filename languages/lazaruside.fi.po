@@ -5273,6 +5273,13 @@ msgstr "Kaikki muutokset tiedostoon \"%s\"%smenetetään ja se avataan uudestaan
 msgid "Alpha"
 msgstr ""
 
+#: lazarusidestrconsts.lisalreadycontainsthehe
+#, object-pascal-format
+msgid ""
+"%s already contains the help:\n"
+"%s"
+msgstr ""
+
 #: lazarusidestrconsts.lisalternativekey
 msgid "Alternative key"
 msgstr "Vaihtoehtoinen näppäin"
@@ -7529,6 +7536,10 @@ msgstr "Uusi pakettien joukko"
 #: lazarusidestrconsts.lisconfirmpackageoldpackageset
 msgid "Old package set"
 msgstr "Vanha pakettien joukko"
+
+#: lazarusidestrconsts.lisconfirmreplace
+msgid "Confirm Replace"
+msgstr ""
 
 #: lazarusidestrconsts.lisconflict
 msgid "Conflict"
@@ -10986,6 +10997,10 @@ msgstr "Vuorovaikutteinen"
 #, object-pascal-format
 msgid "internal error: %s"
 msgstr "sisäinen virhe: %s"
+
+#: lazarusidestrconsts.lisinvaliddeclaration
+msgid "Invalid Declaration"
+msgstr ""
 
 #: lazarusidestrconsts.lisinvaliddelete
 msgid "Invalid delete"
@@ -15873,6 +15888,10 @@ msgstr "Korjaa viesti-ikkunassa näkyvä virhe."
 #: lazarusidestrconsts.lispleaseopenaunitbeforerun
 msgid "Please open a unit before run."
 msgstr "Avaa käänösyksikkö ennen suoritusta."
+
+#: lazarusidestrconsts.lispleaseplacetheeditorcaretonanidentifierifthisisane
+msgid "Please place the editor caret on an identifier. If this is a new unit, please save the file first."
+msgstr ""
 
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."

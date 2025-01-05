@@ -5219,6 +5219,13 @@ msgstr "\"%s\"%s  yaptığınız tüm değişiklikler kaybolacak ve dosya yenide
 msgid "Alpha"
 msgstr "Alfa"
 
+#: lazarusidestrconsts.lisalreadycontainsthehe
+#, object-pascal-format
+msgid ""
+"%s already contains the help:\n"
+"%s"
+msgstr ""
+
 #: lazarusidestrconsts.lisalternativekey
 msgid "Alternative key"
 msgstr "Alternatif tuş"
@@ -7462,6 +7469,10 @@ msgstr "Yeni paket seti"
 #: lazarusidestrconsts.lisconfirmpackageoldpackageset
 msgid "Old package set"
 msgstr "Eski paket seti"
+
+#: lazarusidestrconsts.lisconfirmreplace
+msgid "Confirm Replace"
+msgstr ""
 
 #: lazarusidestrconsts.lisconflict
 msgid "Conflict"
@@ -10928,6 +10939,10 @@ msgstr "Etkileşimli"
 #, object-pascal-format
 msgid "internal error: %s"
 msgstr "dahili hata: %s"
+
+#: lazarusidestrconsts.lisinvaliddeclaration
+msgid "Invalid Declaration"
+msgstr ""
 
 #: lazarusidestrconsts.lisinvaliddelete
 msgid "Invalid delete"
@@ -15799,6 +15814,10 @@ msgstr "Lütfen normalde kaynak düzenleyicinin altında olan mesaj penceresinde
 #: lazarusidestrconsts.lispleaseopenaunitbeforerun
 msgid "Please open a unit before run."
 msgstr "Lütfen çalıştırmadan önce bir ünite açın."
+
+#: lazarusidestrconsts.lispleaseplacetheeditorcaretonanidentifierifthisisane
+msgid "Please place the editor caret on an identifier. If this is a new unit, please save the file first."
+msgstr ""
 
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."

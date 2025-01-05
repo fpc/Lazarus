@@ -5266,6 +5266,13 @@ msgstr "Всі ваші зміни у \"%s\"%sбудуть втрачені і �
 msgid "Alpha"
 msgstr "Альфа"
 
+#: lazarusidestrconsts.lisalreadycontainsthehe
+#, object-pascal-format
+msgid ""
+"%s already contains the help:\n"
+"%s"
+msgstr ""
+
 #: lazarusidestrconsts.lisalternativekey
 msgid "Alternative key"
 msgstr "Альтернативна кнопка"
@@ -7519,6 +7526,10 @@ msgstr "Новий набір пакунків"
 #: lazarusidestrconsts.lisconfirmpackageoldpackageset
 msgid "Old package set"
 msgstr "Старий набір пакунків"
+
+#: lazarusidestrconsts.lisconfirmreplace
+msgid "Confirm Replace"
+msgstr ""
 
 #: lazarusidestrconsts.lisconflict
 msgid "Conflict"
@@ -11017,6 +11028,10 @@ msgstr "Інтерактивний"
 #, object-pascal-format
 msgid "internal error: %s"
 msgstr "внутрішня помилка: %s"
+
+#: lazarusidestrconsts.lisinvaliddeclaration
+msgid "Invalid Declaration"
+msgstr ""
 
 #: lazarusidestrconsts.lisinvaliddelete
 msgid "Invalid delete"
@@ -15933,6 +15948,10 @@ msgstr "Виправте помилку, показану у вікні пові
 #: lazarusidestrconsts.lispleaseopenaunitbeforerun
 msgid "Please open a unit before run."
 msgstr "Відкрийте модуль перед запуском."
+
+#: lazarusidestrconsts.lispleaseplacetheeditorcaretonanidentifierifthisisane
+msgid "Please place the editor caret on an identifier. If this is a new unit, please save the file first."
+msgstr ""
 
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."

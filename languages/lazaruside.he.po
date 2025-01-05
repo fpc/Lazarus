@@ -5535,6 +5535,13 @@ msgstr "כל השינויים שלך של %s%s%s%sיאבדו והקובץ יפת
 msgid "Alpha"
 msgstr ""
 
+#: lazarusidestrconsts.lisalreadycontainsthehe
+#, object-pascal-format
+msgid ""
+"%s already contains the help:\n"
+"%s"
+msgstr ""
+
 #: lazarusidestrconsts.lisalternativekey
 msgid "Alternative key"
 msgstr "מקש חלופי"
@@ -7875,6 +7882,10 @@ msgstr "קבוצת חבילות חדשה"
 #: lazarusidestrconsts.lisconfirmpackageoldpackageset
 msgid "Old package set"
 msgstr "קבוצת חבילות ישנה"
+
+#: lazarusidestrconsts.lisconfirmreplace
+msgid "Confirm Replace"
+msgstr ""
 
 #: lazarusidestrconsts.lisconflict
 msgid "Conflict"
@@ -11426,6 +11437,10 @@ msgstr "אינטראקטיבי"
 #: lazarusidestrconsts.lisinternalerror
 #, object-pascal-format
 msgid "internal error: %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisinvaliddeclaration
+msgid "Invalid Declaration"
 msgstr ""
 
 #: lazarusidestrconsts.lisinvaliddelete
@@ -16777,6 +16792,10 @@ msgstr "תקן בבקשה את שגיאה המופיעה בחלון ההודעו
 #: lazarusidestrconsts.lispleaseopenaunitbeforerun
 msgid "Please open a unit before run."
 msgstr "אנא פתח יחידה לפני הרצה."
+
+#: lazarusidestrconsts.lispleaseplacetheeditorcaretonanidentifierifthisisane
+msgid "Please place the editor caret on an identifier. If this is a new unit, please save the file first."
+msgstr ""
 
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."

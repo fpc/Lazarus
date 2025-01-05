@@ -5386,6 +5386,13 @@ msgstr "\"%s\"%sへのすべての修正は失われ、ファイルが再び開�
 msgid "Alpha"
 msgstr "アルファ"
 
+#: lazarusidestrconsts.lisalreadycontainsthehe
+#, object-pascal-format
+msgid ""
+"%s already contains the help:\n"
+"%s"
+msgstr ""
+
 #: lazarusidestrconsts.lisalternativekey
 msgid "Alternative key"
 msgstr "代替キー "
@@ -7655,6 +7662,10 @@ msgstr "新しいパッケージセット"
 #: lazarusidestrconsts.lisconfirmpackageoldpackageset
 msgid "Old package set"
 msgstr "古いパッケージセット"
+
+#: lazarusidestrconsts.lisconfirmreplace
+msgid "Confirm Replace"
+msgstr ""
 
 #: lazarusidestrconsts.lisconflict
 msgid "Conflict"
@@ -11149,6 +11160,10 @@ msgstr "双方向的"
 #, object-pascal-format
 msgid "internal error: %s"
 msgstr "内部エラー: %s"
+
+#: lazarusidestrconsts.lisinvaliddeclaration
+msgid "Invalid Declaration"
+msgstr ""
 
 #: lazarusidestrconsts.lisinvaliddelete
 msgid "Invalid delete"
@@ -16146,6 +16161,10 @@ msgstr "メッセージウィンドウ（通常ソースエディタの下にあ
 #: lazarusidestrconsts.lispleaseopenaunitbeforerun
 msgid "Please open a unit before run."
 msgstr "実行する前にユニットを開いて下さい。"
+
+#: lazarusidestrconsts.lispleaseplacetheeditorcaretonanidentifierifthisisane
+msgid "Please place the editor caret on an identifier. If this is a new unit, please save the file first."
+msgstr ""
 
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."

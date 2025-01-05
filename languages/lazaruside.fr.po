@@ -5244,6 +5244,13 @@ msgstr "Toutes vos modifications concernant \"%s\"%s seront perdues et le fichie
 msgid "Alpha"
 msgstr "Alpha"
 
+#: lazarusidestrconsts.lisalreadycontainsthehe
+#, object-pascal-format
+msgid ""
+"%s already contains the help:\n"
+"%s"
+msgstr ""
+
 #: lazarusidestrconsts.lisalternativekey
 msgid "Alternative key"
 msgstr "Touche alternative"
@@ -7483,6 +7490,10 @@ msgstr "Nouveau jeu de paquet"
 #: lazarusidestrconsts.lisconfirmpackageoldpackageset
 msgid "Old package set"
 msgstr "Ancien jeu de paquet"
+
+#: lazarusidestrconsts.lisconfirmreplace
+msgid "Confirm Replace"
+msgstr ""
 
 #: lazarusidestrconsts.lisconflict
 msgid "Conflict"
@@ -10951,6 +10962,10 @@ msgstr "Interactif"
 #, object-pascal-format
 msgid "internal error: %s"
 msgstr "erreur interne : %s"
+
+#: lazarusidestrconsts.lisinvaliddeclaration
+msgid "Invalid Declaration"
+msgstr ""
 
 #: lazarusidestrconsts.lisinvaliddelete
 msgid "Invalid delete"
@@ -15856,6 +15871,10 @@ msgstr "Veuillez corriger l'erreur indiquée dans la fenêtre des messages qui s
 #: lazarusidestrconsts.lispleaseopenaunitbeforerun
 msgid "Please open a unit before run."
 msgstr "Veuillez ouvrir une unité avant l'exécution."
+
+#: lazarusidestrconsts.lispleaseplacetheeditorcaretonanidentifierifthisisane
+msgid "Please place the editor caret on an identifier. If this is a new unit, please save the file first."
+msgstr ""
 
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."

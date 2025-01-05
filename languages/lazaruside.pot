@@ -5210,6 +5210,13 @@ msgstr ""
 msgid "Alpha"
 msgstr ""
 
+#: lazarusidestrconsts.lisalreadycontainsthehe
+#, object-pascal-format
+msgid ""
+"%s already contains the help:\n"
+"%s"
+msgstr ""
+
 #: lazarusidestrconsts.lisalternativekey
 msgid "Alternative key"
 msgstr ""
@@ -7448,6 +7455,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisconfirmpackageoldpackageset
 msgid "Old package set"
+msgstr ""
+
+#: lazarusidestrconsts.lisconfirmreplace
+msgid "Confirm Replace"
 msgstr ""
 
 #: lazarusidestrconsts.lisconflict
@@ -10873,6 +10884,10 @@ msgstr ""
 #: lazarusidestrconsts.lisinternalerror
 #, object-pascal-format
 msgid "internal error: %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisinvaliddeclaration
+msgid "Invalid Declaration"
 msgstr ""
 
 #: lazarusidestrconsts.lisinvaliddelete
@@ -15732,6 +15747,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lispleaseopenaunitbeforerun
 msgid "Please open a unit before run."
+msgstr ""
+
+#: lazarusidestrconsts.lispleaseplacetheeditorcaretonanidentifierifthisisane
+msgid "Please place the editor caret on an identifier. If this is a new unit, please save the file first."
 msgstr ""
 
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
