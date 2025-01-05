@@ -4401,8 +4401,9 @@ var
   IsAtCaseLabel: Boolean;
   OldNestLevel, i: Integer;
   CustTk: TSynPasSynCustomTokenInfoList;
-  CustTkList: PPSynPasSynCustomTokenInfo;
+  CustTkList: PSynPasSynCustomTokenInfo;
   UpperTk: String;
+  p: pointer;
 begin
   fAsmStart := False;
   FIsPasDocKey := False;
@@ -4451,17 +4452,20 @@ begin
           CustTk := FCustomTokenInfo[FTokenHashKey and 255].List;
           if CustTk <> nil then begin
             UpperTk := '';
-            CustTkList := CustTk.List;
-            for i := 0 to CustTk.Count - 1 do begin
-              if (FTokenID in CustTkList^^.MatchTokenKinds) then begin
-                if UpperTk = '' then
-                  UpperTk := UpperCase(GetToken);
-                if (UpperTk = CustTkList^^.Word) then begin
-                  FCustomTokenMarkup := CustTkList^^.Token.FMarkup;
-                  break;
-                end
+            p := CustTk.List;
+            if p <> nil then begin
+              CustTkList := PPSynPasSynCustomTokenInfo(p)^;
+              for i := 0 to CustTk.Count - 1 do begin
+                if (FTokenID in CustTkList^.MatchTokenKinds) then begin
+                  if UpperTk = '' then
+                    UpperTk := UpperCase(GetToken);
+                  if (UpperTk = CustTkList^.Word) then begin
+                    FCustomTokenMarkup := CustTkList^.Token.FMarkup;
+                    break;
+                  end
+                end;
+                inc(CustTkList);
               end;
-              inc(CustTkList);
             end;
           end;
         end;
