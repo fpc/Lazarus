@@ -65,7 +65,7 @@ uses
 
 const
   IDEProjectName = 'Lazarus';
-  FPCDocsRepositoryURL = 'http://svn.freepascal.org/svn/fpcdocs/trunk';
+  FPCDocsRepositoryURL = 'https://gitlab.com/freepascal.org/fpc/documentation.git';
 type
   TFPDocItem = (
     fpdiShort,
