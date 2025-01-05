@@ -73,6 +73,8 @@ function TCocoaWidgetSet.BitBlt(DestDC: HDC; X, Y, Width, Height: Integer;
 var
   SrcCtx, DestCtx: TCocoaContext;
   Bmp: TCocoaBitmap;
+  ctm: CGAffineTransform;
+  ScaleRatio: CGFloat;
 begin
   SrcCtx := CheckDC(SrcDC);
   DestCtx := CheckDC(DestDC);
@@ -98,7 +100,13 @@ begin
   Width := Min(Width, Bmp.Width);
   Height := Min(Height, Bmp.Height);
 
-  Result := DestCtx.StretchDraw(X, Y, Width, Height,
+  ctm := CGContextGetCTM(TCocoaBitmapContext(SrcCtx).CGContext);
+  if (ctm.a <> 0) then
+    ScaleRatio := ctm.a
+  else
+    ScaleRatio := 1.0;
+
+  Result := DestCtx.StretchDraw(X, Y, Round(Width / ScaleRatio), Round(Height / ScaleRatio),
     TCocoaBitmapContext(SrcCtx), XSrc, YSrc, Width, Height,
     nil, 0, 0, Rop);
 end;
@@ -1109,6 +1117,8 @@ function TCocoaWidgetSet.StretchMaskBlt(DestDC: HDC; X, Y, Width,
   Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean;
 var
   SrcCtx, DestCtx: TCocoaContext;
+  ctm: CGAffineTransform;
+  ScaleRatio: CGFloat;
 begin
   DestCtx := CheckDC(DestDC);
   SrcCtx := CheckDC(SrcDC);
@@ -1124,8 +1134,12 @@ begin
       ', expected TCocoaBitmapContext!');
     Exit;
   end;
-
-  Result := DestCtx.StretchDraw(X, Y, Width, Height,
+  ctm := CGContextGetCTM(TCocoaBitmapContext(SrcCtx).CGContext);
+  if ctm.a <> 0 then
+    ScaleRatio := ctm.a
+  else
+    ScaleRatio := 1.0;
+  Result := DestCtx.StretchDraw(X, Y, Round(Width/ScaleRatio), Round(Height/ScaleRatio),
     TCocoaBitmapContext(SrcCtx), XSrc, YSrc, SrcWidth, SrcHeight,
     TCocoaBitmap(Mask), XMask, YMask, Rop);
 end;
