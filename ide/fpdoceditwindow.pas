@@ -40,10 +40,10 @@ uses
   // Synedit
   SynEdit, SynHighlighterXML, SynEditFoldedView, SynEditWrappedView,
   // codetools
-  FileProcs, CodeCache, CodeToolManager, CTXMLFixFragment,
+  FileProcs, CodeCache, CodeToolManager, CTXMLFixFragment, FindDeclarationTool, CodeTree,
   // IDEIntf
   IDEWindowIntf, LazIDEIntf, Menus,
-  SrcEditorIntf, IDEDialogs, LazFileUtils, IDEImagesIntf,
+  SrcEditorIntf, IDEDialogs, LazFileUtils, IDEImagesIntf, IDEHelpIntf,
   // IdeUtils
   IdeUtilsPkgStrConsts,
   // IDE
@@ -161,6 +161,7 @@ type
     function GetContextTitle(Element: TCodeHelpElement): string;
 
     function FindInheritedIndex: integer;
+    procedure OnCustomButtonClick(Sender: TObject);
     procedure Save(CheckGUI: boolean = false);
     function GetGUIValues: TFPDocElementValues;
     procedure SetModified(const AValue: boolean);
@@ -187,6 +188,7 @@ type
     procedure DoEditorUpdate(Sender: TObject);
     procedure DoEditorMouseUp(Sender: TObject);
   private
+    FCustomSpeedButtons: array of TSpeedButton;
     FFollowCursor: boolean;
     FIdleConnected: boolean;
     FLastTopicControl: TControl;
@@ -991,6 +993,8 @@ end;
 procedure TFPDocEditor.UpdateButtons;
 var
   HasEdit: Boolean;
+  i: Integer;
+  Btn: TSpeedButton;
 begin
   if fUpdateLock>0 then begin
     Include(FFlags,fpdefButtonsNeedUpdate);
@@ -1017,6 +1021,23 @@ begin
   InsertVarTagButton.Enabled:=HasEdit;
   InsertPrintShortSpeedButton.Enabled:=HasEdit;
   InsertURLTagSpeedButton.Enabled:=HasEdit;
+
+  for i:=0 to length(LazarusHelp.FPDocEditorTextBtnHandlers)-1 do
+  begin
+    if i<length(FCustomSpeedButtons) then
+      Btn:=FCustomSpeedButtons[i]
+    else begin
+      Btn:=TSpeedButton.Create(Self);
+      Btn.Name:='CustomButton'+IntToStr(i);
+      Btn.Parent:=LeftBtnPanel;
+      FCustomSpeedButtons[i]:=Btn;
+      Btn.ShowHint:=true;
+      Btn.Tag:=i;
+      Btn.OnClick:=@OnCustomButtonClick;
+    end;
+    Btn.Caption:=LazarusHelp.FPDocEditorTextBtnHandlers[i].Caption;
+    Btn.Hint:=LazarusHelp.FPDocEditorTextBtnHandlers[i].Hint;
+  end;
 end;
 
 function TFPDocEditor.GetCurrentUnitName: string;
@@ -1557,6 +1578,77 @@ begin
     end;
   end;
   Result:=-1;
+end;
+
+procedure TFPDocEditor.OnCustomButtonClick(Sender: TObject);
+var
+  Btn: TSpeedButton;
+  OnExec: TFPDocEditorTxtBtnClick;
+  Params: TFPDocEditorTxtBtnParams;
+  Element: TCodeHelpElement;
+  Tool: TFindDeclarationTool;
+  Node: TCodeTreeNode;
+  Caret: TCodeXYPosition;
+begin
+  Btn:=TSpeedButton(Sender);
+  if Btn.Tag>=length(LazarusHelp.FPDocEditorTextBtnHandlers) then exit;
+  OnExec:=LazarusHelp.FPDocEditorTextBtnHandlers[Btn.Tag].OnExecute;
+  if Assigned(OnExec) then
+  begin
+    Params:=Default(TFPDocEditorTxtBtnParams);
+    if (fChain=nil) or (fChain.Count=0) then exit;
+    Element:=fChain[0];
+    Tool:=Element.CodeContext.Tool;
+    Node:=Element.CodeContext.Node;
+    Params.CodeTool:=Tool;
+    Params.CodeNode:=Node;
+    if (Tool<>nil) and (Node<>nil) then
+    begin
+      Element.CodeContext.Tool.CleanPosToCaret(Node.StartPos,Caret);
+      Params.CodeTool:=Caret.Code;
+      Params.Filename:=Caret.Code.Filename;
+      Params.Line:=Caret.Y;
+      Params.Col:=Caret.X;
+    end;
+
+    if PageControl.ActivePage = ShortTabSheet then begin
+      Params.Part:=fpdepShortDesc;
+      Params.Selection:=ShortEdit.SelText;
+    end else if PageControl.ActivePage = DescrTabSheet then begin
+      Params.Part:=fpdepDescription;
+      Params.Selection:=DescrSynEdit.SelText;
+    end else if PageControl.ActivePage = ErrorsTabSheet then begin
+      Params.Part:=fpdepErrors;
+      Params.Selection:=ErrorsSynEdit.SelText;
+    end
+    else if PageControl.ActivePage = TopicSheet then begin
+      if (FLastTopicControl = TopicShort) then begin
+        Params.Part:=fpdepTopicShort;
+        Params.Selection:=TopicShort.SelText;
+      end else if (FLastTopicControl = TopicDescrSynEdit) then begin
+        Params.Part:=fpdepTopicDesc;
+        Params.Selection:=TopicDescrSynEdit.SelText;
+      end else
+        exit;
+    end else
+      exit;
+
+    OnExec(Params);
+    if not Params.Success then exit;
+
+    case Params.Part of
+      fpdepShortDesc:
+        begin
+          ShortEdit.SelText := Params.Selection;
+          DescrShortEdit.Text:=ShortEdit.Text;
+        end;
+      fpdepDescription: DescrSynEdit.SelText := Params.Selection;
+      fpdepErrors: ErrorsSynEdit.SelText := Params.Selection;
+      fpdepTopicShort: TopicShort.SelText := Params.Selection;
+      fpdepTopicDesc: TopicDescrSynEdit.SelText := Params.Selection;
+    end;
+    Modified:=true;
+  end;
 end;
 
 procedure TFPDocEditor.AddLinkToInheritedButtonClick(Sender: TObject);

@@ -21,7 +21,7 @@ uses
   // LCL
   LMessages, LCLType, LCLIntf, Forms, Controls, Graphics, HelpIntfs, LazHelpIntf,
   // IdeIntf
-  TextTools;
+  TextTools, LazMethodList;
 
 type
   { THelpDBIRegExprMessage
@@ -51,10 +51,38 @@ type
     );
   TIDEHelpManagerCreateHintFlags = set of TIDEHelpManagerCreateHintFlag;
 
+  TFPDocEditorPart = (
+    fpdepShortDesc,
+    fpdepDescription,
+    fpdepErrors,
+    fpdepTopicShort,
+    fpdepTopicDesc
+    );
+  TFPDocEditorTxtBtnParams = record
+    Part: TFPDocEditorPart;
+    CodeBuf: Pointer; // TCodeBuffer
+    CodeTool: Pointer; // TCodeTool
+    CodeNode: Pointer; // TCodeNode
+    Filename: string;
+    Line, Col: integer;
+    Selection: string; // on Success is changed to new value
+    Success: boolean;
+  end;
+
+  TFPDocEditorTxtBtnClick = procedure(var Params: TFPDocEditorTxtBtnParams) of object;
+
   { TBaseHelpManager }
 
   TBaseHelpManager = class(TComponent)
   private
+    type
+      TFPDocEditorTextBtnHandler = record
+        Caption, Hint: string;
+        OnExecute: TFPDocEditorTxtBtnClick;
+      end;
+      TFPDocEditorTextBtnHandlers = array of TFPDocEditorTextBtnHandler;
+  protected
+    FFPDocEditorTextBtnHandlers: TFPDocEditorTextBtnHandlers;
     FCombineSameIdentifiersInUnit: boolean;
     FShowCodeBrowserOnUnknownIdentifier: boolean;
   public
@@ -78,6 +106,8 @@ type
       ResolveIncludeFiles: Boolean;
       out AnOwner: TObject// a package or a project or LazarusHelp or nil for user defined
       ): string; virtual; abstract;
+    procedure RegisterFPDocEditorTextButton(const aCaption, aHint: string; const OnExecute: TFPDocEditorTxtBtnClick); virtual;
+    property FPDocEditorTextBtnHandlers: TFPDocEditorTextBtnHandlers read FFPDocEditorTextBtnHandlers;
 
     property CombineSameIdentifiersInUnit: boolean
       read FCombineSameIdentifiersInUnit write FCombineSameIdentifiersInUnit;
@@ -252,6 +282,19 @@ function THelpDBIRegExprMessage.MessageMatches(const TheMessage: string;
 begin
   Result:=REMatches(TheMessage,Expression,ModifierStr);
   //writeln('THelpDBIRegExprMessage.MessageMatches TheMessage="',TheMessage,'" Expression="',Expression,'" Result=',Result);
+end;
+
+{ TBaseHelpManager }
+
+procedure TBaseHelpManager.RegisterFPDocEditorTextButton(const aCaption, aHint: string;
+  const OnExecute: TFPDocEditorTxtBtnClick);
+var
+  Item: TFPDocEditorTextBtnHandler;
+begin
+  Item.Caption:=aCaption;
+  Item.Hint:=aHint;
+  Item.OnExecute:=OnExecute;
+  Insert(Item,FFPDocEditorTextBtnHandlers,length(FFPDocEditorTextBtnHandlers));
 end;
 
 { TAbstractIDEHTMLProvider }
