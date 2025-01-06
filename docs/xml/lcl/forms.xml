@@ -15029,11 +15029,14 @@ Control instance to receive the mouse capture.
 </element>
 
 <element name="TApplication.UpdateMouseHint">
-<short>Sets Hint to the (new) hint that applies to CurrentControl.</short>
+<short>
+Sets Hint to the (new) hint that applies to the control in CurrentControl.
+</short>
 <descr>
 </descr>
 <seealso>
 <link id="TApplication.Hint"/>
+<link id="TApplication.DoBeforeMouseMessage"/>
 </seealso>
 </element>
 <element name="TApplication.UpdateMouseHint.CurrentControl">
@@ -18458,23 +18461,62 @@ deprecated THandle type.
 </element>
 
 <element name="TApplication.Hint">
-<short>The current Hint text.</short>
+<short>
+The current Hint text active for the application.
+</short>
 <descr>
 <p>
-A hint is a pop-up message that appears briefly while the mouse hovers over a 
-control. It usually displays useful information about how to use the UI 
-element, or the type of data that should be entered, etc.
+A hint is a String with a pop-up message that appears briefly while the mouse 
+is hovered over a control. It usually displays useful information about how to 
+use the UI element, or the type of data that should be entered, etc.
+</p>
+<p>
+The property value is normally provided by the Hint text assigned to a 
+control when ShowHint is set to <b>True</b> (for both the control and the 
+application). If the Hint text for the control has short and long variants, the 
+long variant is used in TApplication. Otherwise, the short variant is used for 
+the property value. See 
+<link id="#lcl.controls.TControl.Hint">TControl.Hint</link> for more 
+information about short and long hints.
+</p>
+<p>
+Changing the property value causes an assigned OnHint handler to be signalled, 
+along with any other application handlers using the ahtHint type. One of the 
+handlers can be used to override the value for the Hint property. If OnHint (or 
+other handlers) are not assigned, a TCustomHintAction is created and executed 
+to get the value for the Hint property. OnActionExecute can then be used to 
+intercept and fulfill the request for Hint text.
 </p>
 <p>
 Other properties can be used to customize the delay before a Hint is shown, 
 after the mouse is moved away from the control or form, and how long it will 
-remain visible.
+remain visible. See HintPause, HintShortPause, HintHidePause, and 
+HintHidePausePerChar.
+</p>
+<p>
+Use HintColor to specify the background color used to display the pop-up with 
+the Hint text.
+</p>
+<p>
+The Hint value may be displayed on the status bar for the active Form (instead 
+of in a pop-up hint window) when the AutoHint property is enabled for a 
+TStatusBar instance.
 </p>
 </descr>
 <seealso>
+<link id="TApplication.ShowHint"/>
+<link id="TApplication.OnHint"/>
+<link id="TApplication.AddOnHintHandler"/>
+<link id="TApplication.OnActionExecute"/>
+<link id="TApplication.HintColor"/>
 <link id="TApplication.HintPause"/>
+<link id="TApplication.HintShortPause"/>
 <link id="TApplication.HintHidePause"/>
 <link id="TApplication.HintHidePausePerChar"/>
+<link id="#lcl.controls.TControl.Hint">TControl.Hint</link>
+<link id="#lcl.controls.TControl.ShowHint">TControl.ShowHint</link>
+<link id="#lcl.controls.TControl.ParentShowHint">TControl.ParentShowHint</link>
+<link id="#lcl.comctrls.TStatusBar.AutoHint">TStatusBar.AutoHint</link>
 </seealso>
 </element>
 
@@ -18583,6 +18625,7 @@ utilize the TControlActionLink class. The default value for the property is
 <descr/>
 <seealso>
 <link id="TApplication.Hint"/>
+<link id="TApplication.ActivateHint"/>
 </seealso>
 </element>
 
@@ -19272,18 +19315,31 @@ Event handler signalled when a hint is requested in the application.
 </short>
 <descr>
 <p>
-<var>OnHint</var> is a <var>TNotifyEvent</var> property with the event 
-handler signalled when the value for the <var>Hint</var> property has been 
-changed in the application. It is signalled (when assigned) from the 
-<var>SetHint</var> method, and occurs before other application handlers using 
-the <var>ahtHint</var> handler type are notified.
+<var>OnHint</var> is a <var>TNotifyEvent</var> property with the event handler 
+signalled when the value for the <var>Hint</var> property is needed in the 
+application. It is signalled (when assigned) when a new value is assigned to 
+the Hint property, and occurs when the mouse is hovered over a control.
+</p>
+<p>
+OnHint, and other application handlers using the ahtHint type, can be used to 
+override the value assigned to the Hint property. OnHint occurs before other 
+application handlers using the <var>ahtHint</var> handler type are notified.
+OnHint can be implemented to provide hint text using any method needed for the 
+application; it does not have to use the Hint text for the hovered control. 
+</p>
+<p>
+If OnHint (or other handlers) are not assigned, a TCustomHintAction is created 
+and executed to get the value for the Hint property. OnActionExecute can then 
+be used to intercept and fulfill the request for Hint text.
 </p>
 </descr>
 <seealso>
 <link id="TApplication.Hint"/>
 <link id="TApplication.AddOnHintHandler"/>
 <link id="TApplication.RemoveOnHintHandler"/>
+<link id="TApplication.OnActionExecute"/>
 <link id="TApplicationHandlerType"/>
+<link id="TCustomHintAction"/>
 </seealso>
 </element>
 
@@ -19337,6 +19393,9 @@ and the hint window is made visible and activated.
 <link id="TApplication.ShowHintWindow"/>
 <link id="TApplication.AddOnShowHintHandler"/>
 <link id="TApplication.RemoveOnShowHintHandler"/>
+<link id="THintWindow.HintControl"/>
+<link id="THintWindow.HintData"/>
+<link id="THintWindow.HintRect"/>
 <link id="TShowHintEvent"/>
 <link id="TApplicationHandlerType"/>
 </seealso>
@@ -19423,17 +19482,25 @@ Sets the default policy for showing or hiding glyph images in menus.
 </element>
 
 <element name="TApplication.ShowHint">
-<short>Indicates if Hints are displayed for the application.</short>
+<short>
+Indicates if Hints are displayed for the application.
+</short>
 <descr>
 <p>
 <var>ShowHint</var> is a <var>Boolean</var> property which indicates if 
 <var>Hints</var> are displayed for the application. It is used when tracking 
 the position of the mouse cursor over controls and forms, and determines if 
-the items require a hint display.
+the items require a hint display. The value is used in ShowHintWindow to 
+determine whether the hint window can be activated for the application.
 </p>
 <p>
-Setting the value in <var>ShowHints</var> to <b>False</b> causes an existing 
-<var>THintWindow</var> instance in the application to be freed.
+The default value for the property is <b>True</b>. Setting the value in 
+<var>ShowHint</var> to <b>False</b> causes an existing <var>THintWindow</var> 
+instance in the application to be freed.
+</p>
+<p>
+Use the Hint, ShowHint, and ParentShowHint properties in TControl to determine 
+whether that particular control can display a hint.
 </p>
 </descr>
 <seealso>
