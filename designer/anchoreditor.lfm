@@ -9,12 +9,12 @@ object AnchorDesigner: TAnchorDesigner
   ClientWidth = 544
   Constraints.MinHeight = 361
   Constraints.MinWidth = 544
+  LCLVersion = '4.99.0.0'
   OnActivate = FormActivate
   OnCreate = FormCreate
   OnDeactivate = FormDeactivate
   OnDestroy = FormDestroy
   OnShow = FormShow
-  LCLVersion = '2.1.0.0'
   object BorderSpaceGroupBox: TGroupBox
     AnchorSideLeft.Control = Owner
     AnchorSideLeft.Side = asrCenter

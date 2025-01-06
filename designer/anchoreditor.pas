@@ -948,32 +948,29 @@ end;
 procedure TAnchorDesigner.FillComboBoxWithSiblings(AComboBox: TComboBox);
 var
   sl: TStringListUTF8Fast;
-  i: Integer;
-  CurControl: TControl;
-  j: Integer;
-  Sibling: TControl;
+  i, j: Integer;
+  CurControl, Sibling: TControl;
   SelectedControls: TList;
   OldText: String;
   Kind: TAnchorKind;
-  HasSelectedSiblings: Boolean;
+  HasSelSiblings: Boolean;
 
-  function AddSibling(AControl: TControl): boolean;
-  var
-    NewControlStr: String;
+  function AddSiblingSkipSelected(AControl: TControl): boolean;
+  // Return True if AControl was selected and thus skipped.
   begin
     Result:=false;
     if AControl.Name='' then exit;
-    if SelectedControls.IndexOf(AControl)>=0 then exit;
-    NewControlStr:=ControlToStr(AControl);
-    if sl.IndexOf(NewControlStr)>=0 then exit;
-    sl.Add(NewControlStr);
-    Result:=true;
+    // Skip selected siblings and return True.
+    if SelectedControls.IndexOf(AControl)>=0 then exit(true);
+    // This can happen with combined controls like TLabeledEdit.
+    if Assigned(AControl.Owner) and (AControl.Owner<>AControl.Parent) then exit;
+    sl.Add(ControlToStr(AControl));
   end;
-  
+
 begin
-  sl:=TStringListUTF8Fast.Create;
+  sl:=TStringListUTF8Fast.Create;  // By default sl.Duplicates:=dupIgnore
   sl.Add(AnchorDesignerNoSiblingText);
-  HasSelectedSiblings:=false;
+  HasSelSiblings:=false;
   SelectedControls:=GetSelectedControls;
   if SelectedControls<>nil then begin
     for i:=0 to SelectedControls.Count-1 do begin
@@ -982,21 +979,18 @@ begin
         if (CurControl.Parent<>nil) 
           and not (csDesignInstance in CurControl.ComponentState)
         then begin
-          AddSibling(CurControl.Parent);
+          AddSiblingSkipSelected(CurControl.Parent);
           for j:=0 to CurControl.Parent.ControlCount-1 do begin
             Sibling:=CurControl.Parent.Controls[j];
-            if (Sibling<>CurControl) then begin
-              AddSibling(Sibling);
-              if SelectedControls.IndexOf(Sibling)>=0 then
-                HasSelectedSiblings:=true;
-            end;
+            if (Sibling<>CurControl) and AddSiblingSkipSelected(Sibling) then
+              HasSelSiblings:=true;
           end;
         end;
         break;
       end;
     end;
   end;
-  if HasSelectedSiblings then
+  if HasSelSiblings then
     for Kind:=akTop to akBottom do
       sl.add(AnchorDesignerNeighbourText(Kind));
   OldText:=AComboBox.Text;
