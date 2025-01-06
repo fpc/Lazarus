@@ -27,7 +27,7 @@
     <License Value="modified LGPL-2
 "/>
     <Version Major="4" Minor="99"/>
-    <Files Count="289">
+    <Files Count="290">
       <Item1>
         <Filename Value="checklst.pas"/>
         <UnitName Value="CheckLst"/>
@@ -1194,6 +1194,10 @@
         <Filename Value="taskdlgemulation.pp"/>
         <UnitName Value="TaskDlgEmulation"/>
       </Item289>
+      <Item290>
+        <Filename Value="include/windowmagnet.inc"/>
+        <Type Value="Include"/>
+      </Item290>
     </Files>
     <CompatibilityMode Value="True"/>
     <LazDoc Paths="../docs/xml/lcl"/>
