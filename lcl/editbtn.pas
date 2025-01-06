@@ -1181,6 +1181,7 @@ end;
 constructor TCustomControlFilterEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  ControlStyle := ControlStyle - [csSetCaption];
   CharCase:=ecLowerCase;
   Button.Enabled:=False;
   fFilterOptions:=[];
