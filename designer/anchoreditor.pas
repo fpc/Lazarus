@@ -962,8 +962,7 @@ var
     if AControl.Name='' then exit;
     // Skip selected siblings and return True.
     if SelectedControls.IndexOf(AControl)>=0 then exit(true);
-    // This can happen with combined controls like TLabeledEdit.
-    if Assigned(AControl.Owner) and (AControl.Owner<>AControl.Parent) then exit;
+    if csNoDesignSelectable in AControl.ControlStyle then exit;
     sl.Add(ControlToStr(AControl));
   end;
 
