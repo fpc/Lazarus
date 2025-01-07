@@ -1466,31 +1466,50 @@ stored in s.
 
 <element name="UTF8StringReplace">
 <short>
-Replaces values in a String matching a pattern starting at a given position.
+Replaces one or more values in a UTF-8-encoded string which match a given 
+pattern.
 </short>
 <descr>
 <p>
 <var>UTF8StringReplace</var> is an overloaded <var>String</var> function 
-which replaces values in a String matching a pattern starting at a given 
-position.
+which replaces values in a string matching a given pattern.
 </p>
 <p>
 <var>S</var> is the UTF-8-encoded string to update in the function. 
-<var>OldPattern</var> is a pattern with the values to be replaced. 
-<var>NewPattern</var> is the values used to replace the value in OldPattern. 
-<var>Flags</var> contains <var>TReplaceFlags</var> values to use for the 
-operation. <var>ALanguage</var> is the Language Code used for values in 
-function. <var>Count</var> is an output variable used to return the number of 
+<var>OldPattern</var> is a pattern with the values to be replaced in S. 
+<var>NewPattern</var> is the replacement value for OldPattern in S. 
+</p>
+<p>
+<var>Flags</var> contains <var>TReplaceFlags</var> values and control the 
+options enabled in the operation. <var>rfIgnoreCase</var> causes 
+case-insensitive comparisons to be used for values in S and OldPattern; both 
+values are converted to lowercase copies for the purpose. 
+<var>rfReplaceAll</var> causes all occurrences of OldPattern to be replaced 
+with NewPattern in S. If the flag is omitted, only the first occurrence of 
+OldPattern in S is replaced in the routine.
+</p>
+<p>
+<var>ALanguage</var> is the 2-digit ISO 639-1 Language Code, like 'es' or 
+'de', used when converting values to lowercase for case-insensitive search. 
+The default value is an empty string ('') and offers maximum speed when the 
+language is not significant.
+</p>
+<p>
+<var>Count</var> is an output variable used to return the actual number of 
 replacements performed in the function.
 </p>
 <p>
-The return value is a UTF-8-encoded string with the updated values following 
-replacement.
+UTF8StringReplace provides support for UTF-8 codepoints which have different 
+sizes (byte counts) for the uppercase and lowercase variants of patterns. It 
+ensures that the return value is resized (when needed) to account for 
+individual codepoint sizes altered in S due to case conversion.
 </p>
 <p>
-UTF8StringReplace uses the same algorithm as the <var>StringReplace</var> 
-function, but uses <var>UTF8LowerCase</var> for case insensitive search (when 
-enabled in Flags).
+The return value is a UTF-8-encoded string with the updated values from S 
+following replacements.
+</p>
+<p>
+No actions are performed in the routine if OldPattern is an empty string ('').
 </p>
 </descr>
 <seealso/>
