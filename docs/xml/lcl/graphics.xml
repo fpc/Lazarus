@@ -19242,73 +19242,185 @@ returns -1
 </element>
 
 <element name="ColorToRGB">
-<short>Converts a TColor value to an RGB color constant.</short>
+<short>
+Converts a TColor value to an RGB color constant.
+</short>
 <descr>
 <p>
 ColorToRGB ensures that TColor values for special and system colors remove 
-the non-RGB values in the constant.
+the non-RGB values in the constant (Alpha channel).
+</p>
+<p>
+To get a hexadecimal string for a color value with the bytes in RGB order use:
+</p>
+<code>
+// var ColorStr: String;
+ColorStr := '$'+ Red(clMoneyGreen).ToHexString(2) + 
+  Green(clMoneyGreen).ToHexString(2) + 
+  Blue(clMoneyGreen).ToHexString(2);
+</code>
+<p>
+Use RGBToColor to convert individual RGB byte values to a TColor value.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="SysColorToSysColorIndex"/>
+<link id="Red"/>
+<link id="Green"/>
+<link id="Blue"/>
+<link id="RGBToColor"/>
+<link id="#lcl.lclintf.GetSysColor">GetSysColor</link>
+</seealso>
 </element>
 <element name="ColorToRGB.Result">
-<short>LongInt value representing the specified color.</short>
+<short>
+TColor value after the Alpha channel is removed from the input value.
+</short>
 </element>
 <element name="ColorToRGB.Color">
-<short>TColor value converted in the method.</short>
+<short>
+TColor value converted in the method.
+</short>
 </element>
 
 <element name="ColorToString">
 <short>
-<var>ColorToString</var> - given a color value, returns a corresponding color 
-name like 'Green'
+Gets a string representation for the specified TColor value.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>ColorToString</var> converts the <var>TColor</var> value in the 
+<var>Color</var> argument to a string representation for the color. Color may 
+contain either a named color identifier, like clRed or clForm, or a custom 
+color value not represented by a color identifier like TColor($00D7FF).
+</p>
+
+<!--
+  TODO: Include when FPC 3.2.4 (or later) is released.
+
+  Starting with FPC 3.2.0, additional color constants matching standard HTML 
+  color names are defined in the RTL TColorRec record type. The values, like 
+  TColorRec.Goldenrod and TColorRec.LightSteelBlue, can also be used in the 
+  Color argument. 
+
+  Nota Bene: Not recommended at the present time. FPC versions 3.20 and 3.2.2 
+  have color constants with the wrong byte order. The byte orders are fixed in 
+  3.2.4 - but that version has not seen a stable release yet.
+-->
+
+<p>
+For named color identifiers, the return value contains the string 
+representation for the identifier; e.g. 'clRed' or 'clForm'. For colors which 
+are not recognized in the standard Colors map, the return value contains the 
+hexadecimal representation for the color in ABGR (Alpha Blue Green Red) byte 
+order; e.g. '$0000D7FF'.
+</p>
+<p>
+Use StringToColor or StringToColorDef to convert the string representation for 
+a color to its TColor equivalent.
+</p>
+</descr>
+<seealso>
+<link id="ColorToIdent"/>
+<link id="ColorToRGB"/>
+<link id="ColorIndex"/>
+<link id="StringToColor"/>
+<link id="StringToColorDef"/>
+</seealso>
 </element>
 <element name="ColorToString.Result">
 <short>
-Returns the name of the color, expressed as a string (like 'Green').
+AnsiString with the hexadecimal byte values or the color identifier name for the specified color value.
 </short>
 </element>
 <element name="ColorToString.Color">
-<short>The <var>Color</var> to examine in the routine.</short>
+<short>
+The <var>TColor</var> value examined in the routine.
+</short>
 </element>
 
 <element name="StringToColor">
 <short>
-<var>StringToColor</var> - given a color name like 'clBlue', returns the 
-corresponding color value.
+Converts the specified string representation for a color to a TColor value.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>StringToColor</var> is used to convert the string in <var>S</var> to its 
+value as a <var>TColor</var> type. The S argument can contain a color 
+identifier like 'clRed' or 'clForm', or a hexadecimal string with the bytes for 
+the color in GBR byte order like '$00D7FF'.
+</p>
+<p>
+The return value contains the LongInt value for the color. When S is a valid 
+color identifier, the corresponding color constant is returned; e.g. clRed or 
+clForm. If S is not a color identifier, it is converted to an Integer value and 
+cast to the TColor type for use as the return value. The default return value 
+is clNone.
+</p>
+<p>
+Use StringToColorDef to convert a color string to its TColor value using a 
+specified default TColor value.
+</p>
+</descr>
+<seealso>
+<link id="StringToColorDef"/>
+<link id="IdentToColor"/>
+</seealso>
 </element>
 <element name="StringToColor.Result">
-<short>Returns the color corresponding to the name in String <var>S</var>.
+<short>
+Returns the TColor value corresponding to the value in <var>S</var>.
 </short>
 </element>
 <element name="StringToColor.S">
 <short>
-<var>S</var> - the name of the required color, expressed as a string.
+String with the color identifier or hexadecimal byte values converted in the 
+routine.
 </short>
 </element>
 
 <element name="StringToColorDef">
 <short>
-Converts a color name, like "clBlue", to a TColor value with an optional 
-default value when the color name does not exist.
+Converts the specified string representation for a color to a TColor value 
+using a specified default value.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>StringToColorDef</var> is used to convert the string in <var>S</var> to 
+its value as a <var>TColor</var> type. The S argument can contain a color 
+identifier like 'clRed' or 'clForm', or a hexadecimal string with the bytes for 
+the color in GBR byte order like '$00D7FF'. The DefaultValue argument contains 
+the default value used when S is not a valid color string.
+</p>
+<p>
+The return value contains the LongInt value for the color. When S is a valid 
+color identifier, the corresponding color constant is returned; e.g. clRed or 
+clForm. If S is not a color identifier, it is converted to an Integer value and 
+cast to the TColor type for use as the return value. The default return value 
+is specified in the DefaultValue argument.
+</p>
+</descr>
+<seealso>
+<link id="StringToColor"/>
+<link id="ColorToString"/>
+<link id="IdentToColor"/>
+</seealso>
 </element>
 <element name="StringToColorDef.Result">
-<short/>
+<short>
+TColor value for the specified string, or the default value when S does not contain a valid representation for a color.
+</short>
 </element>
 <element name="StringToColorDef.S">
-<short/>
+<short>
+String with the color identifier or hexadecimal byte values converted in the 
+routine.
+</short>
 </element>
 <element name="StringToColorDef.DefaultValue">
-<short/>
+<short>
+Default TColor value used when S is not a valid representation for a color.
+</short>
 </element>
 
 <element name="GetColorValues">
