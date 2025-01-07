@@ -1233,7 +1233,6 @@ begin
       Application.IntfAppDeactivate;
     end;
   end;
-  Application.IntfAppActivate;
 end;
 
 procedure TQtWidgetSet.OnWakeMainThread(Sender: TObject);
