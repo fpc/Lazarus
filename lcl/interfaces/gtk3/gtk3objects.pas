@@ -213,6 +213,7 @@ type
     FvClipRect: TRect;
     FCurrentPen: TGtk3Pen;
     FBkMode: Integer;
+    FDeviceScaleRatio: double;
     function GetOffset: TPoint;
     procedure setBrush(AValue: TGtk3Brush);
     procedure SetFont(AValue: TGtk3Font);
@@ -227,6 +228,7 @@ type
     procedure ApplyFont;
     procedure ApplyPen;
     procedure FillAndStroke;
+    procedure setDeviceScaleRatio(const AValue: double);
   public
     CairoSurface: Pcairo_surface_t;
     pcr: Pcairo_t;
@@ -286,6 +288,7 @@ type
     property CurrentPen: TGtk3Pen read FCurrentPen write FCurrentPen;
     property CurrentRegion: TGtk3Region read FCurrentRegion;
     property CurrentTextColor: TColorRef read FCurrentTextColor write FCurrentTextColor;
+    property DeviceScaleRatio: double read FDeviceScaleRatio write setDeviceScaleRatio;
     property Offset: TPoint read GetOffset write SetOffset;
     property OwnsSurface: Boolean read FOwnsSurface;
     property vBrush: TGtk3Brush read FBrush write setBrush;
@@ -1472,6 +1475,7 @@ begin
      ' FromPaintEvent:',BoolToStr(APaintEvent),' )');
   {$endif}
   inherited Create;
+  FDeviceScaleRatio := 1;
   FvClipRect := Rect(0, 0, 0, 0);
   Window := nil;
   Parent := nil;
@@ -1546,6 +1550,7 @@ begin
      ' FromPaintEvent:',BoolToStr(APaintEvent),' )');
   {$endif}
   inherited Create;
+  FDeviceScaleRatio := 1;
   FvClipRect := Rect(0, 0, 0, 0);
   Parent := nil;
   ParentPixmap := nil;
@@ -1575,6 +1580,7 @@ begin
      ' FromPaintEvent:',BoolToStr(True),' )');
   {$endif}
   inherited Create;
+  FDeviceScaleRatio := 1;
   FOwnsCairo := False;
   Window := nil;
   Parent := AWidget;
@@ -2409,6 +2415,18 @@ begin
   cairo_set_antialias(pcr, caa[aamode]);
 end;
 
+procedure TGtk3DeviceContext.setDeviceScaleRatio(const AValue: double);
+var
+  matrix: Tcairo_matrix_t;
+begin
+  if FDeviceScaleRatio <> AValue then
+  begin
+    FDeviceScaleRatio := AValue;
+    cairo_get_matrix(pcr, @matrix);
+    cairo_matrix_scale(@matrix, FDeviceScaleRatio, FDeviceScaleRatio);
+    cairo_set_matrix(pcr, @matrix);
+  end;
+end;
 
 //various routines for text
 

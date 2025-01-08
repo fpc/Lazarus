@@ -3994,6 +3994,11 @@ begin
   {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
   DebugLn('WARNING: TGtk3WidgetSet.StretchMaskBlt not implemented ...');
   {$ENDIF}
+  if Assigned(SrcContext.pcr) and SrcContext.OwnsSurface then
+  begin
+    Width := Round(Width / SrcContext.DeviceScaleRatio);
+    Height := Round(Height / SrcContext.DeviceScaleRatio);
+  end;
   ATargetRect := Rect(X, Y, Width + X, Height + Y);
   ASrcRect := Rect(XSrc, YSrc, SrcWidth + XSrc, SrcHeight + YSrc);
 
