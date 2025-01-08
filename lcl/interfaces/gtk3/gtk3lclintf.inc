@@ -1186,6 +1186,13 @@ begin
   end;
 end;
 
+procedure TGtk3WidgetSet.SetDeviceScaleRatio(DC: HDC; const AScaleRatio: double);
+var
+  Gtk3DC: TGtk3DeviceContext absolute DC;
+begin
+  if (Gtk3DC <>  nil) then
+    cairo_scale(gtk3DC.pcr, AScaleRatio, AScaleRatio);
+end;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 
