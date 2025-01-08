@@ -154,6 +154,10 @@ type
     function ShiftStateToQtModifiers(Shift: TShiftState): QtModifier;
     procedure setInitialColor;
     procedure setInitialFontColor;
+    {$IFDEF LINUX}
+    //We use internally this routine to fix QLineEdit, QComboBox and QAbstractSpinBox so code is not duplicated. See issue #41317
+    function FixThemePaint(AEvent: QPaintEventH; ARealWidget: QWidgetH; ASender: QWidgetH; const AHasFrame: boolean): boolean;
+    {$ENDIF}
   protected
     // IUnknown implementation
     function QueryInterface(constref iid: TGuid; out obj): LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
@@ -5921,6 +5925,70 @@ begin
   Widget := nil;
 end;
 
+{$IFDEF LINUX}
+function TQtWidget.FixThemePaint(AEvent: QPaintEventH; ARealWidget: QWidgetH; ASender: QWidgetH; const AHasFrame: boolean): boolean;
+var
+  APainter: QPainterH;
+  RF: QRectFH;
+  AQtColor: TQColor;
+  R: TRect;
+  APath: QPainterPathH;
+  APen: QPenH;
+  ACheckValue, APrefW, APrefH: integer;
+begin
+  Result := False;
+  APrefW := 0;
+  APrefH := 0;
+  if Assigned(FOwner) then
+    FOwner.preferredSize(APrefW, APrefH, True)
+  else
+    preferredSize(APrefW, APrefH, True);
+
+  if APrefH <= 0 then
+    exit;
+  // We use ACheckValue since older breeze theme differs in older kde plasmas.
+  ACheckValue := APrefH - QStyle_pixelMetric(QApplication_style(), QStylePM_DefaultFrameWidth, nil, nil) - 1;
+  if (ChildOfComplexWidget = ccwComboBox) or (Self is TQtComboBox) then
+    dec(ACheckValue);
+  if AHasFrame and (StyleSheet = '') and (QtWidgetSet.StyleName.ToLower = 'breeze') and
+    (QWidget_height(ARealWidget) <= ACheckValue) then
+  begin
+    QObject_event(ASender, AEvent);
+    //now we apply missing frame
+    QWidget_geometry(ARealWidget, @R);
+    Types.OffsetRect(R, -R.Left, -R.Top);
+    APainter := QPainter_Create(QWidget_to_QPaintDevice(ASender));
+    RF := QRectF_Create(PRect(@R));
+    AQtColor := Default(TQColor);
+    if (QWidget_hasFocus(ARealWidget) or QWidget_testAttribute(ARealWidget, QtWA_UnderMouse))
+      and QWidget_isEnabled(ARealWidget) then
+    begin
+      ColorRefToTQColor(ColorToRGB(clHighlight), AQtColor);
+      if QWidget_testAttribute(ARealWidget, QtWA_UnderMouse) and not QWidget_hasFocus(ARealWidget) then
+        QPainter_setOpacity(APainter, 0.5);
+    end else
+      ColorRefToTQColor(ColorToRGB(clBtnHighlight), AQtColor);
+    APath := QPainterPath_Create();
+    QPainter_setRenderHint(APainter, QPainterAntialiasing, True);
+    QPainter_setRenderHint(APainter, QPainterHighQualityAntialiasing, True);
+    QRectF_setTop(RF, QRectF_top(RF) + 0.5);
+    QRectF_setLeft(RF, QRectF_left(RF) + 0.5);
+    QRectF_setRight(RF, QRectF_right(RF) - 0.5);
+    QRectF_setBottom(RF, QRectF_bottom(RF) - 0.5);
+    QPainterPath_addRoundRect(APath, RF, 25);
+    QPainterPath_closeSubpath(APath);
+    APen := QPen_Create(PQColor(@AQtColor));
+    QPainter_setPen(APainter, APen);
+    QPainter_drawPath(APainter, APath);
+    QPen_destroy(APen);
+    QPainterPath_destroy(APath);
+    QRectF_Destroy(RF);
+    QPainter_destroy(APainter);
+    Result := True;
+  end;
+end;
+{$ENDIF}
+
 { TQtAbstractButton }
 
 procedure TQtAbstractButton.setIcon(AIcon: QIconH);
@@ -9771,6 +9839,11 @@ end;
 
 function TQtLineEdit.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
   cdecl;
+{$IFDEF LINUX}
+var
+  AHasFrame: boolean;
+  ARealWidget: QWidgetH;
+{$ENDIF}
 begin
   Result := False;
   QEvent_accept(Event);
@@ -9794,6 +9867,28 @@ begin
   if (ChildOfComplexWidget = ccwComboBox) and (QEvent_type(Event) = QEventFontChange) then
     exit;
 
+  {$IFDEF LINUX}
+  if QEvent_type(Event) = QEventPaint then
+  begin
+    if (ChildOfComplexWidget = ccwComboBox) then
+    begin
+      AHasFrame := QComboBox_hasFrame(QComboBoxH(TQtWidget(FOwner).Widget));
+      ARealWidget := TQtWidget(FOwner).Widget;
+    end else
+    begin
+      AHasFrame := QLineEdit_hasFrame(QLineEditH(Sender));
+      ARealWidget := Widget;
+    end;
+    Result := FixThemePaint(QPaintEventH(Event), ARealWidget, QWidgetH(Sender), AHasFrame);
+    if not Result then
+    begin
+      if (ChildOfComplexWidget = ccwComboBox) and (csDesigning in LCLObject.ComponentState) then
+        QObject_event(Sender, Event)
+      else
+        Result := inherited EventFilter(Sender, Event);
+    end;
+  end else
+  {$ENDIF}
   if (ChildOfComplexWidget = ccwComboBox) and
     ((QEvent_type(Event) = QEventPaint) or (QEvent_type(Event) = QEventResize))
     and (LCLObject.HandleAllocated) then
@@ -9813,7 +9908,7 @@ begin
         Result:=inherited EventFilter(Sender, Event);
     end;
   end else
-    Result:=inherited EventFilter(Sender, Event);
+    Result := inherited EventFilter(Sender, Event);
 end;
 
 procedure TQtLineEdit.preferredSize(var PreferredWidth,
@@ -11748,6 +11843,12 @@ begin
           Result := True;
           QEvent_accept(Event);
         end;
+        {$IFDEF LINUX}
+        // missing frame rect around control for breeze style
+        // when height of control is below 29 px.
+        if getEditable then
+          Result := FixThemePaint(QPaintEventH(Event), Widget, QWidgetH(Sender), QComboBox_hasFrame(QComboBoxH(Widget)));
+        {$ENDIF}
       end;
       QEventMouseButtonRelease:
       begin
@@ -11947,6 +12048,10 @@ begin
   else
   if (QEvent_type(Event) >= QEventMouseButtonPress) and (QEvent_type(Event) <= QEventMouseMove) then
     Result := EventFilter(QWidgetH(Sender), Event);
+  {$IFDEF LINUX}
+  if QEvent_type(Event) = QEventPaint then
+    Result := FixThemePaint(QPaintEventH(Event), Widget, QWidgetH(Sender), QAbstractSpinBox_hasFrame(QAbstractSpinBoxH(Widget)));
+  {$ENDIF}
 end;
 
 procedure TQtAbstractSpinBox.SignalLineEditTextChanged(AnonParam1: PWideString); cdecl;
@@ -12224,6 +12329,14 @@ begin
     end;
   end;
 
+  {$IFDEF LINUX}
+  if (QEvent_type(Event) = QEventPaint) then
+  begin
+    Result := FixThemePaint(QPaintEventH(Event), Widget, QWidgetH(Sender), QAbstractSpinBox_hasFrame(QAbstractSpinBoxH(Widget)));
+    if not Result then
+      Result := inherited EventFilter(Sender, Event);
+  end else
+  {$ENDIF}
   Result := inherited EventFilter(Sender, Event);
   {we must pass delete key to qt, qabstractspinbox doesn't like what we do}
   if IsDeleteKey then
