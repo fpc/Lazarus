@@ -720,7 +720,7 @@ begin
     begin
       { in points }
       //sz:=round(96*sz/PANGO_SCALE/72);//round(2.03*sz/PANGO_SCALE);
-      sz := MulDiv(PANGO_PIXELS(sz), 96{Screen.PixelsPerInch}, 72 )
+      sz := MulDiv(PANGO_PIXELS(sz), Round(gdk_screen_get_resolution(gdk_screen_get_default)), 72 );
     end;
 
     fLogFont.lfHeight:=sz;//round(sz/PANGO_SCALE);

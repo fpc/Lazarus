@@ -2085,6 +2085,8 @@ var
   w,w_mm,h,h_mm:gint;
   rr:double;
   pscr:PGdkScreen;
+  aMonitorRect: TGdkRectangle;
+  AMonitor: PGdkMonitor;
 begin
   (*  MONITOR_DPI_TYPE = (
     MDT_EFFECTIVE_DPI = 0,
@@ -2093,19 +2095,10 @@ begin
     MDT_DEFAULT = MDT_EFFECTIVE_DPI);
   TMonitorDpiType = MONITOR_DPI_TYPE;
   *)
-  pscr:=TGdkScreen.get_default;
-  w:=pscr^.get_width;
-  w_mm:=pscr^.get_width_mm;
-  h:=pscr^.get_height;
-  h_mm:=pscr^.get_height_mm;
-
-  dpiX:=round(25.4*w/w_mm);
-  dpiY:=round(25.4*h/h_mm);
-
-  rr:=TGdkScreen.get_default^.get_resolution();
-
-  Result:=0;
-  //Result:=inherited GetDpiForMonitor(hmonitor, dpiType, dpiX, dpiY);
+  // MDT_EFFECTIVE_DPI
+  dpiX := Round(gdk_screen_get_resolution(gdk_screen_get_default));
+  dpiY := dpiX;
+  Result := 0;
 end;
 
 function TGtk3WidgetSet.GetFocus: HWND;
