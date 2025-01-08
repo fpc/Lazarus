@@ -40,13 +40,13 @@ begin
     WStr := 'plugins';
     QCoreApplication_addLibraryPath(@WStr);
     {$ENDIF}
-    {$IF DEFINED(UNIX) AND NOT DEFINED(DARWIN)}
     if (QtVersionMajor = 5) and (QtVersionMinor >= 14) then
     begin
-      QCoreApplication_setAttribute(QtAA_EnableHighDpiScaling, False); // issue #39610, #41276
-      QCoreApplication_setAttribute(QtAA_DisableHighDpiScaling, True); // issue #39610, #41276
+      //As of Qt5 5.14 it is same as Qt6. Qt translates system DPI to scale factor,
+      //so we always have fonts dpi 96, but scaling is changed.
+      QCoreApplication_setAttribute(QtAA_EnableHighDpiScaling, True);
+      QCoreApplication_setAttribute(QtAA_UseHighDpiPixmaps, True);
     end;
-    {$ENDIF}
     App := QApplication_Create(@argc, argv);
   end;
   QCoreApplication_setAttribute(QtAA_DontCreateNativeWidgetSiblings, True);
