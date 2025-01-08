@@ -2153,7 +2153,9 @@ begin
 
   Context:=w^.get_style_context;
   path:=w^.get_path;
-  gtk_style_context_set_path (context, path);
+  //it is wrong to call gtk_style_context_set_path here. Zeljan.
+  //https://docs.gtk.org/gtk3/method.StyleContext.set_path.html
+  //gtk_style_context_set_path (context, path);
   gtk_style_context_set_state(context,(* gtk_widget_path_iter_get_state (path, -1)*) [TGtkStateFlagsIdxMinValue..TGtkStateFlagsIdxMaxValue]);
   gtk_style_context_set_state(context, [GTK_STATE_FLAG_FOCUSED, GTK_STATE_FLAG_PRELIGHT]);
 
