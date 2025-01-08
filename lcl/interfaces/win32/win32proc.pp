@@ -659,7 +659,18 @@ begin
     with LMessage do
     begin
       Msg := LM_SIZE;
-      SizeType := SIZE_RESTORED or Size_SourceIsInterface;
+      SizeType := SIZE_RESTORED;
+      if Sender is TCustomForm then
+      begin
+        case TCustomForm(Sender).WindowState of
+          wsNormal: SizeType:=SIZE_RESTORED;
+          wsMinimized: SizeType:=SIZE_MINIMIZED;
+          wsMaximized: SizeType:=SIZE_MAXIMIZED;
+          wsFullScreen: SizeType:=SIZE_FULLSCREEN;
+        end;
+      end;
+      SizeType:=SizeType or Size_SourceIsInterface;
+
       Width := IntfWidth;
       Height := IntfHeight;
     end;
