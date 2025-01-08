@@ -3112,7 +3112,6 @@ var
   ALogBrush: PLogBrush absolute Buf;
   Dashes: TQRealArray;
   i: integer;
-  PaintDevice: QPaintDeviceH;
   {$ifdef VerboseQtWinAPI}
     ObjType: string;
   {$endif}
@@ -3149,13 +3148,8 @@ begin
 
       FillChar(ALogFont^, SizeOf(ALogFont^), 0);
       if AFont.getPixelSize = -1 then
-      begin
-        PaintDevice := nil; // QWidget_to_QPaintDevice(QApplication_desktop);
-        if PaintDevice <> nil then
-          ALogFont^.lfHeight := MulDiv(AFont.getPointSize, QPaintDevice_logicalDpiX(PaintDevice), 72)
-        else
-          ALogFont^.lfHeight := AFont.getPointSize;
-      end else
+        ALogFont^.lfHeight := MulDiv(AFont.getPointSize, Screen.PixelsPerInch, 72)
+      else
         ALogFont^.lfHeight := AFont.getPixelSize;
       ALogFont^.lfEscapement := AFont.Angle;
       ALogFont^.lfWeight := ConvertFontWeightToQtConst(AFont.getWeight);
