@@ -77,7 +77,7 @@ type
   published
     class procedure AddControl(const AControl: TControl); override;
     class function  CanFocus(const AWincontrol: TWinControl): Boolean; override;
-    
+    class function GetCanvasScaleFactor(const AControl: TControl): Double; override;
     class function  GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
     class function  GetClientRect(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
     class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
@@ -205,6 +205,20 @@ begin
   {$IF DEFINED(GTK3DEBUGCORE) OR DEFINED(GTK3DEBUGFOCUS)}
   DebugLn('TGtk3WSWinControl.CanFocus ',dbgsName(AWinControl),' result ',dbgs(Result));
   {$ENDIF}
+end;
+
+class function TGtk3WSWinControl.GetCanvasScaleFactor(const AControl: TControl
+  ): Double;
+var
+  W: TGtk3Widget;
+begin
+  Result := 1;
+  if TWinControl(AControl).HandleAllocated then
+  begin
+    W := TGtk3Widget(TWinControl(AControl).Handle);
+    if Gtk3IsGdkWindow(W.GetWindow) then
+      Result := gdk_window_get_scale_factor(W.GetWindow);
+  end;
 end;
 
 class function TGtk3WSWinControl.GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean;
