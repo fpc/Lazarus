@@ -5966,9 +5966,12 @@ begin
     begin
       ColorRefToTQColor(ColorToRGB(clHighlight), AQtColor);
       if QWidget_testAttribute(ARealWidget, QtWA_UnderMouse) and not QWidget_hasFocus(ARealWidget) then
-        QPainter_setOpacity(APainter, 0.5);
+        QPainter_setOpacity(APainter, 0.75);
     end else
-      ColorRefToTQColor(ColorToRGB(clBtnHighlight), AQtColor);
+    begin
+      ColorRefToTQColor(ColorToRGB(clGrayText), AQtColor);
+      QPainter_setOpacity(APainter, 0.75);
+    end;
     APath := QPainterPath_Create();
     QPainter_setRenderHint(APainter, QPainterAntialiasing, True);
     QPainter_setRenderHint(APainter, QPainterHighQualityAntialiasing, True);
@@ -5976,7 +5979,7 @@ begin
     QRectF_setLeft(RF, QRectF_left(RF) + 0.5);
     QRectF_setRight(RF, QRectF_right(RF) - 0.5);
     QRectF_setBottom(RF, QRectF_bottom(RF) - 0.5);
-    QPainterPath_addRoundRect(APath, RF, 25);
+    QPainterPath_addRoundRect(APath, RF, 20);
     QPainterPath_closeSubpath(APath);
     APen := QPen_Create(PQColor(@AQtColor));
     QPainter_setPen(APainter, APen);
