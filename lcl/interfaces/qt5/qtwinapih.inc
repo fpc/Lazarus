@@ -105,6 +105,7 @@ function GetDeviceCaps(DC: HDC; Index: Integer): Integer; override;
 function GetDeviceSize(DC: HDC; var P: TPoint): Boolean; Override;
 function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer; Override;
 function GetDoubleClickTime: UINT; override;
+function GetDpiForMonitor(hmonitor: HMONITOR; dpiType: TMonitorDpiType; out dpiX: UINT; out dpiY: UINT): HRESULT; override;
 function GetFocus: HWND; override;
 function GetForegroundWindow: HWND; override;
 function GetKeyState(nVirtKey: Integer): Smallint; override;

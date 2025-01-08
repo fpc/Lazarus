@@ -2920,6 +2920,44 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: GetDpiForMonitor
+  Params:  monitor handle, TMonitorDpiType - MDT_EFFECTIVE_DPI only atm.
+  Returns: DpiX and DpiY
+
+  DPI per monitor, if returned value ok, result is S_OK.
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.GetDpiForMonitor(hmonitor: HMONITOR; dpiType: TMonitorDpiType; out dpiX: UINT; out dpiY: UINT): HRESULT;
+var
+  W: QWidgetH;
+  AScreen: QScreenH;
+  AArray: TPtrIntArray;
+  i: integer;
+begin
+  Result := S_FALSE;
+  // Note: Monitor is PtrUInt and is always >= 0.
+  if hMonitor > 0 then
+    dec(hMonitor);
+  AScreen := QGuiApplication_primaryScreen();
+  if hMonitor = 0 then
+  begin
+    dpiX := Round(QScreen_logicalDotsPerInch(AScreen));
+    dpiY := dpiX;
+    exit(S_OK);
+  end;
+  QScreen_virtualSiblings(AScreen, @AArray);
+  for i := 0 to High(AArray) do
+  begin
+    if I = hMonitor then
+    begin
+      AScreen := QScreenH(AArray[i]);
+      dpiX := Round(QScreen_logicalDotsPerInch(AScreen));
+      dpiY := dpiX;
+      exit(S_OK);
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Function: GetFocus
   Params:  None
   Returns: Nothing

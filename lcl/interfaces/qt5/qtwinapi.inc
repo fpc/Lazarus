@@ -2924,6 +2924,33 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: GetDpiForMonitor
+  Params:  monitor handle, TMonitorDpiType - MDT_EFFECTIVE_DPI only atm
+  Returns: DpiX and DpiY
+
+  DPI per monitor, if returned value ok, result is S_OK.
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.GetDpiForMonitor(hmonitor: HMONITOR; dpiType: TMonitorDpiType; out dpiX: UINT; out dpiY: UINT): HRESULT;
+var
+  Desktop: QDesktopWidgetH;
+  W: QWidgetH;
+begin
+  Result := S_FALSE;
+  Desktop := QApplication_desktop();
+  // Note: Monitor is PtrUInt and is always >= 0.
+  if hMonitor > 0 then
+    dec(hMonitor);
+  if hMonitor >= PtrUInt(QDesktopWidget_numScreens(Desktop)) then
+    exit;
+  W := QDesktopWidget_screen(Desktop, hMonitor);
+  if W = nil then
+    W := QDesktopWidget_screen(Desktop, QDesktopWidget_primaryScreen(Desktop));
+  dpiX := QPaintDevice_logicalDpiX(QPaintDeviceH(QWidget_to_QPaintDevice(W)));
+  dpiY := dpiX;
+  Result := S_OK;
+end;
+
+{------------------------------------------------------------------------------
   Function: GetFocus
   Params:  None
   Returns: Nothing
