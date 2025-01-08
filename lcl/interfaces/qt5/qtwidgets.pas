@@ -18698,7 +18698,7 @@ begin
     Parent := nil;
   {$IFDEF HASX11}
   if IsWayland then
-    Result := QWidget_create(Parent, QtToolTip)
+    Result := QWidget_create(Parent, QtToolTip or QtFramelessWindowHint)
   else
   {$ENDIF}
     Result := QWidget_create(Parent, QtTool or QtFramelessWindowHint);
