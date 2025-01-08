@@ -18697,7 +18697,12 @@ begin
     Parent := QApplication_activeModalWidget
   else
     Parent := nil;
-  Result := QWidget_create(Parent, QtTool or QtFramelessWindowHint);
+  {$IFDEF HASX11}
+  if IsWayland then
+    Result := QWidget_create(Parent, QtToolTip)
+  else
+  {$ENDIF}
+    Result := QWidget_create(Parent, QtTool or QtFramelessWindowHint);
   FDeleteLater := True;
   FMenuBar := nil;
   {$IFDEF QTSCROLLABLEFORMS}
