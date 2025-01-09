@@ -2617,6 +2617,8 @@ end;
 
 procedure TGtk3Widget.DestroyWidget;
 begin
+  if IsValidHandle then
+    GTK3WidgetSet.DestroyCaret(HWND(Self));
   if IsValidHandle and FOwnWidget then
   begin
     fOwnWidget:=false;
