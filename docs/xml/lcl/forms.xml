@@ -18498,9 +18498,8 @@ Use HintColor to specify the background color used to display the pop-up with
 the Hint text.
 </p>
 <p>
-The Hint value may be displayed on the status bar for the active Form (instead 
-of in a pop-up hint window) when the AutoHint property is enabled for a 
-TStatusBar instance.
+The long variant of the Hint is displayed on the status bar for the active 
+Form when the AutoHint property is enabled for a TStatusBar instance.
 </p>
 </descr>
 <seealso>
