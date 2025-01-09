@@ -174,7 +174,9 @@ end;
 procedure TfrCheckBoxView.LoadFromStream(Stream: TStream);
 begin
   inherited LoadFromStream(Stream);
-  Stream.Read(fChecked, SizeOf(fChecked));
+  // CheckBox from FreeReport does not have "Checked" property
+  if frVersion > 23 then
+    Stream.Read(fChecked, SizeOf(fChecked));
 end;
 
 procedure TfrCheckBoxView.SaveToStream(Stream: TStream);
