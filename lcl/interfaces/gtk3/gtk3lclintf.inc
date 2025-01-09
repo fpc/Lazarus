@@ -1186,7 +1186,7 @@ begin
   end;
 end;
 
-procedure TGtk3WidgetSet.SetDeviceScaleRatio(DC: HDC; const AScaleRatio: double);
+procedure TGtk3WidgetSet.SetCanvasScaleFactor(DC: HDC; const AScaleRatio: double);
 var
   Gtk3DC: TGtk3DeviceContext absolute DC;
 begin

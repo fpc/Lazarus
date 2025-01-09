@@ -9262,7 +9262,7 @@ begin
   begin
     FHeaderBitmap.Clear;
     FHeaderBitmap.SetSize(Round(Max(Right, R.Right - R.Left) * sc), Round(Bottom * sc));
-    LCLIntf.SetDeviceScaleRatio(FHeaderBitmap.Canvas.Handle, sc);
+    LCLIntf.SetCanvasScaleFactor(FHeaderBitmap.Canvas.Handle, sc);
   end;
 
   VisibleFixedWidth := GetVisibleFixedWidth;
@@ -30713,7 +30713,7 @@ begin
 
         NodeBitmap.Width := Round(PaintWidth * ScaleFactor);
         NodeBitmap.Height := 1;
-        LCLIntf.SetDeviceScaleRatio(NodeBitmap.Canvas.Handle, ScaleFactor);
+        LCLIntf.SetCanvasScaleFactor(NodeBitmap.Canvas.Handle, ScaleFactor);
 
         // Make sure the buffer bitmap and target bitmap use the same transformation mode.
         {$ifndef Gtk}
@@ -30834,7 +30834,7 @@ begin
                     // Avoid that the VCL copies the bitmap while changing its height.
                     if Height > 0 then SetSize(1,1); // can't go to 0, must keep canvas
                     SetSize(Round(PaintWidth * ScaleFactor), Round(PaintInfo.Node.NodeHeight * ScaleFactor));
-                    LCLIntf.SetDeviceScaleRatio(NodeBitmap.Canvas.Handle, ScaleFactor);
+                    LCLIntf.SetCanvasScaleFactor(NodeBitmap.Canvas.Handle, ScaleFactor);
                     {$ifdef UseSetCanvasOrigin}
                     SetCanvasOrigin(Canvas, Window.Left, 0);
                     {$else}
@@ -31200,7 +31200,7 @@ begin
             NodeBitmap.PixelFormat := pf32Bit;
             NodeBitmap.Width := Round((TargetRect.Right - TargetRect.Left) * ScaleFactor);
             NodeBitmap.Height := Round((TargetRect.Bottom - TargetRect.Top) * ScaleFactor);
-            LCLIntf.SetDeviceScaleRatio(NodeBitmap.Canvas.Handle, ScaleFactor);
+            LCLIntf.SetCanvasScaleFactor(NodeBitmap.Canvas.Handle, ScaleFactor);
           end;
 
           {$ifdef DEBUG_VTV}Logger.Send([lcPaintDetails],'NodeBitmap.Handle after changing height to background',NodeBitmap.Handle);{$endif}

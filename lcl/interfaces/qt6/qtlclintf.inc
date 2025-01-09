@@ -887,7 +887,7 @@ begin
   // todo
 end;
 
-procedure TQtWidgetSet.SetDeviceScaleRatio(DC: HDC; const AScaleRatio: double);
+procedure TQtWidgetSet.SetCanvasScaleFactor(DC: HDC; const AScaleRatio: double);
 var
   QtDc: TQtDeviceContext absolute DC;
 begin

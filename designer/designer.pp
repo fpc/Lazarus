@@ -3635,7 +3635,7 @@ begin
     try
       TextSize := Icon.Canvas.TextExtent(AComponent.Name);
       Icon.SetSize(Round(TextSize.cx * ScaleFactor), Round(TextSize.cy * ScaleFactor));
-      LCLIntf.SetDeviceScaleRatio(Icon.Canvas.Handle, ScaleFactor);
+      LCLIntf.SetCanvasScaleFactor(Icon.Canvas.Handle, ScaleFactor);
       Icon.Canvas.Font.Assign(FDDC.Canvas.Font);
       Icon.Canvas.Font.PixelsPerInch := FDDC.Canvas.Font.PixelsPerInch;
       TextRect := Rect(0, 0, TextSize.cx, TextSize.cy);

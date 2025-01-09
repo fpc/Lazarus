@@ -740,7 +740,7 @@ begin
   Result := True;
 end;
 
-procedure TCocoaWidgetSet.SetDeviceScaleRatio(DC: HDC; const AScaleRatio: double);
+procedure TCocoaWidgetSet.SetCanvasScaleFactor(DC: HDC; const AScaleRatio: double);
 var
   ctx: TCocoaContext;
 begin

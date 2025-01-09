@@ -73,7 +73,7 @@ procedure RemovePipeEventHandler(var AHandler: PPipeEventHandler); override;
 procedure RemoveProcessEventHandler(var AHandler: PProcessEventHandler); override;
 
 procedure SetEventHandlerFlags(AHandler: PEventHandler; NewFlags: dword); override;
-procedure SetDeviceScaleRatio(DC: HDC; const AScaleRatio: double); override;
+procedure SetCanvasScaleFactor(DC: HDC; const AScaleRatio: double); override;
 function SetComboMinDropDownSize(Handle: HWND; MinItemsWidth, MinItemsHeight, MinItemCount: integer): boolean; override;
 procedure SetRubberBandRect(const ARubberBand: HWND; const ARect: TRect); override;
 

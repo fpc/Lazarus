@@ -228,7 +228,7 @@ type
     procedure ApplyFont;
     procedure ApplyPen;
     procedure FillAndStroke;
-    procedure setDeviceScaleRatio(const AValue: double);
+    procedure SetCanvasScaleFactor(const AValue: double);
   public
     CairoSurface: Pcairo_surface_t;
     pcr: Pcairo_t;
@@ -288,7 +288,7 @@ type
     property CurrentPen: TGtk3Pen read FCurrentPen write FCurrentPen;
     property CurrentRegion: TGtk3Region read FCurrentRegion;
     property CurrentTextColor: TColorRef read FCurrentTextColor write FCurrentTextColor;
-    property DeviceScaleRatio: double read FDeviceScaleRatio write setDeviceScaleRatio;
+    property DeviceScaleRatio: double read FDeviceScaleRatio write SetCanvasScaleFactor;
     property Offset: TPoint read GetOffset write SetOffset;
     property OwnsSurface: Boolean read FOwnsSurface;
     property vBrush: TGtk3Brush read FBrush write setBrush;
@@ -2417,7 +2417,7 @@ begin
   cairo_set_antialias(pcr, caa[aamode]);
 end;
 
-procedure TGtk3DeviceContext.setDeviceScaleRatio(const AValue: double);
+procedure TGtk3DeviceContext.SetCanvasScaleFactor(const AValue: double);
 var
   matrix: Tcairo_matrix_t;
 begin
