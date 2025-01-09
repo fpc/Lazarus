@@ -417,8 +417,11 @@ class function TGtk3WSCustomListBox.GetItemRect(
   const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect
   ): boolean;
 begin
+  if not WSCheckHandleAllocated(ACustomListBox, 'GetItemRect') then
+    Exit;
   FillChar(ARect,SizeOf(ARect),0);
-  Result:=false;
+  ARect := TGtk3ListBox(ACustomListBox.Handle).GetItemRect(Index);
+  Result := True;
 end;
 
 class function TGtk3WSCustomListBox.GetScrollWidth(
