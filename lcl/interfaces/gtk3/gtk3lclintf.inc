@@ -1191,7 +1191,7 @@ var
   Gtk3DC: TGtk3DeviceContext absolute DC;
 begin
   if (Gtk3DC <>  nil) then
-    gtk3DC.DeviceScaleRatio := AScaleRatio;
+    gtk3DC.CanvasScaleFactor := AScaleRatio;
 end;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
