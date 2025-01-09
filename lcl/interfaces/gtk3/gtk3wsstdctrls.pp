@@ -401,8 +401,14 @@ end;
 
 class function TGtk3WSCustomListBox.GetIndexAtXY(
   const ACustomListBox: TCustomListBox; X, Y: integer): integer;
+var
+  Widget: TGtk3ListBox;
 begin
   Result := -1;
+  if not WSCheckHandleAllocated(ACustomListBox, 'GetIndexAtXY') then
+    exit;
+  Widget := TGtk3ListBox(ACustomListBox.Handle);
+  Result := Widget.GetIndexAtXY(X, Y);
 end;
 
 class function  TGtk3WSCustomListBox.GetItemIndex(const ACustomListBox: TCustomListBox): integer;

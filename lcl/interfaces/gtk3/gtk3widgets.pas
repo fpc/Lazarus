@@ -553,6 +553,7 @@ type
     function GetSelCount: Integer;
     function GetSelection: PGtkTreeSelection;
     function GetItemRect(const AIndex: integer): TRect;
+    function GetIndexAtXY(const X, Y: integer): integer;
     function GetItemSelected(const AIndex: Integer): Boolean;
     procedure SelectItem(const AIndex: Integer; ASelected: Boolean);
     procedure SetTopIndex(const AIndex: Integer);
@@ -5641,15 +5642,30 @@ begin
   AModel := PGtkTreeView(getContainerWidget)^.model;
   if AModel = nil then
     exit;
+
   if AModel^.iter_nth_child(@Iter, nil, AIndex) then
   begin
     ACol := gtk_tree_view_get_column(PGtkTreeView(getContainerWidget), 0)^;
     gtk_tree_view_get_cell_area(PGtkTreeView(getContainerWidget), AModel^.get_path(@Iter), @ACol, @AGdkRect);
     Result := RectFromGdkRect(AGdkRect);
-    if getVerticalScrollbar^.visible then
-      Types.OffsetRect(Result, 0, Round(getVerticalScrollbar^.get_value));
-    if getHorizontalScrollbar^.visible then
-      Types.OffsetRect(Result, Round(getHorizontalScrollbar^.get_value), 0);
+  end;
+end;
+
+function TGtk3ListBox.GetIndexAtXY(const X, Y: integer): integer;
+var
+  Path: PGtkTreePath;
+  Column: PGtkTreeViewColumn;
+  CellX, CellY: Integer;
+  Indices: PInteger;
+begin
+  Result := -1;
+  if gtk_tree_view_get_path_at_pos(PGtkTreeView(getContainerWidget), X, Y,
+    @Path, @Column, @CellX, @CellY) then
+  begin
+    Indices := gtk_tree_path_get_indices(Path);
+    if Assigned(Indices) then
+      Result := Indices^;
+    gtk_tree_path_free(Path);
   end;
 end;
 
