@@ -552,6 +552,7 @@ type
   public
     function GetSelCount: Integer;
     function GetSelection: PGtkTreeSelection;
+    function GetItemRect(const AIndex: integer): TRect;
     function GetItemSelected(const AIndex: Integer): Boolean;
     procedure SelectItem(const AIndex: Integer; ASelected: Boolean);
     procedure SetTopIndex(const AIndex: Integer);
@@ -5438,8 +5439,9 @@ begin
   g_object_unref (liststore);
 
   ItemList := TGtkListStoreStringList.Create(PGtkListStore(PGtkTreeView(FCentralWidget)^.get_model), 0, LCLObject);
-  g_object_set_data_full(PGObject(FCentralWidget),GtkListItemLCLListTag, ItemList, @FreeStoreStringList);
-  // g_object_set_data(PGObject(FCentralWidget),GtkListItemLCLListTag, ItemList);
+  g_object_set_data(PGObject(FCentralWidget),GtkListItemLCLListTag, ItemList);
+  {if we use g_object_set_data_full then access violation occurs, so, revert to g_object_set_data}
+  // g_object_set_data_full(PGObject(FCentralWidget),GtkListItemLCLListTag, ItemList, @FreeStoreStringList);
 
   Renderer := LCLIntfCellRenderer_New();
 
@@ -5530,7 +5532,7 @@ begin
       Result := gtk_tree_path_get_indices(Path)^;
       if Result = 0 then
       begin
-        Selection :=  TreeView^.get_selection;
+        Selection := TreeView^.get_selection;
         if not Selection^.path_is_selected(Path) then
           Result := -1;
       end;
@@ -5626,6 +5628,29 @@ begin
   if not IsWidgetOk then
     exit(nil);
   Result := PGtkTreeView(GetContainerWidget)^.get_selection;
+end;
+
+function TGtk3ListBox.GetItemRect(const AIndex: integer): TRect;
+var
+  AModel: PGtkTreeModel;
+  Iter: TGtkTreeIter;
+  AGdkRect: TGdkRectangle;
+  ACol: TGtkTreeViewColumn;
+begin
+  Result := Rect(0, 0, 0, 0);
+  AModel := PGtkTreeView(getContainerWidget)^.model;
+  if AModel = nil then
+    exit;
+  if AModel^.iter_nth_child(@Iter, nil, AIndex) then
+  begin
+    ACol := gtk_tree_view_get_column(PGtkTreeView(getContainerWidget), 0)^;
+    gtk_tree_view_get_cell_area(PGtkTreeView(getContainerWidget), AModel^.get_path(@Iter), @ACol, @AGdkRect);
+    Result := RectFromGdkRect(AGdkRect);
+    if getVerticalScrollbar^.visible then
+      Types.OffsetRect(Result, 0, Round(getVerticalScrollbar^.get_value));
+    if getHorizontalScrollbar^.visible then
+      Types.OffsetRect(Result, Round(getHorizontalScrollbar^.get_value), 0);
+  end;
 end;
 
 function TGtk3ListBox.GetItemSelected(const AIndex: Integer): Boolean;
