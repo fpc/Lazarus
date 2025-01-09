@@ -343,7 +343,11 @@ begin
   Widget := TGtk3Widget(Handle);
   if Widget = nil then
     exit;
+
+  //if caret already exist for this handle destroy it.
+  DestroyCaret(Handle);
   GtkWidget := Widget.GetContainerWidget;
+
   //TODO: TGtk3Caret Bitmap
   Caret := TGtk3Caret.Create(GtkWidget, Width, Height);
   Caret.RespondToFocus := True;
@@ -1865,7 +1869,6 @@ begin
   GtkWidget := TGtk3Widget(Widget).getContainerWidget;
   if not Assigned(GtkWidget) then
     Exit;
-
   Caret := TGtk3Caret(g_object_get_data(PGObject(GtkWidget), 'gtk3-caret'));
   if not Assigned(Caret) then
     Exit;
