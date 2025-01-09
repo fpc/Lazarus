@@ -78,7 +78,7 @@ begin
   if Not AHaveContext then
     cr := gdk_cairo_create(gtk_widget_get_window(FOwner));
   try
-    writeln('Caret: BlinkState=',FBlinkState,' HaveContext=',AHaveContext,' X=',FPosX,' Y=',FPosY,' Self=',PtrUInt(Self));
+    //writeln('Caret: BlinkState=',FBlinkState,' HaveContext=',AHaveContext,' X=',FPosX,' Y=',FPosY,' Self=',PtrUInt(Self));
     if FBlinkState then
     begin
       cairo_rectangle(cr, FPosX, FPosY, FWidth, FHeight);
