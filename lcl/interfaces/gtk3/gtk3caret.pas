@@ -52,35 +52,49 @@ type
     property PosX: integer read FPosX;
     property PosY: integer read FPosY;
     property RespondToFocus: boolean read FRespondToFocus write SetRespondToFocus;
+    property Visible: boolean read FVisible;
   end;
 
 implementation
-uses Gtk3Procs;
+uses Gtk3Procs, gtk3int, Gtk3Objects, Gtk3Widgets;
 
 { TGtk3Caret }
 
 procedure TGtk3Caret.RedrawCaret;
 var
   cr: PCairo_t;
+  W: TGtk3Widget;
+  AHaveContext: Boolean;
 begin
   {TODO: Implement bitmap caret.}
   if not Assigned(FOwner) or not FVisible then Exit;
-
-  cr := gdk_cairo_create(gtk_widget_get_window(FOwner));
+  AHaveContext := False;
+  W := Gtk3WidgetFromGtkWidget(FOwner);
+  if W.Context <> 0 then
+  begin
+    AHaveContext := True;
+    cr := TGtk3DeviceContext(W.Context).pcr;
+  end;
+  if Not AHaveContext then
+    cr := gdk_cairo_create(gtk_widget_get_window(FOwner));
   try
+    writeln('Caret: BlinkState=',FBlinkState,' HaveContext=',AHaveContext,' X=',FPosX,' Y=',FPosY,' Self=',PtrUInt(Self));
     if FBlinkState then
     begin
       cairo_rectangle(cr, FPosX, FPosY, FWidth, FHeight);
       cairo_set_source_rgb(cr, 0, 0, 0);
       cairo_fill(cr);
+      //cairo_stroke(cr);
     end else
     begin
       cairo_rectangle(cr, FPosX, FPosY, FWidth, FHeight);
       cairo_set_source_rgb(Cr, 1, 1, 1);
       cairo_fill(cr);
+      //cairo_stroke(cr);
     end;
   finally
-    cairo_destroy(cr);
+    if not AHaveContext then
+      cairo_destroy(cr);
   end;
 end;
 
