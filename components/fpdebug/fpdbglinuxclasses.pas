@@ -2050,7 +2050,8 @@ begin
     TDbgThread(ThreadToPause) := it.Current;
     if ThreadToPause.FHasExited then begin
       Process.RemoveThread(ThreadToPause.ID); // TODO: postpone ?
-      ThreadToPause.Free;
+      if ThreadToPause <> AThread then
+        ThreadToPause.Free;
     end;
     it.Next;
   end;
