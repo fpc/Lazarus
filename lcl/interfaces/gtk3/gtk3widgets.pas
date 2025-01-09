@@ -555,6 +555,7 @@ type
     function GetItemRect(const AIndex: integer): TRect;
     function GetIndexAtXY(const X, Y: integer): integer;
     function GetItemSelected(const AIndex: Integer): Boolean;
+    function GetScrollWidth: integer;
     procedure SelectItem(const AIndex: Integer; ASelected: Boolean);
     procedure SetTopIndex(const AIndex: Integer);
     property ItemIndex: Integer read GetItemIndex write SetItemIndex;
@@ -5642,7 +5643,6 @@ begin
   AModel := PGtkTreeView(getContainerWidget)^.model;
   if AModel = nil then
     exit;
-
   if AModel^.iter_nth_child(@Iter, nil, AIndex) then
   begin
     ACol := gtk_tree_view_get_column(PGtkTreeView(getContainerWidget), 0)^;
@@ -5692,6 +5692,11 @@ begin
 
   if AModel^.iter_nth_child(@Item, nil, AIndex) then
     Result := ASelection^.iter_is_selected(@Item);
+end;
+
+function TGtk3ListBox.GetScrollWidth: integer;
+begin
+  Result := Round(getHorizontalScrollbar^.get_adjustment^.get_upper);
 end;
 
 procedure TGtk3ListBox.SelectItem(const AIndex: Integer; ASelected: Boolean);

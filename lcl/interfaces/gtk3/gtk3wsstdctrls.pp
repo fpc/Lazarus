@@ -434,6 +434,9 @@ class function TGtk3WSCustomListBox.GetScrollWidth(
   const ACustomListBox: TCustomListBox): Integer;
 begin
   Result := 0;
+  if not WSCheckHandleAllocated(ACustomListBox, 'GetScrollWidth') then
+    Exit;
+  Result := TGtk3ListBox(ACustomListBox.Handle).GetScrollWidth;
 end;
 
 class function  TGtk3WSCustomListBox.GetSelCount(const ACustomListBox: TCustomListBox): integer;
