@@ -893,7 +893,7 @@ function Gtk3WidgetEvent(widget: PGtkWidget; event: PGdkEvent; data: GPointer): 
 
 implementation
 
-uses gtk3int,imglist,lclproc;
+uses {$IFDEF GTK3DEBUGKEYPRESS}TypInfo,{$ENDIF}gtk3int,imglist,lclproc;
 
 const
   GDK_DEFAULT_EVENTS_MASK = [
@@ -2029,6 +2029,9 @@ var
   UTF8Char: TUTF8Char;
   AChar: Char;
   IsArrowKey: Boolean;
+  {$IFDEF GTK3DEBUGKEYPRESS}
+  Info: PTypeInfo;
+  {$ENDIF}
 begin
   //TODO: finish LCL messaging
   Result := False;
@@ -2081,11 +2084,12 @@ begin
   IsArrowKey := (AEventString='') and ((ACharCode = VK_UP) or (ACharCode = VK_DOWN) or (ACharCode = VK_LEFT) or (ACharCode = VK_RIGHT));
 
   {$IFDEF GTK3DEBUGKEYPRESS}
+  Info := TypeInfo(TGdkModifierType);
   if AKeyPress then
-    writeln('EVENT KeyPress: ',dbgsName(LCLObject),' Dump state=',AEvent.state,' keyvalue=',KeyValue,' modifier=',AEvent.Bitfield0.is_modifier,
+    writeln('EVENT KeyPress: ',dbgsName(LCLObject),' Dump state=',SetToString(Info, LongInt(AEvent.state), True),' keyvalue=',KeyValue,' modifier=',AEvent.Bitfield0.is_modifier,
     ' KeyValue ',KeyValue,' MODIFIERS ',LCLModifiers,' CharCode ',ACharCode,' EAT ',EatArrowKeys(ACharCode))
   else
-    writeln('EVENT KeyRelease: ',dbgsName(LCLObject),' Dump state=',AEvent.state,' keyvalue=',KeyValue,' modifier=',AEvent.Bitfield0.is_modifier,
+    writeln('EVENT KeyRelease: ',dbgsName(LCLObject),' Dump state=',SetToString(Info, LongInt(AEvent.state), True),' keyvalue=',KeyValue,' modifier=',AEvent.Bitfield0.is_modifier,
     ' KeyValue ',KeyValue,' MODIFIERS ',LCLModifiers,' CharCode ',ACharCode,
     ' EAT ',EatArrowKeys(ACharCode));
   {$ENDIF}
@@ -2104,15 +2108,15 @@ begin
     if not CanSendLCLMessage then
       exit;
 
-    if (DeliverMessage(Msg, True) <> 0) or (Msg.CharCode = VK_UNKNOWN) or (IsArrowKey{EatArrowKeys(ACharCode)}) then
+    if (DeliverMessage(Msg, True) <> 0) or (Msg.CharCode = VK_UNKNOWN) then
     begin
       {$IFDEF GTK3DEBUGKEYPRESS}
-      DebugLn('CN_KeyDownMsgs handled ... exiting');
+      DebugLn('<==== CN_KeyDownMsgs handled ... exiting');
       {$ENDIF}
       if ([wtEntry,wtMemo] * WidgetType <>[]) then
-      exit(false)
+        exit(false)
       else
-      exit(True);
+        exit(True);
     end;
 
     if not CanSendLCLMessage then
@@ -2138,7 +2142,7 @@ begin
     else
     if (DeliverMessage(Msg, True) <> 0) or (Msg.CharCode = 0) then
     begin
-      Result := Msg.CharCode = 0;
+      Result := (Msg.CharCode = 0) or IsArrowKey;
       {$IFDEF GTK3DEBUGKEYPRESS}
       DebugLn('LM_KeyDownMsgs handled ... exiting ',dbgs(ACharCode),' Result=',dbgs(Result),' AKeyPress=',dbgs(AKeyPress));
       {$ENDIF}
@@ -2178,7 +2182,7 @@ begin
     if not CanSendLCLMessage then
       exit;
 
-    Result := (DeliverMessage(CharMsg, True) <> 0) or (CharMsg.CharCode = VK_UNKNOWN);
+    Result := (DeliverMessage(CharMsg, True) <> 0) or (CharMsg.CharCode = VK_UNKNOWN) or IsArrowKey;
 
     if not CanSendLCLMessage then
       exit;
@@ -2212,7 +2216,7 @@ begin
       DebugLn('EVENT: ******* KeyPress charcode is in keys to eat (FKeysToEat), charcode=',dbgs(Msg.CharCode));
     end;
     {$ENDIF}
-    Result := Msg.CharCode in FKeysToEat;
+    Result := (Msg.CharCode in FKeysToEat);
   end;
 end;
 
