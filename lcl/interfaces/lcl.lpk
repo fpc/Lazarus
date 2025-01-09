@@ -131,7 +131,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="4" Minor="99"/>
-    <Files Count="548">
+    <Files Count="549">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -2705,6 +2705,11 @@ end;"/>
         <Filename Value="cocoa/cocoatoolbar.inc"/>
         <Type Value="Include"/>
       </Item548>
+      <Item549>
+        <Filename Value="gtk3/gtk3caret.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="gtk3caret"/>
+      </Item549>
     </Files>
     <CompatibilityMode Value="True"/>
     <LazDoc Paths="../../docs/xml/lcl"/>

@@ -241,6 +241,12 @@ const
   gtk3CLBText = 1; // PGChar
   gtk3CLBDisabled = 3; // gboolean
 
+  // defaults from gtktext.c
+  CURSOR_ON_MULTIPLIER = 2;
+  CURSOR_OFF_MULTIPLIER = 1;
+  CURSOR_PEND_MULTIPLIER = 3;
+  CURSOR_DIVIDER = 3;
+
 
 
 
