@@ -644,7 +644,7 @@ end;
 //Currently cocoa, qt5, qt6 and gtk3 are known to support this. Without proper scale ratio
 //setup, bitmap text rendering is blurred.See iphtml.pas, procedure TIpHtml.Render() how
 //we use it.Param DC is device context with selected bitmap/image into.
-procedure TWidgetSet.SetCanvasScaleFactor(DC: HDC; const AScaleRatio: double);
+procedure TWidgetSet.SetCanvasScaleFactor(DC: HDC; const AScaleFactor: double);
 begin
 end;
 

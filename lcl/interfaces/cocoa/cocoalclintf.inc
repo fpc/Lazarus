@@ -740,13 +740,13 @@ begin
   Result := True;
 end;
 
-procedure TCocoaWidgetSet.SetCanvasScaleFactor(DC: HDC; const AScaleRatio: double);
+procedure TCocoaWidgetSet.SetCanvasScaleFactor(DC: HDC; const AScaleFactor: double);
 var
   ctx: TCocoaContext;
 begin
   ctx := CheckDC(DC);
   if Assigned(ctx) and (ctx is TCocoaBitmapContext) then
-    CGContextScaleCTM(ctx.CGContext, AScaleRatio, AScaleRatio);
+    CGContextScaleCTM(ctx.CGContext, AScaleFactor, AScaleFactor);
 end;
 
 {------------------------------------------------------------------------------

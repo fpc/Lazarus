@@ -868,14 +868,14 @@ begin
   // todo
 end;
 
-procedure TQtWidgetSet.SetCanvasScaleFactor(DC: HDC; const AScaleRatio: double);
+procedure TQtWidgetSet.SetCanvasScaleFactor(DC: HDC; const AScaleFactor: double);
 var
   QtDc: TQtDeviceContext absolute DC;
 begin
   if IsValidDC(DC) and (QtDC.vImage <> nil) and (QtDC.vImage.Handle <> nil) then
   begin
     QPainter_end(QtDC.Widget);
-    QImage_setDevicePixelRatio(QtDC.vImage.Handle, AScaleRatio);
+    QImage_setDevicePixelRatio(QtDC.vImage.Handle, AScaleFactor);
     QPainter_begin(QtDC.Widget, QtDC.vImage.Handle);
   end;
 end;
