@@ -2029,6 +2029,7 @@ var
   UTF8Char: TUTF8Char;
   AChar: Char;
   IsArrowKey: Boolean;
+  TempWidget: HWND;
   {$IFDEF GTK3DEBUGKEYPRESS}
   Info: PTypeInfo;
   {$ENDIF}
@@ -2039,6 +2040,13 @@ begin
   FillChar(Msg{%H-}, SizeOf(Msg), 0);
   AEventString := AEvent.string_;
 
+  TempWidget := HwndFromGtkWidget(Sender);
+  {$IFDEF GTK3DEBUGKEYPRESS}
+  if TempWidget = 0 then
+    writeln('***** warning: no gtk3widget ! *****')
+  else
+     writeln('GtkEventKey: Gtk3Widget ',dbgsName(TGtk3Widget(TempWidget)));
+  {$ENDIF}
   if gdk_keyval_is_lower(AEvent.keyval) then
     KeyValue := Word(gdk_keyval_to_upper(AEvent.keyval))
   else
@@ -2087,7 +2095,7 @@ begin
   Info := TypeInfo(TGdkModifierType);
   if AKeyPress then
     writeln('EVENT KeyPress: ',dbgsName(LCLObject),' Dump state=',SetToString(Info, LongInt(AEvent.state), True),' keyvalue=',KeyValue,' modifier=',AEvent.Bitfield0.is_modifier,
-    ' KeyValue ',KeyValue,' MODIFIERS ',LCLModifiers,' CharCode ',ACharCode,' EAT ',EatArrowKeys(ACharCode))
+    ' KeyValue ',KeyValue,' MODIFIERS ',LCLModifiers,' CharCode ',ACharCode,' EAT ',EatArrowKeys(ACharCode),' Window ? ',Sender^.window = GetWindow)
   else
     writeln('EVENT KeyRelease: ',dbgsName(LCLObject),' Dump state=',SetToString(Info, LongInt(AEvent.state), True),' keyvalue=',KeyValue,' modifier=',AEvent.Bitfield0.is_modifier,
     ' KeyValue ',KeyValue,' MODIFIERS ',LCLModifiers,' CharCode ',ACharCode,
@@ -2111,7 +2119,7 @@ begin
     if (DeliverMessage(Msg, True) <> 0) or (Msg.CharCode = VK_UNKNOWN) then
     begin
       {$IFDEF GTK3DEBUGKEYPRESS}
-      DebugLn('<==== CN_KeyDownMsgs handled ... exiting');
+      writeln('<==== CN_KeyDownMsgs handled ... exiting');
       {$ENDIF}
       if ([wtEntry,wtMemo] * WidgetType <>[]) then
         exit(false)
@@ -2144,14 +2152,13 @@ begin
     begin
       Result := (Msg.CharCode = 0) or IsArrowKey;
       {$IFDEF GTK3DEBUGKEYPRESS}
-      DebugLn('LM_KeyDownMsgs handled ... exiting ',dbgs(ACharCode),' Result=',dbgs(Result),' AKeyPress=',dbgs(AKeyPress));
+      writeln('<=== LM_KeyDownMsgs handled ... exiting ',dbgs(ACharCode),' Result=',dbgs(Result),' AKeyPress=',dbgs(AKeyPress));
       {$ENDIF}
       exit;
     end;
 
     if not CanSendLCLMessage then
       exit;
-
   end;
 
   if AKeyPress and (length(AEventString) > 0) then
@@ -2166,7 +2173,7 @@ begin
     if Result then
     begin
       {$IFDEF GTK3DEBUGKEYPRESS}
-      DebugLn('LCLObject.IntfUTF8KeyPress handled ... exiting');
+      writeln('LCLObject.IntfUTF8KeyPress handled ... exiting');
       {$ENDIF}
       exit;
     end;
@@ -2190,7 +2197,7 @@ begin
     if Result then
     begin
       {$IFDEF GTK3DEBUGKEYPRESS}
-      DebugLn('CN_CharMsg handled ... exiting');
+      writeln('<=== CN_CharMsg handled ... exiting');
       {$ENDIF}
       exit;
     end;
@@ -2211,12 +2218,13 @@ begin
   if AKeyPress then
   begin
     {$IFDEF GTK3DEBUGKEYPRESS}
-    if Msg.CharCode in FKeysToEat then
+    if (Msg.CharCode in FKeysToEat) then
     begin
-      DebugLn('EVENT: ******* KeyPress charcode is in keys to eat (FKeysToEat), charcode=',dbgs(Msg.CharCode));
-    end;
+      writeln('EVENT: ******* KeyPress charcode is in keys to eat (FKeysToEat), charcode=',dbgs(Msg.CharCode),' window ? ',Sender^.window = Self.GetWindow);
+    end else
+      writeln('EVENT: KeyPress Result = False Window ? ', Sender^.window = Self.GetWindow);
     {$ENDIF}
-    Result := (Msg.CharCode in FKeysToEat);
+    Result := (TempWidget = GetFocus) and (Msg.CharCode in FKeysToEat);
   end;
 end;
 
@@ -7225,6 +7233,7 @@ begin
   FScrollY := 0;
   FHasPaint := True;
   FUseLayout := False;
+  FKeysToEat := [];
   if FUseLayout then
     FWidgetType := [wtWidget, wtLayout, wtScrollingWin, wtCustomControl]
   else
