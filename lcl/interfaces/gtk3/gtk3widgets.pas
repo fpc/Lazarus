@@ -542,7 +542,6 @@ type
     procedure SetListBoxStyle(AValue: TListBoxStyle);
     procedure SetMultiSelect(AValue: Boolean);
   protected
-    procedure DestroyWidget; override;
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
     function EatArrowKeys(const {%H-}AKey: Word): Boolean; override;
   public
@@ -5408,6 +5407,12 @@ begin
     TGtk3Widget(AData).DeliverMessage(Msg, False);
 end;
 
+procedure FreeStoreStringList(aData: gpointer); cdecl;
+begin
+  TGtkListStoreStringList(aData).Free;
+end;
+
+
 function TGtk3ListBox.CreateWidget(const Params: TCreateParams): PGtkWidget;
 var
   AListBox: TCustomListBox;
@@ -5433,7 +5438,8 @@ begin
   g_object_unref (liststore);
 
   ItemList := TGtkListStoreStringList.Create(PGtkListStore(PGtkTreeView(FCentralWidget)^.get_model), 0, LCLObject);
-  g_object_set_data(PGObject(FCentralWidget),GtkListItemLCLListTag, ItemList);
+  g_object_set_data_full(PGObject(FCentralWidget),GtkListItemLCLListTag, ItemList, @FreeStoreStringList);
+  // g_object_set_data(PGObject(FCentralWidget),GtkListItemLCLListTag, ItemList);
 
   Renderer := LCLIntfCellRenderer_New();
 
@@ -5596,20 +5602,6 @@ begin
         Selection^.set_mode(GTK_SELECTION_SINGLE);
     end;
   end;
-end;
-
-procedure TGtk3ListBox.DestroyWidget;
-var
-  aData: TGtkListStoreStringList;
-begin
-  if FCentralWidget <> nil then
-  begin
-    aData := TGtkListStoreStringList(g_object_get_data(PGObject(FCentralWidget),GtkListItemLCLListTag));
-    if aData <> nil then
-      aData.Free;
-    g_object_set_data(PGObject(FCentralWidget),GtkListItemLCLListTag, nil);
-  end;
-  inherited DestroyWidget;
 end;
 
 function TGtk3ListBox.GetSelCount: Integer;
