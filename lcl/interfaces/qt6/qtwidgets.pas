@@ -10170,63 +10170,28 @@ end;
 
 procedure TQtTextEdit.removeLine(const AIndex: integer);
 var
-  QtCursor: QTextCursorH;
-  B: Boolean;
-  WrapMode: QTextEditLineWrapMode;
-  Diff: Integer;
+  doc: QTextDocumentH;
+  ATextBlock: QTextBlockH;
+  ACursor: QTextCursorH;
 begin
-  Diff := getBlockCount - AIndex;
-  {we must remove wrapping to get correct line !}
-  WrapMode := QTextEdit_lineWrapMode(QTextEditH(Widget));
-  setLineWrapMode(QTextEditNoWrap);
-  QtCursor := QTextCursor_create();
-  try
-    QTextEdit_textCursor(QTextEditH(Widget), QtCursor);
-    QTextCursor_beginEditBlock(QtCursor);
-    // small optimization if we delete from end of list
-    if Diff <= 2 then
-    begin
-      QTextCursor_movePosition(QtCursor, QTextCursorEnd,
-        QTextCursorMoveAnchor, 1);
-      QTextCursor_movePosition(QtCursor, QTextCursorStartOfLine,
-        QTextCursorMoveAnchor, 1);
-      QTextCursor_movePosition(QtCursor, QTextCursorUp,
-        QTextCursorMoveAnchor, Diff - 1);
-    end else
-    begin
-      QTextCursor_movePosition(QtCursor, QTextCursorStart,
-        QTextCursorMoveAnchor, 1);
-      QTextCursor_movePosition(QtCursor, QTextCursorStartOfLine,
-        QTextCursorMoveAnchor, 1);
-      QTextCursor_movePosition(QtCursor, QTextCursorDown,
-        QTextCursorMoveAnchor, AIndex);
-      QTextCursor_movePosition(QtCursor, QTextCursorEndOfLine,
-        QTextCursorMoveAnchor, 1);
-    end;
+  if AIndex < 0 then
+    exit;
+  doc := QTextEdit_document(QTextEditH(Widget));
+  ATextBlock := QTextBlock_Create;
+  if AIndex = 0 then
+    QTextDocument_firstBlock(doc, ATextBlock)
+  else
+    QTextDocument_findBlockByLineNumber(doc, ATextBlock, AIndex);
 
-    QTextCursor_select(QtCursor, QTextCursorLineUnderCursor);
-    B := QTextCursor_hasSelection(QtCursor);
-    if not B then
-      QTextCursor_deleteChar(QtCursor)
-    else
-      QTextCursor_deletePreviousChar(QtCursor);
-
-    if (AIndex = 0) then
-    begin
-      QTextCursor_movePosition(QtCursor, QTextCursorStart,
-        QTextCursorMoveAnchor, 1);
-      QTextCursor_movePosition(QtCursor, QTextCursorStartOfLine,
-        QTextCursorMoveAnchor, 1);
-      QTextCursor_movePosition(QtCursor, QTextCursorDown,
-        QTextCursorMoveAnchor, 1);
-    end;
-    if B then
-      QTextCursor_deletePreviousChar(QtCursor);
-    QTextCursor_endEditBlock(QtCursor);
-  finally
-    QTextCursor_destroy(QtCursor);
-    setLineWrapMode(WrapMode);
+  if QTextBlock_isValid(ATextBlock) then
+  begin
+    ACursor := QTextCursor_Create(ATextBlock);
+    QTextCursor_select(ACursor, QTextCursorBlockUnderCursor);
+    QTextCursor_removeSelectedText(ACursor);
+    QTextCursor_deleteChar(ACursor);
+    QTextCursor_Destroy(ACursor);
   end;
+  QTextBlock_Destroy(ATextBlock);
 end;
 
 procedure TQtTextEdit.setLineText(const AIndex: integer; AText: WideString);
