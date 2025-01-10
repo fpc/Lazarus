@@ -273,36 +273,31 @@ begin
         // Application.Activate/Deactivate is done via a timer
         // Every time a form looses the focus a timer is started
         // and every time focus is gained the timer is stopped.
-        // Note: It seems gtk2 itself does not always detect focus lost
-        //   For example in LinuxMint switching from a TEdit using Alt-Tab to another
-        //   app generates a focus out, but gtk2 still shows the TEdit focused
-        //   with blinking cursor.
-        //   Switching focus using the mouse to another app, also generates
-        //   a focus out, and gtk2 hides the blinking cursor and focus coloring.
-        //   Switching to another workspace does not generate a focus out event <sigh>.
         if PGdkEventFocus(event)^._in = 0 then
         begin
           // focus out
-          //debugln(['Gtk2FormEvent focus out ',DbgSName(ACtl)]);
-          //if ACtl.Parent<>nil then
-          //  debugln(['Gtk2FormEvent ACtl.Parent=',DbgSName(ACtl.Parent)]);
+          {$IFDEF VerboseGtk2Focus}
+          debugln(['Gtk2FormEvent focus out ',DbgSName(ACtl)]);
+          {$ENDIF}
 
-          // Test switch to another app via mouse, Alt-Tab, workspace. And test open popup menu click GetFocus.
+          // When touching this code:
+          // Test switching to another app via mouse, Alt-Tab, workspace.
+          // And test open popup menu then click and GetFocus.
 
-          {$IFDEF HASX}
-          //if ACtl.Parent<>nil then
-          //begin
-            XDisplay := gdk_display;
-            XGetInputFocus(XDisplay, @Window, @RevertStatus);
-            // Window - 1 is our frame  !
-            if (RevertStatus = RevertToParent) and
-              (GDK_WINDOW_XID(Widget^.Window) = Window - 1) then
-            begin
-              // Note: on LinuxMint switching via Alt-Tab to another window
-              //   generates RevertToParent.
-              exit(True); // stop
-            end;
-          //end;
+          {$IF defined(HASX) and defined(EnableKeepGtk2WidgetActivated)}
+          // MG: this code kept the gtk state activated, so that GetFocus
+          // returned the last focused form.
+          // This broke AppActive when switching on Linux with Atl-Tab or to another Workspace
+          XDisplay := gdk_display;
+          XGetInputFocus(XDisplay, @Window, @RevertStatus);
+          // Window - 1 is our frame  !
+          if (RevertStatus = RevertToParent) and
+            (GDK_WINDOW_XID(Widget^.Window) = Window - 1) then
+          begin
+            // Note: on LinuxMint switching via Alt-Tab to another window
+            //   generates RevertToParent.
+            exit(True); // stop
+          end;
           {$ENDIF}
           with Gtk2WidgetSet do
           begin
@@ -312,7 +307,9 @@ begin
           end;
         end else
         begin
-          //debugln(['Gtk2FormEvent focus in ',DbgSName(ACtl)]);
+          {$IFDEF VerboseGtk2Focus}
+          debugln(['Gtk2FormEvent focus in ',DbgSName(ACtl)]);
+          {$ENDIF}
           with Gtk2WidgetSet do
           begin
             StopAppFocusTimer;

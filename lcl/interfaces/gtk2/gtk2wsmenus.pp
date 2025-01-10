@@ -24,7 +24,7 @@ uses
   // RTL
   Classes, Types, glib2, gdk2, gtk2, math,
   // LazUtils
-  LazTracer,
+  LazTracer, LazLoggerBase,
   // LCL
   Gtk2Int, Gtk2Proc, Gtk2Globals, Gtk2Def, Gtk2Extra,
   LCLType, LCLIntf, InterfaceBase, WSMenus, LMessages, Graphics, Menus, Forms;
@@ -78,9 +78,6 @@ type
 implementation
 
 {$I gtk2defines.inc}
-
-var
-  MenuWidget: PGtkWidget = nil;
 
 function Gtk2MenuItemButtonPress(widget: PGtkWidget; event: PGdkEventButton;
  {%H-}user_data: gpointer): gboolean; cdecl;
@@ -387,7 +384,7 @@ end;
 class procedure TGtk2WSMenuItem.SetShortCut(const AMenuItem: TMenuItem;
   const ShortCutK1, ShortCutK2: TShortCut);
 //var
-  //MenuWidget: PGtkMenuItem;
+  //aMenuWidget: PGtkMenuItem;
   //accel_path: String;
   //CurKey: Word;
   //CurShift: TShiftState;
@@ -398,8 +395,8 @@ begin
   UpdateInnerMenuItem(AMenuItem, {%H-}PGTKWidget(AMenuItem.Handle), ShortCutK1, ShortCutK2);
 
 {  // Gets the inner widgets. They should already be created by now
-  MenuWidget := PGtkMenuItem(AMenuItem.Handle);
-  if (MenuWidget=nil) then Exit;
+  aMenuWidget := PGtkMenuItem(AMenuItem.Handle);
+  if (aMenuWidget=nil) then Exit;
   // Converts the shortcut to a gtk friendly format and sets it
   ShortCutToKey(NewShortCut, CurKey, CurShift);
   accel_path := 'LCLApp/Menu/' + GetAcceleratorString(CurKey, CurShift);
@@ -628,12 +625,14 @@ end;
 
 procedure gtkWSPopupMenuDeactivate(widget: PGtkWidget; data: gPointer); cdecl;
 begin
-  if widget = MenuWidget then
-    MenuWidget := nil;
+  {$IFDEF VerboseGtk2Focus}
+  DebugLn('gtkWSPopupMenuDeactivate ');
+  {$ENDIF}
+  if widget = TGtk2WidgetSet(WidgetSet).MenuWidget then
+    TGtk2WidgetSet(WidgetSet).MenuWidget := nil;
   if data <> nil then
     g_idle_add(@gtkWSPopupDelayedClose, Pointer(PWidgetInfo(data)^.LCLObject));
 end;
-
 
 class procedure TGtk2WSPopupMenu.SetCallbacks(const AGtkWidget: PGtkWidget;
   const AWidgetInfo: PWidgetInfo);
@@ -663,8 +662,9 @@ var
   APoint: TPoint;
   AProc: Pointer;
   WidgetInfo: PWidgetInfo;
+  MenuWidget: PGtkWidget;
 begin
-  if MenuWidget<>nil then //cannot popup when another popup menu is visible
+  if TGtk2WidgetSet(WidgetSet).MenuWidget<>nil then //cannot popup when another popup menu is visible
     Exit;
 
   ReleaseMouseCapture;
@@ -679,8 +679,14 @@ begin
   // MenuWidget can be either GtkMenu or GtkMenuItem submenu
   if GTK_IS_MENU_ITEM(MenuWidget) then
     MenuWidget := gtk_menu_item_get_submenu(PGtkMenuItem(MenuWidget));
+
+  TGtk2WidgetSet(WidgetSet).MenuWidget:=MenuWidget;
   gtk_menu_popup(PGtkMenu(MenuWidget), nil, nil, TGtkMenuPositionFunc(AProc),
                  WidgetInfo, 0, gtk_get_current_event_time());
+  TGtk2WidgetSet(WidgetSet).LastFocusIn:=MenuWidget;
+  {$IFDEF VerboseGtk2Focus}
+  debugln('TGtk2WSPopupMenu.Popup REPEAT...');
+  {$ENDIF}
   repeat
     try
       WidgetSet.AppProcessMessages; // process all events
@@ -694,6 +700,9 @@ begin
       break;
     Application.Idle(true);
   until False;
+  {$IFDEF VerboseGtk2Focus}
+  debugln('TGtk2WSPopupMenu.Popup END');
+  {$ENDIF}
 end;
 
 end.

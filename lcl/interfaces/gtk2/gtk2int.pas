@@ -272,10 +272,12 @@ type
   private
     {$IFDEF HASX}
     FDesktopWidget: PGtkWidget;
+    FMenuWidget: PGtkWidget;
     FWSFrameRect: TRect;
     {$ENDIF}
     procedure Gtk2Create;
     procedure Gtk2Destroy;
+    procedure SetMenuWidget(const AValue: PGtkWidget);
 
   protected
     function GetAppHandle: TLCLHandle; override;
@@ -334,6 +336,7 @@ type
     property LastFocusOut: PGtkWidget read FLastFocusOut write FLastFocusOut;
     property MultiThreadingEnabled: boolean read FMultiThreadingEnabled;
     property KeyStateList: TFPList read FKeyStateList_;
+    property MenuWidget: PGtkWidget read FMenuWidget write SetMenuWidget;
   end;
 
   {$I gtk2listslh.inc}

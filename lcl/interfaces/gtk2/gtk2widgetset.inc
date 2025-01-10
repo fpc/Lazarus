@@ -1925,6 +1925,12 @@ begin
 
 end;
 
+procedure TGtk2WidgetSet.SetMenuWidget(const AValue: PGtkWidget);
+begin
+  if FMenuWidget=AValue then Exit;
+  FMenuWidget:=AValue;
+end;
+
 {$ifdef Unix}
 
 {$IFDEF HASX}
@@ -2759,6 +2765,9 @@ procedure TGtk2WidgetSet.SetAppActive(const AValue: Boolean);
 begin
   if AValue <> FAppActive then
   begin
+    {$IFDEF VerboseGtk2Focus}
+    debugln(['TGtk2WidgetSet.SetAppActive ',AValue]);
+    {$ENDIF}
     FAppActive := AValue;
     if FAppActive then
     begin
