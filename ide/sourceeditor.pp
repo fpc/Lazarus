@@ -2475,13 +2475,13 @@ Begin
       FicPopUpMenuItems[A].RadioItem:=true;
       FicPopUpMenuItems[A].GroupIndex:=ord(A);
       FicPopUpMenuItems[A].OnClick:=@ICPopUpMenuItemClick;
-      case  ord(A) of
-        0: FicPopUpMenuItems[A].Caption:=lisSortOrderScopedAlphabetic;
-        1: FicPopUpMenuItems[A].Caption:=lisSortOrderAlphabetic;
-        2: FicPopUpMenuItems[A].Caption:=lisSortOrderDefinition;
-        else
-          FicPopUpMenuItems[A].Caption:='Method'+(ord(A)).ToString;
+      case  A of
+        icsScopedAlphabetic: NewStr:=lisSortOrderScopedAlphabetic;
+        icsAlphabetic: NewStr:=lisSortOrderAlphabetic;
+        icsScopedDeclaration: NewStr:=lisSortOrderDefinition;
+        else NewStr:='Method'+(ord(A)).ToString;
       end;
+      FicPopUpMenuItems[A].Caption:=NewStr;
       FicPopUpMenu.Items.Insert(ord(A),FicPopUpMenuItems[A]);
       FicPopUpMenuItems[A].Checked:=
         CodeToolBoss.IdentifierList.SortMethodForCompletion=A;
@@ -7458,12 +7458,11 @@ begin
     SrcEditSubMenuDebug.AddLast(SrcEditMenuViewCallStack);
   end;
 
-
   SourceEditorMenuRoot.MenuItem:=SrcPopupMenu.Items;
   RemoveUserDefinedMenuItems;
   RemoveContextMenuItems;
 
-  ASrcEdit:=FindSourceEditorWithEditorComponent(TPopupMenu(Sender).PopupComponent);
+  ASrcEdit:=FindSourceEditorWithEditorComponent(SrcPopupMenu.PopupComponent);
   Assert(Assigned(ASrcEdit), 'TSourceNotebook.SrcPopUpMenuPopup: ASrcEdit=nil');
   Assert((ASrcEdit=GetActiveSE), 'TSourceNotebook.SrcPopUpMenuPopup: ASrcEdit<>GetActiveSE');
   EditorComp:=ASrcEdit.EditorComponent;

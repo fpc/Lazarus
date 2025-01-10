@@ -282,9 +282,16 @@ begin
         //   Switching to another workspace does not generate a focus out event <sigh>.
         if PGdkEventFocus(event)^._in = 0 then
         begin
+          // focus out
+          //debugln(['Gtk2FormEvent focus out ',DbgSName(ACtl)]);
+          //if ACtl.Parent<>nil then
+          //  debugln(['Gtk2FormEvent ACtl.Parent=',DbgSName(ACtl.Parent)]);
+
+          // Test switch to another app via mouse, Alt-Tab, workspace. And test open popup menu click GetFocus.
+
           {$IFDEF HASX}
-          if ACtl.Parent<>nil then
-          begin
+          //if ACtl.Parent<>nil then
+          //begin
             XDisplay := gdk_display;
             XGetInputFocus(XDisplay, @Window, @RevertStatus);
             // Window - 1 is our frame  !
@@ -292,11 +299,10 @@ begin
               (GDK_WINDOW_XID(Widget^.Window) = Window - 1) then
             begin
               // Note: on LinuxMint switching via Alt-Tab to another window
-              //   generates RevertToParent. The above
-              //
-              exit(True);
+              //   generates RevertToParent.
+              exit(True); // stop
             end;
-          end;
+          //end;
           {$ENDIF}
           with Gtk2WidgetSet do
           begin
@@ -306,6 +312,7 @@ begin
           end;
         end else
         begin
+          //debugln(['Gtk2FormEvent focus in ',DbgSName(ACtl)]);
           with Gtk2WidgetSet do
           begin
             StopAppFocusTimer;

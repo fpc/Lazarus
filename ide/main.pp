@@ -14076,13 +14076,16 @@ var
   CurFocusControl: TWinControl;
   ActiveSourceEditor: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
+  H: HWND;
 begin
   CurFocusControl:=Nil;
   ActiveSourceEditor:=Nil;
   // check if focus is on MainIDEBar or on SourceEditor
   if CheckFocus then
   begin
-    CurFocusControl:=FindOwnerControl(GetFocus);
+    H:=GetFocus;
+    CurFocusControl:=FindOwnerControl(H);
+    //debugln(['TMainIDE.DoSourceEditorCommand ',H<>0,' ',DbgSName(CurFocusControl)]);
     while (CurFocusControl<>nil) and (CurFocusControl<>MainIDEBar)
     and not (CurFocusControl is TCustomForm) do
       CurFocusControl:=CurFocusControl.Parent;
