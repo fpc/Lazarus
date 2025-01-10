@@ -295,7 +295,7 @@ function Gtk3ScrollTypeToScrollCode(ScrollType: TGtkScrollType): LongWord;
 
 function TGDKColorToTColor(const value : TGDKColor) : TColor;
 function TColorToTGDKColor(const value : TColor) : TGDKColor;
-function TGdkRGBAToTColor(const value : TGdkRGBA) : TColor;
+function TGdkRGBAToTColor(const value : TGdkRGBA; IgnoreAlpha: Boolean = True) : TColor;
 function TColortoTGdkRGBA(const value : TColor; IgnoreAlpha: Boolean = True) : TGdkRGBA;
 function ColorToCairoRGB(AColor: TColor; out ARed, AGreen, ABlue: Double): Boolean;
 function RectFromGtkAllocation(AGtkAllocation: TGtkAllocation): TRect;
@@ -348,15 +348,16 @@ begin
   Result:=((d + 512) shr 10);
 end;
 
-function TGdkRGBAToTColor(const value: TGdkRGBA): TColor;
+function TGdkRGBAToTColor(const value: TGdkRGBA; IgnoreAlpha: Boolean): TColor;
 begin
   Result := Trunc(value.red * $FF)
          or (Trunc(value.green * $FF) shl  8)
-         or (Trunc(value.blue * $FF) shl  16)
-         or (Trunc(value.alpha * $FF) shl  24);
+         or (Trunc(value.blue * $FF) shl  16);
+  if not IgnoreAlpha then
+    Result := Result or (Trunc(value.alpha * $FF) shl  24);
 end;
 
-function TColortoTGdkRGBA(const value: TColor; IgnoreAlpha: Boolean = True): TGdkRGBA;
+function TColortoTGdkRGBA(const value: TColor; IgnoreAlpha: Boolean): TGdkRGBA;
 begin
   Result.red := (value and $FF) / 255;
   Result.green := ((value shr 8) and $FF) / 255;

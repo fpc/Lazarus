@@ -8366,22 +8366,13 @@ end;
 class procedure TGtk3newColorSelectionDialog.color_to_rgba(clr: TColor; out
   rgba: TgdkRGBA);
 begin
-  clr:=ColorToRgb(clr);
-  rgba.red:=Red(clr)/255;
-  rgba.blue:=Blue(clr)/255;
-  rgba.green:=Green(clr)/255;
-  rgba.alpha:=(clr shl 24)/255;
+  rgba := TColortoTGdkRGBA(clr);
 end;
 
 class function TGtk3newColorSelectionDialog.rgba_to_color(const rgba: TgdkRGBA
   ): TColor;
-var
-  q:array[0..3] of byte absolute Result;
 begin
-  q[0]:= round(255*rgba.red);
-  q[1]:= round(255*rgba.green);
-  q[2]:= round(255*rgba.blue);
-  q[3]:= round(255*rgba.alpha);
+  Result := TGdkRGBAToTColor(rgba);
 end;
 
 
