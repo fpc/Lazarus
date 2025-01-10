@@ -131,13 +131,6 @@ type
     // colors for the completion form (popup form, e.g. word completion)
     FColors: TSynMarkupIdentComplWindow;
 
-    FActiveEditBackgroundColor: TColor;
-    FActiveEditBackgroundSelectedColor: TColor;
-    FActiveEditBorderColor: TColor;
-    FActiveEditTextColor: TColor;
-    FActiveHistoryTextColor: TColor;
-    FActiveEditTextSelectedColor: TColor;
-    FActiveEditTextHighLightColor: TColor;
     FicPopUpMenu: TPopupMenu;
     FicPopUpMenuItems: array [TIdentComplSortMethod] of TMenuItem;
 
