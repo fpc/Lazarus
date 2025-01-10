@@ -14085,14 +14085,17 @@ begin
   begin
     H:=GetFocus;
     CurFocusControl:=FindOwnerControl(H);
-    //debugln(['TMainIDE.DoSourceEditorCommand ',H<>0,' ',DbgSName(CurFocusControl)]);
+    {$IFDEF VerboseGtk2Focus}
+    debugln(['TMainIDE.DoSourceEditorCommand ',H<>0,' ',DbgSName(CurFocusControl)]);
+    {$ENDIF}
     while (CurFocusControl<>nil) and (CurFocusControl<>MainIDEBar)
     and not (CurFocusControl is TCustomForm) do
       CurFocusControl:=CurFocusControl.Parent;
   end;
-  if (CurFocusControl is TSourceNotebook) or (CurFocusControl=MainIDEBar) then
+  if (CurFocusControl is TSourceNotebook) or (CurFocusControl=MainIDEBar)
+      or (CurFocusControl=nil) then
   begin
-    // MainIDEBar or SourceNotebook has focus -> find active source editor
+    // MainIDEBar or SourceNotebook or no LCL form has focus -> find active source editor
     GetCurrentUnit(ActiveSourceEditor,ActiveUnitInfo);
     if Assigned(ActiveSourceEditor) then begin
       ActiveSourceEditor.DoEditorExecuteCommand(EditorCommand); // pass the command
@@ -14100,8 +14103,8 @@ begin
         ActiveSourceEditor.EditorControl.SetFocus;
     end;
   end;
-  // Some other window has focus -> continue processing shortcut, not handled yet
-  if (CurFocusControl=Nil) or (ActiveSourceEditor=Nil) then
+  if ActiveSourceEditor=Nil then
+    // continue processing shortcut, not handled yet
     MainIDEBar.mnuMainMenu.ShortcutHandled := false;
 end;
 
