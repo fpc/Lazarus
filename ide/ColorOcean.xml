@@ -78,6 +78,7 @@
           <Comment Foreground="clGray"/>
           <Directive Foreground="clRed"/>
           <Number Foreground="clFuchsia"/>
+          <Modifier Foreground="clAqua" Style="fsBold"/>
           <Reserved_word Foreground="clAqua" Style="fsBold"/>
           <String Foreground="clYellow"/>
           <Symbol Foreground="clAqua"/>

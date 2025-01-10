@@ -77,6 +77,7 @@
           <Comment Foreground="clGreen" Style="fsItalic"/>
           <Directive Foreground="clTeal"/>
           <Number Foreground="clBlue"/>
+          <Modifier Foreground="clNavy" Style="fsBold"/>
           <Reserved_word Foreground="clNavy" Style="fsBold"/>
           <String Foreground="clBlue"/>
         </SchemeDelphi>
