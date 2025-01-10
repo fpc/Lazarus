@@ -1173,6 +1173,7 @@ end;
 procedure TSynPasSyn.DoCustomTokenChanged(Sender: TObject);
 begin
   FNeedCustomTokenBuild := True;
+  FCustomTokenMarkup := nil;
 end;
 
 procedure TSynPasSyn.RebuildCustomTokenInfo;
@@ -1182,6 +1183,7 @@ var
   t: String;
 begin
   FNeedCustomTokenBuild := False;
+  FCustomTokenMarkup := nil;
   for i := 0 to 255 do begin
     FreeAndNil(FCustomTokenInfo[i].List);
     FCustomTokenInfo[i].MatchTokenKinds := [];
@@ -1227,6 +1229,8 @@ begin
     FSynCustomTokens[i].OnMarkupChange := @DefHighlightChange;
     FSynCustomTokens[i].OnChange := @DoCustomTokenChanged;
   end;
+  FNeedCustomTokenBuild := True;
+  FCustomTokenMarkup := nil;
 end;
 
 function TSynPasSyn.GetCustomTokens(AnIndex: integer): TSynPasSynCustomToken;
