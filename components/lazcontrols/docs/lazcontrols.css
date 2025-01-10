@@ -1,50 +1,37 @@
 /*
-  fpdoc.css modified for LazControls documentation
-  Default font size is 12pt
-  Font family fallbacks
-  Removed border, added vertical margins on DL
-  Added color and font weight for FILE
-  Added styling for footer separator and columns
+  fpdoc.css
+  Modified for use with Lazarus LCL and LazUtils documentation
 */
 
 body {
-  background: white;
+  background-color: white;
   color: black;
-  font-size: 12pt;
-  font-family: "San Francisco", "Roboto", "Noto Sans", "Open Sans", "Segoe UI", "Helvetica", "Arial", sans-serif;
-}
-
-p, th, td, caption, h1, h2, h3, ul, ol, dl {
-  font-family: "San Francisco", "Roboto", "Noto Sans", "Open Sans", "Segoe UI", "Helvetica", "Arial", sans-serif;
-  color: black;
+  font-family: "Roboto", "DejaVu Sans", "Arial", Helvetica, sans-serif;
+  font-size: 11pt;
 }
 
 tt, span.kw, pre {
-  font-family: "Menlo", "JetBrains Mono", "Roboto Mono", "Noto Sans Mono", "Inconsolata", "Courier New", Courier, monospace;
-  font-size: 1em;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 11pt;
 }
 
-p, th, td, caption, ul, ol, dl, tt, span.kw, pre {
-  font-size: 1em;
-}
-
-A:link {
+a:link {
   color: blue;
 }
 
-A:visited {
+a:visited {
   color: darkblue;
 }
 
-A:active {
+a:active {
   color: red;
 }
 
-A {
+a {
   text-decoration: none;
 }
 
-A:hover {
+a:hover {
   text-decoration: underline;
 }
 
@@ -54,12 +41,14 @@ h1, h2, td.h2 {
 
 /* Especially for Netscape on Linux: */
 h3, td.h3 {
-  font-size: 1em;
+  font-size: 11pt;
 }
 
 /* source fragments */
 span.code {
   white-space: nowrap;
+  font-weight: bold;
+  /* font-size: 1em; */
 }
 
 /* symbols in source fragments */
@@ -125,7 +114,6 @@ span.warning {
   font-weight: bold;
 }
 
-/* !!!: How should we define this...? */
 span.file {
   color: darkgreen;
 }
@@ -138,17 +126,13 @@ table.bar {
   background-color: #a0c0ff;
 }
 
-table.footer {
-  margin-top: .5em;
-  width: 100%;
+table.bar tr td {
   font-size: .875em;
-  /* font-style: italic; */
-  font-style: normal;
 }
 
 span.bartitle {
+  font-style: normal;
   font-weight: bold;
-  font-style: italic;
   color: darkblue;
 }
 
@@ -159,50 +143,53 @@ span.footer {
 
 /* definition list */
 dl {
- /* border: 2px solid #ccc; */
- display: block;
- margin: 1em 0 1em 0;
+ display: block; 
 }
 
 /* definition list: term */
 dt {
- /*
- float: left;
- clear: left;
- */
- width: auto; /* normally browsers default width of largest item */
- /* padding-right: 1.25em; */
  font-weight: bold;
  color: darkgreen;
 }
 
 /* definition list: description */
-dd {
- margin: 0 0 0 2em;
- padding: 0 0 0.5em 0;
+dd { 
+ margin-left: 1.5em;
+ padding-bottom: .3em;
 }
 
 /* for browsers in standards compliance mode */
-td p { margin: 0; }
+td p { margin: 0px; }
 
 var { font-weight: bold; }
 
+/* used in custom page footers */
+hr.footer-sep { margin-top: .667em; }
+
+table.footer {
+  width: 100%;
+  margin-top: .5em;
+  font-style: normal;
+  font-size: .875em;
+  color: Black;
+}
+
+td.footer-doc { width: 42%; text-align: left; font-weight: bold; }
+td.footer-ver { width: 33%; text-align: center; color: Gray; }
+td.footer-date { width: 25%; text-align: right; color: Gray; }
+
+/* used on the class hierarchy page */
 span.toggletreeclose {
-    background: url(minus.png) center left no-repeat;
-    padding-left: 20px;
+  background: url(minus.png) center left no-repeat;
+  padding-left: 20px;
 }
 
 span.toggletreeopen {
-    background: url(plus.png) center left no-repeat;
-    padding-left: 20px;
+  background: url(plus.png) center left no-repeat;
+  padding-left: 20px;
 }
 
 li.classtree ul { display: block; }
-ul.classtreelist { list-style-type:none; }
+ul.classtreelist { list-style-type: none; }
 ul.classtreelist li { padding-left: 0px; }
 li.classtreeclosed ul { display: none; }
-
-hr.footer-sep { margin-top: .667em; }
-td.footer-doc { width: 42%; text-align: left; font-weight: bold; color: Black; }
-td.footer-ver { width: 32%; text-align: center; color: Gray; }
-td.footer-date { width: 26%; text-align: right; color: Gray; }
