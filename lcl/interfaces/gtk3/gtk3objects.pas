@@ -232,8 +232,8 @@ type
     procedure ApplyPen;
     procedure FillAndStroke;
     procedure SetCanvasScaleFactor(const AValue: double);
-    procedure SetXorMode(var xorSurface: Pcairo_surface_t); // SetRasterOp
-    procedure ApplyXorDrawing(xorSurface: Pcairo_surface_t); // after each paint
+    procedure SetXorMode(var xorSurface: Pcairo_surface_t; AMap: Tcairo_operator_t); // SetRasterOp
+    procedure ApplyXorDrawing(xorSurface: Pcairo_surface_t; AMap: Tcairo_operator_t); // after each paint
   protected
     FCairo: Pcairo_t;
     FXorCairo: PCairo_t;
@@ -529,7 +529,7 @@ begin
 
     DSTINVERT,
     R2_NOTXORPEN:
-      Result := CAIRO_OPERATOR_DIFFERENCE;
+      Result := CAIRO_OPERATOR_XOR; //just for testing CAIRO_OPERATOR_DIFFERENCE;
 
     WHITENESS,
     R2_WHITE:
@@ -1515,10 +1515,10 @@ var
 begin
   if MapCairoRasterOpToRasterOp(cairo_get_operator(pcr)) = AValue then
     exit;
-  if (AValue <> R2_XORPEN) and FXorMode then
+  if FXorMode and ((AValue <> R2_XORPEN) and (AValue <> R2_NOTXORPEN)) then
   begin
     FXorMode := False;
-    ApplyXorDrawing(FXorSurface);
+    ApplyXorDrawing(FXorSurface, cairo_get_operator(FXorCairo));
     if FXorCairo <> nil then
     begin
       cairo_destroy(FXorCairo);
@@ -1546,11 +1546,14 @@ begin
       cairo_surface_destroy(FXorSurface);
       FXorSurface := nil;
     end;
-    SetXorMode(FXorSurface);
+    if AValue = R2_NOTXORPEN then
+      AMap := CAIRO_OPERATOR_OVER;
+    SetXorMode(FXorSurface, AMap);
   end;
 end;
 
-procedure TGtk3DeviceContext.SetXorMode(var xorSurface: Pcairo_surface_t);
+procedure TGtk3DeviceContext.SetXorMode(var xorSurface: Pcairo_surface_t;
+  AMap: Tcairo_operator_t);
 var
   R: TGdkRectangle;
 begin
@@ -1561,13 +1564,14 @@ begin
 
   xorSurface := cairo_image_surface_create(CAIRO_FORMAT_ARGB32, R.width, R.height);
   FXorCairo := cairo_create(xorSurface);
-  //cairo_set_source_rgba(FXorCairo, 0, 0, 0, 0);
-  //cairo_set_operator(FXorCairo, CAIRO_OPERATOR_CLEAR);
-  //cairo_paint(FXorCairo);
-  cairo_set_operator(FXorCairo, CAIRO_OPERATOR_XOR);
+  cairo_set_source_rgba(FXorCairo, 0, 0, 0, 0);
+  cairo_set_operator(FXorCairo, CAIRO_OPERATOR_CLEAR);
+  cairo_paint(FXorCairo);
+  cairo_set_operator(FXorCairo, AMap);
 end;
 
-procedure TGtk3DeviceContext.ApplyXorDrawing(xorSurface: Pcairo_surface_t);
+procedure TGtk3DeviceContext.ApplyXorDrawing(xorSurface: Pcairo_surface_t;
+  AMap: Tcairo_operator_t);
 var
   width, height: Integer;
   AOperator: Tcairo_operator_t;
@@ -1575,7 +1579,10 @@ begin
   AOperator := cairo_get_operator(FCairo);
   cairo_surface_flush(xorSurface);
   cairo_set_source_surface(FCairo, xorSurface, 0, 0);
-  cairo_set_operator(FCairo, CAIRO_OPERATOR_DIFFERENCE);
+  if aMap = CAIRO_OPERATOR_XOR then
+    cairo_set_operator(FCairo, CAIRO_OPERATOR_DIFFERENCE)
+  else
+    cairo_set_operator(FCairo, CAIRO_OPERATOR_OVER);
   cairo_paint(FCairo);
   cairo_set_operator(FCairo, AOperator);
 end;
@@ -1649,7 +1656,6 @@ var
 begin
   SetSourceColor(FCurrentPen.Color);
   (*
-  //something is wrong with this. XOR does not work, so we setup stuff in SetRasterOp()
   case FCurrentPen.Mode of
     pmBlack: begin
       SetSourceColor(clBlack);
@@ -1661,7 +1667,7 @@ begin
     end;
     pmCopy: cairo_set_operator(pcr, CAIRO_OPERATOR_OVER);
     pmXor: cairo_set_operator(pcr, CAIRO_OPERATOR_XOR);
-    pmNotXor: cairo_set_operator(pcr, CAIRO_OPERATOR_XOR);
+    pmNotXor: cairo_set_operator(pcr, CAIRO_OPERATOR_DIFFERENCE);
     {pmNop,
     pmNot,
     pmCopy,
@@ -1718,6 +1724,7 @@ begin
     pjsBevel: cairo_set_line_join(pcr, CAIRO_LINE_JOIN_BEVEL);
     pjsMiter: cairo_set_line_join(pcr, CAIRO_LINE_JOIN_MITER);
   end;
+
 end;
 
 constructor TGtk3DeviceContext.Create(AWidget: PGtkWidget;
