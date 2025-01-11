@@ -89,6 +89,7 @@ type
 
   TQtMemoStrings = class(TStrings)
   private
+    FUpdating: boolean;
     FTextChanged: Boolean; // Inform TQtMemoStrings about change in TextChange event
     FStringList: TStringList; // Holds the lines to show
     FHasTrailingLineBreak: Boolean; // Indicates whether lines have trailing line break
@@ -104,9 +105,11 @@ type
     function Get(Index : Integer) : string; override;
     procedure Put(Index: Integer; const S: string); override;
     procedure SetTextStr(const Value: string); override;
+    procedure SetUpdateState(Updating: Boolean); override;
   public
     constructor Create(TheOwner: TWinControl);
     destructor Destroy; override;
+    function InUpdate: boolean;
     procedure Assign(Source : TPersistent); override;
     procedure Clear; override;
     procedure Delete(Index : integer); override;
@@ -228,7 +231,7 @@ begin
   {$ifdef VerboseQtMemoStrings}
   WriteLn('TQtMemoStrings.GetTextStr');
   {$endif}
-  if FTextChanged then InternalUpdate;
+  if FTextChanged and not InUpdate then InternalUpdate;
   Result := GetInternalText;
 end;
 
@@ -244,12 +247,12 @@ begin
   {$ifdef VerboseQtMemoStrings}
   WriteLn('TQtMemoStrings.GetCount');
   {$endif}
-  if FTextChanged then InternalUpdate;
+  if FTextChanged and not InUpdate then InternalUpdate;
   Result := FStringList.Count;
 end;
 
 {------------------------------------------------------------------------------
-  Method: TQtMemoStrings.GetCount
+  Method: TQtMemoStrings.Get
   Params:  String Index
   Returns: a string
 
@@ -258,9 +261,9 @@ end;
 function TQtMemoStrings.Get(Index: Integer): string;
 begin
   {$ifdef VerboseQtMemoStrings}
-  WriteLn('TQtMemoStrings.Get Index=',Index);
+  WriteLn('TQtMemoStrings.Get Index=',Index,' TextChanged ? ',TextChanged);
   {$endif}
-  if FTextChanged then InternalUpdate;
+  if FTextChanged and not InUpdate then InternalUpdate;
   if Index < FStringList.Count then
     Result := FStringList.Strings[Index]
   else
@@ -274,10 +277,14 @@ begin
   {$ifdef VerboseQtMemoStrings}
   WriteLn('TQtMemoStrings.Put Index=',Index,' S=',S);
   {$endif}
-  if FTextChanged then InternalUpdate;
+  if FTextChanged and not InUpdate then InternalUpdate;
   FStringList[Index] := S;
-  W := {%H-}S;
-  TQtTextEdit(FOwner.Handle).setLineText(Index, W);
+  if not InUpdate then
+  begin
+    W := UTF8ToUTF16(S);
+    TQtTextEdit(FOwner.Handle).setLineText(Index, W);
+  end;
+  FTextChanged := False;
 end;
 
 procedure TQtMemoStrings.SetTextStr(const Value: string);
@@ -289,7 +296,8 @@ begin
   {$endif}
   SetInternalText(Value);
   W := {%H-}GetInternalText;
-  ExternalUpdate(W, True, False);
+  if not InUpdate then
+    ExternalUpdate(W, True, False);
   FTextChanged := False;
 end;
 
@@ -307,6 +315,7 @@ begin
   if (TheOwner = nil) then
     WriteLn('TQtMemoStrings.Create Unspecified owner');
   {$endif}
+  FUpdating := False;
   FStringList := TStringList.Create;
   FHasTrailingLineBreak := False;
   FOwner := TheOwner;
@@ -324,6 +333,29 @@ begin
   FStringList.Free;
   FOwner := nil;
   inherited Destroy;
+end;
+
+procedure TQtMemoStrings.SetUpdateState(Updating: Boolean);
+var
+  S: String;
+  W: WideString;
+begin
+  if not Updating then
+  begin
+    S := FStringList.Text;
+    if Assigned(FOwner) and FOwner.HandleAllocated then
+    begin
+      W := UTF8ToUTF16(S);
+      TQtTextEdit(FOwner.Handle).setText(W);
+    end;
+  end;
+  inherited SetUpdateState(Updating);
+  FUpdating := Updating;
+end;
+
+function TQtMemoStrings.InUpdate: boolean;
+begin
+  Result := FUpdating;
 end;
 
 {------------------------------------------------------------------------------
@@ -370,7 +402,7 @@ begin
     exit;
   if Assigned(FStringList) then
     FStringList.Clear;
-  if not (csDestroying in FOwner.ComponentState) and
+  if not InUpdate and not (csDestroying in FOwner.ComponentState) and
     not (csFreeNotification in FOwner.ComponentState) and
     FOwner.HandleAllocated then
   begin
@@ -393,14 +425,16 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtMemoStrings.Delete(Index: integer);
 begin
-  if FTextChanged then InternalUpdate;
+  if FTextChanged and not InUpdate then InternalUpdate;
   if (Index >= 0) and (Index < FStringList.Count) then
   begin
     {$ifdef VerboseQtMemoStrings}
     writeln('TQtMemoStrings.Delete');
     {$endif}
     FStringList.Delete(Index);
-    TQtTextEdit(FOwner.Handle).RemoveLine(Index);
+    if not InUpdate then
+      TQtTextEdit(FOwner.Handle).RemoveLine(Index);
+    FTextChanged := False;
   end;
 end;
 
@@ -419,11 +453,11 @@ var
   ABlock: QTextBlockH;
   ACursor: QTextCursorH;
 begin
-  if FTextChanged then InternalUpdate;
+  if FTextChanged and not InUpdate then InternalUpdate;
   if Index < 0 then Index := 0;
 
   {$ifdef VerboseQtMemoStrings}
-  writeln('TQtMemoStrings.Insert Index=',Index,' COUNT=',FStringList.Count);
+  writeln('TQtMemoStrings.Insert Index=',Index,' COUNT=',FStringList.Count,' InUpdate=',InUpdate);
   {$endif}
 
   // simplified because of issue #29670
@@ -431,29 +465,35 @@ begin
   if Index >= FStringList.Count then
   begin
     Index := FStringList.Add(S);
-    if FHasTrailingLineBreak then
-      W := UTF8ToUTF16(S + LineBreak)
-    else
-      W := UTF8ToUTF16(S);
-    if FHasTrailingLineBreak then
+    if not InUpdate then
     begin
-      //issue #39444
-      ATextEdit := QTextEditH(TQtTextEdit(FOwner.Handle).Widget);
-      ADoc := QTextEdit_document(ATextEdit);
-      ABlock := QTextBlock_Create;
-      QTextDocument_lastBlock(ADoc, ABlock);
-      ACursor := QTextCursor_Create(ABlock);
-      QTextCursor_movePosition(ACursor, QTextCursorEnd);
-      QTextCursor_deletePreviousChar(ACursor);
-      QTextBlock_Destroy(ABlock);
-      QTextCursor_destroy(ACursor);
+      if FHasTrailingLineBreak then
+        W := UTF8ToUTF16(S + LineBreak)
+      else
+        W := UTF8ToUTF16(S);
+      if FHasTrailingLineBreak then
+      begin
+        //issue #39444
+        ATextEdit := QTextEditH(TQtTextEdit(FOwner.Handle).Widget);
+        ADoc := QTextEdit_document(ATextEdit);
+        ABlock := QTextBlock_Create;
+        QTextDocument_lastBlock(ADoc, ABlock);
+        ACursor := QTextCursor_Create(ABlock);
+        QTextCursor_movePosition(ACursor, QTextCursorEnd);
+        QTextCursor_deletePreviousChar(ACursor);
+        QTextBlock_Destroy(ABlock);
+        QTextCursor_destroy(ACursor);
+      end;
+      TQtTextEdit(FOwner.Handle).Append(W);
     end;
-    TQtTextEdit(FOwner.Handle).Append(W);
   end else
   begin
     FStringList.Insert(Index, S);
-    W := UTF8ToUTF16(S);
-    TQtTextEdit(FOwner.Handle).insertLine(Index, W);
+    if not InUpdate then
+    begin
+      W := UTF8ToUTF16(S);
+      TQtTextEdit(FOwner.Handle).insertLine(Index, W);
+    end;
   end;
   FTextChanged := False; // FStringList is already updated, no need to update from WS.
 end;
