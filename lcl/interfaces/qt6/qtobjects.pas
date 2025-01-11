@@ -2451,7 +2451,7 @@ begin
   FreeAndNil(vBrush);
   // vPen.FHandle := nil;
   FreeAndNil(vPen);
-  if vRegion.FHandle <> nil then
+  if Assigned(vRegion) and Assigned(vRegion.FHandle) then
   begin
     QRegion_destroy(vRegion.FHandle);
     vRegion.FHandle := nil;
