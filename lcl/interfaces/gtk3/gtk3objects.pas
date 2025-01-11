@@ -215,10 +215,12 @@ type
     FBkMode: Integer;
     FCanvasScaleFactor: double;
     function GetOffset: TPoint;
+    function GetRasterOp: integer;
     procedure setBrush(AValue: TGtk3Brush);
     procedure SetFont(AValue: TGtk3Font);
     procedure SetOffset(AValue: TPoint);
     procedure setPen(AValue: TGtk3Pen);
+    procedure SetRasterOp(AValue: integer);
     procedure SetvImage(AValue: TGtk3Image);
     function SX(const x: double): Double;
     function SY(const y: double): Double;
@@ -291,6 +293,7 @@ type
     property CanvasScaleFactor: double read FCanvasScaleFactor write SetCanvasScaleFactor;
     property Offset: TPoint read GetOffset write SetOffset;
     property OwnsSurface: Boolean read FOwnsSurface;
+    property RasterOp: integer read GetRasterOp write SetRasterOp; //automatically maps cairo_operator_t to winapi ROP.
     property vBrush: TGtk3Brush read FBrush write setBrush;
     property vClipRect: TRect read FvClipRect write FvClipRect;
     property vFont: TGtk3Font read FFont write SetFont;
@@ -463,6 +466,172 @@ begin
   G := ((AColor shr 8) and $FF) / 255;
   B := ((AColor shr 16) and $FF) / 255;
 end;
+
+{Map winapi ROP to Tcairo_operator_t}
+function MapRasterOpToCairo(AValue: Integer): Tcairo_operator_t;
+begin
+  case AValue of
+    BLACKNESS,
+    R2_BLACK:
+      Result := CAIRO_OPERATOR_CLEAR;
+
+    SRCCOPY,
+    R2_COPYPEN:
+      Result := CAIRO_OPERATOR_SOURCE;
+
+    MERGEPAINT,
+    R2_MASKNOTPEN:
+      Result := CAIRO_OPERATOR_OUT;
+
+    SRCAND,
+    R2_MASKPEN:
+      Result := CAIRO_OPERATOR_IN;
+
+    SRCERASE,
+    R2_MASKPENNOT:
+      Result := CAIRO_OPERATOR_OUT;
+
+    R2_MERGENOTPEN:
+      Result := CAIRO_OPERATOR_OVER;
+
+    SRCPAINT,
+    R2_MERGEPEN:
+      Result := CAIRO_OPERATOR_OVER;
+
+    R2_MERGEPENNOT:
+      Result := CAIRO_OPERATOR_OVER;
+
+    R2_NOP:
+      Result := CAIRO_OPERATOR_DEST;
+
+    R2_NOT:
+      Result := CAIRO_OPERATOR_OUT;
+
+    NOTSRCCOPY,
+    R2_NOTCOPYPEN:
+      Result := CAIRO_OPERATOR_SOURCE;
+
+    PATPAINT,
+    R2_NOTMASKPEN:
+      Result := CAIRO_OPERATOR_XOR;
+
+    NOTSRCERASE,
+    R2_NOTMERGEPEN:
+      Result := CAIRO_OPERATOR_CLEAR;
+
+    DSTINVERT,
+    R2_NOTXORPEN:
+      Result := CAIRO_OPERATOR_DIFFERENCE;
+
+    WHITENESS,
+    R2_WHITE:
+      Result := CAIRO_OPERATOR_SCREEN;
+
+    SRCINVERT,
+    R2_XORPEN:
+      Result := CAIRO_OPERATOR_XOR;
+
+  else
+    Result := CAIRO_OPERATOR_OVER;
+  end;
+end;
+
+{Map cairo_operator_t to winapi ROP}
+function MapCairoRasterOpToRasterOp(AValue: Tcairo_operator_t): Integer;
+begin
+  case AValue of
+    CAIRO_OPERATOR_CLEAR:
+      Result := R2_BLACK;
+
+    CAIRO_OPERATOR_SOURCE:
+      Result := R2_COPYPEN;
+
+    CAIRO_OPERATOR_OVER:
+      Result := R2_MERGEPEN;
+
+    CAIRO_OPERATOR_IN:
+      Result := R2_MASKPEN;
+
+    CAIRO_OPERATOR_OUT:
+      Result := R2_MASKPENNOT;
+
+    CAIRO_OPERATOR_ATOP:
+      Result := R2_MERGEPEN;
+
+    CAIRO_OPERATOR_DEST:
+      Result := R2_NOP;
+
+    CAIRO_OPERATOR_DEST_OVER:
+      Result := R2_MERGEPEN;
+
+    CAIRO_OPERATOR_DEST_IN:
+      Result := R2_MASKPEN;
+
+    CAIRO_OPERATOR_DEST_OUT:
+      Result := R2_MASKPENNOT;
+
+    CAIRO_OPERATOR_DEST_ATOP:
+      Result := R2_MERGEPEN;
+
+    CAIRO_OPERATOR_XOR:
+      Result := R2_XORPEN;
+
+    CAIRO_OPERATOR_ADD:
+      Result := R2_MERGEPEN; // Similar to add-blend effect
+
+    CAIRO_OPERATOR_SATURATE:
+      Result := R2_MERGEPEN;
+
+    CAIRO_OPERATOR_MULTIPLY:
+      Result := R2_MASKPEN;
+
+    CAIRO_OPERATOR_SCREEN:
+      Result := R2_WHITE;
+
+    CAIRO_OPERATOR_OVERLAY:
+      Result := R2_MERGEPEN;
+
+    CAIRO_OPERATOR_DARKEN:
+      Result := R2_MASKPEN;
+
+    CAIRO_OPERATOR_LIGHTEN:
+      Result := R2_MERGEPEN;
+
+    CAIRO_OPERATOR_COLOR_DODGE:
+      Result := R2_MERGEPEN;
+
+    CAIRO_OPERATOR_COLOR_BURN:
+      Result := R2_MASKPEN;
+
+    CAIRO_OPERATOR_HARD_LIGHT:
+      Result := R2_MERGEPEN;
+
+    CAIRO_OPERATOR_SOFT_LIGHT:
+      Result := R2_MERGEPEN;
+
+    CAIRO_OPERATOR_DIFFERENCE:
+      Result := R2_NOTXORPEN;
+
+    CAIRO_OPERATOR_EXCLUSION:
+      Result := R2_XORPEN;
+
+    CAIRO_OPERATOR_HSL_HUE:
+      Result := R2_MERGEPEN;
+
+    CAIRO_OPERATOR_HSL_SATURATION:
+      Result := R2_MERGEPEN;
+
+    CAIRO_OPERATOR_HSL_COLOR:
+      Result := R2_MERGEPEN;
+
+    CAIRO_OPERATOR_HSL_LUMINOSITY:
+      Result := R2_MERGEPEN;
+
+  else
+    Result := R2_NOP; // Default fallback
+  end;
+end;
+
 
 { TGtk3Cursor }
 
@@ -1295,6 +1464,11 @@ begin
   Result := Point(Round(dx), Round(dy));
 end;
 
+function TGtk3DeviceContext.GetRasterOp: integer;
+begin
+  Result := MapCairoRasterOpToRasterOp(cairo_get_operator(pcr));
+end;
+
 procedure TGtk3DeviceContext.setBrush(AValue: TGtk3Brush);
 begin
   if Assigned(FBrush) then
@@ -1323,6 +1497,11 @@ begin
   if Assigned(FPen) then
     FPen.Free;
   FPen := AValue;
+end;
+
+procedure TGtk3DeviceContext.SetRasterOp(AValue: integer);
+begin
+  cairo_set_operator(pcr, MapRasterOpToCairo(AValue));
 end;
 
 procedure TGtk3DeviceContext.SetvImage(AValue: TGtk3Image);

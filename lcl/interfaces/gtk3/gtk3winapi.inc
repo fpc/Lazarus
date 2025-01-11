@@ -2410,11 +2410,13 @@ begin
 end;
 
 function TGtk3WidgetSet.GetROP2(DC: HDC): Integer;
+var
+  GtkDC: TGtk3DeviceContext absolute DC;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  DebugLn('WARNING: TGtk3WidgetSet.GetROP2 not implemented ...');
-  {$ENDIF}
-  Result := inherited GetROP2(DC);
+  Result := R2_COPYPEN;
+  if not IsValidDC(DC) then
+    exit;
+  Result := GtkDC.RasterOp;
 end;
 
 function TGtk3WidgetSet.GetScrollBarSize(Handle: HWND; BarKind: Integer
@@ -3692,11 +3694,14 @@ begin
 end;
 
 function TGtk3WidgetSet.SetROP2(DC: HDC; Mode: Integer): Integer;
+var
+  GtkDC: TGtk3DeviceContext absolute DC;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  DebugLn('WARNING: TGtk3WidgetSet.SetROP2 not implemented ...');
-  {$ENDIF}
-  Result:=inherited SetROP2(DC, Mode);
+  Result := R2_COPYPEN;
+  if not IsValidDC(DC) then
+    exit;
+  Result := GtkDC.RasterOp;
+  GtkDC.RasterOp := Mode;
 end;
 
 function TGtk3WidgetSet.SetScrollInfo(Handle: HWND; SBStyle: Integer;
