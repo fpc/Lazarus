@@ -885,16 +885,15 @@ No actions are performed in the method for the following conditions:
 </ul>
 </descr>
 <version>
-Modified in LCL version 4.0 to use the ScrolledLeft and ScrolledTop values from 
-the FilteredTreeView control.
+Modified in LCL version 4.0 to use the ScrolledLeft and ScrolledTop values from the FilteredTreeView control.
 </version>
 <seealso>
 <link id="TTreeFilterEdit.FilteredTreeview"/>
 <link id="TTreeFilterEdit.RestoreSelection"/>
 <link id="TTreeFilterEdit.SelectionList"/>
-<link id="TTreeView.Selected"/>
-<link id="TTreeView.ScrolledLeft"/>
-<link id="TTreeView.ScrolledTop"/>
+<link id="#lcl.comctrls.TCustomTreeView.Selected">TCustomTreeView.Selected</link>
+<link id="#lcl.comctrls.TCustomTreeView.ScrolledLeft">TCustomTreeView.ScrolledLeft</link>
+<link id="#lcl.comctrls.TCustomTreeView.ScrolledTop">TCustomTreeView.ScrolledTop</link>
 <link id="#lcl.editbtn.TCustomControlFilterEdit.StoreSelection">TCustomControlFilterEdit.StoreSelection</link>
 </seealso>
 </element>
@@ -931,9 +930,9 @@ properties in the FilteredTreeView control.
 <link id="TTreeFilterEdit.StoreSelection"/>
 <link id="TTreeFilterEdit.RestoreSelection"/>
 <link id="TTreeFilterEdit.SelectionList"/>
-<link id="TTreeView.Selected"/>
-<link id="TTreeView.ScrolledLeft"/>
-<link id="TTreeView.ScrolledTop"/>
+<link id="#lcl.comctrls.TCustomTreeView.Selected">TCustomTreeView.Selected</link>
+<link id="#lcl.comctrls.TCustomTreeView.ScrolledTop">TCustomTreeView.ScrolledTop</link>
+<link id="#lcl.editbtn.TCustomControlFilterEdit.StoreSelection">TCustomControlFilterEdit.StoreSelection</link>
 <link id="#lcl.editbtn.TCustomControlFilterEdit.RestoreSelection">TCustomControlFilterEdit.RestoreSelection</link>
 </seealso>
 </element>
@@ -1196,9 +1195,10 @@ TreeFilterEditNodeData is the ancestor for the TFileNameItem type.
 </p>
 </descr>
 <seealso>
-<link id="TTreeNode"/>
 <link id="TTreeFilterBranch"/>
 <link id="TFileNameItem"/>
+<link id="#lcl.comctrls.TTreeNode">TTreeNode</link>
+<link id="#lcl.editbtn.TCustomControlFilterEdit.StoreSelection">TCustomControlFilterEdit.StoreSelection</link>
 </seealso>
 </element>
 <element name="TTFENodeData.Node">
