@@ -893,9 +893,12 @@ var
 begin
   if IsValidDC(DC) and (QtDC.vImage <> nil) and (QtDC.vImage.Handle <> nil) then
   begin
-    QPainter_end(QtDC.Widget);
-    QImage_setDevicePixelRatio(QtDC.vImage.Handle, AScaleFactor);
-    QPainter_begin(QtDC.Widget, QtDC.vImage.Handle);
+    if not SameValue(AScaleFactor, QImage_devicePixelRatio(QtDC.vImage.Handle)) then
+    begin
+      QPainter_end(QtDC.Widget);
+      QImage_setDevicePixelRatio(QtDC.vImage.Handle, AScaleFactor);
+      QPainter_begin(QtDC.Widget, QtDC.vImage.Handle);
+    end;
   end;
 end;
 
