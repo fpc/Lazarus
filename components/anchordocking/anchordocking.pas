@@ -7977,7 +7977,10 @@ end;
 
 procedure TAnchorDockSplitter.ConstrainBounds(var ALeft, ATop, AWidth, AHeight: integer);
 begin
-  if Parent = nil then
+  if (Parent = nil) or (not HandleAllocated) or
+     (FPercentPosition <= 0) or
+     ((DockMaster <> nil) and (DockMaster.fUpdateCount > 0))
+  then
     exit;
   if not (akRight in Anchors) then begin
     if ALeft + AWidth > Parent.ClientWidth then
