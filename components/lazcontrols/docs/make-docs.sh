@@ -12,11 +12,11 @@
 
 # lazarus documentation and chm directories
 docdir=$(realpath ../../../docs)
-chmdir=$docdir/chm
+chmdir=../../../docs/chm
 
 # path to fpdoc executable and file name
-fpcdir=$(realpath ../../../../fpc/bin/x86_64-linux)
-#fpcdir=$(realpath ~/fpc331/fpc/bin/x86_64-linux)
+#fpcdir=$(realpath ../../../../fpc/bin/x86_64-linux)
+fpcdir=$(realpath ~/fpc331/fpc/bin/x86_64-linux)
 fpdocpgm=$fpcdir/fpdoc
 
 # path to lazarus git repo
@@ -66,13 +66,13 @@ echo -e "\n\e[7m LazControls package \e[0m";
 # imports done manually to set the correct prefix for the output format
 # output to current directory
 echo "Generating CHM help..."
-$fpdocpgm --project=lazcontrols-project.xml --format=chm --footer="lazcontrols-chm-footer.xml" --import="$chmdir/rtl.xct,ms-its:rtl.chm::/" --import="$chmdir/fcl.xct,ms-its:fcl.chm::/" --import="$chmdir/lcl.xct,ms-its:lcl.chm::/" --import="$chmdir/lazutils.xct,ms-its:lazutils.chm::/" 2>&1 | tee ./build_chm.log
+$fpdocpgm --project=lazcontrols-project.xml --format=chm --footer=@lazcontrols-chm-footer.xml --fallback-seealso-links 2>&1 | tee ./build_chm.log
 
 # generate html format
 # imports done manually to set the correct prefix for the output format
 # html written to lazcontrols sub-directory
 echo "Generating HTML help..."
-$fpdocpgm --project=lazcontrols-project.xml --format=html --footer="lazcontrols-html-footer.xml" --import="$chmdir/rtl.xct,../rtl/" --import="$chmdir/fcl.xct,../fcl/" --import="$chmdir/lcl.xct,../lcl/" --import="$chmdir/lazutils.xct,../lazutils/" --output=lazcontrols  2>&1 | tee ./build_html.log
+$fpdocpgm --project=lazcontrols-project.xml --format=html --footer=@lazcontrols-html-footer.xml --import="$chmdir/rtl.xct,../rtl/" --import="$chmdir/fcl.xct,../fcl/" --import="$chmdir/lcl.xct,../lcl/" --import="$chmdir/lazutils.xct,../lazutils/" --output=lazcontrols  2>&1 | tee ./build_html.log
 
 # copy generated chm, xct to chm directory
 mv -v lazcontrols.{chm,xct} $chmdir/
