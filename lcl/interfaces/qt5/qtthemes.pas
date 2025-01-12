@@ -695,7 +695,17 @@ begin
                   QPainter_fillRect(Context.Widget, @TextRect, QtSolidPattern);
                 end;
               end;
-
+              {$IFDEF MSWINDOWS}
+              if StyleName = 'windowsvista' then // fix for text of selected treeitem.
+              begin
+                if (Palette <> nil) and (QPalette_currentColorGroup(Palette) = QPaletteActive) then
+                begin
+                  AQColor := Default(TQColor);
+                  ColorRefToTQColor(ColorToRGB(clWindowText), AQColor);
+                  QPalette_setColor(Palette, QPaletteHighlightedText, PQColor(@AQColor));
+                end;
+              end;
+              {$ENDIF}
               QStyle_drawItemText(Style, Context.Widget, @R,
                 DTFlagsToQtFlags(Flags), Palette,
                 not IsDisabled(Details), @W, QPaletteHighlightedText)
