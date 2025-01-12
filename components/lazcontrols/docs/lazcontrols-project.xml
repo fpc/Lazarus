@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <docproject>
   <options>
-    <option name="ostarget" value="Win64"/>
-    <option name="cputarget" value="x86_64"/>
     <option name="hide-protected" value="false"/>
     <option name="show-private" value="false"/>
     <option name="warn-no-node" value="false"/>
@@ -15,6 +13,7 @@
     <option name="auto-toc" value="true"/>
     <option name="chm-title" value="(LazControls) Lazarus Controls Package"/>
     <!--
+    Headers differ between CHM and HTML. Pass as command line arguments.
     <option name="footer" value="lazcontrols-footer.xml"/>
     <option name="format" value="chm | html"/>
     -->
@@ -32,10 +31,7 @@
         <unit file="../spinex.pp"/>
         <unit file="../treefilteredit.pas"/>
         <unit file="../laznumedit.pas"/>
-        <!--
-          omit to avoid fcl-passrc errors
-          <unit file="../extendedtabcontrols.pas"/>
-        -->
+        <unit file="../extendedtabcontrols.pas"/>
       </units>
       <descriptions>
         <description file="checkboxthemed.xml"/>
@@ -48,26 +44,23 @@
         <description file="spinex.xml"/>
         <description file="treefilteredit.xml"/>
         <description file="laznumedit.xml"/>
-        <!--
-          omit to avoid fcl-passrc errors
-          <description file="extendedtabcontrols.xml"/>
-        -->
+        <description file="extendedtabcontrols.xml"/>
       </descriptions>
       <imports>
-        <!-- Import prefixes differ between output formats. Pass them as command line arguiments. -->
-
-        <!-- for CHM
-        <import file="../../../docs/chm/rtl.xct" prefix="ms-its:rtl.chm::/"/>
-        <import file="../../../docs/chm/fcl.xct" prefix="ms-its:fcl.chm::/"/>
+        <!--
+        Import prefixes differ between output formats. Pass them as command line arguments for HTML.
+        -->
+        <!-- for CHM -->
         <import file="../../../docs/chm/lcl.xct" prefix="ms-its:lcl.chm::/"/>
         <import file="../../../docs/chm/lazutils.xct" prefix="ms-its:lazutils.chm::/"/>
-        -->
+        <import file="../../../docs/chm/fcl.xct" prefix="ms-its:fcl.chm::/"/>
+        <import file="../../../docs/chm/rtl.xct" prefix="ms-its:rtl.chm::/"/>
 
-        <!--  for HTML
-        <import file="../../../docs/chm/rtl.xct" prefix="../rtl/"/>
-        <import file="../../../docs/chm/fcl.xct" prefix="../fcl/"/>
+        <!-- for HTML
         <import file="../../../docs/chm/lcl.xct" prefix="../lcl/"/>
         <import file="../../../docs/chm/lazutils.xct" prefix="../lazutils/"/>
+        <import file="../../../docs/chm/fcl.xct" prefix="../fcl/"/>
+        <import file="../../../docs/chm/rtl.xct" prefix="../rtl/"/>
         -->
       </imports>
     </package>
