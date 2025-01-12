@@ -596,7 +596,7 @@ Use the OnBasechange event handler to perform actions needed when DisplayBase is
 </p>
 </descr>
 <seealso>
-<link id="TLazIntegerEditGenEdit"/>
+<link id="TLazIntegerEditGen"/>
 <link id="#lcl.stdctrls.TCustomEdit">TCustomEdit</link>
 </seealso>
 </element>
@@ -770,11 +770,11 @@ Owner of the class instance.
 </element>
 
 <!-- published -->
-<element name="TLazIntegerEdit.Value" link="#lazcontrols.laznumedit.TLazIntegerEditGenEdit.Value"/>
+<element name="TLazIntegerEdit.Value" link="#lazcontrols.laznumedit.TLazIntegerEditGen.Value"/>
 
-<element name="TLazIntegerEdit.MinValue" link="#lazcontrols.laznumedit.TLazIntegerEditGenEdit.MinValue"/>
+<element name="TLazIntegerEdit.MinValue" link="#lazcontrols.laznumedit.TLazIntegerEditGen.MinValue"/>
 
-<element name="TLazIntegerEdit.MaxValue" link="#lazcontrols.laznumedit.TLazIntegerEditGenEdit.MaxValue"/>
+<element name="TLazIntegerEdit.MaxValue" link="#lazcontrols.laznumedit.TLazIntegerEditGen.MaxValue"/>
 
 <element name="TLazIntegerEdit.DisplayBase" link="#lazcontrols.laznumedit.TLazIntegerEditGen.DisplayBase"/>
 
