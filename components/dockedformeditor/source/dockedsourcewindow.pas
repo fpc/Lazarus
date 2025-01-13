@@ -186,7 +186,6 @@ begin
   or (SourceWindows.LastActiveSourceWindow = LSourceWindowIntf)
   then
     Exit;
-  LSourceWindowIntf.ActiveEditor := LSourceEditor;
 end;
 
 constructor TSourceWindow.Create(ASourceWindowIntf: TSourceEditorWindowInterface);
