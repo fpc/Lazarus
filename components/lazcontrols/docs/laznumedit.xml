@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-<package name="LazControls">
-
+<package name="lazcontrols">
 <!--
-================================================================================
+===============================================================================
 laznumedit
-================================================================================
+===============================================================================
 -->
-
 <module name="laznumedit">
 <short>
-Implements an edit control specialized for Integer values with a specific 
-numeric base (radix).
+Implements an edit control specialized for Integer values which can be 
+displayed with a specific numeric base (radix).
 </short>
 <descr/>
 
@@ -60,6 +58,13 @@ New numeric base for the notification.
 <element name="TLazIntegerEditBaseChangeEvent.APrefix">
 <short>
 Optional prefix for the new numeric base.
+</short>
+</element>
+
+<element name="TLazIntegerEditGen.T">
+<short>
+Generic type. makeskel generated it... so it is included here. It doesn't 
+appear to be used at all.
 </short>
 </element>
 
@@ -197,10 +202,47 @@ Upper limit for the Int64 value in the control.
 <!-- protected -->
 <element name="TLazIntegerEditGen._KeyDown">
 <short>
-Implements an alternate KeyDown method used in the control.
+Implements an alternate KeyDown method for the generic base class.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>	
+_KeyDown is an implementation of the KeyDown method specific to the generic 
+base class. It allows an alternate implementation without use of the override 
+directive - which is not allowed in the generic class.
+</p>
+<p>
+Key contains the virtual key code examined in the method. Shift contains the 
+Alt, Ctrl, Shift, or Meta modifiers for the virtual key code.
+</p>
+<p>
+_KeyDown calls the KeyDown method in the ancestor class on entry to signal an 
+assigned OnKeyDown event handler, or any control handlers using the 
+chtOnKeyDown handler type.
+</p>
+<p>
+_KeyDown ensures that the following key codes are applied to the Text for the 
+edit control:
+</p>
+<ul>
+<li>VK_BACK</li>
+<li>VK_DELETE</li>
+</ul>
+<p>
+For both key codes, a visible sign (+ or -) or prefix for the DisplayBase in 
+use on the the control is preserved.
+</p>
+<p>
+_KeyDown is called from the overridden KeyDown method in the TLazIntegerEdit 
+descendant.
+</p>
+</descr>
+<seealso>
+<link id="TLazIntegerEdit.KeyDown"/>
+<link id="#lcl.controls.TWinControl.KeyDown">TWinControl.KeyDown</link>
+<link id="#lcl.controls.TWinControl.OnKeyDown">TWinControl.OnKeyDown</link>
+<link id="#lcl.controls.TControl.DoCallKeyEventHandler">TControl.DoCallKeyEventHandler</link>
+<link id="#lcl.controls.TControlHandlerType">TControlHandlerType</link>
+</seealso>
 </element>
 <element name="TLazIntegerEditGen._KeyDown.Key">
 <short>
@@ -217,12 +259,123 @@ Shift, Ctrl, Alt, or Meta modifier(s) for the key code.
 <short>
 Implements an alternate KeyPress method used in the control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+_KeyPress is an implementation of the KeyPress method specific to the generic 
+base class. It allows an alternate implementation without use of the override 
+directive - which is not allowed in the generic class.
+</p>
+<p>
+Key contains the character examined in the method.
+</p>
+<p>
+_KeyPress calls the KeyPress method in the ancestor class on entry to signal 
+an assigned OnKeyPress event handler.
+</p>
+<p>
+_KeyDown ensures that the value in Key is not one of the allowed control 
+characters used in the control, including:
+</p>
+<ul>
+<li>#8 (Backspace)</li>
+<li>#9 (Tab)</li>
+<li>^A (Line Feed)</li>
+<li>^C (Carriage Return)</li>
+<li>^Z (Undo)</li>
+</ul>
+<p>
+No actions are performed in the method if Key contains one of these values.
+</p>
+<p>
+_KeyPress ensures that other characters or control characters in Key are 
+properly applied to the Text in the control, including:
+</p>
+<dl>
+<dt>'-'</dt>
+<dd>
+Toggles the sign when AllowMinus is enabled, and re-selects the Text displayed 
+for the control.
+</dd>
+<dt>'+'</dt>
+<dd>
+Toggles the sign when AllowPlus is enabled, and re-selects the Text displayed 
+for the control.
+</dd>
+<dt>^X (Cut)</dt>
+<dd>
+Copies the selected text on the control to the clipboard and removes the 
+selected text from the display value for the control.
+</dd>
+<dt>^V (Insert)</dt>
+<dd>
+Copies the contents of the clipboard, converts it to the DIsplayBase in use, 
+and inserts the value into the Text for the control. If text is selected on 
+the control, only the selected text is replaced.
+</dd>
+<dt>ToggleBinKeys</dt>
+<dd>
+If Key contains one of he values in ToggleBinKeys, DisplayBase is toggled 
+between 2 (Binary) and 10 (Decimal).
+</dd>
+<dt>ToggleOctKeys</dt>
+<dd>
+If Key contains one of he values in ToggleOctKeys, DisplayBase is toggled 
+between 8 (Octal) and 10 (Decimal).
+</dd>
+<dt>ToggleHexKeys</dt>
+<dd>
+If Key contains one of he values in ToggleHexKeys, DisplayBase is toggled 
+between 16 (Hexadecimal) and 10 (Decimal).
+</dd>
+<dt>SetDecimalKeys</dt>
+<dd>
+If Key contains one of he values in SetDecimalKeys, DisplayBase is switched 
+to  10 (Decimal).
+</dd>
+<dt>SetBinKeys</dt>
+<dd>
+If Key contains one of he values in SetBinKeys, DisplayBase is switched to 2 (
+Binary).
+</dd>
+<dt>SetOctKeys</dt>
+<dd>
+If Key contains one of he values in SetOctKeys, DisplayBase is switched to 8 (
+Octal).
+</dd>
+<dt>SetHexKeys</dt>
+<dd>
+If Key contains one of he values in SetHexKeys, DisplayBase is switched to 16 (
+Hexadecimal).
+</dd>
+</dl>
+<p>
+Key is set to #0 if it is handled in the method.
+</p>
+<p>
+_KeyPress is called from the overridden KeyPress method in the TLazIntegerEdit 
+descendant.
+</p>
+</descr>
+<seealso>
+<link id="TLazIntegerEditGen.AllowMinus"/>
+<link id="TLazIntegerEditGen.AllowPlus"/>
+<link id="TLazIntegerEditGen.ToggleBinKeys"/>
+<link id="TLazIntegerEditGen.ToggleHexKeys"/>
+<link id="TLazIntegerEditGen.ToggleOctKeys"/>
+<link id="TLazIntegerEditGen.SetBinKeys"/>
+<link id="TLazIntegerEditGen.SetDecimalKeys"/>
+<link id="TLazIntegerEditGen.SetOctKeys"/>
+<link id="TLazIntegerEditGen.SetHexKeys"/>
+<link id="TLazIntegerEditGen.CurrentValue"/>
+<link id="TLazIntegerEdit.KeyPress"/>
+<link id="#lcl.controls.TWinControl.KeyPress">TWinControl.KeyPress</link>
+<link id="#lcl.controls.TWinControl.OnKeyPress">TWinControl.OnKeyPress</link>
+</seealso>
 </element>
 <element name="TLazIntegerEditGen._KeyPress.Key">
 <short>
-Character value for the key press notification.
+Character value for the key press notification. Set to #0 when handled in the 
+method.
 </short>
 </element>
 
@@ -230,12 +383,34 @@ Character value for the key press notification.
 <short>
 Implements an alternate UTF8KeyPress method used in the control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+_Utf8KeyPress is an implementation of the Utf8KeyPress method specific to the 
+generic base class. It allows an alternate implementation without use of the 
+override directive - which is not allowed in the generic class.
+</p>
+<p>
+_Utf8KeyPress calls the Utf8KeyPress method from the ancestor class on entry 
+to signal an assigned OnUtf8KeyPress event handler for the class instance. The 
+handler inspects the value in UTF8Key to determine whether it can be applied 
+to the control. Any bytes values in UTF8Key not handled in the ancestor method 
+are discarded. Essentially, this limits the input value for the control to the 
+single byte characters in the UTF-8 encoding.
+</p>
+<p>
+_Utf8KeyPress is called from the UTF8KeyPress method in the TLazIntegerEdit 
+descendant.
+</p>
+</descr>
+<seealso>
+<link id="TLazIntegerEdit.UTF8KeyPress"/>
+<link id="#lcl.controls.TWinControl.OnUTF8KeyPress">TCustomEdit.OnUTF8KeyPress</link>
+<link id="#lcl.controls.TCustomEdit.OnUTF8KeyPress">TCustomEdit.OnUTF8KeyPress</link>
+</seealso>
 </element>
 <element name="TLazIntegerEditGen._Utf8KeyPress.UTF8Key">
 <short>
-UTF-8 character value for the key press notification.
+UTF-8-encoded character value for the key press notification.
 </short>
 </element>
 
@@ -249,7 +424,8 @@ Implements an alternate InitializeWnd method used in the control.
 
 <element name="TLazIntegerEditGen._RealGetText">
 <short>
-Implements an alternate RealGetText method used in the control.
+Implements an alternate RealGetText method used to get the text for the 
+control.
 </short>
 <descr/>
 <seealso/>
@@ -288,29 +464,63 @@ Implements an alternate EditingDone method used in the control.
 <short>
 Implements an initialization routine used for new instances of the control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+_Init acts as a constructor for instances of the generic base class. It is 
+called from the constructor in TLazIntegerEdit to ensure that default values 
+are assigned to members, including:
+</p>
+<ul>
+<li>MinValue (Low(Int64))</li>
+<li>MaxValue (High(Int64))</li>
+<li>DisplayBase (10)</li>
+<li>BinIndicator ('%')</li>
+<li>HexIndicator ('$')</li>
+<li>OctIndicator ('&amp;')</li>
+<li>SetDecimalKeys ('#')</li>
+<li>ToggleBinKeys ('%')</li>
+<li>ToggleHexKeys ('$x')</li>
+<li>ToggleOctKeys ('&amp;)</li>
+<li>AllowMinus (<b>True</b>)</li>
+<li>AllowPlus (<b>True</b>)</li>
+</ul>
+</descr>
+<seealso>
+<link id="TLazIntegerEditGen.MinValue"/>
+<link id="TLazIntegerEditGen.MaxValue"/>
+<link id="TLazIntegerEditGen.DisplayBase"/>
+<link id="TLazIntegerEditGen.BinIndicator"/>
+<link id="TLazIntegerEditGen.HexIndicator"/>
+<link id="TLazIntegerEditGen.OctIndicator"/>
+<link id="TLazIntegerEditGen.SetDecimalKeys"/>
+<link id="TLazIntegerEditGen.ToggleBinKeys"/>
+<link id="TLazIntegerEditGen.ToggleHexKeys"/>
+<link id="TLazIntegerEditGen.ToggleOctKeys"/>
+<link id="TLazIntegerEditGen.AllowMinus"/>
+<link id="TLazIntegerEditGen.AllowPlus"/>
+<link id="TLazIntegerEdit.Create"/>
+</seealso>
 </element>
 
 <!-- public -->
 <element name="TLazIntegerEditGen.Value">
 <short>
-Value  for the control as an Int64 type.
+Value for the control as an Int64 type.
 </short>
 <descr>
 <p>
 <var>Value</var> is an <var>Int64</var> property which contains the decimal 
-(base-10) value for the control. Changing the property value causes the display 
-Text in the control to be updated and redisplayed. DisplayBase determines the 
-numeric base (radix) for the converted control Value. An optional prefix is 
-used for numeric base values in DisplayBase like base-2 (binary), base-8 
-(octal), and base-16 (hexadecimal).
+(base-10) value for the control. Changing the property value causes the 
+display Text in the control to be updated and displayed. DisplayBase 
+determines the numeric base (radix) for the converted control Value. An 
+optional prefix is used for numeric base values in DisplayBase like base-2 
+(binary), base-8 (octal), and base-16 (hexadecimal).
 </p>
 <p>
 Use MinValue and MaxValue to set lower and upper limits for the control Value. 
-Changing the property causes the new value to be normalized for the limits in 
-MinValue and MaxValue; if the new value is not in the specified range, it is 
-changed to the corresponding lower or upper limit.
+Changing the Value property causes the new value to be normalized for the 
+limits in MinValue and MaxValue; if the new value is not in the specified 
+range, it is changed to the corresponding lower or upper limit.
 </p>
 </descr>
 <seealso>
@@ -333,11 +543,11 @@ CurrentValue is a read-only Int64 property which contains the control value
 while editing is active and before the control loses focus. The property value 
 is derived by reading the Text in the edit box and converting it from the 
 selected DisplayBase back to a decimal (base-10) value. If a handle has not 
-been allocated for the contro, the Value property is used instead.
+been allocated for the control, the Value property is used instead.
 </p>
 <p>
-Use Valid to determine if the edit box contains a valid value for the specified 
-DisplayBase.
+Use Valid to determine if the edit box contains a valid value for the 
+specified DisplayBase.
 </p>
 </descr>
 <seealso>
@@ -351,9 +561,18 @@ DisplayBase.
 <element name="TLazIntegerEditGen.Valid">
 <short>
 Indicates whether the value in the CurrentValue property is valid for the 
-selected DisplayBase.
+setting in DisplayBase.
 </short>
-<descr/>
+<descr>
+<p>
+Valid is a read-only Boolean property which indicates whether the text 
+displayed on the control is a valid numeric value for the setting in 
+DisplayBase. Valid converts the edit text to an Int64 value, and checks 
+whether the value is within the limits specified in MinValue and MaxValue. 
+This includes comparing the prefix in the edit text (if any) to the prefix 
+needed for the DisplayBase setting.
+</p>
+</descr>
 <seealso>
 <link id="TLazIntegerEditGen.DisplayBase"/>
 <link id="TLazIntegerEditGen.CurrentValue"/>
@@ -362,23 +581,67 @@ selected DisplayBase.
 
 <element name="TLazIntegerEditGen.MinValue">
 <short>
-Contains the lower limit for the Value property.
+Sets the lower limit for the Value property.
 </short>
-<descr/>
+<descr>
+<p>
+MinValue is an Int64 property which specifies the smallest Base-10 (decimal) 
+value allowed for the control. Changing the value in MinValue causes any 
+existing text on the edit control to be converted back to decimal (if needed) 
+and normalized to the limits specified in MinValue and MinValue.
+</p>
+<p>
+The default value for the property is set in the _Init method to the value in 
+the Min_Limit constant.
+</p>
+<p>
+Use MaxValue to specify the largest Base-10 Value allowed for the control.
+</p>
+<p>
+MinValue and MaxValue are used when the Value property is updated, and ensure 
+that the limits for the control are applied to Value before the display text 
+is converted / displayed for the specified DisplayBase.
+</p>
+</descr>
 <seealso>
-<link id="TLazIntegerEditGen.Min_limit"/>
+<link id="TLazIntegerEditGen.DisplayBase"/>
+<link id="TLazIntegerEditGen.MaxValue"/>
 <link id="TLazIntegerEditGen.Value"/>
+<link id="TLazIntegerEditGen._Init"/>
+<link id="TLazIntegerEditGen.Min_limit"/>
 </seealso>
 </element>
 
 <element name="TLazIntegerEditGen.MaxValue">
 <short>
-Contains the upper limit for the Value property.
+Sets the upper limit for the Value property.
 </short>
-<descr/>
+<descr>
+<p>
+MaxValue is an Int64 property which specifies the largest Base-10 (decimal) 
+value allowed for the control. Changing the value in MaxValue causes any 
+existing text on the edit control to be converted back to decimal (if needed) 
+and normalized to the limits specified in MinValue and MinValue.
+</p>
+<p>
+The default value for the property is set in the _Init method to the value in 
+the Max_Limit constant.
+</p>
+<p>
+Use MinValue to specify the smallest Base-10 Value allowed for the control.
+</p>
+<p>
+MinValue and MaxValue are used when the Value property is updated, and ensure 
+that the limits for the control are applied to Value before the display text 
+is converted / displayed for the specified DisplayBase.
+</p>
+</descr>
 <seealso>
-<link id="TLazIntegerEditGen.Max_limit"/>
+<link id="TLazIntegerEditGen.DisplayBase"/>
+<link id="TLazIntegerEditGen.MinValue"/>
 <link id="TLazIntegerEditGen.Value"/>
+<link id="TLazIntegerEditGen._Init"/>
+<link id="TLazIntegerEditGen.Min_limit"/>
 </seealso>
 </element>
 
@@ -388,22 +651,23 @@ Contains the numeric base (radix) for the value displayed in the control.
 </short>
 <descr>
 <p>
-DisplayBase is an Integer property which contains the numeric base (or radix) for the value displayed and maintained in the edit control.
+DisplayBase is an Integer property which contains the numeric base (or radix) 
+for the value displayed and maintained in the edit control.
 </p>
 <p>
-DisplayBase determines the number of digits used to represent the Value in the 
-control and controls the conversion performed to get the display value. The 
-default value for the property is 10 and indicates the control displays its 
-Value using base-10 or decimal notation. 
+DisplayBase determines the number of digits needed to represent the base-n 
+text displayed on the control, and controls the conversion performed to get 
+the display value. The default value for the property is 10 and indicates that 
+the control displays its Value using base-10 or decimal notation.
 </p>
 <p>
 DisplayBase must be in the range 2..35; a value outside this range is 
 normalized to the lower or upper limit. 
 </p>
 <p>
-Changing the value for the property causes the OnBaseChange event handler to be 
-signalled (when assigned) using the old and new values for the property and the 
-optional prefix for the new numeric base (radix).
+Changing the value for the property causes the OnBaseChange event handler to 
+be signalled (when assigned) using the old and new values for the property and 
+the optional prefix for the new numeric base (radix).
 </p>
 <p>
 The Text for control is updated by converting Value to the specified radix and 
@@ -412,61 +676,182 @@ HexIndicator for more information about common prefixes used for selected
 DisplayBase values.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TLazIntegerEditGen.Value"/>
+<link id="TLazIntegerEditGen.OnBaseChange"/>
+<link id="TLazIntegerEditGen.BinIndicator"/>
+<link id="TLazIntegerEditGen.HexIndicator"/>
+<link id="TLazIntegerEditGen.OctIndicator"/>
+</seealso>
 </element>
 
 <element name="TLazIntegerEditGen.SetDecimalKeys">
 <short>
-Contains the characters or keys which can be applied to the edit control for a 
-value using the decimal (base-10) radix.
+Contains the characters which cause the edit control to be displayed using the 
+decimal (base-10) radix.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+SetDecimalKeys is a String property which contains the character(s) used to 
+switch the edit controls to the decimal (base-10) radix when a key press is 
+handled for the control. SetDecimals is used in the _KeyPress handler, and 
+causes the DisplayBase property to be set to 10.
+</p>
+<p>
+The default value for the property is '#' as assigned in the _Init method.
+</p>
+<remark>
+Please note that SetDecimalKeys is not like the toggles in the ToggleBinKeys, 
+ToggleOctKeys, and ToggleHexKeys properties. It does not toggle between 
+base-10 and another radix value. It selects base-10 only.
+</remark>
+</descr>
+<seealso>
+<link id="TLazIntegerEditGen.DisplayBase"/>
+<link id="TLazIntegerEditGen._Init"/>
+<link id="TLazIntegerEditGen._KeyPress"/>
+<link id="TLazIntegerEditGen.ToggleBinKeys"/>
+<link id="TLazIntegerEditGen.ToggleOctKeys"/>
+<link id="TLazIntegerEditGen.ToggleHexKeys"/>
+</seealso>
 </element>
 
 <element name="TLazIntegerEditGen.HexIndicator">
 <short>
-Contains the prefix used for a control value displayed in hexadecimal format 
-(DisplayBase = 16).
+Contains the prefix displayed in the control when the value is displayed in 
+hexadecimal representation (DisplayBase = 16).
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+HexIndicator contains the prefix displayed in the edit control when 
+DisplayBase is set to 16 for hexadecimal format. The default value for the 
+property is '$' as assigned in the _Init method. Changing the value for the 
+property causes the text displayed on the control to be converted and 
+re-encoded when DisplayBase is 16.
+</p>
+<p>
+Use BinIndicator or OctIndicator for the prefix used for base-2 and base-8 
+respectively.
+</p>
+</descr>
+<seealso>
+<link id="TLazIntegerEditGen.DisplayBase"/>
+<link id="TLazIntegerEditGen._Init"/>
+<link id="TLazIntegerEditGen.BinIndicator"/>
+<link id="TLazIntegerEditGen.OctIndicator"/>
+</seealso>
 </element>
 
 <element name="TLazIntegerEditGen.SetHexKeys">
 <short>
-Contains the characters or keys which can be applied to the edit control for a 
-value using the hexadecimal (base-16) radix.
+Contains the character(s) which cause the edit control to be displayed using 
+the hexadecimal (base-16) radix.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+A default value is not assigned for the property. The ToggleHexKeys property 
+is used to toggle between Hexadecimal (base-16) and Decimal (base-10). When a 
+value is assigned to ToggleHexKeys, those keys take precedence over the keys 
+in SetHexKey. The value in SetHexKeys is used, when applicable, in the 
+_KeyPress handler for the control.
+</p>
+</descr>
+<seealso>
+<link id="TLazIntegerEditGen.ToggleHexKeys"/>
+<link id="TLazIntegerEditGen.DisplayBase"/>
+<link id="TLazIntegerEditGen._KeyPress"/>
+</seealso>
 </element>
 
 <element name="TLazIntegerEditGen.ToggleHexKeys">
 <short>
-Contains key(s) which cause the DisplayBase to be toggled between decimal (10) 
-and hexadecimal (16) display formats.
+Contains key(s) which cause the DisplayBase to be toggled between decimal 
+(base-10) and hexadecimal (base-16) display formats.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+ToggleHexKeys is a String property which contains one or more characters which 
+cause the DisplayBase for the control to be toggled between decimal (base-10) 
+and hexadecimal (base-16). The default value for the property is '$x' as 
+assigned in the _Init method. If either of the keys is entered when the 
+control has focus, the DisplayBase property is updated accordingly and the 
+display Text for the control is updated to to reflect the numeric 
+representation using the radix.
+</p>
+<p>
+Values in ToggleHexKeys are used in the _KeyPress method when a key value is 
+applied to the edit control.
+</p>
+<p>
+Use ToggleBinKeys or ToggleOctKeys to specify the key characters which cause 
+the control to toggle between Binary or Octal, and Decimal representations for 
+the control Value.
+</p>
+<p>
+Use SetDecimalKeys, SetBinKeys, SetOctKeys, or SetHexKeys to switch to a 
+specific base-n representation rather than toggle between a base-n 
+representation and decimal (base-10).
+</p>
+</descr>
+<seealso>
+<link id="TLazIntegerEditGen.ToggleBinKeys"/>
+<link id="TLazIntegerEditGen.ToggleOctKeys"/>
+<link id="TLazIntegerEditGen.SetDecimalKeys"/>
+<link id="TLazIntegerEditGen.SetBinKeys"/>
+<link id="TLazIntegerEditGen.SetOctKeys"/>
+<link id="TLazIntegerEditGen.SetHexKeys"/>
+<link id="TLazIntegerEditGen.Value"/>
+<link id="TLazIntegerEditGen.DisplayBase"/>
+<link id="TLazIntegerEditGen._KeyPress"/>
+<link id="TLazIntegerEdit.KeyPress"/>
+</seealso>
 </element>
 
 <element name="TLazIntegerEditGen.OctIndicator">
 <short>
-Contains the prefix used for a control value displayed in octal format 
-(DisplayBase = 8).
+Contains the prefix displayed in the control when the value is displayed in 
+octal representation (DisplayBase = 8).
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+OctIndicator contains the prefix displayed in the edit control when 
+DisplayBase is set to 8 for octal format. The default value for the 
+property is '&amp;' as assigned in the _Init method. Changing the value for 
+the property causes the text displayed on the control to be converted and 
+re-encoded when DisplayBase is 8.
+</p>
+<p>
+Use BinIndicator or HexIndicator for the prefix used for base-2 and base-16 
+respectively.
+</p>
+</descr>
+<seealso>
+<link id="TLazIntegerEditGen.DisplayBase"/>
+<link id="TLazIntegerEditGen._Init"/>
+<link id="TLazIntegerEditGen.BinIndicator"/>
+<link id="TLazIntegerEditGen.HexIndicator"/>
+</seealso>
 </element>
 
 <element name="TLazIntegerEditGen.SetOctKeys">
 <short>
-Contains the characters or keys which can be applied to the edit control for a 
-value using the octal (base-8) radix.
+Contains the character(s) which cause the edit control to be displayed using 
+the octal (base-8) radix.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+A default value is not assigned for the property. The ToggleOctKeys property 
+is used to toggle between Hexadecimal (base-16) and Decimal (base-10). When a 
+value is assigned to ToggleHexKeys, those keys take precedence over the keys 
+in SetOctKeys. The value in SetOctKeys is used, when applicable, in the 
+_KeyPress handler for the control.
+</p>
+</descr>
+<seealso>
+<link id="TLazIntegerEditGen.ToggleOctKeys"/>
+<link id="TLazIntegerEditGen.DisplayBase"/>
+<link id="TLazIntegerEditGen._KeyPress"/>
+</seealso>
 </element>
 
 <element name="TLazIntegerEditGen.ToggleOctKeys">
@@ -474,26 +859,90 @@ value using the octal (base-8) radix.
 Contains key(s) which cause the DisplayBase to be toggled between decimal (10) 
 and octal (8) display formats.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+ToggleOctKeys is a String property which contains one or more characters which 
+cause the DisplayBase for the control to be toggled between decimal (base-10) 
+and octal (base-8). The default value for the property is '&amp;' as 
+assigned in the _Init method. If the key is entered when the control has 
+focus, the DisplayBase property is updated accordingly and the display Text 
+for the control is updated to to reflect the numeric representation using the 
+radix.
+</p>
+<p>
+Values in ToggleOctKeys are used in the _KeyPress method when a key value is 
+applied to the edit control.
+</p>
+<p>
+Use ToggleBinKeys or ToggleHexKeys to specify the key characters which cause 
+the control to toggle between Binary or Hexadecimal, and Decimal 
+representations for the control Value.
+</p>
+<p>
+Use SetDecimalKeys, SetBinKeys, SetOctKeys, or SetHexKeys to switch to a 
+specific base-n representation rather than toggle between a base-n 
+representation and decimal (base-10).
+</p>
+</descr>
+<seealso>
+<link id="TLazIntegerEditGen.ToggleBinKeys"/>
+<link id="TLazIntegerEditGen.ToggleHexKeys"/>
+<link id="TLazIntegerEditGen.SetDecimalKeys"/>
+<link id="TLazIntegerEditGen.SetBinKeys"/>
+<link id="TLazIntegerEditGen.SetOctKeys"/>
+<link id="TLazIntegerEditGen.SetHexKeys"/>
+<link id="TLazIntegerEditGen.Value"/>
+<link id="TLazIntegerEditGen.DisplayBase"/>
+<link id="TLazIntegerEditGen._KeyPress"/>
+<link id="TLazIntegerEdit.KeyPress"/>
+</seealso>
 </element>
 
 <element name="TLazIntegerEditGen.BinIndicator">
 <short>
-Contains the prefix used for a control value displayed in binary format 
-(DisplayBase = 2).
+Contains the prefix displayed in the control when the value is displayed in 
+binary representation (DisplayBase = 2).
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+BinIndicator contains the prefix displayed in the edit control when 
+DisplayBase is set to 2 for octal format. The default value for the property 
+is '%' as assigned in the _Init method. Changing the value for the property 
+causes the text displayed on the control to be converted and re-encoded when 
+DisplayBase is 2.
+</p>
+<p>
+Use OctIndicator or HexIndicator for the prefix used for base-8 and base-16 
+respectively.
+</p>
+</descr>
+<seealso>
+<link id="TLazIntegerEditGen.DisplayBase"/>
+<link id="TLazIntegerEditGen._Init"/>
+<link id="TLazIntegerEditGen.OctIndicator"/>
+<link id="TLazIntegerEditGen.HexIndicator"/>
+</seealso>
 </element>
 
 <element name="TLazIntegerEditGen.SetBinKeys">
 <short>
-Contains the characters or keys which can be applied to the edit control for a 
-value using the binary (base-2) radix.
+Contains the character(s) which cause the edit control to be displayed using 
+the binary (base-2) radix.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+A default value is not assigned for the property. The ToggleBinKeys property 
+is used to toggle between Binary (base-2) and Decimal (base-10). When a 
+value is assigned to ToggleBinKeys, those keys take precedence over the keys 
+in SetBinKeys. The value in SetBinKeys is used, when applicable, in the 
+_KeyPress handler for the control.
+</p>
+</descr>
+<seealso>
+<link id="TLazIntegerEditGen.ToggleBinKeys"/>
+<link id="TLazIntegerEditGen.DisplayBase"/>
+<link id="TLazIntegerEditGen._KeyPress"/>
+</seealso>
 </element>
 
 <element name="TLazIntegerEditGen.ToggleBinKeys">
@@ -501,8 +950,42 @@ value using the binary (base-2) radix.
 Contains key(s) which cause the DisplayBase to be toggled between decimal (10) 
 and binary (2) display formats.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+ToggleBinKeys is a String property which contains one or more characters which 
+cause the DisplayBase for the control to be toggled between decimal (base-10) 
+and binary (base-2). The default value for the property is '%' as assigned in 
+the _Init method. If the key is entered when the control has focus, the 
+DisplayBase property is updated accordingly and the display Text for the 
+control is updated to to reflect the numeric representation using the radix.
+</p>
+<p>
+Values in ToggleBinKeys are used in the _KeyPress method when a key value is 
+applied to the edit control.
+</p>
+<p>
+Use ToggleOctKeys or ToggleHexKeys to specify the key characters which cause 
+the control to toggle between Octal or Hexadecimal, and Decimal 
+representations for the control Value.
+</p>
+<p>
+Use SetDecimalKeys, SetBinKeys, SetOctKeys, or SetHexKeys to switch to a 
+specific base-n representation rather than toggle between a base-n 
+representation and decimal (base-10).
+</p>
+</descr>
+<seealso>
+<link id="TLazIntegerEditGen.ToggleOctKeys"/>
+<link id="TLazIntegerEditGen.ToggleHexKeys"/>
+<link id="TLazIntegerEditGen.SetDecimalKeys"/>
+<link id="TLazIntegerEditGen.SetBinKeys"/>
+<link id="TLazIntegerEditGen.SetOctKeys"/>
+<link id="TLazIntegerEditGen.SetHexKeys"/>
+<link id="TLazIntegerEditGen.Value"/>
+<link id="TLazIntegerEditGen.DisplayBase"/>
+<link id="TLazIntegerEditGen._KeyPress"/>
+<link id="TLazIntegerEdit.KeyPress"/>
+</seealso>
 </element>
 
 <element name="TLazIntegerEditGen.OnBaseChange">
@@ -522,35 +1005,98 @@ See TLazIntegerEditBaseChangeEvent for more information about the handler type
 and its arguments.
 </p>
 <p>
-OnBaseChange is a public property and does <b>not</b> appear in the Object 
-Inspector at design-time; it must be assigned at run-time using an object 
-procedure which implements the signature for the event.
+OnBaseChange is a public property in TLazIntegerEditGen, but it is published 
+in the TLazIntegerEdit descendant.
 </p>
 </descr>
 <seealso>
 <link id="TLazIntegerEditGen.DisplayBase"/>
 <link id="TLazIntegerEdit.Text"/>
 <link id="TLazIntegerEditBaseChangeEvent"/>
+<link id="TLazIntegerEdit.OnBaseChange"/>
 </seealso>
 </element>
 
 <element name="TLazIntegerEditGen.AllowMinus">
 <short>
-Indicates whether the '-' key can be used when editing the control value.
+Indicates whether the '-' key can be used to negate the control Value.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+AllowMinus is a Boolean property which enables or disables use of the '-' key 
+to change the sign for the value in the control. When enabled, the 
+CurrentValue for the control is negated when the '-' key is pressed. A second 
+press of the key causes the CurrentValue to become positive. The default value 
+for the AllowMinus property is <b>True</b>. AllowMinus does enable direct 
+entry of the sign; it reverses its state.
+</p>
+<p>
+When editing is completed in the control, or it loses focus, the CurrentValue 
+for the control is validated using the MinValue and MaxValue properties. If 
+MinValue is not set to a value less than 0 (zero), a negative Value cannot be 
+stored for the control and it defaults to MinValue.
+</p>
+<p>
+AllowMinus and AllowPlus are used when key press events are applied in the 
+_KeyPress handler.
+</p>
+<p>
+Use AllowPlus to enable or disable use of the '+' key to force the control 
+Value to become positive.
+</p>
+</descr>
+<seealso>
+<link id="TLazIntegerEditGen.AllowPlus"/>
+<link id="TLazIntegerEditGen.CurrentValue"/>
+<link id="TLazIntegerEditGen.Value"/>
+<link id="TLazIntegerEditGen.MaxValue"/>
+<link id="TLazIntegerEditGen.MinValue"/>
+<link id="TLazIntegerEditGen._KeyPress"/>
+<link id="TLazIntegerEditGen._EditingDone"/>
+</seealso>
 </element>
 
 <element name="TLazIntegerEditGen.AllowPlus">
 <short>
-Indicates whether the '+' key can be used when editing the control value.
+Indicates whether the '+' key can be used to switch a negative control value 
+to a positive one.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+AllowPlus is a Boolean property which enables or disables use of the '+' key 
+to change the sign for the Value in the control to a positive one. When 
+enabled, the CurrentValue for the control is negated when the '+' key is 
+pressed. and the control value is negative. No actions are performed if the 
+CurrentValue is already positive. AllowPlus does enable direct entry of the 
+sign; it simply forces a positive sign for the value.
+</p>
+<p>
+When editing is completed in the control, or it loses focus, the CurrentValue 
+for the control is validated using the MinValue and MaxValue properties.
+</p>
+<p>
+AllowMinus and AllowPlus are used when key press events are applied in the 
+_KeyPress handler.
+</p>
+<p>
+Use AllowMinus to enable or disable use of the '-' key to toggle the sign for 
+the control Value.
+</p>
+</descr>
+<seealso>
+<link id="TLazIntegerEditGen.AllowMinus"/>
+<link id="TLazIntegerEditGen.Value"/>
+<link id="TLazIntegerEditGen.CurrentValue"/>
+<link id="TLazIntegerEditGen.MaxValue"/>
+<link id="TLazIntegerEditGen.MinValue"/>
+<link id="TLazIntegerEditGen._KeyPress"/>
+<link id="TLazIntegerEditGen._EditingDone"/>
+</seealso>
 </element>
 
 <!--
+Commented out in source code too.
+
 <element name="TLazIntegerEditGen.DisplayQWord">
 <short/>
 <descr/>
@@ -577,8 +1123,8 @@ DisplayBase.
 <p>
 Value contains the decimal (base-10) value for the control as an Int64 type. 
 MinValue and MaxValue control the lower and upper limits for the value in the 
-control. DisplayBase determines the numeric base (base-2, base-8, base-16, 
-etc.) used to display and edit the text for for the control.
+control. DisplayBase determines the numeric base (base-2, base-8, base-10, 
+base-16, etc.) used to display and edit the text for for the control.
 </p>
 <p>
 Changing the value in DisplayBase causes the Value to be converted to the 
@@ -613,12 +1159,14 @@ events which affect the current selection in the control are properly applied.
 </p>
 <p>
 KeyDown calls the alternate handler in the ancestor class (_KeyDown) to signal 
-assigned OnKeyDown event handler attached to the control. It updates the values 
-in SelStart and SelLength as needed when VK_BACK or VK_DELETE key down events 
-are received and applied to the edit box.
+assigned OnKeyDown event handler attached to the control. It updates the 
+values in SelStart and SelLength as needed when VK_BACK or VK_DELETE key down 
+events are received and applied to the edit box.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TLazIntegerEditGen._KeyDown"/>
+</seealso>
 </element>
 <element name="TLazIntegerEdit.KeyDown.Key">
 <short>
@@ -639,8 +1187,8 @@ Handles key press events for the control.
 <p>
 KeyPress is an overridden method in TLazIntegerEdit. It calls the alternate 
 _KeyPress handler in TLazIntegerEditGen to signal OnKeyPress (when assigned) 
-and apply the specified character to the control. No actions are performed when 
-ReadOnly is set to <b>True</b>.
+and apply the specified character to the control. No actions are performed 
+when ReadOnly is set to <b>True</b>.
 </p>
 <p>
 KeyPress ensures that keys specific to the control or its DisplayBase are 
@@ -666,6 +1214,7 @@ Character for the key press notification.
 </short>
 </element>
 
+<!-- WIP: Here -->
 <element name="TLazIntegerEdit.Utf8KeyPress">
 <short>
 Handles UTF-8-encoded key press events for the control.
@@ -741,6 +1290,8 @@ control.
 </element>
 
 <!-- 
+Commented out in source code too.
+
 <element name="TLazIntegerEdit.DoEnter">
 <short/>
 <descr/>
@@ -755,10 +1306,10 @@ Constructor for the class instance.
 </short>
 <descr>
 <p>
-Create is the overridden constructor for the class instance. It calls the _Init 
-method in the base class to set the default values for members in the class 
-instance. It calls the inherited constructor (in TCustomEdit) to set the 
-default values for members in TCustomEdit ancestor.
+Create is the overridden constructor for the class instance. It calls the 
+_Init method in the base class to set the default values for members in the 
+class instance. It calls the inherited constructor (in TCustomEdit) to set the 
+default values for members in ancestor class.
 </p>
 </descr>
 <seealso/>
@@ -770,54 +1321,140 @@ Owner of the class instance.
 </element>
 
 <!-- published -->
-<element name="TLazIntegerEdit.Value" link="#lazcontrols.laznumedit.TLazIntegerEditGen.Value"/>
+<element name="TLazIntegerEdit.Value" 
+	link="#lazcontrols.laznumedit.TLazIntegerEditGen.Value"/>
 
-<element name="TLazIntegerEdit.MinValue" link="#lazcontrols.laznumedit.TLazIntegerEditGen.MinValue"/>
+<element name="TLazIntegerEdit.MinValue" 
+	link="#lazcontrols.laznumedit.TLazIntegerEditGen.MinValue"/>
 
-<element name="TLazIntegerEdit.MaxValue" link="#lazcontrols.laznumedit.TLazIntegerEditGen.MaxValue"/>
+<element name="TLazIntegerEdit.MaxValue" 
+	link="#lazcontrols.laznumedit.TLazIntegerEditGen.MaxValue"/>
 
-<element name="TLazIntegerEdit.DisplayBase" link="#lazcontrols.laznumedit.TLazIntegerEditGen.DisplayBase"/>
+<element name="TLazIntegerEdit.DisplayBase" 
+	link="#lazcontrols.laznumedit.TLazIntegerEditGen.DisplayBase"/>
 
-<element name="TLazIntegerEdit.SetDecimalKeys" link="#lazcontrols.TLazIntegerEditGen.SetDecimalKeys"/>
+<element name="TLazIntegerEdit.SetDecimalKeys" 
+	link="#lazcontrols.laznumedit.TLazIntegerEditGen.SetDecimalKeys"/>
 
-<element name="TLazIntegerEdit.HexIndicator" link="#lazcontrols.TLazIntegerEditGen.HexIndicator"/>
+<element name="TLazIntegerEdit.HexIndicator">
+<short>
+Contains the prefix displayed in the control when the value is displayed in hexadecimal format (DisplayBase = 16).
+</short>
+<descr>
+<p>
+HexIndicator contains the prefix displayed in the edit control when 
+DisplayBase is set to 16 for hexadecimal format. The default value for the 
+property is '$' as assigned in the _Init method in the base class. Changing 
+the value for the property causes the text displayed on the control to be 
+converted and re-encoded when DisplayBase is 16.
+</p>
+<p>
+Use BinIndicator or OctIndicator for the prefix used for base-2 and base-8 
+respectively.
+</p>
+</descr>
+<seealso>
+<link id="TLazIntegerEdit.DisplayBase"/>
+<link id="TLazIntegerEdit.BinIndicator"/>
+<link id="TLazIntegerEdit.OctIndicator"/>
+<link id="TLazIntegerEdit.Create"/>
+<link id="TLazIntegerEditGen._Init"/>
+</seealso>
+</element>
 
-<element name="TLazIntegerEdit.SetHexKeys" link="#lazcontrols.TLazIntegerEditGen.SetHexKeys"/>
+<element name="TLazIntegerEdit.SetHexKeys">
+<short>
+Contains the character(s) which cause the edit control to be displayed using 
+the hexadecimal (base-16) radix.
+</short>
+<descr>
+<p>
+A default value is not assigned for the property. The ToggleHexKeys property 
+is used to toggle between Hexadecimal (base-16) and Decimal (base-10) 
+instead. When a value is assigned to ToggleHexKeys, those keys take precedence 
+over the keys in SetHexKey. The value is used, when applicable, in the 
+_KeyPress handler for the control.
+</p>
+</descr>
+<seealso>
+<link id="TLazIntegerEdit.ToggleHexKeys"/>
+<link id="TLazIntegerEdit.DisplayBase"/>
+<link id="TLazIntegerEditGen._KeyPress"/>
+<link id="TLazIntegerEditGen.SetHexKeys"/>
+</seealso>
+</element>
 
-<element name="TLazIntegerEdit.ToggleHexKeys" link="#lazcontrols.TLazIntegerEditGen.ToggleHexKeys"/>
+<!-- topics linked to the generic base class -->
+<!-- 
+	TODO: Replace with actual content. 
+		FPDoc will not link to the topics in the generic base class. 
+		It says the ancestor is TObject and not TCustomEdit, so the 
+		links are ignored during doc generation.
+-->
+<element name="TLazIntegerEdit.ToggleHexKeys" 
+	link="#lazcontrols.laznumedit.TLazIntegerEditGen.ToggleHexKeys"/>
 
-<element name="TLazIntegerEdit.OctIndicator" link="#lazcontrols.TLazIntegerEditGen.OctIndicator"/>
+<element name="TLazIntegerEdit.OctIndicator" 
+	link="#lazcontrols.laznumedit.TLazIntegerEditGen.OctIndicator"/>
 
-<element name="TLazIntegerEdit.SetOctKeys" link="#lazcontrols.TLazIntegerEditGen.SetOctKeys"/>
+<element name="TLazIntegerEdit.SetOctKeys" 
+	link="#lazcontrols.laznumedit.TLazIntegerEditGen.SetOctKeys"/>
 
-<element name="TLazIntegerEdit.ToggleOctKeys" link="#lazcontrols.TLazIntegerEditGen.ToggleOctKeys"/>
+<element name="TLazIntegerEdit.ToggleOctKeys" 
+	link="#lazcontrols.laznumedit.TLazIntegerEditGen.ToggleOctKeys"/>
 
-<element name="TLazIntegerEdit.BinIndicator" link="#lazcontrols.TLazIntegerEditGen.BinIndicator"/>
+<element name="TLazIntegerEdit.BinIndicator" 
+	link="#lazcontrols.laznumedit.TLazIntegerEditGen.BinIndicator"/>
 
-<element name="TLazIntegerEdit.SetBinKeys" link="#lazcontrols.TLazIntegerEditGen.SetBinKeys"/>
+<element name="TLazIntegerEdit.SetBinKeys" 
+	link="#lazcontrols.laznumedit.TLazIntegerEditGen.SetBinKeys"/>
 
-<element name="TLazIntegerEdit.ToggleBinKeys" link="#lazcontrols.TLazIntegerEditGen.ToggleBinKeys"/>
+<element name="TLazIntegerEdit.ToggleBinKeys" 
+	link="#lazcontrols.laznumedit.TLazIntegerEditGen.ToggleBinKeys"/>
 
-<element name="TLazIntegerEdit.OnBaseChange" link="#lazcontrols.TLazIntegerEditGen.OnBaseChange"/>
+<element name="TLazIntegerEdit.OnBaseChange" 
+	link="#lazcontrols.laznumedit.TLazIntegerEditGen.OnBaseChange"/>
 
-<element name="TLazIntegerEdit.AllowMinus" link="#lazcontrols.TLazIntegerEditGen.AllowMinus"/>
+<element name="TLazIntegerEdit.AllowMinus" 
+	link="#lazcontrols.laznumedit.TLazIntegerEditGen.AllowMinus"/>
 
-<element name="TLazIntegerEdit.AllowPlus" link="#lazcontrols.TLazIntegerEditGen.AllowPlus"/>
+<element name="TLazIntegerEdit.AllowPlus" 
+	link="#lazcontrols.laznumedit.TLazIntegerEditGen.AllowPlus"/>
 
+<!-- topics linked to inherited topics -->
 <!-- public -->
-<element name="TLazIntegerEdit.AutoSelected" link="#lcl.stdctrls.TCustomEdit.AutoSelected"/>
+<element name="TLazIntegerEdit.AutoSelected" 
+	link="#lcl.stdctrls.TCustomEdit.AutoSelected"/>
 
 <!-- published -->
 <element name="TLazIntegerEdit.Align" link="#lcl.controls.TControl.Align"/>
-<element name="TLazIntegerEdit.Alignment" link="#lcl.stdctrls.TCustomEdit.Alignment"/>
+
+<element name="TLazIntegerEdit.Alignment" 
+	link="#lcl.stdctrls.TCustomEdit.Alignment"/>
+
 <element name="TLazIntegerEdit.Anchors" link="#lcl.controls.TControl.Anchors"/>
-<element name="TLazIntegerEdit.AutoSize" link="#lcl.stdctrls.TCustomEdit.AutoSize"/>
-<element name="TLazIntegerEdit.AutoSelect" link="#lcl.stdctrls.TCustomEdit.AutoSelect"/>
-<element name="TLazIntegerEdit.BidiMode" link="#lcl.controls.TControl.BidiMode"/>
-<element name="TLazIntegerEdit.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
-<element name="TLazIntegerEdit.BorderStyle" link="#lcl.stdctrls.TCustomEdit.BorderStyle"/>
-<element name="TLazIntegerEdit.CharCase" link="#lcl.stdctrls.TCustomEdit.CharCase"/>
-<element name="TLazIntegerEdit.Color" link="#lcl.controls.TControl.Color"/>
+
+<element name="TLazIntegerEdit.AutoSize" 
+	link="#lcl.stdctrls.TCustomEdit.AutoSize"/>
+
+<element name="TLazIntegerEdit.AutoSelect" 
+	link="#lcl.stdctrls.TCustomEdit.AutoSelect"/>
+
+<element name="TLazIntegerEdit.BidiMode" 
+	link="#lcl.controls.TControl.BidiMode"/>
+
+<element name="TLazIntegerEdit.BorderSpacing" 
+	link="#lcl.controls.TControl.BorderSpacing"/>
+
+<element name="TLazIntegerEdit.BorderStyle" 
+	link="#lcl.stdctrls.TCustomEdit.BorderStyle"/>
+
+<element name="TLazIntegerEdit.CharCase" 
+	link="#lcl.stdctrls.TCustomEdit.CharCase"/>
+
+<element name="TLazIntegerEdit.Color" 
+	link="#lcl.controls.TControl.Color"/>
+
 <element name="TLazIntegerEdit.Constraints" link="#lcl.controls.TControl.Constraints"/>
 <element name="TLazIntegerEdit.DoubleBuffered" link="#lcl.controls.TWinControl.DoubleBuffered"/>
 <element name="TLazIntegerEdit.DragCursor" link="#lcl.controls.TControl.DragCursor"/>
@@ -864,7 +1501,7 @@ Owner of the class instance.
 <element name="TLazIntegerEdit.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
 <element name="TLazIntegerEdit.OnMouseWheel" link="#lcl.controls.TControl.OnMouseWheel"/>
 <element name="TLazIntegerEdit.OnMouseWheelDown" link="#lcl.controls.TControl.OnMouseWheelDown"/>
-<element name="TLazIntegerEdit.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUpDown"/>
+<element name="TLazIntegerEdit.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
 <element name="TLazIntegerEdit.OnResize" link="#lcl.controls.TControl.OnResize"/>
 <element name="TLazIntegerEdit.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
 <element name="TLazIntegerEdit.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
