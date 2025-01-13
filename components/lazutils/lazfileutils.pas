@@ -544,7 +544,7 @@ var
   theString: CFStringRef;
   Mutable: CFMutableStringRef;
 begin
-  theString:=CFStringCreateWithCString(nil, Pointer(FileName), kCFStringEncodingUTF8);
+  theString:=CFStringCreateWithCString(nil, pchar(FileName), kCFStringEncodingUTF8);
   Mutable := CFStringCreateMutableCopy(nil, 0, theString);
   if (NForm<0) or (NForm>3) then NForm := kCFStringNormalizationFormC;
   CFStringNormalize(Mutable, NForm);
