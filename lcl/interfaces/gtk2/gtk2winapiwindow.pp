@@ -31,7 +31,7 @@ uses
   // RTL
   SysUtils, glib2, gdk2, gtk2,
   // LCL
-  LCLProc, Gtk2Extra, Controls, Gtk2Proc, Gtk2Def;
+  Gtk2Extra, Controls, LazLoggerBase, Gtk2Proc, Gtk2Def;
 
 { $Define VerboseCaret}
 // the gtk has a function to draw the cursor, but it does not support xor
@@ -557,6 +557,10 @@ var
   WidgetStyle: PGTKStyle;
   HasFocus: boolean;
   WidgetIsPainting: Boolean;
+  { $IFDEF VerboseCaret}
+  Info: PWidgetInfo;
+  LCLObj: TObject;
+  { $ENDIF}
 {$IFDEF Has_gtk_draw_insertion_cursor}
   location: TGdkRectangle;
 {$ENDIF}
@@ -613,7 +617,9 @@ begin
       Invalidated := false;
 
     {$IFDEF VerboseCaret}
-    DebugLn(['GTKAPIWidgetClient_DrawCaret START Client=',DbgS(Client),' Timer=',Timer,' Blink=',Blinking,' BlinkHide=',BlinkHide,' Visible=',Visible,' ShowHideOnFocus=',ShowHideOnFocus,' Focus=',gtk_widget_has_focus(Widget),' IsDrawn=',IsDrawn,' W=',Width,' H=',Height,' WidgetIsPainting=',WidgetIsPainting]);
+    Info:=GetWidgetInfo(Widget);
+    LCLObj:=Info^.LCLObject;
+    DebugLn(['GTKAPIWidgetClient_DrawCaret START Client=',DbgS(Client),' LCLObj=',DbgSName(LCLObj),' Timer=',Timer,' Blink=',Blinking,' BlinkHide=',BlinkHide,' Visible=',Visible,' ShowHideOnFocus=',ShowHideOnFocus,' Focus=',HasFocus,' IsDrawn=',IsDrawn,' W=',Width,' H=',Height,' WidgetIsPainting=',WidgetIsPainting]);
     {$ENDIF}
 
     if IsDrawn and
