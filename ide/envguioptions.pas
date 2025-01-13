@@ -459,6 +459,7 @@ var
 begin
   FComponentTreeHeight := -1;
   FInfoBoxHeight := -1;
+  FShowComponentTree := True;
   FShowInfoBox := True;
   for I in TObjectInspectorPage do
     SplitterX[I] := -1;
