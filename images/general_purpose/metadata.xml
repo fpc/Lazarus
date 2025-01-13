@@ -12122,8 +12122,10 @@
       <keywords>
         <keyword>brush</keyword>
         <keyword>color</keyword>
+        <keyword>draw</keyword>
         <keyword>edit</keyword>
         <keyword>font</keyword>
+        <keyword>paint</keyword>
         <keyword>text</keyword>
       </keywords>
     </icon>
@@ -12131,8 +12133,10 @@
       <keywords>
         <keyword>brush</keyword>
         <keyword>color</keyword>
+        <keyword>draw</keyword>
         <keyword>edit</keyword>
         <keyword>font</keyword>
+        <keyword>paint</keyword>
         <keyword>text</keyword>
       </keywords>
     </icon>
@@ -12140,8 +12144,10 @@
       <keywords>
         <keyword>brush</keyword>
         <keyword>color</keyword>
+        <keyword>draw</keyword>
         <keyword>edit</keyword>
         <keyword>font</keyword>
+        <keyword>paint</keyword>
         <keyword>text</keyword>
       </keywords>
     </icon>
@@ -12149,8 +12155,10 @@
       <keywords>
         <keyword>brush</keyword>
         <keyword>color</keyword>
+        <keyword>draw</keyword>
         <keyword>edit</keyword>
         <keyword>font</keyword>
+        <keyword>paint</keyword>
         <keyword>text</keyword>
       </keywords>
     </icon>
@@ -12158,8 +12166,10 @@
       <keywords>
         <keyword>brush</keyword>
         <keyword>color</keyword>
+        <keyword>draw</keyword>
         <keyword>edit</keyword>
         <keyword>font</keyword>
+        <keyword>paint</keyword>
         <keyword>text</keyword>
       </keywords>
     </icon>
@@ -12167,8 +12177,10 @@
       <keywords>
         <keyword>brush</keyword>
         <keyword>color</keyword>
+        <keyword>draw</keyword>
         <keyword>edit</keyword>
         <keyword>font</keyword>
+        <keyword>paint</keyword>
         <keyword>text</keyword>
       </keywords>
     </icon>
@@ -17132,42 +17144,54 @@
       <keywords>
         <keyword>brush</keyword>
         <keyword>color</keyword>
+        <keyword>draw</keyword>
         <keyword>edit</keyword>
+        <keyword>paint</keyword>
       </keywords>
     </icon>
     <icon filename="Paint_01_24.png" width="24" height="24" style="flat">
       <keywords>
         <keyword>brush</keyword>
         <keyword>color</keyword>
+        <keyword>draw</keyword>
         <keyword>edit</keyword>
+        <keyword>paint</keyword>
       </keywords>
     </icon>
     <icon filename="Paint_01_32.png" width="32" height="32" style="flat">
       <keywords>
         <keyword>brush</keyword>
         <keyword>color</keyword>
+        <keyword>draw</keyword>
         <keyword>edit</keyword>
+        <keyword>paint</keyword>
       </keywords>
     </icon>
     <icon filename="Paint_01_36.png" width="36" height="36" style="flat">
       <keywords>
         <keyword>brush</keyword>
         <keyword>color</keyword>
+        <keyword>draw</keyword>
         <keyword>edit</keyword>
+        <keyword>paint</keyword>
       </keywords>
     </icon>
     <icon filename="Paint_01_48.png" width="48" height="48" style="flat">
       <keywords>
         <keyword>brush</keyword>
         <keyword>color</keyword>
+        <keyword>draw</keyword>
         <keyword>edit</keyword>
+        <keyword>paint</keyword>
       </keywords>
     </icon>
     <icon filename="Paint_01_64.png" width="64" height="64" style="flat">
       <keywords>
         <keyword>brush</keyword>
         <keyword>color</keyword>
+        <keyword>draw</keyword>
         <keyword>edit</keyword>
+        <keyword>paint</keyword>
       </keywords>
     </icon>
     <icon filename="Paint_02_16.png" width="16" height="16" style="outline">
@@ -27115,6 +27139,7 @@
     <icon filename="ovl_Brush_01_16.png" width="16" height="16" style="classic">
       <keywords>
         <keyword>color</keyword>
+        <keyword>draw</keyword>
         <keyword>overlay</keyword>
         <keyword>paint</keyword>
         <keyword>pen</keyword>
@@ -27123,6 +27148,7 @@
     <icon filename="ovl_Brush_01_24.png" width="24" height="24" style="classic">
       <keywords>
         <keyword>color</keyword>
+        <keyword>draw</keyword>
         <keyword>overlay</keyword>
         <keyword>paint</keyword>
         <keyword>pen</keyword>
@@ -27131,6 +27157,7 @@
     <icon filename="ovl_Brush_01_32.png" width="32" height="32" style="classic">
       <keywords>
         <keyword>color</keyword>
+        <keyword>draw</keyword>
         <keyword>overlay</keyword>
         <keyword>paint</keyword>
         <keyword>pen</keyword>
@@ -27139,6 +27166,7 @@
     <icon filename="ovl_Brush_01_36.png" width="36" height="36" style="classic">
       <keywords>
         <keyword>color</keyword>
+        <keyword>draw</keyword>
         <keyword>overlay</keyword>
         <keyword>paint</keyword>
         <keyword>pen</keyword>
@@ -27147,6 +27175,7 @@
     <icon filename="ovl_Brush_01_48.png" width="48" height="48" style="classic">
       <keywords>
         <keyword>color</keyword>
+        <keyword>draw</keyword>
         <keyword>overlay</keyword>
         <keyword>paint</keyword>
         <keyword>pen</keyword>
@@ -27155,6 +27184,7 @@
     <icon filename="ovl_Brush_01_64.png" width="64" height="64" style="classic">
       <keywords>
         <keyword>color</keyword>
+        <keyword>draw</keyword>
         <keyword>overlay</keyword>
         <keyword>paint</keyword>
         <keyword>pen</keyword>
@@ -28634,6 +28664,306 @@
         <keyword>settings</keyword>
         <keyword>setup</keyword>
         <keyword>wrench</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Color_04_16.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>circle</keyword>
+        <keyword>color</keyword>
+        <keyword>draw</keyword>
+        <keyword>paint</keyword>
+        <keyword>pick</keyword>
+        <keyword>select</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Color_04_24.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>circle</keyword>
+        <keyword>color</keyword>
+        <keyword>draw</keyword>
+        <keyword>paint</keyword>
+        <keyword>pick</keyword>
+        <keyword>select</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Color_04_32.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>circle</keyword>
+        <keyword>color</keyword>
+        <keyword>draw</keyword>
+        <keyword>paint</keyword>
+        <keyword>pick</keyword>
+        <keyword>select</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Color_04_36.png" width="36" height="36" style="flat">
+      <keywords>
+        <keyword>circle</keyword>
+        <keyword>color</keyword>
+        <keyword>draw</keyword>
+        <keyword>paint</keyword>
+        <keyword>pick</keyword>
+        <keyword>select</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Color_04_48.png" width="48" height="48" style="flat">
+      <keywords>
+        <keyword>circle</keyword>
+        <keyword>color</keyword>
+        <keyword>draw</keyword>
+        <keyword>paint</keyword>
+        <keyword>pick</keyword>
+        <keyword>select</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Color_04_64.png" width="64" height="64" style="flat">
+      <keywords>
+        <keyword>circle</keyword>
+        <keyword>color</keyword>
+        <keyword>draw</keyword>
+        <keyword>paint</keyword>
+        <keyword>pick</keyword>
+        <keyword>select</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Paint_03_16.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>color</keyword>
+        <keyword>draw</keyword>
+        <keyword>paint</keyword>
+        <keyword>palette</keyword>
+        <keyword>select</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Paint_03_24.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>color</keyword>
+        <keyword>draw</keyword>
+        <keyword>paint</keyword>
+        <keyword>palette</keyword>
+        <keyword>select</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Paint_03_32.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>color</keyword>
+        <keyword>draw</keyword>
+        <keyword>paint</keyword>
+        <keyword>palette</keyword>
+        <keyword>select</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Paint_03_36.png" width="36" height="36" style="flat">
+      <keywords>
+        <keyword>color</keyword>
+        <keyword>draw</keyword>
+        <keyword>paint</keyword>
+        <keyword>palette</keyword>
+        <keyword>select</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Paint_03_48.png" width="48" height="48" style="flat">
+      <keywords>
+        <keyword>color</keyword>
+        <keyword>draw</keyword>
+        <keyword>paint</keyword>
+        <keyword>palette</keyword>
+        <keyword>select</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Paint_03_64.png" width="64" height="64" style="flat">
+      <keywords>
+        <keyword>color</keyword>
+        <keyword>draw</keyword>
+        <keyword>paint</keyword>
+        <keyword>palette</keyword>
+        <keyword>select</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Setup_09_16.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Setup_09_24.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Setup_09_32.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Setup_09_36.png" width="36" height="36" style="flat">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Setup_09_48.png" width="48" height="48" style="flat">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Setup_09_64.png" width="64" height="64" style="flat">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Target_02_16.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>target</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Target_02_24.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>target</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Target_02_32.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>target</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Target_02_36.png" width="36" height="36" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>target</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Target_02_48.png" width="48" height="48" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>target</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Target_02_64.png" width="64" height="64" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>target</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Window_18_16.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>delete</keyword>
+        <keyword>form</keyword>
+        <keyword>minus</keyword>
+        <keyword>remove</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Window_18_24.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>delete</keyword>
+        <keyword>form</keyword>
+        <keyword>minus</keyword>
+        <keyword>remove</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Window_18_32.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>delete</keyword>
+        <keyword>form</keyword>
+        <keyword>minus</keyword>
+        <keyword>remove</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Window_18_36.png" width="36" height="36" style="flat">
+      <keywords>
+        <keyword>delete</keyword>
+        <keyword>form</keyword>
+        <keyword>minus</keyword>
+        <keyword>remove</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Window_18_48.png" width="48" height="48" style="flat">
+      <keywords>
+        <keyword>delete</keyword>
+        <keyword>form</keyword>
+        <keyword>minus</keyword>
+        <keyword>remove</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Window_18_64.png" width="64" height="64" style="flat">
+      <keywords>
+        <keyword>delete</keyword>
+        <keyword>form</keyword>
+        <keyword>minus</keyword>
+        <keyword>remove</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Window_19_16.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>form</keyword>
+        <keyword>plus</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Window_19_24.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>form</keyword>
+        <keyword>plus</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Window_19_32.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>form</keyword>
+        <keyword>plus</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Window_19_36.png" width="36" height="36" style="flat">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>form</keyword>
+        <keyword>plus</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Window_19_48.png" width="48" height="48" style="flat">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>form</keyword>
+        <keyword>plus</keyword>
+        <keyword>window</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Window_19_64.png" width="64" height="64" style="flat">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>form</keyword>
+        <keyword>plus</keyword>
+        <keyword>window</keyword>
       </keywords>
     </icon>
   </icons>

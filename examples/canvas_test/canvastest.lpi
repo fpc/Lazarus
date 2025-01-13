@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="9"/>
+    <Version Value="12"/>
     <General>
+      <Flags>
+        <CompatibilityMode Value="True"/>
+      </Flags>
       <SessionStorage Value="InProjectDir"/>
-      <MainUnit Value="0"/>
       <UseXPManifest Value="True"/>
       <Icon Value="0"/>
     </General>
     <VersionInfo>
       <Language Value=""/>
       <CharSet Value=""/>
-      <StringTable ProductVersion=""/>
     </VersionInfo>
     <BuildModes Count="3">
       <Item1 Name="default" Default="True"/>
@@ -29,9 +30,6 @@
         </CompilerOptions>
       </Item2>
       <Item3 Name="Cocoa">
-        <MacroValues Count="1">
-          <Macro1 Name="LCLWidgetType" Value="cocoa"/>
-        </MacroValues>
         <CompilerOptions>
           <Version Value="11"/>
           <SearchPaths>
@@ -47,14 +45,12 @@
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
-      <IgnoreBinaries Value="False"/>
-      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
-      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
     </PublishOptions>
     <RunParams>
-      <local>
-        <FormatVersion Value="1"/>
-      </local>
+      <FormatVersion Value="2"/>
+      <Modes Count="1">
+        <Mode0 Name="default"/>
+      </Modes>
     </RunParams>
     <RequiredPackages Count="1">
       <Item1>
@@ -72,7 +68,6 @@
         <ComponentName Value="frmCanvasTest"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="canvastestunit"/>
       </Unit1>
       <Unit2>
         <Filename Value="pentest.pas"/>
@@ -111,7 +106,6 @@
         <ComponentName Value="frmEllipse"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="ellipseunit"/>
       </Unit7>
       <Unit8>
         <Filename Value="screenshotunit.pas"/>
@@ -139,7 +133,6 @@
         <ComponentName Value="frmSystemColors"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="systemcolorstest"/>
       </Unit11>
     </Units>
   </ProjectOptions>
@@ -149,6 +142,9 @@
       <IncludeFiles Value="$(ProjOutDir)"/>
     </SearchPaths>
     <Linking>
+      <Debugging>
+        <DebugInfoType Value="dsDwarf3"/>
+      </Debugging>
       <Options>
         <LinkerOptions Value="-framework Qt4Intf -lobjc -framework Foundation -framework QtGui -framework QtCore"/>
         <Win32>
