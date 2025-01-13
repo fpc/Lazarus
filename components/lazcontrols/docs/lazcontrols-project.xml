@@ -48,14 +48,14 @@
       </descriptions>
       <imports>
         <!--
-        Import prefixes differ between output formats. Pass them as command line arguments for HTML.
+        Import prefixes differ between output formats. Pass them as command line arguments.
         -->
-        <!-- for CHM -->
+        <!-- for CHM
         <import file="../../../docs/chm/lcl.xct" prefix="ms-its:lcl.chm::/"/>
         <import file="../../../docs/chm/lazutils.xct" prefix="ms-its:lazutils.chm::/"/>
         <import file="../../../docs/chm/fcl.xct" prefix="ms-its:fcl.chm::/"/>
         <import file="../../../docs/chm/rtl.xct" prefix="ms-its:rtl.chm::/"/>
-
+				-->
         <!-- for HTML
         <import file="../../../docs/chm/lcl.xct" prefix="../lcl/"/>
         <import file="../../../docs/chm/lazutils.xct" prefix="../lazutils/"/>

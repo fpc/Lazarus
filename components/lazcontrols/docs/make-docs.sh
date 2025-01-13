@@ -67,7 +67,10 @@ echo -e "\n\e[7m LazControls package \e[0m";
 # output to current directory
 echo "Generating CHM help..."
 #$fpdocpgm --project=lazcontrols-project.xml --format=chm --footer=@lazcontrols-chm-footer.xml --import=$chmdir/rtl.xct,ms-its:rtl.chm::/ --import=$chmdir/fcl.xct,ms-its:fcl.chm::/ --import=$chmdir/lcl.xct,ms-its:lcl.chm::/ --import=$chmdir/lazutils.xct,ms-its:lazutils.chm::/ 2>&1 | tee ./build_chm.log
-$fpdocpgm --project=lazcontrols-project.xml --format=chm --footer=@lazcontrols-chm-footer.xml 2>&1 | tee ./build_chm.log
+$fpdocpgm --project=lazcontrols-project.xml --format=chm --footer=@lazcontrols-chm-footer.xml \
+  --import=$chmdir/rtl.xct,ms-its:rtl.chm::/ --import=$chmdir/fcl.xct,ms-its:fcl.chm::/ \
+  --import=$chmdir/lcl.xct,ms-its:lcl.chm::/ --import=$chmdir/lazutils.xct,ms-its:lazutils.chm::/ \
+  2>&1 | tee ./build_chm.log
 echo ""
 
 # generate html format
