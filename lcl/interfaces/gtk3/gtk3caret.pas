@@ -76,7 +76,12 @@ begin
     cr := TGtk3DeviceContext(W.Context).pcr;
   end;
   if Not AHaveContext then
-    cr := gdk_cairo_create(gtk_widget_get_window(FOwner));
+  begin
+    if Gtk3IsGdkWindow(gtk_widget_get_window(FOwner)) then
+      cr := gdk_cairo_create(gtk_widget_get_window(FOwner))
+    else
+      exit;
+  end;
   try
     //writeln('Caret: BlinkState=',FBlinkState,' HaveContext=',AHaveContext,' X=',FPosX,' Y=',FPosY,' Self=',PtrUInt(Self));
     if FBlinkState then
