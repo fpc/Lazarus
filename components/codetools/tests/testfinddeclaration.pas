@@ -163,7 +163,10 @@ type
     procedure TestFindDeclaration_FindFPCSrcNameSpacedUnits;
 
     // unit namespaces
-    procedure TestFindDeclaration_LocalBeforeUses;
+    procedure TestFindDeclaration_ProgLocalVsUses;
+    procedure TestFindDeclaration_UnitIntfVsUses;
+    procedure TestFindDeclaration_UnitImplVsIntfUses;
+    procedure TestFindDeclaration_UnitImplVsImplUses;
 
     // directives
     procedure TestFindDeclaration_DirectiveWithIn;
@@ -1727,7 +1730,7 @@ begin
   Traverse(FPCSrcDir,0,-1);
 end;
 
-procedure TTestFindDeclaration.TestFindDeclaration_LocalBeforeUses;
+procedure TTestFindDeclaration.TestFindDeclaration_ProgLocalVsUses;
 var
   DotsUnit: TCodeBuffer;
 begin
@@ -1736,11 +1739,120 @@ begin
     DotsUnit:=CodeToolBoss.CreateFile('nsA.dots.pp');
     DotsUnit.Source:='unit nsa.dots;'+LineEnding
       +'interface'+LineEnding
+      +'type Size = word;'+LineEnding
       +'implementation'+LineEnding
       +'end.';
 
     StartProgram;
     Add([
+    'uses nsA.dots;',
+    'type',
+    '  TWing = record',
+    '    Size: word;',
+    '  end;',
+    '  TBird = record',
+    '    DoTs: TWing;',
+    '  end;',
+    'var NSA: TBird;',
+    'begin',
+    '  NSA.dots.Size{declaration:twing.Size}:=3',
+    'end.',
+    '']);
+    FindDeclarations(Code);
+  finally
+    if DotsUnit<>nil then
+      DotsUnit.IsDeleted:=true;
+  end;
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_UnitIntfVsUses;
+var
+  DotsUnit: TCodeBuffer;
+begin
+  DotsUnit:=nil;
+  try
+    DotsUnit:=CodeToolBoss.CreateFile('nsA.dots.pp');
+    DotsUnit.Source:='unit nsa.dots;'+LineEnding
+      +'interface'+LineEnding
+      +'type Size = word;'+LineEnding
+      +'implementation'+LineEnding
+      +'end.';
+
+    StartUnit;
+    Add([
+    'uses nsA.dots;',
+    'type',
+    '  TWing = record',
+    '    Size: word;',
+    '  end;',
+    '  TBird = record',
+    '    DoTs: TWing;',
+    '  end;',
+    'var NSA: TBird;',
+    'implementation',
+    'begin',
+    '  NSA.dots.Size{declaration:test1.twing.Size}:=3',
+    'end.',
+    '']);
+    FindDeclarations(Code);
+  finally
+    if DotsUnit<>nil then
+      DotsUnit.IsDeleted:=true;
+  end;
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_UnitImplVsIntfUses;
+var
+  DotsUnit: TCodeBuffer;
+begin
+  DotsUnit:=nil;
+  try
+    DotsUnit:=CodeToolBoss.CreateFile('nsA.dots.pp');
+    DotsUnit.Source:='unit nsa.dots;'+LineEnding
+      +'interface'+LineEnding
+      +'type Size = word;'+LineEnding
+      +'implementation'+LineEnding
+      +'end.';
+
+    StartUnit;
+    Add([
+    'uses nsA.dots;',
+    'implementation',
+    'type',
+    '  TWing = record',
+    '    Size: word;',
+    '  end;',
+    '  TBird = record',
+    '    DoTs: TWing;',
+    '  end;',
+    'var NSA: TBird;',
+    'begin',
+    '  NSA.dots.Size{declaration:twing.Size}:=3',
+    'end.',
+    '']);
+    FindDeclarations(Code);
+  finally
+    if DotsUnit<>nil then
+      DotsUnit.IsDeleted:=true;
+  end;
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_UnitImplVsImplUses;
+var
+  DotsUnit: TCodeBuffer;
+begin
+  DotsUnit:=nil;
+  try
+    DotsUnit:=CodeToolBoss.CreateFile('nsA.dots.pp');
+    DotsUnit.Source:='unit nsa.dots;'+LineEnding
+      +'interface'+LineEnding
+      +'type Size = word;'+LineEnding
+      +'implementation'+LineEnding
+      +'end.';
+
+    StartUnit;
+    Add([
+    'implementation',
     'uses nsA.dots;',
     'type',
     '  TWing = record',
