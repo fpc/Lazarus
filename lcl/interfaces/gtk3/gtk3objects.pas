@@ -1619,7 +1619,7 @@ procedure TGtk3DeviceContext.ApplyBrush;
 begin
   if FBkMode = TRANSPARENT then
   begin
-    DebugLn('TGtk3DeviceContext.ApplyBrush setting transparent source');
+    // DebugLn('TGtk3DeviceContext.ApplyBrush setting transparent source');
     //cairo_set_source_surface(Widget, CairoSurface, 0 , 0);
   end else
     SetSourceColor(FCurrentBrush.Color);
@@ -1771,6 +1771,7 @@ begin
 
     ACairo := gdk_cairo_create(gdk_get_default_root_window);
     gdk_cairo_get_clip_rectangle(ACairo, @ARect);
+    cairo_destroy(ACairo);
     CairoSurface := cairo_image_surface_create(CAIRO_FORMAT_ARGB32, ARect.width, ARect.height);
     FCairo := cairo_create(CairoSurface);
 
@@ -1786,7 +1787,10 @@ begin
       H := gtk_widget_get_allocated_height(AWidget);
       if W <= 0 then W := 1;
       if H <= 0 then H := 1;
-      FCairo := gdk_cairo_create(gtk_widget_get_window(AWidget));
+      CairoSurface := cairo_image_surface_create(CAIRO_FORMAT_ARGB32, W, H);
+      FOwnsSurface := True;
+      ParentPixmap := gdk_pixbuf_get_from_surface(CairoSurface, 0, 0, W, H);
+      FCairo := cairo_create(CairoSurface);
     end else
     begin
       W := gtk_widget_get_allocated_width(AWidget);
@@ -1827,6 +1831,7 @@ begin
   FOwnsSurface := False;
   FCanRelease := False;
   FOwnsCairo := True;
+
   FCurrentTextColor := clBlack;
   //AWindow^.get_geometry(@x, @y, @w, @h);
   // ParentPixmap := gdk_pixbuf_get_from_window(AWindow, x, y, w, h);
