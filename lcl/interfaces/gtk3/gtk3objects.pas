@@ -2313,7 +2313,8 @@ begin
 
     applyBrush;
     cairo_rectangle(pcr, x + PixelOffset, y + PixelOffset, w - 1, h - 1);
-    cairo_fill_preserve(pcr);
+    if CurrentBrush.Style <> BS_NULL then
+      cairo_fill_preserve(pcr);
 
     // must paint border, filling is not enough
     SetSourceColor(FCurrentBrush.Color);
