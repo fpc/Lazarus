@@ -199,6 +199,7 @@ type
   TGtk3DeviceContext = class (TGtk3Object)
   private
     FBkColor:TColorRef;
+    FBgBrush: TGtk3Brush; //solid brush created when BkColor is setted up.
     FBrush: TGtk3Brush;
     FFont: TGtk3Font;
     FvImage: TGtk3Image;
@@ -260,7 +261,7 @@ type
     function getPixel(x, y: Integer): TColor;
     procedure drawRect(x1, y1, w, h: Integer; const AFill, ABorder: Boolean);
     procedure drawRoundRect(x, y, w, h, rx, ry: Integer);
-    procedure drawText(x, y: Integer; AText: PChar; ALen: Integer);
+    procedure drawText(x, y: Integer; AText: PChar; ALen: Integer; const ABgFilled: boolean);
     procedure drawEllipse(x, y, w, h: Integer; AFill, ABorder: Boolean);
     procedure drawSurface(targetRect: PRect; Surface: Pcairo_surface_t; sourceRect: PRect;
       mask: PGdkPixBuf; maskRect: PRect);
@@ -295,6 +296,7 @@ type
     procedure set_antialiasing(aamode:boolean);
     property BkMode: integer read FBkMode write FBkMode;
     property BkColor: TColorRef read GetBkColor write SetBkColor;
+    property BgBrush: TGtk3Brush read FBgBrush; {bgBrush is created when SetBk is called, otherwise is nil}
     property CanRelease: Boolean read FCanRelease write FCanRelease;
     property CurrentBrush: TGtk3Brush read FCurrentBrush write FCurrentBrush;
     property CurrentFont: TGtk3Font read FCurrentFont write FCurrentFont;
@@ -1505,6 +1507,12 @@ end;
 procedure TGtk3DeviceContext.setBkColor(AValue:TColorRef);
 begin
   FBkColor := AValue;
+  if Assigned(FBgBrush) then
+    FBgBrush.Free;
+  FBgBrush := TGtk3Brush.Create;
+  FBgBrush.Style := BS_SOLID;
+  FBgBrush.Color := ColorToRGB(FBkColor);
+  FBgBrush.Context := Self;
 end;
 
 procedure TGtk3DeviceContext.SetFont(AValue: TGtk3Font);
@@ -1911,6 +1919,7 @@ procedure TGtk3DeviceContext.CreateObjects;
 var
   Matrix: Tcairo_matrix_t;
 begin
+  FBgBrush := nil; // created on demand
   FBkMode := TRANSPARENT;
   FCurrentImage := nil;
   FCurrentRegion := nil;
@@ -1943,6 +1952,8 @@ begin
     FreeAndNil(FFont);
   if Assigned(FvImage) then
     FreeAndNil(FvImage);
+  if Assigned(FBgBrush) then
+    FreeAndNil(FBgBrush);
 end;
 
 procedure TGtk3DeviceContext.drawPixel(x, y: Integer; AColor: TColor);
@@ -2005,8 +2016,8 @@ begin
   RoundRect(x, y, w, h, rx, ry);
 end;
 
-procedure TGtk3DeviceContext.drawText(x, y: Integer; AText: PChar; ALen: Integer
-  );
+procedure TGtk3DeviceContext.drawText(x, y: Integer; AText: PChar; ALen: Integer;
+  const ABgFilled: boolean);
 var
   R, G, B: Double;
   gColor: TGdkColor;
@@ -2029,10 +2040,10 @@ begin
     //This looks like a bug in logic. eg painting TTreeView: SetBkMode(OPAQUE) BkMode is OPAQUE but currentBrush.style is bsClear
     //If we don't chech any of them text is not drawn as it should.
     //TODO: check how this case works with win32 ws.
-    UseBack := (FBkMode = OPAQUE) and (CurrentBrush.Style <> BS_NULL);
+    UseBack := not ABgFilled and (FBkMode = OPAQUE) and (CurrentBrush.Style <> BS_NULL);
     if UseBack then
     begin
-      gColor := TColorToTGDKColor(FBkColor);
+      gColor := TColorToTGDKColor(clHighlight);
       AttrList := pango_attr_list_new;
       Attr := pango_attr_background_new(gColor.red, gColor.green, gColor.blue);
       pango_attr_list_insert(AttrList, Attr);

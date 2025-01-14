@@ -1580,7 +1580,7 @@ var
       while CurCount > 0 do
       begin
         CharLen := UTF8CodepointSize(CurStr);
-        DevCtx.drawText(CurScreenX, Y, CurStr, CharLen);
+        DevCtx.drawText(CurScreenX, Y, CurStr, CharLen, True);
         inc(CurScreenX, CurDx^);
         inc(CurDx);
         inc(CurStr, CharLen);
@@ -1588,7 +1588,7 @@ var
       end;
     end
     else begin
-      DevCtx.drawText(X, Y, Str, Count);
+      DevCtx.drawText(X, Y, Str, Count, True);
     end;
   end;
 
@@ -1606,8 +1606,8 @@ begin
       cairo_rectangle(GtkDc.pcr, Rect^.Left, Rect^.Top, Rect^.Right - Rect^.Left, Rect^.Bottom - Rect^.Top);
       cairo_clip(GtkDc.pcr);
     end;
-    if Options and ETO_OPAQUE = ETO_OPAQUE then // use Color from setBkMode
-      DevCtx.fillRect(Rect, 0{HBRUSH(GtkDC.CurrentBrush)});
+    if Options and ETO_OPAQUE = ETO_OPAQUE then
+      DevCtx.fillRect(Rect, HBRUSH(DevCtx.BgBrush)); // use Color from setBkMode
 
     LineLen := FindLineLen(Str,Count);
     TopY := Y;
@@ -4174,7 +4174,7 @@ end;
 function TGtk3WidgetSet.TextOut(DC: HDC; X, Y: Integer; Str: PChar; Count: Integer): Boolean;
 begin
   {$IFDEF VerboseGtk3DeviceContext}
-  DebugLn('TGtk3WidgetSet.TextOut X=',dbgs(x),' Y=',dbgs(y),' Text=',dbgs(Str),' Count=',dbgs(Count));
+  DebugLn('TGtk3WidgetSet.TextOut X=',dbgs(x),' Y=',dbgs(y),' Text=',dbgs(Str),' Count=',dbgs(Count),' Text=',StrPas(Str));
   {$ENDIF}
   Result := False;
   if Count <= 0 then
@@ -4182,7 +4182,7 @@ begin
   if IsValidDC(DC) then
   begin
     Result := True;
-    TGtk3DeviceContext(DC).drawText(X, Y, Str, Count);
+    TGtk3DeviceContext(DC).drawText(X, Y, Str, Count, False);
   end;
 end;
 
