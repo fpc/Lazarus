@@ -1374,7 +1374,7 @@ begin
   if Assigned(brush_pattern) then
     cairo_pattern_destroy(brush_pattern);
   if Assigned(pat_buf) then
-  freeandnil(pat_buf);
+    FreeMemAndNil(pat_buf);
   inherited Destroy;
 end;
 
@@ -1390,7 +1390,7 @@ begin
   if Assigned(Self.brush_pattern) then
   begin
      cairo_pattern_destroy(brush_pattern);
-     freeandnil(pat_buf);
+     FreeMemAndNil(pat_buf);
   end;
   case TBrushStyle(Self.LogBrush.lbHatch+ord(bsHorizontal)) of
   bsHorizontal:
