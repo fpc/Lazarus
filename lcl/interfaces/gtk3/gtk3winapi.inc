@@ -2029,8 +2029,11 @@ begin
   begin
     Widget := TGtk3Widget(hWnd);
     Result := Widget.Context;
-    if Result = 0 then
-      Result := HDC(Gtk3DefaultContext);
+    if (Result = 0) then
+    begin
+      Result := HDC(TGtk3DeviceContext.Create(Widget.GetContainerWidget, False));
+      TGtk3DeviceContext(Result).CanRelease := True;
+    end;
   end else
     Result := HDC(Gtk3ScreenContext);
 end;
@@ -2043,14 +2046,6 @@ begin
   {$ENDIF}
   Result:=inherited GetDCOriginRelativeToWindow(PaintDC, WindowHandle,
     OriginDiff);
-end;
-
-function TGtk3WidgetSet.GetDesignerDC(WindowHandle: HWND): HDC;
-begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  DebugLn('WARNING: TGtk3WidgetSet.GetDesignerDC not implemented ...');
-  {$ENDIF}
-  Result:=inherited GetDesignerDC(WindowHandle);
 end;
 
 function TGtk3WidgetSet.GetDeviceCaps(DC: HDC; Index: Integer): Integer;
