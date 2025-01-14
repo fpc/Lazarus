@@ -1214,45 +1214,59 @@ Character for the key press notification.
 </short>
 </element>
 
-<!-- WIP: Here -->
 <element name="TLazIntegerEdit.Utf8KeyPress">
 <short>
-Handles UTF-8-encoded key press events for the control.
+Handles UTF-8 key press events for the control.
 </short>
 <descr>
 <p>
-Ensures that multi-byte UTF-8 characters are ignored for the control.
+Utf8KeyPress is an overridden method in TLazIntegerEdit. It calls the 
+alternate handler routine in _Utf8KeyPress (implemented in TLazIntegerEditGen) 
+to examine, handle, or preprocess the UTF-8 character. The OnUTF8KeyPress 
+event handler is signalled (when assigned). The alternate handler ensures that 
+that multi-byte UTF-8 characters are ignored for the control; the value in 
+Utf8Char is set to an empty string ('') if it contains more than 1 byte value.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TLazIntegerEditGen._Utf8KeyPress"/>
+<link id="#lcl.controls.TWinControl.Utf8KeyPress">TWinControl.Utf8KeyPress</link>
+<link id="#lcl.controls.TWinControl.OnUtf8KeyPress">TWinControl.OnUtf8KeyPress</link>
+</seealso>
 </element>
 <element name="TLazIntegerEdit.Utf8KeyPress.UTF8Key">
 <short>
-UTF-8 character for the key press notification.
+UTF-8-encoded character for the key press notification.
 </short>
 </element>
 
 <element name="TLazIntegerEdit.RealGetText">
 <short>
-Gets the text displayed in the control.
+Gets the text displayed for the control.
 </short>
 <descr>
 <p>
-Gets the value for the Text property using the handle for the control, or by 
-converting Value to the required DisplayBase when a handle has not been 
-assigned.
+RealGetText is an overridden TCaption function in TLazIntegerEdit used to get 
+the value for the control Caption. It calls the alternate handler routine 
+(_RealGetText) in TLazIntegerEditGen to get the return value. If the control 
+handle has been allocated, the inherited RealGetText method in ancestor 
+classes is called to get the return value. It the handle has not been 
+allocated, the Value property is converted to a string which includes the 
+optional prefix for the radix.
 </p>
 </descr>
 <seealso>
 <link id="TLazIntegerEdit.Value"/>
-<link id="TLazIntegerEdit.DisplayBase"/>
 <link id="TLazIntegerEdit.Text"/>
+<link id="TLazIntegerEdit.DisplayBase"/>
+<link id="TLazIntegerEditGen._RealGetText"/>
 <link id="#lcl.stdctrls.TCustomEdit.Text">TCustomEdit.Text</link>
+<link id="#lcl.controls.TControl.Caption">TControl.Caption</link>
 </seealso>
 </element>
 <element name="TLazIntegerEdit.RealGetText.Result">
 <short>
-Value for the Text property.
+Value used for the Text property.
 </short>
 </element>
 
@@ -1260,33 +1274,119 @@ Value for the Text property.
 <short>
 Updates the value in Text when the window handle is created.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+InitializeWnd is an overridden method in TLazIntegerEdit. It calls the 
+alternate routine in the generic base class (_InitializeWnd) on entry. The 
+inherited method (in TCustomEdit) is called to initialize members in the 
+widget instance including its Handle and control flag values. 
+</p>
+<p>
+InitializeWnd ensures that the Text displayed for the control is updated to 
+reflect the Value property converted to the selected DisplayBase with the 
+corresponding prefix.
+</p>
+</descr>
+<seealso>
+<link id="TLazIntegerEditGen._InitializeWnd"/>
+<link id="#lcl.stdctrls.TCustomEdit.InitializeWnd">TCustomEdit.InitializeWnd</link>
+</seealso>
 </element>
 
 <element name="TLazIntegerEdit.FinalizeWnd">
 <short>
-Updates Value prior to freeing the window handle.
+Updates the Value for the control prior to freeing the window handle for the 
+control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+FinalizeWnd is an overridden method in TLazIntegerEdit. It ensures that the 
+control Value is updated using the Text for the control after conversion back 
+to a Decimal (base-10) value. This action is performed prior to calling the 
+inherited FinalizeWnd method (in TWinControl) to update the control Caption 
+and free its Handle.
+</p>
+</descr>
+<seealso>
+<link id="TLazIntegerEdit.Text"/>
+<link id="TLazIntegerEdit.InitializeWnd"/>
+<link id="TLazIntegerEditGen._FinalizeWnd"/>
+<link id="#lcl.controls.TWinControl.FinalizeWnd">TWinControl.FinalizeWnd</link>
+<link id="#lcl.controls.TControl.Caption">TControl.Caption</link>
+</seealso>
 </element>
 
 <element name="TLazIntegerEdit.DoExit">
 <short>
-Updates Value with the contents of Text when the control loses input focus.
+Updates Value with the contents in Text when the control loses input focus.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+DoExit is an overridden method in TLazIntegerEdit. It ensures that the Value 
+for the control is updated when the control loses input focus. DoExit calls 
+the alternate handler (_DoExit) in TLazIntegerEditGen to perform the actions 
+needed.
+</p>
+<p>
+The Value property is updated by converting the Text for control back to its 
+Decimal (base-10) representation. Values in MinValue and MaxValue are enforced 
+when Value is updated.
+</p>
+<p>
+DoExit calls the inherited method (in TCustomEdit) to reset the AutoSelected 
+property, and to signal the OnExit event handler (when assigned).
+</p>
+<p>
+DoExit is called when the CM_EXIT control message is handled for the control.
+</p>
+</descr>
+<seealso>
+<link id="TLazIntegerEdit.OnExit"/>
+<link id="TLazIntegerEdit.Text"/>
+<link id="TLazIntegerEdit.Value"/>
+<link id="TLazIntegerEdit.MinValue"/>
+<link id="TLazIntegerEdit.MaxValue"/>
+<link id="TLazIntegerEditGen._DoExit"/>
+<link id="#lcl.stdctrls.TCustomEdit.DoExit">TCustomEdit.DoExit</link>
+<link id="#lcl.controls.TWinControl.DoExit">TWinControl.DoExit</link>
+<link id="#lcl.controls.TWinControl.OnExit">TWinControl.OnExit</link>
+</seealso>
 </element>
 
 <element name="TLazIntegerEdit.EditingDone">
 <short>
-Updates Value with the contents of Text when editing has been completed for the 
-control.
+Updates the control Value when editing has been completed for the control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+EditingDone is an overridden method in TLazIntegerEdit. It ensures that the 
+Value property is updated when editing has been completed for the control. The 
+alternate handler routine (_EditingDone) in the generic base class 
+(TLazIntegerEditGen) is called to perform the actions needed.
+</p>
+<p>
+Value is updated by converting the control Text back to its Decimal (base-10) 
+representation. Values in the MinValue and MaxValue properties are enforced 
+when Value is updated.
+</p>
+<p>
+EditingDone in an ancestor class (TControl) is called when the ReadOnly 
+property is set to <b>False</b>, and the OnEditingDone event handler is 
+signalled (when assigned).
+</p>
+<p>
+Editing is called when the VK_RETURN key is handled for the control.
+</p>
+</descr>
+<seealso>
+<link id="TLazIntegerEdit.Text"/>
+<link id="TLazIntegerEdit.Value"/>
+<link id="TLazIntegerEdit.MinValue"/>
+<link id="TLazIntegerEdit.MaxValue"/>
+<link id="TLazIntegerEditGen._EditingDone"/>
+<link id="#lcl.controls.TControl.EditingDone">TControl.EditingDone</link>
+<link id="#lcl.controls.TControl.OnEditingDone">TControl.OnEditingDone</link>
+</seealso>
 </element>
 
 <!-- 
@@ -1385,12 +1485,6 @@ _KeyPress handler for the control.
 </element>
 
 <!-- topics linked to the generic base class -->
-<!-- 
-	TODO: Replace with actual content. 
-		FPDoc will not link to the topics in the generic base class. 
-		It says the ancestor is TObject and not TCustomEdit, so the 
-		links are ignored during doc generation.
--->
 <element name="TLazIntegerEdit.ToggleHexKeys" 
 	link="#lazcontrols.laznumedit.TLazIntegerEditGen.ToggleHexKeys"/>
 
@@ -1428,83 +1522,121 @@ _KeyPress handler for the control.
 
 <!-- published -->
 <element name="TLazIntegerEdit.Align" link="#lcl.controls.TControl.Align"/>
-
 <element name="TLazIntegerEdit.Alignment" 
 	link="#lcl.stdctrls.TCustomEdit.Alignment"/>
-
 <element name="TLazIntegerEdit.Anchors" link="#lcl.controls.TControl.Anchors"/>
-
 <element name="TLazIntegerEdit.AutoSize" 
 	link="#lcl.stdctrls.TCustomEdit.AutoSize"/>
-
 <element name="TLazIntegerEdit.AutoSelect" 
 	link="#lcl.stdctrls.TCustomEdit.AutoSelect"/>
-
 <element name="TLazIntegerEdit.BidiMode" 
 	link="#lcl.controls.TControl.BidiMode"/>
-
 <element name="TLazIntegerEdit.BorderSpacing" 
 	link="#lcl.controls.TControl.BorderSpacing"/>
-
 <element name="TLazIntegerEdit.BorderStyle" 
 	link="#lcl.stdctrls.TCustomEdit.BorderStyle"/>
-
 <element name="TLazIntegerEdit.CharCase" 
 	link="#lcl.stdctrls.TCustomEdit.CharCase"/>
-
 <element name="TLazIntegerEdit.Color" 
 	link="#lcl.controls.TControl.Color"/>
-
-<element name="TLazIntegerEdit.Constraints" link="#lcl.controls.TControl.Constraints"/>
-<element name="TLazIntegerEdit.DoubleBuffered" link="#lcl.controls.TWinControl.DoubleBuffered"/>
-<element name="TLazIntegerEdit.DragCursor" link="#lcl.controls.TControl.DragCursor"/>
-<element name="TLazIntegerEdit.DragKind" link="#lcl.controls.TControl.DragKind"/>
-<element name="TLazIntegerEdit.DragMode" link="#lcl.controls.TControl.DragMode"/>
-<element name="TLazIntegerEdit.EchoMode" link="#lcl.stdctrls.TCustomEdit.EchoMode"/>
-<element name="TLazIntegerEdit.Enabled" link="#lcl.controls.TControl.Enabled"/>
+<element name="TLazIntegerEdit.Constraints" 
+	link="#lcl.controls.TControl.Constraints"/>
+<element name="TLazIntegerEdit.DoubleBuffered" 
+	link="#lcl.controls.TWinControl.DoubleBuffered"/>
+<element name="TLazIntegerEdit.DragCursor" 
+	link="#lcl.controls.TControl.DragCursor"/>
+<element name="TLazIntegerEdit.DragKind" 
+	link="#lcl.controls.TControl.DragKind"/>
+<element name="TLazIntegerEdit.DragMode" 
+	link="#lcl.controls.TControl.DragMode"/>
+<element name="TLazIntegerEdit.EchoMode" 
+	link="#lcl.stdctrls.TCustomEdit.EchoMode"/>
+<element name="TLazIntegerEdit.Enabled" 
+	link="#lcl.controls.TControl.Enabled"/>
 <element name="TLazIntegerEdit.Font" link="#lcl.controls.TControl.Font"/>
-<element name="TLazIntegerEdit.HideSelection" link="#lcl.stdctrls.TCustomEdit.HideSelection"/>
-<element name="TLazIntegerEdit.MaxLength" link="#lcl.stdctrls.TCustomEdit.MaxLength"/>
-<element name="TLazIntegerEdit.NumbersOnly" link="#lcl.stdctrls.TCustomEdit.NumbersOnly"/>
-<element name="TLazIntegerEdit.ParentBidiMode" link="#lcl.controls.TControl.ParentBidiMode"/>
-<element name="TLazIntegerEdit.ParentColor" link="#lcl.stdctrls.TCustomEdit.ParentColor"/>
-<element name="TLazIntegerEdit.ParentDoubleBuffered" link="#lcl.controls.TWinControl.ParentDoubleBuffered"/>
-<element name="TLazIntegerEdit.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
-<element name="TLazIntegerEdit.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
-<element name="TLazIntegerEdit.PasswordChar" link="#lcl.stdctrls.TCustomEdit.PasswordChar"/>
-<element name="TLazIntegerEdit.PopupMenu" link="#lcl.stdctrls.TCustomEdit.PopupMenu"/>
-<element name="TLazIntegerEdit.ReadOnly" link="#lcl.stdctrls.TCustomEdit.ReadOnly"/>
-<element name="TLazIntegerEdit.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TLazIntegerEdit.TabStop" link="#lcl.stdctrls.TCustomEdit.TabStop"/>
-<element name="TLazIntegerEdit.TabOrder" link="#lcl.stdctrls.TCustomEdit.TabOrder"/>
-<element name="TLazIntegerEdit.Text" link="#lcl.stdctrls.TCustomEdit.Text"/>
-<element name="TLazIntegerEdit.TextHint" link="#lcl.stdctrls.TCustomEdit.TextHint"/>
-<element name="TLazIntegerEdit.Visible" link="#lcl.controls.TControl.Visible"/>
-<element name="TLazIntegerEdit.OnChange" link="#lcl.stdctrls.TCustomEdit.OnChange"/>
-<element name="TLazIntegerEdit.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
+<element name="TLazIntegerEdit.HideSelection" 
+	link="#lcl.stdctrls.TCustomEdit.HideSelection"/>
+<element name="TLazIntegerEdit.MaxLength" 
+	link="#lcl.stdctrls.TCustomEdit.MaxLength"/>
+<element name="TLazIntegerEdit.NumbersOnly" 
+	link="#lcl.stdctrls.TCustomEdit.NumbersOnly"/>
+<element name="TLazIntegerEdit.ParentBidiMode" 
+	link="#lcl.controls.TControl.ParentBidiMode"/>
+<element name="TLazIntegerEdit.ParentColor" 
+	link="#lcl.stdctrls.TCustomEdit.ParentColor"/>
+<element name="TLazIntegerEdit.ParentDoubleBuffered" 
+	link="#lcl.controls.TWinControl.ParentDoubleBuffered"/>
+<element name="TLazIntegerEdit.ParentFont" 
+	link="#lcl.controls.TControl.ParentFont"/>
+<element name="TLazIntegerEdit.ParentShowHint" 
+	link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TLazIntegerEdit.PasswordChar" 
+	link="#lcl.stdctrls.TCustomEdit.PasswordChar"/>
+<element name="TLazIntegerEdit.PopupMenu" 
+	link="#lcl.stdctrls.TCustomEdit.PopupMenu"/>
+<element name="TLazIntegerEdit.ReadOnly" 
+	link="#lcl.stdctrls.TCustomEdit.ReadOnly"/>
+<element name="TLazIntegerEdit.ShowHint" 
+	link="#lcl.controls.TControl.ShowHint"/>
+<element name="TLazIntegerEdit.TabStop" 
+	link="#lcl.stdctrls.TCustomEdit.TabStop"/>
+<element name="TLazIntegerEdit.TabOrder" 
+	link="#lcl.stdctrls.TCustomEdit.TabOrder"/>
+<element name="TLazIntegerEdit.Text" 
+	link="#lcl.stdctrls.TCustomEdit.Text"/>
+<element name="TLazIntegerEdit.TextHint" 
+	link="#lcl.stdctrls.TCustomEdit.TextHint"/>
+<element name="TLazIntegerEdit.Visible" 
+	link="#lcl.controls.TControl.Visible"/>
+<element name="TLazIntegerEdit.OnChange" 
+	link="#lcl.stdctrls.TCustomEdit.OnChange"/>
+<element name="TLazIntegerEdit.OnChangeBounds" 
+	link="#lcl.controls.TControl.OnChangeBounds"/>
 <element name="TLazIntegerEdit.OnClick" link="#lcl.controls.TControl.OnClick"/>
-<element name="TLazIntegerEdit.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
-<element name="TLazIntegerEdit.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
-<element name="TLazIntegerEdit.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
-<element name="TLazIntegerEdit.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
-<element name="TLazIntegerEdit.OnEditingDone" link="#lcl.controls.TControl.OnEditingDone"/>
-<element name="TLazIntegerEdit.OnEndDrag" link="#lcl.controls.TControl.OnEndDrag"/>
-<element name="TLazIntegerEdit.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
-<element name="TLazIntegerEdit.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
-<element name="TLazIntegerEdit.OnKeyDown" link="#lcl.controls.TWinControl.OnKeyDown"/>
-<element name="TLazIntegerEdit.OnKeyPress" link="#lcl.controls.TWinControl.OnKeyPress"/>
-<element name="TLazIntegerEdit.OnKeyUp" link="#lcl.controls.TWinControl.OnKeyUp"/>
-<element name="TLazIntegerEdit.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
-<element name="TLazIntegerEdit.OnMouseEnter" link="#lcl.controls.TControl.OnMouseEnter"/>
-<element name="TLazIntegerEdit.OnMouseLeave" link="#lcl.controls.TControl.OnMouseLeave"/>
-<element name="TLazIntegerEdit.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
-<element name="TLazIntegerEdit.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
-<element name="TLazIntegerEdit.OnMouseWheel" link="#lcl.controls.TControl.OnMouseWheel"/>
-<element name="TLazIntegerEdit.OnMouseWheelDown" link="#lcl.controls.TControl.OnMouseWheelDown"/>
-<element name="TLazIntegerEdit.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
-<element name="TLazIntegerEdit.OnResize" link="#lcl.controls.TControl.OnResize"/>
-<element name="TLazIntegerEdit.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
-<element name="TLazIntegerEdit.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
+<element name="TLazIntegerEdit.OnContextPopup" 
+	link="#lcl.controls.TControl.OnContextPopup"/>
+<element name="TLazIntegerEdit.OnDblClick" 
+	link="#lcl.controls.TControl.OnDblClick"/>
+<element name="TLazIntegerEdit.OnDragDrop" 
+	link="#lcl.controls.TControl.OnDragDrop"/>
+<element name="TLazIntegerEdit.OnDragOver" 
+	link="#lcl.controls.TControl.OnDragOver"/>
+<element name="TLazIntegerEdit.OnEditingDone" 
+	link="#lcl.controls.TControl.OnEditingDone"/>
+<element name="TLazIntegerEdit.OnEndDrag" 
+	link="#lcl.controls.TControl.OnEndDrag"/>
+<element name="TLazIntegerEdit.OnEnter" 
+	link="#lcl.controls.TWinControl.OnEnter"/>
+<element name="TLazIntegerEdit.OnExit" 
+	link="#lcl.controls.TWinControl.OnExit"/>
+<element name="TLazIntegerEdit.OnKeyDown" 
+	link="#lcl.controls.TWinControl.OnKeyDown"/>
+<element name="TLazIntegerEdit.OnKeyPress" 
+	link="#lcl.controls.TWinControl.OnKeyPress"/>
+<element name="TLazIntegerEdit.OnKeyUp" 
+	link="#lcl.controls.TWinControl.OnKeyUp"/>
+<element name="TLazIntegerEdit.OnMouseDown" 
+	link="#lcl.controls.TControl.OnMouseDown"/>
+<element name="TLazIntegerEdit.OnMouseEnter" 
+	link="#lcl.controls.TControl.OnMouseEnter"/>
+<element name="TLazIntegerEdit.OnMouseLeave" 
+	link="#lcl.controls.TControl.OnMouseLeave"/>
+<element name="TLazIntegerEdit.OnMouseMove" 
+	link="#lcl.controls.TControl.OnMouseMove"/>
+<element name="TLazIntegerEdit.OnMouseUp" 
+	link="#lcl.controls.TControl.OnMouseUp"/>
+<element name="TLazIntegerEdit.OnMouseWheel" 
+	link="#lcl.controls.TControl.OnMouseWheel"/>
+<element name="TLazIntegerEdit.OnMouseWheelDown" 
+	link="#lcl.controls.TControl.OnMouseWheelDown"/>
+<element name="TLazIntegerEdit.OnMouseWheelUp" 
+	link="#lcl.controls.TControl.OnMouseWheelUp"/>
+<element name="TLazIntegerEdit.OnResize" 
+	link="#lcl.controls.TControl.OnResize"/>
+<element name="TLazIntegerEdit.OnStartDrag" 
+	link="#lcl.controls.TControl.OnStartDrag"/>
+<element name="TLazIntegerEdit.OnUTF8KeyPress" 
+	link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
 
 <element name="Str2QWord">
 <short>
