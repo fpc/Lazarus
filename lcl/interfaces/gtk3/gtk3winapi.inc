@@ -39,26 +39,7 @@ begin
   PS.hdc := HDC(DC);
 
   if Handle<>0 then
-  begin
     DC.vClipRect := Widget.PaintData.ClipRect^;
-    (*
-    // if current handle has paintdata information,
-    // setup hdc with it
-    //DC.DebugClipRect('BeginPaint: Before');
-    if Widget.PaintData.ClipRegion <> nil then
-    begin
-      //Write('>>> Setting Paint ClipRegion: ');
-      //DebugRegion('PaintData.ClipRegion: ', Widget.PaintData.ClipRegion);
-      DC.setClipRegion(Widget.PaintData.ClipRegion);
-      DC.setClipping(True);
-    end;
-    if Widget.PaintData.ClipRect <> nil then
-    begin
-      New(DC.vClipRect);
-      DC.vClipRect^ := Widget.PaintData.ClipRect^;
-    end;
-    *)
-  end;
 
   Result := PS.hdc;
 end;
@@ -1062,7 +1043,7 @@ function TGtk3WidgetSet.Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean;
 var
   bFill, bBorder: Boolean;
 begin
-  bFill := TGtk3DeviceContext(DC).CurrentBrush.Style <> BS_NULL;
+  bFill := (TGtk3DeviceContext(DC).CurrentBrush.Style <> BS_NULL);
   bBorder := TGtk3DeviceContext(DC).CurrentPen.Style <> psClear;
   TGtk3DeviceContext(DC).drawEllipse(x1, y1, x2 - x1 - 1, y2 - y1 - 1, bFill, bBorder);
   Result := True;
@@ -1625,8 +1606,8 @@ begin
       cairo_rectangle(GtkDc.pcr, Rect^.Left, Rect^.Top, Rect^.Right - Rect^.Left, Rect^.Bottom - Rect^.Top);
       cairo_clip(GtkDc.pcr);
     end;
-    if Options and ETO_OPAQUE = ETO_OPAQUE then
-      DevCtx.fillRect(Rect, HBRUSH(GtkDC.CurrentBrush));
+    if Options and ETO_OPAQUE = ETO_OPAQUE then // use Color from setBkMode
+      DevCtx.fillRect(Rect, 0{HBRUSH(GtkDC.CurrentBrush)});
 
     LineLen := FindLineLen(Str,Count);
     TopY := Y;
@@ -1845,7 +1826,8 @@ function TGtk3WidgetSet.GetBkColor(DC: HDC): TColorRef;
 begin
   Result := 0;
   if IsValidDC(DC) then
-    Result := TGtk3DeviceContext(DC).CurrentBrush.Color;
+    Result := TGtk3DeviceContext(DC).BkColor;
+  //  Result := TGtk3DeviceContext(DC).CurrentBrush.Color;
 end;
 
 function TGtk3WidgetSet.GetCapture: HWND;
@@ -3535,25 +3517,17 @@ begin
   Result := clNone;
   if not IsValidDC(DC) then
     exit;
-  Result := TGtk3DeviceContext(DC).CurrentBrush.Color;
-  TGtk3DeviceContext(DC).CurrentBrush.Color := TColor(ColorToRGB(TColor(Color)));
+  Result := TGtk3DeviceContext(DC).BkColor;
+  TGtk3DeviceContext(DC).BkColor := Color;
 end;
 
 function TGtk3WidgetSet.SetBkMode(DC: HDC; bkMode: Integer): Integer;
 begin
-  {.$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  // DebugLn('WARNING: TGtk3WidgetSet.SetBkMode not implemented ...', dbgs(BkMode));
-  {.$ENDIF}
   Result := 0;
   if not IsValidDC(DC) then
     exit;
   Result := TGtk3DeviceContext(DC).BkMode;
   TGtk3DeviceContext(DC).BkMode := bkMode;
-  // if cairo_pattern_get_type(cairo_get_source(TGtk3DeviceContext(DC).Widget)) = CAIRO_PATTERN_TYPE_SURFACE then
-  //  Result := TRANSPARENT;
-  // we must use TGtk3Brush.Handle = Pcairo_pattern_t
-  // cairo_pattern_get_type(nil).CAIRO_PATTERN_TYPE_SOLID;
-  // cairo_get_source();
 end;
 
 function TGtk3WidgetSet.SetCapture(AHandle: HWND): HWND;

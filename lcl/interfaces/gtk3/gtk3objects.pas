@@ -95,7 +95,7 @@ type
     function Select(ACtx:TGtk3DeviceContext):TGtk3ContextObject; override;
     function Get(szbuf:integer;pbuf:pointer):integer; override;
     destructor Destroy; override;
-    procedure UpdatePattern;
+    procedure UpdatePattern(const aColor: TColorRef);
     property Color: TColor read FColor write SetColor;
     property Context: TGtk3DeviceContext read FContext write FContext;
     property Style: LongWord read FStyle write SetStyle;
@@ -198,6 +198,7 @@ type
 
   TGtk3DeviceContext = class (TGtk3Object)
   private
+    FBkColor:TColorRef;
     FBrush: TGtk3Brush;
     FFont: TGtk3Font;
     FvImage: TGtk3Image;
@@ -212,12 +213,14 @@ type
     FPen: TGtk3Pen;
     FvClipRect: TRect;
     FCurrentPen: TGtk3Pen;
-    FBkMode: Integer;
+    FBkMode: integer;
     FCanvasScaleFactor: double;
     FXorMode: boolean;
+    function GetBkColor:TColorRef;
     function GetOffset: TPoint;
     function GetRasterOp: integer;
     procedure setBrush(AValue: TGtk3Brush);
+    procedure setBkColor(AValue: TColorRef);
     procedure SetFont(AValue: TGtk3Font);
     procedure SetOffset(AValue: TPoint);
     procedure setPen(AValue: TGtk3Pen);
@@ -290,7 +293,8 @@ type
     procedure TranslateCairoToDevice;
     procedure Translate(APoint: TPoint);
     procedure set_antialiasing(aamode:boolean);
-    property BkMode: Integer read FBkMode write FBkMode;
+    property BkMode: integer read FBkMode write FBkMode;
+    property BkColor: TColorRef read GetBkColor write SetBkColor;
     property CanRelease: Boolean read FCanRelease write FCanRelease;
     property CurrentBrush: TGtk3Brush read FCurrentBrush write FCurrentBrush;
     property CurrentFont: TGtk3Font read FCurrentFont write FCurrentFont;
@@ -1343,7 +1347,7 @@ procedure TGtk3Brush.SetStyle(AStyle: longword);
 begin
   if AStyle=fStyle then exit;
   fStyle:=AStyle;
-  Self.UpdatePattern;
+  Self.UpdatePattern(ColorToRGB(FColor));
 end;
 
 constructor TGtk3Brush.Create;
@@ -1358,7 +1362,7 @@ begin
   fContext:=ACtx;
   if not Assigned(fContext) then exit(nil);
   Result := fContext.CurrentBrush;
-  Self.UpdatePattern;
+  Self.UpdatePattern(ColorToRGB(FColor));
   fContext.CurrentBrush := Self;
 end;
 
@@ -1378,11 +1382,10 @@ begin
   inherited Destroy;
 end;
 
-procedure TGtk3Brush.UpdatePattern;
+procedure TGtk3Brush.UpdatePattern(const aColor: TColorRef);
 var
   w,h,i,j:integer;
-  clr:dword;
-  rgb:array[0..3] of byte absolute clr;
+  rgb:array[0..3] of byte absolute aColor;
   pat_sample,psrc,pdst:pdword;
 begin
   if Self.LogBrush.lbStyle<>BS_HATCHED then exit;
@@ -1391,6 +1394,7 @@ begin
   begin
      cairo_pattern_destroy(brush_pattern);
      FreeMemAndNil(pat_buf);
+     brush_pattern := nil;
   end;
   case TBrushStyle(Self.LogBrush.lbHatch+ord(bsHorizontal)) of
   bsHorizontal:
@@ -1429,7 +1433,6 @@ begin
   psrc:=pat_sample;
   getmem(pat_buf,w*h*sizeof(dword));
   pdst:=pat_buf;
-  clr:=ColorToRgb(Self.Color);
   for i:=0 to h-1 do
   for j:=0 to w-1 do
   begin
@@ -1461,7 +1464,20 @@ begin
 	result:= pattern;
 end;
 
+function DebugColor(AColor: TColor): string;
+var
+  R, G, B: double;
+begin
+  TColorToRGB(AColor, R, G, B);
+  Result := Format('DebugColor: R %2.2n G %2.2n B %2.2n',[R, G, B]);
+end;
+
 { TGtk3DeviceContext }
+
+function TGtk3DeviceContext.GetBkColor:TColorRef;
+begin
+  Result := FBkColor;
+end;
 
 function TGtk3DeviceContext.GetOffset: TPoint;
 var
@@ -1484,6 +1500,11 @@ begin
   if Assigned(FBrush) then
     FBrush.Free;
   FBrush := AValue;
+end;
+
+procedure TGtk3DeviceContext.setBkColor(AValue:TColorRef);
+begin
+  FBkColor := AValue;
 end;
 
 procedure TGtk3DeviceContext.SetFont(AValue: TGtk3Font);
@@ -1617,17 +1638,19 @@ end;
 
 procedure TGtk3DeviceContext.ApplyBrush;
 begin
-  if FBkMode = TRANSPARENT then
-  begin
-    // DebugLn('TGtk3DeviceContext.ApplyBrush setting transparent source');
-    //cairo_set_source_surface(Widget, CairoSurface, 0 , 0);
-  end else
-    SetSourceColor(FCurrentBrush.Color);
-
+  SetSourceColor(FCurrentBrush.Color);
   if Self.FCurrentBrush.Style<>0 then
   begin
     if Assigned(Self.FCurrentBrush.brush_pattern) then
-    cairo_set_source(pcr,Self.FCurrentBrush.brush_pattern);
+    begin
+      //According to MSDN hatched brushes uses BkColor when BkMode = opaque
+      if (FCurrentBrush.Style = BS_HATCHED) and (BkMode <> TRANSPARENT) then
+      begin
+        //Setting another style will update pattern again.
+        FCurrentBrush.UpdatePattern(FBkColor);
+      end;
+      cairo_set_source(pcr,Self.FCurrentBrush.brush_pattern);
+    end;
   end;
 end;
 
@@ -1752,7 +1775,7 @@ begin
   FOwnsCairo := True;
   FOwnsSurface := False;
   FCurrentTextColor := clBlack;
-
+  FBkColor := clWhite;
   if AWidget = nil then
   begin
     ACairo := gdk_cairo_create(gdk_get_default_root_window);
@@ -1818,6 +1841,7 @@ begin
   FOwnsCairo := True;
 
   FCurrentTextColor := clBlack;
+  FBkColor := clWhite;
   FCairo := gdk_cairo_create(AWindow);
   gdk_cairo_set_source_window(FCairo, AWindow, 0, 0);
   CairoSurface := cairo_get_target(FCairo);
@@ -1844,6 +1868,7 @@ begin
   CairoSurface := nil;
   FOwnsSurface := False;
   FCurrentTextColor := clBlack;
+  FBkColor := clWhite;
   gdk_cairo_get_clip_rectangle(ACairo, @AGdkRect);
   FvClipRect := RectFromGdkRect(AGdkRect);
   FCairo := ACairo;
@@ -2001,10 +2026,10 @@ begin
 
     FCurrentFont.Layout^.set_text(AText, ALen);
 
-    UseBack := FCurrentBrush.Style <> BS_NULL;
+    UseBack := BkMode = OPAQUE;
     if UseBack then
     begin
-      gColor := TColorToTGDKColor(FCurrentBrush.Color);
+      gColor := TColorToTGDKColor(FBkColor);
       AttrList := pango_attr_list_new;
       Attr := pango_attr_background_new(gColor.red, gColor.green, gColor.blue);
       pango_attr_list_insert(AttrList, Attr);
@@ -2026,7 +2051,7 @@ end;
 procedure TGtk3DeviceContext.drawEllipse(x, y, w, h: Integer; AFill, ABorder: Boolean);
 var
   save_matrix: Tcairo_matrix_t;
-  SaveMode:Integer;
+  //SaveMode:Integer;
 begin
   cairo_save(pcr);
   try
@@ -2044,13 +2069,11 @@ begin
           (*angle2 =*) 2 * Pi
         );
     cairo_close_path(pcr);
-    if AFill then
+
+    if AFill then // we are sure that CurrentBrush.Style <> BS_NULL
     begin
-      SaveMode := FBkMode;
-      FBkMode := OPAQUE;
       ApplyBrush;
       cairo_fill_preserve(pcr);
-      FBkMode := SaveMode;
     end;
     cairo_set_matrix(pcr, @save_matrix);
   finally
@@ -2294,7 +2317,6 @@ end;
 procedure TGtk3DeviceContext.fillRect(x, y, w, h: Integer; ABrush: HBRUSH);
 var
   ATempBrush: TGtk3Brush;
-  SaveMode:Integer;
 begin
   {$ifdef VerboseGtk3DeviceContext}
   //DebugLn('TGtk3DeviceContext.fillRect ',Format('x %d y %d w %d h %d',[x, y, w, h]));
@@ -2302,30 +2324,27 @@ begin
 
   cairo_save(pcr);
   try
-    ATempBrush := nil;
     if ABrush <> 0 then
     begin
       ATempBrush := FCurrentBrush;
-      SaveMode := FBkMode;
-      FBkMode := OPAQUE;
       CurrentBrush:= TGtk3Brush(ABrush);
+      applyBrush;
     end;
 
-    applyBrush;
     cairo_rectangle(pcr, x + PixelOffset, y + PixelOffset, w - 1, h - 1);
-    if CurrentBrush.Style <> BS_NULL then
-      cairo_fill_preserve(pcr);
 
-    // must paint border, filling is not enough
-    SetSourceColor(FCurrentBrush.Color);
-    cairo_set_line_width(pcr, 1);
-    cairo_stroke(pcr);
+    if (ABrush <> 0) and (CurrentBrush.Style <> BS_NULL) then
+    begin
+      cairo_fill_preserve(pcr);
+      // must paint border, filling is not enough
+      SetSourceColor(FCurrentBrush.Color);
+      cairo_set_line_width(pcr, 1);
+      cairo_stroke(pcr);
+    end;
 
     if ABrush <> 0 then
-    begin
       CurrentBrush:= ATempBrush;
-      FBkMode := SaveMode;
-    end;
+    cairo_new_path(pcr);
   finally
     cairo_restore(pcr);
   end;
