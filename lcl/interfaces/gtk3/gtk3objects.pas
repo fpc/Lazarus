@@ -2638,11 +2638,8 @@ end;
 procedure TGtk3DeviceContext.SetImage(AImage: TGtk3Image);
 var
   APixBuf: PGdkPixbuf;
-  AXor: PCairo_t;
 begin
   FCurrentImage := AImage;
-  //See what cairo is destroyed !
-  AXor := FXorCairo;
   cairo_destroy(pcr);
   APixBuf := AImage.Handle;
   if not Gtk3IsGdkPixbuf(APixBuf) then
