@@ -2040,12 +2040,55 @@ end;
 
 function TGtk3WidgetSet.GetDCOriginRelativeToWindow(PaintDC: HDC;
   WindowHandle: HWND; var OriginDiff: TPoint): boolean;
+var
+  DevCtx: TGtk3DeviceContext absolute PaintDC;
+  DCScreenOrigin: TPoint;
+  WindowScreenOrigin: TPoint;
+  Widget: PGtkWidget;
+  DCWindow: PGdkWindow;
+  // LCLObject: TGtk3Widget;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  DebugLn('WARNING: TGtk3WidgetSet.GetDCOriginRelativeToWindow not implemented ...');
-  {$ENDIF}
-  Result:=inherited GetDCOriginRelativeToWindow(PaintDC, WindowHandle,
-    OriginDiff);
+  // writeln('>GetDCOriginRelativeToWindow() ');
+  Result := False;
+  OriginDiff := Point(0, 0);
+
+  if not IsValidDC(PaintDC) then Exit;
+
+  DCScreenOrigin := DevCtx.Offset;
+
+  DCWindow := DevCtx.Window;
+  if (DCWindow = nil) and Assigned(DevCtx.Parent) then
+    DCWindow := DevCtx.Parent^.window;
+  if DCWindow = nil then
+  begin
+    if Assigned(DevCtx.Parent) then
+    begin
+      // LCLObject := TGtk3Widget(HwndFromGtkWidget(DevCtx.Parent));
+    end;
+  end else
+    gdk_window_get_origin(DCWindow, @DCScreenOrigin.X, @DCScreenOrigin.Y);
+
+  Widget := TGtk3Widget(WindowHandle).GetContainerWidget;
+  if Widget = nil then
+  begin
+    // writeln('<Widget is null !...');
+    Exit;
+  end;
+
+  if Gtk3IsGdkWindow(Widget^.window) then
+    gdk_window_get_origin(Widget^.window, @WindowScreenOrigin.X, @WindowScreenOrigin.Y)
+  else
+    exit; // no valid window
+
+  // Calculate the origin difference
+  OriginDiff.X := DCScreenOrigin.X - WindowScreenOrigin.X;
+  OriginDiff.Y := DCScreenOrigin.Y - WindowScreenOrigin.Y;
+
+  // writeln('GetDCOriginRelativeToWindow: OriginDiff x=',OriginDiff.X,' Y=',OriginDiff.Y);
+  Result := True;
+
+  // DebugLn(['TGtk3WidgetSet.GetDCOriginRelativeToWindow DCScreenOrigin=',dbgs(DCScreenOrigin),
+  //   ' WindowScreenOrigin=',dbgs(WindowScreenOrigin), ' OriginDiff=',dbgs(OriginDiff)])
 end;
 
 function TGtk3WidgetSet.GetDeviceCaps(DC: HDC; Index: Integer): Integer;
