@@ -2026,7 +2026,10 @@ begin
 
     FCurrentFont.Layout^.set_text(AText, ALen);
 
-    UseBack := BkMode = OPAQUE;
+    //This looks like a bug in logic. eg painting TTreeView: SetBkMode(OPAQUE) BkMode is OPAQUE but currentBrush.style is bsClear
+    //If we don't chech any of them text is not drawn as it should.
+    //TODO: check how this case works with win32 ws.
+    UseBack := (FBkMode = OPAQUE) and (CurrentBrush.Style <> BS_NULL);
     if UseBack then
     begin
       gColor := TColorToTGDKColor(FBkColor);
