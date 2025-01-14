@@ -61,14 +61,16 @@ type
   { TGtk3Widget }
 
   TGtk3Widget = class(TGtk3Object, IUnknown)
-  strict private
+  private
     FCairoContext: Pcairo_t;
-    FCentralWidgetRGBA: array [0{GTK_STATE_NORMAL}..4{GTK_STATE_INSENSITIVE}] of TDefaultRGBA;
     FContext: HDC;
+    FPaintData: TPaintData;
+    FDrawSignal: GULong; // needed by designer
+  strict private
+    FCentralWidgetRGBA: array [0{GTK_STATE_NORMAL}..4{GTK_STATE_INSENSITIVE}] of TDefaultRGBA;
     FEnterLeaveTime: Cardinal;
     FFocusableByMouse: Boolean; {shell we call SetFocus on mouse down. Default = False}
     FOwner: PGtkWidget;
-    FPaintData: TPaintData;
     FProps: TStringList;
     FWidgetRGBA: array [0{GTK_STATE_NORMAL}..4{GTK_STATE_INSENSITIVE}] of TDefaultRGBA;
     function CanSendLCLMessage: Boolean;
@@ -95,6 +97,7 @@ type
     function QueryInterface(constref iid: TGuid; out obj): LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
     function _AddRef: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
     function _Release: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
+    function IsDesigning: boolean; virtual;
     function EatArrowKeys(const AKey: Word): Boolean; virtual;
     function getText: String; virtual;
     procedure setText(const AValue: String); virtual;
@@ -364,6 +367,7 @@ type
 
   TGtk3Container = class(TGtk3Widget)
   public
+    procedure InitializeWidget; override;
     procedure AddChild(AWidget: PGtkWidget; const ALeft, ATop: Integer); virtual;
   end;
 
@@ -403,7 +407,6 @@ type
   { TGtk3Bin }
 
   TGtk3Bin = class(TGtk3Container)
-
   end;
 
 
@@ -891,6 +894,23 @@ type
     procedure Update({%H-}ARect: PRect); override;
   end;
 
+  { TGtk3DesignWidget }
+
+  TGtk3DesignWidget = class(TGtk3Window)
+  protected
+    FDesignContext: HDC;
+    procedure BringDesignerToFront;
+    procedure ResizeDesigner;
+    function CreateWidget(const {%H-}Params: TCreateParams): PGtkWidget; override;
+    function GetContext: HDC; override;
+  public
+    procedure InitializeWidget; override;
+    function GtkEventPaint(Sender: PGtkWidget; AContext: Pcairo_t): Boolean; override; cdecl;
+    procedure lowerWidget; override;
+    procedure raiseWidget; override;
+    property DesignContext: HDC read FDesignContext;
+  end;
+
 {main event filter for all widgets, also called from widgetset main eventfilter}
 function Gtk3WidgetEvent(widget: PGtkWidget; event: PGdkEvent; data: GPointer): gboolean; cdecl;
 
@@ -1110,7 +1130,7 @@ begin
     DebugLn('Gtk3WidgetEvent triggered ',dbgsName(TGtk3Widget(Data).LCLObject),
       ' ',Gtk3EventToStr(event^.type_));
   {$ENDIF}
-  Result := False;
+  Result := gtk_false;
   if Assigned(Application) and Application.Terminated then
       exit;
   case event^.type_ of
@@ -1290,9 +1310,8 @@ begin
         if TGtk3ComboBox(Data).DroppedDown then
           exit;
       end;
-      if not (csNoFocus in TCustomForm(TGtk3Widget(Data).LCLObject).ControlStyle) then begin
+      if not (csNoFocus in TCustomForm(TGtk3Widget(Data).LCLObject).ControlStyle) then
         TGtk3Widget(Data).GtkEventFocus(Widget, Event);
-      end;
     end;
   GDK_CONFIGURE:
     begin
@@ -1827,6 +1846,12 @@ begin
 
   if not FHasPaint then
     exit;
+
+  if Self is TGtk3DesignWidget then
+  begin
+    //writeln('WARNING: DesignWidget should not be called here !');
+    exit;
+  end;
 
   FillChar(Msg{%H-}, SizeOf(Msg), #0);
 
@@ -2596,6 +2621,12 @@ begin
   Result := -1;
 end;
 
+function TGtk3Widget.IsDesigning: boolean;
+begin
+  Result := Assigned(LCLObject) and (csDesigning in LCLObject.ComponentState)
+    and not (Self is TGtk3DesignWidget);
+end;
+
 function TGtk3Widget.EatArrowKeys(const AKey: Word): Boolean;
 begin
   Result := AKey in [VK_LEFT, VK_UP, VK_RIGHT, VK_DOWN];
@@ -2745,7 +2776,7 @@ begin
     for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
       FCentralWidgetRGBA[i] := FWidgetRGBA[i];
   end;
-  g_signal_connect_data(GetContainerWidget,'draw', TGCallback(@Gtk3DrawWidget), Self, nil, G_CONNECT_DEFAULT);
+  FDrawSignal := g_signal_connect_data(GetContainerWidget,'draw', TGCallback(@Gtk3DrawWidget), Self, nil, G_CONNECT_DEFAULT);
   g_signal_connect_data(GetContainerWidget,'scroll-event', TGCallback(@Gtk3ScrollEvent), Self, nil, G_CONNECT_DEFAULT);
 
   // must hide all by default ???
@@ -2755,6 +2786,14 @@ begin
   g_signal_connect_data(FWidget,'show', TGCallback(@Gtk3WidgetShow), Self, nil, G_CONNECT_DEFAULT);
   g_signal_connect_data(FWidget,'map', TGCallback(@Gtk3MapWidget), Self, nil, G_CONNECT_DEFAULT);
   g_signal_connect_data(FWidget,'size-allocate',TGCallback(@Gtk3SizeAllocate), Self, nil, G_CONNECT_DEFAULT);
+  if IsDesigning then
+  begin
+    {$IFDEF GTK3DEBUGDESIGNER}
+    writeln('Designer: initializing ',dbgsName(Self),' LCLObj=',dbgsName(LCLobject),' set can focus to false.');
+    {$ENDIF}
+    gtk_widget_set_can_focus(Widget, False);
+    gtk_widget_set_can_focus(GetContainerWidget, False);
+  end;
   // g_signal_connect_data(FWidget, 'motion_notify_event', TGCallback(@Gtk3MotionNotifyEvent), LCLObject, nil, 0);
 end;
 
@@ -4398,6 +4437,27 @@ end;
 
 { TGtk3Container }
 
+function disableMouseButtonEvent(widget: PGtkWidget; event: PGdkEvent; user_data: gpointer): gboolean; cdecl;
+var
+  AEvent: TGdkEvent;
+begin
+  Result := TGtk3Widget(user_data).GtkEventMouse(Widget, Event);
+  {TODO: check if we can block button_press also}
+  if event^.type_ = GDK_BUTTON_RELEASE then
+    Result := True;
+end;
+
+procedure TGtk3Container.InitializeWidget;
+begin
+  inherited InitializeWidget;
+  if IsDesigning then
+  begin
+    GetContainerWidget^.set_events([GDK_BUTTON_PRESS_MASK, GDK_BUTTON_RELEASE_MASK]);
+    g_signal_connect_data(GetContainerWidget, 'button-press-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(GetContainerWidget, 'button-release-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
+  end;
+end;
+
 procedure TGtk3Container.AddChild(AWidget: PGtkWidget; const ALeft, ATop: Integer);
 begin
   if Assigned(FCentralWidget) then
@@ -5488,7 +5548,13 @@ end;
 procedure TGtk3ListBox.InitializeWidget;
 begin
   inherited InitializeWidget;
-  g_signal_connect_data(GetSelection, 'changed', TGCallback(@Gtk3ListBoxSelectionChanged), Self, nil, G_CONNECT_DEFAULT);
+  if IsDesigning then
+  begin
+    GetContainerWidget^.set_events([GDK_BUTTON_PRESS_MASK, GDK_BUTTON_RELEASE_MASK]);
+    g_signal_connect_data(GetContainerWidget, 'button-press-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(GetContainerWidget, 'button-release-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
+  end else
+    g_signal_connect_data(GetSelection, 'changed', TGCallback(@Gtk3ListBoxSelectionChanged), Self, nil, G_CONNECT_DEFAULT);
 end;
 
 function TGtk3ListBox.getHorizontalScrollbar: PGtkScrollbar;
@@ -6785,7 +6851,14 @@ begin
     // when we scroll with mouse wheel over entry our scrollevent doesn't catch entry
     // but parent control with window (eg. form), so we are settint all events mask to
     // catch all mouse events on gtkentry.
-    PGtkEntry(PGtkComboBox(Result)^.get_child)^.set_events(GDK_DEFAULT_EVENTS_MASK);
+    if IsDesigning then
+    begin
+      PGtkEntry(PGtkComboBox(Result)^.get_child)^.set_events([GDK_BUTTON_PRESS_MASK, GDK_BUTTON_RELEASE_MASK]);
+      g_signal_connect_data(PGtkEntry(PGtkComboBox(Result)^.get_child), 'button-press-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
+      g_signal_connect_data(PGtkEntry(PGtkComboBox(Result)^.get_child), 'button-release-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
+      PGtkEntry(PGtkComboBox(Result)^.get_child)^.set_can_focus(False);
+    end else
+      PGtkEntry(PGtkComboBox(Result)^.get_child)^.set_events(GDK_DEFAULT_EVENTS_MASK);
   end else
   begin
     // FCentralWidget := PGtkWidget(TGtkComboBox.new_with_model(PGtkTreeModel(ListStore)));
@@ -6962,6 +7035,9 @@ end;
 procedure TGtk3ComboBox.InitializeWidget;
 begin
   inherited InitializeWidget;
+
+  if IsDesigning then
+    exit;
   // appears-as-list make it appear as list ... no way, its read only property.
   //OnChange
   g_signal_connect_data(GetContainerWidget, 'changed', TGCallback(@Gtk3ComboBoxChanged), Self, nil, G_CONNECT_DEFAULT);
@@ -7082,7 +7158,8 @@ end;
 
 procedure TGtk3Button.ButtonClicked(pData: pointer); cdecl;
 begin
-  if TObject(pdata) is TCustomButton then
+  if not IsDesigning then
+    exit;
   TCustomButton(pdata).Click;
 end;
 
@@ -7116,11 +7193,12 @@ begin
   Result := PGtkWidget(TGtkButton.new);
 
   btn^.set_use_underline(true);
+  if not IsDesigning then
+    g_signal_connect_data(btn,'clicked',
+          TGCallback(@TGtk3Button.ButtonClicked), LCLObject, nil, G_CONNECT_DEFAULT);
 
-  g_signal_connect_data(btn,'clicked',
-        TGCallback(@TGtk3Button.ButtonClicked), LCLObject, nil, G_CONNECT_DEFAULT);
-
-  LCLObject.ControlStyle:=LCLObject.ControlStyle+[csClickEvents];
+  if not IsDesigning then
+    LCLObject.ControlStyle:=LCLObject.ControlStyle+[csClickEvents];
 
   FMargin := -1;
   FLayout := ord(GTK_POS_LEFT);
@@ -7203,16 +7281,6 @@ begin
   check := TGtkCheckButton.new;
   Result := PGtkWidget(check);
   check^.set_use_underline(True);
-  {fWidgetRGBA[0].G:=0.8;
-  fWidgetRGBA[0].Alpha:=1;
-  check^.override_color(GTK_STATE_FLAG_NORMAL,@Self.FWidgetRGBA[0]);}
-  (*fWidgetRGBA[0].G:=0.8;
-  fWidgetRGBA[0].B:=0.9;
-  fWidgetRGBA[0].Alpha:=0.9;
-  check^.override_color(GTK_STATE_FLAG_ACTIVE,@Self.FWidgetRGBA[0]); *)
-  // nil resets color to gtk default
- { FWidget^.override_color(GTK_STATE_FLAG_NORMAL, nil);
-  FWidget^.override_background_color(GTK_STATE_FLAG_NORMAL, nil);}
 end;
 
 { TGtk3RadioButton }
@@ -8388,6 +8456,163 @@ function TGtk3GLArea.CreateWidget(const Params: TCreateParams): PGtkWidget;
 begin
   FWidgetType := [wtWidget, wtGLArea];
   Result := TGtkGLArea.new;
+end;
+
+{ TGtk3DesignWidget }
+
+procedure TGtk3DesignWidget.BringDesignerToFront;
+begin
+  {$IFDEF GTK3DEBUGDESIGNER}
+  writeln('>BringDesignerToFront ');
+  {$ENDIF}
+  if Gtk3IsGdkWindow(getContainerWidget^.window) then
+    getContainerWidget^.window^.raise_;
+  {$IFDEF GTK3DEBUGDESIGNER}
+  writeln('<BringDesignerToFront ');
+  {$ENDIF}
+end;
+
+procedure TGtk3DesignWidget.ResizeDesigner;
+var
+  R: TGdkRectangle;
+begin
+  // Design control must be same as form area,
+  gtk_widget_get_allocation(getContainerWidget, @R);
+  with R do
+  begin
+    //gtk_widget_set_allocation(FDesignControl, @R);
+    //gtk_widget_queue_resize(FDesignControl);
+  end;
+end;
+
+function Gtk3DrawDesigner(AWidget: PGtkWidget; AContext: Pcairo_t; Data: gpointer): gboolean; cdecl;
+var
+  ARect: TGdkRectangle;
+begin
+  Result := False;
+  if Data <> nil then
+  begin
+    gdk_cairo_get_clip_rectangle(AContext, @ARect);
+    {$IFDEF GTK3DEBUGDESIGNER}
+    writeln('>Gtk3DrawDesigner ');
+    {$ENDIF}
+    Result := TGtk3DesignWidget(Data).GtkEventPaint(AWidget, AContext);
+    // workaround for lcl painted widgets until we found why gtk3 sends wrong rect
+    // if (TGtk3Widget(Data).FHasPaint) and
+    if (ARect.height < (TGtk3DesignWidget(Data).getContainerWidget^.get_allocated_height div 4) ) then
+    begin
+      {$IFDEF GTK3DEBUGDESIGNER}
+      with ARect do
+        writeln('Queued new draw for designer ?!? x=',x,' y=',y,' w=',width,' h=',height);
+      {$ENDIF}
+      AWidget^.queue_draw;
+    end;
+    {$IFDEF GTK3DEBUGDESIGNER}
+    writeln('<Gtk3DrawDesigner ');
+    {$ENDIF}
+  end;
+end;
+
+function TGtk3DesignWidget.CreateWidget(const Params: TCreateParams
+  ): PGtkWidget;
+begin
+  Result := inherited CreateWidget(Params);
+  gtk_widget_set_has_window(Widget, True);
+  gtk_widget_set_has_window(GetContainerWidget, True);
+end;
+
+function TGtk3DesignWidget.GetContext: HDC;
+begin
+  if FDesignContext <> 0 then
+    Result := FDesignContext
+  else
+    Result := inherited GetContext;
+end;
+
+procedure TGtk3DesignWidget.InitializeWidget;
+begin
+  inherited InitializeWidget;
+  g_signal_handler_disconnect(getContainerWidget, FDrawSignal);
+  g_signal_connect_data(getContainerWidget,'draw', TGCallback(@Gtk3DrawDesigner), Self, nil, G_CONNECT_DEFAULT);
+  BringDesignerToFront;
+end;
+
+function TGtk3DesignWidget.GtkEventPaint(Sender: PGtkWidget; AContext: Pcairo_t
+  ): Boolean; cdecl;
+var
+  Msg: TLMPaint;
+  AStruct: TPaintStruct;
+  AClipRect: TGdkRectangle;
+  localClip:TRect;
+  P: TPoint;
+begin
+  Result := gtk_false;
+
+  if not FHasPaint then
+    exit;
+
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
+
+  Msg.Msg := LM_PAINT;
+
+  FillChar(AStruct{%H-}, SizeOf(TPaintStruct), 0);
+  Msg.PaintStruct := @AStruct;
+
+  with PaintData do
+  begin
+    if GetContainerWidget = nil then
+      PaintWidget := Widget
+    else
+      PaintWidget := GetContainerWidget;
+    ClipRegion := nil;
+    gdk_cairo_get_clip_rectangle(AContext, @AClipRect);
+    localClip:=RectFromGdkRect(AClipRect);
+    ClipRect := @localClip;
+  end;
+  FContext := 0;
+  FCairoContext := AContext;
+  Msg.DC := BeginPaint(HWND(Self), AStruct);
+  FDesignContext := Msg.DC;
+  FContext := Msg.DC;
+  Msg.PaintStruct^.rcPaint := PaintData.ClipRect^;
+  Msg.PaintStruct^.hdc := FDesignContext;
+
+  P := getClientOffset;
+  inc(P.X, FScrollX);
+  inc(P.Y, FScrollY);
+  TGtk3DeviceContext(Msg.DC).translate(P);
+  try
+    try
+      //DoBeforeLCLPaint;
+      {$IFDEF GTK3DEBUGDESIGNER}
+      writeln('>TGtk3DesignWidget.Paint DC=',dbgHex(Msg.DC),' offset=',dbgs(P),' surface=',cairo_surface_get_type(cairo_get_target(AContext)));
+      {$ENDIF}
+      LCLObject.WindowProc(TLMessage(Msg));
+      {$IFDEF GTK3DEBUGDESIGNER}
+      writeln('<TGtk3DesignWidget.Paint');
+      {$ENDIF}
+    finally
+      FCairoContext := nil;
+      Fillchar(FPaintData, SizeOf(FPaintData), 0);
+      FContext := 0;
+      FDesignContext := 0;
+      EndPaint(HWND(Self), AStruct);
+    end;
+  except
+    Application.HandleException(nil);
+  end;
+end;
+
+procedure TGtk3DesignWidget.lowerWidget;
+begin
+  inherited lowerWidget;
+  BringDesignerToFront;
+end;
+
+procedure TGtk3DesignWidget.raiseWidget;
+begin
+  inherited raiseWidget;
+  BringDesignerToFront;
 end;
 
 end.
