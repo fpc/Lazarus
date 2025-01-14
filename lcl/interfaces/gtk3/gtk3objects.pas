@@ -2026,6 +2026,7 @@ end;
 procedure TGtk3DeviceContext.drawEllipse(x, y, w, h: Integer; AFill, ABorder: Boolean);
 var
   save_matrix: Tcairo_matrix_t;
+  SaveMode:Integer;
 begin
   cairo_save(pcr);
   try
@@ -2045,9 +2046,13 @@ begin
     cairo_close_path(pcr);
     if AFill then
     begin
+      SaveMode := FBkMode;
+      FBkMode := OPAQUE;
       ApplyBrush;
       cairo_fill_preserve(pcr);
+      FBkMode := SaveMode;
     end;
+    cairo_set_matrix(pcr, @save_matrix);
   finally
     cairo_restore(pcr);
   end;
@@ -2289,6 +2294,7 @@ end;
 procedure TGtk3DeviceContext.fillRect(x, y, w, h: Integer; ABrush: HBRUSH);
 var
   ATempBrush: TGtk3Brush;
+  SaveMode:Integer;
 begin
   {$ifdef VerboseGtk3DeviceContext}
   //DebugLn('TGtk3DeviceContext.fillRect ',Format('x %d y %d w %d h %d',[x, y, w, h]));
@@ -2300,7 +2306,8 @@ begin
     if ABrush <> 0 then
     begin
       ATempBrush := FCurrentBrush;
-      fBkMode := OPAQUE;
+      SaveMode := FBkMode;
+      FBkMode := OPAQUE;
       CurrentBrush:= TGtk3Brush(ABrush);
     end;
 
@@ -2314,7 +2321,10 @@ begin
     cairo_stroke(pcr);
 
     if ABrush <> 0 then
+    begin
       CurrentBrush:= ATempBrush;
+      FBkMode := SaveMode;
+    end;
   finally
     cairo_restore(pcr);
   end;
