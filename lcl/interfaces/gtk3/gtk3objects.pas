@@ -1748,10 +1748,6 @@ begin
   Parent := nil;
   ParentPixmap := nil;
   CairoSurface := nil;
-  // FMetrics := nil;
-  // SelFont := nil;
-  // SelBrush := nil;
-  // SelPen := nil;
   FCanRelease := False;
   FOwnsCairo := True;
   FOwnsSurface := False;
@@ -1759,22 +1755,11 @@ begin
 
   if AWidget = nil then
   begin
-   (* AWindow := gdk_get_default_root_window;
-    AWindow^.get_geometry(@x, @y, @w, @h);
-    w:=1; h:=1;
-    // ParentPixmap := gdk_pixbuf_get_from_window(AWindow, x, y, w, h);
-    // Widget := gdk_cairo_create(AWindow);
-    // gdk_cairo_set_source_pixbuf(Widget, ParentPixmap, 0, 0);
-    //CairoSurface := cairo_image_surface_create(CAIRO_FORMAT_RGB24, w, h);
-    CairoSurface := cairo_image_surface_create(CAIRO_FORMAT_ARGB32, w, h);
-    Widget := cairo_create(CairoSurface);   *)
-
     ACairo := gdk_cairo_create(gdk_get_default_root_window);
     gdk_cairo_get_clip_rectangle(ACairo, @ARect);
     cairo_destroy(ACairo);
     CairoSurface := cairo_image_surface_create(CAIRO_FORMAT_ARGB32, ARect.width, ARect.height);
     FCairo := cairo_create(CairoSurface);
-
     ParentPixmap := gdk_pixbuf_get_from_surface(CairoSurface, 0, 0, ARect.width, ARect.height);
     FOwnsSurface := True;
   end else
@@ -1833,10 +1818,7 @@ begin
   FOwnsCairo := True;
 
   FCurrentTextColor := clBlack;
-  //AWindow^.get_geometry(@x, @y, @w, @h);
-  // ParentPixmap := gdk_pixbuf_get_from_window(AWindow, x, y, w, h);
   FCairo := gdk_cairo_create(AWindow);
-  // gdk_cairo_set_source_pixbuf(Widget, ParentPixmap, 0, 0);
   gdk_cairo_set_source_window(FCairo, AWindow, 0, 0);
   CairoSurface := cairo_get_target(FCairo);
   CreateObjects;
