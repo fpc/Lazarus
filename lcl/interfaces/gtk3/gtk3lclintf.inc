@@ -1277,6 +1277,38 @@ begin
       Top, Right - Left, Bottom - Top);
 end;
 
+function TGtk3WidgetSet.GetDesignerDC(WindowHandle: HWND): HDC;
+var
+  Widget: TGtk3Widget absolute WindowHandle;
+begin
+  Result := 0;
+  if IsValidHandle(WindowHandle) then
+  begin
+    if Widget is TGtk3DesignWidget then
+      Result := TGtk3DesignWidget(Widget).DesignContext;
+    if Result = 0 then
+      Result := GetDC(WindowHandle);
+  end;
+end;
+
+function TGtk3WidgetSet.IsDesignerDC(WindowHandle: HWND; DC: HDC): Boolean;
+begin
+  Result := IsValidHandle(WindowHandle) and (TGtk3Widget(WindowHandle) is TGtk3DesignWidget);
+  if Result then
+    Result := TGtk3DesignWidget(DC).DesignContext = DC;
+end;
+
+function TGtk3WidgetSet.ReleaseDesignerDC(Window: HWND; DC: HDC): Integer;
+begin
+  Result := 0;
+  if IsValidHandle(Window) and IsValidDC(DC) then
+  begin
+    if TGtk3DeviceContext(DC).CanRelease then
+      TGtk3DeviceContext(DC).Free;
+    Result := 1;
+  end;
+end;
+
 type
   PPipeEventInfo = ^TPipeEventInfo;
   TPipeEventInfo = record

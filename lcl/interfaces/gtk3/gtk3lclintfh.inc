@@ -65,5 +65,9 @@ procedure SetCanvasScaleFactor(DC: HDC; const AScaleFactor: double); override;
 procedure SetEventHandlerFlags(AHandler: PEventHandler; NewFlags: dword); override;
 procedure SetRubberBandRect(const ARubberBand: HWND; const ARect: TRect); override;
 
+function GetDesignerDC(WindowHandle: HWND): HDC; override;
+function IsDesignerDC(WindowHandle: HWND; DC: HDC): Boolean; override;
+function ReleaseDesignerDC(Window: HWND; DC: HDC): Integer; override;
+
 function TextUTF8Out(DC: HDC; X, Y: Integer; Str: PChar; Count: Longint): Boolean; override;
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
