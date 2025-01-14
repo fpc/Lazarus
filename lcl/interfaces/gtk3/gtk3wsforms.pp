@@ -167,7 +167,10 @@ begin
   {$IFDEF GTK3DEBUGCORE}
   DebugLn('TGtk3WSCustomForm.CreateHandle');
   {$ENDIF}
-  AWindow := TGtk3Window.Create(AWinControl, AParams);
+  if IsFormDesign(AWinControl) or (csDesigning in AWinControl.ComponentState) then
+    AWindow := TGtk3DesignWidget.Create(AWinControl, AParams)
+  else
+    AWindow := TGtk3Window.Create(AWinControl, AParams);
 
   //debugln(['TGtk3WSCustomForm.CreateHandle AWindow.Widget=',Get3WidgetClassName(AWindow.Widget)]);
 
