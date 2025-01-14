@@ -15,21 +15,29 @@
 #==========================================================================
 
 # lazarus documentation directory
-docdir="../../../docs"
+docdir=$(realpath ../../../docs)
+chmdir=../../../docs/chm
 
-# fpdoc executable directory
-fpcdir="../../../fpc/3.2.2/bin/x86_64-win64"
-#fpcdir="../../../../fpc331/fpc/bin/x86_64-win64"
+# path to fpdoc executable and file name
+#fpcdir=$(realpath ../../../../fpc/bin/x86_64-linux)
+fpcdir=$(realpath ~/fpc331/fpc/bin/x86_64-linux)
+fpdocpgm=$fpcdir/fpdoc
 
 # lazarus repository directory
-#gitpath="../../../../usr/work/git-lazarus"
-gitpath=""
+gitpath=$(realpath ../../..)
 
-# version number is hard-coded because main-2_3 tag is not the format needed
-verno="2.3.0"
+# version number, commit hash, generated date, link info for footer files
+#verno="4.99"
+#verno="4.0.0-RC2"
+
+vermaj=`git -C $gitpath describe --long --always | cut -d "-" -f 1 | cut -d "_" -f 2`
+vermin=`git -C $gitpath describe --long --always | cut -d "-" -f 1 | cut -d "_" -f 3`
+verno=$vermaj.$vermin
+commit=`git -C $gitpath describe --all --long | cut -d "-" -f 3 | cut -b "2-"`
 dt=`date +"%Y-%m-%d"`
-# get only the commit hash
-#commit=`git -C "$gitpath" describe --all --long | cut -d "-" -f 3 | cut -b "2-"`
+linkurl="https://dsiders.gitlab.io/lazdocsnext/"
+#linkurl="https://lazarus-ccr.sourceforge.io/docs/"
+linktext="Home"
 
 # chm and html footer files are the same... for now
 # chm footer should have a link to the online HTML
@@ -38,7 +46,7 @@ cat <<EOT > ./datetimectrls-chm-footer.xml
 <table class="footer">
   <tr>
     <td class="footer-doc">Date/Time Controls Package (DateTimeCtrls)</td>
-    <td class="footer-ver">Version $verno</td>
+    <td class="footer-ver">Version $verno-$commit</td>
     <td class="footer-date">Generated $dt</td>
   </tr>
 </table>
@@ -49,8 +57,10 @@ cat <<EOT > ./datetimectrls-html-footer.xml
 <table class="footer">
   <tr>
     <td class="footer-doc">Date/Time Controls Package (DateTimeCtrls)</td>
-    <td class="footer-ver">Version $verno</td>
-    <td class="footer-date">Generated $dt</td>
+    <td class="footer-ver">Version $verno-$commit ($dt)</td>
+    <td class="footer-date">
+      <a href="$linkurl">$linktext</a>
+    </td>
   </tr>
 </table>
 EOT
@@ -62,18 +72,24 @@ echo -e "\n\e[7m DateTimeCtrls package \e[0m";
 # output to current directory
 echo "Generating CHM help..."
 chmTitle="(DateTimeCtrls) Date/Time Controls"
-$fpcdir/fpdoc --project=datetimectrls-project.xml --format=chm --chm-title="$chmTitle" --footer="datetimectrls-chm-footer.xml" --import="$docdir/chm/rtl.xct,ms-its:rtl.chm::/" --import="$docdir/chm/fcl.xct,ms-its:fcl.chm::/" --import="$docdir/chm/lcl.xct,ms-its:lcl.chm::/" --import="$docdir/chm/lazutils.xct,ms-its:lazutils.chm::/" 2>&1 | tee ./build_chm.log
+$fpdocpgm --project=datetimectrls-project.xml --format=chm --chm-title="$chmTitle" --footer=@datetimectrls-chm-footer.xml \
+  --import="$chmdir/rtl.xct,ms-its:rtl.chm::/" --import="$chmdir/fcl.xct,ms-its:fcl.chm::/" \
+  --import="$chmdir/lcl.xct,ms-its:lcl.chm::/" --import="$chmdir/lazutils.xct,ms-its:lazutils.chm::/" \
+  2>&1 | tee ./build_chm.log
 
 # generate html format with footers
 # imports done manually to set the correct prefixs for the html format
 # html written to the datetimectrls sub-directory
 echo "Generating HTML help..."
-$fpcdir/fpdoc --project=datetimectrls-project.xml --format=html --footer="datetimectrls-html-footer.xml" --import="$docdir/chm/rtl.xct,../rtl/" --import="$docdir/chm/fcl.xct,../fcl/" --import="$docdir/chm/lcl.xct,../lcl/" --import="$docdir/chm/lazutils.xct,../lazutils/" --output=datetimectrls  2>&1 | tee ./build_html.log
+$fpdocpgm --project=datetimectrls-project.xml --format=html --footer=@datetimectrls-html-footer.xml \
+  --import="$chmdir/rtl.xct,../rtl/" --import="$chmdir/fcl.xct,../fcl/" \
+  --import="$chmdir/lcl.xct,../lcl/" --import="$chmdir/lazutils.xct,../lazutils/" --output=datetimectrls  \
+  2>&1 | tee ./build_html.log
 
 # copy generated chm, xct to lazarus docs directory
-cp -v datetimectrls.{chm,xct} $docdir/chm/
+cp -v datetimectrls.{chm,xct} $chmdir/
 # copy css file to output directory for generated html content
 cp -v datetimectrls.css datetimectrls/
 
-# run make-archive.sh if needed
-# run clean-files.sh if needed
+# ./make-archive.sh
+# ./clean-files.sh
