@@ -107,32 +107,42 @@ begin
   *)
 end;
 
+
 procedure TGtk3WidgetSet.DrawGrid(DC: HDC; const R: TRect; DX, DY: Integer);
 var
-  X, Y: Integer;
-  W, H: Integer;
-  SavedDC: Integer;
+  x, y: Integer;
+  gc: TGdkRGBA;
+  GtkDC: TGtk3DeviceContext absolute DC;
+  DotSize: integer;
+  //matrix: Tcairo_matrix_t;
 begin
-  SavedDC := SaveDC(DC);
-  try
-    W := (R.Right - R.Left - 1) div DX;
-    H := (R.Bottom - R.Top - 1) div DY;
+  if not IsValidDC(DC) then
+    exit;
 
-    // remove rows from clip rect
-    for Y := 0 to H do
-    begin
-      ExcludeClipRect(DC, R.Left, R.Top + Y * DY + 1, R.Right + 1, R.Top + (Y + 1) * DY);
-    end;
+  gc := TColortoTGdkRGBA(ColorToRGB(GtkDC.CurrentPen.Color));
+  DotSize := Max(1, GtkDC.CurrentPen.Width);
 
-    // draw vertical lines cross excluded rows -> only grid cross points painted
-    for X := 0 to W do
+  cairo_save(GtkDC.pcr);
+  //TODO: cairo_get_matrix(pcr, @matrix);
+  cairo_set_source_rgb(GtkDC.pcr, gc.red, gc.green, gc.blue);
+
+  cairo_set_antialias(GtkDC.pcr, CAIRO_ANTIALIAS_NONE);
+
+  y := R.Top;
+  while y < R.Bottom do
+  begin
+    x := R.Left;
+    while x < R.Right do
     begin
-      if MoveToEx(DC, R.Left + X * DX, R.Top, nil) then
-        LineTo(DC, R.Left + X * DX, R.Bottom + 1);
+      cairo_rectangle(GtkDC.pcr, x, y, DotSize, DotSize);
+      x := x + DX;
     end;
-  finally
-    RestoreDC(DC, SavedDC);
+    y := y + DY;
   end;
+
+  cairo_fill(GtkDC.pcr);
+  cairo_new_path(GtkDC.pcr);
+  cairo_restore(GtkDC.pcr);
 end;
 
 
