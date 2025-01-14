@@ -2031,7 +2031,10 @@ begin
     Result := Widget.Context;
     if (Result = 0) then
     begin
-      Result := HDC(TGtk3DeviceContext.Create(Widget.GetContainerWidget, False));
+      if Gtk3IsGdkWindow(Widget.GetWindow) then
+        Result := HDC(TGtk3DeviceContext.Create(Widget.GetWindow, True))
+      else
+        Result := HDC(TGtk3DeviceContext.Create(Widget.GetContainerWidget, False));
       TGtk3DeviceContext(Result).CanRelease := True;
     end;
   end else
