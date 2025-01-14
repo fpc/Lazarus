@@ -4455,6 +4455,8 @@ begin
     GetContainerWidget^.set_events([GDK_BUTTON_PRESS_MASK, GDK_BUTTON_RELEASE_MASK]);
     g_signal_connect_data(GetContainerWidget, 'button-press-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
     g_signal_connect_data(GetContainerWidget, 'button-release-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(GetContainerWidget, 'enter-notify-event', TGCallback(@gtk_true), Self, nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(GetContainerWidget, 'leave-notify-event', TGCallback(@gtk_true), Self, nil, G_CONNECT_DEFAULT);
   end;
 end;
 
