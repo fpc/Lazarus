@@ -66,6 +66,8 @@ type
     FContext: HDC;
     FPaintData: TPaintData;
     FDrawSignal: GULong; // needed by designer
+    FScrollX: Integer;
+    FScrollY: Integer;
   strict private
     FCentralWidgetRGBA: array [0{GTK_STATE_NORMAL}..4{GTK_STATE_INSENSITIVE}] of TDefaultRGBA;
     FEnterLeaveTime: Cardinal;
@@ -188,6 +190,8 @@ type
     property FontColor: TColor read GetFontColor write SetFontColor;
     property KeysToEat: TByteSet read FKeysToEat write FKeysToEat;
     property PaintData: TPaintData read FPaintData write FPaintData;
+    property ScrollX: Integer read FScrollX write FScrollX;
+    property ScrollY: Integer read FScrollY write FScrollY;
     property StyleContext: PGtkStyleContext read GetStyleContext write SetStyleContext;
     property Text: String read getText write setText;
     property Visible: Boolean read GetVisible write SetVisible;
@@ -474,8 +478,6 @@ type
   TGtk3ScrollableWin = class(TGtk3Container)
   private
     FBorderStyle: TBorderStyle;
-    FScrollX: Integer;
-    FScrollY: Integer;
     function GetHScrollBarPolicy: TGtkPolicyType;
     function GetVScrollBarPolicy: TGtkPolicyType;
     procedure SetBorderStyle(AValue: TBorderStyle);
@@ -491,8 +493,6 @@ type
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle;
     property HScrollBarPolicy: TGtkPolicyType read GetHScrollBarPolicy write SetHScrollBarPolicy;
     property VScrollBarPolicy: TGtkPolicyType read GetVScrollBarPolicy write SetVScrollBarPolicy;
-    property ScrollX: Integer read FScrollX write FScrollX;
-    property ScrollY: Integer read FScrollY write FScrollY;
   end;
 
   { TGtk3ToolBar }
@@ -1650,7 +1650,7 @@ begin
         else
           DebugLn('Gtk3ScrolledWindowScrollEvent: Unknown scroll direction: ', dbgs(AEvent^.scroll.direction));
       end;
-      Exit;
+      //Exit;
   end;
 
   case Msg.Msg of
@@ -1823,8 +1823,8 @@ begin
 
   OffsetMousePos(@MousePos);
 
-  Msg.XPos := SmallInt(MousePos.X);
-  Msg.YPos := SmallInt(MousePos.Y);
+  Msg.XPos := SmallInt(MousePos.X + FScrollX);
+  Msg.YPos := SmallInt(MousePos.Y + FScrollY);
 
   if Mouse.CursorPos=MousePos then exit;
 
@@ -1845,6 +1845,10 @@ var
   AStruct: TPaintStruct;
   AClipRect: TGdkRectangle;
   localClip:TRect;
+  P: TPoint;
+  {$IFDEF GTK3DEBUGDESIGNER}
+  dx, dy: double;
+  {$ENDIF}
 begin
   Result := False;
 
@@ -1860,7 +1864,6 @@ begin
   FillChar(Msg{%H-}, SizeOf(Msg), #0);
 
   Msg.Msg := LM_PAINT;
-  //New(AStruct);
   FillChar(AStruct{%H-}, SizeOf(TPaintStruct), 0);
   Msg.PaintStruct := @AStruct;
 
@@ -1871,11 +1874,16 @@ begin
     else
       PaintWidget := GetContainerWidget;
     ClipRegion := nil;
-    // gdk_cairo_region(AContext, ClipRegion);
-    // Event^.expose.region;
-    //if ClipRect = nil then
-    //  New(ClipRect);
     gdk_cairo_get_clip_rectangle(AContext, @AClipRect);
+
+    {$IFDEF GTK3DEBUGEVENTS}
+    if (Self is TGtk3ScrollableWin) and not (LCLObject is TCustomForm) then
+    begin
+      cairo_get_current_point(AContext, @dx, @dy);
+      writeln(Format('PaintEvent: CairoClip %s dx %2.2n dy %2.2n',[dbgs(RectFromGdkRect(AClipRect)), dx, dy]));
+    end;
+    {$ENDIF}
+
     localClip:=RectFromGdkRect(AClipRect);
     ClipRect := @localClip;
   end;
@@ -1889,16 +1897,41 @@ begin
 
   try
     try
-      // DebugLn('**** Sending paint event to ',dbgsName(LCLObject),' clipRect=',dbgs(PaintData.ClipRect^),' P=',dbgs(P));
+      P := getClientOffset;
+      if Self is TGtk3ScrollableWin then
+      begin
+        {$IFDEF GTK3DEBUGEVENTS}
+        if not (LCLObject is TCustomForm) then
+          writeln('*** Paintevent changing P from ',dbgs(P));
+        {$ENDIF}
+
+        if (Self is TGtk3CustomControl) then
+        begin
+          inc(P.X, -(Self as TGtk3ScrollableWin).ScrollX);
+          inc(P.Y, -(Self as TGtk3ScrollableWin).ScrollY);
+        end else
+        begin
+          with (Self as TGtk3ScrollableWin) do
+          begin
+            if getHorizontalScrollbar^.visible then
+              P.X := Round(getHorizontalScrollbar^.adjustment^.get_value);
+            if getVerticalScrollbar^.visible then
+              P.Y := Round(getverticalScrollbar^.adjustment^.get_value);
+          end;
+        end;
+        cairo_translate(AContext, P.X, P.Y);
+        {$IFDEF GTK3DEBUGEVENTS}
+        if not (LCLObject is TCustomForm) then
+          writeln('**** Paintevent to ',dbgsName(LCLObject),' clipRect=',dbgs(PaintData.ClipRect^),' translate P=',dbgs(P));
+        {$ENDIF}
+      end;
       DoBeforeLCLPaint;
       LCLObject.WindowProc(TLMessage(Msg));
     finally
       FCairoContext := nil;
-      //Dispose(PaintData.ClipRect);
       Fillchar(FPaintData, SizeOf(FPaintData), 0);
       FContext := 0;
       EndPaint(HWND(Self), AStruct);
-      //Dispose(AStruct);
     end;
   except
     Application.HandleException(nil);
@@ -2283,8 +2316,8 @@ begin
 
   Msg.Keys := GdkModifierStateToLCL(Event^.button.state, False);
 
-  Msg.XPos := SmallInt(MousePos.X);
-  Msg.YPos := SmallInt(MousePos.Y);
+  Msg.XPos := SmallInt(MousePos.X + FScrollX);
+  Msg.YPos := SmallInt(MousePos.Y + FScrollY);
 
   MButton := Event^.button.button;
 
@@ -2720,6 +2753,8 @@ var
   ARgba: TGdkRGBA;
   i: TGtkStateType;
 begin
+  FScrollX := 0;
+  FScrollY := 0;
   FFocusableByMouse := False;
   FCentralWidget := nil;
   FCairoContext := nil;
@@ -3334,7 +3369,7 @@ begin
           GetContainerWidget^.queue_draw_area(Left, Top, Right - Left, Bottom - Top);
     end else
     begin
-      FWidget^.queue_draw;
+      //FWidget^.queue_draw;
       if FWidget <> GetContainerWidget then
         GetContainerWidget^.queue_draw;
     end;
