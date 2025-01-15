@@ -1794,13 +1794,16 @@ function TGtk3Widget.GtkEventMouseMove(Sender: PGtkWidget; Event: PGdkEvent
 var
   Msg: TLMMouseMove;
   MousePos: TPoint;
+  {$IFDEF GTK3DEBUGEVENTS}
+  R: TRect;
+  {$ENDIF}
 begin
   Result := False;
 
   {$IFDEF GTK3DEBUGEVENTS}
   R := GetClientBounds;
   DebugLn(['GtkEventMouseMove: ',dbgsName(LCLObject),' Send=',dbgs(Event^.motion.send_event),
-  ' state=',dbgs(event^.motion.state),
+  ' state=',dbgs(LongInt(event^.motion.state)),
   ' x=',dbgs(Round(event^.motion.x)),
   ' y=',dbgs(Round(event^.motion.y)),
   ' x_root=',dbgs(Round(event^.motion.x_root)),
