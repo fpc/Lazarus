@@ -1649,13 +1649,15 @@ begin
           DebugLn('Gtk3ScrolledWindowScrollEvent: Use PGtkWidget^.set_events(GDK_DEFAULT_EVENTS_MASK) in CreateWidget to prevent GTK3 bug with GDK_SCROLL_SMOOTH')
         else
           DebugLn('Gtk3ScrolledWindowScrollEvent: Unknown scroll direction: ', dbgs(AEvent^.scroll.direction));
+        Exit;
       end;
-      //Exit;
   end;
 
   case Msg.Msg of
     LM_VSCROLL: Range := PGtkRange(AScrollWindow^.get_vscrollbar);
     LM_HSCROLL: Range := PGtkRange(AScrollWindow^.get_hscrollbar);
+    else
+      raise Exception.CreateFmt('Gtk3ScrolledWindowScrollEvent: Untranslated event %d !',[Ord(AEvent^.scroll.direction)]);
   end;
 
   AValue :=  power(Range^.adjustment^.page_size, 2 / 3);
