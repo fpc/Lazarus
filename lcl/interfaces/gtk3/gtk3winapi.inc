@@ -3448,14 +3448,164 @@ begin
   Result := TGtk3Widget(Handle).ScreenToClient(P);
 end;
 
+{------------------------------------------------------------------------------
+  Function: ScrollWindowEx
+  Params:  hWnd:       handle of window to scroll
+           dx:         horizontal amount to scroll
+           dy:         vertical amount to scroll
+           prcScroll:  pointer to scroll rectangle
+           prcClip:    pointer to clip rectangle
+           hrgnUpdate: handle of update region
+           prcUpdate:  pointer to update rectangle
+           flags:      scrolling flags
+
+  Returns: True if succesfull;
+
+  The ScrollWindowEx function scrolls the content of the specified window's
+  client area.
+ ------------------------------------------------------------------------------}
 function TGtk3WidgetSet.ScrollWindowEx(hWnd: HWND; dx, dy: Integer; prcScroll,
   prcClip: PRect; hrgnUpdate: HRGN; prcUpdate: PRect; flags: UINT): Boolean;
+var
+  Widget: TGtk3Widget absolute HwnD;
+  Region: Pcairo_region_t;
+  GdkWindow: PGdkWindow;
+  ScrollRect, ClipRect: TRect;
+  UpdateRect: Tcairo_rectangle_int_t;
+  cairoRegion: Pcairo_region_t;
+  CurX, CurY: integer;
+  SFlags: string;
+  R: TRect;
+  cr: Pcairo_t;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  DebugLn('WARNING: TGtk3WidgetSet.ScrollWindowEx not implemented ...');
+  Result := False;
+
+  if not IsValidHandle(hWnd) then
+  begin
+    {$IFDEF DEBUGSCROLLWINDOWEX}
+    writeln('<ScrollWindowEx invalid handle.');
+    {$ENDIF}
+    exit;
+  end;
+
+  if Widget = nil then
+  begin
+    {$IFDEF DEBUGSCROLLWINDOWEX}
+    writeln('<ScrollWindowEx invalid handle widget.');
+    {$ENDIF}
+    Exit;
+  end;
+
+  {$IFDEF DEBUGSCROLLWINDOWEX}
+  //SW_SMOOTHSCROLL = 16;
+  //SW_ERASE = 4;
+  //SW_INVALIDATE = 2;
+  //SW_SCROLLCHILDREN = 1;
+  SFlags := ' ';
+  if Flags and SW_SCROLLCHILDREN <> 0 then
+    SFlags := SFlags + 'SW_SCROLLCHILDREN ';
+  if Flags and SW_INVALIDATE <> 0 then
+    SFlags := SFlags + 'SW_INVALIDATE ';
+  if Flags and SW_ERASE <> 0 then
+    SFlags := SFlags + 'SW_ERASE ';
+  if Flags and SW_SMOOTHSCROLL <> 0 then
+    SFlags := SFlags + 'SW_SMOOTHSCROLL';
+  SFlags := Trim(SFlags);
+  writeln('===>ScrollWindowEx Handle=',dbgHex(hWnd),' dx=',dx,' dy=',dy,' prcS=',prcScroll<>nil,' prC=',prcClip <> nil,' HRGN=',dbgHex(hrgnUpdate),' prcU=',prcUpdate <> nil,' Flags="',SFlags,'" ',dbgsName(Widget.LCLObject));
   {$ENDIF}
-  Result:=inherited ScrollWindowEx(hWnd, dx, dy, prcScroll, prcClip,
-    hrgnUpdate, prcUpdate, flags);
+
+  GdkWindow := gtk_widget_get_window(Widget.getContainerWidget);
+
+  if (GdkWindow <> nil) and not Gtk3IsGdkWindow(GdkWindow) then
+    GdkWindow := nil;
+
+  if Flags and SW_SCROLLCHILDREN <> 0 then
+  begin
+    if GdkWindow = nil then
+    begin
+      {$IFDEF DEBUGSCROLLWINDOWEX}
+      writeln('<ScrollWindowEx invalid GdkWindow.');
+      {$ENDIF}
+      Exit;
+    end;
+
+    // Ensure the widget is realized and visible
+    if not gtk_widget_get_realized(Widget.GetContainerWidget) or not gtk_widget_get_visible(Widget.getContainerWidget) then
+    begin
+      {$IFDEF DEBUGSCROLLWINDOWEX}
+      writeln('<ScrollWindowEx widget not realized or not visible.');
+      {$ENDIF}
+      Exit;
+    end;
+  end;
+
+  if prcScroll <> nil then
+    ScrollRect := prcScroll^
+  else
+    ScrollRect := Rect(0, 0, gtk_widget_get_allocated_width(Widget.getContainerWidget),
+      gtk_widget_get_allocated_height(Widget.getContainerWidget));
+
+  if prcClip <> nil then
+    ClipRect := prcClip^
+  else
+    ClipRect := ScrollRect;
+
+  if hrgnUpdate <> 0 then
+    cairoRegion := TGtk3Region(hrgnUpdate).Handle
+  else
+    cairoRegion := nil;
+
+  if ((Flags and SW_SCROLLCHILDREN) <> 0) then
+  begin
+    gdk_window_scroll(GdkWindow, dx, dy);
+  end else
+  begin
+    if Widget is TGtk3ScrollableWin then
+    begin
+      CurX := (Widget as TGtk3ScrollableWin).ScrollX;
+      CurY := (Widget as TGtk3ScrollableWin).ScrollY;
+      (Widget as TGtk3ScrollableWin).ScrollX := CurX + dx;
+      (Widget as TGtk3ScrollableWin).ScrollY := CurY + dy;
+    end;
+    // with ScrollRect do
+    //  gtk_widget_queue_draw_area(Widget.GetContainerWidget, Left, Top, Width, Height);
+  end;
+
+  if (Flags and SW_ERASE) <> 0 then
+  begin
+    {$IFDEF DEBUGSCROLLWINDOWEX}
+    if cairoRegion <> nil then
+    begin
+      cairo_region_get_extents(cairoRegion, @UpdateRect);
+      R := Bounds(UpdateRect.x, UpdateRect.y, UpdateRect.Width, UpdateRect.Height);
+    end else
+      R := Rect(0, 0, 0, 0);
+    writeln('ClipRect=',dbgs(ClipRect),' ScrollRect=',dbgs(ScrollRect),' R=',dbgs(R));
+    if IsRectEmpty(R) then
+      R := ScrollRect;
+    {$ENDIF}
+    gtk_widget_queue_draw(Widget.Widget);
+  end else
+  if (Flags and SW_INVALIDATE) <> 0 then
+  begin
+    if cairoRegion <> nil then
+    begin
+      cairo_region_get_extents(cairoRegion, @UpdateRect);
+      R := Bounds(UpdateRect.x, UpdateRect.y, UpdateRect.Width, UpdateRect.Height);
+      prcUpdate := @R;
+      gtk_widget_queue_draw_area(Widget.GetContainerWidget, UpdateRect.x, UpdateRect.y, UpdateRect.width, UpdateRect.Height);
+    end else
+    if prcClip <> nil then
+    begin
+      prcUpdate := prcClip;
+      with prcClip^ do
+        gtk_widget_queue_draw_area(Widget.GetContainerWidget, Left, Top, Width, Height);
+    end;
+  end;
+  {$IFDEF DEBUGSCROLLWINDOWEX}
+  writeln('<===ScrollWindowEx.');
+  {$ENDIF}
+  Result := True;
 end;
 
 function TGtk3WidgetSet.SelectClipRGN(DC: hDC; RGN: HRGN): Longint;
