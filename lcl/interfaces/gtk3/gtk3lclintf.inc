@@ -1303,9 +1303,12 @@ end;
 
 function TGtk3WidgetSet.IsDesignerDC(WindowHandle: HWND; DC: HDC): Boolean;
 begin
+  Result := False;
+  {Seem that this below is ok only if we are widgetset which cannot paint outside of paint event.
   Result := IsValidHandle(WindowHandle) and (TGtk3Widget(WindowHandle) is TGtk3DesignWidget);
   if Result then
     Result := TGtk3DesignWidget(WindowHandle).DesignContext = DC;
+  }
 end;
 
 function TGtk3WidgetSet.ReleaseDesignerDC(Window: HWND; DC: HDC): Integer;
