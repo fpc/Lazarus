@@ -4455,26 +4455,43 @@ begin
     Result := True;
 end;
 
+function enterLeaveNotifyEvent(widget: PGtkWidget; event: PGdkEvent; user_data: gpointer): gboolean; cdecl;
+var
+  AEvent: TGdkEvent;
+begin
+  Result := TGtk3Widget(user_data).GtkEventMouseEnterLeave(Widget, Event);
+  {TODO: check if we can block button_press also}
+  if event^.type_ = GDK_LEAVE_NOTIFY then
+    Result := True;
+end;
+
+function motionNotifyEvent(widget: PGtkWidget; event: PGdkEvent; user_data: gpointer): gboolean; cdecl;
+begin
+  TGtk3Widget(user_data).GtkEventMouseMove(widget, event);
+  Result := True;
+end;
+
 procedure TGtk3Container.InitializeWidget;
 begin
   inherited InitializeWidget;
   if IsDesigning then
   begin
-    if Widget <> getContainerWidget then
+    (*
+    if (Widget <> getContainerWidget) then
     begin
-      Widget^.set_events([GDK_BUTTON_PRESS_MASK, GDK_BUTTON_RELEASE_MASK]);
+      //Widget^.set_events([GDK_BUTTON_PRESS_MASK, GDK_BUTTON_RELEASE_MASK]);
       g_signal_connect_data(Widget, 'button-press-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
       g_signal_connect_data(Widget, 'button-release-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
-      g_signal_connect_data(Widget, 'enter-notify-event', TGCallback(@gtk_true), Self, nil, G_CONNECT_DEFAULT);
-      g_signal_connect_data(Widget, 'leave-notify-event', TGCallback(@gtk_true), Self, nil, G_CONNECT_DEFAULT);
-      g_signal_connect_data(Widget, 'motion-notify-event', TGCallback(@gtk_true), Self, nil, G_CONNECT_DEFAULT);
+      g_signal_connect_data(Widget, 'enter-notify-event', TGCallback(@enterLeaveNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
+      g_signal_connect_data(Widget, 'leave-notify-event', TGCallback(@enterLeaveNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
+      g_signal_connect_data(Widget, 'motion-notify-event', TGCallback(@motionNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
     end;
-    GetContainerWidget^.set_events([GDK_BUTTON_PRESS_MASK, GDK_BUTTON_RELEASE_MASK]);
+    *)
     g_signal_connect_data(GetContainerWidget, 'button-press-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
     g_signal_connect_data(GetContainerWidget, 'button-release-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
-    g_signal_connect_data(GetContainerWidget, 'enter-notify-event', TGCallback(@gtk_true), Self, nil, G_CONNECT_DEFAULT);
-    g_signal_connect_data(GetContainerWidget, 'leave-notify-event', TGCallback(@gtk_true), Self, nil, G_CONNECT_DEFAULT);
-    g_signal_connect_data(GetContainerWidget, 'motion-notify-event', TGCallback(@gtk_true), Self, nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(GetContainerWidget, 'enter-notify-event', TGCallback(@enterLeaveNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(GetContainerWidget, 'leave-notify-event', TGCallback(@enterLeaveNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(GetContainerWidget, 'motion-notify-event', TGCallback(@motionNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
   end;
 end;
 
@@ -5233,21 +5250,27 @@ begin
   inherited InitializeWidget;
   if IsDesigning then
   begin
-    ApplyNoHoverCss(Widget);
+    // do not applyc css for now ApplyNoHoverCss(Widget);
+
     // do not flash scrollbars and make unneeded paint events.
     PGtkScrolledWindow(Widget)^.set_policy(GTK_POLICY_ALWAYS, GTK_POLICY_ALWAYS);
-    // completely disable mouse over scrollbars
+    // we won't hook signals during design time atm, it is easier for designer debugging.
+    getHorizontalScrollbar^.sensitive := False;
+    getVerticalScrollbar^.sensitive := False;
+
+    (*
     g_signal_connect_data(getHorizontalScrollbar, 'button-press-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
     g_signal_connect_data(getHorizontalScrollbar, 'button-release-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
-    g_signal_connect_data(getHorizontalScrollbar, 'enter-notify-event', TGCallback(@gtk_true), Self, nil, G_CONNECT_DEFAULT);
-    g_signal_connect_data(getHorizontalScrollbar, 'leave-notify-event', TGCallback(@gtk_true), Self, nil, G_CONNECT_DEFAULT);
-    g_signal_connect_data(getHorizontalScrollbar, 'motion-notify-event', TGCallback(@gtk_true), Self, nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(getHorizontalScrollbar, 'enter-notify-event', TGCallback(@enterLeaveNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(getHorizontalScrollbar, 'leave-notify-event', TGCallback(@enterLeaveNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(getHorizontalScrollbar, 'motion-notify-event', TGCallback(@motionNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
 
     g_signal_connect_data(getVerticalScrollbar, 'button-press-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
     g_signal_connect_data(getVerticalScrollbar, 'button-release-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
-    g_signal_connect_data(getVerticalScrollbar, 'enter-notify-event', TGCallback(@gtk_true), Self, nil, G_CONNECT_DEFAULT);
-    g_signal_connect_data(getVerticalScrollbar, 'leave-notify-event', TGCallback(@gtk_true), Self, nil, G_CONNECT_DEFAULT);
-    g_signal_connect_data(getVerticalScrollbar, 'motion-notify-event', TGCallback(@gtk_true), Self, nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(getVerticalScrollbar, 'enter-notify-event', TGCallback(@enterLeaveNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(getVerticalScrollbar, 'leave-notify-event', TGCallback(@enterLeaveNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(getVerticalScrollbar, 'motion-notify-event', TGCallback(@motionNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
+    *)
   end;
 end;
 
@@ -6917,13 +6940,27 @@ begin
     // catch all mouse events on gtkentry.
     if IsDesigning then
     begin
-      PGtkEntry(PGtkComboBox(Result)^.get_child)^.set_events([GDK_BUTTON_PRESS_MASK, GDK_BUTTON_RELEASE_MASK]);
+      // maybe set disabled
+      {$note this does not work, must make search via children list}
+      (*
+      g_signal_connect_data(PGtkComboBox(Result)^.priv3^.button, 'button-press-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
+      g_signal_connect_data(PGtkComboBox(Result)^.priv3^.button, 'button-release-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
+      g_signal_connect_data(PGtkComboBox(Result)^.priv3^.button, 'enter-notify-event', TGCallback(@enterLeaveNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
+      g_signal_connect_data(PGtkComboBox(Result)^.priv3^.button, 'leave-notify-event', TGCallback(@enterLeaveNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
+
+      g_signal_connect_data(PGtkComboBox(Result)^.priv3^.arrow, 'button-press-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
+      g_signal_connect_data(PGtkComboBox(Result)^.priv3^.arrow, 'button-release-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
+      g_signal_connect_data(PGtkComboBox(Result)^.priv3^.arrow, 'enter-notify-event', TGCallback(@enterLeaveNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
+      g_signal_connect_data(PGtkComboBox(Result)^.priv3^.arrow, 'leave-notify-event', TGCallback(@enterLeaveNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
+      *)
+      PGtkComboBox(Result)^.priv3^.button^.set_sensitive(gtk_false);
+      PGtkComboBox(Result)^.priv3^.arrow^.set_sensitive(gtk_false);
+
       g_signal_connect_data(PGtkEntry(PGtkComboBox(Result)^.get_child), 'button-press-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
       g_signal_connect_data(PGtkEntry(PGtkComboBox(Result)^.get_child), 'button-release-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
-      g_signal_connect_data(PGtkEntry(PGtkComboBox(Result)^.get_child), 'enter-notify-event', TGCallback(@gtk_true), Self, nil, G_CONNECT_DEFAULT);
-      g_signal_connect_data(PGtkEntry(PGtkComboBox(Result)^.get_child), 'leave-notify-event', TGCallback(@gtk_true), Self, nil, G_CONNECT_DEFAULT);
-      g_signal_connect_data(PGtkEntry(PGtkComboBox(Result)^.get_child), 'motion-notify-event', TGCallback(@gtk_true), Self, nil, G_CONNECT_DEFAULT);
-
+      g_signal_connect_data(PGtkEntry(PGtkComboBox(Result)^.get_child), 'enter-notify-event', TGCallback(@enterLeaveNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
+      g_signal_connect_data(PGtkEntry(PGtkComboBox(Result)^.get_child), 'leave-notify-event', TGCallback(@enterLeaveNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
+      // g_signal_connect_data(PGtkEntry(PGtkComboBox(Result)^.get_child), 'motion-notify-event', TGCallback(@motionNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
       PGtkEntry(PGtkComboBox(Result)^.get_child)^.set_can_focus(False);
     end else
       PGtkEntry(PGtkComboBox(Result)^.get_child)^.set_events(GDK_DEFAULT_EVENTS_MASK);
