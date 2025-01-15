@@ -482,6 +482,7 @@ type
     procedure SetHScrollBarPolicy(AValue: TGtkPolicyType); virtual;
     procedure SetVScrollBarPolicy(AValue: TGtkPolicyType); virtual;
   public
+    procedure InitializeWidget;override;
     procedure SetScrollBarsSignalHandlers;
     function getClientBounds: TRect; override;
     function getHorizontalScrollbar: PGtkScrollbar; virtual; abstract;
@@ -1904,13 +1905,13 @@ end;
 function TGtk3Widget.GtkEventResize(Sender: PGtkWidget; Event: PGdkEvent
   ): Boolean; cdecl;
 begin
-  {-$IF DEFINED(GTK3DEBUGEVENTS) OR DEFINED(GTK3DEBUGSIZE)}
+  {$IF DEFINED(GTK3DEBUGEVENTS) OR DEFINED(GTK3DEBUGSIZE)}
   DebugLn('GtkEventResize: ',dbgsName(LCLObject),' Send=',dbgs(Event^.configure.send_event),
   ' x=',dbgs(Round(event^.configure.x)),
   ' y=',dbgs(Round(event^.configure.y)),
   ' w=',dbgs(Round(event^.configure.width)),
   ' h=',dbgs(Round(event^.configure.height)));
-  {-$ENDIF}
+  {$ENDIF}
   Result := false;
 end;
 
@@ -2656,9 +2657,13 @@ begin
   if IsValidHandle and FOwnWidget then
   begin
     fOwnWidget:=false;
+    {$IFDEF GTK3DEBUGCORE}
     DbgOut(#10'destroying '+Classname+' ... ');
+    {$ENDIF}
     FWidget^.destroy_;
+    {$IFDEF GTK3DEBUGCORE}
     DbgOut(Classname+' destroyed.'+#10);
+    {$ENDIF}
   end;
   FWidget := nil;
 end;
@@ -4452,11 +4457,21 @@ begin
   inherited InitializeWidget;
   if IsDesigning then
   begin
+    if Widget <> getContainerWidget then
+    begin
+      Widget^.set_events([GDK_BUTTON_PRESS_MASK, GDK_BUTTON_RELEASE_MASK]);
+      g_signal_connect_data(Widget, 'button-press-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
+      g_signal_connect_data(Widget, 'button-release-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
+      g_signal_connect_data(Widget, 'enter-notify-event', TGCallback(@gtk_true), Self, nil, G_CONNECT_DEFAULT);
+      g_signal_connect_data(Widget, 'leave-notify-event', TGCallback(@gtk_true), Self, nil, G_CONNECT_DEFAULT);
+      g_signal_connect_data(Widget, 'motion-notify-event', TGCallback(@gtk_true), Self, nil, G_CONNECT_DEFAULT);
+    end;
     GetContainerWidget^.set_events([GDK_BUTTON_PRESS_MASK, GDK_BUTTON_RELEASE_MASK]);
     g_signal_connect_data(GetContainerWidget, 'button-press-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
     g_signal_connect_data(GetContainerWidget, 'button-release-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
     g_signal_connect_data(GetContainerWidget, 'enter-notify-event', TGCallback(@gtk_true), Self, nil, G_CONNECT_DEFAULT);
     g_signal_connect_data(GetContainerWidget, 'leave-notify-event', TGCallback(@gtk_true), Self, nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(GetContainerWidget, 'motion-notify-event', TGCallback(@gtk_true), Self, nil, G_CONNECT_DEFAULT);
   end;
 end;
 
@@ -5166,7 +5181,7 @@ var
   APolicyH, APolicyV: TGtkPolicyType;
 begin
   AScrollWin := getScrolledWindow;
-  if not Gtk3IsScrolledWindow(AScrollWin) then
+  if not Gtk3IsScrolledWindow(AScrollWin) or IsDesigning then
     exit;
   AScrollWin^.get_policy(@APolicyH, @APolicyV);
   AScrollWin^.set_policy(AValue, APolicyV);
@@ -5178,10 +5193,59 @@ var
   APolicyH, APolicyV: TGtkPolicyType;
 begin
   AScrollWin := getScrolledWindow;
-  if not Gtk3IsScrolledWindow(AScrollWin) then
+  if not Gtk3IsScrolledWindow(AScrollWin) or IsDesigning then
     exit;
   AScrollWin^.get_policy(@APolicyH, @APolicyV);
   AScrollWin^.set_policy(APolicyH, AValue);
+end;
+
+procedure ApplyNoHoverCss(Widget: PGtkWidget);
+var
+  CssProvider: PGtkCssProvider;
+  StyleContext: PGtkStyleContext;
+  CssData: PChar;
+begin
+  // Define the CSS data
+  CssData := 'scrollbar { transition: none; }' + LineEnding +
+             'scrollbar:hover { background-color: transparent; }' + LineEnding +
+             'scrollbar slider:hover { background-color: transparent; }';
+
+  // Create a new CSS provider
+  CssProvider := gtk_css_provider_new();
+  gtk_css_provider_load_from_data(CssProvider, CssData, -1, nil);
+
+  // Get the style context of the widget
+  StyleContext := gtk_widget_get_style_context(Widget);
+
+  // Add the CSS provider to the style context
+  gtk_style_context_add_provider(StyleContext, PGtkStyleProvider(CssProvider), GTK_STYLE_PROVIDER_PRIORITY_USER);
+
+  // Unreference the CSS provider
+  g_object_unref(CssProvider);
+end;
+
+
+procedure TGtk3ScrollableWin.InitializeWidget;
+begin
+  inherited InitializeWidget;
+  if IsDesigning then
+  begin
+    ApplyNoHoverCss(Widget);
+    // do not flash scrollbars and make unneeded paint events.
+    PGtkScrolledWindow(Widget)^.set_policy(GTK_POLICY_ALWAYS, GTK_POLICY_ALWAYS);
+    // completely disable mouse over scrollbars
+    g_signal_connect_data(getHorizontalScrollbar, 'button-press-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(getHorizontalScrollbar, 'button-release-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(getHorizontalScrollbar, 'enter-notify-event', TGCallback(@gtk_true), Self, nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(getHorizontalScrollbar, 'leave-notify-event', TGCallback(@gtk_true), Self, nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(getHorizontalScrollbar, 'motion-notify-event', TGCallback(@gtk_true), Self, nil, G_CONNECT_DEFAULT);
+
+    g_signal_connect_data(getVerticalScrollbar, 'button-press-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(getVerticalScrollbar, 'button-release-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(getVerticalScrollbar, 'enter-notify-event', TGCallback(@gtk_true), Self, nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(getVerticalScrollbar, 'leave-notify-event', TGCallback(@gtk_true), Self, nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(getVerticalScrollbar, 'motion-notify-event', TGCallback(@gtk_true), Self, nil, G_CONNECT_DEFAULT);
+  end;
 end;
 
 function Gtk3RangeScrollCB(ARange: PGtkRange; AScrollType: TGtkScrollType;
@@ -5550,12 +5614,7 @@ end;
 procedure TGtk3ListBox.InitializeWidget;
 begin
   inherited InitializeWidget;
-  if IsDesigning then
-  begin
-    GetContainerWidget^.set_events([GDK_BUTTON_PRESS_MASK, GDK_BUTTON_RELEASE_MASK]);
-    g_signal_connect_data(GetContainerWidget, 'button-press-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
-    g_signal_connect_data(GetContainerWidget, 'button-release-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
-  end else
+  if not IsDesigning then
     g_signal_connect_data(GetSelection, 'changed', TGCallback(@Gtk3ListBoxSelectionChanged), Self, nil, G_CONNECT_DEFAULT);
 end;
 
@@ -6858,6 +6917,10 @@ begin
       PGtkEntry(PGtkComboBox(Result)^.get_child)^.set_events([GDK_BUTTON_PRESS_MASK, GDK_BUTTON_RELEASE_MASK]);
       g_signal_connect_data(PGtkEntry(PGtkComboBox(Result)^.get_child), 'button-press-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
       g_signal_connect_data(PGtkEntry(PGtkComboBox(Result)^.get_child), 'button-release-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
+      g_signal_connect_data(PGtkEntry(PGtkComboBox(Result)^.get_child), 'enter-notify-event', TGCallback(@gtk_true), Self, nil, G_CONNECT_DEFAULT);
+      g_signal_connect_data(PGtkEntry(PGtkComboBox(Result)^.get_child), 'leave-notify-event', TGCallback(@gtk_true), Self, nil, G_CONNECT_DEFAULT);
+      g_signal_connect_data(PGtkEntry(PGtkComboBox(Result)^.get_child), 'motion-notify-event', TGCallback(@gtk_true), Self, nil, G_CONNECT_DEFAULT);
+
       PGtkEntry(PGtkComboBox(Result)^.get_child)^.set_can_focus(False);
     end else
       PGtkEntry(PGtkComboBox(Result)^.get_child)^.set_events(GDK_DEFAULT_EVENTS_MASK);
@@ -7238,7 +7301,8 @@ end;
 procedure TGtk3ToggleButton.InitializeWidget;
 begin
   inherited InitializeWidget;
-  g_signal_connect_data(FWidget, 'toggled', TGCallback(@Gtk3Toggled), Self, nil, G_CONNECT_DEFAULT);
+  if not IsDesigning then
+    g_signal_connect_data(FWidget, 'toggled', TGCallback(@Gtk3Toggled), Self, nil, G_CONNECT_DEFAULT);
 end;
 
 function TGtk3ToggleButton.CreateWidget(const Params: TCreateParams): PGtkWidget;
@@ -7403,8 +7467,11 @@ end;
 procedure TGtk3CustomControl.InitializeWidget;
 begin
   inherited InitializeWidget;
-  SetScrollBarsSignalHandlers;
-  g_signal_connect_data(GetScrolledWindow,'scroll-event', TGCallback(@Gtk3ScrolledWindowScrollEvent), Self, nil, G_CONNECT_DEFAULT);
+  if not IsDesigning then
+  begin
+    SetScrollBarsSignalHandlers;
+    g_signal_connect_data(GetScrolledWindow,'scroll-event', TGCallback(@Gtk3ScrolledWindowScrollEvent), Self, nil, G_CONNECT_DEFAULT);
+  end;
 end;
 
 procedure TGtk3CustomControl.UpdateWidgetConstraints;
@@ -8507,7 +8574,9 @@ begin
       with ARect do
         writeln('Queued new draw for designer ?!? x=',x,' y=',y,' w=',width,' h=',height);
       {$ENDIF}
-      AWidget^.queue_draw;
+      //do not queue any draw for now
+      //with ARect do
+      //  AWidget^.queue_draw_area(x, y , width, height);
     end;
     {$IFDEF GTK3DEBUGDESIGNER}
     writeln('<Gtk3DrawDesigner ');
