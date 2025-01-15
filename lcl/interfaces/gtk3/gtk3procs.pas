@@ -25,7 +25,7 @@ uses
   BaseUnix, Unix,
   {$ENDIF}
   Classes, SysUtils, Controls, StdCtrls, Graphics,
-  LazGtk3, LazGdk3, LazGLib2, LazGObject2, LazGdkPixbuf2, LazPango1,
+  LazGtk3, LazGdk3, LazGLib2, LazGObject2, LazGdkPixbuf2, LazPango1, Lazcairo1,
   LCLType, InterfaceBase;
 
 type
@@ -304,6 +304,9 @@ function RectFromPangoRect(APangoRect: TPangoRectangle): TRect;
 function GdkRectFromRect(R: TRect): TGdkRectangle;
 function GtkAllocationFromRect(R: TRect): TGtkAllocation;
 
+function CairoRectFromRect(const R: TRect): Tcairo_rectangle_int_t;
+function RectFromCairoRect(const ACairoRect: Tcairo_rectangle_int_t): TRect;
+
 function GdkKeyToLCLKey(AValue: Word): Word;
 function GdkModifierStateToLCL(AState: TGdkModifierType; const AIsKeyEvent: Boolean): PtrInt;
 function GdkModifierStateToShiftState(AState: TGdkModifierType): TShiftState;
@@ -417,6 +420,28 @@ begin
     y := R.Top;
     width := R.Right-R.Left;
     height := R.Bottom-R.Top;
+  end;
+end;
+
+function CairoRectFromRect(const R:TRect):Tcairo_rectangle_int_t;
+begin
+  with Result do
+  begin
+    x := R.Left;
+    y := R.Top;
+    width := R.Right-R.Left;
+    height := R.Bottom-R.Top;
+  end;
+end;
+
+function RectFromCairoRect(const ACairoRect:Tcairo_rectangle_int_t):TRect;
+begin
+  with Result do
+  begin
+    Left := ACairoRect.x;
+    Top := ACairoRect.y;
+    Right := Left + ACairoRect.Width;
+    Bottom := Top + ACairoRect.Height;
   end;
 end;
 
@@ -1321,5 +1346,6 @@ begin
   end;
   g_list_free(TopList);
 end;
+
 
 end.
