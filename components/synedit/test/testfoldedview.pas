@@ -299,7 +299,7 @@ end;
 procedure TTestFoldedView.SetLines(AText: array of String);
 begin
   inherited SetLines(AText);
-  FoldedView.TopLine := 1;
+  FoldedView.TopViewPos := 1;
   FoldedView.LinesInWindow := Length(AText) + 2;
 end;
 
@@ -896,7 +896,7 @@ procedure TTestFoldedView.TestFold;
         TstScreenLineToTextIndex('', [-1,-1,  5,-1 ]);    // 0-base => 0-base
        SynEdit.Options := SynEdit.Options + [eoScrollPastEof];
        SynEdit.TopLine := 5; // now the visible TxtIdx=0 line, is just before the screen [-1]
-        AssertEquals('FoldView.topline', 2, FoldedView.TopLine);
+        AssertEquals('FoldView.topline', 2, FoldedView.TopViewPos);
         TstTextIndexToScreenLine('TopLine=2', [0,-1,  4,0 ], True); // 0-base => 0 base
         TstScreenLineToTextIndex('TopLine=2', [-1,0,  4,-1 ]);    // 0-base => 0-base
 

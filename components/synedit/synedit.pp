@@ -2455,7 +2455,7 @@ begin
   fWantTabs := True;
   fTabWidth := 8;
   FOldTopView := 1;
-  FFoldedLinesView.TopLine := 1;
+  FFoldedLinesView.TopViewPos := 1;
   // find / replace
   fTSearch := TSynEditSearch.Create;
   FOptions := SYNEDIT_DEFAULT_OPTIONS;
@@ -5750,7 +5750,7 @@ begin
     Required, if "TopView := TopView" or "TopLine := TopLine" is called,
     after ScanRanges (used to be: LineCountChanged / LineTextChanged)
   *)
-  FFoldedLinesView.TopLine := AValue;
+  FFoldedLinesView.TopViewPos := AValue;
 
   if FTextArea.TopLine <> AValue then begin
     if FPaintLock = 0 then

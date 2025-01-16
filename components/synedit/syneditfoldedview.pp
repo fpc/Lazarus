@@ -390,7 +390,7 @@ type
     FMarkupInfoFoldedCode: TSynSelectedColor;
     FMarkupInfoFoldedCodeLine: TSynSelectedColor;
     FMarkupInfoHiddenCodeLine: TSynSelectedColor;
-    fTopLine : Integer;
+    fTopViewPos : TLinePos;
     fLinesInWindow : Integer;          // there may be an additional part visible line
     fTextIndexList : Array of integer;   (* Map each Screen line into a line in textbuffer *)
     fFoldTypeList : Array of TSynEditFoldLineMapInfo;
@@ -410,7 +410,7 @@ type
       var Handled: boolean; var Command: TSynEditorCommand;
       var AChar: TUTF8Char; Data: pointer; HandlerData: pointer);
     procedure SetHighLighter(AValue: TSynCustomHighlighter);
-    procedure SetTopLine(const ALine : integer);
+    procedure SetTopViewPos(const ALine : integer);
     function  GetTopTextIndex : integer;
     procedure SetTopTextIndex(const AIndex : integer);
     procedure SetLinesInWindow(const AValue : integer);
@@ -474,8 +474,9 @@ type
       read GetTextIndex; deprecated 'To be removed in 5.99 / Use ViewToTextIndex(index+TopView)';
 
     // Define Visible Area
-    property TopLine : integer                          (* refers to visible (unfolded) lines / 1-based *)
-      read fTopLine write SetTopLine;
+    property TopViewPos : integer                          (* refers to visible (unfolded) lines / 1-based *)
+      read fTopViewPos write SetTopViewPos;
+    property TopLine : integer read fTopViewPos write SetTopViewPos; deprecated 'To be removed in 6.99 / Use TopViewPos)';
     property TopTextIndex : integer                     (* refers to TextIndex (folded + unfolded lines) / 1-based *)
       read GetTopTextIndex write SetTopTextIndex;
     property LinesInWindow : integer                    (* Fully Visible lines in Window; There may be one half visible line *)
@@ -730,7 +731,7 @@ procedure TLazSynDisplayFold.SetHighlighterTokensLine(ALine: TLineIdx; out
 begin
   FLineState := 0;
   CurrentTokenLine := ALine;
-  FLineFlags := FFoldView.FoldType[CurrentTokenLine + 1 - FFoldView.TopLine] * [cfCollapsedFold, cfCollapsedHide];
+  FLineFlags := FFoldView.FoldType[CurrentTokenLine + 1 - FFoldView.TopViewPos] * [cfCollapsedFold, cfCollapsedHide];
   FLineFlags2 := FLineFlags;
 
   if not FFoldView.MarkupInfoFoldedCodeLine.IsEnabled then
@@ -3108,7 +3109,7 @@ constructor TSynEditFoldedView.Create(AOwner: TSynEditBase;
 begin
   FOwner := AOwner;
   inherited Create;
-  fTopLine := 0;
+  fTopViewPos := 0;
   fLinesInWindow := -1;
   fCaret := ACaret;
   fCaret.AddChangeHandler(@DoCaretChanged);
@@ -3200,7 +3201,7 @@ procedure TSynEditFoldedView.LinesDeletedAtTextIndex(AStartIndex, ALineCount, AB
 var top : Integer;
 begin
   top := TopTextIndex;
-  // topline may get out of sync => synedit is always going to change it back
+  // topViewPos may get out of sync => synedit is always going to change it back
   fFoldTree.AdjustForLinesDeleted(AStartIndex+1, ALineCount, ABytePos);
   if not(SkipFixFolding) then
     FixFoldingAtTextIndex(AStartIndex, AStartIndex+ALineCount+1)
@@ -3226,7 +3227,7 @@ end;
 
 function TSynEditFoldedView.TextIndexToScreenLine(aTextIndex : Integer) : Integer;
 begin
-  Result := InternTextToViewIndex(aTextIndex) - TopLine + 1;
+  Result := InternTextToViewIndex(aTextIndex) - TopViewPos + 1;
 end;
 
 function TSynEditFoldedView.InternViewToTextIndex(aViewIndex: TLineIdx): TLineIdx;
@@ -3236,7 +3237,7 @@ end;
 
 function TSynEditFoldedView.ScreenLineToTextIndex(aLine : Integer) : Integer;
 begin
-  Result := InternViewToTextIndex(aLine + TopLine - 1);
+  Result := InternViewToTextIndex(aLine + TopViewPos - 1);
 end;
 
 function TSynEditFoldedView.TextIndexAddLines(aTextIndex, LineOffset : Integer) : Integer;
@@ -3352,24 +3353,24 @@ begin
     Result.CurrentLines := NextLines;
 end;
 
-(* Topline *)
-procedure TSynEditFoldedView.SetTopLine(const ALine : integer);
+(* TopViewPos *)
+procedure TSynEditFoldedView.SetTopViewPos(const ALine : integer);
 begin
-  if fTopLine = ALine then exit;
+  if fTopViewPos = ALine then exit;
   FInTopLineChanged := True;
-  fTopLine := ALine;
+  fTopViewPos := ALine;
   CalculateMaps;
   FInTopLineChanged := False;
 end;
 
 function TSynEditFoldedView.GetTopTextIndex : integer;
 begin
-  Result := fTopLine + fFoldTree.FindFoldForFoldedLine(fTopLine).FoldedBefore - 1;
+  Result := fTopViewPos + fFoldTree.FindFoldForFoldedLine(fTopViewPos).FoldedBefore - 1;
 end;
 
 procedure TSynEditFoldedView.SetTopTextIndex(const AIndex : integer);
 begin
-  TopLine := AIndex + 1 - fFoldTree.FindFoldForLine(AIndex+1).FoldedBefore;
+  TopViewPos := AIndex + 1 - fFoldTree.FindFoldForLine(AIndex+1).FoldedBefore;
 end;
 
 (* LinesInWindow*)
@@ -3434,10 +3435,10 @@ begin
   end;
   Exclude(FFlags, fvfNeedCalcMaps);
 
-  node := fFoldTree.FindFoldForFoldedLine(fTopLine, true);
-  // ftopline is not a folded line
+  node := fFoldTree.FindFoldForFoldedLine(fTopViewPos, true);
+  // fTopViewPos is not a folded line
   // so node.FoldedBefore(next node after ftopl) does apply
-  tpos  := fTopLine + node.FoldedBefore - 1;
+  tpos  := fTopViewPos + node.FoldedBefore - 1;
   if node.IsInFold then
     tmpnode := node.Prev
   else
@@ -3446,7 +3447,7 @@ begin
     node := tmpnode;
     tpos := tpos - node.MergedLineCount;
   end;
-  {$IFDEF SynFoldDebug}debugln(['FOLD-- CalculateMaps fTopLine:=', fTopLine, '  tpos=',tpos]);{$ENDIF}
+  {$IFDEF SynFoldDebug}debugln(['FOLD-- CalculateMaps fTopViewPos:=', fTopViewPos, '  tpos=',tpos]);{$ENDIF}
   cnt := NextLines.Count;
   FirstChanged := -1;
   LastChanged := -1;
@@ -3578,7 +3579,7 @@ procedure TSynEditFoldedView.FoldAtLine(AStartLine : Integer;
   ColIndex : Integer = -1; ColCount : Integer = 1; Skip: Boolean = False;
   AVisibleLines: Integer = 1);
 begin
-  FoldAtViewPos(AStartLine + fTopLine, ColIndex, ColCount, Skip, AVisibleLines);
+  FoldAtViewPos(AStartLine + fTopViewPos, ColIndex, ColCount, Skip, AVisibleLines);
 end;
 
 procedure TSynEditFoldedView.FoldAtViewPos(AStartPos : Integer;
@@ -4048,7 +4049,7 @@ begin
     dec(ColCount);
   end;
 
-  fTopLine := -1;  // make sure seting TopLineTextIndex, will do CalculateMaps;
+  fTopViewPos := -1;  // make sure seting TopLineTextIndex, will do CalculateMaps;
   TopTextIndex := top;
   DoFoldChanged(AStartIndex);
 end;
@@ -4057,7 +4058,7 @@ procedure TSynEditFoldedView.UnFoldAtLine(AStartLine : Integer;
   ColIndex : Integer = -1; ColCount : Integer = 0; Skip: Boolean = False;
   AVisibleLines: Integer = 1);
 begin
-  UnFoldAtViewPos(AStartLine + fTopLine, ColIndex, ColCount, Skip, AVisibleLines);
+  UnFoldAtViewPos(AStartLine + fTopViewPos, ColIndex, ColCount, Skip, AVisibleLines);
 end;
 
 procedure TSynEditFoldedView.UnFoldAtViewPos(AStartPos : Integer;
@@ -4120,7 +4121,7 @@ begin
     end;
   end;
 
-  fTopLine := -1;  // make sure seting TopLineTextIndex, will do CalculateMaps;
+  fTopViewPos := -1;  // make sure seting TopLineTextIndex, will do CalculateMaps;
   TopTextIndex := top;
   if (r >= 0) then
     DoFoldChanged(Max(0, r - 2));
@@ -4132,7 +4133,7 @@ var
 begin
   top := TopTextIndex;
   r := fFoldTree.RemoveFoldForLine(AStartIndex+1) - 1;
-  fTopLine := -1;  // make sure seting TopLineTextIndex, will do CalculateMaps;
+  fTopViewPos := -1;  // make sure seting TopLineTextIndex, will do CalculateMaps;
   TopTextIndex := top;
   DoFoldChanged(r);
 end;
@@ -4143,7 +4144,7 @@ var
 begin
   top := TopTextIndex;
   fFoldTree.Clear;
-  fTopLine := -1;  // make sure seting TopLineTextIndex, will do CalculateMaps;
+  fTopViewPos := -1;  // make sure seting TopLineTextIndex, will do CalculateMaps;
   TopTextIndex := top;
   DoFoldChanged(0);
 end;
@@ -4176,7 +4177,7 @@ begin
     end;
     inc(i);
   end;
-  fTopLine := -1;
+  fTopViewPos := -1;
   TopTextIndex := top;
   DoFoldChanged(0);
 end;
