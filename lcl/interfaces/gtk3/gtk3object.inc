@@ -403,6 +403,7 @@ var
   MinH,PrefH:gint;
   window:PGtkWindow;
   box:PGtkBox;
+  header:PGtkHeaderBar;
 begin
   {$IFDEF GTK3DEBUGCORE}
   DebugLn('TGtk3WidgetSet.AppInit');
@@ -442,6 +443,9 @@ begin
   scrollBarV := gtk_scrollbar_new(GTK_ORIENTATION_VERTICAL, nil);
   gtk_box_pack_start(box, scrollBarV, FALSE, FALSE, 0);
 
+  header := gtk_header_bar_new;
+  gtk_box_pack_start(box, header, False, False, 0);
+
   gtk_widget_show_all(window);
 
   // This is usually not needed, but in case metrics aren't created properly
@@ -474,6 +478,9 @@ begin
 
   scrollBarV^.get_preferred_width(@MinH, @PrefH);
   FSystemMetricsList.Items[SM_CXVSCROLL] := Max(MinH, PrefH);
+
+  header^.get_preferred_height(@MinH, @PrefH);
+  FSystemMetricsList.Items[SM_CYCAPTION] := Max(MinH, PrefH);
 
   gtk_widget_destroy(window);
 end;

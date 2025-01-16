@@ -2719,6 +2719,8 @@ begin
         gdk_screen_get_monitor_workarea(ascreen, 0, @ARect);
         Result := ARect.height;
       end;
+    SM_CXSIZEFRAME, SM_CYSIZEFRAME,
+    SM_CXFIXEDFRAME, SM_CYFIXEDFRAME: Result := 4; //TODO
     SM_CYMENU,
     SM_CXMENUSIZE,
     SM_CYMENUSIZE,
@@ -2727,7 +2729,8 @@ begin
     SM_CXHSCROLL,
     SM_CYHSCROLL,
     SM_CXVSCROLL,
-    SM_CYVSCROLL:
+    SM_CYVSCROLL,
+    SM_CYCAPTION:
         Result := SystemMetric(nIndex);
 
     SM_CXFULLSCREEN,
