@@ -120,15 +120,19 @@ type
     procedure TestFindDeclaration_Program;
     procedure TestFindDeclaration_Basic;
     procedure TestFindDeclaration_Proc_BaseTypes;
-    procedure TestFindDeclaration_ProcMested;
+    procedure TestFindDeclaration_ProcNested;
     procedure TestFindDeclaration_With;
     procedure TestFindDeclaration_ClassOf;
     procedure TestFindDeclaration_NestedClasses;
     procedure TestFindDeclaration_NestedAliasClass;
     procedure TestFindDeclaration_ClassHelper;
     procedure TestFindDeclaration_TypeHelper;
+
+    // darwin objc
     procedure TestFindDeclaration_ObjCClass;
     procedure TestFindDeclaration_ObjCCategory;
+
+    // generics
     procedure TestFindDeclaration_GenericFunction;
     procedure TestFindDeclaration_Generics_Enumerator;
     procedure TestFindDeclaration_Generics;
@@ -139,7 +143,9 @@ type
     procedure TestFindDeclaration_GenericsDelphi_FuncParam;
     procedure TestFindDeclaration_GenericsDelphi_PublicProcType;
     procedure TestFindDeclaration_GenericsDelphi_MultiGenParams;
+
     procedure TestFindDeclaration_ForIn;
+
     procedure TestFindDeclaration_FileAtCursor;
     procedure TestFindDeclaration_CBlocks;
     procedure TestFindDeclaration_Arrays;
@@ -151,6 +157,9 @@ type
     procedure TestFindDeclaration_ArrayMultiDimDot;
     procedure TestFindDeclaration_VarArgsOfType;
     procedure TestFindDeclaration_ProcRef;
+    procedure TestFindDeclaration_PointerForwardVsUses; // todo
+
+    // ampersands
     procedure TestFindDeclaration_Ampersand;
     procedure TestFindDeclaration_Ampersand_UnitName;
     procedure TestFindDeclaration_AmpersandArray;
@@ -169,7 +178,7 @@ type
     procedure TestFindDeclaration_UnitImplVsImplUses;
 
     // directives
-    procedure TestFindDeclaration_DirectiveWithIn;
+    procedure TestFindDeclaration_Directive_OperatorIn;
 
     // test all files in directories:
     procedure TestFindDeclaration_FPCTests;
@@ -771,7 +780,7 @@ begin
   FindDeclarations('moduletests/fdt_proc_basetypes.pas');
 end;
 
-procedure TTestFindDeclaration.TestFindDeclaration_ProcMested;
+procedure TTestFindDeclaration.TestFindDeclaration_ProcNested;
 begin
   StartProgram;
   Add([
@@ -1398,6 +1407,42 @@ begin
   FindDeclarations(Code);
 end;
 
+procedure TTestFindDeclaration.TestFindDeclaration_PointerForwardVsUses;
+var
+  Unit2: TCodeBuffer;
+begin
+  exit;
+
+  Unit2:=nil;
+  try
+    Unit2:=CodeToolBoss.CreateFile('unit2.pp');
+    Unit2.Source:='unit unit2;'+LineEnding
+      +'interface'+LineEnding
+      +'type TBird = word;'+LineEnding
+      +'implementation'+LineEnding
+      +'end.';
+
+    StartUnit;
+    Add([
+    'uses unit2;',
+    'type',
+    '  PBird = ^TBird;',
+    '  TBird = record',
+    '    Speed: word;',
+    '  end;',
+    'var Bird: PBird;',
+    'implementation',
+    'begin',
+    '  Bird^.Speed{declaration:test1.tbird.Speed}:=3',
+    'end.',
+    '']);
+    FindDeclarations(Code);
+  finally
+    if Unit2<>nil then
+      Unit2.IsDeleted:=true;
+  end;
+end;
+
 procedure TTestFindDeclaration.TestFindDeclaration_Ampersand;
 begin
   StartUnit;
@@ -1873,7 +1918,7 @@ begin
   end;
 end;
 
-procedure TTestFindDeclaration.TestFindDeclaration_DirectiveWithIn;
+procedure TTestFindDeclaration.TestFindDeclaration_Directive_OperatorIn;
 begin
   StartProgram;
   Add([
