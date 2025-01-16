@@ -685,7 +685,7 @@ begin
                  WidgetInfo, 0, gtk_get_current_event_time());
   TGtk2WidgetSet(WidgetSet).LastFocusIn:=MenuWidget;
   {$IFDEF VerboseGtk2Focus}
-  debugln('TGtk2WSPopupMenu.Popup REPEAT...');
+  debugln('TGtk2WSPopupMenu.Popup REPEAT... ',DbgSName(APopupMenu));
   {$ENDIF}
   repeat
     try
@@ -696,12 +696,12 @@ begin
       else
         raise;
     end;
-    if Application.Terminated or not Assigned(MenuWidget) then
+    if Application.Terminated or not Assigned(TGtk2WidgetSet(WidgetSet).MenuWidget) then
       break;
     Application.Idle(true);
   until False;
   {$IFDEF VerboseGtk2Focus}
-  debugln('TGtk2WSPopupMenu.Popup END');
+  debugln('TGtk2WSPopupMenu.Popup END ',DbgSName(APopupMenu));
   {$ENDIF}
 end;
 
