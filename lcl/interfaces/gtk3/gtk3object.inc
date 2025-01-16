@@ -96,10 +96,10 @@ begin
   AGtkThread := g_thread_self();
   if not IsLibrary then
   begin
-  AId := 'org.lcl.thread_' + dbgHex({%H-}PtrUInt(AGtkThread));
-  FGtk3Application := TGtkApplication.new(PgChar(AId), [G_APPLICATION_NON_UNIQUE]);
-  // FGtk3Application^.set_application_id(PgChar(AId));
-  FGtk3Application^.register(nil, nil);
+    AId := 'org.lcl.thread_' + dbgHex({%H-}PtrUInt(AGtkThread));
+    FGtk3Application := TGtkApplication.new(PgChar(AId), [G_APPLICATION_NON_UNIQUE]);
+    // FGtk3Application^.set_application_id(PgChar(AId));
+    FGtk3Application^.register(nil, nil);
   end;
   GTK3WidgetSet := Self;
 end;
@@ -295,6 +295,9 @@ begin
   SetExceptionMask([exInvalidOp, exDenormalized, exZeroDivide, exOverflow, exUnderflow, exPrecision]);
   inherited Create;
   FCSSTheme := TStringList.Create;
+  FSystemMetricsList := TIntegerList.Create;
+  for i := 0 to SM_LCLHasFormAlphaBlend do
+    FSystemMetricsList.Add(0);
   FThemeName := '';
   FTimerData := TFPList.Create;
   {$IFDEF GTK3DEBUGCORE}
@@ -380,6 +383,7 @@ begin
   end;
   FreeSysColorBrushes;
   FCSSTheme.Free;
+  FSystemMetricsList.Free;
   inherited Destroy;
 end;
 
@@ -389,10 +393,16 @@ begin
 end;
 
 procedure TGtk3WidgetSet.AppInit(var ScreenInfo: TScreenInfo);
-//var
-//  AId: String;
 var
   ScreenDC: HDC;
+  menuBar: PGtkMenuBar;
+  menuItem: PGtkMenuItem;
+  checkBox: PGtkCheckButton;
+  scrollBarV: PGtkScrollbar;
+  scrollBarH: PGtkScrollbar;
+  MinH,PrefH:gint;
+  window:PGtkWindow;
+  box:PGtkBox;
 begin
   {$IFDEF GTK3DEBUGCORE}
   DebugLn('TGtk3WidgetSet.AppInit');
@@ -407,6 +417,65 @@ begin
   finally
     ReleaseDC(0, ScreenDC);
   end;
+
+  //load needed metrics to the FSystemMetricsList before Application.MainForm is created.
+  window := gtk_window_new(GTK_WINDOW_TOPLEVEL);
+  //no flashing
+  gtk_window_set_decorated(window, False);
+  gtk_widget_set_app_paintable(window, gtk_true);
+  gtk_widget_set_size_request(window, 1, 1);
+
+  box := gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
+  gtk_container_add(Window, box);
+
+  //now menubar, checkboxes, scrollbar
+  menuBar := gtk_menu_bar_new;
+  menuItem := gtk_menu_item_new_with_label('');
+  menuBar^.append(menuItem);
+  gtk_box_pack_start(box, MenuBar, FALSE, FALSE, 0);
+
+  checkBox := gtk_check_button_new_with_label('');
+  gtk_box_pack_start(box, checkbox, FALSE, FALSE, 0);
+
+  scrollBarH := gtk_scrollbar_new(GTK_ORIENTATION_HORIZONTAL, nil);
+  gtk_box_pack_start(box, scrollBarH, FALSE, FALSE, 0);
+  scrollBarV := gtk_scrollbar_new(GTK_ORIENTATION_VERTICAL, nil);
+  gtk_box_pack_start(box, scrollBarV, FALSE, FALSE, 0);
+
+  gtk_widget_show_all(window);
+
+  // This is usually not needed, but in case metrics aren't created properly
+  // try to uncomment those 2 lines below.
+  // while (gtk_events_pending()) do
+  //  gtk_main_iteration();
+
+  menuBar^.get_preferred_height(@MinH, @PrefH);
+  FSystemMetricsList.Items[SM_CYMENU] := Max(MinH, PrefH);
+
+  menuItem^.get_preferred_height(@MinH, @PrefH);
+  FSystemMetricsList.Items[SM_CYMENUSIZE] := Max(MinH, PrefH);
+  menuItem^.get_preferred_width(@MinH, @PrefH);
+  FSystemMetricsList.Items[SM_CXMENUSIZE] := Max(MinH, PrefH);
+
+
+  checkBox^.get_preferred_height(@MinH, @PrefH);
+  FSystemMetricsList.Items[SM_CYMENUCHECK] := Max(MinH, PrefH);
+  checkBox^.get_preferred_width(@MinH, @PrefH);
+  FSystemMetricsList.Items[SM_CXMENUCHECK] := Max(MinH, PrefH);
+
+  scrollBarH^.get_preferred_height(@MinH, @PrefH);
+  FSystemMetricsList.Items[SM_CXHSCROLL] := Max(MinH, PrefH);
+
+  scrollBarH^.get_preferred_width(@MinH, @PrefH);
+  FSystemMetricsList.Items[SM_CYHSCROLL] := Max(MinH, PrefH);
+
+  scrollBarV^.get_preferred_height(@MinH, @PrefH);
+  FSystemMetricsList.Items[SM_CYVSCROLL] := Max(MinH, PrefH);
+
+  scrollBarV^.get_preferred_width(@MinH, @PrefH);
+  FSystemMetricsList.Items[SM_CXVSCROLL] := Max(MinH, PrefH);
+
+  gtk_widget_destroy(window);
 end;
 
 procedure TGtk3WidgetSet.LoadCSSTheme;
@@ -758,6 +827,13 @@ begin
     end;
   end;
   Result := True;
+end;
+
+function TGtk3WidgetSet.SystemMetric(const AIndex:integer):integer;
+begin
+  Result := 0;
+  if (AIndex >= 0) and (AIndex < FSystemMetricsList.Count) then
+    Result := FSystemMetricsList[AIndex];
 end;
 
 function TGtk3WidgetSet.IsValidDC(const DC: HDC): Boolean;

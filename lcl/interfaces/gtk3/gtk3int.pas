@@ -65,6 +65,7 @@ type
     procedure FreeSysColorBrushes;
   protected
     {shared stuff}
+    FSystemMetricsList: TIntegerList;
     FAppIcon: PGdkPixbuf;
     FStockNullBrush: HBRUSH;
     FStockBlackBrush: HBRUSH;
@@ -131,6 +132,8 @@ type
 
     function CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): TLCLHandle; override;
     function DestroyTimer(TimerHandle: TLCLHandle): boolean; override;
+
+    function SystemMetric(const AIndex: integer): integer;
 
     function IsValidDC(const DC: HDC): Boolean;
     function IsValidGDIObject(const AGdiObject: HGDIOBJ): Boolean;
