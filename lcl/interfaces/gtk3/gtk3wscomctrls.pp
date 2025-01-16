@@ -29,7 +29,7 @@ uses
   LCLType, LMessages, Controls, Graphics, StdCtrls, ComCtrls, Forms,
   ImgList, InterfaceBase,
   // LazUtils
-  LazLoggerBase,
+  LazLogger,
   // widgetset
   WSComCtrls, WSLCLClasses, WSControls, WSProc,
   Gtk3WSControls, Gtk3Int, gtk3widgets;

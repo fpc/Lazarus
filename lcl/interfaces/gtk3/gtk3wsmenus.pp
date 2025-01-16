@@ -23,7 +23,7 @@ interface
 uses
   Classes, Types,
   LazGObject2, LazGlib2, LazGdk3, LazGtk3, gtk3procs,
-  LazLoggerBase,
+  LazLogger,
   WSLCLClasses, WSMenus,
   LCLType, LMessages, Graphics, Menus, Forms, Controls, LCLIntf;
 
