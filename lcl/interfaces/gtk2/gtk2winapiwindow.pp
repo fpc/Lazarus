@@ -397,8 +397,8 @@ procedure GTKAPIWidgetClient_UnRealize(AWidget: PGTKWidget); cdecl;
 begin
   with PGTKAPIWidgetClient(AWidget)^.Caret do 
   begin
-    if Timer <> 0 
-    then begin
+    if Timer <> 0 then
+    begin
       gtk_timeout_remove(Timer);
       Timer := 0;
     end;
@@ -557,10 +557,10 @@ var
   WidgetStyle: PGTKStyle;
   HasFocus: boolean;
   WidgetIsPainting: Boolean;
-  { $IFDEF VerboseCaret}
+  {$IFDEF VerboseCaret}
   Info: PWidgetInfo;
   LCLObj: TObject;
-  { $ENDIF}
+  {$ENDIF}
 {$IFDEF Has_gtk_draw_insertion_cursor}
   location: TGdkRectangle;
 {$ENDIF}
@@ -619,7 +619,10 @@ begin
     {$IFDEF VerboseCaret}
     Info:=GetWidgetInfo(Widget);
     LCLObj:=Info^.LCLObject;
-    DebugLn(['GTKAPIWidgetClient_DrawCaret START Client=',DbgS(Client),' LCLObj=',DbgSName(LCLObj),' Timer=',Timer,' Blink=',Blinking,' BlinkHide=',BlinkHide,' Visible=',Visible,' ShowHideOnFocus=',ShowHideOnFocus,' Focus=',HasFocus,' IsDrawn=',IsDrawn,' W=',Width,' H=',Height,' WidgetIsPainting=',WidgetIsPainting]);
+    DebugLn(['GTKAPIWidgetClient_DrawCaret START Client=',DbgS(Client),' LCLObj=',DbgSName(LCLObj),
+      ' Timer=',Timer,' Blink=',Blinking,' BlinkHide=',BlinkHide,' Visible=',Visible,
+      ' ShowHideOnFocus=',ShowHideOnFocus,' Focus=',HasFocus,' IsDrawn=',IsDrawn,
+      ' W=',Width,' H=',Height,' WidgetIsPainting=',WidgetIsPainting]);
     {$ENDIF}
 
     if IsDrawn and
