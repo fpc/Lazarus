@@ -27,7 +27,7 @@ uses
   // LCL
   LCLType, LCLProc, Graphics,
   LazGtk3, LazGdk3, LazGObject2, LazGLib2, LazGdkPixbuf2,
-  LazPango1, LazPangoCairo1, LazCairo1, gtk3procs;
+  LazPango1, LazPangoCairo1, LazCairo1, gtk3procs, LazLogger;
 
 type
   TGtk3DeviceContext = class;
@@ -1726,6 +1726,8 @@ begin
     cairo_set_line_width(pcr, w {* ScaleX}); //line_width is diameter of the pen circle
   end;
 
+  cap := CAIRO_LINE_CAP_BUTT;
+
   case FCurrentPen.Style of
     psSolid: cairo_set_dash(pcr, nil, 0, 0);
     psDash: SetDash(Dash_Dash);
@@ -1747,6 +1749,8 @@ begin
   case FCurrentPen.Style of
     psDash, psDot, psDashDot, psDashDotDot:
       cap := CAIRO_LINE_CAP_BUTT
+    else
+      ;
   end;
   cairo_set_line_cap(pcr, cap);
 
