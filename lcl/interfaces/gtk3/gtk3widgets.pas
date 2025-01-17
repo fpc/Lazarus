@@ -7472,12 +7472,12 @@ end;
 
 class procedure TGtk3Button.ButtonClicked(aButton:PGtkButton; pData:pointer);
   cdecl;
+var
+  Msg: TLMMouse;
 begin
-  //This was wrong, why it must click in designer ?
-  //  if not TGtk3Button(pData).IsDesigning then
-  //  exit;
-  // TCustomButton(pdata).Click; LM_CLICK is sent after mouserelease event
-  //
+  Msg := Default(TLMMouse);
+  Msg.Msg := LM_CLICKED;
+  TGtk3Widget(pData).DeliverMessage(Msg, True);
 end;
 
 procedure TGtk3Button.SetImage(AImage: TBitmap);
@@ -7512,7 +7512,7 @@ begin
   btn^.set_use_underline(true);
   if not IsDesigning then
     g_signal_connect_data(btn,'clicked',
-          TGCallback(@ButtonClicked), LCLObject, nil, G_CONNECT_DEFAULT);
+          TGCallback(@ButtonClicked), Self, nil, G_CONNECT_DEFAULT);
 
   if not IsDesigning then
     LCLObject.ControlStyle:=LCLObject.ControlStyle+[csClickEvents];
@@ -8441,6 +8441,7 @@ begin
         or GDK_KEY_RELEASE_MASK or GDK_KEY_PRESS_MASK);
 
   end;}
+
   if (wtDialog in dlg.WidgetType) then
   begin
     if Assigned(dlg.CommonDialog) then
