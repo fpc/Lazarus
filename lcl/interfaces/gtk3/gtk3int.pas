@@ -26,9 +26,10 @@ uses
   {$ENDIF}
   SysUtils, Classes, types, Math, FPImage,
   // LazUtils
-  LazLogger, LazTracer, LazUTF8, IntegerList, GraphType, LazUtilities,
+  LazTracer, LazUTF8, IntegerList, GraphType, LazUtilities,
   // LCL
   LCLPlatformDef, InterfaceBase, LCLProc, LCLType, LMessages, LCLMessageGlue,
+  LazLogger,
   Controls, Forms, Graphics, GraphUtil, IntfGraphics, StdCtrls, ComCtrls,
   LazGtk3, LazGdk3, LazGlib2, LazGObject2, LazCairo1, LazPango1, LazGio2,
   LazGdkPixbuf2, gtk3widgets, gtk3objects, gtk3procs, gtk3boxes, gtk3caret;
