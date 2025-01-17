@@ -4052,11 +4052,9 @@ begin
       else
       if SBStyle = SB_VERT then
         TGtk3ScrollableWin(AWidget).VScrollBarPolicy := POLICY[IsScrollbarVis];
-    end else
-      AWidget.Update(nil);
-
+    end;
+    AWidget.Update(nil);
     Adjustment^.changed;
-
   end;
   Result := Round(Adjustment^.value);
 end;
