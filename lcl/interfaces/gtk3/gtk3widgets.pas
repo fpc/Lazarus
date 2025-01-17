@@ -291,6 +291,8 @@ type
   { TGtk3Range }
 
   TGtk3Range = class(TGtk3Widget)
+  strict private
+    class procedure RangeChanged(ARange:PGtkRange;AData:gPointer); cdecl; static;
   private
     function GetPosition: Integer; reintroduce;
     function GetRange: TPoint;
@@ -324,7 +326,7 @@ type
 
   TGtk3ScrollBar = class(TGtk3Range)
   protected
-    class procedure value_changed (bar:TGtk3Scrollbar);cdecl;
+    class procedure ScrollBarValueChanged(adjustment: PGtkAdjustment; data:gpointer);cdecl; static;
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
   public
     procedure SetParams;
@@ -3943,8 +3945,6 @@ begin
   PrivateSelection := -1;
   ASpin := TCustomSpinEdit(LCLObject);
   FWidgetType := FWidgetType + [wtSpinEdit];
-  // Adjustment := TGtkAdjustment.new(ASpin.Value, ASpin.MinValue, ASpin.MaxValue, ASpin.Increment,
-  //  ASpin.Increment, ASpin.Increment);
   Result := TGtkSpinButton.new_with_range(ASpin.MinValue, ASpin.MaxValue, ASpin.Increment);
 end;
 
@@ -3966,7 +3966,7 @@ end;
 
 { TGtk3Range }
 
-procedure Gtk3RangeChanged({%H-}ARange: PGtkRange; AData: gPointer); cdecl;
+class procedure TGtk3Range.RangeChanged({%H-}ARange: PGtkRange; AData: gPointer); cdecl;
 var
   Msg: TLMessage;
 begin
@@ -4015,7 +4015,7 @@ end;
 procedure TGtk3Range.InitializeWidget;
 begin
   inherited InitializeWidget;
-  g_signal_connect_data(GetContainerWidget, 'value-changed', TGCallback(@Gtk3RangeChanged), Self, nil, G_CONNECT_DEFAULT);
+  g_signal_connect_data(GetContainerWidget, 'value-changed', TGCallback(@RangeChanged), Self, nil, G_CONNECT_DEFAULT);
 end;
 
 procedure TGtk3Range.SetStep(AStep: Integer; APageSize: Integer);
@@ -4114,20 +4114,18 @@ begin
 end;
 
 { TGtk3ScrollBar }
-class procedure TGtk3ScrollBar.value_changed(bar: TGtk3Scrollbar); cdecl;
+class procedure TGtk3ScrollBar.ScrollBarValueChanged(adjustment:PGtkAdjustment;data:
+  gpointer);cdecl;
 var
-  scr:TScrollBar;
-  pgs:PGtkScrollbar;
-  ARange: PGtkRange;
+  scr: TScrollBar;
 begin
-  scr:=TScrollbar(bar.LCLObject);
-  pgs:=PGtkScrollbar(bar.Widget);
-  arange:=PGtkRange(pgs);
+  scr := TScrollbar(TGtk3Widget(data).LCLObject);
+  {$note this must be fixed. Do not call LCL directly from here but send proper messages}
   scr.SetParams(
-     round(arange^.adjustment^.value),
-     round(arange^.adjustment^.lower),
-     round(arange^.adjustment^.upper),
-     round(arange^.adjustment^.page_size));
+     round(adjustment^.value),
+     round(adjustment^.lower),
+     round(adjustment^.upper),
+     round(adjustment^.page_size));
 end;
 
 function TGtk3ScrollBar.CreateWidget(const Params: TCreateParams): PGtkWidget;
@@ -4139,14 +4137,13 @@ begin
   FWidgetType := FWidgetType + [wtScrollBar];
   Result := TGtkScrollbar.new(TGtkOrientation(AScrollBar.Kind), nil);
   ARange := PGtkRange(Result);
-  // ARange^.set_can_focus(True);
   with AScrollBar do
   begin
     ARange^.adjustment^.configure(Position, Min, Max + PageSize,
       SmallChange, LargeChange, PageSize);
     ARange^.adjustment^.set_value(Position);
     g_signal_connect_data(ARange^.adjustment,
-         'value-changed', TGCallback(@TGtk3ScrollBar.value_changed), Self, nil, G_CONNECT_DEFAULT);
+         'value-changed', TGCallback(@ScrollBarValueChanged), Self, nil, G_CONNECT_DEFAULT);
   end;
 end;
 
