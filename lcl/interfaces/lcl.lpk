@@ -131,7 +131,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="4" Minor="99"/>
-    <Files Count="549">
+    <Files Count="551">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -2710,6 +2710,14 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="gtk3caret"/>
       </Item549>
+      <Item550>
+        <Filename Value="gtk3/gtk3lclcombobox.inc"/>
+        <Type Value="Include"/>
+      </Item550>
+      <Item551>
+        <Filename Value="gtk3/gtk3lclentry.inc"/>
+        <Type Value="Include"/>
+      </Item551>
     </Files>
     <CompatibilityMode Value="True"/>
     <LazDoc Paths="../../docs/xml/lcl"/>
