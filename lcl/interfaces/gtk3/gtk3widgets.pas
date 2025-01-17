@@ -8035,6 +8035,7 @@ begin
   FScrollY := 0;
 
   FHasPaint := True;
+  FMenuBar := nil;
   AForm := TCustomForm(LCLObject);
 
   if not Assigned(LCLObject.Parent) then
@@ -8060,19 +8061,6 @@ begin
   Text := Params.Caption;
 
   FBox := TGtkVBox.new(GTK_ORIENTATION_VERTICAL, 0);
-
-  //TODO: when menu is added dynamically to the form create FMenuBar
-  {$warning FMenuBar should be created on demand, not here !}
-  if (AForm.Menu <> nil) then
-  begin
-    FMenuBar := TGtkMenuBar.new; // our menubar (needed for main menu)
-    // MenuBar
-    //  -> Menu    Menu2
-    //    Item 1   Item 3
-    //    Item 2
-    g_object_set_data(Result,'lclmenubar',GPointer(1));
-    FBox^.pack_start(FMenuBar, False, False, 0);
-  end;
 
   FScrollWin := PGtkScrolledWindow(TGtkScrolledWindow.new(nil, nil));
   g_object_set_data(FScrollWin,'lclscrollingwindow',GPointer(1));
@@ -8346,7 +8334,20 @@ begin
 end;
 
 function TGtk3Window.GetMenuBar: PGtkMenuBar;
+var
+  ABox:PGtkBox;
 begin
+  if not Assigned(FMenuBar) then
+  begin
+    FMenuBar := TGtkMenuBar.new; // our menubar (needed for main menu)
+    // MenuBar
+    //  -> Menu    Menu2
+    //    Item 1   Item 3
+    //    Item 2
+    g_object_set_data(Widget,'lclmenubar',GPointer(1));
+    ABox := PGtkBox(PGtkWindow(Widget)^.get_child);
+    ABox^.pack_start(FMenuBar, False, False, 0);
+  end;
   Result := FMenuBar;
 end;
 
