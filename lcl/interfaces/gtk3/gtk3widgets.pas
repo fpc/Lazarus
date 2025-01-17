@@ -7473,9 +7473,9 @@ end;
 class procedure TGtk3Button.ButtonClicked(aButton:PGtkButton; pData:pointer);
   cdecl;
 var
-  Msg: TLMMouse;
+  Msg: TLMessage;
 begin
-  Msg := Default(TLMMouse);
+  Msg := Default(TLMessage);
   Msg.Msg := LM_CLICKED;
   TGtk3Widget(pData).DeliverMessage(Msg, True);
 end;
