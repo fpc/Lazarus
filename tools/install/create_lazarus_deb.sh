@@ -134,6 +134,11 @@ LazDestDir=$LazBuildDir/usr/share/lazarus/${LazVersion}
 LazDestDirInstalled=/usr/share/lazarus/${LazVersion}
 Pas2jsVer=
 
+EnvOpts=$EtcSrcDir/environmentoptions-$Arch.xml
+if [ ! -f $EnvOpts ]; then
+  EnvOpts=$EtcSrcDir/environmentoptions.xml
+fi
+
 echo "ppcbin=$ppcbin"
 echo "LazVersion=$LazVersion"
 echo "FPCVersion=$FPCVersion"
@@ -262,7 +267,7 @@ done
 
 # default configs
 mkdir -p $LazBuildDir/etc/lazarus
-cat $EtcSrcDir/environmentoptions.xml | \
+cat $EnvOpts | \
   sed -e "s#__LAZARUSDIR__#$LazDestDirInstalled/#" \
       -e "s#__FPCSRCDIR__#/usr/share/fpcsrc/\$(FPCVER)/#" \
   > $LazBuildDir/etc/lazarus/environmentoptions.xml

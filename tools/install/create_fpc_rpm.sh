@@ -6,7 +6,9 @@ set -e
 #------------------------------------------------------------------------------
 # parse parameters
 #------------------------------------------------------------------------------
-Usage="Usage: $0 [nodocs] [notemp] <FPCSrcDir> [release]"
+Usage="Usage: $0 [nodocs] [notemp] [hasbuildid] <FPCSrcDir> [release]"
+
+PkgName=fpc-laz
 
 WithDOCS=yes
 if [ "x$1" = "xnodocs" ]; then
@@ -19,6 +21,13 @@ if [ "x$1" = "xnotemp" ]; then
   WithTempDir=no
   shift
 fi
+
+HasBuildID=no
+if [ "x$1" = "xhasbuildid" ]; then
+  HasBuildID=yes
+  shift
+fi
+
 
 PkgType=rpm
 
@@ -55,17 +64,18 @@ if [ "$WithTempDir" = "yes" ]; then
   if [ -d $TmpDir ]; then
     rm -rf $TmpDir
   fi
-  mkdir -p $TmpDir/fpc
-
   echo "extracting FPC from local git ..."
-  git -C $FPCSrcDir --work-tree=$TmpDir/fpc restore .
+  mkdir -p $TmpDir/$PkgName
+  cp -a $FPCSrcDir/.git $TmpDir/$PkgName/
+  git -C $TmpDir/$PkgName checkout $TmpDir/$PkgName
+  rm -rf $TmpDir/$PkgName/.git*
 else
   TmpDir=$FPCSrcDir
 fi
 
 # retrieve the version information
-echo -n "getting FPC version from local svn ..."
-VersionFile="$TmpDir/fpc/compiler/version.pas"
+echo -n "getting FPC version from local git ..."
+VersionFile="$TmpDir/$PkgName/compiler/version.pas"
 CompilerVersion=$(cat $VersionFile | grep ' *version_nr *=.*;' | sed -e 's/[^0-9]//g')
 CompilerRelease=$(cat $VersionFile | grep ' *release_nr *=.*;' | sed -e 's/[^0-9]//g')
 CompilerPatch=$(cat $VersionFile | grep ' *patch_nr *=.*;' | sed -e 's/[^0-9]//g')
@@ -73,8 +83,7 @@ CompilerVersionStr="$CompilerVersion.$CompilerRelease.$CompilerPatch"
 FPCVersion="$CompilerVersion.$CompilerRelease.$CompilerPatch"
 echo " $CompilerVersionStr-$FPCRelease"
 
-Arch=$(rpm --eval "%{_arch}")
-
+Arch=$(rpm --eval "%{_target_cpu}")
 
 #------------------------------------------------------------------------------
 # patch sources
@@ -85,16 +94,16 @@ ReplaceScript=replace_in_files.pl
 
 # set version numbers in all Makefiles
 echo "set version numbers in all Makefiles ..."
-perl replace_in_files.pl -sR -f 'version=\d.\d.\d' -r version=$CompilerVersionStr -m 'Makefile(.fpc)?' $TmpDir/fpc/*
+perl replace_in_files.pl -sR -f 'version=\d.\d.\d' -r version=$CompilerVersionStr -m 'Makefile(.fpc)?' $TmpDir/$PkgName/*
 
 # update smart_strip.sh
-#ATM: not needed: cp $SmartStripScript $TmpDir/fpc/install/
+#ATM: not needed: cp $SmartStripScript $TmpDir/$PkgName/install/
 
-# build fpc rpm
+# build fpc-laz rpm
 
 echo "creating spec file ..."
-SpecFileTemplate=rpm/fpc.spec.template
-SpecFile=rpm/fpc.spec
+SpecFileTemplate=rpm/$PkgName.spec.template
+SpecFile=rpm/$PkgName.spec
 
 # change spec file
 cat $SpecFileTemplate | \
@@ -104,10 +113,14 @@ cat $SpecFileTemplate | \
         -e 's/^\%{fpcdir}\/samplecfg .*/%{fpcdir}\/samplecfg %{_libdir}\/fpc\/\\\$version/' \
     > $SpecFile
 #      -e 's/\(%define builddocdir.*\)/%define __strip smart_strip.sh\n\n\1/' \
-  
+if [ "$HasBuildID" = "yes" ]; then
+  sed -e 's/%undefine _missing_build-ids_terminate_build//' -i $SpecFile
+fi
+
+
 SrcTGZ=$(rpm/get_rpm_source_dir.sh)/SOURCES/fpc-$CompilerVersionStr-$FPCRelease.source.tar.gz
 echo "creating $SrcTGZ ..."
-tar czf $SrcTGZ -C $TmpDir fpc
+tar czf $SrcTGZ -C $TmpDir $PkgName
 
 #----------------------------------------------------------------------------
 # compile
@@ -117,7 +130,7 @@ if [ "$WithDOCS" = "no" ]; then
 fi
 rpmbuild --nodeps -ba $SpecFile
 
-echo "The new rpm can be found in $(./rpm/get_rpm_source_dir.sh)/RPMS/$Arch/fpc-$FPCVersion-$FPCRelease.$Arch.rpm"
+echo "The new rpm can be found in $(./rpm/get_rpm_source_dir.sh)/RPMS/$Arch/$PkgName-$FPCVersion-$FPCRelease.$Arch.rpm"
 
 # end.
 
