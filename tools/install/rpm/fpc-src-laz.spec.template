@@ -1,4 +1,4 @@
-Name: fpc-src
+Name: fpc-src-laz
 Version: LAZVERSION
 Release: LAZRELEASE
 License: LGPL2
@@ -6,8 +6,9 @@ Group: Development/Languages
 Source: %{name}-%{version}-%{release}.source.tar.gz
 Summary: FreePascal sources
 Packager: Mattias Gaertner (mattias@freepascal.org)
-URL: http://www.freepascal.org/
+URL: https://www.freepascal.org/
 BuildRoot: %{_tmppath}/%{name}-build%{version}
+Conflicts: fpc-src
 
 %global debug_package %{nil}
 %define fpcsrcdir %{_datadir}/fpcsrc
@@ -24,14 +25,17 @@ AutoReq: 0
 %define __strip LAZSCRIPTDIR/smart_strip.sh
 
 %description
-The Free Pascal Compiler is a Turbo Pascal 7.0 and Delphi compatible 32bit
-Pascal Compiler. It comes with fully TP 7.0 compatible run-time library.
-Some extensions are added to the language, like function overloading. Shared
-libraries can be linked. Basic Delphi support is already implemented (classes,
-exceptions, ansistrings, RTTI). This package contains the sources for the
-commandline compiler and utils. Provided units are the runtime library (RTL),
-free component library (FCL), gtk, ncurses, zlib, mysql, postgres, ibase
-bindings and many more.
+Free Pascal is a mature, versatile, open source Pascal compiler.
+It can target many processor architectures: Intel x86 (16 and 32 bit),
+AMD64/x86-64, PowerPC, PowerPC64, SPARC, SPARC64, ARM, AArch64, MIPS,
+Motorola 68k, AVR, and the JVM. Supported operating systems include
+Windows (16/32/64 bit, CE, and native NT), Linux,
+Mac OS X/iOS/iPhoneSimulator/Darwin, FreeBSD and other BSD flavors,
+DOS (16 bit, or 32 bit DPMI), OS/2, AIX, Android, Haiku,
+Nintendo GBA/DS/Wii, AmigaOS, MorphOS, AROS, Atari TOS,
+and various embedded platforms. Additionally, support for RISC-V (32/64),
+Xtensa, and Z80 architectures, and for the LLVM compiler infrastructure
+is available in the development version.
 
 %prep
 
@@ -45,8 +49,8 @@ if [ %{buildroot} != "/" ]; then
 fi
 mkdir -p %{destdir}
 cp -a fpc/* %{destdir}/
-# the palmos libcrt.a archive is making trouble
-rm -f %{destdir}/rtl/palmos/libcrt.a
+find %{destdir} -name '*.o' -delete
+find %{destdir} -name '*.a' -delete
 
 %clean
 if [ %{buildroot} != "/" ]; then
@@ -58,5 +62,6 @@ fi
 %{fpcsrcdir}
 
 %changelog
-
+* Wed Oct 23 2024 Mattias Gaertner <mattias@freepascal.org> 3.2.2
+- renamed to fpc-src-laz, conflicts with fpc-src
 

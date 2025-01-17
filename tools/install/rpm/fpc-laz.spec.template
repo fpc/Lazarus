@@ -1,4 +1,4 @@
-Name:           fpc
+Name:           fpc-laz
 Version:        1.2.3
 Release:        1
 Summary:        Free Pascal Compiler
@@ -9,25 +9,32 @@ AutoReqProv: no
 
 Group:          Development/Languages
 License:        GPL2 and modified LGPL2
-URL:            http://www.freepascal.org/
-Source:         ftp://ftp.freepascal.org/pub/fpc/dist/source-%{version}/%{name}-%{version}-%{release}.source.tar.gz
+URL:            https://www.freepascal.org/
+Source:         ftp://ftp.freepascal.org/pub/fpc/dist/source-%{version}/fpc-%{version}-%{release}.source.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:       glibc, binutils
 BuildRequires:  binutils, glibc-devel
+Conflicts:      fpc, fpc-ide, fpc-units
 
 %define _source_payload w9.bzdio
 %define _binary_payload w9.bzdio
+%define _build_id_links none
+%undefine _missing_build-ids_terminate_build
 
 %description
 
-Freepascal is a free 32/64bit Pascal Compiler. It comes with a run-time
-library fully compatible with Turbo Pascal 7.0 and nearly Delphi compatible.
-Some extensions are added to the language, like function overloading. Shared
-libraries can be linked. This package contains commandline compiler and
-utils. Provided units are the runtime library (RTL), free component library
-(FCL) and bindings for among others gtk1, gtk2, ncurses, zlib, mysql, postgres
-and ibase.
+Free Pascal is a mature, versatile, open source Pascal compiler.
+It can target many processor architectures: Intel x86 (16 and 32 bit),
+AMD64/x86-64, PowerPC, PowerPC64, SPARC, SPARC64, ARM, AArch64, MIPS,
+Motorola 68k, AVR, and the JVM. Supported operating systems include
+Windows (16/32/64 bit, CE, and native NT), Linux,
+Mac OS X/iOS/iPhoneSimulator/Darwin, FreeBSD and other BSD flavors,
+DOS (16 bit, or 32 bit DPMI), OS/2, AIX, Android, Haiku,
+Nintendo GBA/DS/Wii, AmigaOS, MorphOS, AROS, Atari TOS,
+and various embedded platforms. Additionally, support for RISC-V (32/64),
+Xtensa, and Z80 architectures, and for the LLVM compiler infrastructure
+is available in the development version.
 
 %ifarch ppc
 %define ppcname ppcppc
@@ -35,10 +42,14 @@ and ibase.
 %ifarch x86_64
 %define ppcname ppcx64
 %else
+%ifarch aarch64
+%define ppcname ppca64
+%else
 %ifarch amd64
-%define ppcname amd64
+%define ppcname ppcx64
 %else
 %define ppcname ppc386
+%endif
 %endif
 %endif
 %endif
@@ -84,7 +95,7 @@ FPCFULLVERSION=`${NEWPP} -iW`
 INSTALLOPTS="FPC=${NEWPP} FPCMAKE=${FPCMAKE} DATA2INC=${DATA2INC} \
                INSTALL_PREFIX=%{buildroot}%{_prefix} \
                INSTALL_LIBDIR=%{buildroot}%{_libdir} \
-               INSTALL_BASEDIR=%{buildroot}%{_libdir}/%{name}/${FPCVERSION} \
+               INSTALL_BASEDIR=%{buildroot}%{_libdir}/fpc/${FPCVERSION} \
                INSTALL_BINDIR=%{buildroot}%{_bindir}"
 make install ${INSTALLOPTS}
 %ifarch x86_64
@@ -94,14 +105,14 @@ make install ${INSTALLOPTS}
 %endif
 
 # create link /usr/bin/ppc*
-ln -sf %{_libdir}/%{name}/${FPCVERSION}/%{ppcname} %{buildroot}%{_bindir}/%{ppcname}
+ln -sf %{_libdir}/fpc/${FPCVERSION}/%{ppcname} %{buildroot}%{_bindir}/%{ppcname}
 # install /usr/bin/fpcmkcfg
 install `pwd`/utils/fpcmkcfg/bin/%{_arch}-linux/fpcmkcfg %{buildroot}%{_bindir}/fpcmkcfg
 
 # Workaround:
 # newer rpm versions do not allow garbage
-rm -rf %{buildroot}%{_libdir}/%{name}/lexyacc
-rm -rf %{buildroot}%{_prefix}/lib/%{name}/lexyacc
+rm -rf %{buildroot}%{_libdir}/fpc/lexyacc
+rm -rf %{buildroot}%{_prefix}/lib/fpc/lexyacc
 rm -rf %{buildroot}%{_defaultdocdir}/fpc-libc-*
 rm -rf %{buildroot}%{_defaultdocdir}/fpc-symbolic-*
 # 2.7.1 ignores the INSTALL_DOC variable and writes some files directly to /usr/share/doc
@@ -113,16 +124,19 @@ rm -rf %{buildroot}
 %post
 # Create a version independent config
 %define fpcversion 1.2.3
-%{_libdir}/%{name}/%{fpcversion}/samplecfg %{_libdir}/%{name}/%{fpcversion} > /dev/null
+%{_libdir}/fpc/%{fpcversion}/samplecfg %{_libdir}/fpc/%{fpcversion} > /dev/null
 
 %files
 %defattr(-,root,root,-)
 %{_bindir}/*
-%{_libdir}/%{name}
+%{_libdir}/fpc
 # since fpc 3.1.1:
 %{_libdir}/libpas2jslib.so
 
 %changelog
+* Wed Oct 23 2024 Mattias Gaertner <mattias@freepascal.org> 3.2.2
+- renamed to fpc-laz, conflicts with fpc, fpc-ide, fpc-units
+
 * Sat May 2 2020 Mattias Gaertner <mattias@freepascal.org> 3.0.4
 - commented libpas2jslib.so, added fpcmkcfg
 
