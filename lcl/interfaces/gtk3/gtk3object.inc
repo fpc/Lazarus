@@ -97,7 +97,7 @@ begin
   if not IsLibrary then
   begin
     AId := 'org.lcl.thread_' + dbgHex({%H-}PtrUInt(AGtkThread));
-    FGtk3Application := TGtkApplication.new(PgChar(AId), [G_APPLICATION_NON_UNIQUE]);
+    FGtk3Application := {%H-}TGtkApplication.new(PgChar(AId), [G_APPLICATION_NON_UNIQUE]);
     // FGtk3Application^.set_application_id(PgChar(AId));
     FGtk3Application^.register(nil, nil);
   end;
