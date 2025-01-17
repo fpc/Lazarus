@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, LCLType, LCLProc, Controls, StdCtrls, ComCtrls, LMessages,
-  LazGObject2, LazGtk3, LazGdk3, LazGLib2, Gtk3Procs, LazCairo1;
+  LazGObject2, LazGtk3, LazGdk3, LazGLib2, Gtk3Procs, LazCairo1, LazLogger;
   
 type
   PLCLIntfCellRenderer = ^TLCLIntfCellRenderer;
