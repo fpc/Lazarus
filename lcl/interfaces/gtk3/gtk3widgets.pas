@@ -1390,54 +1390,6 @@ begin
   end;
 end;
 
-procedure SetComboBoxMinWidthCSS(ComboBox: PGtkComboBox; MinWidth: Integer);
-var
-  CssProvider: PGtkCssProvider;
-  StyleContext: PGtkStyleContext;
-  CssData: PChar;
-begin
-  ComboBox^.show;
-  // Create a new CSS provider
-  CssProvider := gtk_css_provider_new();
-
-  // Define the CSS data
-  CssData := PChar(Format('combobox { min-width: %dpx; padding: 0; border-width: 0;}', [MinWidth]));
-
-  // Load the CSS data into the provider
-  gtk_css_provider_load_from_data(CssProvider, CssData, -1, nil);
-
-  // Get the style context of the combo box
-  StyleContext := gtk_widget_get_style_context(ComboBox);
-
-  // Add the CSS provider to the style context
-  gtk_style_context_add_provider(StyleContext, PGtkStyleProvider(CssProvider),
-    GTK_STYLE_PROVIDER_PRIORITY_USER);
-
-  // Unreference the CSS provider after adding it
-  g_object_unref(CssProvider);
-end;
-
-procedure ApplyComboEntryCss(ComboBox: PGtkComboBox; const AMinWidth: integer);
-var
-  CssProvider: PGtkCssProvider;
-  StyleContext: PGtkStyleContext;
-  CssData: PChar;
-  Entry: PGtkEntry;
-begin
-  CssProvider := gtk_css_provider_new();
-  CssData := PChar(Format('combobox combo.entry { min-width: %dpx; padding: 0; border-width: 0; }',[AMinWidth]));
-  gtk_css_provider_load_from_data(CssProvider, CssData, -1, nil);
-
-  Entry := PGtkEntry(ComboBox^.get_child);
-  if Assigned(Entry) then
-  begin
-    StyleContext := gtk_widget_get_style_context(Entry);
-    gtk_style_context_add_provider(StyleContext, PGtkStyleProvider(CssProvider),
-      GTK_STYLE_PROVIDER_PRIORITY_USER);
-  end;
-  g_object_unref(CssProvider);
-end;
-
 function SubtractScroll(AWidget: PGtkWidget; APosition: TPoint): TPoint;
 begin
   Result := APosition;
