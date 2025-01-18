@@ -392,6 +392,24 @@ begin
   Result := lpGtk3;
 end;
 
+//This is the only way to fix missing corner widget in GtkScrolledWindow.
+procedure ApplyCustomScrollbarStyles(const APixels: integer);
+var
+  CssProvider: PGtkCssProvider;
+begin
+  CssProvider := gtk_css_provider_new();
+  gtk_css_provider_load_from_data(CssProvider,
+    PgChar(Format('scrollbar.horizontal { margin-right: %dpx; }' +
+    'scrollbar.vertical { margin-bottom: %dpx; }',[APixels, APixels])),
+    -1, nil);
+
+  gtk_style_context_add_provider_for_screen(
+    gdk_screen_get_default(),
+    PGtkStyleProvider(CssProvider),
+    GTK_STYLE_PROVIDER_PRIORITY_APPLICATION
+  );
+end;
+
 procedure TGtk3WidgetSet.AppInit(var ScreenInfo: TScreenInfo);
 var
   ScreenDC: HDC;
@@ -478,6 +496,11 @@ begin
 
   scrollBarV^.get_preferred_width(@MinH, @PrefH);
   FSystemMetricsList.Items[SM_CXVSCROLL] := Max(MinH, PrefH);
+
+  //loading distance between scrollbars in corner, since
+  //gtk3 does not have corner widget, we set it via css.
+  ApplyCustomScrollbarStyles(Max(0, Floor(PrefH / 2) - 1));
+
 
   header^.get_preferred_height(@MinH, @PrefH);
   FSystemMetricsList.Items[SM_CYCAPTION] := Max(MinH, PrefH);

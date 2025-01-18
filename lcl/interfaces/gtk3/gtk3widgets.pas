@@ -505,6 +505,7 @@ type
     procedure InitializeWidget;override;
     procedure SetScrollBarsSignalHandlers;
     function getClientBounds: TRect; override;
+    function getViewport: PGtkViewport; virtual;
     function getHorizontalScrollbar: PGtkScrollbar; virtual; abstract;
     function getVerticalScrollbar: PGtkScrollbar; virtual; abstract;
     function getScrolledWindow: PGtkScrolledWindow; virtual; abstract;
@@ -778,6 +779,7 @@ type
       function EatArrowKeys(const {%H-}AKey: Word): Boolean; override;
     public
       procedure InitializeWidget; override;
+      function getViewport: PGtkViewport; override;
       procedure preferredSize(var PreferredWidth, PreferredHeight: integer; {%H-}WithThemeSpace: Boolean); override;
       function getClientRect: TRect; override;
       function getHorizontalScrollbar: PGtkScrollbar; override;
@@ -821,6 +823,7 @@ type
     procedure setText(const AValue: String); override;
   public
     // function getClientBounds: TRect; override;
+    function getViewport: PGtkViewport; override;
     function getClientRect: TRect; override;
     function getHorizontalScrollbar: PGtkScrollbar; override;
     function getVerticalScrollbar: PGtkScrollbar; override;
@@ -1039,6 +1042,7 @@ end;
 
 {$i gtk3lclcombobox.inc}
 {$i gtk3lclentry.inc}
+{$i gtk3lclbutton.inc}
 
 class function TGtk3Widget.WidgetEvent(widget: PGtkWidget; event: PGdkEvent; data: GPointer): gboolean; cdecl;
 begin
@@ -5422,17 +5426,139 @@ begin
     TGCallback(@Gtk3RangeScrollCB), Self, nil, G_CONNECT_DEFAULT);
 end;
 
+{$IFDEF GTK3DEBUGSIZE}
+function GetViewportClientAreaWithScrollbars(ScrolledWindow: PGtkScrolledWindow): TRect;
+var
+  Viewport: PGtkViewport;
+  ViewportAllocation, HScrollbarAllocation, VScrollbarAllocation: TGtkAllocation;
+  Padding, Border: TGtkBorder;
+  HScrollbar, VScrollbar: PGtkWidget;
+  HScrollbarHeight, VScrollbarWidth: Integer;
+  ScrollPolicyH, ScrollPolicyV: TGtkPolicyType;
+  StyleContext: PGtkStyleContext;
+begin
+
+  FillChar(Result, SizeOf(Result), 0);
+  HScrollbarHeight := 0;
+  VScrollbarWidth := 0;
+
+  Viewport := PGtkViewport(gtk_bin_get_child(PGtkBin(ScrolledWindow)));
+  if Viewport = nil then
+  begin
+    writeln('Viewport not found.');
+    Exit;
+  end;
+
+  gtk_widget_get_allocation(PGtkWidget(Viewport), @ViewportAllocation);
+
+  //Get the style context for padding and border
+  StyleContext := gtk_widget_get_style_context(PGtkWidget(Viewport));
+  FillChar(Padding, SizeOf(Padding), 0);
+  FillChar(Border, SizeOf(Border), 0);
+
+
+  gtk_style_context_get_padding(StyleContext, GTK_STATE_FLAG_NORMAL, @Padding);
+  gtk_style_context_get_border(StyleContext, GTK_STATE_FLAG_NORMAL, @Border);
+
+  // Check scrollbar visibility policies
+  gtk_scrolled_window_get_policy(ScrolledWindow, @ScrollPolicyH, @ScrollPolicyV);
+
+  //Check if the horizontal scrollbar is visible
+  HScrollbar := gtk_scrolled_window_get_hscrollbar(ScrolledWindow);
+  if (HScrollbar <> nil) and gtk_widget_get_visible(HScrollbar) and (ScrollPolicyH <> GTK_POLICY_NEVER) then
+  begin
+    gtk_widget_get_allocation(HScrollbar, @HScrollbarAllocation);
+    HScrollbarHeight := HScrollbarAllocation.height;
+  end;
+
+  //Check if the vertical scrollbar is visible
+  VScrollbar := gtk_scrolled_window_get_vscrollbar(ScrolledWindow);
+  if (VScrollbar <> nil) and gtk_widget_get_visible(VScrollbar) and (ScrollPolicyV <> GTK_POLICY_NEVER) then
+  begin
+    gtk_widget_get_allocation(VScrollbar, @VScrollbarAllocation);
+    VScrollbarWidth := VScrollbarAllocation.width;
+  end;
+
+  //Now we calculate the client area.
+  Result.Left := ViewportAllocation.x + Border.left + Padding.left;
+  Result.Top := ViewportAllocation.y + Border.top + Padding.top;
+  Result.Right := ViewportAllocation.x + ViewportAllocation.width - Border.right - Padding.right - VScrollbarWidth;
+  Result.Bottom := ViewportAllocation.y + ViewportAllocation.height - Border.bottom - Padding.bottom - HScrollbarHeight;
+
+  writeln(Format('Client Area Calculation: Left=%d, Top=%d, Right=%d, Bottom=%d',
+    [Result.Left, Result.Top, Result.Right, Result.Bottom]));
+end;
+{$ENDIF}
+
 function TGtk3ScrollableWin.getClientBounds: TRect;
 var
   Allocation: TGtkAllocation;
+  x:gint;
+  y:gint;
+  w:gint;
+  h:gint;
+  AViewport:PGtkViewport;
+  AWindow:PGdkWindow;
+  VOffset, HOffset:gint;
+  Bar:PGtkScrollbar;
 begin
   Result := Rect(0, 0, 0, 0);
   if IsWidgetOK then
   begin
-    getContainerWidget^.get_allocation(@Allocation);
-    Result := RectFromGtkAllocation(Allocation);
+    (*
+    if (Self is TGtk3CustomControl) then
+    begin
+      if Self is TGtk3Window then
+        Result := GetViewportClientAreaWithScrollbars(PGtkScrolledWindow(TGtk3Window(Self).FScrollWin))
+      else
+        Result := GetViewportClientAreaWithScrollbars(PGtkScrolledWindow(FWidget));
+      //DebugLn('TGtk3ScrollableWin.getClientBounds result ',dbgs(Result),' from viewport ',dbgsName(LCLObject));
+      exit;
+    end else
+    *)
+    AViewport := getViewPort;
+    if Assigned(AViewport) and Gtk3IsGdkWindow(AViewport^.get_view_window) then
+    begin
+      AWindow := AViewport^.get_view_window;
+      if Assigned(AWindow) then
+      begin
+        Bar := getHorizontalScrollbar;
+        if (Bar <> nil) and Gtk3IsWidget(Bar) and Bar^.get_visible then
+          HOffset := Bar^.get_allocated_height
+        else
+          HOffset := 0;
+        Bar := getVerticalScrollbar;
+        if (Bar <> nil) and Gtk3IsWidget(Bar) and Bar^.get_visible then
+          VOffset := Bar^.get_allocated_width
+        else
+          VOffset := 0;
+
+        AViewPort^.get_view_window^.get_geometry(@x, @y, @w, @h);
+        Result := Bounds(x, y, w - VOffset, h - HOffset);
+      end else
+      begin
+        AViewPort^.get_allocation(@Allocation);
+        Result := RectFromGtkAllocation(Allocation);
+      end;
+    end else
+    begin
+      getContainerWidget^.get_allocation(@Allocation);
+      Result := RectFromGtkAllocation(Allocation);
+    end;
   end;
-  // DebugLn('TGtk3ScrollableWin.getClientBounds result ',dbgs(Result));
+  if (Self is TGtk3Window) then
+    exit;
+  {$IFDEF GTK3DEBUGSIZE}
+  if Assigned(AViewPort) then
+    DebugLn('TGtk3ScrollableWin.getClientBounds result ',dbgs(Result),' from viewport ',dbgsName(LCLObject))
+  else
+    ;//DebugLn('TGtk3ScrollableWin.getClientBounds result ',dbgs(Result),' no viewport ',dbgsName(LCLObject));
+  {$ENDIF}
+end;
+
+function TGtk3ScrollableWin.getViewport:PGtkViewport;
+begin
+  Result := nil;
 end;
 
 { TGtk3Memo }
@@ -7456,7 +7582,7 @@ function TGtk3Button.CreateWidget(const Params: TCreateParams): PGtkWidget;
 var
   btn:PGtkButton absolute Result;
 begin
-  Result := PGtkWidget(TGtkButton.new);
+  Result := LCLGtkButtonNew;
 
   btn^.set_use_underline(true);
   if not IsDesigning then
@@ -7675,6 +7801,11 @@ begin
   end;
 end;
 
+function TGtk3CustomControl.getViewport:PGtkViewport;
+begin
+  Result := PGtkViewport(PGtkScrolledWindow(Widget)^.get_child);
+end;
+
 procedure TGtk3CustomControl.preferredSize(var PreferredWidth,PreferredHeight:
   integer;WithThemeSpace:Boolean);
 begin
@@ -7695,14 +7826,41 @@ var
   x: gint;
   y: gint;
   AViewPort: PGtkViewport;
+  VOffset, HOffset:gint;
+  Bar:PGtkScrollbar;
 begin
   // Result := inherited getClientRect;
-  AViewPort := PGtkViewPort(FCentralWidget^.get_parent);
+  AViewPort := getViewport;
   if Gtk3IsViewPort(AViewPort) and Gtk3IsGdkWindow(AViewPort^.get_view_window) then
   begin
+    // Result := GetViewportClientAreaWithScrollbars(PGtkScrolledWindow(FWidget));
+
     AViewPort^.get_view_window^.get_geometry(@x, @y, @w, @h);
-    Result := Rect(0, 0, AViewPort^.get_view_window^.get_width, AViewPort^.get_view_window^.get_height);
-    // DebugLn('TGtk3CustomControl.GetClientRect via Viewport ',dbgsName(LCLObject),' Result ',dbgs(Result),' X=',dbgs(X),' Y=',dbgs(Y));
+
+    Bar := getHorizontalScrollbar;
+    if (Bar <> nil) and Bar^.get_visible then
+      HOffset := Bar^.get_allocated_height
+    else
+      HOffset := 0;
+
+    Bar := getVerticalScrollbar;
+    if (Bar <> nil) and Gtk3IsWidget(Bar) and Bar^.get_visible then
+      VOffset := Bar^.get_allocated_width
+    else
+      VOffset := 0;
+
+    // AViewPort^.get_view_window^.get_frame_extents(@AFrameRect);
+
+    Result := Rect(0, 0, AViewPort^.get_view_window^.get_width - VOffset, AViewPort^.get_view_window^.get_height - HOffset);
+
+    {$IFDEF GTK3DEBUGSIZE}
+    DebugLn('TGtk3CustomControl.GetClientRect via Viewport ',dbgsName(LCLObject),' Result ',dbgs(Result),' X=',dbgs(X),' Y=',dbgs(Y),' AllocH=',dbgs(AViewPort^.get_allocated_height));
+    getContainerWidget^.get_allocation(@Allocation);
+    with ALlocation do
+    begin
+      DebugLn(Format('  GtkFixed alloc x %d y %d width %d height %d',[x, y, width, height]));
+    end;
+    {$ENDIF}
     exit;
   end else
     FCentralWidget^.get_allocation(@Allocation);
@@ -8063,6 +8221,11 @@ begin
   inherited SetText(AValue);
   // set widget text
   Title := AValue;
+end;
+
+function TGtk3Window.getViewport:PGtkViewport;
+begin
+  Result := PGtkViewPort(FScrollWin^.get_child);
 end;
 
 function TGtk3Window.getClientRect: TRect;
