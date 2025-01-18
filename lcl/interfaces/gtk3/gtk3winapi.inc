@@ -2425,10 +2425,17 @@ end;
 
 function TGtk3WidgetSet.GetRgnBox(RGN: HRGN; lpRect: PRect): Longint;
 begin
-  Result := SIMPLEREGION;
+  Result := ERROR;
   if IsValidGDIObject(RGN) then
   begin
     lpRect^ := TGtk3Region(RGN).GetExtents;
+    if IsRectEmpty(lpRect^) then
+      Result := NullRegion
+    else
+    if cairo_region_num_rectangles(TGtk3Region(RGN).Handle) > 1 then
+      Result := ComplexRegion
+    else
+      Result := SimpleRegion;
   end;
 end;
 
