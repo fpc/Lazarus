@@ -254,9 +254,11 @@ type
   TCustomShellListView = class(TCustomListView)
   private
     FAutoSizeColumns: Boolean;
+    FFileSortType: TFileSortType;
     FMask: string;
     FMaskCaseSensitivity: TMaskCaseSensitivity;
     FObjectTypes: TObjectTypes;
+    FOnSortCompare: TFileItemCompareEvent;
     FPopulateDelayed: Boolean;
     FRoot: string;
     FShellTreeView: TCustomShellTreeView;
@@ -265,8 +267,10 @@ type
     FOnAddItem: TAddItemEvent;
     FOnFileAdded: TCSLVFileAddedEvent;
     { Setters and getters }
+    procedure SetFileSortType(AValue: TFileSortType);
     procedure SetMask(const AValue: string);
     procedure SetMaskCaseSensitivity(AValue: TMaskCaseSensitivity);
+    procedure SetOnSortCompare(AValue: TFileItemCompareEvent);
     procedure SetShellTreeView(const Value: TCustomShellTreeView);
     procedure SetRoot(const Value: string);
     procedure SetObjectTypes(const Value: TObjectTypes);
@@ -294,10 +298,12 @@ type
     property Mask: string read FMask write SetMask; // Can be used to conect to other controls
     property MaskCaseSensitivity: TMaskCaseSensitivity read FMaskCaseSensitivity write SetMaskCaseSensitivity default mcsPlatformDefault;
     property ObjectTypes: TObjectTypes read FObjectTypes write SetObjectTypes default [otNonFolders];
+    property FileSortType: TFileSortType read FFileSortType write SetFileSortType default fstNone;
     property Root: string read FRoot write SetRoot;
     property ShellTreeView: TCustomShellTreeView read FShellTreeView write SetShellTreeView;
     property UseBuiltInIcons: Boolean read FUseBuiltinIcons write FUseBuiltInIcons default true;
     property OnAddItem: TAddItemEvent read FOnAddItem write FOnAddItem;
+    property OnSortCompare: TFileItemCompareEvent read FOnSortCompare write SetOnSortCompare;
     { Protected properties which users may want to access, see bug 15374 }
     property Items;
   end;
@@ -352,6 +358,8 @@ type
     property ObjectTypes;
     property Root;
     property ShellTreeView;
+    property FileSortType;
+
     property OnChange;
     property OnClick;
     property OnColumnClick;
@@ -384,6 +392,7 @@ type
     property OnUTF8KeyPress;
     property OnAddItem;
     property OnFileAdded;
+    property OnSortCompare;
   end;
 
   { TShellTreeNode }
@@ -1705,6 +1714,15 @@ begin
   end;
 end;
 
+procedure TCustomShellListView.SetFileSortType(AValue: TFileSortType);
+begin
+  if FFileSortType=AValue then Exit;
+  FFileSortType:=AValue;
+  Clear;
+  Items.Clear;
+  PopulateWithRoot();
+end;
+
 procedure TCustomShellListView.SetMaskCaseSensitivity(
   AValue: TMaskCaseSensitivity);
 var
@@ -1731,6 +1749,15 @@ begin
     FMask := #0 + FMask;
     SetMask(OldMask);
   end;
+end;
+
+procedure TCustomShellListView.SetOnSortCompare(AValue: TFileItemCompareEvent);
+begin
+  if TMethod(AValue) = TMethod(FOnSortCompare) then Exit;
+  FOnSortCompare:=AValue;
+  Clear;
+  Items.Clear;
+  PopulateWithRoot();
 end;
 
 procedure TCustomShellListView.SetObjectTypes(const Value: TObjectTypes);
@@ -1838,8 +1865,8 @@ begin
   Files := TStringList.Create;
   try
     Files.OwnsObjects := True;
-    GetFilesInDirectory(FRoot, Trim(FMask), FObjectTypes, Files, fstNone,
-                        FMaskCaseSensitivity);
+    GetFilesInDirectory(FRoot, Trim(FMask), FObjectTypes, Files, FFileSortType,
+                        FMaskCaseSensitivity, FOnSortCompare);
 
     for i := 0 to Files.Count - 1 do
     begin
