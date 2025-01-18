@@ -24,11 +24,11 @@ type
 
 const
   laz_major = 3;
-  laz_minor = 7;
+  laz_minor = 8;
   laz_release = 0;
   laz_patch = 0;
   laz_fullversion = ((laz_major *  100 + laz_minor) * 100 + laz_release) * 100 + laz_patch;
-  laz_version = '3.7.0.0';
+  laz_version = '3.8.0.0';
 
 var
   OnLCLWidgetTypeName: TLCLWidgetTypeNameEvent;  // Set by LCL
