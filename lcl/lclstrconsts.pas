@@ -319,7 +319,7 @@ resourceString
   sShellCtrlsName = 'Name';
   sShellCtrlsSize = 'Size';
   sShellCtrlsType = 'Type';
-  sShellCtrlsGB = '%.1n GB';
+  sShellCtrlsGB = '%s GB';
   sShellCtrlsMB = '%s MB';
   sShellCtrlsKB = '%s kB';
   sShellCtrlsBytes = '%s bytes';

@@ -459,9 +459,9 @@ begin
     Result := Format(sShellCtrlsKB, [IntToStr(AFileSize div ONE_KB)])
   else
   if AFileSize < ONE_GB then
-    Result := Format(sShellCtrlsMB, [IntToStr(AFileSize div (ONE_MB))])
+    Result := Format(sShellCtrlsMB, [IntToStr(AFileSize div ONE_MB)])
   else
-    Result := Format(sShellCtrlsGB, [AFileSize / ONE_GB]);
+    Result := Format(sShellCtrlsGB, [Format('%.1n', [AFileSize / ONE_GB])]);
 end;
 
 operator = (const A, B: TMethod): Boolean;

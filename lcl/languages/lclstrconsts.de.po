@@ -1525,7 +1525,7 @@ msgstr "Ordner"
 
 #: lclstrconsts.sshellctrlsgb
 #, object-pascal-format
-msgid "%.1n GB"
+msgid "%s GB"
 msgstr ""
 
 #: lclstrconsts.sshellctrlsinvalidpath
