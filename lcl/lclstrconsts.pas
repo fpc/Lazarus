@@ -315,6 +315,7 @@ resourceString
   rsDoPaste = 'Paste';
 
   // ShellCtrls
+  sShellCtrlsFolder = 'Folder';
   sShellCtrlsName = 'Name';
   sShellCtrlsSize = 'Size';
   sShellCtrlsType = 'Type';

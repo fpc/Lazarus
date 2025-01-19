@@ -1554,6 +1554,10 @@ msgstr "Klaidingas leksemos tipas: tikėtasi %s, tačiau rasta %s"
 msgid "%s bytes"
 msgstr "%s baitų"
 
+#: lclstrconsts.sshellctrlsfolder
+msgid "Folder"
+msgstr ""
+
 #: lclstrconsts.sshellctrlsinvalidpath
 #, object-pascal-format, fuzzy
 #| msgid ""

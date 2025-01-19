@@ -1553,6 +1553,10 @@ msgstr "Nesprávný typ symbolu: Očekáváno %s, ale nalezeno %s"
 msgid "%s bytes"
 msgstr "%s bajtů"
 
+#: lclstrconsts.sshellctrlsfolder
+msgid "Folder"
+msgstr ""
+
 #: lclstrconsts.sshellctrlsinvalidpath
 #, object-pascal-format, fuzzy
 #| msgid ""

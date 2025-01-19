@@ -1551,6 +1551,10 @@ msgstr "Rossz vezérjel típus: %s az elvárt, de %s található"
 msgid "%s bytes"
 msgstr "%s bájt"
 
+#: lclstrconsts.sshellctrlsfolder
+msgid "Folder"
+msgstr ""
+
 #: lclstrconsts.sshellctrlsinvalidpath
 #, object-pascal-format
 msgctxt "lclstrconsts.sshellctrlsinvalidpath"

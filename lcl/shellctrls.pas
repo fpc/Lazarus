@@ -446,6 +446,17 @@ begin
   Result := MaskCaseSensitivityStrings[CS];
 end;
 
+function FileSizeToStr(AFileSize: Int64): String;
+begin
+  if AFileSize < 1024 then
+    Result := Format(sShellCtrlsBytes, [IntToStr(AFileSize)])
+  else
+  if AFileSize < 1024 * 1024 then
+    Result := Format(sShellCtrlsKB, [IntToStr(AFileSize div 1024)])
+  else
+    Result := Format(sShellCtrlsMB, [IntToStr(AFileSize div (1024 * 1024))]);
+end;
+
 operator = (const A, B: TMethod): Boolean;
 begin
   Result := (A.Code = B.Code) and (A.Data = B.Data);
@@ -1844,6 +1855,7 @@ var
   i: Integer;
   Files: TStringList;
   NewItem: TListItem;
+  FileItem: TFileItem;
   CurFileName, CurFilePath: string;
   CurFileSize: Int64;
   CanAdd: Boolean;
@@ -1870,29 +1882,32 @@ begin
 
     for i := 0 to Files.Count - 1 do
     begin
+      FileItem := TFileItem(Files.Objects[i]);
       CanAdd := True;
-      with TFileItem(Files.Objects[i]) do DoAddItem(FBasePath, FileInfo, CanAdd);
+      with FileItem do DoAddItem(FBasePath, FileInfo, CanAdd);
       if CanAdd then
       begin
         NewItem := Items.Add;
         if (NewItem is TShellListItem) then
-          TShellListItem(NewItem).FileInfo := TFileItem(Files.Objects[i]).FileInfo;
+          TShellListItem(NewItem).FileInfo := FileItem.FileInfo;
         CurFileName := Files.Strings[i];
         CurFilePath := IncludeTrailingPathDelimiter(FRoot) + CurFileName;
         // First column - Name
         NewItem.Caption := CurFileName;
-        // Second column - Size
-        // The raw size in bytes is stored in the data part of the item
-        CurFileSize := TFileItem(Files.Objects[i]).FFileInfo.Size; // in Bytes. (We already know this, so no need for FileSize(CurFilePath))
-        NewItem.Data := Pointer(PtrInt(CurFileSize));
-        if CurFileSize < 1024 then
-          NewItem.SubItems.Add(Format(sShellCtrlsBytes, [IntToStr(CurFileSize)]))
-        else if CurFileSize < 1024 * 1024 then
-          NewItem.SubItems.Add(Format(sShellCtrlsKB, [IntToStr(CurFileSize div 1024)]))
-        else
-          NewItem.SubItems.Add(Format(sShellCtrlsMB, [IntToStr(CurFileSize div (1024 * 1024))]));
-        // Third column - Type
-        NewItem.SubItems.Add(ExtractFileExt(CurFileName));
+        if not FileItem.IsFolder then
+        begin
+          // Second column - Size, but not for folders
+          // The raw size in bytes is stored in the data part of the item
+          CurFileSize := FileItem.FFileInfo.Size; // in Bytes. (We already know this, so no need for FileSize(CurFilePath))
+          NewItem.Data := Pointer(PtrInt(CurFileSize));
+          NewItem.SubItems.Add(FileSizeToStr(CurFileSize));
+          // Third column - Type, but not folders
+          NewItem.SubItems.Add(ExtractFileExt(CurFileName));
+        end else
+        begin
+          NewItem.SubItems.Add('');                    // Size
+          NewItem.SubItems.Add(sShellCtrlsFolder);     // Type
+        end;
         // Image index
         if FUseBuiltInIcons then
         begin

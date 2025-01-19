@@ -1465,6 +1465,10 @@ msgstr ""
 msgid "%s bytes"
 msgstr "%s字节"
 
+#: lclstrconsts.sshellctrlsfolder
+msgid "Folder"
+msgstr ""
+
 #: lclstrconsts.sshellctrlsinvalidpath
 #, object-pascal-format
 msgctxt "lclstrconsts.sshellctrlsinvalidpath"

@@ -1563,6 +1563,10 @@ msgstr "Tipo sílaba incorreto: %s esperado mas %s encontrado"
 msgid "%s bytes"
 msgstr "%s bytes"
 
+#: lclstrconsts.sshellctrlsfolder
+msgid "Folder"
+msgstr ""
+
 #: lclstrconsts.sshellctrlsinvalidpath
 #, object-pascal-format, fuzzy
 #| msgid ""

@@ -1536,6 +1536,10 @@ msgstr "Хибний тип маркера: очікувався %s, але зн
 msgid "%s bytes"
 msgstr "%s байтів"
 
+#: lclstrconsts.sshellctrlsfolder
+msgid "Folder"
+msgstr ""
+
 #: lclstrconsts.sshellctrlsinvalidpath
 #, object-pascal-format
 msgctxt "lclstrconsts.sshellctrlsinvalidpath"

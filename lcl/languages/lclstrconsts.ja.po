@@ -1552,6 +1552,10 @@ msgstr "正しくないトークンタイプ：\"%s\"があるべきところに
 msgid "%s bytes"
 msgstr "%s バイト"
 
+#: lclstrconsts.sshellctrlsfolder
+msgid "Folder"
+msgstr ""
+
 #: lclstrconsts.sshellctrlsinvalidpath
 #, object-pascal-format, fuzzy
 #| msgid ""

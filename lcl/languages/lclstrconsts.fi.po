@@ -1541,6 +1541,10 @@ msgstr "Väärä token tyyppi: odotettiin %s mutta saatiin %s"
 msgid "%s bytes"
 msgstr "%s tavua"
 
+#: lclstrconsts.sshellctrlsfolder
+msgid "Folder"
+msgstr ""
+
 #: lclstrconsts.sshellctrlsinvalidpath
 #, object-pascal-format, fuzzy
 #| msgid ""

@@ -1533,6 +1533,10 @@ msgstr "Yanlış işaret(token) türü: %s beklendi fakat %s bulundu"
 msgid "%s bytes"
 msgstr "%s byte"
 
+#: lclstrconsts.sshellctrlsfolder
+msgid "Folder"
+msgstr ""
+
 #: lclstrconsts.sshellctrlsinvalidpath
 #, object-pascal-format
 msgctxt "lclstrconsts.sshellctrlsinvalidpath"

@@ -1463,6 +1463,10 @@ msgstr "Неверный тип лексемы: ожидался %s, но най
 msgid "%s bytes"
 msgstr "%s байт"
 
+#: lclstrconsts.sshellctrlsfolder
+msgid "Folder"
+msgstr ""
+
 #: lclstrconsts.sshellctrlsinvalidpath
 #, object-pascal-format
 msgctxt "lclstrconsts.sshellctrlsinvalidpath"

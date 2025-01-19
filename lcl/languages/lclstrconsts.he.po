@@ -1575,6 +1575,10 @@ msgstr "סוג token שגוי: %s צפוי אבל %s נמצא"
 msgid "%s bytes"
 msgstr ""
 
+#: lclstrconsts.sshellctrlsfolder
+msgid "Folder"
+msgstr ""
+
 #: lclstrconsts.sshellctrlsinvalidpath
 #, object-pascal-format
 msgctxt "lclstrconsts.sshellctrlsinvalidpath"

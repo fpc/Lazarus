@@ -1559,6 +1559,10 @@ msgstr "Verkeerd tokentype: %s verwacht maar %s gevonden"
 msgid "%s bytes"
 msgstr "%s bytes"
 
+#: lclstrconsts.sshellctrlsfolder
+msgid "Folder"
+msgstr ""
+
 #: lclstrconsts.sshellctrlsinvalidpath
 #, object-pascal-format, fuzzy
 #| msgid ""

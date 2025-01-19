@@ -1556,6 +1556,10 @@ msgstr "잘못된 토큰 유형: %s를 기대했으나 %s가 발견됨"
 msgid "%s bytes"
 msgstr "%s 바이트"
 
+#: lclstrconsts.sshellctrlsfolder
+msgid "Folder"
+msgstr ""
+
 #: lclstrconsts.sshellctrlsinvalidpath
 #, object-pascal-format, fuzzy
 #| msgid ""

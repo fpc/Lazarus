@@ -1544,6 +1544,10 @@ msgstr "Tipo de token incorrecto: Se esperaba %s pero se encontro %s"
 msgid "%s bytes"
 msgstr "%s bytes"
 
+#: lclstrconsts.sshellctrlsfolder
+msgid "Folder"
+msgstr ""
+
 #: lclstrconsts.sshellctrlsinvalidpath
 #, object-pascal-format
 msgctxt "lclstrconsts.sshellctrlsinvalidpath"
