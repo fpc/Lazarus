@@ -248,9 +248,11 @@ Forms, Grids, LCLProc, Controls, ComCtrls, ExtDlgs, EditBtn, MaskEdit
 <element name="rsDoPaste"/>
 
 <!-- ShellCtrls -->
+<element name="sShellCtrlsFolder"/>
 <element name="sShellCtrlsName"/>
 <element name="sShellCtrlsSize"/>
 <element name="sShellCtrlsType"/>
+<element name="sShellCtrlsGB"/>
 <element name="sShellCtrlsMB"/>
 <element name="sShellCtrlsKB"/>
 <element name="sShellCtrlsBytes"/>
