@@ -3020,10 +3020,8 @@ begin
 end;
 
 function TGtk3WidgetSet.InvalidateRgn(Handle: HWND; Rgn: HRGN; Erase: Boolean): Boolean;
-//var
-//  R: TRect;
 begin
-  Result := False; // inherited InvalidateRgn(Handle, Rgn, Erase);
+  Result := False;
   if IsValidHandle(Handle) then
   begin
     if IsValidGDIObject(RGN) then
@@ -3032,11 +3030,7 @@ begin
        TGtk3Region(RGN).Handle)
     end else
       TGtk3Widget(Handle).Update(nil);
-    //TODO: TGtk3Region must be implemented as Pcairo_region_t
-    // GetRgnBox(Rgn, @R);
-    // InvalidateRect(Handle, @R, True);
     Result := True;
-    // gtk_widget_queue_draw_region();
   end;
 end;
 
@@ -3166,11 +3160,22 @@ end;
 
 function TGtk3WidgetSet.OffsetRgn(RGN: HRGN; nXOffset, nYOffset: Integer
   ): Integer;
+var
+  crRegion: Pcairo_region_t;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  DebugLn('WARNING: TGtk3WidgetSet.OffsetRgn not implemented ...');
-  {$ENDIF}
-  Result:=inherited OffsetRgn(RGN, nXOffset, nYOffset);
+  Result := ERROR;
+  if not IsValidGDIObject(RGN) then
+    Exit
+  else
+    crRegion := TGtk3Region(RGN).Handle;
+  cairo_region_translate(crRegion, nXOffset, nYOffset);
+  if cairo_region_is_empty(crRegion) then
+    Result := NullRegion
+  else
+  if cairo_region_num_rectangles(crRegion) > 1 then
+    Result := ComplexRegion
+  else
+    Result := SimpleRegion;
 end;
 
 function TGtk3WidgetSet.PaintRgn(DC: HDC; RGN: HRGN): Boolean;
