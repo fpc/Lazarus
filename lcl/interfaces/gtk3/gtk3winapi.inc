@@ -3401,6 +3401,7 @@ end;
 function TGtk3WidgetSet.ReleaseCapture: Boolean;
 var
   AWidget: TGtk3Widget;
+  aCurrentGrab:PGtkWidget;
 begin
   {$IFDEF VerboseGtk3WinApi}
   DebugLn('TGtk3WidgetSet.ReleaseCapture');
@@ -3409,12 +3410,9 @@ begin
   Result := AWidget <> nil;
   if Result then
   begin
-    if AWidget.Widget = nil then exit;
-    if AWidget.GetContainerWidget^.has_grab then
-      gtk_grab_remove(AWidget.GetContainerWidget)
-    else
-    if AWidget.Widget^.has_grab then
-      gtk_grab_remove(AWidget.Widget);
+    aCurrentGrab := gtk_grab_get_current;
+    if aCurrentGrab <> nil then
+      gtk_grab_remove(aCurrentGrab);
   end;
 end;
 
