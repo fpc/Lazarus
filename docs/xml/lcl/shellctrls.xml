@@ -124,12 +124,15 @@ file system.
 </short>
 </element>
 <element name="TFileSortType.fstAlphabet">
-<short>Items are sorted alphabetically with folders and files mixed.</short>
+<short>
+Items are sorted alphabetically (case-insensitive) with folders and files 
+mixed.
+</short>
 </element>
 <element name="TFileSortType.fstFoldersFirst">
 <short>
-Items are sorted alphabetically with folders placed at the beginning of the 
-list.
+Items are sorted alphabetically (case-insensitive) with folders placed at the 
+beginning of the list prior to any file entries in the list.
 </short>
 </element>
 <element name="TFileSortType.fstCustom">
@@ -1418,7 +1421,7 @@ Base directory name used to resolve relative path references in AMask.
 </element>
 <element name="TCustomShellTreeView.GetFilesInDir.AMask">
 <short>
-One or more mask values used to select the matching file system objects  
+One or more mask values used to select the matching file system objects 
 returned in AResult.
 </short>
 </element>
@@ -2429,9 +2432,13 @@ in the class.
 </seealso>
 </element>
 
+<element name="TCustomShellListView.FAutoSizeColumns"/>
+<element name="TCustomShellListView.FFileSortType"/>
 <element name="TCustomShellListView.FMask"/>
 <element name="TCustomShellListView.FMaskCaseSensitivity"/>
 <element name="TCustomShellListView.FObjectTypes"/>
+<element name="TCustomShellListView.FObjectTypes"/>
+<element name="TCustomShellListView.FPopulateDelayed"/>
 <element name="TCustomShellListView.FRoot"/>
 <element name="TCustomShellListView.FShellTreeView"/>
 <element name="TCustomShellListView.FUseBuiltInIcons"/>
@@ -2439,6 +2446,16 @@ in the class.
 <element name="TCustomShellListView.FOnAddItem"/>
 <element name="TCustomShellListView.FOnSortCompare"/>
 <element name="TCustomShellListView.FOnFileAdded"/>
+
+<element name="TCustomShellListView.SetFileSortType">
+<short>Sets the value for the FileSortType property.</short>
+<seealso>
+<link id="TCustomShellListView.FileSortType"/>
+</seealso>
+</element>
+<element name="TCustomShellListView.SetFileSortType.AValue">
+<short>New value for the property.</short>
+</element>
 
 <element name="TCustomShellListView.SetMask">
 <short>Sets the value for the Mask property.</short>
@@ -2459,6 +2476,13 @@ in the class.
 </seealso>
 </element>
 <element name="TCustomShellListView.SetMaskCaseSensitivity.AValue">
+<short>New value for the property.</short>
+</element>
+
+<element name="TCustomShellListView.SetOnSortCompare">
+<short>Sets the value for the OnSortCompare property.</short>
+</element>
+<element name="TCustomShellListView.SetOnSortCompare.AValue">
 <short>New value for the property.</short>
 </element>
 
@@ -3084,6 +3108,51 @@ restored following the update to the list view items.
 </seealso>
 </element>
 
+<element name="TCustomShellListView.FileSortType">
+<short>
+Controls the sort order for object types displayed on the control.
+</short>
+<descr>
+<p>
+FileSortType is a TFileSortType property which controls the sort order for the 
+file system object types displayed on the list view control. It contains one 
+of the values from the TFileSortType enumeration: fstNone, fstAlphabet, 
+fstFolderFirst, or fstCustom.
+</p>
+<p>
+The default value for the property is fstNone and indicates that sorting is 
+not performed for the object types displayed on the control. Changing the 
+value for the property causes Items to be cleared and reloaded starting with 
+the Root assigned to the control.
+</p>
+<p>
+See TFileSortType for more information about the enumeration values and their 
+meanings.
+</p>
+<p>
+The value in FileSortType is passed as an argument to a helper routine used to 
+gather the ObjectTypes needed in Items, and to perform the correct sort 
+routine the setting in FileSortType.
+</p>
+<p>
+Please note: Use of fstFoldersFirst in FileSortType implies that otFolders is 
+included in ObjectTypes. Use of fstCustom requires the OnSortCompare event 
+handler to be implemented and assigned to compare the values in Items for the 
+custom sort order.
+</p>
+</descr>
+<version>
+Added in LCL version 5.0.
+</version>
+<seealso>
+<link id="TCustomShellListView.ObjectTypes"/>
+<link id="TCustomShellListView.Root"/>
+<link id="TCustomShellListView.Items"/>
+<link id="TCustomShellListView.OnSortCompare"/>
+<link id="TFileSortType"/>
+</seealso>
+</element>
+
 <element name="TCustomShellListView.Root">
 <short>
 Indicates the initial directory path whose objects are displayed in the 
@@ -3091,7 +3160,7 @@ control.
 </short>
 <descr>
 <p>
-The most important property of the ShellListView, indicates the directory 
+The most important property of the ShellListView. It indicates the directory 
 whose contents will be shown. This property is automatically managed if the 
 property ShellTreeView is filled. If this property is empty, nothing will be 
 shown.
@@ -3195,6 +3264,53 @@ assigned).
 <link id="TCustomShellListView.Items"/>
 <link id="TCustomShellListView.DoAddItem"/>
 <link id="TCustomShellListView.PopulateWithRoot"/>
+</seealso>
+</element>
+
+<element name="TCustomShellListView.OnSortCompare">
+<short>
+Event handler signalled to perform a custom sort for the ObjectTypes in Items.
+</short>
+<descr>
+<p>
+OnSortCompare is a TFileItemCompareEvent property with the event handler 
+signalled to determine the sort order for the Items on the control. An 
+application can implement and assign a routine with the signature in 
+TFileItemCompareEvent to determine a custom sort order.
+</p>
+<p>
+The object function in the handler must compare the file items in the Item1 
+and Item2 arguments, and return a value which indicates the relative sort 
+order for the compared items; -1 when Item1 comes before Item2, 1 when Item1 
+comes after Item2, or 0 when Item1 and Item2 have the same values.
+</p>
+<p>
+Changing the routine assigned to the property causes Items to be cleared, 
+reloaded, and sorted using the new handler.
+</p>
+<p>
+OnSortCompare is used in the PopulateWithRoot method, and passed as an 
+argument to the helper routine used to gather and sort the file system objects 
+in Items.
+</p>
+<p>
+Set FileSortType to fstCustom to enable the OnSortCompare event handler.
+</p>
+<p>
+Use ObjectTypes to indicate which file system objects are displayed on the 
+list view.
+</p>
+</descr>
+<version>
+Added in LCL version 5.0.
+</version>
+<seealso>
+<link id="TCustomShellListView.FileSortType"/>
+<link id="TCustomShellListView.ObjectTypes"/>
+<link id="TCustomShellListView.Items"/>
+<link id="TCustomShellListView.PopulateWithRoot"/>
+<link id="TCustomShellListView.Root"/>
+<link id="TFileItemCompareEvent"/>
 </seealso>
 </element>
 
@@ -3371,6 +3487,7 @@ Modified in LCL version 4.0 to set the default value for the property to
 <element name="TShellListView.ObjectTypes" link="#lcl.shellctrls.TCustomShellListView.ObjectTypes"/>
 <element name="TShellListView.Root" link="#lcl.shellctrls.TCustomShellListView.Root"/>
 <element name="TShellListView.ShellTreeView" link="#lcl.shellctrls.TCustomShellListView.ShellTreeView"/>
+<element name="TShellListView.FileSortType" link="#lcl.shellctrls.TCustomShellListView.FileSortType"/>
 <element name="TShellListView.OnChange" link="#lcl.comctrls.TCustomListView.OnChange"/>
 <element name="TShellListView.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TShellListView.OnColumnClick" link="#lcl.comctrls.TCustomListView.OnColumnClick"/>
@@ -3403,6 +3520,7 @@ Modified in LCL version 4.0 to set the default value for the property to
 <element name="TShellListView.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
 <element name="TShellListView.OnAddItem" link="#lcl.shellctrls.TCustomShellListView.OnAddItem"/>
 <element name="TShellListView.OnFileAdded" link="#lcl.shellctrls.TCustomShellListView.OnFileAdded"/>
+<element name="TShellListView.OnSortCompare" link="#lcl.shellctrls.TCustomShellListView.OnSortCompare"/>
 
 <element name="TShellTreeNode">
 <short>Represents tree nodes in TCustomShellTreeView / TShellTreeView.</short>
