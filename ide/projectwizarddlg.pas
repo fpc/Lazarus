@@ -34,7 +34,7 @@ uses
   // BuildIntf
   PackageIntf,
   // IdeIntf
-  IDEImagesIntf,
+  IDEWindowIntf, IDEImagesIntf,
   // IDE
   LazarusIDEStrConsts, EnvironmentOpts;
 
@@ -64,6 +64,8 @@ type
     procedure btnNewProjectClick(Sender: TObject);
     procedure btnOpenProjectClick(Sender: TObject);
     procedure cbRecentProjectsSelect(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormCreate(Sender: TObject);
   private
     FResult: TProjectWizardSelectionType;
   public
@@ -146,6 +148,16 @@ begin
   FResult := tpws_openRecent;
   if (Sender as TComboBox).Text<>'' then
     ModalResult:=mrOK;  // Exit dialog if something is selected.
+end;
+
+procedure TProjectWizardDialog.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(self);
+end;
+
+procedure TProjectWizardDialog.FormCreate(Sender: TObject);
+begin
+  IDEDialogLayoutList.ApplyLayout(self);
 end;
 
 end.

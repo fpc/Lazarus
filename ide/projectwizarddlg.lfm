@@ -10,6 +10,8 @@ object ProjectWizardDialog: TProjectWizardDialog
   ClientWidth = 572
   Position = poScreenCenter
   LCLVersion = '3.99.0.0'
+  OnClose = FormClose
+  OnCreate = FormCreate
   object btnNewProject: TBitBtn
     AnchorSideTop.Control = Owner
     AnchorSideRight.Side = asrBottom
