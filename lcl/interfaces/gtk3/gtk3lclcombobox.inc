@@ -28,7 +28,7 @@ begin
 
   if not Assigned(ParentClass) then
   begin
-    DebugLn('Error: cannot get ParentClass !');
+    DebugLn('Error: LCLGtkComboBoxGetPreferredWidth cannot get ParentClass !');
     exit;
   end;
 
@@ -38,19 +38,19 @@ begin
   AControl := TGtk3Widget(HwndFromGtkWidget(widget));
   if not Assigned(AControl) then
   begin
-    DebugLn('Error: cannot get TGtk3Widget for widget parameter.');
+    DebugLn('Error: LCLGtkComboBoxGetPreferredWidth cannot get TGtk3Widget for widget parameter.');
     exit;
   end;
 
   // we don't check autosize since combo width is free size
   if AControl.LCLWidth = 0 then
   begin
-    min_width^ := Max(50, AControl.LCLObject.Width);
-    nat_width^ := Max(50, AControl.LCLObject.Width);
+    min_width^ := Max(min_width^ div 2, AControl.LCLObject.Width);
+    nat_width^ := Max(min_width^ div 2, AControl.LCLObject.Width);
   end else
   begin
-    min_width^ := Max(50, AControl.LCLWidth);
-    nat_width^ := Max(50, AControl.LCLWidth);
+    min_width^ := Max(min_width^ div 2, AControl.LCLWidth);
+    nat_width^ := Max(min_width^ div 2, AControl.LCLWidth);
   end;
 end;
 
@@ -62,13 +62,13 @@ begin
 
   if not Assigned(min_height) or not Assigned(nat_height) then
   begin
-    DebugLn('Error: LCLGtkComboBoxGetPreferredWidth invalid params.');
+    DebugLn('Error: LCLGtkComboBoxGetPreferredHeight invalid params.');
     Exit;
   end;
 
   if not Gtk3IsWidget(widget) then
   begin
-    DebugLn('Error: LCLGtkComboBoxGetPreferredWidth widget param is not PGtkWidget.');
+    DebugLn('Error: LCLGtkComboBoxGetPreferredHeight widget param is not PGtkWidget.');
     // WriteLn('Error: widget is not a valid GtkWidget');
     Exit;
   end;
@@ -77,7 +77,7 @@ begin
 
   if not Assigned(ParentClass) then
   begin
-    DebugLn('Error: cannot get ParentClass !');
+    DebugLn('Error: LCLGtkComboBoxGetPreferredHeight cannot get ParentClass !');
     exit;
   end;
 
@@ -86,7 +86,7 @@ begin
   AControl := TGtk3Widget(HwndFromGtkWidget(widget));
   if not Assigned(AControl) then
   begin
-    DebugLn('Error: cannot get TGtk3Widget for widget parameter.');
+    DebugLn('Error: LCLGtkComboBoxGetPreferredHeight cannot get TGtk3Widget for widget parameter.');
     exit;
   end;
 
@@ -95,12 +95,12 @@ begin
 
   if AControl.LCLHeight = 0 then
   begin
-    min_height^ := Max(25, AControl.LCLObject.Height);
-    nat_height^ := Max(25, AControl.LCLObject.Height);
+    min_height^ := Max(min_height^ div 2, AControl.LCLObject.Height);
+    nat_height^ := Max(min_height^ div 2, AControl.LCLObject.Height);
   end else
   begin
-    min_height^ := Max(25, AControl.LCLHeight);
-    nat_height^ := Max(25, AControl.LCLHeight);
+    min_height^ := Max(min_height^ div 2, AControl.LCLHeight);
+    nat_height^ := Max(min_height^ div 2, AControl.LCLHeight);
   end;
 end;
 

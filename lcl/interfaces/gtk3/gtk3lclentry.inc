@@ -24,7 +24,7 @@ begin
   ParentClass := PGtkWidgetClass(g_type_class_peek_parent(widget^.g_type_instance.g_class));
   if not Assigned(ParentClass) then
   begin
-    DebugLn('Error: cannot get ParentClass !');
+    DebugLn('Error: LCLGtkEntryGetPreferredWidth cannot get ParentClass !');
     Exit;
   end;
 
@@ -34,19 +34,19 @@ begin
   AControl := TGtk3Widget(HwndFromGtkWidget(widget));
   if not Assigned(AControl) then
   begin
-    DebugLn('Error: cannot get TGtk3Widget for widget parameter.');
+    DebugLn('Error: LCLGtkEntryGetPreferredWidth cannot get TGtk3Widget for widget parameter.');
     Exit;
   end;
 
   // we pass our width , no matter autosize is on or off.
   if AControl.LCLWidth = 0 then
   begin
-    min_width^ := Max(30, AControl.LCLObject.Width);
-    nat_width^ := Max(30, AControl.LCLObject.Width);
+    min_width^ := Max(min_width^ div 2, AControl.LCLObject.Width);
+    nat_width^ := Max(min_width^ div 2, AControl.LCLObject.Width);
   end else
   begin
-    min_width^ := Max(30, AControl.LCLWidth);
-    nat_width^ := Max(30, AControl.LCLWidth);
+    min_width^ := Max(min_width^ div 2, AControl.LCLWidth);
+    nat_width^ := Max(min_width^ div 2, AControl.LCLWidth);
   end;
 end;
 
@@ -70,7 +70,7 @@ begin
   ParentClass := PGtkWidgetClass(g_type_class_peek_parent(widget^.g_type_instance.g_class));
   if not Assigned(ParentClass) then
   begin
-    DebugLn('Error: cannot get ParentClass !');
+    DebugLn('Error: LCLGtkEntryGetPreferredHeight cannot get ParentClass !');
     Exit;
   end;
 
@@ -80,7 +80,7 @@ begin
   AControl := TGtk3Widget(HwndFromGtkWidget(widget));
   if not Assigned(AControl) then
   begin
-    DebugLn('Error: cannot get TGtk3Widget for widget parameter.');
+    DebugLn('Error: LCLGtkEntryGetPreferredHeight cannot get TGtk3Widget for widget parameter.');
     Exit;
   end;
 
@@ -90,12 +90,12 @@ begin
 
   if AControl.LCLHeight = 0 then
   begin
-    min_height^ := Max(20, AControl.LCLObject.Height);
-    nat_height^ := Max(20, AControl.LCLObject.Height);
+    min_height^ := Max(min_height^ div 2, AControl.LCLObject.Height);
+    nat_height^ := Max(min_height^ div 2, AControl.LCLObject.Height);
   end else
   begin
-    min_height^ := Max(20, AControl.LCLHeight);
-    nat_height^ := Max(20, AControl.LCLHeight);
+    min_height^ := Max(min_height^ div 2, AControl.LCLHeight);
+    nat_height^ := Max(min_height^ div 2, AControl.LCLHeight);
   end;
 end;
 
