@@ -7533,6 +7533,10 @@ begin
   // if combo doesnt use menu
   if PGtkComboBox(GetContainerWidget)^.priv3^.tree_view <> nil then
     g_object_set_data(PGObject(PGtkComboBox(GetContainerWidget)^.priv3^.tree_view), 'lclwidget', Self);
+  // real popup menu
+  if PGtkComboBox(GetContainerWidget)^.priv3^.box <> nil then
+    g_object_set_data(PGObject(PGtkComboBox(GetContainerWidget)^.priv3^.box), 'lclwidget', Self);
+
 end;
 
 function TGtk3ComboBox.GetDroppedDown: boolean;
