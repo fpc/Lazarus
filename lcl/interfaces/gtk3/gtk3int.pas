@@ -52,6 +52,7 @@ type
     FDefaultAppFontName: String;
     {$IFDEF UNIX}
     FChildSignalHandlers: PChildSignalEventHandler;
+    FOverlayScrolling:gboolean;
     {$ELSE}
     {$IFDEF VerboseGtkToDos}{$warning no declaration of FChildSignalHandlers for this OS}{$ENDIF}
     {$ENDIF}
@@ -143,6 +144,7 @@ type
     property AppIcon: PGdkPixbuf read FAppIcon;
     property DefaultAppFontName: String read FDefaultAppFontName;
     property Gtk3Application: PGtkApplication read FGtk3Application;
+    property OverlayScrolling: gboolean read FOverlayScrolling write FOverlayScrolling;
 
     {$i gtk3winapih.inc}
     {$i gtk3lclintfh.inc}

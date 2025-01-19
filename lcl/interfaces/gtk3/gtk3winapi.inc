@@ -3939,6 +3939,7 @@ var
   HasChanged: Boolean;
   ScrollBar: PGtkScrollbar;
   W, H: double;
+  OverlayFactor: integer;
 
   procedure UpdateAdjustment;
   var
@@ -4004,6 +4005,10 @@ begin
   Result := 0;
   if not IsValidHandle(Handle) then Exit;
 
+  if GTK3WidgetSet.OverlayScrolling then
+    OverlayFactor := 2
+  else
+    OverlayFactor := 1;
   HasChanged := False;
 
   // must implement first
@@ -4034,7 +4039,7 @@ begin
         if ((ScrollInfo.fMask and SIF_RANGE) <> 0) and Gtk3IsScrolledWindow(ScrollWin) then
         begin
           H := gtk_scrolled_window_get_vadjustment(ScrollWin)^.upper;
-          W := (ScrollInfo.nMax - ScrollInfo.nMin) + (gtk_scrolled_window_get_vscrollbar(ScrollWin)^.get_allocated_width * 2{scrollbars overlaps each other, so x2});
+          W := (ScrollInfo.nMax - ScrollInfo.nMin) + (gtk_scrolled_window_get_vscrollbar(ScrollWin)^.get_allocated_width * OverlayFactor);
           W := Max(W, TGtk3ScrollableWin(Handle).getClientRect.Width);
           TGtk3ScrollableWin(Handle).GetContainerWidget^.set_size_request(Round(W), Round(H));
         end;
@@ -4050,7 +4055,7 @@ begin
         if ((ScrollInfo.fMask and SIF_RANGE) <> 0) and Gtk3IsScrolledWindow(ScrollWin) then
         begin
           W := gtk_scrolled_window_get_hadjustment(ScrollWin)^.upper;
-          H := (ScrollInfo.nMax - ScrollInfo.nMin) + (gtk_scrolled_window_get_hscrollbar(ScrollWin)^.get_allocated_height * 2{scrollbars overlaps each other, so x2});
+          H := (ScrollInfo.nMax - ScrollInfo.nMin) + (gtk_scrolled_window_get_hscrollbar(ScrollWin)^.get_allocated_height * OverlayFactor);
           H := Max(H, TGtk3ScrollAbleWin(Handle).getClientRect.Height);
           //writeln(Format('VerticalScrollBar: set new size for Container W=%f H=%f viewport W=%d H=%d HScrollHeight=%d nMax=%f',[W, H, TGtk3ScrollableWin(Handle).getViewport^.get_allocated_width, TGtk3ScrollableWin(Handle).getViewport^.get_allocated_height, gtk_scrolled_window_get_hscrollbar(ScrollWin)^.get_allocated_height, adjustment^.get_upper]));
           //writeln(Format('VBAR min %d max %d Scale %d',[ScrollInfo.nMin, ScrollInfo.nMax, ScrollWin^.scale_factor]));

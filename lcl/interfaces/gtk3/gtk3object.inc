@@ -325,6 +325,12 @@ begin
   g_object_set_property(gtk_settings_get_default,'gtk-button-images',@AValue);
   AValue.unset;
 
+  FOverlayScrolling := True;
+  if GetEnvironmentVariable('GTK_OVERLAY_SCROLLING') = '0' then
+    FOverlayScrolling := False;
+  if FOverlayScrolling then
+    g_object_get(gtk_settings_get_default,'gtk-overlay-scrolling', [@FOverlayScrolling, nil]);
+
   FGlobalCursor := 0;
   FAppIcon := nil;
   FStockNullBrush := 0;
@@ -408,6 +414,25 @@ begin
     PGtkStyleProvider(CssProvider),
     GTK_STYLE_PROVIDER_PRIORITY_APPLICATION
   );
+end;
+
+procedure ApplyCustomSpinButtonCSS;
+var
+  CssProvider: PGtkCssProvider;
+  Screen: PGdkScreen;
+  CSSData: PChar =
+    'spinbutton > entry {' +
+    '    min-width: 2px;' +
+    '    min-height: 16px;' +
+    '}';
+
+begin
+  CssProvider := gtk_css_provider_new();
+  gtk_css_provider_load_from_data(CssProvider, CSSData, -1, nil);
+  Screen := gdk_screen_get_default();
+  gtk_style_context_add_provider_for_screen(Screen,
+    PGtkStyleProvider(CssProvider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+  g_object_unref(CssProvider);
 end;
 
 procedure TGtk3WidgetSet.AppInit(var ScreenInfo: TScreenInfo);
@@ -499,8 +524,10 @@ begin
 
   //loading distance between scrollbars in corner, since
   //gtk3 does not have corner widget, we set it via css.
-  ApplyCustomScrollbarStyles(Max(0, Floor(PrefH / 2) - 1));
+  if OverlayScrolling then
+    ApplyCustomScrollbarStyles(Max(0, Floor(PrefH / 2) - 1));
 
+  //ApplyCustomSpinButtonCSS;
 
   header^.get_preferred_height(@MinH, @PrefH);
   FSystemMetricsList.Items[SM_CYCAPTION] := Max(MinH, PrefH);
