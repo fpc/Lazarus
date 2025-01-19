@@ -73,6 +73,7 @@ type
     procedure PersistentDeleting({%H-}APersistent: TPersistent);
     procedure DeletePersistent(var {%H-}APersistent: TPersistent);
     procedure SetSelection(const ASelection: TPersistentSelectionList);
+    procedure ComponentRenamed({%H-}AComponent: TComponent);
   end;
 
   { TTabOrderPropEditor }
@@ -140,6 +141,7 @@ begin
   GlobalDesignHook.AddHandlerPersistentDeleting(@PersistentDeleting);
   GlobalDesignHook.AddHandlerDeletePersistent(@DeletePersistent);
   GlobalDesignHook.AddHandlerSetSelection(@SetSelection);
+  GlobalDesignHook.AddHandlerComponentRenamed(@ComponentRenamed);
 
   IDEImages.AssignImage(ArrowDown, 'arrow_down');
   IDEImages.AssignImage(ArrowUp, 'arrow_up');
@@ -420,6 +422,11 @@ begin
   RefreshTree;
   CheckButtonsEnabled;
   FUpdating := false;
+end;
+
+procedure TTabOrderDialog.ComponentRenamed(AComponent: TComponent);
+begin
+  SomethingChanged;
 end;
 
 procedure TTabOrderDialog.PersistentAdded(APersistent: TPersistent; Select: boolean);
