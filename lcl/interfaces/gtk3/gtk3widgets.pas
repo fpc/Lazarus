@@ -5523,12 +5523,12 @@ begin
       if Assigned(AWindow) then
       begin
         Bar := getHorizontalScrollbar;
-        if (Bar <> nil) and Gtk3IsWidget(Bar) and Bar^.get_visible then
+        if (Bar <> nil) and Gtk3IsWidget(Bar) and Bar^.get_visible and GTK3WidgetSet.OverlayScrolling then
           HOffset := Bar^.get_allocated_height
         else
           HOffset := 0;
         Bar := getVerticalScrollbar;
-        if (Bar <> nil) and Gtk3IsWidget(Bar) and Bar^.get_visible then
+        if (Bar <> nil) and Gtk3IsWidget(Bar) and Bar^.get_visible and GTK3WidgetSet.OverlayScrolling then
           VOffset := Bar^.get_allocated_width
         else
           VOffset := 0;
@@ -7838,13 +7838,13 @@ begin
     AViewPort^.get_view_window^.get_geometry(@x, @y, @w, @h);
 
     Bar := getHorizontalScrollbar;
-    if (Bar <> nil) and Bar^.get_visible then
+    if (Bar <> nil) and Gtk3IsWidget(Bar) and Bar^.get_visible and GTK3WidgetSet.OverlayScrolling then
       HOffset := Bar^.get_allocated_height
     else
       HOffset := 0;
 
     Bar := getVerticalScrollbar;
-    if (Bar <> nil) and Gtk3IsWidget(Bar) and Bar^.get_visible then
+    if (Bar <> nil) and Gtk3IsWidget(Bar) and Bar^.get_visible and GTK3WidgetSet.OverlayScrolling then
       VOffset := Bar^.get_allocated_width
     else
       VOffset := 0;
