@@ -240,7 +240,9 @@ type
     class procedure EntryChanged({%H-}AEntry: PGtkEntryBuffer; AData: GPointer); cdecl; static;
     class procedure InsertText(editable: PGtkEditable; aNewText: PgChar; anewtextlen: gint;
       var pos:Pgint; data: gpointer);cdecl; static;
+    class procedure EntrySizeAllocate(AWidget: PGtkWidget; AGdkRect: PGdkRectangle; Data: gpointer); cdecl; static;
   protected
+    procedure ConnectSizeAllocateSignal(ToWidget: PGtkWidget); override;
     function EatArrowKeys(const AKey: Word): Boolean; override;
     function getText: String; override;
     procedure setText(const AValue: String); override;
@@ -263,6 +265,8 @@ type
   { TGtk3SpinEdit }
 
   TGtk3SpinEdit = class(TGtk3Entry)
+  strict  private
+    class procedure SpinValueChanged({%H-}aSpin: PGtkSpinButton; aData: gpointer); cdecl; static;
   private
     function GetMaximum: Double;
     function GetMinimum: Double;
@@ -278,6 +282,7 @@ type
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
     function EatArrowKeys(const {%H-}AKey: Word): Boolean; override;
   public
+    procedure InitializeWidget; override;
     function IsWidgetOk: Boolean; override;
     procedure SetRange(AMin, AMax: Double);
     property Minimum: Double read GetMinimum;
@@ -1043,6 +1048,7 @@ end;
 {$i gtk3lclcombobox.inc}
 {$i gtk3lclentry.inc}
 {$i gtk3lclbutton.inc}
+{$i gtk3lclspinbutton.inc}
 
 class function TGtk3Widget.WidgetEvent(widget: PGtkWidget; event: PGdkEvent; data: GPointer): gboolean; cdecl;
 begin
@@ -3675,10 +3681,41 @@ end;
 class procedure TGtk3Entry.EntryChanged({%H-}AEntry: PGtkEntryBuffer; AData: GPointer); cdecl;
 var
   Msg: TLMessage;
+  S:String;
+  I:Integer;
+  ASpin: TGtk3SpinEdit;
+  fl: double;
 begin
   FillChar(Msg{%H-}, SizeOf(Msg), 0);
   Msg.Msg := CM_TEXTCHANGED;
-  TGtk3Widget(AData).DeliverMessage(Msg);
+  if [wtSpinEdit] * TGtk3Widget(AData).WidgetType <> [] then
+  begin
+    ASpin := TGtk3SpinEdit(AData);
+    if not TGtk3Widget(AData).InUpdate  then
+    begin
+      S := TGtk3SpinEdit(adata).getText;
+      I := 0;
+      if (ASpin.NumDigits = 0) then
+      begin
+        if TryStrToInt(S, I) then
+        begin
+          if (I >= Round(TGtk3SpinEdit(adata).Minimum)) and (I<= Round(TGtk3SpinEdit(adata).Maximum)) then
+            PGtkSpinButton(TGtk3SpinEdit(adata).Widget)^.set_value(I);
+        end;
+      end else
+      begin
+        fl := 0;
+        if TryStrToFloat(S, fl) then
+        begin
+          if (fl >= TGtk3SpinEdit(adata).Minimum) and (fl<= TGtk3SpinEdit(adata).Maximum) then
+            PGtkSpinButton(TGtk3SpinEdit(adata).Widget)^.set_value(fl);
+        end;
+      end;
+    end;
+    exit; // value-changed should trigger
+  end;
+  if not TGtk3Widget(AData).InUpdate then
+    TGtk3Widget(AData).DeliverMessage(Msg);
 end;
 
 class procedure TGtk3Entry.InsertText(editable: PGtkEditable; aNewText: PgChar; anewtextlen: gint;
@@ -3686,10 +3723,22 @@ class procedure TGtk3Entry.InsertText(editable: PGtkEditable; aNewText: PgChar; 
 var
   i:integer;
   edt:TGtk3Entry;
+  //s: string;
 begin
   if not Assigned(data) then
     exit;
+
   edt := TGtk3Entry(data);
+  if [wtSpinEdit] * TGtk3Widget(data).WidgetType <> [] then
+  begin
+    (*
+    if pos <> nil then
+      s := pos^.ToString
+    else
+      s := 'nil';
+    writeln('SpinEdit.InsertText text=',edt.getText,' newText="',aNewText,'"',' newLen=',anewTextLen,' pos=',s);
+    *)
+  end else
   if (edt.LCLObject as TCustomEdit).NumbersOnly then
   begin
     for i := 0 to anewtextlen-1 do
@@ -3701,6 +3750,74 @@ begin
        end;
     end;
   end;
+end;
+
+class procedure TGtk3Entry.EntrySizeAllocate(AWidget:PGtkWidget;AGdkRect:
+  PGdkRectangle;Data:gpointer);cdecl;
+var
+  Msg: TLMSize;
+  NewSize: TSize;
+  ACtl: TGtk3Entry;
+  AState: TGdkWindowState;
+  Alloc: TGtkAllocation;
+begin
+  if AWidget=nil then ;
+
+  ACtl := TGtk3Entry(Data);
+
+  {$IF DEFINED(GTK3DEBUGENTRY) OR DEFINED(GTK3DEBUGENTRY)}
+  with AGdkRect^ do
+    DebugLn('**** EntrySizeAllocate **** ....',dbgsName(ACtl.LCLObject),
+      ' ',Format('GTK x %d y %d w %d h %d',[x, y, width, height]),
+      Format(' LCL W=%d H=%d LLW %d LLH %d',[ACtl.LCLObject.Width, ACtl.LCLObject.Height, ACtl.LCLWidth, ACtl.LCLHeight]));
+  {$ENDIF}
+
+  with Alloc do
+  begin
+    x := AGdkRect^.x;
+    y := AGdkRect^.y;
+    Width := AGdkRect^.width;
+    Height := AGdkRect^.height;
+  end;
+
+  //fix layout, especially for GtkSpinButton
+  if [wtSpinEdit] * ACtl.WidgetType <> [] then
+    gtk_widget_set_clip(AWidget, @Alloc);
+
+  if not Assigned(ACtl.LCLObject) then exit;
+
+  // return size w/o frame
+  NewSize.cx := AGdkRect^.width;
+  NewSize.cy := AGdkRect^.height;
+
+
+  if not (csDesigning in ACtl.LCLObject.ComponentState) then
+  begin
+    if ACtl.InUpdate then
+      exit;
+  end;
+
+  if ((NewSize.cx <> ACtl.LCLObject.Width) or (NewSize.cy <> ACtl.LCLObject.Height) or
+     ACtl.LCLObject.ClientRectNeedsInterfaceUpdate) then
+  begin
+    ACtl.LCLObject.DoAdjustClientRectChange;
+  end;
+
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
+
+  Msg.Msg := LM_SIZE;
+  Msg.SizeType := SIZE_RESTORED;
+
+  Msg.SizeType := Msg.SizeType or Size_SourceIsInterface;
+
+  Msg.Width := Word(NewSize.cx);
+  Msg.Height := Word(NewSize.cy);
+  ACtl.DeliverMessage(Msg);
+end;
+
+procedure TGtk3Entry.ConnectSizeAllocateSignal(ToWidget:PGtkWidget);
+begin
+  g_signal_connect_data(ToWidget,'size-allocate',TGCallback(@EntrySizeAllocate), Self, nil, G_CONNECT_DEFAULT);
 end;
 
 function TGtk3Entry.getText: String;
@@ -3901,12 +4018,31 @@ begin
   PrivateSelection := -1;
   ASpin := TCustomSpinEdit(LCLObject);
   FWidgetType := FWidgetType + [wtSpinEdit];
-  Result := TGtkSpinButton.new_with_range(ASpin.MinValue, ASpin.MaxValue, ASpin.Increment);
+  Result := LCLGtkSpinButtonNew;
+  PGtkSpinButton(Result)^.set_range(ASpin.MinValue, ASpin.MaxValue);
+  PGtkSpinButton(Result)^.set_increments(ASpin.Increment, ASpin.Increment * 10); //page param gtk default is 10 * step.
 end;
 
 function TGtk3SpinEdit.EatArrowKeys(const AKey: Word): Boolean;
 begin
   Result := False;
+end;
+
+class procedure TGtk3SpinEdit.SpinValueChanged(aSpin:PGtkSpinButton;aData:
+  gpointer);cdecl;
+var
+  Msg: TLMessage;
+begin
+  FillChar(Msg{%H-}, SizeOf(Msg), 0);
+  Msg.Msg := CM_TEXTCHANGED;
+  if not TGtk3Widget(AData).InUpdate then
+    TGtk3Widget(AData).DeliverMessage(Msg);
+end;
+
+procedure TGtk3SpinEdit.InitializeWidget;
+begin
+  inherited InitializeWidget;
+  g_signal_connect_data(Widget, 'value-changed', TGCallback(@SpinValueChanged), Self, nil, G_CONNECT_DEFAULT);
 end;
 
 function TGtk3SpinEdit.IsWidgetOk: Boolean;

@@ -527,7 +527,7 @@ begin
   if OverlayScrolling then
     ApplyCustomScrollbarStyles(Max(0, Floor(PrefH / 2) - 1));
 
-  //ApplyCustomSpinButtonCSS;
+  ApplyCustomSpinButtonCSS;
 
   header^.get_preferred_height(@MinH, @PrefH);
   FSystemMetricsList.Items[SM_CYCAPTION] := Max(MinH, PrefH);

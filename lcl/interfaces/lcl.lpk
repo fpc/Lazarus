@@ -131,7 +131,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="4" Minor="99"/>
-    <Files Count="551">
+    <Files Count="553">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -2718,6 +2718,14 @@ end;"/>
         <Filename Value="gtk3/gtk3lclentry.inc"/>
         <Type Value="Include"/>
       </Item551>
+      <Item552>
+        <Filename Value="gtk3/gtk3lclbutton.inc"/>
+        <Type Value="Include"/>
+      </Item552>
+      <Item553>
+        <Filename Value="gtk3/gtk3lclspinbutton.inc"/>
+        <Type Value="Include"/>
+      </Item553>
     </Files>
     <CompatibilityMode Value="True"/>
     <LazDoc Paths="../../docs/xml/lcl"/>
