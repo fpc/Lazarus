@@ -3179,11 +3179,27 @@ begin
 end;
 
 function TGtk3WidgetSet.PaintRgn(DC: HDC; RGN: HRGN): Boolean;
+var
+  GtkDC: TGtk3DeviceContext absolute DC;
+  crRegion: Pcairo_region_t;
+  i: Integer;
+  R: Tcairo_rectangle_int_t;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  DebugLn('WARNING: TGtk3WidgetSet.PaintRgn not implemented ...');
-  {$ENDIF}
-  Result:=inherited PaintRgn(DC, RGN);
+  Result := False;
+  if not IsValidDC(DC) then
+    exit;
+  if not IsValidGDIObject(RGN) then
+    exit;
+  crRegion := TGtk3Region(RGN).Handle;
+  if crRegion = nil then
+    exit;
+
+  for i := 0 to cairo_region_num_rectangles(crRegion) - 1 do
+  begin
+    cairo_region_get_rectangle(crRegion, i, @R);
+    GtkDC.fillRect(R.x, R.y, R.Width, R.Height, HBRUSH(GtkDC.CurrentBrush));
+  end;
+  Result := True;
 end;
 
 function TGtk3WidgetSet.PeekMessage(var lpMsg: TMsg; Handle: HWND;
