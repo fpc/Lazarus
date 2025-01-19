@@ -447,14 +447,21 @@ begin
 end;
 
 function FileSizeToStr(AFileSize: Int64): String;
+const
+  ONE_KB = 1024;
+  ONE_MB = 1024 * 1024;
+  ONE_GB = 1024 * 1024 * 1024;
 begin
-  if AFileSize < 1024 then
+  if AFileSize < ONE_KB then
     Result := Format(sShellCtrlsBytes, [IntToStr(AFileSize)])
   else
-  if AFileSize < 1024 * 1024 then
-    Result := Format(sShellCtrlsKB, [IntToStr(AFileSize div 1024)])
+  if AFileSize < ONE_MB then
+    Result := Format(sShellCtrlsKB, [IntToStr(AFileSize div ONE_KB)])
   else
-    Result := Format(sShellCtrlsMB, [IntToStr(AFileSize div (1024 * 1024))]);
+  if AFileSize < ONE_GB then
+    Result := Format(sShellCtrlsMB, [IntToStr(AFileSize div (ONE_MB))])
+  else
+    Result := Format(sShellCtrlsGB, [AFileSize / ONE_GB]);
 end;
 
 operator = (const A, B: TMethod): Boolean;
