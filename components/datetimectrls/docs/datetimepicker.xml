@@ -946,7 +946,7 @@ Creates and displays the drop-down calendar dialog for the control.
 <p>
 <var>DropDownCalendarForm</var> ensures that the form instance in the 
 <var>CalendarForm</var> property is allocated, configured, and displayed. 
-CalendarForm is the form the where the embedded calendar/time picker for the 
+CalendarForm is the form where the embedded calendar/time picker for the 
 control is displayed, and its value is assigned in the method when:
 </p>
 <ul>
@@ -965,8 +965,12 @@ The value in CalendarForm is not updated and the form is not displayed at
 design-time.
 </p>
 <p>
+The Show method in CalendarForm is called after the form instance in 
+CalendarForm has been created.
+</p>
+<p>
 DropDownCalendarForm is called when the drop-down button is clicked, or the 
-Alt+Down cursor key is pressed in the edit for the control.
+Alt+Down cursor key is pressed in the edit box for the control.
 </p>
 </descr>
 <seealso>
@@ -976,6 +980,38 @@ Alt+Down cursor key is pressed in the edit for the control.
 <link id="TCustomDateTimePicker.ReadOnly"/>
 <link id="TDateTimePickerOptions"/>
 </seealso>
+</element>
+
+<element name="TCustomDateTimePicker.ShowCalendarForm">
+<short>
+Displays the drop-down calendar form for the control.
+</short>
+<descr>
+<p>
+<var>ShowCalendarForm</var> is a method used to display the custom form in 
+<var>CalendarForm</var> for the control. It is called from 
+DropDownCalendarForm at run-time after the TDTCalendarForm instance in
+CalendarForm has been created. The Show method in CalendarForm is called to 
+display the form instance.
+</p>
+<p>
+Please note that CalendarForm is not created, or subsequently displayed, under 
+certain conditions. See <link id="TCustomDateTimePicker.DropDownCalendarForm">
+DropDownCalendarForm</link> for more information.
+</p>
+</descr>
+<seealso>
+<link id="TCustomDateTimePicker.DropDownCalendarForm"/>
+<link id="TCustomDateTimePicker.CalendarForm"/>
+<link id="TCustomDateTimePicker.ReadOnly"/>
+<link id="TCustomDateTimePicker.Options"/>
+<link id="TDTCalendarForm"/>
+</seealso>
+</element>
+<element name="TCustomDateTimePicker.ShowCalendarForm.aWrapper">
+<short>
+Wrapper for the calendar control where the drop-down calendar form is used.
+</short>
 </element>
 
 <element name="TCustomDateTimePicker.GetCheckBoxRect">
