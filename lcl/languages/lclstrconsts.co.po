@@ -6,10 +6,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: LCL in Corsican\n"
-"POT-Creation-Date: 2024-01-20 03:14\n"
-"PO-Revision-Date: 2024-01-20 17:10+0100\n"
+"POT-Creation-Date: 2025-01-19 19:17\n"
+"PO-Revision-Date: 2025-01-20 17:51+0100\n"
 "Language-Team: Patriccollu di Santa Maria è Sichè\n"
-"X-Generator: Poedit 3.3.2\n"
+"X-Generator: Poedit 3.5.2\n"
 "Last-Translator: Patriccollu di Santa Maria è Sichè <https://github.com/Patriccollu/Lingua_Corsa-Infurmatica/#readme>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "Language: co\n"
@@ -27,7 +27,7 @@ msgstr "U navigatore « %s » ùn si trova micca."
 #: lclstrconsts.hhshelperrorwhileexecuting
 #, object-pascal-format
 msgid "Error while executing \"%s\":%s%s"
-msgstr "Sbagliu à l'esecuzione di « %s » :%s%s"
+msgstr "Sbagliu à l’esecuzione di « %s » :%s%s"
 
 #: lclstrconsts.hhshelpnohtmlbrowserfound
 msgid "Unable to find a HTML browser."
@@ -114,7 +114,7 @@ msgstr "Tutti i schedarii (%s)|%s|%s"
 
 #: lclstrconsts.rsappworkspacecolorcaption
 msgid "Application Workspace"
-msgstr "Spaziu di travagliu di l'appiecazione"
+msgstr "Spaziu di travagliu di l’appiecazione"
 
 #: lclstrconsts.rsaquacolorcaption
 msgid "Aqua"
@@ -643,11 +643,11 @@ msgstr "Schedarii d’icona"
 
 #: lclstrconsts.rsiconimageempty
 msgid "Icon image cannot be empty"
-msgstr "A fiura di l'icona ùn pò micca esse viota"
+msgstr "A fiura di l’icona ùn pò micca esse viota"
 
 #: lclstrconsts.rsiconimageformat
 msgid "Icon image must have the same format"
-msgstr "A fiura di l'icona deve avè u listessu furmatu"
+msgstr "A fiura di l’icona deve avè u listessu furmatu"
 
 #: lclstrconsts.rsiconimageformatchange
 msgid "Cannot change format of icon image"
@@ -655,7 +655,7 @@ msgstr "Ùn si pò cambià u furmatu di a fiura di l’icona"
 
 #: lclstrconsts.rsiconimagesize
 msgid "Icon image must have the same size"
-msgstr "A fiura di l'icona deve avè a listessa dimensione"
+msgstr "A fiura di l’icona deve avè a listessa dimensione"
 
 #: lclstrconsts.rsiconimagesizechange
 msgid "Cannot change size of icon image"
@@ -687,12 +687,12 @@ msgstr "%s indice %d fora di e confine 0 .. %d"
 #: lclstrconsts.rsindexoutofboundsminusone
 #, object-pascal-format
 msgid "%s Index %d out of bounds -1 .. %d"
-msgstr ""
+msgstr "%s indice %d fora di e confine -1 .. %d"
 
 #: lclstrconsts.rsindexoutofrange
 #, object-pascal-format
 msgid "Index Out of range Cell[Col=%d Row=%d]"
-msgstr "Indice fora di a seria Cellula[Col=%d Lin=%d]"
+msgstr "Indice fora di l’intervallu, cellula[Col=%d Lin=%d]"
 
 #: lclstrconsts.rsinfobkcolorcaption
 msgid "Info Background"
@@ -763,7 +763,7 @@ msgstr "Cupià"
 
 #: lclstrconsts.rsmacoseditmenucut
 msgid "Cut"
-msgstr ""
+msgstr "Taglià"
 
 #: lclstrconsts.rsmacoseditmenupaste
 msgctxt "lclstrconsts.rsmacoseditmenupaste"
@@ -772,15 +772,15 @@ msgstr "Incullà"
 
 #: lclstrconsts.rsmacoseditmenuredo
 msgid "Redo"
-msgstr ""
+msgstr "Rifà"
 
 #: lclstrconsts.rsmacoseditmenuselectall
 msgid "Select All"
-msgstr ""
+msgstr "Tuttu selezziunà"
 
 #: lclstrconsts.rsmacoseditmenuundo
 msgid "Undo"
-msgstr ""
+msgstr "Disfà"
 
 #: lclstrconsts.rsmacosfileformat
 msgid "File Format:"
@@ -789,7 +789,7 @@ msgstr "Furmatu di schedariu :"
 #: lclstrconsts.rsmacosmenuabout
 #, object-pascal-format
 msgid "About %s"
-msgstr ""
+msgstr "Apprupositu di %s"
 
 #: lclstrconsts.rsmacosmenuhide
 #, object-pascal-format
@@ -802,7 +802,7 @@ msgstr "Piattà l’altri"
 
 #: lclstrconsts.rsmacosmenupreferences
 msgid "Preferences..."
-msgstr ""
+msgstr "Preferenze…"
 
 #: lclstrconsts.rsmacosmenuquit
 #, object-pascal-format
