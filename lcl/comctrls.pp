@@ -3406,6 +3406,7 @@ type
     FMouseDownOnFoldingSign: Boolean;
     FMultiSelectStyle: TMultiSelectStyle;
     FHotTrackColor: TColor;
+    FHotTrackedPrevNodeIdx: Integer;
     FDisabledFontColor: TColor;
     FOnAddition: TTVExpandedEvent;
     FOnAdvancedCustomDraw: TTVAdvancedCustomDrawEvent;
