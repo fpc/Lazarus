@@ -3498,6 +3498,7 @@ begin
   FTreeLinePenPattern[1] := 1;
   FExpandSignColor := clWindowFrame;
   FHotTrackColor := clNone;
+  FHotTrackedPrevNodeIdx := -1;
   FDisabledFontColor := clGrayText;
   FPathDelimiter := '/';
   // Accessibility
@@ -6011,6 +6012,9 @@ begin
 end;
 
 procedure TCustomTreeView.UpdateHotTrack(X, Y: Integer);
+var
+  lNode, nodeUnderCursorY: TTreeNode;
+  R: TRect;
 begin
   FNodeUnderCursor := nil;
   if Cursor = crHandPoint then
@@ -6020,7 +6024,38 @@ begin
   FNodeUnderCursor := GetNodeAt(X, Y);
   if Assigned(FNodeUnderCursor) then
     Cursor := crHandPoint;
-  Invalidate;
+
+  // Invalidate;
+  // Too global, can lead to massive flicker (issue #41290). Replaced by code below.
+  // Invalidate only the affected lines (at least if not MultiSelect)
+  // Affected lines are: where the cursor is now, and where it was before.
+
+  if Self.MultiSelect then
+    Invalidate
+  else
+  begin
+    // Invalidate the previous hot node
+    nodeUnderCursorY := GetNodeAtY(Y);  // Instead of GetNodeAt(X, Y). Need to trigger redraw across full row for OwnerDraw
+    if FHotTrackedPrevNodeIdx >= Items.Count then
+      FHotTrackedPrevNodeIdx := -1;
+    if FHotTrackedPrevNodeIdx > -1 then
+    begin
+      lNode := Items[FHotTrackedPrevNodeIdx];
+      if Assigned(lNode) and lNode.Visible then
+      begin
+        R := lNode.DisplayRect(False);
+        InvalidateRect(Handle, @R, True);
+      end;
+      FHotTrackedPrevNodeIdx := -1;
+    end;
+    // Invalidate the current hot node
+    if Assigned(nodeUnderCursorY) then
+    begin
+      R := nodeUnderCursorY.DisplayRect(False);
+      InvalidateRect(Handle, @R, True);
+      FHotTrackedPrevNodeIdx := nodeUnderCursorY.AbsoluteIndex;
+    end;
+  end;
 end;
 
 procedure TCustomTreeView.MouseUp(Button: TMouseButton; Shift: TShiftState;
@@ -6238,6 +6273,7 @@ begin
   if tvoHotTrack in FOptions then
   begin
     FNodeUnderCursor:=nil;
+    FHotTrackedPrevNodeIdx:=-1;
     Cursor:=crDefault;
     Invalidate;
   end;
