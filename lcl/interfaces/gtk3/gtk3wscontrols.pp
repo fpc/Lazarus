@@ -39,7 +39,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Controls, Graphics, LCLType, Types, LCLProc,
+  Controls, Graphics, LCLType, Types, LCLProc, LazLogger,
 ////////////////////////////////////////////////////
   WSLCLClasses, WSControls, WSProc, LazGtk3, LazGdk3, LazGlib2, LazGObject2,
   gtk3widgets, LazPango1, LazCairo1, LazGdkPixbuf2,
@@ -350,16 +350,21 @@ begin
 end;
 
 class procedure TGtk3WSWinControl.SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer);
+{$IF DEFINED(GTK3DEBUGCORE) OR DEFINED(GTK3DEBUGSIZE)}
+var
+  AWidget: TGtk3Widget;
+{$ENDIF}
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetBounds') then
     Exit;
   {$IF DEFINED(GTK3DEBUGCORE) OR DEFINED(GTK3DEBUGSIZE)}
+  AWidget := TGtk3Widget(AWinControl.Handle);
   DebugLn('TGtk3WSWinControl.SetBounds ',dbgsName(AWinControl),Format(' ALeft %d ATop %d AWidth %d AHeight %d',[ALeft, ATop, AWidth, AHeight]));
   {$ENDIF}
   TGtk3Widget(AWinControl.Handle).SetBounds(ALeft,ATop,AWidth,AHeight);
   {$IF DEFINED(GTK3DEBUGCORE) OR DEFINED(GTK3DEBUGSIZE)}
-  DebugLn('TGtk3WSWinControl.SetBounds ',dbgsName(AWinControl),' isRealized=',dbgs(AWidget^.get_realized),
-    ' IsMapped=',dbgs(AWidget^.get_mapped));
+  DebugLn('TGtk3WSWinControl.SetBounds ',dbgsName(AWinControl),' isRealized=',dbgs(AWidget.Widget^.get_realized),
+    ' IsMapped=',dbgs(AWidget.Widget^.get_mapped));
   {$ENDIF}
 end;
     
