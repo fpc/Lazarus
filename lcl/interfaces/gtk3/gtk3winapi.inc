@@ -2485,13 +2485,11 @@ end;
 function TGtk3WidgetSet.GetScrollbarVisible(Handle: HWND; SBStyle: Integer
   ): boolean;
 var
-  AWidget: TGtk3Widget;
+  AWidget: TGtk3Widget absolute Handle;
 begin
   Result := False;
   if not IsValidHandle(Handle) then
     exit;
-  AWidget := TGtk3Widget(Handle);
-
   if wtScrollBar in AWidget.WidgetType then
     Result := AWidget.Visible
   else
@@ -2499,10 +2497,10 @@ begin
     if wtScrollingWin in AWidget.WidgetType then
     begin
       if SBStyle = SB_Horz then
-        Result := TGtk3ScrollableWin(Handle).getHorizontalScrollbar^.get_visible
+        Result := Assigned(TGtk3ScrollableWin(AWidget).getHorizontalScrollbar) and (TGtk3ScrollableWin(AWidget).getHorizontalScrollbar^.get_visible)
       else
       if SBStyle = SB_Vert then
-        Result := TGtk3ScrollableWin(Handle).getVerticalScrollbar^.get_visible
+        Result := Assigned(TGtk3ScrollableWin(AWidget).getVerticalScrollbar) and TGtk3ScrollableWin(AWidget).getVerticalScrollbar^.get_visible;
     end;
   end;
 end;
@@ -3940,6 +3938,7 @@ var
   ScrollBar: PGtkScrollbar;
   W, H: double;
   OverlayFactor: integer;
+  AControl: TGtk3Widget absolute Handle;
 
   procedure UpdateAdjustment;
   var
@@ -4017,14 +4016,14 @@ begin
 
   ScrollWin := nil;
   ScrollBar := niL;
-  if TGtk3Widget(Handle) is TGtk3ScrollBar then
-    ScrollBar := PGtkScrollBar(TGtk3Widget(Handle).Widget)
+  if [wtScrollBar] * AControl.WidgetType <> [] then
+    ScrollBar := PGtkScrollBar(AControl.Widget)
   else
   begin
     // TODO: Convert Handle to GtkScrolledWindow, this is not the case with
     // TGtk3Window, so we must introduce new function for scrollables
     // to return GtkScrollingWindow, like we have with getViewport.
-    ScrollWin := PGtkScrolledWindow(TGtk3ScrollableWin(Handle).Widget);
+    ScrollWin := PGtkScrolledWindow(AControl.Widget);
     if not Assigned(ScrollWin) then Exit;
     IsScrollWindow := True;
   end;
@@ -4035,12 +4034,15 @@ begin
       if Assigned(ScrollWin) then
       begin
         Adjustment := gtk_scrolled_window_get_hadjustment(ScrollWin);
-        ScrollBar := TGtk3ScrollableWin(Handle).getHorizontalScrollbar;
+        ScrollBar := TGtk3ScrollableWin(AControl).getHorizontalScrollbar;
         if ((ScrollInfo.fMask and SIF_RANGE) <> 0) and Gtk3IsScrolledWindow(ScrollWin) then
         begin
           H := gtk_scrolled_window_get_vadjustment(ScrollWin)^.upper;
-          W := (ScrollInfo.nMax - ScrollInfo.nMin) + (gtk_scrolled_window_get_vscrollbar(ScrollWin)^.get_allocated_width * OverlayFactor);
-          W := Max(W, TGtk3ScrollableWin(Handle).getClientRect.Width);
+          W := (ScrollInfo.nMax - ScrollInfo.nMin);
+          if Assigned(ScrollBar) then
+            W := W + (gtk_scrolled_window_get_vscrollbar(ScrollWin)^.get_allocated_width * OverlayFactor);
+          W := Max(W, TGtk3ScrollableWin(AControl).getClientRect.Width);
+          //we propose minimum size of container widget now
           TGtk3ScrollableWin(Handle).GetContainerWidget^.set_size_request(Round(W), Round(H));
         end;
       end else
@@ -4051,15 +4053,18 @@ begin
       if Assigned(ScrollWin) then
       begin
         Adjustment := gtk_scrolled_window_get_vadjustment(ScrollWin);
-        ScrollBar := TGtk3ScrollableWin(Handle).getVerticalScrollbar;
+        ScrollBar := TGtk3ScrollableWin(AControl).getVerticalScrollbar;
         if ((ScrollInfo.fMask and SIF_RANGE) <> 0) and Gtk3IsScrolledWindow(ScrollWin) then
         begin
           W := gtk_scrolled_window_get_hadjustment(ScrollWin)^.upper;
-          H := (ScrollInfo.nMax - ScrollInfo.nMin) + (gtk_scrolled_window_get_hscrollbar(ScrollWin)^.get_allocated_height * OverlayFactor);
+          H := (ScrollInfo.nMax - ScrollInfo.nMin);
+          if Assigned(ScrollBar) then
+            H := H + (gtk_scrolled_window_get_hscrollbar(ScrollWin)^.get_allocated_height * OverlayFactor);
           H := Max(H, TGtk3ScrollAbleWin(Handle).getClientRect.Height);
           //writeln(Format('VerticalScrollBar: set new size for Container W=%f H=%f viewport W=%d H=%d HScrollHeight=%d nMax=%f',[W, H, TGtk3ScrollableWin(Handle).getViewport^.get_allocated_width, TGtk3ScrollableWin(Handle).getViewport^.get_allocated_height, gtk_scrolled_window_get_hscrollbar(ScrollWin)^.get_allocated_height, adjustment^.get_upper]));
           //writeln(Format('VBAR min %d max %d Scale %d',[ScrollInfo.nMin, ScrollInfo.nMax, ScrollWin^.scale_factor]));
-          TGtk3ScrollableWin(Handle).GetContainerWidget^.set_size_request(Round(W), Round(H));
+          //Test with set_allocation !
+          TGtk3ScrollableWin(AControl).GetContainerWidget^.set_size_request(Round(W), Round(H));
         end;
       end else
         Adjustment := ScrollBar^.adjustment;
