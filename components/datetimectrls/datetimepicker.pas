@@ -314,6 +314,7 @@ type
     procedure UndoChanges; virtual;
 
     procedure DropDownCalendarForm; virtual;
+    procedure ShowCalendarForm(aWrapper: TCalendarControlWrapper); virtual;
 
     function GetCheckBoxRect(IgnoreRightToLeft: Boolean = False): TRect;
     function GetDateTimePartFromTextPart(TextPart: TTextPart): TDateTimePart;
@@ -681,7 +682,6 @@ type
     constructor CreateNewDTCalendarForm(AOwner: TComponent;
                   ADTPicker: TCustomDateTimePicker);
     destructor Destroy; override;
-  published
   end;
 
 { TDateTimePicker }
@@ -3762,8 +3762,14 @@ begin
                       or (csDesigning in ComponentState))
     then begin
       FCalendarForm := TDTCalendarForm.CreateNewDTCalendarForm(nil, Self);
-      FCalendarForm.Show;
+      ShowCalendarForm(TDTCalendarForm(FCalendarForm).Cal);
     end;
+end;
+
+procedure TCustomDateTimePicker.ShowCalendarForm(aWrapper: TCalendarControlWrapper);
+begin
+  if aWrapper=nil then ;
+  FCalendarForm.Show;
 end;
 
 { TDTUpDown }
