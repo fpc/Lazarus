@@ -33127,6 +33127,7 @@ turn accessibility off for tree view items by setting the
 <element name="TCustomTreeView.FMouseDownPos"/>
 <element name="TCustomTreeView.FMultiSelectStyle"/>
 <element name="TCustomTreeView.FHotTrackColor"/>
+<element name="TCustomTreeView.FHotTrackedPrevNodeIdx"/>
 <element name="TCustomTreeView.FDisabledFontColor"/>
 <element name="TCustomTreeView.FOnAddition"/>
 <element name="TCustomTreeView.FOnAdvancedCustomDraw"/>
@@ -35197,7 +35198,9 @@ editor for the control.
 </element>
 
 <element name="TCustomTreeView.MouseMove">
-<short>Handles mouse move messages for the control.</short>
+<short>
+Handles mouse move messages for the control.
+</short>
 <descr>
 <p>
 <var>MouseMove</var> is an overridden method in <var>TCustomTreeView</var> 
@@ -35207,11 +35210,23 @@ signals the OnMouseMove event handler (when assigned).
 </p>
 <p>
 MouseMove ensures that an automatic insertion mark is generated when needed. 
-It also updates the tool tip (or Hint) location and updates the hot tracking 
-position.
+It updates the tool tip (or Hint) location. It also updates the hot tracking 
+position when needed. When MultiSelect is enabled, a new tracking position 
+causes the entire control to be redrawn. If MultiSelect is <b>not</b> enabled, 
+only the display rectangles for the previous and the current hot-tracked tree 
+nodes are redrawn.
 </p>
 </descr>
+<version>
+Modified in LCL version 4.0 to reduce calls to Invalidate to avoid flicker.
+</version>
 <seealso>
+<link id="TCustomTreeView.Options"/>
+<link id="TCustomTreeView.HotTrack"/>
+<link id="TCustomTreeView.MultiSelect"/>
+<link id="TCustomTreeView.Tooltips"/>
+<link id="TCustomTreeView.Invalidate"/>
+<link id="TTreeViewOption"/>
 <link id="#lcl.controls.TControl.MouseMove">TControl.MouseMove</link>
 </seealso>
 </element>
@@ -35791,9 +35806,36 @@ node when the property is changed.
 Enables or disables highlight / underline drawing styles on a tree item when 
 the mouse is hovered over it.
 </short>
-<descr/>
+<descr>
+<p>
+<var>HotTrack</var> is a <var>Boolean</var> property which controls whether a 
+hot-tracking highlight is drawn for the tree node under the mouse cursor. The 
+default value for the property is <b>False</b> and disables hot-track 
+highlighting on the control.
+</p>
+<p>
+The property value is read from and written to the Options property for the 
+control; the value tvoHotTrack is included in or excluded from Options based 
+on the property value. Setting HotTrack to <b>True</b> causes tvoHotTrack to 
+be included in the Options property.
+</p>
+<p>
+HotTrack is used in methods like DoPaintNode, MouseLeave, and MouseMove.
+</p>
+<p>
+Use HotTrackColor to set the font color used to draw the hot-tracked tree 
+node. Theme element details are used to get the background color for a 
+hot-tracked tree node.
+</p>
+</descr>
 <seealso>
 <link id="TCustomTreeView.Options"/>
+<link id="TCustomTreeView.MouseMove"/>
+<link id="TCustomTreeView.MouseLeave"/>
+<link id="TCustomTreeView.DoPaintNode"/>
+<link id="TCustomTreeView.DoPaint"/>
+<link id="TTreeViewOption"/>
+<link id="TTreeViewOptions"/>
 <link id="#lcl.comctrls.TCustomListview.HotTrack">TCustomListView.HotTrack</link>
 </seealso>
 </element>
@@ -35803,10 +35845,26 @@ the mouse is hovered over it.
 Font color used to draw the text on a hovered tree node when hot tracking is 
 enabled.
 </short>
-<descr/>
+<descr>
+<p>
+<var>HotTrackColor</var> is a <var>TColor</var> property with the color used 
+for the font on a hot-tracked tree node. The default value for the property is 
+clNone and causes either SelectionFontColor or the color in Font to be used 
+for the text. SelectionFontColor is used when themed drawing is not enabled in 
+Options.
+</p>
+<p>
+Use HotTrack to enable or disable hot-track highlighting for tree nodes on the 
+control.
+</p>
+</descr>
 <seealso>
 <link id="TCustomTreeView.Options"/>
 <link id="TCustomTreeView.HotTrack"/>
+<link id="TCustomTreeView.SelectionFontColor"/>
+<link id="TCustomTreeView.SelectionColor"/>
+<link id="TCustomTreeView.DoPaintNode"/>
+<link id="TCustomTreeView.DoPaint"/>
 </seealso>
 </element>
 
