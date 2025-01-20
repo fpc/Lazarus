@@ -89,6 +89,7 @@ type
 
   TGtk3WSCustomRadioGroup = class(TWSCustomRadioGroup)
   published
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
   end;
 
   { TGtk3WSRadioGroup }
@@ -101,6 +102,7 @@ type
 
   TGtk3WSCustomCheckGroup = class(TWSCustomCheckGroup)
   published
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
   end;
 
   { TGtk3WSCheckGroup }
@@ -148,7 +150,7 @@ type
 implementation
 
 uses
-  gtk3widgets;
+  gtk3widgets, Gtk3WSStdCtrls;
 
 { TGtk3WSCustomSplitter }
 
@@ -159,6 +161,20 @@ var
 begin
   ASplitter := TGtk3Splitter.Create(AWinControl, AParams);
   Result := TLCLHandle(ASplitter);
+end;
+
+class function TGtk3WSCustomRadioGroup.CreateHandle(const AWinControl:TWinControl;
+  const AParams:TCreateParams):TLCLHandle;
+begin
+  Result := TGtk3WSCustomGroupBox.CreateHandle(AWinControl,AParams);
+  TGtk3GroupBox(Result).GroupBoxType := gbtRadioGroup;
+end;
+
+class function TGtk3WSCustomCheckGroup.CreateHandle(const AWinControl:TWinControl;
+  const AParams:TCreateParams):TLCLHandle;
+begin
+  Result:= TGtk3WSCustomGroupBox.CreateHandle(AWinControl,AParams);
+  TGtk3GroupBox(Result).GroupBoxType := gbtCheckGroup;
 end;
 
 { TGtk3WSCustomPanel }

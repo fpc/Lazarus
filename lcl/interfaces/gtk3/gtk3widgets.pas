@@ -58,6 +58,8 @@ type
     wtWindow, wtDialog, wtHintWindow, wtGLArea);
   TGtk3WidgetTypes = set of TGtk3WidgetType;
 
+  TGtk3GroupBoxType = (gbtGroupBox, gbtCheckGroup, gbtRadioGroup);
+
   { TGtk3Widget }
 
   TGtk3Widget = class(TGtk3Object, IUnknown)
@@ -674,11 +676,20 @@ type
   { TGtk3GroupBox }
 
   TGtk3GroupBox = class(TGtk3Bin)
+  strict private
+    class procedure GroupBoxSizeAllocate(AWidget: PGtkWidget; AGdkRect: PGdkRectangle; Data: gpointer); cdecl; static;
+  private
+    FGroupBoxType:TGtk3GroupBoxType;
+    function GetInnerClientRect(Frame:PGtkWidget):TRect;
   protected
+    procedure ConnectSizeAllocateSignal(ToWidget: PGtkWidget); override;
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
     function getText: String; override;
     procedure setText(const AValue: String); override;
   public
+    procedure SetBounds(ALeft,ATop,AWidth,AHeight:integer); override;
+    function getClientRect:TRect; override;
+    property GroupBoxType: TGtk3GroupBoxType read FGroupBoxType write FGroupBoxType;
   end;
 
   { TGtk3ComboBox }
@@ -762,16 +773,17 @@ type
   protected
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
   public
+    procedure SetBounds(ALeft,ATop,AWidth,AHeight:integer); override;
     property State: TCheckBoxState read GetState write SetState;
   end;
 
   { TGtk3RadioButton }
 
   TGtk3RadioButton = class(TGtk3CheckBox)
-  private
   protected
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
   public
+    function getClientRect:TRect; override;
     procedure InitializeWidget; override;
   end;
 
@@ -1049,6 +1061,7 @@ end;
 {$i gtk3lclentry.inc}
 {$i gtk3lclbutton.inc}
 {$i gtk3lclspinbutton.inc}
+{$i gtk3lclframe.inc}
 
 class function TGtk3Widget.WidgetEvent(widget: PGtkWidget; event: PGdkEvent; data: GPointer): gboolean; cdecl;
 begin
@@ -3005,7 +3018,6 @@ function TGtk3Widget.getClientRect: TRect;
 var
   AAlloc: TGtkAllocation;
 begin
-  //writeln('GetClientRect ',LCLObject.Name,':',LCLObject.Name);
   Result := LCLObject.BoundsRect;
   if not IsWidgetOK then
     exit;
@@ -3019,7 +3031,7 @@ begin
     FWidget^.get_allocation(@AAlloc);
     Result := Rect(AAlloc.x, AAlloc.y, AAlloc.width + AAlloc.x,AAlloc.height + AAlloc.y);
   end;
-  OffsetRect(Result, -Result.Left, -Result.Top);
+  Types.OffsetRect(Result, -Result.Left, -Result.Top);
 end;
 
 function TGtk3Widget.getClientBounds: TRect;
@@ -3485,14 +3497,13 @@ end;
 function TGtk3GroupBox.CreateWidget(const Params: TCreateParams): PGtkWidget;
 begin
   FHasPaint := True;
-  //dont use layout for now
+  FGroupBoxType := gbtGroupBox;
   FWidgetType := [wtWidget, wtContainer, wtGroupBox];
-  Result := TGtkFrame.new(PChar(Self.LCLObject.Caption));
-  //FCentralWidget := TGtkLayout.new(nil,nil);
+  Result := LCLGtkFrameNew;
   FCentralWidget := TGtkFixed.new;
   PGtkBin(Result)^.add(FCentralWidget);
   FCentralWidget^.set_has_window(True);
-  PgtkFrame(result)^.set_label_align(0.1,0.5);
+  PGtkFrame(result)^.set_label_align(0.1,0.5);
 end;
 
 function TGtk3GroupBox.getText: String;
@@ -3502,7 +3513,7 @@ begin
   begin
     if PGtkFrame(Widget)^.get_label_widget = nil then
       exit;
-    Result := ReplaceUnderscoresWithAmpersands(PGtkFrame(Widget)^.get_label);
+    Result := {%H-}ReplaceUnderscoresWithAmpersands(PGtkFrame(Widget)^.get_label);
   end;
 end;
 
@@ -3512,16 +3523,178 @@ begin
   begin
     if AValue = '' then
       PGtkFrame(Widget)^.set_label_widget(nil)
-      // maybe DoAdjustClientRect here
     else
     begin
       if PGtkFrame(Widget)^.get_label_widget = nil then
         PGtkFrame(Widget)^.set_label_widget(TGtkLabel.new(''));
-      PGtkFrame(Widget)^.set_label(PgChar(ReplaceAmpersandsWithUnderscores(AValue)));
+      {%H-}PGtkFrame(Widget)^.set_label(PgChar({%H-}ReplaceAmpersandsWithUnderscores(AValue)));
     end;
   end;
 end;
 
+procedure TGtk3GroupBox.SetBounds(ALeft,ATop,AWidth,AHeight:integer);
+var
+  Alloc:TGtkAllocation;
+begin
+  {$IF DEFINED(GTK3DEBUGSIZE) OR DEFINED(GTK3DEBUGGROUPBOX)}
+  writeln(Format('TGtk3GroupBox.setBounds l %d t %d w %d h %d',[ALeft, ATop, AWidth, AHeight]));
+  {$ENDIF}
+  LCLWidth := AWidth;
+  LCLHeight := AHeight;
+  Alloc.x := ALeft;
+  Alloc.y := ATop;
+  Alloc.width := AWidth;
+  Alloc.Height := AHeight;
+  Widget^.set_allocation(@Alloc);
+  Move(ALeft, ATop);
+end;
+
+{$IF DEFINED(GTK3DEBUGSIZE) OR DEFINED(GTK3DEBUGGROUPBOX)}
+procedure ContainerChildrenCallback(widget: PGtkWidget; data: gpointer); cdecl;
+begin
+  // This callback is called for each child of the GtkFixed container
+  WriteLn('TGtk3GroupBox Child widget pointer: ', PtrUInt(widget),' ACtl=',dbgsName(TGtk3WIdget(data)));
+
+  // Example: Print the widget type name
+  WriteLn('TGtk3GroupBox Widget type: ', gtk_widget_get_name(widget));
+end;
+{$ENDIF}
+
+class procedure TGtk3GroupBox.GroupBoxSizeAllocate(AWidget:PGtkWidget;AGdkRect:
+  PGdkRectangle;Data:gpointer);cdecl;
+var
+  Msg: TLMSize;
+  NewSize: TSize;
+  ACtl: TGtk3GroupBox;
+  AState: TGdkWindowState;
+  Alloc: TGtkAllocation;
+  AList:PGList;
+  AFixed: PGtkFixed;
+  i:Integer;
+begin
+  if AWidget=nil then ;
+
+  ACtl := TGtk3GroupBox(Data);
+
+  {$IF DEFINED(GTK3DEBUGSIZE) OR DEFINED(GTK3DEBUGGROUPBOX)}
+  with AGdkRect^ do
+    DebugLn('**** GroupBoxSizeAllocate **** ....',dbgsName(ACtl.LCLObject),
+      ' ',Format('GTK x %d y %d w %d h %d',[x, y, width, height]),
+      Format(' LCL W=%d H=%d LLW %d LLH %d upd=%s',[ACtl.LCLObject.Width, ACtl.LCLObject.Height, ACtl.LCLWidth, ACtl.LCLHeight, BoolToStr(ACtl.InUpdate, True)]));
+  {$ENDIF}
+
+  with Alloc do
+  begin
+    x := AGdkRect^.x;
+    y := AGdkRect^.y;
+    Width := AGdkRect^.width;
+    Height := AGdkRect^.height;
+  end;
+
+  gtk_widget_set_clip(AWidget, @Alloc);
+
+  if not Assigned(ACtl.LCLObject) then exit;
+
+  // return size w/o frame
+  NewSize.cx := AGdkRect^.width;
+  NewSize.cy := AGdkRect^.height;
+
+  if not (csDesigning in ACtl.LCLObject.ComponentState) then
+  begin
+    if ACtl.InUpdate then
+      exit;
+  end;
+
+  {$IF DEFINED(GTK3DEBUGSIZE) OR DEFINED(GTK3DEBUGGROUPBOX)}
+  if not ACtl.LCLObject.AutoSize and (ACtl.LCLWidth > 0) and (ACtl.LCLHeight > 0) and
+    ACtl.LCLObject.ClientRectNeedsInterfaceUpdate then
+  begin
+    if (AGdkRect^.Width = ACtl.LCLWidth) and (AGdkRect^.Height = ACtl.LCLHeight) then
+    begin
+      //ACtl.LCLObject.DoAdjustClientRectChange;
+      AFixed := PGtkFixed(ACtl.getContainerWidget);
+      if AFixed^.compute_expand(GTK_ORIENTATION_VERTICAL) then
+        AFixed^.resize_children;
+      // PGtkLayout(AFixed)^.set_size(AFixed^.get_allocated_width, AFixed^.get_allocated_height);
+      gtk_container_foreach(AFixed, @ContainerChildrenCallback, ACtl);
+      exit;
+    end;
+  end;
+  {$ENDIF}
+
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
+
+  Msg.Msg := LM_SIZE;
+  Msg.SizeType := SIZE_RESTORED;
+
+  Msg.SizeType := Msg.SizeType or Size_SourceIsInterface;
+
+  Msg.Width := Word(NewSize.cx);
+  Msg.Height := Word(NewSize.cy);
+  ACtl.DeliverMessage(Msg);
+end;
+
+{This routine is used as long as gtk3 is beta and getClientRect needs debugging}
+function TGtk3GroupBox.GetInnerClientRect(Frame: PGtkWidget): TRect;
+var
+  Allocation: TGdkRectangle;
+  AStyleContext: PGtkStyleContext;
+  Padding, Border: TGtkBorder;
+  LabelWidget: PGtkWidget;
+  FinalRect: TGdkRectangle;
+  minH:gint;
+  natH:gint;
+begin
+  Result := Rect(0, 0, 0, 0);
+
+  gtk_widget_get_allocation(Frame, @Allocation);
+  LabelWidget := gtk_frame_get_label_widget(PGtkFrame(Frame));
+
+  AStyleContext := gtk_widget_get_style_context(Frame);
+  gtk_style_context_get_padding(AStyleContext, GTK_STATE_FLAG_NORMAL, @Padding);
+  gtk_style_context_get_border(AStyleContext, GTK_STATE_FLAG_NORMAL, @Border);
+
+  FinalRect.X := Allocation.X + Border.Left + Padding.Left;
+  FinalRect.Y := Allocation.Y + Border.Top + Padding.Top;
+  FinalRect.Width := Allocation.Width - Border.Left - Border.Right - Padding.Left - Padding.Right;
+  FinalRect.Height := Allocation.Height - Border.Top - Border.Bottom - Padding.Top - Padding.Bottom;
+
+  if PGtkFrame(Frame)^.get_shadow_type > GTK_SHADOW_NONE then
+  begin
+    // this looks like a bug in gtk3, that's why I separated this part of code. Zeljan.
+    if (Border.left = 0) and (Border.Right = 0) then
+      dec(FinalRect.Width, 2);
+    if (Border.Top = 0) and (Border.Bottom = 0) then
+      dec(FinalRect.Height, 2);
+  end;
+
+  if Assigned(LabelWidget) then
+  begin
+    PGtkLabel(LabelWidget)^.get_preferred_height(@minH, @natH);
+    FinalRect.Y := FinalRect.Y + natH;
+    FinalRect.Height := FinalRect.Height - natH;
+    {$IF DEFINED(GTK3DEBUGSIZE) OR DEFINED(GTK3DEBUGGROUPBOX)}
+    writeln('LabelAllocation  LCLObject.Caption=',LCLObject.Caption,' LabelText=',PGtkLabel(LabelWidget)^.get_text,' MinH=',MinH,' NatH=',NatH);
+    {$ENDIF}
+  end;
+
+  Result := RectFromGdkRect(FinalRect);
+end;
+
+procedure TGtk3GroupBox.ConnectSizeAllocateSignal(ToWidget:PGtkWidget);
+begin
+  g_signal_connect_data(ToWidget,'size-allocate',TGCallback(@GroupBoxSizeAllocate), Self, nil, G_CONNECT_DEFAULT);
+end;
+
+
+function TGtk3GroupBox.getClientRect:TRect;
+var
+  Alloc:TGtkAllocation;
+  R: TRect;
+begin
+  Result := GetInnerClientRect(Widget);
+  Types.OffsetRect(Result, -Result.Left, -Result.Top);
+end;
 
 { TGtk3Editable }
 
@@ -5668,7 +5841,6 @@ begin
           VOffset := Bar^.get_allocated_width
         else
           VOffset := 0;
-
         AViewPort^.get_view_window^.get_geometry(@x, @y, @w, @h);
         Result := Bounds(x, y, w - VOffset, h - HOffset);
       end else
@@ -7816,6 +7988,24 @@ begin
   check^.set_use_underline(True);
 end;
 
+procedure TGtk3CheckBox.SetBounds(ALeft,ATop,AWidth,AHeight:integer);
+var
+  Alloc:TGtkAllocation;
+begin
+  if LCLObject.Name = 'HiddenRadioButton' then
+    exit;
+  LCLWidth := AWidth;
+  LCLHeight := AHeight;
+  // not needed
+  // Widget^.set_size_request(AWidth, AHeight);
+  Alloc.x := ALeft;
+  Alloc.y := ATop;
+  Alloc.width := AWidth;
+  Alloc.height := AHeight;
+  Widget^.set_allocation(@Alloc);
+  Move(ALeft, ATop);
+end;
+
 { TGtk3RadioButton }
 
 function TGtk3RadioButton.CreateWidget(const Params: TCreateParams): PGtkWidget;
@@ -7878,6 +8068,21 @@ begin
   end;
   inherited InitializeWidget;
 end;
+
+function TGtk3RadioButton.getClientRect:TRect;
+var
+  Alloc:TGtkAllocation;
+  R: TRect;
+begin
+  Result := Rect(0, 0, 0, 0);
+  //Famous "HiddenRadioButton"
+  if (Widget = nil) then
+    exit;
+  Widget^.get_allocation(@Alloc);
+  Result := Bounds(Alloc.x, Alloc.y, Alloc.Width, Alloc.Height);
+  Types.OffsetRect(Result, -Result.Left, -Result.Top);
+end;
+
 
 { TGtk3CustomControl }
 

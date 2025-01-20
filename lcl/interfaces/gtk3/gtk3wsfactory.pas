@@ -437,16 +437,14 @@ end;
 
 function RegisterCustomRadioGroup: Boolean; alias : 'WSRegisterCustomRadioGroup';
 begin
-//  RegisterWSComponent(TCustomRadioGroup, TGtk2WSCustomRadioGroup);
-//  RegisterWSComponent(TRadioGroup, TGtk2WSRadioGroup);
-  Result := False;
+  RegisterWSComponent(TCustomRadioGroup, TGtk3WSCustomRadioGroup);
+  Result := True;
 end;
 
 function RegisterCustomCheckGroup: Boolean; alias : 'WSRegisterCustomCheckGroup';
 begin
-//  RegisterWSComponent(TCustomCheckGroup, TGtk2WSCustomCheckGroup);
-//  RegisterWSComponent(TCheckGroup, TGtk2WSCheckGroup);
-  Result := False;
+  RegisterWSComponent(TCustomCheckGroup, TGtk3WSCustomCheckGroup);
+  Result := True;
 end;
 
 function RegisterCustomLabeledEdit: Boolean; alias : 'WSRegisterCustomLabeledEdit';

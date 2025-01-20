@@ -309,11 +309,10 @@ uses
 
 class function TGtk3WSCustomGroupBox.CreateHandle(
   const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
-var
-  AGroupBox: TGtk3GroupBox;
 begin
-  AGroupBox := TGtk3GroupBox.Create(AWinControl, AParams);
-  Result := TLCLHandle(AGroupBox);
+  Result := TLCLHandle(TGtk3GroupBox.Create(AWinControl, AParams));
+  //Gtk3Frame needs label before first call of GetClientRect
+  TGtk3GroupBox(Result).Text := AWinControl.Caption;
 end;
 
 class procedure TGtk3WSCustomGroupBox.GetPreferredSize(
@@ -383,6 +382,7 @@ class procedure TGtk3WSScrollBar.SetKind(const AScrollBar: TCustomScrollBar;
 begin
   if not WSCheckHandleAllocated(AScrollBar, 'SetKind') then
     Exit;
+  //TODO: try with PGtkOrientable(Widget)^.set_orientation instead of RecreateWnd.
   RecreateWnd(AScrollBar);
 end;
 

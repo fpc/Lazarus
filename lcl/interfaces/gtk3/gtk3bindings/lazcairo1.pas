@@ -22,6 +22,8 @@ const
   {$endif}
 
 type
+  Pcairo_bool_t                       = ^TCairo_bool_t;
+  TCairo_bool_t                        = LongInt;
   Tcairo_status_t = (
     Tcairo_status_tMinValue = -$7FFFFFFF,
     CAIRO_STATUS_SUCCESS = 0,
@@ -605,8 +607,8 @@ procedure cairo_show_page(cr: Pcairo_t); cdecl; external LIB_CAIRO;
 
 (* Insideness testing *)
 
-//function  cairo_in_stroke(cr: Pcairo_t; x, y: Double): Tcairo_bool_t; cdecl; external LIB_CAIRO;
-//function  cairo_in_fill(cr: Pcairo_t; x, y: Double): Tcairo_bool_t; cdecl; external LIB_CAIRO;
+function  cairo_in_stroke(cr: Pcairo_t; x, y: Double): Tcairo_bool_t; cdecl; external LIB_CAIRO;
+function  cairo_in_fill(cr: Pcairo_t; x, y: Double): Tcairo_bool_t; cdecl; external LIB_CAIRO;
 
 (* Rectangular extents *)
 
