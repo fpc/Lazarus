@@ -1,2 +1,8 @@
 inherited AIssistFPDocEditDlg: TAIssistFPDocEditDlg
+  OnClose = FormClose
+  OnCreate = FormCreate
+  inherited bpExplain: TButtonPanel
+    OKButton.OnClick = OKButtonClick
+    ShowButtons = [pbOK, pbCancel]
+  end
 end
