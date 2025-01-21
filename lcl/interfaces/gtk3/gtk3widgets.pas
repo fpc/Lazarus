@@ -503,6 +503,7 @@ type
   TGtk3ScrollableWin = class(TGtk3Container)
   private
     FBorderStyle: TBorderStyle;
+    FHBarInitialized, FVBarInitialized: boolean;
     function GetHScrollBarPolicy: TGtkPolicyType;
     function GetVScrollBarPolicy: TGtkPolicyType;
     procedure SetBorderStyle(AValue: TBorderStyle);
@@ -5685,14 +5686,22 @@ procedure TGtk3ScrollableWin.SetScrollBarsSignalHandlers(const
   AIsHorizontalScrollBar:boolean);
 begin
   {TODO: create real instances for scrollbars via TGtk3Widget.CreateFrom() ?}
+  if IsDesigning then
+    exit;
   FBorderStyle := bsNone;
   if AIsHorizontalScrollBar then
   begin
-    g_signal_connect_data(getHorizontalScrollbar, 'change-value',
-      TGCallback(@Gtk3RangeScrollCB), Self, nil, G_CONNECT_DEFAULT);
+    if not FHBarInitialized then
+      g_signal_connect_data(getHorizontalScrollbar, 'change-value',
+        TGCallback(@Gtk3RangeScrollCB), Self, nil, G_CONNECT_DEFAULT);
+    FHBarInitialized := True;
   end else
-    g_signal_connect_data(getVerticalScrollbar, 'change-value',
-      TGCallback(@Gtk3RangeScrollCB), Self, nil, G_CONNECT_DEFAULT);
+  begin
+    if not FVBarInitialized then
+      g_signal_connect_data(getVerticalScrollbar, 'change-value',
+        TGCallback(@Gtk3RangeScrollCB), Self, nil, G_CONNECT_DEFAULT);
+    FVBarInitialized := True;
+  end;
 end;
 
 {$IFDEF GTK3DEBUGSIZE}
