@@ -784,9 +784,9 @@ resourcestring
   lisSourceOfPageHasChangedSaveEx = 'Sources of pages have changed. Save page "%s"? (%d more)';
   lisSourceModified = 'Source modified';
   lisOpenProject = 'Open Project?';
-  lisOpenTheProject = 'Open the project %s?';
+  lisOpenTheProject = 'Open the project "%s"?' + LineEnding + LineEnding + 'The "Project" menu has separate commands for opening projects and a list of recent ones.';
   lisOpenPackage = 'Open Package?';
-  lisOpenThePackage = 'Open the package %s?';
+  lisOpenThePackage = 'Open the package "%s"?' + LineEnding + LineEnding + 'The "Package" menu has separate commands for opening packages and a list of recent ones.';
   lisRevertFailed = 'Revert failed';
   lisFileIsVirtual = 'File "%s" is virtual.';
   lisByte = '%s byte';
