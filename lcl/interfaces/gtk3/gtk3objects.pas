@@ -295,6 +295,8 @@ type
     procedure TranslateCairoToDevice;
     procedure Translate(APoint: TPoint);
     procedure set_antialiasing(aamode:boolean);
+    procedure Save;
+    procedure Restore;
     property BkMode: integer read FBkMode write FBkMode;
     property BkColor: TColorRef read GetBkColor write SetBkColor;
     property BgBrush: TGtk3Brush read FBgBrush; {bgBrush is created when SetBk is called, otherwise is nil}
@@ -2349,12 +2351,14 @@ begin
     begin
       ATempBrush := FCurrentBrush;
       CurrentBrush:= TGtk3Brush(ABrush);
-      applyBrush;
-    end;
+    end else
+      ATempBrush := FCurrentBrush;
+
+    applyBrush;
 
     cairo_rectangle(pcr, x + PixelOffset, y + PixelOffset, w - 1, h - 1);
 
-    if (ABrush <> 0) and (CurrentBrush.Style <> BS_NULL) then
+    if (CurrentBrush.Style <> BS_NULL) then
     begin
       cairo_fill_preserve(pcr);
       // must paint border, filling is not enough
@@ -2363,8 +2367,7 @@ begin
       cairo_stroke(pcr);
     end;
 
-    if ABrush <> 0 then
-      CurrentBrush:= ATempBrush;
+    CurrentBrush:= ATempBrush;
     cairo_new_path(pcr);
   finally
     cairo_restore(pcr);
@@ -2741,6 +2744,16 @@ const
    caa:array[boolean] of Tcairo_antialias_t = (CAIRO_ANTIALIAS_NONE,CAIRO_ANTIALIAS_DEFAULT);
 begin
   cairo_set_antialias(pcr, caa[aamode]);
+end;
+
+procedure TGtk3DeviceContext.Save;
+begin
+  cairo_save(pcr);
+end;
+
+procedure TGtk3DeviceContext.Restore;
+begin
+  cairo_restore(pcr);
 end;
 
 procedure TGtk3DeviceContext.SetCanvasScaleFactor(const AValue: double);
