@@ -3039,9 +3039,12 @@ begin
   BeginUpdate;
   try
     {fixes gtk3 assertion}
+    if not Widget^.get_realized then
+      Widget^.realize;
     Widget^.get_preferred_width(@AMinSize, @ANaturalSize);
     Widget^.get_preferred_height(@AMinSize, @ANaturalSize);
 
+    //this should be removed in future.
     Widget^.set_size_request(AWidth,AHeight);
 
     Widget^.size_allocate(@ARect);
@@ -5053,7 +5056,6 @@ begin
   PGtkNoteBook(FCentralWidget)^.set_scrollable(True);
   if (nboHidePageListPopup in TCustomTabControl(LCLObject).Options) then
     PGtkNoteBook(FCentralWidget)^.popup_disable;
-  PGtkNoteBook(FCentralWidget)^.show;
 
   g_signal_connect_data(FCentralWidget,'switch-page', TGCallback(@GtkNotebookSwitchPage), Self, nil, G_CONNECT_DEFAULT);
   // this one triggers after above switch-page
@@ -5062,6 +5064,7 @@ begin
   // those signals doesn't trigger with gtk3-3.6
   // g_signal_connect_data(FCentralWidget,'change-current-page', TGCallback(@GtkNotebookAfterSwitchPage), Self, nil, 0);
   // g_signal_connect_data(FCentralWidget,'select-page', TGCallback(@GtkNotebookSelectPage), Self, nil, 0);
+  FCentralWidget^.show_all;
 end;
 
 procedure TGtk3NoteBook.InitializeWidget;
@@ -8469,8 +8472,8 @@ begin
     gtk_widget_realize(Result);
     Title:=Params.Caption;
     decor:=decoration_flags(AForm);
-    gdk_window_set_decorations(Result^.window, decor);
     gtk_window_set_decorated(PGtkWindow(Result),(decor <> []));
+    gdk_window_set_decorations(Result^.window, decor);
     if AForm.AlphaBlend then
       gtk_widget_set_opacity(Result, TForm(LCLObject).AlphaBlendValue/255);
 
@@ -8489,9 +8492,8 @@ begin
   g_object_set_data(FScrollWin,'lclscrollingwindow',GPointer(1));
   g_object_set_data(PGObject(FScrollWin), 'lclwidget', Self);
 
-
   FCentralWidget := TGtkLayout.new(nil, nil);
-  FCentralWidget^.set_has_window(True);
+  // FCentralWidget^.set_has_window(True);
 
   if AForm.AutoScroll then
     FScrollWin^.add(FCentralWidget)
@@ -8539,9 +8541,52 @@ begin
   Title := AValue;
 end;
 
-function TGtk3Window.getViewport:PGtkViewport;
+{$IFDEF GTK3DEBUGFORMS}
+procedure ChildCallback(Child: PGtkWidget; Data: gpointer); cdecl;
+var
+  Level: PtrInt;
+  S: string;
+  I:Integer;
 begin
-  Result := PGtkViewPort(FScrollWin^.get_child);
+  // Log the child widget type
+  S := '';
+  Level := PtrInt(Data^);
+  for I := 1 to Level - 1 do
+    S := S + ' ';
+  WriteLn(S + 'Found child widget of type: ', g_type_name(PGObject(Child)^.g_type_instance.g_class^.g_type));
+  if Gtk3IsContainer(Child) then
+  begin
+    inc(Level);
+    gtk_container_foreach(PGtkContainer(Child), @ChildCallback, @Level);
+  end;
+end;
+{$ENDIF}
+
+function TGtk3Window.getViewport:PGtkViewport;
+var
+  W: PGtkWidget;
+  {$IFDEF GTK3DEBUGFORMS}
+  AInt: PtrInt;
+  {$ENDIF}
+begin
+  W := FScrollWin^.get_child;
+  if Gtk3IsViewPort(W) then
+    Result := PGtkViewport(W)
+  else
+    Result := nil;
+  {$IFDEF GTK3DEBUGFORMS}
+  if Result <> nil then
+    writeln('TGtk3Window.GetViewport: result class is ' +g_type_name(PGObject(Result)^.g_type_instance.g_class^.g_type)+ '. Found type=',g_type_name(PGObject(W)^.g_type_instance.g_class^.g_type),' g_type=',PGObject(W)^.g_type_instance.g_class^.g_type,' g_type_is_a=',g_type_is_a(PGObject(W)^.g_type_instance.g_class^.g_type, gtk_viewport_get_type))
+  else
+  begin
+    writeln('TGtk3Window.GetViewport: result is nil, check if we are GtkLayout ? ',Gtk3IsLayout(W));
+    if Gtk3IsLayout(W) then
+    begin
+      AInt := 1;
+      gtk_container_foreach(PGtkContainer(W), @ChildCallback, @AInt);
+    end;
+  end;
+  {$ENDIF}
 end;
 
 function TGtk3Window.getClientRect: TRect;
