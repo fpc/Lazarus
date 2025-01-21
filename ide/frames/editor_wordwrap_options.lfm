@@ -1,0 +1,76 @@
+object EditorWordWrapOptionsFrame: TEditorWordWrapOptionsFrame
+  Left = 0
+  Height = 380
+  Top = 0
+  Width = 428
+  ClientHeight = 380
+  ClientWidth = 428
+  TabOrder = 0
+  DesignLeft = 534
+  DesignTop = 48
+  object cbEnableWordWrap: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 19
+    Top = 6
+    Width = 416
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    Caption = 'cbEnableWordWrap'
+    TabOrder = 0
+  end
+  object rgCaretWrapPos: TRadioGroup
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = cbEnableWordWrap
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 19
+    Top = 31
+    Width = 416
+    Anchors = [akTop, akLeft, akRight]
+    AutoFill = True
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'rgCaretWrapPos'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 2
+    Columns = 2
+    TabOrder = 1
+  end
+  object lbWinWordWrapWidth: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = edWinWordWrapWidth
+    AnchorSideTop.Side = asrCenter
+    Left = 6
+    Height = 15
+    Top = 60
+    Width = 120
+    BorderSpacing.Around = 6
+    Caption = 'lbWinWordWrapWidth'
+  end
+  object edWinWordWrapWidth: TSpinEdit
+    AnchorSideLeft.Control = lbWinWordWrapWidth
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = rgCaretWrapPos
+    AnchorSideTop.Side = asrBottom
+    Left = 132
+    Height = 23
+    Top = 56
+    Width = 124
+    BorderSpacing.Around = 6
+    MaxValue = 9999
+    MinValue = 1
+    TabOrder = 2
+    Value = 10
+  end
+end

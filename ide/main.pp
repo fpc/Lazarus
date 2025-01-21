@@ -131,7 +131,7 @@ uses
   Backup_Options, naming_options, fpdoc_options, idecoolbar_options, editortoolbar_options,
   editor_display_options, editor_keymapping_options, editor_mouseaction_options,
   editor_mouseaction_options_advanced, editor_color_options, editor_color_tml_options,
-  editor_markup_options,
+  editor_markup_options, editor_wordwrap_options,
   editor_markup_userdefined, editor_codetools_options, editor_codefolding_options,
   editor_general_misc_options, editor_dividerdraw_options,
   editor_multiwindow_options, editor_indent_options,

@@ -64,7 +64,7 @@ uses
   SynHighlighterIni, SynHighlighterPo, SynHighlighterPike, SynPluginMultiCaret,
   SynEditMarkupFoldColoring, SynEditMarkup, SynGutterLineOverview,
   SynBeautifierPascal, SynEditTextDynTabExpander, SynEditTextTabExpander,
-  SynTextMateSyn, SynEditStrConst, SynHighlighterPosition, SynGutterMarks,
+  SynTextMateSyn, SynEditStrConst, SynHighlighterPosition, SynGutterMarks, SynEditWrappedView,
   // codetools
   LinkScanner, CodeToolManager,
   // BuildIntf
@@ -1593,6 +1593,11 @@ type
     fDbgHintAutoTypeCastClass: Boolean;
     // Code Folding
     fReverseFoldPopUpOrder: Boolean;
+    // Wordwrap
+    FWordWrapCaretWrapPos: TLazSynEditWrapCaretPos;
+    FWordWrapEnabled: Boolean;
+    FWordWrapMinWidth: Integer;
+
     fUseTabHistory: Boolean;
 
     fMultiCaretOnColumnSelect: Boolean;
@@ -1671,6 +1676,12 @@ type
     // Code Folding
     property ReverseFoldPopUpOrder: Boolean
       read fReverseFoldPopUpOrder write fReverseFoldPopUpOrder default True;
+
+    // wordwrap
+    property WordWrapEnabled: Boolean read FWordWrapEnabled write FWordWrapEnabled;
+    property WordWrapCaretWrapPos: TLazSynEditWrapCaretPos read FWordWrapCaretWrapPos write FWordWrapCaretWrapPos;
+    property WordWrapMinWidth: Integer read FWordWrapMinWidth write FWordWrapMinWidth default 10;
+
     property UseTabHistory: Boolean read fUseTabHistory write fUseTabHistory;
 
     property MultiCaretOnColumnSelect: Boolean
@@ -5464,6 +5475,8 @@ begin
   fDbgHintUseBackendDebugConverter := True;
   // Code folding
   fReverseFoldPopUpOrder := True;
+  // wordwrap
+  FWordWrapMinWidth := 10;
   // pas highlighter
   fPasExtendedKeywordsMode := False;
   fPasStringKeywordMode := spsmDefault;
@@ -6817,6 +6830,16 @@ begin
     ASynEdit.Gutter.CodeFoldPart.ReversePopMenuOrder := ReverseFoldPopUpOrder;
 
     ASynEdit.Gutter.Width := fGutterWidth;
+
+    if ASynEdit is TIDESynEditor then begin
+      TIDESynEditor(ASynEdit).WordWrapEnabled       := WordWrapEnabled;
+      TIDESynEditor(ASynEdit).WordWrapCaretWrapPos  := WordWrapCaretWrapPos;
+      TIDESynEditor(ASynEdit).WordWrapMinWidth      := WordWrapMinWidth;
+      if WordWrapEnabled then begin
+        ASynEdit.Options  := ASynEdit.Options  - [eoScrollPastEol];
+        ASynEdit.Options2 := ASynEdit.Options2 - [eoScrollPastEolAddPage, eoScrollPastEolAutoCaret];
+      end;
+    end;
 
     ASynEdit.RightEdge := fRightMargin;
     if fVisibleRightMargin then

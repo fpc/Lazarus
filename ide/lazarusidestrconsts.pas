@@ -1652,6 +1652,14 @@ resourcestring
   dlgCodeFoldEnableHide = 'Hide';
   dlgCodeFoldEnableBoth = 'Both';
   dlgCodeFoldPopUpOrder = 'Reverse fold-order in Popup';
+
+  dlgOptWordWrap = 'Word-wrap';
+  dlgOptWordWrapUseWordwrap = 'Use Word-wrap';
+  dlgOptWordWrapDisplayCaretAtWrapPositio = 'Display caret at wrap-position...';
+  dlgOptWordWrapEndOfLine = 'end of line';
+  dlgOptWordWrapStartOfNextLine = 'start of next line';
+  dlgOptWordWrapMinimumLineLength = 'Minimum line length';
+
   dlfMousePredefinedScheme = 'Use predefined scheme';
   dlfNoPredefinedScheme = '< None >';
   dlfMouseSimpleGenericSect = 'General';

@@ -61,8 +61,8 @@ uses
   SynEditHighlighter, SynEditHighlighterFoldBase, SynHighlighterPas,
   SynEditMarkupHighAll, SynEditKeyCmds, SynEditMarkupIfDef, SynEditMiscProcs,
   SynPluginMultiCaret, SynEditPointClasses,
-  SynEditMarkupFoldColoring, SynEditTextTabExpander, SynEditMouseCmds,
-  etSrcEditMarks, LazarusIDEStrConsts, SourceMarks;
+  SynEditMarkupFoldColoring, SynEditTextTabExpander, SynEditMouseCmds, SynEditWrappedView,
+  etSrcEditMarks, LazarusIDEStrConsts, SourceMarks, SourceSynWrap;
 
 type
 
@@ -258,6 +258,7 @@ type
     FMarkupIdentComplWindow: TSynMarkupIdentComplWindow;
     FShowTopInfo: boolean;
     FFoldView: TSynEditFoldedView;
+    FWrapView: TLazSynSourceEditLineWrapPlugin;
     FTopInfoNestList: TLazSynEditNestedFoldsList;
     FSyncroEdit: TSynPluginSyncroEdit;
     FTemplateEdit: TSynPluginTemplateEdit;
@@ -286,12 +287,16 @@ type
     function GetOnMultiCaretBeforeCommand: TSynMultiCaretBeforeCommand;
     procedure GetTopInfoMarkupForLine(Sender: TObject; {%H-}Line: integer; var Special: boolean;
       aMarkup: TSynSelectedColor);
+    function GetWordWrapEnabled: Boolean;
     procedure SetCaretColor(AValue: TColor);
     procedure SetHighlightUserWordCount(AValue: Integer);
     procedure SetOnMultiCaretBeforeCommand(AValue: TSynMultiCaretBeforeCommand);
     procedure SetShowTopInfo(AValue: boolean);
     procedure SetTopInfoMarkup(AValue: TSynSelectedColor);
     procedure DoHighlightChanged(Sender: TSynEditStrings; {%H-}AIndex, {%H-}ACount : Integer);
+    procedure SetWordWrapCaretWrapPos(AValue: TLazSynEditWrapCaretPos);
+    procedure SetWordWrapEnabled(AValue: Boolean);
+    procedure SetWordWrapMinWidth(AValue: Integer);
     procedure SrcSynCaretChanged(Sender: TObject);
     function  GetHighlighter: TSynCustomFoldHighlighter;
   protected
@@ -299,6 +304,8 @@ type
     function CreateGutter(AOwner : TSynEditBase; ASide: TSynGutterSide;
                           ATextDrawer: TheTextDrawer): TSynGutter; override;
     procedure SetHighlighter(const Value: TSynCustomHighlighter); override;
+    procedure AddLineWrapView;
+    procedure RemoveLineWrapView;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -331,6 +338,10 @@ type
     property  OnMultiCaretBeforeCommand: TSynMultiCaretBeforeCommand read GetOnMultiCaretBeforeCommand write SetOnMultiCaretBeforeCommand;
     property CaretStamp: Int64 read FCaretStamp;
     property CaretColor: TColor read FCaretColor write SetCaretColor;
+
+    property WordWrapEnabled: Boolean read GetWordWrapEnabled write SetWordWrapEnabled;
+    property WordWrapCaretWrapPos: TLazSynEditWrapCaretPos write SetWordWrapCaretWrapPos;
+    property WordWrapMinWidth: Integer write SetWordWrapMinWidth;
   end;
 
   TIDESynHighlighterPasRangeList = class(TSynHighlighterPasRangeList)
@@ -1559,6 +1570,29 @@ begin
     SrcSynCaretChanged(nil);
 end;
 
+procedure TIDESynEditor.SetWordWrapCaretWrapPos(AValue: TLazSynEditWrapCaretPos);
+begin
+  if FWrapView <> nil then
+    FWrapView.CaretWrapPos := AValue;
+end;
+
+procedure TIDESynEditor.SetWordWrapEnabled(AValue: Boolean);
+begin
+  if AValue = WordWrapEnabled then
+    exit;
+
+  if AValue then
+    AddLineWrapView
+  else
+    RemoveLineWrapView;
+end;
+
+procedure TIDESynEditor.SetWordWrapMinWidth(AValue: Integer);
+begin
+  if FWrapView <> nil then
+    FWrapView.MinWrapWidth := AValue;
+end;
+
 procedure TIDESynEditor.SrcSynCaretChanged(Sender: TObject);
   function RealTopLine: Integer;
   begin
@@ -1692,6 +1726,11 @@ procedure TIDESynEditor.GetTopInfoMarkupForLine(Sender: TObject; Line: integer;
 begin
   Special := True;
   aMarkup.Assign(FTopInfoMarkup);
+end;
+
+function TIDESynEditor.GetWordWrapEnabled: Boolean;
+begin
+  Result := FWrapView <> nil;
 end;
 
 procedure TIDESynEditor.SetCaretColor(AValue: TColor);
@@ -1897,6 +1936,18 @@ begin
   end;
 end;
 
+procedure TIDESynEditor.AddLineWrapView;
+begin
+  if FWrapView <> nil then
+    RemoveLineWrapView;
+  FWrapView := TLazSynSourceEditLineWrapPlugin.Create(Self);
+end;
+
+procedure TIDESynEditor.RemoveLineWrapView;
+begin
+  FreeAndNil(FWrapView);
+end;
+
 constructor TIDESynEditor.Create(AOwner: TComponent);
 var
   MarkupFoldColors: TSynEditMarkupFoldColors;
@@ -1967,6 +2018,7 @@ end;
 
 destructor TIDESynEditor.Destroy;
 begin
+  RemoveLineWrapView;
   UnRegisterMouseActionSearchHandler(@CatchMouseForTopInforLine);
   ViewedTextBuffer.RemoveChangeHandler(senrHighlightChanged, @DoHighlightChanged);
   HighlightUserWordCount := 0;

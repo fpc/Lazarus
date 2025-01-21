@@ -184,8 +184,9 @@ const
     EdtOptionsCodetools   = 600;
     EdtOptionsCodeFolding = 700;
       EdtOptionsCodeFoldingMouse = 701;
-    EdtOptionsDrawDivider = 800;
-    EdtOptionsMultiWindow = 900;
+    EdtOptionsLineWrap    = 800;
+    EdtOptionsDrawDivider = 900;
+    EdtOptionsMultiWindow = 1000;
 
   GroupCodetools    = 300;
     CdtOptionsGeneral         = 100;
