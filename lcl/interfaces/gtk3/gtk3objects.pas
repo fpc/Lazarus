@@ -242,6 +242,7 @@ type
     FCairo: Pcairo_t;
     FXorCairo: PCairo_t;
     FXorSurface: Pcairo_surface_t;
+    FLastPenX, FLastPenY: double;
     property XorMode: boolean read FXorMode write FXorMode;
   public
     CairoSurface: Pcairo_surface_t;
@@ -1923,6 +1924,8 @@ procedure TGtk3DeviceContext.CreateObjects;
 var
   Matrix: Tcairo_matrix_t;
 begin
+  FLastPenX := 0;
+  FLastPenY := 0;
   FBgBrush := nil; // created on demand
   FBkMode := TRANSPARENT;
   FCurrentImage := nil;
@@ -2597,7 +2600,6 @@ end;
 
 function TGtk3DeviceContext.LineTo(X, Y: Integer): Boolean;
 var
-  FX, FY: Double;
   X0, Y0,dx,dy:integer;
 begin
   if not Assigned(pcr) then
@@ -2607,9 +2609,9 @@ begin
 
   if fCurrentPen.Width<=1 then // optimizations
   begin
-    cairo_get_current_point(pcr, @FX, @FY);
-    X0:=round(FX);
-    Y0:=round(FY);
+    //cairo_get_current_point(pcr, @FX, @FY);
+    X0:=round(FLastPenX);
+    Y0:=round(FLastPenY);
     dx:=X-X0;
     dy:=Y-Y0;
 
@@ -2630,11 +2632,11 @@ begin
       // here is required more Cairo magic
       if (dx>0) then
       begin
-        cairo_move_to(pcr,FX-PixelOffset,FY-PixelOffset);
+        cairo_move_to(pcr,FLastPenX-PixelOffset,FLastPenY-PixelOffset);
         cairo_line_to(pcr,X+2*PixelOffset, Y+2*PixelOffset);
       end else
       begin
-        cairo_move_to(pcr,FX+2*PixelOffset,FY);
+        cairo_move_to(pcr,FLastPenX+2*PixelOffset,FLastPenY);
         cairo_line_to(pcr,X+PixelOffset, Y+PixelOffset);
       end;
     end else
@@ -2661,6 +2663,7 @@ begin
     OldPoint^.Y := Round(dy);
   end;
   cairo_move_to(pcr, X{-PixelOffset}, Y{-PixelOffset});
+  cairo_get_current_point(pcr,@FLastPenX,@FLastPenY);
   Result := True;
 end;
 
