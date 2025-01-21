@@ -449,13 +449,13 @@ type
     destructor Destroy; override;
     
     // Converting between Folded and Unfolded Lines/Indexes
-    function TextToViewIndex(aTextIndex : TLineIdx) : TLineIdx; override;   (* Convert TextIndex (0-based) to ViewPos (1-based) *)
-    function ViewToTextIndex(aViewIndex : TLineIdx) : TLineIdx; override;     (* Convert ViewPos (1-based) to TextIndex (0-based) *)
+    function TextToViewIndex(aTextIndex : TLineIdx) : TLineIdx; override;   (* Convert TextIndex (0-based) to ViewIndex (0-based) *)
+    function ViewToTextIndex(aViewIndex : TLineIdx) : TLineIdx; override;     (* Convert ViewIndex (0-based) to TextIndex (0-based) *)
     function TextXYToViewXY(APhysTextXY: TPhysPoint): TPhysPoint; override;
     function ViewXYToTextXY(APhysViewXY: TPhysPoint): TPhysPoint; override;
 
-    function InternTextToViewIndex(aTextIndex : TLineIdx) : TLineIdx;           (* Convert TextIndex (0-based) to ViewPos (1-based) *)
-    function InternViewToTextIndex(aViewIndex : TLineIdx) : TLineIdx;             (* Convert ViewPos (1-based) to TextIndex (0-based) *)
+    function InternTextToViewIndex(aTextIndex : TLineIdx) : TLineIdx;           (* Convert TextIndex (0-based) to ViewIndex (0-based) *)
+    function InternViewToTextIndex(aViewIndex : TLineIdx) : TLineIdx;             (* Convert ViewIndex (0-based) to TextIndex (0-based) *)
 
     function TextIndexToScreenLine(aTextIndex : Integer) : Integer; deprecated 'To be removed in 5.99 / Use TextToViewIndex(index)-TopView or TextXYToScreenXY'; (* Convert TextIndex (0-based) to Screen (0-based) *)
     function ScreenLineToTextIndex(aLine : Integer) : Integer; deprecated 'To be removed in 5.99 / Use ViewToTextIndex(index+TopView) or ScreenXYToTextXY'; (* Convert Screen (0-based) to TextIndex (0-based) *)
