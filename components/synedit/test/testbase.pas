@@ -43,6 +43,7 @@ type
     property CaretObj: TSynEditCaret read GetCaretObj;
     property TextArea: TLazSynTextArea read FTextArea;
     property MarkupMgr: TSynEditMarkupManager read TestGetMarkupMgr;
+    property TopView;
   end;
 
   { TTestBase }

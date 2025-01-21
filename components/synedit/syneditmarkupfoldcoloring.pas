@@ -334,7 +334,7 @@ begin
     c := SynEdit.Lines.Count;
     for i := FirstLine to LastLine do
     begin
-      iLine := FoldView.DisplayNumber[i];
+      iLine := ToPos(FoldView.DisplayView.ViewToTextIndex(i));
       if (iLine <= 0) or (iLine > c) then break;
       // next line rect
       rcLine.Top := rcLine.Bottom;
