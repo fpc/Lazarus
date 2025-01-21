@@ -206,10 +206,10 @@ begin
   i := 0;
   while i < high(AExpectedPairs)-1 do begin
     AssertEquals(AName+' TxtIdx('+IntToStr( AExpectedPairs[i])+') to ScreenLine[0-based]('+IntToStr( AExpectedPairs[i+1])+') ',
-                 AExpectedPairs[i+1], FoldedView.TextIndexToScreenLine(AExpectedPairs[i]));
+                 AExpectedPairs[i+1], FoldedView.TextToViewIndex(AExpectedPairs[i])-(SynEdit.TopView-1));
     if ADoReverse then
       AssertEquals(AName+' ScreenLine[0-based]('+IntToStr( AExpectedPairs[i+1])+') to TxtIdx('+IntToStr( AExpectedPairs[i])+') [R]',
-                 AExpectedPairs[i], FoldedView.ScreenLineToTextIndex(AExpectedPairs[i+1]));
+                 AExpectedPairs[i], FoldedView.ViewToTextIndex(AExpectedPairs[i+1]+SynEdit.TopView-1));
     inc(i, 2);
   end;
 end;
@@ -221,10 +221,10 @@ begin
   i := 0;
   while i < high(AExpectedPairs)-1 do begin
     AssertEquals(AName+' ScreenLine[0-based]('+IntToStr( AExpectedPairs[i])+') to TxtIdx('+IntToStr( AExpectedPairs[i+1])+') ',
-                 AExpectedPairs[i+1], FoldedView.ScreenLineToTextIndex(AExpectedPairs[i]));
+                 AExpectedPairs[i+1], FoldedView.ViewToTextIndex(AExpectedPairs[i]+SynEdit.TopView-1));
     if ADoReverse then
       AssertEquals(AName+' TxtIdx('+IntToStr( AExpectedPairs[i+1])+') to ScreenLine[0-based]('+IntToStr( AExpectedPairs[i])+') [R]',
-                 AExpectedPairs[i], FoldedView.TextIndexToScreenLine(AExpectedPairs[i+1]));
+                 AExpectedPairs[i], FoldedView.TextToViewIndex(AExpectedPairs[i+1])-(SynEdit.TopView-1));
     inc(i, 2);
   end;
 end;
@@ -906,8 +906,8 @@ procedure TTestFoldedView.TestFold;
       ReCreateEdit;
       TstSetText('Text6 Hide 1st line', TestTextHide2(1)); // *** one line at the top
         TstFold('fold //)', 0, 0, 1, False, 0, [1]);
-        AssertEquals('FoldedView.TextIndex 0', 1, FoldedView.TextIndex[0]);
-        AssertEquals('FoldedView.TextIndex -1', -1, FoldedView.TextIndex[-1]);
+        AssertEquals('FoldedView.TextIndex 0', 1, FoldedView.ViewToTextIndex(0));
+        AssertEquals('FoldedView.TextIndex -1', -1, FoldedView.ViewToTextIndex(-1));
 
         TstTxtIndexToViewPos    ('', [1,1 ], True); // 0-base => 1 base
         TstTextIndexToScreenLine('', [1,0 ], True); // 0-base => 0 base
