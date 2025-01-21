@@ -1120,7 +1120,7 @@ begin
     c := TCustomSynEdit(SynEdit).Lines.Count;
     for i := FirstLine to LastLine do
     begin
-      iLine := FoldView.DisplayNumber[i];
+      iLine := FoldView.ViewToTextIndex[i] + 1;
       if (iLine < 0) or (iLine >= c) then break;
       // next line rect
       rcLine.Top := rcLine.Bottom;
@@ -1173,7 +1173,7 @@ begin
     c := TCustomSynEdit(SynEdit).Lines.Count;
     for i := FirstLine to LastLine do
     begin
-      iLine := FoldView.DisplayNumber[i];
+      iLine := FoldView.ViewToTextIndex[i] + 1;
       if (iLine < 0) or (iLine >= c) then break;
       // next line rect
       rcLine.Top := rcLine.Bottom;
