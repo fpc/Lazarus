@@ -1510,6 +1510,7 @@ function TLazSynDisplayWordWrap.GetNextHighlighterToken(out
 var
   PreStart: Integer;
 begin
+  ATokenInfo := Default(TLazSynDisplayTokenInfo);
   If FCurLineLogIdx >= FCurSubLineNextLogStartIdx then begin
     Result := False;
     exit;
