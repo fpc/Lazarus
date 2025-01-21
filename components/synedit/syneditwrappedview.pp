@@ -930,13 +930,14 @@ begin
     @ADestPage.FWrappedExtraSums[ALineCount + OldOffset],
     ADestPage.FWrappedExtraSumsCount,
     SrcO2 - SrcO1);
-  assert(ASourceStartLine+MinLineCount<=FWrappedExtraSumsCount, 'TSynWordWrapLineMap.MoveLinesAtEndTo: ASourceStartLine+MinLineCount<=FWrappedExtraSumsCount');
-  if MinLineCount > 0 then
+  if MinLineCount > 0 then begin
+    assert(ASourceStartLine+MinLineCount<=FWrappedExtraSumsCount, 'TSynWordWrapLineMap.MoveLinesAtEndTo: ASourceStartLine+MinLineCount<=FWrappedExtraSumsCount');
     WrapInfoCopyAndAdjustFromTo(
       @FWrappedExtraSums[ASourceStartLine],
       @ADestPage.FWrappedExtraSums[0],
       MinLineCount,
       -SrcO1);
+  end;
   WrapInfoFillFrom(
     @ADestPage.FWrappedExtraSums[MinLineCount],
     ALineCount - MinLineCount + OldOffset,
