@@ -214,9 +214,35 @@ begin
   TGtk3Widget(AWinControl.Handle).SetBounds(ALeft,ATop,AWidth,AHeight);
 end;
 
+{$IFDEF GTK3DEBUGCORE}
+procedure ReleaseInputGrab;
+var
+  Display: PGdkDisplay;
+  Seat: PGdkSeat;
+begin
+  // Get the default display
+  Display := gdk_display_get_default();
+  if not Assigned(Display) then
+  begin
+    WriteLn('Error: No default display available.');
+    Exit;
+  end;
+
+  // Get the default seat
+  Seat := gdk_display_get_default_seat(Display);
+  if not Assigned(Seat) then
+  begin
+    WriteLn('Error: No default seat available.');
+    Exit;
+  end;
+  Gtk3WidgetSet.SetCapture(0);
+  gdk_seat_ungrab(Seat);
+end;
+{$ENDIF}
+
 class procedure TGtk3WSCustomForm.ShowHide(const AWinControl: TWinControl);
 var
-  AMask: TGdkEventMask;
+  AMask:TGdkEventMask;
   AForm, OtherForm: TCustomForm;
   AWindow: PGtkWindow;
   i: Integer;
@@ -241,54 +267,74 @@ begin
   else
     AWindow := nil;
 
+
   ShouldBeVisible:=AForm.HandleObjectShouldBeVisible;
-  if (fsModal in AForm.FormState) and ShouldBeVisible and (AWindow<>nil) then
+
+  {$IFDEF GTK3DEBUGCORE}
+  //use this if pure SetCapture(0) does not work under wayland.
+  ReleaseInputGrab;
+  {$ENDIF}
+
+  Gtk3WidgetSet.SetCapture(0);
+
+  if ShouldBeVisible and not IsFormDesign(AForm) then
   begin
-    AWindow^.set_type_hint(GDK_WINDOW_TYPE_HINT_DIALOG);
-    AWindow^.set_modal(True);
+    if (AForm.FormStyle in fsAllStayOnTop) then
+    begin
+      if AForm.FormStyle = fsSystemStayOnTop then
+        AWindow^.set_keep_above(True)
+      else
+        {$warning according to gtk3 docs this window should stay above application windows, but it is not so,
+         if we click onto form below this one it goes behind that form, so maybe set_keep_above(true) here too,
+         but it's behaviour in that case is fsSystemStayOnTop. Check under wayland !}
+        AWindow^.set_type_hint(GDK_WINDOW_TYPE_HINT_UTILITY);
+    end;
+
+    if (fsModal in AForm.FormState) then
+    begin
+      AWindow^.set_modal(True);
+      AWindow^.window^.set_modal_hint(true);
+    end;
+
+    AWindow^.realize;
   end;
+
   AGtk3Widget.Visible := ShouldBeVisible;
+
   if AGtk3Widget.Visible then
   begin
-    if (fsModal in AForm.FormState) and (Application.ModalLevel > 0) and (AWindow<>nil) then
+    if not IsFormDesign(AForm) and (fsModal in AForm.FormState) and (Application.ModalLevel > 0) then
     begin
       // DebugLn('TGtk3WSCustomForm.ShowHide ModalLevel=',dbgs(Application.ModalLevel),' Self=',dbgsName(AForm));
-      if Application.ModalLevel > 1 then
+      for i := 0 to Screen.CustomFormZOrderCount - 1 do
       begin
-        for i := 0 to Screen.CustomFormZOrderCount - 1 do
+        OtherForm:=Screen.CustomFormsZOrdered[i];
+        // DebugLn('CustomFormZOrder[',dbgs(i),'].',dbgsName(OtherForm),' modal=',dbgs(fsModal in OtherForm.FormState));
+        if (OtherForm <> AForm) and
+          OtherForm.HandleAllocated then
         begin
-          OtherForm:=Screen.CustomFormsZOrdered[i];
-          // DebugLn('CustomFormZOrder[',dbgs(i),'].',dbgsName(OtherForm),' modal=',dbgs(fsModal in OtherForm.FormState));
-          if (OtherForm <> AForm) and
-            (fsModal in OtherForm.FormState) and
-            OtherForm.HandleAllocated then
+          // DebugLn('TGtk3WSCustomForm.ShowHide setTransient for ',dbgsName(OtherForm));
+          OtherGtk3Window:=TGtk3Window(OtherForm.Handle);
+          if Gtk3IsGtkWindow(OtherGtk3Window.Widget) then
           begin
-            // DebugLn('TGtk3WSCustomForm.ShowHide setTransient for ',dbgsName(OtherForm));
-            OtherGtk3Window:=TGtk3Window(OtherForm.Handle);
-            if Gtk3IsGtkWindow(OtherGtk3Window.Widget) then
-            begin
-              AWindow^.set_transient_for(PGtkWindow(OtherGtk3Window.Widget));
-              break;
-            end;
+            AWindow^.set_transient_for(PGtkWindow(OtherGtk3Window.Widget));
+            break;
           end;
         end;
       end;
     end;
-    if AWindow<>nil then
-    begin
-      AWindow^.show_all;
-      AMask := AWindow^.window^.get_events;
-      AWindow^.window^.set_events(GDK_ALL_EVENTS_MASK {AMask or GDK_POINTER_MOTION_MASK or GDK_POINTER_MOTION_HINT_MASK});
-    end;
+
+    AWindow^.show_all;
+    AMask := AWindow^.window^.get_events;
+    AWindow^.window^.set_events(GDK_ALL_EVENTS_MASK);
+    if not IsFormDesign(AForm) then
+      AWindow^.present;
   end else
   begin
-    if (fsModal in AForm.FormState) and (AWindow<>nil) then
+    if not IsFormDesign(AForm) and (fsModal in AForm.FormState) then
     begin
       if AWindow^.transient_for <> nil then
-      begin
-        // DebugLn('TGtk3WSCustomForm.ShowHide removetransientsient for ',dbgsName(AForm));
         AWindow^.set_transient_for(nil);
-      end;
     end;
   end;
 end;
@@ -406,7 +452,7 @@ begin
   if not WSCheckHandleAllocated(ACustomForm, 'SetRealPopupParent') then
     Exit;
   {$IFDEF GTK3DEBUGCORE}
-  DebugLn('TGtk3WSCustomForm.SetRealPopupParent');
+  DebugLn('TGtk3WSCustomForm.SetRealPopupParent AForm=',dbgsName(ACustomForm),' PopupParent=',dbgsName(APopupParent));
   {$ENDIF}
 end;
 
