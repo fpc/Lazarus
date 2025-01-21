@@ -630,24 +630,26 @@ end;
 function Gtk3TranslateScrollStyle(const SS: TScrollStyle): TGtkScrollStyle;
   function return(Horiz, Vert: TGtkPolicyType): TGtkScrollStyle;
   begin
-    with Result do begin
-	  Horizontal := Horiz;
-	  Vertical := Vert;
-	end;
+    with Result do
+    begin
+	    Horizontal := Horiz;
+	    Vertical := Vert;
+	  end;
   end;
 begin
-  with Result do begin
+  with Result do
+  begin
     Horizontal := GTK_POLICY_AUTOMATIC;
-	Vertical := GTK_POLICY_AUTOMATIC;
+	  Vertical := GTK_POLICY_AUTOMATIC;
   end;
   case SS of
-    ssAutoBoth: return(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-    ssAutoHorizontal: return(GTK_POLICY_AUTOMATIC, GTK_POLICY_NEVER);
-    ssAutoVertical: return(GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-    ssBoth: return(GTK_POLICY_ALWAYS, GTK_POLICY_ALWAYS);
-    ssHorizontal: return(GTK_POLICY_ALWAYS, GTK_POLICY_NEVER);
-    ssNone: return(GTK_POLICY_NEVER, GTK_POLICY_NEVER);
-    ssVertical: return(GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
+    ssAutoBoth: Result := return(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+    ssAutoHorizontal: Result := return(GTK_POLICY_AUTOMATIC, GTK_POLICY_NEVER);
+    ssAutoVertical: Result := return(GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+    ssBoth: Result := return(GTK_POLICY_ALWAYS, GTK_POLICY_ALWAYS);
+    ssHorizontal: Result := return(GTK_POLICY_ALWAYS, GTK_POLICY_NEVER);
+    ssNone: Result := return(GTK_POLICY_NEVER, GTK_POLICY_NEVER);
+    ssVertical: Result := return(GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
   end;
 end;
 
