@@ -16,7 +16,10 @@ unit RegLazAIssist;
 interface
 
 uses
-  Classes, SysUtils, LazLoggerBase, FileUtil, IDECommands, IDEWindowIntf, LazIDEIntf, MenuIntf, frmaissistchat;
+  Classes, SysUtils,
+  LazLoggerBase, FileUtil,
+  IDECommands, IDEWindowIntf, LazIDEIntf, MenuIntf, IDEHelpIntf,
+  FrmAIssistChat;
 
 var
   AIssistChatForm: TAIssistChatForm;
@@ -110,12 +113,19 @@ begin
     SAIExplainSelectedCodeCaption, nil, nil, AIExplainSelectionCommand);
 end;
 
+procedure RegisterFPDocDescribe;
+begin
+  LazarusHelp.RegisterFPDocEditorTextButton('AI','Ask aissist for a description',
+      @AIController.FPDocEditorInsertTextClick);
+end;
+
 procedure Register;
 begin
   AIController.LoadConfig;
   AIController.ConfigFrame:=TAIAssistentConfigFrame;
   RegisterAIChatWindow;
   RegisterExplainCommand;
+  RegisterFPDocDescribe;
 end;
 
 end.

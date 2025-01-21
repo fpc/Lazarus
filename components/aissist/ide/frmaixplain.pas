@@ -1,11 +1,12 @@
-unit frmaixplain;
+unit FrmAixplain;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls, ButtonPanel, ComCtrls, Buttons,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls, ButtonPanel,
+  ComCtrls, Buttons,
   typingindicator, SrcEditorIntf, AIClient;
 
 type
@@ -21,23 +22,23 @@ type
     PReply: TPage;
     pnlThinking: TPanel;
     SBRefresh: TSpeedButton;
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
-    procedure FormCreate(Sender: TObject);
-    procedure pnlThinkingClick(Sender: TObject);
-    procedure SBRefreshClick(Sender: TObject);
-  private
-    FTyping : TTypingIndicator;
-    FEditor: TSourceEditorInterface;
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction); virtual;
+    procedure FormCreate(Sender: TObject); virtual;
+    procedure pnlThinkingClick(Sender: TObject); virtual;
+    procedure SBRefreshClick(Sender: TObject); virtual;
+  protected
     FAIClient: TAIClient;
     FBusy : Boolean;
-    procedure ActivateResponse;
-    procedure CreatePrompt;
-    function GetPrompt: string;
-    procedure HandleAIError(Sender: TObject; aErrorData: TAIRequestErrorData);
-    procedure HandleAIResponse(Sender: TObject; aResponses: TPromptResponseArray);
-    procedure SendPrompt;
+    FEditor: TSourceEditorInterface;
+    FTyping : TTypingIndicator;
+    procedure ActivateResponse; virtual;
+    procedure CreatePrompt; virtual;
+    function GetPrompt: string; virtual;
+    procedure HandleAIError(Sender: TObject; aErrorData: TAIRequestErrorData); virtual;
+    procedure HandleAIResponse(Sender: TObject; aResponses: TPromptResponseArray); virtual;
+    procedure SendPrompt; virtual;
   public
-    procedure Explain(aEditor: TSourceEditorInterface; aAIClient: TAIClient);
+    procedure Explain(aEditor: TSourceEditorInterface; aAIClient: TAIClient); virtual;
   end;
 
 var
@@ -182,9 +183,9 @@ var
 begin
   Src:=TStringList.Create;
   try
-    S:=Feditor.GetText(True);
+    S:=FEditor.GetText(True);
     if S='' then
-      S:=Feditor.GetText(False);
+      S:=FEditor.GetText(False);
     Src.Text:=S;
     MPrompt.Lines.Add(SExplainPrompt);
     MPrompt.Lines.Add('');

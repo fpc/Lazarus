@@ -13,14 +13,14 @@
  *****************************************************************************
 }
 
-unit typingindicator;
+unit TypingIndicator;
 
 {$mode ObjFPC}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, graphics, controls, extctrls;
+  Classes, SysUtils, Graphics, Controls, ExtCtrls;
 
 const
   DefaultTypingCycle = 2000;

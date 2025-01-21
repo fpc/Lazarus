@@ -62,7 +62,7 @@ type
     Part: TFPDocEditorPart;
     CodeBuf: Pointer; // TCodeBuffer
     CodeTool: Pointer; // TCodeTool
-    CodeNode: Pointer; // TCodeNode
+    CodeNode: Pointer; // TCodeTreeNode
     Filename: string;
     Line, Col: integer;
     Selection: string; // on Success is changed to new value

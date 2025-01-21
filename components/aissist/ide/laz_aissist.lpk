@@ -39,8 +39,15 @@
         <Filename Value="frmaixplain.pas"/>
         <UnitName Value="frmaixplain"/>
       </Item>
+      <Item>
+        <Filename Value="frmaissistfpdocedit.pas"/>
+        <UnitName Value="frmaissistfpdocedit"/>
+      </Item>
     </Files>
     <RequiredPkgs>
+      <Item>
+        <PackageName Value="CodeTools"/>
+      </Item>
       <Item>
         <PackageName Value="lazchatctrl"/>
       </Item>
@@ -52,12 +59,6 @@
       </Item>
       <Item>
         <PackageName Value="aissist"/>
-      </Item>
-      <Item>
-        <PackageName Value="IDEIntf"/>
-      </Item>
-      <Item>
-        <PackageName Value="FCL"/>
       </Item>
     </RequiredPkgs>
     <UsageOptions>

@@ -8,7 +8,8 @@ unit laz_aissist;
 interface
 
 uses
-  frmaissistchat, RegLazAIssist, AIssistController, StrAIssist, fraAIssistConfig, frmaixplain, LazarusPackageIntf;
+  FrmAissistChat, RegLazAIssist, AIssistController, StrAIssist, fraAIssistConfig, FrmAixplain, 
+  FrmAissistFPDocEdit, LazarusPackageIntf;
 
 implementation
 

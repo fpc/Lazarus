@@ -17,7 +17,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, StdCtrls, AIClient,
-  IDEOptionsIntf, IDEOptEditorIntf, IDEUtils, IDEDialogs, LazNumEdit;
+  IDEOptionsIntf, IDEOptEditorIntf, LazNumEdit;
 
 type
 

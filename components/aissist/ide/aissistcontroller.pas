@@ -16,12 +16,21 @@ unit AIssistController;
 interface
 
 uses
-  Classes, SysUtils, AIClient, JanAIProtocol,  SrcEditorIntf, IDEOptionsIntf, IDEOptEditorIntf, BaseIDEIntf;
+  Classes, SysUtils, Math, Forms, Dialogs,
+  // ide
+  SrcEditorIntf, IDEOptionsIntf, IDEOptEditorIntf, BaseIDEIntf, LazIDEintf, IDEHelpIntf, IDEDialogs,
+  LazConfigStorage, LazLoggerBase, CodeCache, CodeTree, CodeToolManager, PascalParserTool,
+  PascalReaderTool,
+  // aissist
+  AIClient, JanAIProtocol,
+  // laz_aissist
+  StrAIssist, FrmAixplain, FrmAIssistFPDocEdit;
 
 Type
   TAIState = (csDisconnected,csConnected,csWaiting,csAIThinking);
 
   { TAIssistController }
+
   TAIssistController = Class(TComponent)
   private
     FConfigFrame: TAbstractIDEOptionsEditorClass;
@@ -32,14 +41,15 @@ Type
     class destructor done;
     Class property Instance : TAIssistController Read _Instance;
   Public
-    constructor create(aOwner : TComponent); override;
-    Destructor destroy; override;
+    Constructor Create(aOwner : TComponent); override;
+    Destructor Destroy; override;
     procedure HandleShowConfig(Sender : TObject);
-    function ShowConfig: Boolean;
+    Function ShowConfig: Boolean;
     Procedure LoadConfig;
     Procedure SaveConfig;
     Function CreateAIClient : TAIClient;
     Function ExplainCurrentSelection (aEdit : TSourceEditorInterface): Boolean;
+    Procedure FPDocEditorInsertTextClick(var Params: TFPDocEditorTxtBtnParams);
     Function Configured : Boolean;
     Property Settings : TAIServerSettings Read FSettings;
     Property ConfigFrame : TAbstractIDEOptionsEditorClass Read FConfigFrame Write FConfigFrame;
@@ -48,8 +58,6 @@ Type
 Function AIController : TAIssistController;
 
 implementation
-
-uses LazIDEintf, StrAIssist, LazConfigStorage, forms, frmaixplain;
 
 const
   DefaultMaxLength = 2048;
@@ -71,14 +79,14 @@ begin
   FreeAndNil(_Instance);
 end;
 
-constructor TAIssistController.create(aOwner: TComponent);
+constructor TAIssistController.Create(aOwner: TComponent);
 begin
   inherited create(aOwner);
   FSettings:=TAIServerSettings.Create;
   FSettings.Protocol:=TJanAIServerProtocol.protocolname;
 end;
 
-destructor TAIssistController.destroy;
+destructor TAIssistController.Destroy;
 begin
   FreeAndNil(FSettings);
   inherited destroy;
@@ -146,14 +154,72 @@ begin
   if Not Assigned(aEdit) then exit(False);
   if not Configured then exit(False);
 
-  frm:=TAIxplainForm.Create(Application);
+  frm:=TAIxplainForm.Create(LazarusIDE.OwningComponent);
   Caret:=aEdit.CursorScreenXY;
   lPos:=aEdit.EditorControl.ClientToScreen(aEdit.ScreenToPixelPosition(Caret));
-  Frm.Top:=lPos.Y;
-  Frm.Left:=lPos.X;
+  Frm.SetBounds(lPos.X,lPos.Y,Frm.Width,Frm.Height);
   Clnt:=CreateAIClient;
   Frm.Explain(aEdit,Clnt);
   frm.Show;
+end;
+
+procedure TAIssistController.FPDocEditorInsertTextClick(var Params: TFPDocEditorTxtBtnParams);
+
+  procedure ShowNotAtAProc;
+  begin
+    IDEMessageDialog('Unsupported','Source cursor is not at a function declaration.',mtInformation,[mbOk]);
+  end;
+
+var
+  Tool: TCodeTool;
+  Node, ProcNode: TCodeTreeNode;
+  Src, NewTxt: String;
+  aForm: TAIssistFPDocEditDlg;
+  aClient: TAIClient;
+begin
+  Params.Success:=false;
+  Tool:=TCodeTool(Params.CodeTool);
+  Node:=TCodeTreeNode(Params.CodeNode);
+
+  DebugLn(['TAIssistController.FPDocEditorInsertTextClick START ',Params.Filename,'(',Params.Line,',',Params.Col,') Part=',ord(Params.Part)]);
+  if Params.Selection>'' then
+    DebugLn(['  Selection="',LeftStr(Params.Selection,100),'{...}',copy(Params.Selection,Max(101,length(Params.Selection)-99),100),'"']);
+  if (Tool=nil) or (Node=nil) then
+  begin
+    debugln(['Error: TAIssistController.FPDocEditorInsertTextClick Node=nil']);
+    ShowNotAtAProc;
+    exit;
+  end;
+  //debugln(['TAIssistController.FPDocEditorInsertTextClick Node: Start=',Tool.CleanPosToStr(Node.StartPos),' [',NodePathAsString(Node),'] {',LeftStr(Tool.ExtractNode(Node,[]),200),'}']);
+
+  // find proc body
+  ProcNode:=Node;
+  while (ProcNode<>nil) and (ProcNode.Desc<>ctnProcedure) do
+    ProcNode:=ProcNode.Parent;
+  if ProcNode=nil then
+  begin
+    debugln(['Error: TAIssistController.FPDocEditorInsertTextClick Node=',NodePathAsString(Node)]);
+    ShowNotAtAProc;
+    exit;
+  end;
+  Node:=Tool.FindCorrespondingProcNode(ProcNode,[phpInUpperCase],cpsDown);
+  if Node<>nil then
+    ProcNode:=Node;
+
+  Src:=Tool.ExtractNode(ProcNode,[]);
+  debugln(['TAIssistController.FPDocEditorInsertTextClick ProcNode: Start=',Tool.CleanPosToStr(ProcNode.StartPos),' [',NodePathAsString(ProcNode),'] Src={',Src,'}']);
+
+  aForm:=TAissistFPDocEditDlg.Create(nil);
+  try
+    aClient:=CreateAIClient;
+    if aForm.Describe(aClient,Src,NewTxt) then
+    begin
+      Params.Selection:=NewTxt;
+      Params.Success:=true;
+    end;
+  finally
+    aForm.Free;
+  end;
 end;
 
 function TAIssistController.Configured: Boolean;

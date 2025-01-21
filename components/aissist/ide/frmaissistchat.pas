@@ -9,14 +9,14 @@
 
   Abstract: AI Assistant conversation window
 }
-unit frmaissistchat;
+unit FrmAIssistChat;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ChatControl, TypingIndicator,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ChatControl,
   LCLType, StdCtrls, ExtCtrls, Menus, AIClient;
 
 type
