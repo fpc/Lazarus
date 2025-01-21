@@ -195,10 +195,14 @@ type
 
   TLazSynEditLineWrapPlugin = class(TLazSynEditPlugin)
   private
+    FCurrentWrapColumn: Integer;
     FCaretWrapPos: TLazSynEditWrapCaretPos;
+    FMinWrapWidth: Integer;
     procedure DoLinesChanged(Sender: TObject);
     procedure DoWidthChanged(Sender: TObject; Changes: TSynStatusChanges);
     function GetWrapColumn: Integer;
+
+    procedure SetMinWrapWidth(AValue: Integer);
 public
     FLineMapView: TSynEditLineMappingView;
     function CreatePageMapNode(AMapTree: TSynLineMapAVLTree
@@ -230,6 +234,7 @@ public
 
   published
     property CaretWrapPos: TLazSynEditWrapCaretPos read FCaretWrapPos write FCaretWrapPos;
+    property MinWrapWidth: Integer read FMinWrapWidth write SetMinWrapWidth;
   end;
 
 implementation
@@ -1559,14 +1564,31 @@ end;
 
 procedure TLazSynEditLineWrapPlugin.DoWidthChanged(Sender: TObject;
   Changes: TSynStatusChanges);
+var
+  w: Integer;
 begin
-  FLineMapView.KnownLengthOfLongestLine := WrapColumn;
+  w := WrapColumn;
+  if FCurrentWrapColumn = w then
+    exit;
+  FCurrentWrapColumn := w;
+  FLineMapView.KnownLengthOfLongestLine := w;
   FLineMapView.InvalidateLines(0, FLineMapView.NextLines.Count);
 end;
 
 function TLazSynEditLineWrapPlugin.GetWrapColumn: Integer;
 begin
   Result := TSynEdit(Editor).CharsInWindow - 1;
+  if Result < FMinWrapWidth then
+    Result := FMinWrapWidth;
+end;
+
+procedure TLazSynEditLineWrapPlugin.SetMinWrapWidth(AValue: Integer);
+begin
+  if AValue < 1 then
+    AValue := 1;
+  if FMinWrapWidth = AValue then Exit;
+  FMinWrapWidth := AValue;
+  DoWidthChanged(nil, [scCharsInWindow]);
 end;
 
 function TLazSynEditLineWrapPlugin.CreatePageMapNode(AMapTree: TSynLineMapAVLTree): TSynEditLineMapPage;
@@ -1829,6 +1851,7 @@ begin
   FLineMapView.WrapInfoForViewedXYProc := @GetWrapInfoForViewedXY;
   FLineMapView.AddLinesChangedHandler(@DoLinesChanged);
   TSynEdit(Editor).RegisterStatusChangedHandler(@DoWidthChanged, [scCharsInWindow]);
+  FMinWrapWidth := 1;
   FLineMapView.KnownLengthOfLongestLine := WrapColumn;
   WrapAll;
 end;
