@@ -3494,9 +3494,7 @@ end;
 (* Lines *)
 function TSynEditFoldedView.GetViewedLines(index : Integer) : String;
 begin
-  if (index < -1) or (index > fLinesInWindow + 1) then
-    exit(NextLines.ViewedLines[ScreenLineToTextIndex(Index)]);
-  Result := NextLines.ViewedLines[fTextIndexList[index+1]];
+  Result := NextLines.ViewedLines[InternViewToTextIndex(index)];
 end;
 
 function TSynEditFoldedView.GetDisplayNumber(index : Integer) : Integer;
