@@ -1735,65 +1735,98 @@ String with the content examined and converted to its lowercase representation.
 
 <element name="UTF8SwapCase">
 <short>
-Provides a simplistic implementation of UTF8UpperCase and UTF8LowerCase.
+Converts the case for UTF-8 codepoints in the specified string and returns 
+the converted value.
 </short>
 <descr>
 <p>
-<var>UTF8SwapCase</var> provides a "naive" implementation that uses 
-<var>UTF8UpperCase</var> and <var>UTF8LowerCase</var>. Performance is 
-acceptable for short and reasonably long strings, but it could benefit from 
-better performance and lower memory consumption.
+<var>UTF8SwapCase</var> is a String function used to convert the case for the 
+specified UTF-8 codepoints.
 </p>
 <p>
-AInStr contains a UTF-8-encoded string with values to convert it the method. 
-Each character in AInStr will have its case "toggled" in the function. In 
-other words, an uppercase character is converted to lowercase, and vice versa.
+<var>AInStr</var> contains a UTF-8-encoded string with values to convert it 
+the routine. Each codepoint in AInStr will have its case "toggled" in the 
+function. In other words, a codepoint which is an uppercase character is 
+converted to a lowercase one, and vice versa.
 </p>
 <p>
-ALanguage indicates the language code to use for the conversion. ALanguage 
-should be specified using ISO 639-1 format, which uses 2 characters to 
-represent each language. If the language has no code in ISO 639-1, then the 
-3-character code from ISO 639-2 should be used. For example: "tr"for the 
-Turkish language locale. Special handling is provided in the function for 
-Turkish ('tr') and Azeri ('az') language codes. ALanguage can be set to an 
-empty string ('') for maximum speed in the conversion.
+<var>ALanguage</var> indicates the language code to use for the conversion. 
+ALanguage should be specified using ISO 639-1 format, which uses 2 characters 
+to represent each language. If the language has no code in ISO 639-1, then the 
+3-character code from ISO 639-2 should be used. For example: 'tr' for the 
+Turkish language locale or 'az' for the Azeri language code. ALanguage can be 
+set to an empty string ('') for maximum speed in the conversion routine.
 </p>
 <p>
-No actions are performed in the method when the number of bytes for the 
-converted value differs from the number of bytes in the original value. In 
-this case, the return value contains the unmodified string in AInStr. The 
-return value is an empty string ('') when AInStr is an empty string ('').
+No actions are performed in the routine when AInStr is an empty string (''), 
+and the return value is an empty string as well.
+</p>
+<p>
+UTF6SwapCase processes the individual codepoints in AInStr to get the return 
+value for the function. It ensures that codepoints which have a different 
+number of bytes in the lowercase and uppercase variants are handled properly. 
+UTF8UpperCase and UTF8LowerCase are called to change the case for each 
+codepoint.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="UTF8LowerCase"/>
+<link id="UTF8UpperCase"/>
+<link id="UTF8CodepointSize"/>
+<link id="UTF8Length"/>
+</seealso>
 </element>
 <element name="UTF8SwapCase.Result">
-<short>String with the converted case values.</short>
+<short>
+UTF-8-encoded values after case conversion.
+</short>
 </element>
 <element name="UTF8SwapCase.AInStr">
-<short>Original values for the conversion.</short>
+<short>
+UTF-8-encoded values converted in the routine.
+</short>
 </element>
 <element name="UTF8SwapCase.ALanguage">
-<short>Language code for the locale used in the conversion.</short>
+<short>
+Optional Language code for the locale used in the conversion.
+</short>
 </element>
 
 <element name="UTF8ProperCase">
 <short>
-Capitalizes the first letter of each word in the string.
+Capitalizes the first letter of each word in the UTF-8-encoded string.
 </short>
 <descr>
 <p>
 <var>UTF8ProperCase</var> is a <var>String</var> function used to capitalize 
-the first letter of each word in the specified string. WordDelims is set 
-which contains the system characters used as word boundaries in the string.
+the first letter of each word in the specified string. 
 </p>
 <p>
-UTF8ProperCase converts all of the values in AInStr to their lowercase 
-equivalents, before converting letters following a word delimiter to 
-uppercase.
+<var>AInStr</var> contains the UTF-8-encoded byte values examined and 
+converted in the function. All of the values in AInStr are converted to 
+lowercase using UTF8LowerCase prior to converting the case for codepoints.
+</p>
+<p>
+<var>WordDelims</var> is the <var>TSysCharSet</var> set type which contains 
+the system characters used as word delimiters in the conversion. Each 
+occurrence of a character in WordDelims signals that the following codepoint 
+should be converted to Uppercase.
+</p>
+<p>
+UTF8ProperCase processes individual codepoints to get the return value for the 
+function. It ensures that codepoints which have a different number of bytes in 
+the lowercase and uppercase variants are handled properly. UTF8UpperCase is 
+called to change the case for each codepoint following a word delimiter.
+</p>
+<p>
+If AInStr is an empty string (''), the return value is also an empty string.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="UTF8LowerCase"/>
+<link id="UTF8UpperCase"/>
+<link id="#rtl.sysutils.TSysCharSet">TSysCharSet</link>
+</seealso>
 </element>
 <element name="UTF8ProperCase.Result">
 <short>Converting values for the string.</short>
