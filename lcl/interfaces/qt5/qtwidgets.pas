@@ -18632,6 +18632,9 @@ begin
     Result := QWidget_create(Parent, QtTool or QtFramelessWindowHint);
   FDeleteLater := True;
   FMenuBar := nil;
+  {$IFDEF UNIX}
+  QWidget_setAttribute(Result, QtWA_ShowWithoutActivating);
+  {$ENDIF}
   {$IFDEF QTSCROLLABLEFORMS}
   ScrollArea := nil;
   {$ENDIF}
