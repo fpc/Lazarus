@@ -51,11 +51,11 @@ begin
   if AControl.LCLWidth = 0 then
   begin
     min_width^ := Max(min_width^ div 2, AControl.LCLObject.Width);
-    nat_width^ := Max(min_width^ div 2, AControl.LCLObject.Width);
+    nat_width^ := Max(min_width^, AControl.LCLObject.Width);
   end else
   begin
     min_width^ := Max(min_width^ div 2, AControl.LCLWidth);
-    nat_width^ := Max(min_width^ div 2, AControl.LCLWidth);
+    nat_width^ := Max(min_width^, AControl.LCLWidth);
   end;
 end;
 
@@ -105,11 +105,11 @@ begin
   if AControl.LCLHeight = 0 then
   begin
     min_height^ := Max(min_height^ div 2, AControl.LCLObject.Height);
-    nat_height^ := Max(min_height^ div 2, AControl.LCLObject.Height);
+    nat_height^ := Max(min_height^, AControl.LCLObject.Height);
   end else
   begin
     min_height^ := Max(min_height^ div 2, AControl.LCLHeight);
-    nat_height^ := Max(min_height^ div 2, AControl.LCLHeight);
+    nat_height^ := Max(min_height^, AControl.LCLHeight);
   end;
 end;
 
