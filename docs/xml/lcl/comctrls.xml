@@ -35809,7 +35809,9 @@ the mouse is hovered over it.
 <descr>
 <p>
 <var>HotTrack</var> is a <var>Boolean</var> property which controls whether a 
-hot-tracking highlight is drawn for the tree node under the mouse cursor. The 
+hot-tracking highlight is drawn for the tree node under the mouse cursor. When 
+enabled, the text for the hovered tree node is drawn using an underline 
+drawing style and the optional HotTrackColor defined for the control. The 
 default value for the property is <b>False</b> and disables hot-track 
 highlighting on the control.
 </p>
@@ -35829,14 +35831,13 @@ hot-tracked tree node.
 </p>
 </descr>
 <seealso>
+<link id="TCustomTreeView.HotTrackColor"/>
 <link id="TCustomTreeView.Options"/>
 <link id="TCustomTreeView.MouseMove"/>
 <link id="TCustomTreeView.MouseLeave"/>
 <link id="TCustomTreeView.DoPaintNode"/>
-<link id="TCustomTreeView.DoPaint"/>
 <link id="TTreeViewOption"/>
 <link id="TTreeViewOptions"/>
-<link id="#lcl.comctrls.TCustomListview.HotTrack">TCustomListView.HotTrack</link>
 </seealso>
 </element>
 
