@@ -5430,7 +5430,8 @@ begin
   inherited;
   if WaitingForInitialSize then
     exit;
-  inc(FDoingResizeLock);
+  inc(FDoingResizeLock); // prevent UpdateScrollBars;
+  IncStatusChangeLock;   // defer status events
   FScreenCaret.Lock;
   try
     FLeftGutter.RecalcBounds;
@@ -5441,9 +5442,13 @@ begin
       EnsureCursorPosVisible;
     Exclude(fStateFlags, sfEnsureCursorPosAtResize);
   finally
-    FScreenCaret.UnLock;
-    dec(FDoingResizeLock);
-    UpdateScrollBars;
+    try
+      FScreenCaret.UnLock;
+      dec(FDoingResizeLock);
+      UpdateScrollBars;
+    finally
+      DecStatusChangeLock;
+    end;
   end;
   //debugln('TCustomSynEdit.Resize ',dbgs(Width),',',dbgs(Height),',',dbgs(ClientWidth),',',dbgs(ClientHeight));
   // SetLeftChar(LeftChar);                                                     //mh 2000-10-19
