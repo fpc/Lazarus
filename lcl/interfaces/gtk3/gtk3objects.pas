@@ -1513,9 +1513,9 @@ begin
   if Assigned(FBgBrush) then
     FBgBrush.Free;
   FBgBrush := TGtk3Brush.Create;
-  FBgBrush.Style := BS_SOLID;
-  FBgBrush.Color := ColorToRGB(FBkColor);
   FBgBrush.Context := Self;
+  FBgBrush.Style := BS_SOLID;
+  FBgBrush.Color := ColorToRGB(LongInt(FBkColor));
 end;
 
 procedure TGtk3DeviceContext.SetFont(AValue: TGtk3Font);
