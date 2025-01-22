@@ -2941,24 +2941,25 @@ end;
 
 function TGtk3WidgetSet.GetWindowRect(Handle: hwnd; var ARect: TRect): Integer;
 var
-  AWindow: PGdkWindow;
-  x, y: gint;
-  //w, h: gint;
-  GRect: TGdkRectangle;
+  AWindow: PGtkWindow;
+  x, y, aWidth, aHeight: gint;
   Allocation: TGtkAllocation;
 begin
   Result := 0;
-  if Handle <> 0 then
+  if IsValidHandle(Handle) then
   begin
-    AWindow := TGtk3Widget(Handle).GetWindow;
+    if [wtWindow, wtHintWindow] * TGtk3Widget(Handle).WidgetType <> [] then
+    begin
+      AWindow := PGtkWindow(TGtk3Widget(Handle).Widget);
+      if not TGtk3Window(Handle).WidgetMapped then
+        AWindow := nil;
+    end else
+      AWindow := nil;
     if AWindow <> nil then
     begin
-      AWindow^.get_origin(@x, @y);
-      //w := AWindow^.get_width;
-      //h := AWindow^.get_height;
-      AWindow^.get_frame_extents(@GRect);
-      // R := RectFromGdkRect(GRect);
-      ARect := Bounds(x, Y, GRect.width, GRect.Height);
+      AWindow^.get_position(@x, @y);
+      AWindow^.get_size(@aWidth, @aHeight);
+      ARect := Bounds(x, Y, AWidth, AHeight);
       Result := 1;
     end else
     begin

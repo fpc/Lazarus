@@ -77,6 +77,7 @@ type
     FFocusableByMouse: Boolean; {shell we call SetFocus on mouse down. Default = False}
     FOwner: PGtkWidget;
     FProps: TStringList;
+    FWidgetMapped: boolean;
     FWidgetRGBA: array [0{GTK_STATE_NORMAL}..4{GTK_STATE_INSENSITIVE}] of TDefaultRGBA;
     function CanSendLCLMessage: Boolean;
     function GetCairoContext: Pcairo_t;
@@ -90,7 +91,7 @@ type
     procedure SetStyleContext({%H-}AValue: PGtkStyleContext);
     class procedure DestroyWidgetEvent({%H-}w: PGtkWidget;{%H-}data:gpointer); cdecl; static;
     class function DrawWidget(AWidget: PGtkWidget; AContext: Pcairo_t; Data: gpointer): gboolean; cdecl; static;
-    class procedure MapWidget(AWidget: PGtkWidget; Data: gPointer); cdecl; static;
+    class procedure MapWidget(AWidget: PGtkWidget; Data: gPointer); cdecl; static; {GtkWindow never sends this signal !}
     class function ResizeEvent(AWidget: PGtkWidget; AEvent: PGdkEvent; Data: gpointer): gboolean; cdecl; static;
     class function ScrollEvent(AWidget: PGtkWidget; AEvent: PGdkEvent; AData: GPointer): GBoolean; cdecl; static;
     class procedure SizeAllocate(AWidget: PGtkWidget; AGdkRect: PGdkRectangle; Data: gpointer); cdecl; static;
@@ -209,6 +210,7 @@ type
     property Text: String read getText write setText;
     property Visible: Boolean read GetVisible write SetVisible;
     property Widget: PGtkWidget read GetWidget;
+    property WidgetMapped: boolean read FWidgetMapped write FWidgetMapped; {very important. Gtk3 does not give us reliable informations about this state get_mapped returns true, but actually map event isn't arrived yet.}
     property WidgetType: TGtk3WidgetTypes read FWidgetType;
   end;
 
@@ -1293,7 +1295,12 @@ begin
     end;
   GDK_MAP:
     begin
-      // DebugLn('****** GDK_MAP FOR ',dbgsName(TGtk3Widget(Data).LCLObject));
+      //issue #41343
+      if [wtWindow, wtHintWindow] * TGtk3Widget(Data).WidgetType <> [] then
+      begin
+        TGtk3Window(Data).WidgetMapped := True;
+        // DebugLn('****** GDK_MAP FOR ',dbgsName(TGtk3Widget(Data).LCLObject));
+      end;
     end;
   GDK_UNMAP:
     begin
@@ -1369,6 +1376,7 @@ begin
   with Allocation do
     DebugLn(' Allocation ',Format('x %d y %d w %d h %d',[x,y,width,height]));
   {$ENDIF}
+  TGtk3Widget(Data).WidgetMapped := True;
   ARect := TGtk3Widget(Data).LCLObject.BoundsRect;
   {$IFDEF GTK3DEBUGCORE}
   with ARect do
@@ -2667,6 +2675,7 @@ begin
   LCLWidth := 0;
   LCLHeight := 0;
   FContext := 0;
+  FWidgetMapped := False;
   FHasPaint := False;
   FWidget := nil;
   FOwner := nil;
@@ -2687,6 +2696,7 @@ constructor TGtk3Widget.CreateFrom(const AWinControl: TWinControl;
 begin
   inherited Create;
   FContext := 0;
+  FWidgetMapped := False;
   FHasPaint := False;
   FWidget := nil;
   FOwner := nil;
@@ -8317,7 +8327,8 @@ begin
     {%H-}PGtkWindow(FWidget)^.set_title(PGChar(AValue));
 end;
 
-class function TGtk3Window.WindowStateSignal(AWidget: PGtkWidget; AEvent: PGdkEvent; AData: gPointer): GBoolean; cdecl;
+class function TGtk3Window.WindowStateSignal(AWidget: PGtkWidget;
+  AEvent: PGdkEvent; AData: gPointer): gboolean; cdecl;
 var
   Msg: TLMSize;
   AState: TGdkWindowState;
@@ -8703,6 +8714,7 @@ begin
 
     if Gtk3IsGtkWindow(fWidget) then
     begin
+      //PGtkWindow(Widget)^.set_default_size(AWidth, AHeight);
       PGtkWindow(Widget)^.set_resizable(true);
       PGtkWindow(Widget)^.resize(AWidth, AHeight);
       PGtkWindow(Widget)^.move(ALeft, ATop);
