@@ -313,9 +313,11 @@ end;
 class function TGtk3WSToolBar.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLHandle;
 var
-  AToolBar: TGtk3ToolBar;
+  AToolBar: TGtk3CustomControl;
+  // TGtk3ToolBar;
 begin
-  AToolBar := TGtk3ToolBar.Create(AWinControl, AParams);
+  AToolBar := TGtk3CustomControl.Create(AWinControl, AParams);
+  // TGtk3ToolBar.Create(AWinControl, AParams);
   Result := TLCLHandle(AToolBar);
 end;
 

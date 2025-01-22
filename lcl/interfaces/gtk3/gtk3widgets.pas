@@ -5433,8 +5433,8 @@ begin
   if not Assigned(Application) or (Assigned(Application) and Application.Terminated) then
       exit;
 
-  DebugLn('TGtk3MenuItem.MenuItemEvent triggered ',dbgsName(TGtk3MenuItem(Data).MenuItem),
-    ' ',Gtk3EventToStr(event^.type_));
+  //DebugLn('TGtk3MenuItem.MenuItemEvent triggered ',dbgsName(TGtk3MenuItem(Data).MenuItem),
+  //  ' ',Gtk3EventToStr(event^.type_));
 
   case event^.type_ of
   GDK_DELETE:
