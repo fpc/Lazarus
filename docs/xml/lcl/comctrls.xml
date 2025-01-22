@@ -28734,15 +28734,16 @@ A pointer to <var>TDelphiNodeInfo</var>.
 
 <element name="TDelphiNodeInfo">
 <short>
-<var>TDelphiNodeInfo</var> - record structure for Tree Node information (for 
-Delphi compatibility).
+Record structure for Tree Node information (for Delphi compatibility).
 </short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TDelphiNodeInfo.ImageIndex">
-<short>Ordinal position for the image displayed for the node</short>
+<short>
+Ordinal position for the image displayed for the node.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -28781,6 +28782,54 @@ Delphi compatibility).
 <short/>
 <descr/>
 <seealso/>
+</element>
+
+<element name="TDelphiNodeDataInfo">
+<short>
+Record structure used to represent Tree Node Data in Delphi DFM resources.
+</short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TDelphiNodeDataInfo.ImageIndex">
+<short>
+Ordinal position for the image used for the tree node.
+</short>
+<descr></descr>
+<seealso></seealso>
+</element>
+
+<element name="TDelphiNodeDataInfo.SelectedIndex">
+<short></short>
+</element>
+
+<element name="TDelphiNodeDataInfo.StateIndex">
+<short></short>
+</element>
+
+<element name="TDelphiNodeDataInfo.Unknown1">
+<short></short>
+</element>
+
+<element name="TDelphiNodeDataInfo.OverlayIndex">
+<short></short>
+</element>
+
+<element name="TDelphiNodeDataInfo.Unknown2">
+<short></short>
+</element>
+
+<element name="TDelphiNodeDataInfo.ChildCount">
+<short></short>
+</element>
+
+<element name="TDelphiNodeDataInfo.Enabled">
+<short></short>
+</element>
+
+<element name="TDelphiNodeDataInfo.TextLen">
+<short></short>
 </element>
 
 <element name="TTreeNode">
@@ -28923,7 +28972,9 @@ Lazarus Wiki</url>
 <element name="TTreeNode.ReadDelphiData"/>
 <element name="TTreeNode.ReadDelphiData.Stream"/>
 <element name="TTreeNode.ReadDelphiData.Info"/>
-
+<element name="TTreeNode.ReadDelphiNodeData"/>
+<element name="TTreeNode.ReadDelphiNodeData.Stream"/>
+<element name="TTreeNode.ReadDelphiNodeData.ASignature"/>
 <element name="TTreeNode.SetCut"/>
 <element name="TTreeNode.SetCut.AValue"/>
 <element name="TTreeNode.SetData"/>
@@ -31831,6 +31882,8 @@ deprecated THandle type.
 <element name="TTreeNodes.ReadData.Stream"/>
 <element name="TTreeNodes.ReadExpandedState"/>
 <element name="TTreeNodes.ReadExpandedState.Stream"/>
+<element name="TTreeNodes.ReadDelphiNodeData"/>
+<element name="TTreeNodes.ReadDelphiNodeData.Stream"/>
 <element name="TTreeNodes.Repaint"/>
 <element name="TTreeNodes.Repaint.ANode"/>
 <element name="TTreeNodes.ShrinkTopLvlItems"/>
