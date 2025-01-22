@@ -249,7 +249,7 @@ const
 
 
 
-
+function G_OBJECT_TYPE_NAME(AWidget: PGObject): string;
 function Gtk3IsObject(AWidget: PGObject): GBoolean;
 function Gtk3IsButton(AWidget: PGObject): GBoolean;
 
@@ -1347,6 +1347,14 @@ begin
     List := List^.Next;
   end;
   g_list_free(TopList);
+end;
+
+function G_OBJECT_TYPE_NAME(AWidget:PGObject):string;
+begin
+  Result := '';
+  if AWidget = nil then
+    exit;
+  Result := g_type_name(PGObject(AWidget)^.g_type_instance.g_class^.g_type);
 end;
 
 
