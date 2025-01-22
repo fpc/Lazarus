@@ -41,13 +41,14 @@ type
   published
     class function CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLHandle; override;
-    class procedure UpdateProperties(const ACustomPage: TCustomPage); override;
-    class procedure SetBounds(const {%H-}AWinControl: TWinControl; const {%H-}ALeft, {%H-}ATop, {%H-}AWidth, {%H-}AHeight: Integer); override;
-    class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
-    class procedure ShowHide(const AWinControl: TWinControl); override;
     class function GetDefaultClientRect(const AWinControl: TWinControl;
-             const {%H-}aLeft, {%H-}aTop, {%H-}aWidth, {%H-}aHeight: integer; var aClientRect: TRect
-             ): boolean; override;
+            const aLeft, aTop, aWidth, aHeight: integer; var aClientRect: TRect
+            ): boolean; override;
+    class procedure SetBounds(const AWinControl:TWinControl; const ALeft,ATop,AWidth,AHeight:
+      Integer); override;
+    class procedure SetFont(const AWinControl:TWinControl; const AFont:TFont); override;
+    class procedure ShowHide(const AWinControl: TWinControl); override;
+    class procedure UpdateProperties(const ACustomPage: TCustomPage); override;
   end;
 
   { TGtk3WSCustomTabControl }
@@ -56,11 +57,9 @@ type
   published
     class function CreateHandle(const AWinControl: TWinControl;
                                 const AParams: TCreateParams): TLCLHandle; override;
-    (*
     class function GetDefaultClientRect(const AWinControl: TWinControl;
-            const {%H-}aLeft, {%H-}aTop, aWidth, aHeight: integer; var aClientRect: TRect
+            const aLeft, aTop, aWidth, aHeight: integer; var aClientRect: TRect
             ): boolean; override;
-    *)
     class procedure AddPage(const ATabControl: TCustomTabControl;
       const AChild: TCustomPage; const AIndex: integer); override;
     class procedure MovePage(const ATabControl: TCustomTabControl;
@@ -1068,15 +1067,110 @@ begin
     Result := TLCLHandle(TGtk3NoteBook.Create(AWinControl, AParams));
 end;
 
-(*
-class function TGtk3WSCustomTabControl.GetDefaultClientRect(
-  const AWinControl: TWinControl; const aLeft, aTop, aWidth, aHeight: integer;
-  var aClientRect: TRect): boolean;
+{used when handle of TCustomTabControl isn't allocated or TGt3Widget(Handle).WidgetMapped = false}
+function MeasureClientRect(const {%H-}AWinControl: TWinControl; const {%H-}ALeft, {%H-}ATop, AWidth, AHeight: integer): TRect;
+var
+  ANoteBook: PGtkNoteBook;
+  APage:PGtkBox;
+  AFixed:PGtkFixed;
+  Alloc:TGtkAllocation;
+  abox:PGtkBox;
+  AWindow:PGtkWindow;
 begin
-  Result:=inherited GetDefaultClientRect(AWinControl, aLeft, aTop, aWidth,
-    aHeight, aClientRect);
+  Result := Rect(0, 0, 0, 0);
+  AWindow := TGtkWindow.new(GTK_WINDOW_TOPLEVEL);
+
+  gtk_window_set_decorated(awindow, False);
+  gtk_widget_set_app_paintable(awindow, gtk_true);
+  gtk_widget_set_size_request(awindow, 1, 1);
+  gtk_window_set_default_size(aWindow, AWidth, AHeight);
+  gtk_window_set_focus_on_map(aWindow, false);
+  gtk_window_set_position(AWindow, GTK_WIN_POS_NONE);
+  gtk_window_set_keep_below(AWindow, True);
+
+  abox := gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+  gtk_container_add(aWindow, abox);
+
+
+  ANoteBook := TGtkNoteBook.new;
+  APage := TGtkHBox.new(GTK_ORIENTATION_HORIZONTAL, 0);
+  AFixed := TGtkFixed.new;
+
+  APage^.pack_start(AFixed, True, True, 0);
+  APage^.set_child_packing(AFixed, True, True, 0, GTK_PACK_START);
+  Alloc.x := 1;
+  Alloc.y := 1;
+  Alloc.width := 300;
+  Alloc.Height := 200;
+  ANoteBook^.append_page(APage, gtk_label_new('Tab1'));
+  ANoteBook^.set_current_page(0);
+
+  gtk_box_pack_start(abox, ANoteBook, True, True, 0);
+  aBox^.set_child_packing(aNoteBook, True, True, 0, GTK_PACK_START);
+
+  ANoteBook^.show_all;
+  ANoteBook^.set_allocation(@Alloc);
+  ANoteBook^.set_show_tabs(True);
+  AWindow^.realize;
+  AWindow^.show_all;
+  APage^.get_allocation(@Alloc);
+  Result := Bounds(0, 0, Alloc.Width, Alloc.Height);
+  AWindow^.set_visible(false);
+  AWindow^.destroy_;
+
 end;
-*)
+
+{used when handle of TCustomTabControl isn't allocated or TGt3Widget(Handle).WidgetMapped = false}
+function GetTabSize(AWinControl: TCustomTabControl): integer;
+var
+  ABounds:TRect;
+begin
+  ABounds := AWinControl.BoundsRect;
+  if AWinControl.TabPosition in [tpTop, tpBottom] then
+  begin
+    with ABounds do
+      Result := Bottom - Top - MeasureClientRect(AWinControl, Left, Top, Right - Left, Bottom - Top).Height;
+  end else
+  begin
+    with ABounds do
+      Result := Right - Left - MeasureClientRect(AWinControl, Left, Top, Right - Left, Bottom - Top).Width;
+  end;
+end;
+
+class function TGtk3WSCustomTabControl.GetDefaultClientRect(const AWinControl:
+  TWinControl;const aLeft,aTop,aWidth,aHeight:integer;var aClientRect:TRect):
+  boolean;
+var
+  dx:Integer;
+begin
+  Result := False;
+  if AWinControl.HandleAllocated then
+  begin
+    if not (AWinControl is TTabControl) then
+    begin
+      if not TGtk3NoteBook(AWinControl.Handle).WidgetMapped then
+      begin
+        aClientRect := MeasureClientRect(AWinControl, ALeft, ATop, AWidth, AHeight);
+        if IsRectEmpty(aClientRect) then
+        begin
+          TGtk3NoteBook(AWinControl.Handle).DefaultClientRect := Rect(0, 0, 0, 0);
+          exit(False);
+        end;
+        TGtk3NoteBook(AWinControl.Handle).DefaultClientRect := aClientRect;
+        Result := True;
+      end;
+    end;
+  end else
+  begin
+    if AWinControl is TTabControl then
+    begin
+      dx := GetTabSize(TTabControl(AWinControl));
+      aClientRect := Rect(0,0, Max(0, aWidth - (dx * 2)), Max(0, aHeight - (dx * 2)));
+    end else
+      aClientRect := MeasureClientRect(AWinControl, ALeft, ATop, AWidth, AHeight);
+    Result := True;
+  end;
+end;
 
 class procedure TGtk3WSCustomTabControl.AddPage(
   const ATabControl: TCustomTabControl; const AChild: TCustomPage;
@@ -1125,8 +1219,12 @@ end;
 class function TGtk3WSCustomTabControl.GetNotebookMinTabHeight(
   const AWinControl: TWinControl): integer;
 begin
-  Result := inherited GetNotebookMinTabHeight(AWinControl);
-  // inherited GetNotebookMinTabHeight(AWinControl);
+  Result := TWSCustomTabControl.GetNotebookMinTabHeight(AWinControl);
+  if AWinControl.HandleAllocated then
+  begin
+    if not (AWinControl is TTabControl) then
+      Result := TGtk3Notebook(AWinControl.Handle).GetTabSize(AWinControl);
+  end;
 end;
 
 class function TGtk3WSCustomTabControl.GetNotebookMinTabWidth(
@@ -1292,48 +1390,47 @@ begin
   Result := TLCLHandle(TGtk3Page.Create(AWinControl, AParams));
 end;
 
+class function TGtk3WSCustomPage.GetDefaultClientRect(const AWinControl:
+  TWinControl;const aLeft,aTop,aWidth,aHeight:integer;var aClientRect:TRect):
+  boolean;
+begin
+  Result := False;
+  if AWinControl.Parent = nil then
+    exit;
+  if AWinControl.HandleAllocated and AWinControl.Parent.HandleAllocated and
+    TGtk3Widget(AWinControl.Parent.Handle).WidgetMapped and TGtk3Widget(AWinControl.Handle).WidgetMapped then
+    exit
+  else
+  begin
+    aClientRect := AWinControl.Parent.ClientRect;
+  end;
+end;
+
+class procedure TGtk3WSCustomPage.SetBounds(const AWinControl:TWinControl;const
+  ALeft,ATop,AWidth,AHeight:Integer);
+begin
+  //do nothing !
+  //inherited SetBounds(AWinControl,ALeft,ATop,AWidth,AHeight);
+end;
+
+class procedure TGtk3WSCustomPage.SetFont(const AWinControl:TWinControl;const
+  AFont:TFont);
+begin
+  //do nothing !
+  //inherited SetFont(AWinControl,AFont);
+end;
+
+class procedure TGtk3WSCustomPage.ShowHide(const AWinControl:TWinControl);
+begin
+  //do nothing !
+  //inherited ShowHide(AWinControl);
+end;
+
 class procedure TGtk3WSCustomPage.UpdateProperties(
   const ACustomPage: TCustomPage);
 begin
   // inherited UpdateProperties(ACustomPage);
   DebugLn('TGtk3WSCustomPage.UpdateProperties missing implementation ');
-end;
-
-class procedure TGtk3WSCustomPage.SetBounds(const AWinControl: TWinControl;
-  const ALeft, ATop, AWidth, AHeight: Integer);
-begin
-  // ignore lcl bounds
-  // inherited SetBounds(AWinControl, ALeft, ATop, AWidth, AHeight);
-end;
-
-class procedure TGtk3WSCustomPage.SetFont(const AWinControl: TWinControl;
-  const AFont: TFont);
-begin
-  inherited SetFont(AWinControl, AFont);
-end;
-
-class procedure TGtk3WSCustomPage.ShowHide(const AWinControl: TWinControl);
-begin
-  // DebugLn('TGtk3WSCustomPage.ShowHide ',AWinControl.Caption);
-  inherited ShowHide(AWinControl);
-end;
-
-class function TGtk3WSCustomPage.GetDefaultClientRect(
-  const AWinControl: TWinControl; const aLeft, aTop, aWidth, aHeight: integer;
-  var aClientRect: TRect): boolean;
-begin
-  Result:=false;
-  if AWinControl.Parent = nil then exit;
-  if AWinControl.HandleAllocated and AWinControl.Parent.HandleAllocated and
-    (TGtk3Widget(AWinControl.Handle).Widget^.parent <> nil) then
-  begin
-
-  end else
-  begin
-    Result := True;
-    aClientRect := AWinControl.Parent.ClientRect;
-    // DebugLn(['TGtk3WSCustomPage.GetDefaultClientRect ',DbgSName(AWinControl),' Parent=',DbgSName(AWinControl.Parent),' ParentBounds=',dbgs(AWinControl.Parent.BoundsRect),' ParentClient=',dbgs(AWinControl.Parent.ClientRect)]);
-  end;
 end;
 
 end.

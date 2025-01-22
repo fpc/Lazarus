@@ -131,7 +131,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="4" Minor="99"/>
-    <Files Count="554">
+    <Files Count="555">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -2730,6 +2730,10 @@ end;"/>
         <Filename Value="gtk3/gtk3lclframe.inc"/>
         <Type Value="Include"/>
       </Item554>
+      <Item555>
+        <Filename Value="gtk3/gtk3lclnotebook.inc"/>
+        <Type Value="Include"/>
+      </Item555>
     </Files>
     <CompatibilityMode Value="True"/>
     <LazDoc Paths="../../docs/xml/lcl"/>

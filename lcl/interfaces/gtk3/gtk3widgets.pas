@@ -416,10 +416,13 @@ type
   { TGtk3NoteBook }
 
   TGtk3NoteBook = class (TGtk3Container)
+  private
+    FDefaultClientRect:TRect;
   protected
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
   public
     procedure InitializeWidget; override;
+    function GetTabSize(AWinControl: TWinControl): integer; {returns size of tab. Height if orientation is top/bottom, width if orientation is left/right}
     function getClientRect: TRect; override;
     function getPagesCount: integer;
     procedure InsertPage(ACustomPage: TCustomPage; AIndex: Integer);
@@ -429,7 +432,8 @@ type
     procedure SetShowTabs(const AShowTabs: Boolean);
     procedure SetTabPosition(const ATabPosition: TTabPosition);
     procedure SetTabLabelText(AChild: TCustomPage; const AText: String);
-    function  GetTabLabelText(AChild: TCustomPage): String;
+    function GetTabLabelText(AChild: TCustomPage): String;
+    property DefaultClientRect: TRect read FDefaultClientRect write FDefaultClientRect; //measured in gtk3wscomctrls.getDefaultClientRect
   end;
 
   { TGtk3Bin }
@@ -1065,6 +1069,7 @@ end;
 {$i gtk3lclbutton.inc}
 {$i gtk3lclspinbutton.inc}
 {$i gtk3lclframe.inc}
+{$i gtk3lclnotebook.inc}
 
 class function TGtk3Widget.WidgetEvent(widget: PGtkWidget; event: PGdkEvent; data: GPointer): gboolean; cdecl;
 begin
@@ -1535,9 +1540,7 @@ begin
 
   if ((NewSize.cx <> ACtl.LCLObject.Width) or (NewSize.cy <> ACtl.LCLObject.Height) or
      ACtl.LCLObject.ClientRectNeedsInterfaceUpdate) then
-  begin
     ACtl.LCLObject.DoAdjustClientRectChange;
-  end;
 
   FillChar(Msg{%H-}, SizeOf(Msg), #0);
 
@@ -2640,22 +2643,24 @@ end;
 
 function TGtk3Widget.GetWidget:PGtkWidget;
 begin
-  if not Assigned(fWidget) then
-    Self.InitializeWidget;
-  Result:=fWidget;
+  Result := FWidget;
 end;
 
 procedure TGtk3Widget.DestroyWidget;
+var
+  ATemp: PGtkWidget;
 begin
   if IsValidHandle then
     GTK3WidgetSet.DestroyCaret(HWND(Self));
   if IsValidHandle and FOwnWidget then
   begin
-    fOwnWidget:=false;
+    FOwnWidget:=false;
     {$IFDEF GTK3DEBUGCORE}
     DbgOut(#10'destroying '+Classname+' ... ');
     {$ENDIF}
-    FWidget^.destroy_;
+    ATemp := FWidget;
+    FWidget := nil;
+    ATemp^.destroy_;
     {$IFDEF GTK3DEBUGCORE}
     DbgOut(Classname+' destroyed.'+#10);
     {$ENDIF}
@@ -3026,7 +3031,6 @@ begin
   if (Widget=nil) then
     exit;
 
-  //debugln(['TGtk3Widget.SetBounds ',DbgSName(LCLObject),' ',ALeft,',',ATop,',',AWidth,'x',AHeight]);
   LCLWidth := AWidth;
   LCLHeight := AHeight;
   ARect.x := ALeft;
@@ -3243,8 +3247,8 @@ begin
     else
       AWidget := getContainerWidget;
     {$IFDEF GTK3DEBUGPREFERREDSIZE}
-    AWidget^.get_size_request(@AMinW, @AMinH);
-    DebugLn('>',dbgsName(LCLObject),'.preferredSize W=',dbgs(PreferredWidth),' H=',dbgs(PreferredHeight),' WithThemeSpace ',dbgs(WithThemeSpace),' AMinW=',dbgs(AMinW),' AMinH=',dbgs(AMinH));
+     AWidget^.get_size_request(@AMinW, @AMinH);
+     DebugLn('>',dbgsName(LCLObject),'.preferredSize W=',dbgs(PreferredWidth),' H=',dbgs(PreferredHeight),' WithThemeSpace ',dbgs(WithThemeSpace),' AMinW=',dbgs(AMinW),' AMinH=',dbgs(AMinH));
     {$ENDIF}
     AWidget^.get_preferred_height(@AMinH, @PreferredHeight);
     AWidget^.get_preferred_width(@AMinW, @PreferredWidth);
@@ -4913,13 +4917,22 @@ begin
   Result := Point(Result.x + R.Left, Result.y + R.Top);
 end;
 
-
 function TGtk3Page.getClientRect: TRect;
 var
   AParent: PGtkWidget;
   AParentObject: TGtk3Widget;
 begin
-  if not getContainerWidget^.get_realized then
+  Result := Rect(0, 0, 0, 0);
+  if Assigned(LCLObject.Parent) and (LCLObject.Parent.HandleAllocated) then
+  begin
+    if not WidgetMapped then
+    begin
+      Result :=  TGtk3Widget(LCLObject.Parent.Handle).getClientRect;
+      exit;
+    end;
+  end;
+
+  if not WidgetMapped then
   begin
     AParent := Widget^.get_parent;
     AParentObject := TGtk3Widget(HwndFromGtkWidget(AParent));
@@ -4992,7 +5005,9 @@ begin
     APageNum := {%H-}PtrInt(g_object_get_data(AWidget,'switch-page-signal-stopped'));
     ACurrentPage := AWidget^.get_current_page;
     g_object_set_data(AWidget,'switch-page-signal-stopped', nil);
+    {$IFDEF GTK3DEBUGNOTEBOOK}
     DebugLn('BackNoteBookSignal back notebook switch-page signal currpage=',dbgs(AWidget^.get_current_page),' blockedPage ',dbgs(APageNum));
+    {$ENDIF}
     if ACurrentPage<0 then ;
     // must hook into notebook^.priv to unlock APageNum
     // AWidget^.set_current_page(AWidget^.get_current_page);
@@ -5014,8 +5029,9 @@ var
 begin
   if TGtk3Widget(Data).InUpdate then
     exit;
-
+  {$IFDEF GTK3DEBUGNOTEBOOK}
   DebugLn('GtkNotebookSwitchPage Data ',dbgHex({%H-}PtrUInt(Data)),' Realized ',dbgs(Widget^.get_realized),' pageNum=',dbgs(pageNum));
+  {$ENDIF}
 
   {page is deleted}
  { c1:=TGtk3NoteBook(Data).getPagesCount;
@@ -5053,20 +5069,29 @@ begin
   if ANoteBook=nil then ;
   if p1 then ;
   if Data=nil then ;
+  {$IFDEF GTK3DEBUGNOTEBOOK}
   DebugLn('GtkNotebookSelectPage ');
+  {$ENDIF}
   Result:=true;
 end;
 
 function TGtk3NoteBook.CreateWidget(const Params: TCreateParams): PGtkWidget;
+var
+  Alloc:TGtkAllocation;
 begin
   FWidgetType := FWidgetType + [wtNotebook];
   Result := TGtkEventBox.new;
   PGtkEventBox(Result)^.set_has_window(True);
-  FCentralWidget := TGtkNotebook.new;
+  FCentralWidget := LCLGtkNotebookNew; // TGtkNotebook.new; //LCLGtkNotebookNew;
   PGtkEventBox(Result)^.add(FCentralWidget);
   PGtkNoteBook(FCentralWidget)^.set_scrollable(True);
   if (nboHidePageListPopup in TCustomTabControl(LCLObject).Options) then
     PGtkNoteBook(FCentralWidget)^.popup_disable;
+
+  Alloc.x := Params.X;
+  Alloc.y := Params.Y;
+  Alloc.Width := Params.Width;
+  Alloc.Height := Params.Height;
 
   g_signal_connect_data(FCentralWidget,'switch-page', TGCallback(@GtkNotebookSwitchPage), Self, nil, G_CONNECT_DEFAULT);
   // this one triggers after above switch-page
@@ -5076,12 +5101,35 @@ begin
   // g_signal_connect_data(FCentralWidget,'change-current-page', TGCallback(@GtkNotebookAfterSwitchPage), Self, nil, 0);
   // g_signal_connect_data(FCentralWidget,'select-page', TGCallback(@GtkNotebookSelectPage), Self, nil, 0);
   FCentralWidget^.show_all;
+  FCentralWidget^.size_allocate(@Alloc);
 end;
 
 procedure TGtk3NoteBook.InitializeWidget;
 begin
+  FDefaultClientRect := Rect(0, 0, 0, 0);
   inherited;
   SetTabPosition(TCustomTabControl(LCLObject).TabPosition);
+end;
+
+function TGtk3NoteBook.GetTabSize(AWinControl:TWinControl):integer;
+var
+  AWidget: PGtkWidget;
+  Alloc:TGtkAllocation;
+  APage:PGtkWidget;
+  APageAlloc:TGtkAllocation;
+  R:TRect;
+begin
+  Result := 0;
+  if not WidgetMapped then
+    Result := DefaultClientRect.Height
+  else
+  begin
+    R := getClientRect;
+    if PGtkNotebook(GetContainerWidget)^.tab_pos in [GTK_POS_TOP, GTK_POS_BOTTOM] then
+      Result := GetContainerWidget^.get_allocated_height - R.Height
+    else
+      Result := GetContainerWidget^.get_allocated_width - R.Width;
+  end;
 end;
 
 function TGtk3NoteBook.getClientRect: TRect;
@@ -5089,8 +5137,17 @@ var
   AAlloc: TGtkAllocation;
   ACurrentPage: gint;
   APage: PGtkWidget;
+  ATabSheet:HWND;
 begin
   Result := Rect(0, 0, 0, 0);
+  ACurrentPage := -1;
+  if not WidgetMapped then
+  begin
+    if not IsRectEmpty(FDefaultClientRect) then
+      Result := DefaultClientRect
+    else
+      exit;
+  end else
   if PGtkNoteBook(GetContainerWidget)^.get_n_pages = 0 then
   begin
     GetContainerWidget^.get_allocation(@AAlloc);
@@ -5102,7 +5159,8 @@ begin
     if (ACurrentPage >= 0) then
     begin
       APage := PGtkNoteBook(GetContainerWidget)^.get_nth_page(ACurrentPage);
-      if APage^.get_realized then
+      ATabSheet := HwndFromGtkWidget(APage);
+      if (ATabSheet <> 0) and TGtk3Widget(ATabSheet).WidgetMapped then
         APage^.get_allocation(@AAlloc)
       else
         GetContainerWidget^.get_allocation(@AAlloc);
@@ -5110,7 +5168,7 @@ begin
       Types.OffsetRect(Result, -Result.Left, -Result.Top);
     end;
   end;
-  // DebugLn('TGtk3NoteBook.getClientRect Result ',dbgs(Result));
+  // DebugLn('<TGtk3NoteBook.getClientRect Style Result ',dbgs(Result),' ACurrentPage=',ACurrentPage.ToString);
 end;
 
 function TGtk3NoteBook.getPagesCount: integer;
@@ -5120,6 +5178,7 @@ begin
     Result := PGtkNoteBook(GetContainerWidget)^.get_n_pages;
 end;
 
+//debugging
 procedure EnumerateChildren(ANotebook: PGtkNoteBook);
 var
   AList: PGList;

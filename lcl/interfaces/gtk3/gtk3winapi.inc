@@ -1915,7 +1915,7 @@ begin
   if Handle = 0 then
     Exit(False);
   ARect := TGtk3Widget(handle).getClientRect;
-  Result := True;
+  Result := TGtk3Widget(Handle).WidgetMapped;
 end;
 
 function TGtk3WidgetSet.GetClipBox(DC: hDC; lpRect: PRect): Longint;
