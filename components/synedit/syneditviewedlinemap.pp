@@ -861,7 +861,9 @@ end;
 procedure TSynLineMapAVLTree.RemoveNode(ANode: TSynEditLineMapPage);
 begin
   if (FInvalidEntryList <> nil) and
-     ( (ANode.FPrevPageWithInvalid <> nil) or (ANode.FNextPageWithInvalid <> nil))
+     ( (ANode.FPrevPageWithInvalid <> nil) or (ANode.FNextPageWithInvalid <> nil) or
+       (FInvalidEntryList.FFirstEntry = ANode)
+     )
   then
     FInvalidEntryList.RemoveFromInvalidList(ANode, rfiForce);
   inherited RemoveNode(ANode);
