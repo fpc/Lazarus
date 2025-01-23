@@ -2940,7 +2940,11 @@ begin
   AScreen := QGuiApplication_primaryScreen();
   if hMonitor = 0 then
   begin
+    {$IFDEF DARWIN}
+    dpiX := 96;
+    {$ELSE}
     dpiX := Round(QScreen_logicalDotsPerInch(AScreen));
+    {$ENDIF}
     dpiY := dpiX;
     exit(S_OK);
   end;
@@ -2950,7 +2954,11 @@ begin
     if I = hMonitor then
     begin
       AScreen := QScreenH(AArray[i]);
+      {$IFDEF DARWIN}
+      dpiX := 96;
+      {$ELSE}
       dpiX := Round(QScreen_logicalDotsPerInch(AScreen));
+      {$ENDIF}
       dpiY := dpiX;
       exit(S_OK);
     end;
