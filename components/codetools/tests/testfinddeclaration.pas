@@ -1424,7 +1424,7 @@ begin
     Add([
     'uses unit2;',
     'type',
-    '  PBird = ^TBird;',
+    '  PBird = ^TBird{declaration:test1.tbird};',
     '  [attr]',
     '  TBird = record',
     '    Speed: word;',

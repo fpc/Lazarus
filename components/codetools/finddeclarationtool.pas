@@ -9574,6 +9574,22 @@ var
     Result:=FlagCanBeForwardDefined;
   end;
 
+  function FindPointedTypeBehind(PointerTypeNode: TCodeTreeNode): TCodeTreeNode;
+  var
+    IdentNode, Node: TCodeTreeNode;
+  begin
+    IdentNode:=PointerTypeNode.FirstChild;
+    Node:=PointerTypeNode.Parent.NextBrother;
+    while Node<>nil do begin
+      if (Node.Desc=ctnTypeDefinition)
+          and CompareSrcIdentifiers(Node.StartPos, IdentNode.StartPos)
+      then
+        exit(Node);
+      Node:=Node.NextBrother; // all remaing types of current type section
+    end;
+    Result:=nil;
+  end;
+
   procedure ResolveTypeLessProperty;
   begin
     if ExprType.Desc<>xtContext then exit;
@@ -9930,7 +9946,7 @@ var
     if Find(Identifier) then exit(true);
     Params.Load(OldInput,false);
   end;
-  
+
   procedure ResolveIdentifier;
   var
     ProcNode: TCodeTreeNode;
@@ -10086,6 +10102,16 @@ var
               exit;
             end;
           end;
+        end;
+      end else if (StartNode.Parent<>nil)
+          and (StartNode.Parent.Desc=ctnPointerType) and (NextAtomType<>vatPoint) then
+      begin
+        Node:=FindPointedTypeBehind(StartNode.Parent);
+        if Node<>nil then begin
+          ExprType.Context.Tool:=Self;
+          ExprType.Context.Node:=Node;
+          ExprType.Desc:=xtContext;
+          exit;
         end;
       end;
     end;
@@ -10455,25 +10481,9 @@ var
     ExprType.Context.Tool:=Self;
     ExprType.Context.Node:=StartNode;
   end;
-  
+
   procedure ResolveUp;
-  var NodeBehind: TCodeTreeNode;
-
-    function HasPointedTypeBehind: TCodeTreeNode;
-    var Node, pNode: TCodeTreeNode;
-    begin
-      Result:=nil;
-      pNode:=ExprType.Context.Node;//ctnPointerType
-      Node:=pNode.Parent.NextBrother;
-      while Node<>nil do begin
-        if (Node.Desc=ctnTypeDefinition)
-            and CompareSrcIdentifiers(Node.StartPos, pNode.FirstChild{Identifier}.StartPos)
-        then
-          exit(Node);
-        Node:=Node.NextBrother; // all remaing types of current type section
-      end;
-    end;
-
+  var NodeBehind, PointerTypeNode: TCodeTreeNode;
   begin
     // for example:
     //   1. 'PInt = ^integer'  pointer type
@@ -10505,14 +10515,15 @@ var
         ReadNextAtom;
         RaisePointNotFound(20191003163249);
       end;
-      if (ExprType.Context.Node=nil)
-      or (ExprType.Context.Node.Desc<>ctnPointerType) then begin
+      PointerTypeNode:=ExprType.Context.Node;
+      if (PointerTypeNode=nil)
+      or (PointerTypeNode.Desc<>ctnPointerType) then begin
         MoveCursorToCleanPos(CurAtom.StartPos);
         RaiseExceptionFmt(20170421200550,ctsIllegalQualifier,['^']);
       end;
       ExprType.Desc:=xtContext;
       //first try if this node has a pointed type behind
-      NodeBehind:=HasPointedTypeBehind;
+      NodeBehind:=FindPointedTypeBehind(PointerTypeNode);
       if NodeBehind=nil then
         ExprType.Context.Node:=ExprType.Context.Node.FirstChild
       else

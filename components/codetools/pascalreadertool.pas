@@ -271,10 +271,10 @@ type
     function GetFirstGroupVarNode(VarNode: TCodeTreeNode): TCodeTreeNode;
     function NodeIsIdentifierInInterface(Node: TCodeTreeNode): boolean;
     function NodeCanHaveForwardType(TypeNode: TCodeTreeNode): boolean;
-    function NodeIsForwardType(TypeNode: TCodeTreeNode): boolean;
+    function NodeIsForwardType(TypeNode: TCodeTreeNode): boolean; // forward class/interface/object, not pointer
     function FindForwardTypeNode(TypeNode: TCodeTreeNode;
-                                 SearchFirst: boolean): TCodeTreeNode;
-    function FindTypeOfForwardNode(TypeNode: TCodeTreeNode): TCodeTreeNode;
+                                 SearchFirst: boolean): TCodeTreeNode; // find for a type the forward type node
+    function FindTypeOfForwardNode(TypeNode: TCodeTreeNode): TCodeTreeNode; // find the forward type for a type node
     function FindEndOfWithExpr(WithVarNode: TCodeTreeNode): integer;
     function ExtractWithBlockExpression(WithVarNode: TCodeTreeNode; Attr: TProcHeadAttributes = []): string;
     function FindWithBlockStatement(WithVarNode: TCodeTreeNode): TCodeTreeNode;
