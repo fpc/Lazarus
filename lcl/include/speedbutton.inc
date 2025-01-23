@@ -352,7 +352,7 @@ begin
         FState := UpState[FMouseInControl];
     end
     else
-    if (FState in [bsHot, bsDown]) and (not FMouseInControl) and (not FDragging) and (not FDown) then
+    if (FState in [bsHot,bsDown]) and not (FMouseInControl or FDragging or FDown) then
     begin
       // return to normal
       FState := bsUp;
@@ -361,7 +361,7 @@ begin
     if (FState = bsUp) and FMouseInControl then
       FState := bsHot;
   end;
-  if FState <> OldState then
+  if (FState <> OldState) and (FState in [bsUp,bsDown]) and (OldState in [bsUp,bsDown]) then
     if (Action is TCustomAction) then
       TCustomAction(Action).Checked := FState = bsDown;
   //if InvalidateOnChange then DebugLn(['TCustomSpeedButton.UpdateState ',DbgSName(Self),' InvalidateOnChange=',InvalidateOnChange,' StateChange=',FState<>OldState]);
