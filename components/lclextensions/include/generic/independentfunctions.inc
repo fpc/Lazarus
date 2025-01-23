@@ -18,7 +18,7 @@ begin
     PPoint(@lpPoints)[i].x := XOffset + PPoint(@lpPoints)[i].x;
     PPoint(@lpPoints)[i].y := YOffset + PPoint(@lpPoints)[i].y;
   end;
-  Result := MakeLong(XOffset, YOffset);
+  Result := Integer(MakeLong(Word(XOffset), Word(YOffset)));
 end;
 
 {$ifndef HAS_GETDOUBLECLICKTIME}
