@@ -839,8 +839,12 @@ type
     procedure SetSkipTaskBarHint(AValue: Boolean);
     procedure SetTitle(const AValue: String);
   strict private
+    class function WindowMapEvent(awidget:PGtkWindow;AEvent: PGdkEventAny; adata: gpointer): gboolean; cdecl; static; //uses lcl-window-first-map data.
+    class procedure WindowSizeAllocate(AWidget: PGtkWidget; AGdkRect: PGdkRectangle; Data: gpointer); cdecl; static;
     class function WindowStateSignal(AWidget: PGtkWidget; AEvent: PGdkEvent; AData: gPointer): gboolean; cdecl; static;
   protected
+    FFirstMapRect: TRect;
+    procedure ConnectSizeAllocateSignal(ToWidget: PGtkWidget); override;
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
     function EatArrowKeys(const {%H-}AKey: Word): Boolean; override;
     function getText: String; override;
@@ -1300,12 +1304,7 @@ begin
     end;
   GDK_MAP:
     begin
-      //issue #41343
-      if [wtWindow, wtHintWindow] * TGtk3Widget(Data).WidgetType <> [] then
-      begin
-        TGtk3Window(Data).WidgetMapped := True;
-        // DebugLn('****** GDK_MAP FOR ',dbgsName(TGtk3Widget(Data).LCLObject));
-      end;
+      //DebugLn('****** GDK_MAP FOR ',dbgsName(TGtk3Widget(Data).LCLObject));
     end;
   GDK_UNMAP:
     begin
@@ -8430,6 +8429,127 @@ begin
   // DeliverMessage(Msg);
 end;
 
+class procedure TGtk3Window.WindowSizeAllocate(AWidget:PGtkWidget;AGdkRect:
+  PGdkRectangle;Data:gpointer);cdecl;
+var
+  Msg: TLMSize;
+  NewSize: TSize;
+  ACtl: TGtk3Widget;
+  AState: TGdkWindowState;
+  Alloc: TGtkAllocation;
+  ADefW, ADefH: gint;
+begin
+  if AWidget=nil then ;
+
+  ACtl := TGtk3Widget(Data);
+
+  //When gtk3 form is shown for the first time under some window manager there's
+  //geometry out of sync. We fix it via map-event and WidgetMapped property.
+  if g_object_get_data(aWidget,'lcl-window-first-map') <> nil then
+  begin
+    g_object_set_data(aWidget,'lcl-window-first-map', nil);
+    if not IsRectEmpty(TGtk3Window(ACtl).FFirstMapRect) then
+    begin
+      with TGtk3Window(ACtl) do
+        Types.OffsetRect(FFirstMapRect, -FFirstMapRect.Left, -FFirstMapRect.Top);
+      AGdkRect^ := GdkRectFromRect(TGtk3Window(ACtl).FFirstMapRect);
+      TGtk3Window(ACtl).FFirstMapRect := Rect(0, 0, 0, 0);
+    end;
+  end;
+
+  {$IFDEF GTK3DEBUGFORMS}
+  if Assigned(ACtl.LCLObject) then
+  begin
+    with ACtl.LCLObject do
+    begin
+      writeln(Format('TGtk3Window.WindowSizeAllocate %s Gdk x %d y %d w %d h %d  LCL l %d t %d w %d h %d applied w %d h %d cliRect %s WMap %s',[dbgsName(ACtl.LCLObject), AGdkRect^.x, AGdkRect^.y, AGdkRect^.width, AGdkRect^.height, Left, Top, Width, Height, ACtl.LCLWidth, ACtl.LCLHeight, dbgs(ACtl.LCLObject.ClientRect), BoolToStr(ACtl.WidgetMapped, True)]));
+    end;
+    if (AGdkRect^.x = 0) and (AGdkRect^.y = 0) and (AGdkRect^.width = 200) and (AGdkRect^.height = 200) and ACtl.WidgetMapped then
+    begin
+      // this is wrong size. This one is sent by kwin.
+      writeln('***** Dump size values  for ',G_OBJECT_TYPE_NAME(AWidget));
+      with PGtkWindow(AWidget)^ do
+      begin
+        get_allocation(@Alloc);
+        get_size(@NewSize.cx, @NewSize.cy);
+        get_default_size(@ADefW, @ADefH);
+      end;
+      with Alloc do
+        writeln(Format('WSA Alloc x %d y %d w %d h %d NS w %d h %d DEF w %d h %d', [x, y, width, height, NewSize.cx, NewSize.cy, ADefW, ADefH]));
+
+    end;
+  end;
+  {$ENDIF}
+
+  NewSize.cx := AGdkRect^.width;
+  NewSize.cy := AGdkRect^.height;
+
+  //writeln(format('Gkt3SizeAllocate w=%d h=%d',[NewSize.cx,NewSize.cy]));
+
+  if not Assigned(ACtl.LCLObject) then exit;
+
+  // do not loop with LCL  !
+  if not (csDesigning in ACtl.LCLObject.ComponentState) and ACtl.InUpdate then
+    exit;
+
+  if ((NewSize.cx <> ACtl.LCLObject.Width) or (NewSize.cy <> ACtl.LCLObject.Height) or
+     ACtl.LCLObject.ClientRectNeedsInterfaceUpdate) then
+       ACtl.LCLObject.DoAdjustClientRectChange;
+
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
+
+  Msg.Msg := LM_SIZE;
+  Msg.SizeType := SIZE_RESTORED;
+
+  if ACtl is TGtk3Window then
+  begin
+    AState := TGtk3Window(ACtl).getWindowState;
+    if GDK_WINDOW_STATE_ICONIFIED in AState  then
+      Msg.SizeType := SIZE_MINIMIZED
+    else
+    if GDK_WINDOW_STATE_MAXIMIZED in AState  then
+      Msg.SizeType := SIZE_MAXIMIZED
+    else
+    if GDK_WINDOW_STATE_FULLSCREEN in AState  then
+      Msg.SizeType := SIZE_FULLSCREEN;
+  end;
+
+  Msg.SizeType := Msg.SizeType or Size_SourceIsInterface;
+
+  Msg.Width := Word(NewSize.cx);
+  Msg.Height := Word(NewSize.cy);
+  ACtl.DeliverMessage(Msg);
+end;
+
+class function TGtk3Window.WindowMapEvent(awidget: PGtkWindow; AEvent: PGdkEventAny; adata: gpointer): gboolean; cdecl;
+var
+  wx:gint;
+  wy:gint;
+  w:gint;
+  h:gint;
+  Alloc:TGtkAllocation;
+begin
+  gtk_window_get_position(aWidget, @wx, @wy);
+  gtk_window_get_size(aWidget, @w, @h);
+  gtk_widget_get_allocation(aWidget, @Alloc);
+  //under some window managers there's discrepancy gdk window have it's default gtk size, not lcl one
+  //so sends 2 size-allocate events. I've introduced "lcl-window-first-map" gobject data to control
+  //if we are out of sync. Alloc contains correct data.
+  if not TGtk3Widget(AData).WidgetMapped and ((Alloc.width <> w) or (Alloc.height <> h) or (wx <> Alloc.x) or (wy <> Alloc.y)) then
+  begin
+    g_object_set_data(aWidget,'lcl-window-first-map', aData);
+    TGtk3Window(aData).FFirstMapRect := RectFromGdkRect(Alloc);
+  end;
+  TGtk3Widget(AData).WidgetMapped := True;
+  Result := gtk_false;
+end;
+
+procedure TGtk3Window.ConnectSizeAllocateSignal(ToWidget:PGtkWidget);
+begin
+  g_signal_connect_data(ToWidget,'size-allocate',TGCallback(@WindowSizeAllocate), Self, nil, G_CONNECT_DEFAULT);
+  g_signal_connect_data(ToWidget,'map-event',TGCallback(@WindowMapEvent), Self, nil, G_CONNECT_DEFAULT);
+end;
+
 class function TGtk3Window.decoration_flags(Aform: TCustomForm): TGdkWMDecoration;
 var
   icns:TBorderIcons;
@@ -8507,6 +8627,7 @@ begin
   FIcon := nil;
   FScrollX := 0;
   FScrollY := 0;
+  FFirstMapRect := Rect(0, 0, 0, 0);
 
   FHasPaint := True;
   FMenuBar := nil;
@@ -8646,16 +8767,41 @@ var
   x: gint;
   y: gint;
   AViewPort: PGtkViewport;
+  MenuSize:Integer;
 begin
   AViewPort := PGtkViewPort(FCentralWidget^.get_parent);
-  if Gtk3IsViewPort(AViewPort) and Gtk3IsGdkWindow(AViewPort^.get_view_window) then
+  if WidgetMapped and Gtk3IsViewPort(AViewPort) and Gtk3IsGdkWindow(AViewPort^.get_view_window) then
   begin
     AViewPort^.get_view_window^.get_geometry(@x, @y, @w, @h);
     Result := Rect(0, 0, AViewPort^.get_view_window^.get_width, AViewPort^.get_view_window^.get_height);
     // DebugLn('GetClientRect via Viewport ',dbgsName(LCLObject),' Result ',dbgs(Result));
     exit;
   end else
-    FCentralWidget^.get_allocation(@Allocation);
+  begin
+    if not FCentralWidget^.get_realized and not FCentralWidget^.get_mapped then
+    begin
+      // calculate our own client rect somehow.
+      if (LCLObject is TCustomForm) then
+      begin
+        MenuSize := 0;
+        if (TCustomForm(LCLObject).Menu <> nil) or (FMenuBar <> nil) then
+          MenuSize := GetSystemMetrics(SM_CYMENU)
+        else
+          MenuSize := 0;
+        Allocation.x := LCLObject.Left;
+        Allocation.y := LCLObject.Top;
+        Allocation.width := LCLObject.Width; // border
+        Allocation.Height := LCLObject.Height - MenuSize;
+      end else
+      begin
+        Allocation.X := -1;
+        Allocation.Y := -1;
+        Allocation.Width := 1;
+        Allocation.Height := 1;
+      end;
+    end else
+      FCentralWidget^.get_allocation(@Allocation);
+  end;
 
   with Allocation do
     R := Rect(x, y, width + x, height + y);
@@ -8665,8 +8811,9 @@ begin
 
   Result := R;
   Types.OffsetRect(Result, -Result.Left, -Result.Top);
-
-  // DebugLn('GetClientRect ',dbgsName(LCLObject),' Result ',dbgs(Result));
+  {$IFDEF GTK3DEBUGFORMS}
+  DebugLn('TGtk3Window.GetClientRect ',dbgsName(LCLObject),' Result ',dbgs(Result),' CentralWidget mapped ? ',dbgs(FCentralWidget^.get_mapped),' Realized ? ',dbgs(FCentralWidget^.get_realized));
+  {$ENDIF}
 end;
 
 procedure TGtk3Window.SetBounds(ALeft,ATop,AWidth,AHeight:integer);
@@ -8677,6 +8824,7 @@ var
   AFixedWidthHeight: Boolean;
   AForm: TCustomForm;
   AMinSize, ANaturalSize: gint;
+  Alloc:TGtkAllocation;
 begin
   AForm := TCustomForm(LCLObject);
   BeginUpdate;
@@ -8688,6 +8836,11 @@ begin
     {fixes gtk3 assertion}
     Widget^.get_preferred_width(@AMinSize, @ANaturalSize);
     Widget^.get_preferred_height(@AMinSize, @ANaturalSize);
+    Widget^.get_allocation(@Alloc);
+    {$IFDEF GTK3DEBUGFORMS}
+    with Alloc do
+      DebugLn(Format('TGtk3Window.setBounds(%d, %d, %d, %d) Natural w=%d h=%d alloc x %d y %d w %d h %d',[ALeft, ATop ,AWidth, AHeight, ANaturalSize, ANaturalSize2, x, y, width, height]));
+    {$ENDIF}
 
     Widget^.size_allocate(@ARect);
     if Gtk3IsGtkWindow(fWidget)
@@ -8740,7 +8893,7 @@ begin
       end;
     end;
 
-    if Gtk3IsGtkWindow(fWidget) then
+    if Gtk3IsGtkWindow(FWidget) then
     begin
       //PGtkWindow(Widget)^.set_default_size(AWidth, AHeight);
       PGtkWindow(Widget)^.set_resizable(true);
@@ -8751,7 +8904,6 @@ begin
     EndUpdate;
   end;
 end;
-
 
 function TGtk3Window.getHorizontalScrollbar: PGtkScrollbar;
 begin
@@ -8779,7 +8931,6 @@ end;
 
 destructor TGtk3Window.Destroy;
 begin
-  // DebugLn('TGtk3Window.Destroy AWidget ',dbgs(IsWidgetOK));
   if Gtk3IsGdkPixbuf(FIcon) then
   begin
     FIcon^.unref;
