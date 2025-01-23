@@ -3328,7 +3328,7 @@ procedure TGtk3Widget.Update(ARect: PRect);
 begin
   if IsWidgetOK then
   begin
-    if ARect <> nil then
+    if (ARect <> nil) and (aRect^.Width > 0) and (ARect^.Height > 0) then
     begin
       with ARect^ do
         FWidget^.queue_draw_area(Left, Top, Right - Left, Bottom - Top);
