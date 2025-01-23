@@ -12,7 +12,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
  **********************************************************************}
-unit janai_v1;
+unit JanAI_V1;
 
 {$mode objfpc}{$H+}
 
@@ -20,9 +20,7 @@ interface
 
 uses SysUtils, Classes, fpJSON;
 
-
 Type
-
 
   { -----------------------------------------------------------------------
     TMessageItem

@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
   // aissist
-  AIClient, StrAIssist, FrmAixplain;
+  AIClient, FrmAixplain, LazLoggerBase;
 
 const
   SDescribeProcPrompt = 'Explain the following function in one sentence:';
@@ -17,7 +17,7 @@ type
   { TAIssistFPDocEditDlg }
 
   TAIssistFPDocEditDlg = class(TAIxplainForm)
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction); override;
     procedure FormCreate(Sender: TObject); override;
     procedure OKButtonClick(Sender: TObject);
   protected
@@ -77,6 +77,7 @@ begin
     Description:=''
   else
     Description:=aResponses[0].Response;
+  DebugLn(['TAIssistFPDocEditDlg.HandleAIResponse Description="',Description,'"']);
 end;
 
 function TAIssistFPDocEditDlg.Describe(aAIClient: TAIClient; const Src: string; out

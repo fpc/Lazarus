@@ -19,11 +19,9 @@ unit JanAIProtocol;
 interface
 
 uses
-  Classes, SysUtils, aiclient, fpjson;
+  Classes, SysUtils, fpjson, AIClient, JanAI_V1;
 
 type
-
-  { TJanAIServer }
 
   { TJanAIServerProtocol }
 
@@ -33,18 +31,15 @@ type
     function ResponseToPromptResponses(aResponse: TJSONData; out Responses: TPromptResponseArray): boolean; override;
     function ResponseToModels(aResponse: TJSONData; out Models: TModelDataArray): boolean; override;
     function GetAIURL(aURL: TAIURL): String; override;
-    class function protocolname : string; override;
+    class function ProtocolName : string; override;
     class function DefaultURL : String; override;
   end;
 
 implementation
 
-uses janai_v1;
-
 { TJanAIServerProtocol }
 
-
-class function TJanAIServerProtocol.protocolname: string;
+class function TJanAIServerProtocol.ProtocolName: string;
 begin
   Result:='JanAI';
 end;
@@ -53,7 +48,6 @@ class function TJanAIServerProtocol.DefaultURL: String;
 begin
   Result:='http://localhost:1337/v1/';
 end;
-
 
 function TJanAIServerProtocol.ResponseToModels(aResponse: TJSONData; out Models: TModelDataArray): boolean;
 

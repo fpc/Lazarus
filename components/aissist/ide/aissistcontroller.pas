@@ -18,8 +18,8 @@ interface
 uses
   Classes, SysUtils, Math, Forms, Dialogs,
   // ide
-  SrcEditorIntf, IDEOptionsIntf, IDEOptEditorIntf, BaseIDEIntf, LazIDEintf, IDEHelpIntf, IDEDialogs,
-  LazConfigStorage, LazLoggerBase, CodeCache, CodeTree, CodeToolManager, PascalParserTool,
+  SrcEditorIntf, IDEOptEditorIntf, BaseIDEIntf, LazIDEintf, IDEHelpIntf, IDEDialogs,
+  LazConfigStorage, LazLoggerBase, CodeTree, CodeToolManager, PascalParserTool,
   PascalReaderTool,
   // aissist
   AIClient, JanAIProtocol,
@@ -206,7 +206,7 @@ begin
   if Node<>nil then
     ProcNode:=Node;
 
-  Src:=Tool.ExtractNode(ProcNode,[]);
+  Src:=copy(Tool.Src,ProcNode.StartPos,ProcNode.EndPos-ProcNode.StartPos);
   debugln(['TAIssistController.FPDocEditorInsertTextClick ProcNode: Start=',Tool.CleanPosToStr(ProcNode.StartPos),' [',NodePathAsString(ProcNode),'] Src={',Src,'}']);
 
   aForm:=TAissistFPDocEditDlg.Create(nil);

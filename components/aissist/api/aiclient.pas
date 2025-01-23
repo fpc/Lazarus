@@ -90,7 +90,7 @@ Type
     function CreatePromptRequest(const aModel,aPrompt : string; aMaxResponseLength : Cardinal) : TJSONData; virtual; abstract;
     // All URLS are relative to the base URL, they MUST NOT start with /
     function GetAIURL(aURL : TAiUrl) : String; virtual; abstract;
-    class function protocolname : string; virtual;
+    class function ProtocolName : string; virtual;
     class function DefaultURL : String; virtual;
     property Client : TCustomAIClient Read FClient;
   end;
@@ -217,7 +217,7 @@ begin
   FClient:=aClient;
 end;
 
-class function TAIProtocol.protocolname: string;
+class function TAIProtocol.ProtocolName: string;
 begin
   Result:=ClassName;
 end;
@@ -487,7 +487,7 @@ begin
   CheckServerURL;
   json:=Nil;
   try
-//    Writeln('Response: ',aResponse.Response.GetContentAsString);
+    //Writeln('Response: ',aResponse.Response.GetContentAsString);
     JSON:=GetJSON(aResponse.Response.GetContentAsString);
     if Protocol.ResponseToPromptResponses(JSON,lResponses) then
       begin
