@@ -157,7 +157,7 @@ type
     procedure TestFindDeclaration_ArrayMultiDimDot;
     procedure TestFindDeclaration_VarArgsOfType;
     procedure TestFindDeclaration_ProcRef;
-    procedure TestFindDeclaration_PointerForwardVsUses; // todo
+    procedure TestFindDeclaration_PointerForwardVsUses;
 
     // ampersands
     procedure TestFindDeclaration_Ampersand;
@@ -1411,8 +1411,6 @@ procedure TTestFindDeclaration.TestFindDeclaration_PointerForwardVsUses;
 var
   Unit2: TCodeBuffer;
 begin
-  exit;
-
   Unit2:=nil;
   try
     Unit2:=CodeToolBoss.CreateFile('unit2.pp');
@@ -1427,6 +1425,7 @@ begin
     'uses unit2;',
     'type',
     '  PBird = ^TBird;',
+    '  [attr]',
     '  TBird = record',
     '    Speed: word;',
     '  end;',

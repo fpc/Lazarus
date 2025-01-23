@@ -10457,6 +10457,23 @@ var
   end;
   
   procedure ResolveUp;
+  var NodeBehind: TCodeTreeNode;
+
+    function HasPointedTypeBehind: TCodeTreeNode;
+    var Node, pNode: TCodeTreeNode;
+    begin
+      Result:=nil;
+      pNode:=ExprType.Context.Node;//ctnPointerType
+      Node:=pNode.Parent.NextBrother;
+      while Node<>nil do begin
+        if (Node.Desc=ctnTypeDefinition)
+            and CompareSrcIdentifiers(Node.StartPos, pNode.FirstChild{Identifier}.StartPos)
+        then
+          exit(Node);
+        Node:=Node.NextBrother; // all remaing types of current type section
+      end;
+    end;
+
   begin
     // for example:
     //   1. 'PInt = ^integer'  pointer type
@@ -10494,13 +10511,19 @@ var
         RaiseExceptionFmt(20170421200550,ctsIllegalQualifier,['^']);
       end;
       ExprType.Desc:=xtContext;
-      ExprType.Context.Node:=ExprType.Context.Node.FirstChild;
+      //first try if this node has a pointed type behind
+      NodeBehind:=HasPointedTypeBehind;
+      if NodeBehind=nil then
+        ExprType.Context.Node:=ExprType.Context.Node.FirstChild
+      else
+        ExprType.Context.Node:=NodeBehind;
     end else if NodeHasParentOfType(ExprType.Context.Node,ctnPointerType) then
     begin
       // this is a pointer type definition
       // -> the default context is ok
     end;
   end;
+
 
   procedure ResolveEdgedBracketOpen;
   { for example:  a[]
