@@ -8173,9 +8173,7 @@ procedure TGtk3CustomControl.InitializeWidget;
 begin
   inherited InitializeWidget;
   if not IsDesigning then
-  begin
     g_signal_connect_data(GetScrolledWindow,'scroll-event', TGCallback(@Gtk3ScrolledWindowScrollEvent), Self, nil, G_CONNECT_DEFAULT);
-  end;
 end;
 
 function TGtk3CustomControl.getViewport:PGtkViewport;
@@ -8198,20 +8196,13 @@ function TGtk3CustomControl.getClientRect: TRect;
 var
   Allocation: TGtkAllocation;
   R: TRect;
-  w: gint;
-  h: gint;
-  x: gint;
-  y: gint;
+  w, h, x, y, VOffset, HOffset: gint;
   AViewPort: PGtkViewport;
-  VOffset, HOffset:gint;
   Bar:PGtkScrollbar;
 begin
-  // Result := inherited getClientRect;
   AViewPort := getViewport;
   if Gtk3IsViewPort(AViewPort) and Gtk3IsGdkWindow(AViewPort^.get_view_window) then
   begin
-    // Result := GetViewportClientAreaWithScrollbars(PGtkScrolledWindow(FWidget));
-
     AViewPort^.get_view_window^.get_geometry(@x, @y, @w, @h);
 
     Bar := getHorizontalScrollbar;
@@ -8225,8 +8216,6 @@ begin
       VOffset := Bar^.get_allocated_width
     else
       VOffset := 0;
-
-    // AViewPort^.get_view_window^.get_frame_extents(@AFrameRect);
 
     Result := Rect(0, 0, AViewPort^.get_view_window^.get_width - VOffset, AViewPort^.get_view_window^.get_height - HOffset);
 
@@ -8307,16 +8296,6 @@ begin
   FHasPaint := True;
   FScrollX := 0;
   FScrollY := 0;
-  // layout is crap under gtk3
-  (*
-  FWidgetType := [wtWidget, wtLayout, wtScrollingWin];
-  Result := PGtkScrolledWindow(TGtkScrolledWindow.new(nil, nil));
-  FCentralWidget := TGtkLayout.new(nil, nil);
-  FCentralWidget^.set_has_window(True);
-  FCentralWidget^.show;
-
-  PGtkScrolledWindow(Result)^.add(FCentralWidget);
-  *)
   FWidgetType := [wtWidget, wtContainer, wtScrollingWin, wtScrollingWinControl];
   Result := PGtkScrolledWindow(TGtkScrolledWindow.new(nil, nil));
   FCentralWidget := TGtkFixed.new;
@@ -8343,9 +8322,6 @@ function TGtk3Window.GetTitle: String;
 begin
   if Gtk3IsGtkWindow(fWidget) then
     Result:=PGtkWindow(fWidget)^.get_title()
-  {else
-  if Gtk3IsWIdget(fWidget) then
-    Result:='widget'}
   else
     Result:=''
 end;
@@ -8397,19 +8373,6 @@ begin
   Result := False;
   FillChar(Msg{%H-}, SizeOf(Msg), #0);
 
-  (*
-  AScreen := AWidget^.window^.get_screen;
-  ActiveWindow := AScreen^.get_active_window;
-  if ActiveWindow <> AWidget^.window then
-    TGtk3Window(AData).ActivateWindow(nil)
-  else
-    TGtk3Window(AData).ActivateWindow(AEvent);
-  *)
-  // window state isn't changed on activate/deactivate, so must provide another solution
-  // DebugLn('Gtk3WindowState ',dbgsName(TGtk3Widget(AData).LCLObject),' changedmask=',dbgs(AEvent^.window_state.changed_mask),
-  // ' newstate ',dbgs(AEvent^.window_state.new_window_state),' currentState ', dbgs(TGtk3Window(AData).GetWindowState),
-  // ' WITHDRAWN ? ',dbgs(TGtk3Window(AData).getWindowState and GDK_WINDOW_STATE_WITHDRAWN));
-
   Msg.Msg := LM_SIZE;
   Msg.SizeType := SIZE_RESTORED;
 
@@ -8433,18 +8396,22 @@ begin
   end else
   if GDK_WINDOW_STATE_FOCUSED in msk then
   begin
+    {$IFDEF GTK3DEBUGWINDOWSTATE}
     if GDK_WINDOW_STATE_FOCUSED in AState then
       DebugLn('Gtk3WindowState: Focused')
     else
       DebugLn('Gtk3WindowState: Defocused');
+    {$ENDIF}
     exit;
   end else
   if GDK_WINDOW_STATE_WITHDRAWN in msk then
   begin
+    {$IFDEF GTK3DEBUGWINDOWSTATE}
     if GDK_WINDOW_STATE_WITHDRAWN in AState then
       DebugLn('Gtk3WindowState: Shown')
     else
       DebugLn('Gtk3WindowState: Hidden');
+    {$ENDIF}
     exit;
   end else
   begin
@@ -8456,7 +8423,9 @@ begin
 
   Msg.Width := Word(AWidget^.window^.get_width);
   Msg.Height := Word(AWidget^.window^.get_height);
+  {$IFDEF GTK3DEBUGWINDOWSTATE}
   DebugLn('GetWindowState SizeType=',dbgs(Msg.SizeType),' realized ',dbgs(AWidget^.get_realized));
+  {$ENDIF}
   TGtk3Window(AData).DeliverMessage(Msg);
   // DeliverMessage(Msg);
 end;
@@ -9136,6 +9105,7 @@ var
   Action: TGtkFileChooserAction;
   Button1: String;
   AFileDialog: PGtkFileChooserDialog;
+  AParams: TCreateParams;
 begin
   inherited Create;
   FOwnWidget := True;
