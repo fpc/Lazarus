@@ -10388,23 +10388,28 @@ var
         ExprType.Context.Node:=ExprType.Context.Tool.GetInterfaceNode;
       end;
     end
-    else if (ExprType.Context.Node.Desc=ctnUseUnitClearName) then begin
+    else if (NewNode.Desc=ctnUseUnitClearName) then begin
       // uses unit name => interface of used unit
       ResolveUseUnit;
     end
-    else if (ExprType.Context.Node.Desc=ctnClassOfType) then begin
+    else if (NewNode.Desc=ctnClassOfType) then begin
       // 'class of' => jump to the class
-      ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,ExprType.Context.Node.FirstChild);
+      ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,NewNode.FirstChild);
     end
     else if (ExprType.Desc=xtContext)
-    and (ExprType.Context.Node.Desc=ctnPointerType)
-    and (ExprType.Context.Node<>StartNode)
+    and (NewNode.Desc=ctnPointerType)
+    and (NewNode<>StartNode)
     and (cmsAutoderef in Scanner.CompilerModeSwitches) then begin
       // Delphi knows . as shortcut for ^.
       // -> check for pointer type
       // left side of expression has defined a special context
       // => this '.' is a dereference
-      ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,ExprType.Context.Node.FirstChild);
+      NewNode:=FindPointedTypeBehind(NewNode);
+      if NewNode<>nil then begin
+        ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,NewNode);
+      end else begin
+        ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,ExprType.Context.Node.FirstChild);
+      end;
     end;
   end;
 
