@@ -9398,10 +9398,14 @@ end;
 procedure TGtk3newColorSelectionDialog.InitializeWidget;
 var
   rgba:TGdkRGBA;
+  dlg:TColorDialog;
 begin
+  dlg:=TColorDialog(CommonDialog);
   fWidget:= TGtkColorChooserDialog.new(PChar(Self.CommonDialog.Title),nil);
-  self.color_to_rgba(TColorDialog(Self.CommonDialog).Color,rgba);
-  PGtkColorChooser(fWidget)^.use_alpha:=false;
+  self.color_to_rgba(dlg.Color,rgba);
+  PGtkColorChooser(fWidget)^.use_alpha:=(cdShowAlphaChannel in dlg.Options);
+  if (cdPreventFullOpen in dlg.Options) then // drop basic palette that way
+    PGtkColorChooser(fWidget)^.add_palette(GTK_ORIENTATION_HORIZONTAL,9,10,nil);
   PGtkColorChooser(fWidget)^.set_rgba(@rgba);
   inherited;
 end;
@@ -9415,6 +9419,8 @@ begin
   begin
     PGtkColorChooser(fWidget)^.get_rgba(@rgba);
     clr:=self.rgba_to_color(rgba);
+    if not PGtkColorChooser(fWidget)^.use_alpha then
+      clr:=clr and $00ffffff;
     TColorDialog(Self.CommonDialog).Color:=clr;
   end;
   Result:=inherited response_handler(resp_id);
