@@ -3312,7 +3312,7 @@ begin
   
   if Result=nil then begin
     // search .ppu
-    NewCompiledUnitname:=AnUnitName+'.ppu';
+    NewCompiledUnitname:=RemoveAmpersands(AnUnitName)+'.ppu';
     CompiledFilename:=DirectoryCache.FindCompiledUnitInCompletePath(
                                                      NewCompiledUnitname,false);
     //debugln(['TFindDeclarationTool.FindUnitSource UnitName=',NewUnitName,' ',NewCompiledUnitname,' CompiledFilename=',CompiledFilename]);
