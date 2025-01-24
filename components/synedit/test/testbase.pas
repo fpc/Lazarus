@@ -658,6 +658,7 @@ end;
 
 procedure TTestBase.SetSynEditWidth(Chars: Integer; PartCharPixel: Integer);
 begin
+  inc(Chars); // wordwrap takes one off again
   FSynEdit.Width := FSynEdit.CharWidth * Chars + PartCharPixel +
     (FSynEdit.Width - (FSynEdit.TextArea.Right - FSynEdit.TextArea.Left));
   AssertEquals('SetSynEditWidth', Chars, SynEdit.CharsInWindow);

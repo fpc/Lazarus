@@ -1559,7 +1559,7 @@ end;
 
 function TLazSynEditLineWrapPlugin.GetWrapColumn: Integer;
 begin
-  Result := TSynEdit(Editor).CharsInWindow;
+  Result := TSynEdit(Editor).CharsInWindow - 1;
 end;
 
 function TLazSynEditLineWrapPlugin.CreatePageMapNode(AMapTree: TSynLineMapAVLTree): TSynEditLineMapPage;
