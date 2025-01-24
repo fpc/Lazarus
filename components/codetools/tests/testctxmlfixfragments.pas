@@ -22,7 +22,7 @@ type
 
   TTestCTXMLFixFragment = class(TTestCase)
   protected
-    function TestFrag(Title, Fragment, FixedFragment: string): boolean;
+    function TestFrag(Title, Fragment, FixedFragment: string; Flags: TFixFPDocFlags = []): boolean;
     function TestAttr(Title, Value, FixedValue: string): boolean;
   published
     procedure TestFixXMLFragmentComment;
@@ -39,14 +39,14 @@ implementation
 
 { TTestCTXMLFixFragment }
 
-function TTestCTXMLFixFragment.TestFrag(Title, Fragment, FixedFragment: string
-  ): boolean;
+function TTestCTXMLFixFragment.TestFrag(Title, Fragment, FixedFragment: string;
+  Flags: TFixFPDocFlags): boolean;
 var
   s: String;
 begin
   Result:=true;
   s:=Fragment;
-  FixFPDocFragment(s,true,true,nil,false);
+  FixFPDocFragment(s,true,true,nil,Flags);
   AssertEquals(Title+' fragment: '+DbgStr(Fragment),dbgstr(FixedFragment),dbgstr(s));
 end;
 
@@ -101,6 +101,7 @@ begin
   TestFrag('close open tag','<a>','<a/>');
   TestFrag('close open sub tag','<p><a></p>','<p><a/></p>');
   TestFrag('disable invalid close tag','</p>','&lt;/p&gt;');
+  TestFrag('remove invalid close tag','bla</s>','bla',[fffRemoveWrongCloseTags]);
 end;
 
 procedure TTestCTXMLFixFragment.TestFixXMLFragmentBugReports;

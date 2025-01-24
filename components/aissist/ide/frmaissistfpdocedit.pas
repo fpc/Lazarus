@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
   // aissist
-  AIClient, FrmAixplain, LazLoggerBase;
+  AIClient, FrmAixplain, StrAIssist, LazLoggerBase, CTXMLFixFragment;
 
 const
   SDescribeProcPrompt = 'Explain the following function in one sentence:';
@@ -71,12 +71,33 @@ begin
 end;
 
 procedure TAIssistFPDocEditDlg.HandleAIResponse(Sender: TObject; aResponses: TPromptResponseArray);
+
+var
+  S : TStrings;
+
 begin
-  inherited HandleAIResponse(Sender, aResponses);
+  FBusy:=False;
+  ActivateResponse;
   if Length(AResponses)=0 then
-    Description:=''
+    begin
+    Description:='';
+    mExplain.Lines.Add(SNoExplanation);
+    end
   else
+    begin
     Description:=aResponses[0].Response;
+
+    FixFPDocFragment(Description,true,true,nil,[fffRemoveWrongCloseTags]);
+
+    mExplain.Lines.Add(SAIExplanation);
+    S:=TStringList.Create;
+    try
+      S.Text:=Description;
+      mExplain.Lines.AddStrings(S);
+    finally
+      S.Free;
+    end;
+    end;
   DebugLn(['TAIssistFPDocEditDlg.HandleAIResponse Description="',Description,'"']);
 end;
 

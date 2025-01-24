@@ -1042,6 +1042,7 @@ begin
     Btn.Caption:=LazarusHelp.FPDocEditorTextBtnHandlers[i].Caption;
     Btn.Hint:=LazarusHelp.FPDocEditorTextBtnHandlers[i].Hint;
     Btn.ShowHint:=Btn.Hint>'';
+    Btn.Enabled:=HasEdit;
   end;
   for i:=length(FCustomSpeedButtons)-1 downto Cnt do
     FCustomSpeedButtons[i].Free;
@@ -1648,6 +1649,7 @@ begin
   OnExec(Params);
   if not Params.Success then exit;
 
+  // insert text
   case Params.Part of
     fpdepShortDesc:
       begin

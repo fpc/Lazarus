@@ -34,18 +34,29 @@ uses
   Classes, SysUtils, FileProcs, contnrs, BasicCodeTools;
 
 type
+  TFixFPDocFlag = (
+    fffVerbose, // write debugln to stdout
+    fffRemoveWrongCloseTags // remove all close tags which were not open, default: convert to text
+    );
+  TFixFPDocFlags = set of TFixFPDocFlag;
   PObjectList = ^TObjectList;
 
 procedure FixFPDocFragment(var Fragment: string;
   AllowTags,    // for attribute values set this to false, so that all < are converted
   Fix: boolean; // fix errors using heuristics creating valid xml
   ErrorList: PObjectList = nil;
-  Verbose: boolean = false // write debugln to stdout
-  );
+  Flags: TFixFPDocFlags = []);
 procedure FixFPDocAttributeValue(var Value: string);
 
 implementation
 
+const
+  LowerAlpha = ['a'..'z'];
+  UpperAlpha = ['A'..'Z'];
+  Alpha = LowerAlpha+UpperAlpha;
+  Digit = ['0'..'9'];
+  InvalidChars = [#0..#8,#11,#12,#14..#31,#127];
+  Space = [' ',#9,#10,#13];
 
 type
   TFPDocFragmentError = class
@@ -54,9 +65,9 @@ type
     Msg: string;
   end;
 
-procedure FixFPDocFragment(var Fragment: string; AllowTags, Fix: boolean;
-  ErrorList: PObjectList; Verbose: boolean);
-{ - Fix all tags to lowercase to reduce svn commits
+procedure FixFPDocFragment(var Fragment: string; AllowTags, Fix: boolean; ErrorList: PObjectList;
+  Flags: TFixFPDocFlags);
+{ - Fix all tags to lowercase to reduce git commits
   - auto close comments
   - remove #0 from comments
   - convert special characters to &x;
@@ -102,7 +113,7 @@ var
     NewError: TFPDocFragmentError;
     LineStart,LineEnd: integer;
   begin
-    if Verbose then begin
+    if fffVerbose in Flags then begin
       debugln(['Error at ',LineCol(Rel(ErrorPos)),': ',ErrorMsg]);
       GetLineStartEndAtPosition(Fragment,Rel(ErrorPos),LineStart,LineEnd);
       debugln(['  Line: ',copy(Fragment,LineStart,Rel(ErrorPos)-LineStart),'|',
@@ -201,7 +212,7 @@ var
     inc(p,4);
     // parse comment
     repeat
-      if p^ in [#0..#8,#11,#12,#14..#31,#127] then begin
+      if p^ in InvalidChars then begin
         // invalid character in comment => delete
         if (p^=#0) and (p-PChar(Fragment)=length(Fragment)) then
         begin
@@ -246,7 +257,7 @@ var
         // decimal number
         inc(p);
         i:=ord(p^)-ord('0');
-        while p^ in ['0'..'9'] do
+        while p^ in Digit do
         begin
           i:=i+10+ord(p^)-ord('0');
           if i>$10FFFF then
@@ -265,8 +276,8 @@ var
         // name
         inc(p);
         NeedLowercase:=nil;
-        while p^ in ['a'..'z','A'..'Z'] do begin
-          if (NeedLowercase=nil) and (p^ in ['A'..'Z']) then
+        while p^ in Alpha do begin
+          if (NeedLowercase=nil) and (p^ in UpperAlpha) then
             NeedLowercase:=p;
           inc(p);
         end;
@@ -323,7 +334,7 @@ var
   begin
     // read attribute name
     LowerCaseName;
-    while p^ in [' ',#9,#10,#13] do inc(p); // skip space
+    while p^ in Space do inc(p); // skip space
     if p^<>'=' then begin
       // missing value
       Error(p,'expected =');
@@ -333,7 +344,7 @@ var
     if p^='=' then begin
       // read equal
       inc(p);
-      while p^ in [' ',#9,#10,#13] do inc(p); // skip space
+      while p^ in Space do inc(p); // skip space
       if not (p^ in ['"','''']) then begin
         // missing quote
         Error(p,'expected "');
@@ -373,8 +384,9 @@ var
   procedure ParseCloseTag;
   var
     i: LongInt;
+    EndP: PChar;
   begin
-    if (p^<>'<') or (p[1]<>'/') or (not (p[2] in ['a'..'z','A'..'Z'])) then
+    if (p^<>'<') or (p[1]<>'/') or (not (p[2] in Alpha)) then
     begin
       HandleSpecialChar;
       exit;
@@ -387,7 +399,14 @@ var
     if i<0 then begin
       // no corresponding open tag
       Error(p,'tag was never opened');
-      HandleSpecialChar;
+      if fffRemoveWrongCloseTags in Flags then begin
+        EndP:=p+2;
+        while EndP^ in Alpha do inc(EndP);
+        if EndP='>' then
+          inc(EndP);
+        Replace(Rel(p),EndP-p,'');
+      end else
+        HandleSpecialChar;
       exit;
     end;
     TopItem^.CloseStartPos:=Rel(p);
@@ -406,7 +425,7 @@ var
       dec(i);
     end;
     // skip space
-    while (p^ in [' ',#9,#10,#13]) do inc(p);
+    while (p^ in Space) do inc(p);
     if p^='/' then begin
       // uneeded close /
       Error(p,'invalid close /');
@@ -432,7 +451,7 @@ var
     inc(p);
     LowerCaseName;
     repeat
-      while p^ in [' ',#9,#10,#13] do inc(p); // skip space
+      while p^ in Space do inc(p); // skip space
       case p^ of
       'a'..'z','A'..'Z':
         ParseAttribute;
@@ -479,7 +498,7 @@ var
     end else if (p[1]='!') and (p[2]='-') and (p[3]='-') then begin
       // comment
       ParseComment;
-    end else if p[1] in ['a'..'z','A'..'Z'] then begin
+    end else if p[1] in Alpha then begin
       // start tag
       ParseOpenTag;
     end else if p[1]='/' then begin
