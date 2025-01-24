@@ -5060,12 +5060,16 @@ end;
 
 procedure TCustomSynEdit.SynSetText(const Value: string);
 begin
+  IncStatusChangeLock; // can affect width (via gutter) and caret
   FLines.Text := Value;
+  DecStatusChangeLock;
 end;
 
 procedure TCustomSynEdit.RealSetText(const Value: TCaption);
 begin
+  IncStatusChangeLock; // can affect width (via gutter) and caret
   FLines.Text := Value; // Do not trim
+  DecStatusChangeLock;
 end;
 
 function TCustomSynEdit.CurrentMaxTopView: Integer;
