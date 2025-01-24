@@ -1149,9 +1149,13 @@ var
   dummy, NextLineOffs, PrevLineOffs, NextLineDist, PrevLineDist, c: Integer;
   NextPage, PrevPage: TSynEditLineMapPage;
 begin
-  if (FSynWordWrapLineMap.FirstInvalidLine < 0) and
-     (RealCount <= Tree.PageJoinSize)
-  then begin
+  if (FSynWordWrapLineMap.FirstInvalidLine >= 0) then
+    exit;
+  if (RealCount = 0) and (FSize = 0) then begin
+    Tree.FreeNode(Self);
+  end
+  else
+  if (RealCount <= Tree.PageJoinSize) then begin
     NextLineOffs := 0;
     dummy := 0;
     NextPage := Successor(NextLineOffs, dummy);
