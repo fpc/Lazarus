@@ -713,9 +713,7 @@ resourcestring
   lisReplacementFuncs = 'Replacement functions';
   lisFilesHaveRightEncoding = '*** All found files already have the right encoding ***';
   lisEncodingNumberOfFilesFailed = 'Number of files failed to convert: %d';
-
-  //
-  lisnoname = 'noname';
+  lisnoname = 'noname'; // default unit name, must be a valid identifier
   lisTheDestinationDirectoryDoesNotExist = 'The destination directory%s"%s" does not exist.';
   lisRenameFile = 'Rename file?';
   lisThisLooksLikeAPascalFileItIsRecommendedToUseLowerC = 'This looks like a Pascal file.'

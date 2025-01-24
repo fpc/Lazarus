@@ -4930,7 +4930,7 @@ begin
     OldUnitName:='';
   //debugln('ShowSaveFileAsDialog sourceunitname=',OldUnitName);
   if sfskipReferences in Flags then
-    SaveAsFilename:=LowerCase(StringReplace(OldUnitName,'&','',[rfReplaceAll]))
+    SaveAsFilename:=LowerCase(RemoveAmpersands(OldUnitName))
   else
     SaveAsFilename:=OldUnitName;
   if SaveAsFilename='' then
@@ -8221,17 +8221,17 @@ begin
     if Assigned(Project1.MainUnitInfo) then begin
       NewProgramName := Project1.MainUnitInfo.ReadUnitNameFromSource(false);
       ANewPath := ExtractFilePath(Project1.MainUnitInfo.Filename);
-      AFileName := StringReplace(NewProgramName,'&','',[rfReplaceAll]);
+      AFileName := RemoveAmpersands(NewProgramName);
     end;
     if AFilename = '' then begin
       NewProgramName := ExtractFileName(Project1.ProjectInfoFile);
       ANewPath := ExtractFilePath(Project1.ProjectInfoFile);
-      AFilename := StringReplace(NewProgramName,'&','',[rfReplaceAll]);
+      AFilename := RemoveAmpersands(NewProgramName);
     end;
     if AFilename = '' then begin
       NewProgramName := Trim(Project1.GetTitle);
       ANewPath := Project1.Directory;
-      AFilename := StringReplace(NewProgramName,'&','',[rfReplaceAll]);
+      AFilename := RemoveAmpersands(NewProgramName);
     end;
     if AFilename = '' then begin
       NewProgramName := 'Project1';
