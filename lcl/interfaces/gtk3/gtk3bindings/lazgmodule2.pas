@@ -53,7 +53,9 @@ type
     function symbol(symbol_name: Pgchar; symbol: Pgpointer): gboolean; cdecl; inline;
     function build_path(directory: Pgchar; module_name: Pgchar): Pgchar; cdecl; inline; static;
     function error: Pgchar; cdecl; inline; static;
+    {$IFDEF USEGTK3LATESTBINDINGS}
     function error_quark: TGQuark; cdecl; inline; static;
+    {$ENDIF}
     function open(file_name: Pgchar; flags: TGModuleFlags): PGModule; cdecl; inline; static;
     function supported: gboolean; cdecl; inline; static;
   end;
@@ -63,7 +65,9 @@ type
 function g_module_build_path(directory: Pgchar; module_name: Pgchar): Pgchar; cdecl; external LazGModule2_library name 'g_module_build_path';
 function g_module_close(module: PGModule): gboolean; cdecl; external LazGModule2_library name 'g_module_close';
 function g_module_error: Pgchar; cdecl; external LazGModule2_library name 'g_module_error';
+{$IFDEF USEGTK3LATESTBINDINGS}
 function g_module_error_quark: TGQuark; cdecl; external LazGModule2_library name 'g_module_error_quark';
+{$ENDIF}
 function g_module_name(module: PGModule): Pgchar; cdecl; external LazGModule2_library name 'g_module_name';
 function g_module_open(file_name: Pgchar; flags: TGModuleFlags): PGModule; cdecl; external LazGModule2_library name 'g_module_open';
 function g_module_supported: gboolean; cdecl; external LazGModule2_library name 'g_module_supported';
@@ -100,10 +104,12 @@ begin
   Result := LazGModule2.g_module_error();
 end;
 
+{$IFDEF USEGTK3LATESTBINDINGS}
 function TGModule.error_quark: TGQuark; cdecl;
 begin
   Result := LazGModule2.g_module_error_quark();
 end;
+{$ENDIF}
 
 function TGModule.open(file_name: Pgchar; flags: TGModuleFlags): PGModule; cdecl;
 begin

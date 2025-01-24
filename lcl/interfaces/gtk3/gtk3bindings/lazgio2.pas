@@ -3709,7 +3709,9 @@ type
     function close_finish(result_: PGAsyncResult; error: PPGError): gboolean; cdecl; inline;
     function emit_accept_certificate(peer_cert: PGTlsCertificate; errors: TGTlsCertificateFlags): gboolean; cdecl; inline;
     function get_certificate: PGTlsCertificate; cdecl; inline;
+    {$IFDEF USEGTK3LATESTBINDINGS}
     function get_channel_binding_data(type_: TGTlsChannelBindingType; data: Pguint8; error: PPGError): gboolean; cdecl; inline;
+    {$ENDIF}
     function get_database: PGTlsDatabase; cdecl; inline;
     function get_interaction: PGTlsInteraction; cdecl; inline;
     function get_negotiated_protocol: Pgchar; cdecl; inline;
@@ -6713,7 +6715,9 @@ type
     priv1: PGTlsConnectionPrivate;
     function emit_accept_certificate(peer_cert: PGTlsCertificate; errors: TGTlsCertificateFlags): gboolean; cdecl; inline;
     function get_certificate: PGTlsCertificate; cdecl; inline;
+    {$IFDEF USEGTK3LATESTBINDINGS}
     function get_channel_binding_data(type_: TGTlsChannelBindingType; data: Pguint8; error: PPGError): gboolean; cdecl; inline;
+    {$ENDIF}
     function get_database: PGTlsDatabase; cdecl; inline;
     function get_interaction: PGTlsInteraction; cdecl; inline;
     function get_negotiated_protocol: Pgchar; cdecl; inline;
@@ -7086,7 +7090,9 @@ type
     function is_loopback: gboolean; cdecl; inline;
     function is_readonly: gboolean; cdecl; inline;
     function is_user_mountable: gboolean; cdecl; inline;
+    {$IFDEF USEGTK3LATESTBINDINGS}
     function at(mount_path: Pgchar; time_read: Pguint64): PGUnixMountPoint; cdecl; inline; static;
+    {$ENDIF}
   end;
 
 
@@ -7740,7 +7746,9 @@ function g_dtls_connection_close(conn: PGDtlsConnection; cancellable: PGCancella
 function g_dtls_connection_close_finish(conn: PGDtlsConnection; result_: PGAsyncResult; error: PPGError): gboolean; cdecl; external LazGio2_library name 'g_dtls_connection_close_finish';
 function g_dtls_connection_emit_accept_certificate(conn: PGDtlsConnection; peer_cert: PGTlsCertificate; errors: TGTlsCertificateFlags): gboolean; cdecl; external LazGio2_library name 'g_dtls_connection_emit_accept_certificate';
 function g_dtls_connection_get_certificate(conn: PGDtlsConnection): PGTlsCertificate; cdecl; external LazGio2_library name 'g_dtls_connection_get_certificate';
+{$IFDEF USEGTK3LATESTBINDINGS}
 function g_dtls_connection_get_channel_binding_data(conn: PGDtlsConnection; type_: TGTlsChannelBindingType; data: Pguint8; error: PPGError): gboolean; cdecl; external LazGio2_library name 'g_dtls_connection_get_channel_binding_data';
+{$ENDIF}
 function g_dtls_connection_get_database(conn: PGDtlsConnection): PGTlsDatabase; cdecl; external LazGio2_library name 'g_dtls_connection_get_database';
 function g_dtls_connection_get_interaction(conn: PGDtlsConnection): PGTlsInteraction; cdecl; external LazGio2_library name 'g_dtls_connection_get_interaction';
 function g_dtls_connection_get_negotiated_protocol(conn: PGDtlsConnection): Pgchar; cdecl; external LazGio2_library name 'g_dtls_connection_get_negotiated_protocol';
@@ -8530,7 +8538,9 @@ function g_tls_client_connection_get_validation_flags(conn: PGTlsClientConnectio
 function g_tls_client_connection_new(base_io_stream: PGIOStream; server_identity: PGSocketConnectable; error: PPGError): PGTlsClientConnection; cdecl; external LazGio2_library name 'g_tls_client_connection_new';
 function g_tls_connection_emit_accept_certificate(conn: PGTlsConnection; peer_cert: PGTlsCertificate; errors: TGTlsCertificateFlags): gboolean; cdecl; external LazGio2_library name 'g_tls_connection_emit_accept_certificate';
 function g_tls_connection_get_certificate(conn: PGTlsConnection): PGTlsCertificate; cdecl; external LazGio2_library name 'g_tls_connection_get_certificate';
+{$IFDEF USEGTK3LATESTBINDINGS}
 function g_tls_connection_get_channel_binding_data(conn: PGTlsConnection; type_: TGTlsChannelBindingType; data: Pguint8; error: PPGError): gboolean; cdecl; external LazGio2_library name 'g_tls_connection_get_channel_binding_data';
+{$ENDIF}
 function g_tls_connection_get_database(conn: PGTlsConnection): PGTlsDatabase; cdecl; external LazGio2_library name 'g_tls_connection_get_database';
 function g_tls_connection_get_interaction(conn: PGTlsConnection): PGTlsInteraction; cdecl; external LazGio2_library name 'g_tls_connection_get_interaction';
 function g_tls_connection_get_negotiated_protocol(conn: PGTlsConnection): Pgchar; cdecl; external LazGio2_library name 'g_tls_connection_get_negotiated_protocol';
@@ -8620,7 +8630,9 @@ function g_unix_mount_is_readonly(mount_entry: PGUnixMountEntry): gboolean; cdec
 function g_unix_mount_is_system_internal(mount_entry: PGUnixMountEntry): gboolean; cdecl; external LazGio2_library name 'g_unix_mount_is_system_internal';
 function g_unix_mount_monitor_get: PGUnixMountMonitor; cdecl; external LazGio2_library name 'g_unix_mount_monitor_get';
 function g_unix_mount_monitor_get_type: TGType; cdecl; external LazGio2_library name 'g_unix_mount_monitor_get_type';
+{$IFDEF USEGTK3LATESTBINDINGS}
 function g_unix_mount_point_at(mount_path: Pgchar; time_read: Pguint64): PGUnixMountPoint; cdecl; external LazGio2_library name 'g_unix_mount_point_at';
+{$ENDIF}
 function g_unix_mount_point_compare(mount1: PGUnixMountPoint; mount2: PGUnixMountPoint): gint; cdecl; external LazGio2_library name 'g_unix_mount_point_compare';
 function g_unix_mount_point_copy(mount_point: PGUnixMountPoint): PGUnixMountPoint; cdecl; external LazGio2_library name 'g_unix_mount_point_copy';
 function g_unix_mount_point_get_device_path(mount_point: PGUnixMountPoint): Pgchar; cdecl; external LazGio2_library name 'g_unix_mount_point_get_device_path';
@@ -12976,10 +12988,12 @@ begin
   Result := LazGio2.g_dtls_connection_get_certificate(@self);
 end;
 
+{$IFDEF USEGTK3LATESTBINDINGS}
 function TGDtlsConnection.get_channel_binding_data(type_: TGTlsChannelBindingType; data: Pguint8; error: PPGError): gboolean; cdecl;
 begin
   Result := LazGio2.g_dtls_connection_get_channel_binding_data(@self, type_, data, error);
 end;
+{$ENDIF}
 
 function TGDtlsConnection.get_database: PGTlsDatabase; cdecl;
 begin
@@ -16681,10 +16695,12 @@ begin
   Result := LazGio2.g_tls_connection_get_certificate(@self);
 end;
 
+{$IFDEF USEGTK3LATESTBINDINGS}
 function TGTlsConnection.get_channel_binding_data(type_: TGTlsChannelBindingType; data: Pguint8; error: PPGError): gboolean; cdecl;
 begin
   Result := LazGio2.g_tls_connection_get_channel_binding_data(@self, type_, data, error);
 end;
+{$ENDIF}
 
 function TGTlsConnection.get_database: PGTlsDatabase; cdecl;
 begin
@@ -16996,10 +17012,12 @@ begin
   Result := LazGio2.g_unix_mount_point_is_user_mountable(@self);
 end;
 
+{$IFDEF USEGTK3LATESTBINDINGS}
 function TGUnixMountPoint.at(mount_path: Pgchar; time_read: Pguint64): PGUnixMountPoint; cdecl;
 begin
   Result := LazGio2.g_unix_mount_point_at(mount_path, time_read);
 end;
+{$ENDIF}
 
 function TGUnixOutputStream.new(fd: gint; close_fd: gboolean): PGUnixOutputStream; cdecl;
 begin

@@ -10813,7 +10813,7 @@ type
   PGtkPlugAccessiblePrivate = ^TGtkPlugAccessiblePrivate;
   TGtkPlugAccessible = object(TGtkWindowAccessible)
     priv4: PGtkPlugAccessiblePrivate;
-    function get_id: Pgchar; cdecl; inline;
+    {$IFDEF USEGTK3LATESTBINDINGS}function get_id: Pgchar; cdecl; inline;{$ENDIF}
   end;
 
   TGtkPlugAccessiblePrivate = record
@@ -12533,7 +12533,9 @@ type
   PGtkSocketAccessiblePrivate = ^TGtkSocketAccessiblePrivate;
   TGtkSocketAccessible = object(TGtkContainerAccessible)
     priv3: PGtkSocketAccessiblePrivate;
+    {$IFDEF USEGTK3LATESTBINDINGS}
     procedure embed(path: Pgchar); cdecl; inline;
+    {$ENDIF}
   end;
 
   TGtkSocketAccessiblePrivate = record
@@ -16253,7 +16255,9 @@ function gtk_places_sidebar_get_show_trash(sidebar: PGtkPlacesSidebar): gboolean
 function gtk_places_sidebar_get_type: TGType; cdecl; external LazGtk3_library name 'gtk_places_sidebar_get_type';
 function gtk_places_sidebar_list_shortcuts(sidebar: PGtkPlacesSidebar): PGSList; cdecl; external LazGtk3_library name 'gtk_places_sidebar_list_shortcuts';
 function gtk_places_sidebar_new: PGtkPlacesSidebar; cdecl; external LazGtk3_library name 'gtk_places_sidebar_new';
+{$IFDEF USEGTK3LATESTBINDINGS}
 function gtk_plug_accessible_get_id(plug: PGtkPlugAccessible): Pgchar; cdecl; external LazGtk3_library name 'gtk_plug_accessible_get_id';
+{$ENDIF}
 function gtk_plug_accessible_get_type: TGType; cdecl; external LazGtk3_library name 'gtk_plug_accessible_get_type';
 function gtk_plug_get_embedded(plug: PGtkPlug): gboolean; cdecl; external LazGtk3_library name 'gtk_plug_get_embedded';
 function gtk_plug_get_id(plug: PGtkPlug): TWindow; cdecl; external LazGtk3_library name 'gtk_plug_get_id';
@@ -18269,7 +18273,9 @@ procedure gtk_show_about_dialog(parent: PGtkWindow; first_property_name: Pgchar;
 procedure gtk_size_group_add_widget(size_group: PGtkSizeGroup; widget: PGtkWidget); cdecl; external LazGtk3_library name 'gtk_size_group_add_widget';
 procedure gtk_size_group_remove_widget(size_group: PGtkSizeGroup; widget: PGtkWidget); cdecl; external LazGtk3_library name 'gtk_size_group_remove_widget';
 procedure gtk_size_group_set_mode(size_group: PGtkSizeGroup; mode: TGtkSizeGroupMode); cdecl; external LazGtk3_library name 'gtk_size_group_set_mode';
+{$IFDEF USEGTK3LATESTBINDINGS}
 procedure gtk_socket_accessible_embed(socket: PGtkSocketAccessible; path: Pgchar); cdecl; external LazGtk3_library name 'gtk_socket_accessible_embed';
+{$ENDIF}
 procedure gtk_socket_add_id(socket_: PGtkSocket; window: TWindow); cdecl; external LazGtk3_library name 'gtk_socket_add_id';
 procedure gtk_spin_button_configure(spin_button: PGtkSpinButton; adjustment: PGtkAdjustment; climb_rate: gdouble; digits: guint); cdecl; external LazGtk3_library name 'gtk_spin_button_configure';
 procedure gtk_spin_button_get_increments(spin_button: PGtkSpinButton; step: Pgdouble; page: Pgdouble); cdecl; external LazGtk3_library name 'gtk_spin_button_get_increments';
@@ -30342,10 +30348,12 @@ begin
   Result := LazGtk3.gtk_plug_get_socket_window(@self);
 end;
 
+{$IFDEF USEGTK3LATESTBINDINGS}
 function TGtkPlugAccessible.get_id: Pgchar; cdecl;
 begin
   Result := LazGtk3.gtk_plug_accessible_get_id(@self);
 end;
+{$ENDIF}
 
 function TGtkPopoverMenu.new: PGtkPopoverMenu; cdecl;
 begin
@@ -31987,10 +31995,12 @@ begin
   Result := LazGtk3.gtk_socket_get_plug_window(@self);
 end;
 
+{$IFDEF USEGTK3LATESTBINDINGS}
 procedure TGtkSocketAccessible.embed(path: Pgchar); cdecl;
 begin
   LazGtk3.gtk_socket_accessible_embed(@self, path);
 end;
+{$ENDIF}
 
 function TGtkSpinButton.new(adjustment: PGtkAdjustment; climb_rate: gdouble; digits: guint): PGtkSpinButton; cdecl;
 begin

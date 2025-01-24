@@ -1724,23 +1724,29 @@ type
     procedure add_application(uri: Pgchar; name: Pgchar; exec: Pgchar); cdecl; inline;
     procedure add_group(uri: Pgchar; group: Pgchar); cdecl; inline;
     procedure free; cdecl; inline;
+    {$IFDEF USEGTK3LATESTBINDINGS}
     function get_added(uri: Pgchar; error: PPGError): glong; cdecl; inline; deprecated 'Use g_bookmark_file_get_added_date_time() instead, as    `time_t` is deprecated due to the year 2038 problem.';
     function get_added_date_time(uri: Pgchar; error: PPGError): PGDateTime; cdecl; inline;
     function get_app_info(uri: Pgchar; name: Pgchar; exec: PPgchar; count: Pguint; stamp: Pglong; error: PPGError): gboolean; cdecl; inline; deprecated 'Use g_bookmark_file_get_application_info() instead, as    `time_t` is deprecated due to the year 2038 problem.';
     function get_application_info(uri: Pgchar; name: Pgchar; exec: PPgchar; count: Pguint; stamp: PPGDateTime; error: PPGError): gboolean; cdecl; inline;
+    {$ENDIF}
     function get_applications(uri: Pgchar; length: Pgsize; error: PPGError): PPgchar; cdecl; inline;
     function get_description(uri: Pgchar; error: PPGError): Pgchar; cdecl; inline;
     function get_groups(uri: Pgchar; length: Pgsize; error: PPGError): PPgchar; cdecl; inline;
     function get_icon(uri: Pgchar; href: PPgchar; mime_type: PPgchar; error: PPGError): gboolean; cdecl; inline;
     function get_is_private(uri: Pgchar; error: PPGError): gboolean; cdecl; inline;
     function get_mime_type(uri: Pgchar; error: PPGError): Pgchar; cdecl; inline;
+    {$IFDEF USEGTK3LATESTBINDINGS}
     function get_modified(uri: Pgchar; error: PPGError): glong; cdecl; inline; deprecated 'Use g_bookmark_file_get_modified_date_time() instead, as    `time_t` is deprecated due to the year 2038 problem.';
     function get_modified_date_time(uri: Pgchar; error: PPGError): PGDateTime; cdecl; inline;
+    {$ENDIF}
     function get_size: gint; cdecl; inline;
     function get_title(uri: Pgchar; error: PPGError): Pgchar; cdecl; inline;
     function get_uris(length: Pgsize): PPgchar; cdecl; inline;
     function get_visited(uri: Pgchar; error: PPGError): glong; cdecl; inline; deprecated 'Use g_bookmark_file_get_visited_date_time() instead, as    `time_t` is deprecated due to the year 2038 problem.';
+    {$IFDEF USEGTK3LATESTBINDINGS}
     function get_visited_date_time(uri: Pgchar; error: PPGError): PGDateTime; cdecl; inline;
+    {$ENDIF}
     function has_application(uri: Pgchar; name: Pgchar; error: PPGError): gboolean; cdecl; inline;
     function has_group(uri: Pgchar; group: Pgchar; error: PPGError): gboolean; cdecl; inline;
     function has_item(uri: Pgchar): gboolean; cdecl; inline;
@@ -1751,20 +1757,28 @@ type
     function remove_application(uri: Pgchar; name: Pgchar; error: PPGError): gboolean; cdecl; inline;
     function remove_group(uri: Pgchar; group: Pgchar; error: PPGError): gboolean; cdecl; inline;
     function remove_item(uri: Pgchar; error: PPGError): gboolean; cdecl; inline;
+    {$IFDEF USEGTK3LATESTBINDINGS}
     procedure set_added(uri: Pgchar; added: glong); cdecl; inline; deprecated 'Use g_bookmark_file_set_added_date_time() instead, as    `time_t` is deprecated due to the year 2038 problem.';
     procedure set_added_date_time(uri: Pgchar; added: PGDateTime); cdecl; inline;
+    {$ENDIF}
     function set_app_info(uri: Pgchar; name: Pgchar; exec: Pgchar; count: gint; stamp: glong; error: PPGError): gboolean; cdecl; inline; deprecated 'Use g_bookmark_file_set_application_info() instead, as    `time_t` is deprecated due to the year 2038 problem.';
+    {$IFDEF USEGTK3LATESTBINDINGS}
     function set_application_info(uri: Pgchar; name: Pgchar; exec: Pgchar; count: gint; stamp: PGDateTime; error: PPGError): gboolean; cdecl; inline;
+    {$ENDIF}
     procedure set_description(uri: Pgchar; description: Pgchar); cdecl; inline;
     procedure set_groups(uri: Pgchar; groups: PPgchar; length: gsize); cdecl; inline;
     procedure set_icon(uri: Pgchar; href: Pgchar; mime_type: Pgchar); cdecl; inline;
     procedure set_is_private(uri: Pgchar; is_private: gboolean); cdecl; inline;
     procedure set_mime_type(uri: Pgchar; mime_type: Pgchar); cdecl; inline;
     procedure set_modified(uri: Pgchar; modified: glong); cdecl; inline; deprecated 'Use g_bookmark_file_set_modified_date_time() instead, as    `time_t` is deprecated due to the year 2038 problem.';
+    {$IFDEF USEGTK3LATESTBINDINGS}
     procedure set_modified_date_time(uri: Pgchar; modified: PGDateTime); cdecl; inline;
+    {$ENDIF}
     procedure set_title(uri: Pgchar; title: Pgchar); cdecl; inline;
     procedure set_visited(uri: Pgchar; visited: glong); cdecl; inline; deprecated 'Use g_bookmark_file_set_visited_date_time() instead, as    `time_t` is deprecated due to the year 2038 problem.';
+    {$IFDEF USEGTK3LATESTBINDINGS}
     procedure set_visited_date_time(uri: Pgchar; visited: PGDateTime); cdecl; inline;
+    {$ENDIF}
     function to_data(length: Pgsize; error: PPGError): Pgchar; cdecl; inline;
     function to_file(filename: Pgchar; error: PPGError): gboolean; cdecl; inline;
     function error_quark: TGQuark; cdecl; inline; static;
@@ -3809,6 +3823,7 @@ type
   PPGUriParamsFlags = ^PGUriParamsFlags;
   PGUriParamsFlags = ^TGUriParamsFlags;
   TGUri = object
+    {$IFDEF USEGTK3LATESTBINDINGS}
     function get_auth_params: Pgchar; cdecl; inline;
     function get_flags: TGUriFlags; cdecl; inline;
     function get_fragment: Pgchar; cdecl; inline;
@@ -3829,20 +3844,27 @@ type
     function build_with_user(flags: TGUriFlags; scheme: Pgchar; user: Pgchar; password: Pgchar; auth_params: Pgchar; host: Pgchar; port: gint; path: Pgchar; query: Pgchar; fragment: Pgchar): PGUri; cdecl; inline; static;
     function error_quark: TGQuark; cdecl; inline; static;
     function escape_bytes(unescaped: Pguint8; length: gsize; reserved_chars_allowed: Pgchar): Pgchar; cdecl; inline; static;
+    {$ENDIF}
     function escape_string(unescaped: Pgchar; reserved_chars_allowed: Pgchar; allow_utf8: gboolean): Pgchar; cdecl; inline; static;
+    {$IFDEF USEGTK3LATESTBINDINGS}
     function is_valid(uri_string: Pgchar; flags: TGUriFlags; error: PPGError): gboolean; cdecl; inline; static;
     function join(flags: TGUriFlags; scheme: Pgchar; userinfo: Pgchar; host: Pgchar; port: gint; path: Pgchar; query: Pgchar; fragment: Pgchar): Pgchar; cdecl; inline; static;
     function join_with_user(flags: TGUriFlags; scheme: Pgchar; user: Pgchar; password: Pgchar; auth_params: Pgchar; host: Pgchar; port: gint; path: Pgchar; query: Pgchar; fragment: Pgchar): Pgchar; cdecl; inline; static;
+    {$ENDIF}
     function list_extract_uris(uri_list: Pgchar): PPgchar; cdecl; inline; static;
+    {$IFDEF USEGTK3LATESTBINDINGS}
     function parse(uri_string: Pgchar; flags: TGUriFlags; error: PPGError): PGUri; cdecl; inline; static;
     function parse_params(params: Pgchar; length: gssize; separators: Pgchar; flags: TGUriParamsFlags; error: PPGError): PGHashTable; cdecl; inline; static;
+    {$ENDIF}
     function parse_scheme(uri: Pgchar): Pgchar; cdecl; inline; static;
+    {$IFDEF USEGTK3LATESTBINDINGS}
     function peek_scheme(uri: Pgchar): Pgchar; cdecl; inline; static;
     function resolve_relative(base_uri_string: Pgchar; uri_ref: Pgchar; flags: TGUriFlags; error: PPGError): Pgchar; cdecl; inline; static;
     function split(uri_ref: Pgchar; flags: TGUriFlags; scheme: PPgchar; userinfo: PPgchar; host: PPgchar; port: Pgint; path: PPgchar; query: PPgchar; fragment: PPgchar; error: PPGError): gboolean; cdecl; inline; static;
     function split_network(uri_string: Pgchar; flags: TGUriFlags; scheme: PPgchar; host: PPgchar; port: Pgint; error: PPGError): gboolean; cdecl; inline; static;
     function split_with_user(uri_ref: Pgchar; flags: TGUriFlags; scheme: PPgchar; user: PPgchar; password: PPgchar; auth_params: PPgchar; host: PPgchar; port: Pgint; path: PPgchar; query: PPgchar; fragment: PPgchar; error: PPGError): gboolean; cdecl; inline; static;
     function unescape_bytes(escaped_string: Pgchar; length: gssize; illegal_characters: Pgchar; error: PPGError): PGBytes; cdecl; inline; static;
+    {$ENDIF}
     function unescape_segment(escaped_string: Pgchar; escaped_string_end: Pgchar; illegal_characters: Pgchar): Pgchar; cdecl; inline; static;
     function unescape_string(escaped_string: Pgchar; illegal_characters: Pgchar): Pgchar; cdecl; inline; static;
   end;
@@ -3861,8 +3883,10 @@ type
     dummy1: gpointer;
     dummy2: gpointer;
     dummy3: array [0..255] of guint8;
+    {$IFDEF USEGTK3LATESTBINDINGS}
     procedure init(params: Pgchar; length: gssize; separators: Pgchar; flags: TGUriParamsFlags); cdecl; inline;
     function next(attribute: PPgchar; value: PPgchar; error: PPGError): gboolean; cdecl; inline;
+    {$ENDIF}
   end;
 
 
@@ -4185,23 +4209,29 @@ function g_bit_nth_msf(mask: gulong; nth_bit: gint): gint; cdecl; external LazGL
 function g_bit_storage(number: gulong): guint; cdecl; external LazGLib2_library name 'g_bit_storage';
 function g_bit_trylock(address: Pgint; lock_bit: gint): gboolean; cdecl; external LazGLib2_library name 'g_bit_trylock';
 function g_bookmark_file_error_quark: TGQuark; cdecl; external LazGLib2_library name 'g_bookmark_file_error_quark';
+{$IFDEF USEGTK3LATESTBINDINGS}
 function g_bookmark_file_get_added(bookmark: PGBookmarkFile; uri: Pgchar; error: PPGError): glong; cdecl; external LazGLib2_library name 'g_bookmark_file_get_added'; deprecated 'Use g_bookmark_file_get_added_date_time() instead, as    `time_t` is deprecated due to the year 2038 problem.';
 function g_bookmark_file_get_added_date_time(bookmark: PGBookmarkFile; uri: Pgchar; error: PPGError): PGDateTime; cdecl; external LazGLib2_library name 'g_bookmark_file_get_added_date_time';
 function g_bookmark_file_get_app_info(bookmark: PGBookmarkFile; uri: Pgchar; name: Pgchar; exec: PPgchar; count: Pguint; stamp: Pglong; error: PPGError): gboolean; cdecl; external LazGLib2_library name 'g_bookmark_file_get_app_info'; deprecated 'Use g_bookmark_file_get_application_info() instead, as    `time_t` is deprecated due to the year 2038 problem.';
 function g_bookmark_file_get_application_info(bookmark: PGBookmarkFile; uri: Pgchar; name: Pgchar; exec: PPgchar; count: Pguint; stamp: PPGDateTime; error: PPGError): gboolean; cdecl; external LazGLib2_library name 'g_bookmark_file_get_application_info';
+{$ENDIF}
 function g_bookmark_file_get_applications(bookmark: PGBookmarkFile; uri: Pgchar; length: Pgsize; error: PPGError): PPgchar; cdecl; external LazGLib2_library name 'g_bookmark_file_get_applications';
 function g_bookmark_file_get_description(bookmark: PGBookmarkFile; uri: Pgchar; error: PPGError): Pgchar; cdecl; external LazGLib2_library name 'g_bookmark_file_get_description';
 function g_bookmark_file_get_groups(bookmark: PGBookmarkFile; uri: Pgchar; length: Pgsize; error: PPGError): PPgchar; cdecl; external LazGLib2_library name 'g_bookmark_file_get_groups';
 function g_bookmark_file_get_icon(bookmark: PGBookmarkFile; uri: Pgchar; href: PPgchar; mime_type: PPgchar; error: PPGError): gboolean; cdecl; external LazGLib2_library name 'g_bookmark_file_get_icon';
 function g_bookmark_file_get_is_private(bookmark: PGBookmarkFile; uri: Pgchar; error: PPGError): gboolean; cdecl; external LazGLib2_library name 'g_bookmark_file_get_is_private';
 function g_bookmark_file_get_mime_type(bookmark: PGBookmarkFile; uri: Pgchar; error: PPGError): Pgchar; cdecl; external LazGLib2_library name 'g_bookmark_file_get_mime_type';
+{$IFDEF USEGTK3LATESTBINDINGS}
 function g_bookmark_file_get_modified(bookmark: PGBookmarkFile; uri: Pgchar; error: PPGError): glong; cdecl; external LazGLib2_library name 'g_bookmark_file_get_modified'; deprecated 'Use g_bookmark_file_get_modified_date_time() instead, as    `time_t` is deprecated due to the year 2038 problem.';
 function g_bookmark_file_get_modified_date_time(bookmark: PGBookmarkFile; uri: Pgchar; error: PPGError): PGDateTime; cdecl; external LazGLib2_library name 'g_bookmark_file_get_modified_date_time';
+{$ENDIF}
 function g_bookmark_file_get_size(bookmark: PGBookmarkFile): gint; cdecl; external LazGLib2_library name 'g_bookmark_file_get_size';
 function g_bookmark_file_get_title(bookmark: PGBookmarkFile; uri: Pgchar; error: PPGError): Pgchar; cdecl; external LazGLib2_library name 'g_bookmark_file_get_title';
 function g_bookmark_file_get_uris(bookmark: PGBookmarkFile; length: Pgsize): PPgchar; cdecl; external LazGLib2_library name 'g_bookmark_file_get_uris';
 function g_bookmark_file_get_visited(bookmark: PGBookmarkFile; uri: Pgchar; error: PPGError): glong; cdecl; external LazGLib2_library name 'g_bookmark_file_get_visited'; deprecated 'Use g_bookmark_file_get_visited_date_time() instead, as    `time_t` is deprecated due to the year 2038 problem.';
+{$IFDEF USEGTK3LATESTBINDINGS}
 function g_bookmark_file_get_visited_date_time(bookmark: PGBookmarkFile; uri: Pgchar; error: PPGError): PGDateTime; cdecl; external LazGLib2_library name 'g_bookmark_file_get_visited_date_time';
+{$ENDIF}
 function g_bookmark_file_has_application(bookmark: PGBookmarkFile; uri: Pgchar; name: Pgchar; error: PPGError): gboolean; cdecl; external LazGLib2_library name 'g_bookmark_file_has_application';
 function g_bookmark_file_has_group(bookmark: PGBookmarkFile; uri: Pgchar; group: Pgchar; error: PPGError): gboolean; cdecl; external LazGLib2_library name 'g_bookmark_file_has_group';
 function g_bookmark_file_has_item(bookmark: PGBookmarkFile; uri: Pgchar): gboolean; cdecl; external LazGLib2_library name 'g_bookmark_file_has_item';
@@ -4214,7 +4244,9 @@ function g_bookmark_file_remove_application(bookmark: PGBookmarkFile; uri: Pgcha
 function g_bookmark_file_remove_group(bookmark: PGBookmarkFile; uri: Pgchar; group: Pgchar; error: PPGError): gboolean; cdecl; external LazGLib2_library name 'g_bookmark_file_remove_group';
 function g_bookmark_file_remove_item(bookmark: PGBookmarkFile; uri: Pgchar; error: PPGError): gboolean; cdecl; external LazGLib2_library name 'g_bookmark_file_remove_item';
 function g_bookmark_file_set_app_info(bookmark: PGBookmarkFile; uri: Pgchar; name: Pgchar; exec: Pgchar; count: gint; stamp: glong; error: PPGError): gboolean; cdecl; external LazGLib2_library name 'g_bookmark_file_set_app_info'; deprecated 'Use g_bookmark_file_set_application_info() instead, as    `time_t` is deprecated due to the year 2038 problem.';
+{$IFDEF USEGTK3LATESTBINDINGS}
 function g_bookmark_file_set_application_info(bookmark: PGBookmarkFile; uri: Pgchar; name: Pgchar; exec: Pgchar; count: gint; stamp: PGDateTime; error: PPGError): gboolean; cdecl; external LazGLib2_library name 'g_bookmark_file_set_application_info';
+{$ENDIF}
 function g_bookmark_file_to_data(bookmark: PGBookmarkFile; length: Pgsize; error: PPGError): Pgchar; cdecl; external LazGLib2_library name 'g_bookmark_file_to_data';
 function g_bookmark_file_to_file(bookmark: PGBookmarkFile; filename: Pgchar; error: PPGError): gboolean; cdecl; external LazGLib2_library name 'g_bookmark_file_to_file';
 function g_build_filename(first_element: Pgchar; args: array of const): Pgchar; cdecl; external LazGLib2_library name 'g_build_filename';
@@ -5109,11 +5141,14 @@ function g_unix_signal_add(signum: gint; handler: TGSourceFunc; user_data: gpoin
 function g_unix_signal_add_full(priority: gint; signum: gint; handler: TGSourceFunc; user_data: gpointer; notify: TGDestroyNotify): guint; cdecl; external LazGLib2_library name 'g_unix_signal_add_full';
 function g_unix_signal_source_new(signum: gint): PGSource; cdecl; external LazGLib2_library name 'g_unix_signal_source_new';
 function g_unlink(filename: Pgchar): gint; cdecl; external LazGLib2_library name 'g_unlink';
+{$IFDEF USEGTK3LATESTBINDINGS}
 function g_uri_build(flags: TGUriFlags; scheme: Pgchar; userinfo: Pgchar; host: Pgchar; port: gint; path: Pgchar; query: Pgchar; fragment: Pgchar): PGUri; cdecl; external LazGLib2_library name 'g_uri_build';
 function g_uri_build_with_user(flags: TGUriFlags; scheme: Pgchar; user: Pgchar; password: Pgchar; auth_params: Pgchar; host: Pgchar; port: gint; path: Pgchar; query: Pgchar; fragment: Pgchar): PGUri; cdecl; external LazGLib2_library name 'g_uri_build_with_user';
 function g_uri_error_quark: TGQuark; cdecl; external LazGLib2_library name 'g_uri_error_quark';
 function g_uri_escape_bytes(unescaped: Pguint8; length: gsize; reserved_chars_allowed: Pgchar): Pgchar; cdecl; external LazGLib2_library name 'g_uri_escape_bytes';
+{$ENDIF}
 function g_uri_escape_string(unescaped: Pgchar; reserved_chars_allowed: Pgchar; allow_utf8: gboolean): Pgchar; cdecl; external LazGLib2_library name 'g_uri_escape_string';
+{$IFDEF USEGTK3LATESTBINDINGS}
 function g_uri_get_auth_params(uri: PGUri): Pgchar; cdecl; external LazGLib2_library name 'g_uri_get_auth_params';
 function g_uri_get_flags(uri: PGUri): TGUriFlags; cdecl; external LazGLib2_library name 'g_uri_get_flags';
 function g_uri_get_fragment(uri: PGUri): Pgchar; cdecl; external LazGLib2_library name 'g_uri_get_fragment';
@@ -5123,18 +5158,24 @@ function g_uri_get_path(uri: PGUri): Pgchar; cdecl; external LazGLib2_library na
 function g_uri_get_port(uri: PGUri): gint; cdecl; external LazGLib2_library name 'g_uri_get_port';
 function g_uri_get_query(uri: PGUri): Pgchar; cdecl; external LazGLib2_library name 'g_uri_get_query';
 function g_uri_get_scheme(uri: PGUri): Pgchar; cdecl; external LazGLib2_library name 'g_uri_get_scheme';
+{$ENDIF}
 function g_uri_get_type: TGType; cdecl; external LazGLib2_library name 'g_uri_get_type';
+{$IFDEF USEGTK3LATESTBINDINGS}
 function g_uri_get_user(uri: PGUri): Pgchar; cdecl; external LazGLib2_library name 'g_uri_get_user';
 function g_uri_get_userinfo(uri: PGUri): Pgchar; cdecl; external LazGLib2_library name 'g_uri_get_userinfo';
 function g_uri_is_valid(uri_string: Pgchar; flags: TGUriFlags; error: PPGError): gboolean; cdecl; external LazGLib2_library name 'g_uri_is_valid';
 function g_uri_join(flags: TGUriFlags; scheme: Pgchar; userinfo: Pgchar; host: Pgchar; port: gint; path: Pgchar; query: Pgchar; fragment: Pgchar): Pgchar; cdecl; external LazGLib2_library name 'g_uri_join';
 function g_uri_join_with_user(flags: TGUriFlags; scheme: Pgchar; user: Pgchar; password: Pgchar; auth_params: Pgchar; host: Pgchar; port: gint; path: Pgchar; query: Pgchar; fragment: Pgchar): Pgchar; cdecl; external LazGLib2_library name 'g_uri_join_with_user';
+{$ENDIF}
 function g_uri_list_extract_uris(uri_list: Pgchar): PPgchar; cdecl; external LazGLib2_library name 'g_uri_list_extract_uris';
+{$IFDEF USEGTK3LATESTBINDINGS}
 function g_uri_params_iter_next(iter: PGUriParamsIter; attribute: PPgchar; value: PPgchar; error: PPGError): gboolean; cdecl; external LazGLib2_library name 'g_uri_params_iter_next';
 function g_uri_parse(uri_string: Pgchar; flags: TGUriFlags; error: PPGError): PGUri; cdecl; external LazGLib2_library name 'g_uri_parse';
 function g_uri_parse_params(params: Pgchar; length: gssize; separators: Pgchar; flags: TGUriParamsFlags; error: PPGError): PGHashTable; cdecl; external LazGLib2_library name 'g_uri_parse_params';
 function g_uri_parse_relative(base_uri: PGUri; uri_ref: Pgchar; flags: TGUriFlags; error: PPGError): PGUri; cdecl; external LazGLib2_library name 'g_uri_parse_relative';
+{$ENDIF}
 function g_uri_parse_scheme(uri: Pgchar): Pgchar; cdecl; external LazGLib2_library name 'g_uri_parse_scheme';
+{$IFDEF USEGTK3LATESTBINDINGS}
 function g_uri_peek_scheme(uri: Pgchar): Pgchar; cdecl; external LazGLib2_library name 'g_uri_peek_scheme';
 function g_uri_ref(uri: PGUri): PGUri; cdecl; external LazGLib2_library name 'g_uri_ref';
 function g_uri_resolve_relative(base_uri_string: Pgchar; uri_ref: Pgchar; flags: TGUriFlags; error: PPGError): Pgchar; cdecl; external LazGLib2_library name 'g_uri_resolve_relative';
@@ -5144,6 +5185,7 @@ function g_uri_split_with_user(uri_ref: Pgchar; flags: TGUriFlags; scheme: PPgch
 function g_uri_to_string(uri: PGUri): Pgchar; cdecl; external LazGLib2_library name 'g_uri_to_string';
 function g_uri_to_string_partial(uri: PGUri; flags: TGUriHideFlags): Pgchar; cdecl; external LazGLib2_library name 'g_uri_to_string_partial';
 function g_uri_unescape_bytes(escaped_string: Pgchar; length: gssize; illegal_characters: Pgchar; error: PPGError): PGBytes; cdecl; external LazGLib2_library name 'g_uri_unescape_bytes';
+{$ENDIF}
 function g_uri_unescape_segment(escaped_string: Pgchar; escaped_string_end: Pgchar; illegal_characters: Pgchar): Pgchar; cdecl; external LazGLib2_library name 'g_uri_unescape_segment';
 function g_uri_unescape_string(escaped_string: Pgchar; illegal_characters: Pgchar): Pgchar; cdecl; external LazGLib2_library name 'g_uri_unescape_string';
 function g_utf16_to_ucs4(str: Pguint16; len: glong; items_read: Pglong; items_written: Pglong; error: PPGError): Pgunichar; cdecl; external LazGLib2_library name 'g_utf16_to_ucs4';
@@ -5351,18 +5393,24 @@ procedure g_bit_unlock(address: Pgint; lock_bit: gint); cdecl; external LazGLib2
 procedure g_bookmark_file_add_application(bookmark: PGBookmarkFile; uri: Pgchar; name: Pgchar; exec: Pgchar); cdecl; external LazGLib2_library name 'g_bookmark_file_add_application';
 procedure g_bookmark_file_add_group(bookmark: PGBookmarkFile; uri: Pgchar; group: Pgchar); cdecl; external LazGLib2_library name 'g_bookmark_file_add_group';
 procedure g_bookmark_file_free(bookmark: PGBookmarkFile); cdecl; external LazGLib2_library name 'g_bookmark_file_free';
+{$IFDEF USEGTK3LATESTBINDINGS}
 procedure g_bookmark_file_set_added(bookmark: PGBookmarkFile; uri: Pgchar; added: glong); cdecl; external LazGLib2_library name 'g_bookmark_file_set_added'; deprecated 'Use g_bookmark_file_set_added_date_time() instead, as    `time_t` is deprecated due to the year 2038 problem.';
 procedure g_bookmark_file_set_added_date_time(bookmark: PGBookmarkFile; uri: Pgchar; added: PGDateTime); cdecl; external LazGLib2_library name 'g_bookmark_file_set_added_date_time';
+{$ENDIF}
 procedure g_bookmark_file_set_description(bookmark: PGBookmarkFile; uri: Pgchar; description: Pgchar); cdecl; external LazGLib2_library name 'g_bookmark_file_set_description';
 procedure g_bookmark_file_set_groups(bookmark: PGBookmarkFile; uri: Pgchar; groups: PPgchar; length: gsize); cdecl; external LazGLib2_library name 'g_bookmark_file_set_groups';
 procedure g_bookmark_file_set_icon(bookmark: PGBookmarkFile; uri: Pgchar; href: Pgchar; mime_type: Pgchar); cdecl; external LazGLib2_library name 'g_bookmark_file_set_icon';
 procedure g_bookmark_file_set_is_private(bookmark: PGBookmarkFile; uri: Pgchar; is_private: gboolean); cdecl; external LazGLib2_library name 'g_bookmark_file_set_is_private';
 procedure g_bookmark_file_set_mime_type(bookmark: PGBookmarkFile; uri: Pgchar; mime_type: Pgchar); cdecl; external LazGLib2_library name 'g_bookmark_file_set_mime_type';
 procedure g_bookmark_file_set_modified(bookmark: PGBookmarkFile; uri: Pgchar; modified: glong); cdecl; external LazGLib2_library name 'g_bookmark_file_set_modified'; deprecated 'Use g_bookmark_file_set_modified_date_time() instead, as    `time_t` is deprecated due to the year 2038 problem.';
+{$IFDEF USEGTK3LATESTBINDINGS}
 procedure g_bookmark_file_set_modified_date_time(bookmark: PGBookmarkFile; uri: Pgchar; modified: PGDateTime); cdecl; external LazGLib2_library name 'g_bookmark_file_set_modified_date_time';
+{$ENDIF}
 procedure g_bookmark_file_set_title(bookmark: PGBookmarkFile; uri: Pgchar; title: Pgchar); cdecl; external LazGLib2_library name 'g_bookmark_file_set_title';
 procedure g_bookmark_file_set_visited(bookmark: PGBookmarkFile; uri: Pgchar; visited: glong); cdecl; external LazGLib2_library name 'g_bookmark_file_set_visited'; deprecated 'Use g_bookmark_file_set_visited_date_time() instead, as    `time_t` is deprecated due to the year 2038 problem.';
+{$IFDEF USEGTK3LATESTBINDINGS}
 procedure g_bookmark_file_set_visited_date_time(bookmark: PGBookmarkFile; uri: Pgchar; visited: PGDateTime); cdecl; external LazGLib2_library name 'g_bookmark_file_set_visited_date_time';
+{$ENDIF}
 procedure g_byte_array_sort(array_: Pguint8; compare_func: TGCompareFunc); cdecl; external LazGLib2_library name 'g_byte_array_sort';
 procedure g_byte_array_sort_with_data(array_: Pguint8; compare_func: TGCompareDataFunc; user_data: gpointer); cdecl; external LazGLib2_library name 'g_byte_array_sort_with_data';
 procedure g_byte_array_unref(array_: Pguint8); cdecl; external LazGLib2_library name 'g_byte_array_unref';
@@ -5696,8 +5744,10 @@ procedure g_tree_replace(tree: PGTree; key: gpointer; value: gpointer); cdecl; e
 procedure g_tree_unref(tree: PGTree); cdecl; external LazGLib2_library name 'g_tree_unref';
 procedure g_unicode_canonical_ordering(string_: Pgunichar; len: gsize); cdecl; external LazGLib2_library name 'g_unicode_canonical_ordering';
 procedure g_unsetenv(variable: Pgchar); cdecl; external LazGLib2_library name 'g_unsetenv';
+{$IFDEF USEGTK3LATESTBINDINGS}
 procedure g_uri_params_iter_init(iter: PGUriParamsIter; params: Pgchar; length: gssize; separators: Pgchar; flags: TGUriParamsFlags); cdecl; external LazGLib2_library name 'g_uri_params_iter_init';
 procedure g_uri_unref(uri: PGUri); cdecl; external LazGLib2_library name 'g_uri_unref';
+{$ENDIF}
 procedure g_usleep(microseconds: gulong); cdecl; external LazGLib2_library name 'g_usleep';
 procedure g_variant_builder_add(builder: PGVariantBuilder; format_string: Pgchar; args: array of const); cdecl; external LazGLib2_library name 'g_variant_builder_add';
 procedure g_variant_builder_add_parsed(builder: PGVariantBuilder; format: Pgchar; args: array of const); cdecl; external LazGLib2_library name 'g_variant_builder_add_parsed';
@@ -5951,6 +6001,7 @@ begin
   LazGLib2.g_bookmark_file_free(@self);
 end;
 
+{$IFDEF USEGTK3LATESTBINDINGS}
 function TGBookmarkFile.get_added(uri: Pgchar; error: PPGError): glong; cdecl;
 begin
   Result := LazGLib2.g_bookmark_file_get_added(@self, uri, error);
@@ -5970,6 +6021,7 @@ function TGBookmarkFile.get_application_info(uri: Pgchar; name: Pgchar; exec: PP
 begin
   Result := LazGLib2.g_bookmark_file_get_application_info(@self, uri, name, exec, count, stamp, error);
 end;
+{$ENDIF}
 
 function TGBookmarkFile.get_applications(uri: Pgchar; length: Pgsize; error: PPGError): PPgchar; cdecl;
 begin
@@ -6001,6 +6053,7 @@ begin
   Result := LazGLib2.g_bookmark_file_get_mime_type(@self, uri, error);
 end;
 
+{$IFDEF USEGTK3LATESTBINDINGS}
 function TGBookmarkFile.get_modified(uri: Pgchar; error: PPGError): glong; cdecl;
 begin
   Result := LazGLib2.g_bookmark_file_get_modified(@self, uri, error);
@@ -6010,6 +6063,7 @@ function TGBookmarkFile.get_modified_date_time(uri: Pgchar; error: PPGError): PG
 begin
   Result := LazGLib2.g_bookmark_file_get_modified_date_time(@self, uri, error);
 end;
+{$ENDIF}
 
 function TGBookmarkFile.get_size: gint; cdecl;
 begin
@@ -6031,10 +6085,12 @@ begin
   Result := LazGLib2.g_bookmark_file_get_visited(@self, uri, error);
 end;
 
+{$IFDEF USEGTK3LATESTBINDINGS}
 function TGBookmarkFile.get_visited_date_time(uri: Pgchar; error: PPGError): PGDateTime; cdecl;
 begin
   Result := LazGLib2.g_bookmark_file_get_visited_date_time(@self, uri, error);
 end;
+{$ENDIF}
 
 function TGBookmarkFile.has_application(uri: Pgchar; name: Pgchar; error: PPGError): gboolean; cdecl;
 begin
@@ -6086,6 +6142,7 @@ begin
   Result := LazGLib2.g_bookmark_file_remove_item(@self, uri, error);
 end;
 
+{$IFDEF USEGTK3LATESTBINDINGS}
 procedure TGBookmarkFile.set_added(uri: Pgchar; added: glong); cdecl;
 begin
   LazGLib2.g_bookmark_file_set_added(@self, uri, added);
@@ -6095,16 +6152,19 @@ procedure TGBookmarkFile.set_added_date_time(uri: Pgchar; added: PGDateTime); cd
 begin
   LazGLib2.g_bookmark_file_set_added_date_time(@self, uri, added);
 end;
+{$ENDIF}
 
 function TGBookmarkFile.set_app_info(uri: Pgchar; name: Pgchar; exec: Pgchar; count: gint; stamp: glong; error: PPGError): gboolean; cdecl;
 begin
   Result := LazGLib2.g_bookmark_file_set_app_info(@self, uri, name, exec, count, stamp, error);
 end;
 
+{$IFDEF USEGTK3LATESTBINDINGS}
 function TGBookmarkFile.set_application_info(uri: Pgchar; name: Pgchar; exec: Pgchar; count: gint; stamp: PGDateTime; error: PPGError): gboolean; cdecl;
 begin
   Result := LazGLib2.g_bookmark_file_set_application_info(@self, uri, name, exec, count, stamp, error);
 end;
+{$ENDIF}
 
 procedure TGBookmarkFile.set_description(uri: Pgchar; description: Pgchar); cdecl;
 begin
@@ -6136,10 +6196,12 @@ begin
   LazGLib2.g_bookmark_file_set_modified(@self, uri, modified);
 end;
 
+{$IFDEF USEGTK3LATESTBINDINGS}
 procedure TGBookmarkFile.set_modified_date_time(uri: Pgchar; modified: PGDateTime); cdecl;
 begin
   LazGLib2.g_bookmark_file_set_modified_date_time(@self, uri, modified);
 end;
+{$ENDIF}
 
 procedure TGBookmarkFile.set_title(uri: Pgchar; title: Pgchar); cdecl;
 begin
@@ -6151,10 +6213,12 @@ begin
   LazGLib2.g_bookmark_file_set_visited(@self, uri, visited);
 end;
 
+{$IFDEF USEGTK3LATESTBINDINGS}
 procedure TGBookmarkFile.set_visited_date_time(uri: Pgchar; visited: PGDateTime); cdecl;
 begin
   LazGLib2.g_bookmark_file_set_visited_date_time(@self, uri, visited);
 end;
+{$ENDIF}
 
 function TGBookmarkFile.to_data(length: Pgsize; error: PPGError): Pgchar; cdecl;
 begin
@@ -10151,6 +10215,7 @@ begin
   LazGLib2.g_tree_unref(@self);
 end;
 
+{$IFDEF USEGTK3LATESTBINDINGS}
 function TGUri.get_auth_params: Pgchar; cdecl;
 begin
   Result := LazGLib2.g_uri_get_auth_params(@self);
@@ -10250,16 +10315,18 @@ function TGUri.escape_bytes(unescaped: Pguint8; length: gsize; reserved_chars_al
 begin
   Result := LazGLib2.g_uri_escape_bytes(unescaped, length, reserved_chars_allowed);
 end;
-
+{$ENDIF}
 function TGUri.escape_string(unescaped: Pgchar; reserved_chars_allowed: Pgchar; allow_utf8: gboolean): Pgchar; cdecl;
 begin
   Result := LazGLib2.g_uri_escape_string(unescaped, reserved_chars_allowed, allow_utf8);
 end;
 
+{$IFDEF USEGTK3LATESTBINDINGS}
 function TGUri.is_valid(uri_string: Pgchar; flags: TGUriFlags; error: PPGError): gboolean; cdecl;
 begin
   Result := LazGLib2.g_uri_is_valid(uri_string, flags, error);
 end;
+
 
 function TGUri.join(flags: TGUriFlags; scheme: Pgchar; userinfo: Pgchar; host: Pgchar; port: gint; path: Pgchar; query: Pgchar; fragment: Pgchar): Pgchar; cdecl;
 begin
@@ -10270,12 +10337,14 @@ function TGUri.join_with_user(flags: TGUriFlags; scheme: Pgchar; user: Pgchar; p
 begin
   Result := LazGLib2.g_uri_join_with_user(flags, scheme, user, password, auth_params, host, port, path, query, fragment);
 end;
+{$ENDIF}
 
 function TGUri.list_extract_uris(uri_list: Pgchar): PPgchar; cdecl;
 begin
   Result := LazGLib2.g_uri_list_extract_uris(uri_list);
 end;
 
+{$IFDEF USEGTK3LATESTBINDINGS}
 function TGUri.parse(uri_string: Pgchar; flags: TGUriFlags; error: PPGError): PGUri; cdecl;
 begin
   Result := LazGLib2.g_uri_parse(uri_string, flags, error);
@@ -10285,12 +10354,14 @@ function TGUri.parse_params(params: Pgchar; length: gssize; separators: Pgchar; 
 begin
   Result := LazGLib2.g_uri_parse_params(params, length, separators, flags, error);
 end;
+{$ENDIF}
 
 function TGUri.parse_scheme(uri: Pgchar): Pgchar; cdecl;
 begin
   Result := LazGLib2.g_uri_parse_scheme(uri);
 end;
 
+{$IFDEF USEGTK3LATESTBINDINGS}
 function TGUri.peek_scheme(uri: Pgchar): Pgchar; cdecl;
 begin
   Result := LazGLib2.g_uri_peek_scheme(uri);
@@ -10320,6 +10391,7 @@ function TGUri.unescape_bytes(escaped_string: Pgchar; length: gssize; illegal_ch
 begin
   Result := LazGLib2.g_uri_unescape_bytes(escaped_string, length, illegal_characters, error);
 end;
+{$ENDIF}
 
 function TGUri.unescape_segment(escaped_string: Pgchar; escaped_string_end: Pgchar; illegal_characters: Pgchar): Pgchar; cdecl;
 begin
@@ -10331,6 +10403,7 @@ begin
   Result := LazGLib2.g_uri_unescape_string(escaped_string, illegal_characters);
 end;
 
+{$IFDEF USEGTK3LATESTBINDINGS}
 procedure TGUriParamsIter.init(params: Pgchar; length: gssize; separators: Pgchar; flags: TGUriParamsFlags); cdecl;
 begin
   LazGLib2.g_uri_params_iter_init(@self, params, length, separators, flags);
@@ -10340,6 +10413,7 @@ function TGUriParamsIter.next(attribute: PPgchar; value: PPgchar; error: PPGErro
 begin
   Result := LazGLib2.g_uri_params_iter_next(@self, attribute, value, error);
 end;
+{$ENDIF}
 
 function TGVariant.new_array(child_type: PGVariantType; children: PPGVariant; n_children: gsize): PGVariant; cdecl;
 begin

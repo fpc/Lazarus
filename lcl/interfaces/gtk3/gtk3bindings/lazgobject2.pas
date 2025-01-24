@@ -463,7 +463,9 @@ type
     procedure set_instance(instance: gpointer); cdecl; inline;
     procedure set_int(v_int: gint); cdecl; inline;
     procedure set_int64(v_int64: gint64); cdecl; inline;
+    {$IFDEF USEGTK3LATESTBINDINGS}
     procedure set_interned_string(v_string: Pgchar); cdecl; inline;
+    {$ENDIF}
     procedure set_long(v_long: glong); cdecl; inline;
     procedure set_object(v_object: PGObject); cdecl; inline;
     procedure set_param(param: PGParamSpec); cdecl; inline;
@@ -661,7 +663,9 @@ type
     ref_count: guint;
     param_id: guint;
     function internal(param_type: TGType; name: Pgchar; nick: Pgchar; blurb: Pgchar; flags: TGParamFlags): PGParamSpec; cdecl; inline; static;
+    {$IFDEF USEGTK3LATESTBINDINGS}
     function is_valid_name(name: Pgchar): gboolean; cdecl; inline; static;
+    {$ENDIF}
     function get_blurb: Pgchar; cdecl; inline;
     function get_default_value: PGValue; cdecl; inline;
     function get_name: Pgchar; cdecl; inline;
@@ -1371,7 +1375,9 @@ function g_param_spec_gtype(name: Pgchar; nick: Pgchar; blurb: Pgchar; is_a_type
 function g_param_spec_int(name: Pgchar; nick: Pgchar; blurb: Pgchar; minimum: gint; maximum: gint; default_value: gint; flags: TGParamFlags): PGParamSpec; cdecl; external LazGObject2_library name 'g_param_spec_int';
 function g_param_spec_int64(name: Pgchar; nick: Pgchar; blurb: Pgchar; minimum: gint64; maximum: gint64; default_value: gint64; flags: TGParamFlags): PGParamSpec; cdecl; external LazGObject2_library name 'g_param_spec_int64';
 function g_param_spec_internal(param_type: TGType; name: Pgchar; nick: Pgchar; blurb: Pgchar; flags: TGParamFlags): PGParamSpec; cdecl; external LazGObject2_library name 'g_param_spec_internal';
+{$IFDEF USEGTK3LATESTBINDINGS}
 function g_param_spec_is_valid_name(name: Pgchar): gboolean; cdecl; external LazGObject2_library name 'g_param_spec_is_valid_name';
+{$ENDIF}
 function g_param_spec_long(name: Pgchar; nick: Pgchar; blurb: Pgchar; minimum: glong; maximum: glong; default_value: glong; flags: TGParamFlags): PGParamSpec; cdecl; external LazGObject2_library name 'g_param_spec_long';
 function g_param_spec_object(name: Pgchar; nick: Pgchar; blurb: Pgchar; object_type: TGType; flags: TGParamFlags): PGParamSpec; cdecl; external LazGObject2_library name 'g_param_spec_object';
 function g_param_spec_override(name: Pgchar; overridden: PGParamSpec): PGParamSpec; cdecl; external LazGObject2_library name 'g_param_spec_override';
@@ -1671,7 +1677,9 @@ procedure g_value_set_gtype(value: PGValue; v_gtype: TGType); cdecl; external La
 procedure g_value_set_instance(value: PGValue; instance: gpointer); cdecl; external LazGObject2_library name 'g_value_set_instance';
 procedure g_value_set_int(value: PGValue; v_int: gint); cdecl; external LazGObject2_library name 'g_value_set_int';
 procedure g_value_set_int64(value: PGValue; v_int64: gint64); cdecl; external LazGObject2_library name 'g_value_set_int64';
+{$IFDEF USEGTK3LATESTBINDINGS}
 procedure g_value_set_interned_string(value: PGValue; v_string: Pgchar); cdecl; external LazGObject2_library name 'g_value_set_interned_string';
+{$ENDIF}
 procedure g_value_set_long(value: PGValue; v_long: glong); cdecl; external LazGObject2_library name 'g_value_set_long';
 procedure g_value_set_object(value: PGValue; v_object: PGObject); cdecl; external LazGObject2_library name 'g_value_set_object';
 procedure g_value_set_param(value: PGValue; param: PGParamSpec); cdecl; external LazGObject2_library name 'g_value_set_param';
@@ -2275,10 +2283,12 @@ begin
   LazGObject2.g_value_set_int64(@self, v_int64);
 end;
 
+{$IFDEF USEGTK3LATESTBINDINGS}
 procedure TGValue.set_interned_string(v_string: Pgchar); cdecl;
 begin
   LazGObject2.g_value_set_interned_string(@self, v_string);
 end;
+{$ENDIF}
 
 procedure TGValue.set_long(v_long: glong); cdecl;
 begin
@@ -2540,10 +2550,12 @@ begin
   Result := LazGObject2.g_param_spec_internal(param_type, name, nick, blurb, flags);
 end;
 
+{$IFDEF USEGTK3LATESTBINDINGS}
 function TGParamSpec.is_valid_name(name: Pgchar): gboolean; cdecl;
 begin
   Result := LazGObject2.g_param_spec_is_valid_name(name);
 end;
+{$ENDIF}
 
 function TGParamSpec.get_blurb: Pgchar; cdecl;
 begin
