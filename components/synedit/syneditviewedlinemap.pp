@@ -1295,16 +1295,17 @@ var
 begin
   if (not FCurWrapPage.HasPage) or (FCurWrapPage.StartLine > AWrappedLine) or
      (AWrappedLine >= FCurWrapPage.RealEndLine)
-  then begin
+  then
     FCurWrapPage := FLineMappingView.FLineMappingData.FindPageForWrap(AWrappedLine);
-    FCurWrappedLine := AWrappedLine;
-  end;
+  FCurWrappedLine := AWrappedLine;
 
   if FCurWrapPage.HasPage then
     RealIdx := FCurWrapPage.StartLine +
       FCurWrapPage.Page.GetOffsetForWrap(AWrappedLine - FCurWrapPage.StartLine - FCurWrapPage.ViewedCountDifferenceBefore, FCurrentWrapSubline)
-  else
-   RealIdx := AWrappedLine;
+  else begin
+    RealIdx := AWrappedLine;
+    FCurrentWrapSubline := 0;
+  end;
 
   inherited SetHighlighterTokensLine(RealIdx, ARealLine, AStartBytePos, ALineByteLen);
 end;
