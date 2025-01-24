@@ -123,12 +123,12 @@ begin
     x := FWordBreaker.PrevBoundary(s, Markup.Column, True);
     if x < 1 then
       x := 1;
-    Section^.StartX := LogicalToPhysicalPos(Point(x, ARow)).x;
+    Section^.StartX := Point(x, ARow).x;
 
     x := FWordBreaker.NextBoundary(s, Markup.Column);
     if x < 1 then
       x := length(s) + 1;
-    Section^.EndX   := LogicalToPhysicalPos(Point(x, ARow)).x;
+    Section^.EndX   := Point(x, ARow).x;
 
     if (Section^.StartX > 0) and (Section^.EndX > 0) and (Section^.StartX<Section^.EndX)
     then
@@ -148,11 +148,11 @@ begin
   Result := nil;
   for i := 0 to length(FRowData) - 1 do begin
     Section := @FRowData[i];
-    if (Section^.StartX <= aStartCol.Physical) and (Section^.EndX > aStartCol.Physical) and
+    if (Section^.StartX <= aStartCol.Logical) and (Section^.EndX > aStartCol.Logical) and
        ( (Section^.Priority < FoundPri) or (Result=nil) )
     then begin
       Result := Section^.Markup;
-      MarkupInfo.SetFrameBoundsPhys(Section^.StartX, Section^.EndX);
+      MarkupInfo.SetFrameBoundsLog(Section^.StartX, Section^.EndX);
       FoundPri := Section^.Priority;
     end;
   end;
@@ -165,29 +165,29 @@ procedure TSynEditMarkupGutterMark.GetNextMarkupColAfterRowCol(const aRow: Integ
 
   procedure Improve(Col: integer); inline;
   begin
-    if Col <= aStartCol.Physical then exit;
-    if Col > ANextPhys then exit;
-    ANextPhys:=Col;
+    if Col <= aStartCol.Logical then exit;
+    if Col > ANextLog then exit;
+    ANextLog:=Col;
   end;
 
 var
   i: Integer;
   Section: PMarkSection;
 begin
-  ANextLog := -1;
+  ANextPhys := -1;
   if length(FRowData) = 0 then
   begin
-    ANextPhys := -1;
+    ANextLog := -1;
     exit;
   end;
-  ANextPhys := High(ANextPhys);
+  ANextLog := High(ANextLog);
   for i := 0 to length(FRowData) - 1 do begin
     Section := @FRowData[i];
     Improve(Section^.StartX);
     Improve(Section^.EndX);
   end;
-  if ANextPhys = High(ANextPhys) then
-    ANextPhys := -1;
+  if ANextLog = High(ANextLog) then
+    ANextLog := -1;
 end;
 
 end.
