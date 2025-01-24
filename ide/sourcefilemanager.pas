@@ -4932,7 +4932,7 @@ begin
   if sfskipReferences in Flags then
     SaveAsFilename:=LowerCase(RemoveAmpersands(OldUnitName))
   else
-    SaveAsFilename:=OldUnitName;
+    SaveAsFilename:=RemoveAmpersands(OldUnitName);
   if SaveAsFilename='' then
     SaveAsFilename:=ExtractFileNameOnly(AFilename);
   if SaveAsFilename='' then
@@ -5010,7 +5010,7 @@ begin
       // check unitname
       if (NewFileExt<>'') and IsPascalUnitExt(PChar(NewFileExt)) then begin
         NewUnitName:=ExtractFileNameOnly(NewFilename);
-        // Do not rename the unit if new filename differs from its name only in case
+        // Do not rename the unit if new filename is just the lowercase version
         if LowerCase(OldUnitName)=NewUnitName then
           NewUnitName:=OldUnitName;
         if NewUnitName='' then
