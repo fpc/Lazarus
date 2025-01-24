@@ -226,8 +226,10 @@ public
     procedure WrapAll; experimental;
     procedure ValidateAll; experimental;
 
-    property CaretWrapPos: TLazSynEditWrapCaretPos read FCaretWrapPos write FCaretWrapPos;
     property WrapColumn: Integer read GetWrapColumn;
+
+  published
+    property CaretWrapPos: TLazSynEditWrapCaretPos read FCaretWrapPos write FCaretWrapPos;
   end;
 
 implementation
