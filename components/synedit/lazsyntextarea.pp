@@ -62,14 +62,14 @@ type
     FCurTxtLineIdx : Integer;
     FCurLineByteLen: Integer;
     FIsLastViewedSubLine: Boolean;
-    FCurLinePhysStart: integer;
+    FCurLinePhysStartOffset: integer;
 
     // Fields for GetNextHighlighterTokenFromView
     // Info about the token (from highlighter)
     FCurViewToken: TLazSynDisplayTokenInfo;
     FCurViewCurTokenStartPos: TLazSynDisplayTokenBound; // Start bound of the HL token
     FCurViewAttr: TSynSelectedColorMergeResult;
-    FWrapEndBound: TLazSynDisplayTokenBound;
+    FWrapStartBound, FWrapEndBound: TLazSynDisplayTokenBound;
     // Scanner Pos
     FCurViewScannerPos: TLazSynDisplayTokenBound;  // Start according to Logical flow. Left for LTR, or Right for RTL
     FCurViewScannerPhysCharPos: Integer;           // 1 based - Full char bound (Before FCurViewScannerPos.Physical (PaintStart))
@@ -329,7 +329,7 @@ procedure TLazSynPaintTokenBreaker.SetHighlighterTokensLine(ALine: TLineIdx; out
 var
   LogLeftPos, ASubLineIdx: Integer;
 begin
-  FDisplayView.SetHighlighterTokensLine(ALine, ARealLine, ASubLineIdx, LogLeftPos, FCurLinePhysStart, FCurLineByteLen);
+  FDisplayView.SetHighlighterTokensLine(ALine, ARealLine, ASubLineIdx, LogLeftPos, FCurLinePhysStartOffset, FCurLineByteLen);
   if FLinesView.LogPhysConvertor.CurrentLine = ARealLine then begin
     if not FCharWidthsFromConverter then begin
       FCharWidthsFromConverter := True;
@@ -350,14 +350,14 @@ begin
 
   FCurViewToken.TokenLength     := 0;
   FCurViewScannerPos.Logical   := LogLeftPos;
-  FCurViewScannerPos.Physical  := FCurLinePhysStart;
+  FCurViewScannerPos.Physical  := FCurLinePhysStartOffset; // FCurLinePhysStartOffset still one based, not yet offset
   FCurViewScannerPos.Offset    := 0;
-  FCurViewScannerPhysCharPos  := FCurLinePhysStart;
+  FCurViewScannerPhysCharPos  := FCurLinePhysStartOffset;
   FCurViewinRTL := False;
 
-  dec(FCurLinePhysStart);
-  FVirtualFirstCol := FCurLinePhysStart + FFirstCol;
-  FVirtualLastCol  := FCurLinePhysStart + FLastCol;
+  dec(FCurLinePhysStartOffset); // 0 based
+  FVirtualFirstCol := FCurLinePhysStartOffset + FFirstCol;
+  FVirtualLastCol  := FCurLinePhysStartOffset + FLastCol;
 
   FNextMarkupPhysPos := low(FNextMarkupPhysPos); // Marker for first call to GetNextHighlighterTokenEx
   FNextMarkupLogPos  := -1;
@@ -409,54 +409,66 @@ begin
   ATokenInfo.Attr := nil;
   Result := GetNextHighlighterTokenFromView(ATokenInfo, FNextMarkupPhysPos, FNextMarkupLogPos);
 
-  if not Result then begin
-    // the first run StartPos is set by GetNextHighlighterTokenFromView
-    if FTokenOrigin in [dtoAfterText, dtoAfterWrapped] then begin
-      ATokenInfo.StartPos   := FCurMarkupNextStart
+  if (not Result) or (FTokenOrigin = dtoBeforeText) then begin
+    if ATokenInfo.Tk.TokenStart = nil then begin
+      ATokenInfo.Tk.TokenStart      := @Space[1];
+      ATokenInfo.Tk.TokenLength     := 1;
+    end;
+
+    if FTokenOrigin = dtoBeforeText then begin
+      assert((FNextMarkupPhysPos <= 0) or (FNextMarkupPhysPos > ATokenInfo.StartPos.Physical), 'FNextMarkupPhysPos > ATokenInfo.StartPos.Physical');
+      assert(ATokenInfo.EndPos.Physical > ATokenInfo.StartPos.Physical, 'ATokenInfo.EndPos.Physical > ATokenInfo.StartPos.Physical');
     end
-    else
-    if FVirtualFirstCol > ATokenInfo.StartPos.Physical then begin
-      ATokenInfo.StartPos.Logical := ATokenInfo.StartPos.Logical + (FVirtualFirstCol - ATokenInfo.StartPos.Physical);
-      ATokenInfo.StartPos.Physical := FVirtualFirstCol;
+    else begin
+      // the first run StartPos is set by GetNextHighlighterTokenFromView
+      if FTokenOrigin in [dtoAfterText, dtoAfterWrapped] then
+        ATokenInfo.StartPos   := FCurMarkupNextStart
+      else
+      if FVirtualFirstCol > ATokenInfo.StartPos.Physical then begin
+        ATokenInfo.StartPos.Logical := ATokenInfo.StartPos.Logical + (FVirtualFirstCol - ATokenInfo.StartPos.Physical);
+        ATokenInfo.StartPos.Physical := FVirtualFirstCol;
+      end;
+
+      Result := (ATokenInfo.StartPos.Physical < FVirtualLastCol);
+      if not Result then
+        exit;
+      assert((FNextMarkupPhysPos <= 0) or (FNextMarkupPhysPos > ATokenInfo.StartPos.Physical), 'FNextMarkupPhysPos > ATokenInfo.StartPos.Physical');
+      assert(FTokenOrigin in [dtoAfterText, dtoAfterWrapped], 'TLazSynPaintTokenBreaker.GetNextHighlighterTokenEx: FTokenOrigin in [dtoAfterText, dtoAfterWrapped]');
+
+      if FNextMarkupPhysPos > 0
+      then ATokenInfo.EndPos.Physical    := Min(FNextMarkupPhysPos, FVirtualLastCol)
+      else ATokenInfo.EndPos.Physical    := FVirtualLastCol;
+      ATokenInfo.EndPos.Offset      := 0;
+      ATokenInfo.EndPos.Logical     := ATokenInfo.StartPos.Logical + (ATokenInfo.EndPos.Physical - ATokenInfo.StartPos.Physical);
+
+      if (FNextMarkupLogPos > 0) and (FNextMarkupLogPos < ATokenInfo.EndPos.Logical) then begin
+        ATokenInfo.EndPos.Physical := ATokenInfo.EndPos.Physical - (ATokenInfo.EndPos.Logical - FNextMarkupLogPos);
+        ATokenInfo.EndPos.Logical  := FNextMarkupLogPos;
+      end;
+      assert(ATokenInfo.EndPos.Physical > ATokenInfo.StartPos.Physical, 'ATokenInfo.EndPos.Physical > ATokenInfo.StartPos.Physical');
+      assert(ATokenInfo.EndPos.Logical > ATokenInfo.StartPos.Logical, 'ATokenInfo.EndPos.Logical > ATokenInfo.StartPos.Logical');
+
+      FCurMarkupNextStart := ATokenInfo.EndPos;
+      if FCurMarkupNextRtlInfo.IsRtl then begin
+        FNextMarkupPhysPos := -1;
+        FNextMarkupLogPos  := -1;
+      end;
+      FCurMarkupNextRtlInfo.IsRtl := False;
+
+      ATokenInfo.PhysicalCharStart  := ATokenInfo.StartPos.Physical - FCurLinePhysStartOffset;
+      ATokenInfo.PhysicalClipStart  := ATokenInfo.StartPos.Physical - FCurLinePhysStartOffset;
+      ATokenInfo.PhysicalCharEnd    := ATokenInfo.EndPos.Physical - FCurLinePhysStartOffset;
+      ATokenInfo.PhysicalClipEnd    := ATokenInfo.EndPos.Physical - FCurLinePhysStartOffset;
+      ATokenInfo.RtlInfo.IsRtl      := False;
     end;
 
-    Result := (ATokenInfo.StartPos.Physical < FVirtualLastCol);
-    if not Result then
-      exit;
-    assert((FNextMarkupPhysPos <= 0) or (FNextMarkupPhysPos > ATokenInfo.StartPos.Physical), 'FNextMarkupPhysPos > ATokenInfo.StartPos.Physical');
-    assert(FTokenOrigin in [dtoAfterText, dtoAfterWrapped], 'TLazSynPaintTokenBreaker.GetNextHighlighterTokenEx: FTokenOrigin in [dtoAfterText, dtoAfterWrapped]');
-
-    ATokenInfo.Tk.TokenStart      := @Space[1];
-    ATokenInfo.Tk.TokenLength     := 1;
-
-    if FNextMarkupPhysPos > 0
-    then ATokenInfo.EndPos.Physical    := Min(FNextMarkupPhysPos, FVirtualLastCol)
-    else ATokenInfo.EndPos.Physical    := FVirtualLastCol;
-    ATokenInfo.EndPos.Offset      := 0;
-    ATokenInfo.EndPos.Logical     := ATokenInfo.StartPos.Logical + (ATokenInfo.EndPos.Physical - ATokenInfo.StartPos.Physical);
-
-    if (FNextMarkupLogPos > 0) and (FNextMarkupLogPos < ATokenInfo.EndPos.Logical) then begin
-      ATokenInfo.EndPos.Physical := ATokenInfo.EndPos.Physical - (ATokenInfo.EndPos.Logical - FNextMarkupLogPos);
-      ATokenInfo.EndPos.Logical  := FNextMarkupLogPos;
-    end;
-    assert(ATokenInfo.EndPos.Physical > ATokenInfo.StartPos.Physical, 'ATokenInfo.EndPos.Physical > ATokenInfo.StartPos.Physical');
-    assert(ATokenInfo.EndPos.Logical > ATokenInfo.StartPos.Logical, 'ATokenInfo.EndPos.Logical > ATokenInfo.StartPos.Logical');
-
-    FCurMarkupNextStart := ATokenInfo.EndPos;
-    if FCurMarkupNextRtlInfo.IsRtl then begin
-      FNextMarkupPhysPos := -1;
-      FNextMarkupLogPos  := -1;
-    end;
-    FCurMarkupNextRtlInfo.IsRtl := False;
-
-    ATokenInfo.PhysicalCharStart  := ATokenInfo.StartPos.Physical - FCurLinePhysStart;
-    ATokenInfo.PhysicalClipStart  := ATokenInfo.StartPos.Physical - FCurLinePhysStart;
-    ATokenInfo.PhysicalCharEnd    := ATokenInfo.EndPos.Physical - FCurLinePhysStart;
-    ATokenInfo.PhysicalClipEnd    := ATokenInfo.EndPos.Physical - FCurLinePhysStart;
-    ATokenInfo.RtlInfo.IsRtl      := False;
     FMarkupTokenAttr.Clear;
     if ATokenInfo.Attr <> nil then begin
       FMarkupTokenAttr.Assign(ATokenInfo.Attr);
+      if FTokenOrigin = dtoBeforeText then begin
+        FMarkupTokenAttr.CurrentStartX := FWrapStartBound;
+        FMarkupTokenAttr.CurrentEndX   := FWrapEndBound;
+      end;
     end
     else begin
       FMarkupTokenAttr.Foreground := FForegroundColor;
@@ -485,6 +497,7 @@ begin
     fMarkupManager.MergeMarkupAttributeAtWrapEnd(FCurTxtLineIdx + 1,
       FWrapEndBound, FMarkupTokenAttr)
   else
+  if FTokenOrigin <> dtoBeforeText then
     fMarkupManager.MergeMarkupAttributeAtRowCol(FCurTxtLineIdx + 1,
       ATokenInfo.StartPos, ATokenInfo.EndPos, ATokenInfo.RtlInfo, FMarkupTokenAttr);
   FMarkupTokenAttr.ProcessMergeInfo;
@@ -757,6 +770,7 @@ var
   PhysTokenStop: Integer;
   TabExtra: Integer;
   HasTabs, HasDouble, NeedsEto: Boolean;
+  FrameStartPos: TLazSynDisplayTokenBound;
 begin
   ATokenInfo.Attr := nil;
   while True do begin
@@ -766,6 +780,78 @@ begin
     if (FTokenOrigin in [{dtoAfterText,} dtoAfterWrapped]) and (APhysEnd >= 0) then begin
       APhysEnd := MaxInt;
       ALogEnd  := MaxInt;
+    end;
+
+    if (FTokenOrigin = dtoBeforeText) then begin
+      ATokenInfo.RtlInfo.IsRtl      := False;
+      ATokenInfo.NextRtlInfo.IsRtl  := False;
+
+      if APhysEnd < 0 then begin
+        ATokenInfo.NextPos          := FCurViewScannerPos;
+        ATokenInfo.NextPos.Offset   := 0;
+        exit;
+      end;
+
+      i := FCurViewToken.TokenLength;
+      j := FVirtualFirstCol - FCurViewScannerPhysCharPos;
+      if j > 0 then begin
+        j := min(j, i);
+        i := i - j;
+        FCurViewToken.TokenLength := i;
+        if FCurViewToken.TokenStart <> nil then
+          FCurViewToken.TokenStart :=  FCurViewToken.TokenStart + j;
+
+        FVirtualFirstCol := FVirtualFirstCol - j;
+        FVirtualLastCol := FVirtualLastCol - j;
+        dec(FCurLinePhysStartOffset, j);
+        if i = 0 then
+          continue;
+      end;
+
+      ATokenInfo.Tk                 := FCurViewToken;
+      ATokenInfo.StartPos           := FCurViewScannerPos;
+      ATokenInfo.StartPos.Logical           := FCharWidthsLen + 1;
+      ATokenInfo.StartPos.Offset    := 0;
+
+      ATokenInfo.EndPos.Logical     := FCurViewScannerPos.Logical + i;
+      ATokenInfo.EndPos.Logical     := FCharWidthsLen + 1 + i;
+      ATokenInfo.EndPos.Physical    := FCurViewScannerPos.Physical + i; // min right col
+      ATokenInfo.EndPos.Offset      := 0;
+
+      ATokenInfo.PhysicalCharStart  := FCurViewScannerPhysCharPos - FCurLinePhysStartOffset;
+      ATokenInfo.PhysicalClipStart  := ATokenInfo.StartPos.Physical - FCurLinePhysStartOffset;
+      ATokenInfo.PhysicalCharEnd    := Min(FCurViewScannerPhysCharPos - FCurLinePhysStartOffset+ i, FVirtualFirstCol);
+      ATokenInfo.PhysicalClipEnd    := Min(ATokenInfo.StartPos.Physical - FCurLinePhysStartOffset+ i, FVirtualFirstCol);
+
+      FWrapStartBound := FCurViewScannerPos;
+      FWrapEndBound.Logical  := -1;
+      FWrapEndBound.Offset   := 0;
+      FWrapEndBound.Physical := FCurViewScannerPos.Physical + i + (FCurViewScannerPhysCharPos - (FCurLinePhysStartOffset + 1));
+
+      if FCurViewToken.TokenAttr <> nil then begin
+        FrameStartPos.Logical := 0;
+        FrameStartPos.Physical := 1 + FCurLinePhysStartOffset;
+        FrameStartPos.Offset  := 0;
+        InitSynAttr(FCurViewAttr, FCurViewToken.TokenAttr, FrameStartPos);
+        FCurViewAttr.EndX := FWrapEndBound;
+        ATokenInfo.Attr := FCurViewAttr;
+      end
+      else
+        ATokenInfo.Attr := nil;
+
+      FVirtualFirstCol := FVirtualFirstCol - i;
+      FVirtualLastCol := FVirtualLastCol - i;
+      dec(FCurLinePhysStartOffset, i);
+
+      ATokenInfo.ExpandedExtraBytes := 0;
+      ATokenInfo.HasTabs            := False; /////////
+      ATokenInfo.HasDoubleWidth     := False;
+      ATokenInfo.NeedsEto           := False;
+
+      ATokenInfo.NextPos            := ATokenInfo.StartPos;
+
+      FCurViewToken.TokenLength := 0;
+      exit;
     end;
 
     if not Result then begin
@@ -864,10 +950,10 @@ begin
           ATokenInfo.EndPos.Physical    := Min(PhysPos, PhysTokenStop);
           ATokenInfo.EndPos.Offset      := ATokenInfo.EndPos.Physical - PhysPos; // Zero or Negative. Paint ends before Logical
 
-          ATokenInfo.PhysicalCharStart  := FCurViewScannerPhysCharPos - FCurLinePhysStart;
-          ATokenInfo.PhysicalClipStart  := ATokenInfo.StartPos.Physical - FCurLinePhysStart;
-          ATokenInfo.PhysicalCharEnd    := PhysPos - FCurLinePhysStart;
-          ATokenInfo.PhysicalClipEnd    := ATokenInfo.EndPos.Physical - FCurLinePhysStart;
+          ATokenInfo.PhysicalCharStart  := FCurViewScannerPhysCharPos - FCurLinePhysStartOffset;
+          ATokenInfo.PhysicalClipStart  := ATokenInfo.StartPos.Physical - FCurLinePhysStartOffset;
+          ATokenInfo.PhysicalCharEnd    := PhysPos - FCurLinePhysStartOffset;
+          ATokenInfo.PhysicalClipEnd    := ATokenInfo.EndPos.Physical - FCurLinePhysStartOffset;
           ATokenInfo.RtlInfo.IsRtl      := False;
           //ATokenInfo.RtlInfo.PhysLeft   := FCurViewRtlPhysStart;
           //ATokenInfo.RtlInfo.PhysRight  := FCurViewRtlPhysEnd;
@@ -997,10 +1083,10 @@ begin
           ATokenInfo.EndPos.Physical    := Max(PhysPos, PhysTokenStop);
           ATokenInfo.EndPos.Offset      := PhysPos - ATokenInfo.EndPos.Physical; //  <= 0
 
-          ATokenInfo.PhysicalCharStart  := PhysPos - FCurLinePhysStart;
-          ATokenInfo.PhysicalClipStart  := ATokenInfo.EndPos.Physical - FCurLinePhysStart;
-          ATokenInfo.PhysicalCharEnd    := FCurViewScannerPhysCharPos - FCurLinePhysStart;
-          ATokenInfo.PhysicalClipEnd    := ATokenInfo.StartPos.Physical - FCurLinePhysStart;
+          ATokenInfo.PhysicalCharStart  := PhysPos - FCurLinePhysStartOffset;
+          ATokenInfo.PhysicalClipStart  := ATokenInfo.EndPos.Physical - FCurLinePhysStartOffset;
+          ATokenInfo.PhysicalCharEnd    := FCurViewScannerPhysCharPos - FCurLinePhysStartOffset;
+          ATokenInfo.PhysicalClipEnd    := ATokenInfo.StartPos.Physical - FCurLinePhysStartOffset;
           ATokenInfo.RtlInfo.IsRtl      := True;
           ATokenInfo.RtlInfo.PhysLeft   := FCurViewRtlPhysStart;
           ATokenInfo.RtlInfo.PhysRight  := FCurViewRtlPhysEnd;

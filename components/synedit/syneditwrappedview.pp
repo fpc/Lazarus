@@ -184,6 +184,7 @@ type
     FCurSubLinePhysStartIdx, FPrevSubLinePhysWidth: Integer;
     FCurToken: TLazSynDisplayTokenInfo;
     FCurLineLogIdx: Integer;
+    FCurLineWrapIndentString: String;
   public
     constructor Create(AWrappedView: TSynEditLineMappingView; AWrapPlugin: TLazSynEditLineWrapPlugin);
     //destructor Destroy; override;
@@ -199,11 +200,21 @@ type
     FCurrentWrapColumn: Integer;
     FCaretWrapPos: TLazSynEditWrapCaretPos;
     FMinWrapWidth: Integer;
+    FWrapIndentMaxAbs: Integer;
+    FWrapIndentMaxRel: Integer;
+    FWrapIndentMinAbs: Integer;
+    FWrapIndentIsOffset: Boolean;
+    FWrapIndentWidth: Integer;
     procedure DoLinesChanged(Sender: TObject);
     procedure DoWidthChanged(Sender: TObject; Changes: TSynStatusChanges);
     function GetWrapColumn: Integer;
 
+    procedure SetWrapIndentMaxAbs(AValue: Integer);
+    procedure SetWrapIndentMaxRel(AValue: Integer);
+    procedure SetWrapIndentMinAbs(AValue: Integer);
     procedure SetMinWrapWidth(AValue: Integer);
+    procedure SetWrapIndentIsOffset(AValue: Boolean);
+    procedure SetWrapIndentWidth(AValue: Integer);
 public
     FLineMapView: TSynEditLineMappingView;
     function CreatePageMapNode(AMapTree: TSynLineMapAVLTree
@@ -211,13 +222,14 @@ public
   protected
     procedure SetEditor(const AValue: TCustomSynEdit); override;
 
+    function CalculateIndentFor(ALine: PChar; AMaxWidth: Integer; const PhysCharWidths: TPhysicalCharWidths): Integer;
     function CalculateNextBreak(ALine: PChar; ALogStartFrom: IntIdx; AMaxWidth: Integer;
       const PhysCharWidths: TPhysicalCharWidths; out APhysWidth: Integer): IntIdx;
     function  GetSublineCount (ALine: String; AMaxWidth: Integer; const APhysCharWidths: TPhysicalCharWidths): Integer; inline;
-    procedure GetSublineBounds(ALine: String; AMaxWidth: Integer;
+    procedure GetSublineBounds(ALine: String; AMaxWidth, AWrapIndent: Integer;
       const APhysCharWidths: TPhysicalCharWidths; ASubLine: Integer; out ALogStartX,
       ANextLogStartX, APhysStart: IntIdx; out APhysWidth: integer);
-    function  GetSubLineFromX (ALine: String; AMaxWidth: Integer; const APhysCharWidths: TPhysicalCharWidths; var APhysToViewedXPos: Integer): integer;
+    function  GetSubLineFromX (ALine: String; AMaxWidth, AWrapIndent: Integer; const APhysCharWidths: TPhysicalCharWidths; var APhysToViewedXPos: Integer): integer;
 
     procedure GetWrapInfoForViewedXY(var AViewedXY: TViewedPoint; AFlags: TViewedXYInfoFlags; out AFirstViewedX: IntPos; ALogPhysConvertor: TSynLogicalPhysicalConvertor);
 
@@ -235,7 +247,13 @@ public
 
   published
     property CaretWrapPos: TLazSynEditWrapCaretPos read FCaretWrapPos write FCaretWrapPos;
+
     property MinWrapWidth: Integer read FMinWrapWidth write SetMinWrapWidth;
+    property WrapIndentWidth: Integer read FWrapIndentWidth write SetWrapIndentWidth;
+    property WrapIndentIsOffset: Boolean read FWrapIndentIsOffset write SetWrapIndentIsOffset;
+    property WrapIndentMinAbs: Integer read FWrapIndentMinAbs write SetWrapIndentMinAbs;
+    property WrapIndentMaxAbs: Integer read FWrapIndentMaxAbs write SetWrapIndentMaxAbs;
+    property WrapIndentMaxRel: Integer read FWrapIndentMaxRel write SetWrapIndentMaxRel;
   end;
 
 implementation
@@ -1491,7 +1509,7 @@ var
   PrevSub: IntIdx;
   LineTxt: String;
   PWidth: TPhysicalCharWidths;
-  PhysWidth, MaxW: Integer;
+  PhysWidth, MaxW, CurLineWrapInd: Integer;
 begin
   IsNext := (AWrappedLine = FCurWrappedLine + 1) and (FCurWrappedLine >= 0);
   PrevSub := FCurrentWrapSubline;
@@ -1503,22 +1521,32 @@ begin
   PWidth := FLineMappingView.LogPhysConvertor.CurrentWidthsDirect;
   //PWidth  := FLineMappingView.GetPhysicalCharWidths(ARealLine);
   MaxW    := FWrapPlugin.WrapColumn;
+
+  CurLineWrapInd := 0;
+  if (FCurrentWrapSubline > 0) then begin
+    CurLineWrapInd := FWrapPlugin.CalculateIndentFor(PChar(LineTxt), MaxW, PWidth);
+    FCurLineWrapIndentString := StringOfChar(' ', CurLineWrapInd);
+    assert(CurLineWrapInd>=0, 'TLazSynEditLineWrapPlugin.GetSublineCount: CurLineWrapInd>=0');
+  end;
+
   if IsNext and (FCurrentWrapSubline = PrevSub + 1) then begin
     FCurSubLineLogStartIdx := FCurSubLineNextLogStartIdx;
+    // 2nd or lower line / deduct CurLineWrapInd
     FCurSubLineNextLogStartIdx := FWrapPlugin.CalculateNextBreak(PChar(LineTxt), FCurSubLineNextLogStartIdx,
-      MaxW, PWidth, PhysWidth);
+      MaxW-CurLineWrapInd, PWidth, PhysWidth);
     FCurSubLinePhysStartIdx := FCurSubLinePhysStartIdx + FPrevSubLinePhysWidth;
     FPrevSubLinePhysWidth := PhysWidth;
   end
   else begin
-    FWrapPlugin.GetSublineBounds(LineTxt, MaxW, PWidth, FCurrentWrapSubline,
+    // CurLineWrapInd may be incorrectly 0 / but only if retriving bounds for a "first line"
+    FWrapPlugin.GetSublineBounds(LineTxt, MaxW, CurLineWrapInd, PWidth, FCurrentWrapSubline,
       FCurSubLineLogStartIdx, FCurSubLineNextLogStartIdx, FCurSubLinePhysStartIdx, FPrevSubLinePhysWidth);
   end;
   AStartBytePos := AStartBytePos + FCurSubLineLogStartIdx;
   AStartPhysPos := ToPos(FCurSubLinePhysStartIdx);
   ALineByteLen := FCurSubLineNextLogStartIdx - FCurSubLineLogStartIdx;
 
-  FCurLineLogIdx := 0;
+  FCurLineLogIdx := -CurLineWrapInd;
 end;
 
 function TLazSynDisplayWordWrap.GetNextHighlighterToken(out
@@ -1527,6 +1555,16 @@ var
   PreStart: Integer;
 begin
   ATokenInfo := Default(TLazSynDisplayTokenInfo);
+  if FCurLineLogIdx < 0 then begin
+    Result := True;
+    ATokenInfo.TokenStart := PChar(FCurLineWrapIndentString);
+    ATokenInfo.TokenLength := -FCurLineLogIdx;
+    ATokenInfo.TokenAttr := nil;
+    ATokenInfo.TokenOrigin := dtoBeforeText;
+    FCurLineLogIdx := 0;
+    exit;
+  end;
+
   If (FCurLineLogIdx >= FCurSubLineNextLogStartIdx) and (FCurSubLineNextLogStartIdx < FCurRealLineByteLen) then begin
     ATokenInfo.TokenOrigin := dtoAfterWrapped;
     Result := True; // TokenStart = nil => no text
@@ -1594,6 +1632,33 @@ begin
     Result := FMinWrapWidth;
 end;
 
+procedure TLazSynEditLineWrapPlugin.SetWrapIndentMaxAbs(AValue: Integer);
+begin
+  if AValue < 0 then
+    AValue := 0;
+  if FWrapIndentMaxAbs = AValue then Exit;
+  FWrapIndentMaxAbs := AValue;
+  WrapAll;
+end;
+
+procedure TLazSynEditLineWrapPlugin.SetWrapIndentMaxRel(AValue: Integer);
+begin
+  if AValue > 100 then
+    AValue := 100;
+  if FWrapIndentMaxRel = AValue then Exit;
+  FWrapIndentMaxRel := AValue;
+  WrapAll;
+end;
+
+procedure TLazSynEditLineWrapPlugin.SetWrapIndentMinAbs(AValue: Integer);
+begin
+  if AValue < 0 then
+    AValue := 0;
+  if FWrapIndentMinAbs = AValue then Exit;
+  FWrapIndentMinAbs := AValue;
+  WrapAll;
+end;
+
 procedure TLazSynEditLineWrapPlugin.SetMinWrapWidth(AValue: Integer);
 begin
   if AValue < 1 then
@@ -1601,6 +1666,21 @@ begin
   if FMinWrapWidth = AValue then Exit;
   FMinWrapWidth := AValue;
   DoWidthChanged(nil, [scCharsInWindow]);
+end;
+
+procedure TLazSynEditLineWrapPlugin.SetWrapIndentIsOffset(AValue: Boolean);
+begin
+  if FWrapIndentIsOffset = AValue then Exit;
+  FWrapIndentIsOffset := AValue;
+  WrapAll;
+end;
+
+procedure TLazSynEditLineWrapPlugin.SetWrapIndentWidth(AValue: Integer);
+begin
+  // can be negative
+  if FWrapIndentWidth = AValue then Exit;
+  FWrapIndentWidth := AValue;
+  WrapAll;
 end;
 
 function TLazSynEditLineWrapPlugin.CreatePageMapNode(AMapTree: TSynLineMapAVLTree): TSynEditLineMapPage;
@@ -1614,6 +1694,39 @@ begin
   if (Editor <> nil) and (AValue <> nil) then
     raise Exception.Create('Not allowed to change editor');
   inherited SetEditor(AValue);
+end;
+
+function TLazSynEditLineWrapPlugin.CalculateIndentFor(ALine: PChar; AMaxWidth: Integer;
+  const PhysCharWidths: TPhysicalCharWidths): Integer;
+var
+  i: Integer;
+begin
+  if FWrapIndentIsOffset then begin
+    Result := 0;
+    i := CountLeadWhiteSpace(ALine);
+    while i > 0 do begin
+      dec(i);
+      Result := Result + (PhysCharWidths[i] and PCWMask);
+    end;
+    Result := Result + FWrapIndentWidth;
+    if Result < FWrapIndentMinAbs then
+      Result := FWrapIndentMinAbs;
+  end
+  else
+    Result := FWrapIndentWidth;
+
+  if FWrapIndentMaxAbs > 0 then
+    Result := Min(FWrapIndentMaxAbs, Result);
+
+  if FWrapIndentMaxRel > 0 then
+    Result := Min(MulDiv(AMaxWidth, FWrapIndentMaxRel, 100), Result)
+  else
+  if FWrapIndentMaxRel < 0 then
+    Result := Min(Max(0, AMaxWidth + FWrapIndentMaxRel), Result); // keep at least n columns visible
+
+  Result := Max(0, Result);
+  if Result >= AMaxWidth then
+    Result := Max(0, AMaxWidth-1);
 end;
 
 function TLazSynEditLineWrapPlugin.CalculateNextBreak(ALine: PChar;
@@ -1699,15 +1812,17 @@ begin
   if Length(ALine) = 0 then
     exit;
   x := CalculateNextBreak(PChar(ALine), 0, AMaxWidth, APhysCharWidths, dummy);
+  AMaxWidth := AMaxWidth - CalculateIndentFor(PChar(ALine), AMaxWidth, APhysCharWidths);
+  assert(AMaxWidth>0, 'TLazSynEditLineWrapPlugin.GetSublineCount: AMaxWidth>0');
   while (x < Length(ALine)) do begin
     inc(Result);
     x := CalculateNextBreak(PChar(ALine), x, AMaxWidth, APhysCharWidths, dummy);
   end;
 end;
 
-procedure TLazSynEditLineWrapPlugin.GetSublineBounds(ALine: String;
-  AMaxWidth: Integer; const APhysCharWidths: TPhysicalCharWidths; ASubLine: Integer;
-  out ALogStartX, ANextLogStartX, APhysStart: IntIdx; out APhysWidth: integer);
+procedure TLazSynEditLineWrapPlugin.GetSublineBounds(ALine: String; AMaxWidth,
+  AWrapIndent: Integer; const APhysCharWidths: TPhysicalCharWidths; ASubLine: Integer; out
+  ALogStartX, ANextLogStartX, APhysStart: IntIdx; out APhysWidth: integer);
 begin
   ALogStartX := 0;
   ANextLogStartX := 0;
@@ -1715,6 +1830,9 @@ begin
   if Length(ALine) = 0 then
     exit;
   ANextLogStartX := CalculateNextBreak(PChar(ALine), ALogStartX, AMaxWidth, APhysCharWidths, APhysWidth);
+
+  AMaxWidth := AMaxWidth - AWrapIndent;
+  assert(AMaxWidth>0, 'TLazSynEditLineWrapPlugin.GetSublineBounds: AMaxWidth>0');
   while ASubLine > 0 do begin
     ALogStartX := ANextLogStartX;
     APhysStart := APhysStart + APhysWidth;
@@ -1723,21 +1841,25 @@ begin
   end;
 end;
 
-function TLazSynEditLineWrapPlugin.GetSubLineFromX(ALine: String;
-  AMaxWidth: Integer; const APhysCharWidths: TPhysicalCharWidths;
-  var APhysToViewedXPos: Integer): integer;
+function TLazSynEditLineWrapPlugin.GetSubLineFromX(ALine: String; AMaxWidth, AWrapIndent: Integer;
+  const APhysCharWidths: TPhysicalCharWidths; var APhysToViewedXPos: Integer): integer;
 var
-  x, PhysWidth: Integer;
+  x, PhysWidth, AMaxWidth2: Integer;
 begin
   Result := 0;
   if Length(ALine) = 0 then
     exit;
   Result := -1;
   x := 0;
+
+  AMaxWidth2 := AMaxWidth - AWrapIndent;
+  assert(AMaxWidth2>0, 'TLazSynEditLineWrapPlugin.GetSublineCount: AMaxWidth>0');
+
   APhysToViewedXPos := ToIdx(APhysToViewedXPos);
   while (x < Length(ALine)) do begin
     inc(Result);
     x := CalculateNextBreak(PChar(ALine), x, AMaxWidth, APhysCharWidths, PhysWidth);
+    AMaxWidth := AMaxWidth2;
     if x >= Length(ALine) then
       break;
     if (FCaretWrapPos = wcpBOL) and (PhysWidth = APhysToViewedXPos) and (x < Length(ALine))
@@ -1761,7 +1883,7 @@ var
   LineTxt: String;
   PWidth: TPhysicalCharWidths;
   LogX, NextLogX, PhysX: IntIdx;
-  PhysWidth: Integer;
+  PhysWidth, WrapInd, AMaxWidth: Integer;
 begin
 
   YIdx := FLineMapView.Tree.GetLineForForWrap(ToIdx(AViewedXY.y), SubLineOffset);
@@ -1770,8 +1892,10 @@ begin
   LineTxt := FLineMapView.Strings[YIdx];
   ALogPhysConvertor.CurrentLine := YIdx;
   PWidth  := ALogPhysConvertor.CurrentWidthsDirect;
+  AMaxWidth := WrapColumn;
+  WrapInd := CalculateIndentFor(PChar(LineTxt), AMaxWidth, PWidth);
 
-  GetSublineBounds(LineTxt, WrapColumn, PWidth, SubLineOffset, LogX, NextLogX, PhysX, PhysWidth);
+  GetSublineBounds(LineTxt, AMaxWidth, WrapInd, PWidth, SubLineOffset, LogX, NextLogX, PhysX, PhysWidth);
 
   case CaretWrapPos of
     wcpEOL: begin
@@ -1795,33 +1919,41 @@ end;
 
 function TLazSynEditLineWrapPlugin.TextXYToLineXY(ATextXY: TPhysPoint
   ): TViewedSubPoint_0;
+var
+  AMaxWidth, WrapInd: Integer;
+  ALine: String;
+  APhysCharWidths: TPhysicalCharWidths;
 begin
   FLineMapView.LogPhysConvertor.CurrentLine := ATextXY.y;
+  ALine := FLineMapView.NextLines.Strings[ATextXY.y];
+  APhysCharWidths := FLineMapView.LogPhysConvertor.CurrentWidthsDirect;
+  AMaxWidth := WrapColumn;
+  WrapInd := CalculateIndentFor(PChar(ALine), AMaxWidth, APhysCharWidths);
   Result.x := ATextXY.x;
   Result.y :=
-    GetSubLineFromX(FLineMapView.NextLines.Strings[ATextXY.y],
-      WrapColumn,
-      FLineMapView.LogPhysConvertor.CurrentWidthsDirect,
-      Result.x
-    );
+    GetSubLineFromX(ALine, AMaxWidth, WrapInd, APhysCharWidths, Result.x);
+  if Result.x <> ATextXY.x then
+    Result.x := Result.x + WrapInd; // Result is on sub-line
 end;
 
 function TLazSynEditLineWrapPlugin.LineXYToTextX(ARealLine: IntPos;
   ALineXY: TViewedSubPoint_0): Integer;
 var
-  ANextLogX, APhysWidth: Integer;
+  AMaxWidth, WrapInd, ANextLogX, APhysWidth: Integer;
   ALine: String;
   APhysCharWidths: TPhysicalCharWidths;
   dummy: integer;
 begin
   FLineMapView.LogPhysConvertor.CurrentLine := ARealLine;
   ALine := FLineMapView.NextLines.Strings[ARealLine];
-  GetSublineBounds(ALine,
-    WrapColumn,
-    FLineMapView.LogPhysConvertor.CurrentWidthsDirect,
-    ALineXY.y, dummy, ANextLogX, Result, APhysWidth
-  );
+  APhysCharWidths := FLineMapView.LogPhysConvertor.CurrentWidthsDirect;
+  AMaxWidth := WrapColumn;
+  WrapInd := CalculateIndentFor(PChar(ALine), AMaxWidth, APhysCharWidths);
 
+  GetSublineBounds(ALine, AMaxWidth, WrapInd, APhysCharWidths, ALineXY.y, dummy, ANextLogX, Result, APhysWidth);
+
+  if (ALineXY.y > 0) then
+    ALineXY.x := max(1, ALineXY.x -WrapInd);
   if (ALineXY.y > 0) and (ALineXY.X <= 1) and (FCaretWrapPos = wcpEOL) then begin
     ALineXY.x := 2;
   end
