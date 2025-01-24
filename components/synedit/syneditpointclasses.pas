@@ -332,6 +332,7 @@ type
 
     FOldLinePos: Integer; // 1 based
     FOldCharPos: Integer; // 1 based
+    FOldViewedLineCharPos: TPoint;
 
     FAdjustToNextChar: Boolean;
     FMaxLeftChar: TMaxLeftCharFunc;
@@ -389,6 +390,7 @@ type
     property OldLineCharPos: TPoint read GetOldLineCharPos;
     property OldLineBytePos: TPoint read GetOldLineBytePos;
     property OldFullLogicalPos: TLogCaretPoint read GetOldFullLogicalPos;
+    property OldViewedLineCharPos: TPoint read FOldViewedLineCharPos;
 
     property AdjustToNextChar: Boolean read FAdjustToNextChar write FAdjustToNextChar; deprecated;
     property SkipTabs: Boolean read FSkipTabs write SetSkipTabs;
@@ -1108,6 +1110,13 @@ begin
   //ValidateBytePos;
   FOldCharPos := FCharPos;
   FOldLinePos := FLinePos;
+  if scViewedPosValid in FFlags then begin
+    FOldViewedLineCharPos := FViewedLineCharPos;
+  end
+  else begin
+    FOldViewedLineCharPos.x := -1;
+    FOldViewedLineCharPos.y := -1;
+  end;
 end;
 
 procedure TSynEditCaret.DoUnlock;
@@ -1125,6 +1134,13 @@ begin
   FTouched := False;
   FOldCharPos := FCharPos;
   FOldLinePos := FLinePos;
+  if scViewedPosValid in FFlags then begin
+    FOldViewedLineCharPos := FViewedLineCharPos;
+  end
+  else begin
+    FOldViewedLineCharPos.x := -1;
+    FOldViewedLineCharPos.y := -1;
+  end;
 end;
 
 procedure TSynEditCaret.SetLines(const AValue: TSynEditStringsLinked);

@@ -4864,8 +4864,11 @@ begin
   fStateFlags := fStateFlags - [sfExplicitTopLine, sfExplicitLeftChar];
   if FCaret.OldCharPos <> FCaret.CharPos then
     Include(fStatusChanges, scCaretX);
-  if FCaret.OldLinePos <> FCaret.LinePos then begin
+  if FCaret.OldLinePos <> FCaret.LinePos then
     Include(fStatusChanges, scCaretY);
+  if (FCaret.OldViewedLineCharPos.Y < 0) or
+     (FCaret.OldViewedLineCharPos.Y <> FCaret.ViewedLineCharPos.y)
+  then begin
     InvalidateGutterLines(FCaret.OldLinePos, FCaret.OldLinePos);
     InvalidateGutterLines(FCaret.LinePos, FCaret.LinePos);
   end;
