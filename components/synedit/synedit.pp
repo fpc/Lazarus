@@ -2682,6 +2682,7 @@ var
   i: integer;
   p: TList;
 begin
+  Destroying;
   {$IFDEF SynCheckPaintLock}
   if (FPaintLock > 0) then begin
     debugln(['TCustomSynEdit.Destroy: Paintlock=', FPaintLock, ' FInvalidateRect=', dbgs(FInvalidateRect)]);
