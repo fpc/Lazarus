@@ -60,6 +60,7 @@ type
     FCharWidthsLen: Integer;
     FCurTxtLineIdx : Integer;
     FCurLineByteLen: Integer;
+    FIsLastViewedSubLine: Boolean;
 
     // Fields for GetNextHighlighterTokenFromView
     // Info about the token (from highlighter)
@@ -356,6 +357,7 @@ begin
   FNextMarkupLogPos  := -1;
   FCurMarkupState      := cmPreInit;
   FCurTxtLineIdx     := ARealLine;
+  FIsLastViewedSubLine := FCurLineByteLen >= FCharWidthsLen;
 end;
 
 function TLazSynPaintTokenBreaker.GetNextHighlighterTokenEx(out
@@ -1831,15 +1833,17 @@ var
       CWLen := FTokenBreaker.CharWidthsLen;
       fMarkupManager.PrepareMarkupForRow(CurTextIndex+1);
 
-      DividerInfo := DisplayView.GetDrawDividerInfo;  // May call HL.SetRange
-      if (DividerInfo.Color <> clNone) and (nRightEdge >= FTextBounds.Left) then
-      begin
-        ypos := rcToken.Bottom - 1;
-        cl := DividerInfo.Color;
-        if cl = clDefault then
-          cl := RightEdgeColor;
-        fTextDrawer.DrawLine(nRightEdge, ypos, FTextBounds.Left - 1, ypos, cl);
-        dec(rcToken.Bottom);
+      if FTokenBreaker.FIsLastViewedSubLine then begin
+        DividerInfo := DisplayView.GetDrawDividerInfo;  // May call HL.SetRange
+        if (DividerInfo.Color <> clNone) and (nRightEdge >= FTextBounds.Left) then
+        begin
+          ypos := rcToken.Bottom - 1;
+          cl := DividerInfo.Color;
+          if cl = clDefault then
+            cl := RightEdgeColor;
+          fTextDrawer.DrawLine(nRightEdge, ypos, FTextBounds.Left - 1, ypos, cl);
+          dec(rcToken.Bottom);
+        end;
       end;
 
       while FTokenBreaker.GetNextHighlighterTokenEx(TokenInfoEx) do begin
