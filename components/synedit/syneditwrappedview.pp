@@ -1773,15 +1773,30 @@ end;
 function TLazSynEditLineWrapPlugin.LineXYToTextX(ARealLine: IntPos;
   ALineXY: TPhysPoint): Integer;
 var
-  dummy, dummy2: IntIdx;
-  dummy3: integer;
+  ANextLogX, APhysWidth: Integer;
+  ALine: String;
+  APhysCharWidths: TPhysicalCharWidths;
+  dummy: integer;
 begin
   FLineMapView.LogPhysConvertor.CurrentLine := ARealLine;
-  GetSublineBounds(FLineMapView.NextLines.Strings[ARealLine],
+  ALine := FLineMapView.NextLines.Strings[ARealLine];
+  GetSublineBounds(ALine,
     WrapColumn,
     FLineMapView.LogPhysConvertor.CurrentWidthsDirect,
-    ALineXY.y, dummy, dummy2, Result, dummy3
+    ALineXY.y, dummy, ANextLogX, Result, APhysWidth
   );
+
+  if (ALineXY.y > 0) and (ALineXY.X <= 1) and (FCaretWrapPos = wcpEOL) then begin
+    ALineXY.x := 2;
+  end
+  else
+  if (ANextLogX > 0) and (ANextLogX < Length(ALine)) then begin
+    if FCaretWrapPos = wcpEOL then
+      inc(APhysWidth);
+    if ALineXY.X > APhysWidth then
+      ALineXY.x := APhysWidth;
+  end;
+
   Result := Result + ALineXY.x;
 end;
 

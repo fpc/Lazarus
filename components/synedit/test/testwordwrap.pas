@@ -78,7 +78,7 @@ type
     procedure TestWordWrapTreeDeleteThenInsert;
   end;
 
-  TPointType = (ptViewed, ptAlternateViewed, ptPhys, ptLog);
+  TPointType = (ptViewed, ptPhys, ptLog);
 
   TPointSpecs = record
     XY: array [TPointType] of TPoint;
@@ -155,13 +155,11 @@ type
 
 implementation
 
-function p(VX, VY,  AVX, AVY,  PX, PY,  LX, LY: Integer; Offs: Integer = -1): TPointSpecs; overload;
+function p(VX, VY,  PX, PY,  LX, LY: Integer; Offs: Integer = -1): TPointSpecs; overload;
 begin
   with Result do begin
     XY[ptViewed].X          := VX;
     XY[ptViewed].Y          := VY;
-    XY[ptAlternateViewed].X := AVX;
-    XY[ptAlternateViewed].Y := AVY;
     XY[ptPhys].X            := PX;
     XY[ptPhys].Y            := PY;
     XY[ptLog].X             := LX;
@@ -170,27 +168,17 @@ begin
   end;
 end;
 
-function p(VX, VY,  PX, PY,  LX, LY: Integer; Offs: Integer = -1): TPointSpecs; overload;
+function c(Cmd: Array of TSynEditorCommand; VX, VY,  PX, PY,  LX, LY: Integer; Offs: Integer = -1; RunOnlyIf: Boolean = True): TCommandAndPointSpecs; overload;
 begin
-  Result := p(VX, VY, -1, -1, PX, PY, LX, LY, Offs);
-end;
-
-function c(Cmd: Array of TSynEditorCommand; VX, VY,  AVX, AVY,  PX, PY,  LX, LY: Integer; Offs: Integer = -1; RunOnlyIf: Boolean = True): TCommandAndPointSpecs; overload;
-begin
-  Result.Exp := p(VX, VY, AVX, AVY, PX, PY, LX, LY, Offs);
+  Result.Exp := p(VX, VY, PX, PY, LX, LY, Offs);
   SetLength(Result.Cmd, Length(Cmd));
   move(Cmd[0], Result.Cmd[0], SizeOf(cmd[0]) * Length(Cmd));
   Result.RunOnlyIf := RunOnlyIf;
 end;
 
-function c(Cmd: Array of TSynEditorCommand; VX, VY,  PX, PY,  LX, LY: Integer; Offs: Integer = -1; RunOnlyIf: Boolean = True): TCommandAndPointSpecs; overload;
-begin
-  Result := c(Cmd, VX, VY, -1, -1, PX, PY, LX, LY, Offs, RunOnlyIf);
-end;
-
 function c(Cmd: TSynEditorCommand; VX, VY,  PX, PY,  LX, LY: Integer; Offs: Integer = -1; RunOnlyIf: Boolean = True): TCommandAndPointSpecs; overload;
 begin
-  Result := c([Cmd], VX, VY, -1, -1, PX, PY, LX, LY, Offs, RunOnlyIf);
+  Result := c([Cmd], VX, VY, PX, PY, LX, LY, Offs, RunOnlyIf);
 end;
 
 function FillArray(AFrom, ATo: integer; AIncrease: Integer = 1): TIntArray;
@@ -1702,7 +1690,6 @@ procedure TTestWordWrapPluginBase.SetCaret(SourcePt: TPointType; APos: TPoint);
 begin
   case SourcePt of
     ptViewed:          SynEdit.CaretObj.ViewedLineCharPos := Apos;
-    ptAlternateViewed: SynEdit.CaretObj.ViewedLineCharPos := Apos;
     ptPhys:            SynEdit.CaretObj.LineCharPos       := Apos;
     ptLog:             SynEdit.CaretObj.LineBytePos       := APos;
   end;
@@ -1716,7 +1703,6 @@ var
 begin
   case ExpPt of
     ptViewed:          got := SynEdit.CaretObj.ViewedLineCharPos;
-    ptAlternateViewed: got := SynEdit.CaretObj.ViewedLineCharPos;
     ptPhys:            got := SynEdit.CaretObj.LineCharPos;
     ptLog:             got := SynEdit.CaretObj.LineBytePos;
   end;
@@ -1902,14 +1888,9 @@ var
   StartP, TestP: TPointType;
 begin
   CheckXyMap(AName + 'XyMap', APoints.xy[ptPhys], APoints.xy[ptViewed]);
-  if APoints.xy[ptAlternateViewed].x > 0 then
-    CheckXyMap(AName+ 'XyMap(a)', APoints.xy[ptPhys], APoints.xy[ptAlternateViewed], True);
 
 
   for TestP in TPointType do begin
-    if TestP = ptAlternateViewed then
-      continue;
-
     ClearCaret;
     SynEdit.CaretXY := APoints.XY[ptPhys];
     TestCaret(AName, ptPhys, TestP, APoints.XY[TestP], APoints.LogOffs);
@@ -1924,8 +1905,6 @@ begin
     for StartP in TPointType do begin
       if APoints.xy[StartP].x <= 0 then
         Continue;
-    if (StartP = ptAlternateViewed) then // and (TestP = ptViewed) then
-      continue;
     if (StartP = ptLog) and (APoints.LogOffs > 0) then
       continue;
 
@@ -1956,14 +1935,10 @@ begin
     for StartP in TPointType do begin
       if APoints.xy[StartP].x <= 0 then
         Continue;
-      if (StartP = ptAlternateViewed) then // and (TestP = ptViewed) then
-        continue;
       if (StartP = ptLog) and (APoints.LogOffs > 0) then
         continue;
 
       for TestP in TPointType do begin
-        if TestP = ptAlternateViewed then
-          continue;
         ClearCaret;
         SetCaret(StartP, APoints.XY[StartP]);
         for c in ATestCommands[i].Cmd do
@@ -2112,7 +2087,7 @@ begin
                         ]);
     CheckXyMap('wcpEOL', p( 8,1,           8,1,    8,1));
     if AllowPastEOL then
-    CheckXyMap('wcpEOL', p( 9,1,   1,2,    9,1,    9,1), // def |
+    CheckXyMap('wcpEOL', p( 9,1,           9,1,    9,1), // def |
                         [c([ecDown],                        9,2,  17,1,   17,1,0), // DEFG|
                          c([ecDown,ecDown],                 9,3,  26,1,   26,1,0), // XYZ     |
                          c([ecDown,ecDown,ecDown],          9,4,   9,2,    5,2,0), // A#9B#9|C
@@ -2124,7 +2099,7 @@ begin
                          c([ecDown,ecDown,ecDown,ecDown,ecDown,ecDown],   5,7,   5,3,    8,3,0,  SkipTab and not KeepX)
                         ])
     else // not AllowPastEOL then
-    CheckXyMap('wcpEOL', p( 9,1,   1,2,    9,1,    9,1), // after " " / still on line 1
+    CheckXyMap('wcpEOL', p( 9,1,           9,1,    9,1), // after " " / still on line 1
                         [c([ecDown],                        9,2,  17,1,   17,1,0),             // DEFG|
                          c([ecDown,ecDown],                 4,3,  21,1,   21,1,0),             // XYZ|
                          c([ecDown,ecDown,ecDown],          9,4,   9,2,    5,2,0,  KeepX),     // A#9B#9|C
@@ -2138,7 +2113,7 @@ begin
                           c([ecColSelDown,ecColSelDown,ecColSelDown], 4,10,  4,4,   4,4,0,  not AllowPastEOL)
                          ]);
     CheckXyMap('wcpEOL', p( 9,2,          17,1,   17,1)); // after "G"
-    CheckXyMap('wcpEOL', p(10,2,   1,3,   18,1,   18,1)); // after " "
+    CheckXyMap('wcpEOL', p(10,2,          18,1,   18,1)); // after " "
     CheckXyMap('wcpEOL', p( 2,3,          19,1,   19,1)); // after "X"
     CheckXyMap('wcpEOL', p( 4,3,          21,1,   21,1)); // after "Z" EOL
     if AllowPastEOL then
@@ -2157,14 +2132,14 @@ begin
     CheckXyMap('wcpEOL', p( 5,4,           5,2,    3,2, 0)); // after tab
     CheckXyMap('wcpEOL', p( 9,4,           9,2,    5,2)); // after tab, before "C"
     CheckXyMap('wcpEOL', p(10,4,          10,2,    6,2)); // after "C"
-    CheckXyMap('wcpEOL', p(11,4,   1,5,   11,2,    7,2)); // after " "
+    CheckXyMap('wcpEOL', p(11,4,          11,2,    7,2)); // after " "
     CheckXyMap('wcpEOL', p( 2,5,          12,2,    8,2)); // after "D"
     CheckXyMap('wcpEOL', p( 8,5,          18,2,   14,2)); // after "H"
     if not SkipTab then
     CheckXyMap('wcpEOL', p( 9,5,          19,2,   14,2, 1)); // in #9
     if not SkipTab then
     CheckXyMap('wcpEOL', p(10,5,          20,2,   14,2, 2)); // in #9
-    CheckXyMap('wcpEOL', p(11,5,   1,6,   21,2,   15,2)); // after #9
+    CheckXyMap('wcpEOL', p(11,5,          21,2,   15,2)); // after #9
     if not SkipTab then
     CheckXyMap('wcpEOL', p( 2,6,          22,2,   15,2, 1)); // in #9 / next line
     CheckXyMap('wcpEOL', p( 5,6,          25,2,   16,2)); // after 1st #9 / next line
@@ -2174,9 +2149,9 @@ begin
     CheckXyMap('wcpEOL', p( 1,7,           1,3,    1,3));
     CheckXyMap('wcpEOL', p( 2,7,           2,3,    3,3));
     CheckXyMap('wcpEOL', p( 8,7,           8,3,   14,3)); // after "ö"
-    CheckXyMap('wcpEOL', p( 9,7,   1,8,    9,3,   15,3)); // after " "
+    CheckXyMap('wcpEOL', p( 9,7,           9,3,   15,3)); // after " "
     CheckXyMap('wcpEOL', p( 2,8,          10,3,   17,3)); // after "Ä"
-    CheckXyMap('wcpEOL', p( 9,8,   1,9,   17,3,   29,3)); // after " "
+    CheckXyMap('wcpEOL', p( 9,8,          17,3,   29,3)); // after " "
 
     FWordWrap.CaretWrapPos := wcpBOL;
     CheckXyMap('wcpBOL', p( 1,1,           1,1,    1,1),
@@ -2194,14 +2169,14 @@ begin
                         ]);
     CheckXyMap('wcpBOL', p( 7,1,           7,1,    7,1)); // after "e"
     CheckXyMap('wcpBOL', p( 8,1,           8,1,    8,1));
-    CheckXyMap('wcpBOL', p( 1,2,   9,1,    9,1,    9,1)); // after " " / still on line 1
+    CheckXyMap('wcpBOL', p( 1,2,           9,1,    9,1)); // after " " / still on line 1
     CheckXyMap('wcpBOL', p( 2,2,          10,1,   10,1));
     CheckXyMap('wcpBOL', p( 9,2,          17,1,   17,1), // after "G"
                         [c([ecUp],                          8,1,   8,1,   8,1,0),
                          c([ecUp, ecDown],                  9,2,  17,1,  17,1,0,  KeepX),
                          c([ecUp, ecDown],                  8,2,  16,1,  16,1,0,  not KeepX)
                         ]);
-    CheckXyMap('wcpBOL', p( 1,3,  10,2,   18,1,   18,1)); // after " "
+    CheckXyMap('wcpBOL', p( 1,3,          18,1,   18,1)); // after " "
     CheckXyMap('wcpBOL', p( 2,3,          19,1,   19,1)); // after "X"
     CheckXyMap('wcpBOL', p( 4,3,          21,1,   21,1)); // after "Z" EOL
     if AllowPastEOL then
@@ -2223,14 +2198,14 @@ begin
                          c([ecDown,ecDown],                10,6,  30,2,   18,2,0,  KeepX),       // #9#9X|Y
                          c([ecDown,ecDown],                 5,6,  25,2,   16,2,0,  (not KeepX) and SkipTab)    // #9#9X|Y
                         ]);
-    CheckXyMap('wcpBOL', p( 1,5,  11,4,   11,2,    7,2)); // after " "
+    CheckXyMap('wcpBOL', p( 1,5,          11,2,    7,2)); // after " "
     CheckXyMap('wcpBOL', p( 2,5,          12,2,    8,2)); // after "D"
     CheckXyMap('wcpBOL', p( 8,5,          18,2,   14,2)); // after "H"
     if not SkipTab then
     CheckXyMap('wcpBOL', p( 9,5,          19,2,   14,2, 1)); // in #9
     if not SkipTab then
     CheckXyMap('wcpBOL', p(10,5,          20,2,   14,2, 2)); // in #9
-    CheckXyMap('wcpBOL', p( 1,6,  11,5,   21,2,   15,2)); // after #9
+    CheckXyMap('wcpBOL', p( 1,6,          21,2,   15,2)); // after #9
     if not SkipTab then
     CheckXyMap('wcpBOL', p( 2,6,          22,2,   15,2, 1)); // in #9 / next line
     CheckXyMap('wcpBOL', p( 5,6,          25,2,   16,2)); // after 1st #9 / next line
@@ -2244,9 +2219,9 @@ begin
     CheckXyMap('wcpBOL', p( 1,7,           1,3,    1,3));
     CheckXyMap('wcpBOL', p( 2,7,           2,3,    3,3));
     CheckXyMap('wcpBOL', p( 8,7,           8,3,   14,3)); // after "ö"
-    CheckXyMap('wcpBOL', p( 1,8,   9,7,    9,3,   15,3)); // after " "
+    CheckXyMap('wcpBOL', p( 1,8,           9,3,   15,3)); // after " "
     CheckXyMap('wcpBOL', p( 2,8,          10,3,   17,3)); // after "Ä"
-    CheckXyMap('wcpBOL', p( 1,9,   9,8,   17,3,   29,3)); // after " "
+    CheckXyMap('wcpBOL', p( 1,9,          17,3,   29,3)); // after " "
 
   end;
 
