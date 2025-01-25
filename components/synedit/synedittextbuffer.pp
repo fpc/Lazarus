@@ -1570,6 +1570,10 @@ begin
     EditDelete(1, i, length(Strings[i-1]));
   DeleteLines(LogY - 1, ACount);
   CurUndoList.AddChange(TSynEditUndoTxtLinesDel.Create(LogY, ACount));
+  i := LogY;
+  if i >= Count then dec(i);
+  if i > 0 then
+    MarkModified(LogY, LogY);
   SendNotification(senrEditAction, self, LogY, -ACount, 1, 0, '');
   DecIsInEditAction;
 end;
