@@ -3604,15 +3604,22 @@ begin
     gdk_window_scroll(GdkWindow, dx, dy);
   end;
 
+  if (Widget is TGtk3CustomControl)  then
+  begin
+    // writeln('ScrollWindowEx control=',dbgsName(Widget.LCLObject));
+    // keep in sync.
+    CurX := -Round(TGtk3CustomControl(Widget).getHorizontalScrollbar^.adjustment^.get_value);
+    CurY := -Round(TGtk3CustomControl(Widget).getVerticalScrollbar^.adjustment^.get_value);
+    (Widget as TGtk3CustomControl).ScrollX := CurX + dx;
+    (Widget as TGtk3CustomControl).ScrollY := CurY + dy;
+  end;
+
   if (Flags and SW_ERASE) <> 0 then
   begin
-    if Widget is TGtk3ScrollableWin then
-    begin
-      CurX := (Widget as TGtk3ScrollableWin).ScrollX;
-      CurY := (Widget as TGtk3ScrollableWin).ScrollY;
-      (Widget as TGtk3ScrollableWin).ScrollX := CurX + dx;
-      (Widget as TGtk3ScrollableWin).ScrollY := CurY + dy;
-    end;
+
+    if (Flags and SW_INVALIDATE) = 0 then
+      Widget.GetContainerWidget^.queue_draw;
+
     {$IFDEF DEBUGSCROLLWINDOWEX}
     if cairoRegion <> nil then
     begin
@@ -3643,15 +3650,13 @@ begin
       cairo_region_get_extents(cairoRegion, @UpdateRect);
       R := Bounds(UpdateRect.x, UpdateRect.y, UpdateRect.Width, UpdateRect.Height);
       prcUpdate := @R;
-      // Widget.Update(@R);
-      gdk_window_move_region(GdkWindow, cairoRegion, dx, dy);
-      // gtk_widget_queue_draw_area(Widget.GetContainerWidget, UpdateRect.x, UpdateRect.y, UpdateRect.width, UpdateRect.Height);
+      // move region means moving children too.
+      // gdk_window_move_region(GdkWindow, cairoRegion, dx, dy);
+      gtk_widget_queue_draw_area(Widget.GetContainerWidget, UpdateRect.x, UpdateRect.y, UpdateRect.width, UpdateRect.Height);
     end else
     begin
       UpdateRect := CairoRectFromRect(ScrollRect);
-      cairoRegion := cairo_region_create_rectangle(@UpdateRect);
-      gdk_window_move_region(GdkWindow, cairoRegion, dx, dy);
-      cairo_region_destroy(cairoRegion);
+      gtk_widget_queue_draw_area(Widget.GetContainerWidget, UpdateRect.x, UpdateRect.y, UpdateRect.width, UpdateRect.Height);
       prcUpdate := prcScroll;
     end;
   end;
