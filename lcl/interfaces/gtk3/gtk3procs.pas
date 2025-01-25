@@ -250,6 +250,7 @@ const
 
 
 function G_OBJECT_TYPE_NAME(AWidget: PGObject): string;
+
 function Gtk3IsObject(AWidget: PGObject): GBoolean;
 function Gtk3IsButton(AWidget: PGObject): GBoolean;
 
@@ -272,6 +273,7 @@ function Gtk3IsMenuItem(AWidget: PGObject): GBoolean;
 function Gtk3IsNoteBook(AWidget: PGObject): GBoolean;
 function Gtk3IsRadioMenuItem(AWidget: PGObject): GBoolean;
 
+function Gtk3IsAdjustment(AWidget: PGObject): GBoolean;
 function Gtk3IsHScrollbar(AWidget: PGObject): GBoolean;
 function Gtk3IsVScrollbar(AWidget: PGObject): GBoolean;
 
@@ -539,6 +541,11 @@ end;
 function Gtk3IsRadioMenuItem(AWidget: PGObject): GBoolean;
 begin
   Result := (AWidget <> nil) and  g_type_check_instance_is_a(PGTypeInstance(AWidget), gtk_radio_menu_item_get_type);
+end;
+
+function Gtk3IsAdjustment(AWidget:PGObject):GBoolean;
+begin
+  Result := (AWidget <> nil) and  g_type_check_instance_is_a(PGTypeInstance(AWidget), gtk_adjustment_get_type);
 end;
 
 function Gtk3IsHScrollbar(AWidget: PGObject): GBoolean;
@@ -1356,6 +1363,5 @@ begin
     exit;
   Result := g_type_name(PGObject(AWidget)^.g_type_instance.g_class^.g_type);
 end;
-
 
 end.
