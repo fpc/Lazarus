@@ -537,8 +537,8 @@ begin
   if not Gtk3IsScrolledWindow(Scrolled) then
     exit;
   {$note below is old gtk2 implementation}
-  TGtk3ScrollingWinControl(AWinControl.Handle).ScrollX := TGtk3ScrollingWinControl(AWinControl.Handle).ScrollX + DeltaX;
-  TGtk3ScrollingWinControl(AWinControl.Handle).ScrollY := TGtk3ScrollingWinControl(AWinControl.Handle).ScrollY + DeltaY;
+  //TGtk3ScrollingWinControl(AWinControl.Handle).ScrollX := TGtk3ScrollingWinControl(AWinControl.Handle).ScrollX + DeltaX;
+  //TGtk3ScrollingWinControl(AWinControl.Handle).ScrollY := TGtk3ScrollingWinControl(AWinControl.Handle).ScrollY + DeltaY;
   //TODO: change this part like in Qt using ScrollX and ScrollY variables
   //GtkAdjustment calculation isn't good here (can go below 0 or over max)
   // DebugLn('TGtk3WSWinControl.ScrollBy DeltaX=',dbgs(DeltaX),' DeltaY=',dbgs(DeltaY));

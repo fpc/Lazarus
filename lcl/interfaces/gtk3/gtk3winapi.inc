@@ -2529,7 +2529,6 @@ begin
   else
   if wtScrollingWin in AWidget.WidgetType then
     AScrollWin := TGtk3ScrollableWin(Handle).GetScrolledWindow;
-
   case SBStyle of
     SB_Horz:
     begin
@@ -3604,15 +3603,37 @@ begin
     gdk_window_scroll(GdkWindow, dx, dy);
   end;
 
-  if (Widget is TGtk3CustomControl)  then
+  if (Widget is TGtk3CustomControl) then
   begin
-    // writeln('ScrollWindowEx control=',dbgsName(Widget.LCLObject));
-    // keep in sync.
-    CurX := -Round(TGtk3CustomControl(Widget).getHorizontalScrollbar^.adjustment^.get_value);
-    CurY := -Round(TGtk3CustomControl(Widget).getVerticalScrollbar^.adjustment^.get_value);
-    (Widget as TGtk3CustomControl).ScrollX := CurX + dx;
-    (Widget as TGtk3CustomControl).ScrollY := CurY + dy;
+    if not TGtk3CustomControl(Widget).InUpdate then
+    begin
+      {$IFDEF GTK3DEBUGSCROLL}
+      writeln(Format('> ScrollWindowEx processing dx=%d, dy=%d for control %s',
+                     [dx, dy, dbgsName(Widget.LCLObject),' applying InUpdate lock ...']));
+      {$ENDIF}
+      TGtk3CustomControl(Widget).BeginUpdate;
+      // Get current adjustment values
+      CurX := Round(gtk_adjustment_get_value(TGtk3CustomControl(Widget).GetScrolledWindow^.get_hadjustment));
+      CurY := Round(gtk_adjustment_get_value(TGtk3CustomControl(Widget).GetScrolledWindow^.get_vadjustment));
+
+      // Update adjustments by applying dx and dy
+      if dx <> 0 then
+        gtk_adjustment_set_value(TGtk3CustomControl(Widget).GetScrolledWindow^.get_hadjustment, Max(CurX + dx, 0));
+      if dy <> 0 then
+        gtk_adjustment_set_value(TGtk3CustomControl(Widget).GetScrolledWindow^.get_vadjustment, Max(CurY + dy, 0));
+      {$IFDEF GTK3DEBUGSCROLL}
+      writeln(Format('< ScrollWindowEx updated adjustments to CurX=%d, CurY=%d for control %s ... releasing InUpdate lock...',
+                     [CurX + dx, CurY + dy, dbgsName(Widget.LCLObject)]));
+      {$ENDIF}
+      TGtk3CustomControl(Widget).EndUpdate;
+    end else
+    begin
+      {$IFDEF GTK3DEBUGSCROLL}
+      writeln('=======> ScrollWindowEx: No update to adjustments since InUpdate = True. Now paint can be wrong since offset isn''t updated by dx and dy here...no more ScrollX and ScrollY. TODO');
+      {$ENDIF}
+    end;
   end;
+
 
   if (Flags and SW_ERASE) <> 0 then
   begin
@@ -3951,8 +3972,71 @@ var
   W, H: double;
   OverlayFactor: integer;
   AControl: TGtk3Widget absolute Handle;
-
+  {$IFDEF GTK3DEBUGSCROLL}
+  S: String;
+  {$ENDIF}
   procedure UpdateAdjustment;
+  var
+    ATarget: gdouble;
+  begin
+    if AControl.InUpdate then
+    begin
+      {$IFDEF GTK3DEBUGSCROLL}
+      writeln('SetScrollInfo: UpdateAdjustment exiting because of InUpdate lock.');
+      {$ENDIF}
+      exit;
+    end;
+    AControl.BeginUpdate;
+    if (ScrollInfo.FMask and SIF_RANGE) <> 0 then
+    begin
+      ATarget := Adjustment^.lower;
+      SetGDouble(ATarget, ScrollInfo.nMin, HasChanged);
+      Adjustment^.lower := ATarget;
+
+      ATarget := Adjustment^.upper;
+      SetGDouble(ATarget, ScrollInfo.nMax, HasChanged);
+      Adjustment^.upper := ATarget;
+    end;
+
+    if (ScrollInfo.FMask and SIF_PAGE) <> 0 then
+    begin
+      ATarget := Adjustment^.page_size;
+      SetGDouble(ATarget, ScrollInfo.nPage, HasChanged);
+
+      if Adjustment^.upper > Adjustment^.lower then
+      begin
+        ATarget := Min(Max(ATarget, 0), Adjustment^.upper - Adjustment^.lower + 1);
+        if ATarget > 0 then
+        begin
+          Adjustment^.page_size := ATarget;
+
+          ATarget := Adjustment^.page_increment;
+          SetGDouble(ATarget, Max(1, (Adjustment^.page_size / 6) + 1), HasChanged);
+          Adjustment^.page_increment := ATarget;
+        end;
+      end
+      else
+        Adjustment^.page_size := 0; // No valid range to scroll
+    end;
+
+    if (ScrollInfo.FMask and SIF_POS) <> 0 then
+    begin
+      ATarget := Adjustment^.value;
+      SetGDouble(ATarget, ScrollInfo.nPos, HasChanged);
+      ATarget := Max(ATarget, Adjustment^.lower);
+      ATarget := Min(ATarget, Adjustment^.upper - Max(Adjustment^.page_size - 1, 0));
+      Adjustment^.value := ATarget;
+    end;
+
+    gtk_adjustment_changed(Adjustment);
+    {$IFDEF GTK3DEBUGSCROLL}
+    DebugLn(Format('Updated Adjustment: lower=%.2f, upper=%.2f, page_size=%.2f, value=%.2f, page_increment=%.2f InUpdate %s',
+      [Adjustment^.lower, Adjustment^.upper, Adjustment^.page_size, Adjustment^.value, Adjustment^.page_increment, BoolToStr(AControl.InUpdate, True)]));
+    {$ENDIF}
+    AControl.EndUpdate;
+  end;
+
+  procedure UpdateAdjustmentOrig;
   var
     ATarget: gdouble;
   begin
@@ -3973,11 +4057,14 @@ var
       SetGDouble(ATarget, ScrollInfo.nPage, HasChanged);
 
       ATarget := Min(Max(ATarget, 0), Adjustment^.upper - Adjustment^.lower + 1);
-      Adjustment^.page_size := ATarget;
+      if ATarget > 0 then
+      begin
+        Adjustment^.page_size := ATarget;
 
-      ATarget := Adjustment^.page_increment;
-      SetGDouble(ATarget, Max(1, (Adjustment^.page_size / 6) + 1), HasChanged);
-      Adjustment^.page_increment := ATarget;
+        ATarget := Adjustment^.page_increment;
+        SetGDouble(ATarget, Max(1, (Adjustment^.page_size / 6) + 1), HasChanged);
+        Adjustment^.page_increment := ATarget;
+      end;
     end;
 
     if (ScrollInfo.FMask and SIF_POS) <> 0 then
@@ -3997,7 +4084,7 @@ var
   begin
     if bRedraw then
     begin
-      gtk_adjustment_changed(Adjustment);
+      //gtk_adjustment_changed(Adjustment);
       if IsScrollWindow then // seem that gtk3 does not like this
       begin
         ScrollWin^.get_policy(@AHorzPolicy, @AVertPolicy);
@@ -4026,6 +4113,29 @@ begin
   if TGtk3Widget(Handle) is TGtk3Window then
     exit;
 
+  {$IFDEF GTK3DEBUGSCROLL}
+  S := '';
+  if (ScrollInfo.FMask and SIF_RANGE) <> 0 then
+    S := Format(' SET RANGE min %d max %d,',[ScrollInfo.nMin, ScrollInfo.nMax]);
+  if (ScrollInfo.FMask and SIF_PAGE) <> 0 then
+    S := S + ' SET PAGE to ' + ScrollInfo.nPage.ToString + ',';
+  if (ScrollInfo.FMask and SIF_POS) <> 0 then
+    S := S + ' SET SIF_POS to ' + ScrollInfo.nPos.ToString + ',';
+  if (ScrollInfo.FMask and SIF_TRACKPOS) <> 0 then
+    S := S + ' SET SIF_TRACKPOS to ' + ScrollInfo.nTrackPos.ToString + ',';
+  if (ScrollInfo.FMask and SIF_UPDATEPOLICY) <> 0 then
+    S := S +' HAVE UPDATE_POLICY FLAG !';
+
+  if SBStyle = SB_VERT then
+  begin
+    writeln('SetScrollInfo ',dbgsName(AControl),' LCL=',dbgsName(AControl.LCLObject),' SBStyle=SB_VERT PARAMS=',S);
+  end else
+  if SBStyle = SB_HORZ then
+  begin
+    writeln('SetScrollInfo ',dbgsName(AControl),' LCL=',dbgsName(AControl.LCLObject),' SBStyle=SB_HORZ PARAMS=',S);
+  end else
+    writeln('SetScrollInfo ',dbgsName(AControl),' LCL=',dbgsName(AControl.LCLObject),' SBStyle=',SBStyle,' PARAMS=',S);
+  {$ENDIF}
   ScrollWin := nil;
   ScrollBar := niL;
   if [wtScrollBar] * AControl.WidgetType <> [] then
