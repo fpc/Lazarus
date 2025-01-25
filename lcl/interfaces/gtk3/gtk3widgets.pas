@@ -8298,16 +8298,20 @@ begin
   Control := TGtk3CustomControl(data);
   {$IFDEF GTK3DEBUGSCROLL}
   writeln('>TGtk3CustomControl.RangeValueChanged ', dbgsName(Control.LCLObject), ' InUpdate=', Control.InUpdate);
+  {$ENDIF}
   if Control.InUpdate then
   begin
+    {$IFDEF GTK3DEBUGSCROLL}
     writeln('<TGtk3CustomControl.RangeValueChanged exiting because of InUpdate lock.');
+    {$ENDIF}
     exit;
   end else
   begin
+    {$IFDEF GTK3DEBUGSCROLL}
     writeln('  setting InUpdate lock.');
+    {$ENDIF}
     Control.BeginUpdate;
   end;
-  {$ENDIF}
 
   Adjustment := gtk_range_get_adjustment(range);
   CurrentValue := gtk_adjustment_get_value(Adjustment);
@@ -8341,8 +8345,8 @@ begin
   {$IFDEF GTK3DEBUGSCROLL}
   WriteLn('<TGtk3CustomControl.RangeValueChanged: CurrentValue=', CurrentValue:0:2, ', PrevValue=', PrevValue:0:2,
           ', Delta=', Delta:0:2, ', InUpdate=', Control.InUpdate, ' releasing lock ...');
-  Control.EndUpdate;
   {$ENDIF}
+  Control.EndUpdate;
 end;
 
 procedure TGtk3CustomControl.InitializeWidget;
