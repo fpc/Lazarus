@@ -175,7 +175,8 @@ type
   end;
 
 implementation
-uses StdCtrls, CheckLst, LCLProc, gtk3widgets, gtk3procs, Gtk3WSStdCtrls, Gtk3WSCheckLst;
+uses StdCtrls, CheckLst, LCLProc, gtk3widgets, gtk3procs, Gtk3WSStdCtrls,
+  Gtk3WSCheckLst, LazTracer;
 
 {*************************************************************}
 {                      TGtkListStoreStringList methods             }
