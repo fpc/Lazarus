@@ -96,6 +96,7 @@ type
     fSpaceAttri: TSynHighlighterAttributes;
     fIdentifierAttri: TSynHighlighterAttributes;
     fVarAttri: TSynHighlighterAttributes;
+    fUnknownAttri: TSynHighlighterAttributes;
     fKeyWords: TStrings;
     fSecondKeys: TStrings;
     procedure BraceOpenProc;
@@ -161,6 +162,8 @@ type
       write fSymbolAttri;
     property VarAttri: TSynHighlighterAttributes read fVarAttri
       write fVarAttri;
+    property UnknownAttri: TSynHighlighterAttributes read fUnknownAttri
+      write fUnknownAttri;
   end;
 
 implementation
@@ -197,7 +200,7 @@ begin
   for I := #0 to #255 do
   begin
     case I of
-      '_', '0'..'9', 'a'..'z', 'A'..'Z':
+      '_', '0'..'9', 'a'..'z', 'A'..'Z', '-', '~':
         Identifiers[I] := True;
       else
         Identifiers[I] := False;
@@ -259,7 +262,7 @@ begin
       ';': fProcTable[I] := @PointCommaProc;
       '.': fProcTable[i] := @DotProc;
       #13: fProcTable[I] := @CRProc;
-      'A'..'Z', 'a'..'z', '_': fProcTable[I] := @IdentProc;
+      'A'..'Z', 'a'..'z', '_', '-', '~': fProcTable[I] := @IdentProc;
       #10: fProcTable[I] := @LFProc;
       #0: fProcTable[I] := @NullProc;
       '0'..'9': fProcTable[I] := @NumberProc;
@@ -319,6 +322,9 @@ begin
   fVarAttri := TSynHighlighterAttributes.Create(@SYNS_AttrVariable, SYNS_XML_AttrVariable);
   fVarAttri.Foreground := clPurple;
   AddAttribute(fVarAttri);
+  fUnknownAttri := TSynHighlighterAttributes.Create(@SYNS_AttrUnknownWord, SYNS_XML_AttrUnknownWord);
+  fUnknownAttri.Foreground := clDkGray;
+  AddAttribute(fUnknownAttri);
   SetAttributesOnChange(@DefHighlightChange);   ////TL 2003-06-11: added the @prefix to DefHighlightChange
 
   MakeMethodTables;
@@ -759,7 +765,7 @@ begin
     tkString: Result := fStringAttri;
     tkSymbol: Result := fSymbolAttri;
     tkVariable: Result := fVarAttri;
-    tkUnknown: Result := fSymbolAttri;
+    tkUnknown: Result := fUnknownAttri;
   else
     Result := nil;
   end;
