@@ -2789,6 +2789,7 @@ begin
        (FColors[ahaIdentComplRecent].Foreground <> clNone);
 
     MaxX:=TheForm.ClientWidth;
+    if ItemSelected then MaxX := MaxInt; // Might be hint, then it has more space
     t:=CurrentCompletionType;
     if Manager.ActiveCompletionPlugin<>nil then
     begin
