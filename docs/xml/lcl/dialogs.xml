@@ -2422,9 +2422,9 @@ Represents the options which can be enabled during execution of a color dialog.
 </short>
 <descr>
 <p>
-Values from the enumeration are stored in the TColorDialogOptions set type used 
-to implement the TColorDialog.Options property. Please note that some options 
-are platform-specific, as indicated in their descriptions.
+Values from the enumeration are stored in the TColorDialogOptions set type 
+used to implement the TColorDialog.Options property. Please note that some 
+options are platform-specific, as indicated in their descriptions.
 </p>
 </descr>
 <version>
@@ -2437,8 +2437,8 @@ Added in LCL version 4.0.
 </element>
 <element name="TColorDialogOption.cdFullOpen">
 <short>
-Causes the dialog box to display the additional controls that allow the user to 
-create custom colors.
+Causes the dialog box to display the additional controls that allow the user 
+to create custom colors.
 </short>
 </element>
 <element name="TColorDialogOption.cdPreventFullOpen">
@@ -2464,7 +2464,8 @@ colors.
 </element>
 <element name="TColorDialogOption.cdShowAlphaChannel">
 <short>
-Displays the AlphaChannel control on the dialog. (GTK2, QT4, QT5, QT6, Cocoa)
+Displays the AlphaChannel control on the dialog (GTK2, GTK3, QT4, QT5, QT6, 
+Cocoa). Not implemented for the Windows platform.
 </short>
 </element>
 <element name="TColorDialogOption.cdNoButtons">
@@ -2650,9 +2651,9 @@ Constructor for the class instance.
 </short>
 <descr>
 <p>
-<var>Create</var> is the constructor for <var>TColorDialog</var>, and calls the 
-inherited <var>Create</var> method. Create allocates resources and initializes 
-the default values for properties in the class instance, including:
+<var>Create</var> is the constructor for <var>TColorDialog</var>, and calls 
+the inherited <var>Create</var> method. Create allocates resources and 
+initializes the default values for properties in the class instance, including:
 </p>
 <dl>
 <dt>AlphaChannel </dt>
@@ -2722,11 +2723,12 @@ Indicates the opacity or transparency for the selected color.
 <p>
 <var>AlphaChannel</var> is a Byte property which normally contains a value in 
 the range 0 (transparent) to 255 (opaque). The default value for the property 
-is 255 ($FF)(fully opaque). The AlphaChannel in a color is used in images which 
-have a TransparentMode where partial transparency is supported. AlphaChannel 
-indicates the opacity for pixels using the color. It allows the color to be 
-combined over other colors using alpha compositing. The more opaque a color, 
-the more it hides the background against which the color is presented.
+is 255 ($FF)(fully opaque). The AlphaChannel in a color is used in images 
+which have a TransparentMode where partial transparency is supported. 
+AlphaChannel indicates the opacity for pixels using the color. It allows the 
+color to be combined over other colors using alpha compositing. The more 
+opaque a color, the more it hides the background against which the color is 
+presented.
 </p>
 <p>
 AlphaChannel is used in widgetsets where the value is supported, and is 
@@ -2734,8 +2736,8 @@ extracted from or combined with the color value as needed for the native dialog.
 </p>
 <remark>
 On the Windows platform, a control is not displayed for AlphaChannel on the 
-native color selection dialog. Only solid, fully-opaque colors are supported on 
-the dialog.
+native color selection dialog. Only solid, fully-opaque colors are supported 
+on the dialog.
 </remark>
 </descr>
 <version>
