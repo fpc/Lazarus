@@ -2794,6 +2794,7 @@ begin
     Colors.TextSelectedColor := FActiveEditTextSelectedColor;
     Colors.TextHilightColor := FActiveEditTextHighLightColor;
     MaxX:=TheForm.ClientWidth;
+    if ItemSelected then MaxX := MaxInt; // Might be hint, then it has more space
     t:=CurrentCompletionType;
     if Manager.ActiveCompletionPlugin<>nil then
     begin
