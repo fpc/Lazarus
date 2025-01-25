@@ -300,6 +300,7 @@ type
     procedure SrcSynCaretChanged(Sender: TObject);
     function  GetHighlighter: TSynCustomFoldHighlighter;
   protected
+    procedure RestoreTopLineAfterFold(AnOldTopLine: integer);
     procedure DoOnStatusChange(Changes: TSynStatusChanges); override;
     function CreateGutter(AOwner : TSynEditBase; ASide: TSynGutterSide;
                           ATextDrawer: TheTextDrawer): TSynGutter; override;
@@ -309,7 +310,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function TextIndexToViewPos(aTextIndex : Integer) : Integer;
+    function TextIndexToViewPos(aTextIndex : Integer) : Integer; // Wrong name: argument is TextPos, not TextIdx
     property IDEGutterMarks: TIDESynGutterMarks read GetIDEGutterMarks;
     property TopView;
     property TextBuffer;
@@ -1710,6 +1711,16 @@ begin
     Result := nil;
 end;
 
+procedure TIDESynEditor.RestoreTopLineAfterFold(AnOldTopLine: integer);
+var
+  tv: Integer;
+begin
+  tv := TextIndexToViewPos(AnOldTopLine);
+  if not TextView.IsTextIdxVisible(ToIdx(AnOldTopLine)) then
+    tv := tv + 1;
+  TopView := tv;
+end;
+
 procedure TIDESynEditor.DoOnStatusChange(Changes: TSynStatusChanges);
 begin
   inherited DoOnStatusChange(Changes);
@@ -2940,12 +2951,13 @@ end;
 
 procedure TIDESynGutterCodeFolding.UnFoldIfdef(AInclDisabled, AInclEnabled: Boolean);
 var
-  i, j, k, y1, y2: Integer;
+  i, j, k, y1, y2, CurTopLine: Integer;
   FldInf: TSynFoldNodeInfo;
   Tree: TSynMarkupHighIfDefLinesTree;
   IfLineNode: TSynMarkupHighIfDefLinesNodeInfo;
   IsDisabled: Boolean;
 begin
+  CurTopLine := TSynEdit(SynEdit).TopLine;
   if TSynEdit(SynEdit).SelAvail then begin
     y1 := TSynEdit(SynEdit).BlockBegin.Y;
     y2 := TSynEdit(SynEdit).BlockEnd.Y;
@@ -2982,15 +2994,17 @@ begin
       end; //FoldView.IsFoldedAtTextIndex(i,j)
     end;
   end;
+TIDESynEditor(SynEdit).RestoreTopLineAfterFold(CurTopLine);
 end;
 
 procedure TIDESynGutterCodeFolding.FoldIfdef(AInclTemp: Boolean);
 var
-  i, j, k, y1, y2: Integer;
+  i, j, k, y1, y2, CurTopLine: Integer;
   FldInf: TSynFoldNodeInfo;
   Tree: TSynMarkupHighIfDefLinesTree;
   IfLineNode: TSynMarkupHighIfDefLinesNodeInfo;
 begin
+  CurTopLine := TSynEdit(SynEdit).TopLine;
   if TSynEdit(SynEdit).SelAvail then begin
     y1 := TSynEdit(SynEdit).BlockBegin.Y;
     y2 := TSynEdit(SynEdit).BlockEnd.Y;
@@ -3021,14 +3035,17 @@ begin
       end;
     end;
   end;
+  TIDESynEditor(SynEdit).RestoreTopLineAfterFold(CurTopLine);
 end;
 
 procedure TIDESynGutterCodeFolding.PopClickedUnfoldAll(Sender: TObject);
 var
-  i, y1, y2: Integer;
+  i, y1, y2, CurTopLine: Integer;
 begin
+  CurTopLine := TSynEdit(SynEdit).TopLine;
   if not TSynEdit(SynEdit).SelAvail then begin
     FoldView.UnfoldAll;
+    TIDESynEditor(SynEdit).RestoreTopLineAfterFold(CurTopLine);
     exit;
   end;
   y1 := TSynEdit(SynEdit).BlockBegin.Y;
@@ -3036,13 +3053,15 @@ begin
   if TSynEdit(SynEdit).BlockEnd.X = 1 then dec(y2);
   for i := y1-1 to y2-1 do
     FoldView.UnFoldAtTextIndex(i);
+  TIDESynEditor(SynEdit).RestoreTopLineAfterFold(CurTopLine);
 end;
 
 procedure TIDESynGutterCodeFolding.PopClickedUnfoldComment(Sender: TObject);
 var
-  i, j, y1, y2: Integer;
+  i, j, y1, y2, CurTopLine: Integer;
   FldInf: TSynFoldNodeInfo;
 begin
+  CurTopLine := TSynEdit(SynEdit).TopLine;
   if TSynEdit(SynEdit).SelAvail then begin
     y1 := TSynEdit(SynEdit).BlockBegin.Y;
     y2 := TSynEdit(SynEdit).BlockEnd.Y;
@@ -3068,13 +3087,15 @@ begin
       end;
     end;
   end;
+  TIDESynEditor(SynEdit).RestoreTopLineAfterFold(CurTopLine);
 end;
 
 procedure TIDESynGutterCodeFolding.PopClickedFoldComment(Sender: TObject);
 var
-  i, j, y1, y2: Integer;
+  i, j, y1, y2, CurTopLine: Integer;
   FldInf: TSynFoldNodeInfo;
 begin
+  CurTopLine := TSynEdit(SynEdit).TopLine;
   if TSynEdit(SynEdit).SelAvail then begin
     y1 := TSynEdit(SynEdit).BlockBegin.Y;
     y2 := TSynEdit(SynEdit).BlockEnd.Y;
@@ -3098,13 +3119,15 @@ begin
       end;
     end;
   end;
+  TIDESynEditor(SynEdit).RestoreTopLineAfterFold(CurTopLine);
 end;
 
 procedure TIDESynGutterCodeFolding.PopClickedHideComment(Sender: TObject);
 var
-  i, j, y1, y2: Integer;
+  i, j, y1, y2, CurTopLine: Integer;
   FldInf: TSynFoldNodeInfo;
 begin
+  CurTopLine := TSynEdit(SynEdit).TopLine;
   if TSynEdit(SynEdit).SelAvail then begin
     y1 := TSynEdit(SynEdit).BlockBegin.Y;
     y2 := TSynEdit(SynEdit).BlockEnd.Y;
@@ -3128,6 +3151,7 @@ begin
       end;
     end;
   end;
+  TIDESynEditor(SynEdit).RestoreTopLineAfterFold(CurTopLine);
 end;
 
 procedure TIDESynGutterCodeFolding.CreatePopUpMenuEntries(var APopUp: TPopupMenu; ALine: Integer);
