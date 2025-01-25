@@ -3406,6 +3406,30 @@ msgstr "使用默认的Lazarus设置"
 msgid "Optimization levels"
 msgstr "优化等级"
 
+#: lazarusidestrconsts.dlgoptwordwrap
+msgid "Word-wrap"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoptwordwrapdisplaycaretatwrappositio
+msgid "Display caret at wrap-position..."
+msgstr ""
+
+#: lazarusidestrconsts.dlgoptwordwrapendofline
+msgid "end of line"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoptwordwrapminimumlinelength
+msgid "Minimum line length"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoptwordwrapstartofnextline
+msgid "start of next line"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoptwordwrapusewordwrap
+msgid "Use Word-wrap"
+msgstr ""
+
 #: lazarusidestrconsts.dlgotheroptimizations
 msgid "Other optimizations"
 msgstr "其他优化"

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-01-05 23:07+0300\n"
+"PO-Revision-Date: 2025-01-25 18:13+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -3404,6 +3404,30 @@ msgstr "Использовать параметры по умолчанию Laza
 #: lazarusidestrconsts.dlgoptimizationlevels
 msgid "Optimization levels"
 msgstr "Уровни оптимизации"
+
+#: lazarusidestrconsts.dlgoptwordwrap
+msgid "Word-wrap"
+msgstr "Перенос слов"
+
+#: lazarusidestrconsts.dlgoptwordwrapdisplaycaretatwrappositio
+msgid "Display caret at wrap-position..."
+msgstr "В точке переноса отображать курсор в..."
+
+#: lazarusidestrconsts.dlgoptwordwrapendofline
+msgid "end of line"
+msgstr "конце строки"
+
+#: lazarusidestrconsts.dlgoptwordwrapminimumlinelength
+msgid "Minimum line length"
+msgstr "Минимальная длина строки"
+
+#: lazarusidestrconsts.dlgoptwordwrapstartofnextline
+msgid "start of next line"
+msgstr "начале следующей строки"
+
+#: lazarusidestrconsts.dlgoptwordwrapusewordwrap
+msgid "Use Word-wrap"
+msgstr "Включить перенос слов"
 
 #: lazarusidestrconsts.dlgotheroptimizations
 msgid "Other optimizations"

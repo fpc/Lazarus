@@ -3532,6 +3532,30 @@ msgstr "Użyj domyślnych ustawień Lazarusa"
 msgid "Optimization levels"
 msgstr "Poziom optymalizacji"
 
+#: lazarusidestrconsts.dlgoptwordwrap
+msgid "Word-wrap"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoptwordwrapdisplaycaretatwrappositio
+msgid "Display caret at wrap-position..."
+msgstr ""
+
+#: lazarusidestrconsts.dlgoptwordwrapendofline
+msgid "end of line"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoptwordwrapminimumlinelength
+msgid "Minimum line length"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoptwordwrapstartofnextline
+msgid "start of next line"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoptwordwrapusewordwrap
+msgid "Use Word-wrap"
+msgstr ""
+
 #: lazarusidestrconsts.dlgotheroptimizations
 msgid "Other optimizations"
 msgstr "Pozostałe optymalizacje"
