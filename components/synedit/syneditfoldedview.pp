@@ -863,7 +863,7 @@ end;
 function TLazSynDisplayFold.ViewToTextIndex(AViewIndex: TLineIdx): TLineIdx;
 begin
   Result := FFoldView.InternViewToTextIndex(AViewIndex);
-  inherited ViewToTextIndex(Result)
+  Result := inherited ViewToTextIndex(Result)
 end;
 
 function TLazSynDisplayFold.ViewToTextIndexEx(AViewIndex: TLineIdx; out
