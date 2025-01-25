@@ -1362,12 +1362,7 @@ begin
   if Data <> nil then
   begin
     gdk_cairo_get_clip_rectangle(AContext, @ARect);
-    // DebugLn('**** Sending paint event to ',dbgsName(TGtk3Widget(Data).LCLObject),' clip ',dbgs(RectFromGdkRect(ARect)),' w=',dbgs(ARect.Width),' h=',dbgs(ARect.height));
     Result := TGtk3Widget(Data).GtkEventPaint(AWidget, AContext);
-    // workaround for lcl painted widgets until we found why gtk3 sends wrong rect
-    if (TGtk3Widget(Data).FHasPaint) and
-      (ARect.height < (TGtk3Widget(Data).GetContainerWidget^.get_allocated_height div 4) ) then
-        AWidget^.queue_draw;
   end;
 end;
 
