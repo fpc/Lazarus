@@ -805,6 +805,7 @@ type
       function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
       function EatArrowKeys(const {%H-}AKey: Word): Boolean; override;
     public
+      procedure DoBeforeLCLPaint; override;
       procedure OffsetMousePos(APoint: PPoint); override;
       procedure InitializeWidget; override;
       function getViewport: PGtkViewport; override;
@@ -8261,6 +8262,31 @@ end;
 function TGtk3CustomControl.EatArrowKeys(const AKey: Word): Boolean;
 begin
   Result := False;
+end;
+
+procedure TGtk3CustomControl.DoBeforeLCLPaint;
+var
+  DC: TGtk3DeviceContext;
+  NColor: TColor;
+begin
+  inherited DoBeforeLCLPaint;
+  if not Visible then
+    exit;
+
+  DC := TGtk3DeviceContext(Context);
+
+  NColor := LCLObject.Color;
+  if (NColor <> clNone) and (NColor <> clDefault) then
+  begin
+    DC.CurrentBrush.Color := ColorToRGB(NColor);
+    DC.fillRect(0, 0, LCLObject.Width, LCLObject.Height);
+  end;
+
+  if BorderStyle <> bsNone then
+  begin
+    DC.CurrentPen.Color := ColorToRGB(clBtnShadow); // not sure what color to use here?
+    DC.drawRect(0, 0, LCLObject.Width, LCLObject.Height, False, True);
+  end;
 end;
 
 procedure TGtk3CustomControl.OffsetMousePos(APoint: PPoint);
