@@ -641,6 +641,7 @@ type
 
     procedure UpdateItem(AIndex:integer;AItem: TListItem);
     procedure ItemDelete(AIndex: Integer);
+    function  ItemDisplayRect(AIndex: Integer; ASubItem: integer; ACode: TDisplayCode): TRect;
     procedure ItemInsert(AIndex: Integer; AItem: TListItem);
     procedure ItemSetText(AIndex, ASubIndex: Integer; AItem: TListItem; const AText: String);
     procedure ItemSetImage(AIndex, ASubIndex: Integer; AItem: TListItem);
@@ -2079,6 +2080,7 @@ begin
   gtk_grab_add(GetContainerWidget);
 end;
 
+
 function TGtk3Widget.GtkEventKey(Sender: PGtkWidget; Event: PGdkEvent; AKeyPress: Boolean): Boolean;
   cdecl;
 const
@@ -2117,14 +2119,15 @@ begin
   else
      writeln('GtkEventKey: Gtk3Widget ',dbgsName(TGtk3Widget(TempWidget)));
   {$ENDIF}
+
   if gdk_keyval_is_lower(AEvent.keyval) then
     KeyValue := Word(gdk_keyval_to_upper(AEvent.keyval))
   else
     KeyValue := Word(AEvent.keyval);
-
   // state=16 = numlock= on.
 
   LCLModifiers := GtkModifierStateToShiftState(AEvent.state, True);
+
 
   if length(AEventString) = 0 then
   begin
@@ -2155,7 +2158,7 @@ begin
   if AKeyPress and (ACharCode = VK_TAB) then
   begin
     if Sender^.is_focus then
-    Self.LCLObject.SelectNext(Self.LCLObject,true,true);
+      Self.LCLObject.SelectNext(Self.LCLObject,true,true);
     exit;
   end;
 
@@ -7230,6 +7233,36 @@ begin
     AModel := PGtkIconView(getContainerWidget)^.get_model;
   if gtk_tree_model_iter_nth_child(AModel, @Iter, nil, AIndex) then
     gtk_list_store_remove(PGtkListStore(AModel), @Iter);
+end;
+
+function TGtk3ListView.ItemDisplayRect(AIndex: Integer; ASubItem: integer;
+  ACode: TDisplayCode): TRect;
+var
+  AModel: PGtkTreeModel;
+  Iter: TGtkTreeIter;
+  Column: PGtkTreeViewColumn;
+  Path: PGtkTreePath;
+  ItemRect: TGdkRectangle;
+  cell: PGtkCellRenderer;
+  y, x: gint;
+begin
+  Result := Rect(0, 0, 0, 0);
+  if IsTreeView then
+    AModel := PGtkTreeView(getContainerWidget)^.get_model
+  else
+    AModel := PGtkIconView(getContainerWidget)^.get_model;
+  Path := gtk_tree_path_new_from_indices(AIndex, [-1]);
+  try
+    if Self.IsTreeView then
+    begin
+      Column := gtk_tree_view_get_column(PGtkTreeView(GetContainerWidget), ASubItem);
+      gtk_tree_view_get_cell_area(PGtkTreeView(GetContainerWidget), Path, Column, @ItemRect);
+    end else
+      gtk_icon_view_get_cell_rect(PGtkIconView(getContainerWidget), Path, nil, @ItemRect);
+    Result := RectFromGdkRect(ItemRect);
+  finally
+    gtk_tree_path_free(Path);
+  end;
 end;
 
 procedure TGtk3ListView.ItemInsert(AIndex: Integer; AItem: TListItem);

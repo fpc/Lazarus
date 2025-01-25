@@ -636,8 +636,10 @@ class function TGtk3WSCustomListView.ItemDisplayRect(
   const ALV: TCustomListView; const AIndex, ASubItem: Integer;
   ACode: TDisplayCode): TRect;
 begin
-  DebugLn('TGtk3WSCustomListView.ItemDisplayRect ');
-  Result := Rect(0, 0, 0, 0);
+  //DebugLn('TGtk3WSCustomListView.ItemDisplayRect ');
+  if not WSCheckHandleAllocated(ALV, 'ItemDisplayRect') then
+    Exit;
+  Result := TGtk3ListView(ALV.Handle).ItemDisplayRect(AIndex, ASubItem, ACode);
 end;
 
 class procedure TGtk3WSCustomListView.ItemExchange(const ALV: TCustomListView;
