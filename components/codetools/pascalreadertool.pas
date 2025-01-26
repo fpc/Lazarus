@@ -399,8 +399,8 @@ var
   NodeExt2: TCodeTreeNodeExtension absolute NodeData2;
 begin
   Result := CompareMethodHeaders(
-    NodeExt1.Txt,TPascalMethodGroup(NodeExt1.Flags),NodeExt1.ExtTxt4,
-    NodeExt2.Txt,TPascalMethodGroup(NodeExt2.Flags),NodeExt2.ExtTxt4);
+    NodeExt1.Signature,TPascalMethodGroup(NodeExt1.Flags),NodeExt1.ResultType,
+    NodeExt2.Signature,TPascalMethodGroup(NodeExt2.Flags),NodeExt2.ResultType);
 end;
 
 

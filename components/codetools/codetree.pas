@@ -351,8 +351,11 @@ type
   TCodeTreeNodeExtension = class
   public
     Node: TCodeTreeNode;
-    Txt: string;
-    ExtTxt1, ExtTxt2, ExtTxt3, ExtTxt4: string;
+    Signature: string; // was Txt
+    Identifier: string; // the name of the variable or method, was ExtTxt2
+    Code: string; // was ExtTxt1
+    ProcBody: string; // was ExtTxt3
+    ResultType: string; // was ExtTxt4
     Position: integer;
     Data: Pointer;
     Flags: cardinal;
@@ -626,7 +629,7 @@ function CompareTxtWithCodeTreeNodeExt(p: Pointer; NodeData: pointer
 var
   NodeExt: TCodeTreeNodeExtension absolute NodeData;
 begin
-  Result:=CompareTextIgnoringSpace(Ansistring(p),NodeExt.Txt,false);
+  Result:=CompareTextIgnoringSpace(Ansistring(p),NodeExt.Signature,false);
 end;
 
 function CompareIdentifierWithCodeTreeNodeExt(p: Pointer; NodeData: pointer
@@ -635,7 +638,7 @@ var
   NodeExt: TCodeTreeNodeExtension absolute NodeData;
 begin
   NodeExt:=TCodeTreeNodeExtension(NodeData);
-  Result:=CompareIdentifiers(p,PChar(NodeExt.Txt));
+  Result:=CompareIdentifiers(p,PChar(NodeExt.Signature));
 end;
 
 function CompareCodeTreeNodeExt(NodeData1, NodeData2: pointer): integer;
@@ -643,7 +646,7 @@ var
   NodeExt1: TCodeTreeNodeExtension absolute NodeData1;
   NodeExt2: TCodeTreeNodeExtension absolute NodeData2;
 begin
-  Result:=CompareTextIgnoringSpace(NodeExt1.Txt,NodeExt2.Txt,false);
+  Result:=CompareTextIgnoringSpace(NodeExt1.Signature,NodeExt2.Signature,false);
 end;
 
 function CompareCodeTreeNodeExtWithPos(NodeData1, NodeData2: pointer): integer;
@@ -679,7 +682,7 @@ var
   NodeExt1: TCodeTreeNodeExtension absolute NodeData1;
   NodeExt2: TCodeTreeNodeExtension absolute NodeData2;
 begin
-  Result:=CompareTextIgnoringSpace(NodeExt1.Txt,NodeExt2.Txt,false);
+  Result:=CompareTextIgnoringSpace(NodeExt1.Signature,NodeExt2.Signature,false);
   if Result<>0 then exit;
   if NodeExt1.Position<NodeExt2.Position then
     Result:=1
@@ -1179,11 +1182,11 @@ end;
 procedure TCodeTreeNodeExtension.Clear;
 begin
   Next:=nil;
-  Txt:='';
-  ExtTxt1:='';
-  ExtTxt2:='';
-  ExtTxt3:='';
-  ExtTxt4:='';
+  Signature:='';
+  Code:='';
+  Identifier:='';
+  ProcBody:='';
+  ResultType:='';
   Node:=nil;
   Position:=-1;
   Data:=nil;
@@ -1209,18 +1212,18 @@ begin
     DbgOut('Node=',NodeDescriptionAsString(Node.Desc))
   else
     DbgOut('Node=nil');
-  DbgOut(' Position=',dbgs(Position),' Txt="'+Txt+'" ExtTxt1="'+ExtTxt1+'" ExtTxt2="'+ExtTxt2+'" ExtTxt3="'+ExtTxt3+'" ExtTxt4="'+ExtTxt4+'"');
+  DbgOut(' Position=',dbgs(Position),' Txt="'+Signature+'" ExtTxt1="'+Code+'" ExtTxt2="'+Identifier+'" ExtTxt3="'+ProcBody+'" ExtTxt4="'+ResultType+'"');
   debugln;
 end;
 
 function TCodeTreeNodeExtension.CalcMemSize: PtrUInt;
 begin
   Result:=PtrUInt(InstanceSize)
-    +MemSizeString(Txt)
-    +MemSizeString(ExtTxt1)
-    +MemSizeString(ExtTxt2)
-    +MemSizeString(ExtTxt3)
-    +MemSizeString(ExtTxt4);
+    +MemSizeString(Signature)
+    +MemSizeString(Code)
+    +MemSizeString(Identifier)
+    +MemSizeString(ProcBody)
+    +MemSizeString(ResultType);
 end;
 
 end.
