@@ -1864,8 +1864,7 @@ when the value is omitted from the set the feature or behavior is disabled.
 </element>
 <element name="TControlStyleType.csAcceptsControls">
 <short>
-Indicates that one can add child controls to this control in the form 
-designer.
+Indicates that one can add child controls to a control.
 </short>
 </element>
 <element name="TControlStyleType.csCaptureMouse">
