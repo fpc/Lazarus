@@ -232,6 +232,7 @@ const
   EcFoldCurrent            = 381;
   EcUnFoldCurrent          = 382;
   EcToggleMarkupWord       = 383;
+  EcFoldToggle             = 384;
 
   ecZoomOut             = 400;
   ecZoomIn              = 401;
@@ -516,7 +517,7 @@ end;
 { Command mapping routines }
 
 const
-  EditorCommandStrs: array[0..174] of TIdentMapEntry = (
+  EditorCommandStrs: array[0..175] of TIdentMapEntry = (
     (Value: ecNone; Name: 'ecNone'),
     (Value: ecLeft; Name: 'ecLeft'),
     (Value: ecRight; Name: 'ecRight'),
@@ -691,6 +692,7 @@ const
     (Value: EcFoldLevel0; Name: 'EcFoldLevel0'),
     (Value: EcFoldCurrent; Name: 'EcFoldCurrent'),
     (Value: EcUnFoldCurrent; Name: 'EcUnFoldCurrent'),
+    (Value: EcFoldToggle; Name: 'EcFoldToggle'),
     (Value: EcToggleMarkupWord; Name: 'EcToggleMarkupWord')
   );
 

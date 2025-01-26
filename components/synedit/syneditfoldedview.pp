@@ -3653,8 +3653,25 @@ procedure TSynEditFoldedView.ProcessMySynCommand(Sender: TObject;
   AfterProcessing: boolean; var Handled: boolean;
   var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer;
   HandlerData: pointer);
-var
-  CY: Integer;
+
+  procedure FoldAtCaret;
+  var
+    CY: Integer;
+  begin
+    CY := ExpandedLineForBlockAtLine(FCaret.LinePos);
+    if CY > 0 then begin
+      FoldAtTextIndex(CY-1);
+      FCaret.ChangeOnTouch; // setting the caret always clears selection (even setting to current pos / no change)
+      FCaret.LineCharPos:= Point(1, CY);
+    end;
+  end;
+
+  procedure UnFoldAtCaret;
+  begin
+    UnFoldAtTextIndex(FCaret.LinePos-1);
+    FCaret.Touch;
+  end;
+
 begin
   if Handled then
     exit;
@@ -3674,18 +3691,20 @@ begin
       end;
     EcFoldCurrent:
       begin
-        CY := ExpandedLineForBlockAtLine(FCaret.LinePos);
-        if CY > 0 then begin
-          FoldAtTextIndex(CY-1);
-          FCaret.ChangeOnTouch; // setting the caret always clears selection (even setting to current pos / no change)
-          FCaret.LineCharPos:= Point(1, CY);
-        end;
+        FoldAtCaret;
         Handled := True;
       end;
     EcUnFoldCurrent:
       begin
-        UnFoldAtTextIndex(FCaret.LinePos-1);
-        FCaret.Touch;
+        UnFoldAtCaret;
+        Handled := True;
+      end;
+    EcFoldToggle:
+      begin
+        if IsFolded(FCaret.LinePos) then
+          UnFoldAtCaret
+        else
+          FoldAtCaret;
         Handled := True;
       end;
   end;

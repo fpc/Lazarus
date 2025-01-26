@@ -633,6 +633,7 @@ begin
     EcFoldLevel0             : Result:= srkmecUnFoldAll;
     EcFoldCurrent            : Result:= srkmecFoldCurrent;
     EcUnFoldCurrent          : Result:= srkmecUnFoldCurrent;
+    EcFoldToggle             : Result:= srkmecFoldToggle;
     EcToggleMarkupWord       : Result := srkmecToggleMarkupWord;
 
     // file menu
@@ -3059,6 +3060,7 @@ begin
   AddDefault(C, 'Unfold all', srkmecUnFoldAll, EcFoldLevel0);
   AddDefault(C, 'Fold at Cursor', srkmecFoldCurrent, EcFoldCurrent);
   AddDefault(C, 'Unfold at Cursor', srkmecUnFoldCurrent, EcUnFoldCurrent);
+  AddDefault(C, 'Toggle Fold at Cursor', srkmecFoldToggle, EcFoldToggle);
 
   // marker - without menu items in the IDE bar
   C:=Categories[AddCategory('Marker',srkmCatMarker,IDECmdScopeSrcEditOnly)];

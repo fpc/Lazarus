@@ -3224,6 +3224,7 @@ resourcestring
   srkmEcFoldLevel             = 'Fold to Level %d';
   srkmecUnFoldAll             = 'Unfold all';
   srkmecFoldCurrent           = 'Fold at Cursor';
+  srkmecFoldToggle            = 'Toggle Fold at Cursor';
   srkmecUnFoldCurrent         = 'Unfold at Cursor';
   srkmecToggleMarkupWord      = 'Toggle Current-Word highlight';
 
