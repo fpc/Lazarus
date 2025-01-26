@@ -223,7 +223,7 @@ control to be redrawn.
 <descr>
 <p>
 <var>ArrowPointerAngle</var> is an <var>Integer</var> property with the size 
-of the angle (in degress) that forms the arrow pointer for the control. It 
+of the angle (in degrees) that forms the arrow pointer for the control. It 
 determines the size in degrees for the angles on the base of the arrow 
 pointer. ArrowPointerAngle must be in the range specified by the 
 <var>cMinAngle</var> and <var>cMaxAngle</var> constants in the implementation 

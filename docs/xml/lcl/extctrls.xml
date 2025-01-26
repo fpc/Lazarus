@@ -1747,7 +1747,7 @@ calls the Polygon method.
 <dt>stStar, stStarDown</dt>
 <dd>
 Calculates the center point and radii needed to scale the width or height for 
-the shape. Allocates the elevent (11) vertices needed for the shape and calls 
+the shape. Allocates the eleven (11) vertices needed for the shape and calls 
 the Polyon method.
 </dd>
 <dt>stPolygon</dt>
@@ -2169,7 +2169,7 @@ parallelogram, an isocoles triangle, or an octagon.
 <p>
 An application can implement and assign a handler routine using the signature 
 in TShapePointsEvent to respond to the event notification. The handler can 
-poulate its array with the number of TPoint instances needed for the vertices 
+populate its array with the number of TPoint instances needed for the vertices 
 on the polygon. It can also indicate whether Winding order was used for the 
 returned vertices.
 </p>
@@ -8777,7 +8777,7 @@ Control with the child controls aligned in the method.
 </element>
 <element name="TCustomFlowPanel.AlignControls.RemainingClientRect">
 <short>
-Ununsed client area where the child controls are aligned.
+Unused client area where the child controls are aligned.
 </short>
 </element>
 

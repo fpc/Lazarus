@@ -14339,7 +14339,7 @@ Selects and displays the cell Editor when editing is allowed in the column.
 </dd>
 <dt>VK_BACK (Backspace)</dt>
 <dd>
-Fowards the Backspace character (^H) to the cell Editor when editing is 
+Forwards the Backspace character (^H) to the cell Editor when editing is 
 allowed in the column.
 </dd>
 <dt>VK_C</dt>

@@ -9218,7 +9218,7 @@ No actions are performed in the method if SrcGraphic has not been assigned.
 DestRect provides the rectangular area on the canvas where the graphic content 
 is drawn. The Draw method in SrcGraphic is called to draw the image content 
 onto the canvas instance. If the dimensions in DestRect differ from the Width 
-or Height in SrcGraphic, the imgae content is expanded or contracted to fit 
+or Height in SrcGraphic, the image content is expanded or contracted to fit 
 the destination rectangle. This may causes the aspect ratio for the image 
 content to be changed.
 </p>
