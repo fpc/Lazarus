@@ -272,13 +272,14 @@ const
   ecTab             = 617;  // Tab key
   ecShiftTab        = 618;  // Shift+Tab key
 
-  ecUpperCase       = 620; // apply to the current or previous word
-  ecLowerCase       = 621;
-  ecToggleCase      = 622;
-  ecTitleCase       = 623;
-  ecUpperCaseBlock  = 625; // apply to current selection, or current char if no selection
-  ecLowerCaseBlock  = 626;
-  ecToggleCaseBlock = 627;
+  // TODO: The following block is not implemented => once it is the ec... must be added to the EditorCommandStrs array
+  ecUpperCase       = 620 unimplemented; // apply to the current or previous word
+  ecLowerCase       = 621 unimplemented;
+  ecToggleCase      = 622 unimplemented;
+  ecTitleCase       = 623 unimplemented;
+  ecUpperCaseBlock  = 625 unimplemented; // apply to current selection, or current char if no selection
+  ecLowerCaseBlock  = 626 unimplemented;
+  ecToggleCaseBlock = 627 unimplemented;
 
   ecMoveLineUp      = 630; // Moves current line (or selection) one line up
   ecMoveLineDown    = 631; // Moves current line (or selection) one line down
@@ -428,7 +429,7 @@ implementation
 { Command mapping routines }
 
 const
-  EditorCommandStrs: array[0..174] of TIdentMapEntry = (
+  EditorCommandStrs: array[0..178] of TIdentMapEntry = (
     (Value: ecNone; Name: 'ecNone'),
     (Value: ecLeft; Name: 'ecLeft'),
     (Value: ecRight; Name: 'ecRight'),
@@ -524,6 +525,7 @@ const
     (Value: ecCopyAddCurrentLine; Name: 'ecCopyAddCurrentLine'),
     (Value: ecCutCurrentLine; Name: 'ecCutCurrentLine'),
     (Value: ecCutAddCurrentLine; Name: 'ecCutAddCurrentLine'),
+    (Value: ecPasteAsColumns; Name: 'ecPasteAsColumns'),
     (Value: ecMoveLineUp; Name: 'ecMoveLineUp'),
     (Value: ecMoveLineDown; Name: 'ecMoveLineDown'),
     (Value: ecMoveSelectUp; Name: 'ecMoveSelectUp'),
@@ -603,7 +605,10 @@ const
     (Value: EcFoldLevel0; Name: 'EcFoldLevel0'),
     (Value: EcFoldCurrent; Name: 'EcFoldCurrent'),
     (Value: EcUnFoldCurrent; Name: 'EcUnFoldCurrent'),
-    (Value: EcToggleMarkupWord; Name: 'EcToggleMarkupWord')
+    (Value: EcToggleMarkupWord; Name: 'EcToggleMarkupWord'),
+    (Value: ecZoomOut; Name: 'ecZoomOut'),
+    (Value: ecZoomIn; Name: 'ecZoomIn'),
+    (Value: ecZoomNorm; Name: 'ecZoomNorm')
   );
 
 var
