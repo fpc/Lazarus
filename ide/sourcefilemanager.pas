@@ -5011,7 +5011,7 @@ begin
       if (NewFileExt<>'') and IsPascalUnitExt(PChar(NewFileExt)) then begin
         NewUnitName:=ExtractFileNameOnly(NewFilename);
         // Do not rename the unit if new filename is just the lowercase version
-        if LowerCase(OldUnitName)=NewUnitName then
+        if LowerCase(RemoveAmpersands(OldUnitName))=NewUnitName then
           NewUnitName:=OldUnitName;
         if NewUnitName='' then
           exit(mrCancel);
