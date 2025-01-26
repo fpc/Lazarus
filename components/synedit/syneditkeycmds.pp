@@ -42,7 +42,7 @@ unit SynEditKeyCmds;
 interface
 
 uses
-  Classes, Menus, SysUtils, LCLIntf, LCLType, SynEditStrConst;
+  Classes, Menus, SysUtils, LCLIntf, LCLType, LCLProc, SynEditStrConst;
 
 const
   //****************************************************************************
@@ -425,94 +425,6 @@ procedure RegisterExtraGetEditorCommandValues(AProc: TGetEditorCommandValuesProc
 
 implementation
 
-//=============================================================================
-// This code should move to the menus.pas
-type
-  TMenuKeyCap = (
-    mkcBkSp, mkcTab, mkcEsc, mkcEnter, mkcSpace, mkcPgUp,
-    mkcPgDn, mkcEnd, mkcHome, mkcLeft, mkcUp, mkcRight, mkcDown, 
-    mkcIns, mkcDel, mkcShift, mkcCtrl, mkcAlt);
-
-// this code should be moved to whereever mkcXXX are defined
-const
-  SmkcBkSp = 'BkSp';
-  SmkcTab = 'Tab';
-  SmkcEsc = 'Esc';
-  SmkcEnter = 'Enter';
-  SmkcSpace = 'Space';
-  SmkcPgUp = 'PgUp';
-  SmkcPgDn = 'PgDn';
-  SmkcEnd = 'End';
-  SmkcHome = 'Home';
-  SmkcLeft = 'Left';
-  SmkcUp = 'Up';
-  SmkcRight = 'Right';
-  SmkcDown = 'Down';
-  SmkcIns = 'Ins';
-  SmkcDel = 'Del';
-  SmkcShift = 'Shift+';
-  SmkcCtrl = 'Ctrl+';
-  SmkcAlt = 'Alt+';
-
-// this code should be moved to menus.pas
-  MenuKeyCaps: array[TMenuKeyCap] of ansistring = (
-    SmkcBkSp, SmkcTab, SmkcEsc, SmkcEnter, SmkcSpace, SmkcPgUp,
-    SmkcPgDn, SmkcEnd, SmkcHome, SmkcLeft, SmkcUp, SmkcRight, SmkcDown,
-    SmkcIns, SmkcDel, SmkcShift, SmkcCtrl, SmkcAlt);
-
-function GetSpecialName(ShortCut: TShortCut): string;
-// FOR LAZARUS: ToDo
-{
-var
-  ScanCode: Integer;
-  KeyName: array[0..255] of Char;
-}
-begin
-  Result := '';
-// FOR LAZARUS: ToDo
-{
-  ScanCode := MapVirtualKey(WordRec(ShortCut).Lo, 0) shl 16;
-  if ScanCode <> 0 then
-  begin
-    GetKeyNameText(ScanCode, KeyName, SizeOf(KeyName));
-    GetSpecialName := KeyName;
-  end; }
-end;
-
-function ShortCutToText(ShortCut: TShortCut): string;
-var
-  Name: string;
-begin
-  case WordRec(ShortCut).Lo of
-    $08, $09:
-      Name := MenuKeyCaps[TMenuKeyCap(Ord(mkcBkSp) + WordRec(ShortCut).Lo - $08)];
-    $0D: Name := MenuKeyCaps[mkcEnter];
-    $1B: Name := MenuKeyCaps[mkcEsc];
-    $20..$28:
-      Name := MenuKeyCaps[TMenuKeyCap(Ord(mkcSpace) + WordRec(ShortCut).Lo - $20)];
-    $2D..$2E:
-      Name := MenuKeyCaps[TMenuKeyCap(Ord(mkcIns) + WordRec(ShortCut).Lo - $2D)];
-    $30..$39: Name := Chr(WordRec(ShortCut).Lo - $30 + Ord('0'));
-    $41..$5A: Name := Chr(WordRec(ShortCut).Lo - $41 + Ord('A'));
-    $60..$69: Name := Chr(WordRec(ShortCut).Lo - $60 + Ord('0'));
-    $70..$87: Name := 'F' + IntToStr(WordRec(ShortCut).Lo - $6F);
-  else
-    Name := GetSpecialName(ShortCut);
-  end;
-  if Name <> '' then
-  begin
-    Result := '';
-    if ShortCut and scShift <> 0 then Result := Result + MenuKeyCaps[mkcShift];
-    if ShortCut and scCtrl <> 0 then Result := Result + MenuKeyCaps[mkcCtrl];
-    if ShortCut and scAlt <> 0 then Result := Result + MenuKeyCaps[mkcAlt];
-    Result := Result + Name;
-  end
-  else Result := '';
-end;
-
-//=============================================================================
-
-
 { Command mapping routines }
 
 const
@@ -815,7 +727,7 @@ end;
 function TSynEditKeyStroke.GetDisplayName: string;
 begin
   Result := EditorCommandToCodeString(Command) + ' - ' + ShortCutToText(ShortCut);
-  if ShortCut <> 0 then
+  if ShortCut2 <> 0 then
     Result := Result + ' ' + ShortCutToText(ShortCut2);
   if Result = '' then
     Result := inherited GetDisplayName;
