@@ -227,8 +227,8 @@ type
   TControlBorderStyle = TBorderStyle;
 
   TControlRoleForForm = (
-    crffDefault,// this control is notified when user presses Return
-    crffCancel  // this control is notified when user presses Escape
+    crffDefault,// Control is notified when user presses Return.
+    crffCancel  // Control is notified when user presses Escape.
     );
   TControlRolesForForm = set of TControlRoleForForm;
 
@@ -261,7 +261,7 @@ const
   crCross       = TCursor(-3);
   crIBeam       = TCursor(-4);
   crSize        = TCursor(-22);
-  crSizeNESW    = TCursor(-6); // diagonal north east - south west
+  crSizeNESW    = TCursor(-6); // Diagonal north east - south west.
   crSizeNS      = TCursor(-7);
   crSizeNWSE    = TCursor(-8);
   crSizeWE      = TCursor(-9);
@@ -295,38 +295,38 @@ type
   TWndMethod = procedure(var TheMessage: TLMessage) of Object;
 
   TControlStyleType = (
-    csAcceptsControls,       // can have children.
-    csCaptureMouse,          // auto capture mouse when clicked
-    csDesignInteractive,     // wants mouse events in design mode
-    csClickEvents,           // handles mouse events
-    csFramed,                // not implemented, has 3d frame
-    csSetCaption,            // if Name=Caption, changing the Name changes the Caption
-    csOpaque,                // the control paints its area completely
-    csDoubleClicks,          // understands mouse double clicks
-    csTripleClicks,          // understands mouse triple clicks
-    csQuadClicks,            // understands mouse quad clicks
-    csFixedWidth,            // cannot change its width
-    csFixedHeight,           // cannot change its height (for example combobox)
-    csNoDesignVisible,       // is invisible in the designer
-    csReplicatable,          // PaintTo works
-    csNoStdEvents,           // standard events such as mouse, key, and click events are ignored.
-    csDisplayDragImage,      // display images from dragimagelist during drag operation over control
-    csReflector,             // not implemented, the controls respond to size, focus and dlg messages - it can be used as ActiveX control under Windows
-    csActionClient,          // Action is set
-    csMenuEvents,            // not implemented
-    csNoFocus,               // control will not take focus when clicked with mouse.
-    csNeedsBorderPaint,      // not implemented
-    csParentBackground,      // tells WinXP to paint the theme background of parent on controls background
-    csDesignNoSmoothResize,  // when resizing control in the designer do not SetBounds while dragging
-    csDesignFixedBounds,     // can not be moved nor resized in designer
-    csHasDefaultAction,      // implements useful ExecuteDefaultAction
-    csHasCancelAction,       // implements useful ExecuteCancelAction
-    csNoDesignSelectable,    // can not be selected at design time
-    csOwnedChildrenNotSelectable, // child controls owned by this control are NOT selectable in the designer
-    csAutoSize0x0,           // if the preferred size is 0x0 then control is shrinked to 0x0, default is minimum 1x1
-    csAutoSizeKeepChildLeft, // when AutoSize=true do not move children horizontally
-    csAutoSizeKeepChildTop,  // when AutoSize=true do not move children vertically
-    csRequiresKeyboardInput  // If the device has no physical keyboard then show the virtual keyboard when this control gets focus (therefore available only to TWinControl descendents)
+    csAcceptsControls,       // Can have children.
+    csCaptureMouse,          // Auto capture mouse when clicked.
+    csDesignInteractive,     // Wants mouse events in design mode.
+    csClickEvents,           // Handles mouse events.
+    csFramed,                // Not implemented. Control has 3d frame.
+    csSetCaption,            // If Name=Caption, changing the Name changes the Caption.
+    csOpaque,                // Paints its area completely.
+    csDoubleClicks,          // Understands mouse double clicks.
+    csTripleClicks,          // Understands mouse triple clicks.
+    csQuadClicks,            // Understands mouse quad clicks.
+    csFixedWidth,            // Cannot change its width.
+    csFixedHeight,           // Cannot change its height (for example: Combobox).
+    csNoDesignVisible,       // Invisible in the designer.
+    csReplicatable,          // Supports PaintTo method.
+    csNoStdEvents,           // Standard events such as mouse, key, and click events are ignored.
+    csDisplayDragImage,      // Display images from DragImageList during drag operation over control.
+    csReflector,             // Not implemented. Control responds to size, focus and dlg messages - it can be used as ActiveX control under Windows.
+    csActionClient,          // Property Action is set.
+    csMenuEvents,            // Not implemented.
+    csNoFocus,               // Will not take focus when clicked with mouse.
+    csNeedsBorderPaint,      // Not implemented.
+    csParentBackground,      // Tells Windows (XP or newer) to paint the theme background of parent on control's background.
+    csDesignNoSmoothResize,  // When resizing control in the designer, do not call SetBounds while dragging.
+    csDesignFixedBounds,     // Can not be moved nor resized in designer.
+    csHasDefaultAction,      // Implements useful ExecuteDefaultAction.
+    csHasCancelAction,       // Implements useful ExecuteCancelAction.
+    csNoDesignSelectable,    // Can not be selected at design time.
+    csOwnedChildrenNotSelectable, // Child controls owned by this control are NOT selectable in the designer.
+    csAutoSize0x0,           // If the preferred size is 0x0 then control is shrinked to 0x0. Default is minimum 1x1.
+    csAutoSizeKeepChildLeft, // When AutoSize=True, do not move children horizontally.
+    csAutoSizeKeepChildTop,  // When AutoSize=True, do not move children vertically.
+    csRequiresKeyboardInput  // If the device has no physical keyboard then show the virtual keyboard when this control gets focus (therefore available only to TWinControl descendents).
     );
   TControlStyle = set of TControlStyleType;
 
@@ -341,7 +341,7 @@ type
     csPalette,
     csReadingState,
     csFocusing,
-    csCreating, // not used, exists for Delphi compatibility
+    csCreating, // Not used. Exists for Delphi compatibility.
     csPaintCopy,
     csCustomPaint,
     csDestroyingHandle,
@@ -563,10 +563,10 @@ type
   TDragDockObject = class;
 
   TDockOrientation = (
-    doNoOrient,   // zone contains a TControl and no child zones.
-    doHorizontal, // zone's children are stacked top-to-bottom.
-    doVertical,   // zone's children are arranged left-to-right.
-    doPages       // zone's children are pages arranged left-to-right.
+    doNoOrient,   // Zone contains a TControl and no child zones.
+    doHorizontal, // Zone's children are stacked top-to-bottom.
+    doVertical,   // Zone's children are arranged left-to-right.
+    doPages       // Zone's children are pages arranged left-to-right.
     );
   TDockDropEvent = procedure(Sender: TObject; Source: TDragDockObject;
                              X, Y: Integer) of object;
@@ -992,10 +992,10 @@ type
   TControlAutoSizePhase = (
     caspNone,
     caspChangingProperties,
-    caspCreatingHandles, // create/destroy handles
+    caspCreatingHandles, // Create/destroy handles.
     caspComputingBounds,
     caspRealizingBounds,
-    caspShowing          // make handles visible
+    caspShowing          // Make handles visible.
     );
   TControlAutoSizePhases = set of TControlAutoSizePhase;
 
@@ -1010,9 +1010,9 @@ type
                                  var Handled: Boolean) of object;
 
   TControlFlag = (
-    cfLoading, // set by TControl.ReadState, unset by TControl.Loaded when all on form finished loading
+    cfLoading, // Set by TControl.ReadState, unset by TControl.Loaded when all on form finished loading.
     cfAutoSizeNeeded,
-    cfLeftLoaded,  // cfLeftLoaded is set, when 'Left' is set during loading.
+    cfLeftLoaded,  // Set when Left is set during loading.
     cfTopLoaded,
     cfWidthLoaded,
     cfHeightLoaded,
@@ -1044,12 +1044,12 @@ type
     );
 
   TLayoutAdjustmentPolicy = (
-    lapDefault,     // widgetset dependent
-    lapFixedLayout, // A fixed absolute layout in all platforms
+    lapDefault,     // Widgetset dependent.
+    lapFixedLayout, // A fixed absolute layout in all platforms.
     lapAutoAdjustWithoutHorizontalScrolling, // Smartphone platforms use this one,
-                                             // the x axis is stretched to fill the screen and
-                                             // the y is scaled to fit the DPI
-    lapAutoAdjustForDPI // For desktops using High DPI, scale x and y to fit the DPI
+                                             // the X axis is stretched to fill the screen and
+                                             // the Y is scaled to fit the DPI.
+    lapAutoAdjustForDPI // For desktops using High DPI, scale X and Y to fit the DPI.
   );
 
   TLazAccessibilityRole = (
@@ -1058,13 +1058,13 @@ type
     larButton, // A button.
     larCell, // A cell in a table.
     larChart, // An object that displays a graphical representation of data.
-    larCheckBox, // An object that can be checked or unchecked, or sometimes in an intermediary state
+    larCheckBox, // An object that can be checked or unchecked, or sometimes in an intermediary state.
     larClock, // A clock displaying time.
     larColorPicker, // A control which allows selecting a color.
     larColumn, // A generic column that goes in a table.
     larComboBox, // A list of choices that the user can select from.
     larDateField, // A controls which displays and possibly allows one to choose a date.
-    larGrid, // A grid control which displays cells
+    larGrid, // A grid control which displays cells.
     larGroup, // A control which groups others, such as a TGroupBox.
     larImage, // A graphic or picture or an icon.
     larLabel, // A text label as usually placed near other widgets.
@@ -1076,14 +1076,14 @@ type
     larRadioButton, // A radio button, see for example TRadioButton.
     larResizeGrip, // A grip that the user can drag to change the size of widgets.
     larRow, // A generic row that goes in a table.
-    larScrollBar, // A control to scroll another one
+    larScrollBar, // A control to scroll another one.
     larSpinner, // A control which allows one to increment / decrement a value.
     larTabControl, // A control with tabs, like TPageControl.
-    larText, // Text inside of a control, like text in a row cell
-    larTextEditorMultiline, // A multi-line text editor (for example: TMemo, SynEdit)
-    larTextEditorSingleline, // A single-line text editor (for example: TEdit)
-    larToolBar, // A control that holds ToolButtons
-    larToolBarButton, // A button on a ToolBar
+    larText, // Text inside of a control, like text in a row cell.
+    larTextEditorMultiline, // A multi-line text editor (for example: TMemo, TSynEdit).
+    larTextEditorSingleline, // A single-line text editor (for example: TEdit).
+    larToolBar, // A control that holds ToolButtons.
+    larToolBarButton, // A button on a ToolBar.
     larTrackBar, // A control which allows one to drag a slider.
     larTreeView, // A list of items in a tree structure.
     larTreeItem, // An item in a tree structure.
@@ -1936,16 +1936,16 @@ type
   }
 
   TChildControlResizeStyle = (
-      crsAnchorAligning, // (like Delphi)
-      crsScaleChilds, // scale children equally, keep space between children fixed
-      crsHomogenousChildResize, // enlarge children equally (i.e. by the same amount of pixel)
-      crsHomogenousSpaceResize, // enlarge space between children equally
-      crsSameSize  // each child gets the same size (maybe one pixel difference)
+      crsAnchorAligning, // Like Delphi.
+      crsScaleChilds, // Scale children equally, keep space between children fixed.
+      crsHomogenousChildResize, // Enlarge children equally (i.e. by the same amount of pixels).
+      crsHomogenousSpaceResize, // Enlarge space between children equally.
+      crsSameSize  // Each child gets the same size (maybe one pixel difference).
     );
 
   TControlChildrenLayout = (
       cclNone,
-      cclLeftToRightThenTopToBottom, // if BiDiMode <> bdLeftToRight then it becomes RightToLeft
+      cclLeftToRightThenTopToBottom, // If BiDiMode<>bdLeftToRight then it becomes RightToLeft.
       cclTopToBottomThenLeftToRight
     );
 
@@ -2016,42 +2016,42 @@ type
   TWinControlFlag = (
     wcfClientRectNeedsUpdate,
     wcfColorChanged,
-    wcfFontChanged,          // Set if font was changed before handle creation
-    wcfAllAutoSizing,        // Set inside DoAllAutosize
+    wcfFontChanged,          // Set if font was changed before handle creation.
+    wcfAllAutoSizing,        // Set inside DoAllAutosize.
     wcfAligningControls,
     wcfEraseBackground,
-    wcfCreatingHandle,       // Set while constructing the handle of this control
-    wcfInitializing,         // Set while initializing during handle creation
-    wcfCreatingChildHandles, // Set while constructing the handles of the children
-    wcfRealizingBounds,      // Set inside RealizeBoundsRecursive
-    wcfBoundsRealized,       // bounds were sent to the interface
+    wcfCreatingHandle,       // Set while constructing the handle of this control.
+    wcfInitializing,         // Set while initializing during handle creation.
+    wcfCreatingChildHandles, // Set while constructing the handles of the children.
+    wcfRealizingBounds,      // Set inside RealizeBoundsRecursive.
+    wcfBoundsRealized,       // Bounds were sent to the interface.
     wcfUpdateShowing,
     wcfHandleVisible,
     wcfAdjustedLogicalClientRectValid,
     wcfKillIntfSetBounds,
-    wcfDesignerDeleting,     // Only used for PairSplitter which should be redesigned
-    wcfSpecialSubControl     // Only set by PairSplitterSide
+    wcfDesignerDeleting,     // Only used for PairSplitter which should be redesigned.
+    wcfSpecialSubControl     // Only set by PairSplitterSide.
     );
   TWinControlFlags = set of TWinControlFlag;
 
   TControlAtPosFlag = (
-    capfAllowDisabled,   // include controls with Enabled=false
-    capfAllowWinControls,// include TWinControls
-    capfOnlyClientAreas, // use the client areas, not the whole child area
-    capfRecursive,       // search recursively in grand childrens
-    capfHasScrollOffset, // do not add the scroll offset to Pos (already included)
-    capfOnlyWinControls  // include only TWinControls (ignore TControls)
+    capfAllowDisabled,   // Include controls with Enabled=false.
+    capfAllowWinControls,// Include TWinControls.
+    capfOnlyClientAreas, // Use the client areas, not the whole child area.
+    capfRecursive,       // Search recursively in grand childrens.
+    capfHasScrollOffset, // Do not add the scroll offset to Pos (already included).
+    capfOnlyWinControls  // Include only TWinControls (ignore TControls).
     );
   TControlAtPosFlags = set of TControlAtPosFlag;
 
   // needed for VCL compatibility on custom aligning
   TAlignInfo = record
-    AlignList: TFPList;    // The list of controls currently being aligned
-    ControlIndex: Integer; // Index of current control
+    AlignList: TFPList;    // The list of controls currently being aligned.
+    ControlIndex: Integer; // Index of current control.
     Align: TAlign;         // The kind of alignment currently processed
                            // since this info is only used for custom aligning,
-                           // the value is always alCustom
-    Scratch: Integer;      // ??? Declared in the VCL, not used and not documented
+                           // the value is always alCustom.
+    Scratch: Integer;      // ??? Declared in the VCL, not used and not documented.
   end;
 
   TAlignInsertBeforeEvent = function (Sender: TWinControl; Control1, Control2: TControl): Boolean of object;
