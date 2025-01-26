@@ -509,7 +509,7 @@ begin
   // search in new nodes, which will be inserted
   ANodeExt:=FirstInsert;
   while ANodeExt<>nil do begin
-    if CompareTextIgnoringSpace(ANodeExt.Signature,NameAndParamsUpCase,true)=0 then
+    if CompareTextIgnoringSpace(ANodeExt.Txt,NameAndParamsUpCase,true)=0 then
     begin
       Result.Tool:=Self;
       Result.Node:=CodeCompleteClassNode;
@@ -658,7 +658,7 @@ begin
   // search in new nodes, which will be inserted
   ANodeExt:=FirstInsert;
   while ANodeExt<>nil do begin
-    if CompareTextIgnoringSpace(ANodeExt.Signature,UpperName,true)=0 then
+    if CompareTextIgnoringSpace(ANodeExt.Txt,UpperName,true)=0 then
       exit(true);
     ANodeExt:=ANodeExt.Next;
   end;
@@ -721,7 +721,7 @@ begin
   NewInsert:=TCodeTreeNodeExtension.Create;
   with NewInsert do begin
     Node:=PosNode;
-    Signature:=CleanDef;
+    Txt:=CleanDef;
     Code:=Def;
     Identifier:=IdentifierName;
     ProcBody:=Body;
@@ -743,9 +743,9 @@ begin
     // insert alphabetically
     InsertPos:=FirstInsert;
     LastInsertPos:=nil;
-    //DebugLn('GGG "',InsertPos.Signature,'" "',CleanDef,'" ',CompareTextIgnoringSpace(InsertPos.Signature,CleanDef,false));
+    //DebugLn('GGG "',InsertPos.Txt,'" "',CleanDef,'" ',CompareTextIgnoringSpace(InsertPos.Txt,CleanDef,false));
     while (InsertPos<>nil)
-    and (CompareTextIgnoringSpace(InsertPos.Signature,CleanDef,false)>=0) do begin
+    and (CompareTextIgnoringSpace(InsertPos.Txt,CleanDef,false)>=0) do begin
       LastInsertPos:=InsertPos;
       InsertPos:=InsertPos.Next;
     end;
@@ -760,7 +760,7 @@ begin
     end;
     {InsertPos:=FirstInsert;
     while InsertPos<>nil do begin
-      DebugLn(' HHH ',InsertPos.Signature);
+      DebugLn(' HHH ',InsertPos.Txt);
       InsertPos:=InsertPos.Next;
     end;}
   end;
@@ -3434,7 +3434,7 @@ var
     NodeExt:=TCodeTreeNodeExtension.Create;
     NodeExt.Node:=Redefinition;
     NodeExt.Data:=Definition;
-    NodeExt.Signature:=NodeText;
+    NodeExt.Txt:=NodeText;
     if TreeOfCodeTreeNodeExt=nil then
       TreeOfCodeTreeNodeExt:=TAVLTree.Create(@CompareCodeTreeNodeExt);
     TreeOfCodeTreeNodeExt.Add(NodeExt);
@@ -3446,7 +3446,7 @@ var
   begin
     NodeExt:=TCodeTreeNodeExtension.Create;
     NodeExt.Node:=Node;
-    NodeExt.Signature:=NodeText;
+    NodeExt.Txt:=NodeText;
     AllNodes.Add(NodeExt);
   end;
   
@@ -3696,7 +3696,7 @@ var
       TreeOfCodeTreeNodeExt:=TAVLTree.Create(@CompareCodeTreeNodeExt);
     NodeExt:=TCodeTreeNodeExtension.Create;
     NodeExt.Node:=Node;
-    NodeExt.Signature:=GetRedefinitionNodeText(Node);
+    NodeExt.Txt:=GetRedefinitionNodeText(Node);
     NodeExt.Data:=ReferingNode;
     NodeExt.Flags:=NeededType;
     TreeOfCodeTreeNodeExt.Add(NodeExt);
@@ -3712,7 +3712,7 @@ var
       // add new node
       NodeExt:=TCodeTreeNodeExtension.Create;
       NodeExt.Node:=Node;
-      NodeExt.Signature:=NodeText;
+      NodeExt.Txt:=NodeText;
       AllNodes.Add(NodeExt);
     end else begin
       // update node
@@ -4001,7 +4001,7 @@ begin
       else if DefNode.Desc=ctnProcedure then
         ProcName:=ExtractProcName(DefNode,[])
       else
-        ProcName:=NodeExt.Signature;
+        ProcName:=NodeExt.Txt;
       NewSrc:=copy(NewSrc,1,FromPos-1)+ProcName
              +copy(NewSrc,FromPos+length(OldProcName),length(NewSrc));
       FromPos:=DefNode.StartPos;
@@ -4195,7 +4195,7 @@ var
     
     // save values
     ResultNodeExt:=TCodeTreeNodeExtension.Create;
-    ResultNodeExt.Signature:=NodeText;
+    ResultNodeExt.Txt:=NodeText;
     ResultNodeExt.Node:=NodeExt.Node;
     ResultNodeExt.Data:=ProcNode;
     ResultNodeExt.Code:=ExtractCode(ExprStart,ExprEnd,[]);
@@ -4286,7 +4286,7 @@ begin
   AVLNode:=TreeOfCodeTreeNodeExt.FindLowest;
   while AVLNode<>nil do begin
     NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
-    DebugLn(['TCodeCompletionCodeTool.ReplaceConstFunctions ',NodeExt.Signature]);
+    DebugLn(['TCodeCompletionCodeTool.ReplaceConstFunctions ',NodeExt.Txt]);
     DefNode:=NodeExt.Node;
     BodyNode:=TCodeTreeNode(NodeExt.Data);
     Expr:=NodeExt.Code;
@@ -4448,7 +4448,7 @@ var
 
     // save values
     ResultNodeExt:=TCodeTreeNodeExtension.Create;
-    ResultNodeExt.Signature:=NodeText;
+    ResultNodeExt.Txt:=NodeText;
     ResultNodeExt.Node:=NodeExt.Node;
     ResultNodeExt.Data:=ProcNode;
     ResultNodeExt.Code:=GetIdentifier(ResultType);
@@ -4537,7 +4537,7 @@ begin
   AVLNode:=TreeOfCodeTreeNodeExt.FindLowest;
   while AVLNode<>nil do begin
     NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
-    DebugLn(['TCodeCompletionCodeTool.ReplaceTypeCastFunctions ',NodeExt.Signature]);
+    DebugLn(['TCodeCompletionCodeTool.ReplaceTypeCastFunctions ',NodeExt.Txt]);
     DefNode:=NodeExt.Node;
     BodyNode:=TCodeTreeNode(NodeExt.Data);
     Expr:=NodeExt.Code;
@@ -5531,7 +5531,7 @@ function TCodeCompletionCodeTool.GatherUnitDefinitions(out
         RaiseRedefinition(NodeExt.Node,Node);
     end;
     NodeExt:=TCodeTreeNodeExtension.Create;
-    NodeExt.Signature:=NodeText;
+    NodeExt.Txt:=NodeText;
     TreeOfCodeTreeNodeExt.Add(NodeExt);
     NodeExt.Node:=Node;
   end;
@@ -5861,7 +5861,7 @@ begin
     while AVLNode<>nil do begin
       NextAVLNode:=ProcBodyNodes.FindSuccessor(AVLNode);
       NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
-      //DebugLn(['TCodeCompletionCodeTool.FindEmptyMethods ',NodeExt.Signature,' ',ProcBodyIsEmpty(NodeExt.Node)]);
+      //DebugLn(['TCodeCompletionCodeTool.FindEmptyMethods ',NodeExt.Txt,' ',ProcBodyIsEmpty(NodeExt.Node)]);
       // check if proc body is empty (no code, no comments)
       if ProcBodyIsEmpty(NodeExt.Node) then begin
         GatherClassProcs;
@@ -6075,9 +6075,9 @@ function TCodeCompletionCodeTool.FindAssignMethod(CursorPos: TCodeXYPosition;
         NodeExt.Node:=Child;
         NodeExt.Position:=Child.StartPos;
         if Child.Desc=ctnVarDefinition then
-          NodeExt.Signature:=ExtractDefinitionName(Child)
+          NodeExt.Txt:=ExtractDefinitionName(Child)
         else
-          NodeExt.Signature:=ExtractPropName(Child,false);
+          NodeExt.Txt:=ExtractPropName(Child,false);
         MemberNodeExts.Add(NodeExt);
       end;
 
@@ -6296,7 +6296,7 @@ begin
       for i:=0 to MemberNodeExts.Count-1 do begin
         NodeExt:=TCodeTreeNodeExtension(MemberNodeExts[i]);
         // add assignment
-        ProcBody:=ProcBody+Beauty.GetIndentStr(Indent)+NodeExt.Signature+':='+SrcVar+'.'+NodeExt.Signature+';'+e;
+        ProcBody:=ProcBody+Beauty.GetIndentStr(Indent)+NodeExt.Txt+':='+SrcVar+'.'+NodeExt.Txt+';'+e;
       end;
     end;
 
@@ -7815,7 +7815,7 @@ begin
               if IsVariable then begin
                 // the insertion is a new variable
                 if (ANode.Desc<>ctnVarDefinition)
-                or (CompareNodeIdentChars(ANode,ANodeExt.Signature)<0) then
+                or (CompareNodeIdentChars(ANode,ANodeExt.Txt)<0) then
                   break;
               end else begin
                 // the insertion is a new method
@@ -8354,10 +8354,10 @@ begin
   ANodeExt:=FirstInsert;
   while ANodeExt<>nil do begin
     if not NodeExtIsVariable(ANodeExt) then begin
-      if FindNodeExtInTree(ClassProcs,ANodeExt.Signature)=nil then begin
+      if FindNodeExtInTree(ClassProcs,ANodeExt.Txt)=nil then begin
         NewNodeExt:=TCodeTreeNodeExtension.Create;
         with NewNodeExt do begin
-          Signature:=UpperCaseStr(TheClassName)+'.'+ANodeExt.Signature; // Name+ParamTypeList
+          Txt:=UpperCaseStr(TheClassName)+'.'+ANodeExt.Txt; // Name+ParamTypeList
           Code:=Beauty.AddClassAndNameToProc(
              ANodeExt.Code,TheClassName,''); // complete proc head code
           ProcBody:=ANodeExt.ProcBody;
@@ -8413,7 +8413,7 @@ begin
   // update body signature in tree,
   // so that no new body is created for this definition
   ProcBodyNodes.RemovePointer(BodyNodeExt);
-  BodyNodeExt.Signature:=DefNodeExt.Signature;
+  BodyNodeExt.Txt:=DefNodeExt.Txt;
   ProcBodyNodes.Add(BodyNodeExt);
 end;
 
@@ -8585,7 +8585,7 @@ procedure TCodeCompletionCodeTool.GuessProcDefBodyMapping(ProcDefNodes,
         ProcNode:=NodeExt.Node;
         NewNodeExt:=TCodeTreeNodeExtension.Create;
         NewNodeExt.Node:=ProcNode;
-        NewNodeExt.Signature:=ExtractProcName(ProcNode,[phpWithoutClassName]);
+        NewNodeExt.Txt:=ExtractProcName(ProcNode,[phpWithoutClassName]);
         NewNodeExt.Data:=NodeExt;
         NewNodeExt.Flags:=Integer(ExtractProcedureGroup(ProcNode));
         if Result=nil then
@@ -8788,7 +8788,7 @@ begin
   FSourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,ProcCode);
   if FJumpToProcHead.Name='' then begin
     // remember one proc body to jump to after the completion
-    FJumpToProcHead.Name:=ANodeExt.Signature;
+    FJumpToProcHead.Name:=ANodeExt.Txt;
     FJumpToProcHead.Group:=TPascalMethodGroup(ANodeExt.Flags);
     FJumpToProcHead.ResultType:=ANodeExt.ResultType;
     if System.Pos('.',FJumpToProcHead.Name)<1 then
@@ -8796,7 +8796,7 @@ begin
     if FJumpToProcHead.Name[length(FJumpToProcHead.Name)]<>';' then
       FJumpToProcHead.Name:=FJumpToProcHead.Name+';';
     {$IFDEF CTDEBUG}
-    DebugLn('CreateMethodBodies_Insert FJumpToProcHead.Name="',FJumpToProcHead.Name,'"');
+    DebugLn('CreateMethodBodies_Insert FJumpToProcHead.Name="',dbgs(FJumpToProcHead),'"');
     {$ENDIF}
   end;
 end;
@@ -9040,7 +9040,7 @@ var
         FirstExistingProcBody:=ANode;
       if ANode.StartPos>LastExistingProcBody.StartPos then
         LastExistingProcBody:=ANode;
-      //DebugLn(['FindTopMostAndBottomMostProcBodies ',TCodeTreeNodeExtension(ExistingNode.Data).Signature]);
+      //DebugLn(['FindTopMostAndBottomMostProcBodies ',TCodeTreeNodeExtension(ExistingNode.Data).Txt]);
       ExistingNode:=ProcBodyNodes.FindSuccessor(ExistingNode);
     end;
   end;
@@ -9064,8 +9064,8 @@ var
             ANode2:=ANodeExt.Node;
           end;
           debugln(['CheckForDoubleDefinedMethods redefined']);
-          debugln('  1. ',ANodeExt.Signature,' ',CleanPosToStr(ANodeExt.Node.StartPos));
-          debugln('  2. ',ANodeExt2.Signature,' ',CleanPosToStr(ANodeExt2.Node.StartPos));
+          debugln('  1. ',ANodeExt.Txt,' ',CleanPosToStr(ANodeExt.Node.StartPos));
+          debugln('  2. ',ANodeExt2.Txt,' ',CleanPosToStr(ANodeExt2.Node.StartPos));
           CleanPosToCaret(ANode.FirstChild.StartPos,Caret1);
           CleanPosToCaret(ANode2.FirstChild.StartPos,Caret2);
           s:=IntToStr(Caret2.Y)+','+IntToStr(Caret2.X);
@@ -9145,13 +9145,13 @@ begin
     debugln(['TCodeCompletionCodeTool.CreateMissingClassProcBodies ClassProcs=',ClassProcs.Count]);
     AnAVLNode:=ClassProcs.FindLowest;
     while AnAVLNode<>nil do begin
-      DebugLn(' Gathered ProcDef ',TCodeTreeNodeExtension(AnAVLNode.Data).Signature);
+      DebugLn(' Gathered ProcDef ',TCodeTreeNodeExtension(AnAVLNode.Data).Txt);
       AnAVLNode:=ClassProcs.FindSuccessor(AnAVLNode);
     end;
     debugln(['TCodeCompletionCodeTool.CreateMissingClassProcBodies ProcBodyNodes=',ProcBodyNodes.Count]);
     AnAVLNode:=ProcBodyNodes.FindLowest;
     while AnAVLNode<>nil do begin
-      DebugLn(' Gathered ProcBody ',TCodeTreeNodeExtension(AnAVLNode.Data).Signature);
+      DebugLn(' Gathered ProcBody ',TCodeTreeNodeExtension(AnAVLNode.Data).Txt);
       AnAVLNode:=ProcBodyNodes.FindSuccessor(AnAVLNode);
     end;
     {$ENDIF}
@@ -9189,7 +9189,7 @@ begin
     {$IFDEF VerboseCreateMissingClassProcBodies}
     AnAVLNode:=ClassProcs.FindLowest;
     while AnAVLNode<>nil do begin
-      DebugLn(' SignaturesUpdated ProcDef ',TCodeTreeNodeExtension(AnAVLNode.Data).Signature);
+      DebugLn(' SignaturesUpdated ProcDef ',TCodeTreeNodeExtension(AnAVLNode.Data).Txt);
       AnAVLNode:=ClassProcs.FindSuccessor(AnAVLNode);
     end;
     {$ENDIF}
@@ -9199,7 +9199,7 @@ begin
     {$IFDEF VerboseCreateMissingClassProcBodies}
     AnAVLNode:=ClassProcs.FindLowest;
     while AnAVLNode<>nil do begin
-      DebugLn(' AfterPropsCompleted ',TCodeTreeNodeExtension(AnAVLNode.Data).Signature);
+      DebugLn(' AfterPropsCompleted ',TCodeTreeNodeExtension(AnAVLNode.Data).Txt);
       AnAVLNode:=ClassProcs.FindSuccessor(AnAVLNode);
     end;
     {$ENDIF}
@@ -9228,12 +9228,12 @@ begin
     {$IFDEF VerboseCreateMissingClassProcBodies}
     AnAVLNode:=ClassProcs.FindLowest;
     while AnAVLNode<>nil do begin
-      DebugLn(' BeforeAddMissing ProcDef "',TCodeTreeNodeExtension(AnAVLNode.Data).Signature,'"');
+      DebugLn(' BeforeAddMissing ProcDef "',TCodeTreeNodeExtension(AnAVLNode.Data).Txt,'"');
       AnAVLNode:=ClassProcs.FindSuccessor(AnAVLNode);
     end;
     AnAVLNode:=ProcBodyNodes.FindLowest;
     while AnAVLNode<>nil do begin
-      DebugLn(' BeforeAddMissing ProcBody "',TCodeTreeNodeExtension(AnAVLNode.Data).Signature,'"');
+      DebugLn(' BeforeAddMissing ProcBody "',TCodeTreeNodeExtension(AnAVLNode.Data).Txt,'"');
       AnAVLNode:=ProcBodyNodes.FindSuccessor(AnAVLNode);
     end;
     {$ENDIF}
@@ -9279,13 +9279,13 @@ begin
         MissingNode:=ClassProcs.FindPrecessor(MissingNode);
         ExistingNode:=ProcBodyNodes.Find(ANodeExt);
         {$IFDEF VerboseCreateMissingClassProcBodies}
-        DebugLn(['TCodeCompletionCodeTool.CreateMissingClassProcBodies ANodeExt.Txt=',ANodeExt.Signature,' ExistingNode=',ExistingNode<>nil]);
+        DebugLn(['TCodeCompletionCodeTool.CreateMissingClassProcBodies ANodeExt.Txt=',ANodeExt.Txt,' ExistingNode=',ExistingNode<>nil]);
         {$ENDIF}
         if (ExistingNode=nil) and (not ProcNodeHasSpecifier(ANodeExt.Node,psEXTERNAL))
         then begin
           {$IFDEF VerboseCreateMissingClassProcBodies}
           //generates AV:
-          //DebugLn(['TCodeCompletionCodeTool.CreateMissingClassProcBodies ANodeExt.Txt=',ANodeExt.Signature,' ExistingNode=',TCodeTreeNodeExtension(ExistingNode.Data).Signature]);
+          //DebugLn(['TCodeCompletionCodeTool.CreateMissingClassProcBodies ANodeExt.Txt=',ANodeExt.Txt,' ExistingNode=',TCodeTreeNodeExtension(ExistingNode.Data).Txt]);
           {$ENDIF}
           // MissingNode does not have a body -> insert proc body
           case MethodInsertPolicy of
@@ -9861,7 +9861,7 @@ begin
 
         // add method data
         NodeExt:=TCodeTreeNodeExtension.Create;
-        NodeExt.Signature:=CleanProcCode;
+        NodeExt.Txt:=CleanProcCode;
         NodeExt.Code:=FullProcCode;
         NodeExt.Identifier:=ProcName;
         NodeExt.ProcBody:=ProcCode;
@@ -9900,7 +9900,7 @@ begin
     AVLNode:=NewMethods.FindLowest;
     while AVLNode<>nil do begin
       NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
-      CleanProcCode:=NodeExt.Signature;
+      CleanProcCode:=NodeExt.Txt;
       FullProcCode:=NodeExt.Code;
       ProcName:=NodeExt.Identifier;
       ProcCode:=NodeExt.ProcBody;

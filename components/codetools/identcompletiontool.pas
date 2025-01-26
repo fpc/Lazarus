@@ -3857,7 +3857,7 @@ var
       NodeExt:=TCodeTreeNodeExtension.Create;
       NodeExt.Node:=ProcNode;
       NodeExt.Data:=ATool;
-      NodeExt.Signature:=ProcText;
+      NodeExt.Txt:=ProcText;
       if IsAbstract then
         NodeExt.Flags:=FlagIsAbstract
       else

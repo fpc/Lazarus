@@ -322,11 +322,11 @@ begin
   'interface',
   'type',
   '  TBird = class',
-  '    generic class procedure {a}DoIt<T>(s: T);',
+  '    class procedure {a}DoIt<T>(s: T);',
   '    procedure DoIt;',
   '  end;',
   'implementation',
-  'generic class procedure TBird.{b}Do2It<T>(s: T);',
+  'class procedure TBird.{b}Do2It<T>(s: T);',
   'begin',
   'end;',
   'procedure TBird.DoIt;',
@@ -340,7 +340,7 @@ procedure TTestMethodJumpTool.TestMethodJump_ObjFPCGenericMethod;
 begin
   Add([
   'unit Test1;',
-  '{$mode delphi}',
+  '{$mode objfpc}',
   'interface',
   'type',
   '  TBird = class',

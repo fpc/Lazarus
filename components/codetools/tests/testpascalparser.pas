@@ -466,7 +466,7 @@ begin
   '  TBird<B> = class(TAnimal<B>)',
   '    procedure DoIt;', // normal proc inside generic class
   '    procedure DoSome<T>;', // generic proc inside generic class
-  '    generic class procedure DoGen<P>(i: P);',
+  '    class procedure DoGen<P>(i: P);',
   '  end;',
   'procedure TRec.Proc<T>;', // generic proc inside normal record
   'begin',
@@ -477,7 +477,7 @@ begin
   'procedure TBird<B>.DoSome<T>;', // generic proc inside generic class
   'begin',
   'end;',
-  'generic class procedure TBird<B>.DoGen<P>(i: P);',
+  'class procedure TBird<B>.DoGen<P>(i: P);',
   'begin',
   'end;',
   'begin']);

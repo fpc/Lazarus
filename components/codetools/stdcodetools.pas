@@ -4818,7 +4818,7 @@ function TStandardCodeTool.GatherPublishedClassElements(
             NewNodeExt:=TCodeTreeNodeExtension.Create;
             with NewNodeExt do begin
               Node:=ANode;
-              Signature:=CurProcName;
+              Txt:=CurProcName;
             end;
             TreeOfCodeTreeNodeExtension.Add(NewNodeExt);
           end
@@ -4827,7 +4827,7 @@ function TStandardCodeTool.GatherPublishedClassElements(
             NewNodeExt:=TCodeTreeNodeExtension.Create;
             with NewNodeExt do begin
               Node:=ANode;
-              Signature:=CurVarName;
+              Txt:=CurVarName;
             end;
             TreeOfCodeTreeNodeExtension.Add(NewNodeExt);
           end
@@ -4836,7 +4836,7 @@ function TStandardCodeTool.GatherPublishedClassElements(
             NewNodeExt:=TCodeTreeNodeExtension.Create;
             with NewNodeExt do begin
               Node:=ANode;
-              Signature:=CurPropName;
+              Txt:=CurPropName;
             end;
             TreeOfCodeTreeNodeExtension.Add(NewNodeExt);
           end;

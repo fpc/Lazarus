@@ -542,7 +542,7 @@ begin
          then exit(KeyWordFuncClassFinal);
     end;
   'G':
-    if CompareSrcIdentifiers(p,'GENERIC') and (Scanner.CompilerMode in [cmDELPHI,cmOBJFPC])
+    if CompareSrcIdentifiers(p,'GENERIC') and (Scanner.CompilerMode=cmOBJFPC)
     and (CurNode.Desc <> ctnTypeSection)
     then
       exit(KeyWordFuncClassMethod);
@@ -1384,7 +1384,7 @@ begin
   // create class method node
   CreateChildNode;
   CurNode.Desc:=ctnProcedure;
-  if UpAtomIs('GENERIC') then begin
+  if (Scanner.CompilerMode=cmOBJFPC) and UpAtomIs('GENERIC') then begin
     IsGeneric:=true;
     ReadNextAtom;
   end else
@@ -2823,9 +2823,11 @@ var
   HasForwardModifier, IsClassProc: boolean;
   ProcNode: TCodeTreeNode;
   ParseAttr: TParseProcHeadAttributes;
+  StartPos: Integer;
 begin
   ParseAttr:=[pphCreateNodes];
-  if UpAtomIs('GENERIC') then begin
+  StartPos:=CurPos.StartPos;
+  if (Scanner.CompilerMode=cmOBJFPC) and UpAtomIs('GENERIC') then begin
     Include(ParseAttr,pphIsGeneric);
     ReadNextAtom;
   end;
@@ -2843,8 +2845,7 @@ begin
     IsClassProc:=false;
   // create node for procedure
   CreateChildNode;
-  if IsClassProc then
-    CurNode.StartPos:=LastAtoms.GetPriorAtom.StartPos;
+  CurNode.StartPos:=StartPos;
   ProcNode:=CurNode;
   ProcNode.Desc:=ctnProcedure;
   if CurSection=ctnInterface then

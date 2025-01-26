@@ -143,7 +143,7 @@ begin
     NodeExt1:=TCodeTreeNodeExtension(AVLNode1.Data);
     if AVLNode2<>nil then begin
       NodeExt2:=TCodeTreeNodeExtension(AVLNode2.Data);
-      cmp:=CompareTextIgnoringSpace(NodeExt1.Signature,NodeExt2.Signature,false);
+      cmp:=CompareTextIgnoringSpace(NodeExt1.Txt,NodeExt2.Txt,false);
       if cmp<0 then begin
         // node of tree1 does not exist in tree2
         // -> delete
@@ -836,10 +836,10 @@ begin
             NewNodeExt:=TCodeTreeNodeExtension.Create;
             with NewNodeExt do begin
               Node:=ANode;
-              Signature:=CurProcName;
+              Txt:=CurProcName;
               Flags:=Ord(ExtractProcedureGroup(ANode));
               if TPascalMethodGroup(Flags)=mgClassOperator then
-                // for class operator the result type is part of the signature
+                // for class operator the result type is part of the Txt
                 ResultType:=ExtractFuncResultType(ANode,Attr);
             end;
             Result.Add(NewNodeExt);
@@ -884,15 +884,15 @@ begin
     //DebugLn('[TMethodJumpingCodeTool.FindFirstDifferenceNode] B ',SearchInNode<>nil);
     cmp:=CompareCodeTreeNodeExt(Result.Data,SearchInNode.Data);
     
-    //NodeTxt1:=TCodeTreeNodeExtension(Result.Data).Signature;
-    //NodeTxt2:=TCodeTreeNodeExtension(SearchInNode.Data).Signature;
+    //NodeTxt1:=TCodeTreeNodeExtension(Result.Data).Txt;
+    //NodeTxt2:=TCodeTreeNodeExtension(SearchInNode.Data).Txt;
     //DebugLn('[TMethodJumpingCodeTool.FindFirstDifferenceNode] ',NodeTxt1,' ?',cmp,'= ',NodeTxt2);
 
     if cmp<0 then begin
       // result node not found in SearchInNodes
       // -> search for first difference
-      //NodeTxt1:=TCodeTreeNodeExtension(Result.Data).Signature;
-      //NodeTxt2:=TCodeTreeNodeExtension(SearchInNode.Data).Signature;
+      //NodeTxt1:=TCodeTreeNodeExtension(Result.Data).Txt;
+      //NodeTxt2:=TCodeTreeNodeExtension(SearchInNode.Data).Txt;
       Attr:=[phpWithStart, phpWithoutClassName, phpWithVarModifiers,
          phpWithResultType, phpInUpperCase];
       NodeTxt1:=ExtractProcHead(TCodeTreeNodeExtension(Result.Data).Node,Attr);
@@ -938,7 +938,7 @@ begin
   ANode:=ATree.Root;
   while ANode<>nil do begin
     Result:=TCodeTreeNodeExtension(ANode.Data);
-    cmp:=CompareTextIgnoringSpace(UpperCode,Result.Signature,true);
+    cmp:=CompareTextIgnoringSpace(UpperCode,Result.Txt,true);
     if cmp<0 then
       ANode:=ANode.Left
     else if cmp>0 then
@@ -1210,7 +1210,7 @@ begin
     end else
       DbgOut('Node=nil');
     DbgOut(' Position=',Dbgs(ANodeExt.Position));
-    DbgOut(' Txt="',ANodeExt.Signature,'"');
+    DbgOut(' Txt="',ANodeExt.Txt,'"');
     DbgOut(' ExtTxt1="',ANodeExt.Code,'"');
     DbgOut(' ExtTxt2="',ANodeExt.Identifier,'"');
     DebugLn();

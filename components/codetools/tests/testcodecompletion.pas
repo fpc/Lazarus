@@ -21,7 +21,9 @@ type
     // class completion: add missing method body
     procedure TestCompleteMethodBody_GenericObjFPC;
     procedure TestCompleteMethodBody_GenericDelphi;
-    procedure TestCompleteMethodBody_GenericMethod;
+    procedure TestCompleteMethodBody_GenericMethodObjFPC;
+    procedure TestCompleteMethodBody_SpecializedFunctionResultObjFPC;
+    procedure TestCompleteMethodBody_SpecializedFunctionResultDelphi;
     procedure TestCompleteMethodBody_GenericFunctionResultObjFPC;
     procedure TestCompleteMethodBody_GenericFunctionResultDelphi;
     procedure TestCompleteMethodBody_ParamGenericObjFPC;
@@ -513,32 +515,32 @@ begin
     'end.']);
 end;
 
-procedure TTestCodeCompletion.TestCompleteMethodBody_GenericMethod;
+procedure TTestCodeCompletion.TestCompleteMethodBody_GenericMethodObjFPC;
 begin
-  Test('TestCompleteMethodBody_GenericMethod',
+  Test('TestCompleteMethodBody_GenericMethodObjFPC',
     ['unit test1;',
-    '{$mode delphi}',
+    '{$mode objfpc}',
     'interface',
     'type',
-    '  TBird<T: class> = class',
+    '  TBird = class',
     '    generic class procedure DoIt<P>(i: P);',
     '  end;',
     'implementation',
     'end.'],
     6,1,
     ['unit test1;',
-    '{$mode delphi}',
+    '{$mode objfpc}',
     'interface',
     'type',
     '',
     '  { TBird }',
     '',
-    '  TBird<T: class> = class',
+    '  TBird = class',
     '    generic class procedure DoIt<P>(i: P);',
     '  end;',
     'implementation',
     '',
-    'generic class procedure TBird<T>.DoIt<P>(i: P);',
+    'generic class procedure TBird.DoIt<P>(i: P);',
     'begin',
     '',
     'end;',
@@ -546,9 +548,9 @@ begin
     'end.']);
 end;
 
-procedure TTestCodeCompletion.TestCompleteMethodBody_GenericFunctionResultObjFPC;
+procedure TTestCodeCompletion.TestCompleteMethodBody_SpecializedFunctionResultObjFPC;
 begin
-  Test('TestCompleteMethodBody_GenericFunctionResultObjFPC',
+  Test('TestCompleteMethodBody_SpecializedFunctionResultObjFPC',
     ['unit test1;',
     '{$mode objfpc}{$H+}',
     'interface',
@@ -578,9 +580,9 @@ begin
     'end.']);
 end;
 
-procedure TTestCodeCompletion.TestCompleteMethodBody_GenericFunctionResultDelphi;
+procedure TTestCodeCompletion.TestCompleteMethodBody_SpecializedFunctionResultDelphi;
 begin
-  Test('TestCompleteMethodBody_GenericFunctionResultDelphi',
+  Test('TestCompleteMethodBody_SpecializedFunctionResultDelphi',
     ['unit test1;',
     '{$mode delphi}{$H+}',
     'interface',
@@ -604,6 +606,74 @@ begin
     'implementation',
     '',
     'function TBird<T>.DoIt: TBird<T>;',
+    'begin',
+    'end;',
+    '',
+    'end.']);
+end;
+
+procedure TTestCodeCompletion.TestCompleteMethodBody_GenericFunctionResultObjFPC;
+begin
+  Test('TestCompleteMethodBody_GenericFunctionResultObjFPC',
+    ['unit test1;',
+    '{$mode objfpc}{$H+}',
+    '{$ModeSwitch advancedrecords}',
+    'interface',
+    'type',
+    '  TBird = class',
+    '    Generic Function Fly<T> : T;',
+    '  end;',
+    'implementation',
+    'end.'],
+    7,1,
+    ['unit test1;',
+    '{$mode objfpc}{$H+}',
+    '{$ModeSwitch advancedrecords}',
+    'interface',
+    'type',
+    '',
+    '  { TBird }',
+    '',
+    '  TBird = class',
+    '    Generic Function Fly<T> : T;',
+    '  end;',
+    'implementation',
+    '',
+    'generic function TBird.Fly<T>: T;',
+    'begin',
+    'end;',
+    '',
+    'end.']);
+end;
+
+procedure TTestCodeCompletion.TestCompleteMethodBody_GenericFunctionResultDelphi;
+begin
+  Test('TestCompleteMethodBody_GenericFunctionResultDelphi',
+    ['unit test1;',
+    '{$mode delphi}{$H+}',
+    '{$ModeSwitch advancedrecords}',
+    'interface',
+    'type',
+    '  TBird = record',
+    '    Function Fly<T> : T;',
+    '  end;',
+    'implementation',
+    'end.'],
+    7,1,
+    ['unit test1;',
+    '{$mode delphi}{$H+}',
+    '{$ModeSwitch advancedrecords}',
+    'interface',
+    'type',
+    '',
+    '  { TBird }',
+    '',
+    '  TBird = record',
+    '    Function Fly<T> : T;',
+    '  end;',
+    'implementation',
+    '',
+    'function TBird.Fly<T> : T;',
     'begin',
     'end;',
     '',

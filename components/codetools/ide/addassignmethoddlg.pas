@@ -245,9 +245,9 @@ begin
         NextAVLNode:=FMemberNodeExts.FindSuccessor(AVLNode);
         NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
         AssignIt:=true;
-        if (NodeExt.Signature='') then AssignIt:=false;
+        if (NodeExt.Txt='') then AssignIt:=false;
         if AssignIt then begin
-          FoundAVLNode:=FItems.FindKey(PChar(NodeExt.Signature),@CompareAnsistringWithAAMDItemName);
+          FoundAVLNode:=FItems.FindKey(PChar(NodeExt.Txt),@CompareAnsistringWithAAMDItemName);
           if FoundAVLNode<>nil then begin
             Item:=TAAMDItem(FoundAVLNode.Data);
             AssignIt:=Item.Selected;
@@ -503,7 +503,7 @@ begin
         // kind
         Item.Desc:=NodeExt.Node.Desc;
         // name
-        Item.Name:=NodeExt.Signature;
+        Item.Name:=NodeExt.Txt;
         // written by property
         if NodeExt.Data<>nil then
           Item.WrittenByProperty:=FTool.ExtractPropName(TCodeTreeNode(NodeExt.Data),false)

@@ -399,8 +399,8 @@ var
   NodeExt2: TCodeTreeNodeExtension absolute NodeData2;
 begin
   Result := CompareMethodHeaders(
-    NodeExt1.Signature,TPascalMethodGroup(NodeExt1.Flags),NodeExt1.ResultType,
-    NodeExt2.Signature,TPascalMethodGroup(NodeExt2.Flags),NodeExt2.ResultType);
+    NodeExt1.Txt,TPascalMethodGroup(NodeExt1.Flags),NodeExt1.ResultType,
+    NodeExt2.Txt,TPascalMethodGroup(NodeExt2.Flags),NodeExt2.ResultType);
 end;
 
 
@@ -629,7 +629,7 @@ function TPascalReaderTool.ExtractProcHead(ProcNode: TCodeTreeNode;
   Attr: TProcHeadAttributes): string;
 var
   TheClassName, s: string;
-  IsClassName, IsProcType, IsProcedure, IsFunction, IsOperator: Boolean;
+  IsClassName, IsProcType, IsProcedure, IsFunction, IsOperator, IsGeneric, CanGeneric: Boolean;
   EndPos: Integer;
   ParentNode: TCodeTreeNode;
   OldPos: TAtomPosition;
@@ -685,9 +685,13 @@ begin
   // parse procedure head = start + name + parameterlist + result type ;
   ExtractNextAtom(false,Attr);
   // read procedure start keyword
-  if UpAtomIs('GENERIC') then
+  if (Scanner.CompilerMode in [cmOBJFPC]) and UpAtomIs('GENERIC') then begin
     ExtractNextAtom((phpWithStart in Attr)
                     and not (phpWithoutClassKeyword in Attr),Attr);
+    IsGeneric:=true;
+  end else
+    IsGeneric:=false;
+  CanGeneric:=IsGeneric or (Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE]);
   if (UpAtomIs('CLASS') or UpAtomIs('STATIC')) then
     ExtractNextAtom((phpWithStart in Attr)
                     and not (phpWithoutClassKeyword in Attr),Attr);
@@ -719,17 +723,10 @@ begin
       // read classname and name
       repeat
         ExtractNextAtom(true,Attr);
-        if Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE] then
-        begin
-          // delphi generics
-          if AtomIsChar('<') then
-          begin
-            //writeln('TPascalReaderTool.ExtractProcHead B ',GetAtom);
-            if not ExtractNextSpecializeParams(not (phpWithoutGenericParams in Attr),Attr) then
-              exit;
-            //writeln('TPascalReaderTool.ExtractProcHead C ',GetAtom);
-            ExtractNextAtom(not (phpWithoutGenericParams in Attr),Attr);
-          end;
+        if CanGeneric and AtomIsChar('<') then begin
+          if not ExtractNextSpecializeParams(not (phpWithoutGenericParams in Attr),Attr) then
+            exit;
+          ExtractNextAtom(not (phpWithoutGenericParams in Attr),Attr);
         end;
         if CurPos.Flag<>cafPoint then break;
         ExtractNextAtom(true,Attr);
@@ -742,7 +739,7 @@ begin
       repeat
         OldPos:=CurPos;
         ReadNextAtom;
-        if (Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE]) and AtomIsChar('<') then
+        if CanGeneric and AtomIsChar('<') then
         begin
           repeat
             ReadNextAtom;
@@ -754,7 +751,7 @@ begin
         if IsClassName then begin
           // read class name
           ExtractNextAtom(not (phpWithoutClassName in Attr),Attr);
-          if (Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE]) and AtomIsChar('<') then
+          if CanGeneric and AtomIsChar('<') then
           begin
             if not ExtractNextSpecializeParams(false,Attr) then
               exit;
@@ -768,7 +765,7 @@ begin
         end else begin
           // read name
           ExtractNextAtom(not (phpWithoutName in Attr),Attr);
-          if (Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE]) and AtomIsChar('<') then
+          if CanGeneric and AtomIsChar('<') then
           begin
             if not ExtractNextSpecializeParams(false,Attr) then
               exit;
@@ -1040,15 +1037,14 @@ begin
       if (not ((phpIgnoreForwards in Attr)
                and ((Result.SubDesc and ctnsForwardDeclaration)>0)))
       and (not ((phpIgnoreProcsWithBody in Attr)
-            and (FindProcBody(Result)<>nil)))
+               and (FindProcBody(Result)<>nil)))
       and (not InClass or IdentNodeIsInVisibleClassSection(Result, Visibility))
       then
       begin
         CurProcHead:=ExtractProcHeadWithGroup(Result,Attr);
-        //DebugLn(['TPascalReaderTool.FindProcNode B "',CurProcHead,'" =? "',AProcHead,'" Result=',CompareTextIgnoringSpace(CurProcHead,AProcHead,false)]);
-        if (CurProcHead.Name<>'') and
-            SameMethodHeaders(AProcHead, CurProcHead)
-        then
+        //DebugLn(['TPascalReaderTool.FindProcNode B Cur="',dbgs(CurProcHead),'" =? "',dbgs(AProcHead),'" Result=',SameMethodHeaders(AProcHead, CurProcHead)]);
+        if (CurProcHead.Name<>'')
+            and SameMethodHeaders(AProcHead, CurProcHead) then
           exit;
       end;
     end;
