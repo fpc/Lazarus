@@ -4395,18 +4395,10 @@ begin
   begin
     AWidget.Visible := bShow;
   end else
-  (*
-  if wtWindow in AWidget.WidgetType then
-  begin
-    DebugLn('WARNING: TGtk3WidgetSet.ShowScrollBar cannot get scrollbar from ',dbgsName(AWidget.LCLObject),
-    ' bShow ',dbgs(bShow));
-  end else
-  *)
   if wtScrollingWin in AWidget.WidgetType then
   begin
-    // AScrolledWin :=
     if TGtk3ScrollableWin(Handle).GetScrolledWindow = nil then
-      exit;
+      exit(False);
     if wBar in [SB_BOTH, SB_HORZ] then
     begin
       if bShow then
@@ -4434,7 +4426,7 @@ begin
       TGtk3ScrollableWin(AWidget).VScrollBarPolicy := NewPolicy;
     end;
   end else
-    DebugLn('WARNING: TGtk3WidgetSet.ShowScrollBar cannot get scrollbar from ',dbgsName(AWidget.LCLObject));
+    Result := False;
 end;
 
 function TGtk3WidgetSet.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
