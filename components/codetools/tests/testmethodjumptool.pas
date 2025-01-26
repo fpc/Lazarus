@@ -350,12 +350,14 @@ begin
   'implementation',
   'generic class function TBird.{b}Do2It<T>(s: T): T;',
   'begin',
+  '  {c}',
   'end;',
   'procedure TBird.DoIt;',
   'begin',
   'end;',
   'end.']);
   TestJumpToMethod('a',false,'b',false,2);
+  TestJumpToMethod('c',false,'a',false);
 end;
 
 procedure TTestMethodJumpTool.TestMethodJump_ParamWithAttribute;

@@ -47,7 +47,6 @@ uses
   FileProcs, CodeTree, CodeToolsStrConsts, PascalParserTool, StdCodeTools,
   KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache, PascalReaderTool;
 
-
 type
 
   { TMethodJumpingCodeTool }
@@ -92,7 +91,6 @@ type
     procedure WriteCodeTreeNodeExtTree(ExtTree: TAVLTree);
     procedure CalcMemSize(Stats: TCTMemStats); override;
   end;
-
 
 implementation
 
@@ -287,9 +285,13 @@ const
   begin
     Result:=false;
     if SearchForProcNode=nil then exit;
+    if Scanner.CompilerMode=cmOBJFPC then begin
+      Include(SearchForProcAttr,phpWithoutGenericParams);
+      Include(SearchInProcAttr,phpWithoutGenericParams);
+    end;
     SearchedProcHead:=ExtractProcHeadWithGroup(SearchForProcNode,SearchForProcAttr);
     {$IFDEF CTDEBUG}
-    DebugLn('TMethodJumpingCodeTool.FindJumpPoint.FindBestProcNode Searching ',SearchForProcNode.DescAsString,' "',SearchedProcHead.Name,'" ',ProcHeadAttributesToStr(SearchForProcAttr));
+    DebugLn('TMethodJumpingCodeTool.FindJumpPoint.FindBestProcNode Searching ',SearchForProcNode.DescAsString,' "',dbgs(SearchedProcHead),'"');
     {$ENDIF}
     if SearchedProcHead.Name='' then exit;
     ProcNode:=FindProcNode(StartNode,SearchedProcHead,SearchInProcAttr);
