@@ -509,8 +509,7 @@ begin
             ecTab:
               Accept;
             ecDeleteChar,
-            ecRight, ecSelRight, ecColSelRight,
-            ecLostFocus, ecGotFocus:
+            ecRight, ecSelRight, ecColSelRight:
               ; {processed on AfterProcessing}
             else
               Cancel;
@@ -518,7 +517,6 @@ begin
       end
       else { AfterProcessing }
         case Command of
-          ecLostFocus, ecGotFocus,
           ecDeleteChar:
             ;
           ecDeleteLastChar,

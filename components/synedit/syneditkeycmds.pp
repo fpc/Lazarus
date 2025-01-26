@@ -297,8 +297,8 @@ const
   ecBlockIndentMove             = 651;  // Indent selection (indent before column-sel, therefore moving the column-sel)
   ecBlockUnindentMove           = 652;  // Unindent selection (indent before column-sel, therefore moving the column-sel)
 
-  ecGotFocus        = 700;
-  ecLostFocus       = 701;
+  ecGotFocus        = 700 deprecated 'Not used / To be removed in Lazarus 5.99';
+  ecLostFocus       = 701 deprecated 'Not used / To be removed in Lazarus 5.99';
 
   ecUserDefinedFirst  = 900;
   ecUserDefinedLast   = 999;
