@@ -1600,7 +1600,7 @@ begin
 
   if IsValidDC(DC)then
   begin
-    cairo_save(GtkDc.pcr);
+    GtkDC.Save;
     if Options and ETO_CLIPPED = ETO_CLIPPED then
     begin
       cairo_rectangle(GtkDc.pcr, Rect^.Left, Rect^.Top, Rect^.Right - Rect^.Left, Rect^.Bottom - Rect^.Top);
@@ -1642,7 +1642,7 @@ begin
           LineLen := Count;
       end;
     end;
-    cairo_restore(GtkDc.pcr);
+    GtkDC.Restore;
     Result := True;
   end;
 end;
@@ -1710,9 +1710,10 @@ begin
       end;
   end;
 
-  cr := TGtk3DeviceContext(DC).pcr;
-  cairo_save(cr);
+
+  TGtk3DeviceContext(DC).Save;
   try
+    cr := TGtk3DeviceContext(DC).pcr;
     cairo_set_line_width(cr, 1);
     cairo_set_line_cap(cr, Tcairo_line_cap_t.CAIRO_LINE_CAP_ROUND);
     cairo_set_line_join(cr, Tcairo_line_join_t.CAIRO_LINE_JOIN_ROUND);
@@ -1736,7 +1737,7 @@ begin
       InflateRect(ARect, -1, -1);
     end;
   finally
-    cairo_restore(cr);
+    TGtk3DeviceContext(DC).Restore;
   end;
 end;
 
@@ -3454,7 +3455,7 @@ begin
   Result := False;
   if not IsValidDC(DC) then
     exit;
-  cairo_restore(TGtk3DeviceContext(DC).pcr);
+  TGtk3DeviceContext(DC).Restore;
   Result := True;
 end;
 
@@ -3475,7 +3476,7 @@ begin
   Result := 0;
   if not IsValidDC(DC) then
     exit;
-  cairo_save(TGtk3DeviceContext(DC).pcr);
+  TGtk3DeviceContext(DC).Save;
   Result := 1;
 end;
 

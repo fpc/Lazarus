@@ -198,6 +198,7 @@ type
 
   TGtk3DeviceContext = class (TGtk3Object)
   private
+    FDCSaveCounter: integer;
     FBkColor:TColorRef;
     FBgBrush: TGtk3Brush; //solid brush created when BkColor is setted up.
     FBrush: TGtk3Brush;
@@ -1791,6 +1792,7 @@ begin
   FOwnsSurface := False;
   FCurrentTextColor := clBlack;
   FBkColor := clWhite;
+  FDCSaveCounter := 0;
   if AWidget = nil then
   begin
     ACairo := gdk_cairo_create(gdk_get_default_root_window);
@@ -1844,6 +1846,7 @@ begin
      ' FromPaintEvent:',BoolToStr(APaintEvent),' )');
   {$endif}
   inherited Create;
+  FDCSaveCounter := 0;
   FXorSurface := nil;
   FCanvasScaleFactor := 1;
   FvClipRect := Rect(0, 0, 0, 0);
@@ -1874,6 +1877,7 @@ begin
      ' FromPaintEvent:',BoolToStr(True),' )');
   {$endif}
   inherited Create;
+  FDCSaveCounter := 0;
   FXorSurface := nil;
   FCanvasScaleFactor := 1;
   FOwnsCairo := False;
@@ -1900,6 +1904,9 @@ begin
 
   if FXorMode then
     RasterOp := R2_COPYPEN;
+
+  if FDCSaveCounter > 0 then
+    DebugLn('WARNING: TGtk3DeviceContext: Unpaired Cairo save/restore calls. Current count = ',dbgs(FDCSaveCounter),', but should be 0.');
 
   if FOwnsCairo and (FCairo <> nil) then
     cairo_destroy(FCairo);
@@ -1999,7 +2006,7 @@ end;
 
 procedure TGtk3DeviceContext.drawRect(x1, y1, w, h: Integer; const AFill, ABorder: Boolean);
 begin
-  cairo_save(pcr);
+  Save;
   try
     cairo_rectangle(pcr, x1 + PixelOffset, y1 + PixelOffset, w - 1, h - 1);
 
@@ -2016,7 +2023,7 @@ begin
 
     cairo_new_path(pcr);
   finally
-    cairo_restore(pcr);
+    Restore;
   end;
 end;
 
@@ -2035,7 +2042,7 @@ var
   UseBack: boolean;
   ornt:integer;
 begin
-  cairo_save(pcr);
+  Save;
   try
     cairo_move_to(pcr, X, Y);
     ornt := Self.FCurrentFont.FLogFont.lfOrientation;
@@ -2067,7 +2074,7 @@ begin
       pango_attribute_destroy(Attr);
     end;
   finally
-    cairo_restore(pcr);
+    Restore;
   end;
 end;
 
@@ -2076,7 +2083,7 @@ var
   save_matrix: Tcairo_matrix_t;
   //SaveMode:Integer;
 begin
-  cairo_save(pcr);
+  Save;
   try
     cairo_get_matrix(pcr, @save_matrix);
     cairo_translate (pcr, x + w / 2.0 + PixelOffset, y + h / 2.0 + PixelOffset);
@@ -2100,7 +2107,7 @@ begin
     end;
     cairo_set_matrix(pcr, @save_matrix);
   finally
-    cairo_restore(pcr);
+    Restore;
   end;
   if ABorder then
   begin
@@ -2120,7 +2127,7 @@ begin
   {$IFDEF VerboseGtk3DeviceContext}
   DebugLn('TGtk3DeviceContext.DrawSurface ');
   {$ENDIF}
-  cairo_save(pcr);
+  Save;
   try
     with targetRect^ do
       cairo_rectangle(pcr, Left + PixelOffset, Top + PixelOffset, Right - Left, Bottom - Top);
@@ -2134,7 +2141,7 @@ begin
     cairo_clip(pcr);
     cairo_paint(pcr);
   finally
-    cairo_restore(pcr);
+    Restore;
   end;
 end;
 
@@ -2148,7 +2155,7 @@ begin
   {$IFDEF VerboseGtk3DeviceContext}
   DebugLn('TGtk3DeviceContext.DrawImage ');
   {$ENDIF}
-  cairo_save(pcr);
+  Save;
   try
     // pm := Image;
     // AData := PByte(gdk_pixbuf_get_pixels(pm));
@@ -2159,8 +2166,7 @@ begin
       cairo_rectangle(pcr, Left + PixelOffset, Top + PixelOffset, Right - Left, Bottom - Top);
     cairo_paint(pcr);
   finally
-    // cairo_surface_destroy(ASurface);
-    cairo_restore(pcr);
+    Restore;
   end;
 end;
 
@@ -2172,7 +2178,7 @@ begin
   {$IFDEF VerboseGtk3DeviceContext}
   DebugLn('TGtk3DeviceContext.DrawImage ');
   {$ENDIF}
-  cairo_save(pcr);
+  Save;
   try
     gdk_cairo_set_source_pixbuf(pcr, Image, 0, 0);
     with targetRect^ do
@@ -2191,7 +2197,7 @@ begin
     cairo_clip(pcr);
     cairo_paint(pcr);
   finally
-    cairo_restore(pcr);
+    Restore;
   end;
 end;
 
@@ -2204,7 +2210,7 @@ begin
   {$IFDEF VerboseGtk3DeviceContext}
   DebugLn('TGtk3DeviceContext.DrawPixmap ');
   {$ENDIF}
-  cairo_save(pcr);
+  Save;
   try
     AData := PByte(gdk_pixbuf_get_pixels(pm));
     ASurface := cairo_image_surface_create_for_data(AData, CAIRO_FORMAT_ARGB32, gdk_pixbuf_get_width(pm), gdk_pixbuf_get_height(pm), gdk_pixbuf_get_rowstride(pm));
@@ -2212,7 +2218,7 @@ begin
     cairo_paint(pcr);
   finally
     cairo_surface_destroy(ASurface);
-    cairo_restore(pcr);
+    Restore;
   end;
 end;
 
@@ -2220,7 +2226,7 @@ procedure TGtk3DeviceContext.drawPolyLine(P: PPoint; NumPts: Integer);
 var
   i: Integer;
 begin
-  cairo_save(pcr);
+  Save;
   try
     ApplyPen;
     cairo_move_to(pcr, P[0].X+PixelOffset, P[0].Y+PixelOffset);
@@ -2228,9 +2234,8 @@ begin
       cairo_line_to(pcr, P[i].X+PixelOffset, P[i].Y+PixelOffset);
     cairo_stroke(pcr);
   finally
-    cairo_restore(pcr);
+    Restore;
   end;
-
 end;
 
 procedure TGtk3DeviceContext.drawPolygon(P: PPoint; NumPts: Integer;
@@ -2238,7 +2243,7 @@ procedure TGtk3DeviceContext.drawPolygon(P: PPoint; NumPts: Integer;
 var
   i: Integer;
 begin
-  cairo_save(pcr);
+  Save;
   try
     // add offset so the center of the pixel is used
     cairo_move_to(pcr, P[0].X+PixelOffset, P[0].Y+PixelOffset);
@@ -2261,7 +2266,7 @@ begin
 
     cairo_new_path(pcr);
   finally
-    cairo_restore(pcr);
+    Restore;
   end;
 end;
 
@@ -2280,7 +2285,7 @@ begin
   // we need 3 points left for continuous and 4 for not continous
   MaxIndex := NumPoints - 3 - Ord(not Continuous);
 
-  cairo_save(pcr);
+  Save;
   try
     i := 0;
     while i <= MaxIndex do
@@ -2322,7 +2327,7 @@ begin
     else
       cairo_new_path(pcr);
   finally
-    cairo_restore(pcr);
+    Restore;
   end;
 end;
 
@@ -2345,7 +2350,7 @@ begin
   //DebugLn('TGtk3DeviceContext.fillRect ',Format('x %d y %d w %d h %d',[x, y, w, h]));
   {$endif}
 
-  cairo_save(pcr);
+  Save;
   try
     if ABrush <> 0 then
     begin
@@ -2370,7 +2375,7 @@ begin
     CurrentBrush:= ATempBrush;
     cairo_new_path(pcr);
   finally
-    cairo_restore(pcr);
+    Restore;
   end;
 end;
 
@@ -2400,7 +2405,7 @@ procedure TGtk3DeviceContext.EllipseArcPath(CX, CY, RX, RY: Double; Angle1, Angl
 begin
   if (RX=0) or (RY=0) then //cairo_scale do not likes zero params
     Exit;
-  cairo_save(pcr);
+  Save;
   try
     cairo_translate(pcr, SX(CX), SY(CY));
     cairo_scale(pcr, SX2(RX), SY2(RY));
@@ -2411,7 +2416,7 @@ begin
     else
       cairo_arc_negative(pcr, 0, 0, 1, Angle1, Angle2);
   finally
-    cairo_restore(pcr);
+    Restore;
   end;
 end;
 
@@ -2749,11 +2754,15 @@ end;
 procedure TGtk3DeviceContext.Save;
 begin
   cairo_save(pcr);
+  inc(FDCSaveCounter);
 end;
 
 procedure TGtk3DeviceContext.Restore;
 begin
+  dec(FDCSaveCounter);
   cairo_restore(pcr);
+  if FDCSaveCounter < 0 then
+    DebugLn('WARNING: TGtk3DeviceContext: Cairo restore called without save.');
 end;
 
 procedure TGtk3DeviceContext.SetCanvasScaleFactor(const AValue: double);

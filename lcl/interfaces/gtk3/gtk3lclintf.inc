@@ -122,7 +122,7 @@ begin
   gc := TColortoTGdkRGBA(ColorToRGB(GtkDC.CurrentPen.Color));
   DotSize := Max(1, GtkDC.CurrentPen.Width);
 
-  cairo_save(GtkDC.pcr);
+  GtkDC.Save;
   //TODO: cairo_get_matrix(pcr, @matrix);
   cairo_set_source_rgb(GtkDC.pcr, gc.red, gc.green, gc.blue);
 
@@ -142,7 +142,7 @@ begin
 
   cairo_fill(GtkDC.pcr);
   cairo_new_path(GtkDC.pcr);
-  cairo_restore(GtkDC.pcr);
+  GtkDC.Restore;
 end;
 
 
