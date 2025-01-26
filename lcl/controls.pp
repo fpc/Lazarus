@@ -295,7 +295,7 @@ type
   TWndMethod = procedure(var TheMessage: TLMessage) of Object;
 
   TControlStyleType = (
-    csAcceptsControls,       // can have children in the designer
+    csAcceptsControls,       // can have children.
     csCaptureMouse,          // auto capture mouse when clicked
     csDesignInteractive,     // wants mouse events in design mode
     csClickEvents,           // handles mouse events
