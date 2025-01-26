@@ -7607,16 +7607,16 @@ Set of options enabled for the Task dialog.
 options enabled for the Task dialog. It contains zero or more values from the 
 TTaskDialogFlag enumeration, which when included, enable the corresponding 
 features in the Task Dialog. The default value for the property is 
-[tfAllowDialogCancellation] and allows the dialog to be cancelled using the Esc 
-key or Alt+F4 key combination.
+[tfAllowDialogCancellation] and allows the dialog to be cancelled using the 
+Esc key or Alt+F4 key combination.
 </p>
 <p>
 Changing the property value causes validation and normalization of the flag 
 values to be performed. tfQuery and tfSimpleQuery are mutually exclusive 
 values; if both are specified in the property value, then tfSimpleQuery is 
 excluded from the new property value. In addition, tfQuery and tfSimpleQuery 
-causes other flag values to be ignored, and certain features are disbaled. They 
-cause the expando control (expand or collapse indicator) to be hidden and 
+causes other flag values to be ignored, and certain features are disabled. 
+They cause the expando control (expand or collapse indicator) to be hidden and
 ExpandedText is displayed in the expanded state (tfExpandedByDefault). 
 Hyperlinks (tfEnableHyperlinks) are disabled when tfQuery or tfSimpleQuery is 
 included in the property; the markup for the hyperlink is still displayed in 

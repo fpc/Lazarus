@@ -885,7 +885,7 @@ Calls the UpdateButtonLayout, UpdateBevel, and UpdateSizes methods.
 
 <element name="TCustomButtonPanel.CMAppShowBtnGlyphChanged">
 <short>
-Performs the control message needed when the visibility for a button glpyh 
+Performs the control message needed when the visibility for a button glyph 
 has changed.
 </short>
 <descr></descr>
