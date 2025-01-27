@@ -190,7 +190,7 @@ procedure TCustomFrame.CalculatePreferredSize(var PreferredWidth,
 begin
   if (csDesigning in ComponentState) and (Owner=nil) then begin
     // frame is root component at designtime
-    // => keep it free resiable
+    // => keep it free resizable
     exit;
   end;
   inherited CalculatePreferredSize(PreferredWidth, PreferredHeight,
