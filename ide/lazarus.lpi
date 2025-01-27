@@ -23,7 +23,7 @@
     <VersionInfo>
       <UseVersionInfo Value="True"/>
       <MajorVersionNr Value="3"/>
-      <MinorVersionNr Value="8"/>
+      <MinorVersionNr Value="9"/>
       <CharSet Value="04B0"/>
       <StringTable ProductName="Lazarus IDE"/>
     </VersionInfo>
