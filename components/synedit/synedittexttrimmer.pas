@@ -345,6 +345,7 @@ begin
     ATokenInfo.TokenStart := PChar(FTempLineStringForPChar);
     ATokenInfo.TokenLength := length(FTempLineStringForPChar);
     ATokenInfo.TokenAttr := nil;
+    ATokenInfo.TokenOrigin := dtoVirtualText;
     FAtLineStart := False;
     exit;
   end;

@@ -84,7 +84,7 @@ type
     FNextMarkupPhysPos, FNextMarkupLogPos: Integer;
     FCurMarkupNextStart: TLazSynDisplayTokenBound;
     FCurMarkupNextRtlInfo: TLazSynDisplayRtlInfo;
-    FCurMarkupState: (cmPreInit, cmLine, cmPastEOL, cmPastWrapEnd);
+    FTokenOrigin: TLazSynDisplayTokenOrigin;
     FMarkupTokenAttr: TSynSelectedColorMergeResult;
     procedure InitCurMarkup;
   public
@@ -277,8 +277,6 @@ procedure TLazSynPaintTokenBreaker.InitCurMarkup;
 var
   TmpTokenInfo: TLazSynDisplayTokenInfoEx;
 begin
-  FCurMarkupState := cmLine;
-
   if GetNextHighlighterTokenFromView(TmpTokenInfo, -1, 1) then begin
     FCurMarkupNextStart   := TmpTokenInfo.NextPos;
     FCurMarkupNextRtlInfo := TmpTokenInfo.NextRtlInfo;
@@ -361,11 +359,11 @@ begin
   FVirtualFirstCol := FCurLinePhysStart + FFirstCol;
   FVirtualLastCol  := FCurLinePhysStart + FLastCol;
 
-  FNextMarkupPhysPos := -1;
+  FNextMarkupPhysPos := low(FNextMarkupPhysPos); // Marker for first call to GetNextHighlighterTokenEx
   FNextMarkupLogPos  := -1;
-  FCurMarkupState      := cmPreInit;
   FCurTxtLineIdx     := ARealLine;
   FIsLastViewedSubLine := FCurLineByteLen >= FCharWidthsLen;
+  FTokenOrigin     := dtoVirtualText;
 end;
 
 function TLazSynPaintTokenBreaker.GetNextHighlighterTokenEx(out
@@ -373,52 +371,47 @@ function TLazSynPaintTokenBreaker.GetNextHighlighterTokenEx(out
 const
   Space = '  ';
 begin
-  if FCurMarkupState = cmPreInit then
+  if FNextMarkupPhysPos = low(FNextMarkupPhysPos) then begin
     InitCurMarkup;
-
-  if (FCurLineByteLen < FCharWidthsLen) and (FCurViewScannerPos.Logical > FCurLineByteLen)
-  then begin
-    if FCurMarkupState <> cmPastWrapEnd then begin
-      assert(FCurViewScannerPos.Logical = FCurLineByteLen + 1, 'TLazSynPaintTokenBreaker.GetNextHighlighterTokenEx: FCurViewScannerPos.Logical = FCurLineByteLen + 1');
-      FCurMarkupState := cmPastWrapEnd;
-      FWrapEndBound := FCurViewScannerPos;
-    end;
+    FNextMarkupPhysPos := -1;
   end;
 
-  if (FCurMarkupState = cmPastWrapEnd) then begin
+  FTokenOrigin := FCurViewToken.TokenOrigin;
+
+  if FTokenOrigin in [dtoAfterWrapped] then begin
     FNextMarkupPhysPos := MaxInt;
     FNextMarkupLogPos := MaxInt;
   end
   else
-  if (FNextMarkupPhysPos < 0) or
-     (FCurMarkupNextRtlInfo.IsRtl       and (FNextMarkupPhysPos >= FCurMarkupNextStart.Physical)) or
-     ((not FCurMarkupNextRtlInfo.IsRtl) and (FNextMarkupPhysPos <= FCurMarkupNextStart.Physical)) or
-     (FNextMarkupLogPos < 0) or (FNextMarkupLogPos <= FCurMarkupNextStart.Logical)
-  then begin
-    FMarkupManager.GetNextMarkupColAfterRowCol(FCurTxtLineIdx+1,
-      FCurMarkupNextStart, FCurMarkupNextRtlInfo, FNextMarkupPhysPos, FNextMarkupLogPos);
+  begin
+    if (FNextMarkupPhysPos < 0) or
+       (FCurMarkupNextRtlInfo.IsRtl       and (FNextMarkupPhysPos >= FCurMarkupNextStart.Physical)) or
+       ((not FCurMarkupNextRtlInfo.IsRtl) and (FNextMarkupPhysPos <= FCurMarkupNextStart.Physical)) or
+       (FNextMarkupLogPos < 0) or (FNextMarkupLogPos <= FCurMarkupNextStart.Logical)
+    then begin
+      FMarkupManager.GetNextMarkupColAfterRowCol(FCurTxtLineIdx+1,
+        FCurMarkupNextStart, FCurMarkupNextRtlInfo, FNextMarkupPhysPos, FNextMarkupLogPos);
 
-    if FNextMarkupPhysPos < 1 then
-      if FCurMarkupNextRtlInfo.IsRtl
-      then FNextMarkupPhysPos := 1
-      else FNextMarkupPhysPos := MaxInt;
-    if FNextMarkupLogPos < 1 then
-      FNextMarkupLogPos := MaxInt;
+      if FNextMarkupPhysPos < 1 then
+        if FCurMarkupNextRtlInfo.IsRtl
+        then FNextMarkupPhysPos := 1
+        else FNextMarkupPhysPos := MaxInt;
+      if FNextMarkupLogPos < 1 then
+        FNextMarkupLogPos := MaxInt;
+    end;
+
+    if (FTokenOrigin <> dtoAfterText) and (FCurLineByteLen < FCharWidthsLen) and
+       (FNextMarkupLogPos > FCurLineByteLen + 1)
+    then
+      FNextMarkupLogPos := FCurLineByteLen + 1; // stop at WrapEnd / EOL // tokens should have a bound there anyway
   end;
 
-  if (FCurMarkupState <> cmPastWrapEnd) and (FCurLineByteLen < FCharWidthsLen) and
-     (FNextMarkupLogPos > FCurLineByteLen + 1)
-  then
-    FNextMarkupLogPos := FCurLineByteLen + 1; // stop at WrapEnd / EOL // tokens should have a bound there anyway
-
   ATokenInfo.Attr := nil;
-  if FCurMarkupState in [cmPastEOL, cmPastWrapEnd]
-  then Result := False
-  else Result := GetNextHighlighterTokenFromView(ATokenInfo, FNextMarkupPhysPos, FNextMarkupLogPos);
+  Result := GetNextHighlighterTokenFromView(ATokenInfo, FNextMarkupPhysPos, FNextMarkupLogPos);
 
   if not Result then begin
     // the first run StartPos is set by GetNextHighlighterTokenFromView
-    if FCurMarkupState in [cmPastEOL, cmPastWrapEnd] then begin
+    if FTokenOrigin in [dtoAfterText, dtoAfterWrapped] then begin
       ATokenInfo.StartPos   := FCurMarkupNextStart
     end
     else
@@ -427,13 +420,11 @@ begin
       ATokenInfo.StartPos.Physical := FVirtualFirstCol;
     end;
 
-    if (FCurMarkupState <> cmPastWrapEnd) then
-      FCurMarkupState := cmPastEOL;
-
     Result := (ATokenInfo.StartPos.Physical < FVirtualLastCol);
     if not Result then
       exit;
     assert((FNextMarkupPhysPos <= 0) or (FNextMarkupPhysPos > ATokenInfo.StartPos.Physical), 'FNextMarkupPhysPos > ATokenInfo.StartPos.Physical');
+    assert(FTokenOrigin in [dtoAfterText, dtoAfterWrapped], 'TLazSynPaintTokenBreaker.GetNextHighlighterTokenEx: FTokenOrigin in [dtoAfterText, dtoAfterWrapped]');
 
     ATokenInfo.Tk.TokenStart      := @Space[1];
     ATokenInfo.Tk.TokenLength     := 1;
@@ -490,7 +481,7 @@ begin
     FMarkupTokenAttr.CurrentEndX   := ATokenInfo.EndPos;
   end;
 
-  if FCurMarkupState = cmPastWrapEnd then
+  if FTokenOrigin = dtoAfterWrapped then
     fMarkupManager.MergeMarkupAttributeAtWrapEnd(FCurTxtLineIdx + 1,
       FWrapEndBound, FMarkupTokenAttr)
   else
@@ -541,15 +532,27 @@ function TLazSynPaintTokenBreaker.GetNextHighlighterTokenFromView(out
   end;
 
   function MaybeFetchToken: Boolean; inline;
+  var
+    CurTokenOrigin: TLazSynDisplayTokenOrigin;
   begin
     Result := FCurViewToken.TokenLength > 0;
     if Result or (FCurViewToken.TokenLength < 0) then exit;
     FCurViewCurTokenStartPos := FCurViewScannerPos;
+    CurTokenOrigin := FCurViewToken.TokenOrigin;
     while FCurViewToken.TokenLength = 0 do begin // Todo: is SyncroEd-test a zero size token is returned
       Result := FDisplayView.GetNextHighlighterToken(FCurViewToken);
-      if not Result then
+      if (not (CurTokenOrigin in [dtoAfterText, dtoAfterWrapped])) and
+         (FCurViewToken.TokenOrigin in [dtoAfterText, dtoAfterWrapped])
+      then
+        FWrapEndBound := FCurViewScannerPos;
+
+      if not Result then begin
+        FCurViewToken.TokenStart := nil;
         FCurViewToken.TokenAttr := nil;
-      Result := Result and (FCurViewToken.TokenStart <> nil); // False for end of line token
+        FCurViewToken.TokenOrigin := dtoAfterText;
+      end
+      else
+        Result := Result and (FCurViewToken.TokenStart <> nil); // False for end of line token
       if not Result then begin
         FCurViewToken.TokenLength := -1;
         exit;
@@ -758,10 +761,18 @@ begin
   ATokenInfo.Attr := nil;
   while True do begin
     Result := MaybeFetchToken;    // Get token from View/Highlighter
+    FTokenOrigin := FCurViewToken.TokenOrigin;
+
+    if (FTokenOrigin in [{dtoAfterText,} dtoAfterWrapped]) and (APhysEnd >= 0) then begin
+      APhysEnd := MaxInt;
+      ALogEnd  := MaxInt;
+    end;
+
     if not Result then begin
       ATokenInfo.StartPos      := FCurViewScannerPos;
       ATokenInfo.RtlInfo.IsRtl := False;
       ATokenInfo.NextRtlInfo.IsRtl := False;
+      ATokenInfo.Tk := FCurViewToken;
       if FCurViewToken.TokenAttr <> nil then begin
         InitSynAttr(FCurViewAttr, FCurViewToken.TokenAttr, FCurViewCurTokenStartPos);
         ATokenInfo.Attr := FCurViewAttr;

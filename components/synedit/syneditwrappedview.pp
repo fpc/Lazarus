@@ -180,7 +180,7 @@ type
   private
     FWrapPlugin: TLazSynEditLineWrapPlugin;
 
-    FCurSubLineLogStartIdx, FCurSubLineNextLogStartIdx: Integer;
+    FCurSubLineLogStartIdx, FCurSubLineNextLogStartIdx, FCurRealLineByteLen: Integer;
     FCurSubLinePhysStartIdx, FPrevSubLinePhysWidth: Integer;
     FCurToken: TLazSynDisplayTokenInfo;
     FCurLineLogIdx: Integer;
@@ -1496,7 +1496,7 @@ begin
   IsNext := (AWrappedLine = FCurWrappedLine + 1) and (FCurWrappedLine >= 0);
   PrevSub := FCurrentWrapSubline;
 
-  inherited SetHighlighterTokensLine(AWrappedLine, ARealLine, AStartBytePos, AStartPhysPos, ALineByteLen);
+  inherited SetHighlighterTokensLine(AWrappedLine, ARealLine, AStartBytePos, AStartPhysPos, FCurRealLineByteLen);
 
   LineTxt := FLineMappingView.NextLines.Strings[ARealLine];
   FLineMappingView.LogPhysConvertor.CurrentLine := ARealLine;
@@ -1527,8 +1527,9 @@ var
   PreStart: Integer;
 begin
   ATokenInfo := Default(TLazSynDisplayTokenInfo);
-  If FCurLineLogIdx >= FCurSubLineNextLogStartIdx then begin
-    Result := False;
+  If (FCurLineLogIdx >= FCurSubLineNextLogStartIdx) and (FCurSubLineNextLogStartIdx < FCurRealLineByteLen) then begin
+    ATokenInfo.TokenOrigin := dtoAfterWrapped;
+    Result := True; // TokenStart = nil => no text
     exit;
   end;
 
@@ -1547,14 +1548,22 @@ begin
     ATokenInfo.TokenStart := ATokenInfo.TokenStart + PreStart;
     ATokenInfo.TokenLength := ATokenInfo.TokenLength - PreStart;
     Result := ATokenInfo.TokenLength > 0;
-    if not Result then
+    if not Result then begin
+      ATokenInfo.TokenOrigin := dtoAfterWrapped;
+      Result := False;
       exit;
+    end;
   end;
 
 
   If FCurLineLogIdx > FCurSubLineNextLogStartIdx then begin
     ATokenInfo.TokenLength := ATokenInfo.TokenLength - (FCurLineLogIdx - FCurSubLineNextLogStartIdx);
     Result := ATokenInfo.TokenLength > 0;
+    if not Result then begin
+      ATokenInfo.TokenOrigin := dtoAfterWrapped;
+      Result := False;
+      exit;
+    end;
   end;
 end;
 

@@ -196,10 +196,20 @@ type
     - Can be Edited
   *)
 
+  TLazSynDisplayTokenOrigin = (
+    dtoVirtualText,   // The token is part of the (virtual) line text
+    dtoBeforeText,    // Before start of text
+    dtoAfterText,     // After end of Text
+    dtoBeforeWrapped, // Before a wrapped subline (any line but the very first line)
+    dtoAfterWrapped   // After a wrapped subline (any line but the very last line)
+    //dtoInjected       // In the middle of existing text
+  );
+
   TLazSynDisplayTokenInfo = record
     TokenStart: PChar;
     TokenLength: integer;
     TokenAttr: TSynHighlighterAttributes;
+    TokenOrigin: TLazSynDisplayTokenOrigin;
   end;
 
   TLineRange = record

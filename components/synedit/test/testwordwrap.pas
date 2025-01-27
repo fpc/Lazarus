@@ -1550,6 +1550,7 @@ begin
   (* After "DoTestInit" each node should be filled to the max.
      So the test knows where each node begins
   *)
+  FTree.Free;
   FTree := CreateTree(10, 30, 4); // APageJoinSize, APageSplitSize, APageJoinDistance
 
   For OffsetAtStart := 0 to 3 do

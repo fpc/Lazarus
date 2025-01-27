@@ -778,6 +778,7 @@ begin
           inc(FLineState, 2); // LSTATE_BOL_GAP(2), if was at bol // LSTATE_GAP(3) otherwise
           ATokenInfo.TokenStart := PChar(MarkSpaces);
           ATokenInfo.TokenLength := 3;
+          ATokenInfo.TokenOrigin := dtoAfterText;
           if Assigned(CurrentTokenHighlighter)
           then EolAttr := CurrentTokenHighlighter.GetEndOfLineAttribute
           else EolAttr := nil;
@@ -798,6 +799,7 @@ begin
         ATokenInfo.TokenStart := PChar(MarkDots);
         ATokenInfo.TokenLength := 3;
         ATokenInfo.TokenAttr := FTokenAttr;
+        ATokenInfo.TokenOrigin := dtoAfterText;
         Result := True;
       end;
     else begin
