@@ -21468,6 +21468,10 @@ msgstr "קפל במיקום הסמן"
 msgid "Fold to Level %d"
 msgstr "קפל לרמה d%"
 
+#: lazarusidestrconsts.srkmecfoldtoggle
+msgid "Toggle Fold at Cursor"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecgotoeditor
 #, object-pascal-format, fuzzy, badformat
 msgid "Go to editor %d"

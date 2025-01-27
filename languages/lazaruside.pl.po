@@ -20655,6 +20655,10 @@ msgstr "Zwiń przy kursorze"
 msgid "Fold to Level %d"
 msgstr "Zwiń do poziomu %d"
 
+#: lazarusidestrconsts.srkmecfoldtoggle
+msgid "Toggle Fold at Cursor"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecgotoeditor
 #, object-pascal-format
 msgid "Go to editor %d"

@@ -20742,6 +20742,10 @@ msgstr "Klostė ties žymekliu"
 msgid "Fold to Level %d"
 msgstr "Suskleisti iki %d lygio"
 
+#: lazarusidestrconsts.srkmecfoldtoggle
+msgid "Toggle Fold at Cursor"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecgotoeditor
 #, object-pascal-format
 msgid "Go to editor %d"

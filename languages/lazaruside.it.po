@@ -20787,6 +20787,10 @@ msgstr "Collassa al cursore"
 msgid "Fold to Level %d"
 msgstr "Collassa al livello %d"
 
+#: lazarusidestrconsts.srkmecfoldtoggle
+msgid "Toggle Fold at Cursor"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecgotoeditor
 #, object-pascal-format
 msgid "Go to editor %d"

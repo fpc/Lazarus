@@ -20481,6 +20481,10 @@ msgstr "Összecsukás a beszúrási jelnél"
 msgid "Fold to Level %d"
 msgstr "Összecsukás a(z) %d. szinting"
 
+#: lazarusidestrconsts.srkmecfoldtoggle
+msgid "Toggle Fold at Cursor"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecgotoeditor
 #, object-pascal-format
 msgid "Go to editor %d"

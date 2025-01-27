@@ -20264,6 +20264,10 @@ msgstr "İmlece Katla"
 msgid "Fold to Level %d"
 msgstr "Katlama seviyesi %d"
 
+#: lazarusidestrconsts.srkmecfoldtoggle
+msgid "Toggle Fold at Cursor"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecgotoeditor
 #, object-pascal-format
 msgid "Go to editor %d"

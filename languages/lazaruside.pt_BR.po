@@ -20512,6 +20512,10 @@ msgstr "Retrair sob o cursor"
 msgid "Fold to Level %d"
 msgstr "Retrair ao nível %d"
 
+#: lazarusidestrconsts.srkmecfoldtoggle
+msgid "Toggle Fold at Cursor"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecgotoeditor
 #, object-pascal-format
 msgid "Go to editor %d"

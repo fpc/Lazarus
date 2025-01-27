@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-01-25 18:13+0300\n"
+"PO-Revision-Date: 2025-01-27 22:13+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -20311,6 +20311,10 @@ msgstr "Свернуть текст под курсором"
 #, object-pascal-format
 msgid "Fold to Level %d"
 msgstr "Свернуть до уровня %d"
+
+#: lazarusidestrconsts.srkmecfoldtoggle
+msgid "Toggle Fold at Cursor"
+msgstr "Переключить свёрнутость текста под курсором"
 
 #: lazarusidestrconsts.srkmecgotoeditor
 #, object-pascal-format
