@@ -320,9 +320,9 @@ procedure TIDEOptionsDialog.CategoryTreeCustomDrawItem(Sender: TCustomTreeView;
 begin
   // make group categories bold
   if Node.Data = nil then // is group category
-    Node.TreeView.Font.Style := [fsBold]
+    Node.TreeView.Canvas.Font.Style := [fsBold]
   else
-    Node.TreeView.Font.Style := [];
+    Node.TreeView.Canvas.Font.Style := [];
 end;
 
 procedure TIDEOptionsDialog.CategoryTreeExpanded(Sender: TObject; Node: TTreeNode);
