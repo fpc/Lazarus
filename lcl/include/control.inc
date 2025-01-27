@@ -3085,6 +3085,7 @@ procedure TControl.DoAllAutoSize;
     if not AControl.IsControlVisible then exit;
 
     if Needed and AControl.AutoSize and
+       (not ((AControl.Parent = nil) and (csDesigning in AControl.ComponentState))) and
        (not (csDesignInstance in AControl.ComponentState))
     then
       AControl.DoAutoSize;
