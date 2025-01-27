@@ -9574,7 +9574,8 @@ var
     Result:=FlagCanBeForwardDefined;
   end;
 
-  function FindPointedTypeBehind(PointerTypeNode: TCodeTreeNode): TCodeTreeNode;
+  function FindPointedTypeBehind(Tool: TFindDeclarationTool;
+    PointerTypeNode: TCodeTreeNode): TCodeTreeNode;
   var
     IdentNode, Node: TCodeTreeNode;
   begin
@@ -9582,10 +9583,10 @@ var
     Node:=PointerTypeNode.Parent.NextBrother;
     while Node<>nil do begin
       if (Node.Desc=ctnTypeDefinition)
-          and CompareSrcIdentifiers(Node.StartPos, IdentNode.StartPos)
+          and Tool.CompareSrcIdentifiers(Node.StartPos, IdentNode.StartPos)
       then
         exit(Node);
-      Node:=Node.NextBrother; // all remaing types of current type section
+      Node:=Node.NextBrother;
     end;
     Result:=nil;
   end;
@@ -10106,7 +10107,7 @@ var
       end else if (StartNode.Parent<>nil)
           and (StartNode.Parent.Desc=ctnPointerType) and (NextAtomType<>vatPoint) then
       begin
-        Node:=FindPointedTypeBehind(StartNode.Parent);
+        Node:=FindPointedTypeBehind(Self,StartNode.Parent);
         if Node<>nil then begin
           ExprType.Context.Tool:=Self;
           ExprType.Context.Node:=Node;
@@ -10345,6 +10346,7 @@ var
   procedure ResolveChildren;
   var
     NewNode: TCodeTreeNode;
+    NewTool: TFindDeclarationTool;
   begin
     if (ExprType.Context.Node=nil) then exit;
     {$IFDEF ShowExprEval}
@@ -10361,13 +10363,14 @@ var
     //  ]);
     {$ENDIF}
     NewNode:=ExprType.Context.Node;
+    NewTool:=ExprType.Context.Tool;
     if (NewNode=nil) then exit;
     if (NewNode.Desc in AllUsableSourceTypes)
     or (NewNode.Desc=ctnSrcName)
     or ((NewNode.Desc=ctnIdentifier) and (NewNode.Parent.Desc=ctnSrcName)
       and (NewNode.NextBrother=nil))
     then begin
-      if ExprType.Context.Tool=Self then begin
+      if NewTool=Self then begin
         // unit name of this unit => implementation
         // Note: allowed for programs too
         NewNode:=Tree.Root;
@@ -10394,7 +10397,7 @@ var
     end
     else if (NewNode.Desc=ctnClassOfType) then begin
       // 'class of' => jump to the class
-      ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,NewNode.FirstChild);
+      ExprType.Context:=NewTool.FindBaseTypeOfNode(Params,NewNode.FirstChild);
     end
     else if (ExprType.Desc=xtContext)
     and (NewNode.Desc=ctnPointerType)
@@ -10404,11 +10407,11 @@ var
       // -> check for pointer type
       // left side of expression has defined a special context
       // => this '.' is a dereference
-      NewNode:=FindPointedTypeBehind(NewNode);
+      NewNode:=FindPointedTypeBehind(NewTool,NewNode);
       if NewNode<>nil then begin
-        ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,NewNode);
+        ExprType.Context:=NewTool.FindBaseTypeOfNode(Params,NewNode);
       end else begin
-        ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,ExprType.Context.Node.FirstChild);
+        ExprType.Context:=NewTool.FindBaseTypeOfNode(Params,NewNode.FirstChild);
       end;
     end;
   end;
@@ -10513,13 +10516,6 @@ var
     if (ExprType.Context.Node<>StartNode) then begin
       // left side of expression has defined a special context
       // => this '^' is a dereference
-      if (not
-          (NextAtomType in [vatSpace,vatPoint,vatAS,vatUP,vatEdgedBracketOpen]))
-      then begin
-        MoveCursorToCleanPos(NextAtom.StartPos);
-        ReadNextAtom;
-        RaisePointNotFound(20191003163249);
-      end;
       PointerTypeNode:=ExprType.Context.Node;
       if (PointerTypeNode=nil)
       or (PointerTypeNode.Desc<>ctnPointerType) then begin
@@ -10528,7 +10524,7 @@ var
       end;
       ExprType.Desc:=xtContext;
       //first try if this node has a pointed type behind
-      NodeBehind:=FindPointedTypeBehind(PointerTypeNode);
+      NodeBehind:=FindPointedTypeBehind(ExprType.Context.Tool,PointerTypeNode);
       if NodeBehind=nil then
         ExprType.Context.Node:=ExprType.Context.Node.FirstChild
       else
