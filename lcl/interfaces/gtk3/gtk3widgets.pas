@@ -68,6 +68,7 @@ type
     FContext: HDC;
     FPaintData: TPaintData;
     FDrawSignal: GULong; // needed by designer
+    FFont: PPangoFontDescription;
     class function WidgetEvent(widget: PGtkWidget; event: PGdkEvent; data: GPointer): gboolean; cdecl; static; {main event filter of widget}
   strict private
     FCentralWidgetRGBA: array [0{GTK_STATE_NORMAL}..4{GTK_STATE_INSENSITIVE}] of TDefaultRGBA;
@@ -2436,6 +2437,9 @@ begin
   if IsWidgetOk then
   begin
     GetContainerWidget^.override_font(AValue);
+    if Assigned(FFont) and (FFont <> AValue) then
+      FFont^.free;
+    FFont := AValue;
   end;
 end;
 
