@@ -1,4 +1,4 @@
-unit iderpccodegen;
+unit IDERPCCodeGen;
 
 {$mode ObjFPC}
 {$h+}
@@ -375,12 +375,15 @@ function TAPIClientCodeGen.GetServiceMethodName(const aClassName,
   aMethodName: string): String;
 
 begin
+  if aClassName='' then ;
   Result:=EscapeKeyWord(aMethodName);
 end;
 
 function TAPIClientCodeGen.GetServiceMethodParamName(const aClassName, aMethodName, aParamName: string): String;
 
 begin
+  if aClassName='' then ;
+  if aMethodName='' then ;
   Result:=EscapeKeyWord(aParamName);
 end;
 
@@ -388,6 +391,9 @@ function TAPIClientCodeGen.GetServiceMethodParamType(const aClassName,
   aMethodName, aParamName: String; aParamType: TJSONtype): String;
 
 begin
+  if aClassName='' then ;
+  if aMethodName='' then ;
+  if aParamName='' then ;
   case aParamtype of
     jtString : Result:='String';
     jtBoolean : Result:='Boolean';
@@ -407,6 +413,9 @@ end;
 function TAPIClientCodeGen.GetServiceMethodParamDefault(const aClassName, aMethodName, aParamName: string; aParamType : TJSONType): String;
 
 begin
+  if aClassName='' then ;
+  if aMethodName='' then ;
+  if aParamName='' then ;
   case aParamtype of
     jtString  : Result:='''''';
     jtBoolean : Result:='False';
@@ -438,6 +447,8 @@ begin
   TJSValueResultHandler = reference to procedure (aResult : JSValue);
 
   }
+  if aClassName='' then ;
+  if aMethodName='' then ;
   if ccoForceJSValueResult in options then
     Result:='TJSValueResultHandler'
   else
