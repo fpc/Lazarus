@@ -3391,6 +3391,7 @@ begin
   ACairoRect.width := ARect.Right - ARect.Left;
   ACairoRect.height := ARect.Bottom - ARect.Top;
   Result := cairo_region_contains_rectangle(ACairoRegion, @ACairoRect) <> CAIRO_REGION_OVERLAP_OUT;
+  cairo_region_destroy(ACairoRegion);
 end;
 
 function TGtk3WidgetSet.RegroupMenuItem(hndMenu: HMENU; GroupIndex: integer
