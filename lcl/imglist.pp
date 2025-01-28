@@ -110,12 +110,12 @@ type
   TDrawingStyle = (dsFocus, dsSelected, dsNormal, dsTransparent);
   TImageType = (itImage, itMask);
   TOverlay = 0..14; // windows limitation
+  TOverlayArray = array[TOverlay] of Integer;
 
   TCustomImageListResolution = class(TLCLReferenceComponent)
   private
     FWidth: Integer;
     FHeight: Integer;
-    FData: array of TRGBAQuad;
     FReference: TWSCustomImageListReference;
     FAllocCount: Integer;
     FImageList: TCustomImageList;
@@ -139,9 +139,10 @@ type
 
     procedure AddImages(AValue: TCustomImageListResolution);
 
-    procedure WriteData(AStream: TStream; const ACompress: Boolean);
-    procedure ReadData(AStream: TStream);
   protected
+    FData: array of TRGBAQuad;
+    procedure ReadData(AStream: TStream); virtual;
+    procedure WriteData(AStream: TStream; const ACompress: Boolean); virtual;
     function  GetReferenceHandle: TLCLHandle; override;
     function  WSCreateReference(AParams: TCreateParams): PWSReference; override;
     class procedure WSRegisterClass; override;
@@ -279,7 +280,7 @@ type
     FBkColor: TColor;
     FChanged: boolean;
     FUpdateCount: integer;
-    FOverlays: array[TOverlay] of Integer;
+    FOverlays: TOverlayArray;
     fHasOverlays: boolean;
     FOnGetWidthForPPI: TCustomImageListGetWidthForPPI;
     FScaled: Boolean;
@@ -409,7 +410,6 @@ type
     property Width: Integer read FWidth write SetWidth default 16;
     property WidthForPPI[AImageWidth, APPI: Integer]: Integer read GetWidthForPPI;
     property SizeForPPI[AImageWidth, APPI: Integer]: TSize read GetSizeForPPI;
-    property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property Masked: boolean read FMasked write SetMasked default False;
     property Reference[AImageWidth: Integer]: TWSCustomImageListReference read GetReference;
     property ReferenceForPPI[AImageWidth, APPI: Integer]: TWSCustomImageListReference read GetReferenceForPPI;
@@ -419,9 +419,11 @@ type
     property ResolutionCount: Integer read GetResolutionCount;
     function Resolutions: TCustomImageListResolutionEnumerator;
     function ResolutionsDesc: TCustomImageListResolutionEnumerator;
+    property Overlays: TOverlayArray read FOverlays;
     property Scaled: Boolean read FScaled write FScaled default False;
     property ShareImages: Boolean read FShareImages write SetShareImages default False;
     property ImageType: TImageType read FImageType write FImageType default itImage;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnGetWidthForPPI: TCustomImageListGetWidthForPPI read FOnGetWidthForPPI write FOnGetWidthForPPI;
   end;
 
