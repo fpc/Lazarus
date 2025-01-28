@@ -146,8 +146,8 @@ procedure TDbChartSource.AfterDraw;
 begin
   inherited AfterDraw;
   try
-    if not FDataLink.Active or (FBookmark = nil) then exit;
     FDataLink.Dataset.EnableControls;
+    if not FDataLink.Active or (FBookmark = nil) then exit;
     FDataLink.DataSet.GotoBookmark(FBookmark);
     FDataLink.DataSet.FreeBookmark(FBookmark);
   finally
