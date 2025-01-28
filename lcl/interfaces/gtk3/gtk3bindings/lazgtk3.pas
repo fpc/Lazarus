@@ -5810,7 +5810,7 @@ type
   PPGtkTreeRowReference = ^PGtkTreeRowReference;
   PGtkTreeRowReference = ^TGtkTreeRowReference;
 
-  TGtkComboBoxPrivate = record
+  TGtkComboBoxPrivate = record //IMPORTANT NOTE: This record is Gtk3-3.24 compatibile only.Code that relies on this record won't work with earlier gtk3 versions !}
     model: PGtkTreeModel;
 
     area: PGtkCellArea;
@@ -5819,7 +5819,6 @@ type
     row_column: gint;
 
     wrap_width: gint;
-    shadow_type: TGtkShadowType;
 
     active: gint; // Only temporary
     active_row: PGtkTreeRowReference;
@@ -5827,55 +5826,48 @@ type
     tree_view: PGtkWidget;
 
     cell_view: PGtkWidget;
-    cell_view_frame: PGtkWidget;
 
-    button: PGtkWidget;
     box: PGtkWidget;
+    button: PGtkWidget;
     arrow: PGtkWidget;
-    separator: PGtkWidget;
 
     popup_widget: PGtkWidget;
     popup_window: PGtkWidget;
     scrolled_window: PGtkWidget;
 
-    inserted_id: gulong;
-    deleted_id: gulong;
-    reordered_id: gulong;
-    changed_id: gulong;
+    gadget: gPointer; //PGtkCssGadget since 3.22. Hope that gPointer will suffice here.
+
     popup_idle_id: guint;
-    activate_button: guint;
-    activate_time: guint32;
+    trigger_event: PGdkEvent;
     scroll_timer: guint;
     resize_idle_id: guint;
 
     (*For "has-entry" specific behavior we track
      * an automated cell renderer and text column
      *)
-     text_column: gint;
-     text_renderer: PGtkCellRenderer;
+    text_column: gint;
+    text_renderer: PGtkCellRenderer;
 
-     id_column: gint;
+    id_column: gint;
 
-     popup_in_progress: guint;
-     popup_shown: guint;
-     add_tearoffs: guint;
-     has_frame: guint;
-     is_cell_renderer: guint;
-     editing_canceled: guint;
-     auto_scroll: guint;
-     focus_on_click: guint;
-     button_sensitivity: guint;
-     has_entry: guint;
-     popup_fixed_width: guint;
+    popup_in_progress: guint;
+    popup_shown: guint;
+    add_tearoffs: guint;
+    has_frame: guint;
+    is_cell_renderer: guint;
+    editing_canceled: guint;
+    auto_scroll: guint;
+    button_sensitivity: guint;
+    has_entry: guint;
+    popup_fixed_width: guint;
 
-     row_separator_func: TGtkTreeViewRowSeparatorFunc;
-     row_separator_data: gpointer;
-     row_separator_destroy: TGDestroyNotify;
+    row_separator_func: TGtkTreeViewRowSeparatorFunc;
+    row_separator_data: gpointer;
+    row_separator_destroy: TGDestroyNotify;
 
-     grab_pointer: PGdkDevice;
-     grab_keyboard: PGdkDevice;
+    grab_pointer: PGdkDevice;
 
-     tearoff_title: Pgchar;
+    tearoff_title: Pgchar;
   end;
 
 

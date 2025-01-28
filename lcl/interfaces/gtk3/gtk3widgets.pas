@@ -729,7 +729,7 @@ type
     function GetCellView: PGtkCellView;
     function GetPopupWidget: PGtkWidget;
     function GetButtonWidget: PGtkWidget;
-    function GetCellViewFrame: PGtkWidget;
+    function GetArrowWidget: PGtkWidget;
     procedure InitializeWidget; override;
     property DroppedDown: boolean read GetDroppedDown write SetDroppedDown;
     property ItemIndex: Integer read GetItemIndex write SetItemIndex;
@@ -5052,7 +5052,7 @@ var
   ACurrentPage: gint;
 begin
   Result := False;
-  AWidget := AData;
+  AWidget := PGtkNoteBook(AData);
   if not Gtk3IsWidget(AWidget) then
     exit;
   if g_object_get_data(AWidget,'switch-page-signal-stopped') <> nil then
@@ -7584,19 +7584,20 @@ begin
   Result := nil;
   if not IsWidgetOk then
     exit;
+  // button is of type GtkToggleButton
   if PGtkComboBox(GetContainerWidget)^.priv3^.button <> nil then
     Result := PGtkComboBox(GetContainerWidget)^.priv3^.button;
 end;
 
-function TGtk3ComboBox.GetCellViewFrame: PGtkWidget;
+function TGtk3ComboBox.GetArrowWidget: PGtkWidget;
 begin
   Result := nil;
   if not IsWidgetOk then
     exit;
-  if PGtkComboBox(GetContainerWidget)^.priv3^.cell_view_frame <> nil then
-    Result := PGtkComboBox(GetContainerWidget)^.priv3^.cell_view_frame;
+  // arrow is type is GtkIcon
+  if PGtkComboBox(GetContainerWidget)^.priv3^.arrow <> nil then
+    Result := PGtkComboBox(GetContainerWidget)^.priv3^.arrow;
 end;
-
 
 function TGtk3ComboBox.CreateWidget(const Params: TCreateParams): PGtkWidget;
 var

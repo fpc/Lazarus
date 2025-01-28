@@ -31,7 +31,6 @@ begin
     DebugLn('Error: LCLGtkComboBoxGetPreferredWidth cannot get ParentClass !');
     exit;
   end;
-
   //check what parent class says about minimum and natural width.
   ParentClass^.get_preferred_width(widget, min_width, nat_width);
 
@@ -58,6 +57,12 @@ procedure LCLGtkComboBoxGetPreferredHeight(widget: PGtkWidget; min_height, nat_h
 var
   AControl:TGtk3Widget;
   ParentClass:PGtkWidgetClass;
+  ACombo: PGtkComboBox;
+  aContext: PPangoContext;
+  aPangoLayout: PPangoLayout;
+  ABorder, AMargin, APadding: TGtkBorder;
+  w, h, xpad, ypad: gint;
+  aList: PGList;
 begin
 
   if not Assigned(min_height) or not Assigned(nat_height) then
@@ -91,7 +96,36 @@ begin
   end;
 
   if AControl.LCLObject.AutoSize then
+  begin
+    //seem that gtk is off by 1 pixel, csDropDown and csDropDownList should have same height'
+    //writeln('==============>',dbgsName(AControl.LCLObject),' preferred height=',min_height^, ' nat=',nat_height^);
+    if not (TCustomComboBox(AControl.LCLObject).Style in [csDropDown, csSimple]) then
+    begin
+      aCombo := PGtkComboBox(widget);
+
+      aList := PGtkCellLayout(aCombo)^.get_cells;
+      xpad := 0;
+      ypad := 0;
+      if aList = nil then
+        exit;
+      PGtkCellRenderer(aList[0].data)^.get_padding(@xpad, @ypad);
+      g_free(aList);
+
+      GetStyleContextSizes(aCombo^.priv3^.button, ABorder, AMargin, APadding, w, h);
+      aContext := PGtkCellView(ACombo^.priv3^.cell_view)^.get_pango_context;
+      if aContext = nil then
+        exit;
+      aPangoLayout := pango_layout_new(aContext);
+      aPangoLayout^.set_text('Wj', -1);
+      aPangoLayout^.get_size(@w, @h);
+      w := w div PANGO_SCALE;
+      h := (h div PANGO_SCALE) + 1;
+      min_height^ := h + ABorder.Top + ABorder.Bottom + AMargin.Top + AMargin.Bottom + APadding.Top + APadding.Bottom + (ypad * 2);
+      if Assigned(nat_height) then
+        nat_height^ := min_height^;
+    end;
     exit; // keep gtk calculated height.
+  end;
 
   if AControl.LCLHeight = 0 then
   begin
@@ -103,6 +137,39 @@ begin
     nat_height^ := Max(min_height^, AControl.LCLHeight);
   end;
 end;
+
+{$IFDEF GTK3DEBUGCOMBOBOX}
+function LCLGtkComboBoxDraw(widget: PGtkWidget; cairo: Pcairo_t): gboolean; cdecl;
+var
+  ParentClass: PGtkWidgetClass;
+  Alloc: TGtkAllocation;
+  ARect, AreaRect: TGdkRectangle;
+  dx, dy, dw, dh: Double;
+  Layout: PPangoLayout;
+  aText: Pgchar;
+  APangoContext: PPangoContext;
+  aArea: PGtkCellArea;
+  column: PGtkTreeViewColumn;
+begin
+  //PLAYGROUND ONLY !
+  widget^.get_allocation(@Alloc);
+
+  //APangoContext := gtk_widget_get_pango_context(Widget);
+
+  gdk_cairo_get_clip_rectangle(cairo, @ARect);
+  //cairo_get_current_point(cairo, @dx, @dy);
+  cairo_clip_extents(cairo, @dx, @dy, @dw, @dh);
+  //aRegion := gdk_cairo_get_drawing_context(cairo)^.get_clip;
+  ParentClass := PGtkWidgetClass(g_type_class_peek_parent(widget^.g_type_instance.g_class));
+  //cairo_translate(cairo, -dx, -dy);
+  writeln('Overriden comboBox draw ...',dbgs(RectFromGdkRect(Alloc)),' ClipRect=',dbgs(RectFromGdkRect(ARect)),' CurrX=',dbgs(dx),' Y=',dbgs(dy),' W=',dbgs(dw),' H=',dbgs(dh));
+  Result := ParentClass^.draw(widget, cairo);
+
+  cairo_user_to_device(cairo, @dx, @dy);
+  cairo_user_to_device(cairo, @dw, @dh);
+  writeln('Cairo to device dx=',dbgs(dx),' dy=',dbgs(dy),' dw=',dbgs(dw-dx),' dh=',dbgs(dh-dy));
+end;
+{$ENDIF}
 
 procedure LCLGtkComboBoxClassInit(klass: PGTypeClass; data: Pointer); cdecl;
   {$IFDEF GTK3DEBUGCOMBOBOX}
@@ -122,6 +189,7 @@ begin
   AWidgetClass^.get_preferred_width := @LCLGtkComboBoxGetPreferredWidth;
   AWidgetClass^.get_preferred_height := @LCLGtkComboBoxGetPreferredHeight;
   {$IFDEF GTK3DEBUGCOMBOBOX}
+  AWidgetClass^.draw := @LCLGtkComboBoxDraw;
   //debug - looks ok.
   //WalkTypeHierarchy(klass);
   WalkParentClassHierarchy(klass);

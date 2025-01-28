@@ -317,6 +317,8 @@ procedure SetWindowCursor(AWindow: PGdkWindow; ACursor: HCursor;
   ARecursive: Boolean; ASetDefault: Boolean);
 procedure SetGlobalCursor(Cursor: HCURSOR);
 
+function GetStyleContextSizes(awidget: PGtkWidget; out ABorder, AMargin, APadding: TGtkBorder; out AWidth, AHeight: integer): boolean;
+
 type
   Charsetstr = string[15];
   PCharSetEncodingRec=^TCharSetEncodingRec;
@@ -1362,6 +1364,23 @@ begin
   if AWidget = nil then
     exit;
   Result := g_type_name(PGObject(AWidget)^.g_type_instance.g_class^.g_type);
+end;
+
+function GetStyleContextSizes(awidget: PGtkWidget; out ABorder, AMargin, APadding: TGtkBorder; out AWidth, AHeight: integer): boolean;
+var
+  AStyle: PGtkStyleContext;
+begin
+  Result := False;
+  ABorder := Default(TGtkBorder);
+  AMargin := Default(TGtkBorder);
+  APadding := Default(TGtkBorder);
+  AStyle := gtk_widget_get_style_context(aWidget);
+  AWidth := aWidget^.get_allocated_width;
+  AHeight := aWidget^.get_allocated_height;
+  AStyle^.get_border(GTK_STATE_FLAG_NORMAL, @ABorder);
+  AStyle^.get_margin(GTK_STATE_FLAG_NORMAL, @AMargin);
+  AStyle^.get_padding(GTK_STATE_FLAG_NORMAL, @APadding);
+  Result := True;
 end;
 
 end.

@@ -26,7 +26,8 @@ interface
 
 uses
   Classes, SysUtils, LCLType, LCLProc, Controls, StdCtrls, ComCtrls, LMessages,
-  LazGObject2, LazGtk3, LazGdk3, LazGLib2, Gtk3Procs, LazCairo1, LazLogger;
+  LazGObject2, LazGtk3, LazGdk3, LazGLib2, Gtk3Procs, LazCairo1,
+  LazPango1, LazLogger;
   
 type
   PLCLIntfCellRenderer = ^TLCLIntfCellRenderer;
@@ -189,18 +190,262 @@ begin
 
 end;
 
-// get_preferred_width: procedure(cell: PGtkCellRenderer; widget: PGtkWidget; minimum_size: Pgint; natural_size: Pgint); cdecl;
+function GetOwnerComboBox(CellView: PGtkCellView): PGtkComboBox;
+var
+  Parent: PGtkWidget;
+begin
+  Result := nil;
+
+  Parent := gtk_widget_get_parent(PGtkWidget(CellView));
+  while Assigned(Parent) do
+  begin
+    if Gtk3IsComboBox(Parent) then
+    begin
+      Result := PGtkComboBox(Parent);
+      Exit;
+    end;
+    Parent := gtk_widget_get_parent(Parent);
+  end;
+end;
+
+function GTK_IS_CELL_RENDERER_TEXT(cell: PGtkCellRenderer): Boolean;
+begin
+  Result := Assigned(cell) and
+    (g_type_check_instance_is_a(PGTypeInstance(cell), gtk_cell_renderer_text_get_type));
+end;
+
+function GetTextFromCellView(widget: PGtkWidget): PgChar;
+var
+  TreeModel: PGtkTreeModel;
+  Iter: TGtkTreeIter;
+  Path: PGtkTreePath;
+  Text: Pgchar;
+  ColumnIndex: Integer;
+begin
+  Result := nil;
+  TreeModel := gtk_cell_view_get_model(PGtkCellView(Widget));
+  if Assigned(TreeModel) then
+  begin
+    Path := gtk_cell_view_get_displayed_row(PGtkCellView(Widget));
+    if Assigned(Path) then
+    begin
+      if gtk_tree_model_get_iter(TreeModel, @Iter, Path) then
+      begin
+        ColumnIndex := 0;
+        gtk_tree_model_get(TreeModel, @Iter, [ColumnIndex, @Text, -1]);
+
+        if Assigned(Text) then
+          Result := Text; //result must be freed.
+      end;
+      gtk_tree_path_free(Path);
+    end;
+  end;
+end;
+
+{$IFDEF GTK3DEBUGCELLRENDERER}
+procedure InspectStyleContext(aWidget: PGtkWidget);
+var
+  ABorder: TGtkBorder;
+  AStyle: PGtkStyleContext;
+begin
+  writeln('==== begin border,margin and padding for ',G_OBJECT_TYPE_NAME(aWidget));
+  AStyle := gtk_widget_get_style_context(aWidget);
+  AStyle^.get_border(GTK_STATE_FLAG_NORMAL, @ABorder);
+  with Aborder do
+    writeln('  BORDER CONTEXT L=',left,' T=',top,' R=',right,' B=',Bottom);
+  AStyle^.get_margin(GTK_STATE_FLAG_NORMAL, @ABorder);
+  with Aborder do
+    writeln('  MARGIN CONTEXT L=',left,' T=',top,' R=',right,' B=',Bottom);
+  AStyle^.get_padding(GTK_STATE_FLAG_NORMAL, @ABorder);
+  with Aborder do
+    writeln('  PADDING CONTEXT L=',left,' T=',top,' R=',right,' B=',Bottom);
+  writeln('=== end ',G_OBJECT_TYPE_NAME(aWidget),' allocated W=',aWidget^.get_allocated_width,' H=',aWidget^.get_allocated_height);
+end;
+{$ENDIF}
+
+function CreatePangoLayoutFromCellRendererText(cell: PGtkCellRendererText; widget: PGtkCellView): PPangoLayout;
+var
+  layout: PPangoLayout;
+  APangoContext: PPangoContext;
+  gvalue: TGValue;
+  text: Pgchar;
+  alignment: TPangoAlignment;
+  fontDescription: PPangoFontDescription;
+  attributes: PPangoAttrList;
+begin
+  Result := nil;
+
+  if not Assigned(cell) or not Assigned(widget) then
+    exit;
+
+  APangoContext := widget^.get_pango_context;
+  if not Assigned(APangoContext) then
+    exit;
+
+  layout := pango_layout_new(APangoContext);
+  if not Assigned(layout) then
+    exit;
+
+  FillChar(gvalue{%H-}, SizeOf(gvalue), 0);
+
+  g_value_init(@gvalue, G_TYPE_STRING);
+  g_object_get_property(PGObject(cell), 'text', @gvalue);
+  text := g_value_get_string(@gvalue);
+  if Assigned(text) then
+    pango_layout_set_text(layout, text, -1);
+  g_value_unset(@gvalue);
+
+  g_value_init(@gvalue, G_TYPE_ENUM);
+  g_object_get_property(PGObject(cell), 'alignment', @gvalue);
+  alignment := TPangoAlignment(g_value_get_enum(@gvalue));
+  pango_layout_set_alignment(layout, alignment);
+  g_value_unset(@gvalue);
+
+  fontDescription := gtk_widget_get_pango_context(widget)^.get_font_description;
+
+  if Assigned(fontDescription) then
+    pango_layout_set_font_description(layout, fontDescription);
+
+  Result := layout;
+end;
+
 procedure LCLIntfCellRenderer_GetPreferredWidth(cell: PGtkCellRenderer; widget: PGtkWidget; minimum_size: Pgint; natural_size: Pgint); cdecl;
 var
   CellClass: PLCLIntfCellRendererClass;
+  AWidget: TGtk3Widget;
+  W, xpad, ypad: gint;
+  Alloc: TGtkAllocation;
+  ACombo: PGtkComboBox;
+  APangoContext: PPangoContext;
+  APangoLayout: PPangoLayout;
+  APangoText: Pgchar;
+  APangoWidth, APangoHeight: gint;
+  ABorder, AMargin, APadding: TGtkBorder;
 begin
   {$IFDEF GTK3DEBUGCELLRENDERER}
   DebugLn('*** LCLIntfCellRenderer_GetPreferredWidth ***');
   {$ENDIF}
+
   CellClass := PLCLIntfCellRendererClass(cell^.g_type_instance.g_class);
   CellClass^.DefaultGetPreferredWidth(cell, widget, minimum_size, natural_size);
+
+  ACombo := GetOwnerComboBox(PGtkCellView(widget));
+  if ACombo = nil then
+    exit;
+  AWidget := TGtk3Widget(HwndFromGtkWidget(aCombo));
+
+  W := 0; // width of button area
+
+  if not Assigned(aWidget) then
+  begin
+    {$IFDEF GTK3DEBUGCELLRENDERER}
+    writeln('********** warning TGtk3Widget not assigned ! **************** Widget=',G_OBJECT_TYPE_NAME(widget));
+    {$ENDIF}
+    exit;
+  end;
+  if not Assigned(aWidget.LCLObject) then
+  begin
+    {$IFDEF GTK3DEBUGCELLRENDERER}
+    writeln('********* warning LCLObject not assigned ! ***************');
+    {$ENDIF}
+    exit;
+  end;
+
+  if not aWidget.WidgetMapped then
+    exit; // there's no reason to recalculate size while widget isn't mapped yet, triggers too many times.
+
+  if Assigned(ACombo) then
+  begin
+    {$IFDEF GTK3DEBUGCELLRENDERER}
+    writeln('Widget is ',G_OBJECT_TYPE_NAME(widget),' ',G_OBJECT_TYPE_NAME(ACombo),' LCL=',dbgsName(aWidget.LCLObject));
+    InspectStyleContext(aCombo);
+    {$ENDIF}
+
+    //button contains borders,margins and padding
+    if TGtk3ComboBox(aWidget).GetButtonWidget <> nil then
+    begin
+      TGtk3ComboBox(aWidget).GetButtonWidget^.realize;
+      {$IFDEF GTK3DEBUGCELLRENDERER}
+      InspectStyleContext(TGtk3ComboBox(aWidget).GetButtonWidget);
+      {$ENDIF}
+      GetStyleContextSizes(TGtk3ComboBox(aWidget).GetButtonWidget, ABorder, AMargin, APadding, xpad, ypad);
+      W := ABorder.left + ABorder.right + AMargin.left + AMargin.Right + APadding.left + APadding.Right;
+    end;
+
+    //button area size is button borders,margins and padding + allocated width of arrow (GtkIcon)
+    if TGtk3ComboBox(aWidget).GetArrowWidget <> nil then
+    begin
+      TGtk3ComboBox(aWidget).GetArrowWidget^.get_allocation(@Alloc);
+      //PROBLEM: when combo parent form modal window arrow returns width 1 :(, widget is mapped,realized and visible, so how it's possible
+      if GTK_IS_CELL_RENDERER_TEXT(cell) and (Alloc.width <= 1) then
+      begin
+        // This combo won't be shown as expected, usually happens with combos on modal windows or frames parented to modal win.
+        {$warning fix this case, maybe alloc primitive combobox when creating widgetset with other widgets for GetSystemMetrics. We need accurate button area width}
+        Alloc.width := 11;
+      end;
+      W := W + Alloc.width;
+      {$IFDEF GTK3DEBUGCELLRENDERER}
+      InspectStyleContext(TGtk3ComboBox(aWidget).GetArrowWidget);
+      {$ENDIF}
+    end;
+    {$IFDEF GTK3DEBUGCELLRENDERER}
+    ACombo^.get_allocation(@Alloc);
+    writeln('== ComboBox allocation w=',Alloc.width,' alloc ',dbgs(RectFromGdkRect(Alloc)),' Current W=',W);
+    {$ENDIF}
+
+  end else
+  begin
+    {$IFDEF GTK3DEBUGCELLRENDERER}
+    writeln('Error: ************** cannot get combobox, expect crash ! ****************');
+    {$ENDIF}
+  end;
+
+  if GTK_IS_CELL_RENDERER_TEXT(cell) then
+  begin
+    APangoText := GetTextFromCellView(widget);
+    APangoLayout := pango_layout_new(gtk_widget_get_pango_context(Widget));
+
+    if Assigned(APangoLayout) then
+    begin
+      pango_layout_set_spacing(APangoLayout, 2);
+      if APangoText = nil then
+        pango_layout_set_text(APangoLayout, 'Wj' , -1)
+      else
+        pango_layout_set_text(APangoLayout, APangoText , -1);
+      pango_layout_set_ellipsize(APangoLayout, PANGO_ELLIPSIZE_END);
+      if APangoText <> nil then
+        g_free(APangoText);
+
+      pango_layout_get_size(APangoLayout, @APangoWidth, @APangoHeight);
+
+      APangoWidth := APangoWidth div PANGO_SCALE;
+      APangoHeight := APangoHeight div PANGO_SCALE;
+
+      cell^.get_padding(@xpad, @ypad);
+
+      g_object_unref(APangoLayout);
+
+      if Assigned(minimum_size) then
+        minimum_size^ := aWidget.LCLObject.Width - W - xpad;
+      if Assigned(natural_size) then
+        natural_size^ := aWidget.LCLObject.Width - W - xpad;
+
+      //sometimes only way to have properly sized and painted csDropDownList and owner drawn for combos on modal windows.
+      //leave this commented code here, I need it for testing various cases.
+      //if TComboBox(aWidget.LCLObject).Style = csDropDownList then
+      //  cell^.set_fixed_size(aWidget.LCLObject.Width - W - xpad, APangoHeight + ypad + ypad + 1); // Min(APangoHeight - ypad, AWidget.LCLObject.Height - ypad));
+      //cell^.set_alignment(0, 0);
+      //cell^.set_padding(2, 0);
+    end;
+
+  end else
+    DebugLn('BUG: LCLIntfCellRenderer_GetPreferredWidth() cell is not PGtkCellRendererText !');
+
   {$IFDEF GTK3DEBUGCELLRENDERER}
-  // DebugLn('*** LCLIntfCellRenderer_GetPreferredWidth MIN=',dbgs(minimum_size^),' naturalw=',dbgs(natural_size^));
+  if (minimum_size = nil) or (natural_size =nil) then
+    writeln('*** LCLIntfCellRenderer_GetPreferredWidth defaultGetPreferredWidth have assigned minimum_size=',Assigned(minimum_size),' natural_size=',Assigned(natural_size))
+  else
+    writeln('*** LCLIntfCellRenderer_GetPreferredWidth MIN=',dbgs(minimum_size^),' naturalw=',dbgs(natural_size^));
   {$ENDIF}
 end;
 
@@ -214,7 +459,6 @@ begin
   {$ENDIF}
   CellClass := PLCLIntfCellRendererClass(cell^.g_type_instance.g_class);
   CellClass^.DefaultGetPreferredHeight(cell, widget, minimum_size, natural_size);
-
 end;
 
 procedure LCLIntfCellRenderer_GetPreferredWidthForHeight(cell: PGtkCellRenderer; widget: PGtkWidget;
@@ -688,12 +932,14 @@ begin
     not (TCustomComboBox(TGtk3Widget(Data).LCLObject).Style.HasEditBox) and
     not (TCustomComboBox(TGtk3Widget(Data).LCLObject).DroppedDown) then
   begin
+    (*
     Value.clear;
     Value.init(G_TYPE_UINT);
     Value.set_uint(0);
     g_object_get_property(PgObject(cell),'ypad',@Value);
     g_object_set_property(PGObject(cell), 'ypad', @Value);
     Value.unset;
+    *)
   end else
   if wtListView in TGtk3Widget(Data).WidgetType then
   begin
@@ -723,7 +969,7 @@ begin
 
     Value.clear;
     Value.init(G_TYPE_STRING);
-    Value.set_string(PgChar(S));
+    {%H-}Value.set_string(PgChar(S));
     cell^.set_property('text', @Value);
     Value.unset;
   end else
@@ -743,7 +989,7 @@ begin
       //Value.data[0].v_pointer := PgChar(S);
       value.clear;
       value.init(G_TYPE_STRING);
-      Value.set_string(PgChar(S));
+      {%H-}Value.set_string(PgChar(S));
       // set text only if we are not ownerdrawn !
       cell^.set_property('text', @Value);
       Value.unset;
