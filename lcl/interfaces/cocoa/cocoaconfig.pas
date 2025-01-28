@@ -148,10 +148,13 @@ type
   TCocoaApplicationEventHandler = function( event: NSEvent ): Boolean of object;
   // Need to pass to QueueAsyncCall which takes TDataEvent
   TCocoaApplicationOnAppQuitEvent = TDataEvent;
+  // Platform specific NSEvent key translation to VK Keycode function
+  TCocoaApplicationEventToVK = function(AEvent: NSEvent): Word;
 
   TCocoaConfigApplicationEvents = record
     highestHandler: TCocoaApplicationEventHandler;
     onQuitApp: TCocoaApplicationOnAppQuitEvent;
+    keyEventToVK: TCocoaApplicationEventToVK;
   end;
 
   TCocoaConfigApplication = record
