@@ -40,6 +40,7 @@ type
     procedure TestRenameForwardProcedureArgUp;
     procedure TestRenameMethodArgDown;
     procedure TestRenameMethodArgUp;
+    procedure TestRenameMethodInherited;
     procedure TestRenameNestedProgramProcDown;
     procedure TestRenameNestedProgramProcUp;
     procedure TestRenameNestedUnitProcDown;
@@ -582,6 +583,58 @@ begin
   'procedure TBird.Fly(Width{#Rename}: word);',
   'begin',
   '  Width:=Width+1;',
+  'end;',
+  '',
+  'begin',
+  'end.',
+  '']);
+end;
+
+procedure TTestRefactoring.TestRenameMethodInherited;
+begin
+  StartProgram;
+  Add([
+  'type',
+  '  TAnimal = class',
+  '    procedure Fly{#Rename}; virtual;',
+  '  end;',
+  '  TBird = class(TAnimal)',
+  '    procedure Fly; override;',
+  '  end;',
+  '',
+  'procedure TAnimal.Fly;',
+  'begin',
+  'end;',
+  '',
+  'procedure TBird.Fly;',
+  'begin',
+  '  inherited Fly;',
+  'end;',
+  '',
+  'begin',
+  'end.',
+  '']);
+  RenameReferences('Run');
+  CheckDiff(Code,[
+  'program test1;',
+  '',
+  '{$mode objfpc}{$H+}',
+  '',
+  'type',
+  '  TAnimal = class',
+  '    procedure Run{#Rename}; virtual;',
+  '  end;',
+  '  TBird = class(TAnimal)',
+  '    procedure Fly; override;',
+  '  end;',
+  '',
+  'procedure TAnimal.Run;',
+  'begin',
+  'end;',
+  '',
+  'procedure TBird.Fly;',
+  'begin',
+  '  inherited Run;',
   'end;',
   '',
   'begin',

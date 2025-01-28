@@ -1133,7 +1133,7 @@ begin
     // found itself -> search further
     if Search=cpsUp then exit;
     StartNode:=FindNextNodeOnSameLvl(Result);
-    if StartNode<>nil then debugln(['TPascalReaderTool.FindCorrespondingProcNode StartNode=',CleanPosToStr(StartNode.StartPos),' ',dbgstr(copy(Src,StartNode.StartPos,50))]);
+    //if StartNode<>nil then debugln(['TPascalReaderTool.FindCorrespondingProcNode StartNode=',CleanPosToStr(StartNode.StartPos),' ',dbgstr(copy(Src,StartNode.StartPos,50))]);
     Result:=FindProcNode(StartNode,ProcHead,Attr);
   end;
   if (Search=cpsUp) and (Result<>nil) and (Result.StartPos>ProcNode.StartPos) then

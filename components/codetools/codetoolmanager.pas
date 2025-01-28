@@ -3149,7 +3149,7 @@ begin
       end;
     end;
     if i<>0 then begin
-      DebugLn('TCodeToolManager.RenameIdentifier Change ');
+      //DebugLn('TCodeToolManager.RenameIdentifier Change ');
       SourceChangeCache.ReplaceEx(gtNone,gtNone,1,1,Code,
         IdentStartPos,
         IdentEndPos,
@@ -3161,7 +3161,7 @@ begin
   end;
 
   // apply
-  DebugLn('TCodeToolManager.RenameIdentifier Apply');
+  //DebugLn('TCodeToolManager.RenameIdentifier Apply');
   if not SourceChangeCache.Apply then exit;
 
   //DebugLn('TCodeToolManager.RenameIdentifier Success');

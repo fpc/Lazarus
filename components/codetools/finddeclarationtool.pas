@@ -6885,10 +6885,10 @@ var
                      fdfIgnoreCurContextNode];
       //dLen>0  will force searching from units names first
       Params.ContextNode:=CursorNode;
-      //debugln(copy(Src,Params.ContextNode.StartPos,200));
+      //debugln(['ReadIdentifier "',copy(Src,IdentStartPos,200),'"']);
       Params.SetIdentifier(Self,@Src[IdentStartPos],@CheckSrcIdentifier,dLen);
 
-      // search identifier in comment -> if not found, this is no bug
+      // search identifier also in comments -> if not found, this is no bug
       // => silently ignore
       try
         Found:=FindDeclarationOfIdentAtParam(Params);
@@ -10863,7 +10863,7 @@ var
     Params.Save(OldInput);
     Params.SetIdentifier(Self,@Src[CurPos.StartPos],@CheckSrcIdentifier);
     Params.ContextNode:=ExprType.Context.Node;
-    Params.Flags:=Params.Flags-[fdfSearchInParentNodes]
+    Params.Flags:=Params.Flags-[fdfSearchInParentNodes,fdfIgnoreCurContextNode]
                               +[fdfExceptionOnNotFound,fdfSearchInAncestors];
     ExprType.Context.Tool.FindIdentifierInContext(Params);
     ExprType.Context:=CreateFindContext(Params);
