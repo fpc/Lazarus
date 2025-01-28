@@ -595,6 +595,9 @@ begin
   else
     VKKeyCode := MacCodeToVK(KeyCode);
 
+  if Assigned(CocoaConfigApplication.events.keyEventToVK) then
+    VKKeyCode := CocoaConfigApplication.events.keyEventToVK(Event);
+
   case VKKeyCode of
     // for sure, these are "non-printable" keys (see http://wiki.lazarus.freepascal.org/LCL_Key_Handling)
     VK_F1..VK_F24,                     // Function keys (F1-F12)
