@@ -9063,9 +9063,9 @@ begin
     end;
     W := 0;
     for i := 0 to StatusBar.Panels.Count - 1 do
-      if i <> 5 then
+      if i <> CStatusPanelFile then
         w := w + StatusBar.Panels[i].Width;
-    StatusBar.Panels[5].Width := Max(150, StatusBar.Width - W);
+    StatusBar.Panels[CStatusPanelFile].Width := Max(150, StatusBar.Width - W);
   finally
     StatusBar.EndUpdate;
   end;
@@ -9368,7 +9368,7 @@ begin
       Statusbar.Panels[CStatusPanelSel].Width := 100
     else
       Statusbar.Panels[CStatusPanelSel].Width := 50;
-    Statusbar.Panels[5].Text := PanelFilename;
+    Statusbar.Panels[CStatusPanelFile].Text := PanelFilename;
     if(EditorMacroForRecording.IsRecording(CurEditor)) then
       Statusbar.Panels[CStatusPanelMacro].Width := IDEImages.ScaledSize(20)
     else
