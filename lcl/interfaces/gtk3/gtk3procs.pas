@@ -1087,8 +1087,6 @@ begin
     end;
     {$ENDIF}
   end;
-  if Assigned(MainStyle) then
-    MainStyle^.unref;
 end;
 
 function GetStyleWithName(const WName: String): PStyleObject;
