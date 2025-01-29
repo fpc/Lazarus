@@ -48,7 +48,7 @@ uses
   TransferMacros, IDEProcs, SearchPathProcs,
   // IDE
   LazarusIDEStrConsts, MiscOptions, CodeToolsOptions, SearchResultView, CodeHelp, CustomCodeTool,
-  SourceFileManager, Project;
+  FindDeclarationTool, SourceFileManager, Project;
 
 type
 
@@ -56,6 +56,7 @@ type
 
   TFindRenameIdentifierDialog = class(TForm)
     ButtonPanel1: TButtonPanel;
+    ScopeOverridesCheckBox: TCheckBox;
     ShowResultCheckBox: TCheckBox;
     CurrentGroupBox: TGroupBox;
     CurrentListBox: TListBox;
@@ -118,7 +119,7 @@ function DoFindRenameIdentifier(
 function GatherIdentifierReferences(Files: TStringList;
   DeclarationCode: TCodeBuffer; const DeclarationCaretXY: TPoint;
   SearchInComments: boolean;
-  var TreeOfPCodeXYPosition: TAVLTree): TModalResult;
+  var TreeOfPCodeXYPosition: TAVLTree; const Flags: TFindRefsFlags): TModalResult;
 function ShowIdentifierReferences(
   DeclarationCode: TCodeBuffer; const DeclarationCaretXY: TPoint;
   TreeOfPCodeXYPosition: TAVLTree;
@@ -272,6 +273,7 @@ var
   UGUnit: TUGUnit;
   TargetFilename, OrigFileName, ChangedFileType, srcNamed, lfmString: string;
   SkipRenamingFile, isConflicted: Boolean;
+  FindRefFlags: TFindRefsFlags;
 begin
   Result:=mrCancel;
   if not LazarusIDE.BeginCodeTools then exit(mrCancel);
@@ -388,8 +390,11 @@ begin
     end;
 
     // search pascal source references
+    FindRefFlags:=[];
+    if Options.Overrides then
+      Include(FindRefFlags,frfMethodOverrides);
     Result:=GatherIdentifierReferences(Files,DeclCode,
-      DeclarationCaretXY,Options.SearchInComments,PascalReferences);
+      DeclarationCaretXY,Options.SearchInComments,PascalReferences,FindRefFlags);
     if CodeToolBoss.ErrorMessage<>'' then
       LazarusIDE.DoJumpToCodeToolBossError;
     if Result<>mrOk then begin
@@ -499,7 +504,7 @@ begin
         //cursor pos for declaration is the same as before renaming
         CodeToolBoss.FreeTreeOfPCodeXYPosition(PascalReferences);
         Result:=GatherIdentifierReferences(Files,DeclCode,
-          DeclarationCaretXY,Options.SearchInComments,PascalReferences);
+          DeclarationCaretXY,Options.SearchInComments,PascalReferences,FindRefFlags);
         if CodeToolBoss.ErrorMessage<>'' then
           LazarusIDE.DoJumpToCodeToolBossError;
         if Result<>mrOk then begin
@@ -527,10 +532,9 @@ begin
   end;
 end;
 
-function GatherIdentifierReferences(Files: TStringList;
-  DeclarationCode: TCodeBuffer; const DeclarationCaretXY: TPoint;
-  SearchInComments: boolean;
-  var TreeOfPCodeXYPosition: TAVLTree): TModalResult;
+function GatherIdentifierReferences(Files: TStringList; DeclarationCode: TCodeBuffer;
+  const DeclarationCaretXY: TPoint; SearchInComments: boolean; var TreeOfPCodeXYPosition: TAVLTree;
+  const Flags: TFindRefsFlags): TModalResult;
 var
   i: Integer;
   LoadResult: TModalResult;
@@ -561,7 +565,7 @@ begin
       CodeToolBoss.FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
       if not CodeToolBoss.FindReferences(
         DeclarationCode,DeclarationCaretXY.X,DeclarationCaretXY.Y,
-        Code, not SearchInComments, ListOfPCodeXYPosition, Cache) then
+        Code, not SearchInComments, ListOfPCodeXYPosition, Cache, Flags) then
       begin
         debugln('GatherIdentifierReferences unable to FindReferences in "',Code.Filename,'"');
         Result:=mrAbort;
@@ -859,6 +863,7 @@ begin
   RenameCheckBox.Caption:=lisRename;
   ShowResultCheckBox.Caption:=lisRenameShowResult;
   ScopeCommentsCheckBox.Caption:=lisFRISearchInCommentsToo;
+  ScopeOverridesCheckBox.Caption:=lisFindOverridesToo;
   ScopeGroupBox.Caption:=lisFRISearch;
   ScopeRadioGroup.Caption:=dlgSearchScope;
   ScopeRadioGroup.Items[0]:=lisFRIinCurrentUnit;
@@ -1150,6 +1155,7 @@ begin
   NewEdit.Text:=Options.RenameTo;
   ShowResultCheckBox.Checked:=Options.RenameShowResult;
   ScopeCommentsCheckBox.Checked:=Options.SearchInComments;
+  ScopeOverridesCheckBox.Checked:=Options.Overrides;
   case Options.Scope of
   frCurrentUnit: ScopeRadioGroup.ItemIndex:=0;
   frProject: ScopeRadioGroup.ItemIndex:=1;
@@ -1169,6 +1175,7 @@ begin
   Options.RenameTo:=NewEdit.Text;
   Options.RenameShowResult := ShowResultCheckBox.Checked;
   Options.SearchInComments:=ScopeCommentsCheckBox.Checked;
+  Options.Overrides:=ScopeOverridesCheckBox.Checked;
   if ScopeRadioGroup.Enabled then
     case ScopeRadioGroup.ItemIndex of
     0: Options.Scope:=frCurrentUnit;

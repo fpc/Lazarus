@@ -60,6 +60,7 @@ type
     FExtraFiles: TStrings;
     FIdentifierFilename: string;
     FIdentifierPosition: TPoint;
+    FOverrides: boolean;
     FRename: boolean;
     FRenameShowResult: boolean;
     FRenameTo: string;
@@ -70,6 +71,7 @@ type
     procedure SetExtraFiles(AValue: TStrings);
     procedure SetIdentifierFilename(AValue: string);
     procedure SetIdentifierPosition(AValue: TPoint);
+    procedure SetOverrides(const AValue: boolean);
     procedure SetModified(AValue: boolean);
     procedure SetRename(AValue: boolean);
     procedure SetRenameShowResult(AValue: boolean);
@@ -89,6 +91,7 @@ type
     property Rename: boolean read FRename write SetRename;
     property RenameTo: string read FRenameTo write SetRenameTo;
     property SearchInComments: boolean read FSearchInComments write SetSearchInComments;
+    property Overrides: boolean read FOverrides write SetOverrides;
     property RenameShowResult: boolean read FRenameShowResult write SetRenameShowResult;
     property Scope: TFindRenameScope read FScope write SetScope;
     property ExtraFiles: TStrings read FExtraFiles write SetExtraFiles;
@@ -422,6 +425,13 @@ begin
   IncreaseChangeStamp;
 end;
 
+procedure TFindRenameIdentifierOptions.SetOverrides(const AValue: boolean);
+begin
+  if FOverrides=AValue then Exit;
+  FOverrides:=AValue;
+  IncreaseChangeStamp;
+end;
+
 procedure TFindRenameIdentifierOptions.SetModified(AValue: boolean);
 begin
   if AValue then
@@ -486,6 +496,7 @@ begin
   fRename:=XMLConfig.GetValue(Path+'Rename/Value',false);
   fRenameTo:=XMLConfig.GetValue(Path+'Rename/Identifier','');
   fSearchInComments:=XMLConfig.GetValue(Path+'SearchInComments/Value',true);
+  FOverrides:=XMLConfig.GetValue(Path+'Overrides/Value',true);
   fRenameShowResult:=XMLConfig.GetValue(Path+'RenameShowResult/Value',false);
   fScope:=FindRenameScopeNameToScope(XMLConfig.GetValue(Path+'Scope/Value',
                            FindRenameScopeNames[frAllOpenProjectsAndPackages]));
@@ -501,6 +512,7 @@ begin
   XMLConfig.SetDeleteValue(Path+'Rename/Value',Rename,false);
   XMLConfig.SetDeleteValue(Path+'Rename/Identifier',RenameTo,'');
   XMLConfig.SetDeleteValue(Path+'SearchInComments/Value',SearchInComments,true);
+  XMLConfig.SetDeleteValue(Path+'Overrides/Value',Overrides,true);
   XMLConfig.SetDeleteValue(Path+'RenameShowResult/Value',RenameShowResult,false);
   XMLConfig.SetDeleteValue(Path+'Scope/Value',FindRenameScopeNames[Scope],
                             FindRenameScopeNames[frAllOpenProjectsAndPackages]);

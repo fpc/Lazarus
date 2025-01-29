@@ -3615,6 +3615,7 @@ resourcestring
   lisFRIRenaming = 'Renaming';
   lisFRISearchInCommentsToo = 'Search in comments too';
   lisFRISearch = 'Search';
+  lisFindOverridesToo = 'Find overrides too';
   lisCodeToolsOptsColon       = 'Colon';
   lisCodeToolsOptsSemicolon   = 'Semicolon';
   lisCodeToolsOptsComma       = 'Comma';
