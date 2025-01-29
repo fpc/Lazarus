@@ -108,8 +108,8 @@ begin
       ypad := 0;
       if aList = nil then
         exit;
-      PGtkCellRenderer(aList[0].data)^.get_padding(@xpad, @ypad);
-      g_free(aList);
+      PGtkCellRenderer(g_list_nth_data(aList, 0))^.get_padding(@xpad, @ypad);
+      g_list_free(aList);
 
       GetStyleContextSizes(aCombo^.priv3^.button, ABorder, AMargin, APadding, w, h);
       aContext := PGtkCellView(ACombo^.priv3^.cell_view)^.get_pango_context;
@@ -123,6 +123,7 @@ begin
       min_height^ := h + ABorder.Top + ABorder.Bottom + AMargin.Top + AMargin.Bottom + APadding.Top + APadding.Bottom + (ypad * 2);
       if Assigned(nat_height) then
         nat_height^ := min_height^;
+      aPangoLayout^.unref;
     end;
     exit; // keep gtk calculated height.
   end;
