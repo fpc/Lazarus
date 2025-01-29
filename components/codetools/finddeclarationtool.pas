@@ -6762,7 +6762,8 @@ var
   CleanDeclCursorPos: integer;
   DeclarationTool: TFindDeclarationTool;
   DeclarationNode: TCodeTreeNode; // in DeclarationTool
-  AliasDeclarationNode: TCodeTreeNode; // if exists: always in front of DeclarationNode, and in DeclarationTool
+  AliasDeclarationNode: TCodeTreeNode; // if exists: for ProcHead this is the body,
+    // otherwise always in front of DeclarationNode, and in DeclarationTool
   Params: TFindDeclarationParams;
   PosTree: TAVLTree; // tree of PChar positions in Src
   ReferencePos: TCodeXYPosition;
@@ -6842,7 +6843,7 @@ var
     Node: TCodeTreeNode;
   begin
     Result:=false;
-    if ProcNode=AliasDeclarationNode.Parent then exit(true);
+    if ProcNode=DeclarationNode.Parent then exit(true);
     if not NodeIsMethodDecl(ProcNode) then
       exit;
     {$IFDEF VerboseFindRefMethodOverrides}
@@ -6867,14 +6868,14 @@ var
       CurProc:=CurProc.Tool.FindOverridenMethodDecl(CurProc.Node);
       if CurProc.Node=nil then begin
         {$IFDEF VerboseFindRefMethodOverrides}
-        debugln(['CheckMethodOverride Not an override']);
+        debugln(['CheckMethodOverride NOT an override']);
         {$ENDIF}
         break;
       end;
       {$IFDEF VerboseFindRefMethodOverrides}
-      debugln(['CheckMethodOverride found ancestor: ',CurProc.Tool.GetNodeNamePath(CurProc.Node,true,true)]);
+      debugln(['CheckMethodOverride FOUND ancestor: ',CurProc.Tool.GetNodeNamePath(CurProc.Node,true,true)]);
       {$ENDIF}
-      if CurProc.Node=AliasDeclarationNode.Parent then begin
+      if CurProc.Node=DeclarationNode.Parent then begin
         Result:=true;
         break;
       end;
@@ -6885,6 +6886,7 @@ var
       if Result then begin
         System.Insert(Node,OverrideProcNodes,length(OverrideProcNodes));
         if FoundProcs[i].Tool=Self then begin
+          AddNodeReference(Node); // rename decl of overridden proc
           Node:=FindCorrespondingProcNode(Node);
           if Node<>nil then begin
             System.Insert(Node,OverrideProcNodes,length(OverrideProcNodes));
@@ -7236,7 +7238,7 @@ var
 
     // find alias declaration node
     {$IFDEF VerboseFindReferences}
-    debugln('FindDeclarationNode DeclarationNode=',NodePathAsString(DeclarationNode),' at ',DeclarationTool.CleanPosToStr(DeclarationNode.StartPos));
+    debugln('FindDeclarationNode DeclarationNode=',DeclarationTool.GetNodeNamePath(DeclarationNode),'=',NodePathAsString(DeclarationNode),' at ',DeclarationTool.CleanPosToStr(DeclarationNode.StartPos));
     {$ENDIF}
     AliasDeclarationNode:=nil;
     case DeclarationNode.Desc of
@@ -7268,7 +7270,11 @@ var
         //debugln(['FindDeclarationNode adding alias node ...']);
         AddNodeReference(AliasDeclarationNode);
       end;
-      if AliasDeclarationNode.StartPos>DeclarationNode.StartPos then begin
+      if ((DeclarationNode.Desc=ctnProcedureHead)
+            and (AliasDeclarationNode.StartPos<DeclarationNode.StartPos))
+          or ((DeclarationNode.Desc<>ctnProcedureHead)
+            and (AliasDeclarationNode.StartPos>DeclarationNode.StartPos)) then
+      begin
         Node:=AliasDeclarationNode;
         AliasDeclarationNode:=DeclarationNode;
         DeclarationNode:=Node;
@@ -7285,8 +7291,8 @@ var
     {$ENDIF}
 
     if frfMethodOverrides in Flags then begin
-      if (AliasDeclarationNode=nil) or (AliasDeclarationNode.Desc<>ctnProcedureHead)
-          or (not NodeIsMethodDecl(AliasDeclarationNode.Parent)) then
+      if (DeclarationNode.Desc<>ctnProcedureHead)
+          or (not NodeIsMethodDecl(DeclarationNode.Parent)) then
         Exclude(Flags,frfMethodOverrides);
     end;
 
@@ -7329,7 +7335,7 @@ var
     end;
 
     StartNode:=DeclarationNode;
-    if (AliasDeclarationNode<>nil) then
+    if (AliasDeclarationNode<>nil) and (AliasDeclarationNode.StartPos<StartNode.StartPos) then
       StartNode:=AliasDeclarationNode;
     Node:=StartNode;
     while Node<>nil do begin
@@ -11914,7 +11920,7 @@ begin
 
   Identifier:=GetProcNameIdentifier(ProcNode);
   {$IFDEF VerboseFindRefMethodOverrides}
-  debugln(['TFindDeclarationTool.FindOverridenMethodDecl START ',GetNodeNamePath(ProcNode,true)]);
+  debugln(['TFindDeclarationTool.FindOverridenMethodDecl START ',GetNodeNamePath(ProcNode,true),' Identifier="',GetIdentifier(Identifier),'"']);
   {$ENDIF}
 
   Params:=TFindDeclarationParams.Create(Self,ClassNode);
@@ -11925,9 +11931,11 @@ begin
     while CurTool.FindAncestorOfClass(ClassNode,Params,true) do begin
       CurTool:=Params.NewCodeTool;
       ClassNode:=Params.NewNode;
+      //debugln(['  TFindDeclarationTool.FindOverridenMethodDecl Class=',CurTool.GetNodeNamePath(ClassNode)]);
 
       Node:=ClassNode.LastChild;
       while Node<>nil do begin
+        //debugln(['  TFindDeclarationTool.FindOverridenMethodDecl Node=',CurTool.GetNodeNamePath(Node),' ',Node.DescAsString]);
         if (Node.Desc in AllClassSections)
         and (Node.FirstChild<>nil) then begin
           Node:=Node.LastChild;
@@ -11941,7 +11949,8 @@ begin
           if CompareIdentifiers(CurIdentifier,Identifier)=0 then
             exit;
         end else if Node.Desc=ctnProcedure then begin
-          CurIdentifier:=GetProcNameIdentifier(Node);
+          CurIdentifier:=CurTool.GetProcNameIdentifier(Node);
+          //debugln(['  TFindDeclarationTool.FindOverridenMethodDecl PROC "',CurIdentifier,'"']);
           if CompareIdentifiers(CurIdentifier,Identifier)=0 then begin
             // found ancestor method with same name
             {$IFDEF VerboseFindRefMethodOverrides}

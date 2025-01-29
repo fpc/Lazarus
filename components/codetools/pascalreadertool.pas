@@ -1525,9 +1525,6 @@ end;
 
 function TPascalReaderTool.GetProcNameIdentifier(ProcNode: TCodeTreeNode): PChar;
 begin
-
-  // ToDo: ppu, dcu
-
   Result:=nil;
   if ProcNode=nil then exit;
   if ProcNode.Desc=ctnProcedure then begin
@@ -2348,6 +2345,7 @@ begin
   RestoreCurPos:=false;
   StartNode:=Node;
   Result:='';
+
   repeat
     s:='';
     case Node.Desc of
@@ -2372,7 +2370,9 @@ begin
     end;
     if s<>'' then begin
       if Result<>'' then
-        Result:='.'+Result;
+        Result:='.'+Result
+      else
+        Result:='['+StartNode.DescAsString+']';
       Result:=s+Result;
     end;
     Node:=Node.Parent;
@@ -2843,10 +2843,11 @@ begin
     else if UpAtomIs('DESTRUCTOR') then
       Result := mgClassDestructor
     else if UpAtomIs('OPERATOR') then
-      Result := mgClassOperator;
-  end else
-  if UpAtomIs('CONSTRUCTOR') then
-    Result := mgConstructor
+      Result := mgClassOperator
+    else
+      Result:=mgMethod;
+  end else if UpAtomIs('CONSTRUCTOR') then
+    Result := mgConstructor;
 end;
 
 function TPascalReaderTool.PositionInSourceName(CleanPos: integer): boolean;

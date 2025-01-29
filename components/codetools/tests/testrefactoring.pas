@@ -42,10 +42,12 @@ type
     procedure TestRenameMethodArgUp;
     procedure TestRenameMethodInherited;
     procedure TestRenameMethodWithOverrides;
+    procedure TestRenameMethodWithOverridesOtherUnit;
+    procedure TestRenameClassMethodWithOverrides;
     procedure TestRenameNestedProgramProcDown;
     procedure TestRenameNestedProgramProcUp;
     procedure TestRenameNestedUnitProcDown;
-    procedure TestRenameTypeAmp;
+    procedure TestRenameTypeToAmp;
   end;
 
 implementation
@@ -93,7 +95,7 @@ begin
     Fail('CodeToolBoss.FindMainDeclaration failed '+dbgs(DeclarationCaretXY)+' File='+Code.Filename);
   end;
 
-  //debugln(['TCustomTestRefactoring.RenameReferences ',DeclX,' ',DeclY,' "',Code.GetLine(DeclY-1,false),'"']);
+  //debugln(['TCustomTestRefactoring.RenameReferences X=',DeclX,' Y=',DeclY,' "',DeclCode.GetLine(DeclY-1,false),'"']);
 
   DeclarationCaretXY:=Point(DeclX,DeclY);
 
@@ -116,6 +118,7 @@ begin
     Files.Clear;
     while Node<>nil do begin
       UGUnit:=TUGUnit(Node.Data);
+      //debugln(['TCustomTestRefactoring.RenameReferences ',UGUnit.Filename]);
       Files.Add(UGUnit.Filename);
       Node:=Node.Successor;
     end;
@@ -665,6 +668,7 @@ begin
   'begin',
   '  inherited Fly;',
   '  Fly;',
+  '  // Fly',
   'end;',
   '',
   'procedure TBird.Fly;',
@@ -699,12 +703,227 @@ begin
   'begin',
   '  inherited Run;',
   '  Run;',
+  '  // Run',
   'end;',
   '',
   'procedure TBird.Run;',
   'begin',
   '  inherited Run;',
   '  Run;',
+  'end;',
+  '',
+  'begin',
+  'end.',
+  '']);
+end;
+
+procedure TTestRefactoring.TestRenameMethodWithOverridesOtherUnit;
+var
+  DeclUnit: TCodeBuffer;
+begin
+  DeclUnit:=nil;
+  try
+    DeclUnit:=CodeToolBoss.CreateFile('decl.pp');
+    DeclUnit.Source:='unit Decl;'+LineEnding
+      +'interface'+LineEnding
+      +'type'+LineEnding
+      +'  TAnimal = class'+LineEnding
+      +'    procedure Walk(a: word); virtual; abstract;'+LineEnding
+      +'  end;'+LineEnding
+      +'  TBird = class(TAnimal)'+LineEnding
+      +'    procedure Walk(b: longint); virtual; abstract;'+LineEnding
+      +'    procedure Walk(a: word); override;'+LineEnding
+      +'  end;'+LineEnding
+      +'implementation'+LineEnding
+      +'procedure TBird.Walk(a: word);'+LineEnding
+      +'begin end;'+LineEnding
+      +'end.';
+
+    StartUnit;
+    Add([
+    'uses Decl;',
+    'type',
+    '  TBear = class(TAnimal)',
+    '    procedure Charge;',
+    '  end;',
+    '  TEagle = class(TBird)',
+    '    procedure Walk(c: int64);',
+    '    procedure Walk(a: word); override;',
+    '  end;',
+    '  TBig = class(TEagle)',
+    '    procedure Walk(b: longint); override;',
+    '    procedure Walk(a: word); override;',
+    '  end;',
+    'implementation',
+    '',
+    'procedure TBear.Charge;',
+    'var aWord: word;',
+    'begin',
+    '  Walk{#Rename}(aWord);',
+    'end;',
+    '',
+    'procedure TEagle.Walk(c: int64);',
+    'begin',
+    '  Walk(c);',
+    '  Walk(word(c));',
+    'end;',
+    '',
+    'procedure TEagle.Walk(a: word);',
+    'begin',
+    '  Walk(c);',
+    '  Walk(word(c));',
+    'end;',
+    '',
+    'procedure TBig.Walk(b: longint);',
+    'begin',
+    '  Walk(b);',
+    '  Walk(word(b));',
+    'end;',
+    '',
+    'procedure TBig.Walk(a: word);',
+    'begin',
+    '  Walk(a);',
+    '  Walk(longint(a));',
+    'end;',
+    '',
+    'end.',
+    '']);
+    RenameReferences('Run',[frfMethodOverrides]);
+    CheckDiff(Code,[
+    'unit test1;',
+    '',
+    '{$mode objfpc}{$H+}',
+    '',
+    'interface',
+    '',
+    'uses Decl;',
+    'type',
+    '  TBear = class(TAnimal)',
+    '    procedure Charge;',
+    '  end;',
+    '  TEagle = class(TBird)',
+    '    procedure Walk(c: int64);',
+    '    procedure Run(a: word); override;',
+    '  end;',
+    '  TBig = class(TEagle)',
+    '    procedure Walk(b: longint); override;',
+    '    procedure Run(a: word); override;',
+    '  end;',
+    'implementation',
+    '',
+    'procedure TBear.Charge;',
+    'var aWord: word;',
+    'begin',
+    '  Run{#Rename}(aWord);',
+    'end;',
+    '',
+    'procedure TEagle.Walk(c: int64);',
+    'begin',
+    '  Walk(c);',
+    '  Run(word(c));',
+    'end;',
+    '',
+    'procedure TEagle.Run(a: word);',
+    'begin',
+    '  Walk(c);',
+    '  Run(word(c));',
+    'end;',
+    '',
+    'procedure TBig.Walk(b: longint);',
+    'begin',
+    '  Walk(b);',
+    '  Run(word(b));',
+    'end;',
+    '',
+    'procedure TBig.Run(a: word);',
+    'begin',
+    '  Run(a);',
+    '  Walk(longint(a));',
+    'end;',
+    '',
+    'end.',
+    '']);
+  finally
+    if DeclUnit<>nil then
+      DeclUnit.IsDeleted:=true;
+  end;
+end;
+
+procedure TTestRefactoring.TestRenameClassMethodWithOverrides;
+begin
+  StartProgram;
+  Add([
+  'type',
+  '  TOuter = class',
+  '  public type',
+  '    TAnimal = class',
+  '      class procedure Fly{#Rename}; virtual;',
+  '    end;',
+  '    TBird = class(TAnimal)',
+  '      class procedure Eat;',
+  '      class procedure Fly; override;',
+  '    end;',
+  '  end;',
+  '',
+  'class procedure TOuter.TAnimal.Fly;',
+  'begin',
+  'end;',
+  '',
+  'class procedure TOuter.TBird.Eat;',
+  'begin',
+  '  TOuter.TAnimal.Fly;',
+  '  TOuter.TBird.Fly;',
+  '  Test1.TOuter.TAnimal.Fly;',
+  '  Test1.TOuter.TBird.Fly;',
+  '  // TOuter.TAnimal.Fly',
+  '  // TOuter.TBird.Fly',
+  '  // Test1.TOuter.TAnimal.Fly;',
+  '  // Test1.TOuter.TBird.Fly;',
+  'end;',
+  '',
+  'class procedure TOuter.TBird.Fly;',
+  'begin',
+  'end;',
+  '',
+  'begin',
+  'end.',
+  '']);
+  RenameReferences('Run',[frfMethodOverrides]);
+  CheckDiff(Code,[
+  'program test1;',
+  '',
+  '{$mode objfpc}{$H+}',
+  '',
+  'type',
+  '  TOuter = class',
+  '  public type',
+  '    TAnimal = class',
+  '      class procedure Run{#Rename}; virtual;',
+  '    end;',
+  '    TBird = class(TAnimal)',
+  '      class procedure Eat;',
+  '      class procedure Run; override;',
+  '    end;',
+  '  end;',
+  '',
+  'class procedure TOuter.TAnimal.Run;',
+  'begin',
+  'end;',
+  '',
+  'class procedure TOuter.TBird.Eat;',
+  'begin',
+  '  TOuter.TAnimal.Run;',
+  '  TOuter.TBird.Run;',
+  '  Test1.TOuter.TAnimal.Run;',
+  '  Test1.TOuter.TBird.Run;',
+  '  // TOuter.TAnimal.Run',
+  '  // TOuter.TBird.Run',
+  '  // Test1.TOuter.TAnimal.Run;',
+  '  // Test1.TOuter.TBird.Run;',
+  'end;',
+  '',
+  'class procedure TOuter.TBird.Run;',
+  'begin',
   'end;',
   '',
   'begin',
@@ -918,7 +1137,7 @@ begin
   '']);
 end;
 
-procedure TTestRefactoring.TestRenameTypeAmp;
+procedure TTestRefactoring.TestRenameTypeToAmp;
 begin
   StartUnit;
   Add([
