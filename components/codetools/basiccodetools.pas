@@ -394,6 +394,8 @@ procedure ReadRawNextPascalAtom(const Source: string;
 procedure ReadRawNextPascalAtom(var Position: PChar; out AtomStart: PChar;
    const SrcEnd: PChar = nil; NestedComments: boolean = false;
    SkipDirectives: boolean = false);
+function ReadRawPascal(StartP: PChar; SrcEnd: PChar = nil; NestedComments: boolean = false;
+   SkipDirectives: boolean = true): string;
 procedure ReadPriorPascalAtom(const Source: string;
   var Position: integer; out AtomEnd: integer; NestedComments: boolean = false);
 function ReadTilPascalBracketClose(const Source: string;
@@ -2296,6 +2298,52 @@ begin
     end;
   end;
   Position:=Src;
+end;
+
+function ReadRawPascal(StartP: PChar; SrcEnd: PChar; NestedComments: boolean;
+  SkipDirectives: boolean): string;
+var
+  l, Count, ResultLen, NewCount: integer;
+  NeedSpace: Boolean;
+  p, AtomStart: PChar;
+begin
+  Result:='';
+  Count:=0;
+  ResultLen:=0;
+  p:=StartP;
+  repeat
+    ReadRawNextPascalAtom(p,AtomStart,SrcEnd,NestedComments,SkipDirectives);
+    l:=p-AtomStart;
+    if l=0 then begin
+      Setlength(Result,Count);
+      exit;
+    end;
+    NewCount:=Count+l;
+
+    NeedSpace:=(Count>0) and IsIdentChar[Result[Count]] and IsIdentStartChar[AtomStart^];
+    if NeedSpace then
+      inc(NewCount);
+
+    if NewCount>ResultLen then begin
+      // grow
+      if ResultLen=0 then begin
+        ResultLen:=NewCount;
+      end else begin
+        ResultLen:=ResultLen*2;
+        if ResultLen<NewCount then
+          ResultLen:=NewCount;
+      end;
+      SetLength(Result,ResultLen);
+    end;
+
+    if NeedSpace then begin
+      inc(Count);
+      Result[Count]:=' ';
+    end;
+
+    Move(AtomStart^,Result[Count+1],l);
+    inc(Count,l);
+  until false;
 end;
 
 procedure ReadPriorPascalAtom(const Source: string; var Position: integer; out
