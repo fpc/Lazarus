@@ -1413,7 +1413,7 @@ begin
     if (Node<>nil) and (Node.Desc in AllClassSubSections) then
       Node:=Node.Parent;
     if (Node<>nil) and (Node.Desc in AllClassBaseSections) then begin
-      //debugln(['TIdentCompletionTool.CollectAllIdentifiers Node=',Node.DescAsString,' Context=',CurrentIdentifierList.Context.Node.DescAsString,' CtxVis=',NodeDescToStr(CurrentIdentifierList.NewMemberVisibility)]);
+      //debugln(['TIdentCompletionTool.CollectAllIdentifiers Node=',Node.DescAsString,' Context=',CurrentIdentifierList.Context.Node.DescAsString,' CtxVis=',NodeDescriptionAsString(CurrentIdentifierList.NewMemberVisibility)]);
       if (CurrentIdentifierList.NewMemberVisibility<>ctnNone)
       and (CurrentIdentifierList.NewMemberVisibility<Node.Desc)
       and (FoundContext.Node.Desc

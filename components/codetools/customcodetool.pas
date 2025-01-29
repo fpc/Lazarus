@@ -337,8 +337,7 @@ type
 
     // debugging
     procedure Clear; virtual;
-    function NodeDescToStr(Desc: integer): string;
-    function NodeSubDescToStr(Desc, SubDesc: integer): string;
+    function NodeSubDescToStr(Desc: TCodeTreeNodeDesc; SubDesc: TCodeTreeNodeSubDesc): string;
     procedure ConsistencyCheck; virtual;
     procedure WriteDebugTreeReport;
     procedure CalcMemSize(Stats: TCTMemStats); virtual;
@@ -582,12 +581,8 @@ begin
   FRangeValidTill:=lsrNone;
 end;
 
-function TCustomCodeTool.NodeDescToStr(Desc: integer): string;
-begin
-  Result:=NodeDescriptionAsString(TCodeTreeNodeDesc(Desc));
-end;
-
-function TCustomCodeTool.NodeSubDescToStr(Desc, SubDesc: integer): string;
+function TCustomCodeTool.NodeSubDescToStr(Desc: TCodeTreeNodeDesc; SubDesc: TCodeTreeNodeSubDesc
+  ): string;
 begin
   if SubDesc<>0 then
     Result:=Format(ctsUnknownSubDescriptor,[IntToStr(SubDesc)])
@@ -2610,7 +2605,7 @@ procedure TCustomCodeTool.WriteDebugTreeReport;
     while RootNode<>nil do begin
       DbgOut(Indent);
       with RootNode do begin
-        DbgOut(NodeDescToStr(Desc)+'('+NodeSubDescToStr(Desc,SubDesc)+')  ');
+        DbgOut(NodeDescriptionAsString(Desc)+'('+NodeSubDescToStr(Desc,SubDesc)+')  ');
         DbgOut(' Start='+DbgS(StartPos),' ');
         WriteSrcSubString(StartPos,5);
         DbgOut(' End='+DbgS(EndPos)+' ');

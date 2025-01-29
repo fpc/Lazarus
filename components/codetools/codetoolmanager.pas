@@ -559,8 +559,8 @@ type
     function FindReferences(IdentifierCode: TCodeBuffer;
           X, Y: integer; SearchInCode: TCodeBuffer; SkipComments: boolean;
           var ListOfPCodeXYPosition: TFPList;
-          var Cache: TFindIdentifierReferenceCache  // you must free Cache
-          ): boolean;
+          var Cache: TFindIdentifierReferenceCache;  // you must free Cache
+          const Flags: TFindRefsFlags = []): boolean;
     function FindUnitReferences(UnitCode, TargetCode: TCodeBuffer;
           SkipComments: boolean; var ListOfPCodeXYPosition: TFPList): boolean;
     function FindUsedUnitReferences(Code: TCodeBuffer; X, Y: integer;
@@ -569,7 +569,7 @@ type
     function FindReferencesInFiles(Files: TStringList;
           DeclarationCode: TCodeBuffer; const DeclarationCaretXY: TPoint;
           SearchInComments: boolean;
-          var TreeOfPCodeXYPosition: TAVLTree): boolean;
+          var TreeOfPCodeXYPosition: TAVLTree; const Flags: TFindRefsFlags = []): boolean;
     function RenameIdentifier(TreeOfPCodeXYPosition: TAVLTree;
           const OldIdentifier, NewIdentifier: string;
           DeclarationCode: TCodeBuffer; DeclarationCaretXY: PPoint): boolean;
@@ -2816,10 +2816,9 @@ begin
   end;
 end;
 
-function TCodeToolManager.FindReferences(IdentifierCode: TCodeBuffer; X,
-  Y: integer; SearchInCode: TCodeBuffer; SkipComments: boolean;
-  var ListOfPCodeXYPosition: TFPList; var Cache: TFindIdentifierReferenceCache
-  ): boolean;
+function TCodeToolManager.FindReferences(IdentifierCode: TCodeBuffer; X, Y: integer;
+  SearchInCode: TCodeBuffer; SkipComments: boolean; var ListOfPCodeXYPosition: TFPList;
+  var Cache: TFindIdentifierReferenceCache; const Flags: TFindRefsFlags): boolean;
 var
   CursorPos: TCodeXYPosition;
   NewTopLine: integer;
@@ -2911,7 +2910,7 @@ begin
   {$ENDIF}
   try
     Result:=FCurCodeTool.FindReferences(CursorPos,SkipComments,
-                                        ListOfPCodeXYPosition);
+                                        ListOfPCodeXYPosition,Flags);
   except
     on e: Exception do HandleException(e);
   end;
@@ -2969,9 +2968,9 @@ begin
   {$ENDIF}
 end;
 
-function TCodeToolManager.FindReferencesInFiles(Files: TStringList;
-  DeclarationCode: TCodeBuffer; const DeclarationCaretXY: TPoint;
-  SearchInComments: boolean; var TreeOfPCodeXYPosition: TAVLTree): boolean;
+function TCodeToolManager.FindReferencesInFiles(Files: TStringList; DeclarationCode: TCodeBuffer;
+  const DeclarationCaretXY: TPoint; SearchInComments: boolean; var TreeOfPCodeXYPosition: TAVLTree;
+  const Flags: TFindRefsFlags): boolean;
 var
   i, j: Integer;
   Code: TCodeBuffer;
@@ -3005,7 +3004,7 @@ begin
       FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
       if not FindReferences(
         DeclarationCode,DeclarationCaretXY.X,DeclarationCaretXY.Y,
-        Code, not SearchInComments, ListOfPCodeXYPosition, Cache) then
+        Code, not SearchInComments, ListOfPCodeXYPosition, Cache, Flags) then
       begin
         debugln('TCodeToolManager.FindReferencesInFiles unable to FindReferences in "',Code.Filename,'"');
         exit;

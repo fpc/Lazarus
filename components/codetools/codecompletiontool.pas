@@ -3690,7 +3690,7 @@ var
     if NeededType=ctnNone then exit;
     // add alias
     if NeededType<>Node.Desc then begin
-      DebugLn(['TCodeCompletionCodeTool.FindAliasDefinitions Wrong: ',Node.DescAsString,' ',ExtractNode(Node,[]),' ',Node.DescAsString,'<>',NodeDescToStr(NeededType)]);
+      DebugLn(['TCodeCompletionCodeTool.FindAliasDefinitions Wrong: ',Node.DescAsString,' ',ExtractNode(Node,[]),' ',Node.DescAsString,'<>',NodeDescriptionAsString(NeededType)]);
     end;
     if TreeOfCodeTreeNodeExt=nil then
       TreeOfCodeTreeNodeExt:=TAVLTree.Create(@CompareCodeTreeNodeExt);
@@ -3950,7 +3950,7 @@ begin
     ReferingType:=TCodeTreeNodeDesc(NodeExt.Flags);
     ReferingNode:=TCodeTreeNode(NodeExt.Data);
 
-    //DebugLn(['TCodeCompletionCodeTool.FixAliasDefinitions Old=',DefNode.DescAsString,' New=',NodeDescToStr(ReferingType)]);
+    //DebugLn(['TCodeCompletionCodeTool.FixAliasDefinitions Old=',DefNode.DescAsString,' New=',NodeDescriptionAsString(ReferingType)]);
 
     // check in front
     if ReferingType in [ctnTypeDefinition,ctnConstDefinition] then begin
@@ -5282,11 +5282,11 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
         end;
         InsertPos:=FindLineEndOrCodeAfterPosition(DestNode.StartPos);
         Indent:=Beauty.GetLineIndent(Src,DestNode.StartPos);
-        //DebugLn(['MoveNodes DestNode=',GetRedefinitionNodeText(DestNode),':',DestNode.DescAsString,' DestSection=',NodeDescToStr(DestSection)]);
+        //DebugLn(['MoveNodes DestNode=',GetRedefinitionNodeText(DestNode),':',DestNode.DescAsString,' DestSection=',NodeDescriptionAsString(DestSection)]);
       end;
       
       // start a new section if needed
-      //DebugLn(['MoveNodes LastInsertAtSamePos=',LastInsertAtSamePos,' NeedSection=',NodeDescToStr(NeedSection),' LastSection=',NodeDescToStr(LastSection),' DestSection=',NodeDescToStr(DestSection)]);
+      //DebugLn(['MoveNodes LastInsertAtSamePos=',LastInsertAtSamePos,' NeedSection=',NodeDescriptionAsString(NeedSection),' LastSection=',NodeDescriptionAsString(LastSection),' DestSection=',NodeDescriptionAsString(DestSection)]);
       if (LastInsertAtSamePos and (NeedSection<>LastSection))
       or ((not LastInsertAtSamePos) and (NeedSection<>DestSection)) then begin
         // start a new section
@@ -5332,7 +5332,7 @@ function TCodeCompletionCodeTool.FixForwardDefinitions(
       // restore destination section if needed
       if not NextInsertAtSamePos then begin
         // this was the last insertion at this destination
-        DebugLn(['MoveNodes this was the last insertion at this dest NeedSection=',NodeDescToStr(NeedSection),' DestSection=',NodeDescToStr(DestSection)]);
+        DebugLn(['MoveNodes this was the last insertion at this dest NeedSection=',NodeDescriptionAsString(NeedSection),' DestSection=',NodeDescriptionAsString(DestSection)]);
         if (DestNode.Desc in AllIdentifierDefinitions)
         and (NeedSection<>DestSection)
         and (DestSection in AllDefinitionSections) then begin

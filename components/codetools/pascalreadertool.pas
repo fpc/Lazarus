@@ -131,6 +131,7 @@ type
         const OnIdentifier: TOnEachPRIdentifier; Data: Pointer; var Abort: boolean); // node and child nodes
     procedure ForEachIdentifier(SkipComments: boolean;
         const OnIdentifier: TOnEachPRIdentifier; Data: Pointer); // whole unit/program
+    function GetNodeNamePath(Node: TCodeTreeNode; WithLineCol: boolean = false; WithFilename: boolean = false): string; // for debugging
 
     // properties
     function ExtractPropType(PropNode: TCodeTreeNode;
@@ -198,6 +199,7 @@ type
                               Parse: boolean = true): TCodeTreeNode;
     function GetProcResultNode(ProcNode: TCodeTreeNode): TCodeTreeNode;
     function NodeIsInAMethod(Node: TCodeTreeNode): boolean;
+    function NodeIsMethodDecl(ProcNode: TCodeTreeNode): boolean;
     function NodeIsMethodBody(ProcNode: TCodeTreeNode): boolean;
     function GetMethodOfBody(Node: TCodeTreeNode): TCodeTreeNode;
     function NodeIsFunction(ProcNode: TCodeTreeNode): boolean;
@@ -881,29 +883,27 @@ begin
     ctnGenericType:
       begin
         if Result<>'' then Result:='.'+Result;
-        if (Node.Desc = ctnGenericType) then begin
-          // extract generic type param names
-          if WithGenericParams then begin
-            ParamsNode:=Node.FirstChild.NextBrother;
-            Params:='';
-            while ParamsNode<>nil do begin
-              if ParamsNode.Desc=ctnGenericParams then begin
-                ParamNode:=ParamsNode.FirstChild;
-                while ParamNode<>nil do begin
-                  if ParamNode.Desc=ctnGenericParameter then begin
-                    if Params<>'' then
-                      Params:=Params+',';
-                    Params:=Params+GetIdentifier(@Src[ParamNode.StartPos]);
-                  end;
-                  ParamNode:=ParamNode.NextBrother;
+        // extract generic type param names
+        if WithGenericParams then begin
+          ParamsNode:=Node.FirstChild.NextBrother;
+          Params:='';
+          while ParamsNode<>nil do begin
+            if ParamsNode.Desc=ctnGenericParams then begin
+              ParamNode:=ParamsNode.FirstChild;
+              while ParamNode<>nil do begin
+                if ParamNode.Desc=ctnGenericParameter then begin
+                  if Params<>'' then
+                    Params:=Params+',';
+                  Params:=Params+GetIdentifier(@Src[ParamNode.StartPos]);
                 end;
-                Result:='<'+Params+'>'+Result;
+                ParamNode:=ParamNode.NextBrother;
               end;
-              ParamsNode:=ParamsNode.NextBrother;
+              Result:='<'+Params+'>'+Result;
             end;
+            ParamsNode:=ParamsNode.NextBrother;
           end;
-          Result:=GetIdentifier(@Src[Node.FirstChild.StartPos])+Result;
         end;
+        Result:=GetIdentifier(@Src[Node.FirstChild.StartPos])+Result;
         if not WithParents then break;
       end;
     ctnParameterList:
@@ -2325,6 +2325,66 @@ begin
   end;
 end;
 
+function TPascalReaderTool.GetNodeNamePath(Node: TCodeTreeNode; WithLineCol: boolean;
+  WithFilename: boolean): string;
+
+  function ReadSrc(StartPos, EndPos: integer): string;
+  begin
+    Result:='';
+    if (StartPos<1) or (EndPos>=StartPos) then exit;
+    Result:=ReadRawPascal(@Src[StartPos],@Src[EndPos],Scanner.NestedComments,true);
+  end;
+
+var
+  s: String;
+  StartNode: TCodeTreeNode;
+  OldPos: TAtomPosition;
+  RestoreCurPos: Boolean;
+begin
+  if Node=nil then
+    exit('nil');
+
+  OldPos:=CurPos;
+  RestoreCurPos:=false;
+  StartNode:=Node;
+  Result:='';
+  repeat
+    s:='';
+    case Node.Desc of
+    ctnIdentifier:
+      s:=ReadSrc(Node.StartPos,Node.EndPos);
+    ctnTypeDefinition, ctnVarDefinition, ctnConstDefinition:
+      s:=GetIdentifier(@Src[Node.StartPos]);
+    ctnGenericType:
+      s:=ExtractClassName(Node,false,false,true);
+    ctnProcedure:
+      begin
+        RestoreCurPos:=true;
+        s:=ExtractProcName(Node,[]);
+      end;
+    ctnBeginBlock,ctnAsmBlock:
+      s:=NodeDescriptionAsString(Node.Desc);
+    ctnProgram, ctnLibrary, ctnPackage:
+      begin
+        RestoreCurPos:=true;
+        s:=ExtractSourceName;
+      end;
+    end;
+    if s<>'' then begin
+      if Result<>'' then
+        Result:='.'+Result;
+      Result:=s+Result;
+    end;
+    Node:=Node.Parent;
+  until Node=nil;
+
+  if RestoreCurPos then
+    MoveCursorToAtomPos(OldPos);
+
+  if WithLineCol then
+    Result:=Result+' at '+CleanPosToStr(StartNode.StartPos,WithFilename);
+end;
+
 function TPascalReaderTool.FindVarNode(StartNode: TCodeTreeNode;
   const UpperVarName: string; Visibility: TClassSectionVisibility
   ): TCodeTreeNode;
@@ -2855,22 +2915,29 @@ begin
   end;
 end;
 
-function TPascalReaderTool.NodeIsMethodBody(ProcNode: TCodeTreeNode): boolean;
+function TPascalReaderTool.NodeIsMethodDecl(ProcNode: TCodeTreeNode): boolean;
 begin
   Result:=false;
-  if (ProcNode<>nil) and (ProcNode.Desc=ctnProcedure)
-  and (ProcNode.FirstChild<>nil) then begin
-
-    // ToDo: ppu, dcu
-
-    MoveCursorToNodeStart(ProcNode.FirstChild); // ctnProcedureHead
-    ReadNextAtom;
-    if not AtomIsIdentifier then exit;
-    ReadNextAtom;
-    if (CurPos.Flag<>cafPoint) then exit;
-    Result:=true;
+  if (ProcNode=nil) or (ProcNode.Desc<>ctnProcedure) then
     exit;
-  end;
+  if (ProcNode.Parent.Desc in AllClassBaseSections)
+  or (ProcNode.Parent.Desc in AllClasses) then
+    Result:=true;
+end;
+
+function TPascalReaderTool.NodeIsMethodBody(ProcNode: TCodeTreeNode): boolean;
+// does not check if begin/asm block is there, as it should work even
+// if there is a syntax error
+begin
+  Result:=false;
+  if (ProcNode=nil) or (ProcNode.Desc<>ctnProcedure) or (ProcNode.FirstChild=nil) then
+    exit;
+  MoveCursorToNodeStart(ProcNode.FirstChild); // ctnProcedureHead
+  ReadNextAtom;
+  if not AtomIsIdentifier then exit;
+  ReadNextAtom;
+  if (CurPos.Flag<>cafPoint) then exit;
+  Result:=true;
 end;
 
 function TPascalReaderTool.GetMethodOfBody(Node: TCodeTreeNode): TCodeTreeNode;

@@ -53,6 +53,7 @@ uses
 type
   TCodeTreeNodeDesc = word;
   TCodeTreeNodeSubDesc = word;
+  TCodeTreeNodeDescArray = array of TCodeTreeNodeDesc;
 
 const
   // CodeTreeNodeDescriptors
@@ -320,6 +321,7 @@ type
     procedure ConsistencyCheck;
     procedure WriteDebugReport(const Prefix: string; WithChilds: boolean);
   end;
+  TCodeTreeNodeArray = array of TCodeTreeNode;
 
   { TCodeTree }
 

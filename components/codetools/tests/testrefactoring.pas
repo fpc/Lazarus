@@ -11,7 +11,7 @@ interface
 
 uses
   Classes, SysUtils, CodeToolManager, CodeCache, CodeTree, BasicCodeTools,
-  CTUnitGraph, LazLogger, LazFileUtils, AVL_Tree, fpcunit, testregistry,
+  CTUnitGraph, FindDeclarationTool, LazLogger, LazFileUtils, AVL_Tree, fpcunit, testregistry,
   TestFinddeclaration;
 
 const
@@ -22,7 +22,7 @@ type
 
   TCustomTestRefactoring = class(TCustomTestFindDeclaration)
   protected
-    procedure RenameReferences(NewIdentifier: string);
+    procedure RenameReferences(NewIdentifier: string; const Flags: TFindRefsFlags = []);
     procedure CheckDiff(CurCode: TCodeBuffer; const ExpLines: array of string);
   end;
 
@@ -41,6 +41,7 @@ type
     procedure TestRenameMethodArgDown;
     procedure TestRenameMethodArgUp;
     procedure TestRenameMethodInherited;
+    procedure TestRenameMethodWithOverrides;
     procedure TestRenameNestedProgramProcDown;
     procedure TestRenameNestedProgramProcUp;
     procedure TestRenameNestedUnitProcDown;
@@ -51,7 +52,8 @@ implementation
 
 { TCustomTestRefactoring }
 
-procedure TCustomTestRefactoring.RenameReferences(NewIdentifier: string);
+procedure TCustomTestRefactoring.RenameReferences(NewIdentifier: string; const Flags: TFindRefsFlags
+  );
 var
   Marker: TFDMarker;
   Tool: TCodeTool;
@@ -120,7 +122,7 @@ begin
 
     // search pascal source references
     if not CodeToolBoss.FindReferencesInFiles(Files,DeclCode,
-        DeclarationCaretXY,true,PascalReferences) then begin
+        DeclarationCaretXY,true,PascalReferences,Flags) then begin
       Fail('CodeToolBoss.FindReferencesInFiles failed at '+dbgs(DeclarationCaretXY)+' File='+Code.Filename);
     end;
 
@@ -635,6 +637,74 @@ begin
   'procedure TBird.Fly;',
   'begin',
   '  inherited Run;',
+  'end;',
+  '',
+  'begin',
+  'end.',
+  '']);
+end;
+
+procedure TTestRefactoring.TestRenameMethodWithOverrides;
+begin
+  StartProgram;
+  Add([
+  'type',
+  '  TAnimal = class',
+  '    procedure Fly{#Rename}; virtual;',
+  '  end;',
+  '  TBird = class(TAnimal)',
+  '    procedure Eat;',
+  '    procedure Fly; override;',
+  '  end;',
+  '',
+  'procedure TAnimal.Fly;',
+  'begin',
+  'end;',
+  '',
+  'procedure TBird.Eat;',
+  'begin',
+  '  inherited Fly;',
+  '  Fly;',
+  'end;',
+  '',
+  'procedure TBird.Fly;',
+  'begin',
+  '  inherited Fly;',
+  '  Fly;',
+  'end;',
+  '',
+  'begin',
+  'end.',
+  '']);
+  RenameReferences('Run',[frfMethodOverrides]);
+  CheckDiff(Code,[
+  'program test1;',
+  '',
+  '{$mode objfpc}{$H+}',
+  '',
+  'type',
+  '  TAnimal = class',
+  '    procedure Run{#Rename}; virtual;',
+  '  end;',
+  '  TBird = class(TAnimal)',
+  '    procedure Eat;',
+  '    procedure Run; override;',
+  '  end;',
+  '',
+  'procedure TAnimal.Run;',
+  'begin',
+  'end;',
+  '',
+  'procedure TBird.Eat;',
+  'begin',
+  '  inherited Run;',
+  '  Run;',
+  'end;',
+  '',
+  'procedure TBird.Run;',
+  'begin',
+  '  inherited Run;',
+  '  Run;',
   'end;',
   '',
   'begin',

@@ -54,6 +54,7 @@ type
     procedure TestCompareIdentifiersCaseSensitive;
     procedure TestCompareDottedIdentifiers;
     procedure TestCompareDottedIdentifiersCaseSensitive;
+    procedure TestReadRawPascal;
     // FileProcs
     procedure TestDateToCfgStr;
     procedure TestFilenameIsMatching;
@@ -672,6 +673,36 @@ begin
   t('a.&','a.c',1); // compares 'a.' and 'a.c'
   t('a.&','a.&c',1); // compares 'a.' and 'a.&c'
   t('a.&','a.&1',0); // compares 'a.' and 'a.'
+end;
+
+procedure TTestBasicCodeTools.TestReadRawPascal;
+
+  procedure t(const Src: string; StartPos, EndPos: integer; const Expected: string;
+    NestedComments: boolean = false; SkipDirectives: boolean = true);
+  var
+    p, StartP, EndP: PChar;
+    Actual: String;
+  begin
+    p:=PChar(Src);
+    StartP:=p+StartPos-1;
+    if EndPos<StartPos then
+      EndP:=nil
+    else
+      EndP:=p+EndPos-1;
+
+    Actual:=ReadRawPascal(StartP,EndP,NestedComments,SkipDirectives);
+    if Actual=Expected then exit;
+    Fail('Src="'+DbgStr(Src)+'" StartPos='+dbgs(StartPos)+' EndPos='+dbgs(EndPos)
+      +' NestedComments='+dbgs(NestedComments)+' SkipDirectives='+dbgs(SkipDirectives)
+      +' Expected="'+DbgStr(Expected)+'" Found="'+DbgStr(Actual)+'"');
+  end;
+
+begin
+  t('a',1,2,'a');
+  t('a',1,0,'a');
+  t('a   b',1,0,'a b');
+  t('a{}b',1,0,'a b');
+  t('a.b',1,0,'a.b');
 end;
 
 procedure TTestBasicCodeTools.TestDateToCfgStr;

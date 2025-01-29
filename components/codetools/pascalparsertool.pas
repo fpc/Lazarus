@@ -2843,11 +2843,15 @@ begin
         ctsProcedureOrFunctionOrConstructorOrDestructor);
   end else
     IsClassProc:=false;
+
   // create node for procedure
   CreateChildNode;
   CurNode.StartPos:=StartPos;
   ProcNode:=CurNode;
   ProcNode.Desc:=ctnProcedure;
+
+  if IsClassProc then ; // todo: store
+
   if CurSection=ctnInterface then
     ProcNode.SubDesc:=ctnsForwardDeclaration;
   if UpAtomIs('FUNCTION') then
