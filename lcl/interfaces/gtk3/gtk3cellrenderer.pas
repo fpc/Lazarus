@@ -190,24 +190,6 @@ begin
 
 end;
 
-function GetOwnerComboBox(CellView: PGtkCellView): PGtkComboBox;
-var
-  Parent: PGtkWidget;
-begin
-  Result := nil;
-
-  Parent := gtk_widget_get_parent(PGtkWidget(CellView));
-  while Assigned(Parent) do
-  begin
-    if Gtk3IsComboBox(Parent) then
-    begin
-      Result := PGtkComboBox(Parent);
-      Exit;
-    end;
-    Parent := gtk_widget_get_parent(Parent);
-  end;
-end;
-
 function GTK_IS_CELL_RENDERER_TEXT(cell: PGtkCellRenderer): Boolean;
 begin
   Result := Assigned(cell) and
@@ -329,30 +311,18 @@ begin
   CellClass := PLCLIntfCellRendererClass(cell^.g_type_instance.g_class);
   CellClass^.DefaultGetPreferredWidth(cell, widget, minimum_size, natural_size);
 
-  ACombo := GetOwnerComboBox(PGtkCellView(widget));
-  if ACombo = nil then
-    exit;
-  AWidget := TGtk3Widget(HwndFromGtkWidget(aCombo));
+  AWidget := TGtk3Widget(HwndFromGtkWidget(widget));
 
+  if (AWidget = nil) or not (wtCombobox in AWidget.WidgetType) or
+    not Gtk3IsComboBox(AWidget.Widget) then
+      exit;
+
+  if aWidget.InUpdate or (g_object_get_data(cell,'lclwidget') = nil) or
+    not GTK_IS_CELL_RENDERER_TEXT(cell) then
+      exit; // can crash without InUpdate check, because SetBounds() calls size_allocate()
+
+  ACombo := PGtkCombobox(AWidget.Widget);
   W := 0; // width of button area
-
-  if not Assigned(aWidget) then
-  begin
-    {$IFDEF GTK3DEBUGCELLRENDERER}
-    writeln('********** warning TGtk3Widget not assigned ! **************** Widget=',G_OBJECT_TYPE_NAME(widget));
-    {$ENDIF}
-    exit;
-  end;
-  if not Assigned(aWidget.LCLObject) then
-  begin
-    {$IFDEF GTK3DEBUGCELLRENDERER}
-    writeln('********* warning LCLObject not assigned ! ***************');
-    {$ENDIF}
-    exit;
-  end;
-
-  if not aWidget.WidgetMapped then
-    exit; // there's no reason to recalculate size while widget isn't mapped yet, triggers too many times.
 
   if Assigned(ACombo) then
   begin
@@ -377,7 +347,7 @@ begin
     begin
       TGtk3ComboBox(aWidget).GetArrowWidget^.get_allocation(@Alloc);
       //PROBLEM: when combo parent form modal window arrow returns width 1 :(, widget is mapped,realized and visible, so how it's possible
-      if GTK_IS_CELL_RENDERER_TEXT(cell) and (Alloc.width <= 1) then
+      if (Alloc.width <= 1) then
       begin
         // This combo won't be shown as expected, usually happens with combos on modal windows or frames parented to modal win.
         {$warning fix this case, maybe alloc primitive combobox when creating widgetset with other widgets for GetSystemMetrics. We need accurate button area width}
@@ -400,46 +370,39 @@ begin
     {$ENDIF}
   end;
 
-  if GTK_IS_CELL_RENDERER_TEXT(cell) then
+  APangoText := GetTextFromCellView(widget);
+  APangoLayout := pango_layout_new(gtk_widget_get_pango_context(Widget));
+
+  if Assigned(APangoLayout) then
   begin
-    APangoText := GetTextFromCellView(widget);
-    APangoLayout := pango_layout_new(gtk_widget_get_pango_context(Widget));
+    pango_layout_set_spacing(APangoLayout, 2);
+    if APangoText = nil then
+      pango_layout_set_text(APangoLayout, 'Wj' , -1)
+    else
+      pango_layout_set_text(APangoLayout, APangoText , -1);
+    pango_layout_set_ellipsize(APangoLayout, PANGO_ELLIPSIZE_END);
+    if APangoText <> nil then
+      g_free(APangoText);
 
-    if Assigned(APangoLayout) then
-    begin
-      pango_layout_set_spacing(APangoLayout, 2);
-      if APangoText = nil then
-        pango_layout_set_text(APangoLayout, 'Wj' , -1)
-      else
-        pango_layout_set_text(APangoLayout, APangoText , -1);
-      pango_layout_set_ellipsize(APangoLayout, PANGO_ELLIPSIZE_END);
-      if APangoText <> nil then
-        g_free(APangoText);
+    pango_layout_get_size(APangoLayout, @APangoWidth, @APangoHeight);
 
-      pango_layout_get_size(APangoLayout, @APangoWidth, @APangoHeight);
+    APangoWidth := APangoWidth div PANGO_SCALE;
+    APangoHeight := APangoHeight div PANGO_SCALE;
 
-      APangoWidth := APangoWidth div PANGO_SCALE;
-      APangoHeight := APangoHeight div PANGO_SCALE;
+    cell^.get_padding(@xpad, @ypad);
 
-      cell^.get_padding(@xpad, @ypad);
+    g_object_unref(APangoLayout);
 
-      g_object_unref(APangoLayout);
+    if Assigned(minimum_size) then
+      minimum_size^ := aCombo^.get_allocated_width - W - xpad;
+    if Assigned(natural_size) then
+      natural_size^ := aCombo^.get_allocated_width - W - xpad;
 
-      if Assigned(minimum_size) then
-        minimum_size^ := aWidget.LCLObject.Width - W - xpad;
-      if Assigned(natural_size) then
-        natural_size^ := aWidget.LCLObject.Width - W - xpad;
-
-      //sometimes only way to have properly sized and painted csDropDownList and owner drawn for combos on modal windows.
-      //leave this commented code here, I need it for testing various cases.
-      //if TComboBox(aWidget.LCLObject).Style = csDropDownList then
-      //  cell^.set_fixed_size(aWidget.LCLObject.Width - W - xpad, APangoHeight + ypad + ypad + 1); // Min(APangoHeight - ypad, AWidget.LCLObject.Height - ypad));
-      //cell^.set_alignment(0, 0);
-      //cell^.set_padding(2, 0);
-    end;
-
-  end else
-    DebugLn('BUG: LCLIntfCellRenderer_GetPreferredWidth() cell is not PGtkCellRendererText !');
+    //sometimes only way to have properly sized and painted csDropDownList and owner drawn for combos on modal windows.
+    //leave this commented code here, I need it for testing various cases.
+    //if TComboBox(aWidget.LCLObject).Style = csDropDownList then
+    //  cell^.set_fixed_size(aWidget.LCLObject.Width - W - xpad, APangoHeight + ypad + ypad + 1); // Min(APangoHeight - ypad, AWidget.LCLObject.Height - ypad));
+  end;
 
   {$IFDEF GTK3DEBUGCELLRENDERER}
   if (minimum_size = nil) or (natural_size =nil) then

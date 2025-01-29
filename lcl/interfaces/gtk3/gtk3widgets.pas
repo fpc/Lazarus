@@ -7685,6 +7685,13 @@ begin
     gtk_cell_layout_set_cell_data_func(PGtkCellLayout(FCentralWidget), renderer,
       @LCLIntfCellRenderer_CellDataFunc, Self, nil);
 
+    if Assigned(PGtkComboBox(Result)^.priv3^.cell_view) then
+      g_object_set_data(PGObject(PGtkComboBox(Result)^.priv3^.cell_view), 'lclwidget', Self);
+    if Assigned(PGtkComboBox(Result)^.priv3^.button) then
+      g_object_set_data(PGObject(PGtkComboBox(Result)^.priv3^.button), 'lclwidget', Self);
+    if Assigned(PGtkComboBox(Result)^.priv3^.arrow) then
+      g_object_set_data(PGObject(PGtkComboBox(Result)^.priv3^.arrow), 'lclwidget', Self);
+
     FCentralWidget := nil;   //FWidget will be returned from getContainerWidget
     // we need cell renderer, but we need f***g GtkEventBox too
     // maybe an workaround is possible for csDropDownList (use entry with readonly param).
