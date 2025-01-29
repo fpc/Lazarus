@@ -5596,7 +5596,7 @@ constructor TDwarfCompilationUnit.Create(AOwner: TFpDwarfInfo; ADebugFile: PDwar
     begin
       S := String(Name);
       Inc(pb, Length(S)+1);
-      FLineInfo.Directories.Add(S + DirectorySeparator);
+      FLineInfo.Directories.Add(S + DirectorySeparator); // AppendPathDelim();
     end;
     Inc(Name);
 

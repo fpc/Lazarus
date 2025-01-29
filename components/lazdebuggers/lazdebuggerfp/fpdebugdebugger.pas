@@ -2562,8 +2562,10 @@ end;
 function TFpLineInfo.HasAddress(const AIndex: Integer; const ALine: Integer
   ): Boolean;
 var
-  Map: PDWarfLineMap;
+  Map, Map2: PDWarfLineMap;
   dummy: TDBGPtrArray;
+  FullName, BaseName: String;
+  i: Integer;
 begin
   Result := False;
   if not((FpDebugger.DebugInfo <> nil) and (FpDebugger.DebugInfo is TFpDwarfInfo)) then
@@ -2573,6 +2575,21 @@ begin
   begin
     dummy:=nil;
     Result := Map^.GetAddressesForLine(ALine, dummy, True);
+  end;
+
+  if map = nil then begin
+    FullName := FRequestedSources[AIndex];
+    BaseName := ExtractFileName(FullName);
+    if (FullName <> BaseName) then begin
+      i := FRequestedSources.IndexOf(BaseName);
+      if i >= 0 then begin
+        Map2 := PDWarfLineMap(FRequestedSources.Objects[i]);
+        if (Map2 <> nil) and (Map2 <> Map) then begin
+          dummy:=nil;
+          Result := Map2^.GetAddressesForLine(ALine, dummy, True);
+        end;
+      end;
+    end;
   end;
 end;
 
@@ -2599,24 +2616,37 @@ end;
 
 procedure TFpLineInfo.Request(const ASource: String);
 var
-  lmap: PDWarfLineMap;
+  lmap, lmap2: PDWarfLineMap;
   lib: TDbgLibrary;
+  BaseName: String;
 begin
   lmap := nil;
+  lmap2 := nil;
 
-  if (FpDebugger.DebugInfo <> nil) and (FpDebugger.DebugInfo is TFpDwarfInfo) then
+  BaseName := ExtractFileName(ASource);
+  if IndexOf(BaseName) >= 0 then
+    BaseName := ASource; // already got the basename
+  if (FpDebugger.DebugInfo <> nil) and (FpDebugger.DebugInfo is TFpDwarfInfo) then begin
     lmap := TFpDwarfInfo(FpDebugger.DebugInfo).GetLineAddressMap(ASource);
+    if (ASource <> BaseName) and (lmap <> nil) then
+      lmap2 := TFpDwarfInfo(FpDebugger.DebugInfo).GetLineAddressMap(BaseName);
+  end;
 
   if (lmap = nil) and (FpDebugger.DbgController <> nil) and (FpDebugger.DbgController.CurrentProcess <> nil) then begin
     for lib in FpDebugger.DbgController.CurrentProcess.LibMap do begin
       if (lib.DbgInfo <> nil) and  (lib.DbgInfo is TFpDwarfInfo) then begin
         lmap := TFpDwarfInfo(lib.DbgInfo).GetLineAddressMap(ASource);
-        if lmap <> nil then
+        if lmap <> nil then begin
+          if (ASource <> BaseName) then
+            lmap2 := TFpDwarfInfo(lib.DbgInfo).GetLineAddressMap(BaseName);
           break;
+        end;
       end;
     end;
   end;
 
+  if (ASource <> BaseName) then
+    FRequestedSources.AddObject(BaseName, TObject(lmap2));
   FRequestedSources.AddObject(ASource, TObject(lmap));
   if lmap <> nil then
     DoChange(ASource);
