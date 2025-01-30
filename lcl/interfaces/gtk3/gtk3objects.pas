@@ -2009,6 +2009,7 @@ procedure TGtk3DeviceContext.drawRect(x1, y1, w, h: Integer; const AFill, ABorde
 begin
   Save;
   try
+    cairo_new_path(pcr);
     cairo_rectangle(pcr, x1 + PixelOffset, y1 + PixelOffset, w - PixelOffset, h - PixelOffset);
 
     if AFill then
@@ -2246,6 +2247,7 @@ var
 begin
   Save;
   try
+    cairo_new_path(pcr);
     // add offset so the center of the pixel is used
     cairo_move_to(pcr, P[0].X+PixelOffset, P[0].Y+PixelOffset);
     for i := 1 to NumPts-1 do
@@ -2434,6 +2436,7 @@ begin
   dry:=ry/2;
   cairo_translate(pcr, DX, DY);
   try
+    cairo_new_path(pcr);
     cairo_move_to(pcr, X1+dRX, Y1);
     cairo_line_to(pcr, X2-dRX-PixelOffset, Y1);
     EllipseArcPath(X2-dRX-PixelOffset, Y1+dRY, dRX, dRY, -PI/2, 0, True, True);
