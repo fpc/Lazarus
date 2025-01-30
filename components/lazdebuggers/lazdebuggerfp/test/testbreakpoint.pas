@@ -32,6 +32,9 @@ type
   { TTestBreakPoint }
 
   TTestBreakPoint = class(TDBGTestCase)
+  private
+    FLineInfoChanged: Boolean;
+    procedure DoLineInfoChanged(const ASender: TObject; const ASource: String);
   protected
     // Info/Methods used by tests based on TestBreakPointThreadPrg
     FThrPrgInfo: TBreakThreadPrgInfo;
@@ -92,6 +95,9 @@ type
          continues.
     *)
     procedure TestBreakThreadsIgnoreOther;
+
+    //
+    procedure TestLineInfo;
   end;
 
 implementation
@@ -99,7 +105,7 @@ implementation
 var
   ControlTest, ControlTestGetAddressForLine, ControlTestBreak, ControlTestThreadNoSkip,
   ControlTestThreadMove1, ControlTestThreadMove2, ControlTestThreadHit,
-  ControlTestThreadIgnoreOther: Pointer;
+  ControlTestThreadIgnoreOther, ControlTestLineInfo: Pointer;
 
 procedure TTestBreakPoint.TestLocation(ATestName, ABrkName: String;
   ABreakHitCount: Integer);
@@ -454,6 +460,11 @@ begin
 
     AssertTestErrors;
   end;
+end;
+
+procedure TTestBreakPoint.DoLineInfoChanged(const ASender: TObject; const ASource: String);
+begin
+  FLineInfoChanged := True;
 end;
 
 procedure TTestBreakPoint.ThrPrgInitializeThreads(ATestName: String);
@@ -1133,6 +1144,178 @@ begin
   end;
 end;
 
+procedure TTestBreakPoint.TestLineInfo;
+var
+  Ctrl: TDbgController;
+
+  procedure GetLineInfo(ASource: string);
+  var
+    t: Integer;
+  begin
+    dbg.LineInfo.Request(ASource);
+    t := 1000;
+    FLineInfoChanged := False;
+    while (not FLineInfoChanged) and (t > 0) do begin
+      if dbg.LineInfo.IndexOf(ASource) >= 0 then break;
+      Application.ProcessMessages;
+      Sleep(10);
+      dec(t);
+    end;
+    TestTrue('Got line info '+ASource, t>0);
+  end;
+
+  procedure TestHasLine(ASourceName: String; ALineNum: integer; AReverse: boolean = False);
+  var
+    Idx: Integer;
+    n: String;
+    ResLst: TDBGPtrArray;
+    FndLine: Integer;
+    FndFile, r: Boolean;
+  begin
+    Idx := dbg.LineInfo.IndexOf(ASourceName);
+    n := ASourceName+':'+IntToStr(ALineNum);
+    if AReverse then n := 'NOT - ' + n;
+    TestTrue('Has line (idx) '+n,  dbg.LineInfo.HasAddress(Idx, ALineNum) xor AReverse);
+    TestTrue('Has line (name) '+n, dbg.LineInfo.HasAddress(ASourceName, ALineNum) xor AReverse);
+
+
+    (* Test if we could set a breakpoint / relies on how internal breakpoint code searches addresses *)
+
+    r := Ctrl.CurrentProcess.DbgInfo.GetLineAddresses(ASourceName,
+      ALineNum, ResLst, fsNone);
+    TestTrue('Got Address) '+n,  r xor AReverse);
+    if not AReverse then
+      TestEquals('Got ONE Address) '+n,  1, Length(ResLst));
+
+  end;
+
+  procedure TestHasLine(ASrc, ABrkSrc: TCommonSource; ABrkName: String; AReverse: boolean = False);
+  begin
+    TestHasLine(ASrc.FullFileName, ABrkSrc.BreakPoints[ABrkName], AReverse);
+  end;
+
+  procedure TestHasLine(ASrc: TCommonSource; ABrkName: String; AReverse: boolean = False);
+  begin
+    TestHasLine(ASrc.FullFileName, ASrc.BreakPoints[ABrkName], AReverse);
+  end;
+
+var
+  ExeName, BadPath: String;
+  SrcUnit1, SrcIncBar, SrcIncFoo: TCommonSource;
+  FpDbg: TFpDebugDebugger;
+begin
+  if Compiler.Version < 030200 then exit;
+  if SkipTest then exit;
+  if not TestControlCanTest(ControlTestLineInfo) then exit;
+
+  Src := GetCommonSourceFor(AppDir + 'app_generic' + PathDelim + 'app_gen.pas');
+  Src.FileName := 'BreakLineTestPrg.pas';
+  Src.Save(AppDir);
+
+  SrcUnit1 := GetCommonSourceFor(AppDir + 'app_generic' + PathDelim + 'unit_gen1.pas');
+  SrcUnit1.FileName := 'unit_gen1.pas';
+  SrcUnit1.SaveTo(Src);
+
+  SrcIncBar := GetCommonSourceFor(AppDir + 'app_generic' + PathDelim + 'incbar.inc');
+  SrcIncBar.FileName := 'inc1.inc';
+  SrcIncBar.SaveTo(Src, 'bar');
+
+  SrcIncFoo := GetCommonSourceFor(AppDir + 'app_generic' + PathDelim + 'incfoo.inc');
+  SrcIncFoo.FileName := 'inc1.inc';
+  SrcIncFoo.SaveTo(Src, 'foo');
+
+  TestCompile(Src, ExeName);
+
+  BadPath := PathDelim + 'NoSuchDir' + PathDelim + '123xyzfoobar_123' + PathDelim;
+
+  TestTrue('Start debugger', Debugger.StartDebugger(AppDir, ExeName));
+  dbg := Debugger.LazDebugger;
+  dbg.LineInfo.OnChange := @DoLineInfoChanged;
+  FpDbg := dbg as TFpDebugDebugger;
+  Ctrl := FpDbg.DbgController;
+
+  try
+    Debugger.SetBreakPoint(Src, 'BrkMain');
+    AssertDebuggerNotInErrorState;
+    Debugger.RunToNextPause(dcRun);
+    AssertDebuggerState(dsPause, 'main init');
+
+    GetLineInfo(Src.FullFileName);
+    TestHasLine(Src, 'BrkMain');
+    TestHasLine(Src, SrcUnit1, 'BrkUnit1Log',         True);
+    TestHasLine(Src, SrcUnit1, 'BrkUnit1GenLog',      True);
+    TestHasLine(Src, SrcIncBar, 'BrkIncBar',          True);
+
+    GetLineInfo(SrcUnit1.FullFileName);
+    TestHasLine(SrcUnit1, 'BrkUnit1Log');
+    TestHasLine(SrcUnit1, 'BrkUnit1GenLog');
+    TestHasLine(SrcUnit1, Src, 'BrkMain',             True);
+    TestHasLine(SrcUnit1, SrcIncBar, 'BrkIncBar',     True);
+
+    GetLineInfo(SrcIncBar.FullFileName);
+    TestHasLine(SrcIncBar, 'BrkIncBar');
+    TestHasLine(SrcIncBar, SrcIncFoo, 'BrkIncFoo',    True);
+    TestHasLine(SrcIncBar, Src, 'BrkMain',            True);
+    TestHasLine(SrcIncBar, SrcUnit1, 'BrkUnit1Log',   True);
+
+    GetLineInfo(SrcIncFoo.FullFileName);
+    TestHasLine(SrcIncFoo, 'BrkIncFoo');
+    TestHasLine(SrcIncFoo, SrcIncBar, 'BrkIncBar',    True);
+    TestHasLine(SrcIncFoo, Src, 'BrkMain',            True);
+    TestHasLine(SrcIncFoo, SrcUnit1, 'BrkUnit1Log',   True);
+
+    // using wrong path in filename
+    GetLineInfo(BadPath+Src.FileName);
+    TestHasLine(BadPath+Src.FileName, Src.BreakPoints['BrkMain']);
+    TestHasLine(BadPath+Src.FileName, SrcUnit1.BreakPoints['BrkUnit1Log'],         True);
+    TestHasLine(BadPath+Src.FileName, SrcUnit1.BreakPoints['BrkUnit1GenLog'],      True);
+    TestHasLine(BadPath+Src.FileName, SrcIncBar.BreakPoints['BrkIncBar'],          True);
+
+    GetLineInfo(BadPath+SrcUnit1.FileName);
+    TestHasLine(BadPath+SrcUnit1.FileName, SrcUnit1.BreakPoints['BrkUnit1Log']);
+    TestHasLine(BadPath+SrcUnit1.FileName, SrcUnit1.BreakPoints['BrkUnit1GenLog']);
+    TestHasLine(BadPath+SrcUnit1.FileName, Src.BreakPoints['BrkMain'], True);
+    TestHasLine(BadPath+SrcUnit1.FileName, SrcIncBar.BreakPoints['BrkIncBar'],     True);
+
+    GetLineInfo(BadPath+SrcIncBar.FileName);
+    TestHasLine(BadPath+SrcIncBar.FileName, SrcIncBar.BreakPoints['BrkIncBoth']); // not able to tell which inc
+    TestHasLine(BadPath+SrcIncBar.FileName, Src.BreakPoints['BrkMain'],            True);
+    TestHasLine(BadPath+SrcIncBar.FileName, SrcUnit1.BreakPoints['BrkUnit1Log'],   True);
+
+
+    // using NO path in filename
+    GetLineInfo(Src.FileName);
+    TestHasLine(Src.FileName, Src.BreakPoints['BrkMain']);
+    TestHasLine(Src.FileName, SrcUnit1.BreakPoints['BrkUnit1Log'],         True);
+    TestHasLine(Src.FileName, SrcUnit1.BreakPoints['BrkUnit1GenLog'],      True);
+    TestHasLine(Src.FileName, SrcIncBar.BreakPoints['BrkIncBar'],          True);
+
+    GetLineInfo(SrcUnit1.FileName);
+    TestHasLine(SrcUnit1.FileName, SrcUnit1.BreakPoints['BrkUnit1Log']);
+    TestHasLine(SrcUnit1.FileName, SrcUnit1.BreakPoints['BrkUnit1GenLog']);
+    TestHasLine(SrcUnit1.FileName, Src.BreakPoints['BrkMain'], True);
+    TestHasLine(SrcUnit1.FileName, SrcIncBar.BreakPoints['BrkIncBar'],     True);
+
+    GetLineInfo(SrcIncBar.FileName);
+    TestHasLine(SrcIncBar.FileName, SrcIncBar.BreakPoints['BrkIncBoth']); // not able to tell which inc
+    //TestHasLine(SrcIncBar.FileName, SrcIncBar.BreakPoints['BrkIncBar']);
+    //TestHasLine(SrcIncBar.FileName, SrcIncFoo.BreakPoints['BrkIncFoo'],    True); // not implemented
+    TestHasLine(SrcIncBar.FileName, Src.BreakPoints['BrkMain'],            True);
+    TestHasLine(SrcIncBar.FileName, SrcUnit1.BreakPoints['BrkUnit1Log'],   True);
+
+
+
+
+
+    dbg.Stop;
+  finally
+    Debugger.ClearDebuggerMonitors;
+    Debugger.FreeDebugger;
+
+    AssertTestErrors;
+  end;
+end;
+
 
 initialization
 
@@ -1145,5 +1328,6 @@ initialization
   ControlTestThreadMove2       := TestControlRegisterTest('TTestBreakThreadMove2', ControlTest);
   ControlTestThreadHit         := TestControlRegisterTest('TTestBreakThreadHit', ControlTest);
   ControlTestThreadIgnoreOther := TestControlRegisterTest('TTestBreakThreadIgnoreOther', ControlTest);
+  ControlTestLineInfo          := TestControlRegisterTest('TestLineInfo', ControlTest);
 end.
 

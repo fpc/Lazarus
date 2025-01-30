@@ -30,8 +30,10 @@ type
   public
     constructor Create(AName: String);
     destructor Destroy; override;
-    procedure Save(BaseDir: String);
-    property FileName: String read FFileName;
+    procedure Save(BaseDir: String; SubDir: String = '');
+    procedure SaveTo(AFolder: TCommonSource; SubDir: String='');
+    procedure SaveTo(AFolder: String);
+    property FileName: String read FFileName write FFileName;
     property FullFileName: String read GetFullFileName;
     property Folder: String read FFolder;
     property OtherSrc[AName: String]: TCommonSource read GetOtherSrc;
@@ -217,11 +219,12 @@ begin
   inherited Destroy;
 end;
 
-procedure TCommonSource.Save(BaseDir: String);
+procedure TCommonSource.Save(BaseDir: String; SubDir: String);
 var
   d: String;
   i: Integer;
 begin
+  if pos(PathDelim, FFileName) > 0 then exit;
   if FFolder <> '' then
     exit;
   d := AppendPathDelim(BaseDir) + ExtractFileNameOnly(FFileName) + '_' + IntToStr(Random(9999999))+'_';
@@ -231,9 +234,31 @@ begin
   CreateDirUTF8(d);
   CreateDirUTF8(AppendPathDelim(d)+'lib');
   FFolder := d;
+  if SubDir <> '' then
+    FFolder := AppendPathDelim(FFolder) + SubDir;
   SaveToFolder(d);
   for i := 0 to Length(FOtherSources) - 1 do
     FOtherSources[i].SaveToFolder(d);
+end;
+
+procedure TCommonSource.SaveTo(AFolder: TCommonSource; SubDir: String);
+begin
+  if SubDir <> '' then
+    SaveTo(AppendPathDelim(AFolder.Folder) + SubDir)
+  else
+    SaveTo(AFolder.Folder);
+end;
+
+procedure TCommonSource.SaveTo(AFolder: String);
+var
+  i: Integer;
+begin
+  FFolder := AFolder;
+  if not DirectoryExistsUTF8(FFolder) then
+    CreateDirUTF8(FFolder);
+  SaveToFolder(FFolder);
+  for i := 0 to Length(FOtherSources) - 1 do
+    FOtherSources[i].SaveToFolder(FFolder);
 end;
 
 initialization
