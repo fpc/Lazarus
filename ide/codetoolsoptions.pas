@@ -451,6 +451,13 @@ var
   XMLConfig: TXMLConfig;
   FileVersion: integer;
   AJumpCentered: Boolean;
+
+  function f(const aFilename: string): string;
+  begin
+    Result:=SetDirSeparators(aFilename);
+    if not FilenameIsAbsolute(aFilename) then
+      Result:=TrimFilename(AppendPathDelim(GetPrimaryConfigPath)+aFilename);
+  end;
   
   procedure LoadGlobalDefineTemplates;
   begin
@@ -642,15 +649,14 @@ begin
     FIndentOnPaste :=
       XMLConfig.GetValue('CodeToolsOptions/Indentation/OnPaste/Enabled',true);
     fIndentationFilename :=
-      XMLConfig.GetValue('CodeToolsOptions/Indentation/FileName'
-      , TrimFilename(AppendPathDelim(GetPrimaryConfigPath)+DefaultIndentationFilename));
+      f(XMLConfig.GetValue('CodeToolsOptions/Indentation/FileName', DefaultIndentationFilename));
     FIndentContextSensitive :=
       XMLConfig.GetValue('CodeToolsOptions/Indentation/ContextSensitive',true);
 
     // code completion templates
     FCodeCompletionTemplateFileName :=
-      XMLConfig.GetValue('CodeToolsOptions/CodeCompletionTemplate/FileName'
-      , DefaultCodeCompletionFilename);
+      f(XMLConfig.GetValue('CodeToolsOptions/CodeCompletionTemplate/FileName',
+        DefaultCodeCompletionFilename));
 
     XMLConfig.Free;
   except
@@ -663,12 +669,17 @@ end;
 procedure TCodeToolsOptions.Save;
 var
   XMLConfig: TXMLConfig;
+
+  function f(const aFilename: string): string;
+  begin
+    Result:=CreateRelativePath(aFilename,GetPrimaryConfigPath);
+  end;
   
   procedure SaveGlobalDefineTemplates;
   begin
     if FGlobalDefineTemplates<>nil then
       FGlobalDefineTemplates.SaveToXMLConfig(XMLConfig,
-        'CodeToolsGlobalDefines/',true,false,true,false);
+        'CodeToolsGlobalDefines/',true,false,true,true);
   end;
   
 begin
@@ -832,13 +843,13 @@ begin
     XMLConfig.SetDeleteValue('CodeToolsOptions/Indentation/OnPaste/Enabled'
       , FIndentOnPaste, true);
     XMLConfig.SetDeleteValue('CodeToolsOptions/Indentation/FileName'
-      , fIndentationFilename, '');
+      , f(fIndentationFilename), DefaultIndentationFilename);
     XMLConfig.SetDeleteValue('CodeToolsOptions/Indentation/ContextSensitive'
       , FIndentContextSensitive, true);
 
     // code completion templates
     XMLConfig.SetDeleteValue('CodeToolsOptions/CodeCompletionTemplate/FileName'
-      , FCodeCompletionTemplateFileName, DefaultCodeCompletionFilename);
+      , f(FCodeCompletionTemplateFileName), DefaultCodeCompletionFilename);
 
     XMLConfig.Flush;
     XMLConfig.Free;
