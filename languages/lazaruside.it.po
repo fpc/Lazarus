@@ -10232,6 +10232,10 @@ msgstr "Trova unit mancante"
 msgid "Find option"
 msgstr ""
 
+#: lazarusidestrconsts.lisfindoverridestoo
+msgid "Find overrides too"
+msgstr ""
+
 #: lazarusidestrconsts.lisfirst
 msgid "First"
 msgstr "Primo"

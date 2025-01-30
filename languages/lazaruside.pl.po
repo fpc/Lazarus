@@ -10215,6 +10215,10 @@ msgstr "Znajdź brakujący moduł"
 msgid "Find option"
 msgstr ""
 
+#: lazarusidestrconsts.lisfindoverridestoo
+msgid "Find overrides too"
+msgstr ""
+
 #: lazarusidestrconsts.lisfirst
 msgid "First"
 msgstr "Na początku"
