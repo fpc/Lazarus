@@ -321,7 +321,9 @@ begin
       debugln(['WARNING: unable to create primary config directory "',GetPrimaryConfigPath,'"']);
       exit;
     end;
-    if not CopyFile(SecondaryFilename,PrimaryFilename) then begin
+    if FileExists(SecondaryFilename)
+        and not CopyFile(SecondaryFilename,PrimaryFilename) then
+    begin
       debugln(['WARNING: unable to copy config "',SecondaryFilename,'" to "',PrimaryFilename,'"']);
       exit;
     end;
