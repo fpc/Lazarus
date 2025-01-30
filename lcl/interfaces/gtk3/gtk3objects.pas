@@ -1976,6 +1976,7 @@ procedure TGtk3DeviceContext.drawPixel(x, y: Integer; AColor: TColor);
 // Seems that painting line from (a-1, b-1) to (a,b) gives one pixel
 begin
   SetSourceColor(AColor);
+  cairo_new_path(pcr);
   cairo_set_line_width(pcr, 1);
   cairo_move_to(pcr, x - PixelOffset, y - PixelOffset);
   cairo_line_to(pcr, x + PixelOffset, y + PixelOffset);
@@ -2008,7 +2009,7 @@ procedure TGtk3DeviceContext.drawRect(x1, y1, w, h: Integer; const AFill, ABorde
 begin
   Save;
   try
-    cairo_rectangle(pcr, x1 + PixelOffset, y1 + PixelOffset, w - 1, h - 1);
+    cairo_rectangle(pcr, x1 + PixelOffset, y1 + PixelOffset, w - PixelOffset, h - PixelOffset);
 
     if AFill then
     begin
@@ -2352,6 +2353,7 @@ begin
 
   Save;
   try
+    cairo_new_path(pcr);
     if ABrush <> 0 then
     begin
       ATempBrush := FCurrentBrush;
@@ -2627,24 +2629,48 @@ begin
 
     if (dx=0) then
     begin
-      cairo_move_to(pcr,X+PixelOffset,Y0);
-      cairo_line_to(pcr,X+PixelOffset,Y);
+      if dy>0 then
+      begin
+        cairo_move_to(pcr,X+PixelOffset,Y0);
+        cairo_line_to(pcr,X+PixelOffset,Y);
+      end else
+      begin
+        cairo_move_to(pcr,X+PixelOffset,Y0+1);
+        cairo_line_to(pcr,X+PixelOffset,Y+1);
+      end;
     end else
     if (dy=0) then
     begin
-      cairo_move_to(pcr,X0,Y+PixelOffset);
-      cairo_line_to(pcr,X,Y+PixelOffset);
+      if dx>0 then
+      begin
+        cairo_move_to(pcr,X0,Y+PixelOffset);
+        cairo_line_to(pcr,X,Y+PixelOffset);
+      end else
+      begin
+        cairo_move_to(pcr,X0+1,Y+PixelOffset);
+        cairo_line_to(pcr,X+1,Y+PixelOffset);
+      end;
     end else
     if abs(dx)=abs(dy) then
     begin
       // here is required more Cairo magic
-      if (dx>0) then
+      if (dx>0) and (dy>0) then
       begin
         cairo_move_to(pcr,FLastPenX-PixelOffset,FLastPenY-PixelOffset);
-        cairo_line_to(pcr,X+2*PixelOffset, Y+2*PixelOffset);
+        cairo_line_to(pcr,X, Y);
       end else
+      if (dx>0) and (dy<0) then
       begin
-        cairo_move_to(pcr,FLastPenX+2*PixelOffset,FLastPenY);
+        cairo_move_to(pcr,FLastPenX+PixelOffset,FLastPenY+PixelOffset);
+        cairo_line_to(pcr,X+PixelOffset, Y+PixelOffset);
+      end else
+      if (dx<0) and (dy>0) then
+      begin
+        cairo_move_to(pcr,FLastPenX+1+PixelOffset,FLastPenY-PixelOffset);
+        cairo_line_to(pcr,X+1, Y);
+      end else {dx<0 and dy<0}
+      begin
+        cairo_move_to(pcr,FLastPenX+PixelOffset,FLastPenY+PixelOffset);
         cairo_line_to(pcr,X+PixelOffset, Y+PixelOffset);
       end;
     end else
