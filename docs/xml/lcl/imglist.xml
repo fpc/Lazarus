@@ -301,7 +301,6 @@ Added in LCL version 5.0.
 </version>
 <seealso>
 <link id="TOverlay"/>
-<link id="TCustomImageListResolution.Overlays"/>
 <link id="TCustomImageList.Overlays"/>
 </seealso>
 </element>
@@ -1331,7 +1330,8 @@ the method.
 <p>
 <var>AOverlay</var> contains the position where the index for an overlay 
 image was stored using <var>Overlay</var>. The value in AOverlay must be in 
-the range 0..14 (the range defined in <var>TOverlay</var>).
+the range 0..14 (the range defined in <var>TOverlay</var>). It references the 
+position in the Overlays property for the image list used in the resolution.
 </p>
 <p>
 <var>ADrawingStyle</var> contains the <var>TDrawingStyle</var> enumeration 
@@ -1369,7 +1369,10 @@ overlay image is not drawn if AOverlay contains a value outside the range
 allowed in TOverlay, or does not map to a valid image index in the image list.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TScaledImageListResolution.Resolution"/>
+<link id="TCustomImageList.Overlays"/>
+</seealso>
 </element>
 <element name="TCustomImageListResolution.DrawOverlay.ACanvas">
 <short>Canvas where the image and its overlay are rendered.</short>
@@ -3375,8 +3378,8 @@ Clears images indexes assigned as overlay images in the image list.
 <descr>
 <p>
 <var>ClearOverlays</var> is a procedure used to reset the image indexes 
-assigned in the internal array for use as an overlay images. ClearOverlays 
-sets each TOverlay index position to the value <b>-1</b> to indicate that it 
+assigned to Overlays for use as an overlay images. ClearOverlays sets each 
+TOverlay index position to the value <b>-1</b> to indicate that it
 does not point to an overlay image in the image list.
 </p>
 <p>
@@ -3385,6 +3388,7 @@ ClearOverlays is used in the implementation of the <var>Clear</var> and
 </p>
 </descr>
 <seealso>
+<link id="TCustomImageList.Overlays"/>
 <link id="TCustomImageList.Clear"/>
 <link id="TCustomImageList.Initialize"/>
 <link id="TOverlay"/>
@@ -5382,7 +5386,7 @@ the Change method to perform notifications for the change event.
 
 <element name="TCustomImageList.Overlay">
 <short>
-Assigns an overlay index for the specified image in the image list.
+Assigns the specified image to the given overlay position for the image list.
 </short>
 <descr>
 <p>
@@ -5397,9 +5401,7 @@ use as an overlay image.
 </p>
 <p>
 <var>Overlay</var> is a <var>TOverlay</var> value that indicates the position 
-in the internal array of overlay indexes where the value in AIndex is stored. 
-The overlay indexes are essentially one-based because an overlay index of 
-zero means that no overlay image is needed.
+in Overlays where the value in AIndex is stored.
 </p>
 <p>
 The Overlay method tells the image list that the image in AIndex is an 
@@ -5409,22 +5411,24 @@ the ordinal position in the image list.
 <p>
 Overlay sets the value in the <var>HasOverlays</var> property to <b>True</b> 
 when AIndex contains a valid index position in the image list. Otherwise, the 
-image indexes in each of the internal overlay positions are re-examined to 
-determine the value for HasOverlays.
+image indexes in each of the positions in Overlays are re-examined to 
+determine the value for HasOverlays. Any element in Overlays with a value 
+other than -1 has an assigned overlay image index.
 </p>
 <p>
 Use the <var>DrawOverlay</var> method to draw an image along with a specific 
 overlay image.
 </p>
 <p>
-Use <var>ClearOverlays</var> to reset the image indexes stored in the 
-internal member to the unused value (-1).
+Use <var>ClearOverlays</var> to reset the image indexes stored in Overlays to 
+the unused value (-1).
 </p>
 </descr>
 <seealso>
 <link id="TCustomImageList.HasOverlays"/>
 <link id="TCustomImageList.ClearOverlays"/>
 <link id="TCustomImageList.DrawOverlay"/>
+<link id="TCustomImageList.Overlays"/>
 <link id="TCustomImageListResolution.DrawOverlay"/>
 <link id="TOverlay"/>
 </seealso>
@@ -6712,7 +6716,6 @@ Added in LCL version 5.0.
 <link id="TCustomImageList.Overlay"/>
 <link id="TCustomImageList.HasOverlays"/>
 <link id="TCustomImageList.ClearOverlays"/>
-<link id="TCustomImageListResolution.Overlays"/>
 <link id="TCustomImageListResolution.DrawOverlay"/>
 <link id="TScaledImageListResolution.DrawOverlay"/>
 <link id="TOverlayArray"/>
