@@ -908,7 +908,7 @@ type
     get_metrics: function(font: PPangoFont; language: PPangoLanguage): PPangoFontMetrics; cdecl;
     get_font_map: function(font: PPangoFont): PPangoFontMap; cdecl;
     describe_absolute: function(font: PPangoFont): PPangoFontDescription; cdecl;
-    get_features: procedure(font: PPangoFont; features: Phb_feature_t; len: Pguint; num_features: Pguint); cdecl;
+    get_features: procedure(font: PPangoFont; features: Phb_feature_t; len: guint; num_features: Pguint); cdecl;
     create_hb_font: function(font: PPangoFont): Phb_font_t; cdecl;
   end;
 
