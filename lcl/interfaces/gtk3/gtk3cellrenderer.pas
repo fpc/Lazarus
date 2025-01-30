@@ -326,6 +326,8 @@ begin
 
   if Assigned(ACombo) then
   begin
+    if TCustomComboBox(aWidget.LCLObject).Style = csDropDownList then
+      g_object_set(PGObject(cell), 'ellipsize', [PANGO_ELLIPSIZE_END, nil]);
     {$IFDEF GTK3DEBUGCELLRENDERER}
     writeln('Widget is ',G_OBJECT_TYPE_NAME(widget),' ',G_OBJECT_TYPE_NAME(ACombo),' LCL=',dbgsName(aWidget.LCLObject));
     InspectStyleContext(aCombo);
