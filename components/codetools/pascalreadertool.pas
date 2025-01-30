@@ -1308,7 +1308,7 @@ begin
     exit(false);
   end;
   MoveCursorToFirstProcSpecifier(ProcNode);
-  while (CurPos.StartPos<=ProcNode.FirstChild.EndPos) do begin
+  while (CurPos.StartPos<ProcNode.FirstChild.EndPos) do begin
     if CurPos.Flag=cafSemicolon then begin
       ReadNextAtom;
     end else begin
