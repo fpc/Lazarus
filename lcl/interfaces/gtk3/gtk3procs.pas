@@ -318,6 +318,7 @@ procedure SetWindowCursor(AWindow: PGdkWindow; ACursor: HCursor;
 procedure SetGlobalCursor(Cursor: HCURSOR);
 
 function GetStyleContextSizes(awidget: PGtkWidget; out ABorder, AMargin, APadding: TGtkBorder; out AWidth, AHeight: integer): boolean;
+procedure ListProperties(anObject: PGObject); // helper routine for debugging.
 
 type
   Charsetstr = string[15];
@@ -1381,6 +1382,29 @@ begin
   AStyle^.get_margin(GTK_STATE_FLAG_NORMAL, @AMargin);
   AStyle^.get_padding(GTK_STATE_FLAG_NORMAL, @APadding);
   Result := True;
+end;
+
+procedure ListProperties(anObject: PGObject);
+var
+  ObjClass: PGObjectClass;
+  Props: PPGParamSpec;
+  NProps, I: guint;
+begin
+  if anObject = nil then
+    Exit;
+
+  ObjClass := PGObjectClass(anObject^.g_type_instance.g_class);
+  if ObjClass = nil then
+    Exit;
+
+  Props := g_object_class_list_properties(ObjClass, @NProps);
+
+  WriteLn(G_OBJECT_TYPE_NAME(anObject),' Properties:');
+  for I := 0 to NProps - 1 do
+    WriteLn('  ', PGParamSpec(Props[I])^.name, ' (',
+                g_type_name(PGParamSpec(Props[I])^.g_type_instance.g_class^.g_type), ')');
+
+  g_free(Props);
 end;
 
 end.
