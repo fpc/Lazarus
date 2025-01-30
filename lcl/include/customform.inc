@@ -2422,7 +2422,7 @@ begin
                 Result := GetDefaultMonitor;
             poOwnerFormCenter:
               if (Owner is TCustomForm) and (GetParentForm(TCustomForm(Owner))<>Self) then
-                Result := Application.MainForm.Monitor
+                Result := TCustomForm(Owner).Monitor
               else
                 Result := GetDefaultMonitor;
           else
