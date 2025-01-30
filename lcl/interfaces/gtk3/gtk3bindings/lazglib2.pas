@@ -2246,37 +2246,37 @@ type
     next: PGList;
     prev: PGList;
     function alloc: PGList; cdecl; inline; static;
-    function append(list: PGList; data: gpointer): PGList; cdecl; inline; static;
-    function concat(list1: PGList; list2: PGList): PGList; cdecl; inline; static;
-    function copy(list: PGList): PGList; cdecl; inline; static;
-    function copy_deep(list: PGList; func: TGCopyFunc; user_data: gpointer): PGList; cdecl; inline; static;
-    function delete_link(list: PGList; link_: PGList): PGList; cdecl; inline; static;
-    function find(list: PGList; data: Pgpointer): PGList; cdecl; inline; static;
-    function find_custom(list: PGList; data: Pgpointer; func: TGCompareFunc): PGList; cdecl; inline; static;
-    function first(list: PGList): PGList; cdecl; inline; static;
-    procedure foreach(list: PGList; func: TGFunc; user_data: gpointer); cdecl; inline; static;
-    procedure free(list: PGList); cdecl; inline; static;
-    procedure free_1(list: PGList); cdecl; inline; static;
-    procedure free_full(list: PGList; free_func: TGDestroyNotify); cdecl; inline; static;
-    function index(list: PGList; data: Pgpointer): gint; cdecl; inline; static;
-    function insert(list: PGList; data: gpointer; position: gint): PGList; cdecl; inline; static;
-    function insert_before(list: PGList; sibling: PGList; data: gpointer): PGList; cdecl; inline; static;
-    function insert_before_link(list: PGList; sibling: PGList; link_: PGList): PGList; cdecl; inline; static;
-    function insert_sorted(list: PGList; data: gpointer; func: TGCompareFunc): PGList; cdecl; inline; static;
-    function insert_sorted_with_data(list: PGList; data: gpointer; func: TGCompareDataFunc; user_data: gpointer): PGList; cdecl; inline; static;
-    function last(list: PGList): PGList; cdecl; inline; static;
-    function length(list: PGList): guint; cdecl; inline; static;
-    function nth(list: PGList; n: guint): PGList; cdecl; inline; static;
-    function nth_data(list: PGList; n: guint): gpointer; cdecl; inline; static;
-    function nth_prev(list: PGList; n: guint): PGList; cdecl; inline; static;
-    function position(list: PGList; llink: PGList): gint; cdecl; inline; static;
-    function prepend(list: PGList; data: gpointer): PGList; cdecl; inline; static;
-    function remove(list: PGList; data: Pgpointer): PGList; cdecl; inline; static;
-    function remove_all(list: PGList; data: Pgpointer): PGList; cdecl; inline; static;
-    function remove_link(list: PGList; llink: PGList): PGList; cdecl; inline; static;
-    function reverse(list: PGList): PGList; cdecl; inline; static;
-    function sort(list: PGList; compare_func: TGCompareFunc): PGList; cdecl; inline; static;
-    function sort_with_data(list: PGList; compare_func: TGCompareDataFunc; user_data: gpointer): PGList; cdecl; inline; static;
+    function append(data: gpointer): PGList; cdecl; inline; static;
+    function concat(list2: PGList): PGList; cdecl; inline; static;
+    function copy(): PGList; cdecl; inline; static;
+    function copy_deep(func: TGCopyFunc; user_data: gpointer): PGList; cdecl; inline; static;
+    function delete_link(link_: PGList): PGList; cdecl; inline; static;
+    function find(data: Pgpointer): PGList; cdecl; inline; static;
+    function find_custom(data: Pgpointer; func: TGCompareFunc): PGList; cdecl; inline; static;
+    function first(): PGList; cdecl; inline; static;
+    procedure foreach(func: TGFunc; user_data: gpointer); cdecl; inline; static;
+    procedure free(); cdecl; inline; static;
+    procedure free_1(); cdecl; inline; static;
+    procedure free_full(free_func: TGDestroyNotify); cdecl; inline; static;
+    function index(data: Pgpointer): gint; cdecl; inline; static;
+    function insert(data: gpointer; position: gint): PGList; cdecl; inline; static;
+    function insert_before(sibling: PGList; data: gpointer): PGList; cdecl; inline; static;
+    function insert_before_link(sibling: PGList; link_: PGList): PGList; cdecl; inline; static;
+    function insert_sorted(data: gpointer; func: TGCompareFunc): PGList; cdecl; inline; static;
+    function insert_sorted_with_data(data: gpointer; func: TGCompareDataFunc; user_data: gpointer): PGList; cdecl; inline; static;
+    function last(): PGList; cdecl; inline; static;
+    function length(): guint; cdecl; inline; static;
+    function nth(n: guint): PGList; cdecl; inline; static;
+    function nth_data(n: guint): gpointer; cdecl; inline; static;
+    function nth_prev(n: guint): PGList; cdecl; inline; static;
+    function position(llink: PGList): gint; cdecl; inline; static;
+    function prepend(data: gpointer): PGList; cdecl; inline; static;
+    function remove(data: Pgpointer): PGList; cdecl; inline; static;
+    function remove_all(data: Pgpointer): PGList; cdecl; inline; static;
+    function remove_link(llink: PGList): PGList; cdecl; inline; static;
+    function reverse(): PGList; cdecl; inline; static;
+    function sort(compare_func: TGCompareFunc): PGList; cdecl; inline; static;
+    function sort_with_data(compare_func: TGCompareDataFunc; user_data: gpointer): PGList; cdecl; inline; static;
   end;
 
 
@@ -7160,159 +7160,159 @@ begin
   Result := LazGLib2.g_list_alloc();
 end;
 
-function TGList.append(list: PGList; data: gpointer): PGList; cdecl;
+function TGList.append(data: gpointer): PGList; cdecl;
 begin
-  Result := LazGLib2.g_list_append(list, data);
+  Result := LazGLib2.g_list_append(@self, data);
 end;
 
-function TGList.concat(list1: PGList; list2: PGList): PGList; cdecl;
+function TGList.concat(list2: PGList): PGList; cdecl;
 begin
-  Result := LazGLib2.g_list_concat(list1, list2);
+  Result := LazGLib2.g_list_concat(@self, list2);
 end;
 
-function TGList.copy(list: PGList): PGList; cdecl;
+function TGList.copy(): PGList; cdecl;
 begin
-  Result := LazGLib2.g_list_copy(list);
+  Result := LazGLib2.g_list_copy(@self);
 end;
 
-function TGList.copy_deep(list: PGList; func: TGCopyFunc; user_data: gpointer): PGList; cdecl;
+function TGList.copy_deep(func: TGCopyFunc; user_data: gpointer): PGList; cdecl;
 begin
-  Result := LazGLib2.g_list_copy_deep(list, func, user_data);
+  Result := LazGLib2.g_list_copy_deep(@self, func, user_data);
 end;
 
-function TGList.delete_link(list: PGList; link_: PGList): PGList; cdecl;
+function TGList.delete_link(link_: PGList): PGList; cdecl;
 begin
-  Result := LazGLib2.g_list_delete_link(list, link_);
+  Result := LazGLib2.g_list_delete_link(@self, link_);
 end;
 
-function TGList.find(list: PGList; data: Pgpointer): PGList; cdecl;
+function TGList.find(data: Pgpointer): PGList; cdecl;
 begin
-  Result := LazGLib2.g_list_find(list, data);
+  Result := LazGLib2.g_list_find(@self, data);
 end;
 
-function TGList.find_custom(list: PGList; data: Pgpointer; func: TGCompareFunc): PGList; cdecl;
+function TGList.find_custom(data: Pgpointer; func: TGCompareFunc): PGList; cdecl;
 begin
-  Result := LazGLib2.g_list_find_custom(list, data, func);
+  Result := LazGLib2.g_list_find_custom(@self, data, func);
 end;
 
-function TGList.first(list: PGList): PGList; cdecl;
+function TGList.first(): PGList; cdecl;
 begin
-  Result := LazGLib2.g_list_first(list);
+  Result := LazGLib2.g_list_first(@self);
 end;
 
-procedure TGList.foreach(list: PGList; func: TGFunc; user_data: gpointer); cdecl;
+procedure TGList.foreach(func: TGFunc; user_data: gpointer); cdecl;
 begin
-  LazGLib2.g_list_foreach(list, func, user_data);
+  LazGLib2.g_list_foreach(@self, func, user_data);
 end;
 
-procedure TGList.free(list: PGList); cdecl;
+procedure TGList.free(); cdecl;
 begin
-  LazGLib2.g_list_free(list);
+  LazGLib2.g_list_free(@self);
 end;
 
-procedure TGList.free_1(list: PGList); cdecl;
+procedure TGList.free_1(); cdecl;
 begin
-  LazGLib2.g_list_free_1(list);
+  LazGLib2.g_list_free_1(@self);
 end;
 
-procedure TGList.free_full(list: PGList; free_func: TGDestroyNotify); cdecl;
+procedure TGList.free_full(free_func: TGDestroyNotify); cdecl;
 begin
-  LazGLib2.g_list_free_full(list, free_func);
+  LazGLib2.g_list_free_full(@self, free_func);
 end;
 
-function TGList.index(list: PGList; data: Pgpointer): gint; cdecl;
+function TGList.index(data: Pgpointer): gint; cdecl;
 begin
-  Result := LazGLib2.g_list_index(list, data);
+  Result := LazGLib2.g_list_index(@self, data);
 end;
 
-function TGList.insert(list: PGList; data: gpointer; position: gint): PGList; cdecl;
+function TGList.insert(data: gpointer; position: gint): PGList; cdecl;
 begin
-  Result := LazGLib2.g_list_insert(list, data, position);
+  Result := LazGLib2.g_list_insert(@self, data, position);
 end;
 
-function TGList.insert_before(list: PGList; sibling: PGList; data: gpointer): PGList; cdecl;
+function TGList.insert_before(sibling: PGList; data: gpointer): PGList; cdecl;
 begin
-  Result := LazGLib2.g_list_insert_before(list, sibling, data);
+  Result := LazGLib2.g_list_insert_before(@self, sibling, data);
 end;
 
-function TGList.insert_before_link(list: PGList; sibling: PGList; link_: PGList): PGList; cdecl;
+function TGList.insert_before_link(sibling: PGList; link_: PGList): PGList; cdecl;
 begin
-  Result := LazGLib2.g_list_insert_before_link(list, sibling, link_);
+  Result := LazGLib2.g_list_insert_before_link(@self, sibling, link_);
 end;
 
-function TGList.insert_sorted(list: PGList; data: gpointer; func: TGCompareFunc): PGList; cdecl;
+function TGList.insert_sorted(data: gpointer; func: TGCompareFunc): PGList; cdecl;
 begin
-  Result := LazGLib2.g_list_insert_sorted(list, data, func);
+  Result := LazGLib2.g_list_insert_sorted(@self, data, func);
 end;
 
-function TGList.insert_sorted_with_data(list: PGList; data: gpointer; func: TGCompareDataFunc; user_data: gpointer): PGList; cdecl;
+function TGList.insert_sorted_with_data(data: gpointer; func: TGCompareDataFunc; user_data: gpointer): PGList; cdecl;
 begin
-  Result := LazGLib2.g_list_insert_sorted_with_data(list, data, func, user_data);
+  Result := LazGLib2.g_list_insert_sorted_with_data(@self, data, func, user_data);
 end;
 
-function TGList.last(list: PGList): PGList; cdecl;
+function TGList.last(): PGList; cdecl;
 begin
-  Result := LazGLib2.g_list_last(list);
+  Result := LazGLib2.g_list_last(@self);
 end;
 
-function TGList.length(list: PGList): guint; cdecl;
+function TGList.length(): guint; cdecl;
 begin
-  Result := LazGLib2.g_list_length(list);
+  Result := LazGLib2.g_list_length(@self);
 end;
 
-function TGList.nth(list: PGList; n: guint): PGList; cdecl;
+function TGList.nth(n: guint): PGList; cdecl;
 begin
-  Result := LazGLib2.g_list_nth(list, n);
+  Result := LazGLib2.g_list_nth(@self, n);
 end;
 
-function TGList.nth_data(list: PGList; n: guint): gpointer; cdecl;
+function TGList.nth_data(n: guint): gpointer; cdecl;
 begin
-  Result := LazGLib2.g_list_nth_data(list, n);
+  Result := LazGLib2.g_list_nth_data(@self, n);
 end;
 
-function TGList.nth_prev(list: PGList; n: guint): PGList; cdecl;
+function TGList.nth_prev(n: guint): PGList; cdecl;
 begin
-  Result := LazGLib2.g_list_nth_prev(list, n);
+  Result := LazGLib2.g_list_nth_prev(@self, n);
 end;
 
-function TGList.position(list: PGList; llink: PGList): gint; cdecl;
+function TGList.position(llink: PGList): gint; cdecl;
 begin
-  Result := LazGLib2.g_list_position(list, llink);
+  Result := LazGLib2.g_list_position(@self, llink);
 end;
 
-function TGList.prepend(list: PGList; data: gpointer): PGList; cdecl;
+function TGList.prepend(data: gpointer): PGList; cdecl;
 begin
-  Result := LazGLib2.g_list_prepend(list, data);
+  Result := LazGLib2.g_list_prepend(@self, data);
 end;
 
-function TGList.remove(list: PGList; data: Pgpointer): PGList; cdecl;
+function TGList.remove(data: Pgpointer): PGList; cdecl;
 begin
-  Result := LazGLib2.g_list_remove(list, data);
+  Result := LazGLib2.g_list_remove(@self, data);
 end;
 
-function TGList.remove_all(list: PGList; data: Pgpointer): PGList; cdecl;
+function TGList.remove_all(data: Pgpointer): PGList; cdecl;
 begin
-  Result := LazGLib2.g_list_remove_all(list, data);
+  Result := LazGLib2.g_list_remove_all(@self, data);
 end;
 
-function TGList.remove_link(list: PGList; llink: PGList): PGList; cdecl;
+function TGList.remove_link(llink: PGList): PGList; cdecl;
 begin
-  Result := LazGLib2.g_list_remove_link(list, llink);
+  Result := LazGLib2.g_list_remove_link(@self, llink);
 end;
 
-function TGList.reverse(list: PGList): PGList; cdecl;
+function TGList.reverse(): PGList; cdecl;
 begin
-  Result := LazGLib2.g_list_reverse(list);
+  Result := LazGLib2.g_list_reverse(@self);
 end;
 
-function TGList.sort(list: PGList; compare_func: TGCompareFunc): PGList; cdecl;
+function TGList.sort(compare_func: TGCompareFunc): PGList; cdecl;
 begin
-  Result := LazGLib2.g_list_sort(list, compare_func);
+  Result := LazGLib2.g_list_sort(@self, compare_func);
 end;
 
-function TGList.sort_with_data(list: PGList; compare_func: TGCompareDataFunc; user_data: gpointer): PGList; cdecl;
+function TGList.sort_with_data(compare_func: TGCompareDataFunc; user_data: gpointer): PGList; cdecl;
 begin
-  Result := LazGLib2.g_list_sort_with_data(list, compare_func, user_data);
+  Result := LazGLib2.g_list_sort_with_data(@self, compare_func, user_data);
 end;
 
 function TGHashTableIter.get_hash_table: PGHashTable; cdecl;
