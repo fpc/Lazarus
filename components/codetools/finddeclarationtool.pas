@@ -6835,7 +6835,7 @@ var
     Result:=false;
   end;
 
-  function CheckMethodOverride(ProcNode: TCodeTreeNode): boolean;
+  function CheckMethodOverride(Tool: TFindDeclarationTool; ProcNode: TCodeTreeNode): boolean;
   var
     FoundProcs: TFindContextArray;
     CurProc: TFindContext;
@@ -6847,12 +6847,12 @@ var
     if not NodeIsMethodDecl(ProcNode) then
       exit;
     {$IFDEF VerboseFindRefMethodOverrides}
-    debugln(['CheckMethodOverride found method: ',GetNodeNamePath(ProcNode,true,true)]);
+    debugln(['CheckMethodOverride found method: ',Tool.GetNodeNamePath(ProcNode,true,true)]);
     {$ENDIF}
-    if not ProcNodeHasSpecifier(ProcNode,psOverride) then exit;
+    if not Tool.ProcNodeHasSpecifier(ProcNode,psOverride) then exit;
 
     FoundProcs:=[];
-    CurProc:=CreateFindContext(Self,ProcNode);
+    CurProc:=CreateFindContext(Tool,ProcNode);
     repeat
       if ArrayHasNode(OverrideProcNodes,CurProc.Node) then begin
         Result:=true;
@@ -6973,7 +6973,7 @@ var
       // this identifier is another declaration with the same name
       if (frfMethodOverrides in Flags) and (CursorNode.Desc=ctnProcedureHead) then
       begin
-        if CheckMethodOverride(CursorNode.Parent) then
+        if CheckMethodOverride(Self,CursorNode.Parent) then
           AddReference(CursorNode.StartPos);
       end;
     end
@@ -7063,7 +7063,7 @@ var
         {$IFDEF VerboseFindRefMethodOverrides}
         debugln(['ReadIdentifier identifier is procedure, check overrides...']);
         {$ENDIF}
-        if CheckMethodOverride(Node.Parent) then
+        if CheckMethodOverride(Params.NewCodeTool,Node.Parent) then
           AddReference(IdentStartPos);
       end;
     end;
