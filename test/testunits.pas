@@ -30,7 +30,7 @@ uses
   TestLpi, BugTestCase,
   bug8432, TestFileUtil,
   // lazutils
-  TestLazUtils, TestLazUTF8, TestLazUTF16, TestLConvEncoding, TestAvgLvlTree,
+  TestLazUtils, TestLazFileUtils, TestLazUTF8, TestLazUTF16, TestLConvEncoding, TestAvgLvlTree,
   // lcltests
   TestPen, TestPreferredSize, TestTextStrings, TestListView
   {$IFNDEF NoSemiAutomatedTests}
