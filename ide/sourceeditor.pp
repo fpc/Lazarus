@@ -9370,7 +9370,7 @@ begin
       Statusbar.Panels[CStatusPanelSel].Width := 50;
     Statusbar.Panels[CStatusPanelFile].Text := PanelFilename;
     if(EditorMacroForRecording.IsRecording(CurEditor)) then
-      Statusbar.Panels[CStatusPanelMacro].Width := IDEImages.ScaledSize(20)
+      Statusbar.Panels[CStatusPanelMacro].Width := 20 * IDEImages.GetScalePercent div 100 //was ScaledSize(20)
     else
       Statusbar.Panels[CStatusPanelMacro].Width := 0;
 

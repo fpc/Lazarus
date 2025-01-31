@@ -55,21 +55,12 @@ type
     class function GetScalePercent: Integer;
     class function ScaleImage(const AImage: TGraphic; out ANewInstance: Boolean;
       TargetWidth, TargetHeight: Integer; const AFactor: Double): TCustomBitmap;
-    class function CreateImage(ImageSize: Integer; ImageName: String): TCustomBitmap; deprecated 'Don''t use this, use image lists instead.';
-    class function CreateImage(ImageName: String; ImageSize: Integer = 16): TCustomBitmap; deprecated 'Don''t use this, use image lists instead.';
-    class procedure AssignImage(const ABitmap: TCustomBitmap; ImageName: String;
-      ImageSize: Integer = 16); deprecated 'Use the other overloads instead.';
     procedure AssignImage(const ABitBtn: TCustomBitBtn; ImageName: String;
       ImageSize: Integer = 16);
     procedure AssignImage(const ASpeedButton: TCustomSpeedButton; ImageName: String;
       ImageSize: Integer = 16);
-    class function AddImageToImageList(const AImageList: TImageList;
-      ImageName: String; ImageSize: Integer = 16): Integer; deprecated 'Don''t use this, use image lists instead.';
-    class function ScaledSize(ImageSize: Integer = 16): Integer; deprecated 'Don''t use this, use image lists instead.';
 
-    function LoadImage(ImageSize: Integer; ImageName: String): Integer; deprecated 'Use the other overload instead.';
     function LoadImage(ImageName: String; ImageSize: Integer = 16): Integer;
-    function GetImageIndex(ImageSize: Integer; ImageName: String): Integer; deprecated 'Use the other overload instead.';
     function GetImageIndex(ImageName: String; ImageSize: Integer = 16): Integer;
 
     (* Images_nn
@@ -141,37 +132,6 @@ begin
     Result := Round(ScreenInfo.PixelsPerInchX/96) * 100; // 200, 300, 400, ...
 end;
 
-function TIDEImages.LoadImage(ImageSize: Integer; ImageName: String): Integer;
-begin
-  Result := LoadImage(ImageName, ImageSize);
-end;
-
-class function TIDEImages.CreateImage(ImageName: String; ImageSize: Integer
-  ): TCustomBitmap;
-var
-  Grp: TCustomBitmap;
-  GrpScaledNewInstance: Boolean;
-  ScalePercent, GrpScale: Integer;
-begin
-  ScalePercent := GetScalePercent;
-
-  Grp := nil;
-  try
-    GrpScale := CreateBestBitmapForScalingFromRes(ImageName, ScalePercent, Grp);
-    if Grp<>nil then
-    begin
-      Result := ScaleImage(Grp, GrpScaledNewInstance,
-        MulDiv(ImageSize, ScalePercent, GrpScale), MulDiv(ImageSize, ScalePercent, GrpScale), ScalePercent / GrpScale);
-      if not GrpScaledNewInstance then
-        Grp := nil;
-      Exit; // found
-    end;
-  finally
-    Grp.Free;
-  end;
-  Result := nil; // not found
-end;
-
 destructor TIDEImages.Destroy;
 begin
   FImages_12.Free;
@@ -185,33 +145,6 @@ procedure TIDEImages.FImages_24_GetWidthForPPI(Sender: TCustomImageList;
 begin
   if (30<=AResultWidth) and (AResultWidth<=40) then
     AResultWidth := 32;
-end;
-
-class procedure TIDEImages.AssignImage(const ABitmap: TCustomBitmap;
-  ImageName: String; ImageSize: Integer);
-var
-  xBmp: TCustomBitmap;
-begin
-  xBmp := CreateImage(ImageName, ImageSize);
-  try
-    ABitmap.Assign(xBmp);
-  finally
-    xBmp.Free;
-  end;
-end;
-
-class function TIDEImages.AddImageToImageList(const AImageList: TImageList;
-  ImageName: String; ImageSize: Integer): Integer;
-var
-  xBmp: TCustomBitmap;
-begin
-  Result := -1;
-  xBmp := TIDEImages.CreateImage(ImageName, ImageSize);
-  try
-    Result := AImageList.Add(xBmp, nil);
-  finally
-    xBmp.Free;
-  end;
 end;
 
 procedure TIDEImages.AssignImage(const ABitBtn: TCustomBitBtn;
@@ -236,13 +169,7 @@ begin
   ASpeedButton.ImageIndex := IL.GetImageIndex(ImageName);
 end;
 
-class function TIDEImages.ScaledSize(ImageSize: Integer): Integer;
-begin
-  Result := ImageSize * GetScalePercent div 100;
-end;
-
-class function TIDEImages.CreateBitmapFromRes(const ImageName: string
-  ): TCustomBitmap;
+class function TIDEImages.CreateBitmapFromRes(const ImageName: string): TCustomBitmap;
 var
   ResHandle: TLResource;
 begin
@@ -273,17 +200,6 @@ begin
     aBitmap.TransparentColor := aBitmap.Canvas.Pixels[0, aBitmap.Height-1];
     aBitmap.Transparent := True;
   end;
-end;
-
-class function TIDEImages.CreateImage(ImageSize: Integer; ImageName: String
-  ): TCustomBitmap;
-begin
-  Result := CreateImage(ImageName, ImageSize);
-end;
-
-function TIDEImages.GetImageIndex(ImageSize: Integer; ImageName: String): Integer;
-begin
-  Result := GetImageIndex(ImageName, ImageSize);
 end;
 
 function TIDEImages.GetImageIndex(ImageName: String; ImageSize: Integer): Integer;
