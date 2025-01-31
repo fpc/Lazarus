@@ -2066,15 +2066,13 @@ begin
       Attr := pango_attr_background_new(gColor.red, gColor.green, gColor.blue);
       pango_attr_list_insert(AttrList, Attr);
       FCurrentFont.Layout^.set_attributes(AttrList);
+      pango_attr_list_unref(AttrList);
     end;
 
     pango_cairo_show_layout(pcr, FCurrentFont.Layout);
 
     if aBgFilled then
-    begin
       FCurrentFont.Layout^.set_attributes(nil);
-      pango_attribute_destroy(Attr);
-    end;
   finally
     Restore;
   end;
