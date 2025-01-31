@@ -4791,8 +4791,11 @@ procedure TGtk3Container.SetVisible(AValue: Boolean);
 begin
   if not AValue then
   begin
-    Widget^.set_no_show_all(True);
-    Widget^.hide;
+    if [wtNotebook, wtWindow] * WidgetType = [] then
+    begin
+      Widget^.set_no_show_all(True);
+      Widget^.hide;
+    end;
   end;
   inherited SetVisible(AValue);
 end;
