@@ -4475,12 +4475,10 @@ begin
   end;
   ATargetRect := Rect(X, Y, Width + X, Height + Y);
   ASrcRect := Rect(XSrc, YSrc, SrcWidth + XSrc, SrcHeight + YSrc);
-
-  if (DestContext.OwnsSurface) and (SrcContext.OwnsSurface)  or (mask<>0) then
+  if (DestContext.OwnsSurface) and (SrcContext.OwnsSurface) and (mask<>0) then
     DestContext.drawImage1(@ATargetRect, PgdkPixbuf(SrcContext.CurrentImage.Handle) , @ASrcRect, nil, nil)
   else
     DestContext.drawSurface(@ATargetRect,SrcContext.CairoSurface , @ASrcRect, nil, nil);
-
   Result := True;
 end;
 
