@@ -380,6 +380,7 @@ class procedure TGtk3WSCustomForm.SetFormStyle(const AForm: TCustomform;
 begin
   if not WSCheckHandleAllocated(AForm, 'SetFormStyle') then
     Exit;
+  TGtk3Window(AForm.Handle).UpdateFormStyle;
   {$IFDEF GTK3DEBUGCORE}
   DebugLn('TGtk3WSCustomForm.SetFormStyle');
   {$ENDIF}

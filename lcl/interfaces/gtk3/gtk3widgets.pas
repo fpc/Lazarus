@@ -865,6 +865,7 @@ type
     function GetScrolledWindow: PGtkScrolledWindow; override;
     function ShowState(nstate:integer):boolean; // winapi ShowWindow
     procedure UpdateWindowState; // LCL WindowState
+    procedure UpdateFormStyle;
     class function decoration_flags(Aform: TCustomForm): TGdkWMDecoration;
   public
     procedure SetBounds(ALeft,ATop,AWidth,AHeight:integer); override;
@@ -8875,6 +8876,13 @@ const
 begin
   ShowState(ShowCommands[TCustomForm(LCLObject).WindowState]);
 end;
+
+procedure TGtk3Window.UpdateFormStyle;
+begin
+  if Assigned(fWidget) then
+  PGtkWindow(fWidget)^.set_keep_above(TForm(LCLObject).FormStyle in [fsStayOnTop]);
+end;
+
 
 function TGtk3Window.CreateWidget(const Params: TCreateParams): PGtkWidget;
 var
