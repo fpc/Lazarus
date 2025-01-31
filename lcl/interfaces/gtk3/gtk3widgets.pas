@@ -870,6 +870,7 @@ type
     procedure UpdateFormStyle;
     class function decoration_flags(Aform: TCustomForm): TGdkWMDecoration;
   public
+    procedure DoBeforeLCLPaint; override;
     procedure SetBounds(ALeft,ATop,AWidth,AHeight:integer); override;
     destructor Destroy; override;
     procedure Activate; override;
@@ -3499,9 +3500,7 @@ begin
   inherited DoBeforeLCLPaint;
   if not Visible then
     exit;
-
   DC := TGtk3DeviceContext(Context);
-
   NColor := LCLObject.Color;
   if (NColor <> clNone) and (NColor <> clDefault) then
   begin
@@ -8854,6 +8853,31 @@ begin
   if GDK_DECOR_TITLE in Result then
   if biSystemMenu in icns then
      Include(Result, GDK_DECOR_MENU);
+end;
+
+procedure TGtk3Window.DoBeforeLCLPaint;
+var
+  DC: TGtk3DeviceContext;
+  NColor: TColor;
+begin
+  inherited DoBeforeLCLPaint;
+  if not Visible then
+    exit;
+
+  DC := TGtk3DeviceContext(Context);
+
+  NColor := LCLObject.Color;
+  if (NColor <> clNone) and (NColor <> clDefault) and (NColor <> clForm) then
+  begin
+    DC.CurrentBrush.Color := ColorToRGB(NColor);
+    DC.fillRect(0, 0, LCLObject.Width, LCLObject.Height);
+  end;
+
+  if BorderStyle <> bsNone then
+  begin
+    DC.CurrentPen.Color := ColorToRGB(clBtnShadow); // not sure what color to use here?
+    DC.drawRect(0, 0, LCLObject.Width, LCLObject.Height, False, True);
+  end;
 end;
 
 function TGtk3Window.ShowState(nstate:integer):boolean; // winapi ShowWindow
