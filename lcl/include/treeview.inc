@@ -1361,13 +1361,15 @@ end;
 function TTreeNode.GetTextPath: string;
 var
   Node: TTreeNode;
+  PDelim: String;
 begin
+  PDelim := FOwner.FOwner.FPathDelimiter;
   Result := '';
   Node := Self;
   while Assigned(Node) do
   begin
-    if Result <> '' then
-      Result := FOwner.FOwner.FPathDelimiter + Result;
+    if (Result <> '') and (Node.Text <> PDelim) then
+      Result := PDelim + Result;
     Result := Node.Text + Result;
     Node := Node.Parent;
   end;
