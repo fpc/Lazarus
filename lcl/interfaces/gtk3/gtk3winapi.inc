@@ -1580,7 +1580,7 @@ var
       while CurCount > 0 do
       begin
         CharLen := UTF8CodepointSize(CurStr);
-        DevCtx.drawText(CurScreenX, Y, CurStr, CharLen, True);
+        DevCtx.drawText(CurScreenX, Y, CurStr, CharLen, (DevCtx.BkMode = OPAQUE) and Assigned(DevCtx.BgBrush));
         inc(CurScreenX, CurDx^);
         inc(CurDx);
         inc(CurStr, CharLen);
@@ -1588,7 +1588,7 @@ var
       end;
     end
     else begin
-      DevCtx.drawText(X, Y, Str, Count, True);
+      DevCtx.drawText(X, Y, Str, Count, (DevCtx.BkMode = OPAQUE) and Assigned(DevCtx.BgBrush));
     end;
   end;
 
@@ -4516,6 +4516,8 @@ begin
 end;
 
 function TGtk3WidgetSet.TextOut(DC: HDC; X, Y: Integer; Str: PChar; Count: Integer): Boolean;
+var
+  DevCtx: TGtk3DeviceContext absolute DC;
 begin
   {$IFDEF VerboseGtk3DeviceContext}
   DebugLn('TGtk3WidgetSet.TextOut X=',dbgs(x),' Y=',dbgs(y),' Text=',dbgs(Str),' Count=',dbgs(Count),' Text=',StrPas(Str));
@@ -4526,7 +4528,7 @@ begin
   if IsValidDC(DC) then
   begin
     Result := True;
-    TGtk3DeviceContext(DC).drawText(X, Y, Str, Count, False);
+    DevCtx.drawText(X, Y, Str, Count, (DevCtx.BkMode = OPAQUE) and Assigned(DevCtx.BgBrush));
   end;
 end;
 

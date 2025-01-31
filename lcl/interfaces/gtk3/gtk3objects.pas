@@ -1512,7 +1512,12 @@ procedure TGtk3DeviceContext.setBkColor(AValue:TColorRef);
 begin
   FBkColor := AValue;
   if Assigned(FBgBrush) then
+  begin
     FBgBrush.Free;
+    FBgBrush := nil;
+  end;
+  if FBkColor = clNone then
+    exit;
   FBgBrush := TGtk3Brush.Create;
   FBgBrush.Context := Self;
   FBgBrush.Style := BS_SOLID;
@@ -2041,7 +2046,6 @@ var
   gColor: TGdkColor;
   Attr: PPangoAttribute;
   AttrList: PPangoAttrList;
-  UseBack: boolean;
   ornt:integer;
 begin
   Save;
@@ -2055,13 +2059,9 @@ begin
 
     FCurrentFont.Layout^.set_text(AText, ALen);
 
-    //This looks like a bug in logic. eg painting TTreeView: SetBkMode(OPAQUE) BkMode is OPAQUE but currentBrush.style is bsClear
-    //If we don't chech any of them text is not drawn as it should.
-    //TODO: check how this case works with win32 ws.
-    UseBack := not ABgFilled and (FBkMode = OPAQUE) and (CurrentBrush.Style <> BS_NULL);
-    if UseBack then
+    if aBgFilled then
     begin
-      gColor := TColorToTGDKColor(clHighlight);
+      gColor := TColorToTGDKColor(FBgBrush.Color);
       AttrList := pango_attr_list_new;
       Attr := pango_attr_background_new(gColor.red, gColor.green, gColor.blue);
       pango_attr_list_insert(AttrList, Attr);
@@ -2070,7 +2070,7 @@ begin
 
     pango_cairo_show_layout(pcr, FCurrentFont.Layout);
 
-    if UseBack then
+    if aBgFilled then
     begin
       FCurrentFont.Layout^.set_attributes(nil);
       pango_attribute_destroy(Attr);
