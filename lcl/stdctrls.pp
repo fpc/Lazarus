@@ -330,6 +330,7 @@ type
     procedure ShowEmulatedTextHintIfYouCan;
     procedure ShowEmulatedTextHint;
     procedure HideEmulatedTextHint;
+    function UpdateItemIndex(const AValue: TCaption): Boolean;
     procedure UpdateSorted;
     procedure LMDrawListItem(var TheMessage: TLMDrawListItem); message LM_DrawListItem;
     procedure LMMeasureItem(var TheMessage: TLMMeasureItem); message LM_MeasureItem;
