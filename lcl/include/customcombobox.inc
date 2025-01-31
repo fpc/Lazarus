@@ -448,15 +448,8 @@ end;
 procedure TCustomComboBox.RealSetText(const AValue: TCaption);
 // If the text AValue occurs in the list of strings, then sets the itemindex,
 //  otherwise does the default action
-var
-  I: integer;
 begin
-  // when items have same text, FItems.IndexOf(AValue) gives wrong index. Issue #28683.
-  // Items can contain an empty string, set ItemIndex in that case too. Issue #39366
-  I := ItemIndex;
-  if (I < 0) or (I >= FItems.Count) or (FItems[I] <> AValue) then
-    if not (csLoading in ComponentState) then
-      ItemIndex := MatchListItem(AValue);
+  UpdateItemIndex(AValue);
   if AValue<>'' then
     HideEmulatedTextHint;
   inherited;
@@ -631,10 +624,10 @@ end;
 procedure TCustomComboBox.KeyUp(var Key: Word; Shift: TShiftState);
 var
   iSelStart: Integer; // char position
-  sCompleteText, sPrefixText, sResultText: string;
-  Utf8TextLen: Integer;
+  sText, sCompleteText, sPrefixText: string;
 begin
   inherited KeyUp(Key, Shift);
+  sText := Text;
   //SelectAll when hitting return key for AutoSelect feature
   if (Key = VK_RETURN) then
   begin
@@ -646,7 +639,7 @@ begin
     if FAutoSelect then
     begin
      SelectAll;
-     if (SelText = Text) then FAutoSelected := True;
+     if (SelText = sText) then FAutoSelected := True;
     end;
   end
   else
@@ -659,28 +652,26 @@ begin
       iSelStart := SelStart;//Capture original cursor position
       //DebugLn(['TCustomComboBox.UTF8KeyPress SelStart=',SelStart,' Text=',Text]);
       //End of line completion
-      Utf8TextLen := UTF8Length(Text);
-      if (iSelStart < Utf8TextLen) and (cbactEndOfLineComplete in FAutoCompleteText) then
+      if (iSelStart < UTF8Length(sText)) and (cbactEndOfLineComplete in FAutoCompleteText) then
         Exit;
-      sPrefixText := UTF8Copy(Text, 1, iSelStart);
-      sCompleteText := GetCompleteText(Text, iSelStart,
+      sPrefixText := UTF8Copy(sText, 1, iSelStart);
+      sCompleteText := GetCompleteText(sText, iSelStart,
                                        cbactSearchCaseSensitive in FAutoCompleteText,
                                        cbactSearchAscending in FAutoCompleteText, Items);
       //DebugLn(['TCustomComboBox.UTF8KeyPress sCompleteText=',sCompleteText,' Text=',Text]);
-      if (sCompleteText <> Text) or (Utf8TextLen = 1) then
+      // !! must check ItemIndex to be updated, see #41358
+      // check `Utf8TextLen = 1` is unnecessary, issue #34566 is covered
+      if UpdateItemIndex(sCompleteText) or (sCompleteText <> sText) then
       begin
-        sResultText := sCompleteText;
-        if (cbactEndOfLineComplete in FAutoCompleteText)
-        and (cbactRetainPrefixCase in FAutoCompleteText) then
+        sText := sCompleteText;
+        if [cbactEndOfLineComplete, cbactRetainPrefixCase] <= FAutoCompleteText then
         begin //Retain Prefix Character cases
-          UTF8Delete(sResultText, 1, iSelStart);
-          UTF8Insert(sPrefixText, sResultText, 1);
+          UTF8Delete(sText, 1, iSelStart);
+          UTF8Insert(sPrefixText, sText, 1);
         end;
-        if Utf8TextLen = 1 then
-          Text := '';
-        Text := sResultText;
+        Text := sText;
         SelStart := iSelStart;
-        SelLength := UTF8Length(Text);
+        SelLength := UTF8Length(sText);
         DoAutoCompleteSelect;
       end;
     end;
@@ -1208,6 +1199,19 @@ begin
   TWSCustomComboBoxClass(WidgetSetClass).SetFont(Self, Font);
   TWSCustomComboBoxClass(WidgetSetClass).SetText(Self, '');
   FEmulatedTextHintStatus := thsHidden;
+end;
+
+function TCustomComboBox.UpdateItemIndex(const AValue: TCaption): Boolean;
+var
+  I: integer;
+begin
+  // when items have same text, FItems.IndexOf(AValue) gives wrong index. Issue #28683.
+  // Items can contain an empty string, set ItemIndex in that case too. Issue #39366
+  I := ItemIndex;
+  if (I < 0) or (I >= FItems.Count) or (FItems[I] <> AValue) then
+    if not (csLoading in ComponentState) then
+      ItemIndex := MatchListItem(AValue);
+  Result:= (I <> ItemIndex);
 end;
 
 {------------------------------------------------------------------------------
