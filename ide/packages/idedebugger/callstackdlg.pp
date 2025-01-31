@@ -1023,21 +1023,24 @@ var
   CntLimit: Integer;
 begin
   BeginUpdate;
-  ToolButtonPower.Down := True;
-  ToolButtonPowerClick(nil);
-  if FViewLimit = AValue then
-    Exit;
-  CStack := GetSelectedCallstack;
-  if (CStack <> nil) then begin
-    CntLimit := GetSelectedCallstack.CountLimited(FViewStart + FViewLimit+1);
-    if (CntLimit > 0) and (FViewStart + FViewLimit >= CntLimit) and (AValue > FViewLimit) then begin
-      FViewStart := CntLimit - AValue;
-      if FViewStart < 0 then FViewStart := 0;
+  try
+    ToolButtonPower.Down := True;
+    ToolButtonPowerClick(nil);
+    if FViewLimit = AValue then
+      Exit;
+    CStack := GetSelectedCallstack;
+    if (CStack <> nil) then begin
+      CntLimit := GetSelectedCallstack.CountLimited(FViewStart + FViewLimit+1);
+      if (CntLimit > 0) and (FViewStart + FViewLimit >= CntLimit) and (AValue > FViewLimit) then begin
+        FViewStart := CntLimit - AValue;
+        if FViewStart < 0 then FViewStart := 0;
+      end;
     end;
+    FViewLimit := AValue;
+    UpdateView;
+  finally
+    EndUpdate;
   end;
-  FViewLimit := AValue;
-  UpdateView;
-  EndUpdate;
 end;
 
 function TCallStackDlg.GetFunction(const Entry: TIdeCallStackEntry): string;
