@@ -1596,10 +1596,9 @@ type
     property OnStartDrag: TStartDragEvent read FOnStartDrag write FOnStartDrag;
     property OnEditingDone: TNotifyEvent read FOnEditingDone write FOnEditingDone;
   public
-    FCompStyle: Byte; // DEPRECATED. Enables (valid) use of 'IN' operator (this
-      // is a hack for speed. It will be replaced by the use of the widgetset
-      // classes.
-      // So, don't use it anymore.
+    // Enables (valid) use of 'IN' operator. A hack for speed. Will be replaced by
+    // using the widgetset classes. Now used in over 100 places in Lazarus sources.
+    FCompStyle: Byte;
   public
     // drag and dock
     procedure DragDrop(Source: TObject; X,Y: Integer); virtual;
