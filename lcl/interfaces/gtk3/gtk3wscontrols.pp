@@ -509,6 +509,7 @@ begin
   DebugLn('TGtk3WSWinControl.ShowHide ',dbgsName(AWinControl));
   {$ENDIF}
   wgt:=TGtk3Widget(AWinControl.Handle);
+  wgt.BeginUpdate;
   wgt.Visible := AWinControl.HandleObjectShouldBeVisible;
   if wgt.Visible then
   begin
@@ -520,6 +521,7 @@ begin
       wgt.GetContainerWidget^.realize;
     end;
   end;
+  wgt.EndUpdate;
 end;
 
 class procedure TGtk3WSWinControl.ScrollBy(const AWinControl: TWinControl;

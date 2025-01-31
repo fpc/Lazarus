@@ -86,7 +86,6 @@ type
     function GetVisible: Boolean;
     procedure SetEnabled(AValue: Boolean);
     procedure SetFont(AValue: PPangoFontDescription);
-    procedure SetVisible(AValue: Boolean);
     procedure SetStyleContext({%H-}AValue: PGtkStyleContext);
     class procedure DestroyWidgetEvent({%H-}w: PGtkWidget;{%H-}data:gpointer); cdecl; static;
     class function DrawWidget(AWidget: PGtkWidget; AContext: Pcairo_t; Data: gpointer): gboolean; cdecl; static;
@@ -124,6 +123,7 @@ type
     procedure SetFontColor(AValue: TColor); virtual;
     function GetWidget:PGtkWidget;
     procedure ConnectSizeAllocateSignal(ToWidget: PGtkWidget); virtual;
+    procedure SetVisible(AValue: Boolean); virtual;
   public
     LCLObject: TWinControl;
     LCLWidth: integer; {setted up only TWSControl.SetBounds}
@@ -391,6 +391,8 @@ type
   { TGtk3Container }
 
   TGtk3Container = class(TGtk3Widget)
+  protected
+    procedure SetVisible(AValue: Boolean); override;
   public
     procedure InitializeWidget; override;
     procedure AddChild(AWidget: PGtkWidget; const ALeft, ATop: Integer); virtual;
@@ -4783,6 +4785,16 @@ function motionNotifyEvent(widget: PGtkWidget; event: PGdkEvent; user_data: gpoi
 begin
   TGtk3Widget(user_data).GtkEventMouseMove(widget, event);
   Result := True;
+end;
+
+procedure TGtk3Container.SetVisible(AValue: Boolean);
+begin
+  if not AValue then
+  begin
+    Widget^.set_no_show_all(True);
+    Widget^.hide;
+  end;
+  inherited SetVisible(AValue);
 end;
 
 procedure TGtk3Container.InitializeWidget;

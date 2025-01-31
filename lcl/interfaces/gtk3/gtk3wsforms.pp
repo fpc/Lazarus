@@ -298,7 +298,7 @@ begin
 
     AWindow^.realize;
   end;
-
+  AGtk3Widget.BeginUpdate;
   AGtk3Widget.Visible := ShouldBeVisible;
 
   if AGtk3Widget.Visible then
@@ -337,6 +337,7 @@ begin
         AWindow^.set_transient_for(nil);
     end;
   end;
+  AGtk3Widget.EndUpdate;
 end;
 
 class procedure TGtk3WSCustomForm.CloseModal(const ACustomForm: TCustomForm);
