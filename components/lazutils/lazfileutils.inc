@@ -217,7 +217,7 @@ end;
   is not threadsafe (at least on Windows platform)
 
   - Dest and Source must either be both absolute filenames, or relative
-  - Dest and Source cannot contain '..' since no expanding is done by design
+  - Dest and Source cannot contain '/../' since no expanding is done by design
   - Dest and Source must be on same drive or UNC path (Windows)
   - if both Dest and Source are relative they must at least share their base directory
   - Double PathDelims are ignored (unless they are part of the UNC convention)
@@ -298,7 +298,10 @@ var
 begin
   Result := False;
   if (Dest = '') or (Source = '') then Exit;
-  if (Pos('..',Dest) > 0) or (Pos('..',Source) > 0) then Exit;
+  // double period components (meaning parent directory) are not allowed in input
+  if Pos('/../', '/' + SwitchPathDelims(Source, pdsUnix) + '/') > 0 then Exit;
+  if Pos('/../', '/' + SwitchPathDelims(Dest  , pdsUnix) + '/') > 0 then Exit;
+
   SourceRoot := ExtractFileRoot(Source);
   DestRoot := ExtractFileRoot(Dest);
   //debugln('TryCreaterelativePath: DestRoot = "',DestRoot,'"');

@@ -165,6 +165,20 @@ procedure TTestLazFileUtils.TestCreateRelativePath;
       CreateRelativePath(Filename,BaseDirectory,UsePointDirectory));
   end;
 
+  // testing an absolute path and its relative variant
+  procedure DoTest2(Filename, BaseDirectory, Expected: string;
+    UsePointDirectory: boolean = false);
+  begin
+    // absolute paths
+    DoTest(Filename, BaseDirectory, Expected, UsePointDirectory);
+    // relative paths
+    if Filename = Expected then
+      Delete(Expected, 1, 1);
+    Delete(Filename, 1, 1);
+    Delete(BaseDirectory, 1, 1);
+    DoTest(Filename, BaseDirectory, Expected);
+  end;
+
 begin
   DoTest('/a','/a','');
   DoTest('/a','/a','.',true);
@@ -187,8 +201,43 @@ begin
   DoTest('/a','/b','/a');
   DoTest('~/bin','/','~/bin');
   DoTest('$(HOME)/bin','/','$(HOME)/bin');
+
+  // single period in file
+  DoTest2('/dir/file.'    , '/dir', 'file.'    );
+  DoTest2('/dir/.file'    , '/dir', '.file'    );
+  DoTest2('/dir/.file.'   , '/dir', '.file.'   );
+  DoTest2('/dir/file.name', '/dir', 'file.name');
+  // single period in directory
+  DoTest2('/dir/dir2./file.txt'    , '/dir', 'dir2./file.txt'    );
+  DoTest2('/dir/.dir2/file.txt'    , '/dir', '.dir2/file.txt'    );
+  DoTest2('/dir/.dir2./file.txt'   , '/dir', '.dir2./file.txt'   );
+  DoTest2('/dir/dir2.name/file.txt', '/dir', 'dir2.name/file.txt');
+  // double period in file
+  DoTest2('/dir/file..'    , '/dir', 'file..'    );
+  DoTest2('/dir/..file'    , '/dir', '..file'    );
+  DoTest2('/dir/..file..'  , '/dir', '..file..'  );
+  DoTest2('/dir/file..name', '/dir', 'file..name');
+  // double period in directory
+  DoTest2('/dir/dir2../file.txt'    , '/dir', 'dir2../file.txt'    );
+  DoTest2('/dir/..dir2/file.txt'    , '/dir', '..dir2/file.txt'    );
+  DoTest2('/dir/..dir2../file.txt'  , '/dir', '..dir2../file.txt'  );
+  DoTest2('/dir/dir2..name/file.txt', '/dir', 'dir2..name/file.txt');
+  // triple period (no special purpose)
+  DoTest2('/dir/dir/...' , '/dir', 'dir/...');
+  DoTest2('/dir/.../file', '/dir', '.../file');
+  // illegal input must return the original value
+  DoTest2('/dir/../file', '/dir'       , '/dir/../file');
+  DoTest2('/dir/..'     , '/dir'       , '/dir/..'     );
+  DoTest2('/dir/file'   , '/dir/../dir', '/dir/file'   );
+  DoTest2('/dir'        , '/dir/..'    , '/dir'        );
+  DoTest2('/../dir/file', '/../dir'    , '/../dir/file');
+  DoTest2('/dir/file'   , '/../'       , '/dir/file'   );
+
   {$IFDEF MSWindows}
   DoTest('D:\a\b\c.pas','D:\a\d\','..\b\c.pas');
+  // different delimiters
+  DoTest('D:\dir../file', 'D:\dir..', 'file');
+  DoTest('D:\dir\../file', 'D:\dir', 'D:\dir\../file');
   {$ENDIF}
 end;
 
