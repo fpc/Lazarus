@@ -3406,9 +3406,10 @@ classes to perform the actions needed for the DOM node specialization.
 <short>DOM Node to examine in the method.</short>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TDOMNodeList.BuildList">
-<short>Fills the node list using the node filter.</short>
+<short>
+Fills the node list using the node filter.
+</short>
 <descr>
 <p>
 <var>BuildList</var> is a virtual method used to get the <var>TDOMNode</var> 
@@ -3426,9 +3427,6 @@ should be included in the node list. If the return value from NodeFilter
 indicates that recursion is allowed, the child nodes for each child node are 
 also visited and examined.
 </p>
-<remark>
-BuildList is marked as deprecated in TDOMNode. Use NodeFilter instead.
-</remark>
 </descr>
 <seealso>
 <link id="TDOMNodeList.NodeFilter"/>
