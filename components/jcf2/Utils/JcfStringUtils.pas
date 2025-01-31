@@ -126,7 +126,6 @@ function StrCharCount(const S: string; C: Char): Integer;
 function StrStrCount(const S, SubS: string): Integer;
 function StrRepeat(const S: string; Count: Integer): string;
 procedure StrReplace(var S: string; const Search, Replace: string; Flags: TReplaceFlags = []);
-function StrSearch(const Substr, S: string; const Index: Integer = 1): Integer; inline; deprecated 'Use Pos instead';
 function StrFind(const Substr, S: string; const Index: Integer = 1): Integer;
 
 function BooleanToStr(B: Boolean): string;
@@ -412,11 +411,6 @@ end;
 procedure StrReplace(var S: string; const Search, Replace: string; Flags: TReplaceFlags = []);
 begin
   S := StringReplace(S, Search, Replace, Flags);
-end;
-
-function StrSearch(const Substr, S: string; const Index: Integer = 1): Integer;
-begin
-  Result := Pos(SubStr, S ,Index);
 end;
 
 function StrFind(const Substr, S: string; const Index: Integer = 1): Integer;

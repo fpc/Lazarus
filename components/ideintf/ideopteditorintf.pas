@@ -55,10 +55,6 @@ type
     procedure GetSynEditorSettings(ASynEdit: TObject; SimilarEdit: TObject = nil); virtual; abstract;
     // read-only access to options needed by external packages.
     // feel free to extend when needed
-    function CreateSynHighlighter(LazSynHilighter: TLazSyntaxHighlighter): TObject; virtual; abstract; // returns sub-class of TSynCustomHighlighter
-      deprecated 'Use IdeSyntaxHighlighters (to be removed in 4.99)';
-    function ExtensionToLazSyntaxHighlighter(Ext: String): TLazSyntaxHighlighter; virtual; abstract;
-      deprecated 'Use IdeSyntaxHighlighters.GetIdForLazSyntaxHighlighter (to be removed in 4.99)';
     property TabPosition: TTabPosition read GetTabPosition;
   end;
 

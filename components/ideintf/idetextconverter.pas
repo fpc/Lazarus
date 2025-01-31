@@ -26,10 +26,8 @@ interface
 
 uses
   Classes, SysUtils, TypInfo, System.UITypes,
-  // LCL
-  LCLProc,
   // LazUtils
-  FileUtil, LazFileUtils, LazUTF8, LazLoggerBase,
+  FileUtil, LazFileUtils, LazUTF8, LazLoggerBase, LazTracer, LazUtilities,
   // IdeIntf
   SrcEditorIntf, PropEdits, ObjInspStrConsts;
   

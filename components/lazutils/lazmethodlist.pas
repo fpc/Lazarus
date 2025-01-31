@@ -65,8 +65,6 @@ type
   end;
 
 function SameMethod(const m1, m2: TMethod): boolean; inline;
-function CompareMethods(const m1, m2: TMethod): boolean; inline;
-    deprecated 'Use SameMethod instead.'; // In 2.3 October 2021. Remove in 2.5.
 
 
 implementation
@@ -78,11 +76,6 @@ begin
 // contain conditional statements, which is more efficient on modern processors
   Result:=(m1.Code=m2.Code) and (m1.Data=m2.Data);
 {$POP}
-end;
-
-function CompareMethods(const m1, m2: TMethod): boolean;
-begin
-  Result := SameMethod(m1, m2);
 end;
 
 { TMethodList.TItemsEnumerator }

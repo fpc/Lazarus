@@ -89,7 +89,7 @@ begin
     exit;
 
   rev := LazarusRevisionStr;
-  if IsNumber(rev) then
+  if IsNumeric(rev) then
     NewCaption := Format(lisLazarusEditorV + ' r%s',
                          [LazarusVersionStr, rev])
   else

@@ -144,8 +144,6 @@ function GetFPCParameterSrcFile(const CmdLine: string): string;
 // store date locale independent, thread safe
 const DateAsCfgStrFormat=LazConfigStorage.DateAsCfgStrFormat;
 const DateTimeAsCfgStrFormat=LazConfigStorage.DateTimeAsCfgStrFormat;
-function DateToCfgStr(const Date: TDateTime; const aFormat: string = DateAsCfgStrFormat): string; deprecated 'use LazConfigStorage';
-function CfgStrToDate(const s: string; out Date: TDateTime; const aFormat: string = DateAsCfgStrFormat): boolean; deprecated 'use LazConfigStorage';
 
 procedure CTIncreaseChangeStamp(var ChangeStamp: integer); inline;
 procedure CTIncreaseChangeStamp64(var ChangeStamp: int64); inline;
@@ -263,17 +261,6 @@ implementation
 uses
   Unix;
 {$ENDIF}
-
-function DateToCfgStr(const Date: TDateTime; const aFormat: string): string;
-begin
-  Result:=LazConfigStorage.DateToCfgStr(Date,aFormat);
-end;
-
-function CfgStrToDate(const s: string; out Date: TDateTime;
-  const aFormat: string): boolean;
-begin
-  Result:=LazConfigStorage.CfgStrToDate(s,Date,aFormat);
-end;
 
 procedure CTIncreaseChangeStamp(var ChangeStamp: integer);
 begin

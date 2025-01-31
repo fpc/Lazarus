@@ -9003,13 +9003,13 @@ procedure TMainIDE.UpdateCaption;
   end;
 
 var
-  rev, NewCaption, DirName, CustomCaption: String;
+  rev, NewCaption, CustomCaption: String;
   OldMarkUnhandledMacros: boolean;
 begin
   if MainIDEBar = nil then Exit;
   if ToolStatus = itExiting then Exit;
   rev := LazarusRevisionStr;
-  if IsNumber(rev) then
+  if IsNumeric(rev) then
     NewCaption := Format(lisLazarusEditorV + ' r%s',
                          [LazarusVersionStr, rev])
   else

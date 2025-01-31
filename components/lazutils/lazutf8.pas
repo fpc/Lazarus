@@ -184,10 +184,6 @@ function UTF8CompareStrP(S1, S2: PChar): PtrInt;
 function UTF8CompareStr(S1: PChar; Count1: SizeInt; S2: PChar; Count2: SizeInt): PtrInt;
 function UTF8CompareText(const S1, S2: string): PtrInt;
 function UTF8CompareTextP(S1, S2: PChar): PtrInt;
-// Deprecated in Lazarus 3.99, February 2024.
-function UTF8CompareLatinTextFast(S1, S2: String): PtrInt; deprecated 'Use UTF8CompareText or AnsiCompareText instead.';
-function UTF8CompareStrCollated(const S1, S2: string): PtrInt; deprecated 'Use UTF8CompareStr instead.';
-function CompareStrListUTF8LowerCase(List: TStringList; Index1, Index2: Integer): Integer;
 
 type
 
@@ -222,10 +218,6 @@ function UTF8ToUTF16(const S: AnsiString): UnicodeString; overload; inline;
 function UTF8ToUTF16(const P: PChar; ByteCnt: SizeUInt): UnicodeString; overload;
 function UTF16ToUTF8(const S: UnicodeString): AnsiString; overload; inline;
 function UTF16ToUTF8(const P: PWideChar; WideCnt: SizeUInt): AnsiString; overload;
-
-// locale
-procedure LazGetLanguageIDs(var Lang, FallbackLang: String); deprecated 'Use GetLanguageID function from Translations unit instead'; // Lazarus 2.3.0
-procedure LazGetShortLanguageID(var Lang: String); deprecated 'Use GetLanguageID function from Translations unit instead'; // Lazarus 2.3.0
 
 var
   FPUpChars: array[char] of char;
@@ -3581,27 +3573,6 @@ begin
   Result := WideCompareText(UTF8ToUTF16(S1,StrLen(S1)), UTF8ToUTF16(S2,StrLen(S2)));
 end;
 
-function UTF8CompareLatinTextFast(S1, S2: String): PtrInt;
-begin
-  Result := UTF8CompareText(S1, S2);
-end;
-
-function UTF8CompareStrCollated(const S1, S2: string): PtrInt;
-begin
-  {$IFDEF ACP_RTL}
-    //Only with this define AnsiCompareStr does not point to Utf8CompareStr
-    Result := AnsiCompareStr(UTF8ToSys(S1), UTF8ToSys(S2));
-  {$ELSE}
-    Result := Utf8CompareStr(S1,S2);
-  {$ENDIF}
-end;
-
-function CompareStrListUTF8LowerCase(List: TStringList; Index1, Index2: Integer
-  ): Integer;
-begin
-  Result:=UTF8CompareText(List[Index1],List[Index2]);
-end;
-
 {------------------------------------------------------------------------------
   Name:    ConvertUTF8ToUTF16
   Params:  Dest                - Pointer to destination string
@@ -4027,29 +3998,6 @@ begin
     SetLength(Result, L - 1);
   end else
     Result := '';
-end;
-
-procedure LazGetLanguageIDs(var Lang, FallbackLang: String);
-var
-  LangID: TLanguageID;
-begin
-  LangID := GetLanguageID;
-  Lang := LangID.LanguageID;
-  FallbackLang := LangID.LanguageCode;
-end;
-
-{
-This routine will return current short language ID (without the country code).
-
-Ideally the resulting ID from here should conform to ISO 639-1
-or ISO 639-2, if the language has no code in ISO 639-1.
-}
-procedure LazGetShortLanguageID(var Lang: String);
-var
-  LangID: TLanguageID;
-begin
-  LangID := GetLanguageID;
-  Lang := LangID.LanguageCode;
 end;
 
 procedure InitFPUpchars;

@@ -160,10 +160,6 @@ type
     );
   TProjectBuildFlags = set of TProjectBuildFlag;
 
-  // Deprecase in Lazarus 3.99, March 2024.
-  TSearchIDEFileFlag = BaseIDEIntf.TSearchIDEFileFlag deprecated 'Use the definition from BaseIDEIntf';
-  TSearchIDEFileFlags = BaseIDEIntf.TSearchIDEFileFlags deprecated 'Use the definition from BaseIDEIntf';
-
   // find unit flags
   // Normally you don't need to pass any flags.
   TFindUnitFileFlag = (

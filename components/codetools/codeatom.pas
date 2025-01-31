@@ -112,10 +112,8 @@ type
           // 0=current=last added
           // -1=prior current, added before current ...
           // 1=next first undo item, ...
-    function GetValueAt(ReverseRelativePos:integer): TAtomPosition; inline; deprecated 'use GetAtomAt(-1-index)'; // Laz 1.9
     function IndexOf(StartPos: integer; out RelativePos: integer): boolean;
     procedure SetIndex(RelativePos: integer);
-    function Count: integer; inline; deprecated 'use HasPrior or PriorCount instead'; // Laz 1.9
     function PriorCount: integer; inline;
     function NextCount: integer; inline;
     function HasNext: boolean; inline;
@@ -396,11 +394,6 @@ begin
   Result:=CleanAtomPosition;
 end;
 
-function TAtomRing.GetValueAt(ReverseRelativePos: integer): TAtomPosition;
-begin
-  Result:=GetAtomAt(-1-ReverseRelativePos);
-end;
-
 function TAtomRing.IndexOf(StartPos: integer; out RelativePos: integer): boolean;
 var
   p, l, r, m: Integer;
@@ -438,11 +431,6 @@ procedure TAtomRing.SetIndex(RelativePos: integer);
 begin
   FCur:=(FCur+FSize+RelativePos) and FMask;
   {$IFDEF CheckAtomRing}ConsistencyCheck;{$ENDIF}
-end;
-
-function TAtomRing.Count: integer;
-begin
-  Result:=PriorCount;
 end;
 
 procedure TAtomRing.Clear;

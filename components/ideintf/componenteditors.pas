@@ -21,10 +21,10 @@ interface
 uses
   Classes, SysUtils, TypInfo,
   // LCL
-  LCLProc, Forms, Controls, Menus, ExtCtrls, CustomTimer,
+  Forms, Controls, Menus, ExtCtrls, CustomTimer,
   Grids, CheckLst, ComCtrls, Dialogs,
   // LazUtils
-  Maps, LazLoggerBase, LazUTF8,
+  Maps, LazUtilities, LazLoggerBase, LazUTF8,
   // BuildIntf
   ComponentReg,
   // IdeIntf

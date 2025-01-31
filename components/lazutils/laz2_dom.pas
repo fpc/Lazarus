@@ -348,7 +348,7 @@ type
     function GetCount: LongWord;
     function GetItem(index: LongWord): TDOMNode;
     function NodeFilter({%H-}aNode: TDOMNode): TFilterResult; virtual;
-    procedure BuildList; virtual; deprecated 'Use NodeFilter instead.';
+    procedure BuildList; virtual;
   public
     constructor Create(ANode: TDOMNode);
     destructor Destroy; override;

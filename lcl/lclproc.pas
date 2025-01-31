@@ -110,16 +110,6 @@ var
 function SendApplicationMessage(Msg: Cardinal; WParam: WParam; LParam: LParam):Longint;
 procedure OwnerFormDesignerModified(AComponent: TComponent);
 
-// Deprecated in version 2.3, 2023-06.
-procedure FreeThenNil(var obj); deprecated 'Use LazUtilities.FreeThenNil instead';
-function CompareRect(R1, R2: PRect): Boolean; deprecated 'Use GraphMath.SameRect instead';
-function OffsetRect(var Rect: TRect; DX, DY: Integer): Boolean; deprecated 'Use Types.OffsetRect instead';
-procedure MoveRect(var ARect: TRect; x, y: Integer); deprecated 'Use GraphMath.MoveRect instead';
-procedure MoveRectToFit(var ARect: TRect; const MaxRect: TRect); deprecated 'Use GraphMath.MoveRectToFit instead';
-procedure MakeMinMax(var i1, i2: integer); deprecated 'Use GraphMath.MakeMinMax instead';
-procedure CalculateLeftTopWidthHeight(X1,Y1,X2,Y2: integer;
-  out Left,Top,Width,Height: integer); deprecated 'Use GraphMath.CalculateLeftTopWidthHeight instead';
-
 { the LCL interfaces finalization sections are called before the finalization
   sections of the LCL. Those parts, that should be finalized after the LCL, can
   be registered here. }
@@ -232,18 +222,6 @@ procedure DbgAppendToFileWithoutLn(FileName, S: String);
 // case..of utility functions
 function ClassCase(const AClass: TClass; const ACase: array of TClass {; const ADescendant: Boolean = True}): Integer; overload;
 function ClassCase(const AClass: TClass; const ACase: array of TClass; const ADescendant: Boolean): Integer; overload;
-
-// Deprecated in Lazarus 3.99 July 2023.
-function UTF16CharacterLength(p: PWideChar): integer; deprecated 'Use LazUTF16.UTF16CharacterLength instead';
-function UTF16Length(const s: UnicodeString): PtrInt; deprecated 'Use LazUTF16.UTF16Length instead';
-function UTF16Length(p: PWideChar; WordCount: PtrInt): PtrInt; deprecated 'Use LazUTF16.UTF16Length instead';
-function UTF16CharacterToUnicode(p: PWideChar; out CharLen: integer): Cardinal; deprecated 'Use LazUTF16.UTF16CharacterToUnicode instead';
-function UnicodeToUTF16(u: cardinal): UnicodeString; deprecated 'Use LazUTF16.UnicodeToUTF16 instead';
-
-// identifier
-// Deprecated in Lazarus 3.99 April 2024.
-function CreateFirstIdentifier(const Identifier: string): string; deprecated 'Use LazUtilities.CreateFirstIdentifier instead';
-function CreateNextIdentifier(const Identifier: string): string; deprecated 'Use LazUtilities.CreateNextIdentifier instead';
 
 // Font
 function IsFontNameDefault(const AName: string): boolean; inline;
@@ -837,42 +815,6 @@ begin
     if OwnerFormDesignerModifiedProc<>nil then
       OwnerFormDesignerModifiedProc(AComponent);
   end;
-end;
-
-procedure FreeThenNil(var obj);
-begin
-  LazUtilities.FreeThenNil(obj);
-end;
-
-function CompareRect(R1, R2: PRect): Boolean;
-begin
-  Result := GraphMath.SameRect(R1, R2);
-end;
-
-function OffsetRect(var Rect: TRect; DX, DY: Integer): Boolean;
-begin
-  Result := Types.OffsetRect(Rect, DX, DY);
-end;
-
-procedure MoveRect(var ARect: TRect; x, y: Integer);
-begin
-  GraphMath.MoveRect(ARect, x, y);
-end;
-
-procedure MoveRectToFit(var ARect: TRect; const MaxRect: TRect);
-begin
-  GraphMath.MoveRectToFit(ARect, MaxRect);
-end;
-
-procedure MakeMinMax(var i1, i2: integer);
-begin
-  GraphMath.MakeMinMax(i1, i2);
-end;
-
-procedure CalculateLeftTopWidthHeight(X1, Y1, X2, Y2: integer;
-  out Left, Top, Width, Height: integer);
-begin
-  GraphMath.CalculateLeftTopWidthHeight(X1, Y1, X2, Y2, Left, Top, Width, Height);
 end;
 
 procedure RegisterInterfaceInitializationHandler(p: TProcedure);
@@ -1561,41 +1503,6 @@ begin
   end;
 
   Result := -1;
-end;
-
-function UTF16CharacterLength(p: PWideChar): integer;
-begin
-  Result:=LazUTF16.UTF16CharacterLength(p);
-end;
-
-function UTF16Length(const s: UnicodeString): PtrInt;
-begin
-  Result:=LazUTF16.UTF16Length(s);
-end;
-
-function UTF16Length(p: PWideChar; WordCount: PtrInt): PtrInt;
-begin
-  Result:=LazUTF16.UTF16Length(p, WordCount);
-end;
-
-function UTF16CharacterToUnicode(p: PWideChar; out CharLen: integer): Cardinal;
-begin
-  Result:=LazUTF16.UTF16CharacterToUnicode(p, CharLen);
-end;
-
-function UnicodeToUTF16(u: cardinal): UnicodeString;
-begin
-  Result:=LazUTF16.UnicodeToUTF16(u);
-end;
-
-function CreateFirstIdentifier(const Identifier: string): string;
-begin
-  Result:=LazUtilities.CreateFirstIdentifier(Identifier);
-end;
-
-function CreateNextIdentifier(const Identifier: string): string;
-begin
-  Result:=LazUtilities.CreateNextIdentifier(Identifier);
 end;
 
 function IsFontNameDefault(const AName: string): boolean;

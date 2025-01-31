@@ -66,11 +66,6 @@ const
   {$ENDIF}
   mrLast    = System.UITypes.mrLast;
 
-//function GetModalResultStr(ModalResult: TModalResult): ShortString;
-//  deprecated 'Use the ModalResultStr array from unit System.UITypes directly.';
-//property ModalResultStr[ModalResult: TModalResult]: shortstring read GetModalResultStr;
-
-const
   // define aliases for Delphi compatibility
   fsSurface = GraphType.fsSurface;
   fsBorder = GraphType.fsBorder;
@@ -1805,7 +1800,6 @@ type
     property Enabled: Boolean read GetEnabled write SetEnabled stored IsEnabledStored default True;
     property Font: TFont read FFont write SetFont stored IsFontStored;
     property IsControl: Boolean read FIsControl write FIsControl;
-    property MouseEntered: Boolean read FMouseInClient; deprecated 'use MouseInClient instead';// changed in 1.9, will be removed in 1.11
     property MouseInClient: Boolean read FMouseInClient;
     property OnChangeBounds: TNotifyEvent read FOnChangeBounds write FOnChangeBounds;
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
@@ -3061,11 +3055,6 @@ end;
 function DbgS(fs: TFormStyle): string;
 begin
   WriteStr(Result, fs);
-end;
-
-function GetModalResultStr(ModalResult: TModalResult): ShortString;
-begin
-  Result := System.UITypes.ModalResultStr[ModalResult];
 end;
 
 {------------------------------------------------------------------------------

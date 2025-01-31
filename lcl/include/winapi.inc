@@ -1534,38 +1534,12 @@ begin
   Result := aParam and $FFFF;
 end;
 
-{------------------------------------------------------------------------------
-  Function: OffsetRect
-  Params:   Rect: points to structure that moves.
-            dx  : amount to move the rect to left or right.  Must be negative to move to left.
-            dy  : amount to move the rect up or down.  Mmust be negative to move up.
-  Returns:  True if succesful
-
-  Moves the rectangle up or down, left or right.
- ------------------------------------------------------------------------------}
-function OffsetRect(var Rect: TRect; dx,dy: Integer): Boolean;
-begin
-  Result:=Types.OffsetRect(Rect,dx,dy);
-end;
-
-{------------------------------------------------------------------------------
-  Function: PointtoSmallPoint
-  Params:
-  Returns:
-
- ------------------------------------------------------------------------------}
 function PointtoSmallPoint(const P : TPoint) : TSmallPoint; inline;
 begin
   Result.X := P.X;
   Result.Y := P.Y;
 end;
 
-{------------------------------------------------------------------------------
-  Function: PointToSmallPointNoChecks
-  Params:
-  Returns:
-
- ------------------------------------------------------------------------------}
 function PointToSmallPointNoChecks(const P : TPoint) : TSmallPoint; inline;
 begin
   {$PUSH}

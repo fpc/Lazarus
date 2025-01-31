@@ -43,7 +43,6 @@ function LazStartsText(const ASubText, AText: string): Boolean;
 function LazEndsText(const ASubText, AText: string): Boolean;
 function PosI(const SubStr, S: string): integer;
 function IsNumeric(s: String): Boolean;
-function IsNumber(s: String): Boolean; deprecated 'Use IsNumeric; to be removed in v4.99';
 
 // Functions for line endings
 function LineEndingCount(const Txt: string; var LengthOfLastLine: integer): integer;
@@ -109,10 +108,6 @@ function StrLScan(P: PChar; c: Char; MaxLen: Cardinal): PChar;
 // To and from a file.
 function SaveStringToFile(const aString, aFileName: String): Boolean;
 function LoadStringFromFile(const aFileName: String): String;
-
-// Like IsValidIdent() in FPC 3.1.
-function LazIsValidIdent(const Ident: string; AllowDots: Boolean = False;
-                         StrictDots: Boolean = False): Boolean; deprecated 'Use SysUtils.IsValidIdent instead';   //Remove in 4.99
 
 const
   MaxTextLen = 80;
@@ -217,11 +212,6 @@ begin
     Result := i = 0;
   end else
     Result := false;
-end;
-
-function IsNumber(s: String): Boolean;
-begin
-  Result := IsNumeric(s);
 end;
 
 function LineEndingCount(const Txt: string; var LengthOfLastLine: integer): integer;
@@ -1440,12 +1430,6 @@ begin
   finally
     fs.Free;
   end;
-end;
-
-function LazIsValidIdent(const Ident: string; AllowDots: Boolean = False;
-                         StrictDots: Boolean = False): Boolean;
-begin
-  Result := SysUtils.IsValidIdent(Ident, AllowDots, StrictDots);
 end;
 
 end.

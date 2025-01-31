@@ -1870,10 +1870,6 @@ type
     procedure GetHighlighterSettings(Syn: TSrcIDEHighlighter); // read highlight settings from config file
     procedure GetSynEditorSettings(ASynEdit: TObject; SimilarEdit: TObject = nil); override;
     procedure GetSynEditSettings(ASynEdit: TSynEdit; SimilarEdit: TSynEdit = nil); // read synedit settings from config file
-    function CreateSyn(LazSynHilighter: TLazSyntaxHighlighter): TSrcIDEHighlighter;
-      deprecated 'Use IdeSyntaxHighlighters (to be removed in 4.0)';
-    function CreateSynHighlighter(LazSynHilighter: TLazSyntaxHighlighter): TObject; override;
-      deprecated 'Use IdeSyntaxHighlighters (to be removed in 4.0)';
     procedure GetSynEditPreviewSettings(APreviewEditor: TObject);
     procedure SetMarkupColor(Syn: TSrcIDEHighlighter;
                              AddHilightAttr: TAdditionalHilightAttribute;
@@ -1881,8 +1877,6 @@ type
     procedure SetMarkupColors(aSynEd: TSynEdit);
     procedure ApplyFontSettingsTo(ASynEdit: TSynEdit);
     procedure ApplyTabFontSettingsTo(APageCtrl: TPageControl);
-    function ExtensionToLazSyntaxHighlighter(Ext: String): TLazSyntaxHighlighter; override;
-      deprecated 'Use IdeSyntaxHighlighters.GetIdForFileExtension (to be removed in 4.0)';
   public
     // general options
     property SynEditOptions: TSynEditorOptions
@@ -6650,16 +6644,6 @@ begin
     APageCtrl.Font.Quality := fqDefault;
 end;
 
-function TEditorOptions.ExtensionToLazSyntaxHighlighter(Ext: String): TLazSyntaxHighlighter;
-var
-  LangID: Integer;
-begin
-  Result := lshNone;
-  LangID := HighlighterList.GetIdForFileExtension(Ext);
-  if LangID >= 0 then
-    Result := HighlighterList[LangID].TheType;
-end;
-
 procedure TEditorOptions.GetSynEditSettings(ASynEdit: TSynEdit; SimilarEdit: TSynEdit);
 // read synedit settings from config file
 // if SimilarEdit is given it is used for speed up
@@ -6924,24 +6908,6 @@ begin
   finally
     ASynEdit.EndUpdate;
   end;
-end;
-
-function TEditorOptions.CreateSyn(LazSynHilighter: TLazSyntaxHighlighter): TSrcIDEHighlighter;
-var
-  L: TEditOptLanguageInfo;
-begin
-  Result := nil;
-  L := HighlighterList[HighlighterList.GetIdForLazSyntaxHighlighter(LazSynHilighter)];
-  if L <> nil then begin
-    Result := L.CreateNewSynInstance;
-    GetHighlighterSettings(Result);
-  end;
-end;
-
-function TEditorOptions.CreateSynHighlighter(
-  LazSynHilighter: TLazSyntaxHighlighter): TObject;
-begin
-  Result := CreateSyn(LazSynHilighter){%H-};
 end;
 
 procedure TEditorOptions.GetSynEditPreviewSettings(APreviewEditor: TObject);
