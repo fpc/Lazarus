@@ -8,6 +8,7 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
   Constraints.MinWidth = 500
   KeyPreview = True
   Position = poWorkAreaCenter
+  OnClose = FormClose
   OnKeyDown = FormKeyDown
   OnShow = FormShow
   object ButtonPanel: TButtonPanel[0]
