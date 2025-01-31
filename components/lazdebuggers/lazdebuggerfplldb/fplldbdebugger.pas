@@ -1102,8 +1102,10 @@ end;
 function TFpLldbLineInfo.HasAddress(const AIndex: Integer; const ALine: Integer
   ): Boolean;
 var
-  Map: PDWarfLineMap;
+  Map, Map2: PDWarfLineMap;
   dummy: TDBGPtrArray;
+  FullName, BaseName: String;
+  i: Integer;
 begin
   Result := False;
   if not FpDebugger.HasDwarf then
@@ -1112,6 +1114,21 @@ begin
   Map := PDWarfLineMap(FRequestedSources.Objects[AIndex]);
   if Map <> nil then
     Result := Map^.GetAddressesForLine(ALine, dummy, True);
+
+  if map = nil then begin
+    FullName := FRequestedSources[AIndex];
+    BaseName := ExtractFileName(FullName);
+    if (FullName <> BaseName) then begin
+      i := FRequestedSources.IndexOf(BaseName);
+      if i >= 0 then begin
+        Map2 := PDWarfLineMap(FRequestedSources.Objects[i]);
+        if (Map2 <> nil) and (Map2 <> Map) then begin
+          dummy:=nil;
+          Result := Map2^.GetAddressesForLine(ALine, dummy, True);
+        end;
+      end;
+    end;
+  end;
 end;
 
 function TFpLldbLineInfo.GetInfo(AAdress: TDbgPtr; out ASource, ALine,
@@ -1131,10 +1148,16 @@ begin
 end;
 
 procedure TFpLldbLineInfo.Request(const ASource: String);
+var
+  BaseName: String;
 begin
   if not FpDebugger.HasDwarf then
     exit;
   FRequestedSources.AddObject(ASource, TObject(FpDebugger.FDwarfInfo.GetLineAddressMap(ASource)));
+  BaseName := ExtractFileName(ASource);
+  if (ASource <> BaseName) and (IndexOf(BaseName) < 0) then
+    FRequestedSources.AddObject(ASource, TObject(FpDebugger.FDwarfInfo.GetLineAddressMap(BaseName)));
+
   DoChange(ASource);
 end;
 
