@@ -8370,7 +8370,9 @@ the enumeration values and their meanings.
 </element>
 
 <element name="TCustomForm.Monitor">
-<short>Contains the Monitor where the form is shown.</short>
+<short>
+Returns the Monitor where the form is shown.
+</short>
 <descr>
 <p>
 <var>Monitor</var> is a read-only <var>TMonitor</var> property which contains 
@@ -8408,8 +8410,9 @@ used as the monitor where the form is located.
 </dd>
 <dt>poOwnerFormCenter</dt>
 <dd>
-When Owner is a different TCustomForm instance than the current class, the 
-monitor in TApplication.MainForm is used.
+When Owner is both assigned and a different TCustomForm instance than the 
+current class, the Monitor property in Owner is used. Otherwise, the value 
+from GetDefaultMonitor is used as the Monitor for the form instance.
 </dd>
 </dl>
 <p>
@@ -8435,10 +8438,12 @@ poDefaultPosOnly.
 <link id="TCustomForm.DefaultMonitor"/>
 <link id="Screen"/>
 <link id="TScreen"/>
-<link id="Application"/>
+<link id="TApplication.MainForm"/>
 <link id="TApplication"/>
+<link id="Application"/>
 <link id="TMonitor"/>
 <link id="GetParentForm"/>
+<link id="#rtl.classes.TComponent.Owner">TComponent.Owner</link>
 </seealso>
 </element>
 
