@@ -102,6 +102,7 @@ type
     procedure DoCreateNodeClass(var NewNodeClass: TTreeNodeClass); override;
     procedure Loaded; override;
     function CreateNode: TTreeNode; override;
+    function CreateRootNode(const APath: String): TTreeNode;
     { Other methods specific to Lazarus }
     function  PopulateTreeNodeWithFiles(
       ANode: TTreeNode; ANodePath: string): Boolean;
@@ -586,6 +587,19 @@ begin
     Raise EShellCtrl.Create(sShellTreeViewIncorrectNodeType);
 end;
 
+function TCustomShellTreeView.CreateRootNode(const APath: string): TTreeNode;
+var
+  dirInfo: TSearchRec;
+begin
+  Result := Items.AddChild(nil, APath);
+  TShellTreeNode(Result).SetBasePath('');
+  FindFirstUTF8(APath, faAnyFile, dirInfo);
+  TShellTreeNode(Result).FFileInfo := dirInfo;
+  FindCloseUTF8(dirInfo);
+  Result.HasChildren := True;
+  Result.Expand(False);
+end;
+
 procedure TCustomShellTreeView.SetRoot(const AValue: string);
 var
   RootNode: TTreeNode;
@@ -616,12 +630,7 @@ begin
     //Make FRoot contain fully qualified pathname, we need it later in GetPathFromNode()
     FRoot := ExpandFileNameUtf8(FRoot);
     //Set RootNode.Text to AValue so user can choose if text is fully qualified path or not
-    RootNode := Items.AddChild(nil, AValue);
-    TShellTreeNode(RootNode).FFileInfo.Attr := FileGetAttr(FRoot);
-    TShellTreeNode(RootNode).FFileInfo.Name := FRoot;
-    TShellTreeNode(RootNode).SetBasePath('');
-    RootNode.HasChildren := True;
-    RootNode.Expand(False);
+    RootNode := CreateRootNode(AValue);
   end;
   if Assigned(ShellListView) then
     ShellListView.Root := FRoot;
@@ -645,9 +654,7 @@ begin
       PopulateWithBaseFiles()
     else
     begin
-      RootNode := Items.AddChild(nil, FRoot);
-      RootNode.HasChildren := True;
-      RootNode.Expand(False);
+      RootNode := CreateRootNode(FRoot);
       try
        SetPath(CurrPath);
       except
@@ -703,9 +710,7 @@ begin
       PopulateWithBaseFiles()
     else
     begin
-      RootNode := Items.AddChild(nil, FRoot);
-      RootNode.HasChildren := True;
-      RootNode.Expand(False);
+      RootNode := CreateRootNode(FRoot);
       try
        SetPath(CurrPath);
       except
