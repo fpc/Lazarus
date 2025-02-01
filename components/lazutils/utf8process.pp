@@ -54,7 +54,11 @@ type
   end;
 {$ENDIF}
 
-procedure RunCmdFromPath(const ProgramFilename, CmdLineParameters: string);
+// poWaitOnExit prevents a zombie process but locks the calling program until the process
+// terminates. When runnning a GUI application you may want to use [] as ProcessOpts.
+procedure RunCmdFromPath(const ProgramFilename, CmdLineParameters: string;
+  ProcessOpts: TProcessOptions = [poWaitOnExit]);
+
 function FindFilenameOfCmd(ProgramFilename: string): string;
 
 function GetSystemThreadCount: integer; // guess number of cores
@@ -156,7 +160,8 @@ end;
 // For example: ProgramFilename='ls' CmdLineParameters='-l /home'
 // Will locate and execute the file '/bin/ls'
 // If the command isn't found, an exception will be raised
-procedure RunCmdFromPath(const ProgramFilename, CmdLineParameters: string);
+procedure RunCmdFromPath(const ProgramFilename, CmdLineParameters: string;
+  ProcessOpts: TProcessOptions);
 var
   NewProgramFilename: String;
   BrowserProcess: TProcessUTF8;
@@ -172,7 +177,7 @@ begin
   BrowserProcess := TProcessUTF8.Create(nil);
   try
     BrowserProcess.InheritHandles:=false;
-    BrowserProcess.Options := [poWaitOnExit];       // Prevent a zombie process.
+    BrowserProcess.Options := ProcessOpts;
     // Encloses the executable with "" if its name has spaces
     if Pos(' ',NewProgramFilename)>0 then
       NewProgramFilename:='"'+NewProgramFilename+'"';

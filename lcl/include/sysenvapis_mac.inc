@@ -51,3 +51,11 @@ begin
     ResultingPath:=APath;
   RunCmdFromPath('open',ResultingPath);
 end;
+
+// ToDo: Implement
+// Now just open the folder in system filemanager.
+function SelectInFolder(AFullPath: String): Boolean;
+begin
+  Result := OpenDocument(ExtractFilePath(AFullPath));
+end;
+

@@ -9033,7 +9033,7 @@ end;
 
 procedure TSourceNotebook.OpenFolderMenuItemClick(Sender: TObject);
 begin
-  OpenDocument(ExtractFilePath(Statusbar.Panels[CStatusPanelFile].Text));
+  SelectInFolder(Statusbar.Panels[CStatusPanelFile].Text);
 end;
 
 procedure TSourceNotebook.ExecuteEditorItemClick(Sender: TObject);

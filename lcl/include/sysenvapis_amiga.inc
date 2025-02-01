@@ -90,14 +90,21 @@ begin
   Result := False;
 end;
 
-// Open a given URL with whatever Windows thinks is appropriate
+// ToDo: Implement
 function OpenURL(AURL: String): Boolean;
 begin
   Result := False;
 end;
 
-// Open a document with the default application associated with it in the system
+// ToDo: Implement
 function OpenDocument(APath: String): Boolean;
 begin
   Result := OpenURL(APath);
 end;
+
+// ToDo: Implement
+function SelectInFolder(AFullPath: String): Boolean;
+begin
+  Result := OpenDocument(ExtractFilePath(AFullPath));
+end;
+

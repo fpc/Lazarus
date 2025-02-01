@@ -79,9 +79,18 @@ function GetTickStep: DWord;
 {$ENDIF}
 
 function FindDefaultBrowser(out ABrowser, AParams: String): Boolean;
+
+// Open a given URL with the system's default browser.
 // Spaces in URLs need to be encoded as %20 Read http://www.ietf.org/rfc/rfc1738.txt
 function OpenURL(AURL: String): Boolean;
+
+// Open a document in the system's default application associated with it.
 function OpenDocument(APath: String): Boolean;
+
+// Open a system filemanager and select the given file there.
+// AFullPath contains a directory and a file name.
+// Works also with directory names, then nothing gets selected.
+function SelectInFolder(AFullPath: String): Boolean;
 
 type
   TOpenParamStringProc = function (AString: string): Boolean of object;
