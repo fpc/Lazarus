@@ -245,7 +245,9 @@ When <b>True</b>, the BackSlash character is used to quote character values.
 </element>
 
 <element name="RunCmdFromPath">
-<short>Executes a command found in the current PATH environment.</short>
+<short>
+Executes a command using the specified parameters and process options.
+</short>
 <descr>
 <p>
 <var>RunCmdFromPath</var> is used to execute a command which can be found in 
@@ -253,7 +255,7 @@ the current <var>PATH</var> environment. For example, the following locates
 and executes the <b>/bin/ls -l /home</b> command:
 </p>
 <code>
-            RunCmdFromPath('ls', '-l /home');
+RunCmdFromPath('ls', '-l /home');
 </code>
 <p>
 An exception is raised if the program file cannot be located, or cannot be 
@@ -261,19 +263,32 @@ executed.
 </p>
 <p>
 RunCmdFromPath creates and configures a <var>TProcessUTF8</var> instance 
-which is used to execute the program file. <var>ProgramFilename</var> 
-contains the qualified executable file name for the process. If the argument 
-contains a <b>Space</b> (<b>' '</b>), it is surrounded by <b>Quotation 
-Mark</b> (<b>"</b>) characters before it is assigned to the class instance. 
+which is used to execute the program file.
+</p>
+<p>
+<var>ProgramFilename</var> contains the qualified executable file name for the 
+process. If the argument contains a <b>Space</b> (<b>' '</b>), it is 
+surrounded by <b>Quotation Mark</b> (<b>"</b>) characters before it is 
+assigned to the class instance.
+</p>
+<p>
 <var>CmdLineParameters</var> contains optional parameters values for the 
 executable file. It is assumed that parameter values with embedded spaces are 
 already quoted when passed to the routine. CmdLineParameters is included in 
-the class instance when the value is not an empty string (<b>''</b>).
+the class instance when the value is not an empty string (<b>''</b>). 
+</p>
+<p>
+<var>ProcessOpts</var> contains the set of <var>TProcessOption</var> values 
+enabled during execution of the process. The default value for the parameter 
+is [poWaitOnExit], and causes Execute to wait for completion of the process 
+before setting the exit status and exit code.
 </p>
 <p>
 RunCmdFromPath calls the <var>Execute</var> method in the TProcessUTF8 
 instance to execute the specified program file name with the specified 
-parameter values.
+parameter values and process options. The process instance is configured so 
+that it <b>does not</b> inherit handles for StdIn, StdOut, and StdErr during 
+process execution.
 </p>
 </descr>
 <errors>
@@ -284,29 +299,37 @@ Raised with the message in lrsProgramFileNotFound or lrsCanNotExecute.
 </dd>
 </dl>
 </errors>
-<!--
-===========================================
-Uncomment when the target version is known.
-===========================================
 <version>
 Modified in LazUtils version 2.3.0 to wait for process exit during execution.
+Modified in LazUtils version 5.0 to accept process options as a parameter.
 </version>
--->
 <seealso>
 <!-- not an error: {$IFDEF UseTProcessW} -->
-<!-- link id="TProcessUTF8.Execute"/ -->
+<!-- <link id="TProcessUTF8.Execute"/> -->
 <link id="#fcl.process.TProcess.Execute">TProcess.Execute</link>
 <link id="#fcl.process.TProcess.CommandLine">TProcess.CommandLine</link>
 <link id="#fcl.process.TProcess.Executable">TProcess.Executable</link>
 <link id="#fcl.process.TProcess.Parameters">TProcess.Parameters</link>
 <link id="#fcl.process.TProcess.Environment">TProcess.Environment</link>
+<link id="#fcl.process.TProcess.Options">TProcess.Options</link>
+<link id="#fcl.process.TProcessOptions">TProcessOptions</link>
+<link id="#fcl.process.TProcessOption">TProcessOption</link>
 </seealso>
 </element>
 <element name="RunCmdFromPath.ProgramFilename">
-<short>Path and name for the program executed.</short>
+<short>
+Path and name for the program executed in the routine.
+</short>
 </element>
 <element name="RunCmdFromPath.CmdLineParameters">
-<short>Command line parameters for the program.</short>
+<short>
+Command line parameters for the program.
+</short>
+</element>
+<element name="RunCmdFromPath.ProcessOpts">
+<short>
+Set of process options enabled during execution of the command.
+</short>
 </element>
 
 <element name="FindFilenameOfCmd">
