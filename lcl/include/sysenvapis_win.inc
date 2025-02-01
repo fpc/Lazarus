@@ -353,10 +353,22 @@ begin
   Result := OpenURL(APath);
 end;
 
-// ToDo: Implement
-// Now just open the folder in system filemanager.
 function SelectInFolder(AFullPath: String): Boolean;
+var
+  Process: TProcessUTF8;  // Could as well be just TProcess
 begin
-  Result := OpenDocument(ExtractFilePath(AFullPath));
+  if not (FileExists(AFullPath) or DirectoryExists(AFullPath)) then
+    Exit(false);
+  if (AFullPath <> '') and (AFullPath[1] <> '"') then
+    AFullPath := AFullPath.QuotedString('"');
+  Process := TProcessUTF8.Create(Nil);
+  try
+    Process.Executable := 'explorer.exe';
+    Process.Parameters.Add('/select,' + AFullPath);
+    Process.Execute;
+  finally
+    Process.Free;
+  end;
+  Result := True;
 end;
 
