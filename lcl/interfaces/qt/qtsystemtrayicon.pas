@@ -20,7 +20,7 @@ interface
 {$i qtdefines.inc}
 
 uses
-  Classes, types, Controls, ExtCtrls, Graphics, Forms, LCLType, LCLProc, LazUTF8,
+  Classes, types, SysUtils, Controls, ExtCtrls, Graphics, Forms, LCLType, LCLProc, LazUTF8,
   qtobjects, qt4, qtint;
 
 type
@@ -224,7 +224,7 @@ begin
             FTrayIcon.OnPaint(FTrayIcon);
           EndPaintInternal(PaintData);
         finally
-          FreeThenNil(FCanvas);
+          FreeAndNil(FCanvas);
         end;
         Result := True;
         {$ELSE}
