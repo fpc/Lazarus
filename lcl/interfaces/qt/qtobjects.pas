@@ -2319,7 +2319,7 @@ begin
     dispose(vClipRect);
 
   if FMetrics <> nil then
-    FreeThenNil(FMetrics);
+    FreeAndNil(FMetrics);
 
   DestroyObjects;
 
