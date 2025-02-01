@@ -937,7 +937,8 @@ var
 begin
   Owner := GetWindow(Handle, GW_OWNER);
   if (Owner <> 0) and (Owner <> PPopupOwnersWindowInfo(Param)^.AppHandle) then
-    PPopupOwnersWindowInfo(Param)^.OwnersList.Add(Pointer(Owner));
+    if (Windows.GetWindowLong(Owner,GWL_STYLE) and WS_VISIBLE<>0) then
+      PPopupOwnersWindowInfo(Param)^.OwnersList.Add(Pointer(Owner));
   Result := True;
 end;
 
