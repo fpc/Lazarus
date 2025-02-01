@@ -1617,10 +1617,10 @@ Despite similarities in appearance to <var>TCustomEdit</var> and
 (Delphi compatible).
 </p>
 <p>
-Use <var>Items</var> to access the entries displayed in the drop-down list. Use 
-<var>AddItem</var> or <var>AddHistoryItem</var> to add entries to 
-the list of items. Use <var>OnGetItems</var> to dynamically populate the Items 
-in the control when the drop-down list is displayed.
+Use <var>Items</var> to access the entries displayed in the drop-down list. 
+Use <var>AddItem</var> or <var>AddHistoryItem</var> to add entries to the list 
+of items. Use <var>OnGetItems</var> to dynamically populate the Items in the 
+control when the drop-down list is displayed.
 </p>
 <p>
 The selectable values in <var>Items</var> can be maintained at design-time by 
@@ -1633,12 +1633,12 @@ box, or selected either manually or by auto-completion from the Items in the
 list. At run-time, the entry selected from the list replaces the text in the 
 edit box, and <var>ItemIndex</var> holds the (zero-based) index number of the 
 selected item. If no value is selected from the drop-down list, the default 
-text (if any) remains for any information typed directly into the control Text, 
-and ItemIndex takes the value of -1.
+text (if any) remains for any information typed directly into the control 
+Text, and ItemIndex takes the value of -1.
 </p>
 <p>
-Use <var>Style</var> to control the display style and drawing mechanism enabled 
-for the drop-down list on the control.
+Use <var>Style</var> to control the display style and drawing mechanism 
+enabled for the drop-down list on the control.
 </p>
 <p>
 Use <var>AutoDropDown</var>, <var>AutoComplete</var>, 
@@ -1848,6 +1848,39 @@ value is assigned to the TextHint property.
 <short>Hides an emulated TextHint display for the control.</short>
 <descr/>
 <seealso/>
+</element>
+
+<element name="TCustomComboBox.UpdateItemIndex">
+<short>
+Updates the value in ItemIndex when the value at the position does not match 
+the specified value.
+</short>
+<descr>
+<p>
+Called when the editable value in Text is stored for the control, including 
+when a key up event causes the auto-completed text to be updated for the 
+control.
+</p>	
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TCustomComboBox.RealSetText"/>
+<link id="TCustomComboBox.KeyUp"/>
+</seealso>
+</element>
+<element name="TCustomComboBox.UpdateItemIndex.AValue">
+<short>
+Value compared to the existing value stored at ItemIndex, and applied to the 
+Text for the control.
+</short>
+</element>
+<element name="TCustomComboBox.UpdateItemIndex.Result">
+<p>
+Returns <b>True</b> if the position where the specified value is stored was 
+different than the position in ItemIndex.
+</p>
 </element>
 
 <element name="TCustomComboBox.UpdateSorted">
@@ -2772,11 +2805,15 @@ Updates ItemIndex when the new value for the control is updated.
 <p>
 <var>RealSetText</var> is an overridden method in <var>TCustomComboBox</var>. 
 It ensures that <var>ItemIndex</var> is updated with the ordinal position in 
-<var>Items</var> where the <var>AValue</var> argument is found. MatchListItem 
-is called to get the position for AValue using the case sensitivity and search 
-order settings in the AutoCompleteText. If there are no values stored in 
-Items, ItemIndex is set to <b>-1</b>. A visible emulated <var>TextHint</var> 
-is hidden when AValue is not an empty string ('').
+<var>Items</var> where the <var>AValue</var> argument is found. The value in 
+ItemIndex is determined by locating the specified value using the case 
+sensitivity and search order settings in the AutoCompleteText. If there are no 
+values stored in Items, or AValue is not stored there, ItemIndex is set to 
+<b>-1</b>.
+</p>
+<p>
+A visible emulated <var>TextHint</var> is hidden when AValue is not an empty 
+string ('').
 </p>
 <p>
 The inherited method is called prior to exit. This causes the widgetset class 
@@ -2826,7 +2863,9 @@ method, the inherited KeyDown method is called.
 </element>
 
 <element name="TCustomComboBox.KeyUp">
-<short>Handles AutoComplete and AutoSelect for the control.</short>
+<short>
+Handles AutoComplete and AutoSelect for the control.
+</short>
 <descr>
 <p>
 <var>KeyUp</var> is an overridden method in TCustomComboBox, and calls the 
@@ -2841,9 +2880,11 @@ the values in <var>SelText</var> and <var>Text</var> are the same.
 <p>
 In addition, alphanumeric key codes are used to perform AutoComplete text 
 location using the options enabled in the <var>AutoCompleteText</var> 
-property. The values in Text, <var>SelStart</var>, and <var>SelLength</var> 
-are updated (when needed) and the <var>Select</var> method is called to 
-reflect the operation.
+property. The values in <var>Text</var>, <var>SelStart</var>, and 
+<var>SelLength</var> are updated (when needed) and the <var>Select</var> 
+method is called to reflect the operation. If the key causes the 
+auto-completed text to differ from the value in Text, ItemIndex is updated to 
+reflect the auto-completed text value.
 </p>
 <p>
 KeyUp is called when <var>TLMKeyUp</var> control messages are processed in 
@@ -2860,6 +2901,7 @@ the handlers for the control.
 <link id="TCustomComboBox.SelStart"/>
 <link id="TCustomComboBox.SelLength"/>
 <link id="TCustomComboBox.Select"/>
+<link id="TCustomComboBox.ItemIndex"/>
 <link id="#lcl.controls.TWinControl.KeyUp">TWinControl.KeyUp</link>
 </seealso>
 </element>
