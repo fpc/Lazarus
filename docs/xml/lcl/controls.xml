@@ -677,38 +677,6 @@ Uncomment when the topic exists in the RTL documentation.
 </seealso>
 </element>
 
-<!--
-<element name="GetModalResultStr">
-<short>
-Deprecated; Use the ModalResultStr array from the <file>UITypes</file> unit.
-</short>
-<descr/>
-<seealso/>
-</element>
-<element name="GetModalResultStr.Result"/>
-<element name="GetModalResultStr.ModalResult"/>
--->
-
-<!--
-<element name="ModalResultStr">
-<short>
-Gets the string representation for a modal result value.
-</short>
-<descr>
-<p>
-<var>ModalResultStr</var> is an indexed <var>ShortString</var> property used 
-to get the string representation for the specified TModalResult constant. The 
-read access specifier for the property has been deprecated; Use the 
-ModalResultStr array from the <file>UITypes</file> unit directly.
-</p>
-</descr>
-<seealso>
-<link id="#lcl.uitypes.ModalResultStr">ModalResultStr</link>
-<link id="#lcl.uitypes.TModalResult">TModalResult</link>
-</seealso>
-</element> 
--->
-
 <element name="fsSurface">
 <short>
 Alias to the fsSurface constant in the <file>GraphType</file> unit.
@@ -18297,18 +18265,6 @@ IsControl is provided for Delphi code compatibility. It is not used in the
 current LCL implementation.
 </p>
 </descr>
-</element>
-
-<element name="TControl.MouseEntered">
-<short>
-<b>True</b> when the mouse has entered the control. (Deprecated)
-</short>
-<descr>
-Deprecated. Use MouseInClient instead.
-</descr>
-<seealso>
-<link id="TControl.MouseInClient"/>
-</seealso>
 </element>
 
 <element name="TControl.MouseInClient">

@@ -33227,11 +33227,6 @@ Values in the States property for the control have been changed.
 <element name="TTreeViewState.tvsManualNotify">
 <short>A tree node has been expanded or collapsed using code.</short>
 </element>
-<element name="TTreeViewState.tvsUpdating">
-<short>
-This tree view state is deprecated, and has no functionality after r64855.
-</short>
-</element>
 <element name="TTreeViewState.tvsPainting">
 <short>The control has called it Paint method.</short>
 </element>
