@@ -6516,7 +6516,9 @@ return value.
 </element>
 
 <element name="FindDefaultBrowser">
-<short>Gets the path to the default browser and its parameters.</short>
+<short>
+Gets the qualified path to the default browser application and its parameters.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -6533,12 +6535,14 @@ Parameters needed to start the default browser for the platform.
 </element>
 
 <element name="OpenURL">
-<short>Open a given URL with the default browser.</short>
+<short>
+Opens a given URL with the default browser for the system.
+</short>
 <descr>
 <p>
-The function uses FindDefaultBrowser to find the default browser for the 
-platform. If it was found, it is started and the returns value is set to 
-<b>True</b>.
+OpenURL is a routine used to open the specified URL using the default browser 
+application for a platform or host operating system. The implementation is 
+platform-specific.
 </p>
 <p>
 AURL is passed as parameter to the browser application. AURL must be a URL 
@@ -6546,44 +6550,146 @@ like https://www.lazarus-ide.org/ or file:///tmp/test.txt or
 file://C:\test.txt. AURL is quoted when passed as an argument to ensure that 
 space(s) in the path or file name are handled properly.
 </p>
+<p>
+For UNIX-like environments (including Linux), FindDefaultBrowser is used to 
+find the default browser application for the platform. It searches the PATH 
+environment for one of the pre-defined browser applications (or helpers) such 
+as:
+</p>
+<ul>
+<li>'firefox'</li>
+<li>'mozilla'</li>
+<li>'google-chrome'</li>
+<li>'galeon'</li>
+<li>'konqueror'</li>
+<li>'safari'</li>
+<li>'netscape'</li>
+<li>'opera'</li>
+<li>'iexplore'</li>
+<li>'htmlview'</li>
+<li>'xdg-open'</li>
+</ul>
+<p>
+If a browser application was found, the complete path to the executable is 
+used to execute the application using AURL as an argument. AURL must be a 
+valid URL like http://www.lazarus.freepascal.org or file:///tmp/test.txt or 
+file://C:\test.txt. Space characters in the AURL must be encoded using the %20 
+notation required for URLs as described in RFC 1738 
+(http://www.ietf.org/rfc/rfc1738.txt).
+</p>
+<p>
+RunCmdFromPath is used to launch the process and wait for its completion. The 
+return value is <b>True</b> on exit.
+</p>
+<p>
+For the Windows environment, the actions are a little less straight-forward 
+(of course they are). Windows tries to locate rundll32 and url.dll to build 
+the command line with parameters needed for the default browser application. 
+From this it determines the Windows App ID. ShellExecute is called to run the 
+browser application and get its process handle. Common browser applications 
+like Chrome, Firefox, Edge, and Internet Explorer are checked. Edge seems to 
+work the best.
+</p>
+<p>
+For the macOS platform, the 'open' command is used to launch a url in the 
+appropriate browser. Foundation classes are used to get the URL and the shared 
+workspace where the URL is opened. The process fails if AURL does not contain 
+a valid protocol specifier like 'https://' or 'file://'.
+</p>
+<p>
+If a browser application is not found, or the suggested file is not an 
+executable, no additional actions are performed in the routine and the return
+value is <b>False</b>.
+</p>
+<p>
+For the Android platform, the routine assigned to the 
+OpenURLWidgetsetImplementation variable is used instead of the default browser 
+lookup and RunCmdFromPath. 
+</p>
+<remark>
+OpenURL is not implemented for the Amiga platform.
+</remark>
 </descr>
+<seealso>
+<link id="FindDefaultBrowser"/>
+<link id="OpenURLWidgetsetImplementation"/>
+<link id="#lazutils.utf8process.RunCmdFromPath">RunCmdFromPath</link>
+<link id="#lazutils.lazfileutils.FileExistsUTF8">FileExistsUTF8</link>
+<link id="#lazutils.lazfileutils.FileIsExecutable">FileIsExecutable</link>
+</seealso>
 </element>
 <element name="OpenURL.Result">
 <short>
-<b>True</b> if the browser was found and called to open the URL.
+<b>True</b> a browser application was found and called to open the specified 
+URL.
 </short>
 </element>
 <element name="OpenURL.AURL">
-<short>URL with the resource to open in the browser.</short>
+<short>
+URL with the resource to open in the browser application.
+</short>
 </element>
 
 <element name="OpenDocument">
 <short>
-Opens the specified document using the default application for the platform 
-or widgetset.
+Opens the document using the default application associated with the specified 
+file.
 </short>
 <descr>
 <p>
 <var>OpenDocument</var> is a <var>Boolean</var> function used to open the 
-document specified in APath using the default application for the platform or 
-widget set.
+document specified in <var>APath</var> using the default application for the 
+platform. APath can contain a fully-qualified file name or a path on the local 
+system. The implementation of OpenDocument is platform-specific. 
 </p>
 <p>
-The implementation of OpenDocument is platform- and/or WidgetSet-specific. On 
-Windows, the OpenURL function is called to open the specified document. For 
-UNIX-like platforms, the OpenDocumentWidgetsetImplementation is called when 
-assigned. Otherwise, FindFilenameOfCmd is used to check for common Desktop 
-Environment applications for the platform. RunCmdFromPath is called to open 
-the document using the application.
+For the Windows platform, the OpenURL function is called to open the specified 
+document or path. The protocol handler for the path determines which 
+application is used to open and display the file or path.
+</p>
+<p>
+For the macOS platform, OpenURL is used to launch the application needed when 
+path is a file or a directory on the local file system. Otherwise, the 'open' 
+command is used to open the quoted value in APath.
+</p>
+<p>
+For other UNIX-like platforms (including Linux), OpenDocument checks for 
+well-known file managers which can be used to open and display the local 
+resource in APath. FindFilenameOfCmd is called to choose between applications 
+including:
+</p>
+<ul>
+<li>'xdg-open'</li>
+<li>'gnome-open'</li>
+<li>'kfmclient'</li>
+</ul>
+<p>
+No actions are performed in the routine if an application is not found, or the 
+file or directory does not exist on the local file system. Otherwise,  
+RunCmdFromPath is used to launch the file manager using the quoted value in 
+APath as an argument.
 </p>
 <p>
 The return value contains <b>True</b> if an application is available to for 
-the specified file name. The return value is <b>False</b> if an application 
-cannot be found for the specified file, or the file does not exist in the 
-given path.
+the specified file or path name. The return value is <b>False</b> if an 
+application was not found for the specified file, or the file or path does 
+not exist.
 </p>
+<p>
+For the Android platform, the routine assigned to the 
+OpenDocumentWidgetsetImplementation variable is called to display the 
+resource. 
+</p>
+<remark>
+OpenDocument is not implemented for the Amiga platform.
+</remark>
 </descr>
-<seealso/>
+<seealso>
+<link id="OpenURL"/>
+<link id="OpenURLWidgetsetImplementation"/>
+<link id="#lazutils.utf8process.RunCmdFromPath">RunCmdFromPath</link>
+<link id="#lazutils.utf8process.FindFilenameOfCmd">FindFilenameOfCmd</link>
+</seealso>
 </element>
 <element name="OpenDocument.Result">
 <short>
@@ -6592,6 +6698,67 @@ given path.
 </element>
 <element name="OpenDocument.APath">
 <short>Full path and file name to open in the routine.</short>
+</element>
+
+<element name="SelectInFolder">
+<short>
+Opens a system file manager, displays a directory, and optionally selects the 
+given file.
+</short>
+<descr>
+<p>
+<var>SelectInFolder</var> is a routine used to display the specified resource 
+on the local file system using the file manager for the desktop environment. 
+The implementation for SelectInFolder is platform-specific.
+</p>
+<p>
+For the Windows and macOS platforms, the current implementation simply opens 
+the folder for the resource specified in AFullPath. The file name portion is 
+ignored.
+</p>
+<p>
+For other UNIX-like platforms (including Linux), the XDG_CURRENT_DESKTOP 
+variable in the system environment or specific executable files are checked to 
+determine which desktop manager is in use. Values like 'GNOME' or 'KDE' in 
+XDG_CURRENT_DESKTOP cause the 'nautilus' or 'dolphin' file managers to be 
+used. Otherwise, the 'usr/bin' directory is checked for applications including:
+</p>
+<ul>
+<li>'nautilus'</li>
+<li>'dolphin'</li>
+<li>'thunar'</li>
+<li>'nemo'</li>
+<li>'caja'</li>
+<li>'krusader'</li>
+<li>'xdg-open'</li>
+</ul>
+<p>
+RunCmdFromPath is called to launch the executable using the value in AFullPath 
+and any other command line arguments needed for the environment. No actions 
+are performed in the routine if AFullpath does not exist on the local file 
+system, or an application could not be determined.
+</p>
+<p>
+The return value is <var>True</var> if the routine was completed successfully.
+</p>
+<p>
+SelectInFolder is not implemented for the Amiga platform.
+</p>
+</descr>
+<version>
+Added in LCL 5.0.
+</version>
+<seealso></seealso>
+</element>
+<element name="SelectInFolder.AFullPath">
+<short>
+Fully-qualified path to a file or directory on the local file system.	
+</short>
+</element>
+<element name="SelectInFolder.Result">
+<short>
+Returns <var>True</var> if the routine was completed successfully.
+</short>
 </element>
 
 <element name="TOpenParamStringProc">
