@@ -2441,13 +2441,13 @@ begin
 
   w:=nil;
 
-  if uType=DFC_BUTTON then
-  begin
+  case uType of
+  DFC_BUTTON,DFC_CAPTION:
     w:=GetStyleWidget(lgsButton);
-  end else
-  if uType=DFC_MENU then
-  begin
+  DFC_MENU:
     w:=GetStyleWidget(lgsMenu);
+  else
+    w:=GetStyleWidget(lgsDefault);
   end;
 
   if not Assigned(w) then exit;
