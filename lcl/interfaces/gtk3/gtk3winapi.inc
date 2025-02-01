@@ -2780,19 +2780,26 @@ end;
 
 function TGtk3WidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer;
   var Size: TSize): Boolean;
+var
+  Utf8Str: String;
 begin
   Result := False;
   if not IsValidDC(DC) then
-    exit;
-  if (Count <= 0) or (Str = nil) or (StrPas(Str) = '') then
+    Exit;
+
+  if (Count <= 0) or (Str = nil) or (Str^ = #0) then
   begin
     FillChar(Size, SizeOf(Size), 0);
     Exit;
   end;
-  TGtk3DeviceContext(DC).CurrentFont.Layout^.set_text(Str, Count);
+
+  if not g_utf8_validate(Str, Count, nil) then
+    Utf8Str := UTF8Copy(Utf8Encode(Str), 1, Count)
+  else
+    Utf8Str := UTF8Copy(Str, 1, Count);
+  TGtk3DeviceContext(DC).CurrentFont.Layout^.set_text(PChar(Utf8Str), -1);
   TGtk3DeviceContext(DC).CurrentFont.Layout^.get_pixel_size(@Size.Cx, @Size.CY);
-  // DebugLn('TGtk3WidgetSet.GetTextExtentPoint pixel size is ',dbgs(Size),
-  //  ' avgcharwidth ',dbgs(ACharWidth div PANGO_SCALE),' avgdigitwidth ',dbgs(ADigitWidth div PANGO_SCALE));
+
   Result := True;
 end;
 
