@@ -234,7 +234,7 @@ end;
 function TExportFonts.AddItem(AFontName: string; AFontStyle: TFontStyles
   ): TExportFontItem;
 var
-  S1, S2, S3, S: String;
+  S1, S2, S: String;
 
 begin
   Result:=FindItem(AFontName, AFontStyle);
@@ -245,7 +245,6 @@ begin
     Result:=TExportFontItem.Create(Self, AFontName, AFontStyle);
     S1:=ExtractFileDir(Result.FTTFFontInfo.FileName);
     S2:=ExtractFileName(Result.FTTFFontInfo.FileName);
-    S3:=AFontName;
     FOwner.FPDFDocument.FontDirectory:=S1;
     S:=MakePSName(AFontName, AFontStyle);
     Result.FPdfFont:=FOwner.FPDFDocument.AddFont(S2, S);
@@ -368,7 +367,6 @@ begin
 end;
 
 var
-  i: Integer;
   sDefFontName:string;
 begin
   sDefFontName:=DefFontName;
@@ -599,7 +597,6 @@ end;
 procedure TlrPdfExportFilter.DoBarCodeView(View: TfrCustomBarCodeView);
 var
   FBmp: TLazreportBitmap;
-  X, Y: Integer;
 begin
   DrawRectView(View);
   FBmp:=View.GenerateBitmap;
