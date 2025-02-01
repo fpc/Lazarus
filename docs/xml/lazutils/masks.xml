@@ -267,7 +267,6 @@ Omits the op code identifiers mocAnyCharOrNone, mocRange, and mocSet.
 <seealso>
 <link id="TMaskOpCode"/>
 <link id="TMaskOpCodes"/>
-<link id="TMaskOptions"/>
 <link id="TMaskList.Create"/>
 </seealso>
 </element>
@@ -1167,14 +1166,9 @@ IntfMatches is called from the Matches method.
 Create is the overloaded constructor for the class instance. It includes an 
 AMask argument which contains the expression stored in the Mask property. 
 Variants of the method also allow the value in CaseSensitive to be set. Set 
-arguments can be provided which contain the TMaskOpCode values or the 
-TMaskOption values used in the class instance.
+arguments can be provided which contain the TMaskOpCode values used in the 
+class instance.
 </p>
-<remark>
-The variant which includes a TMaskOptions parameter has been deprecated in 
-version 2.3, and will be removed in version 2.5. Use the variant which 
-includes a TMaskOpCodes parameter.
-</remark>
 </descr>
 <seealso/>
 </element>
@@ -1186,9 +1180,6 @@ includes a TMaskOpCodes parameter.
 </element>
 <element name="TMaskUTF8.Create.aOpcodesAllowed">
 <short>Set of op codes allowed for the compiled mask expression.</short>
-</element>
-<element name="TMaskUTF8.Create.aOptions">
-<short>Set of TMaskOption values enabled for the class instance.</short>
 </element>
 
 <element name="TMaskUTF8.Compile">
@@ -1261,34 +1252,6 @@ or too short.
 </element>
 <element name="TMaskUTF8.Matches.aStringToMatch">
 <short>Value to compare to the Mask expression.</short>
-</element>
-
-<element name="TMaskUTF8.MatchesWindowsMask">
-<short>
-Indicates whether the specified value is a match for the Windows-specific 
-Mask expression.
-</short>
-<descr>
-<remark>
-Deprecated in Lazarus version 2.3, and will be removed in 2.5. Create a 
-TWindowsMask instance and call its Matches method instead.
-</remark>
-</descr>
-<seealso>
-<link id="TWindowsMaskUTF8.Matches"/>
-<link id="TWindowsMask"/>
-<link id="MatchesWindowsMask"/>
-<link id="MatchesWindowsMaskList"/>
-</seealso>
-</element>
-<element name="TMaskUTF8.MatchesWindowsMask.Result">
-<short>
-<b>True</b> if the specified file name matches the Windows-specific Mask 
-expression.
-</short>
-</element>
-<element name="TMaskUTF8.MatchesWindowsMask.AFileName">
-<short>Value compared to the Mask expression.</short>
 </element>
 
 <element name="TMaskUTF8.Mask">
@@ -2208,13 +2171,9 @@ Set of Mask op codes allowed for the class instances added to the list.
 <var>Create</var> is the overloaded constructor for the class instance. Create 
 ensures that arguments passed to the constructor are stored in internal 
 members for use in the class instance. The overloaded variants allow 
-configuration settings to include a set of TMaskOption values or a set of 
-Windows "quirks" supported for the masks in the list.
+configuration settings to include a set of Windows "quirks" supported for the 
+masks in the list.
 </p>
-<remark>
-The variant with a TMaskOptions parameter has been deprecated in version 2.3, 
-and will be removed in version 2.5.
-</remark>
 </descr>
 <seealso/>
 </element>
@@ -2232,9 +2191,6 @@ and will be removed in version 2.5.
 </element>
 <element name="TWindowsMaskList.Create.AWindowsQuirksAllowed">
 <short>Set of TWindowsQuirk values allowed for the class instance.</short>
-</element>
-<element name="TWindowsMaskList.Create.AOptions">
-<short>Set of TMaskOption values enabled for the class instance.</short>
 </element>
 
 <element name="TWindowsMaskList.Quirks">
@@ -2386,10 +2342,6 @@ and Options are passed as arguments the TMask constructor. The
 <var>MatchesWindowsMask</var> method in the TMask instance is called using 
 FileName as an argument, and gets the return value for the function.
 </p>
-<remark>
-The overloaded variant which includes a TMaskOptions parameter has been 
-marked as deprecated in version 2.3. It will be removed in version 2.5.
-</remark>
 </descr>
 <seealso>
 <link id="#lazutils.masks.MasksOverview">Masks Overview</link>
@@ -2411,9 +2363,6 @@ options.
 <short>
 <b>True</b> when case sensitivity should be used in the comparison.
 </short>
-</element>
-<element name="MatchesWindowsMask.Options">
-<short>Set of options enabled for the comparison.</short>
 </element>
 
 <element name="MatchesMaskList">
@@ -2461,19 +2410,9 @@ in Separator.</dd>
 Contains the character(s) used as a separator between mask expressions in 
 Mask. The default separator is the SemiColon (;) character.
 </dd>
-<dt>Options</dt>
-<dd>
-Contains TMaskOption values which enable or disable features in the 
-comparison. The default value is an empty set ([]).
-</dd>
 <dt>CaseSensitive</dt>
 <dd>Indicates whether the file name to mask comparison is case sensitive.</dd>
 </dl>
-<remark>
-The overloaded variant which includes the <var>CaseSensitive</var> argument 
-has been deprecated. Use the variant that includes the 
-<var>TMaskOptions</var> argument.
-</remark>
 <p>
 MatchesMaskList creates a <var>TMaskList</var> instance which uses the values 
 in the Mask, Separator and Options parameters. Its <var>Matches</var> method 
@@ -2483,14 +2422,10 @@ is called to compare the value in Filename to the mask values in the list.
 The return value is <b>True</b> when Filename matches at least one of the 
 masks in the list.
 </p>
-<remark>
-The overloaded variant which includes a TMaskOptions parameter has been 
-marked as deprecated in version 2.3. It will be removed in version 2.5.
-</remark>
 </descr>
 <seealso>
 <link id="#lazutils.masks.MasksOverview">Masks Overview</link>
-</seealso>
+`</seealso>
 </element>
 <element name="MatchesMaskList.Result">
 <short>
@@ -2513,11 +2448,6 @@ Character(s) used as a separator between mask expressions in Mask.
 <element name="MatchesMaskList.CaseSensitive">
 <short>
 <b>True</b> if the file name to mask comparison is case sensitive.
-</short>
-</element>
-<element name="MatchesMaskList.Options">
-<short>
-TMaskOption values which enable or disable features in the comparison.
 </short>
 </element>
 <element name="MatchesMaskList.AOpcodesAllowed">
@@ -2569,19 +2499,9 @@ in Separator.</dd>
 Contains the character(s) used as a separator between mask expressions in 
 Mask. The default separator is the SemiColon (;) character.
 </dd>
-<dt>Options</dt>
-<dd>
-Contains TMaskOption values which enable or disable features in the 
-comparison. The default value is an empty set ([]).
-</dd>
 <dt>CaseSensitive</dt>
 <dd>Indicates whether the file name to mask comparison is case sensitive.</dd>
 </dl>
-<remark>
-The overloaded variant which includes the <var>CaseSensitive</var> argument 
-has been deprecated. Use the variant that includes the 
-<var>TMaskOptions</var> argument.
-</remark>
 <p>
 MatchesWindowsMaskList creates a <var>TMaskList</var> instance which uses the 
 values in the Mask, Separator and Options parameters. Its 
@@ -2592,10 +2512,6 @@ Filename to the Windows-style masks in the list.
 The return value is <b>True</b> when Filename matches at least one of the 
 masks in the list.
 </p>
-<remark>
-The overloaded variant which includes a TMaskOptions parameter has been 
-marked as deprecated in version 2.3. It will be removed in version 2.5.
-</remark>
 </descr>
 <seealso>
 <link id="#lazutils.masks.MasksOverview">Masks Overview</link>

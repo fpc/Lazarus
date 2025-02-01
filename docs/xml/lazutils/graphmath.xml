@@ -852,7 +852,7 @@ TRect instances. The return value is <b>True</b> when members in R1 have the
 same values as the corresponding members in R2.
 </p>
 <p>
-SameRect replaces the deprecated CompareRect routine in the 
+SameRect replaces the deprecated (and removed) CompareRect routine in the 
 <file>lclproc.pas</file> unit in the LCL.
 </p>
 </descr>
@@ -860,7 +860,6 @@ SameRect replaces the deprecated CompareRect routine in the
 Added in LazUtils version 3.99.
 </version>
 <seealso>
-<link id="#lcl.lclproc.CompareRect">CompareRect</link>
 <link id="#rtl.types.PRect">PRect</link>
 <link id="#rtl.types.TRect">TRect</link>
 </seealso>

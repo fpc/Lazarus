@@ -316,35 +316,6 @@ String with the characters examined in the routine.
 </short>
 </element>
 
-<element name="IsNumber">
-<short>
-Deprecated. Use IsNumeric instead.
-</short>
-<descr>
-<p>
-Calls the IsNumeric routine to determine the return value.
-</p>
-<p>
-Returns <b>True</b> if all of the characters in <var>s</var> are in the range 
-'0'..'9'. Returns <b>False</b> if any character is not in the required range, 
-or when <var>s</var> is an empty string ('').
-</p>
-</descr>
-<version>
-Deprecated in LazUtils version 4.0 to avoid confusion with the RTL routine 
-of the same name. Use IsNumeric instead.
-</version>
-<seealso>
-<link id="IsNumeric"/>
-</seealso>
-</element>
-<element name="IsNumber.Result">
-<short><b>True</b> when characters in s are in the range '0'..'9'</short>
-</element>
-<element name="IsNumber.s">
-<short>String with values examined in the routine.</short>
-</element>
-
 <element name="LineEndingCount">
 <short>Gets the number of LineEnding sequences in the specified text.</short>
 <descr/>
@@ -1418,72 +1389,6 @@ String with content read from the specified file name.
 <short>
 Qualified file name with the string value read in the routine.
 </short>
-</element>
-
-<element name="LazIsValidIdent">
-<short>
-Deprecated. Use SysUtils.IsValidIdent in RTL instead.
-</short>
-<descr>
-<p>
-<var>LazIsValidIdent</var> is a <var>Boolean</var> function used to determine 
-if the name specified in <var>Ident</var> contains a valid identifier name. 
-The identifier name can represent a Namespace, Package, Unit, Component, or a 
-Member.
-</p>
-<p>
-The return value is <b>True</b> when Ident contains a valid identifier name 
-using the Pascal naming convention. The return value is <b>False</b> if Ident 
-contains an empty string ('').
-</p>
-<p>
-<var>AllowDots</var> indicates whether Period ('.') characters are allowed in 
-the identifier name. The default value for the argument is <b>False</b> (not 
-allowed).
-</p>
-<p>
-<var>StrictDots</var> indicates whether a Period character in the identifier 
-name causes name validation to restart at the next character in the 
-identifier name. When set to <b>False</b>, a Period character is ignored 
-during identifier name validation. The default value for the argument is 
-<b>False</b>, and is significant only when AllowDots is set to <b>True</b>.
-</p>
-<p>
-LazIsValidIdent examines each of the characters in Ident to ensure that the 
-value uses the Pascal identifier naming convention. This requires the value 
-to contain only alphanumeric characters or the Underscore ('_') character. It 
-must start with an alphabetic character or the Underscore character; numeric 
-characters cannot be used at the start of the identifier name. The remaining 
-characters in the identifier name can be any alphanumeric character.
-</p>
-<p>
-Case is not significant when determining the validity of an identifier name.
-</p>
-<p>
-LazIsValidIdent is used in the implementation of various tools in the Lazarus 
-IDE. (IDEIntf, CodeTools, BuildIntf)
-</p>
-</descr>
-<version>
-Deprecated since LCL version 3.6. Use SysUtils.IsValidIdent in RTL instead.
-</version>
-<seealso>
-<link id="#rtl.sysutils.IsValidIdent">IsValidIdent</link>
-</seealso>
-</element>
-<element name="LazIsValidIdent.Result">
-<short><b>True</b> if the specified value is a valid identifier name.</short>
-</element>
-<element name="LazIsValidIdent.Ident">
-<short>Identifier name examined in the routine.</short>
-</element>
-<element name="LazIsValidIdent.AllowDots">
-<short>
-<b>True</b> if period characters are allowed in the identifier name.
-</short>
-</element>
-<element name="LazIsValidIdent.StrictDots">
-<short><b>True</b> if the position of a period character is validated.</short>
 </element>
 
 <element name="MaxTextLen">
