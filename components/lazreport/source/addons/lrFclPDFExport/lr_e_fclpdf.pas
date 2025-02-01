@@ -916,9 +916,10 @@ procedure TlrPdfExportFilter.OnBeginDoc;
 begin
   inherited OnBeginDoc;
   FCurPageNo:=-1;
-  FPDFDocument.Infos.Title := Application.Title;
-{  FPDFDocument.Infos.Author := FAuthorPDF;
-  FPDFDocument.Infos.Producer := FProducerPDF;}
+  FPDFDocument.Infos.Title := CurReport.Title;
+  FPDFDocument.Infos.Author := CurReport.ReportAutor;
+  FPDFDocument.Infos.Producer := Application.Title;
+  FPDFDocument.Infos.Keywords := CurReport.KeyWords;
   FPDFDocument.Infos.ApplicationName := ApplicationName;
   FPDFDocument.Infos.CreationDate := Now;
 
