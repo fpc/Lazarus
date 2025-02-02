@@ -514,6 +514,29 @@ methods implemented in the descendent classes.
 <element name="TCustomShellTreeView.FUseBuiltinIcons"/>
 <element name="TCustomShellTreeView.FOnAddItem"/>
 
+<element name="TCustomShellTreeView.FOnSortCompare">
+<short>
+Member with the event handler for the OnSortCompare property.
+</short>
+</element>
+
+<element name="TCustomShellTreeView.CreateRootNode">
+<short>
+(Re-)creates the root node for the tree view using the specified path.
+</short>
+</element>
+<element name="TCustomShellTreeView.CreateRootNode.APath">
+<short>
+Path to the root node for the tree view.
+</short>
+</element>
+<element name="TCustomShellTreeView.CreateRootNode.Result">
+<short>
+TTreeNode instance for the new root node, with updated TShellTreeNode 
+properties as well.
+</short>
+</element>
+
 <element name="TCustomShellTreeView.GetPath">
 <short>Gets the value for the Path property.</short>
 <descr></descr>
@@ -1689,7 +1712,7 @@ list view control.
 
 <element name="TCustomShellTreeView.FileSortType">
 <short>
-Indicates the sort type used for items in the tree.
+Indicates the sort type used for items (tree nodes) on the tree view control.
 </short>
 <descr>
 <p>
@@ -1703,9 +1726,13 @@ enumeration values and their meanings.
 <p>
 Changing the value in <var>FileSortType</var> causes the <var>Items</var> 
 property to be cleared, and tree nodes to be reloaded. If Root has not been 
-assigned, PopulateWithBaseFiles is used to fill the Items property. Otherwise, 
-the path to the Selected node is restored to the Path property (if it still 
-exists on the local file system).
+assigned, PopulateWithBaseFiles is used to fill the Items property. 
+If Root has a non-empty value, an internal routine is called to recreate the 
+root node using the required path. The value in Root is expanded and used to 
+create the remaining nodes for the tree. This includes filling 
+TShellTreeNode-specific information for the TTreeNode instances in Items. If 
+the path to the Selected tree node is still valid for the file system, it is 
+restored to the Path property.
 </p>
 <p>
 No action other than setting the property value is performed in the method at 
@@ -1718,8 +1745,8 @@ path name.
 </p>
 <remark>
 The value in FileSortType is not used in <var>PopulateWithBaseFiles</var> on 
-Windows platforms. The entries are logical drive letters processed in the order 
-provided by the file system.
+Windows platforms. The entries are logical drive letters processed in the 
+order provided by the file system.
 </remark>
 </descr>
 <seealso>
@@ -1736,46 +1763,72 @@ provided by the file system.
 
 <element name="TCustomShellTreeView.Root">
 <short>
-Indicates the directory to start showing the list of items.
+Indicates the directory or path which is the top-level node in the tree view.
 </short>
 <descr>
 <p>
 <var>Root</var> is a <var>String</var> property used to set the directory (or 
-logical device) used to fill the list of items in the tree view control. 
-Changing the value in Root causes the Items in the control to be re-populated.
+logical device) used to fill the list of Items (tree nodes) in the tree view 
+control. It represents the top-level node in the tree structure which does not 
+have a parent tree node.
+</p>
+<p>
+Changing the value in Root causes the Items in the control to be cleared and 
+re-populated at run-time. This action is not performed at design-time; the 
+tree node for the specified Root is displayed - but no other tree nodes are 
+loaded or displayed.
 </p>
 <p>
 No actions are performed in the method when a new value is set for the 
 Root property while the component is being loaded using the LCL streaming 
-mechanism. The actions are performed when the Loaded method is called.
+mechanism. The actions are performed at run-time when the Loaded method for 
+the control is called.
 </p>
 <p>
-An empty string (<b>''</b>) indicates that the base path for the platform 
-should be used to populate the tree view. This causes the 
-PopulateWithBaseFiles method to be called to determine the Items displayed in 
-the control.
+Setting Root to an empty string (<b>''</b>) indicates that the base path for 
+the platform should be used to populate the nodes for the tree view. For 
+Windows, this is often an empty string and causes the root directory for the 
+current disk device to be used. For UNIX-like platforms, the base path is '/' 
+for the root directory on the file system. For WinCE, the base path is '\' 
+without a device specifier.
 </p>
 <p>
-Setting Root to an invalid path name causes an EInvalidPath exception to be 
-raised at run-time. The error is ignored, and an exception is not raised, at 
+Setting Root to a valid path on the file system causes the specified directory 
+to become the effective top-level node in the tree view control. Any directory 
+above the specified root in the local file system cannot be accessed using the 
+tree view control.
+</p>
+<p>
+Setting Root to an invalid path causes an EInvalidPath exception to be raised 
+at run-time. The error is ignored, and the exception is not raised, at 
 design-time to prevent crashing the Lazarus IDE.
 </p>
 <p>
-TShellTreeNode instances are created and added to the Items property using 
-the expanded fully qualified path name in Root.
+Values in Items are cleared and the tree nodes in Items are re-created using 
+the effective path (base or specified). For platforms where the base path 
+causes Root to be an empty string, the PopulateWithBaseFiles method is called 
+to determine the Items displayed on the control. For platforms with a 
+non-empty base path, or an explicit path assigned to the property, an internal 
+routine is called to recreate the root node using the required path. The value 
+in Root is expanded and used to create the remaining nodes for the tree. This 
+includes filling TShellTreeNode-specific information for the TTreeNode 
+instances in Items.
 </p>
 <p>
 If ShellListView has been assigned for the control, its Root property is 
-updated to match the new value for the property.
+updated to match the new value for the property in the tree view control.
 </p>
 </descr>
 <seealso>
 <link id="TCustomShellTreeView.GetBasePath"/>
 <link id="TCustomShellTreeView.Items"/>
 <link id="TCustomShellTreeView.PopulateWithBaseFiles"/>
+<link id="TCustomShellTreeView.PopulateTreeNodeWithFiles"/>
 <link id="TShellTreeView.ShellListView"/>
 <link id="TShellListView"/>
+<link id="TShellListView.Root"/>
 <link id="TShellTreeNode"/>
+<link id="#lcl.comctrls.TTreeNode.Expand">TTreeNode.Expand</link>
 </seealso>
 </element>
 
@@ -1867,13 +1920,14 @@ Event handler signalled to compare file items in a custom sort routine.
 <var>OnSortCompare</var> is a <var>TFileItemCompareEvent</var> property with 
 the event handler signalled to implement a custom file sort for the tree view 
 control. OnSortCompare is used to order the directories or files displayed in 
-the tree view control when its FileSortType property is set to fstCustom.
+the tree view control when the FileSortType property is set to fstCustom.
 </p>
 <p>
 Changing the routine assigned to the property causes the Items in the control 
-to be reloaded and ordered using the new file sort compare routine. The Path 
-property is used to to expand and select a node if the path still exists and is 
-valid for the settings in ObjectTypes.
+to be reloaded and ordered at run-time starting at the top-level tree node in 
+Root. The Path property is used to to expand and select a tree node after 
+the sort operation has been completed if the path still exists and is valid 
+for the settings in ObjectTypes.
 </p>
 <p>
 An application can implement and assign a routine using the signature perform 
@@ -1937,16 +1991,52 @@ Added in LCL version 3.0.
 <seealso>
 <link id="TCustomShellTreeView.FileSortType"/>
 <link id="TCustomShellTreeView.Items"/>
+<link id="TCustomShellTreeView.ObjectTypes"/>
+<link id="TCustomShellTreeView.Root"/>
 <link id="TCustomShellTreeView.Path"/>
 <link id="TCustomShellTreeView.ExistsAndIsValid"/>
-<link id="TCustomShellTreeView.ObjectTypes"/>
 <link id="TCustomShellTreeView.PopulateTreeNodeWithFiles"/>
 <link id="TCustomShellTreeView.PopulateWithBaseFiles"/>
-<link id="TCustomShellTreeView.Root"/>
 </seealso>
 </element>
 
-<element name="TCustomShellTreeView.Items" link="#lcl.comctrls.TCustomTreeView.Items"/>
+<element name="TCustomShellTreeView.Items">
+<short>	
+Contains the tree nodes used to represent the hierarchical tree structure for the tree view control.
+</short>
+<descr>	
+<p>
+<var>Items</var> is a <var>TTreeNodes</var> property which contains the tree 
+nodes which represent the tree structure for the control. In 
+TCustomShellTreeView, and the TShellTreeView descendant, it is populated at 
+run-time with TShellTreeNode instances instead of the TTreeNode type used in 
+the ancestor class. This allows file system information to be included for the 
+tree nodes. This occurs when the CreateNode method is called for the control, 
+and results in TShellTreeNode being used as the TTreeNodeClass type for the 
+derived control. An exception is raised if OnCreateNodeClass is implemented to 
+return a type other than TShellTreeNode.
+</p>
+<p>
+Methods which access or maintain the Items in TCustomShellTreeView always cast 
+the node values to TShellTreeNode to access the file system-specific 
+information.
+</p>
+<p>
+In TCustomShellTreeView, Items is cleared and re-populated at run-time when a 
+new value is assigned to the Root, FileSortType, or OnSortCompare properties.
+</p>
+</descr>
+<seealso>
+<link id="TCustomShellTreeView.CreateNode"/>
+<link id="TCustomShellTreeView.NodeHasChildren"/>
+<link id="TCustomShellTreeView.PopulateTreeNodeWithFiles"/>
+<link id="TCustomShellTreeView.DoSelectionChanged"/>
+<link id="TCustomShellTreeView.GetPathFromNode"/>
+<link id="TShellTreeNode"/>
+<link id="#lcl.comctrls.TCustomTreeView.Items">TCustomTreeView.Items</link>
+<link id="#lcl.comctrls.TCustomTreeView.OnCreateNodeClass">TCustomTreeView.OnCreateNodeClass</link>
+</seealso>
+</element>
 
 <element name="TShellTreeView">
 <short>
