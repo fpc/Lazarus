@@ -19,8 +19,8 @@ unit gtk3caret;
 
 interface
 
-uses Classes, SysUtils, LazGtk3, LazGdk3, LazGObject2, LazGLib2, LazGdkPixbuf2,
-  LazPango1, LazPangoCairo1, LazCairo1;
+uses Classes, SysUtils, LazGtk3, LazGdk3, LazGObject2, LazGLib2, LazCairo1,
+  LCLType;
 
 type
   { TGtk3Caret }
@@ -32,13 +32,14 @@ type
     FBlinkTimerID: guint;
     FBlinkState: Boolean;
     FBlinkInterval: Integer;
-    FPosX: Integer;
-    FPosY: Integer;
+    FPos: TPoint;
+    FLastPos: TPoint;
     FWidth: Integer;
     FHeight: Integer;
     FRespondToFocus: Boolean;
-    procedure RedrawCaret;
+    FPosChanging: boolean;
     procedure BlinkTimerCallback;
+    procedure CairoDrawCaret(cr: Pcairo_t; const X, Y: integer);
     procedure StartBlinking;
     procedure StopBlinking;
     procedure SetRespondToFocus(const ARespond: Boolean);
@@ -49,57 +50,52 @@ type
     procedure Hide;
     procedure SetPosition(const X, Y: Integer); //Set x and y at once and call one redraw for both.
     procedure SetBlinkInterval(const AInterval: Integer);
-    property PosX: integer read FPosX;
-    property PosY: integer read FPosY;
+    procedure RedrawCaret;
+    property PosX: integer read FPos.X;
+    property PosY: integer read FPos.Y;
     property RespondToFocus: boolean read FRespondToFocus write SetRespondToFocus;
     property Visible: boolean read FVisible;
   end;
 
 implementation
-uses Gtk3Procs, gtk3int, Gtk3Objects, Gtk3Widgets;
+uses Gtk3Procs, gtk3int, Gtk3Widgets;
 
 { TGtk3Caret }
+
+procedure TGtk3Caret.CairoDrawCaret(cr: Pcairo_t; const X, Y: integer);
+begin
+  if cr = nil then
+    exit;
+  cairo_set_operator(cr, CAIRO_OPERATOR_DIFFERENCE);
+  if FBlinkState then
+    cairo_set_source_rgb(cr, 0, 0, 0)
+  else
+    cairo_set_source_rgb(cr, 1, 1, 1);
+  cairo_rectangle(cr, X, Y , FWidth, FHeight);
+  cairo_fill(cr);
+end;
 
 procedure TGtk3Caret.RedrawCaret;
 var
   cr: PCairo_t;
   W: TGtk3Widget;
   AHaveContext: Boolean;
+  R: TRect;
 begin
   {TODO: Implement bitmap caret.}
   if not Assigned(FOwner) or not FVisible then Exit;
-  AHaveContext := False;
-  W := Gtk3WidgetFromGtkWidget(FOwner);
-  if W.Context <> 0 then
-  begin
-    AHaveContext := True;
-    cr := TGtk3DeviceContext(W.Context).pcr;
-  end;
-  if Not AHaveContext then
-  begin
-    if Gtk3IsGdkWindow(gtk_widget_get_window(FOwner)) then
-      cr := gdk_cairo_create(gtk_widget_get_window(FOwner))
-    else
-      exit;
-  end;
+
+  W := TGtk3Widget(HwndFromGtkWidget(FOwner));
+  if W = nil then
+    exit;
+  if Gtk3IsGdkWindow(gtk_widget_get_window(FOwner)) then
+   cr := gdk_cairo_create(gtk_widget_get_window(FOwner))
+  else
+    exit;
   try
-    //writeln('Caret: BlinkState=',FBlinkState,' HaveContext=',AHaveContext,' X=',FPosX,' Y=',FPosY,' Self=',PtrUInt(Self));
-    if FBlinkState then
-    begin
-      cairo_rectangle(cr, FPosX, FPosY, FWidth, FHeight);
-      cairo_set_source_rgb(cr, 0, 0, 0);
-      cairo_fill(cr);
-      //cairo_stroke(cr);
-    end else
-    begin
-      cairo_rectangle(cr, FPosX, FPosY, FWidth, FHeight);
-      cairo_set_source_rgb(Cr, 1, 1, 1);
-      cairo_fill(cr);
-      //cairo_stroke(cr);
-    end;
+    cairoDrawCaret(cr, FPos.X, FPos.Y);
   finally
-    if not AHaveContext then
-      cairo_destroy(cr);
+    cairo_destroy(cr);
   end;
 end;
 
@@ -113,15 +109,17 @@ begin
   FWidth := AWidth;
   FHeight := AHeight;
   FVisible := False;
-  FPosX := 0;
-  FPosY := 0;
+  FPos.X := -1;
+  FPos.Y := -1;
+  FLastPos.X := -1;
+  FLastPos.Y := -1;
   FBlinkState := True;
   FBlinkTimerID := 0;
   ASettings := gtk_settings_get_default;
   FillByte(AValue{%H-}, SizeOf(AValue), 0);
   AValue.init(G_TYPE_INT);
   ASettings^.get_property('gtk-cursor-blink-time', @AValue);
-  FBlinkInterval := AValue.get_int div CURSOR_ON_MULTIPLIER; // (AValue.get_int * CURSOR_OFF_MULTIPLIER) div CURSOR_DIVIDER;
+  FBlinkInterval := (AValue.get_int div CURSOR_ON_MULTIPLIER) div 2; // (AValue.get_int * CURSOR_OFF_MULTIPLIER) div CURSOR_DIVIDER;
   AValue.unset;
 end;
 
@@ -134,12 +132,30 @@ end;
 
 procedure TGtk3Caret.SetPosition(const X, Y: Integer);
 begin
+  if (FPos.X = X) and (FPos.Y = Y) then
+    exit;
+  FPosChanging := True; // stop timer changing FBlinkState and call RedrawCaret until we go out from this proc.
+  FBlinkState := False;
   if FVisible then
-    gtk_widget_queue_draw_area(FOwner, FPosX, FPosY, FWidth, FHeight);
-  FPosX := X;
-  FPosY := Y;
+  begin
+    if (FLastPos.X >= 0) and (FLastPos.Y >=0) and (FLastPos.X <> FPos.X) or (FLastPos.Y <> FPos.Y) then
+      FOwner^.queue_draw_area(FLastPos.X, FLastPos.Y, FWidth, FHeight);
+    if (FPos.X >= 0) and (FPos.Y >= 0) then
+      FOwner^.queue_draw_area(FPos.X, FPos.Y, FWidth, FHeight);
+  end;
+
+  FLastPos.X := FPos.X;
+  FLastPos.Y := FPos.Y;
+
+  FPos.X := X;
+  FPos.Y := Y;
+
+  if FVisible then
+    RedrawCaret; // redraw caret with CAIRO_OPERATOR_DIFFERENCE while FBlinkState = false.
+  FBlinkState := True;
   if FVisible then
     RedrawCaret;
+  FPosChanging := False;
 end;
 
 procedure TGtk3Caret.Show;
@@ -160,7 +176,11 @@ begin
 end;
 
 procedure TGtk3Caret.BlinkTimerCallback;
+var
+  W: TGtk3Widget;
 begin
+  if FPosChanging or not FVisible then
+    exit;
   FBlinkState := not FBlinkState;
   RedrawCaret;
 end;
@@ -228,11 +248,8 @@ begin
     g_signal_connect_data(FOwner, 'focus-out-event', TGCallback(@FocusEventHandler), Self, nil, []);
   end else
   begin
-    //writeln('Disconnecting focus_in/focus_out events !');
-    //focus-in-event
     g_signal_handlers_disconnect_matched(FOwner, [G_SIGNAL_MATCH_DATA], 0, 0, nil,
       nil, Self);
-    //focus-out-event
     g_signal_handlers_disconnect_matched(FOwner, [G_SIGNAL_MATCH_DATA], 0, 0, nil,
       nil, Self);
   end;
