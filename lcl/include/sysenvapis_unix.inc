@@ -44,7 +44,7 @@ begin
     Exit(False);
 
   if (APath<>'') and (APath[1]<>'"') then
-    APath:=QuotedStr(APath);
+    APath:=APath.QuotedString('"');
   RunCmdFromPath(lApp,APath);
 end;
 
@@ -104,7 +104,7 @@ begin
   end;
 
   if (FileParam <> '') and (FileParam[1] <> '"') then
-    FileParam := QuotedStr(FileParam);
+    FileParam := FileParam.QuotedString('"');
   RunCmdFromPath(lApp, SelParam + FileParam, []);
   Result := True;
 end;
