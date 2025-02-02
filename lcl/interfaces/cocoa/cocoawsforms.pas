@@ -121,6 +121,7 @@ type
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
 
     class procedure CloseModal(const ACustomForm: TCustomForm); override;
+    class procedure PaintTo(const AWinControl: TWinControl; ADC: HDC; X, Y: Integer); override;
     class procedure ShowModal(const ACustomForm: TCustomForm); override;
     class procedure SetModalResult(const ACustomForm: TCustomForm; ANewValue: TModalResult); override;
 
@@ -1059,6 +1060,39 @@ end;
 class procedure TCocoaWSCustomForm.CloseModal(const ACustomForm: TCustomForm);
 begin
   CocoaWidgetSet.EndModal(NSView(ACustomForm.Handle).window);
+end;
+
+function createWindowImageRep(win: NSWindow): NSBitmapImageRep;
+var
+  rect: NSRect;
+  imageRef: CGImageRef;
+begin
+  rect:= win.contentRectForFrameRect( win.frame );
+  rect:= RectToNSRect( ScreenRectFromNSToLCL(rect) );
+  imageRef:= CGWindowListCreateImage(
+    rect,
+    kCGWindowListOptionIncludingWindow,
+    win.windowNumber,
+    kCGWindowImageDefault );
+  Result:= NSBitmapImageRep.alloc.initWithCGImage( imageRef );
+  CGImageRelease( imageRef );
+end;
+
+class procedure TCocoaWSCustomForm.PaintTo(const AWinControl: TWinControl; ADC: HDC; X, Y: Integer);
+var
+  bc : TCocoaBitmapContext;
+  win: NSWindow;
+  imageRep: NSBitmapImageRep;
+begin
+  if not (TObject(ADC) is TCocoaBitmapContext) then Exit;
+  bc := TCocoaBitmapContext(ADC);
+  win:= NSView(AWinControl.Handle).window;
+  imageRep:= createWindowImageRep(win);
+  bc.DrawImageRep(
+    NSMakeRect(0,0, bc.size.Width, bc.size.Height),
+    NSMakeRect(0,0, imageRep.size.width, imageRep.size.height),
+    imageRep );
+  imageRep.release;
 end;
 
 class procedure TCocoaWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
