@@ -266,7 +266,7 @@ type
     procedure drawText(x, y: Integer; AText: PChar; ALen: Integer; const ABgFilled: boolean);
     procedure drawEllipse(x, y, w, h: Integer; AFill, ABorder: Boolean);
     procedure drawSurface(targetRect: PRect; Surface: Pcairo_surface_t; sourceRect: PRect;
-      mask: PGdkPixBuf; maskRect: PRect);
+      aPixBuf: PGdkPixBuf; mask: PGdkPixBuf; maskRect: PRect);
     procedure drawImage(targetRect: PRect; image: PGdkPixBuf; sourceRect: PRect;
       mask: PGdkPixBuf; maskRect: PRect);
     procedure drawImage1(targetRect: PRect; image: PGdkPixBuf; sourceRect: PRect;
@@ -1098,6 +1098,23 @@ begin
     FFormat := CAIRO_FORMAT_RGB24;
 end;
 
+function IsPixelDataEmpty(AData: PByte; const Height, BytesPerLine: Integer): Boolean;
+var
+  y: Integer;
+  PixelPtr: PByte;
+begin
+  Result := True;
+
+  if AData = nil then Exit;
+
+  for y := 0 to Height - 1 do
+  begin
+    PixelPtr := AData + (y * BytesPerLine);
+    if not CompareMem(PixelPtr, AData, BytesPerLine) then
+      exit(False);
+  end;
+end;
+
 constructor TGtk3Image.Create(AData: PByte; width: Integer; height: Integer;
   format: Tcairo_format_t; const ADataOwner: Boolean);
 var
@@ -1160,7 +1177,16 @@ begin
     end;
     gdk_pixbuf_fill(FHandle, 0);
   end else
+  begin
     FHandle := TGdkPixbuf.new_from_data(AData, GDK_COLORSPACE_RGB, format=CAIRO_FORMAT_ARGB32, 8, width, height, bytesPerLine, nil, nil);
+    if (format = CAIRO_FORMAT_ARGB32) then
+    begin
+      if IsPixelDataEmpty(AData, Height, BytesPerLine) then
+        g_object_set_data(FHandle,'lcl_color_swap', Self)
+      else
+        g_object_set_data(FHandle,'lcl_no_color_swap', Self);
+    end;
+  end;
 end;
 
 function TGtk3Image.Select(ACtx: TGtk3DeviceContext): TGtk3ContextObject;
@@ -2088,22 +2114,74 @@ begin
   end;
 end;
 
+procedure SwapRedBlueChannels(PixBuf: PGdkPixbuf);
+var
+  Pixels: PByte;
+  x, y, RowStride, Width, Height, Channels: Integer;
+  Temp: Byte;
+begin
+  if PixBuf = nil then
+  begin
+    DebugLn('ERROR: SwapRedBlueChannels: Pixbuf is nil!');
+    Exit;
+  end;
+
+  Width := gdk_pixbuf_get_width(PixBuf);
+  Height := gdk_pixbuf_get_height(PixBuf);
+  RowStride := gdk_pixbuf_get_rowstride(PixBuf);
+  Channels := gdk_pixbuf_get_n_channels(PixBuf);
+
+  if Channels < 3 then
+  begin
+    DebugLn('ERROR: SwapRedBlueChannels: Pixbuf does not have enough color channels (expected at least 3).');
+    Exit;
+  end;
+
+  Pixels := gdk_pixbuf_get_pixels(PixBuf);
+
+  for y := 0 to Height - 1 do
+  begin
+    for x := 0 to Width - 1 do
+    begin
+      Temp := Pixels[x * Channels];
+      Pixels[x * Channels] := Pixels[x * Channels + 2];
+      Pixels[x * Channels + 2] := Temp;
+    end;
+    Inc(Pixels, RowStride);
+  end;
+end;
+
 procedure TGtk3DeviceContext.drawSurface(targetRect: PRect;
-  Surface: Pcairo_surface_t; sourceRect: PRect; mask: PGdkPixBuf;
-  maskRect: PRect);
+  Surface: Pcairo_surface_t; sourceRect: PRect; aPixBuf: PGdkPixBuf;
+  mask: PGdkPixBuf; maskRect: PRect);
 var
   M: Tcairo_matrix_t;
 begin
   {$IFDEF VerboseGtk3DeviceContext}
   DebugLn('TGtk3DeviceContext.DrawSurface ');
   {$ENDIF}
-
   cairo_set_operator(pcr, CAIRO_OPERATOR_OVER);
 
   with targetRect^ do
     cairo_rectangle(pcr, Left + PixelOffset, Top + PixelOffset, Right - Left, Bottom - Top);
 
-  cairo_set_source_surface(pcr, Surface, 0, 0);
+  if aPixBuf <> nil then
+  begin
+    //this fixes problem with some images being R & B swapped when blitted onto dest.
+    if (cairo_surface_get_type(CairoSurface) <> cairo_surface_get_type(Surface)) and
+      (g_object_get_data(aPixBuf,'lcl_color_swap') <> nil) then
+    begin
+      SwapRedBlueChannels(aPixBuf);
+      gdk_cairo_set_source_pixbuf(pcr, aPixBuf, 0, 0)
+    end else
+    begin
+      if g_object_get_data(aPixBuf,'lcl_no_color_swap') <> nil then
+        gdk_cairo_set_source_pixbuf(pcr, aPixBuf, 0, 0)
+      else
+        cairo_set_source_surface(pcr, Surface, 0, 0);
+    end;
+  end else
+    cairo_set_source_surface(pcr, Surface, 0, 0);
 
   cairo_matrix_init_identity(@M);
   cairo_matrix_translate(@M, SourceRect^.Left, SourceRect^.Top);

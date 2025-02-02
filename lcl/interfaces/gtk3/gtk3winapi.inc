@@ -2797,7 +2797,8 @@ begin
     Utf8Str := UTF8Copy(Utf8Encode(Str), 1, Count)
   else
     Utf8Str := UTF8Copy(Str, 1, Count);
-  TGtk3DeviceContext(DC).CurrentFont.Layout^.set_text(PChar(Utf8Str), -1);
+
+  {%H-}TGtk3DeviceContext(DC).CurrentFont.Layout^.set_text(PChar(Utf8Str), -1);
   TGtk3DeviceContext(DC).CurrentFont.Layout^.get_pixel_size(@Size.Cx, @Size.CY);
 
   Result := True;
@@ -4485,7 +4486,13 @@ begin
   if (mask<>0) then
     DestContext.drawImage1(@ATargetRect, PgdkPixbuf(SrcContext.CurrentImage.Handle) , @ASrcRect, nil, nil)
   else
-    DestContext.drawSurface(@ATargetRect,SrcContext.CairoSurface , @ASrcRect, nil, nil);
+  begin
+    if (cairo_surface_get_type(SrcContext.CairoSurface) = CAIRO_SURFACE_TYPE_IMAGE) and
+      Assigned(SrcContext.CurrentImage) and Assigned(SrcContext.CurrentImage.Handle) then
+        DestContext.drawSurface(@ATargetRect,SrcContext.CairoSurface , @ASrcRect, SrcContext.CurrentImage.Handle, nil, nil)
+    else
+      DestContext.drawSurface(@ATargetRect,SrcContext.CairoSurface , @ASrcRect, nil, nil, nil);
+  end;
   Result := True;
 end;
 
