@@ -370,7 +370,7 @@ type
 implementation
 
 uses
-  Math, PropEdits, StrUtils, LResources, Types, GraphUtil,
+  Math, PropEdits, StrUtils, LResources, LazMethodList, Types, GraphUtil,
   TAChartStrConsts, TAGeometry, TAMath;
 
 function CreateLazIntfImage(
@@ -1118,14 +1118,14 @@ end;
 
 procedure TChartSeries.SetOnGetMark(AValue: TChartGetMarkEvent);
 begin
-  if TMethod(FOnGetMark) = TMethod(AValue) then exit;
+  if SameMethod(TMethod(FOnGetMark), TMethod(AValue)) then exit;
   FOnGetMark := AValue;
   UpdateParentChart;
 end;
 
 procedure TChartSeries.SetOnGetMarkText(AValue: TChartGetMarkTextEvent);
 begin
-  if TMethod(FOnGetMarkText) = TMethod(AValue) then exit;
+  if SameMethod(TMethod(FOnGetMarkText), TMethod(AValue)) then exit;
   FOnGetMarkText := AValue;
   UpdateParentChart;
 end;

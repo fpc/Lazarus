@@ -422,7 +422,8 @@ procedure Register;
 
 implementation
 
-uses WSShellCtrls
+uses
+ WSShellCtrls, LazMethodList
 {$ifdef windows}
   ,Windows, ShellApi
 {$endif};
@@ -465,10 +466,6 @@ begin
     Result := Format(sShellCtrlsGB, [Format('%.1n', [AFileSize / ONE_GB])]);
 end;
 
-operator = (const A, B: TMethod): Boolean;
-begin
-  Result := (A.Code = B.Code) and (A.Data = B.Data);
-end;
 
 { TShellListItem }
 
@@ -701,7 +698,7 @@ var
   RootNode: TTreeNode;
   CurrPath: String;
 begin
-  if TMethod(AValue) = TMethod(FOnSortCompare) then
+  if SameMethod(TMethod(AValue), TMethod(FOnSortCompare)) then
     Exit;
 
   FOnSortCompare := AValue;
@@ -1776,7 +1773,8 @@ end;
 
 procedure TCustomShellListView.SetOnSortCompare(AValue: TFileItemCompareEvent);
 begin
-  if TMethod(AValue) = TMethod(FOnSortCompare) then Exit;
+  if SameMethod(TMethod(AValue), TMethod(FOnSortCompare)) then
+    Exit;
   FOnSortCompare:=AValue;
   Clear;
   Items.Clear;

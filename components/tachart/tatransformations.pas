@@ -202,7 +202,7 @@ type
 implementation
 
 uses
-  ComponentEditors, Forms, Math, PropEdits,
+  ComponentEditors, Forms, Math, LazMethodList, PropEdits,
   TAChartStrConsts, TAMath, TASubcomponentsEditor;
 
 type
@@ -797,14 +797,14 @@ end;
 
 procedure TUserDefinedAxisTransform.SetOnAxisToGraph(AValue: TTransformEvent);
 begin
-  if TMethod(FOnAxisToGraph) = TMethod(AValue) then exit;
+  if SameMethod(TMethod(FOnAxisToGraph), TMethod(AValue)) then exit;
   FOnAxisToGraph := AValue;
   Changed;
 end;
 
 procedure TUserDefinedAxisTransform.SetOnGraphToAxis(AValue: TTransformEvent);
 begin
-  if TMethod(FOnGraphToAxis) = TMethod(AValue) then exit;
+  if SameMethod(TMethod(FOnGraphToAxis), TMethod(AValue)) then exit;
   FOnGraphToAxis := AValue;
   Changed;
 end;

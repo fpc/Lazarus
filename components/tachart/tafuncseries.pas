@@ -499,7 +499,7 @@ implementation
 
 uses
   ipf,
-  GraphType, GraphUtil, Math, spe, StrUtils, SysUtils,
+  GraphType, GraphUtil, Math, spe, StrUtils, SysUtils, LazMethodList,
   TAChartStrConsts, TAGeometry, TAGraph, TAMath;
 
 const
@@ -776,7 +776,7 @@ end;
 
 procedure TFuncSeries.SetOnCalculate(AValue: TFuncCalculateEvent);
 begin
-  if TMethod(FOnCalculate) = TMethod(AValue) then exit;
+  if SameMethod(TMethod(FOnCalculate), TMethod(AValue)) then exit;
   FOnCalculate := AValue;
   UpdateParentChart;
 end;
@@ -897,7 +897,7 @@ end;
 procedure TParametricCurveSeries.SetOnCalculate(
   AValue: TParametricCurveCalculateEvent);
 begin
-  if TMethod(FOnCalculate) = TMethod(AValue) then exit;
+  if SameMethod(TMethod(FOnCalculate), TMethod(AValue)) then exit;
   FOnCalculate := AValue;
   UpdateParentChart;
 end;
@@ -2879,7 +2879,7 @@ end;
 
 procedure TColorMapSeries.SetOnCalculate(AValue: TFuncCalculate3DEvent);
 begin
-  if TMethod(FOnCalculate) = TMethod(AValue) then exit;
+  if SameMethod(TMethod(FOnCalculate), TMethod(AValue)) then exit;
   FOnCalculate := AValue;
   InvalidateBufferImage;
   UpdateParentChart;

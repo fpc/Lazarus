@@ -397,8 +397,6 @@ procedure UpdateMinMax(AValue: Integer; var AMin, AMax: Integer); overload;
 
 function WeightedAverage(AX1, AX2, ACoeff: Double): Double; inline;
 
-operator =(const A, B: TMethod): Boolean; overload; inline;
-
 var
   DrawData: TDrawDataRegistry;
   ShowMessageProc: TShowMessageProc;
@@ -407,7 +405,7 @@ var
 implementation
 
 uses
-  StrUtils, TypInfo, TAChartStrConsts;
+  StrUtils, TypInfo, LazMethodList, TAChartStrConsts;
 
 function BoundsSize(ALeft, ATop: Integer; ASize: TSize): TRect; inline;
 begin
@@ -682,10 +680,6 @@ begin
   Result := AX1 * (1 - ACoeff) + AX2 * ACoeff;
 end;
 
-operator = (const A, B: TMethod): Boolean;
-begin
-  Result := (A.Code = B.Code) and (A.Data = B.Data);
-end;
 
 { THistory }
 
@@ -870,7 +864,7 @@ end;
 
 procedure TIntervalList.SetOnChange(AValue: TNotifyEvent);
 begin
-  if TMethod(FOnChange) = TMethod(AValue) then exit;
+  if SameMethod(TMethod(FOnChange), TMethod(AValue)) then exit;
   FOnChange := AValue;
 end;
 

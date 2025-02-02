@@ -301,7 +301,7 @@ type
 implementation
 
 uses
-  LResources, Math, PropEdits,
+  LResources, Math, LazMethodList, PropEdits,
   TAChartStrConsts, TAGeometry, TAMath;
 
 var
@@ -1182,14 +1182,14 @@ end;
 
 procedure TChartAxis.SetOnGetMarkText(AValue: TChartGetAxisMarkTextEvent);
 begin
-  if TMethod(FOnGetMarkText) = TMethod(AValue) then exit;
+  if SameMethod(TMethod(FOnGetMarkText), TMethod(AValue)) then exit;
   FOnGetMarkText := AValue;
   StyleChanged(Self);
 end;
 
 procedure TChartAxis.SetOnMarkToText(AValue: TChartAxisMarkToTextEvent);
 begin
-  if TMethod(FOnMarkToText) = TMethod(AValue) then exit;
+  if SameMethod(TMethod(FOnMarkToText), TMethod(AValue)) then exit;
   FOnMarkToText := AValue;
   StyleChanged(Self);
 end;

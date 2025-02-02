@@ -82,7 +82,7 @@ procedure Register;
 implementation
 
 uses
-  Math, SysUtils, DateUtils, TAMath;
+  Math, SysUtils, DateUtils, LazMethodList, TAMath;
 
 type
 
@@ -345,7 +345,7 @@ end;
 
 procedure TDbChartSource.SetOnGetItem(AValue: TDbChartSourceGetItemEvent);
 begin
-  if TMethod(FOnGetItem) = TMethod(AValue) then exit;
+  if SameMethod(TMethod(FOnGetItem), TMethod(AValue)) then exit;
   FOnGetItem := AValue;
   Reset;
 end;

@@ -525,7 +525,7 @@ implementation
 
 uses
   Math, Types,
-  Clipbrd, Dialogs, LResources,
+  Clipbrd, Dialogs, LResources, LazMethodList,
   TADrawerCanvas, TAGeometry, TAMath, TAStyles;
 
 const
@@ -1835,77 +1835,77 @@ end;
 
 procedure TChart.SetOnAfterDraw(AValue: TChartDrawEvent);
 begin
-  if TMethod(FOnAfterDraw) = TMethod(AValue) then exit;
+  if SameMethod(TMethod(FOnAfterDraw), TMethod(AValue)) then exit;
   FOnAfterDraw := AValue;
   StyleChanged(Self);
 end;
 
 procedure TChart.SetOnAfterCustomDrawBackground(AValue: TChartAfterCustomDrawEvent);
 begin
-  if TMethod(FOnAfterCustomDrawBackground) = TMethod(AValue) then exit;
+  if SameMethod(TMethod(FOnAfterCustomDrawBackground), TMethod(AValue)) then exit;
   FOnAfterCustomDrawBackground := AValue;
   StyleChanged(Self);
 end;
 
 procedure TChart.SetOnAfterCustomDrawBackWall(AValue: TChartAfterCustomDrawEvent);
 begin
-  if TMethod(FOnAfterCustomDrawBackWall) = TMethod(AValue) then exit;
+  if SameMethod(TMethod(FOnAfterCustomDrawBackWall), TMethod(AValue)) then exit;
   FOnAfterCustomDrawBackWall := AValue;
   StyleChanged(Self);
 end;
 
 procedure TChart.SetOnAfterDrawBackground(AValue: TChartAfterDrawEvent);
 begin
-  if TMethod(FOnAfterDrawBackground) = TMethod(AValue) then exit;
+  if SameMethod(TMethod(FOnAfterDrawBackground), TMethod(AValue)) then exit;
   FOnAfterDrawBackground := AValue;
   StyleChanged(Self);
 end;
 
 procedure TChart.SetOnAfterDrawBackWall(AValue: TChartAfterDrawEvent);
 begin
-  if TMethod(FOnAfterDrawBackWall) = TMethod(AValue) then exit;
+  if SameMethod(TMethod(FOnAfterDrawBackWall), TMethod(AValue)) then exit;
   FOnAfterDrawBackWall := AValue;
   StyleChanged(Self);
 end;
 
 procedure TChart.SetOnBeforeCustomDrawBackground(AValue: TChartBeforeCustomDrawEvent);
 begin
-  if TMethod(FOnBeforeCustomDrawBackground) = TMethod(AValue) then exit;
+  if SameMethod(TMethod(FOnBeforeCustomDrawBackground), TMethod(AValue)) then exit;
   FOnBeforeCustomDrawBackground := AValue;
   StyleChanged(Self);
 end;
 
 procedure TChart.SetOnBeforeCustomDrawBackWall(AValue: TChartBeforeCustomDrawEvent);
 begin
-  if TMethod(FOnBeforeCustomDrawBackWall) = TMethod(AValue) then exit;
+  if SameMethod(TMethod(FOnBeforeCustomDrawBackWall), TMethod(AValue)) then exit;
   FOnBeforeCustomDrawBackWall := AValue;
   StyleChanged(Self);
 end;
 
 procedure TChart.SetOnBeforeDrawBackground(AValue: TChartBeforeDrawEvent);
 begin
-  if TMethod(FOnBeforeDrawBackground) = TMethod(AValue) then exit;
+  if SameMethod(TMethod(FOnBeforeDrawBackground), TMethod(AValue)) then exit;
   FOnBeforeDrawBackground := AValue;
   StyleChanged(Self);
 end;
 
 procedure TChart.SetOnBeforeDrawBackWall(AValue: TChartBeforeDrawEvent);
 begin
-  if TMethod(FOnBeforeDrawBackWall) = TMethod(AValue) then exit;
+  if SameMethod(TMethod(FOnBeforeDrawBackWall), TMethod(AValue)) then exit;
   FOnBeforeDrawBackWall := AValue;
   StyleChanged(Self);
 end;
 
 procedure TChart.SetOnChartPaint(AValue: TChartPaintEvent);
 begin
-  if TMethod(FOnChartPaint) = TMethod(AValue) then exit;
+  if SameMethod(TMethod(FOnChartPaint), TMethod(AValue)) then exit;
   FOnChartPaint := AValue;
   StyleChanged(Self);
 end;
 
 procedure TChart.SetOnDrawLegend(AValue: TChartDrawLegendEvent);
 begin
-  if TMethod(FOnDrawLegend) = TMethod(AValue) then exit;
+  if SameMethod(TMethod(FOnDrawLegend), TMethod(AValue)) then exit;
   FOnDrawLegend := AValue;
   StyleChanged(self);
 end;

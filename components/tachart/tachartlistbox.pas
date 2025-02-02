@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, Controls, SysUtils, Types, Math,
-  StdCtrls, Graphics, LCLIntf, LCLType, Themes,
+  StdCtrls, Graphics, LCLIntf, LCLType, LazMethodList, Themes,
   IntegerList, LazUTF8,
   TAChartUtils, TACustomSeries, TALegend, TAGraph,
   TACustomSource, TADrawerCanvas, TADrawUtils, TAEnumerators, TAGeometry;
@@ -732,14 +732,14 @@ end;
 
 procedure TChartListbox.SetOnAddSeries(AValue: TChartListboxAddSeriesEvent);
 begin
-  if TMethod(FOnAddSeries) = TMethod(AValue) then exit;
+  if SameMethod(TMethod(FOnAddSeries), TMethod(AValue)) then exit;
   FOnAddSeries := AValue;
   Populate;
 end;
 
 procedure TChartListbox.SetOnPopulate(AValue: TNotifyEvent);
 begin
-  if TMethod(FOnPopulate) = TMethod(AValue) then exit;
+  if SameMethod(TMethod(FOnPopulate), TMethod(AValue)) then exit;
   FOnPopulate := AValue;
   Populate;
 end;

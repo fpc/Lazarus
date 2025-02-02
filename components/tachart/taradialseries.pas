@@ -220,7 +220,7 @@ type
 implementation
 
 uses
-  Math,
+  Math, LazMethodList,
   TAChartStrConsts, TATypes, TACustomSource, TAGeometry, TAGraph;
 
 const
@@ -901,7 +901,7 @@ end;
 
 procedure TCustomPieSeries.SetOnCustomDrawPie(AValue: TCustomDrawPieEvent);
 begin
-  if TMethod(FOnCustomDrawPie) = TMethod(AValue) then exit;
+  if SameMethod(TMethod(FOnCustomDrawPie), TMethod(AValue)) then exit;
   FOnCustomDrawPie := AValue;
   UpdateParentChart;
 end;

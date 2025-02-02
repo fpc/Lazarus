@@ -15,7 +15,7 @@ unit TATextElements;
 interface
 
 uses
-  Classes, Graphics, Types,
+  Classes, Graphics, Types, LazMethodList,
   TAChartUtils, TADrawUtils, TATypes,
 
   // Workaround for issue #22850.
@@ -585,7 +585,7 @@ end;
 
 procedure TChartTextElement.SetOnGetShape(AValue: TChartGetShapeEvent);
 begin
-  if TMethod(FOnGetShape) = TMethod(AValue) then exit;
+  if SameMethod(TMethod(FOnGetShape), TMethod(AValue)) then exit;
   FOnGetShape := AValue;
   StyleChanged(Self);
 end;

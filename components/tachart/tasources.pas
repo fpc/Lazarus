@@ -304,7 +304,7 @@ procedure Register;
 implementation
 
 uses
-  Math, StrUtils, SysUtils, TAMath, TAChartStrConsts;
+  Math, StrUtils, SysUtils, LazMethodList, TAMath, TAChartStrConsts;
 
 type
   TCustomChartSourceAccess = class(TCustomChartSource);
@@ -1485,7 +1485,7 @@ end;
 procedure TUserDefinedChartSource.SetOnGetChartDataItem(
   AValue: TGetChartDataItemEvent);
 begin
-  if TMethod(FOnGetChartDataItem) = TMethod(AValue) then exit;
+  if SameMethod(TMethod(FOnGetChartDataItem), TMethod(AValue)) then exit;
   FOnGetChartDataItem := AValue;
   Reset;
 end;

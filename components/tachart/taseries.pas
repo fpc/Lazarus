@@ -410,7 +410,7 @@ type
 implementation
 
 uses
-  {GraphMath,} GraphType, IntfGraphics, LResources, Math, PropEdits, SysUtils,
+  GraphType, IntfGraphics, LResources, LazMethodList, Math, PropEdits, SysUtils,
   TAChartStrConsts, TADrawerCanvas, TAGeometry, TACustomSource, TAGraph,
   TAMath, TAStyles;
 
@@ -1898,14 +1898,14 @@ end;
 
 procedure TBarSeries.SetOnBeforeDrawBar(AValue: TBeforeDrawBarEvent);
 begin
-  if TMethod(FOnBeforeDrawBar) = TMethod(AValue) then exit;
+  if SameMethod(TMethod(FOnBeforeDrawBar), TMethod(AValue)) then exit;
   FOnBeforeDrawBar := AValue;
   UpdateParentChart;
 end;
 
 procedure TBarSeries.SetOnCustomDrawBar(AValue: TCustomDrawBarEvent);
 begin
-  if TMethod(FOnCustomDrawBar) = TMethod(AValue) then exit;
+  if SameMethod(TMethod(FOnCustomDrawBar), TMethod(AValue)) then exit;
   FOnCustomDrawBar := AValue;
   UpdateParentChart;
 end;
@@ -2520,14 +2520,14 @@ end;
 
 procedure TUserDrawnSeries.SetOnDraw(AValue: TSeriesDrawEvent);
 begin
-  if TMethod(FOnDraw) = TMethod(AValue) then exit;
+  if SameMethod(TMethod(FOnDraw), TMethod(AValue)) then exit;
   FOnDraw := AValue;
   UpdateParentChart;
 end;
 
 procedure TUserDrawnSeries.SetOnGetBounds(AValue: TSeriesGetBoundsEvent);
 begin
-  if TMethod(FOnGetBounds) = TMethod(AValue) then exit;
+  if SameMethod(TMethod(FOnGetBounds), TMethod(AValue)) then exit;
   FOnGetBounds := AValue;
   UpdateParentChart;
 end;

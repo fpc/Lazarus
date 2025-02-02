@@ -339,7 +339,7 @@ type
 implementation
 
 uses
-  Math, PropEdits, Types, LResources,
+  Math, PropEdits, Types, LResources, LazMethodList,
   TADrawerCanvas, TAGeometry;
 
 const
@@ -1206,14 +1206,14 @@ end;
 
 procedure TChartSeriesLegend.SetOnDraw(AValue: TLegendItemDrawEvent);
 begin
-  if TMethod(FOnDraw) = TMethod(AValue) then exit;
+  if SameMethod(TMethod(FOnDraw), TMethod(AValue)) then exit;
   FOnDraw := AValue;
   StyleChanged(Self);
 end;
 
 procedure TChartSeriesLegend.SetOnCreate(AValue: TLegendItemCreateEvent);
 begin
-  if TMethod(FOnCreate) = TMethod(AValue) then exit;
+  if SameMethod(TMethod(FOnCreate), TMethod(AValue)) then exit;
   FOnCreate := AValue;
   StyleChanged(Self);
 end;
