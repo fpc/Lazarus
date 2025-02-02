@@ -1,8 +1,6 @@
 {%MainUnit ../lclintf.pas}
 
 function DoOpen(APath: String; Param: String): Boolean;
-var
-  ResultingPath: string;
 begin
   Result := True;
   if not FileExistsUTF8(APath) and not DirectoryExistsUTF8(Apath) then begin
@@ -12,14 +10,12 @@ begin
   end;
   // Paths with spaces need to be quoted, see bug 21651
   if (APath<>'') and (APath[1]<>'''') then
-    ResultingPath:=QuotedStr(APath)
-  else
-    ResultingPath:=APath;
+    APath:=QuotedStr(APath);
 
   if Param<>'' then
-    ResultingPath:=Param+' '+ResultingPath;
+    APath:=Param+' '+APath;
 
-  RunCmdFromPath('open',ResultingPath);
+  RunCmdFromPath('open',APath);
 end;
 
 function FindDefaultBrowser(out ABrowser, AParams: String): Boolean;
