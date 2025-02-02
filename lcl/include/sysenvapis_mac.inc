@@ -1,5 +1,26 @@
 {%MainUnit ../lclintf.pas}
 
+function DoOpen(APath: String; Param: String): Boolean;
+var
+  ResultingPath: string;
+begin
+  Result := True;
+  if not FileExistsUTF8(APath) and not DirectoryExistsUTF8(Apath) then begin
+    // OpenDocument handles URLs as well
+    Result := OpenURL(Apath);
+    Exit;
+  end;
+  // Paths with spaces need to be quoted, see bug 21651
+  if (APath<>'') and (APath[1]<>'''') then
+    ResultingPath:=QuotedStr(APath)
+  else
+    ResultingPath:=APath;
+
+  if Param<>'' then
+    ResultingPath:=Param+' '+ResultingPath;
+
+  RunCmdFromPath('open',ResultingPath);
+end;
 
 function FindDefaultBrowser(out ABrowser, AParams: String): Boolean;
 begin
@@ -34,28 +55,13 @@ end;
 
 // Open a document with the default application associated with it in the system
 function OpenDocument(APath: String): Boolean;
-var
-  ResultingPath: string;
-  lpath: string;
 begin
-  Result := True;
-  if not FileExistsUTF8(APath) and not DirectoryExistsUTF8(Apath) then begin
-    // OpenDocument handles URLs as well
-    Result := OpenURL(Apath);
-    Exit;
-  end;
-  // Paths with spaces need to be quoted, see bug 21651
-  if (APath<>'') and (APath[1]<>'''') then
-    ResultingPath:=QuotedStr(APath)
-  else
-    ResultingPath:=APath;
-  RunCmdFromPath('open',ResultingPath);
+  Result:=DoOpen(APath,'');
 end;
 
-// ToDo: Implement
-// Now just open the folder in system filemanager.
+// open the folder and select the file in system filemanager.
 function SelectInFolder(AFullPath: String): Boolean;
 begin
-  Result := OpenDocument(ExtractFilePath(AFullPath));
+  Result := DoOpen(AFullPath,'-R');
 end;
 
