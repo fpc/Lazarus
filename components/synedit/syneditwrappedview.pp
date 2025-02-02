@@ -167,8 +167,8 @@ type
 
     function GetOffsetForWrap(AWrapOffset: IntIdx; out ASubOffset: IntIdx): IntIdx; override;
 
-    function TextXYIdxToViewXYIdx(ATextXYIdx: TPhysPoint; ANodeStartLine: IntIdx): TPhysPoint; override;
-    function ViewXYIdxToTextXYIdx(AViewXYIdx: TPhysPoint; ANodeStartLine: IntIdx): TPhysPoint; override;
+    function TextXYIdxToViewXYIdx(ATextXYIdx: TPhysPoint_0; ANodeStartLine: IntIdx): TViewedPoint_0; override;
+    function ViewXYIdxToTextXYIdx(AViewXYIdx: TViewedPoint_0; ANodeStartLine: IntIdx): TPhysPoint_0; override;
   end;
 
 
@@ -216,12 +216,12 @@ public
     procedure GetSublineBounds(ALine: String; AMaxWidth: Integer;
       const APhysCharWidths: TPhysicalCharWidths; ASubLine: Integer; out ALogStartX,
       ANextLogStartX, APhysStart: IntIdx; out APhysWidth: integer);
-    function  GetSubLineFromX (ALine: String; AMaxWidth: Integer; const APhysCharWidths: TPhysicalCharWidths; var APhysXPos: Integer): integer;
+    function  GetSubLineFromX (ALine: String; AMaxWidth: Integer; const APhysCharWidths: TPhysicalCharWidths; var APhysToViewedXPos: Integer): integer;
 
-    procedure GetWrapInfoForViewedXY(var AViewedXY: TPhysPoint; AFlags: TViewedXYInfoFlags; out AFirstViewedX: IntPos; ALogPhysConvertor: TSynLogicalPhysicalConvertor);
+    procedure GetWrapInfoForViewedXY(var AViewedXY: TViewedPoint; AFlags: TViewedXYInfoFlags; out AFirstViewedX: IntPos; ALogPhysConvertor: TSynLogicalPhysicalConvertor);
 
-    function TextXYToLineXY(ATextXY: TPhysPoint): TPhysPoint;
-    function LineXYToTextX(ARealLine: IntPos; ALineXY: TPhysPoint): Integer;
+    function TextXYToLineXY(ATextXY: TPhysPoint): TViewedSubPoint_0;
+    function LineXYToTextX(ARealLine: IntPos; ALineXY: TViewedSubPoint_0): Integer;
     function CalculateWrapForLine(ALineIdx: IntIdx; AMaxWidth: integer): Integer; inline;
   public
     constructor Create(AOwner: TComponent); override;
@@ -1245,8 +1245,8 @@ begin
   Result := FSynWordWrapLineMap.GetOffsetForWrap(AWrapOffset, ASubOffset);
 end;
 
-function TSynWordWrapIndexPage.TextXYIdxToViewXYIdx(ATextXYIdx: TPhysPoint;
-  ANodeStartLine: IntIdx): TPhysPoint;
+function TSynWordWrapIndexPage.TextXYIdxToViewXYIdx(ATextXYIdx: TPhysPoint_0;
+  ANodeStartLine: IntIdx): TViewedPoint_0;
 var
   p: TPoint;
 begin
@@ -1259,8 +1259,8 @@ begin
   Result.y := Result.y + p.y;
 end;
 
-function TSynWordWrapIndexPage.ViewXYIdxToTextXYIdx(AViewXYIdx: TPhysPoint;
-  ANodeStartLine: IntIdx): TPhysPoint;
+function TSynWordWrapIndexPage.ViewXYIdxToTextXYIdx(AViewXYIdx: TViewedPoint_0;
+  ANodeStartLine: IntIdx): TPhysPoint_0;
 var
   SubOffset: Integer;
 begin
@@ -1713,7 +1713,7 @@ end;
 
 function TLazSynEditLineWrapPlugin.GetSubLineFromX(ALine: String;
   AMaxWidth: Integer; const APhysCharWidths: TPhysicalCharWidths;
-  var APhysXPos: Integer): integer;
+  var APhysToViewedXPos: Integer): integer;
 var
   x, PhysWidth: Integer;
 begin
@@ -1722,27 +1722,27 @@ begin
     exit;
   Result := -1;
   x := 0;
-  APhysXPos := ToIdx(APhysXPos);
+  APhysToViewedXPos := ToIdx(APhysToViewedXPos);
   while (x < Length(ALine)) do begin
     inc(Result);
     x := CalculateNextBreak(PChar(ALine), x, AMaxWidth, APhysCharWidths, PhysWidth);
     if x >= Length(ALine) then
       break;
-    if (FCaretWrapPos = wcpBOL) and (PhysWidth = APhysXPos) and (x < Length(ALine))
+    if (FCaretWrapPos = wcpBOL) and (PhysWidth = APhysToViewedXPos) and (x < Length(ALine))
     then begin
       inc(Result);
-      APhysXPos := APhysXPos - PhysWidth;
+      APhysToViewedXPos := APhysToViewedXPos - PhysWidth;
       break;
     end;
-    if PhysWidth >= APhysXPos then
+    if PhysWidth >= APhysToViewedXPos then
       break;
-    APhysXPos := APhysXPos - PhysWidth;
+    APhysToViewedXPos := APhysToViewedXPos - PhysWidth;
   end;
-  APhysXPos := ToPos(APhysXPos);
+  APhysToViewedXPos := ToPos(APhysToViewedXPos);
 end;
 
 procedure TLazSynEditLineWrapPlugin.GetWrapInfoForViewedXY(
-  var AViewedXY: TPhysPoint; AFlags: TViewedXYInfoFlags;
+  var AViewedXY: TViewedPoint; AFlags: TViewedXYInfoFlags;
   out AFirstViewedX: IntPos; ALogPhysConvertor: TSynLogicalPhysicalConvertor);
 var
   SubLineOffset, YIdx: TLineIdx;
@@ -1782,7 +1782,7 @@ begin
 end;
 
 function TLazSynEditLineWrapPlugin.TextXYToLineXY(ATextXY: TPhysPoint
-  ): TPhysPoint;
+  ): TViewedSubPoint_0;
 begin
   FLineMapView.LogPhysConvertor.CurrentLine := ATextXY.y;
   Result.x := ATextXY.x;
@@ -1795,7 +1795,7 @@ begin
 end;
 
 function TLazSynEditLineWrapPlugin.LineXYToTextX(ARealLine: IntPos;
-  ALineXY: TPhysPoint): Integer;
+  ALineXY: TViewedSubPoint_0): Integer;
 var
   ANextLogX, APhysWidth: Integer;
   ALine: String;

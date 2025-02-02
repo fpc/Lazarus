@@ -99,8 +99,8 @@ function GetWrappedOffsetFor(ARealOffset: IntIdx): IntIdx;  virtual; abstract;
     function GetOffsetForWrap(AWrapOffset: IntIdx; out ASubOffset: IntIdx): IntIdx; virtual; abstract;
     property WrappedOffsetFor[ARealOffset: IntIdx]: IntIdx read GetWrappedOffsetFor;
 
-    function TextXYIdxToViewXYIdx(ATextXYIdx: TPhysPoint; ANodeStartLine: IntIdx): TPhysPoint; virtual;
-    function ViewXYIdxToTextXYIdx(AViewXYIdx: TPhysPoint; ANodeStartLine: IntIdx): TPhysPoint; virtual;
+    function TextXYIdxToViewXYIdx(ATextXYIdx: TPhysPoint_0; ANodeStartLine: IntIdx): TViewedPoint_0; virtual;
+    function ViewXYIdxToTextXYIdx(AViewXYIdx: TViewedPoint_0; ANodeStartLine: IntIdx): TPhysPoint_0; virtual;
   end;
 
 
@@ -151,8 +151,8 @@ function GetWrappedOffsetFor(ARealOffset: IntIdx): IntIdx;  virtual; abstract;
 
     function GetLineForForWrap(AWrapLine: TLineIdx; out AWrapOffset: TLineIdx): TLineIdx;
 
-    function TextXYIdxToViewXYIdx(ATextXYIdx: TPhysPoint): TPhysPoint;
-    function ViewXYIdxToTextXYIdx(AViewXYIdx: TPhysPoint): TPhysPoint;
+    function TextXYIdxToViewXYIdx(ATextXYIdx: TPhysPoint_0): TViewedPoint_0;
+    function ViewXYIdxToTextXYIdx(AViewXYIdx: TViewedPoint_0): TPhysPoint_0;
 
     property FirstInvalidLine: Integer read GetFirstInvalidLine;
     property FirstInvalidEndLine: Integer read GetFirstInvalidEndLine;
@@ -215,8 +215,8 @@ function GetWrappedOffsetFor(ARealOffset: IntIdx): IntIdx;  virtual; abstract;
     function GetLineForForWrap(AWrapLine: TLineIdx; out AWrapOffset: TLineIdx): TLineIdx;
     property ViewedLineCountDifference: Integer read GetViewedLineCountDifference;
 
-    function TextXYIdxToViewXYIdx(ATextXYIdx: TPhysPoint): TPhysPoint; inline;
-    function ViewXYIdxToTextXYIdx(AViewXYIdx: TPhysPoint): TPhysPoint; inline;
+    function TextXYIdxToViewXYIdx(ATextXYIdx: TPhysPoint_0): TViewedPoint_0; inline;
+    function ViewXYIdxToTextXYIdx(AViewXYIdx: TViewedPoint_0): TPhysPoint_0; inline;
 
     property PageSplitSize: Integer read FPageSplitSize;
     property PageJoinSize: Integer read FPageJoinSize;
@@ -248,7 +248,7 @@ type
     function GetLinesCount: Integer; override;
   end;
 
-  TWrapInfoForViewedXYProc = procedure(var AViewedXY: TPhysPoint; AFlags: TViewedXYInfoFlags; out AFirstViewedX: IntPos; ALogPhysConvertor: TSynLogicalPhysicalConvertor) of object;
+  TWrapInfoForViewedXYProc = procedure(var AViewedXY: TViewedPoint; AFlags: TViewedXYInfoFlags; out AFirstViewedX: IntPos; ALogPhysConvertor: TSynLogicalPhysicalConvertor) of object;
 
   { TSynEditLineMappingView }
 
@@ -274,7 +274,7 @@ type
     function GetDisplayView: TLazSynDisplayView; override;
     function GetViewedCount: integer; override;
     procedure SetManager(AManager: TSynTextViewsManager); override;
-    procedure InternalGetInfoForViewedXY(AViewedXY: TPhysPoint;
+    procedure InternalGetInfoForViewedXY(AViewedXY: TViewedPoint;
       AFlags: TViewedXYInfoFlags; out AViewedXYInfo: TViewedXYInfo;
       ALogPhysConvertor: TSynLogicalPhysicalConvertor); override;
   public
@@ -285,8 +285,8 @@ type
     function GetLengthOfLongestLine: integer; override;
     function TextToViewIndex(aTextIndex: TLineIdx): TLinePos; override;
     function ViewToTextIndex(aViewIndex: TLineIdx): TLineIdx; override;
-    function TextXYToViewXY(APhysTextXY: TPhysPoint): TPhysPoint; override;
-    function ViewXYToTextXY(APhysViewXY: TPhysPoint): TPhysPoint; override;
+    function TextXYToViewXY(APhysTextXY: TPhysPoint): TViewedPoint; override;
+    function ViewXYToTextXY(APhysViewXY: TViewedPoint): TPhysPoint; override;
     //function AddVisibleOffsetToTextIndex(aTextIndex: IntIdx; LineOffset: Integer): IntIdx; override; (* Add/Sub to/from TextPos (1-based) skipping folded *)
 
     procedure InvalidateLines(AFromLineIdx, AToLineIdx: TLineIdx);
@@ -510,14 +510,14 @@ begin
   Result := 0;
 end;
 
-function TSynEditLineMapPage.TextXYIdxToViewXYIdx(ATextXYIdx: TPhysPoint;
-  ANodeStartLine: IntIdx): TPhysPoint;
+function TSynEditLineMapPage.TextXYIdxToViewXYIdx(ATextXYIdx: TPhysPoint_0;
+  ANodeStartLine: IntIdx): TViewedPoint_0;
 begin
   Result := ATextXYIdx;
 end;
 
-function TSynEditLineMapPage.ViewXYIdxToTextXYIdx(AViewXYIdx: TPhysPoint;
-  ANodeStartLine: IntIdx): TPhysPoint;
+function TSynEditLineMapPage.ViewXYIdxToTextXYIdx(AViewXYIdx: TViewedPoint_0;
+  ANodeStartLine: IntIdx): TPhysPoint_0;
 begin
   Result := AViewXYIdx;
 end;
@@ -817,8 +817,8 @@ begin
   Result := StartLine + Page.GetOffsetForWrap(AWrapLine - StartLine - ViewedCountDifferenceBefore, AWrapOffset);
 end;
 
-function TSynEditLineMapPageHolder.TextXYIdxToViewXYIdx(ATextXYIdx: TPhysPoint
-  ): TPhysPoint;
+function TSynEditLineMapPageHolder.TextXYIdxToViewXYIdx(ATextXYIdx: TPhysPoint_0
+  ): TViewedPoint_0;
 begin
   Result := ATextXYIdx;
   if not HasPage then
@@ -827,8 +827,8 @@ begin
   Result.y := Result.y + ViewedCountDifferenceBefore;
 end;
 
-function TSynEditLineMapPageHolder.ViewXYIdxToTextXYIdx(AViewXYIdx: TPhysPoint
-  ): TPhysPoint;
+function TSynEditLineMapPageHolder.ViewXYIdxToTextXYIdx(AViewXYIdx: TViewedPoint_0
+  ): TPhysPoint_0;
 begin
   Result := AViewXYIdx;
   if not HasPage then
@@ -1260,8 +1260,8 @@ begin
   Result := pg.GetLineForForWrap(AWrapLine, AWrapOffset);
 end;
 
-function TSynLineMapAVLTree.TextXYIdxToViewXYIdx(ATextXYIdx: TPhysPoint
-  ): TPhysPoint;
+function TSynLineMapAVLTree.TextXYIdxToViewXYIdx(ATextXYIdx: TPhysPoint_0
+  ): TViewedPoint_0;
 var
   pg: TSynEditLineMapPageHolder;
 begin
@@ -1269,8 +1269,8 @@ begin
   Result := pg.TextXYIdxToViewXYIdx(ATextXYIdx);
 end;
 
-function TSynLineMapAVLTree.ViewXYIdxToTextXYIdx(AViewXYIdx: TPhysPoint
-  ): TPhysPoint;
+function TSynLineMapAVLTree.ViewXYIdxToTextXYIdx(AViewXYIdx: TViewedPoint_0
+  ): TPhysPoint_0;
 var
   pg: TSynEditLineMapPageHolder;
 begin
@@ -1458,7 +1458,7 @@ begin
 end;
 
 procedure TSynEditLineMappingView.InternalGetInfoForViewedXY(
-  AViewedXY: TPhysPoint; AFlags: TViewedXYInfoFlags; out
+  AViewedXY: TViewedPoint; AFlags: TViewedXYInfoFlags; out
   AViewedXYInfo: TViewedXYInfo; ALogPhysConvertor: TSynLogicalPhysicalConvertor
   );
 var
@@ -1523,13 +1523,13 @@ begin
 end;
 
 function TSynEditLineMappingView.TextXYToViewXY(APhysTextXY: TPhysPoint
-  ): TPhysPoint;
+  ): TViewedPoint;
 begin
   Result := inherited TextXYToViewXY(APhysTextXY);
   Result := YToPos(FLineMappingData.TextXYIdxToViewXYIdx(YToIdx(Result)));
 end;
 
-function TSynEditLineMappingView.ViewXYToTextXY(APhysViewXY: TPhysPoint
+function TSynEditLineMappingView.ViewXYToTextXY(APhysViewXY: TViewedPoint
   ): TPhysPoint;
 begin
   Result := YToPos(FLineMappingData.ViewXYIdxToTextXYIdx(YToIdx(APhysViewXY)));

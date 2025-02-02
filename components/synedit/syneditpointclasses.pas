@@ -257,7 +257,7 @@ type
     FLinePos: Integer;     // 1 based
     FCharPos: Integer;     // 1 based
     FBytePos, FBytePosOffset: Integer;     // 1 based
-    FViewedLineCharPos: TPoint;
+    FViewedLineCharPos: TViewedPoint;
 
     procedure DoLinesMappingChanged(Sender: TSynEditStrings; aIndex,
       aCount: Integer);

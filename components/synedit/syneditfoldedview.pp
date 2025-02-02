@@ -433,7 +433,7 @@ type
     function GetViewedLines(index : Integer) : String; override; // TODO: not used?
     function GetViewedCount: integer; override;
     function GetDisplayView: TLazSynDisplayView; override;
-    procedure InternalGetInfoForViewedXY(AViewedXY: TPhysPoint;
+    procedure InternalGetInfoForViewedXY(AViewedXY: TViewedPoint;
       AFlags: TViewedXYInfoFlags; out AViewedXYInfo: TViewedXYInfo;
       ALogPhysConvertor: TSynLogicalPhysicalConvertor); override;
     procedure DoBlockSelChanged(Sender: TObject; Changes: TSynStatusChanges);
@@ -458,8 +458,8 @@ type
     // Converting between Folded and Unfolded Lines/Indexes
     function TextToViewIndex(aTextIndex : TLineIdx) : TLineIdx; override;   (* Convert TextIndex (0-based) to ViewIndex (0-based) *)
     function ViewToTextIndex(aViewIndex : TLineIdx) : TLineIdx; override;     (* Convert ViewIndex (0-based) to TextIndex (0-based) *)
-    function TextXYToViewXY(APhysTextXY: TPhysPoint): TPhysPoint; override;
-    function ViewXYToTextXY(APhysViewXY: TPhysPoint): TPhysPoint; override;
+    function TextXYToViewXY(APhysTextXY: TPhysPoint): TViewedPoint; override;
+    function ViewXYToTextXY(APhysViewXY: TViewedPoint): TPhysPoint; override;
 
     function InternTextToViewIndex(aTextIndex : TLineIdx) : TLineIdx;           (* Convert TextIndex (0-based) to ViewIndex (0-based) *)
     function InternTextToViewIndexOffset(var aTextIndex : TLineIdx): integer;       (* Offset (subtract) to Convert TextIndex (0-based) to ViewIndex (0-based) *)
@@ -3198,7 +3198,7 @@ begin
   Result := inherited ViewToTextIndex(Result);
 end;
 
-function TSynEditFoldedView.TextXYToViewXY(APhysTextXY: TPhysPoint): TPhysPoint;
+function TSynEditFoldedView.TextXYToViewXY(APhysTextXY: TPhysPoint): TViewedPoint;
 var
   offs: Integer;
 begin
@@ -3210,7 +3210,7 @@ begin
   Result.Y := Result.Y - offs;
 end;
 
-function TSynEditFoldedView.ViewXYToTextXY(APhysViewXY: TPhysPoint): TPhysPoint;
+function TSynEditFoldedView.ViewXYToTextXY(APhysViewXY: TViewedPoint): TPhysPoint;
 begin
   APhysViewXY.y := ToPos(InternViewToTextIndex(ToIdx(APhysViewXY.y)));
   Result := inherited ViewXYToTextXY(APhysViewXY);
@@ -3391,7 +3391,7 @@ begin
   Result := FDisplayView;
 end;
 
-procedure TSynEditFoldedView.InternalGetInfoForViewedXY(AViewedXY: TPhysPoint;
+procedure TSynEditFoldedView.InternalGetInfoForViewedXY(AViewedXY: TViewedPoint;
   AFlags: TViewedXYInfoFlags; out AViewedXYInfo: TViewedXYInfo;
   ALogPhysConvertor: TSynLogicalPhysicalConvertor);
 var

@@ -162,8 +162,8 @@ type
     procedure InvalidateLines(FirstTextLine, LastTextLine: TLineIdx; AScreenLineOffset: Integer = 0); override;
 
     function ScreenColumnToXValue(Col: integer): integer;  // map screen column to screen pixel
-    function RowColumnToPixels(const RowCol: TPoint): TPoint;
-    function PixelsToRowColumn(Pixels: TPoint; aFlags: TSynCoordinateMappingFlags): TPoint; // ignores scmLimitToLines
+    function RowColumnToPixels(const RowCol: TScreenPoint_0): TPoint;
+    function PixelsToRowColumn(Pixels: TPoint; aFlags: TSynCoordinateMappingFlags): TPhysScreenPoint_0; // ignores scmLimitToLines
 
     procedure FontChanged;
     procedure AddTextSizeChangeHandler(AHandler: TNotifyEvent);
@@ -1314,7 +1314,7 @@ begin
   Result := FTextBounds.Left + (Col - LeftChar) * fCharWidth;
 end;
 
-function TLazSynTextArea.RowColumnToPixels(const RowCol: TPoint): TPoint;
+function TLazSynTextArea.RowColumnToPixels(const RowCol: TScreenPoint): TPoint;
 begin
   // Inludes LeftChar, but not Topline
   Result.X := FTextBounds.Left + (RowCol.X - LeftChar) * CharWidth;
@@ -1322,7 +1322,7 @@ begin
 end;
 
 function TLazSynTextArea.PixelsToRowColumn(Pixels: TPoint;
-  aFlags: TSynCoordinateMappingFlags): TPoint;
+  aFlags: TSynCoordinateMappingFlags): TPhysScreenPoint_0;
 begin
   // Inludes LeftChar, but not Topline
   if (Pixels.X >= FTextBounds.Left) and (Pixels.X < FTextBounds.Right) then begin

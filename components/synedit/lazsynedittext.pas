@@ -258,12 +258,12 @@ type
   TViewedXYInfoFlags = set of TViewedXYInfoFlag;
 
   TViewedXYInfo = record
-    CorrectedViewedXY: TPhysPoint; // Moved inside the wrapping bounds
-    PhysXY: TPhysPoint;
-    LogicalXY: TLogCaretPoint;
-    PhysBoundOffset: Integer;
-    LogEOLPos: Integer;
-    FirstViewedX: IntPos;
+    CorrectedViewedXY: TViewedPoint; // if before/after the last char (allowd caret pos) of a subline, then moved into range
+    PhysXY:            TPhysPoint;
+    LogicalXY:         TLogCaretPoint;
+    PhysBoundOffset: Integer; // Columns to RIGHT(end)-phisical bound of current glyp (negative offset)
+    LogEOLPos: Integer;    // Last Logical Pos in full-line (ByteLength + 1)
+    FirstViewedX: IntPos;  // First Column in wich caret can be placed on the current subline
   end;
 
   { TSynEditStrings }
@@ -304,7 +304,7 @@ type
 
     procedure DoGetPhysicalCharWidths(Line: PChar; LineLen, Index: Integer; PWidths: PPhysicalCharWidth); virtual; abstract;
 
-    procedure InternalGetInfoForViewedXY(AViewedXY: TPhysPoint; AFlags: TViewedXYInfoFlags;
+    procedure InternalGetInfoForViewedXY(AViewedXY: TViewedPoint; AFlags: TViewedXYInfoFlags;
       out AViewedXYInfo: TViewedXYInfo; ALogPhysConvertor :TSynLogicalPhysicalConvertor); virtual;
 
     function GetDisplayView: TLazSynDisplayView; virtual;
@@ -361,13 +361,13 @@ type
 
     function AddVisibleOffsetToTextIndex(aTextIndex: TLineIdx; LineOffset : Integer) : TLineIdx; virtual;
     function IsTextIdxVisible(aTextIndex: TLineIdx): Boolean; virtual;
-    procedure GetInfoForViewedXY(AViewedXY: TPhysPoint; AFlags: TViewedXYInfoFlags; out AViewedXYInfo: TViewedXYInfo);
+    procedure GetInfoForViewedXY(AViewedXY: TViewedPoint; AFlags: TViewedXYInfoFlags; out AViewedXYInfo: TViewedXYInfo);
     // ViewedToPhysAndLog
     (* Convert between TextBuffer and ViewedText
        X/Y are all 1-based
     *)
-    function ViewXYToTextXY(APhysViewXY: TPhysPoint): TPhysPoint; virtual;
-    function TextXYToViewXY(APhysTextXY: TPhysPoint): TPhysPoint; virtual;
+    function ViewXYToTextXY(APhysViewXY: TViewedPoint): TPhysPoint; virtual;
+    function TextXYToViewXY(APhysTextXY: TPhysPoint): TViewedPoint; virtual;
   public
     // Currently Lines are physical
     procedure EditInsert(LogX, LogY: Integer; AText: String); virtual; abstract;
@@ -459,7 +459,7 @@ type
     procedure SetUpdateState(Updating: Boolean; Sender: TObject); override;
     procedure DoGetPhysicalCharWidths(Line: PChar; LineLen, Index: Integer; PWidths: PPhysicalCharWidth); override;
 
-    procedure InternalGetInfoForViewedXY(AViewedXY: TPhysPoint;
+    procedure InternalGetInfoForViewedXY(AViewedXY: TViewedPoint;
       AFlags: TViewedXYInfoFlags; out AViewedXYInfo: TViewedXYInfo;
       ALogPhysConvertor: TSynLogicalPhysicalConvertor); override;
 
@@ -530,8 +530,8 @@ type
     (* Convert between TextBuffer and ViewedText
        X/Y are all 1-based
     *)
-    function ViewXYToTextXY(APhysViewXY: TPhysPoint): TPhysPoint; override;
-    function TextXYToViewXY(APhysTextXY: TPhysPoint): TPhysPoint; override;
+    function ViewXYToTextXY(APhysViewXY: TViewedPoint): TPhysPoint; override;
+    function TextXYToViewXY(APhysTextXY: TPhysPoint): TViewedPoint; override;
   public
     // LogX, LogY are 1-based
     procedure EditInsert(LogX, LogY: Integer; AText: String); override;
@@ -1240,7 +1240,7 @@ begin
     EndUpdate(nil);
 end;
 
-procedure TSynEditStrings.InternalGetInfoForViewedXY(AViewedXY: TPhysPoint;
+procedure TSynEditStrings.InternalGetInfoForViewedXY(AViewedXY: TViewedPoint;
   AFlags: TViewedXYInfoFlags; out AViewedXYInfo: TViewedXYInfo;
   ALogPhysConvertor: TSynLogicalPhysicalConvertor);
 var
@@ -1328,19 +1328,19 @@ begin
   Result := True;
 end;
 
-procedure TSynEditStrings.GetInfoForViewedXY(AViewedXY: TPhysPoint;
+procedure TSynEditStrings.GetInfoForViewedXY(AViewedXY: TViewedPoint;
   AFlags: TViewedXYInfoFlags; out AViewedXYInfo: TViewedXYInfo);
 begin
   InternalGetInfoForViewedXY(AViewedXY, AFlags, AViewedXYInfo,
     LogPhysConvertor);
 end;
 
-function TSynEditStrings.ViewXYToTextXY(APhysViewXY: TPhysPoint): TPhysPoint;
+function TSynEditStrings.ViewXYToTextXY(APhysViewXY: TViewedPoint): TPhysPoint;
 begin
   Result := APhysViewXY;
 end;
 
-function TSynEditStrings.TextXYToViewXY(APhysTextXY: TPhysPoint): TPhysPoint;
+function TSynEditStrings.TextXYToViewXY(APhysTextXY: TPhysPoint): TViewedPoint;
 begin
   Result := APhysTextXY;
 end;
@@ -1631,7 +1631,7 @@ begin
 end;
 
 procedure TSynEditStringsLinked.InternalGetInfoForViewedXY(
-  AViewedXY: TPhysPoint; AFlags: TViewedXYInfoFlags; out
+  AViewedXY: TViewedPoint; AFlags: TViewedXYInfoFlags; out
   AViewedXYInfo: TViewedXYInfo; ALogPhysConvertor: TSynLogicalPhysicalConvertor
   );
 begin
@@ -1834,14 +1834,12 @@ begin
   Result := fSynStrings.IsTextIdxVisible(aTextIndex);
 end;
 
-function TSynEditStringsLinked.ViewXYToTextXY(APhysViewXY: TPhysPoint
-  ): TPhysPoint;
+function TSynEditStringsLinked.ViewXYToTextXY(APhysViewXY: TViewedPoint): TPhysPoint;
 begin
   Result := fSynStringsXYMap.ViewXYToTextXY(APhysViewXY);
 end;
 
-function TSynEditStringsLinked.TextXYToViewXY(APhysTextXY: TPhysPoint
-  ): TPhysPoint;
+function TSynEditStringsLinked.TextXYToViewXY(APhysTextXY: TPhysPoint): TViewedPoint;
 begin
   Result := fSynStringsXYMap.TextXYToViewXY(APhysTextXY);
 end;

@@ -1056,10 +1056,10 @@ type
 
     // Pixel
     function ScreenColumnToXValue(Col: integer): integer;  // map screen column to screen pixel
-    function ScreenXYToPixels(RowCol: TPhysPoint): TPoint; // converts screen position (1,1) based
-    function RowColumnToPixels(RowCol: TPoint): TPoint; // deprecated 'use ScreenXYToPixels(TextXYToScreenXY(point))';
-    function PixelsToRowColumn(Pixels: TPoint; aFlags: TSynCoordinateMappingFlags = [scmLimitToLines]): TPoint;
-    function PixelsToLogicalPos(const Pixels: TPoint): TPoint;
+    function ScreenXYToPixels(RowCol: TScreenPoint): TPoint; // converts screen position (1,1) based
+    function RowColumnToPixels(RowCol: TScreenPoint): TPoint; deprecated 'use ScreenXYToPixels(TextXYToScreenXY(point))';
+    function PixelsToRowColumn(Pixels: TPoint; aFlags: TSynCoordinateMappingFlags = [scmLimitToLines]): TPhysPoint;
+    function PixelsToLogicalPos(const Pixels: TPoint): TLogPoint;
     //
     function ScreenRowToRow(ScreenRow: integer; LimitToLines: Boolean = True): integer; override; deprecated 'use ScreenXYToTextXY';
     function RowToScreenRow(PhysicalRow: integer): integer; override; deprecated 'use TextXYToScreenXY';
@@ -1067,8 +1067,8 @@ type
        First visible (scrolled in) screen line is 1
        First column is 1 => column does not take scrolling into account
     *)
-    function ScreenXYToTextXY(AScreenXY: TPhysPoint; LimitToLines: Boolean = True): TPhysPoint; override;
-    function TextXYToScreenXY(APhysTextXY: TPhysPoint): TPhysPoint; override;
+    function ScreenXYToTextXY(AScreenXY: TPhysScreenPoint; LimitToLines: Boolean = True): TPhysPoint; override;
+    function TextXYToScreenXY(APhysTextXY: TPhysPoint): TPhysScreenPoint; override;
 
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure RegisterCommandHandler(AHandlerProc: THookedCommandEvent;
@@ -2028,7 +2028,7 @@ begin
     PrimarySelection.OnRequest:=nil;
 end;
 
-function TCustomSynEdit.PixelsToRowColumn(Pixels: TPoint; aFlags: TSynCoordinateMappingFlags = [scmLimitToLines]): TPoint;
+function TCustomSynEdit.PixelsToRowColumn(Pixels: TPoint; aFlags: TSynCoordinateMappingFlags = [scmLimitToLines]): TPhysPoint;
 // converts the client area coordinate
 // to Caret position (physical position, (1,1) based)
 // To get the text/logical position use PixelsToLogicalPos
@@ -2037,7 +2037,7 @@ begin
   Result := ScreenXYToTextXY(Result, scmLimitToLines in aFlags);
 end;
 
-function TCustomSynEdit.PixelsToLogicalPos(const Pixels: TPoint): TPoint;
+function TCustomSynEdit.PixelsToLogicalPos(const Pixels: TPoint): TLogPoint;
 begin
   Result:=PhysicalToLogicalPos(PixelsToRowColumn(Pixels));
 end;
@@ -2064,7 +2064,7 @@ begin
 //  DebugLn(['=== Row TO ScreenRow   In:',PhysicalRow,'  out:',Result]);
 end;
 
-function TCustomSynEdit.ScreenXYToTextXY(AScreenXY: TPhysPoint;
+function TCustomSynEdit.ScreenXYToTextXY(AScreenXY: TPhysScreenPoint;
   LimitToLines: Boolean): TPhysPoint;
 begin
   AScreenXY.y := AScreenXY.y + ToIdx(TopView);
@@ -2073,21 +2073,20 @@ begin
     Result.y := Lines.Count;
 end;
 
-function TCustomSynEdit.TextXYToScreenXY(APhysTextXY: TPhysPoint): TPhysPoint;
+function TCustomSynEdit.TextXYToScreenXY(APhysTextXY: TPhysPoint): TPhysScreenPoint;
 begin
   Result := FTheLinesView.TextXYToViewXY(APhysTextXY);
   Result.y := Result.y - ToIdx(TopView);
 end;
 
-function TCustomSynEdit.ScreenXYToPixels(RowCol: TPhysPoint): TPoint;
+function TCustomSynEdit.ScreenXYToPixels(RowCol: TScreenPoint): TPoint;
 // converts screen position (1,1) based
 // to client area coordinate (0,0 based on canvas)
 begin
-  dec(RowCol.y); // x is 1 based, as LeftChar will be subtracted.....
-  Result := FTextArea.RowColumnToPixels(RowCol);
+  Result := FTextArea.RowColumnToPixels(YToIdx(RowCol));
 end;
 
-function TCustomSynEdit.RowColumnToPixels(RowCol: TPoint): TPoint;
+function TCustomSynEdit.RowColumnToPixels(RowCol: TScreenPoint): TPoint;
 begin
   Result := ScreenXYToPixels(TextXYToScreenXY(RowCol));
 end;

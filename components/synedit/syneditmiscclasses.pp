@@ -238,8 +238,8 @@ type
        First visible (scrolled in) screen line is 1
        First column is 1 => column does not take scrolling into account
     *)
-    function ScreenXYToTextXY(AScreenXY: TPhysPoint; LimitToLines: Boolean = True): TPhysPoint; virtual; abstract;
-    function TextXYToScreenXY(APhysTextXY: TPhysPoint): TPhysPoint; virtual; abstract;
+    function ScreenXYToTextXY(AScreenXY: TPhysScreenPoint; LimitToLines: Boolean = True): TPhysPoint; virtual; abstract;
+    function TextXYToScreenXY(APhysTextXY: TPhysPoint): TPhysScreenPoint; virtual; abstract;
 
     procedure GetWordBoundsAtRowCol(const XY: TPoint; out StartX, EndX: integer); virtual; abstract;
     function GetWordAtRowCol(XY: TPoint): string; virtual; abstract;

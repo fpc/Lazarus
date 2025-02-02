@@ -61,11 +61,25 @@ type
   IntPos = type integer; // 1..high(Integer);
   IntIdx = type integer; // 0..high(Integer);
 
-  TLogPoint = Types.TPoint;
-  TPhysPoint = Types.TPoint;
+  (* Points in Text
+     x and y are 1 based, unless otherwise stated
+  *)
+
+  TLogPoint = Types.TPoint;     // Point in Text: Y = unwrapped line / X = Byte
+  TPhysPoint = Types.TPoint;    // Point in Text: Y = unwrapped line / X = Glyph pos (monospaced grid, NOT wrapped)
+  TViewedPoint = Types.TPoint;  // Point in Vew: Y = wrapped/folded line / X = Glyph pos within sub-line
   TLogCaretPoint = record
     X, Y, Offs: Integer;
   end;
+
+  TScreenPoint = Types.TPoint;  // Row/Column on visible Screen (from Topline/LeftChar) // (1,1)-based
+  TPhysScreenPoint = Types.TPoint;  // X pos from "Start of Line", ignored horiz scroll. Y pos=screen line  // (1,1)-based
+
+  TPhysPoint_0       = TPhysPoint;   // Y is 0-Based
+  TViewedPoint_0     = TViewedPoint; // Y is 0-Based
+  TViewedSubPoint_0  = TViewedPoint; // Y is 0-Based sub-line (0 = first current wrapped-lines, 1 = first wrapped sub-line
+  TScreenPoint_0     = TScreenPoint; // Y is 0-Based
+  TPhysScreenPoint_0 = TPhysScreenPoint; // Y is 0-Based
 
   TSynLineState = (slsNone, slsSaved, slsUnsaved);
 
