@@ -1725,14 +1725,15 @@ enumeration values and their meanings.
 </p>
 <p>
 Changing the value in <var>FileSortType</var> causes the <var>Items</var> 
-property to be cleared, and tree nodes to be reloaded. If Root has not been 
-assigned, PopulateWithBaseFiles is used to fill the Items property. 
-If Root has a non-empty value, an internal routine is called to recreate the 
-root node using the required path. The value in Root is expanded and used to 
-create the remaining nodes for the tree. This includes filling 
-TShellTreeNode-specific information for the TTreeNode instances in Items. If 
-the path to the Selected tree node is still valid for the file system, it is 
-restored to the Path property.
+property to be cleared, and tree nodes to be reloaded using the sort order  
+needed for the property value. If Root has not been assigned, 
+PopulateWithBaseFiles is used to fill the Items property. If Root has a 
+non-empty value, an internal routine is called to recreate the root node using 
+the required path. The value in Root is expanded and used to create the 
+remaining nodes for the tree. This includes filling TShellTreeNode-specific 
+information for the TTreeNode instances in Items. If the path to the Selected 
+tree node is still valid for the file system, it is restored to the Path 
+property.
 </p>
 <p>
 No action other than setting the property value is performed in the method at 
@@ -1743,6 +1744,10 @@ The value in FileSortType is used in the PopulateTreeNodeWithFiles method and
 passed as an argument to an internal method used to load the files in a given 
 path name.
 </p>
+<p>
+Use the OnSortCompare event handler to implement the sort / compare routine 
+needed when FileSortType is set to fstCustom.
+</p>
 <remark>
 The value in FileSortType is not used in <var>PopulateWithBaseFiles</var> on 
 Windows platforms. The entries are logical drive letters processed in the 
@@ -1750,14 +1755,15 @@ order provided by the file system.
 </remark>
 </descr>
 <seealso>
-<link id="TFileSortType"/>
-<link id="EInvalidPath"/>
 <link id="TCustomShellTreeView.Items"/>
 <link id="TCustomShellTreeView.Root"/>
 <link id="TCustomShellTreeView.Path"/>
 <link id="TCustomShellTreeView.ExistsAndIsValid"/>
+<link id="TCustomShellTreeView.OnSortCompare"/>
 <link id="TCustomShellTreeView.PopulateWithBaseFiles"/>
 <link id="TCustomShellTreeView.PopulateTreeNodeWithFiles"/>
+<link id="TFileSortType"/>
+<link id="EInvalidPath"/>
 </seealso>
 </element>
 
@@ -1997,6 +2003,7 @@ Added in LCL version 3.0.
 <link id="TCustomShellTreeView.ExistsAndIsValid"/>
 <link id="TCustomShellTreeView.PopulateTreeNodeWithFiles"/>
 <link id="TCustomShellTreeView.PopulateWithBaseFiles"/>
+<link id="TFileSortType"/>
 </seealso>
 </element>
 
