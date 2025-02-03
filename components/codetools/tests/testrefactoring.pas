@@ -57,7 +57,12 @@ type
 
     // rename program
     procedure TestRenameProgramName_Amp;
-    procedure TestRenameProgramName_DottedPostfix; // todo
+    procedure TestRenameProgramName_DottedSameCount;
+    procedure TestRenameProgramName_MakeDotted;
+    procedure TestRenameProgramName_DottedAppendThird;
+    procedure TestRenameProgramName_DottedPrependThird;
+    procedure TestRenameProgramName_DottedShortenEnd;
+    // todo: skip multiline string literals
 
     // rename uses
     // todo: rename unit &Type to &End
@@ -1241,17 +1246,15 @@ begin
   '']);
 end;
 
-procedure TTestRefactoring.TestRenameProgramName_DottedPostfix;
+procedure TTestRefactoring.TestRenameProgramName_DottedSameCount;
 begin
-  exit;
-
   Add([
   'program Foo.Bar;',
   '{$mode objfpc}{$H+}',
   'type TRed = word;',
   'var c: foo . bar . TRed;',
   'begin',
-  //'  foo.bar.c:=&foo . &bar . &c;',
+  '  foo.bar.c:=&foo . &bar . &c;',
   'end.',
   '']);
   RenameSourceName('Foo.&End','foo.end.pas');
@@ -1261,7 +1264,99 @@ begin
   'type TRed = word;',
   'var c: Foo . &End . TRed;',
   'begin',
-  //'  Foo.&End.c:=Foo . &End . &c;',
+  '  Foo.&End.c:=Foo . &End . &c;',
+  'end.',
+  '']);
+end;
+
+procedure TTestRefactoring.TestRenameProgramName_MakeDotted;
+begin
+  Add([
+  'program &Type;',
+  '{$mode objfpc}{$H+}',
+  'type TRed = word;',
+  'var c: &Type . TRed;',
+  'begin',
+  '  &type.c:=&type . &c;',
+  'end.',
+  '']);
+  RenameSourceName('Foo.&End','foo.end.pas');
+  CheckDiff(Code,[
+  'program Foo.&End;',
+  '{$mode objfpc}{$H+}',
+  'type TRed = word;',
+  'var c: Foo.&End . TRed;',
+  'begin',
+  '  Foo.&End.c:=Foo.&End . &c;',
+  'end.',
+  '']);
+end;
+
+procedure TTestRefactoring.TestRenameProgramName_DottedAppendThird;
+begin
+  Add([
+  'program Foo . Bar;',
+  '{$mode objfpc}{$H+}',
+  'type TRed = word;',
+  'var c: Foo . Bar . TRed;',
+  'begin',
+  '  foo.bar.c:=&foo . bar . &c;',
+  'end.',
+  '']);
+  RenameSourceName('Foo.Bar.&End','foo.bar.end.pas');
+  CheckDiff(Code,[
+  'program Foo . Bar.&End;',
+  '{$mode objfpc}{$H+}',
+  'type TRed = word;',
+  'var c: Foo . Bar.&End . TRed;',
+  'begin',
+  '  Foo.Bar.&End.c:=Foo . Bar.&End . &c;',
+  'end.',
+  '']);
+end;
+
+procedure TTestRefactoring.TestRenameProgramName_DottedPrependThird;
+begin
+  Add([
+  'program Foo . Bar;',
+  '{$mode objfpc}{$H+}',
+  'type TRed = word;',
+  'var c: Foo . Bar . TRed;',
+  'begin',
+  '  foo.bar.c:=&foo . bar . &c;',
+  'end.',
+  '']);
+  RenameSourceName('&Unit.Foo.Bar','unit.foo.bar.pas');
+  CheckDiff(Code,[
+  'program &Unit.Foo . Bar;',
+  '{$mode objfpc}{$H+}',
+  'type TRed = word;',
+  'var c: &Unit.Foo . Bar . TRed;',
+  'begin',
+  '  &Unit.Foo.Bar.c:=&Unit.Foo . Bar . &c;',
+  'end.',
+  '']);
+end;
+
+procedure TTestRefactoring.TestRenameProgramName_DottedShortenEnd;
+begin
+  Add([
+  'program Foo . Bar.&End;',
+  '{$mode objfpc}{$H+}',
+  'type TRed = word;',
+  'var c: Foo . Bar . &End . TRed;',
+  'begin',
+  '  foo.bar.&end.c:=&foo . bar.&end . &c;',
+  'end.',
+  '']);
+  RenameSourceName('Foo.Bar','foo.bar.pas');
+  CheckDiff(Code,[
+  'program Foo . Bar;',
+  '{$mode objfpc}{$H+}',
+  'type TRed = word;',
+  'var c: Foo . Bar . TRed;',
+  'begin',
+  '  Foo.Bar.c:=Foo . Bar . &c;',
   'end.',
   '']);
 end;

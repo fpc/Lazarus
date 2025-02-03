@@ -61,7 +61,7 @@ procedure FindCommentsInRange(const Src: string; StartPos, EndPos: integer;
     out FirstCommentStart, FirstAtomStart, LastCommentEnd, LastAtomEnd: integer;
     NestedComments: boolean = false);
 function FindNextCompilerDirective(const ASource: string; StartPos: integer;
-    NestedComments: boolean): integer;
+    NestedComments: boolean; MaxPos: integer = -1): integer;
 function FindNextCompilerDirectiveWithName(const ASource: string;
     StartPos: integer; const DirectiveName: string;
     NestedComments: boolean; out ParamPos: integer): integer;
@@ -1502,11 +1502,10 @@ begin
 end;
 
 function FindNextCompilerDirective(const ASource: string; StartPos: integer;
-  NestedComments: boolean): integer;
-var
-  MaxPos: integer;
+  NestedComments: boolean; MaxPos: integer): integer;
 begin
-  MaxPos:=length(ASource);
+  if MaxPos<0 then
+    MaxPos:=length(ASource);
   Result:=StartPos;
   while (Result<=MaxPos) do begin
     case ASource[Result] of

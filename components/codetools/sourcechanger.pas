@@ -267,7 +267,7 @@ type
     FUpdateLock: integer;
     Src: string; // current cleaned source
     SrcLen: integer; // same as length(Src)
-    procedure DeleteCleanText(CleanFromPos,CleanToPos: integer);
+    procedure DeleteCleanText(Scanner: TLinkScanner; CleanFromPos,CleanToPos: integer);
     procedure DeleteDirectText(ACode: TCodeBuffer;
                                DirectFromPos,DirectToPos: integer);
     procedure InsertNewText(ACode: TCodeBuffer; DirectPos: integer;
@@ -277,6 +277,9 @@ type
     procedure UpdateBuffersToModify;
   protected
     procedure RaiseException(id: int64; const AMessage: string);
+    procedure AddEntry(FrontGap, AfterGap: TGapTyp; FromPos, ToPos: integer;
+                   DirectCode: TCodeBuffer; FromDirectPos, ToDirectPos: integer;
+                   const Text: string; IsDirectChange: boolean);
   public
     BeautifyCodeOptions: TBeautifyCodeOptions;
     constructor Create;
@@ -290,6 +293,8 @@ type
     function ReplaceEx(FrontGap, AfterGap: TGapTyp; FromPos, ToPos: integer;
                    DirectCode: TCodeBuffer; FromDirectPos, ToDirectPos: integer;
                    const Text: string): boolean;
+    function DeleteRange(Scanner: TLinkScanner; FromPos, ToPos: integer;
+      KeepComments: boolean = false; KeepDirectives: boolean = true): boolean;
     function IndentBlock(FromPos, ToPos, IndentDiff: integer): boolean;
     function IndentLine(LineStartPos, IndentDiff: integer): boolean;
     function Apply: boolean;
@@ -477,31 +482,28 @@ end;
 
 function CompareSourceChangeCacheEntry(NodeData1, NodeData2: pointer): integer;
 var
-  Entry1, Entry2: TSourceChangeCacheEntry;
+  Entry1: TSourceChangeCacheEntry absolute NodeData1;
+  Entry2: TSourceChangeCacheEntry absolute NodeData2;
   IsEntry1Delete, IsEntry2Delete: boolean;
 begin
-  Entry1:=TSourceChangeCacheEntry(NodeData1);
-  Entry2:=TSourceChangeCacheEntry(NodeData2);
   if Entry1.FromPos>Entry2.FromPos then
     Result:=1
   else if Entry1.FromPos<Entry2.FromPos then
     Result:=-1
+  else if Entry1.FromDirectPos>Entry2.FromDirectPos then
+    Result:=1
+  else if Entry1.FromDirectPos<Entry2.FromDirectPos then
+    Result:=-1
   else begin
     IsEntry1Delete:=Entry1.IsDeleteOperation;
     IsEntry2Delete:=Entry2.IsDeleteOperation;
-    if IsEntry1Delete=IsEntry2Delete then begin
-      if Entry1.FromDirectPos>Entry2.FromDirectPos then
-        Result:=1
-      else if Entry1.FromDirectPos<Entry2.FromDirectPos then
-        Result:=-1
-      else
-        Result:=0;
-    end else begin
+    if IsEntry1Delete<>IsEntry2Delete then begin
       if IsEntry1Delete then
         Result:=1
       else
         Result:=-1;
-    end;
+    end else
+      Result:=0;
   end;
 end;
 
@@ -788,17 +790,66 @@ begin
     DirectCode:=TCodeBuffer(p);
     ToDirectPos:=0;
   end;
-  // add entry
-  NewEntry:=TSourceChangeCacheEntry.Create(FrontGap,AfterGap,FromPos,ToPos,
-                      Text,DirectCode,FromDirectPos,ToDirectPos,IsDirectChange);
-  FEntries.Add(NewEntry);
-  if not IsDirectChange then
-    FMainScannerNeeded:=true;
-  FBuffersToModifyNeedsUpdate:=true;
+  AddEntry(FrontGap,AfterGap,FromPos,ToPos,
+           DirectCode,FromDirectPos,ToDirectPos,Text,IsDirectChange);
   Result:=true;
   {$IFDEF VerboseSrcChanger}
   DebugLn('TSourceChangeCache.ReplaceEx SUCCESS IsDelete=',dbgs(NewEntry.IsDeleteOperation));
   {$ENDIF}
+end;
+
+function TSourceChangeCache.DeleteRange(Scanner: TLinkScanner; FromPos, ToPos: integer;
+  KeepComments: boolean; KeepDirectives: boolean): boolean;
+var
+  StartPos, p, LinkIndex, aLinkSize, Len: Integer;
+  CurSrc: String;
+  Link: TSourceLink;
+begin
+  Result:=false;
+  //debugln(['TSourceChangeCache.DeleteRange ',FromPos,'-',ToPos]);
+  if Scanner=nil then exit;
+  if FromPos>=ToPos then exit(true);
+  if (FromPos<1) or (ToPos>Scanner.CleanedLen+1) then
+    exit;
+  //debugln(['TSourceChangeCache.DeleteRange ',FromPos,'-',ToPos]);
+  if KeepComments or KeepDirectives then begin
+    // delete code and spaces between comments/directives
+    CurSrc:=Scanner.CleanedSrc;
+    p:=FromPos;
+    repeat
+      StartPos:=p;
+      if KeepComments then
+        p:=FindNextComment(CurSrc,FromPos,ToPos-1)
+      else
+        p:=FindNextCompilerDirective(CurSrc,FromPos,Scanner.NestedComments,ToPos-1);
+      if p>ToPos then p:=ToPos;
+      if p>StartPos then
+        if not DeleteRange(Scanner,StartPos,p,false,false) then exit;
+      if p>=ToPos then break;
+      p:=FindCommentEnd(CurSrc,p,Scanner.NestedComments);
+    until p>=ToPos;
+  end else begin
+    // delete range
+    LinkIndex:=Scanner.LinkIndexAtCleanPos(ToPos);
+    while LinkIndex>=0 do begin
+      Link:=Scanner.Links[LinkIndex];
+      if Link.Code<>nil then begin
+        StartPos:=FromPos-Link.CleanedPos;
+        if StartPos<0 then StartPos:=0;
+        aLinkSize:=Scanner.LinkSize(LinkIndex);
+        //debugln(['TSourceChangeCache.DeleteRange LinkIndex=',LinkIndex,' aLinkSize=',aLinkSize,' StartPosInLink=',StartPos]);
+        Len:=ToPos-Link.CleanedPos;
+        if Len>aLinkSize then Len:=aLinkSize;
+        dec(Len,StartPos);
+        inc(StartPos,Link.SrcPos);
+        //DebugLn(['[TSourceChangeCache.DeleteRange] Pos=',StartPos,'-',StartPos+Len,' "',dbgstr(copy(TCodeBuffer(Link.Code).Source,StartPos,Len)),'"']);
+        AddEntry(gtNone,gtNone,1,1,TCodeBuffer(Link.Code),StartPos,StartPos+Len,'',true);
+      end;
+      if Link.CleanedPos<=ToPos then break;
+      dec(LinkIndex);
+    end;
+  end;
+  Result:=true;
 end;
 
 function TSourceChangeCache.IndentBlock(FromPos, ToPos, IndentDiff: integer): boolean;
@@ -1104,8 +1155,9 @@ begin
     while CurNode<>nil do begin
       FirstEntry:=TSourceChangeCacheEntry(CurNode.Data);
       {$IFDEF VerboseSrcChanger}
-      DebugLn('TSourceChangeCache.Apply Pos=',dbgs(FirstEntry.FromPos),'-',dbgs(FirstEntry.ToPos),
-      ' Text="',dbgstr(FirstEntry.Text),'"');
+      DebugLn(['TSourceChangeCache.Apply Pos=',FirstEntry.FromPos,'-',FirstEntry.ToPos,
+      ' DirectPos=',FirstEntry.FromDirectPos,'-',FirstEntry.ToDirectPos,
+      ' Text="',dbgstr(FirstEntry.Text),'"']);
       {$ENDIF}
       InsertText:=FirstEntry.Text;
       // add after gap
@@ -1148,7 +1200,7 @@ begin
       AddFrontGap(CurEntry);
       // delete old text in code buffers
       if not FirstEntry.IsDirectChange then
-        DeleteCleanText(FirstEntry.FromPos+FromPosAdjustment,FirstEntry.ToPos)
+        DeleteCleanText(MainScanner,FirstEntry.FromPos+FromPosAdjustment,FirstEntry.ToPos)
       else
         DeleteDirectText(FirstEntry.DirectCode,
                          FirstEntry.FromDirectPos+FromPosAdjustment,
@@ -1165,13 +1217,14 @@ begin
   Result:=true;
 end;
 
-procedure TSourceChangeCache.DeleteCleanText(CleanFromPos,CleanToPos: integer);
+procedure TSourceChangeCache.DeleteCleanText(Scanner: TLinkScanner; CleanFromPos,
+  CleanToPos: integer);
 begin
   {$IFDEF VerboseSrcChanger}
   DebugLn('[TSourceChangeCache.DeleteCleanText] Pos=',dbgs(CleanFromPos),'-',dbgs(CleanToPos));
   {$ENDIF}
-  if CleanFromPos=CleanToPos then exit;
-  MainScanner.DeleteRange(CleanFromPos,CleanToPos);
+  if CleanFromPos>=CleanToPos then exit;
+  Scanner.DeleteRange(CleanFromPos,CleanToPos);
 end;
 
 procedure TSourceChangeCache.DeleteDirectText(ACode: TCodeBuffer; DirectFromPos,
@@ -1269,6 +1322,20 @@ end;
 procedure TSourceChangeCache.RaiseException(id: int64; const AMessage: string);
 begin
   raise ESourceChangeCacheError.Create(Self,id,AMessage);
+end;
+
+procedure TSourceChangeCache.AddEntry(FrontGap, AfterGap: TGapTyp; FromPos, ToPos: integer;
+  DirectCode: TCodeBuffer; FromDirectPos, ToDirectPos: integer; const Text: string;
+  IsDirectChange: boolean);
+var
+  NewEntry: TSourceChangeCacheEntry;
+begin
+  NewEntry:=TSourceChangeCacheEntry.Create(FrontGap,AfterGap,FromPos,ToPos,
+                      Text,DirectCode,FromDirectPos,ToDirectPos,IsDirectChange);
+  FEntries.Add(NewEntry);
+  FBuffersToModifyNeedsUpdate:=true;
+  if not IsDirectChange then
+    FMainScannerNeeded:=true;
 end;
 
 { TBeautifyCodeOptions }

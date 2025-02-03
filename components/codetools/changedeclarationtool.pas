@@ -33,7 +33,7 @@ unit ChangeDeclarationTool;
 interface
 
 uses
-  Classes, SysUtils, Contnrs, AVL_Tree,
+  Classes, SysUtils, Math, Contnrs, AVL_Tree,
   // Codetools
   CodeAtom, CodeCache, FileProcs, CodeTree, ExtractProcTool, FindDeclarationTool,
   BasicCodeTools, KeywordFuncLists, LinkScanner, SourceChanger, CustomCodeTool;
@@ -1136,11 +1136,15 @@ type
     DotPos: integer;
   end;
 
+var
+  EndPos: integer;
+
   function Replace(CleanStartPos, CleanEndPos: integer; const NewCode: string): boolean;
   var
     StartCodePos, EndCodePos: TCodePosition;
     OldCode: String;
   begin
+    Result:=true;
     CleanPosToCodePos(CleanStartPos,StartCodePos);
     CleanPosToCodePos(CleanEndPos,EndCodePos);
     if (StartCodePos.Code<>EndCodePos.Code) or (StartCodePos.P>EndCodePos.P) then
@@ -1153,18 +1157,41 @@ type
     debugln(['ReplaceDottedIdentifier ',CleanPosToStr(CleanStartPos),' OldCode="',OldCode,'" NewCode="',NewCode,'"']);
     {$ENDIF}
     if OldCode=NewCode then
-      exit(true);
+      exit;
+
     Result:=SourceChanger.ReplaceEx(gtNone,gtNone,1,1,StartCodePos.Code,
       StartCodePos.P,EndCodePos.P, NewCode);
-    if not Result then
-      debugln(['Error: [20250203111611] SourceChanger.ReplaceEx failed at: ',CleanPosToStr(CleanStartPos,true)]);
+  end;
+
+  function GetRange(FromIndex, ToIndex: integer): string;
+  var
+    i: Integer;
+  begin
+    Result:='';
+    for i:=FromIndex to ToIndex do begin
+      if i>FromIndex then
+        Result:=Result+'.';
+      Result:=Result+Param.NewNames[i];
+    end;
+  end;
+
+  function DeleteRange(FromPos, ToPos: integer): boolean;
+  // delete range and spaces around
+  begin
+    while (FromPos>CleanPos) and IsSpaceChar[Src[FromPos-1]] do dec(FromPos);
+    while (ToPos<EndPos) and IsSpaceChar[Src[ToPos]] do inc(ToPos);
+    if FromPos=ToPos then exit;
+    {$IFDEF VerboseFindSourceNameReferences}
+    debugln(['ReplaceDottedIdentifier DeleteRange at ',CleanPosToStr(FromPos),' "',copy(Src,FromPos,ToPos-FromPos),'"']);
+    {$ENDIF}
+    Result:=SourceChanger.DeleteRange(Scanner,FromPos,ToPos,false,true);
   end;
 
 var
   Item: TItem;
   Items: array of TItem;
   NewCode: String;
-  EndPos, OldCount, NewCount, i: Integer;
+  OldCount, NewCount, i, j, k, p: Integer;
   HasComments: Boolean;
 begin
   Result:=false;
@@ -1181,6 +1208,7 @@ begin
     Item.StartPos:=CurPos.StartPos;
     Item.EndPos:=CurPos.EndPos;
     Item.Name:=GetAtom;
+    Item.DotPos:=0;
 
     if (i>0) and (Item.StartPos>Items[i-1].DotPos+1) then
       HasComments:=true;
@@ -1204,15 +1232,65 @@ begin
 
   if not HasComments then begin
     // simple replace
-    NewCode:=Param.NewNames[0];
-    for i:=1 to NewCount-1 do
-      NewCode:=NewCode+'.'+Param.NewNames[i];
+    NewCode:=GetRange(0,NewCount-1);
     Result:=Replace(CleanPos,EndPos,NewCode);
     exit;
   end;
 
-  // ToDo:
-  debugln(['TChangeDeclarationTool.ReplaceDottedIdentifier Complex: OldCode="',copy(Src,CleanPos,EndPos-CleanPos),'"']);
+  if OldCount=NewCount then begin
+    // 1:1 matching -> replace each identifier
+    for i:=0 to NewCount-1 do begin
+      if not Replace(Items[i].StartPos,Items[i].EndPos,Param.NewNames[i]) then
+        exit;
+    end;
+    exit(true);
+  end;
+
+  // number of identifiers have changed
+
+  // replace each matching identifier at start
+  i:=0;
+  while i<Param.SameStart do begin
+    if not Replace(Items[i].StartPos,Items[i].EndPos,Param.NewNames[i]) then
+      exit;
+    inc(i);
+  end;
+
+  if i=OldCount then begin
+    // new version is just longer -> append new identifiers
+    NewCode:='.'+GetRange(OldCount,NewCount-1);
+    Result:=Replace(EndPos,EndPos,NewCode);
+    exit;
+  end;
+
+  // replace identifiers at end
+  k:=Min(OldCount-i,NewCount-i);
+  j:=OldCount-1;
+  while (k>0) and (j>=i) do begin
+    if not Replace(Items[j].StartPos,Items[j].EndPos,
+        Param.NewNames[j+(NewCount-OldCount)]) then
+      exit;
+    dec(j);
+    dec(k);
+  end;
+
+  //debugln(['TChangeDeclarationTool.ReplaceDottedIdentifier i=',i,' j=',j]);
+
+  if j<i then begin
+    // insertion: for example  A.B -> A.C.B  or  B.C -> A.B.C
+    p:=Items[i].StartPos;
+    NewCode:=GetRange(i,i+(NewCount-OldCount)-1)+'.';
+    Result:=Replace(p,p,NewCode);
+    exit;
+  end;
+
+  // deletion: for example A.B.C -> A.C  or  A.D.E.C -> A.B.C
+  if Items[j].DotPos>0 then
+    Result:=DeleteRange(Items[i].StartPos,Items[j].DotPos+1)
+  else
+    Result:=DeleteRange(Items[i-1].DotPos,Items[j].EndPos);
+
+  //debugln(['TChangeDeclarationTool.ReplaceDottedIdentifier OldCode="',copy(Src,CleanPos,EndPos-CleanPos),'"']);
 end;
 
 function TChangeDeclarationTool.RenameSourceNameReferences(OldTargetFilename,
@@ -1239,7 +1317,7 @@ begin
     Node:=Refs.TreeOfPCodeXYPosition.FindLowest;
     while Node<>nil do begin
       CodePos:=PCodeXYPosition(Node.Data);
-      debugln(['AAA1 TChangeDeclarationTool.RenameSourceNameReferences ',dbgs(CodePos^)]);
+      //debugln(['TChangeDeclarationTool.RenameSourceNameReferences ',dbgs(CodePos^)]);
       if CaretToCleanPos(CodePos^,p)<>0 then begin
         debugln(['TChangeDeclarationTool.RenameSourceNameReferences invalid codepos: ',dbgs(CodePos^)]);
       end else begin
