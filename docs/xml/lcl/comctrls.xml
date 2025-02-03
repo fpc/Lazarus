@@ -31935,10 +31935,27 @@ An existing tree node to update, or <b>Nil</b> to create a new tree node.
 <short>Position in the tree hierarchy where the node is stored.</short>
 </element>
 
-<element name="TTreeNodes.DefineProperties" link="#rtl.classes.TPersistent.DefineProperties">
-<short/>
-<descr/>
-<seealso/>
+<element name="TTreeNodes.DefineProperties">
+<short>
+Specifies read and write routines used to stream the class instance in LCL.
+</short>
+<descr>
+<p>
+<var>DefineProperties</var> is an overridden method in <var>TTreeNodes</var> 
+used to associate read and write routines with properties handled by the 
+TFiler instance specified in <var>Filer</var>. It calls the inherited (empty) 
+virtual method on entry, and assigns to Filer the read and write routines 
+which are used for the Data and NodeData properties in TTreeNode instances in 
+the container. These routines ensure that TTreeNode data written using both 
+Lazarus and Delphi are handled during LCL streaming. ReadData and 
+WriteData methods are used for the Data properties in the tree nodes. The 
+ReadDelphiNodeData method is used for the NodeData properties in tree nodes; 
+no write routine is provided.
+</p>
+</descr>
+<seealso>
+<link id="#rtl.classes.TPersistent">TPersistent</link>
+</seealso>
 </element>
 <element name="TTreeNodes.DefineProperties.Filer">
 <short>
