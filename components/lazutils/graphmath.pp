@@ -838,12 +838,6 @@ function LineEndPoint(const StartPoint : TPoint; Angle, Length : Extended) : TPo
 var
   sinAngle, cosAngle: Extended;
 begin
-  if Angle > 360*16 then
-    Angle := Frac(Angle / 360*16) * 360*16;
-
-  if Angle < 0 then
-    Angle := 360*16 - abs(Angle);
-
   SinCos(DegToRad(Angle/16), sinAngle, cosAngle);
   Result.Y := StartPoint.Y - Round(Length*sinAngle);
   Result.X := StartPoint.X + Round(Length*cosAngle);
