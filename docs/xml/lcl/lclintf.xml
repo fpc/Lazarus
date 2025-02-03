@@ -6711,11 +6711,44 @@ given file.
 on the local file system using the file manager for the desktop environment. 
 The implementation for SelectInFolder is platform-specific.
 </p>
+<p><b>Windows</b></p>
 <p>
-For the Windows and macOS platforms, the current implementation simply opens 
-the folder for the resource specified in AFullPath. The file name portion is 
-ignored.
+For the Windows platform, the path to the file or directory in AFullpath is 
+examined. No actions are performed in the routine if AFullPath does not 
+contain a valid file or directory on the local file system.
 </p>
+<p>
+The value in <var>AFullPath</var> is enclosed in Quotes (if not already 
+quoted) to safeguard against spaces in the path or file name. The quoted value 
+is passed as an argument to a TProcessUTF8 instance which launches the file 
+explorer application ('explorer.exe'). The command looks like the following:
+</p>
+<code>
+'explorer.exe /select, "c:\path\to\filename.ext"'
+</code>
+<p>
+If AFullPath is a folder on the local file system, no selection is made in 
+the file explorer.
+</p>
+<p><b>macOS</b></p>
+<p>
+For the macOS platform, a routine used for OpenURL, OpenDocument, and 
+SelectInFolder is called to open the Finder and select the file name specified 
+in AFullPath. AFullPath is enclosed in Quotes (if not already quoted) to 
+safeguard against spaces in the path or file name.
+</p>
+<p>
+RunCmdFromPath is called to execute the 'open' command using the quoted path 
+value with the '-R' argument prepended to the file/path name. For example:
+</p>
+<code>
+'open -R "/path/to/filename.ext"'
+</code>
+<p>
+If AFullPath is a folder (not a file) on the local file system, no selection 
+is made in Finder.
+</p>
+<p><b>UNIX-like environments</b></p>
 <p>
 For other UNIX-like platforms (including Linux), the XDG_CURRENT_DESKTOP 
 variable in the system environment or specific executable files are checked to 
@@ -6733,10 +6766,21 @@ used. Otherwise, the 'usr/bin' directory is checked for applications including:
 <li>'xdg-open'</li>
 </ul>
 <p>
-RunCmdFromPath is called to launch the executable using the value in AFullPath 
-and any other command line arguments needed for the environment. No actions 
-are performed in the routine if AFullpath does not exist on the local file 
-system, or an application could not be determined.
+The value in AFullPath is enclosed in Quotes(if not already quoted) to 
+safeguard against spaces in the path name. RunCmdFromPath is called to launch 
+the chosen executable using the quoted path and any other command line 
+arguments needed for the environment. For example:
+</p>
+<code>
+'xdg-open "/path/to/folder"'	
+{ or }
+'dolphin --select "/path/to/filename.ext"'
+{ or }
+'nautilus --select "/path/to/filename.ext"'
+</code>
+<p>
+No actions are performed in the routine if AFullpath does not exist on the 
+local file system, or an application could not be determined.
 </p>
 <p>
 The return value is <var>True</var> if the routine was completed successfully.
