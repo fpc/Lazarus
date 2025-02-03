@@ -3217,7 +3217,7 @@ end;
 
 function TCustomCodeTool.ExtractDottedIdentifier(CleanStartPos: integer): string;
 begin
-  Result:=GetDottedIdentifier(@Src[CleanStartPos]);
+  Result:=ReadDottedIdentifier(Src,CleanStartPos,Scanner.NestedComments);
 end;
 
 function TCustomCodeTool.ExtractIdentifierWithPointsOutEndPos(StartPos: integer;
@@ -3229,7 +3229,7 @@ var aLen: integer;
 begin
   Result:='';
   EndPos:=StartPos;
-  if src='' then exit;
+  if Src='' then exit;
   MoveCursorToCleanPos(StartPos);
 
   ReadNextAtom;

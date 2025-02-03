@@ -5307,7 +5307,7 @@ begin
     Node:=FindDeepestNodeAtPos(CleanCursorPos,false);
     //if Node<>nil then debugln(['TStandardCodeTool.FindBlockStart ',Node.DescAsString]);
     if (Node=nil)
-    or (Node.Desc in (AllPascalStatements+AllPascalTypes-AllClasses))
+    or (Node.Desc in (AllPascalStatements+AllPascalTypeParts-AllClasses))
     or (Src[CurPos.StartPos] in [')',']','}'])
     then begin
       MinPos:=1;

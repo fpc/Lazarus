@@ -194,11 +194,13 @@ function dbgsDiff(Expected, Actual: string): string; overload;
 function DottedIdentifierLength(Identifier: PChar): integer;
 function GetDottedIdentifier(Identifier: PChar): string;
 function IsDottedIdentifier(const Identifier: string; AllowAmp: boolean = True): boolean;
+function GetDotCountInIdentifier(Identifier: PChar): integer; // -1 if not an identifier
 function CompareDottedIdentifiers(Identifier1, Identifier2: PChar): integer;
 function CompareDottedIdentifiersCaseSensitive(Identifier1, Identifier2: PChar): integer;
 function ChompDottedIdentifier(const Identifier: string): string;
 function SkipDottedIdentifierPart(var Identifier: PChar): boolean;
 function DottedIdentifierStartsWith(Identifier, StartsWithIdent: PChar): boolean; // true if equal or longer
+function DottedIdentifierEndsWith(Identifier, EndsWithIdent: PChar): boolean; // true if equal or longer
 
 // space and special chars
 function TrimCodeSpace(const ACode: string): string;
@@ -602,20 +604,24 @@ function ReadDottedIdentifier(var Position: PChar; SrcEnd: PChar;
   NestedComments: boolean): string;
 var
   AtomStart, p: PChar;
+  s: String;
 begin
   Result:='';
   p:=Position;
   ReadRawNextPascalAtom(p,AtomStart,SrcEnd,NestedComments);
   Position:=AtomStart;
-  if (AtomStart>=p) or not IsIdentStartChar[AtomStart^] then exit;
+  if (AtomStart>=p) then exit;
   Result:=GetIdentifier(AtomStart);
+  if Result='' then exit;
   repeat
+    Position:=p;
     ReadRawNextPascalAtom(p,AtomStart,SrcEnd,NestedComments);
     if (AtomStart+1<>p) or (AtomStart^<>'.') then exit;
     ReadRawNextPascalAtom(p,AtomStart,SrcEnd,NestedComments);
-    if (AtomStart>=p) or not IsIdentStartChar[AtomStart^] then exit;
-    Position:=AtomStart;
-    Result:=Result+'.'+GetIdentifier(AtomStart);
+    if (AtomStart>=p) then exit;
+    s:=GetIdentifier(AtomStart);
+    if s='' then exit;
+    Result:=Result+'.'+s;
   until false;
 end;
 
@@ -1869,8 +1875,18 @@ function GetIdentLen(Identifier: PChar): integer;
 begin
   Result:=0;
   if Identifier=nil then exit;
-  if not IsIdentStartChar[Identifier^] then exit;
-  while (IsIdentChar[Identifier[Result]]) do inc(Result);
+  if not IsIdentStartChar[Identifier^] then begin
+    if Identifier^='&' then begin
+      inc(Identifier);
+      if not IsIdentStartChar[Identifier^] then exit;
+      Result:=1;
+    end else
+      exit;
+  end;
+  repeat
+    inc(Result);
+    inc(Identifier);
+  until not IsIdentChar[Identifier^];
 end;
 
 function FindFirstProcSpecifier(const ProcText: string; NestedComments: boolean
@@ -5318,20 +5334,14 @@ begin
   Result:=0;
   if Identifier=nil then exit;
   p:=Identifier;
-  if p^='&' then
-    inc(p);
   repeat
-    if not IsIdentStartChar[p^] then exit;
-    repeat
-      c:=p^;
-      inc(p);
-    until not IsIdentChar[p^];
-    if p^<>'.' then begin
-      if not IsIdentChar[c] then exit;
-      break;
-    end;
     if p^='&' then
       inc(p);
+    if not IsIdentStartChar[p^] then exit;
+    inc(p);
+    while IsIdentChar[p^] do inc(p);
+    if p^<>'.' then
+      break;
     inc(p);
   until false;
   Result:=p-Identifier;
@@ -5366,6 +5376,21 @@ begin
     inc(p);
   until false;
   Result:=(p-StartP)=length(Identifier);
+end;
+
+function GetDotCountInIdentifier(Identifier: PChar): integer;
+begin
+  Result:=0;
+  repeat
+    if Identifier^='&' then inc(Identifier);
+    if not IsIdentStartChar[Identifier^] then exit;
+    inc(Identifier);
+    while IsIdentChar[Identifier^] do inc(Identifier);
+    if Identifier^<>'.' then
+      exit;
+    inc(Result);
+    inc(Identifier);
+  until false;
 end;
 
 function CompareDottedIdentifiers(Identifier1, Identifier2: PChar): integer;
@@ -5489,6 +5514,27 @@ begin
       break;
   end;
   Result:=not IsIdentChar[Identifier^] and  not IsIdentChar[StartsWithIdent^];
+end;
+
+function DottedIdentifierEndsWith(Identifier, EndsWithIdent: PChar): boolean;
+var
+  IdentifierDotCnt, EndsWithIdentDotCnt: Integer;
+begin
+  Result:=false;
+  if (EndsWithIdent=nil) then exit;
+  if not (IsIdentStartChar[EndsWithIdent^]
+      or ((EndsWithIdent^='&') and IsIdentStartChar[EndsWithIdent[1]])) then
+    exit;
+  IdentifierDotCnt:=GetDotCountInIdentifier(Identifier);
+  EndsWithIdentDotCnt:=GetDotCountInIdentifier(EndsWithIdent);
+  if EndsWithIdentDotCnt>IdentifierDotCnt then
+    exit;
+  while IdentifierDotCnt>EndsWithIdentDotCnt do begin
+    while Identifier^<>'.' do inc(Identifier);
+    inc(Identifier);
+    dec(IdentifierDotCnt);
+  end;
+  Result:=CompareDottedIdentifiers(Identifier,EndsWithIdent)=0;
 end;
 
 function CompareDottedIdentifiersCaseSensitive(Identifier1, Identifier2: PChar): integer;

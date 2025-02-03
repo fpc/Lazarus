@@ -75,6 +75,7 @@ type
     Flag: TCommonAtomFlag;
   end;
   PAtomPosition = ^TAtomPosition;
+  TAtomPositionArray = array of TAtomPosition;
   
 const
   StartAtomPosition: TAtomPosition = (StartPos:1; EndPos:1; Flag:cafNone);

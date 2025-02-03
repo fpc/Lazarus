@@ -280,15 +280,14 @@ function CompareCodeXYPositions(Pos1, Pos2: PCodeXYPosition): integer;
 
 function CompareCodePositions(Pos1, Pos2: PCodePosition): integer;
 
-procedure AddCodePosition(var ListOfPCodeXYPosition: TFPList;
-                          const NewCodePos: TCodeXYPosition);
+procedure AddCodePosition(var ListOfPCodeXYPosition: TFPList; const NewCodePos: TCodeXYPosition);
 function IndexOfCodePosition(var ListOfPCodeXYPosition: TFPList;
                              const APosition: PCodeXYPosition): integer;
 procedure FreeListOfPCodeXYPosition(ListOfPCodeXYPosition: TFPList);
 
 function CreateTreeOfPCodeXYPosition: TAVLTree;
-procedure AddCodePosition(var TreeOfPCodeXYPosition: TAVLTree;
-                          const NewCodePos: TCodeXYPosition);
+function AddCodePosition(var TreeOfPCodeXYPosition: TAVLTree;
+                          const NewCodePos: TCodeXYPosition; Unique: boolean = true): boolean; // false if duplicate not added
 procedure FreeTreeOfPCodeXYPosition(TreeOfPCodeXYPosition: TAVLTree);
 procedure AddListToTreeOfPCodeXYPosition(SrcList: TFPList;
                           DestTree: TAVLTree; ClearList, CreateCopies: boolean);
@@ -351,7 +350,7 @@ begin
   else if Pos1^.Y<Pos2^.Y then Result:=1
   else if Pos1^.Y>Pos2^.Y then Result:=-1
   else if Pos1^.X<Pos2^.X then Result:=1
-  else if Pos1^.Y<Pos2^.Y then Result:=-1
+  else if Pos1^.X>Pos2^.X then Result:=-1
   else Result:=0;
 end;
 
@@ -408,16 +407,19 @@ begin
   Result:=TAVLTree.Create(TListSortCompare(@CompareCodeXYPositions));
 end;
 
-procedure AddCodePosition(var TreeOfPCodeXYPosition: TAVLTree;
-  const NewCodePos: TCodeXYPosition);
+function AddCodePosition(var TreeOfPCodeXYPosition: TAVLTree; const NewCodePos: TCodeXYPosition;
+  Unique: boolean): boolean;
 var
   AddCodePos: PCodeXYPosition;
 begin
   if TreeOfPCodeXYPosition=nil then
-    TreeOfPCodeXYPosition:=TAVLTree.Create(TListSortCompare(@CompareCodeXYPositions));
+    TreeOfPCodeXYPosition:=TAVLTree.Create(TListSortCompare(@CompareCodeXYPositions))
+  else if Unique and (TreeOfPCodeXYPosition.Find(@NewCodePos)<>nil) then
+    exit(false);
   New(AddCodePos);
   AddCodePos^:=NewCodePos;
   TreeOfPCodeXYPosition.Add(AddCodePos);
+  Result:=true;
 end;
 
 procedure FreeTreeOfPCodeXYPosition(TreeOfPCodeXYPosition: TAVLTree);

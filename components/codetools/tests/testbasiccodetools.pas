@@ -54,6 +54,7 @@ type
     procedure TestCompareIdentifiersCaseSensitive;
     procedure TestCompareDottedIdentifiers;
     procedure TestCompareDottedIdentifiersCaseSensitive;
+    procedure TestDottedIdentifierEndsWith;
     procedure TestReadRawPascal;
     // FileProcs
     procedure TestDateToCfgStr;
@@ -673,6 +674,35 @@ begin
   t('a.&','a.c',1); // compares 'a.' and 'a.c'
   t('a.&','a.&c',1); // compares 'a.' and 'a.&c'
   t('a.&','a.&1',0); // compares 'a.' and 'a.'
+end;
+
+procedure TTestBasicCodeTools.TestDottedIdentifierEndsWith;
+
+  procedure t(Identifier, EndsWithIdent: PChar; Expected: boolean);
+  var
+    Actual: Boolean;
+  begin
+    Actual:=DottedIdentifierEndsWith(Identifier,EndsWithIdent);
+    if Actual=Expected then exit;
+    Fail('Expected '+dbgs(Expected)+' for Identifier="'+Identifier+'" EndsWithIdent="'+EndsWithIdent+'"');
+  end;
+
+begin
+  t('','',false);
+  t('a','',false);
+  t('','b',false);
+  t('a','$',false);
+  t('$','b',false);
+  t('a','a',true);
+  t('a','ab',false);
+  t('ab','a',false);
+  t('ab','ab',true);
+  t('a.b','a',false);
+  t('a.b','b',true);
+  t('a.b.c','c',true);
+  t('a.b.c','b.c',true);
+  t('a.b.c','a.b.c',true);
+  t('a.b.&c','&b.c',true);
 end;
 
 procedure TTestBasicCodeTools.TestReadRawPascal;

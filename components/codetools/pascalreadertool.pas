@@ -2351,10 +2351,15 @@ begin
     case Node.Desc of
     ctnIdentifier:
       s:=ReadSrc(Node.StartPos,Node.EndPos);
-    ctnTypeDefinition, ctnVarDefinition, ctnConstDefinition:
+    ctnTypeDefinition, ctnVarDefinition, ctnConstDefinition, ctnLabel, ctnEnumIdentifier:
       s:=GetIdentifier(@Src[Node.StartPos]);
     ctnGenericType:
-      s:=ExtractClassName(Node,false,false,true);
+      s:='generic-'+ExtractClassName(Node,false,false,true);
+    ctnProperty,ctnGlobalProperty:
+      begin
+        RestoreCurPos:=true;
+        s:=ExtractPropName(Node,false)
+      end;
     ctnProcedure:
       begin
         RestoreCurPos:=true;
@@ -2421,7 +2426,7 @@ begin
         Result:=Result.NextBrother;
         if Result=nil then exit;
       end;
-      if (not (Result.Desc in AllPascalTypes)) then
+      if (not (Result.Desc in AllPascalTypeParts)) then
         Result:=nil;
       exit;
     end;
@@ -3690,6 +3695,7 @@ begin
 end;
 
 function TPascalReaderTool.ExtractUsedUnitNameAtCursor(InFilename: PAnsiString): string;
+// after reading CurPos is on atom behind, i.e. comma or semicolon
 begin
   Result:='';
   if InFilename<>nil then
@@ -3697,8 +3703,7 @@ begin
   while CurPos.Flag=cafWord do begin
     if Result<>'' then
       Result:=Result+'.';
-    //Result:=Result+GetAtomIdentifier;
-    Result:=Result+GetAtom;//&-ident allowed - preferred "&begin.&end" over "begin.end"
+    Result:=Result+GetAtom; // read with &
     ReadNextAtom;
     if CurPos.Flag<>cafPoint then break;
     ReadNextAtom;

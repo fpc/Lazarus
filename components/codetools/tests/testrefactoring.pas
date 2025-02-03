@@ -10,8 +10,8 @@ unit TestRefactoring;
 interface
 
 uses
-  Classes, SysUtils, CodeToolManager, CodeCache, CodeTree, BasicCodeTools,
-  CTUnitGraph, FindDeclarationTool, LazLogger, LazFileUtils, AVL_Tree, fpcunit, testregistry,
+  Classes, SysUtils, CodeToolManager, CodeCache, CodeTree, BasicCodeTools, CTUnitGraph,
+  FindDeclarationTool, LazLogger, LazFileUtils, AVL_Tree, Contnrs, fpcunit, testregistry,
   TestFinddeclaration;
 
 const
@@ -23,6 +23,7 @@ type
   TCustomTestRefactoring = class(TCustomTestFindDeclaration)
   protected
     procedure RenameReferences(NewIdentifier: string; const Flags: TFindRefsFlags = []);
+    procedure RenameSourceName(NewName, NewFilename: string);
     procedure CheckDiff(CurCode: TCodeBuffer; const ExpLines: array of string);
   end;
 
@@ -30,24 +31,46 @@ type
 
   TTestRefactoring = class(TCustomTestRefactoring)
   private
+  protected
   published
     procedure TestExplodeWith;
     procedure TestRenameReferences;
+
     procedure TestRenameProcReferences;
     procedure TestRenameProcedureArg;
     procedure TestRenameProcedureArgCaseSensitive;
     procedure TestRenameForwardProcedureArgDown;
     procedure TestRenameForwardProcedureArgUp;
+
     procedure TestRenameMethodArgDown;
     procedure TestRenameMethodArgUp;
     procedure TestRenameMethodInherited;
     procedure TestRenameMethodWithOverrides;
     procedure TestRenameMethodWithOverridesOtherUnit;
     procedure TestRenameClassMethodWithOverrides;
+
     procedure TestRenameNestedProgramProcDown;
     procedure TestRenameNestedProgramProcUp;
     procedure TestRenameNestedUnitProcDown;
+
     procedure TestRenameTypeToAmp;
+
+    // rename program
+    procedure TestRenameProgramName_Amp;
+    procedure TestRenameProgramName_DottedPostfix; // todo
+
+    // rename uses
+    // todo: rename unit &Type to &End
+    // todo: rename unit Foo.Bar to Foo.Red
+    // todo: rename unit Foo.Bar to Red.Bar
+    // todo: rename unit Foo to Foo.Bar
+    // todo: rename unit Foo.Bar to Foo
+    // todo: rename unit Foo.Bar to Bar
+    // todo: search in an include file should not stop searching in other files
+    // todo: missing used unit should not stop searching in other files
+    // todo: rename with ifdefs
+    // todo: rename with -FN, unit Foo.Bar to Foo.Red, uses Bar;
+    // todo: rename a.b->c.d must not change { a.}b
   end;
 
 implementation
@@ -108,7 +131,7 @@ begin
   try
     Files.Add(DeclCode.Filename);
     if CompareFilenames(DeclCode.Filename,Code.Filename)<>0 then
-      Files.Add(DeclCode.Filename);
+      Files.Add(Code.Filename);
 
     Graph:=CodeToolBoss.CreateUsesGraph;
     Graph.AddStartUnit(Code.Filename);
@@ -139,6 +162,34 @@ begin
   finally
     CodeToolBoss.FreeTreeOfPCodeXYPosition(PascalReferences);
     Graph.Free;
+    Files.Free;
+  end;
+end;
+
+procedure TCustomTestRefactoring.RenameSourceName(NewName, NewFilename: string);
+var
+  Files: TStringList;
+  ListOfSrcNameRefs: TObjectList;
+begin
+  // create the file list
+  ListOfSrcNameRefs:=nil;
+  Files:=TStringList.Create;
+  try
+    Files.Add(Code.Filename);
+
+    // search pascal source references
+    if not CodeToolBoss.FindSourceNameReferences(Code.Filename,Files,false,ListOfSrcNameRefs) then
+    begin
+      Fail('CodeToolBoss.FindSourceNameReferences failed File='+Code.Filename);
+    end;
+
+    // todo: check for conflicts
+
+    if not CodeToolBoss.RenameSourceNameReferences(Code.Filename,NewFilename,NewName,ListOfSrcNameRefs)
+    then
+      Fail('CodeToolBoss.RenameSourceNameReferences failed');
+  finally
+    ListOfSrcNameRefs.Free;
     Files.Free;
   end;
 end;
@@ -1163,6 +1214,54 @@ begin
   'implementation',
   'type',
   '  TBird = low(&End)..high(&End);',
+  'end.',
+  '']);
+end;
+
+procedure TTestRefactoring.TestRenameProgramName_Amp;
+begin
+  Add([
+  'program test1;',
+  '{$mode objfpc}{$H+}',
+  'type TRed = word;',
+  'var c: test1 . TRed;',
+  'begin',
+  '  test1.c:=&test1 . &c;',
+  'end.',
+  '']);
+  RenameSourceName('&End','end.pas');
+  CheckDiff(Code,[
+  'program &End;',
+  '{$mode objfpc}{$H+}',
+  'type TRed = word;',
+  'var c: &End . TRed;',
+  'begin',
+  '  &End.c:=&End . &c;',
+  'end.',
+  '']);
+end;
+
+procedure TTestRefactoring.TestRenameProgramName_DottedPostfix;
+begin
+  exit;
+
+  Add([
+  'program Foo.Bar;',
+  '{$mode objfpc}{$H+}',
+  'type TRed = word;',
+  'var c: foo . bar . TRed;',
+  'begin',
+  '  foo.bar.c:=&foo . &bar . &c;',
+  'end.',
+  '']);
+  RenameSourceName('Foo.&End','foo.end.pas');
+  CheckDiff(Code,[
+  'program Foo.&End;',
+  '{$mode objfpc}{$H+}',
+  'type TRed = word;',
+  'var c: Foo . &End . TRed;',
+  'begin',
+  '  Foo.&End.c:=Foo . &End . &c;',
   'end.',
   '']);
 end;

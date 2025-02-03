@@ -69,6 +69,7 @@ interface
 { $DEFINE VerboseFindDeclarationAndOverload}
 { $DEFINE VerboseFindFileAtCursor}
 { $DEFINE VerboseFindRefMethodOverrides}
+{ $DEFINE VerboseFindSourceNameReferences}
 
 {$IFDEF CTDEBUG}{$DEFINE DebugPrefix}{$ENDIF}
 {$IFDEF ShowTriedIdentifiers}{$DEFINE DebugPrefix}{$ENDIF}
@@ -79,7 +80,7 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, AVL_Tree,
+  Classes, SysUtils, Types, AVL_Tree,
   // LazUtils
   LazFileUtils, LazStringUtils, LazUtilities,
   // Codetools
@@ -252,9 +253,9 @@ type
     xtLongBool,    // longbool
     xtQWordBool,   // qwordbool
     xtBoolean8,    // boolean8
-    xtBoolean16,    // boolean16
-    xtBoolean32,    // boolean32
-    xtBoolean64,    // boolean64
+    xtBoolean16,   // boolean16
+    xtBoolean32,   // boolean32
+    xtBoolean64,   // boolean64
     xtString,      // string
     xtAnsiString,  // ansistring
     xtShortString, // shortstring
@@ -1063,6 +1064,9 @@ type
     function FindReferences(const CursorPos: TCodeXYPosition;
       SkipComments: boolean; out ListOfPCodeXYPosition: TFPList;
       Flags: TFindRefsFlags = []): boolean;
+    function FindSourceNameReferences(const TargetFilename: string; SkipComments: boolean;
+      out LocalSrcName: string; out InFilenameCleanPos: integer;
+      out TreeOfPCodeXYPosition: TAVLTree; SyntaxExceptions: boolean = false): boolean;
     function FindUnitReferences(UnitCode: TCodeBuffer;
       SkipComments: boolean; out ListOfPCodeXYPosition: TFPList): boolean; // searches unitname of UnitCode
     procedure FindUsedUnitReferences(const CursorPos: TCodeXYPosition;
@@ -1458,41 +1462,12 @@ end;
 
 function FindContextToString(const FindContext: TFindContext;
   RelativeFilename: boolean): string;
-var
-  IdentNode: TCodeTreeNode;
 begin
   Result:='';
-  if FindContext.Node<>nil then begin
-    Result:=Result+'Node="'+FindContext.Node.DescAsString+'"';
-    IdentNode:=FindContext.Node;
-    while IdentNode<>nil do begin
-      if IdentNode.Desc in AllSimpleIdentifierDefinitions
-        +[ctnIdentifier,ctnEnumIdentifier,ctnLabel]
-      then begin
-        Result:=Result+' Ident="'+
-          FindContext.Tool.ExtractIdentifier(IdentNode.StartPos)+'"';
-        break;
-      end else if IdentNode.Desc=ctnGenericType then begin
-        if IdentNode.FirstChild<>nil then
-          Result:=Result+' Generic="'+
-            FindContext.Tool.ExtractIdentifier(IdentNode.FirstChild.StartPos)+'"'
-        else
-          Result:=Result+' Generic=?';
-      end else if IdentNode.Desc in [ctnProperty,ctnGlobalProperty] then begin
-        Result:=Result+' PropName="'+
-          FindContext.Tool.ExtractPropName(IdentNode,false)+'"';
-        break;
-      end else if IdentNode.Desc=ctnProcedure then begin
-        Result:=Result+' Proc="'+FindContext.Tool.ExtractProcName(IdentNode,[])+'"';
-        break;
-      end;
-      IdentNode:=IdentNode.Parent;
-    end;
-    if RelativeFilename then
-      Result:=Result+' at "'+FindContext.Tool.CleanPosToStr(FindContext.Node.StartPos,true)+'"'
-    else
-      Result:=Result+' at "'+FindContext.Tool.CleanPosToRelativeStr(FindContext.Node.StartPos,'')+'"'
-  end else
+  if RelativeFilename then ;
+  if FindContext.Node<>nil then
+    Result:=FindContext.Tool.GetNodeNamePath(FindContext.Node,true,true)
+  else
     Result:='nil';
 end;
 
@@ -7448,6 +7423,555 @@ begin
   Result:=true;
 end;
 
+function TFindDeclarationTool.FindSourceNameReferences(const TargetFilename: string;
+  SkipComments: boolean; out LocalSrcName: string; out InFilenameCleanPos: integer; out
+  TreeOfPCodeXYPosition: TAVLTree; SyntaxExceptions: boolean): boolean;
+var
+  IsSelf: Boolean; // true = searching references of my program/unit name
+  LocalSrcNamePos: integer;
+  CleanPositions: TIntegerDynArray;
+  CleanPosCount: integer;
+  TargetUnitName: string; // the target file unit name, can differ from LocalSrcName
+  TargetShortFilename: string;
+  InterfaceUsesNode, ImplementationUsesNode: TCodeTreeNode;
+  IntfUseNames, ImplUseNames: TStringArray;
+  Params: TFindDeclarationParams;
+
+  procedure AddPos(CleanPos: integer);
+  begin
+    {$IFDEF VerboseFindSourceNameReferences}
+    debugln(['  AddPos Index=',CleanPosCount,' ',CleanPosToStr(CleanPos),' "',copy(Src,CleanPos,100),'"']);
+    {$ENDIF}
+    if (CleanPosCount>0) and (CleanPos<=CleanPositions[CleanPosCount-1]) then begin
+      debugln(['  AddPos Index=',CleanPosCount,' ',CleanPosToStr(CleanPos),' "',copy(Src,CleanPos,100),'"']);
+      raise Exception.Create('20250202212016');
+    end;
+
+    if CleanPosCount=Length(CleanPositions) then begin
+      if Length(CleanPositions)<8 then
+        SetLength(CleanPositions,8)
+      else
+        SetLength(CleanPositions,CleanPosCount*2);
+    end;
+    CleanPositions[CleanPosCount]:=CleanPos;
+    inc(CleanPosCount);
+  end;
+
+  procedure DeletePos(CleanPos: integer);
+  var
+    i: Integer;
+  begin
+    for i:=CleanPosCount-1 downto 0 do
+      if CleanPositions[i]=CleanPos then
+        System.Delete(CleanPositions,i,1);
+  end;
+
+  function CheckUsesSection(UsesSection: TCodeTreeNode; var UseNames: TStringArray): boolean;
+  var
+    Node: TCodeTreeNode;
+    AUnitName, UnitInFilename: string;
+    StartPos: Integer;
+    Code: TCodeBuffer;
+    MatchInFile, MatchUses: Boolean;
+    UnitNameRange, InAtom: TAtomPosition;
+  begin
+    if UsesSection=nil then exit(true);
+    Node:=UsesSection.FirstChild;
+    if Node=nil then exit(true);
+
+    //debugln(['CheckUsesSection START ',CleanPosToStr(Node.StartPos)]);
+    Result:=false;
+    MoveCursorToNodeStart(Node);
+    repeat
+      ReadNextAtom;  // read name
+
+      StartPos:=CurPos.StartPos;
+      AUnitName:=ExtractUsedUnitNameAtCursor(@UnitInFilename);
+      if AUnitName='' then exit;
+      //debugln(['CheckUsesSection AUnitName="',AUnitName,'" InFile="',UnitInFilename,'"']);
+
+      Insert(AUnitName,UseNames,length(UseNames));
+
+      if not IsSelf then begin
+        // check if uses refers to target
+
+        MatchInFile:=false;
+        MatchUses:=false;
+        if UnitInFilename<>'' then begin
+          if TargetShortFilename='' then
+            TargetShortFilename:=ExtractFilename(TargetFilename);
+          if CompareDottedIdentifiers(PChar(ExtractFilename(UnitInFilename)),
+            PChar(TargetShortFilename))=0 then
+          begin
+            MatchInFile:=true;
+            MatchUses:=CompareDottedIdentifiers(PChar(AUnitName),PChar(TargetUnitName))=0;
+          end;
+        end else begin
+          // Note: with scopes/namespaces like -FN, a 'uses Bar;' can use a 'foo.bar.pas'
+          MatchUses:=DottedIdentifierEndsWith(PChar(TargetUnitName),PChar(AUnitName));
+        end;
+
+        if MatchUses or MatchInFile then begin
+          // search in search paths
+          Code:=FindUnitSource(AUnitName,UnitInFilename,false,StartPos);
+          if (Code<>nil) and (CompareFilenames(Code.Filename,TargetFilename)=0) then
+          begin
+            // found matching uses
+            {$IFDEF VerboseFindSourceNameReferences}
+            if UnitInFilename<>'' then
+              debugln(['  CheckUsesSection uses found ',CleanPosToStr(StartPos,true),', uses="',AUnitName,'" in "',UnitInFilename,'"'])
+            else
+              debugln(['  CheckUsesSection uses found ',CleanPosToStr(StartPos,true),', uses="',AUnitName,'"']);
+            {$ENDIF}
+            if MatchUses then begin
+              // matches uses
+              if LocalSrcNamePos>=0 then begin
+                // duplicate uses
+                debugln(['Warning: [20250202120622] TFindDeclarationTool.FindSourceNameReferences duplicate uses at ',CleanPosToStr(LocalSrcNamePos,true),' and ',CleanPosToStr(StartPos)]);
+                DeletePos(LocalSrcNamePos);
+              end;
+              LocalSrcName:=AUnitName;
+              LocalSrcNamePos:=StartPos;
+              AddPos(StartPos);
+            end;
+            if MatchInFile then begin
+              // matches in-filename
+              MoveCursorToCleanPos(StartPos);
+              ReadNextAtom;
+              ReadNextUsedUnit(UnitNameRange,InAtom);
+              if InFilenameCleanPos>=0 then begin
+                debugln(['Warning: [20250202122909] TFindDeclarationTool.FindSourceNameReferences duplicate uses IN filenames at ',CleanPosToStr(InFilenameCleanPos,true),' and ',CleanPosToStr(InAtom.StartPos)]);
+              end;
+              InFilenameCleanPos:=InAtom.StartPos;
+            end;
+          end;
+        end;
+      end;
+
+      if AtomIsChar(';') then break;
+      if not AtomIsChar(',') then
+        RaiseExceptionFmt(20250201102057,ctsStrExpectedButAtomFound,[';',GetAtom])
+    until CurPos.StartPos>SrcLen;
+    Result:=true;
+  end;
+
+  procedure FindLongestUsesName(UseNames: TStringArray; const Expr: string;
+    var BestUseName: string; var BestDotCount: integer);
+  var
+    i, DotCount: Integer;
+    ExprP, UseNameP: PChar;
+  begin
+    ExprP:=PChar(Expr);
+    for i:=0 to length(UseNames)-1 do begin
+      UseNameP:=PChar(UseNames[i]);
+      if CompareIdentifiers(UseNameP,ExprP)=0 then begin
+        DotCount:=GetDotCountInIdentifier(UseNameP);
+        if DotCount>BestDotCount then begin
+          BestDotCount:=DotCount;
+          BestUseName:=UseNames[i];
+        end;
+      end;
+    end;
+  end;
+
+  function CheckIdentifier(var p: integer): boolean;
+  // check the identifier at start of an expression
+  var
+    StartP, Ident: PChar;
+    StartPos, BestDotCount, DotCnt, LastIdentPos: Integer;
+    Expr, BestUseName: String;
+    CursorNode, Node: TCodeTreeNode;
+    Found: Boolean;
+  begin
+    Result:=true;
+    StartPos:=p;
+    StartP:=@Src[StartPos];
+    Ident:=PChar(LocalSrcName);
+    if CompareIdentifiers(StartP,Ident)<>0 then begin
+      inc(p,GetIdentLen(StartP));
+      exit;
+    end;
+
+    Expr:=ReadDottedIdentifier(Src,p,Scanner.NestedComments);
+    //debugln(['  CheckIdentifier At ',CleanPosToStr(p),' Expr="',Expr,'"']);
+
+    if not DottedIdentifierStartsWith(PChar(LocalSrcName),PChar(Expr)) then exit;
+
+    {$IFDEF VerboseFindSourceNameReferences}
+    debugln(['  CheckIdentifier found expression starting with LocalSrcName: "',Expr,'" at ',CleanPosToStr(StartPos,true)]);
+    {$ENDIF}
+
+    // quick check: find the longest matching uses name
+    BestUseName:='';
+    BestDotCount:=0;
+    if (ImplementationUsesNode<>nil) and (ImplementationUsesNode.EndPos<=StartPos) then
+      FindLongestUsesName(ImplUseNames,Expr,BestUseName,BestDotCount);
+    if (InterfaceUsesNode<>nil) and (InterfaceUsesNode.EndPos<=StartPos) then
+      FindLongestUsesName(IntfUseNames,Expr,BestUseName,BestDotCount);
+    if (BestUseName<>'')
+        and (CompareDottedIdentifiers(PChar(BestUseName),PChar(LocalSrcName))<>0) then
+    begin
+      // a longer uses fits -> this expr does not refer to the LocalSrcName
+      exit;
+    end;
+
+    // find declaration
+    {$IFDEF VerboseFindSourceNameReferences}
+    debugln(['  CheckIdentifier search expression "',Expr,'" at ',CleanPosToStr(StartPos,true)]);
+    {$ENDIF}
+
+    DotCnt:=GetDotCountInIdentifier(Ident);
+    MoveCursorToCleanPos(StartPos);
+    repeat
+      ReadNextAtom;
+      if not AtomIsIdentifier then begin
+        debugln(['Error: [20250202181504] FindSourceNameReferences CheckIdentifier identifier expected at ',CleanPosToStr(CurPos.StartPos,true),', but "',GetAtom,'" found']);
+        exit;
+      end;
+      if DotCnt=0 then
+        break;
+      dec(DotCnt);
+      ReadNextAtom;
+      if CurPos.Flag<>cafPoint then begin
+        debugln(['Error: [20250202181625] FindSourceNameReferences CheckIdentifier . expected at ',CleanPosToStr(CurPos.StartPos,true),', but "',GetAtom,'" found']);
+        exit;
+      end;
+    until CurPos.StartPos>=SrcLen;
+    LastIdentPos:=CurPos.StartPos;
+
+    CursorNode:=BuildSubTreeAndFindDeepestNodeAtPos(StartPos,true);
+    if CleanPosIsDeclarationIdentifier(LastIdentPos,CursorNode) then
+      exit;
+
+    if Params=nil then
+      Params:=TFindDeclarationParams.Create(Self, CursorNode)
+    else
+      Params.Clear;
+    Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,fdfSearchInHelpers,
+                   fdfIgnoreCurContextNode];
+    Params.ContextNode:=CursorNode;
+    //debugln(['  CheckIdentifier "',copy(Src,LastIdentPos,200),'"']);
+    Params.SetIdentifier(Self,@Src[LastIdentPos],@CheckSrcIdentifier);
+
+    // search identifier also in comments -> if not found, this is no bug
+    // => silently ignore
+    try
+      Found:=FindDeclarationOfIdentAtParam(Params);
+    except
+      on E: ECodeToolError do begin
+        if E.Sender<>Self then begin
+          // there is an error in another unit, which prevents searching
+          // stop further searching in this unit
+          raise;
+        end;
+        // continue
+      end;
+      on E: Exception do
+        raise;
+    end;
+    if not Found then exit;
+    Node:=Params.NewNode;
+    if Node=nil then exit;
+
+    {$IFDEF VerboseFindSourceNameReferences}
+    debugln(['  CheckIdentifier Found Node=',GetNodeNamePath(Node,true)]);
+    {$ENDIF}
+    if Node.Desc=ctnSrcName then begin
+      if IsSelf then
+        AddPos(StartPos);
+    end else begin
+      // todo: found uses node
+    end;
+  end;
+
+  function CheckComment(var StartPos: integer; MaxPos: integer): boolean;
+  var
+    c: Char;
+    CommentLvl: Integer;
+    InStrConst, LastTokenWasPoint, IsDirective: Boolean;
+  begin
+    Result:=true;
+    c:=Src[StartPos];
+    //debugln(['  CheckComment c=',c,' "',copy(Src,StartPos,20),'"']);
+    IsDirective:=false;
+    case c of
+    '/': inc(StartPos,2);
+    '(':
+      begin
+        inc(StartPos,2);
+        IsDirective:=(StartPos<=MaxPos) and (Src[StartPos]='$');
+      end;
+    '{':
+      begin
+        inc(StartPos);
+        IsDirective:=(StartPos<=MaxPos) and (Src[StartPos]='$');
+        if (StartPos<=MaxPos) and (Src[StartPos]=#3) then begin
+          // codetools skip comment {#3 #3}
+          inc(StartPos);
+          while (StartPos<=MaxPos) do begin
+            if (Src[StartPos]=#3) and (StartPos<MaxPos) and (Src[StartPos+1]='}')
+            then begin
+              inc(StartPos,2);
+              exit;
+            end;
+            inc(StartPos);
+          end;
+          exit;
+        end;
+      end;
+    end;
+
+    CommentLvl:=1;
+    InStrConst:=false;
+    LastTokenWasPoint:=false;
+    while StartPos<=MaxPos do begin
+      case Src[StartPos] of
+      '{':
+        begin
+          if (c='{') and Scanner.NestedComments then inc(CommentLvl);
+          LastTokenWasPoint:=false;
+        end;
+      '}':
+        begin
+          LastTokenWasPoint:=false;
+          if c='{' then begin
+            dec(CommentLvl);
+            if CommentLvl=0 then begin
+              inc(StartPos);
+              exit;
+            end;
+          end;
+        end;
+      ')':
+        begin
+          LastTokenWasPoint:=false;
+          if (c='(') and (Src[StartPos-1]='*') then begin
+            inc(StartPos);
+            exit;
+          end;
+        end;
+      'a'..'z','A'..'Z','_','&':
+        begin
+          if (not IsDirective) and (not SkipComments) and (not InStrConst)
+              and (not LastTokenWasPoint) then
+            if not CheckIdentifier(StartPos) then exit(false);
+          LastTokenWasPoint:=false;
+        end;
+      '''':
+        begin
+          InStrConst:=not InStrConst;
+          LastTokenWasPoint:=false;
+        end;
+      #10,#13:
+        begin
+          InStrConst:=false;
+          if c='/' then begin
+            inc(StartPos);
+            if (StartPos<=MaxPos) and (Src[StartPos] in [#10,#13])
+            and (Src[StartPos-1]<>Src[StartPos]) then
+              inc(StartPos);
+            exit;
+          end;
+        end;
+      ' ',#9: ;
+      '.': LastTokenWasPoint:=true;
+      else
+        LastTokenWasPoint:=false;
+      end;
+      inc(StartPos);
+    end;
+  end;
+
+  function CheckSource(MinPos, MaxPos: integer): boolean;
+  var
+    StartPos: Integer;
+    LastTokenWasPoint, LastCommentTokenWasPoint: Boolean;
+  begin
+    Result:=true;
+    if MinPos<LocalSrcNamePos then
+      MinPos:=LocalSrcNamePos;
+    if MinPos>SrcLen then exit;
+    if MaxPos>SrcLen then MaxPos:=SrcLen+1;
+    //debugln(['  CheckSource ',MinPos,'..',MaxPos]);
+    StartPos:=MinPos;
+    LastTokenWasPoint:=false;
+    while StartPos<=MaxPos do begin
+      case Src[StartPos] of
+      ' ',#9,#10,#13:
+        inc(StartPos);
+
+      '{':
+        CheckComment(StartPos,MaxPos);
+
+      '/':  // Delphi comment
+        if (Src[StartPos+1]<>'/') then begin
+          inc(StartPos);
+          LastTokenWasPoint:=false;
+        end else begin
+          if not CheckComment(StartPos,MaxPos) then exit(false);
+        end;
+
+      '(': // turbo pascal comment
+        if (Src[StartPos+1]<>'*') then begin
+          inc(StartPos);
+          LastTokenWasPoint:=false;
+        end else begin
+          if not CheckComment(StartPos,MaxPos) then exit(false);
+        end;
+
+      '''':
+        begin
+          // skip string constant
+          inc(StartPos);
+          while (StartPos<=MaxPos) do begin
+            if (not (Src[StartPos] in ['''',#10,#13])) then
+              inc(StartPos)
+            else begin
+              inc(StartPos);
+              break;
+            end;
+          end;
+          LastTokenWasPoint:=false;
+        end;
+
+      'a'..'z','A'..'Z','_','&':
+        begin
+          if not LastTokenWasPoint then
+            if not CheckIdentifier(StartPos) then exit;
+          LastTokenWasPoint:=false;
+        end;
+
+      '.':
+        begin
+          LastTokenWasPoint:=true;
+          inc(StartPos);
+        end;
+
+      else
+        LastTokenWasPoint:=false;
+        inc(StartPos);
+      end;
+    end;
+  end;
+
+  procedure CreateTree;
+  var
+    i, p: Integer;
+    CodePos: TCodeXYPosition;
+    Node: TAVLTreeNode;
+  begin
+    for i:=0 to CleanPosCount-1 do begin
+      p:=CleanPositions[i];
+      if not CleanPosToCaret(p,CodePos) then
+        raise Exception.Create('20250203105516');
+      //debugln(['TFindDeclarationTool.FindSourceNameReferences CreateTree ',dbgs(CodePos)]);
+      AddCodePosition(TreeOfPCodeXYPosition,CodePos);
+    end;
+  end;
+
+var
+  NamePos: TAtomPosition;
+  MySrcName: String;
+  StartPos, MaxPos: Integer;
+begin
+  Result:=false;
+  {$IFDEF VerboseFindSourceNameReferences}
+  debugln(['TFindDeclarationTool.FindSourceNameReferences Self="',Scanner.MainFilename,'" TargetFile="',TargetFilename,'" SkipComments=',SkipComments,' SyntaxExceptions=',SyntaxExceptions]);
+  {$ENDIF}
+  LocalSrcName:='';
+  LocalSrcNamePos:=-1;
+  InFilenameCleanPos:=-1;
+  TreeOfPCodeXYPosition:=nil;
+
+  TargetUnitName:=ExtractFileNameOnly(TargetFilename);
+  MySrcName:='';
+  IntfUseNames:=[];
+  ImplUseNames:=[];
+  CleanPosCount:=0;
+  CleanPositions:=[];
+
+  IsSelf:=CompareFilenames(Scanner.MainFilename,TargetFilename)=0;
+  if not IsSelf then begin
+    if not IsValidDottedIdent(TargetUnitName) then begin
+      debugln(['Error: TFindDeclarationTool.FindSourceNameReferences invalid unit file name: "',TargetFilename,'"']);
+      exit(false);
+    end;
+  end;
+
+  BuildTree(lsrEnd);
+  Result:=true;
+
+  //debugln(['TFindDeclarationTool.FindSourceNameReferences IsSelf=',IsSelf]);
+  if GetSourceNamePos(NamePos) then begin
+    MySrcName:=ExtractSourceName;
+    if IsSelf then begin
+      LocalSrcName:=MySrcName;
+      LocalSrcNamePos:=NamePos.StartPos;
+      AddPos(LocalSrcNamePos);
+    end;
+  end else begin
+    // program has no source name
+    MySrcName:=ExtractFileNameOnly(Scanner.MainFilename);
+    if not IsValidDottedIdent(MySrcName) then begin
+      MySrcName:='';
+      if IsSelf then begin
+        debugln(['TFindDeclarationTool.FindSourceNameReferences program has no pascal name -> nothing to do']);
+        exit(true);
+      end;
+    end;
+    if IsSelf then
+      LocalSrcName:=MySrcName;
+  end;
+  //debugln(['TFindDeclarationTool.FindSourceNameReferences MySrcName=',MySrcName]);
+
+  InterfaceUsesNode:=FindMainUsesNode;
+  if not CheckUsesSection(InterfaceUsesNode,IntfUseNames) then
+    exit; // syntax error
+
+  ImplementationUsesNode:=FindImplementationUsesNode;
+  if not CheckUsesSection(ImplementationUsesNode,ImplUseNames) then
+    exit; // syntax error
+
+  if (LocalSrcNamePos<0) and not IsSelf then begin
+    {$IFDEF VerboseFindSourceNameReferences}
+    debugln(['TFindDeclarationTool.FindSourceNameReferences Unit not used']);
+    {$ENDIF}
+    exit; // unit not used
+  end;
+
+  MaxPos:=Tree.FindLastPosition;
+  if MaxPos>SrcLen then MaxPos:=SrcLen;
+
+  // find references in source
+  Params:=nil;
+  try
+    if InterfaceUsesNode<>nil then begin
+      if ImplementationUsesNode<>nil then begin
+        if not CheckSource(InterfaceUsesNode.EndPos,ImplementationUsesNode.StartPos) then exit;
+        if not CheckSource(ImplementationUsesNode.EndPos,MaxPos) then exit;
+      end else begin
+        if not CheckSource(InterfaceUsesNode.EndPos,MaxPos) then exit;
+      end;
+    end else if IsSelf then begin
+      if LocalSrcNamePos>0 then
+        StartPos:=NamePos.EndPos
+      else
+        StartPos:=1;
+      if ImplementationUsesNode<>nil then begin
+        if not CheckSource(StartPos,ImplementationUsesNode.StartPos) then exit;
+        if not CheckSource(ImplementationUsesNode.EndPos,MaxPos) then exit;
+      end else begin
+        if not CheckSource(StartPos,SrcLen) then exit;
+      end;
+    end else begin
+      if not CheckSource(ImplementationUsesNode.EndPos,MaxPos) then exit;
+    end;
+  finally
+    Params.Free;
+    CreateTree;
+  end;
+end;
+
 function TFindDeclarationTool.FindUnitReferences(UnitCode: TCodeBuffer;
   SkipComments: boolean; out ListOfPCodeXYPosition: TFPList): boolean;
 var
@@ -9690,7 +10214,7 @@ var
         if Node.Desc in [ctnTypeDefinition,ctnGenericType] then begin
           FlagCanBeForwardDefined:=true;
           break;
-        end else if not (Node.Desc in AllPascalTypes) then
+        end else if not (Node.Desc in AllPascalTypeParts) then
           break;
         Node:=Node.Parent;
       end;
@@ -12973,39 +13497,39 @@ procedure TFindDeclarationTool.OnFindUsedUnitIdentifier(
 var
   Identifier: PChar;
   CacheEntry: PInterfaceIdentCacheEntry;
-  refs: TFindUsedUnitReferences;
+  Refs: TFindUsedUnitReferences;
   Found: Boolean;
   ReferencePos: TCodeXYPosition;
 begin
   if Range=epriInDirective then exit;
-  if not (Node.Desc in (AllPascalTypes+AllPascalStatements)) then exit;
+  if not (Node.Desc in (AllPascalTypeParts+AllPascalStatements)) then exit;
   Identifier:=@Src[IdentifierCleanPos];
-  refs:=TFindUsedUnitReferences(Data);
-  CacheEntry:=refs.TargetTool.FInterfaceIdentifierCache.FindIdentifier(Identifier);
+  Refs:=TFindUsedUnitReferences(Data);
+  CacheEntry:=Refs.TargetTool.FInterfaceIdentifierCache.FindIdentifier(Identifier);
   //debugln(['TFindUsedUnitReferences.OnIdentifier Identifier=',GetIdentifier(Identifier),' Found=',CacheEntry<>nil]);
   if (CacheEntry=nil)
-  and (CompareIdentifiers(Identifier,PChar(refs.TargetUnitName))<>0) then
+  and (CompareIdentifiers(Identifier,PChar(Refs.TargetUnitName))<>0) then
     exit;
   Sender.MoveCursorToCleanPos(IdentifierCleanPos);
   Sender.ReadPriorAtom;
   if (Sender.CurPos.Flag=cafPoint) or (Sender.UpAtomIs('inherited')) then exit;
   //debugln(['TFindUsedUnitReferences.OnIdentifier Identifier=',GetIdentifier(Identifier),' at begin of term']);
   // find declaration
-  refs.Params.Clear;
-  refs.Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
+  Refs.Params.Clear;
+  Refs.Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
                  fdfIgnoreCurContextNode];
-  refs.Params.ContextNode:=Node;
+  Refs.Params.ContextNode:=Node;
   //debugln(copy(Src,Params.ContextNode.StartPos,200));
-  refs.Params.SetIdentifier(Self,Identifier,@CheckSrcIdentifier);
+  Refs.Params.SetIdentifier(Self,Identifier,@CheckSrcIdentifier);
 
   if Range=epriInCode then begin
     // search identifier in code
-    Found:=FindDeclarationOfIdentAtParam(refs.Params);
+    Found:=FindDeclarationOfIdentAtParam(Refs.Params);
   end else begin
     // search identifier in comment -> if not found, this is no problem
     // => silently ignore
     try
-      Found:=FindDeclarationOfIdentAtParam(refs.Params);
+      Found:=FindDeclarationOfIdentAtParam(Refs.Params);
     except
       on E: ECodeToolError do begin
         // continue
@@ -13019,7 +13543,7 @@ begin
   if not Found then exit;
 
   if CleanPosToCaret(IdentifierCleanPos,ReferencePos) then
-    AddCodePosition(refs.ListOfPCodeXYPosition,ReferencePos);
+    AddCodePosition(Refs.ListOfPCodeXYPosition,ReferencePos);
 end;
 
 function TFindDeclarationTool.FindNthParameterNode(Node: TCodeTreeNode;
