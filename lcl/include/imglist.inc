@@ -719,6 +719,7 @@ var
       Add(bmp, nil);
       bmp.Free;
     end;
+    UpdateReference;
   end;
 
   procedure DoReadLaz2;
@@ -757,6 +758,7 @@ var
       Add(bmp, nil);
       bmp.Free;
     end;
+    UpdateReference;
   end;
 
   procedure DoReadLaz3Header(BStream: TStream);
@@ -776,7 +778,10 @@ var
   begin
     DoReadLaz3Header(AStream);
     if FCount > 0 then
+    begin
       DoReadLaz3Data(AStream);
+      UpdateReference;
+    end;
   end;
 
   procedure DoReadLaz4;
@@ -796,6 +801,7 @@ var
       I.Position := 0;
       D := TDecompressionStream.Create(I);
       DoReadLaz3Data(D);
+      UpdateReference;
     finally
       I.Free;
       D.Free;
@@ -862,6 +868,7 @@ var
       end;
 
       CreateImagesFromRawImage(IntfImage,NewCount);
+      UpdateReference;
     finally
       // clean up
       ImgReader.Free;
@@ -973,6 +980,15 @@ begin
   inherited ReferenceDestroying;
 
   FImageList.DoDestroyResolutionReference(FWidth, Reference._Handle);
+end;
+
+procedure TCustomImageListResolution.UpdateReference;
+begin
+  if HandleAllocated then
+  begin
+    DestroyReference;
+    ReferenceNeeded;
+  end;
 end;
 
 procedure TCustomImageListResolution.StretchDraw(Canvas: TCanvas;

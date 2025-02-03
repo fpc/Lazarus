@@ -147,6 +147,7 @@ type
     function  WSCreateReference(AParams: TCreateParams): PWSReference; override;
     class procedure WSRegisterClass; override;
     procedure ReferenceDestroying; override;
+    procedure UpdateReference;
   public
     destructor Destroy; override;
   public
