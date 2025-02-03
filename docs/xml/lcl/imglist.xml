@@ -862,6 +862,30 @@ that the handle for the resolution is being freed.
 </descr>
 </element>
 
+<element name="TCustomImageListResolution.UpdateReference">
+<short>
+Forces the reference counted image list for the resolution to be freed and 
+recreated.
+</short>
+<descr>
+<p>
+<var>UpdateReference</var>	causes the handle-based image list for the image 
+resolution to be freed and recreated when the handle or its contents has been 
+changed. UpdateReference is called from the ReadData method for the resolution 
+when images are loaded during LCL component streaming, and when reloaded in 
+program code.
+</p>
+</descr>
+<version>
+Added in LCL version 5.0.
+</version>
+<seealso>
+<link id="TCustomImageListResolution.ReadData"/>
+<link id="#lcl.lclclasses.TLCLReferenceComponent.DestroyReference">TLCLReferenceComponent.DestroyReference</link>
+<link id="#lcl.lclclasses.TLCLReferenceComponent.ReferenceNeeded">TLCLReferenceComponent.ReferenceNeeded</link>
+</seealso>
+</element>
+
 <element name="TCustomImageListResolution.Destroy">
 <short>Destructor for the class instance.</short>
 <descr/>
