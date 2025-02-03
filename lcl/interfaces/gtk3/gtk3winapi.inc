@@ -2952,6 +2952,7 @@ var
   AWindow: PGtkWindow;
   x, y, aWidth, aHeight: gint;
   Allocation: TGtkAllocation;
+  AGdkWindow: PGdkWindow;
 begin
   Result := 0;
   if IsValidHandle(Handle) then
@@ -2961,18 +2962,34 @@ begin
       AWindow := PGtkWindow(TGtk3Widget(Handle).Widget);
       if not TGtk3Window(Handle).WidgetMapped then
         AWindow := nil;
+
+      if AWindow <> nil then
+        AGdkWindow := AWindow^.get_window
+      else
+        AGdkWindow := nil;
+
     end else
       AWindow := nil;
     if AWindow <> nil then
     begin
-      AWindow^.get_position(@x, @y);
-      AWindow^.get_size(@aWidth, @aHeight);
+      if Assigned(AGdkWindow) then
+      begin
+        AGdkWindow^.get_origin(@x, @y);
+        AGdkWindow^.get_frame_extents(@Allocation);
+        AWidth := Allocation.Width;
+        AHeight := Allocation.Height;
+      end else
+      begin
+        AWindow^.get_position(@x, @y);
+        AWindow^.get_size(@aWidth, @aHeight);
+      end;
       ARect := Bounds(x, Y, AWidth, AHeight);
       Result := 1;
     end else
     begin
       TGtk3Widget(Handle).Widget^.get_allocation(@Allocation);
       ARect := Bounds(Allocation.x, Allocation.y, Allocation.width, Allocation.height);
+      Result := -1;
     end;
   end;
 end;
