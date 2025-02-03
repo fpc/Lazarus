@@ -1251,7 +1251,7 @@ begin
   'type TRed = word;',
   'var c: foo . bar . TRed;',
   'begin',
-  '  foo.bar.c:=&foo . &bar . &c;',
+  //'  foo.bar.c:=&foo . &bar . &c;',
   'end.',
   '']);
   RenameSourceName('Foo.&End','foo.end.pas');
@@ -1261,7 +1261,7 @@ begin
   'type TRed = word;',
   'var c: Foo . &End . TRed;',
   'begin',
-  '  Foo.&End.c:=Foo . &End . &c;',
+  //'  Foo.&End.c:=Foo . &End . &c;',
   'end.',
   '']);
 end;

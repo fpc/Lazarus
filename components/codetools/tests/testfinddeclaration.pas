@@ -173,10 +173,11 @@ type
     procedure TestFindDeclaration_FindFPCSrcNameSpacedUnits;
 
     // unit namespaces
-    procedure TestFindDeclaration_ProgLocalVsUses;
-    procedure TestFindDeclaration_UnitIntfVsUses;
-    procedure TestFindDeclaration_UnitImplVsIntfUses;
-    procedure TestFindDeclaration_UnitImplVsImplUses;
+    procedure TestFindDeclaration_NS_Program; // todo
+    procedure TestFindDeclaration_NS_ProgLocalVsUses;
+    procedure TestFindDeclaration_NS_UnitIntfVsUses;
+    procedure TestFindDeclaration_NS_UnitImplVsIntfUses;
+    procedure TestFindDeclaration_NS_UnitImplVsImplUses;
 
     // directives
     procedure TestFindDeclaration_Directive_OperatorIn;
@@ -1817,7 +1818,19 @@ begin
   Traverse(FPCSrcDir,0,-1);
 end;
 
-procedure TTestFindDeclaration.TestFindDeclaration_ProgLocalVsUses;
+procedure TTestFindDeclaration.TestFindDeclaration_NS_Program;
+begin
+  Add([
+  'program nsA.dots;',
+  'var Red: TBird;',
+  'begin',
+  '  NSA . dots . Red{declaration:red}:=3',
+  'end.',
+  '']);
+  FindDeclarations(Code);
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_NS_ProgLocalVsUses;
 var
   DotsUnit: TCodeBuffer;
 begin
@@ -1852,7 +1865,7 @@ begin
   end;
 end;
 
-procedure TTestFindDeclaration.TestFindDeclaration_UnitIntfVsUses;
+procedure TTestFindDeclaration.TestFindDeclaration_NS_UnitIntfVsUses;
 var
   DotsUnit: TCodeBuffer;
 begin
@@ -1888,7 +1901,7 @@ begin
   end;
 end;
 
-procedure TTestFindDeclaration.TestFindDeclaration_UnitImplVsIntfUses;
+procedure TTestFindDeclaration.TestFindDeclaration_NS_UnitImplVsIntfUses;
 var
   DotsUnit: TCodeBuffer;
 begin
@@ -1924,7 +1937,7 @@ begin
   end;
 end;
 
-procedure TTestFindDeclaration.TestFindDeclaration_UnitImplVsImplUses;
+procedure TTestFindDeclaration.TestFindDeclaration_NS_UnitImplVsImplUses;
 var
   DotsUnit: TCodeBuffer;
 begin
