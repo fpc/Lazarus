@@ -1748,13 +1748,13 @@ procedure TTestWordWrapPluginBase.InternalCheckLine(AName: String;
   NoTrim: Boolean);
 var
   gotRealLine: TLineIdx;
-  gotStartPos, GotLineLen: Integer;
+  gotStartPos, GotLineLen, gotStartPhys: Integer;
   gotTokenOk: Boolean;
   gotToken: TLazSynDisplayTokenInfo;
   gotText: PChar;
   s: String;
 begin
-  dsp.SetHighlighterTokensLine(ALine, gotRealLine, gotStartPos, GotLineLen);
+  dsp.SetHighlighterTokensLine(ALine, gotRealLine, gotStartPos, gotStartPhys, GotLineLen);
   gotTokenOk := dsp.GetNextHighlighterToken(gotToken);
   if gotTokenOk then
     gotText := gotToken.TokenStart
@@ -1805,7 +1805,7 @@ procedure TTestWordWrapPluginBase.CheckLines(AName: String;
 var
   v: TSynEditStringsLinked;
   dsp: TLazSynDisplayView;
-  i, gotStartPos, GotLineLen: Integer;
+  i, gotStartPos, GotLineLen, gotStartPhys: Integer;
   gotTokenOk: Boolean;
   gotToken: TLazSynDisplayTokenInfo;
   s: String;
@@ -1822,7 +1822,7 @@ begin
       dsp.FinishHighlighterTokens;
       dsp.InitHighlighterTokens(nil);
       for i := 0 to Length(AExpTextStart)-1 do begin
-        dsp.SetHighlighterTokensLine(AStartLine+i, gotRealLine, gotStartPos, GotLineLen);
+        dsp.SetHighlighterTokensLine(AStartLine+i, gotRealLine, gotStartPos, gotStartPhys, GotLineLen);
         s := '';
         while dsp.GetNextHighlighterToken(gotToken) and (gotToken.TokenLength > 0) do
           s := s + copy(gotToken.TokenStart, 1, gotToken.TokenLength);

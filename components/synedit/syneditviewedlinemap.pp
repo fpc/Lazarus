@@ -239,7 +239,7 @@ type
   public
     constructor Create(AWrappedView: TSynEditLineMappingView);
     procedure SetHighlighterTokensLine(AWrappedLine: TLineIdx; out
-      ARealLine: TLineIdx; out AStartBytePos, ALineByteLen: Integer); override;
+      ARealLine: TLineIdx; out AStartBytePos, AStartPhysPos, ALineByteLen: Integer); override;
 //    function GetNextHighlighterToken(out ATokenInfo: TLazSynDisplayTokenInfo): Boolean; override;
     procedure FinishHighlighterTokens; override;
     function TextToViewIndex(ATextIndex: TLineIdx): TLineRange; override;
@@ -1289,7 +1289,7 @@ end;
 
 procedure TLazSynDisplayLineMapping.SetHighlighterTokensLine(
   AWrappedLine: TLineIdx; out ARealLine: TLineIdx; out AStartBytePos,
-  ALineByteLen: Integer);
+  AStartPhysPos, ALineByteLen: Integer);
 var
   RealIdx: IntIdx;
 begin
@@ -1307,7 +1307,7 @@ begin
     FCurrentWrapSubline := 0;
   end;
 
-  inherited SetHighlighterTokensLine(RealIdx, ARealLine, AStartBytePos, ALineByteLen);
+  inherited SetHighlighterTokensLine(RealIdx, ARealLine, AStartBytePos, AStartPhysPos, ALineByteLen);
 end;
 
 procedure TLazSynDisplayLineMapping.FinishHighlighterTokens;

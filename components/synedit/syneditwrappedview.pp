@@ -180,14 +180,15 @@ type
   private
     FWrapPlugin: TLazSynEditLineWrapPlugin;
 
-    FCurSubLineLogStartIdx, FCurSubLineNextLogStartIdx, FCurSubLinePhysStartIdx: Integer;
+    FCurSubLineLogStartIdx, FCurSubLineNextLogStartIdx: Integer;
+    FCurSubLinePhysStartIdx, FPrevSubLinePhysWidth: Integer;
     FCurToken: TLazSynDisplayTokenInfo;
     FCurLineLogIdx: Integer;
   public
     constructor Create(AWrappedView: TSynEditLineMappingView; AWrapPlugin: TLazSynEditLineWrapPlugin);
     //destructor Destroy; override;
     procedure SetHighlighterTokensLine(AWrappedLine: TLineIdx; out
-      ARealLine: TLineIdx; out AStartBytePos, ALineByteLen: Integer); override;
+      ARealLine: TLineIdx; out AStartBytePos, AStartPhysPos, ALineByteLen: Integer); override;
     function GetNextHighlighterToken(out ATokenInfo: TLazSynDisplayTokenInfo): Boolean; override;
   end;
 
@@ -1484,7 +1485,7 @@ end;
 
 procedure TLazSynDisplayWordWrap.SetHighlighterTokensLine(
   AWrappedLine: TLineIdx; out ARealLine: TLineIdx; out AStartBytePos,
-  ALineByteLen: Integer);
+  AStartPhysPos, ALineByteLen: Integer);
 var
   IsNext: Boolean;
   PrevSub: IntIdx;
@@ -1495,7 +1496,7 @@ begin
   IsNext := (AWrappedLine = FCurWrappedLine + 1) and (FCurWrappedLine >= 0);
   PrevSub := FCurrentWrapSubline;
 
-  inherited SetHighlighterTokensLine(AWrappedLine, ARealLine, AStartBytePos, ALineByteLen);
+  inherited SetHighlighterTokensLine(AWrappedLine, ARealLine, AStartBytePos, AStartPhysPos, ALineByteLen);
 
   LineTxt := FLineMappingView.NextLines.Strings[ARealLine];
   FLineMappingView.LogPhysConvertor.CurrentLine := ARealLine;
@@ -1506,13 +1507,15 @@ begin
     FCurSubLineLogStartIdx := FCurSubLineNextLogStartIdx;
     FCurSubLineNextLogStartIdx := FWrapPlugin.CalculateNextBreak(PChar(LineTxt), FCurSubLineNextLogStartIdx,
       MaxW, PWidth, PhysWidth);
-    FCurSubLinePhysStartIdx := FCurSubLinePhysStartIdx + PhysWidth;
+    FCurSubLinePhysStartIdx := FCurSubLinePhysStartIdx + FPrevSubLinePhysWidth;
+    FPrevSubLinePhysWidth := PhysWidth;
   end
   else begin
     FWrapPlugin.GetSublineBounds(LineTxt, MaxW, PWidth, FCurrentWrapSubline,
-      FCurSubLineLogStartIdx, FCurSubLineNextLogStartIdx, FCurSubLinePhysStartIdx, PhysWidth);
+      FCurSubLineLogStartIdx, FCurSubLineNextLogStartIdx, FCurSubLinePhysStartIdx, FPrevSubLinePhysWidth);
   end;
   AStartBytePos := AStartBytePos + FCurSubLineLogStartIdx;
+  AStartPhysPos := ToPos(FCurSubLinePhysStartIdx);
   ALineByteLen := FCurSubLineNextLogStartIdx - FCurSubLineLogStartIdx;
 
   FCurLineLogIdx := 0;

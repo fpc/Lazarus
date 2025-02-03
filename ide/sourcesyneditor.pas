@@ -82,7 +82,7 @@ type
     procedure SetLineMap(Index: Integer; AValue: Integer);
     procedure SetLineMapCount(AValue: integer);
   public
-    procedure SetHighlighterTokensLine(ALine: TLineIdx; out ARealLine: TLineIdx; out AStartBytePos, ALineByteLen: Integer); override;
+    procedure SetHighlighterTokensLine(ALine: TLineIdx; out ARealLine: TLineIdx; out AStartBytePos, AStartPhysPos, ALineByteLen: Integer); override;
     function GetLinesCount: Integer; override;
     function TextToViewIndex(AIndex: TLineIdx): TLineRange; override;
     function ViewToTextIndex(AIndex: TLineIdx): TLineIdx; override;
@@ -1319,10 +1319,10 @@ begin
 end;
 
 procedure TSourceLazSynTopInfoView.SetHighlighterTokensLine(ALine: TLineIdx;
-  out ARealLine: TLineIdx; out AStartBytePos, ALineByteLen: Integer);
+  out ARealLine: TLineIdx; out AStartBytePos, AStartPhysPos, ALineByteLen: Integer);
 begin
   CurrentTokenLine := ALine;
-  inherited SetHighlighterTokensLine(FLineMap[ALine], ARealLine, AStartBytePos, ALineByteLen);
+  inherited SetHighlighterTokensLine(FLineMap[ALine], ARealLine, AStartBytePos, AStartPhysPos, ALineByteLen);
 end;
 
 function TSourceLazSynTopInfoView.GetLinesCount: Integer;
