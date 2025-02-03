@@ -357,6 +357,13 @@ function SelectInFolder(AFullPath: String): Boolean;
 begin
   Result := FileExists(AFullPath) or DirectoryExists(AFullPath);
   if Result then
-    ExecuteProcess('explorer.exe', '/select,' + AFullPath);
+    try
+      // quotes are required even in the absence of spaces
+      // the comma at the end "/select," is required
+      // do not check the return code
+      ExecuteProcess('explorer.exe', '/select,"' + AFullPath + '"');
+    except
+      Result := False;
+    end;
 end;
 
