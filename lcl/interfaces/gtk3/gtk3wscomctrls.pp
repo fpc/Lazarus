@@ -162,9 +162,7 @@ type
     class function GetVisibleRowCount(const ALV: TCustomListView): Integer; override;
 
     class procedure SetAllocBy(const ALV: TCustomListView; const {%H-}AValue: Integer); override;
-    class procedure SetColor(const AWinControl: TWinControl); override;
     class procedure SetDefaultItemHeight(const ALV: TCustomListView; const {%H-}AValue: Integer); override;
-    class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
     class procedure SetHotTrackStyles(const ALV: TCustomListView; const {%H-}AValue: TListHotTrackStyles); override;
     class procedure SetHoverTime(const ALV: TCustomListView; const {%H-}AValue: Integer); override;
     //    class procedure SetIconOptions(const ALV: TCustomListView; const AValue: TIconOptions); override;
@@ -870,12 +868,6 @@ begin
   // inherited SetAllocBy(ALV, AValue);
 end;
 
-class procedure TGtk3WSCustomListView.SetColor(const AWinControl: TWinControl);
-begin
-  DebugLn('TGtk3WSCustomListView.SetColor ');
-  inherited SetColor(AWinControl);
-end;
-
 class procedure TGtk3WSCustomListView.SetDefaultItemHeight(
   const ALV: TCustomListView; const AValue: Integer);
 begin
@@ -884,13 +876,6 @@ begin
   // DebugLn('TGtk3WSCustomListView.SetDefaultItemHeight ',dbgs(AValue));
   if TGtk3ListView(ALV.Handle).IsTreeView then
     PGtkTreeView(TGtk3ListView(ALV.Handle).GetContainerWidget)^.set_fixed_height_mode(AValue > 0);
-end;
-
-class procedure TGtk3WSCustomListView.SetFont(const AWinControl: TWinControl;
-  const AFont: TFont);
-begin
-  DebugLn('TGtk3WSCustomListView.SetFont ');
-  inherited SetFont(AWinControl, AFont);
 end;
 
 class procedure TGtk3WSCustomListView.SetHotTrackStyles(
