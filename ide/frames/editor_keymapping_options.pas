@@ -709,8 +709,8 @@ begin
     end;
   end;
 
-  if ConflictsTreeView.Items.Count=0 then
-    ConflictsTreeView.Items.Add(nil, lisThereAreNoConflictingKeys);
+  ConflictsTreeView.Visible:=ConflictsTreeView.Items.Count<>0;
+  KeyMapSplitter.Visible:=ConflictsTreeView.Visible;
 
   ConflictsTreeView.EndUpdate;
 end;

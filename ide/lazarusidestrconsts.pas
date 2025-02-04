@@ -3009,7 +3009,6 @@ resourcestring
     +'%s%sRemove the old assignment and assign the key to the new function %s?';
   lisAlternativeKeyOr2KeySequence = 'Alternative key (or 2 key sequence)';
   srkmConflic  = 'Conflict ';
-  lisThereAreNoConflictingKeys = 'There are no conflicting keys.';
   srkmEditForCmd = 'Edit keys of command';
   lisChooseAKey = 'Choose a key ...';
 

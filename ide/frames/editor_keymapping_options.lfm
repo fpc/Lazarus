@@ -217,6 +217,7 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
       Width = 459
       Align = alBottom
       ResizeAnchor = akBottom
+      Visible = False
       OnMoved = KeyMapSplitterMoved
     end
     object ConflictsTreeView: TTreeView
@@ -232,6 +233,7 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
       RowSelect = True
       ScrollBars = ssAutoBoth
       TabOrder = 0
+      Visible = False
       Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
       OnMouseDown = ConflictsTreeViewMouseDown
     end
