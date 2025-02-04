@@ -7315,7 +7315,7 @@ var
             PChar(TargetShortFilename))=0 then
           begin
             MatchInFile:=true;
-            MatchUses:=CompareDottedIdentifiers(PChar(AUnitName),PChar(TargetUnitName))=0;
+            MatchUses:=CompareDottedIdentifiers(PChar(TargetUnitName),PChar(AUnitName))=0;
           end;
         end else begin
           // Note: with scopes/namespaces like -FN, a 'uses Bar;' can use a 'foo.bar.pas'
@@ -7330,7 +7330,7 @@ var
             // found matching uses
             {$IFDEF VerboseFindSourceNameReferences}
             if UnitInFilename<>'' then
-              debugln(['  CheckUsesSection uses found ',CleanPosToStr(StartPos,true),', uses="',AUnitName,'" in "',UnitInFilename,'"'])
+              debugln(['  CheckUsesSection uses found ',CleanPosToStr(StartPos,true),', uses="',AUnitName,'" in "',UnitInFilename,'" MatchUses=',MatchUses])
             else
               debugln(['  CheckUsesSection uses found ',CleanPosToStr(StartPos,true),', uses="',AUnitName,'"']);
             {$ENDIF}
@@ -7391,7 +7391,7 @@ var
     StartP, Ident: PChar;
     StartPos, BestDotCount, DotCnt, LastIdentPos: Integer;
     Expr, BestUseName: String;
-    CursorNode, Node: TCodeTreeNode;
+    CursorNode, Node, UseUnitNode: TCodeTreeNode;
     Found: Boolean;
   begin
     Result:=true;
@@ -7496,7 +7496,8 @@ var
       if IsSelf then
         AddPos(StartPos);
     end else if Node.Desc in [ctnUseUnitClearName,ctnUseUnitNamespace] then begin
-      if Node.StartPos=LocalSrcNamePos then
+      UseUnitNode:=Node.Parent;
+      if UseUnitNode.StartPos=LocalSrcNamePos then
         AddPos(StartPos);
     end;
   end;

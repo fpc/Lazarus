@@ -36,7 +36,7 @@ uses
   Classes, SysUtils, Math, Contnrs, AVL_Tree,
   // Codetools
   CodeAtom, CodeCache, FileProcs, CodeTree, ExtractProcTool, FindDeclarationTool,
-  BasicCodeTools, KeywordFuncLists, LinkScanner, SourceChanger, CustomCodeTool;
+  BasicCodeTools, KeywordFuncLists, LinkScanner, SourceChanger, CustomCodeTool, LazFileUtils;
 
 type
   TChangeParamListAction = (
@@ -1304,7 +1304,9 @@ var
   i, p: Integer;
   Param: TReplaceDottedIdentifierParam;
   Node: TAVLTreeNode;
-  CodePos: PCodeXYPosition;
+  CodeXYPos: PCodeXYPosition;
+  CodePos: TCodePosition;
+  NewInFilename, NewCode: String;
 begin
   Result:=false;
   if Refs=nil then exit;
@@ -1312,6 +1314,20 @@ begin
   if (Refs.InFilenameCleanPos>0) and (OldTargetFilename<>NewTargetFilename) then
   begin
     // todo: change in-filename
+    p:=Refs.InFilenameCleanPos;
+    if (Src[p]='''') and CleanPosToCodePos(p,CodePos) then begin
+      MoveCursorToCleanPos(p);
+      ReadNextAtom;
+      if AtomIsStringConstant then begin
+        i:=CurPos.EndPos-p;
+        NewInFilename:=CreateRelativePath(NewTargetFilename,ExtractFilePath(MainFilename),false,true);
+        NewCode:=StringToPascalConst(NewInFilename);
+        if not SourceChanger.ReplaceEx(gtNone,gtNone,1,1,CodePos.Code,CodePos.P,CodePos.P+i,NewCode) then
+        begin
+          debugln(['Error: [20250204153739] TChangeDeclarationTool.RenameSourceNameReferences failed to replace IN-filename at ',CleanPosToStr(p,true)]);
+        end;
+      end;
+    end;
   end;
 
   {$IFDEF VerboseFindSourceNameReferences}
@@ -1321,10 +1337,10 @@ begin
     InitReplaceDottedIdentifier(Refs.LocalSrcName,Refs.NewLocalSrcName,Param);
     Node:=Refs.TreeOfPCodeXYPosition.FindLowest;
     while Node<>nil do begin
-      CodePos:=PCodeXYPosition(Node.Data);
-      //debugln(['TChangeDeclarationTool.RenameSourceNameReferences ',dbgs(CodePos^)]);
-      if CaretToCleanPos(CodePos^,p)<>0 then begin
-        debugln(['TChangeDeclarationTool.RenameSourceNameReferences invalid codepos: ',dbgs(CodePos^)]);
+      CodeXYPos:=PCodeXYPosition(Node.Data);
+      //debugln(['TChangeDeclarationTool.RenameSourceNameReferences ',dbgs(CodeXYPos^)]);
+      if CaretToCleanPos(CodeXYPos^,p)<>0 then begin
+        debugln(['TChangeDeclarationTool.RenameSourceNameReferences invalid codepos: ',dbgs(CodeXYPos^)]);
       end else begin
         ReplaceDottedIdentifier(p,Param,SourceChanger);
       end;

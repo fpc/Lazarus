@@ -72,6 +72,7 @@ type
     procedure TestRenameUsedUnit_Amp;
     procedure TestRenameUsedUnit_Impl;
     procedure TestRenameUsedUnit_FN_KeepShort;
+    procedure TestRenameUsedUnit_InFilename;
     // todo: rename uses Bar in 'bar.pas'
   end;
 
@@ -1609,6 +1610,44 @@ begin
     'implementation',
     'initialization',
     '  &End.ant:=&End . &ant;',
+    'end.',
+    '']);
+
+  finally
+    if UsedUnit<>nil then
+      UsedUnit.IsDeleted:=true;
+  end;
+end;
+
+procedure TTestRefactoring.TestRenameUsedUnit_InFilename;
+var
+  UsedUnit: TCodeBuffer;
+begin
+  UsedUnit:=nil;
+  try
+    UsedUnit:=CodeToolBoss.CreateFile('foo.bar.pp');
+    UsedUnit.Source:='unit Foo.Bar;'+LineEnding
+      +'interface'+LineEnding
+      +'type'+LineEnding
+      +'  TAnt = word;'+LineEnding
+      +'implementation'+LineEnding
+      +'end.';
+
+    Add([
+    'program Test1;',
+    '{$mode delphi}',
+    'uses Foo.Bar in ''foo.bar.pp'';',
+    'var c: foo.bar . TAnt;',
+    'begin',
+    'end.',
+    '']);
+    RenameUsedUnitRefs(UsedUnit,'Foo.&End','foo.end.pas');
+    CheckDiff(Code,[
+    'program Test1;',
+    '{$mode delphi}',
+    'uses Foo.&End in ''foo.end.pas'';',
+    'var c: Foo.&End . TAnt;',
+    'begin',
     'end.',
     '']);
 
