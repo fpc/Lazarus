@@ -110,6 +110,7 @@ type
       out Param: TReplaceDottedIdentifierParam): boolean;
     function ReplaceDottedIdentifier(CleanPos: integer; const Param: TReplaceDottedIdentifierParam;
       SourceChanger: TSourceChangeCache): boolean;
+    class function UseOmittedNamespace(const OldShort, OldFull, NewFull: string): string;
     function RenameSourceNameReferences(OldTargetFilename, NewTargetFilename: string;
       Refs: TSrcNameRefs; SourceChanger: TSourceChangeCache): boolean;
   end;
@@ -1079,36 +1080,13 @@ end;
 
 function TChangeDeclarationTool.InitReplaceDottedIdentifier(const OldDottedIdentifier,
   NewDottedIdentifier: string; out Param: TReplaceDottedIdentifierParam): boolean;
-
-  function SplitDotty(const Dotted: string; var Arr: TStringArray): boolean;
-  var
-    p, l, StartP: integer;
-  begin
-    Result:=false;
-    p:=1;
-    l:=length(Dotted);
-    repeat
-      StartP:=p;
-      if p>l then exit;
-      if Dotted[p]='&' then inc(p);
-      if p>l then exit;
-      if not IsIdentStartChar[Dotted[p]] then exit;
-      inc(p);
-      while (p<=l) and IsIdentChar[Dotted[p]] do inc(p);
-      Insert(copy(Dotted,StartP,p-StartP),Arr,length(Arr));
-      if p>l then exit(true);
-      if Dotted[p]<>'.' then exit;
-      inc(p);
-    until false;
-  end;
-
 var
   OldCount, NewCount: integer;
 begin
   Result:=false;
   Param:=Default(TReplaceDottedIdentifierParam);
-  if not SplitDotty(OldDottedIdentifier,Param.OldNames) then exit;
-  if not SplitDotty(NewDottedIdentifier,Param.NewNames) then exit;
+  if not SplitDottedIdentifier(OldDottedIdentifier,Param.OldNames) then exit;
+  if not SplitDottedIdentifier(NewDottedIdentifier,Param.NewNames) then exit;
 
   OldCount:=length(Param.OldNames);
   NewCount:=length(Param.NewNames);
@@ -1291,6 +1269,33 @@ begin
     Result:=DeleteRange(Items[i-1].DotPos,Items[j].EndPos);
 
   //debugln(['TChangeDeclarationTool.ReplaceDottedIdentifier OldCode="',copy(Src,CleanPos,EndPos-CleanPos),'"']);
+end;
+
+class function TChangeDeclarationTool.UseOmittedNamespace(const OldShort, OldFull, NewFull: string
+  ): string;
+// for example: OldShort=Bar, OldFull=Foo.Bar, NewFull=Foo.Red.Blue, Result=Red.Blue
+var
+  ShortPartCnt, i, OldPartCnt: Integer;
+  OldP, NewP, OldShortP: PChar;
+begin
+  Result:=NewFull;
+  if OldShort=OldFull then exit;
+  OldP:=PChar(OldFull);
+  OldShortP:=PChar(OldShort);
+  if not DottedIdentifierEndsWith(OldP,OldShortP) then exit;
+  ShortPartCnt:=GetDotCountInIdentifier(OldShortP)+1;
+  OldPartCnt:=GetDotCountInIdentifier(OldP)+1;
+
+  NewP:=PChar(NewFull);
+  for i:=1 to OldPartCnt-ShortPartCnt do begin
+    if CompareIdentifiers(OldP,NewP)<>0 then exit;
+    if not SkipDottedIdentifierPart(OldP) then exit;
+    if not SkipDottedIdentifierPart(NewP) then exit;
+  end;
+
+  // NewFull uses the same namespace as OldFull
+  // -> omit the namespace
+  Result:=NewP;
 end;
 
 function TChangeDeclarationTool.RenameSourceNameReferences(OldTargetFilename,

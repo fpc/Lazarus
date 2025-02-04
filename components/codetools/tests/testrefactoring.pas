@@ -11,8 +11,8 @@ interface
 
 uses
   Classes, SysUtils, CodeToolManager, CodeCache, CodeTree, BasicCodeTools, CTUnitGraph,
-  FindDeclarationTool, LazLogger, LazFileUtils, AVL_Tree, Contnrs, fpcunit, testregistry,
-  TestFinddeclaration;
+  FindDeclarationTool, ChangeDeclarationTool, LazLogger, LazFileUtils, AVL_Tree, Contnrs, fpcunit,
+  testregistry, TestFinddeclaration;
 
 const
   ExplodeWithMarker = 'explodewith:';
@@ -62,16 +62,17 @@ type
     procedure TestRenameProgramName_MakeDotted;
     procedure TestRenameProgramName_DottedAppendThird;
     procedure TestRenameProgramName_DottedPrependThird;
+    procedure TestRenameProgramName_DottedInsertThird;
     procedure TestRenameProgramName_DottedShortenStart;
     procedure TestRenameProgramName_DottedShortenMiddle;
     procedure TestRenameProgramName_DottedShortenEnd;
-    // todo: tskip multiline string literals
 
     // rename uses
+    procedure TestUseOmittedNamespace;
     procedure TestRenameUsedUnit_Amp;
-    // todo: search in an include file should not stop searching in other files
-    // todo: missing used unit should not stop searching in other files
-    // todo: rename with -FN, unit Foo.Bar to Foo.Red, uses Bar;
+    procedure TestRenameUsedUnit_Impl;
+    procedure TestRenameUsedUnit_FN_KeepShort;
+    // todo: rename uses Bar in 'bar.pas'
   end;
 
 implementation
@@ -209,7 +210,7 @@ begin
       Fail('CodeToolBoss.FindSourceNameReferences failed File='+Code.Filename);
     end;
     // rename
-    if not CodeToolBoss.RenameSourceNameReferences(Code.Filename,NewFilename,NewName,ListOfSrcNameRefs)
+    if not CodeToolBoss.RenameSourceNameReferences(UsedUnit.Filename,NewFilename,NewName,ListOfSrcNameRefs)
     then
       Fail('CodeToolBoss.RenameSourceNameReferences failed');
   finally
@@ -1357,6 +1358,29 @@ begin
   '']);
 end;
 
+procedure TTestRefactoring.TestRenameProgramName_DottedInsertThird;
+begin
+  Add([
+  'program Foo . Bar;',
+  '{$mode objfpc}{$H+}',
+  'type TRed = word;',
+  'var c: Foo . Bar . TRed;',
+  'begin',
+  '  foo.bar.c:=&foo . bar . &c;',
+  'end.',
+  '']);
+  RenameSourceName('Foo.&Unit.Bar','foo.unit.bar.pas');
+  CheckDiff(Code,[
+  'program Foo . &Unit.Bar;',
+  '{$mode objfpc}{$H+}',
+  'type TRed = word;',
+  'var c: Foo . &Unit.Bar . TRed;',
+  'begin',
+  '  Foo.&Unit.Bar.c:=Foo . &Unit.Bar . &c;',
+  'end.',
+  '']);
+end;
+
 procedure TTestRefactoring.TestRenameProgramName_DottedShortenStart;
 begin
   Add([
@@ -1430,6 +1454,31 @@ begin
   '']);
 end;
 
+procedure TTestRefactoring.TestUseOmittedNamespace;
+
+  procedure t(const OldShort, OldFull, NewFull, Expected: string);
+  var
+    Actual: String;
+  begin
+    Actual:=TChangeDeclarationTool.UseOmittedNamespace(OldShort, OldFull, NewFull);
+    if Actual=Expected then exit;
+    Fail('OldShort="'+OldShort+'" OldFull="'+OldFull+'" NewFull="'+NewFull+'": expected "'+Expected+'", but got "'+Actual+'"');
+  end;
+
+begin
+  t('','','','');
+  t('a','a','b.a','b.a');
+  t('b','a.b','c','c');
+  t('b','a.b','a.c','c');
+  t('b','a.b','b.c','b.c');
+  t('b','a.b','d.c','d.c');
+  t('a.b','&Foo.a.b','Foo.a.c','a.c');
+  t('a.b','&Foo.a.b','&Foo.A.c','A.c');
+  t('a.b','Foo.a.b','foO.a.c','a.c');
+  t('a.b','Foo.Bar.a.b','Foo.Bar.d','d');
+  t('a.b','Foo.Bar.a.b','Foo.Bar.&End.&Of','&End.&Of');
+end;
+
 procedure TTestRefactoring.TestRenameUsedUnit_Amp;
 var
   UsedUnit: TCodeBuffer;
@@ -1457,6 +1506,100 @@ begin
     'end.',
     '']);
     RenameUsedUnitRefs(UsedUnit,'&End','end.pas');
+    CheckDiff(Code,[
+    'unit test1;',
+    '{$mode objfpc}{$H+}',
+    'interface',
+    'uses &End;',
+    'var c: &End . TAnt;',
+    'implementation',
+    'initialization',
+    '  &End.ant:=&End . &ant;',
+    'end.',
+    '']);
+
+  finally
+    if UsedUnit<>nil then
+      UsedUnit.IsDeleted:=true;
+  end;
+end;
+
+procedure TTestRefactoring.TestRenameUsedUnit_Impl;
+var
+  UsedUnit: TCodeBuffer;
+begin
+  UsedUnit:=nil;
+  try
+    UsedUnit:=CodeToolBoss.CreateFile('type.pp');
+    UsedUnit.Source:='unit &Type;'+LineEnding
+      +'interface'+LineEnding
+      +'type'+LineEnding
+      +'  TAnt = word;'+LineEnding
+      +'  Ant: TAnt;'+LineEnding
+      +'implementation'+LineEnding
+      +'end.';
+
+    Add([
+    'unit test1;',
+    '{$mode objfpc}{$H+}',
+    'interface',
+    'var &Type: word;',
+    'implementation',
+    'uses &Type;',
+    'var c: &Type . TAnt;',
+    'initialization',
+    '  &type.ant:=&Type . &ant;',
+    'end.',
+    '']);
+    RenameUsedUnitRefs(UsedUnit,'&End','end.pas');
+    CheckDiff(Code,[
+    'unit test1;',
+    '{$mode objfpc}{$H+}',
+    'interface',
+    'var &Type: word;',
+    'implementation',
+    'uses &End;',
+    'var c: &End . TAnt;',
+    'initialization',
+    '  &End.ant:=&End . &ant;',
+    'end.',
+    '']);
+
+  finally
+    if UsedUnit<>nil then
+      UsedUnit.IsDeleted:=true;
+  end;
+end;
+
+procedure TTestRefactoring.TestRenameUsedUnit_FN_KeepShort;
+var
+  UsedUnit: TCodeBuffer;
+begin
+  AddNameSpace('foo');
+
+  UsedUnit:=nil;
+  try
+    UsedUnit:=CodeToolBoss.CreateFile('foo.bar.pp');
+    UsedUnit.Source:='unit Foo.Bar;'+LineEnding
+      +'interface'+LineEnding
+      +'type'+LineEnding
+      +'  TAnt = word;'+LineEnding
+      +'  Ant: TAnt;'+LineEnding
+      +'implementation'+LineEnding
+      +'end.';
+
+    Add([
+    'unit test1;',
+    '{$mode objfpc}{$H+}',
+    'interface',
+    'uses Bar;',
+    'var c: bar . TAnt;',
+    'implementation',
+    'initialization',
+    '  bar.ant:=bar . &ant;',
+    'end.',
+    '']);
+    RenameUsedUnitRefs(UsedUnit,'foo.&End','foo.end.pas');
     CheckDiff(Code,[
     'unit test1;',
     '{$mode objfpc}{$H+}',

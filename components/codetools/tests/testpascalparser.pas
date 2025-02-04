@@ -12,7 +12,7 @@ unit TestPascalParser;
 interface
 
 uses
-  Classes, SysUtils, math, CodeToolManager, CodeCache, CodeAtom,
+  Classes, SysUtils, math, CodeToolManager, CodeCache, CodeAtom, DefineTemplates, ExprEval,
   LazLogger, fpcunit, testregistry, TestGlobals;
 
 type
@@ -23,9 +23,13 @@ type
   private
     FCode: TCodeBuffer;
   protected
+    VirtualDirAdditions: TDefineTemplate;
+    NameSpaceDefine: TDefineTemplate;
     procedure SetUp; override;
     procedure TearDown; override;
     procedure DoParseModule(aCode: TCodeBuffer; out Tool: TCodeTool);
+    function GetVirtualDirAdditions: TDefineTemplate;
+    procedure AddNameSpace(aNameSpaces: string); virtual;
   public
     procedure Add(const s: string);
     procedure Add(Args: array of const);
@@ -76,6 +80,10 @@ end;
 
 procedure TCustomTestPascalParser.TearDown;
 begin
+  if VirtualDirAdditions<>nil then begin
+    CodeToolBoss.DefineTree.RemoveDefineTemplate(VirtualDirAdditions);
+    VirtualDirAdditions:=nil;
+  end;
   inherited TearDown;
 end;
 
@@ -96,6 +104,32 @@ begin
     debugln('Error: '+CodeToolBoss.ErrorDbgMsg);
     Fail('PascalParser failed: '+CodeToolBoss.ErrorMessage);
   end;
+end;
+
+function TCustomTestPascalParser.GetVirtualDirAdditions: TDefineTemplate;
+begin
+  if VirtualDirAdditions=nil then begin
+    VirtualDirAdditions:=TDefineTemplate.Create('TestDefinesForVirtualDir','',
+      '',VirtualDirectory,da_Directory);
+    CodeToolBoss.DefineTree.Add(VirtualDirAdditions);
+  end;
+  Result:=VirtualDirAdditions;
+end;
+
+procedure TCustomTestPascalParser.AddNameSpace(aNameSpaces: string);
+var
+  ParentDef: TDefineTemplate;
+begin
+  aNameSpaces:=Trim(aNameSpaces);
+  if aNameSpaces='' then exit;
+
+  if NameSpaceDefine=nil then begin
+    ParentDef:=GetVirtualDirAdditions;
+    NameSpaceDefine:=TDefineTemplate.Create('TestNameSpaces','',
+      NamespacesMacroName,NamespacesMacro+';'+aNameSpaces,da_DefineRecurse);
+    CodeToolBoss.DefineTree.AddChild(ParentDef,NameSpaceDefine);
+  end else
+    NameSpaceDefine.Value:=NameSpaceDefine.Value+';'+aNameSpaces;
 end;
 
 procedure TCustomTestPascalParser.Add(const s: string);

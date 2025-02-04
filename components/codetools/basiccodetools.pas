@@ -190,7 +190,7 @@ function CompareComments(p1, p2: PChar; NestedComments: boolean): integer; // co
 function FindDiff(const s1, s2: string): integer;
 function dbgsDiff(Expected, Actual: string): string; overload;
 
-// dotted identifiers
+// dotted identifiers. Note: spaces and comments are treated as end
 function DottedIdentifierLength(Identifier: PChar): integer;
 function GetDottedIdentifier(Identifier: PChar): string;
 function IsDottedIdentifier(const Identifier: string; AllowAmp: boolean = True): boolean;
@@ -201,6 +201,7 @@ function ChompDottedIdentifier(const Identifier: string): string;
 function SkipDottedIdentifierPart(var Identifier: PChar): boolean;
 function DottedIdentifierStartsWith(Identifier, StartsWithIdent: PChar): boolean; // true if equal or longer
 function DottedIdentifierEndsWith(Identifier, EndsWithIdent: PChar): boolean; // true if equal or longer
+function SplitDottedIdentifier(const Dotted: string; out Arr: TStringArray; SkipAmps: boolean = false): boolean;
 
 // space and special chars
 function TrimCodeSpace(const ACode: string): string;
@@ -295,11 +296,11 @@ function CompareNameSpaceAndNameSpaceInfo(NamespacePAnsiString,
 function FindSourceType(const Source: string;
   var SrcNameStart, SrcNameEnd: integer; NestedComments: boolean = false): string;
 
-// identifier
+// read dotted identifier, skipping spaces and comments
 function ReadDottedIdentifier(const Source: string; var Position: integer;
-  NestedComments: boolean = false): string;
+  NestedComments: boolean = false; aSkipAmp: boolean = true): string;
 function ReadDottedIdentifier(var Position: PChar; SrcEnd: PChar;
-  NestedComments: boolean = false): string;
+  NestedComments: boolean = false; aSkipAmp: boolean = true): string;
 
 // program name
 function RenameProgramInSource(Source:TSourceLog;
@@ -589,19 +590,19 @@ begin
     ModuleType:='';
 end;
 
-function ReadDottedIdentifier(const Source: string; var Position: integer;
-  NestedComments: boolean): string;
+function ReadDottedIdentifier(const Source: string; var Position: integer; NestedComments: boolean;
+  aSkipAmp: boolean): string;
 var
   p: PChar;
 begin
   if (Position<1) or (Position>length(Source)) then exit('');
   p:=@Source[Position];
-  Result:=ReadDottedIdentifier(p,PChar(Source)+length(Source),NestedComments);
+  Result:=ReadDottedIdentifier(p,PChar(Source)+length(Source),NestedComments,aSkipAmp);
   Position:=p-PChar(Source)+1;
 end;
 
-function ReadDottedIdentifier(var Position: PChar; SrcEnd: PChar;
-  NestedComments: boolean): string;
+function ReadDottedIdentifier(var Position: PChar; SrcEnd: PChar; NestedComments: boolean;
+  aSkipAmp: boolean): string;
 var
   AtomStart, p: PChar;
   s: String;
@@ -611,7 +612,7 @@ begin
   ReadRawNextPascalAtom(p,AtomStart,SrcEnd,NestedComments);
   Position:=AtomStart;
   if (AtomStart>=p) then exit;
-  Result:=GetIdentifier(AtomStart);
+  Result:=GetIdentifier(AtomStart,aSkipAmp);
   if Result='' then exit;
   repeat
     Position:=p;
@@ -619,7 +620,7 @@ begin
     if (AtomStart+1<>p) or (AtomStart^<>'.') then exit;
     ReadRawNextPascalAtom(p,AtomStart,SrcEnd,NestedComments);
     if (AtomStart>=p) then exit;
-    s:=GetIdentifier(AtomStart);
+    s:=GetIdentifier(AtomStart,aSkipAmp);
     if s='' then exit;
     Result:=Result+'.'+s;
   until false;
@@ -5534,6 +5535,33 @@ begin
     dec(IdentifierDotCnt);
   end;
   Result:=CompareDottedIdentifiers(Identifier,EndsWithIdent)=0;
+end;
+
+function SplitDottedIdentifier(const Dotted: string; out Arr: TStringArray; SkipAmps: boolean
+  ): boolean;
+var
+  p, l, StartP: integer;
+begin
+  Arr:=[];
+  Result:=false;
+  p:=1;
+  l:=length(Dotted);
+  repeat
+    StartP:=p;
+    if p>l then exit;
+    if Dotted[p]='&' then begin
+      if SkipAmps then inc(StartP);
+      inc(p);
+    end;
+    if p>l then exit;
+    if not IsIdentStartChar[Dotted[p]] then exit;
+    inc(p);
+    while (p<=l) and IsIdentChar[Dotted[p]] do inc(p);
+    Insert(copy(Dotted,StartP,p-StartP),Arr,length(Arr));
+    if p>l then exit(true);
+    if Dotted[p]<>'.' then exit;
+    inc(p);
+  until false;
 end;
 
 function CompareDottedIdentifiersCaseSensitive(Identifier1, Identifier2: PChar): integer;

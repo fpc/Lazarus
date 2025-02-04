@@ -7774,10 +7774,9 @@ begin
     exit; // unit not used
   end;
 
+  // find references in source
   MaxPos:=Tree.FindLastPosition;
   if MaxPos>SrcLen then MaxPos:=SrcLen;
-
-  // find references in source
   Params:=nil;
   try
     if InterfaceUsesNode<>nil then begin
