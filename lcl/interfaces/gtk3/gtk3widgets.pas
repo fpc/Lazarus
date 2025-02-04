@@ -980,7 +980,7 @@ type
 
 implementation
 
-uses {$IFDEF GTK3DEBUGKEYPRESS}TypInfo,{$ENDIF}gtk3int,imglist,lclproc, LazLogger;
+uses {$IFDEF GTK3DEBUGKEYPRESS}TypInfo,{$ENDIF}gtk3int, gtk3caret, imglist,lclproc, LazLogger;
 
 const
   act_count:integer=0; // application activity - don't touch.
@@ -1961,6 +1961,7 @@ procedure TGtk3Widget.GtkEventFocus(Sender: PGtkWidget; Event: PGdkEvent);
   cdecl;
 var
   Msg: TLMessage;
+  ACaret: TGtk3Caret;
 begin
   {$IF DEFINED(GTK3DEBUGEVENTS) OR DEFINED(GTK3DEBUGFOCUS)}
   DebugLn('TGtk3Widget.GtkEventFocus ',dbgsName(LCLObject),' FocusIn ',dbgs(Event^.focus_change.in_ <> 0));
@@ -1971,6 +1972,17 @@ begin
   else
     Msg.Msg := LM_KILLFOCUS;
   DeliverMessage(Msg);
+  if g_object_get_data(PGObject(getContainerWidget),'gtk3-caret') <> nil then
+  begin
+    ACaret := TGtk3Caret(g_object_get_data(PGObject(getContainerWidget),'gtk3-caret'));
+    if ACaret.RespondToFocus then
+    begin
+      if Msg.Msg = LM_SETFOCUS then
+        ACaret.Show
+      else
+        ACaret.Hide;
+    end;
+  end;
 end;
 
 procedure TGtk3Widget.GtkEventDestroy; cdecl;
