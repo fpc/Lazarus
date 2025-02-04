@@ -14640,13 +14640,21 @@ msgid "Open the file as normal source"
 msgstr "Ouvrir le fichier en tant que code source normal"
 
 #: lazarusidestrconsts.lisopenthepackage
-#, object-pascal-format
-msgid "Open the package %s?"
+#, object-pascal-format, fuzzy
+#| msgid "Open the package %s?"
+msgid ""
+"Open the package \"%s\"?\n"
+"\n"
+"The \"Package\" menu has separate commands for opening packages and a list of recent ones."
 msgstr "Voulez-vous ouvrir le paquet %s ?"
 
 #: lazarusidestrconsts.lisopentheproject
-#, object-pascal-format
-msgid "Open the project %s?"
+#, object-pascal-format, fuzzy
+#| msgid "Open the project %s?"
+msgid ""
+"Open the project \"%s\"?\n"
+"\n"
+"The \"Project\" menu has separate commands for opening projects and a list of recent ones."
 msgstr "Voulez-vous ouvrir le projet %s ?"
 
 #: lazarusidestrconsts.lisopentooloptions

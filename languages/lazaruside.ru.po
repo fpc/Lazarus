@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-01-30 22:25+0300\n"
+"PO-Revision-Date: 2025-02-04 16:11+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -14616,13 +14616,25 @@ msgstr "Открыть файл как обычный исходный код"
 
 #: lazarusidestrconsts.lisopenthepackage
 #, object-pascal-format
-msgid "Open the package %s?"
-msgstr "Открыть пакет %s?"
+msgid ""
+"Open the package \"%s\"?\n"
+"\n"
+"The \"Package\" menu has separate commands for opening packages and a list of recent ones."
+msgstr ""
+"Открыть пакет %s?\n"
+"\n"
+"Меню \"Пакет\" содержит отдельные команды для открытия пакетов и список недавних."
 
 #: lazarusidestrconsts.lisopentheproject
 #, object-pascal-format
-msgid "Open the project %s?"
-msgstr "Открыть проект %s?"
+msgid ""
+"Open the project \"%s\"?\n"
+"\n"
+"The \"Project\" menu has separate commands for opening projects and a list of recent ones."
+msgstr ""
+"Открыть проект %s?\n"
+"\n"
+"Меню \"Проект\" содержит отдельные команды для открытия проектов и список недавних."
 
 #: lazarusidestrconsts.lisopentooloptions
 msgid "Open Tool Options"

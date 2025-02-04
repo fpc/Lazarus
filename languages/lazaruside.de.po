@@ -14585,13 +14585,21 @@ msgid "Open the file as normal source"
 msgstr "Datei als normalen Quelltext öffnen"
 
 #: lazarusidestrconsts.lisopenthepackage
-#, object-pascal-format
-msgid "Open the package %s?"
+#, object-pascal-format, fuzzy
+#| msgid "Open the package %s?"
+msgid ""
+"Open the package \"%s\"?\n"
+"\n"
+"The \"Package\" menu has separate commands for opening packages and a list of recent ones."
 msgstr "Package %s öffnen?"
 
 #: lazarusidestrconsts.lisopentheproject
-#, object-pascal-format
-msgid "Open the project %s?"
+#, object-pascal-format, fuzzy
+#| msgid "Open the project %s?"
+msgid ""
+"Open the project \"%s\"?\n"
+"\n"
+"The \"Project\" menu has separate commands for opening projects and a list of recent ones."
 msgstr "Projekt %s öffnen?"
 
 #: lazarusidestrconsts.lisopentooloptions

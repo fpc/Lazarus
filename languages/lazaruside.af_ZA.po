@@ -14630,12 +14630,18 @@ msgstr ""
 
 #: lazarusidestrconsts.lisopenthepackage
 #, object-pascal-format
-msgid "Open the package %s?"
+msgid ""
+"Open the package \"%s\"?\n"
+"\n"
+"The \"Package\" menu has separate commands for opening packages and a list of recent ones."
 msgstr ""
 
 #: lazarusidestrconsts.lisopentheproject
 #, object-pascal-format
-msgid "Open the project %s?"
+msgid ""
+"Open the project \"%s\"?\n"
+"\n"
+"The \"Project\" menu has separate commands for opening projects and a list of recent ones."
 msgstr ""
 
 #: lazarusidestrconsts.lisopentooloptions
