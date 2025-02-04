@@ -24,6 +24,7 @@ type
   protected
     procedure RenameReferences(NewIdentifier: string; const Flags: TFindRefsFlags = []);
     procedure RenameSourceName(NewName, NewFilename: string);
+    procedure RenameUsedUnitRefs(UsedUnit: TCodeBuffer; NewName, NewFilename: string);
     procedure CheckDiff(CurCode: TCodeBuffer; const ExpLines: array of string);
   end;
 
@@ -61,21 +62,16 @@ type
     procedure TestRenameProgramName_MakeDotted;
     procedure TestRenameProgramName_DottedAppendThird;
     procedure TestRenameProgramName_DottedPrependThird;
+    procedure TestRenameProgramName_DottedShortenStart;
+    procedure TestRenameProgramName_DottedShortenMiddle;
     procedure TestRenameProgramName_DottedShortenEnd;
-    // todo: skip multiline string literals
+    // todo: tskip multiline string literals
 
     // rename uses
-    // todo: rename unit &Type to &End
-    // todo: rename unit Foo.Bar to Foo.Red
-    // todo: rename unit Foo.Bar to Red.Bar
-    // todo: rename unit Foo to Foo.Bar
-    // todo: rename unit Foo.Bar to Foo
-    // todo: rename unit Foo.Bar to Bar
+    procedure TestRenameUsedUnit_Amp;
     // todo: search in an include file should not stop searching in other files
     // todo: missing used unit should not stop searching in other files
-    // todo: rename with ifdefs
     // todo: rename with -FN, unit Foo.Bar to Foo.Red, uses Bar;
-    // todo: rename a.b->c.d must not change { a.}b
   end;
 
 implementation
@@ -180,16 +176,39 @@ begin
   ListOfSrcNameRefs:=nil;
   Files:=TStringList.Create;
   try
+    // search pascal source references in Code
     Files.Add(Code.Filename);
-
-    // search pascal source references
     if not CodeToolBoss.FindSourceNameReferences(Code.Filename,Files,false,ListOfSrcNameRefs) then
     begin
       Fail('CodeToolBoss.FindSourceNameReferences failed File='+Code.Filename);
     end;
+    // rename
+    if not CodeToolBoss.RenameSourceNameReferences(Code.Filename,NewFilename,NewName,ListOfSrcNameRefs)
+    then
+      Fail('CodeToolBoss.RenameSourceNameReferences failed');
+  finally
+    ListOfSrcNameRefs.Free;
+    Files.Free;
+  end;
+end;
 
-    // todo: check for conflicts
-
+procedure TCustomTestRefactoring.RenameUsedUnitRefs(UsedUnit: TCodeBuffer; NewName,
+  NewFilename: string);
+var
+  Files: TStringList;
+  ListOfSrcNameRefs: TObjectList;
+begin
+  // create the file list
+  ListOfSrcNameRefs:=nil;
+  Files:=TStringList.Create;
+  try
+    // search pascal source references in Code
+    Files.Add(Code.Filename);
+    if not CodeToolBoss.FindSourceNameReferences(UsedUnit.Filename,Files,false,ListOfSrcNameRefs) then
+    begin
+      Fail('CodeToolBoss.FindSourceNameReferences failed File='+Code.Filename);
+    end;
+    // rename
     if not CodeToolBoss.RenameSourceNameReferences(Code.Filename,NewFilename,NewName,ListOfSrcNameRefs)
     then
       Fail('CodeToolBoss.RenameSourceNameReferences failed');
@@ -1338,6 +1357,56 @@ begin
   '']);
 end;
 
+procedure TTestRefactoring.TestRenameProgramName_DottedShortenStart;
+begin
+  Add([
+  'program &Type . Foo . Bar;',
+  '{$mode objfpc}{$H+}',
+  'type TRed = word;',
+  'var c: &Type . Foo . Bar . TRed;',
+  'begin',
+  '  &TYpe.foo.bar.c:=&Type . &foo . bar . &c;',
+  '  {$IFDEF FPC}&Type.{$ENDIF}foo.bar:={$IFDEF FPC}&Type.Foo.{$ENDIF}bar;',
+  'end.',
+  '']);
+  RenameSourceName('Foo.Bar','foo.bar.pas');
+  CheckDiff(Code,[
+  'program Foo . Bar;',
+  '{$mode objfpc}{$H+}',
+  'type TRed = word;',
+  'var c: Foo . Bar . TRed;',
+  'begin',
+  '  Foo.Bar.c:=Foo . Bar . &c;',
+  '  {$IFDEF FPC}{$ENDIF}Foo.Bar:={$IFDEF FPC}Foo.{$ENDIF}Bar;',
+  'end.',
+  '']);
+end;
+
+procedure TTestRefactoring.TestRenameProgramName_DottedShortenMiddle;
+begin
+  Add([
+  'program &Type . Foo . Bar;',
+  '{$mode objfpc}{$H+}',
+  'type TRed = word;',
+  'var c: &Type . Foo . Bar . TRed;',
+  'begin',
+  '  &TYpe.foo.bar.c:=&Type . &foo . bar . &c;',
+  '  {$ifdef fpc}&type.{$endif}foo{$ifdef fpc}.bar{$endif};',
+  'end.',
+  '']);
+  RenameSourceName('&Type.Bar','type.bar.pas');
+  CheckDiff(Code,[
+  'program &Type .Bar;',
+  '{$mode objfpc}{$H+}',
+  'type TRed = word;',
+  'var c: &Type .Bar . TRed;',
+  'begin',
+  '  &Type.Bar.c:=&Type .Bar . &c;',
+  '  {$ifdef fpc}&Type.{$endif}{$ifdef fpc}Bar{$endif};',
+  'end.',
+  '']);
+end;
+
 procedure TTestRefactoring.TestRenameProgramName_DottedShortenEnd;
 begin
   Add([
@@ -1359,6 +1428,51 @@ begin
   '  Foo.Bar.c:=Foo . Bar . &c;',
   'end.',
   '']);
+end;
+
+procedure TTestRefactoring.TestRenameUsedUnit_Amp;
+var
+  UsedUnit: TCodeBuffer;
+begin
+  UsedUnit:=nil;
+  try
+    UsedUnit:=CodeToolBoss.CreateFile('type.pp');
+    UsedUnit.Source:='unit &Type;'+LineEnding
+      +'interface'+LineEnding
+      +'type'+LineEnding
+      +'  TAnt = word;'+LineEnding
+      +'  Ant: TAnt;'+LineEnding
+      +'implementation'+LineEnding
+      +'end.';
+
+    Add([
+    'unit test1;',
+    '{$mode objfpc}{$H+}',
+    'interface',
+    'uses &Type;',
+    'var c: &Type . TAnt;',
+    'implementation',
+    'initialization',
+    '  &type.ant:=&Type . &ant;',
+    'end.',
+    '']);
+    RenameUsedUnitRefs(UsedUnit,'&End','end.pas');
+    CheckDiff(Code,[
+    'unit test1;',
+    '{$mode objfpc}{$H+}',
+    'interface',
+    'uses &End;',
+    'var c: &End . TAnt;',
+    'implementation',
+    'initialization',
+    '  &End.ant:=&End . &ant;',
+    'end.',
+    '']);
+
+  finally
+    if UsedUnit<>nil then
+      UsedUnit.IsDeleted:=true;
+  end;
 end;
 
 initialization

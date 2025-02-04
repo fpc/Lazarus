@@ -7402,6 +7402,11 @@ var
       inc(p,GetIdentLen(StartP));
       exit;
     end;
+    if (StartP^<>'&') and WordIsKeyWordFuncList.DoIdentifier(StartP) then begin
+      // do not check keyword identifier references without ampersand
+      inc(p,GetIdentLen(StartP));
+      exit;
+    end;
 
     Expr:=ReadDottedIdentifier(Src,p,Scanner.NestedComments);
     //debugln(['  CheckIdentifier At ',CleanPosToStr(p),' Expr="',Expr,'"']);
@@ -7490,15 +7495,16 @@ var
     if Node.Desc=ctnSrcName then begin
       if IsSelf then
         AddPos(StartPos);
-    end else begin
-      // todo: found uses node
+    end else if Node.Desc in [ctnUseUnitClearName,ctnUseUnitNamespace] then begin
+      if Node.StartPos=LocalSrcNamePos then
+        AddPos(StartPos);
     end;
   end;
 
   function CheckComment(var StartPos: integer; MaxPos: integer): boolean;
   var
     c: Char;
-    CommentLvl: Integer;
+    AtomStart, CommentLvl: Integer;
     InStrConst, LastTokenWasPoint, IsDirective: Boolean;
   begin
     Result:=true;
@@ -7541,6 +7547,7 @@ var
         begin
           if (c='{') and Scanner.NestedComments then inc(CommentLvl);
           LastTokenWasPoint:=false;
+          inc(StartPos);
         end;
       '}':
         begin
@@ -7552,6 +7559,7 @@ var
               exit;
             end;
           end;
+          inc(StartPos);
         end;
       ')':
         begin
@@ -7560,6 +7568,7 @@ var
             inc(StartPos);
             exit;
           end;
+          inc(StartPos);
         end;
       'a'..'z','A'..'Z','_','&':
         begin
@@ -7567,12 +7576,17 @@ var
               and (not LastTokenWasPoint) then
             if not CheckIdentifier(StartPos) then exit(false);
           LastTokenWasPoint:=false;
+          inc(StartPos,GetIdentLen(@Src[StartPos]));
         end;
       '''':
         begin
           InStrConst:=not InStrConst;
           LastTokenWasPoint:=false;
+          inc(StartPos);
         end;
+      '$','0'..'9':
+        // skip number, could contain letters
+        ReadRawNextPascalAtom(Src,StartPos,AtomStart,Scanner.NestedComments);
       #10,#13:
         begin
           InStrConst:=false;
@@ -7583,19 +7597,24 @@ var
               inc(StartPos);
             exit;
           end;
+          inc(StartPos);
         end;
-      ' ',#9: ;
-      '.': LastTokenWasPoint:=true;
+      ' ',#9: inc(StartPos);
+      '.':
+        begin
+          LastTokenWasPoint:=true;
+          inc(StartPos);
+        end
       else
         LastTokenWasPoint:=false;
+        inc(StartPos);
       end;
-      inc(StartPos);
     end;
   end;
 
   function CheckSource(MinPos, MaxPos: integer): boolean;
   var
-    StartPos: Integer;
+    StartPos, AtomStart: Integer;
     LastTokenWasPoint, LastCommentTokenWasPoint: Boolean;
   begin
     Result:=true;
@@ -7647,8 +7666,10 @@ var
 
       'a'..'z','A'..'Z','_','&':
         begin
-          if not LastTokenWasPoint then
-            if not CheckIdentifier(StartPos) then exit;
+          if LastTokenWasPoint then
+            inc(StartPos,GetIdentLen(@Src[StartPos]))
+          else if not CheckIdentifier(StartPos) then
+            exit;
           LastTokenWasPoint:=false;
         end;
 
@@ -7658,6 +7679,9 @@ var
           inc(StartPos);
         end;
 
+      '$','0'..'9':
+        // skip number, could contain letters
+        ReadRawNextPascalAtom(Src,StartPos,AtomStart,Scanner.NestedComments);
       else
         LastTokenWasPoint:=false;
         inc(StartPos);

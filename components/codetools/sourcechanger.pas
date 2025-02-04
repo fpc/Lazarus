@@ -819,9 +819,9 @@ begin
     repeat
       StartPos:=p;
       if KeepComments then
-        p:=FindNextComment(CurSrc,FromPos,ToPos-1)
+        p:=FindNextComment(CurSrc,p,ToPos-1)
       else
-        p:=FindNextCompilerDirective(CurSrc,FromPos,Scanner.NestedComments,ToPos-1);
+        p:=FindNextCompilerDirective(CurSrc,p,Scanner.NestedComments,ToPos-1);
       if p>ToPos then p:=ToPos;
       if p>StartPos then
         if not DeleteRange(Scanner,StartPos,p,false,false) then exit;

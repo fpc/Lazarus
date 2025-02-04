@@ -2382,6 +2382,8 @@ begin
     end;
     Node:=Node.Parent;
   until Node=nil;
+  if Result='' then
+    Result:='['+StartNode.DescAsString+']';
 
   if RestoreCurPos then
     MoveCursorToAtomPos(OldPos);
