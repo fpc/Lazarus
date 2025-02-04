@@ -73,6 +73,7 @@ type
     procedure TestRenameUsedUnit_Impl;
     procedure TestRenameUsedUnit_FN_KeepShort;
     procedure TestRenameUsedUnit_InFilename;
+    procedure TestRenameUsedUnit_LongestUnitnameWins;
   end;
 
 implementation
@@ -1653,6 +1654,64 @@ begin
   finally
     if UsedUnit<>nil then
       UsedUnit.IsDeleted:=true;
+  end;
+end;
+
+procedure TTestRefactoring.TestRenameUsedUnit_LongestUnitnameWins;
+var
+  RedUnit, RedGreenUnit, RedGreenBlueUnit: TCodeBuffer;
+begin
+  RedUnit:=CodeToolBoss.CreateFile('red.pas');
+  RedGreenUnit:=CodeToolBoss.CreateFile('red.green.pas');
+  RedGreenBlueUnit:=CodeToolBoss.CreateFile('red.green.blue.pas');
+  try
+    RedUnit.Source:='unit Red;'+LineEnding
+      +'interface'+LineEnding
+      +'var'+LineEnding
+      +'  Red, Green: word;'+LineEnding
+      +'implementation'+LineEnding
+      +'end.';
+
+    RedGreenUnit.Source:='unit Red.Green;'+LineEnding
+      +'interface'+LineEnding
+      +'var'+LineEnding
+      +'  Green, Blue: word;'+LineEnding
+      +'implementation'+LineEnding
+      +'end.';
+
+    RedGreenBlueUnit.Source:='unit Red.Green.Blue;'+LineEnding
+      +'interface'+LineEnding
+      +'var'+LineEnding
+      +'  Blue: word;'+LineEnding
+      +'implementation'+LineEnding
+      +'end.';
+
+    Add([
+    'program test1;',
+    '{$mode objfpc}{$H+}',
+    'uses Red, Red.Green, Red.Green.Blue;',
+    'begin',
+    '  red.red:=1;',
+    '  red.green.green:=2;',
+    '  red.green.blue.blue:=3;',
+    'end.',
+    '']);
+    RenameUsedUnitRefs(RedGreenUnit,'&End','end.pas');
+    CheckDiff(Code,[
+    'program test1;',
+    '{$mode objfpc}{$H+}',
+    'uses Red, &End, Red.Green.Blue;',
+    'begin',
+    '  red.red:=1;',
+    '  &End.green:=2;',
+    '  red.green.blue.blue:=3;',
+    'end.',
+    '']);
+
+  finally
+    RedUnit.IsDeleted:=true;
+    RedGreenUnit.IsDeleted:=true;
+    RedGreenBlueUnit.IsDeleted:=true;
   end;
 end;
 

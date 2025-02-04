@@ -7375,7 +7375,7 @@ var
     ExprP:=PChar(Expr);
     for i:=0 to length(UseNames)-1 do begin
       UseNameP:=PChar(UseNames[i]);
-      if CompareIdentifiers(UseNameP,ExprP)=0 then begin
+      if CompareDottedIdentifiers(UseNameP,ExprP)=0 then begin
         DotCount:=GetDotCountInIdentifier(UseNameP);
         if DotCount>BestDotCount then begin
           BestDotCount:=DotCount;
