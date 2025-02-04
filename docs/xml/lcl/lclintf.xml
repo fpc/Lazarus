@@ -6718,13 +6718,11 @@ examined. No actions are performed in the routine if AFullPath does not
 contain a valid file or directory on the local file system.
 </p>
 <p>
-The value in <var>AFullPath</var> is enclosed in Quotes (if not already 
-quoted) to safeguard against spaces in the path or file name. The quoted value 
-is passed as an argument to a TProcessUTF8 instance which launches the file 
-explorer application ('explorer.exe'). The command looks like the following:
+ExecuteProcess is called to launch the file explorer using the file or 
+directory in AFullPath as an argument. The command looks like the following:
 </p>
 <code>
-'explorer.exe /select, "c:\path\to\filename.ext"'
+'explorer.exe /select c:\path\to\filename.ext'
 </code>
 <p>
 If AFullPath is a folder on the local file system, no selection is made in 
