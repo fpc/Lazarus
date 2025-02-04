@@ -43,24 +43,28 @@ procedure TTestChangeDeclaration.TestCTAddProcedureModifier;
       +'implementation'+sLineBreak
       +'end.';
     Code:=CodeToolBoss.CreateFile(FDefFilename);
-    Code.Source:=Src;
-    if not CodeToolBoss.AddProcModifier(Code,3,3,aModifier) then
-    begin
-      Fail('AddProcModifier failed: '+CodeToolBoss.ErrorMessage);
-    end else begin
-      if not CodeToolBoss.ExtractProcedureHeader(Code,3,3,
-        [phpWithStart,phpWithResultType,phpWithOfObject,phpWithProcModifiers,phpWithComments,phpDoNotAddSemicolon],
-        ProcHead)
-      then
-        Fail('ExtractProcedureHeader failed: '+CodeToolBoss.ErrorMessage);
-      if ProcHead<>Expected then begin
-        writeln('Test ProcCode="',ProcCode,'"');
-        Src:=Code.Source;
-        writeln('SrcSTART:======================');
-        writeln(Src);
-        writeln('SrcEND:========================');
-        AssertEquals('ProcHead',Expected,ProcHead);
+    try
+      Code.Source:=Src;
+      if not CodeToolBoss.AddProcModifier(Code,3,3,aModifier) then
+      begin
+        Fail('AddProcModifier failed: '+CodeToolBoss.ErrorMessage);
+      end else begin
+        if not CodeToolBoss.ExtractProcedureHeader(Code,3,3,
+          [phpWithStart,phpWithResultType,phpWithOfObject,phpWithProcModifiers,phpWithComments,phpDoNotAddSemicolon],
+          ProcHead)
+        then
+          Fail('ExtractProcedureHeader failed: '+CodeToolBoss.ErrorMessage);
+        if ProcHead<>Expected then begin
+          writeln('Test ProcCode="',ProcCode,'"');
+          Src:=Code.Source;
+          writeln('SrcSTART:======================');
+          writeln(Src);
+          writeln('SrcEND:========================');
+          AssertEquals('ProcHead',Expected,ProcHead);
+        end;
       end;
+    finally
+      Code.IsDeleted:=true;
     end;
   end;
 

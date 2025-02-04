@@ -223,21 +223,25 @@ var
   i: Integer;
 begin
   Code:=CodeToolBoss.CreateFile('test1.pas');
-  s:='';
-  for i:=Low(Src) to High(Src) do
-    s+=Src[i]+LineEnding;
-  Code.Source:=s;
+  try
+    s:='';
+    for i:=Low(Src) to High(Src) do
+      s+=Src[i]+LineEnding;
+    Code.Source:=s;
 
-  if not CodeToolBoss.AddUnitWarnDirective(Code,WarnID,Comment,TurnOn) then begin
-    WriteSource(Code.Filename,1,1);
-    Fail(Title+'call AddUnitWarnDirective failed: '+CodeToolBoss.ErrorDbgMsg);
+    if not CodeToolBoss.AddUnitWarnDirective(Code,WarnID,Comment,TurnOn) then begin
+      WriteSource(Code.Filename,1,1);
+      Fail(Title+'call AddUnitWarnDirective failed: '+CodeToolBoss.ErrorDbgMsg);
+    end;
+
+    //debugln(['TTestCTStdCodetools.DoTestAddUnitWarn NewSrc=',Code.Source]);
+    s:='';
+    for i:=Low(Expected) to High(Expected) do
+      s+=Expected[i]+LineEnding;
+    CheckDiff(Title,s,Code.Source);
+  finally
+    Code.IsDeleted:=true;
   end;
-
-  //debugln(['TTestCTStdCodetools.DoTestAddUnitWarn NewSrc=',Code.Source]);
-  s:='';
-  for i:=Low(Expected) to High(Expected) do
-    s+=Expected[i]+LineEnding;
-  CheckDiff(Title,s,Code.Source);
 end;
 
 procedure TTestCTStdCodetools.DoTestAddUnitToMainUses(NewUnitName, NewUnitInFilename, UsesSrc, ExpectedUsesSrc: string;
@@ -253,19 +257,23 @@ begin
     +'begin'+LineEnding
     +'end.'+LineEnding;
   Code:=CodeToolBoss.CreateFile('TestStdCodeTools.pas');
-  Code.Source:=Header+UsesSrc+Footer;
-  if not CodeToolBoss.AddUnitToMainUsesSectionIfNeeded(Code,NewUnitName,NewUnitInFilename,Flags) then
-  begin
-    AssertEquals('AddUnitToMainUsesSectionIfNeeded failed: '+CodeToolBoss.ErrorMessage,true,false);
-  end else begin
-    Src:=Code.Source;
-    AssertEquals('AddUnitToMainUsesSectionIfNeeded altered header: ',Header,LeftStr(Src,length(Header)));
-    System.Delete(Src,1,length(Header));
-    AssertEquals('AddUnitToMainUsesSectionIfNeeded altered footer: ',Footer,RightStr(Src,length(Footer)));
-    System.Delete(Src,length(Src)-length(Footer)+1,length(Footer));
-    if ExpectedUsesSrc<>Src then
-      debugln(Code.Source);
-    AssertEquals('AddUnitToMainUsesSectionIfNeeded: ',ExpectedUsesSrc,Src);
+  try
+    Code.Source:=Header+UsesSrc+Footer;
+    if not CodeToolBoss.AddUnitToMainUsesSectionIfNeeded(Code,NewUnitName,NewUnitInFilename,Flags) then
+    begin
+      AssertEquals('AddUnitToMainUsesSectionIfNeeded failed: '+CodeToolBoss.ErrorMessage,true,false);
+    end else begin
+      Src:=Code.Source;
+      AssertEquals('AddUnitToMainUsesSectionIfNeeded altered header: ',Header,LeftStr(Src,length(Header)));
+      System.Delete(Src,1,length(Header));
+      AssertEquals('AddUnitToMainUsesSectionIfNeeded altered footer: ',Footer,RightStr(Src,length(Footer)));
+      System.Delete(Src,length(Src)-length(Footer)+1,length(Footer));
+      if ExpectedUsesSrc<>Src then
+        debugln(Code.Source);
+      AssertEquals('AddUnitToMainUsesSectionIfNeeded: ',ExpectedUsesSrc,Src);
+    end;
+  finally
+    Code.IsDeleted:=true;
   end;
 end;
 
@@ -323,6 +331,7 @@ begin
   Test('begin,try,finally,end|end','begin1','begin1end');
   Test('begin,try,finally,|end,end','try1finally','try1end');
   Test('begin,try,finally,|end,end','try1','try1finally');
+  Code.IsDeleted:=true;
 end;
 
 procedure TTestCTStdCodetools.TestCTUses_AddUses_Start;
@@ -405,17 +414,21 @@ procedure TTestCTStdCodetools.TestCTUses_RemoveFromAllUsesSections;
       +'begin'+LineEnding
       +'end.'+LineEnding;
     Code:=CodeToolBoss.CreateFile('TestStdCodeTools.pas');
-    Code.Source:=Header+UsesSrc+Footer;
-    if not CodeToolBoss.RemoveUnitFromAllUsesSections(Code,RemoveUnit) then
-    begin
-      AssertEquals('RemoveUnitFromAllUsesSections failed: '+CodeToolBoss.ErrorMessage,true,false);
-    end else begin
-      Src:=Code.Source;
-      AssertEquals('RemoveUnitFromAllUsesSections altered header: ',Header,LeftStr(Src,length(Header)));
-      System.Delete(Src,1,length(Header));
-      AssertEquals('RemoveUnitFromAllUsesSections altered footer: ',Footer,RightStr(Src,length(Footer)));
-      System.Delete(Src,length(Src)-length(Footer)+1,length(Footer));
-      AssertEquals('RemoveUnitFromAllUsesSections: ',ExpectedUsesSrc,Src);
+    try
+      Code.Source:=Header+UsesSrc+Footer;
+      if not CodeToolBoss.RemoveUnitFromAllUsesSections(Code,RemoveUnit) then
+      begin
+        AssertEquals('RemoveUnitFromAllUsesSections failed: '+CodeToolBoss.ErrorMessage,true,false);
+      end else begin
+        Src:=Code.Source;
+        AssertEquals('RemoveUnitFromAllUsesSections altered header: ',Header,LeftStr(Src,length(Header)));
+        System.Delete(Src,1,length(Header));
+        AssertEquals('RemoveUnitFromAllUsesSections altered footer: ',Footer,RightStr(Src,length(Footer)));
+        System.Delete(Src,length(Src)-length(Footer)+1,length(Footer));
+        AssertEquals('RemoveUnitFromAllUsesSections: ',ExpectedUsesSrc,Src);
+      end;
+    finally
+      Code.IsDeleted:=true;
     end;
   end;
 
@@ -524,22 +537,26 @@ procedure TTestCTStdCodetools.TestCTSetApplicationTitleStatement;
     OldSrc:=Header+OldBeginEnd;
     ExpectedSrc:=Header+NewBeginEnd;
     Code:=CodeToolBoss.CreateFile('TestStdCodeTools.pas');
-    Code.Source:=OldSrc;
-    if not CodeToolBoss.SetApplicationTitleStatement(Code,NewTitle) then
-    begin
-      writeln('Src=[');
-      writeln(OldSrc,']');
-      AssertEquals('SetApplicationTitleStatement failed: '+CodeToolBoss.ErrorMessage,true,false);
-    end else begin
-      ActualSrc:=Code.Source;
-      if ActualSrc=ExpectedSrc then exit;
-      writeln('TTestCTStdCodetools.TestCTSetApplicationTitleStatement OldSrc:');
-      writeln(OldSrc);
-      writeln('TTestCTStdCodetools.TestCTSetApplicationTitleStatement NewTitle="',NewTitle,'" ExpectedSrc:');
-      writeln(ExpectedSrc);
-      writeln('TTestCTStdCodetools.TestCTSetApplicationTitleStatement But found NewSrc:');
-      writeln(ActualSrc);
-      Fail('SetApplicationTitleStatement with Title="'+NewTitle+'"');
+    try
+      Code.Source:=OldSrc;
+      if not CodeToolBoss.SetApplicationTitleStatement(Code,NewTitle) then
+      begin
+        writeln('Src=[');
+        writeln(OldSrc,']');
+        AssertEquals('SetApplicationTitleStatement failed: '+CodeToolBoss.ErrorMessage,true,false);
+      end else begin
+        ActualSrc:=Code.Source;
+        if ActualSrc=ExpectedSrc then exit;
+        writeln('TTestCTStdCodetools.TestCTSetApplicationTitleStatement OldSrc:');
+        writeln(OldSrc);
+        writeln('TTestCTStdCodetools.TestCTSetApplicationTitleStatement NewTitle="',NewTitle,'" ExpectedSrc:');
+        writeln(ExpectedSrc);
+        writeln('TTestCTStdCodetools.TestCTSetApplicationTitleStatement But found NewSrc:');
+        writeln(ActualSrc);
+        Fail('SetApplicationTitleStatement with Title="'+NewTitle+'"');
+      end;
+    finally
+      Code.IsDeleted:=true;
     end;
   end;
 

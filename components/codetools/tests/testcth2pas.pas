@@ -119,6 +119,8 @@ begin
     AssertEquals('start comment header1.h in front of header2.h',true,Header1Start<Header2Start);
     AssertEquals('start comment header2.h in front of end of header1.h',true,Header2Start<Header1End);
   finally
+    Header1.IsDeleted:=true;
+    Header2.IsDeleted:=true;
     Merger.Free;
     Filenames.Free;
   end;
@@ -163,6 +165,7 @@ begin
     Check('do not replace macros in #ifdef','#ifdef macro1','#ifdef macro1');
     Check('do not replace macros in #ifndef','#ifndef macro1','#ifndef macro1');
   finally
+    Header1.IsDeleted:=true;
     Buffers.Free;
     Merger.Free;
   end;

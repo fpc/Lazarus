@@ -73,7 +73,6 @@ type
     procedure TestRenameUsedUnit_Impl;
     procedure TestRenameUsedUnit_FN_KeepShort;
     procedure TestRenameUsedUnit_InFilename;
-    // todo: rename uses Bar in 'bar.pas'
   end;
 
 implementation
@@ -1486,7 +1485,7 @@ var
 begin
   UsedUnit:=nil;
   try
-    UsedUnit:=CodeToolBoss.CreateFile('type.pp');
+    UsedUnit:=CodeToolBoss.CreateFile('type.pas');
     UsedUnit.Source:='unit &Type;'+LineEnding
       +'interface'+LineEnding
       +'type'+LineEnding

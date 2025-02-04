@@ -6946,7 +6946,7 @@ begin
   if (Filename='') or (System.Pos(PathDelim,Filename)>0) then
     exit;
   Code:=FindFile(Filename);
-  if Code<>nil then
+  if (Code<>nil) and not Code.IsDeleted then
     Result:=Code.Filename;
 end;
 

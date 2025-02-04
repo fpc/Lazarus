@@ -53,6 +53,7 @@ type
   TCodeBuffer = class(TSourceLog)
   private
     FFilename: string;
+    FOnDeleted: TNotifyEvent;
     FReferenceCount: integer;
     FScanner: TLinkScanner;
     FOnSetScanner: TNotifyEvent;
@@ -114,6 +115,7 @@ type
     property FileChangeStep: integer read FFileChangeStep; // last loaded/saved changestep, only valid if LoadDateValid=true
     property OnSetFilename: TNotifyEvent read FOnSetFilename write FOnSetFilename;
     property OnSetScanner: TNotifyEvent read FOnSetScanner write FOnSetScanner;
+    property OnDeleted: TNotifyEvent read FOnDeleted write FOnDeleted;
     property Scanner: TLinkScanner read FScanner write SetScanner;
     property ReferenceCount: integer read FReferenceCount;
   end;
@@ -153,11 +155,13 @@ type
     fLastIncludeLinkFileValid: boolean;
     fLastIncludeLinkFileChangeStep: integer;
     fChangeStep: integer;
+    FOnCodeDeleted: TNotifyEvent;
     FOnDecodeLoaded: TOnCodeCacheDecodeLoaded;
     FOnEncodeSaving: TOnCodeCacheEncodeSaving;
     function FindIncludeLink(const IncludeFilename: string): string;
     function FindIncludeLinkNode(const IncludeFilename: string): TIncludedByLink;
     function FindIncludeLinkAVLNode(const IncludeFilename: string): TAVLTreeNode;
+    procedure OnCodeDeleted(Sender: TObject);
     function OnScannerCheckFileOnDisk(Code: TSourceLog): boolean; // true if code changed
     function OnScannerGetFileName(Sender: TObject; Code: TSourceLog): string;
     function OnScannerLoadSource(Sender: TObject; const AFilename: string;
@@ -216,6 +220,7 @@ type
                                                       write FOnDecodeLoaded;
     property OnEncodeSaving: TOnCodeCacheEncodeSaving read FOnEncodeSaving
                                                       write FOnEncodeSaving;
+    property OnFileDeleted: TNotifyEvent read FOnCodeDeleted write FOnCodeDeleted;
     property DefaultEncoding: string read FDefaultEncoding write FDefaultEncoding;
     property ChangeStamp: int64 read FChangeStamp;
     property DirectoryCachePool: TCTDirectoryCachePool read FDirectoryCachePool
@@ -760,6 +765,7 @@ begin
     FItems.Add(Result);
     Result.FCodeCache:=Self;// must be called after FileName:=
     Result.LastIncludedByFile:=FindIncludeLink(Result.Filename);
+    Result.OnDeleted:=@OnCodeDeleted;
   end;
   Result.DiskEncoding:=DefaultEncoding;
   Result.MemEncoding:=Result.DiskEncoding;
@@ -996,6 +1002,27 @@ function TCodeCache.FindIncludeLinkAVLNode(const IncludeFilename: string
 begin
   Result:=FIncludeLinks.FindKey(Pointer(IncludeFilename),
                                 @CompareAnsiStringWithIncludedByLink);
+end;
+
+procedure TCodeCache.OnCodeDeleted(Sender: TObject);
+var
+  Code: TCodeBuffer;
+  Dir: String;
+  Cache: TCTDirectoryCache;
+begin
+  if DirectoryCachePool<>nil then begin
+    Code:=TCodeBuffer(Sender);
+    if Code.IsVirtual then
+      Cache:=DirectoryCachePool.GetCache('',false,false)
+    else begin
+      Dir:=ExtractFilePath(Code.Filename);
+      Cache:=DirectoryCachePool.GetCache(Dir,false,false);
+    end;
+    if Cache<>nil then
+      Cache.Invalidate;
+  end;
+  if Assigned(OnFileDeleted) then
+    OnFileDeleted(Sender);
 end;
 
 function TCodeCache.FindIncludeLink(const IncludeFilename: string): string;
@@ -1391,6 +1418,8 @@ begin
   if FIsDeleted then begin
     Clear;
     FIsDeleted:=true;
+    if Assigned(OnDeleted) then
+      OnDeleted(Self);
     //DebugLn(['TCodeBuffer.SetIsDeleted ',Filename,' ',FileNeedsUpdate]);
   end;
 end;

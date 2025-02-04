@@ -78,30 +78,34 @@ var
   NewCode, Code: TCodeBuffer;
 begin
   Code:=CodeToolBoss.CreateFile('test1.pas');
-  s:='';
-  for i:=Low(Src) to High(Src) do
-    s+=Src[i]+LineEnding;
-  Code.Source:=s;
+  try
+    s:='';
+    for i:=Low(Src) to High(Src) do
+      s+=Src[i]+LineEnding;
+    Code.Source:=s;
 
-  if not CodeToolBoss.CompleteCode(Code,Col,Line,Line,NewCode,NewX,NewY,NewTopLine,
-    BlockTopLine,BlockBottomLine,false)
-  and (CodeToolBoss.ErrorDbgMsg<>'') then
-  begin
-    NewCode:=Code;
-    NewY:=Line;
-    NewX:=Col;
-    if (CodeToolBoss.ErrorCode<>nil) and (CodeToolBoss.ErrorLine>0) then begin
-      NewY:=CodeToolBoss.ErrorLine;
-      NewX:=CodeToolBoss.ErrorColumn;
-      NewCode:=CodeToolBoss.ErrorCode;
+    if not CodeToolBoss.CompleteCode(Code,Col,Line,Line,NewCode,NewX,NewY,NewTopLine,
+      BlockTopLine,BlockBottomLine,false)
+    and (CodeToolBoss.ErrorDbgMsg<>'') then
+    begin
+      NewCode:=Code;
+      NewY:=Line;
+      NewX:=Col;
+      if (CodeToolBoss.ErrorCode<>nil) and (CodeToolBoss.ErrorLine>0) then begin
+        NewY:=CodeToolBoss.ErrorLine;
+        NewX:=CodeToolBoss.ErrorColumn;
+        NewCode:=CodeToolBoss.ErrorCode;
+      end;
+      WriteSource(NewCode.Filename,NewY,NewX);
+      Fail(Title+': call CompleteCode failed: "'+CodeToolBoss.ErrorDbgMsg+'"');
     end;
-    WriteSource(NewCode.Filename,NewY,NewX);
-    Fail(Title+': call CompleteCode failed: "'+CodeToolBoss.ErrorDbgMsg+'"');
+    s:='';
+    for i:=Low(Expected) to High(Expected) do
+      s+=Expected[i]+LineEnding;
+    CheckDiff(Title,s,Code.Source);
+  finally
+    Code.IsDeleted:=true;
   end;
-  s:='';
-  for i:=Low(Expected) to High(Expected) do
-    s+=Expected[i]+LineEnding;
-  CheckDiff(Title,s,Code.Source);
 end;
 
 procedure TTestCodeCompletion.TestIntfProcUpdateArgName;

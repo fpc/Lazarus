@@ -79,6 +79,7 @@ begin
       s+=Expected[i]+LineEnding;
     CheckDiff(Title,s,Code.Source);
   finally
+    Code.IsDeleted:=true;
     CodeToolBoss.DefineTree.RemoveDefineTemplate(DefTemp);
   end;
 end;
@@ -135,6 +136,7 @@ begin
       Fail('VarNameToToType differ');
     end;
   finally
+    Code.IsDeleted:=true;
     VarNameToToType.Free;
     CodeToolBoss.DefineTree.RemoveDefineTemplate(DefTemp);
   end;

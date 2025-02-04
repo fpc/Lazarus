@@ -123,7 +123,6 @@ begin
         PascalCompilerNames[pcPas2js],
         PascalCompilerNames[CodeToolBoss.GetPascalCompilerForDirectory('')]);
 
-
   end;
   FCode:=CodeToolBoss.CreateFile('test1.pas');
 end;

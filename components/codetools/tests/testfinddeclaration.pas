@@ -1510,20 +1510,24 @@ var
   UnitType: TCodeBuffer;
 begin
   UnitType:=CodeToolBoss.CreateFile('type.pas');
-  UnitType.Source:=
-    'unit &Type;'+sLineBreak
-    +'interface'+sLineBreak
-    +'var r: word;'+sLineBreak
-    +'implementation'+sLineBreak
-    +'end.';
+  try
+    UnitType.Source:=
+      'unit &Type;'+sLineBreak
+      +'interface'+sLineBreak
+      +'var r: word;'+sLineBreak
+      +'implementation'+sLineBreak
+      +'end.';
 
-  StartProgram;
-  Add([
-  'uses &Type;',
-  'begin',
-  '  r{declaration:&type.r}:=3;',
-  'end.']);
-  FindDeclarations(Code);
+    StartProgram;
+    Add([
+    'uses &Type;',
+    'begin',
+    '  r{declaration:&type.r}:=3;',
+    'end.']);
+    FindDeclarations(Code);
+  finally
+    UnitType.IsDeleted:=true;
+  end;
 end;
 
 procedure TTestFindDeclaration.TestFindDeclaration_AmpersandArray;

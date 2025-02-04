@@ -111,6 +111,7 @@ begin
   AssertEquals('Src is empty',Trim(Src)<>'',true);
   AssertEquals('ExpectedSrc is empty',Trim(ExpectedSrc)<>'',true);
 
+  Code:=nil;
   ExpectedCode:=TCodeBuffer.Create;
   try
     // replace cursor | marker in Src
@@ -146,6 +147,7 @@ begin
     AssertEquals('CompleteBlock did no or the wrong completion: ',TrimExpected,TrimResult);
 
   finally
+    if Code<>nil then Code.IsDeleted:=true;
     ExpectedCode.Free;
   end;
 end;
@@ -173,17 +175,21 @@ begin
 
   // replace cursor | marker in Src
   Code:=CodeToolBoss.CreateFile('TestCompleteBlock.pas');
-  FullSrc:=CreateFullSrc(Src,p);
-  if p<1 then
-    AssertEquals('missing cursor | in test source: "'+dbgstr(Src)+'"',true,false);
-  Code.Source:=FullSrc;
-  Code.AbsoluteToLineCol(p,Y,X);
+  try
+    FullSrc:=CreateFullSrc(Src,p);
+    if p<1 then
+      AssertEquals('missing cursor | in test source: "'+dbgstr(Src)+'"',true,false);
+    Code.Source:=FullSrc;
+    Code.AbsoluteToLineCol(p,Y,X);
 
-  if CodeToolBoss.CompleteBlock(Code,X,Y,OnlyIfCursorBlockIndented,
-    NewCode,NewX,NewY,NewTopLine)
-  then begin
-    debugln(['TTestCodetoolsCompleteBlock.CompleteBlockFail completion: ',dbgstr(Code.Source)]);
-    AssertEquals('CodeToolBoss.CompleteBlock returned true for incompletable src="'+dbgstr(Src)+'"',true,false);
+    if CodeToolBoss.CompleteBlock(Code,X,Y,OnlyIfCursorBlockIndented,
+      NewCode,NewX,NewY,NewTopLine)
+    then begin
+      debugln(['TTestCodetoolsCompleteBlock.CompleteBlockFail completion: ',dbgstr(Code.Source)]);
+      AssertEquals('CodeToolBoss.CompleteBlock returned true for incompletable src="'+dbgstr(Src)+'"',true,false);
+    end;
+  finally
+    Code.IsDeleted:=true;
   end;
 end;
 

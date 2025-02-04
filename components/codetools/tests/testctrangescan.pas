@@ -164,39 +164,43 @@ var
   TreeChangeStep: LongInt;
 begin
   Code:=CodeToolBoss.CreateFile('TestRangeScan.pas');
-  Tool:=CodeToolBoss.GetCodeToolForSource(Code,false,true) as TCodeTool;
+  try
+    Tool:=CodeToolBoss.GetCodeToolForSource(Code,false,true) as TCodeTool;
 
-  // scan source
-  Code.Source:=GetSource([]);
-  {$IFDEF VerboseTestCTRangeScan}
-  debugln(['TTestCodetoolsRangeScan.TestCTScanRange INITIAL SCAN']);
-  {$ENDIF}
-  Tool.BuildTree(lsrEnd);
-  RootNode:=Tool.Tree.Root;
-  TreeChangeStep:=Tool.TreeChangeStep;
-  AssertEquals('Step1: RootNode<>nil',true,RootNode<>nil);
-  //Tool.WriteDebugTreeReport;
+    // scan source
+    Code.Source:=GetSource([]);
+    {$IFDEF VerboseTestCTRangeScan}
+    debugln(['TTestCodetoolsRangeScan.TestCTScanRange INITIAL SCAN']);
+    {$ENDIF}
+    Tool.BuildTree(lsrEnd);
+    RootNode:=Tool.Tree.Root;
+    TreeChangeStep:=Tool.TreeChangeStep;
+    AssertEquals('Step1: RootNode<>nil',true,RootNode<>nil);
+    //Tool.WriteDebugTreeReport;
 
-  // append a comment at end and scan again => this should result in no tree change
-  Code.Source:=GetSource([crsfWithCommentAtEnd]);
-  {$IFDEF VerboseTestCTRangeScan}
-  debugln(['TTestCodetoolsRangeScan.TestCTScanRange SCAN with comment at end']);
-  {$ENDIF}
-  Tool.BuildTree(lsrEnd);
-  AssertEquals('Step2: RootNode=Tree.Root',true,RootNode=Tool.Tree.Root);
-  AssertEquals('Step2: TreeChangeStep=Tool.TreeChangeStep',true,TreeChangeStep=Tool.TreeChangeStep);
-  //Tool.WriteDebugTreeReport;
+    // append a comment at end and scan again => this should result in no tree change
+    Code.Source:=GetSource([crsfWithCommentAtEnd]);
+    {$IFDEF VerboseTestCTRangeScan}
+    debugln(['TTestCodetoolsRangeScan.TestCTScanRange SCAN with comment at end']);
+    {$ENDIF}
+    Tool.BuildTree(lsrEnd);
+    AssertEquals('Step2: RootNode=Tree.Root',true,RootNode=Tool.Tree.Root);
+    AssertEquals('Step2: TreeChangeStep=Tool.TreeChangeStep',true,TreeChangeStep=Tool.TreeChangeStep);
+    //Tool.WriteDebugTreeReport;
 
-  // insert a procedure in the implementation and scan again
-  // => this should result in a tree change, but the root node should be kept
-  Code.Source:=GetSource([crsfWithProc1]);
-  {$IFDEF VerboseTestCTRangeScan}
-  debugln(['TTestCodetoolsRangeScan.TestCTScanRange SCAN with new proc in implementation']);
-  {$ENDIF}
-  Tool.BuildTree(lsrEnd);
-  AssertEquals('Step3: RootNode=Tree.Root',true,RootNode=Tool.Tree.Root);
-  AssertEquals('Step3: TreeChangeStep<>Tool.TreeChangeStep',true,TreeChangeStep<>Tool.TreeChangeStep);
-  //Tool.WriteDebugTreeReport;
+    // insert a procedure in the implementation and scan again
+    // => this should result in a tree change, but the root node should be kept
+    Code.Source:=GetSource([crsfWithProc1]);
+    {$IFDEF VerboseTestCTRangeScan}
+    debugln(['TTestCodetoolsRangeScan.TestCTScanRange SCAN with new proc in implementation']);
+    {$ENDIF}
+    Tool.BuildTree(lsrEnd);
+    AssertEquals('Step3: RootNode=Tree.Root',true,RootNode=Tool.Tree.Root);
+    AssertEquals('Step3: TreeChangeStep<>Tool.TreeChangeStep',true,TreeChangeStep<>Tool.TreeChangeStep);
+    //Tool.WriteDebugTreeReport;
+  finally
+    Code.IsDeleted:=true;
+  end;
 end;
 
 procedure TTestCodetoolsRangeScan.TestCTScanRangeAscending;
@@ -209,56 +213,60 @@ var
   MaxRange: TLinkScannerRange;
 begin
   Code:=CodeToolBoss.CreateFile('TestRangeScan.pas');
-  Tool:=CodeToolBoss.GetCodeToolForSource(Code,false,true) as TCodeTool;
+  try
+    Tool:=CodeToolBoss.GetCodeToolForSource(Code,false,true) as TCodeTool;
 
-  // empty tool
-  Code.Source:='';
-  Tool.BuildTree(lsrInit);
+    // empty tool
+    Code.Source:='';
+    Tool.BuildTree(lsrInit);
 
-  // scan source
-  Code.Source:=GetSource([crsfWithInitialization,crsfWithFinalization]);
-  RootNode:=nil;
-  MinRange:=low(TLinkScannerRange);
-  MaxRange:=high(TLinkScannerRange);
-  for r:=MinRange to MaxRange do begin
-    {$IFDEF VerboseTestCTRangeScan}
-    debugln(['TTestCodetoolsRangeScan.TestCTScanRangeAscending Range=',dbgs(r)]);
-    {$ENDIF}
-    Tool.BuildTree(r);
-    if RootNode<>nil then begin
-      AssertEquals('RootNode must stay for ascending range '+dbgs(r),true,RootNode=Tool.Tree.Root);
-    end;
-    RootNode:=Tool.Tree.Root;
-    //Tool.WriteDebugTreeReport;
-    case r of
-    lsrNone: ;
-    lsrInit: ;
-    lsrSourceType:
-      AssertEquals('source type scanned',true,RootNode<>nil);
-    lsrSourceName:
-      begin
-        AssertEquals('source name scanned',true,RootNode.FirstChild<>nil);
-        AssertEquals('source name found',true,RootNode.FirstChild.Desc=ctnSrcName);
+    // scan source
+    Code.Source:=GetSource([crsfWithInitialization,crsfWithFinalization]);
+    RootNode:=nil;
+    MinRange:=low(TLinkScannerRange);
+    MaxRange:=high(TLinkScannerRange);
+    for r:=MinRange to MaxRange do begin
+      {$IFDEF VerboseTestCTRangeScan}
+      debugln(['TTestCodetoolsRangeScan.TestCTScanRangeAscending Range=',dbgs(r)]);
+      {$ENDIF}
+      Tool.BuildTree(r);
+      if RootNode<>nil then begin
+        AssertEquals('RootNode must stay for ascending range '+dbgs(r),true,RootNode=Tool.Tree.Root);
       end;
-    lsrInterfaceStart:
-      AssertEquals('interface start scanned',true,Tool.FindInterfaceNode<>nil);
-    lsrMainUsesSectionStart:
-      AssertEquals('main uses section start scanned',true,Tool.FindMainUsesNode<>nil);
-    lsrMainUsesSectionEnd:
-      AssertEquals('main uses section end scanned',true,Tool.FindMainUsesNode.FirstChild<>nil);
-    lsrImplementationStart:
-      AssertEquals('implementation start scanned',true,Tool.FindImplementationNode<>nil);
-    lsrImplementationUsesSectionStart:
-      AssertEquals('implementation uses section start scanned',true,Tool.FindImplementationUsesNode<>nil);
-    lsrImplementationUsesSectionEnd:
-      AssertEquals('implementation uses section end scanned',true,Tool.FindImplementationUsesNode.FirstChild<>nil);
-    lsrInitializationStart:
-      AssertEquals('initialization section start scanned',true,Tool.FindInitializationNode<>nil);
-    lsrFinalizationStart:
-      AssertEquals('finalization section start scanned',true,Tool.FindFinalizationNode<>nil);
-    lsrEnd:
-      AssertEquals('end. found',true,Tool.Tree.FindRootNode(ctnEndPoint)<>nil);
+      RootNode:=Tool.Tree.Root;
+      //Tool.WriteDebugTreeReport;
+      case r of
+      lsrNone: ;
+      lsrInit: ;
+      lsrSourceType:
+        AssertEquals('source type scanned',true,RootNode<>nil);
+      lsrSourceName:
+        begin
+          AssertEquals('source name scanned',true,RootNode.FirstChild<>nil);
+          AssertEquals('source name found',true,RootNode.FirstChild.Desc=ctnSrcName);
+        end;
+      lsrInterfaceStart:
+        AssertEquals('interface start scanned',true,Tool.FindInterfaceNode<>nil);
+      lsrMainUsesSectionStart:
+        AssertEquals('main uses section start scanned',true,Tool.FindMainUsesNode<>nil);
+      lsrMainUsesSectionEnd:
+        AssertEquals('main uses section end scanned',true,Tool.FindMainUsesNode.FirstChild<>nil);
+      lsrImplementationStart:
+        AssertEquals('implementation start scanned',true,Tool.FindImplementationNode<>nil);
+      lsrImplementationUsesSectionStart:
+        AssertEquals('implementation uses section start scanned',true,Tool.FindImplementationUsesNode<>nil);
+      lsrImplementationUsesSectionEnd:
+        AssertEquals('implementation uses section end scanned',true,Tool.FindImplementationUsesNode.FirstChild<>nil);
+      lsrInitializationStart:
+        AssertEquals('initialization section start scanned',true,Tool.FindInitializationNode<>nil);
+      lsrFinalizationStart:
+        AssertEquals('finalization section start scanned',true,Tool.FindFinalizationNode<>nil);
+      lsrEnd:
+        AssertEquals('end. found',true,Tool.Tree.FindRootNode(ctnEndPoint)<>nil);
+      end;
     end;
+  finally
+    Code.IsDeleted:=true;
   end;
 end;
 
@@ -271,21 +279,25 @@ var
   r: TLinkScannerRange;
 begin
   Code:=CodeToolBoss.CreateFile('TestRangeScan.pas');
-  Tool:=CodeToolBoss.GetCodeToolForSource(Code,false,true) as TCodeTool;
+  try
+    Tool:=CodeToolBoss.GetCodeToolForSource(Code,false,true) as TCodeTool;
 
-  // scan source
-  Code.Source:='begin end.';
-  Tool.BuildTree(lsrEnd);
-  Code.Source:=GetSource([]);
-  MinRange:=low(TLinkScannerRange);
-  MaxRange:=high(TLinkScannerRange);
-  for r:=MaxRange downto MinRange do begin
-    {$IFDEF VerboseTestCTRangeScan}
-    debugln(['TTestCodetoolsRangeScan.TestCTScanRangeDescending Range=',dbgs(r)]);
-    {$ENDIF}
-    Tool.BuildTree(r);
-    AssertEquals('RootNode must stay for descending range '+dbgs(r),true,Tool.Tree.Root<>nil);
-    //Tool.WriteDebugTreeReport;
+    // scan source
+    Code.Source:='begin end.';
+    Tool.BuildTree(lsrEnd);
+    Code.Source:=GetSource([]);
+    MinRange:=low(TLinkScannerRange);
+    MaxRange:=high(TLinkScannerRange);
+    for r:=MaxRange downto MinRange do begin
+      {$IFDEF VerboseTestCTRangeScan}
+      debugln(['TTestCodetoolsRangeScan.TestCTScanRangeDescending Range=',dbgs(r)]);
+      {$ENDIF}
+      Tool.BuildTree(r);
+      AssertEquals('RootNode must stay for descending range '+dbgs(r),true,Tool.Tree.Root<>nil);
+      //Tool.WriteDebugTreeReport;
+    end;
+  finally
+    Code.IsDeleted:=true;
   end;
 end;
 
@@ -295,20 +307,24 @@ var
   Tool: TEventsCodeTool;
 begin
   Code:=CodeToolBoss.CreateFile('TestRangeScan.pas');
-  Tool:=CodeToolBoss.GetCodeToolForSource(Code,false,true) as TCodeTool;
+  try
+    Tool:=CodeToolBoss.GetCodeToolForSource(Code,false,true) as TCodeTool;
 
-  // scan source
-  Code.Source:=GetSource([crsfWithProc1]);
-  Tool.BuildTree(lsrEnd);
-  //Tool.WriteDebugTreeReport;
-  AssertEquals('step1: end. found',true,Tool.Tree.FindRootNode(ctnEndPoint)<>nil);
+    // scan source
+    Code.Source:=GetSource([crsfWithProc1]);
+    Tool.BuildTree(lsrEnd);
+    //Tool.WriteDebugTreeReport;
+    AssertEquals('step1: end. found',true,Tool.Tree.FindRootNode(ctnEndPoint)<>nil);
 
-  Code.Source:=GetSource([crsfWithProc1Modified]);
-  Tool.BuildTree(lsrEnd);
-  //Tool.WriteDebugTreeReport;
-  AssertEquals('step2: end. found',true,Tool.Tree.FindRootNode(ctnEndPoint)<>nil);
+    Code.Source:=GetSource([crsfWithProc1Modified]);
+    Tool.BuildTree(lsrEnd);
+    //Tool.WriteDebugTreeReport;
+    AssertEquals('step2: end. found',true,Tool.Tree.FindRootNode(ctnEndPoint)<>nil);
 
-  CheckTree(Tool);
+    CheckTree(Tool);
+  finally
+    Code.IsDeleted:=true;
+  end;
 end;
 
 procedure TTestCodetoolsRangeScan.TestCTScanRangeImplementationToEnd;
@@ -317,22 +333,26 @@ var
   Tool: TEventsCodeTool;
 begin
   Code:=CodeToolBoss.CreateFile('TestRangeScan.pas');
-  Tool:=CodeToolBoss.GetCodeToolForSource(Code,false,true) as TCodeTool;
+  try
+    Tool:=CodeToolBoss.GetCodeToolForSource(Code,false,true) as TCodeTool;
 
-  Code.Source:='';
-  Tool.BuildTree(lsrInit);
+    Code.Source:='';
+    Tool.BuildTree(lsrInit);
 
-  // scan source
-  Code.Source:=GetSource([crsfWithProc1]);
-  Tool.BuildTree(lsrImplementationStart);
-  //Tool.WriteDebugTreeReport;
-  AssertEquals('step1: implementation found',true,Tool.FindImplementationNode<>nil);
+    // scan source
+    Code.Source:=GetSource([crsfWithProc1]);
+    Tool.BuildTree(lsrImplementationStart);
+    //Tool.WriteDebugTreeReport;
+    AssertEquals('step1: implementation found',true,Tool.FindImplementationNode<>nil);
 
-  Tool.BuildTree(lsrEnd);
-  //Tool.WriteDebugTreeReport;
-  AssertEquals('step2: end. found',true,Tool.Tree.FindRootNode(ctnEndPoint)<>nil);
+    Tool.BuildTree(lsrEnd);
+    //Tool.WriteDebugTreeReport;
+    AssertEquals('step2: end. found',true,Tool.Tree.FindRootNode(ctnEndPoint)<>nil);
 
-  CheckTree(Tool);
+    CheckTree(Tool);
+  finally
+    Code.IsDeleted:=true;
+  end;
 end;
 
 procedure TTestCodetoolsRangeScan.TestCTScanRangeInitializationModified;
@@ -341,20 +361,24 @@ var
   Tool: TCodeTool;
 begin
   Code:=CodeToolBoss.CreateFile('TestRangeScan.pas');
-  Tool:=CodeToolBoss.GetCodeToolForSource(Code,false,true) as TCodeTool;
+  try
+    Tool:=CodeToolBoss.GetCodeToolForSource(Code,false,true) as TCodeTool;
 
-  // scan source with initialization
-  Code.Source:=GetSource([crsfWithInitialization,crsfWithInitializationStatement1]);
-  Tool.BuildTree(lsrEnd);
-  AssertEquals('step1: end found',true,Tool.Tree.FindRootNode(ctnEndPoint)<>nil);
+    // scan source with initialization
+    Code.Source:=GetSource([crsfWithInitialization,crsfWithInitializationStatement1]);
+    Tool.BuildTree(lsrEnd);
+    AssertEquals('step1: end found',true,Tool.Tree.FindRootNode(ctnEndPoint)<>nil);
 
-  // scan source with a modified initialization
-  Code.Source:=GetSource([crsfWithInitialization,crsfWithInitializationStatement2]);
-  Tool.BuildTree(lsrEnd);
-  AssertEquals('step2: end found',true,Tool.Tree.FindRootNode(ctnEndPoint)<>nil);
+    // scan source with a modified initialization
+    Code.Source:=GetSource([crsfWithInitialization,crsfWithInitializationStatement2]);
+    Tool.BuildTree(lsrEnd);
+    AssertEquals('step2: end found',true,Tool.Tree.FindRootNode(ctnEndPoint)<>nil);
 
-  CheckTree(Tool);
-  //Tool.WriteDebugTreeReport;
+    CheckTree(Tool);
+    //Tool.WriteDebugTreeReport;
+  finally
+    Code.IsDeleted:=true;
+  end;
 end;
 
 procedure TTestCodetoolsRangeScan.TestCTScanRangeLibraryInitializationModified;
@@ -363,20 +387,24 @@ var
   Tool: TCodeTool;
 begin
   Code:=CodeToolBoss.CreateFile('TestRangeScan.pas');
-  Tool:=CodeToolBoss.GetCodeToolForSource(Code,false,true) as TCodeTool;
+  try
+    Tool:=CodeToolBoss.GetCodeToolForSource(Code,false,true) as TCodeTool;
 
-  // scan source with initialization
-  Code.Source:=GetSource([crsfLibrary,crsfWithInitialization,crsfWithInitializationStatement1]);
-  Tool.BuildTree(lsrEnd);
-  AssertEquals('step1: end found',true,Tool.Tree.FindRootNode(ctnEndPoint)<>nil);
+    // scan source with initialization
+    Code.Source:=GetSource([crsfLibrary,crsfWithInitialization,crsfWithInitializationStatement1]);
+    Tool.BuildTree(lsrEnd);
+    AssertEquals('step1: end found',true,Tool.Tree.FindRootNode(ctnEndPoint)<>nil);
 
-  // scan source with a modified initialization
-  Code.Source:=GetSource([crsfLibrary,crsfWithInitialization,crsfWithInitializationStatement2]);
-  Tool.BuildTree(lsrEnd);
-  AssertEquals('step2: end found',true,Tool.Tree.FindRootNode(ctnEndPoint)<>nil);
+    // scan source with a modified initialization
+    Code.Source:=GetSource([crsfLibrary,crsfWithInitialization,crsfWithInitializationStatement2]);
+    Tool.BuildTree(lsrEnd);
+    AssertEquals('step2: end found',true,Tool.Tree.FindRootNode(ctnEndPoint)<>nil);
 
-  CheckTree(Tool);
-  //Tool.WriteDebugTreeReport;
+    CheckTree(Tool);
+    //Tool.WriteDebugTreeReport;
+  finally
+    Code.IsDeleted:=true;
+  end;
 end;
 
 procedure TTestCodetoolsRangeScan.TestCTScanRangeScannerAtEnd;
@@ -387,24 +415,28 @@ var
   CleanCursorPos: integer;
 begin
   Code:=CodeToolBoss.CreateFile('TestRangeScan.pas');
-  Tool:=CodeToolBoss.GetCodeToolForSource(Code,false,true) as TCodeTool;
+  try
+    Tool:=CodeToolBoss.GetCodeToolForSource(Code,false,true) as TCodeTool;
 
-  // scan source til implementation uses end
-  Code.Source:=GetSource([crsfWithProc1Modified]);
-  Tool.BuildTree(lsrImplementationUsesSectionEnd);
+    // scan source til implementation uses end
+    Code.Source:=GetSource([crsfWithProc1Modified]);
+    Tool.BuildTree(lsrImplementationUsesSectionEnd);
 
-  // let LinkScanner scan til end
-  Tool.Scanner.Scan(lsrEnd,false);
+    // let LinkScanner scan til end
+    Tool.Scanner.Scan(lsrEnd,false);
 
-  AssertEquals('scanner at end, tool at impl uses end',true,Tool.ScannedRange=lsrImplementationUsesSectionEnd);
-  AssertEquals('scanner at end, tool at impl uses end',true,Tool.Scanner.ScannedRange=lsrEnd);
-  // test BuildTreeAndGetCleanPos in implementation section
-  CursorPos.Code:=Code;
-  FindPos(Code,ctrsCommentOfProc1,CursorPos.Y,CursorPos.X);
-  Tool.BuildTreeAndGetCleanPos(trTillCursor,lsrEnd,CursorPos,CleanCursorPos,
-                          [btSetIgnoreErrorPos]);
-  AssertEquals('scanner and tool at end',true,Tool.ScannedRange=lsrEnd);
-  AssertEquals('scanner and tool at end',true,Tool.Scanner.ScannedRange=lsrEnd);
+    AssertEquals('scanner at end, tool at impl uses end',true,Tool.ScannedRange=lsrImplementationUsesSectionEnd);
+    AssertEquals('scanner at end, tool at impl uses end',true,Tool.Scanner.ScannedRange=lsrEnd);
+    // test BuildTreeAndGetCleanPos in implementation section
+    CursorPos.Code:=Code;
+    FindPos(Code,ctrsCommentOfProc1,CursorPos.Y,CursorPos.X);
+    Tool.BuildTreeAndGetCleanPos(trTillCursor,lsrEnd,CursorPos,CleanCursorPos,
+                            [btSetIgnoreErrorPos]);
+    AssertEquals('scanner and tool at end',true,Tool.ScannedRange=lsrEnd);
+    AssertEquals('scanner and tool at end',true,Tool.Scanner.ScannedRange=lsrEnd);
+  finally
+    Code.IsDeleted:=true;
+  end;
 end;
 
 procedure TTestCodetoolsRangeScan.TestCTScanRangeProgramNoName;
@@ -415,41 +447,45 @@ var
   RootNode: TCodeTreeNode;
 begin
   Code:=CodeToolBoss.CreateFile('TestRangeScan.pas');
-  Tool:=CodeToolBoss.GetCodeToolForSource(Code,false,true) as TCodeTool;
-  Tool.BuildTree(lsrInit);
-  Code.Source:=GetSource([crsfProgram,crsfNoSrcName]);
-  Tool.BuildTree(lsrImplementationUsesSectionEnd);
-  RootNode:=nil;
-  for r in TLinkScannerRange do begin
-    {$IFDEF VerboseTestCTRangeScan}
-    debugln(['TTestCodetoolsRangeScan.TestCTScanRangeProgramNoName Range=',dbgs(r)]);
-    {$ENDIF}
-    Tool.BuildTree(r);
-    if RootNode<>nil then begin
-      AssertEquals('RootNode must stay for ascending range '+dbgs(r),true,RootNode=Tool.Tree.Root);
+  try
+    Tool:=CodeToolBoss.GetCodeToolForSource(Code,false,true) as TCodeTool;
+    Tool.BuildTree(lsrInit);
+    Code.Source:=GetSource([crsfProgram,crsfNoSrcName]);
+    Tool.BuildTree(lsrImplementationUsesSectionEnd);
+    RootNode:=nil;
+    for r in TLinkScannerRange do begin
+      {$IFDEF VerboseTestCTRangeScan}
+      debugln(['TTestCodetoolsRangeScan.TestCTScanRangeProgramNoName Range=',dbgs(r)]);
+      {$ENDIF}
+      Tool.BuildTree(r);
+      if RootNode<>nil then begin
+        AssertEquals('RootNode must stay for ascending range '+dbgs(r),true,RootNode=Tool.Tree.Root);
+      end;
+      RootNode:=Tool.Tree.Root;
+      //Tool.WriteDebugTreeReport;
+      case r of
+      lsrNone: ;
+      lsrInit: ;
+      lsrSourceType:
+        AssertEquals('source type scanned',true,RootNode<>nil);
+      lsrSourceName:
+        AssertEquals('source name scanned',true,RootNode<>nil);
+      lsrInterfaceStart: ;
+      lsrMainUsesSectionStart:
+        AssertEquals('main uses section start scanned',true,Tool.FindMainUsesNode<>nil);
+      lsrMainUsesSectionEnd:
+        AssertEquals('main uses section end scanned',true,Tool.FindMainUsesNode.FirstChild<>nil);
+      lsrImplementationStart: ;
+      lsrImplementationUsesSectionStart: ;
+      lsrImplementationUsesSectionEnd: ;
+      lsrInitializationStart: ;
+      lsrFinalizationStart: ;
+      lsrEnd:
+        AssertEquals('end. found',true,Tool.Tree.FindRootNode(ctnEndPoint)<>nil);
+      end;
     end;
-    RootNode:=Tool.Tree.Root;
-    //Tool.WriteDebugTreeReport;
-    case r of
-    lsrNone: ;
-    lsrInit: ;
-    lsrSourceType:
-      AssertEquals('source type scanned',true,RootNode<>nil);
-    lsrSourceName:
-      AssertEquals('source name scanned',true,RootNode<>nil);
-    lsrInterfaceStart: ;
-    lsrMainUsesSectionStart:
-      AssertEquals('main uses section start scanned',true,Tool.FindMainUsesNode<>nil);
-    lsrMainUsesSectionEnd:
-      AssertEquals('main uses section end scanned',true,Tool.FindMainUsesNode.FirstChild<>nil);
-    lsrImplementationStart: ;
-    lsrImplementationUsesSectionStart: ;
-    lsrImplementationUsesSectionEnd: ;
-    lsrInitializationStart: ;
-    lsrFinalizationStart: ;
-    lsrEnd:
-      AssertEquals('end. found',true,Tool.Tree.FindRootNode(ctnEndPoint)<>nil);
-    end;
+  finally
+    Code.IsDeleted:=true;
   end;
 end;
 
@@ -463,40 +499,44 @@ var
   Src: String;
 begin
   Code:=CodeToolBoss.CreateFile('TestRangeScan.pas');
-  Tool:=CodeToolBoss.GetCodeToolForSource(Code,false,true) as TCodeTool;
+  try
+    Tool:=CodeToolBoss.GetCodeToolForSource(Code,false,true) as TCodeTool;
 
-  Src:=
-     'unit testrangescan;'+LineEnding
-    +'interface'+LineEnding
-    +'uses sysutils;'+LineEnding
-    +'implementation'+LineEnding
-    +'initialization'+LineEnding
-    +'write;'+LineEnding
-    +'finalization'+LineEnding
-    +'writeln;'+LineEnding
-    +'end.'+LineEnding;
-  Code.Source:=Src;
-  Tool.BuildTree(lsrEnd);
-  p:=1;
-  repeat
-    ReadRawNextPascalAtom(Src,p,AtomStart);
-    if p>=length(Src) then break;
-    if Src[AtomStart] in ['a'..'z'] then begin
-      try
-        {$IFDEF VerboseTestCTRangeScan}
-        debugln(['TTestCodetoolsRangeScan.TestCTScanRangeAscending Word="',GetIdentifier(@Src[AtomStart]),'"']);
-        {$ENDIF}
-        Src[AtomStart]:=upcase(Src[AtomStart]);
-        Code.Source:=Src;
-        Tool.BuildTree(lsrEnd);
-      except
-        on E: Exception do begin
-          debugln(['TTestCodetoolsRangeScan.TestCTScanRangeUnitModified word="'+GetIdentifier(@Src[AtomStart])+'" ',E.ClassName,' Msg=',E.Message]);
-          Fail(E.Message);
+    Src:=
+       'unit testrangescan;'+LineEnding
+      +'interface'+LineEnding
+      +'uses sysutils;'+LineEnding
+      +'implementation'+LineEnding
+      +'initialization'+LineEnding
+      +'write;'+LineEnding
+      +'finalization'+LineEnding
+      +'writeln;'+LineEnding
+      +'end.'+LineEnding;
+    Code.Source:=Src;
+    Tool.BuildTree(lsrEnd);
+    p:=1;
+    repeat
+      ReadRawNextPascalAtom(Src,p,AtomStart);
+      if p>=length(Src) then break;
+      if Src[AtomStart] in ['a'..'z'] then begin
+        try
+          {$IFDEF VerboseTestCTRangeScan}
+          debugln(['TTestCodetoolsRangeScan.TestCTScanRangeAscending Word="',GetIdentifier(@Src[AtomStart]),'"']);
+          {$ENDIF}
+          Src[AtomStart]:=upcase(Src[AtomStart]);
+          Code.Source:=Src;
+          Tool.BuildTree(lsrEnd);
+        except
+          on E: Exception do begin
+            debugln(['TTestCodetoolsRangeScan.TestCTScanRangeUnitModified word="'+GetIdentifier(@Src[AtomStart])+'" ',E.ClassName,' Msg=',E.Message]);
+            Fail(E.Message);
+          end;
         end;
       end;
-    end;
-  until false;
+    until false;
+  finally
+    Code.IsDeleted:=true;
+  end;
 end;
 
 initialization

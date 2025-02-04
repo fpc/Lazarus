@@ -146,22 +146,26 @@ begin
     +'{$I TestMethodJumpTool2.inc}'+LineEnding
     +'end.'+LineEnding;
   IncCode:=CodeToolBoss.CreateFile('TestMethodJumpTool2.inc');
-  IncCode.Source:=''
-    +'{%MainUnit test1.pas}'+LineEnding
-    +'{$IFDEF UseInterface}'+LineEnding
-    +'procedure {ProcHeader}DoSomething;'+LineEnding
-    +'{$ENDIF}'+LineEnding
-    +'{$IFDEF UseImplementation}'+LineEnding
-    +'procedure DoSomething;'+LineEnding
-    +'begin'+LineEnding
-    +'  {ProcBody}writeln;'+LineEnding
-    +'end;'+LineEnding
-    +'{$ENDIF}'+LineEnding;
+  try
+    IncCode.Source:=''
+      +'{%MainUnit test1.pas}'+LineEnding
+      +'{$IFDEF UseInterface}'+LineEnding
+      +'procedure {ProcHeader}DoSomething;'+LineEnding
+      +'{$ENDIF}'+LineEnding
+      +'{$IFDEF UseImplementation}'+LineEnding
+      +'procedure DoSomething;'+LineEnding
+      +'begin'+LineEnding
+      +'  {ProcBody}writeln;'+LineEnding
+      +'end;'+LineEnding
+      +'{$ENDIF}'+LineEnding;
 
-  Test('Method jump from interface to implementation in one include file',
-       IncCode,'ProcHeader',false,'ProcBody',true);
-  Test('Method jump from implementation to interface in one include file',
-       IncCode,'ProcBody',false,'ProcHeader',false);
+    Test('Method jump from interface to implementation in one include file',
+         IncCode,'ProcHeader',false,'ProcBody',true);
+    Test('Method jump from implementation to interface in one include file',
+         IncCode,'ProcBody',false,'ProcHeader',false);
+  finally
+    IncCode.IsDeleted:=true;
+  end;
 end;
 
 procedure TTestMethodJumpTool.TestMethodJump_IntfToImplSingleProc;
