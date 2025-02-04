@@ -2741,9 +2741,16 @@ begin
     OldPoint^.X := Round(dx);
     OldPoint^.Y := Round(dy);
   end;
-  cairo_move_to(pcr, X, Y);
-  FLastPenX := X;
-  FLastPenY := Y;
+  dx := X;
+  dy := Y;
+  if CurrentPen.Width > 1 then
+  begin
+    dx := X + PixelOffset;
+    dy := Y + PixelOffset;
+  end;
+  cairo_move_to(pcr, dx, dy);
+  FLastPenX := dx;
+  FLastPenY := dy;
   //TODO: check if we need here cairo_get_current_point or we can assign it like above
   //cairo_get_current_point(pcr,@FLastPenX,@FLastPenY);
   Result := True;
