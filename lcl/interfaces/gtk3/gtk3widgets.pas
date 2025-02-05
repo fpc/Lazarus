@@ -623,7 +623,7 @@ type
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
     function EatArrowKeys(const {%H-}AKey: Word): Boolean; override;
     procedure SetColor(AValue: TColor); override;
-    class function selection_changed(ctl:TGtk3ListView):gboolean;cdecl;
+    class function selection_changed(AIconView: PGtkIconView; aData: gPointer):gboolean;cdecl;
   public
     destructor Destroy; override;
     {interface implementation}
@@ -2725,6 +2725,7 @@ var
 begin
   if IsValidHandle then
     GTK3WidgetSet.DestroyCaret(HWND(Self));
+
   if IsValidHandle and FOwnWidget then
   begin
     FOwnWidget:=false;
@@ -6759,7 +6760,7 @@ end;
 
 procedure Gtk3WS_ListViewItemSelected(ASelection: PGtkTreeSelection; AData: GPointer); cdecl;
 var
-  AList: PGList;
+  AList, TmpList: PGList;
   Msg: TLMNotify;
   NM: TNMListView;
   Path: PGtkTreePath;
@@ -6771,9 +6772,10 @@ begin
     exit;
   if not Assigned(TGtk3ListView(AData).FPreselectedIndices) then
     exit;
-  //ATreeView := gtk_tree_selection_get_tree_view(ASelection);
+
   AList := gtk_tree_selection_get_selected_rows(ASelection, nil);
-  TGtk3Widget(AData).BeginUpdate; // dissalow entering Gtk3WS_ListViewItemPreSelected
+  TGtk3Widget(AData).BeginUpdate; // Prevents entering Gtk3WS_ListViewItemPreSelected
+
   try
     for i := 0 to TGtk3ListView(AData).FPreselectedIndices.Count - 1 do
     begin
@@ -6785,17 +6787,21 @@ begin
       NM.iItem := {%H-}PtrInt(TGtk3ListView(AData).FPreselectedIndices.Items[i]);
       NM.iSubItem := 0;
       B := False;
-      for j := 0 to g_list_length(AList) - 1 do
+
+      TmpList := AList;
+      while TmpList <> nil do
       begin
-        Path := g_list_nth_data(AList, guint(j));
-        if Path <> nil then
+        Path := PGtkTreePath(TmpList^.data);
+        if Assigned(Path) then
         begin
           Indices := gtk_tree_path_get_indices(Path)^;
           B := Indices = {%H-}PtrInt(TGtk3ListView(AData).FPreselectedIndices.Items[i]);
           if B then
             break;
         end;
+        TmpList := TmpList^.next;
       end;
+
       if not B then
         NM.uOldState := LVIS_SELECTED
       else
@@ -6807,7 +6813,18 @@ begin
   finally
     FreeAndNil(TGtk3ListView(AData).FPreselectedIndices);
     if AList <> nil then
+    begin
+      TmpList := AList;
+      while TmpList <> nil do
+      begin
+        Path := PGtkTreePath(TmpList^.data);
+        if Assigned(Path) then
+          gtk_tree_path_free(Path);
+        TmpList := TmpList^.next;
+      end;
       g_list_free(AList);
+    end;
+
     TGtk3Widget(AData).EndUpdate;
   end;
 end;
@@ -6884,43 +6901,56 @@ begin
   end;
 end;
 
-class function TGtk3ListView.selection_changed(ctl:TGtk3ListView):gboolean;cdecl;
+class function TGtk3ListView.selection_changed(AIconView: PGtkIconView;
+  aData: gPointer): gboolean; cdecl;
 var
-  pl:PGList;
-  pndx:PGint;
-  i,cnt:gint;
-  lv:TListView;
+  pl, tmp: PGList;
+  pndx: PGint;
+  i, cnt: gint;
   Msg: TLMNotify;
   NM: TNMListView;
+  ctl: TGtk3ListView;
 begin
   Result := gtk_false;
-  pl:=PGtkIconView(ctl.FCentralWidget)^.get_selected_items();
+  ctl := TGtk3ListView(aData);
+  pl := PGtkIconView(ctl.GetContainerWidget)^.get_selected_items();
+
   if Assigned(pl) then
   begin
-    pndx:=PGtkTreePath(pl^.data)^.get_indices_with_depth(@cnt);
-    lv:=TListView(ctl.LCLObject);
-    ctl.BeginUpdate;
     try
-      for i:=0 to cnt-1 do
+      tmp := pl;
+      while Assigned(tmp) do
       begin
-        FillChar(Msg{%H-}, SizeOf(Msg), 0);
-        Msg.Msg := CN_NOTIFY;
-        FillChar(NM{%H-}, SizeOf(NM), 0);
-        NM.hdr.hwndfrom := HWND(ctl);
-        NM.hdr.code := LVN_ITEMCHANGED;
-        NM.iItem := {%H-}PtrInt(pndx^);
-        NM.iSubItem := 0;
-        NM.uNewState := LVIS_SELECTED;
-        NM.uChanged := LVIF_STATE;
-        Msg.NMHdr := @NM.hdr;
-        ctl.DeliverMessage(Msg);
-        inc(pndx);
+        pndx := PGtkTreePath(tmp^.data)^.get_indices_with_depth(@cnt);
+        // lv := TListView(ctl.LCLObject);
+        ctl.BeginUpdate;
+        try
+          for i := 0 to cnt - 1 do
+          begin
+            FillChar(Msg{%H-}, SizeOf(Msg), 0);
+            Msg.Msg := CN_NOTIFY;
+            FillChar(NM{%H-}, SizeOf(NM), 0);
+            NM.hdr.hwndfrom := HWND(ctl);
+            NM.hdr.code := LVN_ITEMCHANGED;
+            NM.iItem := {%H-}PtrInt(pndx^);
+            NM.iSubItem := 0;
+            NM.uNewState := LVIS_SELECTED;
+            NM.uChanged := LVIF_STATE;
+            Msg.NMHdr := @NM.hdr;
+            ctl.DeliverMessage(Msg);
+            inc(pndx);
+          end;
+        finally
+          ctl.EndUpdate;
+        end;
+        gtk_tree_path_free(PGtkTreePath(tmp^.data));
+
+        tmp := tmp^.next;
       end;
     finally
-      ctl.EndUpdate;
+      g_list_free(pl);
     end;
   end;
-
 end;
 
 function TGtk3ListView.EatArrowKeys(const AKey: Word): Boolean;
@@ -7063,13 +7093,15 @@ begin
       ImageIndex := ListItem.SubItemImages[ColumnIndex-1];
 
   if (ImageIndex > -1) and (ImageIndex <= Images.Count-1) then
-    pb:=TGtk3Image(TBitmap(Images.Items[ImageIndex]).Handle).Handle
+    pb:=TGtk3Image(TBitmap(Images.Items[ImageIndex]).Handle).Handle^.copy
   else
     pb:=nil;
 
   gv.set_instance(pb);
-  PGtkCellRendererPixbuf(cell)^.set_property('pixbuf',@gv)
+  PGtkCellRendererPixbuf(cell)^.set_property('pixbuf',@gv);
 
+  if Assigned(pb) then
+    g_object_unref(pb);
 end;
 
 procedure Gtk3WS_ListViewColumnClicked(column: PGtkTreeViewColumn; AData: GPointer); cdecl;
@@ -7511,7 +7543,9 @@ begin
         else
           PGtkTreeView(GetContainerWidget)^.set_cursor(Path, nil, False);
       end else
-        PGtkIconView(GetContainerWidget)^.set_cursor(Path, nil, False);
+      begin
+        PGtkIconView(GetContainerWidget)^.set_cursor(Path, nil, False); // valgrind says leak
+      end;
       if Path <> nil then
         gtk_tree_path_free(Path);
     end;

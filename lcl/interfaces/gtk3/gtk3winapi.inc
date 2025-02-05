@@ -960,7 +960,7 @@ begin
     if Count>0 then
       System.Move(Str^,AStr[1],Count);
 
-    if (Flags and DT_EXPANDTABS) <> 0 then
+    if (Count > 0) and ((Flags and DT_EXPANDTABS) <> 0) then
       AStr := StringReplace(AStr, #9, TabString, [rfReplaceAll]);
 
     if (Flags and DT_NOPREFIX) <> DT_NOPREFIX then
@@ -1131,13 +1131,14 @@ var
     AFamilies: PPPangoFontFamily;
     AFaces: PPPangoFontFace;
     ANumFaces: Integer;
+    APangoContext: PPangoContext;
   begin
     AList.Clear;
     SetLength(Faces, 0);
     Result := -1;
     AFamilies := nil;
-
-    pango_context_list_families(gdk_pango_context_get, @AFamilies, @Result);
+    APangoContext := gdk_pango_context_get;
+    pango_context_list_families(APangoContext, @AFamilies, @Result); // valgrid says mem leak
     SetLength(Faces, Result);
     for i := 0 to Result - 1 do
     begin
@@ -1148,10 +1149,14 @@ var
       pango_font_family_list_faces(AFamilies[i], @AFaces, @ANumFaces);
       SetLength(Faces[i].Faces, ANumFaces);
       for j := 0 to ANumFaces - 1 do
+      begin
         Faces[i].Faces[j] := StrPas(pango_font_face_get_face_name(AFaces[j]));
+        g_object_unref(AFaces[j]);
+      end;
       g_free(AFaces);
     end;
     g_free(AFamilies);
+    g_object_unref(APangoContext);
   end;
 
   function Gtk3GetFontFamilies(var List: TStringList;
@@ -1268,6 +1273,9 @@ var
 
     if StylesList.Count > 0  then
       AStyle := GetStyleAt(0);
+
+    //mem leak found by valgrind.
+    pango_font_description_free(Font);
 
     // current pango support in fpc is really poor, we cannot
     // get PangoScript since it's in pango >= 1.4

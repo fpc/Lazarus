@@ -923,7 +923,7 @@ end;
 class procedure TGtk3WSCustomListView.ItemShow(const ALV: TCustomListView;
   const AIndex: Integer; const AItem: TListItem; const PartialOK: Boolean);
 begin
-  DebugLn('TGtk3WSCustomListView.ItemShow ');
+  // DebugLn('TGtk3WSCustomListView.ItemShow ');
   // inherited ItemShow(ALV, AIndex, AItem, PartialOK);
   if ALV.HandleAllocated then
   begin
