@@ -6830,8 +6830,6 @@ begin
 
   PtrType := G_TYPE_POINTER;
 
-
-
   if TListView(AListView).ViewStyle in [vsIcon,vsSmallIcon] then
   begin
     TreeModel := PGtkTreeModel(gtk_list_store_new(3, [
@@ -7113,6 +7111,9 @@ begin
 
   //store the TColumn in the column data for callbacks
   g_object_set_data(AGtkColumn, PgChar('TListColumn'), gpointer(AColumn));
+
+  g_object_set_data(AGtkColumn, 'pix_renderer', PixRenderer);
+  g_object_set_data(AGtkColumn, 'text_renderer', TextRenderer);
 
   g_signal_connect_data(AGtkColumn,'clicked', TGCallback(@Gtk3WS_ListViewColumnClicked), Self, nil, G_CONNECT_DEFAULT);
   PGtkTreeView(GetContainerWidget)^.insert_column(AGtkColumn, AIndex);

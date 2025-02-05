@@ -22,7 +22,7 @@ interface
 
 uses
   // libs
-  LazGtk3, LazGdk3, LazGlib2,
+  LazGtk3, LazGdk3, LazGlib2, LazGObject2, LazGdkPixbuf2,
   // RTL, FCL
   Types, Classes, Math, Sysutils, ctypes,
   // LCL
@@ -110,6 +110,7 @@ type
   TGtk3WSCustomListView = class(TWSCustomListView)
   private
     class procedure SetPropertyInternal(const ALV: TCustomListView; const AProp: TListViewProperty; const AIsSet: Boolean);
+    class procedure AddRemoveCheckboxRenderer(const ALV: TCustomListView; const Add: Boolean);
   published
     // columns
     class procedure ColumnDelete(const ALV: TCustomListView; const AIndex: Integer); override;
@@ -242,7 +243,7 @@ type
 
 
 implementation
-uses gtk3procs;
+uses gtk3procs, Gtk3CellRenderer, gtk3objects;
 
 { TGtk3WSTrackBar }
 
@@ -375,13 +376,187 @@ begin
   AListView := TGtk3ListView.Create(AWinControl, AParams);
   Result := TLCLHandle(AListView);
 end;
-(*
-class procedure TGtk3WSCustomListView.DestroyHandle(
-  const AWinControl: TWinControl);
+
+type
+  TLVHack = class(TCustomListView)
+  end;
+  TLVItemHack = class(TListItem)
+  end;
+
+
+procedure Gtk3_ItemCheckedChanged(renderer: PGtkCellRendererToggle; PathStr: Pgchar; aData: gPointer);cdecl;
+var
+  LV: TLVHack;
+  Index: Integer;
+  ListItem: TLVItemHack;
+  R: TRect;
+  x, y, cellw, cellh: gint;
+  AMinSize, ANaturalSize: TGtkRequisition;
 begin
-  inherited DestroyHandle(AWinControl);
+  LV := TLVHack(TGtk3ListView(aData).LCLObject);
+  Index := StrToInt(PathStr);
+  ListItem := TLVItemHack(LV.Items.Item[Index]);
+  if ListItem <> nil then
+  begin
+    ListItem.Checked := not ListItem.GetCheckedInternal;
+    if Assigned(LV.OnItemChecked) then
+      LV.OnItemChecked(TGtk3ListView(aData).LCLObject, LV.Items.Item[Index]);
+
+    // we must update renderer row, otherwise visually it looks different
+    // if we change toggle state by keyboard (eg. pressing Space key)
+    R := ListItem.DisplayRect(drBounds);
+    // ARect := GdkRectFromRect(R);
+
+    gtk_cell_renderer_get_preferred_size(PGtkCellRenderer(renderer), TGtk3ListView(aData).getContainerWidget,
+      @AMinSize, @ANaturalSize);
+    with R do
+      gtk_widget_queue_draw_area(TGtk3ListView(aData).getContainerWidget, Left, Top, ANaturalSize.width, ANaturalSize.height);
+  end;
 end;
-*)
+
+procedure Gtk3WSLV_ListViewGetCheckedDataFunc({%H-}tree_column: PGtkTreeViewColumn;
+  cell: PGtkCellRenderer; tree_model: PGtkTreeModel; iter: PGtkTreeIter; aData: gPointer); cdecl;
+var
+  APath: PGtkTreePath;
+  ListItem: TLVItemHack;
+begin
+  gtk_tree_model_get(tree_model, iter, [0, @ListItem, -1]);
+
+  if (ListItem = nil) and TCustomListView(TGtk3ListView(aData).LCLObject).OwnerData then
+  begin
+    APath := gtk_tree_model_get_path(tree_model,iter);
+    ListItem := TLVItemHack(TCustomListView(TGtk3ListView(aData).LCLObject).Items[gtk_tree_path_get_indices(APath)^]);
+    gtk_tree_path_free(APath);
+  end;
+
+  if ListItem = nil then
+    Exit;
+  gtk_cell_renderer_toggle_set_active(PGtkCellRendererToggle(cell), ListItem.GetCheckedInternal);
+end;
+
+procedure Gtk3WSLV_ListViewGetPixbufDataFuncForColumn(tree_column: PGtkTreeViewColumn;
+  cell: PGtkCellRenderer; tree_model: PGtkTreeModel; iter: PGtkTreeIter; aData: gPointer); cdecl;
+var
+  ListItem: TListItem;
+  Images: TFPList;
+  ListColumn: TListColumn;
+  ImageIndex: Integer;
+  ColumnIndex: Integer;
+  APath: PGtkTreePath;
+  ImageList: TCustomImageList;
+  Bmp: TBitmap;
+  pixbuf: PGdkPixbuf;
+  PixbufValue: TGValue;
+begin
+  PixbufValue:=Default(TGValue);
+  g_value_init(@PixbufValue,  gdk_pixbuf_get_type);
+  g_object_set_property(PgObject(cell), PChar('pixbuf'), @PixbufValue);
+  g_value_unset(@PixbufValue);
+
+  gtk_tree_model_get(tree_model, iter, [0, @ListItem, -1]);
+
+  ListColumn := TListColumn(g_object_get_data(PGObject(tree_column), 'TListColumn'));
+  if ListColumn = nil then
+    Exit;
+  ColumnIndex := ListColumn.Index;
+  ImageList := nil;
+  Images := TGtk3ListView(aData).Images;
+  if TCustomListView(TGtk3ListView(aData).LCLObject).OwnerData then
+    ImageList := TLVHack(TGtk3ListView(aData).LCLObject).SmallImages;
+  if (Images = nil) and (ImageList = nil) then
+  begin
+    Exit;
+  end;
+  ImageIndex := -1;
+
+  if (ListItem = nil) and TCustomListView(TGtk3ListView(aData).LCLObject).OwnerData then
+  begin
+    APath := gtk_tree_model_get_path(tree_model,iter);
+    ListItem := TCustomListView(TGtk3ListView(aData).LCLObject).Items[gtk_tree_path_get_indices(APath)^];
+    gtk_tree_path_free(APath);
+  end;
+
+  if ListItem = nil then
+    Exit;
+
+  if ColumnIndex = 0 then
+    ImageIndex := ListItem.ImageIndex
+  else
+    if ColumnIndex -1 <= ListItem.SubItems.Count-1 then
+      ImageIndex := ListItem.SubItemImages[ColumnIndex-1];
+
+  if (ImageList <> nil) and
+    (ImageIndex > -1) and (ImageIndex <= ImageList.Count-1) then
+  begin
+    Bmp := TBitmap.create;
+    try
+      pixbuf := nil;
+      ImageList.GetBitmap(ImageIndex, Bmp);
+      pixbuf := TGtk3Image(Bmp.Handle).Handle;
+      g_value_init(@PixbufValue, gdk_pixbuf_get_type);
+      g_value_set_object(@PixbufValue, pixbuf);
+      g_object_set_property(PGObject(cell), PChar('pixbuf'), @PixbufValue);
+      g_value_unset(@PixbufValue);
+    finally
+      Bmp.Free;
+    end;
+  end else
+  g_value_init(@PixbufValue, gdk_pixbuf_get_type);
+  if (ImageIndex > -1) and (ImageIndex <= Images.Count-1) and (Images.Items[ImageIndex] <> nil) then
+    g_value_set_object(@PixbufValue, PGdkPixbuf(Images.Items[ImageIndex]));
+  g_object_set_property(PGObject(cell), PChar('pixbuf'), @PixbufValue);
+  g_value_unset(@PixbufValue);
+end;
+
+class procedure TGtk3WSCustomListView.AddRemoveCheckboxRenderer(
+  const ALV: TCustomListView; const Add: Boolean);
+var
+  togglerenderer,
+  pixrenderer,
+  textrenderer: PGtkCellRenderer;
+  column: PGtkTreeViewColumn;
+  aPath: PGtkTreePath;
+  aRect: TGdkRectangle;
+begin
+  column := gtk_tree_view_get_column(PGtkTreeView(TGtk3ListView(ALV.Handle).GetContainerWidget), 0);
+
+  if column = nil then
+    Exit;
+  PixRenderer := PGtkCellRenderer(g_object_get_data(PGObject(Column), 'pix_renderer'));
+  TextRenderer := PGtkCellRenderer(g_object_get_data(PGObject(Column), 'text_renderer'));
+
+  g_object_ref(pixrenderer);
+  g_object_ref(textrenderer);
+
+  if Add then
+  begin
+    column^.clear;
+    togglerenderer := gtk_cell_renderer_toggle_new();
+
+    column^.pack_start(togglerenderer, gtk_false);
+    column^.pack_start(pixrenderer, gtk_false);
+    column^.pack_start(textrenderer, gtk_true);
+
+    column^.set_cell_data_func(togglerenderer, TGtkTreeCellDataFunc(@Gtk3WSLV_ListViewGetCheckedDataFunc), TGtk3ListView(ALV.Handle), nil);
+    column^.set_cell_data_func(pixrenderer, TGtkTreeCellDataFunc(@Gtk3WSLV_ListViewGetPixbufDataFuncForColumn), TGtk3ListView(ALV.Handle), nil);
+    column^.set_cell_data_func(textrenderer, TGtkTreeCellDataFunc(@LCLIntfCellRenderer_CellDataFunc), TGtk3ListView(ALV.Handle), nil);
+
+    g_signal_connect_data(togglerenderer, 'toggled', TGCallback(@Gtk3_ItemCheckedChanged), TGtk3ListView(ALV.Handle), nil, G_CONNECT_DEFAULT);
+  end else
+  begin
+    column^.clear;
+    column^.pack_start(pixrenderer, gtk_false);
+    column^.pack_start(textrenderer, gtk_true);
+
+    column^.set_cell_data_func(pixrenderer, TGtkTreeCellDataFunc(@Gtk3WSLV_ListViewGetPixbufDataFuncForColumn), TGtk3ListView(ALV.Handle), nil);
+    column^.set_cell_data_func(textrenderer, TGtkTreeCellDataFunc(@LCLIntfCellRenderer_CellDataFunc), TGtk3ListView(ALV.Handle), nil);
+
+  end;
+  if Gtk3IsObject(pixrenderer) then
+    g_object_unref(pixrenderer);
+  if Gtk3IsObject(textrenderer) then
+    g_object_unref(textrenderer);
+end;
 
 class procedure TGtk3WSCustomListView.SetPropertyInternal(
   const ALV: TCustomListView; const AProp: TListViewProperty;
@@ -399,8 +574,8 @@ begin
     end;
     lvpCheckboxes:
     begin
-      // if TListView(ALV).ViewStyle in [vsReport,vsList] then
-      // AddRemoveCheckboxRenderer(ALV, GetWidgetInfo(Widgets^.MainView), AIsSet);
+      if TListView(ALV).ViewStyle in [vsReport,vsList] then
+        AddRemoveCheckboxRenderer(ALV, AIsSet);
     end;
     lvpColumnClick:
     begin
@@ -479,6 +654,8 @@ begin
     begin
       // TODO: implement ???
     end;
+    else
+      DebugLn(Format('WARNING: TGtk3WSCustomListView.SetPropertyInternal property %d not handled.',[Ord(AProp)]));
   end;
 end;
 
