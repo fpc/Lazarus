@@ -66,6 +66,7 @@ type
     procedure TestRenameProgramName_DottedShortenStart;
     procedure TestRenameProgramName_DottedShortenMiddle;
     procedure TestRenameProgramName_DottedShortenEnd;
+    procedure TestRenameProgramName_ToraToraTora;
 
     // rename uses
     procedure TestUseOmittedNamespace;
@@ -1451,6 +1452,31 @@ begin
   'var c: Foo . Bar . TRed;',
   'begin',
   '  Foo.Bar.c:=Foo . Bar . &c;',
+  'end.',
+  '']);
+end;
+
+procedure TTestRefactoring.TestRenameProgramName_ToraToraTora;
+begin
+  Add([
+  'program tora.tora.{comment}tora;',
+  '{$mode objFPC}',
+  'var Toranaga: longint;',
+  'begin',
+  '  Toranaga:=3;',
+  '  tora.tora.tora.Toranaga:=3*Toranaga;',
+  '  tora.{}tora.{comment}tora.{}Toranaga:=3*tora.tora.tora.Toranaga;',
+  'end.',
+  '']);
+  RenameSourceName('Red.Green.Blue','red.green.blue.pas');
+  CheckDiff(Code,[
+  'program Red.Green.{comment}Blue;',
+  '{$mode objFPC}',
+  'var Toranaga: longint;',
+  'begin',
+  '  Toranaga:=3;',
+  '  Red.Green.Blue.Toranaga:=3*Toranaga;',
+  '  Red.{}Green.{comment}Blue.{}Toranaga:=3*Red.Green.Blue.Toranaga;',
   'end.',
   '']);
 end;
