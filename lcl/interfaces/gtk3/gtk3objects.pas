@@ -1071,6 +1071,7 @@ begin
   inherited Create;
   ACairo := gdk_cairo_create(gdk_get_default_root_window);
   gdk_cairo_get_clip_rectangle(ACairo, @ARect);
+  cairo_destroy(ACairo);
   ASurface := cairo_image_surface_create(CAIRO_FORMAT_ARGB32, ARect.width, ARect.height);
   try
     FHandle := gdk_pixbuf_get_from_surface(ASurface, 0 ,0, ARect.Width, ARect.Height);
