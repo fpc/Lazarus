@@ -152,7 +152,6 @@ type
 
     class function GetBoundingRect(const ALV: TCustomListView): TRect; override;
     class function GetDropTarget(const ALV: TCustomListView): Integer; override;
-    class function GetFocused(const ALV: TCustomListView): Integer; override;
     class function GetHoverTime(const ALV: TCustomListView): Integer; override;
     class function GetItemAt(const ALV: TCustomListView; x,y: integer): Integer; override;
     class function GetSelCount(const ALV: TCustomListView): Integer; override;
@@ -781,13 +780,6 @@ class function TGtk3WSCustomListView.GetDropTarget(const ALV: TCustomListView
   ): Integer;
 begin
   DebugLn('TGtk3WSCustomListView.GetDropTarget ');
-  Result := -1;
-end;
-
-class function TGtk3WSCustomListView.GetFocused(const ALV: TCustomListView
-  ): Integer;
-begin
-  DebugLn('TGtk3WSCustomListView.GetFocused ');
   Result := -1;
 end;
 
