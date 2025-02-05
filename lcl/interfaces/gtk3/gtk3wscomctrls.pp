@@ -737,8 +737,10 @@ end;
 class function TGtk3WSCustomListView.ItemGetPosition(
   const ALV: TCustomListView; const AIndex: Integer): TPoint;
 begin
-  DebugLn('TGtk3WSCustomListView.ItemGetPosition ');
-  Result := Point(0, 0); // inherited ItemGetPosition(ALV, AIndex);
+  //DebugLn('TGtk3WSCustomListView.ItemGetPosition ');
+  Result := Point(-1, -1); // inherited ItemGetPosition(ALV, AIndex);
+  if ALV.HandleAllocated then
+    Result := TGtk3ListView(ALV.Handle).ItemPosition(AIndex);
 end;
 
 class procedure TGtk3WSCustomListView.ItemUpdate(const ALV: TCustomListView;
@@ -1000,6 +1002,7 @@ begin
   if not WSCheckHandleAllocated(ALV, 'SetViewStyle') then
     Exit;
   DebugLn('TGtk3WSCustomListView.SetViewStyle ');
+  RecreateWnd(ALV);
   // inherited SetViewStyle(ALV, AValue);
 end;
 

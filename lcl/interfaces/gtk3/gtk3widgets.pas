@@ -622,6 +622,7 @@ type
   protected
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
     function EatArrowKeys(const {%H-}AKey: Word): Boolean; override;
+    procedure SetColor(AValue: TColor); override;
     class function selection_changed(ctl:TGtk3ListView):gboolean;cdecl;
   public
     destructor Destroy; override;
@@ -646,6 +647,7 @@ type
     procedure ItemDelete(AIndex: Integer);
     function  ItemDisplayRect(AIndex: Integer; ASubItem: integer; ACode: TDisplayCode): TRect;
     procedure ItemInsert(AIndex: Integer; AItem: TListItem);
+    function ItemPosition(AIndex: integer): TPoint;
     procedure ItemSetText(AIndex, ASubIndex: Integer; AItem: TListItem; const AText: String);
     procedure ItemSetImage(AIndex, ASubIndex: Integer; AItem: TListItem);
     procedure ItemSetState(const AIndex: Integer; const {%H-}AItem: TListItem; const AState: TListItemState;
@@ -6923,6 +6925,21 @@ begin
   Result := False;
 end;
 
+procedure TGtk3ListView.SetColor(AValue: TColor);
+var
+  ADisabledColor, BgColor: TGdkRGBA;
+begin
+  BgColor := TColortoTGdkRGBA(ColorToRgb(AValue));
+
+  getContainerWidget^.get_style_context^.get_background_color([GTK_STATE_FLAG_INSENSITIVE], @ADisabledColor);
+  //override all
+  gtk_widget_override_background_color(getContainerWidget, GTK_STATE_FLAG_NORMAL, @BgColor);
+  //return system highlight color
+  BgColor := TColortoTGdkRGBA(ColorToRgb(clHighlight));
+  gtk_widget_override_background_color(getContainerWidget, [GTK_STATE_FLAG_SELECTED], @BgColor);
+  gtk_widget_override_background_color(getContainerWidget, [GTK_STATE_FLAG_INSENSITIVE], @ADisabledColor);
+end;
+
 destructor TGtk3ListView.Destroy;
 begin
   ClearImages;
@@ -7287,6 +7304,11 @@ begin
     begin
       Column := gtk_tree_view_get_column(PGtkTreeView(GetContainerWidget), ASubItem);
       gtk_tree_view_get_cell_area(PGtkTreeView(GetContainerWidget), Path, Column, @ItemRect);
+      gtk_tree_view_convert_bin_window_to_widget_coords(
+        PGtkTreeView(GetContainerWidget),
+        ItemRect.x, ItemRect.y, @x, @y);
+      ItemRect.x := x;
+      ItemRect.y := y;
     end else
       gtk_icon_view_get_cell_rect(PGtkIconView(getContainerWidget), Path, nil, @ItemRect);
     Result := RectFromGdkRect(ItemRect);
@@ -7302,6 +7324,7 @@ var
   NewIndex: Integer;
   bmp:TBitmap;
   pxb:PGdkPixbuf;
+  w,h: gint;
 begin
   if not IsWidgetOK then
     exit;
@@ -7321,15 +7344,27 @@ begin
   else
   begin
     bmp:=TBitmap.Create;
-    TListView(LCLObject).LargeImages.GetBitmap(AIndex,bmp);
+    if Assigned(TListView(LCLObject).LargeImages) then
+      TListView(LCLObject).LargeImages.GetBitmap(AIndex,bmp)
+    else
+    begin
+      gtk_icon_size_lookup(Ord(GTK_ICON_SIZE_LARGE_TOOLBAR), @w, @h);
+      bmp.SetSize(w, h);
+    end;
     pxb:=TGtk3Image(bmp.Handle).Handle;
     gtk_list_store_insert_with_values(PGtkListStore(AModel), @Iter, NewIndex,
       [0, Pointer(AItem),
        1, PChar(AItem.Caption),
        2, pxb, -1] );
+    if not Assigned(FImages) then
+      FImages := TFPList.Create;
     fImages.Add(bmp);
   end;
+end;
 
+function TGtk3ListView.ItemPosition(AIndex: integer): TPoint;
+begin
+  Result := ItemDisplayRect(AIndex, 0, drBounds).TopLeft;
 end;
 
 procedure TGtk3ListView.UpdateItem(AIndex:integer;AItem: TListItem);
@@ -7340,6 +7375,7 @@ var
   Iter: TGtkTreeIter;
   bmp:TBitmap;
   pxb:PGdkPixbuf;
+  w,h: gint;
 begin
   if IsTreeView then
   begin
@@ -7353,14 +7389,19 @@ begin
     AModel^.get_iter(@iter,path);
 
     bmp:=TBitmap.Create;
-    TListView(LCLObject).LargeImages.GetBitmap(AItem.ImageIndex,bmp);
+    if Assigned(TListView(LCLObject).LargeImages) then
+      TListView(LCLObject).LargeImages.GetBitmap(AItem.ImageIndex,bmp)
+    else
+    begin
+      gtk_icon_size_lookup(Ord(GTK_ICON_SIZE_LARGE_TOOLBAR), @w, @h);
+      bmp.SetSize(w, h);
+    end;
     pxb:=TGtk3Image(bmp.Handle).Handle;
     gtk_list_store_set(PGtkListStore(AModel), @Iter,
       [0, Pointer(AItem),
        1, PChar(AItem.Caption),
        2, pxb, -1] );
     fImages.Add(bmp);
-
     gtk_tree_path_free(Path);
   end;
 end;
