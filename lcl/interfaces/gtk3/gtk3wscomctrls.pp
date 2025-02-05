@@ -638,11 +638,10 @@ begin
     end;
     lvpShowColumnHeaders:
     begin
-      // allow only column modifications when in report mode
-      if not (TListView(ALV).ViewStyle in [vsList, vsReport]) then Exit;
       if TGtk3ListView(ALV.Handle).IsTreeView then
       begin
-        PGtkTreeView(TGtk3ListView(ALV.Handle).GetContainerWidget)^.set_headers_visible(AIsSet and (TListView(ALV).ViewStyle = vsReport));
+        //Delphi docs: To use columns in a list view, the ViewStyle property must be set to vsReport.
+        PGtkTreeView(TGtk3ListView(ALV.Handle).GetContainerWidget)^.set_headers_visible(AIsSet and (TLVHack(ALV).ViewStyle = vsReport));
         PGtkTreeView(TGtk3ListView(ALV.Handle).GetContainerWidget)^.resize_children;
       end;
     end;

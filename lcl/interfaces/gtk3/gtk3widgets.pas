@@ -6812,9 +6812,12 @@ begin
   end;
 end;
 
+type
+  TCustomListViewHack = class(TCustomListView);
+
 function TGtk3ListView.CreateWidget(const Params: TCreateParams): PGtkWidget;
 var
-  AListView: TCustomListView;
+  AListView: TCustomListViewHack;
   AScrollStyle: TGtkScrollStyle;
   PtrType: GType;
   TreeModel: PGtkTreeModel;
@@ -6825,12 +6828,12 @@ begin
   FImages := nil;
   FPreselectedIndices := nil;
   FWidgetType := FWidgetType + [wtTreeModel, wtListView, wtScrollingWin];
-  AListView := TCustomListView(LCLObject);
+  AListView := TCustomListViewHack(LCLObject);
   Result := PGtkScrolledWindow(TGtkScrolledWindow.new(nil, nil));
 
   PtrType := G_TYPE_POINTER;
 
-  if TListView(AListView).ViewStyle in [vsIcon,vsSmallIcon] then
+  if AListView.ViewStyle in [vsIcon,vsSmallIcon] then
   begin
     TreeModel := PGtkTreeModel(gtk_list_store_new(3, [
       G_TYPE_POINTER, // ListItem pointer
@@ -6848,7 +6851,7 @@ begin
     FCentralWidget := TGtkTreeView.new_with_model(TreeModel);
   end;
 
-  FIsTreeView := not (TListView(AListView).ViewStyle in [vsIcon,vsSmallIcon]);
+  FIsTreeView := not (AListView.ViewStyle in [vsIcon,vsSmallIcon]);
 
   FCentralWidget^.set_has_window(True);
   FCentralWidget^.show;
@@ -6856,7 +6859,7 @@ begin
   PGtkScrolledWindow(Result)^.add(FCentralWidget);
   //PGtkScrolledWindow(Result)^.set_focus_child(FCentralWidget);
 
-  AScrollStyle := Gtk3TranslateScrollStyle(TListView(AListView).ScrollBars);
+  AScrollStyle := Gtk3TranslateScrollStyle(AListView.ScrollBars);
   // gtk3 scrolled window hates GTK_POLICY_NONE
   PGtkScrolledWindow(Result)^.set_policy(AScrollStyle.Horizontal, AScrollStyle.Vertical);
   PGtkScrolledWindow(Result)^.set_shadow_type(BorderStyleShadowMap[AListView.BorderStyle]);
@@ -6870,13 +6873,15 @@ begin
     gtk_tree_selection_set_select_function(PGtkTreeView(FCentralWidget)^.get_selection, TGtkTreeSelectionFunc(@Gtk3WS_ListViewItemPreSelected),
       Self, nil);
     g_signal_connect_data(PGtkTreeView(FCentralWidget)^.get_selection, 'changed', TGCallback(@Gtk3WS_ListViewItemSelected), Self, nil, G_CONNECT_DEFAULT);
+
+    PGtkTreeView(FCentralWidget)^.set_headers_visible(AListView.ShowColumnHeaders and (AListView.ViewStyle = vsReport));
+    PGtkTreeView(FCentralWidget)^.resize_children;
+
   end else
   begin
     g_signal_connect_data (PGtkIconView(FCentralWidget), 'selection-changed',
                         TGCallback(@Tgtk3ListView.selection_changed), Self, nil, G_CONNECT_DEFAULT);
   end;
-  // if FIsTreeView then
-  //  PGtkTreeView(FCentralWidget)^.set_search_column(0);
 end;
 
 class function TGtk3ListView.selection_changed(ctl:TGtk3ListView):gboolean;cdecl;
