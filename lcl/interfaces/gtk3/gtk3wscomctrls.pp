@@ -24,15 +24,15 @@ uses
   // libs
   LazGtk3, LazGdk3, LazGlib2, LazGObject2, LazGdkPixbuf2,
   // RTL, FCL
-  Types, Classes, Math, Sysutils, ctypes,
+  Types, Classes, Math, Sysutils,
   // LCL
-  LCLType, LMessages, Controls, Graphics, StdCtrls, ComCtrls, Forms,
+  LCLType, Controls, Graphics, StdCtrls, ComCtrls, Forms,
   ImgList, InterfaceBase,
   // LazUtils
   LazLogger,
   // widgetset
   WSComCtrls, WSLCLClasses, WSControls, WSProc,
-  Gtk3WSControls, Gtk3Int, gtk3widgets;
+  gtk3widgets;
   
 type
   { TGtk3WSCustomPage }
@@ -449,15 +449,17 @@ var
   PixbufValue: TGValue;
 begin
   PixbufValue:=Default(TGValue);
-  g_value_init(@PixbufValue,  gdk_pixbuf_get_type);
+  g_value_init(@PixbufValue,  gdk_pixbuf_get_type());
   g_object_set_property(PgObject(cell), PChar('pixbuf'), @PixbufValue);
-  g_value_unset(@PixbufValue);
 
   gtk_tree_model_get(tree_model, iter, [0, @ListItem, -1]);
 
   ListColumn := TListColumn(g_object_get_data(PGObject(tree_column), 'TListColumn'));
   if ListColumn = nil then
+  begin
+    g_value_unset(@PixbufValue);
     Exit;
+  end;
   ColumnIndex := ListColumn.Index;
   ImageList := nil;
   Images := TGtk3ListView(aData).Images;
@@ -465,6 +467,7 @@ begin
     ImageList := TLVHack(TGtk3ListView(aData).LCLObject).SmallImages;
   if (Images = nil) and (ImageList = nil) then
   begin
+    g_value_unset(@PixbufValue);
     Exit;
   end;
   ImageIndex := -1;
@@ -477,7 +480,10 @@ begin
   end;
 
   if ListItem = nil then
+  begin
+    g_value_unset(@PixbufValue);
     Exit;
+  end;
 
   if ColumnIndex = 0 then
     ImageIndex := ListItem.ImageIndex
@@ -492,19 +498,27 @@ begin
     try
       pixbuf := nil;
       ImageList.GetBitmap(ImageIndex, Bmp);
-      pixbuf := TGtk3Image(Bmp.Handle).Handle;
-      g_value_init(@PixbufValue, gdk_pixbuf_get_type);
-      g_value_set_object(@PixbufValue, pixbuf);
-      g_object_set_property(PGObject(cell), PChar('pixbuf'), @PixbufValue);
-      g_value_unset(@PixbufValue);
+      pixbuf := TGtk3Image(Bmp.Handle).Handle^.copy;
+      if pixbuf <> nil then
+      begin
+        g_value_unset(@PixbufValue);
+        g_value_init(@PixbufValue, gdk_pixbuf_get_type());
+        g_value_set_object(@PixbufValue, pixbuf);
+        g_object_set_property(PGObject(cell), PChar('pixbuf'), @PixbufValue);
+      end;
     finally
       Bmp.Free;
     end;
-  end else
-  g_value_init(@PixbufValue, gdk_pixbuf_get_type);
+  end;
   if (ImageIndex > -1) and (ImageIndex <= Images.Count-1) and (Images.Items[ImageIndex] <> nil) then
-    g_value_set_object(@PixbufValue, PGdkPixbuf(Images.Items[ImageIndex]));
-  g_object_set_property(PGObject(cell), PChar('pixbuf'), @PixbufValue);
+  begin
+    Pixbuf := PGdkPixbuf(Images.Items[ImageIndex]);
+    if Assigned(pixBuf) then
+    begin
+      g_value_set_object(@PixbufValue, pixbuf);
+      g_object_set_property(PGObject(cell), PChar('pixbuf'), @PixbufValue);
+    end;
+  end;
   g_value_unset(@PixbufValue);
 end;
 
@@ -652,6 +666,10 @@ begin
     lvpWrapText:
     begin
       // TODO: implement ???
+    end;
+    lvpToolTips:
+    begin
+     // TODO:
     end;
     else
       DebugLn(Format('WARNING: TGtk3WSCustomListView.SetPropertyInternal property %d not handled.',[Ord(AProp)]));
@@ -1026,9 +1044,14 @@ end;
 class function TGtk3WSCustomListView.GetViewOrigin(const ALV: TCustomListView
   ): TPoint;
 begin
-  DebugLn('TGtk3WSCustomListView.GetViewOrigin ');
+  // DebugLn('TGtk3WSCustomListView.GetViewOrigin ');
+
   Result := Point(0, 0);
-  // Result:=inherited GetViewOrigin(ALV);
+  if ALV.HandleAllocated then
+  begin
+    Result := Point(Round(TGtk3ListView(ALV.Handle).getHorizontalScrollbar^.get_value),
+      Round(TGtk3ListView(ALV.Handle).getVerticalScrollbar^.get_value));
+  end;
 end;
 
 class function TGtk3WSCustomListView.GetVisibleRowCount(
@@ -1073,36 +1096,62 @@ end;
 class procedure TGtk3WSCustomListView.SetImageList(const ALV: TCustomListView;
   const AList: TListViewImageList; const AValue: TCustomImageListResolution);
 var
-  AView: TGtk3ListView;
+  BitImage: TBitmap;
+  pixbuf: PGDKPixBuf;
   i: Integer;
-  Bmp: TBitmap;
+  pixrenderer: PGtkCellRenderer;
+  AColumn: PGtkTreeViewColumn;
 begin
   if not WSCheckHandleAllocated(ALV, 'SetImageList') then
     exit;
-  DebugLn('TGtk3WSCustomListView.SetImageList ');
-  AView := TGtk3ListView(ALV.Handle);
-  // inherited SetImageList(ALV, AList, AValue);
-  if ((AList = lvilLarge) and not AView.IsTreeView) or
-     ((AList = lvilSmall) and AView.IsTreeView) then
+
+  TGtk3ListView(ALV.Handle).GetContainerWidget^.realize;
+  TGtk3ListView(ALV.Handle).GetContainerWidget^.queue_draw;
+
+  if ((AList = lvilLarge) and (TLVHack(ALV).ViewStyle = vsIcon)) or
+     ((AList = lvilSmall) and (TLVHack(ALV).ViewStyle <> vsIcon)) then
   begin
-    if Assigned(AView.Images) then
-      AView.ClearImages
-    else
-      AView.Images := TFPList.Create;
-    if Assigned(AValue) then
+    if TGtk3ListView(ALV.Handle).Images <> nil then
+      TGtk3ListView(ALV.Handle).ClearImages;
+    if AValue = nil then
+      exit;
+
+    if TGtk3ListView(ALV.Handle).Images = nil then
+      TGtk3ListView(ALV.Handle).Images := TFPList.Create;
+
+    if (AValue.Count = 0) and TGtk3ListView(ALV.Handle).IsTreeView and (TLVHack(ALV).Columns.Count > 0) and
+      not TLVHack(ALV).OwnerDraw then
     begin
-      for i := 0 to AValue.Count - 1 do
-      begin
-        Bmp := TBitmap.Create;
-        AValue.GetBitmap(i, Bmp);
-        AView.Images.Add(Bmp);
-      end;
+      AColumn := PGtkTreeView(TGtk3ListView(ALV.Handle).GetContainerWidget)^.get_column(0);
+      PixRenderer := PGtkCellRenderer(g_object_get_data(PgObject(AColumn), 'pix_renderer'));
+      PixRenderer^.set_fixed_size(AValue.Width + 2, AValue.Height + 2);
+      AColumn^.queue_resize;
     end;
 
-    if AView.IsTreeView then
-      AView.UpdateImageCellsSize;
+    for i := 0 to AValue.Count-1 do
+    begin
+      pixbuf := nil;
+      BitImage := TBitmap.Create;
+      try
+        AValue.GetBitmap(i, BitImage);
+        pixbuf := TGtk3Image(BitImage.Handle).Handle^.copy;
 
-    AView.Update(nil);
+        if TGtk3ListView(ALV.Handle).IsTreeView and (TLVHack(ALV).Columns.Count > 0) and
+          not TLVHack(ALV).OwnerDraw then
+        begin
+          AColumn := PGtkTreeView(TGtk3ListView(ALV.Handle).GetContainerWidget)^.get_column(0);
+          PixRenderer := PGtkCellRenderer(g_object_get_data(PgObject(AColumn), 'pix_renderer'));
+          if Assigned(PixRenderer) then
+          begin
+            PixRenderer^.set_fixed_size(AValue.Width + 2, AValue.Height + 2);
+            AColumn^.queue_resize;
+          end;
+        end;
+        TGtk3ListView(ALV.Handle).Images.Add(pixbuf);
+      finally
+        BitImage.Free;
+      end;
+    end;
   end;
 end;
 
@@ -1177,7 +1226,7 @@ class procedure TGtk3WSCustomListView.SetViewStyle(const ALV: TCustomListView;
 begin
   if not WSCheckHandleAllocated(ALV, 'SetViewStyle') then
     Exit;
-  DebugLn('TGtk3WSCustomListView.SetViewStyle ');
+  // DebugLn('TGtk3WSCustomListView.SetViewStyle ');
   RecreateWnd(ALV);
   // inherited SetViewStyle(ALV, AValue);
 end;

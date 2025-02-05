@@ -40,8 +40,8 @@ uses
 ////////////////////////////////////////////////////
   Graphics, Controls, StdCtrls, LCLType, LCLProc,
 ////////////////////////////////////////////////////
-  WSLCLClasses, WSControls, WSStdCtrls, WSProc, Classes, WSFactory, Clipbrd,
-  gtk3widgets, gtk3procs, LazGdk3;
+  WSLCLClasses, WSControls, WSStdCtrls, WSProc, Classes, Clipbrd,
+  gtk3widgets, gtk3procs;
 
 type
   { TGtk3WSScrollBar }

@@ -77,7 +77,7 @@ begin
 
   ASettings := gtk_settings_get_default;
 
-  FillByte(AValue, SizeOf(AValue), 0);
+  FillByte(AValue{%H-}, SizeOf(AValue), 0);
   AValue.init(G_TYPE_INT);
   ASettings^.get_property('gtk-cursor-blink-time', @AValue);
   FBlinkInterval := (AValue.get_int div CURSOR_ON_MULTIPLIER);

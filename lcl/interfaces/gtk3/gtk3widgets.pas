@@ -6987,7 +6987,7 @@ begin
   begin
     for i := FImages.Count - 1 downto 0 do
       if FImages[i] <> nil then
-        TGtk3Object(FImages[i]).Free;
+        g_object_unref(FImages[i]);
     FImages.Clear;
   end;
 end;
@@ -7356,14 +7356,18 @@ begin
       gtk_icon_size_lookup(Ord(GTK_ICON_SIZE_LARGE_TOOLBAR), @w, @h);
       bmp.SetSize(w, h);
     end;
-    pxb:=TGtk3Image(bmp.Handle).Handle;
+    pxb:=TGtk3Image(bmp.Handle).Handle^.copy;
     gtk_list_store_insert_with_values(PGtkListStore(AModel), @Iter, NewIndex,
       [0, Pointer(AItem),
        1, PChar(AItem.Caption),
        2, pxb, -1] );
+    // list_store takes ownership, so unref and ref again.
+    g_object_unref(pxb);
     if not Assigned(FImages) then
       FImages := TFPList.Create;
-    fImages.Add(bmp);
+    g_object_ref(pxb);
+    FImages.Add(pxb);
+    bmp.Free;
   end;
 end;
 
@@ -7403,21 +7407,26 @@ begin
     AModel:=PGtkIconView(GetContainerWidget)^.get_model;
     AModel^.get_iter(@iter,path);
 
-    bmp:=TBitmap.Create;
-    if Assigned(TListView(LCLObject).LargeImages) then
-      TListView(LCLObject).LargeImages.GetBitmap(AItem.ImageIndex,bmp)
+    bmp := TBitmap.Create;
+    if Assigned(TCustomListViewHack(LCLObject).LargeImages) then
+      TCustomListViewHack(LCLObject).LargeImages.GetBitmap(AItem.ImageIndex, bmp)
     else
     begin
       gtk_icon_size_lookup(Ord(GTK_ICON_SIZE_LARGE_TOOLBAR), @w, @h);
       bmp.SetSize(w, h);
     end;
-    pxb:=TGtk3Image(bmp.Handle).Handle;
+    pxb := TGtk3Image(Bmp.Handle).Handle^.copy;
     gtk_list_store_set(PGtkListStore(AModel), @Iter,
       [0, Pointer(AItem),
        1, PChar(AItem.Caption),
        2, pxb, -1] );
-    fImages.Add(bmp);
+    g_object_unref(pxb);
+    if not Assigned(FImages) then
+      FImages := TFPList.Create;
+    g_object_ref(pxb);
+    FImages.Add(pxb);
     gtk_tree_path_free(Path);
+    bmp.Free;
   end;
 end;
 
