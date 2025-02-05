@@ -654,7 +654,7 @@ type
       const AIsSet: Boolean);
     function ItemGetState(const AIndex: Integer; const {%H-}AItem: TListItem; const AState: TListItemState;
       out AIsSet: Boolean): Boolean;
-
+    procedure ScrollToRow(const ARow: integer);
     procedure UpdateImageCellsSize;
 
     property Images: TFPList read FImages write FImages;
@@ -7583,6 +7583,18 @@ begin
       Result := True;
     end;
   end;
+end;
+
+procedure TGtk3ListView.ScrollToRow(const ARow: integer);
+var
+  ATreePath: PGtkTreePath;
+begin
+  ATreePath := gtk_tree_path_new_from_indices(ARow, [-1]);
+  if IsTreeView then
+    gtk_tree_view_scroll_to_cell(PGtkTreeView(getContainerWidget), ATreePath, nil, False, 0.0, 0.0)
+  else
+    gtk_icon_view_scroll_to_path(PGtkIconView(getContainerWidget), ATreePath, False, 0.0, 0.0);
+  gtk_tree_path_free(ATreePath);
 end;
 
 procedure TGtk3ListView.UpdateImageCellsSize;

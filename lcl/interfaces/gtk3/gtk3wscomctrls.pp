@@ -732,6 +732,12 @@ class procedure TGtk3WSCustomListView.ItemShow(const ALV: TCustomListView;
 begin
   DebugLn('TGtk3WSCustomListView.ItemShow ');
   // inherited ItemShow(ALV, AIndex, AItem, PartialOK);
+  if ALV.HandleAllocated then
+  begin
+    //TODO: Hide/Show items
+    if not PartialOk then
+      TGtk3ListView(ALV.Handle).ScrollToRow(AIndex);
+  end;
 end;
 
 class function TGtk3WSCustomListView.ItemGetPosition(
@@ -767,6 +773,8 @@ class function TGtk3WSCustomListView.GetBoundingRect(const ALV: TCustomListView
 begin
   DebugLn('TGtk3WSCustomListView.GetBoundingRect ');
   Result := Rect(0, 0, 0, 0);
+  if ALV.HandleAllocated then
+    Result := TGtk3ListView(ALV.handle).getClientBounds;
 end;
 
 class function TGtk3WSCustomListView.GetDropTarget(const ALV: TCustomListView
