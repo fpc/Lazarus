@@ -6927,11 +6927,15 @@ procedure TGtk3ListView.SetColor(AValue: TColor);
 var
   ADisabledColor, BgColor: TGdkRGBA;
 begin
+
   BgColor := TColortoTGdkRGBA(ColorToRgb(AValue));
 
   getContainerWidget^.get_style_context^.get_background_color([GTK_STATE_FLAG_INSENSITIVE], @ADisabledColor);
   //override all
-  gtk_widget_override_background_color(getContainerWidget, GTK_STATE_FLAG_NORMAL, @BgColor);
+  if AValue = clDefault then
+    gtk_widget_override_background_color(getContainerWidget, GTK_STATE_FLAG_NORMAL, nil)
+  else
+    gtk_widget_override_background_color(getContainerWidget, GTK_STATE_FLAG_NORMAL, @BgColor);
   //return system highlight color
   BgColor := TColortoTGdkRGBA(ColorToRgb(clHighlight));
   gtk_widget_override_background_color(getContainerWidget, [GTK_STATE_FLAG_SELECTED], @BgColor);
@@ -7305,11 +7309,6 @@ begin
     begin
       Column := gtk_tree_view_get_column(PGtkTreeView(GetContainerWidget), ASubItem);
       gtk_tree_view_get_cell_area(PGtkTreeView(GetContainerWidget), Path, Column, @ItemRect);
-      gtk_tree_view_convert_bin_window_to_widget_coords(
-        PGtkTreeView(GetContainerWidget),
-        ItemRect.x, ItemRect.y, @x, @y);
-      ItemRect.x := x;
-      ItemRect.y := y;
     end else
       gtk_icon_view_get_cell_rect(PGtkIconView(getContainerWidget), Path, nil, @ItemRect);
     Result := RectFromGdkRect(ItemRect);
@@ -7364,8 +7363,18 @@ begin
 end;
 
 function TGtk3ListView.ItemPosition(AIndex: integer): TPoint;
+var
+  x, y: gint;
 begin
   Result := ItemDisplayRect(AIndex, 0, drBounds).TopLeft;
+  if IsTreeView then
+  begin
+    gtk_tree_view_convert_bin_window_to_widget_coords(
+      PGtkTreeView(GetContainerWidget),
+      Result.x, Result.y, @x, @y);
+    Result.x := x;
+    Result.y := y;
+  end;
 end;
 
 procedure TGtk3ListView.UpdateItem(AIndex:integer;AItem: TListItem);
