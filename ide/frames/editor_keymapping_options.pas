@@ -675,7 +675,7 @@ var
       inc(ConflictCount);
       ConflictNode:=ConflictsTreeView.Items.Add(nil,srkmConflic+IntToStr(ConflictCount));
       ConflictNode.ImageIndex:=imgKeyItem;
-      ConflictNode.StateIndex:=imgKeyItem;
+      ConflictNode.SelectedIndex:=imgKeyItem;
       KeyNode:=ConflictsTreeView.Items.AddChild(ConflictNode,
                                           KeyShortCutToCaption(Key1));
       KeyNode.ImageIndex := imgKeyItem;
