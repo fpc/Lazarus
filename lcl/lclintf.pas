@@ -89,7 +89,7 @@ function OpenDocument(APath: String): Boolean;
 
 // Open a system filemanager and select the given file there.
 // AFullPath contains a directory and a file name.
-// Works also with directory names, then nothing gets selected.
+// Works also with directory names.
 function SelectInFolder(AFullPath: String): Boolean;
 
 type
