@@ -3352,10 +3352,10 @@ begin
   if IsWidgetOk then
   begin
     if GetContainerWidget^.get_has_window and Gtk3IsGdkWindow(GetContainerWidget^.window) then
-      SetWindowCursor(GetContainerWidget^.window, ACursor, False, True)
+      SetWindowCursor(GetContainerWidget^.window, HCURSOR(TGtk3Cursor(ACursor).Handle), False, True)
     else
     if Widget^.get_has_window and Gtk3IsGdkWindow(Widget^.window) then
-      SetWindowCursor(Widget^.window, ACursor, False, True)
+      SetWindowCursor(Widget^.window, HCURSOR(TGtk3Cursor(ACursor).Handle), False, True)
     else // fallback for window-less widgets
     if Assigned(self.getParent) then
       Self.getParent.SetCursor(ACursor);

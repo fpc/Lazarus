@@ -349,7 +349,7 @@ function GetStyleWidget(aStyle: TLazGtkStyle): PGtkWidget;
 procedure ReleaseAllStyles;
 
 implementation
-uses LCLProc;
+uses LCLProc, gtk3objects;
 
 function PANGO_PIXELS(d:integer):integer;
 begin
@@ -1344,16 +1344,21 @@ var
   TopList: PGList;
   List: PGList;
   Window: PGdkWindow;
+  ACursorHandle: HCURSOR;
 begin
+  if Cursor > 0 then
+    ACursorHandle := HCURSOR(TGtk3Cursor(Cursor).Handle)
+  else
+    ACursorHandle := 0;
   TopList := gdk_screen_get_toplevel_windows(gdk_screen_get_default);
   if TopList = nil then
     exit;
   List := TopList;
-  while Assigned(List) do begin
+  while Assigned(List) do
+  begin
     Window := List^.Data;
-    if Assigned(Window) then begin
-      SetWindowCursor(Window, Cursor, True, False);
-    end;
+    if Assigned(Window) then
+      SetWindowCursor(Window, ACursorHandle, True, False);
     List := List^.Next;
   end;
   g_list_free(TopList);

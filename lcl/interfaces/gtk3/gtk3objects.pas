@@ -190,6 +190,7 @@ type
     constructor Create(ACur:integer); overload;
     constructor Create(pixbuf:PGdkPixbuf;x,y:gint); overload;
     constructor Create(img:TGtk3Image); overload;
+    constructor Create(ACur: TGdkCursorType); overload;
     destructor Destroy; override;
     property Handle:PGdkCursor read fHandle;
   end;
@@ -248,8 +249,8 @@ type
   public
     CairoSurface: Pcairo_surface_t;
     Parent: PGtkWidget;
-    Window: PGdkWindow;
     ParentPixmap: PGdkPixbuf;
+    Window: PGdkWindow;
     fncOrigin:TPoint; // non-client area offsets surface origin
     constructor Create(AWidget: PGtkWidget; const APaintEvent: Boolean = False); virtual;
     constructor Create(AWindow: PGdkWindow; const APaintEvent: Boolean); virtual;
@@ -655,8 +656,9 @@ end;
 constructor TGtk3Cursor.Create(ACur:integer);
 var gdk_cur: TGdkCursorType;
 begin
+  inherited Create;
   case ACur of
-  crArrow: gdk_cur:=GDK_ARROW;
+    crArrow: gdk_cur:=GDK_ARROW;
   else
     gdk_cur:=GDK_ARROW;
   end;
@@ -664,23 +666,27 @@ begin
   Fhandle:=TGdkCursor.new_for_display(gdk_display_get_default, gdk_cur);
 end;
 
-constructor TGtk3Cursor.Create(pixbuf: PGdkPixbuf;x,y:gint);
+constructor TGtk3Cursor.Create(pixbuf: PGdkPixbuf; x,y:gint);
 begin
-  fHandle:=TGdkCursor.new_from_pixbuf(TGdkDisplay.get_default(),pixbuf,x,y);
+  inherited Create;
+  FHandle := TGdkCursor.new_from_pixbuf(TGdkDisplay.get_default(),pixbuf,x,y);
 end;
 
 constructor TGtk3Cursor.Create(img: TGtk3Image);
-var w,h:gint;
 begin
   inherited Create;
-  w:=img.width;
-  h:=img.height;
-  Create(img.Handle,w,h);
+  FHandle := TGdkCursor.new_from_pixbuf(TGdkDisplay.get_default(),img.Handle, img.Width, img.Height);
+end;
+
+constructor TGtk3Cursor.Create(ACur: TGdkCursorType);
+begin
+  inherited Create;
+  FHandle := gdk_cursor_new(ACur);
 end;
 
 destructor TGtk3Cursor.Destroy;
 begin
-  PGdkCursor(fHandle)^.unref();
+  FHandle^.unref;
   inherited Destroy;
 end;
 
@@ -959,6 +965,7 @@ var
   AttrList: PPangoAttrList;
   Attr: PPangoAttribute;
 begin
+  inherited Create;
   FLogFont := ALogFont;
   FFontName := ALogFont.lfFaceName;
   AContext := gdk_pango_context_get;
@@ -1125,6 +1132,7 @@ begin
   {$IFDEF VerboseGtk3DeviceContext}
   DebugLn('TGtk3Image.Create 3 AData=',dbgs(AData <> nil),' format=',dbgs(Ord(format)),' w=',dbgs(width),' h=',dbgs(height),' dataowner=',dbgs(ADataOwner));
   {$ENDIF}
+  inherited Create;
   FFormat := format;
   FData := AData;
   FDataOwner := ADataOwner;
@@ -1809,12 +1817,9 @@ begin
   FDCSaveCounter := 0;
   if AWidget = nil then
   begin
-    ACairo := gdk_cairo_create(gdk_get_default_root_window);
-    gdk_cairo_get_clip_rectangle(ACairo, @ARect);
-    cairo_destroy(ACairo);
-    CairoSurface := cairo_image_surface_create(CAIRO_FORMAT_ARGB32, ARect.width, ARect.height);
+    //no need for ParentPixmap, this is Mem DC.
+    CairoSurface := cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 10, 10);
     FCairo := cairo_create(CairoSurface);
-    ParentPixmap := gdk_pixbuf_get_from_surface(CairoSurface, 0, 0, ARect.width, ARect.height);
     FOwnsSurface := True;
   end else
   begin
@@ -2169,12 +2174,13 @@ begin
 
   if aPixBuf <> nil then
   begin
+    aPixBuf^.ref;
     //this fixes problem with some images being R & B swapped when blitted onto dest.
     if (cairo_surface_get_type(CairoSurface) <> cairo_surface_get_type(Surface)) and
       (g_object_get_data(aPixBuf,'lcl_color_swap') <> nil) then
     begin
       SwapRedBlueChannels(aPixBuf);
-      gdk_cairo_set_source_pixbuf(pcr, aPixBuf, 0, 0)
+      gdk_cairo_set_source_pixbuf(pcr, aPixBuf, 0, 0);
     end else
     begin
       if g_object_get_data(aPixBuf,'lcl_no_color_swap') <> nil then
@@ -2182,6 +2188,7 @@ begin
       else
         cairo_set_source_surface(pcr, Surface, 0, 0);
     end;
+    aPixBuf^.unref;
   end else
     cairo_set_source_surface(pcr, Surface, 0, 0);
 
@@ -2227,7 +2234,6 @@ begin
   {$ENDIF}
 
   cairo_set_operator(pcr, CAIRO_OPERATOR_OVER);
-
   gdk_cairo_set_source_pixbuf(pcr, Image, 0, 0);
 
   with targetRect^ do

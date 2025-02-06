@@ -694,7 +694,8 @@ begin
     CursorValue := GDK_CURSOR_IS_PIXMAP;
   end;
   if CursorValue <> GDK_CURSOR_IS_PIXMAP then
-    Result := HCURSOR({%H-}PtrUInt(gdk_cursor_new(CursorValue)));
+    Result := HCURSOR(TGtk3Cursor.Create(CursorValue));
+    // HCURSOR({%H-}PtrUInt(gdk_cursor_new(CursorValue)));
 end;
 
 function TGtk3WidgetSet.DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor;

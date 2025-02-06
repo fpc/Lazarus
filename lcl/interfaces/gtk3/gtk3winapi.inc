@@ -416,8 +416,9 @@ begin
       Result := HICON(TGtk3Image.Create(TGtk3Image(IconInfo^.hbmColor).Handle));
     end else
     begin
-      Result := HCURSOR({%H-}PtrUInt(gdk_cursor_new_from_pixbuf(gdk_display_get_default,
-        TGtk3Image(IconInfo^.hbmColor).Handle, IconInfo^.xHotSpot, IconInfo^.yHotSpot)));
+      Result := HCURSOR(TGtk3Cursor.Create(TGtk3Image(IconInfo^.hbmColor).Handle, IconInfo^.xHotSpot, IconInfo^.yHotSpot));
+        //HCURSOR({%H-}PtrUInt(gdk_cursor_new_from_pixbuf(gdk_display_get_default,
+        // TGtk3Image(IconInfo^.hbmColor).Handle, IconInfo^.xHotSpot, IconInfo^.yHotSpot)));
       // create cursor from pixbuf
      { W := gdk_pixbuf_get_width(TGtk3Image(IconInfo^.hbmColor).Handle);
       H := gdk_pixbuf_get_height(TGtk3Image(IconInfo^.hbmColor).Handle);
@@ -554,18 +555,18 @@ function TGtk3WidgetSet.DestroyCursor(Handle: HCURSOR): Boolean;
 begin
   Result := Handle <> 0;
   if Result then
-    g_object_unref(PGdkCursor(Handle));
-   // gdk_cursor_destroy({%H-}PGdkCursor(Handle));
+    TGtk3Cursor(Handle).Free;
 end;
 
 function TGtk3WidgetSet.DestroyIcon(Handle: HICON): Boolean;
 begin
-  Result := False;
-  if IsValidGDIObject(Handle) then
-  begin
-    TGtk3Image(Handle).Free;
-    Result := True;
-  end;
+ Result := (Handle <> 0) and
+            (
+              (TGtk3Object(Handle) is TGtk3Image) or
+              (TGtk3Object(Handle) is TGtk3Cursor)
+            );
+  if Result then
+    TGtk3Object(Handle).Free;
 end;
 
 function TGtk3WidgetSet.DPtoLP(DC: HDC; var Points; Count: Integer): BOOL;
@@ -4509,7 +4510,7 @@ begin
   ATargetRect := Rect(X, Y, Width + X, Height + Y);
   ASrcRect := Rect(XSrc, YSrc, SrcWidth + XSrc, SrcHeight + YSrc);
   if (mask<>0) then
-    DestContext.drawImage1(@ATargetRect, PgdkPixbuf(SrcContext.CurrentImage.Handle) , @ASrcRect, nil, nil)
+    DestContext.drawImage1(@ATargetRect, SrcContext.CurrentImage.Handle , @ASrcRect, nil, nil)
   else
   begin
     if (cairo_surface_get_type(SrcContext.CairoSurface) = CAIRO_SURFACE_TYPE_IMAGE) and
