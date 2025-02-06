@@ -3545,8 +3545,11 @@ begin
   end;
   if TmpViewIdx <> TmpRange.Bottom then
     exclude(NewCapability, cfFoldEnd);
-  if TmpViewIdx <> TmpRange.Top then
+  if TmpViewIdx <> TmpRange.Top then begin
+    if NewCapability * [cfFoldStart, cfHideStart] <> [] then
+      NewCapability := NewCapability + [cfFoldBody];
     NewCapability := NewCapability - [cfFoldStart, cfHideStart];
+  end;
 
   // Add entry for line one above virtual topViewPos
   if (fFoldTypeList[0].Capability <> NewCapability) or
@@ -3572,6 +3575,8 @@ begin
       if ViewIdx > ViewRange.Top then begin
         NewCapability := CurLineCapability;
         NewClassifications := CurLineClassifications;
+        if NewCapability * [cfFoldStart, cfHideStart] <> [] then
+          NewCapability := NewCapability + [cfFoldBody];
         NewCapability := NewCapability - [cfFoldStart, cfHideStart];
         if ViewIdx <> ViewRange.Bottom then
           exclude(NewCapability, cfFoldEnd);
