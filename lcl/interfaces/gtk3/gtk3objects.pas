@@ -1847,13 +1847,6 @@ begin
   if not FOwnsSurface then
     CairoSurface := cairo_get_target(FCairo);
   CreateObjects;
-  (*
-  FRopMode := R2_COPYPEN;
-  FOwnPainter := True;
-  CreateObjects;
-  FPenPos.X := 0;
-  FPenPos.Y := 0;
-  *)
 end;
 
 constructor TGtk3DeviceContext.Create(AWindow: PGdkWindow;
@@ -2512,19 +2505,6 @@ begin
 
   Result:=false;
 
- { if Parent <> nil then
-    Context := Parent^.get_style_context
-  else
-  begin
-    Context:=TGtkStyleContext.new();
-    Context^.add_class('button');
-  end;
-  if Context = nil then
-  begin
-    DebugLn('WARNING: TGtk3WidgetSet.DrawFrameControl on non widget context isn''t implemented.');
-    exit;
-  end;  }
-
   w:=nil;
 
   case uType of
@@ -2566,26 +2546,17 @@ end;
 function TGtk3DeviceContext.drawFocusRect(const aRect: TRect): boolean;
 var
   Context: PGtkStyleContext;
+  UnRefContext: boolean;
 begin
   Result := False;
-
+  UnRefContext := False;
   if Parent <> nil then
     Context := Parent^.get_style_context
   else
   begin
+    UnRefContext := True;
     Context:=TGtkStyleContext.new();
     Context^.add_class('button');
-    //gtk_style_context_get(Context,GTK_STATE_NORMAL,[]);
- { if gtk_widget_get_default_style^.has_context then
-  begin
-    // Context := gtk_widget_get_default_style^.has_context
-    AValue.g_type := G_TYPE_POINTER;
-    AValue.set_pointer(nil);
-    g_object_get_property(gtk_widget_get_default_style,'context',@AValue);
-    Context := AValue.get_pointer;
-    AValue.unset;
-  end else
-    Context := nil;}
   end;
   if Context = nil then
   begin
@@ -2594,7 +2565,8 @@ begin
   end;
   with aRect do
     gtk_render_focus(Context ,pcr, Left, Top, Right - Left, Bottom - Top);
-
+  if UnRefContext then
+    Context^.unref;
   Result := True;
 end;
 
@@ -2606,7 +2578,6 @@ begin
   begin
     AVisual := gdk_window_get_visual(Parent^.get_window);
     Result := gdk_visual_get_bits_per_rgb(AVisual);
-    g_object_unref(AVisual);
   end else
   if (ParentPixmap <> nil) and (Parent = nil) then
   begin
@@ -2615,7 +2586,6 @@ begin
   begin
     AVisual := gdk_window_get_visual(gdk_get_default_root_window);
     Result := gdk_visual_get_bits_per_rgb(AVisual);
-    g_object_unref(AVisual);
   end;
 end;
 
@@ -2635,9 +2605,7 @@ begin
   end;
   AVisual := gdk_window_get_visual(gdk_get_default_root_window);
   if Gtk3IsGdkVisual(AVisual) then
-  begin
     Result := gdk_visual_get_depth(AVisual);
-  end;
 end;
 
 function TGtk3DeviceContext.getDeviceSize: TPoint;

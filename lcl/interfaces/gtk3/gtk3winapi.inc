@@ -363,7 +363,6 @@ begin
     AVisual := gdk_window_get_visual(gdk_get_default_root_window);
     ADepth := gdk_visual_get_depth(AVisual);
     ABpp := AVisual^.get_bits_per_rgb;
-    g_object_unref(AVisual);
   end;
   case ADepth of
     1: Format := CAIRO_FORMAT_A1;
