@@ -147,8 +147,8 @@ uses
 function RegisterCustomImageListResolution: Boolean; alias : 'WSRegisterCustomImageListResolution';
 begin
   //  RegisterWSComponent(TImageList, TGtk3WSImageList);
-  RegisterWSComponent(TCustomImageListResolution, TGtk3WSCustomImageListResolution);
-  Result := True;
+  //RegisterWSComponent(TCustomImageListResolution, TGtk3WSCustomImageListResolution);
+  Result := False;
 end;
 
 // controls
