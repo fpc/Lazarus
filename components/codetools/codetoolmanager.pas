@@ -573,7 +573,7 @@ type
 
     function FindSourceNameReferences(TargetFilename: string;
           Files: TStringList; SkipComments: boolean;
-          out ListOfSrcNameRefs: TObjectList): boolean;
+          out ListOfSrcNameRefs: TObjectList; WithDuplicates: boolean = false): boolean;
     function RenameSourceNameReferences(OldFilename, NewFilename, NewSrcname: string;
           ListOfSrcNameRefs: TObjectList): boolean;
     // todo: deprecate FindUnitReferences
@@ -3048,7 +3048,7 @@ begin
 end;
 
 function TCodeToolManager.FindSourceNameReferences(TargetFilename: string; Files: TStringList;
-  SkipComments: boolean; out ListOfSrcNameRefs: TObjectList): boolean;
+  SkipComments: boolean; out ListOfSrcNameRefs: TObjectList; WithDuplicates: boolean): boolean;
 var
   i, j, InFilenameCleanPos: Integer;
   Filename, Dir, TargetUnitName, InFilename, LocalSrcName: String;
@@ -3057,6 +3057,8 @@ var
   DirCache: TCTDirectoryCache;
   TreeOfPCodeXYPosition: TAVLTree;
   Param: TSrcNameRefs;
+  Node, NextNode: TAVLTreeNode;
+  CodeXYPos: PCodeXYPosition;
 begin
   {$IFDEF VerboseFindSourceNameReferences}
   debugln(['TCodeToolManager.FindReferencesInFiles TargetFile="',TargetFilename,'" FileCount=',Files.Count,' SkipComments=',SkipComments]);
@@ -3074,7 +3076,7 @@ begin
       '','.','..': continue; // invalid filename
       end;
       {$IFDEF VerboseFindSourceNameReferences}
-      debugln(['TCodeToolManager.FindReferencesInFiles File ',Filename]);
+      debugln(['TCodeToolManager.FindReferencesInFiles File ',i,'/',Files.Count,' ',Filename]);
       {$ENDIF}
       j:=i-1;
       while (j>=0) and (CompareFilenames(Filename,Files[j])<>0) do dec(j);
@@ -3137,6 +3139,22 @@ begin
         FreeTreeOfPCodeXYPosition(TreeOfPCodeXYPosition);
         continue;
       end;
+      if (not WithDuplicates) and (ListOfSrcNameRefs<>nil) then begin
+        // elimnate duplicates
+        for j:=0 to ListOfSrcNameRefs.Count-1 do begin
+          Param:=TSrcNameRefs(ListOfSrcNameRefs[j]);
+          if Param.TreeOfPCodeXYPosition=nil then continue;
+          Node:=TreeOfPCodeXYPosition.FindLowest;
+          while Node<>nil do begin
+            NextNode:=TreeOfPCodeXYPosition.FindSuccessor(Node);
+            CodeXYPos:=PCodeXYPosition(Node.Data);
+            if Param.TreeOfPCodeXYPosition.Find(CodeXYPos)<>nil then
+              TreeOfPCodeXYPosition.Delete(Node);
+            Node:=NextNode;
+          end;
+        end;
+      end;
+
       {$IFDEF VerboseFindSourceNameReferences}
       debugln(['TCodeToolManager.FindSourceNameReferences SrcName="',LocalSrcName,'" Count=',TreeOfPCodeXYPosition.Count]);
       {$ENDIF}

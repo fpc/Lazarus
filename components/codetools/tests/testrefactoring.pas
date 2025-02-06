@@ -10,9 +10,11 @@ unit TestRefactoring;
 interface
 
 uses
-  Classes, SysUtils, CodeToolManager, CodeCache, CodeTree, BasicCodeTools, CTUnitGraph,
-  FindDeclarationTool, ChangeDeclarationTool, LazLogger, LazFileUtils, AVL_Tree, Contnrs, fpcunit,
-  testregistry, TestFinddeclaration;
+  Classes, SysUtils, Contnrs, fpcunit, AVL_Tree,
+  LazLogger, LazFileUtils, testregistry,
+  CodeToolManager, CodeCache, CodeTree, BasicCodeTools, CTUnitGraph,
+  FindDeclarationTool, ChangeDeclarationTool, TestGlobals,
+  TestFinddeclaration;
 
 const
   ExplodeWithMarker = 'explodewith:';
@@ -24,7 +26,9 @@ type
   protected
     procedure RenameReferences(NewIdentifier: string; const Flags: TFindRefsFlags = []);
     procedure RenameSourceName(NewName, NewFilename: string);
-    procedure RenameUsedUnitRefs(UsedUnit: TCodeBuffer; NewName, NewFilename: string);
+    procedure RenameSourceName(NewName, NewFilename: string; const AddFiles: array of string);
+    procedure RenameUsedUnitRefs(UsedUnit: TCodeBuffer; NewName, NewFilename: string); // only in Code, not in UsedUnit
+    procedure RenameUsedUnitRefs(UsedUnit: TCodeBuffer; NewName, NewFilename: string; const AddFiles: array of string);
     procedure CheckDiff(CurCode: TCodeBuffer; const ExpLines: array of string);
   end;
 
@@ -67,6 +71,10 @@ type
     procedure TestRenameProgramName_DottedShortenMiddle;
     procedure TestRenameProgramName_DottedShortenEnd;
     procedure TestRenameProgramName_ToraToraTora;
+
+    // rename unit
+    procedure TestRenameUnitName_IncludeUsedTwiceInOneUnit;
+    procedure TestRenameUnitName_IncludeUsedInTwoUnits;
 
     // rename uses
     procedure TestUseOmittedNamespace;
@@ -171,9 +179,16 @@ begin
 end;
 
 procedure TCustomTestRefactoring.RenameSourceName(NewName, NewFilename: string);
+begin
+  RenameSourceName(NewName,NewFilename,[]);
+end;
+
+procedure TCustomTestRefactoring.RenameSourceName(NewName, NewFilename: string;
+  const AddFiles: array of string);
 var
   Files: TStringList;
   ListOfSrcNameRefs: TObjectList;
+  i: Integer;
 begin
   // create the file list
   ListOfSrcNameRefs:=nil;
@@ -181,6 +196,9 @@ begin
   try
     // search pascal source references in Code
     Files.Add(Code.Filename);
+    for i:=0 to length(AddFiles)-1 do
+      Files.Add(AddFiles[i]);
+
     if not CodeToolBoss.FindSourceNameReferences(Code.Filename,Files,false,ListOfSrcNameRefs) then
     begin
       Fail('CodeToolBoss.FindSourceNameReferences failed File='+Code.Filename);
@@ -207,6 +225,36 @@ begin
   try
     // search pascal source references in Code
     Files.Add(Code.Filename);
+    if not CodeToolBoss.FindSourceNameReferences(UsedUnit.Filename,Files,false,ListOfSrcNameRefs) then
+    begin
+      Fail('CodeToolBoss.FindSourceNameReferences failed File='+Code.Filename);
+    end;
+    // rename
+    if not CodeToolBoss.RenameSourceNameReferences(UsedUnit.Filename,NewFilename,NewName,ListOfSrcNameRefs)
+    then
+      Fail('CodeToolBoss.RenameSourceNameReferences failed');
+  finally
+    ListOfSrcNameRefs.Free;
+    Files.Free;
+  end;
+end;
+
+procedure TCustomTestRefactoring.RenameUsedUnitRefs(UsedUnit: TCodeBuffer; NewName,
+  NewFilename: string; const AddFiles: array of string);
+var
+  Files: TStringList;
+  ListOfSrcNameRefs: TObjectList;
+  i: Integer;
+begin
+  // create the file list
+  ListOfSrcNameRefs:=nil;
+  Files:=TStringList.Create;
+  try
+    // search pascal source references in Code
+    Files.Add(UsedUnit.Filename);
+    Files.Add(Code.Filename);
+    for i:=0 to length(AddFiles)-1 do
+      Files.Add(AddFiles[i]);
     if not CodeToolBoss.FindSourceNameReferences(UsedUnit.Filename,Files,false,ListOfSrcNameRefs) then
     begin
       Fail('CodeToolBoss.FindSourceNameReferences failed File='+Code.Filename);
@@ -1479,6 +1527,137 @@ begin
   '  Red.{}Green.{comment}Blue.{}Toranaga:=3*Red.Green.Blue.Toranaga;',
   'end.',
   '']);
+end;
+
+procedure TTestRefactoring.TestRenameUnitName_IncludeUsedTwiceInOneUnit;
+var
+  RedInc: TCodeBuffer;
+begin
+  RedInc:=CodeToolBoss.CreateFile('red.inc');
+  try
+    RedInc.Source:=
+       '{$IFDEF EnableIntf}'+LineEnding
+      +'function Fly: Test1.TBird;'+LineEnding
+      +'{$ENDIF}'+LineEnding
+      +'{$IFDEF EnableImpl}'+LineEnding
+      +'function Fly: Test1.TBird;'+LineEnding
+      +'begin'+LineEnding
+      +'  Test1.Ant:=test1.ant;'+LineEnding
+      +'end;'+LineEnding
+      +'{$ENDIF}'+LineEnding;
+
+    Add([
+    'unit test1;',
+    '{$mode objfpc}{$H+}',
+    'interface',
+    'type TAnt = word;',
+    '{$define EnableIntf}',
+    '{$i red.inc}',
+    '{$undefine EnableIntf}',
+    'implementation',
+    '{$define EnableImpl}',
+    '{$i red.inc}',
+    '{$undefine EnableIntf}',
+    'end.',
+    '']);
+    RenameSourceName('&End','End.pas');
+    CheckDiff(Code,[
+    'unit &End;',
+    '{$mode objfpc}{$H+}',
+    'interface',
+    'type TAnt = word;',
+    '{$define EnableIntf}',
+    '{$i red.inc}',
+    '{$undefine EnableIntf}',
+    'implementation',
+    '{$define EnableImpl}',
+    '{$i red.inc}',
+    '{$undefine EnableIntf}',
+    'end.',
+    '']);
+    CheckDiff(RedInc,[
+    '{$IFDEF EnableIntf}',
+    'function Fly: &End.TBird;',
+    '{$ENDIF}',
+    '{$IFDEF EnableImpl}',
+    'function Fly: &End.TBird;',
+    'begin',
+    '  &End.Ant:=&End.ant;',
+    'end;',
+    '{$ENDIF}']);
+
+  finally
+    RedInc.IsDeleted:=true;
+  end;
+end;
+
+procedure TTestRefactoring.TestRenameUnitName_IncludeUsedInTwoUnits;
+var
+  RedInc, RedGreenUnit: TCodeBuffer;
+begin
+  RedInc:=CodeToolBoss.CreateFile('red.inc');
+  RedGreenUnit:=CodeToolBoss.CreateFile('red.green.pas');
+  try
+    RedInc.Source:=LinesToStr([
+    'function Fly: Red.Green.TAnt;',
+    'begin',
+    '  red.green.Ant:=3;',
+    'end;']);
+
+    RedGreenUnit.Source:=LinesToStr([
+    'unit Red.Green;',
+    'interface',
+    'type TAnt = word;',
+    'var Ant: TAnt;',
+    'implementation',
+    '{$I red.inc}',
+    'var Hop: red.green.TAnt;',
+    'end.']);
+
+    Add([
+    'unit test1;',
+    '{$mode objfpc}{$H+}',
+    'interface',
+    'uses Red.Green;',
+    'implementation',
+    '{$I red.inc}',
+    'begin',
+    '  red.green.ant:=2;',
+    'end.',
+    '']);
+    RenameUsedUnitRefs(RedGreenUnit,'&End','end.pas',[]);
+    CheckDiff(Code,[
+    'unit test1;',
+    '{$mode objfpc}{$H+}',
+    'interface',
+    'uses &End;',
+    'implementation',
+    '{$I red.inc}',
+    'begin',
+    '  &End.ant:=2;',
+    'end.',
+    '']);
+
+    CheckDiff(RedGreenUnit,[
+      'unit &End;',
+      'interface',
+      'type TAnt = word;',
+      'var Ant: TAnt;',
+      'implementation',
+      '{$I red.inc}',
+      'var Hop: &End.TAnt;',
+      'end.']);
+
+    CheckDiff(RedInc,[
+      'function Fly: &End.TAnt;',
+      'begin',
+      '  &End.Ant:=3;',
+      'end;']);
+
+  finally
+    RedInc.IsDeleted:=true;
+    RedGreenUnit.IsDeleted:=true;
+  end;
 end;
 
 procedure TTestRefactoring.TestUseOmittedNamespace;
