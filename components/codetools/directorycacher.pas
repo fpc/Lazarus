@@ -225,7 +225,7 @@ type
                                   SearchPath: string; AnyCase: boolean): string; // search in unitpath
     function FindUnitSourceInCompletePath(var AUnitName, InFilename: string; // search in unitpath and unitpaths of output dirs
                AnyCase: boolean; FPCSrcSearchRequiresPPU: boolean = false;
-               const AddNameSpaces: string = ''): string;
+               const AddNameSpaces: string = ''; WithNamespaces: boolean = true): string;
     // find ppu/dcu file
     function FindCompiledUnitInUnitSet(const AUnitName: string): string;
     function FindCompiledUnitInCompletePath(const AnUnitname: string; AnyCase: boolean): string;
@@ -1663,9 +1663,9 @@ begin
   Result:='';
 end;
 
-function TCTDirectoryCache.FindUnitSourceInCompletePath(var AUnitName,
-  InFilename: string; AnyCase: boolean; FPCSrcSearchRequiresPPU: boolean;
-  const AddNameSpaces: string): string;
+function TCTDirectoryCache.FindUnitSourceInCompletePath(var AUnitName, InFilename: string;
+  AnyCase: boolean; FPCSrcSearchRequiresPPU: boolean; const AddNameSpaces: string;
+  WithNamespaces: boolean): string;
 
   function FindInFilenameLowUp(aFilename: string): string;
   begin
@@ -1754,8 +1754,7 @@ begin
   end else begin
     // normal unit name
 
-    if Pos('.',AUnitName)<1 then begin
-      // generic unit -> search with namespaces
+    if WithNamespaces then begin
       NameSpaces:=MergeWithDelimiter(Strings[ctdcsNamespaces],AddNameSpaces,';');
       if NameSpaces<>'' then begin
         // search with additional namespaces, separated by semicolon
@@ -1772,7 +1771,7 @@ begin
           if IsValidIdent(aNameSpace,true,true) then begin
             aName:=aNameSpace+'.'+AUnitName;
             Result:=FindUnitSourceInCompletePath(aName,InFilename,AnyCase,
-              FPCSrcSearchRequiresPPU,'');
+              FPCSrcSearchRequiresPPU,'',false);
             if Result<>'' then begin
               AUnitName:=RightStr(aName,length(aName)-length(aNameSpace)-1);
               exit;
@@ -1823,7 +1822,8 @@ begin
         {$ENDIF}
       end;
 
-      AddToCache(UnitSrc,AUnitName,Result);
+      if AddNameSpaces='' then
+        AddToCache(UnitSrc,AUnitName,Result);
     end;
     if Result<>'' then begin
       // improve unit name

@@ -68,11 +68,12 @@ unit TestFindDeclaration;
 interface
 
 uses
-  Classes, SysUtils, contnrs, fpcunit, testregistry, FileProcs, LazFileUtils,
-  LazLogger, CodeToolManager, ExprEval, CodeCache, BasicCodeTools,
+  Classes, SysUtils, contnrs, fpcunit, testregistry, StrUtils,
+  FileProcs, LazFileUtils, LazLogger,
+  CodeToolManager, ExprEval, CodeCache, BasicCodeTools,
   CustomCodeTool, CodeTree, FindDeclarationTool, KeywordFuncLists,
-  IdentCompletionTool, DefineTemplates, DirectoryCacher, CTUnitGraph, StrUtils,
-  TestPascalParser;
+  IdentCompletionTool, DefineTemplates, DirectoryCacher, CTUnitGraph,
+  TestGlobals, TestPascalParser;
 
 const
   MarkDecl = '#'; // a declaration, must be unique
@@ -172,12 +173,14 @@ type
     procedure TestFindDeclaration_IncludeSearch_StarStar;
     procedure TestFindDeclaration_FindFPCSrcNameSpacedUnits;
 
-    // unit namespaces
+    // unit namespaces and dotted unitnames
     procedure TestFindDeclaration_NS_Program; // todo
     procedure TestFindDeclaration_NS_ProgLocalVsUses;
     procedure TestFindDeclaration_NS_UnitIntfVsUses;
     procedure TestFindDeclaration_NS_UnitImplVsIntfUses;
     procedure TestFindDeclaration_NS_UnitImplVsImplUses;
+    procedure TestDirectoyCache_NS_SearchDotted;
+    procedure TestFindDeclaration_NS_SearchDottedUsesInNS;
 
     // directives
     procedure TestFindDeclaration_Directive_OperatorIn;
@@ -1974,6 +1977,52 @@ begin
   finally
     if DotsUnit<>nil then
       DotsUnit.IsDeleted:=true;
+  end;
+end;
+
+procedure TTestFindDeclaration.TestDirectoyCache_NS_SearchDotted;
+var
+  DotsUnit: TCodeBuffer;
+  aUnitName, InFile, Filename: String;
+begin
+  AddNameSpace('nsA');
+  DotsUnit:=CodeToolBoss.CreateFile('nsA.foo.bar.pp');
+  try
+    aUnitName:='foo.bar';
+    InFile:='';
+    Filename:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath('',aUnitName,InFile);
+    AssertEquals('nsA.foo.bar.pp',Filename);
+  finally
+    DotsUnit.IsDeleted:=true;
+  end;
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_NS_SearchDottedUsesInNS;
+var
+  DotsUnit: TCodeBuffer;
+begin
+  AddNameSpace('nsA');
+  DotsUnit:=CodeToolBoss.CreateFile('nsA.foo.bar.pp');
+  try
+    DotsUnit.Source:=LinesToStr([
+      'unit nsA.Foo.Bar;',
+      'interface',
+      'var Size: word;',
+      'implementation',
+      'end.']);
+
+    StartUnit;
+    Add([
+    'implementation',
+    'uses foo.bar;',
+    'begin',
+    '  Size{declaration:nsA.foo.bar.Size}:=1',
+    '  foo.bar.Size{declaration:nsA.foo.bar.Size}:=2',
+    'end.',
+    '']);
+    FindDeclarations(Code);
+  finally
+    DotsUnit.IsDeleted:=true;
   end;
 end;
 
