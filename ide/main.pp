@@ -4470,7 +4470,7 @@ begin
         end;
       end;
     //we try next file only if read and write were successful, otherwise we retry current file or abort
-    until not ReadSaveFailFlag;
+    until (not ReadSaveFailFlag) or AbortFlag;
   end;
 end;
 

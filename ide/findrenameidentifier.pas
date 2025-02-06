@@ -31,7 +31,7 @@ interface
 
 uses
   // RTL + FCL
-  Classes, SysUtils, AVL_Tree,
+  Classes, SysUtils, AVL_Tree, Contnrs,
   // LCL
   Forms, Controls, Dialogs, StdCtrls, ExtCtrls, ComCtrls, ButtonPanel, LclIntf, Graphics,
   // CodeTools
@@ -48,7 +48,7 @@ uses
   TransferMacros, IDEProcs, SearchPathProcs,
   // IDE
   LazarusIDEStrConsts, MiscOptions, CodeToolsOptions, SearchResultView, CodeHelp, CustomCodeTool,
-  FindDeclarationTool, SourceFileManager, Project;
+  FindDeclarationTool, ChangeDeclarationTool, SourceFileManager, Project;
 
 type
 
@@ -82,7 +82,7 @@ type
     FIdentifierPosition: TPoint;
     FOldIdentifier: string;
     FNewIdentifier: string;
-    FForbidden: TStringList;
+    FForbidden: TStringList; // already defined identifiers in scope
     FIsPrivate: boolean;
     FNode: TCodeTreeNode;
     FTool: TCustomCodeTool;
@@ -91,9 +91,10 @@ type
     procedure SetIsPrivate(const AValue: boolean);
     procedure SetFiles(const Files:TStringList);
     procedure UpdateRename;
-    procedure GatherProhibited;
+    procedure GatherFiles;
     function NewIdentifierIsConflicted(var ErrMsg: string): boolean;
   public
+    destructor Destroy; override;
     procedure LoadFromConfig;
     procedure SaveToConfig;
     procedure LoadFromOptions(Options: TFindRenameIdentifierOptions);
@@ -117,19 +118,17 @@ function DoFindRenameIdentifier(
   SetRenameActive: boolean; // check rename
   Options: TFindRenameIdentifierOptions): TModalResult;
 function GatherIdentifierReferences(Files: TStringList;
-  DeclarationCode: TCodeBuffer; const DeclarationCaretXY: TPoint;
+  const DeclCodeXY: TCodeXYPosition;
+  DeclTool: TCodeTool; // can be nil
+  DeclNode: TCodeTreeNode; // can be nil
   SearchInComments: boolean;
-  var TreeOfPCodeXYPosition: TAVLTree; const Flags: TFindRefsFlags): TModalResult;
+  out ListOfSrcNameRefs: TObjectList; const Flags: TFindRefsFlags): boolean;
 function ShowIdentifierReferences(
-  DeclarationCode: TCodeBuffer; const DeclarationCaretXY: TPoint;
-  TreeOfPCodeXYPosition: TAVLTree;
-  Identifier: string;
-  RenameTo: string = '';
-  InsertedCommentsAllowed: boolean=false): TModalResult;
-procedure AddReferencesToResultView(DeclarationCode: TCodeBuffer;
-  const DeclarationCaretXY: TPoint;
-  TreeOfPCodeXYPosition: TAVLTree; ClearItems: boolean; SearchPageIndex: integer;
-  InsertedCommentsAllowed: boolean=false);
+  DeclFilename: string;
+  ListOfSrcNameRefs: TObjectList;
+  Identifier: string; RenameTo: string = ''): TModalResult;
+procedure AddReferencesToResultView(Identifier: string; ListOfSrcNameRefs: TObjectList;
+  ClearItems: boolean; SearchPageIndex: integer);
 
 function GatherFPDocReferencesForPascalFiles(PascalFiles: TStringList;
   DeclarationCode: TCodeBuffer; const DeclarationCaretXY: TPoint;
@@ -166,19 +165,121 @@ begin
       if Options<>nil then
         FindRenameIdentifierDialog.SaveToOptions(Options);
   finally
-    FindRenameIdentifierDialog.FForbidden.Free;
-    FindRenameIdentifierDialog.FFiles.Free;
     FindRenameIdentifierDialog.Free;
     FindRenameIdentifierDialog:=nil;
   end;
 end;
 
+function GetDeclCodeNode(const DeclCodeXY: TCodeXYPosition; out DeclTool: TCodeTool;
+  out DeclNode: TCodeTreeNode; out DeclCleanPos: integer): boolean;
+
+  procedure Err(id: int64; Msg: string);
+  begin
+    Msg:='DoFindRenameIdentifier: '+Msg;
+    debugln(['Error: ',DeclCodeXY.Code.Filename,'(',DeclCodeXY.Y,',',DeclCodeXY.X,') [',id,'] ',Msg]);
+    CodeToolBoss.SetError(id,DeclCodeXY.Code,DeclCodeXY.Y,DeclCodeXY.X,Msg);
+    LazarusIDE.DoJumpToCodeToolBossError;
+  end;
+
+begin
+  Result:=false;
+  DeclTool:=nil;
+  DeclNode:=nil;
+  if DeclCodeXY.Code=nil then exit;
+  CodeToolBoss.Explore(DeclCodeXY.Code,DeclTool,false);
+  if DeclTool=nil then begin
+    debugln(['Error: (lazarus) [20250206142319] DoFindRenameIdentifier CodeToolBoss.Explore failed']);
+    LazarusIDE.DoJumpToCodeToolBossError;
+    exit;
+  end;
+  if DeclTool.CaretToCleanPos(DeclCodeXY,DeclCleanPos)<>0 then begin
+    Err(20250206143746,'position not in Pascal');
+    exit;
+  end;
+  DeclNode:=DeclTool.FindDeepestNodeAtPos(DeclCleanPos,false);
+  if DeclNode=nil then begin
+    Err(20250206143807,'no Pascal node');
+    exit;
+  end;
+  if (DeclNode.Desc=ctnIdentifier)
+      and (DeclNode.Parent.Desc in [ctnSrcName,ctnUseUnitClearName,ctnUseUnitNamespace]) then
+    DeclNode:=DeclNode.Parent;
+
+  Result:=true;
+end;
+
 function DoFindRenameIdentifier(AllowRename: boolean; SetRenameActive: boolean;
   Options: TFindRenameIdentifierOptions): TModalResult;
+var
+  DeclCleanPos: integer;
+  DeclTool: TCodeTool;
+  DeclNode: TCodeTreeNode;
+  DeclCodeXY: TCodeXYPosition;
 
+  procedure Err(id: int64; Msg: string);
+  begin
+    Msg:='DoFindRenameIdentifier: '+Msg;
+    debugln(['Error: ',DeclCodeXY.Code.Filename,'(',DeclCodeXY.Y,',',DeclCodeXY.X,') [',id,'] ',Msg]);
+    CodeToolBoss.SetError(id,DeclCodeXY.Code,DeclCodeXY.Y,DeclCodeXY.X,Msg);
+    LazarusIDE.DoJumpToCodeToolBossError;
+  end;
+
+  function UpdateCodeNode: boolean;
+  begin
+    Result:=GetDeclCodeNode(DeclCodeXY,DeclTool,DeclNode,DeclCleanPos);
+  end;
+
+  function CheckUsesNode: boolean;
+  var
+    InFilename, aUnitName, Dir, Filename: string;
+    NewCode: TCodeBuffer;
+    NewTool: TCodeTool;
+    NamePos: TAtomPosition;
+    CodeXYPos, NewDeclCodeXY: TCodeXYPosition;
+  begin
+    if not (DeclNode.Desc in [ctnUseUnitNamespace,ctnUseUnitClearName]) then
+      exit(true);
+    // renaming a uses -> rename the unit
+    // find unit
+    Result:=false;
+    aUnitName:=DeclTool.ExtractUsedUnitName(DeclNode.Parent,@InFilename);
+    if aUnitName='' then begin
+      Err(20250206143851,'ExtractUsedUnitName failed');
+      exit;
+    end;
+    Dir:=ExtractFilePath(DeclTool.MainFilename);
+    Filename:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(Dir,aUnitName,InFilename);
+    if Filename='' then begin
+      Err(20250206143916,'unit "'+aUnitName+'" not found');
+      exit;
+    end;
+    // load unit
+    NewCode:=CodeToolBoss.LoadFile(Filename,true,false);
+    if NewCode=nil then begin
+      Err(20250206143931,'unable to load file "'+Filename+'"');
+      exit;
+    end;
+    // parse
+    if not CodeToolBoss.Explore(NewCode,NewTool,true) then begin
+      debugln(['Error: (lazarus) [20250206142339] DoFindRenameIdentifier CodeToolBoss.Explore failed']);
+      LazarusIDE.DoJumpToCodeToolBossError;
+      exit;
+    end;
+    DeclTool:=NewTool;
+    DeclCodeXY.Code:=NewCode;
+    DeclCodeXY.X:=1;
+    DeclCodeXY.Y:=1;
+    DeclNode:=DeclTool.GetSourceNameNode;
+    if DeclNode=nil then begin
+      Err(20250206144454,'failed to find unit name');
+      exit;
+    end;
+    DeclTool.CleanPosToCaret(DeclNode.StartPos,DeclCodeXY);
+    Result:=true;
+  end;
+
+  function AddExtraFiles(Files: TStrings): boolean;
   // TODO: replace Files: TStringsList with a AVL tree
-
-  function AddExtraFiles(Files: TStrings): TModalResult;
   var
     i: Integer;
     CurFileMask: string;
@@ -190,11 +291,14 @@ function DoFindRenameIdentifier(AllowRename: boolean; SetRenameActive: boolean;
     FilesTree: TFilenameToStringTree;
     FTItem: PStringToStringItem;
   begin
-    Result:=mrCancel;
+    Result:=false;
     if (Options.ExtraFiles<>nil) then begin
       for i:=0 to Options.ExtraFiles.Count-1 do begin
         CurFileMask:=Options.ExtraFiles[i];
-        if not GlobalMacroList.SubstituteStr(CurFileMask) then exit;
+        if not GlobalMacroList.SubstituteStr(CurFileMask) then begin
+          Err(20250206153855,'invalid file mask "'+CurFileMask+'"');
+          exit;
+        end;
         CurFileMask:=ChompPathDelim(CurFileMask);
         if not FilenameIsAbsolute(CurFileMask) then begin
           if LazarusIDE.ActiveProject.IsVirtual then continue;
@@ -252,71 +356,76 @@ function DoFindRenameIdentifier(AllowRename: boolean; SetRenameActive: boolean;
         FindCloseUTF8(FileInfo);
       end;
     end;
-    Result:=mrOk;
+    Result:=true;
   end;
 
 var
   StartSrcEdit: TSourceEditorInterface;
-  DeclCode, StartSrcCode: TCodeBuffer;
-  DeclX, DeclY, DeclTopLine, StartTopLine, i: integer;
-  LogCaretXY, DeclarationCaretXY: TPoint;
-  OwnerList: TFPList;
+  StartSrcCode: TCodeBuffer;
+  DeclTopLine, StartTopLine, i, CleanPos: integer;
+  StartCaretXY, DeclXY: TPoint;
+  OwnerList, ListOfLazFPDocNode: TFPList;
   ExtraFiles: TStrings;
   Files: TStringList;
-  Identifier: string;
-  PascalReferences: TAVLTree;
-  ListOfLazFPDocNode: TFPList;
-  CurUnitname: String;
-  OldChange, Completed, RewriteNeeded: Boolean;
+  PascalReferences: TObjectList;
+  OldChange, Completed, RenamingFile, IsConflicted: Boolean;
   Graph: TUsesGraph;
-  Node: TAVLTreeNode;
+  AVLNode: TAVLTreeNode;
   UGUnit: TUGUnit;
-  TargetFilename, OrigFileName, ChangedFileType, srcNamed, lfmString: string;
-  SkipRenamingFile, isConflicted: Boolean;
+  Identifier, NewFilename, OldFileName, ChangedFileType, SrcNamed, lfmString: string;
   FindRefFlags: TFindRefsFlags;
+  Tool: TCodeTool;
+  Node: TCodeTreeNode;
+  TreeOfPCodeXYPosition: TAVLTree;
 begin
   Result:=mrCancel;
   if not LazarusIDE.BeginCodeTools then exit(mrCancel);
   StartSrcEdit:=SourceEditorManagerIntf.ActiveEditor;
   StartSrcCode:=TCodeBuffer(StartSrcEdit.CodeToolsBuffer);
   StartTopLine:=StartSrcEdit.TopLine;
-  RewriteNeeded:=False;
+  RenamingFile:=False;
   ChangedFileType:='';
 
   // find the main declaration
-  LogCaretXY:=StartSrcEdit.CursorTextXY;
+  StartCaretXY:=StartSrcEdit.CursorTextXY;
   if not CodeToolBoss.FindMainDeclaration(StartSrcCode,
-    LogCaretXY.X,LogCaretXY.Y,
-    DeclCode,DeclX,DeclY,DeclTopLine) then
+    StartCaretXY.X,StartCaretXY.Y,
+    DeclCodeXY.Code,DeclCodeXY.X,DeclCodeXY.Y,DeclTopLine) then
   begin
     LazarusIDE.DoJumpToCodeToolBossError;
     exit(mrCancel);
   end;
-  DeclarationCaretXY:=Point(DeclX,DeclY);
-  Result:=LazarusIDE.DoOpenFileAndJumpToPos(DeclCode.Filename, DeclarationCaretXY,
+  DeclTool:=nil;
+  if not UpdateCodeNode then exit;
+  if not CheckUsesNode then exit;
+
+  DeclXY:=Point(DeclCodeXY.X,DeclCodeXY.Y);
+  Result:=LazarusIDE.DoOpenFileAndJumpToPos(DeclCodeXY.Code.Filename, DeclXY,
     DeclTopLine,-1,-1,[ofOnlyIfExists,ofRegularFile,ofDoNotLoadResource]);
   if Result<>mrOk then
     exit;
 
-  CodeToolBoss.GetIdentifierAt(DeclCode,DeclarationCaretXY.X,DeclarationCaretXY.Y,Identifier);
-  CurUnitname:= ExtractFileNameOnly(DeclCode.Filename);
+  CodeToolBoss.GetIdentifierAt(DeclCodeXY.Code,DeclCodeXY.X,DeclCodeXY.Y,Identifier);
   Files:=nil;
   OwnerList:=nil;
   PascalReferences:=nil;
   ListOfLazFPDocNode:=nil;
+  NewFilename:='';
   try
     // let user choose the search scope
-    Result:=ShowFindRenameIdentifierDialog(DeclCode.Filename,DeclarationCaretXY,
+    Result:=ShowFindRenameIdentifierDialog(DeclCodeXY.Code.Filename,DeclXY,
       AllowRename,SetRenameActive,nil);
     if Result<>mrOk then begin
       debugln('Error: (lazarus) DoFindRenameIdentifier failed: user cancelled dialog');
       exit;
     end;
 
+    if not UpdateCodeNode then exit(mrCancel);
+
     // create the file list
     Files:=TStringList.Create;
-    Files.Add(DeclCode.Filename);
-    if CompareFilenames(DeclCode.Filename,StartSrcCode.Filename)<>0 then
+    Files.Add(DeclCodeXY.Code.Filename);
+    if CompareFilenames(DeclCodeXY.Code.Filename,StartSrcCode.Filename)<>0 then
       Files.Add(StartSrcCode.Filename);
 
     Options:=MiscellaneousOptions.FindRenameIdentifierOptions;
@@ -365,13 +474,13 @@ begin
         try
           for i:=0 to ExtraFiles.Count-1 do
             Graph.AddStartUnit(ExtraFiles[i]);
-          Graph.AddTargetUnit(DeclCode.Filename);
+          Graph.AddTargetUnit(DeclCodeXY.Code.Filename);
           Graph.Parse(true,Completed);
-          Node:=Graph.FilesTree.FindLowest;
-          while Node<>nil do begin
-            UGUnit:=TUGUnit(Node.Data);
+          AVLNode:=Graph.FilesTree.FindLowest;
+          while AVLNode<>nil do begin
+            UGUnit:=TUGUnit(AVLNode.Data);
             Files.Add(UGUnit.Filename);
-            Node:=Node.Successor;
+            AVLNode:=AVLNode.Successor;
           end;
         finally
           ExtraFiles.Free;
@@ -383,23 +492,19 @@ begin
     //debugln(['DoFindRenameIdentifier ',Files.Text]);
 
     // add user defined extra files
-    Result:=AddExtraFiles(Files);
-    if Result<>mrOk then begin
-      debugln('Error: (lazarus) DoFindRenameIdentifier unable to add user defined extra files');
-      exit;
-    end;
+    if not AddExtraFiles(Files) then
+      exit(mrCancel);
 
     // search pascal source references
+
     FindRefFlags:=[];
     if Options.Overrides then
       Include(FindRefFlags,frfMethodOverrides);
-    Result:=GatherIdentifierReferences(Files,DeclCode,
-      DeclarationCaretXY,Options.SearchInComments,PascalReferences,FindRefFlags);
-    if CodeToolBoss.ErrorMessage<>'' then
-      LazarusIDE.DoJumpToCodeToolBossError;
-    if Result<>mrOk then begin
-      debugln('Error: (lazarus) DoFindRenameIdentifier GatherIdentifierReferences failed');
-      exit;
+    if not GatherIdentifierReferences(Files,DeclCodeXY,DeclTool,DeclNode,
+      Options.SearchInComments,PascalReferences,FindRefFlags) then
+    begin
+      debugln('20250206162727 DoFindRenameIdentifier GatherIdentifierReferences failed');
+      exit(mrCancel);
     end;
 
     {$IFDEF EnableFPDocRename}
@@ -418,48 +523,64 @@ begin
 
     if Options.Rename then begin
 
-      SkipRenamingFile:= true;
-      if (CompareDottedIdentifiers(PChar(Identifier),PChar(CurUnitName))=0) then
-      begin //are project/units names involved?
-        TargetFilename:=ExtractFilePath(DeclCode.Filename)+
-          LowerCase(StringReplace(Options.RenameTo,'&','',[rfReplaceAll]))+
-          ExtractFileExt(DeclCode.Filename);
-        OrigFileName:=DeclCode.Filename;
-        SkipRenamingFile:= CompareFileNames(ExtractFilenameOnly(TargetFilename),
-          ExtractFilenameOnly(DeclCode.Filename))=0;
-        if not SkipRenamingFile and FileExists(TargetFilename) then begin
+      RenamingFile:=false;
+      OldFileName:=DeclCodeXY.Code.Filename;
+      NewFilename:=OldFileName;
+      if DeclNode.Desc=ctnSrcName then
+      begin
+        // rename unit/program
+        NewFilename:=ExtractFilePath(OldFileName)+
+          LowerCase(RemoveAmpersands(Options.RenameTo))+
+          ExtractFileExt(OldFileName);
+        RenamingFile:= CompareFileNames(ExtractFilenameOnly(NewFilename),
+          ExtractFilenameOnly(OldFileName))<>0;
+        if RenamingFile and FileExists(NewFilename) then begin
           IDEMessageDialog(lisRenamingAborted,
-            Format(lisFileAlreadyExists,[TargetFilename]),
+            Format(lisFileAlreadyExists,[NewFilename]),
             mtError,[mbOK]);
           exit(mrCancel);
         end;
-        ChangedFileType:= CodeToolBoss.GetSourceType(DeclCode,False);
-        if ChangedFileType='' then SkipRenamingFile:= true else begin
-           case ChangedFileType[2] of
-           {P}'R':srcNamed:=dlgFoldPasProgram;
-           {L}'I':srcNamed:=lisPckOptsLibrary;
-           {P}'A':srcNamed:=lisPackage;
-           else
-             {U} srcNamed:=dlgFoldPasUnit;
-           end;
+        ChangedFileType:=lowercase(CodeToolBoss.GetSourceType(DeclCodeXY.Code,False));
+        if ChangedFileType='' then
+          RenamingFile:=false
+        else begin
+          case ChangedFileType of
+          'program': SrcNamed:=dlgFoldPasProgram;
+          'library': SrcNamed:=lisPckOptsLibrary;
+          'package': SrcNamed:=lisPackage;
+          else
+            SrcNamed:=dlgFoldPasUnit;
+          end;
         end;
-        if not SkipRenamingFile and (IDEMessageDialog(srkmecRenameIdentifier,
+        if RenamingFile and (IDEMessageDialog(srkmecRenameIdentifier,
              Format(lisTheIdentifierIsAUnitProceedAnyway,
-             [srcNamed,LineEnding,LineEnding]),
+             [SrcNamed,LineEnding,LineEnding]),
              mtInformation,[mbCancel, mbOK],'') <> mrOK) then
           exit(mrCancel);
-        RewriteNeeded:=True;
       end;
 
       // rename identifier
       OldChange:=LazarusIDE.OpenEditorsOnCodeToolChange;
       LazarusIDE.OpenEditorsOnCodeToolChange:=true;
       try
-        isConflicted:=false; // todo: check for conflicts and show user list
-        if not CodeToolBoss.RenameIdentifier(PascalReferences,
-          Identifier, Options.RenameTo, DeclCode, @DeclarationCaretXY)
-        then begin
-          if isConflicted then
+        // todo: check for conflicts and show user list
+        IsConflicted:=false;
+        Result:=mrOk;
+        if DeclNode.Desc=ctnSrcName then begin
+          if not CodeToolBoss.RenameSourceNameReferences(OldFileName,NewFilename,
+            Options.RenameTo,PascalReferences) then
+            Result:=mrCancel;
+        end else begin
+          if (PascalReferences<>nil) and (PascalReferences.Count>0) then begin
+            TreeOfPCodeXYPosition:=TSrcNameRefs(PascalReferences[0]).TreeOfPCodeXYPosition;
+            if not CodeToolBoss.RenameIdentifier(TreeOfPCodeXYPosition,
+              Identifier, Options.RenameTo, DeclCodeXY.Code, @DeclXY) then
+              Result:=mrCancel;
+          end;
+        end;
+
+        if Result<>mrOk then begin
+          if IsConflicted then
             IDEMessageDialog(lisRenamingConflict,
               Format(lisIdentifierWasAlreadyUsed,[Options.RenameTo]),
               mtError,[mbOK])
@@ -467,141 +588,169 @@ begin
             LazarusIDE.DoJumpToCodeToolBossError;
             debugln('Error: (lazarus) DoFindRenameIdentifier unable to commit');
           exit(mrCancel);
-        end else begin
-          // ToDo: search lfm source references
         end;
+
+        // ToDo: rename lfm references
+        // ToDo: rename fpdoc references
+        // ToDo: rename designer references
+
       finally
         LazarusIDE.OpenEditorsOnCodeToolChange:=OldChange;
       end;
-      if Options.RenameShowResult and not RewriteNeeded  then
-        Result:=ShowIdentifierReferences(DeclCode,
-          DeclarationCaretXY,PascalReferences,Identifier,Options.RenameTo);
-    end else begin //no renaming, only references - always shown
-      Result:=ShowIdentifierReferences(DeclCode,
-        DeclarationCaretXY,PascalReferences,Identifier,'',true);
-    end;
 
-    if RewriteNeeded then begin
-      if not SkipRenamingFile then begin
-        if ChangedFileType[1]='U' then //UNIT
-          Result:= RenameUnitFromFileName(OrigFileName, Options.RenameTo)
-        else //PROGRAM, LIBRARY, PACKAGE
-          Result:= ShowSaveProject(Options.RenameTo);
-      end else
-        Result:= mrOK;
-      if Result=mrOK then
-      if Options.RenameShowResult then begin
-        i:=0;
-        while (i<=Files.Count-1) do begin
-          if (CompareFileNames(PChar(Files[i]), PChar(OrigFileName))=0) then begin
-            Files.Delete(i);
-            Files.Add(TargetFilename);
-            break;
+      if RenamingFile then begin
+        if ChangedFileType='unit' then
+          Result:=RenameUnitFromFileName(OldFileName, Options.RenameTo)
+        else
+          Result:=ShowSaveProject(Options.RenameTo);
+        if Result<>mrOK then exit;
+
+        if Options.RenameShowResult then begin
+          // search again
+          i:=0;
+          while (i<=Files.Count-1) do begin
+            if (CompareFileNames(PChar(Files[i]), PChar(OldFileName))=0) then begin
+              Files.Delete(i);
+              Files.Add(NewFilename);
+              break;
+            end;
+            Inc(i);
           end;
-          Inc(i);
+          DeclCodeXY.Code:=CodeToolBoss.LoadFile(NewFilename,false,false);
+          //  X,Y are the same as before renaming
+          FreeAndNil(PascalReferences);
+          if not GatherIdentifierReferences(Files,DeclCodeXY,DeclTool,DeclNode,
+            Options.SearchInComments,PascalReferences,FindRefFlags) then
+          begin
+            debugln('20250206162727 DoFindRenameIdentifier GatherIdentifierReferences failed');
+            exit(mrCancel);
+          end;
         end;
-        DeclCode:=CodeToolBoss.LoadFile(TargetFilename,false,false);
-        //cursor pos for declaration is the same as before renaming
-        CodeToolBoss.FreeTreeOfPCodeXYPosition(PascalReferences);
-        Result:=GatherIdentifierReferences(Files,DeclCode,
-          DeclarationCaretXY,Options.SearchInComments,PascalReferences,FindRefFlags);
-        if CodeToolBoss.ErrorMessage<>'' then
-          LazarusIDE.DoJumpToCodeToolBossError;
-        if Result<>mrOk then begin
-          debugln('Error: (lazarus) DoFindRenameIdentifier GatherIdentifierReferences failed');
-          exit;
-        end;
-
-        Result:=ShowIdentifierReferences(DeclCode,
-          DeclarationCaretXY,PascalReferences,Identifier,Options.RenameTo);
       end;
+      if Options.RenameShowResult then
+        Result:=ShowIdentifierReferences(DeclCodeXY.Code.Filename,
+          PascalReferences,Identifier,Options.RenameTo);
+
+    end else begin //no renaming, only references - always shown
+      Result:=ShowIdentifierReferences(DeclCodeXY.Code.Filename,
+        PascalReferences,Identifier);
     end;
+
   finally
     Files.Free;
     OwnerList.Free;
-    CodeToolBoss.FreeTreeOfPCodeXYPosition(PascalReferences);
+    PascalReferences.Free;
     FreeListObjects(ListOfLazFPDocNode,true);
 
-    // jump back in source editor - depens on the need to rename Files
-    if RewriteNeeded and not SkipRenamingFile and (Result=mrOK) then
-      Result:=LazarusIDE.DoOpenFileAndJumpToPos(TargetFilename, LogCaretXY,
+    if RenamingFile and (Result=mrOK) then
+      // source renamed -> jump to new file
+      Result:=LazarusIDE.DoOpenFileAndJumpToPos(NewFilename, DeclXY,
         StartTopLine,-1,-1,[ofOnlyIfExists,ofRegularFile,ofDoNotLoadResource])
     else
-      Result:=LazarusIDE.DoOpenFileAndJumpToPos(StartSrcCode.Filename, LogCaretXY,
+      // jump back to where user started
+      Result:=LazarusIDE.DoOpenFileAndJumpToPos(StartSrcCode.Filename, StartCaretXY,
         StartTopLine,-1,-1,[ofOnlyIfExists,ofRegularFile,ofDoNotLoadResource]);
   end;
 end;
 
-function GatherIdentifierReferences(Files: TStringList; DeclarationCode: TCodeBuffer;
-  const DeclarationCaretXY: TPoint; SearchInComments: boolean; var TreeOfPCodeXYPosition: TAVLTree;
-  const Flags: TFindRefsFlags): TModalResult;
+function GatherIdentifierReferences(Files: TStringList; const DeclCodeXY: TCodeXYPosition;
+  DeclTool: TCodeTool; DeclNode: TCodeTreeNode; SearchInComments: boolean; out
+  ListOfSrcNameRefs: TObjectList; const Flags: TFindRefsFlags): boolean;
 var
-  i: Integer;
+  i, DeclCleanPos: Integer;
   LoadResult: TModalResult;
   Code: TCodeBuffer;
   ListOfPCodeXYPosition: TFPList;
   Cache: TFindIdentifierReferenceCache;
+  TreeOfPCodeXYPosition: TAVLTree;
+  Refs: TSrcNameRefs;
 begin
-  Result:=mrCancel;
+  Result:=false;
+  ListOfSrcNameRefs:=nil;
   ListOfPCodeXYPosition:=nil;
-  TreeOfPCodeXYPosition.Free;
   TreeOfPCodeXYPosition:=nil;
   Cache:=nil;
   try
     CleanUpFileList(Files);
 
-    // search in every file
-    for i:=0 to Files.Count-1 do begin
-      //debugln(['GatherIdentifierReferences ',Files[i]]);
-      LoadResult:=
-          LoadCodeBuffer(Code,Files[i],[lbfCheckIfText,lbfUpdateFromDisk,lbfIgnoreMissing],true);
-      if LoadResult=mrAbort then begin
-        debugln('GatherIdentifierReferences unable to load "',Files[i],'"');
+    if DeclNode=nil then begin
+      if not GetDeclCodeNode(DeclCodeXY,DeclTool,DeclNode,DeclCleanPos) then
         exit;
-      end;
-      if LoadResult<>mrOk then continue;
-      
-      // search references
-      CodeToolBoss.FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
-      if not CodeToolBoss.FindReferences(
-        DeclarationCode,DeclarationCaretXY.X,DeclarationCaretXY.Y,
-        Code, not SearchInComments, ListOfPCodeXYPosition, Cache, Flags) then
-      begin
-        debugln('GatherIdentifierReferences unable to FindReferences in "',Code.Filename,'"');
-        Result:=mrAbort;
-        exit;
-      end;
-      //debugln('GatherIdentifierReferences FindReferences in "',Code.Filename,'" ',dbgs(ListOfPCodeXYPosition<>nil));
+    end;
 
-      // add to tree
-      if ListOfPCodeXYPosition<>nil then begin
-        if TreeOfPCodeXYPosition=nil then
-          TreeOfPCodeXYPosition:=CodeToolBoss.CreateTreeOfPCodeXYPosition;
-        CodeToolBoss.AddListToTreeOfPCodeXYPosition(ListOfPCodeXYPosition,
-                                              TreeOfPCodeXYPosition,true,false);
+    if DeclNode.Desc=ctnSrcName then begin
+      // search source name references
+      if not CodeToolBoss.FindSourceNameReferences(DeclCodeXY.Code.Filename,Files,
+        not SearchInComments,ListOfSrcNameRefs) then
+      begin
+        debugln('GatherIdentifierReferences CodeToolBoss.FindSourceNameReferences failed');
+        if CodeToolBoss.ErrorMessage='' then
+          CodeToolBoss.SetError(20250206162241,DeclCodeXY.Code,DeclCodeXY.Y,DeclCodeXY.X,'CodeToolBoss.FindSourceNameReferences failed');
+        LazarusIDE.DoJumpToCodeToolBossError;
+        exit;
+      end;
+    end else begin
+      // search identifier in every file
+      for i:=0 to Files.Count-1 do begin
+        //debugln(['GatherIdentifierReferences ',Files[i]]);
+        LoadResult:=
+            LoadCodeBuffer(Code,Files[i],[lbfCheckIfText,lbfUpdateFromDisk,lbfIgnoreMissing],true);
+        if LoadResult=mrAbort then begin
+          debugln('GatherIdentifierReferences unable to load "',Files[i],'"');
+          exit;
+        end;
+        if LoadResult<>mrOk then continue;
+
+        // search references
+        CodeToolBoss.FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
+        if not CodeToolBoss.FindReferences(
+          DeclCodeXY.Code,DeclCodeXY.X,DeclCodeXY.Y,
+          Code, not SearchInComments, ListOfPCodeXYPosition, Cache, Flags) then
+        begin
+          debugln('GatherIdentifierReferences CodeToolBoss.FindReferences failed in "',Code.Filename,'"');
+          if CodeToolBoss.ErrorMessage='' then
+            CodeToolBoss.SetError(20250206161149,Code,1,1,'CodeToolBoss.FindReferences failed');
+          LazarusIDE.DoJumpToCodeToolBossError;
+          exit;
+        end;
+        //debugln('GatherIdentifierReferences FindReferences in "',Code.Filename,'" ',dbgs(ListOfPCodeXYPosition<>nil));
+
+        // add to tree
+        if ListOfPCodeXYPosition<>nil then begin
+          if TreeOfPCodeXYPosition=nil then
+            TreeOfPCodeXYPosition:=CodeToolBoss.CreateTreeOfPCodeXYPosition;
+          CodeToolBoss.AddListToTreeOfPCodeXYPosition(ListOfPCodeXYPosition,
+                                                TreeOfPCodeXYPosition,true,false);
+        end;
+      end;
+      if TreeOfPCodeXYPosition<>nil then begin
+        ListOfSrcNameRefs:=TObjectList.Create(true);
+        Refs:=TSrcNameRefs.Create;
+        Refs.TreeOfPCodeXYPosition:=TreeOfPCodeXYPosition;
+        TreeOfPCodeXYPosition:=nil;
+        if ListOfSrcNameRefs=nil then
+          ListOfSrcNameRefs:=TObjectList.Create(true);
+        ListOfSrcNameRefs.Add(Refs);
       end;
     end;
 
-    Result:=mrOk;
+    Result:=true;
   finally
     CodeToolBoss.FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
-    if Result<>mrOk then
-      CodeToolBoss.FreeTreeOfPCodeXYPosition(TreeOfPCodeXYPosition);
+    CodeToolBoss.FreeTreeOfPCodeXYPosition(TreeOfPCodeXYPosition);
     Cache.Free;
   end;
 end;
 
-function ShowIdentifierReferences(
-  DeclarationCode: TCodeBuffer; const DeclarationCaretXY: TPoint;
-  TreeOfPCodeXYPosition: TAVLTree;
-  Identifier: string;
-  RenameTo: string;
-  InsertedCommentsAllowed: boolean=false): TModalResult;
+function ShowIdentifierReferences(DeclFilename: string; ListOfSrcNameRefs: TObjectList;
+  Identifier: string; RenameTo: string): TModalResult;
 var
   OldSearchPageIndex: TTabSheet;
   SearchPageIndex: TTabSheet;
   lOptions: TLazFindInFileSearchOptions;
 begin
+  if (ListOfSrcNameRefs=nil) or (ListOfSrcNameRefs.Count=0) then exit(mrOk);
+
   Result:=mrCancel;
   LazarusIDE.DoShowSearchResultsView(iwgfShow);
   SearchPageIndex:=nil;
@@ -616,17 +765,14 @@ begin
     SearchPageIndex:=SearchResultsView.AddSearch(
       Identifier,
       RenameTo,
-      ExtractFilePath(DeclarationCode.Filename),
+      ExtractFilePath(DeclFilename),
       '*.pas;*.pp;*.p;*.inc',
       lOptions);
     if SearchPageIndex = nil then exit;
 
     // list results
     SearchResultsView.BeginUpdate(SearchPageIndex.PageIndex);
-    AddReferencesToResultView(DeclarationCode,DeclarationCaretXY,
-                   TreeOfPCodeXYPosition,true,SearchPageIndex.PageIndex,
-                   InsertedCommentsAllowed and
-                   IsDottedIdentifier(Identifier));
+    AddReferencesToResultView(Identifier,ListOfSrcNameRefs,true,SearchPageIndex.PageIndex);
     OldSearchPageIndex:=SearchPageIndex;
     SearchPageIndex:=nil;
     Identifier:=EnforceAmp(Identifier);
@@ -640,59 +786,61 @@ begin
   Result:=mrOK;
 end;
 
-procedure AddReferencesToResultView(DeclarationCode: TCodeBuffer;
-  const DeclarationCaretXY: TPoint; TreeOfPCodeXYPosition: TAVLTree;
-  ClearItems: boolean; SearchPageIndex: integer;
-  InsertedCommentsAllowed: boolean=false);
+procedure AddReferencesToResultView(Identifier: string; ListOfSrcNameRefs: TObjectList;
+  ClearItems: boolean; SearchPageIndex: integer);
 var
-  Identifier: string;
   CodePos: PCodeXYPosition;
-  CurLine: String;
-  TrimmedLine: String;
+  CurLine, TrimmedLine, CurIdentifier: String;
   TrimCnt: Integer;
   ANode: TAVLTreeNode;
-  Xout,Yout: integer;
   CaretXY: TCodeXYPosition;
-  AmdLen: integer;
+  i, Len: integer;
   CleanPos: integer;
-  AmdEndPos: integer;
+  EndPos: integer;
   CodeTool: TCodeTool;
+  Refs: TSrcNameRefs;
+  Tree: TAVLTree;
 begin
-  Xout:=DeclarationCaretXY.X;
-  Yout:=DeclarationCaretXY.Y;
-  CodeToolBoss.GetIdentifierAt(DeclarationCode,Xout,Yout,Identifier);
-
   SearchResultsView.BeginUpdate(SearchPageIndex);
   if ClearItems then
     SearchResultsView.Items[SearchPageIndex].Clear;
-  if (TreeOfPCodeXYPosition<>nil) then begin
-    ANode:=TreeOfPCodeXYPosition.FindHighest;
-    while ANode<>nil do begin
-      CodePos:=PCodeXYPosition(ANode.Data);
-      CurLine:=TrimRight(CodePos^.Code.GetLine(CodePos^.Y-1,false));
-      TrimmedLine:=Trim(CurLine);
-      TrimCnt:=length(CurLine)-length(TrimmedLine);
-      //debugln('ShowReferences x=',dbgs(CodePos^.x),' y=',dbgs(CodePos^.y),' ',CurLine);
-      AmdLen:=0;
-      if InsertedCommentsAllowed  then begin
-        CodeToolBoss.Explore(CodePos^.Code,CodeTool,true);
-        if CodeTool<>nil then begin
+  if ListOfSrcNameRefs<>nil then begin
+    for i:=0 to ListOfSrcNameRefs.Count-1 do begin
+      Refs:=TSrcNameRefs(ListOfSrcNameRefs[i]);
+      Tree:=Refs.TreeOfPCodeXYPosition;
+      if Tree=nil then continue;
+
+      CurIdentifier:=Refs.NewLocalSrcName;
+      if CurIdentifier='' then CurIdentifier:=Identifier;
+
+      ANode:=Tree.FindLowest;
+      while ANode<>nil do begin
+        CodePos:=PCodeXYPosition(ANode.Data);
+        ANode:=Tree.FindSuccessor(ANode);
+
+        CurLine:=TrimRight(CodePos^.Code.GetLine(CodePos^.Y-1,false));
+        TrimmedLine:=Trim(CurLine);
+        TrimCnt:=length(CurLine)-length(TrimmedLine);
+        //debugln('ShowReferences x=',dbgs(CodePos^.x),' y=',dbgs(CodePos^.y),' ',CurLine);
+        Len:=length(CurIdentifier);
+        if Pos('.',CurIdentifier)>0 then begin
+          CodeToolBoss.Explore(CodePos^.Code,CodeTool,true);
           CaretXY.X:=CodePos^.X;
           CaretXY.Y:=CodePos^.Y;
           CaretXY.Code:=CodePos^.Code;
-          CodeTool.CaretToCleanPos(CaretXY,CleanPos);
-          CodeTool.ExtractIdentifierWithPointsOutEndPos(CleanPos,AmdEndPos,
+          if CodeTool.CaretToCleanPos(CaretXY,CleanPos)<>0 then
+            continue;
+          CodeTool.ExtractIdentifierWithPointsOutEndPos(CleanPos,EndPos,
             length(Identifier));
-          AmdLen:=AmdEndPos-CleanPos-length(Identifier);
+          Len:=EndPos-CleanPos;
         end;
+        SearchResultsView.AddMatch(SearchPageIndex,
+                                   CodePos^.Code.Filename,
+                                   Point(CodePos^.X,CodePos^.Y),
+                                   Point(CodePos^.X+Len,CodePos^.Y),
+                                   TrimmedLine,
+                                   CodePos^.X-TrimCnt, Len);
       end;
-      SearchResultsView.AddMatch(SearchPageIndex,
-                                 CodePos^.Code.Filename,
-                                 Point(CodePos^.X,CodePos^.Y),
-                                 Point(CodePos^.X+length(Identifier)+AmdLen,CodePos^.Y),
-                                 TrimmedLine,
-                                 CodePos^.X-TrimCnt, length(Identifier)+AmdLen);//+dotted
-      ANode:=TreeOfPCodeXYPosition.FindPrecessor(ANode);
     end;
   end;
   SearchResultsView.EndUpdate(SearchPageIndex);
@@ -900,30 +1048,30 @@ begin
 end;
 
 procedure TFindRenameIdentifierDialog.ValidateNewName(Sender: TObject);
-var  isOK:boolean;
-    errInfo:string;
-    dotPart:string;
-    i:integer;
+var
+  ok: boolean;
+  Err, dotPart:string;
+  i: integer;
 begin
   if FOldIdentifier='' then exit;
-  errInfo:='';
+  Err:='';
   FNewIdentifier:=NewEdit.Text;
   if (FNode<>nil)
   and (FNode.Desc in [ctnProgram..ctnUnit,ctnUseUnitNamespace,ctnUseUnitClearName]) then
-    isOK:=IsValidDottedIdent(FNewIdentifier) //can be dotted
+    ok:=IsValidDottedIdent(FNewIdentifier) //can be dotted
   else
-    isOK:=IsValidDottedIdent(FNewIdentifier,false);//not dotted for sure
+    ok:=IsValidDottedIdent(FNewIdentifier,false);//not dotted for sure
 
-  if not isOK then begin
+  if not ok then begin
     if FNewIdentifier='' then
-      errInfo:=lisIdentifierCannotBeEmpty
+      Err:=lisIdentifierCannotBeEmpty
     else
-      errInfo:= format(lisIdentifierIsInvalid,[FNewIdentifier]);
+      Err:= format(lisIdentifierIsInvalid,[FNewIdentifier]);
   end;
 
-  if isOK and (FTool<>nil) then begin
+  if ok and (FTool<>nil) then begin
     i:=1;
-    while isOK and (i<=length(FNewIdentifier)) do begin
+    while ok and (i<=length(FNewIdentifier)) do begin
       dotPart:='';
       while (i<=length(FNewIdentifier)) do begin
         dotPart:=dotPart+FNewIdentifier[i];
@@ -935,25 +1083,25 @@ begin
           break;
         end;
       end;
-      isOK:=not FTool.IsStringKeyWord(dotPart);
+      ok:=not FTool.IsStringKeyWord(dotPart);
     end;
-    if not isOK then
-      errInfo:=Format(lisIdentifierIsReservedWord,[dotPart]);
+    if not ok then
+      Err:=Format(lisIdentifierIsReservedWord,[dotPart]);
   end;
 
-  if isOK
+  if ok
   and (CompareDottedIdentifiers(PChar(FNewIdentifier),PChar(FOldIdentifier))<>0)
   then
-    isOK:=not NewIdentifierIsConflicted(errInfo);
+    ok:=not NewIdentifierIsConflicted(Err);
 
-  errInfo:=StringReplace(errInfo,'&','&&',[rfReplaceAll]);
-  ButtonPanel1.OKButton.Enabled:=isOK;
-  if isOK then begin
+  Err:=StringReplace(Err,'&','&&',[rfReplaceAll]);
+  ButtonPanel1.OKButton.Enabled:=ok;
+  if ok then begin
     NewGroupBox.Caption:=lisFRIRenaming;
     NewGroupBox.Font.Style:=NewGroupBox.Font.Style-[fsBold];
   end
   else begin
-    NewGroupBox.Caption:=lisFRIRenaming+' - '+ errInfo;
+    NewGroupBox.Caption:=lisFRIRenaming+' - '+ Err;
     NewGroupBox.Font.Style:=NewGroupBox.Font.Style+[fsBold];
   end;
 
@@ -974,8 +1122,8 @@ begin
     ButtonPanel1.OKButton.Caption:=lisFRIRenameAllReferences
   else
     ButtonPanel1.OKButton.Caption:=lisFRIFindReferences;
-  if RenameCheckBox.Checked and (self.FForbidden=nil) then
-    GatherProhibited;
+  if RenameCheckBox.Checked and (FForbidden=nil) then
+    GatherFiles;
 end;
 
 procedure TFindRenameIdentifierDialog.SetAllowRename(const AValue: boolean);
@@ -1207,38 +1355,46 @@ begin
      +'('+IntToStr(IdentifierPosition.Y)+','+IntToStr(IdentifierPosition.X)+')';
   CurrentListBox.Items.Add(s);
   LoadCodeBuffer(ACodeBuffer,IdentifierFileName,[lbfCheckIfText],false);
-  if ACodeBuffer<>nil then begin
-    CodeToolBoss.GetIncludeCodeChain(ACodeBuffer,true,ListOfCodeBuffer);
-    if ListOfCodeBuffer<>nil then begin
-      for i:=0 to ListOfCodeBuffer.Count-1 do begin
-        CurCode:=TCodeBuffer(ListOfCodeBuffer[i]);
-        if CurCode=ACodeBuffer then break;
-        s:=CurCode.Filename;
-        CurrentListBox.Items.Insert(0,s);
-      end;
-      ListOfCodeBuffer.Free;
+  IsPrivate:=false;
+  FOldIdentifier:='';
+  if ACodeBuffer=nil then begin
+    CurrentGroupBox.Caption:='?file not found?';
+    exit;
+  end;
+
+  // Check if this is an include file and list files this unit/program
+  CodeToolBoss.GetIncludeCodeChain(ACodeBuffer,true,ListOfCodeBuffer);
+  if ListOfCodeBuffer<>nil then begin
+    for i:=0 to ListOfCodeBuffer.Count-1 do begin
+      CurCode:=TCodeBuffer(ListOfCodeBuffer[i]);
+      if CurCode=ACodeBuffer then break;
+      s:=CurCode.Filename;
+      CurrentListBox.Items.Insert(0,s);
     end;
-    if CodeToolBoss.GetIdentifierAt(ACodeBuffer,
-      NewIdentifierPosition.X,NewIdentifierPosition.Y,FOldIdentifier,FNode) then
-    begin
-      CurrentGroupBox.Caption:= Format(lisFRIIdentifier,[''])+EnforceAmp(FOldIdentifier);
-      NewEdit.Text:=FOldIdentifier;
-    end else
-      FOldIdentifier:='';
-    // check if in implementation or private section
-    if CodeToolBoss.Explore(ACodeBuffer,Tool,false) then begin
-      CodeXY:=CodeXYPosition(NewIdentifierPosition.X,NewIdentifierPosition.Y,ACodeBuffer);
-      if Tool.CaretToCleanPos(CodeXY,CleanPos)=0 then begin
-        Node:=Tool.BuildSubTreeAndFindDeepestNodeAtPos(CleanPos,false);
-        if (Node=nil)
-        or Node.HasParentOfType(ctnImplementation)
-        or Node.HasParentOfType(ctnClassPrivate) then
-          IsPrivate:=true;
-      end;
+    ListOfCodeBuffer.Free;
+  end;
+
+  if CodeToolBoss.GetIdentifierAt(ACodeBuffer,
+    NewIdentifierPosition.X,NewIdentifierPosition.Y,FOldIdentifier,FNode) then
+  begin
+    CurrentGroupBox.Caption:= Format(lisFRIIdentifier,[''])+EnforceAmp(FOldIdentifier);
+    NewEdit.Text:=FOldIdentifier;
+  end else
+    FOldIdentifier:='';
+
+  // check if in implementation or private section
+  if CodeToolBoss.Explore(ACodeBuffer,Tool,false) then begin
+    CodeXY:=CodeXYPosition(NewIdentifierPosition.X,NewIdentifierPosition.Y,ACodeBuffer);
+    if Tool.CaretToCleanPos(CodeXY,CleanPos)=0 then begin
+      Node:=Tool.BuildSubTreeAndFindDeepestNodeAtPos(CleanPos,false);
+      if (Node=nil)
+      or Node.HasParentOfType(ctnImplementation)
+      or Node.HasParentOfType(ctnClassPrivate) then
+        IsPrivate:=true;
     end;
   end;
 end;
-procedure TFindRenameIdentifierDialog.GatherProhibited;
+procedure TFindRenameIdentifierDialog.GatherFiles;
 var
   StartSrcEdit: TSourceEditorInterface;
   DeclCode, StartSrcCode: TCodeBuffer;
@@ -1253,7 +1409,7 @@ var
   UGUnit: TUGUnit;
   UnitInfo:TUnitInfo;
   Completed: boolean;
-  ExternalProjectName, InternalProjectName: string;
+  ExternalProjectName, InternalProjectName, ProjMainFilename: string;
 begin
   if not LazarusIDE.BeginCodeTools then exit;
   if Project1=nil then exit;
@@ -1273,60 +1429,63 @@ begin
     exit;
   end;
 
+  OwnerList:=nil;
   try
     FTool:=CodeToolBoss.FindCodeToolForSource(DeclCode);
     FForbidden:=TStringList.Create;
     Files:=TStringList.Create;
 
-    InternalProjectName:=
-      Project1.ProjectUnitWithFilename(Project1.MainFilename).Unit_Name;
-    ExternalProjectName:=ExtractFileNameOnly(Project1.MainFilename);
-    if ExternalProjectName<>'' then begin
-      // units cannot have filename matching project file name - only warnings/problems,
-      // projects source names can be changed to match its file names,
-      // other identifiers can be renamed to project file name - if this differs from
-      // project source name.
-      if (FNode<>nil) and
-        (FNode.Desc in [ctnUseUnit,ctnUseUnitNamespace,ctnUseUnitClearName,ctnUnit])
-        and (CompareDottedIdentifiers(PChar(ExternalProjectName),
-        Pchar(InternalProjectName))<>0) then
+    ProjMainFilename:=Project1.MainFilename;
+    if ProjMainFilename<>'' then begin
+      InternalProjectName:=
+        Project1.ProjectUnitWithFilename(ProjMainFilename).Unit_Name;
+      ExternalProjectName:=ExtractFileNameOnly(ProjMainFilename);
+      if ExternalProjectName<>'' then begin
+        // units cannot have filename matching project file name - only warnings/problems,
+        // projects source names can be changed to match its file names,
+        // other identifiers can be renamed to project file name - if this differs from
+        // project source name.
+        if (FNode<>nil)
+            and (FNode.Desc in [ctnUseUnit,ctnUseUnitNamespace,ctnUseUnitClearName,ctnUnit])
+            and (CompareDottedIdentifiers(PChar(ExternalProjectName),
+                                          PChar(InternalProjectName))<>0)
+        then
           FForbidden.Add(ExternalProjectName);
+      end;
     end;
 
     OwnerList:=TFPList.Create;
     OwnerList.Add(LazarusIDE.ActiveProject);
 
     // get source files of packages and projects
-    if OwnerList<>nil then begin
-      // start in all listed Files of the package(s)
-      ExtraFiles:=PackageEditingInterface.GetSourceFilesOfOwners(OwnerList);
-      if ExtraFiles<>nil then
-      begin
-        // parse all used units
-        Graph:=CodeToolBoss.CreateUsesGraph;
-        try
-          for i:=0 to ExtraFiles.Count-1 do
-            Graph.AddStartUnit(ExtraFiles[i]);
-          Graph.AddTargetUnit(DeclCode.Filename);
-          Graph.Parse(true,Completed);
-          Node:=Graph.FilesTree.FindLowest;
-          while Node<>nil do begin
-            UGUnit:=TUGUnit(Node.Data);
-            Files.Add(UGUnit.Filename);
-            Node:=Node.Successor;
-          end;
-        finally
-          ExtraFiles.Free;
-          Graph.Free;
+    ExtraFiles:=PackageEditingInterface.GetSourceFilesOfOwners(OwnerList);
+    if ExtraFiles<>nil then
+    begin
+      // parse all used units
+      Graph:=CodeToolBoss.CreateUsesGraph;
+      try
+        for i:=0 to ExtraFiles.Count-1 do
+          Graph.AddStartUnit(ExtraFiles[i]);
+        Graph.AddTargetUnit(DeclCode.Filename);
+        Graph.Parse(true,Completed);
+        Node:=Graph.FilesTree.FindLowest;
+        while Node<>nil do begin
+          UGUnit:=TUGUnit(Node.Data);
+          Files.Add(UGUnit.Filename);
+          Node:=Node.Successor;
         end;
+      finally
+        ExtraFiles.Free;
+        Graph.Free;
       end;
     end;
     for i:=0 to Files.Count-1 do begin //get project/unit name
       UnitInfo:=Project1.UnitInfoWithFilename(Files[i]);
-      if UnitInfo<>nil then begin
-        CurUnitname:=UnitInfo.Unit_Name;
-        FForbidden.Add(CurUnitname); //store for ValidateNewName
-      end;
+      if UnitInfo<>nil then
+        CurUnitname:=UnitInfo.Unit_Name
+      else
+        CurUnitname:=ExtractFileNameOnly(Files[i]);
+      FForbidden.Add(CurUnitname); //store for ValidateNewName
     end;
     SetFiles(Files);
   finally
@@ -1343,18 +1502,17 @@ begin
   Result:=false;
   ErrMsg:='';
   if not AllowRename then exit;
-  if not (FNode.Desc in [ctnProgram..ctnUnit,ctnUseUnit,
-      ctnUseUnitNamespace,ctnUseUnitClearName]) and
-    (Pos('.',FNewIdentifier)>0) then
+  if not (FNode.Desc in [ctnProgram..ctnUnit,ctnUseUnit,ctnUseUnitNamespace,ctnUseUnitClearName])
+      and (Pos('.',FNewIdentifier)>0) then
   begin
     ErrMsg:=Format(lisIdentifierCannotBeDotted,[FNewIdentifier]);
     exit(true);
   end;
-  if FForbidden=nil then exit;
   if FNewIdentifier='' then begin
     ErrMsg:=lisIdentifierCannotBeEmpty;
     exit(true);
   end;
+  if FForbidden=nil then exit;
   i:=0;
   while (i<=FForbidden.Count-1) and
     (CompareDottedIdentifiers(PChar(FNewIdentifier),PChar(FForbidden[i]))<>0) do
@@ -1367,6 +1525,13 @@ begin
   end;
   // checking if there are existing other identifiers conflited with the new
   // will be executed when "Rename all References" button is clicked
+end;
+
+destructor TFindRenameIdentifierDialog.Destroy;
+begin
+  FreeAndNil(FForbidden);
+  FreeAndNil(FFiles);
+  inherited Destroy;
 end;
 
 

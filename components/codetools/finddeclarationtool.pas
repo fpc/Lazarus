@@ -7385,7 +7385,7 @@ var
     end;
   end;
 
-  function CheckIdentifier(var p: integer): boolean;
+  function CheckIdentifier(p: integer): boolean;
   // check the identifier at start of an expression
   var
     StartP, Ident: PChar;
@@ -7398,15 +7398,11 @@ var
     StartPos:=p;
     StartP:=@Src[StartPos];
     Ident:=PChar(LocalSrcName);
-    if CompareIdentifiers(StartP,Ident)<>0 then begin
-      inc(p,GetIdentLen(StartP));
+    if CompareIdentifiers(StartP,Ident)<>0 then
       exit;
-    end;
-    if (StartP^<>'&') and WordIsKeyWordFuncList.DoIdentifier(StartP) then begin
+    if (StartP^<>'&') and WordIsKeyWordFuncList.DoIdentifier(StartP) then
       // do not check keyword identifier references without ampersand
-      inc(p,GetIdentLen(StartP));
       exit;
-    end;
 
     Expr:=ReadDottedIdentifier(Src,p,Scanner.NestedComments);
     //debugln(['  CheckIdentifier At ',CleanPosToStr(p),' Expr="',Expr,'"']);
@@ -7505,7 +7501,7 @@ var
   function CheckComment(var StartPos: integer; MaxPos: integer): boolean;
   var
     c: Char;
-    AtomStart, CommentLvl: Integer;
+    AtomStart, CommentLvl, l: Integer;
     InStrConst, LastTokenWasPoint, IsDirective: Boolean;
   begin
     Result:=true;
@@ -7576,8 +7572,9 @@ var
           if (not IsDirective) and (not SkipComments) and (not InStrConst)
               and (not LastTokenWasPoint) then
             if not CheckIdentifier(StartPos) then exit(false);
-          LastTokenWasPoint:=false;
+          if Src[StartPos]='&' then inc(StartPos); // skip invalid &
           inc(StartPos,GetIdentLen(@Src[StartPos]));
+          LastTokenWasPoint:=false;
         end;
       '''':
         begin
@@ -7667,10 +7664,11 @@ var
 
       'a'..'z','A'..'Z','_','&':
         begin
-          if LastTokenWasPoint then
-            inc(StartPos,GetIdentLen(@Src[StartPos]))
-          else if not CheckIdentifier(StartPos) then
-            exit;
+          if not LastTokenWasPoint then
+            if not CheckIdentifier(StartPos) then
+              exit;
+          if Src[StartPos]='&' then inc(StartPos); // skip invalid &
+          inc(StartPos,GetIdentLen(@Src[StartPos]));
           LastTokenWasPoint:=false;
         end;
 
@@ -7928,6 +7926,7 @@ begin
   AnUnitName:=ExtractUsedUnitNameAtCursor(@UnitInFilename);
   //debugln(['TFindDeclarationTool.FindUsedUnitReferences Used Unit=',AnUnitName,' in "',UnitInFilename,'"']);
   TargetCode:=FindUnitSource(AnUnitName,UnitInFilename,true,Node.StartPos);
+  if TargetCode=nil then exit;
   UsedUnitFilename:=TargetCode.Filename;
   //debugln(['TFindDeclarationTool.FindUsedUnitReferences TargetCode=',TargetCode.Filename]);
   TargetTool:=FOnGetCodeToolForBuffer(Self,TargetCode,false);

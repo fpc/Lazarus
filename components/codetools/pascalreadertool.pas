@@ -291,6 +291,7 @@ type
     function ExtractSourceName: string;
     function GetSourceNamePos(out NamePos: TAtomPosition): boolean;
     function GetSourceName(DoBuildTree: boolean = true): string;
+    function GetSourceNameNode: TCodeTreeNode;
     function GetSourceType: TCodeTreeNodeDesc;
     function PositionInSourceName(CleanPos: integer): boolean;
 
@@ -2880,13 +2881,15 @@ begin
 end;
 
 function TPascalReaderTool.GetSourceNamePos(out NamePos: TAtomPosition): boolean;
+var
+  Node: TCodeTreeNode;
 begin
   Result:=false;
   NamePos.StartPos:=-1;
-  if Tree.Root=nil then exit;
-  MoveCursorToNodeStart(Tree.Root);
-  ReadNextAtom; // read source type 'program', 'unit' ...
-  if (Tree.Root.Desc=ctnProgram) and (not UpAtomIs('PROGRAM')) then exit;
+  NamePos.EndPos:=-1;
+  Node:=GetSourceNameNode;
+  if Node=nil then exit;
+  MoveCursorToNodeStart(Node);
   ReadNextAtom; // read name
   if not AtomIsIdentifier then exit;
   NamePos:=CurPos;
@@ -2907,6 +2910,17 @@ begin
     BuildTree(lsrSourceName);
   CachedSourceName:=ExtractSourceName;
   Result:=CachedSourceName;
+end;
+
+function TPascalReaderTool.GetSourceNameNode: TCodeTreeNode;
+begin
+  Result:=Tree.Root;
+  if Result=nil then exit;
+  if not (Result.Desc in AllSourceTypes) then
+    exit(nil);
+  Result:=Result.FirstChild;
+  if Result=nil then exit;
+  if Result.Desc<>ctnSrcName then exit(nil);
 end;
 
 function TPascalReaderTool.NodeIsInAMethod(Node: TCodeTreeNode): boolean;
