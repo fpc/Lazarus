@@ -6719,11 +6719,11 @@ contain a valid file or directory on the local file system.
 </p>
 <p>
 ExecuteProcess is called to launch the file explorer using the file or 
-directory in AFullPath as an argument. The command looks like the following:
+directory in AFullPath as an argument. The argument is enclosed in Quote (") 
+characters to guard against spaces in the path name, and because the value is 
+a switch parameter in the command. The command looks like the following:
 </p>
-<code>
-'explorer.exe /select c:\path\to\filename.ext'
-</code>
+<code>'explorer.exe /select "c:\path\to\filename.ext"'</code>
 <p>
 If AFullPath is a folder on the local file system, no selection is made in 
 the file explorer.
@@ -6739,9 +6739,7 @@ safeguard against spaces in the path or file name.
 RunCmdFromPath is called to execute the 'open' command using the quoted path 
 value with the '-R' argument prepended to the file/path name. For example:
 </p>
-<code>
-'open -R "/path/to/filename.ext"'
-</code>
+<code>'open -R "/path/to/filename.ext"'</code>
 <p>
 If AFullPath is a folder (not a file) on the local file system, no selection 
 is made in Finder.
@@ -6752,7 +6750,8 @@ For other UNIX-like platforms (including Linux), the XDG_CURRENT_DESKTOP
 variable in the system environment or specific executable files are checked to 
 determine which desktop manager is in use. Values like 'GNOME' or 'KDE' in 
 XDG_CURRENT_DESKTOP cause the 'nautilus' or 'dolphin' file managers to be 
-used. Otherwise, the 'usr/bin' directory is checked for applications including:
+used (respectively). Otherwise, the 'usr/bin' directory is checked for 
+applications including:
 </p>
 <ul>
 <li>'nautilus'</li>
@@ -6764,10 +6763,19 @@ used. Otherwise, the 'usr/bin' directory is checked for applications including:
 <li>'xdg-open'</li>
 </ul>
 <p>
-The value in AFullPath is enclosed in Quotes(if not already quoted) to 
-safeguard against spaces in the path name. RunCmdFromPath is called to launch 
-the chosen executable using the quoted path and any other command line 
-arguments needed for the environment. For example:
+If xdg-open is the selected application (but the desktop environment is 
+unknown), a file name in AFullPath is removed. xdg-open tries to open the 
+application associated with file name extension used in the file path. By 
+removing the file name, the folder is opened instead - but a file is not 
+selected in the file browser. The same action is performed for the krusader 
+file manager.
+</p>
+<p>
+The value in the file or directory path is enclosed in Quotes (if not already 
+quoted) to safeguard against spaces in the path name - or because it will be 
+an argument to a command line switch. RunCmdFromPath is called to launch the 
+chosen executable using the quoted path and any other command line arguments 
+needed for the environment. For example:
 </p>
 <code>
 'xdg-open "/path/to/folder"'	
@@ -6778,7 +6786,7 @@ arguments needed for the environment. For example:
 </code>
 <p>
 No actions are performed in the routine if AFullpath does not exist on the 
-local file system, or an application could not be determined.
+local file system, or an file manager application could not be determined.
 </p>
 <p>
 The return value is <var>True</var> if the routine was completed successfully.
@@ -6794,7 +6802,7 @@ Added in LCL 5.0.
 </element>
 <element name="SelectInFolder.AFullPath">
 <short>
-Fully-qualified path to a file or directory on the local file system.	
+A path to a file or directory on the local file system.	
 </short>
 </element>
 <element name="SelectInFolder.Result">
