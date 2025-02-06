@@ -2016,6 +2016,7 @@ begin
     pixels := gdk_pixbuf_get_pixels(pixbuf);
     if Assigned(pixels) then
       Result := PLongInt(pixels)^ and $FFFFFF; // take first 3 bytes at pixels^
+    g_object_unref(pixbuf);
   end;
 end;
 
