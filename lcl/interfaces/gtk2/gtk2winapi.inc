@@ -6844,10 +6844,18 @@ function TGtk2WidgetSet.PeekMessage(var lpMsg: TMsg; Handle : HWND;
 var
   vlItem : TGtkMessageQueueItem;
 begin
-  //TODO Filtering
   fMessageQueue.Lock;
   try
     vlItem := fMessageQueue.FirstMessageItem;
+
+    // filtering
+    while (vlItem <> nil) and (
+      ((Handle <> 0) and (vlItem.Msg^.hwnd <> Handle)) or // filter by handle
+      ((wMsgFilterMin <> 0) and (wMsgFilterMax <> 0) and // filter by message-range
+       not InRange(vlItem.Msg^.message, wMsgFilterMin, wMsgFilterMax)))
+    do
+      vlItem := TGtkMessageQueueItem(vlItem.Next);
+
     Result := vlItem <> nil;
     if Result then begin
       lpMsg := vlItem.Msg^;
