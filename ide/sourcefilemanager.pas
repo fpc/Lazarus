@@ -32,7 +32,7 @@ unit SourceFileManager;
 interface
 
 uses
-  Classes, SysUtils, TypInfo, Math, fpjson, AVL_Tree,
+  Classes, SysUtils, TypInfo, Math, fpjson, AVL_Tree, Contnrs,
   // LCL
   Controls, Forms, Dialogs, LCLIntf, LCLType, LclStrConsts,
   LResources, LCLMemManager,
@@ -2800,6 +2800,7 @@ begin
     Result:=ShowSaveFileAsDialog(NewFilename,AnUnitInfo,LFMCode,LRSCode,CanAbort,Flags);
     if not (Result in [mrIgnore,mrOk]) then
       exit;
+    // this has already renamed the source in this file
   end;
 
   // save source
@@ -2884,10 +2885,10 @@ begin
 
   // fix all references
   if not (sfSkipReferences in Flags) then begin
-    NewUnitName:='';
-    if FilenameIsPascalSource(AnUnitInfo.Filename) then
-      NewUnitName:=AnUnitInfo.ReadUnitNameFromSource(true);
     NewFilename:=AnUnitInfo.Filename;
+    NewUnitName:='';
+    if FilenameIsPascalSource(NewFilename) then
+      NewUnitName:=AnUnitInfo.ReadUnitNameFromSource(true);
     if (NewUnitName<>'')
     and ((OldUnitName<>NewUnitName) or (CompareFilenames(OldFilename,NewFilename)<>0))
     then begin
@@ -5050,8 +5051,8 @@ begin
   // check filename
   if FilenameIsPascalUnit(NewFilename) then begin
     if sfSkipReferences in Flags then begin
-      //F2 forced lowercase filename
-      //NewFileName already set
+      // F2 forced lowercase filename
+      // NewFileName already set
     end else begin
       AText:=ExtractFileName(NewFilename);
       // check if file should be auto renamed
@@ -8484,71 +8485,27 @@ begin
   Result:=FormEditingHook.DesignerBaseClasses[i].ClassName;
 end;
 
-function GatherUnitReferences(Files: TStringList; UnitCode: TCodeBuffer;
-  SearchInComments, IgnoreErrors, IgnoreMissingFiles: boolean;
-  var TreeOfPCodeXYPosition: TAVLTree): TModalResult;
+function GatherUnitReferences(Files: TStringList; OldFilename, NewFilename: string;
+  SearchInComments, IgnoreErrors: boolean;
+  var ListOfSrcNameRefs: TObjectList): TModalResult;
 var
-  ListOfPCodeXYPosition: TFPList;
-  LoadResult: TModalResult;
-  Code: TCodeBuffer;
   i: Integer;
 begin
-  Result:=mrCancel;
-  ListOfPCodeXYPosition:=nil;
-  TreeOfPCodeXYPosition.Free;
-  TreeOfPCodeXYPosition:=nil;
-  try
-    CleanUpFileList(Files);
-
-    Result:=mrOk;
-    // search in every file
-    for i:=0 to Files.Count-1 do begin
-      if CompareFilenames(Files[i],UnitCode.Filename)=0 then continue;
-      if IgnoreMissingFiles then
-      begin
-        if FilenameIsAbsolute(Files[i]) then
-        begin
-          if not FileExistsCached(Files[i]) then continue;
-        end else begin
-          Code:=CodeToolBoss.LoadFile(Files[i],false,false);
-          if (Code=nil) then continue;
-        end;
-      end;
-      LoadResult:=
-          LoadCodeBuffer(Code,Files[i],[lbfCheckIfText,lbfUpdateFromDisk],true);
-      if LoadResult=mrAbort then begin
-        debugln('GatherUnitReferences unable to load "',Files[i],'"');
-        if IgnoreErrors then
-          continue;
-        Result:=mrCancel;
-        exit;
-      end;
-      if LoadResult<>mrOk then continue;
-
-      // search references
-      CodeToolBoss.FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
-      if not CodeToolBoss.FindUnitReferences(
-        UnitCode, Code, not SearchInComments, ListOfPCodeXYPosition) then
-      begin
-        debugln('GatherUnitReferences unable to FindUnitReferences in "',Code.Filename,'"');
-        if IgnoreErrors then
-          continue;
-        Result:=mrCancel;
-        exit;
-      end;
-      //debugln('GatherUnitReferences FindUnitReferences in "',Code.Filename,'" ',dbgs(ListOfPCodeXYPosition<>nil));
-
-      // add to tree
-      if ListOfPCodeXYPosition<>nil then begin
-        if TreeOfPCodeXYPosition=nil then
-          TreeOfPCodeXYPosition:=CodeToolBoss.CreateTreeOfPCodeXYPosition;
-        CodeToolBoss.AddListToTreeOfPCodeXYPosition(ListOfPCodeXYPosition,
-                                              TreeOfPCodeXYPosition,true,false);
-      end;
-    end;
-  finally
-    CodeToolBoss.FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
+  CleanUpFileList(Files);
+  for i:=Files.Count-1 downto 0 do begin
+    if (CompareFilenames(Files[i],OldFilename)=0)
+    or (CompareFilenames(Files[i],NewFilename)=0) then
+      Files.Delete(i);
   end;
+
+  if IgnoreErrors then ;
+  if not CodeToolBoss.FindSourceNameReferences(OldFilename,Files,not SearchInComments,
+    ListOfSrcNameRefs) then
+  begin
+    debugln('GatherUnitReferences FindSourceNameReferences failed');
+    exit(mrCancel);
+  end;
+  Result:=mrOk;
 end;
 
 function ReplaceUnitUse(OldFilename, OldUnitName, NewFilename, NewUnitName: string;
@@ -8558,13 +8515,12 @@ var
   OwnerList: TFPList;
   ExtraFiles: TStrings;
   Files: TStringList;
-  OldCode: TCodeBuffer;
-  OldCodeCreated: Boolean;
-  PascalReferences: TAVLTree;
+  ListOfSrcNameRefs: TObjectList; // list of TSrcNameRefs
   i: Integer;
   MsgResult: TModalResult;
-  OnlyEditorFiles: Boolean;
+  OnlyEditorFiles, OldCodeCreated: Boolean;
   aFilename: String;
+  OldCode: TCodeBuffer;
 begin
   // compare unitnames case sensitive, maybe only the case changed
   if (CompareFilenames(OldFilename,NewFilename)=0) and (OldUnitName=NewUnitName) then
@@ -8575,7 +8531,7 @@ begin
   OwnerList:=nil;
   OldCode:=nil;
   OldCodeCreated:=false;
-  PascalReferences:=nil;
+  ListOfSrcNameRefs:=nil;
   Files:=TStringList.Create;
   try
     if OnlyEditorFiles then begin
@@ -8623,16 +8579,17 @@ begin
     end;
 
     // search pascal source references
-    Result:=GatherUnitReferences(Files,OldCode,false,IgnoreErrors,true,PascalReferences);
+    Result:=GatherUnitReferences(Files,OldFilename,NewFilename,
+                                 false,IgnoreErrors,ListOfSrcNameRefs);
     if (not IgnoreErrors) and (not Quiet) and (CodeToolBoss.ErrorMessage<>'') then
       MainIDE.DoJumpToCodeToolBossError;
     if Result<>mrOk then begin
-      debugln('ReplaceUnitUse GatherUnitReferences failed');
+      debugln('Error: (lazarus) ReplaceUnitUse GatherUnitReferences failed');
       exit;
     end;
 
     // replace
-    if (PascalReferences<>nil) and (PascalReferences.Count>0) then begin
+    if (ListOfSrcNameRefs<>nil) and (ListOfSrcNameRefs.Count>0) then begin
       if Confirm then begin
         MsgResult:=IDEQuestionDialog(lisUpdateReferences,
           Format(lisTheUnitIsUsedByOtherFilesUpdateReferencesAutomatic,
@@ -8652,12 +8609,12 @@ begin
           exit;
         end;
       end;
-      if not CodeToolBoss.RenameIdentifier(PascalReferences,OldUnitName,NewUnitName,
-                                           Nil,Nil) then
+      if not CodeToolBoss.RenameSourceNameReferences(OldCode.Filename,
+        NewFilename,NewUnitName,ListOfSrcNameRefs) then
       begin
         if (not IgnoreErrors) and (not Quiet) then
           MainIDE.DoJumpToCodeToolBossError;
-        debugln('ReplaceUnitUse unable to commit');
+        debugln('Error: (lazarus) ReplaceUnitUse unable to commit');
         if not IgnoreErrors then begin
           Result:=mrCancel;
           exit;
@@ -8668,11 +8625,10 @@ begin
   finally
     if OldCodeCreated then
       OldCode.IsDeleted:=true;
-    CodeToolBoss.FreeTreeOfPCodeXYPosition(PascalReferences);
+    ListOfSrcNameRefs.Free;
     OwnerList.Free;
     Files.Free;
   end;
-  //PkgBoss.GetOwnersOfUnit(NewFilename);
   Result:=mrOk;
 end;
 

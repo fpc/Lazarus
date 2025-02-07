@@ -571,7 +571,7 @@ type
           const OldIdentifier, NewIdentifier: string;
           DeclarationCode: TCodeBuffer; DeclarationCaretXY: PPoint): boolean;
 
-    // find all references of the source name
+    // find all references of the source name of a unit, program
     function FindSourceNameReferences(TargetFilename: string;
           Files: TStringList; SkipComments: boolean;
           out ListOfSrcNameRefs: TObjectList; WithDuplicates: boolean = false): boolean;
@@ -740,7 +740,7 @@ type
     // source name  e.g. 'unit AUnitName;'
     function GetSourceName(Code: TCodeBuffer; SearchMainCode: boolean): string;
     function GetCachedSourceName(Code: TCodeBuffer): string;
-    function RenameSource(Code: TCodeBuffer; const NewName: string): boolean;
+    function RenameSource(Code: TCodeBuffer; const NewName: string; SkipComments: boolean = true): boolean;
     function GetSourceType(Code: TCodeBuffer; SearchMainCode: boolean): string;
 
     // uses sections
@@ -5503,18 +5503,41 @@ begin
   {$ENDIF}
 end;
 
-function TCodeToolManager.RenameSource(Code: TCodeBuffer;
-  const NewName: string): boolean;
+function TCodeToolManager.RenameSource(Code: TCodeBuffer; const NewName: string;
+  SkipComments: boolean): boolean;
+var
+  Refs: TSrcNameRefs;
 begin
   Result:=false;
-  {$IFDEF CTDEBUG}
-  DebugLn('TCodeToolManager.RenameSource A ',Code.Filename,' NewName=',NewName);
-  {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
+  SourceChangeCache.Clear;
+
   try
-    Result:=FCurCodeTool.RenameSource(NewName,SourceChangeCache);
+    Refs:=TSrcNameRefs.Create;
+    try
+      Refs.Tool:=FCurCodeTool;
+      if not FCurCodeTool.FindSourceNameReferences(Code.Filename,SkipComments,Refs.LocalSrcName,
+        Refs.InFilenameCleanPos, Refs.TreeOfPCodeXYPosition, false) then
+      begin
+        debugln(['TCodeToolManager.RenameModule FindSourceNameReferences failed: ',Code.Filename]);
+        exit;
+      end;
+      if Refs.TreeOfPCodeXYPosition=nil then exit(true);
+      Refs.NewLocalSrcName:=NewName;
+
+      if not FCurCodeTool.RenameSourceNameReferences(Code.Filename,Code.Filename,
+        Refs,SourceChangeCache) then
+      begin
+        debugln(['TCodeToolManager.RenameModule RenameSourceNameReferences failed: ',Code.Filename]);
+        exit;
+      end;
+
+      Result:=SourceChangeCache.Apply;
+    finally
+      Refs.Free;
+    end;
   except
-    on e: Exception do Result:=HandleException(e);
+    on e: Exception do HandleException(e);
   end;
 end;
 

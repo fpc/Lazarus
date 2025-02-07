@@ -1313,7 +1313,7 @@ begin
 
   if (Refs.InFilenameCleanPos>0) and (OldTargetFilename<>NewTargetFilename) then
   begin
-    // todo: change in-filename
+    // change IN-filename
     p:=Refs.InFilenameCleanPos;
     if (Src[p]='''') and CleanPosToCodePos(p,CodePos) then begin
       MoveCursorToCleanPos(p);
