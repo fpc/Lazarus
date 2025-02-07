@@ -2023,7 +2023,7 @@ var
   aOp: Tcairo_operator_t;
 begin
   cairo_set_operator(pcr, CAIRO_OPERATOR_OVER);
-  cairo_rectangle(pcr, x1 + PixelOffset, y1 + PixelOffset, w - PixelOffset, h - PixelOffset);
+  cairo_rectangle(pcr, x1 + PixelOffset, y1 + PixelOffset, w - 2*PixelOffset, h - 2*PixelOffset);
   if AFill then
   begin
     ApplyBrush;
