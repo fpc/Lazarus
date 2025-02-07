@@ -373,7 +373,7 @@ type
   public
     constructor Create(AFoldView: TSynEditFoldedView);
     destructor Destroy; override;
-    procedure SetHighlighterTokensLine(ALine: TLineIdx; out ARealLine: TLineIdx; out AStartBytePos, AStartPhysPos, ALineByteLen: Integer); override;
+    procedure SetHighlighterTokensLine(ALine: TLineIdx; out ARealLine: TLineIdx; out ASubLineIdx, AStartBytePos, AStartPhysPos, ALineByteLen: Integer); override;
     function GetNextHighlighterToken(out ATokenInfo: TLazSynDisplayTokenInfo): Boolean; override;
     function GetLinesCount: Integer; override;
 
@@ -735,12 +735,15 @@ begin
   inherited Destroy;
 end;
 
-procedure TLazSynDisplayFold.SetHighlighterTokensLine(ALine: TLineIdx; out
-  ARealLine: TLineIdx; out AStartBytePos, AStartPhysPos, ALineByteLen: Integer);
+procedure TLazSynDisplayFold.SetHighlighterTokensLine(ALine: TLineIdx; out ARealLine: TLineIdx;
+  out ASubLineIdx, AStartBytePos, AStartPhysPos, ALineByteLen: Integer);
 begin
   FLineState := 0;
   CurrentTokenLine := ALine;
-  FLineFlags := FFoldView.FoldType[CurrentTokenLine + 1 - FFoldView.TopViewPos] * [cfCollapsedFold, cfCollapsedHide];
+
+  inherited SetHighlighterTokensLine(FFoldView.InternViewToTextIndex(ALine), ARealLine, ASubLineIdx, AStartBytePos, AStartPhysPos, ALineByteLen);
+
+  FLineFlags := FFoldView.FoldType[CurrentTokenLine - ASubLineIdx + 1 - FFoldView.TopViewPos] * [cfCollapsedFold, cfCollapsedHide];
   FLineFlags2 := FLineFlags;
 
   if not FFoldView.MarkupInfoFoldedCodeLine.IsEnabled then
@@ -752,8 +755,6 @@ begin
     FFoldView.MarkupInfoFoldedCodeLine.SetFrameBoundsLog(1, MaxInt, 0);
     FFoldView.MarkupInfoHiddenCodeLine.SetFrameBoundsLog(1, MaxInt, 0);
   end;
-
-  inherited SetHighlighterTokensLine(FFoldView.InternViewToTextIndex(ALine), ARealLine, AStartBytePos, AStartPhysPos, ALineByteLen);
 end;
 
 function TLazSynDisplayFold.GetNextHighlighterToken(out ATokenInfo: TLazSynDisplayTokenInfo): Boolean;
@@ -773,7 +774,8 @@ begin
   case FLineState of
     LSTATE_BOL, LSTATE_TEXT: begin
         Result := inherited GetNextHighlighterToken(ATokenInfo);
-        if ( (not Result) or (ATokenInfo.TokenStart = nil)) and (FLineFlags <> [])
+        if (ATokenInfo.TokenOrigin = dtoAfterText) and
+           ( (not Result) or (ATokenInfo.TokenStart = nil)) and (FLineFlags <> [])
         then begin
           inc(FLineState, 2); // LSTATE_BOL_GAP(2), if was at bol // LSTATE_GAP(3) otherwise
           ATokenInfo.TokenStart := PChar(MarkSpaces);

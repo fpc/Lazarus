@@ -188,7 +188,7 @@ type
     constructor Create(AWrappedView: TSynEditLineMappingView; AWrapPlugin: TLazSynEditLineWrapPlugin);
     //destructor Destroy; override;
     procedure SetHighlighterTokensLine(AWrappedLine: TLineIdx; out
-      ARealLine: TLineIdx; out AStartBytePos, AStartPhysPos, ALineByteLen: Integer); override;
+      ARealLine: TLineIdx; out ASubLineIdx, AStartBytePos, AStartPhysPos, ALineByteLen: Integer); override;
     function GetNextHighlighterToken(out ATokenInfo: TLazSynDisplayTokenInfo): Boolean; override;
   end;
 
@@ -1484,7 +1484,7 @@ begin
 end;
 
 procedure TLazSynDisplayWordWrap.SetHighlighterTokensLine(
-  AWrappedLine: TLineIdx; out ARealLine: TLineIdx; out AStartBytePos,
+  AWrappedLine: TLineIdx; out ARealLine: TLineIdx; out ASubLineIdx, AStartBytePos,
   AStartPhysPos, ALineByteLen: Integer);
 var
   IsNext: Boolean;
@@ -1496,7 +1496,7 @@ begin
   IsNext := (AWrappedLine = FCurWrappedLine + 1) and (FCurWrappedLine >= 0);
   PrevSub := FCurrentWrapSubline;
 
-  inherited SetHighlighterTokensLine(AWrappedLine, ARealLine, AStartBytePos, AStartPhysPos, FCurRealLineByteLen);
+  inherited SetHighlighterTokensLine(AWrappedLine, ARealLine, ASubLineIdx, AStartBytePos, AStartPhysPos, FCurRealLineByteLen);
 
   LineTxt := FLineMappingView.NextLines.Strings[ARealLine];
   FLineMappingView.LogPhysConvertor.CurrentLine := ARealLine;

@@ -327,9 +327,9 @@ end;
 procedure TLazSynPaintTokenBreaker.SetHighlighterTokensLine(ALine: TLineIdx; out
   ARealLine: TLineIdx);
 var
-  LogLeftPos: Integer;
+  LogLeftPos, ASubLineIdx: Integer;
 begin
-  FDisplayView.SetHighlighterTokensLine(ALine, ARealLine, LogLeftPos, FCurLinePhysStart, FCurLineByteLen);
+  FDisplayView.SetHighlighterTokensLine(ALine, ARealLine, ASubLineIdx, LogLeftPos, FCurLinePhysStart, FCurLineByteLen);
   if FLinesView.LogPhysConvertor.CurrentLine = ARealLine then begin
     if not FCharWidthsFromConverter then begin
       FCharWidthsFromConverter := True;
