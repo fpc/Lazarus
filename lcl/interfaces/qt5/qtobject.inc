@@ -875,6 +875,32 @@ begin
           FreeSysColorBrushes(True);
         end;
       end;
+
+    QEventMouseButtonPress:
+      begin
+        if QObject_isWidgetType(Sender) then
+        begin
+          W := TQtWidget(HwndFromWidgetH(QWidgetH(Sender)));
+
+          if (W <> nil) and QWidget_isVisible(QWidgetH(Sender)) and QWidget_isEnabled(QWidgetH(Sender)) then
+          begin
+            if QWidget_focusPolicy(QWidgetH(Sender)) <> QtNoFocus then
+            begin
+              QWidget_grabMouse(QWidgetH(Sender));
+            end;
+          end;
+        end;
+      end;
+    QEventMouseButtonRelease:
+      begin
+        if QObject_isWidgetType(Sender) then
+        begin
+          W := TQtWidget(HwndFromWidgetH(QWidgetH(Sender)));
+          if W <> nil then
+            QWidget_releaseMouse(QWidgetH(Sender));
+        end;
+      end;
+
     {$IFNDEF QTUSEFOCUSCHANGEDHOOK}
     QEventFocusIn:
     begin
