@@ -9104,6 +9104,7 @@ begin
   if not (csDesigning in AForm.ComponentState) then
     UpdateWindowState;
 
+  Result^.Hide; // issue #41412
   //REMOVE THIS, USED TO TRACK MOUSE MOVE OVER WIDGET TO SEE SIZE OF FIXED !
   //g_object_set_data(PGObject(FScrollWin), 'lcldebugscrollwin', Self);
   //g_object_set_data(PGObject(FCentralWidget), 'lcldebugfixed', Self);
@@ -9482,6 +9483,7 @@ begin
   fBox^.pack_start(fCentralWidget, true, true, 0);
 
   PGtkWindow(Result)^.set_can_focus(false);
+  Result^.Hide; // issue #41412
 end;
 
 procedure TGtk3HintWindow.InitializeWidget;
