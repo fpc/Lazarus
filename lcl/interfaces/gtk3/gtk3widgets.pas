@@ -8875,8 +8875,13 @@ begin
   end;
   {$ENDIF}
 
-  NewSize.cx := AGdkRect^.width;
-  NewSize.cy := AGdkRect^.height;
+  if decoration_flags(TCustomForm(Actl.LCLObject))<>[] then
+    PGtkWIndow(Actl.widget)^.get_size(@newSize.cx, @newsize.cy)
+  else
+  begin
+    NewSize.cx := AGdkRect^.width;
+    NewSize.cy := AGdkRect^.height;
+  end;
 
   //writeln(format('Gkt3SizeAllocate w=%d h=%d',[NewSize.cx,NewSize.cy]));
 
