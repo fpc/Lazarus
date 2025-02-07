@@ -520,6 +520,8 @@ var
 begin
   for stag:=low(TStage) to High(TStage) do
   begin
+    if stag=sRead then
+      CreateEditors; // Create before the inner loop, as this calls IDEEditorGroups.Resort;
     InstanceList:=TFPList.Create;
     for i := 0 to IDEEditorGroups.Count - 1 do
     begin
@@ -560,6 +562,8 @@ var
 begin
   for stag:=low(TStage) to High(TStage) do
   begin
+    if stag=sWrite then
+      CreateEditors; // Create before the inner loop, as this calls IDEEditorGroups.Resort;
     for i := 0 to IDEEditorGroups.Count - 1 do
     begin
       Rec := IDEEditorGroups[i];
