@@ -2004,17 +2004,18 @@ end;
 
 function TGtk3DeviceContext.getPixel(x, y: Integer): TColor;
 var
-  pixbuf: PGdkPixbuf;
-  pixels: pointer;
+  pixels,row: pointer;
+  stride:integer;
 begin
   Result := 0;
-  pixbuf := gdk_pixbuf_get_from_surface(CairoSurface, X, Y, 1, 1);
-  if Assigned(pixbuf) then
+  cairo_surface_flush (CairoSurface);
+  pixels := cairo_image_surface_get_data(Cairosurface);
+  if Assigned(pixels) then
   begin
-    pixels := gdk_pixbuf_get_pixels(pixbuf);
-    if Assigned(pixels) then
-      Result := PLongInt(pixels)^ and $FFFFFF; // take first 3 bytes at pixels^
-    g_object_unref(pixbuf);
+    stride := cairo_image_surface_get_stride(CairoSurface);
+    row:=pixels+(fncOrigin.Y+Y)*stride;
+    inc(row,(fncOrigin.X+X)*sizeof(longint));
+    Result := PLongInt(row)^ and $FFFFFF; // take first 3 bytes at pixels^
   end;
 end;
 
