@@ -251,6 +251,32 @@ var
   ShouldBeVisible: Boolean;
   AGtk3Widget: TGtk3Widget;
   OtherGtk3Window: TGtk3Window;
+
+  procedure CheckAndFixGeometry;
+  const
+    WaitDelay: gulong = 2000;
+    WaitLoops: integer = 2;
+  var
+    x, y, w, h: gint;
+  begin
+    AWindow^.window^.get_geometry(@x, @y, @w, @h);
+    //nothing to do
+    if (w = AWindow^.get_allocated_width) and (h = AWindow^.get_allocated_height) then
+      exit;
+
+    with AWinControl do
+      AWindow^.window^.move_resize(Left, Top, Width, Height);
+    AWindow^.window^.process_updates(True);
+    //Give a little breath to WM.
+    for x := 0 to WaitLoops - 1 do
+    begin
+      g_usleep(WaitDelay);
+      g_main_context_iteration(nil, false);
+    end;
+    //Note that here may be still wrong geometry under x11,
+    //but LCL should be happy at this point.
+  end;
+
 begin
   {$IFDEF GTK3DEBUGCORE}
   DebugLn('TGtk3WSCustomForm.ShowHide handleAllocated=',dbgs(AWinControl.HandleAllocated));
@@ -323,6 +349,8 @@ begin
         end;
       end;
     end;
+    //See issue #41412
+    CheckAndFixGeometry;
 
     AWindow^.show_all;
     AMask := AWindow^.window^.get_events;
