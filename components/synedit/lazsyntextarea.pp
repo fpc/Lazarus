@@ -1738,25 +1738,29 @@ var
 
           case pt^ of
             #9: begin
-                dec(e);
-                if (vscTabAtFirst in FVisibleSpecialChars) and (j < CWLen) then begin
-                  pl^ := #194; inc(pl);
-                  pl^ := #187; inc(pl);
-                  dec(k);
-                  if FetoBuf <> nil then FEtoBuf.EtoData[e] := c;
-                  inc(e);
-                end;
-                while k > 0 do begin
-                  pl^ := ' '; inc(pl);
-                  dec(k);
-                  if FetoBuf <> nil then FEtoBuf.EtoData[e] := c;
-                  inc(e);
-                end;
-                if (vscTabAtLast in FVisibleSpecialChars) and ((pl-1)^=' ') and (j < CWLen) and
-                   (not IsCombiningCodePoint(pt+1))
-                then begin
-                  (pl-1)^ := #194;
-                  pl^ := #187; inc(pl);
+                if (not IsCombiningCodePoint(pt+1)) then begin
+                  dec(e);
+                  if (vscTabAtFirst in FVisibleSpecialChars) and (j < CWLen) then begin
+                    pl^ := #194; inc(pl);
+                    pl^ := #187; inc(pl);
+                    dec(k);
+                    if FetoBuf <> nil then FEtoBuf.EtoData[e] := c;
+                    inc(e);
+                  end;
+                  while k > 0 do begin
+                    pl^ := ' '; inc(pl);
+                    dec(k);
+                    if FetoBuf <> nil then FEtoBuf.EtoData[e] := c;
+                    inc(e);
+                  end;
+                  if (vscTabAtLast in FVisibleSpecialChars) and ((pl-1)^=' ') and (j < CWLen) then begin
+                    (pl-1)^ := #194;
+                    pl^ := #187; inc(pl);
+                  end;
+                end
+                else begin
+                  pl^ := pt^;
+                  inc(pl);
                 end;
               end;
             ' ': begin
