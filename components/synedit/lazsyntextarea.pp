@@ -784,12 +784,6 @@ begin
 
     LogicIdx := FCurViewScannerPos.Logical - 1;
     LogicEnd := LogicIdx + FCurViewToken.TokenLength;
-    if APhysEnd >= 0 then begin
-      assert((ALogEnd<=0) or (ToIdx(ALogEnd)>LogicIdx), 'TLazSynPaintTokenBreaker.GetNextHighlighterTokenFromView: (ALogEnd<=0) or (ToIdx(ALogEnd)>LogicIdx)');
-    //assert(GetCharWidthData(LogicIdx)<>0, 'GetNextHighlighterTokenFromView: Token starts with char');
-      if ToIdx(ALogEnd)<=LogicIdx then
-        ALogEnd:= -1;
-    end;
 
     NeedsEto := False;
     case FCurViewinRTL of
