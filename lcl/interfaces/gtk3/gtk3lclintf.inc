@@ -191,7 +191,6 @@ begin
 end;
 
 
-
 {------------------------------------------------------------------------------
   Function: RawImage_CreateBitmap
   Params: ARawImage:
@@ -952,20 +951,28 @@ var
   DCSize: TSize;
   Pixmap: PGdkPixbuf;
   Context: TGtk3DeviceContext;
-  //DCOrigin: TPoint;
-  //R: TRect;
-  //Drawable: Pcairo_t;
-  //AWindow: PGdkWindow;
+  AScaleFactor: gint;
 
   procedure RawImage_FromImage(AImage: PGdkPixbuf);
   var
-    pixels: Pguint8;
+    APixels: Pguint8;
+    ANewImage: PGdkPixbuf;
+    B: boolean;
   begin
-    ARawImage.DataSize := AImage^.get_byte_length;
+    B := gdk_pixbuf_get_n_channels(AImage) * 8 = 24;
+    if B then
+      ANewImage := ConvertRGB24ToARGB32(aImage)
+    else
+      ANewImage := aImage;
+    ARawImage.DataSize := ANewImage^.get_byte_length;
     ARawImage.Data := GetMem(ARawImage.DataSize);
-    Pixels := AImage^.get_pixels;
-    Move(pixels^, ARawImage.Data^, ARawImage.DataSize);
+    APixels := ANewImage^.get_pixels;
+    Move(APixels^, ARawImage.Data^, ARawImage.DataSize);
     ARawImage.Mask := nil;
+    ARawImage.MaskSize := 0;
+    ARawImage.Description.BitsPerPixel := gdk_pixbuf_get_n_channels(ANewImage) * 8;
+    if B then
+      ANewImage^.unref;
   end;
 
 begin
@@ -990,11 +997,11 @@ begin
 
   if Context.Parent <> nil then
   begin
-    Pixmap := gdk_pixbuf_get_from_window(Context.Parent^.window, 0, 0, DCSize.cx, DCSize.cy);
+    AScaleFactor := gdk_window_get_scale_factor(Context.Window);
+    Pixmap := gdk_pixbuf_get_from_window(Context.Parent^.window, 0, 0, DCSize.cx div AScaleFactor, DCSize.cy div AScaleFactor);
     if Pixmap <> nil then
     begin
       try
-        DebugLn('Context.Parent RawImage_FromImage');
         RawImage_FromImage(Pixmap);
         // if you have dual monitors then getDeviceSize return
         // more width than screen width, but grabWindow will only grab one
@@ -1019,11 +1026,11 @@ begin
     end else
     if Context.Window <> nil then
     begin
-      Pixmap := gdk_pixbuf_get_from_window(Context.Window, 0, 0, DCSize.cx, DCSize.cy);
+      AScaleFactor := gdk_window_get_scale_factor(Context.Window);
+      Pixmap := gdk_pixbuf_get_from_window(Context.Window, 0, 0, DCSize.cx div AScaleFactor, DCSize.cy div AScaleFactor);
       if Pixmap <> nil then
       begin
         try
-          DebugLn('Context.Window RawImage_FromImage');
           RawImage_FromImage(Pixmap);
           // if you have dual monitors then getDeviceSize return
           // more width than screen width, but grabWindow will only grab one
