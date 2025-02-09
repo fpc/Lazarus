@@ -61,7 +61,7 @@ begin
    else begin
          {Get a name for the new node}
       sText := 'New node';
-      InputQuery(  'New Node',  'Caption ?', sText  );
+      InputQuery(  'New Child Node',  'Caption', sText  );
 
          {Add the node as a child of the selected node}
       with tv_eg1.Items.AddChild(  tv_eg1.Selected,  sText  ) do

@@ -1,0 +1,9 @@
+{
+  "customdrawing" : {
+    "Category" : "General",
+    "Keywords" : [
+      "TTreeView"
+    ],
+    "Description" : "Demonstrates how to apply the OnCustomDraw/OnCustomDrawItem and OnAdvancedCustomDraw/OnAdvancedCustomDrawItem events for tuning the visual appearance of the treeview."
+  }
+}

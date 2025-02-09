@@ -7,7 +7,7 @@ object Form1: TForm1
   Caption = 'TreeView Example 1'
   ClientHeight = 427
   ClientWidth = 455
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '4.99.0.0'
   object tv_eg1: TTreeView
     Left = 0
     Height = 427
@@ -26,8 +26,8 @@ object Form1: TForm1
     Top = 8
     Width = 75
     Caption = 'Add'
-    OnClick = but_AddClick
     TabOrder = 1
+    OnClick = but_AddClick
   end
   object but_Remove: TButton
     Left = 208
@@ -35,7 +35,7 @@ object Form1: TForm1
     Top = 40
     Width = 75
     Caption = 'Remove'
-    OnClick = but_RemoveClick
     TabOrder = 2
+    OnClick = but_RemoveClick
   end
 end

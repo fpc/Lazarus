@@ -5,7 +5,10 @@ uses
   Forms,
   TV_Add_Remove_U1 in 'TV_Add_Remove_U1.pas' {Form1};
 
+{$R *.res}
+
 begin
+  Application.Scaled:=True;
   Application.Title:='TV_Add_Remove';
   Application.Initialize;
   Application.CreateForm(TForm1, Form1);
