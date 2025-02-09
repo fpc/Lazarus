@@ -2004,20 +2004,92 @@ end;
 
 function TGtk3DeviceContext.getPixel(x, y: Integer): TColor;
 var
-  pixels,row: pointer;
-  stride:integer;
+  APixbuf: PGdkPixbuf;
+  AData: PByte;
+  APixelValue: LongWord;
+  ASurfaceWidth, ASurfaceHeight, ARowStride: Integer;
+  AOutSize: Tcairo_rectangle_int_t;
+  ARegion: Pcairo_region_t;
 begin
   Result := 0;
-  cairo_surface_flush (CairoSurface);
-  pixels := cairo_image_surface_get_data(Cairosurface);
-  if Assigned(pixels) then
+
+  if CairoSurface = nil then
+    exit;
+
+  if cairo_surface_get_type(CairoSurface) = CAIRO_SURFACE_TYPE_IMAGE then
   begin
-    stride := cairo_image_surface_get_stride(CairoSurface);
-    row:=pixels+(fncOrigin.Y+Y)*stride;
-    inc(row,(fncOrigin.X+X)*sizeof(longint));
-    Result := PLongInt(row)^ and $FFFFFF; // take first 3 bytes at pixels^
+    ASurfaceWidth := cairo_image_surface_get_width(CairoSurface);
+    ASurfaceHeight := cairo_image_surface_get_height(CairoSurface);
+  end else
+  begin
+    ASurfaceWidth := 0;
+    ASurfaceHeight := 0;
+
+    //Our context have or GtkWidget or GdkWindow available.
+    if Assigned(Self.Parent) then
+    begin
+      ASurfaceWidth := gtk_widget_get_allocated_width(Self.Parent);
+      ASurfaceHeight := gtk_widget_get_allocated_height(Self.Parent);
+    end else
+    if Assigned(Self.Window) then
+    begin
+      //for now we'll use cairo region, it's faster than
+      //calculate client size by calling gdk_window_get_geometry() + gdk_window_get_frame_extents()
+      ARegion := gdk_window_get_clip_region(Self.Window);
+      if ARegion <> nil then
+      begin
+        cairo_region_get_extents(ARegion, @AOutSize);
+        ASurfaceWidth := AOutSize.width;
+        ASurfaceHeight := AOutSize.height;
+        cairo_region_destroy(ARegion);
+      end;
+    end;
   end;
+
+  if (X < 0) or (Y < 0) or (X >= ASurfaceWidth) or (Y >= ASurfaceHeight) then
+  begin
+    DebugLn(Format('ERROR: TGtk3DeviceContext.getPixel: Pixel out of bounds x %d y %d surface width %d height %d !',
+      [x, y, ASurfaceWidth, ASurfaceHeight]));
+    Exit;
+  end;
+
+  if cairo_surface_get_type(CairoSurface) = CAIRO_SURFACE_TYPE_IMAGE then
+  begin
+    cairo_surface_flush(CairoSurface);
+    AData := PByte(cairo_image_surface_get_data(CairoSurface));
+
+    if AData <> nil then
+    begin
+      ARowStride := cairo_image_surface_get_stride(CairoSurface);
+      APixelValue := PLongWord(AData + (Y * ARowStride) + (X * 4))^;
+
+      Result := ((APixelValue and $00FF0000) shr 16) or
+                (APixelValue and $0000FF00) or
+                ((APixelValue and $000000FF) shl 16);
+      exit;
+    end else
+    begin
+      DebugLn('Error: GetPixel for CAIRO_SURFACE_TYPE_IMAGE failed.');
+      exit(0);
+    end;
+  end;
+
+  APixbuf := gdk_pixbuf_get_from_surface(CairoSurface, X, Y, 1, 1);
+  if APixbuf = nil then
+    Exit;
+
+  AData := gdk_pixbuf_get_pixels(APixbuf);
+  ARowStride := gdk_pixbuf_get_rowstride(APixbuf);
+
+  APixelValue := PLongWord(AData)^;
+
+  Result := ((APixelValue and $FF0000) shr 16) or
+            (APixelValue and $00FF00) or
+            ((APixelValue and $0000FF) shl 16);
+
+  g_object_unref(APixbuf);
 end;
+
 
 procedure TGtk3DeviceContext.drawRect(x1, y1, w, h: Integer; const AFill, ABorder: Boolean);
 var
