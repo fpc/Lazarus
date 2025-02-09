@@ -254,8 +254,8 @@ var
 
   procedure CheckAndFixGeometry;
   const
-    WaitDelay: gulong = 2000;
-    WaitLoops: integer = 2;
+    WaitDelay: gulong = 3000;
+    WaitLoops: integer = 4;
   var
     x, y, w, h: gint;
   begin
