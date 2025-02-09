@@ -5058,6 +5058,7 @@ var
   SpaceRect, DrawRect: TRect;
   Node: TTreeNode;
   InsertMarkRect: TRect;
+  bkColor: TColor;
 begin
   if [tvsPainting] * FStates <> [] then Exit;
   Include(FStates, tvsPainting);
@@ -5071,10 +5072,13 @@ begin
     //UpdateScrollbars;
     with Canvas do
     begin
+      bkColor := Self.Color;
+      Canvas.Brush.Color := bkColor;
       if IsCustomDrawn(dtControl, cdPrePaint) then
       begin
         DrawRect := ClientRect;
         if not CustomDraw(DrawRect, cdPrePaint) then exit;
+        bkColor := Canvas.Brush.Color;
       end;
       // draw nodes
       Node := TopItem;
@@ -5107,10 +5111,12 @@ begin
         SpaceRect.Top := Node.Top + Node.Height - FScrolledTop + BorderWidth;
       //if Node<>nil then DebugLn('BottomItem=',BottomItem.text) else DebugLn('NO BOTTOMITEM!!!!!!!!!');
       // TWinControl(Parent).InvalidateRect(Self,SpaceRect,true);
-      if (Color <> clNone) and (SpaceRect.Top < SpaceRect.Bottom) then
+      Brush.Color := bkColor;
+      if (Brush.Color <> clNone) and (SpaceRect.Top < SpaceRect.Bottom) then
+//      if (Color <> clNone) and (SpaceRect.Top < SpaceRect.Bottom) then
       begin
         //DebugLn('  SpaceRect=',SpaceRect.Left,',',SpaceRect.Top,',',SpaceRect.Right,',',SpaceRect.Bottom);
-        Brush.Color := Color;
+        //Brush.Color := Color;
         FillRect(SpaceRect);
       end;
       // draw border
@@ -5165,7 +5171,7 @@ procedure TCustomTreeView.DoPaintNode(Node: TTreeNode);
 var
   NodeRect: TRect;
   VertMid, VertDelta, RealExpandSignSize, RealIndent: integer;
-  NodeSelected, HasExpandSign: boolean;
+  NodeSelected, NodeHot, NodeDisabled, HasExpandSign, CustomDrawn: boolean;
 
   procedure DrawVertLine(X, Y1, Y2: Integer);
   begin
@@ -5289,6 +5295,7 @@ var
     Details: TThemedElementDetails;
     R: TRect;
     PrevColor: TColor;
+    PrevStyle: TBrushStyle;
   const
     cShiftHorzArrow = 2; //paint horz arrow N pixels upper than MidY
   begin
@@ -5308,6 +5315,9 @@ var
 
     with Canvas do
     begin
+      PrevStyle := Brush.Style;
+      PrevColor := Brush.Color;
+
       Pen.Color := FExpandSignColor;
       Pen.Style := psSolid;
       case ExpandSignType of
@@ -5315,6 +5325,7 @@ var
         begin
           // draw a themed expand sign. Todo: track hot
           R := Rect(ALeft, ATop, ARight, ABottom);
+          Canvas.Brush.Color := Self.Color;
           Details := ThemeServices.GetElementDetails(PlusMinusDetail[False, CollapseSign]);
           ThemeServices.DrawElement(Canvas.Handle, Details, R, nil);
         end;
@@ -5322,6 +5333,7 @@ var
         begin
           // draw a plus or a minus sign
           R := Rect(ALeft, ATop, ARight+1, ABottom+1); //+1 for centering of line in square
+          Canvas.Brush.Color := Self.Color;
           Rectangle(R);
           SmallIndent := Scale96ToFont(2);
           MoveTo(R.Left + SmallIndent, MidY);
@@ -5352,15 +5364,8 @@ var
           end;
 
           if ExpandSignType = tvestArrowFill then
-          begin
-            PrevColor := Brush.Color;
             Brush.Color := ExpandSignColor;
-          end;
           Polygon(Points, 3, False);
-          if ExpandSignType = tvestArrowFill then
-          begin
-            Brush.Color := PrevColor;
-          end;
         end;
       tvestAngleBracket:
         begin
@@ -5400,6 +5405,8 @@ var
           end;
         end;
       end;
+      Brush.Color := PrevColor;
+      Brush.Style := PrevStyle;
     end;
   end;
 
@@ -5481,88 +5488,74 @@ var
     end;
   end;
 
-  procedure DrawBackground(IsSelected: Boolean; ARect: TRect);
-  var
-    Details: TThemedElementDetails;
-    CurBackgroundColor,bclr: TColor;
+  { Draws the default normal node background }
+  procedure DrawNormalBackground(ARect: TRect);
   begin
-    bclr:=Canvas.Brush.Color;
-    try
-      if (tvoRowSelect in Options) and IsSelected then
-        if tvoThemedDraw in Options then
-        begin
-          if tvoFocusedPainting in FStates then
-            Details := ThemeServices.GetElementDetails(ttItemSelected)
-          else
-            Details := ThemeServices.GetElementDetails(ttItemSelectedNotFocus);
-          if ThemeServices.HasTransparentParts(Details) then
-          begin
-            Canvas.Brush.Color := Color;
-            Canvas.FillRect(ARect);
-          end;
-          ThemeServices.DrawElement(Canvas.Handle, Details, ARect, nil);
-          Exit;
-        end
-        else
-          CurBackgroundColor := FSelectedColor
-      else
-        CurBackgroundColor := Color;
-      if CurBackgroundColor <> clNone then
-      begin
-        Canvas.Brush.Color := CurBackgroundColor;
-        Canvas.FillRect(ARect);
-      end;
-    finally
-      Canvas.Brush.Color := bclr;
-    end;
+    if Canvas.Brush.Color <> clNone then
+      Canvas.FillRect(ARect);
   end;
 
-  procedure DrawNodeText(IsSelected: Boolean; NdRect: TRect; AText: String);
+  { Default-draws the background of selected and hot-tracked nodes over the full
+    client width. This does not occur when the tree is not in RowSelect mode,
+    or when the preceding OnAdvancedCustomDrawItem event handler has been
+    exited with DefaultDraw = fals. }
+  procedure DrawSpecialBackground(IsSelected, IsHot: Boolean; ARect: TRect);
   var
     Details: TThemedElementDetails;
-    NeedUnderline: Boolean;
-    PrevFontStyle: TFontStyles;
-    PrevFontColor: TColor;
   begin
-    if IsSelected then
+    if not RowSelect then
+      exit;
+    if not (IsSelected or IsHot) then
+      exit;
+    if tvoThemedDraw in Options then
+    begin
+      if (tvoFocusedPainting in FStates) then
+      begin
+        if IsSelected then
+          Details := ThemeServices.GetElementDetails(ttItemSelected)
+        else
+        if IsHot then
+          Details := ThemeServices.GetElementDetails(ttItemHot);
+        ThemeServices.DrawElement(Canvas.Handle, Details, ARect, nil);
+      end;
+    end else
+    if (IsSelected or IsHot) and (Canvas.Brush.Color <> clNone) then
+        Canvas.FillRect(ARect);
+  end;
+
+  { If not deactivated by user selection in the custom-draw events, draws the
+    node text background. Then the node text. }
+  procedure DrawNodeText(IsSelected, IsHot: Boolean; NdRect: TRect; AText: String);
+  var
+    Details: TThemedElementDetails;
+  begin
+    if IsSelected or IsHot then
     begin
       if tvoFocusedPainting in FStates then
-        Details := ThemeServices.GetElementDetails(ttItemSelected)
-      else
+      begin
+        if IsSelected then
+          Details := ThemeServices.GetElementDetails(ttItemSelected)
+        else
+          Details := ThemeServices.GetElementDetails(ttItemHot);
+      end else
         Details := ThemeServices.GetElementDetails(ttItemSelectedNotFocus);
       if not (tvoRowSelect in Options) then
+      begin
         if (tvoThemedDraw in Options) then
           ThemeServices.DrawElement(Canvas.Handle, Details, NdRect, nil)
         else
-        begin
-          Canvas.Brush.Color := FSelectedColor;
-          Canvas.Font.Color := IfThen(FSelectedFontColorUsed,
-                                      FSelectedFontColor, InvertNdColor(FSelectedColor));
-          Canvas.FillRect(NdRect);
-        end
-      else
-      if not (tvoThemedDraw in Options) then
-      begin
-        Canvas.Brush.Color := FSelectedColor;
-        Canvas.Font.Color := IfThen(FSelectedFontColorUsed,
-                                    FSelectedFontColor, InvertNdColor(FSelectedColor));
+        if Canvas.Brush.Color <> clNone then
+          Canvas.FillRect(NdRect)
+      end else
+      if not (tvoThemedDraw in Options) and (Canvas.Brush.Color <> clNone) then
         Canvas.FillRect(NdRect);
-      end;
     end
     else
       Details := ThemeServices.GetElementDetails(ttItemNormal);
 
-    NeedUnderline := (tvoHotTrack in FOptions) and (Node=FNodeUnderCursor);
-    if NeedUnderline then
-    begin
-      PrevFontStyle := Canvas.Font.Style;
-      PrevFontColor := Canvas.Font.Color;
-      Canvas.Font.Style := [fsUnderline];
-      if FHotTrackColor<>clNone then
-        Canvas.Font.Color := FHotTrackColor;
-    end;
-
     NdRect.Offset(ScaleX(2, 96), 0);
+
+    SetBkMode(Canvas.Handle, TRANSPARENT);
     if (tvoThemedDraw in Options) then
     begin
       if not (Enabled and Node.Enabled) then
@@ -5571,18 +5564,9 @@ var
     end
     else
     begin
-      if not (Enabled and Node.Enabled) and (FDisabledFontColor<>clNone) then
-        Canvas.Font.Color := FDisabledFontColor;
       DrawText(Canvas.Handle, PChar(AText), -1, NdRect, DT_LEFT or DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX);
     end;
-
-    if NeedUnderline then
-    begin
-      Canvas.Font.Style := PrevFontStyle;
-      Canvas.Font.Color := PrevFontColor;
-    end;
   end;
-
 
 var
   x, ImgIndex: integer;
@@ -5591,6 +5575,7 @@ var
   PaintImages: boolean;
   OverlayIndex: Integer;
   ImageRes, StateImageRes: TScaledImageListResolution;
+  savedBrushColor: TColor;
 begin
   if Assigned(FImages) then
     ImageRes := Images.ResolutionForPPI[ImagesWidth, Font.PixelsPerInch, GetCanvasScaleFactor];
@@ -5602,10 +5587,29 @@ begin
   if (NodeRect.Bottom < 0) or (NodeRect.Top >= ClientHeight) then
     Exit;
   NodeSelected := (Node.Selected) or (Node.MultiSelected);
-  Canvas.Font.Color := Font.Color;
-  Canvas.Brush.Color := Color;
+  NodeHot := (tvoHotTrack in FOptions) and (Node = FNodeUnderCursor) and Assigned(FNodeUnderCursor);
+  NodeDisabled := not (Enabled and Node.Enabled);
+  Canvas.Font.Assign(Self.Font);
+  if NodeSelected and not (tvoThemedDraw in Options) then
+  begin
+    Canvas.Brush.Color := FSelectedColor;
+    Canvas.Font.Color := FSelectedFontColor;
+  end else
+  begin
+    Canvas.Font.Color := Font.Color;
+    Canvas.Brush.Color := Color;
+    if NodeHot and not (tvoThemedDraw in FOptions) then
+    begin
+      Canvas.Font.Style := [fsUnderline];
+      if FHotTrackColor <> clNone then
+        Canvas.Font.Color := FHotTrackColor;
+    end;
+  end;
+  if NodeDisabled and (FDisabledFontColor <> clNone) then
+    Canvas.Font.Color := FDisabledFontColor;
   PaintImages := True;
-  if IsCustomDrawn(dtItem, cdPrePaint) then
+  customdrawn := IsCustomDrawn(dtItem, cdPrePaint);
+  if customDrawn then
   begin
     DrawState := [];
     if NodeSelected then
@@ -5614,6 +5618,10 @@ begin
       Include(DrawState, cdsFocused);
     if Node.MultiSelected then
       Include(DrawState, cdsMarked);
+    if NodeHot then
+      Include(DrawState, cdsHot);
+    if NodeDisabled then
+      Include(DrawState, cdsDisabled);
     if not CustomDrawItem(Node, DrawState, cdPrePaint, PaintImages) then Exit;
   end;
 
@@ -5623,10 +5631,21 @@ begin
   //DebugLn(['[TCustomTreeView.DoPaintNode] Node=',DbgS(Node),' Node.Text=',Node.Text,' NodeRect=',NodeRect.Left,',',NodeRect.Top,',',NodeRect.Right,',',NodeRect.Bottom,' VertMid=',VertMid]);
   with Canvas do
   begin
-    // draw background
-    DrawBackground(NodeSelected, NodeRect);
+    // Draw the normal node background, no selected color, no hot-track color
+    savedBrushColor := Canvas.Brush.Color;
+    Canvas.Brush.Color := Color;
+    customDrawn := IsCustomDrawn(dtItem, cdPreErase);
+    if not IsCustomDrawn(dtItem, cdPreErase) or CustomDrawItem(Node, [], cdPreErase, PaintImages) then
+      DrawNormalBackground(NodeRect);
+    Canvas.Brush.Color := savedBrushColor;
 
-    // draw tree lines
+    // Background of selected or hot-tracked nodes
+    customDrawn := IsCustomDrawn(dtItem, cdPostErase);
+    if not IsCustomDrawn(dtItem, cdPostErase) or CustomDrawItem(Node, DrawState, cdPostErase, PaintImages) then
+      // If not custom-painted draw it over the full tree client width
+      DrawSpecialBackground(NodeSelected, NodeHot, NodeRect);
+
+    // Draw tree lines
     Pen.Color := TreeLineColor;
     Pen.Style := TreeLinePenStyle;
     if Pen.Style = psPattern then
@@ -5698,12 +5717,12 @@ begin
     end;
 
     // draw text
-    if (Node.Text <> '') and (Node<>FEditingItem) then
+    if (Node.Text <> '') and (Node <> FEditingItem) then
     begin
       CurTextRect := NodeRect;
       CurTextRect.Left := x;
       CurTextRect.Right := x + TextWidth(Node.Text) + (FDefItemSpace * 2);
-      DrawNodeText(NodeSelected, CurTextRect, Node.Text);
+      DrawNodeText(NodeSelected, NodeHot, CurTextRect, Node.Text);
     end;
 
     // draw separator
@@ -5727,6 +5746,8 @@ begin
       Include(DrawState,cdsFocused);
     if Node.MultiSelected then
       Include(DrawState,cdsMarked);
+    if NodeHot then
+      Include(DrawState, cdsHot);
     if not CustomDrawItem(Node,DrawState,cdPostPaint,PaintImages) then exit;
   end;
 end;
