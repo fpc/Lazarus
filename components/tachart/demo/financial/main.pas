@@ -69,7 +69,7 @@ var
 begin
   fs := DefaultFormatSettings;
   fs.DateSeparator := '-';
-  fs.ShortDateFormat := 'd/mmm/yyyy';
+  fs.ShortDateFormat := 'yyyy/mm/dd'; //d/mmm/yyyy';
   fs.DecimalSeparator := '.';
   dataList := TStringList.Create;
   try
@@ -86,7 +86,7 @@ begin
         // We don't use the date for x because we want to skip the weekends in the chart
         // Therefore, we use the index and add the date as a label. Diplay of
         // the data labels is activated by BottomAxis.Marks.Style = smsLabel.
-        ohlcSeries.AddXOHLC(i, yOpen, yHigh, yLow, yClose, DateToStr(xDate));
+        ohlcSeries.AddXOHLC(i, yOpen, yHigh, yLow, yClose, DateToStr(xDate, fs));
       end;
     finally
       lines.Free;

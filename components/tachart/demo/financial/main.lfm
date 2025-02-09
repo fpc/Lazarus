@@ -6,8 +6,8 @@ object MainForm: TMainForm
   Caption = 'MainForm'
   ClientHeight = 466
   ClientWidth = 891
+  LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
-  LCLVersion = '2.3.0.0'
   object FinancialChart: TChart
     Left = 0
     Height = 385
@@ -51,8 +51,10 @@ object MainForm: TMainForm
     Align = alClient
     object ohlcSeries: TOpenHighLowCloseSeries
       CandlestickDownBrush.Color = clRed
+      CandlestickDownPen.Color = clMaroon
       CandlestickLinePen.Color = clDefault
       CandlestickUpBrush.Color = clLime
+      CandlestickUpPen.Color = clGreen
       DownLinePen.Color = clRed
       DownLinePen.Width = 2
       LinePen.Color = clLime
@@ -107,10 +109,10 @@ object MainForm: TMainForm
         'OHLC series'
         'Candle stick series'
       )
-      OnChange = cbSeriesTypeChange
       Style = csDropDownList
       TabOrder = 0
       Text = 'OHLC series'
+      OnChange = cbSeriesTypeChange
     end
     object cbCandleStickSameColor: TCheckBox
       AnchorSideLeft.Control = cbDownColor
@@ -120,14 +122,14 @@ object MainForm: TMainForm
       Left = 584
       Height = 19
       Top = 10
-      Width = 173
+      Width = 171
       BorderSpacing.Left = 24
       Caption = 'same color for tails and body'
       Checked = True
-      OnChange = cbCandleStickSameColorChange
       State = cbChecked
       TabOrder = 1
       Visible = False
+      OnChange = cbCandleStickSameColorChange
     end
     object cbUpColor: TColorBox
       AnchorSideLeft.Control = LblUp
@@ -142,8 +144,8 @@ object MainForm: TMainForm
       Style = [cbStandardColors, cbExtendedColors, cbIncludeNone, cbIncludeDefault, cbCustomColor, cbPrettyNames, cbCustomColors]
       BorderSpacing.Left = 8
       ItemHeight = 20
-      OnChange = cbColorChange
       TabOrder = 2
+      OnChange = cbColorChange
     end
     object cbDownColor: TColorBox
       AnchorSideLeft.Control = LblDown
@@ -158,8 +160,8 @@ object MainForm: TMainForm
       Style = [cbStandardColors, cbExtendedColors, cbIncludeNone, cbIncludeDefault, cbCustomColor, cbPrettyNames, cbCustomColors]
       BorderSpacing.Left = 8
       ItemHeight = 20
-      OnChange = cbColorChange
       TabOrder = 3
+      OnChange = cbColorChange
     end
     object LblUp: TLabel
       AnchorSideLeft.Control = cbSeriesType
