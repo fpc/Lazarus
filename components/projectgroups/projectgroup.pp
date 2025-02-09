@@ -374,7 +374,7 @@ end;
 function GetLazBuildFilename: string;
 begin
   // first check the lazbuild executable in the lazarus directory
-  Result:='$(LazarusDir)'+PathDelim+'$MakeExe(lazbuild)';
+  Result:='$(LazarusDir)'+PathDelim+'lazbuild'+ExeExt;
   IDEMacros.SubstituteMacros(Result);
   if FileExistsCached(Result) then
     exit;
