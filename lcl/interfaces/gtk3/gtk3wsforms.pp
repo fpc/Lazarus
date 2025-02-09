@@ -260,9 +260,6 @@ var
     x, y, w, h: gint;
   begin
     AWindow^.window^.get_geometry(@x, @y, @w, @h);
-    //nothing to do
-    if (w = AWindow^.get_allocated_width) and (h = AWindow^.get_allocated_height) then
-      exit;
 
     with AWinControl do
       AWindow^.window^.move_resize(Left, Top, Width, Height);
