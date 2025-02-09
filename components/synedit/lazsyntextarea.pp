@@ -1721,8 +1721,8 @@ var
       end
       else
         c := 0;
-        e := 0;
 
+      e := 0;
       // Copy to LineBuffer (and maybe FetoBuf
       if NeedExpansion then begin
         j := ATokenInfo.StartPos.Logical - 1;
@@ -1757,8 +1757,6 @@ var
                 then begin
                   (pl-1)^ := #194;
                   pl^ := #187; inc(pl);
-                  if FetoBuf <> nil then FEtoBuf.EtoData[e] := c;
-                  inc(e);
                 end;
               end;
             ' ': begin
