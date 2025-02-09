@@ -3236,9 +3236,15 @@ splitter.
 anchored controls on opposing sides of the splitter. MinSize is used in the 
 <var>MoveSplitter</var> method to prevent adjacent controls from becoming too 
 small when the splitter is dragged. The default value for the property is 30 
-(pixels). When set to 0 (zero), an adjacent control can be resized until is 
-no longer visible. MinSize does not accept negative Integer values in the 
-property.
+(pixels).
+</p>
+<p>
+MinSize does not accept zero (0) or negative Integer values in the property. 
+Setting MinSize to zero (0) would allow an adjacent control to be resized 
+until it is no longer visible - so these values are not accepted in the setter 
+for the property. This is compatible with the TSplitter implementation in the 
+Delphi VCL where the property is defined using an Integer type in the range 
+1..High(Integer).
 </p>
 </descr>
 <seealso>
