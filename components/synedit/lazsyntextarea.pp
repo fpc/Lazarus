@@ -789,9 +789,6 @@ begin
     case FCurViewinRTL of
       False: // Left To Right
         begin
-          assert((APhysEnd<=0) or (APhysEnd>FCurViewScannerPhysCharPos), 'TLazSynPaintTokenBreaker.GetNextHighlighterTokenFromView: (APhysEnd<=0) or (APhysEnd>FCurViewScannerPhysCharPos)');
-          if APhysEnd <= FCurViewScannerPhysCharPos then
-            APhysEnd := -1;
           SkipLtrBeforeFirstCol(LogicIdx, LogicEnd);    // Skip out of screen
           if FCurViewToken.TokenLength = 0 then
             continue;  // Get NEXT token
@@ -925,9 +922,6 @@ begin
         end; // case FCurViewinRTL = False;
       True: // Right To Left
         begin
-          assert((APhysEnd<=0) or (APhysEnd<FCurViewScannerPhysCharPos) or (APhysEnd >= FCurViewRtlPhysEnd), 'TLazSynPaintTokenBreaker.GetNextHighlighterTokenFromView: (APhysEnd<=0) or (APhysEnd<FCurViewScannerPhysCharPos) or (APhysEnd >= FCurViewRtlPhysEnd)');
-          if (APhysEnd >= FCurViewScannerPhysCharPos) and (APhysEnd < FCurViewRtlPhysEnd) then
-            APhysEnd := -1;
           SkipRtlOffScreen(LogicIdx, LogicEnd);
           if FCurViewToken.TokenLength = 0 then
             continue;  // Get NEXT token
