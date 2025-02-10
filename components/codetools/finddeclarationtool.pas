@@ -779,9 +779,6 @@ type
     FCheckingNodeCacheDependencies: boolean;
     FSourcesChangeStep, FFilesChangeStep: int64;
     FInitValuesChangeStep: integer;
-    {$IFDEF EnableFKnownIdentLength}
-    FKnownIdentLength:integer;
-    {$ENDIF}
     {$IFDEF DebugPrefix}
     DebugPrefix: string;
     procedure IncPrefix;
@@ -4108,9 +4105,6 @@ begin
     ' "',dbgstr(copy(Src,Params.ContextNode.StartPos,20)),'"');
   {$ENDIF}
   Result:=false;
-  {$IFDEF EnableFKnownIdentLength}
-  FKnownIdentLength:=Params.KnownIdentifierLength;
-  {$ENDIF}
   KnownIdentLen:=Params.KnownIdentifierLength;
 
   // search in cleaned source for start of term
@@ -6805,10 +6799,6 @@ var
       if (Node.Desc = ctnSrcName) then begin
         MoveCursorToCleanPos(Node.StartPos);
         AnUnitName:=ExtractIdentifierWithPoints(Node.StartPos,false);
-        {$IFDEF EnableFKnownIdentLength}
-        if FKnownIdentLength>0 then
-          delete(AnUnitName,FKnownIdentLength+1, length(AnUnitName));
-        {$ENDIF}
         //AnUnitName:=GetDottedIdentifier(@Src[Node.StartPos]); //program, library, package
         NewCodeTool:=FindCodeToolForUsedUnit(AnUnitName, '',false);
         if NewCodeTool=DeclarationTool then begin
@@ -10678,8 +10668,7 @@ var
           exit;
         end;
 
-        Params.SetIdentifier(Self,@Src[CurAtom.StartPos],@CheckSrcIdentifier
-          {$IFDEF EnableFKnownIdentLength},FKnownIdentLength{$ENDIF});
+        Params.SetIdentifier(Self,@Src[CurAtom.StartPos],@CheckSrcIdentifier);
 
         // search ...
         {$IFDEF ShowExprEval}
@@ -13426,9 +13415,6 @@ begin
   FSourcesChangeStep:=CTInvalidChangeStamp64;
   FFilesChangeStep:=CTInvalidChangeStamp64;
   FInitValuesChangeStep:=CTInvalidChangeStamp;
-  {$IFDEF EnableFKnownIdentLength}
-  FKnownIdentLength:=0;
-  {$ENDIF}
 end;
 
 procedure TFindDeclarationTool.DoDeleteNodes(StartNode: TCodeTreeNode);
