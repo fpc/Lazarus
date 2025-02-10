@@ -8,10 +8,9 @@
 
 unit frFuncNum;
 
-interface
+{$mode objfpc}{$H+}
 
-{$A+,B-,E-,R-}
-{.$I FR.inc}
+interface
 
 uses
   SysUtils;
