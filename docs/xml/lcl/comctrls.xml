@@ -35184,84 +35184,122 @@ Implements the Paint method for the control.
 </short>
 <descr>
 <p>
-<var>DoPaint</var> is a method used render the control to its canvas. It 
-Implements the overridden <var>Paint</var> method. No actions are performed 
-in the method when <var>tvsPainting</var> has been included in the 
-<var>States</var> property (Paint has already been called).
+<var>DoPaint</var> is a method used to render the control to its 
+<var>Canvas</var>. It implements the overridden <var>Paint</var> method for 
+the control. DoPaint performs the multi-stage drawing process for the control 
+and its tree nodes using the display rectangle in <var>ClientRect</var>. The 
+<var>Color</var> for the control is used as the Brush color on the Canvas.
 </p>
 <p>
-DoPaint includes the value tvsPainting in the States property to indicate 
-that the paint method is active. It includes the value 
-<var>tvoFocusedPainting</var> in States when <var>Focused</var> is 
-<b>True</b>, or excludes the value when Focused is <var>False</var>.
+DoPaint updates the values in the <var>States</var> property to reflect the 
+drawing state for the control. It includes the value <var>tvsPainting</var> in 
+the States property to indicate that the Paint method is active. No actions 
+are performed in the method if <var>tvsPainting</var> has already been 
+included (Paint has already been called). <var>tvoFocusedPainting</var> is 
+included in States when <var>Focused</var> is <b>True</b>, and excluded when 
+Focused is <var>False</var>.
 </p>
 <p>
-The UpdateDefaultItemHeight is called when <var>tvoAutoItemHeight</var> is 
-included in the <var>Options</var> for the control. The existing value in 
-DefaultItemHeight is used when the Option is omitted.
+The UpdateDefaultItemHeight method is called when <var>tvoAutoItemHeight</var> 
+is included in the <var>Options</var> for the control. The existing value in 
+<var>DefaultItemHeight</var> is used if the option value is omitted.
 </p>
 <p>
-DoPaint performs the multi-stage drawing process for nodes in the tree view 
-control using its Canvas and a display rectangle using the 
-<var>ClientWidth</var> for the control. If the control includes event 
-handlers for the cdPrePaint stage, the <var>CustomDraw</var> method is called.
+If the control is custom-drawn, the <var>CustomDraw</var> method is called to 
+signal assigned event handlers used for the <var>cdPrePaint</var> drawing 
+stage. Any change to the Canvas brush color in the event handlers is retained 
+for subsequent use in the method. If the event handlers do not handle drawing 
+for the cdPrePaint drawing stage, no additional actions are performed in the 
+method.
 </p>
 <p>
-DoPaint draws the nodes on the tree view starting at the node in TopItem. If 
-the node is Visible, the <var>DoPaintNode</var> method is called to render 
-the tree node. The next visible node in the tree is retrieved, and the 
-process is repeated until no more nodes are available or the drawing area is 
-filled.
+See <var>IsCustomDrawn</var> for information about the custom draw event 
+handlers and their use for specific drawing stages.
 </p>
 <p>
-An <var>InsertMark</var> is drawn for the root node if needed.
+DoPaint draws the nodes on the tree view starting at the node in 
+<var>TopItem</var>. If a given node is visible, the <var>DoPaintNode</var> 
+method is called to render the tree node. The next visible node in the tree is 
+retrieved, and the process is repeated until no more nodes are available, 
+<var>BottomItem</var>) is reached, or the drawing area is filled.
 </p>
 <p>
-Borders are drawn around the control using the value in 
-<var>BorderWidth</var>.
+An <var>InsertMark</var> is drawn for the root node when needed.
 </p>
 <p>
-If the control has event handlers for the cdPostPaint stage, the CustomDraw 
-method is called.
+Unused space on the client rectangle between on the control borders is filled 
+with the background color for the control. Borders are drawn for the control 
+using the value in <var>BorderWidth</var>. clGray, clLtGray, and clWhite are 
+used as Pen colors to simulate a 3D edge on the control. clBlack is used as 
+the Pen color for the half-width line drawn using the mid-point for the border.
 </p>
 <p>
-The value <var>tvsPainting</var> is excluded from the States property prior 
-to exit.
+If the control is custom-drawn, the <var>CustomDraw</var> method is called 
+again to signal assigned event handlers used for the <var>cdPostPaint</var> 
+drawing stage. If the event handlers do not perform drawing for the 
+cdPostPaint drawing stage, no additional actions are performed in the method.
+</p>
+<p>
+<var>tvsPainting</var> is excluded from the States property prior to exiting 
+from the method.
 </p>
 </descr>
-<seealso/>
+<version>
+Modified in LCL version 5.0 to retain changes to the Brush color in custom 
+draw event handlers.
+</version>
+<seealso>
+<link id="TCustomTreeView.BorderWidth"/>
+<link id="TCustomTreeView.BottomItem"/>
+<link id="TCustomTreeView.Color"/>
+<link id="TCustomTreeView.CustomDraw"/>
+<link id="TCustomTreeView.DoPaintNode"/>
+<link id="TCustomTreeView.InsertMarkType"/>
+<link id="TCustomTreeView.IsCustomDrawn"/>
+<link id="TCustomTreeView.Options"/>
+<link id="TCustomTreeView.Paint"/>
+<link id="TCustomTreeView.States"/>
+<link id="TCustomTreeView.TopItem"/>
+<link id="TCustomDrawState"/>
+<link id="TCustomDrawTarget"/>
+<link id="TTreeNode"/>
+<link id="TTreeViewState"/>
+<link id="TTreeViewStates"/>
+<link id="#lcl.controls.TCustomControl.Canvas">TCustomControl.Canvas</link>
+<link id="#lcl.controls.TCustomControl.Paint">TCustomControl.Paint</link>
+<link id="#lcl.controls.TControl.ClientRect">TControl.ClientRect</link>
+<link id="#lcl.graphics.TCanvas.Brush">TCanvas.Brush</link>
+<link id="#lcl.graphics.TCanvas.Pen">TCanvas.Pen</link>
+</seealso>
 </element>
 
 <element name="TCustomTreeView.DoPaintNode">
-<short>Renders the specified tree node to the canvas for the control.</short>
+<short>
+Renders the specified tree node to the canvas for the control.
+</short>
 <descr>
 <p>
 <var>DoPaintNode</var> is a method used to render the tree node specified in 
 <var>Node</var> to the <var>Canvas</var> for the control. DoPaintNode is 
 called from the DoPaint method, and occurs for visible nodes processed in the 
-method. No actions are performed in the method when the Node is not in the 
-visible client area for the control.
+method. The display rectangle needed for the tree node is calculated in the 
+method. No actions are performed if the Node is not in the visible client area 
+for the control.
 </p>
 <p>
-DoPaintNode draws the elements which represent a given tree node, including:
+By default, text drawn for a node uses the Font assigned to the control with 
+its Color used for the background on the rendered tree node. The font, color, 
+and background are overridden as needed to reflect the enabled, selected, or 
+hot-tracked state for the tree node. These may also be changed when theme 
+drawing is enabled in Options (using <var>tvoThemedDraw</var>).
 </p>
-<ul>
-<li>Text for the tree node (when it is not the EditingItem for the 
-control).</li>
-<li>An Image or State Image for the node.</li>
-<li>Expand or Collapse indicators for the node.</li>
-<li>Background for the node using theme services or node state.</li>
-<li>An Insert mark for the initial child node in the tree hierarchy.</li>
-<li>Horizontal and vertical lines used to join nodes in the tree 
-hierarchy.</li>
-<li>The Separator line drawn after a node.</li>
-</ul>
 <p>
-The text color is determined using the Enabled properties in both the tree 
-view control and the tree Node. When theme services are enabled in Options 
-(using tvoThemedDraw), theme element details provide the color and font style 
-for the enabled state. Otherwise, the color value in DisabledFontColor or 
-Font is used.
+SelectedColor and SelectedFontColor are used when the tree node is selected (
+or multi-selected) and theme drawing has <b>not</b> been enabled.
+</p>
+<p>
+DisabledFontColor is used when the tree node is not enabled and the property 
+contains a value other than clNone.
 </p>
 <p>
 DoPaintNode retrieves scaled image resolutions needed for the Images and 
@@ -35269,12 +35307,81 @@ StateImages in the control. The images sizes are determined by applying the
 scaling factor in Canvas to the current PixelsPerInch setting in Font.
 </p>
 <p>
-Use of multi-stage custom drawing is supported. If event handlers are 
-provided for the cdPrePaint and cdPostPaint stages, the CustomDraw and 
-CustomDrawItem methods are used to render the node with the drawing state for 
-the node.
+Use of multi-stage custom drawing is supported. If event handlers are provided 
+which support the stages, the draw state flags needed for a focused / selected 
+/ multi-selected / hot-tracked / disabled tree node are calculated. 
+</p>
+<p>
+CustomDrawItem is called to draw the node using the draw state flags and image 
+settings for the node. No additional actions are performed in the method if 
+event handlers have not been assigned which support custom drawing the item 
+for the cdPrePaint state.
+</p>
+<p>
+See <var>IsCustomDrawn</var> for information about the custom draw event 
+handlers and their use for specific drawing stages.
+</p>
+<p>
+ShowButtons controls whether an Expand / Collapse indicator is drawn for a 
+tree node which has child nodes, or is the root node for the tree view control.
+</p>
+<p>
+DoPaintNode performs default drawing for the elements which represent a given 
+tree node using its Canvas. These actions are performed when custom draw event 
+handlers have not been assigned or enabled in Options, including:
+</p>
+<ul>
+<li>
+Drawing the normal, unselected, non-tracked background for the node.
+</li>
+<li>
+Drawing the background for a selected or hot-tracked node.
+</li>
+<li>
+Drawing the full-width background for a selected or hot-tracked node when 
+RowSelect is enabled.
+</li>
+<li>
+Drawing horizontal and vertical lines which connect tree nodes using the 
+TreeLineColor and TreeLinePenStyle for the control.
+</li>
+<li>
+Drawing the expand or collapse indicator using the expanded state for a node 
+with child nodes. Use ExpandSignType and ExpandSignColor for the pre-defined 
+indicators used on the control. Use OnCustomDrawArrow to draw a custom expand 
+/ collapse indicator.
+</li>
+<li>
+Drawing the StateImage, Image (including the built-in ones), and an overlay 
+image using the ImageIndex, SelectedIndex, and OverlayIndex for the tree node.
+</li>
+<li>
+Drawing the text for the node when assigned and the node is not being edited. 
+The text is drawn using the selected and hot-tracked state for the node. The 
+underline style is added to the font when a node is hot-tracked and themed 
+drawing has <b>not</b> been enabled in Options.
+</li>
+<li>
+Drawing the separator line after a tree node when tvoShowSeparators has been 
+included in Options.
+</li>
+<li>
+Drawing the insert mark for a tree node inserted in to the tree view control. 
+Use InsertMarkType to specify the position for the mark relative to the  
+InsertMarkNode.
+</li>
+</ul>
+<p>
+If custom draw event handlers for the cdPostPaint drawing stage have been 
+assigned, draw state flags are calculated for Selected, MultiSelected, 
+Focused, and hot-tracking state for the node. The CustomDrawItem method is 
+called to draw the node using the event handlers for the drawing stage.
 </p>
 </descr>
+<version>
+Modified in LCL version 5.0 to provide better support for background drawing, 
+and selected or hot-tracked drawing states in multi-stage drawing.
+</version>
 <seealso>
 <link id="TCustomTreeView.DoPaint"/>
 <link id="TCustomTreeView.ExpandSignType"/>
@@ -35290,7 +35397,9 @@ the node.
 </seealso>
 </element>
 <element name="TCustomTreeView.DoPaintNode.Node">
-<short>Tree node rendered in the method.</short>
+<short>
+Tree node examined and rendered in the method.
+</short>
 </element>
 
 <element name="TCustomTreeView.DoStartDrag">
