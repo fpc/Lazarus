@@ -4905,7 +4905,8 @@ var
   NewFilename, NewFileExt: string;
   OldUnitName, NewUnitName: string;
   ACaption, AText, APath: string;
-  Filter, AllEditorExt, AllFilter: string;
+  Filter, AllEditorExt, AllFilter, AmpUnitname: string;
+  r: integer;
 begin
   if (AnUnitInfo<>nil) and (AnUnitInfo.OpenEditorInfoCount>0) then
     SrcEdit := TSourceEditor(AnUnitInfo.OpenEditorInfo[0].EditorComponent)
@@ -5019,6 +5020,7 @@ begin
         // Is it a valid name? Ask user.
         if not IsValidUnitName(NewUnitName) then
         begin
+          // it is not valid name -> Ask user
           Result:=IDEQuestionDialogAb(lisInvalidPascalIdentifierCap,
               Format(lisInvalidPascalIdentifierName,[NewUnitName,LineEnding]),
               mtConfirmation, [mrIgnore, lisSave,
@@ -5029,7 +5031,27 @@ begin
             continue;
           if Result in [mrCancel,mrAbort] then
             exit;
+        end else if CodeToolBoss.IdentifierHasKeywords(NewUnitName,
+            ExtractFilePath(NewFilename),AmpUnitname)
+        then begin
+          // contains keywords -> Suggest to ampersand it
+          Result:=TaskDlg(lisInvalidPascalIdentifierCap,
+              Format(lisTheNameContainsAPascalKeyword, [NewUnitName]), '',
+              tdiWarning,[mbOk,mbCancel],mbOk,
+                [lisChooseADifferentName,
+                 Format(lisUseInstead, [StringReplace(AmpUnitname,'&','&&',[rfReplaceAll])]),
+                 Format(lisUseAnyway, [NewUnitName])], r);
+          if Result<>mrOk then
+            exit(mrCancel);
+          case r of
+          1: NewUnitName:=AmpUnitname;
+          2: ;
+          else
+            Result:=mrRetry;
+            continue; // retry
+          end;
         end;
+
         // Does the project already have such unit?
         if Project1.IndexOfUnitWithName(NewUnitName,true,AnUnitInfo)>=0 then
         begin

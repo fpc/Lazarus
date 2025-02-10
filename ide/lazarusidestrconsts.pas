@@ -769,6 +769,8 @@ resourcestring
   lisisAnInvalidProjectNamePleaseChooseAnotherEGProject = '"%s" is an '
     +'invalid project name.%sPlease choose another (e.g. project1.lpi)';
   lisChooseADifferentName = 'Choose a different name';
+  lisUseInstead = 'Use "%s" instead';
+  lisUseAnyway = 'Use "%s" anyway';
   lisTheProjectInfoFileIsEqualToTheProjectMainSource = 'The project info '
     +'file "%s"%sis equal to the project main source file!';
   lisUnitIdentifierExists = 'Unit identifier exists';
@@ -1076,6 +1078,7 @@ resourcestring
   lisForceRenaming = 'Force renaming';
   lisCancelRenaming = 'Cancel renaming';
   lisInvalidPascalIdentifierCap = 'Invalid Pascal Identifier';
+  lisTheNameContainsAPascalKeyword = 'The name "%s" contains a Pascal keyword.';
   lisInvalidPascalIdentifierName = 'The name "%s" is not a valid Pascal identifier.'
       +'%sUse it anyway?';
 

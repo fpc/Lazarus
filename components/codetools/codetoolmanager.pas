@@ -559,7 +559,7 @@ type
     function GatherOverloads(Code: TCodeBuffer; X,Y: integer;
           out Graph: TDeclarationOverloadsGraph): boolean;
 
-    // find references, rename identifier, remove identifier
+    // find references, rename identifier, remove identifier. For unit/program name see FindSourceNameReferences
     function FindReferences(IdentifierCode: TCodeBuffer;
           X, Y: integer; SearchInCode: TCodeBuffer; SkipComments: boolean;
           var ListOfPCodeXYPosition: TFPList;
