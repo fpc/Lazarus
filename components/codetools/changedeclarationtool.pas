@@ -1335,7 +1335,7 @@ begin
   {$ENDIF}
   if (Refs.TreeOfPCodeXYPosition<>nil) and (Refs.TreeOfPCodeXYPosition.Count>0) then begin
     InitReplaceDottedIdentifier(Refs.LocalSrcName,Refs.NewLocalSrcName,Param);
-    Node:=Refs.TreeOfPCodeXYPosition.FindLowest;
+    Node:=Refs.TreeOfPCodeXYPosition.FindHighest;
     while Node<>nil do begin
       CodeXYPos:=PCodeXYPosition(Node.Data);
       //debugln(['TChangeDeclarationTool.RenameSourceNameReferences ',dbgs(CodeXYPos^)]);
@@ -1344,7 +1344,7 @@ begin
       end else begin
         ReplaceDottedIdentifier(p,Param,SourceChanger);
       end;
-      Node:=Refs.TreeOfPCodeXYPosition.FindSuccessor(Node);
+      Node:=Refs.TreeOfPCodeXYPosition.FindPrecessor(Node);
     end;
   end;
 
