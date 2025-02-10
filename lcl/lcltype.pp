@@ -650,6 +650,13 @@ const
 
   VK_LCL_CAPSLOCK   = VK_CAPITAL;
 
+  VK_LCL_PAGEDOWN   = VK_NEXT;
+  VK_LCL_PAGEUP     = VK_PRIOR;
+
+  VK_LCL_BACKSPACE  = VK_BACK;       // The "Backspace" key, dont confuse with the
+                                     // Android BACK key which is mapped to VK_ESCAPE
+  VK_LCL_ENTER      = VK_RETURN;
+
 //==============================================
 // New LCL defined keys
 //==============================================
