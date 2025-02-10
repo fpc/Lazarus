@@ -352,6 +352,9 @@ var
 function CompareCodeTreeNodeParserError(Error1, Error2: Pointer): integer;
 function CompareNodeWithCodeTreeNodeParserError(Node, Error: Pointer): integer;
 
+function IdentifierHasKeywords(const Identifier: string; cm: TCompilerMode; out
+  AmpIdentifier: string): boolean;
+
 implementation
 
 function CompareCodeTreeNodeParserError(Error1, Error2: Pointer): integer;
@@ -367,6 +370,43 @@ var
   AnError: TCodeTreeNodeParseError absolute Error;
 begin
   Result:=ComparePointers(Node,AnError.Node);
+end;
+
+function IdentifierHasKeywords(const Identifier: string; cm: TCompilerMode; out
+  AmpIdentifier: string): boolean;
+var
+  p, StartP: Integer;
+  KeyWords: TKeyWordFunctionList;
+begin
+  Result:=false;
+  AmpIdentifier:=Identifier;
+  Keywords:=nil;
+  p:=length(Identifier);
+  while p>0 do begin
+    while (p>0) and IsIdentChar[Identifier[p]] do dec(p);
+    if (p>0) and (Identifier[p]='&') then begin
+      // &name -> ok
+    end else begin
+      inc(p);
+      if Keywords=nil then begin
+        case cm of
+        cmMacPas: KeyWords:=KeywordFuncLists.WordIsMacPasKeyWord;
+        cmDELPHI, cmDELPHIUNICODE: KeyWords:=KeywordFuncLists.WordIsDelphiKeyWord;
+        else
+          KeyWords:=KeywordFuncLists.WordIsKeyWord;
+        end;
+      end;
+      if KeyWords.DoIdentifier(@Identifier[p]) then begin
+        System.Insert('&',AmpIdentifier,p);
+        Result:=true;
+      end;
+    end;
+    dec(p);
+    if (p>0) and (Identifier[p]='.') then
+      dec(p)
+    else
+      exit;
+  end;
 end;
 
 { TCustomCodeTool }

@@ -63,7 +63,6 @@ type
     procedure CalcMemSize(Stats: TCTMemStats); override;
   end;
 
-
 implementation
 
 { TMultiKeyWordListCodeTool }

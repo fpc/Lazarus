@@ -470,6 +470,8 @@ type
           KeepVerbosityDirectives: boolean = false): string;
     function GetPasDocComments(Code: TCodeBuffer; X, Y: integer;
           out ListOfPCodeXYPosition: TFPList): boolean;
+    function IdentifierHasKeywords(const Identifier, Directory: string;
+          out AmpIdentifier: string): boolean;
 
     // blocks (e.g. begin..end, case..end, try..finally..end, repeat..until)
     function FindBlockCounterPart(Code: TCodeBuffer; X,Y: integer;
@@ -4206,6 +4208,13 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.GetPasDocComments END ');
   {$ENDIF}
+end;
+
+function TCodeToolManager.IdentifierHasKeywords(const Identifier, Directory: string; out
+  AmpIdentifier: string): boolean;
+begin
+  Result:=CustomCodeTool.IdentifierHasKeywords(Identifier,
+      GetCompilerModeForDirectory(Directory),AmpIdentifier);
 end;
 
 function TCodeToolManager.FindBlockCounterPart(Code: TCodeBuffer; X,
