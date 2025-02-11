@@ -4860,7 +4860,11 @@ begin
       Pt := TQtCustomControl(AHandle).viewport.ScrolledOffset;
       Types.OffsetRect(Rect^, -Pt.X, -Pt.Y);
     end;
-
+    if (Rect^.Width <= 0) or (Rect^.Height <= 0) then
+    begin
+      //DebugLn('WARNING: TQtWidgetSet.InvalidateRect() Rect is null ',dbgs(Rect^),' LCL=',dbgsName(TQtWidget(AHandle).LCLObject));
+      exit(True);
+    end;
     // no need to handle bErase. Qt automatically erase rect on paint event according to docs
     TQtWidget(aHandle).Update(Rect);
   end else
@@ -4930,8 +4934,9 @@ begin
     OldBkMode := SetBkMode(DC, TRANSPARENT);
   if TQtDeviceContext(DC).pen.getCosmetic then
     LastPos := TQtDeviceContext(DC).GetLineLastPixelPos(PenPos, LastPos);
-  if QPainter_testRenderHint(TQtDeviceContext(DC).Widget, QPainterAntialiasing) then
-    TQtDeviceContext(DC).drawLineF(PenPos.X, PenPos.Y, LastPos.X, LastPos.Y)
+  if QPainter_testRenderHint(TQtDeviceContext(DC).Widget, QPainterAntialiasing) or
+    TQtDeviceContext(DC).preferFloatingPointDrawingFunctions then
+      TQtDeviceContext(DC).drawLineF(PenPos.X, PenPos.Y, LastPos.X, LastPos.Y)
   else
     TQtDeviceContext(DC).drawLine(PenPos.X, PenPos.Y, LastPos.X, LastPos.Y);
 
@@ -5285,7 +5290,8 @@ begin
   Result := IsValidDC(DC);
   if Result then
   begin
-    if QPainter_testRenderHint(TQtDeviceContext(DC).Widget, QPainterAntialiasing) then
+    if QPainter_testRenderHint(TQtDeviceContext(DC).Widget, QPainterAntialiasing) or
+      TQtDeviceContext(DC).preferFloatingPointDrawingFunctions then
     begin
       GetMem(QtPointsF, NumPts * SizeOf(TQtPointF));
       for i := 0 to NumPts - 1 do
@@ -5371,8 +5377,9 @@ begin
 
   R := NormalizeRect(Rect(X1, Y1, X2, Y2));
   if IsRectEmpty(R) then Exit(True);
-  if QPainter_testRenderHint(TQtDeviceContext(DC).Widget, QPainterAntialiasing) then
-    TQtDeviceContext(DC).drawRectF(R.Left, R.Top, R.Right - R.Left - 1, R.Bottom - R.Top - 1)
+  if QPainter_testRenderHint(TQtDeviceContext(DC).Widget, QPainterAntialiasing) or
+    TQtDeviceContext(DC).preferFloatingPointDrawingFunctions then
+      TQtDeviceContext(DC).drawRectF(R.Left, R.Top, R.Right - R.Left - 1, R.Bottom - R.Top - 1)
   else
     TQtDeviceContext(DC).drawRect(R.Left, R.Top, R.Right - R.Left - 1, R.Bottom - R.Top - 1);
   Result := True;
