@@ -2170,6 +2170,11 @@ begin
 
   // this is just for testing purposes.
   ACharCode := GdkKeyToLCLKey(KeyValue);
+
+  {$IFDEF GTK3DEBUGKEYPRESS}
+  writeln('==== ACharCode=',ACharCode,' KeyValue=',KeyValue);
+  {$ENDIF}
+
   if KeyValue > VK_UNDEFINED then
     KeyValue := ACharCode; // VK_UNKNOWN;
 
