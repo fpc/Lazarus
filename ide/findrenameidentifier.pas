@@ -584,7 +584,7 @@ begin
         if Result<>mrOk then begin
           if IsConflicted then
             IDEMessageDialog(lisRenamingConflict,
-              Format(lisIdentifierIsAlreadyUsed,[Options.RenameTo]),
+              Format(lisIdentifierIsAlreadyUsed2,[Options.RenameTo]),
               mtError,[mbOK])
           else
             LazarusIDE.DoJumpToCodeToolBossError;
@@ -1204,7 +1204,7 @@ var
     if Result then begin
       if anItem.Node<>nil then begin
         ContextPos:=anItem.Node.StartPos;
-        ErrInfo:= Format(lisIdentifierIsAlreadyUsed,[FNewIdentifier]);
+        ErrInfo:= Format(lisIdentifierIsAlreadyUsed2,[FNewIdentifier]);
       end else begin
         if anItem.ResultType='' then
           ErrInfo:= Format(lisIdentifierIsDeclaredCompilerProcedure,[FNewIdentifier])
@@ -1244,7 +1244,7 @@ begin
     Res:=TaskDlg(lisInvalidPascalIdentifierCap,
         Format(lisTheNameContainsAPascalKeyword, [FNewIdentifier]), '',
         tdiWarning,[mbOk,mbCancel],mbOk,
-          [lisChooseADifferentName,
+          [lisChooseADifferentName2,
            Format(lisUseInstead, [StringReplace(AmpIdentifier,'&','&&',[rfReplaceAll])]),
            Format(lisUseAnyway, [StringReplace(FNewIdentifier,'&','&&',[rfReplaceAll])])], r);
     if Res<>mrOK then

@@ -5025,7 +5025,7 @@ begin
               Format(lisInvalidPascalIdentifierName,[NewUnitName,LineEnding]),
               mtConfirmation, [mrIgnore, lisSave,
                                mrCancel, lisCancel,
-                               mrRetry, lisChooseADifferentName,
+                               mrRetry, lisChooseADifferentName2,
                                mrAbort, lisAbort], not CanAbort);
           if Result=mrRetry then
             continue;
@@ -5038,7 +5038,7 @@ begin
           Result:=TaskDlg(lisInvalidPascalIdentifierCap,
               Format(lisTheNameContainsAPascalKeyword, [NewUnitName]), '',
               tdiWarning,[mbOk,mbCancel],mbOk,
-                [lisChooseADifferentName,
+                [lisChooseADifferentName2,
                  Format(lisUseInstead, [StringReplace(AmpUnitname,'&','&&',[rfReplaceAll])]),
                  Format(lisUseAnyway, [StringReplace(NewUnitName,'&','&&',[rfReplaceAll])])], r);
           if Result<>mrOk then

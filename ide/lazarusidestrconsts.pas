@@ -769,6 +769,7 @@ resourcestring
   lisisAnInvalidProjectNamePleaseChooseAnotherEGProject = '"%s" is an '
     +'invalid project name.%sPlease choose another (e.g. project1.lpi)';
   lisChooseADifferentName = 'Choose a different name';
+  lisChooseADifferentName2 = 'Choose a different name';
   lisUseInstead = 'Use "%s" instead';
   lisUseAnyway = 'Use "%s" anyway';
   lisTheProjectInfoFileIsEqualToTheProjectMainSource = 'The project info '
@@ -5462,8 +5463,8 @@ resourcestring
   lisRenamingAborted = 'Renaming aborted';
   lisRenamingConflict = 'Renaming conflict';
   lisFileAlreadyExists = 'File "%s" already exists.';
-  lisIdentifierIsAlreadyUsed = 'Identifier '
-    + '"%s" is already used';
+  lisIdentifierIsAlreadyUsed = 'Identifier "%s" is already used';
+  lisIdentifierIsAlreadyUsed2 = 'Identifier "%s" is already used.';
   lisIdentifierCannotBeDotted = 'Identifier "%s" cannot be dotted';
   lisIdentifierCannotBeEmpty = 'Identifier cannot be empty';
   lisIdentifierIsInvalid = 'Identifier '
@@ -5471,9 +5472,9 @@ resourcestring
   lisIdentifierIsReservedWord = 'Identifier '
     + '"%s" is a reserved word';
   lisIdentifierIsDeclaredCompilerProcedure = 'Identifier '
-    + '"%s" is a declared compiler procedure';
+    + '"%s" is a declared compiler procedure.';
   lisIdentifierIsDeclaredCompilerFunction = 'Identifier '
-    + '"%s" is a declared compiler function';
+    + '"%s" is a declared compiler function.';
 
   lisShowUnitsWithInitialization = 'Show units with initialization/finalization sections';
   lisShowUnitsWithInitializationHint = 'These units may initialize global data '
