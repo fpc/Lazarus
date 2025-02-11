@@ -7440,8 +7440,11 @@ begin
     AModel^.get_iter(@iter,path);
 
     bmp := TBitmap.Create;
-    if Assigned(TCustomListViewHack(LCLObject).LargeImages) then
+    if (TCustomListViewHack(LCLObject).ViewStyle = vsIcon) and Assigned(TCustomListViewHack(LCLObject).LargeImages) then
       TCustomListViewHack(LCLObject).LargeImages.GetBitmap(AItem.ImageIndex, bmp)
+    else
+    if (TCustomListViewHack(LCLObject).ViewStyle = vsSmallIcon) and Assigned(TCustomListViewHack(LCLObject).SmallImages) then
+      TCustomListViewHack(LCLObject).SmallImages.GetBitmap(AItem.ImageIndex, bmp)
     else
     begin
       gtk_icon_size_lookup(Ord(GTK_ICON_SIZE_LARGE_TOOLBAR), @w, @h);
