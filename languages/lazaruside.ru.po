@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-02-04 17:09+0300\n"
+"PO-Revision-Date: 2025-02-12 00:40+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -6340,8 +6340,14 @@ msgid "Check/uncheck all"
 msgstr "Выбрать всё или снять выбор"
 
 #: lazarusidestrconsts.lischooseadifferentname
+msgctxt "lazarusidestrconsts.lischooseadifferentname"
 msgid "Choose a different name"
 msgstr "Выберите другое имя"
+
+#: lazarusidestrconsts.lischooseadifferentname2
+msgctxt "lazarusidestrconsts.lischooseadifferentname2"
+msgid "Choose a different name"
+msgstr "Выбрать другое имя"
 
 #: lazarusidestrconsts.lischooseafilewithcodetoolstemplates
 msgid "Choose a file with CodeTools templates"
@@ -10563,15 +10569,25 @@ msgstr "Идентификатор не может быть пустым"
 msgid "Identifier contains ..."
 msgstr "Идентификатор содержит ..."
 
+#: lazarusidestrconsts.lisidentifierisalreadyused
+#, object-pascal-format
+msgid "Identifier \"%s\" is already used"
+msgstr "Идентификатор \"%s\" уже использован"
+
+#: lazarusidestrconsts.lisidentifierisalreadyused2
+#, object-pascal-format
+msgid "Identifier \"%s\" is already used."
+msgstr "Идентификатор \"%s\" уже использован."
+
 #: lazarusidestrconsts.lisidentifierisdeclaredcompilerfunction
 #, object-pascal-format
-msgid "Identifier \"%s\" is a declared compiler function"
-msgstr "Идентификатор \"%s\" является объявленной функцией компилятора"
+msgid "Identifier \"%s\" is a declared compiler function."
+msgstr "Идентификатор \"%s\" является объявленной функцией компилятора."
 
 #: lazarusidestrconsts.lisidentifierisdeclaredcompilerprocedure
 #, object-pascal-format
-msgid "Identifier \"%s\" is a declared compiler procedure"
-msgstr "Идентификатор \"%s\" является объявленной процедурой компилятора"
+msgid "Identifier \"%s\" is a declared compiler procedure."
+msgstr "Идентификатор \"%s\" является объявленной процедурой компилятора."
 
 #: lazarusidestrconsts.lisidentifierisinvalid
 #, object-pascal-format
@@ -10582,11 +10598,6 @@ msgstr "Идентификатор \"%s\" некорректен"
 #, object-pascal-format
 msgid "Identifier \"%s\" is a reserved word"
 msgstr "Идентификатор \"%s\" является зарезервированным словом"
-
-#: lazarusidestrconsts.lisidentifierwasalreadyused
-#, object-pascal-format
-msgid "Identifier \"%s\" was already used"
-msgstr "Идентификатор \"%s\" уже использован"
 
 #: lazarusidestrconsts.lisideoptions
 msgid "IDE Options:"
@@ -17964,6 +17975,11 @@ msgstr "Макрос \"%s\" не начинается с \"%s\"."
 msgid "The \"make\" executable typically has the name \"%s\". It is needed for building the IDE. Please give the full file path."
 msgstr "Исполнимый файл \"make\" обычно называется \"%s\". Он необходим для сборки IDE. Укажите полный путь к нему."
 
+#: lazarusidestrconsts.listhenamecontainsapascalkeyword
+#, object-pascal-format
+msgid "The name \"%s\" contains a Pascal keyword."
+msgstr "Имя \"%s\" содержит ключевое слово Паскаля."
+
 #: lazarusidestrconsts.listhenewincludefileisnotyetintheincludesearchpathadd
 #, object-pascal-format
 msgid "The new include file is not yet in the include search path.%sAdd directory %s?"
@@ -19161,6 +19177,11 @@ msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
 msgstr "Использовать строки Ansistring"
 
+#: lazarusidestrconsts.lisuseanyway
+#, object-pascal-format
+msgid "Use \"%s\" anyway"
+msgstr "Использовать \"%s\" всё равно"
+
 #: lazarusidestrconsts.lisusecheckboxforbooleanvalues
 msgid "Use CheckBox for Boolean values"
 msgstr "Отображать флажок для логических значений"
@@ -19194,6 +19215,11 @@ msgstr "Использовать идентификатор"
 #, object-pascal-format
 msgid "Use identifier %s in %s at %s"
 msgstr "Использовать идентификатор %s в %s (%s)"
+
+#: lazarusidestrconsts.lisuseinstead
+#, object-pascal-format
+msgid "Use \"%s\" instead"
+msgstr "Использовать \"%s\" взамен"
 
 #: lazarusidestrconsts.lisuselaunchingapplicationgroupbox
 msgid "Launching application"

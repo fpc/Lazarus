@@ -6354,6 +6354,13 @@ msgid "Check/uncheck all"
 msgstr "Tout cocher/décocher"
 
 #: lazarusidestrconsts.lischooseadifferentname
+msgctxt "lazarusidestrconsts.lischooseadifferentname"
+msgid "Choose a different name"
+msgstr "Choisir un nom différent"
+
+#: lazarusidestrconsts.lischooseadifferentname2
+#, fuzzy
+msgctxt "lazarusidestrconsts.lischooseadifferentname2"
 msgid "Choose a different name"
 msgstr "Choisir un nom différent"
 
@@ -10581,14 +10588,24 @@ msgstr ""
 msgid "Identifier contains ..."
 msgstr "L'identificateur contient..."
 
+#: lazarusidestrconsts.lisidentifierisalreadyused
+#, object-pascal-format
+msgid "Identifier \"%s\" is already used"
+msgstr ""
+
+#: lazarusidestrconsts.lisidentifierisalreadyused2
+#, object-pascal-format
+msgid "Identifier \"%s\" is already used."
+msgstr ""
+
 #: lazarusidestrconsts.lisidentifierisdeclaredcompilerfunction
 #, object-pascal-format
-msgid "Identifier \"%s\" is a declared compiler function"
+msgid "Identifier \"%s\" is a declared compiler function."
 msgstr ""
 
 #: lazarusidestrconsts.lisidentifierisdeclaredcompilerprocedure
 #, object-pascal-format
-msgid "Identifier \"%s\" is a declared compiler procedure"
+msgid "Identifier \"%s\" is a declared compiler procedure."
 msgstr ""
 
 #: lazarusidestrconsts.lisidentifierisinvalid
@@ -10599,11 +10616,6 @@ msgstr ""
 #: lazarusidestrconsts.lisidentifierisreservedword
 #, object-pascal-format
 msgid "Identifier \"%s\" is a reserved word"
-msgstr ""
-
-#: lazarusidestrconsts.lisidentifierwasalreadyused
-#, object-pascal-format
-msgid "Identifier \"%s\" was already used"
 msgstr ""
 
 #: lazarusidestrconsts.lisideoptions
@@ -17985,6 +17997,11 @@ msgstr "La macro \"%s\" ne commence pas par \"%s\"."
 msgid "The \"make\" executable typically has the name \"%s\". It is needed for building the IDE. Please give the full file path."
 msgstr "L'exécutable Make porte généralement le nom \"%s\". Il est nécessaire pour la construction de l'EDI. Veuillez en fournir le chemin complet."
 
+#: lazarusidestrconsts.listhenamecontainsapascalkeyword
+#, object-pascal-format
+msgid "The name \"%s\" contains a Pascal keyword."
+msgstr ""
+
 #: lazarusidestrconsts.listhenewincludefileisnotyetintheincludesearchpathadd
 #, object-pascal-format
 msgid "The new include file is not yet in the include search path.%sAdd directory %s?"
@@ -19184,6 +19201,11 @@ msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
 msgstr "Utiliser les chaînes Ansi"
 
+#: lazarusidestrconsts.lisuseanyway
+#, object-pascal-format
+msgid "Use \"%s\" anyway"
+msgstr ""
+
 #: lazarusidestrconsts.lisusecheckboxforbooleanvalues
 msgid "Use CheckBox for Boolean values"
 msgstr "Utiliser une case à cocher pour les valeurs booléennes"
@@ -19217,6 +19239,11 @@ msgstr "Utiliser l'identificateur"
 #, object-pascal-format
 msgid "Use identifier %s in %s at %s"
 msgstr "Utiliser l'identificateur %s dans %s à %s"
+
+#: lazarusidestrconsts.lisuseinstead
+#, object-pascal-format
+msgid "Use \"%s\" instead"
+msgstr ""
 
 #: lazarusidestrconsts.lisuselaunchingapplicationgroupbox
 msgid "Launching application"

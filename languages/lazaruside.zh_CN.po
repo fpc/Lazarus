@@ -6352,6 +6352,13 @@ msgid "Check/uncheck all"
 msgstr "检查/不检查所有"
 
 #: lazarusidestrconsts.lischooseadifferentname
+msgctxt "lazarusidestrconsts.lischooseadifferentname"
+msgid "Choose a different name"
+msgstr "选择一个不同的名称"
+
+#: lazarusidestrconsts.lischooseadifferentname2
+#, fuzzy
+msgctxt "lazarusidestrconsts.lischooseadifferentname2"
 msgid "Choose a different name"
 msgstr "选择一个不同的名称"
 
@@ -10593,14 +10600,24 @@ msgstr ""
 msgid "Identifier contains ..."
 msgstr "标识符包含..."
 
+#: lazarusidestrconsts.lisidentifierisalreadyused
+#, object-pascal-format
+msgid "Identifier \"%s\" is already used"
+msgstr ""
+
+#: lazarusidestrconsts.lisidentifierisalreadyused2
+#, object-pascal-format
+msgid "Identifier \"%s\" is already used."
+msgstr ""
+
 #: lazarusidestrconsts.lisidentifierisdeclaredcompilerfunction
 #, object-pascal-format
-msgid "Identifier \"%s\" is a declared compiler function"
+msgid "Identifier \"%s\" is a declared compiler function."
 msgstr ""
 
 #: lazarusidestrconsts.lisidentifierisdeclaredcompilerprocedure
 #, object-pascal-format
-msgid "Identifier \"%s\" is a declared compiler procedure"
+msgid "Identifier \"%s\" is a declared compiler procedure."
 msgstr ""
 
 #: lazarusidestrconsts.lisidentifierisinvalid
@@ -10611,11 +10628,6 @@ msgstr ""
 #: lazarusidestrconsts.lisidentifierisreservedword
 #, object-pascal-format
 msgid "Identifier \"%s\" is a reserved word"
-msgstr ""
-
-#: lazarusidestrconsts.lisidentifierwasalreadyused
-#, object-pascal-format
-msgid "Identifier \"%s\" was already used"
 msgstr ""
 
 #: lazarusidestrconsts.lisideoptions
@@ -17957,6 +17969,11 @@ msgstr "宏命令\"%s\"不是以\"%s\"开头的."
 msgid "The \"make\" executable typically has the name \"%s\". It is needed for building the IDE. Please give the full file path."
 msgstr "\"make\"可执行文件代表性地有名称\"%s\".构建IDE被需要.请给予完整的文件路径."
 
+#: lazarusidestrconsts.listhenamecontainsapascalkeyword
+#, object-pascal-format
+msgid "The name \"%s\" contains a Pascal keyword."
+msgstr ""
+
 #: lazarusidestrconsts.listhenewincludefileisnotyetintheincludesearchpathadd
 #, object-pascal-format
 msgid "The new include file is not yet in the include search path.%sAdd directory %s?"
@@ -19163,6 +19180,11 @@ msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
 msgstr "使用Ansistrings"
 
+#: lazarusidestrconsts.lisuseanyway
+#, object-pascal-format
+msgid "Use \"%s\" anyway"
+msgstr ""
+
 #: lazarusidestrconsts.lisusecheckboxforbooleanvalues
 msgid "Use CheckBox for Boolean values"
 msgstr "使用CheckBox用于布尔值"
@@ -19196,6 +19218,11 @@ msgstr "使用标识符"
 #, object-pascal-format
 msgid "Use identifier %s in %s at %s"
 msgstr "使用标识符%s 在%s中 在%s处"
+
+#: lazarusidestrconsts.lisuseinstead
+#, object-pascal-format
+msgid "Use \"%s\" instead"
+msgstr ""
 
 #: lazarusidestrconsts.lisuselaunchingapplicationgroupbox
 msgid "Launching application"
