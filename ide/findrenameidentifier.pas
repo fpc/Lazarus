@@ -815,10 +815,10 @@ begin
       CurIdentifier:=Refs.NewLocalSrcName;
       if CurIdentifier='' then CurIdentifier:=Identifier;
 
-      ANode:=Tree.FindLowest;
+      ANode:=Tree.FindHighest;
       while ANode<>nil do begin
         CodePos:=PCodeXYPosition(ANode.Data);
-        ANode:=Tree.FindSuccessor(ANode);
+        ANode:=Tree.FindPrecessor(ANode);
 
         CurLine:=TrimRight(CodePos^.Code.GetLine(CodePos^.Y-1,false));
         TrimmedLine:=Trim(CurLine);
