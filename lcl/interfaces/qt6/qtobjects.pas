@@ -472,6 +472,7 @@ type
     function getDeviceSize: TPoint;
     function getRegionType(ARegion: QRegionH): integer;
     function getClipRegion: TQtRegion;
+    function preferFloatingPointDrawingFunctions: boolean; {when screen is scaled we use drawLineF, drawRectF etc.}
     procedure setClipping(const AValue: Boolean);
     procedure setClipRect(const ARect: TRect);
     procedure setClipRegion(ARegion: QRegionH; AOperation: QtClipOperation = QtReplaceClip);
@@ -3566,6 +3567,25 @@ begin
 
   QPainter_clipRegion(Widget,  vRegion.FHandle);
   Result := vRegion;
+end;
+
+function TQtDeviceContext.preferFloatingPointDrawingFunctions: boolean;
+const
+  AEpsilon: double = 0.01;
+var
+  APixelRatio: QReal;
+  AScreen: QScreenH;
+begin
+  Result := False;
+  if Assigned(Parent) then
+  begin
+    AScreen := QWidget_screen(Parent);
+    if AScreen = nil then
+      exit;
+    APixelRatio := QScreen_devicePixelRatio(AScreen);
+    if Abs(APixelRatio - 1.00) > AEpsilon then
+      exit(True);
+  end;
 end;
 
 procedure TQtDeviceContext.setClipping(const AValue: Boolean);
