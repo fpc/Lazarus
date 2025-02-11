@@ -740,6 +740,12 @@ begin
         QtListWidget.setUniformItemSizes(IconOptions.WrapText);
       end;
 
+      if ALV.ViewStyle = vsIcon then
+      begin
+        if Assigned(ALV.LargeImages) then
+          QtListWidget.IconSize := Size(ALV.LargeImages.Width, ALV.LargeImages.Height);
+      end;
+
     end else
       QtListWidget.setViewMode(QListViewListMode);
 
@@ -1290,7 +1296,18 @@ begin
     end;
   end;
   Result := True;
+end;
 
+function CreateTransparentIcon(const AWidth, AHeight: integer): QIconH;
+var
+  APixmap: QPixmapH;
+  AColor: TQColor;
+begin
+  APixmap := QPixmap_create(AWidth, AHeight);
+  QColor_fromRgb(PQColor(@AColor), 0, 0, 0, 0);
+  QPixmap_fill(APixmap, PQColor(@AColor));
+  Result := QIcon_Create(APixmap);
+  QPixmap_Destroy(APixmap);
 end;
 
 class procedure TQtWSCustomListView.ItemSetImage(const ALV: TCustomListView;
@@ -1303,6 +1320,7 @@ var
   TWI: QTreeWidgetItemH;
   Bmp: TBitmap;
   ImgListRes: TScaledImageListResolution;
+  AIcon: QIconH;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemSetImage') then
     Exit;
@@ -1345,8 +1363,15 @@ begin
       if Assigned(TCustomListViewHack(ALV).StateImages) and (AItem.StateIndex >= 0) then
         exit;
       if LWI <> nil then
-        QListWidgetItem_setIcon(LWI, nil)
-      else
+      begin
+        if ImgListRes.Valid then
+        begin
+          AIcon := CreateTransparentIcon(ImgListRes.Width, ImgListRes.Height);
+          QListWidgetItem_setIcon(LWI, AIcon);
+          QIcon_Destroy(AIcon);
+        end else
+          QListWidgetItem_setIcon(LWI, nil);
+      end else
         QTreeWidgetItem_setIcon(TWI, ASubIndex, nil);
     end;
   end;
@@ -1509,10 +1534,6 @@ var
   Str: WideString;
   i: Integer;
   AAlignment: QtAlignment;
-  //AImages: TCustomImageList;
-  //AMetric: Integer;
-  //ASizeHint: TSize;
-  //AIconWidth: Integer;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemInsert') then
     Exit;
@@ -1579,8 +1600,6 @@ var
   TWI: QTreeWidgetItemH;
   Str: WideString;
   AAlignment: QtAlignment;
-  ABmp: TBitmap;
-  AListItem: QListWidgetItemH;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemSetText') then
     Exit;
@@ -1589,25 +1608,16 @@ begin
   begin
     if ASubIndex >0 Then exit;
     QtListWidget := TQtListWidget(ALV.Handle);
+
     if not QtListWidget.Checkable and (TCustomListViewHack(ALV).ViewStyle = vsIcon) then
-      AAlignment := QtAlignHCenter
+      AAlignment := QtAlignHCenter or QtAlignBottom
+    else
+    if (TCustomListViewHack(ALV).Columns.Count > 0) and (ASubIndex < TCustomListViewHack(ALV).Columns.Count)  then
+      AAlignment := AlignmentToQtAlignmentMap[ALV.Column[ASubIndex].Alignment]
     else
       AAlignment := QtAlignLeft;
-    if (TCustomListViewHack(ALV).Columns.Count > 0) and (ASubIndex < TCustomListViewHack(ALV).Columns.Count)  then
-      AAlignment := AlignmentToQtAlignmentMap[ALV.Column[ASubIndex].Alignment];
+
     QtListWidget.setItemText(AIndex, AText, AAlignment);
-    if (TCustomListViewHack(ALV).ViewStyle = vsIcon) and (AItem.ImageIndex < 0) and
-      Assigned(TListView(ALV).LargeImages) then
-    begin
-      ABmp := TBitmap.Create;
-      ABmp.PixelFormat := pf32bit;
-      ABmp.SetSize(TListView(ALV).LargeImages.Width, TListView(ALV).LargeImages.Height);
-      ABmp.Canvas.Brush.Color := clNone;
-      ABmp.Canvas.FillRect(Rect(0, 0, ABmp.Width, ABmp.Height));
-      AListItem := QtListWidget.getItem(AIndex);
-      QListWidgetItem_setIcon(AListItem, TQtImage(ABmp.Handle).AsIcon);
-      ABmp.Free;
-    end;
   end else
   begin
     QtTreeWidget := TQtTreeWidget(ALV.Handle);

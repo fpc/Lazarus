@@ -13759,8 +13759,13 @@ begin
   if Checkable then
     QListWidgetItem_setCheckState(Item, QtUnChecked)
   else
-  if (ViewStyle = Ord(vsIcon)) and not (FChildOfComplexWidget = ccwComboBox) then
-    QListWidgetItem_setTextAlignment(Item, QtAlignHCenter);
+  if not (FChildOfComplexWidget = ccwComboBox) then
+  begin
+    if (ViewStyle = Ord(vsIcon)) then
+      QListWidgetItem_setTextAlignment(Item, QtAlignHCenter or QtAlignBottom)
+    else
+      QListWidgetItem_setTextAlignment(Item, QtAlignLeft or QtAlignBottom);
+  end;
   QListWidget_insertItem(QListWidgetH(Widget), AIndex, Item);
 end;
 
