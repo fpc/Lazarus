@@ -7229,6 +7229,7 @@ function TFindDeclarationTool.FindSourceNameReferences(const TargetFilename: str
   TreeOfPCodeXYPosition: TAVLTree; SyntaxExceptions: boolean): boolean;
 var
   IsSelf: Boolean; // true = searching references of my program/unit name
+  MySrcName: String;
   LocalSrcNamePos: integer;
   CleanPositions: TIntegerDynArray;
   CleanPosCount: integer;
@@ -7356,6 +7357,22 @@ var
     Result:=true;
   end;
 
+  procedure FindLongestSrcName(const Expr: string;
+    var BestUseName: string; var BestDotCount: integer);
+  var
+    ExprP, SrcNameP: PChar;
+    DotCount: Integer;
+  begin
+    ExprP:=PChar(Expr);
+    SrcNameP:=PChar(MySrcName);
+    if CompareDottedIdentifiers(SrcNameP,ExprP)<>0 then exit;
+    DotCount:=GetDotCountInIdentifier(SrcNameP);
+    if DotCount>BestDotCount then begin
+      BestDotCount:=DotCount;
+      BestUseName:=MySrcName;
+    end;
+  end;
+
   procedure FindLongestUsesName(UseNames: TStringArray; const Expr: string;
     var BestUseName: string; var BestDotCount: integer);
   var
@@ -7410,6 +7427,8 @@ var
       FindLongestUsesName(ImplUseNames,Expr,BestUseName,BestDotCount);
     if (InterfaceUsesNode<>nil) and (InterfaceUsesNode.EndPos<=StartPos) then
       FindLongestUsesName(IntfUseNames,Expr,BestUseName,BestDotCount);
+    FindLongestSrcName(Expr,BestUseName,BestDotCount);
+
     if (BestUseName<>'')
         and (CompareDottedIdentifiers(PChar(BestUseName),PChar(LocalSrcName))<>0) then
     begin
@@ -7695,7 +7714,6 @@ var
 
 var
   NamePos: TAtomPosition;
-  MySrcName: String;
   StartPos, MaxPos: Integer;
 begin
   Result:=false;

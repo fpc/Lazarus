@@ -1529,28 +1529,43 @@ begin
 end;
 
 procedure TTestRefactoring.TestRenameProgramName_ToraToraTora;
+var
+  ToraUnit: TCodeBuffer;
 begin
-  Add([
-  'program tora.tora.{comment}tora;',
-  '{$mode objFPC}',
-  'var Toranaga: longint;',
-  'begin',
-  '  Toranaga:=3;',
-  '  tora.tora.tora.Toranaga:=3*Toranaga;',
-  '  tora.{}tora.{comment}tora.{}Toranaga:=3*tora.tora.tora.Toranaga;',
-  'end.',
-  '']);
-  RenameSourceName('Red.Green.Blue','red.green.blue.pas');
-  CheckDiff(Code,[
-  'program Red.Green.{comment}Blue;',
-  '{$mode objFPC}',
-  'var Toranaga: longint;',
-  'begin',
-  '  Toranaga:=3;',
-  '  Red.Green.Blue.Toranaga:=3*Toranaga;',
-  '  Red.{}Green.{comment}Blue.{}Toranaga:=3*Red.Green.Blue.Toranaga;',
-  'end.',
-  '']);
+  ToraUnit:=CodeToolBoss.CreateFile('tora.pas');
+  try
+    ToraUnit.Source:=LinesToStr([
+    'unit Tora;',
+    'interface',
+    'implementation',
+    'end.']);
+
+    Add([
+    'program tora.tora.{comment}tora;',
+    '{$mode objFPC}',
+    'uses tora;',
+    'var Toranaga: longint;',
+    'begin',
+    '  Toranaga:=3;',
+    '  tora.tora.tora.Toranaga:=3*Toranaga;',
+    '  tora.{}tora.{comment}tora.{}Toranaga:=3*tora.tora.tora.Toranaga;',
+    'end.',
+    '']);
+    RenameSourceName('Red.Green.Blue','red.green.blue.pas');
+    CheckDiff(Code,[
+    'program Red.Green.{comment}Blue;',
+    '{$mode objFPC}',
+    'uses tora;',
+    'var Toranaga: longint;',
+    'begin',
+    '  Toranaga:=3;',
+    '  Red.Green.Blue.Toranaga:=3*Toranaga;',
+    '  Red.{}Green.{comment}Blue.{}Toranaga:=3*Red.Green.Blue.Toranaga;',
+    'end.',
+    '']);
+  finally
+    ToraUnit.IsDeleted:=true;
+  end;
 end;
 
 procedure TTestRefactoring.TestRenameUnitName_IncludeUsedTwiceInOneUnit;
