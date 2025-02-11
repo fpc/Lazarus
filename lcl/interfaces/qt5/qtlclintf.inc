@@ -755,6 +755,7 @@ var
   Image: QImageH;
   Context: TQtDeviceContext;
   AWnd: HWND;
+  APixelRatio: QReal;
   
   procedure RawImage_FromImage(AImage: QImageH);
   begin
@@ -788,8 +789,8 @@ begin
   if Context.Parent <> nil then
   begin
     AWnd := HwndFromWidgetH(Context.Parent);
-    // AWnd should never be 0 at this point
-    APixmap := TQtWidget(AWnd).grabWindow(0, 0, DCSize.cx, DCSize.cy, Context.Parent);
+    APixelRatio := QScreen_devicePixelRatio(QWindow_screen(QWidget_windowHandle(Context.Parent)));
+    APixmap := TQtWidget(AWnd).grabWindow(0, 0, Round(DCSize.cx / APixelRatio), Round(DCSize.cy / APixelRatio), Context.Parent);
     Image := QImage_Create;
     QPixmap_toImage(APixmap, Image);
     RawImage_FromImage(Image);
