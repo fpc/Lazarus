@@ -510,11 +510,8 @@ end;
 
 
 procedure TQtWidgetSet.AppSetTitle(const ATitle: string);
-var
-  W: WideString;
 begin
-  W := UTF8ToUTF16(ATitle);
-  QGuiApplication_setApplicationDisplayName(@W);
+  //Not used. See issue #41417
 end;
 
 function TQtWidgetSet.AppRemoveStayOnTopFlags(const ASystemTopAlso: Boolean = False): Boolean;
