@@ -174,13 +174,14 @@ type
     procedure TestFindDeclaration_FindFPCSrcNameSpacedUnits;
 
     // unit namespaces and dotted unitnames
-    procedure TestFindDeclaration_NS_Program; // todo
+    procedure TestFindDeclaration_NS_Program;
     procedure TestFindDeclaration_NS_ProgLocalVsUses;
     procedure TestFindDeclaration_NS_UnitIntfVsUses;
     procedure TestFindDeclaration_NS_UnitImplVsIntfUses;
     procedure TestFindDeclaration_NS_UnitImplVsImplUses;
-    procedure TestDirectoyCache_NS_SearchDotted;
-    procedure TestFindDeclaration_NS_SearchDottedUsesInNS;
+    procedure TestDirectoyCache_NS_FN_DottedUses;
+    procedure TestFindDeclaration_NS_FN_DottedUses;
+    procedure TestFindDeclaration_NS_MultiDottedUses;
 
     // directives
     procedure TestFindDeclaration_Directive_OperatorIn;
@@ -1980,7 +1981,7 @@ begin
   end;
 end;
 
-procedure TTestFindDeclaration.TestDirectoyCache_NS_SearchDotted;
+procedure TTestFindDeclaration.TestDirectoyCache_NS_FN_DottedUses;
 var
   DotsUnit: TCodeBuffer;
   aUnitName, InFile, Filename: String;
@@ -1997,7 +1998,7 @@ begin
   end;
 end;
 
-procedure TTestFindDeclaration.TestFindDeclaration_NS_SearchDottedUsesInNS;
+procedure TTestFindDeclaration.TestFindDeclaration_NS_FN_DottedUses;
 var
   DotsUnit: TCodeBuffer;
 begin
@@ -2023,6 +2024,61 @@ begin
     FindDeclarations(Code);
   finally
     DotsUnit.IsDeleted:=true;
+  end;
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_NS_MultiDottedUses;
+var
+  RedGreenUnit, RedGreenBlueUnit, RedGreenBlueGrayUnit: TCodeBuffer;
+begin
+  RedGreenUnit:=CodeToolBoss.CreateFile('red.green.pp');
+  RedGreenBlueUnit:=CodeToolBoss.CreateFile('red.green.blue.pp');
+  RedGreenBlueGrayUnit:=CodeToolBoss.CreateFile('red.green.blue.gray.pp');
+  try
+    RedGreenUnit.Source:=LinesToStr([
+      'unit Red.Green;',
+      'interface',
+      'var Two, Size, Red, Green, Blue, Gray: word;',
+      'implementation',
+      'end.']);
+    RedGreenBlueUnit.Source:=LinesToStr([
+      'unit Red.Green.Blue;',
+      'interface',
+      'var Three, Size, Red, Green, Blue, Gray: word;',
+      'implementation',
+      'end.']);
+    RedGreenBlueGrayUnit.Source:=LinesToStr([
+      'unit Red.Green.Blue.Gray;',
+      'interface',
+      'var One, Size, Red, Green, Blue, Gray: word;',
+      'implementation',
+      'end.']);
+
+    Add([
+    'unit Red;',
+    '{$mode objfpc}{$H+}',
+    'interface',
+    'uses',
+    '  Red.Green,',
+    '  Red.Green.Blue,',
+    '  Red.Green.Blue.Gray;',
+    'var Size: word;',
+    'implementation',
+    'begin',
+    '  Red{declaration:red.red:1}.Size:=1;',
+    '  Red.Green{declaration!:red.red.green:5}.Size:=2;',
+    '  Red{declaration!:red.red:5}.Green.Size:=3;',
+    '  Red.Green.Blue{declaration:red.red.green.blue:6}.Size:=4;',
+    '  Red.Green{declaration!:red.red.green:6}.Blue.Size:=5;',
+    '  Red{declaration!:red.red:6}.Green.Blue.Size:=6;',
+    '  Red.Green.Blue.Gray{declaration:red.red.green.blue.gray:7}.Size:=4;',
+    'end.',
+    '']);
+    FindDeclarations(Code);
+  finally
+    RedGreenUnit.IsDeleted:=true;
+    RedGreenBlueUnit.IsDeleted:=true;
+    RedGreenBlueGrayUnit.IsDeleted:=true;
   end;
 end;
 

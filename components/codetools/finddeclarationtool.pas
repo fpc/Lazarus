@@ -10273,7 +10273,7 @@ var
 
   function ResolveUseUnit(StartUseUnitNode: TCodeTreeNode): TCodeTreeNode;
   // IsStart=true, NextAtomType=vatPoint,
-  // StartUseUnitNameNode.Desc in [ctnUseUnitNamespace,ctnUseUnitClearName]
+  // StartUseUnitNameNode.Desc in AllSourceTypes+[ctnUseUnitNamespace,ctnUseUnitClearName]
   // The first dotted identifier matches a name in one of the uses sections.
   // If any uses section or the source name has namespaces the longest fitting wins.
   // Note: the uses section names hide all identifiers in the used unit interfaces.
@@ -10335,7 +10335,7 @@ var
       if (Node<>nil)
       and CompareSrcIdentifiers(CurAtom.StartPos,Node.StartPos) then begin
         // found candidate
-        //debugln(['ResolveUseUnit Candidate=',ExtractNode(Node,[])]);
+        //debugln(['ResolveUseUnit Candidate=',ExtractNode(Node.Parent,[])]);
         Level:=1;
         p:=PChar(DottedIdentifier);
         repeat
@@ -10366,15 +10366,16 @@ var
 
     //debugln(['ResolveUseUnit Src=',Tree.Root.DescAsString,' Name=',GetSourceName(false),' DottedIdentifier="',DottedIdentifier,'"']);
     // check source name
+    Node:=Tree.Root.FirstChild;
     if (Tree.Root.Desc in AllSourceTypes)
-    and (Tree.Root.FirstChild<>nil)
-    and (Tree.Root.FirstChild.Desc=ctnSrcName)
-    and CompareSrcIdentifiers(Tree.Root.FirstChild.StartPos,PChar(DottedIdentifier)) // first identifier fits
+    and (Node<>nil)
+    and (Node.Desc=ctnSrcName)
+    and CompareSrcIdentifiers(Node.StartPos,PChar(DottedIdentifier)) // first identifier fits
     then begin
       // found candidate
       // -> check the whole DottedIdentifier
       Level:=1;
-      Node:=Tree.Root.FirstChild.FirstChild; // child of ctnSrcName
+      Node:=Node.FirstChild; // child of ctnSrcName
       //debugln(['ResolveUseUnit Candidate SrcName']);
       p:=PChar(DottedIdentifier);
       repeat
@@ -10713,18 +10714,18 @@ var
             end;
           end;
 
-          if IsStart and (NextAtomType=vatPoint)
+          if IsStart
           and (Params.NewCodeTool=Self) then begin
             if (Params.NewNode.Desc in AllSourceTypes) then
               // first identitifer is source name -> for dotted identifier advance cursor
               ResolveMySourceName(Params.NewNode)
-            else if (Params.NewNode.Desc in ([ctnUseUnitClearName,ctnUseUnitNamespace]))
+            else if (Params.NewNode.Desc in AllSourceTypes+[ctnUseUnitClearName,ctnUseUnitNamespace])
             then begin
-              // first identifier is a used unit -> find longest fitting unitname or source name
+              // first identitifer is used unit -> find longest fitting unitname or source name
               //debugln(['ResolveIdentifier UseUnit FindLongest... ',Params.NewNode.DescAsString,' ',ExtractNode(Params.NewNode,[])]);
               Params.NewNode:=ResolveUseUnit(Params.NewNode.Parent);
               // this might return nil!
-              //debugln(['ResolveIdentifier UseUnit FoundLongest: ',Params.NewNode.DescAsString,' ',ExtractNode(Params.NewNode,[])]);
+              //debugln(['ResolveIdentifier UseUnit FoundLongest: ',Params.NewNode.DescAsString,' ',ExtractNode(Params.NewNode.Parent,[])]);
             end;
           end;
 

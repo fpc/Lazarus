@@ -86,8 +86,8 @@ const
   ctnGlobalProperty     = 23;
   ctnVarArgs            = 24; // macpas ... parameter
   ctnSrcName            = 25; // children are ctnIdentifier
-  ctnUseUnit            = 26; // StartPos=unit, EndPos=unitname+inFilename, children ctnUseUnitNamespace, ctnUseUnitClearName, parent ctnUsesSection
-  ctnUseUnitNamespace   = 27; // <namespace>.clearname, parent ctnUseUnit
+  ctnUseUnit            = 26; // StartPos=unit, EndPos=unitname+inFilename, children 0-n ctnUseUnitNamespace, 1 ctnUseUnitClearName, parent ctnUsesSection
+  ctnUseUnitNamespace   = 27; // <namespace>.[<namespace>.]clearname, parent ctnUseUnit
   ctnUseUnitClearName   = 28; // namespace.<clearname>, parent ctnUseUnit
 
   ctnClass              = 30;
