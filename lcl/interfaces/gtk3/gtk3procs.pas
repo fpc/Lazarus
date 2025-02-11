@@ -733,7 +733,24 @@ end;
 function GdkKeyToLCLKey(AValue: Word): Word;
 begin
   if AValue <= $FF then
-    exit(AValue);
+  begin
+    if (AValue = GDK_KEY_plus) then
+      exit(VK_OEM_PLUS)
+    else
+    if (AValue = GDK_KEY_comma) then
+      exit(VK_OEM_COMMA)
+    else
+    if (AValue = GDK_KEY_minus) then
+      exit(VK_OEM_MINUS)
+    else
+    if (AValue = GDK_KEY_period) then
+      exit(VK_OEM_PERIOD)
+    else
+    if (AValue >= GDK_KEY_exclam) and (AValue <= GDK_KEY_parenleft)  then
+      exit(AValue + 16)
+    else
+      exit(AValue);
+  end;
   Result := VK_UNKNOWN;
   case AValue of
     GDK_KEY_Return, GDK_KEY_KP_Enter, GDK_KEY_3270_Enter: Result := VK_RETURN;
