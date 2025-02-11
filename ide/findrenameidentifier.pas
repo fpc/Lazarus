@@ -1156,17 +1156,10 @@ end;
 
 procedure TFindRenameIdentifierDialog.FindOrRenameButtonClick(Sender: TObject);
 var
-  Res:TModalResult;
   ACodeBuffer:TCodeBuffer;
-  anItem: TIdentifierListItem;
-  tmpNode: TCodeTreeNode;
   X,Y: integer;
-  ErrInfo: string;
-  isOK: boolean;
-  CTB_IdentComplIncludeKeywords: Boolean;
-  CTB_CodeCompletionTemplateFileName: string;
-  CTB_IdentComplIncludeWords: TIdentComplIncludeWords;
   ContextPos: integer;
+  ErrInfo: string;
 
   function GetCodePos(var aPos: integer; out X,Y:integer;
     pushBack: boolean = true):boolean;
@@ -1203,6 +1196,7 @@ var
   function FindConflict: boolean;
   var
     aNode: TCodeTreeNode;
+    anItem: TIdentifierListItem;
   begin
     anItem:=CodeToolBoss.IdentifierList.FindIdentifier(PChar(FNewIdentifier));
     Result:=(anItem<>nil) and
@@ -1220,6 +1214,14 @@ var
     end;
   end;
 
+var
+  Res:TModalResult;
+  isOK: boolean;
+  CTB_IdentComplIncludeKeywords: Boolean;
+  CTB_CodeCompletionTemplateFileName, AmpIdentifier: string;
+  CTB_IdentComplIncludeWords: TIdentComplIncludeWords;
+  r: integer;
+  tmpNode: TCodeTreeNode;
 begin
   if IsNodeInvalid('TFindRenameIdentifierDialog.FindOrRenameButtonClick') then exit;
 
@@ -1238,6 +1240,26 @@ begin
   // rename -> check for conflict
   ModalResult:=mrNone;
 
+  if IdentifierHasKeywords(FNewIdentifier,cmFPC,AmpIdentifier) then begin
+    Res:=TaskDlg(lisInvalidPascalIdentifierCap,
+        Format(lisTheNameContainsAPascalKeyword, [FNewIdentifier]), '',
+        tdiWarning,[mbOk,mbCancel],mbOk,
+          [lisChooseADifferentName,
+           Format(lisUseInstead, [StringReplace(AmpIdentifier,'&','&&',[rfReplaceAll])]),
+           Format(lisUseAnyway, [StringReplace(FNewIdentifier,'&','&&',[rfReplaceAll])])], r);
+    if Res<>mrOK then
+      exit;
+    case r of
+    1:
+      begin
+        FNewIdentifier:=AmpIdentifier;
+        NewEdit.Text:=FNewIdentifier;
+      end;
+    2: ;
+    else exit;
+    end;
+  end;
+
   CTB_IdentComplIncludeKeywords:=CodeToolBoss.IdentComplIncludeKeywords;
   CodeToolBoss.IdentComplIncludeKeywords:=false;
 
@@ -1250,10 +1272,9 @@ begin
 
   ErrInfo:='';
   try
-    anItem:=nil;
     CodeToolBoss.IdentifierList.Clear;
 
-    Res:= LoadCodeBuffer(ACodeBuffer,IdentifierFileName,[lbfCheckIfText],false);
+    Res:=LoadCodeBuffer(ACodeBuffer,IdentifierFileName,[lbfCheckIfText],false);
     //try declaration context
     if Res<>mrOK then begin
       ModalResult:=mrCancel;

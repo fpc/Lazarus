@@ -5040,7 +5040,7 @@ begin
               tdiWarning,[mbOk,mbCancel],mbOk,
                 [lisChooseADifferentName,
                  Format(lisUseInstead, [StringReplace(AmpUnitname,'&','&&',[rfReplaceAll])]),
-                 Format(lisUseAnyway, [NewUnitName])], r);
+                 Format(lisUseAnyway, [StringReplace(NewUnitName,'&','&&',[rfReplaceAll])])], r);
           if Result<>mrOk then
             exit(mrCancel);
           case r of
