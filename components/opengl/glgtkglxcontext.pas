@@ -16,7 +16,7 @@ unit GLGtkGlxContext;
 interface
 
 uses
-  Classes, SysUtils, ctypes, LCLProc, LCLType, X, XUtil, XLib, gl,
+  Classes, SysUtils, ctypes, LCLType, X, XUtil, XLib, gl,
   InterfaceBase,
   glx,
   WSLCLClasses,
@@ -26,7 +26,7 @@ uses
   {$IFDEF LCLGTK}
   glib, gdk, gtk, GtkInt,
   {$ENDIF}
-  Controls;
+  LazLoggerBase, Controls;
 
 type
   TGLBool = longbool;
@@ -234,7 +234,7 @@ begin
   {$IFDEF Lclgtk2}
   DebugLn('get_xvisualinfo dpy=',XDisplayAsString(dpy));
   DebugLn('get_xvisualinfo visual=',GdkVisualAsString(Visual));
-  RaiseGDBException('not implemented for gtk2');
+  raise Exception.Create('not implemented for gtk2');
   {$ENDIF}
 
   // 'GLX uses VisualInfo records because they uniquely identify
@@ -309,7 +309,7 @@ var
 begin
   {$IFDEF lclgtk2}
   DebugLn(['gdk_gl_choose_visual not implemented yet for gtk2']);
-  RaiseGDBException('');
+  raise Exception.Create('');
   {$ENDIF}
 
   if attrList=nil then begin
@@ -786,13 +786,13 @@ var
   glarea: PGtkGLArea;
 begin
   if Handle=0 then
-    RaiseGDBException('LOpenGLSwapBuffers Handle=0');
+    raise Exception.Create('LOpenGLSwapBuffers Handle=0');
   Result:=false;
 
   Widget:={%H-}PGtkWidget(PtrUInt(Handle));
   glarea:=PGtkGLArea(Widget);
   if not GTK_IS_GL_AREA(glarea) then
-    RaiseGDBException('LOpenGLSwapBuffers not a PGtkGLArea');
+    raise Exception.Create('LOpenGLSwapBuffers not a PGtkGLArea');
 
   // make sure the widget is realized
   gtk_widget_realize(Widget);
@@ -883,7 +883,7 @@ begin
     if SharedControl<>nil then begin
       SharedArea:={%H-}PGtkGLArea(PtrUInt(SharedControl.Handle));
       if not GTK_IS_GL_AREA(SharedArea) then
-        RaiseGDBException('LOpenGLCreateContext');
+        raise Exception.Create('LOpenGLCreateContext');
       NewWidget:=gtk_gl_area_share_new(Attribs,SharedArea);
     end else begin
       NewWidget:=gtk_gl_area_new(Attribs);
