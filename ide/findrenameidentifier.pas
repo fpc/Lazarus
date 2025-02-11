@@ -40,7 +40,7 @@ uses
   // LazUtils
   LazFileUtils, LazFileCache, laz2_DOM, LazStringUtils, AvgLvlTree, LazLoggerBase,
   // IdeIntf
-  IdeIntfStrConsts, LazIDEIntf, IDEWindowIntf, SrcEditorIntf, PackageIntf,
+  IdeIntfStrConsts, LazIDEIntf, IDEWindowIntf, SrcEditorIntf, PackageIntf, ProjectIntf,
   IDEDialogs, InputHistory,
   // IdeUtils
   DialogProcs,
@@ -82,10 +82,11 @@ type
     FIdentifierPosition: TPoint;
     FOldIdentifier: string;
     FNewIdentifier: string;
-    FForbidden: TStringList; // already defined identifiers in scope
+    FConflictUnitNames: TStringList; // already defined identifiers in scope
     FIsPrivate: boolean;
     FNode: TCodeTreeNode;
-    FTool: TCustomCodeTool;
+    FNodesDeletedChangeStep: integer;
+    FTool: TCodeTool;
     FFiles: TStringList;
     procedure SetAllowRename(const AValue: boolean);
     procedure SetIsPrivate(const AValue: boolean);
@@ -93,6 +94,7 @@ type
     procedure UpdateRename;
     procedure GatherFiles;
     function NewIdentifierIsConflicted(var ErrMsg: string): boolean;
+    function IsNodeInvalid(const Msg: string): boolean;
   public
     destructor Destroy; override;
     procedure LoadFromConfig;
@@ -582,7 +584,7 @@ begin
         if Result<>mrOk then begin
           if IsConflicted then
             IDEMessageDialog(lisRenamingConflict,
-              Format(lisIdentifierWasAlreadyUsed,[Options.RenameTo]),
+              Format(lisIdentifierIsAlreadyUsed,[Options.RenameTo]),
               mtError,[mbOK])
           else
             LazarusIDE.DoJumpToCodeToolBossError;
@@ -1054,6 +1056,7 @@ var
   i: integer;
 begin
   if FOldIdentifier='' then exit;
+  if IsNodeInvalid('TFindRenameIdentifierDialog.ValidateNewName') then exit;
   Err:='';
   FNewIdentifier:=NewEdit.Text;
   if (FNode<>nil)
@@ -1083,7 +1086,7 @@ begin
           break;
         end;
       end;
-      ok:=not FTool.IsStringKeyWord(dotPart);
+      ok:=not FTool.StringIsKeyWord(dotPart);
     end;
     if not ok then
       Err:=Format(lisIdentifierIsReservedWord,[dotPart]);
@@ -1122,7 +1125,7 @@ begin
     ButtonPanel1.OKButton.Caption:=lisFRIRenameAllReferences
   else
     ButtonPanel1.OKButton.Caption:=lisFRIFindReferences;
-  if RenameCheckBox.Checked and (FForbidden=nil) then
+  if RenameCheckBox.Checked and (FConflictUnitNames=nil) then
     GatherFiles;
 end;
 
@@ -1207,7 +1210,7 @@ var
     if Result then begin
       if anItem.Node<>nil then begin
         ContextPos:=anItem.Node.StartPos;
-        ErrInfo:= Format(lisIdentifierWasAlreadyUsed,[FNewIdentifier]);
+        ErrInfo:= Format(lisIdentifierIsAlreadyUsed,[FNewIdentifier]);
       end else begin
         if anItem.ResultType='' then
           ErrInfo:= Format(lisIdentifierIsDeclaredCompilerProcedure,[FNewIdentifier])
@@ -1216,13 +1219,24 @@ var
       end;
     end;
   end;
+
 begin
-  if RenameCheckBox.Checked then
-    ModalResult:=mrNone
-  else begin
+  if IsNodeInvalid('TFindRenameIdentifierDialog.FindOrRenameButtonClick') then exit;
+
+  if not RenameCheckBox.Checked then begin
+    // find references
     ModalResult:=mrOK;
     exit;
   end;
+
+  if CompareDottedIdentifiers(PChar(FNewIdentifier),PChar(FOldIdentifier))=0 then begin
+    // change all references to same case
+    ModalResult:=mrOk;
+    exit;
+  end;
+
+  // rename -> check for conflict
+  ModalResult:=mrNone;
 
   CTB_IdentComplIncludeKeywords:=CodeToolBoss.IdentComplIncludeKeywords;
   CodeToolBoss.IdentComplIncludeKeywords:=false;
@@ -1234,28 +1248,29 @@ begin
   CTB_IdentComplIncludeWords:=CodeToolsOptions.CodeToolsOpts.IdentComplIncludeWords;
   CodeToolsOptions.CodeToolsOpts.IdentComplIncludeWords:=icwIncludeFromAllUnits;
 
+  ErrInfo:='';
   try
     anItem:=nil;
-    isOK:=true;
     CodeToolBoss.IdentifierList.Clear;
 
     Res:= LoadCodeBuffer(ACodeBuffer,IdentifierFileName,[lbfCheckIfText],false);
     //try declaration context
-    if Res=mrOK then begin
-      tmpNode:=FNode;
-      while isOK and (tmpNode<>nil) do begin
-        if (tmpNode.Parent<>nil) and (tmpNode.Parent.Desc in AllFindContextDescs)
-        then begin
-          ContextPos:=tmpNode.Parent.EndPos;//can point at the end of "end;"
-          if GetCodePos(ContextPos,X,Y) then
-            CodeToolBoss.GatherIdentifiers(ACodeBuffer, X, Y);
-            isOK:=not FindConflict; //ErrInfo is set inside the function
-          end;
-        tmpNode:=tmpNode.Parent;
-      end;
+    if Res<>mrOK then begin
+      ModalResult:=mrCancel;
+      exit;
     end;
-  if isOK then
-    ModalResult:=mrOk;
+    tmpNode:=FNode;
+    while tmpNode<>nil do begin
+      if (tmpNode.Parent<>nil) and (tmpNode.Parent.Desc in AllFindContextDescs)
+      then begin
+        ContextPos:=tmpNode.Parent.EndPos;//can point at the end of "end;"
+        if GetCodePos(ContextPos,X,Y) then
+          CodeToolBoss.GatherIdentifiers(ACodeBuffer, X, Y);
+        FindConflict; //ErrInfo is set inside the function
+        break;
+      end;
+      tmpNode:=tmpNode.Parent;
+    end;
   finally
     CodeToolBoss.IdentComplIncludeKeywords:=
       CTB_IdentComplIncludeKeywords;
@@ -1263,19 +1278,13 @@ begin
       CTB_CodeCompletionTemplateFileName;
     CodeToolsOptions.CodeToolsOpts.IdentComplIncludeWords:=
       CTB_IdentComplIncludeWords;
-
-    if RenameCheckBox.Checked then begin
-      ButtonPanel1.OKButton.Enabled:=isOK;
-      if isOK then begin
-        NewGroupBox.Caption:=lisFRIRenaming;
-        NewGroupBox.Font.Style:=NewGroupBox.Font.Style-[fsBold];
-      end else begin
-        ErrInfo:=StringReplace(ErrInfo,'&','&&',[rfReplaceAll]);
-        NewGroupBox.Caption:=lisFRIRenaming+' - '+ ErrInfo;
-        NewGroupBox.Font.Style:=NewGroupBox.Font.Style+[fsBold];
-      end;
-    end;
   end;
+  if ErrInfo<>'' then begin
+    if IDEMessageDialog(dlgMsgWinColorUrgentWarning, ErrInfo, mtWarning,
+      [mbCancel, mbIgnore])<>mrIgnore then
+    exit;
+  end;
+  ModalResult:=mrOk;
 end;
 
 procedure TFindRenameIdentifierDialog.FindRenameIdentifierDialogClose(
@@ -1337,11 +1346,9 @@ procedure TFindRenameIdentifierDialog.SetIdentifier(
   const NewIdentifierFilename: string; var NewIdentifierPosition: TPoint);
 var
   s: String;
-  ACodeBuffer: TCodeBuffer;
+  ACodeBuffer, CurCode: TCodeBuffer;
   ListOfCodeBuffer: TFPList;
   i: Integer;
-  CurCode: TCodeBuffer;
-  Tool: TCodeTool;
   CodeXY: TCodeXYPosition;
   CleanPos: integer;
   Node: TCodeTreeNode;
@@ -1349,6 +1356,7 @@ begin
   FIdentifierFilename:=NewIdentifierFilename;
   FIdentifierPosition:=NewIdentifierPosition;
   FNode:=nil;
+  FTool:=nil;
   //debugln(['TFindRenameIdentifierDialog.SetIdentifier ',FIdentifierFilename,' ',dbgs(FIdentifierPosition)]);
   CurrentListBox.Items.Clear;
   s:=IdentifierFilename
@@ -1374,25 +1382,26 @@ begin
     ListOfCodeBuffer.Free;
   end;
 
-  if CodeToolBoss.GetIdentifierAt(ACodeBuffer,
-    NewIdentifierPosition.X,NewIdentifierPosition.Y,FOldIdentifier,FNode) then
-  begin
-    CurrentGroupBox.Caption:= Format(lisFRIIdentifier,[''])+EnforceAmp(FOldIdentifier);
-    NewEdit.Text:=FOldIdentifier;
-  end else
-    FOldIdentifier:='';
-
   // check if in implementation or private section
-  if CodeToolBoss.Explore(ACodeBuffer,Tool,false) then begin
+  if CodeToolBoss.Explore(ACodeBuffer,FTool,false) then begin
     CodeXY:=CodeXYPosition(NewIdentifierPosition.X,NewIdentifierPosition.Y,ACodeBuffer);
-    if Tool.CaretToCleanPos(CodeXY,CleanPos)=0 then begin
-      Node:=Tool.BuildSubTreeAndFindDeepestNodeAtPos(CleanPos,false);
+    if FTool.CaretToCleanPos(CodeXY,CleanPos)=0 then begin
+      Node:=FTool.BuildSubTreeAndFindDeepestNodeAtPos(CleanPos,false);
       if (Node=nil)
       or Node.HasParentOfType(ctnImplementation)
       or Node.HasParentOfType(ctnClassPrivate) then
         IsPrivate:=true;
     end;
   end;
+
+  if CodeToolBoss.GetIdentifierAt(ACodeBuffer,
+    NewIdentifierPosition.X,NewIdentifierPosition.Y,FOldIdentifier,FNode) then
+  begin
+    CurrentGroupBox.Caption:= Format(lisFRIIdentifier,[''])+EnforceAmp(FOldIdentifier);
+  end else
+    FOldIdentifier:='';
+  FNodesDeletedChangeStep:=FTool.NodesDeletedChangeStep;
+  NewEdit.Text:=FOldIdentifier;
 end;
 procedure TFindRenameIdentifierDialog.GatherFiles;
 var
@@ -1407,10 +1416,11 @@ var
   Graph: TUsesGraph;
   Node: TAVLTreeNode;
   UGUnit: TUGUnit;
-  UnitInfo:TUnitInfo;
+  UnitInfo, ProjFileInfo:TUnitInfo;
   Completed: boolean;
   ExternalProjectName, InternalProjectName, ProjMainFilename: string;
 begin
+  if FConflictUnitNames<>nil then exit;
   if not LazarusIDE.BeginCodeTools then exit;
   if Project1=nil then exit;
   if not AllowRename then exit;
@@ -1429,16 +1439,18 @@ begin
     exit;
   end;
 
+  if IsNodeInvalid('TFindRenameIdentifierDialog.GatherFiles') then exit;
+
   OwnerList:=nil;
+  Files:=nil;
   try
-    FTool:=CodeToolBoss.FindCodeToolForSource(DeclCode);
-    FForbidden:=TStringList.Create;
+    FConflictUnitNames:=TStringList.Create;
     Files:=TStringList.Create;
 
-    ProjMainFilename:=Project1.MainFilename;
-    if ProjMainFilename<>'' then begin
-      InternalProjectName:=
-        Project1.ProjectUnitWithFilename(ProjMainFilename).Unit_Name;
+    ProjFileInfo:=Project1.MainUnitInfo;
+    if ProjFileInfo<>nil then begin
+      ProjMainFilename:=ProjFileInfo.Filename;
+      InternalProjectName:=ProjFileInfo.Unit_Name;
       ExternalProjectName:=ExtractFileNameOnly(ProjMainFilename);
       if ExternalProjectName<>'' then begin
         // units cannot have filename matching project file name - only warnings/problems,
@@ -1450,12 +1462,12 @@ begin
             and (CompareDottedIdentifiers(PChar(ExternalProjectName),
                                           PChar(InternalProjectName))<>0)
         then
-          FForbidden.Add(ExternalProjectName);
+          FConflictUnitNames.Add(ExternalProjectName);
       end;
     end;
 
     OwnerList:=TFPList.Create;
-    OwnerList.Add(LazarusIDE.ActiveProject);
+    OwnerList.Add(Project1);
 
     // get source files of packages and projects
     ExtraFiles:=PackageEditingInterface.GetSourceFilesOfOwners(OwnerList);
@@ -1485,7 +1497,7 @@ begin
         CurUnitname:=UnitInfo.Unit_Name
       else
         CurUnitname:=ExtractFileNameOnly(Files[i]);
-      FForbidden.Add(CurUnitname); //store for ValidateNewName
+      FConflictUnitNames.Add(CurUnitname); //store for ValidateNewName
     end;
     SetFiles(Files);
   finally
@@ -1502,7 +1514,10 @@ begin
   Result:=false;
   ErrMsg:='';
   if not AllowRename then exit;
-  if not (FNode.Desc in [ctnProgram..ctnUnit,ctnUseUnit,ctnUseUnitNamespace,ctnUseUnitClearName])
+  if IsNodeInvalid('TFindRenameIdentifierDialog.NewIdentifierIsConflicted') then exit;
+
+  if (FNode<>nil)
+      and not (FNode.Desc in (AllSourceTypes+[ctnUseUnit,ctnUseUnitNamespace,ctnUseUnitClearName]))
       and (Pos('.',FNewIdentifier)>0) then
   begin
     ErrMsg:=Format(lisIdentifierCannotBeDotted,[FNewIdentifier]);
@@ -1512,24 +1527,34 @@ begin
     ErrMsg:=lisIdentifierCannotBeEmpty;
     exit(true);
   end;
-  if FForbidden=nil then exit;
+  if FConflictUnitNames=nil then exit;
   i:=0;
-  while (i<=FForbidden.Count-1) and
-    (CompareDottedIdentifiers(PChar(FNewIdentifier),PChar(FForbidden[i]))<>0) do
+  while (i<=FConflictUnitNames.Count-1) and
+    (CompareDottedIdentifiers(PChar(FNewIdentifier),PChar(FConflictUnitNames[i]))<>0) do
     inc(i);
-  Result:= i<=FForbidden.Count-1;
+  Result:= i<=FConflictUnitNames.Count-1;
 
   if Result then begin
-    ErrMsg:=Format(lisIdentifierWasAlreadyUsed,[FNewIdentifier]);
+    ErrMsg:=Format(lisIdentifierIsAlreadyUsed,[FNewIdentifier]);
     exit;
   end;
   // checking if there are existing other identifiers conflited with the new
   // will be executed when "Rename all References" button is clicked
 end;
 
+function TFindRenameIdentifierDialog.IsNodeInvalid(const Msg: string): boolean;
+begin
+  if FNode=nil then exit(false);
+  if FTool.NodesDeletedChangeStep=FNodesDeletedChangeStep then exit(false);
+  Result:=true;
+  debugln([Msg,' nodes deleted New=',FTool.NodesDeletedChangeStep,' Old=',FNodesDeletedChangeStep]);
+  FNode:=nil;
+  ModalResult:=mrCancel;
+end;
+
 destructor TFindRenameIdentifierDialog.Destroy;
 begin
-  FreeAndNil(FForbidden);
+  FreeAndNil(FConflictUnitNames);
   FreeAndNil(FFiles);
   inherited Destroy;
 end;

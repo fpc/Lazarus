@@ -280,7 +280,7 @@ type
     // initializing single codetool
     function GetCodeToolForSource(Code: TCodeBuffer;
                       GoToMainCode, ExceptionOnError: boolean): TCustomCodeTool;
-    function FindCodeToolForSource(Code: TCodeBuffer): TCustomCodeTool;
+    function FindCodeToolForSource(Code: TCodeBuffer): TCodeTool;
     property CurCodeTool: TCodeTool read FCurCodeTool;
     procedure ClearCurCodeTool;
     function InitCurCodeTool(Code: TCodeBuffer): boolean;
@@ -6692,7 +6692,7 @@ begin
 end;
 
 function TCodeToolManager.FindCodeToolForSource(Code: TCodeBuffer
-  ): TCustomCodeTool;
+  ): TCodeTool;
 var
   ANode: TAVLTreeNode;
   CurSrc, SearchedSrc: Pointer;
@@ -6706,7 +6706,7 @@ begin
     else if CurSrc<SearchedSrc then
       ANode:=ANode.Right
     else begin
-      Result:=TCustomCodeTool(ANode.Data);
+      Result:=TCodeTool(ANode.Data);
       exit;
     end;
   end;

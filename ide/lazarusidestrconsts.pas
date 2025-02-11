@@ -5462,8 +5462,8 @@ resourcestring
   lisRenamingAborted = 'Renaming aborted';
   lisRenamingConflict = 'Renaming conflict';
   lisFileAlreadyExists = 'File "%s" already exists.';
-  lisIdentifierWasAlreadyUsed = 'Identifier '
-    + '"%s" was already used';
+  lisIdentifierIsAlreadyUsed = 'Identifier '
+    + '"%s" is already used';
   lisIdentifierCannotBeDotted = 'Identifier "%s" cannot be dotted';
   lisIdentifierCannotBeEmpty = 'Identifier cannot be empty';
   lisIdentifierIsInvalid = 'Identifier '

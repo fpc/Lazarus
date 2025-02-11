@@ -212,7 +212,6 @@ type
         out CleanCursorPos: integer);
 
     function StringIsKeyWord(const Word: string): boolean;
-    function IsStringKeyWord(const Word: string): boolean;
 
     // cursor moving
     procedure MoveCursorToNodeStart(ANode: TCodeTreeNode); {$IFDEF UseInline}inline;{$ENDIF}
@@ -2405,11 +2404,6 @@ function TCustomCodeTool.StringIsKeyWord(const Word: string): boolean;
 begin
   Result:=(Word<>'') and IsIdentStartChar[Word[1]]
                    and WordIsKeyWordFuncList.DoItUpperCase(Word,1,length(Word));
-end;
-function TCustomCodeTool.IsStringKeyWord(const Word: string): boolean;
-begin
-  Result:=(Word<>'') and IsIdentStartChar[Word[1]]
-    and (WordIsKeyWordFuncList.IndexOf(Word, true)>=0);
 end;
 
 procedure TCustomCodeTool.MoveCursorToNodeStart(ANode: TCodeTreeNode);
