@@ -175,7 +175,10 @@ control.
 </short>
 </element>
 <element name="TListViewFilterEdit.MatchesFilter.AData">
-<short/>
+<short>
+TListViewDataItem instance with the strings and a pointer to data used in the 
+filter comparison.
+</short>
 </element>
 
 <element name="TListViewFilterEdit.SetByAllFields">
