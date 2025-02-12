@@ -1773,10 +1773,19 @@ begin
     begin
       MainView := gtk_icon_view_new_with_model(TreeModel);
       TreeSelection := nil;
-      if TLVHack(AWinControl).IconOptions.Arrangement = iaTop then
-        gtk_icon_view_set_columns(PGtkIconView(MainView), -1)
-      else
-        gtk_icon_view_set_columns(PGtkIconView(MainView), 1);
+      if TLVHack(AWinControl).IconOptions.AutoArrange then
+      begin
+        //MaxM: if we have only Horizontal bar active then set columns to Max
+        if TLVHack(AWinControl).Scrollbars in [ssHorizontal, ssAutoHorizontal] then
+             gtk_icon_view_set_columns(PGtkIconView(MainView), MaxInt)
+        else gtk_icon_view_set_columns(PGtkIconView(MainView), -1);
+      end
+      else begin
+             //We mimic the behavior of Windows although we should take scrollbars into account
+             if TLVHack(AWinControl).IconOptions.Arrangement = iaTop then
+                  gtk_icon_view_set_columns(PGtkIconView(MainView), -1)
+             else gtk_icon_view_set_columns(PGtkIconView(MainView), MaxInt);
+           end;
     end
     else
     begin
