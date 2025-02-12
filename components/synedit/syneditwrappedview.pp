@@ -185,9 +185,10 @@ type
     FCurToken: TLazSynDisplayTokenInfo;
     FCurLineLogIdx: Integer;
     FCurLineWrapIndentString: String;
+    FCurrentSubLineMarkupInfo: TSynSelectedColorMergeResult;
   public
     constructor Create(AWrappedView: TSynEditLineMappingView; AWrapPlugin: TLazSynEditLineWrapPlugin);
-    //destructor Destroy; override;
+    destructor Destroy; override;
     procedure SetHighlighterTokensLine(AWrappedLine: TLineIdx; out
       ARealLine: TLineIdx; out ASubLineIdx, AStartBytePos, AStartPhysPos, ALineByteLen: Integer); override;
     function GetNextHighlighterToken(out ATokenInfo: TLazSynDisplayTokenInfo): Boolean; override;
@@ -199,6 +200,10 @@ type
   private
     FCurrentWrapColumn: Integer;
     FCaretWrapPos: TLazSynEditWrapCaretPos;
+    FMarkupInfoWrapEol: TSynSelectedColor;
+    FMarkupInfoWrapIndent: TSynSelectedColor;
+    FMarkupInfoWrapSubLine: TSynSelectedColor;
+
     FMinWrapWidth: Integer;
     FWrapIndentMaxAbs: Integer;
     FWrapIndentMaxRel: Integer;
@@ -206,6 +211,7 @@ type
     FWrapIndentIsOffset: Boolean;
     FWrapIndentWidth: Integer;
     procedure DoLinesChanged(Sender: TObject);
+    procedure DoMarkupChanged(Sender: TObject);
     procedure DoWidthChanged(Sender: TObject; Changes: TSynStatusChanges);
     function GetWrapColumn: Integer;
 
@@ -254,6 +260,10 @@ public
     property WrapIndentMinAbs: Integer read FWrapIndentMinAbs write SetWrapIndentMinAbs;
     property WrapIndentMaxAbs: Integer read FWrapIndentMaxAbs write SetWrapIndentMaxAbs;
     property WrapIndentMaxRel: Integer read FWrapIndentMaxRel write SetWrapIndentMaxRel;
+
+    property MarkupInfoWrapSubLine: TSynSelectedColor read FMarkupInfoWrapSubLine;
+    property MarkupInfoWrapIndent:  TSynSelectedColor read FMarkupInfoWrapIndent;
+    property MarkupInfoWrapEol:     TSynSelectedColor read FMarkupInfoWrapEol;
   end;
 
 implementation
@@ -1498,7 +1508,14 @@ constructor TLazSynDisplayWordWrap.Create(AWrappedView: TSynEditLineMappingView;
   AWrapPlugin: TLazSynEditLineWrapPlugin);
 begin
   FWrapPlugin := AWrapPlugin;
+  FCurrentSubLineMarkupInfo := TSynSelectedColorMergeResult.Create(nil);
   inherited Create(AWrappedView);
+end;
+
+destructor TLazSynDisplayWordWrap.Destroy;
+begin
+  FCurrentSubLineMarkupInfo.Free;
+  inherited Destroy;
 end;
 
 procedure TLazSynDisplayWordWrap.SetHighlighterTokensLine(
@@ -1553,13 +1570,14 @@ function TLazSynDisplayWordWrap.GetNextHighlighterToken(out
   ATokenInfo: TLazSynDisplayTokenInfo): Boolean;
 var
   PreStart: Integer;
+  LineBnd1, LineBnd2: TLazSynDisplayTokenBound;
 begin
   ATokenInfo := Default(TLazSynDisplayTokenInfo);
   if FCurLineLogIdx < 0 then begin
     Result := True;
     ATokenInfo.TokenStart := PChar(FCurLineWrapIndentString);
     ATokenInfo.TokenLength := -FCurLineLogIdx;
-    ATokenInfo.TokenAttr := nil;
+    ATokenInfo.TokenAttr := FWrapPlugin.MarkupInfoWrapIndent;
     ATokenInfo.TokenOrigin := dtoBeforeText;
     FCurLineLogIdx := 0;
     exit;
@@ -1567,6 +1585,7 @@ begin
 
   If (FCurLineLogIdx >= FCurSubLineNextLogStartIdx) and (FCurSubLineNextLogStartIdx < FCurRealLineByteLen) then begin
     ATokenInfo.TokenOrigin := dtoAfterWrapped;
+    ATokenInfo.TokenAttr := FWrapPlugin.MarkupInfoWrapEol;
     Result := True; // TokenStart = nil => no text
     exit;
   end;
@@ -1588,6 +1607,7 @@ begin
     Result := ATokenInfo.TokenLength > 0;
     if not Result then begin
       ATokenInfo.TokenOrigin := dtoAfterWrapped;
+      ATokenInfo.TokenAttr := FWrapPlugin.MarkupInfoWrapEol;
       Result := False;
       exit;
     end;
@@ -1599,9 +1619,30 @@ begin
     Result := ATokenInfo.TokenLength > 0;
     if not Result then begin
       ATokenInfo.TokenOrigin := dtoAfterWrapped;
+      ATokenInfo.TokenAttr := FWrapPlugin.MarkupInfoWrapEol;
       Result := False;
       exit;
     end;
+  end;
+
+  if (FCurrentWrapSubline > 0) and (FWrapPlugin.MarkupInfoWrapSubLine <> nil) and
+     (FWrapPlugin.MarkupInfoWrapSubLine.IsEnabled)
+  then begin
+    LineBnd1.Logical  := ToPos(FCurSubLineLogStartIdx);
+    LineBnd1.Physical := -1;
+    LineBnd1.Offset   := 0;
+    LineBnd2.Logical  := ToPos(FCurSubLineNextLogStartIdx);
+    LineBnd2.Physical := -1;
+    LineBnd2.Offset   := 0;
+
+    FCurrentSubLineMarkupInfo.Clear;
+    if ATokenInfo.TokenAttr <> nil then begin
+      FCurrentSubLineMarkupInfo.Assign(ATokenInfo.TokenAttr);
+      FCurrentSubLineMarkupInfo.Merge(FWrapPlugin.MarkupInfoWrapSubLine, LineBnd1, LineBnd2);
+    end
+    else
+      FCurrentSubLineMarkupInfo.Assign(FWrapPlugin.MarkupInfoWrapSubLine);
+    ATokenInfo.TokenAttr := FCurrentSubLineMarkupInfo;
   end;
 end;
 
@@ -1610,6 +1651,11 @@ end;
 procedure TLazSynEditLineWrapPlugin.DoLinesChanged(Sender: TObject);
 begin
   ValidateAll;
+end;
+
+procedure TLazSynEditLineWrapPlugin.DoMarkupChanged(Sender: TObject);
+begin
+  FMarkupInfoWrapIndent.FrameEdges := sfeLeft;
 end;
 
 procedure TLazSynEditLineWrapPlugin.DoWidthChanged(Sender: TObject;
@@ -1979,6 +2025,16 @@ end;
 constructor TLazSynEditLineWrapPlugin.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+
+  FMarkupInfoWrapSubLine := TSynSelectedColor.Create;
+  FMarkupInfoWrapIndent  := TSynSelectedColor.Create;
+  FMarkupInfoWrapEol     := TSynSelectedColor.Create;
+  FMarkupInfoWrapSubLine.Clear;
+  FMarkupInfoWrapIndent.Clear;
+  FMarkupInfoWrapEol.Clear;
+  FMarkupInfoWrapIndent.FrameEdges := sfeLeft;
+  FMarkupInfoWrapIndent.OnChange := @DoMarkupChanged;
+
   FLineMapView := TSynEditLineMappingView(TSynEdit(Editor).TextViewsManager.SynTextViewByClass[TSynEditLineMappingView]);
   if FLineMapView = nil then begin
     FLineMapView := TSynEditLineMappingView.Create;
@@ -2010,6 +2066,10 @@ begin
     end;
    end;
   inherited Destroy;
+
+  FMarkupInfoWrapSubLine.Free;
+  FMarkupInfoWrapIndent.Free;
+  FMarkupInfoWrapEol.Free;
 end;
 
 procedure TLazSynEditLineWrapPlugin.WrapAll;
