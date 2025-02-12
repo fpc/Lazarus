@@ -182,6 +182,7 @@ type
     procedure TestDirectoyCache_NS_FN_DottedUses;
     procedure TestFindDeclaration_NS_FN_DottedUses;
     procedure TestFindDeclaration_NS_MultiDottedUses;
+    procedure TestFindDeclaration_NS_MultiDottedPrg;
 
     // directives
     procedure TestFindDeclaration_Directive_OperatorIn;
@@ -2079,6 +2080,52 @@ begin
     RedGreenUnit.IsDeleted:=true;
     RedGreenBlueUnit.IsDeleted:=true;
     RedGreenBlueGrayUnit.IsDeleted:=true;
+  end;
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_NS_MultiDottedPrg;
+var
+  RedUnit, RedRedUnit: TCodeBuffer;
+begin
+  RedUnit:=CodeToolBoss.CreateFile('red.pp');
+  RedRedUnit:=CodeToolBoss.CreateFile('red.red.pp');
+  try
+    RedUnit.Source:=LinesToStr([
+      'unit Red;',
+      'interface',
+      'var Red, RedCol: word;',
+      'implementation',
+      'end.']);
+    RedRedUnit.Source:=LinesToStr([
+      'unit Red.Red;',
+      'interface',
+      'var Red, RedCol: word;',
+      'implementation',
+      'end.']);
+
+    Add([
+    'program Red.',
+    '  Red.',
+    '  Red;',
+    '{$mode objfpc}{$H+}',
+    'uses',
+    '  Red,',
+    '  Red.',
+    '    Red;',
+    'var RedCol: word;',
+    'begin',
+    '  Red{declaration!:red.red.red.red:6}.RedCol{declaration!:red.redcol}:=1;',
+    '  Red.Red{declaration!:red.red.red.red.red:8}.RedCol{declaration!:red.red.redcol}:=2;',
+    '  Red{declaration!:red.red.red.red:7}.Red.RedCol:=3;',
+    '  Red.Red.Red{declaration!:red.red.red:3}.RedCol{declaration!:redcol}:=4;',
+    '  Red.Red{declaration!:red.red.red:2}.Red.RedCol:=5;',
+    '  Red{declaration!:red.red.red:1}.Red.Red.RedCol:=6;',
+    'end.',
+    '']);
+    FindDeclarations(Code);
+  finally
+    RedUnit.IsDeleted:=true;
+    RedRedUnit.IsDeleted:=true;
   end;
 end;
 
