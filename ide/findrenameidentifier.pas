@@ -239,12 +239,17 @@ var
     NamePos: TAtomPosition;
     CodeXYPos, NewDeclCodeXY: TCodeXYPosition;
   begin
-    if not (DeclNode.Desc in [ctnUseUnitNamespace,ctnUseUnitClearName]) then
+    case DeclNode.Desc of
+    ctnUseUnit: ;
+    ctnUseUnitNamespace,ctnUseUnitClearName:
+      DeclNode:=DeclNode.Parent;
+    else
       exit(true);
+    end;
     // renaming a uses -> rename the unit
     // find unit
     Result:=false;
-    aUnitName:=DeclTool.ExtractUsedUnitName(DeclNode.Parent,@InFilename);
+    aUnitName:=DeclTool.ExtractUsedUnitName(DeclNode,@InFilename);
     if aUnitName='' then begin
       Err(20250206143851,'ExtractUsedUnitName failed');
       exit;
