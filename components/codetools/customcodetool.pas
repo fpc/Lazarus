@@ -2403,7 +2403,7 @@ end;
 function TCustomCodeTool.StringIsKeyWord(const Word: string): boolean;
 begin
   Result:=(Word<>'') and IsIdentStartChar[Word[1]]
-                   and WordIsKeyWordFuncList.DoItUpperCase(Word,1,length(Word));
+                   and WordIsKeyWordFuncList.DoItCaseInsensitive(Word);
 end;
 
 procedure TCustomCodeTool.MoveCursorToNodeStart(ANode: TCodeTreeNode);

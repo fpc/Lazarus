@@ -1064,17 +1064,18 @@ begin
   if IsNodeInvalid('TFindRenameIdentifierDialog.ValidateNewName') then exit;
   Err:='';
   FNewIdentifier:=NewEdit.Text;
-  if (FNode<>nil)
-  and (FNode.Desc in [ctnProgram..ctnUnit,ctnUseUnitNamespace,ctnUseUnitClearName]) then
-    ok:=IsValidDottedIdent(FNewIdentifier) //can be dotted
-  else
-    ok:=IsValidDottedIdent(FNewIdentifier,false);//not dotted for sure
-
+  ok:=IsValidDottedIdent(FNewIdentifier);
   if not ok then begin
     if FNewIdentifier='' then
       Err:=lisIdentifierCannotBeEmpty
     else
       Err:= format(lisIdentifierIsInvalid,[FNewIdentifier]);
+  end else if not (FNode.Desc in [ctnProgram..ctnUnit,ctnUseUnit,
+      ctnUseUnitNamespace,ctnUseUnitClearName])
+     and (Pos('.',FNewIdentifier)>0) then
+  begin
+    ok:=false;
+    Err:=Format(lisIdentifierCannotBeDotted,[FNewIdentifier]);
   end;
 
   if ok and (FTool<>nil) then begin
