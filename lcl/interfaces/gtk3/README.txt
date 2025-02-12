@@ -1,22 +1,10 @@
 TODO:
 * Cursors
 * Themes (gtk3themes)
-* Paint system (brush is critical)
-* Paint system coordinates and transformations.
-* Paint system text
-* RawImage (bitmap, device)
 * Other missing ws controls (trayicon, dragimagelist, splitter etc).
 * Clipboard
-* Caret
+* Sizing problems with TCustomGroupBox, TCustomNotebook with different child controls aligned alBottom/Top/Client
 * Dialogs
-* Designer
-* Fix modal windows behaviour under kwin (metacity and xfwm works ok for now).
-* For beta status move all signal handlers into separate unit, so gtk3widgets stay
-  clean.
-* Keep interface as simple as possible ! *
-* If there's any problem which is fixed unlogical code,
-  check if it's gtk3 bug first.
-
 
 
 *KNOWN PROBLEMS:
