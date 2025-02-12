@@ -443,9 +443,7 @@ class procedure TGtk3WSWinControl.SetShape(const AWinControl: TWinControl;
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetShape') then
     Exit;
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  DebugLn('TGtk3WSWinControl.SetShape not implemented');
-  {$ENDIF}
+  TGtk3Widget(AWinControl.Handle).Shape := TGtk3Image(AShape).Handle^.copy;
 end;
 
 class procedure TGtk3WSWinControl.SetFont(const AWinControl: TWinControl; const AFont: TFont);
