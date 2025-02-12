@@ -2294,8 +2294,19 @@ const
 var
   AKeyMap: PGdkKeymap;
   AModifiers: TGdkModifierType;
+  display: PGdkDisplay;
+  seat: PGdkSeat;
+  device: PGdkDevice;
+  x: gdouble;
 begin
   Result := 0;
+
+  display := gdk_display_get_default();
+  if display = nil then
+    exit;
+  seat := gdk_display_get_default_seat(display);
+  if seat = nil then
+    exit;
 
   case nVirtKey of
     VK_LSHIFT:   nVirtKey := VK_SHIFT;
@@ -2303,45 +2314,18 @@ begin
     VK_LMENU:    nVirtKey := VK_MENU;
   end;
 
-  (*
-  // GdkModifierType
-  GDK_SHIFT_MASK: TGdkModifierType = 1;
-  GDK_LOCK_MASK: TGdkModifierType = 2;
-  GDK_CONTROL_MASK: TGdkModifierType = 4;
-  GDK_MOD1_MASK: TGdkModifierType = 8;
-  GDK_MOD2_MASK: TGdkModifierType = 16;
-  GDK_MOD3_MASK: TGdkModifierType = 32;
-  GDK_MOD4_MASK: TGdkModifierType = 64;
-  GDK_MOD5_MASK: TGdkModifierType = 128;
-  GDK_BUTTON1_MASK: TGdkModifierType = 256;
-  GDK_BUTTON2_MASK: TGdkModifierType = 512;
-  GDK_BUTTON3_MASK: TGdkModifierType = 1024;
-  GDK_BUTTON4_MASK: TGdkModifierType = 2048;
-  GDK_BUTTON5_MASK: TGdkModifierType = 4096;
-  GDK_MODIFIER_RESERVED_13_MASK: TGdkModifierType = 8192;
-  GDK_MODIFIER_RESERVED_14_MASK: TGdkModifierType = 16384;
-  GDK_MODIFIER_RESERVED_15_MASK: TGdkModifierType = 32768;
-  GDK_MODIFIER_RESERVED_16_MASK: TGdkModifierType = 65536;
-  GDK_MODIFIER_RESERVED_17_MASK: TGdkModifierType = 131072;
-  GDK_MODIFIER_RESERVED_18_MASK: TGdkModifierType = 262144;
-  GDK_MODIFIER_RESERVED_19_MASK: TGdkModifierType = 524288;
-  GDK_MODIFIER_RESERVED_20_MASK: TGdkModifierType = 1048576;
-  GDK_MODIFIER_RESERVED_21_MASK: TGdkModifierType = 2097152;
-  GDK_MODIFIER_RESERVED_22_MASK: TGdkModifierType = 4194304;
-  GDK_MODIFIER_RESERVED_23_MASK: TGdkModifierType = 8388608;
-  GDK_MODIFIER_RESERVED_24_MASK: TGdkModifierType = 16777216;
-  GDK_MODIFIER_RESERVED_25_MASK: TGdkModifierType = 33554432;
-  GDK_SUPER_MASK: TGdkModifierType = 67108864;
-  GDK_HYPER_MASK: TGdkModifierType = 134217728;
-  GDK_META_MASK: TGdkModifierType = 268435456;
-  GDK_MODIFIER_RESERVED_29_MASK: TGdkModifierType = 536870912;
-  GDK_RELEASE_MASK: TGdkModifierType = 1073741824;
-  GDK_MODIFIER_MASK: TGdkModifierType = 1543512063;
-  *)
-  // AModifierMask := gdk_keymap_get_modifier_mask(AKeyMap, 0);
+  if Byte(nVirtKey) in [VK_LBUTTON..VK_XBUTTON2] then
+  begin
+    device := gdk_seat_get_pointer(seat);
+    if device = nil then
+      exit;
+    device^.get_state(gdk_screen_get_active_window(gdk_screen_get_default), @x, @AModifiers);
+  end else
+  begin
+    AKeyMap := gdk_keymap_get_for_display(display);
+    AModifiers := TGdkModifierType(AKeyMap^.get_modifier_state);
+  end;
 
-  AKeyMap := TGdkKeymap.get_for_display(gdk_display_get_default);
-  AModifiers := TGdkModifierType(AKeyMap^.get_modifier_state);
   case nVirtKey of
     VK_LBUTTON:
       if GDK_BUTTON1_MASK in AModifiers  then
@@ -2370,10 +2354,6 @@ begin
     VK_LWIN, VK_RWIN:
       if GDK_META_MASK in AModifiers  then
         Result := Result or StateDown;
-   {$ifdef VerboseGtk3WinAPI}
-    else
-      DebugLn('TGtk3WidgetSet.GetKeyState TODO ', DbgSVKCode(Word(nVirtkey)));
-   {$endif}
   end;
 end;
 
