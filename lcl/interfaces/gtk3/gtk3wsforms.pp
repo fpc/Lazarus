@@ -143,7 +143,7 @@ type
   end;
 
 implementation
-uses SysUtils, gtk3procs;
+uses SysUtils, gtk3procs, LazLogger;
 
 
 { TGtk3WSScrollingWinControl }
@@ -209,7 +209,7 @@ begin
   if not WSCheckHandleAllocated(AWinControl, 'SetBounds') then
     Exit;
   {$IFDEF GTK3DEBUGCORE}
-  DebugLn('TGtk3WSCustomForm.SetBounds ',dbgsName(AWinControl),Format(' ALeft %d ATop %d AWidth %d AHeight %d',[ALeft, ATop, AWidth, AHeight]));
+  DebugLn('TGtk3WSCustomForm.SetBounds ',dbgsName(AWinControl),Format(' ALeft %d ATop %d AWidth %d AHeight %d InUpdate %s',[ALeft, ATop, AWidth, AHeight, BoolToStr(TGtk3Widget(AWinControl.Handle).InUpdate, True)]));
   {$ENDIF}
   TGtk3Widget(AWinControl.Handle).SetBounds(ALeft,ATop,AWidth,AHeight);
 end;
@@ -240,11 +240,35 @@ begin
 end;
 {$ENDIF}
 
+function GetActiveGtkWindow: PGtkWindow;
+var
+  Toplevels, Node: PGList;
+  GtkWin: PGtkWidget;
+begin
+  Result := nil;
+  Toplevels := gtk_window_list_toplevels;
+  Node := Toplevels;
+
+  while Node <> nil do
+  begin
+    GtkWin := PGtkWidget(Node^.data);
+    if gtk_window_is_active(PGtkWindow(GtkWin)) then
+    begin
+      Result := PGtkWindow(GtkWin);
+      Break;
+    end;
+    Node := Node^.next;
+  end;
+
+  g_list_free(Toplevels);
+end;
+
+
 class procedure TGtk3WSCustomForm.ShowHide(const AWinControl: TWinControl);
 var
   AMask:TGdkEventMask;
   AForm, OtherForm: TCustomForm;
-  AWindow: PGtkWindow;
+  AWindow, ATransient: PGtkWindow;
   i: Integer;
   AGeom: TGdkGeometry;
   AGeomMask: TGdkWindowHints;
@@ -260,9 +284,21 @@ var
     x, y, w, h: gint;
   begin
     AWindow^.window^.get_geometry(@x, @y, @w, @h);
+    x := 0; // we don't use result of get_geometry
+    y := 0;
+    if Assigned(aTransient) and not AWindow^.get_decorated then
+    begin
+      if Assigned(AForm.PopupParent) or (AForm.PopupMode = pmAuto) then
+        aTransient^.window^.get_origin(@x, @y);
+    end else
+    begin
+      x := 0;
+      y := 0;
+    end;
 
     with AWinControl do
-      AWindow^.window^.move_resize(Left, Top, Width, Height);
+      AWindow^.window^.move_resize(Left + x, Top + y, Width, Height);
+
     AWindow^.window^.process_updates(True);
     //Give a little breath to WM.
     for x := 0 to WaitLoops - 1 do
@@ -281,6 +317,7 @@ begin
     Exit;
   AForm := TCustomForm(AWinControl);
   {$IFDEF GTK3DEBUGCORE}
+  writeln('>==== TGtk3WSCustomForm.ShowHide begin ');
   DebugLn('TGtk3WSCustomForm.ShowHide visible=',dbgs(AWinControl.HandleObjectShouldBeVisible));
   {$ENDIF}
   AGtk3Widget:=TGtk3Widget(AForm.Handle);
@@ -299,7 +336,7 @@ begin
 
   Gtk3WidgetSet.SetCapture(0);
 
-  if ShouldBeVisible and not IsFormDesign(AForm) then
+  if ShouldBeVisible and not IsFormDesign(AForm) and (AForm.Parent = nil) then
   begin
     {note that gtk3 docs says that GDK_WINDOW_TYPE_HINT_UTILITY is for fsStayOnTop,
      and set_keep_above() is for fsSystemStayOnTop, but it does not work, so
@@ -315,9 +352,28 @@ begin
 
     AWindow^.realize;
 
-    if AForm.BorderStyle = bsNone then
+    if (AForm.BorderStyle = bsNone) then
     begin
-      AWindow^.set_decorated(gtk_false);
+      if AWindow^.transient_for = nil then
+      begin
+        if Assigned(AForm.PopupParent) then
+          ATransient := PGtkWindow(TGtk3Window(AForm.PopupParent.Handle).Widget)
+        else
+        if AForm.PopupMode = pmAuto then
+          ATransient := GetActiveGtkWindow
+        else
+          ATransient := nil;
+
+        {$IFDEF GTK3DEBUGCORE}
+        if Assigned(ATransient) then
+        begin
+          writeln('TGtk3WSCustomFOrm.ShowHide: ATransient (popupParent form) is ',dbgsName(TGtk3Window(HwndFromGtkWidget(ATransient)).LCLObject));
+          writeln(dbgsName(AForm),' bounds ',dbgs(Bounds(AForm.Left, AForm.Top, AForm.Width, AForm.Height)));
+        end;
+        {$ENDIF}
+
+        AWindow^.set_transient_for(ATransient);
+      end;
       if Assigned(AGtk3Widget.Shape) then
       begin
         AWindow^.set_app_paintable(True);
@@ -325,7 +381,6 @@ begin
         AGtk3Widget.SetWindowShape(AGtk3Widget.Shape, AWindow^.window);
       end;
     end;
-
   end;
   AGtk3Widget.BeginUpdate;
   AGtk3Widget.Visible := ShouldBeVisible;
@@ -352,9 +407,12 @@ begin
         end;
       end;
     end;
+
+    if Assigned(AWinControl.Parent) then
+      exit;
+
     //See issue #41412
     CheckAndFixGeometry;
-
     AWindow^.show_all;
     AMask := AWindow^.window^.get_events;
     AWindow^.window^.set_events(GDK_ALL_EVENTS_MASK);
@@ -362,13 +420,17 @@ begin
       AWindow^.present;
   end else
   begin
-    if not IsFormDesign(AForm) and (fsModal in AForm.FormState) then
+    if not IsFormDesign(AForm) and
+      ((fsModal in AForm.FormState) or (AForm.BorderStyle = bsNone)) then
     begin
       if AWindow^.transient_for <> nil then
         AWindow^.set_transient_for(nil);
     end;
   end;
   AGtk3Widget.EndUpdate;
+  {$IFDEF GTK3DEBUGCORE}
+  writeln('<==== TGtk3WSCustomForm.ShowHide end ');
+  {$ENDIF}
 end;
 
 class procedure TGtk3WSCustomForm.CloseModal(const ACustomForm: TCustomForm);
@@ -486,6 +548,10 @@ begin
   {$IFDEF GTK3DEBUGCORE}
   DebugLn('TGtk3WSCustomForm.SetRealPopupParent AForm=',dbgsName(ACustomForm),' PopupParent=',dbgsName(APopupParent));
   {$ENDIF}
+  if Assigned(APopupParent) and APopupParent.HandleAllocated then
+    PGtkWindow(TGtk3Window(ACustomForm.Handle).Widget)^.set_transient_for(PGtkWindow(TGtk3Window(APopupParent.Handle).Widget))
+  else
+    PGtkWindow(TGtk3Window(ACustomForm.Handle).Widget)^.set_transient_for(nil);
 end;
 
 class procedure TGtk3WSCustomForm.SetAlphaBlend(const ACustomForm: TCustomForm;

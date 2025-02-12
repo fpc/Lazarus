@@ -9120,7 +9120,8 @@ begin
     gdk_window_set_decorations(Result^.window, decor);
     if AForm.AlphaBlend then
       gtk_widget_set_opacity(Result, TForm(LCLObject).AlphaBlendValue/255);
-
+    if not gtk_window_get_decorated(PGtkWindow(Result)) then
+      gtk_window_set_type_hint(PGtkWindow(Result), GDK_WINDOW_TYPE_HINT_UTILITY);
     FWidgetType := [wtWidget, wtLayout, wtScrollingWin, wtWindow];
   end else
   begin
@@ -9301,6 +9302,7 @@ var
   AForm: TCustomForm;
   AMinSize, ANaturalSize: gint;
   Alloc:TGtkAllocation;
+  x, y: gint;
 begin
   AForm := TCustomForm(LCLObject);
   BeginUpdate;
@@ -9373,8 +9375,18 @@ begin
     begin
       //PGtkWindow(Widget)^.set_default_size(AWidth, AHeight);
       PGtkWindow(Widget)^.set_resizable(true);
+      {$IF DEFINED(GTK3DEBUGCORE) OR DEFINED(GTK3DEBUGSIZE)}
+      writeln('Window ',dbgsName(LCLObject),' move/size ',dbgs(Bounds(ALeft, ATop, AWidth, AHeight)));
+      {$ENDIF}
       PGtkWindow(Widget)^.resize(AWidth, AHeight);
-      PGtkWindow(Widget)^.move(ALeft, ATop);
+
+      {Must apply transient window origin here. Not sure if this is needed for decorated windows,
+       but non decorated with popupparent must align.}
+      x := 0;
+      y := 0;
+      if not PGtkWindow(Widget)^.get_decorated and (PGtkWindow(Widget)^.transient_for <> nil) then
+        PGtkWindow(Widget)^.transient_for^.window^.get_origin(@x, @y);
+      PGtkWindow(Widget)^.move(ALeft + x, ATop + y);
     end;
   finally
     EndUpdate;
