@@ -300,6 +300,11 @@ type
     procedure DoHighlightChanged(Sender: TSynEditStrings; {%H-}AIndex, {%H-}ACount : Integer);
     procedure SetWordWrapCaretWrapPos(AValue: TLazSynEditWrapCaretPos);
     procedure SetWordWrapEnabled(AValue: Boolean);
+    procedure SetWordWrapIndent(AValue: Integer);
+    procedure SetWordWrapIndentMax(AValue: Integer);
+    procedure SetWordWrapIndentMaxRel(AValue: Integer);
+    procedure SetWordWrapIndentMin(AValue: Integer);
+    procedure SetWordWrapIndentUseOffset(AValue: boolean);
     procedure SetWordWrapMinWidth(AValue: Integer);
     procedure SrcSynCaretChanged(Sender: TObject);
     function  GetHighlighter: TSynCustomFoldHighlighter;
@@ -346,9 +351,16 @@ type
     property CaretStamp: Int64 read FCaretStamp;
     property CaretColor: TColor read FCaretColor write SetCaretColor;
 
+    property WrapView: TLazSynSourceEditLineWrapPlugin read FWrapView;
     property WordWrapEnabled: Boolean read GetWordWrapEnabled write SetWordWrapEnabled;
     property WordWrapCaretWrapPos: TLazSynEditWrapCaretPos write SetWordWrapCaretWrapPos;
     property WordWrapMinWidth: Integer write SetWordWrapMinWidth;
+
+    property WordWrapIndent: Integer write SetWordWrapIndent;
+    property WordWrapIndentUseOffset: boolean write SetWordWrapIndentUseOffset;
+    property WordWrapIndentMin: Integer write SetWordWrapIndentMin;
+    property WordWrapIndentMax: Integer write SetWordWrapIndentMax;
+    property WordWrapIndentMaxRel: Integer write SetWordWrapIndentMaxRel;
   end;
 
   TIDESynHighlighterPasRangeList = class(TSynHighlighterPasRangeList)
@@ -1592,6 +1604,36 @@ begin
     AddLineWrapView
   else
     RemoveLineWrapView;
+end;
+
+procedure TIDESynEditor.SetWordWrapIndent(AValue: Integer);
+begin
+  if FWrapView <> nil then
+    FWrapView.WrapIndentWidth := AValue;
+end;
+
+procedure TIDESynEditor.SetWordWrapIndentMax(AValue: Integer);
+begin
+  if FWrapView <> nil then
+    FWrapView.WrapIndentMaxAbs := AValue;
+end;
+
+procedure TIDESynEditor.SetWordWrapIndentMaxRel(AValue: Integer);
+begin
+  if FWrapView <> nil then
+    FWrapView.WrapIndentMaxRel := AValue;
+end;
+
+procedure TIDESynEditor.SetWordWrapIndentMin(AValue: Integer);
+begin
+  if FWrapView <> nil then
+    FWrapView.WrapIndentMinAbs := AValue;
+end;
+
+procedure TIDESynEditor.SetWordWrapIndentUseOffset(AValue: boolean);
+begin
+  if FWrapView <> nil then
+    FWrapView.WrapIndentIsOffset := AValue;
 end;
 
 procedure TIDESynEditor.SetWordWrapMinWidth(AValue: Integer);

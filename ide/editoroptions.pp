@@ -143,7 +143,8 @@ const
     '', '', '',     // ahaIdentComplWindowEntryEnum, ahaIdentComplWindowEntryUnit, ahaIdentComplWindowEntryNameSpace,
     '', '', '',     // ahaIdentComplWindowEntryText, ahaIdentComplWindowEntryTempl, ahaIdentComplWindowEntryKeyword,
     '',             // ahaIdentComplWindowEntryUnknown,
-    '', '', '', '', '', '', '', '', '', '' // ahaOutlineLevel1Color..ahaOutlineLevel10Color
+    '', '', '', '', '', '', '', '', '', '', // ahaOutlineLevel1Color..ahaOutlineLevel10Color
+    '', '', '' // ahaWrapIndend, ahaWrapEol, ahaWrapSubLine
   );
 
   ahaGroupMap: array[TAdditionalHilightAttribute] of TAhaGroupName = (
@@ -222,7 +223,10 @@ const
     { ahaOutlineLevel7Color }  agnOutlineColors,
     { ahaOutlineLevel8Color }  agnOutlineColors,
     { ahaOutlineLevel9Color }  agnOutlineColors,
-    { ahaOutlineLevel10Color } agnOutlineColors
+    { ahaOutlineLevel10Color } agnOutlineColors,
+    { ahaWrapIndend  } agnWrap,
+    { ahaWrapEol     } agnWrap,
+    { ahaWrapSubLine } agnWrap
 
   );
   ahaSupportedFeatures: array[TAdditionalHilightAttribute] of TColorSchemeAttributeFeatures =
@@ -302,7 +306,10 @@ const
     { ahaFoldLevel7Color }    [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask, hafMarkupFoldColor],
     { ahaFoldLevel8Color }    [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask, hafMarkupFoldColor],
     { ahaFoldLevel9Color }    [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask, hafMarkupFoldColor],
-    { ahaFoldLevel10Color }   [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask, hafMarkupFoldColor]
+    { ahaFoldLevel10Color }   [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask, hafMarkupFoldColor],
+    { ahaWrapIndend  } [hafBackColor, hafFrameColor {, hafAlpha, hafPrior}],
+    { ahaWrapEol     } [hafBackColor {, hafAlpha, hafPrior}],
+    { ahaWrapSubLine } [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask]
   );
 
 
@@ -1596,6 +1603,11 @@ type
     // Wordwrap
     FWordWrapCaretWrapPos: TLazSynEditWrapCaretPos;
     FWordWrapEnabled: Boolean;
+    FWordWrapIndent: Integer;
+    FWordWrapIndentMax: Integer;
+    FWordWrapIndentMaxRel: Integer;
+    FWordWrapIndentMin: Integer;
+    FWordWrapIndentUseOffset: boolean;
     FWordWrapMinWidth: Integer;
 
     fUseTabHistory: Boolean;
@@ -1681,6 +1693,12 @@ type
     property WordWrapEnabled: Boolean read FWordWrapEnabled write FWordWrapEnabled;
     property WordWrapCaretWrapPos: TLazSynEditWrapCaretPos read FWordWrapCaretWrapPos write FWordWrapCaretWrapPos;
     property WordWrapMinWidth: Integer read FWordWrapMinWidth write FWordWrapMinWidth default 10;
+
+    property WordWrapIndent: Integer read FWordWrapIndent write FWordWrapIndent default 0;
+    property WordWrapIndentUseOffset: boolean read FWordWrapIndentUseOffset write FWordWrapIndentUseOffset default True;
+    property WordWrapIndentMin: Integer read FWordWrapIndentMin write FWordWrapIndentMin default 0;
+    property WordWrapIndentMax: Integer read FWordWrapIndentMax write FWordWrapIndentMax default 8;
+    property WordWrapIndentMaxRel: Integer read FWordWrapIndentMaxRel write FWordWrapIndentMaxRel  default 0;
 
     property UseTabHistory: Boolean read fUseTabHistory write fUseTabHistory;
 
@@ -3075,12 +3093,17 @@ begin
   AdditionalHighlightAttributes[ahaOutlineLevel10Color] := dlgAddHiAttrOutlineLevel10Color;
   AdditionalHighlightGroupNames[agnOutlineColors]  := dlgAddHiAttrGroupOutlineColors;
 
+  AdditionalHighlightAttributes[ahaWrapIndend]  := dlgAddHiAttrWrapIndent;
+  AdditionalHighlightAttributes[ahaWrapEol]     := dlgAddHiAttrWrapEol;
+  AdditionalHighlightAttributes[ahaWrapSubLine] := dlgAddHiAttrWrapSupLine;
+
   AdditionalHighlightGroupNames[agnDefault]      := dlgAddHiAttrGroupDefault;
   AdditionalHighlightGroupNames[agnText]         := dlgAddHiAttrGroupText;
   AdditionalHighlightGroupNames[agnLine]         := dlgAddHiAttrGroupLine;
   AdditionalHighlightGroupNames[agnTemplateMode] := dlgAddHiAttrGroupTemplateEdit;
   AdditionalHighlightGroupNames[agnSyncronMode]  := dlgAddHiAttrGroupSyncroEdit;
   AdditionalHighlightGroupNames[agnGutter]       := dlgAddHiAttrGroupGutter;
+  AdditionalHighlightGroupNames[agnWrap]         := dlgAddHiAttrGroupWrap;
 end;
 
 function StrToValidXMLName(const s: String): String;
@@ -5471,6 +5494,8 @@ begin
   fReverseFoldPopUpOrder := True;
   // wordwrap
   FWordWrapMinWidth := 10;
+  FWordWrapIndentUseOffset := True;
+  FWordWrapIndentMax := 8;
   // pas highlighter
   fPasExtendedKeywordsMode := False;
   fPasStringKeywordMode := spsmDefault;
@@ -6819,6 +6844,11 @@ begin
       TIDESynEditor(ASynEdit).WordWrapEnabled       := WordWrapEnabled;
       TIDESynEditor(ASynEdit).WordWrapCaretWrapPos  := WordWrapCaretWrapPos;
       TIDESynEditor(ASynEdit).WordWrapMinWidth      := WordWrapMinWidth;
+      TIDESynEditor(ASynEdit).WordWrapIndent           := WordWrapIndent;
+      TIDESynEditor(ASynEdit).WordWrapIndentUseOffset  := WordWrapIndentUseOffset;
+      TIDESynEditor(ASynEdit).WordWrapIndentMin        := WordWrapIndentMin;
+      TIDESynEditor(ASynEdit).WordWrapIndentMax        := WordWrapIndentMax;
+      TIDESynEditor(ASynEdit).WordWrapIndentMaxRel     := WordWrapIndentMaxRel;
       if WordWrapEnabled then begin
         ASynEdit.Options  := ASynEdit.Options  - [eoScrollPastEol];
         ASynEdit.Options2 := ASynEdit.Options2 - [eoScrollPastEolAddPage, eoScrollPastEolAutoCaret];
@@ -7669,6 +7699,12 @@ begin
         if (col = clNone) or (col = clDefault) then
           col := $606060;
         TIDESynEditor(aSynEdit).MultiCaret.Color := col;
+      end;
+
+      if TIDESynEditor(aSynEdit).WrapView <> nil then begin
+        SetMarkupColor(ahaWrapIndend,  TIDESynEditor(aSynEdit).WrapView.MarkupInfoWrapIndent);
+        SetMarkupColor(ahaWrapEol,     TIDESynEditor(aSynEdit).WrapView.MarkupInfoWrapEol);
+        SetMarkupColor(ahaWrapSubLine, TIDESynEditor(aSynEdit).WrapView.MarkupInfoWrapSubLine);
       end;
     end;
     SetMarkupColorByClass(ahaHighlightWord, TSynEditMarkupHighlightAllCaret);

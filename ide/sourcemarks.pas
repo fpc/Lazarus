@@ -74,11 +74,13 @@ type
      ahaIdentComplWindowEntryEnum, ahaIdentComplWindowEntryUnit, ahaIdentComplWindowEntryNameSpace,
      ahaIdentComplWindowEntryText, ahaIdentComplWindowEntryTempl, ahaIdentComplWindowEntryKeyword,
      ahaIdentComplWindowEntryUnknown,
-     ahaOutlineLevel1Color, ahaOutlineLevel2Color, ahaOutlineLevel3Color, ahaOutlineLevel4Color, ahaOutlineLevel5Color, ahaOutlineLevel6Color, ahaOutlineLevel7Color, ahaOutlineLevel8Color, ahaOutlineLevel9Color, ahaOutlineLevel10Color
+     ahaOutlineLevel1Color, ahaOutlineLevel2Color, ahaOutlineLevel3Color, ahaOutlineLevel4Color, ahaOutlineLevel5Color, ahaOutlineLevel6Color, ahaOutlineLevel7Color, ahaOutlineLevel8Color, ahaOutlineLevel9Color, ahaOutlineLevel10Color,
+     ahaWrapIndend, ahaWrapEol, ahaWrapSubLine
      );
 
   TAhaGroupName = (
-    agnDefault, agnLanguage, agnText, agnLine, agnGutter, agnTemplateMode, agnSyncronMode,
+    agnDefault, agnLanguage, agnText, agnLine, agnGutter, agnWrap,
+    agnTemplateMode, agnSyncronMode,
     agnIfDef, agnIdentComplWindow, agnOutlineColors
   );
 

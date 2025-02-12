@@ -1663,6 +1663,11 @@ resourcestring
   dlgOptWordWrapEndOfLine = 'end of line';
   dlgOptWordWrapStartOfNextLine = 'start of next line';
   dlgOptWordWrapMinimumLineLength = 'Minimum line length';
+  dlgOptWordWrapIndent = 'Indent width';
+  dlgOptWordWrapIndentIsOffest = 'Indent relative to text';
+  dlgOptWordWrapIndentMin = 'Minimum indent width';
+  dlgOptWordWrapIndentMax = 'Maximum indent width';
+  dlgOptWordWrapIndentMaxRel = 'Maximum indent width (percent)';
 
   dlfMousePredefinedScheme = 'Use predefined scheme';
   dlfNoPredefinedScheme = '< None >';
@@ -2145,6 +2150,9 @@ resourcestring
   dlgAddHiAttrOutlineLevel8Color  = 'Level  8';
   dlgAddHiAttrOutlineLevel9Color  = 'Level  9';
   dlgAddHiAttrOutlineLevel10Color = 'Level 10';
+  dlgAddHiAttrWrapIndent  = 'Indent';
+  dlgAddHiAttrWrapEol     = 'EOL';
+  dlgAddHiAttrWrapSupLine = 'Sub-line';
   dlgAddHiSpecialVisibleChars     = 'Visualized Special Chars';
   dlgTopInfoHint                  = 'Current Class/Proc Hint';
   dlgCaretColor                   = 'Caret (Text-Cursor)';
@@ -2166,6 +2174,7 @@ resourcestring
   dlgAddHiAttrGroupText     = 'Text';
   dlgAddHiAttrGroupLine     = 'Line';
   dlgAddHiAttrGroupGutter   = 'Gutter';
+  dlgAddHiAttrGroupWrap     = 'Wrapping';
   dlgAddHiAttrGroupSyncroEdit    = 'Syncron Edit';
   dlgAddHiAttrGroupTemplateEdit  = 'Template Edit';
   dlgAddHiAttrGroupIfDef    = 'IfDef';
