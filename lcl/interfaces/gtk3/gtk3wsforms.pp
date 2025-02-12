@@ -490,6 +490,11 @@ begin
   {$IFDEF GTK3DEBUGCORE}
   DebugLn('TGtk3WSCustomForm.SetAlphaBlend');
   {$ENDIF}
+  if Gtk3IsGtkWindow(TGtk3Widget(ACustomForm.Handle).Widget) then
+    if AlphaBlend then
+      TGtk3Widget(ACustomForm.Handle).Widget^.set_opacity(Alpha / 255)
+    else
+      TGtk3Widget(ACustomForm.Handle).Widget^.set_opacity(1);
 end;
 
 { mdi support }
