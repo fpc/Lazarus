@@ -301,16 +301,11 @@ begin
 
   if ShouldBeVisible and not IsFormDesign(AForm) then
   begin
+    {note that gtk3 docs says that GDK_WINDOW_TYPE_HINT_UTILITY is for fsStayOnTop,
+     and set_keep_above() is for fsSystemStayOnTop, but it does not work, so
+     we use set_keep_above for both scenarios.}
     if (AForm.FormStyle in fsAllStayOnTop) then
-    begin
-      if AForm.FormStyle = fsSystemStayOnTop then
-        AWindow^.set_keep_above(True)
-      else
-        {$warning according to gtk3 docs this window should stay above application windows, but it is not so,
-         if we click onto form below this one it goes behind that form, so maybe set_keep_above(true) here too,
-         but it's behaviour in that case is fsSystemStayOnTop. Check under wayland !}
-        AWindow^.set_type_hint(GDK_WINDOW_TYPE_HINT_UTILITY);
-    end;
+      AWindow^.set_keep_above(True);
 
     if (fsModal in AForm.FormState) then
     begin
