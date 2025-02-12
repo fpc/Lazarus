@@ -3637,7 +3637,9 @@ When the control receives focus, the selection is always in the first part
 </element>
 
 <element name="TCustomDateTimePicker.CalendarForm">
-<short/>
+<short>
+Form instance where the date/time picker control is displayed.
+</short>
 <descr>
 <p>
 <var>CalendarForm</var> is a read-only <var>TCustomForm</var> property which 
