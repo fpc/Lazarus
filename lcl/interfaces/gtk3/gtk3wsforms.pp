@@ -40,7 +40,7 @@ uses
 ////////////////////////////////////////////////////
   Classes, Graphics, Controls, Forms, LCLType, LCLProc,
 ////////////////////////////////////////////////////
-  WSLCLClasses, WSControls, Gtk3WSControls, WSFactory, WSForms, WSProc,
+  WSLCLClasses, WSControls, WSForms, WSProc,
   LazGtk3, LazGdk3, LazGLib2, gtk3widgets, gtk3int, gtk3objects;
 
 type
@@ -273,7 +273,6 @@ var
     //Note that here may be still wrong geometry under x11,
     //but LCL should be happy at this point.
   end;
-
 begin
   {$IFDEF GTK3DEBUGCORE}
   DebugLn('TGtk3WSCustomForm.ShowHide handleAllocated=',dbgs(AWinControl.HandleAllocated));
@@ -320,6 +319,18 @@ begin
     end;
 
     AWindow^.realize;
+
+    if AForm.BorderStyle = bsNone then
+    begin
+      AWindow^.set_decorated(gtk_false);
+      if Assigned(AGtk3Widget.Shape) then
+      begin
+        AWindow^.set_app_paintable(True);
+        AWindow^.set_visual(TGdkScreen.get_default^.get_rgba_visual);
+        AGtk3Widget.SetWindowShape(AGtk3Widget.Shape, AWindow^.window);
+      end;
+    end;
+
   end;
   AGtk3Widget.BeginUpdate;
   AGtk3Widget.Visible := ShouldBeVisible;
