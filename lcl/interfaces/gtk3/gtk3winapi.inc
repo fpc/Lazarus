@@ -4351,11 +4351,66 @@ end;
 
 function TGtk3WidgetSet.SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND; X, Y,
   cx, cy: Integer; uFlags: UINT): Boolean;
+var
+  DisableUpdates: boolean;
+  AGtkWidget: TGtk3Widget absolute hWnd;
+  Alloc: TGtkAllocation;
 begin
-  Result := False;
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  DebugLn('WARNING: TGtk3WidgetSet.SetWindowPos not implemented Handle=',dbgHex(hWnd),' X=',dbgs(X),' Y=',dbgs(Y));
-  {$ENDIF}
+  Result := IsValidHandle(hWnd);
+  if not Result then
+    exit;
+
+  DisableUpdates := (SWP_NOREDRAW and uFlags) <> 0;
+  if DisableUpdates then
+  begin
+    if Gtk3IsGdkWindow(AGtkWidget.Widget^.window) then
+      AGtkWidget.Widget^.window^.freeze_updates;
+  end;
+  try
+    if ((SWP_NOMOVE and uFlags) = 0) and ((SWP_NOSIZE and uFlags) = 0) then
+    begin
+      AGtkWidget.SetBounds(X, Y, CX, CY);
+    end else
+    begin
+      if (SWP_NOMOVE and uFlags) = 0 then
+      begin
+        Alloc.X := X;
+        Alloc.Y := Y;
+        Alloc.width := AGtkWidget.Widget^.get_allocated_width;
+        Alloc.height := AGtkWidget.Widget^.get_allocated_height;
+        AGtkWidget.SetBounds(X, Y, Alloc.Width, Alloc.Height);
+      end;
+
+      if (SWP_NOSIZE and uFlags) = 0 then
+        AGtkWidget.SetBounds(X, Y, CX, CY);
+    end;
+
+    if (SWP_SHOWWINDOW and uFlags) <> 0 then
+      AGtkWidget.ShowAll;
+
+    if (SWP_HIDEWINDOW and uFlags) <> 0 then
+      AGtkWidget.Hide;
+
+    if (SWP_NOZORDER and uFlags) = 0 then
+    begin
+      case hWndInsertAfter of
+        HWND_TOP:
+          begin
+            aGtkWidget.raiseWidget;
+            if (SWP_NOACTIVATE and uFlags) = 0 then
+              aGtkWidget.Activate;
+          end;
+        HWND_BOTTOM: AGtkWidget.lowerWidget;
+        {TODO: HWND_TOPMOST ,HWND_NOTOPMOST}
+      end;
+    end;
+  finally
+    if DisableUpdates then
+    begin
+      if Gtk3IsGdkWindow(AGtkWidget.Widget^.window) then
+        AGtkWidget.Widget^.window^.thaw_updates;
+    end;
+  end;
 end;
 
 function TGtk3WidgetSet.SetWindowRgn(hWnd: HWND; hRgn: HRGN; bRedraw: Boolean
