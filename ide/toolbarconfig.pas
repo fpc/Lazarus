@@ -196,7 +196,7 @@ end;
 
 procedure TToolBarConfig.btnHelpClick(Sender: TObject);
 begin
-  OpenUrl('http://wiki.freepascal.org/IDE_Window:_Toolbar_Config');
+  OpenUrl('https://wiki.freepascal.org/IDE_Window:_Toolbar_Config');
 end;
 
 function TToolBarConfig.FilterEditFilterNode(ItemNode: TTreeNode; out Done: Boolean): Boolean;

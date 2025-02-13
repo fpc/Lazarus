@@ -422,7 +422,7 @@ end;
 
 procedure TDesktopForm.HelpButtonClick(Sender: TObject);
 begin
-  OpenUrl('http://wiki.freepascal.org/IDE_Window:_Desktops');
+  OpenUrl('https://wiki.freepascal.org/IDE_Window:_Desktops');
 end;
 
 procedure TDesktopForm.RefreshList(SelectName: string);

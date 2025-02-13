@@ -280,7 +280,7 @@ begin
   if AWSPrivate = nil then WSPrivate := TWSPrivate
   else WSPrivate := AWSPrivate;
 
-  // Determine VMT count and size => http://wiki.freepascal.org/Compiler-generated_data_and_data_structures
+  // Determine VMT count and size => https://wiki.freepascal.org/Compiler-generated_data_and_data_structures
   VvmtCount := 0;
   Vvmt := Pointer(ANode^.WSClass) + vmtMethodStart;
   // AWSComponent is equal to ANode^.WSClass;

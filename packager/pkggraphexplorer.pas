@@ -237,7 +237,7 @@ end;
 
 procedure TPkgGraphExplorerDlg.HelpButtonClick(Sender: TObject);
 begin
-  OpenUrl('http://wiki.freepascal.org/IDE_Window:_Package_Graph');
+  OpenUrl('https://wiki.freepascal.org/IDE_Window:_Package_Graph');
 end;
 
 procedure TPkgGraphExplorerDlg.LvlGraphControl1SelectionChanged(Sender: TObject

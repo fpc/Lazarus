@@ -507,7 +507,7 @@ end;
 procedure TIDETodoWindow.acHelpExecute(Sender: TObject);
 begin
   // usual API from IdeHelpIntf don't work
-  OpenURL('http://wiki.freepascal.org/IDE_Window:_ToDo_List');
+  OpenURL('https://wiki.freepascal.org/IDE_Window:_ToDo_List');
 end;
 
 procedure TIDETodoWindow.acExportExecute(Sender: TObject);

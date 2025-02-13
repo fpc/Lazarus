@@ -706,7 +706,7 @@ end;
 
 procedure TMainFrm.tbHelpClick(Sender: TObject);
 begin
-  OpenURL('http://wiki.freepascal.org/Online_Package_Manager');
+  OpenURL('https://wiki.freepascal.org/Online_Package_Manager');
 end;
 
 procedure TMainFrm.tbRefreshClick(Sender: TObject);

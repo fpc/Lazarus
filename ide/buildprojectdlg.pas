@@ -232,7 +232,7 @@ end;
 
 procedure TCleanBuildProjectDialog.HelpButtonClick(Sender: TObject);
 begin
-  OpenUrl('http://wiki.freepascal.org/IDE_Window:_Clean_up_build_files_dialog');
+  OpenUrl('https://wiki.freepascal.org/IDE_Window:_Clean_up_build_files_dialog');
 end;
 
 procedure TCleanBuildProjectDialog.PkgOutCheckBoxChange(Sender: TObject);

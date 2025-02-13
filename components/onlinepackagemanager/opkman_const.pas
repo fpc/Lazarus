@@ -44,9 +44,9 @@ const
   cLocalRepositoryUpdatesFile = 'updates_%s.xml';
   cExcludedFilesDef = '*.,*.a,*.o,*.ppu,*.compiled,*.bak,*.or,*.rsj,*.~,*.exe,*.dbg,*.zip,*.so,*.dll,*.dylib';
   cExcludedFoldersDef = 'lib,backup,updates,compiled,.git,.svn,units';
-  cHelpPage = 'http://wiki.freepascal.org/Online_Package_Manager';
-  cHelpPage_CreateRepositoryPackage = 'http://wiki.freepascal.org/Online_Package_Manager#Create_repository_package';
-  cHelpPage_CreateExternalJSON = 'http://wiki.freepascal.org/Online_Package_Manager#Create_JSON_for_updates';
+  cHelpPage = 'https://wiki.freepascal.org/Online_Package_Manager';
+  cHelpPage_CreateRepositoryPackage = 'https://wiki.freepascal.org/Online_Package_Manager#Create_repository_package';
+  cHelpPage_CreateExternalJSON = 'https://wiki.freepascal.org/Online_Package_Manager#Create_JSON_for_updates';
   {$ifdef win64}
   //cOpenSSLURL = 'http://packages.lazarus-ide.org/openssl-1.0.2j-x64_86-win64.zip';
   cOpenSSLURL = 'http://packages.lazarus-ide.org/openssl-1.1.1o-x64_86-win64.zip';

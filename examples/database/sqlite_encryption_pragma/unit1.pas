@@ -217,7 +217,7 @@ begin
 
       // Insert the values into the database
       // We're using ParamByName which prevents SQL Injection
-      // http://wiki.freepascal.org/Working_With_TSQLQuery#Parameters_in_TSQLQuery.SQL
+      // https://wiki.freepascal.org/Working_With_TSQLQuery#Parameters_in_TSQLQuery.SQL
       SQLQuery1.SQL.Text := 'Insert into DATA (Current_Time,User_Name,Info) values (:Current_Time,:User_Name,:Info)';
       SQLQuery1.Params.ParamByName('Current_Time').AsDateTime := Now;
       SQLQuery1.Params.ParamByName('User_Name').AsString := txtUser_Name.Text;

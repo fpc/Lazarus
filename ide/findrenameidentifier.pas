@@ -1040,7 +1040,7 @@ end;
 
 procedure TFindRenameIdentifierDialog.HelpButtonClick(Sender: TObject);
 begin
-  OpenUrl('http://wiki.freepascal.org/IDE_Window:_Find_or_Rename_identifier');
+  OpenUrl('https://wiki.freepascal.org/IDE_Window:_Find_or_Rename_identifier');
 end;
 
 procedure TFindRenameIdentifierDialog.RenameCheckBoxChange(Sender: TObject);
