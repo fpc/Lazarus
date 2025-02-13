@@ -8908,13 +8908,17 @@ InitializeWnd calls the inherited method prior to exit.
 </element>
 
 <element name="TCustomMemo.FinalizeWnd">
-<short>Frees resources when the handle for the control is freed.</short>
+<short>
+Maintains resources in the class instance when the handle for the control is 
+destroyed or re-created.
+</short>
 <descr>
 <p>
-<var>FinalizeWnd</var> ensures that string values in <var>Lines</var> are 
-freed in the widgetset class before the handle is destroyed for the control. 
-Existing text (and objects) are copied, and assigned to the member variable 
-for Lines after the widgetset class has been notified.
+<var>FinalizeWnd</var> ensures that existing string values assigned to the 
+<var>Lines</var> property are captured, stored locally, and freed in the 
+widget class instance before the handle is destroyed or re-created for the 
+control. It ensures that scroll bar information stored in either HorzScrollBar 
+or VertScrollBar is invalidated when the handle is finalized.
 </p>
 <p>
 FinalizeWnd calls the inherited method prior to exit.
@@ -8922,6 +8926,8 @@ FinalizeWnd calls the inherited method prior to exit.
 </descr>
 <seealso>
 <link id="TCustomMemo.Lines"/>
+<link id="TCustomMemo.HorzScrollBar"/>
+<link id="TCustomMemo.VertScrollBar"/>
 <link id="#lcl.controls.TWinControl.FinalizeWnd">TWinControl.FinalizeWnd</link>
 </seealso>
 </element>
