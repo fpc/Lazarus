@@ -186,6 +186,7 @@ type
     function AutoScrollEnabled: Boolean; virtual;
     procedure CalculateAutoRanges; virtual;
     procedure CreateWnd; override;
+    procedure DestroyWnd; override;
     function GetClientScrollOffset: TPoint; override;
     function GetLogicalClientRect: TRect; override;// logical size of client area
     procedure DoOnResize; override;
