@@ -8556,30 +8556,28 @@ begin
   ListOfSrcNameRefs:=nil;
   Files:=TStringList.Create;
   try
-    if OnlyEditorFiles then begin
-      // search only in open files
-      for i:=0 to SourceEditorManagerIntf.UniqueSourceEditorCount-1 do begin
-        aFilename:=SourceEditorManagerIntf.UniqueSourceEditors[i].FileName;
-        if not FilenameIsPascalSource(aFilename) then continue;
-        Files.Add(aFileName);
-      end;
-      // add project's main source file
-      if (Project1<>nil) and (Project1.MainUnitID>=0) then
-        Files.Add(Project1.MainFilename);
-    end else begin
+    // search only in open files
+    for i:=0 to SourceEditorManagerIntf.UniqueSourceEditorCount-1 do begin
+      aFilename:=SourceEditorManagerIntf.UniqueSourceEditors[i].FileName;
+      if not FilenameIsPascalSource(aFilename) then continue;
+      Files.Add(aFileName);
+    end;
+    // add project's main source file
+    if (Project1<>nil) and (Project1.MainUnitID>=0) then
+      Files.Add(Project1.MainFilename);
+    if not OnlyEditorFiles then begin
       // get owners of unit
       OwnerList:=PkgBoss.GetOwnersOfUnit(NewFilename);
-      if OwnerList=nil then exit(mrOk);
-      PkgBoss.ExtendOwnerListWithUsedByOwners(OwnerList);
-      ReverseList(OwnerList);
+      if OwnerList<>nil then begin
+        PkgBoss.ExtendOwnerListWithUsedByOwners(OwnerList);
+        ReverseList(OwnerList);
 
-      // get source files of packages and projects
-      ExtraFiles:=PkgBoss.GetSourceFilesOfOwners(OwnerList);
-      try
-        if ExtraFiles<>nil then
+        // get source files of packages and projects
+        ExtraFiles:=PkgBoss.GetSourceFilesOfOwners(OwnerList);
+        if ExtraFiles<>nil then begin
           Files.AddStrings(ExtraFiles);
-      finally
-        ExtraFiles.Free;
+          ExtraFiles.Free;
+        end;
       end;
     end;
     for i:=Files.Count-1 downto 0 do begin
@@ -8588,6 +8586,7 @@ begin
         Files.Delete(i);
     end;
     //DebugLn(['ReplaceUnitUse ',Files.Text]);
+    if Files.Count=0 then exit(mrOk);
 
     // commit source editor to codetools
     SaveEditorChangesToCodeCache(nil);
