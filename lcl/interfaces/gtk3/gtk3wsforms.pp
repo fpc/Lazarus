@@ -409,7 +409,10 @@ begin
     end;
 
     if Assigned(AWinControl.Parent) then
+    begin
+      AGtk3Widget.EndUpdate;
       exit;
+    end;
 
     //See issue #41412
     CheckAndFixGeometry;
