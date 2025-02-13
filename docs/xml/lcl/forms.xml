@@ -1415,6 +1415,32 @@ the inherited method to create the window and its handles.
 </seealso>
 </element>
 
+<element name="TScrollingWinControl.DestroyWnd">
+<short>
+Frees or invalidates resources in the class instance when the window Handle is 
+freed.
+</short>
+<descr>
+<p>
+<var>DestroyWnd</var> is an overridden method in 
+<var>TScrollingWinControl</var> used to maintain resources allocated in the 
+class instance when the window Handle for the control is freed. It calls the 
+inherited method on entry to free handles allocated for the control Canvas and 
+the widgetset class instance. It ensures that scroll bar information allocated 
+in either HorzScrollBar or VertScrollBar is invalidated when the handle(s) are 
+freed.
+</p>
+</descr>
+<seealso>
+<link id="TScrollingWinControl.HorzScrollBar"/>
+<link id="TScrollingWinControl.VertScrollBar"/>
+<link id="#lcl.controls.TCustomControl.Canvas">TCustomControl.Canvas</link>
+<link id="#lcl.controls.TCustomControl.DestroyWnd">TCustomControl.DestroyWnd</link>
+<link id="#lcl.controls.TWinControl.Handle">TWinControl.Handle</link>
+<link id="#lcl.controls.TWinControl.DestroyHandle">TWinControl.DestroyHandle</link>
+</seealso>
+</element>
+
 <element name="TScrollingWinControl.GetClientScrollOffset">
 <short>The origin for the physical client area.</short>
 <descr/>
