@@ -249,7 +249,7 @@ var
     // renaming a uses -> rename the unit
     // find unit
     Result:=false;
-    aUnitName:=DeclTool.ExtractUsedUnitName(DeclNode,@InFilename);
+    aUnitName:=RemoveAmpersands(DeclTool.ExtractUsedUnitName(DeclNode,@InFilename));
     if aUnitName='' then begin
       Err(20250206143851,'ExtractUsedUnitName failed');
       exit;
