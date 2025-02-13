@@ -35,6 +35,13 @@ begin
   end;
 end;
 
+procedure TScrollingWinControl.DestroyWnd;
+begin
+  inherited DestroyWnd;
+  if FHorzScrollBar <> nil then FHorzScrollBar.InvalidateScrollInfo;
+  if FVertScrollBar <> nil then FVertScrollBar.InvalidateScrollInfo;
+end;
+
 function TScrollingWinControl.GetClientScrollOffset: TPoint;
 begin
   if (HorzScrollBar <> nil) and (VertScrollBar <> nil) then
@@ -75,8 +82,7 @@ begin
   //debugln(['TScrollingWinControl.DoOnResize ',DbgSName(Self),' ',dbgs(BoundsRect),' ',dbgs(ClientRect),' ',dbgs(GetLogicalClientRect)]);
 end;
 
-procedure TScrollingWinControl.GetPreferredSizeClientFrame(out aWidth,
-  aHeight: integer);
+procedure TScrollingWinControl.GetPreferredSizeClientFrame(out aWidth, aHeight: Integer);
 // return frame width independent of scrollbars (i.e. as if scrollbars not shown)
 begin
   if AutoScroll and (VertScrollBar<>nil) then

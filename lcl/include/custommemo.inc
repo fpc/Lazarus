@@ -142,6 +142,8 @@ begin
     DebugLn('[TCustomMemo.FinalizeWnd] END ',DbgSName(Self),' ',FLines.ClassName,' FLines.Count=',dbgs(FLines.Count));
     {$endif}
   end;
+  if FHorzScrollBar <> nil then FHorzScrollBar.InvalidateScrollInfo;
+  if FVertScrollBar <> nil then FVertScrollBar.InvalidateScrollInfo;
   inherited FinalizeWnd;
 end;
 
