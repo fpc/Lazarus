@@ -3455,13 +3455,16 @@ procedure TGtk3Widget.Update(ARect: PRect);
 begin
   if IsWidgetOK then
   begin
-    if (ARect <> nil) and (aRect^.Width > 0) and (ARect^.Height > 0) then
+    if (ARect <> nil) then
     begin
-      with ARect^ do
-        FWidget^.queue_draw_area(Left, Top, Right - Left, Bottom - Top);
-      if FWidget <> GetContainerWidget then
+      if (aRect^.Width > 0) and (ARect^.Height > 0) then
+      begin
         with ARect^ do
-          GetContainerWidget^.queue_draw_area(Left, Top, Right - Left, Bottom - Top);
+          FWidget^.queue_draw_area(Left, Top, Right - Left, Bottom - Top);
+        if FWidget <> GetContainerWidget then
+          with ARect^ do
+            GetContainerWidget^.queue_draw_area(Left, Top, Right - Left, Bottom - Top);
+      end;
     end else
     begin
       //FWidget^.queue_draw;
