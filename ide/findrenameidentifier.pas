@@ -1499,7 +1499,8 @@ begin
         IsPrivate:=true;
     end;
   end;
-  ScopeOverridesCheckBox.Visible:=(Node<>nil) and (Node.Desc in [ctnProcedure,ctnProcedureHead]);
+  ScopeOverridesCheckBox.Visible:=(Node<>nil) and (Node.Desc=ctnProcedureHead)
+      and (FTool.ProcNodeHasSpecifier(Node,psVirtual) or FTool.ProcNodeHasSpecifier(Node,psOverride));
 
   if CodeToolBoss.GetIdentifierAt(ACodeBuffer,
     NewIdentifierPosition.X,NewIdentifierPosition.Y,FOldIdentifier,FNode) then
