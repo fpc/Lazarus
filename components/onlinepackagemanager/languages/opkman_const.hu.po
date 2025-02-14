@@ -878,9 +878,9 @@ msgid "Help"
 msgstr "Súgó"
 
 #: opkman_const.rsmainfrm_tbhelp_hint
-#, fuzzy
+#, object-pascal-format, fuzzy, badformat
 #| msgid "Help (http://wiki.freepascal.org/Online_Package_Manager)"
-msgid "Help (https://wiki.freepascal.org/Online_Package_Manager)"
+msgid "Help (%s)"
 msgstr "Súgó (http://wiki.freepascal.org/Online_Package_Manager)"
 
 #: opkman_const.rsmainfrm_tbinstall_caption

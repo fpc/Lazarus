@@ -847,7 +847,8 @@ msgid "Help"
 msgstr ""
 
 #: opkman_const.rsmainfrm_tbhelp_hint
-msgid "Help (https://wiki.freepascal.org/Online_Package_Manager)"
+#, object-pascal-format
+msgid "Help (%s)"
 msgstr ""
 
 #: opkman_const.rsmainfrm_tbinstall_caption
