@@ -252,6 +252,7 @@ begin
     CodeToolBoss.Explore(NewCode,Tool,true);
     OldRefs.Tool:=Tool;
     OldRefs.NewLocalSrcName:=NewUnitName;
+    ReplaceCodeInTreeOfPCodeXYPosition(OldRefs.TreeOfPCodeXYPosition,OldCode,NewCode);
   end;
 end;
 
