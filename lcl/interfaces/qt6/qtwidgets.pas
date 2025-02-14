@@ -11157,6 +11157,7 @@ begin
       QObject_disconnect(FLineEdit.Widget, '2returnPressed()', Widget, '1_q_returnPressed()');
       FLineEdit.ChildOfComplexWidget := ccwComboBox;
       FLineEdit.AttachEvents;
+      QComboBox_setCompleter(QComboBoxH(Widget), nil);
     end;
   end;
   Result := FLineEdit;
