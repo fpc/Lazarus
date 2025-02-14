@@ -178,7 +178,7 @@ resourcestring
   rsMainFrm_TBOptions_Caption = 'Options';
   rsMainFrm_TBOptions_Hint = 'Show options dialog';
   rsMainFrm_TBHelp_Caption = 'Help';
-  rsMainFrm_TBHelp_Hint = 'Help (' + cHelpPage + ')';
+  rsMainFrm_TBHelp_Hint = 'Help (%s)';
   rsMainFrm_miFromRepository = 'From official repository';
   rsMainFrm_miFromExternalSource = 'From third party repository';
   rsMainFrm_miCreateRepositoryPackage = 'Create repository package';
