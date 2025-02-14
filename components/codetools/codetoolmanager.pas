@@ -3064,7 +3064,7 @@ var
   CodeXYPos: PCodeXYPosition;
 begin
   {$IFDEF VerboseFindSourceNameReferences}
-  debugln(['TCodeToolManager.FindReferencesInFiles TargetFile="',TargetFilename,'" FileCount=',Files.Count,' SkipComments=',SkipComments]);
+  debugln(['TCodeToolManager.FindSourceNameReferences TargetFile="',TargetFilename,'" FileCount=',Files.Count,' SkipComments=',SkipComments]);
   {$ENDIF}
   Result:=false;
   ListOfSrcNameRefs:=nil;
@@ -3079,7 +3079,7 @@ begin
       '','.','..': continue; // invalid filename
       end;
       {$IFDEF VerboseFindSourceNameReferences}
-      debugln(['TCodeToolManager.FindReferencesInFiles File ',i,'/',Files.Count,' ',Filename]);
+      debugln(['TCodeToolManager.FindSourceNameReferences File ',i,'/',Files.Count,' ',Filename]);
       {$ENDIF}
       j:=i-1;
       while (j>=0) and (CompareFilenames(Filename,Files[j])<>0) do dec(j);
@@ -3096,12 +3096,12 @@ begin
           if DirCache.FindUnitSourceInCompletePath(TargetUnitName,InFilename,true)<>'' then
           begin
             {$IFDEF VerboseFindSourceNameReferences}
-            debugln(['TCodeToolManager.FindReferencesInFiles File ',Filename,', target in unit path']);
+            debugln(['TCodeToolManager.FindSourceNameReferences File ',Filename,', target in unit path']);
             {$ENDIF}
             DirCachesSearch.Add(DirCache);
           end else begin
             {$IFDEF VerboseFindSourceNameReferences}
-            debugln(['TCodeToolManager.FindReferencesInFiles File ',Filename,', target NOT in unit path, SKIP']);
+            debugln(['TCodeToolManager.FindSourceNameReferences File ',Filename,', target NOT in unit path, SKIP']);
             {$ENDIF}
             DirCachesSkip.Add(DirCache);
             continue;
@@ -3111,7 +3111,7 @@ begin
 
       Code:=LoadFile(Filename,true,false);
       if Code=nil then begin
-        debugln('TCodeToolManager.FindReferencesInFiles unable to load "',Filename,'"');
+        debugln('TCodeToolManager.FindSourceNameReferences unable to load "',Filename,'"');
         exit;
       end;
 

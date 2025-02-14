@@ -294,6 +294,10 @@ function CreateTreeOfPCodeXYPosition: TAVLTree;
 function AddCodePosition(var TreeOfPCodeXYPosition: TAVLTree;
                           const NewCodePos: TCodeXYPosition; Unique: boolean = true): boolean; // false if duplicate not added
 procedure FreeTreeOfPCodeXYPosition(TreeOfPCodeXYPosition: TAVLTree);
+procedure RemoveCodeInTreeOfPCodeXYPosition(TreeOfPCodeXYPosition: TAVLTree;
+  Code: TCodeBuffer);
+procedure ReplaceCodeInTreeOfPCodeXYPosition(TreeOfPCodeXYPosition: TAVLTree;
+  OldCode, NewCode: TCodeBuffer);
 procedure AddListToTreeOfPCodeXYPosition(SrcList: TFPList;
                           DestTree: TAVLTree; ClearList, CreateCopies: boolean);
 function ListOfPCodeXYPositionToStr(const ListOfPCodeXYPosition: TFPList): string;
@@ -441,6 +445,60 @@ begin
     ANode:=TreeOfPCodeXYPosition.FindSuccessor(ANode);
   end;
   TreeOfPCodeXYPosition.Free;
+end;
+
+procedure RemoveCodeInTreeOfPCodeXYPosition(TreeOfPCodeXYPosition: TAVLTree; Code: TCodeBuffer);
+var
+  Node, NextNode: TAVLTreeNode;
+  p: PCodeXYPosition;
+begin
+  if TreeOfPCodeXYPosition=nil then exit;
+  Node:=TreeOfPCodeXYPosition.FindLowest;
+  while Node<>nil do begin
+    NextNode:=TreeOfPCodeXYPosition.FindSuccessor(Node);
+    p:=PCodeXYPosition(Node.Data);
+    if p^.Code=Code then begin
+      Dispose(p);
+      TreeOfPCodeXYPosition.Delete(Node);
+    end;
+    Node:=NextNode;
+  end;
+end;
+
+procedure ReplaceCodeInTreeOfPCodeXYPosition(TreeOfPCodeXYPosition: TAVLTree; OldCode,
+  NewCode: TCodeBuffer);
+var
+  Node, NextNode: TAVLTreeNode;
+  p: PCodeXYPosition;
+  List: TFPList;
+  i: Integer;
+begin
+  if TreeOfPCodeXYPosition=nil then exit;
+  Node:=TreeOfPCodeXYPosition.FindLowest;
+  List:=nil;
+  try
+    while Node<>nil do begin
+      NextNode:=TreeOfPCodeXYPosition.FindSuccessor(Node);
+      p:=PCodeXYPosition(Node.Data);
+      if p^.Code=OldCode then begin
+        if List=nil then
+          List:=TFPList.Create;
+        List.Add(p);
+        TreeOfPCodeXYPosition.Delete(Node);
+      end;
+      Node:=NextNode;
+    end;
+
+    if List<>nil then begin
+      for i:=0 to List.Count-1 do begin
+        p:=PCodeXYPosition(List[i]);
+        p^.Code:=NewCode;
+        TreeOfPCodeXYPosition.Add(p);
+      end;
+    end;
+  finally
+    List.Free;
+  end;
 end;
 
 procedure AddListToTreeOfPCodeXYPosition(SrcList: TFPList; DestTree: TAVLTree;

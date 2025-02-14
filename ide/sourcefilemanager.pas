@@ -2776,7 +2776,7 @@ begin
     AnUnitInfo.FileReadOnly:=false;
 
   // if file is readonly then a simple Save is skipped
-  if (AnUnitInfo.ReadOnly) and ([sfSaveToTestDir,sfSaveAs]*Flags=[]) then
+  if AnUnitInfo.ReadOnly and ([sfSaveToTestDir,sfSaveAs]*Flags=[]) then
     exit(mrOk);
 
   // load old resource file
@@ -5854,8 +5854,11 @@ begin
     MainIDE.SetRecentFilesMenu;
 
     // add new path to unit path
-    if AnUnitInfo.IsPartOfProject and FilenameHasPascalExt(NewFilename)
-    and (CompareFilenames(NewFilePath,Project1.Directory)<>0) then begin
+    if AnUnitInfo.IsPartOfProject
+        and FilenameHasPascalExt(NewFilename)
+        and (CompareFilenames(NewFilePath,Project1.Directory)<>0)
+        and (CompareFilenames(NewFilePath,OldFilePath)<>0) then
+    begin
       S:=Project1.CompilerOptions.GetUnitPath(false);
       if SearchDirectoryInMaskedSearchPath(S,NewFilePath)<1 then
         AddPathToBuildModes(NewFilePath, False);
@@ -8512,11 +8515,15 @@ function GatherUnitReferences(Files: TStringList; OldFilename, NewFilename: stri
   var ListOfSrcNameRefs: TObjectList): TModalResult;
 var
   i: Integer;
+  Filename: String;
 begin
   CleanUpFileList(Files);
   for i:=Files.Count-1 downto 0 do begin
-    if (CompareFilenames(Files[i],OldFilename)=0)
-    or (CompareFilenames(Files[i],NewFilename)=0) then
+    Filename:=Files[i];
+    if (CompareFilenames(Filename,OldFilename)=0)
+    or (CompareFilenames(Filename,NewFilename)=0) then
+      Files.Delete(i)
+    else if FilenameIsAbsolute(Filename) and not FileExistsCached(Filename) then
       Files.Delete(i);
   end;
 
