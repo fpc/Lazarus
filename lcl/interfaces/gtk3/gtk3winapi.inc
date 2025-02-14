@@ -4040,7 +4040,8 @@ var
       SetGDouble(ATarget, ScrollInfo.nPos, HasChanged);
       ATarget := Max(ATarget, Adjustment^.lower);
       ATarget := Min(ATarget, Adjustment^.upper - Max(Adjustment^.page_size - 1, 0));
-      Adjustment^.value := ATarget;
+      if Adjustment^.value <> ATarget then
+        Adjustment^.value := ATarget;
     end;
 
     gtk_adjustment_changed(Adjustment);
@@ -4049,47 +4050,6 @@ var
       [Adjustment^.lower, Adjustment^.upper, Adjustment^.page_size, Adjustment^.value, Adjustment^.page_increment, BoolToStr(AControl.InUpdate, True)]));
     {$ENDIF}
     AControl.EndUpdate;
-  end;
-
-  procedure UpdateAdjustmentOrig;
-  var
-    ATarget: gdouble;
-  begin
-    if (ScrollInfo.FMask and SIF_RANGE) <> 0 then
-    begin
-      ATarget := Adjustment^.lower;
-      SetGDouble(ATarget, ScrollInfo.nMin, HasChanged);
-      Adjustment^.lower := ATarget;
-
-      ATarget := Adjustment^.upper;
-      SetGDouble(ATarget, ScrollInfo.nMax, HasChanged);
-      Adjustment^.upper := ATarget;
-    end;
-
-    if (ScrollInfo.FMask and SIF_PAGE) <> 0 then
-    begin
-      ATarget := Adjustment^.page_size;
-      SetGDouble(ATarget, ScrollInfo.nPage, HasChanged);
-
-      ATarget := Min(Max(ATarget, 0), Adjustment^.upper - Adjustment^.lower + 1);
-      if ATarget > 0 then
-      begin
-        Adjustment^.page_size := ATarget;
-
-        ATarget := Adjustment^.page_increment;
-        SetGDouble(ATarget, Max(1, (Adjustment^.page_size / 6) + 1), HasChanged);
-        Adjustment^.page_increment := ATarget;
-      end;
-    end;
-
-    if (ScrollInfo.FMask and SIF_POS) <> 0 then
-    begin
-      ATarget := Adjustment^.value;
-      SetGDouble(ATarget, ScrollInfo.nPos, HasChanged);
-      ATarget := Max(ATarget, Adjustment^.lower);
-      ATarget := Min(ATarget, Adjustment^.upper - Max(Adjustment^.page_size - 1, 0));
-      Adjustment^.value := ATarget;
-    end;
   end;
 
   procedure HandleRedraw;
@@ -4105,9 +4065,21 @@ var
         ScrollWin^.get_policy(@AHorzPolicy, @AVertPolicy);
         case SBStyle of
           SB_HORZ:
-            ScrollWin^.set_policy(POLICY[IsScrollbarVis], AVertPolicy);
+          begin
+            if AHorzPolicy <> POLICY[IsScrollbarVis] then
+              ScrollWin^.set_policy(POLICY[IsScrollbarVis], AVertPolicy);
+            if Gtk3WidgetSet.OverlayScrolling and ScrollWin^.get_hscrollbar^.get_visible and
+              Gtk3IsGdkWindow(ScrollWin^.get_hscrollbar^.window) then
+                ScrollWin^.get_hscrollbar^.window^.raise_;
+          end;
           SB_VERT:
-            ScrollWin^.set_policy(AHorzPolicy, POLICY[IsScrollbarVis]);
+          begin
+            if AVertPolicy <> POLICY[IsScrollbarVis] then
+              ScrollWin^.set_policy(AHorzPolicy, POLICY[IsScrollbarVis]);
+            if Gtk3WidgetSet.OverlayScrolling and ScrollWin^.get_vscrollbar^.get_visible and
+              Gtk3IsGdkWindow(ScrollWin^.get_vscrollbar^.window) then
+                ScrollWin^.get_vscrollbar^.window^.raise_;
+          end;
         end;
       end;
       TGtk3Widget(Handle).Update(nil);
