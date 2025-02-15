@@ -258,7 +258,10 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSWinControl.DestroyHandle(const AWinControl: TWinControl);
 begin
-  TQtWidget(AWinControl.Handle).Release;
+  if not WSCheckHandleAllocated(AWinControl, 'DestroyHandle') then
+    Exit;
+  if QtWidgetSet.IsValidHandle(AWinControl.Handle) then
+    TQtWidget(AWinControl.Handle).Release;
 end;
 
 {------------------------------------------------------------------------------

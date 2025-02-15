@@ -669,6 +669,7 @@ type
     ScrollArea: TQtWindowArea;
     {$ENDIF}
     destructor Destroy; override;
+    procedure Destroyed; cdecl; override;
 
     procedure BeginUpdate; override;
     procedure EndUpdate; override;
@@ -713,6 +714,7 @@ type
     property IsFrameWindow: Boolean read FIsFrameWindow write FIsFrameWindow; {check if our LCLObject is TCustomFrame}
     property FirstPaintEvent: boolean read FFirstPaintEvent write FFirstPaintEvent; {only for x11 - if firstpaintevent arrived we are 100% sure that frame is 100% accurate}
     property MenuBar: TQtMenuBar read FMenuBar;
+    property PopupParent: QWidgetH read FPopupParent;
     property ShowOnTaskBar: Boolean read FShowOnTaskBar;
   public
     function WinIDNeeded: boolean; override;
@@ -2969,15 +2971,15 @@ end;
   Params:  None
   Returns: Nothing
 
-  Note: LCL uses LM_CLOSEQUERY to set the form visibility and if we don�t send this
- message, you won�t be able to show a form twice.
+  Note: LCL uses LM_CLOSEQUERY to set the form visibility and if we don't send this
+ message, you won't be able to show a form twice.
  ------------------------------------------------------------------------------}
 function TQtWidget.SlotClose: Boolean; cdecl;
 var
   Msg : TLMessage;
 begin
   {$ifdef VerboseQt}
-    WriteLn('TQtWidget.SlotClose');
+    WriteLn('TQtWidget.SlotClose ',dbgsName(LCLObject));
   {$endif}
   FillChar(Msg{%H-}, SizeOf(Msg), 0);
 
@@ -3000,7 +3002,7 @@ var
   Msg: TLMessage;
 begin
   {$ifdef VerboseQt}
-    WriteLn('TQtWidget.SlotDestroy');
+  WriteLn('TQtWidget.SlotDestroy ',dbgsName(LCLObject));
   {$endif}
 
   FillChar(Msg{%H-}, SizeOf(Msg), #0);
@@ -7364,6 +7366,20 @@ begin
   {$ENDIF}
 
   inherited Destroy;
+end;
+
+procedure TQtMainWindow.Destroyed; cdecl;
+begin
+  //this is event from qt, must inform LCL about it. issue #41433
+  //when non modal popup is shown over modal form and modal form = real popup parent
+  //if popup form, and modal form is closed on button close then qt releases
+  //popup form automatically, so all we have todo is inform LCL.
+  if Assigned(LCLObject) and (LCLObject.Parent = nil) and not IsMdiChild then
+  begin
+    Widget := nil;
+    SlotDestroy;
+  end else
+    inherited Destroyed;
 end;
 
 procedure TQtMainWindow.BeginUpdate;
