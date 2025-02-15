@@ -2014,15 +2014,36 @@ begin
   SynEdit.TabWidth := 4;
 
   SetLines([
+    // 0
     'abc def ' + 'ABC DEFG ' + 'XYZ',
     //'A'  #9'B'  #9'C ' + 'DEF G'#9'H'  #9 + ''   #9   #9'xy',
     'A'#9'B'#9'C ' + 'DEF G'#9'H'#9 + #9#9'xy',
     'äää ööö ' + 'ÄÄÄ ÖÖÖ ' + 'ÜÜÜ',
-    '999'
+    '999',
+
+    // 4
+    'A نمت X',
+    'A نمت X Foo',
+    // 6
+    'Abc d نمت Foo',
+    'Abc de نمت Foo',
+    'Abcde def نمت Foo',
+    'Abcde  def نمت Foo',
+
+    // 10
+    'Abcde نمت نمت Foo',
+    'Abc de نمت نمت Foo',
+    'Abc de نمت نمت F نمت نمت Foo',
+    'Abc de نمت نمت  نمت نمت Foo',
+
+    // 13
+    'نمت) نمت نمت 789 123 نمت', // digits are weak LTR/RTL
+    ''
   ]);
 
   SetSynEditWidth(10);
   CheckLines('', 0, [
+    // 0 // Virt = 0
     'abc def ',
     'ABC DEFG ',
     'XYZ',
@@ -2032,7 +2053,41 @@ begin
     'äää ööö ',
     'ÄÄÄ ÖÖÖ ',
     'ÜÜÜ',
-    '999'
+    '999',
+
+    // 4  // Virt= 10
+    'A نمت X',
+    'A نمت X ',
+      'Foo',
+    // 6  // Virt=13
+    'Abc d نمت ',
+      'Foo',
+    'Abc de نمت',
+      ' Foo',
+    'Abcde def ',
+      'نمت Foo',
+    'Abcde  def',
+      ' نمت Foo',
+
+    // 10 // Virt = 21
+    'Abcde نمت ',
+      'نمت Foo',
+    'Abc de نمت',
+      ' نمت Foo',
+    'Abc de نمت',
+      ' نمت F نمت'
+      ,' نمت Foo',
+    'Abc de نمت',
+      ' نمت  نمت '
+      ,'نمت Foo',
+
+    // 14 // Virt = 31
+    'نمت) نمت ',
+    'نمت 789 ',
+    '123 نمت',
+
+    ''
+
   ], True);
 
   CheckLines('', ViewedExp(0, [
@@ -2045,7 +2100,41 @@ begin
     l(2, 0, 'äää ööö '),
     l(2, 1, 'ÄÄÄ ÖÖÖ '),
     l(2, 2, 'ÜÜÜ'),
-    l(3, 0, '999')
+    l(3, 0, '999'),
+
+    // 4  // Virt= 10
+    l(4, 0, 'A نمت X'),
+    l(5, 0, 'A نمت X '),
+    l(5, 1,   'Foo'),
+    // 6  // Virt=13
+    l(6, 0, 'Abc d نمت '),
+    l(6, 1,   'Foo'),
+    l(7, 0, 'Abc de نمت'),
+    l(7, 1,   ' Foo'),
+    l(8, 0, 'Abcde def '),
+    l(8, 1,   'نمت Foo'),
+    l(9, 0, 'Abcde  def'),
+    l(9, 1,   ' نمت Foo'),
+
+    // 10 // Virt = 21
+    l(10, 0, 'Abcde نمت '),
+    l(10, 1,   'نمت Foo'),
+    l(11, 0, 'Abc de نمت'),
+    l(11, 1,   ' نمت Foo'),
+    l(12, 0, 'Abc de نمت'),
+    l(12, 1,   ' نمت F نمت'),
+    l(12, 2,   ' نمت Foo'),
+    l(13, 0, 'Abc de نمت'),
+    l(13, 1,   ' نمت  نمت '),
+    l(13, 2,   'نمت Foo'),
+
+    // 14 // Virt = 31
+    l(14, 0, 'نمت) نمت '),
+    l(14, 1, 'نمت 789 '),
+    l(14, 2, '123 نمت'),
+
+    l(15, 0, '')
+
   ], tTrue));
 
 
@@ -2224,6 +2313,64 @@ begin
     CheckXyMap('wcpBOL', p( 2,8,          10,3,   17,3)); // after "Ä"
     CheckXyMap('wcpBOL', p( 1,9,          17,3,   29,3)); // after " "
 
+    //FWordWrap.CaretWrapPos := wcpBOL;
+
+    FWordWrap.CaretWrapPos := wcpEOL;
+    // viewed phys log  x,y
+    // line 5 (idx=4)
+    CheckXyMap('RTL', p( 2,11,           2,5,    2,5)); // after A
+    CheckXyMap('RTL', p( 3,11,           3,5,    3,5)); // after A space  // befare first RTL / could be PX = 6
+    CheckXyMap('RTL', p( 5,11,           5,5,    5,5)); // after first RTL
+    CheckXyMap('RTL', p( 4,11,           4,5,    7,5)); // after 2nd RTL
+    CheckXyMap('RTL', p( 6,11,           6,5,    9,5)); // after 3rd RTL  // before space / could be PX=3
+    CheckXyMap('RTL', p( 7,11,           7,5,   10,5)); // after 2nd space
+    CheckXyMap('RTL', p( 8,11,           8,5,   11,5)); // after X
+
+    // line 6 (idx=5)
+    CheckXyMap('RTL', p( 8,12,           8,6,   11,6)); // after X
+    CheckXyMap('RTL', p( 9,12,           9,6,   12,6)); // after X space
+    CheckXyMap('RTL', p( 2,13,          10,6,   13,6)); // after F of Foo
+
+    // line 7 (idx=6)
+    CheckXyMap('RTL', p(11,14,          11,7,   14,7)); // after last space in first line
+    CheckXyMap('RTL', p( 2,15,          12,7,   15,7)); // after F of Foo (subline)
+
+    // line 8 (idx=7)
+    CheckXyMap('RTL', p(11,16,          11,8,   14,8)); // after last RTL
+    CheckXyMap('RTL', p( 2,17,          12,8,   15,8)); // after space, before Foo (subline)
+
+    // line 9 (idx=8)
+    FWordWrap.CaretWrapPos := wcpBOL;
+    CheckXyMap('RTL BOL', p( 1,19,          11,9,   11,9)); // subline at start (before first RTL)
+    CheckXyMap('RTL BOL', p( 3,19,          13,9,   13,9)); // subline (after first RTL)
+    CheckXyMap('RTL BOL', p( 2,19,          12,9,   15,9)); // subline (after 2nd RTL)
+    FWordWrap.CaretWrapPos := wcpEOL;
+    CheckXyMap('RTL', p(11,18,          11,9,   11,9)); // at end of first line
+    CheckXyMap('RTL', p( 3,19,          13,9,   13,9)); // subline (after first RTL)
+    CheckXyMap('RTL', p( 2,19,          12,9,   15,9)); // subline (after 2nd RTL)
+
+    // line 10 (idx=9)  / Virt 20
+
+    // line 11 (idx=10)  / Virt 22
+    (* The space at the end of the first line is the space between the 2 RTL sequences.
+       (the space is part of the overall RTL sequence)
+       That space is therefore displayed at the left end of the RTL run.
+       I.e. On the screen it is right after the normal space from "ABCDE "
+       The RTL sequence in the first line is the sequence from the right of the RTL run
+    *)
+    FWordWrap.CaretWrapPos := wcpEOL;
+    CheckXyMap('RTL', p(10,22,          13,11,   9,11)); // after first RTL (first line)
+    CheckXyMap('RTL', p( 9,22,          12,11,  11,11)); // after 2nd RTL (first line)
+    CheckXyMap('RTL', p( 8,22,          11,11,  13,11)); // after 3rd / before space
+// The viewed-x is between the leading LTR and the RTL text. So it can not be distinguished
+//    CheckXyMap('RTL', p( 7,22,          10,11,  14,11)); // after space  //???????????? TEST BOL <> EOL
+
+//  same at the end
+//    CheckXyMap('RTL', p( 3,23,           9,11,  16,11)); // 1st subline: after 1st RTL (2nd sequence)
+    CheckXyMap('RTL', p( 2,23,           8,11,  18,11)); // 1st subline: after 2nd RTL (2nd sequence)
+    CheckXyMap('RTL', p( 4,23,          14,11,  20,11)); // 1st subline: after 3rd RTL (2nd sequence) => go to LTR sequence
+
+
   end;
 
 
@@ -2234,8 +2381,8 @@ begin
 
 
   SynEdit.ExecuteCommand(ecEditorBottom, '', nil);
-  AssertEquals('ecEditorBottom', 4 ,SynEdit.CaretY);
-  AssertEquals('ecEditorBottom', 10 ,SynEdit.CaretObj.ViewedLineCharPos.y);
+  AssertEquals('ecEditorBottom', 15 ,SynEdit.CaretY);
+  AssertEquals('ecEditorBottom', 34 ,SynEdit.CaretObj.ViewedLineCharPos.y);
 
   SetSynEditWidth(65);
   AddLines(0, 6000, 60, 'A');

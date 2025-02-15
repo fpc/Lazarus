@@ -234,13 +234,18 @@ public
     function  GetSublineCount (ALine: String; AMaxWidth: Integer; const APhysCharWidths: TPhysicalCharWidths): Integer; inline;
     procedure GetSublineBounds(ALine: String; AMaxWidth, AWrapIndent: Integer;
       const APhysCharWidths: TPhysicalCharWidths; ASubLine: Integer; out ALogStartX,
-      ANextLogStartX, APhysStart: IntIdx; out APhysWidth: integer);
+      ANextLogStartX, APhysStart: IntIdx; out APhysWidth: integer); // APhysStart is based on LTR only
+    procedure GetSublineBounds(ALine: String; AMaxWidth, AWrapIndent: Integer; const APhysCharWidths: TPhysicalCharWidths;
+      ASubLine: Integer;
+      out ALogStartX, ANextLogStartX, APhysStart: IntIdx; out APhysWidth: integer;
+      var AViewedX: integer;
+      out APhysX: integer);
     function  GetSubLineFromX (ALine: String; AMaxWidth, AWrapIndent: Integer; const APhysCharWidths: TPhysicalCharWidths; var APhysToViewedXPos: Integer): integer;
 
     procedure GetWrapInfoForViewedXY(var AViewedXY: TViewedPoint; AFlags: TViewedXYInfoFlags; out AFirstViewedX: IntPos; ALogPhysConvertor: TSynLogicalPhysicalConvertor);
 
     function TextXYToLineXY(ATextXY: TPhysPoint): TViewedSubPoint_0;
-    function LineXYToTextX(ARealLine: IntPos; ALineXY: TViewedSubPoint_0): Integer;
+    function ViewedSubLineXYToTextX(ARealLine: IntPos; ALineXY: TViewedSubPoint_0): Integer;
     function CalculateWrapForLine(ALineIdx: IntIdx; AMaxWidth: integer): Integer; inline;
   public
     constructor Create(AOwner: TComponent); override;
@@ -1296,7 +1301,7 @@ begin
   Result := inherited ViewXYIdxToTextXYIdx(AViewXYIdx, ANodeStartLine);
   Result.y := ANodeStartLine + GetOffsetForWrap(Result.y - ANodeStartLine, SubOffset);
 
-  Result.x := FSynEditWrappedPlugin.LineXYToTextX(Result.y, Point(Result.x, SubOffset) );
+  Result.x := FSynEditWrappedPlugin.ViewedSubLineXYToTextX(Result.y, Point(Result.x, SubOffset) );
 end;
 
 procedure TSynWordWrapIndexPage.InvalidateLines(AFromOffset, AToOffset: Integer);
@@ -1866,6 +1871,35 @@ begin
   end;
 end;
 
+function FindPreviousCharStart(const APhysCharWidths: TPhysicalCharWidths; AnX: integer): Integer; inline;
+begin
+  assert(AnX > 0, 'FindPreviousCharStart: AnX > 0');
+  Result := AnX - 1;
+  while (Result >= 0) and (APhysCharWidths[Result] = 0) do
+    dec(Result);
+end;
+function CalculateRtlLead(const APhysCharWidths: TPhysicalCharWidths; AnX: integer): Integer; //inline;
+begin
+  Result := 0;
+  while (AnX >= 0) and
+        ( (APhysCharWidths[AnX] = 0) or ((APhysCharWidths[AnX] and PCWFlagRTL) <> 0) )
+  do begin
+    Result := Result + (APhysCharWidths[AnX] and PCWMask);
+    dec(AnX);
+  end;
+end;
+function CalculateRtlRemainder(const APhysCharWidths: TPhysicalCharWidths; ALineLen, AnX: integer): Integer; //inline;
+begin
+  Result := 0;
+  while (AnX < ALineLen) and
+        ( (APhysCharWidths[AnX] = 0) or ((APhysCharWidths[AnX] and PCWFlagRTL) <> 0) )
+  do begin
+    Result := Result + (APhysCharWidths[AnX] and PCWMask);
+    inc(AnX);
+  end;
+end;
+
+
 procedure TLazSynEditLineWrapPlugin.GetSublineBounds(ALine: String; AMaxWidth,
   AWrapIndent: Integer; const APhysCharWidths: TPhysicalCharWidths; ASubLine: Integer; out
   ALogStartX, ANextLogStartX, APhysStart: IntIdx; out APhysWidth: integer);
@@ -1887,16 +1921,71 @@ begin
   end;
 end;
 
+procedure TLazSynEditLineWrapPlugin.GetSublineBounds(ALine: String; AMaxWidth,
+  AWrapIndent: Integer; const APhysCharWidths: TPhysicalCharWidths; ASubLine: Integer; out
+  ALogStartX, ANextLogStartX, APhysStart: IntIdx; out APhysWidth: integer; var AViewedX: integer;
+  out APhysX: integer);
+var
+  x, RtlRemainderWidth, RtlLeadWitdh: Integer;
+begin
+  GetSublineBounds(ALine, AMaxWidth, AWrapIndent, APhysCharWidths, ASubLine, ALogStartX, ANextLogStartX, APhysStart, APhysWidth);
+
+  if (ASubLine > 0) then begin
+    AViewedX := max(1, AViewedX - AWrapIndent);
+    if (AViewedX = 1) and (FCaretWrapPos = wcpEOL) then
+      AViewedX := 2;
+  end;
+  if (ANextLogStartX > 0) and (ANextLogStartX < Length(ALine)) then begin
+    x := APhysWidth;
+    if FCaretWrapPos = wcpEOL then
+      inc(x);
+    if AViewedX > x then
+      AViewedX := x;
+  end;
+
+  APhysX := AViewedX;
+
+  if (ALogStartX > 0) and ((APhysCharWidths[ALogStartX] and PCWFlagRTL) <> 0) then begin
+    x := FindPreviousCharStart(APhysCharWidths, ALogStartX);
+    if (APhysCharWidths[x] and PCWFlagRTL) <> 0 then begin
+      RtlRemainderWidth := CalculateRtlRemainder(APhysCharWidths, Length(ALine), ALogStartX);
+      if APhysX < RtlRemainderWidth then begin
+        RtlLeadWitdh := CalculateRtlLead(APhysCharWidths, x);
+        APhysX := APhysX
+                  + (APhysStart - RtlLeadWitdh)
+                  + Max(0,RtlRemainderWidth - APhysWidth);
+        exit;
+      end;
+    end;
+  end;
+
+  if (ANextLogStartX > 0) and (ANextLogStartX < Length(ALine)) and ((APhysCharWidths[ANextLogStartX] and PCWFlagRTL) <> 0) then begin
+    x := FindPreviousCharStart(APhysCharWidths, ANextLogStartX);
+    RtlLeadWitdh := CalculateRtlLead(APhysCharWidths, x);
+    assert(APhysWidth >= RtlLeadWitdh, 'TLazSynEditLineWrapPlugin.GetSublineBounds: APhysWidth > RtlLeadWitdh');
+    if APhysX - 1 > APhysWidth - RtlLeadWitdh then begin
+      RtlRemainderWidth := CalculateRtlRemainder(APhysCharWidths, Length(ALine), ANextLogStartX);
+      APhysX := APhysX + APhysStart + RtlRemainderWidth;
+      exit;
+    end;
+  end;
+
+  APhysX := APhysX + APhysStart;
+end;
+
 function TLazSynEditLineWrapPlugin.GetSubLineFromX(ALine: String; AMaxWidth, AWrapIndent: Integer;
   const APhysCharWidths: TPhysicalCharWidths; var APhysToViewedXPos: Integer): integer;
 var
-  x, PhysWidth, AMaxWidth2: Integer;
+  x, PhysWidth, AMaxWidth2, x2: Integer;
+  RtlLeadWitdh, RtlRemainderWidth, PhysToViewedInRTLOffs, LtrLead: integer;
 begin
   Result := 0;
   if Length(ALine) = 0 then
     exit;
   Result := -1;
   x := 0;
+  RtlRemainderWidth := 0;
+  PhysToViewedInRTLOffs := 0;
 
   AMaxWidth2 := AMaxWidth - AWrapIndent;
   assert(AMaxWidth2>0, 'TLazSynEditLineWrapPlugin.GetSublineCount: AMaxWidth>0');
@@ -1906,17 +1995,56 @@ begin
     inc(Result);
     x := CalculateNextBreak(PChar(ALine), x, AMaxWidth, APhysCharWidths, PhysWidth);
     AMaxWidth := AMaxWidth2;
-    if x >= Length(ALine) then
+    if (x >= Length(ALine)) and (PhysToViewedInRTLOffs = 0) then
       break;
-    if (FCaretWrapPos = wcpBOL) and (PhysWidth = APhysToViewedXPos) and (x < Length(ALine))
-    then begin
-      inc(Result);
-      APhysToViewedXPos := APhysToViewedXPos - PhysWidth;
-      break;
+
+    if RtlRemainderWidth > 0 then begin
+      LtrLead := 0;
+      RtlRemainderWidth := Max(0, RtlRemainderWidth - PhysWidth);
     end;
-    if PhysWidth >= APhysToViewedXPos then
-      break;
-    APhysToViewedXPos := APhysToViewedXPos - PhysWidth;
+
+    if (RtlRemainderWidth = 0) and
+       (PhysToViewedInRTLOffs = 0) and
+       (x > 0) and ((APhysCharWidths[x] and PCWFlagRTL) <> 0) then begin
+      x2 := FindPreviousCharStart(APhysCharWidths, x);
+      if ((APhysCharWidths[x2] and PCWFlagRTL) <> 0) then begin
+        // IN RTL run
+        RtlLeadWitdh := CalculateRtlLead(APhysCharWidths, x2);
+        assert(RtlLeadWitdh <= PhysWidth, 'TLazSynEditLineWrapPlugin.GetSubLineFromX: RtlLeadWitdh <= PhysWidth');
+
+        if (APhysToViewedXPos <= PhysWidth - RtlLeadWitdh) then
+          break;
+
+        RtlRemainderWidth := CalculateRtlRemainder(APhysCharWidths, Length(ALine), x);
+
+        LtrLead := PhysWidth - RtlLeadWitdh;
+        PhysToViewedInRTLOffs := APhysToViewedXPos - LtrLead;
+
+        if PhysToViewedInRTLOffs >= RtlLeadWitdh + RtlRemainderWidth then //NOT_IN_THIS_RUN;
+          PhysToViewedInRTLOffs := 0;
+      end;
+    end;
+
+    if (PhysToViewedInRTLOffs > 0) then begin
+      if (PhysToViewedInRTLOffs > RtlRemainderWidth) or
+         ( (FCaretWrapPos = wcpBOL) and (PhysToViewedInRTLOffs = RtlRemainderWidth) )
+      then begin // within RtlLeadWitdh on the right side
+        //APhysToViewedXPos := APhysToViewedXPos - RtlRemainderWidth;
+        APhysToViewedXPos := LtrLead + PhysToViewedInRTLOffs - RtlRemainderWidth;
+        break;
+      end;
+    end
+    else begin
+      if (FCaretWrapPos = wcpBOL) and (PhysWidth = APhysToViewedXPos) and (x < Length(ALine))
+      then begin
+        inc(Result);
+        APhysToViewedXPos := APhysToViewedXPos - PhysWidth;
+        break;
+      end;
+      if PhysWidth >= APhysToViewedXPos then
+        break;
+      APhysToViewedXPos := APhysToViewedXPos - PhysWidth;
+    end;
   end;
   APhysToViewedXPos := ToPos(APhysToViewedXPos);
 end;
@@ -1928,8 +2056,8 @@ var
   SubLineOffset, YIdx: TLineIdx;
   LineTxt: String;
   PWidth: TPhysicalCharWidths;
-  LogX, NextLogX, PhysX: IntIdx;
-  PhysWidth, WrapInd, AMaxWidth: Integer;
+  BoundLogX, NextBoundLogX, BoundPhysX: IntIdx;
+  PhysWidth, WrapInd, AMaxWidth, PhysXPos: Integer;
 begin
 
   YIdx := FLineMapView.Tree.GetLineForForWrap(ToIdx(AViewedXY.y), SubLineOffset);
@@ -1941,26 +2069,19 @@ begin
   AMaxWidth := WrapColumn;
   WrapInd := CalculateIndentFor(PChar(LineTxt), AMaxWidth, PWidth);
 
-  GetSublineBounds(LineTxt, AMaxWidth, WrapInd, PWidth, SubLineOffset, LogX, NextLogX, PhysX, PhysWidth);
+  GetSublineBounds(LineTxt, AMaxWidth, WrapInd, PWidth, SubLineOffset, BoundLogX, NextBoundLogX, BoundPhysX, PhysWidth, AViewedXY.x, PhysXPos);
 
   case CaretWrapPos of
     wcpEOL: begin
-        if (SubLineOffset > 0) and (AViewedXY.x <= 1) then
-          AViewedXY.x := 2
-        else
-        if (NextLogX < length(LineTxt)) and (AViewedXY.x > ToPos(PhysWidth)) then
-          AViewedXY.x := ToPos(PhysWidth);
         AFirstViewedX := 2;
       end;
     wcpBOL: begin
-        if (NextLogX < length(LineTxt)) and (AViewedXY.x >= ToPos(PhysWidth)) then
-          AViewedXY.x := ToPos(PhysWidth) - 1;
         AFirstViewedX := 1;
       end;
   end;
 
+  AViewedXY.x := PhysXPos;
   AViewedXY.y := ToPos(YIdx);
-  AViewedXY.x := AViewedXY.x + PhysX;
 end;
 
 function TLazSynEditLineWrapPlugin.TextXYToLineXY(ATextXY: TPhysPoint
@@ -1978,17 +2099,18 @@ begin
   Result.x := ATextXY.x;
   Result.y :=
     GetSubLineFromX(ALine, AMaxWidth, WrapInd, APhysCharWidths, Result.x);
-  if Result.x <> ATextXY.x then
+  //if Result.x <> ATextXY.x then
+  if Result.y > 0 then
     Result.x := Result.x + WrapInd; // Result is on sub-line
 end;
 
-function TLazSynEditLineWrapPlugin.LineXYToTextX(ARealLine: IntPos;
+function TLazSynEditLineWrapPlugin.ViewedSubLineXYToTextX(ARealLine: IntPos;
   ALineXY: TViewedSubPoint_0): Integer;
 var
   AMaxWidth, WrapInd, ANextLogX, APhysWidth: Integer;
   ALine: String;
   APhysCharWidths: TPhysicalCharWidths;
-  dummy: integer;
+  dummy, PhysXPos: integer;
 begin
   FLineMapView.LogPhysConvertor.CurrentLine := ARealLine;
   ALine := FLineMapView.NextLines.Strings[ARealLine];
@@ -1996,22 +2118,8 @@ begin
   AMaxWidth := WrapColumn;
   WrapInd := CalculateIndentFor(PChar(ALine), AMaxWidth, APhysCharWidths);
 
-  GetSublineBounds(ALine, AMaxWidth, WrapInd, APhysCharWidths, ALineXY.y, dummy, ANextLogX, Result, APhysWidth);
-
-  if (ALineXY.y > 0) then
-    ALineXY.x := max(1, ALineXY.x -WrapInd);
-  if (ALineXY.y > 0) and (ALineXY.X <= 1) and (FCaretWrapPos = wcpEOL) then begin
-    ALineXY.x := 2;
-  end
-  else
-  if (ANextLogX > 0) and (ANextLogX < Length(ALine)) then begin
-    if FCaretWrapPos = wcpEOL then
-      inc(APhysWidth);
-    if ALineXY.X > APhysWidth then
-      ALineXY.x := APhysWidth;
-  end;
-
-  Result := Result + ALineXY.x;
+  GetSublineBounds(ALine, AMaxWidth, WrapInd, APhysCharWidths, ALineXY.y, dummy, ANextLogX, Result, APhysWidth, ALineXY.x, PhysXPos);
+  Result := PhysXPos;
 end;
 
 function TLazSynEditLineWrapPlugin.CalculateWrapForLine(ALineIdx: IntIdx;
