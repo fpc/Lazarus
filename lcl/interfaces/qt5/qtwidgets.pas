@@ -236,7 +236,7 @@ type
     procedure ShowMinimized;
     procedure ShowMaximized;
     procedure ShowFullScreen;
-    function getActionByIndex(AIndex: Integer): QActionH;
+    function getActionByIndex(AIndex: Integer; AItem: TMenuItem): QActionH;
     function getAutoFillBackground: Boolean;
     function getClientBounds: TRect; virtual;
     function getClientOffset: TPoint; virtual;
@@ -4736,14 +4736,42 @@ begin
   QWidget_showFullScreen(Widget);
 end;
 
-function TQtWidget.getActionByIndex(AIndex: Integer): QActionH;
+function TQtWidget.getActionByIndex(AIndex: Integer; AItem: TMenuItem): QActionH;
 var
   ActionList: TPtrIntArray;
+  WStr: WideString;
+  i: Integer;
+  AVariant: QVariantH;
+  AOk: Boolean;
+  AData: QWord;
 begin
   QWidget_actions(Widget, @ActionList);
   if (AIndex >= 0) and (AIndex < Length(ActionList)) then
-    Result := QActionH(ActionList[AIndex])
-  else
+  begin
+    for i := 0 to High(ActionList) do
+    begin
+      if AItem <> nil then
+      begin
+        AVariant := QVariant_Create;
+        try
+          QAction_data(QActionH(ActionList[i]), AVariant);
+          if not QVariant_isNull(AVariant) then
+          begin
+            AOk := False;
+            AData := QVariant_toULongLong(AVariant, @AOk);
+            if AIndex <= TMenuItem(AData).MenuIndex then
+            begin
+              Result :=  QActionH(ActionList[i]);
+              exit;
+            end;
+          end;
+        finally
+          QVariant_destroy(AVariant);
+        end;
+      end;
+    end;
+    Result := QActionH(ActionList[AIndex]);
+  end else
     Result := nil;
 end;
 
@@ -16391,6 +16419,10 @@ begin
     FActions.Free;
   end;
 
+  if Assigned(FActionHandle) then
+    QAction_Destroy(FActionHandle);
+  FActionHandle := nil;
+
   inherited Destroy;
 end;
 
@@ -16587,6 +16619,7 @@ end;
 function TQtMenu.insertMenu(AIndex: Integer; AMenu: QMenuH; AItem: TMenuItem): QActionH;
 var
   actionBefore: QActionH;
+  AVariant: QVariantH;
 begin
 
   setHasSubmenu(True);
@@ -16594,12 +16627,15 @@ begin
   if (AItem <> nil) and not AItem.IsLine then
     setActionGroups(AItem);
 
-  actionBefore := getActionByIndex(AIndex);
+  actionBefore := getActionByIndex(AIndex, AItem);
 
   if actionBefore <> nil then
     Result := QMenu_insertMenu(QMenuH(Widget), actionBefore, AMenu)
   else
     Result := QMenu_addMenu(QMenuH(Widget), AMenu);
+  AVariant := QVariant_create(PtrUInt(AItem));
+  QAction_setData(Result, AVariant);
+  QVariant_destroy(AVariant);
 end;
 
 function TQtMenu.getHasSubMenu: boolean;
@@ -17016,7 +17052,7 @@ begin
     setVisible(FVisible);
   end;
   {$ENDIF}
-  actionBefore := getActionByIndex(AIndex);
+  actionBefore := getActionByIndex(AIndex, nil);
   if actionBefore <> nil then
     Result := QMenuBar_insertMenu(QMenuBarH(Widget), actionBefore, AMenu)
   else
