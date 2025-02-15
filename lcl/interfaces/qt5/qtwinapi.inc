@@ -6646,6 +6646,9 @@ begin
 
   Result := False;
 
+  if not IsValidHandle(hWnd) then
+    exit;
+
   Widget := TQtWidget(hWnd);
 
   if Widget <> nil then

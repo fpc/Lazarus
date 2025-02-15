@@ -6680,10 +6680,13 @@ var
   Widget: TQtWidget;
 begin
   {$ifdef VerboseQtWinAPI}
-  WriteLn('[WinAPI ShowWindow] hwnd ',dbgHex(PtrUInt(hWnd)),' nCmdShow ',nCmdShow);
+  WriteLn('[WinAPI ShowWindow] hwnd ',dbgHex(PtrUInt(hWnd)),' nCmdShow ',nCmdShow,' IsValidHandle=',IsValidHandle(hWnd));
   {$endif}
 
   Result := False;
+
+  if not IsValidHandle(hWnd) then
+    exit;
 
   Widget := TQtWidget(hWnd);
 
