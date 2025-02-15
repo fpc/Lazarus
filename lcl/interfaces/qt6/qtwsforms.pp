@@ -626,7 +626,9 @@ begin
         APopupParent := TCustomForm(AWinControl).GetRealPopupParent;
         if (APopupParent <> nil) then
         begin
-          Widget.setParent(TQtWidget(APopupParent.Handle).Widget);
+          //attach destroy event to PopupParent.Handle.Widget via signal on Widget
+          //use setRealPopupParent, issue #41433
+          Widget.setRealPopupParent(TQtWidget(APopupParent.Handle).Widget);
           Widget.setWindowFlags(Widget.windowFlags or QtDialog); // issue #41241
         end;
       end;
@@ -641,6 +643,12 @@ begin
   end;
 
   Widget.setVisible(AWinControl.HandleObjectShouldBeVisible);
+  if not AWinControl.HandleObjectShouldBeVisible then
+  begin
+    // issue #41433
+    if Widget.PopupParent <> nil then
+      Widget.setRealPopupParent(nil);
+  end;
   Widget.EndUpdate;
 
   {$IFDEF HASX11}
