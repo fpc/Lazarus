@@ -671,7 +671,6 @@ type
     ScrollArea: TQtWindowArea;
     {$ENDIF}
     destructor Destroy; override;
-    procedure Destroyed; cdecl; override;
     procedure BeginUpdate; override;
     procedure EndUpdate; override;
 
@@ -2381,7 +2380,17 @@ begin
 end;
 
 procedure TQtWidget.Destroyed; cdecl;
+var
+  Msg: TLMessage;
 begin
+  //QEventDestroy does not trigger in Qt5 and Qt6 so we must finish here.
+  //see issue #41433.
+  if Assigned(LCLObject) then
+  begin
+    FillChar(Msg{%H-}, SizeOf(Msg), #0);
+    Msg.Msg := LM_DESTROY;
+    DeliverMessage(Msg);
+  end;
   Widget := nil;
   Release;
 end;
@@ -7415,20 +7424,6 @@ begin
   {$ENDIF}
 
   inherited Destroy;
-end;
-
-procedure TQtMainWindow.Destroyed; cdecl;
-begin
-  //this is event from qt, must inform LCL about it. issue #41433
-  //when non modal popup is shown over modal form and modal form = real popup parent
-  //if popup form, and modal form is closed on button close then qt releases
-  //popup form automatically, so all we have todo is inform LCL.
-  if Assigned(LCLObject) and (LCLObject.Parent = nil) and not IsMdiChild then
-  begin
-    Widget := nil;
-    SlotDestroy;
-  end else
-    inherited Destroyed;
 end;
 
 procedure TQtMainWindow.BeginUpdate;
