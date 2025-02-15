@@ -40,7 +40,7 @@ uses
   // LCL
   LCLType, LclIntf, Controls, Dialogs, ComCtrls,
   // LazUtils
-  LazFileUtils, LazStringUtils, LazFileCache, LazLoggerBase,
+  LazFileUtils, LazStringUtils, LazFileCache, LazLoggerBase, AvgLvlTree,
   // Codetools
   CodeToolManager, FileProcs, CodeCache, BasicCodeTools,
   // IDEIntf
@@ -101,7 +101,7 @@ type
     property AsComment: string read GetAsComment;
   end;
 
-  { TTLScannedFiles }
+  { TTLScannedFile }
 
   TTLScannedFile = class
     FItems: TFPList;// list of TTodoItem
@@ -124,6 +124,8 @@ type
      exposed via a class helper for unit testing purposes *)
 
   TToDoListCore = class(TObject)
+  private
+    class var fScannedIncFiles: TStringMap;
   protected
     class procedure ParseToParts(const aTokenString:string;const aParts:TStrings);
     class procedure AddToDoItemFromParts(const aParts: TStrings;
@@ -131,12 +133,13 @@ type
       const aLineNumber: integer; const aToDoType: TToDoType;
       const aTokenStyle: TTokenStyle);
   public
+    class constructor Create;
+    class destructor Destroy;
     class procedure CreateToDoItem(aTLFile: TTLScannedFile;
         const aFileName: string; const aStartComment, aEndComment: string;
         const aTokenString: string; aLineNumber: Integer);
     class procedure ExtractToCSV(const aListItems: TListItems; const aFilename: string);
-    class procedure ScanFile(const aFileName: string; const FScannedFiles: TAvlTree
-      );
+    class procedure ScanFile(const aFileName: string; const aScannedFiles: TAvlTree);
   end;
 
 
@@ -157,6 +160,16 @@ end;
 type
   TParseState = (psHunting, psGotDash, psOwnerStart, psOwnerContinue, psCategoryStart,
   psCategoryContinue, psPriority, psText, psAllDone); { NOTE : Continue state must follow Start state }
+
+class constructor TToDoListCore.Create;
+begin
+  fScannedIncFiles := TStringMap.Create(False);
+end;
+
+class destructor TToDoListCore.Destroy;
+begin
+  fScannedIncFiles.Free;
+end;
 
 class procedure TToDoListCore.ParseToParts(const aTokenString: string;
   const aParts: TStrings);
@@ -334,7 +347,9 @@ var
   lParts: TStringList;
 
 begin
-  //DebugLn(['TfrmTodo.CreateToDoItem aFileName=',aFileName,' LineNumber=',aLineNumber]);
+  //DebugLn(['TToDoListCore.CreateToDoItem aFileName=',aFileName,' LineNumber=',aLineNumber]);
+  // Process each include file only once.
+  if fScannedIncFiles.Contains(aFileName) then Exit;
   lParsingString:= TextToSingleLine(aTokenString);
   // Remove the beginning comment chars from input string
   Delete(lParsingString, 1, Length(aStartComment));
@@ -375,7 +390,6 @@ begin
 
   // Remove the Token
   Delete(lParsingString, 1, Length(TODO_TOKENS[lFoundTokenStyle, lTodoType]));
-
   lParsingString := Trim(lParsingString);
 
   lParts:=TStringList.Create;
@@ -416,75 +430,81 @@ begin
   end;
 end;
 
-class procedure TToDoListCore.ScanFile(const aFileName: string;const FScannedFiles:TAvlTree);
+class procedure TToDoListCore.ScanFile(const aFileName: string; const aScannedFiles: TAvlTree);
 var
-  ExpandedFilename: String;
+  ExpandedFilename, Ext, Src: String;
   AVLNode: TAvlTreeNode;
   Tool: TCodeTool;
   Code: TCodeBuffer;
   CurFile: TTLScannedFile;
-  Src: String;
   p: Integer;
   NestedComment: Boolean;
   CommentEnd: LongInt;
   CommentStr: String;
   CodeXYPosition: TCodeXYPosition;
+  IncFiles: TStringList;
 begin
-  //DebugLn(['TfrmTodo.ScanFile ',aFileName]);
+  //DebugLn(['TToDoListCore.ScanFile ',aFileName]);
   ExpandedFilename:=TrimFilename(aFileName);
-
   Code:=CodeToolBoss.LoadFile(ExpandedFilename,true,false);
-
   if Code=nil then begin
-    debugln(['TIDETodoWindow.ScanFile failed loading ',ExpandedFilename]);
+    debugln(['TToDoListCore.ScanFile failed loading ',ExpandedFilename]);
     exit;
   end;
 
   CodeToolBoss.Explore(Code,Tool,false,false); // ignore the result
 
   if (Tool=nil) or (Tool.Scanner=nil) then begin
-    debugln(['TIDETodoWindow.ScanFile failed parsing ',Code.Filename]);
+    debugln(['TToDoListCore.ScanFile failed parsing ',Code.Filename]);
     exit;
   end;
 
-  AVLNode:=FScannedFiles.FindKey(Pointer(Tool.MainFilename),
+  Assert(aFileName=Tool.MainFilename, 'TToDoListCore.ScanFile: aFileName <> Tool.MainFilename');
+  AVLNode:=aScannedFiles.FindKey(Pointer(Tool.MainFilename),
                                @CompareAnsiStringWithTLScannedFile);
   CurFile:=nil;
-  //DebugLn(['TfrmTodo.ScanFile ',Tool.MainFilename,' AVLNode=',AVLNode<>nil]);
+  //DebugLn(['TToDoListCore.ScanFile ',Tool.MainFilename,' AVLNode=',AVLNode<>nil]);
   if AVLNode<>nil then begin
     CurFile:=TTLScannedFile(AVLNode.Data);
     // Abort if this file has already been scanned and has not changed
     if CurFile.CodeChangeStep=Tool.Scanner.ChangeStep then exit;
   end;
-  //DebugLn(['TfrmTodo.ScanFile SCANNING ... ']);
+  //DebugLn(['TToDoListCore.ScanFile SCANNING ... ']);
 
   // Add file name to list of scanned files
   if CurFile=nil then begin
     CurFile:=TTLScannedFile.Create;
     CurFile.Filename:=Tool.MainFilename;
-    FScannedFiles.Add(CurFile);
+    aScannedFiles.Add(CurFile);
   end;
   // save ChangeStep
   CurFile.CodeChangeStep:=Tool.Scanner.ChangeStep;
-  //DebugLn(['TfrmTodo.ScanFile saved ChangeStep ',CurFile.CodeChangeStep,' ',Tool.Scanner.ChangeStep]);
+  //DebugLn(['TToDoListCore.ScanFile saved ChangeStep ',CurFile.CodeChangeStep,' ',Tool.Scanner.ChangeStep]);
   // clear old items
   CurFile.Clear;
   Src:=Tool.Src;
   p:=1;
   NestedComment:=CodeToolBoss.GetNestedCommentsFlagForFile(Code.Filename);
-
-  repeat
+  IncFiles := TStringList.Create;
+  try
+    repeat
       p:=FindNextComment(Src,p);
-    if p>length(Src) then break;
-      CommentEnd:=FindCommentEnd(Src,p,NestedComment);
-    if not Tool.CleanPosToCaret(p,CodeXYPosition) then
+      if p>length(Src) then  // No more comments found, break loop
+        break;
+      if not Tool.CleanPosToCaret(p,CodeXYPosition) then
       begin
         ShowMessageFmt(errScanFileFailed, [ExtractFileName(aFileName)]);
         Exit;
       end;
-
-    CommentStr:=copy(Src,p,CommentEnd-p);
-    //DebugLn(['TfrmTodo.ScanFile CommentStr="',CommentStr,'"']);
+      // Save include file names. Use heuristics, assume name ends with ".inc".
+      ExpandedFilename:=CodeXYPosition.Code.Filename;
+      Ext:=ExtractFileExt(ExpandedFilename);
+      if Ext='.inc' then
+        IncFiles.Add(ExpandedFilename);
+      // Process a comment
+      CommentEnd:=FindCommentEnd(Src,p,NestedComment);
+      CommentStr:=copy(Src,p,CommentEnd-p);
+      //DebugLn(['TToDoListCore.ScanFile CommentStr="',CommentStr,'"']);
       if Src[p]='/' then
         CreateToDoItem(CurFile,CodeXYPosition.Code.Filename, '//', '', CommentStr, CodeXYPosition.Y)
       else if Src[p]='{' then
@@ -492,8 +512,14 @@ begin
       else if Src[p]='(' then
         CreateToDoItem(CurFile,CodeXYPosition.Code.Filename, '(*', '*)', CommentStr, CodeXYPosition.Y);
       p:=CommentEnd;
-  until false;
-
+    until false;
+    // Copy include file names to fScannedIncFiles
+    for p := 0 to IncFiles.Count-1 do
+      if not fScannedIncFiles.Contains(IncFiles[p]) then
+        fScannedIncFiles.Add(IncFiles[p]);
+  finally
+    IncFiles.Free;
+  end;
 end;
 
 { TTLScannedFile }

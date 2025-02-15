@@ -102,8 +102,7 @@ type
   public
     // explore the code
     function Explore(WithStatements: boolean; Range: TLinkScannerRange): boolean;
-    function Explore(WithStatements: boolean;
-          OnlyInterface: boolean = false): boolean;
+    function Explore(WithStatements: boolean; OnlyInterface: boolean = false): boolean;
   
     // source name  e.g. 'unit UnitName;'
     function GetCachedSourceName: string;

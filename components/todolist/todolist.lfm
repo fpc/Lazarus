@@ -8,13 +8,13 @@ object IDETodoWindow: TIDETodoWindow
   ClientHeight = 230
   ClientWidth = 820
   KeyPreview = True
+  Position = poScreenCenter
+  SessionProperties = 'cboShowWhat.ItemIndex;chkListed.Checked;chkPackages.Checked;chkSourceEditor.Checked;chkUsed.Checked;lvTodo.Columns'
+  LCLVersion = '4.99.0.0'
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   OnShow = DoUpdateToDos
-  Position = poScreenCenter
-  SessionProperties = 'cboShowWhat.ItemIndex;chkListed.Checked;chkPackages.Checked;chkSourceEditor.Checked;chkUsed.Checked;lvTodo.Columns'
-  LCLVersion = '2.3.0.0'
   object lvTodo: TListView
     Left = 6
     Height = 176
