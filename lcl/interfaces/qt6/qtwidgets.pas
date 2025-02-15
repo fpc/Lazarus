@@ -4762,7 +4762,7 @@ begin
           begin
             AOk := False;
             AData := QVariant_toULongLong(AVariant, @AOk);
-            if AIndex <= TMenuItem(AData).MenuIndex then
+            if AIndex <= TMenuItem(AData).MenuVisibleIndex then
             begin
               Result :=  QActionH(ActionList[i]);
               exit;
