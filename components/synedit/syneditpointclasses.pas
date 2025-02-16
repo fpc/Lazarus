@@ -1500,7 +1500,7 @@ begin
           if Info.CorrectedViewedXY.x < Info.FirstViewedX then begin
             Info.LogicalXY.X := Info.LogicalXY.X + 1;
             Info.LogicalXY.Offs := 0;
-            NewPhysX := Lines.LogPhysConvertor.LogicalToPhysical( ToIdx(Info.LogicalXY.y), Info.LogicalXY.x, Info.LogicalXY.Offs, cslDefault, []);
+            NewPhysX := Lines.LogPhysConvertor.LogicalToPhysical( ToIdx(Info.LogicalXY.y), Info.LogicalXY.x, Info.LogicalXY.Offs, cslDefault, [lpfAdjustToNextChar]);
             Info.CorrectedViewedXY.x := Info.CorrectedViewedXY.x + NewPhysX - Info.PhysXY.x;
             Info.PhysXY.x := NewPhysX;
           end;
