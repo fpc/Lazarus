@@ -51,7 +51,7 @@ object MainForm: TMainForm
     end
     object lbTask: TListBox
       Left = 0
-      Height = 400
+      Height = 377
       Top = 53
       Width = 288
       Align = alClient
@@ -65,6 +65,7 @@ object MainForm: TMainForm
         'Bold top-level nodes'
         'Top-level node gradient'
         'Rounded rectangles'
+        'RowSelect + hot-track (themed)'
         'RowSelect + hot-track (full line)'
         'RowSelect + hot-track (at icon)'
         'RowSelect + hot-track (at text)'
@@ -85,79 +86,80 @@ object MainForm: TMainForm
     end
     object Panel2: TPanel
       Left = 0
-      Height = 77
-      Top = 461
+      Height = 100
+      Top = 438
       Width = 288
       Align = alBottom
       AutoSize = True
       BevelOuter = bvNone
-      ClientHeight = 77
+      ClientHeight = 100
       ClientWidth = 288
       TabOrder = 1
       object btnToggleEnabledDisabled: TButton
         AnchorSideLeft.Control = Panel2
-        AnchorSideTop.Control = cmbExpandSign
+        AnchorSideTop.Control = cbShowLines
         AnchorSideTop.Side = asrBottom
         Left = 0
         Height = 25
-        Top = 52
+        Top = 75
         Width = 205
         AutoSize = True
         BorderSpacing.Top = 6
         Caption = 'Toggle 1st node enabled/disabled'
-        TabOrder = 0
+        TabOrder = 5
         OnClick = btnToggleEnabledDisabledClick
       end
       object cbShowLines: TCheckBox
-        AnchorSideLeft.Control = cbShowButtons
-        AnchorSideLeft.Side = asrBottom
-        AnchorSideTop.Control = Panel2
-        Left = 111
+        AnchorSideLeft.Control = Panel2
+        AnchorSideTop.Control = cbShowButtons
+        AnchorSideTop.Side = asrBottom
+        Left = 0
         Height = 19
-        Top = 0
+        Top = 50
         Width = 74
-        BorderSpacing.Left = 20
+        BorderSpacing.Top = 6
         Caption = 'Show lines'
         Checked = True
         State = cbChecked
-        TabOrder = 1
+        TabOrder = 4
         OnChange = cbShowLinesChange
       end
       object cbMultiSelect: TCheckBox
-        AnchorSideLeft.Control = cbShowLines
+        AnchorSideLeft.Control = cbHideSelection
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = Panel2
-        Left = 205
+        Left = 124
         Height = 19
         Top = 0
         Width = 81
         BorderSpacing.Left = 20
         Caption = 'Multi-select'
-        TabOrder = 2
+        TabOrder = 1
         OnChange = cbMultiSelectChange
       end
       object cbShowButtons: TCheckBox
         AnchorSideLeft.Control = Panel2
-        AnchorSideTop.Control = Panel2
+        AnchorSideTop.Control = cbHideSelection
+        AnchorSideTop.Side = asrBottom
         Left = 0
         Height = 19
-        Top = 0
+        Top = 25
         Width = 91
         Caption = 'Show buttons'
         Checked = True
         State = cbChecked
-        TabOrder = 3
+        TabOrder = 2
         OnChange = cbShowButtonsChange
       end
       object cmbExpandSign: TComboBox
-        AnchorSideLeft.Control = Panel2
-        AnchorSideTop.Control = cbShowLines
-        AnchorSideTop.Side = asrBottom
-        Left = 0
+        AnchorSideLeft.Control = cbMultiSelect
+        AnchorSideTop.Control = cbShowButtons
+        AnchorSideTop.Side = asrCenter
+        Left = 124
         Height = 23
         Top = 23
         Width = 104
-        BorderSpacing.Top = 4
+        BorderSpacing.Top = 6
         ItemHeight = 15
         ItemIndex = 0
         Items.Strings = (
@@ -168,9 +170,23 @@ object MainForm: TMainForm
           '> symbol'
         )
         Style = csDropDownList
-        TabOrder = 4
+        TabOrder = 3
         Text = 'themed sign'
         OnChange = cmbExpandSignChange
+      end
+      object cbHideSelection: TCheckBox
+        AnchorSideLeft.Control = Panel2
+        AnchorSideTop.Control = Panel2
+        Left = 0
+        Height = 19
+        Top = 0
+        Width = 104
+        BorderSpacing.Bottom = 6
+        Caption = 'cbHideSelection'
+        Checked = True
+        State = cbChecked
+        TabOrder = 0
+        OnChange = cbHideSelectionChange
       end
     end
   end

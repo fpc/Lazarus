@@ -17,6 +17,7 @@ type
     cbShowLines: TCheckBox;
     cbMultiSelect: TCheckBox;
     cbShowButtons: TCheckBox;
+    cbHideSelection: TCheckBox;
     cmbExpandSign: TComboBox;
     ImageList1: TImageList;
     Label1: TLabel;
@@ -26,6 +27,7 @@ type
     Splitter1: TSplitter;
     TreeView: TTreeView;
     procedure btnToggleEnabledDisabledClick(Sender: TObject);
+    procedure cbHideSelectionChange(Sender: TObject);
     procedure cbMultiSelectChange(Sender: TObject);
     procedure cbShowButtonsChange(Sender: TObject);
     procedure cbShowLinesChange(Sender: TObject);
@@ -101,19 +103,20 @@ const
   tTopLevelBold = 4;
   tTopLevelGradient = 5;
   tRoundRectNodes = 6;
-  tRowSelect_HotTrack_Full = 7;
-  tRowSelect_HotTrack_Icon = 8;
-  tRowSelect_HotTrack_Text = 9;
-  tRowSelect_HotTrack_Gradient_Full = 10;
-  tRowSelect_HotTrack_Gradient_Icon = 11;
-  tRowSelect_HotTrack_Gradient_Text = 12;
-  tRowSelect_HotTrack_Gradient_TextOnly = 13;
-  tSelectHotTrack_Image = 14;
-  tBackgroundImage_Themed = 15;
-  tBackgroundImage_NotThemed = 16;
-  tBackgroundImage_Themed_NoHotTrackIcons = 17;
-  tBackgroundGradient_Themed = 18;
-  tBackgroundGradient_NotThemed = 19;
+  tRowSelect_HotTrack_Themed = 7;
+  tRowSelect_HotTrack_Full = 8;
+  tRowSelect_HotTrack_Icon = 9;
+  tRowSelect_HotTrack_Text = 10;
+  tRowSelect_HotTrack_Gradient_Full = 11;
+  tRowSelect_HotTrack_Gradient_Icon = 12;
+  tRowSelect_HotTrack_Gradient_Text = 13;
+  tRowSelect_HotTrack_Gradient_TextOnly = 14;
+  tSelectHotTrack_Image = 15;
+  tBackgroundImage_Themed = 16;
+  tBackgroundImage_NotThemed = 17;
+  tBackgroundImage_Themed_NoHotTrackIcons = 18;
+  tBackgroundGradient_Themed = 19;
+  tBackgroundGradient_NotThemed = 20;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
@@ -145,6 +148,11 @@ var
 begin
   node := TreeView.Items.GetFirstNode;
   node.Enabled := not node.Enabled;
+end;
+
+procedure TMainForm.cbHideSelectionChange(Sender: TObject);
+begin
+  TreeView.HideSelection := cbHideSelection.Checked;
 end;
 
 procedure TMainForm.cbMultiSelectChange(Sender: TObject);
@@ -247,6 +255,9 @@ begin
         TreeView.OnAdvancedCustomDrawItem := @RoundedRectNodes_AdvancedCustomDrawItem;
       end;
 
+    tRowSelect_HotTrack_Themed:
+      TreeView.Options := TreeView.Options + [tvoRowSelect, tvoHotTrack, tvoThemedDraw];
+
     tRowSelect_HotTrack_Full,
     tRowSelect_HotTrack_Icon,
     tRowSelect_HotTrack_Text:
@@ -339,7 +350,8 @@ begin
         Sender.Canvas.Brush.Color := clGray;
         Sender.Canvas.Font.Color := clHighlightText;
         Sender.Canvas.Font.Style := [];
-      end;
+      end else
+        Sender.Canvas.Brush.Color := clNone;
   end;
 end;
 
@@ -387,7 +399,10 @@ begin
         Sender.Canvas.Brush.Color := clNone;
         if lbTask.ItemIndex = tBackgroundImage_Themed_NoHotTrackIcons then
           PaintImages := false;
-      end;
+      end
+      else
+        // Prevent drawing of node text background over the image
+        Sender.Canvas.Brush.Color := clNone;
   end;
 end;
 
