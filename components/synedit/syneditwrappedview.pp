@@ -2073,10 +2073,10 @@ begin
 
   case CaretWrapPos of
     wcpEOL: begin
-        AFirstViewedX := 2;
+        AFirstViewedX := 2 + WrapInd;
       end;
     wcpBOL: begin
-        AFirstViewedX := 1;
+        AFirstViewedX := 1 + WrapInd;
       end;
   end;
 
