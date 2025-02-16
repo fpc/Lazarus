@@ -432,7 +432,7 @@ end;
 
 class procedure TToDoListCore.ScanFile(const aFileName: string; const aScannedFiles: TAvlTree);
 var
-  ExpandedFilename, Ext, Src: String;
+  FN, Src: String;
   AVLNode: TAvlTreeNode;
   Tool: TCodeTool;
   Code: TCodeBuffer;
@@ -445,10 +445,10 @@ var
   IncFiles: TStringList;
 begin
   //DebugLn(['TToDoListCore.ScanFile ',aFileName]);
-  ExpandedFilename:=TrimFilename(aFileName);
-  Code:=CodeToolBoss.LoadFile(ExpandedFilename,true,false);
+  FN:=TrimFilename(aFileName);
+  Code:=CodeToolBoss.LoadFile(FN,true,false);
   if Code=nil then begin
-    debugln(['TToDoListCore.ScanFile failed loading ',ExpandedFilename]);
+    debugln(['TToDoListCore.ScanFile failed loading ',FN]);
     exit;
   end;
 
@@ -497,20 +497,19 @@ begin
         Exit;
       end;
       // Save include file names. Use heuristics, assume name ends with ".inc".
-      ExpandedFilename:=CodeXYPosition.Code.Filename;
-      Ext:=ExtractFileExt(ExpandedFilename);
-      if Ext='.inc' then
-        IncFiles.Add(ExpandedFilename);
+      FN:=CodeXYPosition.Code.Filename;
+      if FilenameExtIs(FN, 'inc') then
+        IncFiles.Add(FN);
       // Process a comment
       CommentEnd:=FindCommentEnd(Src,p,NestedComment);
       CommentStr:=copy(Src,p,CommentEnd-p);
       //DebugLn(['TToDoListCore.ScanFile CommentStr="',CommentStr,'"']);
       if Src[p]='/' then
-        CreateToDoItem(CurFile,CodeXYPosition.Code.Filename, '//', '', CommentStr, CodeXYPosition.Y)
+        CreateToDoItem(CurFile, FN, '//', '', CommentStr, CodeXYPosition.Y)
       else if Src[p]='{' then
-        CreateToDoItem(CurFile,CodeXYPosition.Code.Filename, '{', '}', CommentStr, CodeXYPosition.Y)
+        CreateToDoItem(CurFile, FN, '{', '}', CommentStr, CodeXYPosition.Y)
       else if Src[p]='(' then
-        CreateToDoItem(CurFile,CodeXYPosition.Code.Filename, '(*', '*)', CommentStr, CodeXYPosition.Y);
+        CreateToDoItem(CurFile, FN, '(*', '*)', CommentStr, CodeXYPosition.Y);
       p:=CommentEnd;
     until false;
     // Copy include file names to fScannedIncFiles
