@@ -90,7 +90,8 @@ type
   public
     property Bitmap: TBitmap read GetBitmap write SetBitmap;
     property Section: TIDEMenuSection read FSection write SetSection;
-    property MenuItem: TMenuItem read FMenuItem write SetMenuItem; // Note: root section MenuItem = TMenu.Items, setting a non root does not add to Section.MenuItem
+    // Note: root section MenuItem=TMenu.Items, setting a non root does not add to Section.MenuItem
+    property MenuItem: TMenuItem read FMenuItem write SetMenuItem;
     property MenuItemClass: TMenuItemClass read FMenuItemClass write FMenuItemClass;
     property SectionIndex: Integer read FSectionIndex;
     property Tag: Integer read FTag write FTag;
