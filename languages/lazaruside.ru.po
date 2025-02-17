@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-02-17 18:27+0300\n"
+"PO-Revision-Date: 2025-02-17 18:59+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -3440,7 +3440,8 @@ msgstr "конце строки"
 msgid "Indent width"
 msgstr "Ширина отступа"
 
-#: lazarusidestrconsts.dlgoptwordwrapindentisoffest
+#: lazarusidestrconsts.dlgoptwordwrapindentisoffset
+msgctxt "lazarusidestrconsts.dlgoptwordwrapindentisoffset"
 msgid "Indent relative to text"
 msgstr "Делать отступ относительно текста"
 

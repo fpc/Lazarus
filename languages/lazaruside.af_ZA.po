@@ -3445,7 +3445,8 @@ msgstr ""
 msgid "Indent width"
 msgstr ""
 
-#: lazarusidestrconsts.dlgoptwordwrapindentisoffest
+#: lazarusidestrconsts.dlgoptwordwrapindentisoffset
+msgctxt "lazarusidestrconsts.dlgoptwordwrapindentisoffset"
 msgid "Indent relative to text"
 msgstr ""
 
