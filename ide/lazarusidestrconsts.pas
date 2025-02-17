@@ -1664,7 +1664,7 @@ resourcestring
   dlgOptWordWrapStartOfNextLine = 'start of next line';
   dlgOptWordWrapMinimumLineLength = 'Minimum line length';
   dlgOptWordWrapIndent = 'Indent width';
-  dlgOptWordWrapIndentIsOffest = 'Indent relative to text';
+  dlgOptWordWrapIndentIsOffset = 'Indent relative to text';
   dlgOptWordWrapIndentMin = 'Minimum indent width';
   dlgOptWordWrapIndentMax = 'Maximum indent width';
   dlgOptWordWrapIndentMaxRel = 'Maximum indent width (percent)';
