@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-02-12 00:40+0300\n"
+"PO-Revision-Date: 2025-02-17 18:27+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -556,6 +556,10 @@ msgctxt "lazarusidestrconsts.dlgaddhiattrgrouptext"
 msgid "Text"
 msgstr "Текст"
 
+#: lazarusidestrconsts.dlgaddhiattrgroupwrap
+msgid "Wrapping"
+msgstr "Перенос слов"
+
 #: lazarusidestrconsts.dlgaddhiattrgutterseparator
 msgid "Gutter Separator"
 msgstr "Линия отделения бокового поля"
@@ -694,6 +698,20 @@ msgstr "Граница окна"
 #: lazarusidestrconsts.dlgaddhiattrwordgroup
 msgid "Word-Brackets"
 msgstr "Операторные скобки"
+
+#: lazarusidestrconsts.dlgaddhiattrwrapeol
+msgid "EOL"
+msgstr "Конец строки"
+
+#: lazarusidestrconsts.dlgaddhiattrwrapindent
+msgctxt "lazarusidestrconsts.dlgaddhiattrwrapindent"
+msgid "Indent"
+msgstr "Отступ"
+
+#: lazarusidestrconsts.dlgaddhiattrwrapsubline
+msgctxt "lazarusidestrconsts.dlgaddhiattrwrapsubline"
+msgid "Sub-line"
+msgstr "Подстрока"
 
 #: lazarusidestrconsts.dlgaddhispecialvisiblechars
 msgid "Visualized Special Chars"
@@ -2558,6 +2576,7 @@ msgid "from current unit"
 msgstr "из текущего модуля"
 
 #: lazarusidestrconsts.dlgindentsindentgroupoptions
+msgctxt "lazarusidestrconsts.dlgindentsindentgroupoptions"
 msgid "Indent"
 msgstr "Отступ"
 
@@ -3416,6 +3435,26 @@ msgstr "В точке переноса отображать курсор в..."
 #: lazarusidestrconsts.dlgoptwordwrapendofline
 msgid "end of line"
 msgstr "конце строки"
+
+#: lazarusidestrconsts.dlgoptwordwrapindent
+msgid "Indent width"
+msgstr "Ширина отступа"
+
+#: lazarusidestrconsts.dlgoptwordwrapindentisoffest
+msgid "Indent relative to text"
+msgstr "Делать отступ относительно текста"
+
+#: lazarusidestrconsts.dlgoptwordwrapindentmax
+msgid "Maximum indent width"
+msgstr "Максимальная ширина отступа"
+
+#: lazarusidestrconsts.dlgoptwordwrapindentmaxrel
+msgid "Maximum indent width (percent)"
+msgstr "Максимальная ширина отступа (в процентах)"
+
+#: lazarusidestrconsts.dlgoptwordwrapindentmin
+msgid "Minimum indent width"
+msgstr "Минимальная ширина отступа"
 
 #: lazarusidestrconsts.dlgoptwordwrapminimumlinelength
 msgid "Minimum line length"
@@ -18167,10 +18206,6 @@ msgstr "Проект записывает отладочные символы н
 #, object-pascal-format
 msgid "%sThere are additional notes for this message on%s"
 msgstr "%sДля данного сообщения найдены дополнительные сведения по адресу%s"
-
-#: lazarusidestrconsts.listherearenoconflictingkeys
-msgid "There are no conflicting keys."
-msgstr "Конфликтующие комбинации клавиш отсутствуют."
 
 #: lazarusidestrconsts.listhereareotherfilesinthedirectorywiththesamename
 #, object-pascal-format
