@@ -6911,7 +6911,7 @@ begin
   NestedComments:=Scanner.NestedComments;
   p:=1;
   repeat
-    p:=BasicCodeTools.FindNextIncludeDirective(ASource,p,NestedComments,
+    p:=FindNextIncludeDirective(ASource,p,NestedComments,
               FilenameStartPos, FileNameEndPos, CommentStartPos, CommentEndPos);
     if (p<1) or (p>length(ASource)) then break;
     if (CommentStartPos=0) and (CommentEndPos=0) then ;

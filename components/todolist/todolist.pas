@@ -66,7 +66,7 @@ uses
   LCLType, LclIntf, Forms, Controls, StdCtrls, Dialogs, ComCtrls,
   ActnList, XMLPropStorage, ExtCtrls,
   // LazUtils
-  LazFileUtils, LazFileCache, LazLoggerBase, LazTracer,
+  LazFileUtils, LazFileCache, LazLoggerBase, LazTracer, AvgLvlTree,
   // Codetools
   CodeToolManager, FileProcs,
   // IDEIntf
@@ -131,6 +131,7 @@ type
     FStartFilename: String;
     FOnOpenFile  : TOnOpenFile;
     FScannedFiles: TAvlTree;// tree of TTLScannedFile
+    FScannedIncFiles: TStringMap;
     procedure SetIDEItem(AValue: string);
     procedure SetIdleConnected(const AValue: boolean);
     function ProjectOpened(Sender: TObject; AProject: TLazProject): TModalResult;
@@ -161,12 +162,6 @@ implementation
 const
   DefaultTodoListCfgFile = 'todolistoptions.xml';
 
-function CompareTLScannedFiles(Data1, Data2: Pointer): integer;
-begin
-  Result:=CompareFilenames(TTLScannedFile(Data1).Filename,
-                           TTLScannedFile(Data2).Filename);
-end;
-
 { TIDETodoWindow }
 
 constructor TIDETodoWindow.Create(AOwner: TComponent);
@@ -187,6 +182,7 @@ destructor TIDETodoWindow.Destroy;
 begin
   FScannedFiles.FreeAndClear;
   FreeAndNil(FScannedFiles);
+  FreeAndNil(FScannedIncFiles);
   inherited Destroy;
 end;
 
@@ -224,8 +220,8 @@ begin
     CodeToolBoss.ActivateWriteLock;
 
     FScannedFiles.FreeAndClear;
+    FScannedIncFiles.Clear;
     lvTodo.Items.Clear;
-    TToDoListCore.Clear;
 
     if FStartFilename<>'' then begin
       // Find a '.todo' file of the main source
@@ -410,6 +406,7 @@ procedure TIDETodoWindow.FormCreate(Sender: TObject);
 begin
   FUpdating := False;
   FScannedFiles := TAvlTree.Create(@CompareTLScannedFiles);
+  FScannedIncFiles := TStringMap.Create(False);
 
   Caption := lisToDoList;
 
@@ -495,7 +492,7 @@ procedure TIDETodoWindow.acExportExecute(Sender: TObject);
 begin
   SaveDialog.FileName:='TodoList_'+FormatDateTime('YYYY_MM_DD',now);
   if SaveDialog.Execute then
-    TToDoListCore.ExtractToCSV(lvTodo.Items, SaveDialog.FileName);
+    ExtractToCSV(SaveDialog.FileName, lvTodo.Items);
 end;
 
 procedure TIDETodoWindow.FormCloseQuery(Sender: TObject; var CanClose: boolean);
@@ -510,7 +507,7 @@ procedure TIDETodoWindow.AddListItem(aTodoItem: TTodoItem);
   begin
     case cboShowWhat.ItemIndex of
       0:Result := True;
-      1..3: Result := (TToDoType(cboShowWhat.ItemIndex - 1) =  aTodoItem.ToDoType);
+      1..3: Result := (TToDoType(cboShowWhat.ItemIndex - 1) = aTodoItem.ToDoType);
       4:Result := aTodoItem.ToDoType in [tdToDo, tdDone];
       5:Result := aTodoItem.ToDoType in [tdToDo, tdNote];
       6:Result := aTodoItem.ToDoType in [tdDone, tdNote];
@@ -524,7 +521,7 @@ var
 begin
   if Assigned(aTodoItem) and ShowThisToDoItem then
   begin
-    //DebugLn(['TfrmTodo.AddListItem ',aTodoItem.Filename,' ',aTodoItem.LineNumber]);
+    //DebugLn(['TIDETodoWindow.AddListItem ',aTodoItem.Filename,' ',aTodoItem.LineNumber]);
     aListitem := lvTodo.Items.Add;
     aListitem.Data := aTodoItem;
     aListItem.Caption := LIST_INDICATORS[aTodoItem.ToDoType];
@@ -542,7 +539,7 @@ end;
 
 procedure TIDETodoWindow.ScanFile(aFileName: string);
 begin
-  TToDoListCore.ScanFile(aFileName, FScannedFiles);
+  ToDoListCore.ScanFile(aFileName, FScannedFiles, FScannedIncFiles);
 end;
 
 procedure TIDETodoWindow.OnIdle(Sender: TObject; var Done: Boolean);
