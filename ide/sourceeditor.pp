@@ -5657,15 +5657,18 @@ const
   MarksMode: array[Boolean] of TSynMarksAdjustMode = (smaMoveUp, smaKeep);
 var
   Pt: TPoint;
+  NewLine: String;
 begin
   if not ReadOnly then
   begin
-    if StartLine > 1 then
-      Pt := Point(Length(FEditor.Lines[StartLine - 2]) + 1, StartLine - 1)
-    else
+    if StartLine > 1 then begin
+      Pt := Point(Length(FEditor.Lines[StartLine - 2]) + 1, StartLine - 1);
+      NewLine := LineEnding + NewText;
+    end else begin
       Pt := Point(1, 1);
-    FEditor.SetTextBetweenPoints(Pt, Pt,
-      LineEnding + NewText, [], scamEnd, MarksMode[aKeepMarks]);
+      NewLine := NewText + LineEnding;
+    end;
+    FEditor.SetTextBetweenPoints(Pt, Pt, NewLine, [], scamEnd, MarksMode[aKeepMarks]);
   end;
 end;
 
