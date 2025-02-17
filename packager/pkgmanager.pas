@@ -5385,8 +5385,7 @@ begin
   end;
 end;
 
-function TPkgManager.ApplyDependency(CurDependency: TPkgDependency
-  ): TModalResult;
+function TPkgManager.ApplyDependency(CurDependency: TPkgDependency): TModalResult;
 // apply
 var
   OldPkg: TLazPackage;
@@ -5416,10 +5415,11 @@ end;
 function TPkgManager.GetPackageOfEditorItem(Sender: TObject): TIDEPackage;
 begin
   Result:=nil;
+  if Sender is TIDEMenuItem then
+    Sender:=TIDEMenuItem(Sender).MenuItem;
   while (Sender is TMenuItem) and (TMenuItem(Sender).Parent<>nil) do
     Sender:=TMenuItem(Sender).Parent;
-  if (Sender is TMenuItem) and (TMenuItem(Sender).Menu<>nil)
-  then
+  if (Sender is TMenuItem) and (TMenuItem(Sender).Menu<>nil) then
     Sender:=TMenuItem(Sender).Menu;
   if (Sender is TComponent) and (TComponent(Sender).Owner is TCustomForm) then
     Sender:=TCustomForm(TComponent(Sender).Owner);
