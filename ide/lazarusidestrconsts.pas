@@ -2152,7 +2152,7 @@ resourcestring
   dlgAddHiAttrOutlineLevel10Color = 'Level 10';
   dlgAddHiAttrWrapIndent  = 'Indent';
   dlgAddHiAttrWrapEol     = 'EOL';
-  dlgAddHiAttrWrapSupLine = 'Sub-line';
+  dlgAddHiAttrWrapSubLine = 'Sub-line';
   dlgAddHiSpecialVisibleChars     = 'Visualized Special Chars';
   dlgTopInfoHint                  = 'Current Class/Proc Hint';
   dlgCaretColor                   = 'Caret (Text-Cursor)';

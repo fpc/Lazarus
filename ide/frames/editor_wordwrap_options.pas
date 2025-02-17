@@ -79,7 +79,7 @@ begin
   lbMinWordWrapWidth.Caption := dlgOptWordWrapMinimumLineLength;
 
   lbWordWrapIndent.Caption       := dlgOptWordWrapIndent;
-  cbEnableWordWrap.Caption       := dlgOptWordWrapIndentIsOffest;
+  cbIndentIsOffset.Caption       := dlgOptWordWrapIndentIsOffest;
   lbWordWrapIndentMin.Caption    := dlgOptWordWrapIndentMin;
   lbWordWrapIndentMax.Caption    := dlgOptWordWrapIndentMax;
   lbWordWrapIndentMaxRel.Caption := dlgOptWordWrapIndentMaxRel;

@@ -3095,7 +3095,7 @@ begin
 
   AdditionalHighlightAttributes[ahaWrapIndend]  := dlgAddHiAttrWrapIndent;
   AdditionalHighlightAttributes[ahaWrapEol]     := dlgAddHiAttrWrapEol;
-  AdditionalHighlightAttributes[ahaWrapSubLine] := dlgAddHiAttrWrapSupLine;
+  AdditionalHighlightAttributes[ahaWrapSubLine] := dlgAddHiAttrWrapSubLine;
 
   AdditionalHighlightGroupNames[agnDefault]      := dlgAddHiAttrGroupDefault;
   AdditionalHighlightGroupNames[agnText]         := dlgAddHiAttrGroupText;
