@@ -135,6 +135,7 @@ type
   public
     class constructor Create;
     class destructor Destroy;
+    class procedure Clear;
     class procedure CreateToDoItem(aTLFile: TTLScannedFile;
         const aFileName: string; const aStartComment, aEndComment: string;
         const aTokenString: string; aLineNumber: Integer);
@@ -169,6 +170,11 @@ end;
 class destructor TToDoListCore.Destroy;
 begin
   fScannedIncFiles.Free;
+end;
+
+class procedure TToDoListCore.Clear;
+begin
+  fScannedIncFiles.Clear;
 end;
 
 class procedure TToDoListCore.ParseToParts(const aTokenString: string;
@@ -349,7 +355,8 @@ var
 begin
   //DebugLn(['TToDoListCore.CreateToDoItem aFileName=',aFileName,' LineNumber=',aLineNumber]);
   // Process each include file only once.
-  if fScannedIncFiles.Contains(aFileName) then Exit;
+  if fScannedIncFiles.Contains(aFileName) then
+    Exit;
   lParsingString:= TextToSingleLine(aTokenString);
   // Remove the beginning comment chars from input string
   Delete(lParsingString, 1, Length(aStartComment));

@@ -77,13 +77,12 @@ var
   InsertToDoCmd: TIDECommand;
   ViewToDoListCmd: TIDECommand;
 
-function ExecuteTodoDialog: TTodoItem;
-
 procedure Register;
 procedure InsertToDoForActiveSourceEditor(Sender: TObject);
 procedure ViewToDoList(Sender: TObject);
 procedure CreateIDEToDoWindow(Sender: TObject; aFormName: string;
                           var AForm: TCustomForm; DoDisableAutoSizing: boolean);
+function ExecuteTodoDialog: TTodoItem;
 
 implementation
 
@@ -178,6 +177,29 @@ begin
   AForm:=IDETodoWindow;
 end;
 
+function ExecuteTodoDialog: TTodoItem;
+var
+  aTodoDialog: TTodoDialog;
+begin
+  Result := nil;
+  aTodoDialog := TTodoDialog.Create(nil);
+  aTodoDialog.ShowModal;
+  if aTodoDialog.ModalResult = mrOk then
+  begin
+    Result := TTodoItem.Create(nil);
+    Result.Category    := aTodoDialog.CategoryEdit.Text;
+    Result.ToDoType    := TToDoType(aTodoDialog.grpboxToDoType.Tag);
+    if aTodoDialog.chkAlternateTokens.Checked then
+      Result.TokenStyle:=tsAlternate
+    else
+      Result.TokenStyle:=tsNormal;
+    Result.Owner       := aTodoDialog.OwnerEdit.Text;
+    Result.Text        := aTodoDialog.TodoMemo.Text;
+    Result.Priority    := aTodoDialog.PriorityEdit.Value;
+  end;
+  aTodoDialog.Free;
+end;
+
 { TTodoDialog }
 
 procedure TTodoDialog.FormCreate(Sender: TObject);
@@ -225,29 +247,6 @@ begin
   lRadioButton := Sender as TRadioButton;
   lGroupBox := lRadioButton.Parent as TGroupBox;
   lGroupBox.Tag := lRadioButton.Tag;
-end;
-
-function ExecuteTodoDialog: TTodoItem;
-var
-  aTodoDialog: TTodoDialog;
-begin
-  Result := nil;
-  aTodoDialog := TTodoDialog.Create(nil);
-  aTodoDialog.ShowModal;
-  if aTodoDialog.ModalResult = mrOk then
-  begin
-    Result := TTodoItem.Create(nil);
-    Result.Category    := aTodoDialog.CategoryEdit.Text;
-    Result.ToDoType    := TToDoType(aTodoDialog.grpboxToDoType.Tag);
-    if aTodoDialog.chkAlternateTokens.Checked then
-      Result.TokenStyle:=tsAlternate
-    else
-      Result.TokenStyle:=tsNormal;
-    Result.Owner       := aTodoDialog.OwnerEdit.Text;
-    Result.Text        := aTodoDialog.TodoMemo.Text;
-    Result.Priority    := aTodoDialog.PriorityEdit.Value;
-  end;
-  aTodoDialog.Free;
 end;
 
 end.

@@ -131,26 +131,21 @@ type
     FStartFilename: String;
     FOnOpenFile  : TOnOpenFile;
     FScannedFiles: TAvlTree;// tree of TTLScannedFile
-
     procedure SetIDEItem(AValue: string);
     procedure SetIdleConnected(const AValue: boolean);
-    procedure SetStartFilename(const AValue: String);
+    function ProjectOpened(Sender: TObject; AProject: TLazProject): TModalResult;
     procedure UpdateStartFilename;
     procedure ResolveIDEItem(out CurOwner: TObject; out CurProject: TLazProject;
                              out CurPkg: TIDEPackage);
-
     procedure AddListItem(aTodoItem: TTodoItem);
-    
     procedure ScanFile(aFileName : string);
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
     procedure UpdateTodos(Immediately: boolean = false);
 
     property IDEItem: string read FIDEItem write SetIDEItem; // package name or empty for active project
-    property StartFilename: String read FStartFilename write SetStartFilename; // lpi, lpk or a source file
     property BaseDirectory: string read FBaseDirectory;
     property OnOpenFile: TOnOpenFile read FOnOpenFile write FOnOpenFile;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
@@ -177,14 +172,15 @@ end;
 constructor TIDETodoWindow.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  if Name<>ToDoWindowName then RaiseGDBException('');
+  if Name<>ToDoWindowName then
+    RaiseGDBException('');
   ToolBar.Images := IDEImages.Images_16;
   acGoto.ImageIndex := IDEImages.LoadImage('menu_goto_line');
   acRefresh.ImageIndex := IDEImages.LoadImage('laz_refresh');
   acExport.ImageIndex := IDEImages.LoadImage('menu_saveas');
   acHelp.ImageIndex := IDEImages.LoadImage('btn_help');
-
   SaveDialog.Filter:= dlgFilterCsv+'|*.csv';
+  LazarusIDE.AddHandlerOnProjectOpened(@ProjectOpened);
 end;
 
 destructor TIDETodoWindow.Destroy;
@@ -229,15 +225,16 @@ begin
 
     FScannedFiles.FreeAndClear;
     lvTodo.Items.Clear;
+    TToDoListCore.Clear;
 
-    if StartFilename<>'' then begin
+    if FStartFilename<>'' then begin
       // Find a '.todo' file of the main source
-      St:=ChangeFileExt(StartFilename,'.todo');
+      St:=ChangeFileExt(FStartFilename,'.todo');
       if FileExistsCached(St) then
         ScanFile(St);
       // Scan main source file
-      if FilenameIsPascalUnit(StartFilename) then
-        ScanFile(StartFilename);
+      if FilenameIsPascalUnit(FStartFilename) then
+        ScanFile(FStartFilename);
     end;
 
     ResolveIDEItem(CurOwner,CurProject,CurPkg);
@@ -349,13 +346,9 @@ begin
   FLoadingOptions := True;
 end;
 
-//Initialise the todo project and find them
-procedure TIDETodoWindow.SetStartFilename(const AValue: String);
+function TIDETodoWindow.ProjectOpened(Sender: TObject; AProject: TLazProject): TModalResult;
 begin
-  //debugln(['TIDETodoWindow.SetOwnerFilename ',AValue]);
-  if FStartFilename=AValue then
-    exit;
-  FStartFilename:=AValue;
+  Result:=mrOK;
   UpdateTodos;
 end;
 
@@ -368,14 +361,14 @@ var
 begin
   ResolveIDEItem(CurObject,CurProject,CurPkg);
   NewStartFilename:='';
-  if CurPkg<>nil then begin
-    // package
-    NewStartFilename:=CurPkg.Filename;
-  end else if CurProject<>nil then begin
-    // project
+  if CurPkg<>nil then                   // package
+    NewStartFilename:=CurPkg.Filename
+  else if CurProject<>nil then          // project
     NewStartFilename:=CurProject.ProjectInfoFile;
-  end;
-  StartFilename:=NewStartFilename;
+  if FStartFilename=NewStartFilename then
+    exit;
+  FStartFilename:=NewStartFilename;
+  UpdateTodos;
 end;
 
 procedure TIDETodoWindow.ResolveIDEItem(out CurOwner: TObject;
@@ -384,10 +377,11 @@ begin
   CurOwner:=nil;
   CurProject:=nil;
   CurPkg:=nil;
-  if IsValidIdent(IDEItem,true,true) then begin
+  if IsValidIdent(FIDEItem,true,true) then begin
     // package
-    CurPkg:=PackageEditingInterface.FindPackageWithName(IDEItem);
+    CurPkg:=PackageEditingInterface.FindPackageWithName(FIDEItem);
     CurOwner:=CurPkg;
+    DebugLn(['TIDETodoWindow.ResolveIDEItem: Found package ', CurPkg.Filename]);
   end else begin
     // project
     CurProject:=LazarusIDE.ActiveProject;

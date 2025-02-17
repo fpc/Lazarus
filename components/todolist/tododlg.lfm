@@ -8,13 +8,13 @@ object TodoDialog: TTodoDialog
   ClientHeight = 230
   ClientWidth = 361
   Constraints.MinWidth = 360
-  OnCloseQuery = FormCloseQuery
-  OnCreate = FormCreate
-  OnShow = FormShow
   Position = poScreenCenter
   SessionProperties = 'chkAlternateTokens.Checked;rdoDone.Checked;rdoNote.Checked;rdoToDo.Checked;OwnerEdit.Text'
   ShowHint = True
-  LCLVersion = '2.3.0.0'
+  LCLVersion = '4.99.0.0'
+  OnCloseQuery = FormCloseQuery
+  OnCreate = FormCreate
+  OnShow = FormShow
   object TodoLabel: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
