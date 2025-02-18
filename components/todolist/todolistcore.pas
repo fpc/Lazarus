@@ -109,16 +109,19 @@ type
     FFilename: string; // = Tool.MainFilename
     FCodeChangeStep: integer; // = Tool.Scanner.ChangeStep
     FTool: TCodeTool;
+    FCode: TCodeBuffer;
     FScannedIncFiles: TStringMap;
     function GetCount: integer;
     function GetItems(Index: integer): TTodoItem;
     procedure CreateToDoItem(const aFileName, aStartComment, aEndComment, aTokenString: string;
       aLineNumber: Integer);
-    procedure ScanToDos(aCode: TCodeBuffer);
+    procedure ScanPascalToDos;
+    procedure ScanToDoFile;
     procedure AddToDoItemFromParts(aParts: TStrings; const aFileName: string;
       aLineNumber: integer; aToDoType: TToDoType; aTokenStyle: TTokenStyle);
   public
-    constructor Create(const aFilename: string; aTool: TCodeTool; aScannedIncFiles: TStringMap);
+    constructor Create(const aFilename: string; aTool: TCodeTool; aCode: TCodeBuffer;
+      aScannedIncFiles: TStringMap);
     destructor Destroy; override;
     procedure Clear;
     procedure Add(aItem: TTodoItem);
@@ -329,34 +332,35 @@ begin
     DebugLn(['ScanFile failed loading ',FN]);
     exit;
   end;
-  CodeToolBoss.Explore(Code,Tool,false,false); // ignore the result
-  if (Tool=nil) or (Tool.Scanner=nil) then begin
-    DebugLn(['ScanFile failed parsing ',Code.Filename]);
-    exit;
-  end;
-  Assert(aFileName=Tool.MainFilename, 'TToDoListCore.ScanFile: aFileName <> Tool.MainFilename');
-  AVLNode:=aScannedFiles.FindKey(Pointer(Tool.MainFilename),
+  Assert(aFilename=Code.Filename, 'ScanFile: aFileName <> Code.Filename');
+  CodeToolBoss.Explore(Code,Tool,false,false); // Parse Pascal code, ignore Result
+  AVLNode:=aScannedFiles.FindKey(Pointer(aFilename),
                                 @CompareAnsiStringWithTLScannedFile);
-  CurFile:=nil;
   //DebugLn(['ScanFile ',aFilename,' AVLNode=',AVLNode<>nil]);
   if AVLNode<>nil then begin
     CurFile:=TTLScannedFile(AVLNode.Data);
+    Assert(Assigned(CurFile), 'ScanFile: CurFile=Nil');
     // Abort if this file has already been scanned and has not changed
-    if CurFile.FCodeChangeStep=Tool.Scanner.ChangeStep then exit;
-  end;
-  //DebugLn(['ScanFile SCANNING ... ']);
-
-  // Add file name to list of scanned files
-  if CurFile=nil then begin
-    CurFile:=TTLScannedFile.Create(aFilename, Tool, aScannedIncFiles);
+    if Assigned(Tool) and (CurFile.FCodeChangeStep=Tool.Scanner.ChangeStep) then
+      exit;
+    CurFile.Clear;       // clear old items
+  end
+  else begin
+    // Add file name to list of scanned files
+    CurFile:=TTLScannedFile.Create(aFilename, Tool, Code, aScannedIncFiles);
     aScannedFiles.Add(CurFile);
   end;
-  // save ChangeStep
-  CurFile.FCodeChangeStep:=Tool.Scanner.ChangeStep;
-  //DebugLn(['ScanFile saved ChangeStep ',CurFile.FCodeChangeStep,' ',Tool.Scanner.ChangeStep]);
-  // clear old items
-  CurFile.Clear;
-  CurFile.ScanToDos(Code);
+  if (Tool=nil) or (Tool.Scanner=nil) then begin
+    // Not Pascal. Assume .todo textual file.
+    CurFile.ScanToDoFile;
+  end
+  else begin
+    Assert(aFileName=Tool.MainFilename, 'ScanFile: aFileName <> Tool.MainFilename');
+    // save ChangeStep
+    CurFile.FCodeChangeStep:=Tool.Scanner.ChangeStep;
+    //DebugLn(['ScanFile saved ChangeStep ',CurFile.FCodeChangeStep,' ',Tool.Scanner.ChangeStep]);
+    CurFile.ScanPascalToDos;
+  end;
 end;
 
 { TTLScannedFile }
@@ -384,9 +388,10 @@ var
   lParts: TStringList;
 begin
   //DebugLn(['TTLScannedFile.CreateToDoItem aFileName=',aFileName,' LineNumber=',aLineNumber]);
-  lParsingString:= TextToSingleLine(aTokenString);
+  lParsingString := TextToSingleLine(aTokenString);
   // Remove the beginning comment chars from input string
-  Delete(lParsingString, 1, Length(aStartComment));
+  if aStartComment <> '' then
+    Delete(lParsingString, 1, Length(aStartComment));
   // Remove leading and trailing blanks from input
   lParsingString := Trim(lParsingString);
   // See if it's a TODO or DONE item
@@ -436,11 +441,12 @@ begin
 end;
 
 constructor TTLScannedFile.Create(const aFilename: string; aTool: TCodeTool;
-  aScannedIncFiles: TStringMap);
+  aCode: TCodeBuffer; aScannedIncFiles: TStringMap);
 begin
   inherited Create;
   FFilename:=aFilename;
   FTool:=aTool;
+  FCode:=aCode;
   FScannedIncFiles:=aScannedIncFiles;
 end;
 
@@ -498,30 +504,30 @@ begin
   Add(lNewToDoItem);
 end;
 
-procedure TTLScannedFile.ScanToDos(aCode: TCodeBuffer);
+procedure TTLScannedFile.ScanPascalToDos;
 var
   FN, Src, CommentStr, LocationIncTodo: String;
   p, CommentEnd: Integer;
   NestedComment: Boolean;
-  CodeXYPosition: TCodeXYPosition;
+  CodePos: TCodeXYPosition;
 begin
   Src:=FTool.Src;
-  Assert(aCode.Filename=FTool.MainFilename, 'TTLScannedFile.ScanToDos: aCode.Filename<>FTool.MainFilename');
+  Assert(FCode.Filename=FTool.MainFilename, 'TTLScannedFile.ScanPascalToDos: aCode.Filename<>FTool.MainFilename');
   p:=1;
-  NestedComment:=CodeToolBoss.GetNestedCommentsFlagForFile(aCode.Filename);
+  NestedComment:=CodeToolBoss.GetNestedCommentsFlagForFile(FCode.Filename);
   repeat
     p:=FindNextComment(Src,p);
     if p>length(Src) then  // No more comments found, break loop
       break;
-    if not FTool.CleanPosToCaret(p,CodeXYPosition) then
+    if not FTool.CleanPosToCaret(p,CodePos) then
     begin
       ShowMessageFmt(errScanFileFailed, [ExtractFileName(FFilename)]);
       Exit;
     end;
     // Study include file names. Use heuristics, assume name ends with ".inc".
-    FN:=CodeXYPosition.Code.Filename;
+    FN:=CodePos.Code.Filename;
     if FilenameExtIs(FN, 'inc') then // Filename and location in an include file.
-      LocationIncTodo:=FN+'_'+IntToStr(CodeXYPosition.Y)
+      LocationIncTodo:=FN+'_'+IntToStr(CodePos.Y)
     else
       LocationIncTodo:='';
     // Process a comment
@@ -531,16 +537,35 @@ begin
     if (LocationIncTodo='') or not FScannedIncFiles.Contains(LocationIncTodo) then
     begin
       if Src[p]='/' then
-        CreateToDoItem(FN, '//', '', CommentStr, CodeXYPosition.Y)
+        CreateToDoItem(FN, '//', '', CommentStr, CodePos.Y)
       else if Src[p]='{' then
-        CreateToDoItem(FN, '{', '}', CommentStr, CodeXYPosition.Y)
+        CreateToDoItem(FN, '{', '}', CommentStr, CodePos.Y)
       else if Src[p]='(' then
-        CreateToDoItem(FN, '(*', '*)', CommentStr, CodeXYPosition.Y);
+        CreateToDoItem(FN, '(*', '*)', CommentStr, CodePos.Y);
       if LocationIncTodo<>'' then    // Store include file location for future.
         FScannedIncFiles.Add(LocationIncTodo);
     end;
     p:=CommentEnd;
   until false;
+end;
+
+procedure TTLScannedFile.ScanToDoFile;
+var
+  List: TStringList;
+  i: Integer;
+  CommentStr: String;
+begin
+  List:=TStringList.Create;
+  try
+    List.Text:=FCode.Source;
+    for i:=0 to List.Count-1 do
+    begin
+      CommentStr:=List[i];
+      CreateToDoItem(FCode.Filename, '', '', CommentStr, i+1)
+    end;
+  finally
+    List.Free;
+  end;
 end;
 
 { TTodoItem }

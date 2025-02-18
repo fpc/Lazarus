@@ -129,6 +129,7 @@ type
     FIdleConnected: boolean;
     FLoadingOptions: boolean;
     FStartFilename: String;
+    FOwnerProjPack: TObject;  // Project or package owning the FStartFilename.
     FOnOpenFile  : TOnOpenFile;
     FScannedFiles: TAvlTree;// tree of TTLScannedFile
     FScannedIncFiles: TStringMap;
@@ -190,7 +191,6 @@ procedure TIDETodoWindow.UpdateTodos(Immediately: boolean);
 var
   i: integer;
   St : String;
-  CurOwner: TObject;
   Node: TAvlTreeNode;
   CurFile: TTLScannedFile;
   Units: TStrings;
@@ -202,14 +202,14 @@ begin
     exit;
 
   if not Immediately then
-    begin
-      FUpdateNeeded:=true;
-      IdleConnected:=true;
-      exit;
-    end;
+  begin
+    FUpdateNeeded:=true;
+    IdleConnected:=true;
+    exit;
+  end;
 
   FUpdateNeeded:=false;
-  if FUpdating then
+  if FUpdating or (FOwnerProjPack=nil) then
     Exit;
   LazarusIDE.SaveSourceEditorChangesToCodeCache(nil);
   Screen.BeginWaitCursor;
@@ -233,10 +233,6 @@ begin
         ScanFile(FStartFilename);
     end;
 
-    ResolveIDEItem(CurOwner,CurProject,CurPkg);
-    if CurOwner=nil then
-      Exit;
-
     Flags:=[];
     if chkListed.Checked then
       Include(Flags, fuooListed);
@@ -247,7 +243,7 @@ begin
     if chkSourceEditor.Checked then
       Include(Flags, fuooSourceEditor);
 
-    Units:=LazarusIDE.FindUnitsOfOwner(CurOwner,Flags);
+    Units:=LazarusIDE.FindUnitsOfOwner(FOwnerProjPack,Flags);
     for i:=0 to Units.Count-1 do
       ScanFile(Units[i]);
 
@@ -345,17 +341,17 @@ end;
 function TIDETodoWindow.ProjectOpened(Sender: TObject; AProject: TLazProject): TModalResult;
 begin
   Result:=mrOK;
+  IDEItem:='';
   UpdateTodos;
 end;
 
 procedure TIDETodoWindow.UpdateStartFilename;
 var
   NewStartFilename: String;
-  CurObject: TObject;
   CurProject: TLazProject;
   CurPkg: TIDEPackage;
 begin
-  ResolveIDEItem(CurObject,CurProject,CurPkg);
+  ResolveIDEItem(FOwnerProjPack,CurProject,CurPkg);
   NewStartFilename:='';
   if CurPkg<>nil then                   // package
     NewStartFilename:=CurPkg.Filename
@@ -382,6 +378,7 @@ begin
     // project
     CurProject:=LazarusIDE.ActiveProject;
     CurOwner:=CurProject;
+    DebugLn(['TIDETodoWindow.ResolveIDEItem: Found project ', CurProject.MainFile.Filename]);
   end;
 end;
 
@@ -397,7 +394,7 @@ end;
 
 procedure TIDETodoWindow.SetIDEItem(AValue: string);
 begin
-  if FIDEItem=AValue then exit;
+  //if FIDEItem=AValue then exit;  // No check, trigger update in any case.
   FIDEItem:=AValue;
   UpdateStartFilename;
 end;
