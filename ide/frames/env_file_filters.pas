@@ -159,7 +159,7 @@ begin
     + '|' + dlgFilterLazarusForm + ' (*.lfm;*.dfm)|*.lfm;*.dfm'
     + '|' + dlgFilterLazarusPackage + ' (*.lpk)|*.lpk'
     + '|' + dlgFilterLazarusProjectSource + ' (*.lpr)|*.lpr'
-    + '|' + dlgFilterLazarusOtherFile + ' (*.inc;*.lrs;*.lpl)|*.inc;*.lrs;*.lpl';
+    + '|' + dlgFilterLazarusOtherFile + ' (*.inc;*.lrs;*.lpl;*.todo)|*.inc;*.lrs;*.lpl;*.todo';
 end;
 
 function GetFileDialogFilterFromGrid(Grid: TStringGrid): string;
