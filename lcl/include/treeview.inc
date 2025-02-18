@@ -5171,7 +5171,7 @@ procedure TCustomTreeView.DoPaintNode(Node: TTreeNode);
 var
   NodeRect: TRect;
   VertMid, VertDelta, RealExpandSignSize, RealIndent: integer;
-  NodeSelected, NodeHot, NodeDisabled, HasExpandSign, CustomDrawn: boolean;
+  NodeSelected, NodeHot, NodeDisabled, HasExpandSign, CustomDrawn: Boolean;
 
   procedure DrawVertLine(X, Y1, Y2: Integer);
   begin
@@ -5488,6 +5488,24 @@ var
     end;
   end;
 
+  function GetThemedDetail(IsFocused, IsSelected, IsHot: Boolean): TThemedTreeView;
+  const
+    DETAIL: array[boolean, boolean, boolean] of TThemedTreeView = (
+      // IsFocused = false
+      (                        { IsHot = false          IsHot = true }
+        { IsSelected = false } ( ttItemNormal,           ttItemHot ),
+        { IsSelected = true }  ( ttItemSelectedNotFocus, ttItemSelectedNotFocus )
+      ),
+      // IsFocused = true
+      (                        { IsHot = false          IsHot = true }
+        { IsSelected = false } ( ttItemNormal,           ttItemHot ),
+        { IsSelected = true }  ( ttItemSelected,         ttItemSelected )
+      )
+    );
+  begin
+    Result := DETAIL[IsFocused, IsSelected and (not SelectionIsHidden), IsHot];
+  end;
+
   { Draws the default normal node background }
   procedure DrawNormalBackground(ARect: TRect);
   begin
@@ -5498,73 +5516,59 @@ var
   { Default-draws the background of selected and hot-tracked nodes over the full
     client width. This does not occur when the tree is not in RowSelect mode,
     or when the preceding OnAdvancedCustomDrawItem event handler has been
-    exited with DefaultDraw = fals. }
+    exited with DefaultDraw = false. }
   procedure DrawSpecialBackground(IsSelected, IsHot: Boolean; ARect: TRect);
   var
     Details: TThemedElementDetails;
+    tt: TThemedTreeView;
   begin
     if not RowSelect then
       exit;
     if not (IsSelected or IsHot) then
       exit;
-    if tvoThemedDraw in Options then
+
+    if (tvoThemedDraw in Options) then
     begin
-      if (tvoFocusedPainting in FStates) then
-      begin
-        if IsSelected then
-          Details := ThemeServices.GetElementDetails(ttItemSelected)
-        else
-        if IsHot then
-          Details := ThemeServices.GetElementDetails(ttItemHot);
+      tt := GetThemedDetail(Focused, IsSelected, IsHot);
+      Details := ThemeServices.GetElementDetails(tt);
+      if tt <> ttItemNormal then
         ThemeServices.DrawElement(Canvas.Handle, Details, ARect, nil);
-      end;
     end else
     if (IsSelected or IsHot) and (Canvas.Brush.Color <> clNone) then
-        Canvas.FillRect(ARect);
+      Canvas.FillRect(ARect);
   end;
 
-  { If not deactivated by user selection in the custom-draw events, draws the
-    node text background. Then the node text. }
-  procedure DrawNodeText(IsSelected, IsHot: Boolean; NdRect: TRect; AText: String);
+  { Draws first the node text background unless deactivated by user selection
+    in the custom-draw events. Then the node text is drawn. }
+  procedure DrawNodeText(IsSelected, IsHot: Boolean; ANodeRect: TRect; AText: String);
   var
     Details: TThemedElementDetails;
+    tt: TThemedTreeView;
   begin
-    if IsSelected or IsHot then
+    // Themed drawing here
+    if tvoThemedDraw in Options then
     begin
-      if tvoFocusedPainting in FStates then
-      begin
-        if IsSelected then
-          Details := ThemeServices.GetElementDetails(ttItemSelected)
-        else
-          Details := ThemeServices.GetElementDetails(ttItemHot);
-      end else
-        Details := ThemeServices.GetElementDetails(ttItemSelectedNotFocus);
-      if not (tvoRowSelect in Options) then
-      begin
-        if (tvoThemedDraw in Options) then
-          ThemeServices.DrawElement(Canvas.Handle, Details, NdRect, nil)
-        else
-        if Canvas.Brush.Color <> clNone then
-          Canvas.FillRect(NdRect)
-      end else
-      if not (tvoThemedDraw in Options) and (Canvas.Brush.Color <> clNone) then
-        Canvas.FillRect(NdRect);
-    end
-    else
-      Details := ThemeServices.GetElementDetails(ttItemNormal);
+      tt := GetThemedDetail(Focused, IsSelected, IsHot);
+      Details := ThemeServices.GetElementDetails(tt);
+      if (tt <> ttItemNormal) and (not RowSelect) then
+        ThemeServices.DrawElement(Canvas.Handle, Details, ANodeRect, nil);
+    end else
+    // Non-themed drawing of text background here
+    if not RowSelect and (Canvas.Brush.Color <> clNone) then
+      Canvas.FillRect(ANodeRect);
 
-    NdRect.Offset(ScaleX(2, 96), 0);
-
-    SetBkMode(Canvas.Handle, TRANSPARENT);
+    // Draw the node text
+    ANodeRect.Offset(ScaleX(2, 96), 0);
     if (tvoThemedDraw in Options) then
     begin
       if not (Enabled and Node.Enabled) then
         Details.State := 4; // TmSchema.TREIS_DISABLED = 4
-      ThemeServices.DrawText(Canvas, Details, AText, NdRect, DT_LEFT or DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX, 0);
+      ThemeServices.DrawText(Canvas, Details, AText, ANodeRect, DT_LEFT or DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX, 0);
     end
     else
     begin
-      DrawText(Canvas.Handle, PChar(AText), -1, NdRect, DT_LEFT or DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX);
+      SetBkMode(Canvas.Handle, TRANSPARENT);
+      DrawText(Canvas.Handle, PChar(AText), -1, ANodeRect, DT_LEFT or DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX);
     end;
   end;
 
@@ -5590,7 +5594,7 @@ begin
   NodeHot := (tvoHotTrack in FOptions) and (Node = FNodeUnderCursor) and Assigned(FNodeUnderCursor);
   NodeDisabled := not (Enabled and Node.Enabled);
   Canvas.Font.Assign(Self.Font);
-  if NodeSelected and not (tvoThemedDraw in Options) then
+  if NodeSelected and not (tvoThemedDraw in Options) and not SelectionIsHidden then
   begin
     Canvas.Brush.Color := FSelectedColor;
     Canvas.Font.Color := FSelectedFontColor;
@@ -6881,6 +6885,14 @@ begin
     if Assigned(ANode) and not ANode.Visible then
       ANode.Selected:=False;       // Selected := nil;
   end;
+end;
+
+{ When HideSelection is true (and the tree is not focused), the selection is
+  really hidden only in Delphi mode. Lazarus mode ignores the HideSelection
+  setting. }
+function TCustomTreeView.SelectionIsHidden: Boolean;
+begin
+  Result := (not Focused) and HideSelection and (FHideSelectionMode = hsmDelphi);
 end;
 
 procedure TCustomTreeView.MoveToNextNode(ASelect: Boolean);

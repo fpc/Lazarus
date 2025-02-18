@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, ComCtrls, ExtCtrls, SysUtils, Forms, Controls, Graphics, Dialogs,
-  StdCtrls;
+  StdCtrls, LCLVersion;
 
 type
 
@@ -24,6 +24,8 @@ type
     lbTask: TListBox;
     Panel1: TPanel;
     Panel2: TPanel;
+    rbHideSelModeLaz: TRadioButton;
+    rbHideSelModeDelphi: TRadioButton;
     Splitter1: TSplitter;
     TreeView: TTreeView;
     procedure btnToggleEnabledDisabledClick(Sender: TObject);
@@ -55,6 +57,7 @@ type
     // The top-level nodes are painted with bold font
     procedure BoldTopLevel_CustomDrawItem(Sender: TCustomTreeView;
       Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
+    procedure rbHideSelModeLazChange(Sender: TObject);
 
     // Nodes as rounded rectangles
     procedure RoundedRectNodes_AdvancedCustomDrawItem(Sender: TCustomTreeView;
@@ -362,7 +365,7 @@ var
 begin
   if Stage = cdPrePaint then
   begin
-    // Draw the image
+    // Draw the image in a tiled manner
     y := 0;
     while (y < TreeView.ClientHeight) do
     begin
@@ -384,14 +387,21 @@ end;
 procedure TMainForm.BackgroundImage_AdvancedCustomDrawItem(Sender: TCustomTreeView;
   Node: TTreeNode; State: TCustomDrawState; Stage: TCustomDrawStage;
   var PaintImages, DefaultDraw: Boolean);
+var
+  hideSel: Boolean;
 begin
+  {$IF LCL_FullVersion >= 4990000}
+  hideSel := TTreeView(Sender).SelectionIsHidden;
+  {$ELSE}
+  hideSel := false;
+  {$ENDIF}
   case Stage of
     cdPreErase:
       // Avoid overwriting the image with the node background color
       Sender.Canvas.Brush.Color := clNone;
     cdPostErase:
       // Avoid drawing the default hottrack node text background over the image
-      if (cdsSelected in State) then
+      if (cdsSelected in State) and not hideSel then
         Sender.Canvas.Brush.Color := clHighlight
       else
       if (cdsHot in State) then
@@ -416,21 +426,39 @@ begin
     Sender.Canvas.Font.Style := [];
 end;
 
-{ Draw nodes as rounded rectangles. }
+procedure TMainForm.rbHideSelModeLazChange(Sender: TObject);
+begin
+ {$IF LCL_FullVersion >= 4990000}
+  if rbHideSelModeLaz.Checked then
+    TreeView.HideSelectionMode := hsmLaz
+  else
+    TreeView.HideSelectionMode := hsmDelphi;
+  TreeView.Invalidate;
+ {$IFEND}
+end;
+
+{ Draws nodes as rounded rectangles. }
 procedure TMainForm.RoundedRectNodes_AdvancedCustomDrawItem(Sender: TCustomTreeView;
   Node: TTreeNode; State: TCustomDrawState; Stage: TCustomDrawStage;
   var PaintImages, DefaultDraw: Boolean);
 var
   R: TRect;
+  hideSel: Boolean;
 begin
   if Stage = cdPostErase then
   begin
+    {$IF LCL_FullVersion >= 4990000}
+    hideSel := TTreeView(Sender).SelectionIsHidden;
+    {$ELSE}
+    hideSel := false;
+    {$ENDIF}
+
     R := Node.DisplayRect(true);
     R.Left := Node.DisplayIconLeft;
     dec(R.Left, 2);
     inc(R.Top);
     dec(R.Bottom);
-    if State * [cdsFocused, cdsSelected] <> [] then
+    if (State * [cdsFocused, cdsSelected] <> []) and not hideSel then
     begin
       Sender.Canvas.Brush.Color := clRed;
       Sender.Canvas.Pen.Color := clMaroon;
@@ -453,7 +481,7 @@ begin
   end;
 end;
 
-{ Full row highlighting. Depending on the selection in the Task radiogroup,
+{ Full row highlighting. Depending on the selection in the task radiogroup,
   there are three possibilities:
   - highlighting across the entire row
   - highlighting starting at the icon
@@ -463,18 +491,25 @@ procedure TMainForm.RowSelectHotTrack_AdvancedCustomDrawItem(Sender: TCustomTree
   var PaintImages, DefaultDraw: Boolean);
 var
   R: TRect;
-  idx: Integer;
+  hideSel: Boolean;
 begin
   if Stage = cdPostErase then
   begin
-    if [cdsFocused, cdsSelected] * State <> [] then    // Selected node
-      Sender.Canvas.Brush.Color := clRed
-    else
+    {$IF LCL_FullVersion >= 4990000}
+    hideSel := TTreeView(Sender).SelectionIsHidden;
+    {$ELSE}
+    hideSel := false;
+    {$ENDIF}
+
+    if ([cdsFocused, cdsSelected] * State <> []) and not hideSel then
+    begin
+      Sender.Canvas.Brush.Color := clRed;               // Selected node
+      Sender.Canvas.Font.Color := clWhite;
+    end else
     if cdsHot in State then                            // Hot-tracked node
       Sender.Canvas.Brush.Color := $ccccff
     else
       Sender.Canvas.Brush.Color := clWindow;           // Normal nodes
-    idx := lbTask.ItemIndex;
     case lbTask.ItemIndex of
       tRowSelect_HotTrack_Full:           // full with of displayed node
         DefaultDraw := true;
@@ -512,15 +547,22 @@ procedure TMainForm.RowSelectHotTrackGradient_AdvancedCustomDrawItem(Sender: TCu
 var
   R: TRect;
   startColor, endColor: TColor;
+  hideSel: Boolean;
 begin
   if Stage = cdPostErase then
   begin
-    if [cdsFocused, cdsSelected] * State <> [] then    // Selected node
-    begin
+    {$IF LCL_FullVersion >= 4990000}
+    hideSel := TTreeView(Sender).SelectionIsHidden;
+    {$ELSE}
+    hideSel := false;
+    {$ENDIF}
+
+    if ([cdsFocused, cdsSelected] * State <> []) and not hideSel then
+    begin                                     // Selected node
       startColor := clRed;
       endColor := $ccccff;
     end else
-    if cdsHot in State then                            // Hot-tracked node
+    if cdsHot in State then                   // Hot-tracked node
     begin
       startColor := $ccccff;
       endColor := clWhite;
@@ -562,13 +604,20 @@ procedure TMainForm.SelectHotTrackImage_AdvancedCustomDrawItem(Sender: TCustomTr
   var PaintImages, DefaultDraw: Boolean);
 var
   R: TRect;
+  hideSel: Boolean;
 begin
   if Stage = cdPostErase then
   begin
-    if [cdsFocused, cdsSelected] * State <> [] then    // Selected node
-    begin
+    {$IF LCL_FullVersion >= 4990000}
+    hideSel := TTreeView(Sender).SelectionIsHidden;
+    {$ELSE}
+    hideSel := false;
+    {$ENDIF}
+    if ([cdsFocused, cdsSelected] * State <> []) and not hideSel then
+    begin                                              // Selected node
       Sender.Canvas.Brush.Style := bsImage;
       Sender.Canvas.Brush.Bitmap := FSelectionImg.Bitmap;
+      Sender.Canvas.Font.Color := clWhite;
     end else
     if cdsHot in State then                            // Hot-tracked node
     begin

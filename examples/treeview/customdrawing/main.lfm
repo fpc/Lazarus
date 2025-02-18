@@ -127,10 +127,10 @@ object MainForm: TMainForm
       object cbMultiSelect: TCheckBox
         AnchorSideLeft.Control = cbHideSelection
         AnchorSideLeft.Side = asrBottom
-        AnchorSideTop.Control = Panel2
-        Left = 124
+        AnchorSideTop.Control = cbShowLines
+        Left = 113
         Height = 19
-        Top = 0
+        Top = 50
         Width = 81
         BorderSpacing.Left = 20
         Caption = 'Multi-select'
@@ -155,7 +155,7 @@ object MainForm: TMainForm
         AnchorSideLeft.Control = cbMultiSelect
         AnchorSideTop.Control = cbShowButtons
         AnchorSideTop.Side = asrCenter
-        Left = 124
+        Left = 113
         Height = 23
         Top = 23
         Width = 104
@@ -180,13 +180,41 @@ object MainForm: TMainForm
         Left = 0
         Height = 19
         Top = 0
-        Width = 104
+        Width = 93
         BorderSpacing.Bottom = 6
-        Caption = 'cbHideSelection'
+        Caption = 'Hide selection'
         Checked = True
         State = cbChecked
         TabOrder = 0
         OnChange = cbHideSelectionChange
+      end
+      object rbHideSelModeLaz: TRadioButton
+        AnchorSideLeft.Control = cbHideSelection
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = cbHideSelection
+        Left = 113
+        Height = 19
+        Top = 0
+        Width = 56
+        BorderSpacing.Left = 20
+        Caption = 'like Laz'
+        Checked = True
+        TabOrder = 7
+        TabStop = True
+        OnChange = rbHideSelModeLazChange
+      end
+      object rbHideSelModeDelphi: TRadioButton
+        AnchorSideLeft.Control = rbHideSelModeLaz
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = cbHideSelection
+        Left = 179
+        Height = 19
+        Top = 0
+        Width = 73
+        BorderSpacing.Left = 10
+        Caption = 'like Delphi'
+        TabOrder = 6
+        OnChange = rbHideSelModeLazChange
       end
     end
   end

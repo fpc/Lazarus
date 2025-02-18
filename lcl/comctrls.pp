@@ -3422,6 +3422,7 @@ type
     tvimAsPrevSibling
   );
 
+  THideSelectionMode = (hsmLaz, hsmDelphi);
 
   TCustomTreeView = class(TCustomControl)
   private
@@ -3509,6 +3510,7 @@ type
     FPrevToolTips: boolean;
     FDragScrollMargin: integer;
     FDragScrollTimer: TTimer;
+    FHideSelectionMode: THideSelectionMode;
     procedure DragScrollTimerTick(Sender: TObject);
     procedure CanvasChanged(Sender: TObject);
     function GetAutoExpand: boolean;
@@ -3786,6 +3788,7 @@ type
     procedure MakeSelectionVisible;
     procedure ClearInvisibleSelection;
     function StoreCurrentSelection: TStringList;
+    function SelectionIsHidden: Boolean;
     procedure ApplyStoredSelection(ASelection: TStringList; FreeList: boolean = True);
     procedure MoveToNextNode(ASelect: Boolean = False);
     procedure MoveToPrevNode(ASelect: Boolean = False);
@@ -3831,6 +3834,8 @@ type
     property TopItem: TTreeNode read GetTopItem write SetTopItem;
     property TreeLineColor: TColor read FTreeLineColor write FTreeLineColor default clWindowFrame;
     property TreeLinePenStyle: TPenStyle read FTreeLinePenStyle write FTreeLinePenStyle default psPattern;
+    // When HideSelection is false, switches between Lazarus (sel nodes gray) and Delphi mode (sel nodes hidden)
+    property HideSelectionMode: THideSelectionMode read FHideSelectionMode write FHideSelectionMode;
   published
     property TabStop default true;
   end;
