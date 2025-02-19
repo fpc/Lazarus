@@ -3469,6 +3469,7 @@ begin
   NewFlags:=[];
   NewUnitName:='';
   if (NewFileType=pftUnit) then begin
+    InvalidateFileStateCache; // File may not be in cache in some d-n-d situations.
     Code:=CodeToolBoss.LoadFile(aFilename,true,false);
     NewUnitName:=CodeToolBoss.GetSourceName(Code,false);
     Assert(NewUnitName<>'', 'TLazPackage.AddFileByName: NewUnitName is empty.');
