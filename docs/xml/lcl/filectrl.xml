@@ -410,10 +410,16 @@ properties in the class instance, including:
 <dd>Set to False</dd>
 <dt>Sorted</dt>
 <dd>Set to <b>True</b> after files have been loaded in UpdateFileList</dd>
+<dt>Items</dt>
+<dd>
+Sets the <var>CaseSensitive</var> property in Items to <b>True</b> to ensure 
+that file and directory names on case-sensitive file systems are handled 
+properly.
+</dd>
 </dl>
 <p>
 Create calls the <var>UpdateFileList</var> method to load the file and 
-directory names for the current directory into the <var>Items</var> property.
+directory names for the current Directory into the <var>Items</var> property.
 </p>
 </descr>
 <seealso>
@@ -424,6 +430,7 @@ directory names for the current directory into the <var>Items</var> property.
 <link id="TCustomFileListBox.UpdateFileList"/>
 <link id="#lcl.stdctrls.TCustomListBox.Items">TCustomListBox.Items</link>
 <link id="#lcl.stdctrls.TCustomListBox.MultiSelect">TCustomListBox.MultiSelect</link>
+<link id="#rtl.classes.TStringList.CaseSensitive">TStringList.CaseSensitive</link>
 <link id="#rtl.classes.TComponent.Create">TComponent.Create</link>
 </seealso>
 </element>
@@ -512,7 +519,13 @@ UpdateFileList is called in the implementation of the <var>Create</var> and
 <var>Mask</var>.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TCustomFileListBox.Directory"/>
+<link id="TCustomFileListBox.FileName"/>
+<link id="TCustomFileListBox.FileType"/>
+<link id="#lcl.controls.TCustomListBox.Items">TCustomListBox.Items</link>
+<link id="#lcl.controls.TCustomListBox.Clear">TCustomListBox.Clear</link>
+</seealso>
 </element>
 
 <element name="TCustomFileListBox.Drive">
