@@ -36,7 +36,7 @@ interface
 
 uses
   // FCL, RTL
-  Classes, SysUtils, StrUtils, AVL_Tree,
+  Classes, SysUtils, StrUtils, AVL_Tree, IniFiles,
   // LCL
   LCLType, LclIntf, Controls, Dialogs, ComCtrls,
   // LazUtils
@@ -71,8 +71,8 @@ type
   TTodoItem = class(TObject)
   private
     FCategory: string;
-    FToDoType:TToDoType;
-    FTokenStyle:TTokenStyle;
+    FToDoType: TToDoType;
+    FTokenStyle: TTokenStyle;
     FFilename: string;
     FLineNumber: integer;
     FOwner: string;
@@ -117,7 +117,7 @@ type
       aLineNumber: Integer);
     procedure ScanPascalToDos;
     procedure ScanToDoFile;
-    procedure AddToDoItemFromParts(aParts: TStrings; const aFileName: string;
+    procedure AddToDoItemFromParts(const aFileName: string;
       aLineNumber: integer; aToDoType: TToDoType; aTokenStyle: TTokenStyle);
   public
     constructor Create(const aFilename: string; aTool: TCodeTool; aCode: TCodeBuffer;
@@ -140,6 +140,9 @@ implementation
 const
   TODO_TOKENS : array [TTokenStyle, TToDoType] of string
       = (('#todo', '#done', '#note'), ('TODO', 'DONE', 'NOTE'));
+
+var
+  ToDoTokenList: THashedStringList;  // Pass ToDo token parameters in this.
 
 function CompareTLScannedFiles(Data1, Data2: Pointer): integer;
 begin
@@ -169,14 +172,21 @@ begin
   end;
 end;
 
-procedure ParseToParts(const aTokenString: string; aParts: TStrings);
+function ParseToParts(const aTokenString: string;
+  aRequireColon: Boolean): Boolean;
+// Parse a string like
+//  "10 -o'Me Myself' -cMyOwnCat : Text for the item goes here."
+// Returns False if the format is invalid, like a colon is missing.
 var
-  lParseState:TParseState;
-  i, lPriorityStart, lBytesRemoved: Integer;
+  lParseState: TParseState;
+  i, lPriorityStart: Integer;
+  HasColon: Boolean;
   lTempStr, lStr: string;
   lpTemp: PChar;
 begin
-  lParseState :=psHunting;
+  lParseState := psHunting;
+  HasColon := False;
+  ToDoTokenList.Clear;
   i := 1;
   while i <= Length(aTokenString) do
     begin
@@ -185,7 +195,7 @@ begin
         psHunting:
           begin
             case aTokenString[i] of
-              ' ':Inc(i);// look at the next character
+              ' ': Inc(i);// look at the next character
               '-':
                 begin
                   lParseState:=psGotDash;
@@ -199,17 +209,20 @@ begin
                 end;
               ':':
                 begin
+                  HasColon := True;
                   lParseState:=psText;
                   Inc(i);
                 end;
               else // Not a special character so it must be the text
+                if aRequireColon and not HasColon then
+                  Exit(False);
                 lParseState := psText;
             end;
           end;
 
         psText:
           begin
-            aParts.Values[ParseStateToText(lParseState)]:= Trim(Copy(aTokenString, i, MaxInt));
+            ToDoTokenList.Values[ParseStateToText(lParseState)]:= Trim(Copy(aTokenString, i, MaxInt));
             lParseState := psAllDone;
           end;
 
@@ -235,13 +248,12 @@ begin
           end;
 
         psPriority:
-          if (aTokenString[i] < '0') or (aTokenString[i] > '9') then
-            begin
-              aParts.Values[ParseStateToText(lParseState)] := Copy(aTokenString, lPriorityStart, i-lPriorityStart);
-              lParseState := psHunting;
-            end
-          else
-            Inc(i);
+          if aTokenString[i] in ['0'..'9'] then
+            Inc(i)
+          else begin
+            ToDoTokenList.Values[ParseStateToText(lParseState)] := Copy(aTokenString, lPriorityStart, i-lPriorityStart);
+            lParseState := psHunting;
+          end;
 
         psOwnerStart, psCategoryStart:
           begin
@@ -251,9 +263,8 @@ begin
                   lTempStr := Copy(aTokenString, i, MaxInt);
                   lpTemp := PChar(lTempStr);
                   lStr := AnsiExtractQuotedStr(lpTemp, '''');
-                  aParts.Values[ParseStateToText(lParseState)] := lStr;
-                  lBytesRemoved := Length(lTempStr) - Length(lpTemp);
-                  i := i + lBytesRemoved;
+                  ToDoTokenList.Values[ParseStateToText(lParseState)] := lStr;
+                  i := i + Length(lTempStr) - Length(lpTemp);
                   lParseState := psHunting;
                 end;
               else
@@ -271,7 +282,7 @@ begin
           begin
             if (aTokenString[i] = ' ') or (aTokenString[i] = ':') then
               begin
-                aParts.Values[ParseStateToText(lParseState)] := lTempStr;
+                ToDoTokenList.Values[ParseStateToText(lParseState)] := lTempStr;
                 lParseState:=psHunting;
               end
             else
@@ -286,6 +297,7 @@ begin
 
       end;
     end;
+  Result := True;
 end;
 
 procedure ExtractToCSV(const aFilename: string; aListItems: TListItems);
@@ -381,11 +393,10 @@ end;
 procedure TTLScannedFile.CreateToDoItem(const aFileName, aStartComment,
   aEndComment, aTokenString: string; aLineNumber: Integer);
 var
-  lParsingString, lTokenToCheckFor : string;
+  lParsingString, lTokenStr : string;
   lToDoTokenFound: boolean;
   lTodoType, lFoundToDoType: TToDoType;
   lTokenStyle, lFoundTokenStyle: TTokenStyle;
-  lParts: TStringList;
 begin
   //DebugLn(['TTLScannedFile.CreateToDoItem aFileName=',aFileName,' LineNumber=',aLineNumber]);
   lParsingString := TextToSingleLine(aTokenString);
@@ -394,30 +405,21 @@ begin
     Delete(lParsingString, 1, Length(aStartComment));
   // Remove leading and trailing blanks from input
   lParsingString := Trim(lParsingString);
-  // See if it's a TODO or DONE item
 
+  // Determine Token and Style
   lToDoTokenFound:=False;
-
-  // Determine token and style
-
   for lTokenStyle := Low(TTokenStyle) to High(TTokenStyle) do
+    for lTodoType := Low(TToDoType) to High (TToDoType) do
     begin
-      for lTodoType := Low(TToDoType) to High (TToDoType) do
-        begin
-          lTokenToCheckFor := TODO_TOKENS[lTokenStyle, lTodoType];
-          if (LazStartsText(lTokenToCheckFor, lParsingString)) // Token match
-            and ( (Length(lParsingString)=Length(lTokenToCheckFor)) // Exact match, no further chars. Should not happen?
-               or not (lParsingString[Length(lTokenToCheckFor)+1] in ['A'..'Z','a'..'z'])
-            ) then // Extra char is not alpha
-            begin
-              lToDoTokenFound := True;
-              lFoundToDoType := lTodoType;
-              lFoundTokenStyle := lTokenStyle;
-              Break;
-            end;
-          if lToDoTokenFound then
-            break;
-        end;
+      lTokenStr := TODO_TOKENS[lTokenStyle, lTodoType];
+      if Length(lParsingString)<=Length(lTokenStr) then
+        Continue;
+      if not LazStartsText(lTokenStr, lParsingString) then
+        Continue;
+      lToDoTokenFound := True;       // lTokenStr match
+      lFoundToDoType := lTodoType;
+      lFoundTokenStyle := lTokenStyle;
+      Break;
     end;
 
   if Not lToDoTokenFound then
@@ -427,17 +429,15 @@ begin
   if (aEndComment <> '') and LazEndsStr(aEndComment, lParsingString) then
     SetLength(lParsingString, Length(lParsingString)-Length(aEndComment));
 
-  // Remove the Token
-  Delete(lParsingString, 1, Length(TODO_TOKENS[lFoundTokenStyle, lTodoType]));
+  // Remove the lTokenStr
+  lTokenStr := TODO_TOKENS[lFoundTokenStyle, lFoundToDoType];
+  Delete(lParsingString, 1, Length(lTokenStr));
   lParsingString := Trim(lParsingString);
 
-  lParts:=TStringList.Create;
-  try
-    ParseToParts(lParsingString, lParts);
-    AddToDoItemFromParts(lParts, aFileName, aLineNumber, lFoundToDoType, lFoundTokenStyle);
-  finally
-    lParts.Free;
-  end;
+  // Note: Requite a colon with plain "done" but not with "#done".
+  // Otherwise there are false positives.
+  if ParseToParts(lParsingString, lFoundTokenStyle=tsAlternate) then
+    AddToDoItemFromParts(aFileName, aLineNumber, lFoundToDoType, lFoundTokenStyle);
 end;
 
 constructor TTLScannedFile.Create(const aFilename: string; aTool: TCodeTool;
@@ -473,7 +473,7 @@ begin
   FItems.Add(aItem);
 end;
 
-procedure TTLScannedFile.AddToDoItemFromParts(aParts: TStrings; const aFileName: string;
+procedure TTLScannedFile.AddToDoItemFromParts(const aFileName: string;
   aLineNumber: integer; aToDoType: TToDoType; aTokenStyle: TTokenStyle);
 var
   lNewToDoItem: TTodoItem;
@@ -485,19 +485,19 @@ begin
   lNewToDoItem.LineNumber := aLineNumber;
   lNewToDoItem.Filename   := aFileName;
 
-  S:=aParts.Values[TEXT_PART_NAME];
+  S:=ToDoTokenList.Values[TEXT_PART_NAME];
   if S<>'' then
     lNewToDoItem.Text := S;
 
-  S:=aParts.Values[OWNER_PART_NAME];
+  S:=ToDoTokenList.Values[OWNER_PART_NAME];
   if S<>'' then
     lNewToDoItem.Owner:=S;
 
-  S:=aParts.Values[CATEGORY_PART_NAME];
+  S:=ToDoTokenList.Values[CATEGORY_PART_NAME];
   if S<>'' then
     lNewToDoItem.Category:=S;
 
-  S:=aParts.Values[PRIORITY_PART_NAME];
+  S:=ToDoTokenList.Values[PRIORITY_PART_NAME];
   if S<>'' then
     lNewToDoItem.Priority:=StrToInt(S);
 
@@ -614,5 +614,12 @@ function TTodoItem.GetAsComment: string;
 begin
   Result := '{ '+AsString+' }';
 end;
+
+initialization
+  ToDoTokenList:=THashedStringList.Create;
+  ToDoTokenList.CaseSensitive:=True;
+
+finalization
+  ToDoTokenList.Free;
 
 end.
