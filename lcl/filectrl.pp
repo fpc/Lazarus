@@ -478,6 +478,7 @@ var
   CurrentDir: string;
 begin
   inherited Create(TheOwner);
+  TStringList(Items).CaseSensitive := True; //Issue #41441
   //Initializes the Mask property.
   FMask := AllDirectoryEntriesMask;
   //Initializes the FileType property.
