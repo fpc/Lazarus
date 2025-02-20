@@ -414,7 +414,7 @@ implementation
 procedure TMainIDEBar.MainIDEBarDropFiles(Sender: TObject;
   const FileNames: array of String);
 begin
-  // the Drop event comes before the Application activate event
+  // the Drop event comes before the Application activate event or not at all
   // => invalidate file state
   InvalidateFileStateCache;
   LazarusIDE.DoDropFiles(Sender,FileNames);

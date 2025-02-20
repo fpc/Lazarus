@@ -1505,7 +1505,6 @@ end;
 procedure TPackageEditorForm.FormDropFiles(Sender: TObject;
   const FileNames: array of String);
 var
-  i: Integer;
   Files: TStringList;
 begin
   {$IFDEF VerbosePkgEditDrag}
@@ -1514,13 +1513,13 @@ begin
   if length(FileNames)=0 then exit;
 
   //debugln(['TPackageEditorForm.FormDropFiles ']);
-  // the Drop does not always trigger an application activate event -> invalidate here
+  // the Drop event comes before the Application activate event or not at all
+  // => invalidate file state
   InvalidateFileStateCache;
 
   Files:=TStringList.Create;
   try
-    for i:=0 to high(Filenames) do
-      Files.Add(FileNames[i]);
+    Files.AddStrings(FileNames);
     AddUserFiles(Files);
   finally
     Files.Free;

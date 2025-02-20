@@ -895,6 +895,11 @@ begin
   debugln(['TProjectInspectorForm.FormDropFiles ',length(FileNames)]);
   {$ENDIF}
   if length(FileNames)=0 then exit;
+
+  // the Drop event comes before the Application activate event or not at all
+  // => invalidate file state
+  InvalidateFileStateCache;
+
   BeginUpdate;
   try
     for i:=0 to high(Filenames) do

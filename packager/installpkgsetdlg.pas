@@ -392,6 +392,10 @@ var
 begin
   if length(FileNames) = 1 then // only one file
   begin
+    // the Drop event comes before the Application activate event or not at all
+    // => invalidate file state
+    InvalidateFileStateCache;
+
     lFilename := CleanAndExpandFilename(FileNames[0]);
     LoadPackageListFromFile(lFilename);
   end;

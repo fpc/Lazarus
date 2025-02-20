@@ -5890,6 +5890,11 @@ var
 begin
   //DebugLn(['TMainIDE.DoDropFiles: ',length(Filenames), ' files, WindowIndex=', WindowIndex]);
   if Length(FileNames) = 0 then exit;
+
+  // the Drop event comes before the Application activate event or not at all
+  // => invalidate file state
+  InvalidateFileStateCache;
+
   FileList := TStringList.Create;
   FileList.AddStrings(FileNames);
   try
