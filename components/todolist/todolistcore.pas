@@ -540,7 +540,7 @@ begin
         end;
 
       psOwnerContinue,psCategoryContinue:
-        if (aTokenString[i] = ' ') or (aTokenString[i] = ':') then
+        if aTokenString[i] in [#9,' ',':'] then
         begin
           if lParseState = psOwnerContinue then
             Owner := lTempStr
