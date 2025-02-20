@@ -311,6 +311,7 @@ const
   ecPluginFirstSyncro     = 19010;
   ecPluginFirstTemplEdit  = 19030;
   ecPluginFirstMultiCaret = 19050;
+  ecPluginFirstLineWrap   = 19070;
 
   ecPluginFirst = 20000;
 

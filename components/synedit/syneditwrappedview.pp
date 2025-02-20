@@ -6,8 +6,8 @@ interface
 
 uses
   Classes, SysUtils, math, LazSynEditText, SynEdit, SynEditViewedLineMap,
-  SynEditTypes, SynEditMiscProcs, SynEditHighlighter, SynEditMiscClasses,
-  Graphics, LazLoggerBase, LazListClasses;
+  SynEditTypes, SynEditMiscProcs, SynEditHighlighter, SynEditMiscClasses, SynEditKeyCmds,
+  Graphics, LCLType, LazLoggerBase, LazListClasses;
 
 type
   TLazSynEditLineWrapPlugin = class;
@@ -194,26 +194,35 @@ type
     function GetNextHighlighterToken(out ATokenInfo: TLazSynDisplayTokenInfo): Boolean; override;
   end;
 
+  TSynEditLineMapKeyStrokes = class(TSynEditKeyStrokes)
+  end;
+
   { TLazSynEditLineWrapPlugin }
 
   TLazSynEditLineWrapPlugin = class(TLazSynEditPlugin)
   private
     FCurrentWrapColumn: Integer;
     FCaretWrapPos: TLazSynEditWrapCaretPos;
+    FKeyStrokes: TSynEditLineMapKeyStrokes;
     FMarkupInfoWrapEol: TSynSelectedColor;
     FMarkupInfoWrapIndent: TSynSelectedColor;
     FMarkupInfoWrapSubLine: TSynSelectedColor;
 
     FMinWrapWidth: Integer;
+    FOverrideHomeEndKeyDefaults: boolean;
     FWrapIndentMaxAbs: Integer;
     FWrapIndentMaxRel: Integer;
     FWrapIndentMinAbs: Integer;
     FWrapIndentIsOffset: Boolean;
     FWrapIndentWidth: Integer;
+
+    FLineMapView: TSynEditLineMappingView;
+
     procedure DoLinesChanged(Sender: TObject);
     procedure DoMarkupChanged(Sender: TObject);
     procedure DoWidthChanged(Sender: TObject; Changes: TSynStatusChanges);
     function GetWrapColumn: Integer;
+    procedure SetKeyStrokes(AValue: TSynEditLineMapKeyStrokes);
 
     procedure SetWrapIndentMaxAbs(AValue: Integer);
     procedure SetWrapIndentMaxRel(AValue: Integer);
@@ -221,12 +230,24 @@ type
     procedure SetMinWrapWidth(AValue: Integer);
     procedure SetWrapIndentIsOffset(AValue: Boolean);
     procedure SetWrapIndentWidth(AValue: Integer);
-public
-    FLineMapView: TSynEditLineMappingView;
     function CreatePageMapNode(AMapTree: TSynLineMapAVLTree
       ): TSynEditLineMapPage;
   protected
     procedure SetEditor(const AValue: TCustomSynEdit); override;
+    procedure DoEditorRemoving(AValue: TCustomSynEdit); override;
+    procedure DoEditorAdded(AValue: TCustomSynEdit); override;
+
+    procedure TranslateKey(Sender: TObject; Code: word; SState: TShiftState;
+      var Data: pointer; var IsStartOfCombo: boolean; var Handled: boolean;
+      var Command: TSynEditorCommand; FinishComboOnly: Boolean;
+      var ComboKeyStrokes: TSynEditKeyStrokes);
+    procedure ProcessSynCommandInit(Sender: TObject; AfterProcessing: boolean;
+      var Handled: boolean; var Command: TSynEditorCommand; var AChar: TUtf8Char; Data: pointer;
+      HandlerData: pointer);
+    procedure ProcessSynCommand(Sender: TObject; AfterProcessing: boolean;
+              var Handled: boolean; var Command: TSynEditorCommand;
+              var AChar: TUTF8Char; Data: pointer; HandlerData: pointer);
+
 
     function CalculateIndentFor(ALine: PChar; AMaxWidth: Integer; const PhysCharWidths: TPhysicalCharWidths): Integer;
     function CalculateNextBreak(ALine: PChar; ALogStartFrom: IntIdx; AMaxWidth: Integer;
@@ -240,6 +261,8 @@ public
       out ALogStartX, ANextLogStartX, APhysStart: IntIdx; out APhysWidth: integer;
       var AViewedX: integer;
       out APhysX: integer);
+    procedure GetSublineBounds(var AViewedXY: TViewedPoint;
+      out ALogStartX, ANextLogStartX, APhysStart: IntIdx; out APhysWidth, AFirstViewedX, ALastViewedX: integer);
     function  GetSubLineFromX (ALine: String; AMaxWidth, AWrapIndent: Integer; const APhysCharWidths: TPhysicalCharWidths; var APhysToViewedXPos: Integer): integer;
 
     procedure GetWrapInfoForViewedXY(var AViewedXY: TViewedPoint; AFlags: TViewedXYInfoFlags; out AFirstViewedX: IntPos; ALogPhysConvertor: TSynLogicalPhysicalConvertor);
@@ -259,6 +282,9 @@ public
   published
     property CaretWrapPos: TLazSynEditWrapCaretPos read FCaretWrapPos write FCaretWrapPos;
 
+    property KeyStrokes: TSynEditLineMapKeyStrokes read FKeyStrokes write SetKeyStrokes;
+    property OverrideHomeEndKeyDefaults: boolean read FOverrideHomeEndKeyDefaults write FOverrideHomeEndKeyDefaults;
+
     property MinWrapWidth: Integer read FMinWrapWidth write SetMinWrapWidth;
     property WrapIndentWidth: Integer read FWrapIndentWidth write SetWrapIndentWidth;
     property WrapIndentIsOffset: Boolean read FWrapIndentIsOffset write SetWrapIndentIsOffset;
@@ -270,6 +296,17 @@ public
     property MarkupInfoWrapIndent:  TSynSelectedColor read FMarkupInfoWrapIndent;
     property MarkupInfoWrapEol:     TSynSelectedColor read FMarkupInfoWrapEol;
   end;
+
+const
+  ecSynPLineWrapLineStart         = ecPluginFirstLineWrap +  0;
+  ecSynPLineWrapLineEnd           = ecPluginFirstLineWrap +  1;
+  ecSynPLineWrapSelLineStart      = ecPluginFirstLineWrap +  2;
+  ecSynPLineWrapSelLineEnd        = ecPluginFirstLineWrap +  3;
+  ecSynPLineWrapColSelLineStart   = ecPluginFirstLineWrap +  4;
+  ecSynPLineWrapColSelLineEnd     = ecPluginFirstLineWrap +  5;
+
+  ecSynPLineWrapCount     = 6;
+
 
 implementation
 
@@ -1683,6 +1720,14 @@ begin
     Result := FMinWrapWidth;
 end;
 
+procedure TLazSynEditLineWrapPlugin.SetKeyStrokes(AValue: TSynEditLineMapKeyStrokes);
+begin
+  if AValue = nil then
+    FKeyStrokes.Clear
+  else
+    FKeyStrokes.Assign(AValue);
+end;
+
 procedure TLazSynEditLineWrapPlugin.SetWrapIndentMaxAbs(AValue: Integer);
 begin
   if AValue < 0 then
@@ -1745,6 +1790,125 @@ begin
   if (Editor <> nil) and (AValue <> nil) then
     raise Exception.Create('Not allowed to change editor');
   inherited SetEditor(AValue);
+end;
+
+procedure TLazSynEditLineWrapPlugin.DoEditorRemoving(AValue: TCustomSynEdit);
+begin
+  if Editor <> nil then begin
+    Editor.UnregisterCommandHandler(@ProcessSynCommand);
+    Editor.UnregisterCommandHandler(@ProcessSynCommandInit);
+    Editor.UnRegisterKeyTranslationHandler(@TranslateKey);
+  end;
+  inherited DoEditorRemoving(AValue);
+end;
+
+procedure TLazSynEditLineWrapPlugin.DoEditorAdded(AValue: TCustomSynEdit);
+begin
+  inherited DoEditorAdded(AValue);
+  if Editor <> nil then begin
+    Editor.RegisterCommandHandler(@ProcessSynCommandInit, nil, [hcfInit]);
+    Editor.RegisterCommandHandler(@ProcessSynCommand, nil, [hcfPreExec]);
+    Editor.RegisterKeyTranslationHandler(@TranslateKey);
+  end;
+end;
+
+procedure TLazSynEditLineWrapPlugin.TranslateKey(Sender: TObject; Code: word; SState: TShiftState;
+  var Data: pointer; var IsStartOfCombo: boolean; var Handled: boolean;
+  var Command: TSynEditorCommand; FinishComboOnly: Boolean; var ComboKeyStrokes: TSynEditKeyStrokes
+  );
+begin
+  if Handled then
+    exit;
+
+  if not FinishComboOnly then
+    FKeyStrokes.ResetKeyCombo;
+  Command := FKeyStrokes.FindKeycodeEx(Code, SState, Data, IsStartOfCombo, FinishComboOnly, ComboKeyStrokes);
+
+  Handled := (Command <> ecNone) or IsStartOfCombo;
+  if IsStartOfCombo then
+    ComboKeyStrokes := FKeyStrokes;
+end;
+
+procedure TLazSynEditLineWrapPlugin.ProcessSynCommandInit(Sender: TObject;
+  AfterProcessing: boolean; var Handled: boolean; var Command: TSynEditorCommand;
+  var AChar: TUtf8Char; Data: pointer; HandlerData: pointer);
+var
+  p: TPoint;
+  LogStartX, NextLogStartX, PhysStartX: IntIdx;
+  PhysWidth, FirstX, LastX: integer;
+begin
+  if FOverrideHomeEndKeyDefaults then begin
+    case Command of
+      ecSynPLineWrapLineStart:       Command := ecLineStart;
+      ecSynPLineWrapLineEnd:         Command := ecLineEnd;
+      ecSynPLineWrapSelLineStart:    Command := ecSelLineStart;
+      ecSynPLineWrapSelLineEnd:      Command := ecSelLineEnd;
+      ecSynPLineWrapColSelLineStart: Command := ecColSelLineStart;
+      ecSynPLineWrapColSelLineEnd:   Command := ecColSelLineEnd;
+      ecLineStart:       Command := ecSynPLineWrapLineStart;
+      ecLineEnd:         Command := ecSynPLineWrapLineEnd;
+      ecSelLineStart:    Command := ecSynPLineWrapSelLineStart;
+      ecSelLineEnd:      Command := ecSynPLineWrapSelLineEnd;
+      ecColSelLineStart: Command := ecSynPLineWrapColSelLineStart;
+      ecColSelLineEnd:   Command := ecSynPLineWrapColSelLineEnd;
+    end;
+  end;
+
+  case Command of
+    ecSynPLineWrapLineStart, ecSynPLineWrapSelLineStart, ecSynPLineWrapColSelLineStart: begin
+        p := CaretObj.ViewedLineCharPos;
+        GetSublineBounds(p, LogStartX, NextLogStartX, PhysStartX, PhysWidth, FirstX, LastX);
+        if (p.X = FirstX) or (LogStartX = 0) then
+          case Command of
+            ecSynPLineWrapLineStart:       Command := ecLineStart;
+            ecSynPLineWrapSelLineStart:    Command := ecSelLineStart;
+            ecSynPLineWrapColSelLineStart: Command := ecColSelLineStart;
+          end;
+      end;
+    ecSynPLineWrapLineEnd, ecSynPLineWrapSelLineEnd, ecSynPLineWrapColSelLineEnd: begin
+        p := CaretObj.ViewedLineCharPos;
+        GetSublineBounds(p, LogStartX, NextLogStartX, PhysStartX, PhysWidth, FirstX, LastX);
+        if (p.X = LastX) or (NextLogStartX = 0) then
+          case Command of
+            ecSynPLineWrapLineEnd:       Command := ecLineEnd;
+            ecSynPLineWrapSelLineEnd:    Command := ecSelLineEnd;
+            ecSynPLineWrapColSelLineEnd: Command := ecColSelLineEnd;
+          end;
+      end;
+  end;
+end;
+
+procedure TLazSynEditLineWrapPlugin.ProcessSynCommand(Sender: TObject; AfterProcessing: boolean;
+  var Handled: boolean; var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer;
+  HandlerData: pointer);
+var
+  p: TPoint;
+begin
+  if Handled then exit;
+
+  if (Command = ecSynPLineWrapColSelLineStart) or (Command = ecSynPLineWrapColSelLineEnd) then begin
+    SelectionObj.ActiveSelectionMode := smColumn;
+    SelectionObj.AutoExtend := True;
+  end;
+  if (Command = ecSynPLineWrapSelLineStart) or (Command = ecSynPLineWrapSelLineEnd) then begin
+    SelectionObj.ActiveSelectionMode := SelectionObj.SelectionMode;
+    SelectionObj.AutoExtend := True;
+  end;
+
+  case Command of
+    ecSynPLineWrapLineStart, ecSynPLineWrapSelLineStart, ecSynPLineWrapColSelLineStart: begin
+        CaretObj.ChangeOnTouch;
+        p := CaretObj.ViewedLineCharPos;
+        p.x := 1;
+        CaretObj.ViewedLineCharPos := p;
+      end;
+    ecSynPLineWrapLineEnd, ecSynPLineWrapSelLineEnd, ecSynPLineWrapColSelLineEnd: begin
+        CaretObj.ChangeOnTouch;
+        p := CaretObj.ViewedLineCharPos;
+        p.x := WrapColumn + 1;
+        CaretObj.ViewedLineCharPos := p;
+      end;
+  end;
 end;
 
 function TLazSynEditLineWrapPlugin.CalculateIndentFor(ALine: PChar; AMaxWidth: Integer;
@@ -1973,6 +2137,47 @@ begin
   APhysX := APhysX + APhysStart;
 end;
 
+procedure TLazSynEditLineWrapPlugin.GetSublineBounds(var AViewedXY: TViewedPoint; out ALogStartX,
+  ANextLogStartX, APhysStart: IntIdx; out APhysWidth, AFirstViewedX, ALastViewedX: integer);
+var
+  SubLineOffset, YIdx: TLineIdx;
+  LineTxt: String;
+  PWidth: TPhysicalCharWidths;
+  WrapInd, AMaxWidth: Integer;
+  ALogPhysConvertor: TSynLogicalPhysicalConvertor;
+begin
+  YIdx := FLineMapView.Tree.GetLineForForWrap(ToIdx(AViewedXY.y), SubLineOffset);
+  YIdx := FLineMapView.NextLines.ViewToTextIndex(YIdx);
+
+  LineTxt := FLineMapView.Strings[YIdx];
+  ALogPhysConvertor := FLineMapView.LogPhysConvertor;
+  ALogPhysConvertor.CurrentLine := YIdx;
+  PWidth  := ALogPhysConvertor.CurrentWidthsDirect;
+  AMaxWidth := WrapColumn;
+  WrapInd := CalculateIndentFor(PChar(LineTxt), AMaxWidth, PWidth);
+
+  GetSublineBounds(LineTxt, AMaxWidth, WrapInd, PWidth, SubLineOffset, ALogStartX, ANextLogStartX, APhysStart, APhysWidth);
+
+  if SubLineOffset = 0 then
+    WrapInd := 0;
+  case CaretWrapPos of
+    wcpEOL: begin
+        AFirstViewedX := 2 + WrapInd;
+        ALastViewedX  := 1 + WrapInd + APhysWidth;
+      end;
+    wcpBOL: begin
+        AFirstViewedX := 1 + WrapInd;
+        ALastViewedX  := WrapInd + APhysWidth;
+      end;
+  end;
+  if SubLineOffset = 0 then
+    AFirstViewedX := 1;
+  if ANextLogStartX >= Length(LineTxt) then begin
+    ANextLogStartX := 0;
+    ALastViewedX  := 1 + WrapInd + APhysWidth;
+  end;
+end;
+
 function TLazSynEditLineWrapPlugin.GetSubLineFromX(ALine: String; AMaxWidth, AWrapIndent: Integer;
   const APhysCharWidths: TPhysicalCharWidths; var APhysToViewedXPos: Integer): integer;
 var
@@ -2071,6 +2276,9 @@ begin
 
   GetSublineBounds(LineTxt, AMaxWidth, WrapInd, PWidth, SubLineOffset, BoundLogX, NextBoundLogX, BoundPhysX, PhysWidth, AViewedXY.x, PhysXPos);
 
+  if SubLineOffset = 0 then
+    AFirstViewedX := 0
+  else
   case CaretWrapPos of
     wcpEOL: begin
         AFirstViewedX := 2 + WrapInd;
@@ -2143,6 +2351,9 @@ begin
   FMarkupInfoWrapIndent.FrameEdges := sfeLeft;
   FMarkupInfoWrapIndent.OnChange := @DoMarkupChanged;
 
+  FKeystrokes := TSynEditLineMapKeyStrokes.Create(Self);
+
+
   FLineMapView := TSynEditLineMappingView(TSynEdit(Editor).TextViewsManager.SynTextViewByClass[TSynEditLineMappingView]);
   if FLineMapView = nil then begin
     FLineMapView := TSynEditLineMappingView.Create;
@@ -2178,6 +2389,7 @@ begin
   FMarkupInfoWrapSubLine.Free;
   FMarkupInfoWrapIndent.Free;
   FMarkupInfoWrapEol.Free;
+  FKeystrokes.Free;
 end;
 
 procedure TLazSynEditLineWrapPlugin.WrapAll;
@@ -2209,6 +2421,42 @@ if not FLineMapView.Tree.NeedsValidation then exit;
   FLineMapView.SendNotification(senrLineMappingChanged, FLineMapView, 0, 0);
   TSynEdit(Editor).Invalidate;
 end;
+
+const
+  SynPluginLineWrapCommandStrs: array[0..ecSynPLineWrapCount-1] of TIdentMapEntry = (
+    (Value: ecSynPLineWrapLineStart;       Name: 'ecSynPLineWrapLineStart'),
+    (Value: ecSynPLineWrapLineEnd;         Name: 'ecSynPLineWrapLineEnd'),
+    (Value: ecSynPLineWrapSelLineStart;    Name: 'ecSynPLineWrapSelLineStart'),
+    (Value: ecSynPLineWrapSelLineEnd;      Name: 'ecSynPLineWrapSelLineEnd'),
+    (Value: ecSynPLineWrapColSelLineStart; Name: 'ecSynPLineWrapColSelLineStart'),
+    (Value: ecSynPLineWrapColSelLineEnd;   Name: 'ecSynPLineWrapColSelLineEnd')
+  );
+
+function IdentToLineWrapCommand(const Ident: string; var Cmd: longint): boolean;
+begin
+  Result := IdentToInt(Ident, Cmd, SynPluginLineWrapCommandStrs);
+end;
+
+function LineWrapCommandToIdent(Cmd: longint; var Ident: string): boolean;
+begin
+  Result := (Cmd >= ecPluginFirstLineWrap) and (Cmd - ecPluginFirstLineWrap < ecSynPLineWrapCount);
+  if not Result then exit;
+  Result := IntToIdent(Cmd, Ident, SynPluginLineWrapCommandStrs);
+end;
+
+procedure GetEditorCommandValues(Proc: TGetStrProc);
+var
+  i: integer;
+begin
+  for i := Low(SynPluginLineWrapCommandStrs) to High(SynPluginLineWrapCommandStrs) do
+    Proc(SynPluginLineWrapCommandStrs[I].Name);
+end;
+
+
+initialization
+  RegisterKeyCmdIdentProcs(@IdentToLineWrapCommand,
+                           @LineWrapCommandToIdent);
+  RegisterExtraGetEditorCommandValues(@GetEditorCommandValues);
 
 end.
 
