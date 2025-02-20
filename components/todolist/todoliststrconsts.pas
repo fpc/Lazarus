@@ -72,8 +72,6 @@ resourcestring
   lisAlternateTokens = 'Use Alternate Tokens';
   lisAlternateTokensHint = 'Standard token is #todo etc. Alternate is without the #';
 
-  excInvalidParseState = 'Invalid parse state.';
-
   errScanfileFailed = 'Finding ToDo items failed in file %0:s.' + LineEnding +
                        'Is it a valid source file?' + LineEnding +
                        'The rest of the file has been skipped.';

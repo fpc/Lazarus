@@ -186,7 +186,7 @@ begin
   aTodoDialog.ShowModal;
   if aTodoDialog.ModalResult = mrOk then
   begin
-    Result := TTodoItem.Create(nil);
+    Result := TTodoItem.Create;
     Result.Category    := aTodoDialog.CategoryEdit.Text;
     Result.ToDoType    := TToDoType(aTodoDialog.grpboxToDoType.Tag);
     if aTodoDialog.chkAlternateTokens.Checked then

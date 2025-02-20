@@ -373,12 +373,12 @@ begin
     // package
     CurPkg:=PackageEditingInterface.FindPackageWithName(FIDEItem);
     CurOwner:=CurPkg;
-    DebugLn(['TIDETodoWindow.ResolveIDEItem: Found package ', CurPkg.Filename]);
+    //DebugLn(['TIDETodoWindow.ResolveIDEItem: Found package ', CurPkg.Filename]);
   end else begin
     // project
     CurProject:=LazarusIDE.ActiveProject;
     CurOwner:=CurProject;
-    DebugLn(['TIDETodoWindow.ResolveIDEItem: Found project ', CurProject.MainFile.Filename]);
+    //DebugLn(['TIDETodoWindow.ResolveIDEItem: Found project ', CurProject.MainFile.Filename]);
   end;
 end;
 
