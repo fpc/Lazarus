@@ -734,6 +734,7 @@ type
     procedure DumpPrivateStructValues(const ADbgEvent: String);
   public
     function CanFocus: Boolean; override;
+    procedure SetBounds(ALeft,ATop,AWidth,AHeight:integer); override;
     procedure SetFocus; override;
     function GetCellView: PGtkCellView;
     function GetPopupWidget: PGtkWidget;
@@ -1884,7 +1885,8 @@ begin
     {$IFDEF GTK3DEBUGEVENTS}
     if (Self is TGtk3ScrollableWin) and not (LCLObject is TCustomForm) then
     begin
-      cairo_get_current_point(AContext, @dx, @dy);
+      //cairo_get_current_point(AContext, @dx, @dy);
+      cairo_user_to_device(AContext, @dx, @dy);
       writeln(Format('PaintEvent: CairoClip %s dx %2.2n dy %2.2n',[dbgs(RectFromGdkRect(AClipRect)), dx, dy]));
     end;
     {$ENDIF}
@@ -1903,7 +1905,7 @@ begin
   try
     try
       P := getClientOffset;
-      if Self is TGtk3ScrollableWin then
+      if (Self is TGtk3ScrollableWin) and (0 > 1) then
       begin
         {$IFDEF GTK3DEBUGEVENTS}
         if not (LCLObject is TCustomForm) then
@@ -1976,7 +1978,7 @@ begin
     Msg.Msg := LM_SETFOCUS
   else
     Msg.Msg := LM_KILLFOCUS;
-  DeliverMessage(Msg);
+
   if g_object_get_data(PGObject(getContainerWidget),'gtk3-caret') <> nil then
   begin
     ACaret := TGtk3Caret(g_object_get_data(PGObject(getContainerWidget),'gtk3-caret'));
@@ -1988,6 +1990,8 @@ begin
         ACaret.Hide;
     end;
   end;
+
+  DeliverMessage(Msg);
 end;
 
 procedure TGtk3Widget.GtkEventDestroy; cdecl;
@@ -6068,6 +6072,27 @@ begin
       exit;
     end else
     *)
+    if [wtLayout] * WidgetType <> [] then
+    begin
+      Result := Rect(0, 0, 0, 0);
+      AWindow := PGtkLayout(getContainerWidget)^.get_bin_window;
+      if Assigned(AWindow) and Gtk3IsGdkWindow(AWindow) then
+      begin
+        Bar := getHorizontalScrollbar;
+        if (Bar <> nil) and Gtk3IsWidget(Bar) and Bar^.get_visible and GTK3WidgetSet.OverlayScrolling then
+          HOffset := Bar^.get_allocated_height
+        else
+          HOffset := 0;
+        Bar := getVerticalScrollbar;
+        if (Bar <> nil) and Gtk3IsWidget(Bar) and Bar^.get_visible and GTK3WidgetSet.OverlayScrolling then
+          VOffset := Bar^.get_allocated_width
+        else
+          VOffset := 0;
+        AWindow^.get_geometry(@x, @y, @w, @h);
+        Result := Bounds(x, y, w - VOffset, h - HOffset);
+      end;
+      exit;
+    end;
     AViewport := getViewPort;
     if Assigned(AViewport) and Gtk3IsGdkWindow(AViewport^.get_view_window) then
     begin
@@ -7978,6 +8003,47 @@ begin
   end;
 end;
 
+procedure TGtk3ComboBox.SetBounds(ALeft, ATop, AWidth, AHeight: integer);
+var
+  ARect: TGdkRectangle;
+  Alloc: TGtkAllocation;
+begin
+  if (Widget=nil) then
+    exit;
+
+  LCLWidth := AWidth;
+  LCLHeight := AHeight;
+  ARect.x := ALeft;
+  ARect.y := ATop;
+  ARect.width := AWidth;
+  ARect.Height := AHeight;
+  with Alloc do
+  begin
+    x := ALeft;
+    y := ATop;
+    width := AWidth;
+    height := AHeight;
+  end;
+
+  BeginUpdate;
+  try
+    {fixes gtk3 assertion}
+    if not Widget^.get_realized then
+      Widget^.realize;
+
+
+    Widget^.size_allocate(@ARect);
+
+    if Widget^.get_visible then
+      Widget^.set_allocation(@Alloc);
+
+    if LCLObject.Parent <> nil then
+      Move(ALeft, ATop);
+  finally
+    EndUpdate;
+  end;
+end;
+
 procedure TGtk3ComboBox.SetFocus;
 begin
   {$IFDEF GTK3DEBUGFOCUS}
@@ -8478,7 +8544,7 @@ begin
   FHasPaint := True;
   FKeysToEat := [];
 
-  FWidgetType := [wtWidget, wtContainer, wtTabControl, wtScrollingWin, wtCustomControl];
+  FWidgetType := [wtWidget, wtLayout, wtTabControl, wtScrollingWin, wtCustomControl];
 
   // this hack is requred for controls without custom WS classes
   if LCLObject is TUpDown then
@@ -8486,7 +8552,7 @@ begin
 
   Result := PGtkScrolledWindow(TGtkScrolledWindow.new(nil, nil));
 
-  FCentralWidget := TGtkFixed.new;
+  FCentralWidget := TGtkLayout.new(nil, nil);
   FCentralWidget^.set_has_window(True);
 
   PGtkScrolledWindow(Result)^.add(FCentralWidget);
@@ -8495,6 +8561,10 @@ begin
 
   Result^.set_can_focus(False);
   FCentralWidget^.set_can_focus(True);
+  FCentralWidget^.set_app_paintable(True);
+  PGtkScrolledWindow(Result)^.set_shadow_type(BorderStyleShadowMap[TCustomControl(LCLObject).BorderStyle]);
+  g_object_set(PGObject(FCentralWidget), 'resize-mode', [GTK_RESIZE_QUEUE, nil]);
+  gtk_layout_set_size(PGtkLayout(FCentralWidget), 1, 1);
 end;
 
 function TGtk3CustomControl.EatArrowKeys(const AKey: Word): Boolean;
@@ -8650,7 +8720,36 @@ var
   w, h, x, y, VOffset, HOffset: gint;
   AViewPort: PGtkViewport;
   Bar:PGtkScrollbar;
+  AWindow: PGdkWindow;
 begin
+  if [wtLayout] * WidgetType <> [] then
+  begin
+    Result := Rect(0, 0, 0, 0);
+    AWindow := PGtkLayout(getContainerWidget)^.get_bin_window;
+    if (AWindow <> nil) and Gtk3IsGdkWindow(AWindow) then
+    begin
+      Bar := getHorizontalScrollbar;
+      if (Bar <> nil) and Gtk3IsWidget(Bar) and Bar^.get_visible and GTK3WidgetSet.OverlayScrolling then
+        HOffset := Bar^.get_allocated_height
+      else
+        HOffset := 0;
+
+      Bar := getVerticalScrollbar;
+      if (Bar <> nil) and Gtk3IsWidget(Bar) and Bar^.get_visible and GTK3WidgetSet.OverlayScrolling then
+        VOffset := Bar^.get_allocated_width
+      else
+        VOffset := 0;
+
+      Result := Rect(0, 0, AWindow^.get_width - VOffset, AWindow^.get_height - HOffset);
+
+    end else
+    begin
+      Result := Rect(0, 0, PGtkLayout(GetContainerWidget)^.get_allocated_width, PGtkLayout(GetContainerWidget)^.get_allocated_height);
+    end;
+    //writeln('CustomControl clientRect=',dbgs(Result));
+    exit;
+  end;
+
   AViewPort := getViewport;
   if Gtk3IsViewPort(AViewPort) and Gtk3IsGdkWindow(AViewPort^.get_view_window) then
   begin
@@ -8763,6 +8862,7 @@ begin
   // this is very important
   PGtkScrolledWindow(Result)^.set_can_focus(False);
   FCentralWidget^.set_can_focus(True);
+
 end;
 
 { TGtk3Window }
@@ -9115,12 +9215,12 @@ begin
   begin
     Result := TGtkWindow.new(GTK_WINDOW_TOPLEVEL);
     FWidget:=Result;
+    //gtk_widget_realize(Result);
     FWidget^.set_events(GDK_DEFAULT_EVENTS_MASK);
-    gtk_widget_realize(Result);
     Title:=Params.Caption;
     decor:=decoration_flags(AForm);
     gtk_window_set_decorated(PGtkWindow(Result),(decor <> []));
-    gdk_window_set_decorations(Result^.window, decor);
+    //gdk_window_set_decorations(Result^.window, decor);
     if AForm.AlphaBlend then
       gtk_widget_set_opacity(Result, TForm(LCLObject).AlphaBlendValue/255);
     if not gtk_window_get_decorated(PGtkWindow(Result)) then
@@ -9143,10 +9243,10 @@ begin
   FCentralWidget := TGtkLayout.new(nil, nil);
   // FCentralWidget^.set_has_window(True);
 
-  if AForm.AutoScroll then
-    FScrollWin^.add(FCentralWidget)
-  else
-    FScrollWin^.add_with_viewport(FCentralWidget);
+  //if AForm.AutoScroll then
+    FScrollWin^.add(FCentralWidget);
+  //else
+  //  FScrollWin^.add_with_viewport(FCentralWidget);
 
   FScrollWin^.show;
   FBox^.pack_end(FScrollWin, True, True, 0);
@@ -9156,16 +9256,22 @@ begin
   FScrollWin^.get_hscrollbar^.set_can_focus(False);
   FScrollWin^.set_policy(GTK_POLICY_NEVER, GTK_POLICY_NEVER);
   PGtkContainer(Result)^.add(FBox);
+
   g_signal_connect_data(Result,'window-state-event', TGCallback(@WindowStateSignal), Self, nil, G_CONNECT_DEFAULT);
+
+  g_object_set(PGObject(FCentralWidget), 'resize-mode', [GTK_RESIZE_QUEUE, nil]);
+  gtk_layout_set_size(PGtkLayout(FCentralWidget), 1, 1);
+
+  gtk_widget_realize(Result);
+
+  if not Assigned(LCLObject.Parent) then
+    gdk_window_set_decorations(Result^.window, decor);
+
 
   if not (csDesigning in AForm.ComponentState) then
     UpdateWindowState;
 
   Result^.Hide; // issue #41412
-  //REMOVE THIS, USED TO TRACK MOUSE MOVE OVER WIDGET TO SEE SIZE OF FIXED !
-  //g_object_set_data(PGObject(FScrollWin), 'lcldebugscrollwin', Self);
-  //g_object_set_data(PGObject(FCentralWidget), 'lcldebugfixed', Self);
-  //g_object_set_data(PGObject(Result), 'lcldebugwindow', Self);
 end;
 
 function TGtk3Window.EatArrowKeys(const AKey: Word): Boolean;

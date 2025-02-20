@@ -278,7 +278,7 @@ var
 
   procedure CheckAndFixGeometry;
   const
-    WaitDelay: gulong = 3000;
+    WaitDelay: gulong = 4000;
     WaitLoops: integer = 4;
   var
     x, y, w, h: gint;
@@ -306,6 +306,7 @@ var
       g_usleep(WaitDelay);
       g_main_context_iteration(nil, false);
     end;
+
     //Note that here may be still wrong geometry under x11,
     //but LCL should be happy at this point.
   end;

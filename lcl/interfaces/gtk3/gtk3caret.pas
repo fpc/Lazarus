@@ -68,10 +68,14 @@ begin
 
   // Set drawing event for the caret
   g_signal_connect_data(FCaretWidget, 'draw', TGCallback(@OnDraw), Self, nil, G_CONNECT_DEFAULT);
-  PGtkFixed(FOwner)^.put(FCaretWidget, 0, 0);
+  if Gtk3IsLayout(FOwner) then
+    PGtkLayout(FOwner)^.put(FCaretWidget, 0, 0)
+  else
+    PGtkFixed(FOwner)^.put(FCaretWidget, 0, 0);
 
   g_object_set_data(FCaretWidget,'lclwidget', TGtk3Widget(HwndFromGtkWidget(FOwner)));
   FCaretWidget^.set_can_focus(False);
+  FCaretWidget^.set_app_paintable(True);
   FCaretWidget^.show;
   FCaretWidget^.set_opacity(0);
 
@@ -149,7 +153,11 @@ procedure TGtk3Caret.SetPosition(X, Y: Integer);
 begin
   FPos.X := X;
   FPos.Y := Y;
-  gtk_fixed_move(PGtkFixed(FOwner), FCaretWidget, X, Y);
+  if Gtk3IsLayout(FOwner) then
+  begin
+    gtk_layout_move(PGtkLayout(FOwner), FCaretWidget, X, Y);
+  end else
+    gtk_fixed_move(PGtkFixed(FOwner), FCaretWidget, X, Y);
 end;
 
 procedure TGtk3Caret.SetBlinkInterval(AInterval: Integer);

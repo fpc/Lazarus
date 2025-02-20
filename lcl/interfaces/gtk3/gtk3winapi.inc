@@ -3573,7 +3573,10 @@ begin
   writeln('===>ScrollWindowEx Handle=',dbgHex(hWnd),' dx=',dx,' dy=',dy,' prcS=',prcScroll<>nil,' prC=',prcClip <> nil,' HRGN=',dbgHex(hrgnUpdate),' prcU=',prcUpdate <> nil,' Flags="',SFlags,'" ',dbgsName(Widget.LCLObject));
   {$ENDIF}
 
-  if [wtCustomControl] * Widget.WidgetType <> [] then
+  if [wtLayout] * Widget.WidgetType <> [] then
+    GdkWindow := PGtkLayout(TGtk3CustomControl(hwnd).GetContainerWidget)^.get_bin_window
+  else
+  if [wtCustomControl, wtContainer] * Widget.WidgetType <> [] then
     GdkWindow := TGtk3CustomControl(hwnd).getViewport^.get_view_window
   else
     GdkWindow := gtk_widget_get_window(Widget.getContainerWidget);
@@ -3623,7 +3626,7 @@ begin
     if not TGtk3CustomControl(Widget).InUpdate then
     begin
       {$IFDEF GTK3DEBUGSCROLL}
-      writeln(Format('> ScrollWindowEx processing dx=%d, dy=%d for control %s',
+      writeln(Format('===> ScrollWindowEx processing dx=%d, dy=%d for control %s',
                      [dx, dy, dbgsName(Widget.LCLObject),' applying InUpdate lock ...']));
       {$ENDIF}
       TGtk3CustomControl(Widget).BeginUpdate;
@@ -3637,7 +3640,7 @@ begin
       if dy <> 0 then
         gtk_adjustment_set_value(TGtk3CustomControl(Widget).GetScrolledWindow^.get_vadjustment, Max(CurY + dy, 0));
       {$IFDEF GTK3DEBUGSCROLL}
-      writeln(Format('< ScrollWindowEx updated adjustments to CurX=%d, CurY=%d for control %s ... releasing InUpdate lock...',
+      writeln(Format('<=== ScrollWindowEx updated adjustments to CurX=%d, CurY=%d for control %s ... releasing InUpdate lock...',
                      [CurX + dx, CurY + dy, dbgsName(Widget.LCLObject)]));
       {$ENDIF}
       TGtk3CustomControl(Widget).EndUpdate;
@@ -3985,7 +3988,7 @@ var
   HasChanged: Boolean;
   ScrollBar: PGtkScrollbar;
   W, H: double;
-  OverlayFactor: integer;
+  //OverlayFactor: integer;
   AControl: TGtk3Widget absolute Handle;
   {$IFDEF GTK3DEBUGSCROLL}
   S: String;
@@ -4010,7 +4013,7 @@ var
 
       ATarget := Adjustment^.upper;
       SetGDouble(ATarget, ScrollInfo.nMax, HasChanged);
-      Adjustment^.upper := ATarget;
+      Adjustment^.upper := ATarget ;
     end;
 
     if (ScrollInfo.FMask and SIF_PAGE) <> 0 then
@@ -4068,17 +4071,23 @@ var
           begin
             if AHorzPolicy <> POLICY[IsScrollbarVis] then
               ScrollWin^.set_policy(POLICY[IsScrollbarVis], AVertPolicy);
-            if Gtk3WidgetSet.OverlayScrolling and ScrollWin^.get_hscrollbar^.get_visible and
-              Gtk3IsGdkWindow(ScrollWin^.get_hscrollbar^.window) then
-                ScrollWin^.get_hscrollbar^.window^.raise_;
+            if Gtk3WidgetSet.OverlayScrolling and ScrollBar^.get_visible and
+              Gtk3IsGdkWindow(ScrollBar^.window) then
+            begin
+              ScrollBar^.set_can_focus(False);
+              ScrollBar^.window^.raise_;
+            end;
           end;
           SB_VERT:
           begin
             if AVertPolicy <> POLICY[IsScrollbarVis] then
               ScrollWin^.set_policy(AHorzPolicy, POLICY[IsScrollbarVis]);
-            if Gtk3WidgetSet.OverlayScrolling and ScrollWin^.get_vscrollbar^.get_visible and
-              Gtk3IsGdkWindow(ScrollWin^.get_vscrollbar^.window) then
-                ScrollWin^.get_vscrollbar^.window^.raise_;
+            if Gtk3WidgetSet.OverlayScrolling and ScrollBar^.get_visible and
+              Gtk3IsGdkWindow(ScrollBar^.window) then
+            begin
+              ScrollBar^.set_can_focus(False);
+              ScrollBar^.window^.raise_;
+            end;
           end;
         end;
       end;
@@ -4090,10 +4099,10 @@ begin
   Result := 0;
   if not IsValidHandle(Handle) then Exit;
 
-  if GTK3WidgetSet.OverlayScrolling then
-    OverlayFactor := 2
-  else
-    OverlayFactor := 1;
+  //if GTK3WidgetSet.OverlayScrolling then
+  //  OverlayFactor := 2
+  //else
+  //  OverlayFactor := 1;
   HasChanged := False;
 
   // must implement first
@@ -4144,16 +4153,6 @@ begin
       begin
         Adjustment := gtk_scrolled_window_get_hadjustment(ScrollWin);
         ScrollBar := TGtk3ScrollableWin(AControl).getHorizontalScrollbar;
-        if ((ScrollInfo.fMask and SIF_RANGE) <> 0) and Gtk3IsScrolledWindow(ScrollWin) then
-        begin
-          H := gtk_scrolled_window_get_vadjustment(ScrollWin)^.upper;
-          W := (ScrollInfo.nMax - ScrollInfo.nMin);
-          if Assigned(ScrollBar) then
-            W := W + (gtk_scrolled_window_get_vscrollbar(ScrollWin)^.get_allocated_width * OverlayFactor);
-          W := Max(W, TGtk3ScrollableWin(AControl).getClientRect.Width);
-          //we propose minimum size of container widget now
-          TGtk3ScrollableWin(Handle).GetContainerWidget^.set_size_request(Round(W), Round(H));
-        end;
       end else
         Adjustment := ScrollBar^.adjustment;
     end;
@@ -4163,18 +4162,6 @@ begin
       begin
         Adjustment := gtk_scrolled_window_get_vadjustment(ScrollWin);
         ScrollBar := TGtk3ScrollableWin(AControl).getVerticalScrollbar;
-        if ((ScrollInfo.fMask and SIF_RANGE) <> 0) and Gtk3IsScrolledWindow(ScrollWin) then
-        begin
-          W := gtk_scrolled_window_get_hadjustment(ScrollWin)^.upper;
-          H := (ScrollInfo.nMax - ScrollInfo.nMin);
-          if Assigned(ScrollBar) then
-            H := H + (gtk_scrolled_window_get_hscrollbar(ScrollWin)^.get_allocated_height * OverlayFactor);
-          H := Max(H, TGtk3ScrollAbleWin(Handle).getClientRect.Height);
-          //writeln(Format('VerticalScrollBar: set new size for Container W=%f H=%f viewport W=%d H=%d HScrollHeight=%d nMax=%f',[W, H, TGtk3ScrollableWin(Handle).getViewport^.get_allocated_width, TGtk3ScrollableWin(Handle).getViewport^.get_allocated_height, gtk_scrolled_window_get_hscrollbar(ScrollWin)^.get_allocated_height, adjustment^.get_upper]));
-          //writeln(Format('VBAR min %d max %d Scale %d',[ScrollInfo.nMin, ScrollInfo.nMax, ScrollWin^.scale_factor]));
-          //Test with set_allocation !
-          TGtk3ScrollableWin(AControl).GetContainerWidget^.set_size_request(Round(W), Round(H));
-        end;
       end else
         Adjustment := ScrollBar^.adjustment;
     end;
