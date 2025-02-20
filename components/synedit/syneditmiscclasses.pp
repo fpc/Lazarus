@@ -2214,7 +2214,7 @@ var
 begin
   len := Length(aLine);
   if (aX < 1) or (aX > len + 1) then exit(False);
-  Result := ((ax <= len) and (aLine[aX] in FWordChars)) or
+  Result := ((aX <= len) and (aLine[aX] in FWordChars)) or
             ((aX > 1) and (aLine[aX - 1] in FWordChars));
 end;
 
@@ -2234,7 +2234,7 @@ var
 begin
   len := Length(aLine);
   if (aX <= 1) or (aX > len + 1) or (len = 0) then exit(False);
-  Result := ((ax = len + 1) or not(aLine[aX] in FWordChars)) and
+  Result := ((aX = len + 1) or not(aLine[aX] in FWordChars)) and
             (aLine[aX - 1] in FWordChars);
 end;
 
@@ -2249,8 +2249,8 @@ begin
     inc(aX);
   if (aX > len + 1) then exit(-1);
   if (aX > 1) and (aLine[aX - 1] in FWordChars) then
-    while (aX <= len) and (aLine[aX] in FWordChars) do Inc(ax);
-  while (aX <= len) and not(aLine[aX] in FWordChars) do Inc(ax);
+    while (aX <= len) and (aLine[aX] in FWordChars) do Inc(aX);
+  while (aX <= len) and not(aLine[aX] in FWordChars) do Inc(aX);
   if aX > len then
     exit(-1);
   Result := aX;
@@ -2267,10 +2267,10 @@ begin
     inc(aX);
   if (aX > len + 1) then exit(-1);
   if (aX = 1) or not(aLine[aX - 1] in FWordChars) then begin
-    while (aX <= len) and not(aLine[aX] in FWordChars) do Inc(ax);
+    while (aX <= len) and not(aLine[aX] in FWordChars) do Inc(aX);
     if (aX >= len + 1) then exit(-1);
   end;
-  while (aX <= len) and (aLine[aX] in FWordChars) do Inc(ax);
+  while (aX <= len) and (aLine[aX] in FWordChars) do Inc(aX);
   Result := aX;
 end;
 
@@ -2283,10 +2283,10 @@ begin
   if (aX < 1) or (aX > len + 1) then exit(-1);
   if not aIncludeCurrent then
     dec(aX);
-  while (aX >= 1) and ( (ax > len) or not(aLine[aX] in FWordChars) ) do Dec(ax);
+  while (aX >= 1) and ( (aX > len) or not(aLine[aX] in FWordChars) ) do Dec(aX);
   if aX = 0 then
     exit(-1);
-  while (aX >= 1) and ( (ax > len) or (aLine[aX] in FWordChars) ) do Dec(ax);
+  while (aX >= 1) and ( (aX > len) or (aLine[aX] in FWordChars) ) do Dec(aX);
   Result := aX  + 1;
 end;
 
@@ -2300,8 +2300,8 @@ begin
   if not aIncludeCurrent then
     dec(aX);
   if aX <= len then
-    while (aX >= 1) and (aLine[aX] in FWordChars) do Dec(ax);
-  while (aX >= 1) and ( (ax > len) or not(aLine[aX] in FWordChars) ) do Dec(ax);
+    while (aX >= 1) and (aLine[aX] in FWordChars) do Dec(aX);
+  while (aX >= 1) and ( (aX > len) or not(aLine[aX] in FWordChars) ) do Dec(aX);
   if aX = 0 then
     exit(-1);
   Result := aX + 1;
@@ -2314,18 +2314,18 @@ var
 begin
   len := Length(aLine);
   if (aX < 1) then exit(-1);
-  if aIncludeCurrent then dec(ax);
-  if (ax > len) then exit(-1);
+  if aIncludeCurrent then dec(aX);
+  if (aX > len) then exit(-1);
 
   if (aX > 0) and (aLine[aX] in FWordChars) then
-    while (aX <= len) and (aLine[aX] in FWordChars) do Inc(ax)
+    while (aX <= len) and (aLine[aX] in FWordChars) do Inc(aX)
   else
   if (aX > 0) and (aLine[aX] in FWordBreakChars) then
-    while (aX <= len) and (aLine[aX] in FWordBreakChars) do Inc(ax)
+    while (aX <= len) and (aLine[aX] in FWordBreakChars) do Inc(aX)
   else
   begin
-    while (aX <= len) and ((aX = 0) or (aLine[aX] in FWhiteChars)) do Inc(ax);
-    if (ax > len) then exit(-1);
+    while (aX <= len) and ((aX = 0) or (aLine[aX] in FWhiteChars)) do Inc(aX);
+    if (aX > len) then exit(-1);
   end;
   Result := aX;
 end;
@@ -2337,17 +2337,17 @@ var
 begin
   len := Length(aLine);
   if (aX > len + 1) then exit(-1);
-  if not aIncludeCurrent then dec(ax);
+  if not aIncludeCurrent then dec(aX);
   if (aX < 1) then exit(-1);
 
   if (aX <= len) and (aLine[aX] in FWordChars) then
-    while (aX >= 1) and (aLine[aX] in FWordChars) do dec(ax)
+    while (aX >= 1) and (aLine[aX] in FWordChars) do dec(aX)
   else
   if (aX <= len) and (aLine[aX] in FWordBreakChars) then
-    while (aX >= 1) and (aLine[aX] in FWordBreakChars) do dec(ax)
+    while (aX >= 1) and (aLine[aX] in FWordBreakChars) do dec(aX)
   else
   begin
-    while (aX >= 1) and ((aX > len) or (aLine[aX] in FWhiteChars)) do dec(ax);
+    while (aX >= 1) and ((aX > len) or (aLine[aX] in FWhiteChars)) do dec(aX);
     if aX = 0 then exit(-1);
   end;
   Result := aX + 1;
