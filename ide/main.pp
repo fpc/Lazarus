@@ -12628,6 +12628,7 @@ end;
 
 procedure TMainIDE.HandleApplicationActivate(Sender: TObject);
 begin
+  //debugln(['TMainIDE.HandleApplicationActivate ']);
   InvalidateFileStateCache;
   DoCheckFilesOnDisk;
 end;

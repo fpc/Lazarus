@@ -11,7 +11,7 @@ uses
   // LazUtils
   FileUtil, LazLoggerBase, LazFileUtils,
   // Codetools
-  CodeToolManager, CodeCache,
+  CodeToolManager, CodeCache, BasicCodeTools,
   // BuildIntf
   PackageIntf, PackageDependencyIntf, ComponentReg,
   // IDEIntf
@@ -27,6 +27,8 @@ type
 
   TYesToAllList = class(TStringList)
   public
+    WarnFileNotFound: boolean;
+    WarnAlreadyAdded: boolean;
     function Inc(Name: string): integer;
   end;
 
@@ -34,7 +36,7 @@ type
 
   TProjPackFileCheck = class
   protected
-    class function UnitNameOk(const AFilename, AUnitFilename: string): TModalResult;
+    class function UnitNameOk(const AFilename, AnUnitName: string): TModalResult;
   public
   end;
 
@@ -47,12 +49,12 @@ type
     class function PartOfProjectOk(const AFilename: string;
       OnGetIDEFileInfo: TGetIDEFileStateEvent; YesToAll: TYesToAllList): TModalResult;
     class function UniqueUnitOk(LazPackage: TLazPackage;
-      const AUnitFilename: string; YesToAll: TYesToAllList): TModalResult;
+      const AnUnitName: string; YesToAll: TYesToAllList): TModalResult;
   public
     class function ReadOnlyOk(LazPackage: TLazPackage): TModalResult;
-    class function AddingUnit(LazPackage: TLazPackage; const AFilename: string;
+    class function AddingFile(LazPackage: TLazPackage; const AFilename: string;
       OnGetIDEFileInfo: TGetIDEFileStateEvent; YesToAll: TYesToAllList): TModalResult; // ok=success, cancel=fail, abort=fail and stop multi add
-    class function ReAddingUnit(LazPackage: TLazPackage;
+    class function ReAddingFile(LazPackage: TLazPackage;
       FileTyp: TPkgFileType; const AFilename: string;
       OnGetIDEFileInfo: TGetIDEFileStateEvent; YesToAll: TYesToAllList): TModalResult;
     class function AddingDependency(LazPackage: TLazPackage;
@@ -98,33 +100,35 @@ end;
 
 { TProjPackFileCheck }
 
-class function TProjPackFileCheck.UnitNameOk(const AFilename, AUnitFilename: string): TModalResult;
+class function TProjPackFileCheck.UnitNameOk(const AFilename, AnUnitName: string): TModalResult;
 // This is called only for Pascal units.
 var
-  Unit_Name: string;
+  SrcUnitName: string;
   CodeBuffer: TCodeBuffer;
 begin
   Result:=mrCancel;
-  // valid unitname
-  Unit_Name:='';
-  CodeBuffer:=CodeToolBoss.LoadFile(AFilename,true,false);
-  if CodeBuffer<>nil then begin
-    Unit_Name:=CodeToolBoss.GetSourceName(CodeBuffer,false);
-    // Unit_Name can be empty if Codetools had problems parsing the source.
-    if (Unit_Name<>'')
-    and (CompareText(StringReplace(Unit_Name,'&','',[rfReplaceAll]), AUnitFilename)<>0)
-    and (IDEMessageDialog(lisA2PInvalidUnitName,
-                          Format(lisA2PTheUnitNameAndFilenameDiffer,
-                                 [Unit_Name,LineEnding,AUnitFilename]),
-                          mtError,[mbIgnore,mbCancel]) <> mrIgnore) then exit;
-  end;
-
-  if not IsValidUnitName(AUnitFilename) then
+  // check valid unitname
+  if not IsValidUnitName(AnUnitName) then
   begin
-    IDEMessageDialog(lisA2PFileNotUnit, Format(lisA2PisNotAValidUnitName,[AUnitFilename]),
+    IDEMessageDialog(lisA2PFileNotUnit, Format(lisA2PisNotAValidUnitName,[AnUnitName]),
                      mtWarning,[mbCancel]);
     exit;
   end;
+
+  // check file and source match
+  SrcUnitName:='';
+  CodeBuffer:=CodeToolBoss.LoadFile(AFilename,true,false);
+  if CodeBuffer<>nil then begin
+    SrcUnitName:=CodeToolBoss.GetSourceName(CodeBuffer,false);
+    // SrcUnitName can be empty if Codetools had problems parsing the source.
+    if (SrcUnitName<>'')
+    and (CompareText(RemoveAmpersands(SrcUnitName), AnUnitName)<>0)
+    and (IDEMessageDialog(lisA2PInvalidUnitName,
+                          Format(lisA2PTheUnitNameAndFilenameDiffer,
+                                 [SrcUnitName,LineEnding,AnUnitName]),
+                          mtError,[mbIgnore,mbCancel]) <> mrIgnore) then exit;
+  end;
+
   // Pascal extension
   Assert(FilenameHasPascalExt(AFilename), 'TPkgFileCheck.UnitNameOk: Wrong extension.');
   Result:=mrOK;
@@ -159,6 +163,7 @@ begin
   // check if file exists
   if not FileExistsUTF8(AFilename) then
   begin
+    if not YesToAll.WarnFileNotFound then exit(mrIgnore);
     if YesToAll.Inc('FileNotFound')<4 then
       IDEMessageDialog(lisFileNotFound, Format(lisPkgMangFileNotFound,[AFilename]),
                      mtError, [mbCancel]);
@@ -168,6 +173,7 @@ begin
   PkgFile:=LazPackage.FindPkgFile(AFilename,true,false);
   if PkgFile<>nil then
   begin
+    if not YesToAll.WarnAlreadyAdded then exit(mrIgnore);
     if YesToAll.Inc('FileAlreadyInPackage')>2 then exit;
     Msg:=Format(lisA2PFileAlreadyExistsInThePackage, [AFilename]);
     if PkgFile.Filename<>AFilename then
@@ -199,7 +205,7 @@ begin
 end;
 
 class function TPkgFileCheck.UniqueUnitOk(LazPackage: TLazPackage;
-  const AUnitFilename: string; YesToAll: TYesToAllList): TModalResult;
+  const AnUnitName: string; YesToAll: TYesToAllList): TModalResult;
 // This is called only for Pascal units.
 var
   PkgFile: TPkgFile;
@@ -207,7 +213,7 @@ var
 begin
   Result:=mrCancel;
   // check if unitname already exists in package
-  PkgFile:=LazPackage.FindUnit(AUnitFilename,true);
+  PkgFile:=LazPackage.FindUnit(AnUnitName,true);
   if PkgFile<>nil then
   begin
     // a unit with this name already exists in this package => warn
@@ -215,12 +221,12 @@ begin
     if i=1 then
     begin
       if IDEMessageDialog(lisA2PUnitnameAlreadyExists,
-              Format(lisA2PTheUnitnameAlreadyExistsInThisPackage,[AUnitFilename]),
+              Format(lisA2PTheUnitnameAlreadyExistsInThisPackage,[AnUnitName]),
               mtError,[mbCancel,mbIgnore]) <> mrIgnore then
         exit;
     end else if i<100000 then begin
       if IDEMessageDialog(lisA2PUnitnameAlreadyExists,
-              Format(lisA2PTheUnitnameAlreadyExistsInThisPackage,[AUnitFilename]),
+              Format(lisA2PTheUnitnameAlreadyExistsInThisPackage,[AnUnitName]),
               mtError,[mbCancel,mbYesToAll]) = mrYesToAll then
         YesToAll.Values['UnitnameExistsInPkg']:='100000'
       else
@@ -228,7 +234,7 @@ begin
     end;
   end
   else begin
-    PkgFile:=PackageGraph.FindUnit(LazPackage,AUnitFilename,true,true);
+    PkgFile:=PackageGraph.FindUnit(LazPackage,AnUnitName,true,true);
     if (PkgFile<>nil) and (PkgFile.LazPackage<>LazPackage) then
     begin
       // there is already a unit with this name in another package => warn
@@ -237,13 +243,13 @@ begin
       begin
         if IDEMessageDialog(lisA2PUnitnameAlreadyExists,
                 Format(lisA2PTheUnitnameAlreadyExistsInThePackage,
-                       [AUnitFilename, LineEnding, PkgFile.LazPackage.IDAsString]),
+                       [AnUnitName, LineEnding, PkgFile.LazPackage.IDAsString]),
                 mtWarning,[mbCancel,mbIgnore]) <> mrIgnore then
           exit;
       end else if i<100000 then begin
         if IDEMessageDialog(lisA2PUnitnameAlreadyExists,
                 Format(lisA2PTheUnitnameAlreadyExistsInThePackage,
-                       [AUnitFilename, LineEnding, PkgFile.LazPackage.IDAsString]),
+                       [AnUnitName, LineEnding, PkgFile.LazPackage.IDAsString]),
                 mtWarning,[mbCancel,mbYesToAll]) = mrYesToAll then
           YesToAll.Values['UnitnameExistsInOtherPkg']:='100000'
         else
@@ -252,18 +258,18 @@ begin
     end;
   end;
   // check if unitname is a componentclass
-  if IDEComponentPalette.FindRegComponent(AUnitFilename)<>nil then
+  if IDEComponentPalette.FindRegComponent(AnUnitName)<>nil then
   begin
     i:=YesToAll.Inc('UnitnameIsCompName');
     if i=1 then
     begin
       if IDEMessageDialog(lisA2PAmbiguousUnitName,
-          Format(lisA2PTheUnitNameIsTheSameAsAnRegisteredComponent,[AUnitFilename,LineEnding]),
+          Format(lisA2PTheUnitNameIsTheSameAsAnRegisteredComponent,[AnUnitName,LineEnding]),
           mtWarning,[mbCancel,mbIgnore]) <> mrIgnore then
         exit;
     end else if i<100000 then begin
       if IDEMessageDialog(lisA2PAmbiguousUnitName,
-          Format(lisA2PTheUnitNameIsTheSameAsAnRegisteredComponent,[AUnitFilename,LineEnding]),
+          Format(lisA2PTheUnitNameIsTheSameAsAnRegisteredComponent,[AnUnitName,LineEnding]),
           mtWarning,[mbCancel,mbYesToAll]) = mrYesToAll then
         YesToAll.Values['UnitnameIsCompName']:='100000'
       else
@@ -286,12 +292,12 @@ begin
   Result:=mrOK;
 end;
 
-class function TPkgFileCheck.AddingUnit(LazPackage: TLazPackage;
+class function TPkgFileCheck.AddingFile(LazPackage: TLazPackage;
   const AFilename: string; OnGetIDEFileInfo: TGetIDEFileStateEvent;
   YesToAll: TYesToAllList): TModalResult;
 var
   NewFileType: TPkgFileType;
-  UnitFilename: String;
+  AnUnitName: String;
 begin
   Assert(FilenameIsAbsolute(AFilename), 'TPkgFileCheck.AddingUnit: Not absolute Filename.');
   // file exists
@@ -304,22 +310,22 @@ begin
   NewFileType:=FileNameToPkgFileType(AFilename);
   if NewFileType<>pftUnit then
     exit(mrOK);                         // Further checks only for Pascal units.
-  UnitFilename:=ExtractFileNameOnly(AFilename);
+  AnUnitName:=ExtractFileNameOnly(AFilename);
   // unitname
-  Result:=UnitNameOk(AFilename, UnitFilename);
+  Result:=UnitNameOk(AFilename, AnUnitName);
   if Result<>mrOK then exit;
   // unit is unique
-  Result:=UniqueUnitOk(LazPackage, UnitFilename, YesToAll);
+  Result:=UniqueUnitOk(LazPackage, AnUnitName, YesToAll);
   if Result<>mrOK then exit;
   Result:=mrOK;  // ok
 end;
 
-class function TPkgFileCheck.ReAddingUnit(LazPackage: TLazPackage;
+class function TPkgFileCheck.ReAddingFile(LazPackage: TLazPackage;
   FileTyp: TPkgFileType; const AFilename: string;
   OnGetIDEFileInfo: TGetIDEFileStateEvent; YesToAll: TYesToAllList
   ): TModalResult;
 var
-  UnitFilename: String;
+  AnUnitName: String;
 begin
   Assert(FilenameIsAbsolute(AFilename), 'TPkgFileCheck.ReAddingUnit: Not absolute Filename.');
   // file exists
@@ -330,12 +336,12 @@ begin
   if Result<>mrOK then exit;
   if not (FileTyp in [pftUnit, pftMainUnit, pftVirtualUnit]) then
     exit(mrOK);                         // Further checks only for Pascal units.
-  UnitFilename:=ExtractFileNameOnly(AFilename);
+  AnUnitName:=ExtractFileNameOnly(AFilename);
   // unitname
-  Result:=UnitNameOk(AFilename, UnitFilename);
+  Result:=UnitNameOk(AFilename, AnUnitName);
   if Result<>mrOK then exit;
   // unit is unique
-  Result:=UniqueUnitOk(LazPackage, UnitFilename, YesToAll);
+  Result:=UniqueUnitOk(LazPackage, AnUnitName, YesToAll);
   if Result<>mrOK then exit;
   Result:=mrOK;  // ok
 end;

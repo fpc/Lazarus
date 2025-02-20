@@ -3469,15 +3469,15 @@ begin
   NewFlags:=[];
   NewUnitName:='';
   if (NewFileType=pftUnit) then begin
-    InvalidateFileStateCache; // File may not be in cache in some d-n-d situations.
     Code:=CodeToolBoss.LoadFile(aFilename,true,false);
-    NewUnitName:=CodeToolBoss.GetSourceName(Code,false);
-    Assert(NewUnitName<>'', 'TLazPackage.AddFileByName: NewUnitName is empty.');
-    //if NewUnitName='' then NewUnitName:=ExtractFileNameOnly(aFilename);
-    if FindUsedUnit(NewUnitName)=nil then
-      Include(NewFlags,pffAddToPkgUsesSection);
-    if CodeToolBoss.HasInterfaceRegisterProc(Code) then
-      Include(NewFlags,pffHasRegisterProc);
+    if Code<>nil then begin
+      NewUnitName:=CodeToolBoss.GetSourceName(Code,false);
+      if NewUnitName='' then NewUnitName:=ExtractFileNameOnly(aFilename);
+      if FindUsedUnit(NewUnitName)=nil then
+        Include(NewFlags,pffAddToPkgUsesSection);
+      if CodeToolBoss.HasInterfaceRegisterProc(Code) then
+        Include(NewFlags,pffHasRegisterProc);
+    end;
   end;
   AddFile(aFilename,NewUnitName,NewFileType,NewFlags,cpNormal);
   CurDir:=ChompPathDelim(ExtractFilePath(aFilename));

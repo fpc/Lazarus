@@ -291,10 +291,10 @@ type
     procedure SetupComponents;
     procedure CreatePackageFileEditors;
     function TreeViewGetImageIndex({%H-}Str: String; Data: TObject; var {%H-}AIsEnabled: Boolean): Integer;
-    procedure UpdatePending;
     procedure StoreItemsTVSelectedNode(out OldView: TPETVSelectedView; StoreFilter: boolean);
     procedure RestoreItemsTVSelectedNode(const OldView: TPETVSelectedView);
     function CanUpdate(Flag: TPEFlag; Immediately: boolean): boolean;
+    procedure UpdatePending;
     procedure UpdateTitle(Immediately: boolean = false);
     procedure UpdateFiles(Immediately: boolean = false);
     procedure UpdateRemovedFiles(Immediately: boolean = false);
@@ -323,6 +323,7 @@ type
                                         ARect: TRect; {%H-}State: TOwnerDrawState);
     procedure DisableI18NForLFMCheckBoxChange(Sender: TObject);
     procedure SelectFileNode(const AFileName: string);
+    procedure AddUserFiles(Filenames: TStrings);
   protected
     fFlags: TPEFlags;
     procedure SetLazPackage(const AValue: TLazPackage); override;
@@ -619,6 +620,7 @@ var
   NodeData: TPENodeData;
   Item: TObject;
   YesToAll: TYesToAllList;
+  r: TModalResult;
 begin
   BeginUpdate;
   YesToAll:=TYesToAllList.Create;
@@ -631,9 +633,10 @@ begin
       begin        // re-add file
         PkgFile:=TPkgFile(Item);
         AFilename:=PkgFile.GetFullFilename;
-        if TPkgFileCheck.ReAddingUnit(LazPackage, PkgFile.FileType, AFilename,
-                            PackageEditors.OnGetIDEFileInfo,YesToAll)<>mrOk then
-          exit;
+        r:=TPkgFileCheck.ReAddingFile(LazPackage, PkgFile.FileType, AFilename,
+                            PackageEditors.OnGetIDEFileInfo,YesToAll);
+        if r=mrIgnore then continue;
+        if r<>mrOk then exit;
         //PkgFile.Filename:=AFilename;
         Assert(PkgFile.Filename=AFilename, 'TPackageEditorForm.ReAddMenuItemClick: Unexpected Filename.');
         LazPackage.UnremovePkgFile(PkgFile);
@@ -642,7 +645,9 @@ begin
         Dependency:=TPkgDependency(Item);
         // Re-add dependency
         fForcedFlags:=[pefNeedUpdateRemovedFiles,pefNeedUpdateRequiredPkgs];
-        if TPkgFileCheck.AddingDependency(LazPackage,Dependency,true)<>mrOk then exit;
+        r:=TPkgFileCheck.AddingDependency(LazPackage,Dependency,true);
+        if r=mrIgnore then continue;
+        if r<>mrOk then exit;
         LazPackage.RemoveRemovedDependency(Dependency);
         PackageGraph.AddDependencyToPackage(LazPackage,Dependency);
       end;
@@ -1501,36 +1506,24 @@ procedure TPackageEditorForm.FormDropFiles(Sender: TObject;
   const FileNames: array of String);
 var
   i: Integer;
-  NewFilename, NewUnitPaths, NewIncPaths: String;
-  YesToAll: TYesToAllList;
-  r: TModalResult;
+  Files: TStringList;
 begin
   {$IFDEF VerbosePkgEditDrag}
   debugln(['TPackageEditorForm.FormDropFiles ',length(FileNames)]);
   {$ENDIF}
   if length(FileNames)=0 then exit;
-  YesToAll:=TYesToAllList.Create;
-  BeginUpdate;
+
+  //debugln(['TPackageEditorForm.FormDropFiles ']);
+  // the Drop does not always trigger an application activate event -> invalidate here
+  InvalidateFileStateCache;
+
+  Files:=TStringList.Create;
   try
-    NewUnitPaths:='';
-    NewIncPaths:='';
     for i:=0 to high(Filenames) do
-    begin
-      NewFilename:=FileNames[i];
-      r:=TPkgFileCheck.AddingUnit(LazPackage, NewFilename,
-                                  PackageEditors.OnGetIDEFileInfo,YesToAll);
-      if r=mrOK then
-        LazPackage.AddFileByName(NewFilename, NewUnitPaths, NewIncPaths)
-      else if r=mrAbort then
-        break;
-    end;
-    //UpdateAll(false);
-    // extend unit and include search path
-    if not LazPackage.ExtendUnitSearchPath(NewUnitPaths) then exit;
-    if not LazPackage.ExtendIncSearchPath(NewIncPaths) then exit;
+      Files.Add(FileNames[i]);
+    AddUserFiles(Files);
   finally
-    YesToAll.Free;
-    EndUpdate;
+    Files.Free;
   end;
 end;
 
@@ -1596,6 +1589,45 @@ begin
   end;
 end;
 
+procedure TPackageEditorForm.AddUserFiles(Filenames: TStrings);
+var
+  YesToAll: TYesToAllList;
+  NewUnitPaths, NewIncPaths, NewFilename: String;
+  r: TModalResult;
+  i, j: Integer;
+begin
+  if Filenames.Count=0 then exit;
+  YesToAll:=TYesToAllList.Create;
+  BeginUpdate;
+  try
+    NewUnitPaths:='';
+    NewIncPaths:='';
+    for i:=0 to Filenames.Count-1 do
+    begin
+      NewFilename:=ExpandFileNameUTF8(Filenames[i]);
+      j:=i-1;
+      while (j>=0) and (CompareFilenames(NewFilename,Filenames[j])<>0) do
+       dec(j);
+      if j>=0 then begin
+        debugln(['Warning: (lazarus) TPackageEditorForm.AddUserFiles ignoring duplicate "',NewFilename,'"']);
+        continue;
+      end;
+      r:=TPkgFileCheck.AddingFile(LazPackage, NewFilename,
+                                  PackageEditors.OnGetIDEFileInfo,YesToAll);
+      if r=mrOK then
+        LazPackage.AddFileByName(NewFilename, NewUnitPaths, NewIncPaths)
+      else if r=mrAbort then
+        break;
+    end;
+    // extend unit and include search path
+    if not LazPackage.ExtendUnitSearchPath(NewUnitPaths) then exit;
+    if not LazPackage.ExtendIncSearchPath(NewIncPaths) then exit;
+  finally
+    YesToAll.Free;
+    EndUpdate;
+  end;
+end;
+
 procedure TPackageEditorForm.SaveAsClick(Sender: TObject);
 begin
   DoSave(true);
@@ -1650,13 +1682,9 @@ procedure TPackageEditorForm.mnuAddDiskFileClick(Sender: TObject);
 var
   OpenDialog: TOpenDialog;
   i: Integer;
-  NewFilename, NewUnitPaths, NewIncPaths: String;
-  r: TModalResult;
-  YesToAll: TYesToAllList;
 begin
   // is readonly
   if TPkgFileCheck.ReadOnlyOk(LazPackage)<>mrOK then exit;
-  YesToAll:=nil;
   OpenDialog:=TOpenDialog.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
@@ -1674,26 +1702,9 @@ begin
     if OpenDialog.Execute then
     begin
       InputHistories.StoreFileDialogSettings(OpenDialog);
-      NewUnitPaths:='';
-      NewIncPaths:='';
-      YesToAll:=TYesToAllList.Create;
-      for i:=0 to OpenDialog.Files.Count-1 do
-      begin
-        NewFilename:=OpenDialog.Files[i];
-        r:=TPkgFileCheck.AddingUnit(LazPackage, NewFilename,
-                                    PackageEditors.OnGetIDEFileInfo,YesToAll);
-        if r=mrOK then
-          LazPackage.AddFileByName(NewFilename, NewUnitPaths, NewIncPaths)
-        else if r=mrAbort then
-          break;
-      end;
-      //UpdateAll(false);
-      // extend unit and include search path
-      if not LazPackage.ExtendUnitSearchPath(NewUnitPaths) then exit;
-      if not LazPackage.ExtendIncSearchPath(NewIncPaths) then exit;
+      AddUserFiles(OpenDialog.Files);
     end;
   finally
-    YesToAll.Free;
     OpenDialog.Free;
   end;
 end;
