@@ -2835,6 +2835,7 @@ procedure TKeyCommandRelationList.DefineCommandCategories;
 
 var
   C: TIDECommandCategory;
+  i: integer;
 begin
   Clear;
   // moving
@@ -3064,43 +3065,21 @@ begin
 
   // marker - without menu items in the IDE bar
   C:=Categories[AddCategory('Marker',srkmCatMarker,IDECmdScopeSrcEditOnly)];
-  AddDefault(C, 'Set free Bookmark', lisKMSetFreeBookmark, ecSetFreeBookmark);
+  AddDefault(C, 'Set free Bookmark', srkmecSetFreeBookmark, ecSetFreeBookmark);
   AddDefault(C, 'Clear Bookmarks for current file', srkmecClearBookmarkForFile, ecClearBookmarkForFile);
   AddDefault(C, 'Clear all Bookmarks', srkmecClearAllBookmark, ecClearAllBookmark);
   AddDefault(C, 'Previous Bookmark', srkmecPrevBookmark, ecPrevBookmark);
   AddDefault(C, 'Next Bookmark', srkmecNextBookmark, ecNextBookmark);
   AddDefault(C, 'Go to Bookmark...', uemGotoBookmarks, ecGotoBookmarks);
-  AddDefault(C, 'Go to marker 0', lisKMGoToMarker0, ecGotoMarker0);
-  AddDefault(C, 'Go to marker 1', lisKMGoToMarker1, ecGotoMarker1);
-  AddDefault(C, 'Go to marker 2', lisKMGoToMarker2, ecGotoMarker2);
-  AddDefault(C, 'Go to marker 3', lisKMGoToMarker3, ecGotoMarker3);
-  AddDefault(C, 'Go to marker 4', lisKMGoToMarker4, ecGotoMarker4);
-  AddDefault(C, 'Go to marker 5', lisKMGoToMarker5, ecGotoMarker5);
-  AddDefault(C, 'Go to marker 6', lisKMGoToMarker6, ecGotoMarker6);
-  AddDefault(C, 'Go to marker 7', lisKMGoToMarker7, ecGotoMarker7);
-  AddDefault(C, 'Go to marker 8', lisKMGoToMarker8, ecGotoMarker8);
-  AddDefault(C, 'Go to marker 9', lisKMGoToMarker9, ecGotoMarker9);
-  AddDefault(C, 'Set marker 0', lisKMSetMarker0, ecSetMarker0);
-  AddDefault(C, 'Set marker 1', lisKMSetMarker1, ecSetMarker1);
-  AddDefault(C, 'Set marker 2', lisKMSetMarker2, ecSetMarker2);
-  AddDefault(C, 'Set marker 3', lisKMSetMarker3, ecSetMarker3);
-  AddDefault(C, 'Set marker 4', lisKMSetMarker4, ecSetMarker4);
-  AddDefault(C, 'Set marker 5', lisKMSetMarker5, ecSetMarker5);
-  AddDefault(C, 'Set marker 6', lisKMSetMarker6, ecSetMarker6);
-  AddDefault(C, 'Set marker 7', lisKMSetMarker7, ecSetMarker7);
-  AddDefault(C, 'Set marker 8', lisKMSetMarker8, ecSetMarker8);
-  AddDefault(C, 'Set marker 9', lisKMSetMarker9, ecSetMarker9);
+
+  for i:=0 to 9 do
+    AddDefault(C, Format('Go to marker %d', [i]), Format(srkmecGotoMarker, [i]), ecGotoMarker0+i);
+  for i:=0 to 9 do
+    AddDefault(C, Format('Set marker %d', [i]), Format(srkmecSetMarker, [i]), ecSetMarker0+i);
+
   AddDefault(C, 'Toggle Bookmark...', uemToggleBookmarks, ecToggleBookmarks);
-  AddDefault(C, 'Toggle marker 0', lisKMToggleMarker0, ecToggleMarker0);
-  AddDefault(C, 'Toggle marker 1', lisKMToggleMarker1, ecToggleMarker1);
-  AddDefault(C, 'Toggle marker 2', lisKMToggleMarker2, ecToggleMarker2);
-  AddDefault(C, 'Toggle marker 3', lisKMToggleMarker3, ecToggleMarker3);
-  AddDefault(C, 'Toggle marker 4', lisKMToggleMarker4, ecToggleMarker4);
-  AddDefault(C, 'Toggle marker 5', lisKMToggleMarker5, ecToggleMarker5);
-  AddDefault(C, 'Toggle marker 6', lisKMToggleMarker6, ecToggleMarker6);
-  AddDefault(C, 'Toggle marker 7', lisKMToggleMarker7, ecToggleMarker7);
-  AddDefault(C, 'Toggle marker 8', lisKMToggleMarker8, ecToggleMarker8);
-  AddDefault(C, 'Toggle marker 9', lisKMToggleMarker9, ecToggleMarker9);
+  for i:=0 to 9 do
+    AddDefault(C, Format('Toggle marker %d', [i]), Format(srkmecToggleMarker, [i]), ecToggleMarker0+i);
 
   // codetools
   C:=Categories[AddCategory(CommandCategoryCodeTools,srkmCatCodeTools,IDECmdScopeSrcEditOnly)];

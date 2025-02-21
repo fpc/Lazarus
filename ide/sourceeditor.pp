@@ -1833,7 +1833,7 @@ begin
 
       AParent:=RegisterIDEMenuSection(AParent, 'Set Free Bookmark section');
       SrcEditMenuSetFreeBookmark:=RegisterIDEMenuCommand(AParent,
-          'Set a free Bookmark',uemSetFreeBookmark, nil, @ExecuteIdeMenuClick, nil, 'menu_set_free_bookmark');
+          'Set a free Bookmark',lisMenuSetFreeBookmark, nil, @ExecuteIdeMenuClick, nil, 'menu_set_free_bookmark');
 
       AParent:=RegisterIDEMenuSection(AParent, 'Clear Bookmarks section');
       SrcEditMenuClearFileBookmark:=RegisterIDEMenuCommand(AParent,
