@@ -80,6 +80,7 @@ type
     FAllowRename: boolean;
     FIdentifierFilename: string;
     FIdentifierPosition: TPoint;
+    FIsSourceName: boolean;
     FOldIdentifier: string;
     FNewIdentifier: string;
     FConflictUnitNames: TStringList; // already defined identifiers in scope
@@ -91,6 +92,7 @@ type
     procedure SetAllowRename(const AValue: boolean);
     procedure SetIsPrivate(const AValue: boolean);
     procedure SetFiles(const Files:TStringList);
+    procedure SetIsSourceName(const AValue: boolean);
     procedure UpdateRename;
     procedure GatherFiles;
     function NewIdentifierIsConflicted(var ErrMsg: string): boolean;
@@ -108,13 +110,15 @@ type
     property IdentifierPosition: TPoint read FIdentifierPosition;
     property AllowRename: boolean read FAllowRename write SetAllowRename;
     property IsPrivate: boolean read FIsPrivate write SetIsPrivate;
+    property IsSourceName: boolean read FIsSourceName write SetIsSourceName;
   end;
 
 function ShowFindRenameIdentifierDialog(const Filename: string;
   var Position: TPoint;
   AllowRename: boolean; // allow user to disable/enable rename
   SetRenameActive: boolean; // check rename
-  Options: TFindRenameIdentifierOptions): TModalResult;
+  Options: TFindRenameIdentifierOptions;
+  IsSourceName: boolean): TModalResult;
 function DoFindRenameIdentifier(
   AllowRename: boolean; // allow user to disable/enable rename
   SetRenameActive: boolean; // check rename
@@ -149,7 +153,7 @@ implementation
 
 function ShowFindRenameIdentifierDialog(const Filename: string;
   var Position: TPoint; AllowRename: boolean; SetRenameActive: boolean;
-  Options: TFindRenameIdentifierOptions): TModalResult;
+  Options: TFindRenameIdentifierOptions; IsSourceName: boolean): TModalResult;
 var
   FindRenameIdentifierDialog: TFindRenameIdentifierDialog;
 begin
@@ -158,6 +162,7 @@ begin
     FindRenameIdentifierDialog.LoadFromConfig;
     FindRenameIdentifierDialog.SetIdentifier(Filename,Position);
     FindRenameIdentifierDialog.AllowRename:=AllowRename;
+    FindRenameIdentifierDialog.IsSourceName:=IsSourceName;
     FindRenameIdentifierDialog.RenameCheckBox.Checked:=SetRenameActive and AllowRename;
     if Options<>nil then
       FindRenameIdentifierDialog.ShowResultCheckBox.Checked:=Options.RenameShowResult and AllowRename;
@@ -493,7 +498,7 @@ begin
   try
     // let user choose the search scope
     Result:=ShowFindRenameIdentifierDialog(DeclCodeXY.Code.Filename,DeclXY,
-      AllowRename,SetRenameActive,nil);
+      AllowRename,SetRenameActive,nil,DeclNode.Desc=ctnSrcName);
     if Result<>mrOk then begin
       debugln('Error: (lazarus) DoFindRenameIdentifier failed: user cancelled dialog');
       exit;
@@ -1173,9 +1178,7 @@ begin
       Err:=lisIdentifierCannotBeEmpty
     else
       Err:= format(lisIdentifierIsInvalid,[FNewIdentifier]);
-  end else if not (FNode.Desc in [ctnProgram..ctnUnit,ctnUseUnit,
-      ctnUseUnitNamespace,ctnUseUnitClearName])
-     and (Pos('.',FNewIdentifier)>0) then
+  end else if not IsSourceName and (Pos('.',FNewIdentifier)>0) then
   begin
     ok:=false;
     Err:=Format(lisIdentifierCannotBeDotted,[FNewIdentifier]);
@@ -1197,22 +1200,24 @@ begin
       end;
       ok:=not FTool.StringIsKeyWord(dotPart);
     end;
-    if not ok then
+    if not ok then begin
       Err:=Format(lisIdentifierIsReservedWord,[dotPart]);
+      ok:=true;
+    end;
   end;
 
-  if ok
-  and (CompareDottedIdentifiers(PChar(FNewIdentifier),PChar(FOldIdentifier))<>0)
+  if (Err='')
+      and (CompareDottedIdentifiers(PChar(FNewIdentifier),PChar(FOldIdentifier))<>0)
   then
-    ok:=not NewIdentifierIsConflicted(Err);
+    NewIdentifierIsConflicted(Err);
 
-  Err:=StringReplace(Err,'&','&&',[rfReplaceAll]);
   ButtonPanel1.OKButton.Enabled:=ok;
-  if ok then begin
+  if Err='' then begin
     NewGroupBox.Caption:=lisFRIRenaming;
     NewGroupBox.Font.Style:=NewGroupBox.Font.Style-[fsBold];
   end
   else begin
+    Err:=StringReplace(Err,'&','&&',[rfReplaceAll]);
     NewGroupBox.Caption:=lisFRIRenaming+' - '+ Err;
     NewGroupBox.Font.Style:=NewGroupBox.Font.Style+[fsBold];
   end;
@@ -1261,6 +1266,12 @@ begin
   if Files.Count = 0 then exit;
   if FFiles=nil then FFiles:=TStringList.Create;
   FFiles.Assign(Files);
+end;
+
+procedure TFindRenameIdentifierDialog.SetIsSourceName(const AValue: boolean);
+begin
+  if FIsSourceName=AValue then Exit;
+  FIsSourceName:=AValue;
 end;
 
 procedure TFindRenameIdentifierDialog.FindOrRenameButtonClick(Sender: TObject);
@@ -1643,15 +1654,14 @@ function TFindRenameIdentifierDialog.NewIdentifierIsConflicted(var ErrMsg: strin
 var
   i: integer;
   anItem: TIdentifierListItem;
+  CheckUnitName, CheckInFileName, aFilename: String;
 begin
   Result:=false;
   ErrMsg:='';
   if not AllowRename then exit;
   if IsNodeInvalid('TFindRenameIdentifierDialog.NewIdentifierIsConflicted') then exit;
 
-  if (FNode<>nil)
-      and not (FNode.Desc in (AllSourceTypes+[ctnUseUnit,ctnUseUnitNamespace,ctnUseUnitClearName]))
-      and (Pos('.',FNewIdentifier)>0) then
+  if not IsSourceName and (Pos('.',FNewIdentifier)>0) then
   begin
     ErrMsg:=Format(lisIdentifierCannotBeDotted,[FNewIdentifier]);
     exit(true);
@@ -1671,6 +1681,16 @@ begin
     ErrMsg:=Format(lisIdentifierIsAlreadyUsed,[FNewIdentifier]);
     exit;
   end;
+
+  CheckUnitName:=FNewIdentifier;
+  CheckInFileName:='';
+  aFilename:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
+    ExtractFilePath(IdentifierFilename),CheckUnitName,CheckInFileName,true);
+  if aFilename<>'' then begin
+    ErrMsg:='Matches unit "'+ExtractFileName(aFilename)+'"';
+    exit(true);
+  end;
+
   // checking if there are existing other identifiers conflited with the new
   // will be executed when "Rename all References" button is clicked
 end;
