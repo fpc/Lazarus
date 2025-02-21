@@ -4046,6 +4046,8 @@ var
             begin
               ScrollBar^.set_can_focus(False);
               ScrollBar^.window^.raise_;
+              if (csDesigning in AControl.LCLObject.ComponentState) then
+                ScrollBar^.sensitive := false;
             end;
           end;
           SB_VERT:
@@ -4057,6 +4059,8 @@ var
             begin
               ScrollBar^.set_can_focus(False);
               ScrollBar^.window^.raise_;
+              if (csDesigning in AControl.LCLObject.ComponentState) then
+                ScrollBar^.sensitive := false;
             end;
           end;
         end;
