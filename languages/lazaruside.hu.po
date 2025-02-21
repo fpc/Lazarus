@@ -195,7 +195,9 @@ msgid "Select text (Line mode)"
 msgstr "Szöveg kijelölése (sor mód)"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonsetfreebookmark
-msgid "Set free bookmark"
+#, fuzzy
+#| msgid "Set free bookmark"
+msgid "Set a free bookmark"
 msgstr "Üres könyvjelző beállítása"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonsetlinefull
@@ -11484,46 +11486,6 @@ msgstr "Külső eszközök beállításai"
 msgid "Find Incremental"
 msgstr "Bővített keresés"
 
-#: lazarusidestrconsts.liskmgotomarker0
-msgid "Go to bookmark 0"
-msgstr "Ugrás a 0. könyvjelzőhöz"
-
-#: lazarusidestrconsts.liskmgotomarker1
-msgid "Go to bookmark 1"
-msgstr "Ugrás az 1. könyvjelzőhöz"
-
-#: lazarusidestrconsts.liskmgotomarker2
-msgid "Go to bookmark 2"
-msgstr "Ugrás a 2. könyvjelzőhöz"
-
-#: lazarusidestrconsts.liskmgotomarker3
-msgid "Go to bookmark 3"
-msgstr "Ugrás a 3. könyvjelzőhöz"
-
-#: lazarusidestrconsts.liskmgotomarker4
-msgid "Go to bookmark 4"
-msgstr "Ugrás a 4. könyvjelzőhöz"
-
-#: lazarusidestrconsts.liskmgotomarker5
-msgid "Go to bookmark 5"
-msgstr "Ugrás az 5. könyvjelzőhöz"
-
-#: lazarusidestrconsts.liskmgotomarker6
-msgid "Go to bookmark 6"
-msgstr "Ugrás a 6. könyvjelzőhöz"
-
-#: lazarusidestrconsts.liskmgotomarker7
-msgid "Go to bookmark 7"
-msgstr "Ugrás a 7. könyvjelzőhöz"
-
-#: lazarusidestrconsts.liskmgotomarker8
-msgid "Go to bookmark 8"
-msgstr "Ugrás a 8. könyvjelzőhöz"
-
-#: lazarusidestrconsts.liskmgotomarker9
-msgid "Go to bookmark 9"
-msgstr "Ugrás a 9. könyvjelzőhöz"
-
 #: lazarusidestrconsts.liskmgotosourceeditor1
 msgid "Go to source editor 1"
 msgstr "Forráskódszerkesztő 1. lap megnyitása"
@@ -11667,50 +11629,6 @@ msgstr "Projekt mentése"
 msgid "Save project as"
 msgstr "Projekt mentése másként"
 
-#: lazarusidestrconsts.liskmsetfreebookmark
-msgid "Set free Bookmark"
-msgstr "Üres könyvjelző beállítása"
-
-#: lazarusidestrconsts.liskmsetmarker0
-msgid "Set bookmark 0"
-msgstr "0. könyvjelző beállítása"
-
-#: lazarusidestrconsts.liskmsetmarker1
-msgid "Set bookmark 1"
-msgstr "1. könyvjelző beállítása"
-
-#: lazarusidestrconsts.liskmsetmarker2
-msgid "Set bookmark 2"
-msgstr "2. könyvjelző beállítása"
-
-#: lazarusidestrconsts.liskmsetmarker3
-msgid "Set bookmark 3"
-msgstr "3. könyvjelző beállítása"
-
-#: lazarusidestrconsts.liskmsetmarker4
-msgid "Set bookmark 4"
-msgstr "4. könyvjelző beállítása"
-
-#: lazarusidestrconsts.liskmsetmarker5
-msgid "Set bookmark 5"
-msgstr "5. könyvjelző beállítása"
-
-#: lazarusidestrconsts.liskmsetmarker6
-msgid "Set bookmark 6"
-msgstr "6. könyvjelző beállítása"
-
-#: lazarusidestrconsts.liskmsetmarker7
-msgid "Set bookmark 7"
-msgstr "7. könyvjelző beállítása"
-
-#: lazarusidestrconsts.liskmsetmarker8
-msgid "Set bookmark 8"
-msgstr "8. könyvjelző beállítása"
-
-#: lazarusidestrconsts.liskmsetmarker9
-msgid "Set bookmark 9"
-msgstr "9. könyvjelző beállítása"
-
 #: lazarusidestrconsts.liskmstopprogram
 msgid "Stop Program"
 msgstr "Program leállítása"
@@ -11718,46 +11636,6 @@ msgstr "Program leállítása"
 #: lazarusidestrconsts.liskmtogglebetweenunitandform
 msgid "Toggle between Unit and Form"
 msgstr "Unit és Form közötti váltás"
-
-#: lazarusidestrconsts.liskmtogglemarker0
-msgid "Toggle bookmark 0"
-msgstr "0. könyvjelző ki-/bekacsolása"
-
-#: lazarusidestrconsts.liskmtogglemarker1
-msgid "Toggle bookmark 1"
-msgstr "1. könyvjelző ki-/bekacsolása"
-
-#: lazarusidestrconsts.liskmtogglemarker2
-msgid "Toggle bookmark 2"
-msgstr "2. könyvjelző ki-/bekacsolása"
-
-#: lazarusidestrconsts.liskmtogglemarker3
-msgid "Toggle bookmark 3"
-msgstr "3. könyvjelző ki-/bekacsolása"
-
-#: lazarusidestrconsts.liskmtogglemarker4
-msgid "Toggle bookmark 4"
-msgstr "4. könyvjelző ki-/bekacsolása"
-
-#: lazarusidestrconsts.liskmtogglemarker5
-msgid "Toggle bookmark 5"
-msgstr "5. könyvjelző ki-/bekacsolása"
-
-#: lazarusidestrconsts.liskmtogglemarker6
-msgid "Toggle bookmark 6"
-msgstr "6. könyvjelző ki-/bekacsolása"
-
-#: lazarusidestrconsts.liskmtogglemarker7
-msgid "Toggle bookmark 7"
-msgstr "7. könyvjelző ki-/bekacsolása"
-
-#: lazarusidestrconsts.liskmtogglemarker8
-msgid "Toggle bookmark 8"
-msgstr "8. könyvjelző ki-/bekacsolása"
-
-#: lazarusidestrconsts.liskmtogglemarker9
-msgid "Toggle bookmark 9"
-msgstr "9. könyvjelző ki-/bekacsolása"
 
 #: lazarusidestrconsts.liskmtoggleviewassembler
 msgctxt "lazarusidestrconsts.liskmtoggleviewassembler"
@@ -21854,11 +21732,6 @@ msgstr "Csak olvasható"
 #: lazarusidestrconsts.uemrefactor
 msgid "Refactoring"
 msgstr "Átstrukturálás"
-
-#: lazarusidestrconsts.uemsetfreebookmark
-msgctxt "lazarusidestrconsts.uemsetfreebookmark"
-msgid "Set a Free Bookmark"
-msgstr "Üres könyvjelző beállítása"
 
 #: lazarusidestrconsts.uemshowlinenumbers
 msgid "Show Line Numbers"

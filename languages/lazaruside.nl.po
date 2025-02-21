@@ -191,7 +191,7 @@ msgid "Select text (Line mode)"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplebuttonsetfreebookmark
-msgid "Set free bookmark"
+msgid "Set a free bookmark"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplebuttonsetlinefull
@@ -11629,66 +11629,6 @@ msgstr ""
 msgid "Find Incremental"
 msgstr ""
 
-#: lazarusidestrconsts.liskmgotomarker0
-#, fuzzy
-#| msgid "Go to marker 0"
-msgid "Go to bookmark 0"
-msgstr "Ga naar marker 0"
-
-#: lazarusidestrconsts.liskmgotomarker1
-#, fuzzy
-#| msgid "Go to marker 1"
-msgid "Go to bookmark 1"
-msgstr "Ga naar marker 1"
-
-#: lazarusidestrconsts.liskmgotomarker2
-#, fuzzy
-#| msgid "Go to marker 2"
-msgid "Go to bookmark 2"
-msgstr "Ga naar marker 2"
-
-#: lazarusidestrconsts.liskmgotomarker3
-#, fuzzy
-#| msgid "Go to marker 3"
-msgid "Go to bookmark 3"
-msgstr "Ga naar marker 3"
-
-#: lazarusidestrconsts.liskmgotomarker4
-#, fuzzy
-#| msgid "Go to marker 4"
-msgid "Go to bookmark 4"
-msgstr "Ga naar marker 4"
-
-#: lazarusidestrconsts.liskmgotomarker5
-#, fuzzy
-#| msgid "Go to marker 5"
-msgid "Go to bookmark 5"
-msgstr "Ga naar marker 5"
-
-#: lazarusidestrconsts.liskmgotomarker6
-#, fuzzy
-#| msgid "Go to marker 6"
-msgid "Go to bookmark 6"
-msgstr "Ga naar marker 6"
-
-#: lazarusidestrconsts.liskmgotomarker7
-#, fuzzy
-#| msgid "Go to marker 7"
-msgid "Go to bookmark 7"
-msgstr "Ga naar marker 7"
-
-#: lazarusidestrconsts.liskmgotomarker8
-#, fuzzy
-#| msgid "Go to marker 8"
-msgid "Go to bookmark 8"
-msgstr "Ga naar marker 8"
-
-#: lazarusidestrconsts.liskmgotomarker9
-#, fuzzy
-#| msgid "Go to marker 9"
-msgid "Go to bookmark 9"
-msgstr "Ga naar marker 9"
-
 #: lazarusidestrconsts.liskmgotosourceeditor1
 msgid "Go to source editor 1"
 msgstr ""
@@ -11832,70 +11772,6 @@ msgstr "Sla project op"
 msgid "Save project as"
 msgstr "Sla project op als"
 
-#: lazarusidestrconsts.liskmsetfreebookmark
-msgid "Set free Bookmark"
-msgstr ""
-
-#: lazarusidestrconsts.liskmsetmarker0
-#, fuzzy
-#| msgid "Set marker 0"
-msgid "Set bookmark 0"
-msgstr "Zet marker 0"
-
-#: lazarusidestrconsts.liskmsetmarker1
-#, fuzzy
-#| msgid "Set marker 1"
-msgid "Set bookmark 1"
-msgstr "Zet marker 1"
-
-#: lazarusidestrconsts.liskmsetmarker2
-#, fuzzy
-#| msgid "Set marker 2"
-msgid "Set bookmark 2"
-msgstr "Zet marker 2"
-
-#: lazarusidestrconsts.liskmsetmarker3
-#, fuzzy
-#| msgid "Set marker 3"
-msgid "Set bookmark 3"
-msgstr "Zet marker 3"
-
-#: lazarusidestrconsts.liskmsetmarker4
-#, fuzzy
-#| msgid "Set marker 4"
-msgid "Set bookmark 4"
-msgstr "Zet marker 4"
-
-#: lazarusidestrconsts.liskmsetmarker5
-#, fuzzy
-#| msgid "Set marker 5"
-msgid "Set bookmark 5"
-msgstr "Zet marker 5"
-
-#: lazarusidestrconsts.liskmsetmarker6
-#, fuzzy
-#| msgid "Set marker 6"
-msgid "Set bookmark 6"
-msgstr "Zet marker 6"
-
-#: lazarusidestrconsts.liskmsetmarker7
-#, fuzzy
-#| msgid "Set marker 7"
-msgid "Set bookmark 7"
-msgstr "Zet marker 7"
-
-#: lazarusidestrconsts.liskmsetmarker8
-#, fuzzy
-#| msgid "Set marker 8"
-msgid "Set bookmark 8"
-msgstr "Zet marker 8"
-
-#: lazarusidestrconsts.liskmsetmarker9
-#, fuzzy
-#| msgid "Set marker 9"
-msgid "Set bookmark 9"
-msgstr "Zet marker 9"
-
 #: lazarusidestrconsts.liskmstopprogram
 #, fuzzy
 #| msgid "Stop program"
@@ -11904,46 +11780,6 @@ msgstr "Stop programma"
 
 #: lazarusidestrconsts.liskmtogglebetweenunitandform
 msgid "Toggle between Unit and Form"
-msgstr ""
-
-#: lazarusidestrconsts.liskmtogglemarker0
-msgid "Toggle bookmark 0"
-msgstr ""
-
-#: lazarusidestrconsts.liskmtogglemarker1
-msgid "Toggle bookmark 1"
-msgstr ""
-
-#: lazarusidestrconsts.liskmtogglemarker2
-msgid "Toggle bookmark 2"
-msgstr ""
-
-#: lazarusidestrconsts.liskmtogglemarker3
-msgid "Toggle bookmark 3"
-msgstr ""
-
-#: lazarusidestrconsts.liskmtogglemarker4
-msgid "Toggle bookmark 4"
-msgstr ""
-
-#: lazarusidestrconsts.liskmtogglemarker5
-msgid "Toggle bookmark 5"
-msgstr ""
-
-#: lazarusidestrconsts.liskmtogglemarker6
-msgid "Toggle bookmark 6"
-msgstr ""
-
-#: lazarusidestrconsts.liskmtogglemarker7
-msgid "Toggle bookmark 7"
-msgstr ""
-
-#: lazarusidestrconsts.liskmtogglemarker8
-msgid "Toggle bookmark 8"
-msgstr ""
-
-#: lazarusidestrconsts.liskmtogglemarker9
-msgid "Toggle bookmark 9"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewassembler
@@ -22385,13 +22221,6 @@ msgstr "Niet wijzigbaar"
 #: lazarusidestrconsts.uemrefactor
 msgid "Refactoring"
 msgstr "Refactoring"
-
-#: lazarusidestrconsts.uemsetfreebookmark
-#, fuzzy
-#| msgid "Set a free Bookmark"
-msgctxt "lazarusidestrconsts.uemsetfreebookmark"
-msgid "Set a Free Bookmark"
-msgstr "Plaats een beschikbaar Bookmark"
 
 #: lazarusidestrconsts.uemshowlinenumbers
 msgid "Show Line Numbers"
