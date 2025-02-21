@@ -2299,6 +2299,7 @@ var
   MsgPopup : TLMMouse;
   MousePos: TPoint;
   MButton: guint;
+  SavedHandle: PtrUInt;
 begin
   Result := False;
   {$IF DEFINED(GTK3DEBUGEVENTS) OR DEFINED(GTK3DEBUGMOUSE)}
@@ -2308,6 +2309,8 @@ begin
   {$ENDIF}
   if Event^.button.send_event = NO_PROPAGATION_TO_PARENT then
     exit;
+
+  SavedHandle := PtrUInt(Self);
 
   FillChar(Msg{%H-}, SizeOf(Msg), #0);
 
@@ -2395,6 +2398,9 @@ begin
   Event^.button.send_event := NO_PROPAGATION_TO_PARENT;
 
   Result := False;
+  if SavedHandle <> PtrUInt(Self) then
+    exit;
+
   if Msg.Msg = LM_RBUTTONDOWN then
   begin
     MsgPopup := Msg;
@@ -2402,9 +2408,17 @@ begin
     MsgPopup.XPos := SmallInt(Round(Event^.button.x_root));
     MsgPopup.YPos := SmallInt(Round(Event^.button.y_root));
     DeliverMessage(MsgPopup, True);
+    if SavedHandle <> PtrUInt(Self) then
+      exit;
   end;
+
   if not Result then
+  begin
     Result := DeliverMessage(Msg, True) <> 0;
+    if SavedHandle <> PtrUInt(Self) then
+      exit;
+  end;
+
   if Event^.type_ = GDK_BUTTON_RELEASE then
   begin
     Msg.Msg := LM_CLICKED;
