@@ -11441,14 +11441,6 @@ msgstr "Kaynak editöre git 8"
 msgid "Go to source editor 9"
 msgstr "Kaynak editöre git 9"
 
-#: lazarusidestrconsts.liskminsertdateandtime
-msgid "Insert date and time"
-msgstr "Tarih ve saat ekle"
-
-#: lazarusidestrconsts.liskminsertusername
-msgid "Insert username"
-msgstr "Kullanıcı adını ekle"
-
 #: lazarusidestrconsts.liskminspect
 msgid "Inspect"
 msgstr "Denetle"
@@ -11551,16 +11543,6 @@ msgstr "Projeyi kaydet"
 #: lazarusidestrconsts.liskmsaveprojectas
 msgid "Save project as"
 msgstr "Projeyi farklı kaydet"
-
-#: lazarusidestrconsts.liskmselectwordleft
-msgctxt "lazarusidestrconsts.liskmselectwordleft"
-msgid "Select Word Left"
-msgstr "Soldan Sözcük Seçin"
-
-#: lazarusidestrconsts.liskmselectwordright
-msgctxt "lazarusidestrconsts.liskmselectwordright"
-msgid "Select Word Right"
-msgstr "Sağdan Sözcük Seçin"
 
 #: lazarusidestrconsts.liskmsetfreebookmark
 msgid "Set free Bookmark"

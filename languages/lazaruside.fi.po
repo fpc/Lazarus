@@ -11503,14 +11503,6 @@ msgstr "Siirry editoriin 8"
 msgid "Go to source editor 9"
 msgstr "Siirry editoriin 9"
 
-#: lazarusidestrconsts.liskminsertdateandtime
-msgid "Insert date and time"
-msgstr "Liitä päivämäärä ja aika"
-
-#: lazarusidestrconsts.liskminsertusername
-msgid "Insert username"
-msgstr "Liitä käyttäjänimi"
-
 #: lazarusidestrconsts.liskminspect
 msgid "Inspect"
 msgstr "Tutki"
@@ -11613,16 +11605,6 @@ msgstr "Tallenna projekti"
 #: lazarusidestrconsts.liskmsaveprojectas
 msgid "Save project as"
 msgstr "Tallenna projekti nimellä"
-
-#: lazarusidestrconsts.liskmselectwordleft
-msgctxt "lazarusidestrconsts.liskmselectwordleft"
-msgid "Select Word Left"
-msgstr "Valitse sana vasemmalla"
-
-#: lazarusidestrconsts.liskmselectwordright
-msgctxt "lazarusidestrconsts.liskmselectwordright"
-msgid "Select Word Right"
-msgstr "Valitse sana oikealla"
 
 #: lazarusidestrconsts.liskmsetfreebookmark
 msgid "Set free Bookmark"

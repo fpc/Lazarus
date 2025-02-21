@@ -11781,14 +11781,6 @@ msgstr "Pergi ke editor sumber 8"
 msgid "Go to source editor 9"
 msgstr "Pergi ke editor sumber 9"
 
-#: lazarusidestrconsts.liskminsertdateandtime
-msgid "Insert date and time"
-msgstr "Sisipkan tanggal dan jam"
-
-#: lazarusidestrconsts.liskminsertusername
-msgid "Insert username"
-msgstr "Sisipkan nama pengguna"
-
 #: lazarusidestrconsts.liskminspect
 msgid "Inspect"
 msgstr "Inspeksi"
@@ -11894,20 +11886,6 @@ msgstr "Simpan proyek"
 #: lazarusidestrconsts.liskmsaveprojectas
 msgid "Save project as"
 msgstr "Simpan proyek sebagai"
-
-#: lazarusidestrconsts.liskmselectwordleft
-#, fuzzy
-#| msgid "Select word left"
-msgctxt "lazarusidestrconsts.liskmselectwordleft"
-msgid "Select Word Left"
-msgstr "Pilih kata ke kiri"
-
-#: lazarusidestrconsts.liskmselectwordright
-#, fuzzy
-#| msgid "Select word right"
-msgctxt "lazarusidestrconsts.liskmselectwordright"
-msgid "Select Word Right"
-msgstr "Pilih kata ke kanan"
 
 #: lazarusidestrconsts.liskmsetfreebookmark
 msgid "Set free Bookmark"

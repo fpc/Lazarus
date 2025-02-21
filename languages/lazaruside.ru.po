@@ -11440,14 +11440,6 @@ msgstr "Перейти к редактору исходного кода 8"
 msgid "Go to source editor 9"
 msgstr "Перейти к редактору исходного кода 9"
 
-#: lazarusidestrconsts.liskminsertdateandtime
-msgid "Insert date and time"
-msgstr "Вставить дату и время"
-
-#: lazarusidestrconsts.liskminsertusername
-msgid "Insert username"
-msgstr "Вставить имя пользователя"
-
 #: lazarusidestrconsts.liskminspect
 msgid "Inspect"
 msgstr "Просмотреть"
@@ -11547,16 +11539,6 @@ msgstr "Сохранить проект"
 #: lazarusidestrconsts.liskmsaveprojectas
 msgid "Save project as"
 msgstr "Сохранить проект как"
-
-#: lazarusidestrconsts.liskmselectwordleft
-msgctxt "lazarusidestrconsts.liskmselectwordleft"
-msgid "Select Word Left"
-msgstr "Выделить слово слева"
-
-#: lazarusidestrconsts.liskmselectwordright
-msgctxt "lazarusidestrconsts.liskmselectwordright"
-msgid "Select Word Right"
-msgstr "Выделить слово справа"
 
 #: lazarusidestrconsts.liskmsetfreebookmark
 msgid "Set free Bookmark"

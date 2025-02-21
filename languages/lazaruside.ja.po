@@ -11668,14 +11668,6 @@ msgstr "ソースエディタ8に移動"
 msgid "Go to source editor 9"
 msgstr "ソースエディタ9に移動"
 
-#: lazarusidestrconsts.liskminsertdateandtime
-msgid "Insert date and time"
-msgstr "日付と時刻を挿入"
-
-#: lazarusidestrconsts.liskminsertusername
-msgid "Insert username"
-msgstr "ユーザー名を挿入"
-
 #: lazarusidestrconsts.liskminspect
 msgid "Inspect"
 msgstr "インスペクト"
@@ -11784,16 +11776,6 @@ msgstr "プロジェクトを保存"
 #: lazarusidestrconsts.liskmsaveprojectas
 msgid "Save project as"
 msgstr "プロジェクトに名前を付けて保存"
-
-#: lazarusidestrconsts.liskmselectwordleft
-msgctxt "lazarusidestrconsts.liskmselectwordleft"
-msgid "Select Word Left"
-msgstr "左側の語を選択"
-
-#: lazarusidestrconsts.liskmselectwordright
-msgctxt "lazarusidestrconsts.liskmselectwordright"
-msgid "Select Word Right"
-msgstr "右側の語を選択"
 
 #: lazarusidestrconsts.liskmsetfreebookmark
 msgid "Set free Bookmark"

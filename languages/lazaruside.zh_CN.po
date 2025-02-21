@@ -11456,14 +11456,6 @@ msgstr "转到源码编辑器 8"
 msgid "Go to source editor 9"
 msgstr "转到源码编辑器 9"
 
-#: lazarusidestrconsts.liskminsertdateandtime
-msgid "Insert date and time"
-msgstr "插入日期和时间"
-
-#: lazarusidestrconsts.liskminsertusername
-msgid "Insert username"
-msgstr "插入用户名"
-
 #: lazarusidestrconsts.liskminspect
 msgid "Inspect"
 msgstr "查看"
@@ -11562,16 +11554,6 @@ msgstr "保存工程"
 #: lazarusidestrconsts.liskmsaveprojectas
 msgid "Save project as"
 msgstr "保存工程为"
-
-#: lazarusidestrconsts.liskmselectwordleft
-msgctxt "lazarusidestrconsts.liskmselectwordleft"
-msgid "Select Word Left"
-msgstr "选择单词左"
-
-#: lazarusidestrconsts.liskmselectwordright
-msgctxt "lazarusidestrconsts.liskmselectwordright"
-msgid "Select Word Right"
-msgstr "选择单词右"
 
 #: lazarusidestrconsts.liskmsetfreebookmark
 msgid "Set free Bookmark"

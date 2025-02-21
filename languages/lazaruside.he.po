@@ -11986,14 +11986,6 @@ msgstr "לך לעורך קוד 8"
 msgid "Go to source editor 9"
 msgstr "לך לעורך קוד 9"
 
-#: lazarusidestrconsts.liskminsertdateandtime
-msgid "Insert date and time"
-msgstr "הכנס תאריך ושעה"
-
-#: lazarusidestrconsts.liskminsertusername
-msgid "Insert username"
-msgstr "הכנס שם משתמש"
-
 #: lazarusidestrconsts.liskminspect
 msgid "Inspect"
 msgstr "פקח"
@@ -12104,20 +12096,6 @@ msgstr "שמור פרוייקט"
 #: lazarusidestrconsts.liskmsaveprojectas
 msgid "Save project as"
 msgstr "שמור פרוייקט כ "
-
-#: lazarusidestrconsts.liskmselectwordleft
-#, fuzzy
-#| msgid "Select word left"
-msgctxt "lazarusidestrconsts.liskmselectwordleft"
-msgid "Select Word Left"
-msgstr "בחר את שמאל המילה"
-
-#: lazarusidestrconsts.liskmselectwordright
-#, fuzzy
-#| msgid "Select word right"
-msgctxt "lazarusidestrconsts.liskmselectwordright"
-msgid "Select Word Right"
-msgstr "בחר את ימין המילה"
 
 #: lazarusidestrconsts.liskmsetfreebookmark
 msgid "Set free Bookmark"

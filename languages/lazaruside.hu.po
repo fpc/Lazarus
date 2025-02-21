@@ -11564,14 +11564,6 @@ msgstr "Forráskódszerkesztő 8. lap megnyitása"
 msgid "Go to source editor 9"
 msgstr "Forráskódszerkesztő 9. lap megnyitása"
 
-#: lazarusidestrconsts.liskminsertdateandtime
-msgid "Insert date and time"
-msgstr "Dátum és idő beszúrása"
-
-#: lazarusidestrconsts.liskminsertusername
-msgid "Insert username"
-msgstr "Felhasználónév beszúrása"
-
 #: lazarusidestrconsts.liskminspect
 msgid "Inspect"
 msgstr "Megfigyelés"
@@ -11674,16 +11666,6 @@ msgstr "Projekt mentése"
 #: lazarusidestrconsts.liskmsaveprojectas
 msgid "Save project as"
 msgstr "Projekt mentése másként"
-
-#: lazarusidestrconsts.liskmselectwordleft
-msgctxt "lazarusidestrconsts.liskmselectwordleft"
-msgid "Select Word Left"
-msgstr "Szó kijelölése balra"
-
-#: lazarusidestrconsts.liskmselectwordright
-msgctxt "lazarusidestrconsts.liskmselectwordright"
-msgid "Select Word Right"
-msgstr "Szó kijelölése jobbra"
 
 #: lazarusidestrconsts.liskmsetfreebookmark
 msgid "Set free Bookmark"

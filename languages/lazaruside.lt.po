@@ -11696,14 +11696,6 @@ msgstr "Rodyti pirminio kodo rengyklės 8 kortelę"
 msgid "Go to source editor 9"
 msgstr "Rodyti pirminio kodo rengyklės 9 kortelę"
 
-#: lazarusidestrconsts.liskminsertdateandtime
-msgid "Insert date and time"
-msgstr "Įterpti datą ir laiką"
-
-#: lazarusidestrconsts.liskminsertusername
-msgid "Insert username"
-msgstr "Įterpti naudotojo vardą"
-
 #: lazarusidestrconsts.liskminspect
 msgid "Inspect"
 msgstr "Inspektuoti"
@@ -11812,16 +11804,6 @@ msgstr "Įrašyti projektą"
 #: lazarusidestrconsts.liskmsaveprojectas
 msgid "Save project as"
 msgstr "Įrašyti projektą taip"
-
-#: lazarusidestrconsts.liskmselectwordleft
-msgctxt "lazarusidestrconsts.liskmselectwordleft"
-msgid "Select Word Left"
-msgstr "Pažymėti žodį kairėje"
-
-#: lazarusidestrconsts.liskmselectwordright
-msgctxt "lazarusidestrconsts.liskmselectwordright"
-msgid "Select Word Right"
-msgstr "Pažymėti žodį dešinėje"
 
 #: lazarusidestrconsts.liskmsetfreebookmark
 msgid "Set free Bookmark"

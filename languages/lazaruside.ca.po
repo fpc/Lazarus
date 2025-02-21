@@ -11664,14 +11664,6 @@ msgstr ""
 msgid "Go to source editor 9"
 msgstr ""
 
-#: lazarusidestrconsts.liskminsertdateandtime
-msgid "Insert date and time"
-msgstr ""
-
-#: lazarusidestrconsts.liskminsertusername
-msgid "Insert username"
-msgstr ""
-
 #: lazarusidestrconsts.liskminspect
 msgid "Inspect"
 msgstr ""
@@ -11772,18 +11764,6 @@ msgstr ""
 #: lazarusidestrconsts.liskmsaveprojectas
 msgid "Save project as"
 msgstr ""
-
-#: lazarusidestrconsts.liskmselectwordleft
-#, fuzzy
-msgctxt "lazarusidestrconsts.liskmselectwordleft"
-msgid "Select Word Left"
-msgstr "Selecciona una paraula a l'esquerra"
-
-#: lazarusidestrconsts.liskmselectwordright
-#, fuzzy
-msgctxt "lazarusidestrconsts.liskmselectwordright"
-msgid "Select Word Right"
-msgstr "Selecciona una paraula a la dreta"
 
 #: lazarusidestrconsts.liskmsetfreebookmark
 msgid "Set free Bookmark"

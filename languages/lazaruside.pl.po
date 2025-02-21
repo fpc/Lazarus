@@ -11681,14 +11681,6 @@ msgstr "Przejdź do znacznika 8"
 msgid "Go to source editor 9"
 msgstr "Przejdź do znacznika 9"
 
-#: lazarusidestrconsts.liskminsertdateandtime
-msgid "Insert date and time"
-msgstr "Wstaw bieżącą datę i czas"
-
-#: lazarusidestrconsts.liskminsertusername
-msgid "Insert username"
-msgstr "Wstaw bieżącą nazwę użytkownika"
-
 #: lazarusidestrconsts.liskminspect
 msgid "Inspect"
 msgstr "Badaj"
@@ -11789,16 +11781,6 @@ msgstr "Zapisz projekt"
 #: lazarusidestrconsts.liskmsaveprojectas
 msgid "Save project as"
 msgstr "Zapisz projekt jako"
-
-#: lazarusidestrconsts.liskmselectwordleft
-msgctxt "lazarusidestrconsts.liskmselectwordleft"
-msgid "Select Word Left"
-msgstr "Wybierz słowo po lewej"
-
-#: lazarusidestrconsts.liskmselectwordright
-msgctxt "lazarusidestrconsts.liskmselectwordright"
-msgid "Select Word Right"
-msgstr "Wybierz słowo po prawej"
 
 #: lazarusidestrconsts.liskmsetfreebookmark
 msgid "Set free Bookmark"

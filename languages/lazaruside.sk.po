@@ -11517,14 +11517,6 @@ msgstr "Choď na editor zdrojových kódov 8"
 msgid "Go to source editor 9"
 msgstr "Choď na editor zdrojových kódov 9"
 
-#: lazarusidestrconsts.liskminsertdateandtime
-msgid "Insert date and time"
-msgstr "Vložiť dátum a čas"
-
-#: lazarusidestrconsts.liskminsertusername
-msgid "Insert username"
-msgstr "Vložiť meno používateľa"
-
 #: lazarusidestrconsts.liskminspect
 msgid "Inspect"
 msgstr "Skontrolovať"
@@ -11627,20 +11619,6 @@ msgstr "Uložiť projekt"
 #: lazarusidestrconsts.liskmsaveprojectas
 msgid "Save project as"
 msgstr "Uložiť projekt ako"
-
-#: lazarusidestrconsts.liskmselectwordleft
-#, fuzzy
-#| msgid "Select word left"
-msgctxt "lazarusidestrconsts.liskmselectwordleft"
-msgid "Select Word Left"
-msgstr "Vybrať slovo naľavo"
-
-#: lazarusidestrconsts.liskmselectwordright
-#, fuzzy
-#| msgid "Select word right"
-msgctxt "lazarusidestrconsts.liskmselectwordright"
-msgid "Select Word Right"
-msgstr "Vybrať slovo napravo"
 
 #: lazarusidestrconsts.liskmsetfreebookmark
 msgid "Set free Bookmark"

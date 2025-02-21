@@ -11429,14 +11429,6 @@ msgstr "Zum 8. Quelltexteditor gehen"
 msgid "Go to source editor 9"
 msgstr "Zum 9. Quelltexteditor gehen"
 
-#: lazarusidestrconsts.liskminsertdateandtime
-msgid "Insert date and time"
-msgstr "Datum und Uhrzeit einfügen"
-
-#: lazarusidestrconsts.liskminsertusername
-msgid "Insert username"
-msgstr "Benutzername einfügen"
-
 #: lazarusidestrconsts.liskminspect
 msgid "Inspect"
 msgstr "Inspizieren"
@@ -11535,16 +11527,6 @@ msgstr "Projekt speichern"
 #: lazarusidestrconsts.liskmsaveprojectas
 msgid "Save project as"
 msgstr "Projekt speichern als"
-
-#: lazarusidestrconsts.liskmselectwordleft
-msgctxt "lazarusidestrconsts.liskmselectwordleft"
-msgid "Select Word Left"
-msgstr "Wort links wählen"
-
-#: lazarusidestrconsts.liskmselectwordright
-msgctxt "lazarusidestrconsts.liskmselectwordright"
-msgid "Select Word Right"
-msgstr "Wort rechts wählen"
 
 #: lazarusidestrconsts.liskmsetfreebookmark
 msgid "Set free Bookmark"

@@ -11729,14 +11729,6 @@ msgstr ""
 msgid "Go to source editor 9"
 msgstr ""
 
-#: lazarusidestrconsts.liskminsertdateandtime
-msgid "Insert date and time"
-msgstr "Voeg datum en tijd in"
-
-#: lazarusidestrconsts.liskminsertusername
-msgid "Insert username"
-msgstr "Voeg gebruikersnaam in"
-
 #: lazarusidestrconsts.liskminspect
 msgid "Inspect"
 msgstr "Inspecteer"
@@ -11839,18 +11831,6 @@ msgstr "Sla project op"
 #: lazarusidestrconsts.liskmsaveprojectas
 msgid "Save project as"
 msgstr "Sla project op als"
-
-#: lazarusidestrconsts.liskmselectwordleft
-#, fuzzy
-msgctxt "lazarusidestrconsts.liskmselectwordleft"
-msgid "Select Word Left"
-msgstr "Selecteer linker woord"
-
-#: lazarusidestrconsts.liskmselectwordright
-#, fuzzy
-msgctxt "lazarusidestrconsts.liskmselectwordright"
-msgid "Select Word Right"
-msgstr "Selecteer rechter woord"
 
 #: lazarusidestrconsts.liskmsetfreebookmark
 msgid "Set free Bookmark"
