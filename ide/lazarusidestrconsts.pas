@@ -315,8 +315,6 @@ resourcestring
   lisMenuSortSelection = 'Sort Selection ...';
   lisMenuBeakLinesInSelection = 'Break Lines in Selection';
   lisMenuPasteFromClipboard = 'Paste from clipboard';
-  lisKMSelectWordLeft = 'Select Word Left';
-  lisKMSelectWordRight = 'Select Word Right';
   lisMenuSelect = 'Select';
   lisMenuMultiPaste = 'MultiPaste ...';
   lisMenuSelectAll = 'Select All';
@@ -3249,8 +3247,6 @@ resourcestring
   srkmecInsertModifiedLGPLNoticeTranslated = 'Insert modified LGPL notice (translated)';
   srkmecInsertMITNotice          = 'Insert MIT notice';
   srkmecInsertMITNoticeTranslated = 'Insert MIT notice (translated)';
-  lisKMInsertUsername            = 'Insert username';
-  lisKMInsertDateAndTime         = 'Insert date and time';
   srkmecInsertUserName           = 'Insert current username';
   srkmecInsertDateTime           = 'Insert current date and time';
   srkmecInsertChangeLogEntry     = 'Insert ChangeLog entry';

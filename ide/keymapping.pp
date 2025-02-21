@@ -659,11 +659,11 @@ begin
     ecSelectionLowerCase      : Result:= lisMenuLowerCaseSelection;
     ecSelectionSwapCase       : Result:= lisMenuSwapCaseSelection;
     ecSelectionTabs2Spaces    : Result:= srkmecSelectionTabs2Spaces;
-    ecSelectionEnclose        : Result:= lisMenuEncloseSelection;
+    ecSelectionEnclose        : Result:= lisKMEncloseSelection;
     ecSelectionComment        : Result:= lisMenuCommentSelection;
     ecSelectionUncomment      : Result:= lisMenuUncommentSelection;
     ecToggleComment           : Result:= lisMenuToggleComment;
-    ecSelectionEncloseIFDEF   : Result:= lisMenuEncloseInIFDEF;
+    ecSelectionEncloseIFDEF   : Result:= lisEncloseInIFDEF;
     ecSelectionSort           : Result:= lisMenuSortSelection;
     ecSelectionBreakLines     : Result:= lisMenuBeakLinesInSelection;
     ecSelectToBrace           : Result:= lisMenuSelectToBrace;
@@ -2892,8 +2892,8 @@ begin
   AddDefault(C, 'Toggle comment', lisMenuToggleComment, ecToggleComment);
   AddDefault(C, 'Sort selection', lisSortSelSortSelection, ecSelectionSort);
   AddDefault(C, 'Break Lines in selection', lisMenuBeakLinesInSelection, ecSelectionBreakLines);
-  AddDefault(C, 'Select word left', lisKMSelectWordLeft, ecSelWordLeft);
-  AddDefault(C, 'Select word right', lisKMSelectWordRight, ecSelWordRight);
+  AddDefault(C, 'Select word left', srkmecSelWordLeft, ecSelWordLeft);
+  AddDefault(C, 'Select word right', srkmecSelWordRight, ecSelWordRight);
   AddDefault(C, 'Select word end left', srkmecSelWordEndLeft, ecSelWordEndLeft);
   AddDefault(C, 'Select word end right', srkmecSelWordEndRight, ecSelWordEndRight);
   AddDefault(C, 'Select half word left', srkmecSelHalfWordLeft, ecSelHalfWordLeft);
@@ -2990,8 +2990,8 @@ begin
   AddDefault(C, 'Insert modified LGPL notice translated', srkmecInsertModifiedLGPLNoticeTranslated, ecInsertModifiedLGPLNoticeTranslated);
   AddDefault(C, 'Insert MIT notice', srkmecInsertMITNotice, ecInsertMITNotice);
   AddDefault(C, 'Insert MIT notice translated', srkmecInsertMITNoticeTranslated, ecInsertMITNoticeTranslated);
-  AddDefault(C, 'Insert username', lisKMInsertUsername, ecInsertUserName);
-  AddDefault(C, 'Insert date and time', lisKMInsertDateAndTime, ecInsertDateTime);
+  AddDefault(C, 'Insert username', srkmecInsertUserName, ecInsertUserName);
+  AddDefault(C, 'Insert date and time', srkmecInsertDateTime, ecInsertDateTime);
   AddDefault(C, 'Insert ChangeLog entry', srkmecInsertChangeLogEntry, ecInsertChangeLogEntry);
   AddDefault(C, 'Insert CVS keyword Author', srkmecInsertCVSAuthor, ecInsertCVSAuthor);
   AddDefault(C, 'Insert CVS keyword Date', srkmecInsertCVSDate, ecInsertCVSDate);
