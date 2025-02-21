@@ -47,6 +47,7 @@ type
 
   TGtk3WidgetSet = class(TWidgetSet)
   private
+    FActivityCounter: integer;
     FMainPoll: PGPollFD;
     FGtk3Application: PGtkApplication;
     FDefaultAppFontName: String;
@@ -141,6 +142,7 @@ type
     function IsValidGDIObject(const AGdiObject: HGDIOBJ): Boolean;
     function IsValidHandle(const AHandle: HWND): Boolean;
 
+    property ActivityCounter: integer read FActivityCounter write FActivityCounter;
     property AppIcon: PGdkPixbuf read FAppIcon;
     property DefaultAppFontName: String read FDefaultAppFontName;
     property Gtk3Application: PGtkApplication read FGtk3Application;

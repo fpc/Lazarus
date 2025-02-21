@@ -19,12 +19,41 @@ begin
   end;
 end;
 
+function IdleCallback(AData: gpointer): gboolean; cdecl;
+var
+  AWS: TGtk3WidgetSet;
+begin
+  AWS := TGtk3WidgetSet(AData);
+  if AWS.ActivityCounter <= 0 then
+    Application.IntfAppDeactivate;
+  Result := G_SOURCE_REMOVE_;
+end;
+
 {hook into gtk3 main event loop, used for testing purposes only atm.}
 procedure Gtk3MainEventLoop(AEvent: PGdkEvent; {%H-}AData: gPointer); cdecl;
+var
+  AWS: TGtk3WidgetSet;
 begin
   {$IFDEF GTK3DEBUGCORE}
   DebugLn('** TGtk3WidgetSet.Gtk3MainEventLoop **');
   {$ENDIF}
+  if (AEvent^.type_ = GDK_FOCUS_CHANGE) then
+  begin
+    AWS := TGtk3WidgetSet(AData);
+    if AEvent^.focus_change.in_ <> 0 then
+    begin
+      if AWS.ActivityCounter <= 0 then
+      begin
+        AWS.ActivityCounter := 0;
+        Application.IntfAppActivate;
+      end;
+      inc(AWS.FActivityCounter);
+    end else
+    begin
+      dec(AWS.FActivityCounter);
+      g_idle_add(TGSourceFunc(@IdleCallback), aData);
+    end;
+  end;
   gtk_main_do_event(AEvent);
 end;
 
@@ -236,6 +265,7 @@ var
 begin
   SetExceptionMask([exInvalidOp, exDenormalized, exZeroDivide, exOverflow, exUnderflow, exPrecision]);
   inherited Create;
+  FActivityCounter := 0;
   FCSSTheme := TStringList.Create;
   FSystemMetricsList := TIntegerList.Create;
   for i := 0 to SM_LCLHasFormAlphaBlend do
@@ -706,7 +736,8 @@ begin
     Result := 0;
 end;
 
-procedure TGtk3WidgetSet.DCSetPixel(CanvasHandle: HDC; X, Y: Integer; AColor: TGraphicsColor);
+procedure TGtk3WidgetSet.DCSetPixel(CanvasHandle: HDC; X, Y: integer;
+  AColor: TGraphicsColor);
 begin
   if IsValidDC(CanvasHandle) then
     TGtk3DeviceContext(CanvasHandle).drawPixel(X, Y, AColor);

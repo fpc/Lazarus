@@ -992,7 +992,6 @@ implementation
 uses {$IFDEF GTK3DEBUGKEYPRESS}TypInfo,{$ENDIF}gtk3int, gtk3caret, imglist,lclproc, LazLogger;
 
 const
-  act_count:integer=0; // application activity - don't touch.
 
   GDK_DEFAULT_EVENTS_MASK = [
     GDK_EXPOSURE_MASK, {2}
@@ -1281,19 +1280,6 @@ begin
     end;
   GDK_FOCUS_CHANGE:
     begin
-      if event^.focus_change.in_=1 then
-      begin
-        if act_count=0 then
-          Application.IntfAppActivate();
-        inc(act_count);
-      end
-      else
-      begin
-        if act_count>0 then
-          Application.IntfAppDeactivate();
-        dec(act_count);
-      end;
-
       if wtComboBox in TGtk3Widget(Data).WidgetType then
       begin
         TGtk3ComboBox(Data).DumpPrivateStructValues('GDK_FOCUS_CHANGE='+IntToStr(Event^.focus_change.in_));
@@ -1342,9 +1328,7 @@ begin
       // PGtkWindow does not update active property properly
       // so PGtkWindow(Widget)^.is_active returns TRUE even if window isn't active anymore
       if wtWindow in TGtk3Widget(Data).WidgetType then
-      begin
         TGtk3Window(Data).ActivateWindow(Event);
-      end;
       // Result := TGtk3Widget(Data).GtkEventShowHide(Widget, Event);
       // DebugLn('****** GDK_VISIBILITY_NOTIFY FOR ' + dbgsName(TGtk3Widget(Data).LCLObject));
     end;
