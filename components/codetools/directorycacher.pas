@@ -344,7 +344,8 @@ type
                        UseCache: boolean = true): string;
     procedure IncreaseFileTimeStamp; inline;
     procedure IncreaseConfigTimeStamp; inline;
-    function FileExists(Filename: string): boolean;
+    function FileExists(Filename: string): boolean; overload;
+    function FileExists(Filename: string; FileCase: TCTSearchFileCase): boolean; overload;
     function FileAge(Filename: string): TCTFileAgeTime;
     function FileAttr(Filename: string): TCTDirectoryListingAttr;
     function FileSize(Filename: string): TCTDirectoryListingSize;
@@ -2701,6 +2702,11 @@ begin
 end;
 
 function TCTDirectoryCachePool.FileExists(Filename: string): boolean;
+begin
+  Result:=FileExists(Filename,ctsfcDefault);
+end;
+
+function TCTDirectoryCachePool.FileExists(Filename: string; FileCase: TCTSearchFileCase): boolean;
 var
   Directory: String;
   Cache: TCTDirectoryCache;
@@ -2708,15 +2714,17 @@ var
 begin
   Filename:=TrimFilename(Filename);
   if Filename='' then exit(false);
-  if FilenameIsAbsolute(Filename) then begin
-    ShortFilename:=ExtractFilename(Filename);
-    if (ShortFilename<>'') and (ShortFilename<>'.') and (ShortFilename<>'..')
-    then begin
+  ShortFilename:=ExtractFilename(Filename);
+  if (ShortFilename<>'') and (ShortFilename<>'.') and (ShortFilename<>'..') then
+  begin
+    if FilenameIsAbsolute(Filename) then begin
       Directory:=ExtractFilePath(Filename);
       Cache:=GetCache(Directory,true,false);
-      Result:=Cache.FindFile(ShortFilename,ctsfcDefault)<>'';
-      exit;
+      Result:=Cache.FindFile(ShortFilename,FileCase)<>'';
+    end else begin
+      Result:=FindVirtualFile(Filename)<>'';
     end;
+    exit;
   end;
   // fallback
   Result:=FileStateCache.FileExistsCached(Filename);
