@@ -5,8 +5,8 @@ unit SynEditWrappedView experimental;
 interface
 
 uses
-  Classes, SysUtils, math, LazSynEditText, SynEdit, SynEditViewedLineMap,
-  SynEditTypes, SynEditMiscProcs, SynEditHighlighter, SynEditMiscClasses, SynEditKeyCmds,
+  Classes, SysUtils, math, LazSynEditText, SynEdit, SynEditViewedLineMap, SynEditTypes,
+  SynEditMiscProcs, SynEditHighlighter, SynEditMiscClasses, SynEditKeyCmds, SynEditFoldedView,
   Graphics, LCLType, LazLoggerBase, LazListClasses;
 
 type
@@ -2339,6 +2339,8 @@ begin
 end;
 
 constructor TLazSynEditLineWrapPlugin.Create(AOwner: TComponent);
+var
+  Fld: TSynEditStringsLinked;
 begin
   inherited Create(AOwner);
 
@@ -2353,17 +2355,14 @@ begin
 
   FKeystrokes := TSynEditLineMapKeyStrokes.Create(Self);
 
+  FLineMapView := TSynEditLineMappingView.Create;
 
-  FLineMapView := TSynEditLineMappingView(TSynEdit(Editor).TextViewsManager.SynTextViewByClass[TSynEditLineMappingView]);
-  if FLineMapView = nil then begin
-    FLineMapView := TSynEditLineMappingView.Create;
-    TSynEdit(Editor).TextViewsManager.AddTextView(FLineMapView);
-  end
+  Fld := TSynEdit(Editor).TextViewsManager.SynTextViewByClass[TSynEditFoldedView];
+  if Fld <> nil then
+    TSynEdit(Editor).TextViewsManager.AddTextView(FLineMapView, TSynEdit(Editor).TextViewsManager.IndexOf(Fld))
   else
-  if (not(FLineMapView.DisplayView is TLazSynDisplayLineMapping)) or
-     (FLineMapView.PageMapCreator <> nil)
-  then
-    raise Exception.Create('Conflicting Plugin detected');
+    TSynEdit(Editor).TextViewsManager.AddTextView(FLineMapView);
+
 
   FLineMapView.SetDisplayView(TLazSynDisplayWordWrap.Create(FLineMapView, Self));
   FLineMapView.PageMapCreator := @CreatePageMapNode;

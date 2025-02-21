@@ -62,7 +62,7 @@ uses
   SynEditMarkupHighAll, SynEditKeyCmds, SynEditMarkupIfDef, SynEditMiscProcs,
   SynPluginMultiCaret, SynEditPointClasses,
   SynEditMarkupFoldColoring, SynEditTextTabExpander, SynEditMouseCmds, SynEditWrappedView,
-  etSrcEditMarks, LazarusIDEStrConsts, SourceMarks, SourceSynWrap;
+  etSrcEditMarks, LazarusIDEStrConsts, SourceMarks;
 
 type
 
@@ -262,7 +262,7 @@ type
     FMarkupIdentComplWindow: TSynMarkupIdentComplWindow;
     FShowTopInfo: boolean;
     FFoldView: TSynEditFoldedView;
-    FWrapView: TLazSynSourceEditLineWrapPlugin;
+    FWrapView: TLazSynEditLineWrapPlugin;
     FTopInfoNestList: TLazSynEditNestedFoldsList;
     FSyncroEdit: TSynPluginSyncroEdit;
     FTemplateEdit: TSynPluginTemplateEdit;
@@ -352,7 +352,7 @@ type
     property CaretStamp: Int64 read FCaretStamp;
     property CaretColor: TColor read FCaretColor write SetCaretColor;
 
-    property WrapView: TLazSynSourceEditLineWrapPlugin read FWrapView;
+    property WrapView: TLazSynEditLineWrapPlugin read FWrapView;
     property WordWrapEnabled: Boolean read GetWordWrapEnabled write SetWordWrapEnabled;
     property WordWrapCaretWrapPos: TLazSynEditWrapCaretPos write SetWordWrapCaretWrapPos;
     property WordWrapForceHomeEnd: Boolean write SetWordWrapForceHomeEnd;
@@ -2020,7 +2020,7 @@ procedure TIDESynEditor.AddLineWrapView;
 begin
   if FWrapView <> nil then
     RemoveLineWrapView;
-  FWrapView := TLazSynSourceEditLineWrapPlugin.Create(Self);
+  FWrapView := TLazSynEditLineWrapPlugin.Create(Self);
 end;
 
 procedure TIDESynEditor.RemoveLineWrapView;
