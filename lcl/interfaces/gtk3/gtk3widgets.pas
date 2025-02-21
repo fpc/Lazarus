@@ -75,6 +75,7 @@ type
     FCentralWidgetRGBA: array [0{GTK_STATE_NORMAL}..4{GTK_STATE_INSENSITIVE}] of TDefaultRGBA;
     FEnterLeaveTime: Cardinal;
     FFocusableByMouse: Boolean; {shell we call SetFocus on mouse down. Default = False}
+    FHasCaret: boolean;
     FOwner: PGtkWidget;
     FProps: TStringList;
     FWidgetMapped: boolean;
@@ -204,6 +205,7 @@ type
     property Enabled: Boolean read GetEnabled write SetEnabled;
     property Font: PPangoFontDescription read GetFont write SetFont;
     property FontColor: TColor read GetFontColor write SetFontColor;
+    property HasCaret: boolean read FHasCaret write FHasCaret;
     property KeysToEat: TByteSet read FKeysToEat write FKeysToEat;
     property PaintData: TPaintData read FPaintData write FPaintData;
     property Shape: PGdkPixbuf read FShape write SetShape;
@@ -1851,6 +1853,7 @@ var
   localClip:TRect;
   P: TPoint;
   AScrolledWin: PGtkScrolledWindow;
+  ACaret: TGtk3Caret;
   {$IFDEF GTK3DEBUGDESIGNER}
   dx, dy: double;
   allocation: TGtkAllocation;
@@ -1940,6 +1943,12 @@ begin
       end;
       DoBeforeLCLPaint;
       LCLObject.WindowProc(TLMessage(Msg));
+      if HasCaret then
+      begin
+        ACaret := TGtk3Caret(g_object_get_data(Sender,'gtk3-caret'));
+        if ACaret.Visible then
+          ACaret.CairoDrawCaret(FCairoContext);
+      end;
     finally
       FCairoContext := nil;
       Fillchar(FPaintData, SizeOf(FPaintData), 0);
@@ -1979,7 +1988,7 @@ begin
   else
     Msg.Msg := LM_KILLFOCUS;
 
-  if g_object_get_data(PGObject(getContainerWidget),'gtk3-caret') <> nil then
+  if HasCaret then
   begin
     ACaret := TGtk3Caret(g_object_get_data(PGObject(getContainerWidget),'gtk3-caret'));
     if ACaret.RespondToFocus then
@@ -2820,6 +2829,7 @@ var
   ARgba: TGdkRGBA;
   i: TGtkStateType;
 begin
+  FHasCaret := False;
   FFocusableByMouse := False;
   FCentralWidget := nil;
   FCairoContext := nil;

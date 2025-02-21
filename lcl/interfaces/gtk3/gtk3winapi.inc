@@ -332,6 +332,7 @@ begin
   //TODO: TGtk3Caret Bitmap
   Caret := TGtk3Caret.Create(GtkWidget, Width, Height);
   Caret.RespondToFocus := True;
+  Widget.HasCaret := True;
   g_object_set_data(PGObject(GtkWidget), 'gtk3-caret', Caret);
   Result := True;
 end;
@@ -543,6 +544,7 @@ begin
   Caret := TGtk3Caret(g_object_get_data(PGObject(GtkWidget), 'gtk3-caret'));
   if Assigned(Caret) then
   begin
+    Widget.HasCaret := False;
     Caret.RespondToFocus := False;
     Caret.Free;
     g_object_set_data(PGObject(GtkWidget), 'gtk3-caret', nil);
