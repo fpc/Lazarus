@@ -1783,6 +1783,11 @@ function TGtk3Widget.GtkEventMouseMove(Sender: PGtkWidget; Event: PGdkEvent
 var
   Msg: TLMMouseMove;
   MousePos: TPoint;
+  ADisplay: PGdkDisplay;
+  ASeat: PGdkSeat;
+  ADevice: PGdkDevice;
+  X, Y: gint;
+  AMask: TGdkModifierType;
   {$IFDEF GTK3DEBUGEVENTS}
   R: TRect;
   {$ENDIF}
@@ -1807,8 +1812,22 @@ begin
 
   FillChar(Msg{%H-}, SizeOf(Msg), #0);
 
-  MousePos.x := Round(Event^.motion.x);
-  MousePos.y := Round(Event^.motion.y);
+  //we use GDK_POINTER_MOTION_HINT_MASK, so we cannot trust Event^.motion position
+  if Event^.motion.is_hint = 1 then
+  begin
+    ADisplay := gtk_widget_get_display(Sender);
+    ASeat := gdk_display_get_default_seat(ADisplay);
+    ADevice := gdk_seat_get_pointer(ASeat);
+    gdk_window_get_device_position(Event^.motion.window, ADevice, @X, @Y, @AMask);
+  end else
+  begin
+    X := Round(Event^.motion.x);
+    Y := Round(Event^.motion.y);
+    AMask := Event^.motion.state;
+  end;
+
+  MousePos.x := X;
+  MousePos.y := Y;
 
   OffsetMousePos(@MousePos);
 
@@ -1817,7 +1836,7 @@ begin
 
   if Mouse.CursorPos=MousePos then exit;
 
-  Msg.Keys := GdkModifierStateToLCL(Event^.motion.state, False);
+  Msg.Keys := GdkModifierStateToLCL(aMask, False);
 
   Msg.Msg := LM_MOUSEMOVE;
 
@@ -2300,11 +2319,11 @@ var
   MButton: guint;
   SavedHandle: PtrUInt;
 begin
-  Result := False;
+  Result := gtk_false;
   {$IF DEFINED(GTK3DEBUGEVENTS) OR DEFINED(GTK3DEBUGMOUSE)}
   writeLn('TGtk3Widget.GtkEventMouse ',dbgsName(LCLObject),
     ' propagate=',dbgs(not (Event^.button.send_event = NO_PROPAGATION_TO_PARENT)),' Exit ? ',Event^.button.send_event = NO_PROPAGATION_TO_PARENT,
-    ' Event.Type=',Event^.type_);
+    ' Event.Type=',Event^.type_,' Capture=',LCLintf.GetCapture);
   {$ENDIF}
   if Event^.button.send_event = NO_PROPAGATION_TO_PARENT then
     exit;
