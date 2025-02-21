@@ -11845,26 +11845,6 @@ msgstr "Salva progetto"
 msgid "Save project as"
 msgstr "Salva progetto come"
 
-#: lazarusidestrconsts.liskmselectlineend
-msgctxt "lazarusidestrconsts.liskmselectlineend"
-msgid "Select Line End"
-msgstr "Seleziona la fine della riga"
-
-#: lazarusidestrconsts.liskmselectlinestart
-msgctxt "lazarusidestrconsts.liskmselectlinestart"
-msgid "Select Line Start"
-msgstr "Seleziona l'inizio della riga"
-
-#: lazarusidestrconsts.liskmselectpagebottom
-msgctxt "lazarusidestrconsts.liskmselectpagebottom"
-msgid "Select Page Bottom"
-msgstr "Seleziona la fine della pagina"
-
-#: lazarusidestrconsts.liskmselectpagetop
-msgctxt "lazarusidestrconsts.liskmselectpagetop"
-msgid "Select Page Top"
-msgstr "Seleziona l'inizio della pagina"
-
 #: lazarusidestrconsts.liskmselectwordleft
 msgctxt "lazarusidestrconsts.liskmselectwordleft"
 msgid "Select Word Left"

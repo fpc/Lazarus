@@ -12105,34 +12105,6 @@ msgstr "שמור פרוייקט"
 msgid "Save project as"
 msgstr "שמור פרוייקט כ "
 
-#: lazarusidestrconsts.liskmselectlineend
-#, fuzzy
-#| msgid "Select line end"
-msgctxt "lazarusidestrconsts.liskmselectlineend"
-msgid "Select Line End"
-msgstr "בחר את סוף השורה"
-
-#: lazarusidestrconsts.liskmselectlinestart
-#, fuzzy
-#| msgid "Select line start"
-msgctxt "lazarusidestrconsts.liskmselectlinestart"
-msgid "Select Line Start"
-msgstr "בחר את התחלת השורה"
-
-#: lazarusidestrconsts.liskmselectpagebottom
-#, fuzzy
-#| msgid "Select page bottom"
-msgctxt "lazarusidestrconsts.liskmselectpagebottom"
-msgid "Select Page Bottom"
-msgstr "בחר את תחתית הדף"
-
-#: lazarusidestrconsts.liskmselectpagetop
-#, fuzzy
-#| msgid "Select page top"
-msgctxt "lazarusidestrconsts.liskmselectpagetop"
-msgid "Select Page Top"
-msgstr "בחר את ראש הדף"
-
 #: lazarusidestrconsts.liskmselectwordleft
 #, fuzzy
 #| msgid "Select word left"

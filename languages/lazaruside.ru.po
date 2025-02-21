@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-02-21 19:30+0300\n"
+"PO-Revision-Date: 2025-02-21 20:17+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -11548,26 +11548,6 @@ msgstr "Сохранить проект"
 msgid "Save project as"
 msgstr "Сохранить проект как"
 
-#: lazarusidestrconsts.liskmselectlineend
-msgctxt "lazarusidestrconsts.liskmselectlineend"
-msgid "Select Line End"
-msgstr "Выделить до конца строки"
-
-#: lazarusidestrconsts.liskmselectlinestart
-msgctxt "lazarusidestrconsts.liskmselectlinestart"
-msgid "Select Line Start"
-msgstr "Выделить до начала строки"
-
-#: lazarusidestrconsts.liskmselectpagebottom
-msgctxt "lazarusidestrconsts.liskmselectpagebottom"
-msgid "Select Page Bottom"
-msgstr "Выделить до конца страницы"
-
-#: lazarusidestrconsts.liskmselectpagetop
-msgctxt "lazarusidestrconsts.liskmselectpagetop"
-msgid "Select Page Top"
-msgstr "Выделить до начала страницы"
-
 #: lazarusidestrconsts.liskmselectwordleft
 msgctxt "lazarusidestrconsts.liskmselectwordleft"
 msgid "Select Word Left"
@@ -20886,12 +20866,12 @@ msgstr "Выделить слева"
 #: lazarusidestrconsts.srkmecsellineend
 msgctxt "lazarusidestrconsts.srkmecsellineend"
 msgid "Select Line End"
-msgstr "Выделить конец строки"
+msgstr "Выделить до конца строки"
 
 #: lazarusidestrconsts.srkmecsellinestart
 msgctxt "lazarusidestrconsts.srkmecsellinestart"
 msgid "Select Line Start"
-msgstr "Выделить начало строки"
+msgstr "Выделить до начала строки"
 
 #: lazarusidestrconsts.srkmecsellinetextstart
 msgid "Select to text start in line"

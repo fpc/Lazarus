@@ -11895,34 +11895,6 @@ msgstr "Simpan proyek"
 msgid "Save project as"
 msgstr "Simpan proyek sebagai"
 
-#: lazarusidestrconsts.liskmselectlineend
-#, fuzzy
-#| msgid "Select line end"
-msgctxt "lazarusidestrconsts.liskmselectlineend"
-msgid "Select Line End"
-msgstr "Pilih akhir baris"
-
-#: lazarusidestrconsts.liskmselectlinestart
-#, fuzzy
-#| msgid "Select line start"
-msgctxt "lazarusidestrconsts.liskmselectlinestart"
-msgid "Select Line Start"
-msgstr "Pilih awal baris"
-
-#: lazarusidestrconsts.liskmselectpagebottom
-#, fuzzy
-#| msgid "Select page bottom"
-msgctxt "lazarusidestrconsts.liskmselectpagebottom"
-msgid "Select Page Bottom"
-msgstr "Pilih bawah halaman"
-
-#: lazarusidestrconsts.liskmselectpagetop
-#, fuzzy
-#| msgid "Select page top"
-msgctxt "lazarusidestrconsts.liskmselectpagetop"
-msgid "Select Page Top"
-msgstr "Pilih atas halaman"
-
 #: lazarusidestrconsts.liskmselectwordleft
 #, fuzzy
 #| msgid "Select word left"

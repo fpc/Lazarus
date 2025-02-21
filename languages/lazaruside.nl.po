@@ -11840,30 +11840,6 @@ msgstr "Sla project op"
 msgid "Save project as"
 msgstr "Sla project op als"
 
-#: lazarusidestrconsts.liskmselectlineend
-#, fuzzy
-msgctxt "lazarusidestrconsts.liskmselectlineend"
-msgid "Select Line End"
-msgstr "Selecteer regel einde"
-
-#: lazarusidestrconsts.liskmselectlinestart
-#, fuzzy
-msgctxt "lazarusidestrconsts.liskmselectlinestart"
-msgid "Select Line Start"
-msgstr "Selecteer regel begin"
-
-#: lazarusidestrconsts.liskmselectpagebottom
-#, fuzzy
-msgctxt "lazarusidestrconsts.liskmselectpagebottom"
-msgid "Select Page Bottom"
-msgstr "Selecteer onderkant Pagina"
-
-#: lazarusidestrconsts.liskmselectpagetop
-#, fuzzy
-msgctxt "lazarusidestrconsts.liskmselectpagetop"
-msgid "Select Page Top"
-msgstr "Select bovenkant pagina"
-
 #: lazarusidestrconsts.liskmselectwordleft
 #, fuzzy
 msgctxt "lazarusidestrconsts.liskmselectwordleft"

@@ -11628,34 +11628,6 @@ msgstr "Uložiť projekt"
 msgid "Save project as"
 msgstr "Uložiť projekt ako"
 
-#: lazarusidestrconsts.liskmselectlineend
-#, fuzzy
-#| msgid "Select line end"
-msgctxt "lazarusidestrconsts.liskmselectlineend"
-msgid "Select Line End"
-msgstr "Vybrať koniec riadka"
-
-#: lazarusidestrconsts.liskmselectlinestart
-#, fuzzy
-#| msgid "Select line start"
-msgctxt "lazarusidestrconsts.liskmselectlinestart"
-msgid "Select Line Start"
-msgstr "Vybrať začiatok riadka"
-
-#: lazarusidestrconsts.liskmselectpagebottom
-#, fuzzy
-#| msgid "Select page bottom"
-msgctxt "lazarusidestrconsts.liskmselectpagebottom"
-msgid "Select Page Bottom"
-msgstr "Vybrať spodok stránky"
-
-#: lazarusidestrconsts.liskmselectpagetop
-#, fuzzy
-#| msgid "Select page top"
-msgctxt "lazarusidestrconsts.liskmselectpagetop"
-msgid "Select Page Top"
-msgstr "Vybrať vrchol stránky"
-
 #: lazarusidestrconsts.liskmselectwordleft
 #, fuzzy
 #| msgid "Select word left"

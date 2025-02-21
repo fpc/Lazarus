@@ -11773,30 +11773,6 @@ msgstr ""
 msgid "Save project as"
 msgstr ""
 
-#: lazarusidestrconsts.liskmselectlineend
-#, fuzzy
-msgctxt "lazarusidestrconsts.liskmselectlineend"
-msgid "Select Line End"
-msgstr "Selecciona al final de la línia"
-
-#: lazarusidestrconsts.liskmselectlinestart
-#, fuzzy
-msgctxt "lazarusidestrconsts.liskmselectlinestart"
-msgid "Select Line Start"
-msgstr "Selecciona al començament de la línia"
-
-#: lazarusidestrconsts.liskmselectpagebottom
-#, fuzzy
-msgctxt "lazarusidestrconsts.liskmselectpagebottom"
-msgid "Select Page Bottom"
-msgstr "Selecciona la pàgina inferior"
-
-#: lazarusidestrconsts.liskmselectpagetop
-#, fuzzy
-msgctxt "lazarusidestrconsts.liskmselectpagetop"
-msgid "Select Page Top"
-msgstr "Selecciona la pàgina superior"
-
 #: lazarusidestrconsts.liskmselectwordleft
 #, fuzzy
 msgctxt "lazarusidestrconsts.liskmselectwordleft"
