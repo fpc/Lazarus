@@ -523,8 +523,8 @@ UpdateFileList is called in the implementation of the <var>Create</var> and
 <link id="TCustomFileListBox.Directory"/>
 <link id="TCustomFileListBox.FileName"/>
 <link id="TCustomFileListBox.FileType"/>
-<link id="#lcl.controls.TCustomListBox.Items">TCustomListBox.Items</link>
-<link id="#lcl.controls.TCustomListBox.Clear">TCustomListBox.Clear</link>
+<link id="#lcl.stdctrls.TCustomListBox.Items">TCustomListBox.Items</link>
+<link id="#lcl.stdctrls.TCustomListBox.Clear">TCustomListBox.Clear</link>
 </seealso>
 </element>
 
