@@ -527,7 +527,6 @@ type
     {result = true if scrollbar is pressed by mouse, AMouseOver if mouse is over scrollbar pressed or not.}
     class function CheckIfScrollbarPressed(scrollbar: PGtkWidget; out AMouseOver:
        boolean; const ACheckModifier: TGdkModifierTypeIdx): boolean;
-    procedure InitializeWidget;override;
     procedure SetScrollBarsSignalHandlers(const AIsHorizontalScrollBar: boolean);
     function getClientBounds: TRect; override;
     function getViewport: PGtkViewport; virtual;
@@ -5851,36 +5850,6 @@ begin
   end;
 end;
 
-procedure TGtk3ScrollableWin.InitializeWidget;
-begin
-  inherited InitializeWidget;
-  if IsDesigning then
-  begin
-    // do not applyc css for now ApplyNoHoverCss(Widget);
-
-    // do not flash scrollbars and make unneeded paint events.
-    PGtkScrolledWindow(Widget)^.set_policy(GTK_POLICY_ALWAYS, GTK_POLICY_ALWAYS);
-
-    // we won't hook signals during design time atm, it is easier for designer debugging.
-    getHorizontalScrollbar^.sensitive := False;
-    getVerticalScrollbar^.sensitive := False;
-
-    (*
-    g_signal_connect_data(getHorizontalScrollbar, 'button-press-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
-    g_signal_connect_data(getHorizontalScrollbar, 'button-release-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
-    g_signal_connect_data(getHorizontalScrollbar, 'enter-notify-event', TGCallback(@enterLeaveNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
-    g_signal_connect_data(getHorizontalScrollbar, 'leave-notify-event', TGCallback(@enterLeaveNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
-    g_signal_connect_data(getHorizontalScrollbar, 'motion-notify-event', TGCallback(@motionNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
-
-    g_signal_connect_data(getVerticalScrollbar, 'button-press-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
-    g_signal_connect_data(getVerticalScrollbar, 'button-release-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
-    g_signal_connect_data(getVerticalScrollbar, 'enter-notify-event', TGCallback(@enterLeaveNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
-    g_signal_connect_data(getVerticalScrollbar, 'leave-notify-event', TGCallback(@enterLeaveNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
-    g_signal_connect_data(getVerticalScrollbar, 'motion-notify-event', TGCallback(@motionNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
-    *)
-  end;
-end;
-
 class function TGtk3ScrollableWin.RangeChangeValue(ARange: PGtkRange; AScrollType: TGtkScrollType;
   AValue: gdouble; AData: TGtk3Widget): gboolean; cdecl;
 var
@@ -8704,6 +8673,7 @@ var
   AViewPort: PGtkViewport;
   Bar:PGtkScrollbar;
   AWindow: PGdkWindow;
+  AHorzPolicy, AVertPolicy: TGtkPolicyType;
 begin
   if [wtLayout] * WidgetType <> [] then
   begin
@@ -8711,17 +8681,21 @@ begin
     AWindow := PGtkLayout(getContainerWidget)^.get_bin_window;
     if (AWindow <> nil) and Gtk3IsGdkWindow(AWindow) then
     begin
-      Bar := getHorizontalScrollbar;
-      if (Bar <> nil) and Gtk3IsWidget(Bar) and Bar^.get_visible and GTK3WidgetSet.OverlayScrolling then
-        HOffset := Bar^.get_allocated_height
-      else
-        HOffset := 0;
-
-      Bar := getVerticalScrollbar;
-      if (Bar <> nil) and Gtk3IsWidget(Bar) and Bar^.get_visible and GTK3WidgetSet.OverlayScrolling then
-        VOffset := Bar^.get_allocated_width
-      else
-        VOffset := 0;
+      HOffset := 0;
+      VOffset := 0;
+      gtk_scrolled_window_get_policy(PGtkScrolledWindow(Widget), @AHorzPolicy, @AVertPolicy);
+      if AHorzPolicy < GTK_POLICY_NEVER then
+      begin
+        Bar := getHorizontalScrollbar;
+        if (Bar <> nil) and Gtk3IsWidget(Bar) and Bar^.get_visible and GTK3WidgetSet.OverlayScrolling then
+          HOffset := Bar^.get_allocated_height;
+      end;
+      if AVertPolicy < GTK_POLICY_NEVER then
+      begin
+        Bar := getVerticalScrollbar;
+        if (Bar <> nil) and Gtk3IsWidget(Bar) and Bar^.get_visible and GTK3WidgetSet.OverlayScrolling then
+          VOffset := Bar^.get_allocated_width
+      end;
 
       Result := Rect(0, 0, AWindow^.get_width - VOffset, AWindow^.get_height - HOffset);
 
@@ -8792,7 +8766,7 @@ begin
   if not IsWidgetOk then
     exit;
   PGtkScrolledWindow(Widget)^.get_policy(@HPolicy, @VPolicy);
-  if HPolicy = GTK_POLICY_NEVER then
+  if HPolicy >= GTK_POLICY_NEVER then
     exit;
   Result := PGtkScrollBar(PGtkScrolledWindow(Widget)^.get_hscrollbar);
   g_object_set_data(Result,'lclwidget',Self);
@@ -8807,7 +8781,7 @@ begin
   if not IsWidgetOk then
     exit;
   PGtkScrolledWindow(Widget)^.get_policy(@HPolicy, @VPolicy);
-  if VPolicy = GTK_POLICY_NEVER then
+  if VPolicy >= GTK_POLICY_NEVER then
     exit;
   Result := PGtkScrollBar(PGtkScrolledWindow(Widget)^.get_vscrollbar);
   g_object_set_data(Result,'lclwidget',Self);
