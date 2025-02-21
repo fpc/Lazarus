@@ -31,10 +31,6 @@ msgstr ""
 "这是一个有效的源文件吗？\n"
 "已跳过文件的其余部分。"
 
-#: todoliststrconsts.excinvalidparsestate
-msgid "Invalid parse state."
-msgstr "无效解析状态。"
-
 #: todoliststrconsts.lisalternatetokens
 msgid "Use Alternate Tokens"
 msgstr "使用替代标记"

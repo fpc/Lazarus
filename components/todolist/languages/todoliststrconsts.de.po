@@ -27,10 +27,6 @@ msgid ""
 "The rest of the file has been skipped."
 msgstr ""
 
-#: todoliststrconsts.excinvalidparsestate
-msgid "Invalid parse state."
-msgstr ""
-
 #: todoliststrconsts.lisalternatetokens
 msgid "Use Alternate Tokens"
 msgstr ""

@@ -33,10 +33,6 @@ msgstr ""
 "Це справді правильний сирцевий файл?\n"
 "Решту файла пропущено."
 
-#: todoliststrconsts.excinvalidparsestate
-msgid "Invalid parse state."
-msgstr "Помилковий стан розбору."
-
 #: todoliststrconsts.lisalternatetokens
 msgid "Use Alternate Tokens"
 msgstr "Використати альтернативні позначки"

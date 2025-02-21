@@ -30,10 +30,6 @@ msgstr ""
 "Est-ce un fichier source valide ?\n"
 "Le reste du fichier a été ignoré."
 
-#: todoliststrconsts.excinvalidparsestate
-msgid "Invalid parse state."
-msgstr "État d'analyse non valide."
-
 #: todoliststrconsts.lisalternatetokens
 msgid "Use Alternate Tokens"
 msgstr "Utiliser des éléments alternatifs"
