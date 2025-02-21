@@ -3103,10 +3103,15 @@ procedure TGtk3Widget.SetBounds(ALeft,ATop,AWidth,AHeight:integer);
 var
   ARect: TGdkRectangle;
   Alloc: TGtkAllocation;
+  AWidget: PGtkWidget;
 begin
   if (Widget=nil) then
     exit;
 
+  if [wtNotebook] * WidgetType <> [] then
+    AWidget := getContainerWidget
+  else
+    AWidget := Widget;
   LCLWidth := AWidth;
   LCLHeight := AHeight;
   ARect.x := ALeft;
@@ -3130,23 +3135,23 @@ begin
   BeginUpdate;
   try
     {fixes gtk3 assertion}
-    if not Widget^.get_realized then
-      Widget^.realize;
+    if not AWidget^.get_realized then
+      AWidget^.realize;
 
     //this should be removed in future.
-    Widget^.set_size_request(AWidth,AHeight);
+    AWidget^.set_size_request(AWidth,AHeight);
 
-    if Gtk3IsContainer(Widget) then // according to the gtk3 docs only GtkContainer should call this
-      Widget^.size_allocate(@ARect);
+    if Gtk3IsContainer(AWidget) then // according to the gtk3 docs only GtkContainer should call this
+      AWidget^.size_allocate(@ARect);
 
-    if Widget^.get_visible then
-      Widget^.set_allocation(@Alloc);
+    if AWidget^.get_visible then
+      AWidget^.set_allocation(@Alloc);
 
     if LCLObject.Parent <> nil then
       Move(ALeft, ATop);
 
     // we must trigger get_preferred_width after changing size
-    Widget^.queue_resize;
+    AWidget^.queue_resize;
 
     {if wtProgressBar in WidgetType then
       getContainerWidget^.set_size_request(AWidth, AHeight);}
