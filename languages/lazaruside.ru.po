@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-02-17 18:59+0300\n"
+"PO-Revision-Date: 2025-02-21 19:30+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -3304,7 +3304,7 @@ msgstr "Перемещать все курсоры за основным"
 
 #: lazarusidestrconsts.dlgmulticaretoncolumnselection
 msgid "Enable multi-caret for column selection"
-msgstr "Включить несколько курсоров при выделении столбца"
+msgstr "Включить несколько курсоров при выделении столбцов"
 
 #: lazarusidestrconsts.dlgmultipleinstances_alwaysstartnew
 msgid "always start a new instance"
@@ -3436,6 +3436,10 @@ msgstr "В точке переноса отображать курсор в..."
 msgid "end of line"
 msgstr "конце строки"
 
+#: lazarusidestrconsts.dlgoptwordwraphomeendkey
+msgid "Force default home/end keys to subline start/end"
+msgstr "При нажатии Home/End всегда переходить к началу/концу подстроки"
+
 #: lazarusidestrconsts.dlgoptwordwrapindent
 msgid "Indent width"
 msgstr "Ширина отступа"
@@ -3460,6 +3464,10 @@ msgstr "Минимальная ширина отступа"
 #: lazarusidestrconsts.dlgoptwordwrapminimumlinelength
 msgid "Minimum line length"
 msgstr "Минимальная длина строки"
+
+#: lazarusidestrconsts.dlgoptwordwrapsectionindent
+msgid "Indent settings"
+msgstr "Параметры отступа"
 
 #: lazarusidestrconsts.dlgoptwordwrapstartofnextline
 msgid "start of next line"
@@ -11553,12 +11561,12 @@ msgstr "Выделить до начала строки"
 #: lazarusidestrconsts.liskmselectpagebottom
 msgctxt "lazarusidestrconsts.liskmselectpagebottom"
 msgid "Select Page Bottom"
-msgstr "Выделить страницу снизу"
+msgstr "Выделить до конца страницы"
 
 #: lazarusidestrconsts.liskmselectpagetop
 msgctxt "lazarusidestrconsts.liskmselectpagetop"
 msgid "Select Page Top"
-msgstr "Выделить страницу сверху"
+msgstr "Выделить до начала страницы"
 
 #: lazarusidestrconsts.liskmselectwordleft
 msgctxt "lazarusidestrconsts.liskmselectwordleft"
@@ -19917,6 +19925,10 @@ msgstr "Команды меню Файл"
 msgid "Text folding commands"
 msgstr "Команды сворачивания текста"
 
+#: lazarusidestrconsts.srkmcatlinewrap
+msgid "Line wrapping"
+msgstr "Перенос строки"
+
 #: lazarusidestrconsts.srkmcatmacrorecording
 msgctxt "lazarusidestrconsts.srkmcatmacrorecording"
 msgid "Macros"
@@ -20125,67 +20137,67 @@ msgstr "Очистить закладки в текущем файле"
 
 #: lazarusidestrconsts.srkmeccolseldown
 msgid "Column Select Down"
-msgstr "Выделить снизу"
+msgstr "Выделить столбцы снизу"
 
 #: lazarusidestrconsts.srkmeccolseleditorbottom
 msgid "Column Select to absolute end"
-msgstr "Выделить до самого конца"
+msgstr "Выделить столбцы до самого конца"
 
 #: lazarusidestrconsts.srkmeccolseleditortop
 msgid "Column Select to absolute beginning"
-msgstr "Выделить до самого начала"
+msgstr "Выделить столбцы до самого начала"
 
 #: lazarusidestrconsts.srkmeccolselleft
 msgid "Column Select Left"
-msgstr "Выделить слева"
+msgstr "Выделить столбцы слева"
 
 #: lazarusidestrconsts.srkmeccolsellineend
 msgid "Column Select Line End"
-msgstr "Выделить до конца строки"
+msgstr "Выделить столбцы до конца строки"
 
 #: lazarusidestrconsts.srkmeccolsellinestart
 msgid "Column Select Line Start"
-msgstr "Выделить до начала строки"
+msgstr "Выделить столбцы до начала строки"
 
 #: lazarusidestrconsts.srkmeccolsellinetextstart
 msgid "Column Select to text start in line"
-msgstr "Выделить до начала текста в строке"
+msgstr "Выделить столбцы до начала текста в строке"
 
 #: lazarusidestrconsts.srkmeccolselpagebottom
 msgid "Column Select Page Bottom"
-msgstr "Выделить всю страницу снизу"
+msgstr "Выделить столбцы до конца страницы"
 
 #: lazarusidestrconsts.srkmeccolselpagedown
 msgid "Column Select Page Down"
-msgstr "Выделить страницу снизу"
+msgstr "Выделить столбцы страницы снизу"
 
 #: lazarusidestrconsts.srkmeccolselpagetop
 msgid "Column Select Page Top"
-msgstr "Выделить всю страницу сверху"
+msgstr "Выделить столбцы до начала страницы"
 
 #: lazarusidestrconsts.srkmeccolselpageup
 msgid "Column Select Page Up"
-msgstr "Выделить страницу сверху"
+msgstr "Выделить столбцы страницы сверху"
 
 #: lazarusidestrconsts.srkmeccolselright
 msgid "Column Select Right"
-msgstr "Выделить справа"
+msgstr "Выделить столбцы справа"
 
 #: lazarusidestrconsts.srkmeccolselup
 msgid "Column Select Up"
-msgstr "Выделить сверху"
+msgstr "Выделить столбцы сверху"
 
 #: lazarusidestrconsts.srkmeccolselwordleft
 msgid "Column Select Word Left"
-msgstr "Добавить в выделение слово слева"
+msgstr "Выделить столбцы слова слева"
 
 #: lazarusidestrconsts.srkmeccolselwordright
 msgid "Column Select Word Right"
-msgstr "Добавить в выделение слово справа"
+msgstr "Выделить столбцы слова справа"
 
 #: lazarusidestrconsts.srkmeccolumnselect
 msgid "Column selection mode"
-msgstr "Режим выбора столбца"
+msgstr "Режим выбора столбцов"
 
 #: lazarusidestrconsts.srkmeccompile
 msgid "compile program/project"
@@ -20888,7 +20900,7 @@ msgstr "Выделить до начала текста в строке"
 #: lazarusidestrconsts.srkmecselpagebottom
 msgctxt "lazarusidestrconsts.srkmecselpagebottom"
 msgid "Select Page Bottom"
-msgstr "Выделить низ страницы"
+msgstr "Выделить до конца страницы"
 
 #: lazarusidestrconsts.srkmecselpagedown
 msgid "Select Page Down"
@@ -20905,7 +20917,7 @@ msgstr "Выделить страницу справа"
 #: lazarusidestrconsts.srkmecselpagetop
 msgctxt "lazarusidestrconsts.srkmecselpagetop"
 msgid "Select Page Top"
-msgstr "Выделить верх страницы"
+msgstr "Выделить до начала страницы"
 
 #: lazarusidestrconsts.srkmecselpageup
 msgid "Select Page Up"
@@ -21006,6 +21018,30 @@ msgstr "Воспроизвести макрос"
 #: lazarusidestrconsts.srkmecsynmacrorecord
 msgid "Record Macro"
 msgstr "Записать макрос"
+
+#: lazarusidestrconsts.srkmecsynplinewrapcolsellineend
+msgid "Column Select to wrapped line end"
+msgstr "Выделить столбцы до конца перенесённой строки"
+
+#: lazarusidestrconsts.srkmecsynplinewrapcolsellinestart
+msgid "Column Select to wrapped line start"
+msgstr "Выделить столбцы до начала перенесённой строки"
+
+#: lazarusidestrconsts.srkmecsynplinewraplineend
+msgid "Move cursor to wrapped line end"
+msgstr "Переместить курсор в конец перенесённой строки"
+
+#: lazarusidestrconsts.srkmecsynplinewraplinestart
+msgid "Move cursor to wrapped line start"
+msgstr "Переместить курсор в начало перенесённой строки"
+
+#: lazarusidestrconsts.srkmecsynplinewrapsellineend
+msgid "Select to wrapped line end"
+msgstr "Выделить до конца перенесённой строки"
+
+#: lazarusidestrconsts.srkmecsynplinewrapsellinestart
+msgid "Select to wrapped line start"
+msgstr "Выделить до начала перенесённой строки"
 
 #: lazarusidestrconsts.srkmecsynpsyncroedaddcell
 msgid "Add Cell"

@@ -3541,6 +3541,10 @@ msgstr ""
 msgid "end of line"
 msgstr ""
 
+#: lazarusidestrconsts.dlgoptwordwraphomeendkey
+msgid "Force default home/end keys to subline start/end"
+msgstr ""
+
 #: lazarusidestrconsts.dlgoptwordwrapindent
 msgid "Indent width"
 msgstr ""
@@ -3564,6 +3568,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgoptwordwrapminimumlinelength
 msgid "Minimum line length"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoptwordwrapsectionindent
+msgid "Indent settings"
 msgstr ""
 
 #: lazarusidestrconsts.dlgoptwordwrapstartofnextline
@@ -20651,6 +20659,10 @@ msgstr "Perintah menu File"
 msgid "Text folding commands"
 msgstr ""
 
+#: lazarusidestrconsts.srkmcatlinewrap
+msgid "Line wrapping"
+msgstr ""
+
 #: lazarusidestrconsts.srkmcatmacrorecording
 msgctxt "lazarusidestrconsts.srkmcatmacrorecording"
 msgid "Macros"
@@ -21811,6 +21823,30 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecsynmacrorecord
 msgid "Record Macro"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynplinewrapcolsellineend
+msgid "Column Select to wrapped line end"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynplinewrapcolsellinestart
+msgid "Column Select to wrapped line start"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynplinewraplineend
+msgid "Move cursor to wrapped line end"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynplinewraplinestart
+msgid "Move cursor to wrapped line start"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynplinewrapsellineend
+msgid "Select to wrapped line end"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsynplinewrapsellinestart
+msgid "Select to wrapped line start"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecsynpsyncroedaddcell
