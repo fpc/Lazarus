@@ -2397,7 +2397,7 @@ begin
   Event^.button.send_event := NO_PROPAGATION_TO_PARENT;
 
   Result := False;
-  if SavedHandle <> PtrUInt(Self) then
+  if (SavedHandle <> PtrUInt(Self)) or (LCLObject = nil) or (FWidget = nil) then
     exit;
 
   if Msg.Msg = LM_RBUTTONDOWN then
@@ -2407,14 +2407,14 @@ begin
     MsgPopup.XPos := SmallInt(Round(Event^.button.x_root));
     MsgPopup.YPos := SmallInt(Round(Event^.button.y_root));
     DeliverMessage(MsgPopup, True);
-    if SavedHandle <> PtrUInt(Self) then
+    if (SavedHandle <> PtrUInt(Self)) or (LCLObject = nil) or (FWidget = nil) then
       exit;
   end;
 
   if not Result then
   begin
     Result := DeliverMessage(Msg, True) <> 0;
-    if SavedHandle <> PtrUInt(Self) then
+    if (SavedHandle <> PtrUInt(Self)) or (LCLObject = nil) or (FWidget = nil) then
       exit;
   end;
 
