@@ -914,7 +914,6 @@ type
     procedure SetSelEnd(const Value: integer); override;
     procedure SetSelStart(const Value: integer); override;
     property TextView : TSynEditStringsLinked read FTheLinesView;
-    property TopView: Integer read GetTopView write SetTopView;  // TopLine converted into Visible(View) lines
     function PasteFromClipboardEx(ClipHelper: TSynClipboardStream; AForceColumnMode: Boolean = False): Boolean;
     function FindNextUnfoldedLine(iLine: integer; Down: boolean): Integer;
     // Todo: Reduce the argument list of Creategutter
@@ -931,6 +930,7 @@ type
     procedure EndUpdate; override;
 
   public
+    property TopView: Integer read GetTopView write SetTopView;  // TopLine converted into Visible(View) lines
     // Caret
     function CaretXPix: Integer; override;
     function CaretYPix: Integer; override;

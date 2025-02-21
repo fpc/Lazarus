@@ -2405,9 +2405,15 @@ end;
 procedure TLazSynEditLineWrapPlugin.ValidateAll;
 var
   AMaxWidth, i, w: Integer;
-  LowLine, HighLine: TLineIdx;
+  LowLine, HighLine, TopViewIdx, TopLineIdx, TopSubLine: TLineIdx;
+  tsub: TLineRange;
 begin
-if not FLineMapView.Tree.NeedsValidation then exit;
+  if not FLineMapView.Tree.NeedsValidation then exit;
+
+  TopViewIdx := ToIdx(TSynEdit(Editor).TopView);
+  TopLineIdx := ViewedTextBuffer.DisplayView.ViewToTextIndexEx(TopViewIdx, tsub);
+  TopSubLine := TopViewIdx - tsub.Top;
+
   AMaxWidth := WrapColumn;
 
   while FLineMapView.Tree.NextBlockForValidation(LowLine, HighLine) do begin
@@ -2418,6 +2424,10 @@ if not FLineMapView.Tree.NeedsValidation then exit;
   end;
   FLineMapView.Tree.EndValidate;
   FLineMapView.SendNotification(senrLineMappingChanged, FLineMapView, 0, 0);
+
+  tsub := ViewedTextBuffer.DisplayView.TextToViewIndex(TopLineIdx);
+  TSynEdit(Editor).Topview := ToPos(tsub.Top + Min(TopSubLine, tsub.Bottom - tsub.Top));
+
   TSynEdit(Editor).Invalidate;
 end;
 
