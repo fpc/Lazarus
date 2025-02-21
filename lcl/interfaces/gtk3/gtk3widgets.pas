@@ -1943,7 +1943,7 @@ begin
       end;
       DoBeforeLCLPaint;
       LCLObject.WindowProc(TLMessage(Msg));
-      if HasCaret then
+      if HasCaret and not (csDesigning in LCLObject.ComponentState) then
       begin
         ACaret := TGtk3Caret(g_object_get_data(Sender,'gtk3-caret'));
         if ACaret.Visible then
