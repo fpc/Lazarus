@@ -8,7 +8,7 @@ uses
   // LCL
   Forms, Controls, StdCtrls, ExtCtrls, Spin,
   // IdeIntf
-  IDEOptEditorIntf, IDEOptionsIntf, SynEditWrappedView,
+  IDEOptEditorIntf, IDEOptionsIntf, SynEditWrappedView, DividerBevel,
   // IDE
   EditorOptions, LazarusIDEStrConsts
   , Classes;
@@ -20,6 +20,8 @@ type
   TEditorWordWrapOptionsFrame = class(TAbstractIDEOptionsEditor)
     cbEnableWordWrap: TCheckBox;
     cbIndentIsOffset: TCheckBox;
+    cbHomeEndKey: TCheckBox;
+    DividerBevel1: TDividerBevel;
     edMinWordWrapWidth: TSpinEdit;
     edWordWrapIndentMax: TSpinEdit;
     edWordWrapIndentMaxRel: TSpinEdit;
@@ -76,6 +78,8 @@ begin
   rgCaretWrapPos.Caption := dlgOptWordWrapDisplayCaretAtWrapPositio;
   rgCaretWrapPos.Items.Add(dlgOptWordWrapEndOfLine);
   rgCaretWrapPos.Items.Add(dlgOptWordWrapStartOfNextLine);
+  cbHomeEndKey.Caption := dlgOptWordWrapHomeEndKey;
+  DividerBevel1.Caption := dlgOptWordWrapSectionIndent;
   lbMinWordWrapWidth.Caption := dlgOptWordWrapMinimumLineLength;
 
   lbWordWrapIndent.Caption       := dlgOptWordWrapIndent;
@@ -93,6 +97,7 @@ begin
     wcpBOL: rgCaretWrapPos.ItemIndex := 1;
   end;
   edMinWordWrapWidth.Value := (AOptions as TEditorOptions).WordWrapMinWidth;
+  cbHomeEndKey.Checked     := (AOptions as TEditorOptions).WordWrapForceHomeEnd;
 
   edWordWrapIndent.Value       := (AOptions as TEditorOptions).WordWrapIndent;
   cbIndentIsOffset.Checked     := (AOptions as TEditorOptions).WordWrapIndentUseOffset;
@@ -109,6 +114,7 @@ begin
     1: (AOptions as TEditorOptions).WordWrapCaretWrapPos := wcpBOL;
   end;
   (AOptions as TEditorOptions).WordWrapMinWidth := edMinWordWrapWidth.Value;
+  (AOptions as TEditorOptions).WordWrapForceHomeEnd := cbHomeEndKey.Checked;
 
   (AOptions as TEditorOptions).WordWrapIndent          := edWordWrapIndent.Value;
   (AOptions as TEditorOptions).WordWrapIndentUseOffset := cbIndentIsOffset.Checked;

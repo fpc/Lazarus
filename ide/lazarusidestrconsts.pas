@@ -1662,6 +1662,8 @@ resourcestring
   dlgOptWordWrapDisplayCaretAtWrapPositio = 'Display caret at wrap-position...';
   dlgOptWordWrapEndOfLine = 'end of line';
   dlgOptWordWrapStartOfNextLine = 'start of next line';
+  dlgOptWordWrapHomeEndKey = 'Force default home/end keys to subline start/end';
+  dlgOptWordWrapSectionIndent = 'Indent settings';
   dlgOptWordWrapMinimumLineLength = 'Minimum line length';
   dlgOptWordWrapIndent = 'Indent width';
   dlgOptWordWrapIndentIsOffset = 'Indent relative to text';
@@ -3399,6 +3401,14 @@ resourcestring
   srkmecSynPSyncroEdAddCellCtxCase   = 'Add Cell (context & case-sensitive)';
   srkmecSynPSyncroEdDelCell          = 'Remove current Cell';
 
+
+  srkmecSynPLineWrapLineStart             = 'Move cursor to wrapped line start';
+  srkmecSynPLineWrapLineEnd               = 'Move cursor to wrapped line end';
+  srkmecSynPLineWrapSelLineStart          = 'Select to wrapped line start';
+  srkmecSynPLineWrapSelLineEnd            = 'Select to wrapped line end';
+  srkmecSynPLineWrapColSelLineStart       = 'Column Select to wrapped line start';
+  srkmecSynPLineWrapColSelLineEnd         = 'Column Select to wrapped line end';
+
   // run menu
   srkmecCompile                   = 'compile program/project';
   srkmecBuild                     = 'build program/project';
@@ -3473,6 +3483,7 @@ resourcestring
   srkmCatSyncroEdit     = 'Syncron Editing';
   srkmCatSyncroEditOff  = 'Syncron Editing (not in Cell)';
   srkmCatSyncroEditSel  = 'Syncron Editing (while selecting)';
+  srkmCatLineWrap       = 'Line wrapping';
 
   srkmCatSrcNoteBook    = 'Source Notebook commands';
   srkmCatFileMenu       = 'File menu commands';

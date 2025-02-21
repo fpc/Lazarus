@@ -39,7 +39,7 @@ uses
   Laz2_XMLCfg, FileUtil, LazUtilities, LazLoggerBase,
   // SynEdit
   SynEditKeyCmds, SynPluginTemplateEdit, SynPluginSyncroEdit,
-  SynPluginMultiCaret, SynEditMouseCmds,
+  SynPluginMultiCaret, SynEditMouseCmds, SynEditWrappedView,
   // IdeIntf
   IDECommands,
   // IdeConfig
@@ -3235,6 +3235,15 @@ begin
   AddDefault(C, 'Edit Syncro (sel) Start (Case)', srkmecSynPSyncroEdStartCase, ecIdePSyncroEdSelStartCase);
   AddDefault(C, 'Edit Syncro (sel) Start (Context)', srkmecSynPSyncroEdStartCtx, ecIdePSyncroEdSelStartCtx);
   AddDefault(C, 'Edit Syncro (sel) Start (Context/Case)', srkmecSynPSyncroEdStartCtxCase, ecIdePSyncroEdSelStartCtxCase);
+
+  // Line Wrap
+  C:=Categories[AddCategory('Line Wrap', srkmCatLineWrap, IDECmdScopeSrcEditOnly)];
+  AddDefault(C, 'LineWrap move to subline start', srkmecSynPLineWrapLineStart, ecSynPLineWrapLineStart);
+  AddDefault(C, 'LineWrap move to subline end', srkmecSynPLineWrapLineEnd, ecSynPLineWrapLineEnd);
+  AddDefault(C, 'LineWrap select to subline start', srkmecSynPLineWrapSelLineStart, ecSynPLineWrapSelLineStart);
+  AddDefault(C, 'LineWrap select to subline end', srkmecSynPLineWrapSelLineEnd, ecSynPLineWrapSelLineEnd);
+  AddDefault(C, 'LineWrap col select to subline start', srkmecSynPLineWrapColSelLineStart, ecSynPLineWrapColSelLineStart);
+  AddDefault(C, 'LineWrap col select to subline end', srkmecSynPLineWrapColSelLineEnd, ecSynPLineWrapColSelLineEnd);
 
   // source notebook - without menu items in the IDE bar
   C:=Categories[AddCategory('SourceNotebook',srkmCatSrcNoteBook,IDECmdScopeSrcEditOnly)];
