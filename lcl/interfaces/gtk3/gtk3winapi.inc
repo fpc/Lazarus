@@ -4104,6 +4104,7 @@ begin
   {$ENDIF}
   ScrollWin := nil;
   ScrollBar := niL;
+  IsScrollWindow := False;
   if [wtScrollBar] * AControl.WidgetType <> [] then
     ScrollBar := PGtkScrollBar(AControl.Widget)
   else
