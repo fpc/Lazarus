@@ -1485,15 +1485,41 @@ Signals the OnDataSetScrolled event handler when assigned.
 <p>
 <var>DatasetScrolled</var> is a procedure used to signal the 
 OnDataSetScrolled event handler when it has been assigned in the class 
-instance.
+instance. DatasetScrolled is used in data sources or controls which change 
+the active record for the linked Dataset. These classes can implement and 
+assign a handler routine to perform actions specific to the control.
 </p>
+<p>
+TCustomDBGrid provides a default implementation for the OnDataSetScrolled 
+event handler which performs the following control-specific actions:
+</p>
+<ul>
+<li>
+Updates scroll bar information (when needed).
+</li>
+<li>
+Resets the EditorMode for the control.
+</li>
+<li>
+Selects an Editor when the Active record has not been changed, and invalidates 
+the control where the data link is used.
+</li>
+<li>
+Updates the active record and invalidates the grid row when the active record 
+has been changed.
+</li>
+<li>Restores EditorMode to the value on entry.</li>
+</ul>
 </descr>
 <seealso>
+<link id="TComponentDataLink.OnDatasetScrolled"/>
 <link id="#fcl.db.TDataLink.ActiveRecord">TDataLink.ActiveRecord</link>
 </seealso>
 </element>
 <element name="TComponentDataLink.DatasetScrolled.Distance">
-<short>Number of records for the event notification.</short>
+<short>
+Number of records for the event notification.
+</short>
 </element>
 
 <element name="TComponentDataLink.FocusControl">
@@ -5148,7 +5174,8 @@ collection links to Fields in the associated dataset.
 The grid maintains an internal counter that tracks the number of times 
 BeginLayout has been called to start a layout change for the control. 
 EndLayout decrements that counter, and when it reaches 0 (zero), the 
-DoLayoutChanged method is called.
+private DoLayoutChanged method is called; scroll bar information is also 
+updated in this method.
 </p>
 </descr>
 <seealso>
@@ -6080,7 +6107,7 @@ automatic columns.
 <var>LayoutChanged</var> is a virtual procedure used to link Columns to the 
 Fields which read and write the values used in the control. LayoutChanged 
 calls the TDBGridColumns.LinkFields method establish the column-to-field 
-association. If Columns have not been explicitly defined the 
+association. If Columns have not been explicitly defined, the 
 AddAutomaticColumns method is called to add a column for each Field in the 
 linked dataset.
 </p>
