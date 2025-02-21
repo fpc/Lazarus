@@ -1795,8 +1795,10 @@ begin
     ScrollInfo.ntrackPos := 0;
     {$else}
     ScrollInfo.fMask := SIF_ALL or SIF_UPDATEPOLICY;
-    //ScrollInfo.ntrackPos := SB_POLICY_CONTINUOUS;
-    ScrollInfo.ntrackPos := SB_POLICY_DISCONTINUOUS;
+    if dgThumbTracking in Options then
+      ScrollInfo.ntrackPos := SB_POLICY_CONTINUOUS
+    else
+      ScrollInfo.ntrackPos := SB_POLICY_DISCONTINUOUS;
     {$endif}
     ScrollInfo.nMin := 0;
     ScrollInfo.nMax := aRange;
