@@ -263,7 +263,6 @@ begin
   g_list_free(Toplevels);
 end;
 
-
 class procedure TGtk3WSCustomForm.ShowHide(const AWinControl: TWinControl);
 var
   AMask:TGdkEventMask;
@@ -471,6 +470,7 @@ begin
   {$IFDEF GTK3DEBUGCORE}
   DebugLn('TGtk3WSCustomForm.SetFormBorderStyle');
   {$ENDIF}
+  RecreateWnd(AForm);
 end;
 
 class procedure TGtk3WSCustomForm.SetFormStyle(const AForm: TCustomform;
