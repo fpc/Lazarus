@@ -2350,8 +2350,9 @@ var
 begin
   Result := False;
   {$IF DEFINED(GTK3DEBUGEVENTS) OR DEFINED(GTK3DEBUGMOUSE)}
-  DebugLn('TGtk3Widget.GtkEventMouse ',dbgsName(LCLObject),
-    ' propagate=',dbgs(not (Event^.button.send_event = NO_PROPAGATION_TO_PARENT)));
+  writeLn('TGtk3Widget.GtkEventMouse ',dbgsName(LCLObject),
+    ' propagate=',dbgs(not (Event^.button.send_event = NO_PROPAGATION_TO_PARENT)),' Exit ? ',Event^.button.send_event = NO_PROPAGATION_TO_PARENT,
+    ' Event.Type=',Event^.type_);
   {$ENDIF}
   if Event^.button.send_event = NO_PROPAGATION_TO_PARENT then
     exit;
@@ -2441,14 +2442,14 @@ begin
   NotifyApplicationUserInput(LCLObject, Msg.Msg);
   Event^.button.send_event := NO_PROPAGATION_TO_PARENT;
 
-  Result := false;
+  Result := False;
   if Msg.Msg = LM_RBUTTONDOWN then
   begin
     MsgPopup := Msg;
     MsgPopup.Msg := LM_CONTEXTMENU;
     MsgPopup.XPos := SmallInt(Round(Event^.button.x_root));
     MsgPopup.YPos := SmallInt(Round(Event^.button.y_root));
-    Result := DeliverMessage(MsgPopup, True) <> 0;
+    DeliverMessage(MsgPopup, True);
   end;
   if not Result then
     Result := DeliverMessage(Msg, True) <> 0;
