@@ -1908,39 +1908,7 @@ begin
   try
     try
       P := getClientOffset;
-      if (Self is TGtk3ScrollableWin) and (0 > 1) then
-      begin
-        {$IFDEF GTK3DEBUGEVENTS}
-        if not (LCLObject is TCustomForm) then
-          writeln('*** Paintevent changing P from ',dbgs(P));
-        {$ENDIF}
-
-        with (Self as TGtk3ScrollableWin) do
-        begin
-          if Gtk3IsScrolledWindow(Widget) then
-          begin
-            if Gtk3IsAdjustment(gtk_scrolled_window_get_hadjustment(PGtkScrolledWIndow(Widget))) then
-              P.X := P.X + Round(gtk_adjustment_get_value(gtk_scrolled_window_get_hadjustment(PGtkScrolledWindow(Widget))));
-            if Gtk3IsAdjustment(gtk_scrolled_window_get_vadjustment(PGtkScrolledWIndow(Widget))) then
-              P.Y := P.Y + Round(gtk_adjustment_get_value(gtk_scrolled_window_get_vadjustment(PGtkScrolledWindow(Widget))));
-          end else
-          begin
-            //eg TGtk3Window, it is layout based, so container widget is GtkLayout
-            if getScrolledWindow <> nil then
-            begin
-              if Gtk3IsAdjustment(gtk_scrolled_window_get_hadjustment(getScrolledWindow)) then
-                P.X := P.X + Round(gtk_adjustment_get_value(gtk_scrolled_window_get_hadjustment(getScrolledWindow)));
-              if Gtk3IsAdjustment(gtk_scrolled_window_get_vadjustment(getScrolledWindow)) then
-                P.Y := P.Y + Round(gtk_adjustment_get_value(gtk_scrolled_window_get_vadjustment(getScrolledWindow)));
-            end;
-          end;
-        end;
-        cairo_translate(AContext, P.X, P.Y);
-        {$IFDEF GTK3DEBUGEVENTS}
-        if not (LCLObject is TCustomForm) then
-          writeln('**** Paintevent to ',dbgsName(LCLObject),' clipRect=',dbgs(PaintData.ClipRect^),' translate P=',dbgs(P));
-        {$ENDIF}
-      end;
+      //cairo_translate(AContext, P.X, P.Y);
       DoBeforeLCLPaint;
       LCLObject.WindowProc(TLMessage(Msg));
       if HasCaret and not (csDesigning in LCLObject.ComponentState) then
