@@ -2721,7 +2721,7 @@ procedure TGtk3Widget.DestroyWidget;
 var
   ATemp: PGtkWidget;
 begin
-  if IsValidHandle then
+  if HasCaret and IsValidHandle then
     GTK3WidgetSet.DestroyCaret(HWND(Self));
 
   if IsValidHandle and FOwnWidget then
