@@ -8539,13 +8539,14 @@ begin
 
   PGtkScrolledWindow(Result)^.add(FCentralWidget);
 
-  PGtkScrolledWindow(Result)^.set_policy(GTK_POLICY_NEVER, GTK_POLICY_NEVER);
+  PGtkScrolledWindow(Result)^.set_policy(GTK_POLICY_EXTERNAL, GTK_POLICY_EXTERNAL);
 
   Result^.set_can_focus(False);
   FCentralWidget^.set_can_focus(True);
   FCentralWidget^.set_app_paintable(True);
   PGtkScrolledWindow(Result)^.set_shadow_type(BorderStyleShadowMap[TCustomControl(LCLObject).BorderStyle]);
-  g_object_set(PGObject(FCentralWidget), 'resize-mode', [GTK_RESIZE_QUEUE, nil]);
+  if not (csDesigning in LCLObject.ComponentState) then
+    g_object_set(PGObject(FCentralWidget), 'resize-mode', [GTK_RESIZE_QUEUE, nil]);
   gtk_layout_set_size(PGtkLayout(FCentralWidget), 1, 1);
 end;
 
@@ -9636,9 +9637,11 @@ begin
 
   FCentralWidget^.set_size_request(AForm.Width,AForm.Height+1);
 
-  fBox^.pack_start(fCentralWidget, true, true, 0);
+  FBox^.pack_start(fCentralWidget, true, true, 0);
 
   PGtkWindow(Result)^.set_can_focus(false);
+  FBox^.set_can_focus(False);
+  FCentralWidget^.set_can_focus(False);
   Result^.Hide; // issue #41412
 end;
 
