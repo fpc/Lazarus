@@ -820,10 +820,8 @@ var
 
   procedure AddWordToHash(AStart, ALen: integer); //inline;
   var
-    Wrd, LWrd, tk, Ctx: String;
+    Wrd, LWrd, Ctx: String;
     we: PSynPluginSyncroEditWordsHashEntry;
-    tx: Integer;
-    ta: TSynHighlighterAttributes;
   begin
     Wrd := copy(Line, AStart, ALen);
 //    if not CaseSensitive then
