@@ -3621,38 +3621,6 @@ begin
     gdk_window_scroll(GdkWindow, dx, dy);
   end;
 
-  if (Widget is TGtk3CustomControl) then
-  begin
-    if not TGtk3CustomControl(Widget).InUpdate then
-    begin
-      {$IFDEF GTK3DEBUGSCROLL}
-      writeln(Format('===> ScrollWindowEx processing dx=%d, dy=%d for control %s',
-                     [dx, dy, dbgsName(Widget.LCLObject),' applying InUpdate lock ...']));
-      {$ENDIF}
-      TGtk3CustomControl(Widget).BeginUpdate;
-      // Get current adjustment values
-      CurX := Round(gtk_adjustment_get_value(TGtk3CustomControl(Widget).GetScrolledWindow^.get_hadjustment));
-      CurY := Round(gtk_adjustment_get_value(TGtk3CustomControl(Widget).GetScrolledWindow^.get_vadjustment));
-
-      // Update adjustments by applying dx and dy
-      if dx <> 0 then
-        gtk_adjustment_set_value(TGtk3CustomControl(Widget).GetScrolledWindow^.get_hadjustment, Max(CurX + dx, 0));
-      if dy <> 0 then
-        gtk_adjustment_set_value(TGtk3CustomControl(Widget).GetScrolledWindow^.get_vadjustment, Max(CurY + dy, 0));
-      {$IFDEF GTK3DEBUGSCROLL}
-      writeln(Format('<=== ScrollWindowEx updated adjustments to CurX=%d, CurY=%d for control %s ... releasing InUpdate lock...',
-                     [CurX + dx, CurY + dy, dbgsName(Widget.LCLObject)]));
-      {$ENDIF}
-      TGtk3CustomControl(Widget).EndUpdate;
-    end else
-    begin
-      {$IFDEF GTK3DEBUGSCROLL}
-      writeln('=======> ScrollWindowEx: No update to adjustments since InUpdate = True. Now paint can be wrong since offset isn''t updated by dx and dy here...no more ScrollX and ScrollY. TODO');
-      {$ENDIF}
-    end;
-  end;
-
-
   if (Flags and SW_ERASE) <> 0 then
   begin
 
