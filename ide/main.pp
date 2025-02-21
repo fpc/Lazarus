@@ -107,7 +107,7 @@ uses
   LazDebuggerGdbmi, GDBMIDebugger, RunParamsOpts, BaseDebugManager,
   DebugManager, debugger, DebuggerDlg, DebugAttachDialog,
   DbgIntfDebuggerBase, DbgIntfProcess, LazDebuggerIntf, LazDebuggerIntfBaseTypes,
-  idedebuggerpackage, FpDebugValueConvertors, IdeDebuggerBackendValueConv, IdeDebuggerBase,
+  idedebuggerpackage, FpDebugValueConvertors, IdeDebuggerBase,
   // packager
   PackageSystem, PkgManager, BasePkgManager, LPKCache, LazarusPackageIntf, PackageEditor,
   // source editing

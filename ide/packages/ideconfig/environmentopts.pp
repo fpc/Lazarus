@@ -142,9 +142,9 @@ const
 
 type
   TCharCaseFileAction = (
-      ccfaAsk,
-      ccfaAutoRename,
-      ccfaIgnore
+      ccfaAsk, // before saving as non lowercase, ask
+      ccfaAutoRename, // auto lowercase
+      ccfaIgnore // don't ask, save whatever case
     );
   TCharCaseFileActions = set of TCharCaseFileAction;
 

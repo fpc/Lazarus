@@ -110,7 +110,7 @@ function CreateSymlinkInteractive(const {%H-}LinkFilename, {%H-}TargetFilename: 
 function ForceDirectoryInteractive(Directory: string;
                                    ErrorButtons: TMsgDlgButtons = []): TModalResult;
 function DeleteFileInteractive(const Filename: string;
-                               ErrorButtons: TMsgDlgButtons = []): TModalResult;
+                               ErrorButtons: TMsgDlgButtons = []; CaseInsensitive: boolean = false): TModalResult;
 function SaveLazStringToFile(const Filename, Content: string;
                         ErrorButtons: TMsgDlgButtons; const Context: string = ''
                         ): TModalResult;
@@ -590,15 +590,39 @@ begin
     Result:=mrOk;
 end;
 
-function DeleteFileInteractive(const Filename: string;
-  ErrorButtons: TMsgDlgButtons): TModalResult;
+function DeleteFileInteractive(const Filename: string; ErrorButtons: TMsgDlgButtons;
+  CaseInsensitive: boolean): TModalResult;
+var
+  Dir, ShortFilename: string;
+  Info: TSearchRec;
+  CurFilename: String;
+  Found: Boolean;
 begin
+  CurFilename:=Filename;
   repeat
     Result:=mrOk;
-    if not FileExistsUTF8(Filename) then exit;
-    if not DeleteFileUTF8(Filename) then begin
+    if CaseInsensitive then begin
+      Dir:=ExtractFilePath(Filename);
+      Found:=false;
+      if FindFirstUTF8(Dir+AllFilesMask,faAnyFile,Info)=0 then begin
+        ShortFilename:=ExtractFileName(Filename);
+        repeat
+          CurFilename:=Info.Name;
+          if (CurFilename='') or (CurFilename='.') or (CurFilename='..') then continue;
+          if SameText(Filename,ShortFilename) then begin
+            CurFilename:=Dir+CurFilename;
+            Found:=true;
+            break;
+          end;
+        until FindNextUTF8(Info)<>0;
+      end;
+      FindCloseUTF8(Info);
+      if not Found then exit;
+    end else if not FileExistsUTF8(Filename) then
+      exit;
+    if not DeleteFileUTF8(CurFilename) then begin
       Result:=LazMessageDialogAb(lisDeleteFileFailed,
-        Format(lisPkgMangUnableToDeleteFile, [Filename]),
+        Format(lisPkgMangUnableToDeleteFile, [CurFilename]),
         mtError,[mbCancel,mbRetry]+ErrorButtons-[mbAbort],mbAbort in ErrorButtons);
       if Result<>mrRetry then exit;
     end;
