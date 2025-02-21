@@ -2900,11 +2900,11 @@ begin
   AddDefault(C, 'Select half word right', srkmecSelHalfWordRight, ecSelHalfWordRight);
   AddDefault(C, 'Smart select word left', srkmecSelSmartWordLeft, ecSelSmartWordLeft);
   AddDefault(C, 'Smart select word right', srkmecSelSmartWordRight, ecSelSmartWordRight);
-  AddDefault(C, 'Select line start', lisKMSelectLineStart, ecSelLineStart);
+  AddDefault(C, 'Select line start', srkmecSelLineStart, ecSelLineStart);
   AddDefault(C, 'Select to text start in line', srkmecSelLineTextStart, ecSelLineTextStart);
-  AddDefault(C, 'Select line end', lisKMSelectLineEnd, ecSelLineEnd);
-  AddDefault(C, 'Select page top', lisKMSelectPageTop, ecSelPageTop);
-  AddDefault(C, 'Select page bottom', lisKMSelectPageBottom, ecSelPageBottom);
+  AddDefault(C, 'Select line end', srkmecSelLineEnd, ecSelLineEnd);
+  AddDefault(C, 'Select page top', srkmecSelPageTop, ecSelPageTop);
+  AddDefault(C, 'Select page bottom', srkmecSelPageBottom, ecSelPageBottom);
   AddDefault(C, 'Select to absolute beginning', srkmecSelEditorTop, ecSelEditorTop);
   AddDefault(C, 'Select to absolute end', srkmecSelEditorBottom, ecSelEditorBottom);
   AddDefault(C, 'Select all', lisMenuSelectAll, ecSelectAll);

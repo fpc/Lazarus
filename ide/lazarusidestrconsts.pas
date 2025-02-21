@@ -317,10 +317,6 @@ resourcestring
   lisMenuPasteFromClipboard = 'Paste from clipboard';
   lisKMSelectWordLeft = 'Select Word Left';
   lisKMSelectWordRight = 'Select Word Right';
-  lisKMSelectLineStart = 'Select Line Start';
-  lisKMSelectLineEnd = 'Select Line End';
-  lisKMSelectPageTop = 'Select Page Top';
-  lisKMSelectPageBottom = 'Select Page Bottom';
   lisMenuSelect = 'Select';
   lisMenuMultiPaste = 'MultiPaste ...';
   lisMenuSelectAll = 'Select All';
