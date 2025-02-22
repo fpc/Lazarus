@@ -684,13 +684,13 @@ type
   TGtk3Panel = class(TGtk3Bin)
   private
     FBorderStyle: TBorderStyle;
+    procedure SetBorderStyle(AValue: TBorderStyle);
   protected
-    procedure SetColor(AValue: TColor); override;
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
     procedure DoBeforeLCLPaint; override;
     procedure setText(const AValue: String); override;
   public
-    property BorderStyle: TBorderStyle read FBorderStyle write FBorderStyle;
+    property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle;
   end;
 
   { TGtk3GroupBox }
@@ -3489,39 +3489,11 @@ end;
 
 { TGtk3Panel }
 
-procedure TGtk3Panel.SetColor(AValue: TColor);
-var
-  AGdkRGBA: TGdkRGBA;
-  //AColor: TGdkColor;
+procedure TGtk3Panel.SetBorderStyle(AValue: TBorderStyle);
 begin
-  inherited SetColor(AValue);
-  exit;
-  if (AValue = clDefault) or (AValue = clBackground) then
-  begin
-    // this is just to test if we can get transparent panel again
-    // clDefault must be extracted from style
-
-    // nil resets color to gtk default
-    Widget^.override_background_color(GTK_STATE_FLAG_NORMAL, nil);
-    StyleContext^.get_background_color(GTK_STATE_FLAG_NORMAL, @AGdkRGBA);
-
-    // writeln('ACOLOR R=',AColor.Red,' G=',AColor.green,' B=',AColor.blue);
-    // AColor := TColorToTGDKColor(AValue);
-    {AGdkRGBA.alpha := 0;
-    AGdkRGBA.red := AColor.red / 65535.00;
-    AGdkRGBA.blue := AColor.blue / 65535.00;
-    AGdkRGBA.green := AColor.red / 65535.00;}
-    Widget^.override_background_color(GTK_STATE_FLAG_NORMAL, @AGdkRGBA);
-    Widget^.override_background_color([GTK_STATE_FLAG_ACTIVE], @AGdkRGBA);
-    Widget^.override_background_color([GTK_STATE_FLAG_FOCUSED], @AGdkRGBA);
-    Widget^.override_background_color([GTK_STATE_FLAG_PRELIGHT], @AGdkRGBA);
-    Widget^.override_background_color([GTK_STATE_FLAG_SELECTED], @AGdkRGBA);
-  end else
-  begin
-    //AColor := TColorToTGDKColor(AValue);
-    // writeln('ACOLOR R=',AColor.Red,' G=',AColor.green,' B=',AColor.blue);
-    //inherited SetColor(AValue);
-  end;
+  if FBorderStyle = AValue then Exit;
+  FBorderStyle := AValue;
+  PGtkLayout(Widget)^.set_border_width(Ord(AValue));
 end;
 
 function TGtk3Panel.CreateWidget(const Params: TCreateParams): PGtkWidget;
@@ -3531,17 +3503,14 @@ begin
   FHasPaint := True;
   FBorderStyle := bsNone;
 
-  // wtLayout = using GtkLayout
-  // FWidgetType := [wtWidget, wtLayout];
-  // Result := TGtkLayout.new(nil, nil);
-
-  FWidgetType := [wtWidget, wtContainer];
-  Result := TGtkFixed.new();
+  FWidgetType := [wtWidget, wtLayout];
+  Result := TGtkLayout.new(nil, nil);
   Result^.set_has_window(True);
   // as GtkFixed have no child control here - nobody triggers resizing
   // GNOME takes care of it, but other WM - not
   // this is here to make TGtk3Panel shown under Plasma
-  Result^.set_size_request(LCLObject.Width,LCLObject.Height);
+  //Result^.set_size_request(LCLObject.Width,LCLObject.Height);
+  PGtkLayout(Result)^.set_size(1, 1);
 
   // AColor := Result^.style^.bg[0];
   // writeln('BG COLOR R=',AColor.red,' G=',AColor.green,' B=',AColor.blue);
@@ -3557,6 +3526,7 @@ begin
   Result^.override_background_color([GTK_STATE_FLAG_FOCUSED], @AGdkRGBA);
   Result^.override_background_color([GTK_STATE_FLAG_PRELIGHT], @AGdkRGBA);
   Result^.override_background_color([GTK_STATE_FLAG_SELECTED], @AGdkRGBA);
+  Result^.show_all;
 end;
 
 procedure TGtk3Panel.DoBeforeLCLPaint;
@@ -3597,12 +3567,14 @@ function TGtk3GroupBox.CreateWidget(const Params: TCreateParams): PGtkWidget;
 begin
   FHasPaint := True;
   FGroupBoxType := gbtGroupBox;
-  FWidgetType := [wtWidget, wtContainer, wtGroupBox];
+  FWidgetType := [wtWidget, wtLayout, wtGroupBox];
   Result := LCLGtkFrameNew;
-  FCentralWidget := TGtkFixed.new;
+  FCentralWidget := TGtkLayout.new(nil, nil);
   PGtkBin(Result)^.add(FCentralWidget);
   FCentralWidget^.set_has_window(True);
   PGtkFrame(result)^.set_label_align(0.1,0.5);
+  PGtkLayout(FCentralWidget)^.set_size(1, 1);
+  Result^.show_all;
 end;
 
 function TGtk3GroupBox.getText: String;
