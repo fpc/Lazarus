@@ -176,7 +176,7 @@ type
 
 implementation
 uses StdCtrls, CheckLst, LCLProc, gtk3widgets, gtk3procs, Gtk3WSStdCtrls,
-  Gtk3WSCheckLst, LazTracer;
+  Gtk3WSCheckLst, LazTracer, LazLogger;
 
 {*************************************************************}
 {                      TGtkListStoreStringList methods             }
@@ -448,7 +448,8 @@ begin
     exit;
   end;
   UpdateItemCache;
-  ListItem := FCachedItems[Index];
+  //ListItem := FCachedItems[Index];
+  gtk_tree_model_iter_nth_child(PGtkTreeModel(FGtkListStore), @ListItem, nil, Index);
 
   Item := nil;
 
