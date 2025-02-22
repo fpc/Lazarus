@@ -238,7 +238,7 @@ end;
 procedure TTLScannedFile.CreateToDoItem(const aStartComment, aEndComment: string;
   aLineNumber: Integer);
 var
-  lParsingString: string;
+  lParsingString, TheToken: string;
   lTokenFound: boolean;
   lTodoType, lFoundToDoType: TToDoType;
   lTokenStyle, lFoundTokenStyle: TTokenStyle;
@@ -253,18 +253,25 @@ begin
   lParsingString := Trim(lParsingString);
 
   // Determine Token and Style
-  lTokenFound:=False;
+  lTokenFound := False;
   for lTokenStyle := Low(TTokenStyle) to High(TTokenStyle) do
   begin
     if lTokenFound then Break;
-    for lTodoType := Low(TToDoType) to High (TToDoType) do
-      if LazStartsText(TODO_TOKENS[lTokenStyle,lTodoType], lParsingString) then
+    for lTodoType := Low(TToDoType) to High(TToDoType) do
+    begin
+      TheToken := TODO_TOKENS[lTokenStyle,lTodoType];
+      if LazStartsText(TheToken, lParsingString) then
       begin
-        lTokenFound := True;       // Token match
-        lFoundToDoType := lTodoType;
-        lFoundTokenStyle := lTokenStyle;
-        Break;
+        if (Length(lParsingString)=Length(TheToken)) // Don't match with 'ToDoX'
+        or (lParsingString[Length(TheToken)+1] in [#9,' ',':']) then
+        begin
+          lTokenFound := True;       // Token match
+          lFoundToDoType := lTodoType;
+          lFoundTokenStyle := lTokenStyle;
+          Break;
+        end;
       end;
+    end;
   end;
 
   if Not lTokenFound then
@@ -275,7 +282,8 @@ begin
     SetLength(lParsingString, Length(lParsingString)-Length(aEndComment));
 
   // Remove the ToDo token
-  Delete(lParsingString, 1, Length(TODO_TOKENS[lFoundTokenStyle,lFoundToDoType]));
+  Assert(TheToken=TODO_TOKENS[lFoundTokenStyle,lFoundToDoType], 'TTLScannedFile.CreateToDoItem: TheToken');
+  Delete(lParsingString, 1, Length(TheToken));
   lParsingString := Trim(lParsingString);
 
   // Require a colon with plain "done" but not with "#done". Prevent false positives.
