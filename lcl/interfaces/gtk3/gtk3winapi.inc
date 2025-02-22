@@ -2483,6 +2483,7 @@ function TGtk3WidgetSet.GetScrollbarVisible(Handle: HWND; SBStyle: Integer
   ): boolean;
 var
   AWidget: TGtk3Widget absolute Handle;
+  HScrollPolicy, VScrollPolicy: TGtkPolicyType;
 begin
   Result := False;
   if not IsValidHandle(Handle) then
@@ -2493,11 +2494,21 @@ begin
   begin
     if wtScrollingWin in AWidget.WidgetType then
     begin
+      TGtk3ScrollableWin(AWidget).getScrolledWindow^.get_policy(@HScrollPolicy, @VScrollPolicy);
       if SBStyle = SB_Horz then
-        Result := Assigned(TGtk3ScrollableWin(AWidget).getHorizontalScrollbar) and (TGtk3ScrollableWin(AWidget).getHorizontalScrollbar^.get_visible)
-      else
+      begin
+        if HScrollPolicy >= GTK_POLICY_NEVER then
+          Result := False
+        else
+          Result := Assigned(TGtk3ScrollableWin(AWidget).getHorizontalScrollbar) and (TGtk3ScrollableWin(AWidget).getHorizontalScrollbar^.get_visible)
+      end else
       if SBStyle = SB_Vert then
-        Result := Assigned(TGtk3ScrollableWin(AWidget).getVerticalScrollbar) and TGtk3ScrollableWin(AWidget).getVerticalScrollbar^.get_visible;
+      begin
+        if VScrollPolicy >= GTK_POLICY_NEVER then
+          Result := False
+        else
+          Result := Assigned(TGtk3ScrollableWin(AWidget).getVerticalScrollbar) and TGtk3ScrollableWin(AWidget).getVerticalScrollbar^.get_visible;
+      end;
     end;
   end;
 end;
@@ -4015,6 +4026,21 @@ var
       ATarget := Min(ATarget, Adjustment^.upper - Max(Adjustment^.page_size - 1, 0));
       if Adjustment^.value <> ATarget then
         Adjustment^.value := ATarget;
+    end;
+
+    if (ScrollInfo.FMask and SIF_UPDATEPOLICY <> 0) then
+    begin
+      if ScrollInfo.nTrackPos = SB_POLICY_CONTINUOUS then
+      begin
+        //TODO: Set tracking value into control to true and listen value-changed,
+        //there's no more gtk2 gtk_range_set_update_policy.
+      end else
+      if ScrollInfo.nTrackPos = SB_POLICY_DISCONTINUOUS then
+      begin
+       //TODO: Set tracking value to false into control to true and don't listen value-changed
+       //until button is released - then send value
+       //there's no more gtk2 gtk_range_set_update_policy.
+      end;
     end;
 
     gtk_adjustment_changed(Adjustment);
