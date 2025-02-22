@@ -61,40 +61,43 @@ begin
 
   dir := AppendPathDelim(UserSchemeDirectory(False)) + 'tml';
   FileList := nil;
-  if DirectoryExistsUTF8(dir) then
-    FileList := FindAllFiles(dir, '*.json', False);
+  try
+    if DirectoryExistsUTF8(dir) then
+      FileList := FindAllFiles(dir, '*.json', False);
 
-  if (FileList = nil) or (FileList.Count = 0) then begin
-    Memo1.Text := dlgColorsTmlNoFilesFound;
-    exit;
-  end;
-
-  for i := 0 to FileList.Count - 1 do begin
-    tmlHighlighter := TSynTextMateSyn.Create(nil);
-    tmlHighlighter.LoadGrammar(FileList[i], '');
-
-    Memo1.Lines.Add(tmlHighlighter.LanguageName);
-    Memo1.Lines.Add('- '+dlgColorsTmlFromFile+' '+FileList[i]);
-
-    if (tmlHighlighter.ParserError <> '') then begin
-      Memo1.Lines.Add('- '+dlgColorsTmlError+' '+tmlHighlighter.ParserError);
-    end
-    else begin
-      if (tmlHighlighter.TextMateGrammar.SampleText = '') then begin
-        if (tmlHighlighter.TextMateGrammar.SampleTextFile = '') then
-          Memo1.Lines.Add('- '+dlgColorsTmlNoSampleTxt)
-        else
-        if not FileExistsUTF8(TrimAndExpandFilename(tmlHighlighter.TextMateGrammar.SampleTextFile, dir)) then
-          Memo1.Lines.Add('- '+Format(dlgColorsTmlBadSampleTxtFile, [LineEnding+'', tmlHighlighter.TextMateGrammar.SampleTextFile]));
-      end;
-
-      Memo1.Lines.Add('- '+dlgColorsTmlOk);
+    if (FileList = nil) or (FileList.Count = 0) then begin
+      Memo1.Text := dlgColorsTmlNoFilesFound;
+      exit;
     end;
 
-    Memo1.Lines.Add('');
-    tmlHighlighter.Free;
+    for i := 0 to FileList.Count - 1 do begin
+      tmlHighlighter := TSynTextMateSyn.Create(nil);
+      tmlHighlighter.LoadGrammar(FileList[i], '');
+
+      Memo1.Lines.Add(tmlHighlighter.LanguageName);
+      Memo1.Lines.Add('- '+dlgColorsTmlFromFile+' '+FileList[i]);
+
+      if (tmlHighlighter.ParserError <> '') then begin
+        Memo1.Lines.Add('- '+dlgColorsTmlError+' '+tmlHighlighter.ParserError);
+      end
+      else begin
+        if (tmlHighlighter.TextMateGrammar.SampleText = '') then begin
+          if (tmlHighlighter.TextMateGrammar.SampleTextFile = '') then
+            Memo1.Lines.Add('- '+dlgColorsTmlNoSampleTxt)
+          else
+          if not FileExistsUTF8(TrimAndExpandFilename(tmlHighlighter.TextMateGrammar.SampleTextFile, dir)) then
+            Memo1.Lines.Add('- '+Format(dlgColorsTmlBadSampleTxtFile, [LineEnding+'', tmlHighlighter.TextMateGrammar.SampleTextFile]));
+        end;
+
+        Memo1.Lines.Add('- '+dlgColorsTmlOk);
+      end;
+
+      Memo1.Lines.Add('');
+      tmlHighlighter.Free;
+    end;
+  finally
+    FileList.Free;
   end;
-  FileList.Free;
 end;
 
 class function TTEditorColorOptionsTMLFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
