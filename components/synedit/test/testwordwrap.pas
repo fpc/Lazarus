@@ -38,6 +38,11 @@ type
 
   end;
 
+  TTestSynEditLineWrapPlugin = class(TLazSynEditLineWrapPlugin)
+  public
+    property LineMapView;
+  end;
+
   { TTestWordWrap }
 
   TTestWordWrap = class(TTestWordWrapBase)
@@ -119,7 +124,7 @@ type
     procedure TestCaret(AName: String; SourcePt, ExpPt: TPointType; AnExp: TPoint;
       AnExpOffs: Integer = -1);
   protected
-    FWordWrap: TLazSynEditLineWrapPlugin;
+    FWordWrap: TTestSynEditLineWrapPlugin;
     class procedure AssertEquals(const AMessage: string; Expected, Actual: TPoint); overload;
     procedure AddLines(AFirstLineIdx, ACount, ALen: Integer; AnID: String; SkipBeginUpdate: Boolean = False; AReplaceExisting: Boolean = False);
     procedure InternalCheckLine(AName: String; dsp: TLazSynDisplayView; ALine: TLineIdx; AExpTextStart: String; NoTrim: Boolean = False);
@@ -1679,7 +1684,7 @@ end;
 function TTestWordWrapPluginBase.GetTreeNodeHolder(AIndex: Integer
   ): TSynEditLineMapPageHolder;
 begin
-  Result := FWordWrap.FLineMapView.Tree.FirstPage;
+  Result := FWordWrap.LineMapView.Tree.FirstPage;
   while (AIndex > 0) and Result.HasPage do begin
     dec(AIndex);
     Result := Result.Next;
@@ -1983,7 +1988,7 @@ begin
   Result := nil;
   if FWordWrap = nil then
     exit;
-  Result := FWordWrap.FLineMapView.Tree;
+  Result := FWordWrap.LineMapView.Tree;
 end;
 
 procedure TTestWordWrapPluginBase.ReCreateEdit(ADispWidth: Integer);
@@ -1996,7 +2001,7 @@ end;
 procedure TTestWordWrapPluginBase.SetUp;
 begin
   inherited SetUp;
-  FWordWrap := TLazSynEditLineWrapPlugin.Create(SynEdit);
+  FWordWrap := TTestSynEditLineWrapPlugin.Create(SynEdit);
 end;
 
 procedure TTestWordWrapPluginBase.TearDown;
@@ -2453,7 +2458,7 @@ var
 begin
   ReCreateEdit(10);
   SynEdit.Options := [];
-  t := FWordWrap.FLineMapView.Tree;
+  t := FWordWrap.LineMapView.Tree;
 debugln(' split %d  join %d  dist %d', [t.PageSplitSize, t.PageJoinSize, t.PageJoinDistance]);
 
   AddLineTestCount('new: split - 2', 0, t.PageSplitSize - 2, 18,    1);
@@ -2465,7 +2470,7 @@ debugln(' split %d  join %d  dist %d', [t.PageSplitSize, t.PageJoinSize, t.PageJ
 
   ReCreateEdit(10);
   SynEdit.Options := [];
-  t := FWordWrap.FLineMapView.Tree;
+  t := FWordWrap.LineMapView.Tree;
   AddLineTestCount('new: split - 2', 0, t.PageSplitSize - 2, 18,    1);
   AddLineTestCount('insert end: split - 1', SynEdit.Lines.Count, 18,    1);
   AddLineTestCount('insert end: split - 0', SynEdit.Lines.Count, 18,    1);
@@ -2475,7 +2480,7 @@ debugln(' split %d  join %d  dist %d', [t.PageSplitSize, t.PageJoinSize, t.PageJ
 
   ReCreateEdit(10);
   SynEdit.Options := [];
-  t := FWordWrap.FLineMapView.Tree;
+  t := FWordWrap.LineMapView.Tree;
   AddLineTestCount('new: split - 2', 0, t.PageSplitSize - 2, 18,    1);
   AddLineTestCount('insert @10: split - 1', 10, 18,    1);
   AddLineTestCount('insert @10: split - 0', 10, 18,    1);
@@ -2485,7 +2490,7 @@ debugln(' split %d  join %d  dist %d', [t.PageSplitSize, t.PageJoinSize, t.PageJ
 
   ReCreateEdit(10);
   SynEdit.Options := [];
-  t := FWordWrap.FLineMapView.Tree;
+  t := FWordWrap.LineMapView.Tree;
   i := t.PageSplitSize - 2;
   AddLineTestCount('new: split - 2', 0,  i, 18,    1);
   AddLineTestCount('new: split - 2', i, 10,  1,    1);
@@ -2497,7 +2502,7 @@ debugln(' split %d  join %d  dist %d', [t.PageSplitSize, t.PageJoinSize, t.PageJ
 
   ReCreateEdit(10);
   SynEdit.Options := [];
-  t := FWordWrap.FLineMapView.Tree;
+  t := FWordWrap.LineMapView.Tree;
   i := 9;
   AddLineTestCount('new: split - 2', 0,  t.PageSplitSize - 2, 18,    1);
   AddLineTestCount('new: split - 2', 0, 10,  1,    1);
@@ -2511,7 +2516,7 @@ debugln(' split %d  join %d  dist %d', [t.PageSplitSize, t.PageJoinSize, t.PageJ
   ///////////////////
   ReCreateEdit(10);
   SynEdit.Options := [];
-  t := FWordWrap.FLineMapView.Tree;
+  t := FWordWrap.LineMapView.Tree;
   AddLineTestCount('new: split double', 0,  t.PageSplitSize + t.PageJoinSize + 2, 18,    2);
 
 
@@ -2536,7 +2541,7 @@ debugln(' split %d  join %d  dist %d', [t.PageSplitSize, t.PageJoinSize, t.PageJ
 
   ReCreateEdit(10);
   SynEdit.Options := [];
-  t := FWordWrap.FLineMapView.Tree;
+  t := FWordWrap.LineMapView.Tree;
   AddLineTestCount('new: split double', 0,  t.PageSplitSize + t.PageJoinSize + 2, 18,    2);
 
 
@@ -2556,7 +2561,7 @@ debugln(' split %d  join %d  dist %d', [t.PageSplitSize, t.PageJoinSize, t.PageJ
   // do not join
   ReCreateEdit(10);
   SynEdit.Options := [];
-  t := FWordWrap.FLineMapView.Tree;
+  t := FWordWrap.LineMapView.Tree;
   AddLineTestCount('new: split * 2 - 2', 0,  t.PageSplitSize * 2 - 2, 18,    2);
 
 

@@ -272,6 +272,8 @@ type
     function TextXYToLineXY(ATextXY: TPhysPoint): TViewedSubPoint_0;
     function ViewedSubLineXYToTextX(ARealLine: IntPos; ALineXY: TViewedSubPoint_0): Integer;
     function CalculateWrapForLine(ALineIdx: IntIdx; AMaxWidth: integer): Integer; inline;
+
+    property LineMapView: TSynEditLineMappingView read FLineMapView;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
