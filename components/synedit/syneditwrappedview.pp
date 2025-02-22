@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, math, LazSynEditText, SynEdit, SynEditViewedLineMap, SynEditTypes,
   SynEditMiscProcs, SynEditHighlighter, SynEditMiscClasses, SynEditKeyCmds, SynEditFoldedView,
-  Graphics, LCLType, LazLoggerBase, LazListClasses;
+  Graphics, LCLType, Forms, LazLoggerBase, LazListClasses;
 
 type
   TLazSynEditLineWrapPlugin = class;
@@ -220,6 +220,8 @@ type
 
     procedure DoLinesChanged(Sender: TObject);
     procedure DoMarkupChanged(Sender: TObject);
+    procedure DoHandleCreated(Sender: TObject; Changes: TSynStatusChanges);
+    procedure DoTriggerValidate(Data: PtrInt);
     procedure DoWidthChanged(Sender: TObject; Changes: TSynStatusChanges);
     function GetWrapColumn: Integer;
     procedure SetKeyStrokes(AValue: TSynEditLineMapKeyStrokes);
@@ -1700,11 +1702,24 @@ begin
   FMarkupInfoWrapIndent.FrameEdges := sfeLeft;
 end;
 
+procedure TLazSynEditLineWrapPlugin.DoHandleCreated(Sender: TObject; Changes: TSynStatusChanges);
+begin
+  Application.QueueAsyncCall(@DoTriggerValidate, 0); // just in case there is no resize
+end;
+
+procedure TLazSynEditLineWrapPlugin.DoTriggerValidate(Data: PtrInt);
+begin
+  DoWidthChanged(nil, [scCharsInWindow]);
+end;
+
 procedure TLazSynEditLineWrapPlugin.DoWidthChanged(Sender: TObject;
   Changes: TSynStatusChanges);
 var
   w: Integer;
 begin
+  if not Editor.HandleAllocated then exit;
+
+  Application.RemoveAsyncCalls(Self);
   w := WrapColumn;
   if FCurrentWrapColumn = w then
     exit;
@@ -2369,6 +2384,7 @@ begin
   FLineMapView.WrapInfoForViewedXYProc := @GetWrapInfoForViewedXY;
   FLineMapView.AddLinesChangedHandler(@DoLinesChanged);
   TSynEdit(Editor).RegisterStatusChangedHandler(@DoWidthChanged, [scCharsInWindow]);
+  TSynEdit(Editor).RegisterStatusChangedHandler(@DoHandleCreated, [scHandleCreated]);
   FMinWrapWidth := 1;
   FLineMapView.KnownLengthOfLongestLine := WrapColumn;
   WrapAll;
@@ -2376,8 +2392,10 @@ end;
 
 destructor TLazSynEditLineWrapPlugin.Destroy;
 begin
+  Application.RemoveAsyncCalls(Self);
   if Editor <> nil then begin
     TSynEdit(Editor).UnRegisterStatusChangedHandler(@DoWidthChanged);
+    TSynEdit(Editor).UnRegisterStatusChangedHandler(@DoHandleCreated);
     if (FLineMapView <> nil) and not (csDestroying in Editor.Componentstate) then begin
       TSynEdit(Editor).TextViewsManager.RemoveSynTextView(FLineMapView, True);
       TSynEdit(Editor).Invalidate;
@@ -2409,6 +2427,7 @@ var
   tsub: TLineRange;
 begin
   if not FLineMapView.Tree.NeedsValidation then exit;
+  if not Editor.HandleAllocated then exit;
 
   TopViewIdx := ToIdx(TSynEdit(Editor).TopView);
   TopLineIdx := ViewedTextBuffer.DisplayView.ViewToTextIndexEx(TopViewIdx, tsub);

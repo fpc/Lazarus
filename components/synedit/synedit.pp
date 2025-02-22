@@ -5020,6 +5020,7 @@ begin
     Include(fStateFlags, sfAfterHandleCreatedNeeded);
     inherited CreateHandle;   //SizeOrFontChanged will be called
   end;
+  StatusChanged([scHandleCreated]);
 end;
 
 procedure TCustomSynEdit.SetScrollBars(const Value: TScrollStyle);

@@ -117,6 +117,7 @@ type
     scLeftChar, scTopLine, scLinesInWindow, scCharsInWindow,
     scInsertMode, scModified, scSelection, scReadOnly,
     scFocus,     // received or lost focus
+    scHandleCreated,    // handle created
     scOptions    // some Options were changed (only triggered by some optinos)
    );
   TSynStatusChanges = set of TSynStatusChange;
