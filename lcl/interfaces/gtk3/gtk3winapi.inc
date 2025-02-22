@@ -4143,7 +4143,7 @@ begin
     // TGtk3Window, so we must introduce new function for scrollables
     // to return GtkScrollingWindow, like we have with getViewport.
     ScrollWin := PGtkScrolledWindow(AControl.Widget);
-    if not Assigned(ScrollWin) then Exit;
+    if not Assigned(ScrollWin) or not Gtk3IsScrolledWindow(ScrollWin) then Exit;
     IsScrollWindow := True;
   end;
 
