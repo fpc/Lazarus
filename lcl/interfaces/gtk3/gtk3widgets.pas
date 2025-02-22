@@ -9132,8 +9132,11 @@ var
   h:gint;
   Alloc:TGtkAllocation;
 begin
-  gtk_window_get_position(aWidget, @wx, @wy);
-  gtk_window_get_size(aWidget, @w, @h);
+  if Gtk3IsGtkWindow(aWidget) then
+  begin
+    gtk_window_get_position(aWidget, @wx, @wy);
+    gtk_window_get_size(aWidget, @w, @h);
+  end;
   gtk_widget_get_allocation(aWidget, @Alloc);
   //under some window managers there's discrepancy gdk window have it's default gtk size, not lcl one
   //so sends 2 size-allocate events. I've introduced "lcl-window-first-map" gobject data to control
