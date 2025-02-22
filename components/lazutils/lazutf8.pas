@@ -1204,11 +1204,24 @@ function UTF8StringReplace(const S, OldPattern, NewPattern: String;
   Flags: TReplaceFlags; out Count: Integer; const ALanguage: string=''): String;
 // Replace OldPattern in S with NewPattern. With UTF-8 the challenge is to
 // support rfIgnoreCase flag. The length of upper/lower case codepoints may differ.
+
+  procedure CopyOriginal(aStartP: PChar; aLen: Integer; const aExtra: String);
+  // Copy part of the original string pointed by aStartP to Result.
+  // Copy aExtra there at the same go.
+  var
+    LenRes: SizeInt;
+  begin
+    LenRes := Length(Result);
+    SetLength(Result, LenRes+aLen+Length(aExtra)); // Reallocate only once.
+    System.Move(aStartP^, Result[LenRes+1], aLen);
+    if aExtra<>'' then
+      System.Move(aExtra[1], Result[LenRes+aLen+1], Length(aExtra));
+  end;
+
 var
   SrcS, OldPtrn: string;
-  PSrc, POrig: PChar;
-  CharLen, OldPatLen, OldPatCodepoints, l: Integer;
-  OkToReplace: Boolean;
+  PSrc, POrig, PStartOrig: PChar;
+  OldPatLen, OldPatCodepoints, i: Integer;
 begin
   Count := 0;
   if OldPattern='' then
@@ -1226,35 +1239,35 @@ begin
   OldPatCodepoints := UTF8CodepointCount(OldPtrn);
   PSrc := PChar(SrcS);
   POrig := PChar(S);
+  PStartOrig := POrig;       // No block from original text to copy yet
   Result := '';
-  OkToReplace := True;
-  while PSrc < PChar(SrcS) + Length(SrcS) do
+  while PSrc < PChar(SrcS)+Length(SrcS) do
   begin
-    if OkToReplace and (CompareByte(PSrc^, OldPtrn[1], OldPatLen) = 0) then
-    begin
-      // Found: Replace with NewPattern and move forward
+    if CompareByte(PSrc^, OldPtrn[1], OldPatLen) = 0 then
+    begin                    // Found: Replace with NewPattern and move forward
       Inc(Count);
-      Result := Result + NewPattern;
-      Inc(PSrc, OldPatLen);           // Skip the found string
+      if PStartOrig<>POrig then       // Copy a pending part of original string
+        CopyOriginal(PStartOrig, POrig-PStartOrig, NewPattern);
+      //Result := Result + NewPattern;
+      Inc(PSrc, OldPatLen);                   // Skip the found string
       // Move forward also in original string one codepoint at a time.
       // Lengths of a pattern and its lowercase version may differ.
-      for l := 1 to OldPatCodepoints do
-        Inc(POrig, UTF8CodepointSize(POrig)); // Next codepoint
-      if not (rfReplaceAll in Flags) then
-        OkToReplace := False;         // Replace only once.
+      for i := 1 to OldPatCodepoints do
+        Inc(POrig, UTF8CodepointSize(POrig)); // Next original codepoint
+      if not (rfReplaceAll in Flags) then begin
+        // No more replacements, copy rest of the original string and exit.
+        CopyOriginal(POrig, PChar(S)+Length(S)-POrig, '');
+        Exit;
+      end;
+      PStartOrig := POrig;
     end
-    else begin
-      // Move forward in possibly lowercased string
-      CharLen := UTF8CodepointSize(PSrc);
-      Inc(PSrc, CharLen);             // Next codepoint
-      // Copy a codepoint from original string and move forward
-      CharLen := UTF8CodepointSize(POrig);
-      l := Length(Result);
-      SetLength(Result, l+CharLen);   // Copy one codepoint from original string
-      System.Move(POrig^, Result[l+1], CharLen);
-      Inc(POrig, CharLen);            // Next codepoint
+    else begin                                // No replacement, move forward
+      Inc(PSrc, UTF8CodepointSize(PSrc));     // Next source codepoint
+      Inc(POrig, UTF8CodepointSize(POrig));   // Next original string codepoint
     end;
   end;
+  if PStartOrig<>POrig then                   // Copy the remaing part
+    CopyOriginal(PStartOrig, POrig-PStartOrig, '');
 end;
 
 function UTF8SwapCase(const AInStr: string; const ALanguage: string=''): string;
