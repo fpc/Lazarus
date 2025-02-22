@@ -569,7 +569,7 @@ begin
   {$IFDEF GTK3DEBUGCORE}
   DebugLn('TGtk3WidgetSet.AppProcessMessages');
   {$ENDIF}
-  if g_main_context_pending(nil) then
+  while g_main_context_pending(nil) do
     g_main_context_iteration(nil, False);
 end;
 
