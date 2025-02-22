@@ -5534,7 +5534,7 @@ end;
 
 function TQtWidget.ProcessArrowKeys: Boolean;
 begin
-  Result := False;
+  Result := Assigned(LCLObject) and (csDesigning in LCLObject.ComponentState);
 end;
 
 class procedure TQtWidget.removeProperty(AObject: QObjectH; APropName: PAnsiChar);
