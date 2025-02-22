@@ -666,8 +666,7 @@ begin
 
     if Options.Rename then begin
 
-      if RenamingFile or (ExtractFileName(OldFileName)<>ExtractFilename(NewFilename))
-      then begin
+      if RenamingFile then begin
         // rename file, and associated lfm, res, etc,
         // keeping source editor and session data
         // rename source name in this file
@@ -720,12 +719,6 @@ begin
 
       finally
         LazarusIDE.OpenEditorsOnCodeToolChange:=OldChange;
-      end;
-
-      if RenamingFile then begin
-        // ToDo
-        //Result:=RenameIdentifier_SaveFile(OldFileName,NewFilename);
-        //if Result<>mrOk then exit;
       end;
 
       if Options.RenameShowResult then begin
