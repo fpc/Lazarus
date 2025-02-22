@@ -1207,7 +1207,7 @@ function UTF8StringReplace(const S, OldPattern, NewPattern: String;
 var
   SrcS, OldPtrn: string;
   PSrc, POrig: PChar;
-  CharLen, OldPatLen, l: Integer;
+  CharLen, OldPatLen, OldPatCodepoints, l: Integer;
   OkToReplace: Boolean;
 begin
   Count := 0;
@@ -1223,6 +1223,7 @@ begin
     OldPtrn := OldPattern;
   end;
   OldPatLen := Length(OldPtrn);
+  OldPatCodepoints := UTF8CodepointCount(OldPtrn);
   PSrc := PChar(SrcS);
   POrig := PChar(S);
   Result := '';
@@ -1235,21 +1236,23 @@ begin
       Inc(Count);
       Result := Result + NewPattern;
       Inc(PSrc, OldPatLen);           // Skip the found string
-      // Move forward also in original string.
-      Inc(POrig, Length(OldPattern));
+      // Move forward also in original string one codepoint at a time.
+      // Lengths of a pattern and its lowercase version may differ.
+      for l := 1 to OldPatCodepoints do
+        Inc(POrig, UTF8CodepointSize(POrig)); // Next codepoint
       if not (rfReplaceAll in Flags) then
         OkToReplace := False;         // Replace only once.
     end
     else begin
       // Move forward in possibly lowercased string
       CharLen := UTF8CodepointSize(PSrc);
-      Inc(PSrc, CharLen);             // Next Codepoint
+      Inc(PSrc, CharLen);             // Next codepoint
       // Copy a codepoint from original string and move forward
       CharLen := UTF8CodepointSize(POrig);
       l := Length(Result);
       SetLength(Result, l+CharLen);   // Copy one codepoint from original string
       System.Move(POrig^, Result[l+1], CharLen);
-      Inc(POrig, CharLen);            // Next Codepoint
+      Inc(POrig, CharLen);            // Next codepoint
     end;
   end;
 end;
