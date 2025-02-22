@@ -24,8 +24,8 @@ type
     lbTask: TListBox;
     Panel1: TPanel;
     Panel2: TPanel;
-    rbHideSelModeLaz: TRadioButton;
-    rbHideSelModeDelphi: TRadioButton;
+    rbHideSelModeGray: TRadioButton;
+    rbHideSelModeHide: TRadioButton;
     Splitter1: TSplitter;
     TreeView: TTreeView;
     procedure btnToggleEnabledDisabledClick(Sender: TObject);
@@ -57,7 +57,7 @@ type
     // The top-level nodes are painted with bold font
     procedure BoldTopLevel_CustomDrawItem(Sender: TCustomTreeView;
       Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
-    procedure rbHideSelModeLazChange(Sender: TObject);
+    procedure rbHideSelModeGrayChange(Sender: TObject);
 
     // Nodes as rounded rectangles
     procedure RoundedRectNodes_AdvancedCustomDrawItem(Sender: TCustomTreeView;
@@ -332,6 +332,8 @@ begin
   // PrePaint stage would force us to paint everything by ourselves.
 end;
 
+// Note that this handler ignores the settings of the rbHideSelMode* radiobuttons
+// See BackgroundImage_AdvancedCustomDrawItem how this could be handled.
 procedure TMainForm.BackgroundGradient_AdvancedCustomDrawItem(Sender: TCustomTreeView;
   Node: TTreeNode; State: TCustomDrawState; Stage: TCustomDrawStage;
   var PaintImages, DefaultDraw: Boolean);
@@ -426,13 +428,13 @@ begin
     Sender.Canvas.Font.Style := [];
 end;
 
-procedure TMainForm.rbHideSelModeLazChange(Sender: TObject);
+procedure TMainForm.rbHideSelModeGrayChange(Sender: TObject);
 begin
  {$IF LCL_FullVersion >= 4990000}
-  if rbHideSelModeLaz.Checked then
-    TreeView.HideSelectionMode := hsmLaz
+  if rbHideSelModeGray.Checked then
+    TreeView.HideSelectionMode := hsmGray
   else
-    TreeView.HideSelectionMode := hsmDelphi;
+    TreeView.HideSelectionMode := hsmHide;
   TreeView.Invalidate;
  {$IFEND}
 end;
@@ -473,7 +475,9 @@ begin
       Sender.Canvas.Brush.Color := clBtnFace;
       Sender.Canvas.Pen.Color := clSilver;
     end;
-    Sender.Canvas.RoundRect(R, 12, 12);
+    // Draw the node background as rounded rectangle, but only if node is enabled.
+    if not (cdsDisabled in State) then
+      Sender.Canvas.RoundRect(R, 12, 12);
 
     // Avoid default drawing of the node background
     Sender.Canvas.Brush.Style := bsClear;

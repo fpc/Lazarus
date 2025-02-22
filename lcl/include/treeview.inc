@@ -6892,7 +6892,7 @@ end;
   setting. }
 function TCustomTreeView.SelectionIsHidden: Boolean;
 begin
-  Result := (not Focused) and HideSelection and (FHideSelectionMode = hsmDelphi);
+  Result := (not Focused) and HideSelection and (FHideSelectionMode = hsmHide);
 end;
 
 procedure TCustomTreeView.MoveToNextNode(ASelect: Boolean);

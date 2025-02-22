@@ -188,33 +188,33 @@ object MainForm: TMainForm
         TabOrder = 0
         OnChange = cbHideSelectionChange
       end
-      object rbHideSelModeLaz: TRadioButton
+      object rbHideSelModeGray: TRadioButton
         AnchorSideLeft.Control = cbHideSelection
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = cbHideSelection
         Left = 113
         Height = 19
         Top = 0
-        Width = 56
+        Width = 91
         BorderSpacing.Left = 20
-        Caption = 'like Laz'
+        Caption = 'gray selection'
         Checked = True
         TabOrder = 7
         TabStop = True
-        OnChange = rbHideSelModeLazChange
+        OnChange = rbHideSelModeGrayChange
       end
-      object rbHideSelModeDelphi: TRadioButton
-        AnchorSideLeft.Control = rbHideSelModeLaz
+      object rbHideSelModeHide: TRadioButton
+        AnchorSideLeft.Control = rbHideSelModeGray
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = cbHideSelection
-        Left = 179
+        Left = 214
         Height = 19
         Top = 0
-        Width = 73
+        Width = 41
         BorderSpacing.Left = 10
-        Caption = 'like Delphi'
+        Caption = 'hide'
         TabOrder = 6
-        OnChange = rbHideSelModeLazChange
+        OnChange = rbHideSelModeGrayChange
       end
     end
   end

@@ -3422,7 +3422,7 @@ type
     tvimAsPrevSibling
   );
 
-  THideSelectionMode = (hsmLaz, hsmDelphi);
+  THideSelectionMode = (hsmGray, hsmHide);
 
   TCustomTreeView = class(TCustomControl)
   private
@@ -3836,6 +3836,7 @@ type
     property TreeLinePenStyle: TPenStyle read FTreeLinePenStyle write FTreeLinePenStyle default psPattern;
     // When HideSelection is false, switches between Lazarus (sel nodes gray) and Delphi mode (sel nodes hidden)
     property HideSelectionMode: THideSelectionMode read FHideSelectionMode write FHideSelectionMode;
+      deprecated 'Use HideSelection=false to show selection for the non-focused treeview';  // To be removed in v5.99
   published
     property TabStop default true;
   end;
