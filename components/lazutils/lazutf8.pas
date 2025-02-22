@@ -1221,7 +1221,7 @@ function UTF8StringReplace(const S, OldPattern, NewPattern: String;
 var
   SrcS, OldPtrn: string;
   PSrc, POrig, PStartOrig: PChar;
-  OldPatLen, OldPatCodepoints, i: Integer;
+  OldPatLen, OldPatCodepoints, i: SizeInt;
 begin
   Count := 0;
   if OldPattern='' then
@@ -1248,7 +1248,6 @@ begin
       Inc(Count);
       if PStartOrig<>POrig then       // Copy a pending part of original string
         CopyOriginal(PStartOrig, POrig-PStartOrig, NewPattern);
-      //Result := Result + NewPattern;
       Inc(PSrc, OldPatLen);                   // Skip the found string
       // Move forward also in original string one codepoint at a time.
       // Lengths of a pattern and its lowercase version may differ.
