@@ -2422,8 +2422,6 @@ begin
   Event^.button.send_event := NO_PROPAGATION_TO_PARENT;
 
   Result := False;
-  if (SavedHandle <> PtrUInt(Self)) or (LCLObject = nil) or (FWidget = nil) then
-    exit;
 
   if Msg.Msg = LM_RBUTTONDOWN then
   begin
@@ -2431,22 +2429,18 @@ begin
     MsgPopup.Msg := LM_CONTEXTMENU;
     MsgPopup.XPos := SmallInt(Round(Event^.button.x_root));
     MsgPopup.YPos := SmallInt(Round(Event^.button.y_root));
-    DeliverMessage(MsgPopup, True);
+
     if (SavedHandle <> PtrUInt(Self)) or (LCLObject = nil) or (FWidget = nil) then
       exit;
+
+    DeliverMessage(MsgPopup, True);
   end;
 
   if not Result then
   begin
-    Result := DeliverMessage(Msg, True) <> 0;
     if (SavedHandle <> PtrUInt(Self)) or (LCLObject = nil) or (FWidget = nil) then
       exit;
-  end;
-
-  if Event^.type_ = GDK_BUTTON_RELEASE then
-  begin
-    Msg.Msg := LM_CLICKED;
-    DeliverMessage(Msg, True);
+    Result := DeliverMessage(Msg, True) <> 0;
   end;
 end;
 
