@@ -702,6 +702,7 @@ type
     FGroupBoxType:TGtk3GroupBoxType;
     function GetInnerClientRect(Frame:PGtkWidget):TRect;
   protected
+    procedure DoBeforeLCLPaint; override;
     procedure ConnectSizeAllocateSignal(ToWidget: PGtkWidget); override;
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
     function getText: String; override;
@@ -3777,6 +3778,23 @@ begin
   end;
 
   Result := RectFromGdkRect(FinalRect);
+end;
+
+procedure TGtk3GroupBox.DoBeforeLCLPaint;
+var
+  DC: TGtk3DeviceContext;
+  NColor: TColor;
+begin
+  inherited DoBeforeLCLPaint;
+  if not Visible then
+    exit;
+  DC := TGtk3DeviceContext(Context);
+  NColor := LCLObject.Color;
+  if (NColor <> clNone) and (NColor <> clDefault) then
+  begin
+    DC.CurrentBrush.Color := ColorToRGB(NColor);
+    DC.fillRect(0, 0, getContainerWidget^.get_allocated_width, getContainerWidget^.get_allocated_height);
+  end;
 end;
 
 procedure TGtk3GroupBox.ConnectSizeAllocateSignal(ToWidget:PGtkWidget);
