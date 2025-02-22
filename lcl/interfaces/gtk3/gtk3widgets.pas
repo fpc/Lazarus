@@ -3125,15 +3125,10 @@ procedure TGtk3Widget.SetBounds(ALeft,ATop,AWidth,AHeight:integer);
 var
   ARect: TGdkRectangle;
   Alloc: TGtkAllocation;
-  AWidget: PGtkWidget;
 begin
   if (Widget=nil) then
     exit;
 
-  if [wtNotebook] * WidgetType <> [] then
-    AWidget := getContainerWidget
-  else
-    AWidget := Widget;
   LCLWidth := AWidth;
   LCLHeight := AHeight;
   ARect.x := ALeft;
@@ -3157,23 +3152,23 @@ begin
   BeginUpdate;
   try
     {fixes gtk3 assertion}
-    if not AWidget^.get_realized then
-      AWidget^.realize;
+    if not Widget^.get_realized then
+      Widget^.realize;
 
     //this should be removed in future.
-    AWidget^.set_size_request(AWidth,AHeight);
+    Widget^.set_size_request(AWidth,AHeight);
 
-    if Gtk3IsContainer(AWidget) then // according to the gtk3 docs only GtkContainer should call this
-      AWidget^.size_allocate(@ARect);
+    if Gtk3IsContainer(Widget) then // according to the gtk3 docs only GtkContainer should call this
+      Widget^.size_allocate(@ARect);
 
-    if AWidget^.get_visible then
-      AWidget^.set_allocation(@Alloc);
+    if Widget^.get_visible then
+      Widget^.set_allocation(@Alloc);
 
     if LCLObject.Parent <> nil then
       Move(ALeft, ATop);
 
     // we must trigger get_preferred_width after changing size
-    AWidget^.queue_resize;
+    Widget^.queue_resize;
 
     {if wtProgressBar in WidgetType then
       getContainerWidget^.set_size_request(AWidth, AHeight);}
@@ -5232,10 +5227,8 @@ var
   Alloc:TGtkAllocation;
 begin
   FWidgetType := FWidgetType + [wtNotebook];
-  Result := TGtkEventBox.new;
-  PGtkEventBox(Result)^.set_has_window(True);
-  FCentralWidget := LCLGtkNotebookNew; // TGtkNotebook.new; //LCLGtkNotebookNew;
-  PGtkEventBox(Result)^.add(FCentralWidget);
+  Result := LCLGtkNotebookNew;
+  FCentralWidget := Result;
   PGtkNoteBook(FCentralWidget)^.set_scrollable(True);
   if (nboHidePageListPopup in TCustomTabControl(LCLObject).Options) then
     PGtkNoteBook(FCentralWidget)^.popup_disable;
@@ -5248,7 +5241,7 @@ begin
   g_signal_connect_data(FCentralWidget,'switch-page', TGCallback(@GtkNotebookSwitchPage), Self, nil, G_CONNECT_DEFAULT);
   // this one triggers after above switch-page
   g_signal_connect_data(FCentralWidget,'switch-page', TGCallback(@GtkNotebookAfterSwitchPage), Self, nil, G_CONNECT_DEFAULT);
-
+  PGtkNotebook(Result)^.set_scrollable(True);
   // those signals doesn't trigger with gtk3-3.6
   // g_signal_connect_data(FCentralWidget,'change-current-page', TGCallback(@GtkNotebookAfterSwitchPage), Self, nil, 0);
   // g_signal_connect_data(FCentralWidget,'select-page', TGCallback(@GtkNotebookSelectPage), Self, nil, 0);
