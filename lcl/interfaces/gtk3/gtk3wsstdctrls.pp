@@ -41,7 +41,7 @@ uses
   Graphics, Controls, StdCtrls, LCLType, LCLProc,
 ////////////////////////////////////////////////////
   WSLCLClasses, WSControls, WSStdCtrls, WSProc, Classes, Clipbrd,
-  gtk3widgets, gtk3procs;
+  gtk3widgets, gtk3procs, LazLogger;
 
 type
   { TGtk3WSScrollBar }
@@ -573,12 +573,16 @@ class function TGtk3WSCustomComboBox.GetSelStart(const ACustomComboBox: TCustomC
   ): integer;
 begin
   Result := -1;
+  if ACustomComboBox.HandleAllocated then
+    Result := TGtk3ComboBox(ACustomComboBox.Handle).getSelStart;
 end;
 
 class function TGtk3WSCustomComboBox.GetSelLength(const ACustomComboBox: TCustomComboBox
   ): integer;
 begin
   Result := 0;
+  if ACustomComboBox.HandleAllocated then
+    Result := TGtk3ComboBox(ACustomComboBox.Handle).getSelLength;
 end;
 
 class function TGtk3WSCustomComboBox.GetItemIndex(const ACustomComboBox: TCustomComboBox
@@ -594,6 +598,8 @@ class function TGtk3WSCustomComboBox.GetMaxLength(const ACustomComboBox: TCustom
   ): integer;
 begin
   Result := 0;
+  if ACustomComboBox.HandleAllocated then
+    Result := TGtk3ComboBox(ACustomComboBox.Handle).getMaxLength;
 end;
 
 class procedure TGtk3WSCustomComboBox.SetArrowKeysTraverseList(
@@ -618,19 +624,22 @@ end;
 class procedure TGtk3WSCustomComboBox.SetMaxLength(const ACustomComboBox: TCustomComboBox;
   NewLength: integer);
 begin
-
+  if ACustomComboBox.HandleAllocated then
+    TGtk3ComboBox(ACustomComboBox.Handle).SetMaxLength(NewLength);
 end;
 
 class procedure TGtk3WSCustomComboBox.SetSelStart(const ACustomComboBox: TCustomComboBox;
   NewStart: integer);
 begin
-
+  if ACustomComboBox.HandleAllocated then
+    TGtk3ComboBox(ACustomComboBox.Handle).SetSelStart(NewStart);
 end;
 
 class procedure TGtk3WSCustomComboBox.SetSelLength(const ACustomComboBox: TCustomComboBox;
   NewLength: integer);
 begin
-
+  if ACustomComboBox.HandleAllocated then
+    TGtk3ComboBox(ACustomComboBox.Handle).SetSelLength(NewLength);
 end;
 
 class procedure TGtk3WSCustomComboBox.SetItemIndex(const ACustomComboBox: TCustomComboBox;
@@ -638,7 +647,7 @@ class procedure TGtk3WSCustomComboBox.SetItemIndex(const ACustomComboBox: TCusto
 begin
   if not WSCheckHandleAllocated(ACustomComboBox, 'SetItemIndex') then
     Exit;
-  // DebugLn('TGtk3WSCustomComboBox.SetItemIndex ',dbgs(NewIndex));
+  //DebugLn('TGtk3WSCustomComboBox.SetItemIndex ',dbgs(NewIndex));
   TGtk3ComboBox(ACustomComboBox.Handle).BeginUpdate;
   TGtk3ComboBox(ACustomComboBox.Handle).ItemIndex := NewIndex;
   TGtk3ComboBox(ACustomComboBox.Handle).EndUpdate;

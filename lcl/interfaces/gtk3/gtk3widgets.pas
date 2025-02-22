@@ -741,6 +741,12 @@ type
     function GetPopupWidget: PGtkWidget;
     function GetButtonWidget: PGtkWidget;
     function GetArrowWidget: PGtkWidget;
+    function getSelStart: integer;
+    function getSelLength: integer;
+    function getMaxLength: integer;
+    procedure SetMaxLength(const AMaxLength: integer);
+    procedure SetSelStart(const ANewStart: integer);
+    procedure SetSelLength(const ANewLength: integer);
     procedure InitializeWidget; override;
     property DroppedDown: boolean read GetDroppedDown write SetDroppedDown;
     property ItemIndex: Integer read GetItemIndex write SetItemIndex;
@@ -7717,25 +7723,25 @@ end;
 function TGtk3ComboBox.GetItemIndex: Integer;
 begin
   Result := -1;
-  if Assigned(FWidget) and Gtk3IsComboBox(GetContainerWidget) then
-    Result := PGtkComboBox(GetContainerWidget)^.get_active;
+  if Assigned(FWidget) and Gtk3IsComboBox(Widget) then
+    Result := PGtkComboBox(Widget)^.get_active;
 end;
 
 procedure TGtk3ComboBox.SetDroppedDown(AValue: boolean);
 begin
-  if Assigned(FWidget) and Gtk3IsComboBox(GetContainerWidget) then
+  if Assigned(FWidget) and Gtk3IsComboBox(Widget) then
   begin
     if AValue then
-      PGtkComboBox(GetContainerWidget)^.popup
+      PGtkComboBox(Widget)^.popup
     else
-      PGtkComboBox(GetContainerWidget)^.popdown;
+      PGtkComboBox(Widget)^.popdown;
   end;
 end;
 
 procedure TGtk3ComboBox.SetItemIndex(AValue: Integer);
 begin
-  if IsWidgetOK and Gtk3IsComboBox(GetContainerWidget) then
-    PGtkComboBox(GetContainerWidget)^.set_active(AValue);
+  if IsWidgetOK and Gtk3IsComboBox(Widget) then
+    PGtkComboBox(Widget)^.set_active(AValue);
 end;
 
 function TGtk3ComboBox.GetCellView: PGtkCellView;
@@ -7745,7 +7751,7 @@ var
 begin
   if FCellView = nil then
   begin
-    AList := PGtkComboBox(getContainerWidget)^.get_children;
+    AList := PGtkComboBox(Widget)^.get_children;
     for i := 0 to g_list_length(AList) -1 do
     begin
       if Gtk3IsCellView(g_list_nth(AList, i)^.data) then
@@ -7764,11 +7770,11 @@ begin
   Result := nil;
   if not IsWidgetOk then
     exit;
-  if PGtkComboBox(GetContainerWidget)^.priv3^.popup_widget <> nil then
-    Result := PGtkComboBox(GetContainerWidget)^.priv3^.popup_widget
+  if PGtkComboBox(Widget)^.priv3^.popup_widget <> nil then
+    Result := PGtkComboBox(Widget)^.priv3^.popup_widget
   else
-  if PGtkComboBox(GetContainerWidget)^.priv3^.tree_view <> nil then
-    Result := PGtkComboBox(GetContainerWidget)^.priv3^.tree_view;
+  if PGtkComboBox(Widget)^.priv3^.tree_view <> nil then
+    Result := PGtkComboBox(Widget)^.priv3^.tree_view;
 end;
 
 function TGtk3ComboBox.GetButtonWidget: PGtkWidget;
@@ -7777,8 +7783,8 @@ begin
   if not IsWidgetOk then
     exit;
   // button is of type GtkToggleButton
-  if PGtkComboBox(GetContainerWidget)^.priv3^.button <> nil then
-    Result := PGtkComboBox(GetContainerWidget)^.priv3^.button;
+  if PGtkComboBox(Widget)^.priv3^.button <> nil then
+    Result := PGtkComboBox(Widget)^.priv3^.button;
 end;
 
 function TGtk3ComboBox.GetArrowWidget: PGtkWidget;
@@ -7787,8 +7793,69 @@ begin
   if not IsWidgetOk then
     exit;
   // arrow is type is GtkIcon
-  if PGtkComboBox(GetContainerWidget)^.priv3^.arrow <> nil then
-    Result := PGtkComboBox(GetContainerWidget)^.priv3^.arrow;
+  if PGtkComboBox(Widget)^.priv3^.arrow <> nil then
+    Result := PGtkComboBox(Widget)^.priv3^.arrow;
+end;
+
+function TGtk3ComboBox.getSelStart: integer;
+var
+  AStartPos, AEndPos: gint;
+begin
+  Result := -1;
+  if PGtkComboBox(Widget)^.has_entry then
+  begin
+    if PGtkEditable(PGtkComboBox(Widget)^.get_child)^.get_selection_bounds(@AStartPos, @AEndPos) then
+      Result := AStartPos;
+  end;
+end;
+
+function TGtk3ComboBox.getSelLength: integer;
+var
+  AStartPos, AEndPos: gint;
+begin
+  Result := 0;
+  if PGtkComboBox(Widget)^.has_entry then
+  begin
+    if PGtkEditable(PGtkComboBox(Widget)^.get_child)^.get_selection_bounds(@AStartPos, @AEndPos) then
+      Result := AEndPos - AStartPos;
+  end;
+end;
+
+function TGtk3ComboBox.getMaxLength: integer;
+begin
+  Result := 0;
+  if PGtkComboBox(Widget)^.has_entry then
+    Result := PGtkEntry(PGtkComboBox(Widget)^.get_child)^.get_max_length;
+end;
+
+procedure TGtk3ComboBox.SetMaxLength(const AMaxLength: integer);
+begin
+  if PGtkComboBox(Widget)^.has_entry then
+  begin
+    PGtkEntry(PGtkComboBox(Widget)^.get_child)^.set_max_length(AMaxLength);
+  end;
+end;
+
+procedure TGtk3ComboBox.SetSelStart(const ANewStart: integer);
+var
+  AStartPos, AEndPos: gint;
+begin
+  if PGtkComboBox(Widget)^.has_entry then
+  begin
+    AStartPos := ANewStart;
+    AEndPos := AStartPos + 1;
+    PGtkEditable(PGtkComboBox(Widget)^.get_child)^.select_region(AStartPos, AEndPos);
+  end;
+end;
+
+procedure TGtk3ComboBox.SetSelLength(const ANewLength: integer);
+var
+  AStartPos, AEndPos: gint;
+begin
+  if PGtkEditable(PGtkComboBox(Widget)^.get_child)^.get_selection_bounds(@AStartPos, @AEndPos) then
+  begin
+    PGtkEditable(PGtkComboBox(Widget)^.get_child)^.select_region(AStartPos, AStartPos + ANewLength);
+  end;
 end;
 
 function TGtk3ComboBox.CreateWidget(const Params: TCreateParams): PGtkWidget;
@@ -7905,9 +7972,9 @@ end;
 function TGtk3ComboBox.getText: String;
 begin
   Result := '';
-  if Gtk3IsComboBox(GetContainerWidget) then
+  if Gtk3IsComboBox(Widget) then
   begin
-    with PGtkComboBox(GetContainerWidget)^ do
+    with PGtkComboBox(Widget)^ do
     begin
       if has_entry then
       begin
@@ -7921,8 +7988,10 @@ end;
 
 procedure TGtk3ComboBox.setText(const AValue: String);
 begin
-  if Gtk3IsComboBox(GetContainerWidget) then begin
-    with PGtkComboBox(GetContainerWidget)^ do begin
+  if Gtk3IsComboBox(Widget) then
+  begin
+    with PGtkComboBox(Widget)^ do
+    begin
       if has_entry then begin
         {%H-}PGtkEntry(get_child)^.Text := Pgchar(AValue);
       end else begin
@@ -7938,7 +8007,7 @@ var
   APrivate: PGtkComboBoxPrivate;
 begin
   exit;
-  AComboWidget := PGtkComboBox(GetContainerWidget);
+  AComboWidget := PGtkComboBox(Widget);
   APrivate := PGtkComboBoxPrivate(AComboWidget^.priv3);
   DebugLn('** COMBO DUMP OF PGtkComboBoxPrivate struct EVENT=',ADbgEvent);
   DebugLn('BUTTON=',dbgHex({%H-}PtrUInt(APrivate^.button)),' ARROW=',dbgHex({%H-}PtrUInt(APrivate^.arrow)),
@@ -8022,7 +8091,7 @@ begin
   {$ENDIF}
   if Assigned(LCLObject) then
   begin
-    if IsWidgetOK  then // and (FWidget <> GetContainerWidget) then
+    if IsWidgetOK then
     begin
       if PGtkComboBox(FWidget)^.has_entry then
         FWidget^.grab_focus
@@ -8138,16 +8207,16 @@ var
   AValue: TGValue;
 begin
   Result := False;
-  if Assigned(FWidget) and Gtk3IsComboBox(GetContainerWidget) then
+  if Assigned(FWidget) and Gtk3IsComboBox(Widget) then
   begin
     AValue.g_type := G_TYPE_BOOLEAN;
-    g_object_get_property(PGObject(GetContainerWidget), 'popup-shown', @AValue);
+    g_object_get_property(PGObject(Widget), 'popup-shown', @AValue);
     Result := AValue.data[0].v_int <> 0;
   end;
 end;
 
-class procedure TGtk3ComboBox.ComboSizeAllocate(AWidget:PGtkWidget;AGdkRect:
-  PGdkRectangle;Data:gpointer); cdecl;
+class procedure TGtk3ComboBox.ComboSizeAllocate(AWidget:PGtkWidget; AGdkRect: PGdkRectangle;
+  Data:gpointer); cdecl;
 var
   Msg: TLMSize;
   NewSize: TSize;
