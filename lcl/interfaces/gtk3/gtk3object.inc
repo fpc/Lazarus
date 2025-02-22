@@ -560,7 +560,8 @@ begin
   {$IFDEF GTK3DEBUGCORE}
   DebugLn('TGtk3WidgetSet.AppWaitMessage');
   {$ENDIF}
-  gtk_main_iteration;
+  if not g_main_context_pending(nil) then
+    g_main_context_iteration(nil, True);
 end;
 
 procedure TGtk3WidgetSet.AppProcessMessages;
@@ -568,8 +569,8 @@ begin
   {$IFDEF GTK3DEBUGCORE}
   DebugLn('TGtk3WidgetSet.AppProcessMessages');
   {$ENDIF}
-  while gtk_events_pending do
-    gtk_main_iteration_do(False);
+  if g_main_context_pending(nil) then
+    g_main_context_iteration(nil, False);
 end;
 
 procedure TGtk3WidgetSet.AppTerminate;
