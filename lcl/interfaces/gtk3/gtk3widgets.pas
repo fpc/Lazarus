@@ -708,7 +708,6 @@ type
     function getText: String; override;
     procedure setText(const AValue: String); override;
   public
-    procedure SetBounds(ALeft,ATop,AWidth,AHeight:integer); override;
     function getClientRect:TRect; override;
     property GroupBoxType: TGtk3GroupBoxType read FGroupBoxType write FGroupBoxType;
   end;
@@ -3601,23 +3600,6 @@ begin
       {%H-}PGtkFrame(Widget)^.set_label(PgChar({%H-}ReplaceAmpersandsWithUnderscores(AValue)));
     end;
   end;
-end;
-
-procedure TGtk3GroupBox.SetBounds(ALeft,ATop,AWidth,AHeight:integer);
-var
-  Alloc:TGtkAllocation;
-begin
-  {$IF DEFINED(GTK3DEBUGSIZE) OR DEFINED(GTK3DEBUGGROUPBOX)}
-  writeln(Format('TGtk3GroupBox.setBounds l %d t %d w %d h %d',[ALeft, ATop, AWidth, AHeight]));
-  {$ENDIF}
-  LCLWidth := AWidth;
-  LCLHeight := AHeight;
-  Alloc.x := ALeft;
-  Alloc.y := ATop;
-  Alloc.width := AWidth;
-  Alloc.Height := AHeight;
-  Widget^.set_allocation(@Alloc);
-  Move(ALeft, ATop);
 end;
 
 {$IF DEFINED(GTK3DEBUGSIZE) OR DEFINED(GTK3DEBUGGROUPBOX)}
