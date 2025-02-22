@@ -7801,11 +7801,11 @@ function TGtk3ComboBox.getSelStart: integer;
 var
   AStartPos, AEndPos: gint;
 begin
-  Result := -1;
+  Result := 0;
   if PGtkComboBox(Widget)^.has_entry then
   begin
-    if PGtkEditable(PGtkComboBox(Widget)^.get_child)^.get_selection_bounds(@AStartPos, @AEndPos) then
-      Result := AStartPos;
+    PGtkEditable(PGtkComboBox(Widget)^.get_child)^.get_selection_bounds(@AStartPos, @AEndPos);
+    Result := AStartPos;
   end;
 end;
 
@@ -7842,6 +7842,9 @@ var
 begin
   if PGtkComboBox(Widget)^.has_entry then
   begin
+    //PGtkEditable(PGtkComboBox(Widget)^.get_child)^.get_selection_bounds(@AStartPos, @AEndPos);
+    //if AEndPos < ANewStart then
+    //  AEndPos := ANewStart;
     AStartPos := ANewStart;
     AEndPos := AStartPos + 1;
     PGtkEditable(PGtkComboBox(Widget)^.get_child)^.select_region(AStartPos, AEndPos);
