@@ -610,44 +610,9 @@ msgstr "Zmenený riadok"
 msgid "Mouse link"
 msgstr ""
 
-#: lazarusidestrconsts.dlgaddhiattroutlinelevel10color
-msgid "Level 10"
-msgstr ""
-
-#: lazarusidestrconsts.dlgaddhiattroutlinelevel1color
-msgid "Level  1"
-msgstr ""
-
-#: lazarusidestrconsts.dlgaddhiattroutlinelevel2color
-msgid "Level  2"
-msgstr ""
-
-#: lazarusidestrconsts.dlgaddhiattroutlinelevel3color
-msgid "Level  3"
-msgstr ""
-
-#: lazarusidestrconsts.dlgaddhiattroutlinelevel4color
-msgid "Level  4"
-msgstr ""
-
-#: lazarusidestrconsts.dlgaddhiattroutlinelevel5color
-msgid "Level  5"
-msgstr ""
-
-#: lazarusidestrconsts.dlgaddhiattroutlinelevel6color
-msgid "Level  6"
-msgstr ""
-
-#: lazarusidestrconsts.dlgaddhiattroutlinelevel7color
-msgid "Level  7"
-msgstr ""
-
-#: lazarusidestrconsts.dlgaddhiattroutlinelevel8color
-msgid "Level  8"
-msgstr ""
-
-#: lazarusidestrconsts.dlgaddhiattroutlinelevel9color
-msgid "Level  9"
+#: lazarusidestrconsts.dlgaddhiattroutlinelevelcolor
+#, object-pascal-format
+msgid "Level %s"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrrecentlyused
@@ -11439,46 +11404,6 @@ msgstr "Nastavenie externých nástrojov"
 msgid "Find Incremental"
 msgstr "Nájsť narastajúco"
 
-#: lazarusidestrconsts.liskmgotosourceeditor1
-msgid "Go to source editor 1"
-msgstr "Choď na editor zdrojových kódov 1"
-
-#: lazarusidestrconsts.liskmgotosourceeditor10
-msgid "Go to source editor 10"
-msgstr "Choď na editor zdrojových kódov 10"
-
-#: lazarusidestrconsts.liskmgotosourceeditor2
-msgid "Go to source editor 2"
-msgstr "Choď na editor zdrojových kódov 2"
-
-#: lazarusidestrconsts.liskmgotosourceeditor3
-msgid "Go to source editor 3"
-msgstr "Choď na editor zdrojových kódov 3"
-
-#: lazarusidestrconsts.liskmgotosourceeditor4
-msgid "Go to source editor 4"
-msgstr "Choď na editor zdrojových kódov 4"
-
-#: lazarusidestrconsts.liskmgotosourceeditor5
-msgid "Go to source editor 5"
-msgstr "Choď na editor zdrojových kódov 5"
-
-#: lazarusidestrconsts.liskmgotosourceeditor6
-msgid "Go to source editor 6"
-msgstr "Choď na editor zdrojových kódov 6"
-
-#: lazarusidestrconsts.liskmgotosourceeditor7
-msgid "Go to source editor 7"
-msgstr "Choď na editor zdrojových kódov 7"
-
-#: lazarusidestrconsts.liskmgotosourceeditor8
-msgid "Go to source editor 8"
-msgstr "Choď na editor zdrojových kódov 8"
-
-#: lazarusidestrconsts.liskmgotosourceeditor9
-msgid "Go to source editor 9"
-msgstr "Choď na editor zdrojových kódov 9"
-
 #: lazarusidestrconsts.liskminspect
 msgid "Inspect"
 msgstr "Skontrolovať"
@@ -20407,8 +20332,9 @@ msgid "Toggle Fold at Cursor"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecgotoeditor
-#, object-pascal-format
-msgid "Go to editor %d"
+#, object-pascal-format, fuzzy
+#| msgid "Go to editor %d"
+msgid "Go to source editor %d"
 msgstr "Choď na editor %d"
 
 #: lazarusidestrconsts.srkmecgotoincludedirective

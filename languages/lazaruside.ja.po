@@ -608,44 +608,9 @@ msgstr "修正行"
 msgid "Mouse link"
 msgstr "マウスリンク"
 
-#: lazarusidestrconsts.dlgaddhiattroutlinelevel10color
-msgid "Level 10"
-msgstr ""
-
-#: lazarusidestrconsts.dlgaddhiattroutlinelevel1color
-msgid "Level  1"
-msgstr ""
-
-#: lazarusidestrconsts.dlgaddhiattroutlinelevel2color
-msgid "Level  2"
-msgstr ""
-
-#: lazarusidestrconsts.dlgaddhiattroutlinelevel3color
-msgid "Level  3"
-msgstr ""
-
-#: lazarusidestrconsts.dlgaddhiattroutlinelevel4color
-msgid "Level  4"
-msgstr ""
-
-#: lazarusidestrconsts.dlgaddhiattroutlinelevel5color
-msgid "Level  5"
-msgstr ""
-
-#: lazarusidestrconsts.dlgaddhiattroutlinelevel6color
-msgid "Level  6"
-msgstr ""
-
-#: lazarusidestrconsts.dlgaddhiattroutlinelevel7color
-msgid "Level  7"
-msgstr ""
-
-#: lazarusidestrconsts.dlgaddhiattroutlinelevel8color
-msgid "Level  8"
-msgstr ""
-
-#: lazarusidestrconsts.dlgaddhiattroutlinelevel9color
-msgid "Level  9"
+#: lazarusidestrconsts.dlgaddhiattroutlinelevelcolor
+#, object-pascal-format
+msgid "Level %s"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrrecentlyused
@@ -11590,46 +11555,6 @@ msgstr "外部ツールの設定"
 msgid "Find Incremental"
 msgstr "インクリメンタルを検索"
 
-#: lazarusidestrconsts.liskmgotosourceeditor1
-msgid "Go to source editor 1"
-msgstr "ソースエディタ1に移動"
-
-#: lazarusidestrconsts.liskmgotosourceeditor10
-msgid "Go to source editor 10"
-msgstr "ソースエディタ10に移動"
-
-#: lazarusidestrconsts.liskmgotosourceeditor2
-msgid "Go to source editor 2"
-msgstr "ソースエディタ2に移動"
-
-#: lazarusidestrconsts.liskmgotosourceeditor3
-msgid "Go to source editor 3"
-msgstr "ソースエディタ3に移動"
-
-#: lazarusidestrconsts.liskmgotosourceeditor4
-msgid "Go to source editor 4"
-msgstr "ソースエディタ4に移動"
-
-#: lazarusidestrconsts.liskmgotosourceeditor5
-msgid "Go to source editor 5"
-msgstr "ソースエディタ5に移動"
-
-#: lazarusidestrconsts.liskmgotosourceeditor6
-msgid "Go to source editor 6"
-msgstr "ソースエディタ6に移動"
-
-#: lazarusidestrconsts.liskmgotosourceeditor7
-msgid "Go to source editor 7"
-msgstr "ソースエディタ7に移動"
-
-#: lazarusidestrconsts.liskmgotosourceeditor8
-msgid "Go to source editor 8"
-msgstr "ソースエディタ8に移動"
-
-#: lazarusidestrconsts.liskmgotosourceeditor9
-msgid "Go to source editor 9"
-msgstr "ソースエディタ9に移動"
-
 #: lazarusidestrconsts.liskminspect
 msgid "Inspect"
 msgstr "インスペクト"
@@ -20635,8 +20560,9 @@ msgid "Toggle Fold at Cursor"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecgotoeditor
-#, object-pascal-format
-msgid "Go to editor %d"
+#, object-pascal-format, fuzzy
+#| msgid "Go to editor %d"
+msgid "Go to source editor %d"
 msgstr "エディタ%dに移動"
 
 #: lazarusidestrconsts.srkmecgotoincludedirective

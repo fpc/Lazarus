@@ -610,45 +610,10 @@ msgstr "Línea modificada"
 msgid "Mouse link"
 msgstr "Enlace de Ratón"
 
-#: lazarusidestrconsts.dlgaddhiattroutlinelevel10color
-msgid "Level 10"
-msgstr "Nivel 10"
-
-#: lazarusidestrconsts.dlgaddhiattroutlinelevel1color
-msgid "Level  1"
-msgstr "Nivel 1"
-
-#: lazarusidestrconsts.dlgaddhiattroutlinelevel2color
-msgid "Level  2"
-msgstr "Nivel 2"
-
-#: lazarusidestrconsts.dlgaddhiattroutlinelevel3color
-msgid "Level  3"
-msgstr "Nivel 3"
-
-#: lazarusidestrconsts.dlgaddhiattroutlinelevel4color
-msgid "Level  4"
-msgstr "Nivel 4"
-
-#: lazarusidestrconsts.dlgaddhiattroutlinelevel5color
-msgid "Level  5"
-msgstr "Nivel 5"
-
-#: lazarusidestrconsts.dlgaddhiattroutlinelevel6color
-msgid "Level  6"
-msgstr "Nivel 6"
-
-#: lazarusidestrconsts.dlgaddhiattroutlinelevel7color
-msgid "Level  7"
-msgstr "Nivel 7"
-
-#: lazarusidestrconsts.dlgaddhiattroutlinelevel8color
-msgid "Level  8"
-msgstr "Nivel 8"
-
-#: lazarusidestrconsts.dlgaddhiattroutlinelevel9color
-msgid "Level  9"
-msgstr "Nivel 9"
+#: lazarusidestrconsts.dlgaddhiattroutlinelevelcolor
+#, object-pascal-format
+msgid "Level %s"
+msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrrecentlyused
 msgid "Recently used item"
@@ -11638,46 +11603,6 @@ msgstr "Opciones de herramientas externas"
 msgid "Find Incremental"
 msgstr "Búsqueda Incremental"
 
-#: lazarusidestrconsts.liskmgotosourceeditor1
-msgid "Go to source editor 1"
-msgstr "Ir a editor de código 1"
-
-#: lazarusidestrconsts.liskmgotosourceeditor10
-msgid "Go to source editor 10"
-msgstr "Ir a editor de código 10"
-
-#: lazarusidestrconsts.liskmgotosourceeditor2
-msgid "Go to source editor 2"
-msgstr "Ir a editor de código 2"
-
-#: lazarusidestrconsts.liskmgotosourceeditor3
-msgid "Go to source editor 3"
-msgstr "Ir a editor de código 3"
-
-#: lazarusidestrconsts.liskmgotosourceeditor4
-msgid "Go to source editor 4"
-msgstr "Ir a editor de código 4"
-
-#: lazarusidestrconsts.liskmgotosourceeditor5
-msgid "Go to source editor 5"
-msgstr "Ir a editor de código 5"
-
-#: lazarusidestrconsts.liskmgotosourceeditor6
-msgid "Go to source editor 6"
-msgstr "Ir a editor de código 6"
-
-#: lazarusidestrconsts.liskmgotosourceeditor7
-msgid "Go to source editor 7"
-msgstr "Ir a editor de código 7"
-
-#: lazarusidestrconsts.liskmgotosourceeditor8
-msgid "Go to source editor 8"
-msgstr "Ir a editor de código 8"
-
-#: lazarusidestrconsts.liskmgotosourceeditor9
-msgid "Go to source editor 9"
-msgstr "Ir a editor de código 9"
-
 #: lazarusidestrconsts.liskminspect
 msgid "Inspect"
 msgstr "Inspeccionar"
@@ -20615,8 +20540,9 @@ msgid "Toggle Fold at Cursor"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecgotoeditor
-#, object-pascal-format
-msgid "Go to editor %d"
+#, object-pascal-format, fuzzy
+#| msgid "Go to editor %d"
+msgid "Go to source editor %d"
 msgstr "Ir a editor %d"
 
 #: lazarusidestrconsts.srkmecgotoincludedirective

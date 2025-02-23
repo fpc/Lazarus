@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-02-22 01:15+0300\n"
+"PO-Revision-Date: 2025-02-23 12:44+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -605,45 +605,10 @@ msgstr "Изменённая строка"
 msgid "Mouse link"
 msgstr "Ссылка при наведении мыши"
 
-#: lazarusidestrconsts.dlgaddhiattroutlinelevel10color
-msgid "Level 10"
-msgstr "Уровень 10"
-
-#: lazarusidestrconsts.dlgaddhiattroutlinelevel1color
-msgid "Level  1"
-msgstr "Уровень  1"
-
-#: lazarusidestrconsts.dlgaddhiattroutlinelevel2color
-msgid "Level  2"
-msgstr "Уровень  2"
-
-#: lazarusidestrconsts.dlgaddhiattroutlinelevel3color
-msgid "Level  3"
-msgstr "Уровень  3"
-
-#: lazarusidestrconsts.dlgaddhiattroutlinelevel4color
-msgid "Level  4"
-msgstr "Уровень  4"
-
-#: lazarusidestrconsts.dlgaddhiattroutlinelevel5color
-msgid "Level  5"
-msgstr "Уровень  5"
-
-#: lazarusidestrconsts.dlgaddhiattroutlinelevel6color
-msgid "Level  6"
-msgstr "Уровень  6"
-
-#: lazarusidestrconsts.dlgaddhiattroutlinelevel7color
-msgid "Level  7"
-msgstr "Уровень  7"
-
-#: lazarusidestrconsts.dlgaddhiattroutlinelevel8color
-msgid "Level  8"
-msgstr "Уровень  8"
-
-#: lazarusidestrconsts.dlgaddhiattroutlinelevel9color
-msgid "Level  9"
-msgstr "Уровень  9"
+#: lazarusidestrconsts.dlgaddhiattroutlinelevelcolor
+#, object-pascal-format
+msgid "Level %s"
+msgstr "Уровень %s"
 
 #: lazarusidestrconsts.dlgaddhiattrrecentlyused
 msgid "Recently used item"
@@ -11360,46 +11325,6 @@ msgstr "Настройка внешних средств"
 msgid "Find Incremental"
 msgstr "Найти инкрементно"
 
-#: lazarusidestrconsts.liskmgotosourceeditor1
-msgid "Go to source editor 1"
-msgstr "Перейти к редактору исходного кода 1"
-
-#: lazarusidestrconsts.liskmgotosourceeditor10
-msgid "Go to source editor 10"
-msgstr "Перейти к редактору исходного кода 10"
-
-#: lazarusidestrconsts.liskmgotosourceeditor2
-msgid "Go to source editor 2"
-msgstr "Перейти к редактору исходного кода 2"
-
-#: lazarusidestrconsts.liskmgotosourceeditor3
-msgid "Go to source editor 3"
-msgstr "Перейти к редактору исходного кода 3"
-
-#: lazarusidestrconsts.liskmgotosourceeditor4
-msgid "Go to source editor 4"
-msgstr "Перейти к редактору исходного кода 4"
-
-#: lazarusidestrconsts.liskmgotosourceeditor5
-msgid "Go to source editor 5"
-msgstr "Перейти к редактору исходного кода 5"
-
-#: lazarusidestrconsts.liskmgotosourceeditor6
-msgid "Go to source editor 6"
-msgstr "Перейти к редактору исходного кода 6"
-
-#: lazarusidestrconsts.liskmgotosourceeditor7
-msgid "Go to source editor 7"
-msgstr "Перейти к редактору исходного кода 7"
-
-#: lazarusidestrconsts.liskmgotosourceeditor8
-msgid "Go to source editor 8"
-msgstr "Перейти к редактору исходного кода 8"
-
-#: lazarusidestrconsts.liskmgotosourceeditor9
-msgid "Go to source editor 9"
-msgstr "Перейти к редактору исходного кода 9"
-
 #: lazarusidestrconsts.liskminspect
 msgid "Inspect"
 msgstr "Просмотреть"
@@ -20246,8 +20171,8 @@ msgstr "Переключить свёрнутость текста под кур
 
 #: lazarusidestrconsts.srkmecgotoeditor
 #, object-pascal-format
-msgid "Go to editor %d"
-msgstr "Перейти к редактору %d"
+msgid "Go to source editor %d"
+msgstr "Перейти к редактору исходного кода %d"
 
 #: lazarusidestrconsts.srkmecgotoincludedirective
 msgid "Go to include directive of current include file"
