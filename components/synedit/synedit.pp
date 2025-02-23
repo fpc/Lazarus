@@ -2138,6 +2138,7 @@ var
   FInfo: String;
 begin
   if SelAvail then begin
+    FInfo := '';
     if eoFoldedCopyPaste in fOptions2 then
       FInfo := FFoldedLinesView.GetFoldDescription(
         FBlockSelection.FirstLineBytePos.Y - 1, FBlockSelection.FirstLineBytePos.X,
@@ -2151,6 +2152,7 @@ var
   FInfo: String;
 begin
   if SelAvail then begin
+    FInfo := '';
     if eoFoldedCopyPaste in fOptions2 then
       FInfo := FFoldedLinesView.GetFoldDescription(
         FBlockSelection.FirstLineBytePos.Y - 1, FBlockSelection.FirstLineBytePos.X,

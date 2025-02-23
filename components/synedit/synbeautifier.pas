@@ -379,15 +379,16 @@ var
   b: Integer;
 begin
   ACharMix := '';
-  if (GetLine(LinePos-2) = '') and (GetLine(LinePos-1) <> '') then
-    AnIndent := 0
-  else
+  if (GetLine(LinePos-2) = '') and (GetLine(LinePos-1) <> '') then begin
+    AnIndent := 0;
+  end
+  else begin
     AnIndent := GetIndent(LinePos, b, AStopScanAtLine);
-
-  if AnIndent > 0 then begin
-    ACharMix := GetCharMix(LinePos, AnIndent, b, True);
-    if (FIndentType = sbitPositionCaret) and (GetLine(LinePos-1) = '') then
-      ACharMix := '';
+    if AnIndent > 0 then begin
+      ACharMix := GetCharMix(LinePos, AnIndent, b, True);
+      if (FIndentType = sbitPositionCaret) and (GetLine(LinePos-1) = '') then
+        ACharMix := '';
+    end;
   end;
 end;
 
@@ -690,6 +691,7 @@ begin
   Result := 1;
   FCurrentLines := Lines; // for GetCurrentIndent
   BackCounter := ACaret.LinePos - 1;
+  Temp := '';
   if BackCounter > 0 then
     repeat
       Dec(BackCounter);

@@ -620,6 +620,7 @@ var
 begin
   Result := Caller is TSynEditStringList;
   {$IFDEF SynUndoDebugItems}if Result then debugln(['---  Undo Perform ',DbgSName(self), ' ', dbgs(Self), ' - ', DebugString]);{$ENDIF}
+  WasSaved := nil;
   if Result then begin
     UnSaved := Buffer.CurUndoList.SavedMarkerExists and (not Buffer.CurUndoList.IsTopMarkedAsSaved);
     if Length(FWasSaved) = 1 then begin
