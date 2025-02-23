@@ -1,7 +1,7 @@
 unit LazSynTextArea;
 
 {$mode objfpc}{$H+}
-{$INLINE OFF}
+{ $INLINE OFF}
 
 interface
 

@@ -2,7 +2,7 @@ unit SynEditViewedLineMap experimental;
 
 {$mode objfpc}{$H+}
 {$modeswitch AdvancedRecords}
-{$INLINE off}
+{ $INLINE off}
 
 interface
 

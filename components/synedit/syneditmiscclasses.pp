@@ -38,7 +38,7 @@ Known Issues:
 unit SynEditMiscClasses;
 
 {$I synedit.inc}
-{$INLINE off}
+{ $INLINE off}
 
 interface
 

@@ -1,7 +1,7 @@
 unit TestSynTextArea;
 
 {$mode objfpc}{$H+}
-{$INLINE OFF}
+{ $INLINE OFF}
 
 interface
 
