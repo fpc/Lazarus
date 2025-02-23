@@ -408,7 +408,6 @@ type
     procedure SetVisible(AValue: Boolean); override;
   public
     procedure InitializeWidget; override;
-    procedure AddChild(AWidget: PGtkWidget; const ALeft, ATop: Integer); virtual;
   end;
 
   { TGtk3Page }
@@ -4919,14 +4918,6 @@ begin
     g_signal_connect_data(GetContainerWidget, 'button-release-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
     g_signal_connect_data(GetContainerWidget, 'motion-notify-event', TGCallback(@motionNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
   end;
-end;
-
-procedure TGtk3Container.AddChild(AWidget: PGtkWidget; const ALeft, ATop: Integer);
-begin
-  if Assigned(FCentralWidget) then
-    PGtkFixed(PGtkScrolledWindow(FCentralWidget)^.get_child)^.put(AWidget, ALeft, ATop)
-  else
-    PGtkContainer(Widget)^.add(AWidget);
 end;
 
 { TGtk3ToolBar }
