@@ -36,17 +36,6 @@ begin
     DebugLn('Error: LCLGtkFrameGetPreferredWidth cannot get TGtk3Widget for widget parameter.');
     Exit;
   end;
-  // LCL does not like when ws calculates autosize dimensions
-  // writeln('====> FGPW(',dbgsName(AControl.LCLObject),'): AutoSize=', AControl.LCLObject.AutoSize,' minW=',min_width^,' natW=',nat_width^,' LCLWidth=',AControl.LCLWidth,' LCLHeight=',AControl.LCLHeight);
-  if AControl.LCLObject.AutoSize then
-  begin
-    //if AControl.LCLWidth > min_width^ then
-    //  nat_width^ := AControl.LCLWidth;
-    //min_width^ := Max(min_width^, AControl.LCLObject.Width);
-    //if AControl.LCLWidth > 0 then
-    //  nat_width^ := Max(min_width^, AControl.LCLWidth);
-    // exit;
-  end;
 
   if AControl.LCLWidth = 0 then
   begin
@@ -91,15 +80,6 @@ begin
   begin
     DebugLn('Error: LCLGtkFrameGetPreferredHeight cannot get TGtk3Widget for widget parameter.');
     Exit;
-  end;
-  // fixme. min_height and nat_height reports complete box size, but lcl sets client size ?
-  // LCL does not like when ws calculates autosize dimensions.
-  // writeln('====> FGPH(',dbgsName(AControl.LCLObject),'): AutoSize=', AControl.LCLObject.AutoSize,' minH=',min_height^,' natH=',nat_height^,' LCLWidth=',AControl.LCLWidth,' Height=',AControl.LCLHeight);
-  if AControl.LCLObject.AutoSize then
-  begin
-   // if AControl.LCLHeight > nat_height^ then
-   //   nat_height^ := AControl.LCLHeight;
-   // exit;
   end;
 
   if AControl.LCLHeight = 0 then
