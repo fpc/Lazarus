@@ -38,7 +38,9 @@ uses
   {$IFDEF WindowsDesktop} windows,  {$endif}
   Classes, SysUtils,
   {$IFDEF WindowsDesktop}
+  {$IFDEF WithSynExperimentalCharWidth}
   Types,
+  {$ENDIF}
   {$endif}
   LazSynEditText, SynTextDrawer, LazUTF8, Controls, Graphics,
   LazLoggerBase;
@@ -82,7 +84,9 @@ end;
 procedure TSynEditStringSystemWidthChars.DoGetPhysicalCharWidths(Line: PChar; LineLen,
   Index: Integer; PWidths: PPhysicalCharWidth);
 var
+  {$IFDEF WithSynExperimentalCharWidth}
   i: DWORD;
+  {$ENDIF}
   cpRes: TGCPRESULTSW;
   outs: array of widechar;
   order, dx, caret: array of integer;
@@ -101,7 +105,7 @@ begin
     debugln(LOG_SynSystemWidthChars, ['TSynEditStringSystemWidthChars NO HANDLE ']);
     exit;
   end;
-if TextDrawer= nil then exit;;
+  if TextDrawer= nil then exit;
 
   SetLength(s, LineLen+1);  // wide chars of UTF-16 <= bytes of UTF-8 string
   if ConvertUTF8ToUTF16(PWideChar(s), LineLen+1, Line, LineLen, [toInvalidCharToSymbol], l) <> trNoError then
@@ -131,6 +135,9 @@ if TextDrawer= nil then exit;;
     debugln(LOG_SynSystemWidthChars, ['TSynEditStringSystemWidthChars FAILED for line ', Index]);
     exit;
   end;
+  {$else}
+  GetCharacterPlacementW(FHandleOwner.Handle, pwidechar(s), length(s), 0,
+                              @cpRes, GCP_DIACRITIC + GCP_KASHIDA + GCP_LIGATE);
   {$endif}
 
   k := 0; // index for order
