@@ -872,6 +872,8 @@ var
   members:TPangoFontMask;
   AStyle: TPangoStyle;
   AGravity: TPangoGravity;
+  stretch: TPangoStretch;
+  weight: TPangoWeight;
 begin
   if not Assigned(fHandle) then exit;
   fillchar(fLogFont,sizeof(fLogFont),0);
@@ -879,6 +881,15 @@ begin
   if PANGO_FONT_MASK_FAMILY in members then
   begin
     fLogFont.lfFaceName:=PChar(fHandle^.get_family);
+  end else
+  begin
+    if PANGO_FONT_MASK_STRETCH in members then
+      stretch := fHandle^.get_stretch
+    else
+      stretch := PANGO_STRETCH_NORMAL;
+
+    fLogFont.lfFaceName:=AppendPangoFontFaceSuffixes(
+      PChar(fHandle^.get_family), stretch, PANGO_WEIGHT_NORMAL);
   end;
   if PANGO_FONT_MASK_STYLE in members then
   begin
@@ -887,9 +898,7 @@ begin
       fLogFont.lfItalic:=1;
   end;
   if PANGO_FONT_MASK_WEIGHT in members then
-  begin
     fLogFont.lfWeight := Integer(fHandle^.get_weight());
-  end;
   if PANGO_FONT_MASK_GRAVITY in members then
   begin
     AGravity := fHandle^.get_gravity;
@@ -964,10 +973,17 @@ var
   AContext: PPangoContext;
   AttrList: PPangoAttrList;
   Attr: PPangoAttribute;
+  Family: string;
+  Stretch: TPangoStretch;
+  Weight: TPangoWeight;
 begin
   inherited Create;
   FLogFont := ALogFont;
   FFontName := ALogFont.lfFaceName;
+
+  Family := FFontName;
+  ExtractPangoFontFaceSuffixes(Family, Stretch, Weight);
+
   AContext := gdk_pango_context_get;
   if IsFontNameDefault(FFontName) or (FFontName = '') then
   begin
@@ -976,13 +992,23 @@ begin
     else
       FHandle := pango_font_description_copy(pango_context_get_font_description(AContext));
   end else
-    FHandle := pango_font_description_from_string(PgChar(FFontName));
+  begin
+    FHandle := TPangoFontDescription.new;
+    FHandle^.set_family(PgChar(Family));
+  end;
   FFontName := FHandle^.get_family;
   if ALogFont.lfHeight <> 0 then
     FHandle^.set_absolute_size(Abs(ALogFont.lfHeight) * PANGO_SCALE);
   if ALogFont.lfItalic > 0 then
     FHandle^.set_style(PANGO_STYLE_ITALIC);
-  FHandle^.set_weight(TPangoWeight(ALogFont.lfWeight));
+  if Stretch <> PANGO_STRETCH_NORMAL then
+    FHandle^.set_stretch(Stretch);
+  if (ALogFont.lfWeight = FW_DONTCARE) or
+    (ALogFont.lfWeight = FW_NORMAL) or
+    ((ALogFont.lfWeight = FW_BOLD) and (Weight >= PANGO_WEIGHT_SEMIBOLD)) then
+    FHandle^.set_weight(TPangoWeight(Weight))
+  else
+    FHandle^.set_weight(TPangoWeight(ALogFont.lfWeight));
   FLayout := pango_layout_new(AContext);
   FLayout^.set_font_description(FHandle);
 

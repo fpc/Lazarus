@@ -455,7 +455,10 @@ var
   DirName  : string;
   FileName : string;
   Files: TStringList;
-  CurFilename: string;
+  CurFilename, weightSuffix: string;
+  stretch: TPangoStretch;
+  weight: TPangoWeight;
+  family: PChar;
   //SelectedFont: PGdkFont;
 
   function CheckOpenedFilename(var AFilename: string): boolean;
@@ -576,15 +579,20 @@ begin
       begin
         BeginUpdate;
         Size := pango_font_description_get_size(FontDesc) div PANGO_SCALE;
-        if pango_font_description_get_weight(FontDesc) >= PANGO_WEIGHT_BOLD then
+        weight := pango_font_description_get_weight(FontDesc);
+        if weight >= FW_SEMIBOLD then
           Style := Style + [fsBold]
         else
           Style := Style - [fsBold];
+
         if pango_font_description_get_style(FontDesc) > PANGO_STYLE_NORMAL then
           Style := Style + [fsItalic]
         else
           Style := Style - [fsItalic];
-        Name := pango_font_description_get_family(FontDesc);
+
+        family := pango_font_description_get_family(FontDesc);
+        Name := AppendPangoFontFaceSuffixes(family,
+          pango_font_description_get_stretch(FontDesc), weight);
         EndUpdate;
       end;
       pango_font_description_free(FontDesc);
@@ -1371,6 +1379,9 @@ var
   Widget: PGtkWidget;
   WidgetInfo: PWidgetInfo;
   FontDialog: TFontDialog absolute ACommonDialog;
+  Family: string;
+  Stretch: TPangoStretch;
+  Weight: integer;
 begin
   Widget := gtk_font_selection_dialog_new(PChar(ACommonDialog.Title));
 
@@ -1392,17 +1403,30 @@ begin
     begin
       pango_font_description_set_size(FontDesc, Size * PANGO_SCALE);
 
-      if fsBold in Style then
+      Family := Name;
+      ExtractPangoFontFaceSuffixes(Family, Stretch, Weight);
+      pango_font_description_set_family(FontDesc, PChar(Family));
+
+      if (fsBold in Style) and (Weight < FW_SEMIBOLD) then
+        // bold is specified by the fsBold flag only
         pango_font_description_set_weight(FontDesc, PANGO_WEIGHT_BOLD)
       else
-        pango_font_description_set_weight(FontDesc, PANGO_WEIGHT_NORMAL);
+        pango_font_description_set_weight(FontDesc, Weight);
 
       if fsItalic in Style then
-        pango_font_description_set_style(FontDesc, PANGO_STYLE_ITALIC)
+      begin
+        if PangoFontHasItalicFace(gtk_widget_get_pango_context(Widget), family) then
+          pango_font_description_set_style(FontDesc, PANGO_STYLE_ITALIC)
+        else
+          pango_font_description_set_style(FontDesc, PANGO_STYLE_OBLIQUE);
+      end
       else
         pango_font_description_set_style(FontDesc, PANGO_STYLE_NORMAL);
 
-      pango_font_description_set_family(FontDesc, PChar(Name));
+      if Stretch = PANGO_STRETCH_NORMAL then
+        pango_font_description_set_stretch(FontDesc, GetPangoFontFamilyDefaultStretch(Family))
+      else
+        pango_font_description_set_stretch(FontDesc, Stretch);
     end;
     TmpStr := pango_font_description_to_string(FontDesc);
     gtk_font_selection_dialog_set_font_name(PGtkFontSelectionDialog(Widget), TmpStr);

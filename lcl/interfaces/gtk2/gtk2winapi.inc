@@ -1344,7 +1344,8 @@ function TGtk2WidgetSet.CreateFontIndirectEx(const LogFont: TLogFont;
 var
   GdiObject: PGdiObject;
   FullString, aFamily, aStyle, ALongFontName: String;
-  aSize: Integer;
+  aStretch: TPangoStretch;
+  aSize, aWeight: Integer;
   aSizeInPixels: Boolean;
   PangoDesc: PPangoFontDescription;
   CachedFont: TGtkFontCacheDescriptor;
@@ -1352,7 +1353,6 @@ var
   AttrListTemporary: Boolean;
   Attr: PPangoAttribute;
   CurFont: PPangoLayout;
-  TmpStr: PChar;
 begin
   {$IFDEF VerboseFonts}
   DebugLn('TGtk2WidgetSet.CreateFontIndirectEx A Name=',LogFont.lfFaceName,' Height=',dbgs(LogFont.lfHeight),' LongName=',LongFontName);
@@ -1404,6 +1404,7 @@ begin
       end;
 
       FontNameToPangoFontDescStr(ALongFontname, aFamily, aStyle, aSize, aSizeInPixels);
+      ExtractPangoFontFaceSuffixes(aFamily, aStretch, aWeight);
 
       // if font specified size, prefer this instead of 'possibly' inaccurate
       // lfHeight note that lfHeight may actually have a most accurate value
@@ -1456,17 +1457,25 @@ begin
       else
         FullString := AFamily + ', ' + aStyle + ' ' + FullString;
       PangoDesc := pango_font_description_from_string(PChar(FullString));
+      if aStretch <> PANGO_STRETCH_NORMAL then
+        pango_font_description_set_stretch(PangoDesc, aStretch);
 
-      if (pango_font_description_get_weight(PangoDesc) = PANGO_WEIGHT_NORMAL)
-        and (lfWeight <> FW_DONTCARE) then
-        pango_font_description_set_weight(PangoDesc, lfWeight);
+      if (pango_font_description_get_weight(PangoDesc) = PANGO_WEIGHT_NORMAL) then
+      begin
+        if (lfWeight = FW_DONTCARE) or
+           { handle non bold styles (lfWeight is set to "normal" by default) }
+           (lfWeight = PANGO_WEIGHT_NORMAL) or
+           { handle bold styles (lfWeight is set to "bold" because TFont has fsBold style) }
+           ((lfWeight = PANGO_WEIGHT_BOLD) and (aWeight >= FW_SEMIBOLD)) then
+          pango_font_description_set_weight(PangoDesc, aWeight)
+        else if (lfWeight <> FW_DONTCARE) then
+          pango_font_description_set_weight(PangoDesc, lfWeight);
+      end;
 
       if (pango_font_description_get_style (PangoDesc) = PANGO_STYLE_NORMAL)
           and (lfItalic <> 0) then
         pango_font_description_set_style(PangoDesc, PANGO_STYLE_ITALIC);
-      TmpStr := pango_font_description_to_string(PangoDesc);
-      aStyle := TmpStr;
-      g_free(TmpStr);
+
       if (aSize=0) and (lfHeight<>0) then
       begin
         // a size is not specified, try to calculate one based on lfHeight
@@ -1480,7 +1489,7 @@ begin
           aSize := lfHeight * PANGO_SCALE;
         pango_font_description_set_absolute_size(PangoDesc, aSize);
       end;
-      
+
       // create font
       // TODO: use context widget (CreateFontIndirectEx needs a parameter for this: Context: HWnd)
       GdiObject := NewGdiObject(gdiFont);

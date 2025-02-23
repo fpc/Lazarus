@@ -3149,27 +3149,42 @@ procedure TGtk3Widget.SetLclFont(const AFont:TFont);
 var
   AGtkFont: PPangoFontDescription;
   APangoStyle: TPangoStyle;
+  Family: String;
+  Stretch: TPangoStretch;
+  Weight: TPangoWeight;
 begin
   if not IsWidgetOk then exit;
   if IsFontNameDefault(AFont.Name) then
   begin
     AGtkFont := Self.Font;
+    Stretch := PANGO_STRETCH_NORMAL;
+    Weight := PANGO_WEIGHT_NORMAL;
   end else
   begin
-    AGtkFont := pango_font_description_from_string(PgChar(AFont.Name));
-    {%H-}AGtkFont^.set_family(PgChar(AFont.Name));
+    Family := AFont.Name;
+    ExtractPangoFontFaceSuffixes(Family, Stretch, Weight);
+    AGtkFont := TPangoFontDescription.new;
+    AGtkFont^.set_family(PgChar(Family));
   end;
+
+  if Stretch <> PANGO_STRETCH_NORMAL then
+    AGtkFont^.set_stretch(Stretch);
 
   if AFont.Size <> 0 then
     AGtkFont^.set_size(Abs(AFont.Size) * PANGO_SCALE);
+
+  if (fsBold in AFont.Style) and (Weight < PANGO_WEIGHT_SEMIBOLD) then
+    // bold is specified by the fsBold flag only
+    AGtkFont^.set_weight(PANGO_WEIGHT_BOLD)
+  else if (Weight <> PANGO_WEIGHT_NORMAL) then
+    AGtkFont^.set_weight(Weight);
 
   if fsItalic in AFont.Style then
     APangoStyle := PANGO_STYLE_ITALIC
   else
     APangoStyle := PANGO_STYLE_NORMAL;
   AGtkFont^.set_style(APangoStyle);
-  if fsBold in AFont.Style then
-    AGtkFont^.set_weight(PANGO_WEIGHT_BOLD);
+
   Font := AGtkFont;
   FontColor := AFont.Color;
 end;
@@ -9857,8 +9872,54 @@ end;
 { TGtk3FontSelectionDialog }
 
 procedure TGtk3FontSelectionDialog.InitializeWidget;
+var
+  fnt:TFont;
+  pch:PgtkFontChooser;
+  fontDesc: PPangoFontDescription;
+  family: String;
+  stretch: TPangoStretch;
+  weight: TPangoWeight;
 begin
   fWidget:=TGtkFontChooserDialog.new(PChar(CommonDialog.Title),nil);
+  fontDesc := TPangoFontDescription.new;
+  try
+    fnt:=TFontDialog(CommonDialog).Font;
+    if fnt.Size = 0 then
+      FontDesc^.set_size(10 * PANGO_SCALE)
+    else
+      FontDesc^.set_size(fnt.Size * PANGO_SCALE);
+
+    family := fnt.Name;
+    ExtractPangoFontFaceSuffixes(family, stretch, weight);
+    fontDesc^.set_family(PChar(family));
+
+    if (fsBold in fnt.Style) and (weight < PANGO_WEIGHT_SEMIBOLD) then
+      // bold is specified by the fsBold flag only
+      fontDesc^.set_weight(PANGO_WEIGHT_BOLD)
+    else
+      fontDesc^.set_weight(weight);
+
+    if fsItalic in fnt.Style then
+    begin
+      // we need to specify the exact style for the font dialog
+      if PangoFontHasItalicFace(fWidget^.get_pango_context, family) then
+        fontDesc^.set_style(PANGO_STYLE_ITALIC)
+      else
+        fontDesc^.set_style(PANGO_STYLE_OBLIQUE);
+    end
+    else
+      fontDesc^.set_style(PANGO_STYLE_NORMAL);
+
+    if (stretch = PANGO_STRETCH_NORMAL) then
+      fontDesc^.set_stretch(GetPangoFontDefaultStretch(family))
+    else
+      fontDesc^.set_stretch(stretch);
+
+    pch:=PGtkFontChooser(fWidget);
+    pch^.set_font_desc(fontDesc);
+  finally
+    fontDesc^.free;
+  end;
   inherited InitializeWidget;
 end;
 
@@ -9868,9 +9929,8 @@ var
   pch:PgtkFontChooser;
   pfc:PPangoFontFace;
   pfd:PPangoFontDescription;
-  sz:integer;
-  sface,sfamily:string;
   fnts:TfontStyles;
+  family: Pgchar;
 begin
   if resp_id=GTK_RESPONSE_OK then
   begin
@@ -9880,20 +9940,19 @@ begin
     pfd:=pfc^.describe;
     { this stuff is implemened in gtk3objects.Tgtk3Font.UpdateLogFont
       so this is backward mapping of properties }
-    sfamily:=pfd^.get_family();
-    sface:=lowercase(pfc^.get_face_name());
 
-    sz:=pch^.get_font_size() div PANGO_SCALE;
-    fnt.Name:=sfamily;
-    fnt.Size:=sz;
+    family := pfd^.get_family();
+    fnt.Name:=AppendPangoFontFaceSuffixes(family, pfd^.get_stretch, pfd^.get_weight);
+    fnt.Size:=pch^.get_font_size() div PANGO_SCALE;
+
     fnts:=[];
-    if (pos('bold',sface)>0) then
-      include(fnts,fsBold);
+    if pfd^.get_weight >= PANGO_WEIGHT_SEMIBOLD then
+     include(fnts,fsBold);
 
-    if (pos('italic',sface)>0) then
+    // do not differentiate oblique and italic
+    if (pfd^.get_style >= PANGO_STYLE_OBLIQUE) then
       include(fnts,fsItalic);
     fnt.Style:=fnts;
-
   end;
   Result:=inherited response_handler(resp_id);
 end;

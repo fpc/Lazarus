@@ -350,12 +350,81 @@ function PANGO_PIXELS(d:integer):integer; inline;
 function GetStyleWidget(aStyle: TLazGtkStyle): PGtkWidget;
 procedure ReleaseAllStyles;
 
+procedure ExtractPangoFontFaceSuffixes(var AFontName: string; out AStretch: TPangoStretch; out AWeight: TPangoWeight);
+function AppendPangoFontFaceSuffixes(AFamilyName: string; AStretch: TPangoStretch; AWeight: TPangoWeight): string;
+function PangoFontHasItalicFace(AContext: PPangoContext; const AFamilyName: String): Boolean;
+function GetPangoFontDefaultStretch(const AFamilyName: string): TPangoStretch;
+
 implementation
 uses LCLProc, gtk3objects, LazLogger;
 
 function PANGO_PIXELS(d:integer):integer;
 begin
   Result:=((d + 512) shr 10);
+end;
+
+procedure ExtractPangoFontFaceSuffixes(var AFontName: string; out AStretch: TPangoStretch; out AWeight: TPangoWeight);
+var
+  stretch, weight: integer;
+begin
+  ExtractFontFaceSuffixes(AFontName, stretch, weight);
+  AStretch := TPangoStretch(stretch);
+  AWeight := TPangoWeight(weight);
+end;
+
+function AppendPangoFontFaceSuffixes(AFamilyName: string; AStretch: TPangoStretch;
+  AWeight: TPangoWeight): string;
+var
+  stretch: integer;
+begin
+  if AStretch < PANGO_STRETCH_ULTRA_CONDENSED then
+    stretch := FONT_STRETCH_ULTRA_CONDENSED
+  else if AStretch > PANGO_STRETCH_ULTRA_EXPANDED then
+    stretch := FONT_STRETCH_ULTRA_EXPANDED
+  else
+    stretch := integer(AStretch);
+  result := AppendFontFaceSuffixes(AFamilyName, stretch, integer(AWeight));
+end;
+
+function PangoFontHasItalicFace(AContext: PPangoContext; const AFamilyName: String): Boolean;
+var
+  families: PPPangoFontFamily;
+  faces: PPPangoFontFace;
+  num_families, num_faces, i, j: Integer;
+  fontFamily: PPangoFontFamily;
+  hasOblique, hasItalic: boolean;
+  desc: PPangoFontDescription;
+begin
+  Result := False;
+
+  AContext^.list_families(@families, @num_families);
+
+  for i := 0 to num_families - 1 do
+  begin
+    fontFamily := families[i];
+    if StrComp(fontFamily^.get_name, PChar(AFamilyName)) = 0 then
+    begin
+      fontFamily^.list_faces(@faces, @num_faces);
+      for j := 0 to num_faces - 1 do
+      begin
+        desc := faces[j]^.describe;
+        if desc^.get_style = PANGO_STYLE_ITALIC then
+        begin
+          Result := True;
+          Break;
+        end;
+      end;
+      g_free(faces);
+    end;
+    if Result then Break;
+  end;
+
+  g_free(families);
+end;
+
+function GetPangoFontDefaultStretch(const AFamilyName: string): TPangoStretch;
+begin
+  result := TPangoStretch(GetFontFamilyDefaultStretch(AFamilyName));
 end;
 
 function TGdkRGBAToTColor(const value: TGdkRGBA; IgnoreAlpha: Boolean): TColor;

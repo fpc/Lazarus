@@ -392,6 +392,10 @@ type
 var
   GTK2WidgetSet: TGTK2WidgetSet;
 
+procedure ExtractPangoFontFaceSuffixes(var AFontName: string; out AStretch: TPangoStretch; out AWeight: TPangoWeight);
+function AppendPangoFontFaceSuffixes(AFamilyName: string; AStretch: TPangoStretch; AWeight: TPangoWeight): string;
+function PangoFontHasItalicFace(context: PPangoContext; const familyName: String): Boolean;
+function GetPangoFontFamilyDefaultStretch(const AFamilyName: string): TPangoStretch;
 
 // Gtk2FileDialogUtils
 
@@ -949,6 +953,70 @@ begin
 end;
 
 {$I gtk2listsl.inc}
+
+procedure ExtractPangoFontFaceSuffixes(var AFontName: string; out AStretch: TPangoStretch; out AWeight: TPangoWeight);
+var
+  stretch, weight: integer;
+begin
+  ExtractFontFaceSuffixes(AFontName, stretch, weight);
+  AStretch := TPangoStretch(stretch);
+  AWeight := TPangoWeight(weight);
+end;
+
+function AppendPangoFontFaceSuffixes(AFamilyName: string; AStretch: TPangoStretch;
+  AWeight: TPangoWeight): string;
+var
+  stretch: integer;
+begin
+  if AStretch < PANGO_STRETCH_ULTRA_CONDENSED then
+    stretch := FONT_STRETCH_ULTRA_CONDENSED
+  else if AStretch > PANGO_STRETCH_ULTRA_EXPANDED then
+    stretch := FONT_STRETCH_ULTRA_EXPANDED
+  else
+    stretch := integer(AStretch);
+  result := AppendFontFaceSuffixes(AFamilyName, stretch, integer(AWeight));
+end;
+
+function PangoFontHasItalicFace(context: PPangoContext; const familyName: String): Boolean;
+var
+  families: PPPangoFontFamily;
+  faces: PPPangoFontFace;
+  num_families, num_faces, i, j: Integer;
+  fontFamily: PPangoFontFamily;
+  hasOblique, hasItalic: boolean;
+  desc: PPangoFontDescription;
+begin
+  Result := False;
+
+  pango_context_list_families(context, @families, @num_families);
+
+  for i := 0 to num_families - 1 do
+  begin
+    fontFamily := families[i];
+    if StrComp(pango_font_family_get_name(fontFamily), PChar(familyName)) = 0 then
+    begin
+      pango_font_family_list_faces(fontFamily, @faces, @num_faces);
+      for j := 0 to num_faces - 1 do
+      begin
+        desc := pango_font_face_describe(faces[j]);
+        if pango_font_description_get_style(desc) = PANGO_STYLE_ITALIC then
+        begin
+          Result := True;
+          Break;
+        end;
+      end;
+      g_free(faces);
+    end;
+    if Result then Break;
+  end;
+
+  g_free(families);
+end;
+
+function GetPangoFontFamilyDefaultStretch(const AFamilyName: string): TPangoStretch;
+begin
+  result := TPangoStretch(GetFontFamilyDefaultStretch(AFamilyName));
+end;
 
 // Gtk2FileDialogUtils
 

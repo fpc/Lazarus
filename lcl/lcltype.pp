@@ -1544,17 +1544,63 @@ const
   FW_THIN       = 100;
   FW_EXTRALIGHT = 200;
   FW_LIGHT      = 300;
+  FW_SEMILIGHT  = 350;
   FW_NORMAL     = 400;
   FW_MEDIUM     = 500;
   FW_SEMIBOLD   = 600;
   FW_BOLD       = 700;
   FW_EXTRABOLD  = 800;
   FW_HEAVY      = 900;
+  FW_HAIRLINE   = FW_THIN;
   FW_ULTRALIGHT = FW_EXTRALIGHT;
   FW_REGULAR    = FW_NORMAL;
   FW_DEMIBOLD   = FW_SEMIBOLD;
   FW_ULTRABOLD  = FW_EXTRABOLD;
   FW_BLACK      = FW_HEAVY;
+
+  FontWeightValueNames: array[0..13] of record
+    Value: integer;
+    Name: string;
+  end = (
+    (Value:FW_THIN; Name:'Thin'),
+    (Value:FW_HAIRLINE; Name:'HairLine'),
+    (Value:FW_EXTRALIGHT; Name:'ExtraLight'),
+    (Value:FW_ULTRALIGHT; Name:'UltraLight'),
+    (Value:FW_LIGHT; Name:'Light'),
+    (Value:FW_SEMILIGHT; Name:'SemiLight'),
+    (Value:FW_MEDIUM; Name:'Medium'),
+    (Value:FW_SEMIBOLD; Name:'SemiBold'),
+    (Value:FW_DEMIBOLD; Name:'DemiBold'),
+    (Value:FW_DEMIBOLD; Name:'Demi'),
+    (Value:FW_BOLD; Name:'Bold'),
+    (Value:FW_EXTRABOLD; Name:'ExtraBold'),
+    (Value:FW_ULTRABOLD; Name:'UltraBold'),
+    (Value:FW_HEAVY; Name:'Heavy')
+    // "black" is considered part of the font name rather than a weight
+  );
+
+  FONT_STRETCH_ULTRA_CONDENSED = 0;
+  FONT_STRETCH_EXTRA_CONDENSED = 1;
+  FONT_STRETCH_CONDENSED = 2;
+  FONT_STRETCH_SEMI_CONDENSED = 3;
+  FONT_STRETCH_NORMAL = 4;
+  FONT_STRETCH_SEMI_EXPANDED = 5;
+  FONT_STRETCH_EXPANDED = 6;
+  FONT_STRETCH_EXTRA_EXPANDED = 7;
+  FONT_STRETCH_ULTRA_EXPANDED = 8;
+
+  FontStretchNames: array[FONT_STRETCH_ULTRA_CONDENSED..FONT_STRETCH_ULTRA_EXPANDED] of string =
+  (
+  'UltraCondensed', // 0
+  'ExtraCondensed', // 1
+  'Condensed',      // 2
+  'SemiCondensed',  // 3
+  'Normal',         // 4
+  'SemiExpanded',   // 5
+  'Expanded',       // 6
+  'ExtraExpanded',  // 7
+  'UltraExpanded'   // 8
+  );
 
   FOUNDRYCHAR_OPEN  = '[';  // added for support foundry encoded in family name
   FOUNDRYCHAR_CLOSE = ']';  // also needed to drop foundry when creating font in windows
@@ -3007,6 +3053,7 @@ function MulDiv(nNumber, nNumerator, nDenominator: Integer): Integer;
 function KeyToShortCut(const Key: Word; const Shift: TShiftState): TShortCut;
 function CharSetToString(const Charset: Integer): String;
 function StringToCharset(Charset: string): byte;
+function FontWeightToStr(AWeight: integer; ADefault: string = ''): string;
 
 
 implementation
@@ -3287,6 +3334,23 @@ begin
   else
     result := DEFAULT_CHARSET;
 
+end;
+
+function FontWeightToStr(AWeight: integer; ADefault: string = ''): string;
+var
+  i, minDistance, distance: Integer;
+begin
+  minDistance := MaxLongInt;
+  result := ADefault;
+  for i := 0 to high(FontWeightValueNames) do
+  begin
+    distance := abs(AWeight - FontWeightValueNames[i].Value);
+    if distance < minDistance then
+    begin
+      minDistance := distance;
+      result := FontWeightValueNames[i].Name;
+    end;
+  end;
 end;
 
 { TListWithEvent }

@@ -225,6 +225,10 @@ function ClassCase(const AClass: TClass; const ACase: array of TClass; const ADe
 
 // Font
 function IsFontNameDefault(const AName: string): boolean; inline;
+procedure ExtractFontFaceSuffixes(var AFontName: string; out AStretch: integer; out AWeight: integer);
+function ExtractFontWeightSuffix(var AFontName: string; out AWeight: integer): boolean;
+function AppendFontFaceSuffixes(AFamilyName: string; AStretch: integer; AWeight: integer): string;
+function GetFontFamilyDefaultStretch(const AFamilyName: string): integer;
 
 // Help
 procedure AddCmdLineParamDesc(var aText: TStringList; aParamOpts: array of string; aDescr: string);
@@ -1508,6 +1512,151 @@ end;
 function IsFontNameDefault(const AName: string): boolean;
 begin
   Result := CompareText(AName, 'default') = 0;
+end;
+
+function PeekFontSuffix(AFontName: string; out ASuffix: string): boolean;
+var
+  index: SizeInt;
+begin
+  index := length(AFontName);
+  while index > 0 do
+  begin
+    if AFontName[index] in [#0..' '] then
+    begin
+      ASuffix := copy(AFontName, index+1, length(AFontName)-index);
+      exit(length(ASuffix) > 0);
+    end;
+    dec(index);
+  end;
+  ASuffix := '';
+  result := false;
+end;
+
+function ExtractFontSuffix(var AFontName: string; const ASuffix: string): boolean;
+begin
+  if (length(AFontName) > length(ASuffix)) and
+    AFontName.EndsWith(ASuffix, true) and
+    (AFontName[length(AFontName) - length(ASuffix)] in [#0..' ']) then
+  begin
+    AFontName := copy(AFontName, 1, length(AFontName) - length(ASuffix) - 1).TrimRight;
+    exit(true);
+  end;
+  exit(false);
+end;
+
+function ExtractFontStrecthSuffix(var AFontName: string; out AStretch: integer): boolean;
+var stretch, count: integer;
+  suffix: String;
+begin
+  AFontName := AFontName.TrimRight;
+  for stretch := low(FontStretchNames) to high(FontStretchNames) do
+  if (stretch <> FONT_STRETCH_NORMAL) and
+      ExtractFontSuffix(AFontName, FontStretchNames[stretch]) then
+  begin
+    AStretch := stretch;
+    exit(true);
+  end;
+  if (length(AFontName) >= LF_FACESIZE - 1) and PeekFontSuffix(AFontName, suffix) then
+  begin
+    // try to guess from truncated suffix
+    count := 0;
+    for stretch := low(FontStretchNames) to high(FontStretchNames) do
+    begin
+      if  FontStretchNames[stretch].StartsWith(suffix, true) then
+      begin
+        AStretch := stretch;
+        inc(count);
+      end;
+    end;
+    // if only one suffix matches
+    if (count = 1) and ExtractFontSuffix(AFontName, suffix) then
+    begin
+      exit(true);
+    end;
+  end;
+  AStretch := FONT_STRETCH_NORMAL;
+  exit(false);
+end;
+
+function ExtractFontWeightSuffix(var AFontName: string; out AWeight: integer): boolean;
+var
+  i, count: Integer;
+  suffix: String;
+begin
+  AFontName := AFontName.TrimRight;
+  for i := 0 to high(FontWeightValueNames) do
+  if ExtractFontSuffix(AFontName, FontWeightValueNames[i].Name) then
+  begin
+    AWeight := FontWeightValueNames[i].Value;
+    exit(true);
+  end;
+  if (length(AFontName) >= LF_FACESIZE - 1) and PeekFontSuffix(AFontName, suffix) then
+  begin
+    // try to guess from truncated suffix
+    count := 0;
+    for i := 0 to high(FontWeightValueNames) do
+    begin
+      if FontWeightValueNames[i].Name.StartsWith(suffix, true) then
+      begin
+        AWeight := FontWeightValueNames[i].Value;
+        inc(count);
+      end;
+    end;
+    // if only one suffix matches
+    if (count = 1) and ExtractFontSuffix(AFontName, suffix) then
+    begin
+      exit(true);
+    end;
+  end;
+  AWeight := FW_NORMAL;
+  exit(false);
+end;
+
+procedure ExtractFontFaceSuffixes(var AFontName: string; out AStretch: integer; out AWeight: integer);
+var
+  foundWeight: Boolean;
+begin
+  foundWeight := ExtractFontWeightSuffix(AFontName, AWeight);
+  if ExtractFontStrecthSuffix(AFontName, AStretch) then
+  begin
+    if not foundWeight then
+    begin
+      // accept weight after or before stretch specifier
+      ExtractFontWeightSuffix(AFontName, AWeight);
+    end;
+  end;
+end;
+
+function AppendFontFaceSuffixes(AFamilyName: string; AStretch: integer;
+  AWeight: integer): string;
+var
+  weightSuffix: String;
+begin
+  result := AFamilyName;
+
+  // stretch is generally specified before weight
+  if (AStretch <> FONT_STRETCH_NORMAL) and (AStretch >= low(FontStretchNames))
+    and (AStretch <= high(FontStretchNames)) then
+  begin
+    if (AStretch <> GetFontFamilyDefaultStretch(AFamilyName)) then
+      result := result + ' ' + FontStretchNames[AStretch];
+  end;
+
+  // bold is not added as a suffix in the font name because if is a font style
+  if (AWeight <> FW_NORMAL) and (AWeight <> FW_BOLD) then
+  begin
+    weightSuffix := FontWeightToStr(integer(AWeight), '');
+    if (weightSuffix <> '') and (weightSuffix <> FontWeightToStr(FW_BOLD)) then
+      result := result + ' ' + weightSuffix;
+  end;
+end;
+
+function GetFontFamilyDefaultStretch(const AFamilyName: string): integer;
+begin
+  if AFamilyName.EndsWith(' Narrow', true) then
+    result := FONT_STRETCH_SEMI_CONDENSED
+  else
+    result := FONT_STRETCH_NORMAL;
 end;
 
 procedure AddCmdLineParamDesc(var aText: TStringList; aParamOpts: array of string; aDescr: string);
