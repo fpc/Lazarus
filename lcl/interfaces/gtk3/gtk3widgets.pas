@@ -1832,10 +1832,17 @@ begin
     AMask := Event^.motion.state;
   end;
 
-  MousePos.x := X;
-  MousePos.y := Y;
+  if ([wtContainer, wtLayout] * WidgetType <> []) and (Event^.motion.is_hint <> 1) then
+  begin
+    MousePos.X := Round(Event^.button.x_root);
+    MousePos.Y := Round(Event^.button.y_root);
+    ScreenToClient(MousePos)
+  end else
+  begin
+    MousePos.x := X;
+    MousePos.y := Y;
+  end;
 
-  OffsetMousePos(@MousePos);
 
   Msg.XPos := SmallInt(MousePos.X);
   Msg.YPos := SmallInt(MousePos.Y);
@@ -1993,12 +2000,11 @@ function TGtk3Widget.GtkEventMouseWheel(Sender: PGtkWidget; Event: PGdkEvent
   ): Boolean; cdecl;
 var
   Msg: TLMMouseEvent;
-  EventXY: TPoint;
+  MousePos: TPoint;
 begin
   // gtk3 have ugly bug with scroll-event
   // https://bugzilla.gnome.org/show_bug.cgi?id=675959
   Result := False;
-  EventXY := Point(LazUtilities.TruncToInt(Event^.scroll.x), LazUtilities.TruncToInt(Event^.scroll.y));
   FillChar(Msg{%H-},SizeOf(Msg),0);
   Msg.Msg := LM_MOUSEWHEEL;
   //DebugLn('Scroll ',Format('deltaX %2.2n deltaY %2.2n x %2.2n y %2.2n rootx %2.2n rooty %2.2n',
@@ -2011,11 +2017,20 @@ begin
     Msg.WheelDelta := -120
   else
     exit;
-  Msg.X := EventXY.X;
-  Msg.Y := EventXY.Y;
 
-  {$warning check what happens with mousePos in scrollable windows !}
-  //OffsetMousePos(@MousePos);
+  if [wtContainer, wtLayout] * WidgetType <> [] then
+  begin
+    MousePos.X := Round(Event^.scroll.x_root);
+    MousePos.Y := Round(Event^.scroll.y_root);
+    ScreenToClient(MousePos)
+  end else
+  begin
+    MousePos.x := Round(Event^.scroll.x);
+    MousePos.y := Round(Event^.scroll.y);
+  end;
+
+  Msg.X := MousePos.X;
+  Msg.Y := MousePos.Y;
 
   Msg.State := GdkModifierStateToShiftState(Event^.scroll.state);
   Msg.UserData := LCLObject;
@@ -2338,12 +2353,19 @@ begin
 
   FillChar(Msg{%H-}, SizeOf(Msg), #0);
 
-  MousePos.x := Round(Event^.button.x);
-  MousePos.y := Round(Event^.button.y);
-
   Msg.Keys := GdkModifierStateToLCL(Event^.button.state, False);
 
-  OffsetMousePos(@MousePos);
+  if [wtContainer, wtLayout] * WidgetType <> [] then
+  begin
+    MousePos.X := Round(Event^.button.x_root);
+    MousePos.Y := Round(Event^.button.y_root);
+    ScreenToClient(MousePos)
+  end else
+  begin
+    MousePos.x := Round(Event^.button.x);
+    MousePos.y := Round(Event^.button.y);
+  end;
+
   Msg.XPos := SmallInt(MousePos.X);
   Msg.YPos := SmallInt(MousePos.Y);
 
@@ -6104,23 +6126,11 @@ begin
 
   AScrollStyle := Gtk3TranslateScrollStyle(AMemo.ScrollBars);
 
-  // Gtk3 GtkTextView is weird. When scrollbars policy is GTK_POLICY_NONE
-  // then GtkTextView resizes itself (resizes parent) while adding text,
-  // so our TMemo size grows.
-  // http://stackoverflow.com/questions/2695843/gtktextview-automatically-resizing/16881764#16881764
-  // http://stackoverflow.com/questions/15534475/how-can-i-create-a-fixed-size-gtk-textview-in-gtk3
-  // https://bugzilla.gnome.org/show_bug.cgi?id=690099
-  // seem to be fixed in 3.8.2
-
-
-  if (gtk_get_major_version = 3) and (gtk_get_minor_version <= 8) then
-  begin
-    if AScrollStyle.Horizontal = GTK_POLICY_NEVER then
-      AScrollStyle.Horizontal := GTK_POLICY_AUTOMATIC;
-    if AScrollStyle.Vertical = GTK_POLICY_NEVER then
-      AScrollStyle.Vertical := GTK_POLICY_AUTOMATIC;
-  end;
-
+  //memo without scrollbars still grows if policy is NEVER, so cheat gtk.
+  if AScrollStyle.Horizontal = GTK_POLICY_NEVER then
+    AScrollStyle.Horizontal := GTK_POLICY_EXTERNAL;
+  if AScrollStyle.Vertical = GTK_POLICY_NEVER then
+    AScrollStyle.Vertical := GTK_POLICY_EXTERNAL;
 
   PGtkScrolledWindow(Result)^.set_policy(AScrollStyle.Horizontal, AScrollStyle.Vertical);
 
@@ -8554,7 +8564,7 @@ begin
   Result := PGtkScrolledWindow(TGtkScrolledWindow.new(nil, nil));
 
   FCentralWidget := TGtkLayout.new(nil, nil);
-  FCentralWidget^.set_has_window(True);
+  //FCentralWidget^.set_has_window(True);
 
   PGtkScrolledWindow(Result)^.add(FCentralWidget);
 
