@@ -2275,7 +2275,8 @@ begin
   {$ENDIF}
   if Event^.button.send_event = NO_PROPAGATION_TO_PARENT then
   begin
-    LCLIntf.SetCapture(0); //must be so, otherwise form grabs everything under gtk :(
+    if Event^.type_ <> GDK_BUTTON_RELEASE then
+      LCLIntf.SetCapture(HWND(Self));
     exit(gtk_true);
   end;
 
