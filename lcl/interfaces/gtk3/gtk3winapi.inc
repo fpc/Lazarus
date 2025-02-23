@@ -4547,7 +4547,8 @@ begin
   end;
 end;
 
-function TGtk3WidgetSet.TextOut(DC: HDC; X, Y: Integer; Str: PChar; Count: Integer): Boolean;
+function TGtk3WidgetSet.TextOut(DC: HDC; X, Y: Integer; Str: Pchar;
+  Count: Integer): Boolean;
 var
   DevCtx: TGtk3DeviceContext absolute DC;
 begin
