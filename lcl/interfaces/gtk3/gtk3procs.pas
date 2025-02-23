@@ -247,6 +247,10 @@ const
   CURSOR_PEND_MULTIPLIER = 3;
   CURSOR_DIVIDER = 3;
 
+  // drag target type for on drop files event invoking
+  FileDragTarget: TGtkTargetEntry = (target: 'text/uri-list'; flags: 0; info: 0;);
+
+
 
 
 function G_OBJECT_TYPE_NAME(AWidget: PGObject): string;

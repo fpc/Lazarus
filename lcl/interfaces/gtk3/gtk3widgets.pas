@@ -100,6 +100,12 @@ type
     class procedure SizeAllocate(AWidget: PGtkWidget; AGdkRect: PGdkRectangle; Data: gpointer); cdecl; static;
     class procedure WidgetHide({%H-}AWidget:PGtkWidget; AData:gpointer); cdecl; static;
     class procedure WidgetShow({%H-}AWidget:PGtkWidget; AData:gpointer); cdecl; static;
+
+    class procedure DragDataReceived(aWidget: PGtkWidget;
+      aContext: PGdkDragContext; x: gint; y: gint;
+      selection_data: PGtkSelectionData; info: guint; time: guint;
+      aData: gPointer); cdecl; static;
+
   protected
     FCentralWidget: PGtkWidget;
     FHasPaint: Boolean;
@@ -996,7 +1002,8 @@ type
 
 implementation
 
-uses {$IFDEF GTK3DEBUGKEYPRESS}TypInfo,{$ENDIF}gtk3int, gtk3caret, imglist,lclproc, LazLogger;
+uses {$IFDEF GTK3DEBUGKEYPRESS}TypInfo,{$ENDIF}gtk3int, gtk3caret, imglist,
+  uriparser, lclproc, LazLogger;
 
 const
 
@@ -2789,6 +2796,72 @@ begin
     Result := gtk_true;
 end;
 
+class procedure TGtk3Widget.DragDataReceived(aWidget:PGtkWidget; aContext: PGdkDragContext;
+  x:gint; y:gint; selection_data: PGtkSelectionData; info:guint; time:guint; aData: gPointer);cdecl;
+var
+  S: TStringList;
+  I: Integer;
+  FileName, DecodedFileName: String;
+  Files: array of String;
+  Form: TControl;
+  Result: Boolean;
+  U: TURI;
+begin
+  Result := gtk_false;
+  if selection_data^.get_data <> nil then // data is list of uri
+  try
+    SetLength(Files{%H-}, 0);
+    S := TStringList.Create;
+    try
+      S.Text := PChar(selection_data^.get_data);
+
+      for i := 0 to S.Count - 1 do
+      begin
+        FileName := S[I];
+
+        if FileName = '' then Continue;
+        // uri = protocol://hostname/file name
+        U := ParseURI(FileName);
+        if (SameText(U.Host, 'localhost') or (U.Host = '')) and SameText(U.Protocol, 'file')
+          and URIToFileName(FileName, DecodedFileName) then // convert uri of local files to file name
+        begin
+          FileName := DecodedFileName;
+        end;
+        // otherwise: protocol and hostname are preserved!
+
+        if FileName = '' then Continue;
+        SetLength(Files, Length(Files) + 1);
+        Files[High(Files)] := FileName;
+        //DebugLn('GtkDragDataReceived ' + DbgS(I) + ': ' + PChar(FileName));
+      end;
+    finally
+      S.Free;
+    end;
+
+    if Length(Files) > 0 then
+    begin
+      Form := nil;
+      if (TObject(TGtk3Widget(aData).LCLObject) is TWinControl) then
+        Form := TWinControl(TGtk3Widget(aData).LCLObject).IntfGetDropFilesTarget;
+
+      if Form is TCustomForm then
+        TCustomForm(Form).IntfDropFiles(Files)
+      else
+        if (Application <> nil) and (Application.MainForm <> nil) then
+          Application.MainForm.IntfDropFiles(Files);
+
+      if Application <> nil then
+        Application.IntfDropFiles(Files);
+
+      Result := gtk_true;
+    end;
+  except
+    Application.HandleException(nil);
+  end;
+
+  gtk_drag_finish(aContext, Result, false, time);
+end;
+
 procedure TGtk3Widget.InitializeWidget;
 var
   ARect: TGdkRectangle;
@@ -2829,6 +2902,8 @@ begin
 
   g_signal_connect_data(GetContainerWidget, 'enter-notify-event', TGCallback(@MouseEnterNotify), Self, nil, G_CONNECT_DEFAULT);
   g_signal_connect_data(getContainerWidget, 'leave-notify-event', TGCallback(@MouseLeaveNotify), Self, nil, G_CONNECT_DEFAULT);
+
+  g_signal_connect_data(FWidget,'drag_data_received',TGCallback(@DragDataReceived), Self, nil, G_CONNECT_DEFAULT);
 
   for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
   begin
