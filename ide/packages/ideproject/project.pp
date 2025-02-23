@@ -1641,6 +1641,7 @@ begin
       ACaption:=lisCodeToolsDefsWriteError;
       AText:=Format(lisUnableToWriteFile2, [Filename]);
       Result:=IDEMessageDialog(ACaption,AText,mtError,mbAbortRetryIgnore);
+      if Result=mrCancel then exit; // dialog closed via button in caption or [Esc]/[Alt+F4]
       if Result=mrAbort then exit;
       if Result=mrIgnore then Result:=mrOk;
     end;
@@ -1664,6 +1665,7 @@ begin
       ACaption:=lisCodeToolsDefsWriteError;
       AText:=Format(lisUnableToWriteFile2, [AFilename]);
       Result:=IDEMessageDialog(ACaption,AText,mtError,mbAbortRetryIgnore);
+      if Result=mrCancel then exit; // dialog closed via button in caption or [Esc]/[Alt+F4]
       if Result=mrAbort then exit;
       if Result=mrIgnore then Result:=mrOk;
     end else
@@ -1687,7 +1689,7 @@ begin
       ACaption:=lisCodeToolsDefsReadError;
       AText:=Format(lisUnableToReadFile2, [Filename]);
       Result:=IDEMessageDialog(ACaption,AText,mtError,mbAbortRetryIgnore);
-      if Result in [mrAbort,mrIgnore] then
+      if Result in [mrAbort,mrIgnore,mrCancel] then
         exit;
     end else begin
       Source:=NewSource;
