@@ -4413,7 +4413,6 @@ function TGtk3WidgetSet.ShowScrollBar(Handle: HWND; wBar: Integer;
   bShow: Boolean): Boolean;
 var
   AWidget: TGtk3Widget;
-  // AScrolledWin: PGtkScrolledWindow;
   NewPolicy: TGtkPolicyType;
 begin
   Result := IsValidHandle(Handle);
@@ -4460,9 +4459,6 @@ end;
 
 function TGtk3WidgetSet.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  DebugLn('WARNING: TGtk3WidgetSet.ShowWindow not implemented ...');
-  {$ENDIF}
   Result := IsValidHandle(Hwnd);
   if not result then exit;
   if TObject(hWnd) is TGtk3Window then
@@ -4493,9 +4489,6 @@ var
   ATargetRect, ASrcRect: TRect;
 begin
   Result := False;
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  DebugLn('WARNING: TGtk3WidgetSet.StretchMaskBlt not implemented ...');
-  {$ENDIF}
   if Assigned(SrcContext.pcr) and SrcContext.OwnsSurface then
   begin
     Width := Round(Width / SrcContext.CanvasScaleFactor);
