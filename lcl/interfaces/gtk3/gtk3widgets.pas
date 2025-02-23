@@ -2274,7 +2274,10 @@ begin
     ' Event.Type=',Event^.type_,' Capture=',LCLintf.GetCapture);
   {$ENDIF}
   if Event^.button.send_event = NO_PROPAGATION_TO_PARENT then
-    exit;
+  begin
+    LCLIntf.SetCapture(0); //must be so, otherwise form grabs everything under gtk :(
+    exit(gtk_true);
+  end;
 
   SavedHandle := PtrUInt(Self);
 
@@ -2774,6 +2777,9 @@ var
 begin
   Result := gtk_false;
   Msg.Msg := LM_MOUSELEAVE;
+
+  if Gtk3IsLayout(aWidget) and (aWidget^.get_parent = TGtk3Widget(aData).Widget) then
+    exit;
   TGtk3Widget(aData).DeliverMessage(Msg, True);
   if Assigned(TGtk3Widget(aData).LCLObject) and (csDesigning in TGtk3Widget(aData).LCLObject.ComponentState) then
     Result := gtk_true;
