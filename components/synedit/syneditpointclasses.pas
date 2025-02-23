@@ -47,7 +47,7 @@ uses
   Imm,
   {$ENDIF}
   // LazUtils
-  LazMethodList,
+  LazMethodList, LazLoggerBase,
   // SynEdit
   LazSynEditText, SynEditTypes, SynEditMiscProcs;
 

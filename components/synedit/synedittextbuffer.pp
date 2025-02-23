@@ -47,7 +47,7 @@ unit SynEditTextBuffer;
 interface
 
 uses
-  Classes, SysUtils, Graphics, LCLProc,
+  Classes, SysUtils, Graphics, LCLProc, LazLoggerBase,
   SynEditTypes, LazSynEditText, SynEditTextBase, SynEditMiscProcs, SynEditMiscClasses,
   SynEditHighlighter;
 
@@ -372,9 +372,9 @@ type
 
 var
   (* Re-usable arrays for the most common cases *)
-  SynEditUndoMarkModifiedOneEmpty:    TSynEditStringFlagsArray; // = [];
-  SynEditUndoMarkModifiedOneSaved:    TSynEditStringFlagsArray; // = [sfSaved];
-  SynEditUndoMarkModifiedOneModified: TSynEditStringFlagsArray; // = [sfModified];
+  SynEditUndoMarkModifiedOneEmpty:    TSynEditStringFlagsArray = nil; // = [];
+  SynEditUndoMarkModifiedOneSaved:    TSynEditStringFlagsArray = nil; // = [sfSaved];
+  SynEditUndoMarkModifiedOneModified: TSynEditStringFlagsArray = nil; // = [sfModified];
 
 
 { TLazSynDisplayBuffer }
