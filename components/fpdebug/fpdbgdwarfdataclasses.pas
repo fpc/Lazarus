@@ -2732,7 +2732,7 @@ end;
 
 procedure TDwarfInformationEntry.PrepareAbbrev;
 begin
-  if dieAbbrevValid in FFlags then
+  if (dieAbbrevValid in FFlags) or (FInformationEntry = nil) then
     exit;
   FInformationData := FCompUnit.FAbbrevList.FindLe128bFromPointer(FInformationEntry, FAbbrev);
   Include(FFlags, dieAbbrevValid);
@@ -2747,6 +2747,9 @@ function TDwarfInformationEntry.PrepareAbbrevData: Boolean;
 var
   AbbrList: TDwarfAbbrevList;
 begin
+  if FInformationEntry = nil then
+    exit(False);
+
   Result := FAbbrevData <> nil;
   if dieAbbrevDataValid in FFlags then
     exit;
