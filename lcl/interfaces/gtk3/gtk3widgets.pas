@@ -51,7 +51,7 @@ type
 
   TGtk3WidgetType = (wtWidget, wtStaticText, wtProgressBar, wtLayout,
     wtContainer, wtMenuBar, wtMenu, wtMenuItem, wtEntry, wtSpinEdit,
-    wtNotebook, wtTabControl, wtComboBox,
+    wtNotebook, wtTabControl, wtComboBox, wtPanel,
     wtGroupBox, wtCalendar, wtTrackBar, wtScrollBar,
     wtScrollingWin, wtListBox, wtListView, wtCheckListBox, wtMemo, wtTreeModel,
     wtCustomControl, wtScrollingWinControl,
@@ -2396,6 +2396,8 @@ begin
       exit;
     Result := DeliverMessage(Msg, True) <> 0;
   end;
+  if wtPanel in WidgetType then
+    Result := GDK_EVENT_STOP;
 end;
 
 function TGtk3Widget.GetVisible: Boolean;
@@ -3499,7 +3501,7 @@ begin
   FHasPaint := True;
   FBorderStyle := bsNone;
 
-  FWidgetType := [wtWidget, wtLayout];
+  FWidgetType := [wtWidget, wtLayout, wtPanel];
   Result := TGtkLayout.new(nil, nil);
   Result^.set_has_window(True);
   // as GtkFixed have no child control here - nobody triggers resizing
