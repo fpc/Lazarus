@@ -367,6 +367,12 @@ end;
 
 { TGtk3WSCustomListView }
 
+type
+  TLVHack = class(TCustomListView)
+  end;
+  TLVItemHack = class(TListItem)
+  end;
+
 class function TGtk3WSCustomListView.CreateHandle(
   const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
@@ -374,15 +380,22 @@ var
 begin
   // DebugLn('TGtk3WSCustomListView.CreateHandle');
   AListView := TGtk3ListView.Create(AWinControl, AParams);
+  if TLVHack(AWinControl).ViewStyle = vsSmallIcon then
+  begin
+    if Assigned(TLVHack(AWinControl).SmallImages) then
+      AListView.setItemWidth(TLVHack(AWinControl).SmallImages.Width)
+    else
+      AListView.setItemWidth(0);
+  end else
+  if TLVHack(AWinControl).ViewStyle = vsIcon then
+  begin
+    if Assigned(TLVHack(AWinControl).LargeImages) then
+      AListView.setItemWidth(TLVHack(AWinControl).LargeImages.Width)
+    else
+      AListView.setItemWidth(0);
+  end;
   Result := TLCLHandle(AListView);
 end;
-
-type
-  TLVHack = class(TCustomListView)
-  end;
-  TLVItemHack = class(TListItem)
-  end;
-
 
 procedure Gtk3_ItemCheckedChanged(renderer: PGtkCellRendererToggle; PathStr: Pgchar; aData: gPointer);cdecl;
 var
@@ -1127,7 +1140,8 @@ begin
       PixRenderer^.set_fixed_size(AValue.Width + 2, AValue.Height + 2);
       AColumn^.queue_resize;
     end;
-
+    if TLVHack(ALV).ViewStyle in [vsSmallIcon, vsIcon] then
+      TGtk3ListView(ALV.Handle).setItemWidth(AValue.Width);
     for i := 0 to AValue.Count-1 do
     begin
       pixbuf := nil;

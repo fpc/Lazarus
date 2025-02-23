@@ -660,6 +660,7 @@ type
       const AIsSet: Boolean);
     function ItemGetState(const AIndex: Integer; const {%H-}AItem: TListItem; const AState: TListItemState;
       out AIsSet: Boolean): Boolean;
+    procedure setItemWidth(const AImageListWidth: integer=0); //calculates width of vsIcon item. Param aWidth is imageList.Width
     procedure ScrollToRow(const ARow: integer);
     procedure UpdateImageCellsSize;
 
@@ -6814,6 +6815,32 @@ end;
 
 type
   TCustomListViewHack = class(TCustomListView);
+
+procedure TGtk3ListView.setItemWidth(const AImageListWidth: integer);
+var
+  aImgWidth, aBorders: gint;
+  AListView: TCustomListViewHack;
+  aIconView: PGtkIconView;
+begin
+  aImgWidth := AImageListWidth;
+  aListView := TCustomListViewHack(LCLObject);
+  if not (AListView.ViewStyle in [vsSmallIcon, vsIcon]) then
+    exit;
+  if not Gtk3IsWidget(getContainerWidget) then
+    exit;
+  if aImgWidth <= 0 then
+  begin
+    if AListView.ViewStyle = vsIcon then
+      gtk_icon_size_lookup(Ord(GTK_ICON_SIZE_DIALOG), @aImgWidth, @aBorders)
+    else
+      gtk_icon_size_lookup(Ord(GTK_ICON_SIZE_LARGE_TOOLBAR), @aImgWidth, @aBorders);
+  end;
+  aIconView := PGtkIconView(GetContainerWidget);
+  aBorders := aIconView^.get_margin_start + aIconView^.get_margin_end +
+    (aIconView^.get_border_width * 2) + aIconView^.get_column_spacing +
+    (aIconView^.get_spacing * 2);
+  aIconView^.set_item_width(aImgWidth + aBorders);
+end;
 
 function TGtk3ListView.CreateWidget(const Params: TCreateParams): PGtkWidget;
 var
