@@ -3083,16 +3083,16 @@ begin
   AdditionalHighlightAttributes[ahaIdentComplWindowEntryUnknown]      := dlgIAhadentifierComplEntryOther;
   AdditionalHighlightGroupNames[agnIdentComplWindow]                  := dlgIdentifierCompletion;
 
-  AdditionalHighlightAttributes[ahaOutlineLevel1Color]  := dlgAddHiAttrOutlineLevel1Color;
-  AdditionalHighlightAttributes[ahaOutlineLevel2Color]  := dlgAddHiAttrOutlineLevel2Color;
-  AdditionalHighlightAttributes[ahaOutlineLevel3Color]  := dlgAddHiAttrOutlineLevel3Color;
-  AdditionalHighlightAttributes[ahaOutlineLevel4Color]  := dlgAddHiAttrOutlineLevel4Color;
-  AdditionalHighlightAttributes[ahaOutlineLevel5Color]  := dlgAddHiAttrOutlineLevel5Color;
-  AdditionalHighlightAttributes[ahaOutlineLevel6Color]  := dlgAddHiAttrOutlineLevel6Color;
-  AdditionalHighlightAttributes[ahaOutlineLevel7Color]  := dlgAddHiAttrOutlineLevel7Color;
-  AdditionalHighlightAttributes[ahaOutlineLevel8Color]  := dlgAddHiAttrOutlineLevel8Color;
-  AdditionalHighlightAttributes[ahaOutlineLevel9Color]  := dlgAddHiAttrOutlineLevel9Color;
-  AdditionalHighlightAttributes[ahaOutlineLevel10Color] := dlgAddHiAttrOutlineLevel10Color;
+  AdditionalHighlightAttributes[ahaOutlineLevel1Color]  := Format(dlgAddHiAttrOutlineLevelColor, [' 1']);
+  AdditionalHighlightAttributes[ahaOutlineLevel2Color]  := Format(dlgAddHiAttrOutlineLevelColor, [' 2']);
+  AdditionalHighlightAttributes[ahaOutlineLevel3Color]  := Format(dlgAddHiAttrOutlineLevelColor, [' 3']);
+  AdditionalHighlightAttributes[ahaOutlineLevel4Color]  := Format(dlgAddHiAttrOutlineLevelColor, [' 4']);
+  AdditionalHighlightAttributes[ahaOutlineLevel5Color]  := Format(dlgAddHiAttrOutlineLevelColor, [' 5']);
+  AdditionalHighlightAttributes[ahaOutlineLevel6Color]  := Format(dlgAddHiAttrOutlineLevelColor, [' 6']);
+  AdditionalHighlightAttributes[ahaOutlineLevel7Color]  := Format(dlgAddHiAttrOutlineLevelColor, [' 7']);
+  AdditionalHighlightAttributes[ahaOutlineLevel8Color]  := Format(dlgAddHiAttrOutlineLevelColor, [' 8']);
+  AdditionalHighlightAttributes[ahaOutlineLevel9Color]  := Format(dlgAddHiAttrOutlineLevelColor, [' 9']);
+  AdditionalHighlightAttributes[ahaOutlineLevel10Color] := Format(dlgAddHiAttrOutlineLevelColor, ['10']);
   AdditionalHighlightGroupNames[agnOutlineColors]  := dlgAddHiAttrGroupOutlineColors;
 
   AdditionalHighlightAttributes[ahaWrapIndend]  := dlgAddHiAttrWrapIndent;

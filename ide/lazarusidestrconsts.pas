@@ -2136,16 +2136,7 @@ resourcestring
   dlgAddHiAttrRecentlyUsed        = 'Recently used item';
   dlgAddHiAttrWindowBorder        = 'Window border';
   dlgAddHiAttrHighlightPrefix     = 'Highlight prefix';
-  dlgAddHiAttrOutlineLevel1Color  = 'Level  1';
-  dlgAddHiAttrOutlineLevel2Color  = 'Level  2';
-  dlgAddHiAttrOutlineLevel3Color  = 'Level  3';
-  dlgAddHiAttrOutlineLevel4Color  = 'Level  4';
-  dlgAddHiAttrOutlineLevel5Color  = 'Level  5';
-  dlgAddHiAttrOutlineLevel6Color  = 'Level  6';
-  dlgAddHiAttrOutlineLevel7Color  = 'Level  7';
-  dlgAddHiAttrOutlineLevel8Color  = 'Level  8';
-  dlgAddHiAttrOutlineLevel9Color  = 'Level  9';
-  dlgAddHiAttrOutlineLevel10Color = 'Level 10';
+  dlgAddHiAttrOutlineLevelColor   = 'Level %s';
   dlgAddHiAttrWrapIndent  = 'Indent';
   dlgAddHiAttrWrapEol     = 'EOL';
   dlgAddHiAttrWrapSubLine = 'Sub-line';
