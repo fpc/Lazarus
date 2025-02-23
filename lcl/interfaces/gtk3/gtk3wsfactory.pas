@@ -154,8 +154,8 @@ end;
 // controls
 function RegisterDragImageListResolution: Boolean; alias : 'WSRegisterDragImageListResolution';
 begin
-  // RegisterWSComponent(TDragImageListResolution, TGtk3WSDragImageListResolution);
-  Result := False;
+  RegisterWSComponent(TDragImageListResolution, TGtk3WSDragImageListResolution);
+  Result := True;
 end;
 
 function RegisterLazAccessibleObject: Boolean; alias : 'WSRegisterLazAccessibleObject';

@@ -125,7 +125,7 @@ type
 
 
 implementation
-uses SysUtils, gtk3objects, gtk3procs;
+uses SysUtils, gtk3objects, gtk3procs, gtk3int;
 
 { TGtk3WSWinControl }
 
@@ -586,30 +586,48 @@ end;
 
 class function TGtk3WSDragImageListResolution.BeginDrag(const ADragImageList: TDragImageListResolution;
   Window: HWND; AIndex, X, Y: Integer): Boolean;
+var
+  ABitmap: TBitmap;
+  APixBuf: PGdkPixbuf;
 begin
   Result := False;
+  ABitmap := TBitmap.Create;
+  ADragImageList.GetBitmap(AIndex, ABitmap);
+  if (ABitmap.Handle = 0) or (ABitmap.Width = 0) or (ABitmap.Height = 0) then
+  begin
+    ABitmap.Free;
+    exit;
+  end;
+  APixBuf := TGtk3Image(ABitmap.Handle).Handle;
+  APixBuf^.ref;
+  Result := Gtk3Widgetset.DragImageList_BeginDrag(APixBuf, ADragImageList.DragHotspot);
+  if Result then
+    Gtk3Widgetset.DragImageList_DragMove(X, Y);
+  APixBuf^.unref;
+  ABitmap.Free;
 end;
 
 class function TGtk3WSDragImageListResolution.DragMove(const ADragImageList: TDragImageListResolution;
   X, Y: Integer): Boolean;
 begin
-  Result := False;
+  Result := Gtk3Widgetset.DragImageList_DragMove(X, Y);
 end;
 
 class procedure TGtk3WSDragImageListResolution.EndDrag(const ADragImageList: TDragImageListResolution);
 begin
+  Gtk3Widgetset.DragImageList_EndDrag;
 end;
 
 class function TGtk3WSDragImageListResolution.HideDragImage(const ADragImageList: TDragImageListResolution;
   ALockedWindow: HWND; DoUnLock: Boolean): Boolean;
 begin
-  Result := False;
+  Result := Gtk3Widgetset.DragImageList_SetVisible(False);
 end;
 
 class function TGtk3WSDragImageListResolution.ShowDragImage(const ADragImageList: TDragImageListResolution;
   ALockedWindow: HWND; X, Y: Integer; DoLock: Boolean): Boolean;
 begin
-  Result := False;
+  Result := Gtk3Widgetset.DragImageList_DragMove(X, Y) and Gtk3Widgetset.DragImageList_SetVisible(True);
 end;
 
 end.

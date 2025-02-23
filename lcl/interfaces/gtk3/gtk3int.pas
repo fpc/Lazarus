@@ -89,6 +89,11 @@ type
     // tmp
     cssProvider:PGtkCssProvider;
 
+    FDragImageList: PGtkWidget;
+    FDragImageListIcon: PGtkImage;
+    FDragHotSpot: TPoint;
+    FDragImageLock: Boolean;
+
   public
     function CreateDCForWidget(AWidget: PGtkWidget; AWindow: PGdkWindow; cr: Pcairo_t): HDC;
     procedure AddWindow(AWindow: PGtkWindow);
@@ -104,6 +109,12 @@ type
     procedure InitStockItems;
     procedure FreeStockItems;
     function CreateDefaultFont: HFONT;
+
+    {dragImageList support}
+    function DragImageList_BeginDrag(APixBuf: PGdkPixbuf; AHotSpot: TPoint): Boolean;
+    procedure DragImageList_EndDrag;
+    function DragImageList_DragMove(X, Y: Integer): Boolean;
+    function DragImageList_SetVisible(NewVisible: Boolean): Boolean;
 
   public
     constructor Create; override;
