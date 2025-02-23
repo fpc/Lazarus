@@ -629,7 +629,7 @@ type
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
     function EatArrowKeys(const {%H-}AKey: Word): Boolean; override;
     procedure SetColor(AValue: TColor); override;
-    class function selection_changed(AIconView: PGtkIconView; aData: gPointer):gboolean;cdecl;
+    class function selection_changed(AIconView: PGtkIconView; aData: gPointer):gboolean; cdecl; static;
   public
     destructor Destroy; override;
     {interface implementation}
@@ -6907,7 +6907,7 @@ begin
   end else
   begin
     g_signal_connect_data (PGtkIconView(FCentralWidget), 'selection-changed',
-                        TGCallback(@Tgtk3ListView.selection_changed), Self, nil, G_CONNECT_DEFAULT);
+                        TGCallback(@selection_changed), Self, nil, G_CONNECT_DEFAULT);
   end;
 end;
 
