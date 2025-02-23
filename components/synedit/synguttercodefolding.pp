@@ -27,7 +27,7 @@ unit SynGutterCodeFolding;
 interface
 
 uses
-  SysUtils, Classes, StrUtils, Controls, Graphics, Menus, LCLIntf,
+  SysUtils, Classes, Controls, Graphics, Menus, LCLIntf,
   SynGutterBase, SynEditMiscProcs, SynEditFoldedView, SynEditMouseCmds,
   SynEditHighlighterFoldBase, SynEditMiscClasses, LazSynEditText, LCLType,
   ImgList, Forms;

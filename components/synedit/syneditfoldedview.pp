@@ -2422,7 +2422,7 @@ procedure TSynTextFoldAVLTree.AdjustForLinesDeleted(AStartLine,
   Procedure AdjustNodeForLinesDeleted(Current : TSynTextFoldAVLNodeData;
     CurrentLine, FirstLineToDelete, CountLinesToDelete : Integer);
   var
-    LastLineToDelete, LinesBefore, LinesInside, LinesAfter, t : Integer;
+    LastLineToDelete, LinesBefore, LinesInside, LinesAfter : Integer;
   begin
     LastLineToDelete := FirstLineToDelete + CountLinesToDelete - 1; // only valid for delete; CountLinesToDelete < 0
 
@@ -2436,7 +2436,6 @@ procedure TSynTextFoldAVLTree.AdjustForLinesDeleted(AStartLine,
           LinesBefore := CurrentLine - FirstLineToDelete;
           LinesInside := CountLinesToDelete - LinesBefore;
           // shrink
-          t := Current._MergedLineCount;
           Current._FoldedCount := Max(Current._FoldedCount - LinesInside, -1);
           Current._MergedLineCount := Max(Current._MergedLineCount - LinesInside, 0);
           Current.UdpateVirtualLineCounts(FNextStrings, CurrentLine);    // If LineCount = -1; LeftVirtualLineCount will be correctd on delete node
@@ -2472,7 +2471,6 @@ procedure TSynTextFoldAVLTree.AdjustForLinesDeleted(AStartLine,
         LinesInside := CountLinesToDelete - LinesAfter;
 
         // shrink current node
-        t := Current._MergedLineCount;
         Current._MergedLineCount := Current._MergedLineCount- LinesInside;
         if Current._FoldedCount > Current._MergedLineCount then
           Current._FoldedCount := Current._MergedLineCount;

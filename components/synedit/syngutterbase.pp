@@ -400,8 +400,6 @@ begin
 end;
 
 procedure TSynGutterBase.SetColor(const Value: TColor);
-var
-  i: Integer;
 begin
   if FColor.Background = Value then
     exit;
@@ -409,8 +407,6 @@ begin
 end;
 
 procedure TSynGutterBase.SetCurrentLineColor(AValue: TSynHighlighterAttributesModifier);
-var
-  i: Integer;
 begin
   FCurrentLineColor.Assign(AValue);
 end;

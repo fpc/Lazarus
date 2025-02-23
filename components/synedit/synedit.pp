@@ -3743,14 +3743,13 @@ function TCustomSynEdit.GetDragHotZoneInfo(x, y: Integer; out HorizFraction,
   VertFraction: Integer): boolean;
 var
   b: TRect;
-  HotWidth, HotHeight: Integer;
+  HotWidth: Integer;
 begin
   HorizFraction := 0;
   VertFraction := 0;
 
   b := FTextArea.Bounds;
   HotWidth  := Min(LineHeight * 11 div 4, (b.Right - b.Left) div 4);
-  HotHeight := Min(LineHeight *  9 div 4, (b.Bottom - b.Top) div 4);
 
   if x < b.Left + HotWidth then
     HorizFraction := (x - (b.Left + HotWidth)) * 256 div HotWidth
@@ -6611,9 +6610,7 @@ procedure TCustomSynEdit.DragDrop(Source: TObject; X, Y: Integer);
 var
   NewCaret: TPoint;
   DropMove: boolean;
-  BB, BE: TPoint;
   DragDropText: string;
-  Adjust: integer;
   FoldInfo: String;
   BlockSel: TSynEditSelection;
   sm: TSynSelectionMode;
@@ -6627,8 +6624,6 @@ begin
       ComputeCaret(X, Y);
       NewCaret := LogicalCaretXY;
       if CheckDragDropAccecpt(NewCaret, Source, DropMove) then begin
-        BB := BlockBegin;
-        BE := BlockEnd;
         InternalBeginUndoBlock;                                                         //mh 2000-11-20
         try
           DragDropText := TCustomSynEdit(Source).SelText;

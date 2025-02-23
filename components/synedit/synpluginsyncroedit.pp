@@ -27,7 +27,7 @@ interface
 
 uses
   Classes, Controls, SysUtils, Forms, Graphics, SynEditMiscClasses, LCLType,
-  SynEdit, SynPluginSyncronizedEditBase, LazSynEditText, SynEditMiscProcs,
+  SynEdit, SynPluginSyncronizedEditBase, SynEditMiscProcs,
   SynEditMouseCmds, SynEditKeyCmds, SynEditTypes, SynEditHighlighter, LCLIntf,
   LazUTF8, LazLoggerBase;
 
@@ -412,8 +412,6 @@ end;
 
 function TSynPluginSyncroEditWordsHash.CompareEntry(const aEntry1,
   aEntry2: TSynPluginSyncroEditWordsHashEntry): Boolean;
-var
-  Line1, Line2: String;
 begin
   Result := (aEntry1.Word = aEntry2.Word);
 end;
@@ -1057,11 +1055,10 @@ end;
 procedure TSynPluginSyncroEdit.StartSyncroMode(AScanMode: TSynPluginSyncroScanMode);
 var
   Pos, EndPos: TPoint;
-  Line, tk, wrd: String;
-  x2, g, tt, tx, i: Integer;
+  Line, wrd: String;
+  x2, g: Integer;
   entry: PSynPluginSyncroEditWordsHashEntry;
-  f, HasMultiCell: Boolean;
-  ta: TSynHighlighterAttributes;
+  f: Boolean;
   m: TSynPluginSyncroScanMode;
 begin
   if FCallQueued then begin

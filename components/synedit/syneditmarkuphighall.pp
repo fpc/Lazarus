@@ -1954,9 +1954,6 @@ begin
 end;
 
 function TSynMarkupHighAllMatchList.Insert(AStartPoint, AEndPoint: TPoint): integer;
-var
-  C: Integer;
-  S: TPoint;
 begin
   Result := IndexOf(AStartPoint);
   Insert(Result, AStartPoint, AEndPoint);
