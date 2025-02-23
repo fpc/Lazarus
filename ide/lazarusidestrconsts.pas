@@ -3188,16 +3188,7 @@ resourcestring
   srkmecCopyEditorNewWindow      = 'Copy editor to new window';
   srkmecLockEditor               = 'Lock Editor';
 
-  lisKMGoToSourceEditor1 = 'Go to source editor 1';
-  lisKMGoToSourceEditor2 = 'Go to source editor 2';
-  lisKMGoToSourceEditor3 = 'Go to source editor 3';
-  lisKMGoToSourceEditor4 = 'Go to source editor 4';
-  lisKMGoToSourceEditor5 = 'Go to source editor 5';
-  lisKMGoToSourceEditor6 = 'Go to source editor 6';
-  lisKMGoToSourceEditor7 = 'Go to source editor 7';
-  lisKMGoToSourceEditor8 = 'Go to source editor 8';
-  lisKMGoToSourceEditor9 = 'Go to source editor 9';
-  srkmecGotoEditor            = 'Go to editor %d';
+  srkmecGotoEditor            = 'Go to source editor %d';
   srkmEcFoldLevel             = 'Fold to Level %d';
   srkmecUnFoldAll             = 'Unfold all';
   srkmecFoldCurrent           = 'Fold at Cursor';
@@ -3447,7 +3438,6 @@ resourcestring
 
   srkmCatSrcNoteBook    = 'Source Notebook commands';
   srkmCatFileMenu       = 'File menu commands';
-  lisKMGoToSourceEditor10 = 'Go to source editor 10';
   srkmCatViewMenu       = 'View menu commands';
   lisKMToggleViewObjectInspector = 'Toggle view Object Inspector';
   lisKMToggleViewSourceEditor = 'Toggle view Source Editor';
