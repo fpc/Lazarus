@@ -2389,7 +2389,9 @@ var
           SetLength(Str, P - Start);
           Move(Start^, Str[1], P - Start);
           FLines.EditInsert(FInternalCaret.BytePos, FInternalCaret.LinePos, Str);
-        end;
+        end
+        else
+          Str := '';
         if p^ in [#10,#13] then begin
           if (p[1] in [#10,#13]) and (p[1]<>p^) then
             inc(p,2)
