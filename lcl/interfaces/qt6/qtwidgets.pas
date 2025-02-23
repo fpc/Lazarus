@@ -6254,7 +6254,8 @@ end;
 
 procedure TQtPushButton.PushButtonUnblock(Data: PtrInt);
 begin
-  QObject_blockSignals(QObjectH(Data), False);
+  if QtWidgetSet.IsValidHandle(Data) then
+    QObject_blockSignals(TQtPushButton(Data).Widget, False);
 end;
 
 function TQtPushButton.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
@@ -6270,7 +6271,7 @@ begin
         (QWidget_focusPolicy(Widget) > QtNoFocus) then
         begin
           QObject_blockSignals(Sender, True);
-          Application.QueueAsyncCall(@PushButtonUnblock, PtrInt(Sender));
+          Application.QueueAsyncCall(@PushButtonUnblock, PtrInt(Self));
         end;
       end;
     else
