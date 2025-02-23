@@ -93,6 +93,8 @@ type
     class procedure DestroyWidgetEvent({%H-}w: PGtkWidget;{%H-}data:gpointer); cdecl; static;
     class function DrawWidget(AWidget: PGtkWidget; AContext: Pcairo_t; Data: gpointer): gboolean; cdecl; static;
     class procedure MapWidget(AWidget: PGtkWidget; Data: gPointer); cdecl; static; {GtkWindow never sends this signal !}
+    class function MouseEnterNotify(aWidget: PGtkWidget; aEvent: PGdkEventCrossing; aData: gpointer): gboolean; cdecl; static;
+    class function MouseLeaveNotify(aWidget: PGtkWidget; aEvent: PGdkEventCrossing; aData: gpointer): gboolean; cdecl; static;
     class function ResizeEvent(AWidget: PGtkWidget; AEvent: PGdkEvent; Data: gpointer): gboolean; cdecl; static;
     class function ScrollEvent(AWidget: PGtkWidget; AEvent: PGdkEvent; AData: GPointer): GBoolean; cdecl; static;
     class procedure SizeAllocate(AWidget: PGtkWidget; AGdkRect: PGdkRectangle; Data: gpointer); cdecl; static;
@@ -153,7 +155,6 @@ type
     function ScreenToClient(var P: TPoint): Integer;
 
     function DeliverMessage(var Msg; const AIsInputEvent: Boolean = False): LRESULT; virtual;
-    function GtkEventMouseEnterLeave(Sender: PGtkWidget; Event: PGdkEvent): Boolean; virtual; cdecl;
     function GtkEventKey(Sender: PGtkWidget; Event: PGdkEvent; AKeyPress: Boolean): Boolean; virtual; cdecl;
     function GtkEventMouse(Sender: PGtkWidget; Event: PGdkEvent): Boolean; virtual; cdecl;
     function GtkEventMouseMove(Sender: PGtkWidget; Event: PGdkEvent): Boolean; virtual; cdecl;
@@ -1231,57 +1232,9 @@ begin
     end;
   GDK_ENTER_NOTIFY:
     begin
-      if wtWindow in TGtk3Widget(Data).WidgetType then
-      begin
-        if Widget <> TGtk3Widget(Data).GetContainerWidget then
-          exit;
-      end;
-      (*
-      DebugLn('** ENTER_NOTIFY ',dbgs(Event^.crossing.send_event),' TIME ',dbgs(Event^.crossing.time),' MODE ',dbgs(Event^.crossing.mode),
-       ' WIDGET ',dbgHex(PtrUInt(Widget)),' LCLObject ',dbgsName(TGtk3Widget(Data).LCLObject),
-       ' Widget=?',dbgs(Widget=TGtk3Widget(Data).GetContainerWidget));
-      *)
-      (*
-      if wtComboBox in TGtk3Widget(Data).WidgetType then
-      begin
-        // DebugLn('** ENTER_NOTIFY ',dbgs(Event^.crossing.send_event),' TIME ',dbgs(Event^.crossing.time),' MODE ',dbgs(Event^.crossing.mode),
-        //  ' ENTERLEAVETIME=',dbgs(TGtk3ComboBox(Data).FEnterLeaveTime),' WIDGET ',dbgHex(PtrUInt(Widget)));
-        TGtk3ComboBox(Data).DumpPrivateStructValues('GDK_ENTER_NOTIFY');
-        if Widget <> TGtk3Widget(Data).Widget then
-          exit;
-        // upisi u combobox enter time, ako je enter.time - leave.time < 20 onda ne salji msg !
-        TGtk3ComboBox(Data).FEnterLeaveTime := Event^.crossing.time;
-      end;
-      *)
-      TGtk3Widget(Data).GtkEventMouseEnterLeave(Widget, Event);
     end;
   GDK_LEAVE_NOTIFY:
     begin
-      if wtWindow in TGtk3Widget(Data).WidgetType then
-      begin
-        if Widget <> TGtk3Widget(Data).GetContainerWidget then
-          exit;
-      end;
-      (*
-      DebugLn('** LEAVE_NOTIFY ',dbgs(Event^.crossing.send_event),' TIME ',dbgs(Event^.crossing.time),' MODE ',dbgs(Event^.crossing.mode),
-       ' WIDGET ',dbgHex(PtrUInt(Widget)),' LCLObject ',dbgsName(TGtk3Widget(Data).LCLObject),
-       ' Widget=?',dbgs(Widget=TGtk3Widget(Data).GetContainerWidget));
-      *)
-      (*
-      if wtComboBox in TGtk3Widget(Data).WidgetType then
-      begin
-        // DebugLn('** LEAVE_NOTIFY ',dbgs(Event^.crossing.send_event),' TIME ',dbgs(Event^.crossing.time),' MODE ',dbgs(Event^.crossing.mode),
-        // ' TIME DIFF=',dbgs(Event^.crossing.time - TGtk3ComboBox(Data).FEnterLeaveTime),
-        // ' WIDGET ',dbgHex(PtrUInt(Widget)));
-        if Widget <> TGtk3Widget(Data).Widget then
-          exit;
-        if Event^.crossing.time - TGtk3ComboBox(Data).FEnterLeaveTime < 100 then
-        begin
-          exit(False);
-        end;
-      end;
-      *)
-      TGtk3Widget(Data).GtkEventMouseEnterLeave(Widget, Event);
     end;
   GDK_FOCUS_CHANGE:
     begin
@@ -1757,32 +1710,6 @@ begin
 end;
 
 { TGtk3Widget }
-
-function TGtk3Widget.GtkEventMouseEnterLeave(Sender: PGtkWidget; Event: PGdkEvent): Boolean;
-  cdecl;
-var
-  Msg: TLMessage;
-  // MouseMsg: TLMMouseMove absolute Msg;
-  {$IFDEF GTK3DEBUGCORE}
-  MousePos: TPoint;
-  {$ENDIF}
-begin
-  Result := False;
-  FillChar(Msg{%H-}, SizeOf(Msg), #0);
-  if Event^.type_ = GDK_ENTER_NOTIFY then
-    Msg.Msg := LM_MOUSEENTER
-  else
-    Msg.Msg := LM_MOUSELEAVE;
-
-  NotifyApplicationUserInput(LCLObject, Msg.Msg);
-  Result := DeliverMessage(Msg, True) <> 0;
-  {$IFDEF GTK3DEBUGCORE}
-  MousePos.X := Round(Event^.crossing.x);
-  MousePos.Y := Round(Event^.crossing.y);
-  DebugLn('GtkEventMouseEnterLeave: mousePos ',dbgs(MousePos),' Object ',dbgsName(LCLObject),
-    ' IsEnter ',dbgs(Event^.type_ = GDK_ENTER_NOTIFY),' Result=',dbgs(Result));
-  {$ENDIF}
-end;
 
 function TGtk3Widget.GtkEventMouseMove(Sender: PGtkWidget; Event: PGdkEvent
   ): Boolean; cdecl;
@@ -2830,6 +2757,28 @@ begin
   // FHasPaint := False;
 end;
 
+class function TGtk3Widget.MouseEnterNotify(aWidget: PGtkWidget; aEvent: PGdkEventCrossing; aData: gpointer): gboolean; cdecl;
+var
+  Msg: TLMessage;
+begin
+  Result := gtk_false;
+  Msg.Msg := LM_MOUSEENTER;
+  TGtk3Widget(aData).DeliverMessage(Msg, True);
+  if Assigned(TGtk3Widget(aData).LCLObject) and (csDesigning in TGtk3Widget(aData).LCLObject.ComponentState) then
+    Result := gtk_true;
+end;
+
+class function TGtk3Widget.MouseLeaveNotify(aWidget: PGtkWidget; aEvent: PGdkEventCrossing; aData: gpointer): gboolean; cdecl;
+var
+  Msg: TLMessage;
+begin
+  Result := gtk_false;
+  Msg.Msg := LM_MOUSELEAVE;
+  TGtk3Widget(aData).DeliverMessage(Msg, True);
+  if Assigned(TGtk3Widget(aData).LCLObject) and (csDesigning in TGtk3Widget(aData).LCLObject.ComponentState) then
+    Result := gtk_true;
+end;
+
 procedure TGtk3Widget.InitializeWidget;
 var
   ARect: TGdkRectangle;
@@ -2867,6 +2816,9 @@ begin
     FWidget^.set_events(GDK_DEFAULT_EVENTS_MASK);
   g_signal_connect_data(FWidget, 'destroy', TGCallback(@DestroyWidgetEvent), Self, nil, G_CONNECT_DEFAULT);
   g_signal_connect_data(FWidget, 'event', TGCallback(@WidgetEvent), Self, nil, G_CONNECT_DEFAULT);
+
+  g_signal_connect_data(GetContainerWidget, 'enter-notify-event', TGCallback(@MouseEnterNotify), Self, nil, G_CONNECT_DEFAULT);
+  g_signal_connect_data(getContainerWidget, 'leave-notify-event', TGCallback(@MouseLeaveNotify), Self, nil, G_CONNECT_DEFAULT);
 
   for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
   begin
@@ -4830,16 +4782,6 @@ begin
     Result := True;
 end;
 
-function enterLeaveNotifyEvent(widget: PGtkWidget; event: PGdkEvent; user_data: gpointer): gboolean; cdecl;
-var
-  AEvent: TGdkEvent;
-begin
-  Result := TGtk3Widget(user_data).GtkEventMouseEnterLeave(Widget, Event);
-  {TODO: check if we can block button_press also}
-  if event^.type_ = GDK_LEAVE_NOTIFY then
-    Result := True;
-end;
-
 function motionNotifyEvent(widget: PGtkWidget; event: PGdkEvent; user_data: gpointer): gboolean; cdecl;
 begin
   TGtk3Widget(user_data).GtkEventMouseMove(widget, event);
@@ -4870,15 +4812,11 @@ begin
       //Widget^.set_events([GDK_BUTTON_PRESS_MASK, GDK_BUTTON_RELEASE_MASK]);
       g_signal_connect_data(Widget, 'button-press-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
       g_signal_connect_data(Widget, 'button-release-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
-      g_signal_connect_data(Widget, 'enter-notify-event', TGCallback(@enterLeaveNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
-      g_signal_connect_data(Widget, 'leave-notify-event', TGCallback(@enterLeaveNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
       g_signal_connect_data(Widget, 'motion-notify-event', TGCallback(@motionNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
     end;
     *)
     g_signal_connect_data(GetContainerWidget, 'button-press-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
     g_signal_connect_data(GetContainerWidget, 'button-release-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
-    g_signal_connect_data(GetContainerWidget, 'enter-notify-event', TGCallback(@enterLeaveNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
-    g_signal_connect_data(GetContainerWidget, 'leave-notify-event', TGCallback(@enterLeaveNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
     g_signal_connect_data(GetContainerWidget, 'motion-notify-event', TGCallback(@motionNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
   end;
 end;
@@ -7875,21 +7813,16 @@ begin
       (*
       g_signal_connect_data(PGtkComboBox(Result)^.priv3^.button, 'button-press-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
       g_signal_connect_data(PGtkComboBox(Result)^.priv3^.button, 'button-release-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
-      g_signal_connect_data(PGtkComboBox(Result)^.priv3^.button, 'enter-notify-event', TGCallback(@enterLeaveNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
-      g_signal_connect_data(PGtkComboBox(Result)^.priv3^.button, 'leave-notify-event', TGCallback(@enterLeaveNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
 
       g_signal_connect_data(PGtkComboBox(Result)^.priv3^.arrow, 'button-press-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
       g_signal_connect_data(PGtkComboBox(Result)^.priv3^.arrow, 'button-release-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
-      g_signal_connect_data(PGtkComboBox(Result)^.priv3^.arrow, 'enter-notify-event', TGCallback(@enterLeaveNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
-      g_signal_connect_data(PGtkComboBox(Result)^.priv3^.arrow, 'leave-notify-event', TGCallback(@enterLeaveNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
       *)
       PGtkComboBox(Result)^.priv3^.button^.set_sensitive(gtk_false);
       PGtkComboBox(Result)^.priv3^.arrow^.set_sensitive(gtk_false);
 
       g_signal_connect_data(PGtkEntry(PGtkComboBox(Result)^.get_child), 'button-press-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
       g_signal_connect_data(PGtkEntry(PGtkComboBox(Result)^.get_child), 'button-release-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
-      g_signal_connect_data(PGtkEntry(PGtkComboBox(Result)^.get_child), 'enter-notify-event', TGCallback(@enterLeaveNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
-      g_signal_connect_data(PGtkEntry(PGtkComboBox(Result)^.get_child), 'leave-notify-event', TGCallback(@enterLeaveNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
+
       // g_signal_connect_data(PGtkEntry(PGtkComboBox(Result)^.get_child), 'motion-notify-event', TGCallback(@motionNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
       PGtkEntry(PGtkComboBox(Result)^.get_child)^.set_can_focus(False);
     end else
