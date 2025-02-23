@@ -8541,7 +8541,7 @@ begin
   Result := PGtkScrolledWindow(TGtkScrolledWindow.new(nil, nil));
 
   FCentralWidget := TGtkLayout.new(nil, nil);
-  //FCentralWidget^.set_has_window(True);
+  FCentralWidget^.set_has_window(True);
 
   PGtkScrolledWindow(Result)^.add(FCentralWidget);
 
