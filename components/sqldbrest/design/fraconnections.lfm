@@ -5,24 +5,24 @@ object fraConnections: TfraConnections
   Width = 316
   ClientHeight = 463
   ClientWidth = 316
-  LCLVersion = '2.1.0.0'
   TabOrder = 0
   DesignLeft = 709
   DesignTop = 249
   object TVConnections: TTreeView
     Left = 0
-    Height = 406
-    Top = 57
+    Height = 408
+    Top = 55
     Width = 316
     Align = alClient
     DragMode = dmAutomatic
+    HideSelection = False
     Images = ILConnections
     MultiSelect = True
     TabOrder = 0
+    Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
     OnEdited = TVConnectionsEdited
     OnEditing = TVConnectionsEditing
     OnStartDrag = TVConnectionsStartDrag
-    Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
   end
   object ToolBar1: TToolBar
     Left = 0
@@ -51,7 +51,7 @@ object fraConnections: TfraConnections
     end
     object TBSep1: TToolButton
       Left = 91
-      Height = 8
+      Height = 30
       Top = 0
       Caption = 'Refresh connection'
       ImageIndex = 5
@@ -69,7 +69,7 @@ object fraConnections: TfraConnections
     end
     object ToolButton1: TToolButton
       Left = 159
-      Height = 8
+      Height = 30
       Top = 0
       Caption = 'ToolButton1'
       Style = tbsSeparator
@@ -82,7 +82,7 @@ object fraConnections: TfraConnections
   end
   object Label1: TLabel
     Left = 0
-    Height = 17
+    Height = 15
     Top = 36
     Width = 316
     Align = alTop

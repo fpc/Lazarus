@@ -257,6 +257,7 @@ begin
   IPSMain.IniFileName:=FN;
   IPSMain.Active:=True;
   IPSMain.Restore;
+  TreeView1.HideSelection := false;
   MRUSchema.ShowRecentFiles;
   fraEditor.OnSchemaChanged:=@DoSchemaChanged;
   if Application.HasOption('c','connections') then

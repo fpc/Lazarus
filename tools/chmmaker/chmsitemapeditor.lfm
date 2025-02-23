@@ -8,6 +8,7 @@ object SitemapEditForm: TSitemapEditForm
   ClientHeight = 651
   ClientWidth = 773
   ShowInTaskBar = stAlways
+  LCLVersion = '4.99.0.0'
   object Label3: TLabel
     Left = 424
     Height = 15
@@ -78,11 +79,12 @@ object SitemapEditForm: TSitemapEditForm
       Top = 0
       Width = 400
       Align = alTop
+      HideSelection = False
       ReadOnly = True
       TabOrder = 0
+      Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
       OnCustomCreateItem = SitemapTreeCustomCreateItem
       OnSelectionChanged = SitemapTreeSelectionChanged
-      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
     end
     object DescriptionEdit: TLabeledEdit
       Left = 11
@@ -113,9 +115,9 @@ object SitemapEditForm: TSitemapEditForm
       Width = 375
       Enabled = False
       ItemHeight = 15
+      TabOrder = 3
       OnChange = LocalComboChange
       OnKeyUp = LocalComboKeyUp
-      TabOrder = 3
     end
     object URLEdit: TLabeledEdit
       Left = 11
@@ -137,8 +139,8 @@ object SitemapEditForm: TSitemapEditForm
       BorderSpacing.InnerBorder = 4
       Caption = 'Before'
       Enabled = False
-      OnClick = BeforeBtnClick
       TabOrder = 5
+      OnClick = BeforeBtnClick
     end
     object AfterBtn: TButton
       Left = 170
@@ -147,8 +149,8 @@ object SitemapEditForm: TSitemapEditForm
       Width = 75
       BorderSpacing.InnerBorder = 4
       Caption = 'After'
-      OnClick = AfterBtnClick
       TabOrder = 6
+      OnClick = AfterBtnClick
     end
     object SubItemBtn: TButton
       Left = 90
@@ -158,8 +160,8 @@ object SitemapEditForm: TSitemapEditForm
       BorderSpacing.InnerBorder = 4
       Caption = 'Subitem'
       Enabled = False
-      OnClick = SubItemBtnClick
       TabOrder = 7
+      OnClick = SubItemBtnClick
     end
     object DeleteBtn: TButton
       Left = 11
@@ -168,8 +170,8 @@ object SitemapEditForm: TSitemapEditForm
       Width = 75
       BorderSpacing.InnerBorder = 4
       Caption = 'Delete'
-      OnClick = DeleteBtnClick
       TabOrder = 8
+      OnClick = DeleteBtnClick
     end
   end
   object FontEdit: TLabeledEdit
@@ -198,8 +200,8 @@ object SitemapEditForm: TSitemapEditForm
     BorderSpacing.InnerBorder = 4
     Caption = 'Save'
     ModalResult = 1
-    OnClick = SaveBtnClick
     TabOrder = 3
+    OnClick = SaveBtnClick
   end
   object CancelBtn: TButton
     Left = 652
@@ -209,7 +211,7 @@ object SitemapEditForm: TSitemapEditForm
     BorderSpacing.InnerBorder = 4
     Caption = 'Cancel'
     ModalResult = 2
-    OnClick = CancelBtnClick
     TabOrder = 4
+    OnClick = CancelBtnClick
   end
 end

@@ -7,6 +7,7 @@ object ComponentListForm: TComponentListForm
   ClientHeight = 467
   ClientWidth = 300
   KeyPreview = True
+  LCLVersion = '4.99.0.0'
   OnClose = FormClose
   OnKeyDown = FormKeyDown
   OnShow = FormShow
@@ -41,6 +42,7 @@ object ComponentListForm: TComponentListForm
           Top = 2
           Width = 288
           Align = alClient
+          HideSelection = False
           Indent = 25
           PopupMenu = CompListPopupMenu
           ReadOnly = True
@@ -50,7 +52,7 @@ object ComponentListForm: TComponentListForm
           ShowLines = False
           ShowRoot = False
           TabOrder = 0
-          Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRowSelect, tvoToolTips]
+          Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoRowSelect, tvoToolTips, tvoThemedDraw]
           OnDblClick = ComponentsDblClick
           OnKeyPress = TreeKeyPress
           OnMouseDown = TreeMouseDown
@@ -79,6 +81,7 @@ object ComponentListForm: TComponentListForm
           Top = 2
           Width = 288
           Align = alClient
+          HideSelection = False
           PopupMenu = CompListPopupMenu
           ReadOnly = True
           RightClickSelect = True
@@ -86,7 +89,7 @@ object ComponentListForm: TComponentListForm
           ScrollBars = ssAutoBoth
           ShowLines = False
           TabOrder = 0
-          Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowButtons, tvoShowRoot, tvoToolTips]
+          Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowButtons, tvoShowRoot, tvoToolTips, tvoThemedDraw]
           OnDblClick = ComponentsDblClick
           OnKeyPress = TreeKeyPress
           OnMouseDown = TreeMouseDown
@@ -115,14 +118,14 @@ object ComponentListForm: TComponentListForm
           Top = 2
           Width = 288
           Align = alClient
-          Indent = 15
+          HideSelection = False
           PopupMenu = CompListPopupMenu
           ReadOnly = True
           RightClickSelect = True
           RowSelect = True
           ScrollBars = ssAutoBoth
           TabOrder = 0
-          Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+          Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
           OnDblClick = ComponentsDblClick
           OnKeyPress = TreeKeyPress
           OnMouseDown = TreeMouseDown

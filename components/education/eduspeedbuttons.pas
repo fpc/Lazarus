@@ -64,7 +64,6 @@ type
     procedure ShowSelectionButtonClick(Sender: TObject);
     procedure SpeedButtonsTreeViewMouseDown(Sender: TObject;
       Button: TMouseButton; {%H-}Shift: TShiftState; X, Y: Integer);
-    procedure FrameClick(Sender: TObject);
   private
     HideImgID: LongInt;
     ShowImgID: LongInt;
@@ -299,11 +298,6 @@ procedure TEduSpeedButtonsFrame.ShowSelectionButtonClick(Sender: TObject);
 begin
   ShowHideAll(false);
   ShowSelected;
-end;
-
-procedure TEduSpeedButtonsFrame.FrameClick(Sender: TObject);
-begin
-
 end;
 
 function TEduSpeedButtonsFrame.GetImageForSpeedBtn(btnName: String) :TCustomBitmap;

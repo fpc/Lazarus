@@ -7,22 +7,22 @@ object FileBrowserForm: TFileBrowserForm
   Caption = 'File Browser'
   ClientHeight = 467
   ClientWidth = 345
-  LCLVersion = '3.99.0.0'
+  LCLVersion = '4.99.0.0'
   OnActivate = FormActivate
-  OnClose = FormClose
   OnCreate = FormCreate
   OnShow = FormShow
   object TV: TTreeView
     Left = 0
     Height = 185
-    Top = 70
+    Top = 65
     Width = 345
     Align = alTop
+    HideSelection = False
     Images = ilTreeview
     ReadOnly = True
     ScrollBars = ssAutoBoth
     TabOrder = 0
-    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+    Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
     OnDblClick = TVDblClick
     OnExpanded = TVExpanded
     OnSelectionChanged = TVSelectionChanged
@@ -74,25 +74,25 @@ object FileBrowserForm: TFileBrowserForm
     Cursor = crVSplit
     Left = 0
     Height = 5
-    Top = 255
+    Top = 250
     Width = 345
     Align = alTop
     ResizeAnchor = akTop
   end
   object pnlFiles: TPanel
     Left = 0
-    Height = 207
-    Top = 260
+    Height = 212
+    Top = 255
     Width = 345
     Align = alClient
     BevelOuter = bvNone
     Caption = 'pnlFiles'
-    ClientHeight = 207
+    ClientHeight = 212
     ClientWidth = 345
     TabOrder = 3
     object cbFilePanel: TFilterComboBox
       Left = 0
-      Height = 28
+      Height = 23
       Top = 0
       Width = 345
       Align = alTop
@@ -102,22 +102,21 @@ object FileBrowserForm: TFileBrowserForm
     end
     object FileListBox: TFileListBox
       Left = 0
-      Height = 179
-      Top = 28
+      Height = 189
+      Top = 23
       Width = 345
       Align = alClient
       Directory = '/home/graemeg'
       FileType = [ftArchive, ftNormal]
       ItemHeight = 0
       TabOrder = 1
-      TopIndex = -1
       OnDblClick = FileListBoxDblClick
       OnKeyPress = FileListBoxKeyPress
     end
   end
   object cbTreeFilter: TFilterComboBox
     Left = 0
-    Height = 28
+    Height = 23
     Top = 42
     Width = 345
     Align = alTop

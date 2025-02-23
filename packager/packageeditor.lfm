@@ -11,7 +11,7 @@ object PackageEditorForm: TPackageEditorForm
   Constraints.MinHeight = 300
   Constraints.MinWidth = 400
   KeyPreview = True
-  LCLVersion = '3.99.0.0'
+  LCLVersion = '4.99.0.0'
   OnClose = PackageEditorFormClose
   OnCloseQuery = PackageEditorFormCloseQuery
   OnCreate = FormCreate
@@ -216,6 +216,7 @@ object PackageEditorForm: TPackageEditorForm
     Align = alClient
     BorderSpacing.Top = 1
     DragMode = dmAutomatic
+    HideSelection = False
     MultiSelect = True
     MultiSelectStyle = [msControlSelect, msShiftSelect, msSiblingOnly]
     ParentFont = False
@@ -223,7 +224,7 @@ object PackageEditorForm: TPackageEditorForm
     ReadOnly = True
     RightClickSelect = True
     TabOrder = 2
-    Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+    Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
     OnAdvancedCustomDrawItem = ItemsTreeViewAdvancedCustomDrawItem
     OnDblClick = ItemsTreeViewDblClick
     OnDragDrop = ItemsTreeViewDragDrop

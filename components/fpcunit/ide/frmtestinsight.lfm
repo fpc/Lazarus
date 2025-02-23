@@ -1,14 +1,13 @@
 object TestInsightForm: TTestInsightForm
   Left = 484
-  Height = 445
+  Height = 356
   Top = 167
-  Width = 825
+  Width = 660
   Caption = 'Test insight'
-  ClientHeight = 445
-  ClientWidth = 825
-  Constraints.MinHeight = 250
-  Constraints.MinWidth = 312
-  DesignTimePPI = 120
+  ClientHeight = 356
+  ClientWidth = 660
+  Constraints.MinHeight = 200
+  Constraints.MinWidth = 250
   Icon.Data = {
     F6030000000001000100100E000001002000E003000016000000280000001000
     00001C0000000100200000000000800300006400000064000000000000000000
@@ -46,19 +45,20 @@ object TestInsightForm: TTestInsightForm
   Menu = MMtestInsight
   Position = poScreenCenter
   ShowHint = True
+  LCLVersion = '4.99.0.0'
   OnClose = FormClose
   OnCreate = TestInsightFormCreate
   OnDestroy = TestInsightFormDestroy
   object Panel1: TPanel
     Left = 0
-    Height = 90
+    Height = 72
     Top = 0
-    Width = 825
+    Width = 660
     Align = alTop
-    ClientHeight = 90
-    ClientWidth = 825
-    Constraints.MinHeight = 62
-    Constraints.MinWidth = 562
+    ClientHeight = 72
+    ClientWidth = 660
+    Constraints.MinHeight = 50
+    Constraints.MinWidth = 450
     FullRepaint = False
     ParentColor = False
     TabOrder = 0
@@ -68,33 +68,33 @@ object TestInsightForm: TTestInsightForm
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = Panel1
       AnchorSideRight.Side = asrBottom
-      Left = 9
-      Height = 30
-      Top = 50
-      Width = 807
+      Left = 7
+      Height = 24
+      Top = 40
+      Width = 646
       Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Around = 8
+      BorderSpacing.Around = 6
       OnPaint = pbBarPaint
     end
     object ToolBar1: TToolBar
       Left = 1
-      Height = 35
+      Height = 29
       Top = 1
-      Width = 823
+      Width = 658
       AutoSize = True
-      ButtonHeight = 31
-      ButtonWidth = 31
+      ButtonHeight = 25
+      ButtonWidth = 25
       Caption = 'ToolBar1'
       EdgeBorders = [ebTop, ebBottom]
       Images = ILMenu
       TabOrder = 0
       object ToolButton1: TToolButton
-        Left = 42
+        Left = 33
         Top = 2
         Action = actRunAll
       end
       object ToolButton2: TToolButton
-        Left = 73
+        Left = 59
         Top = 2
         Action = ActRunHighlightedTest
         Caption = 'Run selected'
@@ -105,26 +105,26 @@ object TestInsightForm: TTestInsightForm
         Action = aRefresh
       end
       object ToolButton4: TToolButton
-        Left = 32
-        Height = 31
+        Left = 27
+        Height = 25
         Top = 2
         Caption = 'ToolButton4'
         Style = tbsSeparator
       end
       object ToolButton5: TToolButton
-        Left = 104
-        Height = 31
+        Left = 85
+        Height = 25
         Top = 2
         Caption = 'ToolButton5'
         Style = tbsSeparator
       end
       object ToolButton6: TToolButton
-        Left = 114
+        Left = 91
         Top = 2
         Action = actPrevError
       end
       object ToolButton7: TToolButton
-        Left = 145
+        Left = 117
         Top = 2
         Action = actNextError
       end
@@ -132,26 +132,27 @@ object TestInsightForm: TTestInsightForm
   end
   object Panel2: TPanel
     Left = 0
-    Height = 326
-    Top = 90
-    Width = 825
+    Height = 261
+    Top = 72
+    Width = 660
     Align = alClient
     BevelOuter = bvNone
     Caption = 'Panel2'
-    ClientHeight = 326
-    ClientWidth = 825
+    ClientHeight = 261
+    ClientWidth = 660
     FullRepaint = False
     TabOrder = 1
     TabStop = True
     object TestTree: TTreeView
       Left = 0
-      Height = 201
-      Top = 4
-      Width = 825
+      Height = 161
+      Top = 3
+      Width = 660
       Align = alClient
-      BorderSpacing.Top = 4
+      BorderSpacing.Top = 3
       BackgroundColor = clBtnFace
       Color = clBtnFace
+      HideSelection = False
       Images = TestTreeImageList
       PopupMenu = pmResults
       ReadOnly = True
@@ -159,7 +160,7 @@ object TestInsightForm: TTestInsightForm
       ScrollBars = ssAutoBoth
       StateImages = ilNodeStates
       TabOrder = 0
-      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+      Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
       OnChange = TestTreeChange
       OnCreateNodeClass = TestTreeCreateNodeClass
       OnDblClick = TestTreeDblClick
@@ -168,9 +169,9 @@ object TestInsightForm: TTestInsightForm
     end
     object mDetails: TMemo
       Left = 0
-      Height = 121
-      Top = 205
-      Width = 825
+      Height = 97
+      Top = 164
+      Width = 660
       Align = alBottom
       PopupMenu = pmDetails
       ReadOnly = True
@@ -180,14 +181,14 @@ object TestInsightForm: TTestInsightForm
   end
   object sbTestInsight: TStatusBar
     Left = 0
-    Height = 29
-    Top = 416
-    Width = 825
+    Height = 23
+    Top = 333
+    Width = 660
     Panels = <>
   end
   object TestTreeImageList: TImageList
-    Left = 100
-    Top = 250
+    Left = 80
+    Top = 200
     Bitmap = {
       4C7A0E0000001000000010000000ED1400000000000078DAED9A075495D7B2C7
       8F8AD84050B080318ADDDCABA2891ACD3596144D54124BD45863305E3556EC89
@@ -363,8 +364,8 @@ object TestInsightForm: TTestInsightForm
   object ILMenu: TImageList
     Height = 22
     Width = 22
-    Left = 330
-    Top = 230
+    Left = 264
+    Top = 184
     Bitmap = {
       4C7A090000001600000016000000161700000000000078DAE59A075454C9B686
       8BD40262C000624431678C9873161D73761C75F48ECEE89DD1318C09EEA88880
@@ -555,16 +556,16 @@ object TestInsightForm: TTestInsightForm
     }
   end
   object pmDetails: TPopupMenu
-    Left = 560
-    Top = 300
+    Left = 448
+    Top = 240
     object MenuItemCopyText: TMenuItem
       Action = ActCopyTextToClipboard
     end
   end
   object alTestInsight: TActionList
     Images = ILMenu
-    Left = 330
-    Top = 160
+    Left = 264
+    Top = 128
     object actRunAll: TAction
       Category = 'Run'
       Caption = '&Run all'
@@ -655,8 +656,8 @@ object TestInsightForm: TTestInsightForm
   end
   object pmResults: TPopupMenu
     Images = ILMenu
-    Left = 560
-    Top = 360
+    Left = 448
+    Top = 288
     object miCollapseNodes: TMenuItem
       Caption = 'Collapse Nodes'
       OnClick = miCollapseNodesClick
@@ -704,8 +705,8 @@ object TestInsightForm: TTestInsightForm
     end
   end
   object ilNodeStates: TImageList
-    Left = 100
-    Top = 340
+    Left = 80
+    Top = 272
     Bitmap = {
       4C7A020000001000000010000000520000000000000078DAFBFF9F7CC0000450
       9A644C0BFD44BA7954FFA8FE41957E29C97F9482FFA3F99F28FD487A48D68FA6
@@ -715,8 +716,8 @@ object TestInsightForm: TTestInsightForm
   end
   object MMtestInsight: TMainMenu
     Images = ILMenu
-    Left = 560
-    Top = 180
+    Left = 448
+    Top = 144
     object MenuItemActions: TMenuItem
       Caption = 'Actions'
       object MenuItem10: TMenuItem
@@ -782,7 +783,7 @@ object TestInsightForm: TTestInsightForm
     WindowWidth = 0
     FillAttribute = 0
     OnReadData = pTestReadData
-    Left = 93
-    Top = 159
+    Left = 74
+    Top = 127
   end
 end

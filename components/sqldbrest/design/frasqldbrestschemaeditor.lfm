@@ -20,14 +20,16 @@ object SQLDBRestSchemaEditorFrame: TSQLDBRestSchemaEditorFrame
     TabOrder = 0
     object TVResources: TTreeView
       Left = 0
-      Height = 474
-      Top = 24
+      Height = 475
+      Top = 23
       Width = 232
       Align = alClient
       DragMode = dmAutomatic
+      HideSelection = False
       Images = ILResources
       StateImages = ILResources
       TabOrder = 0
+      Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
       OnChange = TVResourcesChange
       OnDblClick = TVResourcesDblClick
       OnDragDrop = TVResourcesDragDrop
@@ -37,7 +39,7 @@ object SQLDBRestSchemaEditorFrame: TSQLDBRestSchemaEditorFrame
     end
     object LResources: TLabel
       Left = 0
-      Height = 16
+      Height = 15
       Top = 4
       Width = 232
       Align = alTop

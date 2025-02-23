@@ -58,7 +58,6 @@ type
     MenusTreeView: TTreeView;
     ShowAllButton: TButton;
     ShowAllChildsButton: TButton;
-    procedure FrameClick(Sender: TObject);
     procedure MenusTreeViewMouseDown(Sender: TObject; Button: TMouseButton;
       {%H-}Shift: TShiftState; X, Y: Integer);
     procedure ShowAllButtonClick(Sender: TObject);
@@ -97,11 +96,6 @@ begin
 end;
 
 { TEduMenuFrame }
-
-procedure TEduMenuFrame.FrameClick(Sender: TObject);
-begin
-
-end;
 
 procedure TEduMenuFrame.MenusTreeViewMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);

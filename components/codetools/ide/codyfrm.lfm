@@ -6,10 +6,10 @@ object CodyWindow: TCodyWindow
   Caption = 'CodyWindow'
   ClientHeight = 304
   ClientWidth = 272
+  Position = poScreenCenter
+  LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  Position = poScreenCenter
-  LCLVersion = '0.9.31'
   object ToolBar1: TToolBar
     Left = 0
     Height = 26
@@ -38,11 +38,12 @@ object CodyWindow: TCodyWindow
     Top = 26
     Width = 272
     Align = alClient
-    DefaultItemHeight = 19
+    HideSelection = False
     TabOrder = 1
+    Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
   end
   object ImageList1: TImageList
-    left = 98
-    top = 54
+    Left = 98
+    Top = 54
   end
 end

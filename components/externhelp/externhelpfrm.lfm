@@ -21,10 +21,11 @@ object ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     BorderSpacing.Bottom = 6
-    DefaultItemHeight = 16
+    HideSelection = False
     ParentShowHint = False
     ShowHint = True
     TabOrder = 0
+    Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
     OnDragOver = ItemsTreeViewDragOver
     OnEdited = ItemsTreeViewEdited
     OnEditing = ItemsTreeViewEditing
@@ -43,10 +44,9 @@ object ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     Width = 23
     Anchors = [akLeft, akBottom]
     BorderSpacing.Around = 6
-    NumGlyphs = 0
-    OnClick = AddSpeedButtonClick
     ShowHint = True
     ParentShowHint = False
+    OnClick = AddSpeedButtonClick
   end
   object DeleteSpeedButton: TSpeedButton
     AnchorSideLeft.Control = AddSpeedButton
@@ -56,10 +56,9 @@ object ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     Height = 22
     Top = 356
     Width = 23
-    NumGlyphs = 0
-    OnClick = DeleteSpeedButtonClick
     ShowHint = True
     ParentShowHint = False
+    OnClick = DeleteSpeedButtonClick
   end
   object NameLabel: TLabel
     AnchorSideLeft.Control = Splitter1
@@ -68,7 +67,7 @@ object ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     Left = 235
     Height = 15
     Top = 20
-    Width = 64
+    Width = 60
     BorderSpacing.Left = 6
     BorderSpacing.Top = 20
     Caption = 'NameLabel'
@@ -81,15 +80,15 @@ object ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 235
-    Height = 24
+    Height = 23
     Top = 35
     Width = 340
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Right = 6
-    OnChange = NameEditChange
-    OnEditingDone = NameEditEditingDone
     TabOrder = 1
     Text = 'NameEdit'
+    OnChange = NameEditChange
+    OnEditingDone = NameEditEditingDone
   end
   object FilenameLabel: TLabel
     AnchorSideLeft.Control = NameLabel
@@ -97,8 +96,8 @@ object ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     AnchorSideTop.Side = asrBottom
     Left = 235
     Height = 15
-    Top = 74
-    Width = 81
+    Top = 73
+    Width = 76
     BorderSpacing.Top = 15
     Caption = 'FilenameLabel'
     ParentColor = False
@@ -110,14 +109,14 @@ object ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 235
-    Height = 24
-    Top = 89
+    Height = 23
+    Top = 88
     Width = 346
     Anchors = [akTop, akLeft, akRight]
-    OnChange = FilenameEditChange
-    OnEditingDone = FilenameEditEditingDone
     TabOrder = 2
     Text = 'FilenameEdit'
+    OnChange = FilenameEditChange
+    OnEditingDone = FilenameEditEditingDone
   end
   object URLLabel: TLabel
     AnchorSideLeft.Control = NameLabel
@@ -125,8 +124,8 @@ object ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     AnchorSideTop.Side = asrBottom
     Left = 235
     Height = 15
-    Top = 176
-    Width = 53
+    Top = 170
+    Width = 49
     BorderSpacing.Top = 15
     Caption = 'URLLabel'
     ParentColor = False
@@ -136,10 +135,10 @@ object ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 506
-    Height = 26
-    Top = 352
-    Width = 69
+    Left = 492
+    Height = 25
+    Top = 353
+    Width = 83
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
@@ -163,8 +162,8 @@ object ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     AnchorSideTop.Side = asrBottom
     Left = 235
     Height = 15
-    Top = 269
-    Width = 60
+    Top = 263
+    Width = 55
     BorderSpacing.Top = 15
     Caption = 'StoreLabel'
     ParentColor = False
@@ -174,13 +173,13 @@ object ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     AnchorSideTop.Control = StoreLabel
     AnchorSideTop.Side = asrBottom
     Left = 235
-    Height = 27
-    Top = 284
+    Height = 23
+    Top = 278
     Width = 157
-    ItemHeight = 0
-    OnEditingDone = StoreComboBoxEditingDone
+    ItemHeight = 15
     TabOrder = 5
     Text = 'StoreComboBox'
+    OnEditingDone = StoreComboBoxEditingDone
   end
   object FileBrowseButton: TButton
     AnchorSideLeft.Control = FilenameEdit
@@ -190,32 +189,32 @@ object ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     AnchorSideBottom.Control = FilenameEdit
     AnchorSideBottom.Side = asrBottom
     Left = 235
-    Height = 26
-    Top = 113
-    Width = 52
+    Height = 25
+    Top = 111
+    Width = 64
     AutoSize = True
     BorderSpacing.Right = 6
     Caption = 'Browse'
-    OnClick = FileBrowseButtonClick
     ParentShowHint = False
     ShowHint = True
     TabOrder = 6
+    OnClick = FileBrowseButtonClick
   end
   object FileUseMacrosButton: TButton
     AnchorSideLeft.Control = FileBrowseButton
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = FilenameEdit
     AnchorSideTop.Side = asrBottom
-    Left = 293
-    Height = 26
-    Top = 113
-    Width = 126
+    Left = 305
+    Height = 25
+    Top = 111
+    Width = 138
     AutoSize = True
     Caption = 'FileUseMacrosButton'
-    OnClick = FileUseMacrosButtonClick
     ParentShowHint = False
     ShowHint = True
     TabOrder = 7
+    OnClick = FileUseMacrosButtonClick
   end
   object URLMemo: TMemo
     AnchorSideLeft.Control = URLLabel
@@ -225,41 +224,41 @@ object ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     AnchorSideRight.Side = asrBottom
     Left = 235
     Height = 63
-    Top = 191
+    Top = 185
     Width = 346
     Anchors = [akTop, akLeft, akRight]
     Lines.Strings = (
       'URLMemo'
     )
-    OnEditingDone = URLMemoEditingDone
     TabOrder = 8
+    OnEditingDone = URLMemoEditingDone
   end
   object WithSubDirsCheckBox: TCheckBox
     AnchorSideLeft.Control = FileBrowseButton
     AnchorSideTop.Control = FileBrowseButton
     AnchorSideTop.Side = asrBottom
     Left = 235
-    Height = 22
-    Top = 139
-    Width = 145
+    Height = 19
+    Top = 136
+    Width = 135
     Caption = 'WithSubDirsCheckBox'
-    OnEditingDone = WithSubDirsCheckBoxEditingDone
     TabOrder = 9
+    OnEditingDone = WithSubDirsCheckBoxEditingDone
   end
   object SelEditorFileButton: TButton
     AnchorSideLeft.Control = FileUseMacrosButton
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = FileUseMacrosButton
-    Left = 425
-    Height = 26
-    Top = 113
-    Width = 115
+    Left = 449
+    Height = 25
+    Top = 111
+    Width = 126
     AutoSize = True
     BorderSpacing.Left = 6
     Caption = 'SelEditorFileButton'
-    OnClick = SelEditorFileButtonClick
     ParentShowHint = False
     ShowHint = True
     TabOrder = 10
+    OnClick = SelEditorFileButtonClick
   end
 end

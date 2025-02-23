@@ -12,6 +12,8 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
   Constraints.MinHeight = 400
   Constraints.MinWidth = 450
   KeyPreview = True
+  Position = poScreenCenter
+  LCLVersion = '4.99.0.0'
   OnClose = FormClose
   OnCreate = InstallPkgSetDialogCreate
   OnDestroy = InstallPkgSetDialogDestroy
@@ -19,25 +21,23 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
   OnKeyDown = FormKeyDown
   OnResize = InstallPkgSetDialogResize
   OnShow = InstallPkgSetDialogShow
-  Position = poScreenCenter
-  LCLVersion = '2.1.0.0'
   object PkgInfoGroupBox: TGroupBox
     AnchorSideBottom.Control = BtnPanel
     Left = 6
     Height = 160
-    Top = 437
+    Top = 440
     Width = 595
     Align = alBottom
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
     Caption = 'PkgInfoGroupBox'
-    ClientHeight = 130
+    ClientHeight = 140
     ClientWidth = 591
     Constraints.MinHeight = 70
     TabOrder = 0
     object PkgInfoMemo: TMemo
       Left = 6
-      Height = 80
+      Height = 90
       Top = 6
       Width = 579
       Align = alClient
@@ -53,7 +53,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       Cursor = crVSplit
       Left = 0
       Height = 5
-      Top = 87
+      Top = 97
       Width = 591
       Align = alBottom
       Constraints.MinHeight = 3
@@ -63,7 +63,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     object PkgInfoMemoLicense: TMemo
       Left = 6
       Height = 31
-      Top = 93
+      Top = 103
       Width = 579
       Align = alBottom
       BorderSpacing.Left = 6
@@ -77,18 +77,18 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
   end
   object BtnPanel: TPanel
     Left = 0
-    Height = 41
-    Top = 597
+    Height = 38
+    Top = 600
     Width = 607
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 41
+    ClientHeight = 38
     ClientWidth = 607
     TabOrder = 1
     object HelpButton: TBitBtn
       Left = 6
-      Height = 29
+      Height = 26
       Top = 6
       Width = 75
       Align = alLeft
@@ -97,14 +97,14 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       Caption = '&Help'
       Constraints.MinWidth = 75
       Kind = bkHelp
-      OnClick = HelpButtonClick
       TabOrder = 0
+      OnClick = HelpButtonClick
     end
     object CancelButton: TBitBtn
-      Left = 523
-      Height = 29
+      Left = 519
+      Height = 26
       Top = 6
-      Width = 83
+      Width = 82
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
@@ -116,10 +116,10 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       TabOrder = 1
     end
     object SaveAndExitButton: TBitBtn
-      Left = 378
-      Height = 29
+      Left = 367
+      Height = 26
       Top = 6
-      Width = 159
+      Width = 146
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
@@ -162,14 +162,14 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
         FF00FFFFFF00FFFFFF00FFFFFF006D9CD4896A9AD2FB6697CFEE
       }
-      OnClick = SaveAndExitButtonClick
       TabOrder = 3
+      OnClick = SaveAndExitButtonClick
     end
     object SaveAndRebuildButton: TBitBtn
-      Left = 216
-      Height = 29
+      Left = 193
+      Height = 26
       Top = 6
-      Width = 183
+      Width = 168
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
@@ -212,15 +212,15 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
         0000000000000000000000000000000000000000000000000000000000000000
         0000000000000000000000000000000000000000000000000000
       }
-      OnClick = SaveAndRebuildButtonClick
       TabOrder = 2
+      OnClick = SaveAndRebuildButtonClick
     end
   end
   object Splitter1: TSplitter
     Cursor = crVSplit
     Left = 0
     Height = 5
-    Top = 432
+    Top = 435
     Width = 607
     Align = alBottom
     Constraints.MinHeight = 3
@@ -228,7 +228,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
   end
   object Panel1: TPanel
     Left = 6
-    Height = 422
+    Height = 425
     Top = 6
     Width = 595
     Align = alClient
@@ -237,13 +237,13 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     BorderSpacing.Right = 6
     BorderSpacing.Bottom = 4
     BevelOuter = bvNone
-    ClientHeight = 422
+    ClientHeight = 425
     ClientWidth = 595
     Constraints.MinHeight = 210
     TabOrder = 3
     object NoteLabel: TLabel
       Left = 0
-      Height = 18
+      Height = 15
       Top = 0
       Width = 595
       Align = alTop
@@ -258,7 +258,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       AnchorSideTop.Side = asrCenter
       Left = 294
       Height = 100
-      Top = 161
+      Top = 162
       Width = 6
       Shape = bsSpacer
     end
@@ -270,13 +270,13 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       AnchorSideBottom.Control = Panel1
       AnchorSideBottom.Side = asrBottom
       Left = 0
-      Height = 398
-      Top = 24
+      Height = 404
+      Top = 21
       Width = 294
       Anchors = [akTop, akLeft, akRight, akBottom]
       AutoSize = True
       Caption = 'InstallPkgGroupBox'
-      ClientHeight = 368
+      ClientHeight = 384
       ClientWidth = 290
       Constraints.MinWidth = 200
       TabOrder = 0
@@ -288,38 +288,39 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = UninstallButton
         Left = 6
-        Height = 247
-        Top = 40
+        Height = 285
+        Top = 31
         Width = 278
         Anchors = [akTop, akLeft, akRight, akBottom]
+        HideSelection = False
         MultiSelect = True
         ReadOnly = True
         ShowButtons = False
         ShowLines = False
         ShowRoot = False
         TabOrder = 1
+        Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoToolTips, tvoThemedDraw]
         OnAdvancedCustomDrawItem = TreeViewAdvancedCustomDrawItem
         OnDblClick = AddToUninstall
         OnKeyDown = InstallTreeViewKeyDown
         OnSelectionChanged = InstallTreeViewSelectionChanged
-        Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoToolTips, tvoThemedDraw]
       end
       object UninstallButton: TBitBtn
         AnchorSideLeft.Control = InstallTreeView
         AnchorSideLeft.Side = asrCenter
         AnchorSideBottom.Control = Panel2
-        Left = 90
-        Height = 29
-        Top = 293
-        Width = 110
+        Left = 91
+        Height = 25
+        Top = 322
+        Width = 108
         Anchors = [akLeft, akBottom]
         AutoSize = True
         BorderSpacing.Top = 6
         BorderSpacing.Bottom = 6
         Caption = 'UninstallButton'
         Layout = blGlyphRight
-        OnClick = AddToUninstall
         TabOrder = 2
+        OnClick = AddToUninstall
       end
       object InstalledFilterEdit: TTreeFilterEdit
         AnchorSideLeft.Control = InstallPkgGroupBox
@@ -327,7 +328,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
         AnchorSideRight.Control = InstallPkgGroupBox
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 32
+        Height = 23
         Top = 2
         Width = 278
         ButtonWidth = 23
@@ -352,8 +353,8 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
         AnchorSideBottom.Control = InstallPkgGroupBox
         AnchorSideBottom.Side = asrBottom
         Left = 0
-        Height = 34
-        Top = 328
+        Height = 25
+        Top = 353
         Width = 290
         Anchors = [akLeft, akRight, akBottom]
         AutoSize = True
@@ -366,29 +367,29 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
         ChildSizing.ShrinkHorizontal = crsHomogenousChildResize
         ChildSizing.Layout = cclLeftToRightThenTopToBottom
         ChildSizing.ControlsPerLine = 2
-        ClientHeight = 34
+        ClientHeight = 25
         ClientWidth = 290
         TabOrder = 3
         object ImportButton: TButton
           AnchorSideLeft.Side = asrCenter
-          Left = 31
-          Height = 34
+          Left = 32
+          Height = 25
           Top = 0
-          Width = 101
+          Width = 98
           Caption = 'ImportButton'
-          OnClick = ImportButtonClick
           TabOrder = 0
+          OnClick = ImportButtonClick
         end
         object ExportButton: TButton
           AnchorSideLeft.Side = asrCenter
           AnchorSideBottom.Side = asrBottom
           Left = 163
-          Height = 34
+          Height = 25
           Top = 0
-          Width = 98
+          Width = 95
           Caption = 'ExportButton'
-          OnClick = ExportButtonClick
           TabOrder = 1
+          OnClick = ExportButtonClick
         end
       end
     end
@@ -402,12 +403,12 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       AnchorSideBottom.Control = Panel1
       AnchorSideBottom.Side = asrBottom
       Left = 300
-      Height = 398
-      Top = 24
+      Height = 404
+      Top = 21
       Width = 295
       Anchors = [akTop, akLeft, akRight, akBottom]
       Caption = 'AvailablePkgGroupBox'
-      ClientHeight = 368
+      ClientHeight = 384
       ClientWidth = 291
       TabOrder = 1
       object AvailableTreeView: TTreeView
@@ -418,38 +419,39 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = AddToInstallButton
         Left = 6
-        Height = 287
-        Top = 40
+        Height = 316
+        Top = 31
         Width = 279
         Anchors = [akTop, akLeft, akRight, akBottom]
+        HideSelection = False
         MultiSelect = True
         ReadOnly = True
         ShowButtons = False
         ShowLines = False
         ShowRoot = False
         TabOrder = 1
+        Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoToolTips, tvoThemedDraw]
         OnAdvancedCustomDrawItem = TreeViewAdvancedCustomDrawItem
         OnDblClick = AddToInstall
         OnKeyDown = AvailableTreeViewKeyDown
         OnSelectionChanged = AvailableTreeViewSelectionChanged
-        Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoToolTips, tvoThemedDraw]
       end
       object AddToInstallButton: TBitBtn
         AnchorSideLeft.Control = AvailableTreeView
         AnchorSideLeft.Side = asrCenter
         AnchorSideBottom.Control = AvailablePkgGroupBox
         AnchorSideBottom.Side = asrBottom
-        Left = 79
-        Height = 29
-        Top = 333
-        Width = 132
+        Left = 81
+        Height = 25
+        Top = 353
+        Width = 129
         Anchors = [akLeft, akBottom]
         AutoSize = True
         BorderSpacing.Top = 6
         BorderSpacing.Bottom = 6
         Caption = 'AddToInstallButton'
-        OnClick = AddToInstall
         TabOrder = 2
+        OnClick = AddToInstall
       end
       object AvailableFilterEdit: TTreeFilterEdit
         AnchorSideLeft.Control = AvailablePkgGroupBox
@@ -457,7 +459,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
         AnchorSideRight.Control = AvailablePkgGroupBox
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 32
+        Height = 23
         Top = 2
         Width = 279
         ButtonWidth = 23
@@ -479,7 +481,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
   end
   object LPKParsingTimer: TTimer
     OnTimer = LPKParsingTimerTimer
-    left = 392
-    top = 176
+    Left = 392
+    Top = 176
   end
 end

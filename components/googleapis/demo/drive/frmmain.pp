@@ -44,7 +44,6 @@ type
     procedure BRefreshFoldersClick(Sender: TObject);
     Procedure DoUserConsent(Const AURL : String; Out AAuthCode : String) ;
     procedure FormCreate(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
     procedure LVFilesDblClick(Sender: TObject);
     procedure TVFoldersSelectionChanged(Sender: TObject);
   private
@@ -108,10 +107,6 @@ begin
   // Create a Tasks API and connect it to the client.
   FDriveAPI:=TDriveAPI.Create(Self);
   FDriveAPI.GoogleClient:=FClient;
-end;
-
-procedure TMainForm.FormDestroy(Sender: TObject);
-begin
 end;
 
 procedure TMainForm.LVFilesDblClick(Sender: TObject);

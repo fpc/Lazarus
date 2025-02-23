@@ -453,6 +453,7 @@ begin
   TV:=TTreeView.Create(Self);
   TV.Parent:=FDisplay;
   TV.Align:=alClient;
+  TV.HideSelection := false;
   TV.Images := ImgDataModule.AppImages;
   ShowTables(TV,Nil);
 end;
@@ -477,6 +478,7 @@ begin
   TV.Parent:=FDisplay;
   TV.Align:=alClient;
   TV.Images := ImgDatamodule.AppImages;
+  TV.HideSelection := false;
   TN:=NewNode(TV,Nil,TableName,iiTable);
   N:=NewNode(TV,TN,SNodeFields,iiFields);
   ShowFields(TableName,TV,N);

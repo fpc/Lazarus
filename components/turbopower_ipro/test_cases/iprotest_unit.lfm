@@ -7,6 +7,7 @@ object TestForm: TTestForm
   Caption = 'Test Form'
   ClientHeight = 620
   ClientWidth = 866
+  LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
   object Panel1: TPanel
     Left = 6
@@ -54,13 +55,14 @@ object TestForm: TTestForm
       Top = 0
       Width = 218
       Align = alClient
+      HideSelection = False
       Images = ImageList1
       ReadOnly = True
       TabOrder = 0
+      Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
       OnDeletion = TestTreeDeletion
       OnGetSelectedIndex = TestTreeGetSelectedIndex
       OnSelectionChanged = TestTreeSelectionChanged
-      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
     end
   end
   object Panel2: TPanel
@@ -588,6 +590,8 @@ object TestForm: TTestForm
           object SynGutterMarks1: TSynGutterMarks
             Width = 24
             MouseActions = <>
+            MaxExtraMarksColums = 0
+            Options = [sgmoDeDuplicateMarksOnOverflow]
           end
           object SynGutterLineNumber1: TSynGutterLineNumber
             Width = 17
@@ -670,8 +674,8 @@ object TestForm: TTestForm
       Width = 75
       BorderSpacing.Left = 6
       Caption = 'Render'
-      OnClick = btnRenderClick
       TabOrder = 1
+      OnClick = btnRenderClick
     end
     object btnShowInBrowser: TButton
       AnchorSideLeft.Control = btnRender
@@ -685,8 +689,8 @@ object TestForm: TTestForm
       AutoSize = True
       BorderSpacing.Left = 6
       Caption = 'Show in Browser'
-      OnClick = btnShowInBrowserClick
       TabOrder = 2
+      OnClick = btnShowInBrowserClick
     end
     object btnLoadHtmlFromFile: TButton
       AnchorSideLeft.Control = btnSaveResults
@@ -700,8 +704,8 @@ object TestForm: TTestForm
       AutoSize = True
       BorderSpacing.Left = 24
       Caption = 'Load html from file...'
-      OnClick = btnLoadHtmlFromFileClick
       TabOrder = 0
+      OnClick = btnLoadHtmlFromFileClick
     end
     object btnPassed: TBitBtn
       AnchorSideLeft.Control = btnShowInBrowser
@@ -718,8 +722,8 @@ object TestForm: TTestForm
       HotImageIndex = 1
       Images = ImageList1
       ImageIndex = 1
-      OnClick = btnTestResultClick
       TabOrder = 3
+      OnClick = btnTestResultClick
     end
     object btnFailed: TBitBtn
       AnchorSideLeft.Control = btnPassed
@@ -735,8 +739,8 @@ object TestForm: TTestForm
       HotImageIndex = 0
       Images = ImageList1
       ImageIndex = 0
-      OnClick = btnTestResultClick
       TabOrder = 4
+      OnClick = btnTestResultClick
     end
     object btnSaveResults: TButton
       AnchorSideLeft.Control = btnFailed
@@ -750,8 +754,8 @@ object TestForm: TTestForm
       AutoSize = True
       BorderSpacing.Left = 3
       Caption = 'Save results'
-      OnClick = btnSaveResultsClick
       TabOrder = 5
+      OnClick = btnSaveResultsClick
     end
   end
   object SynHTMLSyn1: TSynHTMLSyn

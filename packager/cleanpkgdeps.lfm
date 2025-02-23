@@ -7,10 +7,10 @@ object CleanPkgDepsDlg: TCleanPkgDepsDlg
   Caption = 'CleanPkgDepsDlg'
   ClientHeight = 380
   ClientWidth = 522
+  Position = poScreenCenter
+  LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  Position = poScreenCenter
-  LCLVersion = '1.5'
   object BtnPanel: TPanel
     Left = 0
     Height = 38
@@ -26,7 +26,7 @@ object CleanPkgDepsDlg: TCleanPkgDepsDlg
     ClientWidth = 522
     TabOrder = 1
     object DeleteSelectedBitBtn: TBitBtn
-      Left = 287
+      Left = 293
       Height = 26
       Top = 6
       Width = 135
@@ -37,10 +37,10 @@ object CleanPkgDepsDlg: TCleanPkgDepsDlg
       TabOrder = 2
     end
     object CancelBitBtn: TBitBtn
-      Left = 428
+      Left = 434
       Height = 26
       Top = 6
-      Width = 88
+      Width = 82
       Align = alRight
       AutoSize = True
       Cancel = True
@@ -58,8 +58,8 @@ object CleanPkgDepsDlg: TCleanPkgDepsDlg
       Align = alLeft
       AutoSize = True
       Caption = 'SelectAllBitBtn'
-      OnClick = SelectAllBitBtnClick
       TabOrder = 1
+      OnClick = SelectAllBitBtnClick
     end
     object SelectNoneBitBtn: TBitBtn
       Left = 6
@@ -69,8 +69,8 @@ object CleanPkgDepsDlg: TCleanPkgDepsDlg
       Align = alLeft
       AutoSize = True
       Caption = 'SelectNoneBitBtn'
-      OnClick = SelectNoneBitBtnClick
       TabOrder = 0
+      OnClick = SelectNoneBitBtnClick
     end
   end
   object TransitivityLabel: TLabel
@@ -91,10 +91,10 @@ object CleanPkgDepsDlg: TCleanPkgDepsDlg
     Width = 510
     Align = alClient
     BorderSpacing.Around = 6
-    DefaultItemHeight = 18
+    HideSelection = False
     ReadOnly = True
     TabOrder = 0
+    Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
     OnMouseDown = TransitivityTreeViewMouseDown
-    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
   end
 end

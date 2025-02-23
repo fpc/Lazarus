@@ -98,13 +98,14 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
         Align = alClient
         BorderSpacing.Top = 3
         BorderWidth = 1
+        HideSelection = False
         PopupMenu = PopupMenu1
         ReadOnly = True
         RightClickSelect = True
         RowSelect = True
         ScrollBars = ssAutoBoth
         TabOrder = 0
-        Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+        Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
         OnDblClick = TreeViewDblClick
         OnKeyPress = TreeViewKeyPress
         OnSelectionChanged = TreeViewSelectionChanged
@@ -200,7 +201,7 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
           Left = 288
           Height = 25
           Top = 0
-          Width = 96
+          Width = 95
           AutoSize = True
           BorderSpacing.Left = 20
           Caption = 'ExportButton'
@@ -227,6 +228,7 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
       Width = 459
       Align = alBottom
       BorderWidth = 1
+      HideSelection = False
       PopupMenu = PopupMenu1
       ReadOnly = True
       RightClickSelect = True
@@ -234,7 +236,7 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
       ScrollBars = ssAutoBoth
       TabOrder = 0
       Visible = False
-      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+      Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
       OnMouseDown = ConflictsTreeViewMouseDown
     end
   end

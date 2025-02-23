@@ -10,7 +10,7 @@ object MainForm: TMainForm
   Menu = MainMenu1
   Position = poScreenCenter
   SessionProperties = 'Height;Left;Top;Width;WindowState'
-  LCLVersion = '3.99.0.0'
+  LCLVersion = '4.99.0.0'
   OnClose = FormClose
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
@@ -144,14 +144,14 @@ object MainForm: TMainForm
     TabOrder = 1
     object TSConnections: TTabSheet
       Caption = 'Connections'
-      ClientHeight = 308
-      ClientWidth = 450
+      ClientHeight = 310
+      ClientWidth = 452
       ImageIndex = 38
       object LVConnections: TListView
         Left = 0
-        Height = 308
+        Height = 310
         Top = 0
-        Width = 450
+        Width = 452
         Align = alClient
         Columns = <        
           item
@@ -182,14 +182,14 @@ object MainForm: TMainForm
     end
     object TSRecent: TTabSheet
       Caption = 'Dictionaries'
-      ClientHeight = 308
-      ClientWidth = 450
+      ClientHeight = 310
+      ClientWidth = 452
       ImageIndex = 32
       object LVDicts: TListView
         Left = 0
-        Height = 308
+        Height = 310
         Top = 0
-        Width = 450
+        Width = 452
         Align = alClient
         Columns = <        
           item
@@ -217,20 +217,21 @@ object MainForm: TMainForm
     end
     object TSAll: TTabSheet
       Caption = 'Connections/Dictionaries'
-      ClientHeight = 308
-      ClientWidth = 450
+      ClientHeight = 310
+      ClientWidth = 452
       ImageIndex = 29
       object TVAll: TTreeView
         Left = 0
-        Height = 308
+        Height = 310
         Top = 0
-        Width = 450
+        Width = 452
         Align = alClient
+        HideSelection = False
         Images = ImgDatamodule.AppImages
         PopupMenu = PMAll
         ReadOnly = True
         TabOrder = 0
-        Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+        Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
         OnDblClick = TVAllDblClick
       end
     end

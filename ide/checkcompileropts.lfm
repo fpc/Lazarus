@@ -8,20 +8,20 @@ object CheckCompilerOptsDlg: TCheckCompilerOptsDlg
   ClientHeight = 389
   ClientWidth = 624
   Position = poScreenCenter
-  LCLVersion = '1.5'
+  LCLVersion = '4.99.0.0'
   object Splitter1: TSplitter
     Cursor = crVSplit
     Left = 0
     Height = 5
-    Top = 174
+    Top = 172
     Width = 624
     Align = alTop
     ResizeAnchor = akTop
   end
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 29
-    Top = 354
+    Height = 26
+    Top = 357
     Width = 612
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -37,20 +37,21 @@ object CheckCompilerOptsDlg: TCheckCompilerOptsDlg
   end
   object OutputTreeView: TTreeView
     Left = 6
-    Height = 140
-    Top = 208
+    Height = 147
+    Top = 204
     Width = 612
     Align = alClient
     BorderSpacing.Around = 6
+    HideSelection = False
     PopupMenu = OutputPopupMenu
     ReadOnly = True
     TabOrder = 2
-    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+    Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
   end
   object TestMemo: TMemo
     Left = 6
     Height = 139
-    Top = 29
+    Top = 27
     Width = 612
     Align = alTop
     BorderSpacing.Around = 6
@@ -59,7 +60,7 @@ object CheckCompilerOptsDlg: TCheckCompilerOptsDlg
   end
   object LabelTest: TLabel
     Left = 6
-    Height = 17
+    Height = 15
     Top = 6
     Width = 612
     Align = alTop
@@ -69,8 +70,8 @@ object CheckCompilerOptsDlg: TCheckCompilerOptsDlg
   end
   object LabelOutput: TLabel
     Left = 6
-    Height = 17
-    Top = 185
+    Height = 15
+    Top = 183
     Width = 612
     Align = alTop
     BorderSpacing.Around = 6
@@ -78,8 +79,8 @@ object CheckCompilerOptsDlg: TCheckCompilerOptsDlg
     ParentColor = False
   end
   object OutputPopupMenu: TPopupMenu
-    left = 472
-    top = 392
+    Left = 472
+    Top = 392
     object CopyOutputMenuItem: TMenuItem
       Caption = 'CopyOutputMenuItem'
       OnClick = CopyOutputMenuItemClick

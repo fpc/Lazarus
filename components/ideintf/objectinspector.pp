@@ -4419,6 +4419,7 @@ begin
     OnModified := @ComponentTreeModified;
     Scrollbars := ssAutoBoth;
     PopupMenu := MainPopupMenu;
+    HideSelection := false;
   end;
 
   // ComponentPanel encapsulates TreeFilterEdit and ComponentTree

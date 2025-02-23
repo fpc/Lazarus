@@ -7,10 +7,10 @@ object BuildModeDiffDialog: TBuildModeDiffDialog
   Caption = 'BuildModeDiffDialog'
   ClientHeight = 409
   ClientWidth = 476
+  Position = poScreenCenter
+  LCLVersion = '4.99.0.0'
   OnActivate = FormActivate
   OnCreate = FormCreate
-  Position = poScreenCenter
-  LCLVersion = '2.1.0.0'
   object ButtonPanel: TButtonPanel
     Left = 6
     Height = 26
@@ -36,9 +36,9 @@ object BuildModeDiffDialog: TBuildModeDiffDialog
     AnchorSideTop.Control = ModeComboBox
     AnchorSideTop.Side = asrCenter
     Left = 6
-    Height = 14
+    Height = 15
     Top = 10
-    Width = 60
+    Width = 59
     BorderSpacing.Left = 6
     Caption = 'ModeLabel'
     ParentColor = False
@@ -49,22 +49,22 @@ object BuildModeDiffDialog: TBuildModeDiffDialog
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 72
+    Left = 71
     Height = 23
     Top = 6
-    Width = 398
+    Width = 399
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
-    ItemHeight = 14
-    OnChange = ModeComboBoxChange
+    ItemHeight = 15
     Style = csDropDownList
     TabOrder = 0
+    OnChange = ModeComboBoxChange
   end
   object DiffLabel: TLabel
     Left = 6
-    Height = 14
+    Height = 15
     Top = 33
-    Width = 48
+    Width = 47
     Caption = 'DiffLabel'
     ParentColor = False
   end
@@ -72,12 +72,14 @@ object BuildModeDiffDialog: TBuildModeDiffDialog
     AnchorSideTop.Control = DiffLabel
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 318
-    Top = 53
+    Height = 317
+    Top = 54
     Width = 464
     Align = alBottom
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
+    HideSelection = False
     TabOrder = 1
+    Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
   end
 end

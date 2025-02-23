@@ -8,9 +8,9 @@ object UnusedUnitsDialog: TUnusedUnitsDialog
   Caption = 'UnusedUnitsDialog'
   ClientHeight = 382
   ClientWidth = 501
-  OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.5'
+  LCLVersion = '4.99.0.0'
+  OnCreate = FormCreate
   object UnitsTreeView: TTreeView
     Left = 6
     Height = 294
@@ -18,13 +18,13 @@ object UnusedUnitsDialog: TUnusedUnitsDialog
     Width = 489
     Align = alClient
     BorderSpacing.Around = 6
-    DefaultItemHeight = 18
+    HideSelection = False
     MultiSelect = True
     ReadOnly = True
     ScrollBars = ssAutoBoth
     TabOrder = 0
+    Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
     OnSelectionChanged = UnitsTreeViewSelectionChanged
-    Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
   end
   object Panel1: TPanel
     Left = 0
@@ -52,8 +52,8 @@ object UnusedUnitsDialog: TUnusedUnitsDialog
       Constraints.MinWidth = 75
       Kind = bkCancel
       ModalResult = 2
-      OnClick = CancelBitBtnClick
       TabOrder = 3
+      OnClick = CancelBitBtnClick
     end
     object RemoveSelectedBitBtn: TBitBtn
       AnchorSideRight.Control = CancelBitBtn
@@ -67,8 +67,8 @@ object UnusedUnitsDialog: TUnusedUnitsDialog
       Caption = 'RemoveSelectedBitBtn'
       Constraints.MinWidth = 75
       ModalResult = 1
-      OnClick = RemoveSelectedBitBtnClick
       TabOrder = 2
+      OnClick = RemoveSelectedBitBtnClick
     end
     object RemoveAllBitBtn: TBitBtn
       AnchorSideRight.Control = RemoveSelectedBitBtn
@@ -82,21 +82,21 @@ object UnusedUnitsDialog: TUnusedUnitsDialog
       Caption = 'RemoveAllBitBtn'
       Constraints.MinWidth = 75
       ModalResult = 8
-      OnClick = RemoveAllBitBtnClick
       TabOrder = 1
+      OnClick = RemoveAllBitBtnClick
     end
     object ShowInitializationCheckBox: TCheckBox
       Left = 8
       Height = 19
       Top = 6
-      Width = 280
+      Width = 278
       Caption = 'Show units with initialization/finalization sections'
       Checked = True
-      OnClick = ShowInitializationCheckBoxClick
       ParentShowHint = False
       ShowHint = True
       State = cbChecked
       TabOrder = 0
+      OnClick = ShowInitializationCheckBoxClick
     end
   end
 end

@@ -7,11 +7,11 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
   Caption = 'CodeToolsDefinesDialog'
   ClientHeight = 581
   ClientWidth = 592
+  Position = poScreenCenter
+  LCLVersion = '4.99.0.0'
   OnClose = CodeToolsDefinesDialogCLOSE
   OnCreate = CodeToolsDefinesDialogCREATE
   OnDestroy = FormDestroy
-  Position = poScreenCenter
-  LCLVersion = '1.9.0.0'
   object DirectoryGroupbox: TGroupBox
     AnchorSideLeft.Control = ValuesTabSheet
     AnchorSideTop.Control = ValuesTabSheet
@@ -36,9 +36,9 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
       ItemHeight = 15
-      OnChange = DirectoryComboboxCHANGE
       TabOrder = 0
       Text = 'DirectoryCombobox'
+      OnChange = DirectoryComboboxCHANGE
     end
     object DirectoryBrowseButton: TButton
       AnchorSideTop.Control = DirectoryCombobox
@@ -53,8 +53,8 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
       Anchors = [akTop, akRight, akBottom]
       BorderSpacing.Right = 5
       Caption = '...'
-      OnClick = DirectoryBrowseButtonCLICK
       TabOrder = 1
+      OnClick = DirectoryBrowseButtonCLICK
     end
   end
   object PageControl1: TPageControl
@@ -597,6 +597,8 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
             object TSynGutterMarks
               Width = 24
               MouseActions = <>
+              MaxExtraMarksColums = 0
+              Options = [sgmoDeDuplicateMarksOnOverflow]
             end
             object TSynGutterLineNumber
               Width = 17
@@ -698,10 +700,11 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
           Width = 231
           Align = alTop
           BorderSpacing.Around = 6
+          HideSelection = False
           ReadOnly = True
           TabOrder = 0
+          Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
           OnSelectionChanged = ParsedTemplatesTreeViewSelectionChanged
-          Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
         end
         object TemplatesSplitter: TSplitter
           Cursor = crVSplit
@@ -737,13 +740,13 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
     end
     object ReportTabSheet: TTabSheet
       Caption = 'ReportTabSheet'
-      ClientHeight = 437
-      ClientWidth = 576
+      ClientHeight = 448
+      ClientWidth = 572
       object ReportMemo: TMemo
         Left = 6
-        Height = 425
+        Height = 436
         Top = 6
-        Width = 564
+        Width = 560
         Align = alClient
         BorderSpacing.Around = 6
         ReadOnly = True

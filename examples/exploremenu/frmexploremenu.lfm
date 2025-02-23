@@ -7,12 +7,12 @@ object ExploreIDEMenuForm: TExploreIDEMenuForm
   Caption = 'Lazarus IDE menus'
   ClientHeight = 336
   ClientWidth = 468
-  OnCreate = FormCreate
   Position = poDesktopCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '4.99.0.0'
+  OnCreate = FormCreate
   object LTree: TLabel
     Left = 6
-    Height = 16
+    Height = 15
     Top = 6
     Width = 456
     Align = alTop
@@ -22,16 +22,16 @@ object ExploreIDEMenuForm: TExploreIDEMenuForm
   end
   object TVIDEMenu: TTreeView
     Left = 0
-    Height = 225
-    Top = 28
+    Height = 226
+    Top = 27
     Width = 468
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    DefaultItemHeight = 17
+    HideSelection = False
     ReadOnly = True
     TabOrder = 0
+    Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
     OnChange = TVIDEMenuChange
-    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
   end
   object LPAth: TMemo
     AnchorSideBottom.Control = BCLose
@@ -69,7 +69,6 @@ object ExploreIDEMenuForm: TExploreIDEMenuForm
     Caption = '&Close'
     Kind = bkClose
     ModalResult = 1
-    NumGlyphs = 0
     TabOrder = 2
   end
 end

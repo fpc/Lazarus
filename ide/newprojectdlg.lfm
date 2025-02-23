@@ -8,7 +8,7 @@ object NewProjectDialog: TNewProjectDialog
   ClientHeight = 302
   ClientWidth = 561
   Position = poScreenCenter
-  LCLVersion = '1.5'
+  LCLVersion = '4.99.0.0'
   object Panel1: TPanel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -62,9 +62,9 @@ object NewProjectDialog: TNewProjectDialog
       ReadOnly = True
       ScrollBars = ssAutoBoth
       TabOrder = 0
+      Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
       OnDblClick = OkClick
       OnSelectionChanged = TreeSelectionChange
-      Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
     end
   end
   object ButtonPanel: TButtonPanel

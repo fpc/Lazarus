@@ -80,7 +80,7 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
       TabOrder = 1
       object FilterEdit: TTreeFilterEdit
         Left = 0
-        Height = 21
+        Height = 23
         Hint = '[Ctrl+F]'
         Top = 6
         Width = 255
@@ -98,15 +98,16 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
       end
       object CategoryTree: TTreeView
         Left = 0
-        Height = 421
-        Top = 33
+        Height = 419
+        Top = 35
         Width = 255
         Align = alClient
         BorderSpacing.Top = 6
+        HideSelection = False
         ReadOnly = True
         ScrollBars = ssAutoBoth
         TabOrder = 1
-        Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+        Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
         OnChange = CategoryTreeChange
         OnCollapsed = CategoryTreeCollapsed
         OnCustomDrawItem = CategoryTreeCustomDrawItem
@@ -129,18 +130,18 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
     TabOrder = 1
     object BuildModeSelectPanel: TPanel
       Left = 0
-      Height = 42
+      Height = 46
       Top = 0
       Width = 527
       Align = alTop
       AutoSize = True
       BevelOuter = bvNone
-      ClientHeight = 42
+      ClientHeight = 46
       ClientWidth = 527
       TabOrder = 1
       object BuildModesLabel: TLabel
         Left = 0
-        Height = 21
+        Height = 23
         Top = 0
         Width = 94
         Align = alLeft
@@ -152,12 +153,12 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
       end
       object BuildModeComboBox: TComboBox
         Left = 100
-        Height = 21
+        Height = 23
         Top = 0
         Width = 144
         Align = alLeft
         BorderSpacing.Left = 6
-        ItemHeight = 13
+        ItemHeight = 15
         ParentShowHint = False
         ShowHint = True
         Style = csDropDownList
@@ -166,7 +167,7 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
       end
       object BuildModeManageButton: TSpeedButton
         Left = 248
-        Height = 21
+        Height = 23
         Top = 0
         Width = 23
         Align = alLeft
@@ -178,8 +179,8 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
       end
       object BuildModeDividerBevel: TDividerBevel
         Left = 0
-        Height = 13
-        Top = 25
+        Height = 15
+        Top = 27
         Width = 527
         Align = alBottom
         BorderSpacing.Top = 4
@@ -190,8 +191,8 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
     end
     object EditorsPanel: TScrollBox
       Left = 0
-      Height = 406
-      Top = 42
+      Height = 402
+      Top = 46
       Width = 527
       HorzScrollBar.Page = 1
       HorzScrollBar.Tracking = True

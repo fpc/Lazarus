@@ -7,9 +7,9 @@ object PkgGraphExplorerDlg: TPkgGraphExplorerDlg
   ClientHeight = 514
   ClientWidth = 675
   KeyPreview = True
+  LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
   OnShow = PkgGraphExplorerShow
-  LCLVersion = '2.1.0.0'
   object InfoMemo: TMemo
     Left = 6
     Height = 144
@@ -21,9 +21,9 @@ object PkgGraphExplorerDlg: TPkgGraphExplorerDlg
     Lines.Strings = (
       'InfoMemo'
     )
-    OnKeyDown = InfoMemoKeyDown
     ReadOnly = True
     TabOrder = 1
+    OnKeyDown = InfoMemoKeyDown
   end
   object VerticalSplitter: TSplitter
     Cursor = crVSplit
@@ -75,13 +75,14 @@ object PkgGraphExplorerDlg: TPkgGraphExplorerDlg
       Align = alLeft
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
+      HideSelection = False
       PopupMenu = PkgPopupMenu
       ReadOnly = True
       TabOrder = 0
+      Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
       OnDblClick = PkgTreeViewDblClick
       OnExpanding = PkgTreeViewExpanding
       OnSelectionChanged = PkgTreeViewSelectionChanged
-      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
     end
     object Splitter1: TSplitter
       Left = 200
@@ -111,8 +112,8 @@ object PkgGraphExplorerDlg: TPkgGraphExplorerDlg
   end
   object PkgPopupMenu: TPopupMenu
     OnPopup = PkgPopupMenuPopup
-    left = 32
-    top = 40
+    Left = 32
+    Top = 40
     object UninstallMenuItem: TMenuItem
       Caption = 'Uninstall'
       OnClick = UninstallMenuItemClick

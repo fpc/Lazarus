@@ -6,7 +6,7 @@ object formCorelExplorer: TformCorelExplorer
   Caption = 'FP Corel Explorer'
   ClientHeight = 345
   ClientWidth = 466
-  LCLVersion = '2.3.0.0'
+  LCLVersion = '4.99.0.0'
   object Label1: TLabel
     Left = 8
     Height = 15
@@ -31,11 +31,11 @@ object formCorelExplorer: TformCorelExplorer
     Top = 65
     Width = 224
     FileSortType = fstFoldersFirst
-    ReadOnly = True
+    HideSelection = False
     TabOrder = 0
-    OnSelectionChanged = shellInputSelectionChanged
-    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+    Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
     ObjectTypes = [otFolders, otNonFolders]
+    OnSelectionChanged = shellInputSelectionChanged
   end
   object labelFilename: TLabel
     Left = 256

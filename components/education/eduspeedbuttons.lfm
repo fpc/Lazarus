@@ -12,66 +12,70 @@ object EduSpeedButtonsFrame: TEduSpeedButtonsFrame
     Left = 0
     Height = 483
     Top = 0
-    Width = 150
+    Width = 141
     Align = alLeft
     AutoSize = True
     ClientHeight = 483
-    ClientWidth = 150
+    ClientWidth = 141
     TabOrder = 1
     object ShowSelectionButton: TButton
       Left = 1
-      Height = 27
-      Top = 44
-      Width = 148
+      Height = 25
+      Top = 42
+      Width = 139
       Align = alTop
       AutoSize = True
       BorderSpacing.Top = 6
       Caption = 'ShowSelectionButton'
-      OnClick = ShowSelectionButtonClick
       TabOrder = 0
+      OnClick = ShowSelectionButtonClick
     end
     object ShowAllButton: TButton
       Left = 1
-      Height = 27
+      Height = 25
       Top = 11
-      Width = 148
+      Width = 139
       Align = alTop
       AutoSize = True
       BorderSpacing.Top = 10
       Caption = 'ShowAllButton'
-      OnClick = ShowAllButtonClick
       TabOrder = 1
+      OnClick = ShowAllButtonClick
     end
     object HideAllButton: TButton
       Left = 1
-      Height = 27
-      Top = 86
-      Width = 148
+      Height = 25
+      Top = 82
+      Width = 139
       Align = alTop
       AutoSize = True
       BorderSpacing.Top = 15
       Caption = 'HideAllButton'
-      OnClick = HideAllButtonClick
       TabOrder = 2
+      OnClick = HideAllButtonClick
     end
   end
   object SpeedButtonsGroupBox: TGroupBox
-    Left = 150
-    Height = 483
-    Top = 0
-    Width = 409
+    Left = 147
+    Height = 471
+    Top = 6
+    Width = 406
     Align = alClient
+    BorderSpacing.Around = 6
     Caption = 'SpeedButtonsGroupBox'
-    ClientHeight = 464
-    ClientWidth = 405
+    ClientHeight = 451
+    ClientWidth = 402
     TabOrder = 0
     object SpeedButtonsTreeView: TTreeView
-      Left = 0
-      Height = 464
-      Top = 0
-      Width = 405
+      Left = 6
+      Height = 439
+      Top = 6
+      Width = 390
       Align = alClient
+      BorderSpacing.Around = 6
+      HideSelection = False
       TabOrder = 0
+      Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
       OnMouseDown = SpeedButtonsTreeViewMouseDown
     end
   end

@@ -6,8 +6,8 @@ object MainForm: TMainForm
   Caption = 'Example for turbopower internet pro HTML control: Tree of HTML nodes'
   ClientHeight = 660
   ClientWidth = 966
+  LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
-  LCLVersion = '2.3.0.0'
   object Panel1: TPanel
     Left = 0
     Height = 626
@@ -25,7 +25,9 @@ object MainForm: TMainForm
       Width = 270
       Align = alClient
       BorderSpacing.Left = 4
+      HideSelection = False
       TabOrder = 0
+      Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
       OnChange = TreeView1Change
     end
     object ListBox1: TListBox
@@ -36,8 +38,8 @@ object MainForm: TMainForm
       Align = alBottom
       BorderSpacing.Left = 4
       ItemHeight = 0
-      OnDblClick = ListBox1DblClick
       TabOrder = 1
+      OnDblClick = ListBox1DblClick
     end
     object Splitter2: TSplitter
       Cursor = crVSplit
@@ -106,15 +108,15 @@ object MainForm: TMainForm
       Left = 4
       Height = 25
       Top = 5
-      Width = 111
+      Width = 112
       AutoSize = True
       BorderSpacing.Left = 4
       BorderSpacing.Top = 4
       BorderSpacing.Right = 4
       BorderSpacing.Bottom = 4
       Caption = 'Open HTML File'
-      OnClick = BtnOpenHTMLFileClick
       TabOrder = 0
+      OnClick = BtnOpenHTMLFileClick
     end
   end
   object OpenDialog1: TOpenDialog

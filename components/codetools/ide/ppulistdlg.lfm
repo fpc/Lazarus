@@ -7,16 +7,16 @@ object PPUListDialog: TPPUListDialog
   ClientHeight = 531
   ClientWidth = 740
   KeyPreview = True
+  Position = poWorkAreaCenter
+  LCLVersion = '4.99.0.0'
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
-  Position = poWorkAreaCenter
-  LCLVersion = '3.99.0.0'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 37
-    Top = 488
+    Height = 34
+    Top = 491
     Width = 728
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -32,7 +32,7 @@ object PPUListDialog: TPPUListDialog
   end
   object ScopeLabel: TLabel
     Left = 6
-    Height = 18
+    Height = 15
     Top = 6
     Width = 728
     Align = alTop
@@ -42,8 +42,8 @@ object PPUListDialog: TPPUListDialog
   end
   object PageControl1: TPageControl
     Left = 0
-    Height = 452
-    Top = 30
+    Height = 458
+    Top = 27
     Width = 740
     ActivePage = UnitsTabSheet
     Align = alClient
@@ -51,42 +51,41 @@ object PPUListDialog: TPPUListDialog
     TabOrder = 1
     object UnitsTabSheet: TTabSheet
       Caption = 'UnitsTabSheet'
-      ClientHeight = 417
-      ClientWidth = 736
+      ClientHeight = 430
+      ClientWidth = 732
       object UnitsStringGrid: TStringGrid
         Left = 6
-        Height = 209
+        Height = 222
         Top = 6
-        Width = 724
+        Width = 720
         Align = alClient
         AutoFillColumns = True
         BorderSpacing.Around = 6
         ColCount = 6
         Columns = <        
           item
-            SizePriority = 1
             Title.Caption = 'Unit'
             Width = 120
           end        
           item
             SizePriority = 0
             Title.Caption = 'Size of .ppu file'
-            Width = 130
+            Width = 120
           end        
           item
             SizePriority = 0
             Title.Caption = 'Size of .o file'
-            Width = 130
+            Width = 119
           end        
           item
             SizePriority = 0
             Title.Caption = 'Uses'
-            Width = 100
+            Width = 119
           end        
           item
             SizePriority = 0
             Title.Caption = 'Used by'
-            Width = 100
+            Width = 119
           end        
           item
             Title.Caption = 'Package'
@@ -117,40 +116,40 @@ object PPUListDialog: TPPUListDialog
         Cursor = crVSplit
         Left = 0
         Height = 5
-        Top = 221
-        Width = 736
+        Top = 234
+        Width = 732
         Align = alBottom
         ResizeAnchor = akBottom
       end
       object UnitGroupBox: TGroupBox
         Left = 6
         Height = 179
-        Top = 232
-        Width = 724
+        Top = 245
+        Width = 720
         Align = alBottom
         BorderSpacing.Around = 6
         Caption = 'UnitGroupBox'
-        ClientHeight = 149
-        ClientWidth = 720
+        ClientHeight = 159
+        ClientWidth = 716
         TabOrder = 2
         object UnitPageControl: TPageControl
           Left = 0
-          Height = 149
+          Height = 159
           Top = 0
-          Width = 720
+          Width = 716
           ActivePage = UnitLinkedFilesTabSheet
           Align = alClient
           TabIndex = 4
           TabOrder = 0
           object InfoTabSheet: TTabSheet
             Caption = 'InfoTabSheet'
-            ClientHeight = 114
-            ClientWidth = 716
+            ClientHeight = 131
+            ClientWidth = 708
             object SourceFileLabel: TLabel
               Left = 9
-              Height = 18
+              Height = 15
               Top = 14
-              Width = 96
+              Width = 82
               Caption = 'SourceFileLabel'
               ParentColor = False
             end
@@ -158,9 +157,9 @@ object PPUListDialog: TPPUListDialog
               AnchorSideTop.Control = SourceFileLabel
               AnchorSideTop.Side = asrBottom
               Left = 9
-              Height = 18
-              Top = 38
-              Width = 79
+              Height = 15
+              Top = 35
+              Width = 68
               BorderSpacing.Top = 6
               Caption = 'PPUFileLabel'
               ParentColor = False
@@ -168,13 +167,13 @@ object PPUListDialog: TPPUListDialog
           end
           object UsesTabSheet: TTabSheet
             Caption = 'UsesTabSheet'
-            ClientHeight = 114
-            ClientWidth = 716
+            ClientHeight = 131
+            ClientWidth = 708
             object UsesStringGrid: TStringGrid
-              Left = 0
-              Height = 114
-              Top = 0
-              Width = 716
+              Left = 6
+              Height = 119
+              Top = 6
+              Width = 696
               Align = alClient
               AutoFillColumns = True
               BorderSpacing.Around = 6
@@ -182,7 +181,7 @@ object PPUListDialog: TPPUListDialog
               Columns = <              
                 item
                   Title.Caption = 'Unit'
-                  Width = 704
+                  Width = 692
                 end>
               FixedCols = 0
               FocusRectVisible = False
@@ -194,19 +193,19 @@ object PPUListDialog: TPPUListDialog
               TabOrder = 0
               OnMouseDown = UnitStringGridMouseDown
               ColWidths = (
-                704
+                692
               )
             end
           end
           object UsedByTabSheet: TTabSheet
             Caption = 'UsedByTabSheet'
-            ClientHeight = 114
-            ClientWidth = 716
+            ClientHeight = 131
+            ClientWidth = 708
             object UsedByStringGrid: TStringGrid
-              Left = 0
-              Height = 114
-              Top = 0
-              Width = 716
+              Left = 6
+              Height = 119
+              Top = 6
+              Width = 696
               Align = alClient
               AutoFillColumns = True
               BorderSpacing.Around = 6
@@ -214,7 +213,7 @@ object PPUListDialog: TPPUListDialog
               Columns = <              
                 item
                   Title.Caption = 'Unit'
-                  Width = 704
+                  Width = 692
                 end>
               FixedCols = 0
               FocusRectVisible = False
@@ -226,19 +225,19 @@ object PPUListDialog: TPPUListDialog
               TabOrder = 0
               OnMouseDown = UnitStringGridMouseDown
               ColWidths = (
-                704
+                692
               )
             end
           end
           object UsesPathTabSheet: TTabSheet
             Caption = 'UsesPathTabSheet'
-            ClientHeight = 114
-            ClientWidth = 716
+            ClientHeight = 131
+            ClientWidth = 708
             object UsesPathStringGrid: TStringGrid
-              Left = 0
-              Height = 114
-              Top = 0
-              Width = 716
+              Left = 6
+              Height = 119
+              Top = 6
+              Width = 696
               Align = alClient
               AutoFillColumns = True
               BorderSpacing.Around = 6
@@ -246,7 +245,7 @@ object PPUListDialog: TPPUListDialog
               Columns = <              
                 item
                   Title.Caption = 'Unit'
-                  Width = 704
+                  Width = 692
                 end>
               FixedCols = 0
               FocusRectVisible = False
@@ -258,19 +257,19 @@ object PPUListDialog: TPPUListDialog
               TabOrder = 0
               OnMouseDown = UnitStringGridMouseDown
               ColWidths = (
-                704
+                692
               )
             end
           end
           object UnitLinkedFilesTabSheet: TTabSheet
             Caption = 'UnitLinkedFilesTabSheet'
-            ClientHeight = 114
-            ClientWidth = 716
+            ClientHeight = 131
+            ClientWidth = 708
             object UnitLinkedFilesStringGrid: TStringGrid
-              Left = 0
-              Height = 114
-              Top = 0
-              Width = 716
+              Left = 6
+              Height = 119
+              Top = 6
+              Width = 696
               Align = alClient
               AutoFillColumns = True
               BorderSpacing.Around = 6
@@ -278,16 +277,16 @@ object PPUListDialog: TPPUListDialog
               Columns = <              
                 item
                   Title.Caption = 'Type'
-                  Width = 235
+                  Width = 229
                 end              
                 item
                   Title.Caption = 'File'
-                  Width = 235
+                  Width = 229
                 end              
                 item
                   SizePriority = 0
                   Title.Caption = 'Flags'
-                  Width = 160
+                  Width = 234
                 end>
               FixedCols = 0
               FocusRectVisible = False
@@ -298,8 +297,8 @@ object PPUListDialog: TPPUListDialog
               ShowHint = True
               TabOrder = 0
               ColWidths = (
-                235
-                235
+                229
+                229
                 234
               )
             end
@@ -309,18 +308,19 @@ object PPUListDialog: TPPUListDialog
     end
     object LinkedFilesTabSheet: TTabSheet
       Caption = 'LinkedFilesTabSheet'
-      ClientHeight = 417
-      ClientWidth = 736
+      ClientHeight = 430
+      ClientWidth = 732
       object LinkedFilesTreeView: TTreeView
         Left = 0
-        Height = 417
+        Height = 430
         Top = 0
-        Width = 736
+        Width = 732
         Align = alClient
+        HideSelection = False
         ReadOnly = True
         TabOrder = 0
+        Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
         OnDblClick = LinkedFilesTreeViewDblClick
-        Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
       end
     end
   end

@@ -6,10 +6,10 @@ object InspectChksumChgDialog: TInspectChksumChgDialog
   Caption = 'InspectChksumChgDialog'
   ClientHeight = 473
   ClientWidth = 614
+  Position = poScreenCenter
+  LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  Position = poScreenCenter
-  LCLVersion = '0.9.31'
   object InfoGroupBox: TGroupBox
     AnchorSideBottom.Control = Splitter1
     Left = 6
@@ -20,22 +20,23 @@ object InspectChksumChgDialog: TInspectChksumChgDialog
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'InfoGroupBox'
-    ClientHeight = 305
+    ClientHeight = 304
     ClientWidth = 598
     TabOrder = 0
     object InfoTreeView: TTreeView
       Left = 0
-      Height = 285
+      Height = 284
       Top = 0
       Width = 598
       Align = alClient
-      DefaultItemHeight = 19
+      HideSelection = False
       TabOrder = 0
+      Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
     end
     object ProgressBar1: TProgressBar
       Left = 0
       Height = 20
-      Top = 285
+      Top = 284
       Width = 598
       Align = alBottom
       TabOrder = 1
@@ -58,7 +59,7 @@ object InspectChksumChgDialog: TInspectChksumChgDialog
     AnchorSideTop.Control = Splitter1
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 74
+    Height = 80
     Top = 347
     Width = 602
     Align = alBottom
@@ -78,15 +79,19 @@ object InspectChksumChgDialog: TInspectChksumChgDialog
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 40
-    Top = 427
+    Height = 34
+    Top = 433
     Width = 602
     OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
     HelpButton.Enabled = False
     CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 3
     ShowButtons = [pbOK, pbCancel]
   end

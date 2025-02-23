@@ -5,7 +5,6 @@ object ReportDataDisplay: TReportDataDisplay
   Width = 327
   ClientHeight = 277
   ClientWidth = 327
-  LCLVersion = '1.9.0.0'
   TabOrder = 0
   DesignLeft = 658
   DesignTop = 245
@@ -20,13 +19,13 @@ object ReportDataDisplay: TReportDataDisplay
     TabOrder = 0
     object TSData: TTabSheet
       Caption = 'Data'
-      ClientHeight = 242
-      ClientWidth = 321
+      ClientHeight = 249
+      ClientWidth = 319
       object TVData: TTreeView
         Left = 0
-        Height = 242
+        Height = 249
         Top = 0
-        Width = 321
+        Width = 319
         Align = alClient
         DragMode = dmAutomatic
         HideSelection = False
@@ -34,38 +33,39 @@ object ReportDataDisplay: TReportDataDisplay
         RightClickSelect = True
         RowSelect = True
         TabOrder = 0
+        Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
         OnMouseDown = TVDataMouseDown
         OnStartDrag = TVDataStartDrag
-        Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
       end
     end
     object TSVariables: TTabSheet
       Caption = 'Variables'
-      ClientHeight = 242
-      ClientWidth = 321
+      ClientHeight = 249
+      ClientWidth = 319
       object TVVariables: TTreeView
         Left = 0
-        Height = 242
+        Height = 249
         Top = 0
-        Width = 321
+        Width = 319
         Align = alClient
         DragMode = dmAutomatic
+        HideSelection = False
         ReadOnly = True
         TabOrder = 0
+        Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
         OnMouseDown = TVVariablesMouseDown
         OnStartDrag = LBVariablesStartDrag
-        Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
       end
     end
     object TabSheet1: TTabSheet
       Caption = 'Functions'
-      ClientHeight = 242
-      ClientWidth = 321
+      ClientHeight = 249
+      ClientWidth = 319
       object TVFunctions: TTreeView
         Left = 0
-        Height = 242
+        Height = 249
         Top = 0
-        Width = 321
+        Width = 319
         Align = alClient
         DragMode = dmAutomatic
         HideSelection = False
@@ -73,8 +73,8 @@ object ReportDataDisplay: TReportDataDisplay
         RightClickSelect = True
         RowSelect = True
         TabOrder = 0
-        OnStartDrag = TVFunctionsStartDrag
         Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+        OnStartDrag = TVFunctionsStartDrag
       end
     end
   end

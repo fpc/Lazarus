@@ -16,7 +16,7 @@ object CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
     Width = 514
     Align = alTop
     Caption = 'MacrosGroupBox'
-    ClientHeight = 225
+    ClientHeight = 223
     ClientWidth = 510
     TabOrder = 0
     object BuildMacrosTreeView: TTreeView
@@ -27,25 +27,25 @@ object CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
       AnchorSideBottom.Control = MacrosGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 0
-      Height = 203
+      Height = 201
       Top = 22
       Width = 227
       Anchors = [akTop, akLeft, akBottom]
       BorderSpacing.Right = 6
-      DefaultItemHeight = 18
+      HideSelection = False
       RightClickSelect = True
       TabOrder = 0
+      Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
       OnEdited = BuildMacrosTreeViewEdited
       OnEditing = BuildMacrosTreeViewEditing
       OnSelectionChanged = BuildMacrosTreeViewSelectionChanged
-      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
     end
     object Splitter1: TSplitter
       AnchorSideTop.Control = MacrosGroupBox
       AnchorSideBottom.Control = MacrosGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 233
-      Height = 225
+      Height = 223
       Top = 0
       Width = 5
       Align = alNone
@@ -55,14 +55,14 @@ object CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
       AnchorSideLeft.Control = Splitter1
       AnchorSideLeft.Side = asrBottom
       Left = 244
-      Height = 225
+      Height = 223
       Top = 0
       Width = 266
       Align = alRight
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Left = 6
       Caption = 'BuildMacroSelectedGroupBox'
-      ClientHeight = 207
+      ClientHeight = 203
       ClientWidth = 262
       TabOrder = 2
       object BuildMacroDefaultLabel: TLabel
@@ -74,8 +74,8 @@ object CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
         AnchorSideBottom.Control = BuildMacroSelectedGroupBox
         AnchorSideBottom.Side = asrBottom
         Left = 6
-        Height = 122
-        Top = 79
+        Height = 119
+        Top = 78
         Width = 250
         Anchors = [akTop, akLeft, akRight, akBottom]
         AutoSize = False
@@ -90,7 +90,7 @@ object CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
         AnchorSideRight.Control = BuildMacroSelectedGroupBox
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 16
+        Height = 15
         Top = 6
         Width = 250
         Anchors = [akTop, akLeft, akRight]
@@ -108,14 +108,14 @@ object CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
         AnchorSideRight.Side = asrBottom
         Left = 6
         Height = 23
-        Top = 22
+        Top = 21
         Width = 250
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 6
         BorderSpacing.Right = 6
-        OnExit = BuildMacroDescriptionEditExit
         TabOrder = 0
         Text = 'BuildMacroDescriptionEdit'
+        OnExit = BuildMacroDescriptionEditExit
       end
       object BMAddMacroValueSpeedButton: TSpeedButton
         AnchorSideLeft.Control = BuildMacroSelectedGroupBox
@@ -123,13 +123,12 @@ object CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
         AnchorSideTop.Side = asrBottom
         Left = 6
         Height = 22
-        Top = 51
+        Top = 50
         Width = 23
         BorderSpacing.Around = 6
-        NumGlyphs = 0
-        OnClick = BMAddMacroValueSpeedButtonClick
         ShowHint = True
         ParentShowHint = False
+        OnClick = BMAddMacroValueSpeedButtonClick
       end
     end
     object BMAddMacroSpeedButton: TSpeedButton
@@ -139,10 +138,9 @@ object CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
       Height = 22
       Top = 0
       Width = 23
-      NumGlyphs = 0
-      OnClick = BMAddMacroSpeedButtonClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = BMAddMacroSpeedButtonClick
     end
     object BMDeleteMacroSpeedButton: TSpeedButton
       AnchorSideLeft.Side = asrBottom
@@ -152,10 +150,9 @@ object CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
       Top = 0
       Width = 23
       BorderSpacing.Left = 6
-      NumGlyphs = 0
-      OnClick = BMDeleteMacroSpeedButtonClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = BMDeleteMacroSpeedButtonClick
     end
   end
   object MacrosSplitter: TSplitter

@@ -6,23 +6,23 @@ object MainForm: TMainForm
   Caption = 'svg Viewer'
   ClientHeight = 543
   ClientWidth = 832
+  LCLVersion = '4.99.0.0'
   OnActivate = FormActivate
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '2.3.0.0'
   object PageControl: TPageControl
     Left = 297
     Height = 508
     Top = 6
     Width = 529
-    ActivePage = PgDebugTree
+    ActivePage = PgImage
     Align = alClient
     BorderSpacing.Left = 2
     BorderSpacing.Top = 6
     BorderSpacing.Right = 6
     BorderSpacing.Bottom = 6
-    TabIndex = 2
+    TabIndex = 0
     TabOrder = 0
     OnChange = PageControlChange
     object PgImage: TTabSheet
@@ -91,10 +91,10 @@ object MainForm: TMainForm
           BorderSpacing.Top = 2
           BorderSpacing.Bottom = 2
           MaxValue = 32767
-          OnChange = EdOffsetXChange
           ParentFont = False
           TabOrder = 0
           Value = 16
+          OnChange = EdOffsetXChange
         end
         object CbAdjustPenColorToBackground: TCheckBox
           AnchorSideLeft.Control = EdMargin
@@ -108,9 +108,9 @@ object MainForm: TMainForm
           BorderSpacing.Left = 24
           Caption = 'Adjust pen color to background'
           Checked = True
-          OnChange = CbAdjustPenColorToBackgroundChange
           State = cbChecked
           TabOrder = 1
+          OnChange = CbAdjustPenColorToBackgroundChange
         end
         object BtnExternalViewer: TButton
           AnchorSideLeft.Control = CbAdjustPenColorToBackground
@@ -120,14 +120,14 @@ object MainForm: TMainForm
           Left = 359
           Height = 25
           Top = 2
-          Width = 105
+          Width = 104
           AutoSize = True
           BorderSpacing.Left = 24
           BorderSpacing.Top = 2
           BorderSpacing.Bottom = 2
           Caption = 'External viewer'
-          OnClick = BtnExternalViewerClick
           TabOrder = 2
+          OnClick = BtnExternalViewerClick
         end
       end
     end
@@ -604,6 +604,8 @@ object MainForm: TMainForm
           object SynGutterMarks1: TSynGutterMarks
             Width = 24
             MouseActions = <>
+            MaxExtraMarksColums = 0
+            Options = [sgmoDeDuplicateMarksOnOverflow]
           end
           object SynGutterLineNumber1: TSynGutterLineNumber
             Width = 17
@@ -647,7 +649,9 @@ object MainForm: TMainForm
         Top = 0
         Width = 521
         Align = alClient
+        HideSelection = False
         TabOrder = 0
+        Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
       end
     end
   end
@@ -686,12 +690,10 @@ object MainForm: TMainForm
       BorderSpacing.Bottom = 2
       FileSortType = fstCustom
       HideSelection = False
-      ReadOnly = True
       TabOrder = 0
-      OnSortCompare = ShellTreeViewSortCompare
       Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
-      ObjectTypes = [otFolders]
       ShellListView = ShellListView
+      OnSortCompare = ShellTreeViewSortCompare
     end
     object ShellSplitter: TSplitter
       Cursor = crVSplit
@@ -711,13 +713,11 @@ object MainForm: TMainForm
       BorderSpacing.Top = 2
       Color = clDefault
       HideSelection = False
-      ReadOnly = True
       SortType = stText
       TabOrder = 2
+      ShellTreeView = ShellTreeView
       OnCompare = ShellListViewCompare
       OnSelectItem = ShellListViewSelectItem
-      ObjectTypes = [otNonFolders]
-      ShellTreeView = ShellTreeView
     end
     object CbHistory: TComboBox
       Left = 0
@@ -726,11 +726,11 @@ object MainForm: TMainForm
       Width = 282
       Align = alTop
       ItemHeight = 15
+      Style = csOwnerDrawEditableFixed
+      TabOrder = 3
       OnCloseUp = CbHistoryCloseUp
       OnDrawItem = CbHistoryDrawItem
       OnEditingDone = CbHistoryEditingDone
-      Style = csOwnerDrawEditableFixed
-      TabOrder = 3
     end
   end
   object MainSplitter: TSplitter

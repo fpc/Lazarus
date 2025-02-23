@@ -37,7 +37,6 @@ type
     procedure cbTreeFilterChange(Sender: TObject);
     procedure FileListBoxDblClick(Sender: TObject);
     procedure cbFilePanelChange(Sender: TObject);
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure TVDblClick(Sender: TObject);
@@ -208,11 +207,6 @@ end;
 procedure TFileBrowserForm.cbFilePanelChange(Sender: TObject);
 begin
   FileListBox.Mask := cbFilePanel.Text;
-
-end;
-
-procedure TFileBrowserForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
-begin
 
 end;
 

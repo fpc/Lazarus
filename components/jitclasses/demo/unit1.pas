@@ -89,14 +89,12 @@ begin
   FPropertyGrid.Width := 150;
   FPropertyGrid.Parent := PnlOI;
 
-
   FComponentTree := TComponentTreeView.Create(Self);
   FComponentTree.Parent := pnlTree;
   FComponentTree.Align := alClient;
+  FComponentTree.HideSelection := false;
   FComponentTree.OnSelectionChanged  := @DoTreeSelChanged;
-
   FComponentTree.PropertyEditorHook:=FPropertyEditorHook;
-
 
   PopulateOI;
   FComponentTree.BuildComponentNodes(True);

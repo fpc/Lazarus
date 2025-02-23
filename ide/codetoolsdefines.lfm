@@ -5,16 +5,16 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
   Width = 544
   BorderIcons = [biSystemMenu, biMaximize]
   Caption = 'CodeToolsDefinesEditor'
-  ClientHeight = 480
+  ClientHeight = 500
   ClientWidth = 544
   KeyPreview = True
   Menu = MainMenu
+  Position = poScreenCenter
+  LCLVersion = '4.99.0.0'
   OnClose = FormClose
   OnCreate = FormCreate
   OnKeyDown = CodeToolsDefinesEditorKeyDown
   OnKeyUp = CodeToolsDefinesEditorKeyUp
-  Position = poScreenCenter
-  LCLVersion = '1.9.0.0'
   object DefineTreeView: TTreeView
     Left = 6
     Height = 123
@@ -22,21 +22,21 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
     Width = 532
     Align = alTop
     BorderSpacing.Around = 6
-    DefaultItemHeight = 18
+    HideSelection = False
     ReadOnly = True
     TabOrder = 0
+    Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
     OnSelectionChanged = DefineTreeViewSelectionChanged
-    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
   end
   object SelectedItemGroupBox: TGroupBox
     Left = 6
-    Height = 296
+    Height = 316
     Top = 146
     Width = 532
     Align = alClient
     BorderSpacing.Around = 6
     Caption = 'SelectedItemGroupBox'
-    ClientHeight = 276
+    ClientHeight = 296
     ClientWidth = 528
     TabOrder = 2
     object NameLabel: TLabel
@@ -86,7 +86,7 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
       AnchorSideTop.Control = VariableEdit
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 162
+      Height = 182
       Top = 108
       Width = 516
       ActivePage = ValueAsPathsPage
@@ -99,13 +99,13 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
       OnChange = ValueNoteBookPageChanged
       object ValueAsTextPage: TTabSheet
         Caption = 'ValueAsTextPage'
-        ClientHeight = 137
-        ClientWidth = 512
+        ClientHeight = 154
+        ClientWidth = 508
         inline ValueAsTextSynEdit: TSynEdit
           Left = 0
-          Height = 152
+          Height = 154
           Top = 0
-          Width = 512
+          Width = 508
           Align = alClient
           Font.Height = -16
           Font.Name = 'courier'
@@ -551,6 +551,8 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
             object TSynGutterMarks
               Width = 24
               MouseActions = <>
+              MaxExtraMarksColums = 0
+              Options = [sgmoDeDuplicateMarksOnOverflow]
             end
             object TSynGutterLineNumber
               Width = 19
@@ -630,12 +632,12 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
       end
       object ValueAsPathsPage: TTabSheet
         Caption = 'ValueAsPathsPage'
-        ClientHeight = 134
+        ClientHeight = 154
         ClientWidth = 508
         inline ValueAsFilePathsSynEdit: TSynEdit
           AnchorSideRight.Control = MoveFilePathUpBitBtn
           Left = 0
-          Height = 134
+          Height = 154
           Top = 0
           Width = 351
           Align = alLeft
@@ -1085,6 +1087,8 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
             object TSynGutterMarks
               Width = 24
               MouseActions = <>
+              MaxExtraMarksColums = 0
+              Options = [sgmoDeDuplicateMarksOnOverflow]
             end
             object TSynGutterLineNumber
               Width = 19
@@ -1176,8 +1180,8 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
           BorderSpacing.Right = 6
           Caption = 'MoveFilePathUpBitBtn'
           Constraints.MinWidth = 80
-          OnClick = MoveFilePathUpBitBtnClick
           TabOrder = 1
+          OnClick = MoveFilePathUpBitBtnClick
         end
         object MoveFilePathDownBitBtn: TBitBtn
           AnchorSideLeft.Control = MoveFilePathUpBitBtn
@@ -1193,8 +1197,8 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
           AutoSize = True
           BorderSpacing.Top = 4
           Caption = 'MoveFilePathDownBitBtn'
-          OnClick = MoveNodeDownMenuItemClick
           TabOrder = 2
+          OnClick = MoveNodeDownMenuItemClick
         end
         object DeleteFilePathBitBtn: TBitBtn
           AnchorSideLeft.Control = MoveFilePathDownBitBtn
@@ -1210,8 +1214,8 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
           AutoSize = True
           BorderSpacing.Top = 4
           Caption = 'DeleteFilePathBitBtn'
-          OnClick = DeleteFilePathBitBtnClick
           TabOrder = 3
+          OnClick = DeleteFilePathBitBtnClick
         end
         object InsertFilePathBitBtn: TBitBtn
           AnchorSideLeft.Control = MoveFilePathUpBitBtn
@@ -1227,8 +1231,8 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
           AutoSize = True
           BorderSpacing.Top = 4
           Caption = 'InsertFilePathBitBtn'
-          OnClick = InsertFilePathBitBtnClick
           TabOrder = 4
+          OnClick = InsertFilePathBitBtnClick
         end
       end
     end
@@ -1291,7 +1295,7 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
   object ButtonPanel1: TButtonPanel
     Left = 6
     Height = 26
-    Top = 448
+    Top = 468
     Width = 532
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True

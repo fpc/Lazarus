@@ -1428,6 +1428,7 @@ begin
     ReadOnly := True;
     Visible := True;
     ShowHint:=True;
+    HideSelection:=False;
     OnShowHint:=@TreeViewShowHint;
     OnExpanded := @TOCExpand;
     OnCollapsed := @TOCCollapse;
@@ -1481,6 +1482,7 @@ begin
     BorderSpacing.Around := 6;
     ReadOnly := True;
     Visible := True;
+    HideSelection := False;
     ShowButtons:=False;
     ShowLines:=False;
     ShowRoot:=False;
@@ -1569,6 +1571,7 @@ begin
     ShowLines := False;
     ShowRoot:=False;
     ShowHint:=True;
+    HideSelection:=False;
     OnShowHint:=@TreeViewShowHint;
     OnClick:= @ContentsTreeSelectionChanged;
     OnKeyDown:= @ProcTreeKeyDown;

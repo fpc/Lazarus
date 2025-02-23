@@ -8,11 +8,11 @@ object ToolBarConfig: TToolBarConfig
   ClientWidth = 696
   Constraints.MinHeight = 350
   Constraints.MinWidth = 500
+  Position = poScreenCenter
+  LCLVersion = '4.99.0.0'
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  Position = poScreenCenter
-  LCLVersion = '2.3.0.0'
   object lblMenuTree: TLabel
     AnchorSideLeft.Control = TV
     AnchorSideLeft.Side = asrCenter
@@ -52,9 +52,9 @@ object ToolBarConfig: TToolBarConfig
     Width = 26
     BorderSpacing.Top = 3
     Enabled = False
-    OnClick = btnRemoveClick
     ShowHint = True
     ParentShowHint = False
+    OnClick = btnRemoveClick
   end
   object btnAdd: TSpeedButton
     AnchorSideLeft.Control = Splitter1
@@ -67,9 +67,9 @@ object ToolBarConfig: TToolBarConfig
     BorderSpacing.Left = 3
     BorderSpacing.Top = 30
     Enabled = False
-    OnClick = btnAddClick
     ShowHint = True
     ParentShowHint = False
+    OnClick = btnAddClick
   end
   object btnMoveUp: TSpeedButton
     AnchorSideLeft.Control = btnAdd
@@ -81,9 +81,9 @@ object ToolBarConfig: TToolBarConfig
     Width = 26
     BorderSpacing.Top = 25
     Enabled = False
-    OnClick = btnMoveUpClick
     ShowHint = True
     ParentShowHint = False
+    OnClick = btnMoveUpClick
   end
   object btnMoveDown: TSpeedButton
     AnchorSideLeft.Control = btnAdd
@@ -95,9 +95,9 @@ object ToolBarConfig: TToolBarConfig
     Width = 26
     BorderSpacing.Top = 3
     Enabled = False
-    OnClick = btnMoveDownClick
     ShowHint = True
     ParentShowHint = False
+    OnClick = btnMoveDownClick
   end
   object TV: TTreeView
     AnchorSideLeft.Control = Owner
@@ -113,13 +113,13 @@ object ToolBarConfig: TToolBarConfig
     BorderSpacing.Top = 6
     BorderSpacing.Right = 3
     BorderSpacing.Bottom = 6
+    HideSelection = False
     ReadOnly = True
     ScrollBars = ssAutoBoth
-    ShowSeparators = False
     TabOrder = 1
+    Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
     OnDblClick = TVDblClick
     OnSelectionChanged = TVSelectionChanged
-    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
   end
   object FilterEdit: TTreeFilterEdit
     AnchorSideLeft.Control = TV
@@ -197,9 +197,9 @@ object ToolBarConfig: TToolBarConfig
     Width = 26
     Anchors = [akLeft, akBottom]
     BorderSpacing.Bottom = 30
-    OnClick = btnAddDividerClick
     ShowHint = True
     ParentShowHint = False
+    OnClick = btnAddDividerClick
   end
   object pnlButtons: TButtonPanel
     Left = 6

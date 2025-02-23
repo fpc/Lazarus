@@ -7,10 +7,10 @@ object DlgCompPagesPopup: TDlgCompPagesPopup
   Caption = 'DlgCompPagesPopup'
   ClientHeight = 536
   ClientWidth = 293
+  LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
   OnDeactivate = FormDeactivate
   OnShow = FormShow
-  LCLVersion = '1.9.0.0'
   object Panel1: TPanel
     Left = 0
     Height = 536
@@ -31,12 +31,13 @@ object DlgCompPagesPopup: TDlgCompPagesPopup
       Align = alClient
       BackgroundColor = clDefault
       Color = clDefault
+      HideSelection = False
       HotTrack = True
       ReadOnly = True
       ScrollBars = ssAutoVertical
       TabOrder = 0
+      Options = [tvoAutoItemHeight, tvoHotTrack, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
       OnClick = TreeView1Click
-      Options = [tvoAutoItemHeight, tvoHideSelection, tvoHotTrack, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
     end
     object Panel2: TPanel
       Left = 2
@@ -53,10 +54,10 @@ object DlgCompPagesPopup: TDlgCompPagesPopup
       ParentFont = False
       TabOrder = 1
       object cBtnClose: TSpeedButton
-        Left = 285
+        Left = 279
         Height = 16
         Top = 0
-        Width = 4
+        Width = 10
         Align = alRight
         AutoSize = True
         Flat = True

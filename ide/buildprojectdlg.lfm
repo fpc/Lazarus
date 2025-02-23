@@ -7,16 +7,16 @@ object CleanBuildProjectDialog: TCleanBuildProjectDialog
   Caption = 'CleanBuildProjectDialog'
   ClientHeight = 545
   ClientWidth = 537
+  Position = poScreenCenter
+  LCLVersion = '4.99.0.0'
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnResize = FormResize
-  Position = poScreenCenter
-  LCLVersion = '1.7'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 36
-    Top = 503
+    Height = 34
+    Top = 505
     Width = 525
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -36,73 +36,73 @@ object CleanBuildProjectDialog: TCleanBuildProjectDialog
     AnchorSideTop.Control = ProjOutMaskComboBox
     AnchorSideTop.Side = asrCenter
     Left = 10
-    Height = 21
-    Top = 15
-    Width = 137
+    Height = 19
+    Top = 12
+    Width = 111
     BorderSpacing.Left = 10
     Caption = 'ProjOutCheckBox'
     Checked = True
-    OnChange = ProjOutCheckBoxChange
     State = cbChecked
     TabOrder = 0
+    OnChange = ProjOutCheckBoxChange
   end
   object ProjSrcCheckBox: TCheckBox
     AnchorSideLeft.Control = ProjOutCheckBox
     AnchorSideTop.Control = ProjSrcMaskComboBox
     AnchorSideTop.Side = asrCenter
     Left = 10
-    Height = 21
-    Top = 49
-    Width = 133
+    Height = 19
+    Top = 38
+    Width = 107
     Caption = 'ProjSrcCheckBox'
     Checked = True
-    OnChange = ProjSrcCheckBoxChange
     State = cbChecked
     TabOrder = 1
+    OnChange = ProjSrcCheckBoxChange
   end
   object PkgOutCheckBox: TCheckBox
     AnchorSideLeft.Control = ProjOutCheckBox
     AnchorSideTop.Control = PkgOutMaskComboBox
     AnchorSideTop.Side = asrCenter
     Left = 10
-    Height = 21
-    Top = 83
-    Width = 134
+    Height = 19
+    Top = 64
+    Width = 110
     Caption = 'PkgOutCheckBox'
     Checked = True
-    OnChange = PkgOutCheckBoxChange
     State = cbChecked
     TabOrder = 2
+    OnChange = PkgOutCheckBoxChange
   end
   object PkgSrcCheckBox: TCheckBox
     AnchorSideLeft.Control = ProjOutCheckBox
     AnchorSideTop.Control = PkgSrcMaskComboBox
     AnchorSideTop.Side = asrCenter
     Left = 10
-    Height = 21
-    Top = 117
-    Width = 130
+    Height = 19
+    Top = 90
+    Width = 106
     Caption = 'PkgSrcCheckBox'
     Checked = True
-    OnChange = PkgSrcCheckBoxChange
     State = cbChecked
     TabOrder = 3
+    OnChange = PkgSrcCheckBoxChange
   end
   object ProjOutMaskComboBox: TComboBox
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 232
-    Height = 31
+    Height = 23
     Top = 10
     Width = 299
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 10
     BorderSpacing.Right = 6
-    ItemHeight = 23
-    OnChange = ProjOutMaskComboBoxChange
+    ItemHeight = 15
     TabOrder = 4
     Text = 'ProjOutMaskComboBox'
+    OnChange = ProjOutMaskComboBoxChange
   end
   object ProjSrcMaskComboBox: TComboBox
     AnchorSideLeft.Control = ProjOutMaskComboBox
@@ -111,15 +111,15 @@ object CleanBuildProjectDialog: TCleanBuildProjectDialog
     AnchorSideRight.Control = ProjOutMaskComboBox
     AnchorSideRight.Side = asrBottom
     Left = 232
-    Height = 31
-    Top = 44
+    Height = 23
+    Top = 36
     Width = 299
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 3
-    ItemHeight = 23
-    OnChange = ProjOutMaskComboBoxChange
+    ItemHeight = 15
     TabOrder = 5
     Text = 'ProjSrcMaskComboBox'
+    OnChange = ProjOutMaskComboBoxChange
   end
   object PkgOutMaskComboBox: TComboBox
     AnchorSideLeft.Control = ProjOutMaskComboBox
@@ -128,15 +128,15 @@ object CleanBuildProjectDialog: TCleanBuildProjectDialog
     AnchorSideRight.Control = ProjOutMaskComboBox
     AnchorSideRight.Side = asrBottom
     Left = 232
-    Height = 31
-    Top = 78
+    Height = 23
+    Top = 62
     Width = 299
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 3
-    ItemHeight = 23
-    OnChange = ProjOutMaskComboBoxChange
+    ItemHeight = 15
     TabOrder = 6
     Text = 'PkgOutMaskComboBox'
+    OnChange = ProjOutMaskComboBoxChange
   end
   object PkgSrcMaskComboBox: TComboBox
     AnchorSideLeft.Control = ProjOutMaskComboBox
@@ -145,31 +145,31 @@ object CleanBuildProjectDialog: TCleanBuildProjectDialog
     AnchorSideRight.Control = ProjOutMaskComboBox
     AnchorSideRight.Side = asrBottom
     Left = 232
-    Height = 31
-    Top = 112
+    Height = 23
+    Top = 88
     Width = 299
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 3
-    ItemHeight = 23
-    OnChange = ProjOutMaskComboBoxChange
+    ItemHeight = 15
     TabOrder = 7
     Text = 'PkgSrcMaskComboBox'
+    OnChange = ProjOutMaskComboBoxChange
   end
   object DeleteButton: TButton
     AnchorSideRight.Control = ProjOutMaskComboBox
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel1
-    Left = 438
-    Height = 27
-    Top = 470
-    Width = 93
+    Left = 436
+    Height = 25
+    Top = 474
+    Width = 95
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Top = 6
     BorderSpacing.Bottom = 6
     Caption = 'DeleteButton'
-    OnClick = DeleteButtonClick
     TabOrder = 9
+    OnClick = DeleteButtonClick
   end
   object FilesTreeView: TTreeView
     AnchorSideLeft.Control = PreviewLabel
@@ -179,23 +179,24 @@ object CleanBuildProjectDialog: TCleanBuildProjectDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = DeleteButton
     Left = 10
-    Height = 292
-    Top = 172
+    Height = 330
+    Top = 138
     Width = 521
     Anchors = [akTop, akLeft, akRight, akBottom]
+    HideSelection = False
     ReadOnly = True
     TabOrder = 8
+    Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
     OnMouseDown = FilesTreeViewMouseDown
-    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
   end
   object PreviewLabel: TLabel
     AnchorSideLeft.Control = PkgSrcCheckBox
     AnchorSideTop.Control = PkgSrcMaskComboBox
     AnchorSideTop.Side = asrBottom
     Left = 10
-    Height = 17
-    Top = 149
-    Width = 79
+    Height = 15
+    Top = 117
+    Width = 69
     BorderSpacing.Top = 6
     BorderSpacing.Bottom = 6
     Caption = 'PreviewLabel'

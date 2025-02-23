@@ -139,6 +139,7 @@ begin
     ShellTreeView.Top := 0;
     ShellTreeView.Width := Width;
     ShellTreeView.Height := 100;
+    ShellTreeView.HideSelection := false;
     ShellTreeView.Align := alTop;
 
     // Add the ShellListView to the dialog
@@ -149,6 +150,7 @@ begin
     ShellListView.Width := Width;
     ShellListView.Height := Height - ShellTreeView.Height - ButtonPanel.Height;
     ShellListView.Align := alClient;
+    ShellListView.HideSelection := false;
     ShellListView.ShellTreeView := ShellTreeView;
     ShellListView.ScrollBars := ssVertical;
     ShellListView.OnSelectItem := @HandleSelectItem;
@@ -195,6 +197,7 @@ begin
     ShellTreeView.Left := 0;
     ShellTreeView.Top := 0;
     ShellTreeView.Align := alClient;
+    ShellTreeView.HideSelection := false;
     ShellTreeView.OnSelectionChanged := @HandleTreeViewSelectionChanged;
 
     ButtonPanel.OKButton.Enabled := False;

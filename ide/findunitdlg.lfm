@@ -6,14 +6,14 @@ object FindUnitDialog: TFindUnitDialog
   ActiveControl = InfoTreeView
   ClientHeight = 514
   ClientWidth = 584
+  Position = poScreenCenter
+  LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  Position = poScreenCenter
-  LCLVersion = '0.9.29'
   object BtnPanel: TPanel
     Left = 0
-    Height = 37
-    Top = 477
+    Height = 39
+    Top = 475
     Width = 584
     Align = alBottom
     AutoSize = True
@@ -21,14 +21,14 @@ object FindUnitDialog: TFindUnitDialog
     ChildSizing.TopBottomSpacing = 6
     ChildSizing.HorizontalSpacing = 6
     ChildSizing.VerticalSpacing = 6
-    ClientHeight = 37
+    ClientHeight = 39
     ClientWidth = 584
     TabOrder = 0
     object CancelButton: TButton
-      Left = 487
-      Height = 23
+      Left = 479
+      Height = 25
       Top = 7
-      Width = 90
+      Width = 98
       Align = alRight
       AutoSize = True
       Caption = 'CancelButton'
@@ -37,16 +37,16 @@ object FindUnitDialog: TFindUnitDialog
       TabOrder = 0
     end
     object OkButton: TButton
-      Left = 406
-      Height = 23
+      Left = 396
+      Height = 25
       Top = 7
-      Width = 75
+      Width = 77
       Align = alRight
       AutoSize = True
       Caption = 'OkButton'
       Constraints.MinWidth = 75
-      OnClick = OkButtonClick
       TabOrder = 1
+      OnClick = OkButtonClick
     end
   end
   object InfoGroupBox: TGroupBox
@@ -59,24 +59,27 @@ object FindUnitDialog: TFindUnitDialog
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'InfoGroupBox'
-    ClientHeight = 306
+    ClientHeight = 304
     ClientWidth = 568
     TabOrder = 1
     object InfoTreeView: TTreeView
-      Left = 0
-      Height = 286
-      Top = 0
-      Width = 568
+      Left = 6
+      Height = 266
+      Top = 6
+      Width = 556
       Align = alClient
-      DefaultItemHeight = 15
+      BorderSpacing.Around = 6
+      HideSelection = False
       TabOrder = 0
+      Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
     end
     object ProgressBar1: TProgressBar
-      Left = 0
+      Left = 6
       Height = 20
-      Top = 286
-      Width = 568
+      Top = 278
+      Width = 556
       Align = alBottom
+      BorderSpacing.Around = 6
       TabOrder = 1
     end
   end
@@ -97,7 +100,7 @@ object FindUnitDialog: TFindUnitDialog
     AnchorSideTop.Control = Splitter1
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 124
+    Height = 122
     Top = 347
     Width = 572
     Align = alBottom

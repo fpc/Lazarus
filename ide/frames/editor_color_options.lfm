@@ -103,9 +103,149 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
       inherited Panel1: TPanel
         AnchorSideLeft.Control = SynColorAttrEditor1
         AnchorSideTop.Control = SynColorAttrEditor1
+        Width = 915
+        ClientWidth = 915
+        inherited pnlForegroundName: TPanel
+          Width = 220
+          ClientWidth = 220
+          inherited ForeGroundUseDefaultCheckBox: TCheckBox
+            Width = 190
+          end
+        end
+        inherited Panel2: TPanel
+          Left = 229
+        end
+        inherited Panel3: TPanel
+          Left = 435
+        end
+        inherited Panel4: TPanel
+          Left = 561
+        end
+        inherited Panel5: TPanel
+          Left = 629
+        end
+        inherited Panel6: TPanel
+          Left = 718
+        end
+        inherited lbFiller1: TLabel
+          Left = 786
+        end
+        inherited pnlBackgroundName: TPanel
+          Width = 220
+          ClientWidth = 220
+          inherited BackGroundUseDefaultCheckBox: TCheckBox
+            Width = 192
+          end
+        end
+        inherited Panel7: TPanel
+          Left = 229
+        end
+        inherited Panel8: TPanel
+          Left = 435
+        end
+        inherited Panel9: TPanel
+          Left = 561
+        end
+        inherited Panel10: TPanel
+          Left = 629
+        end
+        inherited Panel11: TPanel
+          Left = 718
+        end
+        inherited lbFiller2: TLabel
+          Left = 786
+        end
+        inherited Panel12: TPanel
+          Width = 220
+          ClientWidth = 220
+          inherited FrameColorUseDefaultCheckBox: TCheckBox
+            Width = 189
+          end
+        end
+        inherited Panel13: TPanel
+          Left = 229
+        end
+        inherited Panel14: TPanel
+          Left = 435
+        end
+        inherited Panel15: TPanel
+          Left = 561
+        end
+        inherited Panel16: TPanel
+          Left = 629
+        end
+        inherited Panel17: TPanel
+          Left = 718
+        end
+        inherited pnlFrameHost1: TPanel
+          Left = 786
+        end
+        inherited lbFiller3: TLabel
+          Width = 220
+        end
+        inherited pnlFrameHost2: TPanel
+          Left = 229
+        end
+        inherited lbFiller4: TLabel
+          Left = 435
+        end
+        inherited lbFiller5: TLabel
+          Left = 561
+        end
+        inherited lbFiller6: TLabel
+          Left = 629
+        end
+        inherited lbFiller7: TLabel
+          Left = 718
+        end
+        inherited lbFiller8: TLabel
+          Left = 786
+        end
+        inherited Panel18: TPanel
+          Width = 220
+          ClientWidth = 220
+          inherited MarkupFoldColorUseDefaultCheckBox: TCheckBox
+            Width = 220
+          end
+        end
+        inherited Panel19: TPanel
+          Left = 229
+        end
+        inherited Panel20: TPanel
+          Left = 435
+        end
+        inherited Panel21: TPanel
+          Left = 561
+        end
+        inherited lbFiller9: TLabel
+          Left = 629
+        end
+        inherited lbFiller10: TLabel
+          Left = 718
+        end
+        inherited Panel22: TPanel
+          Left = 786
+        end
       end
       inherited pnlUnderline: TPanel
         AnchorSideLeft.Control = SynColorAttrEditor1
+        Width = 143
+        ClientWidth = 143
+        inherited TextUnderlineCheckBox: TCheckBox
+          Width = 143
+        end
+      end
+      inherited pnlBold: TPanel
+        Left = 155
+        inherited TextBoldCheckBox: TCheckBox
+          Width = 116
+        end
+      end
+      inherited pnlItalic: TPanel
+        Left = 289
+        inherited TextItalicCheckBox: TCheckBox
+          Width = 117
+        end
       end
       inherited lblInfo: TLabel
         AnchorSideLeft.Control = SynColorAttrEditor1
@@ -114,6 +254,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
       end
       inherited pnlWords: TPanel
         AnchorSideTop.Control = SynColorAttrEditor1
+        Left = 915
       end
     end
     object PriorityEditor: TPanel
@@ -158,6 +299,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
           Width = 168
           Align = alClient
           AutoExpand = True
+          HideSelection = False
           ReadOnly = True
           ScrollBars = ssAutoVertical
           ShowButtons = False
@@ -165,7 +307,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
           ShowRoot = False
           SortType = stData
           TabOrder = 0
-          Options = [tvoAutoExpand, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoToolTips, tvoNoDoubleClickExpand, tvoThemedDraw]
+          Options = [tvoAutoExpand, tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoToolTips, tvoNoDoubleClickExpand, tvoThemedDraw]
           TreeLinePenStyle = psClear
           OnAdvancedCustomDrawItem = ColorElementTreeAdvancedCustomDrawItem
           OnClick = ForePriorListClick
@@ -240,6 +382,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
           Width = 168
           Align = alClient
           AutoExpand = True
+          HideSelection = False
           ReadOnly = True
           ScrollBars = ssAutoVertical
           ShowButtons = False
@@ -247,7 +390,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
           ShowRoot = False
           SortType = stData
           TabOrder = 0
-          Options = [tvoAutoExpand, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoToolTips, tvoNoDoubleClickExpand, tvoThemedDraw]
+          Options = [tvoAutoExpand, tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoToolTips, tvoNoDoubleClickExpand, tvoThemedDraw]
           TreeLinePenStyle = psClear
           OnAdvancedCustomDrawItem = ColorElementTreeAdvancedCustomDrawItem
           OnClick = ForePriorListClick
@@ -322,6 +465,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
           Width = 168
           Align = alClient
           AutoExpand = True
+          HideSelection = False
           ReadOnly = True
           ScrollBars = ssAutoVertical
           ShowButtons = False
@@ -329,7 +473,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
           ShowRoot = False
           SortType = stData
           TabOrder = 0
-          Options = [tvoAutoExpand, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoToolTips, tvoNoDoubleClickExpand, tvoThemedDraw]
+          Options = [tvoAutoExpand, tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoToolTips, tvoNoDoubleClickExpand, tvoThemedDraw]
           TreeLinePenStyle = psClear
           OnAdvancedCustomDrawItem = ColorElementTreeAdvancedCustomDrawItem
           OnClick = ForePriorListClick
@@ -404,6 +548,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
           Width = 168
           Align = alClient
           AutoExpand = True
+          HideSelection = False
           ReadOnly = True
           ScrollBars = ssAutoVertical
           ShowButtons = False
@@ -411,7 +556,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
           ShowRoot = False
           SortType = stData
           TabOrder = 0
-          Options = [tvoAutoExpand, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoToolTips, tvoNoDoubleClickExpand, tvoThemedDraw]
+          Options = [tvoAutoExpand, tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoToolTips, tvoNoDoubleClickExpand, tvoThemedDraw]
           TreeLinePenStyle = psClear
           OnAdvancedCustomDrawItem = ColorElementTreeAdvancedCustomDrawItem
           OnClick = ForePriorListClick
@@ -555,11 +700,12 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
       BorderSpacing.Top = 6
       BorderSpacing.Right = 1
       Constraints.MinWidth = 150
+      HideSelection = False
       ReadOnly = True
       ScrollBars = ssAutoBoth
       ShowRoot = False
       TabOrder = 0
-      Options = [tvoAutoExpand, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoToolTips, tvoNoDoubleClickExpand, tvoThemedDraw]
+      Options = [tvoAutoExpand, tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoToolTips, tvoNoDoubleClickExpand, tvoThemedDraw]
       OnAdvancedCustomDrawItem = ColorElementTreeAdvancedCustomDrawItem
       OnChange = ColorElementTreeChange
       OnClick = ColorElementTreeClick

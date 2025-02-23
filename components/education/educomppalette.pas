@@ -61,7 +61,6 @@ type
     ShowAllButton: TButton;
     procedure ComponentsTreeViewMouseDown(Sender: TObject;
       Button: TMouseButton; {%H-}Shift: TShiftState; X, Y: Integer);
-    procedure FrameClick(Sender: TObject);
     procedure HideAllButtonClick(Sender: TObject);
     procedure ShowAllButtonClick(Sender: TObject);
     procedure ShowExtendedButtonClick(Sender: TObject);
@@ -117,11 +116,6 @@ begin
     else
       Node.StateIndex:=ShowImgID;
   end;
-end;
-
-procedure TEduCompPaletteFrame.FrameClick(Sender: TObject);
-begin
-
 end;
 
 procedure TEduCompPaletteFrame.HideAllButtonClick(Sender: TObject);

@@ -10,11 +10,12 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
   ClientWidth = 700
   Constraints.MinHeight = 440
   Constraints.MinWidth = 550
+  Position = poScreenCenter
+  LCLVersion = '4.99.0.0'
   OnClose = FormClose
   OnCreate = FormCreate
   OnResize = FormResize
   OnShow = FormShow
-  Position = poScreenCenter
   object CBLDBtnPanel: TPanel
     AnchorSideTop.Side = asrBottom
     Left = 0
@@ -50,8 +51,8 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'Save settings'
-      OnClick = SaveSettingsButtonClick
       TabOrder = 3
+      OnClick = SaveSettingsButtonClick
     end
     object CompileButton: TBitBtn
       Left = 302
@@ -62,8 +63,8 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'Compile'
-      OnClick = CompileButtonClick
       TabOrder = 1
+      OnClick = CompileButtonClick
     end
     object HelpButton: TBitBtn
       Left = 6
@@ -75,8 +76,8 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
       BorderSpacing.Around = 6
       Caption = '&Help'
       Kind = bkHelp
-      OnClick = HelpButtonClick
       TabOrder = 0
+      OnClick = HelpButtonClick
     end
     object CompileAdvancedButton: TBitBtn
       Left = 379
@@ -87,8 +88,8 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'Compile Advanced'
-      OnClick = CompileAdvancedButtonClick
       TabOrder = 2
+      OnClick = CompileAdvancedButtonClick
     end
   end
   object PageControl1: TPageControl
@@ -144,11 +145,11 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
           BorderSpacing.Left = 6
           BorderSpacing.Right = 6
           ItemHeight = 15
-          OnSelect = BuildProfileComboBoxSelect
           ParentShowHint = False
           ShowHint = True
           Style = csDropDownList
           TabOrder = 0
+          OnSelect = BuildProfileComboBoxSelect
         end
         object BuildProfileButton: TButton
           AnchorSideTop.Control = BuildProfileComboBox
@@ -165,10 +166,10 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
           BorderSpacing.Left = 6
           BorderSpacing.Right = 6
           Caption = '...'
-          OnClick = BuildProfileButtonClick
           ParentShowHint = False
           ShowHint = True
           TabOrder = 1
+          OnClick = BuildProfileButtonClick
         end
         object OptionsLabel: TLabel
           AnchorSideLeft.Control = LCLWidgetTypeLabel
@@ -243,7 +244,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
           Left = 6
           Height = 15
           Top = 36
-          Width = 90
+          Width = 89
           BorderSpacing.Top = 6
           Caption = 'LCL Widget Type'
           ParentColor = False
@@ -268,7 +269,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
           Left = 6
           Height = 15
           Top = 157
-          Width = 85
+          Width = 84
           Alignment = taRightJustify
           BorderSpacing.Top = 6
           Caption = 'Target Directory'
@@ -296,7 +297,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
           Left = 221
           Height = 15
           Top = 36
-          Width = 52
+          Width = 51
           Alignment = taRightJustify
           BorderSpacing.Left = 6
           BorderSpacing.Top = 6
@@ -311,7 +312,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
           Left = 451
           Height = 15
           Top = 36
-          Width = 60
+          Width = 59
           Alignment = taRightJustify
           BorderSpacing.Left = 6
           BorderSpacing.Top = 6
@@ -413,10 +414,10 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
           AutoSize = True
           BorderSpacing.Right = 6
           Caption = 'Edit Defines'
-          OnClick = DefinesButtonClick
           ParentShowHint = False
           ShowHint = True
           TabOrder = 10
+          OnClick = DefinesButtonClick
         end
         object TargetDirectoryButton: TButton
           AnchorSideLeft.Side = asrBottom
@@ -433,8 +434,8 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
           BorderSpacing.Left = 6
           BorderSpacing.Right = 6
           Caption = '...'
-          OnClick = TargetDirectoryButtonClick
           TabOrder = 7
+          OnClick = TargetDirectoryButtonClick
         end
         object TargetOSComboBox: TComboBox
           AnchorSideLeft.Control = TargetOSLabel
@@ -488,9 +489,9 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
             BorderSpacing.Top = 6
             Caption = 'CleanAutoRadioButton'
             Checked = True
-            OnClick = CleanRadioButtonClick
             TabOrder = 0
             TabStop = True
+            OnClick = CleanRadioButtonClick
           end
           object CleanAllRadioButton: TRadioButton
             AnchorSideTop.Control = CleanAutoRadioButton
@@ -501,8 +502,8 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
             Width = 128
             BorderSpacing.Top = 6
             Caption = 'CleanAllRadioButton'
-            OnClick = CleanRadioButtonClick
             TabOrder = 1
+            OnClick = CleanRadioButtonClick
           end
           object CleanOnceCheckBox: TCheckBox
             AnchorSideTop.Control = CleanAllRadioButton
@@ -528,10 +529,10 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
         Top = 0
         Width = 692
         Align = alClient
+        HideSelection = False
         ReadOnly = True
-        ShowSeparators = False
         TabOrder = 0
-        Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+        Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
       end
     end
   end

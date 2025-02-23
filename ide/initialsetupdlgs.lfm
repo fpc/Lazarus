@@ -8,7 +8,7 @@ object InitialSetupDialog: TInitialSetupDialog
   ClientHeight = 520
   ClientWidth = 640
   Position = poScreenCenter
-  LCLVersion = '3.99.0.0'
+  LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   object PropertiesTreeView: TTreeView
@@ -24,6 +24,7 @@ object InitialSetupDialog: TInitialSetupDialog
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
+    HideSelection = False
     Images = ImageList1
     ParentFont = False
     ReadOnly = True
@@ -32,7 +33,7 @@ object InitialSetupDialog: TInitialSetupDialog
     ShowLines = False
     ShowRoot = False
     TabOrder = 0
-    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoToolTips, tvoThemedDraw]
+    Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoToolTips, tvoThemedDraw]
     OnSelectionChanged = PropertiesTreeViewSelectionChanged
   end
   object Splitter1: TSplitter
@@ -388,7 +389,7 @@ object InitialSetupDialog: TInitialSetupDialog
         Left = 6
         Height = 25
         Top = 56
-        Width = 147
+        Width = 146
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'MakeExeBrowseButton'

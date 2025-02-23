@@ -6,21 +6,25 @@ object MissingPkgFilesDialog: TMissingPkgFilesDialog
   Caption = 'MissingPkgFilesDialog'
   ClientHeight = 382
   ClientWidth = 477
-  OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '4.99.0.0'
+  OnCreate = FormCreate
   object ButtonPanel1: TButtonPanel
     Left = 6
     Height = 34
     Top = 342
     Width = 465
     OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
     OKButton.OnClick = ButtonPanel1Click
     HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
     HelpButton.Enabled = False
     CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 0
     ShowButtons = [pbOK, pbCancel]
   end
@@ -31,7 +35,8 @@ object MissingPkgFilesDialog: TMissingPkgFilesDialog
     Width = 465
     Align = alClient
     BorderSpacing.Around = 6
-    DefaultItemHeight = 15
+    HideSelection = False
     TabOrder = 1
+    Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
   end
 end

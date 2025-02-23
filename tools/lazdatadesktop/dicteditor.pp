@@ -383,6 +383,7 @@ begin
   FTV.Align:=alClient;
   FTV.OnSelectionChanged:=@DoSelectNode;
   FTV.ShowLines:=True;
+  FTV.HideSelection:=false;
   FMenu:=TPopupMenu.Create(Self);
   FMenu.Name:='FMenu';
   FMenu.OnPopup:=@DoPopup;
@@ -634,6 +635,7 @@ begin
   TV.ShowLines:=True;
   TV.Parent:=FEdit;
   TV.Align:=alClient;
+  TV.HideSelection := false;
   TV.Images := ImgDataModule.AppImages;
   ShowGlobalObjectList(TV,Nil,AObjectType,False);
   TV.OnDblClick:=@DoDoubleClick;
@@ -651,6 +653,7 @@ begin
   TV.ShowLines:=True;
   TV.Parent:=FEdit;
   TV.Align:=alClient;
+  TV.HideSelection := false;
   TV.Images := ImgDatamodule.AppImages;
   ShowTableObjectList(TV,Nil,ATableDef,AObjectType);
   TV.OnDblClick:=@DoDoubleClick;

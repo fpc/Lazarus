@@ -9,7 +9,7 @@ object ProjectInspectorForm: TProjectInspectorForm
   Caption = 'ProjectInspectorForm'
   ClientHeight = 485
   ClientWidth = 463
-  LCLVersion = '3.99.0.0'
+  LCLVersion = '4.99.0.0'
   OnActivate = FormActivate
   OnCreate = FormCreate
   OnDeactivate = FormDeactivate
@@ -19,20 +19,21 @@ object ProjectInspectorForm: TProjectInspectorForm
   OnShow = FormShow
   object ItemsTreeView: TTreeView
     Left = 0
-    Height = 261
+    Height = 262
     Top = 78
     Width = 463
     Align = alClient
     Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Top = 2
     DragMode = dmAutomatic
+    HideSelection = False
     MultiSelect = True
     MultiSelectStyle = [msControlSelect, msShiftSelect, msSiblingOnly]
     PopupMenu = ItemsPopupMenu
     ReadOnly = True
     RightClickSelect = True
     TabOrder = 0
-    Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+    Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
     OnAdvancedCustomDrawItem = ItemsTreeViewAdvancedCustomDrawItem
     OnDblClick = ItemsTreeViewDblClick
     OnDragDrop = ItemsTreeViewDragDrop
@@ -160,7 +161,7 @@ object ProjectInspectorForm: TProjectInspectorForm
   object PropsGroupBox: TGroupBox
     Left = 0
     Height = 140
-    Top = 344
+    Top = 345
     Width = 463
     Align = alBottom
     Caption = 'PropsGroupBox'
@@ -172,7 +173,7 @@ object ProjectInspectorForm: TProjectInspectorForm
     Cursor = crVSplit
     Left = 0
     Height = 5
-    Top = 339
+    Top = 340
     Width = 463
     Align = alBottom
     ResizeAnchor = akBottom

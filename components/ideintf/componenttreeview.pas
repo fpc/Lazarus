@@ -102,6 +102,7 @@ type
     ImgIndexItem: Integer;
     property Selection: TPersistentSelectionList read GetSelection
                                                  write SetSelection;
+    property HideSelection default false;
     property PropertyEditorHook: TPropertyEditorHook
                            read FPropertyEditorHook write SetPropertyEditorHook;
     property OnSelectionChanged;
@@ -666,6 +667,7 @@ begin
   ImgIndexCollection := IDEImages.GetImageIndex('oi_collection');
   ImgIndexItem := IDEImages.GetImageIndex('oi_item');
   Images := IDEImages.Images_16;
+  HideSelection := false;
 end;
 
 destructor TComponentTreeView.Destroy;

@@ -3,16 +3,16 @@ object frmShowParseTree: TfrmShowParseTree
   Height = 555
   Top = 116
   Width = 581
-  ActiveControl = pcPages
+  ActiveControl = lvTokens
   BorderIcons = [biSystemMenu, biMaximize]
   Caption = 'JCF Parse Tree'
   ClientHeight = 555
   ClientWidth = 581
   KeyPreview = True
+  Position = poScreenCenter
+  LCLVersion = '4.99.0.0'
   OnKeyUp = FormKeyUp
   OnShow = FormShow
-  Position = poScreenCenter
-  LCLVersion = '2.3.0.0'
   object StatusBar1: TStatusBar
     Left = 0
     Height = 23
@@ -36,18 +36,16 @@ object frmShowParseTree: TfrmShowParseTree
       Left = 11
       Height = 15
       Top = 31
-      Width = 87
+      Width = 86
       Caption = 'Tree has ? nodes'
-      Color = clDefault
       ParentColor = False
     end
     object lblTreeDepth: TLabel
       Left = 11
       Height = 15
       Top = 55
-      Width = 130
+      Width = 129
       Caption = 'Tree has max depth of ??'
-      Color = clDefault
       ParentColor = False
     end
     object cbShowWhiteSpace: TCheckBox
@@ -56,8 +54,8 @@ object frmShowParseTree: TfrmShowParseTree
       Top = 5
       Width = 109
       Caption = 'Show whitespace'
-      OnClick = cbShowWhiteSpaceClick
       TabOrder = 0
+      OnClick = cbShowWhiteSpaceClick
     end
   end
   object pnlBottom: TPanel
@@ -76,7 +74,6 @@ object frmShowParseTree: TfrmShowParseTree
       Top = 2
       Width = 43
       Caption = 'Current:'
-      Color = clDefault
       ParentColor = False
     end
     object lblDepth: TLabel
@@ -85,16 +82,14 @@ object frmShowParseTree: TfrmShowParseTree
       Top = 26
       Width = 35
       Caption = 'Depth:'
-      Color = clDefault
       ParentColor = False
     end
     object lblTotalNodeCount: TLabel
       Left = 271
       Height = 15
       Top = 26
-      Width = 94
+      Width = 93
       Caption = 'Total node count:'
-      Color = clDefault
       ParentColor = False
     end
     object lblImmediateChildCount: TLabel
@@ -103,7 +98,6 @@ object frmShowParseTree: TfrmShowParseTree
       Top = 2
       Width = 123
       Caption = 'Immediate child count:'
-      Color = clDefault
       ParentColor = False
     end
   end
@@ -140,6 +134,7 @@ object frmShowParseTree: TfrmShowParseTree
             Caption = 'Text'
             Width = 302
           end>
+        HideSelection = False
         ReadOnly = True
         RowSelect = True
         SortType = stText
@@ -164,9 +159,9 @@ object frmShowParseTree: TfrmShowParseTree
         Indent = 22
         RightClickSelect = True
         TabOrder = 0
+        Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
         OnChange = tvParseTreeChange
         OnDblClick = tvParseTreeDblClick
-        Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
       end
     end
   end
