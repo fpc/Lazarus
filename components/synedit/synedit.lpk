@@ -16,7 +16,7 @@
       </CodeGeneration>
       <Other>
         <CompilerMessages>
-          <IgnoredMessages idx6058="True" idx5024="True" idx4055="True"/>
+          <IgnoredMessages idx6058="True" idx5091="True" idx5024="True" idx4055="True"/>
         </CompilerMessages>
         <CustomOptions Value="$(IDEBuildOptions) -CR -dgc"/>
       </Other>

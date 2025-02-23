@@ -478,7 +478,7 @@ begin
     ISrc := 1;
     DestLen := SrcLen;
     IDest := 1;
-    SetLength(Result, DestLen);
+    SetLength(Result{%H-}, DestLen);
     while ISrc <= SrcLen do begin
       c := AToken[ISrc];
       IsSpace := IsSpace and (c = ' ');

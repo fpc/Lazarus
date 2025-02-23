@@ -3128,7 +3128,7 @@ var
   i: Integer;
 begin
   i := FoldOpenCount(ALine);
-  SetLength(Result, i);
+  SetLength(Result{%H-}, i);
   while i > 0 do begin
     dec(i);
     Result[i] := InfoForFoldAtTextIndex(ALine, i, False, NeedLen);

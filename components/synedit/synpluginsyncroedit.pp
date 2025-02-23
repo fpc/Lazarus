@@ -960,7 +960,7 @@ var
 begin
   TCustomSynEdit(FriendEdit).GetHighlighterAttriAtRowColEx(APos, Ctx, FLastContextLine = APos.Y);
   FLastContextLine := APos.Y;
-  SetLength(Result, SizeOf(Integer));
+  SetLength(Result{%H-}, SizeOf(Integer));
   PInteger(@Result[1])^ := Ctx;
 end;
 
