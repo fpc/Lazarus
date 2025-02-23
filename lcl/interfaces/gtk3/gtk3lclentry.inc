@@ -8,6 +8,7 @@ procedure LCLGtkEntryGetPreferredWidth(widget: PGtkWidget; min_width, nat_width:
 var
   AControl: TGtk3Widget;
   ParentClass: PGtkWidgetClass;
+  APango: PPangoLayout;
 begin
   if not Assigned(min_width) or not Assigned(nat_width) then
   begin
@@ -39,15 +40,13 @@ begin
   end;
 
   // we pass our width , no matter autosize is on or off.
-  if AControl.LCLWidth = 0 then
-  begin
-    min_width^ := Max(min_width^ div 2, AControl.LCLObject.Width);
-    nat_width^ := Max(min_width^, AControl.LCLObject.Width);
-  end else
-  begin
-    min_width^ := Max(min_width^ div 2, AControl.LCLWidth);
-    nat_width^ := Max(min_width^, AControl.LCLWidth);
-  end;
+
+  APango := pango_layout_new(Widget^.get_pango_context);
+  APango^.set_text('W', 1);
+  APango^.get_size(min_width, nat_width);
+  APango^.unref;
+  min_width^ := PANGO_PIXELS(min_width^) * 2 + 2; //borders 2px.
+  nat_width^ := min_width^;
 end;
 
 procedure LCLGtkEntryGetPreferredHeight(widget: PGtkWidget; min_height, nat_height: Pgint); cdecl;
