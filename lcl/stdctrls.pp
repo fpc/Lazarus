@@ -1677,24 +1677,6 @@ uses
   WSControls, WSStdCtrls, interfacebase,  // Widgetset uses circle is allowed
   Graphmath; 
 
-
-type
-  TMemoStrings = class(TStrings)
-  private
-    FMemo: TCustomMemo;
-    FMemoWidgetClass: TWSCustomMemoClass;
-  protected
-    function Get(Index: Integer): String; override;
-    function GetCount: Integer; override;
-  public
-    constructor Create(AMemo: TCustomMemo);
-    procedure Clear; override;
-    procedure Delete(index: Integer); override;
-    procedure Insert(index: Integer; const S: String); override;
-
-    property MemoWidgetClass: TWSCustomMemoClass read FMemoWidgetClass write FMemoWidgetClass;
-  end;
-
 procedure Register;
 begin
   RegisterComponents('Standard',[TButton, TLabel,TEdit,TMemo,TToggleBox,TCheckBox,
@@ -1757,7 +1739,6 @@ end;
 
 {$I scrollbar.inc}
 {$I memoscrollbar.inc}
-{$I memostrings.inc}
 
 {$I buttoncontrol.inc}
 {$I buttons.inc}
