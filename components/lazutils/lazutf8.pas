@@ -1205,7 +1205,7 @@ function UTF8StringReplace(const S, OldPattern, NewPattern: String;
 // Replace OldPattern in S with NewPattern. With UTF-8 the challenge is to
 // support rfIgnoreCase flag. The length of upper/lower case codepoints may differ.
 
-  procedure CopyOriginal(aStartP: PChar; aLen: Integer; const aExtra: String);
+  procedure CopyOriginal(aStartP: PChar; aLen: SizeInt; const aExtra: String);
   // Copy part of the original string pointed by aStartP to Result.
   // Copy aExtra there at the same go.
   var
@@ -1247,7 +1247,9 @@ begin
     begin                    // Found: Replace with NewPattern and move forward
       Inc(Count);
       if PStartOrig<>POrig then       // Copy a pending part of original string
-        CopyOriginal(PStartOrig, POrig-PStartOrig, NewPattern);
+        CopyOriginal(PStartOrig, POrig-PStartOrig, NewPattern)
+      else
+        Result := Result + NewPattern;
       Inc(PSrc, OldPatLen);                   // Skip the found string
       // Move forward also in original string one codepoint at a time.
       // Lengths of a pattern and its lowercase version may differ.
@@ -1255,7 +1257,9 @@ begin
         Inc(POrig, UTF8CodepointSize(POrig)); // Next original codepoint
       if not (rfReplaceAll in Flags) then begin
         // No more replacements, copy rest of the original string and exit.
-        CopyOriginal(POrig, PChar(S)+Length(S)-POrig, '');
+        i := PChar(S)+Length(S)-POrig;
+        if i > 0 then
+          CopyOriginal(POrig, i, '');
         Exit;
       end;
       PStartOrig := POrig;
