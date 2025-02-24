@@ -561,10 +561,12 @@ type
   TGtk3Memo = class(TGtk3ScrollableWin)
   private
     function GetAlignment: TAlignment;
+    function GetCaretPos: TPoint;
     function GetReadOnly: Boolean;
     function GetWantTabs: Boolean;
     function GetWordWrap: Boolean;
     procedure SetAlignment(AValue: TAlignment);
+    procedure SetCaretPos(AValue: TPoint);
     procedure SetReadOnly(AValue: Boolean);
     procedure SetWantTabs(AValue: Boolean);
     procedure SetWordWrap(AValue: Boolean);
@@ -578,7 +580,14 @@ type
     function getVerticalScrollbar: PGtkScrollbar; override;
     function GetScrolledWindow: PGtkScrolledWindow; override;
   public
+    function getSelStart: Integer; virtual;
+    function getSelLength: Integer; virtual;
+    procedure setSelStart(AValue: Integer); virtual;
+    procedure setSelLength(AValue: Integer); virtual;
+    procedure setSelText(const ANewSelText: string); virtual;
+
     property Alignment: TAlignment read GetAlignment write SetAlignment;
+    property CaretPos: TPoint read GetCaretPos write SetCaretPos;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly;
     property WantTabs: Boolean read GetWantTabs write SetWantTabs;
     property WordWrap: Boolean read GetWordWrap write SetWordWrap;
@@ -6204,6 +6213,96 @@ begin
     Result := nil;
 end;
 
+function TGtk3Memo.getSelStart: Integer;
+var
+  AStart, AStop: gint;
+  ATextView: PGtkTextView;
+  ATextBuffer: PGtkTextBuffer;
+  ATextMark: PGtkTextMark;
+  ATextIter, AStartIter, AEndIter: TGtkTextIter;
+begin
+  Result := 0;
+  ATextView := PGtkTextView(GetContainerWidget);
+  ATextBuffer := gtk_text_view_get_buffer(ATextView);
+  ATextMark := gtk_text_buffer_get_insert(ATextBuffer);
+  gtk_text_buffer_get_iter_at_mark(ATextBuffer, @ATextIter, ATextMark);
+
+  Result := gtk_text_iter_get_offset(@ATextIter);
+  if getSelLength = 0 then Exit;
+
+  if not gtk_text_buffer_get_selection_bounds(ATextBuffer, @AStartIter, @AEndIter) then
+    exit;
+
+  AStart := gtk_text_iter_get_offset(@AStartIter);
+  AStop := gtk_text_iter_get_offset(@AEndIter);
+
+  Result := Min(AStart, AStop);
+end;
+
+function TGtk3Memo.getSelLength: Integer;
+var
+  ATextView: PGtkTextView;
+  ATextBuffer: PGtkTextBuffer;
+  AStartIter, AEndIter: TGtkTextIter;
+begin
+  Result := 0;
+  ATextView := PGtkTextView(GetContainerWidget);
+  ATextBuffer := gtk_text_view_get_buffer(ATextView);
+  if not gtk_text_buffer_get_selection_bounds(ATextBuffer, @AStartIter, @AEndIter) then
+    exit;
+  Result := Abs(gtk_text_iter_get_offset(@AEndIter) - gtk_text_iter_get_offset(@AStartIter));
+end;
+
+procedure TGtk3Memo.setSelStart(AValue: Integer);
+var
+  AIter: TGtkTextIter;
+  ATextView: PGtkTextView;
+begin
+  if not IsWidgetOk then
+    exit;
+  ATextView := PGtkTextView(GetContainerWidget);
+  gtk_text_buffer_get_iter_at_offset(ATextView^.get_buffer, @AIter, AValue);
+  gtk_text_buffer_place_cursor(ATextView^.get_buffer, @AIter);
+end;
+
+procedure TGtk3Memo.setSelLength(AValue: Integer);
+var
+  AStart: gint;
+  AStop: gint;
+  ATextView: PGtkTextView;
+  ATextBuffer: PGtkTextBuffer;
+  AStartIter, AEndIter: TGtkTextIter;
+begin
+  if not IsWidgetOk then
+    exit;
+  ATextView := PGtkTextView(GetContainerWidget);
+  ATextBuffer := ATextView^.get_buffer;
+  AStart := getSelStart;
+  gtk_text_buffer_get_iter_at_offset(ATextBuffer, @AStartIter, AStart);
+  gtk_text_buffer_get_iter_at_offset(ATextBuffer, @AEndIter, AStart + AValue);
+  gtk_text_buffer_select_range(ATextBuffer, @AStartIter, @AEndIter);
+end;
+
+procedure TGtk3Memo.setSelText(const ANewSelText: string);
+var
+  StartIter, EndIter: TGtkTextIter;
+  AText: PChar;
+  StartPos: gint;
+  Buffer: PGtkTextBuffer;
+begin
+  Buffer := PGtkTextView(GetContainerWidget)^.get_buffer;
+  gtk_text_buffer_get_start_iter(Buffer, @StartIter);
+  gtk_text_buffer_get_end_iter(Buffer, @EndIter);
+  AText := gtk_text_buffer_get_text(Buffer, @StartIter, @EndIter, False);
+  StartPos := Pos(ANewSelText, StrPas(AText)) - 1;
+  if StartPos >= 0 then
+  begin
+    gtk_text_buffer_get_iter_at_offset(Buffer, @StartIter, StartPos);
+    gtk_text_buffer_get_iter_at_offset(Buffer, @EndIter, StartPos + Length(ANewSelText));
+    gtk_text_buffer_select_range(Buffer, @StartIter, @EndIter);
+  end;
+end;
+
 function TGtk3Memo.GetAlignment: TAlignment;
 var
   AJustification: TGtkJustification;
@@ -6218,6 +6317,28 @@ begin
     if AJustification = GTK_JUSTIFY_CENTER then
       Result := taCenter;
   end;
+end;
+
+function TGtk3Memo.GetCaretPos: TPoint;
+var
+  ATextView: PGtkTextView;
+  ATextBuffer: PGtkTextBuffer;
+  AIter: TGtkTextIter;
+  AOffset: Integer;
+  Rect: TGdkRectangle;
+  YTop, YBottom: gint;
+begin
+  ATextView := PGtkTextView(GetContainerWidget);
+  ATextBuffer := gtk_text_view_get_buffer(ATextView);
+
+  AOffset := GetSelStart - GetSelLength;
+  gtk_text_buffer_get_iter_at_offset(ATextBuffer, @AIter, AOffset);
+  gtk_text_view_get_iter_location(ATextView, @AIter, @Rect);
+  gtk_text_view_get_line_yrange(ATextView, @AIter, @YTop, @YBottom);
+  Result.Y := gtk_text_iter_get_line(@AIter);
+  if Rect.y > YTop then
+    Result.Y := Result.Y + ((Rect.y - YTop) div (YBottom - YTop));
+  Result.X := gtk_text_iter_get_line_offset(@AIter);
 end;
 
 function TGtk3Memo.GetReadOnly: Boolean;
@@ -6245,6 +6366,16 @@ procedure TGtk3Memo.SetAlignment(AValue: TAlignment);
 begin
   if IsWidgetOk then
     PGtkTextView(GetContainerWidget)^.set_justification(AGtkJustification[AValue]);
+end;
+
+procedure TGtk3Memo.SetCaretPos(AValue: TPoint);
+var
+  Iter: TGtkTextIter;
+  ABuffer: PGtkTextBuffer;
+begin
+  ABuffer := gtk_text_view_get_buffer(PGtkTextView(getContainerWidget));
+  gtk_text_buffer_get_iter_at_offset(ABuffer, @Iter, AValue.X);
+  gtk_text_buffer_place_cursor(ABuffer, @Iter);
 end;
 
 procedure TGtk3Memo.SetReadOnly(AValue: Boolean);

@@ -41,7 +41,7 @@ uses
   Graphics, Controls, StdCtrls, LCLType, LCLProc,
 ////////////////////////////////////////////////////
   WSLCLClasses, WSControls, WSStdCtrls, WSProc, Classes, Clipbrd,
-  gtk3widgets, gtk3procs, LazLogger;
+  LazGtk3, gtk3widgets, gtk3procs, LazLogger;
 
 type
   { TGtk3WSScrollBar }
@@ -208,7 +208,7 @@ type
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
-
+    class procedure SetSelText(const ACustomEdit: TCustomEdit; const NewSelText: string); override;
   end;
   TGtk3WSCustomMemoClass = class of TGtk3WSCustomMemo;
 
@@ -930,18 +930,27 @@ class function TGtk3WSCustomMemo.GetCaretPos(const ACustomEdit: TCustomEdit
   ): TPoint;
 begin
   Result := Point(0, 0);
+  if not WSCheckHandleAllocated(ACustomEdit, 'GetCaretPos') then
+    Exit;
+  Result := TGtk3Memo(ACustomEdit.Handle).CaretPos;
 end;
 
 class function TGtk3WSCustomMemo.GetSelStart(const ACustomEdit: TCustomEdit
   ): integer;
 begin
   Result := 0;
+  if not WSCheckHandleAllocated(ACustomEdit, 'GetSelStart') then
+    Exit;
+  Result := TGtk3Memo(ACustomEdit.Handle).getSelStart;
 end;
 
 class function TGtk3WSCustomMemo.GetSelLength(const ACustomEdit: TCustomEdit
   ): integer;
 begin
   Result := 0;
+  if not WSCheckHandleAllocated(ACustomEdit, 'GetSelLength') then
+    Exit;
+  Result := TGtk3Memo(ACustomEdit.Handle).getSelLength;
 end;
 
 class procedure TGtk3WSCustomMemo.SetAlignment(const ACustomEdit: TCustomEdit;
@@ -956,6 +965,11 @@ class procedure TGtk3WSCustomMemo.SetCaretPos(const ACustomEdit: TCustomEdit;
   const NewPos: TPoint);
 begin
   // inherited SetCaretPos(ACustomEdit, NewPos);
+  if not WSCheckHandleAllocated(ACustomEdit, 'SetCaretPos') then
+    Exit;
+  TGtk3Memo(ACustomEdit.Handle).BeginUpdate;
+  TGtk3Memo(ACustomEdit.Handle).CaretPos := NewPos;
+  TGtk3Memo(ACustomEdit.Handle).EndUpdate;
 end;
 
 class procedure TGtk3WSCustomMemo.SetCharCase(const ACustomEdit: TCustomEdit;
@@ -999,13 +1013,25 @@ end;
 class procedure TGtk3WSCustomMemo.SetSelStart(const ACustomEdit: TCustomEdit;
   NewStart: integer);
 begin
-  // inherited SetSelStart(ACustomEdit, NewStart);
+  if not WSCheckHandleAllocated(ACustomEdit, 'SetSelStart') then
+    Exit;
+  TGtk3Memo(ACustomEdit.Handle).SetSelStart(NewStart);
 end;
 
 class procedure TGtk3WSCustomMemo.SetSelLength(const ACustomEdit: TCustomEdit;
   NewLength: integer);
 begin
-  // inherited SetSelLength(ACustomEdit, NewLength);
+  if not WSCheckHandleAllocated(ACustomEdit, 'SetSelLength') then
+    Exit;
+  TGtk3Memo(ACustomEdit.Handle).SetSelLength(NewLength);
+end;
+
+class procedure TGtk3WSCustomMemo.SetSelText(const ACustomEdit: TCustomEdit;
+  const NewSelText: string);
+begin
+  if not WSCheckHandleAllocated(ACustomEdit, 'SetSelText') then
+    Exit;
+  TGtk3Memo(ACustomEdit.Handle).SetSelText(NewSelText);
 end;
 
 { TGtk3WSCustomStaticText }
