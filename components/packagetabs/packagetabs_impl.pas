@@ -500,6 +500,13 @@ constructor TPackageTabButton.Create(aOwner: TComponent);
 begin
   inherited Create(aOwner);
 
+  if IDEEditorOptions.TabPosition in [tpLeft, tpRight] then
+  begin
+    Alignment := taLeftJustify;
+    Margin := 2; // need for left text align
+    BorderSpacing.Left := 8;
+  end;
+
   Transparent := True;
   Flat := True;
   AutoSize := True;
@@ -922,7 +929,7 @@ begin
         if FPanel is TPackageTabScrollBox then
         begin
           xLbl.Alignment := taLeftJustify;
-          xLbl.BorderSpacing.Left := 10;
+          xLbl.BorderSpacing.Left := 2;
         end
         else if FPanel is TPackageTabFlowPanel then
         begin
