@@ -693,6 +693,7 @@ type
     // --- Header ---
     FLength: QWord;  // length of info
     FVersion: Word;
+    FHeaderSize: Integer;
     FAbbrevOffset: QWord;
     FAddressSize: Byte;  // the address size of the target in bytes
     FIsDwarf64: Boolean; // Set if the dwarf info in this unit is 64bit
@@ -821,6 +822,7 @@ type
     property FirstScope: TDwarfScopeInfo read GetFirstScope;
 
     // public for FpDbgDwarfVerbosePrinter
+    property HeaderSize: Integer read FHeaderSize;
     property InfoData: Pointer read FInfoData;
     property InfoDataLength: QWord read FLength;  // length of info
     property AddressMap: TMap read GetAddressMap;
@@ -3373,8 +3375,6 @@ end;
 function TDwarfInformationEntry.DoReadReference(
   InfoIdx: Integer; InfoData: pointer; out AValue: Pointer; out
   ACompUnit: TDwarfCompilationUnit): Boolean;
-const
-  CU_HEADER_SIZE: array [boolean] of QWord = (SizeOf(TDwarfCUHeader32), SizeOf(TDwarfCUHeader64));
 var
   Form: Cardinal;
   Offs: QWord;
@@ -3398,7 +3398,7 @@ begin
       exit;
     ACompUnit := FCompUnit;
     {$PUSH}{$R-}
-    AValue := ACompUnit.FirstScope.Entry - CU_HEADER_SIZE[ACompUnit.FIsDwarf64] + Offs;
+    AValue := ACompUnit.FirstScope.Entry - ACompUnit.HeaderSize + Offs;
     {$POP}
     if (AValue < ACompUnit.FInfoData) or (AValue >= ACompUnit.FInfoData + ACompUnit.FLength) then begin
       DebugLn(FPDBG_DWARF_ERRORS, 'Error: Reference to invalid location. Offset %d is outsize the CU of size %d', [Offs, ACompUnit.FLength]);
@@ -5657,6 +5657,18 @@ begin
   FLength := ALength;
   FVersion := AVersion;
   FAbbrevOffset := AAbbrevOffset;
+
+  case AIsDwarf64 of
+    True:  case AVersion of
+      0..4: FHeaderSize := SizeOf(TDwarfCUHeader64);
+      else  FHeaderSize := SizeOf(TDwarfCUHeader64v5);
+    end;
+    False: case AVersion of
+      0..4: FHeaderSize := SizeOf(TDwarfCUHeader32);
+      else  FHeaderSize := SizeOf(TDwarfCUHeader32v5);
+    end;
+  end;
+
   // check for address as offset
   if FAbbrevOffset > ADebugFile^.Sections[dsAbbrev].Size
   then begin
