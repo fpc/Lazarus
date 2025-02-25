@@ -270,6 +270,7 @@ type
     procedure SetNumbersOnly(ANumbersOnly:boolean);
     procedure SetTextHint(const AHint:string);
     procedure SetFrame(const aborder:boolean);
+    procedure SetSelText(const ASelText: string);
     function GetTextHint:string;
     function IsWidgetOk: Boolean; override;
     property Alignment: TAlignment read GetAlignment write SetAlignment;
@@ -4227,6 +4228,23 @@ procedure TGtk3Entry.SetFrame(const aborder: boolean);
 begin
   if IsWidgetOk then
     PGtkEntry(Widget)^.set_has_frame(aborder);
+end;
+
+procedure TGtk3Entry.SetSelText(const ASelText: string);
+var
+  AEntry: PGtkEntry;
+  AText: Pgchar;
+  APos: SizeInt;
+begin
+  if not IsWidgetOK then
+    exit;
+  AEntry := PGtkEntry(Widget);
+  AText := AEntry^.get_text;
+  if AText = nil then
+    exit;
+  APos := Pos(aSelText, StrPas(AText));
+  if APos > 0 then
+    PGtkEditable(AEntry)^.select_region(APos - 1, APos - 1 + length(ASelText));
 end;
 
 function TGtk3Entry.GetTextHint:string;
