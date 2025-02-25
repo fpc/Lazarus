@@ -88,7 +88,8 @@ class procedure TQtWSCustomPage.SetFont(const AWinControl: TWinControl;
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetFont') then
     Exit;
-  inherited SetFont(AWinControl, AFont);
+  TQtWSWinControl.SetFont(AWinControl, AFont);
+
   UpdateTabFontColor(TCustomPage(AWinControl), AFont);
 end;
 
