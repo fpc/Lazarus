@@ -661,6 +661,21 @@ type
     function GetItemForPanel(APanel: TStatusPanel): TSourceEditorStatusPanel;
   end;
 
+  { TSrcEditTabSheet }
+
+  TSrcEditTabSheet = class(TTabSheet)
+  protected
+    function IsControlVisible: Boolean; override;
+  end;
+
+  { TSrcEditExtendedNotebook }
+
+  TSrcEditExtendedNotebook = class(TExtendedNotebook)
+  protected
+    function GetPageClass: TCustomPageClass; override;
+    function ChildClassAllowed(ChildClass: TClass): boolean; override;
+  end;
+
   { TSourceNotebook }
 
   TSourceNotebook = class(TSourceEditorWindowInterface)
@@ -708,7 +723,7 @@ type
     procedure SrcPopUpMenuPopup(Sender: TObject);
     procedure TabPopUpMenuPopup(Sender: TObject);
   private
-    FNotebook: TExtendedNotebook;
+    FNotebook: TSrcEditExtendedNotebook;
     FBaseCaption: String;
     FIsClosing: Boolean;
     FSrcEditsSortedForFilenames: TAvlTree; // TSourceEditorInterface sorted for Filename
@@ -6965,6 +6980,27 @@ begin
   Result := nil;
 end;
 
+{ TSrcEditTabSheet }
+
+function TSrcEditTabSheet.IsControlVisible: Boolean;
+begin
+  Result := Visible;
+  if Result and (Parent is TCustomTabControl) then
+    Result := PageIndex = TCustomTabControl(Parent).PageIndex;
+end;
+
+{ TSrcEditExtendedNotebook }
+
+function TSrcEditExtendedNotebook.GetPageClass: TCustomPageClass;
+begin
+  Result := TSrcEditTabSheet;
+end;
+
+function TSrcEditExtendedNotebook.ChildClassAllowed(ChildClass: TClass): boolean;
+begin
+  Result := True;
+end;
+
 {------------------------------------------------------------------------}
                       { TSourceNotebook }
 
@@ -7075,7 +7111,7 @@ Begin
   {$IFDEF IDE_MEM_CHECK}
   CheckHeapWrtMemCnt('[TSourceNotebook.CreateNotebook] A ');
   {$ENDIF}
-  FNotebook := TExtendedNotebook.Create(self);
+  FNotebook := TSrcEditExtendedNotebook.Create(self);
   {$IFDEF IDE_DEBUG}
   debugln('[TSourceNotebook.CreateNotebook] B');
   {$ENDIF}
@@ -8320,7 +8356,7 @@ begin
   inherited DragOver(Source, X, Y, State, Accept);
   if State = dsDragLeave then
     FUpdateTabAndPageTimer.Enabled := True
-  else if Source is TExtendedNotebook then
+  else if Source is TSrcEditExtendedNotebook then
     FNotebook.ShowTabs := (Manager=nil) or Manager.ShowTabs;
 end;
 
@@ -9571,7 +9607,7 @@ begin
   FUpdateTabAndPageTimer.Enabled := False;
   if State = dsDragLeave then
     FUpdateTabAndPageTimer.Enabled := True
-  else if Source is TExtendedNotebook then
+  else if Source is TSrcEditExtendedNotebook then
     FNotebook.ShowTabs := (Manager=nil) or Manager.ShowTabs;
 end;
 
