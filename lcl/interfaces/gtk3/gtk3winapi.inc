@@ -1054,10 +1054,7 @@ end;
 function TGtk3WidgetSet.EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal
   ): Boolean;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  DebugLn('WARNING: TGtk3WidgetSet.EnableScrollBar not implemented ...');
-  {$ENDIF}
-  Result := inherited EnableScrollBar(Wnd, wSBflags, wArrows);
+  Result := False;
 end;
 
 function TGtk3WidgetSet.EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;
