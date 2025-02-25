@@ -3759,6 +3759,9 @@ begin
   end;
   {$ENDIF}
 
+  if ACtl.LCLObject.ClientRectNeedsInterfaceUpdate then
+    ACtl.LCLObject.DoAdjustClientRectChange;
+
   FillChar(Msg{%H-}, SizeOf(Msg), #0);
 
   Msg.Msg := LM_SIZE;
@@ -5059,16 +5062,16 @@ end;
 
 function TGtk3Page.CreateWidget(const Params: TCreateParams): PGtkWidget;
 begin
-  FWidgetType := FWidgetType + [wtContainer];
+  FWidgetType := FWidgetType + [wtLayout];
   FPageLabel:= TGtkLabel.new(PChar(Params.Caption));
   FPageLabel^.set_use_underline(true);
   Self.FHasPaint:=true;
   // ref it to save it in case TabVisible is set to false
   FPageLabel^.ref;
-  Result := TGtkHBox.new(GTK_ORIENTATION_HORIZONTAL, 0);
-  FCentralWidget := TGtkFixed.new;
-  PGtkHBox(Result)^.pack_start(FCentralWidget, True , True, 0);
-  PGtkFixed(FCentralWidget)^.set_has_window(True);
+  Result := TGtkBox.new(GTK_ORIENTATION_HORIZONTAL, 0);
+  FCentralWidget := TGtkLayout.new(nil, nil);
+  PGtkBox(Result)^.pack_start(FCentralWidget, True , True, 0);
+  FCentralWidget^.set_has_window(True);
   // PGtkFixed(FCentralWidget)^.set_can_focus(True);
 end;
 
