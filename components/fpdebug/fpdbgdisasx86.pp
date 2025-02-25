@@ -5540,14 +5540,33 @@ const
   MAX_SEARCH_CNT = 400;
   MAX_ADDR_DONE_BLOCKS = 10;
   MAX_FORWARD_ADDR = 5;
+type
+  TAlternativeAddressPoint = record
+    Address: TDBGPtr;
+    Frame, Stack: TDBGPtr;
+  end;
 var
   AddressDoneBlocks: array [0..MAX_ADDR_DONE_BLOCKS] of record
     First, Last: TDBGPtr;
   end;
   CurAddressDoneBlock: integer;
   MaxAddrCurrentBlock: TDBGPtr;
-  ConditionalForwardAddr: array [0..MAX_FORWARD_ADDR+1] of TDBGPtr;
+  ConditionalForwardAddr: array [0..MAX_FORWARD_ADDR+1] of TAlternativeAddressPoint;
   CurConditionalForwardAddr: integer;
+
+  procedure StoreAltAddr(var AltAddrPoint: TAlternativeAddressPoint; AnAddr: TDBGPtr); inline;
+  begin
+    AltAddrPoint.Address := AnAddr;
+    AltAddrPoint.Stack   := NewStack;
+    AltAddrPoint.Frame   := NewFrame;
+  end;
+
+  procedure ContinueAt(const AltAddrPoint: TAlternativeAddressPoint); inline;
+  begin
+    NewAddr  := AltAddrPoint.Address;
+    NewStack := AltAddrPoint.Stack;
+    NewFrame := AltAddrPoint.Frame;
+  end;
 
   function AddrWasDone(AnAddr: TDBGPtr): boolean; inline;
   var
@@ -5605,8 +5624,8 @@ var
   begin
     j := 0;
     for i := 0 to CurConditionalForwardAddr do
-      if (ConditionalForwardAddr[i] >=  NewAddr) or
-         (ConditionalForwardAddr[i] < AddressDoneBlocks[CurAddressDoneBlock].First)
+      if (ConditionalForwardAddr[i].Address >=  NewAddr) or
+         (ConditionalForwardAddr[i].Address < AddressDoneBlocks[CurAddressDoneBlock].First)
       then begin
         ConditionalForwardAddr[j] := ConditionalForwardAddr[i];
         inc(j);
@@ -5619,20 +5638,22 @@ var
     i, j: Integer;
   begin
     i := CurConditionalForwardAddr;
-    while (i >= 0) and (AnAddr <> ConditionalForwardAddr[i]) do
+    while (i >= 0) and (AnAddr <> ConditionalForwardAddr[i].Address) do
       dec(i);
     if i >= 0 then
       exit;
 
     if CurConditionalForwardAddr < MAX_FORWARD_ADDR then begin
       inc(CurConditionalForwardAddr);
-      ConditionalForwardAddr[CurConditionalForwardAddr] := AnAddr;
+      ConditionalForwardAddr[CurConditionalForwardAddr].Address := AnAddr;
+      ConditionalForwardAddr[CurConditionalForwardAddr].Stack   := NewStack;
+      ConditionalForwardAddr[CurConditionalForwardAddr].Frame   := NewFrame;
     end
     else begin
       j := 0;
       for i := 0 to CurConditionalForwardAddr do
-        if (ConditionalForwardAddr[i] >=  NewAddr) or
-           (ConditionalForwardAddr[i] < AddressDoneBlocks[CurAddressDoneBlock].First)
+        if (ConditionalForwardAddr[i].Address >=  NewAddr) or
+           (ConditionalForwardAddr[i].Address < AddressDoneBlocks[CurAddressDoneBlock].First)
         then begin
           ConditionalForwardAddr[j] := ConditionalForwardAddr[i];
           inc(j);
@@ -5640,13 +5661,15 @@ var
       CurConditionalForwardAddr := j - 1;
       if CurConditionalForwardAddr < MAX_FORWARD_ADDR then
         inc(CurConditionalForwardAddr);
-      ConditionalForwardAddr[CurConditionalForwardAddr] := AnAddr;
+      ConditionalForwardAddr[CurConditionalForwardAddr].Address := AnAddr;
+      ConditionalForwardAddr[CurConditionalForwardAddr].Stack   := NewStack;
+      ConditionalForwardAddr[CurConditionalForwardAddr].Frame   := NewFrame;
     end;
   end;
 
 var
   MaxAddr, StartStack, Tmp: TDBGPtr;
-  BackwardJumpAddress: TDBGPtr;
+  BackwardJumpAddress: TAlternativeAddressPoint;
   Cnt: Integer;
   instr: TX86AsmInstruction;
   RSize: Cardinal;
@@ -5660,7 +5683,7 @@ begin
   NewFrame   := AFramePtr;
   StartStack := AStackPtr;
   CurConditionalForwardAddr := -1;
-  BackwardJumpAddress := 0;
+  BackwardJumpAddress.Address := 0;
 
   {$PUSH}{$R-}{$Q-}
   MaxAddr := AnAddress + MAX_SEARCH_ADDR;
@@ -5681,17 +5704,17 @@ begin
       CheckConditionalForwAddr;
       FinishCurAddrBlock;
       while (CurConditionalForwardAddr >= 0) and
-            AddrWasDone(ConditionalForwardAddr[CurConditionalForwardAddr])
+            AddrWasDone(ConditionalForwardAddr[CurConditionalForwardAddr].Address)
       do
         dec(CurConditionalForwardAddr);
       if (CurConditionalForwardAddr >= 0) then begin
-        NewAddr := ConditionalForwardAddr[CurConditionalForwardAddr];
+        ContinueAt(ConditionalForwardAddr[CurConditionalForwardAddr]);
         dec(CurConditionalForwardAddr);
       end
       else
-      if (BackwardJumpAddress > 0) and (not AddrWasDone(BackwardJumpAddress)) then begin
-        NewAddr := BackwardJumpAddress;
-        BackwardJumpAddress := 0;
+      if (BackwardJumpAddress.Address > 0) and (not AddrWasDone(BackwardJumpAddress.Address)) then begin
+        ContinueAt(BackwardJumpAddress);
+        BackwardJumpAddress.Address := 0;
       end
       else
         exit;
@@ -6037,10 +6060,10 @@ begin
               AddConditionalForwAddr(Tmp);
           end
           else begin
-            if ((BackwardJumpAddress = 0) or (Tmp < BackwardJumpAddress)) and
+            if ((BackwardJumpAddress.Address = 0) or (Tmp < BackwardJumpAddress.Address)) and
                (not AddrWasDone(Tmp))
             then
-              BackwardJumpAddress := Tmp;
+              StoreAltAddr(BackwardJumpAddress, Tmp);
           end;
         end;
       OPjmp:
@@ -6070,15 +6093,17 @@ begin
             CheckConditionalForwAddr;
             if (CurConditionalForwardAddr >= 0) then begin
               FinishCurAddrBlock;
-              NewAddr := ConditionalForwardAddr[CurConditionalForwardAddr];
+
+              if ((BackwardJumpAddress.Address = 0) or (Tmp < BackwardJumpAddress.Address)) and
+                 (not AddrWasDone(Tmp))
+              then
+                StoreAltAddr(BackwardJumpAddress, Tmp);
+
+              ContinueAt(ConditionalForwardAddr[CurConditionalForwardAddr]);
               dec(CurConditionalForwardAddr);
               StartNextAddrBlock;
               ClearRecValList := True;
 
-              if ((BackwardJumpAddress = 0) or (Tmp < BackwardJumpAddress)) and
-                 (not AddrWasDone(Tmp))
-              then
-                BackwardJumpAddress := Tmp;
               continue;
             end;
 
