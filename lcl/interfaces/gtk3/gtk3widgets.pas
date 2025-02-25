@@ -416,6 +416,7 @@ type
   private
     FPageLabel: PGtkLabel;
   protected
+    procedure DoBeforeLCLPaint; override;
     procedure setText(const AValue: String); override;
     function CreateWidget(const Params: TCreateParams):PGtkWidget; override;
     procedure DestroyWidget; override;
@@ -5047,6 +5048,23 @@ begin
 end;
 
 { TGtk3Page }
+
+procedure TGtk3Page.DoBeforeLCLPaint;
+var
+  DC: TGtk3DeviceContext;
+  NColor: TColor;
+begin
+  inherited DoBeforeLCLPaint;
+  if not Visible then
+    exit;
+  DC := TGtk3DeviceContext(Context);
+  NColor := LCLObject.Color;
+  if (NColor <> clNone) and (NColor <> clDefault) then
+  begin
+    DC.CurrentBrush.Color := ColorToRGB(NColor);
+    DC.fillRect(0, 0, LCLObject.Width, LCLObject.Height);
+  end;
+end;
 
 procedure TGtk3Page.setText(const AValue: String);
 var
