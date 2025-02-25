@@ -4770,7 +4770,11 @@ var
   i: Integer;
   AVariant: QVariantH;
   AOk: Boolean;
+  {$IFDEF CPU32}
+  AData: LongWord;
+  {$ELSE}
   AData: QWord;
+  {$ENDIF}
 begin
   QWidget_actions(Widget, @ActionList);
   if (AIndex >= 0) and (AIndex < Length(ActionList)) then
@@ -4785,7 +4789,11 @@ begin
           if not QVariant_isNull(AVariant) then
           begin
             AOk := False;
+            {$IFDEF CPU32}
+            AData := QVariant_toUInt(AVariant, @AOk);
+            {$ELSE}
             AData := QVariant_toULongLong(AVariant, @AOk);
+            {$ENDIF}
             if AIndex <= TMenuItem(AData).MenuVisibleIndex then
             begin
               Result :=  QActionH(ActionList[i]);
