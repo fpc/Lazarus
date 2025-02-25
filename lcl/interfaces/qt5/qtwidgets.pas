@@ -1920,6 +1920,7 @@ type
     FIcon: QIconH;
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
+    function CanPaintBackground: Boolean; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function getIcon: QIconH;
     function getIndex(const ATextChanging: Boolean = False): Integer;
@@ -18801,6 +18802,11 @@ begin
   else
     Parent := nil;
   Result := QWidget_create(Parent);
+end;
+
+function TQtPage.CanPaintBackground: Boolean;
+begin
+  Result := CanSendLCLMessage and (LCLObject.Color <> clDefault);
 end;
 
 function TQtPage.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;

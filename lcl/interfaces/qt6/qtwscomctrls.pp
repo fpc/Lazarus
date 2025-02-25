@@ -29,7 +29,7 @@ uses
   SysUtils, Classes, Types, ComCtrls, Controls, LCLType, Graphics, StdCtrls,
   LCLIntf, Forms, ImgList,
   // Widgetset
-  WSProc, WSComCtrls, WSLCLClasses;
+  WSProc, WSComCtrls, WSLCLClasses, QtWSControls;
 
 type
   { TQtWSCustomPage }
