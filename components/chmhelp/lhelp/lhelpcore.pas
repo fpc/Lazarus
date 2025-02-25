@@ -486,7 +486,6 @@ begin
   //end;
 end;
 
-
 procedure THelpForm.FormShow(Sender: TObject);
 begin
   if FHasShowed then
@@ -898,52 +897,53 @@ begin
 end;
 
 procedure THelpForm.ReadCommandLineOptions;
+type
+  THandledArr = array[0..50] of boolean;
 var
-  X, S: Integer;
-  IsHandled: array[0..50] of boolean;
-  URL: String;
+  X, i: Integer;
+  IsHandled: THandledArr;
   StrItem: PStringItem;
-  Filename: String;
+  URL, Filename, Parameter: String;
 begin
-  FillChar(IsHandled{%H-}, 51, 0);
+  IsHandled := Default(THandledArr);
   X := 1;
   while X <= ParamCount do
   begin
-    if CompareText(ParamStrUTF8(X), '--ipcname') = 0 then
+    Parameter := LowerCase(ParamStr(X));
+    if Parameter = '--ipcname' then
     begin
       // IPC name; includes unique PID or other identifier
       IsHandled[X] := True;
       inc(X);
       if X <= ParamCount then
       begin
-        fServerName := ParamStrUTF8(X);
+        fServerName := ParamStr(X);
         IsHandled[X] := True;
         inc(X);
         DebugLn('Start IPCNAME = ', fServerName);
       end;
     end
-    else if CompareText(ParamStrUTF8(X), '--context') = 0 then
+    else if Parameter = '--context' then
     begin
       IsHandled[X] := True;
       inc(X);
       if (X <= ParamCount) then
-        if TryStrToInt(ParamStrUTF8(X), fContext) then
+        if TryStrToInt(ParamStr(X), fContext) then
         begin
           IsHandled[X] := True;
           inc(X);
           DebugLn('Start CONTEXT = ', IntToStr(fContext));
         end;
     end
-    else if CompareText(ParamStrUTF8(X), '--hide') = 0 then
+    else if Parameter = '--hide' then
     begin
       IsHandled[X] := True;
       inc(X);
-      fHide:=true;
+      fHide := true;
       DebugLn('Start HIDE = True');
     end
-    else
-    begin
-      IsHandled[X] := copy(ParamStrUTF8(X),1,1)='-'; // ignore other parameters
+    else begin
+      IsHandled[X] := Parameter[1] = '-'; // ignore other parameters
       inc(X);
     end;
   end;
@@ -952,19 +952,19 @@ begin
   for X := 1 to ParamCount do
     if not IsHandled[X] then
     begin
-      //DoOpenChm(ParamStrUTF8(X));
-      URL := ParamStrUTF8(X);
+      //DoOpenChm(ParamStr(X));
+      URL := ParamStr(X);
       if Pos('://', URL) = 0 then
         URL := 'file://'+URL;
       Filename:=URL;
-      //      if copy(Filename,1,length('file://'))='file://' then
       if pos('file://', FileName) = 1 then
       begin
         System.Delete(Filename,1,length('file://'));
-        S:= System.Pos('?', Filename);
-        if S > 0 then System.Delete(Filename, S, Length(FileName));
+        i:= System.Pos('?', Filename);
+        if i > 0 then
+          System.Delete(Filename, i, Length(FileName));
         Filename := SetDirSeparators(Filename);
-        if not FileExistsUTF8(Filename) then
+        if not FileExists(Filename) then
         begin
           DebugLn(['THelpForm.ReadCommandLineOptions file not found "',Filename,'"']);
           continue;
