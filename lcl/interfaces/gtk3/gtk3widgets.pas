@@ -9376,21 +9376,22 @@ begin
   if not Gtk3IsGtkWindow(fWidget) then
     exit(false);
   case nstate of
-  SW_SHOWNORMAL:
-    begin
-      AState:=fWidget^.window^.get_state;
-      if GDK_WINDOW_STATE_ICONIFIED in AState then
-        PgtkWindow(fWidget)^.deiconify
-      else if GDK_WINDOW_STATE_MAXIMIZED in AState then
-        PgtkWindow(fWidget)^.unmaximize
-      else if GDK_WINDOW_STATE_FULLSCREEN in AState then
-        PgtkWindow(fWidget)^.unfullscreen
-      else
-        PgtkWindow(fWidget)^.show;
-    end;
-  SW_SHOWMAXIMIZED: PgtkWindow(fWidget)^.maximize;
-  SW_MINIMIZE: PgtkWindow(fWidget)^.iconify;
-  SW_SHOWFULLSCREEN: PgtkWindow(fWidget)^.fullscreen;
+    SW_HIDE: PGtkWindow(FWidget)^.hide;
+    SW_SHOWNORMAL:
+      begin
+        AState:=fWidget^.window^.get_state;
+        if GDK_WINDOW_STATE_ICONIFIED in AState then
+          PgtkWindow(fWidget)^.deiconify
+        else if GDK_WINDOW_STATE_MAXIMIZED in AState then
+          PgtkWindow(fWidget)^.unmaximize
+        else if GDK_WINDOW_STATE_FULLSCREEN in AState then
+          PgtkWindow(fWidget)^.unfullscreen
+        else
+          PgtkWindow(fWidget)^.show;
+      end;
+    SW_SHOWMAXIMIZED: PgtkWindow(fWidget)^.maximize;
+    SW_MINIMIZE: PgtkWindow(fWidget)^.iconify;
+    SW_SHOWFULLSCREEN: PgtkWindow(fWidget)^.fullscreen;
   else
     PgtkWindow(fWidget)^.show;
   end;

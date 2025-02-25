@@ -4465,7 +4465,10 @@ begin
     Result:=TGtk3Window(hWnd).ShowState(nCmdShow)
   else
   begin
-    TGtk3Widget(hWnd).Show;
+    if nCmdShow = SW_HIDE then
+      TGtk3Widget(hWnd).Hide
+    else
+      TGtk3Widget(hWnd).Show;
     Result:=true;
   end;
 end;
