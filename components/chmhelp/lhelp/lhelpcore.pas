@@ -126,7 +126,8 @@ type
     // IPC communication method should be used
     fOutputIPC: TSimpleIPCClient;
     fInputIPCTimer: TTimer;
-    fContext: LongInt; // used once when we are started on the command line with --context
+    // used once when we are started on the command line with --context
+    fContext: THelpContext; //LongInt;
     fConfig: TXMLConfig;
     fShowSepTabs: Boolean;
     fShowStatus: Boolean;
