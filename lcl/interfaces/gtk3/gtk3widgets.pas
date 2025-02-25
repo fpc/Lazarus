@@ -782,7 +782,8 @@ type
     procedure SetMargin(AValue: Integer);
     procedure SetSpacing(AValue: Integer);
   strict private
-    class procedure ButtonClicked({%H-}aButton: PGtkButton; pData:pointer); cdecl; static;
+    class function ButtonMouseEvent(aWidget: PGtkWidget; aEvent: PGdkEvent;
+      aData: gpointer): gboolean; cdecl; static;
   protected
     procedure SetImage(AImage:TBitmap);
     function getText: String; override;
@@ -790,6 +791,7 @@ type
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
   public
     destructor Destroy; override;
+    procedure InitializeWidget; override;
     function IsWidgetOk: Boolean; override;
     procedure SetDefault(const ADefault: Boolean);
     property Layout: Integer read getLayout write SetLayout;
@@ -8497,16 +8499,6 @@ begin
   end;
 end;
 
-class procedure TGtk3Button.ButtonClicked(aButton:PGtkButton; pData:pointer);
-  cdecl;
-var
-  Msg: TLMessage;
-begin
-  Msg := Default(TLMessage);
-  Msg.Msg := LM_CLICKED;
-  TGtk3Widget(pData).DeliverMessage(Msg, True);
-end;
-
 procedure TGtk3Button.SetImage(AImage: TBitmap);
 begin
   if Assigned(fImage) then
@@ -8537,9 +8529,6 @@ begin
   Result := LCLGtkButtonNew;
 
   btn^.set_use_underline(true);
-  if not IsDesigning then
-    g_signal_connect_data(btn,'clicked',
-          TGCallback(@ButtonClicked), Self, nil, G_CONNECT_DEFAULT);
 
   if not IsDesigning then
     LCLObject.ControlStyle:=LCLObject.ControlStyle+[csClickEvents];
@@ -8553,6 +8542,27 @@ destructor TGtk3Button.Destroy;
 begin
   SetImage(nil);
   inherited Destroy;
+end;
+
+class function TGtk3Button.ButtonMouseEvent(aWidget: PGtkWidget; aEvent: PGdkEvent; aData: gpointer): gboolean; cdecl;
+begin
+  Result := TGtk3Widget(aData).GtkEventMouse(aWidget, aEvent);
+end;
+
+function ButtonMotionNotifyEvent(widget: PGtkWidget; event: PGdkEvent; user_data: gpointer): gboolean; cdecl;
+begin
+  TGtk3Widget(user_data).GtkEventMouseMove(widget, event);
+  Result := True;
+end;
+
+procedure TGtk3Button.InitializeWidget;
+begin
+  inherited InitializeWidget;
+  if not IsDesigning then
+  begin
+    g_signal_connect_data(GetContainerWidget, 'button-press-event', TGCallback(@ButtonMouseEvent), Self, Nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(GetContainerWidget, 'button-release-event', TGCallback(@ButtonMouseEvent), Self, Nil, G_CONNECT_DEFAULT);
+  end;
 end;
 
 function TGtk3Button.IsWidgetOk: Boolean;
