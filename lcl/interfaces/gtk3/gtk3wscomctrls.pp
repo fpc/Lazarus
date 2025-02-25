@@ -1634,6 +1634,7 @@ begin
   else
   begin
     aClientRect := AWinControl.Parent.ClientRect;
+    Result := True;
   end;
 end;
 
