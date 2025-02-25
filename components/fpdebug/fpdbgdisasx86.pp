@@ -40,7 +40,7 @@ interface
 {.$define verbose_string_instructions}
 
 uses
-  SysUtils, FpDbgUtil, FpDbgInfo, DbgIntfBaseTypes, FpdMemoryTools,
+  SysUtils, math, FpDbgUtil, FpDbgInfo, DbgIntfBaseTypes, FpdMemoryTools,
   FpDbgClasses, {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, LazClasses;
 
 {                   
@@ -5319,31 +5319,46 @@ begin
      (BytesRead = MAX_RET_LEN);
   if not Result then begin
     BytesRead := 5;
-    Result := (AnAddress > MAX_RET_LEN) and ReadCodeAt(AnAddress - MAX_RET_LEN, BytesRead) and
-       (BytesRead = MAX_RET_LEN);
+    Result := (AnAddress > MAX_RET_LEN) and ReadCodeAt(AnAddress - 5, BytesRead) and
+       (BytesRead = 5);
   end;
   if not Result then
     exit;
 
   // can be a false positive
-  Result := (FCodeBin[MAX_RET_LEN-3] in [$9A, $E8]) or (FCodeBin[MAX_RET_LEN-5] in [$9A, $E8]);
+  Result := (FCodeBin[BytesRead-3] in [$9A, $E8]) or (FCodeBin[BytesRead-5] in [$9A, $E8]);
   if Result then
     exit;
 
-  for i := 2 to 6 do
-    if (FCodeBin[MAX_RET_LEN - i] = $FF) and
-       (FCodeBin[MAX_RET_LEN + 1 - i] and $38 in [$10, $18])
+  for i := 2 to Min(6, BytesRead) do begin
+    if (FCodeBin[BytesRead - i] = $FF) and
+       (FCodeBin[BytesRead + 1 - i] and $38 in [$10, $18])
     then begin
       instr := GetInstructionInfo(AnAddress - i);
       Result := instr.IsCallInstruction;
       exit;
     end;
-  if (FCodeBin[MAX_RET_LEN-10] = $FF) and
-     (FCodeBin[MAX_RET_LEN + 1 - 10] and $38 in [$10, $18])
+  end;
+
+  if BytesRead < 10 then
+    exit(False);
+
+  if (FCodeBin[BytesRead - 10] = $FF) and
+     (FCodeBin[BytesRead -  9] and $38 in [$10, $18])
   then begin
     instr := GetInstructionInfo(AnAddress-10);
     Result := instr.IsCallInstruction;
     exit;
+  end;
+
+  if FProcess.Mode = dm64 then begin
+    if (FCodeBin[BytesRead - 8] = $41) and
+       (FCodeBin[BytesRead - 7] = $ff)
+    then begin
+      instr := GetInstructionInfo(AnAddress-8);
+      Result := instr.IsCallInstruction;
+      exit;
+    end;
   end;
 end;
 
