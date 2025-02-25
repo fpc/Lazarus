@@ -5457,8 +5457,10 @@ var
     if (Oper.ByteCount = 0)
     then begin
       if IsLea then exit(False);
-      if (IsRegister(Oper.Value, 'bp')) then
-        AVal := NewFrame
+      if (IsRegister(Oper.Value, 'bp')) then begin
+        if NewFrame = 0 then exit(False);
+        AVal := NewFrame;
+      end
       else
       if (IsRegister(Oper.Value, 'sp')) then
         AVal := NewStack
@@ -5481,15 +5483,18 @@ var
       if IsLea and not (ofMemory in Oper.Flags) then exit(False);
       OpVal := ValueFromMem(CurAddr[Oper.CodeIndex], Oper.ByteCount, Oper.FormatFlags);
 
-      if (IsRegister(Oper.Value, 'bp%s')) then
+      if (IsRegister(Oper.Value, 'bp%s')) then begin
+        if NewFrame = 0 then exit(False);
         {$PUSH}{$R-}{$Q-}
-        AVal := NewFrame + OpVal
+        AVal := NewFrame + OpVal;
         {$POP}
+      end
       else
-      if (IsRegister(Oper.Value, 'sp%s')) then
+      if (IsRegister(Oper.Value, 'sp%s')) then begin
         {$PUSH}{$R-}{$Q-}
-        AVal := NewStack + OpVal
+        AVal := NewStack + OpVal;
         {$POP}
+      end
       else
       if (Oper.Value = '%s') and (not(ofMemory in Oper.Flags))
       then begin
@@ -5672,7 +5677,7 @@ begin
   while (Cnt > 0) do begin
     if ClearRecValList then ARegisterValueList.Clear;
 
-    if ForceDifferentBranch or (NewAddr >= MaxAddr) or( NewAddr > MaxAddrCurrentBlock) then begin
+    if ForceDifferentBranch or (NewStack = 0) or (NewAddr >= MaxAddr) or( NewAddr > MaxAddrCurrentBlock) then begin
       CheckConditionalForwAddr;
       FinishCurAddrBlock;
       while (CurConditionalForwardAddr >= 0) and
@@ -5888,7 +5893,8 @@ begin
             else
             if (IsRegister(instr.X86Instruction.Operand[2].Value, 'bp%s')) then begin
               {$PUSH}{$R-}{$Q-}
-              NewFrame := NewFrame + Val;
+              if NewFrame <> 0 then
+                NewFrame := NewFrame + Val;
               {$POP}
             end
             else
@@ -5916,7 +5922,10 @@ begin
             else
             if (IsRegister(instr.X86Instruction.Operand[2].Value, 'bp%s')) then begin
               {$PUSH}{$R-}{$Q-}
-              NewStack := NewFrame + Val;
+              if NewFrame <> 0 then
+                NewStack := NewFrame + Val
+              else
+                NewStack := 0;
               {$POP}
             end
             else
@@ -5973,7 +5982,8 @@ begin
               continue;
             end;
             {$PUSH}{$R-}{$Q-}
-            NewFrame := NewFrame + int64(Tmp);
+            if NewFrame <> 0 then
+              NewFrame := NewFrame + int64(Tmp);
             {$POP}
           end;
         end;
@@ -6005,7 +6015,8 @@ begin
               continue;
             end;
             {$PUSH}{$R-}{$Q-}
-            NewFrame := NewFrame - int64(Tmp);
+            if NewFrame <> 0 then
+              NewFrame := NewFrame - int64(Tmp);
             {$POP}
           end;
         end;
