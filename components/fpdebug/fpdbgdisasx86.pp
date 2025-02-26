@@ -5702,6 +5702,7 @@ var
   Val: Int64;
   ClearRecValList, ForceDifferentBranch: Boolean;
   FullName: String;
+  WeakResultAddress, WeakResultStackPtr, WeakResultFramePtr: TDBGPtr;
 begin
   Result := False;
   NewAddr    := AnAddress;
@@ -5710,6 +5711,8 @@ begin
   StartStack := AStackPtr;
   CurConditionalForwardAddr := -1;
   BackwardJumpAddress.Address := 0;
+  WeakResultAddress := 0;
+  try
 
   {$PUSH}{$R-}{$Q-}
   MaxAddr := AnAddress + MAX_SEARCH_ADDR;
@@ -5773,19 +5776,30 @@ begin
           Val := 0;
           if instr.X86Instruction.OperCnt = 1 then
             Val := ValueFromMem(CurAddr[Instr.X86Instruction.Operand[1].CodeIndex], Instr.X86Instruction.Operand[1].ByteCount, Instr.X86Instruction.Operand[1].FormatFlags);
-          NewAddr := 0;
+          Tmp := 0;
           if FProcess.Mode = dm32 then begin
-            if not FProcess.ReadData(NewStack, 4, NewAddr, RSize) then
+            if not FProcess.ReadData(NewStack, 4, Tmp, RSize) then
               exit;
             inc(NewStack, 4 + Val);
           end
           else begin
-            if not FProcess.ReadData(NewStack, 8, NewAddr, RSize) then
+            if not FProcess.ReadData(NewStack, 8, Tmp, RSize) then
               exit;
             inc(NewStack, 8 + Val);
           end;
+
+          if not IsAfterCallInstruction(Tmp) then begin
+            if (WeakResultAddress = 0) and (not FLastErrWasMem) then begin
+              WeakResultAddress  := Tmp;
+              WeakResultStackPtr := NewStack;
+              WeakResultFramePtr := NewFrame;
+            end;
+            ForceDifferentBranch := True;
+            continue;
+          end;
+
           Result := True;
-          AnAddress := NewAddr;
+          AnAddress := Tmp;
           AStackPtr := NewStack;
           AFramePtr := NewFrame;
           exit;
@@ -6193,6 +6207,15 @@ begin
     end;
   end;
   if ClearRecValList then ARegisterValueList.Clear;
+
+  finally
+    if (not Result) and (WeakResultAddress <> 0) then begin
+      Result := True;
+      AnAddress := WeakResultAddress;
+      AStackPtr := WeakResultStackPtr;
+      AFramePtr := WeakResultFramePtr;
+    end;
+  end;
 end;
 
 { TDbgStackUnwinderIntelDisAssembler }
