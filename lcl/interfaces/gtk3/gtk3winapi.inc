@@ -4064,7 +4064,8 @@ var
           begin
             if AHorzPolicy <> POLICY[IsScrollbarVis] then
               ScrollWin^.set_policy(POLICY[IsScrollbarVis], AVertPolicy);
-            if Gtk3WidgetSet.OverlayScrolling and ScrollBar^.get_visible and
+            if Gtk3WidgetSet.OverlayScrolling and Gtk3IsWidget(Scrollbar) and
+              ScrollBar^.get_visible and
               Gtk3IsGdkWindow(ScrollBar^.window) then
             begin
               ScrollBar^.set_can_focus(False);
@@ -4077,7 +4078,8 @@ var
           begin
             if AVertPolicy <> POLICY[IsScrollbarVis] then
               ScrollWin^.set_policy(AHorzPolicy, POLICY[IsScrollbarVis]);
-            if Gtk3WidgetSet.OverlayScrolling and ScrollBar^.get_visible and
+            if Gtk3WidgetSet.OverlayScrolling and Gtk3IsWidget(Scrollbar) and
+              ScrollBar^.get_visible and
               Gtk3IsGdkWindow(ScrollBar^.window) then
             begin
               ScrollBar^.set_can_focus(False);
