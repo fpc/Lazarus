@@ -6318,6 +6318,10 @@ resourcestring
   dlgIAhadentifierComplEntryKeyword = 'Keyword';
   dlgIAhadentifierComplEntryOther = 'Other';
   dlgIAhadentifierComplEntryEnum = 'Enum';
+  dlgOptDebugBackendSelectDebuggerBackend = 'Select debugger backend';
+  dlgOptDebugBackendEditDebuggerBackend = 'Edit debugger backend';
+  dlgOptDebugBackendTheProjectOptionsHaveBeen = 'The project options have been set to use a '
+    +'different debugger backend';
 
 implementation
 

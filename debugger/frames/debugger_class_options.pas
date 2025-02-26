@@ -36,7 +36,7 @@ uses
   PropEdits, ObjectInspector, IDEOptionsIntf, IDEOptEditorIntf, IDEUtils,
   IdeIntfStrConsts, InputHistory,
   // LazDebuggerGDBMI
-  GDBMIDebugger,
+  GDBMIDebugger, DividerBevel,
   // IdeDebugger
   Debugger, IdeDebuggerOpts, EnvDebuggerOptions, ProjectDebugLink,
   // IdeConfig
@@ -50,10 +50,16 @@ type
 
   TDebuggerClassOptionsFrame = class(TAbstractIDEOptionsEditor)
     BtnEditClass: TButton;
+    btnAdd: TButton;
+    btnCopy: TButton;
+    btnDelete: TButton;
     cmbDebuggerPath: TComboBox;
     cmbDebuggerType: TComboBox;
     cmdOpenAdditionalPath: TButton;
     cmdOpenDebuggerPath: TButton;
+    cbBackend: TComboBox;
+    divSelectBackend: TDividerBevel;
+    divEditBackend: TDividerBevel;
     edName: TEdit;
     gbAdditionalSearchPath: TGroupBox;
     gbDebuggerSpecific: TGroupBox;
@@ -62,16 +68,9 @@ type
     LblWarnClassChange: TLabel;
     lblName: TLabel;
     Panel1: TPanel;
-    tbDropMenu: TPopupMenu;
-    ToolBar1: TToolBar;
-    tbSelect: TToolButton;
-    tbAddNew: TToolButton;
-    ToolButton2: TToolButton;
-    tbDelete: TToolButton;
-    tbCopy: TToolButton;
-    ToolButton3: TToolButton;
     txtAdditionalPath: TEdit;
     procedure BtnEditClassClick(Sender: TObject);
+    procedure cbBackendChange(Sender: TObject);
     procedure cmbDebuggerPathEditingDone(Sender: TObject);
     procedure cmbDebuggerTypeEditingDone(Sender: TObject);
     procedure cmdOpenAdditionalPathClick(Sender: TObject);
@@ -89,11 +88,11 @@ type
     FPropertyEditorHook: TPropertyEditorHook;
     FCopiedDbgPropertiesConfigList: TDebuggerPropertiesConfigList;
     FSelectedDbgPropertiesConfig: TDebuggerPropertiesConfig;
+    FUpdatingBackendDropDown: Boolean;
     FLastCheckedDebuggerPath: String;
     function SelectedDebuggerClass: TDebuggerClass; // currently shown debugger class
     function SelectedDebuggerProperties: TDebuggerProperties;
 
-    procedure DoNameSelected(Sender: TObject);
     procedure FillDebuggerClassDropDown;
     procedure UpdateDebuggerClass;
     procedure UpdateDebuggerClassDropDown;
@@ -158,6 +157,27 @@ begin
   cmbDebuggerType.Enabled := True;
   BtnEditClass.Visible := False;
   LblWarnClassChange.Visible := True;
+end;
+
+procedure TDebuggerClassOptionsFrame.cbBackendChange(Sender: TObject);
+var
+  idx: PtrInt;
+begin
+  if FUpdatingBackendDropDown then
+    exit;
+
+  UpdateDebuggerPathHistory;
+  idx := cbBackend.ItemIndex;
+
+  edNameExit(nil);
+  UpdateDebuggerClass;
+  cmbDebuggerPathEditingDone(nil);
+
+  FSelectedDbgPropertiesConfig := FCopiedDbgPropertiesConfigList.Opt[idx];
+  FillNameDropDown;
+
+  UpdateDebuggerClassDropDown;
+  FetchDebuggerSpecificOptions;
 end;
 
 procedure TDebuggerClassOptionsFrame.cmdOpenAdditionalPathClick(Sender: TObject);
@@ -401,24 +421,6 @@ begin
     TStringList(FDebuggerFileHistory.Objects[i]).Assign(cmbDebuggerPath.Items);
 end;
 
-procedure TDebuggerClassOptionsFrame.DoNameSelected(Sender: TObject);
-var
-  idx: PtrInt;
-begin
-  UpdateDebuggerPathHistory;
-  idx := TMenuItem(Sender).Tag;
-
-  edNameExit(nil);
-  UpdateDebuggerClass;
-  cmbDebuggerPathEditingDone(nil);
-
-  FSelectedDbgPropertiesConfig := FCopiedDbgPropertiesConfigList.Opt[idx];
-  FillNameDropDown;
-
-  UpdateDebuggerClassDropDown;
-  FetchDebuggerSpecificOptions;
-end;
-
 procedure TDebuggerClassOptionsFrame.FetchDebuggerSpecificOptions;
 var
   S, S2, S3: String;
@@ -564,39 +566,36 @@ end;
 
 procedure TDebuggerClassOptionsFrame.FillNameDropDown;
 var
-  m: TMenuItem;
-  i: Integer;
+  i, j: Integer;
+  c: TDebuggerPropertiesConfig;
 begin
-  {$IFDEF linux}
-  // Workaround for issue https://bugs.freepascal.org/view.php?id=36305 https://bugs.freepascal.org/view.php?id=36306
-  tbDropMenu := TPopupMenu.Create(Self);
-  tbSelect.DropdownMenu := tbDropMenu;
-  {$ENDIF}
-  tbDropMenu.Items.Clear;
-  for i := 0 to FCopiedDbgPropertiesConfigList.Count - 1 do begin
-    m := TMenuItem.Create(tbDropMenu);
-    m.Caption := FCopiedDbgPropertiesConfigList.Opt[i].DisplayName;
-    m.Tag := i;
-    m.OnClick := @DoNameSelected;
-    m.Checked := FCopiedDbgPropertiesConfigList.Opt[i] = FSelectedDbgPropertiesConfig;
-    tbDropMenu.Items.Add(m);
-  end;
-  if FSelectedDbgPropertiesConfig <> nil then
-    tbSelect.Caption := FSelectedDbgPropertiesConfig.DisplayName
-  else
-    tbSelect.Caption := '---';
-  tbSelect.Enabled := FCopiedDbgPropertiesConfigList.Count > 0;
-  Panel1.Enabled := FSelectedDbgPropertiesConfig <> nil;
-  tbCopy.Enabled := FSelectedDbgPropertiesConfig <> nil;
-  tbDelete.Enabled := FSelectedDbgPropertiesConfig <> nil;
+  FUpdatingBackendDropDown := True;
+  try
+    cbBackend.Items.Clear;
+    j := -1;
+    for i := 0 to FCopiedDbgPropertiesConfigList.Count - 1 do begin
+      c := FCopiedDbgPropertiesConfigList.Opt[i];
+      cbBackend.Items.Add(c.DisplayName);
+      if FCopiedDbgPropertiesConfigList.Opt[i] = FSelectedDbgPropertiesConfig then
+        j := i;
+    end;
+    cbBackend.ItemIndex := j;
+    cbBackend.Enabled := FCopiedDbgPropertiesConfigList.Count > 0;
 
-  if ShowWarningOverridenByProject and Assigned(FSelectedDbgPropertiesConfig) then
-    lblWarningProject.Visible := not (
-      (DbgProjectLink.DebuggerBackend = FSelectedDbgPropertiesConfig.UID) or
-      (DbgProjectLink.DebuggerBackend = 'IDE') or
-      ( (DbgProjectLink.DebuggerBackend = '') and
-        (DbgProjectLink.DebuggerPropertiesConfigList.Count = 0) )
-    );
+    Panel1.Enabled := FSelectedDbgPropertiesConfig <> nil;
+    btnCopy.Enabled := FSelectedDbgPropertiesConfig <> nil;
+    btnDelete.Enabled := FSelectedDbgPropertiesConfig <> nil;
+
+    if ShowWarningOverridenByProject and Assigned(FSelectedDbgPropertiesConfig) then
+      lblWarningProject.Visible := not (
+        (DbgProjectLink.DebuggerBackend = FSelectedDbgPropertiesConfig.UID) or
+        (DbgProjectLink.DebuggerBackend = 'IDE') or
+        ( (DbgProjectLink.DebuggerBackend = '') and
+          (DbgProjectLink.DebuggerPropertiesConfigList.Count = 0) )
+      );
+  finally
+    FUpdatingBackendDropDown := False;
+  end;
 end;
 
 procedure TDebuggerClassOptionsFrame.HookGetCheckboxForBoolean(var Value: Boolean);
@@ -670,11 +669,14 @@ end;
 
 procedure TDebuggerClassOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  tbAddNew.Caption := lisAdd;
-  tbCopy.Caption := lisCopy;
-  tbDelete.Caption := lisDelete;
+  divSelectBackend.Caption := dlgOptDebugBackendSelectDebuggerBackend;
+  divEditBackend.Caption := dlgOptDebugBackendEditDebuggerBackend;
+  btnAdd.Caption := lisAdd;
+  btnCopy.Caption := lisCopy;
+  btnDelete.Caption := lisDelete;
+
   lblName.Caption := lisDebugOptionsFrmName;
-  lblWarningProject.Caption := 'The project options have been set to use a different debugger backend';
+  lblWarningProject.Caption := dlgOptDebugBackendTheProjectOptionsHaveBeen;
   BtnEditClass.Caption := lisDebugOptionsFrmEditClass;
   LblWarnClassChange.Caption := lisDebugOptionsFrmEditClassWarn;
   gbDebuggerType.Caption := dlgDebugType;

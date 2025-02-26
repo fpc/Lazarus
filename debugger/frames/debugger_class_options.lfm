@@ -1,75 +1,117 @@
 object DebuggerClassOptionsFrame: TDebuggerClassOptionsFrame
   Left = 0
-  Height = 427
+  Height = 434
   Top = 0
-  Width = 519
-  ClientHeight = 427
-  ClientWidth = 519
+  Width = 532
+  ClientHeight = 434
+  ClientWidth = 532
   TabOrder = 0
   Visible = False
-  DesignLeft = 812
-  DesignTop = 313
-  object ToolBar1: TToolBar
+  DesignLeft = 613
+  DesignTop = 71
+  object divSelectBackend: TDividerBevel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 26
+    Height = 15
     Top = 0
-    Width = 519
-    ButtonHeight = 22
-    ButtonWidth = 60
-    DropDownWidth = 12
-    EdgeBorders = [ebBottom]
-    ShowCaptions = True
-    TabOrder = 0
-    object tbSelect: TToolButton
-      Left = 1
-      Top = 0
-      Caption = 'tbSelect'
-      DropdownMenu = tbDropMenu
-      Style = tbsButtonDrop
-    end
-    object tbAddNew: TToolButton
-      Left = 76
-      Top = 0
-      Caption = 'tbAddNew'
-      OnClick = tbAddNewClick
-    end
-    object tbCopy: TToolButton
-      Left = 141
-      Top = 0
-      Caption = 'tbCopy'
-      OnClick = tbCopyClick
-    end
-    object ToolButton2: TToolButton
-      Left = 201
-      Height = 22
-      Top = 0
-      Caption = 'ToolButton2'
-      Style = tbsDivider
-    end
-    object tbDelete: TToolButton
-      Left = 206
-      Top = 0
-      Caption = 'tbDelete'
-      OnClick = tbDeleteClick
-    end
-    object ToolButton3: TToolButton
-      Left = 71
-      Height = 22
-      Top = 0
-      Caption = 'ToolButton3'
-      Style = tbsDivider
-    end
+    Width = 532
+    Caption = 'divSelectBackend'
+    Anchors = [akTop, akLeft, akRight]
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object cbBackend: TComboBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = divSelectBackend
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 23
+    Top = 21
+    Width = 520
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    ItemHeight = 15
+    Style = csDropDownList
+    TabOrder = 4
+    OnChange = cbBackendChange
+  end
+  object btnAdd: TButton
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = cbBackend
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 22
+    Top = 50
+    Width = 75
+    BorderSpacing.Around = 6
+    Caption = 'btnAdd'
+    TabOrder = 1
+    OnClick = tbAddNewClick
+  end
+  object btnCopy: TButton
+    AnchorSideLeft.Control = btnAdd
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = btnAdd
+    Left = 93
+    Height = 22
+    Top = 50
+    Width = 75
+    BorderSpacing.Left = 12
+    Caption = 'btnCopy'
+    TabOrder = 2
+    OnClick = tbCopyClick
+  end
+  object btnDelete: TButton
+    AnchorSideTop.Control = btnAdd
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 451
+    Height = 22
+    Top = 50
+    Width = 75
+    Anchors = [akTop, akRight]
+    BorderSpacing.Right = 6
+    Caption = 'btnDelete'
+    TabOrder = 3
+    OnClick = tbDeleteClick
+  end
+  object divEditBackend: TDividerBevel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = btnAdd
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 15
+    Top = 78
+    Width = 532
+    Caption = 'divEditBackend'
+    Anchors = [akTop, akLeft, akRight]
+    Font.Style = [fsBold]
+    ParentFont = False
   end
   object Panel1: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = divEditBackend
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 401
-    Top = 26
-    Width = 519
-    Align = alClient
+    Height = 341
+    Top = 93
+    Width = 532
+    Anchors = [akTop, akLeft, akRight, akBottom]
     BevelOuter = bvNone
-    ClientHeight = 401
-    ClientWidth = 519
-    TabOrder = 1
+    ClientHeight = 341
+    ClientWidth = 532
+    TabOrder = 0
     object lblName: TLabel
       AnchorSideLeft.Control = Panel1
       AnchorSideTop.Control = edName
@@ -80,7 +122,6 @@ object DebuggerClassOptionsFrame: TDebuggerClassOptionsFrame
       Width = 45
       BorderSpacing.Left = 10
       Caption = 'lblName'
-      Color = clDefault
       ParentColor = False
     end
     object edName: TEdit
@@ -93,14 +134,14 @@ object DebuggerClassOptionsFrame: TDebuggerClassOptionsFrame
       Left = 61
       Height = 23
       Top = 27
-      Width = 448
+      Width = 461
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       BorderSpacing.Right = 10
+      TabOrder = 0
       OnEditingDone = edNameExit
       OnExit = edNameExit
-      TabOrder = 0
     end
     object gbDebuggerType: TGroupBox
       AnchorSideLeft.Control = Panel1
@@ -111,13 +152,13 @@ object DebuggerClassOptionsFrame: TDebuggerClassOptionsFrame
       Left = 0
       Height = 105
       Top = 56
-      Width = 519
+      Width = 532
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
       BorderSpacing.Top = 6
       Caption = 'Debugger type and path'
       ClientHeight = 85
-      ClientWidth = 515
+      ClientWidth = 528
       TabOrder = 1
       object cmbDebuggerType: TComboBox
         AnchorSideLeft.Control = gbDebuggerType
@@ -126,15 +167,15 @@ object DebuggerClassOptionsFrame: TDebuggerClassOptionsFrame
         Left = 6
         Height = 23
         Top = 6
-        Width = 406
+        Width = 419
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
         Enabled = False
         ItemHeight = 15
-        OnEditingDone = cmbDebuggerTypeEditingDone
-        OnSelect = cmbDebuggerTypeEditingDone
         Style = csDropDownList
         TabOrder = 0
+        OnEditingDone = cmbDebuggerTypeEditingDone
+        OnSelect = cmbDebuggerTypeEditingDone
       end
       object cmbDebuggerPath: TComboBox
         AnchorSideLeft.Control = gbDebuggerType
@@ -144,15 +185,15 @@ object DebuggerClassOptionsFrame: TDebuggerClassOptionsFrame
         Left = 6
         Height = 23
         Top = 56
-        Width = 480
+        Width = 493
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 6
         BorderSpacing.Top = 6
         BorderSpacing.Bottom = 6
         ItemHeight = 15
+        TabOrder = 1
         OnEditingDone = cmbDebuggerPathEditingDone
         OnEnter = cmbDebuggerPathEditingDone
-        TabOrder = 1
       end
       object cmdOpenDebuggerPath: TButton
         AnchorSideTop.Control = cmbDebuggerPath
@@ -160,21 +201,21 @@ object DebuggerClassOptionsFrame: TDebuggerClassOptionsFrame
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = cmbDebuggerPath
         AnchorSideBottom.Side = asrBottom
-        Left = 486
+        Left = 499
         Height = 23
         Top = 56
         Width = 23
         Anchors = [akTop, akRight, akBottom]
         BorderSpacing.Right = 6
         Caption = '…'
-        OnClick = cmdOpenDebuggerPathClick
         TabOrder = 2
+        OnClick = cmdOpenDebuggerPathClick
       end
       object BtnEditClass: TButton
         AnchorSideTop.Control = gbDebuggerType
         AnchorSideRight.Control = gbDebuggerType
         AnchorSideRight.Side = asrBottom
-        Left = 418
+        Left = 431
         Height = 25
         Top = 6
         Width = 91
@@ -182,8 +223,8 @@ object DebuggerClassOptionsFrame: TDebuggerClassOptionsFrame
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'BtnEditClass'
-        OnClick = BtnEditClassClick
         TabOrder = 3
+        OnClick = BtnEditClassClick
       end
       object LblWarnClassChange: TLabel
         AnchorSideLeft.Control = gbDebuggerType
@@ -194,11 +235,10 @@ object DebuggerClassOptionsFrame: TDebuggerClassOptionsFrame
         Left = 6
         Height = 15
         Top = 35
-        Width = 503
+        Width = 516
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
         Caption = 'LblWarnClassChange'
-        Color = clDefault
         Font.Color = clRed
         ParentColor = False
         ParentFont = False
@@ -215,13 +255,13 @@ object DebuggerClassOptionsFrame: TDebuggerClassOptionsFrame
       Left = 0
       Height = 55
       Top = 167
-      Width = 519
+      Width = 532
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
       BorderSpacing.Top = 6
       Caption = 'Additional search path'
       ClientHeight = 35
-      ClientWidth = 515
+      ClientWidth = 528
       TabOrder = 2
       Visible = False
       object txtAdditionalPath: TEdit
@@ -231,7 +271,7 @@ object DebuggerClassOptionsFrame: TDebuggerClassOptionsFrame
         Left = 6
         Height = 23
         Top = 6
-        Width = 480
+        Width = 493
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 6
         BorderSpacing.Top = 6
@@ -244,15 +284,15 @@ object DebuggerClassOptionsFrame: TDebuggerClassOptionsFrame
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = txtAdditionalPath
         AnchorSideBottom.Side = asrBottom
-        Left = 486
+        Left = 499
         Height = 23
         Top = 6
         Width = 23
         Anchors = [akTop, akRight, akBottom]
         BorderSpacing.Right = 6
         Caption = '…'
-        OnClick = cmdOpenAdditionalPathClick
         TabOrder = 1
+        OnClick = cmdOpenAdditionalPathClick
       end
     end
     object gbDebuggerSpecific: TGroupBox
@@ -264,9 +304,9 @@ object DebuggerClassOptionsFrame: TDebuggerClassOptionsFrame
       AnchorSideBottom.Control = Panel1
       AnchorSideBottom.Side = asrBottom
       Left = 0
-      Height = 173
+      Height = 113
       Top = 228
-      Width = 519
+      Width = 532
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Top = 6
       Caption = 'Debugger specific options (depends on type of debugger)'
@@ -280,7 +320,7 @@ object DebuggerClassOptionsFrame: TDebuggerClassOptionsFrame
       Left = 6
       Height = 15
       Top = 6
-      Width = 507
+      Width = 520
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
       Caption = 'lblWarningProject'
@@ -288,9 +328,5 @@ object DebuggerClassOptionsFrame: TDebuggerClassOptionsFrame
       ParentFont = False
       Visible = False
     end
-  end
-  object tbDropMenu: TPopupMenu
-    Left = 294
-    Top = 5
   end
 end
