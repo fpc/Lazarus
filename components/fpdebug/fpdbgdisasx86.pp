@@ -5695,7 +5695,7 @@ var
 
 var
   MaxAddr, StartStack, Tmp: TDBGPtr;
-  BackwardJumpAddress: TAlternativeAddressPoint;
+  BackwardJumpAddress, ForwardJumpAddress: TAlternativeAddressPoint;
   Cnt: Integer;
   instr: TX86AsmInstruction;
   RSize: Cardinal;
@@ -5711,6 +5711,7 @@ begin
   StartStack := AStackPtr;
   CurConditionalForwardAddr := -1;
   BackwardJumpAddress.Address := 0;
+  ForwardJumpAddress.Address := 0;
   WeakResultAddress := 0;
   try
 
@@ -5745,6 +5746,13 @@ begin
       if (BackwardJumpAddress.Address > 0) and (not AddrWasDone(BackwardJumpAddress.Address)) then begin
         ContinueAt(BackwardJumpAddress);
         BackwardJumpAddress.Address := 0;
+      end
+      else
+      if (ForwardJumpAddress.Address > 0) and (not AddrWasDone(ForwardJumpAddress.Address)) then begin
+        ContinueAt(ForwardJumpAddress);
+        ForwardJumpAddress.Address := 0;
+        MaxAddr := NewAddr + MAX_SEARCH_ADDR;
+        MaxAddrCurrentBlock := MaxAddr;
       end
       else
         exit;
@@ -6178,6 +6186,13 @@ begin
           end;
 
           if AddrWasDone(Tmp) then begin
+            ForceDifferentBranch := True;
+            continue;
+          end;
+
+          if Tmp > MaxAddr then begin
+            if (ForwardJumpAddress.Address = 0) or (Tmp < ForwardJumpAddress.Address) then
+              StoreAltAddr(ForwardJumpAddress, Tmp);
             ForceDifferentBranch := True;
             continue;
           end;
