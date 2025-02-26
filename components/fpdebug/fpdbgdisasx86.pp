@@ -5480,6 +5480,9 @@ var
       if (IsRegister(Oper.Value, 'sp')) then
         AVal := NewStack
       else
+      if (IsRegister(Oper.Value, 'ip')) then
+        AVal := NewAddr
+      else
       begin
         FullName := FullRegisterName(Oper.Value);
         if (LowerCase(FullName) = LowerCase(Oper.Value)) then begin
@@ -5508,6 +5511,12 @@ var
       if (IsRegister(Oper.Value, 'sp%s')) then begin
         {$PUSH}{$R-}{$Q-}
         AVal := NewStack + OpVal;
+        {$POP}
+      end
+      else
+      if (IsRegister(Oper.Value, 'ip%s')) then begin
+        {$PUSH}{$R-}{$Q-}
+        AVal := NewAddr + OpVal;
         {$POP}
       end
       else
@@ -6104,10 +6113,6 @@ begin
             ForceDifferentBranch := True;
             continue;
           end;
-          if (instr.X86Instruction.Operand[1].Value <> '%s') then begin
-            ForceDifferentBranch := True;
-            continue;
-          end;
           if (Instr.X86Instruction.Operand[1].ByteCount = 0) or
              (Instr.X86Instruction.Operand[1].ByteCount2 <> 0)
           then begin
@@ -6115,10 +6120,29 @@ begin
             continue;
           end;
 
-          Val := ValueFromMem(CurAddr[Instr.X86Instruction.Operand[1].CodeIndex], Instr.X86Instruction.Operand[1].ByteCount, Instr.X86Instruction.Operand[1].FormatFlags);
-          {$PUSH}{$R-}{$Q-}
-          Tmp := NewAddr + Val;
-          {$POP}
+          if (instr.X86Instruction.Operand[1].Value = '%s') then begin
+            Val := ValueFromMem(CurAddr[Instr.X86Instruction.Operand[1].CodeIndex], Instr.X86Instruction.Operand[1].ByteCount, Instr.X86Instruction.Operand[1].FormatFlags);
+            {$PUSH}{$R-}{$Q-}
+            Tmp := NewAddr + Val;
+            {$POP}
+          end
+          else
+          if (instr.X86Instruction.Operand[1].Value = 'rip%s') or
+             (instr.X86Instruction.Operand[1].Value = 'eip%s')
+          then begin
+            if not ValueFromOperand(instr.X86Instruction.Operand[1], Tmp) then begin
+              ForceDifferentBranch := True;
+              continue;
+            end;
+            {$PUSH}{$R-}{$Q-}
+            Val := Tmp - NewAddr;
+            {$POP}
+          end
+          else begin
+            ForceDifferentBranch := True;
+            continue;
+          end;
+
           if (Val < 0) then begin
             CheckConditionalForwAddr;
             if (CurConditionalForwardAddr >= 0) then begin
