@@ -5778,7 +5778,8 @@ begin
         begin
           ClearRecValList := False;
           if instr.X86Instruction.OperCnt > 1 then begin
-            exit;
+            ForceDifferentBranch := True;
+            continue;
           end;
 
           Val := 0;
@@ -5786,13 +5787,17 @@ begin
             Val := ValueFromMem(CurAddr[Instr.X86Instruction.Operand[1].CodeIndex], Instr.X86Instruction.Operand[1].ByteCount, Instr.X86Instruction.Operand[1].FormatFlags);
           Tmp := 0;
           if FProcess.Mode = dm32 then begin
-            if not FProcess.ReadData(NewStack, 4, Tmp, RSize) then
-              exit;
+            if not FProcess.ReadData(NewStack, 4, Tmp, RSize) then begin
+              ForceDifferentBranch := True;
+              continue;
+            end;
             inc(NewStack, 4 + Val);
           end
           else begin
-            if not FProcess.ReadData(NewStack, 8, Tmp, RSize) then
-              exit;
+            if not FProcess.ReadData(NewStack, 8, Tmp, RSize) then begin
+              ForceDifferentBranch := True;
+              continue;
+            end;
             inc(NewStack, 8 + Val);
           end;
 
@@ -5875,8 +5880,10 @@ begin
             NewFrame := 0;
             if NewStack >= StartStack then begin
               RSize := RegisterSize(instr.X86Instruction.Operand[1].Value);
-              if not FProcess.ReadData(NewStack, RSize, NewFrame, RSize) then
-                exit;
+              if not FProcess.ReadData(NewStack, RSize, NewFrame, RSize) then begin
+                ForceDifferentBranch := True;
+                continue;
+              end;
             end
             else
             if (PushedNewFrameAddr = NewStack) then begin
@@ -5905,13 +5912,17 @@ begin
           NewStack := NewFrame;
           NewFrame := 0;
           if FProcess.Mode = dm32 then begin
-            if not FProcess.ReadData(NewStack, 4, NewFrame, RSize) then
-              exit;
+            if not FProcess.ReadData(NewStack, 4, NewFrame, RSize) then begin
+              ForceDifferentBranch := True;
+              continue;
+            end;
             inc(NewStack, 4);
           end
           else begin
-            if not FProcess.ReadData(NewStack, 8, NewFrame, RSize) then
-              exit;
+            if not FProcess.ReadData(NewStack, 8, NewFrame, RSize) then begin
+              ForceDifferentBranch := True;
+              continue;
+            end;
             inc(NewStack, 8);
           end;
         end;
@@ -6210,13 +6221,14 @@ begin
       else
         begin
           if (instr.X86Instruction.OperCnt >= 1) and
-             (not(ofMemory in Instr.X86Instruction.Operand[1].Flags)) and
-             ( IsRegister(instr.X86Instruction.Operand[1].Value, 'bp') or
-               IsRegister(instr.X86Instruction.Operand[1].Value, 'sp')
-             )
+             (not(ofMemory in Instr.X86Instruction.Operand[1].Flags))
           then begin
-            ForceDifferentBranch := True;
-            continue;
+            if IsRegister(instr.X86Instruction.Operand[1].Value, 'sp') then begin
+              ForceDifferentBranch := True;
+              continue;
+            end;
+            if IsRegister(instr.X86Instruction.Operand[1].Value, 'bp') then
+              NewFrame := 0;
           end;
         end;
     end;
