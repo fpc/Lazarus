@@ -3237,6 +3237,12 @@ begin
   if not CanSendLCLMessage then
     exit;
 
+  if (QEvent_type(Event) = QEventKeyRelease) and QKeyEvent_isAutoRepeat(QKeyEventH(Event)) then
+  begin
+    QEvent_ignore(Event);
+    exit;
+  end;
+
   FillChar(KeyMsg{%H-}, SizeOf(KeyMsg), #0);
   FillChar(CharMsg{%H-}, SizeOf(CharMsg), #0);
   UTF8Text := '';
