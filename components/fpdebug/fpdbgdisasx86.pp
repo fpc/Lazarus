@@ -5559,8 +5559,10 @@ type
   TAlternativeAddressPoint = record
     Address: TDBGPtr;
     Frame, Stack: TDBGPtr;
+    PushedNewFrame, PushedNewFrameAddr: TDBGPtr;
   end;
 var
+  PushedNewFrame, PushedNewFrameAddr: TDBGPtr;
   AddressDoneBlocks: array [0..MAX_ADDR_DONE_BLOCKS] of record
     First, Last: TDBGPtr;
   end;
@@ -5574,6 +5576,8 @@ var
     AltAddrPoint.Address := AnAddr;
     AltAddrPoint.Stack   := NewStack;
     AltAddrPoint.Frame   := NewFrame;
+    AltAddrPoint.PushedNewFrame     := PushedNewFrame;
+    AltAddrPoint.PushedNewFrameAddr := PushedNewFrameAddr;
   end;
 
   procedure ContinueAt(const AltAddrPoint: TAlternativeAddressPoint); inline;
@@ -5581,6 +5585,8 @@ var
     NewAddr  := AltAddrPoint.Address;
     NewStack := AltAddrPoint.Stack;
     NewFrame := AltAddrPoint.Frame;
+    PushedNewFrame     := AltAddrPoint.PushedNewFrame;
+    PushedNewFrameAddr := AltAddrPoint.PushedNewFrameAddr;
   end;
 
   function AddrWasDone(AnAddr: TDBGPtr): boolean; inline;
@@ -5660,9 +5666,7 @@ var
 
     if CurConditionalForwardAddr < MAX_FORWARD_ADDR then begin
       inc(CurConditionalForwardAddr);
-      ConditionalForwardAddr[CurConditionalForwardAddr].Address := AnAddr;
-      ConditionalForwardAddr[CurConditionalForwardAddr].Stack   := NewStack;
-      ConditionalForwardAddr[CurConditionalForwardAddr].Frame   := NewFrame;
+      StoreAltAddr(ConditionalForwardAddr[CurConditionalForwardAddr], AnAddr);
     end
     else begin
       j := 0;
@@ -5676,9 +5680,7 @@ var
       CurConditionalForwardAddr := j - 1;
       if CurConditionalForwardAddr < MAX_FORWARD_ADDR then
         inc(CurConditionalForwardAddr);
-      ConditionalForwardAddr[CurConditionalForwardAddr].Address := AnAddr;
-      ConditionalForwardAddr[CurConditionalForwardAddr].Stack   := NewStack;
-      ConditionalForwardAddr[CurConditionalForwardAddr].Frame   := NewFrame;
+      StoreAltAddr(ConditionalForwardAddr[CurConditionalForwardAddr], AnAddr);
     end;
   end;
 
@@ -5691,7 +5693,6 @@ var
   Val: Int64;
   ClearRecValList, ForceDifferentBranch: Boolean;
   FullName: String;
-  PushedNewFrame, PushedNewFrameAddr: TDBGPtr;
 begin
   Result := False;
   NewAddr    := AnAddress;
