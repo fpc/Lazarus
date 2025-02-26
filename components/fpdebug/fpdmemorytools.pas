@@ -109,6 +109,9 @@ type
     destructor Destroy; override;
     procedure Assign(ASource: TDbgRegisterValue);
     function HasEqualVal(AnOther: TDbgRegisterValue): Boolean;
+    procedure SetValue(ANumValue: Integer; const AStrValue: string; ASize: byte; ADwarfIdx: cardinal);
+    procedure SetValue(ANumValue: Int64; const AStrValue: string; ASize: byte; ADwarfIdx: cardinal);
+    procedure SetValue(ANumValue: Cardinal; const AStrValue: string; ASize: byte; ADwarfIdx: cardinal);
     procedure SetValue(ANumValue: TDBGPtr; const AStrValue: string; ASize: byte; ADwarfIdx: cardinal);
     procedure SetValue(const AData: Pointer; ASize: byte; ADwarfIdx: cardinal; AFormatter: TRegisterFormatterProc);
     procedure Setx86EFlagsValue(ANumValue: TDBGPtr);
@@ -1088,6 +1091,26 @@ begin
     (FNumValue = AnOther.FNumValue) and
     (FSize     = AnOther.FSize)     and
     (FStrValue = AnOther.FStrValue);
+end;
+
+procedure TDbgRegisterValue.SetValue(ANumValue: Integer; const AStrValue: string; ASize: byte;
+  ADwarfIdx: cardinal);
+var
+  CNum: Cardinal absolute ANumValue;
+begin
+  SetValue(TDBGPtr(CNum), AStrValue, ASize, ADwarfIdx);
+end;
+
+procedure TDbgRegisterValue.SetValue(ANumValue: Int64; const AStrValue: string; ASize: byte;
+  ADwarfIdx: cardinal);
+begin
+  SetValue(TDBGPtr(ANumValue), AStrValue, ASize, ADwarfIdx);
+end;
+
+procedure TDbgRegisterValue.SetValue(ANumValue: Cardinal; const AStrValue: string; ASize: byte;
+  ADwarfIdx: cardinal);
+begin
+  SetValue(TDBGPtr(ANumValue), AStrValue, ASize, ADwarfIdx);
 end;
 
 procedure TDbgRegisterValue.SetValue(ANumValue: TDBGPtr;
