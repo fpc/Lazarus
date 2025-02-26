@@ -3505,6 +3505,18 @@ msgstr "Usar Ajustes pretederminados de Delphi"
 msgid "Use default Lazarus settings"
 msgstr "Usar ajustes predeterminados de Lazarus"
 
+#: lazarusidestrconsts.dlgoptdebugbackendeditdebuggerbackend
+msgid "Edit debugger backend"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoptdebugbackendselectdebuggerbackend
+msgid "Select debugger backend"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoptdebugbackendtheprojectoptionshavebeen
+msgid "The project options have been set to use a different debugger backend"
+msgstr ""
+
 #: lazarusidestrconsts.dlgoptimizationlevels
 msgid "Optimization levels"
 msgstr "Niveles de optimización"

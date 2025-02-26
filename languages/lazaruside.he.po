@@ -3573,6 +3573,18 @@ msgstr "השתמש בהגדרות המחדל של דלפי"
 msgid "Use default Lazarus settings"
 msgstr "השתמש בהגדרות המחדל של לזארוס"
 
+#: lazarusidestrconsts.dlgoptdebugbackendeditdebuggerbackend
+msgid "Edit debugger backend"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoptdebugbackendselectdebuggerbackend
+msgid "Select debugger backend"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoptdebugbackendtheprojectoptionshavebeen
+msgid "The project options have been set to use a different debugger backend"
+msgstr ""
+
 #: lazarusidestrconsts.dlgoptimizationlevels
 msgid "Optimization levels"
 msgstr ""

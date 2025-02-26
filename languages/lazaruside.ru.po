@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-02-23 12:44+0300\n"
+"PO-Revision-Date: 2025-02-26 18:08+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -3384,6 +3384,18 @@ msgstr "Использовать параметры по умолчанию Delp
 #: lazarusidestrconsts.dlgoiusedefaultlazarussettings
 msgid "Use default Lazarus settings"
 msgstr "Использовать параметры по умолчанию Lazarus"
+
+#: lazarusidestrconsts.dlgoptdebugbackendeditdebuggerbackend
+msgid "Edit debugger backend"
+msgstr "Редактирование механизма отладки"
+
+#: lazarusidestrconsts.dlgoptdebugbackendselectdebuggerbackend
+msgid "Select debugger backend"
+msgstr "Выбор механизма отладки"
+
+#: lazarusidestrconsts.dlgoptdebugbackendtheprojectoptionshavebeen
+msgid "The project options have been set to use a different debugger backend"
+msgstr "Параметрами проекта задано использование другого механизма отладки"
 
 #: lazarusidestrconsts.dlgoptimizationlevels
 msgid "Optimization levels"
