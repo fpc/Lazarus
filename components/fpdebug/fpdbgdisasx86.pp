@@ -5560,10 +5560,10 @@ var
   end;
 
 const
-  MAX_SEARCH_ADDR = 8000;
-  MAX_SEARCH_CNT = 400;
-  MAX_ADDR_DONE_BLOCKS = 10;
-  MAX_FORWARD_ADDR = 5;
+  MAX_SEARCH_ADDR = 9000;
+  MAX_SEARCH_CNT = 800;
+  MAX_ADDR_DONE_BLOCKS = 12;
+  MAX_FORWARD_ADDR = 6;
 type
   TAlternativeAddressPoint = record
     Address: TDBGPtr;
