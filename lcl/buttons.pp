@@ -49,11 +49,11 @@ type
 
   TButtonState =
   (
-    bsUp,       // button is up
-    bsDisabled, // button disabled (grayed)
-    bsDown,     // button is down
-    bsExclusive,// button is the only down in his group
-    bsHot       // button is under mouse
+    bsUp,       // Button is up.
+    bsDisabled, // Button disabled (grayed).
+    bsDown,     // Button is down.
+    bsExclusive,// Button is the only down in his group.
+    bsHot       // Button is under mouse.
   );
 
   TButtonImage = idButtonOk..idButtonNoToAll;
@@ -67,9 +67,9 @@ type
 
   { TButtonGlyph }
   TGlyphTransparencyMode = (
-    gtmGlyph,       // transparency is defined by the glyph itself (bitbtn)
-    gtmOpaque,      // transparent = false is defined by the owner (speedbutton)
-    gtmTransparent  // transparent = true
+    gtmGlyph,       // Transparency is defined by the glyph itself (BitBtn).
+    gtmOpaque,      // Transparent = false is defined by the owner (SpeedButton).
+    gtmTransparent  // Transparent = true.
   );
 
   TButtonGlyph = class(TObject, IUnknown, IImageCacheListener)

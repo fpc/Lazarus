@@ -48,9 +48,9 @@ type
   TStatusBar = class;  //forward declaration
 
   TPanelPart = (
-    ppText,    // for text and text alignment
-    ppBorder,  // for bevel and style
-    ppWidth    // for width
+    ppText,    // For text and text alignment.
+    ppBorder,  // For bevel and style.
+    ppWidth    // For width.
     );
   TPanelParts = set of TPanelPart;
 
@@ -226,10 +226,10 @@ type
   { TCustomPage }
 
   TPageFlag = (
-    pfAdded,  // handle of page added to notebook handle
-    pfAdding, // currently handle of page adding to notebook handle
-    pfRemoving, // currently removing page handle from notebook handle
-    pfInserting // currently inserting page into notebook
+    pfAdded,    // Handle of page added to notebook handle.
+    pfAdding,   // Currently handle of page adding to notebook handle.
+    pfRemoving, // Currently removing page handle from notebook handle.
+    pfInserting // Currently inserting page into notebook.
     );
   TPageFlags = set of TPageFlag;
 
@@ -935,9 +935,9 @@ type
   { Custom draw }
 
   TCustomDrawTarget = (
-    dtControl,   // the whole control
-    dtItem,      // one item (= line in report mode)
-    dtSubItem    // one subitem, except for subitem 0, this one is drawn by dtItem
+    dtControl,   // The whole control.
+    dtItem,      // One item (= line in report mode).
+    dtSubItem    // One subitem, except for subitem 0, this one is drawn by dtItem.
   );
   TCustomDrawStage = (
     cdPrePaint,
@@ -1368,7 +1368,7 @@ type
     lffSelectedValid,
     lffItemsMoving,
     lffItemsSorting,
-    lffPreparingSorting // do not trigger when we are setting more rules
+    lffPreparingSorting // Do not trigger when we are setting more rules.
     );
   TListViewFlags = set of TListViewFlag;
 
@@ -2063,20 +2063,20 @@ const
 type
   TToolButtonStyle =
   (
-    tbsButton,    // button (can be clicked)
-    tbsCheck,     // check item (click to toggle state, can be grouped)
-    tbsDropDown,  // button with dropdown button to show a popup menu
-    tbsSeparator, // space holder
-    tbsDivider,   // space holder with line
-    tbsButtonDrop // button with arrow (not separated from each other)
+    tbsButton,    // Button (can be clicked).
+    tbsCheck,     // Check item (click to toggle state, can be grouped).
+    tbsDropDown,  // Button with dropdown button to show a popup menu.
+    tbsSeparator, // Space holder.
+    tbsDivider,   // Space holder with line.
+    tbsButtonDrop // Button with arrow (not separated from each other).
   );
     
   TToolButtonFlag =
   (
-    tbfPressed,     // set while mouse is pressed on button
-    tbfArrowPressed,// set while mouse is pressed on arrow button
-    tbfMouseInArrow,// set while mouse is on arrow button
-    tbfDropDownMenuShown // set while dropdownmenu is shown
+    tbfPressed,          // Set while mouse is pressed on button.
+    tbfArrowPressed,     // Set while mouse is pressed on arrow button.
+    tbfMouseInArrow,     // Set while mouse is on arrow button.
+    tbfDropDownMenuShown // Set while dropdown menu is shown.
   );
   TToolButtonFlags = set of TToolButtonFlag;
 
@@ -2903,28 +2903,28 @@ type
   TTreeNodeClass = class of TTreeNode;
 
   TNodeState = (
-    nsCut,           // = Node.Cut
-    nsDropHilited,   // = Node.DropTarget
-    nsFocused,       // = Node.Focused
-    nsSelected,      // = Node.Selected
-    nsMultiSelected, // = Node.MultiSelected
-    nsExpanded,      // = Node.Expanded
-    nsHasChildren,   // = Node.HasChildren
-    nsDeleting,      // = Node.Deleting, set on Destroy
-    nsVisible,       // = Node.Visible
-    nsEnabled,       // = Node.Enabled
-    nsBound,          // bound to a tree, e.g. has Parent or is top lvl node
-    nsValidHasChildren// Node.HasChildren has been assigned
+    nsCut,             // = Node.Cut.
+    nsDropHilited,     // = Node.DropTarget.
+    nsFocused,         // = Node.Focused.
+    nsSelected,        // = Node.Selected.
+    nsMultiSelected,   // = Node.MultiSelected.
+    nsExpanded,        // = Node.Expanded.
+    nsHasChildren,     // = Node.HasChildren.
+    nsDeleting,        // = Node.Deleting, set on Destroy.
+    nsVisible,         // = Node.Visible.
+    nsEnabled,         // = Node.Enabled.
+    nsBound,           // Bound to a tree, e.g. has Parent or is top-level node.
+    nsValidHasChildren // Node.HasChildren has been assigned.
     );
   TNodeStates = set of TNodeState;
 
   TNodeAttachMode = (
-    naAdd,           // add as last sibling of Destination
-    naAddFirst,      // add as first sibling of Destination
-    naAddChild,      // add as last child of Destination
-    naAddChildFirst, // add as first child of Destination
-    naInsert,        // insert in front of Destination
-    naInsertBehind   // insert behind Destination
+    naAdd,           // Add as last sibling of Destination.
+    naAddFirst,      // Add as first sibling of Destination.
+    naAddChild,      // Add as last child of Destination.
+    naAddChildFirst, // Add as first child of Destination.
+    naInsert,        // Insert in front of Destination.
+    naInsertBehind   // Insert behind Destination.
     );
 
   TAddMode = (taAddFirst, taAdd, taInsert);
@@ -3371,8 +3371,8 @@ type
     tvsTripleClicked,
     tvsQuadClicked,
     tvsSelectionChanged,
-    tvsEditOnMouseUp, // if mouse up occurs on mouse down node: activate editing
-    tvsSingleSelectOnMouseUp // if mouse up occurs on mouse down node: single select this node
+    tvsEditOnMouseUp,        // If mouse-up occurs on mouse-down node: activate editing.
+    tvsSingleSelectOnMouseUp // If mouse-up occurs on mouse-down node: single select this node.
     );
   TTreeViewStates = set of TTreeViewState;
 
@@ -3408,16 +3408,16 @@ const
 
 type
   TTreeViewExpandSignType = (
-    tvestTheme,       // use themed sign
-    tvestPlusMinus,   // use +/- sign
-    tvestArrow,       // use blank arrow
-    tvestArrowFill,   // use filled arrow
-    tvestAngleBracket // use > symbol
+    tvestTheme,       // Use themed sign.
+    tvestPlusMinus,   // Use +/- sign.
+    tvestArrow,       // Use blank arrow.
+    tvestArrowFill,   // Use filled arrow.
+    tvestAngleBracket // Use > symbol.
   );
 
   TTreeViewInsertMarkType = (
     tvimNone,
-    tvimAsFirstChild,  // or as root
+    tvimAsFirstChild,  // Or as root.
     tvimAsNextSibling,
     tvimAsPrevSibling
   );
