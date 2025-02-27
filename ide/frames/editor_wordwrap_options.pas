@@ -21,21 +21,32 @@ type
     cbEnableWordWrap: TCheckBox;
     cbIndentIsOffset: TCheckBox;
     cbHomeEndKey: TCheckBox;
-    DividerBevel1: TDividerBevel;
+    cbFixedWidth: TCheckBox;
+    DividerBevelIndent: TDividerBevel;
+    DividerBevelColumn: TDividerBevel;
     edMinWordWrapWidth: TSpinEdit;
+    edMaxWordWrapWidth: TSpinEdit;
     edWordWrapIndentMax: TSpinEdit;
     edWordWrapIndentMaxRel: TSpinEdit;
     edWordWrapIndent: TSpinEdit;
     edWordWrapIndentMin: TSpinEdit;
-    Label1: TLabel;
+    lblBevelColumn: TLabel;
+    lblBevelCol2: TLabel;
+    lblBevelIndent: TLabel;
+    lblBevelIndent2: TLabel;
+    lblFixedCol: TLabel;
+    lblIndentOffs: TLabel;
+    lblFixedCol2: TLabel;
+    lblIndentOffs2: TLabel;
     lbMinWordWrapWidth: TLabel;
+    lbMaxWordWrapWidth: TLabel;
     lbWordWrapIndentMin: TLabel;
     lbWordWrapIndent: TLabel;
     lbWordWrapIndentMax: TLabel;
     lbWordWrapIndentMaxRel: TLabel;
     Panel1: TPanel;
-    Panel2: TPanel;
     rgCaretWrapPos: TRadioGroup;
+    procedure cbFixedWidthChange(Sender: TObject);
     procedure cbIndentIsOffsetChange(Sender: TObject);
   private
 
@@ -67,6 +78,15 @@ begin
   end;
 end;
 
+procedure TEditorWordWrapOptionsFrame.cbFixedWidthChange(Sender: TObject);
+begin
+  edMaxWordWrapWidth.Enabled := not cbFixedWidth.Checked;
+  case cbFixedWidth.Checked of
+    True:    lbMinWordWrapWidth.Caption := dlgOptWordWrapFixedLineLength;
+    False:   lbMinWordWrapWidth.Caption := dlgOptWordWrapMinimumLineLength;
+  end;
+end;
+
 function TEditorWordWrapOptionsFrame.GetTitle: String;
 begin
   Result := dlgOptWordWrap;
@@ -79,9 +99,12 @@ begin
   rgCaretWrapPos.Items.Add(dlgOptWordWrapEndOfLine);
   rgCaretWrapPos.Items.Add(dlgOptWordWrapStartOfNextLine);
   cbHomeEndKey.Caption := dlgOptWordWrapHomeEndKey;
-  DividerBevel1.Caption := dlgOptWordWrapSectionIndent;
+  DividerBevelColumn.Caption := dlgOptWordWrapSectionColumn;
   lbMinWordWrapWidth.Caption := dlgOptWordWrapMinimumLineLength;
+  lbMaxWordWrapWidth.Caption := dlgOptWordWrapMaximumLineLength;
+  cbFixedWidth.Caption := dlgOptWordWrapCheckFixedLength;
 
+  DividerBevelIndent.Caption := dlgOptWordWrapSectionIndent;
   lbWordWrapIndent.Caption       := dlgOptWordWrapIndent;
   cbIndentIsOffset.Caption       := dlgOptWordWrapIndentIsOffset;
   lbWordWrapIndentMin.Caption    := dlgOptWordWrapIndentMin;
@@ -96,14 +119,19 @@ begin
     wcpEOL: rgCaretWrapPos.ItemIndex := 0;
     wcpBOL: rgCaretWrapPos.ItemIndex := 1;
   end;
-  edMinWordWrapWidth.Value := (AOptions as TEditorOptions).WordWrapMinWidth;
   cbHomeEndKey.Checked     := (AOptions as TEditorOptions).WordWrapForceHomeEnd;
+
+  cbFixedWidth.Checked     := (AOptions as TEditorOptions).WordWrapFixedWidth;
+  edMinWordWrapWidth.Value := (AOptions as TEditorOptions).WordWrapMinWidth;
+  edMaxWordWrapWidth.Value := (AOptions as TEditorOptions).WordWrapMaxWidth;
 
   edWordWrapIndent.Value       := (AOptions as TEditorOptions).WordWrapIndent;
   cbIndentIsOffset.Checked     := (AOptions as TEditorOptions).WordWrapIndentUseOffset;
   edWordWrapIndentMin.Value    := (AOptions as TEditorOptions).WordWrapIndentMin;
   edWordWrapIndentMax.Value    := (AOptions as TEditorOptions).WordWrapIndentMax;
   edWordWrapIndentMaxRel.Value := (AOptions as TEditorOptions).WordWrapIndentMaxRel;
+
+  cbFixedWidthChange(nil);
 end;
 
 procedure TEditorWordWrapOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
@@ -113,8 +141,11 @@ begin
     0: (AOptions as TEditorOptions).WordWrapCaretWrapPos := wcpEOL;
     1: (AOptions as TEditorOptions).WordWrapCaretWrapPos := wcpBOL;
   end;
-  (AOptions as TEditorOptions).WordWrapMinWidth := edMinWordWrapWidth.Value;
   (AOptions as TEditorOptions).WordWrapForceHomeEnd := cbHomeEndKey.Checked;
+
+  (AOptions as TEditorOptions).WordWrapFixedWidth := cbFixedWidth.Checked;
+  (AOptions as TEditorOptions).WordWrapMinWidth := edMinWordWrapWidth.Value;
+  (AOptions as TEditorOptions).WordWrapMaxWidth := edMaxWordWrapWidth.Value;
 
   (AOptions as TEditorOptions).WordWrapIndent          := edWordWrapIndent.Value;
   (AOptions as TEditorOptions).WordWrapIndentUseOffset := cbIndentIsOffset.Checked;

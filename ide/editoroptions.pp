@@ -1603,12 +1603,14 @@ type
     // Wordwrap
     FWordWrapCaretWrapPos: TLazSynEditWrapCaretPos;
     FWordWrapEnabled: Boolean;
+    FWordWrapFixedWidth: boolean;
     FWordWrapForceHomeEnd: Boolean;
     FWordWrapIndent: Integer;
     FWordWrapIndentMax: Integer;
     FWordWrapIndentMaxRel: Integer;
     FWordWrapIndentMin: Integer;
     FWordWrapIndentUseOffset: boolean;
+    FWordWrapMaxWidth: Integer;
     FWordWrapMinWidth: Integer;
 
     fUseTabHistory: Boolean;
@@ -1695,6 +1697,8 @@ type
     property WordWrapCaretWrapPos: TLazSynEditWrapCaretPos read FWordWrapCaretWrapPos write FWordWrapCaretWrapPos;
     property WordWrapForceHomeEnd: Boolean read FWordWrapForceHomeEnd write FWordWrapForceHomeEnd;
     property WordWrapMinWidth: Integer read FWordWrapMinWidth write FWordWrapMinWidth default 10;
+    property WordWrapMaxWidth: Integer read FWordWrapMaxWidth write FWordWrapMaxWidth default 0;
+    property WordWrapFixedWidth: boolean read FWordWrapFixedWidth write FWordWrapFixedWidth default False;
 
     property WordWrapIndent: Integer read FWordWrapIndent write FWordWrapIndent default 0;
     property WordWrapIndentUseOffset: boolean read FWordWrapIndentUseOffset write FWordWrapIndentUseOffset default True;
@@ -6847,6 +6851,10 @@ begin
       TIDESynEditor(ASynEdit).WordWrapCaretWrapPos  := WordWrapCaretWrapPos;
       TIDESynEditor(ASynEdit).WordWrapForceHomeEnd  := FWordWrapForceHomeEnd;
       TIDESynEditor(ASynEdit).WordWrapMinWidth      := WordWrapMinWidth;
+      if WordWrapFixedWidth then
+        TIDESynEditor(ASynEdit).WordWrapMaxWidth      := WordWrapMinWidth
+      else
+        TIDESynEditor(ASynEdit).WordWrapMaxWidth      := WordWrapMaxWidth;
       TIDESynEditor(ASynEdit).WordWrapIndent           := WordWrapIndent;
       TIDESynEditor(ASynEdit).WordWrapIndentUseOffset  := WordWrapIndentUseOffset;
       TIDESynEditor(ASynEdit).WordWrapIndentMin        := WordWrapIndentMin;

@@ -306,6 +306,7 @@ type
     procedure SetWordWrapIndentMaxRel(AValue: Integer);
     procedure SetWordWrapIndentMin(AValue: Integer);
     procedure SetWordWrapIndentUseOffset(AValue: boolean);
+    procedure SetWordWrapMaxWidth(AValue: Integer);
     procedure SetWordWrapMinWidth(AValue: Integer);
     procedure SrcSynCaretChanged(Sender: TObject);
     function  GetHighlighter: TSynCustomFoldHighlighter;
@@ -357,6 +358,7 @@ type
     property WordWrapCaretWrapPos: TLazSynEditWrapCaretPos write SetWordWrapCaretWrapPos;
     property WordWrapForceHomeEnd: Boolean write SetWordWrapForceHomeEnd;
     property WordWrapMinWidth: Integer write SetWordWrapMinWidth;
+    property WordWrapMaxWidth: Integer write SetWordWrapMaxWidth;
 
     property WordWrapIndent: Integer write SetWordWrapIndent;
     property WordWrapIndentUseOffset: boolean write SetWordWrapIndentUseOffset;
@@ -1647,6 +1649,12 @@ procedure TIDESynEditor.SetWordWrapIndentUseOffset(AValue: boolean);
 begin
   if FWrapView <> nil then
     FWrapView.WrapIndentIsOffset := AValue;
+end;
+
+procedure TIDESynEditor.SetWordWrapMaxWidth(AValue: Integer);
+begin
+  if FWrapView <> nil then
+    FWrapView.MaxWrapWidth := AValue;
 end;
 
 procedure TIDESynEditor.SetWordWrapMinWidth(AValue: Integer);
