@@ -209,6 +209,7 @@ type
     FMarkupInfoWrapSubLine: TSynSelectedColor;
 
     FMinWrapWidth: Integer;
+    FMaxWrapWidth: Integer;
     FOverrideHomeEndKeyDefaults: boolean;
     FWrapIndentMaxAbs: Integer;
     FWrapIndentMaxRel: Integer;
@@ -230,6 +231,7 @@ type
     procedure SetWrapIndentMaxRel(AValue: Integer);
     procedure SetWrapIndentMinAbs(AValue: Integer);
     procedure SetMinWrapWidth(AValue: Integer);
+    procedure SetMaxWrapWidth(AValue: Integer);
     procedure SetWrapIndentIsOffset(AValue: Boolean);
     procedure SetWrapIndentWidth(AValue: Integer);
     function CreatePageMapNode(AMapTree: TSynLineMapAVLTree
@@ -290,6 +292,7 @@ type
     property OverrideHomeEndKeyDefaults: boolean read FOverrideHomeEndKeyDefaults write FOverrideHomeEndKeyDefaults;
 
     property MinWrapWidth: Integer read FMinWrapWidth write SetMinWrapWidth;
+    property MaxWrapWidth: Integer read FMaxWrapWidth write SetMaxWrapWidth;
     property WrapIndentWidth: Integer read FWrapIndentWidth write SetWrapIndentWidth;
     property WrapIndentIsOffset: Boolean read FWrapIndentIsOffset write SetWrapIndentIsOffset;
     property WrapIndentMinAbs: Integer read FWrapIndentMinAbs write SetWrapIndentMinAbs;
@@ -1734,6 +1737,8 @@ begin
   Result := TSynEdit(Editor).CharsInWindow - 1;
   if Result < FMinWrapWidth then
     Result := FMinWrapWidth;
+  if (FMaxWrapWidth > 0) and (Result > FMaxWrapWidth) then
+    Result := FMaxWrapWidth;
 end;
 
 procedure TLazSynEditLineWrapPlugin.SetKeyStrokes(AValue: TSynEditLineMapKeyStrokes);
@@ -1776,7 +1781,22 @@ begin
   if AValue < 1 then
     AValue := 1;
   if FMinWrapWidth = AValue then Exit;
+
   FMinWrapWidth := AValue;
+  if (AValue > 0) and (FMaxWrapWidth > 0) and (FMaxWrapWidth < AValue) then
+    FMaxWrapWidth := AValue;
+  DoWidthChanged(nil, [scCharsInWindow]);
+end;
+
+procedure TLazSynEditLineWrapPlugin.SetMaxWrapWidth(AValue: Integer);
+begin
+  if AValue < 0 then
+    AValue := 0;
+  if FMaxWrapWidth = AValue then Exit;
+
+  FMaxWrapWidth := AValue;
+  if (AValue > 0) and (FMinWrapWidth > AValue) then
+    FMinWrapWidth := AValue;
   DoWidthChanged(nil, [scCharsInWindow]);
 end;
 
