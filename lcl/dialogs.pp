@@ -184,47 +184,45 @@ type
   { TOpenDialog }
   
   TOpenOption = (
-    ofReadOnly,
-    ofOverwritePrompt, // if selected file exists shows a message, that file
-                       // will be overwritten
-    ofHideReadOnly,    // hide read only file
-    ofNoChangeDir,     // do not change current directory
-    ofShowHelp,        // show a help button
-    ofNoValidate,
-    ofAllowMultiSelect,// allow multiselection
-    ofExtensionDifferent, // set after the dialog is executed (so, don't set it yourself) if DefaultExt <> '' and Extension <> DefaultExt
-    ofPathMustExist,   // shows an error message if selected path does not exist
-    ofFileMustExist,   // shows an error message if selected file does not exist
-    ofCreatePrompt,
-    ofShareAware,
-    ofNoReadOnlyReturn,// do not return filenames that are readonly
-    ofNoTestFileCreate,
-    ofNoNetworkButton,
-    ofNoLongNames,
-    ofOldStyleDialog,
-    ofNoDereferenceLinks,// do not resolve links while dialog is shown (only on Windows, see OFN_NODEREFERENCELINKS)
-    ofNoResolveLinks,  // do not resolve links after Execute
-    ofEnableIncludeNotify,
-    ofEnableSizing,    // dialog can be resized, e.g. via the mouse
-    ofDontAddToRecent, // do not add the path to the history list
-    ofForceShowHidden, // show hidden files
-    ofViewDetail,      // details are OS and interface dependent
-    ofAutoPreview      // details are OS and interface dependent
+    ofReadOnly,            // Include read-only files.
+    ofOverwritePrompt,     // If selected file exists show a message, that file will be overwritten.
+    ofHideReadOnly,        // Hide read-only file.
+    ofNoChangeDir,         // Do not change current directory.
+    ofShowHelp,            // Show a help button.
+    ofNoValidate,          // Disable file name validation using OFN_NOVALIDATE on the Windows platform. Allow file names with invalid characters.
+    ofAllowMultiSelect,    // Allow multi-selection in dialog.
+    ofExtensionDifferent,  // Option is set after the dialog is executed (so, don't set it yourself) if DefaultExt<>'' and Extension<>DefaultExt.
+    ofPathMustExist,       // Show an error message if selected path does not exist.
+    ofFileMustExist,       // Show an error message if selected file does not exist.
+    ofCreatePrompt,        // Enable a verification prompt when a file or directory needs to be created for a file dialog.
+    ofShareAware,          // Include the OFN_SHAREAWARE flag on the Windows platform.
+    ofNoReadOnlyReturn,    // Do not return file names that are read-only.
+    ofNoTestFileCreate,    // Include the OFN_NOTESTFILECREATE flag on the Windows platform.
+    ofNoNetworkButton,     // Disable and hide the Network button on the Windows platform.
+    ofNoLongNames,         // Disable long file names on the Windows platform. Used in classic-style dialogs to force use of file names using the 8.3 format.
+    ofOldStyleDialog,      // Prevents use of the OFN_EXPLORER and dependent flags in dialogs on the Windows platform.
+    ofNoDereferenceLinks,  // Do not resolve links while dialog is shown (only on Windows, see OFN_NODEREFERENCELINKS).
+    ofNoResolveLinks,      // Do not resolve links after Execute.
+    ofEnableIncludeNotify, // Not used in the current LCL version.
+    ofEnableSizing,        // Dialog can be resized, e.g. via the mouse.
+    ofDontAddToRecent,     // Do not add the path to the history list.
+    ofForceShowHidden,     // Show hidden files.
+    ofViewDetail,          // Details are OS and interface dependent.
+    ofAutoPreview          // OS and interface dependent.
     );
   TOpenOptions = set of TOpenOption;
 
   // WS specific options that cannot be (more or less) mapped to the standard TOpenOptions
   // Currently just Windows Vista+ (IFileDialog) options
   TOpenOptionEx = (
-    ofHidePinnedPlaces,         //Windows Vista+ Hide items shown by default in the view's navigation pane.
-    ofForcePreviewPaneOn,       //Windows Vista+ Indicates to the Open dialog box that the preview pane should always be displayed (a NARG/NARL option IMHO)
-    ofStrictFileTypes,          //Windows Vista+ In the Save dialog, only allow the user to choose a file that has one of the file name extensions specified through Filter property
-    ofPickFolders,              //Windows Vista+ Turns the dialog into a TSelectDirectoryDialog
-    ofOkButtonNeedsInteraction, //Windows Vista+ The OK button will be disabled until the user navigates the view or edits the filename (if applicable).
-    ofForceFileSystem,          //Windows Vista+ Ensures that returned items are file system items
-    ofAllNonStorageItems,       //Windows Vista+ Enables the user to choose any item in the Shell namespace, not just those with SFGAO_STREAM or SFAGO_FILESYSTEM attributes.
-                                //               This flag cannot be combined with FOS_FORCEFILESYSTEM.
-    ofUseXPStyleAsFallBack      //Windows Vista+ Use XP style dialog if creating Vista style dialog fails (e.g. when running under Windows Recovery)
+    ofHidePinnedPlaces,         // Windows Vista+: Hide items shown by default in the view's navigation pane.
+    ofForcePreviewPaneOn,       // Windows Vista+: Indicate to the Open dialog box that the preview pane should always be displayed.
+    ofStrictFileTypes,          // Windows Vista+: In the Save dialog, only allow the user to choose a file that has one of the file name extensions specified through Filter property.
+    ofPickFolders,              // Windows Vista+: Turns the dialog into a TSelectDirectoryDialog.
+    ofOkButtonNeedsInteraction, // Windows Vista+: The OK button will be disabled until the user navigates the view or edits the filename (if applicable).
+    ofForceFileSystem,          // Windows Vista+: Ensures that returned items are file system items.
+    ofAllNonStorageItems,       // Windows Vista+: Enables the user to choose any item in the Shell namespace, not just those with SFGAO_STREAM or SFAGO_FILESYSTEM attributes. Flag cannot be combined with ofForceFileSystem.
+    ofUseXPStyleAsFallBack      // Windows Vista+: Use XP-style dialog if creating Vista-style dialog fails (e.g. when running under Windows Recovery).
     // Intentionally not supported: ofDefaultNoMiniMode, ofHideMruPlaces: these values are not supported as of Windows 7.
   );
   TOpenOptionsEx = set of TOpenOptionEx;
@@ -289,15 +287,15 @@ type
   end;
 
   TColorDialogOption = (
-    cdFullOpen,         // Causes the dialog box to display the additional controls that allow the user to create custom colors.
-    cdPreventFullOpen,  // Disables the Define Custom Color button.
-    cdShowHelp,         // Causes the dialog box to display the Help button.
-    cdSolidColor,       // Causes the dialog box to display only solid colors in the set of basic colors.
-    cdAnyColor,         // Causes the dialog box to display all available colors in the set of basic colors.
-    cdShowAlphaChannel, // Shows the AlphaChannel control (GTK2, QT, QT5, QT6, Cocoa)
-    cdNoButtons,        // Removes the buttons from the dialog (QT, QT5, QT6)
-    cdDontUseNativeDialog, // Use QT dialog, not the dialog of the OS (QT, QT5, Qt6)
-    cdNoEyeDropperButton // Hide the Eye Dropper button. QT6.6+
+    cdFullOpen,            // Causes the dialog box to display the additional controls that allow the user to create custom colors.
+    cdPreventFullOpen,     // Disables the Define Custom Color button.
+    cdShowHelp,            // Causes the dialog box to display the Help button.
+    cdSolidColor,          // Causes the dialog box to display only solid colors in the set of basic colors.
+    cdAnyColor,            // Causes the dialog box to display all available colors in the set of basic colors.
+    cdShowAlphaChannel,    // Shows the AlphaChannel control (GTK2, Qt, Qt5, Qt6, Cocoa).
+    cdNoButtons,           // Removes the buttons from the dialog (Qt, Qt5, Qt6).
+    cdDontUseNativeDialog, // Use Qt dialog, not the dialog of the OS (Qt, Qt5, Qt6).
+    cdNoEyeDropperButton   // Hide the Eye Dropper button (Qt6.6+).
     );
   TColorDialogOptions = set of TColorDialogOption;
 

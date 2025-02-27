@@ -339,10 +339,10 @@ type
   { TCustomSplitter }
 
   TResizeStyle = (
-    rsLine,     // draw a line, don't update splitter position during moving
-    rsNone,     // draw nothing and don't update splitter position during moving
-    rsPattern,  // draw a dot pattern, don't update splitter position during moving
-    rsUpdate    // draw nothing, update splitter position during moving
+    rsLine,     // Draw a line, don't update splitter position during moving.
+    rsNone,     // Draw nothing and don't update splitter position during moving.
+    rsPattern,  // Draw a dot pattern, don't update splitter position during moving.
+    rsUpdate    // Draw nothing, update splitter position during moving.
   );
 
   TCanOffsetEvent = procedure(Sender: TObject; var NewOffset: Integer;
@@ -1244,10 +1244,11 @@ type
                 fsTopBottomLeftRight, fsBottomTopLeftRight, fsTopBottomRightLeft, fsBottomTopRightLeft);
 
   TWrapAfter = (
-    waAuto,    // auto
-    waForce,   // always wrap after this control
-    waAvoid,   // try not to wrap after this control, if the control is already at the beginning of the row, wrap though
-    waForbid); // never wrap after this control
+    waAuto,  // Wrap automatically.
+    waForce, // Always wrap after this control.
+    waAvoid, // Try not to wrap after this control, if the control is already at the beginning of the row, wrap though.
+    waForbid // Never wrap after this control.
+  );
 
   TFlowPanelControl = class(TCollectionItem, IObjInspInterface)
   private
