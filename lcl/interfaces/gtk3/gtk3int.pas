@@ -47,6 +47,7 @@ type
 
   TGtk3WidgetSet = class(TWidgetSet)
   private
+    FIsWayland: boolean;
     FActivityCounter: integer;
     FMainPoll: PGPollFD;
     FGtk3Application: PGtkApplication;
@@ -95,6 +96,7 @@ type
     FDragImageLock: Boolean;
 
   public
+    function IsWayland: boolean;
     function CreateDCForWidget(AWidget: PGtkWidget; AWindow: PGdkWindow; cr: Pcairo_t): HDC;
     procedure AddWindow(AWindow: PGtkWindow);
     {$IFDEF UNIX}

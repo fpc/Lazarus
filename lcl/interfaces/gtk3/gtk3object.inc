@@ -73,6 +73,11 @@ begin
     FGtk3Application^.register(nil, nil);
   end;
   GTK3WidgetSet := Self;
+  {$IFDEF UNIX}
+  FIsWayland := CompareText(G_OBJECT_TYPE_NAME(gdk_display_get_default),'gdkwaylanddisplay') = 0;
+  {$ELSE}
+  FIsWayland := False;
+  {$ENDIF}
 end;
 
 procedure TGtk3WidgetSet.Gtk3Destroy;
@@ -128,6 +133,11 @@ begin
   for i := Low(FSysColorBrushes) to High(FSysColorBrushes) do
     if FSysColorBrushes[i] <> HBRUSH(-1) then
       DeleteAndNilObject(FSysColorBrushes[i]);
+end;
+
+function TGtk3WidgetSet.IsWayland: boolean;
+begin
+  Result := FIsWayland;
 end;
 
 {$IFNDEF UNIX}
