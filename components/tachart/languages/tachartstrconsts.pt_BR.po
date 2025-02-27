@@ -500,6 +500,10 @@ msgstr "Parâmetros de ordenação selecionados não são suportados por %s."
 msgid "Star (lines)"
 msgstr "Estrela (linhas)"
 
+#: tachartstrconsts.rsstateseries
+msgid "State series"
+msgstr ""
+
 #: tachartstrconsts.rstop
 msgid "Top"
 msgstr "Topo"

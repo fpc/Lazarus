@@ -503,6 +503,10 @@ msgstr ""
 msgid "Star (lines)"
 msgstr ""
 
+#: tachartstrconsts.rsstateseries
+msgid "State series"
+msgstr ""
+
 #: tachartstrconsts.rstop
 msgid "Top"
 msgstr ""

@@ -16,7 +16,7 @@ unit TATools;
 
 interface
 
-uses
+uses                        lazloggerbase,
   // LCL
   LCLIntf, LCLType,  // must be before Types
   // RTL, FCL
@@ -2027,6 +2027,9 @@ begin
   FindNearestPoint(APoint);
   if FSeries = nil then exit;
   FOrigin := NearestGraphPoint;
+
+  DebugLn(['[TDatapointDragTool.MouseDown] APoint=(', APoint.x,';',APoint.y,'), FSeries=', TChartSeries(FSeries).Title, ', FOrigin=(',FormatFloat('0.00',FOrigin.X),';',FormatFloat('0.00',FOrigin.Y),'), FXIndex=', FXIndex, ', FPointIndex=', FPointIndex]);
+
   FSeries.DragOrigin := APoint;
   p := FChart.ImageToGraph(APoint);
   FDistance := p - FOrigin;

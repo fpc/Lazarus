@@ -500,6 +500,10 @@ msgstr "Выбранные параметры сортировки не подд
 msgid "Star (lines)"
 msgstr "Звезда (из линий)"
 
+#: tachartstrconsts.rsstateseries
+msgid "State series"
+msgstr ""
+
 #: tachartstrconsts.rstop
 msgid "Top"
 msgstr "Верхняя"

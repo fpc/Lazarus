@@ -500,6 +500,10 @@ msgstr "Les paramètres de tri sélectionnés ne sont pas pris en charge par %s.
 msgid "Star (lines)"
 msgstr "Étoile (lignes)"
 
+#: tachartstrconsts.rsstateseries
+msgid "State series"
+msgstr ""
+
 #: tachartstrconsts.rstop
 msgid "Top"
 msgstr "Haut"

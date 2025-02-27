@@ -27,6 +27,7 @@ resourcestring
   rsExpressionSeries = 'Math expression series';
   rsExpressionColorMapSeries = 'Math expression color map series';
   rsPolygonSeries = 'Polygon series';
+  rsStateSeries = 'State series';
 
   // Series editor
   sesSeriesEditorTitle = 'Edit series';

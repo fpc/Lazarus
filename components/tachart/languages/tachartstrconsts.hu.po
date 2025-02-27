@@ -500,6 +500,10 @@ msgstr "A(z) %s nem támogatja a kiválasztott rendezési paramétert."
 msgid "Star (lines)"
 msgstr "Csillag (vonalak)"
 
+#: tachartstrconsts.rsstateseries
+msgid "State series"
+msgstr ""
+
 #: tachartstrconsts.rstop
 msgid "Top"
 msgstr "Felülre"

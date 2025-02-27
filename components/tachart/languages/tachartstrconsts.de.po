@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.1\n"
+"X-Generator: Poedit 3.5\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: tachartstrconsts.descolor
@@ -366,9 +366,9 @@ msgid "The %0:s.DataPoints string \"%1:s\" is not a valid number."
 msgstr "Der %0:s.DataPoints-String \"%1:s\" ist keine gültige Zahl."
 
 #: tachartstrconsts.rslistsourcestringformaterror
-#, object-pascal-format, fuzzy, badformat
+#, object-pascal-format
 msgid "The data value count in the %0:s.DataPoints string \"%1:s\" differs from what is expected from XCount and YCount."
-msgstr "Die Anzahl der Datenwerte im %s.DataPoints-String \"%s\" entspricht nicht der, die aufgrund von XCount und YCount erwartet wird."
+msgstr "Die Anzahl der Datenwerte im %0:s.DataPoints-String \"%1:s\" entspricht nicht der, die aufgrund von XCount und YCount erwartet wird."
 
 #: tachartstrconsts.rslogarithmic
 msgid "Logarithmic"
@@ -502,6 +502,10 @@ msgstr "Die ausgewählten Sortier-Parameter werden von %s nicht unterstützt."
 msgid "Star (lines)"
 msgstr "Stern (Linien)"
 
+#: tachartstrconsts.rsstateseries
+msgid "State series"
+msgstr "Zustands-Diagramm"
+
 #: tachartstrconsts.rstop
 msgid "Top"
 msgstr "Oben"
@@ -556,4 +560,3 @@ msgstr "Fehler beim Umbenennen von Komponenten: %s"
 #: tachartstrconsts.tastoolseditortitle
 msgid "Edit tools"
 msgstr "Werkzeuge bearbeiten"
-

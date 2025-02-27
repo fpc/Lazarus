@@ -1,0 +1,200 @@
+object MainForm: TMainForm
+  Left = 314
+  Height = 292
+  Top = 130
+  Width = 690
+  Caption = 'StateSeries Demo'
+  ClientHeight = 292
+  ClientWidth = 690
+  LCLVersion = '4.99.0.0'
+  OnCreate = FormCreate
+  object Chart: TChart
+    Left = 6
+    Height = 221
+    Top = 6
+    Width = 678
+    AxisList = <    
+      item
+        Grid.Color = clSilver
+        Marks.Alignment = taCenter
+        Marks.Distance = 8
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Grid.Color = clSilver
+        Alignment = calBottom
+        Marks.Alignment = taCenter
+        Marks.Format = '%2:s'
+        Marks.LabelBrush.Style = bsClear
+        Marks.Source = DateTimeIntervalChartSource
+        Marks.Style = smsLabel
+        Minors = <>
+        Title.LabelBrush.Style = bsClear
+        OnGetMarkText = Chart1AxisList1GetMarkText
+      end>
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Toolset = ChartToolset
+    Align = alClient
+    BorderSpacing.Around = 6
+    object MachineA_Series: TStateSeries
+      Title = 'Machine A'
+      Brush.Color = clRed
+    end
+    object MachineB_Series: TStateSeries
+      Title = 'Machine B'
+      Brush.Color = clRed
+    end
+    object MachineC_Series: TStateSeries
+      Title = 'Machine C'
+      Brush.Color = clRed
+    end
+  end
+  object FlowPanel1: TFlowPanel
+    Left = 6
+    Height = 44
+    Top = 242
+    Width = 678
+    Align = alBottom
+    AutoSize = True
+    BevelOuter = bvNone
+    BorderSpacing.Around = 6
+    ControlList = <    
+      item
+        Control = cbSeriesMarks
+        WrapAfter = waAuto
+        Index = 0
+      end    
+      item
+        Control = cbShowPopupHints
+        WrapAfter = waAuto
+        Index = 1
+      end    
+      item
+        Control = cbRotated
+        WrapAfter = waForce
+        Index = 2
+      end    
+      item
+        Control = Panel1
+        WrapAfter = waAuto
+        Index = 3
+      end>
+    FlowLayout = tlTop
+    FlowStyle = fsLeftRightTopBottom
+    TabOrder = 1
+    object cbSeriesMarks: TCheckBox
+      Left = 0
+      Height = 19
+      Top = 0
+      Width = 114
+      Anchors = []
+      BorderSpacing.Right = 16
+      Caption = 'Show series marks'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnChange = cbSeriesMarksChange
+    end
+    object cbShowPopupHints: TCheckBox
+      AnchorSideLeft.Side = asrBottom
+      Left = 130
+      Height = 19
+      Top = 0
+      Width = 114
+      Anchors = []
+      BorderSpacing.Right = 16
+      Caption = 'Show popup hints'
+      TabOrder = 1
+      OnChange = cbShowPopupHintsChange
+    end
+    object cbRotated: TCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 260
+      Height = 19
+      Top = 0
+      Width = 59
+      Anchors = []
+      BorderSpacing.Right = 16
+      Caption = 'Rotated'
+      TabOrder = 2
+      OnChange = cbRotatedChange
+    end
+    object Panel1: TPanel
+      Left = 0
+      Height = 25
+      Top = 19
+      Width = 226
+      Anchors = []
+      AutoSize = True
+      BevelOuter = bvNone
+      ClientHeight = 25
+      ClientWidth = 226
+      TabOrder = 3
+      object Label1: TLabel
+        AnchorSideLeft.Control = Panel1
+        AnchorSideTop.Control = TrackBar1
+        AnchorSideTop.Side = asrCenter
+        Left = 0
+        Height = 15
+        Top = 5
+        Width = 54
+        BorderSpacing.Right = 8
+        Caption = 'Bar height'
+      end
+      object TrackBar1: TTrackBar
+        AnchorSideLeft.Control = Label1
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = Panel1
+        Left = 62
+        Height = 25
+        Top = 0
+        Width = 164
+        Frequency = 10
+        Max = 100
+        Position = 70
+        OnChange = TrackBar1Change
+        TabOrder = 0
+      end
+    end
+  end
+  object Bevel1: TBevel
+    Left = 0
+    Height = 3
+    Top = 233
+    Width = 690
+    Align = alBottom
+    Shape = bsBottomLine
+  end
+  object DateTimeIntervalChartSource: TDateTimeIntervalChartSource
+    Params.MaxLength = 100
+    Left = 134
+    Top = 46
+  end
+  object MachineLabelsChartSource: TListChartSource
+    Left = 312
+    Top = 44
+  end
+  object ChartToolset: TChartToolset
+    Left = 453
+    Top = 46
+    object DataPointHintTool: TDataPointHintTool
+      Enabled = False
+    end
+    object ChartToolsetZoomDragTool1: TZoomDragTool
+      Shift = [ssLeft]
+      Brush.Style = bsClear
+    end
+    object ChartToolsetPanDragTool1: TPanDragTool
+      Shift = [ssRight]
+    end
+    object ChartToolsetDataPointDragTool1: TDataPointDragTool
+      Shift = [ssCtrl, ssLeft]
+      KeepDistance = True
+    end
+  end
+end

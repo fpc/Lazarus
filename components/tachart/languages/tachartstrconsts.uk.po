@@ -503,6 +503,10 @@ msgstr "Вибрані параметри сортування не підтри
 msgid "Star (lines)"
 msgstr "Зірка (з ліній)"
 
+#: tachartstrconsts.rsstateseries
+msgid "State series"
+msgstr ""
+
 #: tachartstrconsts.rstop
 msgid "Top"
 msgstr "Верхня"
