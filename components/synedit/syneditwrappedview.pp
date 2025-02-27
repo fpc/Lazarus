@@ -335,7 +335,6 @@ begin
   end
   else begin
     assert((i = 0) or (Item[i-1].Last < AFromOffset-1), 'TSynWordWrapInvalidLines.InvalidateLines: (i = 0) or (Item[i-1].Last < AFromOffset-1)');
-    assert((i >= c -1) or (Item[i+1].First > AToOffset+1), 'TSynWordWrapInvalidLines.InvalidateLines: (i < Cnt-1) or (Item[i+1].First > AToOffset+1)');
     InsertRows(i, 1);
     PSynWordWrapInvalidLinesRecord(ItemPointer[i])^.First := AFromOffset;
     PSynWordWrapInvalidLinesRecord(ItemPointer[i])^.Last := AToOffset;
