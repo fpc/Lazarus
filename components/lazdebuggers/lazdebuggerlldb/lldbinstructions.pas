@@ -1244,12 +1244,13 @@ begin
     exit;
 
   if StrMatches(AData, ['  ', ' = ', ''], found) then begin
-    if FRes = nil then FRes := TStringList.Create;
-      reg := UpperCase(trim(found[0]));
-      i := pos(' ', found[1]);
-      if i < 1 then i := Length(found[1]);
-      val := copy(found[1], 1, i);
-      FRes.Values[reg] := val;
+    if FRes = nil then
+      FRes := TStringList.Create;
+    reg := UpperCase(trim(found[0]));
+    i := pos(' ', found[1]);
+    if i < 1 then i := Length(found[1]);
+    val := copy(found[1], 1, i);
+    FRes.Values[reg] := val;
     exit;
   end;
 
