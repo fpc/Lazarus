@@ -164,7 +164,6 @@ begin
             OutSideFrame := StackPointer + 1 * AddressSize < FrameBasePointer + 2 * AddressSize
           else
             OutSideFrame := AfterCallOut;
-if not OutSideFrame then debugln(['>>>>>>>>>>>> ####### FRAME UNWIND - new code update to better']);
         end;
       end;
 
