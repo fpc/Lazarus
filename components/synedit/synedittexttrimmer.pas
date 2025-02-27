@@ -686,7 +686,7 @@ var
   temp: String;
 begin
   if (not fEnabled) then exit(s);
-    {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- TrimLine ', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces), '  RealUndo=', RealUndo ]);{$ENDIF}
+  {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- TrimLine ', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces), '  RealUndo=', RealUndo ]);{$ENDIF}
   if RealUndo then begin
     temp := NextLines.Strings[Index];
     l := length(temp);

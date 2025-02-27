@@ -1807,26 +1807,27 @@ var
 begin
   ANextNode.ClearInfo;
   Assert(ANode.IsValid, 'ANode.IsValid in MaybeExtendNodeForward');
-  if AStopBeforeLine < 0 then AStopBeforeLine := Lines.Count + 1;
-    // ANode is a Scan-Start-Marker and may be extended downto StartLine
-    Line := ANode.StartLine + ANode.ScanEndOffs;
-    while Line < AStopBeforeLine - 1 do begin
-      inc(Line);
-      if CheckLineForNodes(Line) then begin
-        ScanLine(Line, ANextNode.FNode);
-        if ANextNode.HasNode then begin
-          ANextNode.FStartLine := Line;  // directly to field
-          ANode.ScanEndLine := Line - 1;
-          MaybeRequestNodeStates(ANextNode);
-          exit;
-        end;
+  if AStopBeforeLine < 0 then
+    AStopBeforeLine := Lines.Count + 1;
+  // ANode is a Scan-Start-Marker and may be extended downto StartLine
+  Line := ANode.StartLine + ANode.ScanEndOffs;
+  while Line < AStopBeforeLine - 1 do begin
+    inc(Line);
+    if CheckLineForNodes(Line) then begin
+      ScanLine(Line, ANextNode.FNode);
+      if ANextNode.HasNode then begin
+        ANextNode.FStartLine := Line;  // directly to field
+        ANode.ScanEndLine := Line - 1;
+        MaybeRequestNodeStates(ANextNode);
+        exit;
       end;
     end;
-    // Line is empty, include in offs
-    if ANode.ScanEndLine <> Line then begin
-      //debugln(['EXTEND FORWARD node ', ANode.StartLine, ' - ', ANode.ScanEndLine, ' TO ', Line]);
-      ANode.ScanEndLine := Line;
-    end;
+  end;
+  // Line is empty, include in offs
+  if ANode.ScanEndLine <> Line then begin
+    //debugln(['EXTEND FORWARD node ', ANode.StartLine, ' - ', ANode.ScanEndLine, ' TO ', Line]);
+    ANode.ScanEndLine := Line;
+  end;
 end;
 
 function TSynMarkupHighIfDefLinesTree.GetOrInsertNodeAtLine(ALinePos: Integer): TSynMarkupHighIfDefLinesNodeInfo;
