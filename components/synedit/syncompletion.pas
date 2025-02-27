@@ -1197,7 +1197,7 @@ begin
   inc(FResizeLock);   // prevent DoResize from recalculating NbLinesInWindow
   try
     inherited;
-    FillChar(TextMetric{%H-},SizeOf(TextMetric),0);
+    TextMetric := Default(TTextMetric);
     GetTextMetrics(Canvas.Handle, TextMetric);
     FFontHeight := TextMetric.tmHeight+2;
     SetNblinesInWindow(FNbLinesInWindow);
