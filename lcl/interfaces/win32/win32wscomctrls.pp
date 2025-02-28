@@ -362,8 +362,9 @@ begin
     WParam := WParam or ((StatusPanel.StatusBar.Panels.Count - 1) - StatusPanel.Index)
   else
     WParam := WParam or StatusPanel.Index;
-  if StatusPanel.StatusBar.UseRightToLeftReading then WParam := WParam or SBT_RTLREADING;
-    Windows.SendMessageW(StatusPanel.StatusBar.Handle, SB_SETTEXTW, WParam, LPARAM(PWideChar(UTF8ToUTF16(Text))));
+  if StatusPanel.StatusBar.UseRightToLeftReading then
+    WParam := WParam or SBT_RTLREADING;
+  Windows.SendMessageW(StatusPanel.StatusBar.Handle, SB_SETTEXTW, WParam, LPARAM(PWideChar(UTF8ToUTF16(Text))));
 end;
 
 procedure UpdateStatusBarPanelWidths(const StatusBar: TStatusBar);

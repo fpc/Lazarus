@@ -449,8 +449,9 @@ begin
       ' ': ;
       ';': begin
              Analyze(AList, ADomain, parts);
-             for p := 0 to Length(parts)-1 do parts[p] := '';
-               p := 0;
+             for p := 0 to Length(parts)-1 do
+               parts[p] := '';
+             p := 0;
            end;
       '<': if (i < Length(FExpression)) then begin
              inc(p);

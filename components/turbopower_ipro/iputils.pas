@@ -1034,8 +1034,9 @@ end;
 { Returns an appropriate string for the given parameters }
 class function TIpBaseComponent.GetLogString(const S, D1, D2, D3: DWORD): string;
 begin
-  if (S=0) or (D1=0) or (D2=0) or (D3=0) then ; // avoid hints
-    Result := '!!!! Unhandled log entry'#10#13;
+  if (S=0) or (D1=0) or (D2=0) or (D3=0) then
+    ; // avoid hints
+  Result := '!!!! Unhandled log entry'#10#13;
 end;
 
 procedure TIpBaseComponent.SetVersion(const Value: string);
