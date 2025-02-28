@@ -43,15 +43,15 @@ object MainForm: TMainForm
     BorderSpacing.Around = 6
     object MachineA_Series: TStateSeries
       Title = 'Machine A'
-      Brush.Color = clRed
+      BarBrush.Color = clRed
     end
     object MachineB_Series: TStateSeries
       Title = 'Machine B'
-      Brush.Color = clRed
+      BarBrush.Color = clRed
     end
     object MachineC_Series: TStateSeries
       Title = 'Machine C'
-      Brush.Color = clRed
+      BarBrush.Color = clRed
     end
   end
   object FlowPanel1: TFlowPanel
@@ -76,13 +76,18 @@ object MainForm: TMainForm
       end    
       item
         Control = cbRotated
-        WrapAfter = waForce
+        WrapAfter = waAuto
         Index = 2
+      end    
+      item
+        Control = cbAdjustMargin
+        WrapAfter = waForce
+        Index = 3
       end    
       item
         Control = Panel1
         WrapAfter = waAuto
-        Index = 3
+        Index = 4
       end>
     FlowLayout = tlTop
     FlowStyle = fsLeftRightTopBottom
@@ -123,6 +128,16 @@ object MainForm: TMainForm
       Caption = 'Rotated'
       TabOrder = 2
       OnChange = cbRotatedChange
+    end
+    object cbAdjustMargin: TCheckBox
+      Left = 335
+      Height = 19
+      Top = 0
+      Width = 93
+      Anchors = []
+      Caption = 'Adjust margin'
+      TabOrder = 4
+      OnChange = cbAdjustMarginChange
     end
     object Panel1: TPanel
       Left = 0

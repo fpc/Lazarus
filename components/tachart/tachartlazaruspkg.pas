@@ -19,7 +19,7 @@ uses
   TACustomFuncSeries, TAFitUtils, TAGUIConnector, TADiagram, TADiagramDrawing, 
   TADiagramLayout, TAChartStrConsts, TAChartCombos, TAHtml, TAFonts, 
   TAExpressionSeries, TAFitLib, TASourcePropEditors, TADataPointsEditor, 
-  TAPolygonSeries, TAColorMap, TAStateSeries, LazarusPackageIntf;
+  TAPolygonSeries, TAColorMap, LazarusPackageIntf;
 
 implementation
 

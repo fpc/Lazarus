@@ -1,10 +1,15 @@
 {
+ ***************************************************************************
+                             TAMultiSeries.pas
+                             -----------------
+                Component Library Multi-valued Graph Series
+
  *****************************************************************************
   See the file COPYING.modifiedLGPL.txt, included in this distribution,
   for details about the license.
  *****************************************************************************
 
-  Authors: Alexander Klenin
+  Authors: Alexander Klenin, Werner Pamler
 
 }
 
@@ -349,6 +354,59 @@ type
     property ToolTargets default [nptPoint, nptXList, nptYList, nptCustom];
     property VectorCoordKind: TVectorCoordKind read FCoordKind write SetCoordKind default vckCenterDir;
   end;
+
+  EStateSeriesError = class(EChartError);
+
+  TStateSeries = class(TBasicPointSeries)
+  private
+    const
+      DEFAULT_BAR_HEIGHT = 0.7;
+  private
+    FBarBrush: TBrush;
+    FBarHeight: Double;
+    FBarPen: TPen;
+    function IsStoredBarHeight: Boolean;
+    procedure SetBarBrush(AValue: TBrush);
+    procedure SetBarHeight(AValue: Double);
+    procedure SetBarPen(AValue: TPen);
+  protected
+    FMinYRange: Double;
+    function CalcBarHeight: Double;
+    function GetLabelDataPoint(AIndex, AYIndex: Integer): TDoublePoint; override;
+    procedure GetLegendItems(AItems: TChartLegendItems); override;
+    function GetYRange: Double;
+    function NearestYNumber(var AIndex: Integer; ADir: Integer): Double;
+
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure Assign(ASource: TPersistent); override;
+
+    function AddXY(AStart, AEnd, Y: Double; ALabel: String;
+      AColor: TColor = clTAColor): Integer;
+    procedure Draw(ADrawer: IChartDrawer); override;
+    function Extent: TDoubleRect; override;
+    function GetImgBarHeight({%H-}AIndex: Integer): Integer;
+    function GetNearestPoint(const AParams: TNearestPointParams;
+      out AResults: TNearestPointResults): Boolean; override;
+    procedure MovePointEx(var AIndex: Integer; AXIndex, AYIndex: Integer;
+      const ANewPos: TDoublePoint); override;
+
+    class procedure GetXYCountNeeded(out AXCount, AYCount: Cardinal); override;
+
+  published
+    property AxisIndexX;
+    property AxisIndexY;
+    property BarBrush: TBrush read FBarBrush write SetBarBrush;
+    property BarHeight: Double read FBarHeight write SetBarHeight stored IsStoredBarHeight;
+    property BarPen: TPen read FBarPen write SetBarPen;
+    property MarkPositions;
+    property Marks;
+    property Source;
+    property ToolTargets default [nptPoint, nptXList, nptCustom];
+
+  end;
+
 
 implementation
 
@@ -2574,10 +2632,437 @@ begin
 end;
 
 
+{ TStateSeries }
+
+constructor TStateSeries.Create(AOwner: TComponent);
+begin
+  inherited;
+
+  FBarPen := TPen.Create;
+  FBarPen.Color := clBlack;
+  FBarPen.OnChange := @StyleChanged;
+
+  FBarBrush := TBrush.Create;
+  FBarBrush.Color := clRed;
+  FBarBrush.OnChange := @StyleChanged;
+
+  FBarHeight := 0.0;
+
+  ToolTargets := [nptPoint, nptXList, nptCustom];
+end;
+
+destructor TStateSeries.Destroy;
+begin
+  FBarBrush.Free;
+  FBarPen.Free;
+  inherited;
+end;
+
+function TStateSeries.AddXY(AStart, AEnd, Y: Double;
+  ALabel: String; AColor: TColor = clTAColor): Integer;
+begin
+  EnsureOrder(AStart, AEnd);
+  Result := ListSource.AddXListY([AStart, AEnd], Y, ALabel, AColor);
+end;
+
+procedure TStateSeries.Assign(ASource: TPersistent);
+begin
+  if ASource is TStateSeries then
+    with TStateSeries(ASource) do begin
+      Self.BarBrush.Assign(FBarBrush);
+      Self.BarHeight := FBarHeight;
+      Self.BarPen.Assign(FBarPen);
+    end;
+  inherited Assign(ASource);
+end;
+
+function TStateSeries.CalcBarHeight: Double;
+var
+  yrng: Double;
+begin
+  if FBarHeight > 0 then
+    Result := FBarHeight
+  else
+  begin
+    Result := DEFAULT_BAR_HEIGHT;
+    if Count > 1 then
+    begin
+      yrng := GetYRange;
+      if yrng > 0 then
+      Result :=  yrng / (Count - 1);
+    end;
+  end;
+  Result := Result * 0.5;
+end;
+
+procedure TStateSeries.Draw(ADrawer: IChartDrawer);
+var
+  pointIndex: Integer;
+  scaledDepth: Integer;
+
+  procedure DrawBar(const ARect: TRect);
+  var
+    sz: TSize;
+    c: TColor;
+   // ic: IChartTCanvasDrawer;   -- maybe later...
+  begin
+    ADrawer.Pen := FBarPen;
+    if FBarPen.Color = clDefault then
+      ADrawer.SetPenColor(FChart.GetDefaultColor(dctFont))
+    else
+      ADrawer.SetPenColor(FBarPen.Color);
+    ADrawer.Brush := FBarBrush;
+    if FBarBrush.Color = clDefault then
+      ADrawer.SetBrushColor(FChart.GetDefaultColor(dctBrush))
+    else
+      ADrawer.SetPenColor(FBarPen.Color);
+
+    c := Source[pointIndex]^.Color;
+    if c <> clTAColor then
+      ADrawer.BrushColor := c;
+
+    sz := Size(ARect);
+    if (sz.cx <= 2*FBarPen.Width) or (sz.cy <= 2*FBarPen.Width) then begin
+      // Bars are too small to distinguish the border from the interior.
+      ADrawer.SetPenParams(psSolid, ADrawer.BrushColor);
+    end;
+            (*  todo --- add me
+    if Assigned(FOnCustomDrawBar) then begin
+      FOnCustomDrawBar(Self, ADrawer, AR, pointIndex, stackIndex);
+      exit;
+    end;
+
+    if Supports(ADrawer, IChartTCanvasDrawer, ic) and Assigned(OnBeforeDrawBar) then
+      OnBeforeDrawBar(Self, ic.Canvas, AR, pointIndex, stackIndex, defaultDrawing);
+    if not defaultDrawing then exit; *)
+
+    ADrawer.Rectangle(ARect);
+    if scaledDepth > 0 then begin
+      c := ADrawer.BrushColor;
+      ADrawer.BrushColor := GetDepthColor(c, true);
+      ADrawer.DrawLineDepth(
+        ARect.Left, ARect.Top, ARect.Right - 1, ARect.Top, scaledDepth);
+      ADrawer.BrushColor := GetDepthColor(c, false);
+      ADrawer.DrawLineDepth(
+        ARect.Right - 1, ARect.Top, ARect.Right - 1, ARect.Bottom - 1, scaledDepth);
+    end;
+  end;
+
+var
+  ext2: TDoubleRect;
+  p: TDoublePoint;
+
+  procedure BuildBar(x1, x2, y, barH: Double);
+  var
+    graphBar: TDoubleRect;
+    imageBar: TRect;
+  begin
+    graphBar := DoubleRect(x1, y - barH, x2, y + barH);
+    if IsRotated then
+      with graphBar do begin
+        Exchange(a.X, a.Y);
+        Exchange(b.X, b.Y);
+      end;
+
+    if not RectIntersectsRect(graphBar, ext2) then exit;
+
+    with imageBar do begin
+      TopLeft := ParentChart.GraphToImage(graphBar.a);
+      BottomRight := ParentChart.GraphToImage(graphBar.b);
+      TAGeometry.NormalizeRect(imageBar);
+      if IsRotated then inc(imageBar.Right) else inc(imageBar.Bottom);
+
+      // Draw a line instead of an empty rectangle.
+      if (Left = Right) and IsRotated then Dec(Left);
+      if (Bottom = Top) and not IsRotated then Inc(Bottom);
+    end;
+    DrawBar(imageBar);
+  end;
+
+var
+  x1, x2, h: Double;
+begin
+  if IsEmpty or (not Active) then exit;
+
+  ext2 := ParentChart.CurrentExtent;
+  ExpandRange(ext2.a.X, ext2.b.X, 1.0);
+  ExpandRange(ext2.a.Y, ext2.b.Y, 1.0);
+
+  scaledDepth := ADrawer.Scale(Depth);
+
+  PrepareGraphPoints(ext2, true);
+  for pointIndex := FLoBound to FUpBound do begin
+    p := Source[pointIndex]^.Point;
+    if SkipMissingValues(pointIndex) then
+      continue;
+    p.Y := AxisToGraphY(p.Y);
+    h := CalcBarHeight;
+
+    with Source[pointIndex]^ do
+    begin
+      x1 := AxisToGraphX(GetX(0));
+      x2 := AxisToGraphX(GetX(1));
+    end;
+
+    BuildBar(x1, x2, p.Y, h);
+  end;
+
+  DrawLabels(ADrawer);
+end;
+
+function TStateSeries.Extent: TDoubleRect;
+var
+  y, h: Double;
+  i: Integer;
+begin
+//  Result := inherited Extent;
+  Result := Source.ExtentXYList;
+
+  if FChart = nil then
+    raise EStateSeriesError.Create('Calculation of TStateTimeSeries.Extent is not possible when the series is not added to a chart.');
+
+  if IsEmpty then exit;
+
+  // Show bars fully
+  h := calcBarHeight;
+  if Source.YCount = 0 then begin
+    Result.a.Y -= h;
+    Result.b.Y += h;
+  end else begin
+    i := 0;
+    y := NearestYNumber(i, -1);   // --> y is in graph units
+    if not IsNan(y) then
+      Result.a.Y := Min(Result.a.Y, GraphToAxisY(y - h));
+    i := Count-1;
+    y := NearestYNumber(i, +1);
+    if not IsNaN(y) then
+      Result.b.Y := Max(Result.b.Y, GraphToAxisY(y + h));
+  end;
+end;
+
+function TStateSeries.GetImgBarHeight(AIndex: Integer): Integer;
+var
+  h: Double;
+  f: TGraphToImageFunc;
+begin
+  h := CalcBarHeight;
+  if IsRotated then
+    f := @FChart.YGraphToImage
+  else
+    f := @FChart.XGraphToImage;
+  Result := Abs(f(2 * h) - f(0));
+end;
+
+function TStateSeries.GetLabelDataPoint(AIndex, AYIndex: Integer): TDoublePoint;
+var
+  P1, P2: TDoublePoint;
+begin
+  P1 := GetGraphPoint(AIndex, 0, AYIndex);
+  P2 := GetGraphPoint(AIndex, 1, AYIndex);
+
+  if IsRotated then
+    Result := DoublePoint(P1.X, (P1.Y + P2.Y) / 2)
+  else
+    Result := DoublePoint((P1.X + P2.X) / 2, P1.Y);
+end;
+
+procedure TStateSeries.GetLegendItems(AItems: TChartLegendItems);
+begin
+  GetLegendItemsRect(AItems, BarBrush, BarPen);
+end;
+
+function TStateSeries.GetNearestPoint(const AParams: TNearestPointParams;
+  out AResults: TNearestPointResults): Boolean;
+var
+  pointIndex: Integer;
+  graphClickPt: TDoublePoint;
+  sp: TDoublePoint;
+  p1, p2, h: Double;
+  img1, img2, imgClick: Integer;
+begin
+  Result := false;
+  AResults.FDist := Sqr(AParams.FRadius) + 1;
+  AResults.FIndex := -1;
+  AResults.FXIndex := 0;
+  AResults.FYIndex := 0;
+
+  // clicked point in image units
+  graphClickPt := ParentChart.ImageToGraph(AParams.FPoint);
+
+  // Iterate through all points of the series
+  for pointIndex := 0 to Count - 1 do begin
+    sp := Source[pointIndex]^.Point;
+    if IsNaN(sp) then
+      Continue;
+    if Source.YCount = 0 then
+      sp.Y := pointIndex;
+    sp := AxisToGraph(sp);
+
+    h := CalcBarHeight;
+    if IsRotated then
+    begin
+      if not InRange(graphClickPt.X, sp.X - h, sp.X + h) then
+        Continue;
+      with Source[pointIndex]^ do
+      begin
+        p1 := AxisToGraphY(GetX(0));
+        p2 := AxisToGraphY(GetX(1));
+      end;
+      img1 := ParentChart.YGraphToImage(p1);
+      img2 := ParentChart.YGraphToImage(p2);
+      imgClick := AParams.FPoint.Y;
+    end else
+    begin
+      if not InRange(graphClickPt.Y, sp.Y - h, sp.Y + h) then
+        continue;
+      with Source[pointIndex]^ do
+      begin
+        p1 := AxisToGraphX(GetX(0));
+        p2 := AxisToGraphX(GetX(1));
+      end;
+      img1 := ParentChart.XGraphToImage(p1);
+      img2 := ParentChart.XGraphToImage(p2);
+      imgClick := AParams.FPoint.X;
+    end;
+
+    // Checking start point
+    if (nptPoint in AParams.FTargets) and (nptPoint in ToolTargets) and
+      InRange(imgClick, img1 - AParams.FRadius, img1 + AParams.FRadius) then
+    begin
+      AResults.FDist := abs(img1 - imgClick);
+      AResults.FIndex := pointindex;
+      AResults.FXIndex := 0;
+      AResults.FValue := DoublePoint(p1, Source[pointIndex]^.Point.Y);
+      Result := true;
+      break;
+    end;
+
+    // Checking end point
+    if (nptXList in AParams.FTargets) and (nptXList in ToolTargets) and
+      InRange(imgClick, img2 - AParams.FRadius, img2 + AParams.FRadius) then
+    begin
+      AResults.FDist := abs(img2 - imgClick);
+      AResults.FIndex := pointIndex;
+      AResults.FXIndex := 1;
+      AResults.FValue := DoublePoint(Source[pointindex]^.GetX(1), Source[pointindex]^.Y);
+      Result := true;
+      break;
+    end;
+
+    // Checking interior
+    if IsRotated then
+      Exchange(img1, img2);
+    if (nptCustom in AParams.FTargets) and (nptCustom in ToolTargets) and
+      InRange(imgClick, img1, img2) then
+    begin
+      AResults.FDist := abs((img1 + img2) div 2 - imgClick);
+      AResults.FIndex := pointIndex;
+      AResults.FXIndex := -1;
+      AResults.FValue := DoublePoint((Source[pointIndex]^.GetX(0) + Source[pointIndex]^.GetX(1))/2, Source[pointIndex]^.Y);
+      Result := true;
+      break;
+    end;
+  end;
+
+  if Result then
+  begin
+    AResults.FYIndex := 0;
+    AResults.FImg := AParams.FPoint;
+  end;
+end;
+
+class procedure TStateSeries.GetXYCountNeeded(out AXCount, AYCount: Cardinal);
+begin
+  AXCount := 2;
+  AYCount := 1;
+end;
+
+function TStateSeries.GetYRange: Double;
+var
+  ymin, ymax: Double;
+begin
+  Source.YRange(0, ymin{%H-}, ymax{%H-});
+  Result := ymax - ymin;
+end;
+
+function TStateSeries.IsStoredBarHeight: Boolean;
+begin
+  Result := (FBarHeight > 0);
+end;
+
+procedure TStateSeries.MovePointEx(var AIndex: Integer;
+  AXIndex, AYIndex: Integer; const ANewPos: TDoublePoint);
+var
+  np: TDoublePoint;
+  x1, x2, dx: Double;
+begin
+  Unused(AYIndex);
+
+  if not InRange(AIndex, 0, Count - 1) then
+    exit;
+
+  x1 := XValues[AIndex, 0];
+  x2 := XValues[AIndex, 1];
+  dx := (x2 - x1) / 2;
+  np := GraphToAxis(ANewPos);
+
+  ParentChart.DisableRedrawing;
+  try
+    case AXIndex of
+     -1: begin
+           x1 := np.X - dx;
+           x2 := np.X + dx;
+         end;
+      0: x1 := np.X;
+      1: x2 := np.X;
+    end;
+    EnsureOrder(x1, x2);
+    with ListSource.Item[AIndex]^ do
+    begin
+      SetX(0, x1);
+      SetX(1, x2);
+    end;
+  finally
+    ParentChart.EnableRedrawing;
+    UpdateParentChart;
+  end;
+end;
+
+function TStateSeries.NearestYNumber(var AIndex: Integer; ADir: Integer): Double;
+begin
+  while InRange(AIndex, 0, Count - 1) do
+    with Source[AIndex]^ do
+      if IsNan(Y) then
+        AIndex += ADir
+      else
+        exit(AxisToGraphY(Y));
+  Result := SafeNan;
+end;
+
+procedure TStateSeries.SetBarHeight(AValue: Double);
+begin
+  if FBarHeight = AValue then
+    exit;
+  FBarHeight := AValue;
+  UpdateParentChart;
+end;
+
+procedure TStateSeries.SetBarBrush(AValue: TBrush);
+begin
+  FBarBrush.Assign(AValue);
+end;
+
+procedure TStateSeries.SetBarPen(AValue: TPen);
+begin
+  FBarPen.Assign(AValue);
+end;
+
+
 initialization
   RegisterSeriesClass(TBubbleSeries, @rsBubbleSeries);
   RegisterSeriesClass(TBoxAndWhiskerSeries, @rsBoxAndWhiskerSeries);
   RegisterSeriesClass(TOpenHighLowCloseSeries, @rsOpenHighLowCloseSeries);
   RegisterSeriesClass(TFieldSeries, @rsFieldSeries);
+  RegisterSeriesClass(TStateSeries, @rsStateSeries);
 
 end.
