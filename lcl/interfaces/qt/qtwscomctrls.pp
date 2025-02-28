@@ -2073,6 +2073,17 @@ begin
         Str := AItem{%H-}.Subitems.Strings[j];
         QtTreeWidget.setItemText(Item, j + 1, Str, AAlignment);
         QtTreeWidget.setItemData(Item, j + 1, AItem);
+        if ImgListRes.Valid and (ImgListRes.Count > 0) and (AItem.SubItemImages[j] >= 0) then
+        begin
+          Bmp := TBitmap.Create;
+          try
+            ImgListRes.GetBitmap(AItem.SubItemImages[j], Bmp);
+            QTreeWidgetItem_setIcon(Item, j + 1, TQtImage(Bmp.Handle).AsIcon);
+          finally
+            Bmp.Free;
+          end;
+        end else
+          QTreeWidgetItem_setIcon(Item, j + 1, nil);
       end;
     end;
 
