@@ -108,7 +108,7 @@ begin
   if TextDrawer= nil then exit;
 
   SetLength(s, LineLen+1);  // wide chars of UTF-16 <= bytes of UTF-8 string
-  if ConvertUTF8ToUTF16(PWideChar(s), LineLen+1, Line, LineLen, [toInvalidCharToSymbol], l) <> trNoError then
+  if ConvertUTF8ToUTF16(PWideChar(s), LineLen+1, Line, LineLen, [toInvalidCharToSymbol], l) <> trSuccess then
     exit;
   SetLength(s, l - 1);
 

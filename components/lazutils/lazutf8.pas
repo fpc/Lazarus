@@ -199,12 +199,15 @@ type
     constructor Create;
   end;
 
-  TConvertResult = (trNoError, trNullSrc, trNullDest, trDestExhausted,
+  TConvertResult = (trSuccess, trNullSrc, trNullDest, trDestExhausted,
     trInvalidChar, trUnfinishedChar);
 
   TConvertOption = (toInvalidCharError, toInvalidCharToSymbol,
     toUnfinishedCharError, toUnfinishedCharToSymbol);
   TConvertOptions = set of TConvertOption;
+
+const
+  trNoError = trSuccess deprecated 'renamed to "trSuccess"'; // deprecated in 4.99
 
 function ConvertUTF8ToUTF16(Dest: PWideChar; DestWideCharCount: SizeUInt;
   Src: PChar; SrcCharCount: SizeUInt; Options: TConvertOptions;
@@ -3611,7 +3614,7 @@ end;
            ActualWideCharCount - Actual wide char count converted from source
                                string to destination string
   Returns:
-    trNoError        - The string was successfully converted without
+    trSuccess        - The string was successfully converted without
                      any error
     trNullSrc        - Pointer to source string is nil
     trNullDest       - Pointer to destination string is nil
@@ -3792,7 +3795,7 @@ begin
     Result := trDestExhausted;
   end
   else
-    Result := trNoError;
+    Result := trSuccess;
 
   Dest[DestI] := #0;
   ActualWideCharCount := DestI + 1;
@@ -3955,7 +3958,7 @@ begin
     Result := trDestExhausted;
   end
   else
-    Result := trNoError;
+    Result := trSuccess;
 
   Dest[DestI] := #0;
   ActualCharCount := DestI + 1;
@@ -3984,7 +3987,7 @@ begin
   SetLength(Result, ByteCnt);
   // wide chars of UTF-16 <= bytes of UTF-8 string
   if ConvertUTF8ToUTF16(PWideChar(Result), Length(Result) + 1, P, ByteCnt,
-    [toInvalidCharToSymbol], L) = trNoError
+    [toInvalidCharToSymbol], L) = trSuccess
   then SetLength(Result, L - 1)
   else Result := '';
 end;
@@ -4012,7 +4015,7 @@ begin
   // bytes of UTF-8 <= 3 * wide chars of UTF-16 string
   // e.g. %11100000 10100000 10000000 (UTF-8) is $0800 (UTF-16)
   if ConvertUTF16ToUTF8(PChar(Result), Length(Result) + 1, P, WideCnt,
-    [toInvalidCharToSymbol], L) = trNoError then
+    [toInvalidCharToSymbol], L) = trSuccess then
   begin
     SetLength(Result, L - 1);
   end else

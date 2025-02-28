@@ -488,7 +488,7 @@ begin
   i := UTF8CodepointSize(p);
   if i <= 1 then exit;
   SetLength(u{%H-}, 3); // surrogate and trailing #0
-  if ConvertUTF8ToUTF16(PWideChar(u), 3, p, i, [toInvalidCharToSymbol], L) = trNoError then
+  if ConvertUTF8ToUTF16(PWideChar(u), 3, p, i, [toInvalidCharToSymbol], L) = trSuccess then
     Result := TCharacter.IsLetterOrDigit(u, 1);
 end;
 

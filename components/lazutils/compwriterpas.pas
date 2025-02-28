@@ -1337,7 +1337,7 @@ begin
         AddLen:=p-StartP;
         if length(s)<AddLen*3 then SetLength(s,AddLen*3);
         if ConvertUTF16ToUTF8(@s[1],length(s),StartP,AddLen,
-            [toInvalidCharError,toUnfinishedCharError],AddLen)=trNoError then
+            [toInvalidCharError,toUnfinishedCharError],AddLen)=trSuccess then
           dec(AddLen); // omit #0
         OldLen:=length(Result);
         SetLength(Result,OldLen+AddLen);
