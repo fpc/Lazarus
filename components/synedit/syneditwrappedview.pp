@@ -5,9 +5,11 @@ unit SynEditWrappedView experimental;
 interface
 
 uses
-  Classes, SysUtils, math, LazSynEditText, SynEdit, SynEditViewedLineMap, SynEditTypes,
-  SynEditMiscProcs, SynEditHighlighter, SynEditMiscClasses, SynEditKeyCmds, SynEditFoldedView,
-  Graphics, LCLType, Forms, LazLoggerBase, LazListClasses;
+  Classes, SysUtils, math,
+  Graphics, LCLType, Forms, LazLoggerBase, LazListClasses,
+  // SynEdit
+  LazSynEditText, SynEdit, SynEditViewedLineMap, SynEditTypes,
+  SynEditMiscProcs, SynEditMiscClasses, SynEditKeyCmds, SynEditFoldedView;
 
 type
   TLazSynEditLineWrapPlugin = class;

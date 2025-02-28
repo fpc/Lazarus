@@ -38,6 +38,8 @@ Known Issues:
 unit SynEditMiscClasses;
 
 {$I synedit.inc}
+{$ModeSwitch advancedrecords}
+{$ModeSwitch typehelpers}
 { $INLINE off}
 
 interface
@@ -843,6 +845,8 @@ type
     // SetRoot, does not obbey fRootOffset => use SetRoot(node, -fRootOffset)
     procedure SetRoot(ANode : TSynSizedDifferentialAVLNode); virtual; overload;
     procedure SetRoot(ANode : TSynSizedDifferentialAVLNode; anAdjustChildPosOffset : Integer); virtual; overload;
+    procedure ReplaceInParentOrRoot(ANode, AReplacementNode : TSynSizedDifferentialAVLNode;
+                          anAdjustChildPosOffset : Integer); inline;
 
     procedure DisposeNode(var ANode: TSynSizedDifferentialAVLNode); virtual;
 
@@ -873,6 +877,46 @@ type
     procedure AdjustForLinesDeleted(AStartLine, ALineCount : Integer);
   end;
 
+  { TGenericSynSizedDifferentialAVLNode }
+
+  generic TGenericSynSizedDifferentialAVLNode<T: class> = class(TSynSizedDifferentialAVLNode)
+  protected
+    function Left: T; inline;
+    function Parent: T; inline;
+    function Right: T; inline;
+  public
+    function Precessor : T; reintroduce; inline;
+    function Successor : T; reintroduce; inline;
+    function Precessor(var aStartPosition, aSizesBeforeSum : Integer) : T; reintroduce; inline;
+    function Successor(var aStartPosition, aSizesBeforeSum : Integer) : T; reintroduce; inline;
+  end;
+
+  { TGenericSynSizedDifferentialAVLNodeHolder }
+
+  generic TGenericSynSizedDifferentialAVLNodeHolder<NODE_T: TSynSizedDifferentialAVLNode> = record
+  private
+    _FData: NODE_T;
+    _FStartLine: Integer;
+    _FLeftSizeSum: Integer;
+  public
+    property Page: NODE_T read _FData;
+    property StartLine: Integer read _FStartLine;
+    property LeftSizeSum: Integer read _FLeftSizeSum;
+  public
+    procedure Init(aData: NODE_T; aStartLine, aLeftSum: Integer); inline;
+    procedure DisposeNode(ATree: TSynSizedDifferentialAVLTree);
+    procedure ClearData; inline;
+    procedure _ChangeStartLine(aStartLine: Integer); inline;
+    function Next : TGenericSynSizedDifferentialAVLNodeHolder;
+    function Prev : TGenericSynSizedDifferentialAVLNodeHolder;
+  end;
+
+  { TGenericSynSizedDifferentialAVLTree }
+
+  generic TGenericSynSizedDifferentialAVLTree<HOLDER_T; NODE_T: TSynSizedDifferentialAVLNode> = class(TSynSizedDifferentialAVLTree)
+    function FirstPage: HOLDER_T;
+    function LastPage: HOLDER_T;
+  end;
 
 implementation
 
@@ -2687,51 +2731,77 @@ begin
 end;
 
 function TSynSizedDifferentialAVLNode.Precessor: TSynSizedDifferentialAVLNode;
+var
+  n: TSynSizedDifferentialAVLNode;
 begin
   Result := FLeft;
-  if Result<>nil then begin
-    while (Result.FRight<>nil) do Result := Result.FRight;
+  if Result <> nil then begin
+    n := Result.FRight;
+    while n <> nil do begin
+      Result := n;
+      n := Result.FRight;
+    end;
   end else begin
-    Result := self;
-    while (Result.FParent<>nil) and (Result.FParent.FLeft=Result) do
-      Result := Result.FParent;
-    Result := Result.FParent;
+    Result := Self;
+    n := Result.FParent;
+    while (n <> nil) and (n.FLeft = Result) do begin
+      Result := n;
+      n := Result.FParent;
+    end;
+    Result := n;
   end;
 end;
 
 function TSynSizedDifferentialAVLNode.Successor: TSynSizedDifferentialAVLNode;
+var
+  n: TSynSizedDifferentialAVLNode;
 begin
   Result := FRight;
   if Result<>nil then begin
-    while (Result.FLeft<>nil) do Result := Result.FLeft;
+    n := Result.FLeft;
+    while n <> nil do begin
+      Result := n;
+      n := Result.FLeft;
+    end;
   end else begin
-    Result := self;
-    while (Result.FParent<>nil) and (Result.FParent.FRight=Result) do
-      Result := Result.FParent;
-    Result := Result.FParent;
+    Result := Self;
+    n := Result.FParent;
+    while (n <> nil) and (n.FRight = Result) do begin
+      Result := n;
+      n := Result.FParent;
+    end;
+    Result := n;
   end;
 end;
 
 function TSynSizedDifferentialAVLNode.Precessor(var aStartPosition,
   aSizesBeforeSum: Integer): TSynSizedDifferentialAVLNode;
+var
+  n: TSynSizedDifferentialAVLNode;
+  aStart: Integer;
 begin
+  aStart := aStartPosition;
   Result := FLeft;
-  if Result<>nil then begin
-    aStartPosition := aStartPosition + Result.FPositionOffset;
-    while (Result.FRight<>nil) do begin
-      Result := Result.FRight;
-      aStartPosition := aStartPosition + Result.FPositionOffset;
+  if Result <> nil then begin
+    aStart := aStart + Result.FPositionOffset;
+    n := Result.FRight;
+    while n <> nil do begin
+      Result := n;
+      aStart := aStart + Result.FPositionOffset;
+      n := Result.FRight;
     end;
   end else begin
-    Result := self;
-    while (Result.FParent<>nil) and (Result.FParent.FLeft=Result) do begin
-      aStartPosition := aStartPosition - Result.FPositionOffset;
-      Result := Result.FParent;
+    Result := Self;
+    n := Result.FParent;
+    while (n <> nil) and (n.FLeft = Result) do begin
+      aStart := aStart - Result.FPositionOffset;
+      Result := n;
+      n := Result.FParent;
     end;
-    // result is now a FRight son
-    aStartPosition := aStartPosition - Result.FPositionOffset;
-    Result := Result.FParent;
+    aStart := aStart - Result.FPositionOffset;
+    Result := n;
   end;
+  aStartPosition := aStart;
   if result <> nil then
     aSizesBeforeSum := aSizesBeforeSum - Result.FSize
   else
@@ -2740,25 +2810,33 @@ end;
 
 function TSynSizedDifferentialAVLNode.Successor(var aStartPosition,
   aSizesBeforeSum: Integer): TSynSizedDifferentialAVLNode;
+var
+  n: TSynSizedDifferentialAVLNode;
+  aStart: Integer;
 begin
   aSizesBeforeSum := aSizesBeforeSum + FSize;
+  aStart := aStartPosition;
   Result := FRight;
   if Result<>nil then begin
-    aStartPosition := aStartPosition + Result.FPositionOffset;
-    while (Result.FLeft<>nil) do begin
-      Result := Result.FLeft;
-      aStartPosition := aStartPosition + Result.FPositionOffset;
+    aStart := aStart + Result.FPositionOffset;
+    n := Result.FLeft;
+    while n <> nil do begin
+      Result := n;
+      aStart := aStart + Result.FPositionOffset;
+      n := Result.FLeft;
     end;
   end else begin
-    Result := self;
-    while (Result.FParent<>nil) and (Result.FParent.FRight=Result) do begin
-      aStartPosition := aStartPosition - Result.FPositionOffset;
-      Result := Result.FParent;
+    Result := Self;
+    n := Result.FParent;
+    while (n <> nil) and (n.FRight = Result) do begin
+      aStart := aStart - Result.FPositionOffset;
+      Result := n;
+      n := Result.FParent;
     end;
-    // Result is now a FLeft son; result has a negative FPositionOffset
-    aStartPosition := aStartPosition - Result.FPositionOffset;
-    Result := Result.FParent;
+    aStart := aStart - Result.FPositionOffset;
+    Result := n;
   end;
+  aStartPosition := aStart;
 end;
 
 { TSynSizedDifferentialAVLTree }
@@ -2777,6 +2855,22 @@ begin
     ANode.FParent := nil;
     ANode.FPositionOffset := ANode.FPositionOffset + anAdjustChildPosOffset;
   end;
+end;
+
+procedure TSynSizedDifferentialAVLTree.ReplaceInParentOrRoot(ANode,
+  AReplacementNode: TSynSizedDifferentialAVLNode; anAdjustChildPosOffset: Integer);
+var
+  p: TSynSizedDifferentialAVLNode;
+begin
+  p := ANode.FParent;
+  if p <> nil then begin
+    if p.FLeft = ANode then
+      p.SetLeftChild(AReplacementNode, anAdjustChildPosOffset)
+    else
+      p.SetRightChild(AReplacementNode, anAdjustChildPosOffset);
+  end
+  else
+    SetRoot(AReplacementNode, anAdjustChildPosOffset);
 end;
 
 procedure TSynSizedDifferentialAVLTree.DisposeNode(var ANode: TSynSizedDifferentialAVLNode);
@@ -2880,17 +2974,14 @@ AnL   AnR       AnL      AnR        Precessor   AnR       AnL      AnR
     PrecOldLeft   := Precessor.FLeft;
     PrecOldParent := Precessor.FParent;
 
-    if (ANode.FParent<>nil)
-    then ANode.FParent.ReplaceChild(ANode, Precessor, PrecOffset + ANode.FPositionOffset)
-    else SetRoot(Precessor, PrecOffset + ANode.FPositionOffset);
-
+    ReplaceInParentOrRoot(ANode, Precessor, PrecOffset + ANode.FPositionOffset);
     Precessor.SetRightChild(ANode.FRight,
                            +ANode.FPositionOffset-Precessor.FPositionOffset);
 
     PrecLeftCount := Precessor.FLeftSizeSum;
     // ANode.FRight will be empty  // ANode.FLeft will be Succesor.FLeft
     if (PrecOldParent = ANode) then begin
-      // Precessor is Fleft son of ANode
+      // Precessor is Fleft child of ANode
       // set ANode.FPositionOffset=0 => FPositionOffset for the Prec-Children is already correct;
       Precessor.SetLeftChild(ANode, -ANode.FPositionOffset,
                              PrecLeftCount + ANode.FSize);
@@ -2943,266 +3034,263 @@ end;
 
 procedure TSynSizedDifferentialAVLTree.BalanceAfterInsert(ANode: TSynSizedDifferentialAVLNode);
 var
-  OldParent, OldParentParent, OldRight, OldRightLeft, OldRightRight, OldLeft,
+  OldParent, OldRight, OldRightLeft, OldRightRight, OldLeft,
   OldLeftLeft, OldLeftRight: TSynSizedDifferentialAVLNode;
   tmp : integer;
 begin
-  OldParent := ANode.FParent;
-  if (OldParent=nil) then exit;
+  repeat
+    OldParent := ANode.FParent;
+    if (OldParent=nil) then exit;
 
-  if (OldParent.FLeft=ANode) then begin
-    (* *** Node is left son *** *)
-    dec(OldParent.FBalance);
-    if (OldParent.FBalance=0) then exit;
-    if (OldParent.FBalance=-1) then begin
-      BalanceAfterInsert(OldParent);
-      exit;
-    end;
+    if (OldParent.FLeft=ANode) then begin
+      (* *** Node is left child *** *)
+      dec(OldParent.FBalance);
+      if (OldParent.FBalance =  0) then exit;
+      if (OldParent.FBalance = -1) then begin
+        ANode := OldParent;
+        continue;
+      end;
 
-    // OldParent.FBalance=-2
-    if (ANode.FBalance=-1) then begin
-      (* ** single rotate ** *)
-      (*  []
-           \
-           []  ORight                     []    ORight    []
-            \   /                          \      \       /
-            ANode(-1)  []        =>        []     OldParent(0)
-               \       /                    \     /
-               OldParent(-2)                 ANode(0)
-      *)
       OldRight := ANode.FRight;
-      OldParentParent := OldParent.FParent;
-      (* ANode moves into position of OldParent *)
-      if (OldParentParent<>nil)
-      then OldParentParent.ReplaceChild(OldParent, ANode, OldParent.FPositionOffset)
-      else SetRoot(ANode, OldParent.FPositionOffset);
+      // OldParent.FBalance=-2
+      if (ANode.FBalance=-1) then begin
+        (* ** single rotate ** *)
+        (*  []
+             \
+             []  ORight                     []    ORight    []
+              \   /                          \      \       /
+              ANode(-1)  []        =>        []     OldParent(0)
+                 \       /                    \     /
+                 OldParent(-2)                 ANode(0)
+        *)
+        (* ANode moves into position of OldParent *)
+        ReplaceInParentOrRoot(OldParent, ANode, OldParent.FPositionOffset);
 
-      (* OldParent moves under ANode, replacing Anode.FRight, which moves under OldParent *)
-      ANode.SetRightChild(OldParent, -ANode.FPositionOffset );
-      OldParent.SetLeftChild(OldRight, -OldParent.FPositionOffset, OldParent.FLeftSizeSum - ANode.FSize - ANode.FLeftSizeSum);
+        (* OldParent moves under ANode, replacing Anode.FRight, which moves under OldParent *)
+        ANode.SetRightChild(OldParent, -ANode.FPositionOffset );
+        OldParent.SetLeftChild(OldRight, -OldParent.FPositionOffset, OldParent.FLeftSizeSum - ANode.FSize - ANode.FLeftSizeSum);
 
-      ANode.FBalance := 0;
-      OldParent.FBalance := 0;
-      (* ** END single rotate ** *)
+        ANode.FBalance := 0;
+        OldParent.FBalance := 0;
+        (* ** END single rotate ** *)
+      end
+      else begin  // ANode.FBalance = +1
+        (* ** double rotate ** *)
+        OldRightLeft := OldRight.FLeft;
+        OldRightRight := OldRight.FRight;
+
+        (* OldRight moves into position of OldParent *)
+        ReplaceInParentOrRoot(OldParent, OldRight, OldParent.FPositionOffset + ANode.FPositionOffset);
+
+        OldRight.SetRightChild(OldParent, -OldRight.FPositionOffset);
+        OldRight.SetLeftChild(ANode, OldParent.FPositionOffset, OldRight.FLeftSizeSum + ANode.FLeftSizeSum + ANode.FSize);
+        ANode.SetRightChild(OldRightLeft, -ANode.FPositionOffset);
+        OldParent.SetLeftChild(OldRightRight, -OldParent.FPositionOffset, OldParent.FLeftSizeSum - OldRight.FLeftSizeSum - OldRight.FSize);
+
+        if (OldRight.FBalance = -1) then begin
+          ANode.FBalance     := 0;
+          OldParent.FBalance := 1;
+        end
+        else
+        if (OldRight.FBalance <= 0) then begin
+          ANode.FBalance     := 0;
+          OldParent.FBalance := 0;
+        end
+        else begin
+          ANode.FBalance     := -1;
+          OldParent.FBalance := 0;
+        end;
+        OldRight.FBalance := 0;
+        (* ** END double rotate ** *)
+      end;
+      (* *** END Node is left child *** *)
     end
-    else begin  // ANode.FBalance = +1
-      (* ** double rotate ** *)
-      OldParentParent := OldParent.FParent;
-      OldRight := ANode.FRight;
-      OldRightLeft := OldRight.FLeft;
-      OldRightRight := OldRight.FRight;
+    else begin
+      (* *** Node is right child *** *)
+      Inc(OldParent.FBalance);
+      if (OldParent.FBalance = 0) then exit;
+      if (OldParent.FBalance = 1) then begin
+        ANode := OldParent;
+        continue;
+      end;
 
-      (* OldRight moves into position of OldParent *)
-      if (OldParentParent<>nil)
-      then OldParentParent.ReplaceChild(OldParent, OldRight, OldParent.FPositionOffset + ANode.FPositionOffset)
-      else SetRoot(OldRight, OldParent.FPositionOffset + ANode.FPositionOffset);        // OldParent was root node. new root node
-
-      OldRight.SetRightChild(OldParent, -OldRight.FPositionOffset);
-      OldRight.SetLeftChild(ANode, OldParent.FPositionOffset, OldRight.FLeftSizeSum + ANode.FLeftSizeSum + ANode.FSize);
-      ANode.SetRightChild(OldRightLeft, -ANode.FPositionOffset);
-      OldParent.SetLeftChild(OldRightRight, -OldParent.FPositionOffset, OldParent.FLeftSizeSum - OldRight.FLeftSizeSum - OldRight.FSize);
-
-      // balance
-      if (OldRight.FBalance<=0)
-      then ANode.FBalance := 0
-      else ANode.FBalance := -1;
-      if (OldRight.FBalance=-1)
-      then OldParent.FBalance := 1
-      else OldParent.FBalance := 0;
-      OldRight.FBalance := 0;
-      (* ** END double rotate ** *)
-    end;
-    (* *** END Node is left son *** *)
-  end
-  else begin
-    (* *** Node is right son *** *)
-    Inc(OldParent.FBalance);
-    if (OldParent.FBalance=0) then exit;
-    if (OldParent.FBalance=+1) then begin
-      BalanceAfterInsert(OldParent);
-      exit;
-    end;
-
-    // OldParent.FBalance = +2
-    if(ANode.FBalance=+1) then begin
-      (* ** single rotate ** *)
       OldLeft := ANode.FLeft;
-      OldParentParent := OldParent.FParent;
+      // OldParent.FBalance = +2
+      if(ANode.FBalance=+1) then begin
+        (* ** single rotate ** *)
 
-      if (OldParentParent<>nil)
-      then  OldParentParent.ReplaceChild(OldParent, ANode, OldParent.FPositionOffset)
-      else SetRoot(ANode, OldParent.FPositionOffset);
+        ReplaceInParentOrRoot(OldParent, ANode, OldParent.FPositionOffset);
 
-      (* OldParent moves under ANode, replacing Anode.FLeft, which moves under OldParent *)
-      ANode.SetLeftChild(OldParent, -ANode.FPositionOffset, ANode.FLeftSizeSum + OldParent.FSize + OldParent.FLeftSizeSum);
-      OldParent.SetRightChild(OldLeft, -OldParent.FPositionOffset);
+        (* OldParent moves under ANode, replacing Anode.FLeft, which moves under OldParent *)
+        ANode.SetLeftChild(OldParent, -ANode.FPositionOffset, ANode.FLeftSizeSum + OldParent.FSize + OldParent.FLeftSizeSum);
+        OldParent.SetRightChild(OldLeft, -OldParent.FPositionOffset);
 
-      ANode.FBalance := 0;
-      OldParent.FBalance := 0;
-      (* ** END single rotate ** *)
-    end
-    else begin  // Node.Balance = -1
-      (* ** double rotate ** *)
-      OldLeft := ANode.FLeft;
-      OldParentParent := OldParent.FParent;
-      OldLeftLeft := OldLeft.FLeft;
-      OldLeftRight := OldLeft.FRight;
+        ANode.FBalance := 0;
+        OldParent.FBalance := 0;
+        (* ** END single rotate ** *)
+      end
+      else begin  // Node.Balance = -1
+        (* ** double rotate ** *)
+        OldLeftLeft := OldLeft.FLeft;
+        OldLeftRight := OldLeft.FRight;
 
-      (* OldLeft moves into position of OldParent *)
-      if (OldParentParent<>nil)
-      then  OldParentParent.ReplaceChild(OldParent, OldLeft, OldParent.FPositionOffset + ANode.FPositionOffset)
-      else SetRoot(OldLeft, OldParent.FPositionOffset + ANode.FPositionOffset);
+        (* OldLeft moves into position of OldParent *)
+        ReplaceInParentOrRoot(OldParent, OldLeft, OldParent.FPositionOffset + ANode.FPositionOffset);
 
-      tmp := OldLeft.FLeftSizeSum;
-      OldLeft.SetLeftChild (OldParent, -OldLeft.FPositionOffset, tmp + OldParent.FLeftSizeSum + OldParent.FSize);
-      OldLeft.SetRightChild(ANode, OldParent.FPositionOffset);
+        tmp := OldLeft.FLeftSizeSum;
+        OldLeft.SetLeftChild (OldParent, -OldLeft.FPositionOffset, tmp + OldParent.FLeftSizeSum + OldParent.FSize);
+        OldLeft.SetRightChild(ANode, OldParent.FPositionOffset);
 
-      OldParent.SetRightChild(OldLeftLeft, -OldParent.FPositionOffset);
-      ANode.SetLeftChild(OldLeftRight, -ANode.FPositionOffset, ANode.FLeftSizeSum - tmp - OldLeft.FSize);
+        OldParent.SetRightChild(OldLeftLeft, -OldParent.FPositionOffset);
+        ANode.SetLeftChild(OldLeftRight, -ANode.FPositionOffset, ANode.FLeftSizeSum - tmp - OldLeft.FSize);
 
-      // Balance
-      if (OldLeft.FBalance>=0)
-      then ANode.FBalance := 0
-      else ANode.FBalance := +1;
-      if (OldLeft.FBalance=+1)
-      then OldParent.FBalance := -1
-      else OldParent.FBalance := 0;
-      OldLeft.FBalance := 0;
-      (* ** END double rotate ** *)
+        if (OldLeft.FBalance = 1) then begin
+          ANode.FBalance     :=  0;
+          OldParent.FBalance := -1;
+        end
+        else
+        if (OldLeft.FBalance >= 0) then begin
+          ANode.FBalance     := 0;
+          OldParent.FBalance := 0;
+        end
+        else begin
+          ANode.FBalance     := 1;
+          OldParent.FBalance := 0;
+        end;
+        OldLeft.FBalance := 0;
+        (* ** END double rotate ** *)
+      end;
     end;
-  end;
+
+    exit;
+  until false;
 end;
 
 procedure TSynSizedDifferentialAVLTree.BalanceAfterDelete(ANode: TSynSizedDifferentialAVLNode);
 var
-  OldParent, OldRight, OldRightLeft, OldLeft, OldLeftRight,
+  Parent, OldRight, OldRightLeft, OldLeft, OldLeftRight,
   OldRightLeftLeft, OldRightLeftRight, OldLeftRightLeft, OldLeftRightRight: TSynSizedDifferentialAVLNode;
   tmp: integer;
 begin
-  if (ANode=nil) then exit;
-  if ((ANode.FBalance=+1) or (ANode.FBalance=-1)) then exit;
-  OldParent := ANode.FParent;
-  if (ANode.FBalance=0) then begin
-    // Treeheight has decreased by one
-    if (OldParent<>nil) then begin
-      if(OldParent.FLeft=ANode) then
-        Inc(OldParent.FBalance)
-      else
-        Dec(OldParent.FBalance);
-      BalanceAfterDelete(OldParent);
+  repeat
+    if (ANode=nil) then exit;
+    if ((ANode.FBalance=+1) or (ANode.FBalance=-1)) then exit;
+    Parent := ANode.FParent;
+    if (ANode.FBalance=0) then begin
+      if (Parent<>nil) then begin
+        if(Parent.FLeft=ANode) then
+          Inc(Parent.FBalance)
+        else
+          Dec(Parent.FBalance);
+
+        ANode := Parent;
+        continue;
+      end;
+      exit;
     end;
+
+    if (ANode.FBalance=-2) then begin
+      (*
+            OLftRight
+             /
+          OLeft(<=0)
+             \
+               ANode(-2)
+      *)
+      OldLeft := ANode.FLeft;
+      if (OldLeft.FBalance<=0) then begin
+        (* single rotate left *)
+        OldLeftRight := OldLeft.FRight;
+
+        ReplaceInParentOrRoot(ANode, OldLeft, ANode.FPositionOffset);
+
+        OldLeft.SetRightChild(ANode, -OldLeft.FPositionOffset);
+        ANode.SetLeftChild(OldLeftRight, -ANode.FPositionOffset, ANode.FLeftSizeSum - OldLeft.FSize - OldLeft.FLeftSizeSum);
+
+        ANode.FBalance := (-1-OldLeft.FBalance);
+        Inc(OldLeft.FBalance);
+
+        ANode := OldLeft;
+        continue;
+      end else begin   // OldLeft.FBalance = 1
+        (* double rotate left left *)
+        OldLeftRight := OldLeft.FRight;
+        OldLeftRightLeft := OldLeftRight.FLeft;
+        OldLeftRightRight := OldLeftRight.FRight;
+
+  (*
+   Old-Left   Old-Right
+        \     /
+        OldLeftRight          Old-Left    Old-Right
+         /                       /            \
+     OldLeft                 OldLeft         ANode
+        \                         \           /
+       ANode                       OldLeftRight
+         |                            |
+       Parent                   Parent  (or root)
+  *)
+        ReplaceInParentOrRoot(ANode, OldLeftRight, ANode.FPositionOffset + OldLeft.FPositionOffset);
+
+        OldLeftRight.SetRightChild(ANode, -OldLeftRight.FPositionOffset);
+        OldLeftRight.SetLeftChild(OldLeft, ANode.FPositionOffset, OldLeftRight.FLeftSizeSum + OldLeft.FLeftSizeSum + OldLeft.FSize);
+        OldLeft.SetRightChild(OldLeftRightLeft, -OldLeft.FPositionOffset);
+        ANode.SetLeftChild(OldLeftRightRight,  -ANode.FPositionOffset, ANode.FLeftSizeSum - OldLeftRight.FLeftSizeSum - OldLeftRight.FSize);
+
+        if (OldLeftRight.FBalance<=0)
+        then OldLeft.FBalance := 0
+        else OldLeft.FBalance := -1;
+        if (OldLeftRight.FBalance>=0)
+        then ANode.FBalance := 0
+        else ANode.FBalance := +1;
+        OldLeftRight.FBalance := 0;
+
+        ANode := OldLeftRight;
+        continue;
+      end;
+    end else begin
+      OldRight := ANode.FRight;
+      if (OldRight.FBalance>=0) then begin
+        (* single rotate right *)
+        OldRightLeft := OldRight.FLeft;
+
+        ReplaceInParentOrRoot(ANode, OldRight, ANode.FPositionOffset);
+
+        OldRight.SetLeftChild(ANode, -OldRight.FPositionOffset, OldRight.FLeftSizeSum + ANode.FSize + ANode.FLeftSizeSum);
+        ANode.SetRightChild(OldRightLeft, -ANode.FPositionOffset);
+
+        ANode.FBalance := (1-OldRight.FBalance);
+        Dec(OldRight.FBalance);
+
+        ANode := OldRight;
+        continue;
+      end else begin  // OldRight.FBalance=-1
+        (* double rotate right left *)
+        OldRightLeft := OldRight.FLeft;
+        OldRightLeftLeft := OldRightLeft.FLeft;
+        OldRightLeftRight := OldRightLeft.FRight;
+        ReplaceInParentOrRoot(ANode, OldRightLeft, ANode.FPositionOffset + OldRight.FPositionOffset);
+
+        tmp := OldRightLeft.FLeftSizeSum;
+        OldRightLeft.SetLeftChild(ANode, -OldRightLeft.FPositionOffset, tmp + ANode.FLeftSizeSum + ANode.FSize);
+        OldRightLeft.SetRightChild(OldRight, ANode.FPositionOffset);
+
+        ANode.SetRightChild(OldRightLeftLeft, -ANode.FPositionOffset);
+        OldRight.SetLeftChild(OldRightLeftRight, -OldRight.FPositionOffset, OldRight.FLeftSizeSum - tmp - OldRightLeft.FSize);
+
+        if (OldRightLeft.FBalance<=0)
+        then ANode.FBalance := 0
+        else ANode.FBalance := -1;
+        if (OldRightLeft.FBalance>=0)
+        then OldRight.FBalance := 0
+        else OldRight.FBalance := +1;
+        OldRightLeft.FBalance := 0;
+        ANode := OldRightLeft;
+        continue;
+      end;
+    end;
+
     exit;
-  end;
-
-  if (ANode.FBalance=-2) then begin
-    // Node.Balance=-2
-    // Node is overweighted to the left
-    (*
-          OLftRight
-           /
-        OLeft(<=0)
-           \
-             ANode(-2)
-    *)
-    OldLeft := ANode.FLeft;
-    if (OldLeft.FBalance<=0) then begin
-      // single rotate left
-      OldLeftRight := OldLeft.FRight;
-
-      if (OldParent<>nil)
-      then OldParent.ReplaceChild(ANode, OldLeft, ANode.FPositionOffset)
-      else SetRoot(OldLeft, ANode.FPositionOffset);
-
-      OldLeft.SetRightChild(ANode, -OldLeft.FPositionOffset);
-      ANode.SetLeftChild(OldLeftRight, -ANode.FPositionOffset, ANode.FLeftSizeSum - OldLeft.FSize - OldLeft.FLeftSizeSum);
-
-      ANode.FBalance := (-1-OldLeft.FBalance);
-      Inc(OldLeft.FBalance);
-
-      BalanceAfterDelete(OldLeft);
-    end else begin
-      // OldLeft.FBalance = 1
-      // double rotate left left
-      OldLeftRight := OldLeft.FRight;
-      OldLeftRightLeft := OldLeftRight.FLeft;
-      OldLeftRightRight := OldLeftRight.FRight;
-
-(*
- OLR-Left   OLR-Right
-      \     /
-      OldLeftRight          OLR-Left    OLR-Right
-       /                       /            \
-   OldLeft                 OldLeft         ANode
-      \                         \           /
-     ANode                       OldLeftRight
-       |                            |
-     OldParent                   OldParent  (or root)
-*)
-      if (OldParent<>nil)
-      then OldParent.ReplaceChild(ANode, OldLeftRight, ANode.FPositionOffset + OldLeft.FPositionOffset)
-      else SetRoot(OldLeftRight, ANode.FPositionOffset + OldLeft.FPositionOffset);
-
-      OldLeftRight.SetRightChild(ANode, -OldLeftRight.FPositionOffset);
-      OldLeftRight.SetLeftChild(OldLeft, ANode.FPositionOffset, OldLeftRight.FLeftSizeSum + OldLeft.FLeftSizeSum + OldLeft.FSize);
-      OldLeft.SetRightChild(OldLeftRightLeft, -OldLeft.FPositionOffset);
-      ANode.SetLeftChild(OldLeftRightRight,  -ANode.FPositionOffset, ANode.FLeftSizeSum - OldLeftRight.FLeftSizeSum - OldLeftRight.FSize);
-
-      if (OldLeftRight.FBalance<=0)
-      then OldLeft.FBalance := 0
-      else OldLeft.FBalance := -1;
-      if (OldLeftRight.FBalance>=0)
-      then ANode.FBalance := 0
-      else ANode.FBalance := +1;
-      OldLeftRight.FBalance := 0;
-
-      BalanceAfterDelete(OldLeftRight);
-    end;
-  end else begin
-    // Node is overweighted to the right
-    OldRight := ANode.FRight;
-    if (OldRight.FBalance>=0) then begin
-      // OldRight.FBalance=={0 or -1}
-      // single rotate right
-      OldRightLeft := OldRight.FLeft;
-
-      if (OldParent<>nil)
-      then OldParent.ReplaceChild(ANode, OldRight, ANode.FPositionOffset)
-      else SetRoot(OldRight, ANode.FPositionOffset);
-
-      OldRight.SetLeftChild(ANode, -OldRight.FPositionOffset, OldRight.FLeftSizeSum + ANode.FSize + ANode.FLeftSizeSum);
-      ANode.SetRightChild(OldRightLeft, -ANode.FPositionOffset);
-
-      ANode.FBalance := (1-OldRight.FBalance);
-      Dec(OldRight.FBalance);
-
-      BalanceAfterDelete(OldRight);
-    end else begin
-      // OldRight.FBalance=-1
-      // double rotate right left
-      OldRightLeft := OldRight.FLeft;
-      OldRightLeftLeft := OldRightLeft.FLeft;
-      OldRightLeftRight := OldRightLeft.FRight;
-      if (OldParent<>nil)
-      then OldParent.ReplaceChild(ANode, OldRightLeft, ANode.FPositionOffset + OldRight.FPositionOffset)
-      else SetRoot(OldRightLeft, ANode.FPositionOffset + OldRight.FPositionOffset);
-
-      tmp := OldRightLeft.FLeftSizeSum;
-      OldRightLeft.SetLeftChild(ANode, -OldRightLeft.FPositionOffset, tmp + ANode.FLeftSizeSum + ANode.FSize);
-      OldRightLeft.SetRightChild(OldRight, ANode.FPositionOffset);
-
-      ANode.SetRightChild(OldRightLeftLeft, -ANode.FPositionOffset);
-      OldRight.SetLeftChild(OldRightLeftRight, -OldRight.FPositionOffset, OldRight.FLeftSizeSum - tmp - OldRightLeft.FSize);
-
-      if (OldRightLeft.FBalance<=0)
-      then ANode.FBalance := 0
-      else ANode.FBalance := -1;
-      if (OldRightLeft.FBalance>=0)
-      then OldRight.FBalance := 0
-      else OldRight.FBalance := +1;
-      OldRightLeft.FBalance := 0;
-      BalanceAfterDelete(OldRightLeft);
-    end;
-  end;
+  until false;
 end;
 
 function TSynSizedDifferentialAVLTree.CreateNode(APosition: Integer): TSynSizedDifferentialAVLNode;
@@ -3260,56 +3348,77 @@ begin
 end;
 
 function TSynSizedDifferentialAVLTree.First: TSynSizedDifferentialAVLNode;
+var
+  n: TSynSizedDifferentialAVLNode;
 begin
   Result := FRoot;
-  if Result = nil then
-    exit;
-  while Result.FLeft <> nil do
-    Result := Result.FLeft;
+  n := Result;
+  while n <> nil do begin
+    Result := n;
+    n := Result.FLeft;
+  end;
 end;
 
 function TSynSizedDifferentialAVLTree.Last: TSynSizedDifferentialAVLNode;
+var
+  n: TSynSizedDifferentialAVLNode;
 begin
   Result := FRoot;
-  if Result = nil then
-    exit;
-  while Result.FRight <> nil do
-    Result := Result.FRight;
+  n := Result;
+  while n <> nil do begin
+    Result := n;
+    n := Result.FRight;
+  end;
 end;
 
 function TSynSizedDifferentialAVLTree.First(out aStartPosition,
   aSizesBeforeSum: Integer): TSynSizedDifferentialAVLNode;
+var
+  n: TSynSizedDifferentialAVLNode;
+  aStartPos: Integer;
 begin
   Result := FRoot;
-  aStartPosition := FRootOffset;
   aSizesBeforeSum := 0;
-  if Result = nil then
+  if Result = nil then begin
+    aStartPosition := FRootOffset;
     exit;
-
-  aStartPosition := aStartPosition + Result.FPositionOffset;
-  while Result.FLeft <> nil do begin
-    Result := Result.FLeft;
-    aStartPosition := aStartPosition + Result.FPositionOffset;
   end;
+
+  aStartPos := FRootOffset  + Result.FPositionOffset;
+  n := Result.FLeft;
+  while n <> nil do begin
+    Result := n;
+    aStartPos := aStartPos + Result.FPositionOffset;
+    n := Result.FLeft;
+  end;
+  aStartPosition := aStartPos;
 end;
 
 function TSynSizedDifferentialAVLTree.Last(out aStartPosition,
   aSizesBeforeSum: Integer): TSynSizedDifferentialAVLNode;
+var
+  n: TSynSizedDifferentialAVLNode;
+  aStartPos, aSizesBefore: Integer;
 begin
   Result := FRoot;
-  aStartPosition := FRootOffset;
-  aSizesBeforeSum := 0;
-  if Result = nil then
+  if Result = nil then begin
+    aStartPosition  := FRootOffset;
+    aSizesBeforeSum := 0;
     exit;
-
-  aStartPosition := aStartPosition + Result.FPositionOffset;
-  aSizesBeforeSum := aSizesBeforeSum + Result.FLeftSizeSum;
-  while Result.FRight <> nil do begin
-    aSizesBeforeSum := aSizesBeforeSum + Result.FSize;
-    Result := Result.FRight;
-    aStartPosition := aStartPosition + Result.FPositionOffset;
-    aSizesBeforeSum := aSizesBeforeSum + Result.FLeftSizeSum;
   end;
+
+  aStartPos    := FRootOffset + Result.FPositionOffset;
+  aSizesBefore := Result.FLeftSizeSum;
+  n := Result.FRight;
+  while n <> nil do begin
+    aSizesBefore := aSizesBefore + Result.FSize;
+    Result := n;
+    aStartPos := aStartPos + Result.FPositionOffset;
+    aSizesBefore := aSizesBefore + Result.FLeftSizeSum;
+    n := Result.FRight;
+  end;
+  aStartPosition  := aStartPos;
+  aSizesBeforeSum := aSizesBefore;
 end;
 
 function TSynSizedDifferentialAVLTree.FindNodeAtLeftSize(ALeftSum: INteger; out
@@ -3519,6 +3628,117 @@ begin
       Current := Current.FRight;
     end;
   end;
+end;
+
+{ TGenericSynSizedDifferentialAVLNode }
+
+function TGenericSynSizedDifferentialAVLNode.Left: T;
+begin
+  Result := T(FLeft);
+end;
+
+function TGenericSynSizedDifferentialAVLNode.Parent: T;
+begin
+  Result := T(FParent);
+end;
+
+function TGenericSynSizedDifferentialAVLNode.Right: T;
+begin
+  Result := T(FRight);
+end;
+
+function TGenericSynSizedDifferentialAVLNode.Precessor: T;
+begin
+  Result := T(inherited Precessor);
+end;
+
+function TGenericSynSizedDifferentialAVLNode.Successor: T;
+begin
+  Result := T(inherited Successor);
+end;
+
+function TGenericSynSizedDifferentialAVLNode.Precessor(var aStartPosition, aSizesBeforeSum: Integer): T;
+begin
+  Result := T(inherited Precessor(aStartPosition, aSizesBeforeSum));
+end;
+
+function TGenericSynSizedDifferentialAVLNode.Successor(var aStartPosition, aSizesBeforeSum: Integer): T;
+begin
+  Result := T(inherited Successor(aStartPosition, aSizesBeforeSum));
+end;
+
+{ TGenericSynSizedDifferentialAVLNodeHolder }
+
+procedure TGenericSynSizedDifferentialAVLNodeHolder.Init(aData: NODE_T; aStartLine,
+  aLeftSum: Integer);
+begin
+  _FData := aData;
+  _FStartLine :=  aStartLine;
+  _FLeftSizeSum   := aLeftSum;
+end;
+
+procedure TGenericSynSizedDifferentialAVLNodeHolder.DisposeNode(ATree: TSynSizedDifferentialAVLTree
+  );
+begin
+  ATree.DisposeNode(TSynSizedDifferentialAVLNode(_FData));
+end;
+
+procedure TGenericSynSizedDifferentialAVLNodeHolder.ClearData;
+begin
+  _FData := NODE_T(nil);
+end;
+
+procedure TGenericSynSizedDifferentialAVLNodeHolder._ChangeStartLine(aStartLine: Integer);
+begin
+  _FStartLine := aStartLine;
+end;
+
+function TGenericSynSizedDifferentialAVLNodeHolder.Next: TGenericSynSizedDifferentialAVLNodeHolder;
+var aStart, aBefore : Integer;
+begin
+  if _FData <> NODE_T(nil) then begin
+    aStart := _FStartLine;
+    aBefore := _FLeftSizeSum;
+    Result._FData := _FData.Successor(aStart, aBefore);
+    Result._FStartLine := aStart;
+    Result._FLeftSizeSum   := aBefore;
+  end
+  else
+    Result._FData := NODE_T(nil);
+end;
+
+function TGenericSynSizedDifferentialAVLNodeHolder.Prev: TGenericSynSizedDifferentialAVLNodeHolder;
+var aStart, aBefore : Integer;
+begin
+  if _FData <> NODE_T(nil) then begin
+    aStart := _FStartLine;
+    aBefore := _FLeftSizeSum;
+    Result._FData := _FData.Precessor(aStart, aBefore);
+    Result._FStartLine := aStart;
+    Result._FLeftSizeSum   := aBefore;
+  end
+  else
+    Result._FData := NODE_T(nil);
+end;
+
+{ TGenericSynSizedDifferentialAVLTree }
+
+function TGenericSynSizedDifferentialAVLTree.FirstPage: HOLDER_T;
+var
+  r: NODE_T;
+  aStartPosition, aSizesBeforeSum: Integer;
+begin
+  r := NODE_T(First(aStartPosition, aSizesBeforeSum));
+  Result{%H-}.Init(r, aStartPosition, aSizesBeforeSum);
+end;
+
+function TGenericSynSizedDifferentialAVLTree.LastPage: HOLDER_T;
+var
+  r: NODE_T;
+  aStartPosition, aSizesBeforeSum: Integer;
+begin
+  r := NODE_T(Last(aStartPosition, aSizesBeforeSum));
+  Result{%H-}.Init(r, aStartPosition, aSizesBeforeSum);
 end;
 
 end.

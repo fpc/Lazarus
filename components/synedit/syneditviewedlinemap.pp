@@ -1,6 +1,7 @@
 unit SynEditViewedLineMap experimental;
 
 {$mode objfpc}{$H+}
+{$modeswitch typehelpers}
 {$modeswitch AdvancedRecords}
 { $INLINE off}
 
@@ -37,12 +38,12 @@ type
 
   { TSynEditLineMapPage }
 
-  TSynEditLineMapPage = class(TSynSizedDifferentialAVLNode)
+  TSynEditLineMapPage = class(specialize TGenericSynSizedDifferentialAVLNode<TSynEditLineMapPage>)
   private
     FTree: TSynLineMapAVLTree;
     FPrevPageWithInvalid, FNextPageWithInvalid: TSynEditLineMapPage;
   protected
-function GetWrappedOffsetFor(ARealOffset: IntIdx): IntIdx;  virtual; abstract;
+    function GetWrappedOffsetFor(ARealOffset: IntIdx): IntIdx;  virtual; abstract;
     function GetFirstInvalidLine: Integer; virtual;
     function GetFirstInvalidEndLine: Integer; virtual;
     function GetLastInvalidLine: Integer; virtual;
@@ -52,10 +53,7 @@ function GetWrappedOffsetFor(ARealOffset: IntIdx): IntIdx;  virtual; abstract;
     procedure AddToInvalidList;
     procedure RemoveFromInvalidList(AMode: TRemoveFromInvalidListMode = rfiDefault);
 
-    function Left: TSynEditLineMapPage;
-    function Parent: TSynEditLineMapPage;
-    function Right: TSynEditLineMapPage;
-    property LeftSizeSum;                                                       // LeftSizeSum:  Lines after wrap, in nodes to the left
+    //property LeftSizeSum; // LeftSizeSum:  Lines after wrap, in nodes to the left
     property Tree: TSynLineMapAVLTree read FTree;
 
   public
@@ -67,11 +65,6 @@ function GetWrappedOffsetFor(ARealOffset: IntIdx): IntIdx;  virtual; abstract;
 
     function CanExtendEndTo(ALineIdx: Integer; AIgnoreJoinDist: Boolean = False): boolean; virtual;
     function CanExtendStartTo(ALineIdx: Integer; AIgnoreJoinDist: Boolean = False): boolean; virtual;
-
-    function Precessor: TSynEditLineMapPage; reintroduce;
-    function Successor: TSynEditLineMapPage; reintroduce;
-    function Precessor(var aStartPosition, aSizesBeforeSum: Integer): TSynEditLineMapPage; reintroduce;
-    function Successor(var aStartPosition, aSizesBeforeSum: Integer): TSynEditLineMapPage; reintroduce;
 
     procedure InsertLinesAtOffset(ALineOffset, ALineCount: IntIdx); virtual;
     procedure DeleteLinesAtOffset(ALineOffset, ALineCount: IntIdx; ADoNotShrink: Boolean = False); virtual;
@@ -103,23 +96,21 @@ function GetWrappedOffsetFor(ARealOffset: IntIdx): IntIdx;  virtual; abstract;
     function ViewXYIdxToTextXYIdx(AViewXYIdx: TViewedPoint_0; ANodeStartLine: IntIdx): TPhysPoint_0; virtual;
   end;
 
+  TSynEditLineMapPageHolder = specialize TGenericSynSizedDifferentialAVLNodeHolder<TSynEditLineMapPage>;
 
   { TSynEditLineMapPageHolder }
 
-  TSynEditLineMapPageHolder = record
+  { TSynEditLineMapPageHolderHelper }
+
+  TSynEditLineMapPageHolderHelper = record helper for TSynEditLineMapPageHolder
   strict private
-    FData: TSynEditLineMapPage;
-    FStartLine: Integer;             // first line with wrap info
-    FViewedCountDifferenceBefore: Integer; // Lines after wrap, before this node
     function GetFirstInvalidEndLine: Integer; inline;
     function GetFirstInvalidLine: Integer; inline;
     function GetLastInvalidLine: Integer; inline;
+    function GetViewedCountDifferenceBefore: Integer; inline;
     function GetViewedLineCountDifference: Integer;  inline;
+
   public
-    procedure Init(aData : TSynEditLineMapPage; aStartLine, aWrappedBefore: Integer);
-    procedure ClearData;
-    function Next: TSynEditLineMapPageHolder;
-    function Prev: TSynEditLineMapPageHolder;
     function HasPage: Boolean; inline;
     function CountAvailable(AMaxAllowed: Integer): integer; inline;
 
@@ -142,7 +133,6 @@ function GetWrappedOffsetFor(ARealOffset: IntIdx): IntIdx;  virtual; abstract;
     procedure InvalidateLines(AFromIdx, AToIdx: Integer);
     function  ExtendAndInvalidateLines(AFromIdx, AToIdx: TLineIdx): Boolean;
 
-    property StartLine: Integer read FStartLine; // real line
     function NextNodeLine: Integer;
 
     function RealCount: Integer; // count of real lines
@@ -158,14 +148,13 @@ function GetWrappedOffsetFor(ARealOffset: IntIdx): IntIdx;  virtual; abstract;
     property FirstInvalidEndLine: Integer read GetFirstInvalidEndLine;
     property LastInvalidLine: Integer read GetLastInvalidLine;
 
-    property ViewedCountDifferenceBefore: Integer read FViewedCountDifferenceBefore; // viewed - real
+    property ViewedCountDifferenceBefore: Integer read GetViewedCountDifferenceBefore; // viewed - real
     property ViewedLineCountDifference: Integer read GetViewedLineCountDifference;
-    property Page: TSynEditLineMapPage read FData;
   end;
 
   { TSynLineMapAVLTree }
 
-  TSynLineMapAVLTree = class(TSynSizedDifferentialAVLTree)
+  TSynLineMapAVLTree = class(specialize TGenericSynSizedDifferentialAVLTree<TSynEditLineMapPageHolder, TSynEditLineMapPage>)
   private
     FPageCreatorProc: TLineMapPageCreatorProc;
     FPageSplitSize: Integer;
@@ -180,8 +169,6 @@ function GetWrappedOffsetFor(ARealOffset: IntIdx): IntIdx;  virtual; abstract;
     function CreateNode(APosition: Integer): TSynSizedDifferentialAVLNode; override;
   public
     (* Find Page by real Line *)
-    function FirstPage: TSynEditLineMapPageHolder;
-    function LastPage: TSynEditLineMapPageHolder;
     function FindPageForLine(ALineIdx: IntIdx; AMode: TSynSizedDiffAVLFindMode = afmPrev) : TSynEditLineMapPageHolder;
 
     //(* Find Fold by wrapped Line  *)
@@ -392,21 +379,6 @@ begin
   Result := -1;
 end;
 
-function TSynEditLineMapPage.Left: TSynEditLineMapPage;
-begin
-  Result := TSynEditLineMapPage(FLeft);
-end;
-
-function TSynEditLineMapPage.Parent: TSynEditLineMapPage;
-begin
-  Result := TSynEditLineMapPage(FParent);
-end;
-
-function TSynEditLineMapPage.Right: TSynEditLineMapPage;
-begin
-  Result := TSynEditLineMapPage(FRight);
-end;
-
 function TSynEditLineMapPage.CanExtendStartTo(ALineIdx: Integer;
   AIgnoreJoinDist: Boolean): boolean;
 begin
@@ -522,167 +494,109 @@ begin
   Result := AViewXYIdx;
 end;
 
-function TSynEditLineMapPage.Precessor: TSynEditLineMapPage;
-begin
-  Result := TSynEditLineMapPage(inherited Precessor);
-end;
+{ TSynEditLineMapPageHolderHelper }
 
-function TSynEditLineMapPage.Successor: TSynEditLineMapPage;
+function TSynEditLineMapPageHolderHelper.GetFirstInvalidLine: Integer;
 begin
-  Result := TSynEditLineMapPage(inherited Successor);
-end;
-
-function TSynEditLineMapPage.Precessor(var aStartPosition,
-  aSizesBeforeSum: Integer): TSynEditLineMapPage;
-begin
-  Result := TSynEditLineMapPage(inherited Precessor(aStartPosition, aSizesBeforeSum));
-end;
-
-function TSynEditLineMapPage.Successor(var aStartPosition,
-  aSizesBeforeSum: Integer): TSynEditLineMapPage;
-begin
-  Result := TSynEditLineMapPage(inherited Successor(aStartPosition, aSizesBeforeSum));
-end;
-
-{ TSynEditLineMapPageHolder }
-
-function TSynEditLineMapPageHolder.GetFirstInvalidLine: Integer;
-begin
-  if FData <> nil then begin
-    Result := FData.FirstInvalidLine;
+  if Page <> nil then begin
+    Result := Page.FirstInvalidLine;
     if Result >= 0 then
-      Result := Result + FStartLine;
+      Result := Result + StartLine;
   end
   else
     Result := -1;
 end;
 
-function TSynEditLineMapPageHolder.GetFirstInvalidEndLine: Integer;
+function TSynEditLineMapPageHolderHelper.GetFirstInvalidEndLine: Integer;
 begin
-  if FData <> nil then begin
-    Result := FData.FirstInvalidEndLine;
+  if Page <> nil then begin
+    Result := Page.FirstInvalidEndLine;
     if Result >= 0 then
-      Result := Result + FStartLine;
+      Result := Result + StartLine;
   end
   else
     Result := -1;
 end;
 
-function TSynEditLineMapPageHolder.GetLastInvalidLine: Integer;
+function TSynEditLineMapPageHolderHelper.GetLastInvalidLine: Integer;
 begin
-  if FData <> nil then begin
-    Result := FData.LastInvalidLine;
+  if Page <> nil then begin
+    Result := Page.LastInvalidLine;
     if Result >= 0 then
-      Result := Result + FStartLine;
+      Result := Result + StartLine;
   end
   else
     Result := -1;
 end;
 
-function TSynEditLineMapPageHolder.GetViewedLineCountDifference: Integer;
+function TSynEditLineMapPageHolderHelper.GetViewedCountDifferenceBefore: Integer;
+begin
+  Result := LeftSizeSum;
+end;
+
+function TSynEditLineMapPageHolderHelper.GetViewedLineCountDifference: Integer;
 begin
   Result := 0;
-  if FData <> nil then
-    Result := FData.ViewedRealCountDifference;
+  if Page <> nil then
+    Result := Page.ViewedRealCountDifference;
 end;
 
-procedure TSynEditLineMapPageHolder.Init(aData: TSynEditLineMapPage; aStartLine,
-  aWrappedBefore: Integer);
+function TSynEditLineMapPageHolderHelper.HasPage: Boolean;
 begin
-  FData := aData;
-  FStartLine :=  aStartLine;
-  FViewedCountDifferenceBefore := aWrappedBefore;
+  Result := Page <> nil;
 end;
 
-procedure TSynEditLineMapPageHolder.ClearData;
+function TSynEditLineMapPageHolderHelper.CountAvailable(AMaxAllowed: Integer): integer;
 begin
-  FData := nil;
-end;
-
-function TSynEditLineMapPageHolder.Next: TSynEditLineMapPageHolder;
-var aStart, aBefore : Integer;
-begin
-  if FData <> nil then begin
-    aStart := FStartLine;
-    aBefore := FViewedCountDifferenceBefore;
-    Result.FData := FData.Successor(aStart, aBefore);
-    Result.FStartLine := aStart;
-    Result.FViewedCountDifferenceBefore := aBefore;
-  end
-  else
-    Result.FData := nil;
-end;
-
-function TSynEditLineMapPageHolder.Prev: TSynEditLineMapPageHolder;
-var aStart, aBefore : Integer;
-begin
-  if FData <> nil then begin
-    aStart := FStartLine;
-    aBefore := FViewedCountDifferenceBefore;
-    Result.FData := FData.Precessor(aStart, aBefore);
-    Result.FStartLine := aStart;
-    Result.FViewedCountDifferenceBefore := aBefore;
-  end
-  else
-    Result.FData := nil;
-end;
-
-function TSynEditLineMapPageHolder.HasPage: Boolean;
-begin
-  Result := FData <> nil;
-end;
-
-function TSynEditLineMapPageHolder.CountAvailable(AMaxAllowed: Integer): integer;
-begin
-  if FData = nil then
+  if Page = nil then
     Result := 0
   else
-    Result := AMaxAllowed - FData.RealCount;
-  assert(Result >= 0, 'TSynEditLineMapPageHolder.CountAvailable: Result >= 0');
+    Result := AMaxAllowed - Page.RealCount;
+  assert(Result >= 0, 'TSynEditLineMapPageHolderHelper.CountAvailable: Result >= 0');
 end;
 
-procedure TSynEditLineMapPageHolder.AdjustForLinesInserted(AStartLine,
+procedure TSynEditLineMapPageHolderHelper.AdjustForLinesInserted(AStartLine,
   ALineCount, ABytePos: Integer);
 begin
-  FData.AdjustForLinesInserted(AStartLine - FStartLine, ALineCount, ABytePos);
+  Page.AdjustForLinesInserted(AStartLine - StartLine, ALineCount, ABytePos);
 end;
 
-procedure TSynEditLineMapPageHolder.AdjustForLinesDeleted(AStartLine,
+procedure TSynEditLineMapPageHolderHelper.AdjustForLinesDeleted(AStartLine,
   ALineCount, ABytePos: Integer);
 begin
-  FData.AdjustForLinesDeleted(AStartLine - FStartLine, ALineCount, ABytePos);
+  Page.AdjustForLinesDeleted(AStartLine - StartLine, ALineCount, ABytePos);
 end;
 
-procedure TSynEditLineMapPageHolder.SplitNodeToPrev(
+procedure TSynEditLineMapPageHolderHelper.SplitNodeToPrev(
   var APrevPage: TSynEditLineMapPageHolder; ASourceEndLine: Integer);
 var
   ELine: Integer;
 begin
-  assert(ASourceEndLine >= FStartLine, 'TSynEditLineMapPageHolder.SplitNodeToPrev: ASourceEndLine > FStartLine');
+  assert(ASourceEndLine >= StartLine, 'TSynEditLineMapPageHolderHelper.SplitNodeToPrev: ASourceEndLine > StartLine');
   if not APrevPage.HasPage then
     APrevPage := Prev;
 
   if not APrevPage.HasPage then begin
-    SplitNodeToNewPrev(APrevPage, ASourceEndLine, FStartLine);
+    SplitNodeToNewPrev(APrevPage, ASourceEndLine, StartLine);
     exit;
   end;
 
-  assert(APrevPage.FStartLine < FStartLine, 'TSynEditLineMapPageHolder.SplitNodeToPrev: APrevPage.FStartLine < FStartLine');
-  ELine := ASourceEndLine - FStartLine;
-  FData.MoveLinesAtStartTo(
-    APrevPage.FData,
+  assert(APrevPage.StartLine < StartLine, 'TSynEditLineMapPageHolderHelper.SplitNodeToPrev: APrevPage.StartLine < StartLine');
+  ELine := ASourceEndLine - StartLine;
+  Page.MoveLinesAtStartTo(
+    APrevPage.Page,
     ELine,
-    FStartLine - APrevPage.FStartLine);
+    StartLine - APrevPage.StartLine);
   AdjustPosition(ELine + 1);
-  assert(APrevPage.RealCount <= Page.FTree.FPageSplitSize, 'TSynEditLineMapPageHolder.SplitNodeToPrev: APrevPage.RealCount <= FPageSplitSize');
+  assert(APrevPage.RealCount <= Page.FTree.FPageSplitSize, 'TSynEditLineMapPageHolderHelper.SplitNodeToPrev: APrevPage.RealCount <= FPageSplitSize');
 end;
 
-procedure TSynEditLineMapPageHolder.SplitNodeToNext(
+procedure TSynEditLineMapPageHolderHelper.SplitNodeToNext(
   var ANextPage: TSynEditLineMapPageHolder; ASourceStartLine: Integer);
 var
   Cnt: Integer;
 begin
-  assert(ASourceStartLine >= FStartLine, 'TSynEditLineMapPageHolder.SplitNodeToNext: ASourceStartLine > FStartLine');
+  assert(ASourceStartLine >= StartLine, 'TSynEditLineMapPageHolderHelper.SplitNodeToNext: ASourceStartLine > StartLine');
   if not ANextPage.HasPage then
     ANextPage := Next;
 
@@ -691,59 +605,59 @@ begin
     exit;
   end;
 
-  assert(ANextPage.FStartLine > ASourceStartLine, 'TSynEditLineMapPageHolder.SplitNodeToNext: ANextPage.FStartLine > ASourceStartLine');
-  Cnt := ANextPage.FStartLine - ASourceStartLine;
-  FData.MoveLinesAtEndTo(
-    ANextPage.FData,
-    ASourceStartLine - FStartLine,
+  assert(ANextPage.StartLine > ASourceStartLine, 'TSynEditLineMapPageHolderHelper.SplitNodeToNext: ANextPage.StartLine > ASourceStartLine');
+  Cnt := ANextPage.StartLine - ASourceStartLine;
+  Page.MoveLinesAtEndTo(
+    ANextPage.Page,
+    ASourceStartLine - StartLine,
     Cnt);
   ANextPage.AdjustPosition(-Cnt);
-  assert(ANextPage.RealCount <= Page.FTree.FPageSplitSize, 'TSynEditLineMapPageHolder.SplitNodeToNext: ANextPage.RealCount <= FPageSplitSize');
+  assert(ANextPage.RealCount <= Page.FTree.FPageSplitSize, 'TSynEditLineMapPageHolderHelper.SplitNodeToNext: ANextPage.RealCount <= FPageSplitSize');
 end;
 
-procedure TSynEditLineMapPageHolder.SplitNodeToNewPrev(out
+procedure TSynEditLineMapPageHolderHelper.SplitNodeToNewPrev(out
   APrevPage: TSynEditLineMapPageHolder; ASourceEndLine: Integer;
   ANewPageStartLine: Integer);
 var
   SLine, ELine, Offs: Integer;
 begin
-  assert(ASourceEndLine >= FStartLine, 'TSynEditLineMapPageHolder.SplitNodeToNewPrev: ASourceEndLine > FStartLine');
-  assert(ANewPageStartLine <= FStartLine, 'TSynEditLineMapPageHolder.SplitNodeToNewPrev: ANewPageStartLine <= FStartLine');
+  assert(ASourceEndLine >= StartLine, 'TSynEditLineMapPageHolderHelper.SplitNodeToNewPrev: ASourceEndLine > StartLine');
+  assert(ANewPageStartLine <= StartLine, 'TSynEditLineMapPageHolderHelper.SplitNodeToNewPrev: ANewPageStartLine <= StartLine');
 
   if ANewPageStartLine >= 0 then begin
     SLine := ANewPageStartLine;
-    Offs := FStartLine - ANewPageStartLine;
+    Offs := StartLine - ANewPageStartLine;
   end
   else begin
-    SLine := FStartLine;
+    SLine := StartLine;
     Offs := 0;
   end;
-  ELine := ASourceEndLine - FStartLine;
+  ELine := ASourceEndLine - StartLine;
   AdjustPosition(ELine + 1);
 
-  APrevPage := FData.FTree.FindPageForLine(SLine, afmCreate);
-  FData.MoveLinesAtStartTo(
-    APrevPage.FData,
+  APrevPage := Page.FTree.FindPageForLine(SLine, afmCreate);
+  Page.MoveLinesAtStartTo(
+    APrevPage.Page,
     ELine,
     Offs);
-  assert(APrevPage.RealCount <= Page.FTree.FPageSplitSize, 'TSynEditLineMapPageHolder.SplitNodeToPrev: APrevPage.RealCount <= Page.FTree.FPageSplitSize');
+  assert(APrevPage.RealCount <= Page.FTree.FPageSplitSize, 'TSynEditLineMapPageHolderHelper.SplitNodeToPrev: APrevPage.RealCount <= Page.FTree.FPageSplitSize');
 end;
 
-procedure TSynEditLineMapPageHolder.SplitNodeToNewNext(out
+procedure TSynEditLineMapPageHolderHelper.SplitNodeToNewNext(out
   ANextPage: TSynEditLineMapPageHolder; ASourceStartLine: Integer);
 begin
-  assert(ASourceStartLine > FStartLine, 'TSynEditLineMapPageHolder.SplitNodeToNewNext: ASourceStartLine > FStartLine');
+  assert(ASourceStartLine > StartLine, 'TSynEditLineMapPageHolderHelper.SplitNodeToNewNext: ASourceStartLine > StartLine');
 
-  ANextPage := FData.FTree.FindPageForLine(ASourceStartLine, afmCreate);
+  ANextPage := Page.FTree.FindPageForLine(ASourceStartLine, afmCreate);
 
-  FData.MoveLinesAtEndTo(
-    ANextPage.FData,
-    ASourceStartLine - FStartLine,
-    Max(FData.LastInvalidLine, FData.RealCount));  // May be bigger than needed....
-  assert(ANextPage.RealCount <= Page.FTree.FPageSplitSize, 'TSynEditLineMapPageHolder.SplitNodeToNext: ANextPage.RealCount <= Page.FTree.FPageSplitSize');
+  Page.MoveLinesAtEndTo(
+    ANextPage.Page,
+    ASourceStartLine - StartLine,
+    Max(Page.LastInvalidLine, Page.RealCount));  // May be bigger than needed....
+  assert(ANextPage.RealCount <= Page.FTree.FPageSplitSize, 'TSynEditLineMapPageHolderHelper.SplitNodeToNext: ANextPage.RealCount <= Page.FTree.FPageSplitSize');
 end;
 
-function TSynEditLineMapPageHolder.CanExtendStartTo(ALineIdx: Integer;
+function TSynEditLineMapPageHolderHelper.CanExtendStartTo(ALineIdx: Integer;
   AIgnoreJoinDist: Boolean): boolean;
 begin
   // TODO: if the node has invalid lines in the offset or behind, then those may need to be included?
@@ -752,7 +666,7 @@ begin
             (AIgnoreJoinDist or (RealStartLine - ALineIdx < Page.FTree.FPageJoinDistance));
 end;
 
-function TSynEditLineMapPageHolder.CanExtendEndTo(ALineIdx: Integer;
+function TSynEditLineMapPageHolderHelper.CanExtendEndTo(ALineIdx: Integer;
   AIgnoreJoinDist: Boolean): boolean;
 begin
   Result := HasPage and
@@ -760,51 +674,52 @@ begin
             (AIgnoreJoinDist or (ALineIdx - RealEndLine < Page.FTree.FPageJoinDistance));
 end;
 
-procedure TSynEditLineMapPageHolder.AdjustPosition(AValue: Integer);
+procedure TSynEditLineMapPageHolderHelper.AdjustPosition(AValue: Integer);
 begin
-  assert(HasPage, 'TSynEditLineMapPageHolder.AdjustPosition: HasPage');
-  FData.AdjustPosition(AValue);
-  FStartLine := FStartLine + AValue;
+  assert(HasPage, 'TSynEditLineMapPageHolderHelper.AdjustPosition: HasPage');
+  Page.AdjustPosition(AValue);
+  _ChangeStartLine(StartLine + AValue);
+  //StartLine := StartLine + AValue;
 end;
 
-procedure TSynEditLineMapPageHolder.InvalidateLines(AFromIdx, AToIdx: Integer);
+procedure TSynEditLineMapPageHolderHelper.InvalidateLines(AFromIdx, AToIdx: Integer);
 begin
-  assert(HasPage, 'TSynEditLineMapPageHolder.InvalidateLines: HasPage');
-  FData.InvalidateLines(AFromIdx-FStartLine, AToIdx-FStartLine);
+  assert(HasPage, 'TSynEditLineMapPageHolderHelper.InvalidateLines: HasPage');
+  Page.InvalidateLines(AFromIdx-StartLine, AToIdx-StartLine);
 end;
 
-function TSynEditLineMapPageHolder.ExtendAndInvalidateLines(AFromIdx,
+function TSynEditLineMapPageHolderHelper.ExtendAndInvalidateLines(AFromIdx,
   AToIdx: TLineIdx): Boolean;
 begin
   Result := HasPage;
   if Result then
-    Result := FData.ExtendAndInvalidateLines(AFromIdx-FStartLine, AToIdx-FStartLine);
+    Result := Page.ExtendAndInvalidateLines(AFromIdx-StartLine, AToIdx-StartLine);
 end;
 
-procedure TSynEditLineMapPageHolder.ValidateLine(ALineIdx, AWrappCount: Integer);
+procedure TSynEditLineMapPageHolderHelper.ValidateLine(ALineIdx, AWrappCount: Integer);
 begin
-  FData.ValidateLine(ALineIdx-FStartLine, AWrappCount);
+  Page.ValidateLine(ALineIdx-StartLine, AWrappCount);
 end;
 
-function TSynEditLineMapPageHolder.RealCount: Integer;
+function TSynEditLineMapPageHolderHelper.RealCount: Integer;
 begin
   if HasPage then
-    Result := FData.RealCount
+    Result := Page.RealCount
   else
     Result := 0;
 end;
 
-function TSynEditLineMapPageHolder.RealStartLine: Integer;
+function TSynEditLineMapPageHolderHelper.RealStartLine: Integer;
 begin
-  Result := FStartLine + FData.RealStartLine;
+  Result := StartLine + Page.RealStartLine;
 end;
 
-function TSynEditLineMapPageHolder.RealEndLine: Integer;
+function TSynEditLineMapPageHolderHelper.RealEndLine: Integer;
 begin
-  Result := FStartLine + FData.RealEndLine;
+  Result := StartLine + Page.RealEndLine;
 end;
 
-function TSynEditLineMapPageHolder.GetLineForForWrap(AWrapLine: TLineIdx; out
+function TSynEditLineMapPageHolderHelper.GetLineForForWrap(AWrapLine: TLineIdx; out
   AWrapOffset: TLineIdx): TLineIdx;
 begin
   if (not HasPage) or (StartLine + ViewedCountDifferenceBefore > AWrapLine) then begin
@@ -817,7 +732,7 @@ begin
   Result := StartLine + Page.GetOffsetForWrap(AWrapLine - StartLine - ViewedCountDifferenceBefore, AWrapOffset);
 end;
 
-function TSynEditLineMapPageHolder.TextXYIdxToViewXYIdx(ATextXYIdx: TPhysPoint_0
+function TSynEditLineMapPageHolderHelper.TextXYIdxToViewXYIdx(ATextXYIdx: TPhysPoint_0
   ): TViewedPoint_0;
 begin
   Result := ATextXYIdx;
@@ -827,7 +742,7 @@ begin
   Result.y := Result.y + ViewedCountDifferenceBefore;
 end;
 
-function TSynEditLineMapPageHolder.ViewXYIdxToTextXYIdx(AViewXYIdx: TViewedPoint_0
+function TSynEditLineMapPageHolderHelper.ViewXYIdxToTextXYIdx(AViewXYIdx: TViewedPoint_0
   ): TPhysPoint_0;
 begin
   Result := AViewXYIdx;
@@ -837,10 +752,10 @@ begin
   Result := Page.ViewXYIdxToTextXYIdx(Result, StartLine);
 end;
 
-function TSynEditLineMapPageHolder.NextNodeLine: Integer;
+function TSynEditLineMapPageHolderHelper.NextNodeLine: Integer;
 begin
-  assert(HasPage, 'TSynEditLineMapPageHolder.NextNodeLinet: HasPage');
-  Result := FStartLine + RealCount;
+  assert(HasPage, 'TSynEditLineMapPageHolderHelper.NextNodeLinet: HasPage');
+  Result := StartLine + RealCount;
 end;
 
 { TSynLineMapAVLTree }
@@ -970,26 +885,6 @@ end;
 procedure TSynLineMapAVLTree.DebugDump;
 begin
   if FRoot <> nil then TSynEditLineMapPage(FRoot).DumpNode;
-end;
-
-function TSynLineMapAVLTree.FirstPage: TSynEditLineMapPageHolder;
-var
-  r : TSynEditLineMapPage;
-  rStartLine : Integer;
-  rWrappedBefore : Integer;
-begin
-  r := TSynEditLineMapPage(First(rStartLine, rWrappedBefore));
-  Result.Init(r, rStartLine, rWrappedBefore);
-end;
-
-function TSynLineMapAVLTree.LastPage: TSynEditLineMapPageHolder;
-var
-  r : TSynEditLineMapPage;
-  rStartLine : Integer;
-  rWrappedBefore : Integer;
-begin
-  r := TSynEditLineMapPage(Last(rStartLine, rWrappedBefore));
-  Result.Init(r, rStartLine, rWrappedBefore);
 end;
 
 function TSynLineMapAVLTree.FindPageForLine(ALineIdx: IntIdx;
