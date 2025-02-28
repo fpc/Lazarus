@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
-"MIME-Version: 1.0\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
-"X-Generator: Poedit 2.4.3\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.5\n"
 
 #: tachartstrconsts.descolor
 msgid "Color"
@@ -502,7 +502,7 @@ msgstr "Звезда (из линий)"
 
 #: tachartstrconsts.rsstateseries
 msgid "State series"
-msgstr ""
+msgstr "Диаграмма состояний"
 
 #: tachartstrconsts.rstop
 msgid "Top"
