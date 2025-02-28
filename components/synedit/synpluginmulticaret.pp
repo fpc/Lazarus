@@ -1626,7 +1626,7 @@ end;
 function TSynPluginMultiCaretBase.AddCaret(X, Y, Offs: Integer; flags: TCaretFlags;
   PhysX: Integer): Integer;
 var
-  y1, y2: Integer;
+  p: TPhysScreenPoint;
 begin
   Result := Carets.AddCaret(x,y, Offs, flags, PhysX);
   UpdateMainCaret;
@@ -1644,23 +1644,25 @@ begin
     exit;
   end;
 
-  y1 := Editor.RowToScreenRow(y);
-  if (y1 < 0) or (y1 > Editor.LinesInWindow + 1) then
-    y := -1; // not visible
-  if y > 1 then
-    y2 := Editor.RowToScreenRow(y-1)
-  else
-    y2 := -1;
-
-  if (y > 0) and (y1 <> y2) or (y=1) then begin
-    if Carets.Visual[Result] = nil then
-      Carets.Visual[Result] := GetVisual;
+  if y >= Editor.TopLine then begin
     x := ViewedTextBuffer.LogPhysConvertor.LogicalToPhysical(ToIdx(y), x, Offs); // TODO: check if offs was adjusted? But should not happen for NEW caret
-    Carets.Visual[Result].DisplayPos := TextArea.RowColumnToPixels(Point(x, y1));
-    Carets.Visual[Result].Visible := (eoPersistentCaret in Editor.Options) or Editor.Focused;
+    p := Editor.TextXYToScreenXY(Point(x, y));
+    dec(p.y);
   end
   else
+    p.y := -1;
+
+  if (p.y < 0) or (p.y > Editor.LinesInWindow + 1) or
+     (not ViewedTextBuffer.IsTextIdxVisible(ToIdx(y)))
+  then begin
     Carets.Visual[Result] := nil;
+    exit;
+  end;
+
+  if Carets.Visual[Result] = nil then
+    Carets.Visual[Result] := GetVisual;
+  Carets.Visual[Result].DisplayPos := TextArea.RowColumnToPixels(p);
+  Carets.Visual[Result].Visible := (eoPersistentCaret in Editor.Options) or Editor.Focused;
 end;
 
 procedure TSynPluginMultiCaretBase.RemoveCaret(Index: Integer);
@@ -1672,7 +1674,8 @@ end;
 procedure TSynPluginMultiCaretBase.UpdateCaretsPos;
 var
   i, x, y, o, w: Integer;
-  y1, y2, TopLine, BottomLine: Integer;
+  TopLine, BottomLine: Integer;
+  p: TPhysScreenPoint;
   vis: Boolean;
 begin
   if plfDeferUpdateCaretsPos in FPaintLockFlags then exit;
@@ -1693,7 +1696,7 @@ begin
 
   w := Editor.LinesInWindow + 1;
   TopLine := Editor.TopLine;
-  BottomLine := Editor.ScreenRowToRow(w);
+  BottomLine := ToPos(ViewedTextBuffer.ViewToTextIndex(ToIdx(Editor.TopView + w)));
   for i := 0 to CaretsCount - 1 do begin
     if cfNoneVisual in Carets.Flags[i] then continue;
 
@@ -1705,30 +1708,28 @@ begin
 
     x := Carets.CaretX[i];
     o := Carets.CaretOffs[i];
-    y1 := Editor.RowToScreenRow(y);
-    if (y1 < 0) or (y1 > w) then begin
+      // check if offs was adjusted
+      //if o <> Carets.CaretOffs[i] then
+      //  Carets.CaretOffs[i] := o;
+
+    x := ViewedTextBuffer.LogPhysConvertor.LogicalToPhysical(ToIdx(y), x, o);
+    p := Editor.TextXYToScreenXY(Point(x, y));
+    dec(p.y);
+
+    if (p.y < 0) or (p.y > w) or
+       (not ViewedTextBuffer.IsTextIdxVisible(ToIdx(y)))
+    then begin
       Carets.Visual[i] := nil;
       continue;
     end;
 
-    if y > 1 then
-      y2 := Editor.RowToScreenRow(y-1);
-
-    if (y1 <> y2) or (y=1) then begin
-      if Carets.Visual[i] = nil then
-        Carets.Visual[i] := GetVisual;
-      x := ViewedTextBuffer.LogPhysConvertor.LogicalToPhysical(ToIdx(y), x, o);
-      Carets.Visual[i].Lock;
-      Carets.Visual[i].DisplayPos := TextArea.RowColumnToPixels(Point(x, y1));
-      Carets.Visual[i].Visible := vis;
-      Carets.Visual[i].UnLock;
-//todo: remove if duplicate
-      // check if offs was adjusted
-      //if o <> Carets.CaretOffs[i] then
-      //  Carets.CaretOffs[i] := o;
-    end
-    else
-      Carets.Visual[i] := nil;
+    if Carets.Visual[i] = nil then
+      Carets.Visual[i] := GetVisual;
+    Carets.Visual[i].Lock;
+    Carets.Visual[i].DisplayPos := TextArea.RowColumnToPixels(p);
+    Carets.Visual[i].Visible := vis;
+    Carets.Visual[i].UnLock;
+    //todo: remove if duplicate
   end;
 end;
 
