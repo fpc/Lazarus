@@ -2107,7 +2107,7 @@ begin
       AItem := AList.Items[i];
       WStr := AItem{%H-}.Caption;
       Item := QtTreeWidget.topLevelItem(i);
-      QtTreeWidget.setItemText(Item, 0, WStr, AlignmentToQtAlignmentMap[AList.Column[0].Alignment]);
+      QtTreeWidget.setItemText(Item, 0, WStr, AlignmentToQtAlignmentMap[AList.Column[0].Alignment] or QtAlignVCenter);
       QtTreeWidget.setItemData(Item, 0, AItem);
       if AList.Checkboxes then
       begin
@@ -2144,7 +2144,7 @@ begin
         if (TCustomListViewHack(AList).Columns.Count > 0) and (j + 1 < TCustomListViewHack(AList).Columns.Count) then
           AAlignment := AlignmentToQtAlignmentMap[TCustomListViewHack(AList).Column[j + 1].Alignment];
         WStr := AItem{%H-}.Subitems.Strings[j];
-        QtTreeWidget.setItemText(Item, j + 1, WStr, AAlignment);
+        QtTreeWidget.setItemText(Item, j + 1, WStr, AAlignment or QtAlignVCenter);
         QtTreeWidget.setItemData(Item, j + 1, AItem);
         if ImgListRes.Valid and (ImgListRes.Count > 0) and (AItem.SubItemImages[j] >= 0) then
         begin
