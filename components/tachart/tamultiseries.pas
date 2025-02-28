@@ -365,6 +365,8 @@ type
     FBarBrush: TBrush;
     FBarHeight: Double;
     FBarPen: TPen;
+    FImgBarHeight: Integer;
+    FOnBarHeightChanged: TNotifyEvent;
     function IsStoredBarHeight: Boolean;
     procedure SetBarBrush(AValue: TBrush);
     procedure SetBarHeight(AValue: Double);
@@ -382,11 +384,11 @@ type
     destructor Destroy; override;
     procedure Assign(ASource: TPersistent); override;
 
-    function AddXY(AStart, AEnd, Y: Double; ALabel: String;
+    function AddXY(AStart, AEnd, Y: Double; ALabel: String = '';
       AColor: TColor = clTAColor): Integer;
     procedure Draw(ADrawer: IChartDrawer); override;
     function Extent: TDoubleRect; override;
-    function GetImgBarHeight({%H-}AIndex: Integer): Integer;
+    function GetImgBarHeight: Integer;
     function GetNearestPoint(const AParams: TNearestPointParams;
       out AResults: TNearestPointResults): Boolean; override;
     procedure MovePointEx(var AIndex: Integer; AXIndex, AYIndex: Integer;
@@ -404,7 +406,7 @@ type
     property Marks;
     property Source;
     property ToolTargets default [nptPoint, nptXList, nptCustom];
-
+    property OnBarHeightChanged: TNotifyEvent read FOnBarHeightChanged write FOnBarHeightChanged;
   end;
 
 
@@ -2659,7 +2661,7 @@ begin
 end;
 
 function TStateSeries.AddXY(AStart, AEnd, Y: Double;
-  ALabel: String; AColor: TColor = clTAColor): Integer;
+  ALabel: String = ''; AColor: TColor = clTAColor): Integer;
 begin
   EnsureOrder(AStart, AEnd);
   Result := ListSource.AddXListY([AStart, AEnd], Y, ALabel, AColor);
@@ -2781,6 +2783,7 @@ var
 
 var
   x1, x2, h: Double;
+  ih: Integer;
 begin
   if IsEmpty or (not Active) then exit;
 
@@ -2789,6 +2792,16 @@ begin
   ExpandRange(ext2.a.Y, ext2.b.Y, 1.0);
 
   scaledDepth := ADrawer.Scale(Depth);
+  h := CalcBarHeight;
+  if Assigned(FOnBarHeightChanged) then
+  begin
+    ih := GetImgBarHeight;
+    if ih <> FImgBarHeight then
+    begin
+      FImgBarHeight := ih;
+      FOnBarHeightChanged(self);
+    end;
+  end;
 
   PrepareGraphPoints(ext2, true);
   for pointIndex := FLoBound to FUpBound do begin
@@ -2796,7 +2809,6 @@ begin
     if SkipMissingValues(pointIndex) then
       continue;
     p.Y := AxisToGraphY(p.Y);
-    h := CalcBarHeight;
 
     with Source[pointIndex]^ do
     begin
@@ -2840,16 +2852,16 @@ begin
   end;
 end;
 
-function TStateSeries.GetImgBarHeight(AIndex: Integer): Integer;
+function TStateSeries.GetImgBarHeight: Integer;
 var
   h: Double;
   f: TGraphToImageFunc;
 begin
   h := CalcBarHeight;
   if IsRotated then
-    f := @FChart.YGraphToImage
+    f := @FChart.XGraphToImage
   else
-    f := @FChart.XGraphToImage;
+    f := @FChart.YGraphToImage;
   Result := Abs(f(2 * h) - f(0));
 end;
 
