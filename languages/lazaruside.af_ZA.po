@@ -3410,12 +3410,20 @@ msgstr ""
 msgid "Word-wrap"
 msgstr ""
 
+#: lazarusidestrconsts.dlgoptwordwrapcheckfixedlength
+msgid "Wrap at fixed column"
+msgstr ""
+
 #: lazarusidestrconsts.dlgoptwordwrapdisplaycaretatwrappositio
 msgid "Display caret at wrap-position..."
 msgstr ""
 
 #: lazarusidestrconsts.dlgoptwordwrapendofline
 msgid "end of line"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoptwordwrapfixedlinelength
+msgid "Fixed line length"
 msgstr ""
 
 #: lazarusidestrconsts.dlgoptwordwraphomeendkey
@@ -3443,8 +3451,16 @@ msgstr ""
 msgid "Minimum indent width"
 msgstr ""
 
+#: lazarusidestrconsts.dlgoptwordwrapmaximumlinelength
+msgid "Maximum line length"
+msgstr ""
+
 #: lazarusidestrconsts.dlgoptwordwrapminimumlinelength
 msgid "Minimum line length"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoptwordwrapsectioncolumn
+msgid "Wrap column settings"
 msgstr ""
 
 #: lazarusidestrconsts.dlgoptwordwrapsectionindent

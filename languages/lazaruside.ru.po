@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-02-26 18:08+0300\n"
+"PO-Revision-Date: 2025-02-28 17:00+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -3405,6 +3405,10 @@ msgstr "Уровни оптимизации"
 msgid "Word-wrap"
 msgstr "Перенос слов"
 
+#: lazarusidestrconsts.dlgoptwordwrapcheckfixedlength
+msgid "Wrap at fixed column"
+msgstr "Переносить на фиксированном столбце"
+
 #: lazarusidestrconsts.dlgoptwordwrapdisplaycaretatwrappositio
 msgid "Display caret at wrap-position..."
 msgstr "В точке переноса отображать курсор в..."
@@ -3412,6 +3416,10 @@ msgstr "В точке переноса отображать курсор в..."
 #: lazarusidestrconsts.dlgoptwordwrapendofline
 msgid "end of line"
 msgstr "конце строки"
+
+#: lazarusidestrconsts.dlgoptwordwrapfixedlinelength
+msgid "Fixed line length"
+msgstr "Фиксированная длина строки"
 
 #: lazarusidestrconsts.dlgoptwordwraphomeendkey
 msgid "Force default home/end keys to subline start/end"
@@ -3438,9 +3446,17 @@ msgstr "Максимальная ширина отступа (в процент�
 msgid "Minimum indent width"
 msgstr "Минимальная ширина отступа"
 
+#: lazarusidestrconsts.dlgoptwordwrapmaximumlinelength
+msgid "Maximum line length"
+msgstr "Максимальная длина строки"
+
 #: lazarusidestrconsts.dlgoptwordwrapminimumlinelength
 msgid "Minimum line length"
 msgstr "Минимальная длина строки"
+
+#: lazarusidestrconsts.dlgoptwordwrapsectioncolumn
+msgid "Wrap column settings"
+msgstr "Параметры переноса столбцов"
 
 #: lazarusidestrconsts.dlgoptwordwrapsectionindent
 msgid "Indent settings"
