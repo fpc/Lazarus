@@ -9052,64 +9052,12 @@ begin
 
     end else
     begin
-      Result := Rect(0, 0, PGtkLayout(GetContainerWidget)^.get_allocated_width, PGtkLayout(GetContainerWidget)^.get_allocated_height);
       //we are not ready, provide at least scrolledwindow size as clientrect for now.
-      //TODO: check scrollbar policy here, and if it's < GTK_POLICY_NEVER apply scrollbars sizes from GetSystemMetrics.
+      Result := Rect(0, 0, PGtkLayout(GetContainerWidget)^.get_allocated_width, PGtkLayout(GetContainerWidget)^.get_allocated_height);
       if (Result.Width <= 1) and (Result.Height <= 1) then
         Result := Rect(0, 0, Widget^.get_allocated_width, Widget^.get_allocated_height);
     end;
-    //writeln('CustomControl clientRect=',dbgs(Result));
-    exit;
   end;
-
-  AViewPort := getViewport;
-  if Gtk3IsViewPort(AViewPort) and Gtk3IsGdkWindow(AViewPort^.get_view_window) then
-  begin
-    AViewPort^.get_view_window^.get_geometry(@x, @y, @w, @h);
-
-    Bar := getHorizontalScrollbar;
-    if (Bar <> nil) and Gtk3IsWidget(Bar) and Bar^.get_visible and GTK3WidgetSet.OverlayScrolling then
-      HOffset := Bar^.get_allocated_height
-    else
-      HOffset := 0;
-
-    Bar := getVerticalScrollbar;
-    if (Bar <> nil) and Gtk3IsWidget(Bar) and Bar^.get_visible and GTK3WidgetSet.OverlayScrolling then
-      VOffset := Bar^.get_allocated_width
-    else
-      VOffset := 0;
-
-    Result := Rect(0, 0, AViewPort^.get_view_window^.get_width - VOffset, AViewPort^.get_view_window^.get_height - HOffset);
-
-    {$IFDEF GTK3DEBUGSIZE}
-    DebugLn('TGtk3CustomControl.GetClientRect via Viewport ',dbgsName(LCLObject),' Result ',dbgs(Result),' X=',dbgs(X),' Y=',dbgs(Y),' AllocH=',dbgs(AViewPort^.get_allocated_height),' OffsetH=',HOffset.ToString,' VOffset=',VOffset.ToString);
-    getContainerWidget^.get_allocation(@Allocation);
-    with ALlocation do
-    begin
-      DebugLn(Format('  GtkFixed alloc x %d y %d width %d height %d',[x, y, width, height]));
-    end;
-    {$ENDIF}
-    exit;
-  end else
-  begin
-    FCentralWidget^.get_allocation(@Allocation);
-    if (Allocation.x = -1) and (Allocation.y = -1) and (Allocation.width = 0) and (Allocation.Height = 0) then
-      FWidget^.get_allocation(@Allocation);
-  end;
-
-  with Allocation do
-    R := Rect(x, y, width + x, height + y);
-
-  if IsRectEmpty(R) then
-    R := Rect(0, 0, 0, 0);
-
-  Result := R;
-  {$IFDEF GTK3DEBUGSIZE}
-  DebugLn('TGtk3CustomControl.GetClientRect via GtkFixed ',dbgsName(LCLObject),' Result=',dbgs(Result));
-  {$ENDIF}
-
-  // DebugLn('TGtk3CustomControl.GetClientRect normal ',dbgsName(LCLObject),' Result ',dbgs(Result));
-  Types.OffsetRect(Result, -Result.Left, -Result.Top);
 end;
 
 function TGtk3CustomControl.getHorizontalScrollbar: PGtkScrollbar;
