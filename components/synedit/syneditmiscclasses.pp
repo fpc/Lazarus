@@ -151,7 +151,6 @@ type
     FScreenCaret: TSynEditScreenCaret;
     FOptions: TSynEditorOptions;
     FOptions2: TSynEditorOptions2;
-    procedure DoTopViewChanged(Sender: TObject); virtual; abstract;
     function GetMarkupMgr: TObject; virtual; abstract;
     function GetLines: TStrings; virtual; abstract;
     function GetCanRedo: boolean; virtual; abstract;
