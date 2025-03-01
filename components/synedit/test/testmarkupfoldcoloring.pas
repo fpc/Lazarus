@@ -78,7 +78,7 @@ implementation
 
 function CopyArray(a: array of Integer): TIntArray;
 begin
-  SetLength(Result, Length(a));
+  SetLength(Result{%H-}, Length(a));
   if Length(a) > 0 then
     move(a[0], Result[0], Length(a) * SizeOf(a[0]));
 end;
@@ -279,7 +279,7 @@ end;
 
 function TTestMarkupFoldColoring.TestText1: TStringArray;
 begin
-  SetLength(Result, 26);
+  SetLength(Result{%H-}, 26);
   Result[ 0] := 'program Foo;';
   Result[ 1] := '';
   Result[ 2] := 'procedure a;';
@@ -310,7 +310,7 @@ end;
 
 function TTestMarkupFoldColoring.TestText2: TStringArray;
 begin
-  SetLength(Result, 20);
+  SetLength(Result{%H-}, 20);
   Result[0] := 'program a;';
   Result[1] := 'procedure TEditorFrame.NotifChanged(Sender: TObject);';
   Result[2] := 'begin';
@@ -337,7 +337,7 @@ function TTestMarkupFoldColoring.TestTextEditIfThen(out ExpLines,
 var
   i: Integer;
 begin
-  SetLength(Result, 29);
+  SetLength(Result{%H-}, 29);
   SetLength(ExpLines, 29);
   SetLength(ExpLinesEdited, 18); // stop at bad line // HL may change....
   Result[ 0] := 'program a;';
@@ -405,7 +405,7 @@ end;
 
 function TTestMarkupFoldColoring.TestTextMultiLineIfIndent: TStringArray;
 begin
-  SetLength(Result, 29);
+  SetLength(Result{%H-}, 29);
   Result[ 0] := 'program a;';
   Result[ 1] := 'procedure foo;';
   Result[ 2] := 'begin';
@@ -439,7 +439,7 @@ end;
 
 function TTestMarkupFoldColoring.TestTextInval1: TStringArray;
 begin
-  SetLength(Result, 20);
+  SetLength(Result{%H-}, 20);
   Result[0] := 'procedure';
   Result[1] := 'begin';
   Result[2] := '';
@@ -466,7 +466,7 @@ function TTestMarkupFoldColoring.TestTextScroll1: TStringArray;
 var
   i: Integer;
 begin
-  SetLength(Result, 112);
+  SetLength(Result{%H-}, 112);
   Result[0] := 'unit TestUnit;';
   Result[1] := '';
   Result[2] := '{$mode objfpc}{$H+}';
@@ -517,7 +517,7 @@ end;
 function TTestMarkupFoldColoring.TestTextCaseScroll1(out
   ExpLines: TTestLineMarkupResults): TStringArray;
 begin
-  SetLength(Result, 44+30);
+  SetLength(Result{%H-}, 44+30);
   SetLength(ExpLines, 44);
   Result[ 0] := 'program a;';
   Result[ 1] := 'begin';

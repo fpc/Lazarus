@@ -81,7 +81,7 @@ end;
 
 function TTestBasicSynEdit.TestLines1: TStringArray;
 begin
-  SetLength(Result, 16);
+  SetLength(Result{%H-}, 16);
               // 1    6    11 14
   Result[0]  := 'Some text to test';                 //1
               // 1   5   9
@@ -111,7 +111,7 @@ end;
 
 function TTestBasicSynEdit.TestLines2: TStringArray;
 begin
-  SetLength(Result, 7);
+  SetLength(Result{%H-}, 7);
               // 1    6    11 14
   Result[0]  := 'abc def ghi'; // 1
   Result[1]  := 'ABC DEF GHI'; // 2
@@ -307,7 +307,7 @@ var
 
   function TestText1: TStringArray;
   begin
-    SetLength(Result, 4);
+    SetLength(Result{%H-}, 4);
     Result[0] := 'abc';
     Result[1] := 'öbc';
     Result[2] := #9'abc';
@@ -2378,7 +2378,7 @@ end;
 procedure TTestBasicSynEdit.TestSearchReplace;
   function TestText1: TStringArray;
   begin
-    SetLength(Result, 9);
+    SetLength(Result{%H-}, 9);
     Result[0] := 'aaaa';
     Result[1] := 'xx11';
     Result[2] := 'cccc';

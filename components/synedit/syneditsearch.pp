@@ -652,10 +652,10 @@ var
     //DebugLn(['GetTextRange StartPos=',dbgs(StartPos),' EndPos=',dbgs(EndPos)]);
     //DebugLn(Lines.Text);
 
-    if EndPos.Y<StartPos.Y then begin
-      Result:='';
+    Result:='';
+    if EndPos.Y<StartPos.Y then
       exit;
-    end;
+
     CurLine:=Lines[StartPos.Y-1];
     if StartPos.y=EndPos.Y then
       Result:=CurLine

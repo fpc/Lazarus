@@ -1835,9 +1835,11 @@ function TSynEditSelection.GetSelText : string;
   begin
     SrcLen := Length(S);
     DstLen := Index + Count;
-    if SrcLen >= DstLen then
-      Result := Copy(S, Index, Count)
+    if SrcLen >= DstLen then begin
+      Result := Copy(S, Index, Count);
+    end
     else begin
+      Result := '';
       SetLength(Result, DstLen);
       P := PChar(Result);
       StrPCopy(P, Copy(S, Index, Count));

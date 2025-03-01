@@ -459,6 +459,7 @@ end;
 {$IFDEF SYN_MBCSSUPPORT}
 function TSynCustomExporter.ReplaceMBCS(Char1, Char2: char): string;
 begin
+  Result := '';
   SetLength(Result, 2);
   Result[1] := Char1;
   Result[2] := Char2;
@@ -474,11 +475,12 @@ var
 begin
   IsSpace := TRUE;
   if AToken <> '' then begin
+    Result := '';
     SrcLen := Length(AToken);
     ISrc := 1;
     DestLen := SrcLen;
     IDest := 1;
-    SetLength(Result{%H-}, DestLen);
+    SetLength(Result, DestLen);
     while ISrc <= SrcLen do begin
       c := AToken[ISrc];
       IsSpace := IsSpace and (c = ' ');

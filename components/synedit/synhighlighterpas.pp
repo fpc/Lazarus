@@ -4553,13 +4553,8 @@ begin
 end;
 
 function TSynPasSyn.GetToken: string;
-var
-  Len: LongInt;
 begin
-  Len := Run - fTokenPos;
-  SetLength(Result{%H-},Len);
-  if Len>0 then
-    System.Move(fLine[fTokenPos],Result[1],Len);
+  SetString(Result, @fLine[fTokenPos], Run - fTokenPos);
 end;
 
 procedure TSynPasSyn.GetTokenEx(out TokenStart: PChar; out TokenLength: integer);
