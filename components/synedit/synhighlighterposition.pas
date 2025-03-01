@@ -188,12 +188,8 @@ begin
 end;
 
 function TSynPositionHighlighter.GetToken: string;
-var
-  Len: LongInt;
 begin
-  Len := fTokenEnd - fTokenPos;
-  SetLength(Result{%H-},Len);
-  System.Move(fLine[fTokenPos],Result[1],Len);
+  SetString(Result, @fLine[fTokenPos], fTokenEnd - fTokenPos);
 end;
 
 procedure TSynPositionHighlighter.GetTokenEx(out TokenStart: PChar;

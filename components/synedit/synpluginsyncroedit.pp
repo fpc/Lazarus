@@ -960,8 +960,7 @@ var
 begin
   TCustomSynEdit(FriendEdit).GetHighlighterAttriAtRowColEx(APos, Ctx, FLastContextLine = APos.Y);
   FLastContextLine := APos.Y;
-  SetLength(Result, SizeOf(Integer));
-  PInteger(@Result[1])^ := Ctx;
+  SetString(Result, PChar(@Ctx), SizeOf(Ctx));
 end;
 
 procedure TSynPluginSyncroEdit.SetGutterGlyph(const AValue: TBitmap);

@@ -1249,8 +1249,9 @@ end;
 
 function TSynEditFoldExportStream.PeakString(ALen: Integer): String;
 begin
+  Result := '';
   If not(FPos+ ALen <= FLen) then
-    exit('');
+    exit;
   SetLength(Result, ALen);
   if ALen > 0 then
     System.Move((FMem + FPos)^, Result[1], ALen);
@@ -1267,8 +1268,9 @@ end;
 
 function TSynEditFoldExportStream.ReadString(ALen: Integer): String;
 begin
+  Result := '';
   If not(FPos+ ALen <= FLen) then
-    exit('');
+    exit;
   SetLength(Result, ALen);
   if ALen > 0 then
     System.Move((FMem + FPos)^, Result[1], ALen);
@@ -3094,6 +3096,7 @@ var
   i: Integer;
 begin
   i := FoldOpenCount(ALine);
+  Result := nil;
   SetLength(Result, i);
   while i > 0 do begin
     dec(i);
@@ -4455,9 +4458,10 @@ var
   end;
 
 begin
+  Result := Default(TFoldViewNodeInfo);
   hl := TSynCustomFoldHighlighter(HighLighter);
   if not assigned(hl) then
-    exit;  // ToDo: Initialize Result
+    exit;
 
   nd.LogXStart := 0;
   nd.LogXEnd := 0;

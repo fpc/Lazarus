@@ -274,6 +274,7 @@ begin
     l := 0;
     for i := 0 to length(CharWidths)-1 do
       l := l + (CharWidths[i] and PCWMask);
+    Result := '';
     SetLength(Result, l);
 
     l := 1;

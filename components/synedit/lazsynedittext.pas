@@ -1146,9 +1146,10 @@ end;
 function TSynEditStrings.GetPhysicalCharWidths(Line: PChar; LineLen,
   Index: Integer): TPhysicalCharWidths;
 begin
-  SetLength(Result{%H-}, LineLen);
+  Result := nil;
   if LineLen = 0 then
     exit;
+  SetLength(Result{%H-}, LineLen);
   DoGetPhysicalCharWidths(Line, LineLen, Index, @Result[0]);
 end;
 

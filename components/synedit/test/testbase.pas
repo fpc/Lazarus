@@ -577,6 +577,7 @@ var
   i, j, k: Integer;
   s: String;
 begin
+  Result := nil;
   SetLength(Result, length(Lines));
   for i := low(Lines) to high(Lines) do
     Result[i-low(Lines)] := Lines[i];

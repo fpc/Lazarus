@@ -832,7 +832,8 @@ procedure TSynSearchDictionary.BuildDictionary;
        memory consumption, since they have 4 continuation bytes (array size 64)
        to bring down the average.
     *)
-    SetLength(Result{%H-}, Length(ATerm));
+    Result := '';
+    SetLength(Result, Length(ATerm));
     for i := 1 to Length(ATerm) do begin
       c := ATerm[i];
       if c < #128

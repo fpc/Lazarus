@@ -197,7 +197,7 @@ function FillArray(AFrom, ATo: integer; AIncrease: Integer = 1): TIntArray;
 var
   i: Integer;
 begin
-  SetLength(Result, ATo - AFrom + 1);
+  SetLength(Result{%H-}, ATo - AFrom + 1);
   for i := 0 to high(Result) do
     Result[i] := AFrom + i * AIncrease;
 end;
@@ -217,7 +217,7 @@ function ViewedExp(AFirstViewedIdx: TLineIdx;
 var
   i, j: Integer;
 begin
-  SetLength(Result, Length(ALines));
+  SetLength(Result{%H-}, Length(ALines));
   j := 0;
   for i := 0 to Length(ALines) - 1 do begin
     if (i > 0) and (ALines[i].SubIdx = 0) then begin
