@@ -126,7 +126,9 @@ begin
           Size.cy := Res.Height;
           QTabWidget_setIconSize(TQtPage(ACustomPage.Handle).getTabWidget, @Size);
         end;
-        TQtPage(ACustomPage.Handle).setIcon(TQtImage(Bmp.Handle).AsIcon);
+        Icon := TQtImage(Bmp.Handle).AsIcon;
+        TQtPage(ACustomPage.Handle).setIcon(Icon);
+        QIcon_destroy(Icon);
         B := True;
       finally
         Bmp.Free;
