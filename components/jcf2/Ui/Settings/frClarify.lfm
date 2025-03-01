@@ -1,12 +1,14 @@
-inherited fClarify: TfClarify
+object fClarify: TfClarify
+  Left = 0
   Height = 292
+  Top = 0
   Width = 426
   ClientHeight = 292
   ClientWidth = 426
   TabOrder = 0
   DesignLeft = 130
   DesignTop = 131
-  object Label1: TLabel[0]
+  object Label1: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 6
@@ -17,7 +19,7 @@ inherited fClarify: TfClarify
     Caption = 'File extensions to format:'
     ParentColor = False
   end
-  object rgRunOnceOffs: TRadioGroup[1]
+  object rgRunOnceOffs: TRadioGroup
     AnchorSideLeft.Control = mFileExtensions
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = mFileExtensions
@@ -49,8 +51,9 @@ inherited fClarify: TfClarify
       'Run &only these'
     )
     TabOrder = 0
+    Visible = False
   end
-  object mFileExtensions: TMemo[2]
+  object mFileExtensions: TMemo
     AnchorSideLeft.Control = Label1
     AnchorSideTop.Control = Label1
     AnchorSideTop.Side = asrBottom
