@@ -1728,7 +1728,7 @@ begin
     end;
 
     ChkBoxRect := Rect(0, 0, 0, 0);
-    if QtTreeWidget.Checkable then
+    if QtTreeWidget.Checkable and (ASubItem = 0) then
     begin
       APixelMetric := QStyle_pixelMetric(QApplication_style(), QStylePM_IndicatorWidth, nil, QtTreeWidget.Widget);
       APixelMetric += QStyle_pixelMetric(QApplication_style(), QStylePM_CheckBoxLabelSpacing, nil, QtTreeWidget.Widget);
