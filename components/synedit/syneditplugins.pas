@@ -439,9 +439,12 @@ begin
     (CurrentEditor.CaretX -1 <= Length(iString)) then
   begin
     iIdentChars := CurrentEditor.IdentChars;
-    for cCol := CurrentEditor.CaretX -1 downto 1 do
+    cCol := CurrentEditor.CaretX -1;
+    while cCol > 0 do begin
       if not (iString[cCol] in iIdentChars) then
         break;
+      dec(cCol);
+    end;
     Result := Copy( iString, cCol +1, CurrentEditor.CaretX - cCol -1);
   end;
 end;
