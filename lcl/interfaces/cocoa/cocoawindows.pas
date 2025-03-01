@@ -100,8 +100,6 @@ type
     procedure otherMouseUp(event: NSEvent); override;
     procedure otherMouseDragged(event: NSEvent); override;
     procedure mouseDragged(event: NSEvent); override;
-    procedure mouseEntered(event: NSEvent); override;
-    procedure mouseExited(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
   end;
 
@@ -148,18 +146,6 @@ type
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     // mouse
-    procedure mouseDown(event: NSEvent); override;
-    procedure mouseUp(event: NSEvent); override;
-    procedure rightMouseDown(event: NSEvent); override;
-    procedure rightMouseUp(event: NSEvent); override;
-    procedure rightMouseDragged(event: NSEvent); override;
-    procedure otherMouseDown(event: NSEvent); override;
-    procedure otherMouseUp(event: NSEvent); override;
-    procedure otherMouseDragged(event: NSEvent); override;
-    procedure mouseDragged(event: NSEvent); override;
-    procedure mouseEntered(event: NSEvent); override;
-    procedure mouseExited(event: NSEvent); override;
-    procedure mouseMoved(event: NSEvent); override;
     procedure scrollWheel(event: NSEvent); override;
     procedure sendEvent(event: NSEvent); override;
     // key
@@ -599,65 +585,55 @@ end;
 procedure TCocoaPanel.mouseDown(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited mouseDown(event);
+    inherited;
 end;
 
 procedure TCocoaPanel.mouseUp(event: NSEvent);
 begin
-  if Assigned(callback) then callback.MouseUpDownEvent(event);
-    inherited mouseUp(event);
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited;
 end;
 
 procedure TCocoaPanel.rightMouseDown(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited rightMouseUp(event);
+    inherited;
 end;
 
 procedure TCocoaPanel.rightMouseUp(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited rightMouseDown(event);
+    inherited;
 end;
 
 procedure TCocoaPanel.rightMouseDragged(event: NSEvent);
 begin
-  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited rightMouseDragged(event);
+  if not Assigned(callback) or not callback.MouseMove(event) then
+    inherited;
 end;
 
 procedure TCocoaPanel.otherMouseDown(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited otherMouseDown(event);
+    inherited;
 end;
 
 procedure TCocoaPanel.otherMouseUp(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited otherMouseUp(event);
+    inherited;
 end;
 
 procedure TCocoaPanel.otherMouseDragged(event: NSEvent);
 begin
-  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited otherMouseDown(event);
+  if not Assigned(callback) or not callback.MouseMove(event) then
+    inherited;
 end;
 
 procedure TCocoaPanel.mouseDragged(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.MouseMove(event) then
-    inherited mouseDragged(event);
-end;
-
-procedure TCocoaPanel.mouseEntered(event: NSEvent);
-begin
-  inherited mouseEntered(event);
-end;
-
-procedure TCocoaPanel.mouseExited(event: NSEvent);
-begin
-  inherited mouseExited(event);
+    inherited;
 end;
 
 procedure TCocoaPanel.mouseMoved(event: NSEvent);
@@ -799,78 +775,6 @@ procedure TCocoaWindow.lclClearCallback;
 begin
   callback := nil;
   contentView.lclClearCallback;
-end;
-
-procedure TCocoaWindow.mouseDown(event: NSEvent);
-begin
-  //if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited mouseDown(event);
-end;
-
-procedure TCocoaWindow.mouseUp(event: NSEvent);
-begin
-  //firedMouseEvent:=true;
-  //if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited mouseUp(event);
-end;
-
-procedure TCocoaWindow.rightMouseDown(event: NSEvent);
-begin
-  //if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited rightMouseUp(event);
-end;
-
-procedure TCocoaWindow.rightMouseUp(event: NSEvent);
-begin
-  //if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited rightMouseDown(event);
-end;
-
-procedure TCocoaWindow.rightMouseDragged(event: NSEvent);
-begin
-  //if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited rightMouseDragged(event);
-end;
-
-procedure TCocoaWindow.otherMouseDown(event: NSEvent);
-begin
-  //if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited otherMouseDown(event);
-end;
-
-procedure TCocoaWindow.otherMouseUp(event: NSEvent);
-begin
-  //if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited otherMouseUp(event);
-end;
-
-procedure TCocoaWindow.otherMouseDragged(event: NSEvent);
-begin
-  //if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited otherMouseDown(event);
-end;
-
-procedure TCocoaWindow.mouseDragged(event: NSEvent);
-begin
-  //if not Assigned(callback) or not callback.MouseMove(event) then
-    inherited mouseDragged(event);
-end;
-
-procedure TCocoaWindow.mouseEntered(event: NSEvent);
-begin
-  inherited mouseEntered(event);
-end;
-
-procedure TCocoaWindow.mouseExited(event: NSEvent);
-begin
-  inherited mouseExited(event);
-end;
-
-procedure TCocoaWindow.mouseMoved(event: NSEvent);
-begin
-  // no need to call for callback or anything, because WindowContent
-  // will take care of it anyway
-  inherited mouseMoved(event);
 end;
 
 procedure TCocoaWindow.scrollWheel(event: NSEvent);
