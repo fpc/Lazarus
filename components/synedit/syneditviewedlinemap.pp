@@ -1466,7 +1466,9 @@ var
   FirstViewedX: IntPos;
 begin
   if FWrapInfoForViewedXYProc <> nil then
-    WrapInfoForViewedXYProc(AViewedXY, AFlags, FirstViewedX, ALogPhysConvertor);
+    WrapInfoForViewedXYProc(AViewedXY, AFlags, FirstViewedX, ALogPhysConvertor)
+  else
+    FirstViewedX := 1;
 
   inherited InternalGetInfoForViewedXY(AViewedXY, AFlags, AViewedXYInfo,
     ALogPhysConvertor);

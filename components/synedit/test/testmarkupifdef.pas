@@ -319,6 +319,7 @@ function TTestMarkupIfDef.TestTextNoIfDef: TStringArray;
     Result[Length(Result)-1] := s;
   end;
 begin
+  Result := nil;
   AddLine('//'                                                    );
   AddLine('//'                                                    );
   AddLine('//'                                                    );
@@ -339,6 +340,7 @@ function TTestMarkupIfDef.TestTextIfDef: TStringArray;
   end;
 
 begin
+  Result := nil;
   // 1
   AddLine('//'                                                    );
   AddLine('{$IFDEF a}'                                            );

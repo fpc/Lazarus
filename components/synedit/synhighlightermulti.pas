@@ -1206,7 +1206,7 @@ begin
         end;
         if NewSearchPos <= 0 then
           break; // Not in this line
-        SearchPos := NewSearchPos + Schemes[j].LastMatchLen;
+        SearchPos := NewSearchPos + Schemes[j{%H-}].LastMatchLen;
         StartScheme(Schemes[j], Result, SearchPos, NewSearchPos);
       end;
     end;

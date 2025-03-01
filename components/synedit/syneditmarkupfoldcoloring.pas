@@ -1189,7 +1189,7 @@ begin
   end;
   inherited SetLines(pValue);
   if Enabled then begin
-    if (pValue <> old) then begin
+    if (pValue <> {%H-}old) then begin
       // change:
       if Assigned(pValue) then begin
         // add Changehandler

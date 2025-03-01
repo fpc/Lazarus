@@ -3648,13 +3648,13 @@ begin
   // *** END Check outerlines, for node that goes into visible area
   // *** if found, then it is in DisableOpenEntry and DisabledCloseEntry
 
+  FirstEntryIdx := 0;
   if ScanNodes then begin
   // FAdjustedTop
     NodeInfo := FIfDefTree.FindNodeAtPosition(FAdjustedTop, afmNext);
     //while NodeInfo.HasNode and (NodeInfo.EntryCount = 0) do
     //  NodeInfo := NodeInfo.Successor;
     Node := NodeInfo.Node;
-    FirstEntryIdx := 0;
     if (Node <> nil) and (NodeInfo.StartLine < TopLine) then
       FirstEntryIdx := Node.EntryCount - 1; // May be visible
   end

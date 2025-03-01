@@ -1244,7 +1244,7 @@ begin
   end;
 
   if (not edit) and
-     (CellAtPos >= 0) and (CellAtPos < Cells.Count) and
+     ({%H-}CellAtPos >= 0) and (CellAtPos < Cells.Count) and
      (CompareCarets(Pos, FCells[CellAtPos].LogStart) <= 0) and
      (CompareCarets(Pos, FCells[CellAtPos].LogEnd) >= 0)
   then begin

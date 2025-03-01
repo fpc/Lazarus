@@ -1322,7 +1322,7 @@ begin
     if LastTextLine <> FirstTextLine then
       ViewedRange := DisplayView.TextToViewIndex(LastTextLine);
     rcInval.Bottom := Min(TextArea.TextBounds.Bottom,
-                          TextArea.TextBounds.Top + (ViewedRange.Bottom + AScreenLineOffset
+                          TextArea.TextBounds.Top + ({%H-}ViewedRange.Bottom + AScreenLineOffset
                              - TextArea.TopLine + 2)  * TextArea.LineHeight);
   end;
 
@@ -1525,7 +1525,7 @@ begin
     if LastTextLine <> FirstTextLine then
       ViewedRange := DisplayView.TextToViewIndex(LastTextLine);
     rcInval.Bottom := Min(TextBounds.Bottom,
-                          TextBounds.Top + (ViewedRange.Bottom + AScreenLineOffset - TopLine + 2)  * LineHeight);
+                          TextBounds.Top + ({%H-}ViewedRange.Bottom + AScreenLineOffset - TopLine + 2)  * LineHeight);
   end;
 
   {$IFDEF VerboseSynEditInvalidate}

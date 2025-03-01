@@ -1276,7 +1276,7 @@ begin
       PrevLineOffs := 0;
 
   if (NextLineOffs > 0) and
-     ( (PrevLineOffs = 0) or (PrevLineDist > NextLineDist) )
+     ( (PrevLineOffs = 0) or ({%H-}PrevLineDist > {%H-}NextLineDist) )
   then begin
     MoveLinesAtEndTo(NextPage, 0, NextLineOffs);
     Tree.FreeNode(Self);

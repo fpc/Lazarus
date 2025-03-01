@@ -1073,7 +1073,7 @@ begin
 
     s := '';
     if (BestLen >= 4) then
-      s := '[' + EncodeIntEx2(BestPos2 - BestPos) + EncodeIntEx2(BestLen)
+      s := '[' + EncodeIntEx2({%H-}BestPos2 - {%H-}BestPos) + EncodeIntEx2(BestLen)
     else
     if (BestLen = 3) and (BestPos2 - BestPos <= NumEncodeAsOneMax) then
       s := ']' + EncodeIntEx2(BestPos2 - BestPos);

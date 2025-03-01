@@ -1572,7 +1572,7 @@ begin
   end;
 
   if Result then begin
-    if (TextLine < SynEdit.TopLine) or
+    if ({%H-}TextLine < SynEdit.TopLine) or
        (TextLine > SynEdit.TopLine + SynEdit.LinesInWindow)
     then
       SynEdit.TopLine := Max(1, TextLine - SynEdit.LinesInWindow div 2);

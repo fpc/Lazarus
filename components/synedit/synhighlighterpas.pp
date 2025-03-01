@@ -5522,7 +5522,7 @@ begin
       dec(FPasStartLevel);
     end;
   end
-  else if IsCollectingNodeInfo and (CollectingNodeInfoList.CountAll > i) then begin
+  else if IsCollectingNodeInfo and (CollectingNodeInfoList.CountAll > {%H-}i) then begin
     nd := CollectingNodeInfoList.LastItemPointer;
     exclude(nd^.FoldAction, sfaMarkup); // not markup able
     nd^.LogXEnd := 0;

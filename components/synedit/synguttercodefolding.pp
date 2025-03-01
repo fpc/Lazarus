@@ -343,7 +343,7 @@ begin
   R.Bottom := R.Right;
 
   NewImg;
-  DrawNodeSymbol(img.Canvas, R, cfFoldStart, []);  // [-]
+  DrawNodeSymbol({%H-}img.Canvas, R, cfFoldStart, []);  // [-]
   FPopUpImageList.AddMasked(img, img.TransparentColor);
   img.Free;
 
