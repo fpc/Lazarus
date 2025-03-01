@@ -532,9 +532,13 @@ type
     class function RangeChangeValue(ARange: PGtkRange; AScrollType: TGtkScrollType;
       AValue: gdouble; AData: TGtk3Widget): gboolean; cdecl; static;
   public
+    LCLVAdj: PGtkAdjustment; // used to keep LCL values
+    LCLHAdj: PGtkAdjustment; // used to keep LCL values
+    procedure DestroyWidget; override;
     {result = true if scrollbar is pressed by mouse, AMouseOver if mouse is over scrollbar pressed or not.}
     class function CheckIfScrollbarPressed(scrollbar: PGtkWidget; out AMouseOver:
        boolean; const ACheckModifier: TGdkModifierTypeIdx): boolean;
+    procedure InitializeWidget; override;
     procedure SetScrollBarsSignalHandlers(const AIsHorizontalScrollBar: boolean);
     function getClientBounds: TRect; override;
     function getViewport: PGtkViewport; virtual;
@@ -838,6 +842,8 @@ type
 
   TGtk3CustomControl = class(TGtk3ScrollableWin)
     strict private
+      class procedure CustomControlLayoutSizeAllocate(AWidget: PGtkWidget;
+        AGdkRect: PGdkRectangle; Data: gpointer); cdecl; static; {very important, see note inside method}
       class procedure RangeValueChanged(range: PGtkRange; data: gpointer); cdecl; static;
     protected
       function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
@@ -5935,6 +5941,13 @@ begin
   end;
 end;
 
+procedure TGtk3ScrollableWin.InitializeWidget;
+begin
+  LCLVAdj := nil;
+  LCLHAdj := nil;
+  inherited InitializeWidget;
+end;
+
 class function TGtk3ScrollableWin.RangeChangeValue(ARange: PGtkRange; AScrollType: TGtkScrollType;
   AValue: gdouble; AData: TGtk3Widget): gboolean; cdecl;
 var
@@ -5994,6 +6007,17 @@ begin
   {$IFDEF GTK3DEBUGSCROLL}
   DebugLn('<RangeChangeValue: Result=',dbgs(Result),' FuturePos=', dbgs(Msg.Pos),' ScrollCode=',dbgs(Msg.ScrollCode),' InUpdate=',dbgs(AData.InUpdate));
   {$ENDIF}
+end;
+
+procedure TGtk3ScrollableWin.DestroyWidget;
+begin
+  if Assigned(LCLHAdj) then
+    LCLHAdj^.unref;
+  if Assigned(LCLVAdj) then
+    LCLVAdj^.unref;
+  LCLHAdj := nil;
+  LCLVAdj := nil;
+  inherited DestroyWidget;
 end;
 
 procedure TGtk3ScrollableWin.SetScrollBarsSignalHandlers(const
@@ -8775,6 +8799,41 @@ end;
 
 { TGtk3CustomControl }
 
+class procedure TGtk3CustomControl.CustomControlLayoutSizeAllocate(AWidget: PGtkWidget;
+  AGdkRect: PGdkRectangle; Data: gpointer); cdecl;
+var
+  hadj, vadj: PGtkAdjustment;
+  AScrollWin: PGtkScrolledWindow;
+begin
+  {Note: Gtk expects that we set content size and then it calculates scrollbar values. LCL
+   is doing opposite, it sets scrollbar values eg via SetScrollInfo and then content should
+   be automatically calculated by widgetset. Gtk is crazy about it.
+   So, we are in charge here to help both. We save adjusted values
+   in setscrollinfo in LCLVAdj and LCLHAdj, so after GtkLayout sends size-allocate with accurate
+   content size we apply LCL values to adjustments and everybody is happy.
+   TODO: eg TTreeView editor, if scrollbar position is not at lower pos, showing
+   editor moves scrollbar to pos 0, if we apply LCL saved value here, then
+   editor won't show at all. Maybe moving editor and showing should take into
+   account scrollbar position and calculate x,y offset.}
+
+  hadj := PGtkScrollable(aWidget)^.get_hadjustment;
+  vadj := PGtkScrollable(aWidget)^.get_vadjustment;
+
+  PGtkLayout(aWidget)^.set_size(AGdkRect^.width, AGdkRect^.height);
+  {TODO: eg treeview editor, if scrollbar value > 0 then editor resets position to 0,
+   to fix this we must position editor at y pos - adjustment.value}
+  if Assigned(TGtk3CustomControl(Data).LCLVAdj) and Gtk3IsAdjustment(vadj) then
+    with TGtk3CustomControl(Data).LCLVAdj^ do
+      vadj^.configure(vadj^.value, lower, upper, step_increment, page_increment, page_size);
+
+  if Assigned(TGtk3CustomControl(Data).LCLHAdj) and Gtk3IsAdjustment(hadj) then
+    with TGtk3CustomControl(Data).LCLHAdj^ do
+      hadj^.configure(hadj^.value, lower, upper, step_increment, page_increment, page_size);
+
+  if TGtk3CustomControl(Data).LCLObject.ClientRectNeedsInterfaceUpdate then
+    TGtk3CustomControl(Data).LCLObject.DoAdjustClientRectChange;
+end;
+
 function TGtk3CustomControl.CreateWidget(const Params: TCreateParams): PGtkWidget;
 begin
   FHasPaint := True;
@@ -8802,6 +8861,13 @@ begin
   if not (csDesigning in LCLObject.ComponentState) then
     g_object_set(PGObject(FCentralWidget), 'resize-mode', [GTK_RESIZE_QUEUE, nil]);
   gtk_layout_set_size(PGtkLayout(FCentralWidget), 1, 1);
+
+  g_signal_connect_data(FCentralWidget,'size-allocate',TGCallback(@CustomControlLayoutSizeAllocate), Self, nil, G_CONNECT_DEFAULT);
+
+  with PGtkScrolledWindow(Result)^.get_vadjustment^ do
+    LCLVAdj := gtk_adjustment_new(value, lower, upper, step_increment, page_increment, page_size);
+  with PGtkScrolledWindow(Result)^.get_hadjustment^ do
+    LCLHAdj := gtk_adjustment_new(value, lower, upper, step_increment, page_increment, page_size);
 end;
 
 function TGtk3CustomControl.EatArrowKeys(const AKey: Word): Boolean;
@@ -8987,6 +9053,10 @@ begin
     end else
     begin
       Result := Rect(0, 0, PGtkLayout(GetContainerWidget)^.get_allocated_width, PGtkLayout(GetContainerWidget)^.get_allocated_height);
+      //we are not ready, provide at least scrolledwindow size as clientrect for now.
+      //TODO: check scrollbar policy here, and if it's < GTK_POLICY_NEVER apply scrollbars sizes from GetSystemMetrics.
+      if (Result.Width <= 1) and (Result.Height <= 1) then
+        Result := Rect(0, 0, Widget^.get_allocated_width, Widget^.get_allocated_height);
     end;
     //writeln('CustomControl clientRect=',dbgs(Result));
     exit;
