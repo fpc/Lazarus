@@ -12873,7 +12873,9 @@ begin
                   v2 := QVariant_create(AImageIndex);
                   QListWidgetItem_setData(item, QtListViewOwnerDataRole, v2);
                   QVariant_destroy(v2);
-                  QListWidgetItem_setIcon(item, TQtImage(Bmp.Handle).AsIcon)
+                  AIcon := TQtImage(Bmp.Handle).AsIcon;
+                  QListWidgetItem_setIcon(item, AIcon);
+                  QIcon_destroy(AIcon);
                 end;
                 // else we are imageIndex and that''s fine.
               end else
@@ -12881,7 +12883,9 @@ begin
                 v2 := QVariant_create(AImageIndex);
                 QListWidgetItem_setData(item, QtListViewOwnerDataRole, v2);
                 QVariant_destroy(v2);
-                QListWidgetItem_setIcon(item, TQtImage(Bmp.Handle).AsIcon);
+                AIcon := TQtImage(Bmp.Handle).AsIcon;
+                QListWidgetItem_setIcon(item, AIcon);
+                QIcon_destroy(AIcon);
               end;
             finally
               Bmp.Free;
@@ -15112,7 +15116,9 @@ begin
                     v2 := QVariant_create(AImageIndex);
                     QTreeWidgetItem_setData(item, 0, QtListViewOwnerDataRole, v2);
                     QVariant_destroy(v2);
-                    QTreeWidgetItem_setIcon(item, 0, TQtImage(Bmp.Handle).AsIcon)
+                    AIcon := TQtImage(Bmp.Handle).AsIcon;
+                    QTreeWidgetItem_setIcon(item, 0, AIcon);
+                    QIcon_destroy(AIcon);
                   end;
                   // else we are imageIndex and that''s fine.
                 end else
@@ -15120,7 +15126,9 @@ begin
                   v2 := QVariant_create(AImageIndex);
                   QTreeWidgetItem_setData(item, 0, QtListViewOwnerDataRole, v2);
                   QVariant_destroy(v2);
-                  QTreeWidgetItem_setIcon(item, 0, TQtImage(Bmp.Handle).AsIcon);
+                  AIcon := TQtImage(Bmp.Handle).AsIcon;
+                  QTreeWidgetItem_setIcon(item, 0, AIcon);
+                  QIcon_destroy(AIcon);
                 end;
               finally
                 Bmp.Free;
