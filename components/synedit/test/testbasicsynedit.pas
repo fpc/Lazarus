@@ -14,7 +14,7 @@ interface
 uses
   Classes, SysUtils, testregistry, LCLProc, LCLType, Forms, TestBase, SynEdit,
   SynEditTextTrimmer, SynEditKeyCmds, LazSynEditText, SynEditPointClasses,
-  SynEditMiscClasses, SynEditTypes, SynEditMiscProcs;
+  SynEditMiscClasses, SynEditTypes, SynEditMiscProcs, LazLoggerBase;
 
 type
 

@@ -7,7 +7,7 @@ interface
 
 uses
   Classes, SysUtils, math, fpcunit,
-  Forms, LCLType, LCLProc, Clipbrd, Controls, LazUTF8,
+  Forms, LCLType, LCLProc, Clipbrd, Controls, LazUTF8, LazLoggerBase,
   SynEdit, SynEditTypes, SynEditPointClasses, SynEditKeyCmds, LazSynTextArea, SynEditMarkup;
 
 type
