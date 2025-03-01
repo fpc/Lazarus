@@ -43,7 +43,20 @@
         <ComponentName Value="MainForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="Main"/>
+      </Unit>
+      <Unit>
+        <Filename Value="uganttframe.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="GanttFrame"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="uGanttFrame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="umachinestateframe.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="MachineStateFrame"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="uMachineStateFrame"/>
       </Unit>
     </Units>
   </ProjectOptions>
