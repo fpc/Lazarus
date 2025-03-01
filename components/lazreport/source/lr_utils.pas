@@ -15,12 +15,13 @@ interface
 {$I LR_Vers.inc}
 
 uses
-  SysUtils, Classes, strutils, Variants, Graphics, Controls,
+  SysUtils, Classes, Variants, Graphics, Controls,
   LR_DBRel, Forms, StdCtrls, ClipBrd, Menus, db,
   {$IFDEF WIN32}
   Windows,
   {$ENDIF}
-  LCLType, LCLIntf, LConvEncoding, LazFileUtils, LazUTF8, LazLoggerBase;
+  LCLType, LCLIntf, LConvEncoding, LazFileUtils, LazUTF8
+  {$IFDEF DebugLR}, LazLoggerBase {$ENDIF};
 
 type
   TUTF8Item=packed record

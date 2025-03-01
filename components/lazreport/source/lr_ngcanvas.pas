@@ -2,12 +2,10 @@ unit lr_ngcanvas;
 
 {$mode objfpc}{$H+}
 
-{$DEFINE DEBUG}
-
 interface
 
 uses
-  Classes, SysUtils, Math, Types, LCLType, LCLProc, LazLoggerBase, Graphics, FileUtil,
+  Classes, SysUtils, Math, Types, LCLType, LCLProc, Graphics, FileUtil,
   fpjson, jsonparser, FPimage, FPImgCanv, FPCanvas, FPWriteBMP, FPWritePNG,
   fpparsettf, EasyLazFreeType, LazFreeTypeFontCollection, LazFreeTypeFPImageDrawer;
 

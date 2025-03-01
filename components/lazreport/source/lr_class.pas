@@ -23,7 +23,10 @@ uses
   // LCL
   LCLType, LCLIntf, Controls, Forms, Dialogs, Menus, Graphics, Printers,
   // LazUtils
-  LazFileUtils, LazUTF8, LazLoggerBase,
+  LazFileUtils, LazUTF8,
+  {$IFDEF DebugLR}
+  LazLoggerBase,
+  {$ENDIF}
   // IDEIntf
   PropEdits,
   // LazReport
@@ -2185,8 +2188,10 @@ begin
   try
     FHyp.BreakWord('lazreport');
   except
+    {$IFDEF DebugLR}
     on E:EHyphenationException do
       DebugLn('Error: ', e.message,'. Hyphenation support will be disabled');
+    {$ENDIF}
   end;
 end;
 
@@ -12185,7 +12190,7 @@ begin
     end;
 
     {$IFDEF DebugLR}
-    DebugLn('TInterpretator.GetValue(',Name,') No Propinfo for Prop=',PropName,' Value=',dbgs(AValue));
+    DebugLn('TInterpretator.GetValue(',Name,') No Propinfo for Prop=',PropName,' Value=',VarToStr(AValue));
     {$ENDIF}
   end
   else

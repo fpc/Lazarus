@@ -21,6 +21,9 @@ uses
   ExtCtrls, Buttons, StdCtrls, Menus,
   // LazUtils
   LazUTF8,
+  {$IFDEF DebugLR}
+  LazLoggerBase,
+  {$ENDIF}
   // LazReport
   LR_Const,
   // Printers
