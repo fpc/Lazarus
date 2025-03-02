@@ -2702,11 +2702,9 @@ var
   pointIndex: Integer;
   scaledDepth: Integer;
 
-  procedure DrawBar(const ARect: TRect);
+  procedure PrepareDrawer;
   var
-    sz: TSize;
     c: TColor;
-   // ic: IChartTCanvasDrawer;   -- maybe later...
   begin
     ADrawer.Pen := FBarPen;
     if FBarPen.Color = clDefault then
@@ -2722,23 +2720,43 @@ var
     c := Source[pointIndex]^.Color;
     if c <> clTAColor then
       ADrawer.BrushColor := c;
+  end;
 
+  procedure DrawDiamond(const ARect: TRect);
+  var
+    P: array of TPoint = nil;
+    sz: Integer;
+    ctr: TPoint;
+  begin
+    PrepareDrawer;
+    ctr := Point((ARect.Left + ARect.Right) div 2, (ARect.Top + ARect.Bottom) div 2);
+    if IsRotated then
+      sz := (ARect.Right - ARect.Left) div 2
+    else
+      sz := (ARect.Bottom - ARect.Top) div 2;
+
+    SetLength(P, 4);
+    P[0] := Point(ctr.X - sz, ctr.Y);
+    P[1] := Point(ctr.X, ctr.Y - sz);
+    P[2] := Point(ctr.X + sz, ctr.Y);
+    P[3] := Point(ctr.X, ctr.Y + sz);
+    ADrawer.Polygon(P, 0, 4);
+  end;
+
+  procedure DrawBar(const ARect: TRect);
+  var
+    c: TColor;
+    sz: TSize;
+  begin
+    PrepareDrawer;
     sz := Size(ARect);
     if (sz.cx <= 2*FBarPen.Width) or (sz.cy <= 2*FBarPen.Width) then begin
       // Bars are too small to distinguish the border from the interior.
       ADrawer.SetPenParams(psSolid, ADrawer.BrushColor);
     end;
-            (*  todo --- add me
-    if Assigned(FOnCustomDrawBar) then begin
-      FOnCustomDrawBar(Self, ADrawer, AR, pointIndex, stackIndex);
-      exit;
-    end;
-
-    if Supports(ADrawer, IChartTCanvasDrawer, ic) and Assigned(OnBeforeDrawBar) then
-      OnBeforeDrawBar(Self, ic.Canvas, AR, pointIndex, stackIndex, defaultDrawing);
-    if not defaultDrawing then exit; *)
 
     ADrawer.Rectangle(ARect);
+
     if scaledDepth > 0 then begin
       c := ADrawer.BrushColor;
       ADrawer.BrushColor := GetDepthColor(c, true);
@@ -2753,6 +2771,7 @@ var
 var
   ext2: TDoubleRect;
   p: TDoublePoint;
+  ctr: TPoint;
 
   procedure BuildBar(x1, x2, y, barH: Double);
   var
@@ -2778,7 +2797,10 @@ var
       if (Left = Right) and IsRotated then Dec(Left);
       if (Bottom = Top) and not IsRotated then Inc(Bottom);
     end;
-    DrawBar(imageBar);
+    if x1 <> x2 then
+      DrawBar(imageBar)
+    else
+      DrawDiamond(imageBar);
   end;
 
 var
@@ -2812,8 +2834,12 @@ begin
 
     with Source[pointIndex]^ do
     begin
-      x1 := AxisToGraphX(GetX(0));
-      x2 := AxisToGraphX(GetX(1));
+      x1 := GetX(0);
+      x2 := GetX(1);
+      if IsNaN(x1) then
+        Continue;
+      x1 := AxisToGraphX(x1);
+      x2 := AxisToGraphX(x2);
     end;
 
     BuildBar(x1, x2, p.Y, h);

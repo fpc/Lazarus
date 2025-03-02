@@ -6,8 +6,8 @@ object MachineStateFrame: TMachineStateFrame
   ClientHeight = 343
   ClientWidth = 988
   TabOrder = 0
-  DesignLeft = 587
-  DesignTop = 331
+  DesignLeft = 594
+  DesignTop = 432
   object Chart: TChart
     Left = 0
     Height = 287

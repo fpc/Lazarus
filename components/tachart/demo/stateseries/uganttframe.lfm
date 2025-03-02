@@ -10,11 +10,13 @@ object GanttFrame: TGanttFrame
   DesignTop = 307
   object GanttChart: TChart
     Left = 0
-    Height = 381
+    Height = 350
     Top = 0
     Width = 935
     AxisList = <    
       item
+        Grid.Color = clSilver
+        Grid.Style = psSolid
         Grid.Visible = False
         Marks.LabelBrush.Style = bsClear
         Minors = <>
@@ -46,26 +48,52 @@ object GanttFrame: TGanttFrame
       BarBrush.Color = clSilver
       BarHeight = 0.7
       BarPen.Color = clMedGray
-      OnBarHeightChanged = GanttSeriesBarHeightChanged
-    end
-    object MilestoneSeries: TLineSeries
-      LinePen.Color = clBlue
-      LineType = ltNone
-      Pointer.Brush.Color = clBlue
-      Pointer.HorizSize = 12
-      Pointer.Style = psDiamond
-      Pointer.VertSize = 12
-      Pointer.Visible = True
-      ShowPoints = True
     end
     object GanttCompletedSeries: TStateSeries
       BarBrush.Color = clGreen
       BarHeight = 0.7
+      Source = Completed_ChartSource
     end
   end
-  object TasksChartSource: TListChartSource
-    Left = 120
-    Top = 40
+  object Panel1: TPanel
+    Left = 0
+    Height = 31
+    Top = 350
+    Width = 935
+    Align = alBottom
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 31
+    ClientWidth = 935
+    TabOrder = 1
+    object cbShowCompleteness: TCheckBox
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = Panel1
+      Left = 6
+      Height = 19
+      Top = 6
+      Width = 147
+      BorderSpacing.Around = 6
+      Caption = 'Show task completeness'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnChange = cbShowCompletenessChange
+    end
+    object cbRotated: TCheckBox
+      AnchorSideLeft.Control = cbShowCompleteness
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      Left = 165
+      Height = 19
+      Top = 6
+      Width = 59
+      BorderSpacing.Left = 6
+      BorderSpacing.Around = 6
+      Caption = 'Rotated'
+      TabOrder = 1
+      OnChange = cbRotatedChange
+    end
   end
   object GanttChartToolset: TChartToolset
     Left = 120
@@ -85,5 +113,17 @@ object GanttFrame: TGanttFrame
     SuppressPrevUnit = False
     Left = 120
     Top = 104
+  end
+  object Tasks_ChartSource: TUserDefinedChartSource
+    OnGetChartDataItem = Tasks_ChartSourceGetChartDataItem
+    XCount = 2
+    Left = 120
+    Top = 32
+  end
+  object Completed_ChartSource: TUserDefinedChartSource
+    OnGetChartDataItem = Tasks_ChartSourceGetChartDataItem
+    XCount = 2
+    Left = 248
+    Top = 32
   end
 end

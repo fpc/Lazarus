@@ -691,7 +691,7 @@ var
   end;
 
 const
-  MAX_COUNT = 1000; // Arbitraty limit to prevent OOM in case of a bug.
+  MAX_COUNT = 1000; // Arbitrary limit to prevent OOM in case of a bug.
 var
   i, cnt: Integer;
   x, start, stepLen: Double;
