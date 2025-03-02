@@ -38,7 +38,7 @@ type
     procedure TimeAxisGetMarkText(Sender: TObject;
       var AText: String; AMark: Double);
     procedure StateSeriesGetMarkText(ASeries: TChartSeries; APointIndex,
-      AXIndex, AYIndex: Integer; var AFormattedMark: String);
+      {%H-}AXIndex, {%H-}AYIndex: Integer; var AFormattedMark: String);
     procedure tbBarHeightChange(Sender: TObject);
   private
     procedure PrepareData;
@@ -235,6 +235,11 @@ begin
   // For top-to-bottom order of the machines (or use negative idxMachineXXXX values)
   Chart.LeftAxis.Inverted := true;
   Chart.BottomAxis.Inverted := false;
+
+  // Series marks text direction
+  MachineA_Series.Marks.LabelFont.Orientation := 0;
+  MachineB_Series.Marks.LabelFont.Orientation := 0;
+  MachineC_Series.Marks.LabelFont.Orientation := 0;
 end;
 
 // Sets axis properties for the case of "rotated" (vertically oriented) state series
@@ -276,6 +281,11 @@ begin
 
   // Restore left axis direction
   Chart.LeftAxis.Inverted := false;
+
+  // Series marks text direction
+  MachineA_Series.Marks.LabelFont.Orientation := 900;
+  MachineB_Series.Marks.LabelFont.Orientation := 900;
+  MachineC_Series.Marks.LabelFont.Orientation := 900;
 end;
 
 // Composes the label text from the label value and each data point's

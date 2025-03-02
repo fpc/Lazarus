@@ -1,0 +1,96 @@
+object SimpleGanttFrame: TSimpleGanttFrame
+  Left = 0
+  Height = 381
+  Top = 0
+  Width = 935
+  ClientHeight = 381
+  ClientWidth = 935
+  TabOrder = 0
+  DesignLeft = 615
+  DesignTop = 307
+  object GanttChart: TChart
+    Left = 0
+    Height = 350
+    Top = 0
+    Width = 935
+    AxisList = <    
+      item
+        Grid.Color = clSilver
+        Grid.Style = psSolid
+        Grid.Visible = False
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Grid.Color = clSilver
+        Grid.Style = psSolid
+        Alignment = calBottom
+        Marks.Format = '%2:s'
+        Marks.LabelBrush.Style = bsClear
+        Marks.Source = DateTimeIntervalChartSource
+        Marks.Style = smsLabel
+        Minors = <>
+        Title.LabelBrush.Style = bsClear
+      end>
+    Margins.Left = 0
+    Margins.Top = 10
+    Margins.Right = 24
+    Margins.Bottom = 24
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Toolset = GanttChartToolset
+    Align = alClient
+    object GanttSeries: TStateSeries
+      OnGetMarkText = GanttSeriesGetMarkText
+      BarBrush.Color = clSilver
+      BarHeight = 0.7
+    end
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 31
+    Top = 350
+    Width = 935
+    Align = alBottom
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 31
+    ClientWidth = 935
+    TabOrder = 1
+    object cbRotated: TCheckBox
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = Panel1
+      Left = 12
+      Height = 19
+      Top = 6
+      Width = 59
+      BorderSpacing.Left = 6
+      BorderSpacing.Around = 6
+      Caption = 'Rotated'
+      TabOrder = 0
+      OnChange = cbRotatedChange
+    end
+  end
+  object GanttChartToolset: TChartToolset
+    Left = 120
+    Top = 184
+    object GanttZoomDragTool: TZoomDragTool
+      Shift = [ssLeft]
+      Brush.Style = bsClear
+    end
+    object GanttPanDragTool: TPanDragTool
+      Shift = [ssRight]
+    end
+    object GanttDataPointHintTool: TDataPointHintTool
+    end
+  end
+  object DateTimeIntervalChartSource: TDateTimeIntervalChartSource
+    Params.MinLength = 100
+    SuppressPrevUnit = False
+    Left = 120
+    Top = 104
+  end
+end

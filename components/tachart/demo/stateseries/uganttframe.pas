@@ -1,3 +1,14 @@
+{ Demonstration how a Gantt chart can be constructed out of a TStateSeries.
+  It contains two overlaid StateSeries, one for the planned tasks and one
+  for the achieved tasks.
+
+  Since in this constellation the same data (start/end date, task name) are
+  used at several places, a common data structure is provided in unit uGanttData.
+
+  The StateSeries get their its data from this data structure via
+  UserDefinedChartSources.
+}
+
 unit uGanttFrame;
 
 {$mode ObjFPC}{$H+}

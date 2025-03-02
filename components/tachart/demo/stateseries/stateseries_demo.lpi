@@ -65,6 +65,14 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="uGanttData"/>
       </Unit>
+      <Unit>
+        <Filename Value="usimpleganttframe.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="SimpleGanttFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="uSimpleGanttFrame"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

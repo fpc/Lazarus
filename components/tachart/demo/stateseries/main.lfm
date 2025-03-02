@@ -20,6 +20,9 @@ object MainForm: TMainForm
     object pgMachineStateChart: TTabSheet
       Caption = 'State plot'
     end
+    object pgSimpleGanttChart: TTabSheet
+      Caption = 'Simple Gantt plot'
+    end
     object pgGanttChart: TTabSheet
       Caption = 'Gantt plot'
     end

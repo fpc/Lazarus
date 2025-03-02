@@ -6,7 +6,7 @@ interface
 
 uses
   SysUtils, Classes, Controls, Forms, ComCtrls,
-  uMachineStateFrame, uGanttFrame;
+  uMachineStateFrame, uSimpleGanttFrame, uGanttFrame;
 
 type
 
@@ -16,9 +16,11 @@ type
     PageControl1: TPageControl;
     pgMachineStateChart: TTabSheet;
     pgGanttChart: TTabSheet;
+    pgSimpleGanttChart: TTabSheet;
     procedure FormCreate(Sender: TObject);
   private
     FMachineStateFrame: TMachineStateFrame;
+    FSimpleGanttFrame: TSimpleGanttFrame;
     FGanttFrame: TGanttFrame;
   end;
 
@@ -34,6 +36,10 @@ begin
   FMachineStateFrame := TMachineStateFrame.Create(Self);
   FMachineStateFrame.Parent := pgMachinestateChart;
   FMachineStateFrame.Align := alClient;
+
+  FSimpleGanttFrame := TSimpleGanttFrame.Create(self);
+  FSimpleGanttFrame.Parent := pgSimpleGanttChart;
+  FSimpleGanttFrame.Align := alClient;
 
   FGanttFrame := TGanttFrame.Create(self);
   FGanttFrame.Parent := pgGanttChart;
