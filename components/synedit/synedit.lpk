@@ -11,6 +11,8 @@
       <SearchPaths>
         <UnitOutputDirectory Value="units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
       </SearchPaths>
+      <Conditionals Value="if GetProjValue(&apos;FPC_FULLVERSION&apos;)>=30203 then
+  CustomOptions+=&apos; -vm6060 &apos;;"/>
       <CodeGeneration>
         <VerifyObjMethodCallValidity Value="True"/>
       </CodeGeneration>
