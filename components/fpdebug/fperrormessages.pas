@@ -326,6 +326,7 @@ function TFpErrorHandler.CreateError(AnErrorCode: TFpErrorCode;
 var
   i: Integer;
 begin
+  Result := nil;
   SetLength(Result, 1);
   Result[0].ErrorCode := AnErrorCode;
   SetLength(Result[0].ErrorData, Length(AData));

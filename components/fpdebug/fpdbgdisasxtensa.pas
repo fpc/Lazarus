@@ -261,7 +261,7 @@ end;
 
 function TXtensaAsmInstruction.IsReturnInstruction: boolean;
 var
-  op0, op1, op2, r, s, t, m, n: byte;
+  op0, op1, op2, r, t, m, n: byte;
 begin
   Result := False;
   ReadCode;
@@ -302,21 +302,21 @@ function TXtensaAsmDecoder.FParsePrologue(AnAddress, AStartPC, AEndPC: TDBGPtr;
   AnIsOutsideFrame: Boolean): Boolean;
 var
   ADataLen: Cardinal;
-  AData: PByte;
-  stackState: TPrologueState;
+  //AData: PByte;
+  //stackState: TPrologueState;
 begin
   ADataLen := Min(MaxPrologueSize, AnAddress - AStartPC + 3);
   Result := ReadCodeAt(AStartPC, ADataLen);
   if not Result then
     exit;
-  AData := @FCodeBin[0];
+  //AData := @FCodeBin[0];
 
   // Example prologue for procedure call2(p2: integer);
   //  004136        	entry	a1, 32
   //  0129      	s32i.n	a2, a1, 0  // store p2 to stack
 
   AnIsOutsideFrame := true;
-  stackState := psStart;
+  //stackState := psStart;
 end;
 
 function TXtensaAsmDecoder.FParseEpilogue(AnAddress, AStartPC, AEndPC: TDBGPtr;

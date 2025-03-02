@@ -614,7 +614,7 @@ end;
 
 function TRiscvAsmInstruction.IsReturnInstruction: boolean;
 var
-  op0, op1, op2, r, s, t, m, n: byte;
+  op0, op1, op2, r, t, m, n: byte;
 begin
   Result := False;
   ReadCode;
@@ -662,8 +662,6 @@ var
   decoder: TRiscvDisassembler;
   ADataLen: Cardinal;
   AData: PByte;
-  frameOffset: word;
-  d, k: byte;
   stackState: TPrologueState;
   instr: TRiscvInstruction;
 begin
@@ -700,7 +698,6 @@ FPC also adjusts SP after storing parameters:
   SPoffset := 0;
   AnIsOutsideFrame := true;
   stackState := psStart;
-  frameOffset := 0;
 
   // Loop until prologue buffer is empty, or stepped inside stack frame
   while (ADataLen > 1) and AnIsOutsideFrame do
@@ -1178,7 +1175,6 @@ var
   pcode: PByte;
   opcode, ophi, oplo: byte;
   instr: uint32;
-  instrlen: int32;
 begin
   pcode := AAddress;
   AnInstruction.OpCode := A_INVALID;
@@ -2597,7 +2593,7 @@ end;
 
 function TRiscvDisassembler.decodeALU(instr: uint16):TRiscvInstruction;
 var
-  imm5, imm40, rs_rd, rs2, funct2: byte;
+  imm5, imm40, rs_rd, funct2: byte;
 begin
   FillByte(Result, SizeOf(Result), 0);
 

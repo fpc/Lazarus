@@ -1770,7 +1770,6 @@ var
   NameInfo: TNameSearchInfo;
   InfoName: PChar;
   tg: Cardinal;
-  i: SizeInt;
   s: String;
 begin
   Result := nil;

@@ -369,11 +369,11 @@ type
     FChildClassCastType: TFpValue;
   protected
     function DoGetResultValue(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue; override;
-    function ReturnsVariant: boolean; override;
   public
     constructor Create(AnExpressionData: TFpPascalExpressionSharedData; AStartChar: PChar; AnEndChar: PChar;
       ADisAssembler: TX86AsmDecoder);
     destructor Destroy; override;
+    function ReturnsVariant: boolean; override;
   end;
 
 implementation
@@ -1371,8 +1371,7 @@ class function TFpSymbolDwarfFreePascalTypeStructure.GetInstanceSizeFromPVmt(APV
   AContext: TFpDbgLocationContext; ASizeOfAddr: Integer; out AnInstSize: Int64; out
   AnError: TFpError; AParentClassIndex: integer; ACompilerVersion: Cardinal): boolean;
 var
-  VmtAddr, ClassNameAddr, A: TFpDbgMemLocation;
-  NameLen: QWord;
+  VmtAddr: TFpDbgMemLocation;
   Tmp: Int64;
 begin
   AnInstSize := 0;
@@ -2375,8 +2374,6 @@ function TFpValueDwarfFreePascalSubroutine.GetMangledMethodName(AClassName, AnUn
   ): String;
 var
   i: Integer;
-  m: TFpValue;
-  n: String;
 begin
   Result := '';
   if (AClassName = '') or (AnUnitName = '') or (Name = '') then
@@ -2392,10 +2389,6 @@ begin
 end;
 
 function TFpValueDwarfFreePascalSubroutine.GetMangledFunctionName(AnUnitName: String): String;
-var
-  i: Integer;
-  m: TFpValue;
-  n: String;
 begin
   Result := '';
   if (AnUnitName = '') or (Name = '') then
@@ -2615,7 +2608,6 @@ var
   AnErr: TFpError;
   R: Boolean;
   TmpAddr: TFpValueConstAddress;
-  reg: String;
 begin
   Result := nil;
   if not CheckArgumentCount(AParams, 1) then

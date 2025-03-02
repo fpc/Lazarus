@@ -4372,7 +4372,6 @@ end;
 function TFpDwarfInfo.FindDwarfUnitSymbol(AAddress: TDbgPtr
   ): TDbgDwarfSymbolBase;
 var
-  n: Integer;
   CU: TDwarfCompilationUnit;
   InfoEntry: TDwarfInformationEntry;
 begin
@@ -4580,7 +4579,7 @@ begin
           // It is a CIE
           {$PUSH} {$T-}  // Would require 2 Pointer() typecasts.
           CIE := LoadCiE(CIE64^.Version, @CIE64^.Augmentation[0],
-                         @CIE64^.CIEId+CIE64^.Length-@CIE64^.Augmentation[0]);
+                         PByte(@CIE64^.CIEId)+CIE64^.Length-PByte(@CIE64^.Augmentation[0]));
           {$POP}
           CFI.AddCIE(p-inf.RawData, CIE);
           end
@@ -4589,7 +4588,7 @@ begin
           // It is a FDE
           {$PUSH} {$T-}
           FDE := LoadFDE(CFI, FDE64^.CIEPointer, @FDE64^.InitialLocation,
-                         @FDE64^.CIEPointer+FDE64^.Length-@FDE64^.InitialLocation);
+                         PByte(@FDE64^.CIEPointer)+FDE64^.Length-PByte(@FDE64^.InitialLocation));
           {$POP}
           if Assigned(FDE) then
             CFI.AddFDE(FDE);
@@ -4619,7 +4618,7 @@ begin
           // It is a CIE
           {$PUSH} {$T-}
           CIE := LoadCiE(CIE32^.Version, @CIE32^.Augmentation[0],
-                         @CIE32^.CIEId+CIE32^.Length-@CIE32^.Augmentation[0]);
+                         PByte(@CIE32^.CIEId)+CIE32^.Length-@CIE32^.Augmentation[0]);
           {$POP}
           CFI.AddCIE(p-inf.RawData, CIE);
           end
@@ -4629,7 +4628,7 @@ begin
           if FDE32^.Length > 0 then
             begin
             FDE := LoadFDE(CFI, FDE32^.CIEPointer, @FDE32^.InitialLocation,
-                           @FDE32^.CIEPointer+FDE32^.Length-@FDE32^.InitialLocation);
+                           PByte(@FDE32^.CIEPointer)+FDE32^.Length-PByte(@FDE32^.InitialLocation));
             if Assigned(FDE) then
               CFI.AddFDE(FDE);
             end
@@ -5672,8 +5671,10 @@ begin
   // check for address as offset
   if FAbbrevOffset > ADebugFile^.Sections[dsAbbrev].Size
   then begin
+    {$PUSH}{$R-}{$Q-}
     Offs := FAbbrevOffset - FOwner.FImageBase - ADebugFile^.Sections[dsAbbrev].VirtualAddress;
-    if (Offs >= 0) and (Offs < ADebugFile^.Sections[dsAbbrev].Size)
+    {$POP}
+    if (Offs < ADebugFile^.Sections[dsAbbrev].Size)
     then begin
       DebugLn(FPDBG_DWARF_WARNINGS, ['WARNING: Got Abbrev offset as address, adjusting..']);
       FAbbrevOffset := Offs;
@@ -5741,8 +5742,10 @@ begin
       FillLineInfo(ADebugFile^.Sections[dsLine].RawData + StatementListOffs);
     end
     else begin
+      {$PUSH}{$R-}{$Q-}
       Offs := StatementListOffs - FOwner.FImageBase - ADebugFile^.Sections[dsLine].VirtualAddress;
-      if (Offs >= 0) and (Offs < ADebugFile^.Sections[dsLine].Size)
+      {$POP}
+      if (Offs < ADebugFile^.Sections[dsLine].Size)
       then begin
         DebugLn(FPDBG_DWARF_WARNINGS, ['WARNING: Got Lineinfo offset as address, adjusting..']);
         FillLineInfo(ADebugFile^.Sections[dsLine].RawData + Offs);

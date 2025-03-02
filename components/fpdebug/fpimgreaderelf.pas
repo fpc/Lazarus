@@ -535,7 +535,7 @@ begin
           if SymbolArr64^[i].st_name<>0 then
             begin
             SectIdx := SymbolArr64^[i].st_shndx;
-            if (SectIdx < 0) or (SectIdx >= fElfFile.seccount) then
+            if (SectIdx >= fElfFile.seccount) then
               continue;
             Sect := @fElfFile.sections[SectIdx];
             if (Sect^.Flags and SHF_ALLOC) = 0 then
@@ -562,7 +562,7 @@ begin
           if SymbolArr32^[i].st_name<>0 then
             begin
             SectIdx := SymbolArr32^[i].st_shndx;
-            if (SectIdx < 0) or (SectIdx >= fElfFile.seccount) then
+            if (SectIdx >= fElfFile.seccount) then
               continue;
             Sect := @fElfFile.sections[SectIdx];
             if (Sect^.Flags and SHF_ALLOC) = 0 then

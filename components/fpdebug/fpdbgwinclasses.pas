@@ -1780,8 +1780,6 @@ procedure TDbgWinThread.LoadRegisterValues;
 type
   PExtended = ^floatx80;
 {$endif}{$ENDIF}
-const
-  M128A_NULL: M128A = (Low: 0; High: 0;  );
 var
   Context: PCONTEXT;
   ContextSize: DWord;

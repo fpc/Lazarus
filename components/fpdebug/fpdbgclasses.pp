@@ -1870,10 +1870,6 @@ begin
 end;
 
 function TDbgCallstackEntry.GetRegisterValueList: TDbgRegisterValueList;
-var
-  i: Integer;
-  L: TDbgRegisterValueList;
-  R: TDbgRegisterValue;
 begin
   if (FAutoFillRegisters) and (FRegisterValueList.Count = 0) then begin
     FRegisterValueList.Assign(FThread.RegisterValueList);
@@ -2070,7 +2066,6 @@ end;
 function TDbgMemReader.GetRegister(const ARegNum: Cardinal; AContext: TFpDbgLocationContext
   ): TDbgRegisterValue;
 var
-  ARegister: TDbgRegisterValue;
   StackFrame: Integer;
   AFrame: TDbgCallstackEntry;
   CtxThread: TDbgThread;
@@ -3599,9 +3594,6 @@ end;
 
 procedure TDbgStackUnwinderX86Base.GetTopFrame(out CodePointer, StackPointer,
   FrameBasePointer: TDBGPtr; out ANewFrame: TDbgCallstackEntry);
-var
-  i: Integer;
-  R: TDbgRegisterValue;
 begin
   CodePointer      := Thread.GetInstructionPointerRegisterValue;
   StackPointer     := Thread.GetStackPointerRegisterValue;
@@ -3896,7 +3888,7 @@ const
   MAX_FRAMES = 150000; // safety net
 var
   Address, FrameBase, StackPtr: TDBGPtr;
-  CountNeeded, i: integer;
+  CountNeeded: integer;
   AnEntry: TDbgCallstackEntry;
   NextIdx: LongInt;
   Unwinder: TDbgStackUnwinder;

@@ -608,7 +608,7 @@ type
     TFpValueConstArrayLowBound = class(TFpSymbol)
     private
       FLowBound: Integer;
-    protected
+    public
       function GetValueLowBound(AValueObj: TFpValue; out ALowBound: Int64): Boolean; override;
     end;
   private
