@@ -1,0 +1,118 @@
+object ErrorRangeFrame: TErrorRangeFrame
+  Left = 0
+  Height = 264
+  Top = 0
+  Width = 417
+  ClientHeight = 264
+  ClientWidth = 417
+  TabOrder = 0
+  DesignLeft = 587
+  DesignTop = 268
+  object Label1: TLabel
+    Left = 8
+    Height = 15
+    Top = 8
+    Width = 401
+    Align = alTop
+    Alignment = taCenter
+    BorderSpacing.Around = 8
+    Caption = 'This functionality requires at least Lazarus version 1.9'
+    Visible = False
+  end
+  object Chart: TChart
+    Left = 0
+    Height = 233
+    Top = 31
+    Width = 417
+    AxisList = <    
+      item
+        Grid.Color = clSilver
+        Grid.Style = psSolid
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Grid.Color = clSilver
+        Grid.Style = psSolid
+        Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelBrush.Style = bsClear
+      end>
+    BackColor = clWhite
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Legend.Visible = True
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Align = alClient
+    Color = clDefault
+    object ChartAreaSeries1: TAreaSeries
+      Legend.Visible = False
+      Transparency = 180
+      AreaBrush.Color = clRed
+      AreaContourPen.Style = psClear
+      AreaLinesPen.Style = psClear
+      Banded = True
+      Source = ChartSourceArea1
+      Stacked = False
+    end
+    object ChartLineSeries1: TLineSeries
+      Title = 'sin data'
+      LinePen.Color = clRed
+      LinePen.Width = 3
+      LineType = ltNone
+      Pointer.Brush.Color = clRed
+      Pointer.HorizSize = 5
+      Pointer.Style = psCircle
+      Pointer.VertSize = 5
+      Pointer.Visible = True
+      ShowPoints = True
+      Source = ChartSourceLine1
+    end
+    object ChartAreaSeries2: TAreaSeries
+      Legend.Visible = False
+      Transparency = 180
+      AreaBrush.Color = clBlue
+      AreaLinesPen.Style = psClear
+      Banded = True
+      Source = ChartSourceArea2
+    end
+    object ChartLineSeries2: TLineSeries
+      Title = 'cos data'
+      LinePen.Color = clBlue
+      Pointer.Brush.Color = clBlue
+      Pointer.HorizSize = 5
+      Pointer.Style = psCircle
+      Pointer.VertSize = 5
+      Pointer.Visible = True
+      ShowPoints = True
+      Source = ChartSourceLine2
+    end
+  end
+  object ChartSourceLine1: TUserDefinedChartSource
+    OnGetChartDataItem = ChartSourceLine1GetChartDataItem
+    Left = 82
+    Top = 62
+  end
+  object ChartSourceArea1: TUserDefinedChartSource
+    OnGetChartDataItem = ChartSourceArea1GetChartDataItem
+    Left = 240
+    Top = 62
+  end
+  object ChartSourceLine2: TUserDefinedChartSource
+    OnGetChartDataItem = ChartSourceLine2GetChartDataItem
+    Left = 82
+    Top = 119
+  end
+  object ChartSourceArea2: TUserDefinedChartSource
+    OnGetChartDataItem = ChartSourceArea2GetChartDataItem
+    Left = 240
+    Top = 119
+  end
+end
