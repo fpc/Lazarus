@@ -965,14 +965,6 @@ procedure TIdentifierList.Add(NewItem: TIdentifierListItem);
 var
   AnAVLNode: TAVLTreeNode;
 begin
-  if (ilcfDontAllowProcedures in ContextFlags) and (NewItem.GetDesc = ctnProcedure) and
-     not (NewItem.IsFunction or NewItem.IsConstructor)
-  then
-  begin
-    NewItem.Free;
-    Exit;
-  end;
-
   AnAVLNode:=FIdentView.FindKey(NewItem,@CompareIdentListItemsForIdents);
   if AnAVLNode=nil then begin
     if History<>nil then
@@ -1368,12 +1360,9 @@ var
   Node: TCodeTreeNode;
   ProtectedForeignClass: Boolean;
   Lvl: LongInt;
-  NamePos: TAtomPosition;
   HasLowerVisibility: Boolean;
   IsDottedIdent: Boolean;
   PlaceForDotted: string;
-  PlaceForNamespace: string;
-  i: integer;
 begin
   // proceed searching ...
   Result:=ifrProceedSearch;
@@ -1512,9 +1501,16 @@ begin
               exit; // there is a previous declaration without 'overload'
           end;
         end;
+      end else begin
+        if (CurrentIdentifierList.StartContext.Node.Parent<>nil) and
+          (CurrentIdentifierList.StartContext.Node.Parent.Parent=FoundContext.Node)
+        then begin // skip adding itself at function/procedure parameters definition
+          debugln(['TIdentCompletionTool.CollectAllIdentifiers ','skipped "',GetIdentifier(Ident),'"']);
+          exit;
+        end;
       end;
     end;
-    
+
   ctnProperty:
     begin
       Ident:=FoundContext.Tool.GetPropertyNameIdentifier(FoundContext.Node);
