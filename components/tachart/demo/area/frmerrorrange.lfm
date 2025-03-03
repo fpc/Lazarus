@@ -8,21 +8,10 @@ object ErrorRangeFrame: TErrorRangeFrame
   TabOrder = 0
   DesignLeft = 587
   DesignTop = 268
-  object Label1: TLabel
-    Left = 8
-    Height = 15
-    Top = 8
-    Width = 401
-    Align = alTop
-    Alignment = taCenter
-    BorderSpacing.Around = 8
-    Caption = 'This functionality requires at least Lazarus version 1.9'
-    Visible = False
-  end
   object Chart: TChart
     Left = 0
-    Height = 233
-    Top = 31
+    Height = 264
+    Top = 0
     Width = 417
     AxisList = <    
       item

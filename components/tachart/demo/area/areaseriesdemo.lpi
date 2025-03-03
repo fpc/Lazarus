@@ -52,6 +52,7 @@
         <Filename Value="frmerrorrange.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="ErrorRangeFrame"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="frmErrorRange"/>
       </Unit2>
@@ -59,6 +60,7 @@
         <Filename Value="frmgeneral.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="GeneralFrame"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="frmGeneral"/>
       </Unit3>

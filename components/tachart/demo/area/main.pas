@@ -5,10 +5,7 @@ unit main;
 interface
 
 uses
-  LCLVersion,
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, Spin,
-  ComCtrls, ExtCtrls,
-  TAGraph, TASeries, TASources, TAStyles, TACustomSeries, TACustomSource,
+  Classes, SysUtils, Forms, Controls, ComCtrls,
   frmGeneral, frmErrorRange;
 
 type
@@ -34,9 +31,6 @@ var
 implementation
 
 {$R *.lfm}
-
-uses
-  Math, TAChartUtils, TATextElements;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin

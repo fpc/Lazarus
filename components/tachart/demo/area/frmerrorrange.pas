@@ -16,7 +16,6 @@ type
     ChartAreaSeries2: TAreaSeries;
     ChartLineSeries1: TLineSeries;
     ChartLineSeries2: TLineSeries;
-    Label1: TLabel;
     ChartSourceLine1: TUserDefinedChartSource;
     ChartSourceArea1: TUserDefinedChartSource;
     ChartSourceLine2: TUserDefinedChartSource;
