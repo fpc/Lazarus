@@ -214,7 +214,8 @@ type
   
   TIdentifierListContextFlag = (
     ilcfStartInStatement,  // context starts in statements. e.g. between begin..end
-    ilcfStartOfStatement,  // atom is start of statement. e.g. 'A|:=' or 'A|;', does not check if A can be assigned
+    // atom is start of statement. e.g. 'A|:=' or 'A|;', does not check if A can be assigned
+    ilcfStartOfStatement,
     ilcfStartOfOperand,    // atom is start of an operand. e.g. 'A|.B'
     ilcfStartIsSubIdent,   // atom in front is point
     ilcfNeedsEndSemicolon, // after context a semicolon is needed. e.g. 'A| end'
@@ -224,7 +225,9 @@ type
     ilcfIsExpression,      // is expression part of statement. e.g. 'if expr'
     ilcfCanProcDeclaration,// context allows one to declare a procedure/method
     ilcfEndOfLine,         // atom at end of line
-    ilcfDontAllowProcedures// context doesn't allow procedures (e.g. in function parameter, after other operator, in if codition etc. - Delphi mode supports assignment of procedures!)
+    // context doesn't allow procedures (e.g. in function parameter, after other operator,
+    // in if codition etc. - Delphi mode supports assignment of procedures!)
+    ilcfDontAllowProcedures
     );
   TIdentifierListContextFlags = set of TIdentifierListContextFlag;
 
@@ -962,14 +965,18 @@ procedure TIdentifierList.Add(NewItem: TIdentifierListItem);
 var
   AnAVLNode: TAVLTreeNode;
 begin
-  if (ilcfDontAllowProcedures in ContextFlags) and (NewItem.GetDesc = ctnProcedure) and
-     not (NewItem.IsFunction or NewItem.IsConstructor)
-  then
-  begin
+  if (NewItem.GetDesc = ctnProcedure)
+  and ( (NewItem.IsFunction or NewItem.IsConstructor) // definition not finished yet
+     or (ilcfDontAllowProcedures in ContextFlags) )   // ???
+  then begin
+    Assert(NewItem.FResultType='', 'TIdentifierList.Add: FResultType is not empty');
+    if ilcfDontAllowProcedures in ContextFlags then
+      DebugLn('TIdentifierList.Add: ilcfDontAllowProcedures in ContextFlags, Desc = ctnProcedure');
     NewItem.Free;
     Exit;
   end;
-
+  if NewItem.FResultType<>'' then
+    DebugLn(['TIdentifierList.Add: ResultType=',NewItem.FResultType]);
   AnAVLNode:=FIdentView.FindKey(NewItem,@CompareIdentListItemsForIdents);
   if AnAVLNode=nil then begin
     if History<>nil then
