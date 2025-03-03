@@ -192,9 +192,12 @@ begin
   TestFindNext('RegEx',                '(t...),',   1,2,  25,3,  true,   15,2, 20,2);
   AssertEquals('RegexRepl', 'aTextB', fTSearch.RegExprReplace);
 
+  // Not supported by fpc 3.2.0 ASupportUnicodeCase
+  {$IF FPC_FULLVERSION >= 030202}
   fTSearch.Sensitive := True;
   TestFindNext('RegEx Case',           '(t...),',   1,2,  25,3,  true,   15,3, 20,3);
   AssertEquals('RegexRepl Case', 'atextB', fTSearch.RegExprReplace);
+  {$ENDIF}
 
   fTSearch.Free;
 end;
