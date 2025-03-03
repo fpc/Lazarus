@@ -965,18 +965,14 @@ procedure TIdentifierList.Add(NewItem: TIdentifierListItem);
 var
   AnAVLNode: TAVLTreeNode;
 begin
-  if (NewItem.GetDesc = ctnProcedure)
-  and ( (NewItem.IsFunction or NewItem.IsConstructor) // definition not finished yet
-     or (ilcfDontAllowProcedures in ContextFlags) )   // ???
-  then begin
-    Assert(NewItem.FResultType='', 'TIdentifierList.Add: FResultType is not empty');
-    if ilcfDontAllowProcedures in ContextFlags then
-      DebugLn('TIdentifierList.Add: ilcfDontAllowProcedures in ContextFlags, Desc = ctnProcedure');
+  if (ilcfDontAllowProcedures in ContextFlags) and (NewItem.GetDesc = ctnProcedure) and
+     not (NewItem.IsFunction or NewItem.IsConstructor)
+  then
+  begin
     NewItem.Free;
     Exit;
   end;
-  if NewItem.FResultType<>'' then
-    DebugLn(['TIdentifierList.Add: ResultType=',NewItem.FResultType]);
+
   AnAVLNode:=FIdentView.FindKey(NewItem,@CompareIdentListItemsForIdents);
   if AnAVLNode=nil then begin
     if History<>nil then
