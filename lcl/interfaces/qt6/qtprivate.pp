@@ -528,8 +528,7 @@ procedure TQtComboStrings.SetSorted(AValue: Boolean);
 begin
   if FSorted=AValue then Exit;
   FSorted:=AValue;
-  if FSorted then
-    Sort;
+  inherited Sorted:=FSorted;
 end;
 
 procedure TQtComboStrings.Put(Index: Integer; const S: string);
