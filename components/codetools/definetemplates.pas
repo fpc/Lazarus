@@ -146,7 +146,7 @@ const
      'wii',
      'wasi'
     );
-  FPCOperatingSystemCaptions: array[1..39] of shortstring =(
+  FPCOperatingSystemCaptions: array[1..43] of shortstring =(
      'AIX',
      'Amiga',
      'Android',
@@ -185,7 +185,11 @@ const
      'Win64',
      'WinCE',
      'Wii',
-     'Wasi'
+     'Wasi',
+     'Wasip1',
+     'Wasip1threads',
+     'Wasip2',
+     'Wasix'
     );
 
   FPCOperatingSystemAlternativeNames: array[1..2] of shortstring =(
