@@ -965,6 +965,13 @@ procedure TIdentifierList.Add(NewItem: TIdentifierListItem);
 var
   AnAVLNode: TAVLTreeNode;
 begin
+  if (ilcfDontAllowProcedures in ContextFlags) and (NewItem.GetDesc = ctnProcedure)
+  and not (NewItem.IsFunction or NewItem.IsConstructor) then
+  begin                                        // no procedures here
+    //DebugLn(['TIdentifierList.Add: Skipped "',NewItem.Identifier,'"']);
+    NewItem.Free;
+    exit;
+  end;
   AnAVLNode:=FIdentView.FindKey(NewItem,@CompareIdentListItemsForIdents);
   if AnAVLNode=nil then begin
     if History<>nil then
