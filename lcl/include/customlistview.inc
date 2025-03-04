@@ -1144,19 +1144,18 @@ begin
             TWSCustomListViewClass(WidgetSetClass).ItemSetState(Self,
               AItemIndex, Items[AItemIndex], lisSelected, True);
         end;
+      end;
 
-        if FSavedChecked <> nil then
+      if FSavedChecked <> nil then
+      begin
+        for i := 0 to FSavedChecked.Count - 1 do
         begin
-          for i := 0 to FSavedChecked.Count - 1 do
-          begin
-            FSavedCheckItem := TListItem( FSavedChecked[i] );
-            // todo: this is inefficient, because FSavedCheckItem.Index must be called again
-            TWSCustomListViewClass(WidgetSetClass).ItemSetChecked(Self,
-              FSavedCheckItem.Index, FSavedCheckItem, True);
-          end;
-          FSavedChecked.Free;
+          FSavedCheckItem := TListItem( FSavedChecked[i] );
+          // todo: this is inefficient, because FSavedCheckItem.Index must be called again
+          TWSCustomListViewClass(WidgetSetClass).ItemSetChecked(Self,
+            FSavedCheckItem.Index, FSavedCheckItem, True);
         end;
-
+        FSavedChecked.Free;
       end;
     finally
       FreeThenNil(FSavedSelection);
