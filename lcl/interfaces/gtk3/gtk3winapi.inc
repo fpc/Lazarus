@@ -3992,6 +3992,16 @@ var
       ATarget := Adjustment^.upper;
       SetGDouble(ATarget, ScrollInfo.nMax, HasChanged);
       Adjustment^.upper := ATarget ;
+
+      if (AControl is TGtk3ScrollingWinControl) and (wtContainer in AControl.WidgetType) then
+      begin
+        //hah
+        if SbStyle = SB_VERT then
+          TGtk3ScrollingWinControl(AControl).GetContainerWidget^.set_size_request(TGtk3ScrollingWinControl(AControl).GetContainerWidget^.get_allocated_width, Round(ATarget) + 1)
+        else
+        if SBStyle = SB_HORZ then
+          TGtk3ScrollingWinControl(AControl).GetContainerWidget^.set_size_request(Round(ATarget) + 1, TGtk3ScrollingWinControl(AControl).GetContainerWidget^.get_allocated_height);
+      end;
     end;
 
     if (ScrollInfo.FMask and SIF_PAGE) <> 0 then

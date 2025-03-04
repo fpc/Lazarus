@@ -863,6 +863,9 @@ type
   { TGtk3ScrollingWinControl }
 
   TGtk3ScrollingWinControl = class(TGtk3CustomControl)
+  strict private
+    class procedure ScrollingWinControlFixedSizeAllocate(AWidget: PGtkWidget;
+      AGdkRect: PGdkRectangle; Data: gpointer); cdecl; static;
     protected
       function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
   end;
@@ -1795,7 +1798,7 @@ begin
     MousePos.x := X;
     MousePos.y := Y;
   end;
-
+  OffsetMousePos(@MousePos);
 
   Msg.XPos := SmallInt(MousePos.X);
   Msg.YPos := SmallInt(MousePos.Y);
@@ -1819,7 +1822,7 @@ var
   AStruct: TPaintStruct;
   AClipRect: TGdkRectangle;
   localClip:TRect;
-  P: TPoint;
+  //P: TPoint;
   AScrolledWin: PGtkScrolledWindow;
   ACaret: TGtk3Caret;
   {$IFDEF GTK3DEBUGDESIGNER}
@@ -1875,7 +1878,7 @@ begin
 
   try
     try
-      P := getClientOffset;
+      //P := getClientOffset;
       //cairo_translate(AContext, P.X, P.Y);
       DoBeforeLCLPaint;
       LCLObject.WindowProc(TLMessage(Msg));
@@ -1981,6 +1984,7 @@ begin
     MousePos.x := Round(Event^.scroll.x);
     MousePos.y := Round(Event^.scroll.y);
   end;
+  OffsetMousePos(@MousePos);
 
   Msg.X := MousePos.X;
   Msg.Y := MousePos.Y;
@@ -2322,6 +2326,7 @@ begin
     MousePos.x := Round(Event^.button.x);
     MousePos.y := Round(Event^.button.y);
   end;
+  OffsetMousePos(@MousePos);
 
   Msg.XPos := SmallInt(MousePos.X);
   Msg.YPos := SmallInt(MousePos.Y);
@@ -9152,18 +9157,54 @@ end;
 
 { TGtk3ScrollingWinControl }
 
+class procedure TGtk3ScrollingWinControl.ScrollingWinControlFixedSizeAllocate(AWidget: PGtkWidget;
+  AGdkRect: PGdkRectangle; Data: gpointer); cdecl;
+var
+  hadj, vadj: PGtkAdjustment;
+  HSize,VSize: Integer;
+begin
+  //writeln('GtkFixed size-allocate x=',AGdkRect^.x,' Y=',AGdkRect^.y,' Width=',AGdkRect^.width,' H=',AGdkRect^.height,' VAdj ? ',Assigned(TGtk3CustomControl(Data).LCLVAdj));
+  VSize := 0;
+  HSize := 0;
+  hadj := TGtk3CustomControl(Data).GetScrolledWindow^.get_hadjustment;
+  vadj := TGtk3CustomControl(Data).GetScrolledWindow^.get_vadjustment;
+
+  if Assigned(TGtk3CustomControl(Data).LCLVAdj) and Gtk3IsAdjustment(vadj) then
+    with TGtk3CustomControl(Data).LCLVAdj^ do
+      VSize := Round(upper - value - page_size);
+
+  if Assigned(TGtk3CustomControl(Data).LCLHAdj) and Gtk3IsAdjustment(hadj) then
+    with TGtk3CustomControl(Data).LCLHAdj^ do
+      HSize := Round(upper - value - page_size);
+
+  PGtkFixed(Awidget)^.set_size_request(AGdkRect^.width + HSize, AGdkRect^.height + VSize);
+
+  {TODO: eg treeview editor, if scrollbar value > 0 then editor resets position to 0,
+   to fix this we must position editor at y pos - adjustment.value}
+  if Assigned(TGtk3CustomControl(Data).LCLVAdj) and Gtk3IsAdjustment(vadj) then
+    with TGtk3CustomControl(Data).LCLVAdj^ do
+      vadj^.configure({vadj^.}value, lower, upper, step_increment, page_increment, page_size);
+
+  if Assigned(TGtk3CustomControl(Data).LCLHAdj) and Gtk3IsAdjustment(hadj) then
+    with TGtk3CustomControl(Data).LCLHAdj^ do
+      hadj^.configure({hadj^.}value, lower, upper, step_increment, page_increment, page_size);
+
+  if TGtk3CustomControl(Data).LCLObject.ClientRectNeedsInterfaceUpdate then
+    TGtk3CustomControl(Data).LCLObject.DoAdjustClientRectChange;
+
+end;
+
 function TGtk3ScrollingWinControl.CreateWidget(const Params: TCreateParams
   ): PGtkWidget;
 begin
   FHasPaint := True;
   FWidgetType := [wtWidget, wtContainer, wtScrollingWin, wtScrollingWinControl];
   Result := PGtkScrolledWindow(TGtkScrolledWindow.new(nil, nil));
-  FCentralWidget := TGtkFixed.new;
+  FCentralWidget := LCLGtkFixedNew;
   FCentralWidget^.set_has_window(True);
   FCentralWidget^.show;
 
   PGtkScrolledWindow(Result)^.add_with_viewport(FCentralWidget);
-  // PGtkScrolledWindow(Result)^.add(FCentralWidget);
 
   PGtkViewport(PGtkScrolledWindow(Result)^.get_child)^.set_shadow_type(BorderStyleShadowMap[bsNone]);
   PGtkScrolledWindow(Result)^.set_shadow_type(BorderStyleShadowMap[TScrollingWinControl(LCLObject).BorderStyle]);
@@ -9174,6 +9215,13 @@ begin
   // this is very important
   PGtkScrolledWindow(Result)^.set_can_focus(False);
   FCentralWidget^.set_can_focus(True);
+
+  g_signal_connect_data(FCentralWidget,'size-allocate',TGCallback(@ScrollingWinControlFixedSizeAllocate), Self, nil, G_CONNECT_DEFAULT);
+
+  with PGtkScrolledWindow(Result)^.get_vadjustment^ do
+    LCLVAdj := gtk_adjustment_new(value, lower, upper, step_increment, page_increment, page_size);
+  with PGtkScrolledWindow(Result)^.get_hadjustment^ do
+    LCLHAdj := gtk_adjustment_new(value, lower, upper, step_increment, page_increment, page_size);
 
 end;
 
