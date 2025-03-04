@@ -29,7 +29,8 @@ type
   TRequestType = (rtFile, rtUrl, rtContext, rtMisc {window handling etc});
   TMiscRequests = (mrShow, mrVersion, mrClose, mrBeginUpdate, mrEndUpdate);
 
-  TLHelpResponse = (srError, srNoAnswer, srUnknown, srSuccess, srInvalidFile, srInvalidURL, srInvalidContext);
+  TLHelpResponse = (srError, srNoAnswer, srUnknown, srSuccess,
+                    srInvalidFile, srInvalidURL, srInvalidContext);
 
   TFileRequest = record
     // Opening files

@@ -43,7 +43,8 @@ uses
   LazFileUtils, LazUTF8, LazLoggerBase,
   // ChmHelp
   {$IFDEF USE_LNET}HTTPContentProvider,{$ENDIF}
-  BaseContentProvider, FileContentProvider, ChmContentProvider, LHelpStrConsts;
+  BaseContentProvider, FileContentProvider, ChmContentProvider,
+  LHelpControl, LHelpStrConsts;
 
 type
 
@@ -165,7 +166,7 @@ type
     // Stop simple IPC server/client
     procedure StopComms;
     // Open specified URL in viewer window
-    function OpenURL(const AURL: String; AContext: THelpContext=-1): DWord;
+    function OpenURL(const AURL: String; AContext: THelpContext=-1): TLHelpResponse;
     // Open specified URL - presumably used to queue URLs for delayed opening
     procedure LateOpenURL(Url: PStringItem);
     function ActivePage: TContentTab;
@@ -198,9 +199,6 @@ const
 implementation
 
 {$R *.lfm}
-
-uses 
-  LHelpControl;
 
 const
   DigitsInPID=5; // Number of digits in the formatted PID according to the Help Protocol
@@ -338,7 +336,7 @@ begin
   try
     if OpenDialog1.Execute then
     begin
-      if OpenURL('file://'+OpenDialog1.FileName) = Ord(srSuccess) then
+      if OpenURL('file://'+OpenDialog1.FileName) = srSuccess then
         AddRecentFile('file://'+OpenDialog1.FileName)
       else
         MessageDlg(Format(slhelp_NotFound, [OpenDialog1.FileName]), mtError, [mbOK], 0);
@@ -391,7 +389,7 @@ begin
   if InputQuery(slhelp_PleaseEnterAURL,
     Format(slhelp_SupportedURLTypeS, [URLSAllowed]), fRes) then
   begin
-    if OpenURL(fRes) = ord(srSuccess) then
+    if OpenURL(fRes) = srSuccess then
       AddRecentFile(fRes);
     RefreshState;
   end;
@@ -496,7 +494,8 @@ end;
 
 procedure THelpForm.MiActionsGoForwardClick ( Sender: TObject ) ;
 begin
-  if Assigned(ActivePage) then ActivePage.ContentProvider.GoForward;
+  if Assigned(ActivePage) then
+    ActivePage.ContentProvider.GoForward;
 end;
 
 procedure THelpForm.MiHideClick ( Sender: TObject ) ;
@@ -508,17 +507,20 @@ end;
 
 procedure THelpForm.MiActionsGoBackClick ( Sender: TObject ) ;
 begin
-  if Assigned(ActivePage) then ActivePage.ContentProvider.GoBack;
+  if Assigned(ActivePage) then
+    ActivePage.ContentProvider.GoBack;
 end;
 
 procedure THelpForm.MiActionsGoHomeClick ( Sender: TObject ) ;
 begin
-  if Assigned(ActivePage) then ActivePage.ContentProvider.GoHome;
+  if Assigned(ActivePage) then
+    ActivePage.ContentProvider.GoHome;
 end;
 
 procedure THelpForm.MiActionsIndexClick ( Sender: TObject ) ;
 begin
-  if Assigned(ActivePage) then ActivePage.ContentProvider.ActivateIndexControl;
+  if Assigned(ActivePage) then
+    ActivePage.ContentProvider.ActivateIndexControl;
 end;
 
 procedure THelpForm.MiQuitClick ( Sender: TObject ) ;
@@ -529,12 +531,14 @@ end;
 
 procedure THelpForm.MiActionsSearchClick ( Sender: TObject ) ;
 begin
-  if Assigned(ActivePage) then ActivePage.ContentProvider.ActivateSearchControl;
+  if Assigned(ActivePage) then
+    ActivePage.ContentProvider.ActivateSearchControl;
 end;
 
 procedure THelpForm.MiActionsTOCClick ( Sender: TObject ) ;
 begin
-  if Assigned(ActivePage) then ActivePage.ContentProvider.ActivateTOCControl;
+  if Assigned(ActivePage) then
+    ActivePage.ContentProvider.ActivateTOCControl;
 end;
 
 procedure THelpForm.PageControlChange(Sender: TObject);
@@ -592,10 +596,9 @@ end;
 
 procedure THelpForm.ViewMenuItemClick(Sender: TObject);
 begin
-  ViewMenuContents.Checked :=
-    Assigned(ActivePage) and
-    (ActivePage.ContentProvider is TChmContentProvider) and
-    (ActivePage.ContentProvider as TChmContentProvider).TabsControl.Visible;
+  ViewMenuContents.Checked := Assigned(ActivePage) and
+      (ActivePage.ContentProvider is TChmContentProvider) and
+      TChmContentProvider(ActivePage.ContentProvider).TabsControl.Visible;
   ViewShowSepTabs.Checked := fShowSepTabs;
   ViewShowStatus.Checked := fShowStatus;
 end;
@@ -687,9 +690,7 @@ var
 begin
   for i := FileMenuOpenRecentItem.Count-1 downto 0 do
     if TRecentMenuItem(FileMenuOpenRecentItem.Items[i]).URL = AFileName then
-    begin
       FileMenuOpenRecentItem.Delete(i);
-    end;
   Item := TRecentMenuItem.Create(FileMenuOpenRecentItem);
   Item.Caption:=ExtractFileNameOnly(AFileName);
   Item.URL:=AFileName;
@@ -725,10 +726,10 @@ end;
 procedure THelpForm.OpenRecentItemClick(Sender: TObject);
 var
   Item: TRecentMenuItem absolute Sender;
-  res: DWord;
+  res: TLHelpResponse;
 begin
   res := OpenURL(Item.URL);
-  if res = Ord(srSuccess) then
+  if res = srSuccess then
     AddRecentFile(Item.URL)
   else
   begin
@@ -758,7 +759,7 @@ var
   ConReq: TContextRequest;
   MiscReq: TMiscRequest;
   Stream: TStream;
-  Res: LongWord;
+  Res: TLHelpResponse;
   Url: String='';
 begin
   while fInputIPC.PeekMessage(5, True) do
@@ -767,7 +768,7 @@ begin
     Stream.Position := 0;
     FillByte(FileReq{%H-},SizeOf(FileReq),0);
     Stream.Read(FileReq, SizeOf(FileReq));
-    Res := Ord(srError); //fail by default
+    Res := srError; //fail by default
     case FileReq.RequestType of
       rtFile:
       begin
@@ -826,12 +827,12 @@ begin
           mrClose:
           begin
             fMustClose:=true;
-            Res:= ord(srSuccess);
+            Res:= srSuccess;
             //DebugLn('got rtmisc/mrClose');
           end;
           mrShow:
           begin
-            Res := ord(srSuccess);
+            Res := srSuccess;
             DebugLn('got rtmisc/mrShow');
             fHide := false;
             if (fUpdateCount = 0) and (fLastHiddenRequest <> '')then
@@ -848,23 +849,23 @@ begin
             // Protocol version encoded in the filename
             // Verify what we support
             if strtointdef(MiscReq.FileRequest.FileName,0)=strtointdef(PROTOCOL_VERSION,0) then
-              Res := ord(srSuccess)
+              Res := srSuccess
             else
-              Res := ord(srError); //version not supported
+              Res := srError; //version not supported
             DebugLn('got rtmisc/version ( ver=' + MiscReq.FileRequest.FileName + ' )' +
-                    ' Success: ', BoolToStr((Res = ord(srSuccess)), true));
+                    ' Success: ', BoolToStr((Res = srSuccess), true));
           end;
           mrBeginUpdate:
           begin
             DebugLn('got BeginUpdate');
             BeginUpdate;
-            Res := ord(srSuccess);
+            Res := srSuccess;
           end;
           mrEndUpdate:
           begin
             DebugLn('got EndUpdate');
             EndUpdate;
-            Res := ord(srSuccess);
+            Res := srSuccess;
           end;
         end;
       end; //rtMisc
@@ -872,12 +873,12 @@ begin
 
     // This may take some time which may allow receiving end to get ready for
     // receiving messages
-    if (URL<>'') and (Res = Ord(srSuccess)) then
+    if (URL<>'') and (Res = srSuccess) then
       AddRecentFile(Url);
     // Receiving end may not yet be ready (observed with an Intel Core i7),
     // so perhaps wait a bit?
     // Unfortunately, the delay time is guesswork=>Sleep(80)?
-    SendResponse(Res); //send response again in case first wasn't picked up
+    SendResponse(DWord(Res)); //send response again in case first wasn't picked up
     // Keep after SendResponse to avoid timing issues (e.g. writing to log file):
     //debugln('Just sent TLHelpResponse code: '+inttostr(Res));
 
@@ -1034,8 +1035,7 @@ begin
   end;
 end;
 
-function THelpForm.OpenURL(const AURL: String; AContext: THelpContext): DWord;
-
+function THelpForm.OpenURL(const AURL: String; AContext: THelpContext): TLHelpResponse;
 var
   fURLPrefix: String;
   ContentProviderClass: TBaseContentProviderClass;
@@ -1044,28 +1044,26 @@ var
   I: Integer;
   fIsNewPage: Boolean = false;
 begin
-  Result := Ord(srInvalidURL);
+  Result := srInvalidURL;
   fURLPrefix := GetUriPrefix(AURL);
   ContentProviderClass := GetContentProvider(fURLPrefix);
 
   if ContentProviderClass = nil then
   begin
     ShowError(Format(slhelp_CannotHandleThisTypeOfContentForUrl, [fURLPrefix, LineEnding, AURL]));
-    Result := Ord(srInvalidURL);
-    Exit;
+    Exit(srInvalidURL);
   end;
 
   ContentProviderClass := ContentProviderClass.GetProperContentProvider(AURL);
   if ContentProviderClass = nil then
   begin
     ShowError(Format(slhelp_CannotHandleThisTypeOfSubcontentForUrl, [fURLPrefix, LineEnding, AURL]));
-    Result := Ord(srInvalidURL);
-    Exit;
+    Exit(srInvalidURL);
   end;
 
-  Result := Ord(srInvalidFile);
+  Result := srInvalidFile;
 
-  if (fUpdateCount > 0) then
+  if fUpdateCount > 0 then
   begin
     fLastHiddenRequest:= AURL;
     //DebugLn('set fLastHiddenRequest: ', AURL);
@@ -1077,29 +1075,30 @@ begin
     fPage := TContentTab(PageControl.Pages[I]);
     if ContentProviderClass.ClassName = fPage.ContentProvider.ClassName then
     begin
-      if fFirstSameTypePage = nil then fFirstSameTypePage:= fPage;
+      if fFirstSameTypePage = nil then
+        fFirstSameTypePage:= fPage;
       if fPage.ContentProvider.HasLoadedData(AURL) then // need to update data
-       break;
+        break;
     end;
     fPage := nil;
   end;
 
-  if (fPage = nil) and (Assigned(fFirstSameTypePage) and (not fShowSepTabs)) then
+  if (fPage = nil) and Assigned(fFirstSameTypePage) and not fShowSepTabs then
   begin // Page with data not found but exists the page with same type
     fPage := fFirstSameTypePage;
   end;
 
-  if (fPage <> nil ) then // load or refresh a data within this page
+  if fPage <> nil then // load or refresh a data within this page
   begin
     if fPage.ContentProvider.LoadURL(AURL, AContext) then
     begin
-     PageControl.ActivePage := fPage;
-     Result := Ord(srSuccess);
+      PageControl.ActivePage := fPage;
+      Result := srSuccess;
     end
     else
     begin
-     fPage := nil;
-     Result := Ord(srInvalidFile);
+      fPage := nil;
+      Result := srInvalidFile;
     end;
   end;
 
@@ -1115,28 +1114,27 @@ begin
     //SetKeyUp(fPage);
     fPage.ContentProvider.LoadPreferences(fConfig);
     if fPage.ContentProvider is TChmContentProvider then
-     (fPage.ContentProvider as TChmContentProvider).ShowStatusbar := fShowStatus;
+      TChmContentProvider(fPage.ContentProvider).ShowStatusbar := fShowStatus;
 
     // BeginUpdate doing into Create
     if fPage.ContentProvider.LoadURL(AURL, AContext) then
     begin
       PageControl.ActivePage := fPage;
       RefreshState;
-      Result := Ord(srSuccess);
+      Result := srSuccess;
     end
     else
     begin
-      Result := Ord(srInvalidURL);
+      Result := srInvalidURL;
       if fIsNewPage then
         fPage.Free;
     end;
   end;
 end;
 
-
-procedure THelpForm.LateOpenURL ( Url: PStringItem ) ;
+procedure THelpForm.LateOpenURL(Url: PStringItem);
 begin
-  if OpenURL(URL^.FString, fContext) = ord(srSuccess) then
+  if OpenURL(URL^.FString, fContext) = srSuccess then
     AddRecentFile(URL^.FString);
   // we reset the context because at this point the file has been loaded and the
   // context shown
@@ -1217,12 +1215,10 @@ var
 begin
   Inc(fUpdateCount);
   //WriteLn(Format('>> fUpdateCount:=%d',[fUpdateCount]));
+  for i := 0 to PageControl.PageCount-1 do
   begin
-    for i := 0 to PageControl.PageCount-1 do
-    begin
-      Tab := TContentTab(PageControl.Pages[I]);
-      Tab.ContentProvider.BeginUpdate;
-    end;
+    Tab := TContentTab(PageControl.Pages[I]);
+    Tab.ContentProvider.BeginUpdate;
   end;
 end;
 
@@ -1233,26 +1229,22 @@ var
 begin
   Dec(fUpdateCount);
   if fUpdateCount < 0 then
-   fUpdateCount:=0;
+    fUpdateCount:=0;
   //WriteLn(Format('<< fUpdateCount:=%d',[fUpdateCount ]));
+  for i := 0 to PageControl.PageCount-1 do
   begin
-    for i := 0 to PageControl.PageCount-1 do
-    begin
-      Tab := TContentTab(PageControl.Pages[I]);
-      Tab.ContentProvider.EndUpdate;
-    end;
+    Tab := TContentTab(PageControl.Pages[I]);
+    Tab.ContentProvider.EndUpdate;
   end;
 end;
 
 procedure THelpForm.ShowApp();
 begin
-  if (fHide = false) then
-  begin
-    fMustClose:= false;
-    Application.Restore;
-    Application.BringToFront;
-    MiActionsTOCClick(Nil);   // Go to TOC TreeView.
-  end;
+  if fHide then Exit;
+  fMustClose:= false;
+  Application.Restore;
+  Application.BringToFront;
+  MiActionsTOCClick(Nil);   // Go to TOC TreeView.
 end;
 {
 procedure THelpForm.DoShowContent(Sender: Tobject);
