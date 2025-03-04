@@ -136,5 +136,128 @@ begin
   Result := PGtkFrame(g_object_new(LCLGtkFrameGetType(),'shadow-type',[GTK_SHADOW_ETCHED_IN, nil]));
 end;
 
+const
+  GTK_FIXED_CLASS_SIZE = SizeOf(TGtkFixedClass);
+  GTK_FIXED_INSTANCE_SIZE = SizeOf(TGtkFixed);
+
+procedure LCLGtkFixedGetPreferredWidth(widget: PGtkWidget; min_width, nat_width: Pgint); cdecl;
+var
+  AControl: TGtk3Widget;
+  ParentClass: PGtkWidgetClass;
+begin
+  if not Assigned(min_width) or not Assigned(nat_width) then
+  begin
+    DebugLn('Error: LCLGtkFixedGetPreferredWidth invalid params.');
+    Exit;
+  end;
+
+  if not Gtk3IsWidget(widget) then
+  begin
+    DebugLn('Error: LCLGtkFixedGetPreferredWidth widget param is not PGtkWidget.');
+    Exit;
+  end;
+
+  ParentClass := PGtkWidgetClass(g_type_class_peek_parent(widget^.g_type_instance.g_class));
+  if not Assigned(ParentClass) then
+  begin
+    DebugLn('Error: LCLGtkFixedGetPreferredWidth cannot get ParentClass !');
+    Exit;
+  end;
+
+  // Call parent class implementation
+  ParentClass^.get_preferred_width(widget, min_width, nat_width);
+  // writeln('LCLFixed preferred min_width=',min_width^,' natural w=',nat_width^);
+  AControl := TGtk3Widget(HwndFromGtkWidget(widget));
+  if not Assigned(AControl) then
+  begin
+    DebugLn('Error: LCLGtkFixedGetPreferredWidth cannot get TGtk3Widget for widget parameter.');
+    Exit;
+  end;
+
+  min_width^ := 1;
+  nat_width^ := 1;
+end;
+
+procedure LCLGtkFixedGetPreferredHeight(widget: PGtkWidget; min_height, nat_height: Pgint); cdecl;
+var
+  AControl: TGtk3Widget;
+  ParentClass: PGtkWidgetClass;
+begin
+  if not Assigned(min_height) or not Assigned(nat_height) then
+  begin
+    DebugLn('Error: LCLGtkFixedGetPreferredHeight invalid params.');
+    Exit;
+  end;
+
+  if not Gtk3IsWidget(widget) then
+  begin
+    DebugLn('Error: LCLGtkFixedGetPreferredHeight widget param is not PGtkWidget.');
+    Exit;
+  end;
+
+  ParentClass := PGtkWidgetClass(g_type_class_peek_parent(widget^.g_type_instance.g_class));
+  if not Assigned(ParentClass) then
+  begin
+    DebugLn('Error: LCLGtkFixedGetPreferredHeight cannot get ParentClass !');
+    Exit;
+  end;
+
+  // Call parent class implementation
+  ParentClass^.get_preferred_height(widget, min_height, nat_height);
+
+  AControl := TGtk3Widget(HwndFromGtkWidget(widget));
+  if not Assigned(AControl) then
+  begin
+    DebugLn('Error: LCLGtkFixedGetPreferredHeight cannot get TGtk3Widget for widget parameter.');
+    Exit;
+  end;
+
+  min_height^ := 1;
+  nat_height^ := 1;
+end;
+
+procedure LCLGtkFixedClassInit(klass: PGTypeClass; {%H-}data: Pointer); cdecl;
+var
+  AWidgetClass: PGtkWidgetClass;
+begin
+  AWidgetClass := PGtkWidgetClass(klass);
+  AWidgetClass^.get_preferred_width := @LCLGtkFixedGetPreferredWidth;
+  AWidgetClass^.get_preferred_height := @LCLGtkFixedGetPreferredHeight;
+end;
+
+procedure LCLGtkFixedInstanceInit(instance: PGTypeInstance; {%H-}klass: PGTypeClass); cdecl;
+begin
+  //
+end;
+
+var
+  LCLGtkFixedType: TGType = 0;
+
+function LCLGtkFixedGetType: TGType; cdecl;
+const
+  lcl_fixed_type_info: TGTypeInfo = (
+    class_size: GTK_FIXED_CLASS_SIZE;
+    base_init: nil;
+    base_finalize: nil;
+    class_init: @LCLGtkFixedClassInit;
+    class_finalize: nil;
+    class_data: nil;
+    instance_size: GTK_FIXED_INSTANCE_SIZE;
+    n_preallocs: 0;
+    instance_init: @LCLGtkFixedInstanceInit;
+    value_table: nil;
+  );
+begin
+  if LCLGtkFixedType = 0 then
+    LCLGtkFixedType := g_type_register_static(gtk_fixed_get_type, 'LCLGtkFixed', @lcl_fixed_type_info, G_TYPE_FLAG_NONE);
+  Result := LCLGtkFixedType;
+end;
+
+function LCLGtkFixedNew: PGtkFixed;
+begin
+                                                                      {in gtk3 this is default border-width}
+  Result := PGtkFixed(g_object_new(LCLGtkFixedGetType(),'border-width',[0, nil]));
+end;
+
 
 
