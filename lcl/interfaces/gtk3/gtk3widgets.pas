@@ -9171,13 +9171,26 @@ begin
 
   if Assigned(TGtk3CustomControl(Data).LCLVAdj) and Gtk3IsAdjustment(vadj) then
     with TGtk3CustomControl(Data).LCLVAdj^ do
-      VSize := Round(upper - value - page_size);
+    begin
+      VSize := Round(upper);
+      if page_size > 0 then
+        VSize := VSize + Round(upper - page_size);
+    end;
 
   if Assigned(TGtk3CustomControl(Data).LCLHAdj) and Gtk3IsAdjustment(hadj) then
     with TGtk3CustomControl(Data).LCLHAdj^ do
-      HSize := Round(upper - value - page_size);
+    begin
+      HSize := Round(upper);
+      if page_size > 0 then
+        HSize := HSize + Round(upper - page_size);
+    end;
 
-  PGtkFixed(Awidget)^.set_size_request(AGdkRect^.width + HSize, AGdkRect^.height + VSize);
+  HSize := Max(AGdkRect^.Width, HSize);
+  VSize := Max(AGdkRect^.Height, VSize);
+
+  //TODO: check if call resizing is needed when GtkFixed equals new size !
+
+  PGtkFixed(Awidget)^.set_size_request(HSize, VSize);
 
   {TODO: eg treeview editor, if scrollbar value > 0 then editor resets position to 0,
    to fix this we must position editor at y pos - adjustment.value}
@@ -9201,6 +9214,8 @@ begin
   FWidgetType := [wtWidget, wtContainer, wtScrollingWin, wtScrollingWinControl];
   Result := PGtkScrolledWindow(TGtkScrolledWindow.new(nil, nil));
   FCentralWidget := LCLGtkFixedNew;
+  FCentralWidget^.set_hexpand(True);
+  FCentralWidget^.set_vexpand(True);
   FCentralWidget^.set_has_window(True);
   FCentralWidget^.show;
 
