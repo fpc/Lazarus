@@ -13,6 +13,13 @@ uses
 type
   TIntArray = Array of integer;
 
+  { TTestSynLineMapAVLTree }
+
+  TTestSynLineMapAVLTree = class(TSynLineMapAVLTree)
+    function FindPageForLine(ALineIdx: IntIdx; AMode: TSynSizedDiffAVLFindMode = afmPrev
+      ): TSynEditLineMapPageHolder;
+  end;
+
   { TExpWraps }
 
   TExpWraps = object
@@ -41,13 +48,14 @@ type
   TTestSynEditLineWrapPlugin = class(TLazSynEditLineWrapPlugin)
   public
     property LineMapView;
+    property LineMappingData;
   end;
 
   { TTestWordWrap }
 
   TTestWordWrap = class(TTestWordWrapBase)
   private
-    FTree: TSynLineMapAVLTree;
+    FTree: TTestSynLineMapAVLTree;
     procedure AssertRealToWrapOffsets(const AName: String; ALine: TSynWordWrapLineMap;
       const ExpWrapOffsets: TExpWraps; AStartOffs: Integer = 0);
     procedure AssertWrapToRealOffset(const AName: String; ALine: TSynWordWrapLineMap;
@@ -56,7 +64,6 @@ type
       const ExpWrapForEachLine: TExpWraps; AnExpAllValid: Boolean = False);
     procedure InitLine(ALine: TSynWordWrapLineMap;
       const AWrapValues: TExpWraps);
-    function OnPageNeeded(AMapTree: TSynLineMapAVLTree): TSynEditLineMapPage;
     procedure ValidateWraps(ALine: TSynWordWrapLineMap;
       const AWrapValues: TExpWraps; AStartOffs: Integer = 0; ABackward: Boolean = False);
     procedure ValidateNeededWraps(ALine: TSynWordWrapLineMap; const AWrapValues: TExpWraps);
@@ -64,7 +71,7 @@ type
     procedure ValidateTreeWraps(const AWrapValues: TExpWraps; AStartOffs: Integer = 0);
     procedure AssertTreeForWraps(const AName: String; const ExpWrapForEachLine: TExpWraps; AStartOffs: Integer = 0);
 
-    function CreateTree(APageJoinSize, APageSplitSize, APageJoinDistance: Integer): TSynLineMapAVLTree;
+    function CreateTree(APageJoinSize, APageSplitSize, APageJoinDistance: Integer): TTestSynLineMapAVLTree;
   protected
     function TheTree: TSynLineMapAVLTree; override;
 
@@ -288,6 +295,14 @@ begin
   end;
 end;
 
+{ TTestSynLineMapAVLTree }
+
+function TTestSynLineMapAVLTree.FindPageForLine(ALineIdx: IntIdx; AMode: TSynSizedDiffAVLFindMode
+  ): TSynEditLineMapPageHolder;
+begin
+  Result := inherited FindPageForLine(ALineIdx, AMode);
+end;
+
 { TExpWraps }
 
 function TExpWraps.Init(const a: array of integer): TExpWraps;
@@ -476,13 +491,6 @@ begin
   AssertEquals('all valid', -1, ALine.FirstInvalidLine);
 end;
 
-function TTestWordWrap.OnPageNeeded(AMapTree: TSynLineMapAVLTree
-  ): TSynEditLineMapPage;
-begin
-  Result := TSynWordWrapIndexPage.Create(AMapTree);
-  //TSynWordWrapIndexPage(Result).FSynEditWrappedPlugin := Self;
-end;
-
 procedure TTestWordWrap.ValidateWraps(ALine: TSynWordWrapLineMap;
   const AWrapValues: TExpWraps; AStartOffs: Integer; ABackward: Boolean);
 var
@@ -554,10 +562,9 @@ begin
 end;
 
 function TTestWordWrap.CreateTree(APageJoinSize, APageSplitSize,
-  APageJoinDistance: Integer): TSynLineMapAVLTree;
+  APageJoinDistance: Integer): TTestSynLineMapAVLTree;
 begin
-  Result := TSynLineMapAVLTree.Create(APageJoinSize, APageSplitSize, APageJoinDistance);
-  Result.PageCreatorProc := @OnPageNeeded;
+  Result := TTestSynLineMapAVLTree.Create(APageJoinSize, APageSplitSize, APageJoinDistance);
 end;
 
 function TTestWordWrap.TheTree: TSynLineMapAVLTree;
@@ -586,7 +593,7 @@ var
   w: TExpWraps;
 begin
   ANode := FTree.FindPageForLine(0, afmCreate).Page;
-  ALine := TSynWordWrapIndexPage(ANode).SynWordWrapLineMapStore;
+  ALine := ANode.SynWordWrapLineMapStore;
   ALine.InsertLinesAtOffset(0, 5);
   ALine.InvalidateLines(2,3);
   ValidateWraps(ALine, w.init([1, 1, 3, 3, 1]));
@@ -792,13 +799,13 @@ end;
 
 procedure TTestWordWrap.TestWordWrapLineMapInvalidate;
 var
-  ANode1: TSynWordWrapIndexPage;
+  ANode1: TSynEditLineMapPage;
   ALine1: TSynWordWrapLineMap;
   //ATestName: String;
   w: TExpWraps;
 begin
   // invalidate and insert/remove lines
-  ANode1 := TSynWordWrapIndexPage(FTree.FindPageForLine(0, afmCreate).Page);
+  ANode1 := FTree.FindPageForLine(0, afmCreate).Page;
   ALine1 := ANode1.SynWordWrapLineMapStore;
 
   InitLine(ALine1, w.init([1]));
@@ -829,13 +836,13 @@ end;
 
 procedure TTestWordWrap.TestWordWrapLineMapInvalidateNoneContineous;
 var
-  ANode1: TSynWordWrapIndexPage;
+  ANode1: TSynEditLineMapPage;
   ALine1: TSynWordWrapLineMap;
   //ATestName: String;
   w: TExpWraps;
 begin
   // invalidate and insert/remove lines
-  ANode1 := TSynWordWrapIndexPage(FTree.FindPageForLine(0, afmCreate).Page);
+  ANode1 := FTree.FindPageForLine(0, afmCreate).Page;
   ALine1 := ANode1.SynWordWrapLineMapStore;
 
   InitLine(ALine1, w.init([1]));
@@ -896,14 +903,14 @@ end;
 
 procedure TTestWordWrap.TestWordWrapLineMapValidate;
 var
-  ANode1: TSynWordWrapIndexPage;
+  ANode1: TSynEditLineMapPage;
   ALine1: TSynWordWrapLineMap;
   ATestName: String;
   w: TExpWraps;
   i: Integer;
 begin
   // invalidate/ re-validate => increase/decrease offset/tail by switching between wrap and one-line lines
-  ANode1 := TSynWordWrapIndexPage(FTree.FindPageForLine(0, afmCreate).Page);
+  ANode1 := FTree.FindPageForLine(0, afmCreate).Page;
   ALine1 := ANode1.SynWordWrapLineMapStore;
 
   ATestName := 'fill one-lines at start - increasing';
@@ -1006,13 +1013,13 @@ end;
 
 procedure TTestWordWrap.TestWordWrapLineMapMerge;
 var
-  ANode1, ANode2: TSynWordWrapIndexPage;
+  ANode1, ANode2: TSynEditLineMapPage;
   ALine1, ALine2: TSynWordWrapLineMap;
   ATestName: String;
   w: TExpWraps;
 begin
-  ANode1 := TSynWordWrapIndexPage(FTree.FindPageForLine(0, afmCreate).Page);
-  ANode2 := TSynWordWrapIndexPage(FTree.FindPageForLine(100, afmCreate).Page);
+  ANode1 := FTree.FindPageForLine(0, afmCreate).Page;
+  ANode2 := FTree.FindPageForLine(100, afmCreate).Page;
   ALine1 := ANode1.SynWordWrapLineMapStore;
   ALine2 := ANode2.SynWordWrapLineMapStore;
 
@@ -1203,7 +1210,7 @@ end;
 
 procedure TTestWordWrap.TestWordWrapLineMapMergeInvalidate;
 var
-  ANode1, ANode2: TSynWordWrapIndexPage;
+  ANode1, ANode2: TSynEditLineMapPage;
   ALine1, ALine2: TSynWordWrapLineMap;
   ATestName: String;
   w: TExpWraps;
@@ -1245,8 +1252,8 @@ var
   end;
 
 begin
-  ANode1 := TSynWordWrapIndexPage(FTree.FindPageForLine(0, afmCreate).Page);
-  ANode2 := TSynWordWrapIndexPage(FTree.FindPageForLine(100, afmCreate).Page);
+  ANode1 := FTree.FindPageForLine(0, afmCreate).Page;
+  ANode2 := FTree.FindPageForLine(100, afmCreate).Page;
   ALine1 := ANode1.SynWordWrapLineMapStore;
   ALine2 := ANode2.SynWordWrapLineMapStore;
 
@@ -1603,7 +1610,7 @@ var
 begin
   FTree.Free;
   FTree := CreateTree(2, 9, 4);
-//  FTree := TSynLineMapAVLTree.Create(TSynWordWrapIndexPage, 2, 11, 4);
+//  FTree := TSynLineMapAVLTree.Create(TSynEditLineMapPage, 2, 11, 4);
   for DelPos := 0 to 26 do
   for DelCount := 1 to Min(5, 27-DelPos) do
   for InsPos := 0 to 29 do
@@ -1641,7 +1648,7 @@ var
 begin
   FTree.Free;
   FTree := CreateTree(2, 9, 4);
-//  FTree := TSynLineMapAVLTree.Create(TSynWordWrapIndexPage, 2, 11, 4);
+//  FTree := TSynLineMapAVLTree.Create(TSynEditLineMapPage, 2, 11, 4);
   for DelPos := 0 to 26 do
   for DelCount := 1 to Min(5, 27-DelPos) do
   for InsPos := 0 to 29 do
@@ -1684,7 +1691,7 @@ end;
 function TTestWordWrapPluginBase.GetTreeNodeHolder(AIndex: Integer
   ): TSynEditLineMapPageHolder;
 begin
-  Result := FWordWrap.LineMapView.Tree.FirstPage;
+  Result := FWordWrap.LineMappingData.FirstPage;
   while (AIndex > 0) and Result.HasPage do begin
     dec(AIndex);
     Result := Result.Next;
@@ -1988,7 +1995,7 @@ begin
   Result := nil;
   if FWordWrap = nil then
     exit;
-  Result := FWordWrap.LineMapView.Tree;
+  Result := FWordWrap.LineMappingData;
 end;
 
 procedure TTestWordWrapPluginBase.ReCreateEdit(ADispWidth: Integer);
@@ -2458,7 +2465,7 @@ var
 begin
   ReCreateEdit(10);
   SynEdit.Options := [];
-  t := FWordWrap.LineMapView.Tree;
+  t := FWordWrap.LineMappingData;
 debugln(' split %d  join %d  dist %d', [t.PageSplitSize, t.PageJoinSize, t.PageJoinDistance]);
 
   AddLineTestCount('new: split - 2', 0, t.PageSplitSize - 2, 18,    1);
@@ -2470,7 +2477,7 @@ debugln(' split %d  join %d  dist %d', [t.PageSplitSize, t.PageJoinSize, t.PageJ
 
   ReCreateEdit(10);
   SynEdit.Options := [];
-  t := FWordWrap.LineMapView.Tree;
+  t := FWordWrap.LineMappingData;
   AddLineTestCount('new: split - 2', 0, t.PageSplitSize - 2, 18,    1);
   AddLineTestCount('insert end: split - 1', SynEdit.Lines.Count, 18,    1);
   AddLineTestCount('insert end: split - 0', SynEdit.Lines.Count, 18,    1);
@@ -2480,7 +2487,7 @@ debugln(' split %d  join %d  dist %d', [t.PageSplitSize, t.PageJoinSize, t.PageJ
 
   ReCreateEdit(10);
   SynEdit.Options := [];
-  t := FWordWrap.LineMapView.Tree;
+  t := FWordWrap.LineMappingData;
   AddLineTestCount('new: split - 2', 0, t.PageSplitSize - 2, 18,    1);
   AddLineTestCount('insert @10: split - 1', 10, 18,    1);
   AddLineTestCount('insert @10: split - 0', 10, 18,    1);
@@ -2490,7 +2497,7 @@ debugln(' split %d  join %d  dist %d', [t.PageSplitSize, t.PageJoinSize, t.PageJ
 
   ReCreateEdit(10);
   SynEdit.Options := [];
-  t := FWordWrap.LineMapView.Tree;
+  t := FWordWrap.LineMappingData;
   i := t.PageSplitSize - 2;
   AddLineTestCount('new: split - 2', 0,  i, 18,    1);
   AddLineTestCount('new: split - 2', i, 10,  1,    1);
@@ -2502,7 +2509,7 @@ debugln(' split %d  join %d  dist %d', [t.PageSplitSize, t.PageJoinSize, t.PageJ
 
   ReCreateEdit(10);
   SynEdit.Options := [];
-  t := FWordWrap.LineMapView.Tree;
+  t := FWordWrap.LineMappingData;
   i := 9;
   AddLineTestCount('new: split - 2', 0,  t.PageSplitSize - 2, 18,    1);
   AddLineTestCount('new: split - 2', 0, 10,  1,    1);
@@ -2516,7 +2523,7 @@ debugln(' split %d  join %d  dist %d', [t.PageSplitSize, t.PageJoinSize, t.PageJ
   ///////////////////
   ReCreateEdit(10);
   SynEdit.Options := [];
-  t := FWordWrap.LineMapView.Tree;
+  t := FWordWrap.LineMappingData;
   AddLineTestCount('new: split double', 0,  t.PageSplitSize + t.PageJoinSize + 2, 18,    2);
 
 
@@ -2541,7 +2548,7 @@ debugln(' split %d  join %d  dist %d', [t.PageSplitSize, t.PageJoinSize, t.PageJ
 
   ReCreateEdit(10);
   SynEdit.Options := [];
-  t := FWordWrap.LineMapView.Tree;
+  t := FWordWrap.LineMappingData;
   AddLineTestCount('new: split double', 0,  t.PageSplitSize + t.PageJoinSize + 2, 18,    2);
 
 
@@ -2561,7 +2568,7 @@ debugln(' split %d  join %d  dist %d', [t.PageSplitSize, t.PageJoinSize, t.PageJ
   // do not join
   ReCreateEdit(10);
   SynEdit.Options := [];
-  t := FWordWrap.LineMapView.Tree;
+  t := FWordWrap.LineMappingData;
   AddLineTestCount('new: split * 2 - 2', 0,  t.PageSplitSize * 2 - 2, 18,    2);
 
 
