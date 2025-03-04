@@ -621,10 +621,14 @@ begin
 
       ctnProcedure:
         begin
-          s:=IdentItem.Tool.ExtractProcHead(ItemNode,
-            [phpWithoutClassName,phpWithoutName,phpWithVarModifiers,
-             phpWithParameterNames,phpWithDefaultValues,phpWithResultType,
-             phpWithOfObject,phpWithoutSemicolon]);
+          try
+            s:=IdentItem.Tool.ExtractProcHead(ItemNode,
+              [phpWithoutClassName,phpWithoutName,phpWithVarModifiers,
+               phpWithParameterNames,phpWithDefaultValues,phpWithResultType,
+               phpWithOfObject,phpWithoutSemicolon]);
+          except
+            // ignore, show funciton name without header
+          end;
         end;
 
       ctnProperty,ctnGlobalProperty:
