@@ -1344,7 +1344,7 @@ begin
   
   // hide process
   if OSError(GetCurrentProcess(Proc{%H-}), Self, SName, SGetCurrentProc) then Exit;
-    OSError(ShowHideProcess(Proc, False), Self, SName, SShowHideProc);
+  OSError(ShowHideProcess(Proc, False), Self, SName, SShowHideProc);
 end;
 
 {------------------------------------------------------------------------------

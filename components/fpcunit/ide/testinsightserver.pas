@@ -656,7 +656,7 @@ begin
   else if Len<2 then
     Raise ETestInsight.Create('Basepath cannot be empty');
   if FBasePath=AValue then Exit;
-    FBasePath:=AValue;
+  FBasePath:=AValue;
 end;
 
 {$IFDEF USECORS}
