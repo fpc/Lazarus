@@ -1,5 +1,7 @@
-{ "TAChart_stateseries" : {
-   "Category" : "TAChart",
-   "Keywords" : ["TAChart","state","Gantt","machine","bar"],
-   "Description" : "Demonstrates how the states of machines ("production", "repair", ...) can be plotted by means of a TStateSeries. Another modification shows the progress of a project in a Gantt chart.
+{ 
+  "TAChart_stateseries" : {
+    "Category" : "TAChart",
+    "Keywords" : ["TAChart","state","Gantt","machine","bar"],
+    "Description" : "Demonstrates how the states of machines ('production', 'repair', ...) can be plotted by means of a TStateSeries. Another modification shows the progress of a project in a Gantt chart."
+  }
 }

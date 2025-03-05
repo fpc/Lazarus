@@ -92,6 +92,7 @@
 ./components/tachart/demo/axis/TAChart_axis.ex-meta
 ./components/tachart/demo/distance/TAChart_distance.ex-meta
 ./components/tachart/demo/barseriesshapes/barseriesshapes.ex-meta
+./components/tachart/demo/stateseries/TAChart_stateseries.ex-meta
 ./components/printers/samples/dialogs/Printer_dialogs.ex-meta
 ./components/printers/samples/rawmode/Printer_rawmode.ex-meta
 ./components/vlc/example/VLC_test.ex-meta
@@ -181,7 +182,8 @@
 ./examples/icons/icons.ex-meta
 ./examples/bitbtn/bitbtn.ex-meta
 ./examples/turbopower_ipro/turbopower_ipro.ex-meta
-./examples/treeview/treeview.ex-meta
+./examples/treeview/add_remove_nodes/treeview.ex-meta
+./examples/treeview/customdrawing/treeview.ex-meta
 ./examples/fpreport/simple/LCLReport.ex-meta
 ./examples/objectinspector/objectinspector.ex-meta
 ./examples/virtualtreeview/vst_advanced/vst_advanced.ex-meta
