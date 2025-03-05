@@ -7,11 +7,11 @@ object HistoryDialog: THistoryDialog
   Caption = 'HistoryDialog'
   ClientHeight = 240
   ClientWidth = 422
-  LCLVersion = '3.99.0.0'
+  LCLVersion = '4.99.0.0'
   object lvHistory: TListView
     Left = 0
-    Height = 214
-    Top = 26
+    Height = 216
+    Top = 24
     Width = 422
     Align = alClient
     Columns = <    
@@ -33,14 +33,14 @@ object HistoryDialog: THistoryDialog
   end
   object ToolBar1: TToolBar
     Left = 0
-    Height = 26
+    Height = 24
     Top = 0
     Width = 422
+    AutoSize = True
     Caption = 'ToolBar1'
     ParentShowHint = False
     ShowHint = True
     TabOrder = 1
-    Wrapable = False
     object tbHistorySelected: TToolButton
       Left = 24
       Top = 2
@@ -117,13 +117,13 @@ object HistoryDialog: THistoryDialog
       Style = tbsDivider
     end
     object tbExport: TToolButton
-      Left = 218
+      Left = 208
       Top = 2
       Caption = 'tbExport'
       OnClick = tbExportClick
     end
     object tbImport: TToolButton
-      Left = 195
+      Left = 185
       Top = 2
       Caption = 'tbImport'
       OnClick = tbImportClick

@@ -10,14 +10,15 @@ object BreakpointsDlg: TBreakpointsDlg
   Caption = 'Breakpoint list'
   ClientHeight = 205
   ClientWidth = 560
-  LCLVersion = '3.99.0.0'
+  LCLVersion = '4.99.0.0'
   Visible = True
   OnCreate = BreakpointsDlgCREATE
   object ToolBar1: TToolBar
     Left = 0
-    Height = 26
+    Height = 24
     Top = 0
     Width = 560
+    AutoSize = True
     Caption = 'ToolBar1'
     ParentShowHint = False
     ShowHint = True
@@ -93,8 +94,8 @@ object BreakpointsDlg: TBreakpointsDlg
   end
   object tvBreakPoints: TDbgTreeView
     Left = 0
-    Height = 179
-    Top = 26
+    Height = 181
+    Top = 24
     Width = 560
     Align = alClient
     DefaultText = 'Node'
