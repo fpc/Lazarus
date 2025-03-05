@@ -793,7 +793,7 @@ begin
   if (Operation=opRemove) and (FilteredTreeview=AComponent) then
   begin
     IdleConnected:=False;
-    fNeedUpdate:=False;
+    fNeedFiltering:=False;
     fFilteredTreeview.RemoveHandlerOnBeforeDestruction(@OnBeforeTreeDestroy);
     fFilteredTreeview:=nil;
     FreeAndNil(fBranches);

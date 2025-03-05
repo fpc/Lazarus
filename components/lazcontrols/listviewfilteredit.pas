@@ -180,7 +180,7 @@ begin
   if (Operation=opRemove) and (FilteredListview=AComponent) then
   begin
     IdleConnected:=False;
-    fNeedUpdate:=False;
+    fNeedFiltering:=False;
     fFilteredListview:=nil;
   end;
 end;

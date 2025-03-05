@@ -163,7 +163,7 @@ begin
   if (Operation=opRemove) and (FilteredListbox=AComponent) then
   begin
     IdleConnected:=False;
-    fNeedUpdate:=False;
+    fNeedFiltering:=False;
     fFilteredListbox:=nil;
   end;
 end;

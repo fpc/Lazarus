@@ -241,7 +241,7 @@ type
   protected
     fAlreadyFiltered: Boolean;
     fIsFirstUpdate: Boolean;
-    fNeedUpdate: Boolean;
+    fNeedFiltering, fNeedButtonEnabled: Boolean;
     fSelectedPart: TObject;         // Select this node on next update
     fOnFilterItem: TFilterItemEvent;
     fOnFilterItemEx: TFilterItemExEvent;
@@ -1182,6 +1182,8 @@ begin
   fIsFirstUpdate:=True;
   fIsFirstSetFormActivate:=True;
   TextHint:=rsFilter;
+  fNeedButtonEnabled:=True;
+  IdleConnected:=true;
 end;
 
 destructor TCustomControlFilterEdit.Destroy;
@@ -1268,8 +1270,14 @@ end;
 
 procedure TCustomControlFilterEdit.OnAsync(Data: PtrInt);
 begin
-  if fNeedUpdate then
+  if fNeedFiltering then begin
     ApplyFilter(true);
+    fNeedFiltering:=False;
+  end;
+  if fNeedButtonEnabled then begin
+    Button.Enabled:=Text<>'';
+    fNeedButtonEnabled:=False;
+  end;
   IdleConnected:=false;
   if Assigned(fOnAfterFilter) then
     fOnAfterFilter(Self);
@@ -1326,7 +1334,6 @@ end;
 procedure TCustomControlFilterEdit.ApplyFilter(Immediately: Boolean);
 begin
   if Immediately then begin
-    fNeedUpdate := False;
     SortAndFilter;
     if (fSelectedPart=Nil) and not fIsFirstUpdate then
       StoreSelection;      // At first round the selection is from caller
@@ -1344,7 +1351,7 @@ end;
 procedure TCustomControlFilterEdit.InvalidateFilter;
 begin
   if fAlreadyFiltered then Exit;
-  fNeedUpdate:=true;
+  fNeedFiltering:=true;
   IdleConnected:=true;
 end;
 
