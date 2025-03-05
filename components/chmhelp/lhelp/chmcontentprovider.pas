@@ -883,10 +883,18 @@ begin
 end;
 
 procedure TChmContentProvider.UpdateTitle;
-var
+{var
   Item: TTreeNode;
-  NewTitle: String;
+  NewTitle: String;  }
 begin
+  // Now show only the first original CHM title.
+  if (Title = '') and (fContentsTree.Items.Count > 0) then
+    Title := fContentsTree.Items.GetFirstNode.Text;
+
+  // When opening LazUtils CHM file, then clicking links for FCL and RTL, the code generated this:
+  //  "(LazUtils) Lazarus Utilities [(FCL) Free Component Library, (RTL) Runtime Library]"
+  // However it never changes again. It only gets updated when a CHM is loaded (ProcFillTOC).
+{
   Item:=nil;
   if fContentsTree.Items.Count > 0 then
     Item := fContentsTree.Items.GetFirstNode;
@@ -910,6 +918,7 @@ begin
   if NewTitle = '' then
     NewTitle := DefaultCHMContentTitle;
   Title := NewTitle;
+}
 end;
 
 procedure TChmContentProvider.SetTitle(const AValue: String);
