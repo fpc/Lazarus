@@ -28,7 +28,7 @@ interface
 uses
   Classes, SysUtils, Graphics, StrUtils,
   SynEditMiscClasses, SynEdit, SynEditMarkup, SynEditMiscProcs, LazSynEditText,
-  SynEditTextTrimmer, SynEditKeyCmds, SynEditTextBase, LazUTF8;
+  SynEditTextTrimmer, SynEditKeyCmds, SynEditTextBase, LazUTF8, LazEditMiscProcs;
 
 type
 
@@ -171,7 +171,7 @@ type
 
   TSynPluginSyncronizedEditChangeAction = record
     CellIndex: Integer;
-    cLinePos, cBytePos, Count, LineBrkCount: Integer;
+    cLinePos, cCharPos, Count, LineBrkCount: Integer;
     Text: String;
   end;
 
@@ -184,7 +184,7 @@ type
     function GetItems(Index: Integer): TSynPluginSyncronizedEditChangeAction;
   public
     procedure Clear;
-    procedure Add(aCellIndex, aLinePos, aBytePos, aCount, aLineBrkCnt: Integer;
+    procedure Add(aCellIndex, aLinePos, aCharPos, aCount, aLineBrkCnt: Integer;
       aText: String);
     property Count: Integer read FCount;
     property Items[Index: Integer]: TSynPluginSyncronizedEditChangeAction
@@ -836,15 +836,15 @@ begin
   FCount := 0;
 end;
 
-procedure TSynPluginSyncronizedEditChangeList.Add(aCellIndex, aLinePos, aBytePos,
-  aCount, aLineBrkCnt: Integer; aText: String);
+procedure TSynPluginSyncronizedEditChangeList.Add(aCellIndex, aLinePos, aCharPos, aCount,
+  aLineBrkCnt: Integer; aText: String);
 begin
   if length(FList) <= FCount then
     SetLength(FList, FCount + 4);
 
   FList[FCount].CellIndex := aCellIndex;
   FList[FCount].cLinePos := aLinePos;
-  FList[FCount].cBytePos := aBytePos;
+  FList[FCount].cCharPos := aCharPos;
   FList[FCount].Count := aCount;
   FList[FCount].LineBrkCount := aLineBrkCnt;
   FList[FCount].Text := aText;
@@ -1180,6 +1180,7 @@ var
   edit: Boolean;
   CellAtPos, CellCnt: Integer;
   LastCellEndPoint, CurCellStartPos: TPoint;
+  Line: PChar;
 begin
   if not Active then begin
     if PreActive then DoPreActiveEdit(aBytePos, aLinePos, aCount, aLineBrkCnt, IsUndoing or IsRedoing);
@@ -1249,11 +1250,16 @@ begin
      (CompareCarets(Pos, FCells[CellAtPos].LogEnd) >= 0)
   then begin
     CurCell := FCells[CellAtPos];
+    Line := ViewedTextBuffer.GetPChar(Pos.Y-1, i);
     Pos.Y := Pos.Y - CurCell.LogStart.y;
-    if Pos.y = 0 then
-      Pos.X := Pos.X - CurCell.LogStart.x
-    else
+    if Pos.y = 0 then begin
+      Pos.X := Pos.X - CurCell.LogStart.x;
+      Pos.X := CountChars(Line+CurCell.LogStart.x-1, Pos.X);
+    end
+    else begin
       dec(Pos.x);
+      Pos.X := CountChars(Line, Pos.X);
+    end;
     FChangeList.Add(CellAtPos, Pos.Y, Pos.X, aCount, aLineBrkCnt, aText);
   end;
 
@@ -1267,8 +1273,10 @@ procedure TSynPluginSyncronizedEditBase.ApplyChangeList;
 var
   Action: TSynPluginSyncronizedEditChangeAction;
   a, i: Integer;
-  Group, Y2, X2, CurCell, LastUndoCurCell: Integer;
+  Group, Y2, X2, CurCell, LastUndoCurCell, Len: Integer;
   Cell: TSynPluginSyncronizedEditCell;
+  Line: PChar;
+  XStart: Integer;
 begin
   LastUndoCurCell := -1;
   if FDependsOnCurrentCell then begin
@@ -1296,37 +1304,34 @@ begin
           continue;
 
         FCurrentCell := i; // direct access / markup does not need to know
-        if Cell.LogStart.Y = Cell.LogEnd.Y then
-          X2 := Cell.LogStart.X + Action.cBytePos
-        else
-          X2 := 1 + Action.cBytePos;
-        if (Cell.LogStart.Y + Action.cLinePos < Cell.LogEnd.Y) or
-           ( (Cell.LogStart.Y + Action.cLinePos = Cell.LogEnd.Y) and
-             (X2 <= Cell.LogEnd.X) )
-        then begin
-          Y2 := Cell.LogStart.Y + Action.cLinePos;
+        Y2 := Cell.LogStart.Y + Action.cLinePos;
+        if (Y2 <= Cell.LogEnd.Y) then begin
+          Line := ViewedTextBuffer.GetPChar(Y2-1, Len);
+          XStart := Cell.LogStart.X;
           if Action.cLinePos = 0 then
-            X2 := Cell.LogStart.X + Action.cBytePos
+            X2 := XStart + CountBytes(Line + XStart - 1, Action.cCharPos, Len - XStart + 1)
           else
-            X2 := 1 + Action.cBytePos;
+            X2 := 1 + CountBytes(Line, Action.cCharPos, Len);
 
-          if Action.LineBrkCount = -1 then
-            ViewedTextBuffer.EditLineJoin(Y2)
-          else
-          if Action.LineBrkCount < -1 then
-            ViewedTextBuffer.EditLinesDelete(Y2, -Action.LineBrkCount)
-          else
-          if Action.LineBrkCount = 1 then
-            ViewedTextBuffer.EditLineBreak(X2, Y2)
-          else
-          if Action.LineBrkCount > 1 then
-            ViewedTextBuffer.EditLinesInsert(Y2, Action.LineBrkCount)
-          else
-          if Action.Count < 0 then
-            ViewedTextBuffer.EditDelete(X2, Y2, -Action.Count)
-          else
-          if Action.Count > 0 then
-            ViewedTextBuffer.EditInsert(X2, Y2, Action.Text);
+          if (Y2 < Cell.LogEnd.Y) or (X2 <= Cell.LogEnd.X) then begin
+            if Action.LineBrkCount = -1 then
+              ViewedTextBuffer.EditLineJoin(Y2)
+            else
+            if Action.LineBrkCount < -1 then
+              ViewedTextBuffer.EditLinesDelete(Y2, -Action.LineBrkCount)
+            else
+            if Action.LineBrkCount = 1 then
+              ViewedTextBuffer.EditLineBreak(X2, Y2)
+            else
+            if Action.LineBrkCount > 1 then
+              ViewedTextBuffer.EditLinesInsert(Y2, Action.LineBrkCount)
+            else
+            if Action.Count < 0 then
+              ViewedTextBuffer.EditDelete(X2, Y2, -Action.Count)
+            else
+            if Action.Count > 0 then
+              ViewedTextBuffer.EditInsert(X2, Y2, Action.Text);
+          end;
         end;
       end;
 
@@ -1887,22 +1892,36 @@ begin
 end;
 
 procedure TSynPluginCustomSyncroEdit.AddGroupFromSelection(AScanMode: TSynPluginSyncroScanMode);
-  function FindNextStart(AText: String; AStartPos, AMaxPos: TPoint): TPoint;
+type
+  TPointEx = record Pnt: TPoint; Len: integer; end;
+
+  function FindNextStart(AText: String; AStartPos, AMaxPos: TPoint): TPointEx;
   var
-    l: String;
+    l2, l: String;
+    x2: LongInt;
   begin
-    Result.Y := -1;
+    Result.Pnt.Y := -1;
     repeat
       l := TextBuffer[ToIdx(AStartPos.Y)];
-      if AScanMode in [spssNoCase, spssCtxNoCase] then
+      l2 := l;
+      if AScanMode in [spssNoCase, spssCtxNoCase] then begin
         l := Utf8LowerCase(l);
-      Result.X := PosEx(AText, l, AStartPos.X);
-      if (Result.X > 0) and
+        if AStartPos.X > 1 then
+          AStartPos.X := CountBytes(PChar(l), CountChars(PChar(l2), AStartPos.X - 1), Length(l)) + 1;
+      end;
+      Result.Pnt.X := PosEx(AText, l, AStartPos.X);
+      if (Result.Pnt.X > 0) and
          ( (AStartPos.Y < AMaxPos.Y) or
-           ((AStartPos.y = AMaxPos.y) and (Result.x + Length(AText) <= AMaxPos.X))
+           ((AStartPos.y = AMaxPos.y) and (Result.Pnt.x + Length(AText) <= AMaxPos.X))
          )
       then begin
-        Result.Y := AStartPos.Y;
+        Result.Pnt.Y   := AStartPos.Y;
+        Result.Len := Length(AText);
+        if AScanMode in [spssNoCase, spssCtxNoCase] then begin
+          x2 := Result.Pnt.X;
+          Result.Pnt.X := CountBytes(PChar(l2), CountChars(PChar(l), Result.Pnt.X - 1), Length(l2)) + 1;
+          Result.Len := CountBytes(PChar(l2)+x2-1, CountChars(PChar(AText), Length(AText)), Length(l2)-x2+1);
+        end;
         exit;
       end;
       AStartPos.X := 1;
@@ -1910,7 +1929,7 @@ procedure TSynPluginCustomSyncroEdit.AddGroupFromSelection(AScanMode: TSynPlugin
     until AStartPos.y > AMaxPos.Y;
   end;
 
-  function FindNextStart(AText: String; AStartPos, AMaxPos: TPoint; AScope: integer): TPoint;
+  function FindNextStart(AText: String; AStartPos, AMaxPos: TPoint; AScope: integer): TPointEx;
   var
     tt: Integer;
   begin
@@ -1918,13 +1937,13 @@ procedure TSynPluginCustomSyncroEdit.AddGroupFromSelection(AScanMode: TSynPlugin
       Result := FindNextStart(AText, AStartPos, AMaxPos);
       if not (AScanMode in [spssCtxNoCase, spssCtxWithCase]) then
         exit;
-      if Result.Y < 0 then
+      if Result.Pnt.Y < 0 then
         exit;
-      TSynEdit(FriendEdit).GetHighlighterAttriAtRowColEx(Result, tt, True);
+      TSynEdit(FriendEdit).GetHighlighterAttriAtRowColEx(Result.Pnt, tt, True);
       if tt = AScope then
         exit;
-      AStartPos := Result;
-      AStartPos.x := AStartPos.x + Length(AText);
+      AStartPos := Result.Pnt;
+      AStartPos.x := AStartPos.x + Result.Len;
     until False;
   end;
 
@@ -1953,10 +1972,11 @@ var
   end;
 var
   BndCell: TSynPluginSyncronizedEditCell;
-  t: String;
+  SelTxt: String;
   p: TPoint;
-  Fnd, FndEnd, Fnd2, FndEnd2: TPoint;
-  Ctx, i: Integer;
+  Fnd, Fnd2: TPointEx;
+  FndEnd, FndEnd2: TPoint;
+  Ctx, i, SelTxtCharLen: Integer;
 begin
   if (not FriendEdit.SelAvail) or (FriendEdit.BlockBegin.y <> FriendEdit.BlockEnd.Y) then
     exit;
@@ -1974,32 +1994,33 @@ begin
   if AScanMode in [spssCtxNoCase, spssCtxWithCase] then
     TSynEdit(FriendEdit).GetHighlighterAttriAtRowColEx(FriendEdit.BlockBegin, Ctx, False);
 
-  t := FriendEdit.SelText;
+  SelTxt := FriendEdit.SelText;
+//  SelTxtCharLen := CountChars(PChar(SelTxt), Length(SelTxt));
   if AScanMode in [spssNoCase, spssCtxNoCase] then
-    t := UTF8LowerCase(t);
+    SelTxt := UTF8LowerCase(SelTxt);
 
   p := BndCell.LogStart;
-  Fnd := FindNextStart(t, p, BndCell.LogEnd, Ctx);
-  FndEnd := Fnd;
-  inc(FndEnd.X, Length(t));
-  if (Fnd.Y < 0)  then
+  Fnd := FindNextStart(SelTxt, p, BndCell.LogEnd, Ctx);
+  FndEnd := Fnd.Pnt;
+  inc(FndEnd.X, Fnd.Len);
+  if (Fnd.Pnt.Y < 0)  then
     exit;
 
   p := FndEnd;
-  Fnd2 := FindNextStart(t, p, BndCell.LogEnd, Ctx);
-  FndEnd2 := Fnd2;
-  inc(FndEnd2.X, Length(t));
-  if (Fnd2.Y < 0) then
+  Fnd2 := FindNextStart(SelTxt, p, BndCell.LogEnd, Ctx);
+  FndEnd2 := Fnd2.Pnt;
+  inc(FndEnd2.X, Fnd2.Len);
+  if (Fnd2.Pnt.Y < 0) then
     exit;
 
-  AddFndCell(Fnd, FndEnd, True);
-  while Fnd2.y >= 0 do begin
-    AddFndCell(Fnd2, FndEnd2);
+  AddFndCell(Fnd.Pnt, FndEnd, True);
+  while Fnd2.Pnt.y >= 0 do begin
+    AddFndCell(Fnd2.Pnt, FndEnd2);
 
     p := FndEnd2;
-    Fnd2 := FindNextStart(t, p, BndCell.LogEnd, Ctx);
-    FndEnd2 := Fnd2;
-    inc(FndEnd2.X, Length(t));
+    Fnd2 := FindNextStart(SelTxt, p, BndCell.LogEnd, Ctx);
+    FndEnd2 := Fnd2.Pnt;
+    inc(FndEnd2.X, Fnd2.Len);
   end;
 
   if DidDelete then
