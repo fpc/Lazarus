@@ -105,6 +105,10 @@ msgstr ""
 msgid "Russian"
 msgstr ""
 
+#: pocheckerconsts.rs_lang_si
+msgid "Sinhala"
+msgstr ""
+
 #: pocheckerconsts.rs_lang_sk
 msgid "Slovak"
 msgstr ""

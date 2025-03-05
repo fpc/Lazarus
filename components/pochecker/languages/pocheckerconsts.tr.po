@@ -107,6 +107,10 @@ msgstr "Brezilya Portekizcesi"
 msgid "Russian"
 msgstr "Rusça"
 
+#: pocheckerconsts.rs_lang_si
+msgid "Sinhala"
+msgstr ""
+
 #: pocheckerconsts.rs_lang_sk
 msgid "Slovak"
 msgstr "Slovak"

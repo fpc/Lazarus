@@ -105,6 +105,10 @@ msgstr "Бразильська португальська"
 msgid "Russian"
 msgstr "Російська"
 
+#: pocheckerconsts.rs_lang_si
+msgid "Sinhala"
+msgstr ""
+
 #: pocheckerconsts.rs_lang_sk
 msgid "Slovak"
 msgstr "Словацька"
