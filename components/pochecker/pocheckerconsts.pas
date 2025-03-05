@@ -141,6 +141,7 @@ type
     lang_pt,     {Portuguese}
     lang_pt_BR,  {Brazilian Portuguese}
     lang_ru,     {Russian}
+    lang_si,     {Sinhala}
     lang_sk,     {Slovak}
     lang_tr,     {Turkish}
     lang_uk,     {Ukrainian}
@@ -170,6 +171,7 @@ resourcestring
   rs_lang_pt =     'Portuguese';
   rs_lang_pt_BR =  'Brazilian Portuguese';
   rs_lang_ru =     'Russian';
+  rs_lang_si =     'Sinhala';
   rs_lang_sk =     'Slovak';
   rs_lang_tr =     'Turkish';
   rs_lang_uk =     'Ukrainian';
@@ -199,6 +201,7 @@ const
     rs_lang_pt ,
     rs_lang_pt_BR,
     rs_lang_ru ,
+    rs_lang_si ,
     rs_lang_sk ,
     rs_lang_tr ,
     rs_lang_uk ,
@@ -228,6 +231,7 @@ const
      'pt',     {Portuguese}
      'pt_BR',  {Brazilian Portuguese}
      'ru',     {Russian}
+     'si',     {Sinhala}
      'sk',     {Slovak}
      'tr',     {Turkish}
      'uk',     {Ukrainian}
@@ -275,6 +279,7 @@ begin
   LanguageNames[lang_pt]:=rs_lang_pt;
   LanguageNames[lang_pt_BR]:=rs_lang_pt_BR;
   LanguageNames[lang_ru]:=rs_lang_ru;
+  LanguageNames[lang_si]:=rs_lang_si;
   LanguageNames[lang_sk]:=rs_lang_sk;
   LanguageNames[lang_tr]:=rs_lang_tr;
   LanguageNames[lang_uk]:=rs_lang_uk;
