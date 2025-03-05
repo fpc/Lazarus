@@ -1990,7 +1990,7 @@ begin
     StartPascalCodeFoldBlock(cfbtRecord);
     fRange := fRange - [rsVarTypeInSpecification, rsAfterEqual, rsAfterEqualOrColon] + [rsAfterSemiColon];
     FOldRange := FOldRange - [rsAfterSemiColon];
-    if CompilerMode = pcmDelphi then
+    if (CompilerMode = pcmDelphi) or (TypeHelpers {and adv_record}) then
       fRange := fRange + [rsAtClass]; // highlight helper
     Result := tkKey;
   end

@@ -2179,12 +2179,14 @@ end;
 
 procedure TTestHighlighterPas.TestContextForClassSection;
 var
-  ty, rc, lead1, lead2, cm, s1, s2, v: string;
+  ty, rc, rc1, hlp, lead1, lead2, cm, s1, s2, v, v_t: string;
   strict1, strict2: Boolean;
   cmod, sp1, sp2: Integer;
 begin
+  ReCreateEdit;
   for ty in ['     ', 'type '] do
-  for rc in ['class ', 'object', 'record'] do
+  for rc1 in ['class ', 'object', 'record'] do
+  for hlp in ['                 ', ' helper for c    ', ' helper(b) for c '] do
   for lead1 in ['', '  '] do
   for lead2 in ['', '  '] do
   for cm  in ['                ', ' sealed abstract', ' sealed         ', ' abstract       '] do
@@ -2192,6 +2194,7 @@ begin
   for s2 in ['strict private  ', 'strict protected', 'private          ', 'protected        ', 'public           ', 'published        '] do
   for v  in ['private          ', 'protected        ', 'public           ', 'published        '] do
   begin
+    rc := rc1;
     sp1 := ord(tkSpace);
     if lead1 = '' then sp1 := TK_SKIP;
     sp2 := ord(tkSpace);
@@ -2207,44 +2210,55 @@ begin
       't': cmod := 1; // abstract
     end;
 
+    if (hlp[2]<>' ') and
+       ( (ty[1] <> ' ') or (cm[2] <> ' ') )
+    then
+      continue;
+
+    if (hlp[2]<>' ') and (rc = 'object') then // no "object helper" // make it "type helper"
+      rc := 'type';
+
     if (rc <> 'class ') and ( (cmod <> 0) or strict1 or  strict2 )
     then
       continue;
 
-    ReCreateEdit;
+    //ReCreateEdit;
+    v_t := trim(v);
     SetLines
-      ([ 'Unit A; interface {$modeswitch advancedrecords}',  // 0
+      ([ 'Unit A; interface {$mode objfpc} {$modeswitch typehelpers} {$modeswitch advancedrecords}',  // 0
          'type',
-         'TFoo='+ty+rc+cm ,  // 2  class sealed abstract
+         'TFoo='+ty+rc+hlp+cm ,  // 2  class sealed abstract
          lead1+trim(s1),
          lead2+trim(s2),
-           'a,'+trim(v)+':'+trim(v)+';', // 5
+           'a,'+v_t+':'+v_t+';', // 5
          lead1+trim(s2),
          lead2+trim(s1),
-           'function '+trim(v)+'('+trim(v)+':'+trim(v)+';'+trim(v)+','+trim(v)+':'+trim(v)+'):'+trim(v)+';', // 8
+           'function '+v_t+'('+v_t+':'+v_t+';'+v_t+','+v_t+':'+v_t+'):'+v_t+';', // 8
          lead1+trim(s1),
          lead2+trim(s2), //10
          'end;',
-         lead1+trim(v)+'='+trim(v)+';', // 12
-         lead2+trim(v)+'='+trim(v)+';',
+         lead1+v_t+'='+v_t+';', // 12
+         lead2+v_t+'='+v_t+';',
          'var',
-         lead1+trim(v)+':'+trim(v)+';', // 15
-         lead2+trim(v)+':'+trim(v)+';',
+         lead1+v_t+':'+v_t+';', // 15
+         lead2+v_t+':'+v_t+';',
          ''
       ]);
 
-    if ty[1] = ' ' then begin
-      case cmod of
-        0: CheckTokensForLine('TFoo=class',  2, [ tkIdentifier, tkSymbol, tkSpace, tkKey ]);
-        1: CheckTokensForLine('TFoo=class',  2, [ tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkModifier, tkSpace ]);
-        2: CheckTokensForLine('TFoo=class',  2, [ tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkModifier, tkSpace, tkModifier]);
-      end;
-    end
-    else begin
-      case cmod of
-        0: CheckTokensForLine('TFoo=class',  2, [ tkIdentifier, tkSymbol, tkKey, tkSpace, tkKey ]);
-        1: CheckTokensForLine('TFoo=class',  2, [ tkIdentifier, tkSymbol, tkKey, tkSpace, tkKey, tkSpace, tkModifier, tkSpace ]);
-        2: CheckTokensForLine('TFoo=class',  2, [ tkIdentifier, tkSymbol, tkKey, tkSpace, tkKey, tkSpace, tkModifier, tkSpace, tkModifier]);
+    if hlp[2]=' ' then begin // not a helper
+      if ty[1] = ' ' then begin
+        case cmod of
+          0: CheckTokensForLine('TFoo=class',  2, [ tkIdentifier, tkSymbol, tkSpace, tkKey ]);
+          1: CheckTokensForLine('TFoo=class',  2, [ tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkModifier, tkSpace ]);
+          2: CheckTokensForLine('TFoo=class',  2, [ tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkModifier, tkSpace, tkModifier]);
+        end;
+      end
+      else begin
+        case cmod of
+          0: CheckTokensForLine('TFoo=class',  2, [ tkIdentifier, tkSymbol, tkKey, tkSpace, tkKey ]);
+          1: CheckTokensForLine('TFoo=class',  2, [ tkIdentifier, tkSymbol, tkKey, tkSpace, tkKey, tkSpace, tkModifier, tkSpace ]);
+          2: CheckTokensForLine('TFoo=class',  2, [ tkIdentifier, tkSymbol, tkKey, tkSpace, tkKey, tkSpace, tkModifier, tkSpace, tkModifier]);
+        end;
       end;
     end;
 
