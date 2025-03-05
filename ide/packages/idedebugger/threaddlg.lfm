@@ -7,11 +7,11 @@ object ThreadsDlg: TThreadsDlg
   Caption = 'Threads'
   ClientHeight = 240
   ClientWidth = 774
-  LCLVersion = '3.99.0.0'
+  LCLVersion = '4.99.0.0'
   object lvThreads: TListView
     Left = 0
-    Height = 214
-    Top = 26
+    Height = 215
+    Top = 25
     Width = 774
     Align = alClient
     Columns = <    
@@ -53,12 +53,15 @@ object ThreadsDlg: TThreadsDlg
   end
   object ToolBar1: TToolBar
     Left = 0
-    Height = 26
+    Height = 24
     Top = 0
     Width = 774
+    AutoSize = True
+    BorderSpacing.Bottom = 1
     Caption = 'ToolBar1'
     ShowCaptions = True
     TabOrder = 1
+    Orientation = tboHorizontal
     object tbCurrent: TToolButton
       Left = 1
       Top = 2

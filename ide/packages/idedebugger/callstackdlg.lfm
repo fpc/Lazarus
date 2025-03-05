@@ -7,13 +7,13 @@ object CallStackDlg: TCallStackDlg
   Caption = 'CallStack'
   ClientHeight = 246
   ClientWidth = 562
-  LCLVersion = '3.99.0.0'
+  LCLVersion = '4.99.0.0'
   Visible = True
   OnCreate = FormCreate
   object lvCallStack: TListView
     Left = 0
-    Height = 220
-    Top = 26
+    Height = 221
+    Top = 25
     Width = 562
     Align = alClient
     Columns = <    
@@ -47,15 +47,18 @@ object CallStackDlg: TCallStackDlg
   end
   object ToolBar1: TToolBar
     Left = 0
-    Height = 26
+    Height = 24
     Top = 0
     Width = 562
+    AutoSize = True
+    BorderSpacing.Bottom = 1
     Caption = 'tbButtons'
     List = True
     ParentShowHint = False
     ShowCaptions = True
     ShowHint = True
     TabOrder = 1
+    Orientation = tboHorizontal
     object ToolButtonShow: TToolButton
       Left = 32
       Top = 2
