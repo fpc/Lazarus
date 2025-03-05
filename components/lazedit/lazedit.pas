@@ -8,7 +8,7 @@ unit LazEdit;
 interface
 
 uses
-  TextMateGrammar, xHyperLinksDecorator, xregexpr, xregexpr_unicodedata;
+  TextMateGrammar, xHyperLinksDecorator, xregexpr, xregexpr_unicodedata, LazEditMiscProcs;
 
 implementation
 

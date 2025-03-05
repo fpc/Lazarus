@@ -11,9 +11,6 @@
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Other>
-        <ConfigFile>
-          <WriteConfigFilePath Value=""/>
-        </ConfigFile>
         <CustomOptions Value="$(IDEBuildOptions)"/>
       </Other>
     </CompilerOptions>
@@ -38,6 +35,10 @@ Additional licenses may be granted in each individual file. See the headers in e
       <Item>
         <Filename Value="xregexpr_unicodedata.pas"/>
         <UnitName Value="xregexpr_unicodedata"/>
+      </Item>
+      <Item>
+        <Filename Value="lazeditmiscprocs.pas"/>
+        <UnitName Value="lazeditmiscprocs"/>
       </Item>
     </Files>
     <RequiredPkgs>
