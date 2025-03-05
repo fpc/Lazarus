@@ -315,6 +315,10 @@ msgstr "Brazilų portugalų"
 msgid "Russian"
 msgstr "Rusų"
 
+#: ideutilspkgstrconsts.rslanguagesinhala
+msgid "Sinhala"
+msgstr ""
+
 #: ideutilspkgstrconsts.rslanguageslovak
 msgid "Slovak"
 msgstr "Slovakų"
