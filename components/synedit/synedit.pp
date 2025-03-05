@@ -142,8 +142,9 @@ uses
   // Gutter
   SynGutterBase, SynGutter,
   SynEditMiscClasses, SynEditHighlighter, LazSynTextArea, SynTextDrawer,
-  SynEditTextBidiChars,
-  SynGutterCodeFolding, SynGutterChanges, SynGutterLineNumber, SynGutterMarks, SynGutterLineOverview;
+  SynEditTextBidiChars, SynGutterCodeFolding, SynGutterChanges, SynGutterLineNumber,
+  SynGutterMarks, SynGutterLineOverview,
+  LazEditMiscProcs;
 
 const
   // SynDefaultFont is determined in InitSynDefaultFont()

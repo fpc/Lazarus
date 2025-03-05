@@ -13,7 +13,7 @@ uses
   LazMethodList,
   // SynEdit
   SynEditTypes, SynEditMiscProcs, SynEditMiscClasses, LazSynEditText,
-  SynEditMarkup, SynEditHighlighter, SynTextDrawer;
+  SynEditMarkup, SynEditHighlighter, SynTextDrawer, LazEditMiscProcs;
 
 
 type

@@ -28,6 +28,12 @@ uses
 
 function IsCombiningCodePoint(const AChar: PChar): Boolean;
 
+function IsSpaceChar(AText: PChar): Boolean; inline;
+function CountLeadSpace(AText: PChar): integer; inline;
+function CountLeadWhiteSpace(AText: PChar): integer; inline;
+function CountBackwardWhiteSpace(AText: PChar; AStart: Integer): integer; inline;
+function CountLeadWhiteSpace(AText: PChar; out AnHasTab: boolean): integer; inline;
+
 function CountChars(AText: PChar; AByteLen: integer): integer;
 function CountBytes(AText: PChar; ACharLen: Integer; AMaxBytes: integer = high(Integer)): integer;
 
@@ -46,6 +52,60 @@ begin
    ( (AChar[0] = #$E2) and (AChar[1] = #$83) and (AChar[2] in [#$90..#$FF]) ) or  // Combining Diacritical Marks for Symbols 20D0-20FF
    ( (AChar[0] = #$EF) and (AChar[1] = #$B8) and (AChar[2] in [#$A0..#$AF]) )     // Combining half Marks FE20-FE2F
   );
+end;
+
+function IsSpaceChar(AText: PChar): Boolean;
+begin
+  Result := (AText^ = ' ') and not IsCombiningCodePoint(AText);
+end;
+
+function CountLeadSpace(AText: PChar): integer;
+var
+  Run : PChar;
+begin
+  Run := AText;
+  while (Run^ in [' ']) do
+    Inc(Run);
+  Result := Run - AText;
+  if (Result > 0) and IsCombiningCodePoint(Run) then
+    dec(Result);
+end;
+
+function CountLeadWhiteSpace(AText: PChar): integer;
+var
+  Run : PChar;
+begin
+  Run := AText;
+  while (Run^ in [' ', #9]) do
+    Inc(Run);
+  Result := Run - AText;
+  if (Result > 0) and IsCombiningCodePoint(Run) then
+    dec(Result);
+end;
+
+function CountBackwardWhiteSpace(AText: PChar; AStart: Integer): integer;
+var
+  Run : PChar;
+begin
+  Run := AText+AStart-1;
+  while (Run >=AText) and (Run^ in [' ', #9]) do
+    Dec(Run);
+  Result := AText + AStart - 1 - Run;
+end;
+
+function CountLeadWhiteSpace(AText: PChar; out AnHasTab: boolean): integer;
+var
+  Run : PChar;
+begin
+  Run := AText;
+  while (Run^ = ' ') do
+    Inc(Run);
+  AnHasTab := Run^ = #9;
+  while (Run^ in [' ', #9]) do
+    Inc(Run);
+  Result := Run - AText;
+  if (Result > 0) and IsCombiningCodePoint(Run) then
+    dec(Result);
 end;
 
 function CountChars(AText: PChar; AByteLen: integer): integer;

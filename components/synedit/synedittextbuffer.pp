@@ -49,7 +49,7 @@ interface
 uses
   Classes, SysUtils, Graphics, LCLProc, LazLoggerBase,
   SynEditTypes, LazSynEditText, SynEditTextBase, SynEditMiscProcs, SynEditMiscClasses,
-  SynEditHighlighter;
+  SynEditHighlighter, LazEditMiscProcs;
 
 type
   TSynEditFlagsClass = class end; // For Register

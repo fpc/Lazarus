@@ -9,7 +9,7 @@ uses
   Graphics, LCLType, Forms, LazLoggerBase,
   // SynEdit
   LazSynEditText, SynEdit, SynEditViewedLineMap, SynEditTypes,
-  SynEditMiscProcs, SynEditMiscClasses, SynEditKeyCmds, SynEditFoldedView;
+  SynEditMiscProcs, SynEditMiscClasses, SynEditKeyCmds, SynEditFoldedView, LazEditMiscProcs;
 
 type
   TLazSynEditLineWrapPlugin = class;

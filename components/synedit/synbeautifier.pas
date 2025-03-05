@@ -43,7 +43,7 @@ uses
   Classes, SysUtils,
   LazStringUtils,
   SynEditMiscClasses, LazSynEditText, SynEditPointClasses,
-  SynEditKeyCmds, SynEditTypes, SynEditMiscProcs;
+  SynEditKeyCmds, SynEditTypes, SynEditMiscProcs, LazEditMiscProcs;
 
 type
 
