@@ -1508,13 +1508,15 @@ begin
               exit; // there is a previous declaration without 'overload'
           end;
         end;
-      end else begin
-        if (CurrentIdentifierList.StartContext.Node.Parent<>nil) and
-          (CurrentIdentifierList.StartContext.Node.Parent.Parent=FoundContext.Node)
-        then begin // skip adding itself at function/procedure parameters definition
-          debugln(['TIdentCompletionTool.CollectAllIdentifiers ','skipped "',GetIdentifier(Ident),'"']);
-          exit;
-        end;
+      end;
+
+      if (FoundContext.Node.FirstChild<>nil) and
+      (CurrentIdentifierList.StartContext.Node.StartPos>=FoundContext.Node.FirstChild.StartPos) and
+      (CurrentIdentifierList.StartContext.Node.EndPos<=FoundContext.Node.FirstChild.EndPos)
+      then //inside parameters declaration
+      begin // skip adding itself at function/procedure parameters definition
+        debugln(['TIdentCompletionTool.CollectAllIdentifiers ','skipped "',GetIdentifier(Ident),'"']);
+        exit;
       end;
     end;
 
