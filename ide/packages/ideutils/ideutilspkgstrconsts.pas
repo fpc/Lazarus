@@ -117,6 +117,7 @@ resourcestring
   rsLanguageCzech        = 'Czech';
   rsLanguageHungarian    = 'Hungarian';
   rsLanguageCorsican     = 'Corsican';
+  rsLanguageSinhala      = 'Sinhala';
 
 implementation
 

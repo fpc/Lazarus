@@ -158,6 +158,8 @@ begin
     Result:=rsLanguageCzech
   else if CompareText(ID,'hu')=0 then
     Result:=rsLanguageHungarian
+  else if CompareText(ID,'si')=0 then
+    Result:=rsLanguageSinhala
   else
     Result:=ID;
 end;
