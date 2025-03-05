@@ -31,7 +31,7 @@ begin
 
   if not EMSSupported then {%H-}exit;
 
-  if not (GetSkipCheckByKey('MacroScript') or GetSkipCheckByKey('All')) then begin
+  if not GetSkipCheckByKey('MacroScript') then begin
 
     conf := GetEMSConf;
     try
