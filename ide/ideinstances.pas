@@ -743,7 +743,7 @@ var
   I: Integer;
 begin
   FForceNewInstance := CheckParamsForForceNewInstanceOpt;
-  FSkipAllChecks := GetSkipCheck(skcUniqueInstance) or GetSkipCheck(skcAll);
+  FSkipAllChecks := GetSkipCheck(skcUniqueInstance);
 
   //get cmd line filenames
   FFilesToOpen := ExtractCmdLineFilenames;

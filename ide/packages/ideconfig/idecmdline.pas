@@ -289,10 +289,11 @@ end;
 function GetSkipCheckByKey(AKey: String): Boolean;
 var
   i: integer;
-  AValue: string;
+  AAll, AValue: string;
 begin
   // return language specified in command line (empty string if no language specified)
   Result := False;
+  AAll := ','+UpperCase(SkipChecksKeys[skcAll])+',';
   AKey := ','+UpperCase(AKey)+',';
   AValue := '';
   i := 1;
@@ -301,7 +302,7 @@ begin
     if ParamIsOptionPlusValue(i, SkipChecksOptLong, AValue) = true then
     begin
       AValue := ','+UpperCase(AValue)+',';
-      Result := Pos(AKey, AValue) > 0;
+      Result := (Pos(AAll, AValue) > 0) or (Pos(AKey, AValue) > 0);
       if Result then
         exit;
     end;

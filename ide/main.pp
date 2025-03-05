@@ -1301,7 +1301,7 @@ begin
     end;
   end
   else
-  if (not (GetSkipCheck(skcLastCalled) or GetSkipCheck(skcAll)) ) and
+  if (not GetSkipCheck(skcLastCalled)) and
      (CompareFilenames(LastCalled,CurPrgName)<>0) and
      (CompareFilenames(LastCalled,AltPrgName)<>0) and
      (CompareFilenames(CurPrgName,AltPrgName)<>0) // we can NOT check, if we only have the path inside the PCP
@@ -1434,7 +1434,7 @@ begin
   ShowSetupDialog:=true;
   {$ENDIF}
 
-  SkipAllTests := GetSkipCheck(skcSetup) or GetSkipCheck(skcAll);
+  SkipAllTests := GetSkipCheck(skcSetup);
 
   // check lazarus directory
   if (not ShowSetupDialog)
