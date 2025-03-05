@@ -291,23 +291,16 @@ var
   i: integer;
   AAll, AValue: string;
 begin
-  // return language specified in command line (empty string if no language specified)
-  Result := False;
   AAll := ','+UpperCase(SkipChecksKeys[skcAll])+',';
   AKey := ','+UpperCase(AKey)+',';
-  AValue := '';
-  i := 1;
-  while i <= ParamsAndCfgCount do
-  begin
-    if ParamIsOptionPlusValue(i, SkipChecksOptLong, AValue) = true then
+  for i := 1 to ParamsAndCfgCount do
+    if ParamIsOptionPlusValue(i, SkipChecksOptLong, AValue) then
     begin
       AValue := ','+UpperCase(AValue)+',';
-      Result := (Pos(AAll, AValue) > 0) or (Pos(AKey, AValue) > 0);
-      if Result then
-        exit;
+      if Pos(AAll, AValue) > 0 then exit(true);
+      if Pos(AKey, AValue) > 0 then exit(true);
     end;
-    inc(i);
-  end;
+  result := false;
 end;
 
 procedure ParseCommandLine(aCmdLineParams: TStrings; out IDEPid: Integer; out
