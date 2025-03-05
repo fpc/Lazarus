@@ -151,12 +151,19 @@ var
   i: Integer;
 begin
   if fFilteredListview = AValue then Exit;
-  fFilteredListview:=AValue;
+  if Assigned(fFilteredListview) then
+  begin
+    fFilteredListview.RemoveFreeNotification(Self);
+    InternalSetFilter('');
+    ApplyFilter(True);
+  end;
+  fFilteredListview := AValue;
   if Assigned(fFilteredListview) then
   begin
     InternalSetFilter(Text);
     for i := 0 to fFilteredListview.Items.Count-1 do
       fOriginalData.Add(ListItem2Data(fFilteredListview.Items[i]));
+    fFilteredListview.FreeNotification(Self);
   end;
 end;
 

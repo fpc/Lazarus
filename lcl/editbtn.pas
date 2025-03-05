@@ -121,7 +121,6 @@ type
     property OnButtonClick: TNotifyEvent read GetOnButtonClick write SetOnButtonClick;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
   end;
 
  { TEditButton }
@@ -233,7 +232,6 @@ type
     fSortData: Boolean;             // Data needs to be sorted.
     fIsFirstSetFormActivate: Boolean;
     fOnAfterFilter: TNotifyEvent;
-    procedure ApplyFilter(Immediately: Boolean = False);
     procedure SetFilter(AValue: string);
     procedure SetFilterOptions(AValue: TFilterStringOptions);
     procedure SetSortData(AValue: Boolean);
@@ -259,6 +257,7 @@ type
     procedure BuddyClick; override;
     procedure SortAndFilter; virtual; abstract;
     procedure ApplyFilterCore; virtual; abstract;
+    procedure ApplyFilter(Immediately: Boolean = False);
     procedure MoveNext(ASelect: Boolean = False); virtual; abstract;
     procedure MovePrev(ASelect: Boolean = False); virtual; abstract;
     procedure MovePageUp(ASelect: Boolean = False); virtual; abstract;
@@ -1170,18 +1169,13 @@ begin
   Spacing := 4;
 end;
 
-destructor TCustomEditButton.Destroy;
-begin
-  inherited Destroy;
-end;
-
 
 { TCustomControlFilterEdit }
 
 constructor TCustomControlFilterEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  ControlStyle := ControlStyle - [csSetCaption];
+  ControlStyle:=ControlStyle-[csSetCaption];
   CharCase:=ecLowerCase;
   Button.Enabled:=False;
   fFilterOptions:=[];
@@ -1192,7 +1186,7 @@ end;
 
 destructor TCustomControlFilterEdit.Destroy;
 begin
-  IdleConnected := False;
+  IdleConnected:=False;
   inherited Destroy;
 end;
 
@@ -1204,7 +1198,6 @@ end;
 
 procedure TCustomControlFilterEdit.InternalSetFilter(const AValue: string);
 begin
-  if fFilter=AValue then Exit;
   Button.Enabled:=AValue<>'';
   fFilter:=AValue;
   fFilterLowercase:=UTF8LowerCase(fFilter);
@@ -1215,7 +1208,7 @@ procedure TCustomControlFilterEdit.SetFilter(AValue: string);
 // AValue parameter must not have const modifier. It causes a crash, see issue #40300.
 begin
   if Text=AValue then Exit;
-  Text:=AValue;           // ActivateFilter will be called by EditChange handler.
+  Text:=AValue;           // ApplyFilter will be called by EditChange handler.
   InternalSetFilter(AValue);
 end;
 

@@ -729,11 +729,13 @@ begin
   begin
     fFilteredTreeview.RemoveFreeNotification(Self);
     fFilteredTreeview.RemoveHandlerOnBeforeDestruction(@OnBeforeTreeDestroy);
+    InternalSetFilter('');
+    ApplyFilter(True);
   end;
   fFilteredTreeview := AValue;
   if fFilteredTreeview <> nil then
   begin
-    InvalidateFilter;
+    InternalSetFilter(Text);
     fFilteredTreeview.FreeNotification(Self);
     fFilteredTreeview.AddHandlerOnBeforeDestruction(@OnBeforeTreeDestroy);
   end;
