@@ -1932,6 +1932,7 @@ begin
     Result:=RenameUnitLowerCase(AnUnitInfo, false,True);
     if Result<>mrOK then exit;
   end;
+  InvalidateFileStateCache;
   ShowMessage(Format(lisDFilesWereRenamedToL, [fUnitInfos.Count]));
 end;
 
