@@ -1455,7 +1455,7 @@ begin
   else
     MappedXY := SubtractScroll(TGtk3Widget(AWinControl.Handle).GetContainerWidget, MappedXY);
   //DebugLn('gtkMouseWheelCB ',DbgSName(AWinControl),' Mapped=',dbgs(MappedXY.X),',',dbgs(MappedXY.Y),' Event=',dbgs(EventXY.X),',',dbgs(EventXY.Y));
-
+  TGtk3Widget(AData).OffsetMousePos(@MappedXY);
   // this is a mouse wheel event
   FillChar(MessE{%H-},SizeOf(MessE),0);
   MessE.Msg := LM_MOUSEWHEEL;
@@ -1662,7 +1662,7 @@ begin
           Msg.Msg := LM_VSCROLL;
           Range := PGtkRange(gtk_scrolled_window_get_vscrollbar(AScrollWindow));
           Adjustment := gtk_range_get_adjustment(Range);
-          ScrollStep := -AEvent^.scroll.delta_y * Adjustment^.page_size * 0.1;
+          ScrollStep := -(-AEvent^.scroll.delta_y * Adjustment^.page_size * 0.1);
         end
         else
         begin
@@ -1713,7 +1713,7 @@ begin
 
 
   Result := ACtl.DeliverMessage(Msg) <> 0;
-
+  //Result := gtk_true;
   {$IFDEF GTK3DEBUGSCROLL}
   DebugLn(['<Gtk3ScrolledWindowScrollEvent completed: Pos=', Msg.Pos, ', ScrollStep=', ScrollStep.ToString,' InUpdate=',dbgs(ACtl.InUpdate),' Result=',dbgs(Result)]);
   {$ENDIF}
@@ -1788,16 +1788,9 @@ begin
     AMask := Event^.motion.state;
   end;
 
-  if ([wtContainer, wtLayout] * WidgetType <> []) and (Event^.motion.is_hint <> 1) then
-  begin
-    MousePos.X := Round(Event^.button.x_root);
-    MousePos.Y := Round(Event^.button.y_root);
-    ScreenToClient(MousePos)
-  end else
-  begin
-    MousePos.x := X;
-    MousePos.y := Y;
-  end;
+  MousePos.x := X;
+  MousePos.y := Y;
+
   OffsetMousePos(@MousePos);
 
   Msg.XPos := SmallInt(MousePos.X);
@@ -1974,20 +1967,13 @@ begin
   else
     exit;
 
-  if [wtContainer, wtLayout] * WidgetType <> [] then
-  begin
-    MousePos.X := Round(Event^.scroll.x_root);
-    MousePos.Y := Round(Event^.scroll.y_root);
-    ScreenToClient(MousePos)
-  end else
-  begin
-    MousePos.x := Round(Event^.scroll.x);
-    MousePos.y := Round(Event^.scroll.y);
-  end;
+  MousePos.x := Round(Event^.scroll.x);
+  MousePos.y := Round(Event^.scroll.y);
+
   OffsetMousePos(@MousePos);
 
-  Msg.X := MousePos.X;
-  Msg.Y := MousePos.Y;
+  Msg.X := SmallInt(MousePos.X);
+  Msg.Y := SmallInt(MousePos.Y);
 
   Msg.State := GdkModifierStateToShiftState(Event^.scroll.state);
   Msg.UserData := LCLObject;
@@ -2316,16 +2302,9 @@ begin
 
   Msg.Keys := GdkModifierStateToLCL(Event^.button.state, False);
 
-  if [wtContainer, wtLayout] * WidgetType <> [] then
-  begin
-    MousePos.X := Round(Event^.button.x_root);
-    MousePos.Y := Round(Event^.button.y_root);
-    ScreenToClient(MousePos)
-  end else
-  begin
-    MousePos.x := Round(Event^.button.x);
-    MousePos.y := Round(Event^.button.y);
-  end;
+  MousePos.x := Round(Event^.button.x);
+  MousePos.y := Round(Event^.button.y);
+
   OffsetMousePos(@MousePos);
 
   Msg.XPos := SmallInt(MousePos.X);
@@ -3423,15 +3402,24 @@ end;
 procedure TGtk3Widget.Move(ALeft, ATop: Integer);
 var
   AParent: TGtk3Widget;
+  XOffset, YOffset: Integer;
+  aWindow: PGdkWindow;
 begin
   AParent := getParent;
   if (AParent <> nil) then
   begin
+    XOffset := 0;
+    YOffset := 0;
     if (wtContainer in AParent.WidgetType) then
       PGtkFixed(AParent.GetContainerWidget)^.move(FWidget, ALeft, ATop)
     else
     if (wtLayout in AParent.WidgetType) then
-      PGtkLayout(AParent.GetContainerWidget)^.move(FWidget, ALeft, ATop);
+    begin
+      aWindow := PGtkLayout(AParent.GetContainerWidget)^.get_bin_window;
+      if Gtk3IsGdkWindow(aWindow) then
+        aWindow^.get_position(@XOffset, @YOffset);
+      PGtkLayout(AParent.GetContainerWidget)^.move(FWidget, ALeft - XOffset, ATop - YOffset);
+    end;
   end;
 end;
 
@@ -6139,7 +6127,7 @@ begin
     if [wtLayout] * WidgetType <> [] then
     begin
       Result := Rect(0, 0, 0, 0);
-      AWindow := PGtkLayout(getContainerWidget)^.get_bin_window;
+      AWindow := PGtkLayout(getContainerWidget)^.get_window;
       if Assigned(AWindow) and Gtk3IsGdkWindow(AWindow) then
       begin
         Bar := getHorizontalScrollbar;
@@ -6155,6 +6143,7 @@ begin
         AWindow^.get_geometry(@x, @y, @w, @h);
         Result := Bounds(x, y, w - VOffset, h - HOffset);
       end;
+      OffsetRect(Result, -Result.Left, -Result.Top);
       exit;
     end;
     AViewport := getViewPort;
@@ -8807,7 +8796,10 @@ class procedure TGtk3CustomControl.CustomControlLayoutSizeAllocate(AWidget: PGtk
   AGdkRect: PGdkRectangle; Data: gpointer); cdecl;
 var
   hadj, vadj: PGtkAdjustment;
-  AScrollWin: PGtkScrolledWindow;
+  //aWindow: PGdkWindow;
+  //aCtl: TGtk3Widget absolute Data;
+  HSize,VSize: integer;
+  uWidth, uHeight: guint;
 begin
   {Note: Gtk expects that we set content size and then it calculates scrollbar values. LCL
    is doing opposite, it sets scrollbar values eg via SetScrollInfo and then content should
@@ -8823,16 +8815,12 @@ begin
   hadj := PGtkScrollable(aWidget)^.get_hadjustment;
   vadj := PGtkScrollable(aWidget)^.get_vadjustment;
 
-  PGtkLayout(aWidget)^.set_size(AGdkRect^.width, AGdkRect^.height);
-  {TODO: eg treeview editor, if scrollbar value > 0 then editor resets position to 0,
-   to fix this we must position editor at y pos - adjustment.value}
-  if Assigned(TGtk3CustomControl(Data).LCLVAdj) and Gtk3IsAdjustment(vadj) then
-    with TGtk3CustomControl(Data).LCLVAdj^ do
-      vadj^.configure(vadj^.value, lower, upper, step_increment, page_increment, page_size);
+  HSize := Max(AGdkRect^.Width, Round(hAdj^.upper));
+  VSize := Max(AGdkRect^.Height, Round(vAdj^.upper));
 
-  if Assigned(TGtk3CustomControl(Data).LCLHAdj) and Gtk3IsAdjustment(hadj) then
-    with TGtk3CustomControl(Data).LCLHAdj^ do
-      hadj^.configure(hadj^.value, lower, upper, step_increment, page_increment, page_size);
+  PGtkLayout(aWidget)^.get_size(@uWidth, @uHeight);
+  if (uWidth <> HSize) or (uHeight <> VSize) then
+    PGtkLayout(aWidget)^.set_size(HSize, VSize);
 
   if TGtk3CustomControl(Data).LCLObject.ClientRectNeedsInterfaceUpdate then
     TGtk3CustomControl(Data).LCLObject.DoAdjustClientRectChange;
@@ -8852,7 +8840,6 @@ begin
   Result := PGtkScrolledWindow(TGtkScrolledWindow.new(nil, nil));
 
   FCentralWidget := TGtkLayout.new(nil, nil);
-  FCentralWidget^.set_has_window(True);
 
   PGtkScrolledWindow(Result)^.add(FCentralWidget);
 
@@ -9033,7 +9020,7 @@ begin
   if [wtLayout] * WidgetType <> [] then
   begin
     Result := Rect(0, 0, 0, 0);
-    AWindow := PGtkLayout(getContainerWidget)^.get_bin_window;
+    AWindow := PGtkLayout(getContainerWidget)^.get_window;
     if (AWindow <> nil) and Gtk3IsGdkWindow(AWindow) then
     begin
       HOffset := 0;
