@@ -4608,11 +4608,10 @@ begin
   ARange := PGtkRange(Widget);
   with TCustomScrollbar(LCLObject) do
   begin
-    ARange^.adjustment^.configure(Position, Min, Max + PageSize,
+    ARange^.adjustment^.configure(Position, Min, Max,
       SmallChange, LargeChange, PageSize);
     ARange^.adjustment^.set_value(Position);
     ARange^.adjustment^.changed;
-   // gtk_adjustment_changed(Range^.adjustment);
   end;
 end;
 
