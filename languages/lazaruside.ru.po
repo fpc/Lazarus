@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-02-28 17:00+0300\n"
+"PO-Revision-Date: 2025-03-06 19:44+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -16918,8 +16918,8 @@ msgid "Select build mode"
 msgstr "Выбрать режим сборки"
 
 #: lazarusidestrconsts.lisselectdfmfiles
-msgid "Select Delphi form files (*.dfm)"
-msgstr "Выберите файлы форм Delphi (*.dfm)"
+msgid "Select Delphi form files (*.dfm|*.fmx)"
+msgstr "Выберите файлы форм Delphi (*.dfm|*.fmx)"
 
 #: lazarusidestrconsts.lisselected
 msgctxt "lazarusidestrconsts.lisselected"

@@ -16913,7 +16913,9 @@ msgid "Select build mode"
 msgstr ""
 
 #: lazarusidestrconsts.lisselectdfmfiles
-msgid "Select Delphi form files (*.dfm)"
+#, fuzzy
+#| msgid "Select Delphi form files (*.dfm)"
+msgid "Select Delphi form files (*.dfm|*.fmx)"
 msgstr "选择Delphi窗体文件(*.dfm)"
 
 #: lazarusidestrconsts.lisselected
