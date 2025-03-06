@@ -1,0 +1,114 @@
+object IntervalsFrame: TIntervalsFrame
+  Left = 0
+  Height = 377
+  Top = 0
+  Width = 697
+  ClientHeight = 377
+  ClientWidth = 697
+  TabOrder = 0
+  DesignLeft = 314
+  DesignTop = 130
+  object ChartIntervals: TChart
+    Left = 0
+    Height = 377
+    Top = 0
+    Width = 697
+    AxisList = <    
+      item
+        Grid.Visible = False
+        Intervals.NiceSteps = '0.25|1.0'
+        TickColor = clMaroon
+        TickLength = 3
+        AxisPen.Color = clMaroon
+        AxisPen.Visible = True
+        Marks.LabelFont.Color = clMaroon
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelFont.Color = clMaroon
+        Title.LabelFont.Orientation = 900
+        Title.Visible = True
+        Title.Caption = 'NiceSteps = 0.25'
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Grid.Visible = False
+        Intervals.MinLength = 20
+        Intervals.NiceSteps = '0.3|0.6'
+        Alignment = calBottom
+        AxisPen.Visible = True
+        Marks.Format = '%0:.6g'
+        Marks.LabelBrush.Style = bsClear
+        Marks.Range.Max = 0.6
+        Marks.Range.Min = -0.3
+        Marks.Range.UseMax = True
+        Marks.Range.UseMin = True
+        Marks.Style = smsCustom
+        Minors = <>
+        Title.Visible = True
+        Title.Caption = 'Marks.Range = -0.3 .. 0.6'
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Grid.Visible = False
+        Intervals.Count = 10
+        Intervals.MinLength = 4
+        Intervals.Options = [aipUseCount, aipUseMaxLength, aipUseMinLength, aipUseNiceSteps]
+        TickColor = clGreen
+        TickLength = 3
+        AxisPen.Color = clGreen
+        AxisPen.Visible = True
+        Margin = 8
+        Marks.LabelFont.Color = clGreen
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelFont.Color = clGreen
+        Title.LabelFont.Orientation = 900
+        Title.Visible = True
+        Title.Caption = 'MinLength = 4'
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Grid.Visible = False
+        Intervals.MaxLength = 200
+        Intervals.Options = [aipUseCount, aipUseMaxLength, aipUseMinLength, aipUseNiceSteps]
+        TickColor = clNavy
+        TickLength = 3
+        AxisPen.Color = clNavy
+        AxisPen.Visible = True
+        Margin = 8
+        Marks.LabelFont.Color = clNavy
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelFont.Color = clNavy
+        Title.LabelFont.Orientation = 900
+        Title.Visible = True
+        Title.Caption = 'MaxLength = 200'
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Grid.Visible = False
+        Intervals.Options = [aipUseMaxLength, aipUseMinLength]
+        TickLength = 3
+        AxisPen.Visible = True
+        Margin = 8
+        Marks.Format = '%0:.4g'
+        Marks.LabelBrush.Style = bsClear
+        Marks.Style = smsCustom
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+        Title.Visible = True
+        Title.Caption = 'No nice steps'
+        Title.LabelBrush.Style = bsClear
+      end>
+    BackColor = clSilver
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Frame.Visible = False
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Align = alClient
+  end
+end

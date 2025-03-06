@@ -1,0 +1,89 @@
+object CustomMarksFrame: TCustomMarksFrame
+  Left = 0
+  Height = 398
+  Top = 0
+  Width = 611
+  ClientHeight = 398
+  ClientWidth = 611
+  TabOrder = 0
+  DesignLeft = 314
+  DesignTop = 130
+  object ChartCustomMarks: TChart
+    Left = 0
+    Height = 398
+    Top = 0
+    Width = 611
+    AxisList = <    
+      item
+        TickLength = 0
+        Marks.Distance = 0
+        Marks.Format = '$%0:.9g'
+        Marks.Frame.Style = psSolid
+        Marks.LabelBrush.Color = clMoneyGreen
+        Marks.Source = lcsMarks
+        Marks.Style = smsCustom
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Grid.Visible = False
+        TickLength = 0
+        Alignment = calBottom
+        AxisPen.Color = clGreen
+        AxisPen.Width = 3
+        AxisPen.Visible = True
+        Marks.LabelFont.Style = [fsBold]
+        Marks.Format = '%2:s'
+        Marks.LabelBrush.Style = bsClear
+        Marks.Source = lcsMarks
+        Marks.Style = smsLabel
+        Minors = <        
+          item
+            Grid.Visible = False
+            Intervals.Count = 2
+            Intervals.MinLength = 5
+            Intervals.Options = [aipUseCount]
+            TickColor = clGreen
+            TickLength = 10
+            Marks.LabelBrush.Style = bsClear
+          end>
+        Title.LabelBrush.Style = bsClear
+        OnMarkToText = ChartCustomMarksAxisList1MarkToText
+      end>
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Frame.Visible = False
+    Margins.Left = 10
+    Margins.Top = 10
+    Margins.Right = 10
+    Margins.Bottom = 0
+    MarginsExternal.Left = 0
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Align = alClient
+    object ChartCustomMarksBarSeries1: TBarSeries
+      BarBrush.Color = clGreen
+      BarPen.Color = clLime
+      BarPen.Width = 2
+      Marks.Frame.Visible = False
+      Marks.LabelBrush.Style = bsClear
+      Source = lcsMarks
+    end
+  end
+  object lcsMarks: TListChartSource
+    DataPoints.Strings = (
+      '1|18000|?|January'
+      '2|35000|?|February'
+      '3|31000|?|March'
+      '4|26000|?|April'
+      '5|37000|?|May'
+      '6|22000|?|June'
+    )
+    Left = 116
+    Top = 84
+  end
+end

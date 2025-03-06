@@ -1,0 +1,82 @@
+object SubMarksFrame: TSubMarksFrame
+  Left = 0
+  Height = 417
+  Top = 0
+  Width = 642
+  ClientHeight = 417
+  ClientWidth = 642
+  TabOrder = 0
+  DesignLeft = 485
+  DesignTop = 240
+  object ChartSubmarks: TChart
+    Left = 0
+    Height = 417
+    Top = 0
+    Width = 642
+    AxisList = <    
+      item
+        Grid.Color = clSilver
+        Grid.Style = psSolid
+        TickLength = 6
+        Group = 1
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Grid.Color = clSilver
+        Grid.Style = psSolid
+        Intervals.MaxLength = 100
+        Intervals.MinLength = 30
+        Intervals.NiceSteps = '0.2|0.25|0.5|1.0'
+        TickLength = 6
+        Alignment = calBottom
+        Group = 2
+        Marks.Distance = 25
+        Marks.LabelFont.Style = [fsBold]
+        Marks.LabelBrush.Style = bsClear
+        Minors = <        
+          item
+            Grid.Color = clSilver
+            Grid.Cosmetic = False
+            Intervals.MinLength = 5
+            Intervals.Options = [aipUseCount, aipUseMinLength]
+            Marks.Distance = 4
+            Marks.LabelFont.Height = -9
+            Marks.LabelFont.Orientation = 900
+            Marks.Format = '%0:.9g'
+            Marks.LabelBrush.Style = bsClear
+            Marks.Style = smsValue
+          end>
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Grid.Visible = False
+        TickLength = 2
+        Group = 1
+        Marks.LabelBrush.Style = bsClear
+        Marks.Style = smsNone
+        Minors = <>
+        Title.LabelBrush.Style = bsClear
+      end>
+    BackColor = clWhite
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Align = alClient
+    object ChartSubmarksLineSeries1: TLineSeries
+      Source = udcsGraph
+    end
+  end
+  object udcsGraph: TUserDefinedChartSource
+    OnGetChartDataItem = udcsGraphGetChartDataItem
+    PointsNumber = 100
+    Left = 216
+    Top = 88
+  end
+end

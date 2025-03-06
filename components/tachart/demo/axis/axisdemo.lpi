@@ -46,7 +46,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="2">
+    <Units Count="9">
       <Unit0>
         <Filename Value="axisdemo.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -59,6 +59,62 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Main"/>
       </Unit1>
+      <Unit2>
+        <Filename Value="frmrotated.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="RotatedSeriesFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="frmRotated"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="frmposition.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="PositionFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="frmPosition"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="frmintervals.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="IntervalsFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="frmIntervals"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="frmdatetime.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="DateTimeFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="frmDateTime"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="frmsubmarks.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="SubMarksFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="frmSubMarks"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="frmaxisgroups.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="AxisGroupsFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="frmAxisGroups"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="frmcustommarks.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="CustomMarksFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="frmCustomMarks"/>
+      </Unit8>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -68,15 +124,13 @@
       <IncludeFiles Value="$(ProjOutDir)"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
-    <Parsing>
-      <SyntaxOptions>
-        <UseAnsiStrings Value="False"/>
-      </SyntaxOptions>
-    </Parsing>
     <CodeGeneration>
       <SmartLinkUnit Value="True"/>
     </CodeGeneration>
     <Linking>
+      <Debugging>
+        <DebugInfoType Value="dsDwarf3"/>
+      </Debugging>
       <LinkSmart Value="True"/>
       <Options>
         <Win32>

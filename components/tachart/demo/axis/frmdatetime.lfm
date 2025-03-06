@@ -1,0 +1,134 @@
+object DateTimeFrame: TDateTimeFrame
+  Left = 0
+  Height = 353
+  Top = 0
+  Width = 580
+  ClientHeight = 353
+  ClientWidth = 580
+  TabOrder = 0
+  DesignLeft = 605
+  DesignTop = 292
+  object Panel1: TPanel
+    AnchorSideTop.Side = asrCenter
+    Left = 0
+    Height = 35
+    Top = 318
+    Width = 580
+    Align = alBottom
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 35
+    ClientWidth = 580
+    TabOrder = 0
+    object CbSuppressPrevUnit: TCheckBox
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 8
+      Height = 19
+      Top = 8
+      Width = 137
+      BorderSpacing.Left = 8
+      BorderSpacing.Top = 8
+      BorderSpacing.Bottom = 8
+      Caption = 'Suppress previous unit'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnChange = CbSuppressPrevUnitChange
+    end
+    object CbAlternateFormat: TCheckBox
+      AnchorSideLeft.Control = CbSuppressPrevUnit
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 161
+      Height = 19
+      Top = 8
+      Width = 143
+      BorderSpacing.Left = 16
+      Caption = 'Alternate format strings'
+      TabOrder = 1
+      OnChange = CbAlternateFormatChange
+    end
+    object Label1: TLabel
+      AnchorSideLeft.Control = CbAlternateFormat
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 328
+      Height = 15
+      Top = 10
+      Width = 34
+      BorderSpacing.Left = 24
+      Caption = 'Label1'
+    end
+  end
+  object ChartDateTime: TChart
+    Left = 0
+    Height = 318
+    Top = 0
+    Width = 580
+    AxisList = <    
+      item
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Alignment = calBottom
+        Marks.Format = '%2:s'
+        Marks.LabelBrush.Style = bsClear
+        Marks.OverlapPolicy = opHideNeighbour
+        Marks.Source = DateTimeIntervalChartSource1
+        Marks.Style = smsLabel
+        Minors = <>
+        Title.LabelBrush.Style = bsClear
+      end>
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'The series contain data points for every hour in 10 years'
+      'Left/right-click to zoom and see various labels on the bottom axis'
+    )
+    Title.Visible = True
+    Toolset = ChartToolsetDateTime
+    Align = alClient
+    object ChartDateTimeLineSeries1: TLineSeries
+      Source = rcsDates
+    end
+  end
+  object DateTimeIntervalChartSource1: TDateTimeIntervalChartSource
+    Params.Count = 10
+    Params.MaxLength = 150
+    Params.MinLength = 20
+    Params.Options = [aipUseCount, aipUseMaxLength, aipUseMinLength, aipUseNiceSteps]
+    OnDateTimeStepChange = DateTimeIntervalChartSource1DateTimeStepChange
+    Left = 272
+    Top = 232
+  end
+  object ChartToolsetDateTime: TChartToolset
+    Left = 272
+    Top = 160
+    object ChartToolset1ZoomIn: TZoomClickTool
+      Shift = [ssLeft]
+      ZoomFactor = 4
+      ZoomRatio = 0.25
+    end
+    object ChartToolset1ZoomOut: TZoomClickTool
+      Shift = [ssRight]
+      ZoomFactor = 0.25
+      ZoomRatio = 4
+    end
+  end
+  object rcsDates: TRandomChartSource
+    RandSeed = 1079653020
+    YMax = 50
+    YMin = 5
+    Left = 112
+    Top = 160
+  end
+end

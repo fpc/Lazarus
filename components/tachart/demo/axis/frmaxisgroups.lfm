@@ -1,0 +1,41 @@
+object AxisGroupsFrame: TAxisGroupsFrame
+  Left = 0
+  Height = 418
+  Top = 0
+  Width = 666
+  ClientHeight = 418
+  ClientWidth = 666
+  TabOrder = 0
+  DesignLeft = 506
+  DesignTop = 253
+  object ChartAxisGroup: TChart
+    Left = 0
+    Height = 418
+    Top = 0
+    Width = 666
+    AxisList = <    
+      item
+        Grid.Visible = False
+        TickLength = 0
+        Group = 2
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelBrush.Style = bsClear
+      end>
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Align = alClient
+  end
+end
