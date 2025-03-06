@@ -694,7 +694,8 @@ type
     procedure SetBlockIndent(const AValue: integer);
     procedure SetCaretAndSelection(const ptCaret, ptBefore, ptAfter: TPoint;
                                    Mode: TSynSelectionMode = smCurrent;
-                                   MakeSelectionVisible: Boolean = False
+                                   MakeSelectionVisible: Boolean = False;
+                                   AForceSingleLineSelected: Boolean = False
                                    );
     procedure SetGutter(const Value: TSynGutter);
     procedure SetRightGutter(const AValue: TSynGutter);
@@ -1439,12 +1440,13 @@ type
   private
     FCaretPos, FBeginPos, FEndPos: TPoint;
     FBlockMode: TSynSelectionMode;
+    FForceSingleLineSelected: Boolean;
   protected
     function IsEqualContent(AnItem: TSynEditUndoItem): Boolean; override;
     function DebugString: String; override;
   public
     function IsCaretInfo: Boolean; override;
-    constructor Create(CaretPos, BeginPos, EndPos: TPoint; BlockMode: TSynSelectionMode);
+    constructor Create(CaretPos, BeginPos, EndPos: TPoint; BlockMode: TSynSelectionMode; AForceSingleLineSelected: Boolean);
     function PerformUndo(Caller: TObject): Boolean; override;
   end;
 
@@ -1540,12 +1542,13 @@ end;
 { TSynEditUndoSelCaret }
 
 constructor TSynEditUndoSelCaret.Create(CaretPos, BeginPos, EndPos: TPoint;
-  BlockMode: TSynSelectionMode);
+  BlockMode: TSynSelectionMode; AForceSingleLineSelected: Boolean);
 begin
   FCaretPos := CaretPos;
   FBeginPos := BeginPos;
   FEndPos   := EndPos;
   FBlockMode := BlockMode;
+  FForceSingleLineSelected := AForceSingleLineSelected;
   {$IFDEF SynUndoDebugItems}debugln(['---  Undo Insert ',DbgSName(self), ' ', dbgs(Self), ' - ', DebugString]);{$ENDIF}
 end;
 
@@ -1557,7 +1560,8 @@ begin
         and (FBeginPos.y = TSynEditUndoSelCaret(AnItem).FBeginPos.y)
         and (FEndPos.x = TSynEditUndoSelCaret(AnItem).FEndPos.x)
         and (FEndPos.y = TSynEditUndoSelCaret(AnItem).FEndPos.y)
-        and (FBlockMode = TSynEditUndoSelCaret(AnItem).FBlockMode);
+        and (FBlockMode = TSynEditUndoSelCaret(AnItem).FBlockMode)
+        and (FForceSingleLineSelected = TSynEditUndoSelCaret(AnItem).FForceSingleLineSelected);
 end;
 
 function TSynEditUndoSelCaret.DebugString: String;
@@ -1576,9 +1580,9 @@ begin
   if Result then
     {$IFDEF SynUndoDebugItems}debugln(['---  Undo Perform ',DbgSName(self), ' ', dbgs(Self), ' - ', DebugString]);{$ENDIF}
     with TCustomSynEdit(Caller) do begin
-      SetCaretAndSelection(FCaretPos, FBeginPos, FEndPos, FBlockMode, True);
+      SetCaretAndSelection(FCaretPos, FBeginPos, FEndPos, FBlockMode, True, FForceSingleLineSelected);
       FTheLinesView.CurUndoList.AddChange(TSynEditUndoSelCaret.Create(FCaretPos, FBeginPos,
-                                                     FEndPos, FBlockMode));
+                                                     FEndPos, FBlockMode, FForceSingleLineSelected));
     end;
 end;
 
@@ -4814,7 +4818,7 @@ begin
   if SelAvail then
     Result := TSynEditUndoSelCaret.Create(FCaret.LineCharPos,
        FBlockSelection.StartLineBytePos, FBlockSelection.EndLineBytePos,
-       FBlockSelection.ActiveSelectionMode)
+       FBlockSelection.ActiveSelectionMode, FBlockSelection.ForceSingleLineSelected)
   else
     Result := TSynEditUndoCaret.Create(FCaret.LineCharPos);
 end;
@@ -8838,8 +8842,8 @@ begin
   DoDecPaintLock(Self);
 end;
 
-procedure TCustomSynEdit.SetCaretAndSelection(const ptCaret, ptBefore,
-  ptAfter: TPoint; Mode: TSynSelectionMode = smCurrent; MakeSelectionVisible: Boolean = False);
+procedure TCustomSynEdit.SetCaretAndSelection(const ptCaret, ptBefore, ptAfter: TPoint;
+  Mode: TSynSelectionMode; MakeSelectionVisible: Boolean; AForceSingleLineSelected: Boolean);
 // caret is physical (screen)
 // Before, After is logical (byte)
 var
@@ -8850,6 +8854,7 @@ begin
   CaretXY := ptCaret;
   SetBlockBegin(ptBefore);
   SetBlockEnd(ptAfter);
+  FBlockSelection.ForceSingleLineSelected := AForceSingleLineSelected;
   if Mode <> smCurrent then
     FBlockSelection.ActiveSelectionMode := Mode;
 

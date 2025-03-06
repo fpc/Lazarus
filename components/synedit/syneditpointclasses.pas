@@ -2115,7 +2115,7 @@ procedure TSynEditSelection.DoLinesEdited(Sender: TSynEditStrings; aLinePos,
       end;
     end
     else
-    if aCount <> 0 then begin
+    if (aCount <> 0) and (FActiveSelectionMode <> smLine) then begin
       (* Chars Insert/Deleted *)
       if (aPoint.y = aLinePos) then begin
         if (FWeakPersistentIdx > 0) and (FWeakPersistentIdx > FStrongPersistentIdx) then begin
@@ -2160,7 +2160,8 @@ begin
   if FPersistent or (FPersistentLock > 0) or
      ((FCaret <> nil) and (not FCaret.Locked))
   then begin
-    empty := (FStartBytePos = FEndBytePos) and (FStartLinePos = FEndLinePos);
+    empty := (FStartBytePos = FEndBytePos) and (FStartLinePos = FEndLinePos) and
+             not( (FActiveSelectionMode = smLine) and (FForceSingleLineSelected) );
     back := IsBackwardSel;
     AdjustStartLineBytePos(AdjustPoint(StartLineBytePos, not back));
     if empty then
