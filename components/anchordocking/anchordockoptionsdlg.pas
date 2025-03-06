@@ -35,6 +35,7 @@ type
     HeaderAlignTopSpinEdit: TSpinEdit;
     HeaderAlignTopTrackBar: TTrackBar;
     HeaderStyleComboBox: TComboBox;
+    SplitterResizeStyleComboBox: TComboBox;
     HeaderStyleLabel: TLabel;
     HideHeaderCaptionForFloatingCheckBox: TCheckBox;
     HighlightFocusedCheckBox: TCheckBox;
@@ -45,6 +46,7 @@ type
     ShowHeaderCaptionCheckBox: TCheckBox;
     ShowHeaderCheckBox: TCheckBox;
     SplitterWidthLabel: TLabel;
+    SplitterResizeStyleLabel: TLabel;
     SplitterWidthSpinEdit: TSpinEdit;
     SplitterWidthTrackBar: TTrackBar;
     procedure HeaderStyleComboBoxDrawItem({%H-}Control: TWinControl; Index: Integer;
@@ -200,6 +202,8 @@ begin
       SplitterWidthSpinEdit.AnchorToNeighbour(akTop,6,DragThresholdSpinEdit);
       SplitterWidthLabel.AnchorVerticalCenterTo(SplitterWidthSpinEdit);
       UpdateSplitterWidthLabel;
+
+      SplitterResizeStyleComboBox.AnchorToNeighbour(akTop,6,SplitterWidthSpinEdit);
 
       HeaderAlignTopSpinEdit.Visible:=true;
       HeaderAlignTopTrackBar.Visible:=false;
@@ -363,12 +367,14 @@ begin
   TheSettings.ScaleOnResize:=ScaleOnResizeCheckBox.Checked;
   TheSettings.ShowHeader:=ShowHeaderCheckBox.Checked;
   TheSettings.ShowHeaderCaption:=ShowHeaderCaptionCheckBox.Checked;
+  TheSettings.SplitterResizeStyle:=TResizeStyle(SplitterResizeStyleComboBox.ItemIndex);
 end;
 
 procedure TAnchorDockOptionsFrame.LoadFromSettings(
   TheSettings: TAnchorDockSettings);
 var
   StyleIndex,CurrentStyleIndex: Integer;
+  ResizeStyle:TResizeStyle;
   sl: TStringList;
 begin
   DragThresholdTrackBar.Hint:=
@@ -393,6 +399,15 @@ begin
   SplitterWidthTrackBar.Position:=TheSettings.SplitterWidth;
   SplitterWidthSpinEdit.Value:=TheSettings.SplitterWidth;
   UpdateSplitterWidthLabel;
+
+  SplitterResizeStyleLabel.Caption:=adrsSplitterResizeStyle;
+
+  SplitterResizeStyleComboBox.Clear;
+  for ResizeStyle:=low(ResizeStyle2Str) to high(ResizeStyle2Str) do begin
+    SplitterResizeStyleComboBox.AddItem(ResizeStyle2Str[ResizeStyle],nil);
+    if DockMaster.SplitterResizeStyle=ResizeStyle then
+      SplitterResizeStyleComboBox.ItemIndex:=ord(ResizeStyle);
+  end;
 
   ScaleOnResizeCheckBox.Caption:=adrsScaleOnResize;
   ScaleOnResizeCheckBox.Hint:=adrsScaleSubSitesWhenASiteIsResized;

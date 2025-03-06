@@ -118,6 +118,18 @@ uses
 {$IFDEF DebugDisableAutoSizing}
 const ADAutoSizingReason = 'TAnchorDockMaster Delayed';
 {$ENDIF}
+const
+  crsLine='rsLine';
+  crsNone='rsNone';
+  crsPattern='rsPattern';
+  crsUpdate='rsUpdate';
+  ResizeStyle2Str : array [TResizeStyle] of String =
+    (
+     crsLine,
+     crsNone,
+     crsPattern,
+     crsUpdate
+    );
 
 type
   TAnchorDockHostSite = class;
@@ -518,6 +530,7 @@ type
     FShowHeader: boolean;
     FShowHeaderCaption: boolean;
     FSplitterWidth: integer;
+    FSplitterResizeStyle: TResizeStyle;
     FDockSitesCanBeMinimized: boolean;
     FFlatHeadersButtons: boolean;
     procedure SetAllowDragging(AValue: boolean);
@@ -538,6 +551,7 @@ type
     procedure SetShowHeader(AValue: boolean);
     procedure SetShowHeaderCaption(AValue: boolean);
     procedure SetSplitterWidth(AValue: integer);
+    procedure SetSplitterResizeStyle(AValue: TResizeStyle);
     procedure SetHeaderFlatten(AValue: boolean);
     procedure SetHeaderFilled(AValue: boolean);
     procedure SetHeaderHighlightFocused(AValue: boolean);
@@ -554,6 +568,7 @@ type
     property HeaderAlignLeft: integer read FHeaderAlignLeft write SetHeaderAlignLeft;
     property HeaderHint: string read FHeaderHint write SetHeaderHint;
     property SplitterWidth: integer read FSplitterWidth write SetSplitterWidth;
+    property SplitterResizeStyle: TResizeStyle read FSplitterResizeStyle write SetSplitterResizeStyle;
     property ScaleOnResize: boolean read FScaleOnResize write SetScaleOnResize;
     property ShowHeader: boolean read FShowHeader write SetShowHeader;
     property ShowHeaderCaption: boolean read FShowHeaderCaption write SetShowHeaderCaption;
@@ -650,6 +665,7 @@ type
     FSiteClass: TAnchorDockHostSiteClass;
     FSplitterClass: TAnchorDockSplitterClass;
     FSplitterWidth: integer;
+    FSplitterResizeStyle: TResizeStyle;
     FMapMinimizedControls: TMapMinimizedControls; // minimized controls and previous parent
     fNeedSimplify: TFPList; // list of TControl
     fNeedFree: TFPList; // list of TControl
@@ -732,6 +748,7 @@ type
     procedure SetShowHeaderCaption(const AValue: boolean);
     procedure SetHideHeaderCaptionFloatingControl(const AValue: boolean);
     procedure SetSplitterWidth(const AValue: integer);
+    procedure SetSplitterResizeStyle(const AValue: TResizeStyle);
     procedure OnIdle(Sender: TObject; var Done: Boolean);
     procedure StartHideOverlappingTimer;
     procedure StopHideOverlappingTimer;
@@ -844,6 +861,7 @@ type
     property FlatHeadersButtons: boolean read FFlatHeadersButtons write SetFlatHeadersButtons default false;
 
     property SplitterWidth: integer read FSplitterWidth write SetSplitterWidth default 4;
+    property SplitterResizeStyle: TResizeStyle read FSplitterResizeStyle write SetSplitterResizeStyle default rsUpdate;
     property ScaleOnResize: boolean read FScaleOnResize write SetScaleOnResize default true; // scale children when resizing a site
     property AllowDragging: boolean read FAllowDragging write SetAllowDragging default true;
     property MultiLinePages: boolean read FMultiLinePages write SetMultiLinePages default false;
@@ -1524,6 +1542,13 @@ begin
   IncreaseChangeStamp;
 end;
 
+procedure TAnchorDockSettings.SetSplitterResizeStyle(AValue: TResizeStyle);
+begin
+  if FSplitterResizeStyle=AValue then Exit;
+  FSplitterResizeStyle:=AValue;
+  IncreaseChangeStamp;
+end;
+
 procedure TAnchorDockSettings.SetDockSitesCanBeMinimized(AValue: boolean);
 begin
   if FDockSitesCanBeMinimized=AValue then Exit;
@@ -1565,6 +1590,19 @@ begin
   FShowHeader                       := Source.FShowHeader;
   FShowHeaderCaption                := Source.FShowHeaderCaption;
   FSplitterWidth                    := Source.FSplitterWidth;
+  FSplitterResizeStyle              := Source.FSplitterResizeStyle;
+end;
+
+function Str2ResizeStyle(ResizeStyleStr:string):TResizeStyle;
+begin
+  if ResizeStyleStr=crsLine then
+    result:=rsLine
+  else if ResizeStyleStr=crsNone then
+    result:=rsNone
+  else if ResizeStyleStr=crsPattern then
+    result:=rsPattern
+  else
+    result:=rsUpdate;
 end;
 
 procedure TAnchorDockSettings.IncreaseChangeStamp;
@@ -1597,6 +1635,7 @@ begin
   ShowHeader                       := Config.GetValue('ShowHeader',true);
   ShowHeaderCaption                := Config.GetValue('ShowHeaderCaption',true);
   SplitterWidth                    := Config.GetValue('SplitterWidth',4);
+  SplitterResizeStyle              := Str2ResizeStyle(Config.GetValue('SplitterResizeStyle',crsUpdate));
   Config.UndoAppendBasePath;
 end;
 
@@ -1624,6 +1663,7 @@ begin
   Config.SetDeleteValue(Path+'ShowHeader',ShowHeader,true);
   Config.SetDeleteValue(Path+'ShowHeaderCaption',ShowHeaderCaption,true);
   Config.SetDeleteValue(Path+'SplitterWidth',SplitterWidth,4);
+  Config.SetDeleteValue(Path+'SplitterResizeStyle',ResizeStyle2Str[SplitterResizeStyle],crsUpdate);
 end;
 
 procedure TAnchorDockSettings.SaveToConfig(Config: TConfigStorage);
@@ -1651,6 +1691,7 @@ begin
   Config.SetDeleteValue('ShowHeader',ShowHeader,true);
   Config.SetDeleteValue('ShowHeaderCaption',ShowHeaderCaption,true);
   Config.SetDeleteValue('SplitterWidth',SplitterWidth,4);
+  Config.SetDeleteValue('SplitterResizeStyle',ResizeStyle2Str[SplitterResizeStyle],crsUpdate);
   Config.UndoAppendBasePath;
 end;
 
@@ -1679,6 +1720,7 @@ begin
       and (ShowHeader=Settings.ShowHeader)
       and (ShowHeaderCaption=Settings.ShowHeaderCaption)
       and (SplitterWidth=Settings.SplitterWidth)
+      and (SplitterResizeStyle=Settings.SplitterResizeStyle)
       ;
 end;
 
@@ -1707,6 +1749,7 @@ begin
   ShowHeader                       := Config.GetValue(Path+'ShowHeader',true);
   ShowHeaderCaption                := Config.GetValue(Path+'ShowHeaderCaption',true);
   SplitterWidth                    := Config.GetValue(Path+'SplitterWidth',4);
+  SplitterResizeStyle              := Str2ResizeStyle(Config.GetValue(Path+'SplitterResizeStyle',crsUpdate));
 end;
 
 { TStyleOfForm }
@@ -2772,6 +2815,21 @@ begin
   OptionsChanged;
 end;
 
+procedure TAnchorDockMaster.SetSplitterResizeStyle(const AValue: TResizeStyle);
+var
+  i: Integer;
+  Splitter: TAnchorDockSplitter;
+begin
+  if AValue=SplitterResizeStyle then exit;
+  FSplitterResizeStyle:=AValue;
+  for i:=0 to ComponentCount-1 do begin
+    Splitter:=TAnchorDockSplitter(Components[i]);
+    if not (Splitter is TAnchorDockSplitter) then continue;
+    Splitter.ResizeStyle:=AValue;
+  end;
+  OptionsChanged;
+end;
+
 procedure TAnchorDockMaster.StartHideOverlappingTimer;
 begin
   if not DockTimer.Enabled then begin
@@ -3234,6 +3292,7 @@ begin
   FShowHeader:=true;
   FShowHeaderCaption:=true;
   FHideHeaderCaptionFloatingControl:=true;
+  FSplitterResizeStyle:=rsUpdate;
   FSplitterWidth:=4;
   FScaleOnResize:=true;
   FMapMinimizedControls:=TMapMinimizedControls.Create;
@@ -3957,6 +4016,7 @@ begin
   ShowHeader                       := Settings.ShowHeader;
   ShowHeaderCaption                := Settings.ShowHeaderCaption;
   SplitterWidth                    := Settings.SplitterWidth;
+  SplitterResizeStyle              := Settings.SplitterResizeStyle;
 end;
 
 procedure TAnchorDockMaster.SaveSettings(Settings: TAnchorDockSettings);
@@ -3983,6 +4043,7 @@ begin
   Settings.ShowHeader                       := ShowHeader;
   Settings.ShowHeaderCaption                := ShowHeaderCaption;
   Settings.SplitterWidth                    := SplitterWidth;
+  Settings.SplitterResizeStyle              := SplitterResizeStyle;
 end;
 
 function TAnchorDockMaster.SettingsAreEqual(Settings: TAnchorDockSettings
@@ -4349,6 +4410,7 @@ var
   NewName: String;
 begin
   Result:=SplitterClass.Create(Self);
+  Result.ResizeStyle:=SplitterResizeStyle;
   i:=0;
   repeat
     inc(i);

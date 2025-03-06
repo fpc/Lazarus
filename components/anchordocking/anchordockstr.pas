@@ -55,6 +55,7 @@ resourcestring
   adrsMoveHeaderToLeftWhenWidthHeight100HeaderAlignLeft = 'Move header to '
     +'left when (Width/Height)*100>=HeaderAlignLeft';
   adrsSplitterWidth = 'Splitter width';
+  adrsSplitterResizeStyle = 'Splitter resize style:';
   adrsSplitterThickness = 'Splitter thickness';
   adrsScaleOnResize = 'Scale on resize';
   adrsScaleSubSitesWhenASiteIsResized ='Scale sub sites when a site is resized';
