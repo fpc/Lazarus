@@ -1016,7 +1016,7 @@ resourcestring
   lisClickHereToBrowseTheFileHint = 'Click here to browse the file';
   lisOpenPackageFile = 'Open Package File';
   lisSaveSpace = 'Save ';
-  lisSelectDFMFiles = 'Select Delphi form files (*.dfm)';
+  lisSelectDFMFiles = 'Select Delphi form files (*.dfm|*.fmx)';
   lisChooseLazarusSourceDirectory = 'Choose Lazarus Directory';
   lisChooseCompilerExecutable = 'Choose compiler executable (%s)';
   lisChooseFPCSourceDir = 'Choose FPC source directory';

@@ -4952,8 +4952,8 @@ begin
     Filter := dlgFilterLazarusUnit + ' (*.pas;*.pp)|*.pas;*.pp';
     if (SaveAsFileExt='.lpi') then
       Filter:=Filter+ '|' + dlgFilterLazarusProject + ' (*.lpi)|*.lpi';
-    if (SaveAsFileExt='.lfm') or (SaveAsFileExt='.dfm') then
-      Filter:=Filter+ '|' + dlgFilterLazarusForm + ' (*.lfm;*.dfm)|*.lfm;*.dfm';
+    if (SaveAsFileExt='.lfm') or (SaveAsFileExt='.dfm') or (SaveAsFileExt='.fmx') then
+      Filter:=Filter+ '|' + dlgFilterLazarusForm + ' (*.lfm;*.dfm;*.fmx)|*.lfm;*.dfm;*.fmx';
     if (SaveAsFileExt='.lpk') then
       Filter:=Filter+ '|' + dlgFilterLazarusPackage + ' (*.lpk)|*.lpk';
     if (SaveAsFileExt='.lpr') then
@@ -5802,7 +5802,11 @@ begin
     if FilenameHasPascalExt(OldFilename) then begin
       OldLFMFilename:=ChangeFileExt(OldFilename,'.lfm');
       if not FileExistsUTF8(OldLFMFilename) then
+        begin
         OldLFMFilename:=ChangeFileExt(OldFilename,'.dfm');
+        if not FileExistsUTF8(OldLFMFilename) then
+          OldLFMFilename:=ChangeFileExt(OldFilename,'.fmx');
+        end;  
     end;
     if NewUnitName='' then
       NewUnitName:=AnUnitInfo.Unit_Name;
@@ -6089,7 +6093,9 @@ begin
   // check, if a .lfm file is opened in the source editor
   if (LFMUnitInfo=nil)
   or not ( FilenameExtIs(LFMUnitInfo.Filename,'lfm',true) or
-           FilenameExtIs(LFMUnitInfo.Filename,'dfm') ) then
+           FilenameExtIs(LFMUnitInfo.Filename,'dfm') or
+           FilenameExtIs(LFMUnitInfo.Filename,'fmx') 
+           ) then
   begin
     if not Quiet then
     begin
@@ -6897,7 +6903,11 @@ begin
   // ToDo: use UnitResources
   LFMFilename:=ChangeFileExt(AFilename,'.lfm');
   if not FileExistsInIDE(LFMFilename,[]) then
+    begin
     LFMFilename:=ChangeFileExt(AFilename,'.dfm');
+    if not FileExistsInIDE(LFMFilename,[]) then
+      LFMFilename:=ChangeFileExt(AFilename,'.fmx');
+    end;
   if not FileExistsInIDE(LFMFilename,[]) then begin
     DebugLn(['OpenComponent file not found ',LFMFilename]);
     exit(mrCancel);
@@ -7220,7 +7230,14 @@ var
         {$IFDEF VerboseLFMSearch}
         debugln(['  TryLFM CurLFMFilename="',CurLFMFilename,'" does not exist']);
         {$ENDIF}
-        exit;
+        CurLFMFilename:=ChangeFileExt(UnitFilename,'.fmx');
+        if not FileExistsCached(CurLFMFilename) then
+          begin
+          {$IFDEF VerboseLFMSearch}
+          debugln(['  TryLFM CurLFMFilename="',CurLFMFilename,'" does not exist']);
+          {$ENDIF}
+          exit;
+          end;
       end;
     end;
     // load the lfm file
@@ -8141,7 +8158,11 @@ begin
     then begin
       LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lfm');
       if not FileExistsCached(LFMFilename) then
+        begin
         LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.dfm');
+        if not FileExistsCached(LFMFilename) then
+          LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.fmx');
+        end;  
       AnUnitInfo.HasResources:=FileExistsCached(LFMFilename);
     end;
   end;

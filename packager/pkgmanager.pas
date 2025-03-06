@@ -2081,6 +2081,7 @@ var
           UnitFilenameToResFileList[OldFilename]:=ResFileList;
           AddResFile(ResFileList,ChangeFileExt(OldFilename,'.lfm'));
           AddResFile(ResFileList,ChangeFileExt(OldFilename,'.dfm'));
+          AddResFile(ResFileList,ChangeFileExt(OldFilename,'.fmx'));
           AddResFile(ResFileList,ChangeFileExt(OldFilename,'.lrs'));
           UnitResArr:=GetUnitResourcefileFormats;
           for j:=0 to length(UnitResArr)-1 do begin

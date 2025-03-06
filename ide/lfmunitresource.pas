@@ -120,11 +120,16 @@ begin
       NewCode,NewX,NewY,NewTopLine, ResourceDirectiveFilename,false)
     then
       Cache.ResourceDirective:=ResourceDirectiveFilename
-    else if (ResourceDirectiveFilename<>'*.dfm')
+    else if (ResourceDirectiveFilename<>'*.dfm') 
     and CodeToolBoss.FindResourceDirective(CodeBuf,1,1,
                      NewCode,NewX,NewY,NewTopLine, '*.dfm',false)
     then
-      Cache.ResourceDirective:='*.dfm';
+      Cache.ResourceDirective:='*.dfm'
+    else if (ResourceDirectiveFilename<>'*.fmx') 
+    and CodeToolBoss.FindResourceDirective(CodeBuf,1,1,
+                     NewCode,NewX,NewY,NewTopLine, '*.fmx',false)
+    then
+      Cache.ResourceDirective:='*.fmx';
   end;
   Result:=Cache.ResourceDirective<>'';
 end;
@@ -140,7 +145,13 @@ begin
   then begin
     DFMFilename:=ChangeFileExt(AUnitFilename,'.dfm');
     if FileExistsCached(DFMFilename) then
-      Result:=DFMFilename;
+      Result:=DFMFilename
+    else
+      begin  
+      DFMFilename:=ChangeFileExt(AUnitFilename,'.fmx');
+      if FileExistsCached(DFMFilename) then
+        Result:=DFMFilename;
+      end;  
   end;
 end;
 

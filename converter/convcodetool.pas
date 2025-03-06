@@ -338,7 +338,7 @@ begin
         Key:=copy(Code.Source, ParamPos+2, 3);
         LowKey:=LowerCase(Key);
         // Form file resource rename or lowercase:
-        if (LowKey='dfm') or (LowKey='xfm') then begin
+        if (LowKey='dfm') or (LowKey='xfm') or (LowKey='fmx') then begin
           if Assigned(Settings) and Settings.SupportDelphi then begin
             // Use the same dfm file. Lowercase existing key.
             if Settings.SameDfmFile then begin
@@ -348,7 +348,7 @@ begin
             else begin
               // Add IFDEF for .lfm and .dfm allowing Delphi to use .dfm.
               s:='{$IFnDEF FPC}'+LineEnding+
-                 '  {$R *.dfm}'+LineEnding+
+                 '  {$R *.'+Key+'}'+LineEnding+
                  '{$ELSE}'+LineEnding+
                  '  {$R *.lfm}'+LineEnding+
                  '{$ENDIF}';

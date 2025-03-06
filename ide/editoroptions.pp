@@ -3610,7 +3610,7 @@ begin
     TheType := lshLFM;
     DefaultCommentType := DefaultCommentTypes{%H-}[TheType];
     SynInstance := LazSyntaxHighlighterClasses{%H-}[TheType].Create(nil);
-    SetBothFilextensions('lfm;dfm;xfm');
+    SetBothFilextensions('lfm;dfm;fmx');
     SampleSource :=
       '{ Lazarus Form Definitions }'#13 + 'object TestForm: TTestForm'#13 +
       '  Left = 273'#13 + '  Top = 103'#13 +

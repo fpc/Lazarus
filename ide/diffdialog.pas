@@ -366,7 +366,7 @@ begin
   dlgOpen.Filter:=dlgFilterAll+' ('+GetAllFilesMask+')|'+GetAllFilesMask
                  +'|'+dlgFilterLazarusUnit+' (*.pas;*.pp)|*.pas;*.pp'
                  +'|'+dlgFilterLazarusProject+' (*.lpi)|*.lpi'
-                 +'|'+dlgFilterLazarusForm+' (*.lfm;*.dfm)|*.lfm;*.dfm'
+                 +'|'+dlgFilterLazarusForm+' (*.lfm;*.dfm;*.fmx)|*.lfm;*.dfm;*.fmx'
                  +'|'+dlgFilterLazarusPackage+' (*.lpk)|*.lpk'
                  +'|'+dlgFilterLazarusProjectSource+' (*.lpr)|*.lpr';
 

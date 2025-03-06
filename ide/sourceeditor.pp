@@ -7538,12 +7538,14 @@ begin
     if FilenameHasPascalExt(ShortFileName) then begin
       MaybeAddPopup('.lfm');
       MaybeAddPopup('.dfm');
+      MaybeAddPopup('.fmx');
       MaybeAddPopup('.lrs');
       MaybeAddPopup('.s');
     end;
     // ToDo: unit resources
     if FilenameExtIs(ShortFileName,'lfm',true)
-    or FilenameExtIs(ShortFileName,'dfm') then begin
+       or FilenameExtIs(ShortFileName,'dfm')
+       or FilenameExtIs(ShortFileName,'fmx') then begin
       MaybeAddPopup('.pas');
       MaybeAddPopup('.pp');
       MaybeAddPopup('.p');

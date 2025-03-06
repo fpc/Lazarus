@@ -4099,7 +4099,7 @@ var
       if (ACleanPos<1) or (ACleanPos>SrcLen) or (ParamPos>SrcLen) then break;
       s:=UpperCaseStr(copy(Src,ParamPos,6));
       if (Src[ACleanPos]='{')
-      and ((s='*.DFM}') or (s='*.XFM}'))
+      and ((s='*.DFM}') or (s='*.XFM}') or (s='*.FMX}'))
       then begin
         StartPos:=FindLineEndOrCodeInFrontOfPosition(ACleanPos,true);
         if not SourceChangeCache.Replace(gtNone,gtNone,StartPos,ParamPos+6,'')

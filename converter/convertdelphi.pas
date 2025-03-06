@@ -497,6 +497,10 @@ begin
   Result:=ChangeFileExt(fOrigUnitFilename,'.xfm');
   if FileExistsUTF8(Result) then exit;
   Result:=ChangeFileExt(fOrigUnitFilename,'.XFM');
+  if FileExistsUTF8(Result) then exit;
+  Result:=ChangeFileExt(fOrigUnitFilename,'.fmx');
+  if FileExistsUTF8(Result) then exit;
+  Result:=ChangeFileExt(fOrigUnitFilename,'.FMX');
   if not FileExistsUTF8(Result) then
     Result:='';
 end;

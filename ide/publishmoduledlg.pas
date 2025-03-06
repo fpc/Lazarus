@@ -244,7 +244,11 @@ begin
       begin
         LfmFile := ChangeFileExt(AFilename, '.dfm');
         if not FileExistsUTF8(LfmFile) then
-          LfmFile := '';
+          begin
+          LfmFile := ChangeFileExt(AFilename, '.fmx');
+          if not FileExistsUTF8(LfmFile) then
+            LfmFile := '';
+          end;
       end;
       if LfmFile <> '' then
         Result := CopyAFile(LfmFile);  // Recursive call.

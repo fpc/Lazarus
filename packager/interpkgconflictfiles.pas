@@ -295,6 +295,7 @@ procedure TPGIPConflictsDialog.DeleteSelectedFilesButtonClick(Sender: TObject);
       DeleteFileUTF8(ChangeFileExt(aFilename,'.lfm'));
       DeleteFileUTF8(ChangeFileExt(aFilename,'.dfm'));
       DeleteFileUTF8(ChangeFileExt(aFilename,'.xfm'));
+      DeleteFileUTF8(ChangeFileExt(aFilename,'.fmx'));
     end else if FilenameIsCompiledSource(aFilename) then begin
       // compiled file -> delete compiled files. Keep sources.
       DeleteFileUTF8(ChangeFileExt(aFilename,'.ppu'));
@@ -310,6 +311,7 @@ procedure TPGIPConflictsDialog.DeleteSelectedFilesButtonClick(Sender: TObject);
         DeleteFileUTF8(ChangeFileExt(aFilename,'.lfm'));
         DeleteFileUTF8(ChangeFileExt(aFilename,'.dfm'));
         DeleteFileUTF8(ChangeFileExt(aFilename,'.xfm'));
+        DeleteFileUTF8(ChangeFileExt(aFilename,'.fmx'));
       end;
     end;
     Result:=true;
@@ -656,7 +658,7 @@ var
           AnUnitName:=ExtractFileNameOnly(aFilename);
           if not IsDottedIdentifier(AnUnitName) then continue;
         end
-        else if FilenameExtIn(aFilename,['.inc', '.lfm', '.dfm']) then
+        else if FilenameExtIn(aFilename,['.inc', '.lfm', '.dfm','.fmx']) then
         begin {Do nothing} end
         else
           continue;
