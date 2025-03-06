@@ -69,16 +69,36 @@ end;
 function TUNBPages.AddObject(const S: string; AObject: TObject): Integer;
 var
   NewPage: TPage;
+  NewName: string;
+  OK: Boolean;
+  i: integer;
 begin
   Result := FPageList.Add(AObject);
   NewPage := TPage(AObject);
-  if IsValidIdent(S) then NewPage.Name := S;
+  if IsValidIdent(S) then
+  begin
+    NewName := S;
+    i := 1;
+    repeat
+      OK := True;
+      try
+        NewPage.Name := NewName;
+      except                     // Name was reserved, try adding numbers to it.
+        on E: EComponentError do begin
+          OK := False;
+          NewName := S + IntToStr(i);
+          Inc(i);
+        end;
+      end;
+    until OK;
+  end;
   NewPage.Caption := S;
   NewPage.Parent := FNotebook;
   NewPage.Align := alClient;
   NewPage.Visible := False;
   NewPage.ControlStyle := NewPage.ControlStyle + [csNoDesignVisible];
-  if FNotebook.PageIndex = -1 then FNotebook.SetPageIndex(Result);
+  if FNotebook.PageIndex = -1 then
+    FNotebook.SetPageIndex(Result);
 end;
 
 procedure TUNBPages.Clear;
@@ -126,7 +146,8 @@ begin
     RaiseGDBException('TUNBPages.Insert Index out of bounds');
   NewPage := TPage.Create(GetNotebookOwner);
   FPageList.Insert(Index, NewPage);
-  if IsValidIdent(S) then NewPage.Name := S;
+  if IsValidIdent(S) then
+    NewPage.Name := S;
   NewPage.Caption := S;
   NewPage.Parent := FNotebook;
   NewPage.Align := alClient;
@@ -265,7 +286,8 @@ begin
       if Assigned(Items.Objects[Index]) then begin
         DummyDelete(Items[Index]);
         APage := TPage(Items.Objects[Index]);
-        if IsValidIdent(Items[Index]) then APage.Name := Items[Index];
+        if IsValidIdent(Items[Index]) then
+          APage.Name := Items[Index];
         APage.Caption := Items[Index];
         APage.SetParent(Self);
         DummyIndex := DummyPageList.IndexOf(APage);
