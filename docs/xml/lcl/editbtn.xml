@@ -1155,6 +1155,40 @@ does not have focus, it displays the grayed value "(filter)".
 <element name="TCustomControlFilterEdit.fIsFirstSetFormActivate"/>
 <element name="TCustomControlFilterEdit.fOnAfterFilter"/>
 
+
+<element name="TCustomControlFilterEdit.ApplyFilter">
+<short>
+Filters the data and updates the container.
+</short>
+<descr>
+<p>
+<var>ApplyFilter</var> is a method used to apply the Filter for the control, 
+and to sort and display the items which match the filter value. ApplyFilter 
+does its job at once when <var>Immediately</var> is set to <b>True</b>. It 
+calls methods like StoreSelection, ApplyFilterCore, and RestoreSelection to 
+perform the actions needed for an associated control.
+</p>
+<p>
+If Immediately is <b>False</b>, InvalidateFilter is called to connect the 
+asynchronous event handler routine which applies the filter asynchronously
+when the Application is in an idle state.
+</p>
+</descr>
+<seealso>
+<link id="TCustomControlFilterEdit.Text"/>
+<link id="TCustomControlFilterEdit.Filter"/>
+<link id="TCustomControlFilterEdit.StoreSelection"/>
+<link id="TCustomControlFilterEdit.RestoreSelection"/>
+<link id="TCustomControlFilterEdit.ApplyFilterCore"/>
+<link id="TCustomControlFilterEdit.InternalSetFilter"/>
+</seealso>
+</element>
+<element name="TCustomControlFilterEdit.ApplyFilter.Immediately">
+<short>
+Indicates whether the filter is applied immediately.
+</short>
+</element>
+
 <element name="TCustomControlFilterEdit.GetFilter">
 <short>
 Gets the value for the Filter property.
@@ -1213,11 +1247,11 @@ as an argument to the Application.QueueAsyncCall method.
 </p>
 <p>
 OnAsync ensures that the internal flag for pending filter updates is handled 
-by calling the ApplyFilter method to immediately apply the pending updates. 
-Use the OnFilterItemEx or OnFilterItem (deprecated) event handlers to perform 
-actions needed to implement the filter. The flag used to enable or disable the 
-Button on the control is handled as well; the Button is Enabled when the value 
-in Text is <b>not</b> an empty string ('').
+by calling the private ApplyFilter method to immediately apply the pending 
+updates. Use the OnFilterItemEx or OnFilterItem (deprecated) event handlers to 
+perform actions needed to implement the filter. The flag used to enable or 
+disable the Button on the control is handled as well; the Button is Enabled 
+when the value in Text is <b>not</b> an empty string ('').
 </p>
 <p>
 OnAsync is executed (via Application.QueueAsyncCall) when the value in 
