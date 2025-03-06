@@ -215,7 +215,8 @@ removed from the control.
 <p>
 Overridden in <var>TListViewFilterEdit</var> to ensure that the 
 <var>FilteredListview</var> property is set to <b>Nil</b> when the component 
-is removed from the control.
+is removed from the control. It also resets the value in IdleConnected and an 
+internal flag used to apply the Filter for the control.
 </p>
 </descr>
 <seealso>

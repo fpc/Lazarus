@@ -435,8 +435,9 @@ from the control.
 <p>
 <var>Notification</var> frees event handlers and other resources allocated for 
 the FilteredTreeview property when the TCustomTreeview component is removed 
-in the class instance. It also frees and <b>Nil</b>s resources allocated to 
-the internal TBranchList instance in the control.
+in the class instance. It frees and <b>Nil</b>s resources allocated to the 
+internal TBranchList instance in the control, and resets properties and flags 
+used in the class instance.
 </p>
 </descr>
 <seealso/>
