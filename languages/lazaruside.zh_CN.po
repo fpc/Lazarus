@@ -19998,6 +19998,22 @@ msgstr "选择单词左侧列"
 msgid "Column Select Word Right"
 msgstr "选择单词右侧列"
 
+#: lazarusidestrconsts.srkmeccolumnblockmoveleft
+msgid "Move column-block left (delete before columns)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmeccolumnblockmoveright
+msgid "Move column-block right (delete after columns)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmeccolumnblockshiftleft
+msgid "Shift column-block left (delete in columns)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmeccolumnblockshiftright
+msgid "Shift column-block right (delete in columns)"
+msgstr ""
+
 #: lazarusidestrconsts.srkmeccolumnselect
 msgid "Column selection mode"
 msgstr "列选择模式"

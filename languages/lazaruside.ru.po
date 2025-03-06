@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-03-06 19:44+0300\n"
+"PO-Revision-Date: 2025-03-06 22:47+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -19985,6 +19985,22 @@ msgstr "Выделить столбцы слова слева"
 #: lazarusidestrconsts.srkmeccolselwordright
 msgid "Column Select Word Right"
 msgstr "Выделить столбцы слова справа"
+
+#: lazarusidestrconsts.srkmeccolumnblockmoveleft
+msgid "Move column-block left (delete before columns)"
+msgstr "Сдвинуть блок столбцов влево (удалить перед ним)"
+
+#: lazarusidestrconsts.srkmeccolumnblockmoveright
+msgid "Move column-block right (delete after columns)"
+msgstr "Сдвинуть блок столбцов вправо (удалить после него)"
+
+#: lazarusidestrconsts.srkmeccolumnblockshiftleft
+msgid "Shift column-block left (delete in columns)"
+msgstr "Сместить блок столбцов влево (удалить внутри него)"
+
+#: lazarusidestrconsts.srkmeccolumnblockshiftright
+msgid "Shift column-block right (delete in columns)"
+msgstr "Сместить блок столбцов вправо (удалить внутри него)"
 
 #: lazarusidestrconsts.srkmeccolumnselect
 msgid "Column selection mode"

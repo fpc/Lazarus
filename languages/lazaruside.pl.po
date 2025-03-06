@@ -20331,6 +20331,22 @@ msgstr "Wybierz słowo po lewej"
 msgid "Column Select Word Right"
 msgstr "Wybierz słowo po prawej"
 
+#: lazarusidestrconsts.srkmeccolumnblockmoveleft
+msgid "Move column-block left (delete before columns)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmeccolumnblockmoveright
+msgid "Move column-block right (delete after columns)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmeccolumnblockshiftleft
+msgid "Shift column-block left (delete in columns)"
+msgstr ""
+
+#: lazarusidestrconsts.srkmeccolumnblockshiftright
+msgid "Shift column-block right (delete in columns)"
+msgstr ""
+
 #: lazarusidestrconsts.srkmeccolumnselect
 msgid "Column selection mode"
 msgstr "Tryb wyboru kolumn"
