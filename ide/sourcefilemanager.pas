@@ -188,6 +188,7 @@ type
     fViewUnitEntries: TViewUnitEntries;
     fSelectCaption: String;
   protected
+    function InitialSelection(aFilename: string): Boolean; virtual;
     function Select: TModalResult; //virtual; // Select with a dialog.
     function ActionForFiles: TModalResult; virtual; abstract;
   public
@@ -210,6 +211,7 @@ type
 
   TRenameFilesSelector = class(TProjectUnitFileSelector)
   protected
+    function InitialSelection(aFilename: string): Boolean; override;
     function ActionForFiles: TModalResult; override;
   public
     constructor Create;
@@ -1753,12 +1755,16 @@ begin
   inherited Destroy;
 end;
 
+function TProjectUnitFileSelector.InitialSelection(aFilename: string): Boolean;
+begin
+  Result:=False;
+end;
+
 function TProjectUnitFileSelector.Select: TModalResult;
 var
-  i:integer;
+  i: integer;
   AName: string;
   AnUnitInfo: TUnitInfo;
-  UnitInfos: TFPList;
   UEntry: TViewUnitsEntry;
 Begin
   Result:=mrOK;
@@ -1770,7 +1776,8 @@ Begin
     if (AnUnitInfo.IsPartOfProject) and (i<>Project1.MainUnitID) then
     begin
       AName:=Project1.RemoveProjectPathFromFilename(AnUnitInfo.FileName);
-      fViewUnitEntries.Add(AName,AnUnitInfo.FileName,i,false,false);
+      fViewUnitEntries.Add(AName, AnUnitInfo.FileName, i,
+                  InitialSelection(AName), AnUnitInfo.OpenEditorInfoCount>0);
     end;
   end;
   if ShowViewUnitsDlg(fViewUnitEntries,true,fSelectCaption,piUnit) <> mrOk then
@@ -1779,7 +1786,7 @@ Begin
   fUnitInfos:=TFPList.Create;
   for UEntry in fViewUnitEntries do
   begin
-    if UEntry.Selected then
+    if vufSelected in UEntry.Flags then
     begin
       if UEntry.ID<0 then continue;
       AnUnitInfo:=Project1.Units[UEntry.ID];
@@ -1914,6 +1921,11 @@ begin
   inherited;
 end;
 
+function TRenameFilesSelector.InitialSelection(aFilename: string): Boolean;
+begin                    // Select only units having mixed case filename.
+  Result:=aFilename<>LowerCase(aFilename);
+end;
+
 function TRenameFilesSelector.ActionForFiles: TModalResult;
 var
   i: Integer;
@@ -1928,8 +1940,7 @@ begin
          + AnUnitInfo.Unit_Name + ' is not part of project');
     if AnUnitInfo.Source=nil then
       AnUnitInfo.ReadUnitSource(false,false);
-    // Marked here means to remove old files silently.
-    Result:=RenameUnitLowerCase(AnUnitInfo, false,True);
+    Result:=RenameUnitLowerCase(AnUnitInfo,false,true);
     if Result<>mrOK then exit;
   end;
   InvalidateFileStateCache;
@@ -3896,7 +3907,7 @@ begin
                                DlgCaption, ItemType, ActiveUnitInfo.Filename);
     // create list of selected files
     for Entry in UnitList do
-      if Entry.Selected then
+      if vufSelected in Entry.Flags then
         Files.Add(Entry.Filename);
 
   finally

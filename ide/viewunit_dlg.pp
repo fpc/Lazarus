@@ -65,14 +65,19 @@ type
     piFrame
   );
 
+  TViewUnitFlag = (
+    vufSelected,
+    vufOpen
+  );
+  TViewUnitFlags = set of TViewUnitFlag;
+
   { TViewUnitsEntry }
 
   TViewUnitsEntry = class
   public
     Name: string;
     ID: integer;
-    Selected: boolean;
-    Open: boolean;
+    Flags: TViewUnitFlags;
     Filename: string;
     constructor Create(const AName, AFilename: string; AnID: integer; ASelected, AOpen: boolean);
   end;
@@ -139,6 +144,7 @@ type
     procedure CancelButtonClick(Sender :TObject);
     procedure MultiselectCheckBoxClick(Sender :TObject);
   private
+    FFirstDraw: boolean;
     FIdleConnected: boolean;
     FItemType: TIDEProjectItem;
     FSortAlphabetically: boolean;
@@ -304,8 +310,10 @@ begin
   inherited Create;
   Name := AName;
   ID := AnID;
-  Selected := ASelected;
-  Open := AOpen;
+  if ASelected then
+    Include(Flags, vufSelected);
+  if AOpen then
+    Include(Flags, vufOpen);
   Filename := AFilename;
 end;
 
@@ -371,13 +379,14 @@ begin
   fEntries:=TheEntries;
   mniMultiselect.Enabled := EnableMultiSelect;
   mniMultiselect.Checked := EnableMultiSelect;
-  ListBox.MultiSelect := mniMultiselect.Enabled;
+  ListBox.MultiSelect := mniMultiselect.Checked;
+  FFirstDraw := True;
   ShowEntries;
   FilterEdit.SimpleSelection := true;
 
   if aStartFilename<>'' then begin
-    // init search for units
-    // -> get unit search path and fill fSearchDirectories
+    // init search for units -> get unit search path and fill fSearchDirectories
+    // The entries should not have "Selected" flag set because the list gets updated.
     fStartFilename:=TrimFilename(aStartFilename);
     SearchPath:=CodeToolBoss.GetCompleteSrcPathForDirectory(ExtractFilePath(fStartFilename));
     p:=1;
@@ -399,17 +408,27 @@ procedure TViewUnitDialog.ListboxDrawItem(Control: TWinControl; Index: Integer;
   ARect: TRect; State: TOwnerDrawState);
 var
   aTop: Integer;
+  UEntry: TViewUnitsEntry;
 begin
   if Index < 0 then Exit;
-  with ListBox do
-  begin
+  with ListBox do begin
     Canvas.FillRect(ARect);
     aTop := (ARect.Bottom + ARect.Top - IDEImages.Images_16.Height) div 2;
     IDEImages.Images_16.Draw(Canvas, 1, aTop, FImageIndex);
     aTop := (ARect.Bottom + ARect.Top - Canvas.TextHeight('Šj9')) div 2;
-    Canvas.TextRect(ARect, ARect.Left + IDEImages.Images_16.Width + Scale96ToFont(4), aTop, Items[Index]);
-    if Items.Objects[Index] <> nil then // already open indicator
-      Canvas.TextRect(ARect, ARect.Right - Scale96ToFont(8), aTop, '•');
+    Canvas.TextRect(ARect, ARect.Left + IDEImages.Images_16.Width + Scale96ToFont(4),
+                    aTop, Items[Index]);
+    UEntry := TViewUnitsEntry(Items.Objects[Index]);
+    if vufOpen in UEntry.Flags then        // already open indicator
+      Canvas.TextRect(ARect, ARect.Right - Scale96ToFont(18), aTop, '🟢'); // • ● 🟢
+    // Update the initial Selected state here.
+    if FFirstDraw then begin
+      if vufSelected in UEntry.Flags then
+        ListBox.Selected[Index] := True;
+      // Assume the items are drawn in order. After the last one reset FFirstDraw.
+      if Index = ListBox.Items.Count-1 then
+        FFirstDraw := False;;
+    end;
   end;
 end;
 
@@ -419,7 +438,7 @@ procedure TViewUnitDialog.OnIdle(Sender: TObject; var Done: Boolean);
   var
     CompClass: TPFComponentBaseClass;
   begin
-    //debugln(['CheckFile ',aFilename]);
+    //DebugLn(['CheckFile ',aFilename]);
     case ItemType of
     piUnit:
       begin
@@ -497,12 +516,17 @@ procedure TViewUnitDialog.OKButtonClick(Sender: TObject);
 var
   S2PItem: PStringToPointerTreeItem;
   Entry: TViewUnitsEntry;
+  Selected: Boolean;
 Begin
   FilterEdit.StoreSelection;
   for S2PItem in fEntries.fItems do begin
     Entry:=TViewUnitsEntry(S2PItem^.Value);
-    Entry.Selected:=FilterEdit.SelectionList.IndexOf(Entry.Name)>-1;
-    if Entry.Selected then
+    Selected:=FilterEdit.SelectionList.IndexOf(Entry.Name)>-1;
+    if Selected then
+      Include(Entry.Flags, vufSelected)
+    else
+      Exclude(Entry.Flags, vufSelected);
+    if Selected then
       ModalResult := mrOK;
   end;
 End;
@@ -539,18 +563,13 @@ end;
 procedure TViewUnitDialog.ShowEntries;
 var
   UEntry: TViewUnitsEntry;
-  flags: PtrInt;
 begin
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TViewUnitDialog.ShowEntries'){$ENDIF};
   try
     // Data items
     FilterEdit.Items.Clear;
-    for UEntry in fEntries do begin
-      flags := PtrInt(UEntry.Selected);
-      if UEntry.Open then
-        flags := flags or 2;
-      FilterEdit.Items.AddObject(UEntry.Name, TObject(flags));
-    end;
+    for UEntry in fEntries do
+      FilterEdit.Items.AddObject(UEntry.Name, UEntry);
     FilterEdit.InvalidateFilter;
   finally
     EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TViewUnitDialog.ShowEntries'){$ENDIF};

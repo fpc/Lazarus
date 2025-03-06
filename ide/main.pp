@@ -5993,7 +5993,7 @@ begin
       AnUnitInfo := nil;
       for UEntry in UnitList do
       begin
-        if not UEntry.Selected then continue;
+        if not (vufSelected in UEntry.Flags) then continue;
         AnUnitInfo := Project1.Units[UEntry.ID];
         if AnUnitInfo.OpenEditorInfoCount > 0 then
         begin

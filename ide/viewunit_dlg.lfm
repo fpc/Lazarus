@@ -12,6 +12,8 @@ object ViewUnitDialog: TViewUnitDialog
   Caption = 'View Project Units'
   ClientHeight = 386
   ClientWidth = 378
+  Position = poScreenCenter
+  LCLVersion = '4.99.0.0'
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
