@@ -1336,13 +1336,12 @@ begin
   if Immediately then begin
     SortAndFilter;
     if (fSelectedPart=Nil) and not fIsFirstUpdate then
-      StoreSelection;      // At first round the selection is from caller
-    fIsFirstUpdate:=False;
-
-    ApplyFilterCore;       // The actual filtering implemented by inherited class.
-
+      StoreSelection;     // At first round the selection is from caller
+    ApplyFilterCore;      // The actual filtering implemented by inherited class.
     fSelectedPart:=Nil;
-    RestoreSelection;
+    if not fIsFirstUpdate then
+      RestoreSelection;
+    fIsFirstUpdate:=False;
   end
   else if [csDestroying,csDesigning]*ComponentState=[] then
     InvalidateFilter;

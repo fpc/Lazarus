@@ -129,7 +129,6 @@ type
     fShowDirHierarchy: Boolean;     // Show directories / files as a tree structure.
     fBranches: TBranchList;         // Items under these nodes can be sorted.
     fExpandAllInitially: Boolean;   // Expand all levels when searched for the first time.
-    fIsFirstTime: Boolean;          // Needed for fExpandAllInitially.
     // First node matching the filter. Will be selected if old selection is hidden.
     fFirstPassedNode: TTreeNode;
     fOnGetImageIndex: TImageIndexEvent;
@@ -701,7 +700,6 @@ begin
   fSelectionList:=TStringList.Create;
   fImageIndexDirectory := -1;
   fExpandAllInitially := False;
-  fIsFirstTime := True;
 end;
 
 destructor TTreeFilterEdit.Destroy;
@@ -780,7 +778,8 @@ begin
     // Recursive call for child nodes.
     Node.Visible := FilterTree(Node.GetFirstChild) or Pass;
     if Node.Visible then begin                 // Collapse all when Filter=''.
-      Node.Expanded := (Filter<>'') or fExpandAllInitially;
+      if (Filter<>'') or (fExpandAllInitially and fIsFirstUpdate) then
+        Node.Expanded := True;
       Result := True;
     end;
     Node := Node.GetNextSibling;
@@ -825,11 +824,8 @@ begin
       fBranches[i].ApplyFilter;
   end
   else begin                             // Apply filter for the whole tree.
-    if fExpandAllInitially and fIsFirstTime then
-    begin
+    if fExpandAllInitially and fIsFirstUpdate then
       fFilteredTreeview.FullExpand;
-      fIsFirstTime := False;
-    end;
     FilterTree(fFilteredTreeview.Items.GetFirstNode);
   end;
   fFilteredTreeview.ClearInvisibleSelection;
