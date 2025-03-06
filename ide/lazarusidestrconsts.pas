@@ -3123,10 +3123,10 @@ resourcestring
   srkmecBlockUnindent         = 'Unindent line/block';
   srkmecBlockIndentMove       = 'Indent line/block (move columns)';
   srkmecBlockUnindentMove     = 'Unindent line/block (move columns)';
-  srkmecColumnBlockShiftRight = 'Shift right column-block (delete in columns)';
-  srkmecColumnBlockMoveRight  = 'Move right column-block (delete after columns)';
-  srkmecColumnBlockShiftLeft  = 'Shift left column-block (delete in columns)';
-  srkmecColumnBlockMoveLeft   = 'Move left  column-block (delete before columns)';
+  srkmecColumnBlockShiftRight = 'Shift column-block right (delete in columns)';
+  srkmecColumnBlockMoveRight  = 'Move column-block right (delete after columns)';
+  srkmecColumnBlockShiftLeft  = 'Shift column-block left (delete in columns)';
+  srkmecColumnBlockMoveLeft   = 'Move column-block left (delete before columns)';
   srkmecPluginMultiCaretSetCaret         = 'Add extra caret';
   srkmecPluginMultiCaretUnsetCaret       = 'Remove extra caret';
   srkmecPluginMultiCaretToggleCaret      = 'Toggle extra caret';
