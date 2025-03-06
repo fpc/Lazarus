@@ -1640,6 +1640,11 @@ resourcestring
   dlgStringEnableAutoContinue = 'Extend strings on linebreak';
   dlgStringAutoAppend = 'Append text to close string';
   dlgStringAutoPrefix = 'Prefix string on new line';
+  dlgStringContAlignAlignSecondLineRegEx = 'Align second line (reg-ex):';
+  dlgStringContAlignMaxIndentForSecondLineIfB = 'Max indent for second line if based on reg-ex:';
+  dlgStringContAlignAlignSecondLineAfterFirst = 'Align second line (after first break) with the '
+    +'position of the lowest matching group in the pattern, or the match position of the pattern '
+    +'itself.';
 
   dlgUndoAfterSave = 'Undo after save';
   dlgFindTextatCursor = 'Find text at cursor';

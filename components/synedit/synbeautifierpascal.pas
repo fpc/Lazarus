@@ -5,8 +5,12 @@ unit SynBeautifierPascal;
 interface
 
 uses
-  Classes, SysUtils, RegExpr, SynBeautifier, SynHighlighterPas, SynEditPointClasses, SynEditKeyCmds, SynEdit,
-  SynEditHighlighterFoldBase, SynEditMiscProcs;
+  Classes, SysUtils,
+  // LazEdit
+  xregexpr,
+  // SynEdit
+  SynBeautifier, SynHighlighterPas, SynEditPointClasses, SynEditKeyCmds, SynEdit,
+  SynEditHighlighterFoldBase, SynEditMiscProcs, LazEditMiscProcs;
 
 type
   { TSynBeautifierPascal }
@@ -35,6 +39,8 @@ type
     FPasHighlighter: TSynPasSyn;
 
     FCaretAtEOL: Boolean;
+    FStringAlignMax: Integer;
+    FStringAlignPattern: String;
     FStringBreakAppend: String;
     FStringBreakEnabled: Boolean;
     FStringBreakPrefix: String;
@@ -214,6 +220,9 @@ type
     property StringBreakEnabled: Boolean read FStringBreakEnabled write FStringBreakEnabled;
     property StringBreakAppend: String read FStringBreakAppend write FStringBreakAppend;
     property StringBreakPrefix: String read FStringBreakPrefix write FStringBreakPrefix;
+    //property StringAlignType:    String read FStringAlignType write FStringAlignType;
+    property StringAlignPattern: String  read FStringAlignPattern write FStringAlignPattern;
+    property StringAlignMax:     Integer read FStringAlignMax write FStringAlignMax;
   end;
 
 
@@ -946,27 +955,33 @@ procedure TSynBeautifierPascal.DoNewLineInString(AStringStartY, AStringStartX: I
   const ACaret: TSynEditCaret; var Command: TSynEditorCommand; StartLinePos,
   EndLinePos: Integer);
 var
-  s: String;
-  WorkLine: Integer;
+  s, ACharMix, pre: String;
+  WorkLine, Indent, IndentLine, j: Integer;
   f: Boolean;
 begin
-  inherited DoAfterCommand(ACaret, Command, StartLinePos, EndLinePos);
-  if not FStringBreakEnabled then
+  if not FStringBreakEnabled then begin
+    inherited DoAfterCommand(ACaret, Command, StartLinePos, EndLinePos);
     exit;
+  end;
 
   if (Command = ecLineBreak)
   then WorkLine := ACaret.LinePos - 1
   else WorkLine := ACaret.LinePos;
 
   s := CurrentLines[ToIdx(WorkLine)];
-  if (AStringStartX < 1) or (AStringStartX > Length(s)) or (s[AStringStartX] <> '''') then
+  if (AStringStartX < 1) or (AStringStartX > Length(s)) or (s[AStringStartX] <> '''') then begin
+    inherited DoAfterCommand(ACaret, Command, StartLinePos, EndLinePos);
     exit;
+  end;
   f := False;
   while AStringStartX <= length(s) do begin
     if (s[AStringStartX] = '''') then f := not f;
     inc(AStringStartX);
   end;
-  if not f then exit;
+  if not f then begin
+    inherited DoAfterCommand(ACaret, Command, StartLinePos, EndLinePos);
+    exit;
+  end;
 
   ACaret.IncForcePastEOL;
 
@@ -974,9 +989,56 @@ begin
   //if Command = ecInsertLine then
   //  ACaret.BytePos := ACaret.BytePos + Length(FStringBreakAppend) + 1;
 
-  CurrentLines.EditInsert(1 + FLogicalIndentLen, WorkLine + 1, FStringBreakPrefix + '''');
+  pre := FStringBreakPrefix;
+  if (FStringAlignPattern <> '') then begin
+    Indent := 0;
+    IndentLine := WorkLine;
+    j := Max(0, CountLeadWhiteSpace(PChar(s)) - CountLeadWhiteSpace(PChar(pre)));
+    if (Length(s) < j + Length(FStringBreakPrefix) + 1 {opening quote} ) or
+       (strlcomp(pchar(s)+j, pchar(FStringBreakPrefix), Length(FStringBreakPrefix)) <> 0) or
+       (s[1+j+Length(FStringBreakPrefix)] <> '''')
+    then begin
+      FRegExprEngine.InputString := s;
+      FRegExprEngine.Expression := FStringAlignPattern;
+      if FRegExprEngine.ExecPos(1) then begin
+        Indent := -1;
+        for j := 1 to FRegExprEngine.SubExprMatchCount do begin
+          Indent := FRegExprEngine.MatchPos[j] - 1;
+          if (Indent >= 0) then
+            break;
+        end;
+        if Indent < 0 then
+          Indent := FRegExprEngine.MatchPos[0];
+      end;
+
+      if Indent >= 0 then begin
+        Indent := CurrentLines.LogicalToPhysicalCol(s, WorkLine, Indent+1)-1;
+        if (FStringAlignMax > 0) and (Indent > FStringAlignMax) then
+          Indent := FStringAlignMax;
+      end
+      else
+        Indent := GetIndent(WorkLine + 1, IndentLine);
+    end
+    else begin
+      Indent := GetIndent(WorkLine + 1, IndentLine);
+      pre := TrimLeft(pre);
+    end;
+  end
+  else
+    Indent := GetIndent(WorkLine + 1, IndentLine);
+
+  if Indent > 0 then begin
+    ACharMix := GetCharMix(WorkLine+1, Indent, IndentLine, True);
+    if Length(ACharMix) > 0 then
+      CurrentLines.EditInsert(1, WorkLine + 1, ACharMix);
+    FLogicalIndentLen := length(ACharMix);
+  end
+  else
+    FLogicalIndentLen := 0;
+
+  CurrentLines.EditInsert(1 + FLogicalIndentLen, WorkLine + 1, pre + '''');
   if (Command = ecLineBreak) then
-    ACaret.BytePos := ACaret.BytePos + Length(FStringBreakPrefix) + 1;
+    ACaret.BytePos := 1 + FLogicalIndentLen + Length(pre) + 1;
 
   ACaret.DecForcePastEOL;
 end;
@@ -1039,6 +1101,8 @@ begin
   FStringBreakEnabled := False;
   FStringBreakAppend := ' +';
   FStringBreakPrefix := '';
+  FStringAlignPattern := '';
+  FStringAlignMax := 0;
 end;
 
 destructor TSynBeautifierPascal.Destroy;
@@ -1076,6 +1140,8 @@ begin
   FStringBreakAppend         := TSynBeautifierPascal(Src).FStringBreakAppend;
   FStringBreakEnabled        := TSynBeautifierPascal(Src).FStringBreakEnabled;
   FStringBreakPrefix         := TSynBeautifierPascal(Src).FStringBreakPrefix;
+  FStringAlignPattern        := TSynBeautifierPascal(Src).FStringAlignPattern;
+  FStringAlignMax            := TSynBeautifierPascal(Src).FStringAlignMax;
 
 end;
 

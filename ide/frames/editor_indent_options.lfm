@@ -7,8 +7,8 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
   ClientWidth = 433
   TabOrder = 0
   Visible = False
-  DesignLeft = 664
-  DesignTop = 211
+  DesignLeft = 489
+  DesignTop = 32
   object BlockIndentLabel: TLabel
     AnchorSideLeft.Control = BlockIndentComboBox
     AnchorSideLeft.Side = asrBottom
@@ -65,10 +65,10 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
       '4'
       '8'
     )
+    TabOrder = 5
     OnChange = ComboboxOnChange
     OnExit = ComboBoxOnExit
     OnKeyDown = ComboboxOnKeyDown
-    TabOrder = 5
   end
   object TabWidthsComboBox: TComboBox
     AnchorSideLeft.Control = CenterLabel1
@@ -88,10 +88,10 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
       '4'
       '8'
     )
+    TabOrder = 1
     OnChange = ComboboxOnChange
     OnExit = ComboBoxOnExit
     OnKeyDown = ComboboxOnKeyDown
-    TabOrder = 1
   end
   object AutoIndentCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
@@ -107,8 +107,8 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
     BorderSpacing.Left = 6
     BorderSpacing.Right = 10
     Caption = 'AutoIndentCheckBox'
-    OnChange = AutoIndentCheckBoxChange
     TabOrder = 3
+    OnChange = AutoIndentCheckBoxChange
   end
   object TabIndentBlocksCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
@@ -125,8 +125,8 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
     BorderSpacing.Top = 3
     BorderSpacing.Right = 10
     Caption = 'TabIndentBlocksCheckBox'
-    OnChange = TabIndentBlocksCheckBoxChange
     TabOrder = 6
+    OnChange = TabIndentBlocksCheckBoxChange
   end
   object SmartTabsCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
@@ -142,8 +142,8 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
     BorderSpacing.Left = 6
     BorderSpacing.Right = 10
     Caption = 'SmartTabsCheckBox'
-    OnChange = SmartTabsCheckBoxChange
     TabOrder = 2
+    OnChange = SmartTabsCheckBoxChange
   end
   object TabsToSpacesCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
@@ -160,8 +160,8 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
     BorderSpacing.Top = 6
     BorderSpacing.Right = 10
     Caption = 'TabsToSpacesCheckBox'
-    OnChange = TabsToSpacesCheckBoxChange
     TabOrder = 0
+    OnChange = TabsToSpacesCheckBoxChange
   end
   object BlockIndentTypeComboBox: TComboBox
     AnchorSideLeft.Control = CenterLabel1
@@ -173,11 +173,11 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
     Width = 100
     ItemHeight = 15
     ItemWidth = 200
+    Style = csDropDownList
+    TabOrder = 4
     OnChange = ComboboxOnChange
     OnExit = ComboBoxOnExit
     OnKeyDown = ComboboxOnKeyDown
-    Style = csDropDownList
-    TabOrder = 4
   end
   object AutoIndentLink: TLabel
     AnchorSideLeft.Control = AutoIndentCheckBox
@@ -237,10 +237,10 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
       '1'
       '2'
     )
+    TabOrder = 7
     OnChange = ComboboxOnChange
     OnExit = ComboBoxOnExit
     OnKeyDown = ComboboxOnKeyDown
-    TabOrder = 7
   end
   object BlockTabIndentLabel: TLabel
     AnchorSideLeft.Control = BlockTabIndentComboBox
@@ -352,10 +352,10 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
     Height = 268
     Top = 231
     Width = 433
-    ActivePage = tbAnsi
+    ActivePage = tbString
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 6
-    TabIndex = 0
+    TabIndex = 3
     TabOrder = 8
     object tbAnsi: TTabSheet
       Caption = 'tbAnsi'
@@ -372,8 +372,8 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
         BorderSpacing.Left = 6
         BorderSpacing.Top = 3
         Caption = 'cbAnsiEnableAutoContinue'
-        OnChange = cbAnsiEnableAutoContinueChange
         TabOrder = 0
+        OnChange = cbAnsiEnableAutoContinueChange
       end
       object lbAnsiMatch: TLabel
         AnchorSideLeft.Control = tbAnsi
@@ -466,9 +466,9 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
         BorderSpacing.Top = 6
         BorderSpacing.Right = 10
         ItemHeight = 15
-        OnChange = cbAnsiIndentModeChange
         Style = csDropDownList
         TabOrder = 4
+        OnChange = cbAnsiIndentModeChange
       end
       object edAnsiAlignMax: TSpinEdit
         AnchorSideLeft.Control = tbAnsi
@@ -515,8 +515,8 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
         BorderSpacing.Left = 6
         BorderSpacing.Top = 3
         Caption = 'cbCurlyEnableAutoContinue'
-        OnChange = cbCurlyEnableAutoContinueChange
         TabOrder = 0
+        OnChange = cbCurlyEnableAutoContinueChange
       end
       object lbCurlyMatch: TLabel
         AnchorSideLeft.Control = tbCurly
@@ -607,9 +607,9 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
         BorderSpacing.Top = 6
         BorderSpacing.Right = 10
         ItemHeight = 15
-        OnChange = cbCurlyIndentModeChange
         Style = csDropDownList
         TabOrder = 4
+        OnChange = cbCurlyIndentModeChange
       end
       object edCurlyAlignMax: TSpinEdit
         AnchorSideLeft.Control = tbCurly
@@ -656,8 +656,8 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
         BorderSpacing.Left = 6
         BorderSpacing.Top = 3
         Caption = 'cbSlashEnableAutoContinue'
-        OnChange = cbSlashEnableAutoContinueChange
         TabOrder = 0
+        OnChange = cbSlashEnableAutoContinueChange
       end
       object lbSlashMatch: TLabel
         AnchorSideLeft.Control = tbShlash
@@ -748,9 +748,9 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
         BorderSpacing.Top = 6
         BorderSpacing.Right = 10
         ItemHeight = 15
-        OnChange = cbSlashIndentModeChange
         Style = csDropDownList
         TabOrder = 4
+        OnChange = cbSlashIndentModeChange
       end
       object cbSlashExtend: TComboBox
         AnchorSideLeft.Control = tbShlash
@@ -813,8 +813,8 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
         BorderSpacing.Left = 6
         BorderSpacing.Top = 3
         Caption = 'cbStringEnableAutoContinue'
-        OnChange = cbStringEnableAutoContinueChange
         TabOrder = 0
+        OnChange = cbStringEnableAutoContinueChange
       end
       object lbStringAutoAppend: TLabel
         AnchorSideLeft.Control = tbString
@@ -826,18 +826,6 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
         Width = 109
         BorderSpacing.Left = 6
         Caption = 'lbStringAutoAppend'
-        ParentColor = False
-      end
-      object lbStringAutoPrefix: TLabel
-        AnchorSideLeft.Control = tbString
-        AnchorSideTop.Control = edStringAutoPrefix
-        AnchorSideTop.Side = asrCenter
-        Left = 6
-        Height = 15
-        Top = 61
-        Width = 97
-        BorderSpacing.Left = 6
-        Caption = 'lbStringAutoPrefix'
         ParentColor = False
       end
       object edStringAutoAppend: TEdit
@@ -857,6 +845,18 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
         BorderSpacing.Right = 6
         TabOrder = 1
       end
+      object lbStringAutoPrefix: TLabel
+        AnchorSideLeft.Control = tbString
+        AnchorSideTop.Control = edStringAutoPrefix
+        AnchorSideTop.Side = asrCenter
+        Left = 6
+        Height = 15
+        Top = 61
+        Width = 97
+        BorderSpacing.Left = 6
+        Caption = 'lbStringAutoPrefix'
+        ParentColor = False
+      end
       object edStringAutoPrefix: TEdit
         AnchorSideLeft.Control = lbStringAutoPrefix
         AnchorSideLeft.Side = asrBottom
@@ -874,6 +874,66 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
         BorderSpacing.Right = 6
         TabOrder = 2
       end
+      object lbStringAlignPattern: TLabel
+        AnchorSideLeft.Control = tbString
+        AnchorSideTop.Side = asrCenter
+        Left = 6
+        Height = 15
+        Top = 90
+        Width = 107
+        BorderSpacing.Left = 6
+        Caption = 'lbStringAlignPattern'
+        ParentColor = False
+      end
+      object edStringAlignPattern: TComboBox
+        AnchorSideLeft.Control = lbStringAlignPattern
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = edStringAutoPrefix
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = tbString
+        AnchorSideRight.Side = asrBottom
+        Left = 119
+        Height = 23
+        Top = 86
+        Width = 300
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        BorderSpacing.Right = 6
+        ItemHeight = 15
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 3
+      end
+      object edStringAlignMax: TSpinEdit
+        AnchorSideLeft.Control = tbAnsi
+        AnchorSideTop.Control = lbStringAlignMax
+        AnchorSideTop.Side = asrBottom
+        AnchorSideBottom.Side = asrBottom
+        Left = 6
+        Height = 23
+        Top = 137
+        Width = 100
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 3
+        MaxValue = 999
+        TabOrder = 4
+      end
+      object lbStringAlignMax: TLabel
+        AnchorSideLeft.Control = tbAnsi
+        AnchorSideTop.Control = edStringAlignPattern
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Side = asrBottom
+        Left = 6
+        Height = 15
+        Top = 119
+        Width = 92
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 10
+        Caption = 'lbStringAlignMax'
+        ParentColor = False
+        WordWrap = True
+      end
     end
   end
   object chkElasticTabs: TCheckBox
@@ -890,8 +950,8 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
     BorderSpacing.Left = 6
     BorderSpacing.Right = 10
     Caption = 'chkElasticTabs'
-    OnChange = chkElasticTabsChange
     TabOrder = 9
+    OnChange = chkElasticTabsChange
   end
   object ElastTabMinWidthsComboBox: TComboBox
     AnchorSideLeft.Control = CenterLabel1
@@ -911,10 +971,10 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
       '4'
       '8'
     )
+    TabOrder = 10
     OnChange = ComboboxOnChange
     OnExit = ComboBoxOnExit
     OnKeyDown = ComboboxOnKeyDown
-    TabOrder = 10
   end
   object ElastTabMinWidthsLabel: TLabel
     AnchorSideLeft.Control = ElastTabMinWidthsComboBox

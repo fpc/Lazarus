@@ -56,8 +56,11 @@ type
     cbStringEnableAutoContinue: TCheckBox;
     chkElasticTabs: TCheckBox;
     CommentsGroupDivider: TDividerBevel;
+    edStringAlignMax: TSpinEdit;
+    edStringAlignPattern: TComboBox;
     edStringAutoAppend: TEdit;
     edStringAutoPrefix: TEdit;
+    lbStringAlignMax: TLabel;
     lbStringAutoAppend: TLabel;
     lbStringAutoPrefix: TLabel;
     lblBlockIndentShortcut: TLabel;
@@ -94,6 +97,7 @@ type
     edSlashAlignMax: TSpinEdit;
 
     CommentsPageControl: TPageControl;
+    lbStringAlignPattern: TLabel;
     TabsGroupDivider: TDividerBevel;
     AutoIndentLink: TLabel;
     CenterLabel:TLabel;
@@ -264,6 +268,14 @@ begin
   cbStringEnableAutoContinue.Caption := dlgStringEnableAutoContinue;
   lbStringAutoAppend.Caption := dlgStringAutoAppend;
   lbStringAutoPrefix.Caption := dlgStringAutoPrefix;
+  lbStringAlignPattern.Caption := dlgStringContAlignAlignSecondLineRegEx;
+  lbStringAlignMax.Caption := dlgStringContAlignMaxIndentForSecondLineIfB;
+  edStringAlignPattern.Hint := dlgStringContAlignAlignSecondLineAfterFirst;
+
+  edStringAlignPattern.Items.Clear;
+  edStringAlignPattern.Items.Add('([''#])');
+  edStringAlignPattern.Items.Add('(?:(?:\(|:=) *()|([''#]))');
+  edStringAlignPattern.Items.Add('^(?=[^'']*?:= *())?(?=[^'']*?[(=<>][<>]? *())?(?=[^'']*([''#]))?\s*()');
 
 end;
 
@@ -345,6 +357,8 @@ begin
     cbStringEnableAutoContinue.Checked := StringBreakEnabled;
     edStringAutoAppend.Text := StringBreakAppend;
     edStringAutoPrefix.Text := StringBreakPrefix;
+    edStringAlignPattern.Text := StringAlignPattern;
+    edStringAlignMax.Value := StringAlignMax;
     cbStringEnableAutoContinueChange(nil);
 
   end;
@@ -463,6 +477,8 @@ begin
     StringBreakEnabled := cbStringEnableAutoContinue.Checked;
     StringBreakAppend := edStringAutoAppend.Text;
     StringBreakPrefix := edStringAutoPrefix.Text;
+    StringAlignPattern := edStringAlignPattern.Text;
+    StringAlignMax := edStringAlignMax.Value;
 
   end;
 end;
