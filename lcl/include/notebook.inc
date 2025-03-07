@@ -11,6 +11,26 @@
  *****************************************************************************
 }
 
+
+function CreateUniquePageName(BaseName: string; OwnerComp: TComponent): string;
+// Inspired by TCustomFormEditor.CreateUniqueComponentName
+var
+  i, j: integer;
+begin
+  i:=0;
+  Result:=BaseName;
+  while true do begin
+    j:=OwnerComp.ComponentCount-1;
+    while (j>=0) and (CompareText(Result,OwnerComp.Components[j].Name)<>0) do
+      dec(j);
+    if j<0 then exit;
+    inc(i);
+    if BaseName[length(BaseName)] in ['0'..'9'] then
+      BaseName:=BaseName+'_';
+    Result:=BaseName+IntToStr(i);
+  end;
+end;
+
 {******************************************************************************
                                    TUNBPages
  ******************************************************************************}
@@ -69,29 +89,11 @@ end;
 function TUNBPages.AddObject(const S: string; AObject: TObject): Integer;
 var
   NewPage: TPage;
-  NewName: string;
-  OK: Boolean;
-  i: integer;
 begin
   Result := FPageList.Add(AObject);
   NewPage := TPage(AObject);
   if IsValidIdent(S) then
-  begin
-    NewName := S;
-    i := 1;
-    repeat
-      OK := True;
-      try
-        NewPage.Name := NewName;
-      except                     // Name was reserved, try adding numbers to it.
-        on E: EComponentError do begin
-          OK := False;
-          NewName := S + IntToStr(i);
-          Inc(i);
-        end;
-      end;
-    until OK;
-  end;
+    NewPage.Name := CreateUniquePageName(S, FNotebook.Owner);
   NewPage.Caption := S;
   NewPage.Parent := FNotebook;
   NewPage.Align := alClient;
