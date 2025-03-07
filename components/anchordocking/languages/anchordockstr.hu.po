@@ -275,6 +275,10 @@ msgstr "Fejléc-felíratok megjelenítése"
 msgid "Show headers"
 msgstr "Fejlécek megjelenítése"
 
+#: anchordockstr.adrssplitterresizestyle
+msgid "Splitter resize style:"
+msgstr ""
+
 #: anchordockstr.adrssplitterthickness
 msgid "Splitter thickness"
 msgstr "Elválasztó vastagsága"

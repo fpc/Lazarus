@@ -265,6 +265,10 @@ msgstr ""
 msgid "Show headers"
 msgstr ""
 
+#: anchordockstr.adrssplitterresizestyle
+msgid "Splitter resize style:"
+msgstr ""
+
 #: anchordockstr.adrssplitterthickness
 msgid "Splitter thickness"
 msgstr ""

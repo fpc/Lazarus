@@ -277,6 +277,10 @@ msgstr "Başlıkları göster"
 msgid "Show headers"
 msgstr "Başlığı göster"
 
+#: anchordockstr.adrssplitterresizestyle
+msgid "Splitter resize style:"
+msgstr ""
+
 #: anchordockstr.adrssplitterthickness
 msgid "Splitter thickness"
 msgstr "Ayırıcı kalınlığı"

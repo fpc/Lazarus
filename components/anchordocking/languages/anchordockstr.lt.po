@@ -277,6 +277,10 @@ msgstr "Rodyti antraščių pavadinimus"
 msgid "Show headers"
 msgstr "Rodyti antraštes"
 
+#: anchordockstr.adrssplitterresizestyle
+msgid "Splitter resize style:"
+msgstr ""
+
 #: anchordockstr.adrssplitterthickness
 msgid "Splitter thickness"
 msgstr "Skyriklio storis"

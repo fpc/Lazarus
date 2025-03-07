@@ -276,6 +276,10 @@ msgstr "显示标题栏标题"
 msgid "Show headers"
 msgstr "显示标题栏"
 
+#: anchordockstr.adrssplitterresizestyle
+msgid "Splitter resize style:"
+msgstr ""
+
 #: anchordockstr.adrssplitterthickness
 msgid "Splitter thickness"
 msgstr "分隔器厚度"

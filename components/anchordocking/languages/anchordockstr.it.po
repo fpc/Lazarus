@@ -277,6 +277,10 @@ msgstr "Mostra titolo delle intestazioni"
 msgid "Show headers"
 msgstr "Mostra intestazioni"
 
+#: anchordockstr.adrssplitterresizestyle
+msgid "Splitter resize style:"
+msgstr ""
+
 #: anchordockstr.adrssplitterthickness
 msgid "Splitter thickness"
 msgstr "Spessore dello splitter"

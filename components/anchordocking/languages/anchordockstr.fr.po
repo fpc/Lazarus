@@ -275,6 +275,10 @@ msgstr "Montrer les étiquettes des en-têtes"
 msgid "Show headers"
 msgstr "Montrer les en-têtes"
 
+#: anchordockstr.adrssplitterresizestyle
+msgid "Splitter resize style:"
+msgstr ""
+
 #: anchordockstr.adrssplitterthickness
 msgid "Splitter thickness"
 msgstr "Épaisseur du séparateur"

@@ -273,6 +273,10 @@ msgstr "Mostrar títulos de cabecera"
 msgid "Show headers"
 msgstr "Mostrar encabezados"
 
+#: anchordockstr.adrssplitterresizestyle
+msgid "Splitter resize style:"
+msgstr ""
+
 #: anchordockstr.adrssplitterthickness
 msgid "Splitter thickness"
 msgstr "Divisor (splitter) grueso"

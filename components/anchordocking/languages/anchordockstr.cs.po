@@ -278,6 +278,10 @@ msgstr "Zobrazit popisky v záhlaví"
 msgid "Show headers"
 msgstr "Zobrazit záhlaví"
 
+#: anchordockstr.adrssplitterresizestyle
+msgid "Splitter resize style:"
+msgstr ""
+
 #: anchordockstr.adrssplitterthickness
 msgid "Splitter thickness"
 msgstr "Tloušťka rozdělovače"

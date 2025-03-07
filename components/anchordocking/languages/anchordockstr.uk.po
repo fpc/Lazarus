@@ -278,6 +278,10 @@ msgstr "Показувати назви у заголовках"
 msgid "Show headers"
 msgstr "Показати заголовки"
 
+#: anchordockstr.adrssplitterresizestyle
+msgid "Splitter resize style:"
+msgstr ""
+
 #: anchordockstr.adrssplitterthickness
 msgid "Splitter thickness"
 msgstr "Товщина роздільника"

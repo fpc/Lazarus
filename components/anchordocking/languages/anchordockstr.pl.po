@@ -276,6 +276,10 @@ msgstr "Pokaż etykiety nagłówka"
 msgid "Show headers"
 msgstr "Pokaż nagłówki"
 
+#: anchordockstr.adrssplitterresizestyle
+msgid "Splitter resize style:"
+msgstr ""
+
 #: anchordockstr.adrssplitterthickness
 msgid "Splitter thickness"
 msgstr "Grubość linii podziału"
