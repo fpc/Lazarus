@@ -4377,6 +4377,18 @@ msgstr "Naujoje eilutės pradžioje įterpti priešdėlį"
 msgid "String ''"
 msgstr "Tekstas \""
 
+#: lazarusidestrconsts.dlgstringcontalignalignsecondlineafterfirst
+msgid "Align second line (after first break) with the position of the lowest matching group in the pattern, or the match position of the pattern itself."
+msgstr ""
+
+#: lazarusidestrconsts.dlgstringcontalignalignsecondlineregex
+msgid "Align second line (reg-ex):"
+msgstr ""
+
+#: lazarusidestrconsts.dlgstringcontalignmaxindentforsecondlineifb
+msgid "Max indent for second line if based on reg-ex:"
+msgstr ""
+
 #: lazarusidestrconsts.dlgstringenableautocontinue
 msgid "Extend strings on linebreak"
 msgstr "Laužiant eilutę praplėsti eilutes"
@@ -20452,15 +20464,15 @@ msgid "Copy"
 msgstr "Kopijuoti į iškarpinę"
 
 #: lazarusidestrconsts.srkmeccopyadd
-msgid "Copy (Add to Clipboard)"
+msgid "Copy to clipboard (append)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmeccopyaddcurrentline
-msgid "Copy current line (Add to Clipboard)"
+msgid "Copy current line to clipboard (append)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmeccopycurrentline
-msgid "Copy current line"
+msgid "Copy current line to clipboard"
 msgstr ""
 
 #: lazarusidestrconsts.srkmeccopyeditornewwindow
@@ -20481,15 +20493,15 @@ msgid "Cut"
 msgstr "Iškirpti į iškarpinę"
 
 #: lazarusidestrconsts.srkmeccutadd
-msgid "Cut (Add to Clipboard)"
+msgid "Cut to clipboard (append)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmeccutaddcurrentline
-msgid "Cut current line (Add to Clipboard)"
+msgid "Cut current line to clipboard (append)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmeccutcurrentline
-msgid "Cut current line"
+msgid "Cut current line to clipboard"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecdeletebol

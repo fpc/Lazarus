@@ -4390,6 +4390,18 @@ msgstr "Cadena de prefijo en nueva línea"
 msgid "String ''"
 msgstr "Cadena ''"
 
+#: lazarusidestrconsts.dlgstringcontalignalignsecondlineafterfirst
+msgid "Align second line (after first break) with the position of the lowest matching group in the pattern, or the match position of the pattern itself."
+msgstr ""
+
+#: lazarusidestrconsts.dlgstringcontalignalignsecondlineregex
+msgid "Align second line (reg-ex):"
+msgstr ""
+
+#: lazarusidestrconsts.dlgstringcontalignmaxindentforsecondlineifb
+msgid "Max indent for second line if based on reg-ex:"
+msgstr ""
+
 #: lazarusidestrconsts.dlgstringenableautocontinue
 msgid "Extend strings on linebreak"
 msgstr "Extender cadenas en rupturas de línea"
@@ -20392,15 +20404,21 @@ msgid "Copy"
 msgstr "Copiar"
 
 #: lazarusidestrconsts.srkmeccopyadd
-msgid "Copy (Add to Clipboard)"
+#, fuzzy
+#| msgid "Copy (Add to Clipboard)"
+msgid "Copy to clipboard (append)"
 msgstr "Copiar (Añadir al portapapeles)"
 
 #: lazarusidestrconsts.srkmeccopyaddcurrentline
-msgid "Copy current line (Add to Clipboard)"
+#, fuzzy
+#| msgid "Copy current line (Add to Clipboard)"
+msgid "Copy current line to clipboard (append)"
 msgstr "Copiar línea actual (Añadir al portapapeles)"
 
 #: lazarusidestrconsts.srkmeccopycurrentline
-msgid "Copy current line"
+#, fuzzy
+#| msgid "Copy current line"
+msgid "Copy current line to clipboard"
 msgstr "Copiar línea actual"
 
 #: lazarusidestrconsts.srkmeccopyeditornewwindow
@@ -20421,15 +20439,21 @@ msgid "Cut"
 msgstr "Cortar"
 
 #: lazarusidestrconsts.srkmeccutadd
-msgid "Cut (Add to Clipboard)"
+#, fuzzy
+#| msgid "Cut (Add to Clipboard)"
+msgid "Cut to clipboard (append)"
 msgstr "Cortar (Añadir al portapapeles)"
 
 #: lazarusidestrconsts.srkmeccutaddcurrentline
-msgid "Cut current line (Add to Clipboard)"
+#, fuzzy
+#| msgid "Cut current line (Add to Clipboard)"
+msgid "Cut current line to clipboard (append)"
 msgstr "Cortar línea actual (Añadir al portapapeles)"
 
 #: lazarusidestrconsts.srkmeccutcurrentline
-msgid "Cut current line"
+#, fuzzy
+#| msgid "Cut current line"
+msgid "Cut current line to clipboard"
 msgstr "Copiar línea actual"
 
 #: lazarusidestrconsts.srkmecdeletebol

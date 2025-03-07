@@ -4257,6 +4257,18 @@ msgstr "Préfixer la chaîne sur une nouvelle ligne"
 msgid "String ''"
 msgstr "Chaîne ''"
 
+#: lazarusidestrconsts.dlgstringcontalignalignsecondlineafterfirst
+msgid "Align second line (after first break) with the position of the lowest matching group in the pattern, or the match position of the pattern itself."
+msgstr ""
+
+#: lazarusidestrconsts.dlgstringcontalignalignsecondlineregex
+msgid "Align second line (reg-ex):"
+msgstr ""
+
+#: lazarusidestrconsts.dlgstringcontalignmaxindentforsecondlineifb
+msgid "Max indent for second line if based on reg-ex:"
+msgstr ""
+
 #: lazarusidestrconsts.dlgstringenableautocontinue
 msgid "Extend strings on linebreak"
 msgstr "Étendre les chaînes sur saut de ligne"
@@ -20049,15 +20061,21 @@ msgid "Copy"
 msgstr "Copier"
 
 #: lazarusidestrconsts.srkmeccopyadd
-msgid "Copy (Add to Clipboard)"
+#, fuzzy
+#| msgid "Copy (Add to Clipboard)"
+msgid "Copy to clipboard (append)"
 msgstr "Copier (ajouter au presse-papiers)"
 
 #: lazarusidestrconsts.srkmeccopyaddcurrentline
-msgid "Copy current line (Add to Clipboard)"
+#, fuzzy
+#| msgid "Copy current line (Add to Clipboard)"
+msgid "Copy current line to clipboard (append)"
 msgstr "Copier la ligne en cours (ajouter au presse-papiers)"
 
 #: lazarusidestrconsts.srkmeccopycurrentline
-msgid "Copy current line"
+#, fuzzy
+#| msgid "Copy current line"
+msgid "Copy current line to clipboard"
 msgstr "Copier la ligne en cours"
 
 #: lazarusidestrconsts.srkmeccopyeditornewwindow
@@ -20078,15 +20096,21 @@ msgid "Cut"
 msgstr "Couper"
 
 #: lazarusidestrconsts.srkmeccutadd
-msgid "Cut (Add to Clipboard)"
+#, fuzzy
+#| msgid "Cut (Add to Clipboard)"
+msgid "Cut to clipboard (append)"
 msgstr "Couper (ajouter au presse-papiers)"
 
 #: lazarusidestrconsts.srkmeccutaddcurrentline
-msgid "Cut current line (Add to Clipboard)"
+#, fuzzy
+#| msgid "Cut current line (Add to Clipboard)"
+msgid "Cut current line to clipboard (append)"
 msgstr "Couper la ligne en cours (ajouter au presse-papiers)"
 
 #: lazarusidestrconsts.srkmeccutcurrentline
-msgid "Cut current line"
+#, fuzzy
+#| msgid "Cut current line"
+msgid "Cut current line to clipboard"
 msgstr "Couper la ligne encours"
 
 #: lazarusidestrconsts.srkmecdeletebol

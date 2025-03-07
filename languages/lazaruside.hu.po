@@ -4283,6 +4283,18 @@ msgstr "Előtag a karakterlánchoz az új sorban"
 msgid "String ''"
 msgstr "Karakterlánc ''"
 
+#: lazarusidestrconsts.dlgstringcontalignalignsecondlineafterfirst
+msgid "Align second line (after first break) with the position of the lowest matching group in the pattern, or the match position of the pattern itself."
+msgstr ""
+
+#: lazarusidestrconsts.dlgstringcontalignalignsecondlineregex
+msgid "Align second line (reg-ex):"
+msgstr ""
+
+#: lazarusidestrconsts.dlgstringcontalignmaxindentforsecondlineifb
+msgid "Max indent for second line if based on reg-ex:"
+msgstr ""
+
 #: lazarusidestrconsts.dlgstringenableautocontinue
 msgid "Extend strings on linebreak"
 msgstr "Karakterláncok meghosszabbítása sortöréskor"
@@ -20191,15 +20203,21 @@ msgid "Copy"
 msgstr "Másolás"
 
 #: lazarusidestrconsts.srkmeccopyadd
-msgid "Copy (Add to Clipboard)"
+#, fuzzy
+#| msgid "Copy (Add to Clipboard)"
+msgid "Copy to clipboard (append)"
 msgstr "Másolás (Hozzáadás a vágólaphoz)"
 
 #: lazarusidestrconsts.srkmeccopyaddcurrentline
-msgid "Copy current line (Add to Clipboard)"
+#, fuzzy
+#| msgid "Copy current line (Add to Clipboard)"
+msgid "Copy current line to clipboard (append)"
 msgstr "Aktuális sor másolása (Hozzáadás a vágólaphoz)"
 
 #: lazarusidestrconsts.srkmeccopycurrentline
-msgid "Copy current line"
+#, fuzzy
+#| msgid "Copy current line"
+msgid "Copy current line to clipboard"
 msgstr "Aktuális sor másolása"
 
 #: lazarusidestrconsts.srkmeccopyeditornewwindow
@@ -20220,15 +20238,21 @@ msgid "Cut"
 msgstr "Kivágás"
 
 #: lazarusidestrconsts.srkmeccutadd
-msgid "Cut (Add to Clipboard)"
+#, fuzzy
+#| msgid "Cut (Add to Clipboard)"
+msgid "Cut to clipboard (append)"
 msgstr "Kivágás (Hozzáadás a vágólaphoz)"
 
 #: lazarusidestrconsts.srkmeccutaddcurrentline
-msgid "Cut current line (Add to Clipboard)"
+#, fuzzy
+#| msgid "Cut current line (Add to Clipboard)"
+msgid "Cut current line to clipboard (append)"
 msgstr "Aktuális sor kivágása (Hozzáadás a vágólaphoz)"
 
 #: lazarusidestrconsts.srkmeccutcurrentline
-msgid "Cut current line"
+#, fuzzy
+#| msgid "Cut current line"
+msgid "Cut current line to clipboard"
 msgstr "Aktuális sor kivágása"
 
 #: lazarusidestrconsts.srkmecdeletebol

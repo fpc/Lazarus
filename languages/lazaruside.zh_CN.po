@@ -4244,6 +4244,18 @@ msgstr "在新行前缀字符串"
 msgid "String ''"
 msgstr "字符串''"
 
+#: lazarusidestrconsts.dlgstringcontalignalignsecondlineafterfirst
+msgid "Align second line (after first break) with the position of the lowest matching group in the pattern, or the match position of the pattern itself."
+msgstr ""
+
+#: lazarusidestrconsts.dlgstringcontalignalignsecondlineregex
+msgid "Align second line (reg-ex):"
+msgstr ""
+
+#: lazarusidestrconsts.dlgstringcontalignmaxindentforsecondlineifb
+msgid "Max indent for second line if based on reg-ex:"
+msgstr ""
+
 #: lazarusidestrconsts.dlgstringenableautocontinue
 msgid "Extend strings on linebreak"
 msgstr "在断行之时扩展(Extend)字符串"
@@ -20032,15 +20044,21 @@ msgid "Copy"
 msgstr "复制"
 
 #: lazarusidestrconsts.srkmeccopyadd
-msgid "Copy (Add to Clipboard)"
+#, fuzzy
+#| msgid "Copy (Add to Clipboard)"
+msgid "Copy to clipboard (append)"
 msgstr "复制(添加到剪贴板)"
 
 #: lazarusidestrconsts.srkmeccopyaddcurrentline
-msgid "Copy current line (Add to Clipboard)"
+#, fuzzy
+#| msgid "Copy current line (Add to Clipboard)"
+msgid "Copy current line to clipboard (append)"
 msgstr "复制到当前行(添加到剪贴板)"
 
 #: lazarusidestrconsts.srkmeccopycurrentline
-msgid "Copy current line"
+#, fuzzy
+#| msgid "Copy current line"
+msgid "Copy current line to clipboard"
 msgstr "复制当前行"
 
 #: lazarusidestrconsts.srkmeccopyeditornewwindow
@@ -20061,15 +20079,21 @@ msgid "Cut"
 msgstr "剪切"
 
 #: lazarusidestrconsts.srkmeccutadd
-msgid "Cut (Add to Clipboard)"
+#, fuzzy
+#| msgid "Cut (Add to Clipboard)"
+msgid "Cut to clipboard (append)"
 msgstr "剪切(添加到剪贴板)"
 
 #: lazarusidestrconsts.srkmeccutaddcurrentline
-msgid "Cut current line (Add to Clipboard)"
+#, fuzzy
+#| msgid "Cut current line (Add to Clipboard)"
+msgid "Cut current line to clipboard (append)"
 msgstr "剪切当前行(添加到剪贴板)"
 
 #: lazarusidestrconsts.srkmeccutcurrentline
-msgid "Cut current line"
+#, fuzzy
+#| msgid "Cut current line"
+msgid "Cut current line to clipboard"
 msgstr "剪切当前行"
 
 #: lazarusidestrconsts.srkmecdeletebol

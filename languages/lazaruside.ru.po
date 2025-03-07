@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-03-06 22:47+0300\n"
+"PO-Revision-Date: 2025-03-07 21:40+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -4237,6 +4237,18 @@ msgstr "Префикс новой строки"
 #: lazarusidestrconsts.dlgstringbreakindenttab
 msgid "String ''"
 msgstr "Строка ''"
+
+#: lazarusidestrconsts.dlgstringcontalignalignsecondlineafterfirst
+msgid "Align second line (after first break) with the position of the lowest matching group in the pattern, or the match position of the pattern itself."
+msgstr "Выравнивать вторую строку (после первого разрыва) по положению самой младшей совпадающей группы выражения, либо него самого."
+
+#: lazarusidestrconsts.dlgstringcontalignalignsecondlineregex
+msgid "Align second line (reg-ex):"
+msgstr "Выравнивать вторую строку (регулярное выражение):"
+
+#: lazarusidestrconsts.dlgstringcontalignmaxindentforsecondlineifb
+msgid "Max indent for second line if based on reg-ex:"
+msgstr "Максимальный отступ второй строки по регулярному выражению:"
 
 #: lazarusidestrconsts.dlgstringenableautocontinue
 msgid "Extend strings on linebreak"
@@ -20020,16 +20032,16 @@ msgid "Copy"
 msgstr "Копировать"
 
 #: lazarusidestrconsts.srkmeccopyadd
-msgid "Copy (Add to Clipboard)"
-msgstr "Копировать (добавить к буферу обмена)"
+msgid "Copy to clipboard (append)"
+msgstr "Копировать в буфер обмена (добавить к содержимому)"
 
 #: lazarusidestrconsts.srkmeccopyaddcurrentline
-msgid "Copy current line (Add to Clipboard)"
-msgstr "Копировать текущую строку (добавить к буферу обмена)"
+msgid "Copy current line to clipboard (append)"
+msgstr "Копировать текущую строку в буфер обмена (добавить к содержимому)"
 
 #: lazarusidestrconsts.srkmeccopycurrentline
-msgid "Copy current line"
-msgstr "Копировать текущую строку"
+msgid "Copy current line to clipboard"
+msgstr "Копировать текущую строку в буфер обмена"
 
 #: lazarusidestrconsts.srkmeccopyeditornewwindow
 msgid "Copy editor to new window"
@@ -20049,16 +20061,16 @@ msgid "Cut"
 msgstr "Вырезать"
 
 #: lazarusidestrconsts.srkmeccutadd
-msgid "Cut (Add to Clipboard)"
-msgstr "Вырезать (добавить к буферу обмена)"
+msgid "Cut to clipboard (append)"
+msgstr "Вырезать в буфер обмена (добавить к содержимому)"
 
 #: lazarusidestrconsts.srkmeccutaddcurrentline
-msgid "Cut current line (Add to Clipboard)"
-msgstr "Вырезать текущую строку (добавить к буферу обмена)"
+msgid "Cut current line to clipboard (append)"
+msgstr "Вырезать текущую строку в буфер обмена (добавить к содержимому)"
 
 #: lazarusidestrconsts.srkmeccutcurrentline
-msgid "Cut current line"
-msgstr "Вырезать текущую строку"
+msgid "Cut current line to clipboard"
+msgstr "Вырезать текущую строку в буфер обмена"
 
 #: lazarusidestrconsts.srkmecdeletebol
 msgid "Delete to beginning of line"

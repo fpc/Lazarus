@@ -4268,6 +4268,18 @@ msgstr "Префікс нового рядка"
 msgid "String ''"
 msgstr "Рядок ''"
 
+#: lazarusidestrconsts.dlgstringcontalignalignsecondlineafterfirst
+msgid "Align second line (after first break) with the position of the lowest matching group in the pattern, or the match position of the pattern itself."
+msgstr ""
+
+#: lazarusidestrconsts.dlgstringcontalignalignsecondlineregex
+msgid "Align second line (reg-ex):"
+msgstr ""
+
+#: lazarusidestrconsts.dlgstringcontalignmaxindentforsecondlineifb
+msgid "Max indent for second line if based on reg-ex:"
+msgstr ""
+
 #: lazarusidestrconsts.dlgstringenableautocontinue
 msgid "Extend strings on linebreak"
 msgstr "Додавати новий рядок при розриві поточного"
@@ -20157,15 +20169,21 @@ msgid "Copy"
 msgstr "Копіювати"
 
 #: lazarusidestrconsts.srkmeccopyadd
-msgid "Copy (Add to Clipboard)"
+#, fuzzy
+#| msgid "Copy (Add to Clipboard)"
+msgid "Copy to clipboard (append)"
 msgstr "Копіювати (додати в буфер обміну)"
 
 #: lazarusidestrconsts.srkmeccopyaddcurrentline
-msgid "Copy current line (Add to Clipboard)"
+#, fuzzy
+#| msgid "Copy current line (Add to Clipboard)"
+msgid "Copy current line to clipboard (append)"
 msgstr "Копіювати поточний рядок (додати в буфер обміну)"
 
 #: lazarusidestrconsts.srkmeccopycurrentline
-msgid "Copy current line"
+#, fuzzy
+#| msgid "Copy current line"
+msgid "Copy current line to clipboard"
 msgstr "Копіювати поточний рядок"
 
 #: lazarusidestrconsts.srkmeccopyeditornewwindow
@@ -20186,15 +20204,21 @@ msgid "Cut"
 msgstr "Вирізати"
 
 #: lazarusidestrconsts.srkmeccutadd
-msgid "Cut (Add to Clipboard)"
+#, fuzzy
+#| msgid "Cut (Add to Clipboard)"
+msgid "Cut to clipboard (append)"
 msgstr "Вирізати (додати в буфер обміну)"
 
 #: lazarusidestrconsts.srkmeccutaddcurrentline
-msgid "Cut current line (Add to Clipboard)"
+#, fuzzy
+#| msgid "Cut current line (Add to Clipboard)"
+msgid "Cut current line to clipboard (append)"
 msgstr "Вирізати поточний рядок (додати в буфер обміну)"
 
 #: lazarusidestrconsts.srkmeccutcurrentline
-msgid "Cut current line"
+#, fuzzy
+#| msgid "Cut current line"
+msgid "Cut current line to clipboard"
 msgstr "Вирізати поточний рядок"
 
 #: lazarusidestrconsts.srkmecdeletebol
