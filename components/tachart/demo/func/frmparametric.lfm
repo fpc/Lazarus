@@ -1,0 +1,200 @@
+object ParametricFrame: TParametricFrame
+  Left = 0
+  Height = 421
+  Top = 0
+  Width = 622
+  ClientHeight = 421
+  ClientWidth = 622
+  TabOrder = 0
+  DesignLeft = 543
+  DesignTop = 227
+  object Chart: TChart
+    Left = 0
+    Height = 421
+    Top = 0
+    Width = 492
+    AxisList = <    
+      item
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelBrush.Style = bsClear
+      end>
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Align = alClient
+    Color = clDefault
+    object ChartParametricCurveSeries1: TParametricCurveSeries
+      Extent.UseXMax = True
+      Extent.UseXMin = True
+      Extent.UseYMax = True
+      Extent.UseYMin = True
+      Extent.XMax = 2
+      Extent.XMin = -2
+      Extent.YMax = 2
+      Extent.YMin = -2
+      OnCalculate = ChartParametricCurveSeries1Calculate
+      ParamMax = 32
+      Pen.Color = clMaroon
+      Pen.Width = 2
+    end
+  end
+  object pnlParametric: TPanel
+    Left = 492
+    Height = 421
+    Top = 0
+    Width = 130
+    Align = alRight
+    BevelOuter = bvNone
+    ClientHeight = 421
+    ClientWidth = 130
+    TabOrder = 1
+    object seJ: TSpinEdit
+      Left = 24
+      Height = 23
+      Top = 182
+      Width = 50
+      Alignment = taRightJustify
+      TabOrder = 0
+      Value = 2
+      OnChange = ParamChange
+    end
+    object seK: TSpinEdit
+      Left = 24
+      Height = 23
+      Top = 210
+      Width = 50
+      Alignment = taRightJustify
+      TabOrder = 1
+      Value = 2
+      OnChange = ParamChange
+    end
+    object tbA: TTrackBar
+      Left = 24
+      Height = 32
+      Top = 46
+      Width = 104
+      Frequency = 4
+      Max = 40
+      Position = 1
+      OnChange = ParamChange
+      TabOrder = 2
+    end
+    object lblA: TLabel
+      Left = 8
+      Height = 13
+      Top = 50
+      Width = 12
+      AutoSize = False
+      Caption = 'a'
+      Font.Style = [fsItalic]
+      ParentFont = False
+    end
+    object stEq: TStaticText
+      Left = 4
+      Height = 37
+      Top = 4
+      Width = 122
+      Align = alTop
+      BorderSpacing.Around = 4
+      Caption = 'x = cos(at) - cos(bt)^j'#13#10'y = sin(ct) - sin(dt)^k'
+      Font.Style = [fsItalic]
+      ParentFont = False
+      TabOrder = 3
+    end
+    object tbB: TTrackBar
+      Left = 24
+      Height = 32
+      Top = 78
+      Width = 104
+      Frequency = 4
+      Max = 40
+      Position = 1
+      OnChange = ParamChange
+      TabOrder = 4
+    end
+    object lblB: TLabel
+      Left = 8
+      Height = 13
+      Top = 82
+      Width = 12
+      AutoSize = False
+      Caption = 'b'
+      Font.Style = [fsItalic]
+      ParentFont = False
+    end
+    object tbC: TTrackBar
+      Left = 24
+      Height = 32
+      Top = 110
+      Width = 104
+      Frequency = 4
+      Max = 40
+      Position = 1
+      OnChange = ParamChange
+      TabOrder = 5
+    end
+    object tbD: TTrackBar
+      Left = 24
+      Height = 32
+      Top = 142
+      Width = 104
+      Frequency = 4
+      Max = 40
+      Position = 1
+      OnChange = ParamChange
+      TabOrder = 6
+    end
+    object lblD: TLabel
+      Left = 8
+      Height = 13
+      Top = 146
+      Width = 12
+      AutoSize = False
+      Caption = 'd'
+      Font.Style = [fsItalic]
+      ParentFont = False
+    end
+    object lblC: TLabel
+      Left = 8
+      Height = 13
+      Top = 114
+      Width = 12
+      AutoSize = False
+      Caption = 'c'
+      Font.Style = [fsItalic]
+      ParentFont = False
+    end
+    object lblK: TLabel
+      Left = 8
+      Height = 13
+      Top = 214
+      Width = 12
+      AutoSize = False
+      Caption = 'k'
+      Font.Style = [fsItalic]
+      ParentFont = False
+    end
+    object lblJ: TLabel
+      Left = 9
+      Height = 13
+      Top = 186
+      Width = 12
+      AutoSize = False
+      Caption = 'j'
+      Font.Style = [fsItalic]
+      ParentFont = False
+    end
+  end
+end

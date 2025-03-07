@@ -1,0 +1,200 @@
+object SplineFrame: TSplineFrame
+  Left = 0
+  Height = 357
+  Top = 0
+  Width = 579
+  ClientHeight = 357
+  ClientWidth = 579
+  TabOrder = 0
+  DesignLeft = 544
+  DesignTop = 272
+  object Chart: TChart
+    Left = 0
+    Height = 325
+    Top = 0
+    Width = 579
+    AxisList = <    
+      item
+        Grid.Color = clGray
+        Grid.Cosmetic = False
+        Intervals.Options = [aipGraphCoords, aipUseCount, aipUseMinLength, aipUseNiceSteps]
+        Intervals.Tolerance = 2
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
+        Transformations = catSpline
+      end    
+      item
+        Grid.Color = clGray
+        Grid.Cosmetic = False
+        Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelBrush.Style = bsClear
+      end>
+    ExpandPercentage = 5
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Align = alClient
+    Color = clDefault
+    DoubleBuffered = True
+    object ChartLineSeries1: TLineSeries
+      AxisIndexX = 1
+      AxisIndexY = 0
+      Source = RandomChartSource
+    end
+    object ChartBSplineSeries1: TBSplineSeries
+      Active = False
+      AxisIndexX = 1
+      AxisIndexY = 0
+      Source = RandomChartSource
+      Pen.Color = clLime
+      Pen.Width = 3
+      Pointer.Brush.Color = clLime
+    end
+    object ChartCubicSplineSeries1: TCubicSplineSeries
+      ZPosition = 1
+      AxisIndexX = 1
+      AxisIndexY = 0
+      Pointer.Brush.Color = clAqua
+      Source = RandomChartSource
+      Options = [csoDrawUnorderedX]
+      Pen.Color = clAqua
+      Pen.Width = 2
+    end
+  end
+  object pnSpline: TPanel
+    Left = 0
+    Height = 32
+    Top = 325
+    Width = 579
+    Align = alBottom
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 32
+    ClientWidth = 579
+    TabOrder = 1
+    object iseSplineDegree: TTISpinEdit
+      AnchorSideLeft.Control = lblSplineDegree
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = pnSpline
+      AnchorSideTop.Side = asrCenter
+      Left = 95
+      Height = 23
+      Top = 5
+      Width = 50
+      BorderSpacing.Left = 8
+      BorderSpacing.Top = 4
+      BorderSpacing.Bottom = 4
+      Link.TIObject = ChartBSplineSeries1
+      Link.TIPropertyName = 'Degree'
+      MaxValue = 100
+      MinValue = 1
+      OnChange = iseSplineDegreeChange
+      TabOrder = 0
+    end
+    object icbSplineRandomX: TTICheckBox
+      AnchorSideLeft.Control = iseSplineDegree
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = iseSplineDegree
+      AnchorSideTop.Side = asrCenter
+      Left = 169
+      Height = 19
+      Top = 7
+      Width = 73
+      AutoSize = True
+      BorderSpacing.Left = 24
+      Caption = 'Random X'
+      Link.TIObject = RandomChartSource
+      Link.TIPropertyName = 'RandomX'
+      PropertyNameAsCaption = False
+      TabOrder = 1
+    end
+    object lblSplineDegree: TLabel
+      AnchorSideLeft.Control = pnSpline
+      AnchorSideTop.Control = iseSplineDegree
+      AnchorSideTop.Side = asrCenter
+      Left = 4
+      Height = 15
+      Top = 9
+      Width = 83
+      BorderSpacing.Left = 4
+      Caption = 'B-Spline degree'
+    end
+    object cbCubic: TTICheckBox
+      AnchorSideLeft.Control = cbBSpline
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = iseSplineDegree
+      AnchorSideTop.Side = asrCenter
+      Left = 336
+      Height = 19
+      Top = 7
+      Width = 49
+      AutoSize = True
+      BorderSpacing.Left = 16
+      Caption = 'Cubic'
+      Link.TIObject = ChartCubicSplineSeries1
+      Link.TIPropertyName = 'Active'
+      PropertyNameAsCaption = False
+      State = cbChecked
+      TabOrder = 2
+    end
+    object cbBSpline: TTICheckBox
+      AnchorSideLeft.Control = icbSplineRandomX
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = pnSpline
+      AnchorSideTop.Side = asrCenter
+      Left = 258
+      Height = 19
+      Top = 7
+      Width = 62
+      AutoSize = True
+      BorderSpacing.Left = 16
+      Caption = 'B-Spline'
+      Link.TIObject = ChartBSplineSeries1
+      Link.TIPropertyName = 'Active'
+      PropertyNameAsCaption = False
+      TabOrder = 3
+    end
+    object cbLogY: TTICheckBox
+      AnchorSideLeft.Control = cbCubic
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = iseSplineDegree
+      AnchorSideTop.Side = asrCenter
+      Left = 409
+      Height = 19
+      Top = 7
+      Width = 48
+      AutoSize = True
+      BorderSpacing.Left = 24
+      Caption = 'Log Y'
+      Link.TIObject = catSplineLogarithmAxisTransform
+      Link.TIPropertyName = 'Enabled'
+      PropertyNameAsCaption = False
+      TabOrder = 4
+    end
+  end
+  object catSpline: TChartAxisTransformations
+    Left = 128
+    Top = 48
+    object catSplineLogarithmAxisTransform: TLogarithmAxisTransform
+      Enabled = False
+      Base = 10
+    end
+  end
+  object RandomChartSource: TRandomChartSource
+    PointsNumber = 21
+    RandSeed = 1859411043
+    XMax = 10
+    YMax = 1000
+    YMin = 1
+    Left = 304
+    Top = 48
+  end
+end

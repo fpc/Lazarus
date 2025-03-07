@@ -9,7 +9,8 @@
         <CompatibilityMode Value="True"/>
       </Flags>
       <SessionStorage Value="InProjectDir"/>
-      <Title Value="TAChart function series demo"/>
+      <Title Value="TAChart Function Series Demo"/>
+      <Scaled Value="True"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
     </General>
@@ -49,7 +50,7 @@
         <PackageName Value="LCL"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="2">
+    <Units Count="8">
       <Unit0>
         <Filename Value="funcdemo.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -57,10 +58,56 @@
       <Unit1>
         <Filename Value="main.pas"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="Form1"/>
+        <ComponentName Value="MainForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
       </Unit1>
+      <Unit2>
+        <Filename Value="frmdomain.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="DomainFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="frmDomain"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="frmcolormap.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ColorMapFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="frmColorMap"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="frmspline.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="SplineFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="frmSpline"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="frmautoyextent.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="AutoYExtentFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="frmAutoYExtent"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="frmparametric.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ParametricFrame"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="frmParametric"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="frmexpression.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ExpressionFrame"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="frmExpression"/>
+      </Unit7>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -71,6 +118,9 @@
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>
+      <Debugging>
+        <DebugInfoType Value="dsDwarf3"/>
+      </Debugging>
       <Options>
         <Win32>
           <GraphicApplication Value="True"/>

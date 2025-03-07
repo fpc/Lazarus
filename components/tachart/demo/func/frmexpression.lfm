@@ -1,0 +1,180 @@
+object ExpressionFrame: TExpressionFrame
+  Left = 0
+  Height = 455
+  Top = 0
+  Width = 656
+  ClientHeight = 455
+  ClientWidth = 656
+  TabOrder = 0
+  DesignLeft = 470
+  DesignTop = 237
+  object Chart: TChart
+    Left = 0
+    Height = 362
+    Top = 0
+    Width = 656
+    AxisList = <    
+      item
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+        Title.Visible = True
+        Title.Caption = 'y'
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.Visible = True
+        Title.Caption = 'x'
+        Title.LabelBrush.Style = bsClear
+      end>
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Align = alClient
+    Color = clDefault
+    object ExpressionSeries: TExpressionSeries
+      Extent.UseXMax = True
+      Extent.UseXMin = True
+      Extent.XMax = 10
+      Extent.XMin = -1
+      ExtentAutoY = True
+      DomainEpsilon = 1E-6
+      Params = <      
+        item
+          Name = 'a'
+          Value = 1
+        end      
+        item
+          Name = 'b'
+          Value = -0.5
+        end>
+      Variable = 'x'
+      Domain = 'x >= a; x<>b'
+      Expression = 'a*sqrt(x-a)/(x-b)'
+    end
+  end
+  object Panel2: TPanel
+    Left = 0
+    Height = 93
+    Top = 362
+    Width = 656
+    Align = alBottom
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 93
+    ClientWidth = 656
+    TabOrder = 1
+    object LblExpression: TLabel
+      AnchorSideLeft.Control = Panel2
+      AnchorSideTop.Control = EdExpression
+      AnchorSideTop.Side = asrCenter
+      Left = 8
+      Height = 15
+      Top = 8
+      Width = 88
+      BorderSpacing.Left = 8
+      BorderSpacing.Right = 8
+      Caption = 'Expression y(x) ='
+    end
+    object EdExpression: TEdit
+      AnchorSideLeft.Control = LblExpression
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel2
+      AnchorSideRight.Control = Panel2
+      AnchorSideRight.Side = asrBottom
+      Left = 104
+      Height = 23
+      Top = 4
+      Width = 544
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 4
+      BorderSpacing.Right = 8
+      TabOrder = 0
+      OnEditingDone = EdExpressionEditingDone
+    end
+    object LblExprDomain: TLabel
+      AnchorSideTop.Control = EdExprDomain
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = EdExprDomain
+      Left = 54
+      Height = 15
+      Top = 35
+      Width = 42
+      Anchors = [akTop, akRight]
+      BorderSpacing.Right = 8
+      Caption = 'Domain'
+    end
+    object EdExprDomain: TEdit
+      AnchorSideLeft.Control = EdExpression
+      AnchorSideTop.Control = EdExpression
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = EdExpression
+      AnchorSideRight.Side = asrBottom
+      Left = 104
+      Height = 23
+      Top = 31
+      Width = 544
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 4
+      TabOrder = 1
+      OnEditingDone = EdExprDomainEditingDone
+    end
+    object LblExprParamA: TLabel
+      AnchorSideTop.Control = EdExprParamA
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = EdExprParamA
+      Left = 79
+      Height = 15
+      Top = 66
+      Width = 17
+      Anchors = [akTop, akRight]
+      BorderSpacing.Right = 8
+      Caption = 'a ='
+    end
+    object EdExprParamA: TEdit
+      AnchorSideLeft.Control = EdExpression
+      AnchorSideTop.Control = EdExprDomain
+      AnchorSideTop.Side = asrBottom
+      Left = 104
+      Height = 23
+      Top = 62
+      Width = 80
+      BorderSpacing.Top = 8
+      BorderSpacing.Bottom = 8
+      TabOrder = 2
+      OnEditingDone = EdExprParamAEditingDone
+    end
+    object LblExprParamB: TLabel
+      AnchorSideLeft.Control = EdExprParamA
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = EdExprParamA
+      AnchorSideTop.Side = asrCenter
+      Left = 200
+      Height = 15
+      Top = 66
+      Width = 18
+      BorderSpacing.Left = 16
+      Caption = 'b ='
+    end
+    object EdExprParamB: TEdit
+      AnchorSideLeft.Control = LblExprParamB
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = EdExprParamA
+      Left = 226
+      Height = 23
+      Top = 62
+      Width = 80
+      BorderSpacing.Left = 8
+      BorderSpacing.Bottom = 8
+      TabOrder = 3
+      OnEditingDone = EdExprParamBEditingDone
+    end
+  end
+end

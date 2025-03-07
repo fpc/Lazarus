@@ -1,0 +1,85 @@
+object AutoYExtentFrame: TAutoYExtentFrame
+  Left = 0
+  Height = 461
+  Top = 0
+  Width = 707
+  ClientHeight = 461
+  ClientWidth = 707
+  TabOrder = 0
+  DesignLeft = 539
+  DesignTop = 222
+  object Chart: TChart
+    Left = 0
+    Height = 434
+    Top = 0
+    Width = 707
+    AxisList = <    
+      item
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelBrush.Style = bsClear
+      end>
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Align = alClient
+    Color = clDefault
+    DoubleBuffered = True
+    object ChartFuncSeries1: TFuncSeries
+      Extent.UseXMax = True
+      Extent.UseXMin = True
+      Extent.UseYMax = True
+      Extent.UseYMin = True
+      Extent.XMax = 1
+      Extent.YMax = 5
+      Extent.YMin = -5
+      Pen.Color = 16711808
+      Pen.Width = 2
+      OnCalculate = ChartFuncSeries1Calculate
+    end
+  end
+  object pnlAutoExtentY: TPanel
+    Left = 0
+    Height = 27
+    Top = 434
+    Width = 707
+    Align = alBottom
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 27
+    ClientWidth = 707
+    TabOrder = 1
+    object cbAutoExtentY: TCheckBox
+      AnchorSideLeft.Control = pnlAutoExtentY
+      AnchorSideTop.Control = pnlAutoExtentY
+      AnchorSideTop.Side = asrCenter
+      Left = 4
+      Height = 19
+      Top = 4
+      Width = 89
+      BorderSpacing.Left = 4
+      BorderSpacing.Top = 4
+      BorderSpacing.Bottom = 4
+      Caption = 'Auto Y extent'
+      TabOrder = 0
+      OnChange = cbAutoExtentYChange
+    end
+  end
+  object Timer1: TTimer
+    Interval = 200
+    OnTimer = Timer1Timer
+    Left = 216
+    Top = 80
+  end
+end

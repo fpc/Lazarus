@@ -1,0 +1,112 @@
+object DomainFrame: TDomainFrame
+  Left = 0
+  Height = 436
+  Top = 0
+  Width = 604
+  ClientHeight = 436
+  ClientWidth = 604
+  TabOrder = 0
+  DesignLeft = 506
+  DesignTop = 221
+  object Chart: TChart
+    Left = 0
+    Height = 436
+    Top = 0
+    Width = 604
+    AxisList = <    
+      item
+        Grid.Color = clGray
+        TickLength = 0
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Grid.Color = clGray
+        TickLength = 0
+        Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelBrush.Style = bsClear
+      end>
+    ExpandPercentage = 5
+    Extent.UseYMax = True
+    Extent.UseYMin = True
+    Extent.YMax = 6
+    Extent.YMin = -6
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Frame.Visible = False
+    Legend.Visible = True
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Align = alClient
+    Color = clNone
+    object FuncSeries: TFuncSeries
+      Extent.UseXMax = True
+      Extent.UseXMin = True
+      Extent.XMax = 6.28
+      Extent.XMin = -6.28
+      Extent.YMax = 2
+      Extent.YMin = -2
+      Title = '1 / Sin(x)'
+      Pen.Color = clOlive
+      Pen.Width = 2
+      Step = 4
+      OnCalculate = FuncSeriesCalculate
+    end
+    object ChartXAxis: TConstantLine
+      Legend.Visible = False
+      Arrow.BaseLength = 5
+      Arrow.Length = 12
+      Arrow.Visible = True
+      Arrow.Width = 4
+    end
+    object ChartYAxis: TConstantLine
+      Legend.Visible = False
+      Arrow.BaseLength = 5
+      Arrow.Length = 12
+      Arrow.Visible = True
+      Arrow.Width = 4
+      LineStyle = lsVertical
+    end
+    object BarSeries: TBarSeries
+      Title = 'Cos(x)'
+      BarBrush.Color = clMoneyGreen
+      Source = UserDefinedChartSource1
+    end
+    object UserDrawnSeries: TUserDrawnSeries
+      OnDraw = UserDrawnSeriesDraw
+    end
+  end
+  object cbRotate: TCheckBox
+    Left = 535
+    Height = 19
+    Top = 375
+    Width = 52
+    Anchors = [akRight, akBottom]
+    Caption = 'Rotate'
+    TabOrder = 1
+    OnChange = cbRotateChange
+  end
+  object cbDomain: TCheckBox
+    Left = 535
+    Height = 19
+    Top = 400
+    Width = 60
+    Anchors = [akRight, akBottom]
+    Caption = 'Domain'
+    TabOrder = 2
+    OnChange = cbDomainChange
+  end
+  object UserDefinedChartSource1: TUserDefinedChartSource
+    OnGetChartDataItem = UserDefinedChartSource1GetChartDataItem
+    PointsNumber = 14
+    Left = 88
+    Top = 48
+  end
+end
