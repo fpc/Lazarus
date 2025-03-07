@@ -17,8 +17,9 @@ function CreateUniquePageName(BaseName: string; OwnerComp: TComponent): string;
 var
   i, j: integer;
 begin
-  i:=0;
   Result:=BaseName;
+  if (OwnerComp=nil) or (Result='') then exit;
+  i:=0;
   while true do begin
     j:=OwnerComp.ComponentCount-1;
     while (j>=0) and (CompareText(Result,OwnerComp.Components[j].Name)<>0) do
