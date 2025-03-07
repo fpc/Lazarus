@@ -489,20 +489,85 @@ page object was stored.
 </element>
 
 <element name="TUNBPages.AddObject">
-<short>Adds the specified page object to the list of pages.</short>
-<descr/>
-<seealso/>
+<short>
+Adds the specified page object to the list of pages.
+</short>
+<descr>
+<p>
+<var>AddObject</var> is an overridden method in <var>TUNBPages</var> used to 
+add the specified object to the page list maintained in the class instance. It 
+re-implements the virtual method introduced in TStrings, and does <b>not</b> 
+call the inherited method.
+</p>
+<p>
+<var>S</var> contains the string used to identify the page instance in 
+<var>AObject</var>. It is used as both the Name and the Caption for the TPage 
+instance, as well as the value displayed in the Pages property for a TNotebook 
+control. S must contain a valid identifier name. In addition, it must be 
+unique in the context of the owner control. A numeric suffix is added to the 
+value in S if it is not a unique identifier on the associated TNotebook 
+control.
+</p>
+<p>
+<var>AObject</var> is the page instance added to the internal list. AddObject 
+ensures that AObject is cast to TPage and its properties are initialized:
+</p>
+<ul>
+<li>
+Sets Name to the unique identifier derived from S.
+</li>
+<li>
+Sets Caption to the unique identifier derived from S.
+</li>
+<li>
+Sets Parent to the TNotebook instance which owns the page list.
+</li>
+<li>
+Sets Align to alClient to align the page to the client area for the Notebook.
+</li>
+<li>
+Sets Visible to <b>False</b>.
+</li>
+<li>
+Sets control style flags so that the page is not visible at design-time.
+</li>
+</ul>
+<p>
+The return value is the ordinal position in the internal page list where 
+AObject was stored. If the notebook does not already have an active page, the 
+return value is assigned as the active PageIndex in the notebook control.
+</p>
+<p>
+AddObject is called from the Add method using the TPage instance created in 
+that method.
+</p>
+</descr>
+<seealso>
+<link id="TUNBPages.Add"/>
+<link id="TPage.PageIndex"/>
+<link id="TPage.Visible"/>
+<link id="TNotebook.PageIndex"/>
+<link id="TNotebook.Pages"/>
+<link id="#lcl.controls.TControl.Caption">TControl.Caption</link>
+<link id="#lcl.controls.TControl.Parent">TControl.Parent</link>
+<link id="#lcl.controls.TControl.Align">TControl.Align</link>
+<link id="#rtl.classes.TComponent.Name">TComponent.Name</link>
+</seealso>
 </element>
 <element name="TUNBPages.AddObject.Result">
 <short>
-Ordinal position in the page list where the page object was stored.
+Ordinal position in the page list where the specified page object was stored.
 </short>
 </element>
 <element name="TUNBPages.AddObject.S">
-<short>Identifier used as the name and/or caption for the page object.</short>
+<short>
+Identifier used as the name and caption for the page object.
+</short>
 </element>
 <element name="TUNBPages.AddObject.AObject">
-<short>Page object stored in the method.</short>
+<short>
+Object with the TPage instance stored in the method.
+</short>
 </element>
 
 <element name="TUNBPages.Clear">
