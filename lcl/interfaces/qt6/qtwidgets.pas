@@ -10412,6 +10412,8 @@ begin
   // initialize scrollbars
   verticalScrollBar;
   horizontalScrollBar;
+  if csDesigning in LCLObject.ComponentState then
+    QWidget_setAutoFillBackground(viewportWidget, False);
 end;
 
 procedure TQtTextEdit.DetachEvents;
@@ -10437,6 +10439,9 @@ begin
 end;
 
 function TQtTextEdit.viewportEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+var
+  DC: TQtDeviceContext;
+  R: TRect;
 begin
   Result := False;
   QEvent_accept(Event);
@@ -10446,6 +10451,23 @@ begin
     QEventMouseButtonRelease,
     QEventMouseButtonDblClick: Result := SlotMouse(Sender, Event);
     QEventMouseMove: Result := SlotMouseMove(Sender, Event);
+    QEventPaint:
+    begin
+      if csDesigning in LCLObject.ComponentState then
+      begin
+        if LCLObject.Color = clDefault then
+        begin
+          QPaintEvent_rect(QPaintEventH(Event), @R);
+          DC := TQtDeviceContext.Create(QWidgetH(Sender), True);
+          try
+            LCLIntf.SetBkColor(HDC(DC), ColorToRgb(clWindow));
+            DC.fillRect(R.Left, R.Top, R.Width, R.Height);
+          finally
+            DC.Free;
+          end;
+        end;
+      end;
+    end;
   end;
 end;
 
@@ -12905,6 +12927,9 @@ begin
   QListWidget_hook_hook_itemSelectionChanged(FSelectionChangeHook, @signalSelectionChanged);
   QListWidget_hook_hook_itemClicked(FItemClickedHook, @signalItemClicked);
   QListWidget_hook_hook_currentTextChanged(FItemTextChangedHook, @signalItemTextChanged);
+
+  if csDesigning in LCLObject.ComponentState then
+    QWidget_setAutoFillBackground(viewportWidget, False);
 end;
 
 procedure TQtListWidget.DetachEvents;
@@ -13129,6 +13154,16 @@ begin
           OwnerDataNeeded(R);
         DC := TQtDeviceContext.Create(QWidgetH(Sender), True);
         try
+          if csDesigning in LCLObject.ComponentState then
+          begin
+            if LCLObject.Color = clDefault then
+            begin
+              DC.save;
+              LCLIntf.SetBkColor(HDC(DC), ColorToRgb(clWindow));
+              DC.fillRect(R.Left, R.Top, R.Width, R.Height);
+              DC.restore;
+            end;
+          end;
           TCustomListViewAccess(LCLObject).Canvas.handle := HDC(DC);
           TCustomListViewAccess(LCLObject).IntfCustomDraw(dtControl, cdPrePaint, 0, 0, [], @R);
         finally
@@ -13332,6 +13367,7 @@ begin
       end;
     end else
     case QEvent_type(Event) of
+      QEventPaint: Result := inherited itemViewViewportEventFilter(Sender, Event);
       QEventMouseButtonPress,
       QEventMouseButtonRelease,
       QEventMouseButtonDblClick:
@@ -14161,6 +14197,7 @@ begin
   if (LCLObject <> nil) then
   begin
     case QEvent_type(Event) of
+      QEventPaint: Result := inherited itemViewViewportEventFilter(Sender, Event);
       QEventMouseButtonRelease,
       QEventMouseButtonPress,
       QEventMouseButtonDblClick:
@@ -14355,6 +14392,8 @@ begin
   inherited AttachEvents;
   FSectionClicked := QHeaderView_hook_create(Widget);
   QHeaderView_hook_hook_sectionClicked(FSectionClicked, @SignalSectionClicked);
+  if csDesigning in LCLObject.ComponentState then
+    QWidget_setAutoFillBackground(viewportWidget, False);
 end;
 
 procedure TQtHeaderView.DetachEvents;
@@ -14386,6 +14425,8 @@ end;
 
 function TQtHeaderView.itemViewViewportEventFilter(Sender: QObjectH;
   Event: QEventH): Boolean; cdecl;
+var
+  R: TRect;
 begin
   Result := False;
   QEvent_accept(Event);
@@ -14798,6 +14839,16 @@ begin
       QPaintEvent_rect(QPaintEventH(Event), @R);
       DC := TQtDeviceContext.Create(QWidgetH(Sender), True);
       try
+        if csDesigning in LCLObject.ComponentState then
+        begin
+          if LCLObject.Color = clDefault then
+          begin
+            DC.save;
+            LCLIntf.SetBkColor(HDC(DC), ColorToRgb(clWindow));
+            DC.fillRect(R.Left, R.Top, R.Width, R.Height);
+            DC.restore;
+          end;
+        end;
         TCustomListViewAccess(LCLObject).Canvas.handle := HDC(DC);
         TCustomListViewAccess(LCLObject).IntfCustomDraw(dtControl, cdPrePaint, 0, 0, [], @R);
       finally
@@ -15748,6 +15799,9 @@ begin
   QTreeWidget_hook_hook_ItemActivated(FItemActivatedHook, @SignalItemActivated);
   QTreeWidget_hook_hook_ItemEntered(FItemEnteredHook, @SignalItemEntered);
   QTreeWidget_hook_hook_itemSelectionChanged(FSelectionChangedHook, @SignalSelectionChanged);
+
+  if csDesigning in LCLObject.ComponentState then
+    QWidget_setAutoFillBackground(viewportWidget, False);
 end;
 
 procedure TQtTreeWidget.DetachEvents;
@@ -19110,6 +19164,7 @@ var
   R: TRect;
   ASize: TSize;
   AResizeEvent: QResizeEventH;
+  DC: TQtDeviceContext;
 begin
   {we install only mouse events on QAbstractItemView viewport}
   Result := False;
@@ -19129,6 +19184,20 @@ begin
     end;
 
     case QEvent_type(Event) of
+      QEventPaint:
+      begin
+        if (csDesigning in LCLObject.ComponentState) and (LCLObject.Color = clDefault) then
+        begin
+          QPaintEvent_rect(QPaintEventH(Event), @R);
+          DC := TQtDeviceContext.Create(QWidgetH(Sender), True);
+          try
+            LCLIntf.SetBkColor(HDC(DC), ColorToRgb(clWindow));
+            DC.fillRect(R.Left, R.Top, R.Width, R.Height);
+          finally
+            DC.Free;
+          end;
+        end;
+      end;
       QEventResize:
       begin
         if Assigned(FOwner) then
