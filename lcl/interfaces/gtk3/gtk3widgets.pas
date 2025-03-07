@@ -2290,11 +2290,7 @@ begin
     ' Event.Type=',Event^.type_,' Capture=',LCLintf.GetCapture);
   {$ENDIF}
   if Event^.button.send_event = NO_PROPAGATION_TO_PARENT then
-  begin
-    if Event^.type_ <> GDK_BUTTON_RELEASE then
-      LCLIntf.SetCapture(HWND(Self));
     exit(gtk_true);
-  end;
 
   SavedHandle := PtrUInt(Self);
 
@@ -2396,7 +2392,7 @@ begin
     if (SavedHandle <> PtrUInt(Self)) or (LCLObject = nil) or (FWidget = nil) then
       exit;
 
-    DeliverMessage(MsgPopup, True);
+    Result := DeliverMessage(MsgPopup, True) <> 0;
   end;
 
   if not Result then
