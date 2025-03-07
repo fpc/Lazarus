@@ -3956,8 +3956,6 @@ begin
     ASize := R.Height
   else
     ASize := R.Width;
-  if ScrollInfo.nMax >= ASize - ScrollInfo.nPage then
-    exit;
   if ScrollInfo.nPage <= 0 then
     exit;
   APixelsPerUnit := ASize / ScrollInfo.nPage;
@@ -4148,7 +4146,6 @@ var
   begin
     if bRedraw then
     begin
-      //gtk_adjustment_changed(Adjustment);
       if IsScrollWindow then // seem that gtk3 does not like this
       begin
         ScrollWin^.get_policy(@AHorzPolicy, @AVertPolicy);
@@ -4162,7 +4159,10 @@ var
             begin
               ScrollBar^.set_can_focus(False);
               if (csDesigning in AControl.LCLObject.ComponentState) then
-                ScrollBar^.sensitive := false;
+                ScrollBar^.sensitive := false
+              else
+              if HaveLogicalValues and Gtk3IsGdkWindow(ScrollBar^.window) then
+                ScrollBar^.window^.raise_;
             end;
           end;
           SB_VERT:
@@ -4174,7 +4174,10 @@ var
             begin
               ScrollBar^.set_can_focus(False);
               if (csDesigning in AControl.LCLObject.ComponentState) then
-                ScrollBar^.sensitive := false;
+                ScrollBar^.sensitive := false
+              else
+              if HaveLogicalValues and Gtk3IsGdkWindow(ScrollBar^.window) then
+                ScrollBar^.window^.raise_;
             end;
           end;
         end;
@@ -4187,10 +4190,6 @@ begin
   Result := 0;
   if not IsValidHandle(Handle) then Exit;
 
-  //if GTK3WidgetSet.OverlayScrolling then
-  //  OverlayFactor := 2
-  //else
-  //  OverlayFactor := 1;
   HasChanged := False;
   HaveLogicalValues := False;
 
@@ -4243,12 +4242,15 @@ begin
       begin
         Adjustment := gtk_scrolled_window_get_hadjustment(ScrollWin);
         ScrollBar := TGtk3ScrollableWin(AControl).getHorizontalScrollbar;
-        if ScrollInfo.nMax < ScrollWin^.get_allocated_width then
+
+        R := AControl.getClientRect;
+        if ([wtScrollingWinControl] * AControl.WidgetType = []) and
+          (Scrollinfo.nMax - (R.Width - ScrollInfo.nPage) < R.Width) then
         begin
-          R := AControl.getClientRect;
           HaveLogicalValues := True;
           ChangeLogicalToAbsolute(AControl, ScrollInfo, SB_HORZ, R);
         end;
+
       end else
         Adjustment := ScrollBar^.adjustment;
     end;
@@ -4259,11 +4261,14 @@ begin
         Adjustment := gtk_scrolled_window_get_vadjustment(ScrollWin);
         ScrollBar := TGtk3ScrollableWin(AControl).getVerticalScrollbar;
         R := AControl.getClientRect;
-        if ScrollInfo.nMax < ScrollWin^.get_allocated_height then
+
+        if ([wtScrollingWinControl] * AControl.WidgetType = []) and
+          (Scrollinfo.nMax - (R.Height - ScrollInfo.nPage) < R.Height) then
         begin
           HaveLogicalValues := True;
           ChangeLogicalToAbsolute(AControl, ScrollInfo, SB_VERT, R);
         end;
+
       end else
         Adjustment := ScrollBar^.adjustment;
     end;
