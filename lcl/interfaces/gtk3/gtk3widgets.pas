@@ -27,7 +27,7 @@ uses
   Controls, StdCtrls, ExtCtrls, Buttons, ComCtrls, Graphics, Dialogs, Forms, Menus, ExtDlgs,
   Spin, CheckLst, PairSplitter, LCLType, LMessages, LCLMessageGlue, LCLIntf,
   // LazUtils
-  GraphType, LazUtilities,
+  GraphType,
   // GTK3
   LazGtk3, LazGdk3, LazGObject2, LazGLib2, LazCairo1, LazPango1, LazGdkPixbuf2,
   gtk3objects, gtk3procs, gtk3private, Gtk3CellRenderer;
@@ -168,7 +168,6 @@ type
     function GtkEventResize(Sender: PGtkWidget; Event: PGdkEvent): Boolean; virtual; cdecl;
     procedure GtkEventFocus(Sender: PGtkWidget; Event: PGdkEvent); cdecl;
     procedure GtkEventDestroy; cdecl;
-    function GtkEventMouseWheel(Sender: PGtkWidget; Event: PGdkEvent): Boolean; virtual; cdecl;
 
     function IsValidHandle: Boolean;
     function IsWidgetOk: Boolean; virtual;
@@ -1322,7 +1321,7 @@ begin
   GDK_SCROLL:
     begin
       // DebugLn('****** GDK_SCROLL ' + dbgsName(TGtk3Widget(Data).LCLObject));
-      Result := TGtk3Widget(Data).GtkEventMouseWheel(Widget, Event);
+      // Result := TGtk3Widget(Data).GtkEventMouseWheel(Widget, Event);
     end;
   GDK_WINDOW_STATE:
     begin
@@ -1425,7 +1424,6 @@ end;
 class function TGtk3Widget.ScrollEvent(AWidget: PGtkWidget; AEvent: PGdkEvent; AData: GPointer): GBoolean; cdecl;
 var
   AWinControl: TWinControl;
-  EventXY: TPoint;
   AState: Cardinal;
   ShiftState: TShiftState;
   MappedXY: TPoint;
@@ -1433,12 +1431,13 @@ var
 begin
   Result := False;
   if AWidget=nil then ;
+
   AWinControl := TGtk3Widget(AData).LCLObject;
 
   if AEvent^.scroll.send_event = NO_PROPAGATION_TO_PARENT then
     exit;
 
-  EventXY := Point(LazUtilities.TruncToInt(AEvent^.Scroll.X),LazUtilities.TruncToInt(AEvent^.scroll.Y));
+  MappedXY := Point(Round(AEvent^.Scroll.X),Round(AEvent^.scroll.Y));
   AState := GtkModifierStateToShiftState(AEvent^.scroll.state, False);
   ShiftState := [];
   if AState and MK_SHIFT <> 0 then
@@ -1447,38 +1446,51 @@ begin
     ShiftState := ShiftState + [ssCtrl];
   if AState and MK_ALT <> 0 then
     ShiftState := ShiftState + [ssAlt];
-  // MappedXY := TranslateGdkPointToClientArea(AEvent^.scroll.window, EventXY,
-  //                                        {%H-}TGtk3Widget(AWinControl.Handle).GetContainerWidget);
-  MappedXY := EventXY;
-  if TGtk3Widget(AWinControl.Handle) is TGtk3ScrollableWin then
-    MappedXY := SubtractScroll(TGtk3Widget(AWinControl.Handle).Widget, MappedXY)
-  else
-    MappedXY := SubtractScroll(TGtk3Widget(AWinControl.Handle).GetContainerWidget, MappedXY);
-  //DebugLn('gtkMouseWheelCB ',DbgSName(AWinControl),' Mapped=',dbgs(MappedXY.X),',',dbgs(MappedXY.Y),' Event=',dbgs(EventXY.X),',',dbgs(EventXY.Y));
+
   TGtk3Widget(AData).OffsetMousePos(@MappedXY);
-  // this is a mouse wheel event
+
   FillChar(MessE{%H-},SizeOf(MessE),0);
   MessE.Msg := LM_MOUSEWHEEL;
   case AEvent^.scroll.direction of
-    GDK_SCROLL_UP {0}: MessE.WheelDelta := 120;
-    GDK_SCROLL_DOWN {1}: MessE.WheelDelta := -120;
+    GDK_SCROLL_UP, GDK_SCROLL_RIGHT {0}: MessE.WheelDelta := 120;
+    GDK_SCROLL_DOWN, GDK_SCROLL_LEFT {1}: MessE.WheelDelta := -120;
+    GDK_SCROLL_SMOOTH:
+      begin
+        if AEvent^.scroll.delta_y <> 0 then
+        begin
+          if AEvent^.scroll.delta_y > 0 then
+            MessE.WheelDelta := -120
+          else
+            MessE.WheelDelta := 120;
+          //TODO: find in settings default wheel scroll distance
+          //MessE.WheelDelta := -Round((120 * AEvent^.scroll.delta_y) / 10);
+        end else
+        if AEvent^.scroll.delta_x <> 0 then
+        begin
+          if AEvent^.scroll.delta_x > 0 then
+            MessE.WheelDelta := -120
+          else
+            MessE.WheelDelta := 120;
+        end else
+          exit;
+      end;
   else
+  begin
+    DebugLn('WARNING: ',dbgsName(aWinControl),' unhandled scrollDirection event ',dbgs(Ord(AEvent^.scroll.direction)));
     exit;
   end;
-  MessE.X := MappedXY.X;
-  MessE.Y := MappedXY.Y;
+  end;
+  MessE.X := SmallInt(MappedXY.X);
+  MessE.Y := SmallInt(MappedXY.Y);
   MessE.State := ShiftState;
   MessE.UserData := AWinControl;
   MessE.Button := 0;
 
-  // send the message directly to the LCL
   NotifyApplicationUserInput(AWinControl, MessE.Msg);
-  if TGtk3Widget(AData).DeliverMessage(MessE) <> 0 then
-    Result := True // message handled by LCL, stop processing
-  else
-    AEvent^.scroll.send_event := NO_PROPAGATION_TO_PARENT;
+  Result := TGtk3Widget(AData).DeliverMessage(MessE) <> 0;
+  AEvent^.scroll.send_event := NO_PROPAGATION_TO_PARENT;
 
-  // DebugLn('Gtk3ScrollEvent for ', dbgsName(TGtk3Widget(AData).LCLObject),' Result ',dbgs(Result));
+  //DebugLn('Gtk3ScrollEvent for ', dbgsName(TGtk3Widget(AData).LCLObject),' Result ',dbgs(Result));
 end;
 
 class procedure TGtk3Widget.SizeAllocate(AWidget: PGtkWidget; AGdkRect: PGdkRectangle; Data: gpointer); cdecl;
@@ -1613,110 +1625,6 @@ begin
   Msg.Show := True;
 
   Gtk3Widget.DeliverMessage(Msg);
-end;
-
-function Gtk3ScrolledWindowScrollEvent(AScrollWindow: PGtkScrolledWindow; AEvent: PGdkEvent; AData: gPointer): gboolean; cdecl;
-var
-  Msg: TLMVScroll;
-  ScrollStep, AValue: Double;
-  Adjustment: PGtkAdjustment;
-  Range: PGtkRange;
-  ACtl: TGtk3Widget absolute AData;
-  IsVerticalScroll: Boolean;
-begin
-  Result := False;
-
-  if ACtl = nil then
-    Exit;
-
-  {$IFDEF GTK3DEBUGSCROLL}
-  DebugLn(['>Gtk3ScrolledWindowScrollEvent triggered InUpdate lock=',dbgs(ACtl.InUpdate)]);
-  {$ENDIF}
-
-  Msg := Default(TLMVScroll);
-
-  case AEvent^.scroll.direction of
-    GDK_SCROLL_UP, GDK_SCROLL_DOWN:
-      begin
-        Msg.Msg := LM_VSCROLL;
-        Range := PGtkRange(gtk_scrolled_window_get_vscrollbar(AScrollWindow));
-        Adjustment := gtk_range_get_adjustment(Range);
-        ScrollStep := power(Adjustment^.page_size, 2 / 3);
-        if AEvent^.scroll.direction = GDK_SCROLL_DOWN then
-          ScrollStep := -ScrollStep;
-      end;
-    GDK_SCROLL_LEFT, GDK_SCROLL_RIGHT:
-      begin
-        Msg.Msg := LM_HSCROLL;
-        Range := PGtkRange(gtk_scrolled_window_get_hscrollbar(AScrollWindow));
-        Adjustment := gtk_range_get_adjustment(Range);
-        ScrollStep := power(Adjustment^.page_size, 2 / 3);
-        if AEvent^.scroll.direction = GDK_SCROLL_RIGHT then
-          ScrollStep := -ScrollStep;
-      end;
-    GDK_SCROLL_SMOOTH:
-      begin
-        IsVerticalScroll := Abs(AEvent^.scroll.delta_y) > Abs(AEvent^.scroll.delta_x);
-        if IsVerticalScroll then
-        begin
-          Msg.Msg := LM_VSCROLL;
-          Range := PGtkRange(gtk_scrolled_window_get_vscrollbar(AScrollWindow));
-          Adjustment := gtk_range_get_adjustment(Range);
-          ScrollStep := -(-AEvent^.scroll.delta_y * Adjustment^.page_size * 0.1);
-        end
-        else
-        begin
-          Msg.Msg := LM_HSCROLL;
-          Range := PGtkRange(gtk_scrolled_window_get_hscrollbar(AScrollWindow));
-          Adjustment := gtk_range_get_adjustment(Range);
-          ScrollStep := -AEvent^.scroll.delta_x * Adjustment^.page_size * 0.1;
-        end;
-
-        if Abs(ScrollStep) < 1.0 then
-        begin
-          if ScrollStep > 0 then
-            ScrollStep := 1.0
-          else
-            ScrollStep := -1.0;
-        end;
-        {$IFDEF GTK3DEBUGSCROLL}
-        DebugLn(Format('Smooth Scroll: delta_x=%.2f, delta_y=%.2f, ScrollStep=%.2f',
-          [AEvent^.scroll.delta_x, AEvent^.scroll.delta_y, ScrollStep]));
-        {$ENDIF}
-      end;
-    else
-    begin
-      {$IFDEF GTK3DEBUGSCROLL}
-      DebugLn('Gtk3ScrolledWindowScrollEvent: Unknown scroll direction: ', dbgs(AEvent^.scroll.direction));
-      {$ENDIF}
-      Exit;
-    end;
-  end;
-
-  with Adjustment^ do
-  begin
-    AValue := value + ScrollStep;
-    AValue := Max(AValue, lower);
-    AValue := Min(AValue, upper - page_size);
-  end;
-
-  with Msg do
-  begin
-    Pos := Round(AValue);
-    ScrollBar := HWND({%H-}TGtk3Widget(AData)); //TODO: Implement TGtk3Scrollbar.CreateFrom
-    ScrollCode := SB_THUMBPOSITION;
-  end;
-
-  {$IFDEF GTK3DEBUGSCROLL}
-  DebugLn(Format('Scroll Event: Pos=%d, ScrollStep=%.2f, Value=%.2f', [Msg.Pos, ScrollStep, AValue]));
-  {$ENDIF}
-
-
-  Result := ACtl.DeliverMessage(Msg) <> 0;
-  //Result := gtk_true;
-  {$IFDEF GTK3DEBUGSCROLL}
-  DebugLn(['<Gtk3ScrolledWindowScrollEvent completed: Pos=', Msg.Pos, ', ScrollStep=', ScrollStep.ToString,' InUpdate=',dbgs(ACtl.InUpdate),' Result=',dbgs(Result)]);
-  {$ENDIF}
 end;
 
 { TGtk3SplitterSide }
@@ -1943,47 +1851,6 @@ begin
   Msg.Msg := LM_DESTROY;
   DeliverMessage(Msg);
   Release;
-end;
-
-function TGtk3Widget.GtkEventMouseWheel(Sender: PGtkWidget; Event: PGdkEvent
-  ): Boolean; cdecl;
-var
-  Msg: TLMMouseEvent;
-  MousePos: TPoint;
-begin
-  // gtk3 have ugly bug with scroll-event
-  // https://bugzilla.gnome.org/show_bug.cgi?id=675959
-  Result := False;
-  FillChar(Msg{%H-},SizeOf(Msg),0);
-  Msg.Msg := LM_MOUSEWHEEL;
-  //DebugLn('Scroll ',Format('deltaX %2.2n deltaY %2.2n x %2.2n y %2.2n rootx %2.2n rooty %2.2n',
-  //  [Event^.scroll.delta_x, Event^.scroll.delta_y, Event^.scroll.x, Event^.scroll.y,
-  //  Event^.scroll.x_root, Event^.scroll.y_root]));
-  if Event^.scroll.direction = GDK_SCROLL_UP then
-    Msg.WheelDelta := 120
-  else
-  if Event^.scroll.direction = GDK_SCROLL_DOWN then
-    Msg.WheelDelta := -120
-  else
-    exit;
-
-  MousePos.x := Round(Event^.scroll.x);
-  MousePos.y := Round(Event^.scroll.y);
-
-  OffsetMousePos(@MousePos);
-
-  Msg.X := SmallInt(MousePos.X);
-  Msg.Y := SmallInt(MousePos.Y);
-
-  Msg.State := GdkModifierStateToShiftState(Event^.scroll.state);
-  Msg.UserData := LCLObject;
-  Msg.Button := 0;
-
-  NotifyApplicationUserInput(LCLObject, Msg.Msg);
-  if Widget^.get_parent <> nil then
-    Event^.motion.send_event := NO_PROPAGATION_TO_PARENT;
-  if DeliverMessage(Msg, True) <> 0 then
-    Result := True;
 end;
 
 function TGtk3Widget.IsValidHandle: Boolean;
@@ -8973,8 +8840,6 @@ begin
   inherited InitializeWidget;
   if not IsDesigning then
   begin
-    g_signal_connect_data(GetScrolledWindow,'scroll-event', TGCallback(@Gtk3ScrolledWindowScrollEvent), Self, nil, G_CONNECT_DEFAULT);
-
     g_signal_connect_data(gtk_scrolled_window_get_hscrollbar(GetScrolledWindow), 'change-value',
       TGCallback(@RangeChangeValue), Self, nil, G_CONNECT_DEFAULT);
     g_signal_connect_data(gtk_scrolled_window_get_vscrollbar(GetScrolledWindow), 'change-value',
