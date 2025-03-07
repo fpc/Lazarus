@@ -143,8 +143,7 @@ begin
   if Assigned(fFilteredListbox) then
   begin
     fFilteredListbox.RemoveFreeNotification(Self);
-    InternalSetFilter('');
-    ApplyFilter(True);
+    ForceFilter('');
   end;
   fFilteredListbox:=AValue;
   if Assigned(fFilteredListbox) then

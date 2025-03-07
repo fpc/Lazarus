@@ -154,8 +154,7 @@ begin
   if Assigned(fFilteredListview) then
   begin
     fFilteredListview.RemoveFreeNotification(Self);
-    InternalSetFilter('');
-    ApplyFilter(True);
+    ForceFilter('');
   end;
   fFilteredListview := AValue;
   if Assigned(fFilteredListview) then
