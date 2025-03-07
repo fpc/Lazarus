@@ -1,0 +1,345 @@
+object BasicFrame: TBasicFrame
+  Left = 0
+  Height = 441
+  Top = 0
+  Width = 622
+  ClientHeight = 441
+  ClientWidth = 622
+  TabOrder = 0
+  DesignLeft = 570
+  DesignTop = 262
+  object pnControls: TPanel
+    Left = 0
+    Height = 135
+    Top = 306
+    Width = 622
+    Align = alBottom
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 135
+    ClientWidth = 622
+    TabOrder = 0
+    object lblMarginY: TLabel
+      AnchorSideLeft.Control = lblMarginX
+      AnchorSideTop.Control = seMarginY
+      AnchorSideTop.Side = asrCenter
+      Left = 8
+      Height = 15
+      Top = 35
+      Width = 48
+      Caption = 'Y margin'
+    end
+    object seMarginY: TSpinEdit
+      AnchorSideLeft.Control = seMarginX
+      AnchorSideTop.Control = seMarginX
+      AnchorSideTop.Side = asrBottom
+      Left = 64
+      Height = 23
+      Top = 31
+      Width = 54
+      BorderSpacing.Top = 4
+      MaxValue = 20
+      TabOrder = 0
+      Value = 4
+      OnChange = seMarginYChange
+    end
+    object seSymbolWidth: TSpinEdit
+      AnchorSideLeft.Control = lblSymbolWidth
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = seMarginX
+      Left = 223
+      Height = 23
+      Top = 4
+      Width = 54
+      BorderSpacing.Left = 8
+      MaxValue = 50
+      TabOrder = 1
+      Value = 20
+      OnChange = seSymbolWidthChange
+    end
+    object lblSymbolWidth: TLabel
+      AnchorSideLeft.Control = seMarginX
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = seSymbolWidth
+      AnchorSideTop.Side = asrCenter
+      Left = 142
+      Height = 15
+      Top = 8
+      Width = 73
+      BorderSpacing.Left = 24
+      Caption = 'Symbol width'
+    end
+    object rgAlignment: TRadioGroup
+      AnchorSideLeft.Control = seSymbolWidth
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideBottom.Side = asrBottom
+      Left = 293
+      Height = 135
+      Top = 0
+      Width = 317
+      Anchors = [akTop, akLeft, akBottom]
+      AutoFill = True
+      AutoSize = True
+      BorderSpacing.Left = 16
+      BorderSpacing.Right = 8
+      Caption = ' Alignment '
+      ChildSizing.LeftRightSpacing = 12
+      ChildSizing.TopBottomSpacing = 6
+      ChildSizing.HorizontalSpacing = 16
+      ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+      ChildSizing.EnlargeVertical = crsHomogenousChildResize
+      ChildSizing.ShrinkHorizontal = crsScaleChilds
+      ChildSizing.ShrinkVertical = crsScaleChilds
+      ChildSizing.Layout = cclTopToBottomThenLeftToRight
+      ChildSizing.ControlsPerLine = 3
+      ClientHeight = 115
+      ClientWidth = 313
+      Columns = 3
+      ItemIndex = 6
+      Items.Strings = (
+        'TopLeft'
+        'CenterLeft'
+        'BottomLeft'
+        'TopCenter'
+        ''
+        'BottomCenter'
+        'TopRight'
+        'CenterRight'
+        'BottomRight'
+      )
+      TabOrder = 2
+      OnClick = rgAlignmentClick
+    end
+    object cbUseSidebar: TCheckBox
+      AnchorSideLeft.Control = lblMarginX
+      AnchorSideTop.Control = seMarginY
+      AnchorSideTop.Side = asrBottom
+      Left = 8
+      Height = 19
+      Top = 62
+      Width = 57
+      BorderSpacing.Top = 8
+      Caption = 'Sidebar'
+      Checked = True
+      State = cbChecked
+      TabOrder = 3
+      OnChange = cbUseSidebarChange
+    end
+    object lblSpacing: TLabel
+      AnchorSideTop.Control = seSpacing
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = lblSymbolWidth
+      AnchorSideRight.Side = asrBottom
+      Left = 173
+      Height = 15
+      Top = 35
+      Width = 42
+      Anchors = [akTop, akRight]
+      Caption = 'Spacing'
+    end
+    object seSpacing: TSpinEdit
+      AnchorSideLeft.Control = seSymbolWidth
+      AnchorSideTop.Control = seMarginY
+      Left = 223
+      Height = 23
+      Top = 31
+      Width = 54
+      MaxValue = 20
+      TabOrder = 4
+      Value = 4
+      OnChange = seSpacingChange
+    end
+    object lblMarginX: TLabel
+      AnchorSideLeft.Control = pnControls
+      AnchorSideTop.Control = seMarginX
+      AnchorSideTop.Side = asrCenter
+      Left = 8
+      Height = 15
+      Top = 8
+      Width = 48
+      BorderSpacing.Left = 8
+      Caption = 'X margin'
+    end
+    object seMarginX: TSpinEdit
+      AnchorSideLeft.Control = lblMarginX
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = pnControls
+      Left = 64
+      Height = 23
+      Top = 4
+      Width = 54
+      BorderSpacing.Left = 8
+      BorderSpacing.Top = 4
+      MaxValue = 20
+      TabOrder = 5
+      Value = 4
+      OnChange = seMarginXChange
+    end
+    object cbSeries: TComboBox
+      AnchorSideLeft.Control = lblSymbolWidth
+      AnchorSideRight.Control = seSymbolWidth
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = cbGrid
+      AnchorSideBottom.Side = asrBottom
+      Left = 142
+      Height = 22
+      Top = 105
+      Width = 135
+      Anchors = [akLeft, akRight, akBottom]
+      ItemHeight = 16
+      Style = csOwnerDrawFixed
+      TabOrder = 6
+      OnDrawItem = cbSeriesDrawItem
+    end
+    object lblColumnCount: TLabel
+      AnchorSideTop.Control = seColumnCount
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = lblSymbolWidth
+      AnchorSideRight.Side = asrBottom
+      Left = 167
+      Height = 15
+      Top = 62
+      Width = 48
+      Anchors = [akTop, akRight]
+      Caption = 'Columns'
+    end
+    object seColumnCount: TSpinEdit
+      AnchorSideLeft.Control = seSymbolWidth
+      AnchorSideTop.Control = seSpacing
+      AnchorSideTop.Side = asrBottom
+      Left = 223
+      Height = 23
+      Top = 58
+      Width = 54
+      BorderSpacing.Top = 4
+      MaxValue = 10
+      MinValue = 1
+      TabOrder = 7
+      Value = 1
+      OnChange = seColumnCountChange
+    end
+    object cbByRows: TCheckBox
+      AnchorSideLeft.Control = cbUseSidebar
+      AnchorSideTop.Control = cbUseSidebar
+      AnchorSideTop.Side = asrBottom
+      Left = 8
+      Height = 19
+      Top = 85
+      Width = 59
+      BorderSpacing.Top = 4
+      Caption = 'By rows'
+      TabOrder = 8
+      OnChange = cbByRowsChange
+    end
+    object cbGrid: TCheckBox
+      AnchorSideLeft.Control = cbUseSidebar
+      AnchorSideTop.Control = cbByRows
+      AnchorSideTop.Side = asrBottom
+      Left = 8
+      Height = 19
+      Top = 108
+      Width = 40
+      BorderSpacing.Top = 4
+      BorderSpacing.Bottom = 8
+      Caption = 'Grid'
+      TabOrder = 9
+      OnChange = cbGridChange
+    end
+  end
+  object Chart: TChart
+    Left = 8
+    Height = 290
+    Top = 8
+    Width = 606
+    AxisList = <    
+      item
+        Visible = False
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Visible = False
+        Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelBrush.Style = bsClear
+      end>
+    BackColor = clSkyBlue
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Legend.BackgroundBrush.Color = clMoneyGreen
+    Legend.GridHorizontal.Style = psDot
+    Legend.GridVertical.Style = psDot
+    Legend.GroupFont.Style = [fsBold]
+    Legend.GroupTitles.Strings = (
+      'Pie'
+    )
+    Legend.Visible = True
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Align = alClient
+    BorderSpacing.Around = 8
+    Color = clOlive
+    object LineSeries: TLineSeries
+      Title = 'Line'
+      LinePen.Color = clRed
+      Pointer.Brush.Color = clRed
+      Pointer.Visible = True
+      ShowPoints = True
+    end
+    object AreaSeries: TAreaSeries
+      Title = 'Area'
+      AreaBrush.Color = clGreen
+      AreaBrush.Style = bsCross
+      Source = RandomChartSource1
+    end
+    object PieSeries: TPieSeries
+      Legend.Format = '%2:s %1:.2f%%'
+      Legend.GroupIndex = 0
+      Legend.Multiplicity = lmPoint
+      Title = 'Pie'
+      Exploded = True
+      Marks.Format = '%2:s'
+      Marks.Style = smsLabel
+      Source = ListChartSource2
+    end
+    object FuncSeries: TFuncSeries
+      Legend.Order = 1
+      Legend.UserItemsCount = 2
+      Legend.OnDraw = Chart1FuncSeries1ChartSeriesLegendDraw
+      Extent.UseXMax = True
+      Extent.UseXMin = True
+      Extent.XMax = 5
+      Title = 'Function'
+      Pen.Color = clPurple
+      Pen.Width = 2
+      OnCalculate = FuncSeriesCalculate
+    end
+  end
+  object RandomChartSource1: TRandomChartSource
+    PointsNumber = 7
+    RandSeed = 104675296
+    XMax = 10
+    XMin = 1
+    YMax = 10
+    YMin = 1
+    Left = 128
+    Top = 48
+  end
+  object ListChartSource2: TListChartSource
+    DataPoints.Strings = (
+      '0|5|?|abcc'
+      '0|6|?|def'
+      '0.2|4|?|пример'
+      '0|7|?|ещё'
+      '0|2|?|два слова'
+    )
+    Left = 128
+    Top = 120
+  end
+end

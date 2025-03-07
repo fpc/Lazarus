@@ -7,16 +7,15 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, main, TAChartLazarusPkg
-  { you can add units after this };
+  Forms, main;
 
 {$R *.res}
 
 begin
-  Application.Scaled:=True;
-  Application.Title:='TAChart legend demo';
+  Application.Scaled := True;
+  Application.Title := 'TAChart Legend Demo';
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TMainForm, MainForm);
   Application.Run;
 end.
 
