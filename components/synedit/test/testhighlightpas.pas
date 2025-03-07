@@ -56,6 +56,7 @@ type
   published
     procedure TestFoldInfo;
     procedure TestExtendedKeywordsAndStrings;
+    procedure TestRaiseAt;
     procedure TestContextForProcModifiers;
     procedure TestContextForProcModifiers2;
     procedure TestContextForProcModifiersName;
@@ -621,6 +622,47 @@ begin
   PasHighLighter.ExtendedKeywordsMode := True;
   CheckTokensForLine('continue',  11, [tkSpace, tkKey, tkSymbol ]);
   CheckTokensForLine('exit',      12, [tkSpace, tkKey, tkSymbol ]);
+
+end;
+
+procedure TTestHighlighterPas.TestRaiseAt;
+begin
+  ReCreateEdit;
+  SetLines
+    ([ 'program A;',
+       'begin',
+       '  raise foo at 1;',  // 2
+       '  raise at AT at;',
+       '  raise at + at AT at.at;',  // 4
+       '  raise at.at at AT + at;',
+       '  raise at(at, at) AT at + at;', // 6
+       '  raise at(at, at).at AT at + at;',
+       '  raise at(at, at) + at AT at + at;',
+       '',
+       'end.'
+    ]);
+
+    CheckTokensForLine('foo at 1',  2,
+      [ tkSpace, tkKey, tkSpace,  tkIdentifier, tkSpace,
+        tkKey{at}, tkSpace, tkNumber, TK_Semi ]);
+    CheckTokensForLine('at AT at',  3,
+      [ tkSpace, tkKey, tkSpace,  tkIdentifier, tkSpace,
+        tkKey{at}, tkSpace, tkIdentifier, TK_Semi ]);
+    CheckTokensForLine('at + at AT at.at',  4,
+      [ tkSpace, tkKey, tkSpace,  tkIdentifier, tkSpace, tkSymbol, tkSpace, tkIdentifier, tkSpace,
+        tkKey{at}, tkSpace, tkIdentifier, TK_Dot, tkIdentifier, TK_Semi ]);
+    CheckTokensForLine('at.at AT at + at',  5,
+      [ tkSpace, tkKey, tkSpace,  tkIdentifier, TK_Dot, tkIdentifier, tkSpace,
+        tkKey{at}, tkSpace, tkIdentifier, tkSpace, tkSymbol, tkSpace, tkIdentifier, TK_Semi ]);
+    CheckTokensForLine('at(at, at) AT at + at',  6,
+      [ tkSpace, tkKey, tkSpace, tkIdentifier,TK_Bracket, tkIdentifier, TK_Comma, tkSpace, tkIdentifier, TK_Bracket, tkSpace,
+        tkKey{at}, tkSpace, tkIdentifier, tkSpace, tkSymbol, tkSpace, tkIdentifier, TK_Semi ]);
+    CheckTokensForLine('at(at, at).at AT at + at',  7,
+      [ tkSpace, tkKey, tkSpace, tkIdentifier,TK_Bracket, tkIdentifier, TK_Comma, tkSpace, tkIdentifier, TK_Bracket, TK_Dot, tkIdentifier, tkSpace,
+        tkKey{at}, tkSpace, tkIdentifier, tkSpace, tkSymbol, tkSpace, tkIdentifier, TK_Semi ]);
+    CheckTokensForLine('at(at, at) + at AT at + at',  8,
+      [ tkSpace, tkKey, tkSpace, tkIdentifier,TK_Bracket, tkIdentifier, TK_Comma, tkSpace, tkIdentifier, TK_Bracket, tkSpace, tkSymbol, tkSpace, tkIdentifier, tkSpace,
+        tkKey{at}, tkSpace, tkIdentifier, tkSpace, tkSymbol, tkSpace, tkIdentifier, TK_Semi ]);
 
 end;
 
