@@ -1,0 +1,139 @@
+object StatisticsFrame: TStatisticsFrame
+  Left = 0
+  Height = 382
+  Top = 0
+  Width = 619
+  ClientHeight = 382
+  ClientWidth = 619
+  TabOrder = 0
+  DesignLeft = 538
+  DesignTop = 282
+  object chCalc: TChart
+    Left = 0
+    Height = 342
+    Top = 0
+    Width = 619
+    AxisList = <    
+      item
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelBrush.Style = bsClear
+      end>
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Legend.Alignment = laTopLeft
+    Legend.MarginX = 40
+    Legend.MarginY = 10
+    Legend.UseSidebar = False
+    Legend.Visible = True
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Align = alClient
+    Color = clWindow
+    object chCalcLineSeries1: TLineSeries
+      Title = 'Data'
+      LineType = ltNone
+      Pointer.Visible = True
+      ShowPoints = True
+      Source = RandomChartSource2
+    end
+    object chCalcLineSeriesSum: TLineSeries
+      Title = 'Cumulative'
+      LinePen.Color = clMaroon
+      LinePen.Width = 2
+      Source = ccsSum
+    end
+    object chCalcLineSeriesAvg: TLineSeries
+      Title = 'Running average'
+      ZPosition = 1
+      LinePen.Color = clTeal
+      LinePen.Width = 2
+      Source = ccsAvg
+    end
+  end
+  object Panel2: TPanel
+    Left = 0
+    Height = 40
+    Top = 342
+    Width = 619
+    Align = alBottom
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 40
+    ClientWidth = 619
+    TabOrder = 1
+    object cbCumulative: TCheckBox
+      AnchorSideLeft.Control = Panel2
+      AnchorSideTop.Control = Panel2
+      AnchorSideTop.Side = asrCenter
+      Left = 8
+      Height = 19
+      Top = 11
+      Width = 79
+      BorderSpacing.Left = 8
+      Caption = 'Cumulative'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnChange = cbCumulativeChange
+    end
+    object cbAccDirStatistics: TComboBox
+      AnchorSideLeft.Control = cbCumulative
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel2
+      AnchorSideTop.Side = asrCenter
+      Left = 111
+      Height = 23
+      Top = 9
+      Width = 100
+      BorderSpacing.Left = 24
+      BorderSpacing.Top = 8
+      BorderSpacing.Bottom = 8
+      ItemHeight = 15
+      ItemIndex = 0
+      Items.Strings = (
+        'Backward'
+        'Forward'
+        'Center'
+      )
+      Style = csDropDownList
+      TabOrder = 1
+      Text = 'Backward'
+      OnChange = cbAccDirStatisticsChange
+    end
+  end
+  object RandomChartSource2: TRandomChartSource
+    PointsNumber = 25
+    RandSeed = 840176578
+    XMax = 20
+    XMin = -10
+    YMax = 8
+    YMin = 1
+    Left = 120
+    Top = 104
+  end
+  object ccsSum: TCalculatedChartSource
+    AccumulationMethod = camSum
+    AccumulationRange = 0
+    Origin = RandomChartSource2
+    Left = 120
+    Top = 160
+  end
+  object ccsAvg: TCalculatedChartSource
+    AccumulationMethod = camAverage
+    AccumulationRange = 5
+    Origin = RandomChartSource2
+    Left = 120
+    Top = 216
+  end
+end

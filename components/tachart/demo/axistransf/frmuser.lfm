@@ -1,0 +1,80 @@
+object UserFrame: TUserFrame
+  Left = 0
+  Height = 332
+  Top = 0
+  Width = 503
+  ClientHeight = 332
+  ClientWidth = 503
+  TabOrder = 0
+  DesignLeft = 314
+  DesignTop = 130
+  object Chart: TChart
+    Left = 0
+    Height = 332
+    Top = 0
+    Width = 503
+    AxisList = <    
+      item
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Grid.Visible = False
+        Intervals.Count = 20
+        Intervals.MinLength = 20
+        Intervals.NiceSteps = '0.2|0.25|0.4|0.5|1.0'
+        Intervals.Options = [aipGraphCoords, aipUseCount, aipUseMaxLength, aipUseMinLength, aipUseNiceSteps]
+        Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelBrush.Style = bsClear
+        Transformations = catUser
+      end>
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Title.Text.Strings = (
+      'Drag purple line to locally zoom in various axis segments'
+    )
+    Title.Visible = True
+    Toolset = ChartToolset1
+    Align = alClient
+    Color = clWindow
+    object LineSeries: TLineSeries
+      AxisIndexX = 1
+      Source = rcsUser
+    end
+    object VerticalLine: TConstantLine
+      AxisIndex = 1
+      LineStyle = lsVertical
+      Pen.Color = clFuchsia
+      Pen.Width = 2
+      Position = 20
+    end
+  end
+  object rcsUser: TRandomChartSource
+    PointsNumber = 100
+    RandSeed = 1999979507
+    XMax = 50
+    YMax = 20
+    YMin = 10
+    Left = 115
+    Top = 236
+  end
+  object ChartToolset1: TChartToolset
+    Left = 115
+    Top = 72
+    object DataPointDragTool: TDataPointDragTool
+      Shift = [ssLeft]
+      AffectedSeries = '1'
+    end
+  end
+  object catUser: TChartAxisTransformations
+    Left = 272
+    Top = 236
+    object catUserUserDefinedAxisTransform1: TUserDefinedAxisTransform
+      OnAxisToGraph = catUserUserDefinedAxisTransform1AxisToGraph
+    end
+  end
+end

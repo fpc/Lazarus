@@ -1,0 +1,109 @@
+object SortedFrame: TSortedFrame
+  Left = 0
+  Height = 384
+  Top = 0
+  Width = 642
+  ClientHeight = 384
+  ClientWidth = 642
+  TabOrder = 0
+  DesignLeft = 502
+  DesignTop = 268
+  object btnSort: TButton
+    AnchorSideLeft.Control = Owner
+    Left = 8
+    Height = 25
+    Top = 8
+    Width = 227
+    AutoSize = True
+    BorderSpacing.Left = 8
+    BorderSpacing.Top = 8
+    Caption = 'Sort/unsort data by number of visitors'
+    TabOrder = 0
+    OnClick = btnSortClick
+  end
+  object lblSortInfo: TLabel
+    AnchorSideLeft.Control = btnSort
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = btnSort
+    AnchorSideTop.Side = asrCenter
+    Left = 243
+    Height = 15
+    Top = 13
+    Width = 55
+    BorderSpacing.Left = 8
+    Caption = 'lblSortInfo'
+  end
+  object BubbleChart: TChart
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = btnSort
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 8
+    Height = 335
+    Top = 41
+    Width = 626
+    AxisList = <    
+      item
+        Visible = False
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Alignment = calBottom
+        Marks.Format = '%4:.9g'
+        Marks.LabelBrush.Style = bsClear
+        Marks.Source = SortedChartSource
+        Marks.Style = smsXValue
+        Minors = <>
+        Title.LabelBrush.Style = bsClear
+      end>
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Margins.Left = 20
+    Margins.Right = 40
+    Title.Brush.Color = clBtnFace
+    Title.Brush.Style = bsClear
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'Locations of World Exposition X, and numbers of visitors (given by bubble size)'
+    )
+    Title.Visible = True
+    OnAfterPaint = BubbleChartAfterPaint
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 8
+    Color = clWindow
+    object BubbleSeries: TBubbleSeries
+      AxisIndexX = 1
+      AxisIndexY = 0
+      BubbleRadiusUnits = bruY
+      MarkPositions = lmpPositive
+      Marks.Attachment = maCenter
+      Marks.Distance = 0
+      Marks.LabelFont.Orientation = 900
+      Marks.Format = '%2:s'
+      Marks.LabelBrush.Color = clWhite
+      Marks.Style = smsLabel
+      OverrideColor = [bocBrush]
+      Source = SortedChartSource
+    end
+  end
+  object UserDefinedChartSource: TUserDefinedChartSource
+    OnGetChartDataItem = UserDefinedChartSourceGetChartDataItem
+    YCount = 2
+    Left = 88
+    Top = 88
+  end
+  object SortedChartSource: TSortedChartSource
+    Origin = UserDefinedChartSource
+    SortBy = sbY
+    SortDir = sdDescending
+    SortIndex = 1
+    Left = 88
+    Top = 144
+  end
+end

@@ -1,0 +1,167 @@
+object LogarithmFrame: TLogarithmFrame
+  Left = 0
+  Height = 322
+  Top = 0
+  Width = 480
+  ClientHeight = 322
+  ClientWidth = 480
+  TabOrder = 0
+  DesignLeft = 475
+  DesignTop = 165
+  object pnlLogControls: TPanel
+    Left = 8
+    Height = 23
+    Top = 291
+    Width = 464
+    Align = alBottom
+    AutoSize = True
+    BorderSpacing.Around = 8
+    BevelOuter = bvNone
+    ClientHeight = 23
+    ClientWidth = 464
+    TabOrder = 0
+    object cbLog: TCheckBox
+      AnchorSideLeft.Control = pnlLogControls
+      AnchorSideTop.Control = seTolerance
+      AnchorSideTop.Side = asrCenter
+      Left = 0
+      Height = 19
+      Top = 2
+      Width = 67
+      Caption = 'Log scale'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnChange = cbLogChange
+    end
+    object seTolerance: TSpinEdit
+      AnchorSideLeft.Control = lblTolerance
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = pnlLogControls
+      Left = 142
+      Height = 23
+      Top = 0
+      Width = 50
+      BorderSpacing.Left = 8
+      MaxValue = 10000
+      TabOrder = 1
+      OnChange = seToleranceChange
+    end
+    object lblTolerance: TLabel
+      AnchorSideLeft.Control = cbLog
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = seTolerance
+      AnchorSideTop.Side = asrCenter
+      Left = 83
+      Height = 15
+      Top = 4
+      Width = 51
+      BorderSpacing.Left = 16
+      Caption = 'Tolerance'
+    end
+  end
+  object Chart: TChart
+    Left = 0
+    Height = 283
+    Top = 0
+    Width = 480
+    AxisList = <    
+      item
+        Intervals.Count = 10
+        Intervals.Options = [aipGraphCoords, aipUseCount, aipUseMinLength, aipUseNiceSteps]
+        Intervals.Tolerance = 5
+        Marks.LabelBrush.Style = bsClear
+        Marks.Stripes = csStripes
+        Minors = <        
+          item
+            Grid.Visible = False
+            Intervals.Count = 9
+            Intervals.MinLength = 5
+            Intervals.Options = [aipUseCount, aipUseMaxLength, aipUseMinLength, aipUseNiceSteps]
+            Marks.LabelBrush.Style = bsClear
+          end>
+        Title.LabelFont.Orientation = 900
+        Title.Visible = True
+        Title.Caption = 'Left'
+        Title.LabelBrush.Style = bsClear
+        Transformations = catLog
+      end    
+      item
+        Grid.Visible = False
+        Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.Distance = 0
+        Title.Visible = True
+        Title.Caption = 'Bottom'
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Grid.Visible = False
+        Alignment = calRight
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+        Title.Visible = True
+        Title.Caption = 'Right'
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Grid.Visible = False
+        Alignment = calTop
+        Arrow.Inverted = True
+        Inverted = True
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.Caption = 'Top'
+        Title.LabelBrush.Style = bsClear
+      end>
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Align = alClient
+    Color = clWindow
+    object clsLogPoints: TLineSeries
+      AxisIndexY = 0
+      LineType = ltNone
+      Pointer.Brush.Color = clMaroon
+      Pointer.Visible = True
+      ShowPoints = True
+    end
+    object cfsLog: TFuncSeries
+      Extent.UseXMax = True
+      Extent.UseXMin = True
+      Extent.XMax = 3
+      Extent.XMin = -1
+      AxisIndexY = 0
+      OnCalculate = cfsLogCalculate
+    end
+  end
+  object csStripes: TChartStyles
+    Styles = <    
+      item
+        Brush.Color = 16631498
+        UsePen = False
+      end    
+      item
+        Brush.Color = 12319483
+        UsePen = False
+      end>
+    Left = 104
+    Top = 56
+  end
+  object catLog: TChartAxisTransformations
+    Left = 104
+    Top = 112
+    object ChartAxisTransformations1LinearAxisTransform2: TLinearAxisTransform
+      Scale = 2
+    end
+    object ChartAxisTransformations1LogarithmAxisTransform1: TLogarithmAxisTransform
+      Base = 10
+    end
+  end
+end

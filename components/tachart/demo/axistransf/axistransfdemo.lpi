@@ -50,7 +50,7 @@
         <PackageName Value="LCL"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="2">
+    <Units Count="7">
       <Unit0>
         <Filename Value="axistransfdemo.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -58,11 +58,51 @@
       <Unit1>
         <Filename Value="main.pas"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="Form1"/>
+        <ComponentName Value="MainForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Main"/>
       </Unit1>
+      <Unit2>
+        <Filename Value="frmlinear.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="LinearFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="frmLinear"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="frmuser.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="UserFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="frmUser"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="frmnormdistr.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="NormDistrFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="frmNormDistr"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="frmlogarithm.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="LogarithmFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="frmLogarithm"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="frmindependent.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="IndependentScaleFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="frmIndependent"/>
+      </Unit6>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -72,11 +112,6 @@
       <IncludeFiles Value="$(ProjOutDir)"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
-    <Parsing>
-      <SyntaxOptions>
-        <UseAnsiStrings Value="False"/>
-      </SyntaxOptions>
-    </Parsing>
     <CodeGeneration>
       <SmartLinkUnit Value="True"/>
     </CodeGeneration>

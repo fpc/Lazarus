@@ -1,0 +1,154 @@
+object LinearFrame: TLinearFrame
+  Left = 0
+  Height = 378
+  Top = 0
+  Width = 531
+  ClientHeight = 378
+  ClientWidth = 531
+  TabOrder = 0
+  DesignLeft = 515
+  DesignTop = 287
+  object Chart: TChart
+    Left = 0
+    Height = 343
+    Top = 0
+    Width = 531
+    AxisList = <    
+      item
+        Grid.Visible = False
+        TickColor = clRed
+        AxisPen.Color = clRed
+        AxisPen.Visible = True
+        Marks.LabelFont.Color = clRed
+        Marks.AtDataOnly = True
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelFont.Color = clRed
+        Title.LabelFont.Orientation = 900
+        Title.Visible = True
+        Title.Caption = 'Summer temperature, °C'
+        Title.LabelBrush.Style = bsClear
+        Transformations = catTAuto
+      end    
+      item
+        Intervals.MaxLength = 100
+        Intervals.MinLength = 20
+        Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.Visible = True
+        Title.Caption = 'Year'
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Grid.Visible = False
+        TickColor = clBlue
+        Alignment = calRight
+        AxisPen.Color = clBlue
+        AxisPen.Visible = True
+        Marks.Distance = 4
+        Marks.LabelFont.Color = clBlue
+        Marks.AtDataOnly = True
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelFont.Color = clBlue
+        Title.LabelFont.Orientation = 900
+        Title.Visible = True
+        Title.Caption = 'Winter temperature, °F'
+        Title.LabelBrush.Style = bsClear
+        Transformations = catT
+      end>
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Frame.Visible = False
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Align = alClient
+    Color = clWindow
+    object ChartSummer: TLineSeries
+      AxisIndexY = 0
+      LinePen.Color = clRed
+      LinePen.Width = 2
+      Source = rcsTSummer
+    end
+    object ChartWinterLine: TLineSeries
+      AxisIndexY = 2
+      LinePen.Color = clBlue
+      LinePen.Width = 2
+      Source = rcsTWinter
+    end
+    object ChartWinterBar: TBarSeries
+      AxisIndexY = 2
+      BarBrush.Color = clBlue
+      BarBrush.Style = bsDiagCross
+      Source = rcsTWinter
+    end
+  end
+  object pnlAutoControls: TPanel
+    Left = 0
+    Height = 35
+    Top = 343
+    Width = 531
+    Align = alBottom
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 35
+    ClientWidth = 531
+    TabOrder = 1
+    object cbAuto: TCheckBox
+      AnchorSideLeft.Control = pnlAutoControls
+      AnchorSideTop.Control = pnlAutoControls
+      AnchorSideTop.Side = asrCenter
+      Left = 8
+      Height = 19
+      Top = 8
+      Width = 73
+      BorderSpacing.Left = 8
+      BorderSpacing.Top = 8
+      BorderSpacing.Bottom = 8
+      Caption = 'Auto scale'
+      TabOrder = 0
+      OnChange = cbAutoChange
+    end
+  end
+  object rcsTSummer: TRandomChartSource
+    PointsNumber = 20
+    RandSeed = 114536250
+    XMax = 2009
+    XMin = 1990
+    YMax = 25
+    Left = 72
+    Top = 16
+  end
+  object rcsTWinter: TRandomChartSource
+    PointsNumber = 20
+    RandSeed = 23453245
+    XMax = 2009
+    XMin = 1990
+    YMax = 20
+    YMin = -15
+    Left = 344
+    Top = 224
+  end
+  object catTAuto: TChartAxisTransformations
+    Left = 144
+    Top = 16
+    object catTAutoAutoScaleAxisTransform1: TAutoScaleAxisTransform
+      Enabled = False
+    end
+  end
+  object catT: TChartAxisTransformations
+    Left = 416
+    Top = 224
+    object catTFahrToCel: TLinearAxisTransform
+      Offset = -17.777777777
+      Scale = 0.5555555555
+    end
+    object catTAutoScaleAxisTransform1: TAutoScaleAxisTransform
+      Enabled = False
+    end
+  end
+end

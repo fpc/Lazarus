@@ -42,7 +42,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="2">
+    <Units Count="6">
       <Unit0>
         <Filename Value="chartsourcedemo.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -50,11 +50,42 @@
       <Unit1>
         <Filename Value="main.pas"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="Form1"/>
+        <ComponentName Value="MainForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Main"/>
       </Unit1>
+      <Unit2>
+        <Filename Value="frmbasic.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="BasicFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="frmBasic"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="frmstatistics.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="StatisticsFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="frmStatistics"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="frmderivative.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="DerivativeFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="frmDerivative"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="frmsorted.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="SortedFrame"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="frmSorted"/>
+      </Unit5>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -64,11 +95,6 @@
       <IncludeFiles Value="$(ProjOutDir)"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
-    <Parsing>
-      <SyntaxOptions>
-        <UseAnsiStrings Value="False"/>
-      </SyntaxOptions>
-    </Parsing>
     <CodeGeneration>
       <Checks>
         <RangeChecks Value="True"/>
@@ -77,6 +103,7 @@
     </CodeGeneration>
     <Linking>
       <Debugging>
+        <DebugInfoType Value="dsDwarf3"/>
         <UseExternalDbgSyms Value="True"/>
       </Debugging>
       <Options>
