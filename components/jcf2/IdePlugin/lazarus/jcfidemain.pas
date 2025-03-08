@@ -92,9 +92,9 @@ uses
 
 function FileIsAllowedType(const psFileName: string): boolean;
 const
-  ALLOWED_FILE_TYPES: array[1..5] of string = ('.pas', '.pp', '.dpr', '.lpr', '.dpk');
+  ALLOWED_FILE_TYPES: array[1..6] of string = ('.pas', '.pp', '.dpr', '.lpr', '.dpk', '.inc');
 begin
-  Result := StrIsOneOf(StrRight(psFileName, 4), ALLOWED_FILE_TYPES);
+  Result := StrIsOneOf(LowerCase(ExtractFileExt(psFileName)), ALLOWED_FILE_TYPES);
 end;
 
 
