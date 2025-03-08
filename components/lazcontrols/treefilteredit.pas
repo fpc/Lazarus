@@ -136,6 +136,7 @@ type
     procedure SetFilteredTreeview(AValue: TCustomTreeview);
     procedure SetShowDirHierarchy(AValue: Boolean);
     function FilterTree(Node: TTreeNode): Boolean;
+    procedure BeforeTreeDestroy(Sender: TObject);
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure MoveNext(ASelect: Boolean = False); override;
@@ -703,6 +704,7 @@ end;
 
 destructor TTreeFilterEdit.Destroy;
 begin
+  FilteredTreeview:=nil;
   FreeAndNil(fBranches);
   FreeAndNil(fSelectionList);
   inherited Destroy;
@@ -713,19 +715,27 @@ begin
   Result := 'btnfiltercancel';
 end;
 
+procedure TTreeFilterEdit.BeforeTreeDestroy(Sender: TObject);
+begin
+  FreeAndNil(fBranches);
+end;
+
 procedure TTreeFilterEdit.SetFilteredTreeview(AValue: TCustomTreeview);
 begin
   if fFilteredTreeview = AValue then Exit;
   if fFilteredTreeview <> nil then
   begin
     fFilteredTreeview.RemoveFreeNotification(Self);
-    ForceFilter('');
+    fFilteredTreeview.RemoveHandlerOnBeforeDestruction(@BeforeTreeDestroy);
+    if not (csDestroying in ComponentState) then
+      ForceFilter('');
     FreeAndNil(fBranches);
   end;
   fFilteredTreeview := AValue;
   if fFilteredTreeview <> nil then
   begin
     InternalSetFilter(Text);
+    fFilteredTreeview.AddHandlerOnBeforeDestruction(@BeforeTreeDestroy);
     fFilteredTreeview.FreeNotification(Self);
   end;
 end;
@@ -784,6 +794,7 @@ begin
   begin
     IdleConnected:=False;
     fNeedFiltering:=False;
+    fFilteredTreeview.RemoveHandlerOnBeforeDestruction(@BeforeTreeDestroy);
     fFilteredTreeview:=nil;
     FreeAndNil(fBranches);
   end;
