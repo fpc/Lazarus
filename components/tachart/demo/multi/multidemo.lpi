@@ -8,7 +8,8 @@
         <CompatibilityMode Value="True"/>
       </Flags>
       <SessionStorage Value="InProjectDir"/>
-      <Title Value="Multi-valued series demo"/>
+      <Title Value="Multi-Valued Series Demo"/>
+      <Scaled Value="True"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
     </General>
@@ -40,7 +41,7 @@
         <PackageName Value="LCL"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="2">
+    <Units Count="7">
       <Unit0>
         <Filename Value="multidemo.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -48,10 +49,45 @@
       <Unit1>
         <Filename Value="Main.pas"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="Form1"/>
+        <ComponentName Value="MainForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
       </Unit1>
+      <Unit2>
+        <Filename Value="frmbubble.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="BubbleFrame"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="frmBubble"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="frmstacked.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="StackedFrame"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="frmStacked"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="frmboxwhisker.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="BoxWhiskerFrame"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="frmBoxWhisker"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="frmohlc.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="OHLCFrame"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="frmOHLC"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="frmfield.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FieldFrame"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="frmField"/>
+      </Unit6>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -68,6 +104,9 @@
       <SmartLinkUnit Value="True"/>
     </CodeGeneration>
     <Linking>
+      <Debugging>
+        <DebugInfoType Value="dsDwarf3"/>
+      </Debugging>
       <Options>
         <Win32>
           <GraphicApplication Value="True"/>

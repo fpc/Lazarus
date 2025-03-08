@@ -1,0 +1,218 @@
+object StackedFrame: TStackedFrame
+  Left = 0
+  Height = 521
+  Top = 0
+  Width = 581
+  ClientHeight = 521
+  ClientWidth = 581
+  TabOrder = 0
+  DesignLeft = 314
+  DesignTop = 130
+  object Chart: TChart
+    Left = 0
+    Height = 462
+    Top = 0
+    Width = 581
+    AxisList = <    
+      item
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelBrush.Style = bsClear
+      end>
+    Depth = 10
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Legend.GroupFont.Style = [fsBold]
+    Legend.GroupTitles.Strings = (
+      'Levels'
+    )
+    Legend.Visible = True
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Align = alClient
+    object BarSeries: TBarSeries
+      Legend.GroupIndex = 0
+      Legend.Multiplicity = lmStyle
+      Active = False
+      ZPosition = 5
+      BarBrush.Color = clRed
+      Depth = 10
+      DepthBrightnessDelta = -40
+      MarkPositions = lmpInside
+      Marks.Format = '%0:.2g'
+      Marks.LinkPen.Visible = False
+      Marks.Style = smsCustom
+      Marks.YIndex = -1
+      Source = ccsStacked
+      Styles = ChartStyles
+    end
+    object LineSeries: TLineSeries
+      Legend.GroupIndex = 0
+      Legend.Multiplicity = lmStyle
+      Active = False
+      Depth = 10
+      DepthBrightnessDelta = -40
+      MarkPositions = lmpInside
+      Marks.Format = '%0:.2g'
+      Marks.LinkPen.Visible = False
+      Marks.Style = smsCustom
+      Marks.YIndex = -1
+      Stacked = True
+      Source = ccsStacked
+      Styles = ChartStyles
+    end
+    object AreaSeries: TAreaSeries
+      Legend.GroupIndex = 0
+      Legend.Multiplicity = lmStyle
+      ZPosition = 5
+      AreaContourPen.Color = clGreen
+      AreaContourPen.EndCap = pecSquare
+      AreaContourPen.Width = 2
+      Depth = 10
+      DepthBrightnessDelta = -40
+      MarkPositions = lmpInside
+      Marks.Format = '%0:.2g'
+      Marks.LinkPen.Visible = False
+      Marks.Style = smsCustom
+      Marks.YIndex = -1
+      Source = ccsStacked
+      Styles = ChartStyles
+      UseZeroLevel = True
+      ZeroLevel = 1
+    end
+  end
+  object pnStackedControls: TPanel
+    Left = 4
+    Height = 51
+    Top = 466
+    Width = 573
+    Align = alBottom
+    AutoSize = True
+    BorderSpacing.Around = 4
+    BevelOuter = bvNone
+    ClientHeight = 51
+    ClientWidth = 573
+    TabOrder = 1
+    object rgStackedSeries: TRadioGroup
+      Left = 0
+      Height = 51
+      Top = 0
+      Width = 169
+      Align = alLeft
+      AutoFill = False
+      AutoSize = True
+      Caption = ' Type '
+      ChildSizing.LeftRightSpacing = 12
+      ChildSizing.TopBottomSpacing = 6
+      ChildSizing.HorizontalSpacing = 12
+      ChildSizing.ShrinkHorizontal = crsScaleChilds
+      ChildSizing.ShrinkVertical = crsScaleChilds
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 3
+      ClientHeight = 31
+      ClientWidth = 165
+      Columns = 3
+      ItemIndex = 0
+      Items.Strings = (
+        'Area'
+        'Bar'
+        'Line'
+      )
+      TabOrder = 0
+      OnClick = rgStackedSeriesClick
+    end
+    object cbPercentage: TCheckBox
+      AnchorSideLeft.Control = rgStackedSeries
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = rgStackedSeries
+      Left = 201
+      Height = 19
+      Top = 23
+      Width = 77
+      BorderSpacing.Left = 32
+      BorderSpacing.Top = 23
+      Caption = 'Percentage'
+      TabOrder = 1
+      OnChange = cbPercentageChange
+    end
+    object cgShowStackLevels: TCheckGroup
+      Left = 397
+      Height = 51
+      Top = 0
+      Width = 176
+      Align = alRight
+      AutoFill = False
+      AutoSize = True
+      Caption = 'Show levels'
+      ChildSizing.LeftRightSpacing = 12
+      ChildSizing.TopBottomSpacing = 6
+      ChildSizing.HorizontalSpacing = 12
+      ChildSizing.ShrinkHorizontal = crsScaleChilds
+      ChildSizing.ShrinkVertical = crsScaleChilds
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 3
+      ClientHeight = 31
+      ClientWidth = 172
+      Columns = 3
+      Items.Strings = (
+        'red'
+        'green'
+        'blue'
+      )
+      TabOrder = 2
+      OnItemClick = cgShowStackLevelsItemClick
+      Data = {
+        03000000030303
+      }
+    end
+  end
+  object rcsStacked: TRandomChartSource
+    PointsNumber = 9
+    RandSeed = 317042356
+    XMax = 9
+    XMin = 1
+    YCount = 3
+    YMax = 20
+    YMin = 3
+    Left = 272
+    Top = 93
+  end
+  object ccsStacked: TCalculatedChartSource
+    Origin = rcsStacked
+    Left = 272
+    Top = 164
+  end
+  object ChartStyles: TChartStyles
+    Styles = <    
+      item
+        Brush.Color = clRed
+        Pen.Color = clMaroon
+        Pen.Width = 2
+        Text = 'red'
+      end    
+      item
+        Brush.Color = clLime
+        Pen.Color = clGreen
+        Pen.Width = 2
+        Text = 'green'
+      end    
+      item
+        Brush.Color = clBlue
+        Pen.Color = clNavy
+        Pen.Width = 2
+        Text = 'blue'
+      end>
+    Left = 272
+    Top = 236
+  end
+end

@@ -1,0 +1,80 @@
+object PointersFrame: TPointersFrame
+  Left = 0
+  Height = 439
+  Top = 0
+  Width = 674
+  ClientHeight = 439
+  ClientWidth = 674
+  TabOrder = 0
+  DesignLeft = 314
+  DesignTop = 130
+  object Chart: TChart
+    Left = 0
+    Height = 439
+    Top = 0
+    Width = 578
+    AxisList = <    
+      item
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelBrush.Style = bsClear
+      end>
+    AxisVisible = False
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Margins.Left = 20
+    Margins.Right = 20
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Align = alClient
+  end
+  object pnlPointers: TPanel
+    Left = 578
+    Height = 439
+    Top = 0
+    Width = 96
+    Align = alRight
+    AutoSize = True
+    ClientHeight = 439
+    ClientWidth = 96
+    TabOrder = 1
+    object sePointerSize: TSpinEdit
+      AnchorSideLeft.Control = lblPointerSize
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideRight.Control = pnlPointers
+      AnchorSideRight.Side = asrBottom
+      Left = 37
+      Height = 23
+      Top = 9
+      Width = 50
+      Alignment = taRightJustify
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 8
+      MaxValue = 1000
+      TabOrder = 0
+      Value = 4
+      OnChange = sePointerSizeChange
+    end
+    object lblPointerSize: TLabel
+      AnchorSideLeft.Control = pnlPointers
+      AnchorSideTop.Control = sePointerSize
+      AnchorSideTop.Side = asrCenter
+      Left = 9
+      Height = 15
+      Top = 13
+      Width = 20
+      BorderSpacing.Around = 8
+      Caption = 'Size'
+    end
+  end
+end

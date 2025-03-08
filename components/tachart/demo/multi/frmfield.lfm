@@ -1,0 +1,120 @@
+object FieldFrame: TFieldFrame
+  Left = 0
+  Height = 440
+  Top = 0
+  Width = 601
+  ClientHeight = 440
+  ClientWidth = 601
+  TabOrder = 0
+  DesignLeft = 326
+  DesignTop = 141
+  object Chart: TChart
+    Left = 0
+    Height = 406
+    Top = 0
+    Width = 601
+    AxisList = <    
+      item
+        Grid.Visible = False
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Grid.Visible = False
+        Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelBrush.Style = bsClear
+      end>
+    BackColor = clWhite
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Legend.Visible = True
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Align = alClient
+    object FieldSeries: TFieldSeries
+      Title = 'Vector field'
+      Arrow.BaseLength = 30
+      Arrow.Length = 40
+      Arrow.Visible = True
+      Arrow.Width = 20
+      Pen.Color = clBlue
+    end
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 34
+    Top = 406
+    Width = 601
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 34
+    ClientWidth = 601
+    TabOrder = 1
+    object rbRadial: TRadioButton
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 8
+      Height = 19
+      Top = 8
+      Width = 47
+      BorderSpacing.Left = 8
+      Caption = 'radial'
+      Checked = True
+      TabOrder = 1
+      TabStop = True
+      OnChange = rbRadialChange
+    end
+    object rbTangential: TRadioButton
+      AnchorSideLeft.Control = rbRadial
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 71
+      Height = 19
+      Top = 8
+      Width = 71
+      BorderSpacing.Left = 16
+      Caption = 'tangential'
+      TabOrder = 0
+      OnChange = rbRadialChange
+    end
+    object Label1: TLabel
+      AnchorSideLeft.Control = rbTangential
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 192
+      Height = 15
+      Top = 10
+      Width = 95
+      BorderSpacing.Left = 50
+      Caption = 'Max vector length'
+    end
+    object edMaxVectorLength: TFloatSpinEdit
+      AnchorSideLeft.Control = Label1
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 295
+      Height = 23
+      Top = 6
+      Width = 74
+      Alignment = taRightJustify
+      BorderSpacing.Left = 8
+      Increment = 0.1
+      MaxValue = 10
+      MinValue = 0.1
+      TabOrder = 2
+      Value = 0.5
+      OnChange = edMaxVectorLengthChange
+    end
+  end
+end

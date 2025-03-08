@@ -1,0 +1,131 @@
+object FitDemoFrame: TFitDemoFrame
+  Left = 0
+  Height = 451
+  Top = 0
+  Width = 795
+  ClientHeight = 451
+  ClientWidth = 795
+  TabOrder = 0
+  DesignLeft = 314
+  DesignTop = 130
+  object ParamsPanel: TPanel
+    Left = 0
+    Height = 69
+    Top = 0
+    Width = 795
+    Align = alTop
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 69
+    ClientWidth = 795
+    TabOrder = 0
+    object rgFitParamCount: TRadioGroup
+      AnchorSideLeft.Control = ParamsPanel
+      AnchorSideTop.Control = ParamsPanel
+      Left = 8
+      Height = 53
+      Top = 8
+      Width = 366
+      AutoFill = False
+      AutoSize = True
+      BorderSpacing.Around = 8
+      BorderSpacing.InnerBorder = 4
+      Caption = 'Measure (by dragging right mouse button)'
+      ChildSizing.LeftRightSpacing = 12
+      ChildSizing.TopBottomSpacing = 3
+      ChildSizing.HorizontalSpacing = 24
+      ChildSizing.ShrinkHorizontal = crsScaleChilds
+      ChildSizing.ShrinkVertical = crsScaleChilds
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 3
+      ClientHeight = 33
+      ClientWidth = 362
+      Columns = 3
+      ItemIndex = 0
+      Items.Strings = (
+        'Mean value'
+        'Slope'
+        'Find minimum/maximum'
+      )
+      TabOrder = 0
+      OnClick = rgFitParamCountClick
+    end
+    object lblFit: TLabel
+      AnchorSideLeft.Control = rgFitParamCount
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = rgFitParamCount
+      AnchorSideTop.Side = asrCenter
+      Left = 406
+      Height = 15
+      Top = 27
+      Width = 26
+      BorderSpacing.Left = 32
+      Caption = 'lblFit'
+      Visible = False
+    end
+  end
+  object Chart: TChart
+    Left = 0
+    Height = 382
+    Top = 69
+    Width = 795
+    AxisList = <    
+      item
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelBrush.Style = bsClear
+      end>
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Toolset = Toolset
+    Align = alClient
+    DoubleBuffered = True
+    object LineSeries: TLineSeries
+      LineType = ltNone
+      Pointer.Brush.Color = clRed
+      Pointer.HorizSize = 3
+      Pointer.VertSize = 3
+      Pointer.Visible = True
+      ShowPoints = True
+    end
+    object FitSeries: TFitSeries
+      Active = False
+      ParamCount = 1
+      Pen.Color = clLime
+      Pen.Width = 3
+    end
+  end
+  object Toolset: TChartToolset
+    Left = 288
+    Top = 220
+    object DataPointDistanceTool: TDataPointDistanceTool
+      Shift = [ssRight]
+      OnBeforeMouseDown = DataPointDistanceToolBeforeMouseDown
+      DrawingMode = tdmNormal
+      LinePen.Visible = False
+      Marks.Format = '%0:.9g'
+      Marks.LinkPen.Visible = False
+      MeasureMode = cdmOnlyX
+      PointerEnd.VertSize = 10000
+      PointerStart.VertSize = 10000
+      OnGetDistanceText = DataPointDistanceToolGetDistanceText
+      OnMeasure = DataPointDistanceToolMeasure
+    end
+    object ZoomDragTool: TZoomDragTool
+      Shift = [ssLeft]
+      Brush.Style = bsClear
+    end
+  end
+end

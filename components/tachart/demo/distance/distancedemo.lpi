@@ -39,7 +39,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="2">
+    <Units Count="4">
       <Unit0>
         <Filename Value="distancedemo.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -47,10 +47,26 @@
       <Unit1>
         <Filename Value="Main.pas"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="Form1"/>
+        <ComponentName Value="MainForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
       </Unit1>
+      <Unit2>
+        <Filename Value="frmmaindemo.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="MainDemoFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="frmMainDemo"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="frmfitdemo.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FitDemoFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="frmFitDemo"/>
+      </Unit3>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -65,6 +81,7 @@
     </SearchPaths>
     <Linking>
       <Debugging>
+        <DebugInfoType Value="dsDwarf3"/>
         <StripSymbols Value="True"/>
       </Debugging>
       <LinkSmart Value="True"/>

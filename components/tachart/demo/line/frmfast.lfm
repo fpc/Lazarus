@@ -1,0 +1,211 @@
+object FastDrawingFrame: TFastDrawingFrame
+  Left = 0
+  Height = 529
+  Top = 0
+  Width = 769
+  ClientHeight = 529
+  ClientWidth = 769
+  TabOrder = 0
+  DesignLeft = 314
+  DesignTop = 130
+  object Panel1: TPanel
+    Left = 0
+    Height = 40
+    Top = 0
+    Width = 769
+    Align = alTop
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 40
+    ClientWidth = 769
+    TabOrder = 0
+    object cmbLineType: TComboBox
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 8
+      Height = 23
+      Top = 9
+      Width = 96
+      BorderSpacing.Left = 8
+      BorderSpacing.Top = 8
+      BorderSpacing.Bottom = 8
+      ItemHeight = 15
+      ItemIndex = 1
+      Items.Strings = (
+        'None'
+        'Previous'
+        'Origin'
+        'StepXY'
+        'StepYX'
+        'StepCenterXY'
+        'StepCenterYX'
+      )
+      Style = csDropDownList
+      TabOrder = 0
+      Text = 'Previous'
+      OnChange = cmbLineTypeChange
+    end
+    object cb3D: TCheckBox
+      AnchorSideLeft.Control = cmbLineType
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 112
+      Height = 19
+      Top = 11
+      Width = 32
+      BorderSpacing.Left = 8
+      Caption = '3D'
+      TabOrder = 1
+      OnChange = cb3DChange
+    end
+    object cbRotated: TCheckBox
+      AnchorSideLeft.Control = cb3D
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 152
+      Height = 19
+      Top = 11
+      Width = 59
+      BorderSpacing.Left = 8
+      Caption = 'Rotated'
+      TabOrder = 2
+      OnChange = cbRotatedChange
+    end
+    object btnAddSeries: TButton
+      AnchorSideLeft.Control = cbSorted
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 321
+      Height = 25
+      Top = 8
+      Width = 48
+      AutoSize = True
+      BorderSpacing.Left = 50
+      Caption = 'Add'
+      TabOrder = 3
+      OnClick = btnAddSeriesClick
+    end
+    object edTime: TEdit
+      AnchorSideLeft.Control = btnRefresh
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 487
+      Height = 23
+      Top = 9
+      Width = 76
+      Alignment = taRightJustify
+      BorderSpacing.Left = 8
+      ReadOnly = True
+      TabOrder = 4
+    end
+    object btnRefresh: TButton
+      AnchorSideLeft.Control = btnAddSeries
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 377
+      Height = 25
+      Top = 8
+      Width = 102
+      AutoSize = True
+      BorderSpacing.Left = 8
+      Caption = 'Timed refresh:'
+      TabOrder = 5
+      OnClick = btnRefreshClick
+    end
+    object cbSorted: TCheckBox
+      AnchorSideLeft.Control = cbRotated
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 219
+      Height = 19
+      Top = 11
+      Width = 52
+      BorderSpacing.Left = 8
+      Caption = 'Sorted'
+      TabOrder = 6
+      OnChange = cbSortedChange
+    end
+    object lblPointsCount: TLabel
+      AnchorSideLeft.Control = edTime
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = edTime
+      AnchorSideTop.Side = asrCenter
+      Left = 569
+      Height = 15
+      Top = 13
+      Width = 79
+      BorderSpacing.Left = 6
+      Caption = 'lblPointsCount'
+    end
+  end
+  object Chart: TChart
+    Left = 0
+    Height = 489
+    Top = 40
+    Width = 769
+    AxisList = <    
+      item
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelBrush.Style = bsClear
+      end>
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Toolset = ChartToolset
+    Align = alClient
+    Color = clWindow
+    DoubleBuffered = True
+    object LineSeries: TLineSeries
+      LinePen.Color = clTeal
+      LinePen.Width = 3
+      Source = RandomChartSource
+    end
+    object ConstantLine: TConstantLine
+      LineStyle = lsVertical
+      Pen.Color = clAqua
+      Pen.Width = 2
+      ZPosition = 1
+    end
+  end
+  object RandomChartSource: TRandomChartSource
+    PointsNumber = 25
+    RandSeed = 840176578
+    XMax = 20
+    XMin = -10
+    YMax = 8
+    YMin = 1
+    Left = 132
+    Top = 148
+  end
+  object ChartToolset: TChartToolset
+    Left = 132
+    Top = 224
+    object ZoomDragTool: TZoomDragTool
+      Shift = [ssLeft]
+      Brush.Style = bsClear
+      RatioLimit = zrlFixedY
+    end
+    object PanDragTool: TPanDragTool
+      Shift = [ssRight]
+    end
+  end
+end

@@ -7,14 +7,15 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, lazcontrols, main, tachartlazaruspkg
-  { you can add units after this };
+  Forms, lazcontrols, main;
 
 {$R *.res}
 
 begin
+  Application.Scaled := True;
+  Application.Title := '';
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TMainForm, MainForm);
   Application.Run;
 end.
 

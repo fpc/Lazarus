@@ -5,6 +5,7 @@
     <PathDelim Value="\"/>
     <General>
       <SessionStorage Value="InProjectDir"/>
+      <Scaled Value="True"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
     </General>
@@ -48,9 +49,23 @@
       <Unit>
         <Filename Value="main.pas"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="Form1"/>
+        <ComponentName Value="MainForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="frmpie.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="PieFrame"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="frmPie"/>
+      </Unit>
+      <Unit>
+        <Filename Value="frmpolar.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="PolarFrame"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="frmPolar"/>
       </Unit>
     </Units>
   </ProjectOptions>

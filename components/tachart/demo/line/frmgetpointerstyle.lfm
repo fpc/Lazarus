@@ -1,0 +1,60 @@
+object GetPointerStyleFrame: TGetPointerStyleFrame
+  Left = 0
+  Height = 381
+  Top = 0
+  Width = 556
+  ClientHeight = 381
+  ClientWidth = 556
+  TabOrder = 0
+  DesignLeft = 630
+  DesignTop = 250
+  object Chart: TChart
+    Left = 0
+    Height = 381
+    Top = 0
+    Width = 556
+    AxisList = <    
+      item
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelBrush.Style = bsClear
+      end>
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Align = alClient
+    Color = clWindow
+    object LineSeries: TLineSeries
+      Pointer.Brush.Color = clRed
+      Pointer.HorizSize = 6
+      Pointer.Pen.Color = clRed
+      Pointer.Pen.Width = 2
+      Pointer.VertSize = 6
+      Pointer.Visible = True
+      ShowPoints = True
+      Source = RandomChartSource
+      OnGetPointerStyle = LineSeriesGetPointerStyle
+    end
+  end
+  object RandomChartSource: TRandomChartSource
+    PointsNumber = 25
+    RandSeed = 840176578
+    XMax = 20
+    XMin = -10
+    YMax = 8
+    YMin = 1
+    Left = 132
+    Top = 148
+  end
+end

@@ -8,6 +8,8 @@
         <CompatibilityMode Value="True"/>
       </Flags>
       <SessionStorage Value="InProjectDir"/>
+      <Title Value="TAChart LineSeries Demo"/>
+      <Scaled Value="True"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
     </General>
@@ -22,6 +24,9 @@
       <Version Value="2"/>
     </PublishOptions>
     <RunParams>
+      <local>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T &apos;Lazarus Run Output&apos; -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
       <FormatVersion Value="2"/>
       <Modes Count="1">
         <Mode0 Name="default">
@@ -44,7 +49,7 @@
         <PackageName Value="LCL"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="2">
+    <Units Count="8">
       <Unit0>
         <Filename Value="linedemo.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -52,10 +57,53 @@
       <Unit1>
         <Filename Value="Main.pas"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="Form1"/>
+        <ComponentName Value="MainForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
       </Unit1>
+      <Unit2>
+        <Filename Value="frmfast.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FastDrawingFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="frmFast"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="frmpointers.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="PointersFrame"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="frmPointers"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="frmcustomdrawpointer.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="CustomDrawPointerFrame"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="frmCustomDrawPointer"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="frmgetpointerstyle.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="GetPointerStyleFrame"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="frmGetPointerStyle"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="frmoscilloscope.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="OscilloscopeFrame"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="frmOscilloscope"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="frmcoloreach.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ColorEachDatapointFrame"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="frmColorEach"/>
+      </Unit7>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -69,6 +117,9 @@
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>
+      <Debugging>
+        <DebugInfoType Value="dsDwarf3"/>
+      </Debugging>
       <Options>
         <Win32>
           <GraphicApplication Value="True"/>

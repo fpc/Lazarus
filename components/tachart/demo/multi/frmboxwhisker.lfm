@@ -1,0 +1,49 @@
+object BoxWhiskerFrame: TBoxWhiskerFrame
+  Left = 0
+  Height = 485
+  Top = 0
+  Width = 579
+  ClientHeight = 485
+  ClientWidth = 579
+  TabOrder = 0
+  DesignLeft = 481
+  DesignTop = 276
+  object Chart: TChart
+    Left = 0
+    Height = 485
+    Top = 0
+    Width = 579
+    AxisList = <    
+      item
+        Grid.Visible = False
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelBrush.Style = bsClear
+      end>
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Legend.SymbolWidth = 40
+    Legend.Visible = True
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Align = alClient
+    object BoxAndWhiskerSeries: TBoxAndWhiskerSeries
+      Title = 't1'
+      BoxBrush.Color = clGreen
+      BoxPen.Color = clMaroon
+      MedianPen.Color = clLime
+      MedianPen.Width = 2
+      WhiskersPen.Color = clBlue
+    end
+  end
+end

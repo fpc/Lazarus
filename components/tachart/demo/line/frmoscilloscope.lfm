@@ -1,0 +1,75 @@
+object OscilloscopeFrame: TOscilloscopeFrame
+  Left = 0
+  Height = 424
+  Top = 0
+  Width = 634
+  ClientHeight = 424
+  ClientWidth = 634
+  TabOrder = 0
+  DesignLeft = 314
+  DesignTop = 130
+  object Chart: TChart
+    Left = 0
+    Height = 424
+    Top = 0
+    Width = 634
+    AxisList = <    
+      item
+        Grid.Color = clMedGray
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Range.Max = 2
+        Range.Min = -2
+        Range.UseMax = True
+        Range.UseMin = True
+        Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Grid.Color = clMedGray
+        Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelBrush.Style = bsClear
+        Transformations = AxisTransformations
+      end>
+    BackColor = clBlack
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Align = alClient
+    Color = clWindow
+    DoubleBuffered = True
+    object ChartLineSeries1: TLineSeries
+      AxisIndexX = 1
+      LinePen.Color = clLime
+      LinePen.Width = 2
+      LineType = ltStepXY
+      Source = ListChartSource
+    end
+  end
+  object Timer: TTimer
+    Enabled = False
+    Interval = 150
+    OnTimer = TimerTimer
+    Left = 112
+    Top = 64
+  end
+  object ListChartSource: TListChartSource
+    DataPoints.Strings = (
+      '0|0|?|'
+    )
+    Left = 112
+    Top = 136
+  end
+  object AxisTransformations: TChartAxisTransformations
+    Left = 112
+    Top = 208
+    object LinearAxisTransform: TLinearAxisTransform
+    end
+  end
+end

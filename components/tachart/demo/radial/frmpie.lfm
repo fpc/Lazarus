@@ -1,0 +1,487 @@
+object PieFrame: TPieFrame
+  Left = 0
+  Height = 577
+  Top = 0
+  Width = 641
+  ClientHeight = 577
+  ClientWidth = 641
+  TabOrder = 0
+  DesignLeft = 533
+  DesignTop = 182
+  object Panel1: TPanel
+    AnchorSideTop.Side = asrCenter
+    Left = 0
+    Height = 124
+    Top = 0
+    Width = 641
+    Align = alTop
+    Alignment = taLeftJustify
+    Anchors = [akTop, akRight]
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 124
+    ClientWidth = 641
+    TabOrder = 0
+    object seWords: TSpinEdit
+      AnchorSideLeft.Control = lblWords
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = cbShowLabels
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = lblInnerRadius
+      Left = 222
+      Height = 23
+      Top = 6
+      Width = 72
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 24
+      MaxValue = 10
+      TabOrder = 0
+      Value = 1
+      OnChange = seWordsChange
+    end
+    object lblWords: TLabel
+      AnchorSideLeft.Control = cmbMarkPositions
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = seWords
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = seWords
+      Left = 151
+      Height = 15
+      Top = 10
+      Width = 63
+      BorderSpacing.Left = 16
+      BorderSpacing.Right = 8
+      Caption = 'Label words'
+    end
+    object seLabelAngle: TSpinEdit
+      AnchorSideLeft.Control = seWords
+      AnchorSideTop.Control = seWords
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = seWords
+      AnchorSideRight.Side = asrBottom
+      Left = 222
+      Height = 23
+      Top = 35
+      Width = 72
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 6
+      Increment = 5
+      MaxValue = 360
+      MinValue = -360
+      TabOrder = 1
+      OnChange = seLabelAngleChange
+    end
+    object lblLabelAngle: TLabel
+      AnchorSideTop.Control = seLabelAngle
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = seLabelAngle
+      Left = 154
+      Height = 15
+      Top = 39
+      Width = 60
+      Anchors = [akTop, akRight]
+      BorderSpacing.Right = 8
+      Caption = 'Label angle'
+    end
+    object cbRotate: TCheckBox
+      AnchorSideLeft.Control = cbShowLabels
+      AnchorSideTop.Control = seLabelAngle
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Side = asrBottom
+      Left = 8
+      Height = 19
+      Top = 37
+      Width = 85
+      BorderSpacing.Top = 6
+      BorderSpacing.Bottom = 6
+      Caption = 'Rotate labels'
+      TabOrder = 2
+      OnChange = cbRotateChange
+    end
+    object cmbMarkPositions: TComboBox
+      AnchorSideLeft.Control = cbShowLabels
+      AnchorSideTop.Control = cmbMarkAttachment
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = seDepthBrightnessDelta
+      AnchorSideRight.Side = asrBottom
+      Left = 8
+      Height = 23
+      Top = 93
+      Width = 127
+      AutoSize = False
+      BorderSpacing.Bottom = 8
+      ItemHeight = 15
+      ItemIndex = 0
+      Items.Strings = (
+        'Around'
+        'Inside'
+        'Left / right'
+      )
+      Style = csDropDownList
+      TabOrder = 3
+      Text = 'Around'
+      OnChange = cmbMarkPositionsChange
+    end
+    object cb3D: TCheckBox
+      AnchorSideLeft.Control = lblInnerRadius
+      AnchorSideTop.Control = seDepth
+      AnchorSideTop.Side = asrCenter
+      Left = 327
+      Height = 19
+      Top = 66
+      Width = 32
+      Caption = '3D'
+      TabOrder = 4
+      OnChange = cb3DChange
+    end
+    object seInnerRadius: TSpinEdit
+      AnchorSideLeft.Control = seDepthBrightnessDelta
+      AnchorSideTop.Control = seWords
+      AnchorSideRight.Side = asrBottom
+      Left = 410
+      Height = 23
+      Top = 6
+      Width = 62
+      BorderSpacing.Right = 8
+      TabOrder = 5
+      OnChange = seInnerRadiusChange
+    end
+    object lblInnerRadius: TLabel
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = lblWords
+      AnchorSideRight.Control = seInnerRadius
+      Left = 327
+      Height = 15
+      Top = 10
+      Width = 75
+      Anchors = [akTop, akRight]
+      BorderSpacing.Right = 8
+      Caption = 'Inner radius %'
+    end
+    object lblDepth: TLabel
+      AnchorSideLeft.Control = cb3D
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = seDepth
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = seDepth
+      Left = 370
+      Height = 15
+      Top = 68
+      Width = 32
+      Anchors = [akTop, akRight]
+      BorderSpacing.Left = 12
+      BorderSpacing.Right = 8
+      Caption = 'Depth'
+      Enabled = False
+    end
+    object seDepth: TSpinEdit
+      AnchorSideLeft.Control = seDepthBrightnessDelta
+      AnchorSideTop.Control = seDistance
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Side = asrBottom
+      Left = 410
+      Height = 23
+      Top = 64
+      Width = 62
+      BorderSpacing.Right = 6
+      Enabled = False
+      MaxValue = 1000
+      TabOrder = 6
+      Value = 20
+      OnChange = seDepthChange
+    end
+    object seDepthBrightnessDelta: TSpinEdit
+      AnchorSideLeft.Control = lblDepthBrightnessDelta
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = seDepth
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 410
+      Height = 23
+      Top = 93
+      Width = 62
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      Enabled = False
+      MaxValue = 255
+      MinValue = -255
+      TabOrder = 7
+      Value = -32
+      OnChange = seDepthBrightnessDeltaChange
+    end
+    object lblDepthBrightnessDelta: TLabel
+      AnchorSideLeft.Control = seDistance
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = seDepthBrightnessDelta
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = seDepthBrightnessDelta
+      Left = 318
+      Height = 15
+      Top = 97
+      Width = 84
+      Alignment = taRightJustify
+      BorderSpacing.Left = 24
+      BorderSpacing.Right = 8
+      Caption = 'Brightness delta'
+      Enabled = False
+      WordWrap = True
+    end
+    object cbShowLabels: TCheckBox
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = Panel1
+      AnchorSideRight.Control = lblWords
+      Left = 8
+      Height = 19
+      Top = 8
+      Width = 80
+      BorderSpacing.Left = 8
+      BorderSpacing.Top = 8
+      BorderSpacing.Right = 16
+      Caption = 'Show labels'
+      Checked = True
+      State = cbChecked
+      TabOrder = 8
+      OnChange = cbShowLabelsChange
+    end
+    object lblDistance: TLabel
+      AnchorSideTop.Control = seDistance
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = seDistance
+      Left = 169
+      Height = 15
+      Top = 68
+      Width = 45
+      Anchors = [akTop, akRight]
+      BorderSpacing.Right = 8
+      Caption = 'Distance'
+    end
+    object seDistance: TSpinEdit
+      AnchorSideTop.Control = seLabelAngle
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = seLabelAngle
+      AnchorSideRight.Side = asrBottom
+      Left = 222
+      Height = 23
+      Top = 64
+      Width = 72
+      Anchors = [akTop, akRight]
+      BorderSpacing.Top = 6
+      MaxValue = 1000
+      TabOrder = 9
+      Value = 40
+      OnChange = seDistanceChange
+    end
+    object cmbMarkAttachment: TComboBox
+      AnchorSideLeft.Control = cbShowLabels
+      AnchorSideTop.Control = seDistance
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = seDistance
+      AnchorSideRight.Side = asrBottom
+      Left = 8
+      Height = 23
+      Top = 64
+      Width = 125
+      BorderSpacing.Top = 6
+      BorderSpacing.Bottom = 6
+      ItemHeight = 15
+      ItemIndex = 0
+      Items.Strings = (
+        'Default'
+        'Edge'
+        'Center'
+      )
+      Style = csDropDownList
+      TabOrder = 10
+      Text = 'Default'
+      OnChange = cmbMarkAttachmentChange
+    end
+    object cbMarkPositionsCentered: TCheckBox
+      AnchorSideLeft.Control = lblWords
+      AnchorSideTop.Control = cmbMarkPositions
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = cmbMarkPositions
+      AnchorSideRight.Side = asrBottom
+      Left = 151
+      Height = 19
+      Top = 95
+      Width = 145
+      Caption = 'Mark positions centered'
+      TabOrder = 11
+      OnChange = cbMarkPositionsCenteredChange
+    end
+    object lblStartAngle: TLabel
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = seStartAngle
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = seStartAngle
+      Left = 346
+      Height = 15
+      Top = 39
+      Width = 56
+      Anchors = [akTop, akRight]
+      BorderSpacing.Right = 8
+      Caption = 'Start angle'
+    end
+    object seStartAngle: TSpinEdit
+      AnchorSideLeft.Control = seDepthBrightnessDelta
+      AnchorSideTop.Control = seLabelAngle
+      AnchorSideRight.Side = asrBottom
+      Left = 410
+      Height = 23
+      Top = 35
+      Width = 62
+      BorderSpacing.Right = 6
+      MaxValue = 180
+      MinValue = -180
+      TabOrder = 12
+      OnChange = seStartAngleChange
+    end
+    object seViewAngle: TSpinEdit
+      AnchorSideLeft.Control = seAngleRange
+      AnchorSideTop.Control = seDistance
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = cmbOrientation
+      AnchorSideRight.Side = asrBottom
+      Left = 562
+      Height = 23
+      Top = 64
+      Width = 62
+      Anchors = [akTop, akRight]
+      Enabled = False
+      MaxValue = 89
+      TabOrder = 13
+      Value = 60
+      OnChange = seViewAngleChange
+    end
+    object lblViewAngle: TLabel
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = seViewAngle
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = seViewAngle
+      Left = 497
+      Height = 15
+      Top = 68
+      Width = 57
+      Anchors = [akTop, akRight]
+      BorderSpacing.Left = 12
+      BorderSpacing.Right = 8
+      Caption = 'View angle'
+      Enabled = False
+    end
+    object cmbOrientation: TComboBox
+      AnchorSideLeft.Control = seDepthBrightnessDelta
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = cmbMarkAttachment
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Side = asrBottom
+      Left = 496
+      Height = 23
+      Top = 93
+      Width = 128
+      AutoSize = False
+      BorderSpacing.Left = 24
+      BorderSpacing.Bottom = 8
+      Enabled = False
+      ItemHeight = 15
+      ItemIndex = 0
+      Items.Strings = (
+        'normal'
+        'horizontal'
+        'vertical'
+      )
+      Style = csDropDownList
+      TabOrder = 14
+      Text = 'normal'
+      OnChange = cmbOrientationChange
+    end
+    object lblAngleRange: TLabel
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = seAngleRange
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = seAngleRange
+      Left = 493
+      Height = 15
+      Top = 39
+      Width = 64
+      Anchors = [akTop, akRight]
+      BorderSpacing.Left = 12
+      BorderSpacing.Right = 8
+      Caption = 'Angle range'
+    end
+    object seAngleRange: TSpinEdit
+      AnchorSideTop.Control = seStartAngle
+      AnchorSideRight.Control = cmbOrientation
+      AnchorSideRight.Side = asrBottom
+      Left = 565
+      Height = 23
+      Top = 35
+      Width = 59
+      Anchors = [akTop, akRight]
+      MaxValue = 360
+      MinValue = 1
+      TabOrder = 15
+      Value = 360
+      OnChange = seAngleRangeChange
+    end
+  end
+  object Chart: TChart
+    Left = 0
+    Height = 453
+    Top = 124
+    Width = 641
+    AxisList = <    
+      item
+        Visible = False
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Visible = False
+        Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelBrush.Style = bsClear
+      end>
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Title.Alignment = taLeftJustify
+    Title.Brush.Color = clNone
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      '  Click on a slice to explode/unexplode it'
+    )
+    Title.Visible = True
+    Toolset = ChartToolset
+    Align = alClient
+    Color = clDefault
+    OnMouseDown = ChartMouseDown
+    object PieSeries: TPieSeries
+      DepthBrightnessDelta = -32
+      Exploded = True
+      Marks.Distance = 40
+      Marks.Format = '%2:s'
+      Marks.Frame.Color = clSilver
+      Marks.LinkPen.Color = clSilver
+      Marks.Style = smsLabel
+      Source = ListChartSource
+    end
+  end
+  object ListChartSource: TListChartSource
+    DataPoints.Strings = (
+      '0|7|?|'
+      '0|3|?|'
+      '0|1|?|'
+      '0.2|0.2|?|'
+      '0|1|?|'
+    )
+    Left = 92
+    Top = 284
+  end
+  object ChartToolset: TChartToolset
+    Left = 92
+    Top = 228
+  end
+end

@@ -1,0 +1,62 @@
+object OHLCFrame: TOHLCFrame
+  Left = 0
+  Height = 464
+  Top = 0
+  Width = 596
+  ClientHeight = 464
+  ClientWidth = 596
+  TabOrder = 0
+  DesignLeft = 414
+  DesignTop = 228
+  object Chart: TChart
+    Left = 0
+    Height = 464
+    Top = 0
+    Width = 596
+    AxisList = <    
+      item
+        Grid.Color = clGray
+        TickLength = 0
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Grid.Visible = False
+        Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelBrush.Style = bsClear
+      end>
+    ExpandPercentage = 5
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Legend.Visible = True
+    Title.Brush.Color = clBtnFace
+    Title.Brush.Style = bsClear
+    Title.Font.Color = clBlack
+    Title.Font.Style = [fsBold]
+    Title.Text.Strings = (
+      'ACME Corporation'
+    )
+    Title.Visible = True
+    Align = alClient
+    Color = clSkyBlue
+    object OpenHighLowCloseSeries: TOpenHighLowCloseSeries
+      Title = 'test'
+      CandlestickDownBrush.Color = clRed
+      CandlestickDownPen.Color = clMaroon
+      CandlestickLinePen.Color = clDefault
+      CandlestickUpBrush.Color = clLime
+      CandlestickUpPen.Color = clGreen
+      DownLinePen.Color = clRed
+      DownLinePen.EndCap = pecSquare
+      DownLinePen.Width = 2
+      LinePen.Color = clLime
+      LinePen.EndCap = pecSquare
+      LinePen.Width = 2
+      TickWidth = 30
+    end
+  end
+end

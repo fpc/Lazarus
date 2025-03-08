@@ -1,0 +1,68 @@
+object BubbleFrame: TBubbleFrame
+  Left = 0
+  Height = 522
+  Top = 0
+  Width = 592
+  ClientHeight = 522
+  ClientWidth = 592
+  TabOrder = 0
+  DesignLeft = 473
+  DesignTop = 185
+  object Chart: TChart
+    Left = 0
+    Height = 522
+    Top = 0
+    Width = 592
+    AxisList = <    
+      item
+        AxisPen.Visible = True
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        TickLength = 0
+        Alignment = calBottom
+        Marks.Attachment = maCenter
+        Marks.Distance = 0
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelBrush.Style = bsClear
+      end>
+    BackColor = clForm
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Frame.Visible = False
+    Proportional = True
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Align = alClient
+    object BubbleSeries: TBubbleSeries
+      BubbleBrush.Color = clRed
+      BubbleBrush.Style = bsDiagCross
+      Marks.Attachment = maCenter
+      Marks.Distance = 0
+      Marks.Format = '%0:.9g'
+      Marks.Style = smsValue
+      OverrideColor = [bocBrush, bocPen]
+      Source = lcsBubble
+    end
+  end
+  object lcsBubble: TListChartSource
+    DataPoints.Strings = (
+      '10|50|3|?|'
+      '20|30|1|?|'
+      '35|20|9|?|'
+      '50|40|6|$00FF00|'
+      '60|50|15|?|'
+      '80|60|2|?|'
+    )
+    YCount = 2
+    Left = 158
+    Top = 93
+  end
+end

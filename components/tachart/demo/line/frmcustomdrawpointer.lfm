@@ -1,0 +1,149 @@
+object CustomDrawPointerFrame: TCustomDrawPointerFrame
+  Left = 0
+  Height = 481
+  Top = 0
+  Width = 698
+  ClientHeight = 481
+  ClientWidth = 698
+  TabOrder = 0
+  DesignLeft = 314
+  DesignTop = 130
+  object Panel2: TPanel
+    Left = 0
+    Height = 39
+    Top = 0
+    Width = 698
+    Align = alTop
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 39
+    ClientWidth = 698
+    TabOrder = 0
+    object cbBitmapPointer: TCheckBox
+      AnchorSideLeft.Control = Panel2
+      AnchorSideTop.Control = Panel2
+      AnchorSideTop.Side = asrCenter
+      Left = 8
+      Height = 19
+      Top = 10
+      Width = 97
+      BorderSpacing.Left = 8
+      Caption = 'Bitmap pointer'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnChange = cbBitmapPointerChange
+    end
+    object cbDrawEveryNthPointer: TCheckBox
+      AnchorSideLeft.Control = PointerImage
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel2
+      AnchorSideTop.Side = asrCenter
+      Left = 141
+      Height = 19
+      Top = 10
+      Width = 140
+      BorderSpacing.Left = 16
+      Caption = 'Every n-th pointer, n = '
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+      OnChange = cbDrawEveryNthPointerChange
+    end
+    object edEveryNth: TSpinEdit
+      AnchorSideLeft.Control = cbDrawEveryNthPointer
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel2
+      AnchorSideTop.Side = asrCenter
+      Left = 281
+      Height = 23
+      Top = 8
+      Width = 50
+      Alignment = taRightJustify
+      BorderSpacing.Top = 8
+      BorderSpacing.Bottom = 8
+      MaxValue = 10
+      MinValue = 1
+      TabOrder = 2
+      Value = 3
+      OnChange = edEveryNthChange
+    end
+    object PointerImage: TImage
+      AnchorSideLeft.Control = cbBitmapPointer
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel2
+      AnchorSideTop.Side = asrCenter
+      Left = 109
+      Height = 16
+      Top = 11
+      Width = 16
+      AutoSize = True
+      BorderSpacing.Left = 4
+      Picture.Data = {
+        1754506F727461626C654E6574776F726B477261706869632B02000089504E47
+        0D0A1A0A0000000D49484452000000100000001008060000001FF3FF61000000
+        017352474200AECE1CE900000006624B474400FF00FF00FFA0BDA79300000009
+        7048597300000B1300000B1301009A9C180000000774494D4507DC06140F1F36
+        F0AF9FA6000001AB4944415438CB9592416813411486BFD96EECB1D09357AF5E
+        24224868D18330117BF5604E1AC1A6EBA188500985F4D0802C22228B685BC1D6
+        532EB92849210BA145101B5A103C45BDE79243C183D0E2CEF3B0DD71D326D8FE
+        30CCCC9BFFCD9B7FDEAF18814BD71E3C17D45D4761322E6BBBEDB50AA7C554BE
+        D4CC694FBABD48BABD4872DA93EBB74A1F4E957CFEE29D8974F2FF2E5147155B
+        461C9D044B8BCFC85E18673C3366893B3F7EB3FAF489DD3BCA849F5BAB793595
+        2FB544D0EF365E7316DCBFF730528AB60B2038001466AE58C2D51BB779F4B80C
+        C0CB173E9D76DD9ED59A7B08CE98C2C4819CF62468F4A5DB8B249BCD8A483C77
+        7E1EC8FBADFD8158D0E84BD0E84B4E7B02E0027C09DF2840F4C62B6ACD3DBC05
+        1F80CEF75FB6AAB7E053AC86F10B82A524E7E8EDC7D069D72D19A0580D0724A4
+        E124120AF3CB270ED72B9AF58A3E112FCC2F6325C42D047D7992C33FC2F6B7FD
+        B318AEE5C6663003C9C56AC8D7FAA295915EFF3390196DA4617292CF3B6EA4A1
+        C4A4ADE991684E502E974777C151264C57AB054B9C73CDC734C7F77DB1128661
+        FAE65C23326A0620E3CADB4F9B2BB3C3787F01CE48DFB7D4C375300000000049
+        454E44AE426082
+      }
+    end
+  end
+  object Chart: TChart
+    Left = 0
+    Height = 442
+    Top = 39
+    Width = 698
+    AxisList = <    
+      item
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelBrush.Style = bsClear
+      end>
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Align = alClient
+    Color = clWindow
+    object LineSeries: TLineSeries
+      Pointer.Visible = True
+      ShowPoints = True
+      Source = RandomChartSource
+      OnCustomDrawPointer = LineSeriesCustomDrawPointer
+    end
+  end
+  object RandomChartSource: TRandomChartSource
+    PointsNumber = 25
+    RandSeed = 840176578
+    XMax = 20
+    XMin = -10
+    YMax = 8
+    YMin = 1
+    Left = 132
+    Top = 148
+  end
+end

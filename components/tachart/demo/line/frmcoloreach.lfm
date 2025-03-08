@@ -1,0 +1,128 @@
+object ColorEachDatapointFrame: TColorEachDatapointFrame
+  Left = 0
+  Height = 463
+  Top = 0
+  Width = 710
+  ClientHeight = 463
+  ClientWidth = 710
+  TabOrder = 0
+  DesignLeft = 314
+  DesignTop = 130
+  object pnlColorEach: TPanel
+    Left = 0
+    Height = 40
+    Top = 0
+    Width = 710
+    Align = alTop
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 40
+    ClientWidth = 710
+    TabOrder = 0
+    object cmbColorEach: TComboBox
+      AnchorSideLeft.Control = pnlColorEach
+      AnchorSideTop.Control = pnlColorEach
+      Left = 8
+      Height = 23
+      Top = 8
+      Width = 272
+      BorderSpacing.Left = 8
+      BorderSpacing.Top = 8
+      BorderSpacing.Right = 8
+      BorderSpacing.Bottom = 8
+      ItemHeight = 15
+      ItemIndex = 1
+      Items.Strings = (
+        'no'
+        'data point only'
+        'line segment before data point'
+        'line segment after data point'
+        'data point and preceding line segment'
+        'data point and following line segment'
+      )
+      Style = csDropDownList
+      TabOrder = 0
+      Text = 'data point only'
+      OnChange = cmbColorEachChange
+    end
+    object cbColorEachRotated: TCheckBox
+      AnchorSideLeft.Control = cmbColorEachLineType
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = pnlColorEach
+      AnchorSideTop.Side = asrCenter
+      Left = 392
+      Height = 19
+      Top = 11
+      Width = 59
+      Caption = 'Rotated'
+      TabOrder = 1
+      OnChange = cbColorEachRotatedChange
+    end
+    object cmbColorEachLineType: TComboBox
+      AnchorSideLeft.Control = cmbColorEach
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = pnlColorEach
+      AnchorSideTop.Side = asrCenter
+      Left = 288
+      Height = 23
+      Top = 9
+      Width = 96
+      BorderSpacing.Left = 8
+      BorderSpacing.Top = 8
+      BorderSpacing.Right = 8
+      BorderSpacing.Bottom = 8
+      ItemHeight = 15
+      ItemIndex = 1
+      Items.Strings = (
+        'None'
+        'Previous'
+        'Origin'
+        'StepXY'
+        'StepYX'
+        'StepCenterXY'
+        'StepCenterYX'
+      )
+      Style = csDropDownList
+      TabOrder = 2
+      Text = 'Previous'
+      OnChange = cmbColorEachLineTypeChange
+    end
+  end
+  object Chart: TChart
+    Left = 0
+    Height = 423
+    Top = 40
+    Width = 710
+    AxisList = <    
+      item
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelBrush.Style = bsClear
+      end>
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Align = alClient
+    Color = clWindow
+    object LineSeries: TLineSeries
+      ColorEach = cePointAndLineAfter
+      LinePen.Width = 2
+      Pointer.HorizSize = 6
+      Pointer.Style = psCircle
+      Pointer.VertSize = 6
+      Pointer.Visible = True
+      ShowPoints = True
+    end
+  end
+end
