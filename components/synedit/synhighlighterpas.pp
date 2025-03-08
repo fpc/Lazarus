@@ -97,7 +97,6 @@ type
     rsAfterClass,
     rsInTypeHelper,
     rsAfterIdentifierOrValue, // anywhere where a ^ deref can happen "foo^", "foo^^", "foo()^", "foo[]^"
-    rsAfterIdentifierOrValueAdd,
 
     rsAtCaseLabel,
     rsInProcHeader,       // Declaration or implementation header of a Procedure, function, constructor...
@@ -1589,7 +1588,8 @@ function TSynPasSyn.Func35: TtkTokenKind;
 begin
   if KeyComp('Nil') then begin
     Result := tkKey;
-    fRange := fRange + [rsAfterIdentifierOrValueAdd];
+    fRange := fRange + [rsAfterIdentifierOrValue];
+    FOldRange := FOldRange - [rsAfterIdentifierOrValue];
   end
   else
   if KeyComp('To') then
@@ -1789,7 +1789,8 @@ begin
      (TopPascalCodeFoldBlockType in [cfbtClass])
   then begin
     Result := tkModifier;
-    fRange := fRange + [rsAtClass, rsAfterIdentifierOrValueAdd]; // forward, in case of further class modifiers
+    fRange := fRange + [rsAtClass, rsAfterIdentifierOrValue]; // forward, in case of further class modifiers
+    FOldRange := FOldRange - [rsAfterIdentifierOrValue];
   end
   else
     Result := tkIdentifier;
@@ -2317,8 +2318,10 @@ begin
   then begin
     Result := tkModifier;
     // type foo = class abstract
-    if (rsAfterClass in fRange) and (TopPascalCodeFoldBlockType = cfbtClass) then
-      fRange := fRange + [rsAtClass, rsAfterIdentifierOrValueAdd] // forward, in case of further class modifiers  end
+    if (rsAfterClass in fRange) and (TopPascalCodeFoldBlockType = cfbtClass) then begin
+      fRange := fRange + [rsAtClass, rsAfterIdentifierOrValue]; // forward, in case of further class modifiers  end
+      FOldRange := FOldRange - [rsAfterIdentifierOrValue];
+    end
     else
     // procedure foo; virtual; abstract;
     if (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader, rsAfterClassMembers] = [rsWasInProcHeader, rsAfterClassMembers]) then
@@ -3988,8 +3991,10 @@ begin
     end;
     fTokenID := tkString;
   end
-  else
-    fRange := fRange + [rsAfterIdentifierOrValueAdd];
+  else begin
+    fRange := fRange + [rsAfterIdentifierOrValue];
+    FOldRange := FOldRange - [rsAfterIdentifierOrValue];
+  end;
 end;
 
 procedure TSynPasSyn.NullProc;
@@ -4144,7 +4149,8 @@ end;
 procedure TSynPasSyn.RoundCloseProc;
 begin
   fTokenID := tkSymbol;
-  fRange := fRange + [rsAfterIdentifierOrValueAdd];
+  fRange := fRange + [rsAfterIdentifierOrValue];
+  FOldRange := FOldRange - [rsAfterIdentifierOrValue];
   if (PasCodeFoldRange.BracketNestLevel = 0) and
      (TopPascalCodeFoldBlockType in [cfbtRecordCase, cfbtRecordCaseSection])
   then begin
@@ -4175,7 +4181,8 @@ procedure TSynPasSyn.SquareCloseProc;
 begin
   inc(Run);
   fTokenID := tkSymbol;
-  fRange := fRange + [rsAfterIdentifierOrValueAdd];
+  fRange := fRange + [rsAfterIdentifierOrValue];
+  FOldRange := FOldRange - [rsAfterIdentifierOrValue];
   PasCodeFoldRange.DecBracketNestLevel;
 
   if (PasCodeFoldRange.BracketNestLevel = 0) and
@@ -4537,8 +4544,8 @@ begin
             fRange := fRange + [rsAfterClass];
         end;
 
-        if (FTokenID = tkIdentifier) or (rsAfterIdentifierOrValueAdd in fRange) then
-          fRange := fRange + [rsAfterIdentifierOrValue] - [rsAfterIdentifierOrValueAdd];
+        if (FTokenID = tkIdentifier) then
+          fRange := fRange + [rsAfterIdentifierOrValue];
       end
   end;
   if FAtLineStart and not(FTokenID in [tkSpace, tkComment, tkIDEDirective]) then
