@@ -20098,7 +20098,7 @@ end;
 
 function TQtDesignWidget.DesignControlEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 var
-  p, AGlobalPos: TQtPoint;
+  p, AGlobalPos, DeltaPt: TQtPoint;
   APosF, AGlobalPosF: TQtPointF;
   pt: TPoint;
   R: TRect;
@@ -20110,6 +20110,21 @@ var
   AWidget: TQtWidget;
   ATabWidget: TQtTabWidget;
   ATabIndex: Integer;
+  YStep, XStep: integer;
+  B: Boolean;
+  Bar: TQtScrollBar;
+
+  function FindScrolledParent(AControl: TWinControl): TWinControl;
+  begin
+    Result := AControl;
+    while Assigned(AControl) do
+    begin
+      if TQtWidget(aControl.Handle) is TQtAbstractScrollArea then
+        exit(AControl);
+      AControl := AControl.Parent;
+    end;
+  end;
+
 begin
   Result := False;
   QEvent_Accept(Event);
@@ -20125,6 +20140,111 @@ begin
   BeginEventProcessing;
   try
     case QEvent_type(Event) of
+      QEventWheel:
+      begin
+        QWheelEvent_pos(QWheelEventH(Event), @p);
+
+        OffsetMousePos(@p);
+        pt := Point(p.x, p.y);
+        Control := LCLObject.ControlAtPos(pt, [capfRecursive, capfAllowWinControls]);
+
+        if Assigned(Control) and (Control is TWinControl) then
+        begin
+          WSQtWidget := TWSWinControlClass(TWinControl(Control).WidgetSetClass);
+          if Assigned(WSQtWidget) and WSQtWidget.GetDesignInteractive(TWinControl(Control), Pt) then
+          begin
+            Result := TQtWidget(TWinControl(Control).Handle).SlotMouseWheel(Sender, Event);
+            exit;
+          end;
+        end;
+
+        if Control = nil then
+          Control := LCLObject;
+        if Control is TWinControl then
+        begin
+          Control := FindScrolledParent(TWinControl(Control));
+          if Assigned(Control) then
+          begin
+            {$IFDEF QTSCROLLABLEFORMS}
+            if Control = LCLObject then
+              AWidget := ScrollArea
+            else
+            {$ENDIF}
+              AWidget := TQtWidget(TWinControl(Control).Handle)
+          end else
+            AWidget := nil;
+
+          if AWidget = nil then
+            exit;
+
+          if (AWidget is TQtAbstractScrollArea) then
+          begin
+            if QInputEvent_modifiers(QInputEventH(Event)) = QtAltModifier then
+              Bar := TQtAbstractScrollArea(AWidget).horizontalScrollBar
+            else
+              Bar := TQtAbstractScrollArea(AWidget).verticalScrollBar;
+            if Assigned(Bar) and Bar.getVisible then
+            begin
+              B := Bar.SlotMouseWheel(Bar.Widget, Event);
+              if not B then //not handled by control
+              begin
+                QWheelEvent_angleDelta(QWheelEventH(Event), @DeltaPt);
+                YStep := 0;
+                XStep := 0;
+                if DeltaPt.y <> 0 then
+                begin
+                  if DeltaPt.Y < 0 then
+                  begin
+                    if Bar.getValue + Bar.getSingleStep > Bar.getMax then
+                      YStep := -(Bar.getMax - Bar.GetValue)
+                    else
+                      YStep := -Bar.getSingleStep
+                  end else
+                  begin
+                    if Bar.getValue - Bar.getSingleStep < Bar.getMin then
+                      YStep := Bar.GetValue - Bar.getMin
+                    else
+                      YStep := Bar.getSingleStep;
+                  end;
+                  Bar.setValue(Bar.getValue - YStep);
+                end else
+                if DeltaPt.x <> 0 then
+                begin
+                  if DeltaPt.X < 0 then
+                  begin
+                    if Bar.getValue + Bar.getSingleStep > Bar.getMax then
+                      XStep := -(Bar.getMax - Bar.getValue)
+                    else
+                      XStep := -Bar.getSingleStep
+                  end else
+                  begin
+                    if Bar.getValue - Bar.getSingleStep < Bar.getMin then
+                      XStep := Bar.getValue - Bar.getMin
+                    else
+                      XStep := Bar.getSingleStep;
+                  end;
+                  Bar.SetValue(Bar.getValue - XStep);
+                end;
+                if (AWidget.ChildOfComplexWidget in [ccwCustomControl, ccwScrollingWinControl]) then
+                  TQtCustomControl(AWidget).viewport.scroll(XStep, YStep)
+                {$IFDEF QTSCROLLABLEFORMS}
+                else
+                if (aWidget is TQtWindowArea) then
+                begin
+                  TQtWindowArea(aWidget).scroll(XStep, YStep);
+                end;
+                {$ENDIF}
+              end else
+              begin
+                {$IFDEF VerboseQt}
+                DebugLn(dbgsName(Control),' handled design scroll.');
+                {$ENDIF}
+              end;
+            end;
+          end else
+            AWidget.SlotMouseWheel(AWidget.GetContainerWidget, Event);
+        end;
+      end;
       QEventMouseButtonPress,
       QEventMouseButtonRelease:
       begin
