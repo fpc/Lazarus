@@ -504,7 +504,7 @@ end;
 
 procedure TJcfIdeMain.OnIncludeFile(Sender: TObject; AIncludeFileName: string; var AFileContentOrErrorMessage: string; var AFileReaded: boolean);
 var
-  lsFile: string;
+  lsFile, lsFileExt: string;
   lsDir: string;
   lbFileFound: boolean;
 
@@ -522,43 +522,73 @@ var
     end;
   end;
 
-begin
-  lbFileFound := False;
+  procedure TryFile(const AFN: string);
+  begin
+    if aFN = '' then
+      Exit;
+    if IsOnIdeEditor(AFN) then
+      lbFileFound := True
+    else
+      lbFileFound := FileExists(AFN);
+    if lbFileFound then
+      lsFile := AFN;
+  end;
 
+begin
+  AFileReaded := False;
+  lbFileFound := False;
+  lsFile := '';
+  lsFileExt := LowerCase(ExtractFileExt(AIncludeFileName));
   if ExtractFilePath(AIncludeFileName) = '' then
   begin
     // seach in the same path as formated unit.
     lsFile := ExtractFilePath(TConverter(Sender).FileName) + AIncludeFileName;
-    if IsOnIdeEditor(lsFile) then
-      Exit;
-    lbFileFound := FileExists(lsFile);
   end
   else
   begin
     if FilenameIsAbsolute(AIncludeFileName) then
+      lsFile := AIncludeFileName
+    else
+      lsFile := ExtractFilePath(TConverter(Sender).FileName) + AIncludeFileName;
+  end;
+  if lsFile <> '' then
+  begin
+    TryFile(lsFile);
+    if (not lbFileFound) and ((lsFileExt <> '.inc') and (lsFileExt <> '.pp') and (lsFileExt <> '.pas')) then
     begin
-      lsFile := AIncludeFileName;
-      if IsOnIdeEditor(lsFile) then
-        Exit;
-      lbFileFound := FileExists(lsFile);
+      TryFile(lsfile + '.inc');
+      if not lbFileFound then
+        TryFile(lsfile + '.pp');
+      if not lbFileFound then
+        TryFile(lsfile + 'pas');
     end;
+    if (not lbFileFound) and (lsFileExt = ExtensionSeparator) and (Length(AIncludeFileName) >= 2) then
+      TryFile(Copy(AIncludeFileName, 1, Length(AIncludeFileName) - 1));
   end;
   // search in project dir and project include paths.
   if not lbFileFound then
   begin
     lsDir := LazProject1.Directory;
-    lsFile := LazarusIDE.FindSourceFile(AIncludeFileName, lsDir, [fsfSearchForProject, fsfUseIncludePaths]);
-    lbFileFound := lsFile <> '';
-    if lsFile <> '' then
+    TryFile(LazarusIDE.FindSourceFile(AIncludeFileName, lsDir, [fsfSearchForProject, fsfUseIncludePaths]));
+    if (not lbFileFound) and ((lsFileExt <> '.inc') and (lsFileExt <> '.pp') and (lsFileExt <> '.pas')) then
     begin
-      if IsOnIdeEditor(lsFile) then
-        Exit;
+      { try default extensions .inc , .pp and .pas }
+      TryFile(LazarusIDE.FindSourceFile(AIncludeFileName + '.inc', lsDir, [fsfSearchForProject, fsfUseIncludePaths]));
+      if not lbFileFound then
+        TryFile(LazarusIDE.FindSourceFile(AIncludeFileName + '.pp', lsDir, [fsfSearchForProject, fsfUseIncludePaths]));
+      if not lbFileFound then
+        TryFile(LazarusIDE.FindSourceFile(AIncludeFileName + '.pas', lsDir, [fsfSearchForProject, fsfUseIncludePaths]));
     end;
+    if (not lbFileFound) and (lsFileExt = ExtensionSeparator) and (Length(AIncludeFileName) >= 2) then
+      TryFile(LazarusIDE.FindSourceFile(Copy(AIncludeFileName, 1, Length(AIncludeFileName) - 1), lsDir, [fsfSearchForProject, fsfUseIncludePaths]));
   end;
   if lbFileFound then
   begin
-    AFileContentOrErrorMessage := ReadFileToUTF8String(lsFile);
-    AFileReaded := True;
+    if not AFileReaded then
+    begin
+      AFileContentOrErrorMessage := ReadFileToUTF8String(lsFile);
+      AFileReaded := True;
+    end;
   end
   else
   begin

@@ -117,7 +117,7 @@ begin
   begin
     // search in the same path as formated unit.
     lsFile := ExtractFilePath(TConverter(Sender).FileName) + AIncludeFileName;
-    lbFileFound := FileExists(lsFile);
+    lbFileFound := CheckIfFileExistsWithStdIncludeExtensions(lsFile);
 
     // search in project include paths.  c:\p1\;c:\p2\;c:\p3\
     liStart := 1;
@@ -137,7 +137,7 @@ begin
         lsDir:=CreateAbsolutePath(lsDir,IncludeTrailingPathDelimiter(GetCurrentDir));
       end;
       lsFile := lsDir + AIncludeFileName;
-      lbFileFound := FileExists(lsFile);
+      lbFileFound := CheckIfFileExistsWithStdIncludeExtensions(lsFile);
     end;
   end
   else
@@ -145,7 +145,7 @@ begin
     if FilenameIsAbsolute(AIncludeFileName) then
     begin
       lsFile := AIncludeFileName;
-      lbFileFound := FileExists(lsFile);
+      lbFileFound := CheckIfFileExistsWithStdIncludeExtensions(lsFile);
     end;
   end;
   if lbFileFound then

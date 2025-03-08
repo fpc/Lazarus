@@ -68,6 +68,7 @@ procedure AdvanceTextPos(const AText: String; var ARow, ACol: integer);
 function LastLineLength(const AString: string): integer;
 function ReadFileToUTF8String(AFilename: string): string;
 function GetConfigFileNameJcf:string;
+function CheckIfFileExistsWithStdIncludeExtensions(var AIncludeFile:string):boolean;
 
 var
   GetConfigFileNameJcfFunction:GetConfigFileNameFunction = nil;
@@ -359,6 +360,43 @@ begin
   finally
     OnGetApplicationName := lOld;
   end;
+end;
+
+function CheckIfFileExistsWithStdIncludeExtensions(var AIncludeFile: string): boolean;
+var
+  fileext: string;
+  found: boolean;
+  filename: string;
+begin
+  if FileExists(AIncludeFile) then
+    exit(True);
+  found := False;
+  filename := AIncludeFile;
+  fileext := LowerCase(ExtractFileExt(AIncludeFile));
+  if (not found) and ((fileext <> '.inc') and (fileext <> '.pp') and (fileext <> '.pas')) then
+  begin
+    { try default extensions .inc , .pp and .pas }
+    filename := AIncludeFile + '.inc';
+    found := FileExists(filename);
+    if not found then
+    begin
+      filename := AIncludeFile + '.pp';
+      found := FileExists(filename);
+    end;
+    if not found then
+    begin
+      filename := AIncludeFile + '.pas';
+      found := FileExists(filename);
+    end;
+  end;
+  if (not found) and (fileext = ExtensionSeparator) and (Length(AIncludeFile) >= 2) then
+  begin
+    filename := Copy(AIncludeFile, 1, Length(AIncludeFile) - 1);
+    found := FileExists(filename);
+  end;
+  if found then
+    AIncludeFile := filename;
+  Result := found;
 end;
 
 end.
