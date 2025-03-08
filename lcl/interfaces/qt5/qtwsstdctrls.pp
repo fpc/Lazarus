@@ -1111,7 +1111,7 @@ var
   QtStaticText: TQtStaticText;
 begin
   QtStaticText := TQtStaticText.Create(AWinControl, AParams);
-  QtStaticText.WordWrap := True;
+  //QtStaticText.WordWrap := True; issue #41515
   QtStaticText.AttachEvents;
   QtStaticText.setAlignment(AlignmentMap[TCustomStaticText(AWinControl).Alignment]);
   QtStaticText.setFrameShape(StaticBorderFrameShapeMap[TCustomStaticText(AWinControl).BorderStyle]);
