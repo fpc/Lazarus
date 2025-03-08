@@ -69,6 +69,7 @@ type
     procedure TestContextForClassObjRecHelp;
     procedure TestContextForClassSection;
     procedure TestContextForClassModifier; // Sealed abstract
+    procedure TestContextForClassOf;
     procedure TestContextForClassProcModifier; // virtual override final reintroduce
     procedure TestContextForClassHelper;
     procedure TestContextForTypeHelper;
@@ -2481,6 +2482,85 @@ begin
       [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  tkSymbol, tkSpace, tkModifier,  tkSymbol ]);
 
   end;
+end;
+
+procedure TTestHighlighterPas.TestContextForClassOf;
+  procedure SetClassOfText(s: String; s2: String = '');
+  begin
+    if s2 = '' then s2 := 'FInt1: String;';
+    SetLines
+      ([ 'Unit A; interface',
+         'type',
+         s,                    // 2
+         s2,                   // 3
+         'FInt: String;',      // 4
+         'private',            // 5
+         'procedure Foo; abstract;',
+          'end;',
+         ''
+      ]);
+  end;
+  procedure CheckClassOfField(ALine: Integer);
+  begin
+    CheckTokensForLine('Fint: integer; '+IntToStr(ALine),  ALine, [ tkIdentifier, TK_Colon, tkSpace, tkKey, TK_Semi ]);
+    AssertEquals('no Fold-OpenCount '+IntToStr(ALine), 0, FTheHighLighter.FoldOpenCount(ALine));
+  end;
+  procedure CheckClassOfFold(ALine: Integer; AFold: Boolean);
+  begin
+    AssertEquals('Fold-OpenCount 2', 1, FTheHighLighter.FoldOpenCount(2)); // currently always
+
+    if AFold then begin
+      CheckTokensForLine('private '+IntToStr(ALine),  ALine, [ tkKey ]);
+      AssertEquals('Fold-OpenCount '+IntToStr(ALine), 1, FTheHighLighter.FoldOpenCount(ALine));
+    end
+    else begin
+      CheckTokensForLine('private '+IntToStr(ALine),  ALine, [ tkIdentifier ]);
+      AssertEquals('no Fold-OpenCount '+IntToStr(ALine), 0, FTheHighLighter.FoldOpenCount(ALine));
+    end;
+  end;
+begin
+  ReCreateEdit;
+  EnableFolds([cfbtBeginEnd..cfbtNone]);
+
+  SetClassOfText('TFoo=class');
+  CheckClassOfField(3);
+  CheckClassOfFold(5, True);
+
+  SetClassOfText('TFoo=class(TFoo)');
+  CheckClassOfField(3);
+  CheckClassOfFold(5, True);
+
+  SetClassOfText('TFoo=class()');
+  CheckClassOfField(3);
+  CheckClassOfFold(5, True);
+
+  SetClassOfText('TFoo=class()', 'private'); // incomplete
+  CheckClassOfFold(3, True);
+  CheckClassOfField(4);
+  CheckClassOfFold(5, True);
+
+
+  SetClassOfText('TFoo=class of');
+  CheckClassOfField(3);
+  CheckClassOfFold(5, False);
+
+  SetClassOfText('TFoo=class {bar} of');
+  CheckClassOfField(3);
+  CheckClassOfFold(5, False);
+
+  SetClassOfText('TFoo=class of', 'private');
+  CheckClassOfFold(3, False);
+  CheckClassOfField(4);
+  CheckClassOfFold(5, False);
+
+
+  SetClassOfText('TFoo = class sealed (TBar) of');
+  CheckClassOfField(3);
+  CheckClassOfFold(5, True);
+
+  SetClassOfText('TFoo = class sealed of');
+  CheckClassOfField(3);
+  CheckClassOfFold(5, True);
 end;
 
 procedure TTestHighlighterPas.TestContextForClassProcModifier;

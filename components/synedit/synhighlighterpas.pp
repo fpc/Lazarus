@@ -1305,7 +1305,8 @@ begin
     Result := tkKey;
     if not (rsInProcHeader in fRange) then
       fRange := fRange + [rsAfterEqualOrColon]; // Identifier for type expected
-    if (rsAfterClass in fRange) and (tfb = cfbtClass) and
+    if (tfb = cfbtClass) and
+       (fRange * [rsAfterClass, rsAfterIdentifierOrValue] = [rsAfterClass]) and
        (PasCodeFoldRange.BracketNestLevel = 0)
     then begin
       // Accidental start of block // End at next semicolon (usually same line)
@@ -1788,7 +1789,7 @@ begin
      (TopPascalCodeFoldBlockType in [cfbtClass])
   then begin
     Result := tkModifier;
-    fRange := fRange + [rsAtClass]; // forward, in case of further class modifiers
+    fRange := fRange + [rsAtClass, rsAfterIdentifierOrValueAdd]; // forward, in case of further class modifiers
   end
   else
     Result := tkIdentifier;
@@ -2317,7 +2318,7 @@ begin
     Result := tkModifier;
     // type foo = class abstract
     if (rsAfterClass in fRange) and (TopPascalCodeFoldBlockType = cfbtClass) then
-      fRange := fRange + [rsAtClass] // forward, in case of further class modifiers  end
+      fRange := fRange + [rsAtClass, rsAfterIdentifierOrValueAdd] // forward, in case of further class modifiers  end
     else
     // procedure foo; virtual; abstract;
     if (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader, rsAfterClassMembers] = [rsWasInProcHeader, rsAfterClassMembers]) then
