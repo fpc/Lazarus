@@ -501,12 +501,13 @@ call the inherited method.
 </p>
 <p>
 <var>S</var> contains the string used to identify the page instance in 
-<var>AObject</var>. It is used as both the Name and the Caption for the TPage 
-instance, as well as the value displayed in the Pages property for a TNotebook 
-control. S must contain a valid identifier name. In addition, it must be 
-unique in the context of the owner control. A numeric suffix is added to the 
-value in S if it is not a unique identifier on the associated TNotebook 
-control.
+<var>AObject</var>. The value is used as the Caption for the page object, 
+and as the basis for the Name used in the TPage class instance. The Name for 
+the class instance must be a unique identifier (when specified) in the 
+Components for the TNoteBook control owner. A numeric suffix is appended to 
+the Name value if S is not a unique identifier name on the owner of the 
+TNotebook control. If S is not specified (contains ''), the Name for the
+class instance is not assigned.
 </p>
 <p>
 <var>AObject</var> is the page instance added to the internal list. AddObject 
@@ -514,16 +515,18 @@ ensures that AObject is cast to TPage and its properties are initialized:
 </p>
 <ul>
 <li>
-Sets Name to the unique identifier derived from S.
+Sets Name to the unique identifier derived from S when S is not an empty 
+string.
 </li>
 <li>
-Sets Caption to the unique identifier derived from S.
+Sets Caption to the value specified in S (which can be an empty string).
 </li>
 <li>
 Sets Parent to the TNotebook instance which owns the page list.
 </li>
 <li>
-Sets Align to alClient to align the page to the client area for the Notebook.
+Sets Align to alClient to align the page to the client area for the TNotebook 
+control.
 </li>
 <li>
 Sets Visible to <b>False</b>.
