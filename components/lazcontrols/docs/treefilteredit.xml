@@ -423,7 +423,8 @@ It uses the Visible property in the TTreeNode instances to show/hide it.
 <element name="TTreeFilterEdit.SetFilteredTreeview"/>
 <element name="TTreeFilterEdit.SetShowDirHierarchy"/>
 <element name="TTreeFilterEdit.FilterTree"/>
-<element name="TTreeFilterEdit.OnBeforeTreeDestroy"/>
+<element name="TTreeFilterEdit.BeforeTreeDestroy"/>
+<element name="TTreeFilterEdit.BeforeTreeDestroy.Sender"/>
 
 <!-- protected -->
 <element name="TTreeFilterEdit.Notification">
