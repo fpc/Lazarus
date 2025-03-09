@@ -290,11 +290,15 @@ var
   QtDC: TQtDeviceContext absolute DC;
   X, Y: Integer;
   W, H: Integer;
+  P: TPoint;
 begin
   if not IsValidDC(DC) then
     exit;
   QtDC.save;
   try
+    P := Point(0, 0);
+    SetWindowOrgEx(DC, 0, 0, @P);
+
     W := (R.Right - R.Left - 1) div DX;
     H := (R.Bottom - R.Top - 1) div DY;
 
