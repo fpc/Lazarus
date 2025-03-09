@@ -3429,40 +3429,48 @@ begin
   CurFoldedBefore := node.FoldedBefore;
   ViewIdx := ToIdx(fTopViewPos + CurFoldedBefore);
   TxtIdx := NextLines.DisplayView.ViewToTextIndexEx(ViewIdx, ViewRange);
+  cnt := NextLines.Count;
 
   // Prepare data for line one above fTopViewPos
-  If ViewIdx > ViewRange.Top then begin
-    // Need CurLine.... data for wrapped lines
-    CurLineCapability := FFoldProvider.LineCapabilities[TxtIdx];
-    CurLineClassifications := FFoldProvider.LineClassification[TxtIdx];
-    NewCapability := CurLineCapability;
-    NewClassifications := CurLineClassifications;
-    TmpRange := ViewRange;
-    TmpViewIdx := ViewIdx - 1;
+  if (TxtIdx >= cnt) or (TxtIdx < -1) then begin
+    // Past end of Text
+    NewCapability := [];
+    NewClassifications := [];
   end
   else begin
-    TmpTxtIdx := TxtIdx - 1;
-    if node.IsInFold then tmpnode := node.Prev
-                     else tmpnode := fFoldTree.LastPage;
-    if tmpnode.IsInFold and (tmpnode.StartLine + tmpnode.MergedLineCount - 1 = ToPos(TmpTxtIdx))
-      then TmpTxtIdx := TmpTxtIdx - node.MergedLineCount    // Line before is in fold
-      else tmpnode.Init(nil, 0, 0);
-    NewCapability := FFoldProvider.LineCapabilities[TmpTxtIdx];
-    NewClassifications := FFoldProvider.LineClassification[TmpTxtIdx];
-    if (tmpnode.IsInFold) then begin
-      if tmpnode.IsHide then include(NewCapability, cfCollapsedHide)
-                        else include(NewCapability, cfCollapsedFold);
-      include(NewClassifications, tmpnode.Page._Classification);
+    If ViewIdx > ViewRange.Top then begin
+      // Need CurLine.... data for wrapped lines
+      CurLineCapability := FFoldProvider.LineCapabilities[TxtIdx];
+      CurLineClassifications := FFoldProvider.LineClassification[TxtIdx];
+      NewCapability := CurLineCapability;
+      NewClassifications := CurLineClassifications;
+      TmpRange := ViewRange;
+      TmpViewIdx := ViewIdx - 1;
+    end
+    else begin
+      TmpTxtIdx := TxtIdx - 1;
+      if node.IsInFold then tmpnode := node.Prev
+                       else tmpnode := fFoldTree.LastPage;
+      if tmpnode.IsInFold and (tmpnode.StartLine + tmpnode.MergedLineCount - 1 = ToPos(TmpTxtIdx))
+        then TmpTxtIdx := TmpTxtIdx - node.MergedLineCount    // Line before is in fold
+        else tmpnode.Init(nil, 0, 0);
+      NewCapability := FFoldProvider.LineCapabilities[TmpTxtIdx];
+      NewClassifications := FFoldProvider.LineClassification[TmpTxtIdx];
+      if (tmpnode.IsInFold) then begin
+        if tmpnode.IsHide then include(NewCapability, cfCollapsedHide)
+                          else include(NewCapability, cfCollapsedFold);
+        include(NewClassifications, tmpnode.Page._Classification);
+      end;
+      TmpRange := NextLines.DisplayView.TextToViewIndex(TmpTxtIdx);
+      TmpViewIdx := TmpRange.Bottom;
     end;
-    TmpRange := NextLines.DisplayView.TextToViewIndex(TmpTxtIdx);
-    TmpViewIdx := TmpRange.Bottom;
-  end;
-  if TmpViewIdx <> TmpRange.Bottom then
-    exclude(NewCapability, cfFoldEnd);
-  if TmpViewIdx <> TmpRange.Top then begin
-    if NewCapability * [cfFoldStart, cfHideStart] <> [] then
-      NewCapability := NewCapability + [cfFoldBody];
-    NewCapability := NewCapability - [cfFoldStart, cfHideStart];
+    if TmpViewIdx <> TmpRange.Bottom then
+      exclude(NewCapability, cfFoldEnd);
+    if TmpViewIdx <> TmpRange.Top then begin
+      if NewCapability * [cfFoldStart, cfHideStart] <> [] then
+        NewCapability := NewCapability + [cfFoldBody];
+      NewCapability := NewCapability - [cfFoldStart, cfHideStart];
+    end;
   end;
 
   // Add entry for line one above virtual topViewPos
@@ -3478,7 +3486,6 @@ begin
 
 
   {$IFDEF SynFoldDebug}debugln(['FOLD-- CalculateMaps fTopViewPos:=', fTopViewPos, '  TxtIdx=',TxtIdx]);{$ENDIF}
-  cnt := NextLines.Count;
   for i := 1 to fLinesInWindow + 2 do begin
     if (TxtIdx >= cnt) or (TxtIdx < -1) then begin
       // Past end of Text
