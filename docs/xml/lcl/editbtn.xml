@@ -1155,39 +1155,6 @@ does not have focus, it displays the grayed value "(filter)".
 <element name="TCustomControlFilterEdit.fIsFirstSetFormActivate"/>
 <element name="TCustomControlFilterEdit.fOnAfterFilter"/>
 
-<element name="TCustomControlFilterEdit.ApplyFilter">
-<short>
-Filters the data and updates the container.
-</short>
-<descr>
-<p>
-<var>ApplyFilter</var> is a method used to apply the Filter for the control, 
-and to sort and display the items which match the filter value. ApplyFilter 
-does its job at once when <var>Immediately</var> is set to <b>True</b>. It 
-calls methods like StoreSelection, ApplyFilterCore, and RestoreSelection to 
-perform the actions needed for an associated control.
-</p>
-<p>
-If Immediately is <b>False</b>, InvalidateFilter is called to connect the 
-asynchronous event handler routine which applies the filter asynchronously
-when the Application is in an idle state.
-</p>
-</descr>
-<seealso>
-<link id="TCustomControlFilterEdit.Text"/>
-<link id="TCustomControlFilterEdit.Filter"/>
-<link id="TCustomControlFilterEdit.StoreSelection"/>
-<link id="TCustomControlFilterEdit.RestoreSelection"/>
-<link id="TCustomControlFilterEdit.ApplyFilterCore"/>
-<link id="TCustomControlFilterEdit.InternalSetFilter"/>
-</seealso>
-</element>
-<element name="TCustomControlFilterEdit.ApplyFilter.Immediately">
-<short>
-Indicates whether the filter is applied immediately.
-</short>
-</element>
-
 <element name="TCustomControlFilterEdit.GetFilter">
 <short>
 Gets the value for the Filter property.
@@ -1246,11 +1213,11 @@ as an argument to the Application.QueueAsyncCall method.
 </p>
 <p>
 OnAsync ensures that the internal flag for pending filter updates is handled 
-by calling the private ApplyFilter method to immediately apply the pending 
-updates. Use the OnFilterItemEx or OnFilterItem (deprecated) event handlers to 
-perform actions needed to implement the filter. The flag used to enable or 
-disable the Button on the control is handled as well; the Button is Enabled 
-when the value in Text is <b>not</b> an empty string ('').
+by calling the ApplyFilter method to immediately apply the pending updates. 
+Use the OnFilterItemEx or OnFilterItem (deprecated) event handlers to perform 
+actions needed to implement the filter. The flag used to enable or disable the 
+Button on the control is handled as well; the Button is Enabled when the value 
+in Text is <b>not</b> an empty string ('').
 </p>
 <p>
 OnAsync is executed (via Application.QueueAsyncCall) when the value in 
@@ -1576,6 +1543,40 @@ is a virtual abstract method, and must be implemented in a derived classes.
 <seealso></seealso>
 </element>
 
+<!-- protected visibility -->
+<element name="TCustomControlFilterEdit.ApplyFilter">
+<short>
+Applies the Filter to the data displayed on the control.
+</short>
+<descr>
+<p>
+<var>ApplyFilter</var> is a method used to apply the Filter for the control, 
+and to sort and display the items which match the filter value. ApplyFilter 
+does its job at once when <var>Immediately</var> is set to <b>True</b>. It 
+calls methods like StoreSelection, ApplyFilterCore, and RestoreSelection to 
+perform the actions needed for an associated control.
+</p>
+<p>
+If Immediately is <b>False</b>, InvalidateFilter is called to connect the 
+asynchronous event handler routine which applies the filter asynchronously
+when the Application is in an idle state.
+</p>
+</descr>
+<seealso>
+<link id="TCustomControlFilterEdit.Text"/>
+<link id="TCustomControlFilterEdit.Filter"/>
+<link id="TCustomControlFilterEdit.StoreSelection"/>
+<link id="TCustomControlFilterEdit.RestoreSelection"/>
+<link id="TCustomControlFilterEdit.ApplyFilterCore"/>
+<link id="TCustomControlFilterEdit.InternalSetFilter"/>
+</seealso>
+</element>
+<element name="TCustomControlFilterEdit.ApplyFilter.Immediately">
+<short>
+Indicates whether the filter is applied immediately.
+</short>
+</element>
+
 <element name="TCustomControlFilterEdit.MoveNext">
 <short>Moves to the next value matching the filter for the control.</short>
 <descr>
@@ -1773,14 +1774,14 @@ this flag is set in descendent classes like TTreeFilterEdit found in the
 LazControls package.
 </p>
 <p>
-InvalidateFilter is called from the private ApplyFilter method when the Filter 
-value is not immediately applied. InvalidateFilter is also called when a new 
-value is applied to the Filter or SortData properties, or when FilterOptions 
-is modified for the control.
+InvalidateFilter is called from the ApplyFilter method when the Filter value 
+is not immediately applied. InvalidateFilter is also called when a new value 
+is applied to the Filter or SortData properties, or when FilterOptions is modified for the control.
 </p>
 </descr>
 <seealso>
 <link id="TCustomControlFilterEdit.Filter"/>
+<link id="TCustomControlFilterEdit.ApplyFilter"/>
 <link id="TCustomControlFilterEdit.FilterOptions"/>
 <link id="TCustomControlFilterEdit.IdleConnected"/>
 <link id="TCustomControlFilterEdit.SortData"/>
@@ -1818,8 +1819,8 @@ Applies a new Filter immediately without waiting for an idle state.
 </short>
 <descr>
 <p>
-Calls the private ApplyFilter method to immediately apply the value in Filter 
-using the ApplyFilterCore method in the implementation.
+Calls the ApplyFilter method to immediately apply the value in Filter using 
+the ApplyFilterCore method in the implementation.
 </p>
 </descr>
 <seealso/>
@@ -1989,8 +1990,8 @@ Indicates whether items are sorted as they are filtered.
 <p>
 <var>SortData</var> is a <var>Boolean</var> property which determines whether 
 items in the filtered control are sorted when the Filter value is applied in 
-the private ApplyFilter method. An explicit default value is not assigned for 
-the property, but the default value for the Boolean type is <b>False</b>.
+the ApplyFilter method. An explicit default value is not assigned for the 
+property, but the default value for the Boolean type is <b>False</b>.
 </p>
 <p>
 Changing the value for the property causes the InvalidateFilter method to be 
@@ -2007,6 +2008,7 @@ type.
 <seealso>
 <link id="TCustomControlFilterEdit.Filter"/>
 <link id="TCustomControlFilterEdit.ApplyFilterCore"/>
+<link id="TCustomControlFilterEdit.ApplyFilter"/>
 <link id="TCustomControlFilterEdit.InvalidateFilter"/>
 <link id="TCustomControlFilterEdit.SortAndFilter"/>
 </seealso>
@@ -2076,11 +2078,12 @@ Event handler signalled after all items have been filtered in the control.
 <descr>
 <p>
 OnAfterFilter is signalled from the asynchronous event handler routine, and 
-occurs after the private ApplyFilter method has been completed. 
+occurs after the ApplyFilter method has been completed. 
 </p>
 </descr>
 <seealso>
 <link id="TCustomControlFilterEdit.Filter"/>
+<link id="TCustomControlFilterEdit.ApplyFilter"/>
 <link id="TCustomControlFilterEdit.FilterOptions"/>
 </seealso>
 </element>
