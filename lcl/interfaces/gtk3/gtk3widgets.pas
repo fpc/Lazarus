@@ -9489,6 +9489,14 @@ begin
   g_object_set(PGObject(FCentralWidget), 'resize-mode', [GTK_RESIZE_QUEUE, nil]);
   gtk_layout_set_size(PGtkLayout(FCentralWidget), 1, 1);
 
+
+  g_signal_connect_data(FCentralWidget,'size-allocate',TGCallback(@ScrolledLayoutSizeAllocate), Self, nil, G_CONNECT_DEFAULT);
+
+  with PGtkScrolledWindow(Result)^.get_vadjustment^ do
+    LCLVAdj := gtk_adjustment_new(value, lower, upper, step_increment, page_increment, page_size);
+  with PGtkScrolledWindow(Result)^.get_hadjustment^ do
+    LCLHAdj := gtk_adjustment_new(value, lower, upper, step_increment, page_increment, page_size);
+
   gtk_widget_realize(Result);
 
   if not Assigned(LCLObject.Parent) then
