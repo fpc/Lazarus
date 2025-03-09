@@ -412,7 +412,7 @@ type
     procedure SetHighLighter(AValue: TSynCustomHighlighter);
     procedure SetTopViewPos(const ALine : integer);
     function  GetTopTextIndex : integer;
-    procedure SetTopTextIndex(const AIndex : integer);
+    procedure SetTopTextIndex(AIndex : integer);
     procedure SetLinesInWindow(const AValue : integer);
     procedure DoFoldChanged(AnIndex: Integer);
     function TextIndexAddLines(aTextIndex, LineOffset : Integer) : Integer;     (* Add/Sub to/from TextIndex (0-based) skipping folded *)
@@ -3349,9 +3349,17 @@ begin
   Result := fTopViewPos + fFoldTree.FindFoldForFoldedLine(fTopViewPos).FoldedBefore - 1;
 end;
 
-procedure TSynEditFoldedView.SetTopTextIndex(const AIndex : integer);
+procedure TSynEditFoldedView.SetTopTextIndex(AIndex: integer);
+var
+  n: TSynTextFoldAVLNode;
 begin
-  TopViewPos := AIndex + 1 - fFoldTree.FindFoldForLine(AIndex+1).FoldedBefore;
+  n := fFoldTree.FindFoldForLine(AIndex+1);
+  if n.IsInFold then begin
+    assert(AIndex >= ToIdx(n.StartLine), 'TSynEditFoldedView.SetTopTextIndex: AIndex > n.StartLine');
+    if AIndex < n.StartLine + n.MergedLineCount then
+      AIndex := Max(0, ToIdx(n.StartLine) - 1);
+  end;
+  TopViewPos := AIndex + 1 - n.FoldedBefore;
 end;
 
 (* LinesInWindow*)
