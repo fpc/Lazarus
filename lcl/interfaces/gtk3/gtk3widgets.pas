@@ -528,6 +528,9 @@ type
     procedure SetHScrollBarPolicy(AValue: TGtkPolicyType); virtual;
     procedure SetVScrollBarPolicy(AValue: TGtkPolicyType); virtual;
   protected
+    class procedure ScrolledLayoutSizeAllocate(AWidget: PGtkWidget;
+      AGdkRect: PGdkRectangle; Data: gpointer); cdecl; static; {very important, see note inside method}
+
     class function RangeChangeValue(ARange: PGtkRange; AScrollType: TGtkScrollType;
       AValue: gdouble; AData: TGtk3Widget): gboolean; cdecl; static;
     class procedure RangeValueChanged(range: PGtkRange; data: gpointer); cdecl; static;
@@ -841,9 +844,6 @@ type
   { TGtk3CustomControl }
 
   TGtk3CustomControl = class(TGtk3ScrollableWin)
-    strict private
-      class procedure CustomControlLayoutSizeAllocate(AWidget: PGtkWidget;
-        AGdkRect: PGdkRectangle; Data: gpointer); cdecl; static; {very important, see note inside method}
     protected
       function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
       function EatArrowKeys(const {%H-}AKey: Word): Boolean; override;
@@ -5708,6 +5708,40 @@ begin
   AScrollWin^.set_policy(APolicyH, AValue);
 end;
 
+class procedure TGtk3ScrollableWin.ScrolledLayoutSizeAllocate(
+  AWidget: PGtkWidget; AGdkRect: PGdkRectangle; Data: gpointer); cdecl;
+var
+  hadj, vadj: PGtkAdjustment;
+  //aWindow: PGdkWindow;
+  //aCtl: TGtk3Widget absolute Data;
+  HSize,VSize: integer;
+  uWidth, uHeight: guint;
+begin
+  {Note: Gtk expects that we set content size and then it calculates scrollbar values. LCL
+   is doing opposite, it sets scrollbar values eg via SetScrollInfo and then content should
+   be automatically calculated by widgetset. Gtk is crazy about it.
+   So, we are in charge here to help both. We save adjusted values
+   in setscrollinfo in LCLVAdj and LCLHAdj, so after GtkLayout sends size-allocate with accurate
+   content size we apply LCL values to adjustments and everybody is happy.
+   TODO: eg TTreeView editor, if scrollbar position is not at lower pos, showing
+   editor moves scrollbar to pos 0, if we apply LCL saved value here, then
+   editor won't show at all. Maybe moving editor and showing should take into
+   account scrollbar position and calculate x,y offset.}
+
+  hadj := PGtkScrollable(aWidget)^.get_hadjustment;
+  vadj := PGtkScrollable(aWidget)^.get_vadjustment;
+
+  HSize := Max(AGdkRect^.Width, Round(hAdj^.upper));
+  VSize := Max(AGdkRect^.Height, Round(vAdj^.upper));
+
+  PGtkLayout(aWidget)^.get_size(@uWidth, @uHeight);
+  if (uWidth <> HSize) or (uHeight <> VSize) then
+    PGtkLayout(aWidget)^.set_size(HSize, VSize);
+
+  if TGtk3Widget(Data).LCLObject.ClientRectNeedsInterfaceUpdate then
+    TGtk3Widget(Data).LCLObject.DoAdjustClientRectChange;
+end;
+
 procedure ApplyNoHoverCss(Widget: PGtkWidget);
 var
   CssProvider: PGtkCssProvider;
@@ -8718,40 +8752,6 @@ end;
 
 { TGtk3CustomControl }
 
-class procedure TGtk3CustomControl.CustomControlLayoutSizeAllocate(AWidget: PGtkWidget;
-  AGdkRect: PGdkRectangle; Data: gpointer); cdecl;
-var
-  hadj, vadj: PGtkAdjustment;
-  //aWindow: PGdkWindow;
-  //aCtl: TGtk3Widget absolute Data;
-  HSize,VSize: integer;
-  uWidth, uHeight: guint;
-begin
-  {Note: Gtk expects that we set content size and then it calculates scrollbar values. LCL
-   is doing opposite, it sets scrollbar values eg via SetScrollInfo and then content should
-   be automatically calculated by widgetset. Gtk is crazy about it.
-   So, we are in charge here to help both. We save adjusted values
-   in setscrollinfo in LCLVAdj and LCLHAdj, so after GtkLayout sends size-allocate with accurate
-   content size we apply LCL values to adjustments and everybody is happy.
-   TODO: eg TTreeView editor, if scrollbar position is not at lower pos, showing
-   editor moves scrollbar to pos 0, if we apply LCL saved value here, then
-   editor won't show at all. Maybe moving editor and showing should take into
-   account scrollbar position and calculate x,y offset.}
-
-  hadj := PGtkScrollable(aWidget)^.get_hadjustment;
-  vadj := PGtkScrollable(aWidget)^.get_vadjustment;
-
-  HSize := Max(AGdkRect^.Width, Round(hAdj^.upper));
-  VSize := Max(AGdkRect^.Height, Round(vAdj^.upper));
-
-  PGtkLayout(aWidget)^.get_size(@uWidth, @uHeight);
-  if (uWidth <> HSize) or (uHeight <> VSize) then
-    PGtkLayout(aWidget)^.set_size(HSize, VSize);
-
-  if TGtk3CustomControl(Data).LCLObject.ClientRectNeedsInterfaceUpdate then
-    TGtk3CustomControl(Data).LCLObject.DoAdjustClientRectChange;
-end;
-
 function TGtk3CustomControl.CreateWidget(const Params: TCreateParams): PGtkWidget;
 begin
   FHasPaint := True;
@@ -8779,7 +8779,7 @@ begin
     g_object_set(PGObject(FCentralWidget), 'resize-mode', [GTK_RESIZE_QUEUE, nil]);
   gtk_layout_set_size(PGtkLayout(FCentralWidget), 1, 1);
 
-  g_signal_connect_data(FCentralWidget,'size-allocate',TGCallback(@CustomControlLayoutSizeAllocate), Self, nil, G_CONNECT_DEFAULT);
+  g_signal_connect_data(FCentralWidget,'size-allocate',TGCallback(@ScrolledLayoutSizeAllocate), Self, nil, G_CONNECT_DEFAULT);
 
   with PGtkScrolledWindow(Result)^.get_vadjustment^ do
     LCLVAdj := gtk_adjustment_new(value, lower, upper, step_increment, page_increment, page_size);
