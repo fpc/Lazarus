@@ -2820,7 +2820,8 @@ function TQtWidgetSet.GetDCOriginRelativeToWindow(PaintDC: HDC;
 var
   QtDC: TQtDeviceContext absolute PaintDC;
   Matrix: QTransformH;
-  P: TPoint;
+  DCScreenOrigin, P: TPoint;
+  Pt1, Pt2: TQtPoint;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI GetDCOriginRelativeToWindow] PaintDC ' + dbghex(PaintDC));
@@ -2831,13 +2832,26 @@ begin
   Matrix := QPainter_transform(QtDC.Widget);
   OriginDiff := Point(0, 0);
   P := Point(0, 0);
+  DCScreenOrigin := Point(0, 0);
+  if (QtDC.Parent <> nil) then
+  begin
+    Pt2.X := 0;
+    Pt2.y := 0;
+    QWidget_mapToGlobal(QtDC.Parent, @Pt1, @Pt2);
+    DCScreenOrigin.X := Pt1.X;
+    DCScreenOrigin.Y := Pt1.Y;
+  end;
   if WindowHandle <> 0 then
+  begin
     P := TQtWidget(WindowHandle).getClientOffset;
+    P := TQtWidget(WindowHandle).MapToGlobal(P, False);
+  end;
   if Matrix <> nil then
   begin
-    OriginDiff.X := Round(QTransform_Dx(Matrix)) - P.X;
-    OriginDiff.Y := Round(QTransform_Dy(Matrix)) - P.Y;
+    OriginDiff.X := DCScreenOrigin.X - P.X;
+    OriginDiff.Y := DCScreenOrigin.Y - P.Y;
   end;
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------

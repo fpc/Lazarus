@@ -20107,8 +20107,15 @@ begin
     Msg.PaintStruct^.hdc := FDesignContext;
 
     P := getClientOffset;
+
+    {$IFDEF QTSCROLLABLEFORMS}
+    inc(P.X, -ScrollArea.horizontalScrollBar.getValue);
+    inc(P.Y, -ScrollArea.verticalScrollBar.getValue);
+    {$ELSE}
     inc(P.X, FScrollX);
     inc(P.Y, FScrollY);
+    {$ENDIF}
+
     TQtDeviceContext(Msg.DC).translate(P.X, P.Y);
 
     // send paint message
@@ -20150,9 +20157,13 @@ var
 begin
   if FDesignControl = nil then
     Exit;
-  // FDesignControl must be same as form area,
-  // since we use QWidget, not QMainWindow in design time.
+  {$IFDEF QTSCROLLABLEFORMS}
+  QWidget_contentsRect(ScrollArea.viewportWidget, @R);
+  R.Width := R.Width + ScrollArea.horizontalScrollBar.getMax;
+  R.Height := R.Height + ScrollArea.verticalScrollBar.getMax;
+  {$ELSE}
   QWidget_contentsRect(Widget, @R);
+  {$ENDIF}
   with R do
   begin
     QWidget_move(FDesignControl, Left, Top);
@@ -20302,9 +20313,7 @@ begin
                 {$IFDEF QTSCROLLABLEFORMS}
                 else
                 if (aWidget is TQtWindowArea) then
-                begin
                   TQtWindowArea(aWidget).scroll(XStep, YStep);
-                end;
                 {$ENDIF}
               end else
               begin
@@ -20390,7 +20399,11 @@ begin
           end;
         end;
       end;
-      QEventPaint: SlotDesignControlPaint(Sender, Event);
+      QEventPaint:
+      begin
+        SlotDesignControlPaint(Sender, Event);
+        Result := True;
+      end;
       QEventContextMenu: SlotContextMenu(Sender, Event);
     end;
   finally
