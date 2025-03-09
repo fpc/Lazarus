@@ -530,6 +530,7 @@ type
   protected
     class function RangeChangeValue(ARange: PGtkRange; AScrollType: TGtkScrollType;
       AValue: gdouble; AData: TGtk3Widget): gboolean; cdecl; static;
+    class procedure RangeValueChanged(range: PGtkRange; data: gpointer); cdecl; static;
   public
     LCLVAdj: PGtkAdjustment; // used to keep LCL values
     LCLHAdj: PGtkAdjustment; // used to keep LCL values
@@ -843,7 +844,6 @@ type
     strict private
       class procedure CustomControlLayoutSizeAllocate(AWidget: PGtkWidget;
         AGdkRect: PGdkRectangle; Data: gpointer); cdecl; static; {very important, see note inside method}
-      class procedure RangeValueChanged(range: PGtkRange; data: gpointer); cdecl; static;
     protected
       function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
       function EatArrowKeys(const {%H-}AKey: Word): Boolean; override;
@@ -5864,6 +5864,69 @@ begin
   {$ENDIF}
 end;
 
+class procedure TGtk3ScrollableWin.RangeValueChanged(range: PGtkRange;
+  data: gpointer); cdecl;
+var
+  PrevValue, CurrentValue, Delta: gdouble;
+  Control: TGtk3ScrollableWin;
+  Msg: TLMVScroll;
+  APressed, AMouseOver: boolean;
+  Adjustment: PGtkAdjustment;
+begin
+  Control := TGtk3ScrollableWin(data);
+  {$IFDEF GTK3DEBUGSCROLL}
+  writeln('>TGtk3ScrollableWin.RangeValueChanged ', dbgsName(Control.LCLObject), ' InUpdate=', Control.InUpdate);
+  {$ENDIF}
+  if Control.InUpdate then
+  begin
+    {$IFDEF GTK3DEBUGSCROLL}
+    writeln('<TGtk3ScrollableWin.RangeValueChanged exiting because of InUpdate lock.');
+    {$ENDIF}
+    exit;
+  end else
+  begin
+    {$IFDEF GTK3DEBUGSCROLL}
+    writeln('  setting InUpdate lock.');
+    {$ENDIF}
+    Control.BeginUpdate;
+  end;
+
+  Adjustment := gtk_range_get_adjustment(range);
+  CurrentValue := gtk_adjustment_get_value(Adjustment);
+  PrevValue := gtk_adjustment_get_lower(Adjustment); // Store the previous position before it changes
+
+  Delta := CurrentValue - PrevValue;
+
+  if Delta <> 0 then
+  begin
+    if gtk_orientable_get_orientation(PGtkOrientable(range)) = GTK_ORIENTATION_VERTICAL then
+    begin
+      Msg.Msg := LM_VSCROLL;
+    end
+    else
+    begin
+      Msg.Msg := LM_HSCROLL;
+    end;
+
+    APressed := Control.CheckIfScrollbarPressed(PGtkScrollBar(range), AMouseOver, GDK_BUTTON1_MASK);
+    if APressed then
+      Msg.ScrollCode := SB_THUMBTRACK
+    else
+      Msg.ScrollCode := SB_THUMBPOSITION;
+
+    Msg.Pos := Round(CurrentValue);
+    Msg.ScrollBar := HWND(Control);
+
+    Control.DeliverMessage(Msg);
+  end;
+
+  {$IFDEF GTK3DEBUGSCROLL}
+  WriteLn('<TGtk3ScrollableWin.RangeValueChanged: CurrentValue=', CurrentValue:0:2, ', PrevValue=', PrevValue:0:2,
+          ', Delta=', Delta:0:2, ', InUpdate=', Control.InUpdate, ' releasing lock ...');
+  {$ENDIF}
+  Control.EndUpdate;
+end;
+
 procedure TGtk3ScrollableWin.DestroyWidget;
 begin
   if Assigned(LCLHAdj) then
@@ -8771,68 +8834,6 @@ begin
   // Apply adjustment values to the mouse position
   Dec(APoint^.x, HValue);
   Dec(APoint^.y, VValue);
-end;
-
-class procedure TGtk3CustomControl.RangeValueChanged(range: PGtkRange; data: gpointer); cdecl;
-var
-  PrevValue, CurrentValue, Delta: gdouble;
-  Control: TGtk3CustomControl;
-  Msg: TLMVScroll;
-  APressed, AMouseOver: boolean;
-  Adjustment: PGtkAdjustment;
-begin
-  Control := TGtk3CustomControl(data);
-  {$IFDEF GTK3DEBUGSCROLL}
-  writeln('>TGtk3CustomControl.RangeValueChanged ', dbgsName(Control.LCLObject), ' InUpdate=', Control.InUpdate);
-  {$ENDIF}
-  if Control.InUpdate then
-  begin
-    {$IFDEF GTK3DEBUGSCROLL}
-    writeln('<TGtk3CustomControl.RangeValueChanged exiting because of InUpdate lock.');
-    {$ENDIF}
-    exit;
-  end else
-  begin
-    {$IFDEF GTK3DEBUGSCROLL}
-    writeln('  setting InUpdate lock.');
-    {$ENDIF}
-    Control.BeginUpdate;
-  end;
-
-  Adjustment := gtk_range_get_adjustment(range);
-  CurrentValue := gtk_adjustment_get_value(Adjustment);
-  PrevValue := gtk_adjustment_get_lower(Adjustment); // Store the previous position before it changes
-
-  Delta := CurrentValue - PrevValue;
-
-  if Delta <> 0 then
-  begin
-    if gtk_orientable_get_orientation(PGtkOrientable(range)) = GTK_ORIENTATION_VERTICAL then
-    begin
-      Msg.Msg := LM_VSCROLL;
-    end
-    else
-    begin
-      Msg.Msg := LM_HSCROLL;
-    end;
-
-    APressed := Control.CheckIfScrollbarPressed(PGtkScrollBar(range), AMouseOver, GDK_BUTTON1_MASK);
-    if APressed then
-      Msg.ScrollCode := SB_THUMBTRACK
-    else
-      Msg.ScrollCode := SB_THUMBPOSITION;
-
-    Msg.Pos := Round(CurrentValue);
-    Msg.ScrollBar := HWND(Control);
-
-    Control.DeliverMessage(Msg);
-  end;
-
-  {$IFDEF GTK3DEBUGSCROLL}
-  WriteLn('<TGtk3CustomControl.RangeValueChanged: CurrentValue=', CurrentValue:0:2, ', PrevValue=', PrevValue:0:2,
-          ', Delta=', Delta:0:2, ', InUpdate=', Control.InUpdate, ' releasing lock ...');
-  {$ENDIF}
-  Control.EndUpdate;
 end;
 
 procedure TGtk3CustomControl.InitializeWidget;
