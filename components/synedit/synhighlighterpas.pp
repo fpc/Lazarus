@@ -4089,12 +4089,17 @@ begin
   fTokenID := tkSymbol;
 
   t := TopPascalCodeFoldBlockType;
-  if ( (t in PascalStatementBlocks - [cfbtAsm])  or               //cfbtClass, cfbtClassSection,
-       ( ( (t in [cfbtVarBlock, cfbtLocalVarBlock, cfbtConstBlock, cfbtLocalConstBlock, cfbtClassConstBlock]) or
-           ((t in [cfbtProcedure, cfbtAnonymousProcedure]) and (PasCodeFoldRange.BracketNestLevel > 0))
-         ) and
+  if ( (t in PascalStatementBlocks - [cfbtAsm])                 //cfbtClass, cfbtClassSection,
+       or
+       ( (t in [cfbtVarBlock, cfbtLocalVarBlock, cfbtConstBlock, cfbtLocalConstBlock, cfbtClassConstBlock]) and
          (rsAfterEqual in fRange)
-     )) and
+       )
+       or
+       ( (t in [cfbtProcedure, cfbtAnonymousProcedure, cfbtTypeBlock, cfbtLocalTypeBlock]) and
+         (PasCodeFoldRange.BracketNestLevel > 0) and
+         (fRange * [rsInProcHeader, rsAfterEqual] = [rsInProcHeader, rsAfterEqual])
+       )
+     ) and
      not(rsAfterIdentifierOrValue in fRange)
   then begin
     if Run<fLineLen then begin

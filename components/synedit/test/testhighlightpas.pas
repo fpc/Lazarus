@@ -3263,23 +3263,25 @@ begin
        'type',
          'c=^char;',         // 7
          'c=type ^char;',         // 8
+         'f=procedure(a:char=^c);',
        'const',
-         'd:record A:char; B:^char; end=(a:^c;b:nil);',  //10
+         'f:procedure(a:char=^c) =nil;',
+         'd:record A:char; B:^char; end=(a:^c;b:nil);',  //12
        'implementation',
        'function x(f:^char=^k^c):^v;', // actually the compiler does not allow ^ as pointer for result
        'var',
-         'a:char=^o;',       // 14
-         'b:^char=nil;',     // 15
-       'type',  // 16
+         'a:char=^o;',       // 16
+         'b:^char=nil;',     // 17
+       'type',  // 18
          'c=^char;',
        'begin',
          'i:=^f;',
-         'x:=GetTypeData(PropInfo^.PropType{$IFNDEF FPC}^{$ENDIF});', // 17
+         'x:=GetTypeData(PropInfo^.PropType{$IFNDEF FPC}^{$ENDIF});', // 18
          'c:=p^;',
          'c:=p ^;',
          'c:=p(**)^;',
-         'c:=p{} ^;',     // 24
-         'i:=f(1)^;',     // 25
+         'c:=p{} ^;',     // 26
+         'i:=f(1)^;',     // 27
          'i:=f[1]^;',
          'i:=f^^;',
          'c:=p^+^i''e''^a#13^x;',
@@ -3307,8 +3309,16 @@ begin
                      [tkIdentifier, tkSymbol, tkSymbol, tkIdentifier, tkSymbol]);
   CheckTokensForLine('c=type ^char;',   8,
                      [tkIdentifier, tkSymbol, tkKey, tkSpace, tkSymbol, tkIdentifier, tkSymbol]);
+  CheckTokensForLine('f=procedure(a:char=^c);',   9,
+                     [tkIdentifier, tkSymbol, tkKey, TK_Bracket,
+                      tkIdentifier, TK_Colon, tkIdentifier, TK_Equal, tkString, TK_Bracket, TK_Semi]);
 
-  CheckTokensForLine('CONST c:record A:char; B:^char; end=(a:^c;b:nil);',   10,
+  CheckTokensForLine('f:procedure(a:char=^c) =nil;',   11,
+                     [tkIdentifier, tkSymbol, tkKey, TK_Bracket,
+                      tkIdentifier, TK_Colon, tkIdentifier, TK_Equal, tkString, TK_Bracket, tkSpace,
+                      TK_Equal, tkKey, TK_Semi]);
+
+  CheckTokensForLine('CONST d:record A:char; B:^char; end=(a:^c;b:nil);',   12,
                      [tkIdentifier, tkSymbol, tkKey, tkSpace,
                         tkIdentifier, TK_Colon, tkIdentifier, TK_Semi, tkSpace,
                         tkIdentifier, TK_Colon, tkSymbol, tkIdentifier, TK_Semi, tkSpace, tkKey,
@@ -3317,45 +3327,45 @@ begin
                         TK_Bracket, TK_Semi
                         ]);
 
-  CheckTokensForLine('function x(f:^char=^k):^v;',   12,
+  CheckTokensForLine('function x(f:^char=^k):^v;',   14,
                      [tkKey, tkSpace, tkIdentifier + FAttrProcName, tkSymbol, tkIdentifier,  // function x(f
                       tkSymbol, tkSymbol, tkIdentifier, tkSymbol, tkString,  tkString,  // :^char=^k
                       tkSymbol, tkSymbol, tkSymbol, tkIdentifier, tkSymbol]);          // ):^v;
-  CheckTokensForLine('LOCAL a:char=^o;',   14,
+  CheckTokensForLine('LOCAL a:char=^o;',   16,
                      [tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkString, tkSymbol]);
-  CheckTokensForLine('LOCAL b:^char=nil;',   15,
+  CheckTokensForLine('LOCAL b:^char=nil;',   17,
                      [tkIdentifier, tkSymbol, tkSymbol, tkIdentifier, tkSymbol, tkKey, tkSymbol]);
-  CheckTokensForLine('LOCAL c=^char;',   17,
+  CheckTokensForLine('LOCAL c=^char;',   19,
                      [tkIdentifier, tkSymbol, tkSymbol, tkIdentifier, tkSymbol]);
-  CheckTokensForLine('i:=^f',   19,
+  CheckTokensForLine('i:=^f',   21,
                      [tkIdentifier, tkSymbol, tkString, tkSymbol]);
 
-  CheckTokensForLine('x:=GetTypeData(PropInfo^.PropType{$IFNDEF FPC}^{$ENDIF});',   20,
+  CheckTokensForLine('x:=GetTypeData(PropInfo^.PropType{$IFNDEF FPC}^{$ENDIF});',   22,
                      [tkIdentifier, tkSymbol, tkIdentifier, tkSymbol,    // x:=GetTypeData(
                       tkIdentifier, tkSymbol, tkSymbol, tkIdentifier,    // PropInfo^.PropType
                       tkDirective, tkSymbol, tkDirective, tkSymbol, tkSymbol]);  // {$IFNDEF FPC}^{$ENDIF});
 
-  CheckTokensForLine('c:=p^;',   21,
+  CheckTokensForLine('c:=p^;',   23,
                      [tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkSymbol]);
-  CheckTokensForLine('c:=p ^;',   22,
+  CheckTokensForLine('c:=p ^;',   24,
                      [tkIdentifier, tkSymbol, tkIdentifier, tkSpace, tkSymbol, tkSymbol]);
-  CheckTokensForLine('c:=p(**)^;',   23,
+  CheckTokensForLine('c:=p(**)^;',   25,
                      [tkIdentifier, tkSymbol, tkIdentifier, tkComment, tkSymbol, tkSymbol]);
-  CheckTokensForLine('c:=p{} ^;',   24,
+  CheckTokensForLine('c:=p{} ^;',   26,
                      [tkIdentifier, tkSymbol, tkIdentifier, tkComment, tkSpace, tkSymbol, tkSymbol]);
 
-  CheckTokensForLine('c:=p(1)^;',   25,
+  CheckTokensForLine('c:=p(1)^;',   27,
                      [tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkNumber, tkSymbol, tkSymbol]);
-  CheckTokensForLine('c:=p[1]^;',   26,
+  CheckTokensForLine('c:=p[1]^;',   28,
                      [tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkNumber, tkSymbol, tkSymbol]);
-  CheckTokensForLine('c:=p^^;',   27,
+  CheckTokensForLine('c:=p^^;',   29,
                      [tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkSymbol, tkSymbol]);
 
-  CheckTokensForLine('c:=p^+^i''e''^a#13^x;',   28,
+  CheckTokensForLine('c:=p^+^i''e''^a#13^x;',   30,
                      [tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkSymbol, // c:=p^+
                       tkString, tkString, tkString, tkString, tkString, tkSymbol  // ^i'e'^a#13^x;
                      ]);
-  CheckTokensForLine('c:=x=^a and ^a=k and(^a^a=z);',   29,
+  CheckTokensForLine('c:=x=^a and ^a=k and(^a^a=z);',   31,
                      [tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkString, tkSpace, // c:=x=^a
                       tkKey, tkSpace, tkString, tkSymbol, tkIdentifier, tkSpace, // and ^a=k
                       tkKey, tkSymbol, tkString, tkString, tkSymbol, tkIdentifier,  // and(^a^a=z
