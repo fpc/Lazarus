@@ -284,15 +284,17 @@ begin
   if WindowsVersion >= wv2000 then
   begin
     Result := CreateWindowEx(WS_EX_LAYERED or WS_EX_TRANSPARENT or WS_EX_TOPMOST or WS_EX_TOOLWINDOW,
-      PChar(WndClassName), PChar(WndClassName), WS_POPUP or WS_VISIBLE,
+      PChar(WndClassName), PChar(WndClassName), WS_POPUP,
       ARect.Left, ARect.Top, ARect.Right - ARect.Left, ARect.Bottom - ARect.Top, AppHandle, 0, System.HInstance, nil);
 
     SetLayeredWindowAttributes(Result, 0, $30, LWA_ALPHA);
   end
   else
     Result := CreateWindowEx(WS_EX_TOPMOST or WS_EX_TOOLWINDOW,
-      PChar(WndClassName), PChar(WndClassName), WS_POPUP or WS_VISIBLE,
+      PChar(WndClassName), PChar(WndClassName), WS_POPUP,
       ARect.Left, ARect.Top, ARect.Right - ARect.Left, ARect.Bottom - ARect.Top, AppHandle, 0, System.HInstance, nil);
+
+  ShowWindow(Result, SW_SHOWNOACTIVATE);
 end;
 
 {------------------------------------------------------------------------------
