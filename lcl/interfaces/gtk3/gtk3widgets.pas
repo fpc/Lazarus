@@ -95,7 +95,6 @@ type
     class procedure MapWidget(AWidget: PGtkWidget; Data: gPointer); cdecl; static; {GtkWindow never sends this signal !}
     class function MouseEnterNotify(aWidget: PGtkWidget; aEvent: PGdkEventCrossing; aData: gpointer): gboolean; cdecl; static;
     class function MouseLeaveNotify(aWidget: PGtkWidget; aEvent: PGdkEventCrossing; aData: gpointer): gboolean; cdecl; static;
-    class function ResizeEvent(AWidget: PGtkWidget; AEvent: PGdkEvent; Data: gpointer): gboolean; cdecl; static;
     class function ScrollEvent(AWidget: PGtkWidget; AEvent: PGdkEvent; AData: GPointer): GBoolean; cdecl; static;
     class procedure SizeAllocate(AWidget: PGtkWidget; AGdkRect: PGdkRectangle; Data: gpointer); cdecl; static;
     class procedure WidgetHide({%H-}AWidget:PGtkWidget; AData:gpointer); cdecl; static;
@@ -1576,19 +1575,6 @@ begin
 
   ACtl.DeliverMessage(Msg);
 
-end;
-
-class function TGtk3Widget.ResizeEvent(AWidget: PGtkWidget; AEvent: PGdkEvent; Data: gpointer): gboolean; cdecl;
-var
-  ARect: TGdkRectangle;
-begin
-  Result := False;
-  ARect.X := AEvent^.configure.x;
-  ARect.Y := AEvent^.configure.y;
-  ARect.width := AEvent^.configure.width;
-  ARect.height := AEvent^.configure.height;
-  // DebugLn('**** Gtk3ResizeEvent(CONFIGURE) **** ....',dbgsName(TGtk3Widget(Data).LCLObject),' ARect ',dbgs(RectFromGdkRect(ARect)));
-  SizeAllocate(AWidget, @ARect, Data);
 end;
 
 class procedure TGtk3Widget.WidgetHide({%H-}AWidget: PGtkWidget; AData: gpointer); cdecl;
