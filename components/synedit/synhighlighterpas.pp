@@ -2963,8 +2963,16 @@ begin
   if (FStringKeywordMode in [spsmDefault]) and KeyComp('Ansistring') then
     Result := tkKey
   else
-  if KeyComp('Enumerator') and (TopPascalCodeFoldBlockType in [cfbtClassSection]) then
-    Result := tkModifier
+  if (PasCodeFoldRange.BracketNestLevel = 0) and
+     (fRange * [rsAfterClassMembers, rsAfterSemiColon, rsAfterEqualOrColon, rsInProcHeader, rsProperty] =
+               [rsAfterClassMembers, rsAfterSemiColon]) and
+     KeyComp('Enumerator') and
+     (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection, cfbtRecord])
+  then begin
+    Result := tkModifier;
+    if rsWasInProcHeader in fRange then
+      FRange := FRange + [rsInProcHeader];
+  end
   else
     Result := tkIdentifier;
 end;

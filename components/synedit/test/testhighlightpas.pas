@@ -2583,6 +2583,7 @@ begin
       6: n := 'message';
       7: n := 'platform';
       8: n := 'overload';
+      9: n := 'enumerator'; // "enumerator current" or "enumerator MoveNext"
     end;
 
     SetLines
@@ -2636,6 +2637,9 @@ begin
         'procedure '+n+'('+n+':'+n+');'+n+';',
         'function '+n+':'+n+';'+n+';',
         'function '+n+'('+n+':'+n+'):'+n+';'+n+';',
+        // 41
+        'function '+n+'('+n+':'+n+'):'+n+';enumerator MoveNext;'+n+';',
+        'property '+n+':'+n+' read '+n+';enumerator Current;deprecated;',
         'end;',
          ''
       ]);
@@ -2791,7 +2795,19 @@ begin
            tkIdentifier, TK_Semi,
            tkModifier, TK_Semi
           ]);
-
+        // 41
+        CheckTokensForLine('function '+n+'('+n+':'+n+'):'+n+';enumerator MoveNext;'+n+';',41,
+          [tkKey, tkSpace, tkIdentifier+h,
+           TK_Bracket, tkIdentifier, TK_Comma, tkIdentifier, TK_Bracket, TK_Colon, tkIdentifier, TK_Semi,
+           tkModifier, tkSpace, tkIdentifier, TK_Semi,
+           tkModifier, TK_Semi
+          ]);
+        CheckTokensForLine('property '+n+':'+n+' read '+n+';enumerator Current;deprecated;',42,
+          [tkKey, tkSpace, tkIdentifier,
+           TK_Colon, tkIdentifier, tkSpace, tkKey, tkSpace, tkIdentifier, TK_Semi,
+           tkModifier, tkSpace, tkIdentifier, TK_Semi,
+           tkModifier, TK_Semi
+          ]);
     end;
   end;
 end;
