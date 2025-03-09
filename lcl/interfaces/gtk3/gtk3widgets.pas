@@ -9014,19 +9014,19 @@ begin
   //writeln('GtkFixed size-allocate x=',AGdkRect^.x,' Y=',AGdkRect^.y,' Width=',AGdkRect^.width,' H=',AGdkRect^.height,' VAdj ? ',Assigned(TGtk3CustomControl(Data).LCLVAdj));
   VSize := 0;
   HSize := 0;
-  hadj := TGtk3CustomControl(Data).GetScrolledWindow^.get_hadjustment;
-  vadj := TGtk3CustomControl(Data).GetScrolledWindow^.get_vadjustment;
+  hadj := TGtk3ScrollableWin(Data).GetScrolledWindow^.get_hadjustment;
+  vadj := TGtk3ScrollableWin(Data).GetScrolledWindow^.get_vadjustment;
 
-  if Assigned(TGtk3CustomControl(Data).LCLVAdj) and Gtk3IsAdjustment(vadj) then
-    with TGtk3CustomControl(Data).LCLVAdj^ do
+  if Assigned(TGtk3ScrollableWin(Data).LCLVAdj) and Gtk3IsAdjustment(vadj) then
+    with TGtk3ScrollableWin(Data).LCLVAdj^ do
     begin
       VSize := Round(upper);
       if page_size > 0 then
         VSize := VSize + Round(upper - page_size);
     end;
 
-  if Assigned(TGtk3CustomControl(Data).LCLHAdj) and Gtk3IsAdjustment(hadj) then
-    with TGtk3CustomControl(Data).LCLHAdj^ do
+  if Assigned(TGtk3ScrollableWin(Data).LCLHAdj) and Gtk3IsAdjustment(hadj) then
+    with TGtk3ScrollableWin(Data).LCLHAdj^ do
     begin
       HSize := Round(upper);
       if page_size > 0 then
@@ -9042,16 +9042,16 @@ begin
 
   {TODO: eg treeview editor, if scrollbar value > 0 then editor resets position to 0,
    to fix this we must position editor at y pos - adjustment.value}
-  if Assigned(TGtk3CustomControl(Data).LCLVAdj) and Gtk3IsAdjustment(vadj) then
-    with TGtk3CustomControl(Data).LCLVAdj^ do
+  if Assigned(TGtk3ScrollableWin(Data).LCLVAdj) and Gtk3IsAdjustment(vadj) then
+    with TGtk3ScrollableWin(Data).LCLVAdj^ do
       vadj^.configure({vadj^.}value, lower, upper, step_increment, page_increment, page_size);
 
-  if Assigned(TGtk3CustomControl(Data).LCLHAdj) and Gtk3IsAdjustment(hadj) then
-    with TGtk3CustomControl(Data).LCLHAdj^ do
+  if Assigned(TGtk3ScrollableWin(Data).LCLHAdj) and Gtk3IsAdjustment(hadj) then
+    with TGtk3ScrollableWin(Data).LCLHAdj^ do
       hadj^.configure({hadj^.}value, lower, upper, step_increment, page_increment, page_size);
 
-  if TGtk3CustomControl(Data).LCLObject.ClientRectNeedsInterfaceUpdate then
-    TGtk3CustomControl(Data).LCLObject.DoAdjustClientRectChange;
+  if TGtk3ScrollableWin(Data).LCLObject.ClientRectNeedsInterfaceUpdate then
+    TGtk3ScrollableWin(Data).LCLObject.DoAdjustClientRectChange;
 
 end;
 
@@ -9492,9 +9492,9 @@ begin
 
   g_signal_connect_data(FCentralWidget,'size-allocate',TGCallback(@ScrolledLayoutSizeAllocate), Self, nil, G_CONNECT_DEFAULT);
 
-  with PGtkScrolledWindow(Result)^.get_vadjustment^ do
+  with PGtkScrolledWindow(FScrollWin)^.get_vadjustment^ do
     LCLVAdj := gtk_adjustment_new(value, lower, upper, step_increment, page_increment, page_size);
-  with PGtkScrolledWindow(Result)^.get_hadjustment^ do
+  with PGtkScrolledWindow(FScrollWin)^.get_hadjustment^ do
     LCLHAdj := gtk_adjustment_new(value, lower, upper, step_increment, page_increment, page_size);
 
   gtk_widget_realize(Result);
