@@ -4030,27 +4030,27 @@ var
       SetGDouble(ATarget, ScrollInfo.nMax, HasChanged);
       Adjustment^.upper := ATarget ;
 
-      if (AControl is TGtk3CustomControl) and (wtContainer in AControl.WidgetType) then
+      if (AControl is TGtk3ScrollableWin) and (wtContainer in AControl.WidgetType) then
       begin
         //hah
         if SbStyle = SB_VERT then
-          TGtk3CustomControl(AControl).GetContainerWidget^.set_size_request(TGtk3CustomControl(AControl).GetContainerWidget^.get_allocated_width, Round(ATarget) + 1)
+          TGtk3ScrollableWin(AControl).GetContainerWidget^.set_size_request(TGtk3ScrollableWin(AControl).GetContainerWidget^.get_allocated_width, Round(ATarget) + 1)
         else
         if SBStyle = SB_HORZ then
-          TGtk3CustomControl(AControl).GetContainerWidget^.set_size_request(Round(ATarget) + 1, TGtk3CustomControl(AControl).GetContainerWidget^.get_allocated_height);
+          TGtk3ScrollableWin(AControl).GetContainerWidget^.set_size_request(Round(ATarget) + 1, TGtk3ScrollableWin(AControl).GetContainerWidget^.get_allocated_height);
       end else
-      if (AControl is TGtk3CustomControl) and (wtLayout in AControl.WidgetType) then
+      if (AControl is TGtk3ScrollableWin) and (wtLayout in AControl.WidgetType) then
       begin
-        PGtkLayout(TGtk3CustomControl(AControl).GetContainerWidget)^.get_size(@uWidth, @uHeight);
+        PGtkLayout(TGtk3ScrollableWin(AControl).GetContainerWidget)^.get_size(@uWidth, @uHeight);
         if SbStyle = SB_VERT then
         begin
           if Round(aTarget) <> uHeight then
           begin
             if HaveLogicalValues and (ScrollInfo.nPage = ScrollInfo.nMax) and (ScrollInfo.nMax > 0) then
-              PGtkLayout(TGtk3CustomControl(AControl).GetContainerWidget)^.set_size(uWidth, ScrollInfo.nMax)
+              PGtkLayout(TGtk3ScrollableWin(AControl).GetContainerWidget)^.set_size(uWidth, ScrollInfo.nMax)
             else
-              PGtkLayout(TGtk3CustomControl(AControl).GetContainerWidget)^.set_size(uWidth, Round(ATarget) + GetSystemMetrics(SM_CYVSCROLL));
-            PGtkLayout(TGtk3CustomControl(AControl).GetContainerWidget)^.queue_resize;
+              PGtkLayout(TGtk3ScrollableWin(AControl).GetContainerWidget)^.set_size(uWidth, Round(ATarget) + GetSystemMetrics(SM_CYVSCROLL));
+            PGtkLayout(TGtk3ScrollableWin(AControl).GetContainerWidget)^.queue_resize;
           end;
         end else
         if SBStyle = SB_HORZ then
@@ -4058,10 +4058,10 @@ var
           if Round(aTarget) <> uWidth then
           begin
             if HaveLogicalValues and (ScrollInfo.nPage = ScrollInfo.nMax) and (ScrollInfo.nMax > 0) then
-              PGtkLayout(TGtk3CustomControl(AControl).GetContainerWidget)^.set_size(ScrollInfo.nMax, uHeight)
+              PGtkLayout(TGtk3ScrollableWin(AControl).GetContainerWidget)^.set_size(ScrollInfo.nMax, uHeight)
             else
-             PGtkLayout(TGtk3CustomControl(AControl).GetContainerWidget)^.set_size(Round(ATarget) + GetSystemMetrics(SM_CYVSCROLL), uHeight);
-            PGtkLayout(TGtk3CustomControl(AControl).GetContainerWidget)^.queue_resize;
+             PGtkLayout(TGtk3ScrollableWin(AControl).GetContainerWidget)^.set_size(Round(ATarget) + GetSystemMetrics(SM_CYVSCROLL), uHeight);
+            PGtkLayout(TGtk3ScrollableWin(AControl).GetContainerWidget)^.queue_resize;
           end;
         end;
       end;
@@ -4114,19 +4114,19 @@ var
 
     if SBStyle = SB_VERT then
     begin
-      if (AControl is TGtk3CustomControl) and Assigned(TGtk3CustomControl(AControl).LCLVAdj) then
+      if (AControl is TGtk3ScrollableWin) and Assigned(TGtk3ScrollableWin(AControl).LCLVAdj) then
       begin
         with Adjustment^ do
-          TGtk3CustomControl(AControl).LCLVAdj^.configure(value, lower, upper, step_increment, page_increment, page_size);
+          TGtk3ScrollableWin(AControl).LCLVAdj^.configure(value, lower, upper, step_increment, page_increment, page_size);
         g_object_set_data(Adjustment,'lcl-have-adjust', gPointer(1));
       end;
     end else
     if SBStyle = SB_HORZ then
     begin
-      if (AControl is TGtk3CustomControl) and Assigned(TGtk3CustomControl(AControl).LCLHAdj) then
+      if (AControl is TGtk3ScrollableWin) and Assigned(TGtk3ScrollableWin(AControl).LCLHAdj) then
       begin
         with Adjustment^ do
-          TGtk3CustomControl(AControl).LCLHAdj^.configure(value, lower, upper, step_increment, page_increment, page_size);
+          TGtk3ScrollableWin(AControl).LCLHAdj^.configure(value, lower, upper, step_increment, page_increment, page_size);
         g_object_set_data(Adjustment,'lcl-have-adjust', gPointer(1));
       end;
     end;
@@ -4193,10 +4193,6 @@ begin
   HasChanged := False;
   HaveLogicalValues := False;
 
-  // must implement first
-  if TGtk3Widget(Handle) is TGtk3Window then
-    exit;
-
   {$IFDEF GTK3DEBUGSCROLL}
   S := '';
   if (ScrollInfo.FMask and SIF_RANGE) <> 0 then
@@ -4227,10 +4223,8 @@ begin
     ScrollBar := PGtkScrollBar(AControl.Widget)
   else
   begin
-    // TODO: Convert Handle to GtkScrolledWindow, this is not the case with
-    // TGtk3Window, so we must introduce new function for scrollables
-    // to return GtkScrollingWindow, like we have with getViewport.
-    ScrollWin := PGtkScrolledWindow(AControl.Widget);
+    if wtScrollingWin in AControl.WidgetType then
+      ScrollWin := TGtk3ScrollableWin(AControl).getScrolledWindow;
     if not Assigned(ScrollWin) or not Gtk3IsScrolledWindow(ScrollWin) then Exit;
     IsScrollWindow := True;
   end;
