@@ -5728,32 +5728,6 @@ begin
     TGtk3Widget(Data).LCLObject.DoAdjustClientRectChange;
 end;
 
-procedure ApplyNoHoverCss(Widget: PGtkWidget);
-var
-  CssProvider: PGtkCssProvider;
-  StyleContext: PGtkStyleContext;
-  CssData: PChar;
-begin
-  // Define the CSS data
-  CssData := 'scrollbar { transition: none; }' + LineEnding +
-             'scrollbar:hover { background-color: transparent; }' + LineEnding +
-             'scrollbar slider:hover { background-color: transparent; }';
-
-  // Create a new CSS provider
-  CssProvider := gtk_css_provider_new();
-  gtk_css_provider_load_from_data(CssProvider, CssData, -1, nil);
-
-  // Get the style context of the widget
-  StyleContext := gtk_widget_get_style_context(Widget);
-
-  // Add the CSS provider to the style context
-  gtk_style_context_add_provider(StyleContext, PGtkStyleProvider(CssProvider), GTK_STYLE_PROVIDER_PRIORITY_USER);
-
-  // Unreference the CSS provider
-  g_object_unref(CssProvider);
-end;
-
-
 class function TGtk3ScrollableWin.CheckIfScrollbarPressed(scrollbar: PGtkWidget; out AMouseOver: boolean;
   const ACheckModifier: TGdkModifierTypeIdx): boolean;
 var
