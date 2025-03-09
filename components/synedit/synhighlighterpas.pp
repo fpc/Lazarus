@@ -106,8 +106,6 @@ type
     rsInRaise,            // between raise and either ";" or "at"
     rsVarTypeInSpecification, // between ":"/"=" and ";" in a var or type section (or class members)
                               // var a: Integer; type b = Int64;
-    rsInTypeBlock,
-    rsInConstBlock,
     rsInTypedConst,
     rsSkipAllPasBlocks        // used for: class of ... ;
   );
@@ -147,8 +145,8 @@ type
     cfbtNestedComment,
     cfbtProcedure,
     cfbtUses,
-    cfbtVarType,
-    cfbtLocalVarType,
+    cfbtVarBlock,        // Var, ResourceString, Label // Config shared with Const/Type-Block
+    cfbtLocalVarBlock,
     cfbtClass,
     cfbtClassSection,
     cfbtUnitSection,
@@ -177,6 +175,12 @@ type
     cfbtCaseElse,     // "else" in case can have multiply statements
     cfbtPackage,
     //cfbtIfThen,
+    cfbtConstBlock,
+    cfbtLocalConstBlock,
+    cfbtClassConstBlock, // in class and record section
+    cfbtTypeBlock,
+    cfbtLocalTypeBlock,
+    cfbtClassTypeBlock, // in class and record section
     cfbtNone
     );
   TPascalCodeFoldBlockTypes = set of TPascalCodeFoldBlockType;
@@ -185,6 +189,9 @@ type
 const
   cfbtLastPublic = cfbtAnonymousProcedure;
   cfbtFirstPrivate = cfbtCaseElse;
+
+  cfbtVarType      = cfbtVarBlock      deprecated 'use cfbtVarBlock / To be removed in 5.99';
+  cfbtLocalVarType = cfbtLocalVarBlock deprecated 'use cfbtLocalVarBlock / To be removed in 5.99';
 
   CountPascalCodeFoldBlockOffset =
     Pointer(PtrInt(Integer(high(TPascalCodeFoldBlockType))+1));
@@ -201,7 +208,8 @@ const
     ]);
   PascalNoOutlineRanges = TPascalCodeFoldBlockTypes(
     [cfbtProgram,cfbtUnit,cfbtUnitSection, cfbtRegion, //cfbtProcedure,//=need by nested proc?
-      cfbtVarType, cfbtCaseElse,
+      cfbtVarBlock, cfbtConstBlock, cfbtClassConstBlock, cfbtTypeBlock, cfbtClassTypeBlock,
+      cfbtCaseElse,
       cfbtIfDef, cfbtAnsiComment,cfbtBorCommand,cfbtSlashComment, cfbtNestedComment]);
 
   // restrict cdecl etc to places where they can be.
@@ -209,7 +217,10 @@ const
   ProcModifierAllowed = TPascalCodeFoldBlockTypes(
     [cfbtNone, cfbtProcedure, cfbtProgram, cfbtClass, cfbtClassSection, cfbtRecord,
      cfbtUnitSection, // unitsection, actually interface only
-     cfbtVarType, cfbtLocalVarType]);
+     cfbtVarBlock, cfbtLocalVarBlock,
+     cfbtConstBlock, cfbtLocalConstBlock, cfbtClassConstBlock,
+     cfbtTypeBlock, cfbtLocalTypeBlock, cfbtClassTypeBlock
+    ]);
   ProcModifierAllowedNoVar = TPascalCodeFoldBlockTypes(
     [cfbtNone, cfbtProcedure, cfbtProgram, cfbtClass, cfbtClassSection, cfbtRecord,
      cfbtUnitSection // unitsection, actually interface only
@@ -222,7 +233,10 @@ const
   cfbtEssential = TPascalCodeFoldBlockTypes([
     cfbtClass, cfbtClassSection, cfbtRecord,
     cfbtUnitSection, cfbtProcedure, cfbtProgram, cfbtPackage,
-    cfbtVarType, cfbtLocalVarType, cfbtAsm,
+    cfbtVarBlock, cfbtLocalVarBlock,
+    cfbtConstBlock, cfbtLocalConstBlock, cfbtClassConstBlock,
+    cfbtTypeBlock, cfbtLocalTypeBlock, cfbtClassTypeBlock,
+    cfbtAsm,
     cfbtAnsiComment, cfbtBorCommand, cfbtSlashComment, cfbtNestedComment,
     cfbtCase, // for case-else
     cfbtTry // only if cfbtExcept
@@ -232,14 +246,77 @@ const
     - [cfbtBeginEnd, cfbtCase, {cfbtTry,} cfbtExcept, cfbtRepeat,
        cfbtCaseElse, cfbtIfThen, cfbtForDo,cfbtWhileDo,cfbtWithDo ]);
 
+  cfbtVarConstType = TPascalCodeFoldBlockTypes([
+    cfbtVarBlock, cfbtLocalVarBlock,
+    cfbtConstBlock, cfbtLocalConstBlock,
+    cfbtTypeBlock, cfbtLocalTypeBlock]);
+
+  cfbtVarConstTypeExt = TPascalCodeFoldBlockTypes([
+    cfbtVarBlock, cfbtLocalVarBlock,
+    cfbtConstBlock, cfbtLocalConstBlock, cfbtClassConstBlock,
+    cfbtTypeBlock, cfbtLocalTypeBlock, cfbtClassTypeBlock]);
+
+  //cfbtClassOrRecord
+
+  PascalFoldTypeConfigMap: Array [TPascalCodeFoldBlockType] of TPascalCodeFoldBlockType =
+    ( cfbtBeginEnd,      // Nested
+      cfbtTopBeginEnd,   // Begin of Procedure
+      cfbtNestedComment,
+      cfbtProcedure,
+      cfbtUses,
+      cfbtVarBlock,        // Var, ResourceString, Label // Config shared with Const/Type-Block
+      cfbtLocalVarBlock,
+      cfbtClass,
+      cfbtClassSection,
+      cfbtUnitSection,
+      cfbtProgram,
+      cfbtUnit,
+      cfbtRecord,
+      cfbtTry,
+      cfbtExcept,
+      cfbtRepeat,
+      cfbtAsm,
+      cfbtCase,
+      cfbtIfDef,        // {$IfDef} directive, this is not counted in the Range-Node
+      cfbtRegion,       // {%Region} user folds, not counted in the Range-Node
+      cfbtAnsiComment,  // (* ... *)
+      cfbtBorCommand,   // { ... }
+      cfbtSlashComment, // //
+      cfbtIfThen,
+      cfbtForDo,
+      cfbtWhileDo,
+      cfbtWithDo,
+      cfbtIfElse,
+      cfbtRecordCase,
+      cfbtRecordCaseSection,
+      cfbtAnonymousProcedure,
+      // Internal type / not configurable
+      cfbtCaseElse,     // "else" in case can have multiply statements
+      cfbtPackage,
+      //cfbtIfThen,
+      cfbtVarBlock,      // cfbtConstBlock,
+      cfbtLocalVarBlock, // cfbtLocalConstBlock,
+      cfbtClassConstBlock,
+      cfbtVarBlock,      // cfbtTypeBlock,
+      cfbtLocalVarBlock, // cfbtLocalTypeBlock,
+      cfbtClassTypeBlock,
+      //cfbtConstBlock,
+      //cfbtLocalConstBlock,
+      //cfbtClassConstBlock, // in class and record section
+      //cfbtTypeBlock,
+      //cfbtLocalTypeBlock,
+      //cfbtClassTypeBlock, // in class and record section
+      cfbtNone
+    );
+
   PascalFoldTypeCompatibility: Array [TPascalCodeFoldBlockType] of TPascalCodeFoldBlockType =
     ( cfbtBeginEnd,      // Nested
       cfbtBeginEnd,  // cfbtTopBeginEnd,   // Begin of Procedure
       cfbtNestedComment,
       cfbtProcedure,
       cfbtUses,
-      cfbtVarType,
-      cfbtVarType, // cfbtLocalVarType,
+      cfbtVarBlock,
+      cfbtVarBlock, // cfbtLocalVarBlock,
       cfbtClass,
       cfbtClassSection,
       cfbtUnitSection,
@@ -267,6 +344,12 @@ const
       // Internal type / not configurable
       cfbtCaseElse,
       cfbtPackage,
+      cfbtConstBlock,
+      cfbtConstBlock, // cfbtLocalConstBlock,
+      cfbtConstBlock, // cfbtClassConstBlock,
+      cfbtTypeBlock,
+      cfbtTypeBlock, // cfbtLocalTypeBlock,
+      cfbtTypeBlock, //cfbtClassTypeBlock,
       cfbtNone
     );
 
@@ -655,6 +738,9 @@ type
     procedure EndPascalCodeFoldBlockLastLine;
     procedure StartCustomCodeFoldBlock(ABlockType: TPascalCodeFoldBlockType);
     procedure EndCustomCodeFoldBlock(ABlockType: TPascalCodeFoldBlockType);
+    function CloseOneFold(ACurTfb: TPascalCodeFoldBlockType; ACloseFold: TPascalCodeFoldBlockType): TPascalCodeFoldBlockType; inline;
+    function CloseOneFold(ACurTfb: TPascalCodeFoldBlockType; ACloseFolds: TPascalCodeFoldBlockTypes): TPascalCodeFoldBlockType; inline;
+    function CloseFolds(ACurTfb: TPascalCodeFoldBlockType; ACloseFolds: TPascalCodeFoldBlockTypes): TPascalCodeFoldBlockType; inline;
     procedure CollectNodeInfo(FinishingABlock: Boolean; ABlockType: Pointer;
       LevelChanged: Boolean); override;
 
@@ -1348,25 +1434,19 @@ begin
       tfb := TopPascalCodeFoldBlockType;
       fStringLen:=0;
       EndStatement(tfb, [cfbtForDo,cfbtWhileDo,cfbtWithDo,cfbtIfThen,cfbtIfElse]);
-      tfb := TopPascalCodeFoldBlockType;
-      while tfb = cfbtRecordCaseSection do begin // missing ")"?
-        EndPascalCodeFoldBlock;
-        tfb := TopPascalCodeFoldBlockType;
-      end;
-      fStringLen := sl;
 
+      tfb := CloseFolds(TopPascalCodeFoldBlockType, [cfbtRecordCaseSection { missing ")"? },
+                    cfbtClassConstBlock, cfbtClassTypeBlock]);
+      fStringLen := sl;
       if tfb = cfbtRecordCase then begin
-        repeat
-          EndPascalCodeFoldBlock;
-          tfb := TopPascalCodeFoldBlockType;
-        until not (tfb in [cfbtRecordCase, cfbtRecordCaseSection]);
+        tfb := CloseFolds(TopPascalCodeFoldBlockType, [cfbtRecordCase, cfbtRecordCaseSection, cfbtClassConstBlock, cfbtClassTypeBlock]);
         fRange := fRange - [rsAtCaseLabel];
         if TopPascalCodeFoldBlockType = cfbtRecord then begin
           EndPascalCodeFoldBlock;
         end;
         // After type declaration, allow "deprecated"?
-        if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType,
-             cfbtClass, cfbtClassSection, cfbtRecord, cfbtRecordCase, cfbtRecordCaseSection]
+        if TopPascalCodeFoldBlockType in cfbtVarConstTypeExt +
+           [cfbtClass, cfbtClassSection, cfbtRecord, cfbtRecordCase, cfbtRecordCaseSection]
         then
           fRange := fRange + [rsVarTypeInSpecification];
       end
@@ -1374,13 +1454,9 @@ begin
       if tfb = cfbtRecord then begin
         EndPascalCodeFoldBlock;
         // After type declaration, allow "deprecated"?
-        if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType,
-             cfbtClass, cfbtClassSection, cfbtRecord, cfbtRecordCase, cfbtRecordCaseSection]
+        if TopPascalCodeFoldBlockType in cfbtVarConstTypeExt + [cfbtClass, cfbtClassSection, cfbtRecord, cfbtRecordCase, cfbtRecordCaseSection]
         then
           fRange := fRange + [rsVarTypeInSpecification];
-        if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType, cfbtClass, cfbtClassSection, cfbtRecord]
-        then
-          fRange := fRange + [rsInTypeBlock];
       end else if tfb = cfbtUnit then begin
         EndPascalCodeFoldBlock;
       end else if tfb = cfbtPackage then begin
@@ -1431,21 +1507,14 @@ begin
         else
         begin
           if tfb = cfbtRecordCase then
-            repeat
-              EndPascalCodeFoldBlock;
-              tfb := TopPascalCodeFoldBlockType;
-            until not (tfb in [cfbtRecordCase, cfbtRecordCaseSection]);
+            tfb := CloseFolds(TopPascalCodeFoldBlockType, [cfbtRecordCase, cfbtRecordCaseSection, cfbtClassConstBlock, cfbtClassTypeBlock]);
           if tfb = cfbtRecord then
             EndPascalCodeFoldBlock;
         end;
         // After type declaration, allow "deprecated"?
-        if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType,
-             cfbtClass, cfbtClassSection, cfbtRecord, cfbtRecordCase, cfbtRecordCaseSection]
+        if TopPascalCodeFoldBlockType in cfbtVarConstTypeExt + [cfbtClass, cfbtClassSection, cfbtRecord, cfbtRecordCase, cfbtRecordCaseSection]
         then
           fRange := fRange + [rsVarTypeInSpecification];
-        if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType, cfbtClass, cfbtClassSection, cfbtRecord]
-        then
-          fRange := fRange + [rsInTypeBlock];
       end;
     end else begin
       Result := tkKey; // @@end or @end label
@@ -1488,6 +1557,8 @@ begin
 end;
 
 function TSynPasSyn.Func28: TtkTokenKind;
+var
+  tfb: TPascalCodeFoldBlockType;
 begin
   if KeyComp('Is') then begin
     Result := tkKey;
@@ -1502,11 +1573,14 @@ begin
     fRange := fRange + [rsAtPropertyOrReadWrite] - [rsVarTypeInSpecification];
   end
   else if KeyComp('Case') then begin
-    if TopPascalCodeFoldBlockType in PascalStatementBlocks + [cfbtUnitSection] then
-      StartPascalCodeFoldBlock(cfbtCase, True)
-    else
-    if TopPascalCodeFoldBlockType in [cfbtRecord, cfbtRecordCaseSection] then
-      StartPascalCodeFoldBlock(cfbtRecordCase, True); // TODO: only force, if there is case-label highlight // also word-triplet?
+    if TopPascalCodeFoldBlockType in PascalStatementBlocks + [cfbtUnitSection] then begin
+      StartPascalCodeFoldBlock(cfbtCase, True);
+    end
+    else begin
+      tfb := CloseFolds(TopPascalCodeFoldBlockType(), [cfbtClassConstBlock, cfbtClassTypeBlock]);
+      if tfb in [cfbtRecord, cfbtRecordCaseSection] then
+        StartPascalCodeFoldBlock(cfbtRecordCase, True); // TODO: only force, if there is case-label highlight // also word-triplet?
+    end;
     Result := tkKey;
   end
   else
@@ -1521,14 +1595,14 @@ end;
 function TSynPasSyn.Func32: TtkTokenKind;
 begin
   if KeyComp('Label') then begin
-    if (TopPascalCodeFoldBlockType in  [cfbtVarType, cfbtLocalVarType, cfbtNone,
+    if TopPascalCodeFoldBlockType in cfbtVarConstTypeExt then
+      EndPascalCodeFoldBlockLastLine;
+    if (TopPascalCodeFoldBlockType in cfbtVarConstType + [cfbtNone,
         cfbtProcedure, cfbtAnonymousProcedure, cfbtProgram, cfbtUnit, cfbtUnitSection])
     then begin
-      if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
-        EndPascalCodeFoldBlockLastLine;
       if TopPascalCodeFoldBlockType in [cfbtProcedure, cfbtAnonymousProcedure]
-      then StartPascalCodeFoldBlock(cfbtLocalVarType)
-      else StartPascalCodeFoldBlock(cfbtVarType);
+      then StartPascalCodeFoldBlock(cfbtLocalVarBlock)
+      else StartPascalCodeFoldBlock(cfbtVarBlock);
     end;
     Result := tkKey;
   end
@@ -1555,7 +1629,7 @@ begin
     Result := tkKey;
     fRange := fRange + [rsAsm];
     fAsmStart := True;
-    if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
+    if TopPascalCodeFoldBlockType in cfbtVarConstTypeExt then
       EndPascalCodeFoldBlockLastLine;
     StartPascalCodeFoldBlock(cfbtAsm);
   end
@@ -1605,20 +1679,20 @@ end;
 
 function TSynPasSyn.Func37: TtkTokenKind;
 var
-  tbf: TPascalCodeFoldBlockType;
+  tfb: TPascalCodeFoldBlockType;
 begin
   if KeyComp('Begin') then begin
     // if we are in an include file, we may not know the state
     if (fRange * [rsImplementation, rsInterface] = []) then
       Include(fRange, rsImplementation);
     PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
-    if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
+    if TopPascalCodeFoldBlockType in cfbtVarConstTypeExt then
       EndPascalCodeFoldBlockLastLine;
     Result := tkKey;
-    tbf := TopPascalCodeFoldBlockType;
-    if tbf in [cfbtProcedure, cfbtAnonymousProcedure]
+    tfb := TopPascalCodeFoldBlockType;
+    if tfb in [cfbtProcedure, cfbtAnonymousProcedure]
     then StartPascalCodeFoldBlock(cfbtTopBeginEnd, True)
-    else StartPascalCodeFoldBlock(cfbtBeginEnd, tbf in [
+    else StartPascalCodeFoldBlock(cfbtBeginEnd, tfb in [
       cfbtProgram, cfbtUnit, cfbtUnitSection, cfbtPackage,
       cfbtTopBeginEnd, cfbtBeginEnd,
       cfbtTry, cfbtExcept, cfbtAsm,
@@ -1685,32 +1759,35 @@ begin
 end;
 
 function TSynPasSyn.Func41: TtkTokenKind;
+var
+  tfb: TPascalCodeFoldBlockType;
 begin
   if KeyComp('Else') then begin
     Result := tkKey;
     // close all parent "else" and "do" // there can only be one else
     EndStatementLastLine(TopPascalCodeFoldBlockType, [cfbtForDo,cfbtWhileDo,cfbtWithDo,cfbtIfElse]);
-    if (TopPascalCodeFoldBlockType in [cfbtIfThen]) then begin
+    tfb := TopPascalCodeFoldBlockType;
+    if (tfb in [cfbtIfThen]) then begin
       EndPascalCodeFoldBlock;
       StartPascalCodeFoldBlock(cfbtIfElse);
     end else
-    if TopPascalCodeFoldBlockType = cfbtCase then begin
+    if tfb = cfbtCase then begin
       FTokenIsCaseLabel := True;
       StartPascalCodeFoldBlock(cfbtCaseElse, True);
     end
   end
   else if KeyComp('Var') then begin
     if (PasCodeFoldRange.BracketNestLevel = 0) then begin
-      if (TopPascalCodeFoldBlockType in
-         [cfbtVarType, cfbtLocalVarType, cfbtNone, cfbtProcedure, cfbtAnonymousProcedure, cfbtProgram,
-          cfbtUnit, cfbtUnitSection])
-      then begin
-        if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
-          EndPascalCodeFoldBlockLastLine;
-        if TopPascalCodeFoldBlockType in [cfbtProcedure, cfbtAnonymousProcedure]
-        then StartPascalCodeFoldBlock(cfbtLocalVarType)
-        else StartPascalCodeFoldBlock(cfbtVarType);
+      tfb := TopPascalCodeFoldBlockType;
+      if tfb in cfbtVarConstTypeExt then begin
+        EndPascalCodeFoldBlockLastLine;
+        tfb := TopPascalCodeFoldBlockType;
       end;
+      if tfb in [cfbtProcedure, cfbtAnonymousProcedure] then
+        StartPascalCodeFoldBlock(cfbtLocalVarBlock)
+      else
+      if (tfb in cfbtVarConstType + [cfbtNone, cfbtProgram, cfbtUnit, cfbtUnitSection]) then
+        StartPascalCodeFoldBlock(cfbtVarBlock);
       fRange := fRange + [rsAfterSemiColon];
       FOldRange := FOldRange - [rsAfterSemiColon];
       FNextTokenState := tsAfterExternal;  // prevent a variable of name public/export/external to be highlighted
@@ -1722,12 +1799,12 @@ end;
 
 function TSynPasSyn.Func42: TtkTokenKind;
 var
-  tbf: TPascalCodeFoldBlockType;
+  tfb: TPascalCodeFoldBlockType;
 begin
-  tbf := TopPascalCodeFoldBlockType;
+  tfb := TopPascalCodeFoldBlockType;
   if (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader] = [rsWasInProcHeader]) and
-     (tbf in ProcModifierAllowedNoVar) and
-     ( (rsAfterClassMembers in fRange) or not(tbf in [cfbtClass, cfbtClassSection]) ) and
+     (tfb in ProcModifierAllowedNoVar) and
+     ( (rsAfterClassMembers in fRange) or not(tfb in [cfbtClass, cfbtClassSection, cfbtClassConstBlock, cfbtClassTypeBlock]) ) and
      KeyComp('Alias')
   then begin
     Result := tkModifier;
@@ -1736,7 +1813,7 @@ begin
   else
   if KeyComp('Final') and
      (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader, rsAfterClassMembers] = [rsWasInProcHeader, rsAfterClassMembers]) and
-     (tbf in [cfbtClass, cfbtClassSection]) and
+     (tfb in [cfbtClass, cfbtClassSection]) and
      (PasCodeFoldRange.BracketNestLevel = 0)
   then begin
     Result := tkModifier;
@@ -1757,13 +1834,16 @@ begin
   end
   else
   if (PasCodeFoldRange.BracketNestLevel = 0) and
-     ( (FTokenState = tsAfterTypedConst) or
-       ( not(FTokenState in [tsAfterExternal, tsAfterCvar]) and
-         (fRange * [rsAfterSemiColon, rsInProcHeader, rsWasInProcHeader, rsInTypeBlock, rsInConstBlock] = [rsAfterSemiColon])
-     ) )
-     and
      KeyComp('CVAR') and
-     (TopPascalCodeFoldBlockType() in [cfbtVarType, cfbtLocalVarType])
+     ( ( (FTokenState = tsAfterTypedConst) and
+         (TopPascalCodeFoldBlockType() in [cfbtConstBlock, cfbtLocalConstBlock])
+       )
+       or
+       ( not(FTokenState in [tsAfterExternal, tsAfterCvar]) and
+         (fRange * [rsAfterSemiColon, rsInProcHeader, rsWasInProcHeader] = [rsAfterSemiColon]) and
+         (TopPascalCodeFoldBlockType() in [cfbtVarBlock, cfbtLocalVarBlock])
+       )
+     )
   then begin
     Result := tkModifier;
     FNextTokenState := tsAfterCvar;
@@ -1957,7 +2037,6 @@ begin
   else
   if KeyComp('Generic') then begin
     Result := tkKey;
-    fRange := fRange + [rsInTypeBlock]; // in case it was incorrectly removed
   end
   else
     Result := tkIdentifier;
@@ -1965,18 +2044,18 @@ end;
 
 function TSynPasSyn.Func63: TtkTokenKind;
 var
-  tbf: TPascalCodeFoldBlockType;
+  tfb: TPascalCodeFoldBlockType;
 begin
   if KeyComp('Public') then begin
-    tbf := TopPascalCodeFoldBlockType;
-    if (tbf in [cfbtClass, cfbtClassSection, cfbtRecord]) and
+    tfb := CloseFolds(TopPascalCodeFoldBlockType, [cfbtClassConstBlock, cfbtClassTypeBlock]);
+    if (tfb in [cfbtClass, cfbtClassSection, cfbtRecord]) and
        (fRange * [rsInProcHeader, rsAfterEqual, rsAfterEqualOrColon, rsVarTypeInSpecification] = []) and
        (fRange * [rsAfterSemiColon, rsAfterClass] <> [])
     then begin
       Result := tkKey;
       fRange := fRange - [rsAfterClassMembers, rsVarTypeInSpecification] + [rsAfterSemiColon];
       FOldRange := FOldRange - [rsAfterSemiColon];
-      if (tbf=cfbtClassSection) then
+      if (tfb=cfbtClassSection) then
         EndPascalCodeFoldBlockLastLine;
       StartPascalCodeFoldBlock(cfbtClassSection);
     end
@@ -1987,10 +2066,10 @@ begin
          or
          ( (FTokenState <> tsAfterExternal) and
            ( ( (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader] = [rsWasInProcHeader]) and
-               (tbf in ProcModifierAllowed - [cfbtClass, cfbtClassSection, cfbtRecord])
+               (tfb in ProcModifierAllowed - [cfbtClass, cfbtClassSection, cfbtRecord, cfbtClassConstBlock, cfbtClassTypeBlock])
              ) or
-             ( (fRange * [rsAfterSemiColon, rsInProcHeader, rsWasInProcHeader, rsInTypeBlock, rsInConstBlock] = [rsAfterSemiColon]) and
-               (tbf in [cfbtVarType, cfbtLocalVarType])
+             ( (fRange * [rsAfterSemiColon, rsInProcHeader, rsWasInProcHeader] = [rsAfterSemiColon]) and
+               (tfb in [cfbtVarBlock, cfbtLocalVarBlock])
          ) ) )
        )
     then begin
@@ -2019,7 +2098,7 @@ begin
   if (PasCodeFoldRange.BracketNestLevel in [0, 1]) and
      (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader] = [rsWasInProcHeader]) and
      (TopPascalCodeFoldBlockType in ProcModifierAllowedNoVar) and
-     ( (rsAfterClassMembers in fRange) or not(TopPascalCodeFoldBlockType() in [cfbtClass, cfbtClassSection]) ) and
+     ( (rsAfterClassMembers in fRange) or not(TopPascalCodeFoldBlockType() in [cfbtClass, cfbtClassSection, cfbtClassConstBlock, cfbtClassTypeBlock]) ) and
      KeyComp('Inline')
   then begin
     Result := tkModifier;
@@ -2078,7 +2157,7 @@ begin
     tfb := TopPascalCodeFoldBlockType;
     if (PasCodeFoldRange.BracketNestLevel = 0)
        and (tfb in
-        [cfbtVarType, cfbtLocalVarType, cfbtNone, cfbtProcedure, cfbtAnonymousProcedure, cfbtProgram,
+        cfbtVarConstTypeExt + [cfbtNone, cfbtProcedure, cfbtAnonymousProcedure, cfbtProgram,
          cfbtUnit, cfbtUnitSection,
          cfbtClass, cfbtClassSection, cfbtRecord // if inside a type section in class/record
         ])
@@ -2089,15 +2168,18 @@ begin
           FNextTokenState := tsAfterEqualThenType;
       end
       else begin
-        if tfb in [cfbtVarType, cfbtLocalVarType] then begin
+        // If already in cfbtClassTypeBlock, then keep block going / save the close, open
+        if tfb in cfbtVarConstTypeExt - [cfbtClassTypeBlock] then begin
           EndPascalCodeFoldBlockLastLine;
           tfb := TopPascalCodeFoldBlockType;
         end;
-        if not(tfb in [cfbtClass, cfbtClassSection, cfbtRecord]) then
-          if tfb in [cfbtProcedure, cfbtAnonymousProcedure]
-          then StartPascalCodeFoldBlock(cfbtLocalVarType)
-          else StartPascalCodeFoldBlock(cfbtVarType);
-        fRange := fRange + [rsInTypeBlock, rsAfterSemiColon];
+        if tfb in [cfbtClass, cfbtClassSection, cfbtRecord]
+        then StartPascalCodeFoldBlock(cfbtClassTypeBlock)
+        else
+        if tfb in [cfbtProcedure, cfbtAnonymousProcedure]
+        then StartPascalCodeFoldBlock(cfbtLocalTypeBlock)
+        else StartPascalCodeFoldBlock(cfbtTypeBlock);
+        fRange := fRange + [rsAfterSemiColon];
         FOldRange := FOldRange - [rsAfterSemiColon];
         FNextTokenState := tsAfterExternal;  // prevent a type of name public/export/external to be highlighted
       end;
@@ -2150,6 +2232,8 @@ begin
 end;
 
 function TSynPasSyn.Func71: TtkTokenKind;
+var
+  tfb: TPascalCodeFoldBlockType;
 begin
   if KeyComp('Stdcall') and
      (PasCodeFoldRange.BracketNestLevel in [0, 1]) and
@@ -2161,17 +2245,22 @@ begin
   end
   else if KeyComp('Const') then begin
     if (PasCodeFoldRange.BracketNestLevel = 0) then begin
-      if (TopPascalCodeFoldBlockType in
-         [cfbtVarType, cfbtLocalVarType, cfbtNone, cfbtProcedure, cfbtAnonymousProcedure, cfbtProgram,
-          cfbtUnit, cfbtUnitSection])
-      then begin
-        if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
-          EndPascalCodeFoldBlockLastLine;
-        if TopPascalCodeFoldBlockType in [cfbtProcedure, cfbtAnonymousProcedure]
-        then StartPascalCodeFoldBlock(cfbtLocalVarType)
-        else StartPascalCodeFoldBlock(cfbtVarType);
+      tfb := TopPascalCodeFoldBlockType;
+      // If already in cfbtClassTypeBlock, then keep block going / save the close, open
+      if tfb in cfbtVarConstTypeExt - [cfbtClassConstBlock] then begin
+        EndPascalCodeFoldBlockLastLine;
+        tfb := TopPascalCodeFoldBlockType;
       end;
-      fRange := fRange + [rsAfterSemiColon, rsInConstBlock];
+      if tfb in [cfbtClass, cfbtClassSection, cfbtRecord] then
+        StartPascalCodeFoldBlock(cfbtClassConstBlock)
+      else
+      if tfb in [cfbtProcedure, cfbtAnonymousProcedure] then
+        StartPascalCodeFoldBlock(cfbtLocalConstBlock)
+      else
+      if (tfb in cfbtVarConstType + [cfbtNone, cfbtProgram, cfbtUnit, cfbtUnitSection]) then
+        StartPascalCodeFoldBlock(cfbtConstBlock);
+
+      fRange := fRange + [rsAfterSemiColon];
       FOldRange := FOldRange - [rsAfterSemiColon];
       FNextTokenState := tsAfterExternal;  // prevent a variable of name public/export/external to be highlighted
     end;
@@ -2185,7 +2274,7 @@ end;
 
 function TSynPasSyn.Func72: TtkTokenKind;
 begin
-  if KeyComp('Static') and (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection]) and
+  if KeyComp('Static') and (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection, cfbtClassConstBlock, cfbtClassTypeBlock]) and
      (fRange * [rsAfterEqualOrColon, rsInProcHeader, rsProperty] = []) and
      (fRange * [rsAfterClassMembers, rsAfterClassField] <> []) and
      (PasCodeFoldRange.BracketNestLevel = 0)
@@ -2248,7 +2337,7 @@ end;
 
 function TSynPasSyn.Func81: TtkTokenKind;
 var
-  tbf: TPascalCodeFoldBlockType;
+  tfb: TPascalCodeFoldBlockType;
 begin
   if (fRange * [rsProperty, rsAtPropertyOrReadWrite, rsAfterEqualOrColon] =  [rsProperty]) and
      (PasCodeFoldRange.BracketNestLevel = 0) and
@@ -2270,7 +2359,7 @@ begin
     begin
       // unit section INTERFACE
       CloseBeginEndBlocksBeforeProc;
-      if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
+      if TopPascalCodeFoldBlockType in cfbtVarConstType then
         EndPascalCodeFoldBlockLastLine;
       if TopPascalCodeFoldBlockType=cfbtUnitSection then EndPascalCodeFoldBlockLastLine;
       StartPascalCodeFoldBlock(cfbtUnitSection);
@@ -2280,17 +2369,17 @@ begin
     Result := tkKey
   end
   else if KeyComp('Deprecated') then begin
-    tbf := TopPascalCodeFoldBlockType;
-    if ( ( (tbf in [cfbtVarType, cfbtLocalVarType]) and
+    tfb := TopPascalCodeFoldBlockType;
+    if ( ( (tfb in cfbtVarConstType) and
            (FTokenState <> tsAfterAbsolute) and
            (fRange * [rsVarTypeInSpecification, rsAfterEqualOrColon] = [rsVarTypeInSpecification]) ) or
-         ( (tbf in [cfbtClass, cfbtClassSection, cfbtRecord, cfbtRecordCase, cfbtRecordCaseSection]) and
+         ( (tfb in [cfbtClass, cfbtClassSection, cfbtRecord, cfbtRecordCase, cfbtRecordCaseSection, cfbtClassConstBlock, cfbtClassTypeBlock]) and
            ( (fRange * [rsAfterClassMembers, rsInProcHeader] = [rsAfterClassMembers]) or
              (fRange * [rsAfterClassMembers, rsAfterEqualOrColon, rsVarTypeInSpecification] = [rsVarTypeInSpecification])
          ) ) or
-         ( (tbf in [cfbtUnitSection, cfbtProgram, cfbtProcedure]) and
+         ( (tfb in [cfbtUnitSection, cfbtProgram, cfbtProcedure]) and
            (fRange * [rsInProcHeader] = []) ) or
-         ( (tbf in [cfbtUnit, cfbtNone]) and
+         ( (tfb in [cfbtUnit, cfbtNone]) and
            (fRange * [rsInProcHeader] = []) and (FTokenState = tsAfterProcName) )
        ) and
        ( fRange *[rsAfterEqualOrColon, rsProperty] = [] ) and
@@ -2441,11 +2530,12 @@ begin
   end
   else
   if KeyComp('strict') and
-     (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection, cfbtRecord]) and
+     (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection, cfbtRecord, cfbtClassConstBlock, cfbtClassTypeBlock]) and
      (fRange * [rsInProcHeader, rsAfterEqual, rsAfterEqualOrColon, rsVarTypeInSpecification] = []) and
      (fRange * [rsAfterSemiColon, rsAfterClass] <> []) and
      ScanForClassSection
   then begin
+    CloseFolds(TopPascalCodeFoldBlockType, [cfbtClassConstBlock, cfbtClassTypeBlock]);
     fRange := fRange + [rsAfterSemiColon]; // flag for private/proctected (must be next)
     FOldRange := FOldRange - [rsAfterSemiColon];
     Result := tkKey;
@@ -2455,19 +2545,22 @@ begin
 end;
 
 function TSynPasSyn.Func91: TtkTokenKind;
+var
+  tfb: TPascalCodeFoldBlockType;
 begin
   if KeyComp('Downto') then
     Result := tkKey
   else
   if KeyComp('Private') and
-     (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection, cfbtRecord]) and
+     (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection, cfbtRecord, cfbtClassConstBlock, cfbtClassTypeBlock]) and
      (fRange * [rsInProcHeader, rsAfterEqual, rsAfterEqualOrColon, rsVarTypeInSpecification] = []) and
      (fRange * [rsAfterSemiColon, rsAfterClass] <> [])
   then begin
     Result := tkKey;
     fRange := fRange - [rsAfterClassMembers, rsVarTypeInSpecification] + [rsAfterSemiColon];
     FOldRange := FOldRange - [rsAfterSemiColon];
-    if (TopPascalCodeFoldBlockType=cfbtClassSection) then
+    tfb := CloseFolds(TopPascalCodeFoldBlockType(), [cfbtClassConstBlock, cfbtClassTypeBlock]);
+    if (tfb=cfbtClassSection) then
       EndPascalCodeFoldBlockLastLine;
     StartPascalCodeFoldBlock(cfbtClassSection);
   end
@@ -2522,7 +2615,7 @@ end;
 function TSynPasSyn.Func95: TtkTokenKind;
 begin
   if KeyComp('Absolute') and
-     (TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType]) and
+     (TopPascalCodeFoldBlockType in cfbtVarConstType) and
      (fRange * [rsVarTypeInSpecification, rsAfterEqualOrColon, rsProperty] = [rsVarTypeInSpecification]) and
      (PasCodeFoldRange.BracketNestLevel = 0) and
      (FTokenState = tsNone) // FTokenState <> tsAfterAbsolute
@@ -2540,16 +2633,19 @@ begin
 end;
 
 function TSynPasSyn.Func96: TtkTokenKind;
+var
+  tfb: TPascalCodeFoldBlockType;
 begin
   if KeyComp('Published') and
-     (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection, cfbtRecord]) and
+     (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection, cfbtRecord, cfbtClassConstBlock, cfbtClassTypeBlock]) and
      (fRange * [rsInProcHeader, rsAfterEqual, rsAfterEqualOrColon, rsVarTypeInSpecification] = []) and
      (fRange * [rsAfterSemiColon, rsAfterClass] <> [])
   then begin
     Result := tkKey;
     fRange := fRange - [rsAfterClassMembers, rsVarTypeInSpecification] + [rsAfterSemiColon];
     FOldRange := FOldRange - [rsAfterSemiColon];
-    if (TopPascalCodeFoldBlockType=cfbtClassSection) then
+    tfb := CloseFolds(TopPascalCodeFoldBlockType(), [cfbtClassConstBlock, cfbtClassTypeBlock]);
+    if (tfb=cfbtClassSection) then
       EndPascalCodeFoldBlockLastLine;
     StartPascalCodeFoldBlock(cfbtClassSection);
   end
@@ -2568,7 +2664,12 @@ end;
 
 function TSynPasSyn.Func97: TtkTokenKind;
 begin
-  if KeyComp('Threadvar') then Result := tkKey
+  if KeyComp('Threadvar') then begin
+    Result := tkKey;
+    if TopPascalCodeFoldBlockType() in cfbtVarConstTypeExt then
+      EndPascalCodeFoldBlockLastLine;
+    StartPascalCodeFoldBlock(cfbtVarBlock);
+  end
   else
   if (rsInObjcProtocol in fRange) and
      KeyComp('required') and
@@ -2584,16 +2685,16 @@ end;
 
 function TSynPasSyn.Func98: TtkTokenKind;
 var
-  tbf: TPascalCodeFoldBlockType;
+  tfb: TPascalCodeFoldBlockType;
 begin
-  tbf := TopPascalCodeFoldBlockType;
+  tfb := TopPascalCodeFoldBlockType;
   if (PasCodeFoldRange.BracketNestLevel in [0, 1]) and
      (FTokenState <> tsAfterExternal) and
      ( ( (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader] = [rsWasInProcHeader]) and
-         (tbf in ProcModifierAllowed)
+         (tfb in ProcModifierAllowed)
        ) or
-       ( (fRange * [rsAfterSemiColon, rsInProcHeader, rsWasInProcHeader, rsInTypeBlock, rsInConstBlock] = [rsAfterSemiColon]) and
-         (tbf in [cfbtVarType, cfbtLocalVarType])
+       ( (fRange * [rsAfterSemiColon, rsInProcHeader, rsWasInProcHeader] = [rsAfterSemiColon]) and
+         (tfb in [ cfbtVarBlock, cfbtLocalVarBlock])
        )
      ) and
      KeyComp('Export')
@@ -2615,23 +2716,23 @@ end;
 
 function TSynPasSyn.Func99: TtkTokenKind;
 var
-  tbf: TPascalCodeFoldBlockType;
+  tfb: TPascalCodeFoldBlockType;
 begin
-  tbf := TopPascalCodeFoldBlockType;
+  tfb := TopPascalCodeFoldBlockType;
   if (PasCodeFoldRange.BracketNestLevel = 0) and
      (FTokenState <> tsAfterExternal) and
      ( ( (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader] = [rsWasInProcHeader]) and
-         (tbf in ProcModifierAllowed)
+         (tfb in ProcModifierAllowed)
        ) or
-       ( (fRange * [rsAfterSemiColon, rsInProcHeader, rsWasInProcHeader, rsInTypeBlock, rsInConstBlock] = [rsAfterSemiColon]) and
-         (tbf in [cfbtVarType, cfbtLocalVarType])
+       ( (fRange * [rsAfterSemiColon, rsInProcHeader, rsWasInProcHeader] = [rsAfterSemiColon]) and
+         (tfb in [ cfbtVarBlock, cfbtLocalVarBlock])
        )
      ) and
      KeyComp('External')
   then begin
     Result := tkModifier;
     FNextTokenState := tsAfterExternal;
-    if tbf = cfbtProcedure then begin
+    if tfb = cfbtProcedure then begin
       EndPascalCodeFoldBlock(True);
     end;
   end
@@ -2657,29 +2758,29 @@ end;
 
 function TSynPasSyn.Func101: TtkTokenKind;
 var
-  tbf: TPascalCodeFoldBlockType;
+  tfb: TPascalCodeFoldBlockType;
 begin
-  tbf := TopPascalCodeFoldBlockType;
+  tfb := TopPascalCodeFoldBlockType;
   if KeyComp('Register') and
      (PasCodeFoldRange.BracketNestLevel in [0, 1]) and
      (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader] = [rsWasInProcHeader]) and
-     (tbf in ProcModifierAllowed)
+     (tfb in ProcModifierAllowed)
   then begin
     Result := tkModifier;
     FRange := FRange + [rsInProcHeader];
   end
   else
   if KeyComp('Platform') then begin
-    if ( ( (tbf in [cfbtVarType, cfbtLocalVarType]) and
+    if ( ( (tfb in cfbtVarConstType) and
            (FTokenState <> tsAfterAbsolute) and
            (fRange * [rsVarTypeInSpecification, rsAfterEqualOrColon] = [rsVarTypeInSpecification]) ) or
-         ( (tbf in [cfbtClass, cfbtClassSection, cfbtRecord, cfbtRecordCase, cfbtRecordCaseSection]) and
+         ( (tfb in [cfbtClass, cfbtClassSection, cfbtRecord, cfbtRecordCase, cfbtRecordCaseSection, cfbtClassConstBlock, cfbtClassTypeBlock]) and
            ( (fRange * [rsAfterClassMembers, rsInProcHeader] = [rsAfterClassMembers]) or
              (fRange * [rsAfterClassMembers, rsAfterEqualOrColon, rsVarTypeInSpecification] = [rsVarTypeInSpecification])
          ) ) or
-         ( (tbf in [cfbtUnitSection, cfbtProgram, cfbtProcedure]) and
+         ( (tfb in [cfbtUnitSection, cfbtProgram, cfbtProcedure]) and
            (fRange * [rsInProcHeader] = []) ) or
-         ( (tbf in [cfbtUnit, cfbtNone]) and
+         ( (tfb in [cfbtUnit, cfbtNone]) and
            (fRange * [rsInProcHeader] = []) and (FTokenState = tsAfterProcName) )
        ) and
        ( fRange *[rsAfterEqualOrColon, rsProperty] = [] ) and
@@ -2687,7 +2788,7 @@ begin
     then begin
       Result := tkModifier;
       if (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader, rsAfterClassMembers] = [rsWasInProcHeader, rsAfterClassMembers]) and
-         (tbf in [cfbtClass, cfbtClassSection]) and
+         (tfb in [cfbtClass, cfbtClassSection]) and
          (CompilerMode = pcmDelphi)
       then
         FRange := FRange + [rsInProcHeader]; // virtual reintroduce overload can be after virtual
@@ -2697,7 +2798,7 @@ begin
   end
   else
   if FExtendedKeywordsMode and KeyComp('Continue') and
-     (tbf in PascalStatementBlocks) and (fRange * [rsAfterEqualOrColon] = []) and
+     (tfb in PascalStatementBlocks) and (fRange * [rsAfterEqualOrColon] = []) and
      (PasCodeFoldRange.BracketNestLevel = 0)
   then
     Result := tkKey
@@ -2718,7 +2819,7 @@ begin
         PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
         CloseBeginEndBlocksBeforeProc;
 
-        if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
+        if TopPascalCodeFoldBlockType in cfbtVarConstTypeExt then
           EndPascalCodeFoldBlockLastLine;
 
         InClass := TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection, cfbtRecord];
@@ -2737,7 +2838,7 @@ begin
   if (rsInObjcProtocol in fRange) and
      KeyComp('optional') and
      (PasCodeFoldRange.BracketNestLevel = 0) and
-     (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection])
+     (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection, cfbtClassConstBlock, cfbtClassTypeBlock])
   then begin
     Result := tkKey;
     fRange := fRange - [rsAfterClassMembers, rsVarTypeInSpecification];
@@ -2772,7 +2873,7 @@ begin
         PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
         CloseBeginEndBlocksBeforeProc;
 
-        if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
+        if TopPascalCodeFoldBlockType in cfbtVarConstTypeExt then
           EndPascalCodeFoldBlockLastLine;
 
         InClass := TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection, cfbtRecord];
@@ -2802,16 +2903,19 @@ begin
 end;
 
 function TSynPasSyn.Func106: TtkTokenKind;
+var
+  tfb: TPascalCodeFoldBlockType;
 begin
   if KeyComp('Protected') and
-     (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection, cfbtRecord]) and
+     (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection, cfbtRecord, cfbtClassConstBlock, cfbtClassTypeBlock]) and
      (fRange * [rsInProcHeader, rsAfterEqual, rsAfterEqualOrColon, rsVarTypeInSpecification] = []) and
      (fRange * [rsAfterSemiColon, rsAfterClass] <> [])
   then begin
     Result := tkKey;
     fRange := fRange - [rsAfterClassMembers, rsVarTypeInSpecification] + [rsAfterSemiColon];
     FOldRange := FOldRange - [rsAfterSemiColon];
-    if (TopPascalCodeFoldBlockType=cfbtClassSection) then
+    tfb := CloseFolds(TopPascalCodeFoldBlockType(), [cfbtClassConstBlock, cfbtClassTypeBlock]);
+    if (tfb=cfbtClassSection) then
       EndPascalCodeFoldBlockLastLine;
     StartPascalCodeFoldBlock(cfbtClassSection);
   end
@@ -2828,7 +2932,7 @@ begin
     begin
       PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
       CloseBeginEndBlocksBeforeProc;
-      if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
+      if TopPascalCodeFoldBlockType in cfbtVarConstTypeExt then
         EndPascalCodeFoldBlockLastLine;
 
       InClass := TopPascalCodeFoldBlockType in [{cfbtClass,} cfbtClassSection, cfbtRecord]; // only in records
@@ -2993,11 +3097,14 @@ begin
 end;
 
 function TSynPasSyn.Func133: TtkTokenKind;
+var
+  tfb: TPascalCodeFoldBlockType;
 begin
   if KeyComp('Property') then begin
     Result := tkKey;
     fRange := fRange + [rsProperty, rsAtPropertyOrReadWrite];
-    if TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection, cfbtRecord] then
+    tfb := CloseFolds(TopPascalCodeFoldBlockType, [cfbtClassConstBlock, cfbtClassTypeBlock]);
+    if tfb in [cfbtClass, cfbtClassSection, cfbtRecord] then
       fRange := fRange + [rsAfterClassMembers];
   end
   else
@@ -3009,7 +3116,7 @@ begin
   if KeyComp('Finalization') then begin
     PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
     CloseBeginEndBlocksBeforeProc;
-    if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
+    if TopPascalCodeFoldBlockType in cfbtVarConstType then
       EndPascalCodeFoldBlockLastLine;
     if TopPascalCodeFoldBlockType=cfbtUnitSection then EndPascalCodeFoldBlockLastLine;
     StartPascalCodeFoldBlock(cfbtUnitSection);
@@ -3045,20 +3152,20 @@ end;
 
 function TSynPasSyn.Func142: TtkTokenKind;
 var
-  tbf: TPascalCodeFoldBlockType;
+  tfb: TPascalCodeFoldBlockType;
 begin
   if KeyComp('Experimental') then begin
-    tbf := TopPascalCodeFoldBlockType;
-    if ( ( (tbf in [cfbtVarType, cfbtLocalVarType]) and
+    tfb := TopPascalCodeFoldBlockType;
+    if ( ( (tfb in cfbtVarConstType) and
            (FTokenState <> tsAfterAbsolute) and
            (fRange * [rsVarTypeInSpecification, rsAfterEqualOrColon] = [rsVarTypeInSpecification]) ) or
-         ( (tbf in [cfbtClass, cfbtClassSection, cfbtRecord, cfbtRecordCase, cfbtRecordCaseSection]) and
+         ( (tfb in [cfbtClass, cfbtClassSection, cfbtRecord, cfbtRecordCase, cfbtRecordCaseSection, cfbtClassConstBlock, cfbtClassTypeBlock]) and
            ( (fRange * [rsAfterClassMembers, rsInProcHeader] = [rsAfterClassMembers]) or
              (fRange * [rsAfterClassMembers, rsAfterEqualOrColon, rsVarTypeInSpecification] = [rsVarTypeInSpecification])
          ) ) or
-         ( (tbf in [cfbtUnitSection, cfbtProgram, cfbtProcedure]) and
+         ( (tfb in [cfbtUnitSection, cfbtProgram, cfbtProcedure]) and
            (fRange * [rsInProcHeader] = []) ) or
-         ( (tbf in [cfbtUnit, cfbtNone]) and
+         ( (tfb in [cfbtUnit, cfbtNone]) and
            (fRange * [rsInProcHeader] = []) and (FTokenState = tsAfterProcName) )
        ) and
        ( fRange *[rsAfterEqualOrColon, rsProperty] = [] ) and
@@ -3089,7 +3196,7 @@ begin
       PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
       CloseBeginEndBlocksBeforeProc;
 
-      if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
+      if TopPascalCodeFoldBlockType in cfbtVarConstTypeExt then
         EndPascalCodeFoldBlockLastLine;
 
       InClass := TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection, cfbtRecord];
@@ -3134,20 +3241,20 @@ end;
 
 function TSynPasSyn.Func151: TtkTokenKind;
 var
-  tbf: TPascalCodeFoldBlockType;
+  tfb: TPascalCodeFoldBlockType;
 begin
-  tbf := TopPascalCodeFoldBlockType;
+  tfb := TopPascalCodeFoldBlockType;
   if KeyComp('Unimplemented') then begin
-    if ( ( (tbf in [cfbtVarType, cfbtLocalVarType]) and
+    if ( ( (tfb in cfbtVarConstType) and
            (FTokenState <> tsAfterAbsolute) and
            (fRange * [rsVarTypeInSpecification, rsAfterEqualOrColon] = [rsVarTypeInSpecification]) ) or
-         ( (tbf in [cfbtClass, cfbtClassSection, cfbtRecord, cfbtRecordCase, cfbtRecordCaseSection]) and
+         ( (tfb in [cfbtClass, cfbtClassSection, cfbtRecord, cfbtRecordCase, cfbtRecordCaseSection, cfbtClassConstBlock, cfbtClassTypeBlock]) and
            ( (fRange * [rsAfterClassMembers, rsInProcHeader] = [rsAfterClassMembers]) or
              (fRange * [rsAfterClassMembers, rsAfterEqualOrColon, rsVarTypeInSpecification] = [rsVarTypeInSpecification])
          ) ) or
-         ( (tbf in [cfbtUnitSection, cfbtProgram, cfbtProcedure]) and
+         ( (tfb in [cfbtUnitSection, cfbtProgram, cfbtProcedure]) and
            (fRange * [rsInProcHeader] = []) ) or
-         ( (tbf in [cfbtUnit, cfbtNone]) and
+         ( (tfb in [cfbtUnit, cfbtNone]) and
            (fRange * [rsInProcHeader] = []) and (FTokenState = tsAfterProcName) )
        ) and
        ( fRange *[rsAfterEqualOrColon, rsProperty] = [] ) and
@@ -3184,7 +3291,7 @@ begin
       PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
       CloseBeginEndBlocksBeforeProc;
 
-      if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
+      if TopPascalCodeFoldBlockType in cfbtVarConstTypeExt then
         EndPascalCodeFoldBlockLastLine;
 
       InClass := TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection, cfbtRecord];
@@ -3201,7 +3308,7 @@ begin
     if KeyComp('Implementation') then begin
       PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
       CloseBeginEndBlocksBeforeProc;
-      if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
+      if TopPascalCodeFoldBlockType in cfbtVarConstType then
         EndPascalCodeFoldBlockLastLine;
       if TopPascalCodeFoldBlockType=cfbtUnitSection then EndPascalCodeFoldBlockLastLine;
       StartPascalCodeFoldBlock(cfbtUnitSection);
@@ -3234,7 +3341,7 @@ begin
   if KeyComp('Initialization') then begin
     PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
     CloseBeginEndBlocksBeforeProc;
-    if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
+    if TopPascalCodeFoldBlockType in cfbtVarConstType then
       EndPascalCodeFoldBlockLastLine;
     if TopPascalCodeFoldBlockType=cfbtUnitSection then EndPascalCodeFoldBlockLastLine;
     StartPascalCodeFoldBlock(cfbtUnitSection);
@@ -3264,9 +3371,9 @@ function TSynPasSyn.Func191: TtkTokenKind;
 begin
   if KeyComp('Resourcestring') then begin
     Result := tkKey;
-	if TopPascalCodeFoldBlockType = cfbtVarType then
+    if TopPascalCodeFoldBlockType in cfbtVarConstType then
       EndPascalCodeFoldBlockLastLine;
-    StartPascalCodeFoldBlock(cfbtVarType);
+    StartPascalCodeFoldBlock(cfbtVarBlock);
   end
   else if KeyComp('Stringresource') then
     Result := tkKey else Result := tkIdentifier;
@@ -3870,7 +3977,7 @@ begin
     inc(Run) // ":="
   else begin
     fRange := fRange + [rsAfterEqualOrColon] - [rsAtCaseLabel];
-    if (TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType, cfbtClass, cfbtClassSection, cfbtRecord, cfbtRecordCaseSection]) and
+    if (TopPascalCodeFoldBlockType in cfbtVarConstTypeExt + [cfbtClass, cfbtClassSection, cfbtRecord, cfbtRecordCaseSection]) and
        ( (rsProperty in fRange) or not(rsAfterClassMembers in fRange) )
     then
       fRange := fRange + [rsVarTypeInSpecification];
@@ -3882,7 +3989,7 @@ begin
       then
         FRange := FRange + [rsInProcHeader]
       else
-      if rsInConstBlock in fRange then
+      if TopPascalCodeFoldBlockType in [cfbtConstBlock, cfbtLocalConstBlock, cfbtClassConstBlock] then
         fRange := fRange + [rsInTypedConst];
     end;
   end;
@@ -3894,7 +4001,8 @@ begin
   inc(Run);
   if fLine[Run] = '=' then begin
     inc(Run);
-    if (rsInTypeBlock in fRange) then // generic TFoo<..>= // no space between > and =
+    // generic TFoo<..>= // no space between > and =
+    if TopPascalCodeFoldBlockType in [cfbtTypeBlock, cfbtLocalTypeBlock, cfbtClassTypeBlock] then
       fRange := fRange + [rsAfterEqual, rsAfterEqualOrColon];
   end;
   //      DoAfterOperator;
@@ -3982,10 +4090,10 @@ begin
 
   t := TopPascalCodeFoldBlockType;
   if ( (t in PascalStatementBlocks - [cfbtAsm])  or               //cfbtClass, cfbtClassSection,
-       ( ( (t in [cfbtVarType, cfbtLocalVarType]) or
+       ( ( (t in [cfbtVarBlock, cfbtLocalVarBlock, cfbtConstBlock, cfbtLocalConstBlock, cfbtClassConstBlock]) or
            ((t in [cfbtProcedure, cfbtAnonymousProcedure]) and (PasCodeFoldRange.BracketNestLevel > 0))
          ) and
-         (fRange * [rsInTypeBlock, rsAfterEqual] = [rsAfterEqual])
+         (rsAfterEqual in fRange)
      )) and
      not(rsAfterIdentifierOrValue in fRange)
   then begin
@@ -4205,7 +4313,7 @@ begin
   inc(Run);
   fTokenID := tkSymbol;
   fRange := fRange + [rsAfterEqualOrColon, rsAfterEqual];
-  if (TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType, cfbtClass, cfbtClassSection, cfbtRecord, cfbtRecordCaseSection]) and
+  if (TopPascalCodeFoldBlockType in cfbtVarConstTypeExt + [cfbtClass, cfbtClassSection, cfbtRecord, cfbtRecordCaseSection]) and
      not(rsAfterClassMembers in fRange)
   then
     fRange := fRange + [rsVarTypeInSpecification];
@@ -4238,7 +4346,7 @@ begin
   if (tfb in [cfbtCase, cfbtRecordCase]) then
     fRange := fRange + [rsAtCaseLabel];
 
-  if (tfb in [cfbtClass, cfbtClassSection]) and
+  if (tfb in [cfbtClass, cfbtClassSection, cfbtClassConstBlock, cfbtClassTypeBlock]) and
      (fRange * [rsVarTypeInSpecification, rsAfterClassMembers] = [rsVarTypeInSpecification])
   then
     fRange := fRange + [rsAfterClassField];
@@ -5320,14 +5428,18 @@ var
   act: TSynFoldActions;
   nd: TSynFoldNodeInfo;
   FoldBlock, BlockEnabled: Boolean;
+  ConfigP: PSynCustomFoldConfig;
 begin
-  BlockEnabled := FFoldConfig[ord(ABlockType)].Enabled;
-  FoldBlock := BlockEnabled and (FFoldConfig[ord(ABlockType)].Modes * [fmFold, fmHide] <> []);
-  //if not FFoldConfig[ord(ABlockType)].Enabled then exit;
+  (* Currently no need to map / only IFDEF / REGION *)
+  //ConfigP := @FFoldConfig[ord(PascalFoldTypeConfigMap[ABlockType])];
+  ConfigP := @FFoldConfig[ord(ABlockType)];
+  BlockEnabled := ConfigP^.Enabled;
+  FoldBlock := BlockEnabled and (ConfigP^.Modes * [fmFold, fmHide] <> []);
+  //if not ConfigP^.Enabled then exit;
   if IsCollectingNodeInfo then begin // exclude subblocks, because they do not increase the foldlevel yet
     act := [sfaOpen, sfaOpenFold];
     if BlockEnabled then
-      act := act + FFoldConfig[ord(ABlockType)].FoldActions;
+      act := act + ConfigP^.FoldActions;
     if not FAtLineStart then
       act := act - [sfaFoldHide];
     DoInitNode(nd{%H-}, False, Pointer(PtrUInt(ABlockType)), act, FoldBlock);
@@ -5348,17 +5460,22 @@ var
   act: TSynFoldActions;
   nd: TSynFoldNodeInfo;
   FoldBlock, BlockEnabled: Boolean;
+  ConfigP: PSynCustomFoldConfig;
 begin
-  FoldBlock := FFoldConfig[ord(ABlockType)].Enabled;
-  //if not FFoldConfig[ord(ABlockType)].Enabled then exit;
+  (* Currently no need to map / only IFDEF / REGION *)
+  //ConfigP := @FFoldConfig[ord(PascalFoldTypeConfigMap[ABlockType])];
+  ConfigP := @FFoldConfig[ord(ABlockType)];
+  // TODO: Why is "FoldBlock" = Enabled? Instead of Modes fmFold,fmHide?
+  FoldBlock := ConfigP^.Enabled;
+  //if not ConfigP^.Enabled then exit;
   if IsCollectingNodeInfo then begin // exclude subblocks, because they do not increase the foldlevel yet
-    BlockEnabled := FFoldConfig[ord(ABlockType)].Enabled;
+    BlockEnabled := ConfigP^.Enabled;
     act := [sfaClose, sfaCloseFold];
     if BlockEnabled then
-      act := act + FFoldConfig[PtrUInt(ABlockType)].FoldActions;
+      act := act + ConfigP^.FoldActions;
     if not FoldBlock then
       act := act - [sfaFold, sfaFoldFold, sfaFoldHide];
-    DoInitNode(nd{%H-}, True, Pointer(PtrUInt(ABlockType)), act, FoldBlock); // + FFoldConfig[ord(ABlockType)].FoldActions);
+    DoInitNode(nd{%H-}, True, Pointer(PtrUInt(ABlockType)), act, FoldBlock); // + ConfigP^.FoldActions);
     CollectingNodeInfoList.Add(nd);
   end;
   //if not FoldBlock then
@@ -5379,6 +5496,38 @@ begin
           FSynPasRangeInfo.MinLevelRegion := FSynPasRangeInfo.EndLevelRegion;
       end;
   end;
+end;
+
+function TSynPasSyn.CloseOneFold(ACurTfb: TPascalCodeFoldBlockType;
+  ACloseFold: TPascalCodeFoldBlockType): TPascalCodeFoldBlockType;
+begin
+  if ACurTfb = ACloseFold then begin
+    EndPascalCodeFoldBlock;
+    Result:= TopPascalCodeFoldBlockType;
+  end
+  else
+    Result := ACurTfb;
+end;
+
+function TSynPasSyn.CloseOneFold(ACurTfb: TPascalCodeFoldBlockType;
+  ACloseFolds: TPascalCodeFoldBlockTypes): TPascalCodeFoldBlockType;
+begin
+  if ACurTfb in ACloseFolds then begin
+    EndPascalCodeFoldBlock;
+    Result:= TopPascalCodeFoldBlockType;
+  end
+  else
+    Result := ACurTfb;
+end;
+
+function TSynPasSyn.CloseFolds(ACurTfb: TPascalCodeFoldBlockType;
+  ACloseFolds: TPascalCodeFoldBlockTypes): TPascalCodeFoldBlockType;
+begin
+  while ACurTfb in ACloseFolds do begin
+    EndPascalCodeFoldBlock;
+    ACurTfb := TopPascalCodeFoldBlockType;
+  end;
+  Result := ACurTfb;
 end;
 
 procedure TSynPasSyn.CollectNodeInfo(FinishingABlock: Boolean;
@@ -5434,24 +5583,26 @@ var
   FoldBlock, BlockEnabled: Boolean;
   act: TSynFoldActions;
   nd: TSynFoldNodeInfo;
+  ConfigP: PSynCustomFoldConfig;
 begin
   if rsSkipAllPasBlocks in fRange then exit(nil);
-  BlockEnabled := FFoldConfig[ord(ABlockType)].Enabled;
+  ConfigP := @FFoldConfig[ord(PascalFoldTypeConfigMap[ABlockType])];
+  BlockEnabled := ConfigP^.Enabled;
   if (not BlockEnabled) and (not ForceDisabled) and
-     (not FFoldConfig[ord(ABlockType)].IsEssential)
+     (not ConfigP^.IsEssential)
   then
     exit(nil);
 
-  FoldBlock := BlockEnabled and (FFoldConfig[ord(ABlockType)].Modes * [fmFold, fmHide] <> []);
+  FoldBlock := BlockEnabled and (ConfigP^.Modes * [fmFold, fmHide] <> []);
   p := 0;
   // TODO: let inherited call CollectNodeInfo
   if IsCollectingNodeInfo then begin // exclude subblocks, because they do not increase the foldlevel yet
     act := [sfaOpen, sfaOpenFold]; //TODO: sfaOpenFold not for cfbtIfThen
     if BlockEnabled then
-      act := act + FFoldConfig[ord(ABlockType)].FoldActions;
+      act := act + ConfigP^.FoldActions;
     if not FAtLineStart then
       act := act - [sfaFoldHide];
-    DoInitNode(nd{%H-}, False, Pointer(PtrUInt(ABlockType)), act, FoldBlock);
+    DoInitNode(nd{%H-}, False, Pointer(PtrUInt(PascalFoldTypeConfigMap[ABlockType])), act, FoldBlock);
     CollectingNodeInfoList.Add(nd);
   end;
   if not FoldBlock then
@@ -5466,26 +5617,26 @@ var
   act: TSynFoldActions;
   BlockType: TPascalCodeFoldBlockType;
   nd: TSynFoldNodeInfo;
+  ConfigP: PSynCustomFoldConfig;
 begin
   Exclude(fRange, rsSkipAllPasBlocks);
   BlockType := TopPascalCodeFoldBlockType;
-  if BlockType in [cfbtVarType, cfbtLocalVarType] then
-    fRange := fRange - [rsInTypeBlock, rsInConstBlock];
   fRange := fRange - [rsAfterEqual];
   DecreaseLevel := TopCodeFoldBlockType < CountPascalCodeFoldBlockOffset;
   // TODO: let inherited call CollectNodeInfo
   if IsCollectingNodeInfo then begin // exclude subblocks, because they do not increase the foldlevel yet
-    BlockEnabled := FFoldConfig[ord(BlockType)].Enabled;
+    ConfigP := @FFoldConfig[ord(PascalFoldTypeConfigMap[BlockType])];
+    BlockEnabled := ConfigP^.Enabled;
     act := [sfaClose, sfaCloseFold];
     if BlockEnabled then
-      act := act + FFoldConfig[ord(BlockType)].FoldActions - [sfaFoldFold, sfaFoldHide]; // TODO: Why filter?
+      act := act + ConfigP^.FoldActions - [sfaFoldFold, sfaFoldHide]; // TODO: Why filter?
     if not DecreaseLevel then
       act := act - [sfaFold, sfaFoldFold, sfaFoldHide];
     if NoMarkup then
       exclude(act, sfaMarkup);
     if UndoInvalidOpen then
       act := act - [sfaMarkup, {sfaFold,} sfaFoldFold, sfaFoldHide, sfaOutline]; // sfaFold affects the EndOffset for the fold-lvl
-    DoInitNode(nd{%H-}, True, Pointer(PtrUInt(BlockType)), act, DecreaseLevel);
+    DoInitNode(nd{%H-}, True, Pointer(PtrUInt(PascalFoldTypeConfigMap[BlockType])), act, DecreaseLevel);
     CollectingNodeInfoList.Add(nd);
   end;
   EndCodeFoldBlock(DecreaseLevel);
@@ -5629,25 +5780,25 @@ begin
       cfbtUses:
         if FDividerDrawConfig[pddlUses].MaxDrawDepth > 0 then
           exit(FDividerDrawConfig[pddlUses].TopSetting);
-      cfbtLocalVarType:
+      cfbtLocalVarBlock, cfbtLocalConstBlock, cfbtLocalTypeBlock:
         if CheckFoldNestLevel(FDividerDrawConfig[pddlVarLocal].MaxDrawDepth - 1,
                               i + 2, [cfbtProcedure], cfbtAll, c) then begin
           if c = 0
           then exit(FDividerDrawConfig[pddlVarLocal].TopSetting)
           else exit(FDividerDrawConfig[pddlVarLocal].NestSetting);
         end;
-      cfbtVarType:
+      cfbtVarBlock, cfbtConstBlock, cfbtTypeBlock:
         if FDividerDrawConfig[pddlVarGlobal].MaxDrawDepth > 0 then
           exit(FDividerDrawConfig[pddlVarGlobal].TopSetting);
       cfbtClass, cfbtRecord:
         begin
           if CheckFoldNestLevel(0, i + 1, [cfbtProcedure],
-                                cfbtAll - [cfbtVarType, cfbtLocalVarType], c)
+                                cfbtAll - cfbtVarConstType, c)
           then t := pddlStructGlobal
           else t := pddlStructLocal;
           if CheckFoldNestLevel(FDividerDrawConfig[t].MaxDrawDepth - 1,
                                 i + 1, [cfbtClass, cfbtRecord],
-                                cfbtAll - [cfbtVarType, cfbtLocalVarType], c) then begin
+                                cfbtAll - cfbtVarConstType, c) then begin
             if c = 0
             then exit(FDividerDrawConfig[t].TopSetting)
             else exit(FDividerDrawConfig[t].NestSetting);

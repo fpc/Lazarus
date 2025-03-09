@@ -901,10 +901,10 @@ begin
 
   for i := 0 to $3F do begin
     AFolds := [];
-    if (i and $20) = 0 then AFolds := [cfbtBeginEnd..cfbtNone] - [cfbtUnitSection, cfbtProcedure, cfbtVarType, cfbtClass, cfbtClassSection];
+    if (i and $20) = 0 then AFolds := [cfbtBeginEnd..cfbtNone] - [cfbtUnitSection, cfbtProcedure, cfbtVarBlock, cfbtClass, cfbtClassSection];
     if (i and $01) = 0 then AFolds := AFolds + [cfbtUnitSection];
     if (i and $02) = 0 then AFolds := AFolds + [cfbtProcedure];
-    if (i and $04) = 0 then AFolds := AFolds + [cfbtVarType];
+    if (i and $04) = 0 then AFolds := AFolds + [cfbtVarBlock];
     if (i and $08) = 0 then AFolds := AFolds + [cfbtClass];
     if (i and $10) = 0 then AFolds := AFolds + [cfbtClassSection];
 
@@ -1035,9 +1035,9 @@ begin
 
     for j := 0 to $1F do begin
       AFolds := [];
-      if (j and $10) = 0 then AFolds := [cfbtBeginEnd..cfbtNone] - [cfbtUnitSection, cfbtVarType, cfbtClass, cfbtClassSection];
+      if (j and $10) = 0 then AFolds := [cfbtBeginEnd..cfbtNone] - [cfbtUnitSection, cfbtVarBlock, cfbtClass, cfbtClassSection];
       if (j and $01) = 0 then AFolds := AFolds + [cfbtUnitSection];
-      if (j and $02) = 0 then AFolds := AFolds + [cfbtVarType];
+      if (j and $02) = 0 then AFolds := AFolds + [cfbtVarBlock];
       if (j and $04) = 0 then AFolds := AFolds + [cfbtClass];
       if (j and $08) = 0 then AFolds := AFolds + [cfbtClassSection];
       EnableFolds(AFolds);
@@ -2106,7 +2106,7 @@ begin
     AFolds := [cfbtBeginEnd..cfbtNone];
     if (i and $01) = 0 then AFolds := AFolds - [cfbtProgram, cfbtUnit];
     if (i and $02) = 0 then AFolds := AFolds - [cfbtUnitSection];
-    if (i and $04) = 0 then AFolds := AFolds - [cfbtVarType, cfbtLocalVarType];
+    if (i and $04) = 0 then AFolds := AFolds - [cfbtVarBlock, cfbtLocalVarBlock];
     if (i and $08) = 0 then AFolds := AFolds - [cfbtClass, cfbtRecord];
     if (i and $10) = 0 then AFolds := AFolds - [cfbtClassSection];
     if (i and $20) = 0 then AFolds := AFolds - [cfbtProcedure];
@@ -3075,8 +3075,8 @@ var
 begin
   for i := 0 to $1F do begin
     AFolds := [];
-    if (i and $10) = 0 then AFolds := [cfbtBeginEnd..cfbtNone] - [cfbtVarType, cfbtRecord, cfbtRecordCase, cfbtRecordCaseSection];
-    if (i and $01) = 0 then AFolds := AFolds + [cfbtVarType];
+    if (i and $10) = 0 then AFolds := [cfbtBeginEnd..cfbtNone] - [cfbtVarBlock, cfbtRecord, cfbtRecordCase, cfbtRecordCaseSection];
+    if (i and $01) = 0 then AFolds := AFolds + [cfbtVarBlock];
     if (i and $02) = 0 then AFolds := AFolds + [cfbtRecord];
     if (i and $04) = 0 then AFolds := AFolds + [cfbtRecordCase];
     if (i and $08) = 0 then AFolds := AFolds + [cfbtRecordCaseSection];
@@ -3154,7 +3154,7 @@ begin
     CheckTokensForLine('  end;',                 31, [tkSpace, tkKey, TK_Semi]);
 
 
-    if cfbtVarType in AFolds then
+    if cfbtVarBlock in AFolds then
       AssertEquals('Fold-Len type   (1) ',   31, PasHighLighter.FoldLineLength(1, 0));
     if cfbtRecord in AFolds then
       AssertEquals('Fold-Len record (2) ',   29, PasHighLighter.FoldLineLength(2, 0));
@@ -3259,15 +3259,18 @@ begin
          'a:char=^o;',
          'a:somestring=^o^c;',
          'b:^char=nil;',
+         'c:record A:char; B:^char; end=(a:^c;b:nil);',   // 5
        'type',
-         'c=^char;',         // 6
-         'c=type ^char;',         // 6
+         'c=^char;',         // 7
+         'c=type ^char;',         // 8
+       'const',
+         'd:record A:char; B:^char; end=(a:^c;b:nil);',  //10
        'implementation',
        'function x(f:^char=^k^c):^v;', // actually the compiler does not allow ^ as pointer for result
        'var',
-         'a:char=^o;',       // 11
-         'b:^char=nil;',     // 12
-       'type',
+         'a:char=^o;',       // 14
+         'b:^char=nil;',     // 15
+       'type',  // 16
          'c=^char;',
        'begin',
          'i:=^f;',
@@ -3275,8 +3278,8 @@ begin
          'c:=p^;',
          'c:=p ^;',
          'c:=p(**)^;',
-         'c:=p{} ^;',     // 21
-         'i:=f(1)^;',     // 22
+         'c:=p{} ^;',     // 24
+         'i:=f(1)^;',     // 25
          'i:=f[1]^;',
          'i:=f^^;',
          'c:=p^+^i''e''^a#13^x;',
@@ -3291,50 +3294,68 @@ begin
                      [tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkString, tkString, tkSymbol]);
   CheckTokensForLine('b:^char=nil;',   4,
                      [tkIdentifier, tkSymbol, tkSymbol, tkIdentifier, tkSymbol, tkKey, tkSymbol]);
-  CheckTokensForLine('c=^char;',   6,
+  CheckTokensForLine('c:record A:char; B:^char; end=(a:^c;b:nil);',   5,
+                     [tkIdentifier, tkSymbol, tkKey, tkSpace,
+                        tkIdentifier, TK_Colon, tkIdentifier, TK_Semi, tkSpace,
+                        tkIdentifier, TK_Colon, tkSymbol, tkIdentifier, TK_Semi, tkSpace, tkKey,
+                        TK_Equal, TK_Bracket,
+                        tkIdentifier, TK_Colon, tkString, TK_Semi, tkIdentifier, TK_Colon, tkKey,
+                        TK_Bracket, TK_Semi
+                        ]);
+
+  CheckTokensForLine('c=^char;',   7,
                      [tkIdentifier, tkSymbol, tkSymbol, tkIdentifier, tkSymbol]);
-  CheckTokensForLine('c=type ^char;',   7,
+  CheckTokensForLine('c=type ^char;',   8,
                      [tkIdentifier, tkSymbol, tkKey, tkSpace, tkSymbol, tkIdentifier, tkSymbol]);
 
-  CheckTokensForLine('function x(f:^char=^k):^v;',   9,
+  CheckTokensForLine('CONST c:record A:char; B:^char; end=(a:^c;b:nil);',   10,
+                     [tkIdentifier, tkSymbol, tkKey, tkSpace,
+                        tkIdentifier, TK_Colon, tkIdentifier, TK_Semi, tkSpace,
+                        tkIdentifier, TK_Colon, tkSymbol, tkIdentifier, TK_Semi, tkSpace, tkKey,
+                        TK_Equal, TK_Bracket,
+                        tkIdentifier, TK_Colon, tkString, TK_Semi, tkIdentifier, TK_Colon, tkKey,
+                        TK_Bracket, TK_Semi
+                        ]);
+
+  CheckTokensForLine('function x(f:^char=^k):^v;',   12,
                      [tkKey, tkSpace, tkIdentifier + FAttrProcName, tkSymbol, tkIdentifier,  // function x(f
                       tkSymbol, tkSymbol, tkIdentifier, tkSymbol, tkString,  tkString,  // :^char=^k
                       tkSymbol, tkSymbol, tkSymbol, tkIdentifier, tkSymbol]);          // ):^v;
-  CheckTokensForLine('LOCAL a:char=^o;',   11,
+  CheckTokensForLine('LOCAL a:char=^o;',   14,
                      [tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkString, tkSymbol]);
-  CheckTokensForLine('LOCAL b:^char=nil;',   12,
+  CheckTokensForLine('LOCAL b:^char=nil;',   15,
                      [tkIdentifier, tkSymbol, tkSymbol, tkIdentifier, tkSymbol, tkKey, tkSymbol]);
-  CheckTokensForLine('LOCAL c=^char;',   14,
+  CheckTokensForLine('LOCAL c=^char;',   17,
                      [tkIdentifier, tkSymbol, tkSymbol, tkIdentifier, tkSymbol]);
-  CheckTokensForLine('i:=^f',   16,
+  CheckTokensForLine('i:=^f',   19,
                      [tkIdentifier, tkSymbol, tkString, tkSymbol]);
 
-  CheckTokensForLine('x:=GetTypeData(PropInfo^.PropType{$IFNDEF FPC}^{$ENDIF});',   17,
+  CheckTokensForLine('x:=GetTypeData(PropInfo^.PropType{$IFNDEF FPC}^{$ENDIF});',   20,
                      [tkIdentifier, tkSymbol, tkIdentifier, tkSymbol,    // x:=GetTypeData(
                       tkIdentifier, tkSymbol, tkSymbol, tkIdentifier,    // PropInfo^.PropType
                       tkDirective, tkSymbol, tkDirective, tkSymbol, tkSymbol]);  // {$IFNDEF FPC}^{$ENDIF});
 
-  CheckTokensForLine('c:=p^;',   18,
+  CheckTokensForLine('c:=p^;',   21,
                      [tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkSymbol]);
-  CheckTokensForLine('c:=p ^;',   19,
+  CheckTokensForLine('c:=p ^;',   22,
                      [tkIdentifier, tkSymbol, tkIdentifier, tkSpace, tkSymbol, tkSymbol]);
-  CheckTokensForLine('c:=p(**)^;',   20,
+  CheckTokensForLine('c:=p(**)^;',   23,
                      [tkIdentifier, tkSymbol, tkIdentifier, tkComment, tkSymbol, tkSymbol]);
-  CheckTokensForLine('c:=p{} ^;',   21,
+  CheckTokensForLine('c:=p{} ^;',   24,
                      [tkIdentifier, tkSymbol, tkIdentifier, tkComment, tkSpace, tkSymbol, tkSymbol]);
 
-  CheckTokensForLine('c:=p(1)^;',   22,
+  CheckTokensForLine('c:=p(1)^;',   25,
                      [tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkNumber, tkSymbol, tkSymbol]);
-  CheckTokensForLine('c:=p[1]^;',   23,
+  CheckTokensForLine('c:=p[1]^;',   26,
                      [tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkNumber, tkSymbol, tkSymbol]);
-  CheckTokensForLine('c:=p^^;',   24,
+  CheckTokensForLine('c:=p^^;',   27,
                      [tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkSymbol, tkSymbol]);
 
-  CheckTokensForLine('c:=p^+^i''e''^a#13^x;',   25,
+  CheckTokensForLine('c:=p^+^i''e''^a#13^x;',   28,
                      [tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkSymbol, // c:=p^+
                       tkString, tkString, tkString, tkString, tkString, tkSymbol  // ^i'e'^a#13^x;
                      ]);
-  CheckTokensForLine('c:=x=^a and ^a=k and(^a^a=z);',   26,
+  CheckTokensForLine('c:=x=^a and ^a=k and(^a^a=z);',   29,
                      [tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkString, tkSpace, // c:=x=^a
                       tkKey, tkSpace, tkString, tkSymbol, tkIdentifier, tkSpace, // and ^a=k
                       tkKey, tkSymbol, tkString, tkString, tkSymbol, tkIdentifier,  // and(^a^a=z
@@ -3943,22 +3964,22 @@ begin
                                   [sfaOpen, sfaOpenFold,sfaFold,sfaFoldFold, sfaMultiLine]);
       // Line 2:   type a=integer;                                              # pasminlvl=2 endlvl=2
       CheckNode( 2, [], 0,   0,   0, 4,   2, 3,   2, 3,
-                                  cfbtVarType, cfbtVarType,  FOLDGROUP_PASCAL,
+                                  cfbtVarBlock, cfbtVarBlock,  FOLDGROUP_PASCAL,
                                   [sfaOpen, sfaOneLineOpen, sfaSingleLine]);
       CheckNode( 2, [], 0,   1,   15, 15,   3, 2,   3, 2,
-                                  cfbtVarType, cfbtVarType,  FOLDGROUP_PASCAL,
+                                  cfbtVarBlock, cfbtVarBlock,  FOLDGROUP_PASCAL,
                                   [sfaClose, sfaOneLineClose, sfaCloseForNextLine, sfaSingleLine]);
       // Line 3:   var                                                          # pasminlvl=2 endlvl=3
       CheckNode( 3, [], 0,   0,   0, 3,   2, 3,   2, 3,
-                                  cfbtVarType, cfbtVarType,  FOLDGROUP_PASCAL,
+                                  cfbtVarBlock, cfbtVarBlock,  FOLDGROUP_PASCAL,
                                   [sfaOpen, sfaOpenFold,sfaFold,sfaFoldFold, sfaMultiLine]);
       // Line 4:     b:integer                                                  # pasminlvl=2 endlvl=2
       CheckNode( 4, [], 0,   0,   11, 11,   3, 2,   3, 2,
-                                  cfbtVarType, cfbtVarType,  FOLDGROUP_PASCAL,
+                                  cfbtVarBlock, cfbtVarBlock,  FOLDGROUP_PASCAL,
                                   [sfaClose, sfaCloseFold,sfaFold, sfaCloseForNextLine, sfaMultiLine]);
       // Line 5:   const                                                        # pasminlvl=2 endlvl=3
       CheckNode( 5, [], 0,   0,   0, 5,   2, 3,   2, 3,
-                                  cfbtVarType, cfbtVarType,  FOLDGROUP_PASCAL,
+                                  cfbtVarBlock, cfbtVarBlock,  FOLDGROUP_PASCAL,
                                   [sfaOpen, sfaOpenFold,sfaFold,sfaFoldFold, sfaMultiLine]);
       // Line 6:     c = 1;                                                     # pasminlvl=3 endlvl=3
       // Line 7:     d = 2; {$ifdef a}                                          # pasminlvl=1 endlvl=1
@@ -3966,7 +3987,7 @@ begin
                                   cfbtIfDef, cfbtIfDef,  FOLDGROUP_IFDEF,
                                   [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);
       CheckNode( 7, [], 0,   1,   19, 19,   3, 2,   3, 2,
-                                  cfbtVarType, cfbtVarType,  FOLDGROUP_PASCAL,
+                                  cfbtVarBlock, cfbtVarBlock,  FOLDGROUP_PASCAL,
                                   [sfaClose, sfaCloseFold,sfaFold, sfaCloseForNextLine, sfaMultiLine]);
       CheckNode( 7, [], 0,   2,   19, 19,   2, 1,   2, 1,
                                   cfbtUnitSection, cfbtUnitSection,  FOLDGROUP_PASCAL,
@@ -4074,7 +4095,7 @@ begin
                                   [sfaOpen, sfaOpenFold, sfaFold, sfaFoldFold, sfaMultiLine]);
       // Line 2:   type
       CheckNode( 2, [], 0,   0,   0, 4,   2, 3,   2, 3,
-                                  cfbtVarType, cfbtVarType,  FOLDGROUP_PASCAL,
+                                  cfbtVarBlock, cfbtVarBlock,  FOLDGROUP_PASCAL,
                                   [sfaOpen, sfaFold, sfaFoldFold, sfaMultiLine, sfaOpenFold]);
       // Line 3:   TFoo<T: class> = class(TBar<T>)
       CheckNode( 3, [], 0,   0,   17, 22,   3, 4,   3, 4,
@@ -4100,7 +4121,7 @@ begin
                                   cfbtRecord, cfbtRecord,  FOLDGROUP_PASCAL,
                                   [sfaClose, sfaFold, sfaMultiLine, sfaMarkup, sfaCloseFold]);
       CheckNode( 8, [], 0,   1,    4, 4,   3, 2,   3, 2,
-                                  cfbtVarType, cfbtVarType,  FOLDGROUP_PASCAL,
+                                  cfbtVarBlock, cfbtVarBlock,  FOLDGROUP_PASCAL,
                                   [sfaClose, sfaFold, sfaMultiLine, sfaCloseForNextLine, sfaCloseFold]);
       CheckNode( 8, [], 0,   2,    4, 4,   2, 1,   2, 1,
                                   cfbtUnitSection, cfbtUnitSection,  FOLDGROUP_PASCAL,

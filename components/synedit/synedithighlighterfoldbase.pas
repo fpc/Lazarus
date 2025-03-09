@@ -338,6 +338,8 @@ type
     property Modes: TSynCustomFoldConfigModes read FModes write SetModes default [fmFold];
   end;
 
+  PSynCustomFoldConfig = ^TSynCustomFoldConfig;
+
   { TSynCustomCodeFoldBlock }
 
   TSynCustomCodeFoldBlock = class
