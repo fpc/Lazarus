@@ -72,6 +72,7 @@ type
     constructor Create;
     destructor Destroy; override;
 
+    procedure FormatIncludeFile(srcEditor: TSourceEditorInterface);
     procedure DoFormatSelection(Sender: TObject);
     procedure DoFormatIncludeFile(Sender: TObject);
     procedure DoFormatCurrentIDEWindow(Sender: TObject);
@@ -378,19 +379,22 @@ begin
 end;
 
 procedure TJcfIdeMain.DoFormatIncludeFile(Sender: TObject);
+begin
+  if (SourceEditorManagerIntf = nil) or (SourceEditorManagerIntf.ActiveEditor = nil) then
+  begin
+    LogIdeMessage('', 'No current window', mtInputError, -1, -1);
+    Exit;
+  end;
+  FormatIncludeFile(SourceEditorManagerIntf.ActiveEditor);
+end;
+
+procedure TJcfIdeMain.FormatIncludeFile(srcEditor: TSourceEditorInterface);
 var
-  srcEditor: TSourceEditorInterface;
   sourceCode: string;
   BlockBegin, BlockEnd: TPoint;
   fcConverter: TConverter;
   outputstr: string;
 begin
-  if (SourceEditorManagerIntf = nil) or (SourceEditorManagerIntf.ActiveEditor = nil) then
-  begin
-    LogIdeMessage('', 'No current window', mtInputError, -1, -1);
-    exit;
-  end;
-  srcEditor := SourceEditorManagerIntf.ActiveEditor;
   if srcEditor.ReadOnly then
     Exit;
   sourceCode := srcEditor.GetText(False);   //get ALL editor text.
