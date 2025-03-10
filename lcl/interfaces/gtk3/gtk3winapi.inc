@@ -4006,6 +4006,13 @@ var
   {$IFDEF GTK3DEBUGSCROLL}
   S: String;
   {$ENDIF}
+
+  function NeedsRecalculation(const aMaxValue, aPageSize, aVisibleSize: Integer): Boolean;
+  begin
+    Result := (aMaxValue < aVisibleSize) or ((aMaxValue > aVisibleSize) and
+      (aPageSize < aVisibleSize div 2)) and (aMaxValue >= aPageSize);
+  end;
+
   procedure UpdateAdjustment;
   var
     ATarget: gdouble;
@@ -4239,7 +4246,7 @@ begin
 
         R := AControl.getClientRect;
         if ([wtScrollingWinControl] * AControl.WidgetType = []) and
-          (Scrollinfo.nMax - (R.Width - ScrollInfo.nPage) < R.Width) then
+          NeedsRecalculation(ScrollInfo.nMax, ScrollInfo.nPage, R.Width) then
         begin
           HaveLogicalValues := True;
           ChangeLogicalToAbsolute(AControl, ScrollInfo, SB_HORZ, R);
@@ -4257,7 +4264,7 @@ begin
         R := AControl.getClientRect;
 
         if ([wtScrollingWinControl] * AControl.WidgetType = []) and
-          (Scrollinfo.nMax - (R.Height - ScrollInfo.nPage) < R.Height) then
+          NeedsRecalculation(ScrollInfo.nMax, ScrollInfo.nPage, R.Height) then
         begin
           HaveLogicalValues := True;
           ChangeLogicalToAbsolute(AControl, ScrollInfo, SB_VERT, R);
