@@ -5881,7 +5881,7 @@ begin
             if NewStack >= StartStack then begin
               RSize := RegisterSize(instr.X86Instruction.Operand[1].Value);
               if not FProcess.ReadData(NewStack, RSize, NewFrame, RSize) then begin
-                ForceDifferentBranch := True;
+                NewFrame := 0;
                 continue;
               end;
             end
@@ -5913,14 +5913,14 @@ begin
           NewFrame := 0;
           if FProcess.Mode = dm32 then begin
             if not FProcess.ReadData(NewStack, 4, NewFrame, RSize) then begin
-              ForceDifferentBranch := True;
+              NewFrame := 0;
               continue;
             end;
             inc(NewStack, 4);
           end
           else begin
             if not FProcess.ReadData(NewStack, 8, NewFrame, RSize) then begin
-              ForceDifferentBranch := True;
+              NewFrame := 0;
               continue;
             end;
             inc(NewStack, 8);
@@ -5975,7 +5975,7 @@ begin
                (Instr.X86Instruction.Operand[2].ByteCount2 <> 0) or
                not(ofMemory in Instr.X86Instruction.Operand[2].Flags)
             then begin
-              ForceDifferentBranch := True;
+              NewFrame := 0;
               continue;
             end;
 
@@ -6073,7 +6073,7 @@ begin
              not(ofMemory in Instr.X86Instruction.Operand[1].Flags)
           then begin
             if not ValueFromOperand(instr.X86Instruction.Operand[2], Tmp) then begin
-              ForceDifferentBranch := True;
+              NewFrame := 0;
               continue;
             end;
             {$PUSH}{$R-}{$Q-}
@@ -6106,7 +6106,7 @@ begin
              not(ofMemory in Instr.X86Instruction.Operand[1].Flags)
           then begin
             if not ValueFromOperand(instr.X86Instruction.Operand[2], Tmp) then begin
-              ForceDifferentBranch := True;
+              NewFrame := 0;
               continue;
             end;
             {$PUSH}{$R-}{$Q-}
