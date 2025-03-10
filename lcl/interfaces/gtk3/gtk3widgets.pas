@@ -906,6 +906,8 @@ type
     function getHorizontalScrollbar: PGtkScrollbar; override;
     function getVerticalScrollbar: PGtkScrollbar; override;
     function GetScrolledWindow: PGtkScrolledWindow; override;
+    procedure InitializeWidget; override;
+    procedure OffsetMousePos(APoint: PPoint); override;
     function ShowState(nstate:integer):boolean; // winapi ShowWindow
     procedure UpdateWindowState; // LCL WindowState
     class function decoration_flags(Aform: TCustomForm): TGdkWMDecoration;
@@ -9719,6 +9721,42 @@ begin
     Result := FScrollWin
   else
     Result := nil;
+end;
+
+procedure TGtk3Window.InitializeWidget;
+begin
+  inherited InitializeWidget;
+  if not IsDesigning then
+  begin
+    g_signal_connect_data(gtk_scrolled_window_get_hscrollbar(GetScrolledWindow), 'change-value',
+      TGCallback(@RangeChangeValue), Self, nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(gtk_scrolled_window_get_vscrollbar(GetScrolledWindow), 'change-value',
+      TGCallback(@RangeChangeValue), Self, nil, G_CONNECT_DEFAULT);
+
+    g_signal_connect_data(PGtkRange(gtk_scrolled_window_get_hscrollbar(GetScrolledWindow)),'value-changed',
+      TGCallback(@RangeValueChanged), Self, nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(PGtkRange(gtk_scrolled_window_get_vscrollbar(GetScrolledWindow)),'value-changed',
+      TGCallback(@RangeValueChanged), Self, nil, G_CONNECT_DEFAULT);
+  end;
+end;
+
+procedure TGtk3Window.OffsetMousePos(APoint: PPoint);
+var
+  Hadjustment, Vadjustment: PGtkAdjustment;
+  HValue, VValue: longint;
+begin
+  inherited OffsetMousePos(APoint);
+  // Retrieve adjustments
+  Hadjustment := GetScrolledWindow^.get_hadjustment;
+  Vadjustment := GetScrolledWindow^.get_vadjustment;
+
+  // Get the adjustment values
+  HValue := Round(gtk_adjustment_get_value(Hadjustment));
+  VValue := Round(gtk_adjustment_get_value(Vadjustment));
+
+  // Apply adjustment values to the mouse position
+  Dec(APoint^.x, HValue);
+  Dec(APoint^.y, VValue);
 end;
 
 destructor TGtk3Window.Destroy;
