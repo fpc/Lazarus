@@ -531,7 +531,7 @@ type
       AGdkRect: PGdkRectangle; Data: gpointer); cdecl; static; {very important, see note inside method}
 
     class function RangeChangeValue(ARange: PGtkRange; AScrollType: TGtkScrollType;
-      AValue: gdouble; AData: TGtk3Widget): gboolean; cdecl; static;
+      AValue: gdouble; AData: gPointer): gboolean; cdecl; static;
     class procedure RangeValueChanged(range: PGtkRange; data: gpointer); cdecl; static;
   public
     LCLVAdj: PGtkAdjustment; // used to keep LCL values
@@ -5799,8 +5799,9 @@ begin
   inherited InitializeWidget;
 end;
 
-class function TGtk3ScrollableWin.RangeChangeValue(ARange: PGtkRange; AScrollType: TGtkScrollType;
-  AValue: gdouble; AData: TGtk3Widget): gboolean; cdecl;
+class function TGtk3ScrollableWin.RangeChangeValue(ARange: PGtkRange;
+  AScrollType: TGtkScrollType; AValue: gdouble; AData: gPointer): gboolean;
+  cdecl;
 var
   Msg: TLMVScroll;
   MaxValue: gdouble;
@@ -5809,7 +5810,7 @@ begin
   Result := gtk_false;
 
   {$IFDEF GTK3DEBUGSCROLL}
-  DebugLn(Format('>TGtk3ScrollableWin.RangeChangeValue Value: %d', [RoundToInt(AValue)]),' IsHScrollBar ',dbgs(PGtkOrientable(ARange)^.get_orientation = GTK_ORIENTATION_HORIZONTAL),' InUpdate=',dbgs(AData.InUpdate));
+  DebugLn(Format('>TGtk3ScrollableWin.RangeChangeValue Value: %d', [Round(AValue)]),' IsHScrollBar ',dbgs(PGtkOrientable(ARange)^.get_orientation = GTK_ORIENTATION_HORIZONTAL),' InUpdate=',dbgs(TGtk3Widget(AData).InUpdate));
   {$ENDIF}
   if PGtkOrientable(ARange)^.get_orientation = GTK_ORIENTATION_HORIZONTAL then
     Msg.Msg := LM_HSCROLL
@@ -5834,10 +5835,10 @@ begin
     else
       SmallPos := High(SmallPos);
     {$note to get this correct we must use TQtWidget.CreateFrom() for scrollbars}
-    ScrollBar := HWND(AData); // HWND({%H-}PtrUInt(ARange));
+    ScrollBar := HWND(TGtk3Widget(AData)); // HWND({%H-}PtrUInt(ARange));
     ScrollCode := Gtk3ScrollTypeToScrollCode(AScrollType);
   end;
-  AData.DeliverMessage(Msg, True);
+  TGtk3Widget(AData).DeliverMessage(Msg, True);
 
   if Msg.Scrollcode = SB_THUMBTRACK then
   begin
@@ -5845,18 +5846,18 @@ begin
     if not (GTK_STATE_FLAG_ACTIVE in StateFlags) then
     begin
       Msg.ScrollCode := SB_THUMBPOSITION;
-      AData.DeliverMessage(Msg, False);
+      TGtk3Widget(AData).DeliverMessage(Msg, False);
       Msg.ScrollCode := SB_ENDSCROLL;
-      AData.DeliverMessage(Msg, False);
+      TGtk3Widget(AData).DeliverMessage(Msg, False);
     end;
   end else
     ARange^.set_state_flags([GTK_STATE_FLAG_ACTIVE], True);
 
-  if ([wtScrollingWinControl, wtWindow, wtHintWindow, wtDialog] * AData.WidgetType <> []) and
+  if ([wtScrollingWinControl, wtWindow, wtHintWindow, wtDialog] * TGtk3Widget(AData).WidgetType <> []) and
   ((Msg.ScrollCode = SB_LINEUP) or (Msg.ScrollCode = SB_LINEDOWN)) then
     Result := gtk_true;
   {$IFDEF GTK3DEBUGSCROLL}
-  DebugLn('<RangeChangeValue: Result=',dbgs(Result),' FuturePos=', dbgs(Msg.Pos),' ScrollCode=',dbgs(Msg.ScrollCode),' InUpdate=',dbgs(AData.InUpdate));
+  DebugLn('<RangeChangeValue: Result=',dbgs(Result),' FuturePos=', dbgs(Msg.Pos),' ScrollCode=',dbgs(Msg.ScrollCode),' InUpdate=',dbgs(TGtk3Widget(AData).InUpdate));
   {$ENDIF}
 end;
 
