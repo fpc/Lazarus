@@ -12314,14 +12314,14 @@ begin
         end
         else if Node.Desc in AllSimpleIdentifierDefinitions then begin
           if CompareIdentifiers(@CurTool.Src[Node.StartPos],Identifier)=0 then
-            exit;
+            exit; // ancestor has field or constant with same name -> stop
         end else if Node.Desc=ctnProperty then begin
           CurIdentifier:=GetPropertyNameIdentifier(Node);
           if CompareIdentifiers(CurIdentifier,Identifier)=0 then
-            exit;
+            exit; // ancestor has property with same name -> stop
         end else if Node.Desc=ctnProcedure then begin
           CurIdentifier:=CurTool.GetProcNameIdentifier(Node);
-          //debugln(['  TFindDeclarationTool.FindOverridenMethodDecl PROC "',CurIdentifier,'"']);
+          //debugln(['  TFindDeclarationTool.FindOverridenMethodDecl PROC "',GetIdentifier(CurIdentifier),'"']);
           if CompareIdentifiers(CurIdentifier,Identifier)=0 then begin
             // found ancestor method with same name
             {$IFDEF VerboseFindRefMethodOverrides}
@@ -12367,7 +12367,7 @@ begin
         end else if Node.Desc=ctnGenericType then begin
           if (Node.FirstChild<>nil)
           and (CompareIdentifiers(@Src[Node.FirstChild.StartPos],Identifier)=0) then
-            exit;
+            exit; // ancestor has a generic type with same name -> stop
         end;
         // next
         if Node.PriorBrother<>nil then
@@ -12375,12 +12375,15 @@ begin
         else begin
           repeat
             Node:=Node.Parent;
-            if Node=ClassNode then exit;
+            if Node=ClassNode then begin
+              Node:=nil;
+              break;
+            end;
           until Node.PriorBrother<>nil;
+          if Node=nil then break;
           Node:=Node.PriorBrother;
         end;
       end;
-
     end;
 
   finally
