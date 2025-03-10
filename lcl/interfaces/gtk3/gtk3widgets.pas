@@ -8865,7 +8865,6 @@ begin
       end;
 
       Result := Rect(0, 0, AWindow^.get_width - VOffset, AWindow^.get_height - HOffset);
-
     end else
     begin
       //we are not ready, provide at least scrolledwindow size as clientrect for now.
@@ -9595,6 +9594,12 @@ begin
 
   Result := R;
   Types.OffsetRect(Result, -Result.Left, -Result.Top);
+
+  if GTK3WidgetSet.OverlayScrolling and getHorizontalScrollbar^.is_visible then
+    Result.Height := Result.Height - getHorizontalScrollbar^.get_allocated_height;
+  if GTK3WidgetSet.OverlayScrolling and getVerticalScrollbar^.is_visible then
+    Result.Width := Result.Width - getVerticalScrollbar^.get_allocated_width;
+
   {$IFDEF GTK3DEBUGFORMS}
   DebugLn('TGtk3Window.GetClientRect ',dbgsName(LCLObject),' Result ',dbgs(Result),' CentralWidget mapped ? ',dbgs(FCentralWidget^.get_mapped),' Realized ? ',dbgs(FCentralWidget^.get_realized));
   {$ENDIF}
