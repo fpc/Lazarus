@@ -7828,7 +7828,7 @@ begin
   end;
   if (smcrRemoved in Changes) and Sender.IsBookmark then begin
     FBookMarks[Sender.BookmarkNumber] := nil;
-    if Assigned(FOnPlaceMark) then
+    if Assigned(FOnClearMark) then
       FOnClearMark(Self, Sender);
   end;
 
