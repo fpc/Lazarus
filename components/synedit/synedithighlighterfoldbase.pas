@@ -2029,7 +2029,6 @@ end;
 function TSynCustomFoldHighlighter.GetFoldConfigInstance(Index: Integer): TSynCustomFoldConfig;
 begin
   Result := CreateFoldConfigInstance(Index);
-  Result.OnChange := @DoFoldConfigChanged;
   Result.Enabled := False;
 end;
 
@@ -2037,8 +2036,11 @@ procedure TSynCustomFoldHighlighter.InitFoldConfig;
 var
   i: Integer;
 begin
-  for i := 0 to high(FFoldConfig) do
+  for i := 0 to high(FFoldConfig) do begin
     FFoldConfig[i] := GetFoldConfigInstance(i);
+    if not assigned(FFoldConfig[i].OnChange) then
+      FFoldConfig[i].OnChange := @DoFoldConfigChanged;
+  end;
 end;
 
 procedure TSynCustomFoldHighlighter.DestroyFoldConfig;

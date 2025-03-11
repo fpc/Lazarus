@@ -352,10 +352,10 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
     Height = 268
     Top = 231
     Width = 433
-    ActivePage = tbString
+    ActivePage = tbAnsi
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 6
-    TabIndex = 3
+    TabIndex = 0
     TabOrder = 8
     object tbAnsi: TTabSheet
       Caption = 'tbAnsi'

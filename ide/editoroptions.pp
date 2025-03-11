@@ -1623,6 +1623,10 @@ type
     // Highlighter Pas
     fPasExtendedKeywordsMode: Boolean;
     fPasStringKeywordMode: TSynPasStringMode;
+    FCaseLabelAttriMatchesElseOtherwise: Boolean;
+    FDeclaredTypeAttributeMode: TSynPasTypeAttributeMode;
+    FDeclaredValueAttributeMachesStringNum: Boolean;
+    FDeclaredValueAttributeMode: TSynPasTypeAttributeMode;
     // Multi window
     fCtrlMiddleTabClickClosesOthers: Boolean;
     fMiddleTabClickClosesOthersModifier: TShiftState;
@@ -1723,6 +1727,14 @@ type
       read fPasExtendedKeywordsMode write fPasExtendedKeywordsMode default False;
     property PasStringKeywordMode: TSynPasStringMode
       read fPasStringKeywordMode write fPasStringKeywordMode default spsmDefault;
+    property CaseLabelAttriMatchesElseOtherwise: Boolean
+       read FCaseLabelAttriMatchesElseOtherwise write FCaseLabelAttriMatchesElseOtherwise default True;
+    property DeclaredTypeAttributeMode: TSynPasTypeAttributeMode
+       read FDeclaredTypeAttributeMode write FDeclaredTypeAttributeMode default tamIdentifierOnly;
+    property DeclaredValueAttributeMode: TSynPasTypeAttributeMode
+       read FDeclaredValueAttributeMode write FDeclaredValueAttributeMode default tamIdentifierOnly;
+    property DeclaredValueAttributeMachesStringNum: Boolean
+       read FDeclaredValueAttributeMachesStringNum write FDeclaredValueAttributeMachesStringNum default False;
     // Multi window
     property CtrlMiddleTabClickClosesOthers: Boolean
       read fCtrlMiddleTabClickClosesOthers write fCtrlMiddleTabClickClosesOthers stored False default True;
@@ -5509,6 +5521,10 @@ begin
   // pas highlighter
   fPasExtendedKeywordsMode := False;
   fPasStringKeywordMode := spsmDefault;
+  FCaseLabelAttriMatchesElseOtherwise := True;
+  FDeclaredTypeAttributeMode := tamIdentifierOnly;
+  FDeclaredValueAttributeMode := tamIdentifierOnly;
+  FDeclaredValueAttributeMachesStringNum := False;
   // Multi window
   fCtrlMiddleTabClickClosesOthers := True;
   fMiddleTabClickClosesOthersModifier := [ssCtrl];
@@ -6578,7 +6594,11 @@ begin
   if Syn is TSynPasSyn then begin
     TSynPasSyn(Syn).ExtendedKeywordsMode := PasExtendedKeywordsMode;
     TSynPasSyn(Syn).StringKeywordMode := PasStringKeywordMode;
-  end;;
+    TSynPasSyn(Syn).CaseLabelAttriMatchesElseOtherwise    := FCaseLabelAttriMatchesElseOtherwise;
+    TSynPasSyn(Syn).DeclaredTypeAttributeMode             := FDeclaredTypeAttributeMode;
+    TSynPasSyn(Syn).DeclaredValueAttributeMode            := FDeclaredValueAttributeMode;
+    TSynPasSyn(Syn).DeclaredValueAttributeMachesStringNum := FDeclaredValueAttributeMachesStringNum;
+  end;
 end;
 
 procedure TEditorOptions.GetSynEditorSettings(ASynEdit: TObject;

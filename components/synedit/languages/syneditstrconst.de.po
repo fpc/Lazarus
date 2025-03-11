@@ -105,6 +105,22 @@ msgstr "Bedingung"
 msgid "Data type"
 msgstr "Datentyp"
 
+#: syneditstrconst.syns_attrdeclarationtype
+msgid "Declaration block type"
+msgstr ""
+
+#: syneditstrconst.syns_attrdeclarationtypename
+msgid "Declaration block (Type) name"
+msgstr ""
+
+#: syneditstrconst.syns_attrdeclarationvalue
+msgid "Declaration block value"
+msgstr ""
+
+#: syneditstrconst.syns_attrdeclarationvarconstname
+msgid "Declaration block (Var,Conts) name"
+msgstr ""
+
 #: syneditstrconst.syns_attrdefaultpackage
 msgid "Default packages"
 msgstr "Default-Packages"
@@ -172,6 +188,10 @@ msgstr "Form"
 #: syneditstrconst.syns_attrfunction
 msgid "Function"
 msgstr "Funktion"
+
+#: syneditstrconst.syns_attrgotolabel
+msgid "Goto Label"
+msgstr ""
 
 #: syneditstrconst.syns_attrhexadecimal
 msgid "Hexadecimal"
@@ -329,9 +349,29 @@ msgstr "Vorheriger Wert"
 msgid "Procedure header name"
 msgstr ""
 
+#: syneditstrconst.syns_attrprocedureheaderparam
+msgid "Procedure header param name"
+msgstr ""
+
+#: syneditstrconst.syns_attrprocedureheaderresult
+msgid "Procedure header result"
+msgstr ""
+
+#: syneditstrconst.syns_attrprocedureheadertype
+msgid "Procedure header type"
+msgstr ""
+
+#: syneditstrconst.syns_attrprocedureheadervalue
+msgid "Procedure header value"
+msgstr ""
+
 #: syneditstrconst.syns_attrprocessinginstr
 msgid "Processing Instruction"
 msgstr "Befehl ausführen"
+
+#: syneditstrconst.syns_attrpropertyname
+msgid "Property name"
+msgstr ""
 
 #: syneditstrconst.syns_attrqualifier
 msgid "Qualifier"
@@ -408,6 +448,10 @@ msgstr "Eckige Klammer"
 #: syneditstrconst.syns_attrstring
 msgid "String"
 msgstr "Zeichenkette"
+
+#: syneditstrconst.syns_attrstructmember
+msgid "Structure member"
+msgstr ""
 
 #: syneditstrconst.syns_attrsymbol
 msgid "Symbol"

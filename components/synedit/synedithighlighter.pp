@@ -386,6 +386,7 @@ type
     property KnownRanges[Index: Integer]: TSynHighlighterRangeList read GetKnownRanges;
     property KnownLines: TSynEditLinesList read FKnownLines;
     property CurrentLineText: string read FLineText;
+    procedure DoDefHighlightChanged; virtual;
   public
     procedure DefHighlightChange(Sender: TObject);
     property  AttributeChangeNeedScan: Boolean read FAttributeChangeNeedScan;
@@ -1502,6 +1503,7 @@ begin
   else begin
     fAttrChangeHooks.CallNotifyEvents(self);
     FAttributeChangeNeedScan := False;
+    DoDefHighlightChanged;
   end;
 end;
 
@@ -1767,6 +1769,11 @@ begin
     ContinueNextLine;
     NextToEol;
   end;
+end;
+
+procedure TSynCustomHighlighter.DoDefHighlightChanged;
+begin
+  //
 end;
 
 procedure TSynCustomHighlighter.ScanAllRanges;

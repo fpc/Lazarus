@@ -36,7 +36,7 @@ uses
   SynEdit, SynHighlighterPas, SynEditKeyCmds, SynEditHighlighterFoldBase,
   // IDE
   EditorOptions, LazarusIDEStrConsts, SourceMarks, KeyMapping, SynEditMarkupBracket, SynEditTypes,
-  editor_color_options, editor_general_options, editor_keymapping_options,
+  SynEditStrConst, editor_color_options, editor_general_options, editor_keymapping_options,
   editor_codefolding_options;
 
 type
@@ -46,10 +46,13 @@ type
     BracketCombo: TComboBox;
     BracketLabel: TLabel;
     BracketLink: TLabel;
+    CaseLabelLink: TLabel;
+    cbDeclaredValueAttrForNumString: TCheckBox;
     cbMarkup: TCheckBox;
     cbOutline: TCheckBox;
     cbMarkupWordBracket: TCheckBox;
     cbMarkupOutline: TCheckBox;
+    cbCaseLabelColorForOtherwise: TCheckBox;
     chkKWGroups: TCheckListBox;
     chkExtPasKeywords: TCheckBox;
     divKeyWordGroups: TDividerBevel;
@@ -57,6 +60,10 @@ type
     divKeywords: TDividerBevel;
     divMatchingBrackets: TDividerBevel;
     divWordGroup: TDividerBevel;
+    dropDeclaredTypeAttrMode: TComboBox;
+    dropDeclaredValueAttrMode: TComboBox;
+    lblDeclaredTypeAttrMode: TLabel;
+    lblDeclaredValueAttrMode: TLabel;
     MarkupCurrentWordKeys: TLabel;
     lbMarkupWarnNoColor: TLabel;
     LanguageComboBox: TComboBox;
@@ -78,6 +85,7 @@ type
     procedure BracketLinkClick(Sender: TObject);
     procedure BracketLinkMouseEnter(Sender: TObject);
     procedure BracketLinkMouseLeave(Sender: TObject);
+    procedure CaseLabelLinkClick(Sender: TObject);
     procedure cbMarkupChange(Sender: TObject);
     procedure cbMarkupOutlineChange(Sender: TObject);
     procedure cbMarkupWordBracketChange(Sender: TObject);
@@ -180,6 +188,16 @@ procedure TEditorMarkupOptionsFrame.BracketLinkMouseLeave(Sender: TObject);
 begin
   (Sender as TLabel).Font.Underline := False;
   (Sender as TLabel).Font.Color := clBlue;
+end;
+
+procedure TEditorMarkupOptionsFrame.CaseLabelLinkClick(Sender: TObject);
+var
+  col: TEditorColorOptionsFrame;
+begin
+  col := TEditorColorOptionsFrame(FDialog.FindEditor(TEditorColorOptionsFrame));
+  if col = nil then exit;
+  FDialog.OpenEditor(TEditorColorOptionsFrame);
+  col.SelectNamedColor(SYNS_XML_AttrCaseLabel);
 end;
 
 procedure TEditorMarkupOptionsFrame.cbMarkupChange(Sender: TObject);
@@ -498,12 +516,32 @@ begin
   BracketCombo.Items.Add(dlgHighlightRightOfCursor);
   BracketCombo.Items.Add(gldHighlightBothSidesOfCursor);
 
-  divKeywords.Caption := dlgPasExtKeywordsGroup;
+  divKeywords.Caption := dlgPasExtHighlightGroup;
   chkExtPasKeywords.Caption := dlgPasExtKeywords;
+
   lblPasStringKeywords.Caption := dlgPasStringKeywords;
   dropPasStringKeywords.Items.Add(dlgPasStringKeywordsOptDefault);
   dropPasStringKeywords.Items.Add(dlgPasStringKeywordsOptString);
+  cbCaseLabelColorForOtherwise.Caption := dlgPasCaseLabelForOtherwise;
+
+  CaseLabelLink.Caption := dlgColorLink;
   dropPasStringKeywords.Items.Add(dlgPasStringKeywordsOptNone);
+
+  lblDeclaredTypeAttrMode.Caption := dlgPasDeclaredTypeAttrMode;
+  dropDeclaredTypeAttrMode.Items.Clear;
+  dropDeclaredTypeAttrMode.Items.add(dlgPasDeclaredTypeAttrModeIdent);
+  dropDeclaredTypeAttrMode.Items.add(dlgPasDeclaredTypeAttrModeNames);
+  dropDeclaredTypeAttrMode.Items.add(dlgPasDeclaredTypeAttrModeKeywords);
+  dropDeclaredTypeAttrMode.Items.add(dlgPasDeclaredTypeAttrModeKeyAndSym);
+
+  lblDeclaredValueAttrMode.Caption := dlgPasDeclaredTypeValueMode;
+  dropDeclaredValueAttrMode.Items.Clear;
+  dropDeclaredValueAttrMode.Items.add(dlgPasDeclaredTypeAttrModeIdent);
+  dropDeclaredValueAttrMode.Items.add(dlgPasDeclaredTypeAttrModeNames);
+  dropDeclaredValueAttrMode.Items.add(dlgPasDeclaredTypeAttrModeKeywords);
+  dropDeclaredValueAttrMode.Items.add(dlgPasDeclaredTypeAttrModeKeyAndSym);
+
+  cbDeclaredValueAttrForNumString.Caption := dlgPasDeclaredTypeValueModeLiteral;
 
   LanguageLabel.Caption := dlgLang;
   divKeyWordGroups.Caption := dlgPasKeywordsMatches;
@@ -558,6 +596,10 @@ begin
 
     chkExtPasKeywords.Checked := PasExtendedKeywordsMode;
     dropPasStringKeywords.ItemIndex := ord(PasStringKeywordMode);
+    cbCaseLabelColorForOtherwise.Checked    := CaseLabelAttriMatchesElseOtherwise;
+    dropDeclaredTypeAttrMode.ItemIndex      := ord(DeclaredTypeAttributeMode);
+    dropDeclaredValueAttrMode.ItemIndex     := ord(DeclaredValueAttributeMode);
+    cbDeclaredValueAttrForNumString.Checked := DeclaredValueAttributeMachesStringNum;
 
     FUseMarkupWordBracket := UseMarkupWordBracket;
     FUseMarkupOutline := UseMarkupOutline;
@@ -591,6 +633,10 @@ begin
 
     PasExtendedKeywordsMode := chkExtPasKeywords.Checked;
     PasStringKeywordMode := TSynPasStringMode(dropPasStringKeywords.ItemIndex);
+    CaseLabelAttriMatchesElseOtherwise := cbCaseLabelColorForOtherwise.Checked;
+    DeclaredTypeAttributeMode          := TSynPasTypeAttributeMode(dropDeclaredTypeAttrMode.ItemIndex);
+    DeclaredValueAttributeMode         := TSynPasTypeAttributeMode(dropDeclaredValueAttrMode.ItemIndex);
+    DeclaredValueAttributeMachesStringNum := cbDeclaredValueAttrForNumString.Checked;
 
     UseMarkupWordBracket := FUseMarkupWordBracket;
     UseMarkupOutline := FUseMarkupOutline;

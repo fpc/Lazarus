@@ -1968,15 +1968,24 @@ resourcestring
   lisDebugHintAutoTypeCastClass = 'Automatic typecast for objects';
   dlgMarkupGroup = 'Highlight all occurrences of Word under Caret';
   dlgBracketMatchGroup = 'Matching bracket and quote pairs';
-  dlgPasExtKeywordsGroup = 'Extended Pascal Keyword Options';
+  dlgPasExtHighlightGroup = 'Extended Pascal Highlight Options';
   dlgPasKeywordsMatches = 'Matching Keywords';
   dlgPasKeywordsMarkup = 'Markup (on caret)';
   dlgPasKeywordsOutline = 'Outline';
   dlgMarkupWordBracket = 'Keyword brackets on caret (global)';
   dlgMarkupOutline = 'Outline (global)';
   dlgMarkupOutlineWarnNoColor = 'Warning: There are no colors configured for the selected language';
-  dlgPasExtKeywords = 'Highlight control statements as keywords';
-  dlgPasStringKeywords = 'Highlight "String" keyword(s)';
+  dlgPasExtKeywords = 'Highlight flow control statements (break, continue, exit) as keywords';
+  dlgPasCaseLabelForOtherwise = 'Color otherwise/else as case-label';
+  dlgPasDeclaredTypeAttrMode = 'Extend of type-highlight in declarations';
+  dlgPasDeclaredTypeValueMode = 'Extend of initial-value-highlight in declarations';
+  dlgPasDeclaredTypeValueModeLiteral = 'Include literals (Number, String) in initial-value-highlight in declarations';
+  dlgPasDeclaredTypeAttrModeIdent = 'Identifier only';
+  dlgPasDeclaredTypeAttrModeNames = 'Identifier and build-in types/values';
+  dlgPasDeclaredTypeAttrModeKeywords = 'Identifier, build-in and keywords';
+  dlgPasDeclaredTypeAttrModeKeyAndSym = 'All, including symbols';
+
+  dlgPasStringKeywords = 'Highlight "String" types as keyword';
   dlgPasStringKeywordsOptDefault = 'Default';
   dlgPasStringKeywordsOptString = 'Only "String"';
   dlgPasStringKeywordsOptNone = 'None';
@@ -6335,6 +6344,10 @@ resourcestring
   dlgOptDebugBackendEditDebuggerBackend = 'Edit debugger backend';
   dlgOptDebugBackendTheProjectOptionsHaveBeen = 'The project options have been set to use a '
     +'different debugger backend';
+  dlgSrcEdColorLabelInTheSourceAreOnlyCo = 'Label in the source are only colored if the colon ":"'
+    +' is placed immediately after the label.';
+  dlgSrcEdColorMemberColorIsAppliedToAny = '"Member" color is applied to any identifier behind a '
+    +'dot ".".';
 
 implementation
 

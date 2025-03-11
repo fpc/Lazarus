@@ -34,7 +34,7 @@ uses
   DividerBevel,
   // SynEdit
   SynEdit, SynEditMiscClasses, SynGutterCodeFolding, SynGutterLineNumber,
-  SynEditTypes, SynGutterChanges, SynEditMouseCmds, SynEditHighlighter,
+  SynEditTypes, SynGutterChanges, SynEditMouseCmds, SynEditHighlighter, SynEditStrConst,
   SynColorAttribEditor,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf, IDEUtils,
@@ -53,6 +53,7 @@ type
   { TEditorColorOptionsFrame }
 
   TEditorColorOptionsFrame = class(TAbstractIDEOptionsEditor)
+    lblColorInfo: TLabel;
     lbLocalGlobal: TLabel;
     PanelElementAttr: TPanel;
     rbLocalAttr: TRadioButton;
@@ -191,6 +192,7 @@ type
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    procedure SelectNamedColor(XmlName: string);
     procedure SelectAhaColor(aha: TAdditionalHilightAttribute);
     procedure UpdateCurrentScheme;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
@@ -868,10 +870,23 @@ procedure TEditorColorOptionsFrame.ShowCurAttribute;
 var
   CanGlobal: Boolean;
 begin
-  if (FCurHighlightElement = nil) then
+  if (FCurHighlightElement = nil) then begin
+    lblColorInfo.Visible := False;
     Exit;
+  end;
   DisableAlign;
   try
+    if FCurHighlightElement.StoredName = SYNS_XML_AttrGotoLabel then begin
+      lblColorInfo.Visible := True;
+      lblColorInfo.Caption := dlgSrcEdColorLabelInTheSourceAreOnlyCo;
+    end
+    else
+    if FCurHighlightElement.StoredName = SYNS_XML_AttrStructMember then begin
+      lblColorInfo.Visible := True;
+      lblColorInfo.Caption := dlgSrcEdColorMemberColorIsAppliedToAny;
+    end
+    else
+      lblColorInfo.Visible := False;
 
     CanGlobal := (FCurHighlightElement.GetSchemeGlobal <> nil) and
                             not FIsEditingDefaults;
@@ -1147,6 +1162,8 @@ begin
 end;
 
 procedure TEditorColorOptionsFrame.FillColorElementListBox;
+const
+  NAME_EXTENDED = '(Extended)';
 var
   i, AttriIdx: Integer;
   ParentName: String;
@@ -1159,8 +1176,10 @@ begin
   ColorElementTree.Items.Clear;
 
   // Create Groups
-  if not FIsEditingDefaults then
-    ColorElementTree.Items.Add(nil, FCurrentHighlighter.LanguageName + ' ')
+  if not FIsEditingDefaults then begin
+    ColorElementTree.Items.Add(nil, FCurrentHighlighter.LanguageName + ' ');
+    ColorElementTree.Items.Add(nil, FCurrentHighlighter.LanguageName + ' ' + NAME_EXTENDED).Visible := False;
+  end
   else
     ColorElementTree.Items.Add(nil, AdditionalHighlightGroupNames[agnDefault]);
   for j := low(TAhaGroupName) to high(TAhaGroupName) do
@@ -1188,6 +1207,10 @@ begin
             end
             else begin
               ParentName := FCurrentHighlighter.LanguageName;
+              if hafAlpha in Attr.Features then begin
+                ParentName := ParentName + ' ' + NAME_EXTENDED;
+                ParentNode := ColorElementTree.Items.FindTopLvlNode(ParentName);
+              end;
             end;
           end;
         else
@@ -1685,19 +1708,23 @@ begin
   end;
 end;
 
-procedure TEditorColorOptionsFrame.SelectAhaColor(aha: TAdditionalHilightAttribute);
+procedure TEditorColorOptionsFrame.SelectNamedColor(XmlName: string);
 var
   i: Integer;
 begin
   for i := 0 to ColorElementTree.Items.Count - 1 do begin
     if ColorElementTree.Items[i].Data = nil then continue;
-    if TColorSchemeAttribute(ColorElementTree.Items[i].Data).StoredName <>
-       GetEnumName(TypeInfo(TAdditionalHilightAttribute), ord(aha))
+    if TColorSchemeAttribute(ColorElementTree.Items[i].Data).StoredName <> XmlName
     then
       continue;
     ColorElementTree.Items[i].Selected := True;
     break;
   end;
+end;
+
+procedure TEditorColorOptionsFrame.SelectAhaColor(aha: TAdditionalHilightAttribute);
+begin
+  SelectNamedColor(GetEnumName(TypeInfo(TAdditionalHilightAttribute), ord(aha)));
 end;
 
 class function TEditorColorOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
