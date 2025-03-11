@@ -1491,6 +1491,7 @@ begin
   FIdentifierPosition:=NewIdentifierPosition;
   FNode:=nil;
   FTool:=nil;
+  Node:=nil;
   //debugln(['TFindRenameIdentifierDialog.SetIdentifier ',FIdentifierFilename,' ',dbgs(FIdentifierPosition)]);
   CurrentListBox.Items.Clear;
   s:=IdentifierFilename
