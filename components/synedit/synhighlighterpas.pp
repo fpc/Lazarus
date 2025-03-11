@@ -5103,7 +5103,7 @@ begin
         FTokenHashKey := 0;
         fProcTable[fLine[Run]];
 
-        if not (FIsInNextToEOL or IsScanning) then begin
+        //if not (FIsInNextToEOL or IsScanning) then begin
           CheckForAdditionalAttributes;
           if FTokenTypeDeclExtraAttrib <> FLastTokenTypeDeclExtraAttrib then begin
             FLastTokenTypeDeclExtraAttrib := FTokenTypeDeclExtraAttrib;
@@ -5112,7 +5112,7 @@ begin
           end
           else
             FLastTokenTypeDeclExtraAttrib := FTokenTypeDeclExtraAttrib;
-        end;
+        //end;
 
         if not (FTokenID in [tkSpace, tkComment, tkIDEDirective, tkDirective, tkNull]) then
           FTokenState := FNextTokenState;

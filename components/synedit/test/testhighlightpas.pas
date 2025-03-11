@@ -3349,6 +3349,8 @@ begin
        'function Foo: string;',
        'function Foo(var a:byte;b, b2:string;c:array of boolean): integer;',
        'function Foo(d:word=2-x;e:boolean=(1=y*2);f:qword=default(qword); g:MySet=[a1..a2]): integer;',
+       'procedure Foo(a:byte;',  //5
+       'b, b2:word);',
        ''
     ]);
 
@@ -3391,6 +3393,13 @@ begin
        TK_Equal, TK_Bracket, tkIdentifier+ProcVal, tkSymbol, tkIdentifier+ProcVal, TK_Bracket,
      TK_Bracket, TK_Colon, tkSpace,
      tkIdentifier+ProcRes, TK_Semi]);
+
+  CheckTokensForLine('6: procedure Foo(a:byte;',  5,
+    [tkKey, tkSpace, tkIdentifier+ProcName, TK_Bracket,
+     tkIdentifier+ProcParam, TK_Semi]);
+  CheckTokensForLine('7: b, b2:word);',  6,
+    [tkIdentifier+ProcParam, TK_Comma, tkSpace, tkIdentifier+ProcParam, TK_Colon,
+     tkIdentifier+ProcType, TK_Bracket, TK_Semi]);
 
 
   //PropName.Clear;
