@@ -5835,9 +5835,9 @@ begin
 end;
 
 function TCodeToolManager.FindLFMFileName(Code: TCodeBuffer): string;
-var LinkIndex: integer;
+var
+  LinkIndex: integer;
   CurCode: TCodeBuffer;
-  Ext: string;
 begin
   Result:='';
   {$IFDEF CTDEBUG}
@@ -5848,12 +5848,8 @@ begin
     LinkIndex:=-1;
     CurCode:=FCurCodeTool.FindNextIncludeInInitialization(LinkIndex);
     while (CurCode<>nil) do begin
-      if UpperCaseStr(ExtractFileExt(CurCode.Filename))='.LRS' then begin
-        Result:=CurCode.Filename;
-        Ext:=ExtractFileExt(Result);
-        Result:=copy(Result,1,length(Result)-length(Ext))+'.lfm';
-        exit;
-      end;
+      if UpperCaseStr(ExtractFileExt(CurCode.Filename))='.LRS' then
+        exit(ChangeFileExt(CurCode.Filename,'.lfm'));
       CurCode:=FCurCodeTool.FindNextIncludeInInitialization(LinkIndex);
     end;
   except
