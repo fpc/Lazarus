@@ -1053,12 +1053,9 @@ begin
       Info := GetWidgetInfo(Widget);
       if Info <> nil then
       begin
-        if (Info^.LCLObject is TCustomEdit) then
-        begin
-          gtk_editable_get_selection_bounds(PGtkEditable(Widget),@AStart, @AEnd);
-          Info^.CursorPos := Min(AStart, AEnd);
-          Info^.SelLength := Abs(AEnd - AStart);
-        end;
+        gtk_editable_get_selection_bounds(PGtkEditable(Widget),@AStart, @AEnd);
+        Info^.CursorPos := Min(AStart, AEnd);
+        Info^.SelLength := Abs(AEnd - AStart);
         // Copy text to X-clipboard (paste = middle mouse button).
         p := gtk_editable_get_chars(PGtkEditable(Widget), AStart, AEnd);
         if AStart <> AEnd then
