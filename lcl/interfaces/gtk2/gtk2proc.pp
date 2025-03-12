@@ -591,6 +591,9 @@ procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
 
 //--
 
+// markups
+function EscapeMarkups(const Str: String): String;
+
 // accelerators
 function Ampersands2Underscore(Src: PChar): PChar;
 function Ampersands2Underscore(const ASource: String): String;

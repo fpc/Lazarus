@@ -44,6 +44,7 @@ type
     class procedure SetShortCut(const AMenuItem: TMenuItem; const ShortCutK1, ShortCutK2: TShortCut); override;
     class procedure SetVisible(const AMenuItem: TMenuItem; const Visible: boolean); override;
     class function SetCheck(const AMenuItem: TMenuItem; const Checked: boolean): boolean; override;
+    class function SetDefault(const AMenuItem: TMenuItem; const ADefault: boolean): boolean; override;
     class function SetEnable(const AMenuItem: TMenuItem; const Enabled: boolean): boolean; override;
     class function SetRadioItem(const AMenuItem: TMenuItem; const {%H-}RadioItem: boolean): boolean; override;
     class function SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean; override;
@@ -450,6 +451,19 @@ begin
     AMenuItem.RecreateHandle;
     Result := True;
   end;
+end;
+
+class function TGtk2WSMenuItem.SetDefault(const AMenuItem: TMenuItem; const ADefault: boolean): boolean;
+var
+  MenuItemWidget: PGtkWidget;
+begin
+  Result := False;
+  if not WSCheckMenuItem(AMenuItem, 'SetDefault') then
+    Exit;
+  MenuItemWidget:={%H-}PGtkWidget(AMenuItem.Handle);
+  UpdateInnerMenuItem(AMenuItem,MenuItemWidget);
+//  gtk_widget_set_sensitive({%H-}PGtkWidget(AMenuItem.Handle), AMenuItem.Enabled);
+  Result := True;
 end;
 
 class function TGtk2WSMenuItem.SetEnable(const AMenuItem: TMenuItem;

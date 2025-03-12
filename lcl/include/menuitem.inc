@@ -1309,9 +1309,12 @@ begin
     // Only one item in a menu or submenu can be default.
     for i:=0 to FParent.Count-1 do
       if FParent[i].Default then
-        FParent[i].FDefault := False;
+        FParent[i].Default := False;
   FDefault:= AValue;
-  MenuChanged(True);
+  if HandleAllocated and not (csReading in ComponentState) and ((FParent <> nil) or (FMenu = nil)) then
+    TWSMenuItemClass(WidgetSetClass).SetDefault(Self, AValue);
+  MenuChanged(False);
+  OwnerFormDesignerModified(Self);
 end;
 
 {------------------------------------------------------------------------------

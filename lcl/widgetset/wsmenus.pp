@@ -59,6 +59,7 @@ type
     class procedure SetShortCut(const AMenuItem: TMenuItem; const ShortCutK1, ShortCutK2: TShortCut); virtual;
     class procedure SetVisible(const AMenuItem: TMenuItem; const Visible: boolean); virtual;
     class function SetCheck(const AMenuItem: TMenuItem; const Checked: boolean): boolean; virtual;
+    class function SetDefault(const AMenuItem: TMenuItem; const ADefault: boolean): boolean; virtual;
     class function SetEnable(const AMenuItem: TMenuItem; const Enabled: boolean): boolean; virtual;
     class function SetRadioItem(const AMenuItem: TMenuItem; const RadioItem: boolean): boolean; virtual;
     class function SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean; virtual;
@@ -153,6 +154,11 @@ begin
 end;
 
 class function TWSMenuItem.SetCheck(const AMenuItem: TMenuItem; const Checked: boolean): boolean;
+begin
+  Result := false;
+end;
+
+class function TWSMenuItem.SetDefault(const AMenuItem: TMenuItem; const ADefault: boolean): boolean;
 begin
   Result := false;
 end;

@@ -950,32 +950,24 @@ begin
   ConnectSignal(AGTKObject,'grab-notify',@gtk2GrabNotify, ALCLObject);
 end;
 
-procedure TGtk2WidgetSet.SetLabelCaption(const ALabel: PGtkLabel;
-  const ACaption: String);
-var
-  s: String;
-  i: Integer;
+function TGtk2WidgetSet.SetLabelCaption(const ALabel: PGtkLabel;
+  const ACaption: String): String;
 begin
-  s := '';
-  i := 1;
-  while i <=  Length(ACaption) do
-  begin
-    case ACaption[i] of
-      '_': s := s + '__';
-      '&':
-        if (i < Length(ACaption)) and (ACaption[i + 1] = '&') then
-        begin
-          s := s + '&';
-          inc(i);
-        end
-        else
-          s := s + '_';
-    else
-      s := s + ACaption[i];
-    end;
-    inc(i);
-  end;
-  gtk_label_set_text_with_mnemonic(ALabel, PChar(s));
+  Result := Ampersands2Underscore(ACaption);
+  gtk_label_set_text_with_mnemonic(ALabel, PChar(Result));
+end;
+
+function TGtk2WidgetSet.SetLabelCaptionMarkup(const ALabel: PGtkLabel;
+  const ACaption: String; AmpersandsEscape: Boolean; MarkupsEscape: Boolean): String;
+begin
+  Result := ACaption;
+  if AmpersandsEscape then
+    Result := Ampersands2Underscore(Result);
+  if MarkupsEscape then
+    Result := EscapeMarkups(Result);
+
+  gtk_label_set_use_markup(ALabel, True);
+  gtk_label_set_markup_with_mnemonic(ALabel, PChar(Result));
 end;
 
 {------------------------------------------------------------------------------
@@ -987,16 +979,16 @@ procedure TGtk2WidgetSet.SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
 var
   AControl: TWinControl;
   SelectionMode: TGtkSelectionMode;
-  Selection : PGtkTreeSelection;
+  Selection: PGtkTreeSelection;
 begin
   AControl:=TWinControl(Sender);
   if (AControl is TWinControl) and
     (AControl.fCompStyle in [csListBox, csCheckListBox]) then
   begin
     if MultiSelect then
-      SelectionMode:= GTK_SELECTION_MULTIPLE
+      SelectionMode := GTK_SELECTION_MULTIPLE
     else
-      SelectionMode:= GTK_SELECTION_SINGLE;
+      SelectionMode := GTK_SELECTION_SINGLE;
       
     Selection := gtk_tree_view_get_selection(GTK_TREE_VIEW(
        GetOrCreateWidgetInfo(Widget)^.CoreWidget));

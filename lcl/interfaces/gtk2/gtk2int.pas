@@ -302,7 +302,9 @@ type
     procedure _SetCallbackEx(const AMsg: LongInt; const AGTKObject: PGTKObject; const ALCLObject: TObject; Direct: Boolean);
     procedure SetCallbackEx(const AMsg: LongInt; const AGTKObject: PGTKObject; const ALCLObject: TObject; Direct: Boolean);
     procedure SetCommonCallbacks(const AGTKObject: PGTKObject; const ALCLObject: TObject);
-    procedure SetLabelCaption(const ALabel: PGtkLabel; const ACaption: String);
+    function SetLabelCaption(const ALabel: PGtkLabel; const ACaption: String): String;
+    function SetLabelCaptionMarkup(const ALabel: PGtkLabel; const ACaption: String;
+                                   AmpersandsEscape: Boolean=True; MarkupsEscape: Boolean=True): String;
     procedure SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
       MultiSelect, {%H-}ExtendedSelect: Boolean);
     function ForceLineBreaks(DC : hDC; Src: PChar; MaxWidthInPixels : Longint;
