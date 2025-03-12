@@ -120,7 +120,7 @@ msgid "Declaration block value"
 msgstr ""
 
 #: syneditstrconst.syns_attrdeclarationvarconstname
-msgid "Declaration block (Var,Conts) name"
+msgid "Declaration block (Var, Const) name"
 msgstr ""
 
 #: syneditstrconst.syns_attrdefaultpackage
