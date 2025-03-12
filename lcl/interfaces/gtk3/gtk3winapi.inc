@@ -4034,17 +4034,17 @@ var
       Adjustment^.lower := ATarget;
 
       ATarget := Adjustment^.upper;
-      SetGDouble(ATarget, ScrollInfo.nMax, HasChanged);
-      Adjustment^.upper := ATarget ;
+      SetGDouble(ATarget, ScrollInfo.nMax - ScrollInfo.nMin + 1, HasChanged);
+      Adjustment^.upper := ATarget;
 
       if (AControl is TGtk3ScrollableWin) and (wtContainer in AControl.WidgetType) then
       begin
         //hah
         if SbStyle = SB_VERT then
-          TGtk3ScrollableWin(AControl).GetContainerWidget^.set_size_request(TGtk3ScrollableWin(AControl).GetContainerWidget^.get_allocated_width, Round(ATarget) + 1)
+          TGtk3ScrollableWin(AControl).GetContainerWidget^.set_size_request(TGtk3ScrollableWin(AControl).GetContainerWidget^.get_allocated_width, Round(ATarget))
         else
         if SBStyle = SB_HORZ then
-          TGtk3ScrollableWin(AControl).GetContainerWidget^.set_size_request(Round(ATarget) + 1, TGtk3ScrollableWin(AControl).GetContainerWidget^.get_allocated_height);
+          TGtk3ScrollableWin(AControl).GetContainerWidget^.set_size_request(Round(ATarget), TGtk3ScrollableWin(AControl).GetContainerWidget^.get_allocated_height);
       end else
       if (AControl is TGtk3ScrollableWin) and (wtLayout in AControl.WidgetType) then
       begin
@@ -4082,7 +4082,7 @@ var
       if Adjustment^.upper > Adjustment^.lower then
       begin
         //ATarget := Min(Adjustment^.upper, (ScrollInfo.nPage * Round(Adjustment^.upper)) / ScrollInfo.nMax);
-        ATarget := Min(Max(ATarget, 0), Adjustment^.upper - Adjustment^.lower + 1);
+        ATarget := Min(Max(ATarget, 0), Adjustment^.upper - Adjustment^.lower);
         if ATarget > 0 then
         begin
           Adjustment^.page_size := ATarget;
@@ -4099,7 +4099,7 @@ var
       ATarget := Adjustment^.value;
       SetGDouble(ATarget, ScrollInfo.nPos, HasChanged);
       ATarget := Max(ATarget, Adjustment^.lower);
-      ATarget := Min(ATarget, Adjustment^.upper - Max(Adjustment^.page_size - 1, 0));
+      ATarget := Min(ATarget, Adjustment^.upper - Max(Adjustment^.page_size, 0));
       if Adjustment^.value <> ATarget then
         Adjustment^.value := ATarget;
     end;
