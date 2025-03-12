@@ -1981,8 +1981,8 @@ resourcestring
   dlgPasDeclaredTypeValueMode = 'Extend of initial-value-highlight in declarations';
   dlgPasDeclaredTypeValueModeLiteral = 'Include literals (Number, String) in initial-value-highlight in declarations';
   dlgPasDeclaredTypeAttrModeIdent = 'Identifier only';
-  dlgPasDeclaredTypeAttrModeNames = 'Identifier and built-in types/values';
-  dlgPasDeclaredTypeAttrModeKeywords = 'Identifier and built-in keywords';
+  dlgPasDeclaredTypeAttrModeNames = 'Identifier and built-in (types/values)';
+  dlgPasDeclaredTypeAttrModeKeywords = 'Identifier, built-in and keywords';
   dlgPasDeclaredTypeAttrModeKeyAndSym = 'All, including symbols';
 
   dlgPasStringKeywords = 'Highlight "String" types as keyword';
