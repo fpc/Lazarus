@@ -228,6 +228,12 @@ object ProjectGroupEditorForm: TProjectGroupEditorForm
       OnExecute = ATargetCompileFromHereExecute
       OnUpdate = ATargetCompileFromHereUpdate
     end
+    object ATargetCompileCleanFromHere: TAction
+      Category = 'TargetAction'
+      Caption = 'Compile clean from here'
+      OnExecute = ATargetCompileCleanFromHereExecute
+      OnUpdate = ATargetCompileCleanFromHereUpdate
+    end
     object ATargetProperties: TAction
       Category = 'TargetAction'
       Caption = 'Properties'
@@ -485,6 +491,9 @@ object ProjectGroupEditorForm: TProjectGroupEditorForm
     end
     object PMICompileFromHere: TMenuItem
       Action = ATargetCompileFromHere
+    end
+    object PMICompileCleanFromHere: TMenuItem
+      Action = ATargetCompileCleanFromHere
     end
     object PMIDelete: TMenuItem
       Action = AProjectGroupDelete

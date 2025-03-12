@@ -34,6 +34,7 @@ Resourcestring
   lisProjectGroups = 'Project Groups';
   lisTargetCompileClean = 'Compile clean';
   lisTargetCompileFromHere = 'Compile from here';
+  lisTargetCompileCleanFromHere = 'Compile clean from here';
   lisTargetInstall      = 'Install';
   lisTargetUnInstall    = 'Uninstall';
   lisTargetActivate     = 'Activate target';

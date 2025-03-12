@@ -305,6 +305,7 @@ var
   MnuCmdTargetCompile,
   MnuCmdTargetCompileClean,
   MnuCmdTargetCompileFromHere,
+  MnuCmdTargetCompileCleanFromHere,
   MnuCmdTargetInstall,
   MnuCmdTargetOpen,
   MnuCmdTargetRun,
@@ -1532,7 +1533,7 @@ begin
   IDEMacros.SubstituteMacros(WorkingDir);
 
   Params:=TStringList.Create;
-  if AAction=taCompileClean then
+  if AAction in [taCompileClean,taCompileCleanFromHere] then
     Params.Add('-B');
   if aBuildMode<>'' then
     Params.Add('--build-mode='+aBuildMode);
@@ -1875,13 +1876,14 @@ begin
        end;
      taCompile,
      taCompileClean,
-     taCompileFromHere:
+     taCompileFromHere,
+     taCompileCleanFromHere:
        begin
          if not CheckIDEIsReadyForBuild then exit;
          // save project
          if LazarusIDE.DoSaveProject([])<>mrOk then exit;
          R:= crCompile;
-         if (AAction=taCompileClean) then
+         if (AAction in [taCompileClean,taCompileCleanFromHere]) then
            R:= crBuild;
          if BuildModeCount>1 then begin
            i:=0;
@@ -1892,7 +1894,7 @@ begin
            while i<BuildModeCount do begin
              aMode:=BuildModes[i];
              inc(i);
-             debugln(['TIDECompileTarget.ProjectAction ',(aMode.Identifier<>StartBuildMode),' ',aMode.Identifier,' StartBuildMode=',StartBuildMode,' ',AAction=taCompileFromHere]);
+             debugln(['TIDECompileTarget.ProjectAction ',(aMode.Identifier<>StartBuildMode),' ',aMode.Identifier,' StartBuildMode=',StartBuildMode,' ',AAction in [taCompileFromHere,taCompileCleanFromHere]]);
              if (aMode.Identifier<>StartBuildMode) and (not aMode.Compile) then continue;
              // switch build mode
              aProject.ActiveBuildModeID:=aMode.Identifier;
@@ -1904,7 +1906,7 @@ begin
              // compile project in active buildmode
              if LazarusIDE.DoBuildProject(R,[])<>mrOk then
                exit;
-             if (StartBuildMode<>'') and (AAction<>taCompileFromHere) then
+             if (StartBuildMode<>'') and not (AAction in [taCompileFromHere,taCompileCleanFromHere]) then
                exit(arOK);
              StartBuildMode:='';
            end;
@@ -1914,8 +1916,8 @@ begin
              exit;
          end;
          Result:=arOK;
-         if AAction=taCompileFromHere then
-           Result:=PerformNextTarget(taCompileFromHere);
+         if AAction in [taCompileFromHere,taCompileCleanFromHere] then
+           Result:=PerformNextTarget(AAction);
        end;
      taRun :
        begin
@@ -1938,7 +1940,8 @@ begin
       end;
     taCompile,
     taCompileClean,
-    taCompileFromHere:
+    taCompileFromHere,
+    taCompileCleanFromHere:
       begin
         if not CheckIDEIsReadyForBuild then exit;
         // save files
@@ -1960,7 +1963,7 @@ begin
               Result:=CompileUsingLazBuild(AAction,aMode.Identifier);
               if Result<>arOK then exit;
 
-              if (StartBuildMode<>'') and (AAction<>taCompileFromHere) then
+              if (StartBuildMode<>'') and not (AAction in [taCompileFromHere,taCompileCleanFromHere]) then
                 exit(arOK);
               StartBuildMode:='';
             end;
@@ -1974,8 +1977,8 @@ begin
           LazarusIDE.ToolStatus:=itNone;
         end;
         Result:=arOK;
-        if AAction=taCompileFromHere then
-          Result:=PerformNextTarget(taCompileFromHere);
+        if AAction in [taCompileFromHere,taCompileCleanFromHere] then
+          Result:=PerformNextTarget(AAction);
       end;
     taRun:
       begin
@@ -2004,14 +2007,15 @@ begin
     end;
   taCompile,
   taCompileClean,
-  taCompileFromHere:
+  taCompileFromHere,
+  taCompileCleanFromHere:
     begin
       if not CheckIDEIsReadyForBuild then exit;
       // compile independent of active project => use lazbuild
       Result:=CompileUsingLazBuild(AAction);
       if Result<>arOK then exit;
-      if AAction=taCompileFromHere then
-        Result:=PerformNextTarget(taCompileFromHere);
+      if AAction in [taCompileFromHere,taCompileCleanFromHere] then
+        Result:=PerformNextTarget(AAction);
     end;
   taInstall: ;  // ToDo install
   taUninstall: ; // ToDo uninstall
@@ -2045,15 +2049,21 @@ begin
     finally
       ActiveChanged(Nil);
     end;
-  taCompileFromHere:
+  taCompileFromHere,
+  taCompileCleanFromHere:
     begin
+      if AAction = taCompileCleanFromHere then begin
+        if ProjectGroupAction(taCompileClean)<>arOK then
+          exit;
+      end
+      else
       if ProjectGroupAction(taCompile)<>arOK then
         exit;
       Result:=arOK;
       aTarget:=TIDECompileTarget(GetNext(true));
       ActiveChanged(aTarget);
       if aTarget=nil then exit;
-      Result:=aTarget.PerformAction(taCompileFromHere);
+      Result:=aTarget.PerformAction(AAction);
     end;
   end;
 end;
@@ -2074,14 +2084,15 @@ begin
     end;
   taCompile,
   taCompileClean,
-  taCompileFromHere:
+  taCompileFromHere,
+  taCompileCleanFromHere:
     begin
       if not CheckIDEIsReadyForBuild then exit;
       if LazarusIDE.DoBuildFile(false,Filename)<>mrOK then
         exit;
       Result:=arOK;
-      if AAction=taCompileFromHere then
-        Result:=PerformNextTarget(taCompileFromHere);
+      if AAction in [taCompileFromHere,taCompileCleanFromHere] then
+        Result:=PerformNextTarget(AAction);
     end;
   taRun:
     begin
@@ -2103,10 +2114,11 @@ begin
   taSettings: ;
   taCompile,
   taCompileClean,
-  taCompileFromHere:
+  taCompileFromHere,
+  taCompileCleanFromHere:
     begin
-      if AAction=taCompileFromHere then
-        Result:=PerformNextTarget(taCompileFromHere);
+      if AAction in [taCompileFromHere,taCompileCleanFromHere] then
+        Result:=PerformNextTarget(AAction);
     end;
   taRun: ;
   end;

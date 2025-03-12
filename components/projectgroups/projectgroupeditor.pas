@@ -61,6 +61,7 @@ type
     AProjectGroupUndo: TAction;
     AProjectGroupReload: TAction;
     ATargetCompileFromHere: TAction;
+    ATargetCompileCleanFromHere: TAction;
     ATargetCopyFilename: TAction;
     AProjectGroupAddExisting: TAction;
     ATargetCompile: TAction;
@@ -87,6 +88,7 @@ type
     PMIRedo: TMenuItem;
     PMIUndo: TMenuItem;
     PMICompileFromHere: TMenuItem;
+    PMICompileCleanFromHere: TMenuItem;
     PMIRunMenuItem: TMenuItem;
     PMICopyFilenameMenuItem: TMenuItem;
     PMIOpen: TMenuItem;
@@ -146,6 +148,8 @@ type
     procedure ATargetCompileExecute(Sender: TObject);
     procedure ATargetCompileFromHereExecute(Sender: TObject);
     procedure ATargetCompileFromHereUpdate(Sender: TObject);
+    procedure ATargetCompileCleanFromHereExecute(Sender: TObject);
+    procedure ATargetCompileCleanFromHereUpdate(Sender: TObject);
     procedure ATargetCompileUpdate(Sender: TObject);
     procedure ATargetCopyFilenameExecute(Sender: TObject);
     procedure ATargetCopyFilenameUpdate(Sender: TObject);
@@ -447,6 +451,7 @@ begin
   ConfigAction(ATargetOpen,'',lisTargetOpenCaption,lisTargetOpenHint,Nil);
   ConfigAction(ATargetCopyFilename,'',lisTargetCopyFilename,'',Nil);
   ConfigAction(ATargetCompileFromHere,'',lisTargetCompileFromHere,'',Nil);
+  ConfigAction(ATargetCompileCleanFromHere,'',lisTargetCompileCleanFromHere,'',Nil);
   ConfigAction(AProjectGroupReload,'laz_refresh',lisProjectGroupReload,'',Nil);
   ConfigAction(AProjectGroupUndo, 'menu_undo', lisUndo, '', nil);
   ConfigAction(AProjectGroupRedo, 'menu_redo', lisRedo, '', nil);
@@ -616,6 +621,7 @@ begin
   SetItem(MnuCmdTargetCompile,@ATargetCompileExecute);
   SetItem(MnuCmdTargetCompileClean,@ATargetCompileCleanExecute);
   SetItem(MnuCmdTargetCompileFromHere,@ATargetCompileFromHereExecute);
+  SetItem(MnuCmdTargetCompileCleanFromHere,@ATargetCompileCleanFromHereExecute);
   SetItem(MnuCmdTargetInstall,@ATargetInstallExecute);
   SetItem(MnuCmdTargetUninstall,@ATargetUnInstallExecute);
   SetItem(MnuCmdTargetLater,@ATargetLaterExecute);
@@ -1031,7 +1037,7 @@ begin
       case ND.NodeType of
       ntBuildMode:
         Result:=(not aTarget.Missing)
-          and (ATargetAction in [taCompile,taCompileClean,taCompileFromHere,taRun]);
+          and (ATargetAction in [taCompile,taCompileClean,taCompileFromHere,taCompileCleanFromHere,taRun]);
       end;
     end;
   end;
@@ -1125,6 +1131,17 @@ end;
 procedure TProjectGroupEditorForm.ATargetCompileFromHereUpdate(Sender: TObject);
 begin
   AllowPerform(taCompileFromHere,Sender as TAction);
+  UpdateIDEMenuCommandFromAction(Sender,MnuCmdTargetCompile);
+end;
+
+procedure TProjectGroupEditorForm.ATargetCompileCleanFromHereExecute(Sender: TObject);
+begin
+  Perform(taCompileCleanFromHere);
+end;
+
+procedure TProjectGroupEditorForm.ATargetCompileCleanFromHereUpdate(Sender: TObject);
+begin
+  AllowPerform(taCompileCleanFromHere,Sender as TAction);
   UpdateIDEMenuCommandFromAction(Sender,MnuCmdTargetCompile);
 end;
 

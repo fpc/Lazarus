@@ -47,6 +47,7 @@ begin
   RegisterMenuCmd(MnuCmdTargetCompile,MnuSection,'TargetCompile',lisTargetCompile);
   RegisterMenuCmd(MnuCmdTargetCompileClean,MnuSection,'TargetCompileClean',lisTargetCompileClean);
   RegisterMenuCmd(MnuCmdTargetCompileFromHere,MnuSection,'TargetCompileFromHere',lisTargetCompileFromHere);
+  RegisterMenuCmd(MnuCmdTargetCompileCleanFromHere,MnuSection,'TargetCompileCleanFromHere',lisTargetCompileCleanFromHere);
   // ToDo: clean ... -> clean up dialog
   // ToDo: set build mode of all projects
 

@@ -32,6 +32,7 @@ Type
     taCompile,
     taCompileClean,
     taCompileFromHere,
+    taCompileCleanFromHere,
     taRun,
     taInstall,
     taUninstall);
@@ -249,11 +250,11 @@ var
 const
   PGTargetActions: array[TPGTargetType] of TPGTargetActions = (
     [], // ttUnknown
-    [taOpen,taSettings,taCompile,taCompileClean,taCompileFromHere,taRun], // ttProject
-    [taOpen,taSettings,taCompile,taCompileClean,taCompileFromHere,taInstall,taUninstall], // ttPackage
-    [taOpen,taCompile,taCompileClean,taCompileFromHere], // ttProjectGroup
+    [taOpen,taSettings,taCompile,taCompileClean,taCompileFromHere,taCompileCleanFromHere,taRun], // ttProject
+    [taOpen,taSettings,taCompile,taCompileClean,taCompileFromHere,taCompileCleanFromHere,taInstall,taUninstall], // ttPackage
+    [taOpen,taCompile,taCompileClean,taCompileFromHere,taCompileCleanFromHere], // ttProjectGroup
     [taOpen,taSettings,taCompile,taCompileFromHere,taRun], // ttPascalFile
-    [taOpen,taCompile,taCompileClean,taCompileFromHere,taRun] // ttExternalTool
+    [taOpen,taCompile,taCompileClean,taCompileFromHere,taCompileCleanFromHere,taRun] // ttExternalTool
   );
 
 function TargetTypeFromExtension(AExt: String): TPGTargetType;
