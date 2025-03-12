@@ -133,7 +133,7 @@ resourcestring
   SYNS_AttrProcedureHeaderResult   = 'Procedure header result';
   SYNS_AttrProcedureHeaderType     = 'Procedure header type';
   SYNS_AttrProcedureHeaderValue    = 'Procedure header value';
-  SYNS_AttrDeclarationVarConstName = 'Declaration block (Var,Conts) name';
+  SYNS_AttrDeclarationVarConstName = 'Declaration block (Var, Const) name';
   SYNS_AttrDeclarationTypeName     = 'Declaration block (Type) name';
   SYNS_AttrDeclarationType         = 'Declaration block type';
   SYNS_AttrDeclarationValue        = 'Declaration block value';
