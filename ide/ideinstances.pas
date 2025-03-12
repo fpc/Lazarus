@@ -189,7 +189,7 @@ begin
   if FServerPrefix = '' then
   begin
     // Calculate the user specific instance prefix only once.
-    FServerPrefix := GetEnvironmentVariable('USER');    // current user
+    FServerPrefix := GetEnvironmentVariable({$IFDEF MSWINDOWS}'USERNAME'{$ELSE}'USER'{$ENDIF});
     // encode to cover illegal chars ('-' etc)
     FServerPrefix := IntToStr( crc32(0, pbyte(FServerPrefix), Length(FServerPrefix)) )
                      + '_LazarusMain';
