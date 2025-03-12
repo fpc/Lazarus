@@ -425,6 +425,10 @@ msgctxt "projectgroupstrconst.listargetcompilecleancaption"
 msgid "Compile clean"
 msgstr "Temizle derle"
 
+#: projectgroupstrconst.listargetcompilecleanfromhere
+msgid "Compile clean from here"
+msgstr ""
+
 #: projectgroupstrconst.listargetcompilecleanhint
 msgid "Compile selected target clean"
 msgstr "Seçilen hedefi temizle derle"

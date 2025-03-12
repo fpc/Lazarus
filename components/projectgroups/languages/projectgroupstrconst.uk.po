@@ -427,6 +427,10 @@ msgctxt "projectgroupstrconst.listargetcompilecleancaption"
 msgid "Compile clean"
 msgstr "Компілювати з очищенням"
 
+#: projectgroupstrconst.listargetcompilecleanfromhere
+msgid "Compile clean from here"
+msgstr ""
+
 #: projectgroupstrconst.listargetcompilecleanhint
 msgid "Compile selected target clean"
 msgstr "Компілювати вибрану ціль з очищенням"

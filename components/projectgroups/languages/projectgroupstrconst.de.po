@@ -438,6 +438,10 @@ msgctxt "projectgroupstrconst.listargetcompilecleancaption"
 msgid "Compile clean"
 msgstr "Sauber rekompilieren"
 
+#: projectgroupstrconst.listargetcompilecleanfromhere
+msgid "Compile clean from here"
+msgstr ""
+
 #: projectgroupstrconst.listargetcompilecleanhint
 msgid "Compile selected target clean"
 msgstr "Gewähltes Ziel sauber rekompilieren"

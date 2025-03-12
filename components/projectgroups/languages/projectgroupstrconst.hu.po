@@ -425,6 +425,10 @@ msgctxt "projectgroupstrconst.listargetcompilecleancaption"
 msgid "Compile clean"
 msgstr "Tiszta fordítás"
 
+#: projectgroupstrconst.listargetcompilecleanfromhere
+msgid "Compile clean from here"
+msgstr ""
+
 #: projectgroupstrconst.listargetcompilecleanhint
 msgid "Compile selected target clean"
 msgstr "A kiválasztott cél fordítása tisztítással"

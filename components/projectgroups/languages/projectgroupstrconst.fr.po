@@ -424,6 +424,10 @@ msgctxt "projectgroupstrconst.listargetcompilecleancaption"
 msgid "Compile clean"
 msgstr "Compiler proprement"
 
+#: projectgroupstrconst.listargetcompilecleanfromhere
+msgid "Compile clean from here"
+msgstr ""
+
 #: projectgroupstrconst.listargetcompilecleanhint
 msgid "Compile selected target clean"
 msgstr "Compiler proprement la cible choisie"
