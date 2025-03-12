@@ -3516,17 +3516,51 @@ msgstr ""
 msgid "Hints for component palette"
 msgstr "组件面板提示"
 
+#: lazarusidestrconsts.dlgpascaselabelforotherwise
+msgid "Color otherwise/else as case-label"
+msgstr ""
+
+#: lazarusidestrconsts.dlgpasdeclaredtypeattrmode
+msgid "Extend of type-highlight in declarations"
+msgstr ""
+
+#: lazarusidestrconsts.dlgpasdeclaredtypeattrmodeident
+msgid "Identifier only"
+msgstr ""
+
+#: lazarusidestrconsts.dlgpasdeclaredtypeattrmodekeyandsym
+msgid "All, including symbols"
+msgstr ""
+
+#: lazarusidestrconsts.dlgpasdeclaredtypeattrmodekeywords
+msgid "Identifier and built-in keywords"
+msgstr ""
+
+#: lazarusidestrconsts.dlgpasdeclaredtypeattrmodenames
+msgid "Identifier and built-in types/values"
+msgstr ""
+
+#: lazarusidestrconsts.dlgpasdeclaredtypevaluemode
+msgid "Extend of initial-value-highlight in declarations"
+msgstr ""
+
+#: lazarusidestrconsts.dlgpasdeclaredtypevaluemodeliteral
+msgid "Include literals (Number, String) in initial-value-highlight in declarations"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpasext
 msgid "Default Pascal extension"
 msgstr "默认Pascal扩展名"
 
-#: lazarusidestrconsts.dlgpasextkeywords
-msgid "Highlight control statements as keywords"
-msgstr "高亮控件语句作为关键字"
+#: lazarusidestrconsts.dlgpasexthighlightgroup
+msgid "Extended Pascal Highlight Options"
+msgstr ""
 
-#: lazarusidestrconsts.dlgpasextkeywordsgroup
-msgid "Extended Pascal Keyword Options"
-msgstr "展开(Extended)Pascal关键字选项"
+#: lazarusidestrconsts.dlgpasextkeywords
+#, fuzzy
+#| msgid "Highlight control statements as keywords"
+msgid "Highlight flow control statements (break, continue, exit) as keywords"
+msgstr "高亮控件语句作为关键字"
 
 #: lazarusidestrconsts.dlgpaskeywordsmarkup
 msgid "Markup (on caret)"
@@ -3545,7 +3579,9 @@ msgid "Pass options to linker with \"-k\", delimiter is space"
 msgstr "带有\"-k\"传递选项到链接器,分隔符(delimiter)是空格"
 
 #: lazarusidestrconsts.dlgpasstringkeywords
-msgid "Highlight \"String\" keyword(s)"
+#, fuzzy
+#| msgid "Highlight \"String\" keyword(s)"
+msgid "Highlight \"String\" types as keyword"
 msgstr "高亮\"String\"关键字"
 
 #: lazarusidestrconsts.dlgpasstringkeywordsoptdefault
@@ -4219,6 +4255,14 @@ msgstr "空格"
 #: lazarusidestrconsts.dlgspbhints
 msgid "Hints for main speed buttons (open, save, ...)"
 msgstr "主快速按钮提示 (打开, 保存, ...)"
+
+#: lazarusidestrconsts.dlgsrcedcolorlabelinthesourceareonlyco
+msgid "Label in the source are only colored if the colon \":\" is placed immediately after the label."
+msgstr ""
+
+#: lazarusidestrconsts.dlgsrcedcolormembercolorisappliedtoany
+msgid "\"Member\" color is applied to any identifier behind a dot \".\"."
+msgstr ""
 
 #: lazarusidestrconsts.dlgsrorigin
 msgid "Origin"
