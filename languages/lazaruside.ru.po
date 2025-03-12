@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-03-12 17:46+0300\n"
+"PO-Revision-Date: 2025-03-12 18:27+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -3529,12 +3529,12 @@ msgid "All, including symbols"
 msgstr "Всё, включая символы"
 
 #: lazarusidestrconsts.dlgpasdeclaredtypeattrmodekeywords
-msgid "Identifier and built-in keywords"
-msgstr "Идентификатор и встроенные ключевые слова"
+msgid "Identifier, built-in and keywords"
+msgstr "Идентификатор, встроенные и ключевые слова"
 
 #: lazarusidestrconsts.dlgpasdeclaredtypeattrmodenames
-msgid "Identifier and built-in types/values"
-msgstr "Идентификатор и встроенные типы/значения"
+msgid "Identifier and built-in (types/values)"
+msgstr "Идентификатор и встроенные (типы/значения)"
 
 #: lazarusidestrconsts.dlgpasdeclaredtypevaluemode
 msgid "Extend of initial-value-highlight in declarations"

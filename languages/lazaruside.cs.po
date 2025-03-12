@@ -3596,11 +3596,11 @@ msgid "All, including symbols"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpasdeclaredtypeattrmodekeywords
-msgid "Identifier and built-in keywords"
+msgid "Identifier, built-in and keywords"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpasdeclaredtypeattrmodenames
-msgid "Identifier and built-in types/values"
+msgid "Identifier and built-in (types/values)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpasdeclaredtypevaluemode
