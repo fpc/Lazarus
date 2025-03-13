@@ -7752,7 +7752,7 @@ end;
 
 procedure TSourceNotebook.UpdateHighlightMenuItems(SrcEdit: TSourceEditor);
 var
-  i: Integer;
+  i, j: Integer;
   CurName: String;
   CurCaption: String;
   IDEMenuItem: TIDEMenuItem;
@@ -7762,9 +7762,11 @@ begin
     SrcEdit.UpdateDefaultDefaultSyntaxHighlighterId(True);
 
   SrcEditSubMenuHighlighter.ChildrenAsSubMenu:=true;
+  j := -1;
   for i := -1 to EditorOpts.HighlighterList.Count - 1 do begin
     if (i >= 0) and (EditorOpts.HighlighterList.SharedSynInstances[i] is TNonSrcIDEHighlighter) then
       continue;
+    inc(j);
     CurName:='Highlighter'+IntToStr(i);
     if i = IdeHighlighterNotSpecifiedId then begin
       if SrcEdit.FDefaultSyntaxHighlighterId <> IdeHighlighterNotSpecifiedId then
@@ -7775,12 +7777,12 @@ begin
     else
       CurCaption:= EditorOpts.HighlighterList.Captions[i];
 
-    if SrcEditSubMenuHighlighter.Count=i+1 then begin
+    if SrcEditSubMenuHighlighter.Count<=j then begin
       // add new item
       IDEMenuItem:=RegisterIDEMenuCommand(SrcEditSubMenuHighlighter,
                              CurName,CurCaption,@HighlighterClicked);
     end else begin
-      IDEMenuItem:=SrcEditSubMenuHighlighter[i+1];
+      IDEMenuItem:=SrcEditSubMenuHighlighter[j];
       IDEMenuItem.OnClick:=@HighlighterClicked;
     end;
     IDEMenuItem.Caption:=CurCaption;
