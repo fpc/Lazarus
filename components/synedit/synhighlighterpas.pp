@@ -117,6 +117,8 @@ type
   // Except, will be kept for: tkSpace, tkComment, tkIDEDirective, tkDirective, tkNull  // maybe in future line break
   TTokenState = (
     tsNone,
+    tsAfterVarConstType,  // Immediately after
+                          // Also sometime after ";" (in declarations) to prevent a type of name public/export/external to be highlighted
     tsAtProcName,         // procedure ___
                           // unit ____    // used for "deprecated" detection / check in tsAfterProcName
                           //    >>> after a procedure/function/... keyword, when the name is expected (not for types)
@@ -1824,7 +1826,7 @@ begin
   else
   if (FTokenState = tsAfterExternal) and
      (PasCodeFoldRange.BracketNestLevel = 0) and
-     (fRange * [rsAfterSemiColon, rsAfterEqualOrColon, rsAfterEqual] = []) and
+     (fRange * [rsAfterEqualOrColon, rsAfterEqual] = []) and
      KeyComp('name') // procedure foo; public name 'abc';
   then
   begin
@@ -1972,7 +1974,7 @@ begin
         StartPascalCodeFoldBlock(cfbtVarBlock);
       fRange := fRange + [rsAfterSemiColon];
       FOldRange := FOldRange - [rsAfterSemiColon];
-      FNextTokenState := tsAfterExternal;  // prevent a variable of name public/export/external to be highlighted
+      FNextTokenState := tsAfterVarConstType;
     end;
     Result := tkKey;
   end
@@ -2021,7 +2023,7 @@ begin
          (TopPascalCodeFoldBlockType() in [cfbtConstBlock, cfbtLocalConstBlock])
        )
        or
-       ( not(FTokenState in [tsAfterExternal, tsAfterCvar]) and
+       ( not(FTokenState in [tsAfterExternal, tsAfterVarConstType, tsAfterCvar]) and
          (fRange * [rsAfterSemiColon, rsInProcHeader, rsWasInProcHeader] = [rsAfterSemiColon]) and
          (TopPascalCodeFoldBlockType() in [cfbtVarBlock, cfbtLocalVarBlock])
        )
@@ -2253,7 +2255,7 @@ begin
     if (PasCodeFoldRange.BracketNestLevel = 0) and
        ( (FTokenState in [tsAfterTypedConst, tsAfterCvar])
          or
-         ( (FTokenState <> tsAfterExternal) and
+         ( (not (FTokenState in [tsAfterExternal, tsAfterVarConstType])) and
            ( ( (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader] = [rsWasInProcHeader]) and
                (tfb in ProcModifierAllowed - [cfbtClass, cfbtClassSection, cfbtRecord, cfbtClassConstBlock, cfbtClassTypeBlock])
              ) or
@@ -2374,7 +2376,7 @@ begin
         else StartPascalCodeFoldBlock(cfbtTypeBlock);
         fRange := fRange + [rsAfterSemiColon];
         FOldRange := FOldRange - [rsAfterSemiColon];
-        FNextTokenState := tsAfterExternal;  // prevent a type of name public/export/external to be highlighted
+        FNextTokenState := tsAfterVarConstType;
       end;
     end;
     Result := tkKey;
@@ -2457,7 +2459,7 @@ begin
 
       fRange := fRange + [rsAfterSemiColon];
       FOldRange := FOldRange - [rsAfterSemiColon];
-      FNextTokenState := tsAfterExternal;  // prevent a variable of name public/export/external to be highlighted
+      FNextTokenState := tsAfterVarConstType;
     end;
     Result := tkKey;
   end
@@ -2892,7 +2894,7 @@ var
 begin
   tfb := TopPascalCodeFoldBlockType;
   if (PasCodeFoldRange.BracketNestLevel in [0, 1]) and
-     (FTokenState <> tsAfterExternal) and
+     (not(FTokenState in [tsAfterVarConstType, tsAfterExternal])) and
      ( ( (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader] = [rsWasInProcHeader]) and
          (tfb in ProcModifierAllowed)
        ) or
@@ -2923,7 +2925,7 @@ var
 begin
   tfb := TopPascalCodeFoldBlockType;
   if (PasCodeFoldRange.BracketNestLevel = 0) and
-     (FTokenState <> tsAfterExternal) and
+     (not(FTokenState in [tsAfterVarConstType, tsAfterExternal])) and
      ( ( (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader] = [rsWasInProcHeader]) and
          (tfb in ProcModifierAllowed)
        ) or
@@ -4677,8 +4679,11 @@ begin
     fRange := fRange - [rsProperty, rsInProcHeader];
   end;
 
-  if FTokenState in [tsAfterExternal, tsAfterCvar] then
-    FNextTokenState := FTokenState
+  if FTokenState = tsAfterCvar then
+    FNextTokenState := tsAfterCvar
+  else
+  if FTokenState = tsAfterExternal then
+    FNextTokenState := tsAfterVarConstType
   else
   if (rsInTypedConst in fRange) and (PasCodeFoldRange.BracketNestLevel = 0) then
     FNextTokenState := tsAfterTypedConst;
@@ -4949,7 +4954,7 @@ begin
       if (reaStructMemeber in FRequiredStates) and (FTokenID = tkIdentifier) then
         FTokenExtraAttribs := FTokenExtraAttribs + [eaStructMemeber];
       end;
-    tsNone, tsAfterTypedConst, tsAfterEqualThenType, tsAfterExternal: begin
+    tsNone, tsAfterTypedConst, tsAfterEqualThenType, tsAfterVarConstType: begin
         // procedure param-list / result
         tfb := TopPascalCodeFoldBlockType;
         if (FTokenState = tsNone) and (rsInProcHeader in fRange) and
