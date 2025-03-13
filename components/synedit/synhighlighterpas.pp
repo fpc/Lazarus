@@ -4413,6 +4413,7 @@ begin
     tkUnknown: Result := fSymbolAttri;
   else
     Result := nil;
+    exit; // can't merge
   end;
 
   if FTokenIsCaseLabel and (tid in [tkIdentifier, tkKey, tkNumber, tkString])
