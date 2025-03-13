@@ -7683,27 +7683,29 @@ end;
 
 procedure TSourceNotebook.UpdateHighlightMenuItems(SrcEdit: TSourceEditor);
 var
-  i: Integer;
+  i, j: Integer;
   CurName: String;
   CurCaption: String;
   IDEMenuItem: TIDEMenuItem;
 begin
   SrcEditSubMenuHighlighter.ChildrenAsSubMenu:=true;
+  j := -1;
   for i := 0 to EditorOpts.HighlighterList.Count - 1 do begin
     if EditorOpts.HighlighterList.SharedSynInstances[i] is TNonSrcIDEHighlighter then
       continue;
+    inc(j);
     CurName:='Highlighter'+IntToStr(i);
     CurCaption:= EditorOpts.HighlighterList.Captions[i];
-    if SrcEditSubMenuHighlighter.Count=i then begin
+    if SrcEditSubMenuHighlighter.Count<=j then begin
       // add new item
       IDEMenuItem:=RegisterIDEMenuCommand(SrcEditSubMenuHighlighter,
                              CurName,CurCaption,@HighlighterClicked);
     end else begin
-      IDEMenuItem:=SrcEditSubMenuHighlighter[i];
+      IDEMenuItem:=SrcEditSubMenuHighlighter[j];
       IDEMenuItem.Caption:=CurCaption;
-      IDEMenuItem.Tag:=i;
       IDEMenuItem.OnClick:=@HighlighterClicked;
     end;
+    IDEMenuItem.Tag:=i;
     if IDEMenuItem is TIDEMenuCommand then
       TIDEMenuCommand(IDEMenuItem).Checked:=(SrcEdit<>nil)
                                           and (SrcEdit.FSyntaxHighlighterId=i);
