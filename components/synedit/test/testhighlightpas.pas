@@ -84,6 +84,7 @@ type
     procedure TestModifierAttributesForProcedure;
     procedure TestModifierAttributesForProperty;
     procedure TestModifierAttributesForVarConstType;
+    procedure TestModifierAttributesWithAnonProcedure;
     procedure TestModifierAttributesForLabel;
     procedure TestCaretAsString;
     procedure TestFoldNodeInfo;
@@ -3674,6 +3675,144 @@ begin
        tkSpace, tkModifier, TK_Semi]);
 
   end;
+end;
+
+procedure TTestHighlighterPas.TestModifierAttributesWithAnonProcedure;
+var
+  DeclVarName, DeclTypeName, DeclType, DeclVal, ProcName,
+    ProcParam, ProcType, ProcVal, ProcRes: TSynHighlighterAttributesModifier;
+  x: String;
+begin
+  x := 'end; procedure test; begin'; // in case the anon function closed the named function
+  FKeepAllModifierAttribs := True;
+  ReCreateEdit;
+  EnableFolds([cfbtBeginEnd..cfbtNone]);
+  SetLines
+    (['program foo;{$mode objfpc}{$modeswitch anonymousfunctions}{$modeswitch functionreferences}',
+      'type t= reference to procedure;',
+      'var a: t; procedure test;',
+      'begin',
+        'a :=(',       // 4
+          'procedure',
+          'var',
+          '  n: word;',  // 7
+          'begin',
+          '  n := 1;',
+          'end',
+        ');',
+        x+'',
+        'a :=',      // 13
+          'procedure',
+          'var',
+          '  n: word;',  // 16
+          'begin',
+          '  n := 1;',
+          'end;',
+          '',
+        x+  '',
+        'a :=(',       // 22
+          'procedure(var t:byte; var t2:byte)',
+          'var',
+          '  n: word;',  // 25
+          'begin',
+          '  n := 1;',
+          'end',
+        ');',
+        '',
+        x+'',
+        'a :=',      // 32
+          'procedure(var t:byte; var t2:byte)',
+          'var',
+          '  n: word;',  // 35
+          'begin',
+          '  n := 1;',
+          'end;',
+          '',
+          '',
+        x+  '',
+        'a :=(',       // 42
+          'procedure',
+          '(var t:byte; var t2:byte)',
+          'var',
+          '  n: word;',  // 46
+          'begin',
+          '  n := 1;',
+          'end',
+        ');',
+        x+'',
+        'a :=',      // 52
+          'procedure',
+          '(var t:byte; var t2:byte)',
+          'var',
+          '  n: word;',  // 56
+          'begin',
+          '  n := 1;',
+          'end;',
+          '',
+        x+  '',
+
+      'end.'
+    ]);
+
+  // NOT extra attribs...
+  AssertEquals('Len procedure',  5, PasHighLighter.FoldLineLength(5,0));
+  AssertEquals('Len var',        1, PasHighLighter.FoldLineLength(6,0));
+  AssertEquals('Len begin',      2, PasHighLighter.FoldLineLength(8,0));
+  AssertEquals('Len procedure',  5, PasHighLighter.FoldLineLength(14,0));
+  AssertEquals('Len var',        1, PasHighLighter.FoldLineLength(15,0));
+  AssertEquals('Len begin',      2, PasHighLighter.FoldLineLength(17,0));
+  AssertEquals('Len procedure',  5, PasHighLighter.FoldLineLength(23,0));
+  AssertEquals('Len var',        1, PasHighLighter.FoldLineLength(24,0));
+  AssertEquals('Len begin',      2, PasHighLighter.FoldLineLength(26,0));
+  AssertEquals('Len procedure',  5, PasHighLighter.FoldLineLength(33,0));
+  AssertEquals('Len var',        1, PasHighLighter.FoldLineLength(34,0));
+  AssertEquals('Len begin',      2, PasHighLighter.FoldLineLength(36,0));
+  AssertEquals('Len procedure',  6, PasHighLighter.FoldLineLength(43,0));
+  AssertEquals('Len var',        1, PasHighLighter.FoldLineLength(45,0));
+  AssertEquals('Len begin',      2, PasHighLighter.FoldLineLength(47,0));
+  AssertEquals('Len procedure',  6, PasHighLighter.FoldLineLength(53,0));
+  AssertEquals('Len var',        1, PasHighLighter.FoldLineLength(55,0));
+  AssertEquals('Len begin',      2, PasHighLighter.FoldLineLength(57,0));
+
+  DeclVarName := PasHighLighter.DeclarationVarConstNameAttr;
+  DeclTypeName := PasHighLighter.DeclarationTypeNameAttr;
+  DeclType  := PasHighLighter.DeclarationTypeAttr;
+  DeclVal := PasHighLighter.DeclarationValueAttr;
+
+  ProcName  := PasHighLighter.ProcedureHeaderName;
+  ProcParam := PasHighLighter.ProcedureHeaderParamAttr;
+  ProcType  := PasHighLighter.ProcedureHeaderTypeAttr;
+  ProcVal  := PasHighLighter.ProcedureHeaderValueAttr;
+  ProcRes   := PasHighLighter.ProcedureHeaderResultAttr;
+
+  CheckTokensForLine('procedure', 5,      [tkKey      ]);
+  CheckTokensForLine('var', 6,            [tkKey      ]);
+  CheckTokensForLine('  n: word;', 7,
+    [tkSpace, tkIdentifier+DeclVarName, TK_Colon, tkSpace, tkIdentifier+DeclType, TK_Semi  ]);
+
+  CheckTokensForLine('procedure', 14,      [tkKey      ]);
+  CheckTokensForLine('var', 15,            [tkKey      ]);
+  CheckTokensForLine('  n: word;', 16,
+    [tkSpace, tkIdentifier+DeclVarName, TK_Colon, tkSpace, tkIdentifier+DeclType, TK_Semi  ]);
+
+  CheckTokensForLine('procedure(var t:byte; var t2:byte)', 23,
+    [tkKey, TK_Bracket,
+     tkKey, tkSpace, tkIdentifier+ProcParam, TK_Colon, tkIdentifier+ProcType, TK_Semi, tkSpace,
+     tkKey, tkSpace, tkIdentifier+ProcParam, TK_Colon, tkIdentifier+ProcType, TK_Bracket
+    ]);
+  CheckTokensForLine('var', 24,      [tkKey      ]);
+  CheckTokensForLine('  n: word;', 25,
+    [tkSpace, tkIdentifier+DeclVarName, TK_Colon, tkSpace, tkIdentifier+DeclType, TK_Semi  ]);
+
+  CheckTokensForLine('procedure(var t:byte; var t2:byte)', 33,
+    [tkKey, TK_Bracket,
+     tkKey, tkSpace, tkIdentifier+ProcParam, TK_Colon, tkIdentifier+ProcType, TK_Semi, tkSpace,
+     tkKey, tkSpace, tkIdentifier+ProcParam, TK_Colon, tkIdentifier+ProcType, TK_Bracket
+    ]);
+  CheckTokensForLine('var', 34,      [tkKey      ]);
+  CheckTokensForLine('  n: word;', 35,
+    [tkSpace, tkIdentifier+DeclVarName, TK_Colon, tkSpace, tkIdentifier+DeclType, TK_Semi  ]);
+
 end;
 
 procedure TTestHighlighterPas.TestModifierAttributesForLabel;

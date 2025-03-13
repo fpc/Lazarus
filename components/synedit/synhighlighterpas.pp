@@ -123,6 +123,7 @@ type
                           // unit ____    // used for "deprecated" detection / check in tsAfterProcName
                           //    >>> after a procedure/function/... keyword, when the name is expected (not for types)
                           //    >>> renewed after dot "."
+    tsAfterAnonProc,      // [OPT] for rsInParamDeclaration
     tsAfterProcName,      // procedure NAME
                           // unit NAME    // used for "deprecated" detection
     tsAfterIs,            // maybe "is nested"
@@ -1881,6 +1882,8 @@ begin
       if TopPascalCodeFoldBlockType in [cfbtProcedure, cfbtAnonymousProcedure]
       then StartPascalCodeFoldBlock(cfbtLocalLabelBlock)
       else StartPascalCodeFoldBlock(cfbtLabelBlock);
+      FTokenState := tsNone;  // clear tsAfterProcName for undetected anon procedure
+      fRange := fRange - [rsInProcHeader];
     end;
     Result := tkKey;
   end
@@ -1982,6 +1985,8 @@ begin
       // TODO: cfbtIfThen..cfbtWithDo => only if they are nested in one of the above
       cfbtIfThen, cfbtIfElse, cfbtForDo, cfbtWhileDo, cfbtWithDo
     ]);
+    FTokenState := tsNone;  // clear tsAfterProcName for undetected anon procedure
+    fRange := fRange - [rsInProcHeader];
     //debugln('TSynPasSyn.Func37 BEGIN ',dbgs(ord(TopPascalCodeFoldBlockType)),' LineNumber=',dbgs(fLineNumber),' ',dbgs(MinimumNestFoldBlockLevel),' ',dbgs(CurrentCodeFoldBlockLevel));
   end else
   if FExtendedKeywordsMode and KeyComp('Break') and
@@ -2071,7 +2076,9 @@ begin
       else
       if (tfb in [cfbtNone, cfbtProgram, cfbtUnit, cfbtUnitSection]) then
         StartPascalCodeFoldBlock(cfbtVarBlock);
+      FTokenState := tsNone;  // clear tsAfterProcName for anon undetected procedure
       FNextTokenState := tsAfterVarConstType;
+      fRange := fRange - [rsInProcHeader];
     end;
     Result := tkKey;
   end
@@ -2476,7 +2483,9 @@ begin
         if tfb in [cfbtProcedure, cfbtAnonymousProcedure]
         then StartPascalCodeFoldBlock(cfbtLocalTypeBlock)
         else StartPascalCodeFoldBlock(cfbtTypeBlock);
+        FTokenState := tsNone;  // clear tsAfterProcName for undetected anon procedure
         FNextTokenState := tsAfterVarConstType;
+        fRange := fRange - [rsInProcHeader];
       end;
     end;
     Result := tkKey;
@@ -2565,7 +2574,9 @@ begin
       if (tfb in [cfbtNone, cfbtProgram, cfbtUnit, cfbtUnitSection]) then
         StartPascalCodeFoldBlock(cfbtConstBlock);
 
+      FTokenState := tsNone;  // clear tsAfterProcName for undetected anon procedure
       FNextTokenState := tsAfterVarConstType;
+      fRange := fRange - [rsInProcHeader];
     end;
     Result := tkKey;
   end
@@ -3135,6 +3146,8 @@ begin
   if KeyComp('Function') then begin
     if (TopPascalCodeFoldBlockType in PascalStatementBlocks) and IsAnonymousFunc(8, True) then begin
       StartPascalCodeFoldBlock(cfbtAnonymousProcedure);
+      PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
+      FNextTokenState := tsAfterAnonProc;
     end
     else begin
       if not(rsAfterEqualOrColon in fRange) or
@@ -3192,6 +3205,8 @@ begin
   if KeyComp('Procedure') then begin
     if (TopPascalCodeFoldBlockType in PascalStatementBlocks) and IsAnonymousFunc(9, False) then begin
       StartPascalCodeFoldBlock(cfbtAnonymousProcedure);
+      PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
+      FNextTokenState := tsAfterAnonProc;
     end
     else begin
       if not(rsAfterEqualOrColon in fRange) or
@@ -4370,6 +4385,9 @@ begin
       else
       if tfb in PascalStatementBlocks then  // goto label
         FNextTokenState := tsAtBeginOfStatement;
+
+      if FTokenState = tsAfterProcName then
+        FTokenState := tsNone;  // clear tsAfterProcName for undetected anon function
     end;
   end;
 end;
@@ -4615,8 +4633,11 @@ begin
       PasCodeFoldRange.BracketNestLevel := 0
     end
     else begin
-      if (FTokenState = tsAfterProcName) and (rrsInParamDeclaration in FRequiredStates) and
-         (PasCodeFoldRange.BracketNestLevel = 0)
+      if (rrsInParamDeclaration in FRequiredStates) and
+         ( ( (FTokenState = tsAfterProcName) and (PasCodeFoldRange.BracketNestLevel = 0)
+           ) or
+           ( FTokenState = tsAfterAnonProc )
+         )
       then
         fRange := fRange + [rsInParamDeclaration];
 
@@ -4668,9 +4689,12 @@ begin
         end
         else begin
           if (rrsInParamDeclaration in FRequiredStates) and
-             (PasCodeFoldRange.BracketNestLevel = 0) and
-             ( (FTokenState = tsAfterProcName) or
-               (tfb in cfbtVarConstTypeExt)
+             ( ( (PasCodeFoldRange.BracketNestLevel = 0) and
+                 ( (FTokenState = tsAfterProcName) or
+                   (tfb in cfbtVarConstTypeExt)
+                 )
+               ) or
+               ( FTokenState = tsAfterAnonProc )
              )
           then
             fRange := fRange + [rsInParamDeclaration];
