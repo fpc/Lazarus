@@ -5372,6 +5372,7 @@ begin
     tkUnknown: Result := fSymbolAttri;
   else
     Result := nil;
+    exit; // can't merge
   end;
 
 
