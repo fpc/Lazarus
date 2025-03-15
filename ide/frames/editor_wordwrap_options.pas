@@ -6,11 +6,11 @@ interface
 
 uses
   // LCL
-  Forms, Controls, StdCtrls, ExtCtrls, Spin,
+  Forms, Controls, StdCtrls, ExtCtrls, Spin, CheckLst,
   // IdeIntf
   IDEOptEditorIntf, IDEOptionsIntf, SynEditWrappedView, DividerBevel,
   // IDE
-  EditorOptions, LazarusIDEStrConsts
+  EditorOptions, LazarusIDEStrConsts, EditorSyntaxHighlighterDef
   , Classes;
 
 type
@@ -18,10 +18,13 @@ type
   { TEditorWordWrapOptionsFrame }
 
   TEditorWordWrapOptionsFrame = class(TAbstractIDEOptionsEditor)
+    btnWordWrapAllHL: TButton;
+    btnWordWrapNoneHL: TButton;
     cbEnableWordWrap: TCheckBox;
     cbIndentIsOffset: TCheckBox;
     cbHomeEndKey: TCheckBox;
     cbFixedWidth: TCheckBox;
+    cblWordWrapHL: TCheckListBox;
     DividerBevelIndent: TDividerBevel;
     DividerBevelColumn: TDividerBevel;
     edMinWordWrapWidth: TSpinEdit;
@@ -46,6 +49,8 @@ type
     lbWordWrapIndentMaxRel: TLabel;
     Panel1: TPanel;
     rgCaretWrapPos: TRadioGroup;
+    procedure btnWordWrapAllHLClick(Sender: TObject);
+    procedure btnWordWrapNoneHLClick(Sender: TObject);
     procedure cbFixedWidthChange(Sender: TObject);
     procedure cbIndentIsOffsetChange(Sender: TObject);
   private
@@ -87,14 +92,28 @@ begin
   end;
 end;
 
+procedure TEditorWordWrapOptionsFrame.btnWordWrapAllHLClick(Sender: TObject);
+begin
+  cblWordWrapHL.CheckAll(cbChecked, False, False);
+end;
+
+procedure TEditorWordWrapOptionsFrame.btnWordWrapNoneHLClick(Sender: TObject);
+begin
+  cblWordWrapHL.CheckAll(cbUnchecked, False, False);
+end;
+
 function TEditorWordWrapOptionsFrame.GetTitle: String;
 begin
   Result := dlgOptWordWrap;
 end;
 
 procedure TEditorWordWrapOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
+var
+  i, index: Integer;
 begin
   cbEnableWordWrap.Caption := dlgOptWordWrapUseWordwrap;
+  btnWordWrapAllHL.Caption := dlgOptWordWrapAllHL;
+  btnWordWrapNoneHL.Caption := dlgOptWordWrapNoneHL;
   rgCaretWrapPos.Caption := dlgOptWordWrapDisplayCaretAtWrapPositio;
   rgCaretWrapPos.Items.Add(dlgOptWordWrapEndOfLine);
   rgCaretWrapPos.Items.Add(dlgOptWordWrapStartOfNextLine);
@@ -110,11 +129,29 @@ begin
   lbWordWrapIndentMin.Caption    := dlgOptWordWrapIndentMin;
   lbWordWrapIndentMax.Caption    := dlgOptWordWrapIndentMax;
   lbWordWrapIndentMaxRel.Caption := dlgOptWordWrapIndentMaxRel;
+
+  cblWordWrapHL.Items.Clear;
+  for i := IdeHighlighterNoneID to EditorOpts.HighlighterList.Count - 1 do
+  begin
+    if not (EditorOpts.HighlighterList.SharedSynInstances[i] is TNonSrcIDEHighlighter) then
+    begin
+      index := cblWordWrapHL.Items.AddObject(EditorOpts.HighlighterList.Captions[i], TObject(PtrUInt(i)));
+      cblWordWrapHL.Checked[index] := True;
+    end;
+  end;
 end;
 
 procedure TEditorWordWrapOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
+var
+  i, highlighterID: Integer;
 begin
   cbEnableWordWrap.Checked := (AOptions as TEditorOptions).WordWrapEnabled;
+  for i := 0 to cblWordWrapHL.Count - 1 do
+  begin
+    highlighterID := PtrUInt(Pointer(cblWordWrapHL.Items.Objects[i]));
+    if (AOptions as TEditorOptions).WordWrapHLList.IndexOf(EditorOpts.HighlighterList.Names[highlighterID]) >= 0 then
+      cblWordWrapHL.Checked[i] := False;
+  end;
   case (AOptions as TEditorOptions).WordWrapCaretWrapPos of
     wcpEOL: rgCaretWrapPos.ItemIndex := 0;
     wcpBOL: rgCaretWrapPos.ItemIndex := 1;
@@ -135,8 +172,19 @@ begin
 end;
 
 procedure TEditorWordWrapOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
+var
+  i, highlighterID: Integer;
 begin
   (AOptions as TEditorOptions).WordWrapEnabled := cbEnableWordWrap.Checked;
+  (AOptions as TEditorOptions).WordWrapHLList.Clear;
+  for i := 0 to cblWordWrapHL.Count - 1 do
+  begin
+    if not cblWordWrapHL.Checked[i] then
+    begin
+      highlighterID := PtrUInt(Pointer(cblWordWrapHL.Items.Objects[i]));
+      (AOptions as TEditorOptions).WordWrapHLList.Add(EditorOpts.HighlighterList.Names[highlighterID]);
+    end;
+  end;
   case rgCaretWrapPos.ItemIndex of
     0: (AOptions as TEditorOptions).WordWrapCaretWrapPos := wcpEOL;
     1: (AOptions as TEditorOptions).WordWrapCaretWrapPos := wcpBOL;

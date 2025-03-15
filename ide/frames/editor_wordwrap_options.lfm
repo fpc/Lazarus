@@ -1,10 +1,10 @@
 object EditorWordWrapOptionsFrame: TEditorWordWrapOptionsFrame
   Left = 0
-  Height = 380
+  Height = 449
   Top = 0
   Width = 387
   ChildSizing.ControlsPerLine = 2
-  ClientHeight = 380
+  ClientHeight = 449
   ClientWidth = 387
   TabOrder = 0
   DesignLeft = 599
@@ -25,13 +25,13 @@ object EditorWordWrapOptionsFrame: TEditorWordWrapOptionsFrame
   end
   object rgCaretWrapPos: TRadioGroup
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = cbEnableWordWrap
+    AnchorSideTop.Control = cblWordWrapHL
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 19
-    Top = 31
+    Top = 117
     Width = 375
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
@@ -46,7 +46,7 @@ object EditorWordWrapOptionsFrame: TEditorWordWrapOptionsFrame
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 2
     Columns = 2
-    TabOrder = 1
+    TabOrder = 2
   end
   object cbHomeEndKey: TCheckBox
     AnchorSideLeft.Control = Owner
@@ -56,12 +56,12 @@ object EditorWordWrapOptionsFrame: TEditorWordWrapOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 19
-    Top = 56
+    Top = 142
     Width = 375
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
     Caption = 'cbHomeEndKey'
-    TabOrder = 2
+    TabOrder = 3
   end
   object Panel1: TPanel
     AnchorSideLeft.Control = Owner
@@ -71,7 +71,7 @@ object EditorWordWrapOptionsFrame: TEditorWordWrapOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 245
-    Top = 81
+    Top = 167
     Width = 375
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -83,7 +83,7 @@ object EditorWordWrapOptionsFrame: TEditorWordWrapOptionsFrame
     ChildSizing.ControlsPerLine = 2
     ClientHeight = 245
     ClientWidth = 375
-    TabOrder = 3
+    TabOrder = 4
     object lblBevelColumn: TLabel
       Left = 0
       Height = 15
@@ -345,5 +345,43 @@ object EditorWordWrapOptionsFrame: TEditorWordWrapOptionsFrame
       TabOrder = 7
       Value = 10
     end
+  end
+  object cblWordWrapHL: TCheckListBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = cbEnableWordWrap
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 80
+    Top = 31
+    Width = 212
+    BorderSpacing.Around = 6
+    ItemHeight = 0
+    TabOrder = 1
+  end
+  object btnWordWrapAllHL: TButton
+    AnchorSideLeft.Control = cblWordWrapHL
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = cblWordWrapHL
+    Left = 224
+    Height = 25
+    Top = 31
+    Width = 75
+    Caption = 'btnWordWrapAllHL'
+    TabOrder = 5
+    OnClick = btnWordWrapAllHLClick
+  end
+  object btnWordWrapNoneHL: TButton
+    AnchorSideLeft.Control = cblWordWrapHL
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = btnWordWrapAllHL
+    AnchorSideTop.Side = asrBottom
+    Left = 224
+    Height = 25
+    Top = 62
+    Width = 75
+    BorderSpacing.Around = 6
+    Caption = 'btnWordWrapNoneHL'
+    TabOrder = 6
+    OnClick = btnWordWrapNoneHLClick
   end
 end
