@@ -590,6 +590,8 @@ begin
   actPower.Enabled := True;
 
   actToggleInspectSite.Enabled := True;
+  popupWatchFormatPresets.Enabled := HasTopWatchSelected or
+                                     ( (Watch<>nil) and (Watch = Watch.TopParentWatch));
 
   UpdateInspectPane;
 end;
@@ -1095,7 +1097,7 @@ begin
   end
   else begin
     Watch := TIdeWatch(GetSelected);
-    if (Watch.TopParentWatch = Watch) then begin
+    if (Watch <> nil) and (Watch.TopParentWatch = Watch) then begin
       d := APreset.DisplayFormat;
       d.CopyInheritedFrom(Watch.DisplayFormat);
       Watch.DisplayFormat := d;
@@ -1316,7 +1318,7 @@ begin
     end
     else begin
       Watch := TCurrentWatch(GetSelected);
-      if (Watch.TopParentWatch = Watch) then begin
+      if (Watch <> nil) and (Watch.TopParentWatch = Watch) then begin
         d := Watch.Values[GetThreadId, GetStackframe];
         dk := rdkUnknown;
         if (d <> nil) and (d.Validity = ddsValid) and (d.ResultData <> nil) then
