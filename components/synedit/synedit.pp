@@ -923,6 +923,7 @@ type
                           ATextDrawer: TheTextDrawer): TSynGutter; virtual;
   public
     constructor Create(AOwner: TComponent); override;
+    procedure BeforeDestruction; override;
     destructor Destroy; override;
     procedure AfterLoadFromFile;
 
@@ -2683,18 +2684,31 @@ begin
   end;
 end;
 
+procedure TCustomSynEdit.BeforeDestruction;
+begin
+  inherited BeforeDestruction;
+  {$IFDEF SynCheckPaintLock}
+  if (FPaintLockOwnerCnt > 0) then begin
+    debugln(['TCustomSynEdit.Destroy: Paintlock=', FPaintLock, ' FInvalidateRect=', dbgs(FInvalidateRect)]);
+    DumpStack;
+  end;
+  {$ENDIF}
+  // block all events during destruction
+  inc(FPaintLock);
+  FMarkupManager.IncPaintLock;
+  FFoldedLinesView.Lock; //DecPaintLock triggers ScanRanges, and folds must wait
+  FTrimmedLinesView.Lock; // Lock before caret
+  FBlockSelection.Lock;
+  FCaret.Lock;
+end;
+
 destructor TCustomSynEdit.Destroy;
 var
   i: integer;
   p: TList;
 begin
   Destroying;
-  {$IFDEF SynCheckPaintLock}
-  if (FPaintLock > 0) then begin
-    debugln(['TCustomSynEdit.Destroy: Paintlock=', FPaintLock, ' FInvalidateRect=', dbgs(FInvalidateRect)]);
-    DumpStack;
-  end;
-  {$ENDIF}
+  inc(FPaintLock); // block all events during destruction
   Application.RemoveOnIdleHandler(@IdleScanRanges);
   SurrenderPrimarySelection;
   Highlighter := nil;
