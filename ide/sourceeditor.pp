@@ -320,7 +320,7 @@ type
 
     function GotoLine(Value: Integer): Integer;
 
-    procedure CreateEditor(AOwner: TComponent; AParent: TWinControl);
+    procedure CreateEditor(AOwner: TComponent; AParent: TWinControl; AReturnUpdating: boolean = False);
     procedure UpdateNoteBook(const ANewNoteBook: TSourceNotebook; ANewPage: TTabSheet);
     procedure SetVisible(Value: boolean);
     procedure UnbindEditor;
@@ -376,7 +376,7 @@ type
     procedure AfterCodeBufferReplace;
     function Close: Boolean;
   public
-    constructor Create(AOwner: TComponent; AParent: TWinControl; ASharedEditor: TSourceEditor = nil);
+    constructor Create(AOwner: TComponent; AParent: TWinControl; ASharedEditor: TSourceEditor = nil; AReturnUpdating: boolean = False);
     destructor Destroy; override;
 
     // codebuffer
@@ -806,7 +806,8 @@ type
     procedure CreateNotebook;
     function NewSE(Pagenum: Integer; NewPagenum: Integer = -1;
                    ASharedEditor: TSourceEditor = nil;
-                   ATabCaption: String = ''): TSourceEditor;
+                   ATabCaption: String = '';
+                   AReturnUpdating: boolean = False): TSourceEditor;
     procedure AcceptEditor(AnEditor: TSourceEditor; SendEvent: Boolean = False);
     procedure ReleaseEditor(AnEditor: TSourceEditor; SendEvent: Boolean = False);
     procedure EditorChanged(Sender: TObject; Changes: TSynStatusChanges);
@@ -3656,7 +3657,7 @@ end;
   AOwner is the @link(TSourceNotebook)
   and the AParent is usually a page of a @link(TPageControl) }
 constructor TSourceEditor.Create(AOwner: TComponent; AParent: TWinControl;
-  ASharedEditor: TSourceEditor = nil);
+  ASharedEditor: TSourceEditor; AReturnUpdating: boolean);
 Begin
   FInEditorChangedUpdating := False;
 
@@ -3682,11 +3683,13 @@ Begin
   FLineInfoNotification.AddReference;
   FLineInfoNotification.OnChange := @LineInfoNotificationChange;
 
-  CreateEditor(AOwner,AParent);
+  CreateEditor(AOwner,AParent, AReturnUpdating);
   FProjectFileUpdatesNeeded := [];
   if ASharedEditor <> nil then begin
     PageName := ASharedEditor.PageName;
+    if AReturnUpdating then EndUpdate;
     FEditor.ShareTextBufferFrom(ASharedEditor.EditorComponent);
+    if AReturnUpdating then BeginUpdate;
     FEditor.Highlighter := ASharedEditor.EditorComponent.Highlighter;
     if ASharedEditor.EditorComponent.Beautifier is TSynBeautifierPascal then
       FEditor.Beautifier := ASharedEditor.EditorComponent.Beautifier;
@@ -5381,7 +5384,8 @@ end;
 
 { AOwner is the TSourceNotebook
   AParent is a page of the TPageControl }
-procedure TSourceEditor.CreateEditor(AOwner: TComponent; AParent: TWinControl);
+procedure TSourceEditor.CreateEditor(AOwner: TComponent; AParent: TWinControl;
+  AReturnUpdating: boolean);
 var
   NewName: string;
   i: integer;
@@ -5450,7 +5454,8 @@ Begin
     FEditor.SyncroEdit.OnEndEdit := @EditorDeactivateSyncro;
 
     RefreshEditorSettings;
-    FEditor.EndUpdate;
+    if not AReturnUpdating then
+      FEditor.EndUpdate;
   end else begin
     FEditor.Parent:=AParent;
   end;
@@ -8059,7 +8064,7 @@ begin
 end;
 
 function TSourceNotebook.NewSE(Pagenum: Integer; NewPagenum: Integer;
-  ASharedEditor: TSourceEditor; ATabCaption: String): TSourceEditor;
+  ASharedEditor: TSourceEditor; ATabCaption: String; AReturnUpdating: boolean): TSourceEditor;
 begin
   {$IFDEF IDE_DEBUG}
   debugln('TSourceNotebook.NewSE A ');
@@ -8079,10 +8084,12 @@ begin
   {$IFDEF IDE_DEBUG}
   debugln(['TSourceNotebook.NewSE B  ', PageIndex,',',PageCount]);
   {$ENDIF}
-  Result := TSourceEditor.Create(Self, NotebookPage[PageNum], ASharedEditor);
+  Result := TSourceEditor.Create(Self, NotebookPage[PageNum], ASharedEditor, True);
   Result.FPageName := NoteBookPages[Pagenum];
   AcceptEditor(Result);
   PageIndex := Pagenum;
+  if not AReturnUpdating then
+    Result.EndUpdate;
   {$IFDEF IDE_DEBUG}
   debugln('TSourceNotebook.NewSE end ');
   {$ENDIF}
@@ -8976,7 +8983,7 @@ Begin
     try
       IDEWindowCreators.ShowForm(Self,false);
       s := Manager.FindUniquePageName(NewShortName, AShareEditor);
-      Result := NewSE(-1, -1, AShareEditor, s);
+      Result := NewSE(-1, -1, AShareEditor, s, True);
       debugln(SRCED_OPEN, '[TSourceNotebook.NewFile] B ');
       Result.CodeBuffer:=ASource;
       debugln(SRCED_OPEN, '[TSourceNotebook.NewFile] D ');
@@ -8984,6 +8991,7 @@ Begin
       Result.PageName:= s;
       UpdatePageNames;
       UpdateProjectFiles(Result);
+      Result.EndUpdate;
       UpdateStatusBar;
       Manager.SendEditorCreated(Result);
     finally
