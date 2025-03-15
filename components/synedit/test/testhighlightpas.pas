@@ -63,6 +63,7 @@ type
     procedure TestContextForProcModifiers2;
     procedure TestContextForProcModifiersName;
     procedure TestContextForVarModifiers;
+    procedure TestContextForVarModifiers2;
     procedure TestContextForProperties;
     procedure TestContextForProcedure;
     procedure TestContextForProcedureNameAttr;
@@ -917,14 +918,17 @@ begin
        'procedure name; external ''name'' name ''name'';',
        'procedure name; public name ''name'';',
        '  begin end;',
-       'function name: name; external ''name'' name ''name'';',
+       'function name: name; external ''name'' name ''name'';',   // 4
        'function name: name; public name ''name'';',
        '  begin end;',
        '',
-       'type TFoo = class ',
+       'type TFoo = class ',  // 8
        'procedure name; public name: name;',  // just a public field
        'function name: name; public name: name;',  // just a public field
        'end;',
+       '',  // 12
+       'procedure name; external name name;',  // external keyword_NAME const_NAME
+       'procedure name; external foo name name;',  // external foo keyword_NAME const_NAME
        ''
         ]);
 
@@ -959,6 +963,14 @@ begin
     CheckTokensForLine('CLASS: function name: name; public name: name;', 10,
       [tkKey, tkSpace, tkIdentifier+p, TK_Colon, tkSpace, tkIdentifier, TK_Semi, tkSpace,
        tkKey, tkSpace, tkIdentifier, TK_Colon, tkSpace, tkIdentifier, TK_Semi]);
+
+    CheckTokensForLine('procedure name; external name name;', 13,
+      [tkKey, tkSpace, tkIdentifier+p, TK_Semi, tkSpace,
+       tkModifier, tkSpace,  tkModifier, tkSpace, tkIdentifier, TK_Semi]);
+
+    CheckTokensForLine('procedure name; external foo name name;', 14,
+      [tkKey, tkSpace, tkIdentifier+p, TK_Semi, tkSpace,
+       tkModifier, tkSpace, tkIdentifier, tkSpace, tkModifier, tkSpace, tkIdentifier, TK_Semi]);
 
   end;
 end;
@@ -1268,6 +1280,27 @@ begin
 
     end;
   end;
+end;
+
+procedure TTestHighlighterPas.TestContextForVarModifiers2;
+begin
+  ReCreateEdit;
+  EnableFolds([cfbtBeginEnd..cfbtNone]);
+  SetLines
+    ([ 'Unit A; interface',
+       'var',
+       'name: name;  external name name;',   // external const_NAME keyword_NAME const_NAME
+       'name: name;  external foo name name;',   // external const_NAME keyword_NAME const_NAME
+       ''
+    ]);
+
+    CheckTokensForLine('name: name; external name name;', 2,
+      [tkIdentifier, TK_Colon, tkSpace, tkIdentifier, TK_Semi, tkSpace,
+       tkModifier, tkSpace, tkModifier, tkSpace, tkIdentifier, TK_Semi]);
+
+    CheckTokensForLine('name: name; external foo name name;', 3,
+      [tkIdentifier, TK_Colon, tkSpace, tkIdentifier, TK_Semi, tkSpace,
+       tkModifier, tkSpace, tkIdentifier, tkSpace, tkModifier, tkSpace, tkIdentifier, TK_Semi]);
 end;
 
 procedure TTestHighlighterPas.TestContextForProperties;
@@ -3351,6 +3384,10 @@ begin
        'function Foo(d:word=2-x;e:boolean=(1=y*2);f:qword=default(qword); g:MySet=[a1..a2]): integer;',
        'procedure Foo(a:byte;',  //5
        'b, b2:word);',
+       '',  // 7
+       'procedure name; external &name name name;',  // external const_NAME keyword_NAME const_NAME
+       'procedure name; external foo name name;',    // external const_FOO keyword_NAME const_NAME
+       'procedure name; external name name;',        // external keyword_NAME const_NAME
        ''
     ]);
 
@@ -3401,6 +3438,10 @@ begin
     [tkIdentifier+ProcParam, TK_Comma, tkSpace, tkIdentifier+ProcParam, TK_Colon,
      tkIdentifier+ProcType, TK_Bracket, TK_Semi]);
 
+
+    CheckTokensForLine('procedure name; external name name name;', 8,
+      [tkKey, tkSpace, tkIdentifier+ProcName, TK_Semi, tkSpace,
+       tkModifier, tkSpace, tkIdentifier, tkSpace, tkModifier, tkSpace, tkIdentifier, TK_Semi]);
 
   //PropName.Clear;
   //PasHighLighter.DeclaredTypeAttributeMode := tamIdentifierOnly;
@@ -3519,8 +3560,12 @@ begin
            'b:byte;',
            'c:array of word;',
          'end;',
+       '',  // 18
+       'name: name;  external name name;',   // external keyword_NAME const_NAME
+       'name: name;  external foo name name;',   // external foo keyword_NAME const_NAME
        ''
     ]);
+
 
   DeclVarName := PasHighLighter.DeclarationVarConstNameAttr;
   DeclTypeName := PasHighLighter.DeclarationTypeNameAttr;
@@ -3586,6 +3631,16 @@ begin
      tkKey+DeclType, tkSpace, tkIdentifier+DeclType, TK_Semi]);
   //CheckTokensForLine('18: end', 17,
   //  [tkKey+DeclType, TK_Semi]);
+
+
+    CheckTokensForLine('name: name; external name name;', 19,
+      [tkIdentifier+DeclVarName, TK_Colon, tkSpace, tkIdentifier+DeclType, TK_Semi, tkSpace,
+       tkModifier, tkSpace, tkModifier, tkSpace, tkIdentifier, TK_Semi]);
+
+    CheckTokensForLine('name: name; external foo name name;', 20,
+      [tkIdentifier+DeclVarName, TK_Colon, tkSpace, tkIdentifier+DeclType, TK_Semi, tkSpace,
+       tkModifier, tkSpace, tkIdentifier, tkSpace, tkModifier, tkSpace, tkIdentifier, TK_Semi]);
+
 
   for i := 0 to 1 do begin
     case i of

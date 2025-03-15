@@ -133,6 +133,7 @@ type
                           // var Foo; public name 'bar';
                           //    after public, export or external: "name" may follow
                           //    >>> KEPT until ONE AFTER the ";" => to prevent next token from being mistaken
+    tsAfterExternalName,  // "external name name" (2nd name is a string constant)
                           //    >>> Also SET BY "var"/"type"/"const" => to prevent next token from being mistaken
     tsAfterCvar,          // cvar;
                           //    >>> KEPT until ONE AFTER the ";" => to prevent next token from being mistaken
@@ -1690,6 +1691,8 @@ begin
     then begin
       Result := tkKey;
       fRange := fRange - [rsAsm, rsInClassHeader, rsInTypeHelper, rsInObjcProtocol, rsAfterClassMembers];
+      if FTokenState in [tsAfterExternal, tsAfterExternalName] then
+        FTokenState := tsNone;
       PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
       sl := fStringLen;
       // there may be more than on block ending here
@@ -1905,6 +1908,7 @@ begin
   then
   begin
     Result := tkModifier;
+    FNextTokenState := tsAfterExternalName;
     fRange := fRange + [rsInObjcProtocol];
     FOldRange := FOldRange - [rsInObjcProtocol];
   end
@@ -1916,7 +1920,7 @@ begin
   then
   begin
     Result := tkModifier;
-    FNextTokenState := tsAfterExternal; // external 'foo' name 'bar'
+    FNextTokenState := tsAfterExternalName;
   end
   else
     Result := tkIdentifier;
@@ -2338,7 +2342,7 @@ begin
     if (PasCodeFoldRange.BracketNestLevel = 0) and
        ( (FTokenState in [tsAfterTypedConst, tsAfterCvar])
          or
-         ( (not (FTokenState in [tsAfterExternal, tsAfterVarConstType])) and
+         ( (not (FTokenState in [tsAfterExternal, tsAfterExternalName, tsAfterVarConstType])) and
            ( ( (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader] = [rsWasInProcHeader]) and
                (tfb in ProcModifierAllowed - [cfbtClass, cfbtClassSection, cfbtRecord, cfbtClassConstBlock, cfbtClassTypeBlock])
              ) or
@@ -2978,7 +2982,7 @@ var
 begin
   tfb := TopPascalCodeFoldBlockType;
   if (PasCodeFoldRange.BracketNestLevel in [0, 1]) and
-     (not(FTokenState in [tsAfterVarConstType, tsAfterExternal])) and
+     (not(FTokenState in [tsAfterVarConstType, tsAfterExternal, tsAfterExternalName])) and
      ( ( (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader] = [rsWasInProcHeader]) and
          (tfb in ProcModifierAllowed)
        ) or
@@ -3010,7 +3014,7 @@ var
 begin
   tfb := TopPascalCodeFoldBlockType;
   if (PasCodeFoldRange.BracketNestLevel = 0) and
-     (not(FTokenState in [tsAfterVarConstType, tsAfterExternal])) and
+     (not(FTokenState in [tsAfterVarConstType, tsAfterExternal, tsAfterExternalName])) and
      ( ( (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader] = [rsWasInProcHeader]) and
          (tfb in ProcModifierAllowed)
        ) or
@@ -4772,7 +4776,7 @@ begin
   if FTokenState = tsAfterCvar then
     FNextTokenState := tsAfterCvar
   else
-  if FTokenState = tsAfterExternal then
+  if FTokenState in [tsAfterExternal, tsAfterExternalName] then
     FNextTokenState := tsAfterVarConstType
   else
   if (rsInTypedConst in fRange) and (PasCodeFoldRange.BracketNestLevel = 0) then
@@ -4880,8 +4884,6 @@ end;
 procedure TSynPasSyn.StringProc;
 begin
   fTokenID := tkString;
-  if FTokenState = tsAfterExternal then
-    FNextTokenState := tsAfterExternal; // external 'foo' name 'bar'
   Inc(Run);
   while (not (fLine[Run] in [#0, #10, #13])) do begin
     if fLine[Run] = '''' then begin
@@ -5208,8 +5210,14 @@ begin
             FLastTokenTypeDeclExtraAttrib := FTokenTypeDeclExtraAttrib;
         //end;
 
-        if not (FTokenID in [tkSpace, tkComment, tkIDEDirective, tkDirective, tkNull]) then
+        if not (FTokenID in [tkSpace, tkComment, tkIDEDirective, tkDirective, tkNull]) then begin
+          if (FNextTokenState = tsNone) and (FTokenState in [tsAfterExternal, tsAfterExternalName]) and
+             (FTokenID in [tkIdentifier, tkString, tkKey, tkSymbol])
+          then
+            FNextTokenState := FTokenState;
+
           FTokenState := FNextTokenState;
+        end;
 
         if (IsAtCaseLabel) and (rsAtCaseLabel in fRange) then begin
           FTokenIsCaseLabel := True;
