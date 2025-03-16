@@ -577,10 +577,13 @@ function TStringBuilderPart.GetFullString: String;
 var
   p: PChar;
 begin
+  Result := '';
   if FData = nil then
-    exit('');
+    exit();
   if FType = sbfString then
     exit(string(FData));
+  if PHeader(FData)^.FTotalLen = 0 then
+    exit;
 
   SetLength(Result, PHeader(FData)^.FTotalLen);
   p := pchar(Result);
