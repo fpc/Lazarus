@@ -6190,7 +6190,10 @@ var
 begin
   Exclude(fRange, rsSkipAllPasBlocks);
   BlockType := TopPascalCodeFoldBlockType;
-  fRange := fRange - [rsAfterEqual, rsAfterColon];
+  if not (BlockType in [cfbtAnsiComment, cfbtBorCommand, cfbtSlashComment, cfbtNestedComment,
+                        cfbtIfDef, cfbtRegion]) // cfbtAnonymousProcedure
+  then
+    fRange := fRange - [rsAfterEqual, rsAfterColon];
   DecreaseLevel := TopCodeFoldBlockType < CountPascalCodeFoldBlockOffset;
   // TODO: let inherited call CollectNodeInfo
   if IsCollectingNodeInfo then begin // exclude subblocks, because they do not increase the foldlevel yet
