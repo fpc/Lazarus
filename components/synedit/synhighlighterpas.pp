@@ -93,10 +93,9 @@ type
     //                                  TBar = class of TFoo;
     // or full class declaration  TFoo = class ... end;
     // Also included after class modifiers "sealed" and "abstract"
-    rsAtClass,
+    rsInClassHeader,      // ends an ")" of inheritance / or goes to first ident after header
+    rsInTypeHelper,       // ends after "for name"
     rsInObjcProtocol,
-    rsAfterClass,
-    rsInTypeHelper,
     rsAfterIdentifierOrValue, // anywhere where a ^ deref can happen "foo^", "foo^^", "foo()^", "foo[]^"
 
     rsAtCaseLabel,
@@ -119,6 +118,7 @@ type
     tsAtBeginOfStatement, // After ";" or begin,do,with,...
     tsAfterVarConstType,  // Immediately after
                           // Also sometime after ";" (in declarations) to prevent a type of name public/export/external to be highlighted
+    tsAfterClass,         // after "class" or "record": for "class helper"
     tsAtProcName,         // procedure ___
                           // unit ____    // used for "deprecated" detection / check in tsAfterProcName
                           //    >>> after a procedure/function/... keyword, when the name is expected (not for types)
@@ -1580,7 +1580,7 @@ begin
     if not (rsInProcHeader in fRange) then
       fRange := fRange + [rsAfterEqualOrColon]; // Identifier for type expected
     if (tfb = cfbtClass) and
-       (fRange * [rsAfterClass, rsAfterIdentifierOrValue] = [rsAfterClass]) and
+       (fRange * [rsInClassHeader, rsAfterIdentifierOrValue] = [rsInClassHeader]) and
        (PasCodeFoldRange.BracketNestLevel = 0)
     then begin
       // Accidental start of block // End at next semicolon (usually same line)
@@ -1616,7 +1616,7 @@ begin
     if ((fToIdent<2) or (fLine[fToIdent-1]<>'@'))
     then begin
       Result := tkKey;
-      fRange := fRange - [rsAsm, rsAfterClassMembers];
+      fRange := fRange - [rsAsm, rsInClassHeader, rsInTypeHelper, rsInObjcProtocol, rsAfterClassMembers];
       PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
       sl := fStringLen;
       // there may be more than on block ending here
@@ -1691,7 +1691,6 @@ begin
         // after class-section either a class OR a record can close with the same "end"
         if tfb = cfbtClass then begin
           EndPascalCodeFoldBlock;
-          fRange := fRange - [rsInObjcProtocol];
         end
         else
         begin
@@ -1825,7 +1824,7 @@ begin
     StartPascalCodeFoldBlock(cfbtAsm);
   end
   else
-  if (fRange * [rsAfterClass, rsInObjcProtocol, rsInProcHeader] = [rsAfterClass, rsInObjcProtocol]) and
+  if (fRange * [rsInClassHeader, rsInObjcProtocol, rsInProcHeader] = [rsInClassHeader, rsInObjcProtocol]) and
      ((CompilerMode = pcmMacPas) or not (rsCompilerModeSet in fRange)) and
      KeyComp('name') and
      (PasCodeFoldRange.BracketNestLevel = 0) and
@@ -1833,7 +1832,8 @@ begin
   then
   begin
     Result := tkModifier;
-    fRange := fRange + [rsAtClass];
+    fRange := fRange + [rsInClassHeader];
+    FOldRange := FOldRange - [rsInClassHeader];
   end
   else
   if (FTokenState = tsAfterExternal) and
@@ -2056,13 +2056,13 @@ end;
 
 function TSynPasSyn.Func46: TtkTokenKind;
 begin
-  if (rsAfterClass in fRange) and KeyComp('Sealed') and
+  if (rsInClassHeader in fRange) and KeyComp('Sealed') and
      (PasCodeFoldRange.BracketNestLevel = 0) and
      (TopPascalCodeFoldBlockType in [cfbtClass])
   then begin
     Result := tkModifier;
-    fRange := fRange + [rsAtClass, rsAfterIdentifierOrValue]; // forward, in case of further class modifiers
-    FOldRange := FOldRange - [rsAfterIdentifierOrValue];
+    fRange := fRange + [rsInClassHeader, rsAfterIdentifierOrValue]; // forward, in case of further class modifiers
+    FOldRange := FOldRange - [rsAfterIdentifierOrValue, rsInClassHeader];
   end
   else
     Result := tkIdentifier;
@@ -2120,7 +2120,9 @@ begin
     Result := tkKey;
     if (rsAfterEqual in fRange) and (PasCodeFoldRange.BracketNestLevel = 0)
     then begin
-      fRange := fRange + [rsAtClass] - [rsVarTypeInSpecification, rsAfterEqual, rsAfterColon];
+      FNextTokenState := tsAfterClass;
+      fRange := fRange + [rsInClassHeader] - [rsVarTypeInSpecification, rsAfterEqual, rsAfterColon];
+      FOldRange := FOldRange - [rsInClassHeader];
       StartPascalCodeFoldBlock(cfbtClass);
     end;
   end
@@ -2136,7 +2138,8 @@ begin
        not(rsInProcHeader in fRange) and
        (PasCodeFoldRange.BracketNestLevel = 0)
     then begin
-      fRange := fRange + [rsAtClass] - [rsVarTypeInSpecification, rsAfterEqual, rsAfterColon];
+      fRange := fRange + [rsInClassHeader] - [rsVarTypeInSpecification, rsAfterEqual, rsAfterColon];
+      FOldRange := FOldRange - [rsInClassHeader];
       StartPascalCodeFoldBlock(cfbtClass);
     end;
   end
@@ -2248,7 +2251,7 @@ begin
     tfb := CloseFolds(TopPascalCodeFoldBlockType, [cfbtClassConstBlock, cfbtClassTypeBlock]);
     if (tfb in [cfbtClass, cfbtClassSection, cfbtRecord]) and
        (fRange * [rsInProcHeader, rsAfterEqual, rsAfterEqualOrColon, rsVarTypeInSpecification] = []) and
-       ( (FTokenState in [tsAtBeginOfStatement, tsAfterVarConstType, tsAfterTypedConst]) or (fRange * [rsAfterClass] <> []) )
+       ( (FTokenState in [tsAtBeginOfStatement, tsAfterVarConstType, tsAfterClass, tsAfterTypedConst]) or (fRange * [rsInClassHeader] <> []) )
     then begin
       Result := tkKey;
       FNextTokenState := tsAtBeginOfStatement;
@@ -2280,10 +2283,13 @@ begin
   end
   else if KeyComp('Record') then begin
     StartPascalCodeFoldBlock(cfbtRecord);
-    FNextTokenState := tsAtBeginOfStatement;
+    //FNextTokenState := tsAtBeginOfStatement;
+    //if (CompilerMode = pcmDelphi) or (TypeHelpers {and adv_record}) then
+    FNextTokenState := tsAfterClass;
     fRange := fRange - [rsVarTypeInSpecification, rsAfterEqual, rsAfterColon, rsAfterEqualOrColon];
     if (CompilerMode = pcmDelphi) or (TypeHelpers {and adv_record}) then
-      fRange := fRange + [rsAtClass]; // highlight helper
+      fRange := fRange + [rsInClassHeader]; // highlight helper
+      FOldRange := FOldRange - [rsInClassHeader];
     Result := tkKey;
   end
   else if KeyComp('Array') then Result := tkKey
@@ -2323,7 +2329,7 @@ begin
   end
   // TODO: "class helper" fold at "class", but "type helper" fold at "helper"
   else if KeyComp('helper') then begin
-    if (rsAtClass in fRange) and (PasCodeFoldRange.BracketNestLevel = 0)
+    if (FTokenState = tsAfterClass) and (PasCodeFoldRange.BracketNestLevel = 0)
     then begin
       Result := tkKey; // tkModifier
       fRange := fRange - [rsVarTypeInSpecification, rsAfterEqual, rsAfterColon] + [rsInTypeHelper];
@@ -2553,7 +2559,8 @@ begin
     if (rsAfterEqual in fRange) and (PasCodeFoldRange.BracketNestLevel = 0)
     then begin
       // type IFoo = INTERFACE
-      fRange := fRange + [rsAtClass] - [rsVarTypeInSpecification, rsAfterEqual, rsAfterColon];
+      fRange := fRange + [rsInClassHeader] - [rsVarTypeInSpecification, rsAfterEqual, rsAfterColon];
+      FOldRange := FOldRange - [rsInClassHeader];
       StartPascalCodeFoldBlock(cfbtClass);
     end
     else
@@ -2610,9 +2617,9 @@ begin
   then begin
     Result := tkModifier;
     // type foo = class abstract
-    if (rsAfterClass in fRange) and (TopPascalCodeFoldBlockType = cfbtClass) then begin
-      fRange := fRange + [rsAtClass, rsAfterIdentifierOrValue]; // forward, in case of further class modifiers  end
-      FOldRange := FOldRange - [rsAfterIdentifierOrValue];
+    if (rsInClassHeader in fRange) and (TopPascalCodeFoldBlockType = cfbtClass) then begin
+      fRange := fRange + [rsInClassHeader, rsAfterIdentifierOrValue]; // forward, in case of further class modifiers  end
+      FOldRange := FOldRange - [rsInClassHeader, rsAfterIdentifierOrValue];
     end
     else
     // procedure foo; virtual; abstract;
@@ -2627,7 +2634,8 @@ begin
     Result := tkKey;
     if (rsAfterEqualOrColon in fRange) and (PasCodeFoldRange.BracketNestLevel = 0) then
     begin
-      fRange := fRange + [rsAtClass];
+      fRange := fRange + [rsInClassHeader]; // rsInObjcProtocol ?
+      FOldRange := FOldRange - [rsInClassHeader];
       StartPascalCodeFoldBlock(cfbtClass);
     end;
   end
@@ -2729,7 +2737,8 @@ begin
     Result := tkKey;
     if (rsAfterEqualOrColon in fRange) and (PasCodeFoldRange.BracketNestLevel = 0) then
     begin
-      fRange := fRange + [rsAtClass];
+      fRange := fRange + [rsInClassHeader];
+      FOldRange := FOldRange - [rsInClassHeader];
       StartPascalCodeFoldBlock(cfbtClass);
     end;
   end
@@ -2737,7 +2746,7 @@ begin
   if KeyComp('strict') and
      (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection, cfbtRecord, cfbtClassConstBlock, cfbtClassTypeBlock]) and
      (fRange * [rsInProcHeader, rsAfterEqual, rsAfterEqualOrColon, rsVarTypeInSpecification] = []) and
-     ( (FTokenState in [tsAtBeginOfStatement, tsAfterVarConstType, tsAfterTypedConst]) or (fRange * [rsAfterClass] <> []) ) and
+     ( (FTokenState in [tsAtBeginOfStatement, tsAfterVarConstType, tsAfterClass, tsAfterTypedConst]) or (fRange * [rsInClassHeader] <> []) ) and
      ScanForClassSection
   then begin
     CloseFolds(TopPascalCodeFoldBlockType, [cfbtClassConstBlock, cfbtClassTypeBlock]);
@@ -2758,7 +2767,7 @@ begin
   if KeyComp('Private') and
      (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection, cfbtRecord, cfbtClassConstBlock, cfbtClassTypeBlock]) and
      (fRange * [rsInProcHeader, rsAfterEqual, rsAfterEqualOrColon, rsVarTypeInSpecification] = []) and
-     ( (FTokenState in [tsAtBeginOfStatement, tsAfterVarConstType, tsAfterTypedConst]) or (fRange * [rsAfterClass] <> []) )
+     ( (FTokenState in [tsAtBeginOfStatement, tsAfterVarConstType, tsAfterClass, tsAfterTypedConst]) or (fRange * [rsInClassHeader] <> []) )
   then begin
     Result := tkKey;
     FNextTokenState := tsAtBeginOfStatement;
@@ -2845,7 +2854,7 @@ begin
   if KeyComp('Published') and
      (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection, cfbtRecord, cfbtClassConstBlock, cfbtClassTypeBlock]) and
      (fRange * [rsInProcHeader, rsAfterEqual, rsAfterEqualOrColon, rsVarTypeInSpecification] = []) and
-     ( (FTokenState in [tsAtBeginOfStatement, tsAfterVarConstType, tsAfterTypedConst]) or (fRange * [rsAfterClass] <> []) )
+     ( (FTokenState in [tsAtBeginOfStatement, tsAfterVarConstType, tsAfterClass, tsAfterTypedConst]) or (fRange * [rsInClassHeader] <> []) )
   then begin
     Result := tkKey;
     FNextTokenState := tsAtBeginOfStatement;
@@ -2952,7 +2961,7 @@ begin
   if KeyComp('Automated') and // in old times: class section
      (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection, cfbtRecord]) and
      (fRange * [rsInProcHeader, rsAfterEqual, rsAfterEqualOrColon, rsVarTypeInSpecification] = []) and
-     ( (FTokenState in [tsAtBeginOfStatement, tsAfterTypedConst]) or (fRange * [rsAfterClass] <> []) )
+     ( (FTokenState in [tsAtBeginOfStatement, tsAfterTypedConst, tsAfterClass]) or (fRange * [rsInClassHeader] <> []) )
   then
     Result := tkKey
   else
@@ -3117,7 +3126,7 @@ begin
   if KeyComp('Protected') and
      (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection, cfbtRecord, cfbtClassConstBlock, cfbtClassTypeBlock]) and
      (fRange * [rsInProcHeader, rsAfterEqual, rsAfterEqualOrColon, rsVarTypeInSpecification] = []) and
-     ( (FTokenState in [tsAtBeginOfStatement, tsAfterVarConstType, tsAfterTypedConst]) or (fRange * [rsAfterClass] <> []) )
+     ( (FTokenState in [tsAtBeginOfStatement, tsAfterVarConstType, tsAfterClass, tsAfterTypedConst]) or (fRange * [rsInClassHeader] <> []) )
   then begin
     Result := tkKey;
     FNextTokenState := tsAtBeginOfStatement;
@@ -3197,7 +3206,9 @@ begin
     Result := tkKey;
     if (rsAfterEqualOrColon in fRange) and (PasCodeFoldRange.BracketNestLevel = 0) then
     begin
-      fRange := fRange + [rsAtClass] - [rsVarTypeInSpecification, rsAfterEqual, rsAfterColon];
+      // rsInObjcProtocol ?
+      fRange := fRange + [rsInClassHeader] - [rsVarTypeInSpecification, rsAfterEqual, rsAfterColon];
+      FOldRange := FOldRange - [rsInClassHeader];
       StartPascalCodeFoldBlock(cfbtClass);
     end;
   end
@@ -3264,7 +3275,8 @@ begin
     Result := tkKey;
     if (rsAfterEqual in fRange) and (PasCodeFoldRange.BracketNestLevel = 0) then
     begin
-      fRange := fRange + [rsAtClass] - [rsVarTypeInSpecification, rsAfterEqual, rsAfterColon];
+      fRange := fRange + [rsInClassHeader] - [rsVarTypeInSpecification, rsAfterEqual, rsAfterColon];
+      FOldRange := FOldRange - [rsInClassHeader];
       StartPascalCodeFoldBlock(cfbtClass);
     end;
   end
@@ -3446,7 +3458,8 @@ begin
     Result := tkKey;
     if (rsAfterEqualOrColon in fRange) and (PasCodeFoldRange.BracketNestLevel = 0) then
     begin
-      fRange := fRange + [rsAtClass, rsInObjcProtocol] - [rsVarTypeInSpecification, rsAfterEqual, rsAfterColon];
+      fRange := fRange + [rsInClassHeader, rsInObjcProtocol] - [rsVarTypeInSpecification, rsAfterEqual, rsAfterColon];
+      FOldRange := FOldRange - [rsInClassHeader];
       StartPascalCodeFoldBlock(cfbtClass);
     end;
   end
@@ -4659,9 +4672,14 @@ begin
   if tfb in [cfbtUses, cfbtLabelBlock, cfbtLocalLabelBlock] then
     EndPascalCodeFoldBlock;
 
-  if (tfb = cfbtClass) and ((rsAfterClass in fRange) or InSkipBlocks) then begin
-    EndPascalCodeFoldBlock(True, True);
-    fRange := fRange - [rsInObjcProtocol];
+  if (PasCodeFoldRange.BracketNestLevel = 0) and
+     ( (fRange * [rsInClassHeader, rsInTypeHelper {, rsInObjcProtocol}] <> []) or
+       InSkipBlocks
+     )
+  then begin
+    if (tfb = cfbtClass) then
+      EndPascalCodeFoldBlock(True, True);
+    fRange := fRange - [rsInClassHeader, rsInTypeHelper, rsInObjcProtocol];
   end;
 
   EndStatement(tfb, [cfbtForDo,cfbtWhileDo,cfbtWithDo,cfbtIfThen,cfbtIfElse]);
@@ -4960,7 +4978,7 @@ begin
       if (reaStructMemeber in FRequiredStates) and (FTokenID = tkIdentifier) then
         FTokenExtraAttribs := FTokenExtraAttribs + [eaStructMemeber];
       end;
-    tsNone, tsAtBeginOfStatement, tsAfterVarConstType, tsAfterTypedConst, tsAfterEqualThenType: begin
+    tsNone, tsAtBeginOfStatement, tsAfterVarConstType, tsAfterClass, tsAfterTypedConst, tsAfterEqualThenType: begin
         // procedure param-list / result
         tfb := TopPascalCodeFoldBlockType;
         if (FTokenState in [tsNone, tsAtBeginOfStatement]) and (rsInProcHeader in fRange) and
@@ -5131,34 +5149,21 @@ begin
         end;
 
         if not (FTokenID in [tkSpace, tkComment, tkIDEDirective, tkDirective]) then begin
-          if (PasCodeFoldRange.BracketNestLevel = 0) and
-             (OldNestLevel = 0)
+          if (FTokenID = tkIdentifier) and (rsInTypeHelper in FOldRange) and
+             (PasCodeFoldRange.BracketNestLevel = 0)
           then
-            fRange := fRange - [rsAfterClass];
+            FTokenState := tsAtBeginOfStatement;
+
           if (PasCodeFoldRange.BracketNestLevel > 0) or
              (OldNestLevel > 0)
           then
-            FOldRange := FOldRange - [rsInTypeHelper];
+            FOldRange := FOldRange - [rsInClassHeader, rsInTypeHelper];
 
           fRange := fRange -
-            (FOldRange * [rsAfterEqualOrColon, rsAtPropertyOrReadWrite, rsAfterClassField,
-                          rsAfterIdentifierOrValue, rsWasInProcHeader,
-                          rsInTypeHelper]
+            (FOldRange * [rsAfterEqualOrColon, rsAtPropertyOrReadWrite,
+                          rsInClassHeader, rsInTypeHelper, rsAfterClassField,
+                          rsAfterIdentifierOrValue, rsWasInProcHeader]
             );
-
-          if (FTokenID = tkIdentifier) and (rsInTypeHelper in FOldRange) then
-            FTokenState := tsAtBeginOfStatement;
-
-          if rsAtClass in fRange then begin
-            if FOldRange * [rsAtClass, rsAfterClass] <> [] then
-              fRange := fRange + [rsAfterClass] - [rsAtClass]
-            else
-              fRange := fRange + [rsAfterClass];
-          end
-        end
-        else begin
-          if rsAtClass in fRange then
-            fRange := fRange + [rsAfterClass];
         end;
 
         if (FTokenID = tkIdentifier) then

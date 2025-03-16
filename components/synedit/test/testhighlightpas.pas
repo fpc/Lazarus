@@ -2462,7 +2462,7 @@ begin
          'type',
          'TFoo = class {}',
          ' sealed abstract',
-           'a, sealed, abstract: Integer;',
+           'helper, sealed, abstract: Integer;',
            'procedure Foo; abstract;',
           'end;',
          ''
@@ -2490,7 +2490,7 @@ begin
     SetLines
       ([ 'Unit A; interface',
          'type',
-         'TFoo = class(sealed) sealed abstract',
+         'TFoo = class sealed abstract(sealed)',
            'helper, sealed, abstract: Integer;',
            'procedure Foo; abstract;',
           'end;',
@@ -2498,10 +2498,10 @@ begin
       ]);
 
     CheckTokensForLine('class declaration"',  2,
-      [ tkIdentifier, tkSpace, tkSymbol, tkSpace,
-        tkKey {class}, tkSymbol, tkIdentifier, tkSymbol, tkSpace,
-        tkModifier {sealed}, tkSpace,
-        tkModifier {abstract}
+      [ tkIdentifier, tkSpace, TK_Equal, tkSpace,
+        tkKey {class}, tkSpace,
+        tkModifier {sealed}, tkSpace, tkModifier {abstract},
+        tkSymbol, tkIdentifier, tkSymbol
       ]);
     CheckTokensForLine('var in class "',  3,
       [ tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol,
