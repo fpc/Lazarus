@@ -453,6 +453,15 @@ type
     pcmMacPas
     );
 
+  TPascalCompilerModeSwitch = (
+    pcsNestedComments,
+    pcsTypeHelpers,
+    //pcsAdvancedRecords,
+    pcsObjectiveC1,
+    pcsObjectiveC2
+  );
+  TPascalCompilerModeSwitches = set of TPascalCompilerModeSwitch;
+
   TSynPasDividerDrawLocation = (
       pddlUnitSection,
       pddlUses,
@@ -525,11 +534,10 @@ type
   TSynPasSynRange = class(TSynCustomHighlighterRange)
   private
     FMode: TPascalCompilerMode;
-    FNestedComments: Boolean;
     FBracketNestLevel : Integer;
     FLastLineCodeFoldLevelFix: integer;
+    FModeSwitches: TPascalCompilerModeSwitches;
     FPasFoldFixLevel: Smallint;
-    FTypeHelpers: Boolean;
     FTokenState: TTokenState;
   public
     procedure Clear; override;
@@ -541,8 +549,7 @@ type
     procedure DecLastLineCodeFoldLevelFix;
     procedure DecLastLinePasFoldFix;
     property Mode: TPascalCompilerMode read FMode write FMode;
-    property NestedComments: Boolean read FNestedComments write FNestedComments;
-    property TypeHelpers: Boolean read FTypeHelpers write FTypeHelpers;
+    property ModeSwitches: TPascalCompilerModeSwitches read FModeSwitches write FModeSwitches;
     property BracketNestLevel: integer read FBracketNestLevel write FBracketNestLevel;
     property LastLineCodeFoldLevelFix: integer
       read FLastLineCodeFoldLevelFix write FLastLineCodeFoldLevelFix;
@@ -597,7 +604,6 @@ type
 
     fAsmStart: Boolean;
     FExtendedKeywordsMode: Boolean;
-    FNestedComments: boolean;
     FUsePasDoc, FIsPasDocKey, FIsPasUnknown, FIsPasDocSym, FIsInSlash: Boolean;
     FPasDocWordList: TStringList;
     fPasDocKeyWordAttri: TSynHighlighterAttributesModifier;
@@ -633,7 +639,6 @@ type
     fLineLen: integer;
     fLineNumber: Integer;
     fProcTable: array[#0..#255] of TProcTableProc;
-    FTypeHelpers: boolean;
     Run: LongInt;// current parser postion in fLine
     fStringLen: Integer;// current length of hash
     fToIdent: integer;// start of current identifier in fLine
@@ -658,11 +663,17 @@ type
     FCaseLabelAttri: TSynHighlighterAttributesModifier;
     fDirectiveAttri: TSynHighlighterAttributes;
     FCompilerMode: TPascalCompilerMode;
+    FModeSwitches: TPascalCompilerModeSwitches;
+    FModeSwitchesLoaded: Boolean;
     fD4syntax: boolean;
     // Divider
     FDividerDrawConfig: Array [TSynPasDividerDrawLocation] of TSynDividerDrawConfig;
 
     procedure DoCustomTokenChanged(Sender: TObject);
+    procedure DoReadLfmNestedComments(Reader: TReader);
+    procedure DoReadLfmTypeHelpers(Reader: TReader);
+    function GetNestedComments: boolean; deprecated;
+    function GetTypeHelpers: boolean; deprecated;
     procedure RebuildCustomTokenInfo;
     function  GetCustomTokenCount: integer;
     procedure SetCaseLabelAttriMatchesElseOtherwise(AValue: Boolean);
@@ -671,13 +682,15 @@ type
     function GetPasCodeFoldRange: TSynPasSynRange;
     procedure PasDocAttrChanged(Sender: TObject);
     procedure SetCompilerMode(const AValue: TPascalCompilerMode);
+    procedure SetModeSwitches(AValue: TPascalCompilerModeSwitches);
     procedure SetDeclaredTypeAttributeMode(AValue: TSynPasTypeAttributeMode);
     procedure SetDeclaredValueAttributeMachesStringNum(AValue: Boolean);
     procedure SetDeclaredValueAttributeMode(AValue: TSynPasTypeAttributeMode);
     procedure SetExtendedKeywordsMode(const AValue: Boolean);
-    procedure SetNestedComments(const ANestedComments: boolean);
     procedure SetStringKeywordMode(const AValue: TSynPasStringMode);
     procedure SetStringMultilineMode(const AValue: TSynPasMultilineStringModes);
+    procedure SetNestedComments(AValue: boolean); deprecated;
+    procedure SetTypeHelpers(AValue: boolean); deprecated;
     function TextComp(aText: PChar): Boolean;
     function KeyHash: Integer;
     function Func15: TtkTokenKind;
@@ -810,7 +823,6 @@ type
     procedure DoubleQuoteProc;
     procedure StringProc_MultiLineDQ;
     procedure SymbolProc;
-    function TypeHelpersIsStored: Boolean;
     procedure UnknownProc;
     procedure SetD4syntax(const Value: boolean);
 
@@ -889,14 +901,14 @@ type
     function GetFoldConfigCount: Integer; override;
     function GetFoldConfigInternalCount: Integer; override;
     procedure DoFoldConfigChanged(Sender: TObject); override;
+
+    procedure DefineProperties(Filer: TFiler); override;
   public
     class function GetCapabilities: TSynHighlighterCapabilities; override;
     class function GetLanguageName: string; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Loaded; override;
-    procedure Loading; override;
     function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
       override;
     function GetEol: Boolean; override;
@@ -937,6 +949,9 @@ type
 
     property CustomTokenCount: integer read GetCustomTokenCount write SetCustomTokenCount;
     property CustomTokens[AnIndex: integer]: TSynPasSynCustomToken read GetCustomTokens;
+
+    property NestedComments: boolean read GetNestedComments write SetNestedComments stored False; deprecated 'Use ModeSwitches / Will be removed in 5.99';
+    property TypeHelpers: boolean read GetTypeHelpers write SetTypeHelpers stored False; deprecated 'Use ModeSwitches / Will be removed in 5.99';
   published
     property AsmAttri: TSynHighlighterAttributes read fAsmAttri write fAsmAttri;
     property CommentAttri: TSynHighlighterAttributes read fCommentAttri
@@ -989,8 +1004,7 @@ type
     property DirectiveAttri: TSynHighlighterAttributes read fDirectiveAttri
       write fDirectiveAttri;
     property CompilerMode: TPascalCompilerMode read FCompilerMode write SetCompilerMode;
-    property NestedComments: boolean read FNestedComments write SetNestedComments;
-    property TypeHelpers: boolean read FTypeHelpers write FTypeHelpers stored TypeHelpersIsStored;
+    property ModeSwitches: TPascalCompilerModeSwitches read FModeSwitches write SetModeSwitches;
     property D4syntax: boolean read FD4syntax write SetD4syntax default true;
     property ExtendedKeywordsMode: Boolean
              read FExtendedKeywordsMode write SetExtendedKeywordsMode default False;
@@ -1374,14 +1388,27 @@ end;
 
 procedure TSynPasSyn.SetCompilerMode(const AValue: TPascalCompilerMode);
 begin
-  if not(csLoading in ComponentState) then begin
-    NestedComments:=AValue in [pcmFPC,pcmObjFPC]; // NestedComments has to be reset even if CompilerMode doesn't change
-    TypeHelpers := AValue in [pcmDelphi];  // keep in sync with TypeHelpersIsStored / Loaded
+  if (not FModeSwitchesLoaded) or not(csLoading in ComponentState) then begin
+    case AValue of
+      pcmFPC,
+      pcmObjFPC: ModeSwitches := [pcsNestedComments];
+      pcmDelphi: ModeSwitches := [pcsTypeHelpers];
+      //pcmTP: ;
+      //pcmGPC: ;
+      pcmMacPas: ModeSwitches := [pcsObjectiveC1, pcsObjectiveC2];
+    end;
   end;
-  if FCompilerMode=AValue then exit;
+  //if FCompilerMode=AValue then exit;
   FCompilerMode:=AValue;
-  PasCodeFoldRange.Mode:=FCompilerMode;
-  //DebugLn(['TSynPasSyn.SetCompilerMode FCompilerMode=',ord(FCompilerMode),' FNestedComments=',FNestedComments]);
+//  PasCodeFoldRange.Mode:=FCompilerMode;
+end;
+
+procedure TSynPasSyn.SetModeSwitches(AValue: TPascalCompilerModeSwitches);
+begin
+  if (csLoading in ComponentState) then
+    FModeSwitchesLoaded := True;
+
+  FModeSwitches := AValue;
 end;
 
 procedure TSynPasSyn.SetDeclaredTypeAttributeMode(AValue: TSynPasTypeAttributeMode);
@@ -1432,6 +1459,22 @@ begin
   DefHighlightChange(self);
 end;
 
+procedure TSynPasSyn.SetNestedComments(AValue: boolean);
+begin
+  if AValue then
+    ModeSwitches := ModeSwitches + [pcsNestedComments]
+  else
+    ModeSwitches := ModeSwitches - [pcsNestedComments];
+end;
+
+procedure TSynPasSyn.SetTypeHelpers(AValue: boolean);
+begin
+  if AValue then
+    ModeSwitches := ModeSwitches + [pcsTypeHelpers]
+  else
+    ModeSwitches := ModeSwitches - [pcsTypeHelpers];
+end;
+
 function TSynPasSyn.GetPasCodeFoldRange: TSynPasSynRange;
 begin
   Result := TSynPasSynRange(CodeFoldRange);
@@ -1454,6 +1497,34 @@ procedure TSynPasSyn.DoCustomTokenChanged(Sender: TObject);
 begin
   FNeedCustomTokenBuild := True;
   FCustomTokenMarkup := nil;
+end;
+
+procedure TSynPasSyn.DoReadLfmNestedComments(Reader: TReader);
+begin
+  if Reader.ReadBoolean then
+    FModeSwitches := FModeSwitches + [pcsNestedComments]
+  else
+    FModeSwitches := FModeSwitches - [pcsNestedComments];
+  FModeSwitchesLoaded := True;
+end;
+
+procedure TSynPasSyn.DoReadLfmTypeHelpers(Reader: TReader);
+begin
+  if Reader.ReadBoolean then
+    FModeSwitches := FModeSwitches + [pcsTypeHelpers]
+  else
+    FModeSwitches := FModeSwitches - [pcsTypeHelpers];
+  FModeSwitchesLoaded := True;
+end;
+
+function TSynPasSyn.GetNestedComments: boolean;
+begin
+  Result := pcsNestedComments in FModeSwitches;
+end;
+
+function TSynPasSyn.GetTypeHelpers: boolean;
+begin
+  Result := pcsTypeHelpers in FModeSwitches;
 end;
 
 procedure TSynPasSyn.RebuildCustomTokenInfo;
@@ -2284,10 +2355,10 @@ begin
   else if KeyComp('Record') then begin
     StartPascalCodeFoldBlock(cfbtRecord);
     //FNextTokenState := tsAtBeginOfStatement;
-    //if (CompilerMode = pcmDelphi) or (TypeHelpers {and adv_record}) then
+    //if (CompilerMode = pcmDelphi) or (pcsTypeHelpers in FModeSwitches {and adv_record}) then
     FNextTokenState := tsAfterClass;
     fRange := fRange - [rsVarTypeInSpecification, rsAfterEqual, rsAfterColon, rsAfterEqualOrColon];
-    if (CompilerMode = pcmDelphi) or (TypeHelpers {and adv_record}) then
+    if (CompilerMode = pcmDelphi) or (pcsTypeHelpers in FModeSwitches {and adv_record}) then
       fRange := fRange + [rsInClassHeader]; // highlight helper
       FOldRange := FOldRange - [rsInClassHeader];
     Result := tkKey;
@@ -2335,7 +2406,7 @@ begin
       fRange := fRange - [rsVarTypeInSpecification, rsAfterEqual, rsAfterColon] + [rsInTypeHelper];
     end
     else
-    if (FTokenState = tsAfterEqualThenType) and TypeHelpers then begin
+    if (FTokenState = tsAfterEqualThenType) and (pcsTypeHelpers in FModeSwitches) then begin
       Result := tkKey;
       fRange := fRange - [rsVarTypeInSpecification, rsAfterEqual, rsAfterColon] + [rsInTypeHelper];
       StartPascalCodeFoldBlock(cfbtClass); // type helper
@@ -2371,7 +2442,7 @@ begin
     then begin
       if (rsAfterEqualOrColon in fRange) then begin
         FOldRange := FOldRange - [rsAfterEqualOrColon];
-        if TypeHelpers then
+        if (pcsTypeHelpers in FModeSwitches) then
           FNextTokenState := tsAfterEqualThenType;
       end
       else begin
@@ -3835,19 +3906,6 @@ begin
   inherited Destroy;
 end;
 
-procedure TSynPasSyn.Loaded;
-begin
-  if Byte(FTypeHelpers) = 99 then
-    FTypeHelpers := FCompilerMode in [pcmDelphi];
-  inherited Loaded;
-end;
-
-procedure TSynPasSyn.Loading;
-begin
-  Byte(FTypeHelpers) := 99; // Help detecting, if changed while loading.
-  inherited Loading;
-end;
-
 procedure TSynPasSyn.SetLine(const NewValue: string; LineNumber:Integer);
 begin
   //DebugLn(['TSynPasSyn.SetLine START LineNumber=',LineNumber,' Line="',NewValue,'"']);
@@ -3872,13 +3930,6 @@ begin
   if not IsCollectingNodeInfo then
     Next;
 end; { SetLine }
-
-procedure TSynPasSyn.SetNestedComments(const ANestedComments: boolean);
-begin
-  if FNestedComments = ANestedComments then Exit;
-  FNestedComments := ANestedComments;
-  PasCodeFoldRange.NestedComments:=FNestedComments;
-end;
 
 procedure TSynPasSyn.AddressOpProc;
 begin
@@ -4030,10 +4081,10 @@ begin
       // skip space
       while (fLine[Run] in [' ',#9,#10,#13]) do inc(Run);
       if fLine[Run] in ['+', '}'] then
-        NestedComments:=True
+        ModeSwitches := ModeSwitches + [pcsNestedComments]
       else
       if fLine[Run] = '-' then
-        NestedComments:=False;
+        ModeSwitches := ModeSwitches - [pcsNestedComments];
     end;
     if TextComp('typehelpers') then
     begin
@@ -4041,10 +4092,10 @@ begin
       // skip space
       while (fLine[Run] in [' ',#9,#10,#13]) do inc(Run);
       if fLine[Run] in ['+', '}'] then
-        TypeHelpers := True
+        ModeSwitches := ModeSwitches + [pcsTypeHelpers]
       else
       if fLine[Run] = '-' then
-        TypeHelpers := False;
+        ModeSwitches := ModeSwitches - [pcsTypeHelpers];
     end;
   end;
   if TextComp('mode') then begin
@@ -4080,7 +4131,7 @@ begin
         break;
       end;
     '{':
-      if NestedComments then begin
+      if pcsNestedComments in ModeSwitches then begin
         fStringLen := 1;
         StartPascalCodeFoldBlock(cfbtNestedComment);
       end;
@@ -4472,8 +4523,9 @@ begin
         break;
       end;
     end
-    else if NestedComments
-    and (fLine[Run] = '(') and (fLine[Run + 1] = '*') then
+    else
+    if (pcsNestedComments in ModeSwitches) and
+       (fLine[Run] = '(') and (fLine[Run + 1] = '*') then
     begin
       fStringLen := 2;
       StartPascalCodeFoldBlock(cfbtNestedComment);
@@ -4874,11 +4926,6 @@ begin
   else
   if rsInRaise in fRange then
     FNextTokenState := tsAfterRaise;
-end;
-
-function TSynPasSyn.TypeHelpersIsStored: Boolean;
-begin
-  Result := FTypeHelpers = (FCompilerMode in [pcmDelphi]);
 end;
 
 procedure TSynPasSyn.UnknownProc;
@@ -5375,7 +5422,8 @@ begin
   // -> update now
   CodeFoldRange.RangeType:=Pointer(PtrUInt(Integer(fRange)));
   PasCodeFoldRange.TokenState := FTokenState;
-  PasCodeFoldRange.TypeHelpers := TypeHelpers;
+  PasCodeFoldRange.Mode := CompilerMode;
+  PasCodeFoldRange.ModeSwitches := ModeSwitches;
   // return a fixed copy of the current CodeFoldRange instance
   Result := inherited GetRange;
 end;
@@ -5385,8 +5433,7 @@ begin
   //DebugLn(['TSynPasSyn.SetRange START']);
   inherited SetRange(Value);
   CompilerMode := PasCodeFoldRange.Mode;
-  NestedComments := PasCodeFoldRange.NestedComments;
-  TypeHelpers := PasCodeFoldRange.TypeHelpers;
+  ModeSwitches := PasCodeFoldRange.ModeSwitches;
   FTokenState := PasCodeFoldRange.TokenState;
   fRange := TRangeStates(Integer(PtrUInt(CodeFoldRange.RangeType)));
   FSynPasRangeInfo := TSynHighlighterPasRangeList(CurrentRanges).PasRangeInfo[LineIndex-1];
@@ -6522,6 +6569,13 @@ begin
   inherited DoFoldConfigChanged(Sender);
 end;
 
+procedure TSynPasSyn.DefineProperties(Filer: TFiler);
+begin
+  inherited DefineProperties(Filer);
+  Filer.DefineProperty('NestedComments', @DoReadLfmNestedComments, nil, False);
+  Filer.DefineProperty('TypeHelpers',    @DoReadLfmTypeHelpers, nil, False);
+end;
+
 function TSynPasSyn.GetDividerDrawConfig(Index: Integer): TSynDividerDrawConfig;
 begin
   Result := FDividerDrawConfig[TSynPasDividerDrawLocation(Index)];
@@ -6839,9 +6893,7 @@ begin
   if Result<>0 then exit;
   Result:=ord(FMode)-ord(TSynPasSynRange(Range).FMode);
   if Result<>0 then exit;
-  Result:=ord(FNestedComments)-ord(TSynPasSynRange(Range).FNestedComments);
-  if Result<>0 then exit;
-  Result:=ord(FTypeHelpers)-ord(TSynPasSynRange(Range).FTypeHelpers);
+  Result:=Integer(FModeSwitches)-Integer(TSynPasSynRange(Range).FModeSwitches);
   if Result<>0 then exit;
   Result := FBracketNestLevel - TSynPasSynRange(Range).FBracketNestLevel;
   if Result<>0 then exit;
@@ -6856,8 +6908,7 @@ begin
     inherited Assign(Src);
     FTokenState:=TSynPasSynRange(Src).FTokenState;
     FMode:=TSynPasSynRange(Src).FMode;
-    FNestedComments:=TSynPasSynRange(Src).FNestedComments;
-    FTypeHelpers := TSynPasSynRange(Src).FTypeHelpers;
+    FModeSwitches:=TSynPasSynRange(Src).FModeSwitches;
     FBracketNestLevel:=TSynPasSynRange(Src).FBracketNestLevel;
     FLastLineCodeFoldLevelFix := TSynPasSynRange(Src).FLastLineCodeFoldLevelFix;
     FPasFoldFixLevel := TSynPasSynRange(Src).FPasFoldFixLevel;
