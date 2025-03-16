@@ -3070,6 +3070,10 @@ var
     Result:=false;
     if FilenameIsAbsolute(TargetFilename) then exit;
     Result:=DoOnFindUsedUnit(CurFilename,TargetUnitName,'')<>nil;
+    {$IFDEF VerboseFindSourceNameReferences}
+    if Result then
+      debugln(['TCodeToolManager.FindSourceNameReferences File ',Filename,', virtual target in unit path']);
+    {$ENDIF}
   end;
 
 begin
