@@ -125,6 +125,7 @@ type
                           //    >>> renewed after dot "."
     tsAfterProcName,      // procedure NAME
                           // unit NAME    // used for "deprecated" detection
+    tsAfterIs,            // maybe "is nested"
     tsAfterEqualThenType, // TFoo = type
                           //    >>> ONLY if type-helper enabled
     tsAfterAbsolute,      // var x absolute y;
@@ -730,6 +731,7 @@ type
     function Func64: TtkTokenKind;
     function Func65: TtkTokenKind;
     function Func66: TtkTokenKind;
+    function Func67: TtkTokenKind;
     function Func69: TtkTokenKind;
     function Func71: TtkTokenKind;
     function Func72: TtkTokenKind;
@@ -1251,6 +1253,7 @@ begin
   fIdentFuncTable[64] := @Func64;
   fIdentFuncTable[65] := @Func65;
   fIdentFuncTable[66] := @Func66;
+  fIdentFuncTable[67] := @Func67;
   fIdentFuncTable[69] := @Func69;
   fIdentFuncTable[71] := @Func71;
   fIdentFuncTable[72] := @Func72;
@@ -1825,6 +1828,11 @@ var
   tfb: TPascalCodeFoldBlockType;
 begin
   if KeyComp('Is') then begin
+    if (fRange * [rsInProcHeader, rsVarTypeInSpecification] = [rsInProcHeader, rsVarTypeInSpecification]) and
+       (PasCodeFoldRange.BracketNestLevel = 0) and
+       (TopPascalCodeFoldBlockType in cfbtVarConstTypeExt)
+    then
+      FNextTokenState := tsAfterIs;
     Result := tkKey;
     DoAfterOperator;
   end
@@ -2469,6 +2477,14 @@ begin
     Result := tkKey;
   end
   else Result := tkIdentifier;
+end;
+
+function TSynPasSyn.Func67: TtkTokenKind;
+begin
+  if (FTokenState = tsAfterIs) and KeyComp('nested') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func69: TtkTokenKind;

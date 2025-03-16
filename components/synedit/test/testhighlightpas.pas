@@ -1555,21 +1555,22 @@ begin
        '',
        'var',
 {10}   '  Foo: Procedure of object;', // no folding // do not end var block
+       '  Foo: Procedure is nested;', // no folding // do not end var block
        '',
        'type',
        '  TBar= ',
-       '    Function(): Boolean;',  // no folding // do not end type block
-{15}   '',
+{15}   '    Function(): Boolean;',  // no folding // do not end type block
+       '',
        'Procedure a;', // no folding in interface
        '',
        'implementation',
-       '',
-{20}   'var',
+{20}   '',
+       'var',
        '  Foo2: Procedure of object;', // no folding // do not end var block
        '',
        'type',
-       '  TBar2: ',
-{25}   '    Function(): Boolean;',  // no folding // do not end type block
+{25}   '  TBar2: ',
+       '    Function(): Boolean;',  // no folding // do not end type block
        '',
        'Procedure a;', // fold
        'var',
@@ -1593,16 +1594,16 @@ begin
       // fold depth / only for all folds enabled
       CheckFoldOpenCounts('', [ 1, 1, 0,
                                 1 {type}, 1, 0, 0, 0, 0,
-                                1 {var}, 0, 0, 1 {type}, 0, 0, 0,
+                                1 {var}, 0, 0, 0, 1 {type}, 0, 0, 0,
                                 0 {Proc}, 0,
                                 1 {impl}, 0, 1 {var}, 0, 0, 1 {type}, 0, 0, 0,
                                 1 {proc}, 1 {var}, 0, 0, 0, 0, 0
                          ]);
-      AssertEquals('Len var 1 ',   2, PasHighLighter.FoldLineLength(9, 0));
-      AssertEquals('Len type 1 ',  3, PasHighLighter.FoldLineLength(12, 0));
-      AssertEquals('Len var 2 ',   2, PasHighLighter.FoldLineLength(20, 0));
-      AssertEquals('Len type 2 ',  3, PasHighLighter.FoldLineLength(23, 0));
-      AssertEquals('Len var 3 ',   2, PasHighLighter.FoldLineLength(28, 0));
+      AssertEquals('Len var 1 ',   3, PasHighLighter.FoldLineLength(9, 0));
+      AssertEquals('Len type 1 ',  3, PasHighLighter.FoldLineLength(13, 0));
+      AssertEquals('Len var 2 ',   2, PasHighLighter.FoldLineLength(21, 0));
+      AssertEquals('Len type 2 ',  3, PasHighLighter.FoldLineLength(24, 0));
+      AssertEquals('Len var 3 ',   2, PasHighLighter.FoldLineLength(29, 0));
     end;
 
     CheckTokensForLine('IBar.p1',   5, [ tkSpace, tkKey + AtK, tkSpace, tkIdentifier + AtP, tkSymbol ]);
@@ -1610,7 +1611,10 @@ begin
     CheckTokensForLine('foo p of', 10, [ tkSpace, tkIdentifier, tkSymbol, tkSpace,
       tkKey + AtK, tkSpace, tkKey + AtK {of}, tkSpace, tkKey, tkSymbol
       ]);
-    CheckTokensForLine('TBar',     14, [ tkSpace, tkKey + AtK, tkSymbol, tkSymbol, tkSymbol,
+    CheckTokensForLine('foo p is nested', 11, [ tkSpace, tkIdentifier, tkSymbol, tkSpace,
+      tkKey + AtK, tkSpace, tkKey + AtK {of}, tkSpace, tkKey, tkSymbol
+      ]);
+    CheckTokensForLine('TBar',     15, [ tkSpace, tkKey + AtK, tkSymbol, tkSymbol, tkSymbol,
       tkSpace, tkIdentifier + AtI, tkSymbol
       ]);
 
