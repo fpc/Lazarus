@@ -6303,6 +6303,8 @@ function TMainIDE.CreateNewUniqueFilename(const Prefix, Ext: string;
   NewOwner: TObject; Flags: TSearchIDEFileFlags; TryWithoutNumber: boolean): string;
 
   function FileIsUnique(const ShortFilename: string): boolean;
+  var
+    aUnitName, InFilename: String;
   begin
     Result:=false;
 
@@ -6322,6 +6324,14 @@ function TMainIDE.CreateNewUniqueFilename(const Prefix, Ext: string;
 
     // search file in all loaded projects
     if (siffCheckAllProjects in Flags) then begin
+    end;
+
+    // search in project unit path
+    if FilenameIsPascalUnit(ShortFilename) then begin
+      aUnitName:=ExtractFileNameOnly(ShortFilename);
+      InFilename:='';
+      if CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(Project1.Directory,
+        aUnitName,InFilename,true)<>'' then exit;
     end;
 
     Result:=true;
