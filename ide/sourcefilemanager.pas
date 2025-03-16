@@ -1758,6 +1758,7 @@ end;
 function TProjectUnitFileSelector.InitialSelection(aFilename: string): Boolean;
 begin
   Result:=False;
+  if aFilename='' then ;
 end;
 
 function TProjectUnitFileSelector.Select: TModalResult;
@@ -5827,7 +5828,7 @@ begin
     // check new resource file
     NewLFMFilename:='';
     if FilenameHasPascalExt(NewFilename) then
-       NewLFMFilename:=ChangeFileExt(NewFilename,'.lfm');
+      NewLFMFilename:=ChangeFileExt(NewFilename,'.lfm');
     if AnUnitInfo.ComponentName='' then begin
       // unit has no component
       // -> remove lfm file, so that it will not be auto loaded on next open

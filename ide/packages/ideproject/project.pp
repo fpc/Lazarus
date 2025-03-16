@@ -6648,7 +6648,7 @@ end;
 procedure TProjectDefineTemplates.UpdateMain;
 begin
   if (Owner as TProject).Destroying then exit;
-  // update the package block define template (the container for all other
+  // update the block define template (the container for all other
   // define templates of the project)
   if FMain=nil then begin
     // create the main project template
@@ -6768,7 +6768,7 @@ var
   SrcDirDefTempl: TDefineTemplate;
   IDHasChanged: Boolean;
   SrcDirMarkDefTempl: TDefineTemplate;
-  CurUnitPath: String;
+  CurUnitPath, SrcDir: String;
 begin
   //DebugLn('TProjectDefineTemplates.UpdateDefinesForSourceDirectories ',Owner.IDAsString,' Active=',dbgs(Active),' TimeStamp=',dbgs(fLastSourceDirStamp),' Project.TimeStamp=',dbgs(Project.SourceDirectories.TimeStamp));
   if (not Owner.NeedsDefineTemplates) or (not Active) then exit;
@@ -6822,10 +6822,12 @@ begin
       UpdateSrcDirIfDef;
     for i:=0 to fLastSourceDirectories.Count-1 do begin
       // create directory template
+      SrcDir:=fLastSourceDirectories[i];
       SrcDirDefTempl:=TDefineTemplate.Create('Source Directory '+IntToStr(i+1),
-        fLastSourceDirectories[i],'',fLastSourceDirectories[i],da_Directory);
-      DisableDefaultsInDirectories(SrcDirDefTempl,false);
+        SrcDir,'',fLastSourceDirectories[i],da_Directory);
       fLastSourceDirectories.Objects[i]:=SrcDirDefTempl;
+      // add disable defaults
+      DisableDefaultsInDirectories(SrcDirDefTempl,false);
       // add proj source directory marker
       SrcDirMarkDefTempl:=TDefineTemplate.Create('ProjectSrcDirMark',
         lisProjProjectSourceDirectoryMark, '#ProjectSrcMark'+Owner.IDAsWord,
