@@ -853,6 +853,8 @@ type
     property PasCodeFoldRange: TSynPasSynRange read GetPasCodeFoldRange;
     function TopPascalCodeFoldBlockType
              (DownIndex: Integer = 0): TPascalCodeFoldBlockType;
+    function HasCompilerModeswitch(AModeSwitch: TPascalCompilerModeSwitch): Boolean; inline;
+    function HasCompilerModeswitch(AModeSwitches: TPascalCompilerModeSwitches): Boolean; inline;
 
     // Open/Close Folds
     procedure GetTokenBounds(out LogX1,LogX2: Integer); override;
@@ -1895,16 +1897,16 @@ begin
     StartPascalCodeFoldBlock(cfbtAsm);
   end
   else
-  if (fRange * [rsInClassHeader, rsInObjcProtocol, rsInProcHeader] = [rsInClassHeader, rsInObjcProtocol]) and
-     ((CompilerMode = pcmMacPas) or not (rsCompilerModeSet in fRange)) and
+  if (fRange * [rsInObjcProtocol, rsInProcHeader] = [rsInObjcProtocol]) and
+     (FTokenState = tsAfterExternal) and
      KeyComp('name') and
      (PasCodeFoldRange.BracketNestLevel = 0) and
      (TopPascalCodeFoldBlockType in [cfbtClass])
   then
   begin
     Result := tkModifier;
-    fRange := fRange + [rsInClassHeader];
-    FOldRange := FOldRange - [rsInClassHeader];
+    fRange := fRange + [rsInObjcProtocol];
+    FOldRange := FOldRange - [rsInObjcProtocol];
   end
   else
   if (FTokenState = tsAfterExternal) and
@@ -2322,7 +2324,7 @@ begin
     tfb := CloseFolds(TopPascalCodeFoldBlockType, [cfbtClassConstBlock, cfbtClassTypeBlock]);
     if (tfb in [cfbtClass, cfbtClassSection, cfbtRecord]) and
        (fRange * [rsInProcHeader, rsAfterEqual, rsAfterEqualOrColon, rsVarTypeInSpecification] = []) and
-       ( (FTokenState in [tsAtBeginOfStatement, tsAfterVarConstType, tsAfterClass, tsAfterTypedConst]) or (fRange * [rsInClassHeader] <> []) )
+       ( (FTokenState in [tsAtBeginOfStatement, tsAfterVarConstType, tsAfterClass, tsAfterTypedConst]) or (fRange * [rsInClassHeader, rsInObjcProtocol] <> []) )
     then begin
       Result := tkKey;
       FNextTokenState := tsAtBeginOfStatement;
@@ -2699,14 +2701,15 @@ begin
     else
       Result := tkIdentifier;
   end
-  else if ((CompilerMode = pcmMacPas) or not (rsCompilerModeSet in fRange)) and
-    KeyComp('ObjcClass')
+  else
+  if HasCompilerModeswitch([pcsObjectiveC1, pcsObjectiveC2]) and
+     KeyComp('ObjcClass')
   then begin
     Result := tkKey;
     if (rsAfterEqualOrColon in fRange) and (PasCodeFoldRange.BracketNestLevel = 0) then
     begin
-      fRange := fRange + [rsInClassHeader]; // rsInObjcProtocol ?
-      FOldRange := FOldRange - [rsInClassHeader];
+      fRange := fRange + [rsInObjcProtocol] - [rsVarTypeInSpecification, rsAfterEqual, rsAfterColon];
+      FOldRange := FOldRange - [rsInObjcProtocol];
       StartPascalCodeFoldBlock(cfbtClass);
     end;
   end
@@ -2817,7 +2820,7 @@ begin
   if KeyComp('strict') and
      (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection, cfbtRecord, cfbtClassConstBlock, cfbtClassTypeBlock]) and
      (fRange * [rsInProcHeader, rsAfterEqual, rsAfterEqualOrColon, rsVarTypeInSpecification] = []) and
-     ( (FTokenState in [tsAtBeginOfStatement, tsAfterVarConstType, tsAfterClass, tsAfterTypedConst]) or (fRange * [rsInClassHeader] <> []) ) and
+     ( (FTokenState in [tsAtBeginOfStatement, tsAfterVarConstType, tsAfterClass, tsAfterTypedConst]) or (fRange * [rsInClassHeader, rsInObjcProtocol] <> []) ) and
      ScanForClassSection
   then begin
     CloseFolds(TopPascalCodeFoldBlockType, [cfbtClassConstBlock, cfbtClassTypeBlock]);
@@ -2838,7 +2841,7 @@ begin
   if KeyComp('Private') and
      (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection, cfbtRecord, cfbtClassConstBlock, cfbtClassTypeBlock]) and
      (fRange * [rsInProcHeader, rsAfterEqual, rsAfterEqualOrColon, rsVarTypeInSpecification] = []) and
-     ( (FTokenState in [tsAtBeginOfStatement, tsAfterVarConstType, tsAfterClass, tsAfterTypedConst]) or (fRange * [rsInClassHeader] <> []) )
+     ( (FTokenState in [tsAtBeginOfStatement, tsAfterVarConstType, tsAfterClass, tsAfterTypedConst]) or (fRange * [rsInClassHeader, rsInObjcProtocol] <> []) )
   then begin
     Result := tkKey;
     FNextTokenState := tsAtBeginOfStatement;
@@ -2925,7 +2928,7 @@ begin
   if KeyComp('Published') and
      (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection, cfbtRecord, cfbtClassConstBlock, cfbtClassTypeBlock]) and
      (fRange * [rsInProcHeader, rsAfterEqual, rsAfterEqualOrColon, rsVarTypeInSpecification] = []) and
-     ( (FTokenState in [tsAtBeginOfStatement, tsAfterVarConstType, tsAfterClass, tsAfterTypedConst]) or (fRange * [rsInClassHeader] <> []) )
+     ( (FTokenState in [tsAtBeginOfStatement, tsAfterVarConstType, tsAfterClass, tsAfterTypedConst]) or (fRange * [rsInClassHeader, rsInObjcProtocol] <> []) )
   then begin
     Result := tkKey;
     FNextTokenState := tsAtBeginOfStatement;
@@ -3014,7 +3017,8 @@ begin
        ( (FTokenState in [tsAtBeginOfStatement, tsAfterTypedConst, tsAfterCvar]) and
          (fRange * [rsInProcHeader, rsWasInProcHeader] = []) and
          (tfb in [ cfbtVarBlock, cfbtLocalVarBlock])
-       )
+       ) or
+       ( rsInObjcProtocol in fRange )
      ) and
      KeyComp('External')
   then begin
@@ -3198,7 +3202,7 @@ begin
   if KeyComp('Protected') and
      (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection, cfbtRecord, cfbtClassConstBlock, cfbtClassTypeBlock]) and
      (fRange * [rsInProcHeader, rsAfterEqual, rsAfterEqualOrColon, rsVarTypeInSpecification] = []) and
-     ( (FTokenState in [tsAtBeginOfStatement, tsAfterVarConstType, tsAfterClass, tsAfterTypedConst]) or (fRange * [rsInClassHeader] <> []) )
+     ( (FTokenState in [tsAtBeginOfStatement, tsAfterVarConstType, tsAfterClass, tsAfterTypedConst]) or (fRange * [rsInClassHeader, rsInObjcProtocol] <> []) )
   then begin
     Result := tkKey;
     FNextTokenState := tsAtBeginOfStatement;
@@ -3272,15 +3276,14 @@ end;
 
 function TSynPasSyn.Func124: TtkTokenKind;
 begin
-  if ((CompilerMode = pcmMacPas) or not (rsCompilerModeSet in fRange)) and
+  if HasCompilerModeswitch([pcsObjectiveC1, pcsObjectiveC2]) and
      KeyComp('ObjcCategory')
   then begin
     Result := tkKey;
     if (rsAfterEqualOrColon in fRange) and (PasCodeFoldRange.BracketNestLevel = 0) then
     begin
-      // rsInObjcProtocol ?
-      fRange := fRange + [rsInClassHeader] - [rsVarTypeInSpecification, rsAfterEqual, rsAfterColon];
-      FOldRange := FOldRange - [rsInClassHeader];
+      fRange := fRange + [rsInObjcProtocol] - [rsVarTypeInSpecification, rsAfterEqual, rsAfterColon];
+      FOldRange := FOldRange - [rsInObjcProtocol];
       StartPascalCodeFoldBlock(cfbtClass);
     end;
   end
@@ -3524,14 +3527,14 @@ end;
 
 function TSynPasSyn.Func144: TtkTokenKind;
 begin
-  if ((CompilerMode = pcmMacPas) or not (rsCompilerModeSet in fRange)) and
+  if HasCompilerModeswitch([pcsObjectiveC1, pcsObjectiveC2]) and
      KeyComp('ObjcProtocol')
   then begin
     Result := tkKey;
     if (rsAfterEqualOrColon in fRange) and (PasCodeFoldRange.BracketNestLevel = 0) then
     begin
-      fRange := fRange + [rsInClassHeader, rsInObjcProtocol] - [rsVarTypeInSpecification, rsAfterEqual, rsAfterColon];
-      FOldRange := FOldRange - [rsInClassHeader];
+      fRange := fRange + [rsInObjcProtocol] - [rsVarTypeInSpecification, rsAfterEqual, rsAfterColon];
+      FOldRange := FOldRange - [rsInObjcProtocol];
       StartPascalCodeFoldBlock(cfbtClass);
     end;
   end
@@ -4069,6 +4072,16 @@ begin
 end;
 
 procedure TSynPasSyn.DirectiveProc;
+  procedure ApplyModeSwitch(ASwitch: TPascalCompilerModeSwitch);
+  begin
+    // skip space
+    while (fLine[Run] in [' ',#9,#10,#13]) do inc(Run);
+    if fLine[Run] in ['+', '}'] then
+      ModeSwitches := ModeSwitches + [ASwitch]
+    else
+    if fLine[Run] = '-' then
+      ModeSwitches := ModeSwitches - [ASwitch];
+  end;
 begin
   fTokenID := tkDirective;
   if TextComp('modeswitch') then begin
@@ -4079,24 +4092,25 @@ begin
     if TextComp('nestedcomments') then
     begin
       inc(Run,14);
-      // skip space
-      while (fLine[Run] in [' ',#9,#10,#13]) do inc(Run);
-      if fLine[Run] in ['+', '}'] then
-        ModeSwitches := ModeSwitches + [pcsNestedComments]
-      else
-      if fLine[Run] = '-' then
-        ModeSwitches := ModeSwitches - [pcsNestedComments];
-    end;
+      ApplyModeSwitch(pcsNestedComments);
+    end
+    else
     if TextComp('typehelpers') then
     begin
       inc(Run,11);
-      // skip space
-      while (fLine[Run] in [' ',#9,#10,#13]) do inc(Run);
-      if fLine[Run] in ['+', '}'] then
-        ModeSwitches := ModeSwitches + [pcsTypeHelpers]
-      else
-      if fLine[Run] = '-' then
-        ModeSwitches := ModeSwitches - [pcsTypeHelpers];
+      ApplyModeSwitch(pcsTypeHelpers);
+    end
+    else
+    if TextComp('objectivec1') then
+    begin
+      inc(Run,11);
+      ApplyModeSwitch(pcsObjectiveC1);
+    end
+    else
+    if TextComp('objectivec2') then
+    begin
+      inc(Run,11);
+      ApplyModeSwitch(pcsObjectiveC2);
     end;
   end;
   if TextComp('mode') then begin
@@ -4726,7 +4740,7 @@ begin
     EndPascalCodeFoldBlock;
 
   if (PasCodeFoldRange.BracketNestLevel = 0) and
-     ( (fRange * [rsInClassHeader, rsInTypeHelper {, rsInObjcProtocol}] <> []) or
+     ( (fRange * [rsInClassHeader, rsInTypeHelper, rsInObjcProtocol] <> []) or
        InSkipBlocks
      )
   then begin
@@ -4879,11 +4893,13 @@ begin
   end;
 
   // modifiers like "alias" take a string as argument
-  if (PasCodeFoldRange.BracketNestLevel = 0) and
-     (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader] = [rsInProcHeader]) and
-     (TopPascalCodeFoldBlockType in ProcModifierAllowed)
-  then
-    FRange := FRange + [rsInProcHeader];
+  if (PasCodeFoldRange.BracketNestLevel = 0) then begin
+    if (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader] = [rsInProcHeader]) and
+       (TopPascalCodeFoldBlockType in ProcModifierAllowed)
+    then
+      FRange := FRange + [rsInProcHeader];
+    FOldRange := FOldRange - [rsInObjcProtocol];
+  end;
 end;
 
 procedure TSynPasSyn.DoubleQuoteProc;
@@ -5210,11 +5226,11 @@ begin
           if (PasCodeFoldRange.BracketNestLevel > 0) or
              (OldNestLevel > 0)
           then
-            FOldRange := FOldRange - [rsInClassHeader, rsInTypeHelper];
+            FOldRange := FOldRange - [rsInClassHeader, rsInObjcProtocol, rsInTypeHelper];
 
           fRange := fRange -
             (FOldRange * [rsAfterEqualOrColon, rsAtPropertyOrReadWrite,
-                          rsInClassHeader, rsInTypeHelper, rsAfterClassField,
+                          rsInClassHeader, rsInObjcProtocol, rsInTypeHelper, rsAfterClassField,
                           rsAfterIdentifierOrValue, rsWasInProcHeader]
             );
         end;
@@ -5709,6 +5725,36 @@ begin
   if p >= CountPascalCodeFoldBlockOffset then
     p := p - PtrUInt(CountPascalCodeFoldBlockOffset);
   Result := TPascalCodeFoldBlockType(PtrUInt(p));
+end;
+
+function TSynPasSyn.HasCompilerModeswitch(AModeSwitch: TPascalCompilerModeSwitch): Boolean;
+begin
+  Result := (AModeSwitch in ModeSwitches) or not(rsCompilerModeSet in fRange);
+  if not Result then begin
+    case CompilerMode of
+      pcmObjFPC: Result := AModeSwitch in [pcsNestedComments];
+      //pcmDelphi: ;
+      pcmFPC:    Result := AModeSwitch in [pcsNestedComments];
+      //pcmTP: ;
+      //pcmGPC: ;
+      pcmMacPas: Result := AModeSwitch in [pcsObjectiveC1, pcsObjectiveC2];
+    end;
+  end;
+end;
+
+function TSynPasSyn.HasCompilerModeswitch(AModeSwitches: TPascalCompilerModeSwitches): Boolean;
+begin
+  Result := (AModeSwitches * ModeSwitches <> []) or not(rsCompilerModeSet in fRange);
+  if not Result then begin
+    case CompilerMode of
+      pcmObjFPC: Result := AModeSwitches * [pcsNestedComments] <> [];
+      //pcmDelphi: ;
+      pcmFPC:    Result := AModeSwitches * [pcsNestedComments] <> [];
+      //pcmTP: ;
+      //pcmGPC: ;
+      pcmMacPas: Result := AModeSwitches * [pcsObjectiveC1, pcsObjectiveC2] <> [];
+    end;
+  end;
 end;
 
 procedure TSynPasSyn.GetTokenBounds(out LogX1, LogX2: Integer);
