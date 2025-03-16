@@ -3019,6 +3019,7 @@ begin
      KeyComp('External')
   then begin
     Result := tkModifier;
+    FOldRange := FOldRange - [rsInObjcProtocol];
     FNextTokenState := tsAfterExternal;
     if tfb = cfbtProcedure then begin
       EndPascalCodeFoldBlock(True);
@@ -5099,7 +5100,12 @@ begin
                   if (reaDeclTypeName in FRequiredStates) then
                     FTokenTypeDeclExtraAttrib := eaDeclTypeName;
                 otherwise
-                  if (reaDeclVarName in FRequiredStates) then
+                  if (reaDeclVarName in FRequiredStates) and
+                     ( not(rsInTypeHelper in fRange) ) and
+                     ( (fRange * [rsInClassHeader, rsInObjcProtocol] = []) or
+                       (PasCodeFoldRange.BracketNestLevel = 0)
+                     )
+                  then
                     FTokenTypeDeclExtraAttrib := eaDeclVarName;
               end;
           end
