@@ -247,7 +247,6 @@ begin
 
   FActivating := True;
   try
-    Assert(ControlCount = 0, 'THintWindow.ActivateRendered: ControlCount > 0');
     if Caption<>AHint then
       Hide; // reduce flicker and start animation if hint changed
     Caption := AHint;
