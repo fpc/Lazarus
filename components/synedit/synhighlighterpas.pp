@@ -4770,6 +4770,7 @@ begin
   end;
 
   EndStatement(tfb, [cfbtForDo,cfbtWhileDo,cfbtWithDo,cfbtIfThen,cfbtIfElse]);
+  tfb := TopPascalCodeFoldBlockType;
 
   Inc(Run);
 
