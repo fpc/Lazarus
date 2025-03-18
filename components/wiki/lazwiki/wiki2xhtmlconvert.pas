@@ -136,6 +136,11 @@ const
   NOTE_ICON = 'note.png';
   WARNING_ICON = 'warning.png';
 
+function CompareStrListUTF8LowerCase(List: TStringList; Index1, Index2: Integer): Integer;
+begin
+  Result:=UTF8CompareText(List[Index1],List[Index2]);
+end;
+
 { Replaces some special characters by their HTML code }
 function EscapeToHTML(AText: string): string;
 var
@@ -225,7 +230,6 @@ begin
       CategoriesNode.AppendChild(doc.CreateTextNode(' | '));
   end;
 end;
-
 
 procedure TWiki2XHTMLConverter.DoAddLinksToTranslations(Page: TW2XHTMLPage);
 var
