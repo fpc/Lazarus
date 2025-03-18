@@ -15521,18 +15521,24 @@ are signalled next.
 </p>
 <p>
 If the hint text or hint data was not assigned in the event handlers, the hint 
-text for the hovered control is used. Only the first "|"-delimited line of text 
-in TControl.Hint is used for the hint.
+text for the hovered control is used. Only the first "|"-delimited line of 
+text in TControl.Hint is used for the hint.
 </p>
 <p>
 The hint window for the application is created (or re-created) and configured 
-as needed, and the show hint command is performed for the hint control. The 
-ActivateHintData method in the hint window is called to display (or hide) the 
-hint window and activate (or reset) the auto-hide timer.
+as needed. This includes setting the BiDiMode in the hint window to match the 
+hint control, as well as the position and color for the hint window.
 </p>
 <p>
-If the hint control is no longer valid or the hint text is empty, the HideHint 
-method is called to hide an existing hint window.
+ActivateHintData is called to display the hint window when hint data is used 
+in the hint information. ActivateHint is called to display the hint window 
+when the hint information contains only hint text. The timer used to auto-hide 
+the hint window is started using the hide or reshow timeout values found in 
+the hint information.
+</p>
+<p>
+If the hint control is not assigned (no longer hovered) or the hint text is 
+empty, the HideHint method is called to hide an existing hint window.
 </p>
 </descr>
 <seealso>
@@ -15548,13 +15554,13 @@ method is called to hide an existing hint window.
 </seealso>
 </element>
 <version>
-Modified in LCL version 4.0 to call ActivateHintData for the hint window 
-(instead of ActivateHint).
+Modified in LCL version 4.0 to call either ActivateHint or ActivateHintData 
+for the hint window based on the hint information derived in the method.
 </version>
 <element name="TApplication.ShowHintWindow.Info">
 <short>
 Contains information about the hint control, its mouse coordinates, and the 
-hint text used in the method.
+hint text or data used in the method.
 </short>
 </element>
 
