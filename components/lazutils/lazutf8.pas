@@ -227,8 +227,6 @@ var
 
 implementation
 
-uses
-  Translations;
 
 {$IFDEF WinCE}
 // CP_UTF8 is missing in the windows unit of the Windows CE RTL
@@ -3555,7 +3553,7 @@ begin
     else
       Result := 2;
     //writeln('UCS: FallBack Result = ',Result);
-    //Try t find start of valid UTF8 codepoints
+    //Try to find start of valid UTF8 codepoints
     if (not Utf8TryFindCodepointStart(Org1, S1, CL1)) or
         not Utf8TryFindCodepointStart(Org2, S2, CL2) then
       Exit;
