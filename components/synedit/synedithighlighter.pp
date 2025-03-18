@@ -38,7 +38,7 @@ uses
   // LazUtils
   LazUTF8, LazMethodList,
   // SynEdit
-  SynEditTypes, SynEditTextBase;
+  SynEditTypes, SynEditTextBase, SynEditMiscProcs;
 
 type
   { TSynHighlighterRangeList }
@@ -417,6 +417,7 @@ type
     function IsKeyword(const AKeyword: string): boolean; virtual;               // DJLP 2000-08-09
     procedure Next; virtual; abstract;
     procedure NextToEol;
+    function  NextToLogX(ALogX: IntPos): boolean;
 
     property DrawDivider[Index: integer]: TSynDividerDrawConfigSetting
       read GetDrawDivider;
@@ -1591,6 +1592,23 @@ begin
   FIsInNextToEOL := True;
   while not GetEol do Next;
   FIsInNextToEOL := False;
+end;
+
+function TSynCustomHighlighter.NextToLogX(ALogX: IntPos): boolean;
+var
+  Start: Integer;
+begin
+  Result := False;
+  while not GetEol do begin
+    Start := ToPos(GetTokenPos);
+    if Start > ALogX then
+      exit;
+    if ALogX < Start + GetTokenLen then begin
+      Result := True;
+      exit;
+    end;
+    Next;
+  end;
 end;
 
 procedure TSynCustomHighlighter.ContinueNextLine;

@@ -8,13 +8,14 @@ unit ToDoListLaz;
 interface
 
 uses
-  ToDoDlg, ToDoList, ToDoListCore, ToDoListStrConsts, LazarusPackageIntf;
+  ToDoDlg, ToDoList, ToDoListCore, ToDoListStrConsts, TodoSynMarkup, LazarusPackageIntf;
 
 implementation
 
 procedure Register;
 begin
   RegisterUnit('ToDoDlg', @ToDoDlg.Register);
+  RegisterUnit('TodoSynMarkup', @TodoSynMarkup.Register);
 end;
 
 initialization

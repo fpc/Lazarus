@@ -925,6 +925,9 @@ type
     function GetTokenKind: integer; override;
     function GetTokenPos: Integer; override;
     function GetTokenLen: Integer; override;
+    function GetTokenIsComment: Boolean;
+    function GetTokenIsCommentStart(AnIgnoreMultiLineSlash: Boolean = False): Boolean;
+    function GetTokenIsCommentEnd: Boolean;
     function IsKeyword(const AKeyword: string): boolean; override;
     procedure Next; override;
 
@@ -5197,6 +5200,7 @@ begin
     #10: LFProc;
     #13: CRProc;
     else
+      FOldRange := fRange;
       if rsAnsi in fRange then
         AnsiProc
       else if fRange * [rsBor, rsIDEDirective] <> [] then
@@ -5207,7 +5211,6 @@ begin
         SlashContinueProc
       else begin
         FNextTokenState := tsNone;
-        FOldRange := fRange;
         OldNestLevel := PasCodeFoldRange.BracketNestLevel;
         if (PasCodeFoldRange.BracketNestLevel = 1) then // procedure foo; [attr...]
           FOldRange := FOldRange - [rsWasInProcHeader];
@@ -5467,6 +5470,30 @@ end;
 function TSynPasSyn.GetTokenLen: Integer;
 begin
   Result := Run-fTokenPos;
+end;
+
+function TSynPasSyn.GetTokenIsComment: Boolean;
+begin
+  Result := (FTokenID = tkComment) or
+            ( (fLineLen = 0) and
+              (FRange * [rsAnsi, rsBor] <> [])  //rsIDEDirective
+            );
+end;
+
+function TSynPasSyn.GetTokenIsCommentStart(AnIgnoreMultiLineSlash: Boolean): Boolean;
+begin
+  if AnIgnoreMultiLineSlash then
+    Result := (FTokenID = tkComment) and (fLineLen > 0) and
+              (FOldRange * [rsAnsi, rsBor] = [])  // rsIDEDirective
+  else
+    Result := (FTokenID = tkComment) and (fLineLen > 0) and
+              (FOldRange * [rsAnsi, rsBor, rsSlash] = []);
+end;
+
+function TSynPasSyn.GetTokenIsCommentEnd: Boolean;
+begin
+  Result := (FTokenID = tkComment) and
+            (FRange * [rsAnsi, rsBor, rsSlash] = []);  // rsIDEDirective
 end;
 
 function TSynPasSyn.GetRange: Pointer;

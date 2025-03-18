@@ -1183,7 +1183,7 @@ begin
   else
     ColorElementTree.Items.Add(nil, AdditionalHighlightGroupNames[agnDefault]);
   for j := low(TAhaGroupName) to high(TAhaGroupName) do
-    if not(j in [agnDefault, agnLanguage]) then
+    if not(j in [agnDefault, agnLanguage, agnRegistered]) then
       ColorElementTree.Items.Add(nil, AdditionalHighlightGroupNames[j]).Visible := False;
 
   // Fill Attributes in
@@ -1216,7 +1216,7 @@ begin
         else
           begin
             AttriIdx := GetEnumValue(TypeInfo(TAdditionalHilightAttribute), Attr.StoredName);
-            ParentName := AdditionalHighlightGroupNames[Attr.Group];
+            ParentName := Attr.GroupName;
             ParentNode := ColorElementTree.Items.FindTopLvlNode(ParentName);
             if (AttriIdx >= ord(ahaIdentComplWindowEntryVar)) and (AttriIdx <= ord(ahaIdentComplWindowEntryUnknown))
             then begin

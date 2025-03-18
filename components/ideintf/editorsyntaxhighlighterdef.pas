@@ -44,7 +44,7 @@ const
   IdeHighlighterUnknownId      = TIdeSyntaxHighlighterID(-2); // Name not in list
   IdeHighlighterNotSpecifiedId = TIdeSyntaxHighlighterID(-1); // No Name given
   IdeHighlighterNoneID         = TIdeSyntaxHighlighterID(0);
-  IdeHighlighterStartId = TIdeSyntaxHighlighterID(1); // first regulor Highlighter in IdeSyntaxHighlighters (lowest index)
+  IdeHighlighterStartId = TIdeSyntaxHighlighterID(1); // first regular Highlighter in IdeSyntaxHighlighters (lowest index)
 
   LazSyntaxHighlighterNames: array[TLazSyntaxHighlighter] of String =
   ( 'None',
@@ -73,8 +73,53 @@ const
 function GetSyntaxHighlighterCaption(h: TLazSyntaxHighlighter): string;     deprecated 'Use IdeSyntaxHighlighters (to be removed in 4.99)';
 function StrToLazSyntaxHighlighter(const s: String): TLazSyntaxHighlighter; deprecated 'Use IdeSyntaxHighlighters (to be removed in 4.99)';
 
+
+type
+  TColorSchemeAttributeFeature =
+    ( hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior,
+      hafStyle, hafStyleMask,
+      hafFrameStyle, hafFrameEdges,
+      hafMarkupFoldColor, // for the MarkupFoldColor module
+      hafCustomWords
+    );
+  TColorSchemeAttributeFeatures = set of TColorSchemeAttributeFeature;
+
+  IColorSchemeAttribute = interface ['{2572547D-217A-4A83-A910-0D808ECF3317}']
+    procedure ApplyTo(aDest: TObject);
+  end;
+
+  IColorSchemeLanguage = interface ['{40A0F5E1-ADD5-4E0E-BD14-583E244C4ACC}']
+    function GetName: String;
+    function AttributeCount: Integer;
+    function GetAttributeIntf(AnIndex: integer): IColorSchemeAttribute;  //TSynHighlighterAttributesModifier
+    function GetAttributeIntf(const AStoredName: string): IColorSchemeAttribute;  //TSynHighlighterAttributesModifier
+  end;
+
+  IColorScheme = interface ['{121AB166-7458-4AD8-8122-C9AD4A259521}']
+    function GetName: String;
+    function Count: integer;
+    function GetLanguage(AnIndex: Integer): IColorSchemeLanguage;
+    function GetLanguageForHighlighter(AnHiglighter: TObject): IColorSchemeLanguage;
+    function GetLanguageForHighlighter(AnHighlighterId: TIdeSyntaxHighlighterID): IColorSchemeLanguage;
+  end;
+
+  IColorSchemeList = interface ['{BA72F07B-77F5-4C36-AE9C-907980ADDEE3}']
+    function Count: integer;
+    function GetScheme(AnIndex: Integer): IColorScheme;
+    function GetScheme(AName: String): IColorScheme;
+    function GetCurrentSchemeForHighlighter(AnHiglighter: TObject): IColorScheme;
+    function GetCurrentSchemeForHighlighter(AnHighlighterId: TIdeSyntaxHighlighterID): IColorScheme;
+
+    procedure RegisterChangedHandler(AnHandler: TNotifyEvent);
+    procedure UnregisterChangedHandler(AnHandler: TNotifyEvent);
+
+    function RegisterAttributeGroup(AName: PString): integer; // pointer to resource string
+    procedure AddAttribute(AnAttrGroup: integer; AnHighlighterId: TIdeSyntaxHighlighterID; AStoredName: String; AName: PString;  AFeatures: TColorSchemeAttributeFeatures; ADefaults: TObject = nil);
+  end;
+
 var
   IdeSyntaxHighlighters: TIdeSyntaxHighlighterList;
+  IdeColorSchemeList: IColorSchemeList;
 
 implementation
 

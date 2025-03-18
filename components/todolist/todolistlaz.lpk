@@ -44,12 +44,20 @@
         <Filename Value="todoliststrconsts.pas"/>
         <UnitName Value="ToDoListStrConsts"/>
       </Item>
+      <Item>
+        <Filename Value="todosynmarkup.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="todosynmarkup"/>
+      </Item>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
     </i18n>
     <RequiredPkgs>
+      <Item>
+        <PackageName Value="SynEdit"/>
+      </Item>
       <Item>
         <PackageName Value="IDEIntf"/>
       </Item>

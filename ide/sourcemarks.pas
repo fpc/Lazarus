@@ -81,7 +81,8 @@ type
   TAhaGroupName = (
     agnDefault, agnLanguage, agnText, agnLine, agnGutter, agnWrap,
     agnTemplateMode, agnSyncronMode,
-    agnIfDef, agnIdentComplWindow, agnOutlineColors
+    agnIfDef, agnIdentComplWindow, agnOutlineColors,
+    agnRegistered
   );
 
   TSourceEditorBase = class;

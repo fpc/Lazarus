@@ -9,6 +9,8 @@ uses
   // LCL
   LCLIntf, Forms, StdCtrls, ExtCtrls, Graphics, GraphUtil,
   ColorBox, Dialogs, Menus, Spin,
+  // IdeIntf
+  EditorSyntaxHighlighterDef,
   // SynEdit
   SynEditTypes, SynTextDrawer, SynHighlighterPas,
   // IdeConfig
