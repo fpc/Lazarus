@@ -311,8 +311,6 @@ type
     procedure SrcSynCaretChanged(Sender: TObject);
     function  GetHighlighter: TSynCustomFoldHighlighter;
   protected
-    function GetTopLineBeforeFold: TSrcSynTopLineInfo;
-    procedure RestoreTopLineAfterFold(AnInfo: TSrcSynTopLineInfo);
     procedure DoOnStatusChange(Changes: TSynStatusChanges); override;
     function CreateGutter(AOwner : TSynEditBase; ASide: TSynGutterSide;
                           ATextDrawer: TheTextDrawer): TSynGutter; override;
@@ -324,6 +322,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function TextIndexToViewPos(aTextIndex : Integer) : Integer; // Wrong name: argument is TextPos, not TextIdx
+    function GetTopLineBeforeFold: TSrcSynTopLineInfo;
+    procedure RestoreTopLineAfterFold(AnInfo: TSrcSynTopLineInfo);
     property IDEGutterMarks: TIDESynGutterMarks read GetIDEGutterMarks;
     property TopView;
     property TextBuffer;

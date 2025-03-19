@@ -5117,10 +5117,13 @@ procedure TSourceEditor.SetSyntaxHighlighterId(AHighlighterId: TIdeSyntaxHighlig
   ASkipEditorOpts: boolean);
 var
   HlIsPas, OldHlIsPas: Boolean;
+  tl: TSrcSynTopLineInfo;
 begin
   if (AHighlighterId=fSyntaxHighlighterId)
   and ((FEditor.Highlighter<>nil) = EditorOpts.UseSyntaxHighlight) then exit;
 
+  if not ASkipEditorOpts then
+    tl := FEditor.GetTopLineBeforeFold;
   FEditor.BeginUpdate(False);
   try
     OldHlIsPas := FEditor.Highlighter is TSynPasSyn;
@@ -5164,6 +5167,8 @@ begin
     SourceEditorManager.SendEditorReconfigured(Self);
   finally
     FEditor.EndUpdate;
+    if not ASkipEditorOpts then
+      FEditor.RestoreTopLineAfterFold(tl);
   end;
 end;
 
@@ -5216,8 +5221,10 @@ end;
 function TSourceEditor.RefreshEditorSettings: Boolean;
 var
   SimilarEditor: TSynEdit;
+  tl: TSrcSynTopLineInfo;
 Begin
   Result:=true;
+  tl := FEditor.GetTopLineBeforeFold;
   FEditor.BeginUpdate(False);
   try
     SetSyntaxHighlighterId(fSyntaxHighlighterId, True);
@@ -5233,6 +5240,7 @@ Begin
       UpdateIfDefNodeStates(True);
   finally
     FEditor.EndUpdate;
+    FEditor.RestoreTopLineAfterFold(tl);
   end;
   SourceEditorManager.SendEditorReconfigured(Self);
 end;
