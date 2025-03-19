@@ -5121,45 +5121,50 @@ begin
   if (AHighlighterId=fSyntaxHighlighterId)
   and ((FEditor.Highlighter<>nil) = EditorOpts.UseSyntaxHighlight) then exit;
 
-  OldHlIsPas := FEditor.Highlighter is TSynPasSyn;
-  HlIsPas := False;
-  if EditorOpts.UseSyntaxHighlight then begin
-    if AHighlighterId < 0 then begin
-      if FDefaultSyntaxHighlighterId = IdeHighlighterNotSpecifiedId then
-        UpdateDefaultDefaultSyntaxHighlighterId(True);
-      FEditor.Highlighter:=EditorOpts.HighlighterList.SharedSynInstances[FDefaultSyntaxHighlighterId];
+  FEditor.BeginUpdate(False);
+  try
+    OldHlIsPas := FEditor.Highlighter is TSynPasSyn;
+    HlIsPas := False;
+    if EditorOpts.UseSyntaxHighlight then begin
+      if AHighlighterId < 0 then begin
+        if FDefaultSyntaxHighlighterId = IdeHighlighterNotSpecifiedId then
+          UpdateDefaultDefaultSyntaxHighlighterId(True);
+        FEditor.Highlighter:=EditorOpts.HighlighterList.SharedSynInstances[FDefaultSyntaxHighlighterId];
+      end
+      else
+        FEditor.Highlighter:=EditorOpts.HighlighterList.SharedSynInstances[AHighlighterId];
+      HlIsPas := FEditor.Highlighter is TSynPasSyn;
     end
     else
-      FEditor.Highlighter:=EditorOpts.HighlighterList.SharedSynInstances[AHighlighterId];
-    HlIsPas := FEditor.Highlighter is TSynPasSyn;
-  end
-  else
-    FEditor.Highlighter:=nil;
+      FEditor.Highlighter:=nil;
 
-  FSyntaxHighlighterId:=AHighlighterId;
-  if (OldHlIsPas <>  HlIsPas) then begin
-    if HlIsPas then
-      FEditor.Beautifier := PasBeautifier
+    FSyntaxHighlighterId:=AHighlighterId;
+    if (OldHlIsPas <>  HlIsPas) then begin
+      if HlIsPas then
+        FEditor.Beautifier := PasBeautifier
+      else
+        FEditor.Beautifier := nil; // use default
+
+      if ASkipEditorOpts then
+        exit;
+
+      EditorOpts.GetSynEditSettings(FEditor, nil, ActiveSyntaxHighlighterId);
+      if Visible then
+        UpdateIfDefNodeStates(True);
+    end
+
     else
-      FEditor.Beautifier := nil; // use default
-
     if ASkipEditorOpts then
-      exit;
+      exit
 
-    EditorOpts.GetSynEditSettings(FEditor, nil, ActiveSyntaxHighlighterId);
-    if Visible then
-      UpdateIfDefNodeStates(True);
-  end
+    else
+      EditorOpts.UpdateSynEditSettingsForHighlighter(FEditor, ActiveSyntaxHighlighterId);
 
-  else
-  if ASkipEditorOpts then
-    exit
-
-  else
-    EditorOpts.UpdateSynEditSettingsForHighlighter(FEditor, ActiveSyntaxHighlighterId);
-
-  SourceNotebook.UpdateActiveEditColors(FEditor);
-  SourceEditorManager.SendEditorReconfigured(Self);
+    SourceNotebook.UpdateActiveEditColors(FEditor);
+    SourceEditorManager.SendEditorReconfigured(Self);
+  finally
+    FEditor.EndUpdate;
+  end;
 end;
 
 procedure TSourceEditor.SetErrorLine(NewLine: integer);
@@ -5213,17 +5218,22 @@ var
   SimilarEditor: TSynEdit;
 Begin
   Result:=true;
-  SetSyntaxHighlighterId(fSyntaxHighlighterId, True);
+  FEditor.BeginUpdate(False);
+  try
+    SetSyntaxHighlighterId(fSyntaxHighlighterId, True);
 
-  // try to copy settings from an editor to the left
-  SimilarEditor:=nil;
-  if (SourceNotebook.EditorCount>0) and (SourceNotebook.Editors[0]<>Self) then
-    SimilarEditor:=SourceNotebook.Editors[0].EditorComponent;
-  EditorOpts.GetSynEditSettings(FEditor,SimilarEditor, ActiveSyntaxHighlighterId);
+    // try to copy settings from an editor to the left
+    SimilarEditor:=nil;
+    if (SourceNotebook.EditorCount>0) and (SourceNotebook.Editors[0]<>Self) then
+      SimilarEditor:=SourceNotebook.Editors[0].EditorComponent;
+    EditorOpts.GetSynEditSettings(FEditor,SimilarEditor, ActiveSyntaxHighlighterId);
 
-  SourceNotebook.UpdateActiveEditColors(FEditor);
-  if Visible then
-    UpdateIfDefNodeStates(True);
+    SourceNotebook.UpdateActiveEditColors(FEditor);
+    if Visible then
+      UpdateIfDefNodeStates(True);
+  finally
+    FEditor.EndUpdate;
+  end;
   SourceEditorManager.SendEditorReconfigured(Self);
 end;
 

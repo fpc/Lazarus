@@ -2182,6 +2182,7 @@ begin
   FInternalBlockSelection.Lines := FTheLinesView;
   FMarkupManager.Lines := FTheLinesView;
   FTextArea.TheLinesView := FTheLinesView;
+  SizeOrFontChanged(True);
 end;
 
 function TCustomSynEdit.GetIsStickySelecting: Boolean;
