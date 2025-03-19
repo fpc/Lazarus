@@ -526,7 +526,7 @@ end;
 function ComparePCharUnitNameWithFilename(UnitNameP, FilenameP: Pointer): integer;
 { Checks if UnitNameP is a dotted prefix of FilenameP.
   For example:
-    a.b is prefix of a.b.c.d, A.b.c, a.b.c
+    a.b is prefix of a.B, a.b.c.d, A.b.c, a.b.c
       but not of a.bc
 }
 var
@@ -540,10 +540,10 @@ begin
     cf:=FPUpChars[Filename^];
     if cu=#0 then begin
       // the unit name fits the start of the file name
-      if (cf<>'.') then
-        Result:=ord('.')-ord(cf)
+      if cf in [#0,'.'] then
+        Result:=0
       else
-        Result:=0;
+        Result:=ord('.')-ord(cf);
       exit;
     end;
     if cu=cf then begin
@@ -1204,8 +1204,8 @@ begin
 
     // see fpc source scanner.pas function preproc_factor(eval: Boolean):texprvalue;
     // first search IncFilename
-    // if IncFilename has not an ext of .inc, .pp, .pas, then search IncFilename pus .inc,.pp,.pas
-    // Note: This means e.g. "a.b" will search "a.b.inc", "a.b.pp" and "a.b.pas"
+    // if IncFilename has not an ext of .inc, .pp, .pas, then search IncFilename plus .inc,.pp,.pas
+    // Note: This means e.g. "a.b" will search "a.b", "a.b.inc", "a.b.pp" and "a.b.pas"
 
     IncFilenameP:=PChar(IncFilename);
     l:=length(IncFilename);
