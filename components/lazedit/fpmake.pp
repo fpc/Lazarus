@@ -1,9 +1,9 @@
 {
    File generated automatically by Lazarus Package Manager
 
-   fpmake.pp for LazEdit 0.0
+   fpmake.pp for LazEdit 1.0
 
-   This file was generated on 11/09/2023
+   This file was generated on 19/03/2025
 }
 
 {$ifndef ALLPACKAGES} 
@@ -24,7 +24,7 @@ begin
   with Installer do
     begin
     P:=AddPackage('lazedit');
-    P.Version:='<none>';
+    P.Version:='1.0.0-0';
 
     P.Directory:=ADirectory;
 
@@ -47,11 +47,13 @@ begin
     t.Dependencies.AddUnit('xHyperLinksDecorator');
     t.Dependencies.AddUnit('xregexpr');
     t.Dependencies.AddUnit('xregexpr_unicodedata');
+    t.Dependencies.AddUnit('lazeditmiscprocs');
 
     T:=P.Targets.AddUnit('textmategrammar.pas');
     T:=P.Targets.AddUnit('xHyperLinksDecorator.pas');
     T:=P.Targets.AddUnit('xregexpr.pas');
     T:=P.Targets.AddUnit('xregexpr_unicodedata.pas');
+    T:=P.Targets.AddUnit('lazeditmiscprocs.pas');
 
     // copy the compiled file, so the IDE knows how the package was compiled
     P.Sources.AddSrc('lazedit.compiled');
