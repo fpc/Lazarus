@@ -239,7 +239,7 @@ begin
       TargetPos := ADragObjectCopy.DragTargetPos //controls can override the position
     else
       TargetPos := ADragObjectCopy.DragPos; //otherwise take the current position
-    Accepted := ADropped and SendCmDragMsg(ADragObjectCopy, dmDragLeave);
+    Accepted := SendCmDragMsg(ADragObjectCopy, dmDragLeave) and ADropped;
     ADragObjectCopy.FDropped := Accepted;
 
     if ADragObjectCopy.DragTarget <> nil then
@@ -630,7 +630,7 @@ begin
       TargetPos := ADockObjectCopy.DragTargetPos //controls can override the position
     else
       TargetPos := ADockObjectCopy.DragPos; //otherwise take the current position
-    Accepted := Accepted and (Moved or ADockObjectCopy.Floating or SendCmDragMsg(ADockObjectCopy, dmDragLeave)) and ADropped;
+    Accepted := (SendCmDragMsg(ADockObjectCopy, dmDragLeave) or Moved or ADockObjectCopy.Floating) and Accepted and ADropped;
     ADockObjectCopy.FDropped := Accepted;
 
     // float
