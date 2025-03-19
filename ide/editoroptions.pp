@@ -1911,7 +1911,7 @@ type
     procedure GetHighlighterObjSettings(Syn: TObject); override; // read highlight settings from config file
     procedure GetHighlighterSettings(Syn: TSrcIDEHighlighter); // read highlight settings from config file
     procedure GetSynEditorSettings(ASynEdit: TObject; SimilarEdit: TObject = nil); override;
-    procedure GetSynEditSettings(ASynEdit: TSynEdit; SimilarEdit: TSynEdit = nil); // read synedit settings from config file
+    procedure GetSynEditSettings(ASynEdit: TSynEdit; SimilarEdit: TSynEdit = nil; AHighlighterId: TIdeSyntaxHighlighterID = IdeHighlighterUnknownId); // read synedit settings from config file
     procedure UpdateSynEditSettingsForHighlighter(ASynEdit: TSynEdit; AHighlighterId: TIdeSyntaxHighlighterID);
     procedure GetSynEditPreviewSettings(APreviewEditor: TObject);
     procedure SetMarkupColor(Syn: TSrcIDEHighlighter;
@@ -6718,7 +6718,8 @@ begin
     APageCtrl.Font.Quality := fqDefault;
 end;
 
-procedure TEditorOptions.GetSynEditSettings(ASynEdit: TSynEdit; SimilarEdit: TSynEdit);
+procedure TEditorOptions.GetSynEditSettings(ASynEdit: TSynEdit; SimilarEdit: TSynEdit;
+  AHighlighterId: TIdeSyntaxHighlighterID);
 // read synedit settings from config file
 // if SimilarEdit is given it is used for speed up
 var
@@ -6735,7 +6736,7 @@ begin
     ASynEdit.Options := fSynEditOptions;
     ASynEdit.Options2 := fSynEditOptions2;
 
-    UpdateSynEditSettingsForHighlighter(ASynEdit, IdeHighlighterUnknownId);
+    UpdateSynEditSettingsForHighlighter(ASynEdit, AHighlighterId);
 
     ASynEdit.BlockIndent := fBlockIndent;
     ASynEdit.BlockTabIndent := FBlockTabIndent;
