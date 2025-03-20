@@ -2835,8 +2835,8 @@ begin
     Result := tkKey;
     if (rsAfterEqualOrColon in fRange) and (PasCodeFoldRange.BracketNestLevel = 0) then
     begin
-      fRange := fRange + [rsInClassHeader] - [rsVarTypeInSpecification, rsAfterEqual, rsAfterColon];
-      FOldRange := FOldRange - [rsInClassHeader];
+      // rsInObjcProtocol: allow external
+      fRange := fRange + [rsInObjcProtocol] - [rsVarTypeInSpecification, rsAfterEqual, rsAfterColon];
       StartPascalCodeFoldBlock(cfbtClass);
     end;
   end
