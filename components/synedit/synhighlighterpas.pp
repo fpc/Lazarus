@@ -861,7 +861,7 @@ type
 
     // Open/Close Folds
     procedure GetTokenBounds(out LogX1,LogX2: Integer); override;
-    function NextTokenIsProcedureName: boolean; inline; // only if in current line
+    function NextTokenIsProcedureName(CheckModifiers: boolean = False): boolean; inline; // only if in current line
     function ScanAheadForNextToken(RunOffs: Integer;
                                    out AFndLine: String; out ATokStart, ATokLen: integer;
                                    MaxLineCnt: Integer = 1000): Boolean; //inline;
@@ -3171,6 +3171,11 @@ begin
   end
   else Result := tkIdentifier;
 end;
+type
+a=
+ procedure far
+//procedure deprecated
+;
 
 function TSynPasSyn.Func103: TtkTokenKind;
 begin
@@ -3195,7 +3200,7 @@ begin
     end
     else begin
       if not(rsAfterEqualOrColon in fRange) or
-         (FAtLineStart and NextTokenIsProcedureName)
+         (FAtLineStart and NextTokenIsProcedureName(True))
       then begin
         PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
         CloseBeginEndBlocksBeforeProc;
@@ -5832,7 +5837,7 @@ begin
   LogX2 := LogX1 + fStringLen;
 end;
 
-function TSynPasSyn.NextTokenIsProcedureName: boolean;
+function TSynPasSyn.NextTokenIsProcedureName(CheckModifiers: boolean): boolean;
 var
   s: String;
   p, l: integer;
@@ -5849,7 +5854,30 @@ begin
             ) or
             ( (s[p] = '&') and (p < Length(s)) and
                (s[p+1] in ['A'..'Z', 'a'..'z', '_'])
-            )
+            );
+  if CheckModifiers and Result then
+    case l of
+      //1: Result := (strlicomp(pchar('is'), pchar(@s[p]), 1) <> 0);
+      //1: Result := (strlicomp(pchar('of'), pchar(@s[p]), 1) <> 0);
+      3:  Result := (strlicomp(pchar('far'), pchar(@s[p]), 3) <> 0);
+      4:  Result := (strlicomp(pchar('near'), pchar(@s[p]), 4) <> 0);
+      5:  Result := (strlicomp(pchar('cdecl'), pchar(@s[p]), 5) <> 0);
+      6:  Result := (strlicomp(pchar('pascal'), pchar(@s[p]), 6) <> 0);
+      7:  Result := (strlicomp(pchar('stdcall'), pchar(@s[p]), 7) <> 0);
+      8:  Result := (strlicomp(pchar('safecall'), pchar(@s[p]), 8) <> 0)
+                and (strlicomp(pchar('register'), pchar(@s[p]), 8) <> 0)
+                and (strlicomp(pchar('platform'), pchar(@s[p]), 8) <> 0)
+                and (strlicomp(pchar('Mwpascal'), pchar(@s[p]), 8) <> 0);
+      10: Result := (strlicomp(pchar('oldfpccall'), pchar(@s[p]), 10) <> 0)
+                and (strlicomp(pchar('vectorcall'), pchar(@s[p]), 10) <> 0)
+                and (strlicomp(pchar('deprecated'), pchar(@s[p]), 10) <> 0);
+      12: Result := (strlicomp(pchar('Ms_abi_cdecl'), pchar(@s[p]), 12) <> 0)
+                and (strlicomp(pchar('experimental'), pchar(@s[p]), 12) <> 0);
+      13: Result := (strlicomp(pchar('Unimplemented'), pchar(@s[p]), 13) <> 0);
+      14: Result := (strlicomp(pchar('Ms_abi_default'), pchar(@s[p]), 14) <> 0)
+                and (strlicomp(pchar('Sysv_abi_cdecl'), pchar(@s[p]), 14) <> 0);
+      16: Result := (strlicomp(pchar('Sysv_abi_default'), pchar(@s[p]), 16) <> 0);
+    end;
 end;
 
 function TSynPasSyn.ScanAheadForNextToken(RunOffs: Integer; out
