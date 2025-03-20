@@ -2182,7 +2182,8 @@ begin
   FInternalBlockSelection.Lines := FTheLinesView;
   FMarkupManager.Lines := FTheLinesView;
   FTextArea.TheLinesView := FTheLinesView;
-  SizeOrFontChanged(True);
+  if FMarkList <> nil then // skip, if in ChangeTextBuffer / senrTextBufferChanged hasn't been sent yet
+    SizeOrFontChanged(True);
 end;
 
 function TCustomSynEdit.GetIsStickySelecting: Boolean;
