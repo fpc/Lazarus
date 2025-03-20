@@ -861,6 +861,7 @@ type
 
     // Open/Close Folds
     procedure GetTokenBounds(out LogX1,LogX2: Integer); override;
+    function NextTokenIsProcedureName: boolean; inline; // only if in current line
     function ScanAheadForNextToken(RunOffs: Integer;
                                    out AFndLine: String; out ATokStart, ATokLen: integer;
                                    MaxLineCnt: Integer = 1000): Boolean; //inline;
@@ -3136,7 +3137,9 @@ begin
       StartPascalCodeFoldBlock(cfbtAnonymousProcedure);
     end
     else begin
-      if not(rsAfterEqualOrColon in fRange) then begin
+      if not(rsAfterEqualOrColon in fRange) or
+         (FAtLineStart and NextTokenIsProcedureName)
+      then begin
         PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
         CloseBeginEndBlocksBeforeProc;
 
@@ -3149,6 +3152,7 @@ begin
 
         if InClass then
           fRange := fRange + [rsAfterClassMembers];
+        fRange := fRange - [rsAfterEqual, rsAfterColon];
         FNextTokenState := tsAtProcName;
       end;
     end;
@@ -3190,7 +3194,9 @@ begin
       StartPascalCodeFoldBlock(cfbtAnonymousProcedure);
     end
     else begin
-      if not(rsAfterEqualOrColon in fRange) then begin
+      if not(rsAfterEqualOrColon in fRange) or
+         (FAtLineStart and NextTokenIsProcedureName)
+      then begin
         PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
         CloseBeginEndBlocksBeforeProc;
 
@@ -3203,6 +3209,7 @@ begin
 
         if InClass then
           fRange := fRange + [rsAfterClassMembers];
+        fRange := fRange - [rsAfterEqual, rsAfterColon];
         FNextTokenState := tsAtProcName;
       end;
     end;
@@ -3263,6 +3270,7 @@ begin
 
       if InClass then
         fRange := fRange + [rsAfterClassMembers];
+      fRange := fRange - [rsAfterEqual, rsAfterColon];
       //FNextTokenState := tsAtProcName;
     end;
     fRange := fRange + [rsInProcHeader];
@@ -3431,7 +3439,7 @@ var
 begin
   if KeyComp('Property') then begin
     Result := tkKey;
-    fRange := fRange + [rsProperty, rsAtPropertyOrReadWrite];
+    fRange := fRange + [rsProperty, rsAtPropertyOrReadWrite] - [rsAfterEqual, rsAfterColon];
     if rtsAfterProperty in FRequiredStates then
       FNextTokenState := tsAfterProperty;
     tfb := CloseFolds(TopPascalCodeFoldBlockType, [cfbtClassConstBlock, cfbtClassTypeBlock]);
@@ -3522,8 +3530,9 @@ var
 begin
   if KeyComp('Destructor') then
   begin
-    if not(rsAfterEqualOrColon in fRange) then
-    begin
+    if not(rsAfterEqualOrColon in fRange) or
+       (FAtLineStart and NextTokenIsProcedureName)
+    then begin
       PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
       CloseBeginEndBlocksBeforeProc;
 
@@ -3536,7 +3545,7 @@ begin
 
       if InClass then
         fRange := fRange + [rsAfterClassMembers];
-      fRange := fRange + [rsInProcHeader];
+      fRange := fRange + [rsInProcHeader] - [rsAfterEqual, rsAfterColon];
       FNextTokenState := tsAtProcName;
     end;
     Result := tkKey;
@@ -3621,7 +3630,9 @@ var
   InClass: Boolean;
 begin
   if KeyComp('Constructor') then begin
-    if not(rsAfterEqualOrColon in fRange) then begin
+    if not(rsAfterEqualOrColon in fRange) or
+       (FAtLineStart and NextTokenIsProcedureName)
+    then begin
       PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
       CloseBeginEndBlocksBeforeProc;
 
@@ -3634,7 +3645,7 @@ begin
 
       if InClass then
         fRange := fRange + [rsAfterClassMembers];
-      fRange := fRange + [rsInProcHeader];
+      fRange := fRange + [rsInProcHeader] - [rsAfterEqual, rsAfterColon];
       FNextTokenState := tsAtProcName;
     end;
     Result := tkKey;
@@ -5819,6 +5830,26 @@ procedure TSynPasSyn.GetTokenBounds(out LogX1, LogX2: Integer);
 begin
   LogX1 := Run;
   LogX2 := LogX1 + fStringLen;
+end;
+
+function TSynPasSyn.NextTokenIsProcedureName: boolean;
+var
+  s: String;
+  p, l: integer;
+begin
+  Result := ScanAheadForNextToken(fStringLen, s, p, l, 0);
+  if not Result then
+    exit;
+  Result := ( (s[p] in ['A'..'Z', 'a'..'z', '_']) and
+              ( (l <> 2) or
+                not(
+                  ( (s[p] in ['i', 'I']) and (s[p+1] in ['s', 'S']) ) or
+                  ( (s[p] in ['o', 'O']) and (s[p+1] in ['f', 'F']) )
+              )    )
+            ) or
+            ( (s[p] = '&') and (p < Length(s)) and
+               (s[p+1] in ['A'..'Z', 'a'..'z', '_'])
+            )
 end;
 
 function TSynPasSyn.ScanAheadForNextToken(RunOffs: Integer; out
