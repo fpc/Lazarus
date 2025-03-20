@@ -3171,11 +3171,6 @@ begin
   end
   else Result := tkIdentifier;
 end;
-type
-a=
- procedure far
-//procedure deprecated
-;
 
 function TSynPasSyn.Func103: TtkTokenKind;
 begin
