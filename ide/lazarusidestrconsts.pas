@@ -1658,8 +1658,8 @@ resourcestring
 
   dlgOptWordWrap = 'Word-wrap';
   dlgOptWordWrapUseWordwrap = 'Use Word-wrap';
-  dlgOptWordWrapAllHL = 'All';
-  dlgOptWordWrapNoneHL = 'None';
+  dlgOptWordWrapAllHL = 'Select all';
+  dlgOptWordWrapNoneHL = 'Clear selection';
   dlgOptWordWrapDisplayCaretAtWrapPositio = 'Display caret at wrap-position...';
   dlgOptWordWrapEndOfLine = 'end of line';
   dlgOptWordWrapStartOfNextLine = 'start of next line';

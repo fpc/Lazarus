@@ -15,7 +15,7 @@ object EditorWordWrapOptionsFrame: TEditorWordWrapOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 19
+    Height = 21
     Top = 6
     Width = 375
     Anchors = [akTop, akLeft, akRight]
@@ -30,8 +30,8 @@ object EditorWordWrapOptionsFrame: TEditorWordWrapOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 19
-    Top = 117
+    Height = 18
+    Top = 119
     Width = 375
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
@@ -55,8 +55,8 @@ object EditorWordWrapOptionsFrame: TEditorWordWrapOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 19
-    Top = 142
+    Height = 21
+    Top = 143
     Width = 375
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
@@ -70,8 +70,8 @@ object EditorWordWrapOptionsFrame: TEditorWordWrapOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 245
-    Top = 167
+    Height = 267
+    Top = 170
     Width = 375
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -81,19 +81,19 @@ object EditorWordWrapOptionsFrame: TEditorWordWrapOptionsFrame
     ChildSizing.VerticalSpacing = 4
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 2
-    ClientHeight = 245
+    ClientHeight = 267
     ClientWidth = 375
     TabOrder = 4
     object lblBevelColumn: TLabel
       Left = 0
-      Height = 15
+      Height = 16
       Top = 0
-      Width = 140
+      Width = 151
       Caption = ' '
     end
     object lblBevelCol2: TLabel
-      Left = 146
-      Height = 15
+      Left = 157
+      Height = 16
       Top = 0
       Width = 60
       Caption = ' '
@@ -104,7 +104,7 @@ object EditorWordWrapOptionsFrame: TEditorWordWrapOptionsFrame
       AnchorSideRight.Control = Panel1
       AnchorSideRight.Side = asrBottom
       Left = 0
-      Height = 15
+      Height = 16
       Top = 0
       Width = 375
       Caption = 'DividerBevelColumn'
@@ -114,17 +114,17 @@ object EditorWordWrapOptionsFrame: TEditorWordWrapOptionsFrame
     end
     object lbMinWordWrapWidth: TLabel
       Left = 0
-      Height = 15
-      Top = 23
-      Width = 140
+      Height = 16
+      Top = 25
+      Width = 151
       BorderSpacing.CellAlignVertical = ccaCenter
       Caption = 'lbMinWordWrapWidth'
     end
     object edMinWordWrapWidth: TSpinEdit
       AnchorSideRight.Side = asrBottom
-      Left = 146
-      Height = 23
-      Top = 19
+      Left = 157
+      Height = 26
+      Top = 20
       Width = 60
       Alignment = taRightJustify
       BorderSpacing.Top = 3
@@ -138,17 +138,17 @@ object EditorWordWrapOptionsFrame: TEditorWordWrapOptionsFrame
     end
     object lbMaxWordWrapWidth: TLabel
       Left = 0
-      Height = 15
-      Top = 50
-      Width = 140
+      Height = 16
+      Top = 55
+      Width = 151
       BorderSpacing.CellAlignVertical = ccaCenter
       Caption = 'lbMaxWordWrapWidth'
     end
     object edMaxWordWrapWidth: TSpinEdit
       AnchorSideRight.Side = asrBottom
-      Left = 146
-      Height = 23
-      Top = 46
+      Left = 157
+      Height = 26
+      Top = 50
       Width = 60
       Alignment = taRightJustify
       BorderSpacing.Top = 3
@@ -161,17 +161,17 @@ object EditorWordWrapOptionsFrame: TEditorWordWrapOptionsFrame
     end
     object lblFixedCol: TLabel
       Left = 0
-      Height = 15
-      Top = 73
-      Width = 140
+      Height = 16
+      Top = 80
+      Width = 151
       BorderSpacing.Bottom = 8
       Caption = ' '
     end
     object lblFixedCol2: TLabel
       AnchorSideBottom.Side = asrBottom
-      Left = 146
-      Height = 15
-      Top = 73
+      Left = 157
+      Height = 16
+      Top = 80
       Width = 60
       Caption = ' '
     end
@@ -181,8 +181,8 @@ object EditorWordWrapOptionsFrame: TEditorWordWrapOptionsFrame
       AnchorSideRight.Control = Panel1
       AnchorSideRight.Side = asrBottom
       Left = 0
-      Height = 19
-      Top = 73
+      Height = 21
+      Top = 80
       Width = 375
       Anchors = [akTop, akLeft, akRight]
       Caption = 'cbFixedWidth'
@@ -191,15 +191,15 @@ object EditorWordWrapOptionsFrame: TEditorWordWrapOptionsFrame
     end
     object lblBevelIndent: TLabel
       Left = 0
-      Height = 15
-      Top = 96
-      Width = 140
+      Height = 16
+      Top = 104
+      Width = 151
       Caption = ' '
     end
     object lblBevelIndent2: TLabel
-      Left = 146
-      Height = 15
-      Top = 96
+      Left = 157
+      Height = 16
+      Top = 104
       Width = 60
       Caption = ' '
     end
@@ -209,8 +209,8 @@ object EditorWordWrapOptionsFrame: TEditorWordWrapOptionsFrame
       AnchorSideRight.Control = Panel1
       AnchorSideRight.Side = asrBottom
       Left = 0
-      Height = 15
-      Top = 96
+      Height = 16
+      Top = 104
       Width = 375
       Caption = 'DividerBevelIndent'
       Anchors = [akTop, akLeft, akRight]
@@ -219,18 +219,18 @@ object EditorWordWrapOptionsFrame: TEditorWordWrapOptionsFrame
     end
     object lbWordWrapIndent: TLabel
       Left = 0
-      Height = 15
-      Top = 119
-      Width = 140
+      Height = 16
+      Top = 129
+      Width = 151
       BorderSpacing.CellAlignVertical = ccaCenter
       Caption = 'lbWordWrapIndent'
     end
     object edWordWrapIndent: TSpinEdit
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Side = asrBottom
-      Left = 146
-      Height = 23
-      Top = 115
+      Left = 157
+      Height = 26
+      Top = 124
       Width = 60
       Alignment = taRightJustify
       BorderSpacing.Top = 3
@@ -244,16 +244,16 @@ object EditorWordWrapOptionsFrame: TEditorWordWrapOptionsFrame
     end
     object lblIndentOffs: TLabel
       Left = 0
-      Height = 15
-      Top = 142
-      Width = 140
+      Height = 16
+      Top = 154
+      Width = 151
       BorderSpacing.Bottom = 8
       Caption = ' '
     end
     object lblIndentOffs2: TLabel
-      Left = 146
-      Height = 15
-      Top = 142
+      Left = 157
+      Height = 16
+      Top = 154
       Width = 60
       BorderSpacing.Bottom = 8
       Caption = ' '
@@ -264,8 +264,8 @@ object EditorWordWrapOptionsFrame: TEditorWordWrapOptionsFrame
       AnchorSideRight.Control = Panel1
       AnchorSideRight.Side = asrBottom
       Left = 0
-      Height = 19
-      Top = 142
+      Height = 21
+      Top = 154
       Width = 375
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.CellAlignVertical = ccaCenter
@@ -275,18 +275,18 @@ object EditorWordWrapOptionsFrame: TEditorWordWrapOptionsFrame
     end
     object lbWordWrapIndentMin: TLabel
       Left = 0
-      Height = 15
-      Top = 169
-      Width = 140
+      Height = 16
+      Top = 183
+      Width = 151
       BorderSpacing.CellAlignVertical = ccaCenter
       Caption = 'lbWordWrapIndentMin'
     end
     object edWordWrapIndentMin: TSpinEdit
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Side = asrBottom
-      Left = 146
-      Height = 23
-      Top = 165
+      Left = 157
+      Height = 26
+      Top = 178
       Width = 60
       Alignment = taRightJustify
       BorderSpacing.Top = 3
@@ -299,18 +299,18 @@ object EditorWordWrapOptionsFrame: TEditorWordWrapOptionsFrame
     end
     object lbWordWrapIndentMax: TLabel
       Left = 0
-      Height = 15
-      Top = 196
-      Width = 140
+      Height = 16
+      Top = 213
+      Width = 151
       BorderSpacing.CellAlignVertical = ccaCenter
       Caption = 'lbWordWrapIndentMax'
     end
     object edWordWrapIndentMax: TSpinEdit
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Side = asrBottom
-      Left = 146
-      Height = 23
-      Top = 192
+      Left = 157
+      Height = 26
+      Top = 208
       Width = 60
       Alignment = taRightJustify
       BorderSpacing.Top = 3
@@ -323,18 +323,18 @@ object EditorWordWrapOptionsFrame: TEditorWordWrapOptionsFrame
     end
     object lbWordWrapIndentMaxRel: TLabel
       Left = 0
-      Height = 15
-      Top = 223
-      Width = 140
+      Height = 16
+      Top = 243
+      Width = 151
       BorderSpacing.CellAlignVertical = ccaCenter
       Caption = 'lbWordWrapIndentMaxRel'
     end
     object edWordWrapIndentMaxRel: TSpinEdit
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Side = asrBottom
-      Left = 146
-      Height = 23
-      Top = 219
+      Left = 157
+      Height = 26
+      Top = 238
       Width = 60
       Alignment = taRightJustify
       BorderSpacing.Top = 3
@@ -352,20 +352,25 @@ object EditorWordWrapOptionsFrame: TEditorWordWrapOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 80
-    Top = 31
+    Top = 33
     Width = 212
     BorderSpacing.Around = 6
     ItemHeight = 0
     TabOrder = 1
+    TopIndex = -1
   end
   object btnWordWrapAllHL: TButton
     AnchorSideLeft.Control = cblWordWrapHL
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = cblWordWrapHL
+    AnchorSideRight.Control = btnWordWrapNoneHL
+    AnchorSideRight.Side = asrBottom
     Left = 224
-    Height = 25
-    Top = 31
-    Width = 75
+    Height = 26
+    Top = 33
+    Width = 136
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
     Caption = 'btnWordWrapAllHL'
     TabOrder = 5
     OnClick = btnWordWrapAllHLClick
@@ -376,9 +381,10 @@ object EditorWordWrapOptionsFrame: TEditorWordWrapOptionsFrame
     AnchorSideTop.Control = btnWordWrapAllHL
     AnchorSideTop.Side = asrBottom
     Left = 224
-    Height = 25
-    Top = 62
-    Width = 75
+    Height = 26
+    Top = 65
+    Width = 136
+    AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'btnWordWrapNoneHL'
     TabOrder = 6
