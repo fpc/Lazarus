@@ -6,7 +6,7 @@ unit EditorSyntaxHighlighterDef;
 interface
 
 uses
-  Classes, SysUtils;
+  Classes, SysUtils, LazMethodList;
 
 type
   TLazSyntaxHighlighter =
@@ -121,6 +121,10 @@ var
   IdeSyntaxHighlighters: TIdeSyntaxHighlighterList;
   IdeColorSchemeList: IColorSchemeList;
 
+procedure RegisterOnIdeColorSchemeListCreated(AnHandler: TNotifyEvent);
+procedure _IDE_CallOnIdeColorSchemeListCreated;
+
+
 implementation
 
 function GetSyntaxHighlighterCaption(h: TLazSyntaxHighlighter): string;
@@ -131,6 +135,26 @@ end;
 function StrToLazSyntaxHighlighter(const s: String): TLazSyntaxHighlighter;
 begin
   Result := IdeSyntaxHighlighters.GetLazSyntaxHighlighterType(IdeSyntaxHighlighters.GetIdForName(s)){%H-};
+end;
+
+var
+  OnIdeColorSchemeListCreated: TMethodList;
+procedure RegisterOnIdeColorSchemeListCreated(AnHandler: TNotifyEvent);
+begin
+  if IdeColorSchemeList <> nil then begin
+    AnHandler(nil);
+    exit;
+  end;
+
+  if OnIdeColorSchemeListCreated = nil then
+    OnIdeColorSchemeListCreated := TMethodList.Create;
+  OnIdeColorSchemeListCreated.Add(TMethod(AnHandler));
+end;
+
+procedure _IDE_CallOnIdeColorSchemeListCreated;
+begin
+  OnIdeColorSchemeListCreated.CallNotifyEvents(nil);
+  FreeAndNil(OnIdeColorSchemeListCreated);
 end;
 
 end.

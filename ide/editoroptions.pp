@@ -2947,6 +2947,8 @@ begin
       FileList.Free;
     end;
   end;
+  IdeColorSchemeList := Singleton;
+  _IDE_CallOnIdeColorSchemeListCreated;
   Result := Singleton;
 end;
 
@@ -8436,7 +8438,6 @@ end;
 initialization
   RegisterIDEOptionsGroup(GroupEditor, TEditorOptions);
   IdeSyntaxHighlighters := HighlighterList;
-  IdeColorSchemeList := ColorSchemeFactory;
 
 finalization
   IdeColorSchemeList := nil;
