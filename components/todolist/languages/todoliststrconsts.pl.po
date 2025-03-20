@@ -12,6 +12,22 @@ msgstr ""
 "Language: pl_PL\n"
 "X-Generator: Poedit 2.2\n"
 
+#: todoliststrconsts.attribgroupname
+msgid "ToDo comments"
+msgstr ""
+
+#: todoliststrconsts.attribnamedone
+msgid "Done comment"
+msgstr ""
+
+#: todoliststrconsts.attribnamenote
+msgid "Note comment"
+msgstr ""
+
+#: todoliststrconsts.attribnametodo
+msgid "ToDo comment"
+msgstr ""
+
 #: todoliststrconsts.dlgfiltercsv
 msgid "CSV files"
 msgstr "Pliki CSV"

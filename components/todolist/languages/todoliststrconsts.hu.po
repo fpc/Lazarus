@@ -11,6 +11,22 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.8.7.1\n"
 
+#: todoliststrconsts.attribgroupname
+msgid "ToDo comments"
+msgstr ""
+
+#: todoliststrconsts.attribnamedone
+msgid "Done comment"
+msgstr ""
+
+#: todoliststrconsts.attribnamenote
+msgid "Note comment"
+msgstr ""
+
+#: todoliststrconsts.attribnametodo
+msgid "ToDo comment"
+msgstr ""
+
 #: todoliststrconsts.dlgfiltercsv
 msgid "CSV files"
 msgstr "CSV fájlok"

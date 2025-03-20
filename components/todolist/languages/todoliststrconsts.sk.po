@@ -12,6 +12,22 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n>=2 && n<=4 ? 1 : 2);\n"
 "Language: sk\n"
 
+#: todoliststrconsts.attribgroupname
+msgid "ToDo comments"
+msgstr ""
+
+#: todoliststrconsts.attribnamedone
+msgid "Done comment"
+msgstr ""
+
+#: todoliststrconsts.attribnamenote
+msgid "Note comment"
+msgstr ""
+
+#: todoliststrconsts.attribnametodo
+msgid "ToDo comment"
+msgstr ""
+
 #: todoliststrconsts.dlgfiltercsv
 msgid "CSV files"
 msgstr "CSV súbory"

@@ -1,6 +1,22 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
+#: todoliststrconsts.attribgroupname
+msgid "ToDo comments"
+msgstr ""
+
+#: todoliststrconsts.attribnamedone
+msgid "Done comment"
+msgstr ""
+
+#: todoliststrconsts.attribnamenote
+msgid "Note comment"
+msgstr ""
+
+#: todoliststrconsts.attribnametodo
+msgid "ToDo comment"
+msgstr ""
+
 #: todoliststrconsts.dlgfiltercsv
 msgid "CSV files"
 msgstr "CSV tiedostot"

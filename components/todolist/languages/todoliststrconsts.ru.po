@@ -1,15 +1,31 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
-"MIME-Version: 1.0\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
-"X-Generator: Poedit 2.2.1\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.5\n"
+
+#: todoliststrconsts.attribgroupname
+msgid "ToDo comments"
+msgstr "Комментарии ToDo"
+
+#: todoliststrconsts.attribnamedone
+msgid "Done comment"
+msgstr "Комментарий Done"
+
+#: todoliststrconsts.attribnamenote
+msgid "Note comment"
+msgstr "Комментарий Note"
+
+#: todoliststrconsts.attribnametodo
+msgid "ToDo comment"
+msgstr "Комментарий ToDo"
 
 #: todoliststrconsts.dlgfiltercsv
 msgid "CSV files"
