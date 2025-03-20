@@ -3593,6 +3593,10 @@ msgstr ""
 msgid "Word-wrap"
 msgstr ""
 
+#: lazarusidestrconsts.dlgoptwordwrapallhl
+msgid "Select all"
+msgstr ""
+
 #: lazarusidestrconsts.dlgoptwordwrapcheckfixedlength
 msgid "Wrap at fixed column"
 msgstr ""
@@ -3640,6 +3644,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgoptwordwrapminimumlinelength
 msgid "Minimum line length"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoptwordwrapnonehl
+msgid "Clear selection"
 msgstr ""
 
 #: lazarusidestrconsts.dlgoptwordwrapsectioncolumn
