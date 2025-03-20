@@ -77,6 +77,11 @@ resourcestring
                        'The rest of the file has been skipped.';
   rsExportTodoIt = 'Export ToDo items to CSV';
 
+  AttribGroupName = 'ToDo comments';
+  AttribNameTodo  = 'ToDo comment';
+  AttribNameDone  = 'Done comment';
+  AttribNameNote  = 'Note comment';
+
 implementation
 
 end.

@@ -8,6 +8,8 @@ interface
 uses
   Classes, SysUtils, Controls, Graphics,
   LazLoggerBase,
+  // TodoList
+  ToDoListStrConsts,
   // IdeIntf
   SrcEditorIntf, EditorSyntaxHighlighterDef,
   // LazEdit
@@ -59,12 +61,6 @@ type
     procedure DoEditorCreated(Sender: TObject);
     procedure DoColorsChanged(Sender: TObject);
   end;
-
-resourcestring
-  AttribGroupName = 'Todo comments';
-  AttribNameTodo  = 'Todo comment';
-  AttribNameDone  = 'Done comment';
-  AttribNameNote  = 'Note comment';
 
 var
   AttribGroupIdx: Integer;
