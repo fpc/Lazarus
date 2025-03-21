@@ -1200,7 +1200,7 @@ begin
             end
             else
             if hafCustomWords in Attr.Features then begin
-              ParentName := FCurrentHighlighter.LanguageName + dlgAddHiAttrGroup_Suffix_Custom;
+              ParentName := FCurrentHighlighter.LanguageName + ' ' + dlgAddHiAttrGroup_Suffix_Custom;
               ParentNode := ColorElementTree.Items.FindTopLvlNode(ParentName);
             end
             else begin
