@@ -5340,11 +5340,8 @@ begin
   if IsWidgetOK then
   begin
     Gtk3Page := TGtk3Page(ACustomPage.Handle);
-    with PGtkNoteBook(GetContainerWidget)^ do begin
+    with PGtkNoteBook(GetContainerWidget)^ do
       insert_page(Gtk3Page.Widget, Gtk3Page.FPageLabel, AIndex);
-      // Check why this give sometimes: Gtk-WARNING: Negative content width -1 (allocation 1, extents 1x1) while allocating gadget (node notebook, owner GtkNotebook)
-      resize_children;
-    end;
   end;
 end;
 
