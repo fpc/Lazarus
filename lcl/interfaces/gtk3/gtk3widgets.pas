@@ -1989,13 +1989,6 @@ begin
   if KeyValue > VK_UNDEFINED then
     KeyValue := ACharCode; // VK_UNKNOWN;
 
-  if AKeyPress and (ACharCode = VK_TAB) then
-  begin
-    if Sender^.is_focus then
-      Self.LCLObject.SelectNext(Self.LCLObject,true,true);
-    exit;
-  end;
-
   IsArrowKey := (AEventString='') and ((ACharCode = VK_UP) or (ACharCode = VK_DOWN) or (ACharCode = VK_LEFT) or (ACharCode = VK_RIGHT));
 
   {$IFDEF GTK3DEBUGKEYPRESS}
