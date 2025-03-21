@@ -5033,16 +5033,12 @@ begin
     end;
   end;
 
-  if (PasCodeFoldRange.BracketNestLevel = 0) then
-    fRange := fRange - [rsInParamDeclaration];
-
   case FTokenState of
     tsAtProcName: begin
         if (reaProcName in FRequiredStates) and (FTokenID = tkIdentifier) and
            (rsInProcHeader in fRange)
         then
           FTokenTypeDeclExtraAttrib := eaProcName;
-        FNextTokenState := tsAfterProcName;
       end;
     tsAfterProperty: begin
         if rsInParamDeclaration in fRange then begin
@@ -5069,13 +5065,6 @@ begin
             FTokenTypeDeclExtraAttrib := eaPropertyName;
           end;
         end;
-
-        if (rsProperty in fRange) and
-           ( (PasCodeFoldRange.BracketNestLevel > 0) or
-             (FTokenID <> tkKey)  // not read/write/...
-           )
-        then
-          FNextTokenState := tsAfterProperty;
       end;
     tsAfterDot: begin
       if (reaStructMemeber in FRequiredStates) and (FTokenID = tkIdentifier) then
@@ -5236,7 +5225,10 @@ begin
         FTokenHashKey := 0;
         fProcTable[fLine[Run]];
 
-        //if not (FIsInNextToEOL or IsScanning) then begin
+        if (PasCodeFoldRange.BracketNestLevel = 0) then
+          fRange := fRange - [rsInParamDeclaration];
+
+        if not (FIsInNextToEOL or IsScanning) then begin
           CheckForAdditionalAttributes;
           if FTokenTypeDeclExtraAttrib <> FLastTokenTypeDeclExtraAttrib then begin
             FLastTokenTypeDeclExtraAttrib := FTokenTypeDeclExtraAttrib;
@@ -5245,7 +5237,22 @@ begin
           end
           else
             FLastTokenTypeDeclExtraAttrib := FTokenTypeDeclExtraAttrib;
-        //end;
+        end;
+
+        case FTokenState of
+          tsAtProcName: begin
+              FNextTokenState := tsAfterProcName;
+            end;
+          tsAfterProperty: begin
+            if (rsProperty in fRange) and
+               ( (PasCodeFoldRange.BracketNestLevel > 0) or
+                 (FTokenID <> tkKey)  // not read/write/...
+               )
+            then
+              FNextTokenState := tsAfterProperty;
+          end;
+        end;
+
 
         if not (FTokenID in [tkSpace, tkComment, tkIDEDirective, tkDirective, tkNull]) then begin
           if (FNextTokenState = tsNone) and (FTokenState in [tsAfterExternal, tsAfterExternalName]) and
