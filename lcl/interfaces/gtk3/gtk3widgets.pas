@@ -154,7 +154,7 @@ type
     function getClientOffset: TPoint; virtual;
     function getWidgetPos: TPoint; virtual;
 
-    procedure OffsetMousePos(APoint: PPoint); virtual;
+    procedure OffsetMousePos(const aGlobalX, aGlobalY: double; APoint: PPoint); virtual;
 
     function ClientToScreen(var P:TPoint):boolean;
     function ScreenToClient(var P: TPoint): Integer;
@@ -541,6 +541,7 @@ type
     class function CheckIfScrollbarPressed(scrollbar: PGtkWidget; out AMouseOver:
        boolean; const ACheckModifier: TGdkModifierTypeIdx): boolean;
     procedure InitializeWidget; override;
+    procedure OffsetMousePos(const aGlobalX, aGlobalY: double; APoint: PPoint); override;
     procedure SetScrollBarsSignalHandlers(const AIsHorizontalScrollBar: boolean);
     function getClientBounds: TRect; override;
     function getViewport: PGtkViewport; virtual;
@@ -848,7 +849,6 @@ type
       function EatArrowKeys(const {%H-}AKey: Word): Boolean; override;
     public
       procedure DoBeforeLCLPaint; override;
-      procedure OffsetMousePos(APoint: PPoint); override;
       procedure InitializeWidget; override;
       function getViewport: PGtkViewport; override;
       procedure preferredSize(var PreferredWidth, PreferredHeight: integer; {%H-}WithThemeSpace: Boolean); override;
@@ -907,7 +907,6 @@ type
     function getVerticalScrollbar: PGtkScrollbar; override;
     function GetScrolledWindow: PGtkScrolledWindow; override;
     procedure InitializeWidget; override;
-    procedure OffsetMousePos(APoint: PPoint); override;
     function ShowState(nstate:integer):boolean; // winapi ShowWindow
     procedure UpdateWindowState; // LCL WindowState
     class function decoration_flags(Aform: TCustomForm): TGdkWMDecoration;
@@ -1448,7 +1447,7 @@ begin
   if AState and MK_ALT <> 0 then
     ShiftState := ShiftState + [ssAlt];
 
-  TGtk3Widget(AData).OffsetMousePos(@MappedXY);
+  TGtk3Widget(AData).OffsetMousePos(AEvent^.scroll.x_root, AEvent^.scroll.y_root, @MappedXY);
 
   FillChar(MessE{%H-},SizeOf(MessE),0);
   MessE.Msg := LM_MOUSEWHEEL;
@@ -1687,7 +1686,7 @@ begin
   MousePos.x := X;
   MousePos.y := Y;
 
-  OffsetMousePos(@MousePos);
+  OffsetMousePos(Event^.motion.x_root, Event^.motion.y_root, @MousePos);
 
   Msg.XPos := SmallInt(MousePos.X);
   Msg.YPos := SmallInt(MousePos.Y);
@@ -2156,7 +2155,7 @@ begin
   MousePos.x := Round(Event^.button.x);
   MousePos.y := Round(Event^.button.y);
 
-  OffsetMousePos(@MousePos);
+  OffsetMousePos(Event^.button.x_root, Event^.button.y_root, @MousePos);
 
   Msg.XPos := SmallInt(MousePos.X);
   Msg.YPos := SmallInt(MousePos.Y);
@@ -2884,7 +2883,8 @@ begin
   end;
 end;
 
-procedure TGtk3Widget.OffsetMousePos(APoint: PPoint);
+procedure TGtk3Widget.OffsetMousePos(const aGlobalX, aGlobalY: double;
+  APoint: PPoint);
 begin
   with getClientOffset do
   begin
@@ -5797,6 +5797,41 @@ begin
   LCLVAdj := nil;
   LCLHAdj := nil;
   inherited InitializeWidget;
+end;
+
+procedure TGtk3ScrollableWin.OffsetMousePos(const aGlobalX, aGlobalY: double;
+  APoint: PPoint);
+var
+  ScrolledWindow: PGtkScrolledWindow;
+  Viewport: PGtkWidget;
+  WinX, WinY: gint;
+  LocalX, LocalY: gint;
+  ClientX, ClientY: gint;
+  aWindow: PGdkWindow;
+begin
+  inherited OffsetMousePos(aGlobalX, aGlobalY, APoint);
+  if [wtCustomControl, wtWindow] * WidgetType = [] then
+    exit;
+  ScrolledWindow := GetScrolledWindow;
+  if not Gtk3IsScrolledWindow(ScrolledWindow) then
+    exit;
+  Viewport := gtk_bin_get_child(PGtkBin(ScrolledWindow));
+  if not Gtk3IsWidget(ViewPort) then
+    exit;
+  aWindow := GetContainerWidget^.get_window;
+  if not Gtk3IsGdkWindow(aWindow) then
+    exit;
+  gdk_window_get_origin(aWindow, @WinX, @WinY);
+  LocalX := Trunc(aGlobalX) - WinX;
+  LocalY := Trunc(aGlobalY) - WinY;
+
+  if gtk_widget_translate_coordinates(GetContainerWidget, Viewport, LocalX, LocalY, @ClientX, @ClientY) then
+  begin
+    // writeln(Format('Mouse clicked at: Global=(%.2f, %.2f), Local=(%d, %d), Client=(%d, %d)',
+    //  [aGlobalX, aGlobalY, LocalX, LocalY, ClientX, ClientY]));
+    aPoint^.X := ClientX;
+    aPoint^.Y := ClientY;
+  end;
 end;
 
 class function TGtk3ScrollableWin.RangeChangeValue(ARange: PGtkRange;
@@ -8787,25 +8822,6 @@ begin
   end;
 end;
 
-procedure TGtk3CustomControl.OffsetMousePos(APoint: PPoint);
-var
-  Hadjustment, Vadjustment: PGtkAdjustment;
-  HValue, VValue: longint;
-begin
-  inherited OffsetMousePos(APoint);
-  // Retrieve adjustments
-  Hadjustment := GetScrolledWindow^.get_hadjustment;
-  Vadjustment := GetScrolledWindow^.get_vadjustment;
-
-  // Get the adjustment values
-  HValue := Round(gtk_adjustment_get_value(Hadjustment));
-  VValue := Round(gtk_adjustment_get_value(Vadjustment));
-
-  // Apply adjustment values to the mouse position
-  Dec(APoint^.x, HValue);
-  Dec(APoint^.y, VValue);
-end;
-
 procedure TGtk3CustomControl.InitializeWidget;
 begin
   inherited InitializeWidget;
@@ -9751,25 +9767,6 @@ begin
     g_signal_connect_data(PGtkRange(gtk_scrolled_window_get_vscrollbar(GetScrolledWindow)),'value-changed',
       TGCallback(@RangeValueChanged), Self, nil, G_CONNECT_DEFAULT);
   end;
-end;
-
-procedure TGtk3Window.OffsetMousePos(APoint: PPoint);
-var
-  Hadjustment, Vadjustment: PGtkAdjustment;
-  HValue, VValue: longint;
-begin
-  inherited OffsetMousePos(APoint);
-  // Retrieve adjustments
-  Hadjustment := GetScrolledWindow^.get_hadjustment;
-  Vadjustment := GetScrolledWindow^.get_vadjustment;
-
-  // Get the adjustment values
-  HValue := Round(gtk_adjustment_get_value(Hadjustment));
-  VValue := Round(gtk_adjustment_get_value(Vadjustment));
-
-  // Apply adjustment values to the mouse position
-  Dec(APoint^.x, HValue);
-  Dec(APoint^.y, VValue);
 end;
 
 destructor TGtk3Window.Destroy;
