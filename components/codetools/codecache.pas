@@ -351,7 +351,7 @@ begin
   else if Pos1^.Y<Pos2^.Y then Result:=1
   else if Pos1^.Y>Pos2^.Y then Result:=-1
   else if Pos1^.X<Pos2^.X then Result:=1
-  else if Pos1^.Y<Pos2^.Y then Result:=-1
+  else if Pos1^.X>Pos2^.X then Result:=-1
   else Result:=0;
 end;
 
