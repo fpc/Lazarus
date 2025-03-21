@@ -2281,7 +2281,7 @@ begin
   inherited Create(AOwner);
 
   for i := 0 to 9 do begin
-    FCustomAttribs[i] := TSynHighlighterLazCustomPasAttribute.Create('Custom '+IntToStr(i), 'CustomToken_'+IntToStr(i));
+    FCustomAttribs[i] := TSynHighlighterLazCustomPasAttribute.Create(Format(dlgAddHiAttrCustom, [i]), 'CustomToken_'+IntToStr(i));
     AddAttribute(FCustomAttribs[i]);
     FCustomAttribs[i].OnChange := @DoBuildCustomPasAttr;
   end;

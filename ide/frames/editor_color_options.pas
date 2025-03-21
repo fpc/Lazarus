@@ -1162,8 +1162,6 @@ begin
 end;
 
 procedure TEditorColorOptionsFrame.FillColorElementListBox;
-const
-  NAME_EXTENDED = '(Extended)';
 var
   i, AttriIdx: Integer;
   ParentName: String;
@@ -1178,7 +1176,7 @@ begin
   // Create Groups
   if not FIsEditingDefaults then begin
     ColorElementTree.Items.Add(nil, FCurrentHighlighter.LanguageName + ' ');
-    ColorElementTree.Items.Add(nil, FCurrentHighlighter.LanguageName + ' ' + NAME_EXTENDED).Visible := False;
+    ColorElementTree.Items.Add(nil, FCurrentHighlighter.LanguageName + ' ' + dlgAddHiAttrGroup_Suffix_Extended).Visible := False;
   end
   else
     ColorElementTree.Items.Add(nil, AdditionalHighlightGroupNames[agnDefault]);
@@ -1202,13 +1200,13 @@ begin
             end
             else
             if hafCustomWords in Attr.Features then begin
-              ParentName := FCurrentHighlighter.LanguageName + ' (Custom)';
+              ParentName := FCurrentHighlighter.LanguageName + dlgAddHiAttrGroup_Suffix_Custom;
               ParentNode := ColorElementTree.Items.FindTopLvlNode(ParentName);
             end
             else begin
               ParentName := FCurrentHighlighter.LanguageName;
               if hafAlpha in Attr.Features then begin
-                ParentName := ParentName + ' ' + NAME_EXTENDED;
+                ParentName := ParentName + ' ' + dlgAddHiAttrGroup_Suffix_Extended;
                 ParentNode := ColorElementTree.Items.FindTopLvlNode(ParentName);
               end;
             end;
@@ -1224,7 +1222,7 @@ begin
                 p := ParentNode;
                 if p = nil then
                   p := ColorElementTree.Items.Add(nil, ParentName);
-                ParentName := ParentName + ' (entry type)';
+                ParentName := ParentName + dlgAddHiAttrGroup_Suffix_EntryType;
                 ParentNode := ColorElementTree.Items.AddChild(p, ParentName);
                 ComplWindowEntryParentNode := ParentNode;
               end;

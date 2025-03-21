@@ -2172,6 +2172,7 @@ resourcestring
   dlgIfDefNodeInactive            = 'Inactive $IFDEF node';
   dlgIfDefNodeActive              = 'Active $IFDEF node';
   dlgIfDefNodeTmpActive           = 'Included mixed state $IFDEF node';
+  dlgAddHiAttrCustom              = 'Custom %d';
 
   dbgAsmWindowSourceLine          = 'Source line';
   dbgAsmWindowSourceFunc          = 'Function name';
@@ -2186,6 +2187,10 @@ resourcestring
   dlgAddHiAttrGroupTemplateEdit  = 'Template Edit';
   dlgAddHiAttrGroupIfDef    = 'IfDef';
   dlgAddHiAttrGroupOutlineColors = 'Outline Colors';
+  dlgAddHiAttrGroup_Suffix_Extended  = '(Extended)';
+  dlgAddHiAttrGroup_Suffix_Custom  = '(Custom)';
+  dlgAddHiAttrGroup_Suffix_EntryType  = '(entry type)';
+
 
   dlgEditAccessCaptionLockedInView            = 'Locked, if text in view';
   dlgEditAccessCaptionUnLockedInSoftView      = 'Unlocked, if text in centered view';
