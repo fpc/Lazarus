@@ -733,6 +733,7 @@ type
     function getText: String; override;
     procedure setText(const AValue: String); override;
   public
+    function getClientOffset:TPoint; override;
     function getClientRect:TRect; override;
     property GroupBoxType: TGtk3GroupBoxType read FGroupBoxType write FGroupBoxType;
   end;
@@ -3536,6 +3537,18 @@ begin
       {%H-}PGtkFrame(Widget)^.set_label(PgChar({%H-}ReplaceAmpersandsWithUnderscores(AValue)));
     end;
   end;
+end;
+
+function TGtk3GroupBox.getClientOffset: TPoint;
+var
+  Allocation: TGtkAllocation;
+  R: TRect;
+begin
+  Self.Widget^.get_allocation(@Allocation);
+  Result.X := -Allocation.X;
+  Result.Y := -Allocation.Y;
+  R := getClientBounds;
+  Result := Point(Result.x + R.Left, Result.y + R.Top);
 end;
 
 {$IF DEFINED(GTK3DEBUGSIZE) OR DEFINED(GTK3DEBUGGROUPBOX)}
