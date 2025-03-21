@@ -5806,20 +5806,27 @@ var
   Msg: TLMVScroll;
   MaxValue: gdouble;
   StateFlags: TGtkStateFlags;
+  ACtl: TGtk3ScrollableWin;
 begin
   Result := gtk_false;
 
   {$IFDEF GTK3DEBUGSCROLL}
   DebugLn(Format('>TGtk3ScrollableWin.RangeChangeValue Value: %d', [Round(AValue)]),' IsHScrollBar ',dbgs(PGtkOrientable(ARange)^.get_orientation = GTK_ORIENTATION_HORIZONTAL),' InUpdate=',dbgs(TGtk3Widget(AData).InUpdate));
   {$ENDIF}
+  ACtl := TGtk3ScrollableWin(aData);
   if PGtkOrientable(ARange)^.get_orientation = GTK_ORIENTATION_HORIZONTAL then
     Msg.Msg := LM_HSCROLL
   else
     Msg.Msg := LM_VSCROLL;
 
   if ARange^.adjustment^.page_size > 0 then
-    MaxValue := ARange^.adjustment^.upper - ARange^.adjustment^.page_size
-  else
+  begin
+    {we must use cached values since gtk3 has it's own meaning about page_size}
+    if Msg.Msg = LM_HSCROLL then
+      MaxValue := ACtl.LCLHAdj^.upper - ACtl.LCLHAdj^.page_size
+    else
+      MaxValue := ACtl.LCLVAdj^.upper - ACtl.LCLVAdj^.page_size;
+  end else
     MaxValue := ARange^.adjustment^.upper;
 
   if (AValue > MaxValue) then
