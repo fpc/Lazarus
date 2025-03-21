@@ -4548,10 +4548,6 @@ begin
       else
         NewPolicy := GTK_POLICY_NEVER;
 
-      // bug in gtk3
-      if (wtWindow in AWidget.WidgetType) and (NewPolicy = GTK_POLICY_NEVER) then
-        NewPolicy := GTK_POLICY_AUTOMATIC;
-
       TGtk3ScrollableWin(AWidget).HScrollBarPolicy := NewPolicy;
     end;
     if wBar in [SB_BOTH, SB_VERT] then
@@ -4560,10 +4556,6 @@ begin
         NewPolicy := GTK_POLICY_ALWAYS
       else
         NewPolicy := GTK_POLICY_NEVER;
-
-      // bug in gtk3
-      if (wtWindow in AWidget.WidgetType) and (NewPolicy = GTK_POLICY_NEVER) then
-        NewPolicy := GTK_POLICY_AUTOMATIC;
 
       TGtk3ScrollableWin(AWidget).VScrollBarPolicy := NewPolicy;
     end;
