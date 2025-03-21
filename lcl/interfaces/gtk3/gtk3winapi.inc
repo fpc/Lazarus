@@ -4013,6 +4013,47 @@ var
       (aPageSize < aVisibleSize div 2)) and (aMaxValue >= aPageSize);
   end;
 
+  procedure UpdateContentSize;
+  var
+    uWidth, uHeight: guint;
+  begin
+    if (AControl is TGtk3ScrollableWin) and (wtContainer in AControl.WidgetType) then
+    begin
+      //hah
+      if SbStyle = SB_VERT then
+        TGtk3ScrollableWin(AControl).GetContainerWidget^.set_size_request(TGtk3ScrollableWin(AControl).GetContainerWidget^.get_allocated_width, Round(adjustment^.upper))
+      else
+      if SBStyle = SB_HORZ then
+        TGtk3ScrollableWin(AControl).GetContainerWidget^.set_size_request(Round(adjustment^.upper), TGtk3ScrollableWin(AControl).GetContainerWidget^.get_allocated_height);
+    end else
+    if (AControl is TGtk3ScrollableWin) and (wtLayout in AControl.WidgetType) then
+    begin
+      PGtkLayout(TGtk3ScrollableWin(AControl).GetContainerWidget)^.get_size(@uWidth, @uHeight);
+      if SbStyle = SB_VERT then
+      begin
+        if Round(adjustment^.upper) <> uHeight then
+        begin
+          if HaveLogicalValues and (ScrollInfo.nPage = ScrollInfo.nMax) and (ScrollInfo.nMax > 0) then
+            PGtkLayout(TGtk3ScrollableWin(AControl).GetContainerWidget)^.set_size(uWidth, ScrollInfo.nMax)
+          else
+            PGtkLayout(TGtk3ScrollableWin(AControl).GetContainerWidget)^.set_size(uWidth, Round(adjustment^.upper) + 1 { GetSystemMetrics(SM_CYVSCROLL)});
+          PGtkLayout(TGtk3ScrollableWin(AControl).GetContainerWidget)^.queue_resize;
+        end;
+      end else
+      if SBStyle = SB_HORZ then
+      begin
+        if Round(adjustment^.upper) <> uWidth then
+        begin
+          if HaveLogicalValues and (ScrollInfo.nPage = ScrollInfo.nMax) and (ScrollInfo.nMax > 0) then
+            PGtkLayout(TGtk3ScrollableWin(AControl).GetContainerWidget)^.set_size(ScrollInfo.nMax, uHeight)
+          else
+            PGtkLayout(TGtk3ScrollableWin(AControl).GetContainerWidget)^.set_size(Round(adjustment^.upper) + 1 {GetSystemMetrics(SM_CYVSCROLL)}, uHeight);
+          PGtkLayout(TGtk3ScrollableWin(AControl).GetContainerWidget)^.queue_resize;
+        end;
+      end;
+    end;
+  end;
+
   procedure UpdateAdjustment;
   var
     ATarget: gdouble;
@@ -4034,44 +4075,8 @@ var
       Adjustment^.lower := ATarget;
 
       ATarget := Adjustment^.upper;
-      SetGDouble(ATarget, ScrollInfo.nMax - ScrollInfo.nMin + 1, HasChanged);
+      SetGDouble(ATarget, ScrollInfo.nMax - ScrollInfo.nMin, HasChanged);
       Adjustment^.upper := ATarget;
-
-      if (AControl is TGtk3ScrollableWin) and (wtContainer in AControl.WidgetType) then
-      begin
-        //hah
-        if SbStyle = SB_VERT then
-          TGtk3ScrollableWin(AControl).GetContainerWidget^.set_size_request(TGtk3ScrollableWin(AControl).GetContainerWidget^.get_allocated_width, Round(ATarget))
-        else
-        if SBStyle = SB_HORZ then
-          TGtk3ScrollableWin(AControl).GetContainerWidget^.set_size_request(Round(ATarget), TGtk3ScrollableWin(AControl).GetContainerWidget^.get_allocated_height);
-      end else
-      if (AControl is TGtk3ScrollableWin) and (wtLayout in AControl.WidgetType) then
-      begin
-        PGtkLayout(TGtk3ScrollableWin(AControl).GetContainerWidget)^.get_size(@uWidth, @uHeight);
-        if SbStyle = SB_VERT then
-        begin
-          if Round(aTarget) <> uHeight then
-          begin
-            if HaveLogicalValues and (ScrollInfo.nPage = ScrollInfo.nMax) and (ScrollInfo.nMax > 0) then
-              PGtkLayout(TGtk3ScrollableWin(AControl).GetContainerWidget)^.set_size(uWidth, ScrollInfo.nMax)
-            else
-              PGtkLayout(TGtk3ScrollableWin(AControl).GetContainerWidget)^.set_size(uWidth, Round(ATarget) + GetSystemMetrics(SM_CYVSCROLL));
-            PGtkLayout(TGtk3ScrollableWin(AControl).GetContainerWidget)^.queue_resize;
-          end;
-        end else
-        if SBStyle = SB_HORZ then
-        begin
-          if Round(aTarget) <> uWidth then
-          begin
-            if HaveLogicalValues and (ScrollInfo.nPage = ScrollInfo.nMax) and (ScrollInfo.nMax > 0) then
-              PGtkLayout(TGtk3ScrollableWin(AControl).GetContainerWidget)^.set_size(ScrollInfo.nMax, uHeight)
-            else
-             PGtkLayout(TGtk3ScrollableWin(AControl).GetContainerWidget)^.set_size(Round(ATarget) + GetSystemMetrics(SM_CYVSCROLL), uHeight);
-            PGtkLayout(TGtk3ScrollableWin(AControl).GetContainerWidget)^.queue_resize;
-          end;
-        end;
-      end;
     end;
 
     if (ScrollInfo.FMask and SIF_PAGE) <> 0 then
@@ -4139,9 +4144,12 @@ var
     end;
     Adjustment^.thaw_notify;
     {$IFDEF GTK3DEBUGSCROLL}
-    DebugLn(Format('Updated Adjustment: lower=%.2f, upper=%.2f, page_size=%.2f, value=%.2f, page_increment=%.2f InUpdate %s',
-      [Adjustment^.lower, Adjustment^.upper, Adjustment^.page_size, Adjustment^.value, Adjustment^.page_increment, BoolToStr(AControl.InUpdate, True)]));
+    DebugLn(Format('Updated Adjustment: lower=%.2f, upper=%.2f, page_size=%.2f, value=%.2f, page_increment=%.2f InUpdate %s %s Logical %s',
+      [Adjustment^.lower, Adjustment^.upper, Adjustment^.page_size, Adjustment^.value, Adjustment^.page_increment, BoolToStr(AControl.InUpdate, True),
+        dbgHex(PtrUInt(Adjustment)), BoolToStr(HaveLogicalValues, True)]));
     {$ENDIF}
+    if ((ScrollInfo.FMask and SIF_RANGE) <> 0) or ((ScrollInfo.FMask and SIF_PAGE) <> 0) then
+      UpdateContentSize;
     AControl.EndUpdate;
   end;
 
