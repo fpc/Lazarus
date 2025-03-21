@@ -488,6 +488,11 @@ msgstr "源代码折叠树"
 msgid "Code folding (current)"
 msgstr ""
 
+#: lazarusidestrconsts.dlgaddhiattrcustom
+#, object-pascal-format
+msgid "Custom %d"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrdefault
 msgid "Default Text"
 msgstr "默认文本"
@@ -559,6 +564,18 @@ msgstr "文本"
 
 #: lazarusidestrconsts.dlgaddhiattrgroupwrap
 msgid "Wrapping"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrgroup_suffix_custom
+msgid "(Custom)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrgroup_suffix_entrytype
+msgid "(entry type)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrgroup_suffix_extended
+msgid "(Extended)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrgutterseparator

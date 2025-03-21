@@ -496,6 +496,11 @@ msgstr "עץ קוד מקופל"
 msgid "Code folding (current)"
 msgstr ""
 
+#: lazarusidestrconsts.dlgaddhiattrcustom
+#, object-pascal-format
+msgid "Custom %d"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrdefault
 msgid "Default Text"
 msgstr "טקסט ברירת המחדל"
@@ -567,6 +572,18 @@ msgstr "טקסט"
 
 #: lazarusidestrconsts.dlgaddhiattrgroupwrap
 msgid "Wrapping"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrgroup_suffix_custom
+msgid "(Custom)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrgroup_suffix_entrytype
+msgid "(entry type)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrgroup_suffix_extended
+msgid "(Extended)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrgutterseparator

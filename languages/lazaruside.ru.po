@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-03-20 18:56+0300\n"
+"PO-Revision-Date: 2025-03-21 18:49+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -487,6 +487,11 @@ msgstr "Дерево сворачиваний кода"
 msgid "Code folding (current)"
 msgstr "Сворачивание кода (текущее)"
 
+#: lazarusidestrconsts.dlgaddhiattrcustom
+#, object-pascal-format
+msgid "Custom %d"
+msgstr "Пользовательский %d"
+
 #: lazarusidestrconsts.dlgaddhiattrdefault
 msgid "Default Text"
 msgstr "Текст по умолчанию"
@@ -559,6 +564,18 @@ msgstr "Текст"
 #: lazarusidestrconsts.dlgaddhiattrgroupwrap
 msgid "Wrapping"
 msgstr "Перенос слов"
+
+#: lazarusidestrconsts.dlgaddhiattrgroup_suffix_custom
+msgid "(Custom)"
+msgstr "(пользовательские)"
+
+#: lazarusidestrconsts.dlgaddhiattrgroup_suffix_entrytype
+msgid "(entry type)"
+msgstr "(тип элемента списка)"
+
+#: lazarusidestrconsts.dlgaddhiattrgroup_suffix_extended
+msgid "(Extended)"
+msgstr "(расширенные)"
 
 #: lazarusidestrconsts.dlgaddhiattrgutterseparator
 msgid "Gutter Separator"

@@ -498,6 +498,11 @@ msgstr "Albero di chiusura codice"
 msgid "Code folding (current)"
 msgstr ""
 
+#: lazarusidestrconsts.dlgaddhiattrcustom
+#, object-pascal-format
+msgid "Custom %d"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrdefault
 msgid "Default Text"
 msgstr "Testo predefinito"
@@ -569,6 +574,18 @@ msgstr "Testo"
 
 #: lazarusidestrconsts.dlgaddhiattrgroupwrap
 msgid "Wrapping"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrgroup_suffix_custom
+msgid "(Custom)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrgroup_suffix_entrytype
+msgid "(entry type)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrgroup_suffix_extended
+msgid "(Extended)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrgutterseparator
