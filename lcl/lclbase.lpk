@@ -26,7 +26,7 @@
 "/>
     <License Value="modified LGPL-2
 "/>
-    <Version Major="4" Build="2"/>
+    <Version Major="4" Build="3"/>
     <Files Count="289">
       <Item1>
         <Filename Value="checklst.pas"/>
@@ -1192,7 +1192,7 @@
       </Item288>
       <Item289>
         <Filename Value="taskdlgemulation.pp"/>
-        <UnitName Value="taskdlgemulation"/>
+        <UnitName Value="TaskDlgEmulation"/>
       </Item289>
     </Files>
     <CompatibilityMode Value="True"/>
