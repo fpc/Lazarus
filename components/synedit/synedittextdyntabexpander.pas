@@ -65,6 +65,7 @@ type
     FViewChangeStamp: int64;
     FTabWidth: integer;
     FCachedColumnWidth: TCachedColumnWidth;
+    FIsInLineTextChanged: boolean;
     function ExpandedString(AnIndex: integer): string;
     function ExpandedStringLength(AnIndex: integer): Integer;
     function GetMinimumColumnWidths(AnIndex: integer): IntArray; inline;
@@ -402,18 +403,23 @@ end;
 procedure TSynEditStringDynTabExpander.LineTextChanged(Sender: TSynEditStrings;
   AnIndex, aCount: Integer);
 begin
-  if Sender = Self then
+  if (Sender = Self) or FIsInLineTextChanged then
     exit;
-  inherited LineTextChanged(Sender, AnIndex, aCount);
+  FIsInLineTextChanged := True;
+  try
+    inherited LineTextChanged(Sender, AnIndex, aCount);
 
-  if FStoredLongestLineIdx >= 0 then begin
-    if (FStoredLongestLineBlockEnd >= AnIndex) and (FStoredLongestLineBlockBegin < AnIndex+aCount) then
-      FStoredLongestLineIdx := -1;
+    if FStoredLongestLineIdx >= 0 then begin
+      if (FStoredLongestLineBlockEnd >= AnIndex) and (FStoredLongestLineBlockBegin < AnIndex+aCount) then
+        FStoredLongestLineIdx := -1;
+    end;
+
+    // TODO: find minimum range
+    SendNotification(senrLineChange, self, 0, Count-1);
+    FCachedColumnWidth.InvalidateLine(AnIndex, aCount);
+  finally
+    FIsInLineTextChanged := False;
   end;
-
-  // TODO: find minimum range
-  SendNotification(senrLineChange, self, 0, Count-1);
-  FCachedColumnWidth.InvalidateLine(AnIndex, aCount);
 end;
 
 procedure TSynEditStringDynTabExpander.LineCountChanged(
