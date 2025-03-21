@@ -414,6 +414,9 @@ type
   TGtk3Page = class(TGtk3Container)
   private
     FPageLabel: PGtkLabel;
+  strict private
+    class procedure TabSheetLayoutSizeAllocate(AWidget: PGtkWidget;
+      AGdkRect: PGdkRectangle; Data: gpointer); cdecl; static;
   protected
     procedure DoBeforeLCLPaint; override;
     procedure setText(const AValue: String); override;
@@ -723,6 +726,8 @@ type
 
   TGtk3GroupBox = class(TGtk3Bin)
   strict private
+    class procedure GroupBoxLayoutSizeAllocate(AWidget: PGtkWidget;
+      AGdkRect: PGdkRectangle; Data: gpointer); cdecl; static;
     class procedure GroupBoxSizeAllocate(AWidget: PGtkWidget; AGdkRect: PGdkRectangle; Data: gpointer); cdecl; static;
   private
     FGroupBoxType:TGtk3GroupBoxType;
@@ -3500,6 +3505,23 @@ end;
 
 { TGtk3GroupBox }
 
+class procedure TGtk3GroupBox.GroupBoxLayoutSizeAllocate(
+  AWidget: PGtkWidget; AGdkRect: PGdkRectangle; Data: gpointer); cdecl;
+var
+  HSize,VSize: integer;
+  uWidth, uHeight: guint;
+begin
+  HSize := AGdkRect^.Width;
+  VSize := AGdkRect^.Height;
+
+  PGtkLayout(aWidget)^.get_size(@uWidth, @uHeight);
+  if (uWidth <> HSize) or (uHeight <> VSize) then
+    PGtkLayout(aWidget)^.set_size(HSize, VSize);
+
+  if TGtk3Widget(Data).LCLObject.ClientRectNeedsInterfaceUpdate then
+    TGtk3Widget(Data).LCLObject.DoAdjustClientRectChange;
+end;
+
 function TGtk3GroupBox.CreateWidget(const Params: TCreateParams): PGtkWidget;
 begin
   FHasPaint := True;
@@ -3510,7 +3532,10 @@ begin
   PGtkBin(Result)^.add(FCentralWidget);
   FCentralWidget^.set_has_window(True);
   PGtkFrame(result)^.set_label_align(0.1,0.5);
+  if not (csDesigning in LCLObject.ComponentState) then
+    g_object_set(PGObject(FCentralWidget), 'resize-mode', [GTK_RESIZE_QUEUE, nil]);
   PGtkLayout(FCentralWidget)^.set_size(1, 1);
+  g_signal_connect_data(FCentralWidget,'size-allocate',TGCallback(@GroupBoxLayoutSizeAllocate), Self, nil, G_CONNECT_DEFAULT);
   Result^.show_all;
 end;
 
@@ -4959,6 +4984,23 @@ begin
   end;
 end;
 
+class procedure TGtk3Page.TabSheetLayoutSizeAllocate(
+  AWidget: PGtkWidget; AGdkRect: PGdkRectangle; Data: gpointer); cdecl;
+var
+  HSize,VSize: integer;
+  uWidth, uHeight: guint;
+begin
+  HSize := AGdkRect^.Width;
+  VSize := AGdkRect^.Height;
+
+  PGtkLayout(aWidget)^.get_size(@uWidth, @uHeight);
+  if (uWidth <> HSize) or (uHeight <> VSize) then
+    PGtkLayout(aWidget)^.set_size(HSize, VSize);
+
+  if TGtk3Widget(Data).LCLObject.ClientRectNeedsInterfaceUpdate then
+    TGtk3Widget(Data).LCLObject.DoAdjustClientRectChange;
+end;
+
 function TGtk3Page.CreateWidget(const Params: TCreateParams): PGtkWidget;
 begin
   FWidgetType := FWidgetType + [wtLayout];
@@ -4972,6 +5014,11 @@ begin
   FCentralWidget^.set_app_paintable(True);
   PGtkBox(Result)^.pack_start(FCentralWidget, True , True, 0);
   FCentralWidget^.set_has_window(True);
+  if not (csDesigning in LCLObject.ComponentState) then
+    g_object_set(PGObject(FCentralWidget), 'resize-mode', [GTK_RESIZE_QUEUE, nil]);
+  gtk_layout_set_size(PGtkLayout(FCentralWidget), 1, 1);
+
+  g_signal_connect_data(FCentralWidget,'size-allocate',TGCallback(@TabSheetLayoutSizeAllocate), Self, nil, G_CONNECT_DEFAULT);
 end;
 
 procedure TGtk3Page.DestroyWidget;
