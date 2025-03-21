@@ -1222,7 +1222,7 @@ begin
                 p := ParentNode;
                 if p = nil then
                   p := ColorElementTree.Items.Add(nil, ParentName);
-                ParentName := ParentName + dlgAddHiAttrGroup_Suffix_EntryType;
+                ParentName := ParentName + ' ' + dlgAddHiAttrGroup_Suffix_EntryType;
                 ParentNode := ColorElementTree.Items.AddChild(p, ParentName);
                 ComplWindowEntryParentNode := ParentNode;
               end;
