@@ -156,7 +156,7 @@ type
 
     procedure OffsetMousePos(const aGlobalX, aGlobalY: double; APoint: PPoint); virtual;
 
-    function ClientToScreen(var P:TPoint):boolean;
+    function ClientToScreen(var P:TPoint):boolean; virtual;
     function ScreenToClient(var P: TPoint): Integer;
 
     function DeliverMessage(var Msg; const AIsInputEvent: Boolean = False): LRESULT; virtual;
@@ -420,6 +420,7 @@ type
     function CreateWidget(const Params: TCreateParams):PGtkWidget; override;
     procedure DestroyWidget; override;
   public
+    function ClientToScreen(var P:TPoint):boolean; override;
     function getClientOffset:TPoint; override;
     function getClientRect: TRect; override;
   end;
@@ -4968,9 +4969,9 @@ begin
   FPageLabel^.ref;
   Result := TGtkBox.new(GTK_ORIENTATION_HORIZONTAL, 0);
   FCentralWidget := TGtkLayout.new(nil, nil);
+  FCentralWidget^.set_app_paintable(True);
   PGtkBox(Result)^.pack_start(FCentralWidget, True , True, 0);
   FCentralWidget^.set_has_window(True);
-  // PGtkFixed(FCentralWidget)^.set_can_focus(True);
 end;
 
 procedure TGtk3Page.DestroyWidget;
@@ -4980,17 +4981,28 @@ begin
   inherited DestroyWidget;
 end;
 
-function TGtk3Page.getClientOffset: TPoint;
+function TGtk3Page.ClientToScreen(var P: TPoint): boolean;
 var
-  Allocation: TGtkAllocation;
-  R: TRect;
+  aParent: PGtkWidget;
+  Alloc, Allocation: TGtkAllocation;
 begin
-  Self.Widget^.get_allocation(@Allocation);
-  Result.X := -Allocation.X;
-  Result.Y := -Allocation.Y;
 
-  R := getClientBounds;
-  Result := Point(Result.x + R.Left, Result.y + R.Top);
+  if Assigned(LCLObject.Parent) then
+    Result := TGtk3Widget(LCLObject.Parent.Handle).ClientToScreen(P)
+  else
+    Result := inherited ClientToScreen(P);
+
+  aParent := gtk_widget_get_parent(Widget);
+  aParent^.get_allocation(@Alloc);
+  Self.Widget^.get_allocation(@Allocation);
+
+  P.X := P.X - (Alloc.X - Allocation.X);
+  P.Y := P.Y - (Alloc.Y - Allocation.Y);
+end;
+
+function TGtk3Page.getClientOffset: TPoint;
+begin
+  Result := Point(0, 0);
 end;
 
 function TGtk3Page.getClientRect: TRect;
