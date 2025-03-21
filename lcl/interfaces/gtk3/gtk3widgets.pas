@@ -540,6 +540,7 @@ type
   public
     LCLVAdj: PGtkAdjustment; // used to keep LCL values
     LCLHAdj: PGtkAdjustment; // used to keep LCL values
+    function ClientToScreen(var P:TPoint):boolean; override;
     procedure DestroyWidget; override;
     {result = true if scrollbar is pressed by mouse, AMouseOver if mouse is over scrollbar pressed or not.}
     class function CheckIfScrollbarPressed(scrollbar: PGtkWidget; out AMouseOver:
@@ -6026,6 +6027,24 @@ begin
           ', Delta=', Delta:0:2, ', InUpdate=', Control.InUpdate, ' releasing lock ...');
   {$ENDIF}
   Control.EndUpdate;
+end;
+
+function TGtk3ScrollableWin.ClientToScreen(var P: TPoint): boolean;
+var
+  gx, gy, wx, wy: gint;
+begin
+
+  if not Widget^.is_toplevel then
+  begin
+    Result := getContainerWidget^.translate_coordinates(GetContainerWidget^.get_toplevel, P.X, P.Y, @gx, @gy);
+    if Result then
+    begin
+      gdk_window_get_origin(gtk_widget_get_toplevel(GetContainerWidget)^.window, @wx, @wy);
+      P := Point(gx + wx, gy + wy);
+    end else
+      Result := inherited ClientToScreen(P);
+  end else
+    Result := inherited ClientToScreen(P);
 end;
 
 procedure TGtk3ScrollableWin.DestroyWidget;
