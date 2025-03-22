@@ -80,6 +80,9 @@
           <Modifier Foreground="clNavy" Style="fsBold"/>
           <Reserved_word Foreground="clNavy" Style="fsBold"/>
           <String Foreground="clBlue"/>
+          <NestedRoundBracket_1 Foreground="12917458"/>
+          <NestedRoundBracket_2 Foreground="clBlue"/>
+          <NestedRoundBracket_3 Foreground="8301827"/>
         </SchemeDelphi>
       </LangObjectPascal>
       <LangLazarus_Form_definition Version="6">

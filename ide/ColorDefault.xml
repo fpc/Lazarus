@@ -80,6 +80,9 @@
           <Reserved_word Style="fsBold"/>
           <String Foreground="clBlue"/>
           <Symbol Foreground="clRed"/>
+          <NestedRoundBracket_1 Foreground="12917458"/>
+          <NestedRoundBracket_2 Foreground="clBlue"/>
+          <NestedRoundBracket_3 Foreground="8301827"/>
         </SchemeDefault>
       </LangObjectPascal>
       <LangLazarus_Form_definition Version="6">

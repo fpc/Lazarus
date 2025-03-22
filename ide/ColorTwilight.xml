@@ -83,6 +83,9 @@
           <Reserved_word Foreground="clAqua" Style="fsBold"/>
           <String Foreground="clYellow"/>
           <Symbol Foreground="clAqua"/>
+          <NestedRoundBracket_1 Foreground="clFuchsia"/>
+          <NestedRoundBracket_2 Foreground="2996475"/>
+          <NestedRoundBracket_3 Foreground="6814853"/>
         </SchemeTwilight>
       </LangObjectPascal>
       <LangLazarus_Form_definition Version="6">
