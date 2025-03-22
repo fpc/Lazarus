@@ -4077,6 +4077,8 @@ var
   s: string;
 begin
   Result := False;
+  if IsScanning or FIsInNextToEOL then
+    exit;
   r := Run;
   inc(Run); // the @
 
