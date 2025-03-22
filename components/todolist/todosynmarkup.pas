@@ -451,6 +451,11 @@ begin
       FPasHl.StartAtLineIndex(ToIdx(pos.Y));
     FPasHl.NextToLogX(pos.X);
     TkEnd := ToPos(FPasHl.GetTokenPos) + FPasHl.GetTokenLen;
+    while (not FPasHl.GetEol) and (not FPasHl.GetTokenIsCommentEnd) do begin
+      FPasHl.Next;
+      if not FPasHl.GetTokenIsComment then break;
+      TkEnd := ToPos(FPasHl.GetTokenPos) + FPasHl.GetTokenLen;
+    end;
 
     i := Length(FFoundPos);
     SetLength(FFoundPos, i + 1);
