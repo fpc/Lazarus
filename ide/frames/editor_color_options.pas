@@ -43,7 +43,7 @@ uses
   IDEProcs, LazConf,
   // IDE
   EditorOptions, editor_general_options,
-  LazarusIDEStrConsts, SourceMarks;
+  LazarusIDEStrConsts, SourceMarks, SourceSynEditor;
 
 type
 
@@ -1177,6 +1177,7 @@ begin
   if not FIsEditingDefaults then begin
     ColorElementTree.Items.Add(nil, FCurrentHighlighter.LanguageName + ' ');
     ColorElementTree.Items.Add(nil, FCurrentHighlighter.LanguageName + ' ' + dlgAddHiAttrGroup_Suffix_Extended).Visible := False;
+    ColorElementTree.Items.Add(nil, FCurrentHighlighter.LanguageName + ' ' + dlgAddHiAttrGroup_Suffix_NBrackets).Visible := False;
   end
   else
     ColorElementTree.Items.Add(nil, AdditionalHighlightGroupNames[agnDefault]);
@@ -1201,6 +1202,12 @@ begin
             else
             if hafCustomWords in Attr.Features then begin
               ParentName := FCurrentHighlighter.LanguageName + ' ' + dlgAddHiAttrGroup_Suffix_Custom;
+              ParentNode := ColorElementTree.Items.FindTopLvlNode(ParentName);
+            end
+            else
+            if strlcomp(PChar(Attr.StoredName), PChar(NESTED_BRACKET_STOREDNAME), length(NESTED_BRACKET_STOREDNAME)) = 0
+            then begin
+              ParentName := FCurrentHighlighter.LanguageName + ' ' + dlgAddHiAttrGroup_Suffix_NBrackets;
               ParentNode := ColorElementTree.Items.FindTopLvlNode(ParentName);
             end
             else begin

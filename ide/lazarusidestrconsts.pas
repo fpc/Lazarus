@@ -2173,6 +2173,7 @@ resourcestring
   dlgIfDefNodeActive              = 'Active $IFDEF node';
   dlgIfDefNodeTmpActive           = 'Included mixed state $IFDEF node';
   dlgAddHiAttrCustom              = 'Custom %d';
+  dlgAddHiAttrNestedBracket       = 'Nested bracket %d';
 
   dbgAsmWindowSourceLine          = 'Source line';
   dbgAsmWindowSourceFunc          = 'Function name';
@@ -2189,6 +2190,7 @@ resourcestring
   dlgAddHiAttrGroupOutlineColors = 'Outline Colors';
   dlgAddHiAttrGroup_Suffix_Extended  = '(Extended)';
   dlgAddHiAttrGroup_Suffix_Custom  = '(Custom)';
+  dlgAddHiAttrGroup_Suffix_NBrackets  = '(Nested Brackets)';
   dlgAddHiAttrGroup_Suffix_EntryType  = '(entry type)';
 
 

@@ -62,6 +62,7 @@ uses
   SynEditMarkupHighAll, SynEditKeyCmds, SynEditMarkupIfDef, SynEditMiscProcs,
   SynPluginMultiCaret, SynEditPointClasses,
   SynEditMarkupFoldColoring, SynEditTextTabExpander, SynEditMouseCmds, SynEditWrappedView,
+  // IDE
   etSrcEditMarks, LazarusIDEStrConsts, SourceMarks;
 
 type
@@ -582,6 +583,9 @@ type
     property TheLinesView:  TSynEditStrings       read FTheLinesView  write FTheLinesView;
   end;
   {$ENDIF}
+
+const
+  NESTED_BRACKET_STOREDNAME = 'NestedRoundBracket';
 
 implementation
 
@@ -2285,6 +2289,11 @@ begin
     AddAttribute(FCustomAttribs[i]);
     FCustomAttribs[i].OnChange := @DoBuildCustomPasAttr;
   end;
+
+  NestedBracketAttribs.BaseName := dlgAddHiAttrNestedBracket;
+  NestedBracketAttribs.BaseStoredName := NESTED_BRACKET_STOREDNAME;
+  for i := 0 to 9 do
+    NestedBracketAttribs.Add;
 end;
 
 procedure TIDESynPasSyn.SetLine(const NewValue: string; LineNumber: Integer);
