@@ -2159,16 +2159,18 @@ begin
     FCurrentValidatingNode.ClearData;
   end;
 
-  Result := FInvalidEntryList.FFirstEntry <> nil;
-  if not Result then
-    exit;
+  repeat
+    Result := FInvalidEntryList.FFirstEntry <> nil;
+    if not Result then
+      exit;
 
-  FCurrentValidatingNode := NextNodeForValidation; // TODO: directly fill FCurrentValidatingNode;
-  Result := FCurrentValidatingNode.HasPage;
-  assert(result, 'TSynLineMapAVLTree.NextBlockForValidation: result');
-  ALowLine  := FCurrentValidatingNode.FirstInvalidLine;
-  AHighLine := FCurrentValidatingNode.FirstInvalidEndLine;
-  FCurrentValidatingNodeLastLine := -1; // If there was a next node, inval lines would be on that next node, and not on this
+    FCurrentValidatingNode := NextNodeForValidation; // TODO: directly fill FCurrentValidatingNode;
+    Result := FCurrentValidatingNode.HasPage;
+    assert(result, 'TSynLineMapAVLTree.NextBlockForValidation: result');
+    ALowLine  := FCurrentValidatingNode.FirstInvalidLine;
+    AHighLine := FCurrentValidatingNode.FirstInvalidEndLine;
+    FCurrentValidatingNodeLastLine := -1; // If there was a next node, inval lines would be on that next node, and not on this
+  until ALowLine >= 0;
 end;
 
 procedure TSynLineMapAVLTree.EndValidate;
