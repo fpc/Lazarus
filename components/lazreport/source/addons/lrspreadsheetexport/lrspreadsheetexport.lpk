@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="4">
+  <Package Version="5">
     <Name Value="lrSpreadSheetExport"/>
     <Type Value="RunAndDesignTime"/>
     <Author Value="Aleksey Lagunov"/>
@@ -43,6 +43,7 @@
         <UnitName Value="le_e_spreadsheet_types"/>
       </Item7>
     </Files>
+    <CompatibilityMode Value="True"/>
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
@@ -50,6 +51,7 @@
     <RequiredPkgs Count="3">
       <Item1>
         <PackageName Value="laz_fpspreadsheet"/>
+        <MinVersion Major="1" Minor="17" Valid="True"/>
       </Item1>
       <Item2>
         <PackageName Value="lazreport"/>

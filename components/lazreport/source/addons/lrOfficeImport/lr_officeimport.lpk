@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="4">
+  <Package Version="5">
     <Name Value="lr_OfficeImport"/>
+    <Type Value="RunAndDesignTime"/>
     <CompilerOptions>
       <Version Value="11"/>
       <SearchPaths>
@@ -16,13 +17,14 @@
       </Item1>
       <Item2>
         <Filename Value="lrspreadsheetimportunit.pas"/>
-        <UnitName Value="lrspreadsheetimportunit"/>
+        <UnitName Value="lrSpreadSheetImportUnit"/>
       </Item2>
     </Files>
-    <Type Value="RunAndDesignTime"/>
+    <CompatibilityMode Value="True"/>
     <RequiredPkgs Count="3">
       <Item1>
         <PackageName Value="laz_fpspreadsheet"/>
+        <MinVersion Major="1" Minor="17" Valid="True"/>
       </Item1>
       <Item2>
         <PackageName Value="lazreport"/>

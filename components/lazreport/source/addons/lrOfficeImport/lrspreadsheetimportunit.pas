@@ -79,7 +79,8 @@ function sHAToA(AValue:TsHorAlignment):TAlignment; inline;
 const
   A:array [TsHorAlignment] of TAlignment =
     //haDefault, haLeft, haCenter, haRight
-     (taLeftJustify, taLeftJustify, taCenter, taRightJustify);
+     (taLeftJustify, taLeftJustify, taCenter, taRightJustify,
+      taLeftJustify, taLeftJustify, taLeftJustify);
 begin
   Result:=A[AValue];
 end;
