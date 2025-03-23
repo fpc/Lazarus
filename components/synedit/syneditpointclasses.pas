@@ -380,6 +380,7 @@ type
     procedure DecAutoMoveOnEdit;
     procedure ChangeOnTouch;
     procedure Touch(aChangeOnTouch: Boolean = False);
+    procedure ValidateXPos;
 
     function WasAtLineChar(aPoint: TPoint): Boolean;
     function WasAtLineByte(aPoint: TPoint): Boolean;
@@ -1652,6 +1653,11 @@ begin
   if aChangeOnTouch then
     ChangeOnTouch;
   FTouched := True;
+end;
+
+procedure TSynEditCaret.ValidateXPos;
+begin
+  InternalSetLineCharPos(FLinePos, FCharPos, [scuForceSet]);
 end;
 
 

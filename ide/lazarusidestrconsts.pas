@@ -3110,6 +3110,7 @@ resourcestring
   srkmecDeleteBOL             = 'Delete to beginning of line';
   srkmecDeleteEOL             = 'Delete to end of line';
   srkmecDeleteLine            = 'Delete current line';
+  srkmecDeleteLineKeepX       = 'Delete current line (keep X pos)';
   srkmecClearAll              = 'Delete whole text';
   srkmecLineBreak             = 'Break line and move cursor';
   srkmecInsertLine            = 'Break line, leave cursor';

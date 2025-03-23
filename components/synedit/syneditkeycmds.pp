@@ -251,6 +251,7 @@ const
   ecChar            = 511;  // Insert a character at current position
   ecSmartUnindent   = 512;  // NOT regocniced as command, used for group-undo, set by beautifier
   ecDeleteCharNoCrLf= 513;  // Delete char at cursor (i.e. delete key), but do not join lines
+  ecDeleteLineKeepX = 514;  // Delete current line
 
   ecImeStr          = 550;  // Insert character(s) from IME
 
@@ -436,7 +437,7 @@ implementation
 { Command mapping routines }
 
 const
-  EditorCommandStrs: array[0..183] of TIdentMapEntry = (
+  EditorCommandStrs: array[0..184] of TIdentMapEntry = (
     (Value: ecNone; Name: 'ecNone'),
     (Value: ecLeft; Name: 'ecLeft'),
     (Value: ecRight; Name: 'ecRight'),
@@ -516,6 +517,7 @@ const
     (Value: ecDeleteBOL; Name: 'ecDeleteBOL'),
     (Value: ecDeleteEOL; Name: 'ecDeleteEOL'),
     (Value: ecDeleteLine; Name: 'ecDeleteLine'),
+    (Value: ecDeleteLineKeepX; Name: 'ecDeleteLineKeepX'),
     (Value: ecClearAll; Name: 'ecClearAll'),
     (Value: ecLineBreak; Name: 'ecLineBreak'),
     (Value: ecInsertLine; Name: 'ecInsertLine'),

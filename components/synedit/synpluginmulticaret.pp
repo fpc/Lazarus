@@ -2666,7 +2666,7 @@ begin
 
   case Command of
   // TODO: delete and smColumn -- only delete once
-    ecDeleteLastChar..ecDeleteLine, ecDeleteCharNoCrLf,
+    ecDeleteLastChar..ecDeleteLine, ecDeleteCharNoCrLf, ecDeleteLineKeepX,
     ecLineBreak..ecChar:
       begin
         StartEditing;

@@ -518,6 +518,7 @@ begin
     ecDeleteBOL               : Result:= srkmecDeleteBOL;
     ecDeleteEOL               : Result:= srkmecDeleteEOL;
     ecDeleteLine              : Result:= srkmecDeleteLine;
+    ecDeleteLineKeepX         : Result:= srkmecDeleteLineKeepX;
     ecClearAll                : Result:= srkmecClearAll;
     ecLineBreak               : Result:= srkmecLineBreak;
     ecInsertLine              : Result:= srkmecInsertLine;
@@ -2978,6 +2979,7 @@ begin
   AddDefault(C, 'Delete to beginning of line', srkmecDeleteBOL, ecDeleteBOL);
   AddDefault(C, 'Delete to end of line', srkmecDeleteEOL, ecDeleteEOL);
   AddDefault(C, 'Delete current line', srkmecDeleteLine, ecDeleteLine);
+  AddDefault(C, 'Delete current line keep x', srkmecDeleteLineKeepX, ecDeleteLineKeepX);
   AddDefault(C, 'Delete whole text', srkmecClearAll, ecClearAll);
   AddDefault(C, 'Break line and move cursor', srkmecLineBreak, ecLineBreak);
   AddDefault(C, 'Break line, leave cursor', srkmecInsertLine, ecInsertLine);
