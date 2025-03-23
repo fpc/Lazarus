@@ -9842,7 +9842,7 @@ var
       end;
       TokenPosList[i].X := MaxKnownTokenPos;
       TokenListCnt := i + 1;
-      Result := TokenPosList[i-1].Attr = BracketKind;
+      Result := (i > 0) and (TokenPosList[i-1].Attr = BracketKind);
       LastUsedTokenIdx := i; // -1; TODO: -1 only if searching backwards
       exit;
     end;
