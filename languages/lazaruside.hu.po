@@ -580,6 +580,10 @@ msgstr ""
 msgid "(Extended)"
 msgstr ""
 
+#: lazarusidestrconsts.dlgaddhiattrgroup_suffix_nbrackets
+msgid "(Nested Brackets)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrgutterseparator
 msgid "Gutter Separator"
 msgstr "Hasábköz elválasztó"
@@ -624,6 +628,11 @@ msgstr "Módosított sor"
 #: lazarusidestrconsts.dlgaddhiattrmouselink
 msgid "Mouse link"
 msgstr "Egér hivatkozás"
+
+#: lazarusidestrconsts.dlgaddhiattrnestedbracket
+#, object-pascal-format
+msgid "Nested bracket %d"
+msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattroutlinelevelcolor
 #, object-pascal-format
@@ -20347,6 +20356,10 @@ msgstr "Törlés kifejezés kezdetéig"
 #: lazarusidestrconsts.srkmecdeleteline
 msgid "Delete current line"
 msgstr "Aktuális sor törlése"
+
+#: lazarusidestrconsts.srkmecdeletelinekeepx
+msgid "Delete current line (keep X pos)"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecdeleteword
 msgid "Delete to end of word"

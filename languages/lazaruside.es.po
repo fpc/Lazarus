@@ -582,6 +582,10 @@ msgstr ""
 msgid "(Extended)"
 msgstr ""
 
+#: lazarusidestrconsts.dlgaddhiattrgroup_suffix_nbrackets
+msgid "(Nested Brackets)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrgutterseparator
 msgid "Gutter Separator"
 msgstr "Separador de la columna de marcas"
@@ -626,6 +630,11 @@ msgstr "Línea modificada"
 #: lazarusidestrconsts.dlgaddhiattrmouselink
 msgid "Mouse link"
 msgstr "Enlace de Ratón"
+
+#: lazarusidestrconsts.dlgaddhiattrnestedbracket
+#, object-pascal-format
+msgid "Nested bracket %d"
+msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattroutlinelevelcolor
 #, object-pascal-format
@@ -20548,6 +20557,10 @@ msgstr "Borrar al principio de la palabra"
 #: lazarusidestrconsts.srkmecdeleteline
 msgid "Delete current line"
 msgstr "Borrar línea actual"
+
+#: lazarusidestrconsts.srkmecdeletelinekeepx
+msgid "Delete current line (keep X pos)"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecdeleteword
 msgid "Delete to end of word"

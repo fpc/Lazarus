@@ -580,6 +580,10 @@ msgstr ""
 msgid "(Extended)"
 msgstr ""
 
+#: lazarusidestrconsts.dlgaddhiattrgroup_suffix_nbrackets
+msgid "(Nested Brackets)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrgutterseparator
 msgid "Gutter Separator"
 msgstr "ガターセパレータ"
@@ -624,6 +628,11 @@ msgstr "修正行"
 #: lazarusidestrconsts.dlgaddhiattrmouselink
 msgid "Mouse link"
 msgstr "マウスリンク"
+
+#: lazarusidestrconsts.dlgaddhiattrnestedbracket
+#, object-pascal-format
+msgid "Nested bracket %d"
+msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattroutlinelevelcolor
 #, object-pascal-format
@@ -20556,6 +20565,10 @@ msgstr "単語の先頭まで削除"
 #: lazarusidestrconsts.srkmecdeleteline
 msgid "Delete current line"
 msgstr "現在の行を削除"
+
+#: lazarusidestrconsts.srkmecdeletelinekeepx
+msgid "Delete current line (keep X pos)"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecdeleteword
 msgid "Delete to end of word"

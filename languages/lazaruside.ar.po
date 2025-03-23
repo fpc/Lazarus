@@ -582,6 +582,10 @@ msgstr ""
 msgid "(Extended)"
 msgstr ""
 
+#: lazarusidestrconsts.dlgaddhiattrgroup_suffix_nbrackets
+msgid "(Nested Brackets)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrgutterseparator
 msgid "Gutter Separator"
 msgstr ""
@@ -625,6 +629,11 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrmouselink
 msgid "Mouse link"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrnestedbracket
+#, object-pascal-format
+msgid "Nested bracket %d"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattroutlinelevelcolor
@@ -20135,6 +20144,10 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecdeleteline
 msgid "Delete current line"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecdeletelinekeepx
+msgid "Delete current line (keep X pos)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecdeleteword

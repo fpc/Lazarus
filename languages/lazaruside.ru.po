@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-03-21 18:49+0300\n"
+"PO-Revision-Date: 2025-03-23 22:36+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -577,6 +577,10 @@ msgstr "(тип элемента списка)"
 msgid "(Extended)"
 msgstr "(расширенные)"
 
+#: lazarusidestrconsts.dlgaddhiattrgroup_suffix_nbrackets
+msgid "(Nested Brackets)"
+msgstr "(вложенные скобки)"
+
 #: lazarusidestrconsts.dlgaddhiattrgutterseparator
 msgid "Gutter Separator"
 msgstr "Линия отделения бокового поля"
@@ -621,6 +625,11 @@ msgstr "Изменённая строка"
 #: lazarusidestrconsts.dlgaddhiattrmouselink
 msgid "Mouse link"
 msgstr "Ссылка при наведении мыши"
+
+#: lazarusidestrconsts.dlgaddhiattrnestedbracket
+#, object-pascal-format
+msgid "Nested bracket %d"
+msgstr "Вложенная скобка %d"
 
 #: lazarusidestrconsts.dlgaddhiattroutlinelevelcolor
 #, object-pascal-format
@@ -20160,6 +20169,10 @@ msgstr "Удалить до начала слова"
 #: lazarusidestrconsts.srkmecdeleteline
 msgid "Delete current line"
 msgstr "Удалить текущую строку"
+
+#: lazarusidestrconsts.srkmecdeletelinekeepx
+msgid "Delete current line (keep X pos)"
+msgstr "Удалить текущую строку (сохранить позицию по X)"
 
 #: lazarusidestrconsts.srkmecdeleteword
 msgid "Delete to end of word"

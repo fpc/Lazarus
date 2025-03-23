@@ -582,6 +582,10 @@ msgstr ""
 msgid "(Extended)"
 msgstr ""
 
+#: lazarusidestrconsts.dlgaddhiattrgroup_suffix_nbrackets
+msgid "(Nested Brackets)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrgutterseparator
 msgid "Gutter Separator"
 msgstr ""
@@ -625,6 +629,11 @@ msgstr "Zmenený riadok"
 
 #: lazarusidestrconsts.dlgaddhiattrmouselink
 msgid "Mouse link"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrnestedbracket
+#, object-pascal-format
+msgid "Nested bracket %d"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattroutlinelevelcolor
@@ -20326,6 +20335,10 @@ msgstr "Zmazať po začiatok slova"
 #: lazarusidestrconsts.srkmecdeleteline
 msgid "Delete current line"
 msgstr "Zmazať aktuálny riadok"
+
+#: lazarusidestrconsts.srkmecdeletelinekeepx
+msgid "Delete current line (keep X pos)"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecdeleteword
 msgid "Delete to end of word"
