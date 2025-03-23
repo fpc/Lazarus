@@ -69,7 +69,7 @@ type
 
   TSQLDialect = (sqlStandard, sqlInterbase6, sqlMSSQL7, sqlMySQL, sqlOracle,
     sqlSybase, sqlIngres, sqlMSSQL2K, sqlPostgres, sqlSQLite,                                           // JJV 2000-11-16
-    sqlFirebird25, sqlFirebird30, sqlFirebird40, sqlMSSQL);
+    sqlFirebird25, sqlFirebird30, sqlFirebird40, sqlMSSQL2022);
 
 type
   PIdentifierTable = ^TIdentifierTable;
@@ -1729,7 +1729,7 @@ var
   i: integer;
 begin
   // MS SQL uses @@ to indicate system functions/variables
-  if (fDialect in [sqlMSSQL7, sqlMSSQL2K, sqlMSSQL]) and (fLine[Run] = '@') and (fLine[Run + 1] = '@')
+  if (fDialect in [sqlMSSQL7, sqlMSSQL2K, sqlMSSQL2022]) and (fLine[Run] = '@') and (fLine[Run + 1] = '@')
   then
     IdentProc
 {begin}                                                                         //JDR 2000-25-2000
@@ -1919,7 +1919,7 @@ end;
 function TSynSQLSyn.GetIdentChars: TSynIdentChars;
 begin
   Result := TSynValidStringChars;
-  if (fDialect in [sqlMSSQL7, sqlMSSQL2K, sqlMSSQL]) then
+  if (fDialect in [sqlMSSQL7, sqlMSSQL2K, sqlMSSQL2022]) then
     Include(Result, '@')
 {begin}                                                                         // DJLP 2000-08-11
   else if fDialect = sqlOracle then begin
@@ -1977,7 +1977,7 @@ end;
 procedure TSynSQLSyn.InitializeKeywordLists;
 begin
   fKeywords.Clear;
-  if (fDialect in [sqlMSSQL7, sqlMSSQL2K, sqlMSSQL]) then
+  if (fDialect in [sqlMSSQL7, sqlMSSQL2K, sqlMSSQL2022]) then
   begin
     fIdentifiersPtr := @IdentifiersMSSQL7;
     fmHashTablePtr := @mHashTableMSSQL7;
@@ -2035,7 +2035,7 @@ begin
         EnumerateKeywords(ord(tkDataType), MSSQL2000Types, IdentChars, @DoAddKeyword);
         EnumerateKeywords(ord(tkFunction), MSSQL2000Functions, IdentChars, @DoAddKeyword);
       end;
-    sqlMSSQL:
+    sqlMSSQL2022:
       begin
         EnumerateKeywords(Ord(tkKey), MSSQLKW, IdentChars, @DoAddKeyword);
         EnumerateKeywords(Ord(tkDatatype), MSSQLTypes, IdentChars, @DoAddKeyword);
@@ -2215,7 +2215,7 @@ begin
         #13#10 +
         '  SELECT SCOPE_IDENTITY()'#13#10 +
         'GO';
-    sqlMSSQL:
+    sqlMSSQL2022:
       Result := '/* SQL Server example source */'#13#10 +
         'SET QUOTED_IDENTIFIER OFF'#13#10 +
         'GO'#13#10 +
