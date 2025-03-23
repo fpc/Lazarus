@@ -581,18 +581,11 @@ type
 
   TSynPasSyn = class(TSynCustomFoldHighlighter)
   private type
-
-    { TSynPasSynCustomTokenInfo }
-
-    TSynPasSynCustomTokenInfo = record
-      MatchTokenKinds: TtkTokenKinds;
-      Word: String;
-      Token: TSynPasSynCustomToken;
-      class operator = (a, b: TSynPasSynCustomTokenInfo): boolean;
+    TSynPasSynCustomTokenInfoListEx = record
+      TokenKind: TtkTokenKind;
+      List: TStringList;
     end;
-    PSynPasSynCustomTokenInfo = ^TSynPasSynCustomTokenInfo;
-    PPSynPasSynCustomTokenInfo = ^PSynPasSynCustomTokenInfo;
-    TSynPasSynCustomTokenInfoList = specialize TFPGList<TSynPasSynCustomTokenInfo>;
+    PSynPasSynCustomTokenInfoListEx = ^TSynPasSynCustomTokenInfoListEx;
   private
     FCaseLabelAttriMatchesElseOtherwise: Boolean;
     FNestedBracketAttribs: TSynHighlighterAttributesModifierCollection;
@@ -602,7 +595,7 @@ type
     FNeedCustomTokenBuild: boolean;
     FCustomTokenInfo: array [byte] of record
       MatchTokenKinds: TtkTokenKinds;
-      List: TSynPasSynCustomTokenInfoList;
+      Lists: array of TSynPasSynCustomTokenInfoListEx;
     end;
     FCustomTokenMarkup: TSynHighlighterAttributesModifier;
     FCustomTokenMergedMarkup: TSynSelectedColorMergeResult;
@@ -1555,37 +1548,59 @@ begin
 end;
 
 procedure TSynPasSyn.RebuildCustomTokenInfo;
+  function FindList(AnHash: Byte; ATokenKind: TtkTokenKind): PSynPasSynCustomTokenInfoListEx;
+  var
+    x: Integer;
+  begin
+    for x := 0 to length(FCustomTokenInfo[AnHash].Lists) - 1 do begin
+      Result := @FCustomTokenInfo[AnHash].Lists[x];
+      if Result^.TokenKind = ATokenKind then
+        exit;
+    end;
+    x := length(FCustomTokenInfo[AnHash].Lists);
+    SetLength(FCustomTokenInfo[AnHash].Lists, x+1);
+    Result := @FCustomTokenInfo[AnHash].Lists[x];
+    Result^.TokenKind := ATokenKind;
+    Result^.List := TStringList.Create;
+    Result^.List.Sorted        := True;
+    Result^.List.CaseSensitive := True;
+    Result^.List.Duplicates    := dupIgnore;
+  end;
+
 var
   i, j, h: Integer;
-  ti: TSynPasSynCustomTokenInfo;
   t: String;
+  tk: TtkTokenKind;
+  Lst: PSynPasSynCustomTokenInfoListEx;
 begin
   FNeedCustomTokenBuild := False;
   FCustomTokenMarkup := nil;
   for i := 0 to 255 do begin
-    FreeAndNil(FCustomTokenInfo[i].List);
+    for j := 0 to length(FCustomTokenInfo[i].Lists) - 1 do
+      FreeAndNil(FCustomTokenInfo[i].Lists[j].List);
+    FCustomTokenInfo[i].Lists := nil;
     FCustomTokenInfo[i].MatchTokenKinds := [];
   end;
+
   for i := 0 to Length(FSynCustomTokens) - 1 do begin
+    if FSynCustomTokens[i].MatchTokenKinds = [] then
+      continue;
+
     for j := 0 to FSynCustomTokens[i].FTokens.Count - 1 do begin
-      if FSynCustomTokens[i].MatchTokenKinds = [] then
-        continue;
       t := FSynCustomTokens[i].FTokens[j];
       if t = '' then
         continue;
+
       fLine    := PChar(t);
       fLineLen := Length(t);
       fToIdent := 0;
       h := KeyHash and 255;
 
-      if FCustomTokenInfo[h].List = nil then
-        FCustomTokenInfo[h].List := TSynPasSynCustomTokenInfoList.Create;
-
-      ti.MatchTokenKinds := FSynCustomTokens[i].MatchTokenKinds;
-      ti.Word := UpperCase(t);
-      ti.Token := FSynCustomTokens[i];
       FCustomTokenInfo[h].MatchTokenKinds := FCustomTokenInfo[h].MatchTokenKinds + FSynCustomTokens[i].MatchTokenKinds;
-      FCustomTokenInfo[h].List.Add(ti);
+      for tk in FSynCustomTokens[i].MatchTokenKinds do begin
+        Lst := FindList(h, tk);
+        Lst^.List.AddObject(UpperCase(t), FSynCustomTokens[i]);
+      end;
     end;
   end;
 end;
@@ -3986,7 +4001,7 @@ end; { Create }
 
 destructor TSynPasSyn.Destroy;
 var
-  i: Integer;
+  i, j: Integer;
 begin
   DestroyDividerDrawConfig;
   FreeAndNil(FCurCaseLabelAttri);
@@ -3998,7 +4013,8 @@ begin
   FreeAndNil(FPasDocWordList);
   CustomTokenCount := 0;
   for i := 0 to 255 do
-    FCustomTokenInfo[i].List.Free;
+    for j := 0 to length(FCustomTokenInfo[i].Lists) - 1 do
+      FreeAndNil(FCustomTokenInfo[i].Lists[j].List);
   FNestedBracketMergedMarkup.Free;
   FNestedBracketAttribs.Free;
   inherited Destroy;
@@ -5071,32 +5087,22 @@ end;
 
 procedure TSynPasSyn.CheckForAdditionalAttributes;
 var
-  CustTk: TSynPasSynCustomTokenInfoList;
-  CustTkList: PSynPasSynCustomTokenInfo;
-  i: integer;
-  UpperTk: String;
-  p: pointer;
+  i, h: integer;
+  CustTkList: TStringList;
   tfb: TPascalCodeFoldBlockType;
 begin
-  if FTokenID in FCustomTokenInfo[FTokenHashKey and 255].MatchTokenKinds then begin
-    CustTk := FCustomTokenInfo[FTokenHashKey and 255].List;
-    if CustTk <> nil then begin
-      UpperTk := '';
-      p := CustTk.List;
-      if p <> nil then begin
-        CustTkList := PPSynPasSynCustomTokenInfo(p)^;
-        for i := 0 to CustTk.Count - 1 do begin
-          if (FTokenID in CustTkList^.MatchTokenKinds) then begin
-            if UpperTk = '' then
-              UpperTk := UpperCase(GetToken);
-            if (UpperTk = CustTkList^.Word) then begin
-              FCustomTokenMarkup := CustTkList^.Token.FMarkup;
-              break;
-            end
-          end;
-          inc(CustTkList);
-        end;
+  h := FTokenHashKey and 255;
+  if FTokenID in FCustomTokenInfo[h].MatchTokenKinds then begin
+    CustTkList := nil;
+    for i := 0 to Length(FCustomTokenInfo[h].Lists) - 1 do
+      if FCustomTokenInfo[h].Lists[i].TokenKind = FTokenID then begin
+        CustTkList := FCustomTokenInfo[h].Lists[i].List;
+        break;
       end;
+    if CustTkList <> nil then begin
+      i := CustTkList.IndexOf(UpperCase(GetToken));
+      if i >= 0 then
+        FCustomTokenMarkup := TSynPasSynCustomToken(CustTkList.Objects[i]).Markup;
     end;
   end;
 
@@ -7116,15 +7122,6 @@ end;
 procedure TSynPasSyn.SetD4syntax(const Value: boolean);
 begin
   FD4syntax := Value;
-end;
-
-{ TSynPasSyn.TSynPasSynCustomTokenInfo }
-
-class operator TSynPasSyn.TSynPasSynCustomTokenInfo. = (a, b: TSynPasSynCustomTokenInfo): boolean;
-begin
-  Result := (a.MatchTokenKinds = b.MatchTokenKinds) and
-            (a.Token = b.Token) and
-            (a.Word = b.Word);
 end;
 
 { TSynFreePascalSyn }
