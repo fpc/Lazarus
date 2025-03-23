@@ -254,7 +254,10 @@ begin
         if Assigned(Cel.Font) and (Cel.Font.Size > 0) then
           FWorksheet.WriteFont(Y, X, Cel.Font.Name,  Cel.Font.Size, sftofs(Cel.Font), Cel.Font.Color, fpNormal);
 
-        FWorksheet.WriteHorAlignment(Y, X, ssAligns[Cel.Alignment]);
+        if Cel.Justify then
+          FWorksheet.WriteHorAlignment(Y, X, haJustified)
+        else
+          FWorksheet.WriteHorAlignment(Y, X, ssAligns[Cel.Alignment]);
 
         scFrm:=[];
         if frbLeft in Cel.Frames then

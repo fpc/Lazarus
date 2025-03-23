@@ -74,6 +74,7 @@ type
     FName:string;
     FAngle:byte;
     FWordWrap: boolean;
+    FJustify: boolean;
 
     FPicture: TPicture;
 
@@ -106,6 +107,7 @@ type
     property WordWrap:boolean read FWordWrap;
     property URLInfo: string read FURLInfo write FURLInfo;
     property Picture: TPicture read FPicture;
+    property Justify: boolean read FJustify write FJustify;
 
   end;
 
@@ -291,6 +293,7 @@ begin
       FAngle:=TfrMemoView(AObj).Angle;
       FLayout:=TfrMemoView(AObj).Layout;
       FWordWrap:=TfrMemoView(AObj).WordWrap;
+      FJustify:=TfrMemoView(AObj).Justify;
                                     //http://www.lazarus-ide.org/
       S:=TfrMemoView(AObj).URLInfo;
       if LazStartsText('HTTP://', S) or LazStartsText('HTTPS://', S) then
@@ -659,9 +662,12 @@ begin
 {  Result:=nil;
   if (AObj is TfrMemoView) or ((AObj is TfrPictureView) and FExportImages) then
   begin}
+  if AObj.Height > 0 then
+  begin
     R:=FindRow(AObj.Y);
     Result:=R.ExportObject(AObj);
     Result.Top:=R.Top;
+  end;
 //  end
 end;
 
