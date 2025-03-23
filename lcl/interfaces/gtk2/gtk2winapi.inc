@@ -9819,10 +9819,12 @@ end;
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.WindowFromPoint(APoint: TPoint): HWND;
 var
+  Ctrl: TWinControl;
+  CtrlFakeRoot: THintWindow;
   ev: TgdkEvent;
+  p: TPoint;
   Window: PgdkWindow;
   Widget: PgtkWidget;
-  p: TPoint;
   WidgetInfo: PWidgetInfo;
 begin
   // return cached value to prevent heavy gdk_display_get_window_at_pointer call
@@ -9843,7 +9845,21 @@ begin
   begin
     // ignore temporary windows Hint/DragImageList/etc...
     if gdk_window_get_type(Window) = GDK_WINDOW_TEMP then
-      Exit(LastWFPResult);
+    begin
+      // FakeRoot must be a temporary window that returns HTTRANSPARENT on WM_NCHitTest.
+      // It is used as an entry point for CheckTransparentWindow method to start searching thgrough all forms.
+      CtrlFakeRoot := THintWindow.Create(nil);
+      try
+        Ctrl := CtrlFakeRoot;
+        CheckTransparentWindow(Result, Ctrl);
+      finally
+        CtrlFakeRoot.Free;
+      end;
+      if Result = 0 then
+        Result := LastWFPResult;
+      Exit;
+    end;
+
     FillChar(ev{%H-}, SizeOf(ev), 0);
     ev.any.window := Window;
     Widget := gtk_get_event_widget(@ev);
@@ -9868,9 +9884,13 @@ begin
   end;
 
   // see issue #17389
-  if (WidgetInfo <> nil) and (WidgetInfo^.LCLObject <> nil)
-  and (WidgetInfo^.LCLObject is TWinControl) then
-    Result := TWinControl(WidgetInfo^.LCLObject).Handle;
+  if (WidgetInfo <> nil) and (WidgetInfo^.LCLObject <> nil) and
+    (WidgetInfo^.LCLObject is TWinControl) then
+  begin
+    Ctrl := TWinControl(WidgetInfo^.LCLObject);
+    Result := Ctrl.Handle;
+    CheckTransparentWindow(Result, Ctrl);
+  end;
 
   // now we must check if we are visible and enabled
   if Result <> 0 then
