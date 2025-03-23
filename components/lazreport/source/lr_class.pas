@@ -2257,7 +2257,7 @@ var
 begin
   F:=FindFilter(AFilterExt);
   if Assigned(F) then
-    F.FEnabled:=true;
+    F.FEnabled:=false;
 end;
 
 procedure TExportFilters.EnableFilter(AFilterExt: String);
@@ -2266,7 +2266,7 @@ var
 begin
   F:=FindFilter(AFilterExt);
   if Assigned(F) then
-    F.FEnabled:=false;
+    F.FEnabled:=true;
 end;
 
 function TExportFilters.FindFilter(AFilterExt: String): TExportFilterItem;
