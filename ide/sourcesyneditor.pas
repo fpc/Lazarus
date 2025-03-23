@@ -379,9 +379,9 @@ type
   TSynHighlighterLazCustomPasAttribute = class(TSynHighlighterAttributesModifier)
   private
     FCustomWords: TStrings;
-    FCustomWordTokenKind: TtkTokenKind;
+    FCustomWordTokenKind: TtkTokenKindEx;
     procedure DoWordsChanged(Sender: TObject);
-    procedure SetCustomWordTokenKind(AValue: TtkTokenKind);
+    procedure SetCustomWordTokenKind(AValue: TtkTokenKindEx);
   protected
     procedure AssignFrom(Src: TLazSynCustomTextAttributes); override;
     procedure DoClear; override;
@@ -390,7 +390,7 @@ type
     destructor Destroy; override;
     property CustomWords: TStrings read FCustomWords;
   published
-    property CustomWordTokenKind: TtkTokenKind read FCustomWordTokenKind write SetCustomWordTokenKind;
+    property CustomWordTokenKind: TtkTokenKindEx read FCustomWordTokenKind write SetCustomWordTokenKind;
   end;
 
   { TIDESynPasSyn }
@@ -2155,7 +2155,7 @@ end;
 
 { TSynHighlighterLazCustomPasAttribute }
 
-procedure TSynHighlighterLazCustomPasAttribute.SetCustomWordTokenKind(AValue: TtkTokenKind);
+procedure TSynHighlighterLazCustomPasAttribute.SetCustomWordTokenKind(AValue: TtkTokenKindEx);
 begin
   if FCustomWordTokenKind = AValue then Exit;
   FCustomWordTokenKind := AValue;

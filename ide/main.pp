@@ -4042,7 +4042,7 @@ begin
           TokenTxt, TokenType, Start, Attri);
         inc(xy.x);
         if Start + Length(TokenTxt) = xy.X then begin
-          IdentFound := TtkTokenKind(TokenType) in [tkAsm, tkComment, tkIdentifier, tkString];
+          IdentFound := (TokenType >= 0) and (TtkTokenKind(TokenType) in [tkAsm, tkComment, tkIdentifier, tkString]);
           StringFound := TtkTokenKind(TokenType) = tkString;
         end;
         cont := True;
@@ -4050,7 +4050,7 @@ begin
       if not (IdentFound or StringFound) then begin
         ASrcEdit.EditorComponent.GetHighlighterAttriAtRowColEx(xy,
           TokenTxt, TokenType, Start, Attri, cont);
-        IdentFound := TtkTokenKind(TokenType) in [tkAsm, tkComment, tkIdentifier, tkString];
+        IdentFound := (TokenType >= 0) and (TtkTokenKind(TokenType) in [tkAsm, tkComment, tkIdentifier, tkString]);
         StringFound := TtkTokenKind(TokenType) = tkString;
       end;
     end;

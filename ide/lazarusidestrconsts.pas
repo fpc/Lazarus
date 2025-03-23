@@ -3622,6 +3622,11 @@ resourcestring
   lisCodeToolsOptsNewLine     = 'Newline';
   lisCodeToolsOptsSpace       = 'Space';
   lisCodeToolsOptsSymbol      = 'Symbol';
+  lisCodeToolsOptsString      = 'String';
+  lisCodeToolsOptsComment= 'Comment';
+  lisCodeToolsOptsCommentSlash= 'Slash Comment: //';
+  lisCodeToolsOptsCommentAnsi = 'Ansi Comment: (*';
+  lisCodeToolsOptsCommentBor  = 'Curly Comment: {';
   lisCodeToolsOptsBracket     = 'Bracket';
   lisCodeToolsOptsCaret       = 'Caret (^)';
 
