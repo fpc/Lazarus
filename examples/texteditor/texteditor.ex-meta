@@ -1,0 +1,5 @@
+{ "texteditor" : {
+   "Category" : "Beginner",
+   "Keywords" : ["TMemo", "editor"],
+   "Description" : "Text editor example with TMemo and basic file menu operations (New, Open, Save, Exit)" }
+}

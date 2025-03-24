@@ -207,3 +207,4 @@
 ./examples/canvas_test/canvas_test.ex-meta
 ./examples/cleandir/cleandir.ex-meta
 ./examples/fontenum/fontenum.ex-meta
+./examples/texteditor/texteditor.ex-meta

@@ -6,15 +6,15 @@ object Form1: TForm1
   Caption = 'Form1'
   ClientHeight = 226
   ClientWidth = 467
-  LCLVersion = '2.3.0.0'
+  LCLVersion = '4.99.0.0'
   object ButtonHello: TButton
     Left = 40
     Height = 41
     Top = 160
     Width = 103
     Caption = 'Say Hello'
-    OnClick = ButtonHelloClick
     TabOrder = 0
+    OnClick = ButtonHelloClick
   end
   object ButtonClose: TButton
     Left = 272
@@ -22,8 +22,8 @@ object Form1: TForm1
     Top = 160
     Width = 91
     Caption = 'Close'
-    OnClick = ButtonCloseClick
     TabOrder = 1
+    OnClick = ButtonCloseClick
   end
   object Memo1: TMemo
     Left = 24
