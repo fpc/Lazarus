@@ -805,11 +805,6 @@ msgstr "Автоматичний відступ"
 msgid "(Set up smart indent)"
 msgstr "(Задати розумні відступи)"
 
-#: lazarusidestrconsts.dlgautoindenttype
-msgctxt "lazarusidestrconsts.dlgautoindenttype"
-msgid "Auto indent"
-msgstr "Автоматичний відступ"
-
 #: lazarusidestrconsts.dlgautoremoveemptymethods
 msgid "Auto remove empty methods"
 msgstr "Автом. видаляти порожні методи"
@@ -863,10 +858,6 @@ msgctxt "lazarusidestrconsts.dlgblockgroupoptions"
 msgid "Selection"
 msgstr "Вибране"
 
-#: lazarusidestrconsts.dlgblockindent
-msgid "Block indent (spaces)"
-msgstr "Відступ блока (пробіли)"
-
 #: lazarusidestrconsts.dlgblockindentkeys
 msgid "Block indent"
 msgstr "Відступ блока"
@@ -874,6 +865,18 @@ msgstr "Відступ блока"
 #: lazarusidestrconsts.dlgblockindentlink
 msgid "(edit keys)"
 msgstr "(змінити клавіші)"
+
+#: lazarusidestrconsts.dlgblockindentspaces
+msgid "Amount of spaces"
+msgstr ""
+
+#: lazarusidestrconsts.dlgblockindenttabs
+msgid "Amount of tabs (tab stops)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgblockindenttabs2spaces
+msgid "Amount of spaces (tab stops)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgblockindenttypecopy
 msgid "Space/tab as prev Line"
@@ -894,10 +897,6 @@ msgstr "Таби, обрізати"
 #: lazarusidestrconsts.dlgblockindenttypetabspace
 msgid "Tabs, then spaces"
 msgstr "Таби, потім пробіли"
-
-#: lazarusidestrconsts.dlgblocktabindent
-msgid "Block indent (tabs)"
-msgstr "Відступ блока (таби)"
 
 #: lazarusidestrconsts.dlgbookmarksetscroll
 msgid "Restore scroll position for bookmarks"
@@ -2587,14 +2586,21 @@ msgstr "зі всіх модулів"
 msgid "from current unit"
 msgstr "з поточного модуля"
 
-#: lazarusidestrconsts.dlgindentsindentgroupoptions
-msgctxt "lazarusidestrconsts.dlgindentsindentgroupoptions"
-msgid "Indent"
-msgstr "Відступ"
+#: lazarusidestrconsts.dlgindentslineindentgroupoptions
+msgid "Indent (New line)"
+msgstr ""
 
-#: lazarusidestrconsts.dlgindentstabsgroupoptions
-msgid "Tabs"
-msgstr "Таби"
+#: lazarusidestrconsts.dlgindentstabindentgroupoptions
+msgid "Indent (Tab key on Selection)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgindentstabskeyoptions
+msgid "Tab key"
+msgstr ""
+
+#: lazarusidestrconsts.dlgindentstabswidthsoptions
+msgid "Tabs widths (Tab stop position)"
+msgstr ""
 
 #: lazarusidestrconsts.dlginfrontofmethods
 msgid "In front of methods"
@@ -2800,6 +2806,10 @@ msgstr "Вилучити"
 msgid "Delete list \"%s\"?"
 msgstr "Вилучити список \"%s\"?"
 
+#: lazarusidestrconsts.dlgmarkupuserdefineddivedit
+msgid "Edit list"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeyadd
 #, fuzzy
 #| msgid "Add Word or Term"
@@ -2817,6 +2827,10 @@ msgstr "Вилучити слово або термін"
 #| msgid "Toggle Word or Term"
 msgid "Toggle Word or Term by key"
 msgstr "Перемкнути слово або термін"
+
+#: lazarusidestrconsts.dlgmarkupuserdefineddivselect
+msgid "Create or Select list"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedduplicate
 msgid "Duplicate Term"

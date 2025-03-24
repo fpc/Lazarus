@@ -804,11 +804,6 @@ msgstr "Indentation automatique"
 msgid "(Set up smart indent)"
 msgstr "(Paramétrer l'indentation intelligente)"
 
-#: lazarusidestrconsts.dlgautoindenttype
-msgctxt "lazarusidestrconsts.dlgautoindenttype"
-msgid "Auto indent"
-msgstr "Indentation automatique"
-
 #: lazarusidestrconsts.dlgautoremoveemptymethods
 msgid "Auto remove empty methods"
 msgstr "Supprimer automatiquement les méthodes vides"
@@ -862,10 +857,6 @@ msgctxt "lazarusidestrconsts.dlgblockgroupoptions"
 msgid "Selection"
 msgstr "Sélection"
 
-#: lazarusidestrconsts.dlgblockindent
-msgid "Block indent (spaces)"
-msgstr "Indentation de bloc (espaces)"
-
 #: lazarusidestrconsts.dlgblockindentkeys
 msgid "Block indent"
 msgstr "Indentation de bloc"
@@ -873,6 +864,18 @@ msgstr "Indentation de bloc"
 #: lazarusidestrconsts.dlgblockindentlink
 msgid "(edit keys)"
 msgstr "(touches d'édition)"
+
+#: lazarusidestrconsts.dlgblockindentspaces
+msgid "Amount of spaces"
+msgstr ""
+
+#: lazarusidestrconsts.dlgblockindenttabs
+msgid "Amount of tabs (tab stops)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgblockindenttabs2spaces
+msgid "Amount of spaces (tab stops)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgblockindenttypecopy
 msgid "Space/tab as prev Line"
@@ -893,10 +896,6 @@ msgstr "Tabulations puis coupure"
 #: lazarusidestrconsts.dlgblockindenttypetabspace
 msgid "Tabs, then spaces"
 msgstr "Tabulations puis espaces"
-
-#: lazarusidestrconsts.dlgblocktabindent
-msgid "Block indent (tabs)"
-msgstr "Indentation de bloc (tabulations)"
 
 #: lazarusidestrconsts.dlgbookmarksetscroll
 msgid "Restore scroll position for bookmarks"
@@ -2586,14 +2585,21 @@ msgstr "depuis toutes les unités"
 msgid "from current unit"
 msgstr "depuis l'unité en cours"
 
-#: lazarusidestrconsts.dlgindentsindentgroupoptions
-msgctxt "lazarusidestrconsts.dlgindentsindentgroupoptions"
-msgid "Indent"
-msgstr "Indenter"
+#: lazarusidestrconsts.dlgindentslineindentgroupoptions
+msgid "Indent (New line)"
+msgstr ""
 
-#: lazarusidestrconsts.dlgindentstabsgroupoptions
-msgid "Tabs"
-msgstr "Tabulations"
+#: lazarusidestrconsts.dlgindentstabindentgroupoptions
+msgid "Indent (Tab key on Selection)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgindentstabskeyoptions
+msgid "Tab key"
+msgstr ""
+
+#: lazarusidestrconsts.dlgindentstabswidthsoptions
+msgid "Tabs widths (Tab stop position)"
+msgstr ""
 
 #: lazarusidestrconsts.dlginfrontofmethods
 msgid "In front of methods"
@@ -2799,6 +2805,10 @@ msgstr "Supprimer"
 msgid "Delete list \"%s\"?"
 msgstr "Voulez-vous supprimer la liste \"%s\" ?"
 
+#: lazarusidestrconsts.dlgmarkupuserdefineddivedit
+msgid "Edit list"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeyadd
 msgid "Add Word or Term by key"
 msgstr "Ajouter un mot ou un terme par clé"
@@ -2810,6 +2820,10 @@ msgstr "Retirer un mot ou un terme par clé"
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeytoggle
 msgid "Toggle Word or Term by key"
 msgstr "Inverser un mot ou un terme par clé"
+
+#: lazarusidestrconsts.dlgmarkupuserdefineddivselect
+msgid "Create or Select list"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedduplicate
 msgid "Duplicate Term"

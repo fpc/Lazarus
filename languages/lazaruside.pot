@@ -786,11 +786,6 @@ msgstr ""
 msgid "(Set up smart indent)"
 msgstr ""
 
-#: lazarusidestrconsts.dlgautoindenttype
-msgctxt "lazarusidestrconsts.dlgautoindenttype"
-msgid "Auto indent"
-msgstr ""
-
 #: lazarusidestrconsts.dlgautoremoveemptymethods
 msgid "Auto remove empty methods"
 msgstr ""
@@ -842,16 +837,24 @@ msgctxt "lazarusidestrconsts.dlgblockgroupoptions"
 msgid "Selection"
 msgstr ""
 
-#: lazarusidestrconsts.dlgblockindent
-msgid "Block indent (spaces)"
-msgstr ""
-
 #: lazarusidestrconsts.dlgblockindentkeys
 msgid "Block indent"
 msgstr ""
 
 #: lazarusidestrconsts.dlgblockindentlink
 msgid "(edit keys)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgblockindentspaces
+msgid "Amount of spaces"
+msgstr ""
+
+#: lazarusidestrconsts.dlgblockindenttabs
+msgid "Amount of tabs (tab stops)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgblockindenttabs2spaces
+msgid "Amount of spaces (tab stops)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgblockindenttypecopy
@@ -872,10 +875,6 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgblockindenttypetabspace
 msgid "Tabs, then spaces"
-msgstr ""
-
-#: lazarusidestrconsts.dlgblocktabindent
-msgid "Block indent (tabs)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgbookmarksetscroll
@@ -2554,13 +2553,20 @@ msgstr ""
 msgid "from current unit"
 msgstr ""
 
-#: lazarusidestrconsts.dlgindentsindentgroupoptions
-msgctxt "lazarusidestrconsts.dlgindentsindentgroupoptions"
-msgid "Indent"
+#: lazarusidestrconsts.dlgindentslineindentgroupoptions
+msgid "Indent (New line)"
 msgstr ""
 
-#: lazarusidestrconsts.dlgindentstabsgroupoptions
-msgid "Tabs"
+#: lazarusidestrconsts.dlgindentstabindentgroupoptions
+msgid "Indent (Tab key on Selection)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgindentstabskeyoptions
+msgid "Tab key"
+msgstr ""
+
+#: lazarusidestrconsts.dlgindentstabswidthsoptions
+msgid "Tabs widths (Tab stop position)"
 msgstr ""
 
 #: lazarusidestrconsts.dlginfrontofmethods
@@ -2766,6 +2772,10 @@ msgstr ""
 msgid "Delete list \"%s\"?"
 msgstr ""
 
+#: lazarusidestrconsts.dlgmarkupuserdefineddivedit
+msgid "Edit list"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeyadd
 msgid "Add Word or Term by key"
 msgstr ""
@@ -2776,6 +2786,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeytoggle
 msgid "Toggle Word or Term by key"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmarkupuserdefineddivselect
+msgid "Create or Select list"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedduplicate
