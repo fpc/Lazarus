@@ -51,6 +51,10 @@ type
   { TEditorMarkupUserDefinedFrame }
 
   TEditorMarkupUserDefinedFrame = class(TAbstractIDEOptionsEditor)
+    btnAdd: TButton;
+    btnCopy: TButton;
+    btnDelete: TButton;
+    cbGroup: TComboBox;
     cbCaseSense: TCheckBox;
     cbMatchEndBound: TCheckBox;
     cbMatchStartBound: TCheckBox;
@@ -59,11 +63,14 @@ type
     cbKeyBoundEnd: TCheckBox;
     cbSmartSelectBound: TCheckBox;
     cbGlobalList: TCheckBox;
+    divEditGroup: TDividerBevel;
     divKeyAdd: TDividerBevel;
     divKeyRemove: TDividerBevel;
     divKeyToggle: TDividerBevel;
+    divSelectGroup: TDividerBevel;
     edListName: TEdit;
     HCenter: TLabel;
+    lbListName: TLabel;
     lbWordMin: TLabel;
     lbSelectMin: TLabel;
     HQuarter: TLabel;
@@ -76,12 +83,10 @@ type
     lbKeyRemove2: TLabel;
     lbKeyToggle1: TLabel;
     lbKeyToggle2: TLabel;
-    lbListName: TLabel;
-    ListMenu: TPopupMenu;
-    MainPanel: TPanel;
-    Notebook1: TNotebook;
-    PageMain: TPage;
-    PageKeys: TPage;
+    MainPanel: TScrollBox;
+    pnlKeys: TPanel;
+    pnlMain: TPanel;
+    PageControl1: TPageControl;
     Panel1: TPanel;
     btnKeyAdd: TSpeedButton;
     btnKeyRemove: TSpeedButton;
@@ -89,22 +94,17 @@ type
     edWordMin: TSpinEdit;
     edSelectMin: TSpinEdit;
     SynColorAttrEditor1: TSynColorAttrEditor;
-    ToolBar1: TToolBar;
-    tbSelectList: TToolButton;
-    tbNewList: TToolButton;
-    tbDeleteList: TToolButton;
-    ToolButton2: TToolButton;
-    tbMainPage: TToolButton;
-    tbKeyPage: TToolButton;
+    tabMain: TTabSheet;
+    tabKeys: TTabSheet;
     WordList: TColorStringGrid;
+    procedure cbGroupChange(Sender: TObject);
     procedure edListNameEditingDone(Sender: TObject);
     procedure edListNameKeyPress(Sender: TObject; var Key: char);
     procedure KeyEditClicked(Sender: TObject);
+    procedure PageControl1Change(Sender: TObject);
     procedure tbDeleteListClick(Sender: TObject);
     procedure tbNewListClick(Sender: TObject);
-    procedure tbSelectListClick(Sender: TObject);
     procedure GeneralCheckBoxChange(Sender: TObject);
-    procedure tbSelectPageClicked(Sender: TObject);
     procedure WordListButtonClick(Sender: TObject; {%H-}aCol, aRow: Integer);
     procedure WordListColRowDeleted(Sender: TObject; {%H-}IsColumn: Boolean; {%H-}sIndex,
       {%H-}tIndex: Integer);
@@ -122,7 +122,6 @@ type
     FSelectedRow: Integer;
     FUpdatingDisplay: Integer;
     procedure CheckDuplicate(AnIndex: Integer);
-    procedure DoListSelected(Sender: TObject);
     procedure MaybeCleanEmptyRow(aRow: Integer);
     procedure UpdateKeys;
     procedure UpdateTermOptions;
@@ -272,6 +271,15 @@ begin
   UpdateListDropDownFull;
 end;
 
+procedure TEditorMarkupUserDefinedFrame.cbGroupChange(Sender: TObject);
+begin
+  if WordList.EditorMode then
+    WordList.EditingDone;
+
+  FSelectedListIdx := cbGroup.ItemIndex;
+  UpdateListDisplay;
+end;
+
 procedure TEditorMarkupUserDefinedFrame.edListNameKeyPress(Sender: TObject; var Key: char);
 begin
   if key in [#10,#13] then edListNameEditingDone(nil);
@@ -296,6 +304,12 @@ begin
   ShowKeyMappingEditForm(i, (FUserWordsList.KeyCommandList as TKeyCommandRelationList));
   FKeyOptFrame.UpdateTree;
   UpdateKeys;
+end;
+
+procedure TEditorMarkupUserDefinedFrame.PageControl1Change(Sender: TObject);
+begin
+  if WordList.EditorMode then
+    WordList.EditingDone;
 end;
 
 procedure TEditorMarkupUserDefinedFrame.tbDeleteListClick(Sender: TObject);
@@ -328,11 +342,6 @@ begin
   FSelectedListIdx := FUserWordsList.IndexOf(FUserWords);
   UpdateListDropDownFull;
   UpdateListDisplay;
-end;
-
-procedure TEditorMarkupUserDefinedFrame.tbSelectListClick(Sender: TObject);
-begin
-  tbSelectList.CheckMenuDropdown;
 end;
 
 procedure TEditorMarkupUserDefinedFrame.GeneralCheckBoxChange(Sender: TObject);
@@ -404,17 +413,6 @@ begin
     end;
   end;
 
-end;
-
-procedure TEditorMarkupUserDefinedFrame.tbSelectPageClicked(Sender: TObject);
-begin
-  if WordList.EditorMode then
-    WordList.EditingDone;
-
-  if tbMainPage.Down then
-    Notebook1.PageIndex :=  0
-  else
-    Notebook1.PageIndex :=  1;
 end;
 
 procedure TEditorMarkupUserDefinedFrame.WordListButtonClick(Sender: TObject;
@@ -554,15 +552,6 @@ begin
     UpdateDupErrors;
 end;
 
-procedure TEditorMarkupUserDefinedFrame.DoListSelected(Sender: TObject);
-begin
-  if WordList.EditorMode then
-    WordList.EditingDone;
-
-  FSelectedListIdx := TMenuItem(Sender).Tag;
-  UpdateListDisplay;
-end;
-
 procedure TEditorMarkupUserDefinedFrame.MaybeCleanEmptyRow(aRow: Integer);
 var
   i: PtrInt;
@@ -645,34 +634,27 @@ end;
 
 procedure TEditorMarkupUserDefinedFrame.UpdateListDropDownFull;
 var
-  m: TMenuItem;
   i: Integer;
 begin
-  ListMenu.Items.Clear;
-  if FUserWordsList.Count > 0 then begin
-    for i := 0 to FUserWordsList.Count - 1 do begin
-      m := TMenuItem.Create(ListMenu);
-      m.Caption := FUserWordsList.Lists[i].Name;
-      m.Tag := i;
-      m.OnClick := @DoListSelected;
-      ListMenu.Items.Add(m);
-    end;
-  end;
+  cbGroup.Clear;
+  for i := 0 to FUserWordsList.Count - 1 do
+    cbGroup.Items.Add(FUserWordsList.Lists[i].Name);
   UpdateListDropDownCaption;
 end;
 
 procedure TEditorMarkupUserDefinedFrame.UpdateListDropDownCaption;
 begin
   if FUserWordsList.Count = 0 then begin
-    tbSelectList.Enabled := False;
-    tbSelectList.Caption := dlgMarkupUserDefinedNoLists;
+    cbGroup.Enabled := False;
+    cbGroup.Caption := dlgMarkupUserDefinedNoLists;
   end
   else begin
-    tbSelectList.Enabled := True;
+    cbGroup.Enabled := True;
     if (FSelectedListIdx >= 0) and (FSelectedListIdx < FUserWordsList.Count) then
-      tbSelectList.Caption := FUserWordsList.Lists[FSelectedListIdx].Name
+      cbGroup.ItemIndex := FSelectedListIdx
+      //cbGroup.Caption := FUserWordsList.Lists[FSelectedListIdx].Name
     else
-      tbSelectList.Caption := dlgMarkupUserDefinedNoListsSel;
+      cbGroup.Caption := dlgMarkupUserDefinedNoListsSel;
   end;
 end;
 
@@ -753,11 +735,13 @@ procedure TEditorMarkupUserDefinedFrame.Setup(ADialog: TAbstractOptionsEditorDia
 begin
   SynColorAttrEditor1.Setup;
   SynColorAttrEditor1.ShowPrior := True;
-  tbNewList.Caption          := dlgMarkupUserDefinedListNew;
-  tbDeleteList.Caption       := dlgMarkupUserDefinedListDel;
+  divSelectGroup.Caption     := dlgMarkupUserDefinedDivSelect;
+  divEditGroup.Caption       := dlgMarkupUserDefinedDivEdit;
+  btnAdd.Caption             := dlgMarkupUserDefinedListNew;
+  btnDelete.Caption          := dlgMarkupUserDefinedListDel;
   lbListName.Caption         := dlgMarkupUserDefinedListName;
-  tbMainPage.Caption         := dlgMarkupUserDefinedPageMain;
-  tbKeyPage.Caption          := dlgMarkupUserDefinedPageKeys;
+  tabMain.Caption            := dlgMarkupUserDefinedPageMain;
+  tabKeys.Caption            := dlgMarkupUserDefinedPageKeys;
   cbCaseSense.Caption        := dlgMarkupUserDefinedMatchCase;
   cbMatchStartBound.Caption  := dlgMarkupUserDefinedMatchStartBound;
   cbMatchEndBound.Caption    := dlgMarkupUserDefinedMatchEndBound;
@@ -791,7 +775,7 @@ begin
   FSelectedListIdx := 0;
   UpdateListDropDownFull;
   UpdateListDisplay;
-  tbDeleteList.Enabled := FUserWordsList.Count > 0;
+  cbGroup.Enabled := FUserWordsList.Count > 0;
   FGlobalColors := nil;
   UpdateKeys;
 end;

@@ -570,12 +570,21 @@ procedure TSynColorAttrEditor.UpdateAll;
               (FCurrentColorScheme.AttributeByEnum[aha] <> nil) and
               (Element.StoredName = FCurrentColorScheme.AttributeByEnum[aha].StoredName);
   end;
+var
+  UsingTempAttr: Boolean;
 begin
-  if (FCurHighlightElement = nil) or UpdatingColor then
-    Exit;
+  if UpdatingColor then
+    exit;
+
   UpdatingColor := True;
   DisableAlign;
   try
+    UsingTempAttr := FCurHighlightElement = nil;
+    if UsingTempAttr then begin
+      FCurHighlightElement := TColorSchemeAttribute.Create(nil, nil, '');
+      FCurHighlightElement.Clear;
+    end;
+
     // Adjust color captions
     ForeGroundUseDefaultCheckBox.Caption := dlgForecolor;
     BackGroundUseDefaultCheckBox.Caption := dlgBackColor;
@@ -804,6 +813,8 @@ begin
 
     UpdatingColor := False;
   finally
+    if UsingTempAttr then
+      FreeAndNil(FCurHighlightElement);
     EnableAlign;
   end;
   pnlElementAttributesResize(nil);

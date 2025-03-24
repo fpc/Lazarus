@@ -2021,6 +2021,8 @@ resourcestring
   dlgIncludeCodeTemplatesToIdentCompl = 'Include code templates';
 
   dlgMarkupUserDefined = 'User defined markup';
+  dlgMarkupUserDefinedDivSelect = 'Create or Select list';
+  dlgMarkupUserDefinedDivEdit   = 'Edit list';
   dlgMarkupUserDefinedNoLists = 'No lists';
   dlgMarkupUserDefinedNoListsSel = 'Select ...';
   dlgMarkupUserDefinedNewName = 'New list';
