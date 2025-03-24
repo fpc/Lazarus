@@ -1567,16 +1567,12 @@ resourcestring
 
   dlgUndoGroupOptions = 'Undo / Redo';
   dlgScrollGroupOptions = 'Scrolling';
-  dlgIndentsTabsGroupOptions = 'Tabs';
-  dlgIndentsIndentGroupOptions = 'Indent';
   dlgCommentIndentGroupOptions = 'Comments and Strings';
   dlgCaretGroupOptions = 'Caret (Text Cursor)';
   dlgCaretScrollGroupOptions = 'Caret (Text Cursor) past end of line';
   dlgMultiCaretGroupOptions = 'Multi-caret';
   dlgBlockGroupOptions = 'Selection';
   dlgAlwaysVisibleCursor = 'Always keep caret in visible area of editor';
-  dlgAutoIndent = 'Auto indent';
-  dlgAutoIndentLink = '(Set up smart indent)';
   dlgAutoHideCursor  = 'Hide mouse pointer when typing';
   dlgGroupUndo = 'Group Undo';
   dlgHalfPageScroll = 'Half page scroll';
@@ -1610,16 +1606,39 @@ resourcestring
   lisNotebookTabPosRight = 'Right';
   dlgUseTabsHistory = 'Use tab history when closing tabs';
   dlgShowGutterHints = 'Show gutter hints';
-  dlgSmartTabs = 'Smart tabs';
-  dlgElasticTabs = 'Elastic tabs';
-  dlgElasticTabsWidths = 'Elastic min Widths';
-  dlgTabsToSpaces = 'Tabs to spaces';
-  dlgTabIndent = 'Tab indents blocks';
   dlgTrimTrailingSpaces = 'Trim trailing spaces';
   dlgAnsiCommentTab = 'ANSI (* *)';
   dlgCurlyCommentTab = 'Curly { }';
   dlgSlashCommentTab = 'Slash //';
   dlgStringBreakIndentTab = 'String ''''';
+
+  // Tab & Indent
+  dlgIndentsTabsWidthsOptions = 'Tabs widths (Tab stop position)';
+  dlgIndentsTabsKeyOptions    = 'Tab key';
+  dlgIndentsTabIndentGroupOptions = 'Indent (Tab key on Selection)';
+  dlgIndentsLineIndentGroupOptions = 'Indent (New line)';
+
+  dlgTabWidths         = 'Tab widths';
+  dlgElasticTabs       = 'Elastic tabs';
+  dlgElasticTabsWidths = 'Elastic min Widths';
+
+  dlgTabsToSpaces = 'Tabs to spaces';
+  dlgSmartTabs    = 'Smart tabs';
+
+  dlgTabIndent               = 'Tab indents blocks';
+  dlgBlockIndentSpaces       = 'Amount of spaces';
+  dlgBlockIndentTabs         = 'Amount of tabs (tab stops)';
+  dlgBlockIndentTabs2Spaces  = 'Amount of spaces (tab stops)';
+  dlgBlockIndentKeys         = 'Block indent';
+  dlgBlockIndentLink         = '(edit keys)';
+  dlgBlockIndentTypeSpace    = 'Spaces';
+  dlgBlockIndentTypeCopy     = 'Space/tab as prev Line';
+  dlgBlockIndentTypePos      = 'Position only';
+  dlgBlockIndentTypeTabSpace = 'Tabs, then spaces';
+  dlgBlockIndentTypeTabOnly  = 'Tabs, cut off';
+
+  dlgAutoIndent     = 'Auto indent';
+  dlgAutoIndentLink = '(Set up smart indent)';
 
   dlgCommentContinue = 'Prefix comments on linebreak';
   dlgCommentContinueMatch  = 'Match current line';
@@ -1849,16 +1868,6 @@ resourcestring
   dlgHighlightLeftOfCursor = 'Left Of Caret';
   dlgHighlightRightOfCursor = 'Right Of Caret';
   gldHighlightBothSidesOfCursor = 'On Both Sides';
-  dlgBlockIndentKeys = 'Block indent';
-  dlgBlockIndentLink = '(edit keys)';
-  dlgBlockIndent = 'Block indent (spaces)';
-  dlgBlockTabIndent = 'Block indent (tabs)';
-  dlgAutoIndentType = 'Auto indent';
-  dlgBlockIndentTypeSpace = 'Spaces';
-  dlgBlockIndentTypeCopy = 'Space/tab as prev Line';
-  dlgBlockIndentTypePos = 'Position only';
-  dlgBlockIndentTypeTabSpace ='Tabs, then spaces';
-  dlgBlockIndentTypeTabOnly = 'Tabs, cut off';
   dlgTrimSpaceTypeCaption = 'Trim spaces style';
   dlgTrimSpaceTypeLeaveLine = 'Leave line';
   dlgTrimSpaceTypeEditLine = 'Line Edited';
@@ -1869,7 +1878,6 @@ resourcestring
   dlgEditExportBackColor = 'Use Background color in HTML export';
   dlgBookmarkSetScroll = 'Restore scroll position for bookmarks';
   dlgUndoLimit = 'Undo limit';
-  dlgTabWidths = 'Tab widths';
   dlgMarginGutter = 'Margin and gutter';
   dlgVisibleRightMargin = 'Visible right margin';
   dlgVisibleGutter = 'Visible gutter';

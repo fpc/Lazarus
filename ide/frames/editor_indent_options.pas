@@ -50,12 +50,11 @@ type
     BlockIndentTypeComboBox: TComboBox;
     BlockIndentLabel: TLabel;
     AutoIndentCheckBox: TCheckBox;
-    AutoIndentTypeLabel: TLabel;
     cbSlashExtend: TComboBox;
-    CenterLabel1: TLabel;
     cbStringEnableAutoContinue: TCheckBox;
     chkElasticTabs: TCheckBox;
     CommentsGroupDivider: TDividerBevel;
+    divLineIndent: TDividerBevel;
     edStringAlignMax: TSpinEdit;
     edStringAlignPattern: TComboBox;
     edStringAutoAppend: TEdit;
@@ -98,15 +97,16 @@ type
 
     CommentsPageControl: TPageControl;
     lbStringAlignPattern: TLabel;
-    TabsGroupDivider: TDividerBevel;
+    divTabKey: TDividerBevel;
     AutoIndentLink: TLabel;
     CenterLabel:TLabel;
-    IndentsGroupDivider: TDividerBevel;
+    divTabIndent: TDividerBevel;
     lblBlockIndentKeys: TLabel;
     TabIndentBlocksCheckBox: TCheckBox;
     SmartTabsCheckBox: TCheckBox;
     ElastTabMinWidthsComboBox: TComboBox;
     ElastTabMinWidthsLabel: TLabel;
+    divTabsWidth: TDividerBevel;
     tbAnsi: TTabSheet;
     tbCurly: TTabSheet;
     tbShlash: TTabSheet;
@@ -134,6 +134,7 @@ type
     procedure TabIndentBlocksCheckBoxChange(Sender: TObject);
     procedure TabsToSpacesCheckBoxChange(Sender: TObject);
     procedure chkElasticTabsChange(Sender: TObject);
+    procedure TabWidthsLabelChangeBounds(Sender: TObject);
   private
     FDefaultBookmarkImages: TImageList;
     FDialog: TAbstractOptionsEditorDialog;
@@ -143,6 +144,7 @@ type
     procedure SetExtendedKeywordsMode(const AValue: Boolean);
     procedure SetStringKeywordMode(const AValue: TSynPasStringMode);
     function GeneralPage: TEditorGeneralOptionsFrame; inline;
+    procedure UpdateSetup;
   public
     procedure SetPreviewOption(AValue: Boolean; AnOption: TSynEditorOption); overload;
     procedure SetPreviewOption(AValue: Boolean; AnOption: TSynEditorOption2); overload;
@@ -172,28 +174,40 @@ begin
   Result := dlgEdTabIndent;
 end;
 
+procedure TEditorIndentOptionsFrame.UpdateSetup;
+begin
+  SmartTabsCheckBox.Enabled         := not chkElasticTabs.Checked;
+  TabsToSpacesCheckBox.Enabled      := not chkElasticTabs.Checked;
+  ElastTabMinWidthsComboBox.Enabled := chkElasticTabs.Checked;
+
+  if TabsToSpacesCheckBox.Checked and TabsToSpacesCheckBox.Enabled then
+    BlockTabIndentLabel.Caption     := dlgBlockIndentTabs2Spaces
+  else
+    BlockTabIndentLabel.Caption     := dlgBlockIndentTabs;
+end;
+
 procedure TEditorIndentOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   FDialog := ADialog;
 
   // tabs
-  TabsGroupDivider.Caption := dlgIndentsTabsGroupOptions;
-  TabsToSpacesCheckBox.Caption := dlgTabsToSpaces;
-  TabWidthsLabel.Caption := dlgTabWidths;
-  SmartTabsCheckBox.Caption := dlgSmartTabs;
-  chkElasticTabs.Caption := dlgElasticTabs;
+  divTabsWidth.Caption           := dlgIndentsTabsWidthsOptions;
+  TabWidthsLabel.Caption         := dlgTabWidths;
+  chkElasticTabs.Caption         := dlgElasticTabs;
   ElastTabMinWidthsLabel.Caption := dlgElasticTabsWidths;
 
-  // indents
-  IndentsGroupDivider.Caption := dlgIndentsIndentGroupOptions;
-  AutoIndentCheckBox.Caption := dlgAutoIndent;
-  AutoIndentTypeLabel.Caption := dlgAutoIndentType;
+  divTabKey.Caption              := dlgIndentsTabsKeyOptions;
+  TabsToSpacesCheckBox.Caption   := dlgTabsToSpaces;
+  SmartTabsCheckBox.Caption      := dlgSmartTabs;
 
-  lblBlockIndentKeys.Caption := dlgBlockIndentKeys;
-  lblBlockIndentShortcut.Caption := '';
-  BlockIndentLink.Caption := dlgBlockIndentLink;
-  BlockIndentLabel.Caption := dlgBlockIndent;
-  BlockTabIndentLabel.Caption := dlgBlockTabIndent;
+  // indents
+  divTabIndent.Caption            := dlgIndentsTabIndentGroupOptions;
+  TabIndentBlocksCheckBox.Caption := dlgTabIndent;
+  BlockIndentLabel.Caption        := dlgBlockIndentSpaces;
+  BlockTabIndentLabel.Caption     := dlgBlockIndentTabs;
+  lblBlockIndentKeys.Caption      := dlgBlockIndentKeys;
+  lblBlockIndentShortcut.Caption  := '';
+  BlockIndentLink.Caption         := dlgBlockIndentLink;
 
   BlockIndentTypeComboBox.Items.Add(dlgBlockIndentTypeSpace);
   BlockIndentTypeComboBox.Items.Add(dlgBlockIndentTypeCopy);
@@ -201,8 +215,9 @@ begin
   BlockIndentTypeComboBox.Items.Add(dlgBlockIndentTypeTabSpace);
   BlockIndentTypeComboBox.Items.Add(dlgBlockIndentTypeTabOnly);
 
-  TabIndentBlocksCheckBox.Caption := dlgTabIndent;
-  AutoIndentLink.Caption := dlgAutoIndentLink;
+  divLineIndent.Caption       := dlgIndentsLineIndentGroupOptions;
+  AutoIndentCheckBox.Caption  := dlgAutoIndent;
+  AutoIndentLink.Caption      := dlgAutoIndentLink;
 
   // Comments
   CommentsGroupDivider.Caption := dlgCommentIndentGroupOptions;
@@ -362,6 +377,7 @@ begin
     cbStringEnableAutoContinueChange(nil);
 
   end;
+  UpdateSetup;
 end;
 
 procedure TEditorIndentOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
@@ -683,13 +699,34 @@ end;
 procedure TEditorIndentOptionsFrame.TabsToSpacesCheckBoxChange(Sender: TObject);
 begin
   SetPreviewOption(TabsToSpacesCheckBox.Checked, eoTabsToSpaces);
+  UpdateSetup;
 end;
 
 procedure TEditorIndentOptionsFrame.chkElasticTabsChange(Sender: TObject);
 begin
-  SmartTabsCheckBox.Enabled    := not chkElasticTabs.Checked;
-  TabsToSpacesCheckBox.Enabled := not chkElasticTabs.Checked;
-  ElastTabMinWidthsComboBox.Enabled := chkElasticTabs.Checked;
+  UpdateSetup;
+end;
+
+procedure TEditorIndentOptionsFrame.TabWidthsLabelChangeBounds(Sender: TObject);
+var
+  x: integer;
+  procedure UpdateX(c: TControl);
+  var
+    x2: Integer;
+  begin
+    x2 := c.Left + c.Width;
+    if x < x2 then x := x2;
+  end;
+begin
+  x := 80;
+  UpdateX(TabWidthsLabel);
+  UpdateX(TabsToSpacesCheckBox);
+  UpdateX(TabIndentBlocksCheckBox);
+  UpdateX(BlockIndentLink);
+  UpdateX(lblBlockIndentShortcut);
+  UpdateX(AutoIndentCheckBox);
+  UpdateX(AutoIndentLink);
+  CenterLabel.Left := x + 25;
 end;
 
 function TEditorIndentOptionsFrame.DefaultBookmarkImages: TImageList;
