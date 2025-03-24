@@ -16,7 +16,7 @@ uses
   LazEditMiscProcs,
   // SynEdit
   SynEditMarkup, SynHighlighterPas, SynEditMiscProcs, SynEdit, SynEditMiscClasses, SynEditTypes,
-  SynEditHighlighter;
+  SynEditHighlighter, SynEditHighlighterFoldBase;
 
 type
 
@@ -189,23 +189,30 @@ var
 
   function GetStartOfComment(var ALineNum: integer; out ALogX: integer): boolean; inline;
   var
+    lvl: Integer;
     IsComment, IsNewCommentStart: Boolean;
   begin
     ALogX := 1;
     FPasHl.StartAtLineIndex(ToIdx(ALineNum));
-    Result := FPasHl.GetTokenIsComment;
+    Result := FPasHl.GetTokenIsComment and (ALineNum > 1);
     if (not Result) or
        (FPasHl.GetTokenIsCommentStart(True))
     then
       exit;
 
-    while ALineNum > 1 do begin
+    repeat
       dec(ALineNum);
-      if ALineNum = FSkipEndLine then
-        exit(False);
+      lvl := FPasHl.FoldBlockEndLevel(ToIdx(ALineNum), FOLDGROUP_PASCAL, [sfbIncludeDisabled]);
+      while (ALineNum > 1) and
+            (FPasHl.FoldBlockMinLevel(ToIdx(ALineNum), FOLDGROUP_PASCAL, [sfbIncludeDisabled]) >= lvl)
+      do begin
+        dec(ALineNum);
+        if ALineNum = FSkipEndLine then
+          exit(False);
+      end;
 
+      // Get ALogX and check for nested comment
       FPasHl.StartAtLineIndex(ToIdx(ALineNum));
-
       IsComment := FPasHl.GetTokenIsComment;
       // if not a comment, then pretend its a new start => used for "result"
       IsNewCommentStart := (not IsComment) or FPasHl.GetTokenIsCommentStart(True);
@@ -224,7 +231,8 @@ var
 
       if Result then
         exit;
-    end;
+
+    until false;
     Result := False;
   end;
 
@@ -281,6 +289,11 @@ begin
         FFoundPos[0] := FFoundPos[i];
       SetLength(FFoundPos, 1);
       TkEnd := 1 + FPasHl.GetTokenLen;
+      while (not FPasHl.GetEol) and (not FPasHl.GetTokenIsCommentEnd) do begin
+        FPasHl.Next;
+        if not FPasHl.GetTokenIsComment then break;
+        TkEnd := ToPos(FPasHl.GetTokenPos) + FPasHl.GetTokenLen;
+      end;
       FFoundPos[0].EndPos.Y := aRow;
       FFoundPos[0].EndPos.X := TkEnd;
       LogX := TkEnd;
