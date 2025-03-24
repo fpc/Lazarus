@@ -738,7 +738,7 @@ msgid "An icon for error/warning/hint is shown in front of a message. The same i
 msgstr ""
 
 #: lazarusidestrconsts.dlgansicommenttab
-msgid "Ansi (* *)"
+msgid "ANSI (* *)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgapplicationsettings
@@ -7576,6 +7576,23 @@ msgstr "Dubbele punt"
 msgid "Comma"
 msgstr "Komma"
 
+#: lazarusidestrconsts.liscodetoolsoptscomment
+msgctxt "lazarusidestrconsts.liscodetoolsoptscomment"
+msgid "Comment"
+msgstr ""
+
+#: lazarusidestrconsts.liscodetoolsoptscommentansi
+msgid "ANSI Comment: (*"
+msgstr ""
+
+#: lazarusidestrconsts.liscodetoolsoptscommentbor
+msgid "Curly Comment: {"
+msgstr ""
+
+#: lazarusidestrconsts.liscodetoolsoptscommentslash
+msgid "Slash Comment: //"
+msgstr ""
+
 #: lazarusidestrconsts.liscodetoolsoptsidentifier
 msgctxt "lazarusidestrconsts.liscodetoolsoptsidentifier"
 msgid "Identifier"
@@ -7611,6 +7628,10 @@ msgstr "Puntkomma"
 msgctxt "lazarusidestrconsts.liscodetoolsoptsspace"
 msgid "Space"
 msgstr "Spatie"
+
+#: lazarusidestrconsts.liscodetoolsoptsstring
+msgid "String"
+msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsoptsstringconst
 msgid "String constant"

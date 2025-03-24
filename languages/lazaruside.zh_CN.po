@@ -743,7 +743,9 @@ msgid "An icon for error/warning/hint is shown in front of a message. The same i
 msgstr "一个错误/警告/提示图标显示在消息前面.在任何情况下,相同的图标都会显示在源文件编辑器的边缝中."
 
 #: lazarusidestrconsts.dlgansicommenttab
-msgid "Ansi (* *)"
+#, fuzzy
+#| msgid "Ansi (* *)"
+msgid "ANSI (* *)"
 msgstr "Ansi (* *)"
 
 #: lazarusidestrconsts.dlgapplicationsettings
@@ -7354,6 +7356,24 @@ msgstr "冒号"
 msgid "Comma"
 msgstr "逗号"
 
+#: lazarusidestrconsts.liscodetoolsoptscomment
+#, fuzzy
+msgctxt "lazarusidestrconsts.liscodetoolsoptscomment"
+msgid "Comment"
+msgstr "注释"
+
+#: lazarusidestrconsts.liscodetoolsoptscommentansi
+msgid "ANSI Comment: (*"
+msgstr ""
+
+#: lazarusidestrconsts.liscodetoolsoptscommentbor
+msgid "Curly Comment: {"
+msgstr ""
+
+#: lazarusidestrconsts.liscodetoolsoptscommentslash
+msgid "Slash Comment: //"
+msgstr ""
+
 #: lazarusidestrconsts.liscodetoolsoptsidentifier
 msgctxt "lazarusidestrconsts.liscodetoolsoptsidentifier"
 msgid "Identifier"
@@ -7389,6 +7409,10 @@ msgstr "分号"
 msgctxt "lazarusidestrconsts.liscodetoolsoptsspace"
 msgid "Space"
 msgstr "空格"
+
+#: lazarusidestrconsts.liscodetoolsoptsstring
+msgid "String"
+msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsoptsstringconst
 msgid "String constant"

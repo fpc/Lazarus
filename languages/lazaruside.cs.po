@@ -749,7 +749,9 @@ msgid "An icon for error/warning/hint is shown in front of a message. The same i
 msgstr "Ikona pro chybu/varování/pokyn je ukázána na začátku zprávy. Stejná ikona je ukázána ve žlábku zdrojovém editoru v těchto případech."
 
 #: lazarusidestrconsts.dlgansicommenttab
-msgid "Ansi (* *)"
+#, fuzzy
+#| msgid "Ansi (* *)"
+msgid "ANSI (* *)"
 msgstr "Ansi (* *)"
 
 #: lazarusidestrconsts.dlgapplicationsettings
@@ -7457,6 +7459,24 @@ msgstr "Dvojtečka"
 msgid "Comma"
 msgstr "Čárka"
 
+#: lazarusidestrconsts.liscodetoolsoptscomment
+#, fuzzy
+msgctxt "lazarusidestrconsts.liscodetoolsoptscomment"
+msgid "Comment"
+msgstr "Komentář"
+
+#: lazarusidestrconsts.liscodetoolsoptscommentansi
+msgid "ANSI Comment: (*"
+msgstr ""
+
+#: lazarusidestrconsts.liscodetoolsoptscommentbor
+msgid "Curly Comment: {"
+msgstr ""
+
+#: lazarusidestrconsts.liscodetoolsoptscommentslash
+msgid "Slash Comment: //"
+msgstr ""
+
 #: lazarusidestrconsts.liscodetoolsoptsidentifier
 msgctxt "lazarusidestrconsts.liscodetoolsoptsidentifier"
 msgid "Identifier"
@@ -7492,6 +7512,10 @@ msgstr "Středník"
 msgctxt "lazarusidestrconsts.liscodetoolsoptsspace"
 msgid "Space"
 msgstr "Mezera"
+
+#: lazarusidestrconsts.liscodetoolsoptsstring
+msgid "String"
+msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsoptsstringconst
 msgid "String constant"

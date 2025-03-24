@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-03-23 22:36+0300\n"
+"PO-Revision-Date: 2025-03-24 22:37+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -741,7 +741,7 @@ msgid "An icon for error/warning/hint is shown in front of a message. The same i
 msgstr "Значок для ошибки/предупреждения/подсказки отображается перед сообщением. Тот же значок выводится в редакторе исходного кода в любом случае."
 
 #: lazarusidestrconsts.dlgansicommenttab
-msgid "Ansi (* *)"
+msgid "ANSI (* *)"
 msgstr "ANSI (* *)"
 
 #: lazarusidestrconsts.dlgapplicationsettings
@@ -7331,6 +7331,23 @@ msgstr "Двоеточие"
 msgid "Comma"
 msgstr "Запятая"
 
+#: lazarusidestrconsts.liscodetoolsoptscomment
+msgctxt "lazarusidestrconsts.liscodetoolsoptscomment"
+msgid "Comment"
+msgstr "Комментарий"
+
+#: lazarusidestrconsts.liscodetoolsoptscommentansi
+msgid "ANSI Comment: (*"
+msgstr "Комментарий ANSI: (*"
+
+#: lazarusidestrconsts.liscodetoolsoptscommentbor
+msgid "Curly Comment: {"
+msgstr "Комментарий с фигурными скобками: {"
+
+#: lazarusidestrconsts.liscodetoolsoptscommentslash
+msgid "Slash Comment: //"
+msgstr "Комментарий с косыми чертами: //"
+
 #: lazarusidestrconsts.liscodetoolsoptsidentifier
 msgctxt "lazarusidestrconsts.liscodetoolsoptsidentifier"
 msgid "Identifier"
@@ -7366,6 +7383,10 @@ msgstr "Точка с запятой"
 msgctxt "lazarusidestrconsts.liscodetoolsoptsspace"
 msgid "Space"
 msgstr "Пробел"
+
+#: lazarusidestrconsts.liscodetoolsoptsstring
+msgid "String"
+msgstr "Строка"
 
 #: lazarusidestrconsts.liscodetoolsoptsstringconst
 msgid "String constant"
