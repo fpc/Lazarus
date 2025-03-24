@@ -1616,7 +1616,7 @@ resourcestring
   dlgTabsToSpaces = 'Tabs to spaces';
   dlgTabIndent = 'Tab indents blocks';
   dlgTrimTrailingSpaces = 'Trim trailing spaces';
-  dlgAnsiCommentTab = 'Ansi (* *)';
+  dlgAnsiCommentTab = 'ANSI (* *)';
   dlgCurlyCommentTab = 'Curly { }';
   dlgSlashCommentTab = 'Slash //';
   dlgStringBreakIndentTab = 'String ''''';
@@ -3625,7 +3625,7 @@ resourcestring
   lisCodeToolsOptsString      = 'String';
   lisCodeToolsOptsComment= 'Comment';
   lisCodeToolsOptsCommentSlash= 'Slash Comment: //';
-  lisCodeToolsOptsCommentAnsi = 'Ansi Comment: (*';
+  lisCodeToolsOptsCommentAnsi = 'ANSI Comment: (*';
   lisCodeToolsOptsCommentBor  = 'Curly Comment: {';
   lisCodeToolsOptsBracket     = 'Bracket';
   lisCodeToolsOptsCaret       = 'Caret (^)';
