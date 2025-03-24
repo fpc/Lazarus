@@ -87,7 +87,7 @@ begin
   end;
 
  // we respect ws height if autosize is true.
-  if AControl.LCLObject.AutoSize then
+  if AControl.LCLObject.AutoSize and (AControl.LCLObject.BorderSpacing.InnerBorder = 0) then
     exit;
 
   // Custom height handling
