@@ -1142,6 +1142,7 @@ begin
     end;
     if TLVHack(ALV).ViewStyle in [vsSmallIcon, vsIcon] then
       TGtk3ListView(ALV.Handle).setItemWidth(AValue.Width);
+
     for i := 0 to AValue.Count-1 do
     begin
       pixbuf := nil;
@@ -1149,18 +1150,6 @@ begin
       try
         AValue.GetBitmap(i, BitImage);
         pixbuf := TGtk3Image(BitImage.Handle).Handle^.copy;
-
-        if TGtk3ListView(ALV.Handle).IsTreeView and (TLVHack(ALV).Columns.Count > 0) and
-          not TLVHack(ALV).OwnerDraw then
-        begin
-          AColumn := PGtkTreeView(TGtk3ListView(ALV.Handle).GetContainerWidget)^.get_column(0);
-          PixRenderer := PGtkCellRenderer(g_object_get_data(PgObject(AColumn), 'pix_renderer'));
-          if Assigned(PixRenderer) then
-          begin
-            PixRenderer^.set_fixed_size(AValue.Width + 2, AValue.Height + 2);
-            AColumn^.queue_resize;
-          end;
-        end;
         TGtk3ListView(ALV.Handle).Images.Add(pixbuf);
       finally
         BitImage.Free;
