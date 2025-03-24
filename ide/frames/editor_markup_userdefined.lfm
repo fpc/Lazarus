@@ -46,11 +46,13 @@ object EditorMarkupUserDefinedFrame: TEditorMarkupUserDefinedFrame
     AnchorSideTop.Control = cbGroup
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 22
+    Height = 25
     Top = 56
     Width = 75
+    AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'btnAdd'
+    Constraints.MinWidth = 75
     TabOrder = 1
     OnClick = tbNewListClick
   end
@@ -59,11 +61,13 @@ object EditorMarkupUserDefinedFrame: TEditorMarkupUserDefinedFrame
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = btnAdd
     Left = 93
-    Height = 22
+    Height = 25
     Top = 56
     Width = 75
+    AutoSize = True
     BorderSpacing.Left = 12
     Caption = 'btnCopy'
+    Constraints.MinWidth = 75
     TabOrder = 2
     Visible = False
   end
@@ -74,12 +78,14 @@ object EditorMarkupUserDefinedFrame: TEditorMarkupUserDefinedFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 174
-    Height = 22
+    Height = 25
     Top = 56
-    Width = 75
+    Width = 77
+    AutoSize = True
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
     Caption = 'btnDelete'
+    Constraints.MinWidth = 75
     TabOrder = 3
     OnClick = tbDeleteListClick
   end
@@ -91,7 +97,7 @@ object EditorMarkupUserDefinedFrame: TEditorMarkupUserDefinedFrame
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 15
-    Top = 84
+    Top = 87
     Width = 544
     Caption = 'divEditGroup'
     Anchors = [akTop, akLeft, akRight]
@@ -108,14 +114,14 @@ object EditorMarkupUserDefinedFrame: TEditorMarkupUserDefinedFrame
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 536
-    Top = 105
+    Height = 533
+    Top = 108
     Width = 556
     HorzScrollBar.Page = 556
-    VertScrollBar.Page = 470
+    VertScrollBar.Page = 334
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderStyle = bsNone
-    ClientHeight = 519
+    ClientHeight = 516
     ClientWidth = 556
     TabOrder = 4
     object lbListName: TLabel
@@ -184,7 +190,7 @@ object EditorMarkupUserDefinedFrame: TEditorMarkupUserDefinedFrame
       AnchorSideBottom.Control = MainPanel
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 294
+      Height = 291
       Top = 219
       Width = 1098
       ActivePage = tabMain
@@ -195,17 +201,17 @@ object EditorMarkupUserDefinedFrame: TEditorMarkupUserDefinedFrame
       OnChange = PageControl1Change
       object tabMain: TTabSheet
         Caption = 'tabMain'
-        ClientHeight = 266
+        ClientHeight = 263
         ClientWidth = 1090
         object pnlMain: TPanel
           Left = 0
-          Height = 266
+          Height = 263
           Top = 0
           Width = 1090
           Align = alClient
           AutoSize = True
           BevelOuter = bvNone
-          ClientHeight = 266
+          ClientHeight = 263
           ClientWidth = 1090
           ParentBackground = False
           ParentColor = False
@@ -228,7 +234,7 @@ object EditorMarkupUserDefinedFrame: TEditorMarkupUserDefinedFrame
             AnchorSideBottom.Control = pnlMain
             AnchorSideBottom.Side = asrBottom
             Left = 551
-            Height = 254
+            Height = 251
             Top = 6
             Width = 533
             Anchors = [akTop, akLeft, akRight, akBottom]
@@ -239,7 +245,7 @@ object EditorMarkupUserDefinedFrame: TEditorMarkupUserDefinedFrame
             Columns = <            
               item
                 Title.Caption = 'Title'
-                Width = 504
+                Width = 487
               end            
               item
                 ButtonStyle = cbsButtonColumn
@@ -260,7 +266,7 @@ object EditorMarkupUserDefinedFrame: TEditorMarkupUserDefinedFrame
             OnKeyUp = WordListKeyUp
             OnSelection = WordListSelection
             ColWidths = (
-              504
+              487
               25
             )
           end
@@ -306,17 +312,17 @@ object EditorMarkupUserDefinedFrame: TEditorMarkupUserDefinedFrame
       end
       object tabKeys: TTabSheet
         Caption = 'tabKeys'
-        ClientHeight = 266
+        ClientHeight = 263
         ClientWidth = 1090
         object pnlKeys: TPanel
           Left = 0
-          Height = 266
+          Height = 263
           Top = 0
           Width = 1090
           Align = alClient
           AutoSize = True
           BevelOuter = bvNone
-          ClientHeight = 266
+          ClientHeight = 263
           ClientWidth = 1090
           ParentBackground = False
           ParentColor = False
@@ -364,12 +370,12 @@ object EditorMarkupUserDefinedFrame: TEditorMarkupUserDefinedFrame
             AnchorSideBottom.Control = pnlKeys
             AnchorSideBottom.Side = asrBottom
             Left = 545
-            Height = 266
+            Height = 263
             Top = 0
             Width = 545
             Anchors = [akTop, akLeft, akRight, akBottom]
             BevelOuter = bvNone
-            ClientHeight = 266
+            ClientHeight = 263
             ClientWidth = 545
             TabOrder = 1
             object divKeyAdd: TDividerBevel
