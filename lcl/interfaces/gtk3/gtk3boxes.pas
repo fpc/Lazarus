@@ -62,7 +62,7 @@ type
 
 
 implementation
-
+uses gtk3int;
 // fake GTK button responses
 const
   GTK_RESPONSE_LCL_ALL = TGtkResponseType(-15);
@@ -422,7 +422,8 @@ begin
       idDialogConfirm : Title := rsMtConfirmation;
     end;
   end;
-
+  if Assigned(Gtk3WidgetSet.Gtk3Application) then
+    gtk_window_set_transient_for(PGtkWindow(Dialog), Gtk3WidgetSet.Gtk3Application^.get_active_window);
   gtk_window_set_title(PGtkWindow(Dialog), PGChar(Title));
   gtk_dialog_run(Dialog);
 end;
