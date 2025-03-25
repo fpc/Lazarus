@@ -939,8 +939,6 @@ type
   TGtk3HintWindow = class(TGtk3Window)
   protected
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
-  public
-    procedure InitializeWidget; override;
   end;
 
   { TGtk3Dialog }
@@ -9125,8 +9123,10 @@ function TGtk3ScrollingWinControl.CreateWidget(const Params: TCreateParams
   ): PGtkWidget;
 begin
   FHasPaint := True;
-  FWidgetType := [wtWidget, wtContainer, wtScrollingWin, wtScrollingWinControl];
-  Result := PGtkScrolledWindow(TGtkScrolledWindow.new(nil, nil));
+  //FWidgetType := [wtWidget, wtContainer, wtScrollingWin, wtScrollingWinControl];
+  Result := inherited CreateWidget(Params);
+  exit;
+  // PGtkScrolledWindow(TGtkScrolledWindow.new(nil, nil));
   FCentralWidget := LCLGtkFixedNew;
   FCentralWidget^.set_hexpand(True);
   FCentralWidget^.set_vexpand(True);
@@ -9506,23 +9506,34 @@ begin
 
   if not Assigned(LCLObject.Parent) then
   begin
-    Result := TGtkWindow.new(GTK_WINDOW_TOPLEVEL);
+    if FWidgetType = [wtHintWindow] then
+      Result := TGtkWindow.new(GTK_WINDOW_POPUP)
+    else
+      Result := TGtkWindow.new(GTK_WINDOW_TOPLEVEL);
     FWidget:=Result;
-    //gtk_widget_realize(Result);
     FWidget^.set_events(GDK_DEFAULT_EVENTS_MASK);
     Title:=Params.Caption;
-    decor:=decoration_flags(AForm);
+    if FWidgetType = [wtHintWindow] then
+      decor := []
+    else
+      decor:=decoration_flags(AForm);
     gtk_window_set_decorated(PGtkWindow(Result),(decor <> []));
-    //gdk_window_set_decorations(Result^.window, decor);
     if AForm.AlphaBlend then
       gtk_widget_set_opacity(Result, TForm(LCLObject).AlphaBlendValue/255);
     if not gtk_window_get_decorated(PGtkWindow(Result)) then
-      gtk_window_set_type_hint(PGtkWindow(Result), GDK_WINDOW_TYPE_HINT_UTILITY);
-    FWidgetType := [wtWidget, wtLayout, wtScrollingWin, wtWindow];
+    begin
+      if FWidgetType = [wtHintWindow] then
+        gtk_window_set_type_hint(PGtkWindow(Result), GDK_WINDOW_TYPE_HINT_TOOLTIP)
+      else
+        gtk_window_set_type_hint(PGtkWindow(Result), GDK_WINDOW_TYPE_HINT_UTILITY);
+    end;
+    if FWidgetType = [wtHintWindow] then
+      FWidgetType := [wtWidget, wtLayout, wtScrollingWin, wtWindow, wtHintWindow]
+    else
+      FWidgetType := [wtWidget, wtLayout, wtScrollingWin, wtWindow];
   end else
   begin
     Result := PGtkScrolledWindow(TGtkScrolledWindow.new(nil, nil));
-    // cannot gtk_widget_realize(Result), because that needs a valid widget parent
     FWidgetType := [wtWidget, wtLayout, wtScrollingWin, wtCustomControl]
   end;
   Text := Params.Caption;
@@ -9534,13 +9545,7 @@ begin
   g_object_set_data(PGObject(FScrollWin), 'lclwidget', Self);
 
   FCentralWidget := TGtkLayout.new(nil, nil);
-  // FCentralWidget^.set_has_window(True);
-
-  //if AForm.AutoScroll then
-    FScrollWin^.add(FCentralWidget);
-  //else
-  //  FScrollWin^.add_with_viewport(FCentralWidget);
-
+  FScrollWin^.add(FCentralWidget);
   FScrollWin^.show;
   FBox^.pack_end(FScrollWin, True, True, 0);
   FBox^.show;
@@ -9555,7 +9560,6 @@ begin
   g_object_set(PGObject(FCentralWidget), 'resize-mode', [GTK_RESIZE_QUEUE, nil]);
   gtk_layout_set_size(PGtkLayout(FCentralWidget), 1, 1);
 
-
   g_signal_connect_data(FCentralWidget,'size-allocate',TGCallback(@ScrolledLayoutSizeAllocate), Self, nil, G_CONNECT_DEFAULT);
 
   with PGtkScrolledWindow(FScrollWin)^.get_vadjustment^ do
@@ -9565,13 +9569,17 @@ begin
 
   gtk_widget_realize(Result);
 
-  if not Assigned(LCLObject.Parent) then
-    gdk_window_set_decorations(Result^.window, decor);
+  if wtHintWindow in FWidgetType then
+  begin
+    PGtkWindow(Result)^.show_all;
+  end else
+  begin
+    if not Assigned(LCLObject.Parent) then
+      gdk_window_set_decorations(Result^.window, decor);
 
-
-  if not (csDesigning in AForm.ComponentState) then
-    UpdateWindowState;
-
+    if not (csDesigning in AForm.ComponentState) then
+      UpdateWindowState;
+  end;
   Result^.Hide; // issue #41412
 end;
 
@@ -9677,8 +9685,8 @@ begin
           MenuSize := 0;
         Allocation.x := LCLObject.Left;
         Allocation.y := LCLObject.Top;
-        Allocation.width := LCLObject.Width; // border
-        Allocation.Height := LCLObject.Height - MenuSize;
+        Allocation.width := LCLObject.Width - 1; // border
+        Allocation.Height := LCLObject.Height - MenuSize - 1;
       end else
       begin
         Allocation.X := -1;
@@ -9965,40 +9973,8 @@ var
 begin
   FText := '';
   FHasPaint := True;
-  AForm := THintWindow(LCLObject);
-
-  FWidgetType := [wtWidget, wtContainer, wtWindow, wtHintWindow];
-
-  Result := TGtkWindow.new(GTK_WINDOW_POPUP);
-
-  FBox := TGtkVBox.new(GTK_ORIENTATION_VERTICAL, 0);
-  PGtkContainer(Result)^.add(FBox);
-
-  FCentralWidget := TGtkFixed.new;
-
-  FCentralWidget^.set_size_request(AForm.Width,AForm.Height+1);
-
-  FBox^.pack_start(fCentralWidget, true, true, 0);
-
-  PGtkWindow(Result)^.set_can_focus(false);
-  FBox^.set_can_focus(False);
-  FCentralWidget^.set_can_focus(False);
-  Result^.Hide; // issue #41412
-end;
-
-procedure TGtk3HintWindow.InitializeWidget;
-var
-  ParentWidget: TGtk3Widget;
-begin
-  inherited;
-  with LCLObject as THintWindow do begin
-    if HintControl is TWinControl then with HintControl as TWinControl do
-    begin
-      ParentWidget := TGtk3Widget(Handle);
-      FWidget^.realize;
-      GetWindow^.set_transient_for(ParentWidget.GetWindow);
-    end;
-  end;
+  FWidgetType := [wtHintWindow];
+  Result := inherited CreateWidget(Params);
 end;
 
 { TGtk3Dialog }
