@@ -2708,7 +2708,7 @@ begin
 
   if fCurrentPen.Width<=1 then // optimizations
   begin
-    //cairo_get_current_point(pcr, @FX, @FY);
+    cairo_get_current_point(pcr, @FLastPenX, @FLastPenY);
     X0:=round(FLastPenX);
     Y0:=round(FLastPenY);
     dx:=X-X0;
@@ -2768,7 +2768,7 @@ begin
   end else
     cairo_line_to(pcr,X+PixelOffset, Y+PixelOffset);
 
-  cairo_stroke(pcr);
+  cairo_stroke_preserve(pcr);
   Result := True;
 end;
 
