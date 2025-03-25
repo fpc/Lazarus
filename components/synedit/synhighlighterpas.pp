@@ -6546,12 +6546,12 @@ begin
         //inherited DoInitNode(Node, FinishingABlock, ABlockType, aActions, AIsFold);
         node.FoldGroup := FOLDGROUP_PASCAL;
         if AIsFold then begin
-          Node.FoldLvlStart := PasCodeFoldRange.CodeFoldStackSize;
-          Node.NestLvlStart := PasCodeFoldRange.NestFoldStackSize;
-          OneLine := FinishingABlock and (Node.FoldLvlStart > PasCodeFoldRange.MinimumCodeFoldBlockLevel); // MinimumCodeFoldBlockLevel);
+          Node.FoldLvlStart := CurrentCodeFoldBlockLevel;
+          Node.NestLvlStart := CurrentCodeNestBlockLevel;
+          OneLine := FinishingABlock and (Node.FoldLvlStart > MinimumCodeFoldBlockLevel);
         end else begin
-          Node.FoldLvlStart := PasCodeFoldRange.NestFoldStackSize; // CodeFoldStackSize; ? but fails test // Todo: zero?
-          Node.NestLvlStart := PasCodeFoldRange.NestFoldStackSize;
+          Node.FoldLvlStart := CurrentCodeNestBlockLevel; // CodeFoldStackSize; ? but fails test // Todo: zero?
+          Node.NestLvlStart := CurrentCodeNestBlockLevel;
           OneLine := FinishingABlock and (Node.NestLvlStart > PasCodeFoldRange.MinimumNestFoldBlockLevel); // MinimumCodeFoldBlockLevel);
         end;
       end;
@@ -6833,7 +6833,7 @@ begin
   EndPascalCodeFoldBlock;
   if FAtLineStart then begin
     // If we are not at linestart, new folds could have been opened => handle as normal close
-    if (PasCodeFoldRange.NestFoldStackSize < FStartCodeFoldBlockLevel) and
+    if (CurrentCodeNestBlockLevel < FStartCodeFoldBlockLevel) and
       (FStartCodeFoldBlockLevel > 0)
     then begin
       PasCodeFoldRange.DecLastLineCodeFoldLevelFix;
@@ -6841,7 +6841,7 @@ begin
       if IsCollectingNodeInfo then CollectingNodeInfoList.Delete;
     end;
     // TODO this only happens if the above was true
-    if (PasCodeFoldRange.CodeFoldStackSize < FPasStartLevel) and
+    if (CurrentCodeFoldBlockLevel < FPasStartLevel) and
       (FPasStartLevel > 0)
     then begin
       PasCodeFoldRange.DecLastLinePasFoldFix;
@@ -6865,7 +6865,7 @@ function TSynPasSyn.GetDrawDivider(Index: integer): TSynDividerDrawConfigSetting
   begin
     i := 0;
     j := StartLvl;
-    m := PasCodeFoldRange.NestFoldStackSize;;
+    m := CurrentCodeNestBlockLevel;
     t := TopPascalCodeFoldBlockType(j);
     while (i <= MaxDepth) and (j < m) and
           ((t in CountTypes) or (t in SkipTypes)) do begin

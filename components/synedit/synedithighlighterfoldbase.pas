@@ -402,6 +402,13 @@ type
   { TSynCustomFoldHighlighter }
 
   TSynCustomFoldHighlighter = class(TSynCustomHighlighter)
+  private const
+    MAX_UFOLD_CAPACITY = 16;
+  private type
+    TUncommittedFold = record
+      FBlockType: Pointer;
+      FIncreaseLevel: Boolean;
+    end;
   protected
     // Fold Config
     FFoldConfig: Array of TSynCustomFoldConfig;
@@ -416,12 +423,15 @@ type
     procedure DoFoldConfigChanged(Sender: TObject); virtual;
   private
     FCodeFoldRange: TSynCustomHighlighterRange;
+    FUncommittedFolds: array of TUncommittedFold;
+    FUncommittedFoldStackCount, FUncommittedFoldNestCount: integer;
     FIsCollectingNodeInfo: boolean;
     fRanges: TLazHighlighterRangesDictionary;
     FRootCodeFoldBlock: TSynCustomCodeFoldBlock;
     FFoldNodeInfoList: TLazSynFoldNodeInfoList;
     FCollectingNodeInfoList: TLazSynFoldNodeInfoList;
     procedure ClearFoldNodeList;
+    procedure CommitUncommittedFolds; inline;
   protected
     // "Range"
     function GetRangeClass: TLazHighlighterRangeClass; virtual;
@@ -451,8 +461,9 @@ type
     procedure InitFoldNodeInfo(AList: TLazSynFoldNodeInfoList; Line: TLineIdx);
 
     // Info about Folds, on currently set line/range (simply forwarding to range
-    function MinimumCodeFoldBlockLevel: integer; virtual;
-    function CurrentCodeFoldBlockLevel: integer; virtual;
+    function MinimumCodeFoldBlockLevel: integer; inline;
+    function CurrentCodeFoldBlockLevel: integer; inline;
+    function CurrentCodeNestBlockLevel: integer; inline;
 
     property IsCollectingNodeInfo : boolean read FIsCollectingNodeInfo;
     property CollectingNodeInfoList : TLazSynFoldNodeInfoList read FCollectingNodeInfoList;
@@ -1685,7 +1696,9 @@ begin
   inherited Create(AOwner);
   FCodeFoldRange:=TSynCustomHighlighterRange(GetRangeClass.Create(nil));
   FCodeFoldRange.FoldRoot := FRootCodeFoldBlock;
-  FFoldNodeInfoList := nil;;
+  FUncommittedFoldStackCount := 0;
+  FUncommittedFoldNestCount := 0;
+  FFoldNodeInfoList := nil;
 end;
 
 destructor TSynCustomFoldHighlighter.Destroy;
@@ -1709,6 +1722,7 @@ begin
   // FCodeFoldRange is the working range and changed steadily
   // => return a fixed copy of the current CodeFoldRange instance,
   //    that can be stored by other classes (e.g. TSynEdit)
+  CommitUncommittedFolds;
   Result:=fRanges.GetEqual(FCodeFoldRange);
 end;
 
@@ -1837,6 +1851,8 @@ procedure TSynCustomFoldHighlighter.ResetRange;
 begin
   FCodeFoldRange.Clear;
   FCodeFoldRange.FoldRoot := FRootCodeFoldBlock;
+  FUncommittedFoldStackCount := 0;
+  FUncommittedFoldNestCount := 0;
 end;
 
 function TSynCustomFoldHighlighter.MinimumCodeFoldBlockLevel: integer;
@@ -1847,6 +1863,8 @@ end;
 
 procedure TSynCustomFoldHighlighter.SetRange(Value: Pointer);
 begin
+  FUncommittedFoldStackCount := 0;
+  FUncommittedFoldNestCount := 0;
   FCodeFoldRange.Assign(TSynCustomHighlighterRange(Value));
   // in case we asigned a null range
   if not assigned(FCodeFoldRange.FoldRoot) then
@@ -1872,12 +1890,23 @@ function TSynCustomFoldHighlighter.PerformScan(StartIndex, EndIndex: Integer;
 begin
   ClearFoldNodeList;
   Result := inherited PerformScan(StartIndex, EndIndex, ForceEndIndex);
+
+  FUncommittedFoldStackCount := 0;
+  FUncommittedFoldNestCount := 0;
+  if Length(FUncommittedFolds) > MAX_UFOLD_CAPACITY then
+    SetLength(FUncommittedFolds, MAX_UFOLD_CAPACITY);
 end;
 
 function TSynCustomFoldHighlighter.CurrentCodeFoldBlockLevel: integer;
 begin
-  assert(FCodeFoldRange <> nil, 'MinimumCodeFoldBlockLevel requires FCodeFoldRange');
-  Result := FCodeFoldRange.CodeFoldStackSize;
+  assert(FCodeFoldRange <> nil, 'CurrentCodeFoldBlockLevel requires FCodeFoldRange');
+  Result := FCodeFoldRange.CodeFoldStackSize + FUncommittedFoldStackCount;
+end;
+
+function TSynCustomFoldHighlighter.CurrentCodeNestBlockLevel: integer;
+begin
+  assert(FCodeFoldRange <> nil, 'CurrentCodeNestBlockLevel requires FCodeFoldRange');
+  Result := FCodeFoldRange.NestFoldStackSize + FUncommittedFoldNestCount;
 end;
 
 function TSynCustomFoldHighlighter.FoldOpenCount(ALineIndex: Integer; AType: Integer = 0): integer;
@@ -2036,6 +2065,16 @@ begin
   end;
 end;
 
+procedure TSynCustomFoldHighlighter.CommitUncommittedFolds;
+var
+  i: Integer;
+begin
+  for i := 0 to FUncommittedFoldNestCount - 1 do
+    FCodeFoldRange.Add(FUncommittedFolds[i].FBlockType, FUncommittedFolds[i].FIncreaseLevel);
+  FUncommittedFoldStackCount := 0;
+  FUncommittedFoldNestCount := 0;
+end;
+
 function TSynCustomFoldHighlighter.GetFoldNodeInfo(Line: TLineIdx
   ): TLazSynFoldNodeInfoList;
 begin
@@ -2088,6 +2127,12 @@ var
   Fold: TSynCustomCodeFoldBlock;
 begin
   Result:=nil;
+  if DownIndex < FUncommittedFoldNestCount then begin
+    Result := FUncommittedFolds[FUncommittedFoldNestCount-1 - DownIndex].FBlockType;
+    exit;
+  end;
+
+  DownIndex := DownIndex - FUncommittedFoldNestCount;
   if (CodeFoldRange<>nil) then begin
     Fold := CodeFoldRange.Top;
     while (Fold <> nil) and (DownIndex > 0) do begin
@@ -2119,7 +2164,14 @@ begin
   if FIsCollectingNodeInfo then
     CollectNodeInfo(False, ABlockType, IncreaseLevel);
 
-  Result:=CodeFoldRange.Add(ABlockType, IncreaseLevel);
+  if Length(FUncommittedFolds) <= FUncommittedFoldNestCount then
+    SetLength(FUncommittedFolds, FUncommittedFoldNestCount + 4);
+  FUncommittedFolds[FUncommittedFoldNestCount].FBlockType := ABlockType;
+  FUncommittedFolds[FUncommittedFoldNestCount].FIncreaseLevel := IncreaseLevel;
+  inc(FUncommittedFoldNestCount);
+  if IncreaseLevel then
+    inc(FUncommittedFoldStackCount);
+//  Result:=CodeFoldRange.Add(ABlockType, IncreaseLevel);
 end;
 
 procedure TSynCustomFoldHighlighter.EndCodeFoldBlock(DecreaseLevel: Boolean = True);
@@ -2131,7 +2183,13 @@ begin
   if FIsCollectingNodeInfo then
     CollectNodeInfo(True, BlockType, DecreaseLevel);
 
-  CodeFoldRange.Pop(DecreaseLevel);
+  if FUncommittedFoldNestCount > 0 then begin
+    dec(FUncommittedFoldNestCount);
+    if DecreaseLevel then
+      dec(FUncommittedFoldStackCount);
+  end
+  else
+    CodeFoldRange.Pop(DecreaseLevel);
 end;
 
 procedure TSynCustomFoldHighlighter.CollectNodeInfo(FinishingABlock: Boolean;
@@ -2199,8 +2257,8 @@ begin
   Node.FoldTypeCompatible := ABlockType;
   Node.FoldAction := aActions;
   node.FoldGroup := 1;//FOLDGROUP_PASCAL;
-  Node.FoldLvlStart := CodeFoldRange.CodeFoldStackSize; // If "not AIsFold" then the node has no foldlevel of its own
-  Node.NestLvlStart := CodeFoldRange.NestFoldStackSize;
+  Node.FoldLvlStart := CodeFoldRange.CodeFoldStackSize + FUncommittedFoldStackCount; // If "not AIsFold" then the node has no foldlevel of its own
+  Node.NestLvlStart := CodeFoldRange.NestFoldStackSize + FUncommittedFoldNestCount;
   OneLine := FinishingABlock and (Node.FoldLvlStart > CodeFoldRange.MinimumCodeFoldBlockLevel);
   Node.NestLvlEnd := Node.NestLvlStart + EndOffs;
   if not (sfaFold in aActions) then

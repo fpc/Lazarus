@@ -163,7 +163,7 @@ begin
 
   cnt := 0;
   If IsScanning then begin
-    if (AName = '') and (CodeFoldRange.CodeFoldStackSize > 0) then begin
+    if (AName = '') and (CurrentCodeFoldBlockLevel > 0) then begin
       cnt := 1;
     end
     else begin
@@ -195,7 +195,7 @@ begin
           dec(i);
         end;
 
-        if (i < 0) or (cnt > CodeFoldRange.CodeFoldStackSize ) then cnt := 0; // never opened, do not close
+        if (i < 0) or (cnt > CurrentCodeFoldBlockLevel) then cnt := 0; // never opened, do not close
       end;
     end;
 
