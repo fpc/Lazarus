@@ -644,6 +644,13 @@ type
   { TGtk3CheckListBox }
 
   TGtk3CheckListBox = class(TGtk3ListBox)
+  strict private
+    class procedure CheckListBoxDataFunc(tree_column: PGtkTreeViewColumn;
+      cell: PGtkCellRenderer; tree_model: PGtkTreeModel; iter: PGtkTreeIter;
+      data: gPointer); cdecl; static;
+    class procedure CheckListBoxToggle(
+      cellrenderertoggle: PGtkCellRendererToggle; arg1: PGChar; AData: GPointer
+      ); cdecl; static;
   protected
     function CreateWidget(const {%H-}Params: TCreateParams): PGtkWidget; override;
   end;
@@ -6798,8 +6805,8 @@ end;
 
 { TGtk3CheckListBox }
 
-procedure Gtk3WS_CheckListBoxDataFunc({%H-}tree_column: PGtkTreeViewColumn;
-  cell: PGtkCellRenderer; tree_model: PGtkTreeModel; iter: PGtkTreeIter; {%H-}data: Pointer); cdecl;
+class procedure TGtk3CheckListBox.CheckListBoxDataFunc({%H-}tree_column: PGtkTreeViewColumn;
+  cell: PGtkCellRenderer; tree_model: PGtkTreeModel; iter: PGtkTreeIter; {%H-}data: gPointer); cdecl;
 var
   b: byte;
   ADisabled: gboolean;
@@ -6817,7 +6824,7 @@ begin
   g_object_set(cell, 'activatable', [gboolean(not ADisabled), nil]);
 end;
 
-procedure Gtk3WS_CheckListBoxToggle({%H-}cellrenderertoggle : PGtkCellRendererToggle;
+class procedure TGtk3CheckListBox.CheckListBoxToggle({%H-}cellrenderertoggle : PGtkCellRendererToggle;
   arg1 : PGChar; AData: GPointer); cdecl;
 var
   Mess: TLMessage;
@@ -6853,7 +6860,7 @@ begin
 
   Mess.Result := 0;
   Mess.WParam := Param;
-  DeliverMessage(TGtk3Widget(AData).LCLObject, Mess);
+  LCLMessageGlue.DeliverMessage(TGtk3Widget(AData).LCLObject, Mess);
 
 end;
 
@@ -6887,12 +6894,12 @@ begin
 
   AColumn^.set_title('CHECKBINS');
   AColumn^.pack_start(Toggle, True);
-  AColumn^.set_cell_data_func(Toggle, @Gtk3WS_CheckListBoxDataFunc, Self, nil);
+  AColumn^.set_cell_data_func(Toggle, TGtkTreeCellDataFunc(@CheckListBoxDataFunc), Self, nil);
   Toggle^.set_active(True);
   PGtkTreeView(FCentralWidget)^.append_column(AColumn);
   AColumn^.set_clickable(True);
 
-  g_signal_connect_data(Toggle, 'toggled', TGCallback(@Gtk3WS_CheckListBoxToggle), Self, nil, G_CONNECT_DEFAULT);
+  g_signal_connect_data(Toggle, 'toggled', TGCallback(@CheckListBoxToggle), Self, nil, G_CONNECT_DEFAULT);
 
   Renderer := LCLIntfCellRenderer_New(); // gtk_cell_renderer_text_new;
 
@@ -6915,8 +6922,6 @@ begin
 
   AColumn^.set_clickable(True);
 
-  // AColumn^set_cell_data_func(AColumn, renderer, @LCLIntfRenderer_ColumnCellDataFunc, Self, nil);
-
   PGtkScrolledWindow(Result)^.add(FCentralWidget);
 
 
@@ -6928,13 +6933,6 @@ begin
     PGtkTreeView(FCentralWidget)^.get_selection^.set_mode(GTK_SELECTION_MULTIPLE)
   else
     PGtkTreeView(FCentralWidget)^.get_selection^.set_mode(GTK_SELECTION_SINGLE);
-  // AListBox.Style;
-  if FListBoxStyle <> lbOwnerDrawVariable then
-  begin
-    //AColumn^.set_sizing(GTK_TREE_VIEW_COLUMN_FIXED);
-    //PGtkTreeView(FCentralWidget)^.set_fixed_height_mode(True);
-  end;
-
 end;
 
 { TGtk3ListView }
