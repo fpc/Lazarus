@@ -1716,9 +1716,10 @@ var
   AStruct: TPaintStruct;
   AClipRect: TGdkRectangle;
   localClip:TRect;
-  //P: TPoint;
+  P: TPoint;
   AScrolledWin: PGtkScrolledWindow;
   ACaret: TGtk3Caret;
+  HScrollPolicy, VScrollPolicy: TGtkPolicyType;
   {$IFDEF GTK3DEBUGDESIGNER}
   dx, dy: double;
   allocation: TGtkAllocation;
@@ -1772,8 +1773,22 @@ begin
 
   try
     try
-      //P := getClientOffset;
-      //cairo_translate(AContext, P.X, P.Y);
+      if wtScrollingWinControl in WidgetType then
+      begin
+        P := getClientOffset;
+        AScrolledWin := TGtk3ScrollingWinControl(Self).GetScrolledWindow;
+        AScrolledWin^.get_policy(@HScrollPolicy, @VScrollPolicy);
+        if HScrollPolicy < GTK_POLICY_NEVER then
+          P.X := P.X + Round(AScrolledWin^.get_hadjustment^.get_value);
+        if VScrollPolicy < GTK_POLICY_NEVER then
+          P.Y := P.Y + Round(AScrolledWin^.get_vadjustment^.get_value);
+        cairo_translate(AContext, -P.X, -P.Y);
+        with TGtk3DeviceContext(Msg.DC).fncOrigin do
+        begin
+          X := X - P.X;
+          Y := Y - P.Y;
+        end;
+      end;
       DoBeforeLCLPaint;
       LCLObject.WindowProc(TLMessage(Msg));
       if HasCaret and not (csDesigning in LCLObject.ComponentState) then
@@ -1782,6 +1797,8 @@ begin
         if ACaret.Visible then
           ACaret.CairoDrawCaret(FCairoContext);
       end;
+      if wtScrollingWinControl in WidgetType then
+        cairo_translate(AContext, P.X, P.Y);
     finally
       FCairoContext := nil;
       Fillchar(FPaintData, SizeOf(FPaintData), 0);
@@ -9125,6 +9142,8 @@ begin
   FHasPaint := True;
   //FWidgetType := [wtWidget, wtContainer, wtScrollingWin, wtScrollingWinControl];
   Result := inherited CreateWidget(Params);
+  include(FWidgetType, wtScrollingWinControl);
+  exclude(FWidgetType, wtCustomControl);
   exit;
   // PGtkScrolledWindow(TGtkScrolledWindow.new(nil, nil));
   FCentralWidget := LCLGtkFixedNew;
@@ -9528,9 +9547,9 @@ begin
         gtk_window_set_type_hint(PGtkWindow(Result), GDK_WINDOW_TYPE_HINT_UTILITY);
     end;
     if FWidgetType = [wtHintWindow] then
-      FWidgetType := [wtWidget, wtLayout, wtScrollingWin, wtWindow, wtHintWindow]
+      FWidgetType := [wtWidget, wtLayout, wtScrollingWin, wtScrollingWinControl, wtWindow, wtHintWindow]
     else
-      FWidgetType := [wtWidget, wtLayout, wtScrollingWin, wtWindow];
+      FWidgetType := [wtWidget, wtLayout, wtScrollingWin, wtScrollingWinControl, wtWindow];
   end else
   begin
     Result := PGtkScrolledWindow(TGtkScrolledWindow.new(nil, nil));
