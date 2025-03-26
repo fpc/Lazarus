@@ -2251,9 +2251,11 @@ begin
   NotifyApplicationUserInput(LCLObject, Msg.Msg);
   Event^.button.send_event := NO_PROPAGATION_TO_PARENT;
 
-  Result := False;
+  if (SavedHandle <> PtrUInt(Self)) or (LCLObject = nil) or (FWidget = nil) then
+    exit;
+  Result := DeliverMessage(Msg, True) <> 0;
 
-  if Msg.Msg = LM_RBUTTONDOWN then
+  if not Result and (Msg.Msg = LM_RBUTTONDOWN) then
   begin
     MsgPopup := Msg;
     MsgPopup.Msg := LM_CONTEXTMENU;
@@ -2266,12 +2268,6 @@ begin
     Result := DeliverMessage(MsgPopup, True) <> 0;
   end;
 
-  if not Result then
-  begin
-    if (SavedHandle <> PtrUInt(Self)) or (LCLObject = nil) or (FWidget = nil) then
-      exit;
-    Result := DeliverMessage(Msg, True) <> 0;
-  end;
   if wtPanel in WidgetType then
     Result := GDK_EVENT_STOP;
 end;
@@ -3030,9 +3026,11 @@ begin
 
     // we must trigger get_preferred_width after changing size
     Widget^.queue_resize;
-
-    {if wtProgressBar in WidgetType then
-      getContainerWidget^.set_size_request(AWidth, AHeight);}
+    if [wtCustomControl, wtScrollingWinControl] * WidgetType <> [] then
+    begin
+      if Gtk3IsGdkWindow(Widget^.get_window) then
+        Widget^.get_window^.process_updates(True);
+    end;
   finally
     EndUpdate;
   end;
