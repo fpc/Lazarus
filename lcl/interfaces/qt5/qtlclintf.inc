@@ -291,20 +291,22 @@ var
   X, Y: Integer;
   W, H: Integer;
   P: TPoint;
+  R1: TRect;
 begin
   if not IsValidDC(DC) then
     exit;
   QtDC.save;
   try
+    R1 := R;
     P := Point(0, 0);
     SetWindowOrgEx(DC, 0, 0, @P);
-
-    W := (R.Right - R.Left - 1) div DX;
-    H := (R.Bottom - R.Top - 1) div DY;
+    OffsetRect(R1, -R1.Left, -R1.Top);
+    W := (R1.Right - R1.Left - 1) div DX;
+    H := (R1.Bottom - R1.Top - 1) div DY;
 
     for Y := 0 to H do
       for X := 0 to W do
-        QtDC.drawPoint(R.Left + X * DX, R.Top + Y * DY + 1);
+        QtDC.drawPoint(R1.Left + X * DX, R1.Top + Y * DY + 1);
   finally
     QtDC.restore;
   end;
