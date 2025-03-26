@@ -9264,7 +9264,7 @@ begin
   end;
   {$ENDIF}
 
-  if decoration_flags(TCustomForm(Actl.LCLObject))<>[] then
+  if Gtk3WidgetSet.IsWayland and (decoration_flags(TCustomForm(Actl.LCLObject))<>[]) then
     PGtkWIndow(Actl.widget)^.get_size(@newSize.cx, @newsize.cy)
   else
   begin
