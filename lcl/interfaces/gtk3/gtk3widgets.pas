@@ -5802,7 +5802,7 @@ var
   aWindow: PGdkWindow;
 begin
   inherited OffsetMousePos(aGlobalX, aGlobalY, APoint);
-  if [wtCustomControl, wtWindow] * WidgetType = [] then
+  if [wtCustomControl, wtScrollingWinControl, wtWindow] * WidgetType = [] then
     exit;
   ScrolledWindow := GetScrolledWindow;
   if not Gtk3IsScrolledWindow(ScrolledWindow) then
