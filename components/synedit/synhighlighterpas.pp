@@ -5113,6 +5113,7 @@ begin
   AtSlashOpen := (fLine[Run] = '/') and (fLine[Run + 1] = '/') and not FIsInSlash;
   if FIsInSlash or AtSlashOpen then begin
     FIsInSlash := True;
+    FCustomCommentTokenMarkup := FCustomTokenMarkupSlash;
     // Continue fold block
     fTokenID := tkComment;
 
