@@ -1926,7 +1926,6 @@ begin
   gtk_grab_add(GetContainerWidget);
 end;
 
-
 function TGtk3Widget.GtkEventKey(Sender: PGtkWidget; Event: PGdkEvent; AKeyPress: Boolean): Boolean;
   cdecl;
 const
@@ -2061,7 +2060,7 @@ begin
 
     {$warning workaround for GtkTreeView key bindings.Must find out what LCL does with
      this keys.}
-    if {IsArrowKey and} ([wtListBox,wtListView,wtEntry,wtMemo] * WidgetType <> []) then
+    if {IsArrowKey and} ([wtListBox,wtListView,wtEntry,wtMemo,wtComboBox] * WidgetType <> []) then
     // let gtk3 select cell for now. Must check what LCL does with arrow keys
     // since gtk3 becomes crazy after delivery of this message
     else
