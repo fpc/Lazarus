@@ -164,7 +164,6 @@ type
     function GtkEventMouse(Sender: PGtkWidget; Event: PGdkEvent): Boolean; virtual; cdecl;
     function GtkEventMouseMove(Sender: PGtkWidget; Event: PGdkEvent): Boolean; virtual; cdecl;
     function GtkEventPaint(Sender: PGtkWidget; AContext: Pcairo_t): Boolean; virtual; cdecl;
-    function GtkEventResize(Sender: PGtkWidget; Event: PGdkEvent): Boolean; virtual; cdecl;
     procedure GtkEventFocus(Sender: PGtkWidget; Event: PGdkEvent); cdecl;
     procedure GtkEventDestroy; cdecl;
 
@@ -1285,18 +1284,7 @@ begin
     end;
   GDK_CONFIGURE:
     begin
-      (* DOES NOT WORK AS DOCUMENTATION SAYS
-      if Data <> nil then
-      begin
-        if wtWindow in TGtk3Widget(Data).WidgetType then
-        begin
-          TGtk3Window(Data).ActivateWindow(Event);
-          DebugLn('** WindowState event ',dbgsName(TGtk3Widget(Data).LCLObject),' windowState=',dbgs(TGtk3Window(Data).GetWindowState));
-        end else
-          DebugLn('** WindowState event not wtWindow ',dbgsName(TGtk3Widget(Data).LCLObject));
-      end;
-      *)
-      Result := TGtk3Widget(Data).GtkEventResize(Widget, Event);
+
     end;
   GDK_MAP:
     begin
@@ -1810,19 +1798,6 @@ begin
   end;
 end;
 
-function TGtk3Widget.GtkEventResize(Sender: PGtkWidget; Event: PGdkEvent
-  ): Boolean; cdecl;
-begin
-  {$IF DEFINED(GTK3DEBUGEVENTS) OR DEFINED(GTK3DEBUGSIZE)}
-  DebugLn('GtkEventResize: ',dbgsName(LCLObject),' Send=',dbgs(Event^.configure.send_event),
-  ' x=',dbgs(Round(event^.configure.x)),
-  ' y=',dbgs(Round(event^.configure.y)),
-  ' w=',dbgs(Round(event^.configure.width)),
-  ' h=',dbgs(Round(event^.configure.height)));
-  {$ENDIF}
-  Result := false;
-end;
-
 procedure TGtk3Widget.GtkEventFocus(Sender: PGtkWidget; Event: PGdkEvent);
   cdecl;
 var
@@ -2333,69 +2308,7 @@ procedure TGtk3Widget.SetColor(AValue: TColor);
 var
   AColor: TGdkRGBA;
   i: TGtkStateType;
-  ARgba: TGdkRGBA;
 begin
-  // new way (gtk3) but still buggy
-  if IsWidgetOK and (0 > 1) then
-  begin
-    if AValue = clDefault then
-    begin
-      (*
-      with FDefaultRGBA do
-      begin
-        writeln('clDefault ',Format('R %2.2n G %2.2n B %2.2n A %2.2n',[R, G, B , Alpha]));
-        ARgba.red := R;
-        ARgba.green := G;
-        ARgba.blue := B;
-        ARgba.alpha := Alpha;
-      end;
-      *)
-    end else
-    begin
-      ARgba := TColortoTGdkRGBA(ColorToRGB(AValue));
-      {$info GTK3: set GdkRGBA.alpah to 1.0?}
-
-      {ColorToCairoRGB(ColorToRGB(AValue), R, G, B);
-      ARgba.red := R;
-      ARgba.green := G;
-      ARgba.blue := B;
-      ARgba.alpha := 1.0;}
-    end;
-    if FWidget <> GetContainerWidget then
-    begin
-      with FWidget^ do
-      begin
-        for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
-        begin
-          if AValue = clDefault then
-          begin
-            ARgba.red := FWidgetRGBA[i].R;
-            ARgba.green := FWidgetRGBA[i].G;
-            ARgba.blue := FWidgetRGBA[i].B;
-            ARgba.alpha := FWidgetRGBA[i].Alpha;
-          end;
-          FWidget^.override_background_color(TGtkStateFlags(1 shl (i - 1)), @ARgba);
-        end;
-      end;
-    end;
-    with GetContainerWidget^ do
-    begin
-      for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
-      begin
-        //if AVAlue = clDefault then
-        //  GetContainerWidget^.get_style_context^.get_background_color(GTK_STATE_NORMAL, @ARgba);
-        if AValue = clDefault then
-        begin
-          ARgba.red := FCentralWidgetRGBA[i].R;
-          ARgba.green := FCentralWidgetRGBA[i].G;
-          ARgba.blue := FCentralWidgetRGBA[i].B;
-          ARgba.alpha := FCentralWidgetRGBA[i].Alpha;
-        end;
-        GetContainerWidget^.override_background_color(TGtkStateFlags(1 shl (i - 1)), @ARgba);
-      end;
-    end;
-  end;
-
   if IsWidgetOK then
   begin
     AColor := TColortoTGdkRGBA(ColorToRgb(AValue));
