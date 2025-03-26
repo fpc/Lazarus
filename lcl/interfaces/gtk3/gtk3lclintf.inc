@@ -114,7 +114,6 @@ var
   gc: TGdkRGBA;
   GtkDC: TGtk3DeviceContext absolute DC;
   DotSize: integer;
-  //matrix: Tcairo_matrix_t;
 begin
   if not IsValidDC(DC) then
     exit;
@@ -123,7 +122,8 @@ begin
   DotSize := Max(1, GtkDC.CurrentPen.Width);
 
   GtkDC.Save;
-  //TODO: cairo_get_matrix(pcr, @matrix);
+
+  GtkDC.Translate(GtkDC.ScrollbarsOffset);
   cairo_set_source_rgb(GtkDC.pcr, gc.red, gc.green, gc.blue);
 
   cairo_set_antialias(GtkDC.pcr, CAIRO_ANTIALIAS_NONE);

@@ -252,6 +252,7 @@ type
     ParentPixmap: PGdkPixbuf;
     Window: PGdkWindow;
     fncOrigin:TPoint; // non-client area offsets surface origin
+    ScrollbarsOffset: TPoint; // for scrollingwincontrol and forms.
     constructor Create(AWidget: PGtkWidget; const APaintEvent: Boolean = False); virtual;
     constructor Create(AWindow: PGdkWindow; const APaintEvent: Boolean); virtual;
     constructor CreateFromCairo(AWidget: PGtkWidget; ACairo: PCairo_t); virtual;
@@ -1971,6 +1972,8 @@ procedure TGtk3DeviceContext.CreateObjects;
 var
   Matrix: Tcairo_matrix_t;
 begin
+  ScrollbarsOffset.X := 0;
+  ScrollbarsOffset.Y := 0;
   FLastPenX := 0;
   FLastPenY := 0;
   FBgBrush := nil; // created on demand

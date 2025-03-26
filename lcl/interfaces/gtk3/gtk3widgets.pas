@@ -1795,6 +1795,7 @@ begin
           P.X := P.X + Round(AScrolledWin^.get_hadjustment^.get_value);
         if VScrollPolicy < GTK_POLICY_NEVER then
           P.Y := P.Y + Round(AScrolledWin^.get_vadjustment^.get_value);
+        TGtk3DeviceContext(Msg.DC).ScrollbarsOffset := Point(P.X, P.Y);
         cairo_translate(AContext, -P.X, -P.Y);
         with TGtk3DeviceContext(Msg.DC).fncOrigin do
         begin
@@ -10491,6 +10492,7 @@ begin
           P.X := P.X + Round(AScrolledWin^.get_hadjustment^.get_value);
         if VScrollPolicy < GTK_POLICY_NEVER then
           P.Y := P.Y + Round(AScrolledWin^.get_vadjustment^.get_value);
+        TGtk3DeviceContext(Msg.DC).ScrollbarsOffset := Point(P.X, P.Y);
         cairo_translate(AContext, -P.X, -P.Y);
         with TGtk3DeviceContext(Msg.DC).fncOrigin do
         begin
