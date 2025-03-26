@@ -855,6 +855,7 @@ type
       function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
       function EatArrowKeys(const {%H-}AKey: Word): Boolean; override;
     public
+      procedure Update(ARect: PRect); override;
       procedure DoBeforeLCLPaint; override;
       procedure InitializeWidget; override;
       function getViewport: PGtkViewport; override;
@@ -8804,6 +8805,22 @@ end;
 function TGtk3CustomControl.EatArrowKeys(const AKey: Word): Boolean;
 begin
   Result := False;
+end;
+
+procedure TGtk3CustomControl.Update(ARect: PRect);
+begin
+  if IsWidgetOK then
+  begin
+    if (ARect <> nil) then
+    begin
+      if (aRect^.Width > 0) and (ARect^.Height > 0) then
+      begin
+        with ARect^ do
+          GetContainerWidget^.queue_draw_area(Left, Top, Right - Left, Bottom - Top);
+      end;
+    end else
+      GetContainerWidget^.queue_draw;
+  end;
 end;
 
 procedure TGtk3CustomControl.DoBeforeLCLPaint;
