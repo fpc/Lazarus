@@ -18850,7 +18850,7 @@ begin
     Result := QWidget_create(Parent, QtToolTip or QtFramelessWindowHint)
   else
   {$ENDIF}
-    Result := QWidget_create(Parent, QtTool or QtFramelessWindowHint);
+    Result := QWidget_create(Parent, QtTool or QtFramelessWindowHint {$IFDEF HASX11}or QtBypassWindowManagerHint{$ENDIF});
   FDeleteLater := True;
   FMenuBar := nil;
   {$IFDEF UNIX}
