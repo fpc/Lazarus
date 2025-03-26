@@ -609,6 +609,9 @@ type
   { TGtk3ListBox }
 
   TGtk3ListBox = class(TGtk3ScrollableWin)
+  strict private
+    class procedure ListBoxSelectionChanged(ASelection: PGtkTreeSelection;
+      AData: GPointer); cdecl; static;
   private
     FListBoxStyle: TListBoxStyle;
     function GetItemIndex: Integer;
@@ -6088,17 +6091,6 @@ begin
   Result := Rect(0, 0, 0, 0);
   if IsWidgetOK then
   begin
-    (*
-    if (Self is TGtk3CustomControl) then
-    begin
-      if Self is TGtk3Window then
-        Result := GetViewportClientAreaWithScrollbars(PGtkScrolledWindow(TGtk3Window(Self).FScrollWin))
-      else
-        Result := GetViewportClientAreaWithScrollbars(PGtkScrolledWindow(FWidget));
-      //DebugLn('TGtk3ScrollableWin.getClientBounds result ',dbgs(Result),' from viewport ',dbgsName(LCLObject));
-      exit;
-    end else
-    *)
     if [wtLayout] * WidgetType <> [] then
     begin
       Result := Rect(0, 0, 0, 0);
@@ -6469,7 +6461,7 @@ end;
 
 { TGtk3ListBox }
 
-procedure Gtk3ListBoxSelectionChanged({%H-}ASelection: PGtkTreeSelection; AData: GPointer); cdecl;
+class procedure TGtk3ListBox.ListBoxSelectionChanged({%H-}ASelection: PGtkTreeSelection; AData: GPointer); cdecl;
 var
   Msg: TLMessage;
 begin
@@ -6479,12 +6471,6 @@ begin
   if not TGtk3Widget(AData).InUpdate then
     TGtk3Widget(AData).DeliverMessage(Msg, False);
 end;
-
-procedure FreeStoreStringList(aData: gpointer); cdecl;
-begin
-  TGtkListStoreStringList(aData).Free;
-end;
-
 
 function TGtk3ListBox.CreateWidget(const Params: TCreateParams): PGtkWidget;
 var
@@ -6510,8 +6496,6 @@ begin
 
   ItemList := TGtkListStoreStringList.Create(PGtkListStore(PGtkTreeView(FCentralWidget)^.get_model), 0, LCLObject);
   g_object_set_data(PGObject(FCentralWidget),GtkListItemLCLListTag, ItemList);
-  {if we use g_object_set_data_full then access violation occurs, so, revert to g_object_set_data}
-  // g_object_set_data_full(PGObject(FCentralWidget),GtkListItemLCLListTag, ItemList, @FreeStoreStringList);
 
   Renderer := LCLIntfCellRenderer_New();
 
@@ -6557,7 +6541,7 @@ procedure TGtk3ListBox.InitializeWidget;
 begin
   inherited InitializeWidget;
   if not IsDesigning then
-    g_signal_connect_data(GetSelection, 'changed', TGCallback(@Gtk3ListBoxSelectionChanged), Self, nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(GetSelection, 'changed', TGCallback(@ListBoxSelectionChanged), Self, nil, G_CONNECT_DEFAULT);
 end;
 
 function TGtk3ListBox.getHorizontalScrollbar: PGtkScrollbar;
