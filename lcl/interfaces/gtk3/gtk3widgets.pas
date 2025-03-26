@@ -8829,6 +8829,7 @@ procedure TGtk3CustomControl.DoBeforeLCLPaint;
 var
   DC: TGtk3DeviceContext;
   NColor: TColor;
+  P: TPoint;
 begin
   inherited DoBeforeLCLPaint;
   if not Visible then
@@ -8837,16 +8838,18 @@ begin
   DC := TGtk3DeviceContext(Context);
 
   NColor := LCLObject.Color;
+  P.X := Round(GetScrolledWindow^.get_hadjustment^.get_value);
+  P.Y := Round(GetScrolledWindow^.get_vadjustment^.get_value);
   if (NColor <> clNone) and (NColor <> clDefault) then
   begin
     DC.CurrentBrush.Color := ColorToRGB(NColor);
-    DC.fillRect(0, 0, LCLObject.Width, LCLObject.Height);
+    DC.fillRect(P.X, P.Y, LCLObject.Width, LCLObject.Height);
   end;
 
   if BorderStyle <> bsNone then
   begin
     DC.CurrentPen.Color := ColorToRGB(clBtnShadow); // not sure what color to use here?
-    DC.drawRect(0, 0, LCLObject.Width, LCLObject.Height, False, True);
+    DC.drawRect(P.X, P.Y, LCLObject.Width, LCLObject.Height, False, True);
   end;
 end;
 
