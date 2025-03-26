@@ -5146,18 +5146,6 @@ begin
   end;
 end;
 
-function GtkNotebookSelectPage(ANoteBook: PGtkNotebook; p1: gboolean; Data: gPointer): GBoolean; cdecl;
-begin
-  // does not trigger for some reason
-  if ANoteBook=nil then ;
-  if p1 then ;
-  if Data=nil then ;
-  {$IFDEF GTK3DEBUGNOTEBOOK}
-  DebugLn('GtkNotebookSelectPage ');
-  {$ENDIF}
-  Result:=true;
-end;
-
 function TGtk3NoteBook.CreateWidget(const Params: TCreateParams): PGtkWidget;
 var
   Alloc:TGtkAllocation;
@@ -5178,9 +5166,7 @@ begin
   // this one triggers after above switch-page
   g_signal_connect_data(FCentralWidget,'switch-page', TGCallback(@GtkNotebookAfterSwitchPage), Self, nil, G_CONNECT_DEFAULT);
   PGtkNotebook(Result)^.set_scrollable(True);
-  // those signals doesn't trigger with gtk3-3.6
-  // g_signal_connect_data(FCentralWidget,'change-current-page', TGCallback(@GtkNotebookAfterSwitchPage), Self, nil, 0);
-  // g_signal_connect_data(FCentralWidget,'select-page', TGCallback(@GtkNotebookSelectPage), Self, nil, 0);
+
   FCentralWidget^.show_all;
   FCentralWidget^.size_allocate(@Alloc);
 end;
