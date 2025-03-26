@@ -3465,7 +3465,7 @@ begin
   if (uWidth <> HSize) or (uHeight <> VSize) then
     PGtkLayout(aWidget)^.set_size(HSize, VSize);
 
-  if TGtk3Widget(Data).LCLObject.ClientRectNeedsInterfaceUpdate then
+  if not TGtk3Widget(Data).InUpdate and TGtk3Widget(Data).LCLObject.ClientRectNeedsInterfaceUpdate then
     TGtk3Widget(Data).LCLObject.DoAdjustClientRectChange;
 end;
 
@@ -3484,6 +3484,7 @@ begin
   PGtkLayout(FCentralWidget)^.set_size(1, 1);
   g_signal_connect_data(FCentralWidget,'size-allocate',TGCallback(@GroupBoxLayoutSizeAllocate), Self, nil, G_CONNECT_DEFAULT);
   Result^.show_all;
+  Result^.hide;
 end;
 
 function TGtk3GroupBox.getText: String;
@@ -9936,12 +9937,6 @@ begin
   g_signal_connect_data(fWidget,
     'close', TGCallback(@Tgtk3DIalog.CloseCB), Self, nil, G_CONNECT_DEFAULT);
 
-
-(*  g_signal_connect_data(fWidget,
-    'key-press-event', TGCallback(@GTKDialogKeyUpDownCB), Self, nil, 0);
-  g_signal_connect_data(fWidget,
-    'key-release-event', TGCallback(@GTKDialogKeyUpDownCB), Self, nil, 0);*)
-
   g_signal_connect_data(fWidget,
     'realize', TGCallback(@Tgtk3Dialog.RealizeCB), Self, nil, G_CONNECT_DEFAULT);
 end;
@@ -10061,8 +10056,6 @@ begin
   end;
 end;
 
-
-
 function TGtk3Dialog.CreateWidget(const Params: TCreateParams): PGtkWidget;
 begin
   FWidgetType := [wtWidget, wtDialog];
@@ -10093,7 +10086,6 @@ begin
 end;
 
 constructor TGtk3FileDialog.Create(const ACommonDialog: TCommonDialog);
-
 var
   FileDialog: TFileDialog absolute ACommonDialog;
   Action: TGtkFileChooserAction;
