@@ -27,7 +27,7 @@ begin
   Widget := TGtk3Widget(Handle);
   if Widget <> nil then
   begin
-    GtkWidget := Widget.GetContainerWidget;
+    GtkWidget := Widget.PaintData.PaintWidget;
     if Widget.CairoContext <> nil then
       DC := TGtk3DeviceContext.CreateFromCairo(GtkWidget, Widget.CairoContext)
     else

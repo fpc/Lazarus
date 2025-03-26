@@ -1757,10 +1757,7 @@ begin
 
   with PaintData do
   begin
-    if GetContainerWidget = nil then
-      PaintWidget := Widget
-    else
-      PaintWidget := GetContainerWidget;
+    PaintWidget := Sender;
     ClipRegion := nil;
     gdk_cairo_get_clip_rectangle(AContext, @AClipRect);
 
@@ -10423,6 +10420,8 @@ var
   AClipRect: TGdkRectangle;
   localClip:TRect;
   P: TPoint;
+  AScrolledWin: PGtkScrolledWindow;
+  HScrollPolicy, VScrollPolicy: TGtkPolicyType;
 begin
   Result := gtk_false;
 
@@ -10438,10 +10437,7 @@ begin
 
   with PaintData do
   begin
-    if GetContainerWidget = nil then
-      PaintWidget := Widget
-    else
-      PaintWidget := GetContainerWidget;
+    PaintWidget := Sender;
     ClipRegion := nil;
     gdk_cairo_get_clip_rectangle(AContext, @AClipRect);
     localClip:=RectFromGdkRect(AClipRect);
@@ -10459,11 +10455,30 @@ begin
   TGtk3DeviceContext(Msg.DC).translate(P);
   try
     try
+      if wtScrollingWinControl in WidgetType then
+      begin
+        P := getClientOffset;
+        AScrolledWin := TGtk3ScrollingWinControl(Self).GetScrolledWindow;
+        AScrolledWin^.get_policy(@HScrollPolicy, @VScrollPolicy);
+        if HScrollPolicy < GTK_POLICY_NEVER then
+          P.X := P.X + Round(AScrolledWin^.get_hadjustment^.get_value);
+        if VScrollPolicy < GTK_POLICY_NEVER then
+          P.Y := P.Y + Round(AScrolledWin^.get_vadjustment^.get_value);
+        cairo_translate(AContext, -P.X, -P.Y);
+        with TGtk3DeviceContext(Msg.DC).fncOrigin do
+        begin
+          X := X - P.X;
+          Y := Y - P.Y;
+        end;
+      end;
+
       //DoBeforeLCLPaint;
       {$IFDEF GTK3DEBUGDESIGNER}
       writeln('>TGtk3DesignWidget.Paint DC=',dbgHex(Msg.DC),' offset=',dbgs(P),' surface=',cairo_surface_get_type(cairo_get_target(AContext)));
       {$ENDIF}
       LCLObject.WindowProc(TLMessage(Msg));
+      if wtScrollingWinControl in WidgetType then
+        cairo_translate(AContext, P.X, P.Y);
       {$IFDEF GTK3DEBUGDESIGNER}
       writeln('<TGtk3DesignWidget.Paint');
       {$ENDIF}
