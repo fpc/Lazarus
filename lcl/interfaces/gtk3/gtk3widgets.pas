@@ -885,7 +885,7 @@ type
 
   { TGtk3Window }
 
-  TGtk3Window = class(TGtk3ScrollableWin) {we are TGtk3Bin actually, but it won't hurt since we need scroll}
+  TGtk3Window = class(TGtk3ScrollingWinControl) {we are TGtk3Bin actually, but it won't hurt since we need scroll}
   private
     FIcon: PGdkPixBuf;
     FScrollWin: PGtkScrolledWindow;
