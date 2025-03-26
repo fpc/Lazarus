@@ -5153,7 +5153,7 @@ begin
   FWidgetType := FWidgetType + [wtNotebook];
   Result := LCLGtkNotebookNew;
   FCentralWidget := Result;
-  PGtkNoteBook(FCentralWidget)^.set_scrollable(True);
+
   if (nboHidePageListPopup in TCustomTabControl(LCLObject).Options) then
     PGtkNoteBook(FCentralWidget)^.popup_disable;
 
