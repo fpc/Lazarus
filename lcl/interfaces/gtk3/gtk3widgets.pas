@@ -732,6 +732,9 @@ type
   { TGtk3Panel }
 
   TGtk3Panel = class(TGtk3Bin)
+  strict private
+    class procedure PanelLayoutSizeAllocate(AWidget: PGtkWidget;
+      AGdkRect: PGdkRectangle; Data: gpointer); cdecl; static;
   private
     FBorderStyle: TBorderStyle;
     procedure SetBorderStyle(AValue: TBorderStyle);
@@ -3375,6 +3378,23 @@ end;
 
 { TGtk3Panel }
 
+class procedure TGtk3Panel.PanelLayoutSizeAllocate(AWidget: PGtkWidget;
+  AGdkRect: PGdkRectangle; Data: gpointer); cdecl;
+var
+  HSize,VSize: integer;
+  uWidth, uHeight: guint;
+begin
+  HSize := AGdkRect^.Width;
+  VSize := AGdkRect^.Height;
+
+  PGtkLayout(aWidget)^.get_size(@uWidth, @uHeight);
+  if (uWidth <> HSize) or (uHeight <> VSize) then
+    PGtkLayout(aWidget)^.set_size(HSize, VSize);
+
+  if not TGtk3Widget(Data).InUpdate and TGtk3Widget(Data).LCLObject.ClientRectNeedsInterfaceUpdate then
+    TGtk3Widget(Data).LCLObject.DoAdjustClientRectChange;
+end;
+
 procedure TGtk3Panel.SetBorderStyle(AValue: TBorderStyle);
 begin
   if FBorderStyle = AValue then Exit;
@@ -3396,7 +3416,11 @@ begin
   // GNOME takes care of it, but other WM - not
   // this is here to make TGtk3Panel shown under Plasma
   //Result^.set_size_request(LCLObject.Width,LCLObject.Height);
+
+  if not (csDesigning in LCLObject.ComponentState) then
+    g_object_set(PGObject(Result), 'resize-mode', [GTK_RESIZE_QUEUE, nil]);
   PGtkLayout(Result)^.set_size(1, 1);
+  g_signal_connect_data(Result,'size-allocate',TGCallback(@PanelLayoutSizeAllocate), Self, nil, G_CONNECT_DEFAULT);
 
   // AColor := Result^.style^.bg[0];
   // writeln('BG COLOR R=',AColor.red,' G=',AColor.green,' B=',AColor.blue);
