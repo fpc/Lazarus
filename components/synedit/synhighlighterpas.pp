@@ -52,9 +52,9 @@ unit SynHighlighterPas;
 interface
 
 uses
-  SysUtils, Classes, fgl, Registry, Graphics, SynEditHighlighterFoldBase,
+  SysUtils, Classes, fgl, Registry, Graphics, Generics.Defaults, SynEditHighlighterFoldBase,
   SynEditMiscProcs, SynEditTypes, SynEditHighlighter, SynEditTextBase,
-  SynEditStrConst, SynEditMiscClasses, LazLoggerBase, LazEditMiscProcs;
+  SynEditStrConst, SynEditMiscClasses, LazLoggerBase, LazEditMiscProcs, LazEditHighlighterUtils;
 
 type
   TSynPasStringMode = (spsmDefault, spsmStringOnly, spsmNone);
@@ -552,8 +552,8 @@ type
     procedure SetBracketNestLevel(AValue: integer); inline;
   public
     procedure Clear; override;
-    function Compare(Range: TSynCustomHighlighterRange): integer; override;
-    procedure Assign(Src: TSynCustomHighlighterRange); override;
+    function Compare(Range: TLazHighlighterRange): integer; override;
+    procedure Assign(Src: TLazHighlighterRange); override;
     function MaxFoldLevel: Integer; override;
     procedure ResetBracketNestLevel;
     procedure IncBracketNestLevel;
@@ -870,7 +870,7 @@ type
     procedure EndStatementLastLine(ACurTfb: TPascalCodeFoldBlockType;
                            ACloseFolds: TPascalCodeFoldBlockTypes); inline;
     // "Range"
-    function GetRangeClass: TSynCustomHighlighterRangeClass; override;
+    function GetRangeClass: TLazHighlighterRangeClass; override;
     procedure CreateRootCodeFoldBlock; override;
     function CreateRangeList(ALines: TSynEditStringsBase): TSynHighlighterRangeList; override;
     function UpdateRangeInfoAtLine(Index: Integer): Boolean; override; // Returns true if range changed
@@ -7160,7 +7160,7 @@ begin
           - ord(low(TSynPasDividerDrawLocation)) + 1;
 end;
 
-function TSynPasSyn.GetRangeClass: TSynCustomHighlighterRangeClass;
+function TSynPasSyn.GetRangeClass: TLazHighlighterRangeClass;
 begin
   Result:=TSynPasSynRange;
 end;
@@ -7463,27 +7463,12 @@ begin
   FTokenState := tsNone;
 end;
 
-function TSynPasSynRange.Compare(Range: TSynCustomHighlighterRange): integer;
+function TSynPasSynRange.Compare(Range: TLazHighlighterRange): integer;
 begin
-  Result:=inherited Compare(Range);
-  if Result<>0 then exit;
-
-  Result:=ord(FTokenState)-ord(TSynPasSynRange(Range).FTokenState);
-  if Result<>0 then exit;
-  Result:=ord(FMode)-ord(TSynPasSynRange(Range).FMode);
-  if Result<>0 then exit;
-  Result:=Integer(FModeSwitches)-Integer(TSynPasSynRange(Range).FModeSwitches);
-  if Result<>0 then exit;
-  Result := FBracketNestLevel - TSynPasSynRange(Range).FBracketNestLevel;
-  if Result<>0 then exit;
-  Result := FRoundBracketNestLevel - TSynPasSynRange(Range).FRoundBracketNestLevel;
-  if Result<>0 then exit;
-  Result := FLastLineCodeFoldLevelFix - TSynPasSynRange(Range).FLastLineCodeFoldLevelFix;
-  if Result<>0 then exit;
-  Result := FPasFoldFixLevel - TSynPasSynRange(Range).FPasFoldFixLevel;
+  Result := DoCompare(Range, TSynPasSynRange.InstanceSize);
 end;
 
-procedure TSynPasSynRange.Assign(Src: TSynCustomHighlighterRange);
+procedure TSynPasSynRange.Assign(Src: TLazHighlighterRange);
 begin
   if (Src<>nil) and (Src<>TSynCustomHighlighterRange(NullRange)) then begin
     inherited Assign(Src);

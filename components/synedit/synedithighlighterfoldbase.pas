@@ -61,7 +61,7 @@ uses
   // LazUtils
   LazClasses, LazLoggerBase, LazTracer,
   // SynEdit
-  SynEditHighlighter, SynEditTypes, LazSynEditText;
+  SynEditHighlighter, SynEditTypes, LazSynEditText, LazEditHighlighterUtils;
 
 const
   NullRange = TSynEditRange(nil);
@@ -366,7 +366,7 @@ type
 
   { TSynCustomHighlighterRange }
 
-  TSynCustomHighlighterRange = class
+  TSynCustomHighlighterRange = class(TLazHighlighterRangeForDictionary)
   private
     // TODO: either reduce to one level, or create subclass for 2nd level
     FCodeFoldStackSize: integer; // EndLevel
@@ -376,15 +376,15 @@ type
     FRangeType: Pointer;
     FTop: TSynCustomCodeFoldBlock;
   public
-    constructor Create(Template: TSynCustomHighlighterRange); virtual;
+    constructor Create(Template: TLazHighlighterRange); override;
     destructor Destroy; override;
-    function Compare(Range: TSynCustomHighlighterRange): integer; virtual;
+    function Compare(Range: TLazHighlighterRange): integer; override;
     function Add(ABlockType: Pointer = nil; IncreaseLevel: Boolean = True):
         TSynCustomCodeFoldBlock; virtual;
     procedure Pop(DecreaseLevel: Boolean = True); virtual;
     function MaxFoldLevel: Integer; virtual;
     procedure Clear; virtual;
-    procedure Assign(Src: TSynCustomHighlighterRange); virtual;
+    procedure Assign(ASrc: TLazHighlighterRange); override;
     procedure WriteDebugReport;
     property FoldRoot: TSynCustomCodeFoldBlock read FTop write FTop;
   public
@@ -397,9 +397,7 @@ type
       read FMinimumNestFoldBlockLevel; // write FMinimumNestFoldBlockLevel;
     property Top: TSynCustomCodeFoldBlock read FTop;
   end;
-  TSynCustomHighlighterRangeClass = class of TSynCustomHighlighterRange;
-
-  TSynCustomHighlighterRanges = class;
+  TSynCustomHighlighterRangeClass = class of TSynCustomHighlighterRange deprecated 'use TLazHighlighterRangeClass // will be removed in 5.99';
 
   { TSynCustomFoldHighlighter }
 
@@ -419,14 +417,14 @@ type
   private
     FCodeFoldRange: TSynCustomHighlighterRange;
     FIsCollectingNodeInfo: boolean;
-    fRanges: TSynCustomHighlighterRanges;
+    fRanges: TLazHighlighterRangesDictionary;
     FRootCodeFoldBlock: TSynCustomCodeFoldBlock;
     FFoldNodeInfoList: TLazSynFoldNodeInfoList;
     FCollectingNodeInfoList: TLazSynFoldNodeInfoList;
     procedure ClearFoldNodeList;
   protected
     // "Range"
-    function GetRangeClass: TSynCustomHighlighterRangeClass; virtual;
+    function GetRangeClass: TLazHighlighterRangeClass; virtual;
     procedure CreateRootCodeFoldBlock; virtual; // set RootCodeFoldBlock
     property CodeFoldRange: TSynCustomHighlighterRange read FCodeFoldRange;
     function TopCodeFoldBlockType(DownIndex: Integer = 0): Pointer;
@@ -536,27 +534,22 @@ type
 
   end;
 
-  { TSynCustomHighlighterRanges }
+  { TSynCustomHighlighterRangeTree }
 
-  TSynCustomHighlighterRanges = class
+  TSynCustomHighlighterRangeTree = class(TLazHighlighterRanges)
   private
-    FAllocatedCount: integer;
-    FHighlighterClass: TSynCustomHighlighterClass;
     FItems: TAvlTree;
   public
-    constructor Create(TheHighlighterClass: TSynCustomHighlighterClass);
+    constructor Create; override;
     destructor Destroy; override;
-    function GetEqual(Range: TSynCustomHighlighterRange
-                      ): TSynCustomHighlighterRange;
-    procedure Allocate;
-    procedure Release;
-    property HighlighterClass: TSynCustomHighlighterClass read FHighlighterClass;
-    property AllocatedCount: integer read FAllocatedCount;
-  end;
+    function GetEqual(Range: TLazHighlighterRange
+                      ): TLazHighlighterRange; override;
+  end experimental; // replaced by TLazHighlighterRangesDictionary
 
 function CompareSynHighlighterRanges(Data1, Data2: Pointer): integer;
 function AllocateHighlighterRanges(
-     HighlighterClass: TSynCustomHighlighterClass): TSynCustomHighlighterRanges;
+     HighlighterClass: TSynCustomHighlighterClass): TLazHighlighterRangesDictionary;
+     deprecated 'use GetHighlighterRangesForHighlighter // will be removed in 5.99';
 
 function dbgs(AFoldActions: TSynFoldActions): String; overload;
 function dbgs(ANode: TSynFoldNodeInfo):string; overload;
@@ -585,38 +578,11 @@ begin
   Result:=Range1.Compare(Range2);
 end;
 
-var
-  HighlighterRanges: TFPList = nil;
-
-function IndexOfHighlighterRanges(
-  HighlighterClass: TSynCustomHighlighterClass): integer;
-begin
-  if HighlighterRanges=nil then
-    Result:=-1
-  else begin
-    Result:=HighlighterRanges.Count-1;
-    while (Result>=0)
-    and (TSynCustomHighlighterRanges(HighlighterRanges[Result]).HighlighterClass
-      <>HighlighterClass)
-    do
-      dec(Result);
-  end;
-end;
-
 function AllocateHighlighterRanges(
-  HighlighterClass: TSynCustomHighlighterClass): TSynCustomHighlighterRanges;
-var
-  i: LongInt;
+  HighlighterClass: TSynCustomHighlighterClass): TLazHighlighterRangesDictionary;
 begin
-  if HighlighterRanges=nil then HighlighterRanges:=TFPList.Create;
-  i:=IndexOfHighlighterRanges(HighlighterClass);
-  if i>=0 then begin
-    Result:=TSynCustomHighlighterRanges(HighlighterRanges[i]);
-    Result.Allocate;
-  end else begin
-    Result:=TSynCustomHighlighterRanges.Create(HighlighterClass);
-    HighlighterRanges.Add(Result);
-  end;
+  Result := TLazHighlighterRangesDictionary(GetHighlighterRangesForHighlighter(HighlighterClass, TLazHighlighterRangesDictionary));
+  Result.AddReference;
 end;
 
 function dbgs(AFoldActions: TSynFoldActions): String;
@@ -1711,10 +1677,13 @@ constructor TSynCustomFoldHighlighter.Create(AOwner: TComponent);
 begin
   SetLength(FFoldConfig, GetFoldConfigInternalCount);
   InitFoldConfig;
-  fRanges:=AllocateHighlighterRanges(TSynCustomHighlighterClass(ClassType));
+  fRanges := TLazHighlighterRangesDictionary(
+    GetHighlighterRangesForHighlighter(TSynCustomHighlighterClass(ClassType), TLazHighlighterRangesDictionary)
+  );
+  fRanges.AddReference;
   CreateRootCodeFoldBlock;
   inherited Create(AOwner);
-  FCodeFoldRange:=GetRangeClass.Create(nil);
+  FCodeFoldRange:=TSynCustomHighlighterRange(GetRangeClass.Create(nil));
   FCodeFoldRange.FoldRoot := FRootCodeFoldBlock;
   FFoldNodeInfoList := nil;;
 end;
@@ -1726,7 +1695,7 @@ begin
   FreeAndNil(FCodeFoldRange);
   FreeAndNil(FRootCodeFoldBlock);
   ReleaseRefAndNil(FFoldNodeInfoList);
-  fRanges.Release;
+  fRanges.ReleaseReference;
   FFoldConfig := nil;
 end;
 
@@ -2109,7 +2078,7 @@ begin
   Result := TLazSynFoldNodeInfoList.Create;
 end;
 
-function TSynCustomFoldHighlighter.GetRangeClass: TSynCustomHighlighterRangeClass;
+function TSynCustomFoldHighlighter.GetRangeClass: TLazHighlighterRangeClass;
 begin
   Result:=TSynCustomHighlighterRange;
 end;
@@ -2474,7 +2443,7 @@ end;
 { TSynCustomHighlighterRange }
 
 constructor TSynCustomHighlighterRange.Create(
-  Template: TSynCustomHighlighterRange);
+  Template: TLazHighlighterRange);
 begin
   if (Template<>nil) and (ClassType<>Template.ClassType) then
     RaiseGDBException('');
@@ -2488,29 +2457,9 @@ begin
   inherited Destroy;
 end;
 
-function TSynCustomHighlighterRange.Compare(Range: TSynCustomHighlighterRange
-  ): integer;
+function TSynCustomHighlighterRange.Compare(Range: TLazHighlighterRange): integer;
 begin
-  if RangeType < Range.RangeType then
-    Result:=1
-  else if RangeType > Range.RangeType then
-    Result:=-1
-  else if Pointer(FTop) < Pointer(Range.FTop) then
-    Result:= -1
-  else if Pointer(FTop) > Pointer(Range.FTop) then
-    Result:= 1
-  else
-    Result := FMinimumNestFoldBlockLevel - Range.FMinimumNestFoldBlockLevel;
-  if Result <> 0 then
-    exit;
-  Result := FNestFoldStackSize - Range.FNestFoldStackSize;
-  if Result <> 0 then
-    exit;
-
-    Result := FMinimumCodeFoldBlockLevel - Range.FMinimumCodeFoldBlockLevel;
-  if Result <> 0 then
-    exit;
-  Result := FCodeFoldStackSize - Range.FCodeFoldStackSize;
+  Result := DoCompare(Range, TSynCustomHighlighterRange.InstanceSize);
 end;
 
 function TSynCustomHighlighterRange.Add(ABlockType: Pointer;
@@ -2563,7 +2512,8 @@ begin
   FTop:=nil;
 end;
 
-procedure TSynCustomHighlighterRange.Assign(Src: TSynCustomHighlighterRange);
+procedure TSynCustomHighlighterRange.Assign(ASrc: TLazHighlighterRange);
+var Src: TSynCustomHighlighterRange absolute ASrc;
 begin
   if (Src<>nil) and (Src<>TSynCustomHighlighterRange(NullRange)) then begin
     FTop := Src.FTop;
@@ -2591,29 +2541,22 @@ begin
   FTop.WriteDebugReport;
 end;
 
-{ TSynCustomHighlighterRanges }
+{ TSynCustomHighlighterRangeTree }
 
-constructor TSynCustomHighlighterRanges.Create(
-  TheHighlighterClass: TSynCustomHighlighterClass);
+constructor TSynCustomHighlighterRangeTree.Create;
 begin
-  Allocate;
   FItems:=TAvlTree.Create(@CompareSynHighlighterRanges);
+  inherited Create;
 end;
 
-destructor TSynCustomHighlighterRanges.Destroy;
+destructor TSynCustomHighlighterRangeTree.Destroy;
 begin
-  if HighlighterRanges<>nil then begin
-    HighlighterRanges.Remove(Self);
-    if HighlighterRanges.Count=0 then
-      FreeAndNil(HighlighterRanges);
-  end;
   FItems.FreeAndClear;
   FreeAndNil(FItems);
   inherited Destroy;
 end;
 
-function TSynCustomHighlighterRanges.GetEqual(Range: TSynCustomHighlighterRange
-  ): TSynCustomHighlighterRange;
+function TSynCustomHighlighterRangeTree.GetEqual(Range: TLazHighlighterRange): TLazHighlighterRange;
 var
   Node: TAvlTreeNode;
 begin
@@ -2623,22 +2566,11 @@ begin
     Result:=TSynCustomHighlighterRange(Node.Data);
   end else begin
     // add a copy
-    Result:=TSynCustomHighlighterRangeClass(Range.ClassType).Create(Range);
+    Result:=TLazHighlighterRangeClass(Range.ClassType).Create(Range);
     FItems.Add(Result);
     //if FItems.Count mod 32 = 0 then debugln(['FOLDRANGE Count=', FItems.Count]);
   end;
-  //debugln('TSynCustomHighlighterRanges.GetEqual A ',dbgs(Node),' ',dbgs(Result.Compare(Range)),' ',dbgs(Result.CodeFoldStackSize));
-end;
-
-procedure TSynCustomHighlighterRanges.Allocate;
-begin
-  inc(FAllocatedCount);
-end;
-
-procedure TSynCustomHighlighterRanges.Release;
-begin
-  dec(FAllocatedCount);
-  if FAllocatedCount=0 then Free;
+  //debugln('TSynCustomHighlighterRangeTree.GetEqual A ',dbgs(Node),' ',dbgs(Result.Compare(Range)),' ',dbgs(Result.CodeFoldStackSize));
 end;
 
 { TSynCustomFoldConfig }
