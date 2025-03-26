@@ -658,6 +658,17 @@ type
   { TGtk3ListView }
 
   TGtk3ListView = class(TGtk3ScrollableWin)
+  strict private
+    class procedure ListViewColumnClicked(column: PGtkTreeViewColumn;
+      AData: GPointer); cdecl; static;
+    class procedure ListViewGetPixbufDataFuncForColumn(
+      tree_column: PGtkTreeViewColumn; cell: PGtkCellRenderer;
+      tree_model: PGtkTreeModel; iter: PGtkTreeIter; AData: GPointer); cdecl; static;
+    class function ListViewItemPreSelected(selection: PGtkTreeSelection;
+      model: PGtkTreeModel; path: PGtkTreePath;
+      path_is_currently_selected: GBoolean; AData: GPointer): GBoolean; cdecl; static;
+    class procedure ListViewItemSelected(ASelection: PGtkTreeSelection;
+      AData: GPointer); cdecl; static;
   private
     FPreselectedIndices: TFPList;
     FImages: TFPList;
@@ -829,6 +840,9 @@ type
   { TGtk3ToggleButton }
 
   TGtk3ToggleButton = class(TGtk3Button)
+  strict private
+    class procedure ButtonToggled(AWidget: PGtkToggleButton; AData: gPointer);
+      cdecl; static;
   protected
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
   public
@@ -6937,7 +6951,7 @@ end;
 
 { TGtk3ListView }
 
-function Gtk3WS_ListViewItemPreSelected({%H-}selection: PGtkTreeSelection; {%H-}model: PGtkTreeModel;
+class function TGtk3ListView.ListViewItemPreSelected({%H-}selection: PGtkTreeSelection; {%H-}model: PGtkTreeModel;
   path: PGtkTreePath; path_is_currently_selected: GBoolean; AData: GPointer): GBoolean; cdecl;
 begin
   if path_is_currently_selected then ;
@@ -6956,7 +6970,7 @@ begin
     TGtk3ListView(AData).FPreselectedIndices.Add({%H-}Pointer(PtrInt(gtk_tree_path_get_indices(path)^)));
 end;
 
-procedure Gtk3WS_ListViewItemSelected(ASelection: PGtkTreeSelection; AData: GPointer); cdecl;
+class procedure TGtk3ListView.ListViewItemSelected(ASelection: PGtkTreeSelection; AData: GPointer); cdecl;
 var
   AList, TmpList: PGList;
   Msg: TLMNotify;
@@ -7006,7 +7020,7 @@ begin
         NM.uNewState := LVIS_SELECTED;
       NM.uChanged := LVIF_STATE;
       Msg.NMHdr := @NM.hdr;
-      DeliverMessage(TGtk3Widget(AData).LCLObject, Msg);
+      LCLMessageGlue.DeliverMessage(TGtk3Widget(AData).LCLObject, Msg);
     end;
   finally
     FreeAndNil(TGtk3ListView(AData).FPreselectedIndices);
@@ -7106,9 +7120,9 @@ begin
   PGtkTreeView(FCentralWidget)^.set_can_focus(True);
   if FIsTreeView then
   begin
-    gtk_tree_selection_set_select_function(PGtkTreeView(FCentralWidget)^.get_selection, TGtkTreeSelectionFunc(@Gtk3WS_ListViewItemPreSelected),
+    gtk_tree_selection_set_select_function(PGtkTreeView(FCentralWidget)^.get_selection, TGtkTreeSelectionFunc(@ListViewItemPreSelected),
       Self, nil);
-    g_signal_connect_data(PGtkTreeView(FCentralWidget)^.get_selection, 'changed', TGCallback(@Gtk3WS_ListViewItemSelected), Self, nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(PGtkTreeView(FCentralWidget)^.get_selection, 'changed', TGCallback(@ListViewItemSelected), Self, nil, G_CONNECT_DEFAULT);
 
     PGtkTreeView(FCentralWidget)^.set_headers_visible(AListView.ShowColumnHeaders and (AListView.ViewStyle = vsReport));
     PGtkTreeView(FCentralWidget)^.resize_children;
@@ -7266,11 +7280,11 @@ begin
   end;
 end;
 
-procedure Gtk3WSLV_ListViewGetPixbufDataFuncForColumn(tree_column: PGtkTreeViewColumn;
+class procedure TGtk3ListView.ListViewGetPixbufDataFuncForColumn(tree_column: PGtkTreeViewColumn;
   {%H-}cell: PGtkCellRenderer; tree_model: PGtkTreeModel; iter: PGtkTreeIter; AData: GPointer); cdecl;
 var
   ListItem: TListItem;
-  Images: TFPList;
+  AImages: TFPList;
   // Widgets: PTVWidgets;
   ListColumn: TListColumn;
   ImageIndex: Integer;
@@ -7290,8 +7304,8 @@ begin
   if ListColumn = nil then
     Exit;
   ColumnIndex := ListColumn.Index;
-  Images := TGtk3ListView(AData).Images;
-  if Images = nil then
+  AImages := TGtk3ListView(AData).Images;
+  if AImages = nil then
     Exit;
   ImageIndex := -1;
 
@@ -7311,8 +7325,8 @@ begin
     if ColumnIndex -1 <= ListItem.SubItems.Count-1 then
       ImageIndex := ListItem.SubItemImages[ColumnIndex-1];
 
-  if (ImageIndex > -1) and (ImageIndex <= Images.Count-1) then
-    pb:=TGtk3Image(TBitmap(Images.Items[ImageIndex]).Handle).Handle^.copy
+  if (ImageIndex > -1) and (ImageIndex <= AImages.Count-1) then
+    pb:=TGtk3Image(TBitmap(AImages.Items[ImageIndex]).Handle).Handle^.copy
   else
     pb:=nil;
 
@@ -7323,7 +7337,7 @@ begin
     g_object_unref(pb);
 end;
 
-procedure Gtk3WS_ListViewColumnClicked(column: PGtkTreeViewColumn; AData: GPointer); cdecl;
+class procedure TGtk3ListView.ListViewColumnClicked(column: PGtkTreeViewColumn; AData: GPointer); cdecl;
 var
   AColumn: TListColumn;
   Msg: TLMNotify;
@@ -7343,7 +7357,7 @@ begin
   NM.iItem := -1;
   NM.iSubItem := AColumn.Index;
   Msg.NMHdr := @NM.hdr;
-  DeliverMessage(TGtk3Widget(AData).LCLObject, Msg);
+  LCLMessageGlue.DeliverMessage(TGtk3Widget(AData).LCLObject, Msg);
 end;
 
 procedure TGtk3ListView.ColumnInsert(AIndex: Integer; AColumn: TListColumn);
@@ -7362,9 +7376,7 @@ begin
   AGtkColumn^.pack_start(PixRenderer, False);
   AGtkColumn^.pack_start(TextRenderer, True);
 
-  // gtk_tree_view_column_set_cell_data_func(column, pixrenderer,  TGtkTreeCellDataFunc(@Gtk2WSLV_ListViewGetPixbufDataFuncForColumn), WidgetInfo, nil);
-  // gtk_tree_view_column_set_cell_data_func(column, textrenderer, TGtkTreeCellDataFunc(@LCLIntfCellRenderer_CellDataFunc), Self, nil);
-  AGtkColumn^.set_cell_data_func(PixRenderer, @Gtk3WSLV_ListViewGetPixbufDataFuncForColumn, Self, nil);
+  AGtkColumn^.set_cell_data_func(PixRenderer, @ListViewGetPixbufDataFuncForColumn, Self, nil);
 
 
   AGtkColumn^.set_cell_data_func(PGtkCellRenderer(TextRenderer), TGtkTreeCellDataFunc(@LCLIntfCellRenderer_CellDataFunc), Self, nil);
@@ -7375,7 +7387,7 @@ begin
   g_object_set_data(AGtkColumn, 'pix_renderer', PixRenderer);
   g_object_set_data(AGtkColumn, 'text_renderer', TextRenderer);
 
-  g_signal_connect_data(AGtkColumn,'clicked', TGCallback(@Gtk3WS_ListViewColumnClicked), Self, nil, G_CONNECT_DEFAULT);
+  g_signal_connect_data(AGtkColumn,'clicked', TGCallback(@ListViewColumnClicked), Self, nil, G_CONNECT_DEFAULT);
   PGtkTreeView(GetContainerWidget)^.insert_column(AGtkColumn, AIndex);
   AGtkColumn^.set_clickable(True);
 
@@ -7546,7 +7558,7 @@ end;
 function TGtk3ListView.ItemDisplayRect(AIndex: Integer; ASubItem: integer;
   ACode: TDisplayCode): TRect;
 var
-  AModel: PGtkTreeModel;
+  {%H-}AModel: PGtkTreeModel;
   Iter: TGtkTreeIter;
   Column: PGtkTreeViewColumn;
   Path: PGtkTreePath;
@@ -8590,7 +8602,7 @@ begin
 end;
 
 { TGtk3ToggleButton }
-procedure Gtk3Toggled({%H-}AWidget: PGtkToggleButton; AData: gPointer); cdecl;
+class procedure TGtk3ToggleButton.ButtonToggled({%H-}AWidget: PGtkToggleButton; AData: gPointer); cdecl;
 var
   Msg: TLMessage;
 begin
@@ -8604,7 +8616,7 @@ procedure TGtk3ToggleButton.InitializeWidget;
 begin
   inherited InitializeWidget;
   if not IsDesigning then
-    g_signal_connect_data(FWidget, 'toggled', TGCallback(@Gtk3Toggled), Self, nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(FWidget, 'toggled', TGCallback(@ButtonToggled), Self, nil, G_CONNECT_DEFAULT);
 end;
 
 function TGtk3ToggleButton.CreateWidget(const Params: TCreateParams): PGtkWidget;
