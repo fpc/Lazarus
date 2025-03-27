@@ -624,6 +624,7 @@ type
   protected
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
     function EatArrowKeys(const {%H-}AKey: Word): Boolean; override;
+    procedure SetColor(AValue: TColor); override;
   public
     procedure InitializeWidget; override;
     function getHorizontalScrollbar: PGtkScrollbar; override;
@@ -1188,8 +1189,13 @@ begin
   {$IFDEF GTK3DEBUGCORE}
   // if event^.type_ = GDK_EXPOSE then
   if event^.type_ <> GDK_MOTION_NOTIFY then
-    DebugLn('TGtk3Widget.WidgetEvent triggered ',dbgsName(TGtk3Widget(Data).LCLObject),
-      ' ',Gtk3EventToStr(event^.type_));
+  begin
+    if TGtk3Widget(Data).LCLObject is TCustomForm then
+    begin
+      writeln('TGtk3Widget.WidgetEvent triggered ',dbgsName(TGtk3Widget(Data).LCLObject),
+        ' ',Gtk3EventToStr(event^.type_),' ',GetTickCount64);
+    end;
+  end;
   {$ENDIF}
   Result := gtk_false;
   if Assigned(Application) and Application.Terminated then
@@ -1314,7 +1320,7 @@ begin
     end;
   GDK_CONFIGURE:
     begin
-
+      //DebugLn('****** GDK_CONFIGURE FOR ',dbgsName(TGtk3Widget(Data).LCLObject));
     end;
   GDK_MAP:
     begin
@@ -1549,17 +1555,7 @@ begin
   begin
     if ACtl.InUpdate then
       exit;
-
-    if (ACtl.LCLWidth = NewSize.cx) and (ACtl.LCLHeight = NewSize.cy) and (ACtl.LCLWidth > 0) then
-    begin
-      if ACtl.LCLObject.ClientRectNeedsInterfaceUpdate then
-        ACtl.LCLObject.DoAdjustClientRectChange(True);
-    end;
   end;
-
-  if ((NewSize.cx <> ACtl.LCLObject.Width) or (NewSize.cy <> ACtl.LCLObject.Height) or
-     ACtl.LCLObject.ClientRectNeedsInterfaceUpdate) then
-    ACtl.LCLObject.DoAdjustClientRectChange;
 
   FillChar(Msg{%H-}, SizeOf(Msg), #0);
 
@@ -6582,6 +6578,25 @@ begin
   Result := False;
 end;
 
+procedure TGtk3ListBox.SetColor(AValue: TColor);
+var
+  ADisabledColor, BgColor: TGdkRGBA;
+begin
+
+  BgColor := TColortoTGdkRGBA(ColorToRgb(AValue));
+
+  getContainerWidget^.get_style_context^.get_background_color([GTK_STATE_FLAG_INSENSITIVE], @ADisabledColor);
+  //override all
+  if AValue = clDefault then
+    gtk_widget_override_background_color(getContainerWidget, GTK_STATE_FLAG_NORMAL, nil)
+  else
+    gtk_widget_override_background_color(getContainerWidget, GTK_STATE_FLAG_NORMAL, @BgColor);
+  //return system highlight color
+  BgColor := TColortoTGdkRGBA(ColorToRgb(clHighlight));
+  gtk_widget_override_background_color(getContainerWidget, [GTK_STATE_FLAG_SELECTED], @BgColor);
+  gtk_widget_override_background_color(getContainerWidget, [GTK_STATE_FLAG_INSENSITIVE], @ADisabledColor);
+end;
+
 procedure TGtk3ListBox.InitializeWidget;
 begin
   inherited InitializeWidget;
@@ -9290,13 +9305,8 @@ begin
   end;
   {$ENDIF}
 
-  if Gtk3WidgetSet.IsWayland and (decoration_flags(TCustomForm(Actl.LCLObject))<>[]) then
-    PGtkWIndow(Actl.widget)^.get_size(@newSize.cx, @newsize.cy)
-  else
-  begin
-    NewSize.cx := AGdkRect^.width;
-    NewSize.cy := AGdkRect^.height;
-  end;
+  NewSize.cx := AGdkRect^.width;
+  NewSize.cy := AGdkRect^.height;
 
   //writeln(format('Gkt3SizeAllocate w=%d h=%d',[NewSize.cx,NewSize.cy]));
 
@@ -9305,10 +9315,6 @@ begin
   // do not loop with LCL  !
   if not (csDesigning in ACtl.LCLObject.ComponentState) and ACtl.InUpdate then
     exit;
-
-  if ((NewSize.cx <> ACtl.LCLObject.Width) or (NewSize.cy <> ACtl.LCLObject.Height) or
-     ACtl.LCLObject.ClientRectNeedsInterfaceUpdate) then
-       ACtl.LCLObject.DoAdjustClientRectChange;
 
   FillChar(Msg{%H-}, SizeOf(Msg), #0);
 
