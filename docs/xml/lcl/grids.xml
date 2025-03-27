@@ -18141,24 +18141,46 @@ TabAdvance is used in the implementation of the KeyDown method in TCustomGrid.
 </element>
 
 <element name="TCustomGrid.TitleImageList">
-<short>The list with images displayed in column titles.</short>
+<short>
+The list with images displayed in column titles.
+</short>
 <descr>
 <p>
-<var>TitleImageList</var> is a <var>TImageList</var> property which contains 
-the images displayed in the title area for columns in the grid. It can 
-include images used for the non-native column sort indicators.
+<var>TitleImageList</var> is a <var>TCustomImageList</var> property which 
+contains images displayed in the title area for columns on the grid. It can 
+include images used for the ascending and descending column sort indicators 
+when <var>TitleStyle</var> is set to a value other than <var>tsNative</var>. 
+Use <var>ImageIndexSortAsc</var> and <var>ImageIndexSortDesc</var> to specify 
+the positions for sort images stored in TitleImageList.
 </p>
 <p>
 Setting a new value for the property causes the <var>VisualChange</var> 
-method to be called to update the column sizes and redraw the control.
+method to be called to update column sizes and to redraw the control.
 </p>
 <p>
-TitleImageList is used to get an image resolution using the width specified 
-in <var>TitleImageListWidth</var>. The images are used when rendering the 
-<var>TGridColumn</var> instances in the <var>Columns</var> collection.
+TitleImageList is used to get an image resolution with the width specified in 
+<var>TitleImageListWidth</var>. The images are used (when assigned) in 
+<var>DrawColumnTitleImage</var> and <var>DrawColumnText</var> to render the 
+<var>TGridColumn</var> instances defined in the <var>Columns</var> collection. 
+</p>
+<p>
+Use the <var>Title</var> property in the TGridColumn instance to assign the 
+<var>ImageIndex</var> and <var>ImageLayout</var> needed for the title image.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TCustomGrid.Columns"/>
+<link id="TCustomGrid.TitleStyle"/>
+<link id="TCustomGrid.TitleImageListWidth"/>
+<link id="TCustomGrid.DrawColumnTitleImage"/>
+<link id="TCustomGrid.DrawColumnText"/>
+<link id="TCustomGrid.ImageIndexSortAsc"/>
+<link id="TCustomGrid.ImageIndexSortDesc"/>
+<link id="TCustomGrid.VisualChange"/>
+<link id="TGridColumn.Title"/>
+<link id="TGridColumnTitle.ImageIndex"/>
+<link id="TGridColumnTitle.ImageLayout"/>
+</seealso>
 </element>
 
 <element name="TCustomGrid.TitleImageListWidth">
