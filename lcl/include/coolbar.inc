@@ -1281,7 +1281,7 @@ begin
       aTop := FVisiBands[i].FTop;
       aRect := Rect(aLeft, aTop, aLeft+FVisiBands[i].FRealWidth+1, aTop+FVisiBands[i].FHeight);
       //paint Band Background
-      if FVisiBands[i].Bitmap.Width > 0 then
+      if Assigned(FVisiBands[i].Bitmap) and (FVisiBands[i].Bitmap.Width > 0) then
         DrawTiledBitmap(aRect, FVisiBands[i].Bitmap)
       else begin
         if not FVisiBands[i].FixedBackground and FVisiBands[i].ParentBitmap
