@@ -9106,37 +9106,8 @@ function TGtk3ScrollingWinControl.CreateWidget(const Params: TCreateParams
   ): PGtkWidget;
 begin
   FHasPaint := True;
-  //FWidgetType := [wtWidget, wtContainer, wtScrollingWin, wtScrollingWinControl];
   Result := inherited CreateWidget(Params);
-  include(FWidgetType, wtScrollingWinControl);
-  exclude(FWidgetType, wtCustomControl);
-  exit;
-  // PGtkScrolledWindow(TGtkScrolledWindow.new(nil, nil));
-  FCentralWidget := LCLGtkFixedNew;
-  FCentralWidget^.set_hexpand(True);
-  FCentralWidget^.set_vexpand(True);
-  FCentralWidget^.set_has_window(True);
-  FCentralWidget^.show;
-
-  PGtkScrolledWindow(Result)^.add_with_viewport(FCentralWidget);
-
-  PGtkViewport(PGtkScrolledWindow(Result)^.get_child)^.set_shadow_type(BorderStyleShadowMap[bsNone]);
-  PGtkScrolledWindow(Result)^.set_shadow_type(BorderStyleShadowMap[TScrollingWinControl(LCLObject).BorderStyle]);
-  PGtkScrolledWindow(Result)^.get_vscrollbar^.set_can_focus(False);
-  PGtkScrolledWindow(Result)^.get_hscrollbar^.set_can_focus(False);
-  PGtkScrolledWindow(Result)^.set_policy(GTK_POLICY_NEVER, GTK_POLICY_NEVER);
-
-  // this is very important
-  PGtkScrolledWindow(Result)^.set_can_focus(False);
-  FCentralWidget^.set_can_focus(True);
-
-  g_signal_connect_data(FCentralWidget,'size-allocate',TGCallback(@ScrollingWinControlFixedSizeAllocate), Self, nil, G_CONNECT_DEFAULT);
-
-  with PGtkScrolledWindow(Result)^.get_vadjustment^ do
-    LCLVAdj := gtk_adjustment_new(value, lower, upper, step_increment, page_increment, page_size);
-  with PGtkScrolledWindow(Result)^.get_hadjustment^ do
-    LCLHAdj := gtk_adjustment_new(value, lower, upper, step_increment, page_increment, page_size);
-
+  Include(FWidgetType, wtScrollingWinControl);
 end;
 
 { TGtk3Window }
