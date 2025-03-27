@@ -70,6 +70,8 @@ type
     FPaintData: TPaintData;
     FDrawSignal: GULong; // needed by designer
     FFont: PPangoFontDescription;
+    class function MoveTabFocus(aWidget: PGtkWidget;
+      aDirection: TGtkDirectionType; aData: gPointer): gBoolean; cdecl; static;
     class function WidgetEvent(widget: PGtkWidget; event: PGdkEvent; data: GPointer): gboolean; cdecl; static; {main event filter of widget}
   strict private
     FCentralWidgetRGBA: array [0{GTK_STATE_NORMAL}..4{GTK_STATE_INSENSITIVE}] of TDefaultRGBA;
@@ -2140,7 +2142,8 @@ begin
     end else
       writeln('EVENT: KeyPress Result = False Window ? ', Sender^.window = Self.GetWindow);
     {$ENDIF}
-    Result := (TempWidget = GetFocus) and (Msg.CharCode in FKeysToEat);
+    Result := gtk_false;
+    // (TempWidget = GetFocus) and (Msg.CharCode in FKeysToEat);
   end;
 end;
 
@@ -2664,6 +2667,17 @@ begin
   gtk_drag_finish(aContext, Result, false, time);
 end;
 
+class function TGtk3Widget.MoveTabFocus(aWidget: PGtkWidget;
+  aDirection: TGtkDirectionType; aData: gPointer): gBoolean; cdecl;
+var
+  aForm: TCustomForm;
+begin
+  Result := gtk_true;  // we are usually toplevel here
+  aForm := GetParentForm(TGtk3Widget(aData).LCLObject);
+  if Assigned(aForm.ActiveControl) then
+    aForm.ActiveControl.PerformTab(aDirection = GTK_DIR_TAB_FORWARD);
+end;
+
 procedure TGtk3Widget.InitializeWidget;
 var
   ARect: TGdkRectangle;
@@ -2706,6 +2720,10 @@ begin
   g_signal_connect_data(getContainerWidget, 'leave-notify-event', TGCallback(@MouseLeaveNotify), Self, nil, G_CONNECT_DEFAULT);
 
   g_signal_connect_data(FWidget,'drag_data_received',TGCallback(@DragDataReceived), Self, nil, G_CONNECT_DEFAULT);
+
+  g_signal_connect_data(FWidget, 'focus', TGCallback(@MoveTabFocus), Self, nil, G_CONNECT_DEFAULT);
+  if FWidget <> GetContainerWidget then
+    g_signal_connect_data(GetContainerWidget, 'focus', TGCallback(@MoveTabFocus), Self, nil, G_CONNECT_DEFAULT);
 
   for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
   begin
