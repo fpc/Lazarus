@@ -1307,7 +1307,7 @@ begin
         if TGtk3ComboBox(Data).DroppedDown then
           exit;
       end;
-      if not (csNoFocus in TCustomForm(TGtk3Widget(Data).LCLObject).ControlStyle) then
+      if not (csNoFocus in TWinControl(TGtk3Widget(Data).LCLObject).ControlStyle) then
         TGtk3Widget(Data).GtkEventFocus(Widget, Event);
     end;
   GDK_CONFIGURE:
