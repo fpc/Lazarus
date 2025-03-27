@@ -771,7 +771,7 @@ type
     FSortColumn: Integer;
     FSortLCLImages: TLCLGlyphs;
     FTabAdvance: TAutoAdvance;
-    FTitleImageList: TImageList;
+    FTitleImageList: TCustomImageList;
     FTitleImageListWidth: Integer;
     FTitleStyle: TTitleStyle;
     FAscImgInd: TImageIndex;
@@ -870,7 +870,7 @@ type
     procedure SetFocusRectVisible(const AValue: Boolean);
     procedure ScrollerDoScroll(Dir: TPoint);
     procedure SetScroller(Dir: TPoint);
-    procedure SetTitleImageList(const AValue: TImageList);
+    procedure SetTitleImageList(const AValue: TCustomImageList);
     procedure SetTitleImageListWidth(const aTitleImageListWidth: Integer);
     procedure SetTitleFont(const AValue: TFont);
     procedure SetTitleStyle(const AValue: TTitleStyle);
@@ -1271,7 +1271,7 @@ type
     property ImageIndexSortAsc: TImageIndex read FAscImgInd write FAscImgInd default -1;
     property ImageIndexSortDesc: TImageIndex read FDescImgInd write FDescImgInd default -1;
     property TabAdvance: TAutoAdvance read FTabAdvance write FTabAdvance default aaRightDown;
-    property TitleImageList: TImageList read FTitleImageList write SetTitleImageList;
+    property TitleImageList: TCustomImageList read FTitleImageList write SetTitleImageList;
     property TitleImageListWidth: Integer read FTitleImageListWidth write SetTitleImageListWidth default 0;
     property InplaceEditor: TWinControl read FEditor;
     property IsCellSelected[aCol,aRow: Integer]: boolean read GetIsCellSelected;
@@ -5902,7 +5902,7 @@ begin
   VisualChange;
 end;
 
-procedure TCustomGrid.SetTitleImageList(const AValue: TImageList);
+procedure TCustomGrid.SetTitleImageList(const AValue: TCustomImageList);
 begin
   if FTitleImageList = AValue then exit;
   FTitleImageList := AValue;
