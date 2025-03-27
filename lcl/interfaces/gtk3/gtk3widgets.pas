@@ -9229,14 +9229,14 @@ class procedure TGtk3Window.WindowSizeAllocate(AWidget:PGtkWidget;AGdkRect:
 var
   Msg: TLMSize;
   NewSize: TSize;
-  ACtl: TGtk3Widget;
+  ACtl: TGtk3Window;
   AState: TGdkWindowState;
   Alloc: TGtkAllocation;
   ADefW, ADefH: gint;
 begin
   if AWidget=nil then ;
 
-  ACtl := TGtk3Widget(Data);
+  ACtl := TGtk3Window(Data);
 
   //When gtk3 form is shown for the first time under some window manager there's
   //geometry out of sync. We fix it via map-event and WidgetMapped property.
@@ -9292,18 +9292,15 @@ begin
   Msg.Msg := LM_SIZE;
   Msg.SizeType := SIZE_RESTORED;
 
-  if ACtl is TGtk3Window then
-  begin
-    AState := TGtk3Window(ACtl).getWindowState;
-    if GDK_WINDOW_STATE_ICONIFIED in AState  then
-      Msg.SizeType := SIZE_MINIMIZED
-    else
-    if GDK_WINDOW_STATE_MAXIMIZED in AState  then
-      Msg.SizeType := SIZE_MAXIMIZED
-    else
-    if GDK_WINDOW_STATE_FULLSCREEN in AState  then
-      Msg.SizeType := SIZE_FULLSCREEN;
-  end;
+  AState := TGtk3Window(ACtl).getWindowState;
+  if GDK_WINDOW_STATE_ICONIFIED in AState  then
+    Msg.SizeType := SIZE_MINIMIZED
+  else
+  if GDK_WINDOW_STATE_MAXIMIZED in AState  then
+    Msg.SizeType := SIZE_MAXIMIZED
+  else
+  if GDK_WINDOW_STATE_FULLSCREEN in AState  then
+    Msg.SizeType := SIZE_FULLSCREEN;
 
   Msg.SizeType := Msg.SizeType or Size_SourceIsInterface;
 
