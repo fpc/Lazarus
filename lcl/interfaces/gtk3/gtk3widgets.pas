@@ -5762,7 +5762,7 @@ begin
   if (uWidth <> HSize) or (uHeight <> VSize) then
     PGtkLayout(aWidget)^.set_size(HSize, VSize);
 
-  if TGtk3Widget(Data).LCLObject.ClientRectNeedsInterfaceUpdate then
+  if not TGtk3Widget(Data).InUpdate and TGtk3Widget(Data).LCLObject.ClientRectNeedsInterfaceUpdate then
     TGtk3Widget(Data).LCLObject.DoAdjustClientRectChange;
 end;
 
