@@ -148,14 +148,15 @@ end;
 function TFpSymbolContext.FindSymbol(const AName: String; const OnlyUnitName: String;
   AFindFlags: TFindExportedSymbolsFlags): TFpValue;
 var
-  i: integer;
   val: TFpDbgMemLocation;
+  a: TDBGPtr;
+  n: string;
 begin
-  i := FFpSymbolInfo.FSymbolList.IndexOf(AName);
-  if i > -1 then
+  // TODO: case sense?
+  if FFpSymbolInfo.FSymbolList.GetInfo(AName, a, n) then
   begin
     val := Default(TFpDbgMemLocation);
-    val.Address:=FFpSymbolInfo.FSymbolList.DataPtr[i]^.Addr;
+    val.Address:=a;
     val.MType:=mlfTargetMem;
     result := TFpValueConstAddress.Create(val);
   end
@@ -166,8 +167,11 @@ end;
 { TFpSymbolInfo }
 
 function TFpSymbolInfo.GetSymbols(AnIndex: integer): TFpSymbol;
+var
+  p: PfpLinkerSymbol;
 begin
-  Result := TFpSymbolTableProc.Create(FSymbolList.Keys[AnIndex], FSymbolList.DataPtr[AnIndex]^.Addr);
+  p := FSymbolList.DataPtr[AnIndex];
+  Result := TFpSymbolTableProc.Create(p^.Name, FSymbolList.Keys[AnIndex]);
 end;
 
 constructor TFpSymbolInfo.Create(ALoaderList: TDbgImageLoaderList;
@@ -182,8 +186,10 @@ begin
   for i := 0 to ALoaderList.Count-1 do
     ALoaderList[i].ParseSymbolTable(FSymbolList);
   FTargetInfo := ALoaderList.TargetInfo;
-  if FSymbolList.Count > 0 then
+  if FSymbolList.Count > 0 then begin
     SetHasInfo;
+    FSymbolList.SortAndHash;
+  end;
 end;
 
 constructor TFpSymbolInfo.Create(ALoaderList: TDbgImageLoaderList;
@@ -209,22 +215,11 @@ end;
 function TFpSymbolInfo.FindProcSymbol(const AName: String; AIgnoreCase: Boolean
   ): TFpSymbol;
 var
-  s: String;
-  i: integer;
+  a: TDBGPtr;
+  n: string;
 begin
-  if AIgnoreCase then begin
-    s := UpperCase(AName);
-    i := FSymbolList.Count - 1;
-    while i >= 0 do begin
-      if UpperCase(FSymbolList.Keys[i]) = s then
-        break;
-      dec(i);
-    end;
-  end
-  else
-    i := FSymbolList.IndexOf(AName);
-  if i >= 0 then
-    Result := TFpSymbolTableProc.Create(AName, FSymbolList.DataPtr[i]^.Addr)
+  if FSymbolList.GetInfo(AName, a, n, not AIgnoreCase) then
+    Result := TFpSymbolTableProc.Create(n, a)
   else
     result := nil;
 end;
@@ -232,11 +227,13 @@ end;
 function TFpSymbolInfo.FindProcSymbol(AnAdress: TDbgPtr): TFpSymbol;
 var
   CheckRange: Boolean;
-  i, NearestIdx: integer;
-  a, NearestAddr: TDBGPtr;
-  NPreFix: String;
-  d: PfpLinkerSymbol;
+  NPreFix, n: String;
+  a: TDBGPtr;
 begin
+  Result := nil;
+  if (AnAdress < FSymbolList.FirstAddr) or (AnAdress > FSymbolList.LastAddr) then
+    exit;
+
   NPreFix := '';
   if FLibName <> '' then
     NPreFix := FLibName+':';
@@ -244,29 +241,9 @@ begin
     (FSymbolList.HighAddr > FSymbolList.LowAddr) and
     (AnAdress >= FSymbolList.LowAddr) and
     (AnAdress < FSymbolList.HighAddr);
-  NearestIdx := -1;
-  NearestAddr := 0;
 
-  Result := nil;
-  i := FSymbolList.Count - 1;
-  while i >= 0 do begin
-    d := FSymbolList.DataPtr[i];
-    a := d^.Addr;
-    if (a = AnAdress) then begin
-      Result := TFpSymbolTableProc.Create(NPreFix + FSymbolList.Keys[i], a);
-      exit;
-    end;
-    if CheckRange and (a <= AnAdress) and (a > NearestAddr) and
-       ( (d^.SectionEnd = 0) or (AnAdress <= d^.SectionEnd) )
-    then begin
-      NearestIdx := i;
-      NearestAddr := a;
-    end;
-    dec(i);
-  end;
-  if NearestIdx >= 0 then begin
-    Result := TFpSymbolTableProc.Create(NPreFix + FSymbolList.Keys[NearestIdx], FSymbolList.DataPtr[NearestIdx]^.Addr);
-  end;
+  if FSymbolList.GetInfo(AnAdress, a, n, not CheckRange) then
+    Result := TFpSymbolTableProc.Create(NPreFix + n, a);
 end;
 
 function TFpSymbolInfo.SymbolCount: integer;
