@@ -7847,7 +7847,12 @@ begin
 end;
 
 procedure TCustomGrid.KeyPress(var Key: char);
+const
+  keypressBusy:boolean=false;
 begin
+  if keypressbusy then
+    exit;
+  keypressBusy := true;
   inherited KeyPress(Key);
   if not EditorKey then
     // we are interested in these keys only if they came from the grid
@@ -7862,6 +7867,7 @@ begin
         Key := #0;
       end;
     end;
+  keypressBusy := false;
 end;
 
 { Convert a physical Mouse coordinate into a physical cell coordinate }

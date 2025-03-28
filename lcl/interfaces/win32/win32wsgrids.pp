@@ -80,7 +80,7 @@ begin
     if S='' then WChar := WPARAM(Ord('?'))
     else         WChar := WPARAM(S[1]);
   end;
-  PostMessageW(AEditor.Handle, WM_CHAR, WChar, 0);
+  SendMessageW(AEditor.Handle, WM_CHAR, WChar, 0);
 end;
 
 end.
