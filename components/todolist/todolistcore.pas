@@ -263,13 +263,15 @@ begin
       if LazStartsText(TheToken, lParsingString) then
       begin
         if (Length(lParsingString)=Length(TheToken)) // Don't match with 'ToDoX'
-        or (lParsingString[Length(TheToken)+1] in [#9,' ',':']) then
-        begin
+        or (lParsingString[Length(TheToken)+1] in [#9,#10,#13,' ',':'])
+        or ((aEndComment <> '') and
+            (Copy(lParsingString,Length(TheToken)+1,Length(aEndComment))=aEndComment))
+        then begin
           lTokenFound := True;       // Token match
           lFoundToDoType := lTodoType;
           lFoundTokenStyle := lTokenStyle;
-          Break;
         end;
+        Break;
       end;
     end;
   end;
