@@ -38,7 +38,7 @@ begin
   { Creates the application NSApp object }
   FNSApp := InitApplication;
   FNSApp_Delegate := TAppDelegate.alloc.init;
-  FNSApp.setDelegate(FNSApp_Delegate);
+  FNSApp.setDelegate( NSApplicationDelegateProtocol(FNSApp_Delegate) );
   {$ifdef COCOALOOPOVERRIDE}
   FNSApp.finishLaunching;
   {$endif}
@@ -605,6 +605,15 @@ end;
 procedure TAppDelegate.application_openFiles(sender: NSApplication; filenames: NSArray);
 begin
   TCocoaWidgetSet(WidgetSet).DropFiles(filenames);
+end;
+
+procedure TAppDelegate.application_openURLs(sender: NSApplication; urls: NSArray);
+var
+  url: NSURL;
+begin
+  for url in urls do begin
+    TCocoaApplication(NSAPP).onOpenURL( url );
+  end;
 end;
 
 procedure TAppDelegate.applicationDidHide(notification: NSNotification);
