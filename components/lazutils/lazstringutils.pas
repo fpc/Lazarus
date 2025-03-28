@@ -1242,36 +1242,33 @@ end;
 }
 function TextToSingleLine(const AText: string): string;
 var
-  str: string;
   i, wstart, wlen: Integer;
 begin
-  str := Trim(AText);
+  Result := Trim(AText);
   wstart := 0;
-  wlen := 0;
   i := 1;
-  while i < Length(str) - 1 do
+  while i <= Length(Result) do
   begin
-    if (str[i] in [' ', #13, #10]) then
+    if Result[i] in [' ', #13, #10] then
     begin
-      if (wstart = 0) then
+      if wstart = 0 then
       begin
         wstart := i;
-        wlen := 1;
+        wlen := 0;
       end else
         Inc(wlen);
     end else
     begin
       if wstart > 0 then
       begin
-        str[wstart] := ' ';
-        Delete(str, wstart+1, wlen-1);
-        Dec(i, wlen-1);
+        Result[wstart] := ' ';
+        Delete(Result, wstart+1, wlen);
+        Dec(i, wlen);
         wstart := 0;
       end;
     end;
     Inc(i);
   end;
-  Result := str;
 end;
 
 function SwapCase(const S: String): String;

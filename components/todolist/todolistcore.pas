@@ -238,19 +238,22 @@ end;
 procedure TTLScannedFile.CreateToDoItem(const aStartComment, aEndComment: string;
   aLineNumber: Integer);
 var
-  lParsingString, TheToken: string;
+  TheToken: string;
   lTokenFound: boolean;
   lTodoType, lFoundToDoType: TToDoType;
   lTokenStyle, lFoundTokenStyle: TTokenStyle;
   NewToDoItem: TTodoItem;
 begin
-  //DebugLn(['TTLScannedFile.CreateToDoItem FileName=',FRealFilename,' LineNumber=',aLineNumber]);
-  lParsingString := TextToSingleLine(FCommentStr);
-  // Remove the beginning comment chars from input string
+  //DebugLn(['TTLScannedFile.CreateToDoItem FileName=',FRealFilename,
+  //         ', LineNumber=',aLineNumber, ', FCommentStr=',FCommentStr]);
+  // Remove beginning and ending comment characters from the string
   if aStartComment <> '' then
-    Delete(lParsingString, 1, Length(aStartComment));
-  // Remove leading and trailing blanks from input
-  lParsingString := Trim(lParsingString);
+    Delete(FCommentStr, 1, Length(aStartComment));
+  if aEndComment <> '' then begin
+    Assert(LazEndsStr(aEndComment, FCommentStr), 'TTLScannedFile.CreateToDoItem: No comment end.');
+    SetLength(FCommentStr, Length(FCommentStr)-Length(aEndComment));
+  end;
+  FCommentStr := TextToSingleLine(FCommentStr);
 
   // Determine Token and Style
   lTokenFound := False;
@@ -260,13 +263,11 @@ begin
     for lTodoType := Low(TToDoType) to High(TToDoType) do
     begin
       TheToken := TODO_TOKENS[lTokenStyle,lTodoType];
-      if LazStartsText(TheToken, lParsingString) then
+      if LazStartsText(TheToken, FCommentStr) then
       begin
-        if (Length(lParsingString)=Length(TheToken)) // Don't match with 'ToDoX'
-        or (lParsingString[Length(TheToken)+1] in [#9,#10,#13,' ',':'])
-        or ((aEndComment <> '') and
-            (Copy(lParsingString,Length(TheToken)+1,Length(aEndComment))=aEndComment))
-        then begin
+        if (Length(FCommentStr)=Length(TheToken)) // Don't match with 'ToDoX'
+        or (FCommentStr[Length(TheToken)+1] in [#9,' ',':']) then
+        begin
           lTokenFound := True;       // Token match
           lFoundToDoType := lTodoType;
           lFoundTokenStyle := lTokenStyle;
@@ -279,18 +280,14 @@ begin
   if Not lTokenFound then
     Exit; // Not a Todo/Done item, leave
 
-  // Remove the ending comment chars from input string
-  if (aEndComment <> '') and LazEndsStr(aEndComment, lParsingString) then
-    SetLength(lParsingString, Length(lParsingString)-Length(aEndComment));
-
   // Remove the ToDo token
   Assert(TheToken=TODO_TOKENS[lFoundTokenStyle,lFoundToDoType], 'TTLScannedFile.CreateToDoItem: TheToken');
-  Delete(lParsingString, 1, Length(TheToken));
-  lParsingString := Trim(lParsingString);
+  Delete(FCommentStr, 1, Length(TheToken));
+  FCommentStr := TrimLeft(FCommentStr);
 
   // Require a colon with plain "done" but not with "#done". Prevent false positives.
   NewToDoItem:=TTodoItem.Create;
-  if NewToDoItem.Parse(lParsingString, lFoundTokenStyle=tsAlternate) then
+  if NewToDoItem.Parse(FCommentStr, lFoundTokenStyle=tsAlternate) then
   begin
     NewToDoItem.ToDoType   := lFoundToDoType;
     NewToDoItem.TokenStyle := lFoundTokenStyle;

@@ -212,12 +212,12 @@ begin
   CategoryLabel.Caption:=listToDoLCategory;
   grpboxToDoType.Caption:=lisToDoToDoType;
   grpboxToDoType.Tag:=Ord(tdToDo);
-  rdoToDo.Tag := Ord(tdToDo);
+  rdoToDo.Tag:=Ord(tdToDo);
   rdoDone.Tag:=Ord(tdDone);
   rdoNote.Tag:=Ord(tdNote);
   chkAlternateTokens.Caption:=lisAlternateTokens;
   chkAlternateTokens.Hint:=lisAlternateTokensHint;
-  XMLPropStorage.FileName := Concat(AppendPathDelim(LazarusIDE.GetPrimaryConfigPath),
+  XMLPropStorage.FileName:=Concat(AppendPathDelim(LazarusIDE.GetPrimaryConfigPath),
     DefaultTodoListCfgFile);
   XMLPropStorage.Active := True;
 end;
