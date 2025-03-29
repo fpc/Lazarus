@@ -1110,23 +1110,37 @@ It is used to implement facilities in the debugger.
 <element name="GetPart.AnUpdateSource"/>
 
 <element name="TextToSingleLine">
-<short>Converts a multi-line string to a single line of text.</short>
+<short>
+Converts a multi-line string to a single line of text.
+</short>
 <descr>
 <p>
-Replaces <b>CR</b> and <b>LF</b> characters in <var>AText</var> with 
-<b>Space</b> characters. Duplicate Space characters in the return value are 
-converted to a single Space character.
+<var>TextToSingleLine</var> is a <var>String</var> function used to replace 
+end-of-line characters (like <b>CR (#13)</b> and <b>LF (#10)</b>) in 
+<var>AText</var> with <b>Space (#32)</b> characters. Duplicate adjacent Space 
+characters are converted to a single Space character in the return value.
 </p>
+<code>
+// uses LazStringUtils;
+// var sMultiLn, sSingleLn: String;
+
+sMultiLn := 'The rain  '#10' in Spain  '#13#10' falls  mainly  on  the  plain.  ';
+
+sSingleLn := TextToSingleLine(sMultiLn);
+// value is: 'The rain in Spain falls mainly on the plain.'
+</code>
 </descr>
 <seealso/>
 </element>
 <element name="TextToSingleLine.Result">
 <short>
-Text after removing end-of-line characters and duplicate spaces.
+Text after removing end-of-line characters and duplicate space characters.
 </short>
 </element>
 <element name="TextToSingleLine.AText">
-<short>Text values examined and converted in the routine.</short>
+<short>
+Text values examined and converted in the routine.
+</short>
 </element>
 
 <element name="SwapCase">
