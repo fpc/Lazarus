@@ -199,6 +199,7 @@ type
     procedure Move(ALeft, ATop: Integer);
     procedure Activate; virtual;
     procedure preferredSize(var PreferredWidth, PreferredHeight: integer; {%H-}WithThemeSpace: Boolean); virtual;
+    procedure Repaint(const ARect: PRect = nil); virtual;
     procedure SetCursor(ACursor: HCURSOR);
     procedure SetFocus; virtual;
     procedure SetParent(AParent: TGtk3Widget; const ALeft, ATop: Integer); virtual;
@@ -3296,6 +3297,43 @@ begin
       PreferredWidth := 0;
     end;
   end;
+end;
+
+procedure TGtk3Widget.Repaint(const ARect: PRect);
+var
+  aLayout: PGtkLayout;
+  aWindow: PGdkWindow;
+  cr, tmpCtx: Pcairo_t;
+  aRegion: Pcairo_region_t;
+  tmpSurf: Pcairo_surface_t;
+  ACairoRect: Tcairo_rectangle_int_t;
+begin
+  if [wtLayout] * WidgetType <> [] then
+  begin
+    aLayout := PGtkLayout(GetContainerWidget);
+    if Gtk3IsGdkWindow(aLayout^.get_bin_window) then
+    begin
+      //TODO: implement ARect
+      aWindow := aLayout^.get_bin_window;
+      cr := gdk_cairo_create(aWindow);
+      aRegion := gdk_window_get_visible_region(aWindow);
+      cairo_region_get_extents(aRegion, @ACairoRect);
+      tmpSurf := cairo_surface_create_similar(cairo_get_target(cr), CAIRO_CONTENT_COLOR_ALPHA, ACairoRect.Width, ACairoRect.Height);
+      tmpCtx := cairo_create(tmpSurf);
+      cairo_translate(tmpCtx, ACairoRect.X, ACairoRect.Y);
+      gtk_widget_draw(aLayout, tmpCtx);
+      cairo_set_source_surface(cr, tmpSurf, 0, 0);
+      cairo_paint(cr);
+      cairo_destroy(tmpCtx);
+      cairo_surface_destroy(tmpSurf);
+      cairo_destroy(cr);
+      cairo_region_destroy(aRegion);
+      exit;
+    end;
+  end;
+  GetContainerWidget^.queue_draw;
+  if GetContainerWidget^.get_has_window and Gtk3IsGdkWindow(GetContainerWidget^.window) then
+    GetContainerWidget^.window^.process_updates(True);
 end;
 
 procedure TGtk3Widget.SetCursor(ACursor: HCURSOR);
