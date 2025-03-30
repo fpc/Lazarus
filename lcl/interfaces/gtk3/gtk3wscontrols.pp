@@ -109,6 +109,7 @@ type
     class procedure DefaultWndHandler(const AWinControl: TWinControl; var AMessage); override;
     class procedure Invalidate(const AWinControl: TWinControl); override;
     class procedure PaintTo(const AWinControl: TWinControl; ADC: HDC; X, Y: Integer); override;
+    class procedure Repaint(const AWinControl: TWinControl); override;
     class procedure ShowHide(const AWinControl: TWinControl); override; //TODO: rename to SetVisible(control, visible)
     class procedure ScrollBy(const AWinControl: TWinControl; DeltaX, DeltaY: integer); override;
   end;
@@ -348,6 +349,37 @@ begin
     gtk_widget_draw(AWidget.Widget, pcr);
   end;
   TGtk3DeviceContext(ADC).Restore;
+end;
+
+class procedure TGtk3WSWinControl.Repaint(const AWinControl: TWinControl);
+var
+  cr, tmpCtx: Pcairo_t;
+  aWindow: PGdkWindow;
+  aRegion: Pcairo_region_t;
+  ARect: Tcairo_rectangle_int_t;
+  tmpSurf: Pcairo_surface_t;
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'Repaint') then
+    Exit;
+
+  if Gtk3IsLayout(TGtk3Widget(AWinControl.Handle).GetContainerWidget) and
+    Gtk3IsGdkWindow(PGtkLayout(TGtk3Widget(AWinControl.Handle).GetContainerWidget)^.get_bin_window) then
+  begin
+    aWindow := PGtkLayout(TGtk3Widget(AWinControl.Handle).GetContainerWidget)^.get_bin_window;
+    cr := gdk_cairo_create(aWindow);
+    aRegion := gdk_window_get_visible_region(aWIndow);
+    cairo_region_get_extents(aRegion, @ARect);
+    tmpSurf := cairo_surface_create_similar(cairo_get_target(cr), CAIRO_CONTENT_COLOR_ALPHA, ARect.Width, ARect.Height);
+    tmpCtx := cairo_create(tmpSurf);
+    cairo_translate(tmpCtx, ARect.X, ARect.Y);
+    gtk_widget_draw(TGtk3Widget(AWinControl.Handle).GetContainerWidget, tmpCtx);
+    cairo_set_source_surface(cr, tmpSurf, 0, 0);
+    cairo_paint(cr);
+    cairo_destroy(tmpCtx);
+    cairo_surface_destroy(tmpSurf);
+    cairo_destroy(cr);
+  end else
+    TGtk3Widget(AWinControl.Handle).Update(nil);
 end;
 
 class procedure TGtk3WSWinControl.SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer);
