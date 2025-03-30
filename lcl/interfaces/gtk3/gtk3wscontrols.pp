@@ -378,6 +378,7 @@ begin
     cairo_destroy(tmpCtx);
     cairo_surface_destroy(tmpSurf);
     cairo_destroy(cr);
+    cairo_region_destroy(aRegion);
   end else
     TGtk3Widget(AWinControl.Handle).Update(nil);
 end;
