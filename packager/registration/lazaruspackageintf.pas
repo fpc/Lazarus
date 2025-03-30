@@ -115,10 +115,6 @@ function SetupDlgFrameList: TSetupDlgFrameList;
 
 implementation
 
-operator < (a,b: ISetupDlgFrame): boolean;
-begin
-end;
-
 procedure RegisterUnit(const TheUnitName: string; RegisterProc: TRegisterProc);
 begin
   RegisterUnitProc(TheUnitName,RegisterProc);
