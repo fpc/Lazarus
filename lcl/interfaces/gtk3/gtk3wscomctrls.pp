@@ -32,7 +32,7 @@ uses
   LazLogger,
   // widgetset
   WSComCtrls, WSLCLClasses, WSControls, WSProc,
-  gtk3widgets;
+  gtk3widgets, gtk3int;
   
 type
   { TGtk3WSCustomPage }
@@ -1588,13 +1588,23 @@ end;
 
 class procedure TGtk3WSCustomTabControl.UpdateProperties(
   const ATabControl: TCustomTabControl);
+var
+  aPage: PGtkWidget;
+  aLCLPage: TGtk3Page;
+  i: Integer;
 begin
   if ATabControl is TTabControl then
     exit;
   // inherited UpdateProperties(ATabControl);
   if not WSCheckHandleAllocated(ATabControl, 'ATabControl') then
     Exit;
-
+  for i := 0 to PGtkNotebook(TGtk3NoteBook(ATabControl.Handle).GetContainerWidget)^.get_n_pages - 1 do
+  begin
+    aPage := PGtkNotebook(TGtk3NoteBook(ATabControl.Handle).GetContainerWidget)^.get_nth_page(i);
+    aLCLPage := TGtk3Page(HwndFromGtkWidget(aPage));
+    if Assigned(aLCLPage) then
+      aLCLPage.CloseButtonVisible := (nboShowCloseButtons in ATabControl.Options);
+  end;
   if (nboHidePageListPopup in ATabControl.Options) then
     PGtkNotebook(TGtk3NoteBook(ATabControl.Handle).GetContainerWidget)^.popup_disable
   else

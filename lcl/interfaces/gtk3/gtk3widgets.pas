@@ -415,8 +415,12 @@ type
 
   TGtk3Page = class(TGtk3Container)
   private
+    FPageBox: PGtkBox;
     FPageLabel: PGtkLabel;
+    FCloseButton: PGtkButton;
   strict private
+    function GetCloseButtonVisible: boolean;
+    procedure SetCloseButtonVisible(AValue: boolean);
     class procedure TabSheetLayoutSizeAllocate(AWidget: PGtkWidget;
       AGdkRect: PGdkRectangle; Data: gpointer); cdecl; static;
   protected
@@ -428,6 +432,7 @@ type
     function ClientToScreen(var P:TPoint):boolean; override;
     function getClientOffset:TPoint; override;
     function getClientRect: TRect; override;
+    property CloseButtonVisible: boolean read GetCloseButtonVisible write SetCloseButtonVisible;
   end;
 
   { TGtk3NoteBook }
@@ -5003,6 +5008,17 @@ begin
   end;
 end;
 
+function TGtk3Page.GetCloseButtonVisible: boolean;
+begin
+  Result := Assigned(FCloseButton) and FCloseButton^.is_visible;
+end;
+
+procedure TGtk3Page.SetCloseButtonVisible(AValue: boolean);
+begin
+  if Assigned(FCloseButton) then
+    FCloseButton^.set_visible(AValue);
+end;
+
 class procedure TGtk3Page.TabSheetLayoutSizeAllocate(
   AWidget: PGtkWidget; AGdkRect: PGdkRectangle; Data: gpointer); cdecl;
 var
@@ -5021,13 +5037,27 @@ begin
 end;
 
 function TGtk3Page.CreateWidget(const Params: TCreateParams): PGtkWidget;
+var
+  image: PGtkImage;
 begin
   FWidgetType := FWidgetType + [wtLayout];
+  FPageBox := TGtkBox.new(GTK_ORIENTATION_HORIZONTAL, 4);
   FPageLabel:= TGtkLabel.new(PChar(Params.Caption));
   FPageLabel^.set_use_underline(true);
+  image := gtk_image_new_from_icon_name('window-close', GTK_ICON_SIZE_MENU);
+  FCloseButton := gtk_button_new();
+  gtk_button_set_relief(PGtkButton(FCloseButton), GTK_RELIEF_NONE);
+  gtk_container_add(PGtkContainer(FCloseButton), image);
+  gtk_widget_set_name(FCloseButton, 'tab-close-button'); // optional styling via css.
+
+  FPageBox^.pack_start(FPageLabel, False, False, 0);
+  FPageBox^.pack_start(FCloseButton, False, False, 0);
+  FPageBox^.show_all;
+
   Self.FHasPaint:=true;
   // ref it to save it in case TabVisible is set to false
-  FPageLabel^.ref;
+  FPageBox^.ref;
+
   Result := TGtkBox.new(GTK_ORIENTATION_HORIZONTAL, 0);
   FCentralWidget := TGtkLayout.new(nil, nil);
   FCentralWidget^.set_app_paintable(True);
@@ -5043,7 +5073,7 @@ end;
 procedure TGtk3Page.DestroyWidget;
 begin
   // unref it to allow it to be destroyed
-  FPageLabel^.unref;
+  FPageBox^.unref;
   inherited DestroyWidget;
 end;
 
@@ -5345,8 +5375,9 @@ begin
   if IsWidgetOK then
   begin
     Gtk3Page := TGtk3Page(ACustomPage.Handle);
+    Gtk3Page.CloseButtonVisible := nboShowCloseButtons in TCustomTabControl(LCLObject).Options;
     with PGtkNoteBook(GetContainerWidget)^ do
-      insert_page(Gtk3Page.Widget, Gtk3Page.FPageLabel, AIndex);
+      insert_page(Gtk3Page.Widget, Gtk3Page.FPageBox, AIndex);
   end;
 end;
 
