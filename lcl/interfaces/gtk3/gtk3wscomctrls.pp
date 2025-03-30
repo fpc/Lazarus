@@ -1595,15 +1595,16 @@ var
 begin
   if ATabControl is TTabControl then
     exit;
-  // inherited UpdateProperties(ATabControl);
-  if not WSCheckHandleAllocated(ATabControl, 'ATabControl') then
-    Exit;
   for i := 0 to PGtkNotebook(TGtk3NoteBook(ATabControl.Handle).GetContainerWidget)^.get_n_pages - 1 do
   begin
     aPage := PGtkNotebook(TGtk3NoteBook(ATabControl.Handle).GetContainerWidget)^.get_nth_page(i);
     aLCLPage := TGtk3Page(HwndFromGtkWidget(aPage));
     if Assigned(aLCLPage) then
+    begin
       aLCLPage.CloseButtonVisible := (nboShowCloseButtons in ATabControl.Options);
+      if Assigned(ATabControl.Images) then
+        TGtk3WSCustomPage.UpdateProperties(TCustomPage(aLCLPage.LCLObject));
+    end;
   end;
   if (nboHidePageListPopup in ATabControl.Options) then
     PGtkNotebook(TGtk3NoteBook(ATabControl.Handle).GetContainerWidget)^.popup_disable
@@ -1664,9 +1665,38 @@ end;
 
 class procedure TGtk3WSCustomPage.UpdateProperties(
   const ACustomPage: TCustomPage);
+
+var
+  ImageList: TCustomImageList;
+  ImageIndex: Integer;
+  Bmp: TBitmap;
+  Res: TScaledImageListResolution;
 begin
-  // inherited UpdateProperties(ACustomPage);
-  DebugLn('TGtk3WSCustomPage.UpdateProperties missing implementation ');
+  if not WSCheckHandleAllocated(ACustomPage, 'UpdateProperties') then
+    Exit;
+
+  ImageList := TCustomTabControl(ACustomPage.Parent).Images;
+
+  if Assigned(ImageList) then
+  begin
+    Res := ImageList.ResolutionForPPI[
+      TCustomTabControl(ACustomPage.Parent).ImagesWidth,
+      TCustomTabControl(ACustomPage.Parent).Font.PixelsPerInch,
+      TCustomTabControl(ACustomPage.Parent).GetCanvasScaleFactor];
+    ImageIndex := TCustomTabControl(ACustomPage.Parent).GetImageIndex(ACustomPage.PageIndex);
+    if (ImageIndex >= 0) and (ImageIndex < Res.Count) then
+    begin
+      Bmp := TBitmap.Create;
+      try
+        Res.GetBitmap(ACustomPage.ImageIndex, Bmp);
+        TGtk3Page(ACustomPage.Handle).setTabImage(Bmp);
+      finally
+        Bmp.Free;
+      end;
+    end else
+      TGtk3Page(ACustomPage.Handle).setTabImage(nil);
+  end else
+    TGtk3Page(ACustomPage.Handle).setTabImage(nil);
 end;
 
 end.

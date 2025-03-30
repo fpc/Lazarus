@@ -416,6 +416,7 @@ type
   TGtk3Page = class(TGtk3Container)
   private
     FPageBox: PGtkBox;
+    FImageWidget: PGtkImage;
     FPageLabel: PGtkLabel;
     FCloseButton: PGtkButton;
   strict private
@@ -432,6 +433,7 @@ type
     function ClientToScreen(var P:TPoint):boolean; override;
     function getClientOffset:TPoint; override;
     function getClientRect: TRect; override;
+    procedure setTabImage(aBitmap: TBitmap);
     property CloseButtonVisible: boolean read GetCloseButtonVisible write SetCloseButtonVisible;
   end;
 
@@ -5042,6 +5044,9 @@ var
 begin
   FWidgetType := FWidgetType + [wtLayout];
   FPageBox := TGtkBox.new(GTK_ORIENTATION_HORIZONTAL, 4);
+
+  FImageWidget := TGtkImage.new;
+
   FPageLabel:= TGtkLabel.new(PChar(Params.Caption));
   FPageLabel^.set_use_underline(true);
   image := gtk_image_new_from_icon_name('window-close', GTK_ICON_SIZE_MENU);
@@ -5050,9 +5055,12 @@ begin
   gtk_container_add(PGtkContainer(FCloseButton), image);
   gtk_widget_set_name(FCloseButton, 'tab-close-button'); // optional styling via css.
 
+  FPageBox^.pack_start(FImageWidget, False, False, 0);
   FPageBox^.pack_start(FPageLabel, False, False, 0);
   FPageBox^.pack_start(FCloseButton, False, False, 0);
   FPageBox^.show_all;
+
+  FImageWidget^.hide;
 
   Self.FHasPaint:=true;
   // ref it to save it in case TabVisible is set to false
@@ -5127,6 +5135,26 @@ begin
   end else
     Result := inherited getClientRect;
   // DebugLn('TGtk3Page.GetClientRect Result=',dbgs(Result),' Realized ',dbgs(getContainerWidget^.get_realized));
+end;
+
+procedure TGtk3Page.setTabImage(aBitmap: TBitmap);
+var
+  APixBuf: PGdkPixbuf;
+begin
+  if Assigned(aBitmap) then
+    APixBuf := TGtk3Image(aBitmap.Handle).Handle^.copy
+  else
+    aPixBuf := nil;
+  if aPixBuf = nil then
+  begin
+    FImageWidget^.set_from_pixbuf(nil);
+    FImageWidget^.set_visible(False);
+  end else
+  begin
+    FImageWidget^.set_from_pixbuf(aPixBuf);
+    FImageWidget^.set_visible(True);
+    aPixbuf^.unref;
+  end;
 end;
 
 { TGtk3NoteBook }
@@ -5371,11 +5399,21 @@ procedure TGtk3NoteBook.InsertPage(ACustomPage: TCustomPage; AIndex: Integer);
 var
   Gtk3Page: TGtk3Page;
   AMinSize, ANaturalSize: gint;
+  Bmp: TBitmap;
 begin
   if IsWidgetOK then
   begin
     Gtk3Page := TGtk3Page(ACustomPage.Handle);
     Gtk3Page.CloseButtonVisible := nboShowCloseButtons in TCustomTabControl(LCLObject).Options;
+    if Assigned(TCustomTabControl(LCLObject).Images) and (ACustomPage.ImageIndex >= 0) and
+      (ACustomPage.ImageIndex < TCustomTabControl(LCLObject).Images.Count) then
+    begin
+      Bmp := TBitmap.Create;
+      TCustomTabControl(LCLObject).Images.GetBitmap(ACustomPage.ImageIndex, Bmp);
+      Gtk3Page.setTabImage(Bmp);
+      Bmp.Free;
+    end else
+      Gtk3Page.setTabImage(nil);
     with PGtkNoteBook(GetContainerWidget)^ do
       insert_page(Gtk3Page.Widget, Gtk3Page.FPageBox, AIndex);
   end;
