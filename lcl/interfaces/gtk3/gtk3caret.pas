@@ -39,6 +39,7 @@ type
     FRespondToFocus: Boolean;
     FPosChanging: boolean;
     procedure BlinkTimerCallback;
+    procedure RepaintLayoutCaret(const ARect: TRect);
     procedure StartBlinking;
     procedure StopBlinking;
     procedure SetRespondToFocus(const ARespond: Boolean);
@@ -60,6 +61,37 @@ type
 implementation
 uses Gtk3Procs, gtk3int, Gtk3Widgets;
 
+procedure TGtk3Caret.RepaintLayoutCaret(const ARect: TRect);
+var
+  aWindow: PGdkWindow;
+  aRegion: Pcairo_region_t;
+  tmpSurf: Pcairo_surface_t;
+  tmpCtx, cr: Pcairo_t;
+  ACairoRect: Tcairo_rectangle_int_t;
+  aLayout: PGtkLayout;
+begin
+  if not Gtk3IsLayout(FOwner) then
+    exit;
+  aLayout := PGtkLayout(FOwner);
+  if Gtk3IsGdkWindow(aLayout^.get_bin_window) then
+  begin
+    aWindow := aLayout^.get_bin_window;
+    cr := gdk_cairo_create(aWindow);
+    aRegion := gdk_window_get_visible_region(aWindow);
+    cairo_region_get_extents(aRegion, @ACairoRect);
+    tmpSurf := cairo_surface_create_similar(cairo_get_target(cr), CAIRO_CONTENT_COLOR_ALPHA, ARect.Width, ARect.Height);
+    tmpCtx := cairo_create(tmpSurf);
+    cairo_translate(tmpCtx, ACairoRect.X, ACairoRect.Y);
+    self.CairoDrawCaret(tmpCtx);
+    cairo_set_source_surface(cr, tmpSurf, ARect.Left, ARect.Top);
+    cairo_paint(cr);
+    cairo_destroy(tmpCtx);
+    cairo_surface_destroy(tmpSurf);
+    cairo_destroy(cr);
+    cairo_region_destroy(aRegion);
+  end;
+end;
+
 { TGtk3Caret }
 
 procedure TGtk3Caret.RedrawCaret;
@@ -75,7 +107,10 @@ begin
   if W.Context > 0 then
     exit
   else
+  begin
+    RepaintLayoutCaret(Bounds(FPos.X, FPos.Y, FWidth, FHeight));
     FOwner^.queue_draw_area(FPos.X, FPos.Y, FWidth, FHeight);
+  end;
 end;
 
 constructor TGtk3Caret.Create(AOwner: PGtkWidget; AWidth, AHeight: Integer);
@@ -122,9 +157,17 @@ begin
     if Assigned(W) and (W.Context = 0) then
     begin
       if (FLastPos.X >= 0) and (FLastPos.Y >=0) and (FLastPos.X <> FPos.X) or (FLastPos.Y <> FPos.Y) then
+      begin
+        FBlinkState := False;
+        RepaintLayoutCaret(Bounds(FLastPos.X, FLastPos.Y, FWidth, FHeight));
         FOwner^.queue_draw_area(FLastPos.X, FLastPos.Y, FWidth, FHeight);
+      end;
       if (FPos.X >= 0) and (FPos.Y >= 0) then
+      begin
+        FBlinkState := False;
+        RepaintLayoutCaret(Bounds(FPos.X, FPos.Y, FWidth, FHeight));
         FOwner^.queue_draw_area(FPos.X, FPos.Y, FWidth, FHeight);
+      end;
     end;
   end;
 
@@ -136,7 +179,11 @@ begin
   if FVisible then
   begin
     if Assigned(W) and (W.Context = 0) then
+    begin
+      FBlinkState := True;
+      RepaintLayoutCaret(Bounds(FPos.X, FPos.Y, FWidth, FHeight));
       FOwner^.queue_draw_area(FPos.X, FPos.Y, FWidth, FHeight);
+    end;
   end;
   FBlinkState := not FBlinkState;
   FPosChanging := False;
@@ -191,6 +238,7 @@ procedure TGtk3Caret.StartBlinking;
 begin
   if FBlinkTimerID <> 0 then Exit;
   FBlinkTimerID := g_timeout_add(FBlinkInterval, @BlinkTimerCallbackFunc, Self);
+  BlinkTimerCallback;
 end;
 
 procedure TGtk3Caret.StopBlinking;
