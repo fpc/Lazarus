@@ -419,11 +419,13 @@ type
     FImageWidget: PGtkImage;
     FPageLabel: PGtkLabel;
     FCloseButton: PGtkButton;
-  strict private
     function GetCloseButtonVisible: boolean;
     procedure SetCloseButtonVisible(AValue: boolean);
+  strict private
     class procedure TabSheetLayoutSizeAllocate(AWidget: PGtkWidget;
       AGdkRect: PGdkRectangle; Data: gpointer); cdecl; static;
+    class procedure TabCloseClicked(aButton: PGtkButton; aData: gPointer);
+      cdecl; static;
   protected
     procedure DoBeforeLCLPaint; override;
     procedure setText(const AValue: String); override;
@@ -5038,6 +5040,12 @@ begin
     TGtk3Widget(Data).LCLObject.DoAdjustClientRectChange;
 end;
 
+class procedure TGtk3Page.TabCloseClicked(aButton: PGtkButton; aData: gPointer); cdecl;
+begin
+  with TCustomTabControl(TCustomPage(TGtk3Page(aData).LCLObject).Parent) do
+    DoCloseTabClicked(TCustomPage(TGtk3Page(aData).LCLObject));
+end;
+
 function TGtk3Page.CreateWidget(const Params: TCreateParams): PGtkWidget;
 var
   image: PGtkImage;
@@ -5076,6 +5084,7 @@ begin
   gtk_layout_set_size(PGtkLayout(FCentralWidget), 1, 1);
 
   g_signal_connect_data(FCentralWidget,'size-allocate',TGCallback(@TabSheetLayoutSizeAllocate), Self, nil, G_CONNECT_DEFAULT);
+  g_signal_connect_data(FCloseButton, 'clicked', TGCallback(@TabCloseClicked), Self, nil, G_CONNECT_DEFAULT);
 end;
 
 procedure TGtk3Page.DestroyWidget;
