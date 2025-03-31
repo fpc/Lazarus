@@ -1141,6 +1141,7 @@ end;
 
 function TSynEditStringList.GetPChar(ALineIndex: Integer; out ALen: Integer): PChar;
 begin
+  ALen := 0;
   if (ALineIndex = 0) and (Count = 0) then  // simulate empty line
     Result := nil
   else
