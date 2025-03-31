@@ -584,6 +584,8 @@ type
   { TGtk3Memo }
 
   TGtk3Memo = class(TGtk3ScrollableWin)
+  strict private
+    class procedure MemoTextChanged(aBuffer: PGtkTextBuffer; aData: gPointer); cdecl; static;
   private
     function GetAlignment: TAlignment;
     function GetCaretPos: TPoint;
@@ -607,6 +609,7 @@ type
   public
     function getSelStart: Integer; virtual;
     function getSelLength: Integer; virtual;
+    procedure InitializeWidget; override;
     procedure setSelStart(AValue: Integer); virtual;
     procedure setSelLength(AValue: Integer); virtual;
     procedure setSelText(const ANewSelText: string); virtual;
@@ -5293,7 +5296,9 @@ begin
   FCentralWidget := Result;
 
   if (nboHidePageListPopup in TCustomTabControl(LCLObject).Options) then
-    PGtkNoteBook(FCentralWidget)^.popup_disable;
+    PGtkNoteBook(FCentralWidget)^.popup_disable
+  else
+    PGtkNoteBook(FCentralWidget)^.popup_enable;
 
   Alloc.x := Params.X;
   Alloc.y := Params.Y;
@@ -6316,6 +6321,17 @@ end;
 
 { TGtk3Memo }
 
+class procedure TGtk3Memo.MemoTextChanged(aBuffer: PGtkTextBuffer; aData: gPointer); cdecl;
+var
+  Mess: TLMessage;
+begin
+  Mess := Default(TLMessage);
+  if (aData = nil) then
+    exit;
+  Mess.Msg := CM_TEXTCHANGED;
+  LCLMessageGlue.DeliverMessage(TGtk3Widget(aData).LCLObject, Mess);
+end;
+
 function TGtk3Memo.CreateWidget(const Params: TCreateParams): PGtkWidget;
 var
   AMemo: TCustomMemo;
@@ -6361,6 +6377,16 @@ begin
   FCentralWidget^.set_can_focus(True);
   PGtkScrolledWindow(Result)^.set_can_focus(False);
 end;
+
+procedure TGtk3Memo.InitializeWidget;
+var
+  ATextView: PGtkTextView;
+begin
+  inherited InitializeWidget;
+  ATextView := PGtkTextView(getContainerWidget);
+  g_signal_connect_data(ATextView^.get_buffer,'changed', TGCallBack(@MemoTextChanged), Self, nil, G_CONNECT_DEFAULT);
+end;
+
 
 function TGtk3Memo.EatArrowKeys(const AKey: Word): Boolean;
 begin
