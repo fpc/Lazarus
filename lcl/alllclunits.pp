@@ -28,7 +28,7 @@ uses
   Arrow, EditBtn, ComboEx, DBExtCtrls, CustomDrawn_Mac, CalcForm, 
   LCLTranslator, GroupedEdit, LCLTaskDialog, WSLazDeviceAPIS, LCLPlatformDef, 
   IndustrialBase, JSONPropStorage, LCLExceptionStackTrace, DialogRes, 
-  taskdlgemulation, LazarusPackageIntf;
+  TaskDlgEmulation, TreeStorage, LazarusPackageIntf;
 
 implementation
 

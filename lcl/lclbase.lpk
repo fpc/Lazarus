@@ -27,7 +27,7 @@
     <License Value="modified LGPL-2
 "/>
     <Version Major="4" Minor="99"/>
-    <Files Count="290">
+    <Files Count="291">
       <Item1>
         <Filename Value="checklst.pas"/>
         <UnitName Value="CheckLst"/>
@@ -1198,6 +1198,10 @@
         <Filename Value="include/windowmagnet.inc"/>
         <Type Value="Include"/>
       </Item290>
+      <Item291>
+        <Filename Value="treestorage.pp"/>
+        <UnitName Value="TreeStorage"/>
+      </Item291>
     </Files>
     <CompatibilityMode Value="True"/>
     <LazDoc Paths="../docs/xml/lcl"/>
