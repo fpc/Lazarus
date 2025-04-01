@@ -613,6 +613,10 @@ msgstr "Події"
 msgid "Favorites"
 msgstr "Обрані"
 
+#: objinspstrconsts.oisfilterxml
+msgid "XML files"
+msgstr ""
+
 #: objinspstrconsts.oisfinddeclaration
 msgid "Jump to declaration"
 msgstr "Перейти до оголошення"

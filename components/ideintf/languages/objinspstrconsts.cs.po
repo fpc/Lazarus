@@ -614,6 +614,10 @@ msgstr "Události"
 msgid "Favorites"
 msgstr "Oblíbené"
 
+#: objinspstrconsts.oisfilterxml
+msgid "XML files"
+msgstr ""
+
 #: objinspstrconsts.oisfinddeclaration
 msgid "Jump to declaration"
 msgstr "Skok na deklaraci"

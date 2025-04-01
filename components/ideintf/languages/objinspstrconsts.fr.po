@@ -611,6 +611,10 @@ msgstr "Événements"
 msgid "Favorites"
 msgstr "Favoris"
 
+#: objinspstrconsts.oisfilterxml
+msgid "XML files"
+msgstr ""
+
 #: objinspstrconsts.oisfinddeclaration
 msgid "Jump to declaration"
 msgstr "Aller à la déclaration"

@@ -611,6 +611,10 @@ msgstr "事件"
 msgid "Favorites"
 msgstr "收藏夹"
 
+#: objinspstrconsts.oisfilterxml
+msgid "XML files"
+msgstr ""
+
 #: objinspstrconsts.oisfinddeclaration
 msgid "Jump to declaration"
 msgstr "跳转到声明(declaration)"

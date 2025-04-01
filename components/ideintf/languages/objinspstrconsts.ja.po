@@ -619,6 +619,10 @@ msgstr "イベント"
 msgid "Favorites"
 msgstr "お気に入り"
 
+#: objinspstrconsts.oisfilterxml
+msgid "XML files"
+msgstr ""
+
 #: objinspstrconsts.oisfinddeclaration
 msgid "Jump to declaration"
 msgstr "宣言にジャンプする"

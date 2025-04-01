@@ -614,6 +614,10 @@ msgstr "Olaylar"
 msgid "Favorites"
 msgstr "Favoriler"
 
+#: objinspstrconsts.oisfilterxml
+msgid "XML files"
+msgstr ""
+
 #: objinspstrconsts.oisfinddeclaration
 msgid "Jump to declaration"
 msgstr "Deklarasyona geç"

@@ -616,6 +616,10 @@ msgstr "Įvykiai"
 msgid "Favorites"
 msgstr "Mėgstamiausi"
 
+#: objinspstrconsts.oisfilterxml
+msgid "XML files"
+msgstr ""
+
 #: objinspstrconsts.oisfinddeclaration
 msgid "Jump to declaration"
 msgstr "Rodyti kur paskelbta"

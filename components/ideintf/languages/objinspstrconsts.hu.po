@@ -614,6 +614,10 @@ msgstr "Események"
 msgid "Favorites"
 msgstr "Kedvencek"
 
+#: objinspstrconsts.oisfilterxml
+msgid "XML files"
+msgstr ""
+
 #: objinspstrconsts.oisfinddeclaration
 msgid "Jump to declaration"
 msgstr "Ugrás a deklarációra"
