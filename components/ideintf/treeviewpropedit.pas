@@ -157,6 +157,7 @@ begin
   dlgOpen.Title := sccsTrEdtOpenDialog;
   dlgSave.Title := sccsTrEdtSaveDialog;
   dlgSave.Filter := 'xml files|*.xml|All files|'+GetAllFilesMask+'|';
+  dlgOpen.Filter := dlgSave.Filter;
 
   // button panel
   ButtonPanel.ShowHint := true;
@@ -410,6 +411,8 @@ begin
 end;
 
 procedure TTreeViewItemsEditorForm.tbOpenClick(Sender: TObject);
+var
+  Fn: String;
 
   function ConfirmTreeReplace: boolean;
   begin
@@ -426,8 +429,11 @@ begin
 
   if ConfirmTreeReplace and dlgOpen.Execute then
   begin
-    treEditor.LoadFromFile(dlgOpen.FileName);
-
+    Fn := dlgOpen.FileName;
+    if (CompareFileExt(Fn, 'xml', False) = 0) then
+      TreeLoadFromXML(treEditor, Fn)
+    else
+      treEditor.LoadFromFile(Fn);
     treEditor.FullExpand;
     treEditor.Selected := treEditor.Items.GetFirstNode;
     treEditor.SetFocus;
