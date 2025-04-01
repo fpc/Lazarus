@@ -384,7 +384,6 @@ resourcestring
   // TFileNamePropertyEditor
   oisSelectAFile = 'Select a file';
   oisPropertiesOf = 'Properties of %s';
-  oisAllFiles = 'All files';
   
   // TCommonDialogComponentEditor
   oisTestDialog = 'Test dialog ...';
@@ -530,6 +529,10 @@ resourcestring
   lrsBufDSFilters = 'XML data files|*.xml;Binary data files|*.dat';
   lrsCopyFromDataset = 'Copy data from other dataset';
   lrsNoDatasetsAvailableForCopy = 'No dataset available to copy data from.';
+
+  // File types
+  oisAllFiles = 'All files';
+  oisFilterXML = 'XML files';
 
 implementation
 
