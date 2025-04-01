@@ -157,6 +157,7 @@ begin
   NewBounds:=Rect(0,0,0,0);
   DockSiblingName:='';
   DockAlign:=alNone;
+  Creator := nil;
 
   // get the embedded control
   AControl:=DockMaster.GetControl(AForm);
