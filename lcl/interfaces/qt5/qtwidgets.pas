@@ -13500,7 +13500,7 @@ begin
                 if (ViewStyle >= 0) and (TCustomListView(LCLObject).ItemIndex = -1) then
                   signalCurrentItemChanged(Item, nil);
               end;
-              QEvent_ignore(Event);
+              QEvent_accept(Event);
               //issue #39852, uncommented works fine with Qt4
               //Result := True;
               exit;
