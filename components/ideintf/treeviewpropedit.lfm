@@ -279,6 +279,7 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
   object dlgOpen: TOpenDialog
     Title = 'Open'
     FilterIndex = 0
+    Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
     Left = 72
     Top = 160
   end
