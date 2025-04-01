@@ -26,18 +26,18 @@ uses
   LazLoggerBase;
 
 type
-  TTreeStorageOption = (tsoExpanded, tsoSelected, tsoFocused, tsoVisible, tsoEnabled,
-                        tsoImageIndex, tsoSelectedIndex, tsoStateIndex, tsoOverlayIndex);
-  TTreeStorageOptions = set of TTreeStorageOption;
+  TTreeItemStorageOption = (tsoExpanded, tsoSelected, tsoFocused, tsoVisible, tsoEnabled,
+                            tsoImageIndex, tsoSelectedIndex, tsoStateIndex, tsoOverlayIndex);
+  TTreeItemStorageOptions = set of TTreeItemStorageOption;
 
 const
-  tsoAllOptions = [tsoExpanded, tsoSelected, tsoFocused, tsoVisible, tsoEnabled,
-                   tsoImageIndex, tsoSelectedIndex, tsoStateIndex, tsoOverlayIndex];
+  TreeItemStorageDefaultOptions = [tsoExpanded, tsoSelected, tsoFocused, tsoVisible, tsoEnabled,
+                                   tsoImageIndex, tsoSelectedIndex, tsoStateIndex, tsoOverlayIndex];
 
-procedure TreeSaveToXML(Tree: TCustomTreeView; Fn: String; Options: TTreeStorageOptions = tsoAllOptions);
-procedure TreeSaveToXML(Tree: TCustomTreeView; St: TStream; Options: TTreeStorageOptions = tsoAllOptions);
-procedure TreeLoadFromXML(Tree: TCustomTreeView; const Fn: String; Options: TTreeStorageOptions = tsoAllOptions);
-procedure TreeLoadFromXML(Tree: TCustomTreeView; St: TStream; Options: TTreeStorageOptions = tsoAllOptions);
+procedure TreeSaveToXML(Tree: TCustomTreeView; Fn: String; Options: TTreeItemStorageOptions = TreeItemStorageDefaultOptions);
+procedure TreeSaveToXML(Tree: TCustomTreeView; St: TStream; Options: TTreeItemStorageOptions = TreeItemStorageDefaultOptions);
+procedure TreeLoadFromXML(Tree: TCustomTreeView; const Fn: String; Options: TTreeItemStorageOptions = TreeItemStorageDefaultOptions);
+procedure TreeLoadFromXML(Tree: TCustomTreeView; St: TStream; Options: TTreeItemStorageOptions = TreeItemStorageDefaultOptions);
 
 
 implementation
@@ -71,7 +71,7 @@ begin
   end;
 end;
 
-procedure TreeSaveToXML(Tree: TCustomTreeView; Fn: String; Options: TTreeStorageOptions);
+procedure TreeSaveToXML(Tree: TCustomTreeView; Fn: String; Options: TTreeItemStorageOptions);
 var
   FS: TFileStream;
 begin
@@ -83,7 +83,7 @@ begin
   end;
 end;
 
-procedure TreeSaveToXML(Tree: TCustomTreeView; St: TStream; Options: TTreeStorageOptions);
+procedure TreeSaveToXML(Tree: TCustomTreeView; St: TStream; Options: TTreeItemStorageOptions);
 var
   Doc: TXMLDocument;
   RootNode: TDOMElement;
@@ -152,7 +152,7 @@ begin
   end;
 end;
 
-procedure TreeLoadFromXML(Tree: TCustomTreeView; const Fn: String; Options: TTreeStorageOptions);
+procedure TreeLoadFromXML(Tree: TCustomTreeView; const Fn: String; Options: TTreeItemStorageOptions);
 var
   FS: TFileStream;
 begin
@@ -166,7 +166,7 @@ end;
 
 
 
-procedure TreeLoadFromXML(Tree: TCustomTreeView; St: TStream; Options: TTreeStorageOptions = tsoAllOptions);
+procedure TreeLoadFromXML(Tree: TCustomTreeView; St: TStream; Options: TTreeItemStorageOptions = TreeItemStorageDefaultOptions);
 var
   Doc: TXMLDocument;
   DomNode: TDOMNode;
