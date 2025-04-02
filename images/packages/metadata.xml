@@ -841,11 +841,10 @@
     <icon filename="pkg_removedrequired.png" width="16" height="16" style="classic">
       <keywords>
         <keyword>close</keyword>
-        <keyword>cross</keyword>
         <keyword>delete</keyword>
         <keyword>ide</keyword>
+        <keyword>minus</keyword>
         <keyword>package</keyword>
-        <keyword>puzzle</keyword>
         <keyword>remove</keyword>
         <keyword>required</keyword>
       </keywords>
@@ -853,11 +852,10 @@
     <icon filename="pkg_removedrequired_150.png" width="24" height="24" style="classic">
       <keywords>
         <keyword>close</keyword>
-        <keyword>cross</keyword>
         <keyword>delete</keyword>
         <keyword>ide</keyword>
+        <keyword>minus</keyword>
         <keyword>package</keyword>
-        <keyword>puzzle</keyword>
         <keyword>remove</keyword>
         <keyword>required</keyword>
       </keywords>
@@ -865,11 +863,10 @@
     <icon filename="pkg_removedrequired_200.png" width="32" height="32" style="classic">
       <keywords>
         <keyword>close</keyword>
-        <keyword>cross</keyword>
         <keyword>delete</keyword>
         <keyword>ide</keyword>
+        <keyword>minus</keyword>
         <keyword>package</keyword>
-        <keyword>puzzle</keyword>
         <keyword>remove</keyword>
         <keyword>required</keyword>
       </keywords>
@@ -878,7 +875,6 @@
       <keywords>
         <keyword>ide</keyword>
         <keyword>package</keyword>
-        <keyword>puzzle</keyword>
         <keyword>required</keyword>
       </keywords>
     </icon>
@@ -886,7 +882,6 @@
       <keywords>
         <keyword>ide</keyword>
         <keyword>package</keyword>
-        <keyword>puzzle</keyword>
         <keyword>required</keyword>
       </keywords>
     </icon>
@@ -894,7 +889,6 @@
       <keywords>
         <keyword>ide</keyword>
         <keyword>package</keyword>
-        <keyword>puzzle</keyword>
         <keyword>required</keyword>
       </keywords>
     </icon>
