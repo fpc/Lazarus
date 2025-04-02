@@ -1073,6 +1073,7 @@ var
   Dialog: IFileDialog;
   Idx: Integer;
 begin
+  Idx := -1;
   if (ACommonDialog.Handle <> 0) and (ACommonDialog.Handle <> INVALID_HANDLE_VALUE) then
   begin
     if CanUseVistaDialogs(TOpenDialog(ACommonDialog)) and not IsXPStyleFallBack(TOpenDialog(ACommonDialog), Idx) then
