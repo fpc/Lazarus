@@ -29650,5 +29650,155 @@
         <keyword>www</keyword>
       </keywords>
     </icon>
+    <icon filename="Package_02_16.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>delete</keyword>
+        <keyword>minus</keyword>
+        <keyword>package</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Package_02_24.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>delete</keyword>
+        <keyword>minus</keyword>
+        <keyword>package</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Package_02_32.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>delete</keyword>
+        <keyword>minus</keyword>
+        <keyword>package</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Package_02_36.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>delete</keyword>
+        <keyword>minus</keyword>
+        <keyword>package</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Package_02_48.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>delete</keyword>
+        <keyword>minus</keyword>
+        <keyword>package</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Package_02_64.png" width="64" height="64" style="classic">
+      <keywords>
+        <keyword>delete</keyword>
+        <keyword>minus</keyword>
+        <keyword>package</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Plugin_04_16.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>jigsaw</keyword>
+        <keyword>plugin</keyword>
+        <keyword>puzzle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Plugin_04_24.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>jigsaw</keyword>
+        <keyword>plugin</keyword>
+        <keyword>puzzle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Plugin_04_32.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>jigsaw</keyword>
+        <keyword>plugin</keyword>
+        <keyword>puzzle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Plugin_04_36.png" width="36" height="36" style="flat">
+      <keywords>
+        <keyword>jigsaw</keyword>
+        <keyword>plugin</keyword>
+        <keyword>puzzle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Plugin_04_48.png" width="48" height="48" style="flat">
+      <keywords>
+        <keyword>jigsaw</keyword>
+        <keyword>plugin</keyword>
+        <keyword>puzzle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Plugin_04_64.png" width="64" height="64" style="flat">
+      <keywords>
+        <keyword>jigsaw</keyword>
+        <keyword>plugin</keyword>
+        <keyword>puzzle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Plugin_05_16.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>delete</keyword>
+        <keyword>jigsaw</keyword>
+        <keyword>minus</keyword>
+        <keyword>plugin</keyword>
+        <keyword>puzzle</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Plugin_05_24.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>delete</keyword>
+        <keyword>jigsaw</keyword>
+        <keyword>minus</keyword>
+        <keyword>plugin</keyword>
+        <keyword>puzzle</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Plugin_05_32.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>delete</keyword>
+        <keyword>jigsaw</keyword>
+        <keyword>minus</keyword>
+        <keyword>plugin</keyword>
+        <keyword>puzzle</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Plugin_05_36.png" width="36" height="36" style="flat">
+      <keywords>
+        <keyword>delete</keyword>
+        <keyword>jigsaw</keyword>
+        <keyword>minus</keyword>
+        <keyword>plugin</keyword>
+        <keyword>puzzle</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Plugin_05_48.png" width="48" height="48" style="flat">
+      <keywords>
+        <keyword>delete</keyword>
+        <keyword>jigsaw</keyword>
+        <keyword>minus</keyword>
+        <keyword>plugin</keyword>
+        <keyword>puzzle</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Plugin_05_64.png" width="64" height="64" style="flat">
+      <keywords>
+        <keyword>delete</keyword>
+        <keyword>jigsaw</keyword>
+        <keyword>minus</keyword>
+        <keyword>plugin</keyword>
+        <keyword>puzzle</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
   </icons>
 </metadata>
