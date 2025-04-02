@@ -486,7 +486,7 @@ msgstr "Spezifiziertes Verzeichnis wählen"
 #: jcfuiconsts.liscnflogspecified
 #, object-pascal-format
 msgid "Specified: %s"
-msgstr "Spezifiziert: %s\""
+msgstr "Spezifiziert: %s"
 
 #: jcfuiconsts.liscnflogtemp
 #, object-pascal-format
@@ -737,9 +737,7 @@ msgstr "Einrückung von try/finally/except"
 
 #: jcfuiconsts.lisjcfformatsettings
 msgid "JCF Format Settings"
-msgstr ""
-"JCF-Format E\n"
-"instellungen"
+msgstr "JCF-Format Einstellungen"
 
 #: jcfuiconsts.lisjedicodeformatallopenwindow
 msgid "JEDI Code Format of all open windows?"
