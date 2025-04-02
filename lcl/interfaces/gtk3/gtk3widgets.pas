@@ -54,7 +54,7 @@ type
     wtNotebook, wtTabControl, wtComboBox, wtPanel,
     wtGroupBox, wtCalendar, wtTrackBar, wtScrollBar,
     wtScrollingWin, wtListBox, wtListView, wtCheckListBox, wtMemo, wtTreeModel,
-    wtCustomControl, wtScrollingWinControl,
+    wtCustomControl, wtToolbar, wtScrollingWinControl,
     wtWindow, wtDialog, wtHintWindow, wtGLArea);
   TGtk3WidgetTypes = set of TGtk3WidgetType;
 
@@ -569,18 +569,6 @@ type
     property VScrollBarPolicy: TGtkPolicyType read GetVScrollBarPolicy write SetVScrollBarPolicy;
   end;
 
-  { TGtk3ToolBar }
-
-  TGtk3ToolBar = class(TGtk3Container)
-  private
-    fBmpList:TList;
-    procedure ButtonClicked(data: gPointer); cdecl;
-    procedure ClearGlyphs;
-  public
-    destructor Destroy; override;
-    function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
-  end;
-
   { TGtk3Memo }
 
   TGtk3Memo = class(TGtk3ScrollableWin)
@@ -907,6 +895,13 @@ type
       function getHorizontalScrollbar: PGtkScrollbar; override;
       function getVerticalScrollbar: PGtkScrollbar; override;
       function GetScrolledWindow: PGtkScrolledWindow; override;
+  end;
+
+  { TGtk3ToolBar }
+
+  TGtk3ToolBar = class(TGtk3CustomControl)
+  public
+    function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
   end;
 
   { TGtk3ScrollingWinControl }
@@ -4870,118 +4865,6 @@ begin
     g_signal_connect_data(GetContainerWidget, 'button-release-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
     g_signal_connect_data(GetContainerWidget, 'motion-notify-event', TGCallback(@motionNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
   end;
-end;
-
-{ TGtk3ToolBar }
-
-procedure TGtk3ToolBar.ClearGlyphs;
-var i:integer;
-begin
-  if Assigned(fBmpList) then
-  for i:=fBmpList.Count-1 downto 0 do
-    TObject(fBmpList[i]).Free;
-end;
-
-destructor TGtk3ToolBar.Destroy;
-begin
-  ClearGlyphs;
-  fBmpList.Free;
-  inherited Destroy;
-end;
-
-procedure TGtk3ToolBar.ButtonClicked(data: gPointer);cdecl;
-begin
-  if TObject(data) is TToolButton then
-  TToolButton(data).Click;
-end;
-
-function TGtk3ToolBar.CreateWidget(const Params: TCreateParams): PGtkWidget;
-var
-  i:integer;
-  AToolBar: TToolBar;
-  btn:TToolButton;
-  gtb:PGtkToolItem;
-  wmenu,wicon:PGtkWidget;
-  pb:PGdkPixBuf;
-  bmp:TBitmap;
-  resolution:TCustomImageListResolution;
-  raw:TRawImage;
-  bs:string;
-begin
-  AToolBar := TToolBar(LCLObject);
-  FHasPaint := False;
-  FWidgetType := [wtWidget, wtContainer];
-  Result:=PGtkWidget(TGtkToolbar.new);
-
-  if not Assigned(fBmpList) then
-    fBmpList:=TList.Create;
-
-  ClearGlyphs;
-
-  // allocate appropriate number of tool items
-  for i:=0 to AToolbar.ButtonCount-1 do
-  begin
-    btn:=AToolBar.Buttons[i];
-    bs:= ReplaceAmpersandsWithUnderscores(btn.Caption);
-    wicon:=nil;
-    if btn is TToolButton then
-    begin
-      if (btn.ImageIndex>=0) and
-          assigned(AToolbar.Images) and
-          not (btn.Style in [tbsSeparator,tbsDivider]) then
-      begin
-        if Assigned(AToolBar.Images) and (btn.ImageIndex>=0) then
-        begin
-          bmp:=TBitmap.Create; { this carries gdk pixmap }
-          resolution:=AToolBar.Images.Resolution[AToolBar.ImagesWidth]; // not AToolBar.Images.Width, issue #36465
-          resolution.GetRawImage(btn.ImageIndex,raw);
-          { convince the bitmap it has actually another format }
-          bmp.BeginUpdate();
-          //raw.Description.Init_BPP32_R8G8B8A8_BIO_TTB(resolution.Width,resolution.Height);
-          bmp.LoadFromRawImage(raw,false);
-          bmp.EndUpdate();
-          pb:=TGtk3Image(bmp.Handle).Handle;
-          wicon := TGtkImage.new_from_pixbuf(pb);
-          fBmpList.Add(bmp);
-        end
-        else
-          wicon := nil;
-      end;
-
-      case btn.Style of
-      tbsSeparator:
-        gtb:=TGtkSeparatorToolItem.new();
-      tbsDropDown:
-        begin
-          gtb:=TGtkMenuToolButton.new(wicon,PgChar(bs));
-          if Assigned(btn.DropdownMenu) then
-          begin
-            wmenu:=TGtk3Menu(btn.DropdownMenu.Handle).Widget;
-            PGtkMenuToolButton(gtb)^.set_menu(wmenu);
-          end;
-        end;
-      tbsCheck:
-        begin
-          gtb:=TGtkToggleToolButton.new();
-          PGtkToolButton(gtb)^.set_label(PgChar(bs));
-          PGtkToolButton(gtb)^.set_icon_widget(wicon);
-        end
-      else
-        gtb:=TGtkToolButton.new(wicon,PgChar(bs));
-      end;
-      if not (btn.Style in [tbsSeparator,tbsDivider]) then
-      begin
-        gtb^.set_tooltip_text(PgChar(btn.Hint));
-        PgtkToolButton(gtb)^.set_use_underline(true);
-      end;
-      PGtkToolBar(Result)^.add(gtb);
-
-      if not (btn.Style in [tbsSeparator,tbsDivider]) then
-      g_signal_connect_data(gtb,'clicked',
-        TGCallback(@TGtk3Toolbar.ButtonClicked), btn, nil, G_CONNECT_DEFAULT);
-    end;
-  end;
-
 end;
 
 { TGtk3Page }
@@ -9190,6 +9073,14 @@ begin
     Result := PGtkScrolledWindow(Widget)
   else
     Result := nil;
+end;
+
+{ TGtk3ToolBar }
+
+function TGtk3ToolBar.CreateWidget(const Params: TCreateParams): PGtkWidget;
+begin
+  Result := inherited CreateWidget(Params);
+  Include(FWidgetType, wtToolbar);
 end;
 
 { TGtk3ScrollingWinControl }
