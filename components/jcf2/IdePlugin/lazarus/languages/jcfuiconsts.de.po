@@ -1,19 +1,19 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: \n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.6\n"
 
 #: jcfuiconsts.format_about_menu
-#, fuzzy
-#| msgid "&About"
 msgid "&About ..."
-msgstr "Über"
+msgstr "Über ..."
 
 #: jcfuiconsts.format_category_idecmd
 msgctxt "jcfideregister.format_category_idecmd"
@@ -45,17 +45,15 @@ msgstr "&Alle Dateien im Projekt"
 
 #: jcfuiconsts.format_reg_settings_menu
 msgid "Global Settings ..."
-msgstr ""
+msgstr "Globale Einstellungen..."
 
 #: jcfuiconsts.format_remove_comments
 msgid "Remove comments in current editor window"
-msgstr ""
+msgstr "Kommentare im aktuellen Editor-Fenster entfernen"
 
 #: jcfuiconsts.format_settings_menu
-#, fuzzy
-#| msgid "&Format Settings"
 msgid "&Format Settings ..."
-msgstr "&Formatierungseinstellungen"
+msgstr "&Formatierungseinstellungen..."
 
 #: jcfuiconsts.lisaboutaboutjedicodeformat
 msgid "About JEDI Code Format"
@@ -72,12 +70,12 @@ msgstr "Dieses Programm ist Open Source Software. Es ist freigegeben unter der M
 
 #: jcfuiconsts.lisaboutthisprogramisstillunderdevelopment
 msgid "This program is still under development. In spite of thorough testing and removal of reported bugs, no guarantees are given. Please make backups, or better yet use a source control system."
-msgstr ""
+msgstr "Dieses Programm wird noch entwickelt. Trotz gründlicher Tests und der Beseitigung der gemeldeten Fehler kann keine Garantie gegeben werden. Bitte machen Sie Sicherheitskopieren oder, besser, verwenden Sie ein Quellcode-Versionskontrollsystem."
 
 #: jcfuiconsts.lisaboutversion
 #, object-pascal-format
 msgid "Version $VERSION$%s%sThis program attempts to standardise and make readable the layout of any Object Pascal source code.%s%sCopyright Anthony Steele 1999-2008"
-msgstr ""
+msgstr "Version $VERSION$%s%sDieses Programm versucht, das Layout von jedem Object Pascal Quellcode zu standardisieren und lesbarer zu machen.%s%sCopyright Anthony Steele 1999-2008"
 
 #: jcfuiconsts.lisalignalign
 msgid "Align"
@@ -117,7 +115,7 @@ msgstr "Maximaler Unterschied"
 
 #: jcfuiconsts.lisalignmaxvarianceinterface
 msgid "Max Variance Interface"
-msgstr "Max. Unterschied in Interface "
+msgstr "Max. Unterschied in Interface"
 
 #: jcfuiconsts.lisalignmincolumn
 msgid "Min Column"
@@ -201,7 +199,7 @@ msgstr "Maximal zusätzliche Leerzeichen an bel. Stelle"
 
 #: jcfuiconsts.lisblmaxconsecutiveblanklinesbeforeremoval
 msgid "Max consecutive blank lines before removal"
-msgstr "Maximal zusätzliche Leerzeichen vor dem Entfernen "
+msgstr "Maximal zusätzliche Leerzeichen vor dem Entfernen"
 
 #: jcfuiconsts.lisblnumberofreturnsaftertheunitsfinalend
 msgid "Number of returns after the unit's final End."
@@ -228,9 +226,8 @@ msgid "Block without begin"
 msgstr "Blöcke ohne Begin"
 
 #: jcfuiconsts.lisblockselsebegin
-#, fuzzy
 msgid "Else begin"
-msgstr "Else gein"
+msgstr "Else begin"
 
 #: jcfuiconsts.lisblocksuseanewlineinblocksat
 msgid "Use a new line in blocks at:"
@@ -246,7 +243,7 @@ msgstr "Zusätzliche Leerzeilen löschen"
 
 #: jcfuiconsts.liscapsanywordanyword
 msgid "Any Word"
-msgstr "Beliebige Worte"
+msgstr "Beliebiges Wort"
 
 #: jcfuiconsts.liscapsanywordenable
 msgid "Enable"
@@ -254,7 +251,7 @@ msgstr "Zulassen"
 
 #: jcfuiconsts.liscapsanywordsetcapitalisationonthesewords
 msgid "Set capitalisation on these words:"
-msgstr "Schreibweise für diese Worte anwenden:"
+msgstr "Schreibweise auf diese Wörter anwenden:"
 
 #: jcfuiconsts.liscapscapitalisation
 msgid "Capitalisation"
@@ -270,7 +267,7 @@ msgstr "Anweisungen"
 
 #: jcfuiconsts.liscapsenablecapitalisationfixing
 msgid "Enable capitalisation fixing"
-msgstr "Schreibweisenkorrektur einschalten "
+msgstr "Schreibweisen korrigieren"
 
 #: jcfuiconsts.liscapsidentifiersidentifiers
 msgid "Identifiers"
@@ -278,15 +275,15 @@ msgstr "Schlüsselworte"
 
 #: jcfuiconsts.liscapsidentifierssetcapitalisationontheseidentifiers
 msgid "Set capitalisation on these identifiers:"
-msgstr "Schreibweise für diese Bezeichner anwenden:"
+msgstr "Schreibweise auf diese Bezeichner anwenden:"
 
 #: jcfuiconsts.liscapsnormalizecapitalisation
 msgid "Normalization of capitalisation"
-msgstr ""
+msgstr "Normalisierung der Schreibweise"
 
 #: jcfuiconsts.liscapsnormalizecapitalisationonenamespace
 msgid "Use only one namespace"
-msgstr ""
+msgstr "Nur einen Namensraum verwenden"
 
 #: jcfuiconsts.liscapsnotidentifiersnotidentifiers
 msgid "Non-identifiers"
@@ -294,7 +291,7 @@ msgstr "Nicht-Bezeicher"
 
 #: jcfuiconsts.liscapsnotidentifierssetcapitalisationonthesenonidentifiers
 msgid "Set capitalisation on these non-identifiers:"
-msgstr "Schreibweise für diese Nicht-Bezeichner anwenden:"
+msgstr "Schreibweise auf diese Nicht-Bezeichner anwenden:"
 
 #: jcfuiconsts.liscapsoperators
 msgid "Operators"
@@ -361,7 +358,7 @@ msgstr "Nie"
 
 #: jcfuiconsts.liscaseblocksuseanewlineincaseblocksat
 msgid "Use a new line in Case blocks at:"
-msgstr "Neue Zeile in Base-Blöcken einsetzen bei:"
+msgstr "Neue Zeile in Case-Blöcken einsetzen bei:"
 
 #: jcfuiconsts.liscdcompilerdirectives
 msgid "Compiler Directives"
@@ -401,10 +398,9 @@ msgstr "Ausfüh&ren"
 
 #: jcfuiconsts.lisclarifyfileextensionstoformat
 msgid "File extensions to format:"
-msgstr "Zu formatierende Endungen:"
+msgstr "Zu formatierende Dateiendungen:"
 
 #: jcfuiconsts.lisclarifyrunonceoffs
-#, fuzzy
 msgid "Run once-offs"
 msgstr "Einmalige Einstellung"
 
@@ -414,94 +410,92 @@ msgstr "Nur die ausführen"
 
 #: jcfuiconsts.liscnfcaption
 msgid "JCF Global Settings"
-msgstr ""
+msgstr "Globale JCF-Einstellungen"
 
 #: jcfuiconsts.liscnfexcludedirs
 msgid "Directories to exclude from batch processing:"
-msgstr ""
+msgstr "Bei der Stapelbearbeitung ausgeschlossene Verzeichnisse:"
 
 #: jcfuiconsts.liscnfexcludefiles
 msgid "Individual files to exclude from batch processing:"
-msgstr ""
+msgstr "Bei der Stapelbearbeitung ausgeschlossene individuelle Dateien:"
 
 #: jcfuiconsts.liscnfgenalways
-#, fuzzy
 msgctxt "jcfuiconsts.liscnfgenalways"
 msgid "Always"
 msgstr "Immer"
 
 #: jcfuiconsts.liscnfgenconvertsettingsfile
 msgid "Convert settings file"
-msgstr ""
+msgstr "Einstellungsdatei konvertieren"
 
 #: jcfuiconsts.liscnfgenfail
 msgid "Fail quietly"
-msgstr ""
+msgstr "Ohne Fehlermeldung abbrechen"
 
 #: jcfuiconsts.liscnfgennever
-#, fuzzy
 msgctxt "jcfuiconsts.liscnfgennever"
 msgid "Never"
 msgstr "Nie"
 
 #: jcfuiconsts.liscnfgenonparseerror
 msgid "On parse error"
-msgstr ""
+msgstr "Bei Parser-Fehler"
 
 #: jcfuiconsts.liscnfgenshowparsetree
 msgid "Show parse &tree during parse"
-msgstr ""
+msgstr "Parse-Baum anzeigen"
 
 #: jcfuiconsts.liscnfgenwritesettings
 msgid "&Write settings file"
-msgstr ""
+msgstr "Einstellungsdatei schreiben"
 
 #: jcfuiconsts.liscnflogapplication
 #, object-pascal-format
 msgid "Application: %s"
-msgstr ""
+msgstr "Anwendung: %s"
 
 #: jcfuiconsts.liscnflogbackupfileext
 msgid "Backup file extension"
-msgstr ""
+msgstr "Endung der Sicherungskopie"
 
 #: jcfuiconsts.liscnflogdetaillevel
 msgid "Log file detail level"
-msgstr ""
+msgstr "Detail-Stufe in Log-Datei"
 
 #: jcfuiconsts.liscnflogerrorsonly
 msgid "Errors only"
-msgstr ""
+msgstr "Nur Fehler"
 
 #: jcfuiconsts.liscnflogfile
 msgid "File"
-msgstr ""
+msgstr "Datei"
 
 #: jcfuiconsts.liscnflogfiledir
 msgid "Log file directory"
-msgstr ""
+msgstr "Verzeichnis für Log-Datei"
 
 #: jcfuiconsts.liscnflogoutputfileext
 msgid "Output file extension"
-msgstr ""
+msgstr "Endung der Ausgabedatei"
 
 #: jcfuiconsts.liscnflogselectdir
 msgid "Select specified directory"
-msgstr ""
+msgstr "Spezifiziertes Verzeichnis wählen"
 
 #: jcfuiconsts.liscnflogspecified
 #, object-pascal-format
 msgid "Specified: %s"
-msgstr ""
+msgstr "Spezifiziert: %s\""
 
 #: jcfuiconsts.liscnflogtemp
 #, object-pascal-format
 msgid "Temp: %s"
-msgstr ""
+msgstr "Temp: %s"
 
 #: jcfuiconsts.liscnflogtime
 msgid "Log time taken to process"
-msgstr ""
+msgstr "Bearbeitungsdauer erfassen"
 
 #: jcfuiconsts.liscnflogtoken
 msgid "Token"
@@ -509,23 +503,23 @@ msgstr ""
 
 #: jcfuiconsts.liscnflogviewlog
 msgid "View log after each run"
-msgstr ""
+msgstr "Log-Datei nach jedem Start zeigen"
 
 #: jcfuiconsts.liscnflogviewlognow
 msgid "View Log now"
-msgstr ""
+msgstr "Log-Datei jetzt anzeigen"
 
 #: jcfuiconsts.liscnftabexclusions
 msgid "Exclusions"
-msgstr ""
+msgstr "Ausschlüsse"
 
 #: jcfuiconsts.liscnftabgeneral
 msgid "General"
-msgstr ""
+msgstr "Allgemein"
 
 #: jcfuiconsts.liscnftablogfile
 msgid "Log file"
-msgstr ""
+msgstr "Log-Datei"
 
 #: jcfuiconsts.liscommentsremoveemptycurlybracescomments
 msgid "Remove empty '{ }' comments"
@@ -553,7 +547,7 @@ msgstr "Ausnahme-Fehler %s"
 #: jcfuiconsts.lisedin
 #, object-pascal-format
 msgid "%s in %s"
-msgstr ""
+msgstr "%s in %s"
 
 #: jcfuiconsts.lisedjcfparseerror
 msgid "JCF Parse error"
@@ -567,10 +561,9 @@ msgstr "%s in der Nähe von %s"
 #: jcfuiconsts.lisedtype
 #, object-pascal-format
 msgid "Type: %s%s"
-msgstr ""
+msgstr "Typ: %s%s"
 
 #: jcfuiconsts.liserroract
-#, fuzzy
 msgctxt "jcfuiconsts.liserroract"
 msgid "Error"
 msgstr "Fehler"
@@ -589,12 +582,12 @@ msgstr "Wortliste:"
 
 #: jcfuiconsts.lisfrfileconfirmformat
 msgid "Show confirmation dialog before format"
-msgstr ""
+msgstr "Bestätigungsdialog vor der Formatierung anzeigen"
 
 #: jcfuiconsts.lisfrfilesdatefilewritten
-#, object-pascal-format, fuzzy, badformat
+#, object-pascal-format
 msgid "Date file written: %s"
-msgstr "Dateidatum:"
+msgstr "Dateidatum: %s"
 
 #: jcfuiconsts.lisfrfilesdescription
 msgid "Description:"
@@ -614,28 +607,28 @@ msgstr "Datei nicht gefunden"
 
 #: jcfuiconsts.lisfrfilesopenfolder
 msgid "Open folder"
-msgstr ""
+msgstr "Ordner öffnen"
 
 #: jcfuiconsts.lisfrfilessettingsfile
 msgid "Settings File"
-msgstr ""
+msgstr "Einstellungs-Datei"
 
 #: jcfuiconsts.lisfrfilessettingsfileis
 msgid "Settings file is:"
-msgstr ""
+msgstr "Einstellungs-Datei %s:"
 
 #: jcfuiconsts.lisfrfilesversionthatwrotethisfile
-#, object-pascal-format, fuzzy, badformat
+#, object-pascal-format
 msgid "Version that wrote this file: %s"
-msgstr "Version, die die Datei geschrieben hat:"
+msgstr "Version, die die Datei geschrieben hat: %s"
 
 #: jcfuiconsts.lishintapplicationdefault
 msgid "Application Default: "
-msgstr ""
+msgstr "Voreinstellung: "
 
 #: jcfuiconsts.lisimbalancedcommentact
 msgid "Imbalanced comment action"
-msgstr ""
+msgstr "Aktion bei unausgeglichenem Kommentar"
 
 #: jcfuiconsts.lisindentblockindentationspaces
 msgid "Block indentation spaces"
@@ -660,7 +653,7 @@ msgstr "Zusätzliche Einrückung bei Case..Else-Blöcken"
 
 #: jcfuiconsts.lisindentextraindentforcaselabels
 msgid "Extra Indent for Case labels"
-msgstr ""
+msgstr "Zusätzliche Einrückung für Case-Labels"
 
 #: jcfuiconsts.lisindentextraindentforifelseblocks
 msgid "Extra Indent for If...Else blocks"
@@ -668,26 +661,23 @@ msgstr "Zusätzliche Einrückung bei If..Else-Blöcken"
 
 #: jcfuiconsts.lisindentextraindentforinterfaceguid
 msgid "Extra Indent for interface GUID"
-msgstr ""
+msgstr "Zusätzliche Einrückung für Interface GUID"
 
 #: jcfuiconsts.lisindentextraorphantryblocks
 msgid "Extra Indent for orphan try blocks"
-msgstr ""
+msgstr "Zusätzliche Einrückung für verwaiste try-Böcke"
 
 #: jcfuiconsts.lisindentindentation
 msgid "Indentation"
 msgstr "Einrückung"
 
 #: jcfuiconsts.lisindentindentforprocedurebody
-#, fuzzy
 msgid "Indent for procedure body"
 msgstr "Einrückung für Prozedurkörper"
 
 #: jcfuiconsts.lisindentindentforproceduresinlibrary
-#, fuzzy
-#| msgid "Indent for procedures in library"
 msgid "Indent for procedures in program/library"
-msgstr "Einrückung für Bibliotheksprozeduren "
+msgstr "Einrückung für Bibliotheksprozeduren"
 
 #: jcfuiconsts.lisindentindentnestedtypes
 msgid "Indent nested types"
@@ -715,27 +705,27 @@ msgstr "Einzeilige Kommentare in Prozeduren mit dem Quelltext zusammenhalten"
 
 #: jcfuiconsts.lisindentlabels
 msgid "Indent labels"
-msgstr ""
+msgstr "Labels einrücken"
 
 #: jcfuiconsts.lisindentlabelsdontindent
 msgid "Don't indent"
-msgstr ""
+msgstr "Nicht einrücken"
 
 #: jcfuiconsts.lisindentlabelsindentprevlevel
 msgid "Indent to prior level"
-msgstr ""
+msgstr "Zur vorigen Ebene einrücken"
 
 #: jcfuiconsts.lisindentlabelsindentx0
 msgid "Indent to first column position"
-msgstr ""
+msgstr "Zur ersten Spaltenposition einrücken"
 
 #: jcfuiconsts.lisindentlabelslindenttoprocedure
 msgid "Indent to procedure level"
-msgstr ""
+msgstr "Zur Prozedur-Ebene einrücken"
 
 #: jcfuiconsts.lisindentlabelsstatement
 msgid "Indent statement"
-msgstr ""
+msgstr "Anweisung einrücken"
 
 #: jcfuiconsts.lisindentoptions
 msgid "Options"
@@ -743,29 +733,31 @@ msgstr "Einstellungen"
 
 #: jcfuiconsts.lisindenttryfinallyexcept
 msgid "Indent try/finally/except"
-msgstr ""
+msgstr "Einrückung von try/finally/except"
 
 #: jcfuiconsts.lisjcfformatsettings
 msgid "JCF Format Settings"
-msgstr "JCF-Formateinstellungen"
+msgstr ""
+"JCF-Format E\n"
+"instellungen"
 
 #: jcfuiconsts.lisjedicodeformatallopenwindow
 msgid "JEDI Code Format of all open windows?"
-msgstr ""
+msgstr "JEDI-Code-Formatierung von allen offenen Fenstern?"
 
 #: jcfuiconsts.lisjedicodeformatofareyousurethatyouwanttoformatallfi
 #, object-pascal-format
 msgid "JEDI Code Format of %sAre you sure that you want to format all %s files in the project?"
-msgstr ""
+msgstr "JEDI-Code-Formatierung von %sSind Sie sicher, dass Sie alle %s Dateien im Projekt formatieren wollen?"
 
 #: jcfuiconsts.lisjedicodeformatofstartformatting
 #, object-pascal-format
 msgid "JEDI Code Format of %sStart formatting?"
-msgstr ""
+msgstr "JEDE-Code-Formatierung von %sFormatierung beginnen?"
 
 #: jcfuiconsts.lislbbreaklinesthatarelongerthanmaxlinelength
 msgid "&Break lines that are longer than max line length"
-msgstr "Zeilen, die länger als das Maximum sind umbrechen"
+msgstr "Zeilen umbrechen, die länger als das Maximum sind"
 
 #: jcfuiconsts.lislblinebreaking
 msgid "Line Breaking"
@@ -781,7 +773,7 @@ msgstr "&Nie"
 
 #: jcfuiconsts.lislbsometimesifagoodplacetobreakisfound
 msgid "&Sometimes, if a good place to break is found"
-msgstr "Manchmal, wenn eine gute Stelle gefunden wurde"
+msgstr "Manchmal, wenn eine passende Stelle gefunden wurde"
 
 #: jcfuiconsts.lislbusuallyunlessthereisnoacceptableplacetobreak
 msgid "&Usually, unless there is no acceptable place to break"
@@ -797,11 +789,11 @@ msgstr "alles in kleinbuchstaben"
 
 #: jcfuiconsts.lisobfsleavealone
 msgid "Leave alone"
-msgstr "Belassen"
+msgstr "Beibehalten"
 
 #: jcfuiconsts.lisobfsmixedcase
 msgid "Mixed Case"
-msgstr "Gemischte Schreibung"
+msgstr "Gemischte Schreibweise"
 
 #: jcfuiconsts.lisobfsobfuscate
 msgid "Obfuscate"
@@ -834,15 +826,15 @@ msgstr "Leerzeichen und Tabs entfernen"
 
 #: jcfuiconsts.lisprpcompileroptionsdefinedforconditionalcompilation
 msgid "Compiler options defined for conditional compilation:"
-msgstr ""
+msgstr "Compiler-Einstellungen für bedinge Kompilierung:"
 
 #: jcfuiconsts.lisprpenablepreprocessorparsing
 msgid "Enable preprocessor parsing"
-msgstr ""
+msgstr "Prä-Prozessor aktivieren"
 
 #: jcfuiconsts.lisprppreprocessor
 msgid "PreProcessor"
-msgstr ""
+msgstr "Prä-Prozessor"
 
 #: jcfuiconsts.lisprpsymbolsdefinedforconditionalcompilation
 msgid "Symbols defined for conditional compilation:"
@@ -866,11 +858,11 @@ msgstr "In Ausdrücken"
 
 #: jcfuiconsts.lisreturnsinmiscbadplaces
 msgid "In misc. bad places"
-msgstr "An diversen schlechten Stellen"
+msgstr "An unpassenden Stellen"
 
 #: jcfuiconsts.lisreturnsinmiscgoodplaces
 msgid "In misc. good places"
-msgstr "An diversen guten Stellen"
+msgstr "An passenden Stellen"
 
 #: jcfuiconsts.lisreturnsinproceduredefinitions
 msgid "In procedure definitions"
@@ -1048,7 +1040,7 @@ msgstr "&Begin und End bei Einzelanweisungen hinzufügen/entfernen"
 
 #: jcfuiconsts.listransformadvancedsettings
 msgid "Advanced settings"
-msgstr ""
+msgstr "Erweiterte Einstellungen"
 
 #: jcfuiconsts.listransformalphabetic
 msgid "Alphabetic"
@@ -1059,9 +1051,8 @@ msgid "Break on &comment"
 msgstr "An Kommentar umbrechen"
 
 #: jcfuiconsts.listransformbreakonreturn
-#, fuzzy
 msgid "Break on &return"
-msgstr "An Rückkehr umbrechen"
+msgstr "Bei &Rückkehr umbrechen"
 
 #: jcfuiconsts.listransformleavebeginandendasis
 msgid "Leave begin and end as is"
@@ -1117,15 +1108,15 @@ msgstr "Uses-S&ortierreihenfolge"
 
 #: jcfuiconsts.listransformwarningsortusesclauses
 msgid "WARNING: changing order of uses clauses may break your code."
-msgstr ""
+msgstr "WARNUNG: Änderung der Unit-Reihenfolge in der 'uses'-Anweisung kann zu Fehlern führen."
 
 #: jcfuiconsts.lisusesinsertintoimplementation
 msgid "Insert into Implementation"
-msgstr "In die Implementation einfügen"
+msgstr "Im Implementation-Abschnitt einfügen"
 
 #: jcfuiconsts.lisusesinsertintointerface
 msgid "Insert into Interface"
-msgstr "In das Interface einfügen"
+msgstr "Im Interface-Abschnitt einfügen"
 
 #: jcfuiconsts.lisusesremove
 msgid "Remove"
@@ -1141,7 +1132,7 @@ msgstr "Uses"
 
 #: jcfuiconsts.liswarnact
 msgid "Warn"
-msgstr ""
+msgstr "Warnen"
 
 #: jcfuiconsts.liswarningsignoreunusedparametersnamed
 msgid "&Ignore unused parameters named:"
@@ -1149,7 +1140,7 @@ msgstr "Ungenutzte Parameter übergehen:"
 
 #: jcfuiconsts.liswarningswarnaboutunusedparameters
 msgid "Warn about &unused parameters"
-msgstr "Warnungen zu überflüssigen Parametern"
+msgstr "Warnungen bei ungenutzten Parametern"
 
 #: jcfuiconsts.liswarningswarnings
 msgid "Warnings"
@@ -1158,4 +1149,3 @@ msgstr "Warnungen"
 #: jcfuiconsts.liswarningswarningson
 msgid "&Warnings On"
 msgstr "&Warnungen an"
-
