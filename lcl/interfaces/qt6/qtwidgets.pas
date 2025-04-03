@@ -107,6 +107,7 @@ type
 
   TQtWidget = class(TQtObject, IUnknown)
   private
+    FDefaultFocusReason: QtFocusReason;
     FInResizeEvent: boolean;
     FWidgetState: TQtWidgetStates;
     FWidgetDefaultFont: TQtFont;
@@ -316,6 +317,7 @@ type
       nil): QPixmapH;
     property ChildOfComplexWidget: TChildOfComplexWidget read FChildOfComplexWidget write FChildOfComplexWidget;
     property Context: HDC read GetContext;
+    property DefaultFocusReason: QtFocusReason read FDefaultFocusReason write FDefaultFocusReason;
     property HasCaret: Boolean read FHasCaret write SetHasCaret;
     property HasPaint: Boolean read FHasPaint write FHasPaint;
     property InResizeEvent: boolean read FInResizeEvent write FInResizeEvent;
@@ -2158,6 +2160,7 @@ end;
 
 procedure TQtWidget.InitializeWidget;
 begin
+  FDefaultFocusReason := QtTabFocusReason;
   FInResizeEvent := False;
   // default states
   FWidgetState := [];
@@ -5168,7 +5171,7 @@ end;
 procedure TQtWidget.setFocus;
 begin
   if getFocusPolicy <> QtNoFocus then
-    QWidget_setFocus(Widget, QtTabFocusReason) {issue #10155}
+    QWidget_setFocus(Widget, FDefaultFocusReason) {issue #10155}
   else
     QWidget_setFocus(Widget);
 end;
@@ -9725,6 +9728,7 @@ begin
   FCachedSelectionLen := -1;
   FIntValidator := nil;
   FNumbersOnly := False;
+  FDefaultFocusReason := QtOtherFocusReason;
   if AParams.WndParent <> 0 then
     Parent := TQtWidget(AParams.WndParent).GetContainerWidget
   else
@@ -16322,6 +16326,7 @@ end;
 
 procedure TQtMenu.InitializeWidget;
 begin
+  FDefaultFocusReason := QtTabFocusReason;
   FWidgetState := [];
   ChildOfComplexWidget := ccwNone;
   WidgetColorRole := QPaletteWindow;
