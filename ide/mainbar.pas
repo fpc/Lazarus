@@ -613,7 +613,7 @@ end;
 procedure TMainIDEBar.WndProc(var Message: TLMessage);
 begin
   inherited WndProc(Message);
-  if (Message.Msg=LM_ACTIVATE) and (Message.Result=0) then
+  if (Message.Msg=LM_ACTIVATE) and (Message.Result=0) and (Lo(Message.WParam) <> WA_INACTIVE) then
     DoActive;
 end;
 
