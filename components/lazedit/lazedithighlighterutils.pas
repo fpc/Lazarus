@@ -88,8 +88,13 @@ type
 
   TLazHighlighterRangeEqualityComparer = class(TInterfacedObject, ILazHighlighterRangeEqualityComparer)
   public
+    {$IF FPC_Fullversion>30202}
     function Equals(const ALeft, ARight: TLazHighlighterRangeForDictionary): Boolean; reintroduce;
     function GetHashCode(const AValue: TLazHighlighterRangeForDictionary): UInt32; reintroduce;
+    {$ELSE}
+    function Equals(constref ALeft, ARight: TLazHighlighterRangeForDictionary): Boolean; reintroduce;
+    function GetHashCode(constref AValue: TLazHighlighterRangeForDictionary): UInt32; reintroduce;
+    {$ENDIF}
   end;
 
 var
@@ -109,14 +114,16 @@ end;
 
 { TLazHighlighterRangeEqualityComparer }
 
-function TLazHighlighterRangeEqualityComparer.Equals(const ALeft,
-  ARight: TLazHighlighterRangeForDictionary): Boolean;
+function TLazHighlighterRangeEqualityComparer.Equals(
+  {$IF FPC_Fullversion>30202} const {$ELSE} constref {$ENDIF}
+  ALeft, ARight: TLazHighlighterRangeForDictionary): Boolean;
 begin
   Result := ALeft.Compare(ARight) = 0;
 end;
 
 function TLazHighlighterRangeEqualityComparer.GetHashCode(
-  const AValue: TLazHighlighterRangeForDictionary): UInt32;
+  {$IF FPC_Fullversion>30202} const {$ELSE} constref {$ENDIF}
+  AValue: TLazHighlighterRangeForDictionary): UInt32;
 begin
   Result := AValue.GetHashCode;
 end;
