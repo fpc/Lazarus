@@ -29,3 +29,4 @@ msgstr "Keine Voreinstellungen gefunden"
 #, object-pascal-format
 msgid "The settings file \"%s\" does not exist.%sThe formatter will work better if it is configured to use a valid settings file"
 msgstr "Die Konfigurationsdatei »%s« fehlt.%sDer Formatierer arbeitet mit einer gültigen Konfigurationsdatei besser"
+
