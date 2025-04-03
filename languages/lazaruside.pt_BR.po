@@ -568,6 +568,18 @@ msgstr "Texto"
 msgid "Wrapping"
 msgstr ""
 
+#: lazarusidestrconsts.dlgaddhiattrgroup_comment
+msgid "Comments"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrgroup_declsection
+msgid "Declaration Blocks"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrgroup_progheader
+msgid "Procedure Header"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrgroup_suffix_custom
 msgid "(Custom)"
 msgstr ""
@@ -20423,11 +20435,13 @@ msgid "Delete to start of word"
 msgstr "Excluir até o início da palavra"
 
 #: lazarusidestrconsts.srkmecdeleteline
-msgid "Delete current line"
+#, fuzzy
+#| msgid "Delete current line"
+msgid "Delete current line (keep caret at BOL)"
 msgstr "Excluir linha atual"
 
 #: lazarusidestrconsts.srkmecdeletelinekeepx
-msgid "Delete current line (keep X pos)"
+msgid "Delete current line (restore caret x-pos)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecdeleteword
