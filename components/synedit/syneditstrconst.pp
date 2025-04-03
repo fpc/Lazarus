@@ -66,6 +66,9 @@ resourcestring
   SYNS_AttrCharacter            =  'Character';
   SYNS_AttrClass                =  'Class';
   SYNS_AttrComment              =  'Comment';
+  SYNS_AttrCommentAnsi          =  'Ansi Comment';
+  SYNS_AttrCommentCurly         =  'Curly Comment';
+  SYNS_AttrCommentSlash         =  'Slash Comment';
   SYNS_AttrIDEDirective         =  'IDE Directive';
   SYNS_AttrCondition            =  'Condition';
   SYNS_AttrDataType             =  'Data type';
@@ -199,6 +202,9 @@ const
   SYNS_XML_AttrCharacter            =  'Character';
   SYNS_XML_AttrClass                =  'Class';
   SYNS_XML_AttrComment              =  'Comment';
+  SYNS_XML_AttrCommentAnsi          =  'Ansi Comment';
+  SYNS_XML_AttrCommentCurly         =  'Curly Comment';
+  SYNS_XML_AttrCommentSlash         =  'Slash Comment';
   SYNS_XML_AttrIDEDirective         =  'IDE Directive';
   SYNS_XML_AttrCondition            =  'Condition';
   SYNS_XML_AttrDataType             =  'Data type';

@@ -96,6 +96,18 @@ msgstr "Classe"
 msgid "Comment"
 msgstr "Commento"
 
+#: syneditstrconst.syns_attrcommentansi
+msgid "Ansi Comment"
+msgstr ""
+
+#: syneditstrconst.syns_attrcommentcurly
+msgid "Curly Comment"
+msgstr ""
+
+#: syneditstrconst.syns_attrcommentslash
+msgid "Slash Comment"
+msgstr ""
+
 #: syneditstrconst.syns_attrcondition
 msgid "Condition"
 msgstr "Condizione"

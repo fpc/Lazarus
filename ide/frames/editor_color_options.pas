@@ -25,7 +25,7 @@ unit editor_color_options;
 interface
 
 uses
-  Classes, Controls, Math, Types, typinfo, sysutils,
+  Classes, Controls, Math, Types, typinfo, fgl, sysutils,
   // LazUtils
   Laz2_XMLCfg, LazFileUtils, LazUTF8, LazLoggerBase,
   // LCL
@@ -1162,13 +1162,53 @@ begin
 end;
 
 procedure TEditorColorOptionsFrame.FillColorElementListBox;
+  function GetParentNameForLanguageElement(AnAttr: TColorSchemeAttribute;
+    out AParentName, AGroupName: String): boolean;
+  begin
+    AGroupName := '';
+    AParentName := FCurrentHighlighter.LanguageName;
+    Result := True;
+
+    if hafCustomWords in AnAttr.Features then begin
+      AParentName := AParentName + ' ' + dlgAddHiAttrGroup_Suffix_Custom;
+    end
+    else
+    if strlcomp(PChar(AnAttr.StoredName), PChar(NESTED_BRACKET_STOREDNAME), length(NESTED_BRACKET_STOREDNAME)) = 0
+    then begin
+      AParentName := AParentName + ' ' + dlgAddHiAttrGroup_Suffix_NBrackets;
+    end
+    else
+    if hafAlpha in AnAttr.Features then begin
+      AParentName := AParentName + ' ' + dlgAddHiAttrGroup_Suffix_Extended;
+
+      case AnAttr.StoredName of
+        //SYNS_XML_AttrIDEDirective,
+        SYNS_XML_AttrCommentAnsi, SYNS_XML_AttrCommentCurly, SYNS_XML_AttrCommentSlash,
+        SYNS_XML_AttrPasDocKey, SYNS_XML_AttrPasDocSymbol, SYNS_XML_AttrPasDocUnknown:
+          AGroupName := dlgAddHiAttrGroup_Comment;
+        SYNS_XML_AttrProcedureHeaderName, SYNS_XML_AttrPropertyName,
+        SYNS_XML_AttrProcedureHeaderParam, SYNS_XML_AttrProcedureHeaderResult,
+        SYNS_XML_AttrProcedureHeaderType,  SYNS_XML_AttrProcedureHeaderValue:
+          AGroupName := dlgAddHiAttrGroup_ProgHeader;
+        SYNS_XML_AttrDeclarationVarConstName, SYNS_XML_AttrDeclarationTypeName,
+        SYNS_XML_AttrDeclarationType, SYNS_XML_AttrDeclarationValue:
+          AGroupName := dlgAddHiAttrGroup_DeclSection;
+      end;
+    end
+    else
+      Result := False;
+  end;
+
+type
+  TGroupNodes = specialize TFPGMap<String, TTreeNode>;
 var
   i, AttriIdx: Integer;
-  ParentName: String;
+  ParentName, GroupName: String;
   ParentNode: TTreeNode;
   j: TAhaGroupName;
   Attr: TColorSchemeAttribute;
   NewNode, DefNode, p, ComplWindowEntryParentNode: TTreeNode;
+  GroupNodes: TGroupNodes;
 begin
   ColorElementTree.BeginUpdate;
   ColorElementTree.Items.Clear;
@@ -1185,6 +1225,7 @@ begin
     if not(j in [agnDefault, agnLanguage, agnRegistered]) then
       ColorElementTree.Items.Add(nil, AdditionalHighlightGroupNames[j]).Visible := False;
 
+  GroupNodes := TGroupNodes.Create;
   // Fill Attributes in
   ComplWindowEntryParentNode := nil;
   DefNode := nil;
@@ -1196,25 +1237,18 @@ begin
         agnLanguage:
           begin
             ParentNode := ColorElementTree.Items.GetFirstNode;
-            if FIsEditingDefaults then begin
-              ParentName := AdditionalHighlightGroupNames[agnDefault];
-            end
-            else
-            if hafCustomWords in Attr.Features then begin
-              ParentName := FCurrentHighlighter.LanguageName + ' ' + dlgAddHiAttrGroup_Suffix_Custom;
+            if GetParentNameForLanguageElement(Attr, ParentName, GroupName) then begin
               ParentNode := ColorElementTree.Items.FindTopLvlNode(ParentName);
-            end
-            else
-            if strlcomp(PChar(Attr.StoredName), PChar(NESTED_BRACKET_STOREDNAME), length(NESTED_BRACKET_STOREDNAME)) = 0
-            then begin
-              ParentName := FCurrentHighlighter.LanguageName + ' ' + dlgAddHiAttrGroup_Suffix_NBrackets;
-              ParentNode := ColorElementTree.Items.FindTopLvlNode(ParentName);
-            end
-            else begin
-              ParentName := FCurrentHighlighter.LanguageName;
-              if hafAlpha in Attr.Features then begin
-                ParentName := ParentName + ' ' + dlgAddHiAttrGroup_Suffix_Extended;
-                ParentNode := ColorElementTree.Items.FindTopLvlNode(ParentName);
+              if ParentNode = nil then
+                ParentNode := ColorElementTree.Items.Add(nil, ParentName);
+
+              if GroupName <> '' then begin
+                ParentName := GroupName;
+                p := ParentNode;
+                if not GroupNodes.TryGetData(GroupName, ParentNode) then begin
+                  ParentNode := ColorElementTree.Items.AddChild(p, GroupName);
+                  GroupNodes.Add(GroupName, ParentNode);
+                end;
               end;
             end;
           end;
@@ -1261,6 +1295,9 @@ begin
   FindCurHighlightElement;
   if assigned(ComplWindowEntryParentNode) then
     ComplWindowEntryParentNode.Collapse(True);
+  for i := 0 to GroupNodes.Count - 1 do
+    GroupNodes.Data[i].Collapse(False);
+  GroupNodes.Free;
 end;
 
 procedure TEditorColorOptionsFrame.SetColorElementsToDefaults(OnlySelected: Boolean);

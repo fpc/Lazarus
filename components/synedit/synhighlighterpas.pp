@@ -188,7 +188,11 @@ type
     reaDeclVarName,
     reaDeclTypeName,
     reaDeclType,
-    reaDeclValue
+    reaDeclValue,
+    // other
+    reCommentAnsi,
+    reCommentCurly,
+    reCommentSlash
   );
   TRequiredStates = set of TRequiredState;
 
@@ -595,6 +599,9 @@ type
     PSynPasSynCustomTokenInfoListEx = ^TSynPasSynCustomTokenInfoListEx;
   private
     FCaseLabelAttriMatchesElseOtherwise: Boolean;
+    FCommentAnsiAttri: TSynHighlighterAttributesModifier;
+    FCommentCurlyAttri: TSynHighlighterAttributesModifier;
+    FCommentSlashAttri: TSynHighlighterAttributesModifier;
     FNestedBracketAttribs: TSynHighlighterAttributesModifierCollection;
     FNestedBracketMergedMarkup: TSynSelectedColorMergeResult;
     FHighNestedBracketAttrib: integer;
@@ -605,7 +612,6 @@ type
       Lists: array of TSynPasSynCustomTokenInfoListEx;
     end;
     FCustomTokenMarkup, FCustomCommentTokenMarkup: TSynHighlighterAttributesModifier;
-    FCustomTokenMarkupSlash, FCustomTokenMarkupAnsi, FCustomTokenMarkupBor: TSynHighlighterAttributesModifier;
     FCustomTokenMergedMarkup, FCustomCommentTokenMergedMarkup: TSynSelectedColorMergeResult;
 
     FCurIDEDirectiveAttri: TSynSelectedColorMergeResult;
@@ -987,6 +993,9 @@ type
     property AsmAttri: TSynHighlighterAttributes read fAsmAttri write fAsmAttri;
     property CommentAttri: TSynHighlighterAttributes read fCommentAttri
       write fCommentAttri;
+    property CommentAnsiAttri: TSynHighlighterAttributesModifier read FCommentAnsiAttri write FCommentAnsiAttri;
+    property CommentCurlyAttri: TSynHighlighterAttributesModifier read FCommentCurlyAttri write FCommentCurlyAttri;
+    property CommentSlashAttri: TSynHighlighterAttributesModifier read FCommentSlashAttri write FCommentSlashAttri;
     property IDEDirectiveAttri: TSynHighlighterAttributesModifier read FIDEDirectiveAttri
       write FIDEDirectiveAttri;
     property IdentifierAttri: TSynHighlighterAttributes read fIdentifierAttri
@@ -1596,9 +1605,6 @@ begin
   FNeedCustomTokenBuild := False;
   FCustomTokenMarkup := nil;
   FCustomCommentTokenMarkup := nil;
-  FCustomTokenMarkupSlash := nil;
-  FCustomTokenMarkupAnsi := nil;
-  FCustomTokenMarkupBor := nil;
   for i := 0 to 255 do begin
     for j := 0 to length(FCustomTokenInfo[i].Lists) - 1 do
       FreeAndNil(FCustomTokenInfo[i].Lists[j].List);
@@ -1625,23 +1631,6 @@ begin
 
       FCustomTokenInfo[h].MatchTokenKinds := FCustomTokenInfo[h].MatchTokenKinds + mtk;
       for tk in mtk do begin
-        case tk of
-          tkSlashComment:
-            if t = '*' then begin
-              FCustomTokenMarkupSlash := FSynCustomTokens[i].Markup;
-              continue;
-            end;
-          tkAnsiComment:
-            if t = '*' then begin
-              FCustomTokenMarkupAnsi := FSynCustomTokens[i].Markup;
-              continue;
-            end;
-          tkBorComment:
-            if t = '*' then begin
-              FCustomTokenMarkupBor := FSynCustomTokens[i].Markup;
-              continue;
-            end;
-        end;
         Lst := FindList(h, tk);
         Lst^.List.AddObject(UpperCase(t), FSynCustomTokens[i]);
       end;
@@ -3943,7 +3932,7 @@ end;
 constructor TSynPasSyn.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FCaseLabelAttriMatchesElseOtherwise := True;;
+  FCaseLabelAttriMatchesElseOtherwise := True;
   FStringKeywordMode := spsmDefault;
   FExtendedKeywordsMode := False;
   CreateDividerDrawConfig;
@@ -3953,6 +3942,12 @@ begin
   fCommentAttri := TSynHighlighterAttributes.Create(@SYNS_AttrComment, SYNS_XML_AttrComment);
   fCommentAttri.Style:= [fsItalic];
   AddAttribute(fCommentAttri);
+  FCommentAnsiAttri := TSynHighlighterAttributesModifier.Create(@SYNS_AttrCommentAnsi, SYNS_XML_AttrCommentAnsi);
+  AddAttribute(FCommentAnsiAttri);
+  FCommentCurlyAttri := TSynHighlighterAttributesModifier.Create(@SYNS_AttrCommentCurly, SYNS_XML_AttrCommentCurly);
+  AddAttribute(FCommentCurlyAttri);
+  FCommentSlashAttri := TSynHighlighterAttributesModifier.Create(@SYNS_AttrCommentSlash, SYNS_XML_AttrCommentSlash);
+  AddAttribute(FCommentSlashAttri);
   FIDEDirectiveAttri := TSynHighlighterAttributesModifier.Create(@SYNS_AttrIDEDirective, SYNS_XML_AttrIDEDirective);
   AddAttribute(FIDEDirectiveAttri);
   // FCurIDEDirectiveAttri, FCurCaseLabelAttri, FCurProcTypeDeclExtraAttr
@@ -4182,7 +4177,8 @@ var
   p: LongInt;
   IsInWord, WasInWord, ct: Boolean;
 begin
-  FCustomCommentTokenMarkup := FCustomTokenMarkupBor;
+  if reCommentCurly in FRequiredStates then
+    FCustomCommentTokenMarkup := FCommentCurlyAttri;
   fTokenID := tkComment;
   if rsIDEDirective in fRange then
     fTokenID := tkIDEDirective;
@@ -4500,7 +4496,8 @@ begin
       dec(Run);
       StartPascalCodeFoldBlock(cfbtBorCommand);
 
-      FCustomCommentTokenMarkup := FCustomTokenMarkupBor;
+      if reCommentCurly in FRequiredStates then
+        FCustomCommentTokenMarkup := FCommentCurlyAttri;
       if not (FIsInNextToEOL or IsScanning) then
         GetCustomSymbolToken(tkBorComment, 1, FCustomTokenMarkup);
 
@@ -4737,7 +4734,8 @@ var
   IsInWord, WasInWord, ct: Boolean;
 begin
   fTokenID := tkComment;
-  FCustomCommentTokenMarkup := FCustomTokenMarkupAnsi;
+  if reCommentAnsi in FRequiredStates then
+    FCustomCommentTokenMarkup := FCommentAnsiAttri;
 
   if (not (FIsInNextToEOL or IsScanning)) then begin
     if FUsePasDoc and (fLine[Run] = '@') then begin
@@ -4863,7 +4861,8 @@ begin
         Dec(Run);
         StartPascalCodeFoldBlock(cfbtAnsiComment);
 
-        FCustomCommentTokenMarkup := FCustomTokenMarkupAnsi;
+        if reCommentAnsi in FRequiredStates then
+          FCustomCommentTokenMarkup := FCommentAnsiAttri;
         if not (FIsInNextToEOL or IsScanning) then
           GetCustomSymbolToken(tkAnsiComment, 2, FCustomTokenMarkup);
 
@@ -5061,7 +5060,8 @@ end;
 procedure TSynPasSyn.SlashProc;
 begin
   if fLine[Run+1] = '/' then begin
-    FCustomCommentTokenMarkup := FCustomTokenMarkupSlash;
+    if reCommentSlash in FRequiredStates then
+      FCustomCommentTokenMarkup := FCommentSlashAttri;
     FIsInSlash := True;
 
     fTokenID := tkComment;
@@ -5093,7 +5093,8 @@ var
   AtSlashOpen: Boolean;
 begin
   if FIsInSlash and (not (FIsInNextToEOL or IsScanning)) then begin
-    FCustomCommentTokenMarkup := FCustomTokenMarkupSlash;
+    if reCommentSlash in FRequiredStates then
+      FCustomCommentTokenMarkup := FCommentSlashAttri;
     fTokenID := tkComment;
 
     if (fLine[Run] = '@') then begin
@@ -5113,7 +5114,8 @@ begin
   AtSlashOpen := (fLine[Run] = '/') and (fLine[Run + 1] = '/') and not FIsInSlash;
   if FIsInSlash or AtSlashOpen then begin
     FIsInSlash := True;
-    FCustomCommentTokenMarkup := FCustomTokenMarkupSlash;
+    if reCommentSlash in FRequiredStates then
+      FCustomCommentTokenMarkup := FCommentSlashAttri;
     // Continue fold block
     fTokenID := tkComment;
 
@@ -7308,6 +7310,10 @@ begin
   inherited DoDefHighlightChanged;
 
   FRequiredStates := [];
+
+  if FCommentAnsiAttri.IsEnabled then  Include(FRequiredStates, reCommentAnsi);
+  if FCommentCurlyAttri.IsEnabled then Include(FRequiredStates, reCommentCurly);
+  if FCommentSlashAttri.IsEnabled then Include(FRequiredStates, reCommentSlash);
 
   //if fPasDocKeyWordAttri.IsEnabled then begin
   //end;
