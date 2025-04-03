@@ -4708,8 +4708,16 @@ begin
     CreateChildNode;
     CurNode.Desc:=ctnIdentifier;
     CurNode.EndPos:=CurPos.EndPos;
-    EndChildNode;
     ReadNextAtom;
+    while CurPos.Flag = cafPoint do begin
+      // TMyClassClass = class of unit1.TMyClass
+      ReadNextAtom;
+      AtomIsIdentifierSaveE(20250403202500);
+      CurNode.EndPos:=CurPos.EndPos;
+      ReadNextAtom;
+    end;
+    EndChildNode;
+    ReadHintModifiers(False);
     if CurPos.Flag<>cafSemicolon then
       SaveRaiseCharExpectedButAtomFound(20170421195756,';');
   end else begin
