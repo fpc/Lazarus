@@ -2204,7 +2204,7 @@ resourcestring
   dlgAddHiAttrGroup_Suffix_EntryType  = '(entry type)';
   dlgAddHiAttrGroup_Comment      = 'Comments';
   dlgAddHiAttrGroup_ProgHeader   = 'Procedure Header';
-  dlgAddHiAttrGroup_DeclSection  = 'Declaration Sections';
+  dlgAddHiAttrGroup_DeclSection  = 'Declaration Blocks';
 
 
   dlgEditAccessCaptionLockedInView            = 'Locked, if text in view';
