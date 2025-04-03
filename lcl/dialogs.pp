@@ -184,9 +184,9 @@ type
   { TOpenDialog }
   
   TOpenOption = (
-    ofReadOnly,            // Include read-only files.
+    ofReadOnly,            // Causes the Read Only check box to be selected initially when the dialog box is created. This flag indicates the state of the Read Only check box when the dialog box is closed.
     ofOverwritePrompt,     // If selected file exists show a message, that file will be overwritten.
-    ofHideReadOnly,        // Hide read-only file.
+    ofHideReadOnly,        // Hides the Read Only check box.
     ofNoChangeDir,         // Do not change current directory.
     ofShowHelp,            // Show a help button.
     ofNoValidate,          // Disable file name validation using OFN_NOVALIDATE on the Windows platform. Allow file names with invalid characters.
