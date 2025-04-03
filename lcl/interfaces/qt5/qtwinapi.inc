@@ -4404,7 +4404,13 @@ begin
   {$endif}
   if Handle = 0 then
     Exit(False);
-  R := TQtWidget(Handle).getFrameGeometry;
+  if QWidget_isTopLevel(TQtWidget(Handle).Widget) then
+  begin
+    R := Rect(0, 0, 0, 0);
+    if GetWindowRect(Handle, R) = 0 then
+      R := TQtWidget(Handle).getFrameGeometry;
+  end else
+    R := TQtWidget(Handle).getFrameGeometry;
   Left := R.Left;
   Top := R.Top;
   Result := True;
