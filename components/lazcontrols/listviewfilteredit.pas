@@ -156,6 +156,7 @@ begin
     fFilteredListview.RemoveFreeNotification(Self);
     ForceFilter('');
   end;
+  fOriginalData.Clear;
   fFilteredListview := AValue;
   if Assigned(fFilteredListview) then
   begin
