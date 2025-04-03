@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-03-12 16:29+0300\n"
+"PO-Revision-Date: 2025-04-04 00:06+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -96,16 +96,16 @@ msgid "Comment"
 msgstr "Комментарий"
 
 #: syneditstrconst.syns_attrcommentansi
-msgid "Ansi Comment"
-msgstr ""
+msgid "ANSI Comment"
+msgstr "Комментарий ANSI"
 
 #: syneditstrconst.syns_attrcommentcurly
 msgid "Curly Comment"
-msgstr ""
+msgstr "Комментарий с фигурными скобками"
 
 #: syneditstrconst.syns_attrcommentslash
 msgid "Slash Comment"
-msgstr ""
+msgstr "Комментарий с косыми чертами"
 
 #: syneditstrconst.syns_attrcondition
 msgid "Condition"

@@ -99,7 +99,7 @@ msgid "Comment"
 msgstr "Коментар"
 
 #: syneditstrconst.syns_attrcommentansi
-msgid "Ansi Comment"
+msgid "ANSI Comment"
 msgstr ""
 
 #: syneditstrconst.syns_attrcommentcurly
