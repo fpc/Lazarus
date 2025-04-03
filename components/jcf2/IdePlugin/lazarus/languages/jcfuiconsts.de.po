@@ -271,7 +271,7 @@ msgstr "Schreibweisen korrigieren"
 
 #: jcfuiconsts.liscapsidentifiersidentifiers
 msgid "Identifiers"
-msgstr "Schlüsselworte"
+msgstr "Schlüsselwörter"
 
 #: jcfuiconsts.liscapsidentifierssetcapitalisationontheseidentifiers
 msgid "Set capitalisation on these identifiers:"
@@ -283,7 +283,7 @@ msgstr "Normalisierung der Schreibweise"
 
 #: jcfuiconsts.liscapsnormalizecapitalisationonenamespace
 msgid "Use only one namespace"
-msgstr "Nur einen Namensraum verwenden"
+msgstr "Nur einzigen Namensraum verwenden"
 
 #: jcfuiconsts.liscapsnotidentifiersnotidentifiers
 msgid "Non-identifiers"
@@ -299,7 +299,7 @@ msgstr "Operatoren"
 
 #: jcfuiconsts.liscapsreservedwords
 msgid "Reserved words"
-msgstr "Reservierte Worte"
+msgstr "Reservierte Wörter"
 
 #: jcfuiconsts.liscapstypes
 msgid "Types"
@@ -406,7 +406,7 @@ msgstr "Einmalige Einstellung"
 
 #: jcfuiconsts.lisclarifyrunonlythese
 msgid "Run &only these"
-msgstr "Nur die ausführen"
+msgstr "Nur diese ausführen"
 
 #: jcfuiconsts.liscnfcaption
 msgid "JCF Global Settings"
@@ -578,7 +578,7 @@ msgstr "Suchen und Ersetzen"
 
 #: jcfuiconsts.lisfindreplacewordlist
 msgid "Word list:"
-msgstr "Wortliste:"
+msgstr "Wörterliste:"
 
 #: jcfuiconsts.lisfrfileconfirmformat
 msgid "Show confirmation dialog before format"
@@ -641,7 +641,7 @@ msgstr "Unterschiedliche Einrückung in der ersten Ebene"
 #: jcfuiconsts.lisindentendtryblockascode
 msgctxt "jcfuiconsts.lisindentendtryblockascode"
 msgid "Indent end try block as code"
-msgstr ""
+msgstr "Ende des Try Blocks wie Code einrücken"
 
 #: jcfuiconsts.lisindentextraindentforbeginend
 msgid "Extra indent for begin/end inside procedures"
@@ -751,7 +751,7 @@ msgstr "JEDI-Code-Formatierung von %sSind Sie sicher, dass Sie alle %s Dateien i
 #: jcfuiconsts.lisjedicodeformatofstartformatting
 #, object-pascal-format
 msgid "JEDI Code Format of %sStart formatting?"
-msgstr "JEDE-Code-Formatierung von %sFormatierung beginnen?"
+msgstr "JEDI-Code-Formatierung von %sFormatierung beginnen?"
 
 #: jcfuiconsts.lislbbreaklinesthatarelongerthanmaxlinelength
 msgid "&Break lines that are longer than max line length"
@@ -828,11 +828,11 @@ msgstr "Compiler-Einstellungen für bedinge Kompilierung:"
 
 #: jcfuiconsts.lisprpenablepreprocessorparsing
 msgid "Enable preprocessor parsing"
-msgstr "Prä-Prozessor aktivieren"
+msgstr "Präprozessor aktivieren"
 
 #: jcfuiconsts.lisprppreprocessor
 msgid "PreProcessor"
-msgstr "Prä-Prozessor"
+msgstr "Präprozessor"
 
 #: jcfuiconsts.lisprpsymbolsdefinedforconditionalcompilation
 msgid "Symbols defined for conditional compilation:"
@@ -929,9 +929,8 @@ msgid "C&onst declarations"
 msgstr "K&onstantendeklarationen"
 
 #: jcfuiconsts.lisspacesfixspacing
-#, fuzzy
 msgid "Fix &spacing"
-msgstr "Leerzeichen korrigieren"
+msgstr "Verwendung von Leerzeichen korrigieren"
 
 #: jcfuiconsts.lisspacesfunctionreturntypes
 msgid "&Function return types"
@@ -996,7 +995,6 @@ msgid "Spaces"
 msgstr "Leerzeichen"
 
 #: jcfuiconsts.lisspacesspacesaroundoperators
-#, fuzzy
 msgid "Spaces around &operators"
 msgstr "Leerzeichen um &Operatoren"
 

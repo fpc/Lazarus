@@ -233,7 +233,7 @@ begin
   rgWriteSettingsFile.Caption := lisCnfGenWriteSettings;
   rgWriteSettingsFile.Items[0] := lisCnfGenAlways;
   rgWriteSettingsFile.Items[1] := lisCnfGenFail;
-  rgWriteSettingsFile.Items[2] := lisCnfGenNever;
+  //rgWriteSettingsFile.Items[2] := lisCnfGenNever;
   rgShowParseTree.Caption := lisCnfGenShowParseTree;
   rgShowParseTree.Items[0] := lisCnfGenAlways;
   rgShowParseTree.Items[1] := lisCnfGenOnParseError;
