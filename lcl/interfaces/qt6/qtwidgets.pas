@@ -5168,7 +5168,7 @@ end;
 procedure TQtWidget.setFocus;
 begin
   if getFocusPolicy <> QtNoFocus then
-    QWidget_setFocus(Widget, QtOtherFocusReason) {issue #10155}
+    QWidget_setFocus(Widget, QtTabFocusReason) {issue #10155}
   else
     QWidget_setFocus(Widget);
 end;
