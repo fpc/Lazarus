@@ -66,7 +66,7 @@ resourcestring
   SYNS_AttrCharacter            =  'Character';
   SYNS_AttrClass                =  'Class';
   SYNS_AttrComment              =  'Comment';
-  SYNS_AttrCommentAnsi          =  'Ansi Comment';
+  SYNS_AttrCommentAnsi          =  'ANSI Comment';
   SYNS_AttrCommentCurly         =  'Curly Comment';
   SYNS_AttrCommentSlash         =  'Slash Comment';
   SYNS_AttrIDEDirective         =  'IDE Directive';
