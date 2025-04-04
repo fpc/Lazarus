@@ -42,8 +42,8 @@ uses
   Types,
   {$ENDIF}
   {$endif}
-  LazSynEditText, SynTextDrawer, LazUTF8, Controls, Graphics,
-  LazLoggerBase;
+  LazSynEditText, LazUTF8, Controls, Graphics,
+  LazLoggerBase, LazEditTextGridPainter;
 
 type
 
@@ -53,7 +53,7 @@ type
   private
     FCharWidth: Integer;
     FHandleOwner: TCanvas;
-    fTextDrawer: TheTextDrawer;
+    fTextDrawer: TLazEditTextGridPainter;
   protected
   {$IFDEF WindowsDesktop} // Do nothing on other OS/ parent handles default
     procedure DoGetPhysicalCharWidths(Line: PChar; LineLen, Index: Integer; PWidths: PPhysicalCharWidth); override;
@@ -62,7 +62,7 @@ type
     constructor Create(AHandleOwner: TCanvas);
     property HandleOwner: TCanvas read FHandleOwner;
     property CharWidth:   Integer read FCharWidth write FCharWidth;
-    property TextDrawer: TheTextDrawer read fTextDrawer write fTextDrawer;
+    property TextDrawer: TLazEditTextGridPainter read fTextDrawer write fTextDrawer;
   end;
 
 implementation

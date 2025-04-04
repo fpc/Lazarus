@@ -56,7 +56,7 @@ uses
   SynEditTypes, SynGutterLineNumber, SynGutterCodeFolding, SynGutterMarks,
   SynGutterChanges, SynGutterLineOverview, SynEditMarkup,
   SynEditMarkupGutterMark, SynEditMarkupSpecialLine, SynEditTextBuffer,
-  SynEditFoldedView, SynTextDrawer, SynEditTextBase, LazSynEditText,
+  SynEditFoldedView, SynEditTextBase, LazSynEditText,
   SynPluginTemplateEdit, SynPluginSyncroEdit, LazSynTextArea,
   SynEditHighlighter, SynEditHighlighterFoldBase, SynHighlighterPas,
   SynEditMarkupHighAll, SynEditKeyCmds, SynEditMarkupIfDef, SynEditMiscProcs,
@@ -64,7 +64,7 @@ uses
   SynEditMarkupFoldColoring, SynEditTextTabExpander, SynEditMouseCmds, SynEditWrappedView,
   LazEditTextAttributes,
   // IDE
-  etSrcEditMarks, LazarusIDEStrConsts, SourceMarks;
+  etSrcEditMarks, LazarusIDEStrConsts, SourceMarks, LazEditTextGridPainter;
 
 type
 
@@ -315,7 +315,7 @@ type
   protected
     procedure DoOnStatusChange(Changes: TSynStatusChanges); override;
     function CreateGutter(AOwner : TSynEditBase; ASide: TSynGutterSide;
-                          ATextDrawer: TheTextDrawer): TSynGutter; override;
+                          ATextDrawer: TLazEditTextGridPainter): TSynGutter; override;
     procedure SetHighlighter(const Value: TSynCustomHighlighter); override;
     procedure AddLineWrapView;
     procedure RemoveLineWrapView;
@@ -1128,7 +1128,7 @@ end;
 procedure TIDESynGutterDebugHL.PaintFoldLvl(Canvas: TCanvas; AClip: TRect; FirstLine,
   LastLine: integer);
 var
-  TextDrawer: TheTextDrawer;
+  TextDrawer: TLazEditTextGridPainter;
   c, i, iLine, LineHeight: Integer;
   rcLine: TRect;
   dc: HDC;
@@ -1188,7 +1188,7 @@ end;
 procedure TIDESynGutterDebugHL.PaintCharWidths(Canvas: TCanvas; AClip: TRect; FirstLine,
   LastLine: integer);
 var
-  TextDrawer: TheTextDrawer;
+  TextDrawer: TLazEditTextGridPainter;
   c, i, iLine, LineHeight: Integer;
   rcLine: TRect;
   dc: HDC;
@@ -1986,7 +1986,7 @@ begin
 end;
 
 function TIDESynEditor.CreateGutter(AOwner: TSynEditBase; ASide: TSynGutterSide;
-  ATextDrawer: TheTextDrawer): TSynGutter;
+  ATextDrawer: TLazEditTextGridPainter): TSynGutter;
 begin
   Result := TIDESynGutter.Create(AOwner, ASide, ATextDrawer);
 end;

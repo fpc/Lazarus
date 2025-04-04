@@ -331,10 +331,6 @@ If you wish to allow use of your version of these files only under the terms of 
         <UnitName Value="LazSynTextArea"/>
       </Item>
       <Item>
-        <Filename Value="syntextdrawer.pp"/>
-        <UnitName Value="SynTextDrawer"/>
-      </Item>
-      <Item>
         <Filename Value="syneditmarkupguttermark.pp"/>
         <UnitName Value="SynEditMarkupGutterMark"/>
       </Item>

@@ -141,10 +141,10 @@ uses
   SynEditFoldedView,
   // Gutter
   SynGutterBase, SynGutter,
-  SynEditMiscClasses, SynEditHighlighter, LazSynTextArea, SynTextDrawer,
+  SynEditMiscClasses, SynEditHighlighter, LazSynTextArea,
   SynEditTextBidiChars, SynGutterCodeFolding, SynGutterChanges, SynGutterLineNumber,
   SynGutterMarks, SynGutterLineOverview,
-  LazEditMiscProcs, LazEditTextAttributes;
+  LazEditMiscProcs, LazEditTextAttributes, LazEditTextGridPainter;
 
 const
   // SynDefaultFont is determined in InitSynDefaultFont()
@@ -568,7 +568,7 @@ type
     fWantTabs: boolean;
     FLeftGutter, FRightGutter: TSynGutter;
     fTabWidth: integer;
-    fTextDrawer: TheTextDrawer;
+    fTextDrawer: TLazEditTextGridPainter;
     FPaintLineColor, FPaintLineColor2: TSynSelectedColor;
     fStateFlags: TSynStateFlags;
     fStatusChanges: TSynStatusChanges;
@@ -773,7 +773,7 @@ type
     procedure StatusChanged(AChanges: TSynStatusChanges); override;
 
     property PaintLockOwner: TSynEditBase read GetPaintLockOwner write SetPaintLockOwner;
-    property TextDrawer: TheTextDrawer read fTextDrawer;
+    property TextDrawer: TLazEditTextGridPainter read fTextDrawer;
 
     procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
       const AXProportion, AYProportion: Double); override;
@@ -920,7 +920,7 @@ type
     function FindNextUnfoldedLine(iLine: integer; Down: boolean): Integer;
     // Todo: Reduce the argument list of Creategutter
     function CreateGutter(AOwner : TSynEditBase; ASide: TSynGutterSide;
-                          ATextDrawer: TheTextDrawer): TSynGutter; virtual;
+                          ATextDrawer: TLazEditTextGridPainter): TSynGutter; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     procedure BeforeDestruction; override;
@@ -2335,7 +2335,8 @@ begin
 
   RecreateMarkList;
 
-  fTextDrawer := TheTextDrawer.Create([fsBold], fFontDummy);
+  fFontDummy.Style := [fsBold];
+  fTextDrawer := TLazEditTextGridPainter.Create(Canvas, fFontDummy);
   {$IFDEF WithSynExperimentalCharWidth}
   FSysCharWidthLinesView.TextDrawer := fTextDrawer;
   {$ENDIF} // WithSynExperimentalCharWidth
@@ -4345,7 +4346,7 @@ begin
 end;
 
 function TCustomSynEdit.CreateGutter(AOwner : TSynEditBase; ASide: TSynGutterSide;
-  ATextDrawer: TheTextDrawer): TSynGutter;
+  ATextDrawer: TLazEditTextGridPainter): TSynGutter;
 begin
   Result := TSynGutter.Create(AOwner, ASide, ATextDrawer);
 end;
@@ -8959,10 +8960,10 @@ begin
       //debugln(['TCustomSynEdit.RecalcCharExtent ',fFontDummy.Name,' ',fFontDummy.Size]);
       //debugln('TCustomSynEdit.RecalcCharExtent  CharHeight=',dbgs(CharHeight));
 
-      fTextDrawer.BaseFont := FFontDummy;
+      fTextDrawer.SetBaseFont(FFontDummy);
       if Assigned(fHighlighter) then
         for i := 0 to Pred(fHighlighter.AttrCount) do
-          fTextDrawer.BaseStyle := fHighlighter.Attribute[i].Style;
+          fTextDrawer.AddBaseStyle(fHighlighter.Attribute[i].Style);
       fTextDrawer.CharExtra := ExtraCharSpacing;
       StatusChanged([scFontOrStyleChanged]); // Font or Spacing
 

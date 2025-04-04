@@ -70,6 +70,23 @@ type
   );
   TLazTextAttrBorderSides = set of TLazTextAttrBorderSide;
 
+const
+  LazTextFrameEdgeToSides: array [TLazTextAttrFrameEdges] of TLazTextAttrBorderSides =
+  ( [],                                      // sfeNone
+    [bsLeft, bsTop, bsRight, bsBottom],      // sfeAround
+    [bsBottom],                              // sfeBottom
+    [bsLeft]                                 // sfeLeft
+  );
+
+  LazTextFrameEdgePriorities: array [TLazTextAttrFrameEdges] of integer =
+  ( 0,    // sfeNone
+    1,   // sfeAround
+    2,   // sfeBottom
+    2    // sfeLeft
+  );
+
+type
+
   { TLazCustomEditTextAttribute }
 
   TLazCustomEditTextAttribute = class(TPersistent)

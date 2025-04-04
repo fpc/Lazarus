@@ -12,8 +12,9 @@ uses
   // LazUtils
   LazMethodList,
   // SynEdit
-  SynEditTypes, SynEditMiscProcs, SynEditMiscClasses, LazSynEditText,
-  SynEditMarkup, SynEditHighlighter, SynTextDrawer, LazEditMiscProcs, LazEditTextAttributes;
+  SynEditTypes, SynEditMiscProcs, SynEditMiscClasses, LazSynEditText, SynEditMarkup,
+  SynEditHighlighter, LazEditMiscProcs, LazEditTextAttributes,
+  LazEditTextGridPainter;
 
 
 type
@@ -121,7 +122,7 @@ type
     FTextHeight: integer;
 
     FCanvas: TCanvas;
-    FTextDrawer: TheTextDrawer;
+    FTextDrawer: TLazEditTextGridPainter;
     FEtoBuf: TEtoBuffer;
     FTheLinesView: TSynEditStrings;
     FHighlighter: TSynCustomHighlighter;
@@ -158,7 +159,7 @@ type
       FirstCol, LastCol: integer); virtual;
     property Canvas: TCanvas read FCanvas;
   public
-    constructor Create(AOwner: TSynEditBase; ATextDrawer: TheTextDrawer);
+    constructor Create(AOwner: TSynEditBase; ATextDrawer: TLazEditTextGridPainter);
     destructor Destroy; override;
     procedure Assign(Src: TLazSynSurface); override;
     procedure InvalidateLines(FirstTextLine, LastTextLine: TLineIdx; AScreenLineOffset: Integer = 0); override;
@@ -188,7 +189,7 @@ type
     property TheLinesView:  TSynEditStrings       read FTheLinesView  write FTheLinesView;
     property Highlighter:   TSynCustomHighlighter read FHighlighter   write FHighlighter;
     property MarkupManager: TSynEditMarkupManager read FMarkupManager write FMarkupManager;
-    property TextDrawer: TheTextDrawer read FTextDrawer;
+    property TextDrawer: TLazEditTextGridPainter read FTextDrawer;
   public
     property TextBounds: TRect read FTextBounds;
 
@@ -1453,7 +1454,7 @@ begin
   if Result.Y < 0 then Result.Y := 0;
 end;
 
-constructor TLazSynTextArea.Create(AOwner: TSynEditBase; ATextDrawer: TheTextDrawer);
+constructor TLazSynTextArea.Create(AOwner: TSynEditBase; ATextDrawer: TLazEditTextGridPainter);
 var
   i: TLazSynBorderSide;
 begin
@@ -1661,7 +1662,6 @@ var
   EraseLeft, DrawLeft: Integer;  // LeftSide for EraseBackground, Text
   CurLine: integer;         // Screen-line index for the loop
   CurTextIndex: Integer;    // Current Index in text
-  dc: HDC;
   CharWidths: TPhysicalCharWidths;
   CWLen: Integer;
 
@@ -1683,9 +1683,9 @@ var
     NeedExpansion, NeedTransform: Boolean;
   begin
     Attr := ATokenInfo.Attr;
-    FTextDrawer.SetForeColor(Attr.Foreground);
-    FTextDrawer.SetBackColor(Attr.Background);
-    FTextDrawer.SetStyle    (Attr.Style);
+    FTextDrawer.ForeColor := Attr.Foreground;
+    FTextDrawer.BackColor := Attr.Background;
+    FTextDrawer.Style     := Attr.Style;
     HasFrame := False;
     for s := low(TLazSynBorderSide) to high(TLazSynBorderSide) do begin
       HasFrame := HasFrame or (Attr.FrameSideColors[s] <> clNone);
@@ -1723,8 +1723,7 @@ var
         FTextDrawer.FillRect(tok);
       end;
       // draw edge (use rcLine / rcToken may be reduced)
-      LCLIntf.MoveToEx(dc, nRightEdge, rcLine.Top, nil);
-      LCLIntf.LineTo  (dc, nRightEdge, rcLine.Bottom + 1);
+      FTextDrawer.DrawLine(nRightEdge, rcLine.Top, nRightEdge, rcLine.Bottom+1, ColorToRGB(RightEdgeColor));
     end
     else
     if HasFrame then begin
@@ -1800,7 +1799,7 @@ var
       then begin
         FEtoBuf := FTextDrawer.Eto;
         FEtoBuf.SetMinLength(Len + ATokenInfo.ExpandedExtraBytes + 1);
-        c := FTextDrawer.GetCharWidth;
+        c := FTextDrawer.CharWidth;
       end
       else
         c := 0;
@@ -1936,9 +1935,9 @@ var
       rcToken := rcLine;
       // Delete the whole Line
       fTextDrawer.BackColor := colEditorBG;
-      SetBkColor(dc, ColorToRGB(colEditorBG));
       rcLine.Left := EraseLeft;
-      InternalFillRect(dc, rcLine);
+      //rcLine.Right := DrawLeft; // TODO?
+      FTextDrawer.FillRect(rcLine);
       rcLine.Left := DrawLeft;
       LineBufferRtlLogPos := -1;
 
@@ -2008,9 +2007,6 @@ begin
 
   Canvas.Pen.Color := RightEdgeColor; // used for code folding too
   Canvas.Pen.Width := 1;
-  // Do everything else with API calls. This (maybe) realizes the new pen color.
-  dc := Canvas.Handle;
-  SetBkMode(dc, TRANSPARENT);
 
   // Adjust the invalid area to not include the gutter (nor the 2 ixel offset to the guttter).
   EraseLeft := AClip.Left;
@@ -2032,27 +2028,24 @@ begin
 
     DisplayView.InitHighlighterTokens(FHighlighter);
     fTextDrawer.Style := []; //Font.Style;
-    fTextDrawer.BeginDrawing(dc);
+    fTextDrawer.BeginPaint;
     try
       PaintLines;
+
+      if (AClip.Top < AClip.Bottom) then begin
+        // Delete the remaining area
+        AClip.Left := EraseLeft;
+        FTextDrawer.BackColor := ColorToRGB(colEditorBG);
+        FTextDrawer.FillRect(AClip);
+        AClip.Left := DrawLeft;
+        // Draw the right edge if necessary.
+        if bDoRightEdge then
+          FTextDrawer.DrawLine(nRightEdge, AClip.Top, nRightEdge, AClip.Bottom+1, ColorToRGB(RightEdgeColor));
+      end;
     finally
-      fTextDrawer.EndDrawing;
+      fTextDrawer.EndPaint;
       DisplayView.FinishHighlighterTokens;
       ReAllocMem(LineBuffer, 0);
-    end;
-  end;
-
-  if (AClip.Top < AClip.Bottom) then begin
-    // Delete the remaining area
-    SetBkColor(dc, ColorToRGB(colEditorBG));
-    AClip.Left := EraseLeft;
-    InternalFillRect(dc, AClip);
-    AClip.Left := DrawLeft;
-
-    // Draw the right edge if necessary.
-    if bDoRightEdge then begin
-      LCLIntf.MoveToEx(dc, nRightEdge, AClip.Top, nil);
-      LCLIntf.LineTo(dc, nRightEdge, AClip.Bottom + 1);
     end;
   end;
 

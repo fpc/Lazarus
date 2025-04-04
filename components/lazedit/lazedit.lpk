@@ -11,6 +11,9 @@
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Other>
+        <CompilerMessages>
+          <IgnoredMessages idx6058="True" idx3123="True"/>
+        </CompilerMessages>
         <CustomOptions Value="$(IDEBuildOptions)"/>
       </Other>
     </CompilerOptions>
@@ -38,15 +41,19 @@ Additional licenses may be granted in each individual file. See the headers in e
       </Item>
       <Item>
         <Filename Value="lazeditmiscprocs.pas"/>
-        <UnitName Value="lazeditmiscprocs"/>
+        <UnitName Value="LazEditMiscProcs"/>
       </Item>
       <Item>
         <Filename Value="lazedithighlighterutils.pas"/>
-        <UnitName Value="lazedithighlighterutils"/>
+        <UnitName Value="LazEditHighlighterUtils"/>
+      </Item>
+      <Item>
+        <Filename Value="lazedittextgridpainter.pas"/>
+        <UnitName Value="LazEditTextGridPainter"/>
       </Item>
       <Item>
         <Filename Value="lazedittextattributes.pas"/>
-        <UnitName Value="lazedittextattributes"/>
+        <UnitName Value="LazEditTextAttributes"/>
       </Item>
     </Files>
     <RequiredPkgs>

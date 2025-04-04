@@ -11,8 +11,8 @@ uses
   // LazUtils
   LazMethodList,
   // SynEdit
-  SynEditMarks, SynEditMiscClasses, SynTextDrawer, SynEditMouseCmds,
-  LazSynTextArea, SynEditHighlighter;
+  SynEditMarks, SynEditMiscClasses, SynEditMouseCmds,
+  LazSynTextArea, SynEditHighlighter, LazEditTextGridPainter;
 
 type
 
@@ -33,7 +33,7 @@ type
     FGutterPartList: TSynGutterPartListBase;
     FSide: TSynGutterSide;
     FSynEdit: TSynEditBase;
-    FTextDrawer: TheTextDrawer;
+    FTextDrawer: TLazEditTextGridPainter;
     FColor: TSynSelectedColor;
     FCurrentLineColor: TSynHighlighterAttributesModifier;
     FMarkupInfoCurLineMerged: TSynSelectedColorMergeResult;
@@ -85,7 +85,7 @@ type
     property MarkupInfoCurLineMerged: TSynSelectedColorMergeResult read FMarkupInfoCurLineMerged;
     property CaretRow: integer read FCaretRow; // vaild only during paint
   public
-    constructor Create(AOwner : TSynEditBase; ASide: TSynGutterSide; ATextDrawer: TheTextDrawer);
+    constructor Create(AOwner : TSynEditBase; ASide: TSynGutterSide; ATextDrawer: TLazEditTextGridPainter);
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure RecalcBounds;
@@ -116,7 +116,7 @@ type
   public
     // properties available for the GutterPartClasses
     property SynEdit: TSynEditBase read FSynEdit;
-    property TextDrawer: TheTextDrawer read FTextDrawer;
+    property TextDrawer: TLazEditTextGridPainter read FTextDrawer;
     property Color: TColor read GetColor write SetColor default clBtnFace;
     property CurrentLineColor: TSynHighlighterAttributesModifier read FCurrentLineColor write SetCurrentLineColor;
     property MouseActions: TSynEditMouseActions
@@ -260,7 +260,7 @@ implementation
 { TSynGutterBase }
 
 constructor TSynGutterBase.Create(AOwner: TSynEditBase; ASide: TSynGutterSide;
-  ATextDrawer: TheTextDrawer);
+  ATextDrawer: TLazEditTextGridPainter);
 begin
   FOnResizeHandler := TMethodList.Create;
   FOnChangeHandler := TMethodList.Create;

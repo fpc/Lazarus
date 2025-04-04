@@ -311,7 +311,7 @@ end;
 procedure TIDESynMarkupFoldColorDebugGutter.Paint(Canvas: TCanvas;
   AClip: TRect; FirstLine, LastLine: integer);
 var
-  TextDrawer: TheTextDrawer;
+  TextDrawer: TLazEditTextGridPainter;
   dc: HDC;
   rcLine: TRect;
   LineHeight, c, i, j: Integer;

@@ -6,8 +6,8 @@ interface
 
 uses
   Classes, SysUtils, Graphics, LCLType, LCLIntf, SynGutterBase,
-  SynEditMiscProcs, SynTextDrawer, SynEditMouseCmds,
-  LazSynEditText, SynEditTypes;
+  SynEditMiscProcs, SynEditMouseCmds,
+  LazSynEditText, SynEditTypes, LazEditTextGridPainter, LazEditTextAttributes;
 
 type
 
@@ -28,7 +28,7 @@ type
 
   TSynGutterLineNumber = class(TSynGutterPartBase)
   private
-    FTextDrawer: TheTextDrawer;
+    FTextDrawer: TLazEditTextGridPainter;
 
     FDigitCount: integer;
     FAutoSizeDigitCount: integer;
@@ -235,7 +235,6 @@ var
   i, c, iLine: integer;
   rcLine: TRect;
   s: string;
-  dc: HDC;
   LineInfo: TSynEditGutterLineInfo;
   LineHeight, EveryNLine: Integer;
   t: TLinePos;
@@ -249,12 +248,11 @@ begin
   // Changed to use fTextDrawer.BeginDrawing and fTextDrawer.EndDrawing only
   // when absolutely necessary.  Note: Never change brush / pen / font of the
   // canvas inside of this block (only through methods of fTextDrawer)!
-  dc := Canvas.Handle;
-  FTextDrawer.BeginDrawing(dc);
+  FTextDrawer.BeginCustomCanvas(Canvas);
   try
-    FTextDrawer.SetBackColor(MarkupInfoInternal.Background);
-    fTextDrawer.SetForeColor(MarkupInfoInternal.Foreground);
-    fTextDrawer.SetFrameColor(MarkupInfoInternal.FrameColor);
+    FTextDrawer.BackColor := MarkupInfoInternal.Background;
+    fTextDrawer.ForeColor := MarkupInfoInternal.Foreground;
+    fTextDrawer.SetFrame(MarkupInfoInternal.FrameColor, slsSolid);
     fTextDrawer.Style := MarkupInfoInternal.Style;
     // prepare the rect initially
     rcLine := AClip;
@@ -285,16 +283,16 @@ begin
         s := '';
       // erase the background and draw the line number string in one go
       if i - t = CaretRow then begin
-        FTextDrawer.SetBackColor(MarkupInfoCurLineMerged.Background);
-        fTextDrawer.SetForeColor(MarkupInfoCurLineMerged.Foreground);
-        fTextDrawer.SetFrameColor(MarkupInfoCurLineMerged.FrameColor);
+        FTextDrawer.BackColor := MarkupInfoCurLineMerged.Background;
+        fTextDrawer.ForeColor := MarkupInfoCurLineMerged.Foreground;
+        fTextDrawer.SetFrame(MarkupInfoCurLineMerged.FrameColor, slsSolid);
         fTextDrawer.Style := MarkupInfoCurLineMerged.Style;
       end
       else
       if i - t = CaretRow+1 then begin
-        FTextDrawer.SetBackColor(MarkupInfoInternal.Background);
-        fTextDrawer.SetForeColor(MarkupInfoInternal.Foreground);
-        fTextDrawer.SetFrameColor(MarkupInfoInternal.FrameColor);
+        FTextDrawer.BackColor := MarkupInfoInternal.Background;
+        fTextDrawer.ForeColor := MarkupInfoInternal.Foreground;
+        fTextDrawer.SetFrame(MarkupInfoInternal.FrameColor, slsSolid);
         fTextDrawer.Style := MarkupInfoInternal.Style;
       end;
       fTextDrawer.ExtTextOut(rcLine.Left, rcLine.Top, ETO_OPAQUE or ETO_CLIPPED, rcLine,
@@ -304,9 +302,9 @@ begin
     // now erase the remaining area if any
     if AClip.Bottom > rcLine.Bottom then
     begin
-      FTextDrawer.SetBackColor(MarkupInfoInternal.Background);
-      fTextDrawer.SetForeColor(MarkupInfoInternal.Foreground);
-      fTextDrawer.SetFrameColor(MarkupInfoInternal.FrameColor);
+      FTextDrawer.BackColor := MarkupInfoInternal.Background;
+      fTextDrawer.ForeColor := MarkupInfoInternal.Foreground;
+      fTextDrawer.SetFrame(MarkupInfoInternal.FrameColor, slsSolid);
       fTextDrawer.Style := MarkupInfoInternal.Style;
       rcLine.Top := rcLine.Bottom;
       rcLine.Bottom := AClip.Bottom;
@@ -314,7 +312,7 @@ begin
         fTextDrawer.ExtTextOut(Left, Top, ETO_OPAQUE, rcLine, nil, 0);
     end;
   finally
-    fTextDrawer.EndDrawing;
+    fTextDrawer.EndCustomCanvas;
   end;
 end;
 

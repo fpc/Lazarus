@@ -5,10 +5,10 @@ unit SynGutter;
 interface
 
 uses
-  SysUtils, Classes, Controls, Graphics, LCLType, LCLIntf, Menus,
-  SynEditMarks, SynEditTypes, SynEditMiscClasses, SynEditMiscProcs, LazSynTextArea,
-  SynTextDrawer, SynGutterBase, SynGutterLineNumber, SynGutterCodeFolding,
-  SynGutterMarks, SynGutterChanges, SynEditMouseCmds, SynGutterLineOverview;
+  SysUtils, Classes, Controls, Graphics, LCLType, LCLIntf, Menus, SynEditMarks, SynEditTypes,
+  SynEditMiscClasses, SynEditMiscProcs, LazSynTextArea, SynGutterBase,
+  SynGutterLineNumber, SynGutterCodeFolding, SynGutterMarks, SynGutterChanges, SynEditMouseCmds,
+  SynGutterLineOverview, LazEditTextGridPainter, LazEditTextAttributes;
 
 type
 
@@ -32,7 +32,7 @@ type
     property GutterArea;
   public
     constructor Create(AOwner : TSynEditBase; ASide: TSynGutterSide;
-                      ATextDrawer: TheTextDrawer);
+                      ATextDrawer: TLazEditTextGridPainter);
     destructor Destroy; override;
     procedure Paint(Canvas: TCanvas; Surface:TLazSynGutterArea; AClip: TRect; FirstLine, LastLine: integer);
     function  HasCustomPopupMenu(out PopMenu: TPopupMenu): Boolean;
@@ -179,7 +179,7 @@ end;
 { TSynGutter }
 
 constructor TSynGutter.Create(AOwner: TSynEditBase; ASide: TSynGutterSide;
-  ATextDrawer: TheTextDrawer);
+  ATextDrawer: TLazEditTextGridPainter);
 begin
   inherited;
   if not(csLoading in AOwner.ComponentState) then
@@ -276,10 +276,10 @@ begin
   rcClip := AClip;
   t := Surface.TextBounds.Top;
   // Clear all
-  TextDrawer.BeginDrawing(dc);
-  TextDrawer.SetBackColor(Color);
-  TextDrawer.SetForeColor(SynEdit.Font.Color);
-  TextDrawer.SetFrameColor(clNone);
+  TextDrawer.BeginCustomCanvas(Canvas);
+  TextDrawer.BackColor := Color;
+  TextDrawer.ForeColor := SynEdit.Font.Color;
+  TextDrawer.SetFrame(clNone, slsSolid);
   if aCaretRow >= 0 then
     rcClip.Bottom := t + aCaretRow * SynEdit.LineHeight;
    with rcClip do
@@ -292,11 +292,11 @@ begin
 
     rcClip.Bottom := rcClip.Top;
     rcClip.top := rcClip.Top - SynEdit.LineHeight;
-    TextDrawer.SetBackColor(MarkupInfoCurLineMerged.Background);
+    TextDrawer.BackColor := MarkupInfoCurLineMerged.Background;
      with rcClip do
        TextDrawer.ExtTextOut(Left, Top, ETO_OPAQUE, rcClip, nil, 0);
   end;
-  TextDrawer.EndDrawing;
+  TextDrawer.EndCustomCanvas;
 
   AClip.Left := Surface.Left + LeftOffset;
   AClip.Top  := t + FirstLine * SynEdit.LineHeight;

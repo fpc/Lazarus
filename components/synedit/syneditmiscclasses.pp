@@ -1059,7 +1059,7 @@ begin
       bsRight: if not IsMatching(FCurrentEndX,   EndX)   then exit(clNone);
     end;
 
-  if (Side in SynFrameEdgeToSides[FrameEdges])
+  if (Side in LazTextFrameEdgeToSides[FrameEdges])
   then Result := FrameColor
   else Result := clNone;
 end;
@@ -1086,7 +1086,7 @@ begin
       bsRight: if not IsMatching(FCurrentEndX,   EndX)   then exit(0);
     end;
 
-  if (Side in SynFrameEdgeToSides[FrameEdges])
+  if (Side in LazTextFrameEdgeToSides[FrameEdges])
   then Result := FramePriority
   else Result := 0;
 end;
@@ -1096,7 +1096,7 @@ begin
   if FFrameSidesInitialized
   then Result := FFrameSideStyles[Side]
   else
-  if Side in SynFrameEdgeToSides[FrameEdges]
+  if Side in LazTextFrameEdgeToSides[FrameEdges]
   then Result := FrameStyle
   else Result := slsSolid;
 end;
@@ -1436,14 +1436,14 @@ procedure TSynSelectedColorMergeResult.MergeFrames(Other: TLazCustomEditTextAttr
   //  if (FrameSideColors[ASide] <> clNone) and
   //     ( (ASrc.FramePriority < FrameSidePriority[ASide]) or
   //       ( (ASrc.FramePriority = FrameSidePriority[ASide]) and
-  //         (SynFrameEdgePriorities[ASrc.FrameEdges] < SynFrameEdgePriorities[FrameSideOrigin[ASide]]) )
+  //         (LazTextFrameEdgePriorities[ASrc.FrameEdges] < LazTextFrameEdgePriorities[FrameSideOrigin[ASide]]) )
   //     )
   //
   //*)
   //  if (FrameSideColors[ASide] <> clNone) and
   //     ( (ASrc.FramePriority < FrameSidePriority[ASide]) or
   //       ( (ASrc.FramePriority = FrameSidePriority[ASide]) and
-  //         (SynFrameEdgePriorities[ASrc.FrameEdges] < SynFrameEdgePriorities[FrameSideOrigin[ASide]]) )
+  //         (LazTextFrameEdgePriorities[ASrc.FrameEdges] < LazTextFrameEdgePriorities[FrameSideOrigin[ASide]]) )
   //     )
   //  then
   //    exit;
@@ -1463,7 +1463,7 @@ procedure TSynSelectedColorMergeResult.MergeFrames(Other: TLazCustomEditTextAttr
     if (FMergeInfos[AInfoSide].BaseColor <> clNone) and
        ( (ASrc.FramePriority < FMergeInfos[AInfoSide].BasePriority) or
          ( (ASrc.FramePriority = FMergeInfos[AInfoSide].BasePriority) and
-           (SynFrameEdgePriorities[ASrc.FrameEdges] < SynFrameEdgePriorities[FrameSideOrigin[ASide]]) )
+           (LazTextFrameEdgePriorities[ASrc.FrameEdges] < LazTextFrameEdgePriorities[FrameSideOrigin[ASide]]) )
        )
     then
       exit;
@@ -1473,7 +1473,7 @@ procedure TSynSelectedColorMergeResult.MergeFrames(Other: TLazCustomEditTextAttr
     FFrameSidePriority[ASide] := ASrc.FramePriority; // used for style (style may be taken, from an alpha frame
     if ( (ASrc.FramePriority > FFrameSidePriority[ASide]) or
          ( (ASrc.FramePriority = FFrameSidePriority[ASide]) and
-           (SynFrameEdgePriorities[ASrc.FrameEdges] >= SynFrameEdgePriorities[FrameSideOrigin[ASide]]) )
+           (LazTextFrameEdgePriorities[ASrc.FrameEdges] >= LazTextFrameEdgePriorities[FrameSideOrigin[ASide]]) )
        )
     then
       FFrameSideStyles[ASide] := ASrc.FrameStyle;

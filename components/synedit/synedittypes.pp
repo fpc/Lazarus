@@ -244,20 +244,6 @@ type
     FinishComboOnly: Boolean; var ComboKeyStrokes: TSynEditKeyStrokes) of object;
 
 const
-  SynFrameEdgeToSides: array [TSynFrameEdges] of TLazSynBorderSides =
-  ( [],                                       // sfeNone
-    [bsLeft, bsTop, bsRight, bsBottom],   // sfeAround
-    [bsBottom],                              // sfeBottom
-    [bsLeft]                                 // sfeLeft
-  );
-
-  SynFrameEdgePriorities: array [TSynFrameEdges] of integer =
-  ( 0,    // sfeNone
-    1,   // sfeAround
-    2,   // sfeBottom
-    2    // sfeLeft
-  );
-
   scTextCleared = [scCaretX, scCaretY, scLeftChar, scTopLine, scModified, scSelection];
 
 
