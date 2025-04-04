@@ -5312,6 +5312,7 @@ begin
       Project1.WriteProject([pwfSkipSeparateSessionInfo,pwfIgnoreModified],
         aFilename,EnvironmentOptions.BuildMatrixOptions);
     end;
+    Project1.DefineTemplates.AllChanged(false);
     Project1.UpdateAllSyntaxHighlighter;
     SourceEditorManager.BeginGlobalUpdate;
     try
