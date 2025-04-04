@@ -1344,26 +1344,33 @@ The Sender argument is the dialog instance for the event notification.
 <descr>
 <p>
 <var>TOpenOption</var> contains a list of possible options which can be used 
-in an Open dialog. Values from the enumeration are stored in the 
+in Open or Save dialogs. Values from the enumeration are stored in the 
 <var>TOpenOptions</var> set type which is used to implement the Options 
-property in TOpenDialog. When an option value is included in the set, it is 
-enabled during execution of the dialog. The values are applied to the native 
-dialog before it is executed.
+property in TOpenDialog and descendent classes. When an option value is 
+included in the set, it is enabled during execution of the dialog. The values 
+are applied to the native dialog before it is executed. Some option values are 
+included or excluded to represent the actions performed when the native dialog 
+was executed.
 </p>
 <p>
 Please note that some option values may not be available for a given platform 
-where the LCL is supported: ofNoDereferenceLinks, ofOldStyleDialog, 
-ofViewDetail, and ofAutoPreview.
+where the LCL is supported. The help for the option values indicate the 
+platforms where the value is relevant.
 </p>
 </descr>
 <seealso>
 <link id="TOpenDialog.Options"/>
 <link id="TOpenOptions"/>
+<link id="TSaveDialog"/>
+<link id="TSelectDirectoryDialog"/>
 </seealso>
 </element>
 <element name="TOpenOption.ofReadOnly">
 <short>
-Include read-only files.
+For the Windows platform, it causes the Read Only check box to be selected 
+initially when the dialog box is created. It is also used as a flag to 
+indicate the state of the Read Only check box when the dialog box is closed. 
+For QT-based platforms, it indicates that the entire dialog model is read-only.
 </short>
 </element>
 <element name="TOpenOption.ofOverwritePrompt">
@@ -1372,7 +1379,10 @@ If selected file exists shows a message, that file will be overwritten.
 </short>
 </element>
 <element name="TOpenOption.ofHideReadOnly">
-<short>Hide read only files.</short>
+<short>
+For the Windows platform, it hides the Read Only check box on the dialog. Not 
+used in other widgetsets.
+</short>
 </element>
 <element name="TOpenOption.ofNoChangeDir">
 <short>Do not change the current directory.</short>
@@ -1415,7 +1425,15 @@ Includes the OFN_SHAREAWARE flag on the Windows platform.
 </short>
 </element>
 <element name="TOpenOption.ofNoReadOnlyReturn">
-<short>Do not return file names that are read-only.</short>
+<short>
+For the Windows platform, it indicates the Read Only check box is not selected 
+for the returned file, the file is writable, and is not in a write-protected 
+directory. In TOpenDialog, an error message is displayed if the selected file 
+does not meet the criteria when ofNoReadOnlyReturn is included in dialog 
+options. See TOpenDialog.CheckFile. In TSaveDialog, it indicates that 
+read-only items cannot be returned by the dialog. This is the default value 
+for a Save dialog. Not used for other widgetsets.
+</short>
 </element>
 <element name="TOpenOption.ofNoTestFileCreate">
 <short>
@@ -1437,7 +1455,8 @@ dialogs ignore this flag and always display long file names.
 <element name="TOpenOption.ofOldStyleDialog">
 <short>
 Prevents use of the OFN_EXPLORER and dependent flags in dialogs on the 
-Windows platform.
+Windows platform. Also controls whether the Read Only check box is visible on 
+native dialogs.
 </short>
 </element>
 <element name="TOpenOption.ofNoDereferenceLinks">
