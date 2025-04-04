@@ -13,7 +13,7 @@ uses
   LazMethodList,
   // SynEdit
   SynEditTypes, SynEditMiscProcs, SynEditMiscClasses, LazSynEditText,
-  SynEditMarkup, SynEditHighlighter, SynTextDrawer, LazEditMiscProcs;
+  SynEditMarkup, SynEditHighlighter, SynTextDrawer, LazEditMiscProcs, LazEditTextAttributes;
 
 
 type
@@ -520,7 +520,7 @@ end;
 function TLazSynPaintTokenBreaker.GetNextHighlighterTokenFromView(out
   ATokenInfo: TLazSynDisplayTokenInfoEx; APhysEnd: Integer; ALogEnd: Integer): Boolean;
 
-  procedure InitSynAttr(var ATarget: TSynSelectedColorMergeResult; const ASource: TLazSynCustomTextAttributes;
+  procedure InitSynAttr(var ATarget: TSynSelectedColorMergeResult; const ASource: TLazEditTextAttribute;
     const AnAttrStartX: TLazSynDisplayTokenBound);
   const
     NoEnd: TLazSynDisplayTokenBound = (Physical: -1; Logical: -1; Offset: 0);

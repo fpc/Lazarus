@@ -74,7 +74,7 @@ uses
   // LazUtils
   LazMethodList, LazLoggerBase, LazTracer, LazUTF8,
   // SynEdit
-  SynEditTypes, SynEditMiscProcs;
+  SynEditTypes, SynEditMiscProcs, LazEditTextAttributes;
 
 type
   TheStockFontPatterns = 0..(1 shl (1 + Ord(High(TFontStyle))));

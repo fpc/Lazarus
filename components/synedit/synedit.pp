@@ -144,7 +144,7 @@ uses
   SynEditMiscClasses, SynEditHighlighter, LazSynTextArea, SynTextDrawer,
   SynEditTextBidiChars, SynGutterCodeFolding, SynGutterChanges, SynGutterLineNumber,
   SynGutterMarks, SynGutterLineOverview,
-  LazEditMiscProcs;
+  LazEditMiscProcs, LazEditTextAttributes;
 
 const
   // SynDefaultFont is determined in InitSynDefaultFont()

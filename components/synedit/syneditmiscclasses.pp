@@ -52,7 +52,7 @@ uses
   LCLIntf, LCLType, Graphics, Controls, Clipbrd, ImgList,
   // SynEdit
   SynEditHighlighter, SynEditMiscProcs, SynEditTypes, LazSynEditText, SynEditPointClasses, SynEditMouseCmds,
-  SynEditTextBase;
+  SynEditTextBase, LazEditTextAttributes;
 
 const
   SYNEDIT_DEFAULT_MOUSE_OPTIONS = [];
@@ -485,7 +485,7 @@ type
     FStartX, FEndX: TLazSynDisplayTokenBound;
   protected
     procedure DoClear; override;
-    procedure AssignFrom(Src: TLazSynCustomTextAttributes); override;
+    procedure AssignFrom(Src: TLazCustomEditTextAttribute); override;
     procedure Init; override;
   public
     // boundaries of the frame
@@ -536,14 +536,15 @@ type
     FMergeInfos: array [TSynSelectedColorEnum] of TSynSelectedColorMergeInfo;
 
     function IsMatching(ABound1, ABound2: TLazSynDisplayTokenBound): Boolean;
-    function GetFrameSideColors(Side: TLazSynBorderSide): TColor;
     function GetFrameSideOrigin(Side: TLazSynBorderSide): TSynFrameEdges;
-    function GetFrameSidePriority(Side: TLazSynBorderSide): integer;
-    function GetFrameSideStyles(Side: TLazSynBorderSide): TSynLineStyle;
     procedure SetCurrentEndX(AValue: TLazSynDisplayTokenBound);
     procedure SetCurrentStartX(AValue: TLazSynDisplayTokenBound);
   protected
-    procedure AssignFrom(Src: TLazSynCustomTextAttributes); override;
+    function GetFrameSideColors(Side: TLazSynBorderSide): TColor; override;
+    function GetFrameSidePriority(Side: TLazSynBorderSide): integer; override;
+    function GetFrameSideStyles(Side: TLazSynBorderSide): TSynLineStyle; override;
+
+    procedure AssignFrom(Src: TLazCustomEditTextAttribute); override;
     procedure DoClear; override;
     procedure Init; override;
 
@@ -552,13 +553,10 @@ type
       AColor: TColor; APriority, AnAlpha: Integer);
     function  CalculateInfo(var AnInfo: TSynSelectedColorMergeInfo;
               ANoneColor: TColor; IsFrame: Boolean = False): TColor;
-    property FrameSidePriority[Side: TLazSynBorderSide]: integer read GetFrameSidePriority;
     property FrameSideOrigin[Side: TLazSynBorderSide]: TSynFrameEdges read GetFrameSideOrigin;
   public
     destructor Destroy; override;
 
-    property FrameSideColors[Side: TLazSynBorderSide]: TColor read GetFrameSideColors;
-    property FrameSideStyles[Side: TLazSynBorderSide]: TSynLineStyle read GetFrameSideStyles;
     // boundaries for current paint
     property CurrentStartX: TLazSynDisplayTokenBound read FCurrentStartX write SetCurrentStartX;
     property CurrentEndX: TLazSynDisplayTokenBound read FCurrentEndX write SetCurrentEndX;
@@ -1142,7 +1140,7 @@ begin
   end;
 end;
 
-procedure TSynSelectedColorMergeResult.AssignFrom(Src: TLazSynCustomTextAttributes);
+procedure TSynSelectedColorMergeResult.AssignFrom(Src: TLazCustomEditTextAttribute);
 var
   i: TLazSynBorderSide;
   j: TSynSelectedColorEnum;
@@ -1554,7 +1552,7 @@ begin
   AStyle := GetModifiedStyle(AStyle);
 end;
 
-procedure TSynSelectedColor.AssignFrom(Src: TLazSynCustomTextAttributes);
+procedure TSynSelectedColor.AssignFrom(Src: TLazCustomEditTextAttribute);
 begin
   inherited AssignFrom(Src);
   if not (Src is TSynSelectedColor) then exit;

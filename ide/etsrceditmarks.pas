@@ -37,6 +37,8 @@ uses
   Graphics, Controls, Forms, ImgList,
   // LazUtils
   LazLoggerBase, LazFileUtils,
+  // LazEdit
+  LazEditTextAttributes,
   // Codetools
   KeywordFuncLists,
   // SynEdit

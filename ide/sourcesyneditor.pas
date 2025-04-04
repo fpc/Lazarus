@@ -62,6 +62,7 @@ uses
   SynEditMarkupHighAll, SynEditKeyCmds, SynEditMarkupIfDef, SynEditMiscProcs,
   SynPluginMultiCaret, SynEditPointClasses,
   SynEditMarkupFoldColoring, SynEditTextTabExpander, SynEditMouseCmds, SynEditWrappedView,
+  LazEditTextAttributes,
   // IDE
   etSrcEditMarks, LazarusIDEStrConsts, SourceMarks;
 
@@ -383,7 +384,7 @@ type
     procedure DoWordsChanged(Sender: TObject);
     procedure SetCustomWordTokenKind(AValue: TtkTokenKindEx);
   protected
-    procedure AssignFrom(Src: TLazSynCustomTextAttributes); override;
+    procedure AssignFrom(Src: TLazCustomEditTextAttribute); override;
     procedure DoClear; override;
     procedure Init; override;
   public
@@ -2167,7 +2168,7 @@ begin
   Changed;
 end;
 
-procedure TSynHighlighterLazCustomPasAttribute.AssignFrom(Src: TLazSynCustomTextAttributes);
+procedure TSynHighlighterLazCustomPasAttribute.AssignFrom(Src: TLazCustomEditTextAttribute);
 begin
   inherited AssignFrom(Src);
   if Src is TSynHighlighterLazCustomPasAttribute then begin

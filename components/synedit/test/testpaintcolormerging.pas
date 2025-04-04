@@ -5,8 +5,8 @@ unit TestPaintColorMerging;
 interface
 
 uses
-  testregistry, TestBase, SynEditHighlighter, SynEditMiscClasses, SynEditTypes, Graphics,
-  sysutils;
+  testregistry, TestBase, SynEditHighlighter, SynEditMiscClasses, SynEditTypes,
+  LazEditTextAttributes, Graphics, sysutils;
 
 type
 
@@ -33,7 +33,8 @@ procedure TTestPaintColorMerging.MergeAttrib;
     AnAttrib.Background := ABack;
     AnAttrib.FrameColor := AFrame;
     AnAttrib.Style      := AStyle;
-    AnAttrib.StyleMask  := AStyleMask;
+    if AnAttrib is TSynHighlighterAttributesModifier then
+      AnAttrib.StyleMask  := AStyleMask;
     AnAttrib.FrameEdges := AFrameSides;
     AnAttrib.FrameStyle := AFrameStyle;
     if AnAttrib is TSynSelectedColor then begin

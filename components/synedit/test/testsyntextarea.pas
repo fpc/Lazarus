@@ -7,7 +7,7 @@ interface
 
 uses
   Classes, SysUtils, testregistry, TestBase, LazSynTextArea, SynEditTypes,
-  SynEditMarkupBracket, SynEdit, SynHighlighterPosition, SynEditMiscClasses,
+  SynEditMarkupBracket, SynEdit, SynHighlighterPosition, SynEditMiscClasses, LazEditTextAttributes,
   Graphics;
 
 type

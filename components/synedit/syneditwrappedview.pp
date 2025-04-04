@@ -8,8 +8,8 @@ uses
   Classes, SysUtils,
   Graphics, LCLType, Forms, LazLoggerBase,
   // SynEdit
-  LazSynEditText, SynEdit, SynEditViewedLineMap, SynEditTypes,
-  SynEditMiscProcs, SynEditMiscClasses, SynEditKeyCmds, SynEditFoldedView, LazEditMiscProcs;
+  LazSynEditText, SynEdit, SynEditViewedLineMap, SynEditTypes, SynEditMiscProcs,
+  SynEditMiscClasses, SynEditKeyCmds, SynEditFoldedView, LazEditMiscProcs, LazEditTextAttributes;
 
 type
   TLazSynEditLineWrapPlugin = class;

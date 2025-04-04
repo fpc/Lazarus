@@ -14,8 +14,10 @@ uses
   LazLoggerBase,
   // Codetools
   CodeToolManager, CodeCache,
-  //SynEdit
-  SynEdit, SynEditHighlighter, SynEditMiscClasses, SynEditTypes,
+  // LazEdit
+  LazEditTextAttributes,
+  // SynEdit
+  SynEdit, SynEditHighlighter, SynEditMiscClasses,
   // IdeIntf
   IDEWindowIntf, IDECommands, IDEImagesIntf, SrcEditorIntf, IDEOptEditorIntf,
   IdeIntfStrConsts, EditorSyntaxHighlighterDef,

@@ -54,7 +54,7 @@ uses
   SynEditMarkupBracket, SynEditMarkupHighAll, SynEditMarkupWordGroup,
   SynEditMarkupSpecialChar,
   // LazEdit
-  TextMateGrammar,
+  TextMateGrammar, LazEditTextAttributes,
   // SynEdit Highlighters
   SynEditHighlighter, SynEditHighlighterFoldBase, SynHighlighterCPP,
   SynHighlighterHTML, SynHighlighterJava, SynHighlighterLFM, SynHighlighterPas,
@@ -7180,10 +7180,12 @@ begin
     aDest.FrameEdges := Src.FrameEdges;
     aDest.FrameStyle := Src.FrameStyle;
     aDest.Style      := Src.Style;
-    if hafStyleMask in Src.Features then
-      aDest.StyleMask  := Src.StyleMask
-    else
-      aDest.StyleMask  := [low(TFontStyle)..high(TFontStyle)];
+    if aDest is TLazEditTextAttributeModifier then begin
+      if hafStyleMask in Src.Features then
+        aDest.StyleMask  := Src.StyleMask
+      else
+        aDest.StyleMask  := [low(TFontStyle)..high(TFontStyle)];
+    end;
 
     if aDest is TSynHighlighterAttributesModifier then begin
       TSynHighlighterAttributesModifier(aDest).ForeAlpha := Src.ForeAlpha;

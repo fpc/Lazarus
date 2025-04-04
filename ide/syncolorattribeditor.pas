@@ -12,7 +12,7 @@ uses
   // IdeIntf
   EditorSyntaxHighlighterDef,
   // SynEdit
-  SynEditTypes, SynTextDrawer, SynHighlighterPas,
+  SynEditTypes, SynTextDrawer, SynHighlighterPas, LazEditTextAttributes,
   // IdeConfig
   EnvironmentOpts,
   // IDE
