@@ -134,6 +134,10 @@ procedure TTestBaseHighlighterPas.InitTighLighterAttr;
 begin
   inherited InitTighLighterAttr;
 
+  PasHighLighter.CommentAnsiAttri.Clear;
+  PasHighLighter.CommentCurlyAttri.Clear;
+  PasHighLighter.CommentSlashAttri.Clear;
+
   if FKeepAllModifierAttribs then exit;
 
   PasHighLighter.PropertyNameAttr.Clear;
