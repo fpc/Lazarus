@@ -715,7 +715,7 @@ begin
   inherited Create;
   FFoldView := AFoldView;
   FTokenAttr := TSynHighlighterAttributesModifier.Create(nil);
-  FMarkupLine := TSynSelectedColorMergeResult.Create(nil);
+  FMarkupLine := TSynSelectedColorMergeResult.Create;
 end;
 
 destructor TLazSynDisplayFold.Destroy;

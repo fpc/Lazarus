@@ -25,6 +25,14 @@ uses
   Classes, SysUtils, Graphics;
 
 type
+  TLazEditDisplayTokenBound = record
+    Physical: Integer;      // 1 based - May be in middle of char
+    Logical: Integer;       // 1 based
+    Offset: Integer;        // default 0. MultiWidth (e.g. Tab), if token starts in the middle of char
+  end;
+
+
+
   //TLazTextAttributeFeature = (
   //  lafForeColor, lafBackColor,
   //  lafFrameColor,
@@ -60,6 +68,9 @@ type
   protected type
     TLazTextAttributeColor = (lacForeColor, lacBackColor, lacFrameColor);
   private
+    // 0 or -1 start/end before/after line // 1 first char
+    FStartX, FEndX: TLazEditDisplayTokenBound;
+
     FColors:   array[TLazTextAttributeColor] of TColor;
     FFrameEdges: TLazTextAttrFrameEdges;
     FFrameStyle: TLazTextAttrLineStyle;
@@ -103,6 +114,11 @@ type
     procedure EndUpdate;
     function  IsEnabled: boolean; virtual;
     procedure SetAllPriorities(APriority: integer); virtual;
+    // boundaries of the frame
+    procedure SetFrameBoundsPhys(AStart, AEnd: Integer);
+    procedure SetFrameBoundsLog(AStart, AEnd: Integer; AStartOffs: Integer = 0; AEndOffs: Integer = 0);
+    property StartX: TLazEditDisplayTokenBound read FStartX write FStartX;
+    property EndX: TLazEditDisplayTokenBound read FEndX write FEndX;
   public
     property Foreground: TColor index lacForeColor read GetColor write SetColor;
     property Background: TColor index lacBackColor read GetColor write SetColor;
@@ -383,6 +399,13 @@ begin
   FFrameEdges := sfeAround;
   FFrameStyle := slsSolid;
   FStyle      := [];
+
+  FStartX.Physical := -1;
+  FEndX.Physical   := -1;
+  FStartX.Logical  := -1;
+  FEndX.Logical    := -1;
+  FStartX.Offset   := 0;
+  FEndX.Offset     := 0;
 end;
 
 procedure TLazCustomEditTextAttribute.AssignFrom(ASource: TLazCustomEditTextAttribute);
@@ -391,6 +414,9 @@ begin
   FFrameEdges := ASource.FFrameEdges;
   FFrameStyle := ASource.FFrameStyle;
   FStyle      := ASource.FStyle;
+
+  FStartX     := ASource.FStartX;
+  FEndX       := ASource.FEndX;
 end;
 
 constructor TLazCustomEditTextAttribute.Create;
@@ -451,6 +477,27 @@ procedure TLazCustomEditTextAttribute.SetAllPriorities(APriority: integer);
 begin
   assert(false, 'TLazCustomEditTextAttribute.SetAllPriorities: abstract');
   //raise exception.Create('abstract');
+end;
+
+procedure TLazCustomEditTextAttribute.SetFrameBoundsPhys(AStart, AEnd: Integer);
+begin
+  FStartX.Physical := AStart;
+  FEndX.Physical   := AEnd;
+  FStartX.Logical  := -1;
+  FEndX.Logical    := -1;
+  FStartX.Offset   := 0;
+  FEndX.Offset     := 0;
+end;
+
+procedure TLazCustomEditTextAttribute.SetFrameBoundsLog(AStart, AEnd: Integer;
+  AStartOffs: Integer; AEndOffs: Integer);
+begin
+  FStartX.Physical := -1;
+  FEndX.Physical   := -1;
+  FStartX.Logical  := AStart;
+  FEndX.Logical    := AEnd;
+  FStartX.Offset   := AStartOffs;
+  FEndX.Offset     := AEndOffs;
 end;
 
 { TLazEditTextAttribute }

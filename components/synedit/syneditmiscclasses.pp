@@ -471,28 +471,13 @@ type
 
   TSynObjectListItemClass = class of TSynObjectListItem;
 
-  TLazSynDisplayTokenBound = record
-    Physical: Integer;      // 1 based - May be in middle of char
-    Logical: Integer;       // 1 based
-    Offset: Integer;        // default 0. MultiWidth (e.g. Tab), if token starts in the middle of char
-  end;
+  TLazSynDisplayTokenBound = TLazEditDisplayTokenBound;
 
   { TSynSelectedColor }
 
   TSynSelectedColor = class(TSynHighlighterAttributesModifier)
-  private
-    // 0 or -1 start/end before/after line // 1 first char
-    FStartX, FEndX: TLazSynDisplayTokenBound;
   protected
-    procedure DoClear; override;
-    procedure AssignFrom(Src: TLazCustomEditTextAttribute); override;
     procedure Init; override;
-  public
-    // boundaries of the frame
-    procedure SetFrameBoundsPhys(AStart, AEnd: Integer);
-    procedure SetFrameBoundsLog(AStart, AEnd: Integer; AStartOffs: Integer = 0; AEndOffs: Integer = 0);
-    property StartX: TLazSynDisplayTokenBound read FStartX write FStartX;
-    property EndX: TLazSynDisplayTokenBound read FEndX write FEndX;
   end;
 
   TSynSelectedColorAlphaEntry = record
@@ -1068,8 +1053,8 @@ begin
 
   if (FCurrentStartX.Logical >= 0) or (FCurrentStartX.Physical >= 0) then
     case Side of
-      bsLeft:  if not IsMatching(FCurrentStartX, FStartX) then exit(clNone);
-      bsRight: if not IsMatching(FCurrentEndX,   FEndX)   then exit(clNone);
+      bsLeft:  if not IsMatching(FCurrentStartX, StartX) then exit(clNone);
+      bsRight: if not IsMatching(FCurrentEndX,   EndX)   then exit(clNone);
     end;
 
   if (Side in SynFrameEdgeToSides[FrameEdges])
@@ -1095,8 +1080,8 @@ begin
 
   if (FCurrentStartX.Logical >= 0) or (FCurrentStartX.Physical >= 0) then
     case Side of
-      bsLeft:  if not IsMatching(FCurrentStartX, FStartX) then exit(0);
-      bsRight: if not IsMatching(FCurrentEndX,   FEndX)   then exit(0);
+      bsLeft:  if not IsMatching(FCurrentStartX, StartX) then exit(0);
+      bsRight: if not IsMatching(FCurrentEndX,   EndX)   then exit(0);
     end;
 
   if (Side in SynFrameEdgeToSides[FrameEdges])
@@ -1118,7 +1103,7 @@ procedure TSynSelectedColorMergeResult.SetCurrentEndX(AValue: TLazSynDisplayToke
 begin
   //if FCurrentEndX = AValue then Exit;
   FCurrentEndX := AValue;
-  if not IsMatching(FCurrentEndX, FEndX) then begin
+  if not IsMatching(FCurrentEndX, EndX) then begin
     FFrameSideColors[bsRight] := clNone;
     FMergeInfos[sscFrameRight].BaseColor := clNone;
     FMergeInfos[sscFrameRight].AlphaCount := 0;
@@ -1129,7 +1114,7 @@ procedure TSynSelectedColorMergeResult.SetCurrentStartX(AValue: TLazSynDisplayTo
 begin
   //if FCurrentStartX = AValue then Exit;
   FCurrentStartX := AValue;
-  if not IsMatching(FCurrentStartX, FStartX) then begin
+  if not IsMatching(FCurrentStartX, StartX) then begin
     FFrameSideColors[bsLeft] := clNone;
     FMergeInfos[sscFrameLeft].BaseColor := clNone;
     FMergeInfos[sscFrameLeft].AlphaCount := 0;
@@ -1384,7 +1369,7 @@ end;
 
 procedure TSynSelectedColorMergeResult.Merge(Other: TSynHighlighterAttributesModifier);
 begin
-  Merge(Other, FStartX, FEndX); // always merge frame
+  Merge(Other, StartX, EndX); // always merge frame
 end;
 
 procedure TSynSelectedColorMergeResult.Merge(Other: TSynHighlighterAttributesModifier; LeftCol,
@@ -1460,9 +1445,9 @@ procedure TSynSelectedColorMergeResult.MergeFrames(Other: TSynHighlighterAttribu
   //  FFrameSidePriority[ASide] := ASrc.FramePriority;
   //  FFrameSideOrigin[ASide]   := ASrc.FrameEdges;
   //  if ASide = bsLeft then
-  //    FStartX := LeftCol; // LeftCol has Phys and log ; // ASrc.FStartX;
+  //    StartX := LeftCol; // LeftCol has Phys and log ; // ASrc.StartX;
   //  if ASide = bsRight then
-  //    FEndX := RightCol; // ASrc.FEndX;
+  //    EndX := RightCol; // ASrc.EndX;
   //end;
 
   procedure SetSide(AInfoSide: TSynSelectedColorEnum; ASide: TLazSynBorderSide;
@@ -1527,17 +1512,6 @@ end;
 
 { TSynSelectedColor }
 
-procedure TSynSelectedColor.AssignFrom(Src: TLazCustomEditTextAttribute);
-begin
-  inherited AssignFrom(Src);
-  if not (Src is TSynSelectedColor) then exit;
-
-  FStartX := TSynSelectedColor(Src).FStartX;
-  FEndX   := TSynSelectedColor(Src).FEndX;
-
-  Changed; {TODO: only if really changed}
-end;
-
 procedure TSynSelectedColor.Init;
 begin
   inherited Init;
@@ -1547,38 +1521,6 @@ begin
   FrameStyle := slsSolid;
   FrameEdges := sfeAround;
   InternalSaveDefaultValues;
-end;
-
-procedure TSynSelectedColor.SetFrameBoundsPhys(AStart, AEnd: Integer);
-begin
-  FStartX.Physical := AStart;
-  FEndX.Physical   := AEnd;
-  FStartX.Logical  := -1;
-  FEndX.Logical    := -1;
-  FStartX.Offset   := 0;
-  FEndX.Offset     := 0;
-end;
-
-procedure TSynSelectedColor.SetFrameBoundsLog(AStart, AEnd: Integer; AStartOffs: Integer;
-  AEndOffs: Integer);
-begin
-  FStartX.Physical := -1;
-  FEndX.Physical   := -1;
-  FStartX.Logical  := AStart;
-  FEndX.Logical    := AEnd;
-  FStartX.Offset   := AStartOffs;
-  FEndX.Offset     := AEndOffs;
-end;
-
-procedure TSynSelectedColor.DoClear;
-begin
-  inherited;
-  FStartX.Physical := -1;
-  FEndX.Physical   := -1;
-  FStartX.Logical  := -1;
-  FEndX.Logical    := -1;
-  FStartX.Offset   := 0;
-  FEndX.Offset     := 0;
 end;
 
 { TLazSynSurface }
