@@ -53,8 +53,9 @@ interface
 
 uses
   SysUtils, Classes, fgl, Registry, Graphics, Generics.Defaults, SynEditHighlighterFoldBase,
-  SynEditMiscProcs, SynEditTypes, SynEditHighlighter, SynEditTextBase,
-  SynEditStrConst, SynEditMiscClasses, LazLoggerBase, LazEditMiscProcs, LazEditHighlighterUtils;
+  SynEditMiscProcs, SynEditTypes, SynEditHighlighter, SynEditTextBase, SynEditStrConst,
+  SynEditMiscClasses, LazLoggerBase, LazEditMiscProcs, LazEditHighlighterUtils,
+  LazEditTextAttributes;
 
 type
   TSynPasStringMode = (spsmDefault, spsmStringOnly, spsmNone);
@@ -950,6 +951,7 @@ type
     function GetToken: string; override;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
     function GetTokenAttribute: TSynHighlighterAttributes; override;
+    function GetTokenAttributeEx: TLazCustomEditTextAttribute; override;
     function GetTokenID: TtkTokenKind;
     function GetTokenKind: integer; override;
     function GetTokenPos: Integer; override;
@@ -3950,10 +3952,7 @@ begin
   AddAttribute(FCommentSlashAttri);
   FIDEDirectiveAttri := TSynHighlighterAttributesModifier.Create(@SYNS_AttrIDEDirective, SYNS_XML_AttrIDEDirective);
   AddAttribute(FIDEDirectiveAttri);
-  // FCurIDEDirectiveAttri, FCurCaseLabelAttri, FCurProcTypeDeclExtraAttr
-  // They are not available through the "Attribute" property (not added via AddAttribute
-  // But they are returned via GetTokenAttribute, so they should have a name.
-  FCurIDEDirectiveAttri := TSynSelectedColorMergeResult.Create(@SYNS_AttrIDEDirective, SYNS_XML_AttrIDEDirective);
+  FCurIDEDirectiveAttri := TSynSelectedColorMergeResult.Create;
   fIdentifierAttri := TSynHighlighterAttributes.Create(@SYNS_AttrIdentifier, SYNS_XML_AttrIdentifier);
   AddAttribute(fIdentifierAttri);
   fKeyAttri := TSynHighlighterAttributes.Create(@SYNS_AttrReservedWord, SYNS_XML_AttrReservedWord);
@@ -5720,21 +5719,13 @@ begin
     Result := fTokenId;
 end;
 
+
 function TSynPasSyn.GetTokenAttribute: TSynHighlighterAttributes;
-var
-  tid: TtkTokenKind;
-  i: Integer;
-  attr: TSynHighlighterAttributesModifier;
 begin
-  tid := GetTokenID;
-  case tid of
+  case GetTokenID of
     tkAsm: Result := fAsmAttri;
-    tkComment: Result := fCommentAttri;
-    tkIDEDirective: begin
-      FCurIDEDirectiveAttri.Assign(FCommentAttri);
-      FCurIDEDirectiveAttri.Merge(FIDEDirectiveAttri);
-      Result := FCurIDEDirectiveAttri;
-    end;
+    tkIDEDirective, tkComment:
+      Result := fCommentAttri;
     tkIdentifier: begin
       if eaGotoLabel in FTokenExtraAttribs then
         Result := FGotoLabelAttr
@@ -5751,9 +5742,25 @@ begin
     tkUnknown: Result := fSymbolAttri;
   else
     Result := nil;
-    exit; // can't merge
   end;
+end;
+function TSynPasSyn.GetTokenAttributeEx: TLazCustomEditTextAttribute;
+var
+  tid: TtkTokenKind;
+  i: Integer;
+  attr: TSynHighlighterAttributesModifier;
+begin
+  Result := GetTokenAttribute;
+  if Result = nil then
+    exit;
 
+  tid := GetTokenID;
+
+  if tid = tkIDEDirective then begin
+    FCurIDEDirectiveAttri.Assign(FCommentAttri);
+    FCurIDEDirectiveAttri.Merge(FIDEDirectiveAttri);
+    Result := FCurIDEDirectiveAttri;
+  end;
 
   if FTokenIsCaseLabel and
     ( (tid in [tkIdentifier, tkNumber, tkString]) or

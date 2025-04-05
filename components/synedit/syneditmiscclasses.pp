@@ -499,7 +499,7 @@ type
 
   { TSynSelectedColorMergeResult }
 
-  TSynSelectedColorMergeResult = class(TSynSelectedColor)
+  TSynSelectedColorMergeResult = class(TLazCustomEditTextAttribute)
   private
     // TSynSelectedColor.Style and StyleMask describe how to modify a style,
     // but PaintLines creates an instance that contains an actual style (without mask)
@@ -536,6 +536,7 @@ type
               ANoneColor: TColor; IsFrame: Boolean = False): TColor;
     property FrameSideOrigin[Side: TLazSynBorderSide]: TSynFrameEdges read GetFrameSideOrigin;
   public
+    constructor Create(ACaption: PString; AStoredName: String = ''); overload; deprecated 'use Create without name // To be removed in 5.99';
     destructor Destroy; override;
 
     // boundaries for current paint
@@ -1303,6 +1304,11 @@ begin
     end;
     Result := RGBToColor(C1, C2, C3);
   end;
+end;
+
+constructor TSynSelectedColorMergeResult.Create(ACaption: PString; AStoredName: String);
+begin
+  Create;
 end;
 
 destructor TSynSelectedColorMergeResult.Destroy;

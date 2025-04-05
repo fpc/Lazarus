@@ -25,6 +25,7 @@ uses
   Classes, SysUtils, Graphics;
 
 type
+  // TODO: TLazEditDisplayTokenBound is not yet supporting wrapped text - The Physical value may change
   TLazEditDisplayTokenBound = record
     Physical: Integer;      // 1 based - May be in middle of char
     Logical: Integer;       // 1 based

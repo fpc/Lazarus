@@ -52,7 +52,7 @@ uses
   SynEditHighlighter, SynEditTextBase, SynEditTextBuffer,
   FileUtil, LazUTF8, FPCAdds, LCLType,
   Graphics, Clipbrd,
-  SynEditMiscProcs, SynEditStrConst;
+  SynEditMiscProcs, SynEditStrConst, LazEditTextAttributes;
 
 type
   PSynReplaceCharsArray = ^TSynReplaceCharsArray;
@@ -126,13 +126,13 @@ type
       token into account }
     procedure FormatBeforeFirstAttributeImmediate(BG, FG: TColor); virtual; abstract;
     procedure FormatAfterLastAttributeImmediate; virtual; abstract;
-    procedure FormatAttributeInitImmediate(Attri: TSynHighlighterAttributes; IsSpace: Boolean); virtual; abstract;
-    procedure FormatAttributeDoneImmediate(Attri: TSynHighlighterAttributes; IsSpace: Boolean); virtual; abstract;
+    procedure FormatAttributeInitImmediate(Attri: TLazCustomEditTextAttribute; IsSpace: Boolean); virtual; abstract;
+    procedure FormatAttributeDoneImmediate(Attri: TLazCustomEditTextAttribute; IsSpace: Boolean); virtual; abstract;
 
     { Has to be overridden in descendant classes to add the formatted text of
       the actual token text to the output buffer. }
     procedure FormatToken(Token: string); virtual;
-    procedure FormatTokenImmediate(Token: String; Attri: TSynHighlighterAttributes; IsSpace: Boolean);
+    procedure FormatTokenImmediate(Token: String; Attri: TLazCustomEditTextAttribute; IsSpace: Boolean);
     { Has to be overridden in descendant classes to add a newline in the output
       format to the output buffer. }
     procedure FormatNewLine; virtual; abstract;
@@ -166,7 +166,7 @@ type
       of colors and font styles so the properties of the next token can be
       added to the output buffer. }
     procedure SetTokenAttribute(IsSpace: boolean;
-      Attri: TSynHighlighterAttributes); virtual;
+      Attri: TLazCustomEditTextAttribute); virtual;
     function ValidatedColor(AColor, ADefColor: TColor): TColor;
   public
     { Creates an instance of the exporter. }
@@ -304,7 +304,7 @@ var
   i, X, l: integer;
   Token: string;
   IsSpace: boolean;
-  Attri: TSynHighlighterAttributes;
+  Attri: TLazCustomEditTextAttribute;
   TheLines: TSynEditStringsBase;
 begin
   // abort if not all necessary conditions are met
@@ -344,7 +344,7 @@ begin
       Highlighter.StartAtLineIndex(i - 1);
       X := 1;
       while not Highlighter.GetEOL do begin
-        Attri := Highlighter.GetTokenAttribute;
+        Attri := Highlighter.GetTokenAttributeEx;
         Token := Highlighter.GetToken;
         l := UTF8Length(Token);
 
@@ -410,7 +410,7 @@ begin
 end;
 
 procedure TSynCustomExporter.FormatTokenImmediate(Token: String;
-  Attri: TSynHighlighterAttributes; IsSpace: Boolean);
+  Attri: TLazCustomEditTextAttribute; IsSpace: Boolean);
 begin
   {$ifdef debug_synexport}
   debugln(['TSynCustomExporter.FormatTokenImmediate: Token = "', Token,'", IsSpace = ',IsSpace]);
@@ -564,7 +564,7 @@ begin
 end;
 
 procedure TSynCustomExporter.SetTokenAttribute(IsSpace: boolean;
-  Attri: TSynHighlighterAttributes);
+  Attri: TLazCustomEditTextAttribute);
 var
   ChangedBG: boolean;
   ChangedFG: boolean;

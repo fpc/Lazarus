@@ -50,7 +50,8 @@ uses
   // IdeIntf
   LazIDEIntf, IDEImagesIntf, TextTools, IDETextConverter,
   // IDE
-  DialogProcs, EditorOptions, CodeToolsOptions, SourceSynEditor, SourceMarks;
+  DialogProcs, EditorOptions, CodeToolsOptions, SourceSynEditor, SourceMarks,
+  LazEditTextAttributes;
 
 type
 
@@ -276,7 +277,7 @@ var
   var
     sToken: PChar;
     nTokenLen: integer;
-    Attr: TSynHighlightElement;
+    Attr: TLazCustomEditTextAttribute;
     CurForeground: TColor;
     LeftText: string;
   begin
@@ -293,7 +294,7 @@ var
         SetLength(s,nTokenLen);
         if nTokenLen>0 then begin
           System.Move(sToken^,s[1],nTokenLen);
-          attr := Highlighter.GetTokenAttribute;
+          attr := Highlighter.GetTokenAttributeEx;
           CurForeground:=Attr.Foreground;
           if CurForeground=clNone then
             CurForeground:=TColor(ForegroundColor);

@@ -6,7 +6,7 @@ interface
 
 uses
   SysUtils, TestBase, SynEdit, SynEditHighlighterFoldBase, SynEditHighlighter,
-  SynEditMiscClasses, LazLoggerBase;
+  SynEditMiscClasses, LazLoggerBase, LazEditTextAttributes;
 
 type
 
@@ -198,7 +198,7 @@ end;
 procedure TTestBaseHighlighterFoldBase.CheckTokensForLine(Name: String;
   LineIdx: Integer; ExpTokens: array of TExpTokenInfo);
 
-  function AttrVal(a: TSynHighlighterAttributes): Integer;
+  function AttrVal(a: TLazCustomEditTextAttribute): Integer;
   begin
     if a = nil then exit(-1);
     if a is TSynSelectedColorMergeResult then
@@ -208,7 +208,7 @@ procedure TTestBaseHighlighterFoldBase.CheckTokensForLine(Name: String;
 var
   c: Integer;
   e: TExpTokenInfo;
-  GotAttr: TSynHighlighterAttributes;
+  GotAttr: TLazCustomEditTextAttribute;
 begin
   FTheHighLighter.StartAtLineIndex(LineIdx);
   c := 0;
@@ -224,7 +224,7 @@ begin
       AssertEquals(Name + ' ASSERT token-kind @ TokenId Line='+IntToStr(LineIdx)+' pos='+IntToStr(c)+' Src='+FTheHighLighter.GetToken+' @'+IntToStr(FTheHighLighter.GetTokenPos),
         e.ExpKind, FTheHighLighter.GetTokenKind);
 
-    GotAttr := FTheHighLighter.GetTokenAttribute;
+    GotAttr := FTheHighLighter.GetTokenAttributeEx;
     if etiAttr in e.Flags then
       AssertEquals(Name + ' Attr @ TokenId Line='+IntToStr(LineIdx)+' pos='+IntToStr(c)+' Src='+FTheHighLighter.GetToken+' @'+IntToStr(FTheHighLighter.GetTokenPos),
         AttrVal(e.ExpAttr), AttrVal(GotAttr))

@@ -53,7 +53,7 @@ interface
 uses
   Classes, Graphics, SysUtils, Math, RegExpr,
   SynEditStrConst, SynEditTypes, SynEditTextBase,
-  SynEditHighlighter,
+  SynEditHighlighter, LazEditTextAttributes,
   {$IFDEF SynDebugMultiHL}LazLoggerBase{$ELSE}LazLoggerDummy{$ENDIF}, LazUTF8
   ;
 
@@ -289,6 +289,7 @@ type
     FTokenPos: integer;
     FTokenKind: integer;
     FTokenAttr: TSynHighlighterAttributes;
+    FTokenAttrEx: TLazCustomEditTextAttribute;
     FRun: Integer;
     FRunSectionInfo: Array of TRunSectionInfo;
     FSampleSource: string;
@@ -322,6 +323,7 @@ type
     function  GetToken: string; override;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
     function  GetTokenAttribute: TSynHighlighterAttributes; override;
+    function  GetTokenAttributeEx: TLazCustomEditTextAttribute; override;
     function  GetTokenKind: integer; override;
     function  GetTokenPos: Integer; override; // 0-based
     procedure SetLine(const NewValue: string; LineNumber: Integer); override;
@@ -1356,6 +1358,11 @@ begin
   Result := FTokenAttr;
 end;
 
+function TSynMultiSyn.GetTokenAttributeEx: TLazCustomEditTextAttribute;
+begin
+  Result := FTokenAttrEx;
+end;
+
 function TSynMultiSyn.GetTokenKind: integer;
 begin
   Result := FTokenKind;
@@ -1430,6 +1437,7 @@ begin
   //debugln(['--- Next at ',FRun]);
   FTokenPos := FRun;
   FTokenAttr := nil;
+  FTokenAttrEx := nil;
   FTokenKind := 0;
   if FRun > FLineLen then
     exit;
@@ -1445,8 +1453,6 @@ begin
   if idx < 0 then begin
     //debugln(['*** XXXXX No section found XXXXX ***']);
     FRun := FLineLen + 1;
-    FTokenAttr := nil;
-    FTokenKind := 0;
     exit;
   end;
 
@@ -1455,19 +1461,19 @@ begin
   if RSect.SectionIdx < 0 then begin
     //debugln(['*** XXXXX section missing XXXXX ***']);
     FRun := FLineLen + 1;
-    FTokenAttr := nil;
-    FTokenKind := 0;
     exit;
   end;
 
   if (idx > 0) and (FRun < RSect.FirstChar) then begin
     FTokenAttr := Schemes[idx-1].FMarkerAttri;
+    FTokenAttrEx := FTokenAttr;
     FTokenKind := 1;
     FRun := RSect.FirstChar;
     //debugln(['  start-token ', FRun]);
   end
   else if (idx > 0) and (FRun > RSect.LastChar) then begin
     FTokenAttr := Schemes[idx-1].FMarkerAttri;
+    FTokenAttrEx := FTokenAttr;
     FTokenKind := 1;
     FRun := RSect.TokenLastChar + 1;
     //debugln(['  end-token   ', FRun]);
@@ -1490,6 +1496,7 @@ begin
       until HL.GetEol;
       if not HL.GetEol then begin
         FTokenAttr := HL.GetTokenAttribute;
+        FTokenAttrEx := HL.GetTokenAttributeEx;
         FTokenKind := idx * TokenKindPerHighlighter + HL.GetTokenKind;
         FRun := Min(tkpos - RSect.VirtualStartPos + RSect.FirstChar + tklen,
                     RSect.LastChar + 1);
@@ -1501,6 +1508,7 @@ begin
 
     if (HL = nil) then begin
       FTokenAttr := nil;
+      FTokenAttrEx := nil;
       FTokenKind := 0;
       FRun := RSect.LastChar + 1;
       //debugln(['  no HL ', FRun]);
@@ -1673,6 +1681,7 @@ begin
   fRun := 1;
   FTokenPos := 1;
   FTokenAttr := nil;
+  FTokenAttrEx := nil;
   FTokenKind := 0;
   //debugln(['>>>>> Setting Line ',FCurLineIndex,' = ',FLine]);
   for i := 0 to high(FRunSectionInfo) do

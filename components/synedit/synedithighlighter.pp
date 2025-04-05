@@ -304,8 +304,15 @@ type
     function GetRange: Pointer; virtual;
     function GetToken: String; virtual; abstract;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); virtual; abstract;
+    (* GetTokenAttribute / GetEndOfLineAttribute
+       The base attribute
+     * GetTokenAttributeEx / GetEndOfLineAttributeEx
+       The final attribute with merged modifiers (if HL has modifiers)
+    *)
     function GetEndOfLineAttribute: TSynHighlighterAttributes; virtual; // valid after line was scanned to EOL
+    function GetEndOfLineAttributeEx: TLazCustomEditTextAttribute; virtual; // valid after line was scanned to EOL
     function GetTokenAttribute: TSynHighlighterAttributes; virtual; abstract;
+    function GetTokenAttributeEx: TLazCustomEditTextAttribute; virtual;
     function GetTokenKind: integer; virtual; abstract;
     function GetTokenPos: Integer; virtual; abstract; // 0-based
     function GetTokenLen: Integer; virtual;
@@ -1138,6 +1145,16 @@ end;
 function TSynCustomHighlighter.GetEndOfLineAttribute: TSynHighlighterAttributes;
 begin
   Result := nil;
+end;
+
+function TSynCustomHighlighter.GetEndOfLineAttributeEx: TLazCustomEditTextAttribute;
+begin
+  Result := GetEndOfLineAttribute;
+end;
+
+function TSynCustomHighlighter.GetTokenAttributeEx: TLazCustomEditTextAttribute;
+begin
+  Result := GetTokenAttribute;
 end;
 
 function TSynCustomHighlighter.GetTokenLen: Integer;

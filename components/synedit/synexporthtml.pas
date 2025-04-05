@@ -47,7 +47,7 @@ interface
 uses
   Classes, SysUtils,
   LCLIntf, LCLType, Graphics, ClipBrd,
-  SynEditHighlighter, SynEditExport, LazUtf8, SynEditStrConst;
+  SynEditHighlighter, SynEditExport, LazUtf8, SynEditStrConst, LazEditTextAttributes;
 
 type
   THTMLFontSize = (fs01, fs02, fs03, fs04, fs05, fs06, fs07, fsDefault);        //eb 2000-10-12
@@ -84,8 +84,8 @@ type
 {end}                                                                           //mh 2000-10-10
     procedure FormatBeforeFirstAttributeImmediate(BG, FG: TColor); override;
     procedure FormatAfterLastAttributeImmediate; override;
-    procedure FormatAttributeInitImmediate(Attri: TSynHighlighterAttributes; IsSpace: Boolean); override;
-    procedure FormatAttributeDoneImmediate(Attri: TSynHighlighterAttributes; IsSpace: Boolean); override;
+    procedure FormatAttributeInitImmediate(Attri: TLazCustomEditTextAttribute; IsSpace: Boolean); override;
+    procedure FormatAttributeDoneImmediate(Attri: TLazCustomEditTextAttribute; IsSpace: Boolean); override;
 
     procedure FormatNewLine; override;
     function GetFooter: string; override;
@@ -404,7 +404,7 @@ begin
 end;
 
 procedure TSynExporterHTML.FormatAttributeInitImmediate(
-  Attri: TSynHighlighterAttributes; IsSpace: Boolean);
+  Attri: TLazCustomEditTextAttribute; IsSpace: Boolean);
 var
   Span, StyleStr: String;
   FG, BG: TColor;
@@ -428,7 +428,7 @@ begin
 end;
 
 procedure TSynExporterHTML.FormatAttributeDoneImmediate(
-  Attri: TSynHighlighterAttributes; IsSpace: Boolean);
+  Attri: TLazCustomEditTextAttribute; IsSpace: Boolean);
 var
   FG, BG: TColor;
   StyleStr: String;

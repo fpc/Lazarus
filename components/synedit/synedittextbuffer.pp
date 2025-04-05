@@ -423,14 +423,14 @@ begin
     if not Result then begin
       ATokenInfo.TokenStart := nil;
       ATokenInfo.TokenLength := 0;
-      ATokenInfo.TokenAttr := CurrentTokenHighlighter.GetEndOfLineAttribute;
+      ATokenInfo.TokenAttr := CurrentTokenHighlighter.GetEndOfLineAttributeEx;
       ATokenInfo.TokenOrigin := dtoAfterText;
       Result := ATokenInfo.TokenAttr <> nil;
       exit;
     end;
 
     CurrentTokenHighlighter.GetTokenEx(ATokenInfo.TokenStart, ATokenInfo.TokenLength);
-    ATokenInfo.TokenAttr := CurrentTokenHighlighter.GetTokenAttribute;
+    ATokenInfo.TokenAttr := CurrentTokenHighlighter.GetTokenAttributeEx;
     ATokenInfo.TokenOrigin := dtoVirtualText;
     CurrentTokenHighlighter.Next;
   end;

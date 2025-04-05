@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Math, testregistry, TestBase, Forms, SynEditHighlighter,
   SynHighlighterMulti, SynHighlighterLFM, SynHighlighterXML, SynHighlighterPas, SynEditKeyCmds,
-  LazSynEditText, SynEditTextBuffer, SynEditTypes, LazLoggerBase;
+  LazSynEditText, SynEditTextBuffer, SynEditTypes, LazLoggerBase, LazEditTextAttributes;
 
 type
 
@@ -264,7 +264,7 @@ procedure TTestHighlightMulti.CheckTokensForLine(Name: String; HL: TSynCustomHig
   LineIdx: Integer; ExpAttr: array of TSynHighlighterAttributes);
 var
   c: Integer;
-  tk: TSynHighlighterAttributes;
+  tk: TLazCustomEditTextAttribute;
   tkName: String;
 begin
   HL.StartAtLineIndex(LineIdx);
@@ -275,9 +275,9 @@ begin
       break;
     end;
     //DebugLn([HL.GetToken,' (',HL.GetTokenID ,') at ', HL.GetTokenPos]);
-    tk := HL.GetTokenAttribute;
-    if tk <> nil
-    then tkName := tk.StoredName
+    tk := HL.GetTokenAttributeEx;
+    if (tk <> nil) and (tk is TSynHighlighterAttributes)
+    then tkName := TSynHighlighterAttributes(tk).StoredName
     else tkName := '<nil>';
     AssertTrue(Format('%s Attrib Line=%d pos=%d exp=%s got=%s',
                       [Name, LineIdx, c,  ExpAttr[c].StoredName, tkName]),

@@ -520,7 +520,7 @@ end;
 function TLazSynPaintTokenBreaker.GetNextHighlighterTokenFromView(out
   ATokenInfo: TLazSynDisplayTokenInfoEx; APhysEnd: Integer; ALogEnd: Integer): Boolean;
 
-  procedure InitSynAttr(var ATarget: TSynSelectedColorMergeResult; const ASource: TLazEditTextAttribute;
+  procedure InitSynAttr(var ATarget: TSynSelectedColorMergeResult; const ASource: TLazCustomEditTextAttribute;
     const AnAttrStartX: TLazSynDisplayTokenBound);
   const
     NoEnd: TLazSynDisplayTokenBound = (Physical: -1; Logical: -1; Offset: 0);
@@ -539,7 +539,6 @@ function TLazSynPaintTokenBreaker.GetNextHighlighterTokenFromView(out
       ATarget.Style :=  []; // Font.Style; // currently always cleared
     end;
 //    ATarget.MergeFinalStyle := True;
-    ATarget.StyleMask  := [];
     ATarget.StartX := AnAttrStartX;
     ATarget.EndX   := NoEnd;
   end;

@@ -34,7 +34,7 @@ interface
 
 uses
   Classes, SysUtils, Graphics, LCLProc, SynEditTypes, SynEditMiscProcs,
-  SynEditHighlighter, SynEditKeyCmds, SynEditTextBase;
+  SynEditHighlighter, SynEditKeyCmds, SynEditTextBase, LazEditTextAttributes;
 
 type
   TSynEditStrings = class;
@@ -208,7 +208,7 @@ type
   TLazSynDisplayTokenInfo = record
     TokenStart: PChar;
     TokenLength: integer;
-    TokenAttr: TSynHighlighterAttributes;
+    TokenAttr: TLazCustomEditTextAttribute;
     TokenOrigin: TLazSynDisplayTokenOrigin;
   end;
 
