@@ -493,10 +493,6 @@ type
     procedure SetFrameBoundsLog(AStart, AEnd: Integer; AStartOffs: Integer = 0; AEndOffs: Integer = 0);
     property StartX: TLazSynDisplayTokenBound read FStartX write FStartX;
     property EndX: TLazSynDisplayTokenBound read FEndX write FEndX;
-  public
-    function GetModifiedStyle(aStyle: TFontStyles): TFontStyles; // deprecated;
-    procedure ModifyColors(var AForeground, ABackground, AFrameColor: TColor;
-      var AStyle: TFontStyles; var AFrameStyle: TSynLineStyle); deprecated;
   end;
 
   TSynSelectedColorAlphaEntry = record
@@ -1530,27 +1526,6 @@ begin
 end;
 
 { TSynSelectedColor }
-
-function TSynSelectedColor.GetModifiedStyle(aStyle : TFontStyles) : TFontStyles;
-begin
-  Result := fsXor(aStyle, Style * fsNot(StyleMask)) // Invert Styles
-            + (Style*StyleMask)                     // Set Styles
-            - (fsNot(Style)*StyleMask);             // Remove Styles
-end;
-
-procedure TSynSelectedColor.ModifyColors(var AForeground, ABackground,
-    AFrameColor: TColor; var AStyle: TFontStyles; var AFrameStyle: TSynLineStyle);
-begin
-  if Foreground <> clNone then AForeground := Foreground;
-  if Background <> clNone then ABackground := Background;
-  if FrameColor <> clNone then
-  begin
-    AFrameColor := FrameColor;
-    AFrameStyle := FrameStyle;
-  end;
-
-  AStyle := GetModifiedStyle(AStyle);
-end;
 
 procedure TSynSelectedColor.AssignFrom(Src: TLazCustomEditTextAttribute);
 begin
