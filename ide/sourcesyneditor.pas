@@ -384,7 +384,7 @@ type
     procedure DoWordsChanged(Sender: TObject);
     procedure SetCustomWordTokenKind(AValue: TtkTokenKindEx);
   protected
-    procedure AssignFrom(Src: TLazCustomEditTextAttribute); override;
+    procedure AssignColorsFrom(ASource: TLazCustomEditTextAttribute); override;
     procedure DoClear; override;
     procedure Init; override;
   public
@@ -2168,12 +2168,13 @@ begin
   Changed;
 end;
 
-procedure TSynHighlighterLazCustomPasAttribute.AssignFrom(Src: TLazCustomEditTextAttribute);
+procedure TSynHighlighterLazCustomPasAttribute.AssignColorsFrom(
+  ASource: TLazCustomEditTextAttribute);
 begin
-  inherited AssignFrom(Src);
-  if Src is TSynHighlighterLazCustomPasAttribute then begin
-    FCustomWords.Assign(TSynHighlighterLazCustomPasAttribute(Src).FCustomWords);
-    FCustomWordTokenKind := TSynHighlighterLazCustomPasAttribute(Src).FCustomWordTokenKind;
+  inherited AssignColorsFrom(ASource);
+  if ASource is TSynHighlighterLazCustomPasAttribute then begin
+    FCustomWords.Assign(TSynHighlighterLazCustomPasAttribute(ASource).FCustomWords);
+    FCustomWordTokenKind := TSynHighlighterLazCustomPasAttribute(ASource).FCustomWordTokenKind;
   end
   else begin
     FCustomWords.Clear;

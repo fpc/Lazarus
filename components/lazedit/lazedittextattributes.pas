@@ -106,10 +106,12 @@ type
     procedure DoChanged; virtual;
     procedure Init; virtual;
     procedure DoClear; virtual;
+    procedure AssignColorsFrom(ASource: TLazCustomEditTextAttribute); virtual;
     procedure AssignFrom(ASource: TLazCustomEditTextAttribute); virtual;
   public
     constructor Create;
     procedure Assign(ASource: TPersistent); override;
+    procedure AssignColors(ASource: TLazCustomEditTextAttribute);
     procedure Clear;
     procedure BeginUpdate;
     procedure EndUpdate;
@@ -186,16 +188,17 @@ type
     function GetStyleStored: Boolean;
     function GetStylePriorityStored(AnIndex: TFontStyle): Boolean;
 
-    procedure SetCaption(ACaption: String);
     procedure DoChanged; override;
     procedure Init; override;
     procedure DoClearThis; inline;
     procedure DoClear; override;
+    procedure AssignColorsFrom(ASource: TLazCustomEditTextAttribute); override;
     procedure AssignFrom(ASource: TLazCustomEditTextAttribute); override;
   public
     constructor Create;
     constructor Create(ACaption: string; AStoredName: String = '');
     constructor Create(ACaption: PString; AStoredName: String = ''); // e.g. pointer to resourcestring. (Must be global var/const)
+    procedure SetCaption(ACaption: String);
 
     procedure InternalSaveDefaultValues; virtual;
     procedure SetAllPriorities(APriority: integer); override;
@@ -244,7 +247,7 @@ type
 
     procedure DoClearThis; reintroduce; inline;
     procedure DoClear; override;
-    procedure AssignFrom(ASource: TLazCustomEditTextAttribute); override;
+    procedure AssignColorsFrom(ASource: TLazCustomEditTextAttribute); override;
   public
     function IsEnabled: boolean; override;
     procedure InternalSaveDefaultValues; override;
@@ -409,13 +412,16 @@ begin
   FEndX.Offset     := 0;
 end;
 
-procedure TLazCustomEditTextAttribute.AssignFrom(ASource: TLazCustomEditTextAttribute);
+procedure TLazCustomEditTextAttribute.AssignColorsFrom(ASource: TLazCustomEditTextAttribute);
 begin
   FColors     := ASource.FColors;
   FFrameEdges := ASource.FFrameEdges;
   FFrameStyle := ASource.FFrameStyle;
   FStyle      := ASource.FStyle;
+end;
 
+procedure TLazCustomEditTextAttribute.AssignFrom(ASource: TLazCustomEditTextAttribute);
+begin
   FStartX     := ASource.FStartX;
   FEndX       := ASource.FEndX;
 end;
@@ -431,12 +437,21 @@ var
 begin
   if ASource is TLazCustomEditTextAttribute then begin
     BeginUpdate;
+    AssignColorsFrom(Src);
     AssignFrom(Src);
     Changed;
     EndUpdate;
   end
   else
     inherited Assign(ASource);
+end;
+
+procedure TLazCustomEditTextAttribute.AssignColors(ASource: TLazCustomEditTextAttribute);
+begin
+  BeginUpdate;
+  AssignColorsFrom(ASource);
+  Changed;
+  EndUpdate;
 end;
 
 procedure TLazCustomEditTextAttribute.Clear;
@@ -600,6 +615,19 @@ begin
   DoClearThis;
 end;
 
+procedure TLazEditTextAttribute.AssignColorsFrom(ASource: TLazCustomEditTextAttribute);
+var
+  Source: TLazEditTextAttribute absolute ASource;
+begin
+  inherited AssignColorsFrom(ASource);
+  if ASource is TLazEditTextAttribute then begin
+    FPriority      := Source.FPriority;
+    FStylePriority := Source.FStylePriority;
+  end
+  else
+    DoClearThis;
+end;
+
 procedure TLazEditTextAttribute.AssignFrom(ASource: TLazCustomEditTextAttribute);
 var
   Source: TLazEditTextAttribute absolute ASource;
@@ -609,11 +637,7 @@ begin
     FStoredName    := Source.FStoredName;
     FFixedCaption  := Source.FFixedCaption;
     FCaption       := Source.FCaption;
-    FPriority      := Source.FPriority;
-    FStylePriority := Source.FStylePriority;
-  end
-  else
-    DoClearThis;
+  end;
 end;
 
 constructor TLazEditTextAttribute.Create;
@@ -713,11 +737,11 @@ begin
   DoClearThis;
 end;
 
-procedure TLazEditTextAttributeModifier.AssignFrom(ASource: TLazCustomEditTextAttribute);
+procedure TLazEditTextAttributeModifier.AssignColorsFrom(ASource: TLazCustomEditTextAttribute);
 var
   Source: TLazEditTextAttributeModifier absolute ASource;
 begin
-  inherited AssignFrom(ASource);
+  inherited AssignColorsFrom(ASource);
   if ASource is TLazEditTextAttributeModifier then begin
     FAlpha     := Source.FAlpha;
     FStyleMask := Source.FStyleMask;

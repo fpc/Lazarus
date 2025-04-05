@@ -80,12 +80,9 @@ type
   private
     function GetConstName: string;
     function GetStyleFromInt: integer;
-    procedure SetConstName(AValue: string);
     procedure SetStyleFromInt(const Value: integer);
     function GetStyleMaskFromInt : integer;
     procedure SetStyleMaskFromInt(const Value : integer);
-  protected
-    property ConstName: string read GetConstName write SetConstName; // internal accessor
   public
     function  LoadFromBorlandRegistry(rootKey: HKEY; attrKey, attrName: string;
                                       oldStyle: boolean): boolean;
@@ -486,7 +483,7 @@ var
   i: Integer;
 begin
   for i := 0 to Count - 1 do begin
-    Attribs[i].ConstName  := Format(FBaseName, [i]);
+    Attribs[i].SetCaption(Format(FBaseName, [i]));
     Attribs[i].StoredName := Format(FBaseStoredName, [i]);
   end;
 end;
@@ -876,11 +873,6 @@ begin
   if fsItalic in Style then Result:= Result + 2;
   if fsUnderline in Style then Result:= Result + 4;
   if fsStrikeout in Style then Result:= Result + 8;
-end;
-
-procedure TSynHighlighterAttributesHelper.SetConstName(AValue: string);
-begin
-  SetCaption(AValue);
 end;
 
 procedure TSynHighlighterAttributesHelper.SetStyleFromInt(const Value: integer);
