@@ -14391,38 +14391,61 @@ EditorOptions for the control.
 <element name="TCustomGrid.KeyUp.Shift" link="#lcl.controls.TWinControl.KeyUp.Shift"/>
 
 <element name="TCustomGrid.KeyPress">
-<short>Applies the specified key press character to the control.</short>
+<short>
+Applies the specified key press character to the control.
+</short>
 <descr>
 <p>
-<var> KeyPress</var> is a method used to apply the character in Key to the 
-grid control. KeyPress is overridden to ensure that a key which originated 
-from the grid control is applied properly to the cell <var>Editor</var> (when 
-needed). It calls the inherited method on entry.
+<var>KeyPress</var> is a method used to apply the character in <var>Key</var> 
+to the grid control. KeyPress is overridden to ensure that a key which 
+originated from the grid control is applied properly to the cell 
+<var>Editor</var> (when needed). It calls the inherited method on entry to 
+signal the <var>OnKeyPress</var> event handler (when assigned).
 </p>
 <p>
-The following key press values in <var>Key</var> are handled in the method:
+KeyPress uses the value in <var>EditorKey</var> to determine if Key applies to 
+an active cell Editor on the control. If KeyDown did not flag the value for 
+the Editor control, the following values in Key are handled in the method:
 </p>
 <dl>
 <dt>Enter (#13)</dt>
 <dd>
 Gets and displays the cell Editor when EditMode is <b>False</b> and the 
-column allows editing.
+column allows editing. This includes signalling the OnSelectEditor event 
+handler (when assigned).
 </dd>
-<dt>Backspace (^H) and characters in the range #32..#255 (data)</dt>
+<dt>Backspace (^H), and characters in the range #32..#255 (data)</dt>
 <dd>
-Applies the key press to the Editor.
+Calls EditorShowChar to apply the key press to the Editor (when editing is 
+enabled).
 </dd>
 </dl>
 <p>
 When Key is handled in the method, it is set to #0 prior to exit.
 </p>
+<remark>
+The SendCharToEditor implementation in the Windows widgetset was modified 
+in LCL version 4.0. It changed the message delivery mechanism from 
+PostMessageW (asynchronous) to SendMessageW (synchronous) to avoid duplicate 
+or unintentional message delivery to the grid and/or cell editor controls.
+</remark>
 </descr>
 <seealso>
+<link id="TCustomGrid.KeyDown"/>
+<link id="TCustomGrid.EditorKey"/>
+<link id="TCustomGrid.EditorShow"/>
+<link id="TCustomGrid.EditorCanAcceptKey"/>
+<link id="TCustomGrid.EditorIsReadOnly"/>
+<link id="TCustomGrid.SelectEditor"/>
+<link id="TCustomGrid.OnSelectEditor"/>
 <link id="#lcl.controls.TWinControl.KeyPress">TWinControl.KeyPress</link>
+<link id="#lcl.controls.TWinControl.OnKeyPress">TWinControl.OnKeyPress</link>
 </seealso>
 </element>
 <element name="TCustomGrid.KeyPress.Key">
-<short>Key press character examined in the method.</short>
+<short>
+Key press character examined in the method.
+</short>
 </element>
 
 <element name="TCustomGrid.LoadContent">
