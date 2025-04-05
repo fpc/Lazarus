@@ -219,7 +219,6 @@ begin
     D := T.Dependencies.AddInclude('include/listitems.inc');
     D := T.Dependencies.AddInclude('include/mainmenu.inc');
     D := T.Dependencies.AddInclude('include/memoscrollbar.inc');
-    D := T.Dependencies.AddInclude('include/memostrings.inc');
     D := T.Dependencies.AddInclude('include/menu.inc');
     D := T.Dependencies.AddInclude('include/menuactionlink.inc');
     D := T.Dependencies.AddInclude('include/menuitem.inc');

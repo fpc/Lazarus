@@ -27,7 +27,7 @@
     <License Value="modified LGPL-2
 "/>
     <Version Major="4" Minor="99"/>
-    <Files Count="291">
+    <Files Count="290">
       <Item1>
         <Filename Value="checklst.pas"/>
         <UnitName Value="CheckLst"/>
@@ -690,218 +690,214 @@
         <Type Value="Include"/>
       </Item165>
       <Item166>
-        <Filename Value="include/memostrings.inc"/>
+        <Filename Value="include/menu.inc"/>
         <Type Value="Include"/>
       </Item166>
       <Item167>
-        <Filename Value="include/menu.inc"/>
+        <Filename Value="include/menuactionlink.inc"/>
         <Type Value="Include"/>
       </Item167>
       <Item168>
-        <Filename Value="include/menuactionlink.inc"/>
+        <Filename Value="include/menuitem.inc"/>
         <Type Value="Include"/>
       </Item168>
       <Item169>
-        <Filename Value="include/menuitem.inc"/>
+        <Filename Value="include/messagedialogs.inc"/>
         <Type Value="Include"/>
       </Item169>
       <Item170>
-        <Filename Value="include/messagedialogs.inc"/>
+        <Filename Value="include/monitor.inc"/>
         <Type Value="Include"/>
       </Item170>
       <Item171>
-        <Filename Value="include/monitor.inc"/>
+        <Filename Value="include/mouse.inc"/>
         <Type Value="Include"/>
       </Item171>
       <Item172>
-        <Filename Value="include/mouse.inc"/>
+        <Filename Value="include/notebook.inc"/>
         <Type Value="Include"/>
       </Item172>
       <Item173>
-        <Filename Value="include/notebook.inc"/>
+        <Filename Value="include/page.inc"/>
         <Type Value="Include"/>
       </Item173>
       <Item174>
-        <Filename Value="include/page.inc"/>
+        <Filename Value="include/pagecontrol.inc"/>
         <Type Value="Include"/>
       </Item174>
       <Item175>
-        <Filename Value="include/pagecontrol.inc"/>
+        <Filename Value="include/paintbox.inc"/>
         <Type Value="Include"/>
       </Item175>
       <Item176>
-        <Filename Value="include/paintbox.inc"/>
+        <Filename Value="include/pen.inc"/>
         <Type Value="Include"/>
       </Item176>
       <Item177>
-        <Filename Value="include/pen.inc"/>
+        <Filename Value="include/picture.inc"/>
         <Type Value="Include"/>
       </Item177>
       <Item178>
-        <Filename Value="include/picture.inc"/>
+        <Filename Value="include/pixmap.inc"/>
         <Type Value="Include"/>
       </Item178>
       <Item179>
-        <Filename Value="include/pixmap.inc"/>
+        <Filename Value="include/png.inc"/>
         <Type Value="Include"/>
       </Item179>
       <Item180>
-        <Filename Value="include/png.inc"/>
+        <Filename Value="include/pnm.inc"/>
         <Type Value="Include"/>
       </Item180>
       <Item181>
-        <Filename Value="include/pnm.inc"/>
+        <Filename Value="include/popupmenu.inc"/>
         <Type Value="Include"/>
       </Item181>
       <Item182>
-        <Filename Value="include/popupmenu.inc"/>
+        <Filename Value="include/progressbar.inc"/>
         <Type Value="Include"/>
       </Item182>
       <Item183>
-        <Filename Value="include/progressbar.inc"/>
+        <Filename Value="include/promptdialog.inc"/>
         <Type Value="Include"/>
       </Item183>
       <Item184>
-        <Filename Value="include/promptdialog.inc"/>
+        <Filename Value="include/radiobutton.inc"/>
         <Type Value="Include"/>
       </Item184>
       <Item185>
-        <Filename Value="include/radiobutton.inc"/>
+        <Filename Value="include/radiogroup.inc"/>
         <Type Value="Include"/>
       </Item185>
       <Item186>
-        <Filename Value="include/radiogroup.inc"/>
+        <Filename Value="include/rasterimage.inc"/>
         <Type Value="Include"/>
       </Item186>
       <Item187>
-        <Filename Value="include/rasterimage.inc"/>
+        <Filename Value="include/reginifile.inc"/>
         <Type Value="Include"/>
       </Item187>
       <Item188>
-        <Filename Value="include/reginifile.inc"/>
+        <Filename Value="include/region.inc"/>
         <Type Value="Include"/>
       </Item188>
       <Item189>
-        <Filename Value="include/region.inc"/>
+        <Filename Value="include/replacedialog.inc"/>
         <Type Value="Include"/>
       </Item189>
       <Item190>
-        <Filename Value="include/replacedialog.inc"/>
+        <Filename Value="include/rubberband.inc"/>
         <Type Value="Include"/>
       </Item190>
       <Item191>
-        <Filename Value="include/rubberband.inc"/>
+        <Filename Value="include/screen.inc"/>
         <Type Value="Include"/>
       </Item191>
       <Item192>
-        <Filename Value="include/screen.inc"/>
+        <Filename Value="include/scrollbar.inc"/>
         <Type Value="Include"/>
       </Item192>
       <Item193>
-        <Filename Value="include/scrollbar.inc"/>
+        <Filename Value="include/scrollbox.inc"/>
         <Type Value="Include"/>
       </Item193>
       <Item194>
-        <Filename Value="include/scrollbox.inc"/>
+        <Filename Value="include/scrollingwincontrol.inc"/>
         <Type Value="Include"/>
       </Item194>
       <Item195>
-        <Filename Value="include/scrollingwincontrol.inc"/>
+        <Filename Value="include/shape.inc"/>
         <Type Value="Include"/>
       </Item195>
       <Item196>
-        <Filename Value="include/shape.inc"/>
+        <Filename Value="include/sharedcustombitmap.inc"/>
         <Type Value="Include"/>
       </Item196>
       <Item197>
-        <Filename Value="include/sharedcustombitmap.inc"/>
+        <Filename Value="include/sharedimage.inc"/>
         <Type Value="Include"/>
       </Item197>
       <Item198>
-        <Filename Value="include/sharedimage.inc"/>
+        <Filename Value="include/sharedrasterimage.inc"/>
         <Type Value="Include"/>
       </Item198>
       <Item199>
-        <Filename Value="include/sharedrasterimage.inc"/>
+        <Filename Value="include/shortcutlist.inc"/>
         <Type Value="Include"/>
       </Item199>
       <Item200>
-        <Filename Value="include/shortcutlist.inc"/>
+        <Filename Value="include/sizeconstraints.inc"/>
         <Type Value="Include"/>
       </Item200>
       <Item201>
-        <Filename Value="include/sizeconstraints.inc"/>
+        <Filename Value="include/speedbutton.inc"/>
         <Type Value="Include"/>
       </Item201>
       <Item202>
-        <Filename Value="include/speedbutton.inc"/>
+        <Filename Value="include/spinedit.inc"/>
         <Type Value="Include"/>
       </Item202>
       <Item203>
-        <Filename Value="include/spinedit.inc"/>
+        <Filename Value="include/statusbar.inc"/>
         <Type Value="Include"/>
       </Item203>
       <Item204>
-        <Filename Value="include/statusbar.inc"/>
+        <Filename Value="include/statuspanel.inc"/>
         <Type Value="Include"/>
       </Item204>
       <Item205>
-        <Filename Value="include/statuspanel.inc"/>
+        <Filename Value="include/statuspanels.inc"/>
         <Type Value="Include"/>
       </Item205>
       <Item206>
-        <Filename Value="include/statuspanels.inc"/>
+        <Filename Value="include/tabcontrol.inc"/>
         <Type Value="Include"/>
       </Item206>
       <Item207>
-        <Filename Value="include/tabcontrol.inc"/>
+        <Filename Value="include/tabsheet.inc"/>
         <Type Value="Include"/>
       </Item207>
       <Item208>
-        <Filename Value="include/tabsheet.inc"/>
+        <Filename Value="include/tiffimage.inc"/>
         <Type Value="Include"/>
       </Item208>
       <Item209>
-        <Filename Value="include/tiffimage.inc"/>
+        <Filename Value="include/togglebox.inc"/>
         <Type Value="Include"/>
       </Item209>
       <Item210>
-        <Filename Value="include/togglebox.inc"/>
+        <Filename Value="include/toolbar.inc"/>
         <Type Value="Include"/>
       </Item210>
       <Item211>
-        <Filename Value="include/toolbar.inc"/>
+        <Filename Value="include/toolbutton.inc"/>
         <Type Value="Include"/>
       </Item211>
       <Item212>
-        <Filename Value="include/toolbutton.inc"/>
+        <Filename Value="include/toolwindow.inc"/>
         <Type Value="Include"/>
       </Item212>
       <Item213>
-        <Filename Value="include/toolwindow.inc"/>
+        <Filename Value="include/trackbar.inc"/>
         <Type Value="Include"/>
       </Item213>
       <Item214>
-        <Filename Value="include/trackbar.inc"/>
+        <Filename Value="include/treeview.inc"/>
         <Type Value="Include"/>
       </Item214>
       <Item215>
-        <Filename Value="include/treeview.inc"/>
+        <Filename Value="include/winapi.inc"/>
         <Type Value="Include"/>
       </Item215>
       <Item216>
-        <Filename Value="include/winapi.inc"/>
+        <Filename Value="include/winapih.inc"/>
         <Type Value="Include"/>
       </Item216>
       <Item217>
-        <Filename Value="include/winapih.inc"/>
+        <Filename Value="include/wincontrol.inc"/>
         <Type Value="Include"/>
       </Item217>
       <Item218>
-        <Filename Value="include/wincontrol.inc"/>
-        <Type Value="Include"/>
-      </Item218>
-      <Item219>
         <Filename Value="nonwin32/messages.pp"/>
         <UnitName Value="Messages"/>
         <CustomOptions Items="FPMake" Version="2">
@@ -909,299 +905,299 @@
             <_TargetOSes Value="win32,win64,wince"/>
           </_FPMake>
         </CustomOptions>
-      </Item219>
-      <Item220>
+      </Item218>
+      <Item219>
         <Filename Value="widgetset/wsbuttons.pp"/>
         <UnitName Value="WSButtons"/>
-      </Item220>
-      <Item221>
+      </Item219>
+      <Item220>
         <Filename Value="widgetset/wscalendar.pp"/>
         <UnitName Value="WSCalendar"/>
-      </Item221>
-      <Item222>
+      </Item220>
+      <Item221>
         <Filename Value="widgetset/wschecklst.pp"/>
         <UnitName Value="WSCheckLst"/>
-      </Item222>
-      <Item223>
+      </Item221>
+      <Item222>
         <Filename Value="widgetset/wscomctrls.pp"/>
         <UnitName Value="WSComCtrls"/>
-      </Item223>
-      <Item224>
+      </Item222>
+      <Item223>
         <Filename Value="widgetset/wscontrols.pp"/>
         <UnitName Value="WSControls"/>
-      </Item224>
-      <Item225>
+      </Item223>
+      <Item224>
         <Filename Value="widgetset/wsdesigner.pp"/>
         <UnitName Value="WSDesigner"/>
-      </Item225>
-      <Item226>
+      </Item224>
+      <Item225>
         <Filename Value="widgetset/wsdialogs.pp"/>
         <UnitName Value="WSDialogs"/>
-      </Item226>
-      <Item227>
+      </Item225>
+      <Item226>
         <Filename Value="widgetset/wsextctrls.pp"/>
         <UnitName Value="WSExtCtrls"/>
-      </Item227>
-      <Item228>
+      </Item226>
+      <Item227>
         <Filename Value="widgetset/wsextdlgs.pp"/>
         <UnitName Value="WSExtDlgs"/>
-      </Item228>
-      <Item229>
+      </Item227>
+      <Item228>
         <Filename Value="widgetset/wsfactory.pas"/>
         <UnitName Value="WSFactory"/>
-      </Item229>
-      <Item230>
+      </Item228>
+      <Item229>
         <Filename Value="widgetset/wsforms.pp"/>
         <UnitName Value="WSForms"/>
-      </Item230>
-      <Item231>
+      </Item229>
+      <Item230>
         <Filename Value="widgetset/wsgrids.pp"/>
         <UnitName Value="WSGrids"/>
-      </Item231>
-      <Item232>
+      </Item230>
+      <Item231>
         <Filename Value="widgetset/wsimglist.pp"/>
         <UnitName Value="WSImgList"/>
-      </Item232>
-      <Item233>
+      </Item231>
+      <Item232>
         <Filename Value="widgetset/wslclclasses.pp"/>
         <UnitName Value="WSLCLClasses"/>
-      </Item233>
-      <Item234>
+      </Item232>
+      <Item233>
         <Filename Value="widgetset/wsmenus.pp"/>
         <UnitName Value="WSMenus"/>
-      </Item234>
-      <Item235>
+      </Item233>
+      <Item234>
         <Filename Value="widgetset/wspairsplitter.pp"/>
         <UnitName Value="WSPairSplitter"/>
-      </Item235>
-      <Item236>
+      </Item234>
+      <Item235>
         <Filename Value="widgetset/wsproc.pp"/>
         <UnitName Value="WSProc"/>
-      </Item236>
-      <Item237>
+      </Item235>
+      <Item236>
         <Filename Value="widgetset/wsreferences.pp"/>
         <UnitName Value="WSReferences"/>
-      </Item237>
-      <Item238>
+      </Item236>
+      <Item237>
         <Filename Value="widgetset/wsspin.pp"/>
         <UnitName Value="WSSpin"/>
-      </Item238>
-      <Item239>
+      </Item237>
+      <Item238>
         <Filename Value="widgetset/wsstdctrls.pp"/>
         <UnitName Value="WSStdCtrls"/>
-      </Item239>
-      <Item240>
+      </Item238>
+      <Item239>
         <Filename Value="widgetset/wstoolwin.pp"/>
         <UnitName Value="WSToolwin"/>
-      </Item240>
-      <Item241>
+      </Item239>
+      <Item240>
         <Filename Value="alllclunits.pp"/>
         <Type Value="Main Unit"/>
         <UnitName Value="AllLCLUnits"/>
-      </Item241>
-      <Item242>
+      </Item240>
+      <Item241>
         <Filename Value="actnlist.pas"/>
         <UnitName Value="ActnList"/>
-      </Item242>
-      <Item243>
+      </Item241>
+      <Item242>
         <Filename Value="asyncprocess.pp"/>
         <UnitName Value="AsyncProcess"/>
-      </Item243>
-      <Item244>
+      </Item242>
+      <Item243>
         <Filename Value="buttonpanel.pas"/>
         <UnitName Value="ButtonPanel"/>
-      </Item244>
-      <Item245>
+      </Item243>
+      <Item244>
         <Filename Value="buttons.pp"/>
         <UnitName Value="Buttons"/>
-      </Item245>
-      <Item246>
+      </Item244>
+      <Item245>
         <Filename Value="calendar.pp"/>
         <UnitName Value="Calendar"/>
-      </Item246>
-      <Item247>
+      </Item245>
+      <Item246>
         <Filename Value="registerlcl.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="RegisterLCL"/>
-      </Item247>
-      <Item248>
+      </Item246>
+      <Item247>
         <Filename Value="include/lclcolordialog.inc"/>
         <Type Value="Include"/>
-      </Item248>
-      <Item249>
+      </Item247>
+      <Item248>
         <Filename Value="valedit.pas"/>
         <UnitName Value="ValEdit"/>
-      </Item249>
-      <Item250>
+      </Item248>
+      <Item249>
         <Filename Value="lazcanvas.pas"/>
         <UnitName Value="LazCanvas"/>
-      </Item250>
-      <Item251>
+      </Item249>
+      <Item250>
         <Filename Value="lazdialogs.pas"/>
         <UnitName Value="LazDialogs"/>
-      </Item251>
-      <Item252>
+      </Item250>
+      <Item251>
         <Filename Value="lazregions.pas"/>
         <UnitName Value="LazRegions"/>
-      </Item252>
-      <Item253>
+      </Item251>
+      <Item252>
         <Filename Value="customdrawn_common.pas"/>
         <UnitName Value="CustomDrawn_Common"/>
-      </Item253>
-      <Item254>
+      </Item252>
+      <Item253>
         <Filename Value="customdrawncontrols.pas"/>
         <UnitName Value="CustomDrawnControls"/>
-      </Item254>
-      <Item255>
+      </Item253>
+      <Item254>
         <Filename Value="customdrawndrawers.pas"/>
         <UnitName Value="CustomDrawnDrawers"/>
-      </Item255>
-      <Item256>
+      </Item254>
+      <Item255>
         <Filename Value="lazdeviceapis.pas"/>
         <UnitName Value="LazDeviceApis"/>
-      </Item256>
-      <Item257>
+      </Item255>
+      <Item256>
         <Filename Value="ldocktree.pas"/>
         <UnitName Value="LDockTree"/>
-      </Item257>
-      <Item258>
+      </Item256>
+      <Item257>
         <Filename Value="lazfreetypeintfdrawer.pas"/>
         <UnitName Value="LazFreeTypeIntfDrawer"/>
-      </Item258>
-      <Item259>
+      </Item257>
+      <Item258>
         <Filename Value="customdrawn_winxp.pas"/>
         <UnitName Value="CustomDrawn_WinXP"/>
-      </Item259>
-      <Item260>
+      </Item258>
+      <Item259>
         <Filename Value="customdrawn_android.pas"/>
         <UnitName Value="CustomDrawn_Android"/>
+      </Item259>
+      <Item260>
+        <Filename Value="include/sysenvapis_win.inc"/>
+        <Type Value="Include"/>
       </Item260>
       <Item261>
-        <Filename Value="include/sysenvapis_win.inc"/>
+        <Filename Value="include/sysenvapis.inc"/>
         <Type Value="Include"/>
       </Item261>
       <Item262>
-        <Filename Value="include/sysenvapis.inc"/>
+        <Filename Value="include/sysenvapis_mac.inc"/>
         <Type Value="Include"/>
       </Item262>
       <Item263>
-        <Filename Value="include/sysenvapis_mac.inc"/>
+        <Filename Value="include/sysenvapis_unix.inc"/>
         <Type Value="Include"/>
       </Item263>
       <Item264>
-        <Filename Value="include/sysenvapis_unix.inc"/>
+        <Filename Value="include/lcl_defines.inc"/>
         <Type Value="Include"/>
       </Item264>
       <Item265>
-        <Filename Value="include/lcl_defines.inc"/>
-        <Type Value="Include"/>
-      </Item265>
-      <Item266>
         <Filename Value="arrow.pp"/>
         <UnitName Value="Arrow"/>
-      </Item266>
-      <Item267>
+      </Item265>
+      <Item266>
         <Filename Value="editbtn.pas"/>
         <UnitName Value="EditBtn"/>
-      </Item267>
-      <Item268>
+      </Item266>
+      <Item267>
         <Filename Value="comboex.pas"/>
         <UnitName Value="ComboEx"/>
-      </Item268>
-      <Item269>
+      </Item267>
+      <Item268>
         <Filename Value="dbextctrls.pp"/>
         <UnitName Value="DBExtCtrls"/>
-      </Item269>
-      <Item270>
+      </Item268>
+      <Item269>
         <Filename Value="customdrawn_mac.pas"/>
         <UnitName Value="CustomDrawn_Mac"/>
-      </Item270>
-      <Item271>
+      </Item269>
+      <Item270>
         <Filename Value="forms/calcform.pas"/>
         <UnitName Value="CalcForm"/>
-      </Item271>
-      <Item272>
+      </Item270>
+      <Item271>
         <Filename Value="lcltranslator.pas"/>
         <UnitName Value="LCLTranslator"/>
+      </Item271>
+      <Item272>
+        <Filename Value="include/customflowpanel.inc"/>
+        <Type Value="Include"/>
       </Item272>
       <Item273>
-        <Filename Value="include/customflowpanel.inc"/>
+        <Filename Value="include/clipbrd_html.inc"/>
         <Type Value="Include"/>
       </Item273>
       <Item274>
-        <Filename Value="include/clipbrd_html.inc"/>
-        <Type Value="Include"/>
-      </Item274>
-      <Item275>
         <Filename Value="groupededit.pp"/>
         <UnitName Value="GroupedEdit"/>
-      </Item275>
-      <Item276>
+      </Item274>
+      <Item275>
         <Filename Value="lcltaskdialog.pas"/>
         <UnitName Value="LCLTaskDialog"/>
-      </Item276>
-      <Item277>
+      </Item275>
+      <Item276>
         <Filename Value="include/taskdialog.inc"/>
         <Type Value="Include"/>
-      </Item277>
-      <Item278>
+      </Item276>
+      <Item277>
         <Filename Value="widgetset/wslazdeviceapis.pas"/>
         <UnitName Value="WSLazDeviceAPIS"/>
-      </Item278>
-      <Item279>
+      </Item277>
+      <Item278>
         <Filename Value="include/customdesigncontrol.inc"/>
         <Type Value="Include"/>
-      </Item279>
-      <Item280>
+      </Item278>
+      <Item279>
         <Filename Value="lclplatformdef.pas"/>
         <UnitName Value="LCLPlatformDef"/>
-      </Item280>
-      <Item281>
+      </Item279>
+      <Item280>
         <Filename Value="industrialbase.pp"/>
         <UnitName Value="IndustrialBase"/>
-      </Item281>
-      <Item282>
+      </Item280>
+      <Item281>
         <Filename Value="include/patternbitmap.inc"/>
         <Type Value="Include"/>
-      </Item282>
-      <Item283>
+      </Item281>
+      <Item282>
         <Filename Value="jsonpropstorage.pas"/>
         <UnitName Value="JSONPropStorage"/>
-      </Item283>
-      <Item284>
+      </Item282>
+      <Item283>
         <Filename Value="forms/dblogdlg.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="DBLogDlg"/>
-      </Item284>
-      <Item285>
+      </Item283>
+      <Item284>
         <Filename Value="include/comboex.inc"/>
         <Type Value="Include"/>
-      </Item285>
-      <Item286>
+      </Item284>
+      <Item285>
         <Filename Value="lclexceptionstacktrace.pas"/>
         <UnitName Value="LCLExceptionStackTrace"/>
-      </Item286>
-      <Item287>
+      </Item285>
+      <Item286>
         <Filename Value="widgetset/wsshellctrls.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="WSShellCtrls"/>
-      </Item287>
-      <Item288>
+      </Item286>
+      <Item287>
         <Filename Value="dialogres.pas"/>
         <UnitName Value="DialogRes"/>
-      </Item288>
-      <Item289>
+      </Item287>
+      <Item288>
         <Filename Value="taskdlgemulation.pp"/>
         <UnitName Value="TaskDlgEmulation"/>
-      </Item289>
-      <Item290>
+      </Item288>
+      <Item289>
         <Filename Value="include/windowmagnet.inc"/>
         <Type Value="Include"/>
-      </Item290>
-      <Item291>
+      </Item289>
+      <Item290>
         <Filename Value="treestorage.pp"/>
         <UnitName Value="TreeStorage"/>
-      </Item291>
+      </Item290>
     </Files>
     <CompatibilityMode Value="True"/>
     <LazDoc Paths="../docs/xml/lcl"/>
