@@ -516,10 +516,10 @@ type
 
     FMergeInfos: array [TSynSelectedColorEnum] of TSynSelectedColorMergeInfo;
 
-    function IsMatching(ABound1, ABound2: TLazSynDisplayTokenBound): Boolean;
+    function IsMatching(const ABound1, ABound2: TLazSynDisplayTokenBound): Boolean;
     function GetFrameSideOrigin(Side: TLazSynBorderSide): TSynFrameEdges;
-    procedure SetCurrentEndX(AValue: TLazSynDisplayTokenBound);
-    procedure SetCurrentStartX(AValue: TLazSynDisplayTokenBound);
+    procedure SetCurrentEndX(const AValue: TLazSynDisplayTokenBound);
+    procedure SetCurrentStartX(const AValue: TLazSynDisplayTokenBound);
   protected
     function GetFrameSideColors(Side: TLazSynBorderSide): TColor; override;
     function GetFrameSidePriority(Side: TLazSynBorderSide): integer; override;
@@ -546,9 +546,9 @@ type
     procedure InitMergeInfo;    // (called automatically) Set all MergeInfo to the start values. After this was called, ay Changes to the color properties are ignored
     procedure ProcessMergeInfo; // copy the merge result, to the actual color properties
     procedure CleanupMergeInfo; // free the alpha arrays
-    procedure Merge(Other: TSynHighlighterAttributesModifier);
-    procedure Merge(Other: TSynHighlighterAttributesModifier; LeftCol, RightCol: TLazSynDisplayTokenBound);
-    procedure MergeFrames(Other: TSynHighlighterAttributesModifier; LeftCol, RightCol: TLazSynDisplayTokenBound);
+    procedure Merge(Other: TLazCustomEditTextAttribute);
+    procedure Merge(Other: TLazCustomEditTextAttribute; LeftCol, RightCol: TLazSynDisplayTokenBound);
+    procedure MergeFrames(Other: TLazCustomEditTextAttribute; LeftCol, RightCol: TLazSynDisplayTokenBound);
   end;
 
   { TLazSynSurface }
@@ -1034,8 +1034,8 @@ end;
 
 { TSynSelectedColorMergeResult }
 
-function TSynSelectedColorMergeResult.IsMatching(ABound1,
-  ABound2: TLazSynDisplayTokenBound): Boolean;
+function TSynSelectedColorMergeResult.IsMatching(const ABound1, ABound2: TLazSynDisplayTokenBound
+  ): Boolean;
 begin
   Result := ( (ABound1.Physical > 0) and
               (ABound1.Physical = ABound2.Physical)
@@ -1100,7 +1100,7 @@ begin
   else Result := slsSolid;
 end;
 
-procedure TSynSelectedColorMergeResult.SetCurrentEndX(AValue: TLazSynDisplayTokenBound);
+procedure TSynSelectedColorMergeResult.SetCurrentEndX(const AValue: TLazSynDisplayTokenBound);
 begin
   //if FCurrentEndX = AValue then Exit;
   FCurrentEndX := AValue;
@@ -1111,7 +1111,7 @@ begin
   end;
 end;
 
-procedure TSynSelectedColorMergeResult.SetCurrentStartX(AValue: TLazSynDisplayTokenBound);
+procedure TSynSelectedColorMergeResult.SetCurrentStartX(const AValue: TLazSynDisplayTokenBound);
 begin
   //if FCurrentStartX = AValue then Exit;
   FCurrentStartX := AValue;
@@ -1373,12 +1373,12 @@ begin
   FMergeInfoInitialized := False;
 end;
 
-procedure TSynSelectedColorMergeResult.Merge(Other: TSynHighlighterAttributesModifier);
+procedure TSynSelectedColorMergeResult.Merge(Other: TLazCustomEditTextAttribute);
 begin
   Merge(Other, StartX, EndX); // always merge frame
 end;
 
-procedure TSynSelectedColorMergeResult.Merge(Other: TSynHighlighterAttributesModifier; LeftCol,
+procedure TSynSelectedColorMergeResult.Merge(Other: TLazCustomEditTextAttribute; LeftCol,
   RightCol: TLazSynDisplayTokenBound);
 var
   sKeep, sSet, sClr, sInv, sInvInv: TFontStyles;
@@ -1426,7 +1426,7 @@ begin
   EndUpdate;
 end;
 
-procedure TSynSelectedColorMergeResult.MergeFrames(Other: TSynHighlighterAttributesModifier; LeftCol,
+procedure TSynSelectedColorMergeResult.MergeFrames(Other: TLazCustomEditTextAttribute; LeftCol,
   RightCol: TLazSynDisplayTokenBound);
 
   //procedure SetSide(ASide: TLazSynBorderSide; ASrc: TSynHighlighterAttributesModifier);
@@ -1457,7 +1457,7 @@ procedure TSynSelectedColorMergeResult.MergeFrames(Other: TSynHighlighterAttribu
   //end;
 
   procedure SetSide(AInfoSide: TSynSelectedColorEnum; ASide: TLazSynBorderSide;
-    ASrc: TSynHighlighterAttributesModifier);
+    ASrc: TLazCustomEditTextAttribute);
   begin
     if (FMergeInfos[AInfoSide].BaseColor <> clNone) and
        ( (ASrc.FramePriority < FMergeInfos[AInfoSide].BasePriority) or
@@ -1481,6 +1481,14 @@ procedure TSynSelectedColorMergeResult.MergeFrames(Other: TSynHighlighterAttribu
       FFrameSideOrigin[ASide] := ASrc.FrameEdges;
   end;
 
+  function HasFrameBound(AnAttr: TLazCustomEditTextAttribute; const ABnd: TLazSynDisplayTokenBound): boolean;
+  begin
+    (* Highlighter Attribs (NON-TSynSelectedColor) did NOT have a StartX/EndX
+       So theire frames would be drawn at any location
+    *)
+    Result := (Other is TSynSelectedColor) or ABnd.HasValue;
+  end;
+
 begin
   if not FFrameSidesInitialized then
     MaybeInitFrameSides;
@@ -1492,12 +1500,12 @@ begin
   case Other.FrameEdges of
     sfeAround: begin
         // UpdateOnly, frame keeps behind individual sites
-        if (not (Other is TSynSelectedColor)) or  // always merge, if it has no startx
-           IsMatching(TSynSelectedColor(Other).StartX, LeftCol)
+        if (not HasFrameBound(Other, Other.StartX)) or
+           IsMatching(Other.StartX, LeftCol)
         then
           SetSide(sscFrameLeft, bsLeft, Other);
-        if  (not (Other is TSynSelectedColor)) or
-           IsMatching(TSynSelectedColor(Other).EndX, RightCol)
+        if (not HasFrameBound(Other, Other.EndX)) or
+           IsMatching(Other.EndX, RightCol)
         then
           SetSide(sscFrameRight, bsRight, Other);
         SetSide(sscFrameBottom, bsBottom, Other);

@@ -5724,11 +5724,22 @@ end;
 
 
 function TSynPasSyn.GetTokenAttribute: TSynHighlighterAttributes;
+var
+  x1, x2: Integer;
 begin
   case GetTokenID of
     tkAsm: Result := fAsmAttri;
-    tkIDEDirective, tkComment:
+    tkIDEDirective, tkComment: begin
       Result := fCommentAttri;
+      //x1 := ToPos(fTokenPos);
+      //x2 := ToPos(Run);
+      //FCustomCommentTokenMergedMarkup.SetFrameBoundsLog(x1, x2);
+      //if not GetTokenIsCommentStart(True) then
+      //  x1 := 1;
+      //if (not GetTokenIsCommentEnd) then
+      //  x2 := fLineLen;
+      //Result.SetFrameBoundsLog(x1, x2);
+    end;
     tkIdentifier: begin
       if eaGotoLabel in FTokenExtraAttribs then
         Result := FGotoLabelAttr
@@ -5750,8 +5761,20 @@ end;
 function TSynPasSyn.GetTokenAttributeEx: TLazCustomEditTextAttribute;
 var
   tid: TtkTokenKind;
-  i: Integer;
+  i, x1, x2: Integer;
+  LeftCol, RightCol: TLazSynDisplayTokenBound;
   attr: TSynHighlighterAttributesModifier;
+
+  procedure InitMergeRes(AMergeRes: TSynSelectedColorMergeResult; AnAttr: TLazCustomEditTextAttribute);
+  begin
+    if AnAttr is TSynSelectedColorMergeResult then begin
+      AMergeRes.Assign(AnAttr);
+    end
+    else begin
+      AMergeRes.Clear;
+      AMergeRes.Merge(AnAttr, LeftCol, RightCol);
+    end;
+  end;
 begin
   Result := GetTokenAttribute;
   if Result = nil then
@@ -5759,9 +5782,20 @@ begin
 
   tid := GetTokenID;
 
+  x1 := ToPos(fTokenPos);
+  x2 := ToPos(Run);
+  LeftCol.Init(-1, x1);
+  RightCol.Init(-1, x2);
+  if tid in [tkIDEDirective, tkComment] then begin
+    if not GetTokenIsCommentStart(True) then x1 := 1;
+    if (not GetTokenIsCommentEnd)       then x2 := fLineLen;
+    Result.SetFrameBoundsLog(x1, x2);
+  end;
+
+
   if tid = tkIDEDirective then begin
     FCurIDEDirectiveAttri.Assign(FCommentAttri);
-    FCurIDEDirectiveAttri.Merge(FIDEDirectiveAttri);
+    FCurIDEDirectiveAttri.Merge(FIDEDirectiveAttri, LeftCol, RightCol);
     Result := FCurIDEDirectiveAttri;
   end;
 
@@ -5771,26 +5805,29 @@ begin
     )
   then begin
     FCurCaseLabelAttri.Assign(Result);
-    FCurCaseLabelAttri.Merge(FCaseLabelAttri);
+    FCurCaseLabelAttri.Merge(FCaseLabelAttri, LeftCol, RightCol);
     Result := FCurCaseLabelAttri;
   end;
 
   if FIsPasDocKey then begin
-    FCurPasDocAttri.Assign(Result);
-    FCurPasDocAttri.Merge(fPasDocKeyWordAttri);
+    InitMergeRes(FCurPasDocAttri, Result);
+    FCurPasDocAttri.Merge(fPasDocKeyWordAttri, LeftCol, RightCol);
     Result := FCurPasDocAttri;
+    Result.SetFrameBoundsLog(x1, x2);
   end
   else
   if FIsPasDocSym then begin
-    FCurPasDocAttri.Assign(Result);
-    FCurPasDocAttri.Merge(fPasDocSymbolAttri);
+    InitMergeRes(FCurPasDocAttri, Result);
+    FCurPasDocAttri.Merge(fPasDocSymbolAttri, LeftCol, RightCol);
     Result := FCurPasDocAttri;
+    Result.SetFrameBoundsLog(x1, x2);
   end
   else
   if FIsPasUnknown then begin
-    FCurPasDocAttri.Assign(Result);
-    FCurPasDocAttri.Merge(fPasDocUnknownAttr);
+    InitMergeRes(FCurPasDocAttri, Result);
+    FCurPasDocAttri.Merge(fPasDocUnknownAttr, LeftCol, RightCol);
     Result := FCurPasDocAttri;
+    Result.SetFrameBoundsLog(x1, x2);
   end;
 
   case FTokenTypeDeclExtraAttrib of
@@ -5801,72 +5838,73 @@ begin
            (PasCodeFoldRange.BracketNestLevel = 0)
         then begin
           FCurProcTypeDeclExtraAttr.Assign(Result);
-          FCurProcTypeDeclExtraAttr.Merge(FProcedureHeaderNameAttr);
+          FCurProcTypeDeclExtraAttr.Merge(FProcedureHeaderNameAttr, LeftCol, RightCol);
           Result := FCurProcTypeDeclExtraAttr;
         end;
       end;
     eaPropertyName: begin
           FCurProcTypeDeclExtraAttr.Assign(Result);
-          FCurProcTypeDeclExtraAttr.Merge(FPropertyNameAttr);
+          FCurProcTypeDeclExtraAttr.Merge(FPropertyNameAttr, LeftCol, RightCol);
           Result := FCurProcTypeDeclExtraAttr;
       end;
     eaProcParam: begin
           FCurProcTypeDeclExtraAttr.Assign(Result);
-          FCurProcTypeDeclExtraAttr.Merge(FProcedureHeaderParamAttr);
+          FCurProcTypeDeclExtraAttr.Merge(FProcedureHeaderParamAttr, LeftCol, RightCol);
           Result := FCurProcTypeDeclExtraAttr;
       end;
     eaProcType: begin
           FCurProcTypeDeclExtraAttr.Assign(Result);
-          FCurProcTypeDeclExtraAttr.Merge(FProcedureHeaderTypeAttr);
+          FCurProcTypeDeclExtraAttr.Merge(FProcedureHeaderTypeAttr, LeftCol, RightCol);
           Result := FCurProcTypeDeclExtraAttr;
       end;
     eaProcValue: begin
           FCurProcTypeDeclExtraAttr.Assign(Result);
-          FCurProcTypeDeclExtraAttr.Merge(FProcedureHeaderValueAttr);
+          FCurProcTypeDeclExtraAttr.Merge(FProcedureHeaderValueAttr, LeftCol, RightCol);
           Result := FCurProcTypeDeclExtraAttr;
       end;
     eaProcResult: begin
           FCurProcTypeDeclExtraAttr.Assign(Result);
-          FCurProcTypeDeclExtraAttr.Merge(FProcedureHeaderResultAttr);
+          FCurProcTypeDeclExtraAttr.Merge(FProcedureHeaderResultAttr, LeftCol, RightCol);
           Result := FCurProcTypeDeclExtraAttr;
       end;
     eaDeclVarName: begin
           FCurProcTypeDeclExtraAttr.Assign(Result);
-          FCurProcTypeDeclExtraAttr.Merge(FDeclarationVarConstNameAttr);
+          FCurProcTypeDeclExtraAttr.Merge(FDeclarationVarConstNameAttr, LeftCol, RightCol);
           Result := FCurProcTypeDeclExtraAttr;
       end;
     eaDeclTypeName: begin
           FCurProcTypeDeclExtraAttr.Assign(Result);
-          FCurProcTypeDeclExtraAttr.Merge(FDeclarationTypeNameAttr);
+          FCurProcTypeDeclExtraAttr.Merge(FDeclarationTypeNameAttr, LeftCol, RightCol);
           Result := FCurProcTypeDeclExtraAttr;
       end;
     eaDeclType: begin
           FCurProcTypeDeclExtraAttr.Assign(Result);
-          FCurProcTypeDeclExtraAttr.Merge(FDeclarationTypeAttr);
+          FCurProcTypeDeclExtraAttr.Merge(FDeclarationTypeAttr, LeftCol, RightCol);
           Result := FCurProcTypeDeclExtraAttr;
       end;
     eaDeclValue: begin
           FCurProcTypeDeclExtraAttr.Assign(Result);
-          FCurProcTypeDeclExtraAttr.Merge(FDeclarationValueAttr);
+          FCurProcTypeDeclExtraAttr.Merge(FDeclarationValueAttr, LeftCol, RightCol);
           Result := FCurProcTypeDeclExtraAttr;
       end;
   end;
 
   if eaStructMemeber in FTokenExtraAttribs then begin
     FCurStructMemberExtraAttri.Assign(Result);
-    FCurStructMemberExtraAttri.Merge(FStructMemberAttr);
+    FCurStructMemberExtraAttri.Merge(FStructMemberAttr, LeftCol, RightCol);
     Result := FCurStructMemberExtraAttri;
   end;
 
-  if FCustomTokenMarkup <> nil then begin
-    FCustomTokenMergedMarkup.Assign(Result);
-    FCustomTokenMergedMarkup.Merge(FCustomTokenMarkup);
-    Result := FCustomTokenMergedMarkup;
-  end;
   if FCustomCommentTokenMarkup <> nil then begin
-    FCustomCommentTokenMergedMarkup.Assign(Result);
-    FCustomCommentTokenMergedMarkup.Merge(FCustomCommentTokenMarkup);
+    InitMergeRes(FCustomCommentTokenMergedMarkup, Result);
+    FCustomCommentTokenMarkup.SetFrameBoundsLog(x1, x2);
+    FCustomCommentTokenMergedMarkup.Merge(FCustomCommentTokenMarkup, LeftCol, RightCol);
     Result := FCustomCommentTokenMergedMarkup;
+  end;
+  if FCustomTokenMarkup <> nil then begin
+    InitMergeRes(FCustomTokenMergedMarkup, Result);
+    FCustomTokenMergedMarkup.Merge(FCustomTokenMarkup, LeftCol, RightCol);
+    Result := FCustomTokenMergedMarkup;
   end;
 
   if (FTokenID = tkSymbol) and (Run - fTokenPos = 1) and (fLine[fTokenPos] in ['(', ')'])
@@ -5886,6 +5924,7 @@ begin
     end;
   end;
 
+  //Result.SetFrameBoundsLog(-1, -1); // TODO: Textdrawer will do its own bounds, so all frames must be cleared while merging
 end;
 
 function TSynPasSyn.GetTokenKind: integer;

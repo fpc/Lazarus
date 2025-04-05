@@ -18,6 +18,7 @@
 unit LazEditTextAttributes;
 
 {$mode objfpc}{$H+}
+{$ModeSwitch advancedrecords}
 
 interface
 
@@ -26,10 +27,16 @@ uses
 
 type
   // TODO: TLazEditDisplayTokenBound is not yet supporting wrapped text - The Physical value may change
+
+  { TLazEditDisplayTokenBound }
+
   TLazEditDisplayTokenBound = record
     Physical: Integer;      // 1 based - May be in middle of char
     Logical: Integer;       // 1 based
     Offset: Integer;        // default 0. MultiWidth (e.g. Tab), if token starts in the middle of char
+
+    function HasValue: boolean; inline;
+    function Init(APhys, ALog: Integer; AnOffs: Integer = 0): boolean; inline;
   end;
 
 
@@ -261,6 +268,20 @@ type
   end;
 
 implementation
+
+{ TLazEditDisplayTokenBound }
+
+function TLazEditDisplayTokenBound.HasValue: boolean;
+begin
+  Result := (Physical > 0) or (Logical > 0);
+end;
+
+function TLazEditDisplayTokenBound.Init(APhys, ALog: Integer; AnOffs: Integer): boolean;
+begin
+  Physical := APhys;
+  Logical := ALog;
+  Offset := AnOffs;
+end;
 
 { TLazCustomEditTextAttribute }
 

@@ -539,8 +539,10 @@ function TLazSynPaintTokenBreaker.GetNextHighlighterTokenFromView(out
       ATarget.Style :=  []; // Font.Style; // currently always cleared
     end;
 //    ATarget.MergeFinalStyle := True;
-    ATarget.StartX := AnAttrStartX;
-    ATarget.EndX   := NoEnd;
+    if not ATarget.StartX.HasValue then
+      ATarget.StartX := AnAttrStartX;
+    if not ATarget.EndX.HasValue then
+      ATarget.EndX   := NoEnd;
   end;
 
   function MaybeFetchToken: Boolean; inline;
@@ -832,7 +834,8 @@ begin
         FrameStartPos.Physical := 1 + FCurLinePhysStartOffset;
         FrameStartPos.Offset  := 0;
         InitSynAttr(FCurViewAttr, FCurViewToken.TokenAttr, FrameStartPos);
-        FCurViewAttr.EndX := FWrapEndBound;
+        if not FCurViewAttr.EndX.HasValue then
+          FCurViewAttr.EndX := FWrapEndBound;
         ATokenInfo.Attr := FCurViewAttr;
       end
       else
@@ -983,7 +986,9 @@ begin
           assert(FCurViewToken.TokenLength >= 0, 'FCurViewToken.TokenLength >= 0');
 
           InitSynAttr(FCurViewAttr, FCurViewToken.TokenAttr, FCurViewCurTokenStartPos);
-          if FCurViewToken.TokenLength = 0 then
+          if (FCurViewToken.TokenLength = 0) and
+             (not ATokenInfo.Attr.EndX.HasValue)
+          then
             ATokenInfo.Attr.EndX := ATokenInfo.EndPos; // PhysPos-1;
 
           MaybeFetchToken;
@@ -1118,7 +1123,9 @@ begin
           assert(FCurViewToken.TokenLength >= 0, 'FCurViewToken.TokenLength >= 0');
 
           InitSynAttr(FCurViewAttr, FCurViewToken.TokenAttr, FCurViewCurTokenStartPos);
-          if FCurViewToken.TokenLength = 0 then
+          if (FCurViewToken.TokenLength = 0) and
+             (not ATokenInfo.Attr.EndX.HasValue)
+          then
             ATokenInfo.Attr.EndX := ATokenInfo.EndPos; // PhysPos-1;
 
           MaybeFetchToken;
