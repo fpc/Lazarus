@@ -652,7 +652,7 @@ type
     FStringKeywordMode: TSynPasStringMode;
     FStringMultilineMode: TSynPasMultilineStringModes;
     FSynPasRangeInfo: TSynPasRangeInfo;
-    FAtLineStart, FInString: Boolean; // Line had only spaces or comments sofar
+    FAtLineStart, FAtSlashStart, FInString: Boolean; // Line had only spaces or comments sofar
     fLineStr: string;
     fLine: PChar;
     fLineLen: integer;
@@ -4081,6 +4081,7 @@ begin
   FSynPasRangeInfo.MinLevelRegion := FSynPasRangeInfo.EndLevelRegion;
   fLineNumber := LineNumber;
   FAtLineStart := True;
+  FAtSlashStart := False;
   FInString := False;
   FCustomCommentTokenMarkup := nil;
   if not IsCollectingNodeInfo then
@@ -5062,6 +5063,7 @@ begin
     if reCommentSlash in FRequiredStates then
       FCustomCommentTokenMarkup := FCommentSlashAttri;
     FIsInSlash := True;
+    FAtSlashStart := True;
 
     fTokenID := tkComment;
     if FAtLineStart then begin
@@ -5091,6 +5093,7 @@ procedure TSynPasSyn.SlashContinueProc;
 var
   AtSlashOpen: Boolean;
 begin
+  FAtSlashStart := False;
   if FIsInSlash and (not (FIsInNextToEOL or IsScanning)) then begin
     if reCommentSlash in FRequiredStates then
       FCustomCommentTokenMarkup := FCommentSlashAttri;
@@ -5912,7 +5915,10 @@ function TSynPasSyn.GetTokenIsCommentStart(AnIgnoreMultiLineSlash: Boolean): Boo
 begin
   if AnIgnoreMultiLineSlash then
     Result := (FTokenID = tkComment) and (fLineLen > 0) and
-              (FOldRange * [rsAnsi, rsBor] = [])  // rsIDEDirective
+              ( (FOldRange * [rsAnsi, rsBor, rsSlash] = []) or  // rsIDEDirective
+                FAtSlashStart or
+                ((rsSlash in fRange) and (fTokenPos = 0) )
+              )
   else
     Result := (FTokenID = tkComment) and (fLineLen > 0) and
               (FOldRange * [rsAnsi, rsBor, rsSlash] = []);
@@ -5921,8 +5927,9 @@ end;
 function TSynPasSyn.GetTokenIsCommentEnd: Boolean;
 begin
   Result := (FTokenID = tkComment) and
-            (FRange * [rsAnsi, rsBor, rsSlash] = []) and  // rsIDEDirective
-            (not (FIsInSlash and (Run < fLineLen)));
+            ( (FRange * [rsAnsi, rsBor, rsSlash] = []) or  // rsIDEDirective
+              ( (rsSlash in fRange) and FIsInSlash and (Run = fLineLen) )
+            );
 end;
 
 function TSynPasSyn.GetRange: Pointer;
