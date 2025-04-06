@@ -133,7 +133,7 @@ type
     procedure DoDisplayViewChanged; override;
     procedure BoundsChanged; override;
   public
-    constructor Create(AOwner: TWinControl; AnOriginalManager: TLazSynSurfaceManager);
+    constructor Create(AOwner: TSynEditBase; AnOriginalManager: TLazSynSurfaceManager);
     destructor Destroy; override;
     procedure  InvalidateLines(FirstTextLine, LastTextLine: TLineIdx; AScreenLineOffset: Integer = 0); override;
     procedure InvalidateTextLines(FirstTextLine, LastTextLine: TLineIdx; AScreenLineOffset: Integer = 0); override;
@@ -1519,7 +1519,8 @@ begin
   FOriginalManager.SetBounds(t, Left, Bottom, Right);
 end;
 
-constructor TSourceLazSynSurfaceManager.Create(AOwner: TWinControl; AnOriginalManager: TLazSynSurfaceManager);
+constructor TSourceLazSynSurfaceManager.Create(AOwner: TSynEditBase;
+  AnOriginalManager: TLazSynSurfaceManager);
 var
   txt: TLazSynTextArea;
   lgutter, rgutter: TLazSynGutterArea;
@@ -2138,7 +2139,6 @@ var
 begin
   if ImeHandler is LazSynImeSimple then exit;
   Ime := LazSynImeSimple.Create(Self);
-  LazSynImeSimple(Ime).TextDrawer := TextDrawer;
   Ime.InvalidateLinesMethod := @InvalidateLines;
   ImeHandler := Ime;
 end;

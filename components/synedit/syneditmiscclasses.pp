@@ -558,7 +558,7 @@ type
     FBounds: TRect;
     FBoundsChangeList: TMethodList;
     FDisplayView: TLazSynDisplayView;
-    FOwner: TWinControl;
+    FOwner: TSynEditBase;
     function GetHandle: HWND;
     procedure SetDisplayView(AValue: TLazSynDisplayView);
   protected
@@ -566,8 +566,9 @@ type
     procedure DoPaint(ACanvas: TCanvas; AClip: TRect); virtual; abstract;
     procedure DoDisplayViewChanged; virtual;
     property  Handle: HWND read GetHandle;
+    property  Owner: TSynEditBase read FOwner;
   public
-    constructor Create(AOwner: TWinControl);
+    constructor Create(AOwner: TSynEditBase);
     destructor Destroy; override;
     procedure Assign(Src: TLazSynSurface); virtual;
     procedure AddBoundsChangeHandler(AHandler: TNotifyEvent);
@@ -1561,7 +1562,7 @@ begin
   //
 end;
 
-constructor TLazSynSurface.Create(AOwner: TWinControl);
+constructor TLazSynSurface.Create(AOwner: TSynEditBase);
 begin
   FOwner := AOwner;
   FBoundsChangeList := TMethodList.Create;

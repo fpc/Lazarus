@@ -150,7 +150,7 @@ type
     procedure SetLeftChar(AValue: Integer);
     procedure SetPadding(Side: TLazSynBorderSide; AValue: integer);
     procedure SetTopLine(AValue: TLinePos);
-    procedure DoDrawerFontChanged(Sender: TObject);
+    procedure DoDrawerFontChanged(Sender: TObject; Changes: TSynStatusChanges);
   protected
     procedure BoundsChanged; override;
     procedure DoPaint(ACanvas: TCanvas; AClip: TRect); override;
@@ -158,7 +158,7 @@ type
       FirstCol, LastCol: integer); virtual;
     property Canvas: TCanvas read FCanvas;
   public
-    constructor Create(AOwner: TWinControl; ATextDrawer: TheTextDrawer);
+    constructor Create(AOwner: TSynEditBase; ATextDrawer: TheTextDrawer);
     destructor Destroy; override;
     procedure Assign(Src: TLazSynSurface); override;
     procedure InvalidateLines(FirstTextLine, LastTextLine: TLineIdx; AScreenLineOffset: Integer = 0); override;
@@ -245,7 +245,7 @@ type
     procedure DoDisplayViewChanged; override;
     procedure BoundsChanged; override;
   public
-    constructor Create(AOwner: TWinControl);
+    constructor Create(AOwner: TSynEditBase);
     procedure InvalidateLines(FirstTextLine, LastTextLine: TLineIdx; AScreenLineOffset: Integer = 0); override;
     procedure InvalidateTextLines(FirstTextLine, LastTextLine: TLineIdx; AScreenLineOffset: Integer = 0); virtual;
     procedure InvalidateGutterLines(FirstTextLine, LastTextLine: TLineIdx; AScreenLineOffset: Integer = 0); virtual;
@@ -1304,7 +1304,7 @@ begin
   FRightGutterArea.SetBounds(Top, r, Bottom, Right);
 end;
 
-constructor TLazSynSurfaceManager.Create(AOwner: TWinControl);
+constructor TLazSynSurfaceManager.Create(AOwner: TSynEditBase);
 begin
   inherited Create(AOwner);
   FLeftGutterWidth := 0;
@@ -1405,7 +1405,7 @@ begin
   FTopLine := AValue;
 end;
 
-procedure TLazSynTextArea.DoDrawerFontChanged(Sender: TObject);
+procedure TLazSynTextArea.DoDrawerFontChanged(Sender: TObject; Changes: TSynStatusChanges);
 begin
   FontChanged;
 end;
@@ -1424,7 +1424,7 @@ begin
   Result := FTextBounds.Left + (Col - LeftChar) * fCharWidth;
 end;
 
-function TLazSynTextArea.RowColumnToPixels(const RowCol: TScreenPoint): TPoint;
+function TLazSynTextArea.RowColumnToPixels(const RowCol: TScreenPoint_0): TPoint;
 begin
   // Inludes LeftChar, but not Topline
   Result.X := FTextBounds.Left + (RowCol.X - LeftChar) * CharWidth;
@@ -1453,7 +1453,7 @@ begin
   if Result.Y < 0 then Result.Y := 0;
 end;
 
-constructor TLazSynTextArea.Create(AOwner: TWinControl; ATextDrawer: TheTextDrawer);
+constructor TLazSynTextArea.Create(AOwner: TSynEditBase; ATextDrawer: TheTextDrawer);
 var
   i: TLazSynBorderSide;
 begin
@@ -1461,7 +1461,8 @@ begin
   FTextSizeChangeList := TMethodList.Create;
   FTokenBreaker := TLazSynPaintTokenBreaker.Create;
   FTextDrawer := ATextDrawer;
-  FTextDrawer.RegisterOnFontChangeHandler(@DoDrawerFontChanged);
+
+  Owner.RegisterStatusChangedHandler(@DoDrawerFontChanged, [scFontOrStyleChanged]);
   FPaintLineColor := TSynSelectedColor.Create;
   FPaintLineColor2 := TSynSelectedColor.Create;
   for i := low(TLazSynBorderSide) to high(TLazSynBorderSide) do
@@ -1477,7 +1478,7 @@ end;
 destructor TLazSynTextArea.Destroy;
 begin
   FreeAndNil(FTokenBreaker);
-  FTextDrawer.UnRegisterOnFontChangeHandler(@DoDrawerFontChanged);
+  Owner.UnRegisterStatusChangedHandler(@DoDrawerFontChanged);
   FreeAndNil(FPaintLineColor);
   FreeAndNil(FPaintLineColor2);
   FreeAndNil(FTextSizeChangeList);

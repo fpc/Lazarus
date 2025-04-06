@@ -46,7 +46,7 @@ type
     function  PreferedWidthAtCurrentPPI: Integer; override;
     procedure LineCountChanged(Sender: TSynEditStrings; AIndex, ACount: Integer);
     procedure BufferChanged(Sender: TObject);
-    procedure FontChanged(Sender: TObject);
+    procedure FontChanged(Sender: TObject; Changes: TSynStatusChanges);
     procedure SetAutoSize(const AValue : boolean); override;
     procedure SetVisible(const AValue: boolean); override;
     function CreateMouseActions: TSynEditMouseInternalActions; override;
@@ -88,14 +88,14 @@ begin
   FTextDrawer := Gutter.TextDrawer;
   ViewedTextBuffer.AddChangeHandler(senrLineCount, @LineCountChanged);
   ViewedTextBuffer.AddNotifyHandler(senrTextBufferChanged, @BufferChanged);
-  FTextDrawer.RegisterOnFontChangeHandler(@FontChanged);
+  FriendEdit.RegisterStatusChangedHandler(@FontChanged, [scFontOrStyleChanged]);
   LineCountchanged(nil, 0, 0);
 end;
 
 destructor TSynGutterLineNumber.Destroy;
 begin
   ViewedTextBuffer.RemoveHandlers(self);
-  FTextDrawer.UnRegisterOnFontChangeHandler(@FontChanged);
+  FriendEdit.UnRegisterStatusChangedHandler(@FontChanged);
   inherited Destroy;
 end;
 
@@ -208,7 +208,7 @@ begin
   LineCountChanged(nil, 0, 0);
 end;
 
-procedure TSynGutterLineNumber.FontChanged(Sender: TObject);
+procedure TSynGutterLineNumber.FontChanged(Sender: TObject; Changes: TSynStatusChanges);
 begin
   DoAutoSize;
 end;

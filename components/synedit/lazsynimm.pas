@@ -10,7 +10,7 @@ interface
 
 uses
   windows, imm, LazSynIMMBase, Classes, SysUtils, Controls, LazLoggerBase, LCLType, LazUTF8,
-  Graphics, SynEditMiscClasses, SynTextDrawer, SynEditPointClasses, SynEditMarkupSelection,
+  Graphics, SynEditMiscClasses, SynEditPointClasses, SynEditMarkupSelection,
   SynEditMarkup, SynEditTypes, SynEditKeyCmds, LazSynEditText, SynEditTextBase,
   LazEditTextAttributes;
 
@@ -29,12 +29,10 @@ type
   private
     FImeBlockSelection: TSynEditSelection;
     FImeWinX, FImeWinY: Integer;
-    FTextDrawer: TheTextDrawer;
-    procedure SetTextDrawer(AValue: TheTextDrawer);
     procedure UpdateImeWinXY(aX, aY: Integer; aImc: HIMC = 0; aForce: Boolean = False);
     procedure UpdateImeWinFont(aImc: HIMC = 0);
     procedure DoStatusChanged(Sender: TObject; Changes: TSynStatusChanges);
-    procedure DoDrawerFontChanged(Sender: TObject);
+    procedure DoDrawerFontChanged;
     procedure DoOnCommand(Sender: TObject; AfterProcessing: boolean; var Handled: boolean;
       var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer;
       HandlerData: pointer);
@@ -48,7 +46,6 @@ type
     procedure WMImeStartComposition(var Msg: TMessage); override;
     procedure WMImeEndComposition(var Msg: TMessage); override;
     procedure FocusKilled; override;
-    property TextDrawer: TheTextDrawer read FTextDrawer write SetTextDrawer;
   end;
 
   { LazSynImeFull }
@@ -118,12 +115,17 @@ end;
 
 procedure LazSynImeSimple.DoStatusChanged(Sender: TObject; Changes: TSynStatusChanges);
 begin
+  if scFontOrStyleChanged in Changes then begin
+    DoDrawerFontChanged;
+    if Changes = [scFontOrStyleChanged] then exit;
+  end;
+
   UpdateImeWinXY(FriendEdit.CaretXPix, FriendEdit.CaretYPix);
   if Changes * [scCaretX, scCaretY] <> [] then
     StopIme(False);
 end;
 
-procedure LazSynImeSimple.DoDrawerFontChanged(Sender: TObject);
+procedure LazSynImeSimple.DoDrawerFontChanged;
 var
   imc: HIMC;
 begin
@@ -173,16 +175,6 @@ begin
   end;
 end;
 
-procedure LazSynImeSimple.SEtTextDrawer(AValue: TheTextDrawer);
-begin
-  if FTextDrawer = AValue then Exit;
-  if FTextDrawer <> nil then
-    FTextDrawer.UnRegisterOnFontChangeHandler(@DoDrawerFontChanged);
-  FTextDrawer := AValue;
-  if FTextDrawer <> nil then
-    FTextDrawer.RegisterOnFontChangeHandler(@DoDrawerFontChanged);
-end;
-
 procedure LazSynImeSimple.UpdateImeWinFont(aImc: HIMC);
 var
   imc: HIMC;
@@ -207,14 +199,13 @@ begin
   FImeBlockSelection := TSynEditSelection.Create(ViewedTextBuffer, False);
   FImeBlockSelection.InvalidateLinesMethod := @InvalidateLines;
 
-  FriendEdit.RegisterStatusChangedHandler(@DoStatusChanged, [scCaretX, scCaretY, scLeftChar, scTopLine, scModified]);
+  FriendEdit.RegisterStatusChangedHandler(@DoStatusChanged, [scCaretX, scCaretY, scLeftChar, scTopLine, scModified, scFontOrStyleChanged]);
   FriendEdit.RegisterCommandHandler(@DoOnCommand, nil, [hcfInit]);
   FriendEdit.RegisterBeforeMouseDownHandler(@DoOnMouse);
 end;
 
 destructor LazSynImeSimple.Destroy;
 begin
-  TextDrawer := nil;
   FreeAndNil(FImeBlockSelection);
   FriendEdit.UnregisterBeforeMouseDownHandler(@DoOnMouse);
   FriendEdit.UnregisterCommandHandler(@DoOnCommand);

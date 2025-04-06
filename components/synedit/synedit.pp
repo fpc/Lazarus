@@ -8964,6 +8964,7 @@ begin
         for i := 0 to Pred(fHighlighter.AttrCount) do
           fTextDrawer.BaseStyle := fHighlighter.Attribute[i].Style;
       fTextDrawer.CharExtra := ExtraCharSpacing;
+      StatusChanged([scFontOrStyleChanged]); // Font or Spacing
 
       FLines.IsUtf8 := True;
     finally
