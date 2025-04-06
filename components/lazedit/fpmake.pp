@@ -3,7 +3,7 @@
 
    fpmake.pp for LazEdit 1.0
 
-   This file was generated on 19/03/2025
+   This file was generated on 06/04/2025
 }
 
 {$ifndef ALLPACKAGES} 
@@ -32,6 +32,7 @@ begin
     P.License:='modified LGPL-2'#13#10'Additional licenses may be granted in each individual file. See the headers in each file.';
     P.Description:='Tools/Units to be used by SynEdit (or other editors)';
 
+    D := P.Dependencies.Add('lclbase');
     D := P.Dependencies.Add('lazutils');
     D := P.Dependencies.Add('fcl');
     P.Options.Add('-MObjFPC');
@@ -48,12 +49,16 @@ begin
     t.Dependencies.AddUnit('xregexpr');
     t.Dependencies.AddUnit('xregexpr_unicodedata');
     t.Dependencies.AddUnit('lazeditmiscprocs');
+    t.Dependencies.AddUnit('lazedithighlighterutils');
+    t.Dependencies.AddUnit('lazedittextattributes');
 
     T:=P.Targets.AddUnit('textmategrammar.pas');
     T:=P.Targets.AddUnit('xHyperLinksDecorator.pas');
     T:=P.Targets.AddUnit('xregexpr.pas');
     T:=P.Targets.AddUnit('xregexpr_unicodedata.pas');
     T:=P.Targets.AddUnit('lazeditmiscprocs.pas');
+    T:=P.Targets.AddUnit('lazedithighlighterutils.pas');
+    T:=P.Targets.AddUnit('lazedittextattributes.pas');
 
     // copy the compiled file, so the IDE knows how the package was compiled
     P.Sources.AddSrc('lazedit.compiled');
