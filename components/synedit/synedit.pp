@@ -564,7 +564,7 @@ type
     FMouseActionExecHandlerList: TSynEditMouseActionExecList;
     FMouseActionShiftMask: TShiftState;
     FMarkList: TSynEditMarkList;
-    FUseUTF8: boolean;
+    FUseUTF8: boolean deprecated 'always true';
     fWantTabs: boolean;
     FLeftGutter, FRightGutter: TSynGutter;
     fTabWidth: integer;
@@ -1154,7 +1154,7 @@ type
     property UseIncrementalColor : Boolean write SetUseIncrementalColor;
     property PaintLock: Integer read fPaintLock;
 
-    property UseUTF8: boolean read FUseUTF8;
+    property UseUTF8: boolean read FUseUTF8; deprecated 'always true';
     procedure Invalidate; override;
     property ChangeStamp: int64 read GetChangeStamp;
     procedure ShareTextBufferFrom(AShareEditor: TCustomSynEdit);
@@ -2228,6 +2228,7 @@ begin
   FStatusChangeLock := 0;
   FUndoBlockAtPaintLock := 0;
   FRecalcCharsAndLinesLock := 0;
+  FUseUTF8 {%H-}:= True;
 
   FStatusChangedList := TSynStatusChangedHandlerList.Create;
   FPaintEventHandlerList := TSynPaintEventHandlerList.Create;
@@ -2237,6 +2238,7 @@ begin
   FBeautifier := FDefaultBeautifier;
 
   FLines := TSynEditStringList.Create;
+  FLines.IsUtf8 := True;
   TSynEditStringList(FLines).AttachSynEdit(Self);
 
   FCaret := TSynEditCaret.Create;
@@ -3273,7 +3275,7 @@ begin
       OnKeyPressFired:= true;//used to prevent from double firing issue #0026444
     end;
     {$IFDEF VerboseKeys}
-    DebugLn('TCustomSynEdit.UTF8KeyPress ',DbgSName(Self),' Key="',DbgStr(Key),'" UseUTF8=',dbgs(UseUTF8));
+    DebugLn('TCustomSynEdit.UTF8KeyPress ',DbgSName(Self),' Key="',DbgStr(Key),'"');
     {$ENDIF}
     CommandProcessor(ecChar, Key, nil);
     // Check if ecChar has handled the Key; Todo: move the condition, in one common place
@@ -3300,7 +3302,7 @@ begin
   if not (sfIgnoreNextChar in fStateFlags) then begin
     Include(FStateFlags, sfHideCursor);
     {$IFDEF VerboseKeys}
-    DebugLn('TCustomSynEdit.KeyPress ',DbgSName(Self),' Key="',DbgStr(Key),'" UseUTF8=',dbgs(UseUTF8));
+    DebugLn('TCustomSynEdit.KeyPress ',DbgSName(Self),' Key="',DbgStr(Key),'"');
     {$ENDIF}
     if Assigned(OnKeyPress) then OnKeyPress(Self, Key);
     CommandProcessor(ecChar, Key, nil);
@@ -8955,7 +8957,7 @@ begin
         Style := [];        // Reserved for Highlighter
       end;
       //debugln(['TCustomSynEdit.RecalcCharExtent ',fFontDummy.Name,' ',fFontDummy.Size]);
-      //debugln('TCustomSynEdit.RecalcCharExtent A UseUTF8=',dbgs(UseUTF8),' CharHeight=',dbgs(CharHeight));
+      //debugln('TCustomSynEdit.RecalcCharExtent  CharHeight=',dbgs(CharHeight));
 
       fTextDrawer.BaseFont := FFontDummy;
       if Assigned(fHighlighter) then
@@ -8963,8 +8965,7 @@ begin
           fTextDrawer.BaseStyle := fHighlighter.Attribute[i].Style;
       fTextDrawer.CharExtra := ExtraCharSpacing;
 
-      FUseUTF8:=fTextDrawer.UseUTF8;
-      FLines.IsUtf8 := FUseUTF8;
+      FLines.IsUtf8 := True;
     finally
       dec(FRecalcCharsAndLinesLock);
       // RecalcCharsAndLinesInWin will be called by SizeOrFontChanged
@@ -8982,7 +8983,6 @@ begin
   finally
     DecStatusChangeLock;
   end;
-  //debugln('TCustomSynEdit.RecalcCharExtent UseUTF8=',dbgs(UseUTF8));
 end;
 
 procedure TCustomSynEdit.HighlighterAttrChanged(Sender: TObject);
