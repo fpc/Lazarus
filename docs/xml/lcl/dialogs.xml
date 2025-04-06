@@ -1426,13 +1426,14 @@ Includes the OFN_SHAREAWARE flag on the Windows platform.
 </element>
 <element name="TOpenOption.ofNoReadOnlyReturn">
 <short>
-For the Windows platform, it indicates the Read Only check box is not selected 
-for the returned file, the file is writable, and is not in a write-protected 
-directory. In TOpenDialog, an error message is displayed if the selected file 
-does not meet the criteria when ofNoReadOnlyReturn is included in dialog 
-options. See TOpenDialog.CheckFile. In TSaveDialog, it indicates that 
-read-only items cannot be returned by the dialog. This is the default value 
-for a Save dialog. Not used for other widgetsets.
+Indicates that a dialog cannot be used to choose a read-only file. For the 
+<b>Windows</b> platform, TOpenDialog displays an error message if a read-only 
+file is selected - but it does not close dialog. TSaveDialog will always 
+display an error message if the user selects a read-only file - regardless of 
+the state of this flag. For <b>other</b> platforms, TOpenDiaLog / TSaveDialog 
+use the value to ensure that a file or directory selected with the dialog has 
+write access permissions. A 'File is not writable' error message is displayed 
+if the file or directory is read-only. See TOpenDialog.CheckFile.
 </short>
 </element>
 <element name="TOpenOption.ofNoTestFileCreate">
