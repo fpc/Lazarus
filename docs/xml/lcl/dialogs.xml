@@ -1428,7 +1428,7 @@ Includes the OFN_SHAREAWARE flag on the Windows platform.
 <short>
 Indicates that a dialog cannot be used to choose a read-only file. For the 
 <b>Windows</b> platform, TOpenDialog displays an error message if a read-only 
-file is selected - but it does not close dialog. TSaveDialog will always 
+file is selected - but it does not close the dialog. TSaveDialog will always 
 display an error message if the user selects a read-only file - regardless of 
 the state of this flag. For <b>other</b> platforms, TOpenDiaLog / TSaveDialog 
 use the value to ensure that a file or directory selected with the dialog has 
