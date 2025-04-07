@@ -5118,9 +5118,19 @@ procedure TSourceEditor.SetSyntaxHighlighterId(AHighlighterId: TIdeSyntaxHighlig
 var
   HlIsPas, OldHlIsPas: Boolean;
   tl: TSrcSynTopLineInfo;
+  d: TIdeSyntaxHighlighterID;
 begin
-  if (AHighlighterId=fSyntaxHighlighterId)
-  and ((FEditor.Highlighter<>nil) = EditorOpts.UseSyntaxHighlight) then exit;
+  d := AHighlighterId;
+  if AHighlighterId < 0 then
+    d := FDefaultSyntaxHighlighterId;
+
+  if (AHighlighterId=fSyntaxHighlighterId) and
+     ((FEditor.Highlighter<>nil) = EditorOpts.UseSyntaxHighlight) and
+     (d >= 0) and (d < EditorOpts.HighlighterList.Count) and
+     (FEditor.Highlighter = EditorOpts.HighlighterList.SharedSynInstances[d])
+  then
+    exit;
+
 
   if not ASkipEditorOpts then
     tl := FEditor.GetTopLineBeforeFold;
