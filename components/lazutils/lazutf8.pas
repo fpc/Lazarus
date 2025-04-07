@@ -1197,6 +1197,8 @@ procedure UTF8Insert(const source: String; var s: String; StartCharIndex: PtrInt
 var
   StartBytePos: PChar;
 begin
+  if StartCharIndex < 1 then
+    StartCharIndex := 1;  //Insert() does this correction too
   StartBytePos:=UTF8CodepointStart(PChar(s),length(s),StartCharIndex-1);
   if StartBytePos <> nil then
     Insert(source, s, StartBytePos-PChar(s)+1);
