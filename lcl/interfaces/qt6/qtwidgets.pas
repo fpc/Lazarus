@@ -6968,6 +6968,13 @@ begin
   inherited AttachEvents;
   FViewPortEventHook := QObject_hook_create(viewportWidget);
   QObject_hook_hook_events(FViewPortEventHook, @ScrollViewEventFilter);
+  if (LCLObject is TScrollingWinControl) then
+  begin
+    if TScrollingWinControl(LCLObject).VertScrollBar.Visible then
+      FScrollY := -TScrollingWinControl(LCLObject).VertScrollBar.Position;
+    if TScrollingWinControl(LCLObject).HorzScrollBar.Visible then
+      FScrollX := -TScrollingWinControl(LCLObject).HorzScrollBar.Position;
+  end;
 end;
 
 function TQtWindowArea.CanAdjustClientRectOnResize: Boolean;
