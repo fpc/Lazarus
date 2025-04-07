@@ -1201,7 +1201,9 @@ begin
     StartCharIndex := 1;  //Insert() does this correction too
   StartBytePos:=UTF8CodepointStart(PChar(s),length(s),StartCharIndex-1);
   if StartBytePos <> nil then
-    Insert(source, s, StartBytePos-PChar(s)+1);
+    Insert(source, s, StartBytePos-PChar(s)+1)
+  else
+    s := s + source; // StartCharIndex > Utf8Length(s) + 1, consistent with System.Insert
 end;
 
 function UTF8StringReplace(const S, OldPattern, NewPattern: String;
