@@ -1125,6 +1125,8 @@ var
   EndBytePos: PChar;
   MaxBytes: PtrInt;
 begin
+  if StartCharIndex < 1 then
+    StartCharIndex := 1; //Copy() does this correction too
   StartBytePos:=UTF8CodepointStart(PChar(s),length(s),StartCharIndex-1);
   if StartBytePos=nil then
     Result:=''
