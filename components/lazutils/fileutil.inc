@@ -60,10 +60,7 @@ begin
     System.Move(Filename1^,File1[1],Len1);
     SetLength(File2{%H-},Len2);
     System.Move(Filename2^,File2[1],Len2);
-    if ResolveLinks then
-      Result:=ComparePhysicalFilenames(File1,File2)
-    else
-      Result:=LazFileUtils.CompareFilenames(File1,File2);
+    Result:=ComparePhysicalFilenames(File1,File2);
   end else begin
     {$IFDEF NotLiteralFilenames}
     SetLength(File1,Len1);
