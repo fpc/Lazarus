@@ -5484,8 +5484,9 @@ var
         AVal := NewAddr
       else
       begin
+        // Oper.Value and FullName are alwys lowercase
         FullName := FullRegisterName(Oper.Value);
-        if (LowerCase(FullName) = LowerCase(Oper.Value)) then begin
+        if (FullName = Oper.Value) then begin
           r := ARegisterValueList.FindRegisterByName(FullName);
           if r <> nil then begin
             AVal := r.NumValue;
@@ -5526,9 +5527,10 @@ var
       end
       else
       if (ofMemory in Oper.Flags) then begin
+        // Oper.Value and FullName are alwys lowercase
         FullName := FullRegisterName(Oper.Value);
         AVal := 0;
-        if (LowerCase(FullName)+'%s' = LowerCase(Oper.Value)) then begin
+        if (FullName+'%s' = Oper.Value) then begin
           r := ARegisterValueList.FindRegisterByName(FullName);
           if r = nil then
             exit(False);
