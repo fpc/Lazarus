@@ -1340,34 +1340,49 @@ Number of bytes in SearchInText.
 
 <element name="UTF8Copy">
 <short>
-Copies the specified number of codepoints from the UTF-8-encoded string.
+Copies the specified number of codepoints from the UTF-8-encoded string 
+starting at the specified character index.
 </short>
 <descr>
 <p>
 <var>UTF8Copy</var> is a <var>String</var> function used copy to 
 UTF-8-encoded values from <var>s</var> starting at the position in 
-<var>StartCharIndex</var>. <var>CharCount</var> specifies the number of 
-multi-byte characters (or codepoints) to include in the return value. The 
-return value is an empty string ('') when s is not a valid UTF-8-encoded 
-string.
+<var>StartCharIndex</var>. A value in StartCharIndex starts at 1 (one). If a 
+value is provided that is less than 1, it is convert to 1 (just like in the 
+RTL Copy routine). <var>CharCount</var> specifies the number of multi-byte 
+characters (or codepoints) to include in the return value. The return value is 
+an empty string ('') when <var>s</var> is not a valid UTF-8-encoded string.
 </p>
 <p>
 UTF8Copy behaves like a substring function.
 </p>
+<remark>
+Modified in LazUtils version 4.0 to ensure that StartCharIndex starts at 1 
+(for String-style indexing) and not 0 (for PChar-style indexing). 
+</remark>
 </descr>
 <seealso/>
 </element>
 <element name="UTF8Copy.Result">
-<short>String with codepoints copied from the specified source.</short>
+<short>
+String with codepoints copied from the specified source.
+</short>
 </element>
 <element name="UTF8Copy.s">
-<short>String with values to copy in the function.</short>
+<short>
+String with values to copy in the function.
+</short>
 </element>
 <element name="UTF8Copy.StartCharIndex">
-<short>Initial character position for the copy operation.</short>
+<short>
+Initial character position for the copy operation. Uses index positions 
+starting at 1 (just like the String type).
+</short>
 </element>
 <element name="UTF8Copy.CharCount">
-<short>Number of characters (codepoints) to copy in the function.</short>
+<short>
+Number of characters (codepoints) to copy in the function.
+</short>
 </element>
 
 <element name="UTF8Delete">
@@ -1431,15 +1446,21 @@ specified character position.
 <p>
 The value in <var>StartCharIndex</var> starts at <b>1</b>, and represents the 
 n-th codepoint (or character) in the destination string (s) where the values 
-are inserted.
+are inserted. If StartCharIndex contains a value less than 1, it is converted 
+to the value 1 (just like in the RTL Insert routine).
 </p>
 <p>
 UTF8Insert calls UTF8CodepointStart to determine the position in s where the 
-codepoint represented by StartCharIndex is located. No actions are performed in 
-the routine if a valid codepoint is not found at the position specified in 
-StartCharIndex. The RTL Insert routine is called to insert the UTF-8-encoded 
-values from source into s.
+codepoint represented by StartCharIndex is located. The RTL Insert routine is 
+called to insert the UTF-8-encoded values from source into s at the required 
+position. If s is an empty UTF-8 string or the specified character index does 
+not exist, the value in source is appended to the value in s.
 </p>
+<remark>
+Modified in LazUtils version 4.0 to ensure that: StartCharIndex starts at 1 
+(for String-style indexing) and not 0 (for PChar-style indexing), the value is 
+appended when the character index is not found.
+</remark>
 </descr>
 <seealso>
 <link id="UTF8CodepointStart"/>
@@ -1459,8 +1480,8 @@ String where the values from source are inserted.
 </element>
 <element name="UTF8Insert.StartCharIndex">
 <short>
-Starting character position (1-based) where the inserted values from source are 
-stored in s.
+Starting character position (1-based) where the inserted values from source 
+are stored in s.
 </short>
 </element>
 
