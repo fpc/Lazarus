@@ -443,6 +443,8 @@ type
     function getScrollFrameOffset: Integer;
     function getViewOrigin: TPoint;
     function viewportWidget: QWidgetH;
+    function HBarAllocated: boolean;
+    function VBarAllocated: boolean;
     function horizontalScrollBar: TQtScrollBar;
     procedure InitializeAccessibility; override;
     function verticalScrollBar: TQtScrollBar;
@@ -17784,6 +17786,16 @@ end;
 function TQtAbstractScrollArea.viewportWidget: QWidgetH;
 begin
   Result := QAbstractScrollArea_viewport(QAbstractScrollAreaH(Widget));
+end;
+
+function TQtAbstractScrollArea.HBarAllocated: boolean;
+begin
+  Result := FHScrollbar <> nil;
+end;
+
+function TQtAbstractScrollArea.VBarAllocated: boolean;
+begin
+  Result := FVScrollbar <> nil;
 end;
 
 function TQtAbstractScrollArea.getScrollBarsPolicy(AIndex: Boolean

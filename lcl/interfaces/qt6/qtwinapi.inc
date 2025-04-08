@@ -4451,12 +4451,15 @@ begin
     Width := ARect.Width;
     Height := ARect.Height;
     {$IFDEF QTSCROLLABLEFORMS}
-    if Assigned(TQtMainWindow(Handle).ScrollArea.verticalScrollBar) and
-      TQtMainWindow(Handle).ScrollArea.verticalScrollBar.getVisible then
-        inc(Height, TQtMainWindow(Handle).ScrollArea.horizontalScrollBar.getWidth);
-    if Assigned(TQtMainWindow(Handle).ScrollArea.verticalScrollBar) and
-      TQtMainWindow(Handle).ScrollArea.horizontalScrollBar.getVisible then
-        inc(Width, TQtMainWindow(Handle).ScrollArea.horizontalScrollBar.getHeight);
+    if Assigned(TQtMainWindow(Handle).ScrollArea) then
+    begin
+      if TQtMainWindow(Handle).ScrollArea.VBarAllocated and
+        TQtMainWindow(Handle).ScrollArea.verticalScrollBar.getVisible then
+          inc(Height, TQtMainWindow(Handle).ScrollArea.verticalScrollBar.getWidth);
+      if TQtMainWindow(Handle).ScrollArea.HBarAllocated and
+        TQtMainWindow(Handle).ScrollArea.horizontalScrollBar.getVisible then
+          inc(Width, TQtMainWindow(Handle).ScrollArea.horizontalScrollBar.getHeight);
+    end;
     {$ENDIF}
   end else
   begin
