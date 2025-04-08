@@ -4450,6 +4450,12 @@ begin
     GetClientRect(Handle, ARect);
     Width := ARect.Width;
     Height := ARect.Height;
+    {$IFDEF QTSCROLLABLEFORMS}
+    if TQtMainWindow(Handle).ScrollArea.verticalScrollBar.getVisible then
+      inc(Height, TQtMainWindow(Handle).ScrollArea.verticalScrollBar.getWidth);
+    if TQtMainWindow(Handle).ScrollArea.horizontalScrollBar.getVisible then
+      inc(Width, TQtMainWindow(Handle).ScrollArea.horizontalScrollBar.getHeight);
+    {$ENDIF}
   end else
   begin
     ASize := TQtWidget(Handle).getSize;
