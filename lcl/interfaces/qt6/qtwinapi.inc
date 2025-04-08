@@ -4455,10 +4455,10 @@ begin
     begin
       if TQtMainWindow(Handle).ScrollArea.VBarAllocated and
         TQtMainWindow(Handle).ScrollArea.verticalScrollBar.getVisible then
-          inc(Height, TQtMainWindow(Handle).ScrollArea.verticalScrollBar.getWidth);
+          inc(Width, TQtMainWindow(Handle).ScrollArea.verticalScrollBar.getWidth);
       if TQtMainWindow(Handle).ScrollArea.HBarAllocated and
         TQtMainWindow(Handle).ScrollArea.horizontalScrollBar.getVisible then
-          inc(Width, TQtMainWindow(Handle).ScrollArea.horizontalScrollBar.getHeight);
+          inc(Height, TQtMainWindow(Handle).ScrollArea.horizontalScrollBar.getHeight);
     end;
     {$ENDIF}
   end else
