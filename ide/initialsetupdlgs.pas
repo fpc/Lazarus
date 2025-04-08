@@ -604,7 +604,7 @@ begin
     if not Dlg.Execute then
       exit;
     lFileName := CleanAndExpandFilename(Dlg.Filename);
-    lChanged := UpperCase(lExpandedName)<>UpperCase(lFileName);
+    lChanged := CompareFilenames(lExpandedName, lFileName) <> 0;
   finally
     Dlg.Free;
   end;
@@ -688,7 +688,7 @@ begin
     if not Dlg.Execute then
       exit;
     lFileName := CleanAndExpandFilename(Dlg.Filename);
-    lChanged := UpperCase(lExpandedName)<>UpperCase(lFileName);
+    lChanged := CompareFilenames(lExpandedName, lFileName) <> 0;
   finally
     Dlg.Free;
   end;
@@ -1007,7 +1007,7 @@ begin
     DirDlg.Options := DirDlg.Options + [ofExtensionDifferent, ofPathMustExist];
     if DirDlg.Execute then begin
       lDirName := CleanAndExpandFilename(DirDlg.FileName);
-      if UpperCase(lCurDirName)<>UpperCase(lDirName) then
+      if CompareFilenames(lCurDirName, lDirName) <> 0 then
         Result := lDirName;
     end;
   finally
@@ -1666,7 +1666,7 @@ begin
     if not Dlg.Execute then
       exit;
     lFileName:=CleanAndExpandFilename(Dlg.Filename);
-    lChanged := UpperCase(lExpandedName)<>UpperCase(lFileName);
+    lChanged := CompareFilenames(lExpandedName, lFileName) <> 0;
   finally
     Dlg.Free;
   end;

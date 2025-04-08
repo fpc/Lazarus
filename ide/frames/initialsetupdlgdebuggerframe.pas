@@ -146,7 +146,7 @@ begin
     if not Dlg.Execute then
       exit;
     lFileName := CleanAndExpandFilename(Dlg.Filename);
-    lChanged := UpperCase(lExpandedName)<>UpperCase(lFileName);
+    lChanged := CompareFilenames(lExpandedName, lFileName) <> 0;
   finally
     Dlg.Free;
   end;
@@ -446,7 +446,7 @@ begin
   s := GetVisibleDebuggerPath;
   r := EnvironmentOptions.GetParsedValue(eopDebuggerFilename, s);
   edDebuggerPathResolved.Text := r;
-  edDebuggerPathResolved.Visible := (r <> '') and (UpperCase(r) <> UpperCase(s));
+  edDebuggerPathResolved.Visible := (r <> '') and (CompareFilenames(r, s)  <> 0);
 end;
 
 function TInitDebuggerFrame.GetDebuggerClassNote(out ANote: String
