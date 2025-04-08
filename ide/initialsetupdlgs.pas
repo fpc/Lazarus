@@ -1004,7 +1004,7 @@ begin
     DirDlg.Title := aTitle;
     DirDlg.InitialDir := lDirPath;
     DirDlg.FileName := lDirName;
-    DirDlg.Options := DirDlg.Options + [ofExtensionDifferent, ofPathMustExist];
+    DirDlg.Options := DirDlg.Options + [ofPathMustExist];
     if DirDlg.Execute then begin
       lDirName := CleanAndExpandFilename(DirDlg.FileName);
       if CompareFilenames(lCurDirName, lDirName) <> 0 then
