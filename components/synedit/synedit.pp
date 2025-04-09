@@ -8966,6 +8966,7 @@ begin
           fTextDrawer.AddBaseStyle(fHighlighter.Attribute[i].Style);
       fTextDrawer.CharExtra := ExtraCharSpacing;
       StatusChanged([scFontOrStyleChanged]); // Font or Spacing
+      FTextArea.FontChanged; // needed early to load now values // SynStatus changes are still locked
 
       FLines.IsUtf8 := True;
     finally
