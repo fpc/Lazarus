@@ -16686,7 +16686,7 @@ begin
   for i := 0 to FActions.Count - 1 do
   begin
     Group := TQtActionGroup(FActions.Items[i]);
-    if Group.GroupIndex = AItem.GroupIndex then
+    if (Group.GroupIndex = AItem.GroupIndex) and (Group.Exclusive = AItem.RadioItem) then
     begin
       QAction_setEnabled(TQtMenu(AItem.Handle).actionHandle, AItem.Enabled);
       QAction_setVisible(TQtMenu(AItem.Handle).actionHandle, AItem.Visible);

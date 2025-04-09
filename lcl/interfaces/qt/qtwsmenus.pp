@@ -115,14 +115,6 @@ begin
   begin
     Result.setText(AMenuItem.Caption{%H-});
     Result.setEnabled(AMenuItem.Enabled);
-
-    {issue #37741}
-    if AMenuItem.RadioItem and (AMenuItem.Count = 0) and (AMenuItem.GroupIndex = 0) then
-    begin
-      if AMenuItem.GroupIndex = 0 then
-        AMenuItem.GroupIndex := 1;
-    end;
-
     Result.setCheckable(AMenuItem.RadioItem or AMenuItem.ShowAlwaysCheckable);
     Result.BeginUpdate;
     Result.setChecked(AMenuItem.Checked);
