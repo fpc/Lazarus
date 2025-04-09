@@ -2043,7 +2043,7 @@ function TGDBMIDebuggerCommandRegisterUpdate.DoExecute: Boolean;
         RegValObj.SetAsNum(Num, FTheDebugger.TargetPtrSize);
         RegValObj.AddFormats([rdBinary, rdDecimal, rdOctal, rdHex]);
       end;
-      if AFormat = RegVal.DisplayFormat then
+      if (AFormat = RegVal.DisplayFormat) or RegVal.HasValue {Has current required disp-format} then
         RegVal.DataValidity := ddsValid;
     end;
     FreeAndNil(List);
