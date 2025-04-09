@@ -284,6 +284,57 @@ type
     property StyleMask stored GetStyleMaskStored;
   end;
 
+  TLazEditCustomHighlighter = class(TComponent)
+  protected
+    procedure AddAttribute(AAttrib: TLazEditTextAttribute); virtual; abstract;
+    procedure RemoveAttribute(AAttrib: TLazEditTextAttribute); virtual; abstract;
+  end;
+
+  { TLazEditTextAttributeModifierCollectionItem }
+
+  TLazEditTextAttributeModifierCollectionItem = class(TCollectionItem)
+  private
+    FAttribute: TLazEditTextAttributeModifier;
+    procedure SetAttribute(AValue: TLazEditTextAttributeModifier);
+  public
+    constructor Create(ACollection: TCollection); override;
+    destructor Destroy; override;
+  published
+    property Attribute: TLazEditTextAttributeModifier read FAttribute write SetAttribute;
+  end;
+
+  { TLazEditTextAttributeModifierCollection }
+
+  TLazEditTextAttributeModifierCollection = class(TCollection)
+  private
+    FBaseName: string;
+    FBaseStoredName: string;
+    FOnAttributeChange: TNotifyEvent;
+    FOwner: TLazEditCustomHighlighter;
+    procedure DoAttribChaged(Sender: TObject);
+    function GetAttrib(Index: Integer): TLazEditTextAttributeModifier;
+    function GetItem(Index: Integer): TLazEditTextAttributeModifierCollectionItem;
+    procedure SetAttribs(Index: Integer; AValue: TLazEditTextAttributeModifier);
+    procedure SetBaseName(AValue: string);
+    procedure SetBaseStoredName(AValue: string);
+    procedure SetItem(Index: Integer; Value: TLazEditTextAttributeModifierCollectionItem);
+    procedure ResetNames;
+  protected
+    procedure Notify(Item: TCollectionItem; Action: TCollectionNotification); override;
+  public
+    constructor Create(AnOwner: TLazEditCustomHighlighter);
+    function Add: TLazEditTextAttributeModifierCollectionItem;
+  public
+    property BaseName: string read FBaseName write SetBaseName;
+    property BaseStoredName: string read FBaseStoredName write SetBaseStoredName;
+
+    property Items[Index: Integer]: TLazEditTextAttributeModifierCollectionItem read GetItem
+      write SetItem; default;
+    property Attribs[Index: Integer]: TLazEditTextAttributeModifier read GetAttrib
+      write SetAttribs;
+    property OnAttributeChange: TNotifyEvent read FOnAttributeChange write FOnAttributeChange;
+  end;
+
 implementation
 
 { TLazEditDisplayTokenBound }
@@ -801,6 +852,118 @@ begin
   inherited InternalSaveDefaultValues;
   FDefaultAlpha         := FAlpha;
   FDefaultStyleMask     := FStyleMask;
+end;
+
+{ TLazEditTextAttributeModifierCollectionItem }
+
+procedure TLazEditTextAttributeModifierCollectionItem.SetAttribute(
+  AValue: TLazEditTextAttributeModifier);
+begin
+  FAttribute.Assign(AValue);
+end;
+
+constructor TLazEditTextAttributeModifierCollectionItem.Create(ACollection: TCollection);
+begin
+  FAttribute := TLazEditTextAttributeModifier.Create('', '');
+  inherited Create(ACollection);
+end;
+
+destructor TLazEditTextAttributeModifierCollectionItem.Destroy;
+begin
+  inherited Destroy;
+  FAttribute.Destroy;
+end;
+
+{ TLazEditTextAttributeModifierCollection }
+
+function TLazEditTextAttributeModifierCollection.GetItem(Index: Integer
+  ): TLazEditTextAttributeModifierCollectionItem;
+begin
+  Result := TLazEditTextAttributeModifierCollectionItem(inherited GetItem(Index));
+end;
+
+function TLazEditTextAttributeModifierCollection.GetAttrib(Index: Integer
+  ): TLazEditTextAttributeModifier;
+begin
+  Result := Items[Index].Attribute;
+end;
+
+procedure TLazEditTextAttributeModifierCollection.DoAttribChaged(Sender: TObject);
+begin
+  if FOnAttributeChange <> nil then
+    FOnAttributeChange(Sender);
+end;
+
+procedure TLazEditTextAttributeModifierCollection.SetAttribs(Index: Integer;
+  AValue: TLazEditTextAttributeModifier);
+begin
+  Items[Index].Attribute := AValue;
+end;
+
+procedure TLazEditTextAttributeModifierCollection.SetBaseName(AValue: string);
+begin
+  if FBaseName = AValue then Exit;
+  FBaseName := AValue;
+  if Format(FBaseName, [9]) = FBaseName then
+    FBaseName := FBaseName + ' %d';
+
+  ResetNames;
+end;
+
+procedure TLazEditTextAttributeModifierCollection.SetBaseStoredName(AValue: string);
+begin
+  if FBaseStoredName = AValue then Exit;
+  FBaseStoredName := AValue;
+  if Format(FBaseStoredName, [9]) = FBaseStoredName then
+    FBaseStoredName := FBaseStoredName + '_%d';
+
+  ResetNames;
+end;
+
+procedure TLazEditTextAttributeModifierCollection.SetItem(Index: Integer;
+  Value: TLazEditTextAttributeModifierCollectionItem);
+begin
+  inherited SetItem(Index, Value);
+end;
+
+procedure TLazEditTextAttributeModifierCollection.ResetNames;
+var
+  i: Integer;
+begin
+  for i := 0 to Count - 1 do begin
+    Attribs[i].SetCaption(Format(FBaseName, [i]));
+    Attribs[i].StoredName := Format(FBaseStoredName, [i]);
+  end;
+end;
+
+procedure TLazEditTextAttributeModifierCollection.Notify(Item: TCollectionItem;
+  Action: TCollectionNotification);
+var
+  TheItem: TLazEditTextAttributeModifierCollectionItem absolute Item;
+  i: Integer;
+begin
+  inherited Notify(Item, Action);
+  case Action of
+    cnAdded: begin
+      FOwner.AddAttribute(TheItem.Attribute);
+      TheItem.Attribute.OnChange := @DoAttribChaged;
+    end;
+    cnExtracting, cnDeleting: begin
+      FOwner.RemoveAttribute(TheItem.Attribute);
+    end;
+  end;
+  ResetNames;
+end;
+
+constructor TLazEditTextAttributeModifierCollection.Create(AnOwner: TLazEditCustomHighlighter);
+begin
+  FOwner := AnOwner;
+  inherited Create(TLazEditTextAttributeModifierCollectionItem);
+end;
+
+function TLazEditTextAttributeModifierCollection.Add: TLazEditTextAttributeModifierCollectionItem;
+begin
+  Result := TLazEditTextAttributeModifierCollectionItem(inherited Add);
 end;
 
 end.

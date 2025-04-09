@@ -603,7 +603,7 @@ type
     FCommentAnsiAttri: TSynHighlighterAttributesModifier;
     FCommentCurlyAttri: TSynHighlighterAttributesModifier;
     FCommentSlashAttri: TSynHighlighterAttributesModifier;
-    FNestedBracketAttribs: TSynHighlighterAttributesModifierCollection;
+    FNestedBracketAttribs: TLazEditTextAttributeModifierCollection;
     FNestedBracketMergedMarkup: TSynSelectedColorMergeResult;
     FHighNestedBracketAttrib: integer;
     FSynCustomTokens: array of TSynPasSynCustomToken;
@@ -706,7 +706,7 @@ type
     procedure SetDeclaredValueAttributeMachesStringNum(AValue: Boolean);
     procedure SetDeclaredValueAttributeMode(AValue: TSynPasTypeAttributeMode);
     procedure SetExtendedKeywordsMode(const AValue: Boolean);
-    procedure SetNestedBracketAttribs(AValue: TSynHighlighterAttributesModifierCollection);
+    procedure SetNestedBracketAttribs(AValue: TLazEditTextAttributeModifierCollection);
     procedure SetStringKeywordMode(const AValue: TSynPasStringMode);
     procedure SetStringMultilineMode(const AValue: TSynPasMultilineStringModes);
     procedure SetNestedComments(AValue: boolean); deprecated;
@@ -1067,7 +1067,7 @@ type
     property PasDocKeyWord: TSynHighlighterAttributesModifier read fPasDocKeyWordAttri write fPasDocKeyWordAttri;
     property PasDocSymbol: TSynHighlighterAttributesModifier read fPasDocSymbolAttri write fPasDocSymbolAttri;
     property PasDocUnknown: TSynHighlighterAttributesModifier read fPasDocUnknownAttr write fPasDocUnknownAttr;
-    property NestedBracketAttribs: TSynHighlighterAttributesModifierCollection read FNestedBracketAttribs write SetNestedBracketAttribs;
+    property NestedBracketAttribs: TLazEditTextAttributeModifierCollection read FNestedBracketAttribs write SetNestedBracketAttribs;
   end;
 
   { TSynFreePascalSyn }
@@ -1487,7 +1487,7 @@ begin
   DefHighlightChange(self);
 end;
 
-procedure TSynPasSyn.SetNestedBracketAttribs(AValue: TSynHighlighterAttributesModifierCollection);
+procedure TSynPasSyn.SetNestedBracketAttribs(AValue: TLazEditTextAttributeModifierCollection);
 begin
   if FNestedBracketAttribs = AValue then Exit;
   FNestedBracketAttribs.Assign(AValue);
@@ -4020,7 +4020,7 @@ begin
   FCustomTokenMergedMarkup := TSynSelectedColorMergeResult.Create;
   FCustomCommentTokenMergedMarkup := TSynSelectedColorMergeResult.Create;
 
-  FNestedBracketAttribs := TSynHighlighterAttributesModifierCollection.Create(Self);
+  FNestedBracketAttribs := TLazEditTextAttributeModifierCollection.Create(Self);
   FNestedBracketAttribs.OnAttributeChange := @DefHighlightChange;
   FNestedBracketMergedMarkup := TSynSelectedColorMergeResult.Create;
 

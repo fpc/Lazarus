@@ -97,53 +97,6 @@ type
   end;
 
 
-  TSynCustomHighlighter = class;
-
-  { TSynHighlighterAttributesModifierCollectionItem }
-
-  TSynHighlighterAttributesModifierCollectionItem = class(TCollectionItem)
-  private
-    FAttribute: TSynHighlighterAttributesModifier;
-    procedure SetAttribute(AValue: TSynHighlighterAttributesModifier);
-  public
-    constructor Create(ACollection: TCollection); override;
-    destructor Destroy; override;
-  published
-    property Attribute: TSynHighlighterAttributesModifier read FAttribute write SetAttribute;
-  end;
-
-  { TSynHighlighterAttributesModifierCollection }
-
-  TSynHighlighterAttributesModifierCollection = class(TCollection)
-  private
-    FBaseName: string;
-    FBaseStoredName: string;
-    FOnAttributeChange: TNotifyEvent;
-    FOwner: TSynCustomHighlighter;
-    procedure DoAttribChaged(Sender: TObject);
-    function GetAttrib(Index: Integer): TSynHighlighterAttributesModifier;
-    function GetItem(Index: Integer): TSynHighlighterAttributesModifierCollectionItem;
-    procedure SetAttribs(Index: Integer; AValue: TSynHighlighterAttributesModifier);
-    procedure SetBaseName(AValue: string);
-    procedure SetBaseStoredName(AValue: string);
-    procedure SetItem(Index: Integer; Value: TSynHighlighterAttributesModifierCollectionItem);
-    procedure ResetNames;
-  protected
-    procedure Notify(Item: TCollectionItem; Action: TCollectionNotification); override;
-  public
-    constructor Create(AnOwner: TSynCustomHighlighter);
-    function Add: TSynHighlighterAttributesModifierCollectionItem;
-  public
-    property BaseName: string read FBaseName write SetBaseName;
-    property BaseStoredName: string read FBaseStoredName write SetBaseStoredName;
-
-    property Items[Index: Integer]: TSynHighlighterAttributesModifierCollectionItem read GetItem
-      write SetItem; default;
-    property Attribs[Index: Integer]: TSynHighlighterAttributesModifier read GetAttrib
-      write SetAttribs;
-    property OnAttributeChange: TNotifyEvent read FOnAttributeChange write FOnAttributeChange;
-  end;
-
   TSynHighlighterCapability = (
     hcUserSettings, // supports Enum/UseUserSettings
     hcRegistry,     // supports LoadFrom/SaveToRegistry
@@ -222,7 +175,7 @@ type
 
   { TSynCustomHighlighter }
 
-  TSynCustomHighlighter = class(TComponent)
+  TSynCustomHighlighter = class(TLazEditCustomHighlighter)
   private
     fAttributes: TObjectList;
     fAttrChangeHooks: TMethodList;
@@ -247,7 +200,8 @@ type
     fUpdateChange: boolean;                                                     //mh 2001-09-13
     FIsInNextToEOL: Boolean;
     function GetInstanceLanguageName: string; virtual;
-    procedure AddAttribute(AAttrib: TSynHighlighterAttributes);
+    procedure AddAttribute(AAttrib: TSynHighlighterAttributes); override;
+    procedure RemoveAttribute(AAttrib: TLazEditTextAttribute); override;
     procedure FreeHighlighterAttributes;                                        //mh 2001-09-13
     function GetAttribCount: integer; virtual;
     function GetAttribute(idx: integer): TSynHighlighterAttributes; virtual;
@@ -405,119 +359,6 @@ implementation
 
 const
   IDLE_SCAN_CHUNK_SIZE = 2500;
-
-{ TSynHighlighterAttributesModifierCollectionItem }
-
-procedure TSynHighlighterAttributesModifierCollectionItem.SetAttribute(
-  AValue: TSynHighlighterAttributesModifier);
-begin
-  FAttribute.Assign(AValue);
-end;
-
-constructor TSynHighlighterAttributesModifierCollectionItem.Create(ACollection: TCollection);
-begin
-  FAttribute := TSynHighlighterAttributesModifier.Create('', '');
-  inherited Create(ACollection);
-end;
-
-destructor TSynHighlighterAttributesModifierCollectionItem.Destroy;
-begin
-  inherited Destroy;
-  FAttribute.Destroy;
-end;
-
-{ TSynHighlighterAttributesModifierCollection }
-
-function TSynHighlighterAttributesModifierCollection.GetItem(Index: Integer
-  ): TSynHighlighterAttributesModifierCollectionItem;
-begin
-  Result := TSynHighlighterAttributesModifierCollectionItem(inherited GetItem(Index));
-end;
-
-function TSynHighlighterAttributesModifierCollection.GetAttrib(Index: Integer
-  ): TSynHighlighterAttributesModifier;
-begin
-  Result := Items[Index].Attribute;
-end;
-
-procedure TSynHighlighterAttributesModifierCollection.DoAttribChaged(Sender: TObject);
-begin
-  if FOnAttributeChange <> nil then
-    FOnAttributeChange(Sender);
-end;
-
-procedure TSynHighlighterAttributesModifierCollection.SetAttribs(Index: Integer;
-  AValue: TSynHighlighterAttributesModifier);
-begin
-  Items[Index].Attribute := AValue;
-end;
-
-procedure TSynHighlighterAttributesModifierCollection.SetBaseName(AValue: string);
-begin
-  if FBaseName = AValue then Exit;
-  FBaseName := AValue;
-  if Format(FBaseName, [9]) = FBaseName then
-    FBaseName := FBaseName + ' %d';
-
-  ResetNames;
-end;
-
-procedure TSynHighlighterAttributesModifierCollection.SetBaseStoredName(AValue: string);
-begin
-  if FBaseStoredName = AValue then Exit;
-  FBaseStoredName := AValue;
-  if Format(FBaseStoredName, [9]) = FBaseStoredName then
-    FBaseStoredName := FBaseStoredName + '_%d';
-
-  ResetNames;
-end;
-
-procedure TSynHighlighterAttributesModifierCollection.SetItem(Index: Integer;
-  Value: TSynHighlighterAttributesModifierCollectionItem);
-begin
-  inherited SetItem(Index, Value);
-end;
-
-procedure TSynHighlighterAttributesModifierCollection.ResetNames;
-var
-  i: Integer;
-begin
-  for i := 0 to Count - 1 do begin
-    Attribs[i].SetCaption(Format(FBaseName, [i]));
-    Attribs[i].StoredName := Format(FBaseStoredName, [i]);
-  end;
-end;
-
-procedure TSynHighlighterAttributesModifierCollection.Notify(Item: TCollectionItem;
-  Action: TCollectionNotification);
-var
-  TheItem: TSynHighlighterAttributesModifierCollectionItem absolute Item;
-  i: Integer;
-begin
-  inherited Notify(Item, Action);
-  case Action of
-    cnAdded: begin
-      FOwner.AddAttribute(TheItem.Attribute);
-      TheItem.Attribute.OnChange := @DoAttribChaged;
-    end;
-    cnExtracting, cnDeleting: begin
-      i := FOwner.fAttributes.IndexOf(TheItem.Attribute);
-      if i >= 0 then FOwner.fAttributes.Delete(i);
-    end;
-  end;
-  ResetNames;
-end;
-
-constructor TSynHighlighterAttributesModifierCollection.Create(AnOwner: TSynCustomHighlighter);
-begin
-  FOwner := AnOwner;
-  inherited Create(TSynHighlighterAttributesModifierCollectionItem);
-end;
-
-function TSynHighlighterAttributesModifierCollection.Add: TSynHighlighterAttributesModifierCollectionItem;
-begin
-  Result := TSynHighlighterAttributesModifierCollectionItem(inherited Add);
-end;
 
 {$IFDEF _Gp_MustEnhanceRegistry}
   function IsRelative(const Value: string): Boolean;
@@ -1080,6 +921,11 @@ end;
 procedure TSynCustomHighlighter.AddAttribute(AAttrib: TSynHighlighterAttributes);
 begin
   fAttributes.Add(AAttrib);
+end;
+
+procedure TSynCustomHighlighter.RemoveAttribute(AAttrib: TLazEditTextAttribute);
+begin
+  fAttributes.Remove(AAttrib);
 end;
 
 function TSynCustomHighlighter.AddSpecialAttribute(const aCaption: string;
