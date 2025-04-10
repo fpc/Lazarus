@@ -420,7 +420,7 @@ begin
                     aTop, Items[Index]);
     UEntry := TViewUnitsEntry(Items.Objects[Index]);
     if vufOpen in UEntry.Flags then        // already open indicator
-      Canvas.TextRect(ARect, ARect.Right - Scale96ToFont(18), aTop, '🟢'); // • ● 🟢
+      Canvas.TextRect(ARect, ARect.Right - Scale96ToFont(8), aTop, '•'); // • ● 🟢
     // Update the initial Selected state here.
     if FFirstDraw then begin
       if vufSelected in UEntry.Flags then
