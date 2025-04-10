@@ -640,32 +640,32 @@ end;
 
 function TLazEditTextAttribute.GetColorStored(AnIndex: TLazTextAttributeColor): Boolean;
 begin
-  Result := FColors[AnIndex] = FDefaultColors[AnIndex];
+  Result := FColors[AnIndex] <> FDefaultColors[AnIndex];
 end;
 
 function TLazEditTextAttribute.GetPriorityStored(AnIndex: TLazTextAttributeColor): Boolean;
 begin
-  Result := FPriority[AnIndex] = FDefaultPriority[AnIndex];
+  Result := FPriority[AnIndex] <> FDefaultPriority[AnIndex];
 end;
 
 function TLazEditTextAttribute.GetFrameStyleStored: Boolean;
 begin
-  Result := FFrameStyle = FDefaultFrameStyle;
+  Result := FFrameStyle <> FDefaultFrameStyle;
 end;
 
 function TLazEditTextAttribute.GetFrameEdgesStored: Boolean;
 begin
-  Result := FFrameEdges = FDefaultFrameEdges;
+  Result := FFrameEdges <> FDefaultFrameEdges;
 end;
 
 function TLazEditTextAttribute.GetStyleStored: Boolean;
 begin
-  Result := FStyle = FDefaultStyle;
+  Result := FStyle <> FDefaultStyle;
 end;
 
 function TLazEditTextAttribute.GetStylePriorityStored(AnIndex: TFontStyle): Boolean;
 begin
-  Result := FStylePriority[AnIndex] = FDefaultStylePriority[AnIndex];
+  Result := FStylePriority[AnIndex] <> FDefaultStylePriority[AnIndex];
 end;
 
 procedure TLazEditTextAttribute.SetCaption(ACaption: String);
@@ -803,12 +803,12 @@ end;
 
 function TLazEditTextAttributeModifier.GetAlphaStored(AnIndex: TLazTextAttributeColor): Boolean;
 begin
-  Result := FAlpha[AnIndex] = FDefaultAlpha[AnIndex];
+  Result := FAlpha[AnIndex] <> FDefaultAlpha[AnIndex];
 end;
 
 function TLazEditTextAttributeModifier.GetStyleMaskStored: Boolean;
 begin
-  Result := FStyleMask = FDefaultStyleMask;
+  Result := FStyleMask <> FDefaultStyleMask;
 end;
 
 procedure TLazEditTextAttributeModifier.DoClearThis;
