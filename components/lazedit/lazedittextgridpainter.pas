@@ -218,7 +218,7 @@ begin
   Result := Integer(AFontStyles);
 end;
 
-procedure GetCharMetrics(DC: HDC; out AWidth, AHeight: Integer; ANeedEto: Boolean);
+procedure GetCharMetrics(DC: HDC; out AWidth, AHeight: Integer; out ANeedEto: Boolean);
   Procedure DebugFont(s: String; a: array of const); inline;
   begin
     DebugLn(DBG_FONTMETRIC, DBG_FontName + Format(s, a));
