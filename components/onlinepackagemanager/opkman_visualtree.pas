@@ -1547,7 +1547,7 @@ begin
     begin
       if ((Options.DaysToShowNewPackages > 0) and (DaysBetween(Now, Data^.RepositoryDate) <= Options.DaysToShowNewPackages)) and
          ((not Options.ShowRegularIcons) or ((Options.ShowRegularIcons) and (Data^.InstallState = 0))) and (Data^.DataType = 1) then
-        CellText := '- ' + FormatDateTime('YYYY.MM.DD', Data^.RepositoryDate)
+        CellText := '- ' + DateToStr(Data^.RepositoryDate)
       else
         CellText := '';
     end
@@ -1682,7 +1682,7 @@ begin
        13: CellText := Data^.RepositoryFileName;
        14: CellText := FormatSize(Data^.RepositoryFileSize);
        15: CellText := Data^.RepositoryFileHash;
-       16: CellText := FormatDateTime('YYYY.MM.DD', Data^.RepositoryDate);
+       16: CellText := DateToStr(Data^.RepositoryDate);
        17: CellText := Data^.HomePageURL;
        18: CellText := Data^.DownloadURL;
        19: CellText := GetDisplayString(Data^.CommunityDescription);
@@ -2073,7 +2073,7 @@ begin
     13: HintText := Data^.RepositoryFileName;
     14: HintText := FormatSize(Data^.RepositoryFileSize);
     15: HintText := Data^.RepositoryFileHash;
-    16: HintText := FormatDateTime('YYYY.MM.DD', Data^.RepositoryDate);
+    16: HintText := DateToStr(Data^.RepositoryDate);
     17: HintText := Data^.HomePageURL;
     18: HintText := Data^.DownloadURL;
     19: HintText := Data^.CommunityDescription;

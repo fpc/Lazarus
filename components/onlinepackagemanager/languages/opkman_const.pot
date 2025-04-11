@@ -1070,107 +1070,138 @@ msgid "Cryptography"
 msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory10
-msgid "Indicators and Gauges"
+msgctxt "opkman_const.rsmainfrm_vsttext_packagecategory10"
+msgid "Grids"
 msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory11
-msgid "Labels"
+msgctxt "opkman_const.rsmainfrm_vsttext_packagecategory11"
+msgid "Indicators and Gauges"
 msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory12
-msgid "LazIDEPlugins"
+msgctxt "opkman_const.rsmainfrm_vsttext_packagecategory12"
+msgid "Labels"
 msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory13
-msgid "List and Combo Boxes"
+msgctxt "opkman_const.rsmainfrm_vsttext_packagecategory13"
+msgid "LazIDEPlugins"
 msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory14
-msgid "ListViews and TreeViews"
+msgctxt "opkman_const.rsmainfrm_vsttext_packagecategory14"
+msgid "List and Combo Boxes"
 msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory15
-msgid "Menus"
+msgctxt "opkman_const.rsmainfrm_vsttext_packagecategory15"
+msgid "ListViews and TreeViews"
 msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory16
-msgid "Multimedia"
+msgctxt "opkman_const.rsmainfrm_vsttext_packagecategory16"
+msgid "Menus"
 msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory17
-msgid "Networking"
+msgctxt "opkman_const.rsmainfrm_vsttext_packagecategory17"
+msgid "Multimedia"
 msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory18
-msgid "Panels"
+msgctxt "opkman_const.rsmainfrm_vsttext_packagecategory18"
+msgid "Networking"
 msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory19
-msgid "Reporting"
+msgctxt "opkman_const.rsmainfrm_vsttext_packagecategory19"
+msgid "Panels"
 msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory2
-msgid "DataControls"
+msgctxt "opkman_const.rsmainfrm_vsttext_packagecategory2"
+msgid "Database"
 msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory20
-msgid "Science"
+msgctxt "opkman_const.rsmainfrm_vsttext_packagecategory20"
+msgid "Reporting"
 msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory21
-msgid "Security"
+msgctxt "opkman_const.rsmainfrm_vsttext_packagecategory21"
+msgid "Science"
 msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory22
-msgid "Shapes"
+msgctxt "opkman_const.rsmainfrm_vsttext_packagecategory22"
+msgid "Security"
 msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory23
-msgid "Sizers and Scrollers"
+msgctxt "opkman_const.rsmainfrm_vsttext_packagecategory23"
+msgid "Shapes"
 msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory24
-msgid "System"
+msgctxt "opkman_const.rsmainfrm_vsttext_packagecategory24"
+msgid "Sizers and Scrollers"
 msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory25
-msgid "Tabbed Components"
+msgctxt "opkman_const.rsmainfrm_vsttext_packagecategory25"
+msgid "System"
 msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory26
-msgid "Other"
+msgctxt "opkman_const.rsmainfrm_vsttext_packagecategory26"
+msgid "Tabbed Components"
 msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory27
+msgctxt "opkman_const.rsmainfrm_vsttext_packagecategory27"
+msgid "Other"
+msgstr ""
+
+#: opkman_const.rsmainfrm_vsttext_packagecategory28
+msgctxt "opkman_const.rsmainfrm_vsttext_packagecategory28"
 msgid "Games and Game Engines"
 msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory3
-msgid "Date and Time"
+msgctxt "opkman_const.rsmainfrm_vsttext_packagecategory3"
+msgid "DataControls"
 msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory4
-msgid "Dialogs"
+msgctxt "opkman_const.rsmainfrm_vsttext_packagecategory4"
+msgid "Date and Time"
 msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory5
-msgid "Edit and Memos"
+msgctxt "opkman_const.rsmainfrm_vsttext_packagecategory5"
+msgid "Dialogs"
 msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory6
-msgid "Files and Drives"
+msgctxt "opkman_const.rsmainfrm_vsttext_packagecategory6"
+msgid "Edit and Memos"
 msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory7
-msgid "GUIContainers"
+msgctxt "opkman_const.rsmainfrm_vsttext_packagecategory7"
+msgid "Files and Drives"
 msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory8
-msgid "Graphics"
+msgctxt "opkman_const.rsmainfrm_vsttext_packagecategory8"
+msgid "GUIContainers"
 msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory9
-msgid "Grids"
+msgctxt "opkman_const.rsmainfrm_vsttext_packagecategory9"
+msgid "Graphics"
 msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_packageinfo

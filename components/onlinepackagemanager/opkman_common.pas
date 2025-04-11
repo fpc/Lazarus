@@ -50,7 +50,7 @@ type
   end;
 
 const
-  MaxCategories = 28;
+  MaxCategories = 29;
   Categories: array[0..MaxCategories - 1] of String = (
     rsMainFrm_VSTText_PackageCategory0,
     rsMainFrm_VSTText_PackageCategory1,
@@ -79,11 +79,13 @@ const
     rsMainFrm_VSTText_PackageCategory24,
     rsMainFrm_VSTText_PackageCategory25,
     rsMainFrm_VSTText_PackageCategory26,
-    rsMainFrm_VSTText_PackageCategory27);
+    rsMainFrm_VSTText_PackageCategory27,
+    rsMainFrm_VSTText_PackageCategory28);
   //needed for localized filter, since the JSON contains only english text
   CategoriesEng: array[0..MaxCategories - 1] of String = (
     'Charts and Graphs',
     'Cryptography',
+    'Database',
     'DataControls',
     'Date and Time',
     'Dialogs',
@@ -111,12 +113,13 @@ const
     'Other',
     'Games and Game Engines');
 
-  MaxLazVersions = 7;
+  MaxLazVersions = 10;
   LazVersions: array [0..MaxLazVersions - 1] of String = (
-    '2.2.0', '2.2.4',                                       // order from old to young
-    '3.0.0', '3.2.0', '3.4.0', '3.6.0',
+    '2.0.x', '2.2.0', '2.2.4',                                       // order from old to young
+    '3.0.0', '3.2.0', '3.4.0', '3.6.0', '3.8.0',
+    '4.0.0',
     'Trunk');
-  LazDefVersions = '3.6.0, 3.4.0, 3.2.0, 3.0.0';
+  LazDefVersions = '4.0.0, 3.8.0, 3.6.0, 3.4.0, 3.2.0, 3.0.0';
   LazTrunk = '4.99.0';
 
   MaxFPCVersions = 7;
