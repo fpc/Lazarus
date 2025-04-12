@@ -1985,15 +1985,17 @@ procedure TTestHighlighterPas.TestContextForDeprecated;
                s+'= array [1..2] of '+s+' '+s+';',  // nameDEPRECATED=array of typeDEPRECATED deprecated;
                s+'= set of '+s+' '+s+';',    // nameDEPRECATED=set of typeDEPRECATED deprecated;
                s+'= class of '+s+' '+s+';',  // nameDEPRECATED=class of typeDEPRECATED deprecated;
-               s+'= procedure '+s+';',
-               s+'= procedure of object '+s+';',
-               s+'= procedure(a:'+s+') '+s+';',
-               s+'= procedure(a:'+s+') of object '+s+';',
-               s+'= function:'+s+' '+s+';',
-               s+'= function:'+s+' of object '+s+';',
-               s+'= function(a:'+s+'):'+s+' '+s+';',
-               s+'= function(a:'+s+'):'+s+' of object '+s+';',
-               s+'= record end '+s+';',  // nameDEPRECATED=packed record deprecated;
+               s+'= procedure '+s+';',              // 8
+               'f= procedure; '+s+';',              // 9
+               'f= procedure '+s+';'+s+';',         // 10
+               'f= procedure of object '+s+';',
+               'f= procedure(a:'+s+') '+s+';',
+               'f= procedure(a:'+s+') of object '+s+';',
+               'f= function:'+s+' '+s+';',
+               'f= function:'+s+' of object '+s+';',
+               'f= function(a:'+s+'):'+s+' '+s+';',
+               'f= function(a:'+s+'):'+s+' of object '+s+';',
+               'f= record end '+s+';',  // nameDEPRECATED=packed record deprecated;
                s+'= packed record end '+s+';',  // nameDEPRECATED=packed record deprecated;
             'end',
             ''
@@ -2010,35 +2012,41 @@ procedure TTestHighlighterPas.TestContextForDeprecated;
         [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey {"of"}, tkSpace, tkIdentifier, tkSpace, tkModifier {the one and only}, tkSymbol]);
       CheckTokensForLine('class of', 7,
         [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey {"of"}, tkSpace, tkIdentifier, tkSpace, tkModifier {the one and only}, tkSymbol]);
+
       CheckTokensForLine('procedure ', 8,
         [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkModifier {the one and only}, tkSymbol]);
-      CheckTokensForLine('procedure of object ', 9,
+      CheckTokensForLine('procedure ', 9,
+        [tkIdentifier, tkSymbol, tkSpace, tkKey, TK_Semi, tkSpace, tkModifier {the one and only}, tkSymbol]);
+      CheckTokensForLine('procedure ', 10,
+        [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkModifier, TK_Semi, tkModifier, tkSymbol]);
+
+      CheckTokensForLine('procedure of object ', 11,
         [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey {"of"}, tkSpace, tkKey, tkSpace, tkModifier {the one and only}, tkSymbol]);
-      CheckTokensForLine('procedure(a:s) ', 10,
+      CheckTokensForLine('procedure(a:s) ', 12,
         [tkIdentifier, tkSymbol, tkSpace, tkKey,
          TK_Bracket, tkIdentifier, TK_Colon, tkIdentifier, TK_Bracket,
          tkSpace, tkModifier {the one and only}, tkSymbol]);
-      CheckTokensForLine('procedure(a:s) of object ', 11,
+      CheckTokensForLine('procedure(a:s) of object ', 13,
         [tkIdentifier, tkSymbol, tkSpace, tkKey,
          TK_Bracket, tkIdentifier, TK_Colon, tkIdentifier, TK_Bracket,
          tkSpace, tkKey {"of"}, tkSpace, tkKey, tkSpace, tkModifier {the one and only}, tkSymbol]);
-      CheckTokensForLine('function', 12,
+      CheckTokensForLine('function', 14,
         [tkIdentifier, tkSymbol, tkSpace, tkKey, TK_Colon, tkIdentifier, tkSpace, tkModifier {the one and only}, tkSymbol]);
-      CheckTokensForLine('function of object ', 13,
+      CheckTokensForLine('function of object ', 15,
         [tkIdentifier, tkSymbol, tkSpace, tkKey, TK_Colon, tkIdentifier, tkSpace, tkKey {"of"}, tkSpace, tkKey, tkSpace, tkModifier {the one and only}, tkSymbol]);
-      CheckTokensForLine('function(a:s)', 14,
+      CheckTokensForLine('function(a:s)', 16,
         [tkIdentifier, tkSymbol, tkSpace, tkKey,
           TK_Bracket, tkIdentifier, TK_Colon, tkIdentifier, TK_Bracket,
           TK_Colon, tkIdentifier,
           tkSpace, tkModifier {the one and only}, tkSymbol]);
-      CheckTokensForLine('function(a:s) of object ', 15,
+      CheckTokensForLine('function(a:s) of object ', 17,
         [tkIdentifier, tkSymbol, tkSpace, tkKey,
           TK_Bracket, tkIdentifier, TK_Colon, tkIdentifier, TK_Bracket,
           TK_Colon, tkIdentifier,
           tkSpace, tkKey {"of"}, tkSpace, tkKey, tkSpace, tkModifier {the one and only}, tkSymbol]);
-      CheckTokensForLine('record end', 16,
+      CheckTokensForLine('record end', 18,
         [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey {"end"}, tkSpace, tkModifier {the one and only}, tkSymbol]);
-      CheckTokensForLine('packed record end', 17,
+      CheckTokensForLine('packed record end', 19,
         [tkIdentifier, tkSymbol, tkSpace, tkKey, tkSpace, tkKey, tkSpace, tkKey {"end"}, tkSpace, tkModifier {the one and only}, tkSymbol]);
 
       if (struct = 'record') or (struct = 'byte;') then

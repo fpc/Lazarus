@@ -2770,23 +2770,31 @@ begin
 end;
 
 function TSynPasSyn.Func85: TtkTokenKind;
+var
+  tfb: TPascalCodeFoldBlockType;
 begin
+  tfb := TopPascalCodeFoldBlockType;
   if (PasCodeFoldRange.BracketNestLevel = 0) and
      (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader] = [rsWasInProcHeader]) and
-     (TopPascalCodeFoldBlockType in ProcModifierAllowedNoVar-[cfbtClass, cfbtClassSection]) and
+     (tfb in ProcModifierAllowedNoVar-[cfbtClass, cfbtClassSection]) and
      KeyComp('Forward')
   then begin
     Result := tkModifier;
-    if TopPascalCodeFoldBlockType = cfbtProcedure then begin
+    if tfb = cfbtProcedure then begin
       EndPascalCodeFoldBlock(True);
     end;
   end
   else
-  if KeyComp('Library') then begin
-    fRange := fRange - [rsInterface] + [rsImplementation];
-    if TopPascalCodeFoldBlockType=cfbtNone then
-      StartPascalCodeFoldBlock(cfbtProgram);
-    Result := tkKey
+  if KeyCompU('LIBRARY') then begin
+    if IsHintModifier(tfb) then begin
+      Result := DoHintModifier;
+    end
+    else begin
+      fRange := fRange - [rsInterface] + [rsImplementation];
+      if tfb=cfbtNone then
+        StartPascalCodeFoldBlock(cfbtProgram);
+      Result := tkKey;
+    end;
   end
   else
     Result := tkIdentifier;
@@ -3637,15 +3645,28 @@ begin
      (PasCodeFoldRange.BracketNestLevel = 0) and
      ( ( (tfb in cfbtVarConstType) and
          (FTokenState <> tsAfterAbsolute) and
-         (fRange * [rsVarTypeInSpecification, rsAfterEqualOrColon] = [rsVarTypeInSpecification]) ) or
+         ( (fRange * [rsVarTypeInSpecification, rsAfterEqualOrColon] = [rsVarTypeInSpecification]) or
+           ( (tfb in [cfbtTypeBlock, cfbtLocalTypeBlock]) and
+             (rsWasInProcHeader in fRange) and
+             (FTokenState in [tsAtBeginOfStatement])
+           )
+         )
+       ) or
        ( (tfb in [cfbtClass, cfbtClassSection, cfbtRecord, cfbtRecordCase, cfbtRecordCaseSection, cfbtClassConstBlock, cfbtClassTypeBlock]) and
          ( (fRange * [rsAfterClassMembers, rsInProcHeader] = [rsAfterClassMembers]) or
-           (fRange * [rsAfterClassMembers, rsAfterEqualOrColon, rsVarTypeInSpecification] = [rsVarTypeInSpecification])
-       ) ) or
+           (fRange * [rsAfterClassMembers, rsAfterEqualOrColon, rsVarTypeInSpecification] = [rsVarTypeInSpecification]) or
+           ( (tfb = cfbtClassTypeBlock) and
+             (rsWasInProcHeader in fRange) and
+             (FTokenState in [tsAtBeginOfStatement])
+           )
+       )
+       ) or
        ( (tfb in [cfbtUnitSection, cfbtProgram, cfbtProcedure]) and
-         (fRange * [rsInProcHeader] = []) ) or
+         (fRange * [rsInProcHeader] = [])
+       ) or
        ( (tfb in [cfbtUnit, cfbtNone]) and
-         (fRange * [rsInProcHeader] = []) and (FTokenState = tsAfterProcName) )
+         (fRange * [rsInProcHeader] = []) and (FTokenState = tsAfterProcName)
+       )
      )
   then
     Result := True
