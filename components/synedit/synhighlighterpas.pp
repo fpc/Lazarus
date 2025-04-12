@@ -2427,8 +2427,8 @@ var
   tfb: TPascalCodeFoldBlockType;
 begin
   if KeyComp('Public') then begin
-    tfb := CloseFolds(TopPascalCodeFoldBlockType, [cfbtClassConstBlock, cfbtClassTypeBlock]);
-    if (tfb in [cfbtClass, cfbtClassSection, cfbtRecord]) and
+    tfb := TopPascalCodeFoldBlockType;
+    if (tfb in [cfbtClass, cfbtClassSection, cfbtRecord, cfbtClassConstBlock, cfbtClassTypeBlock]) and
        (PasCodeFoldRange.BracketNestLevel = 0) and
        (fRange * [rsInProcHeader, rsAfterEqualOrColon] = []) and
        ( (FTokenState in [tsAtBeginOfStatement, tsAfterVarConstType, tsAfterClass, tsAfterTypedConst]) or (fRange * [rsInClassHeader, rsInObjcProtocol, rsAfterIdentifierOrValue] <> []) )
@@ -2436,6 +2436,7 @@ begin
       Result := tkKey;
       FNextTokenState := tsAtBeginOfStatement;
       fRange := fRange - [rsAfterClassMembers, rsVarTypeInSpecification];
+      tfb := CloseFolds(tfb, [cfbtClassConstBlock, cfbtClassTypeBlock]);
       if (tfb=cfbtClassSection) then
         EndPascalCodeFoldBlockLastLine;
       StartPascalCodeFoldBlock(cfbtClassSection);
@@ -5493,7 +5494,7 @@ begin
             if rsAfterEqual in fRange then begin
               if (rsAfterEqual in FOldRange) then begin
                 case tfb of
-                  cfbtTypeBlock, cfbtLocalTypeBlock:
+                  cfbtTypeBlock, cfbtLocalTypeBlock, cfbtClassTypeBlock:
                     if (reaDeclType in FRequiredStates) and
                        CanApplyExtendedDeclarationAttribute(FDeclaredTypeAttributeMode)
                     then
@@ -5516,7 +5517,7 @@ begin
             else
             if FTokenID = tkIdentifier then
               case tfb of
-                cfbtTypeBlock, cfbtLocalTypeBlock:
+                cfbtTypeBlock, cfbtLocalTypeBlock, cfbtClassTypeBlock:
                   if (reaDeclTypeName in FRequiredStates) then
                     FTokenTypeDeclExtraAttrib := eaDeclTypeName;
                 otherwise
