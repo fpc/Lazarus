@@ -768,28 +768,49 @@ begin
 
     EnableFolds(AFolds);
     SetLines
-      ([ 'Unit A; interface',
+      ([ 'Unit A; interface', // 0
          'type',
          'cdecl=function(cdecl:cdecl):cdecl;cdecl;',
          'type',
          'Stdcall=class(cdecl)',
-         'function Stdcall(Stdcall:Stdcall):Stdcall;Stdcall;deprecated;',
+         'function Stdcall(Stdcall:Stdcall):Stdcall;Stdcall;deprecated;',    // 5
          'property cdecl:cdecl read cdecl;',
          'end;',
          '',
          'cdecl=record',
-         'function cdecl(cdecl:cdecl):cdecl;cdecl;deprecated;',
+         'function cdecl(cdecl:cdecl):cdecl;cdecl;deprecated;',    // 10
          'end;',
          '',
          'var',
          'Stdcall:function(cdecl:cdecl):cdecl;cdecl;',
-         'var',
+         'var',                                // 15
          'cdecl:cdecl;',
          '',
          'function Stdcall(cdecl:cdecl):cdecl;cdecl;',
          'var',
-         'cdecl:cdecl deprecated;',
+         'cdecl:cdecl deprecated;',            // 20
          'function Stdcall(cdecl:cdecl):cdecl;cdecl;deprecated;',
+         '',
+         // in []
+         'function Stdcall:cdecl;[cdecl];', // 23
+         'procedure Stdcall; [cdecl];',
+         '',
+
+         // no semicolon
+         'function Stdcall:cdecl cdecl;',   // 26
+         'function Stdcall():cdecl cdecl;',
+         'procedure Stdcall cdecl;',
+         'procedure Stdcall() cdecl;',
+         'function Stdcall:cdecl [cdecl];',  // not a modifire / not currently
+         '',
+         // anonym
+         'implementation', // 32
+         'procedure foo cdecl;',
+         'begin',
+         '  procedure() cdecl begin end();',
+         '  procedure() [cdecl] begin end();',
+         'end',
+         '',
          ''
       ]);
 
@@ -818,7 +839,7 @@ begin
       [ tkIdentifier, TK_Equal, tkKey  // Stdcall=record
       ]);
 
-    CheckTokensForLine('funciton in recorld',  10,
+    CheckTokensForLine('funciton in record',  10,
       [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  // function cdecl
         TK_Bracket, tkIdentifier, TK_Comma, tkIdentifier, TK_Bracket,  // (cdecl:cdecl)
         TK_Colon, tkIdentifier, TK_Semi, tkModifier, TK_Semi, // :cdecl;cdecl;
@@ -852,6 +873,55 @@ begin
         TK_Colon, tkIdentifier,TK_Semi, // :cdecl;
         tkModifier, TK_Semi, // cdecl;
         tkModifier, TK_Semi //deprecated;
+      ]);
+
+
+     CheckTokensForLine('function Stdcall:cdecl;[cdecl];', 23,
+      [ tkKey, tkSpace, tkIdentifier + FAttrProcName, TK_Colon, tkIdentifier, TK_Semi,
+        TK_Bracket, tkModifier, TK_Bracket, TK_Semi
+      ]);
+     CheckTokensForLine('procedure Stdcall; [cdecl];', 24,
+      [ tkKey, tkSpace, tkIdentifier + FAttrProcName, TK_Colon, tkSpace,
+        TK_Bracket, tkModifier, TK_Bracket, TK_Semi
+      ]);
+
+     CheckTokensForLine('function Stdcall:cdecl cdecl;', 26,
+      [ tkKey, tkSpace, tkIdentifier + FAttrProcName, TK_Colon, tkIdentifier, tkSpace,
+        tkModifier, TK_Semi
+      ]);
+     CheckTokensForLine('function Stdcall():cdecl cdecl;', 27,
+      [ tkKey, tkSpace, tkIdentifier + FAttrProcName, TK_Bracket, TK_Bracket, TK_Colon,
+        tkIdentifier, tkSpace,
+        tkModifier, TK_Semi
+      ]);
+     CheckTokensForLine('procedure Stdcall cdecl;', 28,
+      [ tkKey, tkSpace, tkIdentifier + FAttrProcName, tkSpace,
+        tkModifier, TK_Semi
+      ]);
+     CheckTokensForLine('procedure Stdcall() cdecl;', 29,
+      [ tkKey, tkSpace, tkIdentifier + FAttrProcName, TK_Bracket, TK_Bracket, tkSpace,
+        tkModifier, TK_Semi
+      ]);
+     CheckTokensForLine('function Stdcall:cdecl [cdecl];', 30,  // not a modifire / not currently
+      [ tkKey, tkSpace, tkIdentifier + FAttrProcName, TK_Colon, tkIdentifier, tkSpace,
+        TK_Bracket, tkIdentifier {maybe modifier in future fpc version?}, TK_Bracket, TK_Semi
+      ]);
+     CheckTokensForLine('procedure foo cdecl;', 33,
+      [ tkKey, tkSpace, tkIdentifier + FAttrProcName, tkSpace,
+        tkModifier, TK_Semi
+      ]);
+
+     CheckTokensForLine('  procedure() cdecl begin end();', 35,
+      [ tkSpace, tkKey, TK_Bracket, TK_Bracket, tkSpace,
+        tkModifier,
+        tkSpace, tkKey, tkSpace, tkKey,
+        TK_Bracket, TK_Bracket, TK_Semi
+      ]);
+     CheckTokensForLine('  procedure() [cdecl] begin end();', 36,
+      [ tkSpace, tkKey, TK_Bracket, TK_Bracket, tkSpace,
+        TK_Bracket, tkModifier, TK_Bracket,
+        tkSpace, tkKey, tkSpace, tkKey,
+        TK_Bracket, TK_Bracket, TK_Semi
       ]);
 
 

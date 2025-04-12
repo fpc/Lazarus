@@ -3594,14 +3594,23 @@ end;
 
 function TSynPasSyn.IsCallingConventionModifier(tfb: TPascalCodeFoldBlockType): Boolean;
 begin
-  if (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader] = [rsWasInProcHeader]) and
+  Result :=
+     (tfb in ProcModifierAllowed + [cfbtAnonymousProcedure]) and
+     (fRange * [rsProperty, rsAfterEqualOrColon] = []) and
      (PasCodeFoldRange.RoundBracketNestLevel = 0) and
-     (PasCodeFoldRange.BracketNestLevel <= 1) and // can be: [cdecl]
-     (tfb in ProcModifierAllowed)
-  then
-    Result := True
-  else
-    Result := False;
+     ( ( (rsInProcHeader in fRange) and (FTokenState in [tsNone, tsAfterProcName]) and  // CDECL without semicolon
+         ( (PasCodeFoldRange.BracketNestLevel = 0) or
+           ( (tfb = cfbtAnonymousProcedure) and (PasCodeFoldRange.BracketNestLevel <= 1) )  // for anon function it may be in [cdecl]
+         )
+       ) or
+       ( (rsWasInProcHeader in fRange) and
+         ( ( (FTokenState in [tsAtBeginOfStatement]) and           // after semicolon
+             (PasCodeFoldRange.BracketNestLevel = 0)
+           ) or
+           (PasCodeFoldRange.BracketNestLevel = 1)                 // [cdecl]
+         )
+       )
+     );
 end;
 
 function TSynPasSyn.IsCallingConventionModifier(const AnUpperKey: string): Boolean;
