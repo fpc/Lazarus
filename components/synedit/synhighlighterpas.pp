@@ -1802,7 +1802,10 @@ begin
     if ((fToIdent<2) or (fLine[fToIdent-1]<>'@'))
     then begin
       Result := tkKey;
-      fRange := fRange - [rsAsm, rsInClassHeader, rsInTypeHelper, rsInObjcProtocol, rsAfterClassMembers];
+      fRange := fRange - [rsAsm, rsInClassHeader, rsInTypeHelper, rsInObjcProtocol,
+                          rsAfterClassMembers, rsProperty,
+                          rsInProcHeader, rsInParamDeclaration,
+                          rsSkipAllPasBlocks];
       if FTokenState in [tsAfterExternal, tsAfterExternalName] then
         FTokenState := tsNone;
       PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
