@@ -42,6 +42,7 @@ type
     class function GetControlClassDefaultSize: TSize; override;
     procedure SetPreviewFileDialog(const AValue: TPreviewFileDialog);
     procedure CreateParams(var Params: TCreateParams); override;
+
   public
     constructor Create(TheOwner: TComponent); override;
     property PreviewFileDialog: TPreviewFileDialog read FPreviewFileDialog
@@ -270,6 +271,7 @@ begin
     Params.Style := Params.Style and not WS_CHILD;
 end;
 
+
 class function TPreviewFileControl.GetControlClassDefaultSize: TSize;
 begin
   Result.CX := 200;
@@ -378,7 +380,7 @@ begin
   FileIsValid := FileExistsUTF8(FPreviewFilename)
                  and (not DirPathExists(FPreviewFilename))
                  and FileIsReadable(FPreviewFilename);
-  if FileIsValid then
+  if FileIsValid and FPictureGroupBox.HandleAllocated then //on e.g. Vista+ this isn't used, so don't load the image
     try
       FImageCtrl.Picture.LoadFromFile(FPreviewFilename);
       FPictureGroupBox.Caption := Format('(%dx%d)',
