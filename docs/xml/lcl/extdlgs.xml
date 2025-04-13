@@ -428,37 +428,41 @@ the caption displayed in the dialog. ClearPreview is called from the
 
 <element name="TOpenPictureDialog.UpdatePreview">
 <short>
-<var>UpdatePreview</var> - updates the preview image, implementing any 
-pending changes.
+Loads the preview image for the current file name, or clears the preview 
+image when the file is not usable.
 </short>
 <descr>
 <p>
-<var>UpdatePreview</var> is a procedure used to update the file name and 
-image used in the preview dialog. Please note: No actions are needed or 
-performed in the method when FileName has the same value as PreviewFileName.
+<var>UpdatePreview</var> is a procedure used to update the preview image file 
+name and the image caption for the open picture dialog. The preview image file 
+name is based on the current value in the FileName property. No actions are 
+performed in the method if the preview image file name already contains the 
+value in FileName.
 </p>
 <p>
-The <var>FileName</var> property is assigned to <var>PreviewFileName</var>, 
-which is used as the source for the content displayed in 
-<var>ImageCtrl</var>. FileName must be a valid file name on the local file 
-system, and have read permissions. PreviewFileName is loaded into the picture 
-for the ImageCtrl, and the caption in <var>PictureGroupBox</var> is updated 
-to display the Width and Height for the stored image in the format 
-<b>'(%dx%d)'</b>.
+FileName must be a valid qualified path on the local file system, and have 
+read permissions. The image file is loaded into the <var>ImageCtrl</var> 
+on the dialog. The caption in <var>PictureGroupBox</var> is updated to display 
+the Width and Height for the stored image in the format <b>'(%dx%d)'</b> 
+(Width x Height).
 </p>
 <p>
-If the file is not successfully loaded (due to permissions or image format), 
-the <var>ClearPreview</var> method is called.
+The <var>ClearPreview</var> method is called if the file path or name is not 
+valid, not successfully loaded (due to permissions or image format), or the 
+PictureGroupBox is not used for the platform (as with Windows Vista and later 
+versions where the preview image is natively supported).
 </p>
 <p>
 UpdatePreview is called from the <var>DoSelectionChange</var> method when the 
-selected file name for the preview dialog has changed.
+selected file name for the preview dialog has changed. It is executed before 
+an assigned OnSelectionChange event handler for the dialog.
 </p>
 </descr>
 <seealso>
 <link id="TOpenPictureDialog.ImageCtrl"/>
 <link id="TOpenPictureDialog.PictureGroupBox"/>
 <link id="TOpenPictureDialog.ClearPreview"/>
+<link id="#lcl.dialogs.TOpenDialog.OnSelectionChange">TOpenDialog.OnSelectionChange</link>
 <link id="#lcl.dialogs.TFileDialog.FileName">TFileDialog.FileName</link>
 </seealso>
 </element>
