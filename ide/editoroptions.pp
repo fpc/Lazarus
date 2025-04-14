@@ -303,6 +303,9 @@ const
     { ahaWrapSubLine } [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask]
   );
 
+const
+  AdditionalHighlightAttrWithPastEolFeature = TAdditionalHilightAttributes([ahaTextBlock]);
+  AdditionalHighlightAttrWithPastEolEnabled = TAdditionalHilightAttributes([ahaTextBlock]);
 
 var
   AdditionalHighlightAttributes: array[TAdditionalHilightAttribute] of String;
@@ -324,7 +327,8 @@ type
 
   TColorSchemeAttribute = class(TSynHighlighterLazCustomPasAttribute, IColorSchemeAttribute)
   private
-    FFeatures: TColorSchemeAttributeFeatures;
+    FAttrFeatures: TColorSchemeAttributeFeatures;
+    FDefaultSynFeatures: TLazTextAttributeFeatures;
     FGroup: TAhaGroupName;
     FRegisteredGroup: integer;
     FMarkupFoldLineAlpha: Byte;
@@ -360,7 +364,7 @@ type
     property Group: TAhaGroupName read FGroup write FGroup;
     property GroupName: String read GetGroupName;
     property IsUsingSchemeGlobals: Boolean read GetIsUsingSchemeGlobals;
-    property Features: TColorSchemeAttributeFeatures read FFeatures write FFeatures;
+    property AttrFeatures: TColorSchemeAttributeFeatures read FAttrFeatures write FAttrFeatures;
   published
     property UseSchemeGlobals: Boolean read FUseSchemeGlobals write FUseSchemeGlobals;
     // For markup fold color
@@ -2614,7 +2618,7 @@ begin
 
   inherited Create;
   FColorAttr := TColorSchemeAttribute.Create(nil, nil);
-  FColorAttr.Features := [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior,hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask];
+  FColorAttr.AttrFeatures := [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior,hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask];
   FColorAttr.Group := agnText;
   FColorAttr.SetAllPriorities(MARKUP_USER_DEF_PRIOR);
   FKeyAddSelectSmart := True;
@@ -7114,7 +7118,7 @@ end;
 procedure TColorSchemeAttribute.Init;
 begin
   inherited Init;
-  FFeatures := [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafFrameStyle, hafFrameEdges, hafPrior];
+  FAttrFeatures := [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafFrameStyle, hafFrameEdges, hafPrior];
   FMarkupFoldLineColor := clNone;
   FMarkupFoldLineStyle := slsSolid;
   FMarkupFoldLineAlpha := 0;
@@ -7193,8 +7197,9 @@ begin
     aDest.FrameEdges := Src.FrameEdges;
     aDest.FrameStyle := Src.FrameStyle;
     aDest.Style      := Src.Style;
+    aDest.Features   := Src.Features;
     if aDest is TLazEditTextAttributeModifier then begin
-      if hafStyleMask in Src.Features then
+      if hafStyleMask in Src.AttrFeatures then
         aDest.StyleMask  := Src.StyleMask
       else
         aDest.StyleMask  := [low(TFontStyle)..high(TFontStyle)];
@@ -7210,7 +7215,7 @@ begin
       end;
     end;
 
-    if hafPrior in Src.Features then begin
+    if hafPrior in Src.AttrFeatures then begin
       aDest.ForePriority      := Src.ForePriority;
       aDest.BackPriority      := Src.BackPriority;
       aDest.FramePriority     := Src.FramePriority;
@@ -7246,22 +7251,25 @@ procedure TColorSchemeAttribute.Assign(Src: TPersistent);
 var
   SrcAttr: TColorSchemeAttribute;
 begin
+  if Src is TLazCustomEditTextAttribute then
+    AssignSupportedFeaturesFrom(TLazCustomEditTextAttribute(Src));
   inherited Assign(Src);
-  FFeatures := [hafBackColor, hafForeColor, hafFrameColor,
+  FAttrFeatures := [hafBackColor, hafForeColor, hafFrameColor,
                 hafStyle, hafFrameStyle, hafFrameEdges, hafPrior];
   if Src is TSynHighlighterLazCustomPasAttribute then
-    FFeatures := FFeatures + [hafCustomWords];
+    FAttrFeatures := FAttrFeatures + [hafCustomWords];
   if Src is TSynHighlighterAttributesModifier then
-    FFeatures := FFeatures + [hafAlpha, hafStyleMask];
+    FAttrFeatures := FAttrFeatures + [hafAlpha, hafStyleMask];
 
   if Src is TColorSchemeAttribute then begin
     SrcAttr := TColorSchemeAttribute(Src);
     FGroup               := SrcAttr.FGroup;
     FUseSchemeGlobals    := SrcAttr.FUseSchemeGlobals;
-    FFeatures            := SrcAttr.FFeatures;
+    FAttrFeatures            := SrcAttr.FAttrFeatures;
     FMarkupFoldLineColor := SrcAttr.FMarkupFoldLineColor;
     FMarkupFoldLineStyle := SrcAttr.FMarkupFoldLineStyle;
     FMarkupFoldLineAlpha := SrcAttr.FMarkupFoldLineAlpha;
+    FDefaultSynFeatures  := SrcAttr.FDefaultSynFeatures;
   end;
 end;
 
@@ -7281,7 +7289,7 @@ begin
             ) and
             (Style       = Other.Style) and
             (StyleMask   = Other.StyleMask) and
-            (Features   = Other.Features);
+            (AttrFeatures   = Other.AttrFeatures);
 end;
 
 function TColorSchemeAttribute.GetStoredValuesForAttrib: TColorSchemeAttribute;
@@ -7312,7 +7320,7 @@ begin
   end
   else begin
     if (Defaults <> Self) and (Defaults <> nil) then begin
-      // do not copy (Stored)Name or Features ...
+      // do not copy (Stored)Name or AttrFeatures ...
       Background := Defaults.Background;
       Foreground := Defaults.Foreground;
       FrameColor := Defaults.FrameColor;
@@ -7450,7 +7458,7 @@ constructor TColorSchemeLanguage.CreateWithDefColor(AGroup: TColorScheme;
 begin
   Create(AGroup, AIdeHighlighterID, IsSchemeDefault);
   FDefaultAttribute := TColorSchemeAttribute.Create(Self, @dlgAddHiAttrDefault, 'ahaDefault');
-  FDefaultAttribute.Features := [hafBackColor, hafForeColor];
+  FDefaultAttribute.AttrFeatures := [hafBackColor, hafForeColor];
   FDefaultAttribute.Group := agnDefault;
   FAttributes.AddObject(FDefaultAttribute.StoredName, FDefaultAttribute);
 end;
@@ -7476,14 +7484,15 @@ begin
       csa := TColorSchemeAttribute.Create(Self, hla.Caption, hla.StoredName);
       csa.Assign(hla);
       csa.Group := agnLanguage;
+      csa.FDefaultSynFeatures := csa.Features;
       if (FHighlighter <> nil) and (FHighlighter is TNonSrcIDEHighlighter) then
         if hla is TSynHighlighterLazCustomPasAttribute then
-          csa.Features := [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafStyle, hafStyleMask, hafCustomWords]
+          csa.AttrFeatures := [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafStyle, hafStyleMask, hafCustomWords]
         else
         if hla is TSynHighlighterAttributesModifier then
-          csa.Features := [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafStyle, hafStyleMask]
+          csa.AttrFeatures := [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafStyle, hafStyleMask]
         else
-          csa.Features := [hafBackColor, hafForeColor, hafFrameColor, hafStyle];
+          csa.AttrFeatures := [hafBackColor, hafForeColor, hafFrameColor, hafStyle];
       FAttributes.AddObject(csa.StoredName, csa);
     end;
   end;
@@ -7493,8 +7502,14 @@ begin
     if not DoesSupportGroup(ahaGroupMap[aha]) then continue;
     csa := TColorSchemeAttribute.Create(Self, @AdditionalHighlightAttributes[aha],
                                         GetAddiHilightAttrName(aha) );
-    csa.Features := ahaSupportedFeatures[aha];
+    csa.AttrFeatures := ahaSupportedFeatures[aha];
     csa.Group    := ahaGroupMap[aha];
+    if aha in AdditionalHighlightAttrWithPastEolFeature then begin
+      csa.UpdateSupportedFeatures([lafPastEOL], []);
+      if aha in AdditionalHighlightAttrWithPastEolEnabled then
+        csa.Features := [lafPastEOL];
+    end;
+    csa.FDefaultSynFeatures := csa.Features;
     FAttributes.AddObject(csa.StoredName, csa);
   end;
   FAttributes.Sorted := true;
@@ -7645,9 +7660,11 @@ begin
   //   Attribute has SchemeDefault => Save diff to SchemeDefault
   //     SchemeDefault_Attri.UseSchemeGlobals must be TRUE => so it serves as default
   //   Attribute hasn't SchemeDefault => Save diff to empty
-  if Defaults = nil then
+  if Defaults = nil then begin
     // default all colors = clNone
-    EmptyDef := TColorSchemeAttribute.Create(Self, nil, '')
+    EmptyDef := TColorSchemeAttribute.Create(Self, nil, '');
+    EmptyDef.UpdateSupportedFeatures([low(TLazTextAttributeFeatures)..high(TLazTextAttributeFeatures)], []);
+  end
   else
     EmptyDef := nil;
 
@@ -7667,8 +7684,10 @@ begin
         Def := Defaults.Attribute[CurAttr.StoredName]
       else begin
         Def := CurAttr.GetSchemeGlobal;
-        if Def = nil then
+        if Def = nil then begin
           Def := EmptyDef;
+          Def.Features := CurAttr.FDefaultSynFeatures;
+        end;
       end;
     end;
     CurAttr.LoadFromXml(aXMLConfig, TmpPath, Def, FormatVersion);
@@ -7719,9 +7738,11 @@ begin
   aXMLConfig.SetValue(aPath + 'Version', EditorOptsFormatVersion);
   aPath := aPath + 'Scheme' + StrToValidXMLName(Name) + '/';
 
-  if (Defaults = nil) then
+  if (Defaults = nil) then begin
     // default all colors = clNone
-    EmptyDef := TColorSchemeAttribute.Create(Self, nil, '')
+    EmptyDef := TColorSchemeAttribute.Create(Self, nil, '');
+    EmptyDef.UpdateSupportedFeatures([low(TLazTextAttributeFeatures)..high(TLazTextAttributeFeatures)], []);
+  end
   else
     EmptyDef := nil;
 
@@ -7731,8 +7752,10 @@ begin
       Def := Defaults.Attribute[CurAttr.StoredName]
     else begin
       Def := CurAttr.GetSchemeGlobal;
-      if Def = nil then
+      if Def = nil then begin
         Def := EmptyDef;
+        Def.Features := CurAttr.FDefaultSynFeatures;
+      end;
     end;
     CurAttr.SaveToXml(aXMLConfig, aPath, Def);
   end;
@@ -8221,13 +8244,16 @@ begin
 
     csa := TColorSchemeAttribute.Create(csl, AName, AStoredName);
     csa.Clear;
-    if ADefaults <> nil then
+    if ADefaults <> nil then begin
+      csa.AssignSupportedFeaturesFrom(ADefaults as TSynHighlighterAttributes);
       csa.AssignColors(ADefaults as TSynHighlighterAttributes);
+    end;
     csa.InternalSaveDefaultValues;
+    csa.FDefaultSynFeatures := csa.Features;
 
     csa.FGroup := agnRegistered;
     csa.FRegisteredGroup := AnAttrGroup;
-    csa.FFeatures := AFeatures;
+    csa.FAttrFeatures := AFeatures;
 
     csl.FAttributes.AddObject(AStoredName, csa);
   end;

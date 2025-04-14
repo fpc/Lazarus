@@ -276,7 +276,7 @@ begin
 
   // Draw preview box - Background
   c := clNone;
-  if (hafBackColor in  Attri.Features) and not (AttriIdx = ord(ahaCaretColor)) then
+  if (hafBackColor in  Attri.AttrFeatures) and not (AttriIdx = ord(ahaCaretColor)) then
     c := Attri.Background;
   // Fallback Background-color for gutter
   if ((c = clNone) or (c = clDefault)) and
@@ -338,7 +338,7 @@ begin
 
   // Draw preview Frame
   TheTree.Canvas.Pen.Color := Attri.FrameColor;
-  if (hafFrameColor in Attri.Features) and (AttriIdx <> ord(ahaCodeFoldingTree)) and
+  if (hafFrameColor in Attri.AttrFeatures) and (AttriIdx <> ord(ahaCodeFoldingTree)) and
      (AttriIdx <> ord(ahaCodeFoldingTreeCurrent)) and
      (Attri.FrameColor <> clDefault) and (Attri.FrameColor <> clNone)
   then
@@ -346,7 +346,7 @@ begin
                                       NodeRect.Left+FullAbcWidth-2, NodeRect.Bottom-2);
 
   // Draw preview ForeGround
-  if (hafForeColor in Attri.Features) //and
+  if (hafForeColor in Attri.AttrFeatures) //and
        //(ahaSupportedFeatures[TAdditionalHilightAttribute(AttriIdx)].BG) )       // if no BG, then FG was used
   then begin
     c := Attri.Foreground;
@@ -920,19 +920,19 @@ procedure TEditorColorOptionsFrame.FillPriorEditor;
       AnAttr := AnAttr.GetSchemeGlobal;
     //if AnAttr.StoredName = 'ahaDefault' then
     //  exit;
-    if not (hafPrior in AnAttr.Features) then
+    if not (hafPrior in AnAttr.AttrFeatures) then
       exit;
     case AnSelector of
-        mfForeGround: Result := (hafForeColor in AnAttr.Features) and
+        mfForeGround: Result := (hafForeColor in AnAttr.AttrFeatures) and
                      (AnAttr.Foreground <> clNone) and
                      (AnAttr.Foreground <> clDefault);
-        mfBackGround: Result := (hafBackColor in AnAttr.Features) and
+        mfBackGround: Result := (hafBackColor in AnAttr.AttrFeatures) and
                      (AnAttr.Background <> clNone) and
                      (AnAttr.Background <> clDefault);
-        mfFrame:     Result := (hafFrameColor in AnAttr.Features) and
+        mfFrame:     Result := (hafFrameColor in AnAttr.AttrFeatures) and
                      (AnAttr.FrameColor <> clNone) and
                      (AnAttr.FrameColor <> clDefault);
-        mfStyle:     Result := (hafStyle in AnAttr.Features) and
+        mfStyle:     Result := (hafStyle in AnAttr.AttrFeatures) and
                      ( (AnAttr.Style <> []) or (AnAttr.StyleMask <> []) );
     end
   end;
@@ -1169,7 +1169,7 @@ procedure TEditorColorOptionsFrame.FillColorElementListBox;
     AParentName := FCurrentHighlighter.LanguageName;
     Result := True;
 
-    if hafCustomWords in AnAttr.Features then begin
+    if hafCustomWords in AnAttr.AttrFeatures then begin
       AParentName := AParentName + ' ' + dlgAddHiAttrGroup_Suffix_Custom;
     end
     else
@@ -1178,7 +1178,7 @@ procedure TEditorColorOptionsFrame.FillColorElementListBox;
       AParentName := AParentName + ' ' + dlgAddHiAttrGroup_Suffix_NBrackets;
     end
     else
-    if hafAlpha in AnAttr.Features then begin
+    if hafAlpha in AnAttr.AttrFeatures then begin
       AParentName := AParentName + ' ' + dlgAddHiAttrGroup_Suffix_Extended;
 
       case AnAttr.StoredName of

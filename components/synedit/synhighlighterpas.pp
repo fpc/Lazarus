@@ -652,7 +652,7 @@ type
     FStringKeywordMode: TSynPasStringMode;
     FStringMultilineMode: TSynPasMultilineStringModes;
     FSynPasRangeInfo: TSynPasRangeInfo;
-    FAtLineStart, FAtSlashStart, FInString: Boolean; // Line had only spaces or comments sofar
+    FAtLineStart, FAtSlashStart, FHadSlashLastLine, FInString: Boolean; // Line had only spaces or comments sofar
     fLineStr: string;
     fLine: PChar;
     fLineLen: integer;
@@ -984,7 +984,7 @@ type
     procedure SetLine(const NewValue: string; LineNumber: Integer); override;
     procedure SetRange(Value: Pointer); override;
     procedure StartAtLineIndex(LineNumber:Integer); override; // 0 based
-    function GetEndOfLineAttribute: TSynHighlighterAttributes; override;
+    function GetEndOfLineAttributeEx: TLazCustomEditTextAttribute; override;
 
     function UseUserSettings(settingIndex: integer): boolean; override;
     procedure EnumUserSettings(settings: TStrings); override;
@@ -1544,6 +1544,12 @@ begin
   if FStringMultilineMode=AValue then Exit;
   FStringMultilineMode:=AValue;
   FAttributeChangeNeedScan := True;
+
+  if spmsmDoubleQuote in FStringMultilineMode then
+    fStringAttri.UpdateSupportedFeatures([lafPastEOL], [])
+  else
+    fStringAttri.UpdateSupportedFeatures([], [lafPastEOL]);
+
   DefHighlightChange(self);
 end;
 
@@ -3835,16 +3841,20 @@ begin
   fD4syntax := true;
   fAsmAttri := TSynHighlighterAttributes.Create(@SYNS_AttrAssembler, SYNS_XML_AttrAssembler);
   AddAttribute(fAsmAttri);
-  fCommentAttri := TSynHighlighterAttributes.Create(@SYNS_AttrComment, SYNS_XML_AttrComment);
+  fCommentAttri := TSynHighlighterAttributes.Create(@SYNS_AttrComment, SYNS_XML_AttrComment, [lafPastEOL]);
   fCommentAttri.Style:= [fsItalic];
+  fCommentAttri.Features:= [lafPastEOL];
   AddAttribute(fCommentAttri);
-  FCommentAnsiAttri := TSynHighlighterAttributesModifier.Create(@SYNS_AttrCommentAnsi, SYNS_XML_AttrCommentAnsi);
+  FCommentAnsiAttri := TSynHighlighterAttributesModifier.Create(@SYNS_AttrCommentAnsi, SYNS_XML_AttrCommentAnsi, [lafPastEOL]);
+  FCommentAnsiAttri.Features:= [lafPastEOL];
   AddAttribute(FCommentAnsiAttri);
-  FCommentCurlyAttri := TSynHighlighterAttributesModifier.Create(@SYNS_AttrCommentCurly, SYNS_XML_AttrCommentCurly);
+  FCommentCurlyAttri := TSynHighlighterAttributesModifier.Create(@SYNS_AttrCommentCurly, SYNS_XML_AttrCommentCurly, [lafPastEOL]);
+  FCommentCurlyAttri.Features:= [lafPastEOL];
   AddAttribute(FCommentCurlyAttri);
-  FCommentSlashAttri := TSynHighlighterAttributesModifier.Create(@SYNS_AttrCommentSlash, SYNS_XML_AttrCommentSlash);
+  FCommentSlashAttri := TSynHighlighterAttributesModifier.Create(@SYNS_AttrCommentSlash, SYNS_XML_AttrCommentSlash, [lafPastEOL]);
   AddAttribute(FCommentSlashAttri);
-  FIDEDirectiveAttri := TSynHighlighterAttributesModifier.Create(@SYNS_AttrIDEDirective, SYNS_XML_AttrIDEDirective);
+  FIDEDirectiveAttri := TSynHighlighterAttributesModifier.Create(@SYNS_AttrIDEDirective, SYNS_XML_AttrIDEDirective, [lafPastEOL]);
+  FIDEDirectiveAttri.Features:= [lafPastEOL];
   AddAttribute(FIDEDirectiveAttri);
   FCurIDEDirectiveAttri := TSynSelectedColorMergeResult.Create;
   fIdentifierAttri := TSynHighlighterAttributes.Create(@SYNS_AttrIdentifier, SYNS_XML_AttrIdentifier);
@@ -3895,8 +3905,9 @@ begin
   AddAttribute(FCaseLabelAttri);
   FCurCaseLabelAttri := TSynSelectedColorMergeResult.Create(@SYNS_AttrCaseLabel, SYNS_XML_AttrCaseLabel);
   FCurProcTypeDeclExtraAttr := TSynSelectedColorMergeResult.Create(@SYNS_AttrProcedureHeaderName, SYNS_XML_AttrProcedureHeaderName);
-  fDirectiveAttri := TSynHighlighterAttributes.Create(@SYNS_AttrDirective, SYNS_XML_AttrDirective);
+  fDirectiveAttri := TSynHighlighterAttributes.Create(@SYNS_AttrDirective, SYNS_XML_AttrDirective, [lafPastEOL]);
   fDirectiveAttri.Style:= [fsItalic];
+  fDirectiveAttri.Features:= [lafPastEOL];
   AddAttribute(fDirectiveAttri);
 
   fPasDocKeyWordAttri := TSynHighlighterAttributesModifier.Create(@SYNS_AttrPasDocKey, SYNS_XML_AttrPasDocKey);
@@ -3976,6 +3987,7 @@ begin
   fLineNumber := LineNumber;
   FAtLineStart := True;
   FAtSlashStart := False;
+  FHadSlashLastLine := rsSlash in fRange;
   FInString := False;
   FCustomCommentTokenMarkup := nil;
   if not IsCollectingNodeInfo then
@@ -5893,10 +5905,58 @@ begin
   inherited StartAtLineIndex(LineNumber);
 end;
 
-function TSynPasSyn.GetEndOfLineAttribute: TSynHighlighterAttributes;
+function TSynPasSyn.GetEndOfLineAttributeEx: TLazCustomEditTextAttribute;
+  function Merge(MergeRes: TSynSelectedColorMergeResult;
+    Base: TSynHighlighterAttributes;
+    Modifier: TSynHighlighterAttributesModifier
+  ): TLazCustomEditTextAttribute;
+  begin
+    Result := nil;
+    if lafPastEOL in Base.Features then
+      Result := Base;
+
+    if not (lafPastEOL in Modifier.Features) then
+      exit;
+
+    if Result = nil then begin
+      Result := Modifier;
+    end
+    else begin
+      MergeRes.Assign(Base);
+      MergeRes.Merge(Modifier);
+      Result := MergeRes;
+    end;
+  end;
+
 begin
-  if fRange * [rsAnsi, rsBor] <> [] then
-    Result := fCommentAttri
+  Result := nil;
+  if fRange * [rsIDEDirective] <> [] then begin
+    Result := Merge(FCurIDEDirectiveAttri, fCommentAttri, FIDEDirectiveAttri);
+  end
+  else
+  if fRange * [rsDirective] <> [] then begin
+    if lafPastEOL in fDirectiveAttri.Features then
+      Result := fDirectiveAttri;
+  end
+  else
+  if fRange * [rsAnsi] <> [] then begin
+    Result := Merge(FCustomCommentTokenMergedMarkup, fCommentAttri, FCommentAnsiAttri);
+  end
+  else
+  if fRange * [rsBor] <> [] then begin
+    Result := Merge(FCustomCommentTokenMergedMarkup, fCommentAttri, FCommentCurlyAttri);
+  end
+  else
+  if fRange * [rsSlash] <> [] then begin
+    if FHadSlashLastLine or (LastLinePasFoldLevelFix(fLineNumber+1, FOLDGROUP_PASCAL, True) = 0) then begin
+      Result := Merge(FCustomCommentTokenMergedMarkup, fCommentAttri, FCommentSlashAttri);
+    end;
+  end
+  else
+  if fRange * [rsAnsiMultiDQ] <> [] then begin
+    if lafPastEOL in fStringAttri.Features then
+      Result := fStringAttri;
+  end
   else
     Result := inherited GetEndOfLineAttribute;
 end;

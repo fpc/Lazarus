@@ -1957,6 +1957,7 @@ resourcestring
   dlgTextStyle = 'Text-Style';
   dlgUnsavedLineColor = 'Unsaved line';
   dlgSavedLineColor = 'Saved line';
+  dlgColorFeatPastEol        = 'Extend past EOL';
   dlgGutterCollapsedColor = 'Collapsed';
   dlgCaretForeColor = 'Main or primary caret';
   dlgCaretBackColor = 'Secondary carets (multi-caret mode)';

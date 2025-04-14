@@ -27,7 +27,7 @@ interface
 
 uses
   Classes, SysUtils, Graphics, Controls,
-  SynEditMarkup, SynEditMiscClasses, SynEditPointClasses, SynEditTypes;
+  SynEditMarkup, SynEditMiscClasses, SynEditPointClasses, SynEditTypes, LazEditTextAttributes;
 
 type
 
@@ -117,7 +117,8 @@ constructor TSynEditMarkupSelection.Create(ASynEdit : TSynEditBase; ASelection: 
 begin
   inherited Create(ASynEdit);
   FSelection := ASelection;
-  FMarkupInfoSelection := TSynSelectedColor.Create;
+  FMarkupInfoSelection := TSynSelectedColor.Create([lafPastEOL]);
+  FMarkupInfoSelection.Features := [lafPastEOL];
   FMarkupInfoSelection.OnChange := @MarkupChangedIntern;
   FMarkupInfoIncr := TSynSelectedColor.Create;
   FMarkupInfoIncr.OnChange := @MarkupChangedIntern;
@@ -173,7 +174,10 @@ begin
       end;
 
       //colorize selected block only till EOL, not till edge of control
-      if FColorTillEol then begin
+      if FColorTillEol or
+         FUseIncrementalColor or
+         not (lafPastEOL in FMarkupInfoSelection.Features)
+      then begin
         p2.x := Length(Lines[aRow-1]) + 1;
         p2.y := aRow;
 //        p2 := LogicalToPhysicalPos(p2);

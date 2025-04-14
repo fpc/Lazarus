@@ -77,6 +77,7 @@ type
      ahaOutlineLevel1Color, ahaOutlineLevel2Color, ahaOutlineLevel3Color, ahaOutlineLevel4Color, ahaOutlineLevel5Color, ahaOutlineLevel6Color, ahaOutlineLevel7Color, ahaOutlineLevel8Color, ahaOutlineLevel9Color, ahaOutlineLevel10Color,
      ahaWrapIndend, ahaWrapEol, ahaWrapSubLine
      );
+  TAdditionalHilightAttributes = set of TAdditionalHilightAttribute;
 
   TAhaGroupName = (
     agnDefault, agnLanguage, agnText, agnLine, agnGutter, agnWrap,

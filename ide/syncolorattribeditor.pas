@@ -27,6 +27,7 @@ type
     BackPriorSpin: TSpinEdit;
     BackGroundColorBox: TColorBox;
     BackGroundLabel: TLabel;
+    FeaturePastEOLCheckBox: TCheckBox;
     dropCustomWordKind: TComboBox;
     ForePriorLabel: TLabel;
     ForePriorSpin: TSpinEdit;
@@ -74,6 +75,7 @@ type
     Panel20: TPanel;
     Panel21: TPanel;
     Panel22: TPanel;
+    PnlFeaturePastEOL: TPanel;
     pnlWords: TPanel;
     Panel3: TPanel;
     Panel4: TPanel;
@@ -445,7 +447,7 @@ begin
   end;
 
   if Sender = TextBoldCheckBox then begin
-    if hafStyleMask in FCurHighlightElement.Features then
+    if hafStyleMask in FCurHighlightElement.AttrFeatures then
       TextStyleRadioOnChange(Sender)
     else
     if TextBoldCheckBox.Checked xor (fsBold in FCurHighlightElement.Style) then
@@ -459,7 +461,7 @@ begin
   end;
 
   if Sender = TextItalicCheckBox then begin
-    if hafStyleMask in FCurHighlightElement.Features then
+    if hafStyleMask in FCurHighlightElement.AttrFeatures then
       TextStyleRadioOnChange(Sender)
     else
     if TextItalicCheckBox.Checked xor (fsItalic in FCurHighlightElement.Style) then
@@ -473,7 +475,7 @@ begin
   end;
 
   if Sender = TextUnderlineCheckBox then begin
-    if hafStyleMask in FCurHighlightElement.Features then
+    if hafStyleMask in FCurHighlightElement.AttrFeatures then
       TextStyleRadioOnChange(Sender)
     else
     if TextUnderlineCheckBox.Checked xor (fsUnderline in FCurHighlightElement.Style) then
@@ -485,6 +487,18 @@ begin
       DoChanged;
     end;
   end;
+
+  if Sender = FeaturePastEOLCheckBox then begin
+    if FeaturePastEOLCheckBox.Checked xor (lafPastEOL in FCurHighlightElement.Features) then
+    begin
+      if FeaturePastEOLCheckBox.Checked then
+        FCurHighlightElement.Features := FCurHighlightElement.Features + [lafPastEOL]
+      else
+        FCurHighlightElement.Features := FCurHighlightElement.Features - [lafPastEOL];
+      DoChanged;
+    end;
+  end;
+
 end;
 
 procedure TSynColorAttrEditor.pnlElementAttributesResize(Sender: TObject);
@@ -535,7 +549,7 @@ procedure TSynColorAttrEditor.TextStyleRadioOnChange(Sender: TObject);
 begin
   if FCurHighlightElement = nil then
     exit;
-  if UpdatingColor or not (hafStyleMask in FCurHighlightElement.Features) then
+  if UpdatingColor or not (hafStyleMask in FCurHighlightElement.AttrFeatures) then
     Exit;
 
   if (Sender = TextBoldCheckBox) or
@@ -558,7 +572,6 @@ begin
      (Sender = TextUnderlineRadioInvert) then
     CalcNewStyle(TextUnderlineCheckBox, TextUnderlineRadioOn, TextUnderlineRadioOff,
                     TextUnderlineRadioInvert, fsUnderline, TextUnderlineRadioPanel);
-
 
   DoChanged;
 end;
@@ -619,11 +632,11 @@ begin
     end;
 
     // Forground
-    ForeGroundLabel.Visible              := (hafForeColor in FCurHighlightElement.Features) and
+    ForeGroundLabel.Visible              := (hafForeColor in FCurHighlightElement.AttrFeatures) and
                                             (FCurHighlightElement.Group = agnDefault);
-    ForeGroundUseDefaultCheckBox.Visible := (hafForeColor in FCurHighlightElement.Features) and
+    ForeGroundUseDefaultCheckBox.Visible := (hafForeColor in FCurHighlightElement.AttrFeatures) and
                                             not(FCurHighlightElement.Group = agnDefault);
-    ForegroundColorBox.Visible           := (hafForeColor in FCurHighlightElement.Features);
+    ForegroundColorBox.Visible           := (hafForeColor in FCurHighlightElement.AttrFeatures);
 
     ForegroundColorBox.Selected := NoneToDefault(FCurHighlightElement.Foreground);
     if ForegroundColorBox.Selected = clDefault then
@@ -633,7 +646,7 @@ begin
     ForeGroundUseDefaultCheckBox.Checked := ForegroundColorBox.Selected <> clDefault;
 
     ForeAlphaSpin.Visible  := ForegroundColorBox.Visible and
-                             (hafAlpha in FCurHighlightElement.Features);
+                             (hafAlpha in FCurHighlightElement.AttrFeatures);
     ForeAlphaLabel.Visible := ForeAlphaSpin.Visible;
     if FCurHighlightElement.ForeAlpha = 0 then begin
       ForeAlphaSpin.Value    := 256; // Off
@@ -643,17 +656,17 @@ begin
       ForeAlphaSpin.Value    := FCurHighlightElement.ForeAlpha;
 
     ForePriorSpin.Visible  := ForegroundColorBox.Visible and FShowPrior and
-                             (hafPrior in FCurHighlightElement.Features);
+                             (hafPrior in FCurHighlightElement.AttrFeatures);
     ForePriorLabel.Visible := ForePriorSpin.Visible;
     ForePriorSpin.Value    := FCurHighlightElement.ForePriority;
 
 
     // BackGround
-    BackGroundLabel.Visible              := (hafBackColor in FCurHighlightElement.Features) and
+    BackGroundLabel.Visible              := (hafBackColor in FCurHighlightElement.AttrFeatures) and
                                             (FCurHighlightElement.Group = agnDefault);
-    BackGroundUseDefaultCheckBox.Visible := (hafBackColor in FCurHighlightElement.Features) and
+    BackGroundUseDefaultCheckBox.Visible := (hafBackColor in FCurHighlightElement.AttrFeatures) and
                                             not(FCurHighlightElement.Group = agnDefault);
-    BackGroundColorBox.Visible           := (hafBackColor in FCurHighlightElement.Features);
+    BackGroundColorBox.Visible           := (hafBackColor in FCurHighlightElement.AttrFeatures);
 
     BackGroundColorBox.Selected := NoneToDefault(FCurHighlightElement.Background);
     if BackGroundColorBox.Selected = clDefault then
@@ -663,7 +676,7 @@ begin
     BackGroundUseDefaultCheckBox.Checked := BackGroundColorBox.Selected <> clDefault;
 
     BackAlphaSpin.Visible := BackGroundColorBox.Visible and
-                             (hafAlpha in FCurHighlightElement.Features);
+                             (hafAlpha in FCurHighlightElement.AttrFeatures);
     BackAlphaLabel.Visible := BackAlphaSpin.Visible;
     if FCurHighlightElement.BackAlpha = 0 then begin
       BackAlphaSpin.Value    := 256; // Off
@@ -673,15 +686,15 @@ begin
       BackAlphaSpin.Value    := FCurHighlightElement.BackAlpha;
 
     BackPriorSpin.Visible  := BackGroundColorBox.Visible and FShowPrior and
-                             (hafPrior in FCurHighlightElement.Features);
+                             (hafPrior in FCurHighlightElement.AttrFeatures);
     BackPriorLabel.Visible := BackPriorSpin.Visible;
     BackPriorSpin.Value    := FCurHighlightElement.BackPriority;
 
     // Frame
-    FrameColorUseDefaultCheckBox.Visible := hafFrameColor in FCurHighlightElement.Features;
-    FrameColorBox.Visible                := hafFrameColor in FCurHighlightElement.Features;
-    FrameEdgesBox.Visible                := hafFrameEdges in FCurHighlightElement.Features;
-    FrameStyleBox.Visible                := hafFrameStyle in FCurHighlightElement.Features;
+    FrameColorUseDefaultCheckBox.Visible := hafFrameColor in FCurHighlightElement.AttrFeatures;
+    FrameColorBox.Visible                := hafFrameColor in FCurHighlightElement.AttrFeatures;
+    FrameEdgesBox.Visible                := hafFrameEdges in FCurHighlightElement.AttrFeatures;
+    FrameStyleBox.Visible                := hafFrameStyle in FCurHighlightElement.AttrFeatures;
 
     FrameColorBox.Selected := NoneToDefault(FCurHighlightElement.FrameColor);
     if FrameColorBox.Selected = clDefault then
@@ -695,7 +708,7 @@ begin
     FrameStyleBox.Enabled := FrameColorUseDefaultCheckBox.Checked;
 
     FrameAlphaSpin.Visible := FrameColorBox.Visible and
-                             (hafAlpha in FCurHighlightElement.Features);
+                             (hafAlpha in FCurHighlightElement.AttrFeatures);
     FrameAlphaLabel.Visible := FrameAlphaSpin.Visible;
     if FCurHighlightElement.FrameAlpha = 0 then begin
       FrameAlphaSpin.Value    := 256; // Off
@@ -705,16 +718,16 @@ begin
       FrameAlphaSpin.Value    := FCurHighlightElement.FrameAlpha;
 
     FramePriorSpin.Visible  := FrameColorBox.Visible and FShowPrior and
-                              (hafPrior in FCurHighlightElement.Features);
+                              (hafPrior in FCurHighlightElement.AttrFeatures);
     FramePriorLabel.Visible := FramePriorSpin.Visible;
     FramePriorSpin.Value    := FCurHighlightElement.FramePriority;
 
     // Markup Fold
-    MarkupFoldColorUseDefaultCheckBox.Visible := hafMarkupFoldColor in FCurHighlightElement.Features;
-    MarkupFoldColorBox.Visible                := hafMarkupFoldColor in FCurHighlightElement.Features;
-    MarkupFoldAlphaLabel.Visible             := hafMarkupFoldColor in FCurHighlightElement.Features;
-    MarkupFoldAlphaSpin.Visible              := hafMarkupFoldColor in FCurHighlightElement.Features;
-    MarkupFoldStyleBox.Visible               := hafMarkupFoldColor in FCurHighlightElement.Features;
+    MarkupFoldColorUseDefaultCheckBox.Visible := hafMarkupFoldColor in FCurHighlightElement.AttrFeatures;
+    MarkupFoldColorBox.Visible                := hafMarkupFoldColor in FCurHighlightElement.AttrFeatures;
+    MarkupFoldAlphaLabel.Visible             := hafMarkupFoldColor in FCurHighlightElement.AttrFeatures;
+    MarkupFoldAlphaSpin.Visible              := hafMarkupFoldColor in FCurHighlightElement.AttrFeatures;
+    MarkupFoldStyleBox.Visible               := hafMarkupFoldColor in FCurHighlightElement.AttrFeatures;
 
     MarkupFoldColorBox.Selected := NoneToDefault(FCurHighlightElement.MarkupFoldLineColor);
     if MarkupFoldColorBox.Selected = clDefault then
@@ -734,15 +747,15 @@ begin
       MarkupFoldAlphaSpin.Value    := FCurHighlightElement.MarkupFoldLineAlpha;
 
     // Styles
-    TextBoldCheckBox.Visible      := hafStyle in FCurHighlightElement.Features;
-    TextItalicCheckBox.Visible    := hafStyle in FCurHighlightElement.Features;
-    TextUnderlineCheckBox.Visible := hafStyle in FCurHighlightElement.Features;
+    TextBoldCheckBox.Visible      := hafStyle in FCurHighlightElement.AttrFeatures;
+    TextItalicCheckBox.Visible    := hafStyle in FCurHighlightElement.AttrFeatures;
+    TextUnderlineCheckBox.Visible := hafStyle in FCurHighlightElement.AttrFeatures;
 
-    TextBoldRadioPanel.Visible      := hafStyleMask in FCurHighlightElement.Features;
-    TextItalicRadioPanel.Visible    := hafStyleMask in FCurHighlightElement.Features;
-    TextUnderlineRadioPanel.Visible := hafStyleMask in FCurHighlightElement.Features;
+    TextBoldRadioPanel.Visible      := hafStyleMask in FCurHighlightElement.AttrFeatures;
+    TextItalicRadioPanel.Visible    := hafStyleMask in FCurHighlightElement.AttrFeatures;
+    TextUnderlineRadioPanel.Visible := hafStyleMask in FCurHighlightElement.AttrFeatures;
 
-    if hafStyleMask in FCurHighlightElement.Features then begin
+    if hafStyleMask in FCurHighlightElement.AttrFeatures then begin
       TextBoldCheckBox.Checked   := (fsBold in FCurHighlightElement.Style) or
                                     (fsBold in FCurHighlightElement.StyleMask);
       TextBoldRadioPanel.Enabled := TextBoldCheckBox.Checked;
@@ -786,6 +799,9 @@ begin
       TextUnderlineCheckBox.Checked := fsUnderline in FCurHighlightElement.Style;
     end;
 
+    PnlFeaturePastEOL.Visible := lafPastEOL in FCurHighlightElement.SupportedFeatures;
+    FeaturePastEOLCheckBox.Checked := lafPastEOL in FCurHighlightElement.Features;
+
     lblInfo.Caption := '';
     if IsAhaElement(FCurHighlightElement, ahaCaretColor) then begin
       lblInfo.Caption := dlgCaretColorInfo;
@@ -793,9 +809,9 @@ begin
     end;
 
     // custom words
-    lbCustomWords.Visible      := hafCustomWords in FCurHighlightElement.Features;
-    edCustomWord.Visible       := hafCustomWords in FCurHighlightElement.Features;
-    dropCustomWordKind.Visible := hafCustomWords in FCurHighlightElement.Features;
+    lbCustomWords.Visible      := hafCustomWords in FCurHighlightElement.AttrFeatures;
+    edCustomWord.Visible       := hafCustomWords in FCurHighlightElement.AttrFeatures;
+    dropCustomWordKind.Visible := hafCustomWords in FCurHighlightElement.AttrFeatures;
     edCustomWord.Text := FCurHighlightElement.CustomWords.Text;
 
     case FCurHighlightElement.CustomWordTokenKind of
@@ -884,6 +900,8 @@ begin
   TextUnderlineRadioOn.Caption := dlgEdOn;
   TextUnderlineRadioOff.Caption := dlgEdOff;
   TextUnderlineRadioInvert.Caption := dlgEdInvert;
+
+  FeaturePastEOLCheckBox.Caption  := dlgColorFeatPastEol;
 
   lbCustomWords.Caption := dlgMatchWords;
   dropCustomWordKind.Items.Add(lisCodeToolsOptsIdentifier);

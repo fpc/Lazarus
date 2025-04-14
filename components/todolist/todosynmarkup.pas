@@ -13,7 +13,7 @@ uses
   // IdeIntf
   SrcEditorIntf, EditorSyntaxHighlighterDef,
   // LazEdit
-  LazEditMiscProcs,
+  LazEditMiscProcs, LazEditTextAttributes,
   // SynEdit
   SynEditMarkup, SynHighlighterPas, SynEditMiscProcs, SynEdit, SynEditMiscClasses, SynEditTypes,
   SynEditHighlighter, SynEditHighlighterFoldBase;
@@ -36,6 +36,8 @@ type
     FFoundPos: array of TFoundTodo;
     FSkipStartLine, FSkipEndLine: integer;
     FNxtIdx, FMrkIdx: integer;
+
+    function MarkupFor(AKind: TCommentKind): TSynSelectedColor;
   public
     procedure BeginMarkup; override;
     procedure PrepareMarkupForRow(aRow: Integer); override;
@@ -78,12 +80,18 @@ procedure RegisterAttribs;
 var
   pas: TIdeSyntaxHighlighterID;
 begin
-  CommentAttribTodo := TSynSelectedColor.Create('', '');
-  CommentAttribDone := TSynSelectedColor.Create('', '');
-  CommentAttribNote := TSynSelectedColor.Create('', '');
+  CommentAttribTodo := TSynSelectedColor.Create('', '', [lafPastEOL]);
+  CommentAttribDone := TSynSelectedColor.Create('', '', [lafPastEOL]);
+  CommentAttribNote := TSynSelectedColor.Create('', '', [lafPastEOL]);
   CommentAttribTodo.Clear;
   CommentAttribDone.Clear;
   CommentAttribNote.Clear;
+  CommentAttribTodo.Features := [lafPastEOL];
+  CommentAttribDone.Features := [lafPastEOL];
+  CommentAttribNote.Features := [lafPastEOL];
+  CommentAttribTodo.InternalSaveDefaultValues;
+  CommentAttribDone.InternalSaveDefaultValues;
+  CommentAttribNote.InternalSaveDefaultValues;
 
   IdeColorSchemeList.RegisterChangedHandler(@TTodoEditorHandler(nil).DoColorsChanged);
 
@@ -92,9 +100,9 @@ begin
   pas := IdeSyntaxHighlighters.GetIdForLazSyntaxHighlighter(lshFreePascal);
   AttribGroupIdx := IdeColorSchemeList.RegisterAttributeGroup(@AttribGroupName);
 
-  IdeColorSchemeList.AddAttribute(AttribGroupIdx, pas, 'LazTodoListCommentTodo', @AttribNameTodo, [hafBackColor..hafFrameEdges]);
-  IdeColorSchemeList.AddAttribute(AttribGroupIdx, pas, 'LazTodoListCommentDone', @AttribNameDone, [hafBackColor..hafFrameEdges]);
-  IdeColorSchemeList.AddAttribute(AttribGroupIdx, pas, 'LazTodoListCommentNote', @AttribNameNote, [hafBackColor..hafFrameEdges]);
+  IdeColorSchemeList.AddAttribute(AttribGroupIdx, pas, 'LazTodoListCommentTodo', @AttribNameTodo, [hafBackColor..hafFrameEdges], CommentAttribTodo);
+  IdeColorSchemeList.AddAttribute(AttribGroupIdx, pas, 'LazTodoListCommentDone', @AttribNameDone, [hafBackColor..hafFrameEdges], CommentAttribDone);
+  IdeColorSchemeList.AddAttribute(AttribGroupIdx, pas, 'LazTodoListCommentNote', @AttribNameNote, [hafBackColor..hafFrameEdges], CommentAttribNote);
 end;
 
 procedure FreeAttribs;
@@ -138,6 +146,15 @@ begin
 end;
 
 { TSynEditTodoMarkup }
+
+function TSynEditTodoMarkup.MarkupFor(AKind: TCommentKind): TSynSelectedColor;
+begin
+  case AKind of
+    ckTodo: Result := CommentAttribTodo;
+    ckDone: Result := CommentAttribDone;
+    else    Result := CommentAttribNote;
+  end;
+end;
 
 procedure TSynEditTodoMarkup.BeginMarkup;
 begin
@@ -249,7 +266,7 @@ var
   end;
 
 var
-  fnd, firstRun, HasHash: Boolean;
+  fnd, firstRun, HasHash, IsEnd: Boolean;
   LogX, TkEnd: integer;
   Kind: TCommentKind;
   pos: TPoint;
@@ -288,15 +305,18 @@ begin
       if i > 0 then
         FFoundPos[0] := FFoundPos[i];
       SetLength(FFoundPos, 1);
-      TkEnd := 1 + FPasHl.GetTokenLen;
-      while (not FPasHl.GetEol) and (not FPasHl.GetTokenIsCommentEnd) do begin
-        FPasHl.Next;
-        if not FPasHl.GetTokenIsComment then break;
+      repeat
         TkEnd := ToPos(FPasHl.GetTokenPos) + FPasHl.GetTokenLen;
-      end;
+        IsEnd := FPasHl.GetTokenIsCommentEnd;
+        FPasHl.Next;
+      until IsEnd or FPasHl.GetEol or not FPasHl.GetTokenIsComment;
+      if FPasHl.GetEol and (not IsEnd) and (lafPastEOL in MarkupFor(FFoundPos[0].Kind).Features) then
+        TkEnd := MaxInt; // past eol
       FFoundPos[0].EndPos.Y := aRow;
       FFoundPos[0].EndPos.X := TkEnd;
       LogX := TkEnd;
+      if FPasHl.GetEol then
+        exit;
     end
     else
       FFoundPos := nil;
@@ -463,12 +483,14 @@ begin
     then
       FPasHl.StartAtLineIndex(ToIdx(pos.Y));
     FPasHl.NextToLogX(pos.X);
-    TkEnd := ToPos(FPasHl.GetTokenPos) + FPasHl.GetTokenLen;
-    while (not FPasHl.GetEol) and (not FPasHl.GetTokenIsCommentEnd) do begin
-      FPasHl.Next;
-      if not FPasHl.GetTokenIsComment then break;
+    repeat
       TkEnd := ToPos(FPasHl.GetTokenPos) + FPasHl.GetTokenLen;
-    end;
+      IsEnd := FPasHl.GetTokenIsCommentEnd;
+      FPasHl.Next;
+    until IsEnd or FPasHl.GetEol or not FPasHl.GetTokenIsComment;
+
+    if FPasHl.GetEol and (not IsEnd) and (lafPastEOL in MarkupFor(Kind).Features) then
+      TkEnd := MaxInt; // past eol
 
     i := Length(FFoundPos);
     SetLength(FFoundPos, i + 1);
@@ -497,6 +519,7 @@ begin
     end
     else
     if (FFoundPos[FNxtIdx].EndPos.X > aStartCol.Logical) and
+       (FFoundPos[FNxtIdx].EndPos.X <> MaxInt) and
        (FFoundPos[FNxtIdx].EndPos.y = aRow)
     then begin
       ANextLog := FFoundPos[FNxtIdx].EndPos.X;
@@ -511,21 +534,20 @@ function TSynEditTodoMarkup.GetMarkupAttributeAtRowCol(const aRow: Integer;
   ): TSynSelectedColor;
 begin
   Result := nil;
-  if aStartCol.Logical > FLineLen then
-    exit;
   while (Result = nil) and (FMrkIdx < Length(FFoundPos)) do begin
     if (FFoundPos[FMrkIdx].StartPos.X > aStartCol.Logical) and
        (FFoundPos[FMrkIdx].StartPos.Y = aRow)
     then
       exit;
     if (FFoundPos[FMrkIdx].EndPos.X > aStartCol.Logical) or
+       (FFoundPos[FMrkIdx].EndPos.X = MaxInt) or
        (FFoundPos[FMrkIdx].EndPos.y > aRow)
     then begin
-      case FFoundPos[FMrkIdx].Kind of
-        ckTodo: Result := CommentAttribTodo;
-        ckDone: Result := CommentAttribDone;
-        else    Result := CommentAttribNote;
-      end;
+      Result := MarkupFor(FFoundPos[FMrkIdx].Kind);
+      if (FFoundPos[FMrkIdx].EndPos.y > aRow) and
+         not (lafPastEOL in MarkupFor(FFoundPos[FMrkIdx].Kind).Features)
+      then
+        Result := nil;
       exit;
     end;
 
@@ -545,13 +567,10 @@ begin
     then
       exit;
     if (FFoundPos[FMrkIdx].EndPos.X > aWrapCol.Logical) or
+       (FFoundPos[FMrkIdx].EndPos.X = MaxInt) or
        (FFoundPos[FMrkIdx].EndPos.y > aRow)
     then begin
-      case FFoundPos[FMrkIdx].Kind of
-        ckTodo: Result := CommentAttribTodo;
-        ckDone: Result := CommentAttribDone;
-        else    Result := CommentAttribNote;
-      end;
+      Result := MarkupFor(FFoundPos[FMrkIdx].Kind);
       exit;
     end;
 

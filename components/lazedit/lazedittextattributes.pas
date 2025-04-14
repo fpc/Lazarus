@@ -41,12 +41,10 @@ type
 
 
 
-  //TLazTextAttributeFeature = (
-  //  lafForeColor, lafBackColor,
-  //  lafFrameColor,
-  //  lafAlpha, lafPrior,
-  //  lafStyle, lafStyleMask
-  //);
+  TLazTextAttributeFeature = (
+    lafPastEOL       // color extends past eol
+  );
+  TLazTextAttributeFeatures = set of TLazTextAttributeFeature;
 
   TLazTextAttrLineStyle = (
     slsSolid,  // PS_SOLID pen
@@ -92,6 +90,8 @@ type
   TLazCustomEditTextAttribute = class(TPersistent)
   protected type
     TLazTextAttributeColor = (lacForeColor, lacBackColor, lacFrameColor);
+  strict private
+    FSupportedFeatures: TLazTextAttributeFeatures;
   private
     // 0 or -1 start/end before/after line // 1 first char
     FStartX, FEndX: TLazEditDisplayTokenBound;
@@ -100,10 +100,10 @@ type
     FFrameEdges: TLazTextAttrFrameEdges;
     FFrameStyle: TLazTextAttrLineStyle;
     FStyle: TFontStyles;
+    FFeatures: TLazTextAttributeFeatures;
 
     FUpdateCount: integer;
     FHasUpdates: Boolean;
-
   protected
     function GetColor(AnIndex: TLazTextAttributeColor): TColor; inline;
     function GetAlpha({%H-}AnIndex: TLazTextAttributeColor): byte; virtual;
@@ -124,28 +124,35 @@ type
     procedure SetStyle(AValue: TFontStyles);
     procedure SetStyleMask({%H-}AValue: TFontStyles); virtual;
     procedure SetStylePriority({%H-}AnIndex: TFontStyle; {%H-}AValue: integer); virtual;
-
+    procedure SetFeatures(AValue: TLazTextAttributeFeatures);
   protected
     procedure Changed;
     procedure DoChanged; virtual;
     procedure Init; virtual;
     procedure DoClear; virtual;
+    procedure AssignSupportedFeaturesFrom(ASource: TLazCustomEditTextAttribute); // Not called by assign, must be called explicitly
     procedure AssignColorsFrom(ASource: TLazCustomEditTextAttribute); virtual;
     procedure AssignFrom(ASource: TLazCustomEditTextAttribute); virtual;
+    function  DefaultSupportedFeatures: TLazTextAttributeFeatures; virtual;
   public
-    constructor Create;
+    constructor Create; overload;
+    constructor Create(ASupportedFeatures: TLazTextAttributeFeatures); overload;
+    // Assign does not change SupportedFeatures
     procedure Assign(ASource: TPersistent); override;
     procedure AssignColors(ASource: TLazCustomEditTextAttribute);
     procedure Clear;
     procedure BeginUpdate;
     procedure EndUpdate;
     function  IsEnabled: boolean; virtual;
+    procedure UpdateSupportedFeatures(AnAddSupportedFeatures, ARemoveSupportedFeatures: TLazTextAttributeFeatures);
     procedure SetAllPriorities(APriority: integer); virtual;
     // boundaries of the frame
     procedure SetFrameBoundsPhys(AStart, AEnd: Integer);
     procedure SetFrameBoundsLog(AStart, AEnd: Integer; AStartOffs: Integer = 0; AEndOffs: Integer = 0);
     property StartX: TLazEditDisplayTokenBound read FStartX write FStartX;
     property EndX: TLazEditDisplayTokenBound read FEndX write FEndX;
+
+    property SupportedFeatures: TLazTextAttributeFeatures read FSupportedFeatures;
   public
     property Foreground: TColor index lacForeColor read GetColor write SetColor;
     property Background: TColor index lacBackColor read GetColor write SetColor;
@@ -178,6 +185,8 @@ type
     property ItalicPriority:    integer index fsItalic read GetStylePriority write SetStylePriority;
     property UnderlinePriority: integer index fsUnderline read GetStylePriority write SetStylePriority;
     property StrikeOutPriority: integer index fsStrikeOut read GetStylePriority write SetStylePriority;
+
+    property Features: TLazTextAttributeFeatures read FFeatures write SetFeatures;
   end;
 
   { TLazEditTextAttribute }
@@ -197,6 +206,7 @@ type
     FDefaultFrameStyle: TLazTextAttrLineStyle;
     FDefaultStyle: TFontStyles;
     FDefaultStylePriority: array[TFontStyle] of Integer;
+    FDefaultFeatures: TLazTextAttributeFeatures;
 
   protected
     function GetPriority(AnIndex: TLazTextAttributeColor): integer; override;
@@ -205,6 +215,7 @@ type
     procedure SetPriority(AnIndex: TLazTextAttributeColor; AValue: integer); override;
     procedure SetStylePriority(AnIndex: TFontStyle; AValue: integer); override;
 
+    function GetFeaturesStored: Boolean;
     function GetColorStored(AnIndex: TLazTextAttributeColor): Boolean;
     function GetPriorityStored(AnIndex: TLazTextAttributeColor): Boolean;
     function GetFrameStyleStored: Boolean;
@@ -220,8 +231,11 @@ type
     procedure AssignFrom(ASource: TLazCustomEditTextAttribute); override;
   public
     constructor Create;
+    constructor Create(ASupportedFeatures: TLazTextAttributeFeatures);
     constructor Create(ACaption: string; AStoredName: String = '');
+    constructor Create(ACaption: string; AStoredName: String; ASupportedFeatures: TLazTextAttributeFeatures);
     constructor Create(ACaption: PString; AStoredName: String = ''); // e.g. pointer to resourcestring. (Must be global var/const)
+    constructor Create(ACaption: PString; AStoredName: String; ASupportedFeatures: TLazTextAttributeFeatures); // e.g. pointer to resourcestring. (Must be global var/const)
     procedure SetCaption(ACaption: String);
 
     procedure InternalSaveDefaultValues; virtual;
@@ -247,6 +261,8 @@ type
     property ItalicPriority    stored GetStylePriorityStored;
     property UnderlinePriority stored GetStylePriorityStored;
     property StrikeOutPriority stored GetStylePriorityStored;
+
+    property Features stored GetFeaturesStored;
 
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
@@ -465,6 +481,15 @@ begin
   //raise exception.Create('abstract');
 end;
 
+procedure TLazCustomEditTextAttribute.SetFeatures(AValue: TLazTextAttributeFeatures);
+begin
+  AValue := AValue * FSupportedFeatures;
+  if FFeatures = AValue then
+    exit;
+  FFeatures := AValue;
+  Changed;
+end;
+
 procedure TLazCustomEditTextAttribute.Changed;
 begin
   FHasUpdates := FUpdateCount > 0;
@@ -501,12 +526,21 @@ begin
   FEndX.Offset     := 0;
 end;
 
+procedure TLazCustomEditTextAttribute.AssignSupportedFeaturesFrom(
+  ASource: TLazCustomEditTextAttribute);
+begin
+  FSupportedFeatures := ASource.SupportedFeatures;
+  FFeatures          := FFeatures * SupportedFeatures;
+  Changed;
+end;
+
 procedure TLazCustomEditTextAttribute.AssignColorsFrom(ASource: TLazCustomEditTextAttribute);
 begin
   FColors     := ASource.FColors;
   FFrameEdges := ASource.FFrameEdges;
   FFrameStyle := ASource.FFrameStyle;
   FStyle      := ASource.FStyle;
+  FFeatures   := ASource.FFeatures * SupportedFeatures;
 end;
 
 procedure TLazCustomEditTextAttribute.AssignFrom(ASource: TLazCustomEditTextAttribute);
@@ -515,8 +549,19 @@ begin
   FEndX       := ASource.FEndX;
 end;
 
+function TLazCustomEditTextAttribute.DefaultSupportedFeatures: TLazTextAttributeFeatures;
+begin
+  Result := [];
+end;
+
 constructor TLazCustomEditTextAttribute.Create;
 begin
+  Create(DefaultSupportedFeatures);
+end;
+
+constructor TLazCustomEditTextAttribute.Create(ASupportedFeatures: TLazTextAttributeFeatures);
+begin
+  FSupportedFeatures := ASupportedFeatures;
   Init;
 end;
 
@@ -578,6 +623,12 @@ begin
   Result := False;
 end;
 
+procedure TLazCustomEditTextAttribute.UpdateSupportedFeatures(AnAddSupportedFeatures,
+  ARemoveSupportedFeatures: TLazTextAttributeFeatures);
+begin
+  FSupportedFeatures := FSupportedFeatures - ARemoveSupportedFeatures + AnAddSupportedFeatures;
+end;
+
 procedure TLazCustomEditTextAttribute.SetAllPriorities(APriority: integer);
 begin
   assert(false, 'TLazCustomEditTextAttribute.SetAllPriorities: abstract');
@@ -636,6 +687,11 @@ begin
     exit;
   FStylePriority[AnIndex] := AValue;
   Changed;
+end;
+
+function TLazEditTextAttribute.GetFeaturesStored: Boolean;
+begin
+  Result := FFeatures <> FDefaultFeatures;
 end;
 
 function TLazEditTextAttribute.GetColorStored(AnIndex: TLazTextAttributeColor): Boolean;
@@ -735,15 +791,33 @@ begin
   inherited Create;
 end;
 
+constructor TLazEditTextAttribute.Create(ASupportedFeatures: TLazTextAttributeFeatures);
+begin
+  FCaption := @FFixedCaption;
+  inherited Create(ASupportedFeatures);
+end;
+
 constructor TLazEditTextAttribute.Create(ACaption: string; AStoredName: String);
 begin
+  Create(ACaption, AStoredName, DefaultSupportedFeatures);
+end;
+
+constructor TLazEditTextAttribute.Create(ACaption: string; AStoredName: String;
+  ASupportedFeatures: TLazTextAttributeFeatures);
+begin
   FFixedCaption := ACaption;
-  Create(@FFixedCaption, AStoredName);
+  Create(@FFixedCaption, AStoredName, ASupportedFeatures);
 end;
 
 constructor TLazEditTextAttribute.Create(ACaption: PString; AStoredName: String);
 begin
-  Create;
+  Create(ACaption, AStoredName, DefaultSupportedFeatures);
+end;
+
+constructor TLazEditTextAttribute.Create(ACaption: PString; AStoredName: String;
+  ASupportedFeatures: TLazTextAttributeFeatures);
+begin
+  Create(ASupportedFeatures);
   if ACaption <> nil then
     FCaption := ACaption;
 
@@ -760,6 +834,7 @@ begin
   FDefaultFrameStyle    := FFrameStyle;
   FDefaultStyle         := FStyle;
   FDefaultStylePriority := FStylePriority;
+  FDefaultFeatures      := FFeatures;
 end;
 
 procedure TLazEditTextAttribute.SetAllPriorities(APriority: integer);
