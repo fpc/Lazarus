@@ -222,7 +222,7 @@ type
     property Enabled;
     property ExtendedSelect;
     property FixedColor;
-    property FixedCols;
+    property FixedCols default 0;
     property Flat;
     property Font;
     property GridLineWidth;
