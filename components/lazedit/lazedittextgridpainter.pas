@@ -37,7 +37,7 @@ type
 
   TLazEditTextGridPainterFontInfo = class(TRefCountedObject)
   strict private const
-    HIGH_ORD_FONTSTYLES = (1 << ord(High(TFontStyle)) );
+    HIGH_ORD_FONTSTYLES = (2 << ord(High(TFontStyle)) ) - 1;
   strict private type
     TLazEditTextGridPainterFontStyleInfo = record
       Font: TFont;
