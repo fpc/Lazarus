@@ -35,13 +35,13 @@ uses
   // SynEdit
   SynEdit, SynEditMiscClasses, SynGutterCodeFolding, SynGutterLineNumber,
   SynEditTypes, SynGutterChanges, SynEditMouseCmds, SynEditHighlighter, SynEditStrConst,
-  SynColorAttribEditor,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf, IDEUtils,
   EditorSyntaxHighlighterDef,
   // IdeConfig
   IDEProcs, LazConf,
   // IDE
+  SynColorAttribEditor,
   EditorOptions, editor_general_options,
   LazarusIDEStrConsts, SourceMarks, SourceSynEditor;
 
