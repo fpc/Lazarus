@@ -207,8 +207,8 @@ type
     ofEnableSizing,        // Dialog can be resized, e.g. via the mouse.
     ofDontAddToRecent,     // Do not add the path to the history list.
     ofForceShowHidden,     // Show hidden files.
-    ofViewDetail,          // Windows Vista+: Indicate to the Open dialog box that the preview pane should always be displayed.
-    ofAutoPreview          // OS and interface dependent.
+    ofViewDetail,          // Details are OS and interface dependent
+    ofAutoPreview          // Windows Vista+: Indicate to the Open dialog box that the preview pane should always be displayed.
     );
   TOpenOptions = set of TOpenOption;
 
