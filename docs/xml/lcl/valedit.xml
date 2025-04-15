@@ -1116,13 +1116,24 @@ stored in the TDisplayOptions set type.
 </seealso>
 </element>
 <element name="TDisplayOption.doColumnTitles">
-<short>Displays column titles.</short>
+<short>
+Displays column titles on the associated TValueListEditor control.
+</short>
 </element>
 <element name="TDisplayOption.doAutoColResize">
-<short>Automatically resizes columns to the width of its content.</short>
+<short>
+Automatically resizes columns to the width of their content. doKeyColFixed 
+prevents the Key column from being automatically resized.
+</short>
 </element>
 <element name="TDisplayOption.doKeyColFixed">
-<short>Displays the Key names column as a fixed caption column.</short>
+<short>
+Prevents the Key column in TValueListEditor from being resized using the 
+automatic column resizing algorithm. Uses the ColWidth value assigned to the 
+control instead. Overridden by calls to the AutoSizeColumn or AutoSizeColumns 
+methods in TValueListEditor. goColSizing in TValueListEditor.Options allows 
+the column to be manually resized.
+</short>
 </element>
 
 <element name="TDisplayOptions">
