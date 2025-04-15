@@ -249,7 +249,7 @@ begin
     Dlg.InitialDir:=GetCurrentDirUTF8;
     Dlg.Title:='Save layout as ...';
     Dlg.Filter:='*.xml|*.xml';
-    Dlg.Options:=Dlg.Options+[ofPathMustExist,ofHideReadOnly,ofOverwritePrompt];
+    Dlg.Options:=Dlg.Options+[ofPathMustExist,ofNoReadOnlyReturn,ofOverwritePrompt];
     if not Dlg.Execute then exit;
     Filename:=Dlg.FileName;
     if ExtractFileExt(Filename)='' then
