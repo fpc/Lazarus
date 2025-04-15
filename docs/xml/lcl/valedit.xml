@@ -1122,17 +1122,20 @@ Displays column titles on the associated TValueListEditor control.
 </element>
 <element name="TDisplayOption.doAutoColResize">
 <short>
-Automatically resizes columns to the width of their content. doKeyColFixed 
-prevents the Key column from being automatically resized.
+Automatically resizes the columns to fill the available space on the
+associated TValueListEditor control. doKeyColFixed prevents the Key column
+from being automatically resized; only the Value column is resized to fill the
+client area.
 </short>
+</element>
 </element>
 <element name="TDisplayOption.doKeyColFixed">
 <short>
-Prevents the Key column in TValueListEditor from being resized using the 
-automatic column resizing algorithm. Uses the ColWidth value assigned to the 
-control instead. Overridden by calls to the AutoSizeColumn or AutoSizeColumns 
-methods in TValueListEditor. goColSizing in TValueListEditor.Options allows 
-the column to be manually resized.
+Prevents the Key column in TValueListEditor from being resized using the
+doAutoColResize automatic column resizing algorithm. Uses the ColWidth value
+assigned to the control instead. Overridden by calls to the AutoSizeColumn or
+AutoSizeColumns methods in TValueListEditor. goColSizing in
+TValueListEditor.Options allows the column to be manually resized.
 </short>
 </element>
 
