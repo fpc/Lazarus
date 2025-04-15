@@ -2984,7 +2984,75 @@ to the <var>TItemPropList</var> member in the <var>Strings</var> property.
 <element name="TValueListEditor.Enabled" link="#lcl.controls.TControl.Enabled"/>
 <element name="TValueListEditor.ExtendedSelect" link="#lcl.grids.TCustomGrid.ExtendedSelect"/>
 <element name="TValueListEditor.FixedColor" link="#lcl.grids.TCustomGrid.FixedColor"/>
-<element name="TValueListEditor.FixedCols" link="#lcl.grids.TCustomGrid.FixedCols"/>
+
+<element name="TValueListEditor.FixedCols">
+<short>
+The number of fixed columns on the control.	
+</short>
+<descr>
+<p>
+<var>FixedCols</var> is a published <var>Integer</var> property in 
+<var>TValueListEditor</var>. It contains the fixed column count for the 
+control. The default value for the property is 0, and causes both the Key and 
+Value columns on the control to be displayed using the background color 
+specified in Color (or ParentColor when enabled). 
+</p>
+<p>
+FixedCols can be changed to 1 to force the Key column to be displayed using 
+the FixedColor and TitleStyle for the control. A value other than 0 or 1 
+assigned to the property is ignored. Fixed columns are normally displayed on 
+the left edge of the grid and become part of the control which is not scrolled 
+horizontally.
+</p>
+<p>
+When set to 1, a cell in the Key column cannot be edited using a cell editor 
+at run-time. A can cannot be edited if keyEdit has not been included in 
+KeyOptions - even when FixedCols is set to 0. The cell value can be modified 
+using the Keys property for all combinations of FixedCols and KeyOptions.
+</p>
+<p>
+Setting a new value for the FixedCols property causes several actions to be 
+performed:
+</p>
+<ul>
+<li>
+The values in FixedCols and FixedRows are verified by calling CheckFixedCount, 
+which can raise an exception if either value is not in range for the grid 
+control.	
+</li>
+<li>
+EditorMode is set to <b>False</b> to hide a visible cell Editor on the control.
+</li>
+<li>
+If Columns has been Enabled, UpdateSelectionRange is called to refresh the 
+selection rectangle for the control. ColumnsChanged is called to apply the 
+visual change to the control. If Columns has not been Enabled, 
+MoveNextSelectable and UpdateSelectionRange are called to refresh the cells on the control.	
+</li>
+</ul>
+<p>
+Use FixedRows to get or set the number of fixed rows displayed for the grid 
+control.
+</p>
+<p>
+Use the Keys property to maintain a key name displayed in a specific row on 
+the control. Use Values to maintain the value associated with a specific key 
+name. Or, use Strings to access key / value pairs on the control.
+</p>
+</descr>
+<seealso>
+<link id="TValueListEditor.Keys"/>
+<link id="TValueListEditor.Values"/>
+<link id="TValueListEditor.Strings"/>
+<link id="TValueListEditor.InsertColRow"/>
+<link id="TValueListEditor.InsertRow"/>
+<link id="TValueListEditor.InsertRowWithValues"/>
+<link id="#lcl.grids.TCustomDrawGrid.FixedCols">TCustomDrawGrid.FixedCols</link>
+<link id="#lcl.grids.TCustomDrawGrid.FixedCols">TCustomDrawGrid.FixedRows</link>
+<link id="#lcl.grids.TCustomGrid.FixedCols">TCustomGrid.FixedCols</link>
+</seealso>
+</element>
+
 <element name="TValueListEditor.Flat" link="#lcl.grids.TCustomGrid.Flat"/>
 <element name="TValueListEditor.Font" link="#lcl.controls.TControl.Font"/>
 <element name="TValueListEditor.GridLineWidth" link="#lcl.grids.TCustomGrid.GridLineWidth"/>
