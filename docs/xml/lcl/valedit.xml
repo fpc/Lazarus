@@ -2993,9 +2993,10 @@ horizontally.
 </p>
 <p>
 When set to 1, a cell in the Key column cannot be edited using a cell editor 
-at run-time. A can cannot be edited if keyEdit has not been included in 
-KeyOptions - even when FixedCols is set to 0. The cell value can be modified 
-using the Keys property for all combinations of FixedCols and KeyOptions.
+at run-time. A cell in the Key column cannot be edited if keyEdit has not been 
+included in KeyOptions - even when FixedCols is set to 0. The cell value can 
+be modified using the Keys property for all combinations of FixedCols and 
+KeyOptions.
 </p>
 <p>
 Setting a new value for the FixedCols property causes several actions to be 
