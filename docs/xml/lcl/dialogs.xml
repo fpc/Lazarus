@@ -1484,10 +1484,18 @@ Not used in the current LCL version.
 <short>Show hidden files.</short>
 </element>
 <element name="TOpenOption.ofViewDetail">
-<short>Details are OS and interface dependent.</short>
+<short>
+Indicates that the preview pane should be displayed on the Open dialog box. 
+Used in gtk1, qt4, qt5, and qt6 widgetsets. Note: not implemented for gtk2 and 
+gtk3.
+</short>
 </element>
 <element name="TOpenOption.ofAutoPreview">
-<short>OS and interface dependent.</short>
+<short>
+For Windows Vista (and later versions), indicates that the preview pane should 
+always be displayed on an Open dialog box. Causes the FOS_FORCEPREVIEWPANEON 
+flag to be included for a dialog using the Windows widgetset.
+</short>
 </element>
 
 <element name="TOpenOptions">
@@ -1540,12 +1548,6 @@ Added in LCL version 4.0.
 <element name="TOpenOptionEx.ofHidePinnedPlaces">
 <short>
 Hides items shown by default in the view's navigation pane. (Windows Vista+)
-</short>
-</element>
-<element name="TOpenOptionEx.ofForcePreviewPaneOn">
-<short>
-Indicates an Open dialog should always display the preview pane. (Windows 
-Vista+)
 </short>
 </element>
 <element name="TOpenOptionEx.ofStrictFileTypes">
@@ -1632,8 +1634,7 @@ Allows the dialog to be resized.
 </dd>
 <dt>ofViewDetail</dt>
 <dd>
-Enables the file detail view in the QT4 and QT5 widgetsets. Not implemented 
-for any other platforms in the current LCL version.
+Enables the preview pane on an Open dialog.
 </dd>
 </dl>
 <p>
@@ -2121,8 +2122,7 @@ Allows the dialog to be resized at run-time.
 </dd>
 <dt>ofViewDetail</dt>
 <dd>
-Enables the file detail view in the QT4 and QT5 widgetsets. Not implemented 
-for any other platforms in the current LCL version.
+Enables the preview pane on an Open dialog.
 </dd>
 </dl>
 <p>
