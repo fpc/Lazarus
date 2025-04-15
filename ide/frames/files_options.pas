@@ -134,7 +134,7 @@ begin
   OpenDialog := IDEOpenDialogClass.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
-    OpenDialog.Options := OpenDialog.Options+[ofFileMustExist, ofReadOnly]; // allow select read only files
+    OpenDialog.Options := OpenDialog.Options + [ofFileMustExist];
     OpenDialog.Filter:=
       Format('%s (*%s)|*%s|', [dlgFilterExecutable, GetExecutableExt, GetExecutableExt]) +
       Format('%s (%s)|%s', [dlgFilterAll, GetAllFilesMask, GetAllFilesMask]);
@@ -192,15 +192,13 @@ begin
     // set title
     if Sender = LazarusDirButton then begin
       OpenDialog.Title := lisChooseLazarusSourceDirectory;
-      OpenDialog.Options := OpenDialog.Options
-        + [ofPathMustExist,ofReadOnly]; // allow select read only folder
+      OpenDialog.Options := OpenDialog.Options + [ofPathMustExist];
       lDirText := LazarusDirComboBox.Text;
       lDirName := EnvironmentOptions.GetParsedValue(eopLazarusDirectory, lDirText);
     end
     else if Sender = FPCSourceDirButton then begin
       OpenDialog.Title := lisChooseFPCSourceDir;
-      OpenDialog.Options := OpenDialog.Options
-        + [ofPathMustExist,ofReadOnly]; // allow select read only folder
+      OpenDialog.Options := OpenDialog.Options + [ofPathMustExist];
       lDirText := FPCSourceDirComboBox.Text;
       lDirName := EnvironmentOptions.GetParsedValue(eopFPCSourceDirectory, lDirText);
     end
