@@ -12,7 +12,7 @@
 
 procedure TDBDateEdit.DataChange(Sender: TObject);
 begin
-  if FDataLink.Field <> nil then
+  if (FDataLink.Field <> nil) and (not FDataLink.Field.IsNull) then
     Self.Date := FDataLink.Field.AsDateTime
   else
     Text := '';
