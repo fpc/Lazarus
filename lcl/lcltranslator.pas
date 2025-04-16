@@ -137,7 +137,18 @@ begin
 
   FoundLang := LangID;
 
+  {$IFDEF darwin}
+  // macOS has special location of resources in bundle. See issue #41592.
+  // Resources are located in "project1-directory/project1.app/Contents/Resources/".
+  // Executable is located in either "project1-directory/project1"
+  // or "project1-directory/project1.app/Contents/MacOS/project1".
+  AppDir := ParamStrUTF8(0)+'.app/Contents/Resources/';
+  if not DirectoryExists(AppDir) then
+    AppDir := CleanAndExpandDirectory(ExtractFilePath(ParamStrUTF8(0))+'../Resources/');
+  if not DirectoryExists(AppDir) then
+  {$ENDIF}
   AppDir := ExtractFilePath(ParamStrUTF8(0));
+
   LCFileName := ChangeFileExt(GetLCFileName, LCExt);
 
   if Dir<>'' then
