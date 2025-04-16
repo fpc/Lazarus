@@ -1184,6 +1184,10 @@ msgctxt "lazarusidestrconsts.dlgcoloadsavehint"
 msgid "Compiler options can be saved to an XML file."
 msgstr "Ambil/Simpan"
 
+#: lazarusidestrconsts.dlgcolorfeatpasteol
+msgid "Extend past EOL"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcolorlink
 msgid "(Edit Color)"
 msgstr ""

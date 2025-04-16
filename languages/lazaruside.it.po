@@ -1191,6 +1191,10 @@ msgctxt "lazarusidestrconsts.dlgcoloadsavehint"
 msgid "Compiler options can be saved to an XML file."
 msgstr "Le opzioni del compilatore possono essere salvate in un file XML"
 
+#: lazarusidestrconsts.dlgcolorfeatpasteol
+msgid "Extend past EOL"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcolorlink
 msgid "(Edit Color)"
 msgstr "(Edita colore)"

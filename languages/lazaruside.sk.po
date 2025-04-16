@@ -1167,6 +1167,10 @@ msgctxt "lazarusidestrconsts.dlgcoloadsavehint"
 msgid "Compiler options can be saved to an XML file."
 msgstr "Voľby prekladača môžu byť uložené do XML súboru."
 
+#: lazarusidestrconsts.dlgcolorfeatpasteol
+msgid "Extend past EOL"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcolorlink
 msgid "(Edit Color)"
 msgstr ""

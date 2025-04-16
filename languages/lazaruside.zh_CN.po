@@ -1165,6 +1165,10 @@ msgctxt "lazarusidestrconsts.dlgcoloadsavehint"
 msgid "Compiler options can be saved to an XML file."
 msgstr "编译器选项可以保存到一个XML文件."
 
+#: lazarusidestrconsts.dlgcolorfeatpasteol
+msgid "Extend past EOL"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcolorlink
 msgid "(Edit Color)"
 msgstr "(编辑颜色)"

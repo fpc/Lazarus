@@ -1173,6 +1173,10 @@ msgstr "Linkitys"
 msgid "Compiler options can be saved to an XML file."
 msgstr "Kääntäjän asetukset voidaan tallettaa XML tiedostoon."
 
+#: lazarusidestrconsts.dlgcolorfeatpasteol
+msgid "Extend past EOL"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcolorlink
 msgid "(Edit Color)"
 msgstr "(Muokkaa väriä)"

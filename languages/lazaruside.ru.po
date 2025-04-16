@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-04-04 00:10+0300\n"
+"PO-Revision-Date: 2025-04-16 16:15+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -1160,6 +1160,10 @@ msgstr "Компоновка"
 msgctxt "lazarusidestrconsts.dlgcoloadsavehint"
 msgid "Compiler options can be saved to an XML file."
 msgstr "Параметры компилятора могут быть сохранены в файл XML."
+
+#: lazarusidestrconsts.dlgcolorfeatpasteol
+msgid "Extend past EOL"
+msgstr "Применять за концом строки"
 
 #: lazarusidestrconsts.dlgcolorlink
 msgid "(Edit Color)"

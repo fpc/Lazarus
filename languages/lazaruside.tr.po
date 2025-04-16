@@ -1170,6 +1170,10 @@ msgstr "Bağlanıyor"
 msgid "Compiler options can be saved to an XML file."
 msgstr "Derleyici seçenekleri bir XML dosyasına kaydedilebilir."
 
+#: lazarusidestrconsts.dlgcolorfeatpasteol
+msgid "Extend past EOL"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcolorlink
 msgid "(Edit Color)"
 msgstr "(Renk Düzenle)"
