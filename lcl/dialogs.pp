@@ -186,15 +186,15 @@ type
   TOpenOption = (
     ofReadOnly,            // Causes the Read Only check box to be selected initially when the dialog box is created. This flag indicates the state of the Read Only check box when the dialog box is closed.
     ofOverwritePrompt,     // If selected file exists, show a message that file will be overwritten.
-    ofHideReadOnly,        // Hides the Read Only check box.
+    ofHideReadOnly,        // Windows only: Hides the Read Only check box (pre-Vista).
     ofNoChangeDir,         // Do not change current directory.
     ofShowHelp,            // Show a help button.
-    ofNoValidate,          // Disable file name validation using OFN_NOVALIDATE on the Windows platform. Allow file names with invalid characters.
+    ofNoValidate,          // Windows only: Disable file name validation. Allow file names with invalid characters.
     ofAllowMultiSelect,    // Allow multi-selection in dialog.
     ofExtensionDifferent,  // Option is set after the dialog is executed (so, don't set it yourself) if DefaultExt<>'' and Extension<>DefaultExt.
     ofPathMustExist,       // Show an error message if selected path does not exist.
     ofFileMustExist,       // Show an error message if selected file does not exist.
-    ofCreatePrompt,        // Enable a verification prompt when a file or directory needs to be created for a file dialog.
+    ofCreatePrompt,        // Windows only: Enable a verification prompt when a file or directory needs to be created for a file dialog.
     ofShareAware,          // Include the OFN_SHAREAWARE flag on the Windows platform.
     ofNoReadOnlyReturn,    // Do not return file names that are read-only.
     ofNoTestFileCreate,    // Windows only: the OS does not check if the item as specified in the TSaveDialog can actually be created.
