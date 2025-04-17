@@ -209,7 +209,7 @@ type
     ofDontAddToRecent, // do not add the path to the history list
     ofForceShowHidden, // show hidden files
     ofViewDetail,      // details are OS and interface dependent
-    ofAutoPreview      // details are OS and interface dependent
+    ofAutoPreview      // Windows Vista+: Indicates to the Open dialog box that the preview pane should always be displayed.    );
     );
   TOpenOptions = set of TOpenOption;
 
@@ -217,7 +217,6 @@ type
   // Currently just Windows Vista+ (IFileDialog) options
   TOpenOptionEx = (
     ofHidePinnedPlaces,         //Windows Vista+ Hide items shown by default in the view's navigation pane.
-    ofForcePreviewPaneOn,       //Windows Vista+ Indicates to the Open dialog box that the preview pane should always be displayed (a NARG/NARL option IMHO)
     ofStrictFileTypes,          //Windows Vista+ In the Save dialog, only allow the user to choose a file that has one of the file name extensions specified through Filter property
     ofPickFolders,              //Windows Vista+ Turns the dialog into a TSelectDirectoryDialog
     ofOkButtonNeedsInteraction, //Windows Vista+ The OK button will be disabled until the user navigates the view or edits the filename (if applicable).

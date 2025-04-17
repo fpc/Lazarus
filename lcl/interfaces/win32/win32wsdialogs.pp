@@ -881,6 +881,7 @@ begin
   if ofDontAddToRecent in Options then Result := Result or FOS_DONTADDTORECENT;
   if SelectFolder or (ofPickFolders in OptionsEx)  then Result := Result or FOS_PICKFOLDERS;
   if ofForceShowHidden in Options then Result := Result or FOS_FORCESHOWHIDDEN;
+  if ofAutoPreview in Options then Result := Result or FOS_FORCEPREVIEWPANEON;
   { unavailable options:
     ofHideReadOnly
     ofEnableSizing
@@ -894,7 +895,6 @@ begin
     FOS_SUPPORTSTREAMABLEITEMS
   }
   if ofHidePinnedPlaces in OptionsEx then Result := Result or FOS_HIDEPINNEDPLACES;
-  if ofForcePreviewPaneOn in OptionsEx then Result := Result or FOS_FORCEPREVIEWPANEON;
   if ofStrictFileTypes in OptionsEx then Result := Result or FOS_STRICTFILETYPES;
   if ofOkButtonNeedsInteraction in OptionsEx then Result := Result or FOS_OKBUTTONNEEDSINTERACTION;
   if ofForceFileSystem in OptionsEx then Result := Result or FOS_FORCEFILESYSTEM;
