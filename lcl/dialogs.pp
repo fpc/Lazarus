@@ -185,7 +185,7 @@ type
   
   TOpenOption = (
     ofReadOnly,            // Causes the Read Only check box to be selected initially when the dialog box is created. This flag indicates the state of the Read Only check box when the dialog box is closed.
-    ofOverwritePrompt,     // If selected file exists show a message, that file will be overwritten.
+    ofOverwritePrompt,     // If selected file exists, show a message that file will be overwritten.
     ofHideReadOnly,        // Hides the Read Only check box.
     ofNoChangeDir,         // Do not change current directory.
     ofShowHelp,            // Show a help button.
@@ -197,18 +197,18 @@ type
     ofCreatePrompt,        // Enable a verification prompt when a file or directory needs to be created for a file dialog.
     ofShareAware,          // Include the OFN_SHAREAWARE flag on the Windows platform.
     ofNoReadOnlyReturn,    // Do not return file names that are read-only.
-    ofNoTestFileCreate,    // Include the OFN_NOTESTFILECREATE flag on the Windows platform.
-    ofNoNetworkButton,     // Disable and hide the Network button on the Windows platform.
-    ofNoLongNames,         // Disable long file names on the Windows platform. Used in classic-style dialogs to force use of file names using the 8.3 format.
-    ofOldStyleDialog,      // Prevents use of the OFN_EXPLORER and dependent flags in dialogs on the Windows platform.
-    ofNoDereferenceLinks,  // Do not resolve links while dialog is shown (only on Windows, see OFN_NODEREFERENCELINKS).
+    ofNoTestFileCreate,    // Windows only: the OS does not check if the item as specified in the TSaveDialog can actually be created.
+    ofNoNetworkButton,     // Windows only: Disable and hide the Network button on the Windows platform.
+    ofNoLongNames,         // Windows only (with ofOldStyleDialog): Disables long file names and force use the 8.3 file names format.
+    ofOldStyleDialog,      // Windows only: Shows the dialog in the old Win9x style.
+    ofNoDereferenceLinks,  // Windows only: When choosing a file shortcut (*.lnk), return the shortcut itself, not the target file.
     ofNoResolveLinks,      // Do not resolve links after Execute.
-    ofEnableIncludeNotify, // Not used in the current LCL version.
+    ofEnableIncludeNotify, // Not used (defined for compatibility with Delphi).
     ofEnableSizing,        // Dialog can be resized, e.g. via the mouse.
-    ofDontAddToRecent,     // Do not add the path to the history list.
+    ofDontAddToRecent,     // Windows only: Do not add the path to the history list.
     ofForceShowHidden,     // Show hidden files.
-    ofViewDetail,          // Details are OS and interface dependent
-    ofAutoPreview          // Windows Vista+: Indicate to the Open dialog box that the preview pane should always be displayed.
+    ofViewDetail,          // Details are OS and interface dependent.
+    ofAutoPreview          // Windows Vista+: Indicates to the Open dialog box that the preview pane should always be displayed.
     );
   TOpenOptions = set of TOpenOption;
 
