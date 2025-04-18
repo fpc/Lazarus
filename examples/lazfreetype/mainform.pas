@@ -121,6 +121,8 @@ end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
+  Panel_Option.ParentBackground := false;
+
   mx := clientwidth div 2;
   my := clientheight div 2;
 
