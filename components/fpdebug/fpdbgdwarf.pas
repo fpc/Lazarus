@@ -908,6 +908,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     procedure CreateMembers;
   protected
     procedure KindNeeded; override;
+    function DoReadSize(const AValueObj: TFpValue; out ASize: TFpDbgValueSize): Boolean; override;
     function GetNestedSymbolEx(AIndex: Int64; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol; override;
     function GetNestedSymbolExByName(const AIndex: String; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol; override;
     function GetNestedSymbolCount: Integer; override;
@@ -6013,6 +6014,21 @@ end;
 procedure TFpSymbolDwarfTypeEnum.KindNeeded;
 begin
   SetKind(skEnum);
+end;
+
+function TFpSymbolDwarfTypeEnum.DoReadSize(const AValueObj: TFpValue; out ASize: TFpDbgValueSize
+  ): Boolean;
+var
+  n: TFpSymbolDwarfType;
+begin
+  Result := inherited DoReadSize(AValueObj, ASize);
+
+  // Starting with DWARF-5 the size is optional and may be gotten from the embedded type
+  if not Result then begin
+    n := NestedTypeInfo;
+    if n <> nil then
+      Result := n.DoReadSize(AValueObj, ASize);
+  end;
 end;
 
 function TFpSymbolDwarfTypeEnum.GetNestedSymbolEx(AIndex: Int64; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol;
