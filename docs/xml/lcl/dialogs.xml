@@ -1375,13 +1375,14 @@ For QT-based platforms, it indicates that the entire dialog model is read-only.
 </element>
 <element name="TOpenOption.ofOverwritePrompt">
 <short>
-If selected file exists shows a message, that file will be overwritten.
+If the selected file exists, a message is displayed that the file will be 
+overwritten.
 </short>
 </element>
 <element name="TOpenOption.ofHideReadOnly">
 <short>
-For the Windows platform, it hides the Read Only check box on the dialog. Not 
-used in other widgetsets.
+For the Windows versions prior to Vista, it hides the Read Only check box on 
+the dialog. Not used in other widgetsets.
 </short>
 </element>
 <element name="TOpenOption.ofNoChangeDir">
@@ -1415,8 +1416,8 @@ options prior to executing a dialog.
 </element>
 <element name="TOpenOption.ofCreatePrompt">
 <short>
-Enables a verification prompt when a file or directory needs to be created 
-for a file dialog.
+Windows only: Enables a verification prompt when a file or directory needs to 
+be created for a file dialog.
 </short>
 </element>
 <element name="TOpenOption.ofShareAware">
@@ -1438,47 +1439,54 @@ if the file or directory is read-only. See TOpenDialog.CheckFile.
 </element>
 <element name="TOpenOption.ofNoTestFileCreate">
 <short>
-Includes the OFN_NOTESTFILECREATE flag on the Windows platform.
+For the Windows platform, the OS does not check if the item specified in a 
+TSaveDialog can actually be created. Includes the OFN_NOTESTFILECREATE flag on 
+the Windows platform.
 </short>
 </element>
 <element name="TOpenOption.ofNoNetworkButton">
 <short>
-Disables and hides the Network button on the Windows platform.
+Disables and hides the Network button on the Windows platform. Not used for 
+other platforms.
 </short>
 </element>
 <element name="TOpenOption.ofNoLongNames">
 <short>
 Disables long file names on the Windows platform. Used in classic-style 
 dialogs to force use of file names using the 8.3 format. Explorer-style 
-dialogs ignore this flag and always display long file names.
+dialogs ignore this flag and always display long file names. Not used for 
+other platforms.
 </short>
 </element>
 <element name="TOpenOption.ofOldStyleDialog">
 <short>
-Prevents use of the OFN_EXPLORER and dependent flags in dialogs on the 
-Windows platform. Also controls whether the Read Only check box is visible on 
-native dialogs.
+Windows only: Shows the dialog in the Win9x style.
 </short>
 </element>
 <element name="TOpenOption.ofNoDereferenceLinks">
 <short>
-Do not resolve links while dialog is shown (only on Windows, see 
-OFN_NODEREFERENCELINKS).
+Windows only: When choosing a file shortcut (*.lnk), return the shortcut 
+itself and not the target file.
 </short>
 </element>
 <element name="TOpenOption.ofNoResolveLinks">
-<short>Do not resolve links after Execute.</short>
+<short>
+Do not resolve links after Execute. This value is not explicitly used in any 
+of the widgetset implementations.
+</short>
 </element>
 <element name="TOpenOption.ofEnableIncludeNotify">
 <short>
-Not used in the current LCL version.
+Not used in the current LCL version. Defined for compatibility with Delphi.
 </short>
 </element>
 <element name="TOpenOption.ofEnableSizing">
 <short>Dialog can be resized, e.g. via the mouse.</short>
 </element>
 <element name="TOpenOption.ofDontAddToRecent">
-<short>Do not add the path to the history list.</short>
+<short>
+Windows only: Do not add the path to the history list.
+</short>
 </element>
 <element name="TOpenOption.ofForceShowHidden">
 <short>Show hidden files.</short>
