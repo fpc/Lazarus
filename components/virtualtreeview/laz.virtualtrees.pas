@@ -14189,17 +14189,17 @@ begin
   TheInstance := HINSTANCE;
   with Screen do
   begin
-    Cursors[crVT_MOVEALL]:=LoadCursor(TheInstance, 'VT_MOVEALL');
-    Cursors[crVT_MOVEEW]:=LoadCursor(TheInstance, 'VT_MOVEEW');
-    Cursors[crVT_MOVENS]:=LoadCursor(TheInstance, 'VT_MOVENS');
-    Cursors[crVT_MOVENW]:=LoadCursor(TheInstance, 'VT_MOVENW');
-    Cursors[crVT_MOVESW]:=LoadCursor(TheInstance, 'VT_MOVESW');
-    Cursors[crVT_MOVESE]:=LoadCursor(TheInstance, 'VT_MOVESE');
-    Cursors[crVT_MOVENE]:=LoadCursor(TheInstance, 'VT_MOVENE');
-    Cursors[crVT_MOVEW]:=LoadCursor(TheInstance, 'VT_MOVEW');
-    Cursors[crVT_MOVEE]:=LoadCursor(TheInstance, 'VT_MOVEE');
-    Cursors[crVT_MOVEN]:=LoadCursor(TheInstance, 'VT_MOVEN');
-    Cursors[crVT_MOVES]:=LoadCursor(TheInstance, 'VT_MOVES');
+    Cursors[crVT_MOVEALL]:=LoadCursor(TheInstance, 'LAZ_VT_MOVEALL');
+    Cursors[crVT_MOVEEW]:=LoadCursor(TheInstance, 'LAZ_VT_MOVEEW');
+    Cursors[crVT_MOVENS]:=LoadCursor(TheInstance, 'LAZ_VT_MOVENS');
+    Cursors[crVT_MOVENW]:=LoadCursor(TheInstance, 'LAZ_VT_MOVENW');
+    Cursors[crVT_MOVESW]:=LoadCursor(TheInstance, 'LAZ_VT_MOVESW');
+    Cursors[crVT_MOVESE]:=LoadCursor(TheInstance, 'LAZ_VT_MOVESE');
+    Cursors[crVT_MOVENE]:=LoadCursor(TheInstance, 'LAZ_VT_MOVENE');
+    Cursors[crVT_MOVEW]:=LoadCursor(TheInstance, 'LAZ_VT_MOVEW');
+    Cursors[crVT_MOVEE]:=LoadCursor(TheInstance, 'LAZ_VT_MOVEE');
+    Cursors[crVT_MOVEN]:=LoadCursor(TheInstance, 'LAZ_VT_MOVEN');
+    Cursors[crVT_MOVES]:=LoadCursor(TheInstance, 'LAZ_VT_MOVES');
   end;
 end;
 //----------------------------------------------------------------------------------------------------------------------
