@@ -276,7 +276,8 @@ type
 
   TEnumX0 = (EnXVal01= -503, EnXVal02= 4, EnXVal03= 7, EnXVal04= 510);
   {$PackEnum 1}
-  TEnumX1 = (EnXVal11=   -3, EnXVal12= 4, EnXVal13= 7, EnXVal14=  10);
+  TEnumX1  = (EnXVal11=   -3, EnXVal12= 4, EnXVal13= 7, EnXVal14=  10);
+  TEnumX1a = (EnXValA11=   1, EnXValA12= 4, EnXValA13= 7, EnXValA14=  190);
   {$PackEnum 2}
   TEnumX2 = (EnXVal21= -203, EnXVal22= 4, EnXVal23= 7, EnXVal24= 210);
   {$PackEnum default}

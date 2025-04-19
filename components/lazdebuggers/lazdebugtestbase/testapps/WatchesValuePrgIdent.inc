@@ -425,6 +425,8 @@
   pre__EnumX0b{e}  _OP_ TEnumX0(EnXVal04);          //@@ _pre3_EnumX0b{e3};
   pre__EnumX1a{e}  _OP_ TEnumX1(EnXVal11);          //@@ _pre3_EnumX1a{e3};
   pre__EnumX1b{e}  _OP_ TEnumX1(EnXVal14);          //@@ _pre3_EnumX1b{e3};
+  pre__EnumX1Aa{e}  _OP_ TEnumX1a(EnXValA11);          //@@ _pre3_EnumX1Aa{e3};
+  pre__EnumX1Ab{e}  _OP_ TEnumX1a(EnXValA14);          //@@ _pre3_EnumX1Ab{e3};
   pre__EnumX2a{e}  _OP_ TEnumX2(EnXVal21);          //@@ _pre3_EnumX2a{e3};
   pre__EnumX2b{e}  _OP_ TEnumX2(EnXVal24);          //@@ _pre3_EnumX2b{e3};
 

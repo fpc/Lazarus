@@ -1845,6 +1845,17 @@ begin
     Result := True;
     Expect := AContext.Expectation;
 
+    TestWatchDisplayFormat.Enum.UseInherited := True;
+    TestWatchDisplayFormat.EnumVal.UseInherited := True;
+    TestWatchDisplayFormat.Enum.MainFormat := vdfEnumName;
+    TestWatchDisplayFormat.EnumVal.MainFormat := vdfEnumName;
+    if pos('=',  Expect.ExpTextData) > 0 then begin
+      TestWatchDisplayFormat.Enum.UseInherited := False;
+      TestWatchDisplayFormat.EnumVal.UseInherited := False;
+      TestWatchDisplayFormat.Enum.MainFormat := vdfEnumNameAndOrd;
+      TestWatchDisplayFormat.EnumVal.MainFormat := vdfEnumNameAndOrd;
+    end;
+
     Result := TestEquals('Data', Expect.ExpTextData, FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, TestWatchDisplayFormat, ''), not(Compiler.SymbolType in stDwarf2), AContext, AnIgnoreRsn);
   end;
 end;

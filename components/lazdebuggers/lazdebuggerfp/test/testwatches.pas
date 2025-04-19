@@ -1066,8 +1066,11 @@ t.Add(AName, p+'FiveDynArray'+e+'[0]',      weMatch('.*',skRecord));
 
       t.Add(AName, p+'EnumX0a'+e, weEnum('EnXVal01', 'TEnumX0'));
       t.Add(AName, p+'EnumX0b'+e, weEnum('EnXVal04', 'TEnumX0'));
-      t.Add(AName, p+'EnumX1a'+e, weEnum('EnXVal11', 'TEnumX1'));
-      t.Add(AName, p+'EnumX1b'+e, weEnum('EnXVal14', 'TEnumX1'));
+      t.Add(AName, p+'EnumX1a'+e, weEnum('EnXVal11 = -3', 'TEnumX1'));
+      t.Add(AName, p+'EnumX1b'+e, weEnum('EnXVal14 = 10', 'TEnumX1'));
+      t.Add(AName, p+'EnumX1Aa'+e, weEnum('EnXValA11 = 1', 'TEnumX1a'));
+      t.Add(AName, p+'EnumX1Ab'+e, weEnum('EnXValA14 = 190', 'TEnumX1a'))
+      .IgnAll(stDwarf2, Compiler.Version >= 030301);
       t.Add(AName, p+'EnumX2a'+e, weEnum('EnXVal21', 'TEnumX2'));
       t.Add(AName, p+'EnumX2b'+e, weEnum('EnXVal24', 'TEnumX2'));
 
@@ -1428,6 +1431,9 @@ begin
     t.Add('EnXVal14', 'EnXVal14', weMatch('EnXVal14 *:?= *10', skEnumValue));
     t.Add('EnXVal21', 'EnXVal21', weMatch('EnXVal21 *:?= *-203', skEnumValue));
     t.Add('EnXVal24', 'EnXVal24', weMatch('EnXVal24 *:?= *210', skEnumValue));
+    t.Add('EnXValA11', 'EnXValA11', weMatch('EnXValA11 *= *1', skEnumValue));
+    t.Add('EnXValA14', 'EnXValA14', weMatch('EnXValA14 *= *190', skEnumValue))
+    .IgnAll(stDwarf2, Compiler.Version >= 030301);
 
     // recurse pointers
     // TODO: currently just run them and check they do not fail,crash or hang.
@@ -4055,7 +4061,32 @@ procedure TTestWatches.TestWatchesExpression;
     t.Add('ENUM-Cmp: ', 'TEnum('+p+'Enum) > eNVaL3',        weBool(False));
     t.Add('ENUM-Cmp: ', p+'Enum > TEnum(2)',        weBool(False));
     t.Add('ENUM-Cmp: ', p+'Enum > TEnum(1)',        weBool(True));
-    t.Add('ENUM-Cmp: ', p+'Enum > TEnum(-1)',       weBool(True));
+    t.Add('ENUM-Cmp: ', p+'Enum > TEnum(-1)',       weBool(False)) // Enum is all positive / cast will be an unsigned enum // changed
+    .IgnAll([], Compiler.Version < 030301)
+    .IgnAll(stDwarf2, Compiler.Version >= 030301);
+    t.Add('ENUM-Cmp: ', p+'EnumX0a < TEnumX0(-1)',       weBool(True));
+    t.Add('ENUM-Cmp: ', p+'EnumX0a > TEnumX0(-900)',       weBool(True));
+    t.Add('ENUM-Cmp: ', p+'EnumX0b > TEnumX0(-1)',       weBool(True));
+
+    t.Add('ENUM-Cmp: ', p+'EnumX1a <  '+p+'EnumX1b',       weBool(True));
+    t.Add('ENUM-Cmp: ', p+'EnumX1a <  EnXVal14',       weBool(True));
+    t.Add('ENUM-Cmp: ', p+'EnumX1a =  EnXVal11',       weBool(True));
+    t.Add('ENUM-Cmp: ', p+'EnumX1b >  EnXVal11',       weBool(True));
+    t.Add('ENUM-Cmp: ', p+'EnumX1b >  EnXVal12',       weBool(True));
+    t.Add('ENUM-Cmp: ',   'EnXVal11 < EnXVal14',       weBool(True));
+
+    t.Add('ENUM-Cmp: ', p+'EnumX1Aa <  '+p+'EnumX1Ab',       weBool(True))
+    .IgnAll(stDwarf2, Compiler.Version >= 030301);
+    t.Add('ENUM-Cmp: ', p+'EnumX1Aa <  EnXValA14',       weBool(True))
+    .IgnAll(stDwarf2, Compiler.Version >= 030301);
+    t.Add('ENUM-Cmp: ', p+'EnumX1Aa =  EnXValA11',       weBool(True))
+    .IgnAll(stDwarf2, Compiler.Version >= 030301);
+    t.Add('ENUM-Cmp: ', p+'EnumX1Ab >  EnXValA11',       weBool(True))
+    .IgnAll(stDwarf2, Compiler.Version >= 030301);
+    t.Add('ENUM-Cmp: ', p+'EnumX1Ab >  EnXValA12',       weBool(True))
+    .IgnAll(stDwarf2, Compiler.Version >= 030301);
+    t.Add('ENUM-Cmp: ',   'EnXValA11 < EnXValA14',       weBool(True))
+    .IgnAll(stDwarf2, Compiler.Version >= 030301);
   end;
 
 var
