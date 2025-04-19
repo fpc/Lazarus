@@ -1295,7 +1295,7 @@ type
 
   { TWatchResultDataEnum }
 
-  TWatchResultDataEnum = class(specialize TGenericWatchResultDataSizedNum<TWatchResultValueEnum>)
+  TWatchResultDataEnum = class(specialize TGenericWatchResultDataWithType<TWatchResultValueEnum, TWatchResultTypeOrdNum>)
   private
     function GetClassID: TWatchResultDataClassID; override;
   public
@@ -1304,7 +1304,7 @@ type
 
   { TWatchResultDataEnumVal }
 
-  TWatchResultDataEnumVal = class(specialize TGenericWatchResultDataSizedNum<TWatchResultValueEnumVal>)
+  TWatchResultDataEnumVal = class(specialize TGenericWatchResultDataWithType<TWatchResultValueEnumVal, TWatchResultTypeOrdNum>)
   private
     function GetClassID: TWatchResultDataClassID; override;
   public
