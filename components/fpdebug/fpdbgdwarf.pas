@@ -2998,27 +2998,27 @@ end;
 
 procedure TFpValueDwarfEnum.InitMemberIndex;
 var
-  v: QWord;
-  v2: Int64;
+  MbrVal: QWord;
   i, j: Integer;
+  Sz: TFpDbgValueSize;
+  Mask: TDBGPtr;
 begin
   // TODO: if TypeInfo is a subrange, check against the bounds, then bypass it, and scan all members (avoid subrange scanning members)
   if FMemberValueDone then exit;
   // FTypeSymbol (if not nil) must be same as FTypeSymbol. It may have wrappers like declaration.
-  v := GetAsCardinal;
-  v2 := GetAsInteger;
+  if GetSize(Sz) and not IsZeroSize(Sz) then
+    Mask := BitMask(Sz)
+  else
+    Mask := FULL_BIT_MASK;
+  MbrVal := GetAsCardinal and Mask;
+
   i := FTypeSymbol.NestedSymbolCount - 1;
   j := -1;
   while i >= 0 do begin
-    if QWord(FTypeSymbol.NestedSymbol[i].OrdinalValue) = v then
+    if (QWord(FTypeSymbol.NestedSymbol[i].OrdinalValue) and Mask) = MbrVal then
       break;
-    if FTypeSymbol.NestedSymbol[i].OrdinalValue = v2 then
-      j := i;
     dec(i);
   end;
-  // If the value was not found, then fall back to a signed (possible sign extended) comparison
-  if i < 0 then
-    i := j;
   FMemberIndex := i;
   FMemberValueDone := True;
 end;
