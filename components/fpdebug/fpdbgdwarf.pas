@@ -1500,7 +1500,7 @@ begin
   end
 
   else
-  if InfoEntry.GoNamedChildEx(ANameInfo, False, fsfIgnoreEnumVals in AFindFlags) then begin
+  if InfoEntry.GoNamedChildEx(ANameInfo, False, fsfIgnoreEnumVals in AFindFlags, True) then begin
     if InfoEntry.IsAddressInStartScope(FAddress) then begin
       // only variables are marked "external", but types not / so we may need all top level
       Result := True;

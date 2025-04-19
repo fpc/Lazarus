@@ -379,7 +379,7 @@ type
 
     function GoNamedChild(const ANameInfo: TNameSearchInfo): Boolean;
     // find in enum too // TODO: control search with a flags param, if needed
-    function GoNamedChildEx(const ANameInfo: TNameSearchInfo; ASkipArtificial: Boolean = False; ASkipEnumMembers: Boolean = False): Boolean;
+    function GoNamedChildEx(const ANameInfo: TNameSearchInfo; ASkipArtificial: Boolean = False; ASkipEnumMembers: Boolean = False; ASkipScopedEnumMembers: Boolean = False): Boolean;
     // GoNamedChildMatchCaseEx will use
     // - UpperName for Hash
     // - LowerName for compare
@@ -3026,9 +3026,8 @@ begin
   end;
 end;
 
-function TDwarfInformationEntry.GoNamedChildEx(
-  const ANameInfo: TNameSearchInfo; ASkipArtificial: Boolean;
-  ASkipEnumMembers: Boolean): Boolean;
+function TDwarfInformationEntry.GoNamedChildEx(const ANameInfo: TNameSearchInfo;
+  ASkipArtificial: Boolean; ASkipEnumMembers: Boolean; ASkipScopedEnumMembers: Boolean): Boolean;
 var
   Val: Integer;
   EntryName: PChar;
@@ -3096,6 +3095,13 @@ begin
       end;
 
       if (not ASkipEnumMembers) and (FAbbrev^.tag = DW_TAG_enumeration_type) then begin
+        if ASkipScopedEnumMembers then begin
+          if ReadValue(DW_AT_enum_class, Val) and (Val <> 0) then begin
+            GoNextFast;
+            Continue;
+          end;
+        end;
+
         assert(not InEnum, 'nested enum');
         InEnum := True;
         ParentScopIdx := ScopeIndex;
