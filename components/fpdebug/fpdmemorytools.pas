@@ -613,6 +613,7 @@ function LocToAddrOrNil(const ALocation: TFpDbgMemLocation): TDbgPtr; inline; //
 
 function SignExtend(ASrcVal: QWord; ASrcSize: TFpDbgValueSize): Int64;
 function BitMask(ASize: TFpDbgValueSize): QWord; inline;
+function SignMask(ASize: TFpDbgValueSize): QWord; inline;
 
 //function EmptyMemReadOpts:TFpDbgMemReadOptions;
 
@@ -1025,6 +1026,16 @@ begin
   i := SizeToBits(ASize);
   if i < 64 then
     Result := Result shr (64 - i);
+end;
+
+function SignMask(ASize: TFpDbgValueSize): QWord;
+var
+  i: Int64;
+begin
+  Result := 0;
+  i := SizeToBits(ASize) - 1;
+  if (i >= 0) and (i < 64) then
+    Result := QWord(1) shl i;
 end;
 
 //function {%H-}EmptyMemReadOpts: TFpDbgMemReadOptions;
