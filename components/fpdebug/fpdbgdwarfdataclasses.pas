@@ -6088,9 +6088,9 @@ begin
   Result := True;
   case AForm of
     DW_FORM_addr:
-      AValue := LocToAddrOrNil(ReadTargetAddressFromDwarfSection(AAttribute));
+      AValue := Int64(LocToAddrOrNil(ReadTargetAddressFromDwarfSection(AAttribute)));
     DW_FORM_ref_addr : begin
-      AValue := LocToAddrOrNil(ReadDwarfSectionOffsetOrLenFromDwarfSection(AAttribute));
+      AValue := Int64(LocToAddrOrNil(ReadDwarfSectionOffsetOrLenFromDwarfSection(AAttribute)));
     end;
     DW_FORM_flag_present: AValue := 1;
     DW_FORM_flag,
@@ -6112,7 +6112,7 @@ begin
     end;
     DW_FORM_sec_offset: begin
       if IsDwarf64 then
-        AValue := PQWord(AAttribute)^
+        AValue := Int64(PQWord(AAttribute)^)
       else
         AValue := PLongWord(AAttribute)^;
     end;
