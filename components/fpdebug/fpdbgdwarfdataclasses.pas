@@ -2945,33 +2945,19 @@ begin
     if FAbbrev = nil then
       continue;
 
-    if not (dafHasName in FAbbrev^.flags) then begin
-      if FScope.Index >= NextTopLevel then
-        NextTopLevel := FScope.GetNextIndex;
-      Continue;
+    if (dafHasName in FAbbrev^.flags) and
+       ReadValue(DW_AT_name, EntryName)
+    then begin
+      h := objpas.Hash(UTF8UpperCaseFast(EntryName)) and $7fff or $8000;
+      FScope.Current^.NameHash := h;
+      if (FScope.Index >= NextTopLevel) or InEnum then
+        AKNownHashes^[h and KnownNameHashesBitMask] := True;
     end;
-
-    if not ReadValue(DW_AT_name, EntryName) then begin
-      if FScope.Index >= NextTopLevel then
-        NextTopLevel := FScope.GetNextIndex;
-      Continue;
-    end;
-    h := objpas.Hash(UTF8UpperCaseFast(EntryName)) and $7fff or $8000;
-    FScope.Current^.NameHash := h;
-    if (FScope.Index >= NextTopLevel) or InEnum then
-      AKNownHashes^[h and KnownNameHashesBitMask] := True;
 
     if FScope.Index >= NextTopLevel then begin
-      InEnum := False;
-      if FAbbrev^.tag = DW_TAG_enumeration_type then begin
-        InEnum := True;
-        NextTopLevel := FScope.GetNextIndex;
-        Continue;
-      end;
-    end;
-
-    if FScope.Index >= NextTopLevel then
+      InEnum := FAbbrev^.tag = DW_TAG_enumeration_type;
       NextTopLevel := FScope.GetNextIndex;
+    end;
   end;
 end;
 
@@ -3050,26 +3036,25 @@ begin
           GoNextFast;
           Continue;
         end;
-      end
-      else begin
-        if sc^.NameHash = 0 then begin
-          GoNextFast;
-          Continue;
-        end;
       end;
 
       PrepareAbbrev;
-      if (FAbbrev = nil) or not (dafHasName in FAbbrev^.flags) then begin
+      if (FAbbrev = nil) then begin
         assert(false);
         GoNextFast;
         Continue;
       end;
 
-      if (sc^.NameHash <> ANameInfo.NameHash) and
-         ( ASkipEnumMembers or (FAbbrev^.tag <> DW_TAG_enumeration_type) )
-      then begin
-        GoNextFast;
-        Continue;
+      if ASkipEnumMembers or (FAbbrev^.tag <> DW_TAG_enumeration_type) then begin
+        if not(dafHasName in FAbbrev^.flags) then begin
+          GoNextFast;
+          Continue;
+        end;
+
+        if (sc^.NameHash <> ANameInfo.NameHash) then begin
+          GoNextFast;
+          Continue;
+        end;
       end;
 
       if ASkipArtificial and (dafHasArtifical in FAbbrev^.flags) then begin
@@ -3078,7 +3063,6 @@ begin
           Continue;
         end;
       end;
-
 
       if (sc^.NameHash = ANameInfo.NameHash) then begin
         if not ReadValue(DW_AT_name, EntryName) then begin
