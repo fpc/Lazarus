@@ -47,6 +47,7 @@ uses
 
 type
   TFPDEvent = (
+    deNone,
     deExitProcess, deCreateProcess,
     deLoadLibrary, deUnloadLibrary,
     deFinishedStep, deBreakpoint, deHardCodedBreakpoint,
@@ -901,6 +902,7 @@ type
 
 const
   FPDEventNames: array[TFPDEvent] of string = (
+    'deNone',
     'deExitProcess', 'deCreateProcess',
     'deLoadLibrary', 'deUnloadLibrary',
     'deFinishedStep', 'deBreakpoint', 'deHardCodedBreakpoint',
