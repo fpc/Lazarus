@@ -2101,10 +2101,12 @@ begin
         if assigned(OnProcessExitEvent) then
           OnProcessExitEvent(FCurrentProcess.ExitCode);
 
-        FProcessMap.Delete(FCurrentProcess.ProcessID);
+        if FCurrentProcess <> nil then
+          FProcessMap.Delete(FCurrentProcess.ProcessID);
         FCurrentProcess.Free;
         FCurrentProcess := nil;
         HasPauseRequest := False;
+        FPDEvent := deNone;
         continue := false;
       end;
     deException:
