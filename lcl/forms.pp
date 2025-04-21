@@ -1438,6 +1438,12 @@ type
     sbgSystem   // show them depending on OS
   );
 
+  TApplicationGlyphDrawEffectsEnabled = (
+    gdeAlways,   // mouse-over and mouse-down visual feedback: always active
+    gdeNever,    // never active
+    gdeSystem    // depends on theme-services
+  );
+
   TTaskBarBehavior = (
     tbDefault,      // widgetset dependent
     tbMultiButton,  // show buttons for Forms with ShowTaskBar = stDefault
@@ -1491,6 +1497,7 @@ type
     FOnModalBegin: TNotifyEvent;
     FOnModalEnd: TNotifyEvent;
     FScaled: Boolean;
+    FGlyphDrawEffectsEnabled: TApplicationGlyphDrawEffectsEnabled;
     FShowButtonGlyphs: TApplicationShowGlyphs;
     FShowMenuGlyphs: TApplicationShowGlyphs;
     FSmallIconHandle: HICON;
@@ -1722,6 +1729,7 @@ type
     property FindGlobalComponentEnabled: Boolean read FFindGlobalComponentEnabled
                                                write FFindGlobalComponentEnabled;
     property Flags: TApplicationFlags read FFlags write SetFlags;
+    property GlyphDrawEffectsEnabled: TApplicationGlyphDrawEffectsEnabled read FGlyphDrawEffectsEnabled write FGlyphDrawEffectsEnabled default gdeSystem;
     //property HelpSystem : IHelpSystem read FHelpSystem;
     property Handle: TLCLHandle read GetHandle write SetHandle; platform;
     property Hint: string read FHint write SetHint;

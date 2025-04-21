@@ -102,9 +102,9 @@ begin
     Result := Result and FButtonGlyph.CanShow;
 end;
 
-function TCustomBitBtn.GetDrawingEffectsEnabled: TGlyphDrawingEffectsEnabled;
+function TCustomBitBtn.GetDrawEffectsEnabled: TGlyphDrawEffectsEnabled;
 begin
-  Result := FButtonGlyph.DrawingEffectsEnabled;
+  Result := FButtonGlyph.DrawEffectsEnabled;
 end;
 
 function TCustomBitBtn.GetGlyph : TBitmap;
@@ -154,9 +154,9 @@ begin
       and (FButtonGlyph.Glyph.Width>0) and (FButtonGlyph.Glyph.Height>0);
 end;
 
-procedure TCustomBitBtn.SetDrawingEffectsEnabled(AValue: TGlyphDrawingEffectsEnabled);
+procedure TCustomBitBtn.SetDrawEffectsEnabled(AValue: TGlyphDrawEffectsEnabled);
 begin
-  FButtonGlyph.DrawingEffectsEnabled := AValue;
+  FButtonGlyph.DrawEffectsEnabled := AValue;
   RecreateWnd(Self);
 end;
 

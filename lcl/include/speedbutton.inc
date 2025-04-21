@@ -470,14 +470,14 @@ begin
   Result.CY := 22;
 end;
 
-function TCustomSpeedButton.GetDrawingEffectsEnabled: TGlyphDrawingEffectsEnabled;
+function TCustomSpeedButton.GetDrawEffectsEnabled: TGlyphDrawEffectsEnabled;
 begin
-  Result := FGlyph.DrawingEffectsEnabled;
+  Result := FGlyph.DrawEffectsEnabled;
 end;
 
-procedure TCustomSpeedButton.SetDrawingEffectsEnabled(AValue: TGlyphDrawingEffectsEnabled);
+procedure TCustomSpeedButton.SetDrawEffectsEnabled(AValue: TGlyphDrawEffectsEnabled);
 begin
-  FGlyph.DrawingEffectsEnabled := AValue;
+  FGlyph.DrawEffectsEnabled := AValue;
 end;
 
 {------------------------------------------------------------------------------

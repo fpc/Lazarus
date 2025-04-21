@@ -72,10 +72,11 @@ type
     gtmTransparent  // Transparent = true.
   );
 
-  TGlyphDrawingEffectsEnabled = (
-    deeSystem,      // Mouse-over etc effects as determined by themesettings
-    deeEnabled,     // Mouse-over etc. effectsalways active
-    deeDisabled     // No mouse-over etc effects
+  TGlyphDrawEffectsEnabled = (
+    deeAlways,       // Mouse-over and mouse-down effects always active
+    deeNever,        // ... never active
+    deeSystem,       // ... as determined by theme services
+    deeApplication   // ... as defined by Application.GlyphDrawEffectsEnabled
   );
 
   TButtonGlyph = class(TObject, IUnknown, IImageCacheListener)
@@ -94,7 +95,7 @@ type
     FImagesCache: TImageListCache;
     FTransparentMode: TGlyphTransparencyMode;         // set by our owner to indicate that the glyphbitmap should be transparent
     FLCLGlyphName: string;
-    FDrawingEffectsEnabled: TGlyphDrawingEffectsEnabled;
+    FDrawEffectsEnabled: TGlyphDrawEffectsEnabled;
     function GetExternalImageIndex(AState: TButtonState): Integer;
     function GetHeight: Integer;
     function GetNumGlyphs: TNumGlyphs;
@@ -139,7 +140,7 @@ type
                   State: TButtonState; Transparent: Boolean;
                   BiDiFlags, PPI: Longint; const ScaleFactor: Double): TRect;
     procedure Refresh;
-    property DrawingEffectsEnabled: TGlyphDrawingEffectsEnabled read FDrawingEffectsEnabled write FDrawingEffectsEnabled;
+    property DrawEffectsEnabled: TGlyphDrawEffectsEnabled read FDrawEffectsEnabled write FDrawEffectsEnabled default deeApplication;
     property Glyph: TBitmap read FOriginal write SetGlyph;
     property IsDesigning: Boolean read FIsDesigning write FIsDesigning;
     property NumGlyphs: TNumGlyphs read GetNumGlyphs write SetNumGlyphs;
@@ -176,14 +177,14 @@ type
     FMargin: integer;
     FSpacing: Integer;
     FImageChangeLink: TChangeLink;
-    FDrawingEffectsEnabled: TGlyphDrawingEffectsEnabled;
-    function GetDrawingEffectsEnabled: TGlyphDrawingEffectsEnabled;
+    FDrawEffectsEnabled: TGlyphDrawEffectsEnabled;
+    function GetDrawEffectsEnabled: TGlyphDrawEffectsEnabled;
     function GetGlyph: TBitmap;
     function GetGlyphShowMode: TGlyphShowMode;
     function GetNumGlyphs: Integer;
     procedure ImageListChange(Sender: TObject);
     function IsGlyphStored: Boolean;
-    procedure SetDrawingEffectsEnabled(AValue: TGlyphDrawingEffectsEnabled);
+    procedure SetDrawEffectsEnabled(AValue: TGlyphDrawEffectsEnabled);
     procedure SetGlyph(AValue: TBitmap);
     procedure SetGlyphShowMode(const AValue: TGlyphShowMode);
     procedure SetKind(AValue: TBitBtnKind);
@@ -227,7 +228,7 @@ type
     property Caption stored IsCaptionStored;
     property DefaultCaption: Boolean read FDefaultCaption write SetDefaultCaption default False;
     property DisabledImageIndex: TImageIndex index bsDisabled read GetImageIndex write SetImageIndex default -1;
-    property DrawingEffectsEnabled: TGlyphDrawingEffectsEnabled read GetDrawingEffectsEnabled write SetDrawingEffectsEnabled default deeSystem;
+    property DrawEffectsEnabled: TGlyphDrawEffectsEnabled read GetDrawEffectsEnabled write SetDrawEffectsEnabled default deeApplication;
     property Glyph: TBitmap read GetGlyph write SetGlyph stored IsGlyphStored;
     property NumGlyphs: Integer read GetNumGlyphs write SetNumGlyphs default 1;
     property HotImageIndex: TImageIndex index bsHot read GetImageIndex write SetImageIndex default -1;
@@ -265,7 +266,7 @@ type
     property DragCursor;
     property DragKind;
     property DragMode;
-    property DrawingEffectsEnabled;
+    property DrawEffectsEnabled;
     property Enabled;
     property Font;
     property Glyph;
@@ -354,8 +355,8 @@ type
     function GetGlyph: TBitmap;
     procedure ImageListChange(Sender: TObject);
     function IsGlyphStored: Boolean;
-    function GetDrawingEffectsEnabled: TGlyphDrawingEffectsEnabled;
-    procedure SetDrawingEffectsEnabled(AValue: TGlyphDrawingEffectsEnabled);
+    function GetDrawEffectsEnabled: TGlyphDrawEffectsEnabled;
+    procedure SetDrawEffectsEnabled(AValue: TGlyphDrawEffectsEnabled);
     procedure SetShowCaption(const AValue: boolean);
     procedure UpdateExclusive;
     function  GetTransparent: Boolean;
@@ -431,7 +432,7 @@ type
     property Color default clBtnFace;
     property DisabledImageIndex: TImageIndex index bsDisabled read GetImageIndex write SetImageIndex default -1;
     property Down: Boolean read FDown write SetDown default false;
-    property DrawingEffectsEnabled: TGlyphDrawingEffectsEnabled read GetDrawingEffectsEnabled write SetDrawingEffectsEnabled default deeSystem;
+    property DrawEffectsEnabled: TGlyphDrawEffectsEnabled read GetDrawEffectsEnabled write SetDrawEffectsEnabled default deeApplication;
     property Flat: Boolean read FFlat write SetFlat default false;
     property Glyph: TBitmap read GetGlyph write SetGlyph stored IsGlyphStored;
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default 0;
@@ -471,7 +472,7 @@ type
     property DragCursor;
     property DragKind;
     property DragMode;
-    property DrawingEffectsEnabled;
+    property DrawEffectsEnabled;
     property Enabled;
     property Flat;
     property Font;

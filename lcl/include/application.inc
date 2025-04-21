@@ -85,6 +85,7 @@ begin
   FExceptionDialog := aedOkCancelDialog;
   FShowButtonGlyphs := sbgAlways;
   FShowMenuGlyphs := sbgAlways;
+  FGlyphDrawEffectsEnabled := gdeSystem;
   FMainForm := nil;
   FModalLevel := 0;
   FMouseControl := nil;
