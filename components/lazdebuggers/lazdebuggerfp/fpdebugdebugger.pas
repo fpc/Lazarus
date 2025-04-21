@@ -3565,9 +3565,9 @@ begin
   {$POP}
   LockRelease;
   try
-    SetState(dsStop);
     StopAllWorkers;
     FreeDebugThread;
+    SetState(dsStop); // after FreeDebugThread, which does ProcessMessages
   finally
     UnlockRelease;
   end;
