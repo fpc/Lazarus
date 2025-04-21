@@ -279,9 +279,9 @@ begin
   if Value < Low(TNumGlyphs) then Value := Low(TNumGlyphs);
   if Value > High(TNumGlyphs) then Value := High(TNumGlyphs);
 
-  if Value <> TButtonGlyph(fGlyph).NumGlyphs then
+  if Value <> TButtonGlyph(FGlyph).NumGlyphs then
   begin
-    TButtonGlyph(fGlyph).NumGlyphs := TNumGlyphs(Value);
+    TButtonGlyph(FGlyph).NumGlyphs := TNumGlyphs(Value);
     Invalidate;
   end;
 end;
@@ -468,6 +468,16 @@ class function TCustomSpeedButton.GetControlClassDefaultSize: TSize;
 begin
   Result.CX := 23;
   Result.CY := 22;
+end;
+
+function TCustomSpeedButton.GetDrawingEffectsEnabled: TGlyphDrawingEffectsEnabled;
+begin
+  Result := FGlyph.DrawingEffectsEnabled;
+end;
+
+procedure TCustomSpeedButton.SetDrawingEffectsEnabled(AValue: TGlyphDrawingEffectsEnabled);
+begin
+  FGlyph.DrawingEffectsEnabled := AValue;
 end;
 
 {------------------------------------------------------------------------------

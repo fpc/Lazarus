@@ -104,7 +104,11 @@ const
     ((gdeNormal, gdeDisabled, gdeNormal, gdeNormal, gdeNormal),
      (gdeNormal, gdeDisabled, gdeShadowed, gdeNormal, gdeHighlighted));
 begin
-  AUseAutoEffects := ThemeServices.GetOption(toUseGlyphEffects);
+  case FDrawingEffectsEnabled of
+    deeSystem: AUseAutoEffects := ThemeServices.GetOption(toUseGlyphEffects);
+    deeEnabled: AUseAutoEffects := 1;
+    deeDisabled: AUseAutoEffects := 0;
+  end;
   if Assigned(FExternalImages) and CanShow then
   begin
     AImages := FExternalImages;
