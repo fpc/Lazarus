@@ -4737,7 +4737,10 @@ begin
   end
 
   else
-  if Form in [DW_FORM_block, DW_FORM_block1, DW_FORM_block2, DW_FORM_block4]
+  (* Up to DWARF-3: DW_FORM_block
+     From DWARF-4: DW_FORM_exprloc
+  *)
+  if Form in [DW_FORM_block, DW_FORM_block1, DW_FORM_block2, DW_FORM_block4, DW_FORM_exprloc]
   then begin
     (* Dwarf Spec:
        "For a block / For an exprloc, the value is interpreted as a DWARF
