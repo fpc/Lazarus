@@ -743,6 +743,7 @@ var
   TabExtra: Integer;
   HasTabs, HasDouble: Boolean;
 begin
+  ATokenInfo := Default(TLazSynDisplayTokenInfoEx);
   ATokenInfo.Attr := nil;
   while True do begin
     Result := MaybeFetchToken;    // Get token from View/Highlighter
