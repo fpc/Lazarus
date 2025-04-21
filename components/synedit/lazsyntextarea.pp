@@ -774,6 +774,7 @@ var
   HasTabs, HasDouble, NeedsEto: Boolean;
   FrameStartPos: TLazSynDisplayTokenBound;
 begin
+  ATokenInfo := Default(TLazSynDisplayTokenInfoEx);
   ATokenInfo.Attr := nil;
   while True do begin
     Result := MaybeFetchToken;    // Get token from View/Highlighter
