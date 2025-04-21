@@ -85,6 +85,15 @@ begin
     Application.CaptureExceptions := AValue;
 end;
 
+procedure TApplicationProperties.SetGlyphDrawEffectsEnabled(
+  const AValue: TApplicationGlyphDrawEffectsEnabled);
+begin
+  FGlyphDrawEffectsEnabled := AValue;
+
+  if not (csDesigning in ComponentState) then
+    Application.GlyphDrawEffectsEnabled := FGlyphDrawEffectsEnabled;
+end;
+
 procedure TApplicationProperties.SetHelpFile(const AValue : string);
 begin
   FHelpFile := AValue;
@@ -344,6 +353,7 @@ begin
   if (csDesigning in ComponentState) then
   begin
     FCaptureExceptions := True;
+    FGlyphDrawEffectsEnabled := gdeSystem;
     FHintColor := DefHintColor;
     FHintPause := DefHintPause;
     FHintShortCuts := True;
@@ -356,6 +366,7 @@ begin
   else
   begin
     FCaptureExceptions := Application.CaptureExceptions;
+    FGlyphDrawEffectsEnabled := Application.GlyphDrawEffectsEnabled;
     FHelpFile := Application.HelpFile;
     FHint := Application.Hint;
     FHintColor := Application.HintColor;

@@ -1796,6 +1796,7 @@ type
   private
     FCaptureExceptions: Boolean;
     FExceptionDialogType: TApplicationExceptionDlg;
+    FGlyphDrawEffectsEnabled: TApplicationGlyphDrawEffectsEnabled;
     FHelpFile: string;
     FHint: string;
     FHintColor: TColor;
@@ -1831,6 +1832,7 @@ type
     procedure SetExceptionDialog(AValue: TApplicationExceptionDlg);
   protected
     procedure SetCaptureExceptions(const AValue : Boolean);
+    procedure SetGlyphDrawEffectsEnabled(const AValue: TApplicationGlyphDrawEffectsEnabled);
     procedure SetHelpFile(const AValue : string);
     procedure SetHint(const AValue : string);
     procedure SetHintColor(const AValue : TColor);
@@ -1871,6 +1873,8 @@ type
                                         write SetCaptureExceptions default True;
     property ExceptionDialog: TApplicationExceptionDlg read FExceptionDialogType
                                                        write SetExceptionDialog default aedOkCancelDialog;
+    property GlyphDrawEffectsEnabled: TApplicationGlyphDrawEffectsEnabled
+      read FGlyphDrawEffectsEnabled write SetGlyphDrawEffectsEnabled default gdeSystem;
     property HelpFile: string read FHelpFile write SetHelpFile;
     property Hint: string read FHint write SetHint;
     property HintColor: TColor read FHintColor write SetHintColor default DefHintColor;
