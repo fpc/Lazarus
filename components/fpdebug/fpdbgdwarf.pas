@@ -4588,13 +4588,17 @@ var
   InitLocParserData: TInitLocParserData;
   ByteSize: TFpDbgValueSize;
   BitOffset, BitSize: Int64;
+  IsLocList: Boolean;
 begin
   Result := True;
   if AnInformationEntry.GetAttribData(DW_AT_data_member_location, AttrData) then begin
     Form := AnInformationEntry.AttribForm[AttrData.Idx];
     Result := False;
 
-    if Form in [DW_FORM_data1, DW_FORM_data2, DW_FORM_sdata, DW_FORM_udata] then begin
+    IsLocList := DW_Form_IsLocationList(Form, CompilationUnit.Version);
+    if (not IsLocList) and
+       (Form in [DW_FORM_data1, DW_FORM_data2, DW_FORM_data4, DW_FORM_data8, DW_FORM_sdata, DW_FORM_udata])
+    then begin
       if AnInformationEntry.ReadValue(AttrData, ConstOffs) then begin
         {$PUSH}{$R-}{$Q-} // TODO: check overflow
         AnAddress.Address := AnAddress.Address + ConstOffs;
@@ -4605,10 +4609,9 @@ begin
         SetLastError(AValueObj, CreateError(fpErrAnyError));
     end
 
-    // TODO: loclistptr: DW_FORM_data4, DW_FORM_data8,
     else
-
-    if Form in [DW_FORM_block, DW_FORM_block1, DW_FORM_block2, DW_FORM_block4] then begin
+    if IsLocList or (Form in [DW_FORM_block, DW_FORM_block1, DW_FORM_block2, DW_FORM_block4, DW_FORM_exprloc])
+    then begin
       InitLocParserData.ObjectDataAddress := AnAddress;
       InitLocParserData.ObjectDataAddrPush := True;
       Result := LocationFromAttrData(AttrData, AValueObj, AnAddress, @InitLocParserData);
@@ -4881,8 +4884,12 @@ begin
   AnAddress := InvalidLoc;
 
   AForm :=  AnAttribData.InformationEntry.AttribForm[AnAttribData.Idx];
+  (* DW_FORM_data4, DW_FORM_data8 should only happen with DWARF-3 or before *)
   if (AForm = DW_FORM_data4) or (AForm = DW_FORM_data8) or (AForm = DW_FORM_sec_offset) then begin
     // location list
+    DebugLn((FPDBG_DWARF_VERBOSE or FPDBG_DWARF_WARNINGS or DBG_WARNINGS) and
+            (AForm in [DW_FORM_data4, DW_FORM_data8]) and (CompilationUnit.Version > 3),
+            ['Found location-list via DW_FORM_data# for newer DWARF version']);
     if not LocationExprFromLocationList(AnAttribData, AValueObj, Val) then begin
       DebugLn(FPDBG_DWARF_VERBOSE, ['LocationFromAttrData: failed to read DW_AT_location from loc-list']);
       if not IsError(AValueObj.LastError) then

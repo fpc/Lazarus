@@ -949,6 +949,8 @@ function DbgsDump(AScope: TDwarfScopeInfo; ACompUnit: TDwarfCompilationUnit): St
 function GetDwarfSymbolClassMapList: TFpSymbolDwarfClassMapList; inline;
 function NameInfoForSearch(const AName: String): TNameSearchInfo;
 
+function DW_Form_IsLocationList(AForm: Cardinal; ADwarfVersion: integer): Boolean;
+
 property DwarfSymbolClassMapList: TFpSymbolDwarfClassMapList read GetDwarfSymbolClassMapList;
 
 implementation
@@ -977,6 +979,20 @@ begin
   Result.NameLower := UTF8LowerCaseFast(AName);
   Result.NameUpper := UTF8UpperCaseFast(AName);
   Result.NameHash := objpas.Hash(Result.NameUpper) and $7fff or $8000;
+end;
+
+function DW_Form_IsLocationList(AForm: Cardinal; ADwarfVersion: integer): Boolean;
+begin
+  (* In DWARF V3 the forms DW_FORM_data4 and DW_FORM_data8 were members of either
+     class constant or one of the classes lineptr, loclistptr, macptr or rangelistptr,
+     depending on context.
+     In DWARF V4 DW_FORM_data4 and DW_FORM_data8 are members of class constant in all cases.
+     The new DW_FORM_sec_offset replaces their usage for the other classes.
+  *)
+  Result := (AForm = DW_FORM_sec_offset) or
+            ( (ADwarfVersion < 4) and
+              (AForm in [DW_FORM_data4, DW_FORM_data8])
+            );
 end;
 
 function Dbgs(AInfoData: Pointer; ACompUnit: TDwarfCompilationUnit): String;
