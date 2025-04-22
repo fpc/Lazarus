@@ -193,6 +193,61 @@ TGlyphTransparencyMode is the type used to implement the
 <short>Glyph is drawn with transparency.</short>
 </element>
 
+<element name="TGlyphDrawEffectsEnabled">
+<short>
+Controls glyph drawing effects for mouse-over and mouse-down events.
+</short>
+<descr>
+<p>
+<var>TGlyphDrawEffectsEnabled</var> is an enumerated type which represents the 
+settings allowed for glyph drawing effects used in button controls. 
+TGlyphDrawEffectsEnabled is the type used to implement the DrawEffectsEnabled 
+property in TButtonGlyph, TCustomBitBtn / TBitBtn, and TCustomSpeedButton / 
+TSpeedButton.
+</p>
+<p>
+See TApplicationGlyphDrawEffectsEnabled, TApplication.GlyphDrawEffectsEnabled, 
+and TApplicationProperties.GlyphDrawEffectsEnabled for the corresponding 
+application-wide setting.
+</p>
+</descr>
+<version>
+Added in LCL version 5.0.
+</version>
+<seealso>
+<link id="TButtonGlyph.DrawEffectsEnabled"/>
+<link id="TCustomBitBtn.DrawEffectsEnabled"/>
+<link id="TBitBtn.DrawEffectsEnabled"/>
+<link id="TCustomSpeedButton.DrawEffectsEnabled"/>
+<link id="TSpeedButton.DrawEffectsEnabled"/>
+<link id="#lcl.forms.TApplication.GlyphDrawEffectsEnabled">TApplication.GlyphDrawEffectsEnabled</link>
+<link id="#lcl.forms.TApplicationProperties.GlyphDrawEffectsEnabled">TApplicationProperties.GlyphDrawEffectsEnabled</link>
+</seealso>
+</element>
+<element name="TGlyphDrawEffectsEnabled.deeAlways">
+<short>
+Mouse-over and mouse-down effects are <b>always</b> active when drawing a 
+glyph on a button control.
+</short>
+</element>
+<element name="TGlyphDrawEffectsEnabled.deeNever">
+<short>
+Mouse-over and mouse-down effects are <b>never</b> active when drawing a glyph 
+on a button control.
+</short>
+</element>
+<element name="TGlyphDrawEffectsEnabled.deeSystem">
+<short>
+Mouse-over and mouse-down effects are active when enabled in theme services.
+</short>
+</element>
+<element name="TGlyphDrawEffectsEnabled.deeApplication">
+<short>
+Mouse-over and mouse-down effects are enabled or disabled using the 
+corresponding TApplication setting.
+</short>
+</element>
+
 <element name="TButtonGlyph">
 <short>Represents an image that can be attached to a button.</short>
 <descr>
@@ -251,6 +306,7 @@ support the <var>QueryInterface</var> method and reference counting.
 <element name="TButtonGlyph.FImagesCache"/>
 <element name="TButtonGlyph.FTransparentMode"/>
 <element name="TButtonGlyph.FLCLGlyphName"/>
+<element name="TButtonGlyph.FDrawEffectsEnabled"/>
 
 <element name="TButtonGlyph.GetExternalImageIndex">
 <short>Gets the value for the ExternalImageIndex property.</short>
@@ -730,29 +786,69 @@ draw it.
 <var>GetImageIndexAndEffect</var> is a procedure used to get the ordinal 
 position for the image used to render the <var>Glyph</var> for the class 
 instance. In addition, it returns the image resolution for the specified 
-display density and the drawing effect for the button <var>State</var>.
+display density and the drawing effect for the specified button 
+<var>State</var>.
 </p>
 <p>
-<var>GetImageIndexAndEffect</var> uses <var>ThemeServices</var> to determine 
-if drawing effects are automatically applied to glyph images, and captures 
-the effect in the <var>AEffect</var> output argument.
+GetImageIndexAndEffect uses the value in DrawEffectsEnabled to determine the 
+TGraphicsDrawEffect value returned in the AEffect argument. It represents 
+either an enabled or a disabled drawing effect for available TButtonState 
+values. For example:
+</p>
+<dl>
+<dt>deeSystem</dt>
+<dd>
+Causes theme services to be used to determine whether glyph effects are used 
+for the platform / widgetset.
+</dd>
+<dt>deeAlways</dt>
+<dd>
+Causes the enabled state to be used for the graphic drawing effect in AEffect.
+</dd>
+<dt>deeNever</dt>
+<dd>
+Causes the disabled state to be used for the graphic drawing effect in AEffect.
+</dd>
+<dt>deeApplication</dt>
+<dd>
+Uses the value in TApplication.GlyphDrawEffectsEnabled to determine the 
+graphic drawing effect in AEffect. gdeSystem behaves like deeSystem, and 
+causes theme services to be used to determine whether glyph effects are used 
+for the platform / widgetset. gdeAlways behaves like deeAlways, and causes the 
+enabled state to be used for the graphic drawing effect in AEffect. gdeNever 
+behaves like deeNever, and causes the disabled state to be used for the 
+graphic drawing effect in AEffect.
+</dd>
+</dl>
+<p>
+GetImageIndexAndEffect examines values in the ExternalImages, 
+LCLGlyphResourceName, and Images properties to determine the image(s) used in 
+the method.
 </p>
 <p>
-<var>GetImageIndexAndEffect</var> determines the image source and the ordinal 
-position for the image used for the button glyph. <var>ExternalImages</var> 
-and <var>ExternalImageIndex</var> are used (when assigned). The next 
-available source is the resource name specified in 
-<var>LCLGlyphResourceName</var> (when specified). Finally, the 
-<var>Images</var> property is used (when assigned). When the image source has 
-been determined, the correct image resolution for the value in 
-<var>APPI</var> is selected and stored in <var>AImageResolution</var>. 
-<var>ImageIndexes</var> is used to get the position for the image with the 
-specified button <var>State</var>.
+ExternalImages is used (when assigned) to create the scaled image resolution 
+returned in AImageResolution. AIndex is set to the ordinal position for the 
+button state represented by the ExternalImageIndex, ExternalHotImageIndex, 
+ExternalDisabledImageIndex, ExternalPressedImageIndex, or 
+ExternalSelectedImageIndex properties.
 </p>
 <p>
-<var>GetImageIndexAndEffect</var> is used in in the implementation of the 
-<var>Draw</var> method in <var>TButtonGlyph</var>, and in the 
-<var>GetGlyphSize</var> method in <var>TCustomSpeedButton</var>.
+If LCLGlyphResourceName has been assigned, values in LCLGlyphs are used to 
+create the scaled image resolution returned in AImageResolution. 
+LCLGlyphResourceName is used to get the value for AIndex, and AEffect is set 
+to the graphic drawing effect indicated in State.
+</p>
+<p>
+Finally, the Images property is used (when assigned) to create the scaled 
+image resolution returned in AImageResolution. Images contains the cached image
+(s) created from the Glyph property. AEffect is set to the value needed to 
+represent State when DrawEffectsEnabled is enabled. AIndex is set to the image 
+index calculated for button draw states when the glyphs were added to the 
+image cache.
+</p>
+<p>
+GetImageIndexAndEffect is used in in the implementation of the Draw method in 
+TButtonGlyph, and in the GetGlyphSize method in TCustomSpeedButton.
 </p>
 </descr>
 <seealso>
@@ -762,32 +858,38 @@ specified button <var>State</var>.
 <link id="TButtonGlyph.Images"/>
 <link id="TButtonGlyph.Draw"/>
 <link id="TCustomSpeedButton.GetGlyphSize"/>
+<link id="#lcl.imglist.LCLGlyphs">LCLGlyphs</link>
 </seealso>
 </element>
 <element name="TButtonGlyph.GetImageIndexAndEffect.State">
-<short>Drawing state for the button glyph.</short>
+<short>
+Drawing state for the button glyph.
+</short>
 </element>
 <element name="TButtonGlyph.GetImageIndexAndEffect.APPI">
 <short>
-Pixels per inch for the image resolution with the button glyphs.
+Pixels per inch for the scaled image resolution created for the glyph images.
 </short>
 </element>
 <element name="TButtonGlyph.GetImageIndexAndEffect.ACanvasScaleFactor">
-<short>Canvas scaling factor applied to the image resolution.</short>
+<short>
+Canvas scaling factor applied to the scaled image resolution.
+</short>
 </element>
 <element name="TButtonGlyph.GetImageIndexAndEffect.AImageResolution">
-<short>Returns the scaled image resolution with the button glyphs.</short>
+<short>
+Returns the scaled image resolution with the glyphs images.
+</short>
 </element>
 <element name="TButtonGlyph.GetImageIndexAndEffect.AIndex">
 <short>
-Returns the index for the glyph image selected from Images or LCL glyph 
-resources
+Returns the index for the glyph image in the image resolution.
 </short>
 </element>
 <element name="TButtonGlyph.GetImageIndexAndEffect.AEffect">
 <short>
-Returns the drawing effect needed for the glyph image with the specified 
-state.
+Returns the graphic drawing effect needed for the glyph image with the 
+specified state.
 </short>
 </element>
 
@@ -900,6 +1002,58 @@ Pixels Per Inch for the image resolution requested in the method.
 <short>Updates the button glyph after changes to property values.</short>
 <descr></descr>
 <seealso></seealso>
+</element>
+
+<element name="TButtonGlyph.DrawEffectsEnabled">
+<short>
+Indicates whether drawing effects are enabled for mouse-over and mouse-down 
+events for the button glyph.
+</short>
+<descr>
+<p>
+<var>DrawEffectsEnabled</var> is a <var>TGlyphDrawEffectsEnabled</var> 
+property which controls glyph drawing effects for the <var>TButtonGlyph</var> 
+class instance and the button control to which it is attached. It determines 
+whether glyph drawing effects are applied when mouse-over or mouse-down events 
+occur for the associated button control. The values defined in 
+TGlyphDrawEffectsEnabled can enable or disable the glyph drawing effects 
+for the associated control, or defer the decision to the theme services 
+supported for the platform / widgetset.
+</p>
+<p>
+When enabled, the glyph image is modified using the drawing style needed for a 
+mouse hover or mouse down event. See TGlyphDrawEffectsEnabled for the 
+values in the enumeration and their meanings.
+</p>
+<p>
+The property value is set when the DrawEffectsEnabled property in a button 
+control (like TBitBtn or TSpeedButton) has been changed. Or, when
+the GlyphDrawEffectsEnabled in TApplication has been modified.
+</p>
+<p>
+The property value is used in the GetImageIndexAndEffect method. It is 
+translated to a TGraphicsDrawEffect value needed for the scaled image 
+resolution with the Glyph(s) or external Images used in the class instance. 
+The Draw method uses the scaled resolution, image index, and the drawing 
+effect to render the glyph image to the Canvas passed to the method.
+</p>
+</descr>
+<version>
+Added in LCL version 5.0.
+</version>
+<seealso>
+<link id="TButtonGlyph.DrawEffectsEnabled"/>
+<link id="TButtonGlyph.Draw"/>
+<link id="TButtonGlyph.GetImageIndexAndEffect"/>
+<link id="TCustomBitBtn.DrawEffectsEnabled"/>
+<link id="TBitBtn.DrawEffectsEnabled"/>
+<link id="TCustomSpeedButton.DrawEffectsEnabled"/>
+<link id="TSpeedButton.DrawEffectsEnabled"/>
+<link id="TGlyphDrawEffectsEnabled"/>
+<link id="#lcl.forms.TApplication.GlyphDrawEffectsEnabled">TApplication.GlyphDrawEffectsEnabled</link>
+<link id="#lcl.forms.TApplicationProperties.GlyphDrawEffectsEnabled">TApplicationProperties.GlyphDrawEffectsEnabled</link>
+<link id="#lazutils.graphtype.TGraphicsDrawEffect">TGraphicsDrawEffect</link>
+</seealso>
 </element>
 
 <element name="TButtonGlyph.Glyph">
@@ -1458,6 +1612,24 @@ this class.
 <element name="TCustomBitBtn.FMargin"/>
 <element name="TCustomBitBtn.FSpacing"/>
 <element name="TCustomBitBtn.FImageChangeLink"/>
+<element name="TCustomBitBtn.FDrawEffectsEnabled"/>
+
+<element name="TCustomBitBtn.GetDrawEffectsEnabled">
+<short>
+Gets the value for the DrawEffectsEnabled property.
+</short>
+<version>
+Added in LCL version 5.0.
+</version>
+<seealso>
+<link id="TCustomBitBtn.DrawEffectsEnabled"/>
+</seealso>
+</element>
+<element name="TCustomBitBtn.GetDrawEffectsEnabled.Result">
+<short>
+Value for the DrawEffectsEnabled property.
+</short>
+</element>
 
 <element name="TCustomBitBtn.GetGlyph">
 <short>Gets the value for the Glyph property.</short>
@@ -1543,6 +1715,23 @@ occurs for the LCL component streaming mechanism.
 <element name="TCustomBitBtn.IsGlyphStored.Result">
 <short>
 <b>True</b> when the glyph image is stored in the LCL component stream.
+</short>
+</element>
+
+<element name="TCustomBitBtn.SetDrawEffectsEnabled">
+<short>
+Sets the value for the DrawEffectsEnabled property.
+</short>
+<version>
+Added in LCL version 5.0.
+</version>
+<seealso>
+<link id="TCustomBitBtn.DrawEffectsEnabled"/>
+</seealso>
+</element>
+<element name="TCustomBitBtn.SetDrawEffectsEnabled.AValue">
+<short>
+New value for the DrawEffectsEnabled property.
 </short>
 </element>
 
@@ -2240,6 +2429,58 @@ Added in LCL version 2.3.0. Available since version 3.0.
 <seealso/>
 </element>
 
+<element name="TCustomBitBtn.DrawEffectsEnabled">
+<short>
+Enables or disables Glyph drawing effects for mouse over and mouse down events 
+on the control.
+</short>
+<descr>
+<p>
+<var>DrawEffectsEnabled</var> is a <var>TGlyphDrawEffectsEnabled</var> 
+property which controls whether drawing effects for mouse over and mouse 
+down events are applied to the Glyph for the control. The default value for 
+the property is <var>deeApplication</var> and indicates that the setting in 
+<var>TApplication</var> is used to enable or disable the glyph drawing effects 
+on all button controls where they are relevant.
+</p>
+<p>
+Use deeSystem to use the capabilities provided in theme services to apply the 
+glyph drawing effects for the control.
+</p>
+<p>
+Use deeAlways or deeNever to enable or disable glyph drawing effects for the 
+control.
+</p>
+<p>
+The value for the property is read from and written to the internal 
+<var>TButtonGlyph</var> instance used in the control. Changing the property 
+value causes the window handle to be recreated in the LCL interface.
+</p>
+<p>
+See the TButtonGlyph.Draw and TButtonGlyph.GetImageIndexAndEffect methods for 
+more information about how the value is used to draw the glyph on the control.
+</p>
+<p>
+Use GlyphShowMode to control whether glyphs are visible on the button control.
+</p>
+</descr>
+<version>
+Added in LCL version 5.0.
+</version>
+<seealso>
+<link id="TCustomBitBtn.Glyph"/>
+<link id="TCustomBitBtn.GlyphShowMode"/>
+<link id="TCustomBitBtn.Images"/>
+<link id="TBitBtn.DrawEffectsEnabled"/>
+<link id="TButtonGlyph.DrawEffectsEnabled"/>
+<link id="TButtonGlyph.Draw"/>
+<link id="TButtonGlyph.GetImageIndexAndEffect"/>
+<link id="TGlyphDrawEffectsEnabled"/>
+<link id="#lcl.forms.TApplication.GlyphDrawEffectsEnabled">TApplication.GlyphDrawEffectsEnabled</link>
+<link id="#lcl.forms.TApplicationProperties.GlyphDrawEffectsEnabled">TApplicationProperties.GlyphDrawEffectsEnabled</link>
+</seealso>
+</element>
+
 <element name="TCustomBitBtn.Glyph">
 <short>Bitmap with the Glyph displayed on the control.</short>
 <descr>
@@ -2653,6 +2894,7 @@ TBitBtn sets the visibility for properties introduced in ancestor classes.
 <element name="TBitBtn.DragCursor" link="#lcl.controls.TControl.DragCursor"/>
 <element name="TBitBtn.DragKind" link="#lcl.controls.TControl.DragKind"/>
 <element name="TBitBtn.DragMode" link="#lcl.controls.TControl.DragMode"/>
+<element name="TBitBtn.DrawEffectsEnabled" link="TCustomBitBtn.DrawEffectsEnabled"/>
 <element name="TBitBtn.Enabled" link="#lcl.controls.TControl.Enabled"/>
 <element name="TBitBtn.Font" link="#lcl.controls.TControl.Font"/>
 <element name="TBitBtn.Glyph" link="#lcl.buttons.TCustomBitBtn.Glyph"/>
@@ -2967,6 +3209,38 @@ for the control.
 <short>
 <b>True</b> when a value for the Glyph property is included in the LCL 
 component streaming mechanism.
+</short>
+</element>
+
+<element name="TCustomSpeedButton.GetDrawEffectsEnabled">
+<short>
+Gets the value for the DrawEffectsEnabled property.
+</short>
+<version>
+Added in LCL version 5.0.
+</version>
+<seealso>
+<link id="TCustomSpeedButton.DrawEffectsEnabled">text</link>
+</seealso>
+</element>
+<element name="TCustomSpeedButton.GetDrawEffectsEnabled.Result">
+<short>
+Value for the DrawEffectsEnabled property.
+</short>
+</element>
+
+<element name="TCustomSpeedButton.SetDrawEffectsEnabled">
+<short>
+Sets the value for the DrawEffectsEnabled property.
+</short>
+<version>
+Added in LCL version 5.0.
+</version>
+<seealso></seealso>
+</element>
+<element name="TCustomSpeedButton.SetDrawEffectsEnabled.AValue">
+<short>
+New value for the DrawEffectsEnabled property.
 </short>
 </element>
 
@@ -4272,6 +4546,51 @@ MouseInControl, to determine the current TButtonState for the control.
 <seealso/>
 </element>
 
+<element name="TCustomSpeedButton.DrawEffectsEnabled">
+<short>
+Enables or disables Glyph drawing effects for mouse over and mouse down events 
+on the control.
+</short>
+<descr>
+<p>
+<var>DrawEffectsEnabled</var> is a <var>TGlyphDrawEffectsEnabled</var> 
+property which controls whether drawing effects for mouse over and mouse 
+down events are applied to the Glyph for the control. The default value for 
+the property is <var>deeApplication</var> and indicates that the setting in 
+<var>TApplication</var> is used to enable or disable the glyph drawing effects 
+on all button controls where they are relevant.
+</p>
+<p>
+Use deeSystem to use the capabilities provided in theme services to apply the 
+glyph drawing effects for the control.
+</p>
+<p>
+Use deeAlways or deeNever to enable or disable glyph drawing effects for the 
+control.
+</p>
+<p>
+The value for the property is read from and written to the internal 
+<var>TButtonGlyph</var> instance used in the control. See the 
+TButtonGlyph.Draw and TButtonGlyph.GetImageIndexAndEffect methods for more 
+information about how the value is used to draw the glyph on the control.
+</p>
+</descr>
+<version>
+Added in LCL version 5.0.
+</version>
+<seealso>
+<link id="TCustomSpeedButton.Glyph"/>
+<link id="TCustomSpeedButton.Images"/>
+<link id="TSpeedButton.DrawEffectsEnabled"/>
+<link id="TButtonGlyph.DrawEffectsEnabled"/>
+<link id="TButtonGlyph.Draw"/>
+<link id="TButtonGlyph.GetImageIndexAndEffect"/>
+<link id="TGlyphDrawEffectsEnabled"/>
+<link id="#lcl.forms.TApplication.GlyphDrawEffectsEnabled">TApplication.GlyphDrawEffectsEnabled</link>
+<link id="#lcl.forms.TApplicationProperties.GlyphDrawEffectsEnabled">TApplicationProperties.GlyphDrawEffectsEnabled</link>
+</seealso>
+</element>
+
 <element name="TCustomSpeedButton.Flat">
 <short>
 Indicates whether the button is displayed with a Flat (non-relief) appearance.
@@ -4816,6 +5135,7 @@ Object Inspector at design-time.
 <element name="TSpeedButton.DragCursor" link="#lcl.controls.TControl.DragCursor"/>
 <element name="TSpeedButton.DragKind" link="#lcl.controls.TControl.DragKind"/>
 <element name="TSpeedButton.DragMode" link="#lcl.controls.TControl.DragMode"/>
+<element name="TSpeedButton.DrawEffectsEnabled" link="TCustomSpeedButton.DrawEffectsEnabled"/>
 <element name="TSpeedButton.Enabled" link="#lcl.controls.TControl.Enabled"/>
 <element name="TSpeedButton.Flat" link="#lcl.buttons.TCustomSpeedButton.Flat"/>
 <element name="TSpeedButton.Font" link="#lcl.controls.TControl.Font"/>
