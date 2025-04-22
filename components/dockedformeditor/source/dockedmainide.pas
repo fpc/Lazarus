@@ -423,6 +423,7 @@ var
   LPageCtrl: TSourcePageControl;
   LSourceWindowIntf: TSourceEditorWindowInterface;
   LDesignForm: TDesignForm;
+  w: TSourceWindow;
 begin
   if Sender is TSourceEditorInterface then
   begin
@@ -494,6 +495,10 @@ begin
         LDesignForm.HideWindow;
       LPageCtrl.InitPage;
     end;
+
+    w := SourceWindows.SourceWindow[LSourceWindowIntf];
+    if w <> nil then
+      w.NoteBookPageChanged(nil);
   end else begin
     {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TDockedMainIDE.EditorActivated [' + DbgSName(Sender) + '] - not a Source Editor!');{$ENDIF}
   end;

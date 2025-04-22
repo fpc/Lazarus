@@ -42,15 +42,12 @@ type
   TSourceWindow = class
   private
     FActiveDesignForm: TDesignForm;
-    FDefaultNotebookPageChanged: TNotifyEvent;
     FLastActiveSourceEditor: TSourceEditorInterface;
     FLastTopParent: TControl;
     FNotebook: TExtendedNotebook;
     FPageControlList: TSourcePageControls;
     FSourceWindowIntf: TSourceEditorWindowInterface;
     function GetActiveEditor: TSourceEditorInterface;
-    procedure HookIntoOnPageChanged;
-    procedure NoteBookPageChanged(Sender: TObject);
     procedure SetActiveDesignForm(const AValue: TDesignForm);
     procedure UpdateEditorPageCaption(Sender: TObject);
   public
@@ -58,6 +55,7 @@ type
     destructor Destroy; override;
     procedure AddPageCtrl(APageControl: TSourcePageControl);
     procedure AdjustPageControl;
+    procedure NoteBookPageChanged(Sender: TObject);
     function  FindPageControl(ASourceEditor: TSourceEditorInterface): TSourcePageControl;
     procedure RemoveActiveDesignForm;
     procedure RemovePageCtrl(ASourceEditor: TSourceEditorInterface);
@@ -109,27 +107,11 @@ implementation
 
 { TSourceWindow }
 
-procedure TSourceWindow.HookIntoOnPageChanged;
-var
-  i: Integer;
-begin
-  for i := 0 to FSourceWindowIntf.ControlCount - 1 do
-    if FSourceWindowIntf.Controls[i] is TExtendedNotebook then
-    begin
-      FNotebook := TExtendedNotebook(FSourceWindowIntf.Controls[i]);
-      Break;
-    end;
-  if not Assigned(FNotebook) then Exit;
-  FDefaultNotebookPageChanged := FNotebook.OnChange;
-  FNotebook.OnChange := @NoteBookPageChanged;
-end;
-
 procedure TSourceWindow.NoteBookPageChanged(Sender: TObject);
 var
   LPageCtrl: TSourcePageControl;
 begin
   {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TSourceWindow.NoteBookPageChanged SourceWindow[' + FSourceWindowIntf.Caption + ']'); {$ENDIF}
-  FDefaultNotebookPageChanged(Sender);
   LPageCtrl := FindPageControl(ActiveEditor);
   if not Assigned(LPageCtrl) then Exit;
   if LPageCtrl.DesignerPageActive then
@@ -193,15 +175,11 @@ begin
   FLastActiveSourceEditor := nil;
   FSourceWindowIntf := ASourceWindowIntf;
   FPageControlList := TSourcePageControls.Create;
-  FNotebook := nil;
-  HookIntoOnPageChanged;
   FSourceWindowIntf.AddUpdateEditorPageCaptionHandler(@UpdateEditorPageCaption);
 end;
 
 destructor TSourceWindow.Destroy;
 begin
-  if Assigned(FNotebook) then
-    FNotebook.OnChange := FDefaultNotebookPageChanged;
   FPageControlList.Free;
   inherited Destroy;
 end;
