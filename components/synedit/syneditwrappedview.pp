@@ -1047,7 +1047,7 @@ begin
   if Editor <> nil then begin
     TSynEdit(Editor).UnRegisterStatusChangedHandler(@DoWidthChanged);
     TSynEdit(Editor).UnRegisterStatusChangedHandler(@DoHandleCreated);
-    if (FLineMapView <> nil) and not (csDestroying in Editor.Componentstate) then begin
+    if (FLineMapView <> nil) then begin
       TSynEdit(Editor).TextViewsManager.RemoveSynTextView(FLineMapView, True);
       TSynEdit(Editor).Invalidate;
     end;
