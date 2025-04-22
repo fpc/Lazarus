@@ -184,9 +184,11 @@ type
   { TOpenDialog }
   
   TOpenOption = (
-    ofReadOnly,            // Causes the Read Only check box to be selected initially when the dialog box is created. This flag indicates the state of the Read Only check box when the dialog box is closed.
-    ofOverwritePrompt,     // If selected file exists, show a message that file will be overwritten.
-    ofHideReadOnly,        // Windows only: Hides the Read Only check box (pre-Vista).
+    ofReadOnly,            // Windows only (before Vista or with ofOldStyleDialog): Causes the "Read Only" checkbox to be checked initially when the dialog
+                           // is shown. After Execute, this flag indicates the state of the "Read Only" checkbox when the dialog box was closed.
+                           // QT: indicates that the dialog model is read-only
+    ofOverwritePrompt,     // If the selected file exists (TSaveDialog), a confirmation dialog will be shown.
+    ofHideReadOnly,        // Windows only (before Vista or with ofOldStyleDialog): Hides the "Read Only" checkbox.
     ofNoChangeDir,         // Do not change current directory.
     ofShowHelp,            // Show a help button.
     ofNoValidate,          // Windows only: Disable file name validation. Allow file names with invalid characters.
@@ -195,10 +197,10 @@ type
     ofPathMustExist,       // Show an error message if selected path does not exist.
     ofFileMustExist,       // Show an error message if selected file does not exist.
     ofCreatePrompt,        // Windows only: Enable a verification prompt when a file or directory needs to be created for a file dialog.
-    ofShareAware,          // Include the OFN_SHAREAWARE flag on the Windows platform.
+    ofShareAware,          // Windows only: Ignore network sharing violation errors.
     ofNoReadOnlyReturn,    // Do not return file names that are read-only.
     ofNoTestFileCreate,    // Windows only: the OS does not check if the item as specified in the TSaveDialog can actually be created.
-    ofNoNetworkButton,     // Windows only: Disable and hide the Network button on the Windows platform.
+    ofNoNetworkButton,     // Windows only: Disables and hides the Network button.
     ofNoLongNames,         // Windows only (with ofOldStyleDialog): Disables long file names and force use the 8.3 file names format.
     ofOldStyleDialog,      // Windows only: Shows the dialog in the old Win9x style.
     ofNoDereferenceLinks,  // Windows only: When choosing a file shortcut (*.lnk), return the shortcut itself, not the target file.
