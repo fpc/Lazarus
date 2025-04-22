@@ -7619,6 +7619,7 @@ var
   i: Integer;
 begin
 //  Path := 'EditorOptions/Color/'
+  RealFormatVersion := 0;
   if not FIsSchemeDefault then
     TmpPath := aPath + 'Lang' + StrToValidXMLName(FLanguageName) + '/'
   else
