@@ -2112,11 +2112,11 @@ end;
 
 destructor TIDESynEditor.Destroy;
 begin
-  RemoveLineWrapView;
   UnRegisterMouseActionSearchHandler(@CatchMouseForTopInforLine);
   ViewedTextBuffer.RemoveChangeHandler(senrHighlightChanged, @DoHighlightChanged);
   HighlightUserWordCount := 0;
   Highlighter := nil;
+  RemoveLineWrapView;
   FreeAndNil(FUserWordsList);
   FExtraMarkupMgr.RemoveMarkUp(TSynEditMarkup(MarkupMgr));
   FreeAndNil(FTopInfoDisplay);
