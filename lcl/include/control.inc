@@ -1434,11 +1434,11 @@ const
   );
 begin
   Result := TWSControlClass(WidgetSetClass).GetDefaultColor(Self, DefaultColorType);
-  if (Result = clDefault) then
+  if (Result = clDefault) or (Self.Color = clDefault) then
     if ParentColor and Assigned(Parent) then
-      Result := Parent.GetDefaultColor(DefaultColorType)
-    else
-      Result := DefColors[DefaultColorType];
+      Result := Parent.GetDefaultColor(DefaultColorType);
+  if Result = clDefault then
+    Result := DefColors[DefaultColorType];
 end;
 
 function TControl.GetColorResolvingParent: TColor;
