@@ -1367,22 +1367,23 @@ platforms where the value is relevant.
 </element>
 <element name="TOpenOption.ofReadOnly">
 <short>
-For the Windows platform, it causes the Read Only check box to be selected 
-initially when the dialog box is created. It is also used as a flag to 
-indicate the state of the Read Only check box when the dialog box is closed. 
-For QT-based platforms, it indicates that the entire dialog model is read-only.
+For the <b>Windows</b> platform (with <var>ofOldStyleDialog</var> or before
+Vista), it is responsible for the state of the "Read only" check box when 
+opening the dialog and before closing it. The user can set this check box to 
+ask the program to open a file in read-only mode. For <b>QT-based</b> 
+platforms, it indicates that the entire dialog model is read-only.
 </short>
 </element>
 <element name="TOpenOption.ofOverwritePrompt">
 <short>
-If the selected file exists, a message is displayed that the file will be 
-overwritten.
+If the selected file exists, a message is displayed to confirm rewriting the 
+file.
 </short>
 </element>
 <element name="TOpenOption.ofHideReadOnly">
 <short>
-For the Windows versions prior to Vista, it hides the Read Only check box on 
-the dialog. Not used in other widgetsets.
+Windows only (with <var>ofOldStyleDialog</var> or before Vista): Hides the
+"Read only" check box on the dialog.
 </short>
 </element>
 <element name="TOpenOption.ofNoChangeDir">
@@ -1393,36 +1394,71 @@ the dialog. Not used in other widgetsets.
 </element>
 <element name="TOpenOption.ofNoValidate">
 <short>
-Disables file name validation using OFN_NOVALIDATE on the Windows platform. 
-Allows file names with invalid characters.
+Windows only: Disables file name validation using
+<var>OFN_NOVALIDATE</var>/<var>FOS_NOVALIDATE</var> flags. Allows file names
+with invalid characters.
 </short>
 </element>
 <element name="TOpenOption.ofAllowMultiSelect">
-<short>Enables multi-selection in a dialog.</short>
+<short>
+Allows selection of multiple files (or folders).  The selection list can be 
+read in the <var>Files</var> property (<var>FileName</var> also contains the 
+first file in the list). Affects the <var>ofExtensionDifferent</var> and
+<var>ofCreatePrompt</var> flags. Not available in <var>TSaveDialog</var>.
+</short>
+<seealso>
+<link id="TFileDialog.FileName"/>
+<link id="TFileDialog.Files"/>
+</seealso>
 </element>
 <element name="TOpenOption.ofExtensionDifferent">
 <short>
-Indicates that a non-blank extension which differs from the default extension 
-was entered using a file open dialog. Included in the option values if the 
-condition occurs during execution of a dialog. Specifically excluded from the 
-options prior to executing a dialog.
+This is a returned flag that is set when the extension of the selected
+file differs from <var>DefaultExt</var>. It can only be returned when
+<var>DefaultExt</var> is not empty, and the dialog call was successful
+(<var>Execute</var> is true). For compatibility with Delphi, it is never
+set if multiple files are selected (possibly with 
+<var>ofAllowMultiSelect</var>).
 </short>
+<seealso>
+<link id="TFileDialog.FileName"/>
+<link id="TFileDialog.DefaultExt"/>
+<link id="TCommonDialog.Execute"/>
+</seealso>
 </element>
 <element name="TOpenOption.ofPathMustExist">
-<short>Shows an error message if an entered file path does not exist.</short>
+<short>
+Prevents selection of a non-existent path. Depending on the widget set, the 
+error will be displayed in the dialog itself or after it is closed, when 
+<var>Execute</var> returns false.
+</short>
+<seealso>
+<link id="TCommonDialog.Execute"/>
+</seealso>
 </element>
 <element name="TOpenOption.ofFileMustExist">
-<short>Shows an error message if an entered file does not exist.</short>
+<short>Doesn't allow to select a non-existent file. Depending on the
+widget set, the error will be displayed in the dialog itself or after its
+closing, when <var>Execute</var> returns false.</short>
+<seealso>
+<link id="TCommonDialog.Execute"/>
+</seealso>
 </element>
 <element name="TOpenOption.ofCreatePrompt">
 <short>
-Windows only: Enables a verification prompt when a file or directory needs to 
-be created for a file dialog.
+Windows only: Enables a verification prompt when a file or directory needs to
+be created for a file dialog. If the user decides to create a file, the dialog
+box closes. Otherwise, the dialog box remains open. When using 
+<var>ofAllowMultiSelect</var>, it allows a single non-existing file to be 
+specified.
 </short>
+<seealso>
+<link id="TFileDialog.FileName"/>
+</seealso>
 </element>
 <element name="TOpenOption.ofShareAware">
 <short>
-Includes the OFN_SHAREAWARE flag on the Windows platform.
+Windows only: Ignore network sharing violation errors.
 </short>
 </element>
 <element name="TOpenOption.ofNoReadOnlyReturn">
@@ -1439,28 +1475,27 @@ if the file or directory is read-only. See TOpenDialog.CheckFile.
 </element>
 <element name="TOpenOption.ofNoTestFileCreate">
 <short>
-For the Windows platform, the OS does not check if the item specified in a 
-TSaveDialog can actually be created. Includes the OFN_NOTESTFILECREATE flag on 
-the Windows platform.
+Windows only: The OS does not check if the item specified in a
+<var>TSaveDialog</var> can actually be created (it does not check for write 
+protection, a full disk, an open drive door, or network protection).
 </short>
 </element>
 <element name="TOpenOption.ofNoNetworkButton">
 <short>
-Disables and hides the Network button on the Windows platform. Not used for 
-other platforms.
+Windows only: Hides and disables the "Network" button.
 </short>
 </element>
 <element name="TOpenOption.ofNoLongNames">
 <short>
-Disables long file names on the Windows platform. Used in classic-style 
-dialogs to force use of file names using the 8.3 format. Explorer-style 
-dialogs ignore this flag and always display long file names. Not used for 
-other platforms.
+Windows only (with <var>ofOldStyleDialog</var>): Disables long file names and
+force use the 8.3 file names format.
 </short>
 </element>
 <element name="TOpenOption.ofOldStyleDialog">
 <short>
-Windows only: Shows the dialog in the Win9x style.
+Windows only: Shows the dialog in the Win9x style. In this style, an additional
+"Read only" check box for the file opening mode can be displayed (depending on
+<var>ofReadOnly</var> and <var>ofHideReadOnly</var>).
 </short>
 </element>
 <element name="TOpenOption.ofNoDereferenceLinks">
@@ -1474,6 +1509,9 @@ itself and not the target file.
 Do not resolve links after Execute. This value is not explicitly used in any 
 of the widgetset implementations.
 </short>
+<seealso>
+<link id="TCommonDialog.Execute"/>
+</seealso>
 </element>
 <element name="TOpenOption.ofEnableIncludeNotify">
 <short>
