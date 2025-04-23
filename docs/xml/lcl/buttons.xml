@@ -785,44 +785,37 @@ draw it.
 <p>
 <var>GetImageIndexAndEffect</var> is a procedure used to get the ordinal 
 position for the image used to render the <var>Glyph</var> for the class 
-instance. In addition, it returns the image resolution for the specified 
-display density and the drawing effect for the specified button 
-<var>State</var>.
-</p>
-<p>
-GetImageIndexAndEffect uses the values in the State argument and the 
-DrawEffectsEnabled property to determine the TGraphicsDrawEffect value 
-returned in the AEffect argument. An internal mapping of TGraphicsDrawEffect 
-values is used in the method, where both enabled and disabled variants are 
-maintained for use in AEffect.
-</p>
-<p>
-DrawEffectsEnabled determines whether the enabled or disabled 
-TGraphicsDrawEffect variant is used.
+instance. In addition, it returns the scaled imagelist (AImageResolution) for 
+the specified display resolution (APPI) and the drawing effect (AEffect) for 
+the button state (normal, disabled, hot, clicked, selected) requested by the 
+State argument. In principle, the user can provide dedicated images for each 
+state, but for simplicity usually only a single image is provided for the 
+"normal" state. In this case the imagelist can generate the missing images 
+based on the AEffect parameter. Whether this is done, however, depends on the 
+value of the DrawEffectsEnabled property of the ButtonGlyph:
 </p>
 <dl>
-<dt>deeSystem</dt>
-<dd>
-Causes theme services to be used to determine whether glyph effects are 
-enabled or disabled for the platform / widgetset.
-</dd>
 <dt>deeAlways</dt>
 <dd>
-Causes the enabled state to be used for the graphic drawing effect in AEffect.
+State-dependent images are always created from the normal image (for this 
+particular glyph).
 </dd>
 <dt>deeNever</dt>
 <dd>
-Causes the disabled state to be used for the graphic drawing effect in AEffect.
+No state-dependent images are generated from the normal image.
+</dd>
+<dt>deeSystem</dt>
+<dd>
+Queries the ThemeServices whether state-dependent images should be created 
+from the normal image.
 </dd>
 <dt>deeApplication</dt>
 <dd>
-Uses the value in TApplication.GlyphDrawEffectsEnabled to determine the 
-enabled or disabled state for the graphic drawing effect in AEffect. gdeSystem 
-behaves like deeSystem, and causes theme services to be used to determine 
-whether glyph effects are enabled or disabled for the platform / widgetset. 
-gdeAlways behaves like deeAlways, and causes the enabled state to be used for 
-the graphic drawing effect in AEffect. gdeNever behaves like deeNever, and 
-causes the disabled state to be used for the graphic drawing effect in AEffect.
+Uses the application-wide settings in TApplication.GlyphDrawEffectsEnabled (or 
+TApplicationProperties.GlyphDrawEffectsEnabled) to decide whether 
+state-dependent images should be created. While the deeAlways, deeNever and 
+deeSystem are applied only to the current button, the deeApplication setting 
+is applied to all buttons of the application.
 </dd>
 </dl>
 <p>
@@ -878,10 +871,10 @@ to the graphic drawing effect indicated in State.
 Finally, the Images property is used (when assigned) to create the scaled 
 image resolution returned in AImageResolution. Images contains the cached image
 (s) created from the Glyph property. Images may contain as many as 5 distinct  
-bitmaps representing the corresponding button states. AEffect is set to the 
-value needed to represent State when DrawEffectsEnabled is enabled. AIndex is 
-set to the image index calculated for button draw states when the glyphs were 
-added to the image cache.
+bitmaps (as defined in TNumGlyph) representing the corresponding button 
+states. AEffect is set to the value needed to represent State when 
+DrawEffectsEnabled is enabled. AIndex is set to the image index calculated for 
+button draw states when the glyphs were added to the image cache.
 </p>
 <p>
 GetImageIndexAndEffect is used in in the implementation of the Draw method in 
@@ -895,6 +888,7 @@ TButtonGlyph, and in the GetGlyphSize method in TCustomSpeedButton.
 <link id="TButtonGlyph.Images"/>
 <link id="TButtonGlyph.Draw"/>
 <link id="TButtonState"/>
+<link id="TNumGlyph"/>
 <link id="TCustomSpeedButton.GetGlyphSize"/>
 <link id="#lcl.imglist.TScaledImageListResolution">TScaledImageListResolution</link>
 <link id="#lcl.imglist.LCLGlyphs">LCLGlyphs</link>
