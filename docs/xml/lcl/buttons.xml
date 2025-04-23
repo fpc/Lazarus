@@ -778,7 +778,7 @@ Remember to call <var>Free</var> for all objects created on the constructor.
 
 <element name="TButtonGlyph.GetImageIndexAndEffect">
 <short>
-Gets the index for a button image using a given state, and the effect used to 
+Gets the index for a glyph image using a given state, and the effect used to 
 draw it.
 </short>
 <descr>
@@ -790,16 +790,21 @@ display density and the drawing effect for the specified button
 <var>State</var>.
 </p>
 <p>
-GetImageIndexAndEffect uses the value in DrawEffectsEnabled to determine the 
-TGraphicsDrawEffect value returned in the AEffect argument. It represents 
-either an enabled or a disabled drawing effect for available TButtonState 
-values. For example:
+GetImageIndexAndEffect uses the values in the State argument and the 
+DrawEffectsEnabled property to determine the TGraphicsDrawEffect value 
+returned in the AEffect argument. An internal mapping of TGraphicsDrawEffect 
+values is used in the method, where both enabled and disabled variants are 
+maintained for use in AEffect.
+</p>
+<p>
+DrawEffectsEnabled determines whether the enabled or disabled 
+TGraphicsDrawEffect variant is used.
 </p>
 <dl>
 <dt>deeSystem</dt>
 <dd>
-Causes theme services to be used to determine whether glyph effects are used 
-for the platform / widgetset.
+Causes theme services to be used to determine whether glyph effects are 
+enabled or disabled for the platform / widgetset.
 </dd>
 <dt>deeAlways</dt>
 <dd>
@@ -812,18 +817,49 @@ Causes the disabled state to be used for the graphic drawing effect in AEffect.
 <dt>deeApplication</dt>
 <dd>
 Uses the value in TApplication.GlyphDrawEffectsEnabled to determine the 
-graphic drawing effect in AEffect. gdeSystem behaves like deeSystem, and 
-causes theme services to be used to determine whether glyph effects are used 
-for the platform / widgetset. gdeAlways behaves like deeAlways, and causes the 
-enabled state to be used for the graphic drawing effect in AEffect. gdeNever 
-behaves like deeNever, and causes the disabled state to be used for the 
-graphic drawing effect in AEffect.
+enabled or disabled state for the graphic drawing effect in AEffect. gdeSystem 
+behaves like deeSystem, and causes theme services to be used to determine 
+whether glyph effects are enabled or disabled for the platform / widgetset. 
+gdeAlways behaves like deeAlways, and causes the enabled state to be used for 
+the graphic drawing effect in AEffect. gdeNever behaves like deeNever, and 
+causes the disabled state to be used for the graphic drawing effect in AEffect.
+</dd>
+</dl>
+<p>
+<var>State</var> contains the current button state and determines which 
+graphic drawing effect is used in AEffect. For example:
+</p>
+<dl>
+<dt>bsUp</dt>
+<dd>
+Causes AEffect to contain gdeNormal for both enabled and disabled glyph 
+effects.
+</dd>
+<dt>bsDisabled</dt>
+<dd>
+Causes AEffect to contain gdeDisabled for both enabled and disabled glyph 
+effects.
+</dd>
+<dt>bsDown</dt>
+<dd>
+Causes AEffect to contain gdeNormal for disabled glyph effects, and 
+gdeShadowed for enabled glyph effects.
+</dd>
+<dt>bsExclusive</dt>
+<dd>
+Causes AEffect to contain gdeNormal for both enabled and disabled glyph 
+effects.
+</dd>
+<dt>bsHot</dt>
+<dd>
+Causes AEffect to contain gdeNormal for disabled glyph effects, or 
+gdeHighlighted for enabled glyph effects.
 </dd>
 </dl>
 <p>
 GetImageIndexAndEffect examines values in the ExternalImages, 
-LCLGlyphResourceName, and Images properties to determine the image(s) used in 
-the method.
+LCLGlyphResourceName, and Images properties (in that order) to determine the 
+glyph image(s) used in the method.
 </p>
 <p>
 ExternalImages is used (when assigned) to create the scaled image resolution 
@@ -841,10 +877,11 @@ to the graphic drawing effect indicated in State.
 <p>
 Finally, the Images property is used (when assigned) to create the scaled 
 image resolution returned in AImageResolution. Images contains the cached image
-(s) created from the Glyph property. AEffect is set to the value needed to 
-represent State when DrawEffectsEnabled is enabled. AIndex is set to the image 
-index calculated for button draw states when the glyphs were added to the 
-image cache.
+(s) created from the Glyph property. Images may contain as many as 5 distinct  
+bitmaps representing the corresponding button states. AEffect is set to the 
+value needed to represent State when DrawEffectsEnabled is enabled. AIndex is 
+set to the image index calculated for button draw states when the glyphs were 
+added to the image cache.
 </p>
 <p>
 GetImageIndexAndEffect is used in in the implementation of the Draw method in 
@@ -857,8 +894,13 @@ TButtonGlyph, and in the GetGlyphSize method in TCustomSpeedButton.
 <link id="TButtonGlyph.LCLGlyphName"/>
 <link id="TButtonGlyph.Images"/>
 <link id="TButtonGlyph.Draw"/>
+<link id="TButtonState"/>
 <link id="TCustomSpeedButton.GetGlyphSize"/>
+<link id="#lcl.imglist.TScaledImageListResolution">TScaledImageListResolution</link>
 <link id="#lcl.imglist.LCLGlyphs">LCLGlyphs</link>
+<link id="#lcl.themes.TThemeServices.GetOption">TThemeServices.GetOption</link>
+<link id="#lcl.themes.ThemeServices">ThemeServices</link>
+<link id="#lazutils.graphtype.TGraphicsDrawEffect">TGraphicsDrawEffect</link>
 </seealso>
 </element>
 <element name="TButtonGlyph.GetImageIndexAndEffect.State">
