@@ -871,7 +871,7 @@ to the graphic drawing effect indicated in State.
 Finally, the Images property is used (when assigned) to create the scaled 
 image resolution returned in AImageResolution. Images contains the cached image
 (s) created from the Glyph property. Images may contain as many as 5 distinct  
-bitmaps (as defined in TNumGlyph) representing the corresponding button 
+bitmaps (as defined in TNumGlyphs) representing the corresponding button 
 states. AEffect is set to the value needed to represent State when 
 DrawEffectsEnabled is enabled. AIndex is set to the image index calculated for 
 button draw states when the glyphs were added to the image cache.
@@ -888,7 +888,7 @@ TButtonGlyph, and in the GetGlyphSize method in TCustomSpeedButton.
 <link id="TButtonGlyph.Images"/>
 <link id="TButtonGlyph.Draw"/>
 <link id="TButtonState"/>
-<link id="TNumGlyph"/>
+<link id="TNumGlyphs"/>
 <link id="TCustomSpeedButton.GetGlyphSize"/>
 <link id="#lcl.imglist.TScaledImageListResolution">TScaledImageListResolution</link>
 <link id="#lcl.imglist.LCLGlyphs">LCLGlyphs</link>
