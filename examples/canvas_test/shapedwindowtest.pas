@@ -42,9 +42,12 @@ var
 begin
   Shape := TBitmap.Create;
   try
-    Shape.Width := 200;
-    Shape.Height := 200;
-    Shape.Canvas.Ellipse(0, 0, 200, 200);
+    {$IFDEF LCLGtk2}
+    Shape.Monochrome := True;
+    {$ENDIF}
+    Shape.Width := Width;
+    Shape.Height := Height;
+    Shape.Canvas.Ellipse(0, 0, Width, Height);
     SetShape(Shape);
   finally
     Shape.Free;
