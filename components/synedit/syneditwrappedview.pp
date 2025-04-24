@@ -1076,6 +1076,7 @@ var
   AMaxWidth, i, w: Integer;
   LowLine, HighLine, TopViewIdx, TopLineIdx, TopSubLine, LowestLine, HighestLine: TLineIdx;
   tsub: TLineRange;
+  HasChange: Boolean;
 begin
   if not FLineMapView.LineMappingData.NeedsValidation then exit;
   if not Editor.HandleAllocated then exit;
@@ -1087,6 +1088,7 @@ begin
   AMaxWidth := WrapColumn;
   LowestLine := high(LowestLine);
   HighestLine := -1;
+  HasChange := False;
 
   while FLineMapView.LineMappingData.NextBlockForValidation(LowLine, HighLine) do begin
     if LowLine < LowestLine then
@@ -1095,12 +1097,13 @@ begin
       HighestLine := HighLine;
     for i := LowLine to HighLine do begin
       w := CalculateWrapForLine(i, AMaxWidth);
-      FLineMapView.LineMappingData.ValidateLine(i, w);
+      if FLineMapView.LineMappingData.ValidateLine(i, w) then
+        HasChange := True;
     end;
   end;
   FLineMapView.LineMappingData.EndValidate;
   // TODO: detect if any line actually changed wrapping
-  if HighestLine >= 0 then
+  if HasChange and (HighestLine >= 0) then
     FLineMapView.SendNotification(senrLineMappingChanged, FLineMapView, LowestLine, HighestLine - LowestLine + 1); // TODO: this sets the topview / but that is done below
 
   tsub := ViewedTextBuffer.DisplayView.TextToViewIndex(TopLineIdx);

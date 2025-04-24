@@ -119,7 +119,7 @@ type
 
 
     procedure InvalidateLines(AFromOffset, AToOffset: Integer);
-    procedure ValidateLine(ALineOffset, AWrappCount: Integer);
+    function  ValidateLine(ALineOffset, AWrappCount: Integer): boolean;
     procedure EndValidate;
     property FirstInvalidLine: Integer read GetFirstInvalidLine;
     property FirstInvalidEndLine: Integer read GetFirstInvalidEndLine;
@@ -198,7 +198,7 @@ type
 
     // must be FirstInvalidLine (or Last) => so FirstInvalidLine can be set.
     procedure EndValidate;
-    procedure ValidateLine(ALineOffset, AWrappCount: Integer);
+    function ValidateLine(ALineOffset, AWrappCount: Integer): boolean;
     procedure InvalidateLines(AFromOffset, AToOffset: Integer); // TODO: adjust offset
     function  ExtendAndInvalidateLines(AFromLineIdx, AToLineIdx: TLineIdx): Boolean;
 
@@ -247,7 +247,7 @@ type
 
     procedure AdjustPosition(AValue : Integer); // Must not change order with prev/next node
 
-    procedure ValidateLine(ALineIdx, AWrappCount: Integer); inline;
+    function ValidateLine(ALineIdx, AWrappCount: Integer): boolean; inline;
     procedure InvalidateLines(AFromIdx, AToIdx: Integer);
     function  ExtendAndInvalidateLines(AFromIdx, AToIdx: TLineIdx): Boolean;
 
@@ -308,7 +308,7 @@ type
     // ValidateLine must only be called AFTER NextBlockForValidation / with no modifications to the tree
     function NextBlockForValidation(out ALowLine, AHighLine: TLineIdx): boolean;
     procedure EndValidate;
-    procedure ValidateLine(ALineIdx: TLineIdx; AWrappCount: Integer);
+    function ValidateLine(ALineIdx: TLineIdx; AWrappCount: Integer): boolean;
     procedure InvalidateLines(AFromLineIdx, AToLineIdx: TLineIdx);
 
     procedure AdjustForLinesInserted(ALineIdx, ALineCount, ABytePos: Integer); reintroduce;
@@ -835,24 +835,30 @@ begin
   AddToInvalidList;
 end;
 
-procedure TSynWordWrapLineMap.ValidateLine(ALineOffset, AWrappCount: Integer);
+function TSynWordWrapLineMap.ValidateLine(ALineOffset, AWrappCount: Integer): boolean;
 var
-  i, j: Integer;
+  i, j, AdjustedLineOffset: Integer;
 begin
   assert(ALineOffset >= 0, 'TSynWordWrapLineMap.ValidateLine: ALineOffset >= 0');
   assert((FOffsetAtStart = 0) or (FWrappedExtraSumsCount > 0), 'TSynWordWrapLineMap.ValidateLine: (FOffsetAtStart = 0) or (FWrappedExtraSumsCount > 0)');
+  Result := True; // assume it was changed
   FInvalidLines.ValidateLines(ALineOffset);
 
-  if ALineOffset - FOffsetAtStart < FDeferredAdjustFromOffs then begin
-    EndValidate;
-  end
-  else
+  AdjustedLineOffset := ALineOffset - FOffsetAtStart;
   if FDeferredAdjustFromOffs > 0 then begin
-    j := FDeferredAdjustFromVal;
-    //AWrappCount := AWrappCount + j;
-    for i := FDeferredAdjustFromOffs to Min(FWrappedExtraSumsCount - 1, ALineOffset - FOffsetAtStart) do
-      FWrappedExtraSums[i] := FWrappedExtraSums[i] + j;
-    FDeferredAdjustFromOffs := 0;
+    if AdjustedLineOffset < FDeferredAdjustFromOffs then begin
+      EndValidate;
+    end
+    else begin
+      j := FDeferredAdjustFromVal;
+      //AWrappCount := AWrappCount + j;
+      for i := FDeferredAdjustFromOffs to Min(FWrappedExtraSumsCount - 1, AdjustedLineOffset) do
+        FWrappedExtraSums[i] := FWrappedExtraSums[i] + j;
+      if AdjustedLineOffset < FWrappedExtraSumsCount - 1 then
+        FDeferredAdjustFromOffs := AdjustedLineOffset + 1
+      else
+        FDeferredAdjustFromOffs := 0;
+    end;
   end;
 
 
@@ -882,37 +888,42 @@ begin
       assert(FOffsetAtStart >= j, 'TSynWordWrapLineMap.ValidateLine: FOffsetAtStart >= j');
       FOffsetAtStart := FOffsetAtStart - j;
       FWrappedExtraSumsCount := FWrappedExtraSumsCount + j;
-    end;
+    end
+    else
+      Result := False; // wrap-count did not change
   end
 
   else
   begin
-    ALineOffset := ALineOffset - FOffsetAtStart;
-    if ALineOffset >= FWrappedExtraSumsCount then begin
+    if AdjustedLineOffset >= FWrappedExtraSumsCount then begin
       if AWrappCount > 1 then begin
         i := FWrappedExtraSumsCount;
   // TODO: check LastInvalidLine and SYN_WORD_WRAP_SPLIT_SIZE;
-        GrowCapacity(ALineOffset + 1);
-        FWrappedExtraSumsCount := ALineOffset + 1;
+        GrowCapacity(AdjustedLineOffset + 1);
+        FWrappedExtraSumsCount := AdjustedLineOffset + 1;
         WrapInfoFillFrom(
           @FWrappedExtraSums[i],
           FWrappedExtraSumsCount - i,
           GetWrappedExtraSumBefore(i));
-        FWrappedExtraSums[ALineOffset] := AWrappCount - 1; // last element, no AdjustFrom() needed
-        if ALineOffset > 0 then
-          FWrappedExtraSums[ALineOffset] := FWrappedExtraSums[ALineOffset] + FWrappedExtraSums[ALineOffset-1];
-      end;
+        FWrappedExtraSums[AdjustedLineOffset] := AWrappCount - 1; // last element, no AdjustFrom() needed
+        if AdjustedLineOffset > 0 then
+          FWrappedExtraSums[AdjustedLineOffset] := FWrappedExtraSums[AdjustedLineOffset] + FWrappedExtraSums[AdjustedLineOffset-1];
+      end
+      else
+        Result := False; // wrap-count did not change
     end
 
     else
-    if (AWrappCount = 1) and (ALineOffset = FWrappedExtraSumsCount - 1) then begin
-      if ALineOffset = 0 then begin
+    if (AWrappCount = 1) and (AdjustedLineOffset = FWrappedExtraSumsCount - 1) then begin
+      // removing the last (tailing) wrap entry from list
+      // that must be wrapped, so result=true / there was a change
+      if AdjustedLineOffset = 0 then begin
         FWrappedExtraSumsCount := 0;
         FOffsetAtStart := 0;
       end
       else begin
-// TODO: defer if there are further invalid lines after ALineOffset
-        i := ALineOffset - 1; // i = FWrappedExtraSumsCount - 2
+// TODO: defer if there are further invalid lines after AdjustedLineOffset
+        i := AdjustedLineOffset - 1; // i = FWrappedExtraSumsCount - 2
         j := FWrappedExtraSums[i];
         if j = 0 then begin
           FWrappedExtraSumsCount := 0;
@@ -929,10 +940,15 @@ begin
 
     else
     begin
-      j := AWrappCount - 1 + GetWrappedExtraSumBefore(ALineOffset);
-      FDeferredAdjustFromOffs := ALineOffset + 1;
-      FDeferredAdjustFromVal  := FDeferredAdjustFromVal + j - FWrappedExtraSums[ALineOffset];
-      FWrappedExtraSums[ALineOffset] := j;
+      assert((FDeferredAdjustFromOffs=0) or (FDeferredAdjustFromOffs=AdjustedLineOffset+1), 'TSynWordWrapLineMap.ValidateLine: (FDeferredAdjustFromOffs=0) or (FDeferredAdjustFromOffs=AdjustedLineOffset+1)');
+      j := AWrappCount - 1 + GetWrappedExtraSumBefore(AdjustedLineOffset);
+      i := j - FWrappedExtraSums[AdjustedLineOffset];
+      Result := i <> 0;
+      if Result then begin
+        FDeferredAdjustFromVal  := FDeferredAdjustFromVal + i;
+        FDeferredAdjustFromOffs := AdjustedLineOffset + 1;
+        FWrappedExtraSums[AdjustedLineOffset] := j;
+      end;
     end;
   end;
 end;
@@ -1628,9 +1644,9 @@ begin
   MaybeJoinWithSibling;
 end;
 
-procedure TSynEditLineMapPage.ValidateLine(ALineOffset, AWrappCount: Integer);
+function TSynEditLineMapPage.ValidateLine(ALineOffset, AWrappCount: Integer): boolean;
 begin
-  FSynWordWrapLineMap.ValidateLine(ALineOffset, AWrappCount);
+  Result := FSynWordWrapLineMap.ValidateLine(ALineOffset, AWrappCount);
 end;
 
 procedure TSynEditLineMapPage.InvalidateLines(AFromOffset, AToOffset: Integer);
@@ -1889,9 +1905,9 @@ begin
     Result := Page.ExtendAndInvalidateLines(AFromIdx-StartLine, AToIdx-StartLine);
 end;
 
-procedure TSynEditLineMapPageHolderHelper.ValidateLine(ALineIdx, AWrappCount: Integer);
+function TSynEditLineMapPageHolderHelper.ValidateLine(ALineIdx, AWrappCount: Integer): boolean;
 begin
-  Page.ValidateLine(ALineIdx-StartLine, AWrappCount);
+  Result := Page.ValidateLine(ALineIdx-StartLine, AWrappCount);
 end;
 
 function TSynEditLineMapPageHolderHelper.RealCount: Integer;
@@ -2181,14 +2197,14 @@ begin
   end;
 end;
 
-procedure TSynLineMapAVLTree.ValidateLine(ALineIdx: TLineIdx;
-  AWrappCount: Integer);
+function TSynLineMapAVLTree.ValidateLine(ALineIdx: TLineIdx; AWrappCount: Integer): boolean;
 var
   RealStart, RealEnd: Integer;
   SblRealStart: Integer;
   NewScrEnd: Integer;
   SiblingNode: TSynEditLineMapPageHolder;
 begin
+  Result := True;
   assert(FCurrentValidatingNode.HasPage, 'TSynLineMapAVLTree.ValidateLine: FCurrentValidatingNode.HasPage');
   assert(ALineIdx >= FCurrentValidatingNode.StartLine, 'TSynLineMapAVLTree.ValidateLine: ALineIdx >= FCurrentValidatingNode.StartLine');
 
@@ -2206,7 +2222,7 @@ begin
      ) or
      (AWrappCount = 1)
   then begin
-    FCurrentValidatingNode.ValidateLine(ALineIdx, AWrappCount);
+    Result := FCurrentValidatingNode.ValidateLine(ALineIdx, AWrappCount);
     exit;
   end;
 
@@ -2253,7 +2269,7 @@ begin
   FCurrentValidatingNode.Page.EndValidate;
   FCurrentValidatingNode := SiblingNode;
 
-  FCurrentValidatingNode.ValidateLine(ALineIdx, AWrappCount);
+  Result := FCurrentValidatingNode.ValidateLine(ALineIdx, AWrappCount);
 end;
 
 procedure TSynLineMapAVLTree.InvalidateLines(AFromLineIdx, AToLineIdx: TLineIdx
