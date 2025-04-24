@@ -5623,7 +5623,6 @@ begin
       // TODO: see TSynEditFoldedView.LineCountChanged, this is only needed, because NeedFixFrom does not always work
       FFoldedLinesView.FixFoldingAtTextIndex(FChangedLinesStart, FChangedLinesEnd);
     end;
-    TopView := TopView;
     exit;
   end;
   FHighlighter.CurrentLines := FLines; // Trailing spaces are not needed
@@ -5632,7 +5631,6 @@ begin
   // Todo: text may not have changed
   if ATextChanged then
     fMarkupManager.TextChanged(FChangedLinesStart, FChangedLinesEnd, FChangedLinesDiff);
-  TopView := TopView;
 end;
 
 procedure TCustomSynEdit.IdleScanRanges(Sender: TObject; var Done: Boolean);
@@ -6132,7 +6130,6 @@ begin
   end;
   FFoldedLinesView.Lock;
   FFoldedLinesView.ApplyFoldDescription(0, 0, -1, -1, PChar(AValue), length(AValue), True);
-  TopView := TopView; // Todo: reset TopView on foldedview
   FFoldedLinesView.UnLock;
   FPendingFoldState := '';
 end;
@@ -8997,7 +8994,6 @@ begin
     FHighlighter.CurrentLines := FTheLinesView;
     FHighlighter.ScanAllRanges;
     fMarkupManager.TextChanged(1, FTheLinesView.Count, 0);
-    TopView := TopView;
   end;
 end;
 
