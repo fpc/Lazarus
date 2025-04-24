@@ -1074,7 +1074,7 @@ end;
 procedure TLazSynEditLineWrapPlugin.ValidateAll;
 var
   AMaxWidth, i, w: Integer;
-  LowLine, HighLine, TopViewIdx, TopLineIdx, TopSubLine: TLineIdx;
+  LowLine, HighLine, TopViewIdx, TopLineIdx, TopSubLine, LowestLine, HighestLine: TLineIdx;
   tsub: TLineRange;
 begin
   if not FLineMapView.LineMappingData.NeedsValidation then exit;
@@ -1085,20 +1085,26 @@ begin
   TopSubLine := TopViewIdx - tsub.Top;
 
   AMaxWidth := WrapColumn;
+  LowestLine := high(LowestLine);
+  HighestLine := -1;
 
   while FLineMapView.LineMappingData.NextBlockForValidation(LowLine, HighLine) do begin
+    if LowLine < LowestLine then
+      LowestLine := LowLine;
+    if HighLine > HighestLine then
+      HighestLine := HighLine;
     for i := LowLine to HighLine do begin
       w := CalculateWrapForLine(i, AMaxWidth);
       FLineMapView.LineMappingData.ValidateLine(i, w);
     end;
   end;
   FLineMapView.LineMappingData.EndValidate;
-  FLineMapView.SendNotification(senrLineMappingChanged, FLineMapView, 0, 0);
+  // TODO: detect if any line actually changed wrapping
+  if HighestLine >= 0 then
+    FLineMapView.SendNotification(senrLineMappingChanged, FLineMapView, LowestLine, HighestLine - LowestLine + 1); // TODO: this sets the topview / but that is done below
 
   tsub := ViewedTextBuffer.DisplayView.TextToViewIndex(TopLineIdx);
   TSynEdit(Editor).Topview := ToPos(tsub.Top + Min(TopSubLine, tsub.Bottom - tsub.Top));
-
-  TSynEdit(Editor).Invalidate;
 end;
 
 { TLazSynWordWrapMapAVLTree }
