@@ -32,6 +32,8 @@ type
     FPen: TFPCustomPen;
     FPrevPos: TPoint;
     FStream: TStream;
+    FPaintingPattern: Integer;
+    FPatternPainter: TChartLinePatternPainter;
 
     function OpacityStr: String;
     function PointsToStr(
@@ -69,6 +71,8 @@ type
     function GetFontSize: Integer; override;
     function GetFontStyle: TChartFontStyles; override;
     function GetPenColor: TChartColor;
+    function GetPenStyle: TFPPenStyle;
+    function GetPenWidth: Integer;
     procedure Line(AX1, AY1, AX2, AY2: Integer);
     procedure Line(const AP1, AP2: TPoint);
     procedure LineTo(AX, AY: Integer); override;
@@ -89,8 +93,10 @@ type
     procedure SetAntialiasingMode(AValue: TChartAntialiasingMode);
     procedure SetBrushColor(AColor: TChartColor);
     procedure SetBrushParams(AStyle: TFPBrushStyle; AColor: TChartColor);
+    procedure SetEnhancedBrokenLines(AValue: Boolean); override;
     procedure SetPenColor(AColor: TChartColor);
     procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor; AWidth: Integer = 1);
+    procedure SetPenStyle(AStyle: TFPPenStyle);
     procedure SetPenWidth(AWidth: Integer);
   end;
 
@@ -314,11 +320,32 @@ begin
   Result := FPColorToChartColor(FPen.FPColor);
 end;
 
+function TSVGDrawer.GetPenStyle: TFPPenStyle;
+begin
+  Result := FPen.Style;
+end;
+
+function TSVGDrawer.GetPenWidth: Integer;
+begin
+  Result := FPen.Width;
+end;
+
 procedure TSVGDrawer.Line(AX1, AY1, AX2, AY2: Integer);
 begin
-  WriteFmt(
-    '<line x1="%d" y1="%d" x2="%d" y2="%d" style="%s"/>',
-    [AX1, AY1, AX2, AY2, StyleStroke]);
+  if (FPatternPainter = nil) or (FPaintingPattern > 0) then
+    WriteFmt(
+      '<line x1="%d" y1="%d" x2="%d" y2="%d" style="%s"/>',
+      [AX1, AY1, AX2, AY2, StyleStroke])
+  else
+  begin
+    inc(FPaintingPattern);
+    try
+      FPen.Style := psSolid;
+      FPatternPainter.Line(AX1, AY1, AX2, AY2);
+    finally
+      dec(FPaintingPattern);
+    end;
+  end;
 end;
 
 procedure TSVGDrawer.Line(const AP1, AP2: TPoint);
@@ -334,7 +361,17 @@ end;
 
 procedure TSVGDrawer.MoveTo(AX, AY: Integer);
 begin
-  FPrevPos := Point(AX, AY);
+  if (FPatternPainter = nil) or (FPaintingPattern > 0) then
+    FPrevPos := Point(AX, AY)
+  else
+  begin
+    inc(FPaintingPattern);
+    try
+      FPatternPainter.MoveTo(AX, AY);
+    finally
+      dec(FPaintingPattern);
+    end;
+  end;
 end;
 
 function TSVGDrawer.OpacityStr: String;
@@ -369,9 +406,20 @@ end;
 procedure TSVGDrawer.Polyline(
   const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
 begin
-  WriteFmt(
-    '<polyline points="%s" style="fill: none; %s"/>',
-    [PointsToStr(APoints, AStartIndex, ANumPts), StyleStroke]);
+  if (FPatternPainter = nil) or (FPaintingPattern > 0) then
+    WriteFmt(
+      '<polyline points="%s" style="fill: none; %s"/>',
+      [PointsToStr(APoints, AStartIndex, ANumPts), StyleStroke])
+  else
+  begin
+    inc(FPaintingPattern);
+    try
+      FPen.Style := psSolid;
+      FPatternPainter.PolyLine(APoints, AStartIndex, ANumPts);
+    finally
+      dec(FPaintingPattern);
+    end;
+  end;
 end;
 
 procedure TSVGDrawer.PrepareSimplePen(AColor: TChartColor);
@@ -479,6 +527,17 @@ begin
   FBrushStyle := AStyle;
 end;
 
+procedure TSVGDrawer.SetEnhancedBrokenLines(AValue: Boolean);
+begin
+  if AValue then
+  begin
+    if FPatternPainter = nil then
+      FPatternPainter := TChartLinePatternPainter.Create(Self);
+    FPatternPainter.Prepare(GetPenStyle, GetPenWidth);
+  end else
+    FreeAndNil(FPatternPainter);
+end;
+
 procedure TSVGDrawer.SetFont(AFont: TFPCustomFont);
 var
   style: TFreeTypeStyles;
@@ -524,6 +583,8 @@ begin
     FPen.FPColor := FPColorOrMono(APen.FPColor);
   FPen.Style := APen.Style;
   FPen.Width := APen.Width;
+  if Assigned(FPatternPainter) then
+    FPatternPainter.Prepare(FPen.Style, FPen.Width);
 end;
 
 procedure TSVGDrawer.SetPenColor(AColor: TChartColor);
@@ -537,11 +598,22 @@ begin
   FPen.FPColor := FChartColorToFPColorFunc(ColorOrMono(AColor));
   FPen.Style := AStyle;
   FPen.Width := AWidth;
+  if Assigned(FPatternPainter) then
+    FPatternPainter.Prepare(AStyle, AWidth);
+end;
+
+procedure TSVGDrawer.SetPenStyle(AStyle: TFPPenStyle);
+begin
+  FPen.Style := AStyle;
+  if Assigned(FPatternPainter) then
+    FPatternPainter.Prepare(AStyle, FPen.Width);
 end;
 
 procedure TSVGDrawer.SetPenWidth(AWidth: Integer);
 begin
   FPen.Width := AWidth;
+  if Assigned(FPatternPainter) then
+    FPatternPainter.Prepare(FPen.Style, AWidth);
 end;
 
 function TSVGDrawer.SimpleTextExtent(const AText: String): TPoint;

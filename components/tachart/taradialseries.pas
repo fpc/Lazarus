@@ -17,7 +17,7 @@ interface
 
 uses
   Classes, Graphics, SysUtils, Types,
-  TAChartUtils, TAMath, TACustomSeries, TADrawUtils, TALegend, TAStyles;
+  TAChartUtils, TATypes, TAMath, TACustomSeries, TADrawUtils, TALegend, TAStyles;
 
 type
 
@@ -163,7 +163,7 @@ type
     FBrush: TBrush;
     FCloseCircle: Boolean;
     FFilled: Boolean;
-    FLinePen: TPen;
+    FLinePen: TEnhancedChartPen;
     FOriginX: Double;
     FOriginY: Double;
     function GetShowPoints: Boolean;
@@ -172,7 +172,7 @@ type
     procedure SetBrush(AValue: TBrush);
     procedure SetCloseCircle(AValue: Boolean);
     procedure SetFilled(AValue: Boolean);
-    procedure SetLinePen(AValue: TPen);
+    procedure SetLinePen(AValue: TEnhancedChartPen);
     procedure SetOriginX(AValue: Double);
     procedure SetOriginY(AValue: Double);
     procedure SetShowPoints(AValue: Boolean);
@@ -204,7 +204,7 @@ type
     property Brush: TBrush read FBrush write SetBrush;
     property CloseCircle: Boolean read FCloseCircle write SetCloseCircle default false;
     property Filled: Boolean read FFilled write SetFilled default false;
-    property LinePen: TPen read FLinePen write SetLinePen;
+    property LinePen: TEnhancedChartPen read FLinePen write SetLinePen;
     property MarkPositions;
     property Marks;
     property OriginX: Double read FOriginX write SetOriginX stored IsOriginXStored;
@@ -221,7 +221,7 @@ implementation
 
 uses
   Math, LazMethodList,
-  TAChartStrConsts, TATypes, TACustomSource, TAGeometry, TAGraph;
+  TAChartStrConsts, TACustomSource, TAGeometry, TAGraph;
 
 const
   ONE_PI = Double(pi);                  // Avoid double/extended issues
@@ -1229,7 +1229,7 @@ begin
 
   FBrush := TBrush.Create;
   FBrush.OnChange := @StyleChanged;
-  FLinePen := TPen.Create;
+  FLinePen := TEnhancedChartPen.Create;
   FLinePen.OnChange := @StyleChanged;
   FPointer := TSeriesPointer.Create(FChart);
   FFilled := true;      // needed for SetFilled to execute its code
@@ -1276,10 +1276,12 @@ var
       if Styles <> nil then
         Styles.Apply(ADrawer, AYIndex, true);
         // "true" avoids painting the gaps of non-solid lines in the brush color
+
       ADrawer.PolyLine(pts, 0, cnt);
     end;
 
   begin
+    ADrawer.SetEnhancedBrokenLines(LinePen.EnhancedBrokenLines);
     firstPointSet := false;
     cnt := 0;
     for i := 0 to Count - 1 do begin
@@ -1306,6 +1308,7 @@ var
       cnt := 2;
       DrawPart;
     end;
+    ADrawer.SetEnhancedBrokenlines(false);
   end;
 
 var
@@ -1526,7 +1529,7 @@ begin
   UpdateParentChart;
 end;
 
-procedure TPolarSeries.SetLinePen(AValue: TPen);
+procedure TPolarSeries.SetLinePen(AValue: TEnhancedChartPen);
 begin
   if FLinePen = AValue then exit;
   FLinePen.Assign(AValue);

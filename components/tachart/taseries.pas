@@ -244,7 +244,7 @@ type
 
   TLineSeries = class(TBasicPointSeries)
   private
-    FLinePen: TPen;
+    FLinePen: TEnhancedChartPen;
     FLineType: TLineType;
     FOldLineType: TLineType;
     FOnDrawPointer: TSeriesPointerDrawEvent;
@@ -254,7 +254,7 @@ type
     function GetShowLines: Boolean;
     function GetShowPoints: Boolean;
     procedure SetColorEach(AValue: TColorEachMode);
-    procedure SetLinePen(AValue: TPen);
+    procedure SetLinePen(AValue: TEnhancedChartPen);
     procedure SetLineType(AValue: TLineType);
     procedure SetSeriesColor(AValue: TColor);
     procedure SetShowLines(Value: Boolean);
@@ -278,7 +278,7 @@ type
       read FColorEach write SetColorEach default cePoint;
     property Depth;
     property DepthBrightnessDelta;
-    property LinePen: TPen read FLinePen write SetLinePen;
+    property LinePen: TEnhancedChartPen read FLinePen write SetLinePen;
     property LineType: TLineType
       read FLineType write SetLineType default ltFromPrevious;
     property MarkPositions;
@@ -441,7 +441,7 @@ constructor TLineSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FColorEach := cePoint;
-  FLinePen := TPen.Create;
+  FLinePen := TEnhancedChartPen.Create;
   FLinePen.OnChange := @StyleChanged;
   FPointer := TSeriesPointer.Create(FChart);
   SetPropDefaults(Self, ['LineType']);
@@ -650,10 +650,13 @@ var
     if Styles <> nil then
       Styles.Apply(ADrawer, AIndex, Depth = 0);
       // "true" avoids painting of spaces in non-solid lines in brush color
+
+    ADrawer.SetEnhancedBrokenLines(LinePen.EnhancedBrokenLines);
     if Depth = 0 then
       for i := 0 to High(breaks) - 1 do
         ADrawer.Polyline(points, breaks[i], breaks[i + 1] - breaks[i])
-    else begin
+    else
+    begin
       if Styles = nil then begin
         ADrawer.SetBrushParams(bsSolid, GetDepthColor(LinePen.Color));
         ADrawer.SetPenParams(LinePen.Style, clBlack);
@@ -663,6 +666,7 @@ var
         for j := breaks[i] to breaks[i + 1] - 2 do
           ADrawer.DrawLineDepth(points[j], points[j + 1], scaled_depth);
     end;
+    ADrawer.SetEnhancedBrokenLines(false);
   end;
 
   function GetPtColor(AIndex: Integer): TColor;
@@ -699,8 +703,11 @@ var
       ADrawer.SetPenColor(FChart.GetDefaultColor(dctFont))
     else
       ADrawer.SetPenColor(LinePen.Color);
+
     imgPt1 := ParentChart.GraphToImage(gp);
     col1 := GetPtColor(i + FLoBound);
+
+    ADrawer.SetEnhancedBrokenLines(FLinePen.EnhancedBrokenLines);
 
     // First line for line type ltFromOrigin
     if LineType = ltFromOrigin then begin
@@ -728,7 +735,7 @@ var
             ceLineAfter, cePointAndLineAfter: col := col1;
             else raise Exception.Create('TLineSeries: ColorEach error');
           end;
-          ADrawer.SetPenParams(FLinePen.Style, col, FLinePen.Width);
+          ADrawer.SetPenColor(col);
           case LineType of
             ltFromPrevious:
               ADrawer.Line(imgPt1, imgPt2);
@@ -771,6 +778,8 @@ var
       end;
       inc(i);
     end;
+
+    ADrawer.SetEnhancedBrokenLines(false);
   end;
 
 begin
@@ -915,7 +924,7 @@ begin
   UpdateParentChart;
 end;
 
-procedure TLineSeries.SetLinePen(AValue: TPen);
+procedure TLineSeries.SetLinePen(AValue: TEnhancedChartPen);
 begin
   FLinePen.Assign(AValue);
 end;

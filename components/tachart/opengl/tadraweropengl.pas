@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, FPImage, FPCanvas,
-  TAChartUtils, TADrawUtils;
+  TAChartUtils, TADrawUtils, TALinePatterns;
 
 type
   { TOpenGLDrawer }
@@ -68,6 +68,8 @@ type
     function GetFontSize: Integer; override;
     function GetFontStyle: TChartFontStyles; override;
     function GetPenColor: TChartColor;
+    function GetPenStyle: TFPPenStyle;
+    function GetPenWidth: Integer;
     procedure Line(AX1, AY1, AX2, AY2: Integer);
     procedure Line(const AP1, AP2: TPoint);
     procedure LineTo(AX, AY: Integer); override;
@@ -89,6 +91,7 @@ type
     procedure SetBrushParams(AStyle: TFPBrushStyle; AColor: TChartColor);
     procedure SetPenColor(AColor: TChartColor);
     procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor; AWidth: Integer = 1);
+    procedure SetPenStyle(AStyle: TFPPenStyle);
     procedure SetPenWidth(AWidth: Integer);
     procedure SetTransparency(ATransparency: TChartTransparency);
   end;
@@ -254,6 +257,16 @@ begin
   Result := FPColorToChartColor(FPenColor);
 end;
 
+function TOpenGLDrawer.GetPenStyle: TFPPenStyle;
+begin
+  Result := FPenStyle;
+end;
+
+function TOpenGLDrawer.GetPenWidth: Integer;
+begin
+  Result := FPenWidth;
+end;
+
 procedure TOpenGLDrawer.InternalPolyline(
   const APoints: array of TPoint; AStartIndex, ANumPts, AMode: Integer);
 var
@@ -269,7 +282,8 @@ end;
 
 procedure TOpenGLDrawer.Line(AX1, AY1, AX2, AY2: Integer);
 begin
-  if FPenStyle = psClear then exit;
+  if FPenStyle = psClear then
+    exit;
   glBegin(GL_LINES);
   ChartGLColor(FPenColor);
   glVertex2i(AX1, AY1);
@@ -289,7 +303,7 @@ end;
 
 procedure TOpenGLDrawer.MoveTo(AX, AY: Integer);
 begin
-  FPos := Point(AX, AY);
+  FPos := Point(AX, AY)
 end;
 
 procedure TOpenGLDrawer.Polygon(
@@ -431,6 +445,12 @@ begin
   FPenStyle := AStyle;
   FPenWidth := AWidth;
   FPenColor := FChartColorToFPColorFunc(AColor);
+  ChartGLPenStyle(AStyle);
+end;
+
+procedure TOpenGLDrawer.SetPenStyle(AStyle: TFPPenStyle);
+begin
+  FPenStyle := AStyle;
   ChartGLPenStyle(AStyle);
 end;
 

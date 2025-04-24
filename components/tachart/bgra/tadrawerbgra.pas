@@ -21,6 +21,8 @@ type
 
   TBGRABitmapDrawer = class(TBasicDrawer, IChartDrawer)
   strict private
+    FPaintingPattern: Integer;
+    FPatternPainter: TChartLinePatternPainter;
     function BGRAColorOrMono(AColor: TFPColor): TBGRAPixel; inline;
     function Canvas: TBGRACanvas; inline;
     function Opacity: Byte; inline;
@@ -49,6 +51,8 @@ type
     function GetFontSize: Integer; override;
     function GetFontStyle: TChartFontStyles; override;
     function GetPenColor: TChartColor;
+    function GetPenStyle: TFPPenStyle;
+    function GetPenWidth: Integer;
     procedure Line(AX1, AY1, AX2, AY2: Integer);
     procedure Line(const AP1, AP2: TPoint);
     procedure LineTo(AX, AY: Integer); override;
@@ -68,8 +72,10 @@ type
     procedure ResetFont;
     procedure SetBrushColor(AColor: TChartColor);
     procedure SetBrushParams(AStyle: TFPBrushStyle; AColor: TChartColor);
+    procedure SetEnhancedBrokenLines(AValue: Boolean); override;
     procedure SetPenColor(AColor: TChartColor);
     procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor; AWidth: Integer = 1);
+    procedure SetPenStyle(AStyle: TFPPenStyle);
     procedure SetPenWidth(AWidth: Integer);
     procedure SetTransparency(ATransparency: TChartTransparency);
   end;
@@ -174,6 +180,16 @@ begin
   Result := TChartColor(Canvas.Pen.Color);
 end;
 
+function TBGRABitmapDrawer.GetPenStyle: TFPPenStyle;
+begin
+  Result := Canvas.Pen.Style;
+end;
+
+function TBGRABitmapDrawer.GetPenWidth: Integer;
+begin
+  Result := Canvas.Pen.Width;
+end;
+
 procedure TBGRABitmapDrawer.Line(AX1, AY1, AX2, AY2: Integer);
 begin
   Canvas.MoveTo(AX1, AY1);
@@ -188,12 +204,34 @@ end;
 
 procedure TBGRABitmapDrawer.LineTo(AX, AY: Integer);
 begin
-  Canvas.LineTo(AX, AY);
+  if (FPatternPainter = nil) or (FPaintingPattern > 0) then
+    Canvas.LineTo(AX, AY)
+  else
+  begin
+    inc(FPaintingPattern);
+    try
+      Canvas.Pen.Style := psSolid;
+      FPatternPainter.LineTo(AX, AY);
+    finally
+      dec(FPaintingPattern);
+    end;
+  end;
 end;
 
 procedure TBGRABitmapDrawer.MoveTo(AX, AY: Integer);
 begin
-  Canvas.MoveTo(AX, AY);
+  if (FPatternPainter = nil) or (FPaintingPattern > 0) then
+    Canvas.MoveTo(AX, AY)
+  else
+  begin
+    inc(FPaintingPattern);
+    try
+      Canvas.Pen.Style := psSolid;
+      FPatternPainter.MoveTo(AX, AY);
+    finally
+      dec(FPaintingPattern);
+    end;
+  end;
 end;
 
 function TBGRABitmapDrawer.Opacity: Byte;
@@ -210,7 +248,18 @@ end;
 procedure TBGRABitmapDrawer.Polyline(
   const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
 begin
-  Canvas.Polyline(APoints, AStartIndex, ANumPts);
+  if (FPatternPainter = nil) or (FPaintingPattern > 0) then
+    Canvas.PolyLine(APoints, AStartIndex, ANumPts)
+  else
+  begin
+    inc(FPaintingPattern);
+    try
+      Canvas.Pen.Style := psSolid;
+      FPatternPainter.PolyLine(APoints, AStartIndex, ANumPts);
+    finally
+      dec(FPaintingPattern);
+    end;
+  end;
 end;
 
 procedure TBGRABitmapDrawer.PrepareSimplePen(AColor: TChartColor);
@@ -285,6 +334,20 @@ begin
   Canvas.Brush.Opacity := Opacity;
 end;
 
+procedure TBGRABitmapDrawer.SetEnhancedBrokenLines(AValue: Boolean);
+begin
+  if AValue then
+  begin
+    if FPatternPainter = nil then
+      FPatternPainter := TChartLinePatternPainter.Create(Self);
+    FPatternPainter.Prepare(GetPenStyle, GetPenWidth);
+  end else
+  begin
+    FPatternPainter.Free;
+    FPatternPainter := nil;
+  end;
+end;
+
 procedure TBGRABitmapDrawer.SetFont(AFont: TFPCustomFont);
 var
   fs: Integer;
@@ -311,6 +374,8 @@ begin
     end;
     BGRAColor := BGRAColorOrMono(APen.FPColor);
     Opacity := Self.Opacity;
+    if Assigned(FPatternPainter) then
+      FPatternPainter.Prepare(Style, Width);
   end;
 end;
 
@@ -326,11 +391,22 @@ begin
   Canvas.Pen.Width := AWidth;
   Canvas.Pen.Color := ColorOrMono(AColor);
   Canvas.Pen.Opacity := Opacity;
+  if Assigned(FPatternPainter) then
+    FPatternPainter.Prepare(AStyle, AWidth);
+end;
+
+procedure TBGRABitmapDrawer.SetPenStyle(AStyle: TFPPenStyle);
+begin
+  Canvas.Pen.Style := AStyle;
+  if Assigned(FPatternPainter) then
+    FPatternPainter.Prepare(AStyle, Canvas.Pen.Width);
 end;
 
 procedure TBGRABitmapDrawer.SetPenWidth(AWidth: Integer);
 begin
   Canvas.Pen.Width := AWidth;
+  if Assigned(FPatternPainter) then
+    FPatternPainter.Prepare(Canvas.Pen.Style, AWidth);
 end;
 
 procedure TBGRABitmapDrawer.SetTransparency(ATransparency: TChartTransparency);

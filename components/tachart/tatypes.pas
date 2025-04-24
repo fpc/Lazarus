@@ -62,6 +62,17 @@ type
     property Visible: Boolean read FVisible write SetVisible default true;
   end;
 
+  TEnhancedChartPen = class(TChartPen)
+  strict private
+    FEnhancedBrokenLines: Boolean;
+    procedure SetEnhandedBrokenLines(AValue: Boolean);
+  protected
+  public
+    procedure Assign(ASource: TPersistent); override;
+  published
+    property EnhancedBrokenLines: Boolean read FEnhancedBrokenLines write SetEnhandedBrokenLines default false;
+  end;
+
   TClearBrush = class(TBrush)
   public
     constructor Create; override;
@@ -317,6 +328,24 @@ procedure TChartPen.SetVisible(AValue: Boolean);
 begin
   FVisible := AValue;
   if Assigned(OnChange) then OnChange(Self);
+end;
+
+{ TEnhancedChartPen }
+
+procedure TEnhancedChartPen.Assign(ASource: TPersistent);
+begin
+  if ASource is TEnhancedChartPen then
+    FEnhancedBrokenLines := TEnhancedChartPen(ASource).EnhancedBrokenLines;
+  inherited Assign(ASource);
+end;
+
+procedure TEnhancedChartPen.SetEnhandedBrokenLines(AValue: Boolean);
+begin
+  if FEnhancedBrokenLines <> AValue then
+  begin
+    FEnhancedBrokenLines := AValue;
+    if Assigned(OnChange) then OnChange(Self);
+  end;
 end;
 
 { TClearBrush }

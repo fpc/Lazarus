@@ -40,11 +40,11 @@ type
   strict private
     FDomainExclusions: TIntervalList;
     FExtentAutoY: Boolean;
-    FPen: TChartPen;
+    FPen: TEnhancedChartPen;
     FStep: TFuncSeriesStep;
 
     procedure SetExtentAutoY(AValue: Boolean);
-    procedure SetPen(AValue: TChartPen);
+    procedure SetPen(AValue: TEnhancedChartPen);
     procedure SetStep(AValue: TFuncSeriesStep);
 
   protected
@@ -68,7 +68,7 @@ type
     property AxisIndexY;
     property ExtentAutoY: Boolean
       read FExtentAutoY write SetExtentAutoY default false;
-    property Pen: TChartPen read FPen write SetPen;
+    property Pen: TEnhancedChartPen read FPen write SetPen;
     property Step: TFuncSeriesStep
       read FStep write SetStep default DEF_FUNC_STEP;
   end;
@@ -98,7 +98,7 @@ type
     FParamMax: Double;
     FParamMaxStep: Double;
     FParamMin: Double;
-    FPen: TChartPen;
+    FPen: TEnhancedChartPen;
     FStep: TFuncSeriesStep;
     function DoCalculate(AT: Double): TDoublePoint;
     function ParamMaxIsStored: Boolean;
@@ -108,7 +108,7 @@ type
     procedure SetParamMax(AValue: Double);
     procedure SetParamMaxStep(AValue: Double);
     procedure SetParamMin(AValue: Double);
-    procedure SetPen(AValue: TChartPen);
+    procedure SetPen(AValue: TEnhancedChartPen);
     procedure SetStep(AValue: TFuncSeriesStep);
   protected
     procedure GetLegendItems(AItems: TChartLegendItems); override;
@@ -130,7 +130,7 @@ type
       read FParamMaxStep write SetParamMaxStep stored ParamMaxStepIsStored;
     property ParamMin: Double
       read FParamMin write SetParamMin stored ParamMinIsStored;
-    property Pen: TChartPen read FPen write SetPen;
+    property Pen: TEnhancedChartPen read FPen write SetPen;
     property Step: TFuncSeriesStep
       read FStep write SetStep default DEF_FUNC_STEP;
   end;
@@ -142,12 +142,12 @@ type
   TBSplineSeries = class(TBasicPointSeries)
   strict private
     FDegree: TSplineDegree;
-    FPen: TChartPen;
+    FPen: TEnhancedChartPen;
     FStep: TFuncSeriesStep;
 
     procedure InternalPrepareGraphPoints;
     procedure SetDegree(AValue: TSplineDegree);
-    procedure SetPen(AValue: TChartPen);
+    procedure SetPen(AValue: TEnhancedChartPen);
     procedure SetStep(AValue: TFuncSeriesStep);
   protected
     procedure GetLegendItems(AItems: TChartLegendItems); override;
@@ -174,7 +174,7 @@ type
       read FDegree write SetDegree default DEF_SPLINE_DEGREE;
     property MarkPositions;
     property Marks;
-    property Pen: TChartPen read FPen write SetPen;
+    property Pen: TEnhancedChartPen read FPen write SetPen;
     property Pointer;
     property Step: TFuncSeriesStep
       read FStep write SetStep default DEF_SPLINE_STEP;
@@ -186,7 +186,7 @@ type
     property OnGetPointerStyle;
   end;
 
-  TBadDataChartPen = class(TChartPen)
+  TBadDataChartPen = class(TEnhancedChartPen)
   published
     property Color default clRed;
   end;
@@ -203,10 +203,10 @@ type
     FCachedExtent: TDoubleRect;
     FOptions: TCubicSplineOptions;
     FSplineType: TCubicSplineType;
-    FPen: TChartPen;
+    FPen: TEnhancedChartPen;
     FStep: TFuncSeriesStep;
     FX, FY: array of ArbFloat;
-    procedure SetPen(AValue: TChartPen);
+    procedure SetPen(AValue: TEnhancedChartPen);
     procedure SetStep(AValue: TFuncSeriesStep);
   strict private
   type
@@ -270,7 +270,7 @@ type
     property BadDataPen: TBadDataChartPen read FBadDataPen write SetBadDataPen;
     property Options: TCubicSplineOptions
       read FOptions write SetOptions default [];
-    property Pen: TChartPen read FPen write SetPen;
+    property Pen: TEnhancedChartPen read FPen write SetPen;
     property SplineType: TCubicSplineType
       read FSplineType write SetSplineType default cstNatural;
     property Step: TFuncSeriesStep
@@ -297,7 +297,7 @@ type
     FFixedParams: String;
     FOnFitComplete: TNotifyEvent;
     FOnFitEquationText: TFitEquationTextEvent;
-    FPen: TChartPen;
+    FPen: TEnhancedChartPen;
     FState: TFitParamsState;
     FStep: TFuncSeriesStep;
     FErrCode: TFitErrCode;
@@ -317,7 +317,7 @@ type
     procedure SetFitRange(AValue: TChartRange);
     procedure SetFixedParams(AValue: String);
     procedure SetParamCount(AValue: Integer);
-    procedure SetPen(AValue: TChartPen);
+    procedure SetPen(AValue: TEnhancedChartPen);
     procedure SetStep(AValue: TFuncSeriesStep);
     procedure SetUseCombinedExtentY(AValue: Boolean);
     procedure GetInterval(const Ax: Double; out AY: Double; IsUpper, IsPrediction: Boolean);
@@ -383,7 +383,7 @@ type
     property Marks;
     property ParamCount: Integer
       read GetParamCount write SetParamCount default DEF_FIT_PARAM_COUNT;
-    property Pen: TChartPen read FPen write SetPen;
+    property Pen: TEnhancedChartPen read FPen write SetPen;
     property Pointer;
     property Source;
     property Step: TFuncSeriesStep read FStep write SetStep default DEF_FIT_STEP;
@@ -499,7 +499,7 @@ implementation
 
 uses
   ipf,
-  GraphType, GraphUtil, Math, spe, StrUtils, SysUtils, LazMethodList,
+  GraphType, Math, spe, StrUtils, SysUtils, LazMethodList,
   TAChartStrConsts, TAGeometry, TAGraph, TAMath;
 
 const
@@ -614,7 +614,7 @@ begin
   inherited Create(AOwner);
   FDomainExclusions := TIntervalList.Create;
   FDomainExclusions.OnChange := @StyleChanged;
-  FPen := TChartPen.Create;
+  FPen := TEnhancedChartPen.Create;
   FPen.OnChange := @StyleChanged;
   FStep := DEF_FUNC_STEP;
 end;
@@ -637,7 +637,7 @@ begin
     ADrawer.SetPenColor(FChart.GetDefaultColor(dctFont))
   else
     ADrawer.SetPenColor(Pen.Color);
-  with TDrawFuncHelper.Create(Self, DomainExclusions, @DoCalculate, Step) do
+  with TDrawFuncHelper.Create( Self, DomainExclusions, @DoCalculate, Step, Pen.EnhancedBrokenLines) do
     try
       DrawFunction(ADrawer);
     finally
@@ -701,7 +701,7 @@ begin
   UpdateParentChart;
 end;
 
-procedure TCustomFuncSeries.SetPen(AValue: TChartPen);
+procedure TCustomFuncSeries.SetPen(AValue: TEnhancedChartPen);
 begin
   if FPen = AValue then exit;
   FPen.Assign(AValue);
@@ -802,7 +802,7 @@ begin
   inherited Create(AOwner);
   FParamMin := DEF_PARAM_MIN;
   FParamMax := DEF_PARAM_MAX;
-  FPen := TChartPen.Create;
+  FPen := TEnhancedChartPen.Create;
   FPen.OnChange := @StyleChanged;
   FStep := DEF_FUNC_STEP;
 end;
@@ -851,6 +851,8 @@ begin
 
   if IsEmpty then exit;
 
+  ADrawer.SetEnhancedBrokenLines(Pen.EnhancedBrokenLines);
+
   t := ParamMin;
   pp := PointAt(ParamMin);
   ADrawer.MoveTo(pp);
@@ -867,6 +869,8 @@ begin
       ts := {%H-}MinValue([ts * 2, ms, ParamMax - t]);
     end;
   end;
+
+  ADrawer.SetEnhancedBrokenLines(false);
 end;
 
 procedure TParametricCurveSeries.GetLegendItems(AItems: TChartLegendItems);
@@ -923,7 +927,7 @@ begin
   UpdateParentChart;
 end;
 
-procedure TParametricCurveSeries.SetPen(AValue: TChartPen);
+procedure TParametricCurveSeries.SetPen(AValue: TEnhancedChartPen);
 begin
   if FPen = AValue then exit;
   FPen.Assign(AValue);
@@ -1049,7 +1053,7 @@ begin
   inherited Create(AOwner);
   ToolTargets := [nptPoint, nptCustom];
   FDegree := DEF_SPLINE_DEGREE;
-  FPen := TChartPen.Create;
+  FPen := TEnhancedChartPen.Create;
   FPen.OnChange := @StyleChanged;
   FPointer := TSeriesPointer.Create(ParentChart);
   FStep := DEF_SPLINE_STEP;
@@ -1102,10 +1106,12 @@ var
     pm: TPoint;
   begin
     if (level > INF_SENTINEL) or (PointDistSq(APL, APR) <= Sqr(Step)) then
+    begin
       // Left-then-right recursive call order guarantees that
       // the last drawn segment is the immediately preceding one.
       ADrawer.LineTo(APR)
-    else begin
+    end else
+    begin
       m := (AL + AR) / 2;
       pm := SplinePoint(m);
       level += 1;
@@ -1128,8 +1134,10 @@ var
     if Styles <> nil then
       Styles.Apply(ADrawer, AStyleIndex, true);
       // "true" avoids painting the gaps of non-solid lines in brush color
+
     splineStart := 0;
     splineEnd := -2;
+    ADrawer.SetEnhancedBrokenLines(Pen.EnhancedBrokenLines);
     while NextNumberSeq(FGraphPoints, splineStart, splineEnd) do begin
       ADrawer.MoveTo(ParentChart.GraphToImage(FGraphPoints[splineStart]));
       for j := splineStart to splineEnd + Degree - 1 do begin
@@ -1137,6 +1145,7 @@ var
         SplineSegment(0.0, 1.0, SplinePoint(0.0), SplinePoint(1.0));
       end;
     end;
+    ADrawer.SetEnhancedBrokenLines(false);
   end;
 
 var
@@ -1251,7 +1260,7 @@ begin
   UpdateParentChart;
 end;
 
-procedure TBSplineSeries.SetPen(AValue: TChartPen);
+procedure TBSplineSeries.SetPen(AValue: TEnhancedChartPen);
 begin
   if FPen = AValue then exit;
   FPen.Assign(AValue);
@@ -1401,7 +1410,7 @@ begin
   ToolTargets := [nptPoint, nptCustom];
   FBadDataPen := TBadDataChartPen.Create;
   FBadDataPen.OnChange := @StyleChanged;
-  FPen := TChartPen.Create;
+  FPen := TEnhancedChartPen.Create;
   FPen.OnChange := @StyleChanged;
   FPointer := TSeriesPointer.Create(ParentChart);
   FStep := DEF_SPLINE_STEP;
@@ -1441,7 +1450,9 @@ procedure TCubicSplineSeries.Draw(ADrawer: IChartDrawer);
       else
         ADrawer.SetPenColor(Pen.Color);
     end;
-    with TPointsDrawFuncHelper.Create(Self, xmin, xmax, ASpline.FSourceStartIndex, @ASpline.Calculate, Step) do
+    with TPointsDrawFuncHelper.Create(
+           Self, xmin, xmax, ASpline.FSourceStartIndex,
+           @ASpline.Calculate, Step, Pen.EnhancedBrokenLines) do
       try
         DrawFunction(ADrawer);
       finally
@@ -1647,7 +1658,7 @@ begin
   UpdateParentChart;
 end;
 
-procedure TCubicSplineSeries.SetPen(AValue: TChartPen);
+procedure TCubicSplineSeries.SetPen(AValue: TEnhancedChartPen);
 begin
   if FPen = AValue then exit;
   FPen.Assign(AValue);
@@ -1780,7 +1791,7 @@ begin
   FFitRange := TFitSeriesRange.Create(Self);
   FDrawFitRangeOnly := true;
   FPointer := TSeriesPointer.Create(ParentChart);
-  FPen := TChartPen.Create;
+  FPen := TEnhancedChartPen.Create;
   FPen.OnChange := @StyleChanged;
   FStep := DEF_FIT_STEP;
   FConfidenceLevel := 0.95;
@@ -2392,7 +2403,7 @@ begin
   UpdateParentChart;
 end;
 
-procedure TFitSeries.SetPen(AValue: TChartPen);
+procedure TFitSeries.SetPen(AValue: TEnhancedChartPen);
 begin
   if FPen = AValue then exit;
   FPen.Assign(AValue);

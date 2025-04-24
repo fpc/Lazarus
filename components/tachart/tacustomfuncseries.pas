@@ -49,6 +49,7 @@ type
     FCalc: TTransformFunc;
     FChart: TChart;
     FDrawer: IChartDrawer;
+    FEnhancedPen: Boolean;
     FExtentYMax: PDouble;
     FExtentYMin: PDouble;
     FImageToGraph: TImageToGraphFunc;
@@ -73,7 +74,8 @@ type
     FSeries: TCustomChartSeries;
     procedure ForEachPoint(AXg, AXMax: Double; AOnMoveTo, AOnLineTo: TOnPoint); virtual; abstract;
   public
-    constructor Create(ASeries: TCustomChartSeries; ACalc: TTransformFunc; AStep: Integer);
+    constructor Create(ASeries: TCustomChartSeries; ACalc: TTransformFunc;
+      AStep: Integer; AEnhancedPen: Boolean = false);
     procedure CalcAxisExtentY(AMinX, AMaxX: Double; var AMinY, AMaxY: Double);
     procedure DrawFunction(ADrawer: IChartDrawer);
     function GetNearestPoint(
@@ -88,7 +90,7 @@ type
     procedure ForEachPoint(AXg, AXMax: Double; AOnMoveTo, AOnLineTo: TOnPoint); override;
   public
     constructor Create(ASeries: TCustomChartSeries; ADomainExclusions: TIntervalList;
-      ACalc: TTransformFunc; AStep: Integer);
+      ACalc: TTransformFunc; AStep: Integer; AEnhancedPen: Boolean = false);
   end;
 
   TPointsDrawFuncHelper = class(TCustomDrawFuncHelper)
@@ -98,13 +100,14 @@ type
     procedure ForEachPoint(AXg, AXMax: Double; AOnMoveTo, AOnLineTo: TOnPoint); override;
   public
     constructor Create(ASeries: TBasicPointSeries; AMinX, AMaxX: Double;
-      AStartIndex: Integer; ACalc: TTransformFunc; AStep: Integer);
+      AStartIndex: Integer; ACalc: TTransformFunc; AStep: Integer;
+      AEnhancedPen: Boolean = false);
   end;
 
 implementation
 
 uses
-  Math, SysUtils,
+  Math, SysUtils, FPCanvas,
   TAGeometry, TAMath;
 
 function DoublePointRotated(AX, AY: Double): TDoublePoint;
@@ -153,7 +156,7 @@ begin
 end;
 
 constructor TCustomDrawFuncHelper.Create( ASeries: TCustomChartSeries;
-  ACalc: TTransformFunc; AStep: Integer);
+  ACalc: TTransformFunc; AStep: Integer; AEnhancedPen: Boolean = false);
 begin
   FChart := ASeries.ParentChart;
   FExtent := FChart.CurrentExtent;
@@ -177,13 +180,24 @@ begin
       FImageToGraph := @FChart.XImageToGraph;
     end;
   FGraphStep := FImageToGraph(AStep) - FImageToGraph(0);
+
+  FEnhancedPen := AEnhancedPen;
 end;
 
 procedure TCustomDrawFuncHelper.DrawFunction(ADrawer: IChartDrawer);
+var
+  savedPenStyle: TFPPenStyle;
 begin
   FDrawer := ADrawer;
+
+  ADrawer.SetEnhancedBrokenLines(FEnhancedPen);
+  savedPenStyle := ADrawer.GetPenStyle;
+
   with XRange do
     ForEachPoint(FStart, FEnd, @MoveTo, @LineTo);
+
+  ADrawer.SetEnhancedBrokenLines(false);
+  ADrawer.SetPenStyle(savedPenStyle);
 end;
 
 function TCustomDrawFuncHelper.GetNearestPoint(
@@ -258,9 +272,10 @@ end;
 { TDrawFuncHelper }
 
 constructor TDrawFuncHelper.Create(ASeries: TCustomChartSeries;
-  ADomainExclusions: TIntervalList; ACalc: TTransformFunc; AStep: Integer);
+  ADomainExclusions: TIntervalList; ACalc: TTransformFunc; AStep: Integer;
+  AEnhancedPen: Boolean = false);
 begin
-  inherited Create(ASeries, ACalc, AStep);
+  inherited Create(ASeries, ACalc, AStep, AEnhancedPen);
   FDomainExclusions := ADomainExclusions;
 end;
 
@@ -306,9 +321,9 @@ type
 
 constructor TPointsDrawFuncHelper.Create(
   ASeries: TBasicPointSeries; AMinX, AMaxX: Double; AStartIndex: Integer;
-  ACalc: TTransformFunc; AStep: Integer);
+  ACalc: TTransformFunc; AStep: Integer; AEnhancedPen: Boolean = false);
 begin
-  inherited Create(ASeries, ACalc, AStep);
+  inherited Create(ASeries, ACalc, AStep, AEnhancedPen);
   if ASeries.IsRotated then
   begin
     FExtent.a.Y := Min(AMinX, AMaxX);

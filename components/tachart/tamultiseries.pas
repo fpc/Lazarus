@@ -2771,7 +2771,6 @@ var
 var
   ext2: TDoubleRect;
   p: TDoublePoint;
-  ctr: TPoint;
 
   procedure BuildBar(x1, x2, y, barH: Double);
   var

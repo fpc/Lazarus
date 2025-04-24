@@ -15,7 +15,7 @@ unit TADrawUtils;
 interface
 
 uses
-  SysUtils, Classes, FPCanvas, FPImage, Types, TAChartUtils;
+  SysUtils, Classes, FPCanvas, FPImage, Types, TAChartUtils, TALinePatterns;
 
 type
   // Same types as in Graphics unit, but without dependency.
@@ -84,6 +84,8 @@ type
     function GetFontSize: Integer;
     function GetFontStyle: TChartFontStyles;
     function GetPenColor: TChartColor;
+    function GetPenStyle: TFPPenStyle;
+    function GetPenWidth: Integer;
     procedure SetDoChartColorToFPColorFunc(AValue: TChartColorToFPColorFunc);
     procedure Line(AX1, AY1, AX2, AY2: Integer);
     procedure Line(const AP1, AP2: TPoint);
@@ -109,12 +111,14 @@ type
     procedure SetBrush(ABrush: TFPCustomBrush);
     procedure SetBrushColor(AColor: TChartColor);
     procedure SetBrushParams(AStyle: TFPBrushStyle; AColor: TChartColor);
+    procedure SetEnhancedBrokenLines(AValue: Boolean);
     procedure SetFont(AValue: TFPCustomFont);
     procedure SetGetFontOrientationFunc(AValue: TGetFontOrientationFunc);
     procedure SetMonochromeColor(AColor: TChartColor);
     procedure SetPen(APen: TFPCustomPen);
     procedure SetPenColor(AColor: TChartColor);
     procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor; AWidth: Integer = 1);
+    procedure SetPenStyle(AStyle: TFPPenStyle);
     procedure SetPenWidth(AWidth: Integer);
     function GetRightToLeft: Boolean;
     procedure SetRightToLeft(AValue: Boolean);
@@ -177,6 +181,7 @@ type
     function Scale(ADistance: Integer): Integer; virtual;
     procedure SetAntialiasingMode(AValue: TChartAntialiasingMode);
     procedure SetDoChartColorToFPColorFunc(AValue: TChartColorToFPColorFunc);
+    procedure SetEnhancedBrokenLines(AValue: Boolean); virtual;
     procedure SetGetFontOrientationFunc(AValue: TGetFontOrientationFunc);
     procedure SetMonochromeColor(AColor: TChartColor);
     procedure SetRightToLeft(AValue: Boolean);
@@ -185,6 +190,19 @@ type
     function TextExtent(const AText: String; ATextFormat: TChartTextFormat = tfNormal): TPoint; overload;
     function TextExtent(AText: TStrings; ATextFormat: TChartTextFormat = tfNormal): TPoint; overload;
     function TextOut: TChartTextOut;
+  end;
+
+  TChartLinePatternPainter = class(TLinePatternPainter)
+  private
+    FDrawer: IChartDrawer;
+  protected
+    procedure DoLineTo(X, Y: Integer); override;
+    procedure DoMoveTo(X, Y: Integer); override;
+    procedure SetPenStyle(AStyle: TFPPenStyle); override;
+  public
+    constructor Create(ADrawer: IChartDrawer);
+    property PenStyle;
+    property PenWidth;
   end;
 
   function ChartColorToFPColor(AChartColor: TChartColor): TFPColor;
@@ -730,6 +748,11 @@ begin
   FChartColorToFPColorFunc := AValue;
 end;
 
+procedure TBasicDrawer.SetEnhancedBrokenLines(AValue: Boolean);
+begin
+  // must be overridden and implemented by descendants.
+end;
+
 procedure TBasicDrawer.SetGetFontOrientationFunc(
   AValue: TGetFontOrientationFunc);
 begin
@@ -802,6 +825,31 @@ function TBasicDrawer.TextOut: TChartTextOut;
 begin
   Result := TChartTextOut.Create(Self);
 end;
+
+{ TChartLinePatternPainter }
+
+constructor TChartLinePatternPainter.Create(ADrawer: IChartDrawer);
+begin
+  inherited Create;
+  FDrawer := ADrawer;
+end;
+
+procedure TChartLinePatternPainter.DoLineTo(X, Y: Integer);
+begin
+  FDrawer.LineTo(X, Y);
+end;
+
+procedure TChartLinePatternPainter.DoMoveTo(X, Y: Integer);
+begin
+  FDrawer.MoveTo(X, Y);
+end;
+
+procedure TChartLinePatternPainter.SetPenStyle(AStyle: TFPPenStyle);
+begin
+  inherited;
+ // FDrawer.SetPenStyle(psSolid);
+end;
+
 
 // Inserts LineEndings into the provided string AText such that its width 
 // does not exceed the given width.

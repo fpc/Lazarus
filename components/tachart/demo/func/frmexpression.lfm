@@ -45,6 +45,7 @@ object ExpressionFrame: TExpressionFrame
       Extent.XMax = 10
       Extent.XMin = -1
       ExtentAutoY = True
+      Pen.Style = psDash
       DomainEpsilon = 1E-6
       Params = <      
         item

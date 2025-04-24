@@ -23,6 +23,8 @@ type
   TAggPasDrawer = class(TBasicDrawer, IChartDrawer)
   strict private
     FFontDir: String;
+    FPaintingPattern: Integer;
+    FPatternPainter: TChartLinePatternPainter;
     function ApplyTransparency(AColor: TFPColor): TFPColor;
     procedure SetBrush(ABrush: TFPCustomBrush);
     procedure SetFont(AFont: TFPCustomFont);
@@ -47,6 +49,8 @@ type
     function GetFontSize: Integer; override;
     function GetFontStyle: TChartFontStyles; override;
     function GetPenColor: TChartColor;
+    function GetPenStyle: TFPPenStyle;
+    function GetPenWidth: Integer;
     procedure Line(AX1, AY1, AX2, AY2: Integer);
     procedure Line(const AP1, AP2: TPoint);
     procedure LineTo(AX, AY: Integer); override;
@@ -65,8 +69,10 @@ type
     procedure ResetFont;
     procedure SetBrushColor(AColor: TChartColor);
     procedure SetBrushParams(AStyle: TFPBrushStyle; AColor: TChartColor);
+    procedure SetEnhancedBrokenLines(AValue: Boolean); override;
     procedure SetPenColor(AColor: TChartColor);
     procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor; AWidth: Integer = 1);
+    procedure SetPenStyle(AStyle: TFPPenStyle);
     procedure SetPenWidth(AWidth: Integer);
     property FontDir: String read FFontDir write FFontDir;
   end;
@@ -185,24 +191,78 @@ begin
   Result := FCanvas.Pen.Color;
 end;
 
+function TAggPasDrawer.GetPenStyle: TFPPenStyle;
+begin
+  Result := FCanvas.Pen.Style;
+end;
+
+function TAggPasDrawer.GetPenWidth: Integer;
+begin
+  Result := FCanvas.Pen.Width;
+end;
+
 procedure TAggPasDrawer.Line(AX1, AY1, AX2, AY2: Integer);
 begin
-  FCanvas.Line(AX1, AY1, AX2, AY2);
+  if (FPatternPainter = nil) or (FPaintingPattern > 0) then
+    FCanvas.Line(AX1, AY1, AX2, AY2)
+  else
+  begin
+    inc(FPaintingPattern);
+    try
+      FCanvas.Pen.Style := psSolid;
+      FPatternPainter.Line(AX1, AY1, AX2, AY2);
+    finally
+      dec(FPaintingPattern);
+    end;
+  end;
 end;
 
 procedure TAggPasDrawer.Line(const AP1, AP2: TPoint);
 begin
-  FCanvas.Line(AP1, AP2);
+  if (FPatternPainter = nil) or (FPaintingPattern > 0) then
+    FCanvas.Line(AP1, AP2)
+  else
+  begin
+    inc(FPaintingPattern);
+    try
+      FCanvas.Pen.Style := psSolid;
+      FPatternPainter.Line(AP1, AP2);
+    finally
+      dec(FPaintingPattern);
+    end;
+  end;
 end;
 
 procedure TAggPasDrawer.LineTo(AX, AY: Integer);
 begin
-  FCanvas.LineTo(AX, AY);
+  if (FPatternPainter = nil) or (FPaintingPattern > 0) then
+    FCanvas.LineTo(AX, AY)
+  else
+  begin
+    inc(FPaintingPattern);
+    try
+      FCanvas.Pen.Style := psSolid;
+      FPatternPainter.LineTo(AX, AY);
+    finally
+      dec(FPaintingPattern);
+    end;
+  end;
 end;
 
 procedure TAggPasDrawer.MoveTo(AX, AY: Integer);
 begin
-  FCanvas.MoveTo(AX, AY);
+  if (FPatternPainter = nil) or (FPaintingPattern > 0) then
+    FCanvas.MoveTo(AX, AY)
+  else
+  begin
+    inc(FPaintingPattern);
+    try
+      FCanvas.Pen.Style := psSolid;
+      FPatternPainter.MoveTo(AX, AY);
+    finally
+      dec(FPaintingPattern);
+    end;
+  end;
 end;
 
 procedure TAggPasDrawer.Polygon(
@@ -220,7 +280,18 @@ end;
 procedure TAggPasDrawer.Polyline(
   const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
 begin
-  FCanvas.Polyline(APoints, AStartIndex, ANumPts);
+  if (FPatternPainter = nil) or (FPaintingPattern > 0) then
+    FCanvas.PolyLine(APoints, AStartIndex, ANumPts)
+  else
+  begin
+    inc(FPaintingPattern);
+    try
+      FCanvas.Pen.Style := psSolid;
+      FPatternPainter.PolyLine(APoints, AStartIndex, ANumPts);
+    finally
+      dec(FPaintingPattern);
+    end;
+  end;
 end;
 
 procedure TAggPasDrawer.PrepareSimplePen(AColor: TChartColor);
@@ -290,6 +361,20 @@ begin
   FCanvas.Brush.Style := AStyle;
 end;
 
+procedure TAggPasDrawer.SetEnhancedBrokenLines(AValue: Boolean);
+begin
+  if AValue then
+  begin
+    if FPatternPainter = nil then
+      FPatternPainter := TChartLinePatternPainter.Create(Self);
+    FPatternPainter.Prepare(GetPenStyle, GetPenWidth);
+  end else
+  begin
+    FPatternPainter.Free;
+    FPatternPainter := nil;
+  end;
+end;
+
 procedure TAggPasDrawer.SetFont(AFont: TFPCustomFont);
 var
   f: TAggLCLFont;
@@ -317,6 +402,8 @@ procedure TAggPasDrawer.SetPen(APen: TFPCustomPen);
 begin
   TAggLCLPenCrack(FCanvas.Pen).DoCopyProps(APen);
   FCanvas.Pen.FPColor := ApplyTransparency(FPColorOrMono(APen.FPColor));
+  if Assigned(FPatternPainter) then
+    FPatternPainter.Prepare(FCanvas.Pen.Style, FCanvas.Pen.Width);
 end;
 
 procedure TAggPasDrawer.SetPenColor(AColor: TChartColor);
@@ -330,11 +417,22 @@ begin
   FCanvas.Pen.Style := AStyle;
   FCanvas.Pen.Width := AWidth;
   FCanvas.Pen.FPColor := ApplyTransparency(FChartColorToFPColorFunc(ColorOrMono(AColor)));
+  if Assigned(FPatternPainter) then
+    FPatternPainter.Prepare(AStyle, AWidth);
+end;
+
+procedure TAggPasDrawer.SetPenStyle(AStyle: TFPPenStyle);
+begin
+  FCanvas.Pen.Style := AStyle;
+  if Assigned(FPatternPainter) then
+    FPatternPainter.Prepare(AStyle, FCanvas.Pen.Width);
 end;
 
 procedure TAggpasDrawer.SetPenWidth(AWidth: Integer);
 begin
   FCanvas.Pen.Width := AWidth;
+  if Assigned(FPatternPainter) then
+    FPatternPainter.Prepare(FCanvas.Pen.Style, AWidth);
 end;
 
 function TAggPasDrawer.SimpleTextExtent(const AText: String): TPoint;

@@ -35,6 +35,8 @@ type
   strict protected
     FCanvas: TCanvas;
     FBuffer: TBitmap;
+    FPaintingPattern: Integer;
+    FPatternPainter: TChartLinePatternPainter;
 //    function GetFontAngle: Double; override;
     function SimpleTextExtent(const AText: String): TPoint; override;
     procedure SimpleTextOut(AX, AY: Integer; const AText: String); override;
@@ -55,6 +57,8 @@ type
     function GetFontSize: Integer; override;
     function GetFontStyle: TChartFontStyles; override;
     function GetPenColor: TChartColor;
+    function GetPenStyle: TFPPenStyle;
+    function GetPenWidth: Integer;
     procedure Line(AX1, AY1, AX2, AY2: Integer);
     procedure Line(const AP1, AP2: TPoint);
     procedure LineTo(AX, AY: Integer); override;
@@ -75,8 +79,10 @@ type
     procedure SetAntialiasingMode(AValue: TChartAntialiasingMode);
     procedure SetBrushColor(AColor: TChartColor);
     procedure SetBrushParams(AStyle: TFPBrushStyle; AColor: TChartColor);
+    procedure SetEnhancedBrokenLines(AValue: Boolean); override;
     procedure SetPenColor(AColor: TChartColor);
     procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor; AWidth: Integer = 1);
+    procedure SetPenStyle(AStyle: TFPPenStyle);
     procedure SetPenWidth(AWidth: Integer);
     procedure SetTransparency(ATransparency: TChartTransparency);
   end;
@@ -213,24 +219,66 @@ begin
   Result := GetCanvas.Pen.Color;
 end;
 
+function TCanvasDrawer.GetPenStyle: TFPPenStyle;
+begin
+  Result := GetCanvas.Pen.Style;
+end;
+
+function TCanvasDrawer.GetPenWidth: Integer;
+begin
+  Result := GetCanvas.Pen.Width;
+end;
+
 procedure TCanvasDrawer.Line(AX1, AY1, AX2, AY2: Integer);
 begin
-  GetCanvas.Line(AX1, AY1, AX2, AY2);
+  if (FPatternPainter = nil) or (FPaintingPattern > 0) then
+    GetCanvas.Line(AX1, AY1, AX2, AY2)
+  else
+  begin
+    inc(FPaintingPattern);
+    try
+      GetCanvas.Pen.Style := psSolid;
+      FPatternPainter.Line(AX1, AY1, AX2, AY2);
+    finally
+      dec(FPaintingPattern);
+    end;
+  end;
 end;
 
 procedure TCanvasDrawer.Line(const AP1, AP2: TPoint);
 begin
-  GetCanvas.Line(AP1, AP2);
+  Line(AP1.X, AP1.Y, AP2.X, AP2.Y);
 end;
 
 procedure TCanvasDrawer.LineTo(AX, AY: Integer);
 begin
-  GetCanvas.LineTo(AX, AY);
+  if (FPatternPainter = nil) or (FPaintingPattern > 0) then
+    GetCanvas.LineTo(AX, AY)
+  else
+  begin
+    inc(FPaintingPattern);
+    try
+      GetCanvas.Pen.Style := psSolid;
+      FPatternPainter.LineTo(AX, AY);
+    finally
+      dec(FPaintingPattern);
+    end;
+  end;
 end;
 
 procedure TCanvasDrawer.MoveTo(AX, AY: Integer);
 begin
-  GetCanvas.MoveTo(AX, AY);
+  if (FPatternPainter = nil) or (FPaintingPattern > 0) then
+    GetCanvas.MoveTo(AX, AY)
+  else
+  begin
+    inc(FPaintingPattern);
+    try
+      FPatternPainter.MoveTo(AX, AY);
+    finally
+      dec(FPaintingPattern);
+    end;
+  end;
 end;
 
 procedure TCanvasDrawer.Polygon(
@@ -243,10 +291,22 @@ procedure TCanvasDrawer.Polyline(
   const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
 begin
   if ANumPts <= 0 then exit;
-  GetCanvas.Polyline(APoints, AStartIndex, ANumPts);
-  // TCanvas.Polyline does not draw the end point.
-  with APoints[AStartIndex + ANumPts - 1] do
-    GetCanvas.Pixels[X, Y] := GetCanvas.Pen.Color;
+  if (FPatternPainter = nil) or (FPaintingPattern > 0) then
+  begin
+    GetCanvas.Polyline(APoints, AStartIndex, ANumPts);
+    // TCanvas.Polyline does not draw the end point.
+    with APoints[AStartIndex + ANumPts - 1] do
+      GetCanvas.Pixels[X, Y] := GetCanvas.Pen.Color;
+  end else
+  begin
+    inc(FPaintingPattern);
+    try
+      GetCanvas.Pen.Style := psSolid;
+      FPatternPainter.PolyLine(APoints, AStartIndex, ANumPts);
+    finally
+      dec(FPaintingPattern);
+    end;
+  end;
 end;
 
 procedure TCanvasDrawer.PrepareSimplePen(AColor: TChartColor);
@@ -354,6 +414,17 @@ begin
   GetCanvas.Brush.Style := AStyle;
 end;
 
+procedure TCanvasDrawer.SetEnhancedBrokenLines(AValue: Boolean);
+begin
+  if AValue then
+  begin
+    if FPatternPainter = nil then
+      FPatternPainter := TChartLinePatternPainter.Create(Self);
+    FPatternPainter.Prepare(GetPenStyle, GetPenWidth);
+  end else
+    FreeAndNil(FPatternPainter);
+end;
+
 procedure TCanvasDrawer.SetFont(AFont: TFPCustomFont);
 var
   st: TFontStyles = [];
@@ -418,6 +489,9 @@ begin
     end;
     if scalePen in FScaleItems then
       Pen.Width := Scale(Pen.Width);
+
+    if Assigned(FPatternPainter) then
+      FPatternPainter.Prepare(Pen.Style, Pen.Width);
   end;
 end;
 
@@ -434,11 +508,24 @@ begin
   GetCanvas.Pen.Width := AWidth;
   if not FXor then
     GetCanvas.Pen.Color := ColorOrMono(AColor);
+  if Assigned(FPatternPainter) then
+    FPatternPainter.Prepare(AStyle, AWidth);
+end;
+
+procedure TCanvasDrawer.SetPenStyle(AStyle: TFPPenStyle);
+begin
+  if AStyle = GetCanvas.Pen.Style then
+    exit;
+  GetCanvas.Pen.Style := AStyle;
+  if Assigned(FPatternPainter) then
+    FPatternPainter.Prepare(AStyle, GetCanvas.Pen.Width);
 end;
 
 procedure TCanvasDrawer.SetPenWidth(AWidth: Integer);
 begin
   GetCanvas.Pen.Width := AWidth;
+  if Assigned(FPatternPainter) then
+    FPatternPainter.Prepare(GetCanvas.Pen.Style, AWidth);
 end;
 
 procedure TCanvasDrawer.SetTransparency(ATransparency: TChartTransparency);
