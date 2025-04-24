@@ -6798,12 +6798,8 @@ begin
 end;
 
 function TSourceEditor.GetWordAtCurrentCaret: String;
-var
-  CaretPos: TPoint;
 begin
-  CaretPos.Y := CurrentCursorYLine;
-  CaretPos.X := CurrentCursorXLine;
-  Result := GetWordFromCaret(ScreenToTextPosition(CaretPos));
+  Result := GetWordFromCaret(FEditor.LogicalCaretXY);
 end;
 
 function TSourceEditor.GetOperandFromCaret(const ACaretPos: TPoint): String;
@@ -6835,12 +6831,8 @@ begin
 end;
 
 function TSourceEditor.GetOperandAtCurrentCaret: String;
-var
-  CaretPos: TPoint;
 begin
-  CaretPos.Y := CurrentCursorYLine;
-  CaretPos.X := CurrentCursorXLine;
-  Result := GetOperandFromCaret(ScreenToTextPosition(CaretPos));
+  Result := GetOperandFromCaret(FEditor.LogicalCaretXY);
 end;
 
 function TSourceEditor.GetWordFromCaret(const ACaretPos: TPoint): String;
