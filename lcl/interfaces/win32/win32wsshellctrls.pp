@@ -102,6 +102,11 @@ begin
   if (ShellIconSize.CX = -1) and (ShellIconSize.CY = -1) then
   begin
     ico := GetShellIcon(WideString('C:'));
+    if ico = nil then
+    begin
+      Result := Types.Size(0, 0);
+      exit;
+    end;
     try
       Result := Types.Size(ico.Width, ico.Height);
       ShellIconSize := Result;
