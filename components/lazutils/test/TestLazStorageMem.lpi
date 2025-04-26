@@ -21,8 +21,322 @@
     <i18n>
       <EnableI18N LFM="False"/>
     </i18n>
-    <BuildModes Count="1">
-      <Item1 Name="Default" Default="True"/>
+    <BuildModes Count="17">
+      <Item1 Name="O1 gh riot Sa" Default="True"/>
+      <Item2 Name="O1 gh riot Sa gt">
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <Target>
+            <Filename Value="testlazstoragemem"/>
+          </Target>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <UnitOutputDirectory Value="units\$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <Linking>
+            <Debugging>
+              <DebugInfoType Value="dsDwarf2Set"/>
+            </Debugging>
+          </Linking>
+        </CompilerOptions>
+      </Item2>
+      <Item3 Name="O1 gh riot Sa gtt">
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <Target>
+            <Filename Value="testlazstoragemem"/>
+          </Target>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <UnitOutputDirectory Value="units\$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <Linking>
+            <Debugging>
+              <DebugInfoType Value="dsDwarf2Set"/>
+            </Debugging>
+          </Linking>
+        </CompilerOptions>
+      </Item3>
+      <Item4 Name="O1 gh riot Sa gttt">
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <Target>
+            <Filename Value="testlazstoragemem"/>
+          </Target>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <UnitOutputDirectory Value="units\$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <Linking>
+            <Debugging>
+              <DebugInfoType Value="dsDwarf2Set"/>
+            </Debugging>
+          </Linking>
+        </CompilerOptions>
+      </Item4>
+      <Item5 Name="O1 gh riot Sa gtttt">
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <Target>
+            <Filename Value="testlazstoragemem"/>
+          </Target>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <UnitOutputDirectory Value="units\$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <Linking>
+            <Debugging>
+              <DebugInfoType Value="dsDwarf2Set"/>
+            </Debugging>
+          </Linking>
+        </CompilerOptions>
+      </Item5>
+      <Item6 Name="O1 riot Sa">
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <Target>
+            <Filename Value="testlazstoragemem"/>
+          </Target>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <UnitOutputDirectory Value="units\$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <Linking>
+            <Debugging>
+              <DebugInfoType Value="dsDwarf2Set"/>
+            </Debugging>
+          </Linking>
+          <Other>
+            <CompilerMessages>
+              <IgnoredMessages idx6058="True"/>
+            </CompilerMessages>
+          </Other>
+        </CompilerOptions>
+      </Item6>
+      <Item7 Name="O1 - quick">
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <Target>
+            <Filename Value="testlazstoragemem"/>
+          </Target>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <UnitOutputDirectory Value="units\$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <Linking>
+            <Debugging>
+              <DebugInfoType Value="dsDwarf2Set"/>
+            </Debugging>
+          </Linking>
+          <Other>
+            <CompilerMessages>
+              <IgnoredMessages idx6058="True" idx3124="True"/>
+            </CompilerMessages>
+          </Other>
+        </CompilerOptions>
+      </Item7>
+      <Item8 Name="O2 gh riot Sa">
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <Target>
+            <Filename Value="testlazstoragemem"/>
+          </Target>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <UnitOutputDirectory Value="units\$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <Linking>
+            <Debugging>
+              <DebugInfoType Value="dsDwarf2Set"/>
+            </Debugging>
+          </Linking>
+        </CompilerOptions>
+      </Item8>
+      <Item9 Name="O2 riot Sa NO gh">
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <Target>
+            <Filename Value="testlazstoragemem"/>
+          </Target>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <UnitOutputDirectory Value="units\$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <Linking>
+            <Debugging>
+              <DebugInfoType Value="dsDwarf2Set"/>
+            </Debugging>
+          </Linking>
+        </CompilerOptions>
+      </Item9>
+      <Item10 Name="O2 riot Sa -gt NO gh">
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <Target>
+            <Filename Value="testlazstoragemem"/>
+          </Target>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <UnitOutputDirectory Value="units\$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <Linking>
+            <Debugging>
+              <DebugInfoType Value="dsDwarf2Set"/>
+            </Debugging>
+          </Linking>
+        </CompilerOptions>
+      </Item10>
+      <Item11 Name="O2 riot Sa -gtt NO gh">
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <Target>
+            <Filename Value="testlazstoragemem"/>
+          </Target>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <UnitOutputDirectory Value="units\$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <Linking>
+            <Debugging>
+              <DebugInfoType Value="dsDwarf2Set"/>
+            </Debugging>
+          </Linking>
+        </CompilerOptions>
+      </Item11>
+      <Item12 Name="O2 riot Sa -gttt NO gh">
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <Target>
+            <Filename Value="testlazstoragemem"/>
+          </Target>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <UnitOutputDirectory Value="units\$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <Linking>
+            <Debugging>
+              <DebugInfoType Value="dsDwarf2Set"/>
+            </Debugging>
+          </Linking>
+        </CompilerOptions>
+      </Item12>
+      <Item13 Name="O2 riot Sa -gtttt NO gh">
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <Target>
+            <Filename Value="testlazstoragemem"/>
+          </Target>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <UnitOutputDirectory Value="units\$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <Linking>
+            <Debugging>
+              <DebugInfoType Value="dsDwarf2Set"/>
+            </Debugging>
+          </Linking>
+        </CompilerOptions>
+      </Item13>
+      <Item14 Name="O3 gh Sa ">
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <Target>
+            <Filename Value="testlazstoragemem"/>
+          </Target>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <UnitOutputDirectory Value="units\$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <Linking>
+            <Debugging>
+              <DebugInfoType Value="dsDwarf2Set"/>
+            </Debugging>
+          </Linking>
+        </CompilerOptions>
+      </Item14>
+      <Item15 Name="O3 Sa">
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <Target>
+            <Filename Value="testlazstoragemem"/>
+          </Target>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <UnitOutputDirectory Value="units\$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <Linking>
+            <Debugging>
+              <DebugInfoType Value="dsDwarf2Set"/>
+            </Debugging>
+          </Linking>
+        </CompilerOptions>
+      </Item15>
+      <Item16 Name="O3 NO test">
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <Target>
+            <Filename Value="testlazstoragemem"/>
+          </Target>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <UnitOutputDirectory Value="units\$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <Linking>
+            <Debugging>
+              <DebugInfoType Value="dsDwarf2Set"/>
+            </Debugging>
+          </Linking>
+        </CompilerOptions>
+      </Item16>
+      <Item17 Name="O4 NO test">
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <Target>
+            <Filename Value="testlazstoragemem"/>
+          </Target>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <UnitOutputDirectory Value="units\$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <Linking>
+            <Debugging>
+              <DebugInfoType Value="dsDwarf2Set"/>
+            </Debugging>
+          </Linking>
+        </CompilerOptions>
+      </Item17>
+      <SharedMatrixOptions Count="14">
+        <Item1 ID="434562845193" Targets="#project,LazUtils" Modes="O1 gh riot Sa gt,O1 gh riot Sa gtt,O1 gh riot Sa gttt,O1 gh riot Sa gtttt,O2 gh riot Sa,O1 gh riot Sa,O1 riot Sa,O1 - quick,O2 riot Sa NO gh,O2 riot Sa -gt NO gh,O2 riot Sa -gtt NO gh,O2 riot Sa -gttt NO gh,O2 riot Sa -gtttt NO gh,O3 gh Sa ,O3 Sa" Value="-dLazListClassTestCase"/>
+        <Item2 ID="652540415867" Targets="#project,LazUtils" Modes="O1 gh riot Sa gt,O1 gh riot Sa gtt,O1 gh riot Sa gttt,O1 gh riot Sa gtttt,O1 gh riot Sa,O1 riot Sa,O1 - quick" Value="-O-1"/>
+        <Item3 ID="858164029917" Targets="#project,LazUtils" Modes="O2 gh riot Sa,O2 riot Sa NO gh,O2 riot Sa -gt NO gh,O2 riot Sa -gtt NO gh,O2 riot Sa -gttt NO gh,O2 riot Sa -gtttt NO gh" Value="-O-2"/>
+        <Item4 ID="719105787433" Targets="#project,LazUtils" Modes="O3 gh Sa ,O3 Sa,O3 NO test" Value="-O-3"/>
+        <Item5 ID="709009418491" Targets="#project,LazUtils" Modes="O4 NO test" Value="-O-4"/>
+        <Item6 ID="576377139750" Targets="#project,LazUtils" Modes="O1 gh riot Sa gt,O1 gh riot Sa gtt,O1 gh riot Sa gttt,O1 gh riot Sa gtttt,O2 gh riot Sa,O3 gh Sa ,O1 gh riot Sa" Value="-gh"/>
+        <Item7 ID="920217515015" Targets="#project,LazUtils" Modes="O2 riot Sa NO gh,O3 Sa,O3 NO test,O4 NO test,O1 riot Sa,O1 - quick,O2 riot Sa -gtttt NO gh,O2 riot Sa -gttt NO gh,O2 riot Sa -gtt NO gh,O2 riot Sa -gt NO gh" Value="-gh-"/>
+        <Item8 ID="365905304916" Targets="#project,LazUtils" Modes="O1 gh riot Sa gt,O1 gh riot Sa gtt,O1 gh riot Sa gttt,O1 gh riot Sa gtttt,O2 gh riot Sa,O2 riot Sa NO gh,O3 gh Sa ,O3 Sa,O1 gh riot Sa,O1 riot Sa,O2 riot Sa -gt NO gh,O2 riot Sa -gtt NO gh,O2 riot Sa -gttt NO gh,O2 riot Sa -gtttt NO gh" Value="-Sa"/>
+        <Item9 ID="050840210698" Targets="#project,LazUtils" Modes="O3 NO test,O4 NO test,O1 - quick" Value="-Sa-"/>
+        <Item10 ID="461421226441" Targets="#project,LazUtils" Modes="O1 gh riot Sa,O2 gh riot Sa,O2 riot Sa NO gh,O3 gh Sa ,O3 Sa,O3 NO test,O4 NO test,O1 riot Sa,O1 - quick" Value="-gt-"/>
+        <Item11 ID="083697521408" Targets="#project,LazUtils" Modes="O1 gh riot Sa gt,O2 riot Sa -gt NO gh" Value="-gt- -gt"/>
+        <Item12 ID="537995386122" Targets="#project,LazUtils" Modes="O1 gh riot Sa gtt,O2 riot Sa -gtt NO gh" Value="-gt- -gtt"/>
+        <Item13 ID="822691409252" Targets="#project,LazUtils" Modes="O1 gh riot Sa gttt,O2 riot Sa -gttt NO gh" Value="-gt- -gttt"/>
+        <Item14 ID="398205324639" Targets="#project,LazUtils" Modes="O1 gh riot Sa gtttt,O2 riot Sa -gtttt NO gh" Value="-gt- -gtttt"/>
+      </SharedMatrixOptions>
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
@@ -64,16 +378,13 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <UnitOutputDirectory Value="units/$(TargetCPU)-$(TargetOS)"/>
+      <UnitOutputDirectory Value="units\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>
       <Debugging>
         <DebugInfoType Value="dsDwarf2Set"/>
       </Debugging>
     </Linking>
-    <Other>
-      <CustomOptions Value="-WC"/>
-    </Other>
   </CompilerOptions>
   <Debugging>
     <Exceptions Count="3">

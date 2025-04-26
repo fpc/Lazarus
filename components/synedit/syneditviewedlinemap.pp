@@ -9,7 +9,7 @@ unit SynEditViewedLineMap;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LazUTF8, LazListClasses, LazLoggerBase,
+  Classes, SysUtils, LCLProc, LazUTF8, LazListClasses, LazLoggerBase, LazListClassesBase,
   // SynEdit
   SynEditMiscClasses, LazSynEditText, SynEditTypes, SynEditMiscProcs;
 
@@ -39,20 +39,25 @@ type
   end;
   PSynWordWrapInvalidLinesRecord = ^TSynWordWrapInvalidLinesRecord;
 
+  { TSynWordWrapInvalidLinesCapacityController }
+
+  TSynWordWrapInvalidLinesCapacityController = object(TLazListAspectCapacitySimple)
+  public
+    class function GrowCapacity(ARequired, ACurrent: Integer): Integer; inline; static;
+    class function ShrinkCapacity({%H-}ARequired, ACurrent: Integer): Integer; inline; static;
+  end;
+
   { TSynWordWrapInvalidLines }
 
-  TSynWordWrapInvalidLinesRecordSize = specialize TLazListClassesItemSize<TSynWordWrapInvalidLinesRecord>;
-  TSynWordWrapInvalidLines = object(specialize TLazShiftBufferListObjBase<PSynWordWrapInvalidLinesRecord, TSynWordWrapInvalidLinesRecordSize>)
+  TSynWordWrapInvalidLines = object(
+    specialize TGenLazShiftListFixedSize<TSynWordWrapInvalidLinesRecord,
+      specialize TGenListConfigFixSize_3<TLazListAspectMemInitNone, TSynWordWrapInvalidLinesCapacityController, TLazListAspectRangeNoIndexCheck> >
+  )
   private
     function GetFirstInvalidEndLine: Integer; inline;
     function GetFirstInvalidLine: Integer; inline;
     function GetLastInvalidLine: Integer;
     function GetItem(AnIndex: Integer): TSynWordWrapInvalidLinesRecord; inline;
-
-    function GrowCapacity(ARequired: Integer): Integer;
-    function ShrinkCapacity(ARequired: Integer): Integer;
-    procedure InsertRows(AIndex, ACount: Integer); inline;
-    procedure DeleteRows(AIndex, ACount: Integer); inline;
   public
     function FindIndexFor(ALine: Integer): Integer; // find first Result.First after ALine
     procedure InvalidateLines(AFromOffset, AToOffset: Integer);
@@ -486,32 +491,6 @@ end;
 function TSynWordWrapInvalidLines.GetItem(AnIndex: Integer): TSynWordWrapInvalidLinesRecord;
 begin
   Result := ItemPointer[AnIndex]^;
-end;
-
-function TSynWordWrapInvalidLines.GrowCapacity(ARequired: Integer): Integer;
-begin
-  Result := ARequired + 16;
-end;
-
-function TSynWordWrapInvalidLines.ShrinkCapacity(ARequired: Integer): Integer;
-begin
-  //if ARequired = 0 then
-  //  Result := 0
-  //else
-  if ARequired * 8 < Count then
-    Result := ARequired + 4
-  else
-    Result := -1;
-end;
-
-procedure TSynWordWrapInvalidLines.InsertRows(AIndex, ACount: Integer);
-begin
-  InsertRowsEx(AIndex, ACount, @GrowCapacity);
-end;
-
-procedure TSynWordWrapInvalidLines.DeleteRows(AIndex, ACount: Integer);
-begin
-  DeleteRowsEx(AIndex, ACount, @ShrinkCapacity);
 end;
 
 function TSynWordWrapInvalidLines.FindIndexFor(ALine: Integer): Integer;
@@ -2379,6 +2358,26 @@ var
 begin
   pg := FindPageForWrap(AViewXYIdx.y);
   Result := pg.ViewXYIdxToTextXYIdx(AViewXYIdx);
+end;
+
+{ TSynWordWrapInvalidLinesCapacityController }
+
+class function TSynWordWrapInvalidLinesCapacityController.GrowCapacity(ARequired, ACurrent: Integer
+  ): Integer;
+begin
+  Result := ARequired + 16;
+end;
+
+class function TSynWordWrapInvalidLinesCapacityController.ShrinkCapacity(ARequired,
+  ACurrent: Integer): Integer;
+begin
+  //if ARequired = 0 then
+  //  Result := 0
+  //else
+  if ARequired * 8 < ACurrent then
+    Result := ARequired + 4
+  else
+    Result := -1;
 end;
 
 { TLazSynDisplayLineMapping }
