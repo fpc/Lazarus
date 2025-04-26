@@ -486,6 +486,8 @@ type
     Name: PChar;
   end;
 
+  PDWarfLineMap = ^TDWarfLineMap;
+
   { TDWarfLineMap }
 
   TDWarfLineMap = object
@@ -495,6 +497,7 @@ type
       LineOffsets: Array of Byte;
       Addresses: Array of TDBGPtr;
     end;
+    FNextMap: PDWarfLineMap; // https:/bugs.freepascal.org/view.php?id=37658
   public
     procedure Init;
     procedure SetAddressForLine(ALine: Cardinal; AnAddress: TDBGPtr); inline;
@@ -508,7 +511,6 @@ type
       // NoData: only return True/False, but nothing in AResultList
     procedure Compress;
   end;
-  PDWarfLineMap = ^TDWarfLineMap;
 {%endregion Line Info / Section "debug_line"}
 
 {%region Base classes for handling Symbols in unit FPDbgDwarf}
@@ -3555,6 +3557,7 @@ end;
 
 procedure TDWarfLineMap.Init;
 begin
+  FNextMap := nil;
 end;
 
 procedure TDWarfLineMap.SetAddressForLine(ALine: Cardinal; AnAddress: TDBGPtr);
@@ -3635,142 +3638,150 @@ var
   TmpResList: TDBGPtrArray;
 begin
   Result := False;
-  idx := ALine div 256;
-  offset := ALine mod 256;
-  if idx >= Length(FLineIndexList) then begin
-    if AFindSibling  = fsBefore then begin
-      idx := Length(FLineIndexList)-1;
-      offset := 255;
-    end
-    else
-      exit;
-  end;
+  try
+    idx := ALine div 256;
+    offset := ALine mod 256;
+    if idx >= Length(FLineIndexList) then begin
+      if AFindSibling  = fsBefore then begin
+        idx := Length(FLineIndexList)-1;
+        offset := 255;
+      end
+      else
+        exit;
+    end;
 
-  repeat
-    LineOffsets := FLineIndexList[idx].LineOffsets;
-    Addresses := FLineIndexList[idx].Addresses;
-    if Addresses = nil then
-      case AFindSibling of
-        fsNone:
-            exit;
-        fsBefore: begin
-            if idx = 0 then
-              exit;
-            dec(idx);
-            offset := 255;
-            Continue;
-          end;
-        fsNext, fsNextFunc, fsNextFuncLazy: begin
-            inc(idx);
-            if idx >= Length(FLineIndexList) then
-              exit;
-            offset := 0;
-            Continue;
-          end;
-      end;
-
-    l := Length(LineOffsets);
-    i := 0;
-    CurOffs := 0;
-    while (i < l) do begin
-      o := LineOffsets[i];
-      CurOffs := CurOffs + o;
-      if o > offset then begin
+    repeat
+      LineOffsets := FLineIndexList[idx].LineOffsets;
+      Addresses := FLineIndexList[idx].Addresses;
+      if Addresses = nil then
         case AFindSibling of
           fsNone:
               exit;
           fsBefore: begin
-              if i > 0 then begin
-                dec(i);
-                CurOffs := CurOffs - o;
-                offset := 0;  // found line before
-              end
-              else begin
-                // i=0 => will trigger continue for outer loop
-                dec(idx);
-                if idx < 0 then
-                  exit;
-                offset := 255; // Must be last entry from block before (if there is a block before)
-              end;
+              if idx = 0 then
+                exit;
+              dec(idx);
+              offset := 255;
+              Continue;
             end;
           fsNext, fsNextFunc, fsNextFuncLazy: begin
-              offset := 0;  // found line after/next
+              inc(idx);
+              if idx >= Length(FLineIndexList) then
+                exit;
+              offset := 0;
+              Continue;
             end;
         end;
-        break;
+
+      l := Length(LineOffsets);
+      i := 0;
+      CurOffs := 0;
+      while (i < l) do begin
+        o := LineOffsets[i];
+        CurOffs := CurOffs + o;
+        if o > offset then begin
+          case AFindSibling of
+            fsNone:
+                exit;
+            fsBefore: begin
+                if i > 0 then begin
+                  dec(i);
+                  CurOffs := CurOffs - o;
+                  offset := 0;  // found line before
+                end
+                else begin
+                  // i=0 => will trigger continue for outer loop
+                  dec(idx);
+                  if idx < 0 then
+                    exit;
+                  offset := 255; // Must be last entry from block before (if there is a block before)
+                end;
+              end;
+            fsNext, fsNextFunc, fsNextFuncLazy: begin
+                offset := 0;  // found line after/next
+              end;
+          end;
+          break;
+        end;
+        offset := offset - o;
+        if offset = 0 then
+          break;
+        inc(i);
       end;
-      offset := offset - o;
+
       if offset = 0 then
         break;
-      inc(i);
-    end;
-
-    if offset = 0 then
-      break;
-    case AFindSibling of
-      fsNone: exit;
-      fsBefore: begin
-        if i = 0 then
+      case AFindSibling of
+        fsNone: exit;
+        fsBefore: begin
+          if i = 0 then
+            continue;
+          assert(i=l, 'TDWarfLineMap.GetAddressesForLine: i=l');
+          dec(i);
+          break;
+        end;
+        else begin
+          inc(idx);
+          if idx >= Length(FLineIndexList) then
+            exit;
           continue;
-        assert(i=l, 'TDWarfLineMap.GetAddressesForLine: i=l');
-        dec(i);
-        break;
+        end;
       end;
-      else begin
-        inc(idx);
-        if idx >= Length(FLineIndexList) then
-          exit;
-        continue;
-      end;
-    end;
-  until False;
+    until False;
 
-  ln := 256 * idx + CurOffs;
-  if ln <> ALine then
-    case AFindSibling of
-      fsBefore:
-        if (AMaxSiblingDistance > 0) and (ALine - ln > AMaxSiblingDistance) then exit;
-      fsNext, fsNextFunc, fsNextFuncLazy: begin
-        if (AMaxSiblingDistance > 0) and (ln - ALine > AMaxSiblingDistance) then exit;
-        if (AFindSibling = fsNextFunc) or
-           ((AFindSibling = fsNextFuncLazy) and (ln - ALine > 1))
-        then begin
-          // check same function
-          if ADbgInfo = nil then exit;
-          if not ADbgInfo.FindProcStartEndPC(Addresses[i], Addr1, Addr2) then exit;
-          if GetAddressesForLine(ALine, TmpResList, False, fsBefore) then begin
-            if (Length(TmpResList) = 0) or (TmpResList[0] < Addr1) or (TmpResList[0] > Addr2) then
-              exit;
+    ln := 256 * idx + CurOffs;
+    if ln <> ALine then
+      case AFindSibling of
+        fsBefore:
+          if (AMaxSiblingDistance > 0) and (ALine - ln > AMaxSiblingDistance) then exit;
+        fsNext, fsNextFunc, fsNextFuncLazy: begin
+          if (AMaxSiblingDistance > 0) and (ln - ALine > AMaxSiblingDistance) then exit;
+          if (AFindSibling = fsNextFunc) or
+             ((AFindSibling = fsNextFuncLazy) and (ln - ALine > 1))
+          then begin
+            // check same function
+            if ADbgInfo = nil then exit;
+            if not ADbgInfo.FindProcStartEndPC(Addresses[i], Addr1, Addr2) then exit;
+            if GetAddressesForLine(ALine, TmpResList, False, fsBefore) then begin
+              if (Length(TmpResList) = 0) or (TmpResList[0] < Addr1) or (TmpResList[0] > Addr2) then
+                exit;
+            end;
+          end;
+
+          if (AFoundLine <> nil) and (AFoundLine^ <> -1) then begin
+            if (ln > AFoundLine^) then exit; // already have better match
+            if (ln < AFoundLine^) then
+              AResultList := nil;  // found better match
           end;
         end;
-
-        if (AFoundLine <> nil) and (AFoundLine^ <> -1) then begin
-          if (ln > AFoundLine^) then exit; // already have better match
-          if (ln < AFoundLine^) then
-            AResultList := nil;  // found better match
-        end;
       end;
+    if AFoundLine <> nil then
+      AFoundLine^ := 256 * idx + CurOffs;
+
+    if NoData then begin
+      Result := True;
+      exit;
     end;
-  if AFoundLine <> nil then
-    AFoundLine^ := 256 * idx + CurOffs;
 
-  if NoData then begin
+    j := i + 1;
+    while (j < l) and (LineOffsets[j] = 0) do inc(j);
+
+    k := Length(AResultList);
+    SetLength(AResultList, k + (j-i));
+    while i < j do begin
+      AResultList[k] := Addresses[i];
+      inc(i);
+      inc(k);
+    end;
+
     Result := True;
-    exit;
+  finally
+    if (FNextMap <> nil) and (FNextMap <> pointer(1)) and
+       FNextMap^.GetAddressesForLine(ALine, AResultList, NoData, AFindSibling, AFoundLine,
+          AMaxSiblingDistance, ADbgInfo)
+    then
+      Result := True;
   end;
-
-  j := i + 1;
-  while (j < l) and (LineOffsets[j] = 0) do inc(j);
-
-  k := Length(AResultList);
-  SetLength(AResultList, k + (j-i));
-  while i < j do begin
-    AResultList[k] := Addresses[i];
-    inc(i);
-    inc(k);
-  end;
-
-  Result := True;
 end;
 
 procedure TDWarfLineMap.Compress;
@@ -4105,13 +4116,11 @@ function TFpDwarfInfo.GetLineAddressMap(const AFileName: String): PDWarfLineMap;
   var
     Name: String;
   begin
-    // try fullname first
-    Result := FLineNumberMap.IndexOf(AFileName);
-    if Result <> -1 then Exit;
-
     Name := ExtractFileName(AFileName);
-    Result := FLineNumberMap.IndexOf(Name);
-    if Result <> -1 then Exit;
+    if Name <> AFileName then begin
+      Result := FLineNumberMap.IndexOf(Name);
+      if Result <> -1 then Exit;
+    end;
 
     for Result := 0 to FLineNumberMap.Count - 1 do
       if AnsiCompareText(Name, ExtractFileName(FLineNumberMap.Keys[Result])) = 0 then
@@ -4122,6 +4131,7 @@ function TFpDwarfInfo.GetLineAddressMap(const AFileName: String): PDWarfLineMap;
 var
   n, idx: Integer;
   CU: TDwarfCompilationUnit;
+  Name: String;
 begin
   Result := nil;
   if FLineNumberMap = nil then Exit;
@@ -4138,6 +4148,25 @@ begin
     for n := 0 to FLineNumberMap.Count - 1 do
       FLineNumberMap.Data[n]^.Compress;
     FLineNumberMapDone := True;
+  end;
+
+  idx := FLineNumberMap.IndexOf(AFileName);
+  if idx >= 0 then begin
+    Result := FLineNumberMap.Data[idx];
+    if Result^.FNextMap <> nil then
+      exit;
+    Result^.FNextMap := pointer(1);
+    Name := ExtractFileName(AFileName);
+    if Name = AFileName then
+      exit;
+    idx := FLineNumberMap.IndexOf(Name);
+    if idx >= 0 then begin
+      Result^.FNextMap := FLineNumberMap.Data[idx];
+      Result^.FNextMap^.FNextMap := pointer(1);
+    end
+    else
+      Result^.FNextMap := pointer(1);
+    exit;
   end;
 
   idx := FindIndex;
