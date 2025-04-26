@@ -486,6 +486,8 @@ type
     Name: PChar;
   end;
 
+  PDWarfLineMap = ^TDWarfLineMap;
+
   { TDWarfLineMap }
 
   TDWarfLineMap = object
@@ -512,6 +514,8 @@ type
     FLinePageList: Array of PLineMapPage;
     FHighNumberMap: TLineNumberAddrMap;
     FHighNumberMin, FHighNumberMax: Cardinal;
+
+    FNextMap: PDWarfLineMap; // https:/bugs.freepascal.org/view.php?id=37658
   protected
     function CheckIsSameProc(const IsList: Boolean; const FndAddr: TDBGPtr;
       const ADbgInfo: TFpDwarfInfo; const ALine: Cardinal): Boolean;
@@ -536,7 +540,6 @@ type
     ): Boolean; inline;
       // NoData: only return True/False, but nothing in AResultList
   end;
-  PDWarfLineMap = ^TDWarfLineMap;
 {%endregion Line Info / Section "debug_line"}
 
 {%region Base classes for handling Symbols in unit FPDbgDwarf}
@@ -3625,6 +3628,7 @@ procedure TDWarfLineMap.Init;
 begin
   SetLength(FLinePageList, 32);
   FHighNumberMap := nil;
+  FNextMap := nil;
 end;
 
 procedure TDWarfLineMap.Free;
@@ -3925,6 +3929,7 @@ var
   IsList, OffsetExist: Boolean;
 begin
   Result := False;
+  try
 
   if (ALine >= MAX_PAGE_LINE) and not ASkipHighLines then begin
     Result := GetAddressesForHighLine(ALine, AResultList, NoData, AFindSibling, AFoundLine,
@@ -4075,6 +4080,14 @@ begin
     j := PDBGPtr(FndAddr)[0];
     SetLength(AResultList, k + j);
     move(PDBGPtr(FndAddr)[1], AResultList[k], j*SizeOf(TDBGPtr));
+  end;
+
+  finally
+    if (FNextMap <> nil) and (FNextMap <> pointer(1)) and
+       FNextMap^.GetAddressesForLine(ALine, AResultList, NoData, AFindSibling, AFoundLine,
+          AMaxSiblingDistance, ADbgInfo, ASkipHighLines)
+    then
+      Result := True;
   end;
 end;
 
@@ -4430,8 +4443,19 @@ begin
     FLineNumberMapDone := True;
   end;
 
-  if FLineNumberMap.TryGetValue(AFileName, Result) then
+  if FLineNumberMap.TryGetValue(AFileName, Result) then begin
+    if Result^.FNextMap <> nil then
+      exit;
+    Result^.FNextMap := pointer(1);
+    BaseName := ExtractFileName(AFileName);
+    if BaseName = AFileName then
+      exit;
+    if FLineNumberMap.TryGetValue(BaseName, Result^.FNextMap) then
+      Result^.FNextMap^.FNextMap := pointer(1)
+    else
+      Result^.FNextMap := pointer(1);
     exit;
+  end;
 
   BaseName := ExtractFileName(AFileName);
   if FLineNumberMap.TryGetValue(BaseName, Result) then
