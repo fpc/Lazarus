@@ -1792,11 +1792,6 @@ msgstr "TreeView:n kohtien muokkain"
 msgid "Confirmation"
 msgstr ""
 
-#: objinspstrconsts.sccstredtconfirmationfilereplace
-msgctxt "objinspstrconsts.sccstredtconfirmationfilereplace"
-msgid "The file already exists, replace it?"
-msgstr ""
-
 #: objinspstrconsts.sccstredtconfirmationimagesloss
 msgctxt "objinspstrconsts.sccstredtconfirmationimagesloss"
 msgid "Information about node images cannot be stored in the file. Continue anyway?"

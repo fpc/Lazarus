@@ -117,7 +117,6 @@ resourcestring
   sccsTrEdtImageListNotAssigned = '"%s" not assigned';
   sccsTrEdtConfirmationCaption     = 'Confirmation';
   sccsTrEdtConfirmationImagesLoss  = 'Information about node images cannot be stored in the file. Continue anyway?';
-  sccsTrEdtConfirmationFileReplace = 'The file already exists, replace it?';
   sccsTrEdtConfirmationTreeReplace = 'The current tree will be overwritten, continue?';
 
   // ListView Items Editor

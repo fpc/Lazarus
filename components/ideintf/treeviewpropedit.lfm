@@ -286,6 +286,7 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
   object dlgSave: TSaveDialog
     Title = 'Save'
     FilterIndex = 0
+    Options = [ofOverwritePrompt, ofNoReadOnlyReturn, ofEnableSizing, ofViewDetail]
     Left = 136
     Top = 160
   end

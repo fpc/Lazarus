@@ -468,19 +468,10 @@ var
       result := true;
   end;
 
-  function ConfirmFileReplace: boolean;
-  begin
-    if FileExists(dlgSave.FileName) then
-      result := QuestionDlg(sccsTrEdtConfirmationCaption, sccsTrEdtConfirmationFileReplace,
-        TMsgDlgType.mtConfirmation, [mrYes, sccsTrEdtYes, mrNo, sccsTrEdtNo,
-        mrCancel, sccsTrEdtCancel], 0) = mrYes
-    else
-      result := true;
-  end;
 
 begin
   FinishNodeEditing;
-  if dlgSave.Execute and ConfirmFileReplace then
+  if dlgSave.Execute then
   begin
     Fn := dlgSave.FileName;
     if (CompareFileExt(Fn, 'xml', False) = 0) then
@@ -493,8 +484,6 @@ begin
         treEditor.SaveToFile(Fn);
     end;
   end;
-  //if ConfirmImagesLoss and dlgSave.Execute and ConfirmFileReplace then
-  //  treEditor.SaveToFile(dlgSave.FileName);
 end;
 
 procedure TTreeViewItemsEditorForm.spnIndexChange(Sender: TObject);
