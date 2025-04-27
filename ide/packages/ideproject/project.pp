@@ -4260,15 +4260,18 @@ end;
 
 function TProject.IndexOfUnitWithName(const AnUnitName: string;
   OnlyProjectUnits: boolean; IgnoreUnit: TUnitInfo): integer;
+var
+  lUnit: TUnitInfo;
 begin
   if AnUnitName='' then exit(-1);
   Result:=UnitCount-1;
   while (Result>=0) do begin
-    if (Units[Result].IsPartOfProject or not OnlyProjectUnits)
-    and (IgnoreUnit<>Units[Result])
-    and (Units[Result].Unit_Name<>'')
+    lUnit := Units[Result];
+    if (lUnit.IsPartOfProject or not OnlyProjectUnits)
+    and (IgnoreUnit<>lUnit)
+    and (lUnit.Unit_Name<>'')
     then begin
-      if (CompareDottedIdentifiers(PChar(Units[Result].Unit_Name),PChar(AnUnitName))=0)
+      if (CompareDottedIdentifiers(PChar(lUnit.Unit_Name),PChar(AnUnitName))=0)
       then
         exit;
     end;
@@ -4278,12 +4281,15 @@ end;
 
 function TProject.IndexOfUnitWithComponent(AComponent: TComponent;
   OnlyProjectUnits: boolean; IgnoreUnit: TUnitInfo): integer;
+var
+  lUnit: TUnitInfo;
 begin
   Result:=UnitCount-1;
   while (Result>=0) do begin
-    if (Units[Result].IsPartOfProject or not OnlyProjectUnits)
-    and (IgnoreUnit<>Units[Result]) then begin
-      if Units[Result].Component=AComponent then
+    lUnit := Units[Result];
+    if (lUnit.IsPartOfProject or not OnlyProjectUnits)
+    and (IgnoreUnit<>lUnit) then begin
+      if lUnit.Component=AComponent then
         exit;
     end;
     dec(Result);
@@ -4292,14 +4298,17 @@ end;
 
 function TProject.IndexOfUnitWithComponentName(const AComponentName: string;
   OnlyProjectUnits: boolean; IgnoreUnit: TUnitInfo): integer;
+var
+  lUnit: TUnitInfo;
 begin
   Result:=UnitCount-1;
   while (Result>=0) do begin
-    if (Units[Result].IsPartOfProject or not OnlyProjectUnits)
-    and (IgnoreUnit<>Units[Result]) then begin
-      if (CompareText(Units[Result].ComponentName,AComponentName)=0)
-      or ((Units[Result].Component<>nil)
-        and (CompareText(Units[Result].Component.Name,AComponentName)=0))
+    lUnit := Units[Result];
+    if (lUnit.IsPartOfProject or not OnlyProjectUnits)
+    and (IgnoreUnit<>lUnit) then begin
+      if (CompareText(lUnit.ComponentName,AComponentName)=0)
+      or ((lUnit.Component<>nil)
+        and (CompareText(lUnit.Component.Name,AComponentName)=0))
       then
         exit;
     end;
