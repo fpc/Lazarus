@@ -1514,7 +1514,7 @@ procedure TMainForm.DoImport(const EngineName, ConnectionString: String);
   Function UseNewDataDict : Boolean;
   
   begin
-    Result:=(mrNo=QuestionDLG(SImportDictInto,SWhichCurrentDictToUse,mtInformation,[mrYes,SUseCurrentDict,mrNo,SUseNewDict],0))
+    Result:=mrYes<>QuestionDlg(SImportDictInto,SWhichCurrentDictToUse,mtInformation,[mrYes,SUseCurrentDict,mrNo,SUseNewDict],0);
   end;
 
 Var
