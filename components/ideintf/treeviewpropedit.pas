@@ -156,7 +156,7 @@ begin
   // dialogs
   dlgOpen.Title := sccsTrEdtOpenDialog;
   dlgSave.Title := sccsTrEdtSaveDialog;
-  dlgSave.Filter := oisFilterXML+'|*.xml|'+oisAllFiles+'|'+GetAllFilesMask+'|';
+  dlgSave.Filter := Format(sccsTrEdtOpenSaveDlgFilter,[oisAllFiles,GetAllFilesMask]);
   dlgOpen.Filter := dlgSave.Filter;
 
   // button panel

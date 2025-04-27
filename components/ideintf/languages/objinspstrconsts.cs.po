@@ -1865,6 +1865,11 @@ msgctxt "objinspstrconsts.sccstredtopendialog"
 msgid "Open"
 msgstr "Otevřít"
 
+#: objinspstrconsts.sccstredtopensavedlgfilter
+#, object-pascal-format
+msgid "XML files (Node captions and properties)|*.xml|Text files (Node captions only)|*.txt|%s|%s|"
+msgstr ""
+
 #: objinspstrconsts.sccstredtrename
 #, fuzzy
 msgctxt "objinspstrconsts.sccstredtrename"

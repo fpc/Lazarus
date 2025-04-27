@@ -1830,6 +1830,11 @@ msgctxt "objinspstrconsts.sccstredtopendialog"
 msgid "Open"
 msgstr "Ouvrir"
 
+#: objinspstrconsts.sccstredtopensavedlgfilter
+#, object-pascal-format
+msgid "XML files (Node captions and properties)|*.xml|Text files (Node captions only)|*.txt|%s|%s|"
+msgstr ""
+
 #: objinspstrconsts.sccstredtrename
 msgctxt "objinspstrconsts.sccstredtrename"
 msgid "Rename"

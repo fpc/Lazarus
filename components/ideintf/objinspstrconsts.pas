@@ -118,6 +118,7 @@ resourcestring
   sccsTrEdtConfirmationCaption     = 'Confirmation';
   sccsTrEdtConfirmationImagesLoss  = 'Information about node images cannot be stored in the file. Continue anyway?';
   sccsTrEdtConfirmationTreeReplace = 'The current tree will be overwritten, continue?';
+  sccsTrEdtOpenSaveDlgFilter = 'XML files (Node captions and properties)'+'|*.xml|Text files (Node captions only)|*.txt|%s|%s|';
 
   // ListView Items Editor
   sccsLvEdtCaption         = 'ListView Items Editor';
