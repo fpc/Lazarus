@@ -616,10 +616,6 @@ msgstr "Įvykiai"
 msgid "Favorites"
 msgstr "Mėgstamiausi"
 
-#: objinspstrconsts.oisfilterxml
-msgid "XML files"
-msgstr ""
-
 #: objinspstrconsts.oisfinddeclaration
 msgid "Jump to declaration"
 msgstr "Rodyti kur paskelbta"
@@ -1854,9 +1850,12 @@ msgctxt "objinspstrconsts.sccstredtopendialog"
 msgid "Open"
 msgstr "Įkelti"
 
-#: objinspstrconsts.sccstredtopensavedlgfilter
-#, object-pascal-format
-msgid "XML files (Node captions and properties)|*.xml|Text files (Node captions only)|*.txt|%s|%s|"
+#: objinspstrconsts.sccstredtopensavedlgfiltertextfiles
+msgid "Text files (Node captions only)"
+msgstr ""
+
+#: objinspstrconsts.sccstredtopensavedlgfilterxmlfiles
+msgid "XML files (Node captions and properties)"
 msgstr ""
 
 #: objinspstrconsts.sccstredtrename

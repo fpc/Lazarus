@@ -614,10 +614,6 @@ msgstr "Události"
 msgid "Favorites"
 msgstr "Oblíbené"
 
-#: objinspstrconsts.oisfilterxml
-msgid "XML files"
-msgstr ""
-
 #: objinspstrconsts.oisfinddeclaration
 msgid "Jump to declaration"
 msgstr "Skok na deklaraci"
@@ -1865,9 +1861,12 @@ msgctxt "objinspstrconsts.sccstredtopendialog"
 msgid "Open"
 msgstr "Otevřít"
 
-#: objinspstrconsts.sccstredtopensavedlgfilter
-#, object-pascal-format
-msgid "XML files (Node captions and properties)|*.xml|Text files (Node captions only)|*.txt|%s|%s|"
+#: objinspstrconsts.sccstredtopensavedlgfiltertextfiles
+msgid "Text files (Node captions only)"
+msgstr ""
+
+#: objinspstrconsts.sccstredtopensavedlgfilterxmlfiles
+msgid "XML files (Node captions and properties)"
 msgstr ""
 
 #: objinspstrconsts.sccstredtrename

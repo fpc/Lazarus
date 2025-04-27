@@ -636,10 +636,6 @@ msgstr "מאורעות"
 msgid "Favorites"
 msgstr "מועדפים"
 
-#: objinspstrconsts.oisfilterxml
-msgid "XML files"
-msgstr ""
-
 #: objinspstrconsts.oisfinddeclaration
 msgid "Jump to declaration"
 msgstr "קפוץ להצהרה"
@@ -1914,9 +1910,12 @@ msgctxt "objinspstrconsts.sccstredtopendialog"
 msgid "Open"
 msgstr "פתח"
 
-#: objinspstrconsts.sccstredtopensavedlgfilter
-#, object-pascal-format
-msgid "XML files (Node captions and properties)|*.xml|Text files (Node captions only)|*.txt|%s|%s|"
+#: objinspstrconsts.sccstredtopensavedlgfiltertextfiles
+msgid "Text files (Node captions only)"
+msgstr ""
+
+#: objinspstrconsts.sccstredtopensavedlgfilterxmlfiles
+msgid "XML files (Node captions and properties)"
 msgstr ""
 
 #: objinspstrconsts.sccstredtrename

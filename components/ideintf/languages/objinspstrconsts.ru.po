@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-04-02 02:35+0300\n"
+"PO-Revision-Date: 2025-04-27 18:18+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -609,10 +609,6 @@ msgstr "События"
 #: objinspstrconsts.oisfavorites
 msgid "Favorites"
 msgstr "Избранное"
-
-#: objinspstrconsts.oisfilterxml
-msgid "XML files"
-msgstr "Файлы XML"
 
 #: objinspstrconsts.oisfinddeclaration
 msgid "Jump to declaration"
@@ -1829,10 +1825,13 @@ msgctxt "objinspstrconsts.sccstredtopendialog"
 msgid "Open"
 msgstr "Открыть"
 
-#: objinspstrconsts.sccstredtopensavedlgfilter
-#, object-pascal-format
-msgid "XML files (Node captions and properties)|*.xml|Text files (Node captions only)|*.txt|%s|%s|"
-msgstr ""
+#: objinspstrconsts.sccstredtopensavedlgfiltertextfiles
+msgid "Text files (Node captions only)"
+msgstr "Текстовые файлы (только заголовки элементов)"
+
+#: objinspstrconsts.sccstredtopensavedlgfilterxmlfiles
+msgid "XML files (Node captions and properties)"
+msgstr "Файлы XML (заголовки и свойства элементов)"
 
 #: objinspstrconsts.sccstredtrename
 msgctxt "objinspstrconsts.sccstredtrename"
