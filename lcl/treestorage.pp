@@ -30,14 +30,16 @@ type
                             tsoImageIndex, tsoSelectedIndex, tsoStateIndex, tsoOverlayIndex);
   TTreeItemStorageOptions = set of TTreeItemStorageOption;
 
+  TTreeStorageCallback = procedure (ATreeNode: TTreeNode; ADomNode: TDomNode) of Object;
+
 const
   TreeItemStorageDefaultOptions = [tsoExpanded, tsoSelected, tsoFocused, tsoVisible, tsoEnabled,
                                    tsoImageIndex, tsoSelectedIndex, tsoStateIndex, tsoOverlayIndex];
 
-procedure TreeSaveToXML(Tree: TCustomTreeView; Fn: String; Options: TTreeItemStorageOptions = TreeItemStorageDefaultOptions);
-procedure TreeSaveToXML(Tree: TCustomTreeView; St: TStream; Options: TTreeItemStorageOptions = TreeItemStorageDefaultOptions);
-procedure TreeLoadFromXML(Tree: TCustomTreeView; const Fn: String; Options: TTreeItemStorageOptions = TreeItemStorageDefaultOptions);
-procedure TreeLoadFromXML(Tree: TCustomTreeView; St: TStream; Options: TTreeItemStorageOptions = TreeItemStorageDefaultOptions);
+procedure TreeSaveToXML(Tree: TCustomTreeView; Fn: String; Options: TTreeItemStorageOptions = TreeItemStorageDefaultOptions; OnCallback: TTreeStorageCallBack = nil);
+procedure TreeSaveToXML(Tree: TCustomTreeView; St: TStream; Options: TTreeItemStorageOptions = TreeItemStorageDefaultOptions; OnCallback: TTreeStorageCallBack = nil);
+procedure TreeLoadFromXML(Tree: TCustomTreeView; const Fn: String; Options: TTreeItemStorageOptions = TreeItemStorageDefaultOptions; OnCallback: TTreeStorageCallBack = nil);
+procedure TreeLoadFromXML(Tree: TCustomTreeView; St: TStream; Options: TTreeItemStorageOptions = TreeItemStorageDefaultOptions; OnCallback: TTreeStorageCallBack = nil);
 
 
 implementation
@@ -71,7 +73,7 @@ begin
   end;
 end;
 
-procedure TreeSaveToXML(Tree: TCustomTreeView; Fn: String; Options: TTreeItemStorageOptions);
+procedure TreeSaveToXML(Tree: TCustomTreeView; Fn: String; Options: TTreeItemStorageOptions; OnCallback: TTreeStorageCallBack);
 var
   FS: TFileStream;
 begin
@@ -83,7 +85,7 @@ begin
   end;
 end;
 
-procedure TreeSaveToXML(Tree: TCustomTreeView; St: TStream; Options: TTreeItemStorageOptions);
+procedure TreeSaveToXML(Tree: TCustomTreeView; St: TStream; Options: TTreeItemStorageOptions; OnCallback: TTreeStorageCallBack);
 var
   Doc: TXMLDocument;
   RootNode: TDOMElement;
@@ -116,6 +118,9 @@ var
       TDomElement(CurrNode).SetAttribute(attrStateIndex,ATreeNode.StateIndex.ToString);
     if (tsoOverlayIndex in Options) and (ATreeNode.OverlayIndex > -1) then
       TDomElement(CurrNode).SetAttribute(attrOverlayIndex,ATreeNode.OverlayIndex.ToString);
+
+    if Assigned(OnCallback) then
+      OnCallback(ATreeNode, CurrNode);
 
     Child := ATreeNode.GetFirstChild;
     while Assigned(Child) do
@@ -152,7 +157,7 @@ begin
   end;
 end;
 
-procedure TreeLoadFromXML(Tree: TCustomTreeView; const Fn: String; Options: TTreeItemStorageOptions);
+procedure TreeLoadFromXML(Tree: TCustomTreeView; const Fn: String; Options: TTreeItemStorageOptions; OnCallback: TTreeStorageCallBack);
 var
   FS: TFileStream;
 begin
@@ -166,7 +171,7 @@ end;
 
 
 
-procedure TreeLoadFromXML(Tree: TCustomTreeView; St: TStream; Options: TTreeItemStorageOptions = TreeItemStorageDefaultOptions);
+procedure TreeLoadFromXML(Tree: TCustomTreeView; St: TStream; Options: TTreeItemStorageOptions; OnCallback: TTreeStorageCallBack);
 var
   Doc: TXMLDocument;
   DomNode: TDOMNode;
@@ -218,6 +223,9 @@ var
     if (tsoSelectedIndex in Options) then TreeNode.SelectedIndex := GetAttributeDef(ADomNode, attrSelectedIndex, -1);
     if (tsoStateIndex in Options) then TreeNode.StateIndex :=  GetAttributeDef(ADomNode, attrStateIndex, -1);
     if (tsoOverlayIndex in Options) then TreeNode.OverlayIndex := GetAttributeDef(ADomNode, attrOverlayIndex, -1);
+
+    if Assigned(OnCallback) then
+      OnCallback(TreeNode, ADomNode);
 
     if MustExpand then
       ExpandedList.Add(TreeNode);
