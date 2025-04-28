@@ -1321,6 +1321,7 @@ type
   TIdleEvent = procedure (Sender: TObject; var Done: Boolean) of object;
   TOnUserInputEvent = procedure(Sender: TObject; Msg: Cardinal) of object;
   TDataEvent = procedure (Data: PtrInt) of object;
+  TLogMessageEvent = Procedure (Sender : TObject; EventType : TEventType; Const Msg : String) of Object;
 
   // application hint stuff
   TCMHintShow = record
@@ -1526,6 +1527,7 @@ type
     FOnShortcut: TShortcutEvent;
     FOnShowHint: TShowHintEvent;
     FOnUserInput: TOnUserInputEvent;
+    FOnLog: TLogMessageEvent;
     FAsyncCall: TAsyncCallQueues;
     FShowHint: Boolean;
     FShowMainForm: Boolean;
@@ -1597,6 +1599,7 @@ type
     procedure ReleaseComponents;
     procedure DoBeforeFinalization;
     function GetParams(Index: Integer): string; override;
+    Procedure DoLog(EventType : TEventType; const Msg : String); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1770,6 +1773,7 @@ type
     property OnShortcut: TShortcutEvent read FOnShortcut write FOnShortcut;
     property OnShowHint: TShowHintEvent read FOnShowHint write FOnShowHint;
     property OnUserInput: TOnUserInputEvent read FOnUserInput write FOnUserInput;
+    property OnLog: TLogMessageEvent read FOnLog write FOnLog;
     property OnDestroy: TNotifyEvent read FOnDestroy write FOnDestroy;
     property OnCircularException: TExceptionEvent read FOnCircularException write FOnCircularException;
     property ShowButtonGlyphs: TApplicationShowGlyphs read FShowButtonGlyphs write SetShowButtonGlyphs default sbgAlways;

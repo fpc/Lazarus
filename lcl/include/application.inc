@@ -1131,6 +1131,12 @@ begin
   Result:=ParamStrUTF8(Index);
 end;
 
+procedure TApplication.DoLog(EventType: TEventType; const Msg: String);
+begin
+  if Assigned(FOnLOg) then
+    FOnLog(Self, EventType, Msg);
+end;
+
 procedure TApplication.IconChanged(Sender: TObject);
 var
   i: integer;
