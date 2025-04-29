@@ -2611,7 +2611,7 @@ begin
   if NotifyUserInput then
   begin
     CurrentWindow := Window;
-    NotifyApplicationUserInput(lWinControl, PLMsg^.Msg);
+    NotifyApplicationUserInput(lWinControl, PLMsg^);
     // Invalidate associated lWinControl if current window has been destroyed
     if CurrentWindow = 0 then
       lWinControl := nil;
