@@ -331,7 +331,7 @@ begin
   begin
     if Widget.NeedDeliverMouseEvent(Msg.Message.Msg, Msg) then begin
       // Msg is set in the Appropriate HandleMousexxx procedure
-      NotifyApplicationUserInput(Widget.LCLObject, Msg.Message.Msg);
+      NotifyApplicationUserInput(Widget.LCLObject, Msg.Message);
       if DeliverMessage(Widget.LCLObject, Msg) = 0 then
       begin
         Result := EventNotHandledErr;
@@ -753,7 +753,7 @@ const
           DebugLn('[HandleRawKeyDownEvent] LCL handled CN_KEYDOWN, exiting');
         {$ENDIF}
         
-        NotifyApplicationUserInput(Widget.LCLObject, KeyMsg.Msg);
+        NotifyApplicationUserInput(Widget.LCLObject, PLMessage(@KeyMsg)^);
         Result := noErr;
         Exit;
       end;
@@ -773,7 +773,7 @@ const
         {$ENDIF}
         //Result already set by CallNextEventHandler
         
-        NotifyApplicationUserInput(Widget.LCLObject, KeyMsg.Msg);
+        NotifyApplicationUserInput(Widget.LCLObject, PLMessage(@KeyMsg)^);
         Exit;
       end;
     end;
@@ -813,7 +813,7 @@ const
         if Result=EventNotHandledErr then
           Result := noErr;
           
-        NotifyApplicationUserInput(Widget.LCLObject, CharMsg.Msg);
+        NotifyApplicationUserInput(Widget.LCLObject, PLMessage(@CharMsg)^);
         Exit;
       end;
       if CharMsg.CharCode<>ord(KeyChar) then
@@ -847,7 +847,7 @@ const
         if Result=EventNotHandledErr then
           Result := noErr;
           
-        NotifyApplicationUserInput(Widget.LCLObject, CharMsg.Msg);
+        NotifyApplicationUserInput(Widget.LCLObject, PLMessage(@CharMsg)^);
         Exit;
       end;
     end;
@@ -880,7 +880,7 @@ const
         {$ENDIF}
         Result := noErr;
         
-        NotifyApplicationUserInput(Widget.LCLObject, KeyMsg.Msg);
+        NotifyApplicationUserInput(Widget.LCLObject, PLMessage(@KeyMsg)^);
         Exit;
       end;
       
@@ -901,7 +901,7 @@ const
         if Result=EventNotHandledErr then
           Result := noErr;
           
-        NotifyApplicationUserInput(Widget.LCLObject, KeyMsg.Msg);
+        NotifyApplicationUserInput(Widget.LCLObject, PLMessage(@KeyMsg)^);
         Exit;
       end;
     end;
