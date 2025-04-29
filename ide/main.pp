@@ -61,7 +61,7 @@ uses
   // fpc packages
   Math, Classes, SysUtils, TypInfo, Types, StrUtils, Contnrs, process, AVL_Tree,
   // LCL
-  LCLProc, LCLType, LCLIntf, LResources, HelpIntfs, InterfaceBase, LCLPlatformDef,
+  LCLProc, LCLType, LCLIntf, LMessages, LResources, HelpIntfs, InterfaceBase, LCLPlatformDef,
   ComCtrls, Forms, Buttons, Menus, Controls, Graphics, ExtCtrls, Dialogs, LclStrConsts,
   // CodeTools
   FileProcs, FindDeclarationTool, LinkScanner, BasicCodeTools, CodeToolsStructs,
@@ -186,7 +186,7 @@ type
     // event handlers
     procedure MainIDEFormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure MainIDEFormCloseQuery(Sender: TObject; var CanClose: boolean);
-    procedure HandleApplicationUserInput(Sender: TObject; {%H-}Msg: Cardinal);
+    procedure HandleApplicationUserInput(Sender: TObject; var Msg: TLMessage);
     procedure HandleApplicationIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure HandleApplicationActivate(Sender: TObject);
     procedure HandleApplicationDeActivate(Sender: TObject);
@@ -12512,7 +12512,7 @@ begin
   {$ENDIF}
 end;
 
-procedure TMainIDE.HandleApplicationUserInput(Sender: TObject; Msg: Cardinal);
+procedure TMainIDE.HandleApplicationUserInput(Sender: TObject; var Msg: TLMessage);
 begin
   Include(FIdleIdeActions, iiaUserInputSinceLastIdle);
   if ToolStatus=itCodeTools then

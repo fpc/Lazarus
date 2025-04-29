@@ -114,6 +114,7 @@ end;
 procedure TResizeControl.AppOnIdle(Sender: TObject; var Done: Boolean);
 var
   LFakeMenuNeeded: Boolean;
+  Mess : TLMessage;
 begin
   if FDesignerModified then
   begin
@@ -124,7 +125,9 @@ begin
       TryBoundDesignForm;
       if Assigned(OnResized) then
         OnResized(Self);
-      Application.NotifyUserInputHandler(Self, 0); // force repaint invisible components
+      FillChar(Mess,SizeOf(Mess),0);
+      Mess.Msg := 0;
+      Application.NotifyUserInputHandler(Self, Mess); // force repaint invisible components
     end else
     if LFakeMenuNeeded then
       TryBoundDesignForm; // always repaint menu on modification

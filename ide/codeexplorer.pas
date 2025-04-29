@@ -43,7 +43,7 @@ uses
   // LazUtils
   LazStringUtils, LazLoggerBase, LazTracer,
   // LCL
-  LCLProc, LCLType, Forms, Controls, Dialogs, Buttons, ComCtrls, Menus, ExtCtrls, EditBtn,
+  LCLProc, LCLType, LMessages, Forms, Controls, Dialogs, Buttons, ComCtrls, Menus, ExtCtrls, EditBtn,
   // CodeTools
   FileProcs, BasicCodeTools, CustomCodeTool, CodeToolManager, CodeAtom,
   CodeCache, CodeTree, KeywordFuncLists, FindDeclarationTool, DirectivesTree,
@@ -159,7 +159,7 @@ type
     procedure TreeviewDblClick(Sender: TObject);
     procedure TreeviewDeletion(Sender: TObject; Node: TTreeNode);
     procedure TreeviewKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure UserInputHandler(Sender: TObject; {%H-}Msg: Cardinal);
+    procedure UserInputHandler(Sender: TObject; var Msg: TLMessage);
   private
     fCategoryNodes: array[TCodeExplorerCategory] of TTreeNode;
     FCodeFilename: string;
@@ -734,7 +734,7 @@ begin
   end;
 end;
 
-procedure TCodeExplorerView.UserInputHandler(Sender: TObject; Msg: Cardinal);
+procedure TCodeExplorerView.UserInputHandler(Sender: TObject; var Msg: TLMessage);
 begin
   if CodeExplorerOptions.Refresh=cerOnIdle then
     CheckOnIdle;
