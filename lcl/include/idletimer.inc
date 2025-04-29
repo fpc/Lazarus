@@ -46,7 +46,7 @@ begin
     Enabled:=true;
 end;
 
-procedure TCustomIdleTimer.DoOnUserInput(Sender: TObject; Msg: Cardinal);
+procedure TCustomIdleTimer.DoOnUserInput(Sender: TObject; var Msg: TLMessage);
 begin
   FireOnIdle:=false;
   if not AutoEnabled then exit;
