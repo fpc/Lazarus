@@ -2205,7 +2205,7 @@ var
       Msg.KeyData := CommonKeyData or (Flags shl 16) or $0001 {TODO:  repeatcount};
 
       // send the (Sys)KeyDown message directly to the LCL
-      NotifyApplicationUserInput(TControl(TargetObj), Msg.Msg);
+      NotifyApplicationUserInput(TControl(TargetObj), PLMessage(@Msg)^);
       DeliverKeyMessage(TargetObj, Msg);
     end;
     {$ENDIF}
@@ -2358,7 +2358,7 @@ begin
       if not KeyAlreadyHandledByGtk
       then begin
         // send the (Sys)KeyDown message directly to the LCL
-        NotifyApplicationUserInput(TControl(TargetObj), Msg.Msg);
+        NotifyApplicationUserInput(TControl(TargetObj), PLMessage(@Msg)^);
         if DeliverKeyMessage(TargetObj, Msg)
         and (Msg.CharCode <> Vkey) then
           StopKeyEvent;
@@ -2381,7 +2381,7 @@ begin
 
       // send the message directly to the LCL
       Msg.Result:=0;
-      NotifyApplicationUserInput(TControl(TargetObj), Msg.Msg);
+      NotifyApplicationUserInput(TControl(TargetObj), PLMessage(@Msg)^);
 
       if DeliverKeyMessage(TargetObj, Msg)
       and (Msg.CharCode <> VKey)

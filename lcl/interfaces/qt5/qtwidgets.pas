@@ -3137,7 +3137,7 @@ begin
           MouseMsg.YPos := SmallInt(MousePos.Y);
         end;
     end;
-    NotifyApplicationUserInput(LCLObject, Msg.Msg);
+    NotifyApplicationUserInput(LCLObject, Msg);
     if not CanSendLCLMessage then
       exit(True);
     DeliverMessage(Msg);
@@ -3537,7 +3537,7 @@ begin
   {$endif}
   if KeyMsg.CharCode <> VK_UNKNOWN then
   begin
-    NotifyApplicationUserInput(LCLObject, KeyMsg.Msg);
+    NotifyApplicationUserInput(LCLObject, PLMessage(@KeyMsg)^);
 
     if not CanSendLCLMessage or (Sender = nil) then
       exit;
@@ -3564,7 +3564,7 @@ begin
     {$endif}
     if not EatArrowKeys then
     begin
-      NotifyApplicationUserInput(LCLObject, KeyMsg.Msg);
+      NotifyApplicationUserInput(LCLObject, PLMessage(@KeyMsg)^);
 
       if not CanSendLCLMessage or (Sender = nil) then
         exit;
@@ -3626,7 +3626,7 @@ begin
     {$ifdef VerboseQt}
     WriteLn(' message: ', CharMsg.Msg);
     {$endif}
-    NotifyApplicationUserInput(LCLObject, CharMsg.Msg);
+    NotifyApplicationUserInput(LCLObject, PLMessage(@KeyMsg)^);
 
     if not CanSendLCLMessage or (Sender = nil) then
       exit;
@@ -3652,7 +3652,7 @@ begin
     if not CanSendLCLMessage or (Sender = nil) then
       exit;
 
-    NotifyApplicationUserInput(LCLObject, CharMsg.Msg);
+    NotifyApplicationUserInput(LCLObject, PLMessage(@CharMsg)^);
 
     if not CanSendLCLMessage or (Sender = nil) then
       exit;
@@ -3796,7 +3796,7 @@ begin
       SavedLCLControl := PtrUInt(LCLObject);
       try
 
-        NotifyApplicationUserInput(LCLObject, Msg.Msg);
+        NotifyApplicationUserInput(LCLObject, PLMessage(@Msg)^);
 
         if (SavedLCLControl <> PtrUInt(LCLObject)) then
           exit(True);
@@ -3841,7 +3841,7 @@ begin
       if (FChildOfComplexWidget = ccwCustomControl) and (FOwner <> nil) then
         SaveWidget := Widget;
 
-      NotifyApplicationUserInput(LCLObject, Msg.Msg);
+      NotifyApplicationUserInput(LCLObject, PLMessage(@Msg)^);
 
       if (SaveWidget <> nil) and (SaveWidget <> Widget) then
         exit(True);
@@ -4057,7 +4057,7 @@ begin
   SetNoMousePropagation(SenderWidget, True);
   SavedLCLObject := PtrUInt(LCLObject);
 
-  NotifyApplicationUserInput(LCLObject, Msg.Msg);
+  NotifyApplicationUserInput(LCLObject, PLMessage(@Msg)^);
 
   if (SavedLCLObject <> PtrUInt(LCLObject)) or not CanSendLCLMessage then
     exit(True);
@@ -4154,7 +4154,7 @@ begin
   end;
   {$ENDIF}
 
-  NotifyApplicationUserInput(LCLObject, Msg.Msg);
+  NotifyApplicationUserInput(LCLObject, PLMessage(@Msg)^);
 
   if not CanSendLCLMessage then
     exit(True);

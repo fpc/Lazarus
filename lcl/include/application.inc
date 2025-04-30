@@ -1665,12 +1665,12 @@ begin
   dec(FIdleLockCount);
 end;
 
-procedure TApplication.NotifyUserInputHandler(Sender: TObject; Msg: Cardinal);
+procedure TApplication.NotifyUserInputHandler(Sender: TObject; var Msg: TLMessage);
 var
   i: integer;
 begin
   FLastMouseControlValid := False;
-  case Msg of
+  case Msg.Msg of
     LM_MOUSEMOVE:
       DoOnMouseMove;
     else

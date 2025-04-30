@@ -691,7 +691,7 @@ begin
   else
     _KeyMsg.Msg := CN_KEYDOWN;
 
-  NotifyApplicationUserInput(Target, _KeyMsg.Msg);
+  NotifyApplicationUserInput(Target, PLMessage(@_KeyMsg)^);
   if (DeliverMessage(_KeyMsg) <> 0) or (_KeyMsg.CharCode = VK_UNKNOWN) then
     // the LCL handled the key
     KeyEvHandled;
@@ -707,7 +707,7 @@ begin
   //Send message to LCL
   if _KeyMsg.CharCode <> VK_UNKNOWN then
   begin
-    NotifyApplicationUserInput(Target, _KeyMsg.Msg);
+    NotifyApplicationUserInput(Target, PLMessage(@_KeyMsg)^);
     if (DeliverMessage(_KeyMsg) <> 0) or (_KeyMsg.CharCode = VK_UNKNOWN) then
     begin
       // the LCL has handled the key
@@ -817,7 +817,7 @@ begin
   if DeliverMessage(_KeyMsg) <> 0 then
   begin
     // the LCL handled the key
-    NotifyApplicationUserInput(Target, _KeyMsg.Msg);
+    NotifyApplicationUserInput(Target, PLMessage(@_KeyMsg)^);
     Exit;
   end;
 end;
@@ -1003,7 +1003,7 @@ begin
         4: Msg.Keys := msg.Keys or MK_QUADCLICK;
       end;
 
-      NotifyApplicationUserInput(Target, Msg.Msg);
+      NotifyApplicationUserInput(Target, PLMessage(@Msg)^);
       DeliverMessage(Msg);
 
     end;
@@ -1019,7 +1019,7 @@ begin
         4: Msg.Keys := msg.Keys or MK_QUADCLICK;
       end;
 
-      NotifyApplicationUserInput(Target, Msg.Msg);
+      NotifyApplicationUserInput(Target, PLMessage(@Msg)^);
       DeliverMessage(Msg);
 
       // TODO: Check if Cocoa has special context menu check event
@@ -1178,7 +1178,7 @@ begin
 
   //debugln('MouseMove x='+dbgs(MousePos.X)+' y='+dbgs(MousePos.Y)+' Target='+Target.Name);
 
-  NotifyApplicationUserInput(Target, Msg.Msg);
+  NotifyApplicationUserInput(Target, PLMessage(@Msg)^);
   // LCL/LM_MOUSEMOVE always return false, so we should discard return value
   DeliverMessage(Msg);
   // 1. for MouseMove Event, it has been processed by LCL,
@@ -1264,7 +1264,7 @@ begin
     wheelDelta := Low(SmallInt);
   Msg.WheelDelta := wheelDelta;
 
-  NotifyApplicationUserInput(Target, Msg.Msg);
+  NotifyApplicationUserInput(Target, PLMessage(@Msg)^);
   Result := DeliverMessage(Msg) <> 0;
 end;
 

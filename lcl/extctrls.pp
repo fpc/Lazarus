@@ -225,7 +225,7 @@ type
     procedure SetAutoEnabled(const AValue: boolean); virtual;
     procedure DoOnIdle(Sender: TObject; var Done: Boolean); virtual;
     procedure DoOnIdleEnd(Sender: TObject); virtual;
-    procedure DoOnUserInput(Sender: TObject; Msg: Cardinal); virtual;
+    procedure DoOnUserInput(Sender: TObject; var Msg: TLMessage); virtual;
     procedure Loaded; override;
   public
     constructor Create(TheOwner: TComponent); override;

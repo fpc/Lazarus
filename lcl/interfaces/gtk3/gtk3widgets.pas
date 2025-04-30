@@ -1524,7 +1524,7 @@ begin
   MessE.UserData := AWinControl;
   MessE.Button := 0;
 
-  NotifyApplicationUserInput(AWinControl, MessE.Msg);
+  NotifyApplicationUserInput(AWinControl, PLMessage(@MessE)^);
   Result := TGtk3Widget(AData).DeliverMessage(MessE) <> 0;
   AEvent^.scroll.send_event := NO_PROPAGATION_TO_PARENT;
 
@@ -1725,7 +1725,7 @@ begin
 
   Msg.Msg := LM_MOUSEMOVE;
 
-  NotifyApplicationUserInput(LCLObject, Msg.Msg);
+  NotifyApplicationUserInput(LCLObject, PLMessage(@Msg)^);
   if Widget^.get_parent <> nil then
     Event^.motion.send_event := NO_PROPAGATION_TO_PARENT;
   DeliverMessage(Msg, True);
@@ -2033,7 +2033,7 @@ begin
     Msg.CharCode := ACharCode;
     Msg.KeyData := PtrInt((KeyValue shl 16) or (LCLModifiers shl 16) or $0001);
 
-    NotifyApplicationUserInput(LCLObject, Msg.Msg);
+    NotifyApplicationUserInput(LCLObject, PLMessage(@Msg)^);
 
     if not CanSendLCLMessage then
       exit;
@@ -2059,7 +2059,7 @@ begin
     Msg.CharCode := ACharCode;
     Msg.KeyData := PtrInt((KeyValue shl 16) or (LCLModifiers shl 16) or $0001);
 
-    NotifyApplicationUserInput(LCLObject, Msg.Msg);
+    NotifyApplicationUserInput(LCLObject, PLMessage(@Msg)^);
 
     if not CanSendLCLMessage then
       exit;
@@ -2106,7 +2106,7 @@ begin
     CharMsg.KeyData := Msg.KeyData;
     AChar := AEventString[1];
     CharMsg.CharCode := Word(AChar);
-    NotifyApplicationUserInput(LCLObject, CharMsg.Msg);
+    NotifyApplicationUserInput(LCLObject, PLMessage(@CharMsg)^);
 
     if not CanSendLCLMessage then
       exit;
@@ -2127,7 +2127,7 @@ begin
     //Send a LM_(SYS)CHAR
     CharMsg.Msg := LM_CharMsg[IsSysKey];
 
-    NotifyApplicationUserInput(LCLObject, CharMsg.Msg);
+    NotifyApplicationUserInput(LCLObject, PLMessage(@CharMsg)^);
 
     if not CanSendLCLMessage then
       exit;
@@ -2254,7 +2254,7 @@ begin
   DebugLn('TGtk3Widget.GtkEventMouse ',dbgsName(LCLObject),
     ' msg=',dbgs(msg.Msg), ' point=',dbgs(Msg.XPos),',',dbgs(Msg.YPos));
   {$ENDIF}
-  NotifyApplicationUserInput(LCLObject, Msg.Msg);
+  NotifyApplicationUserInput(LCLObject, PLMessage(@Msg)^);
   Event^.button.send_event := NO_PROPAGATION_TO_PARENT;
 
   if (SavedHandle <> PtrUInt(Self)) or (LCLObject = nil) or (FWidget = nil) then

@@ -1319,7 +1319,7 @@ type
   TExceptionEvent = procedure (Sender: TObject; E: Exception) of object;
   TGetHandleEvent = procedure(var Handle: HWND) of object;
   TIdleEvent = procedure (Sender: TObject; var Done: Boolean) of object;
-  TOnUserInputEvent = procedure(Sender: TObject; Msg: Cardinal) of object;
+  TOnUserInputEvent = procedure(Sender: TObject; var Msg: TLMessage) of object;
   TDataEvent = procedure (Data: PtrInt) of object;
   TLogMessageEvent = Procedure (Sender : TObject; EventType : TEventType; Const Msg : String) of Object;
 
@@ -1644,7 +1644,7 @@ type
     procedure Terminate; override;
     procedure DisableIdleHandler;
     procedure EnableIdleHandler;
-    procedure NotifyUserInputHandler(Sender: TObject; Msg: Cardinal);
+    procedure NotifyUserInputHandler(Sender: TObject; var Msg: TLMessage);
     procedure NotifyKeyDownBeforeHandler(Sender: TObject;
                                          var Key: Word; Shift: TShiftState);
     procedure NotifyKeyDownHandler(Sender: TObject;
@@ -1989,7 +1989,7 @@ function GetParentDesignControl(Control: TControl): TCustomDesignControl;
 function NeedParentDesignControl(Control: TControl): TCustomDesignControl;
 
 function IsAccel(VK: word; const Str: string): Boolean;
-procedure NotifyApplicationUserInput(Target: TControl; Msg: Cardinal);
+procedure NotifyApplicationUserInput(Target: TControl; var Msg: TLMessage);
 
 
 function GetShortHint(const Hint: string): string;
@@ -2051,7 +2051,7 @@ end;
   procedure NotifyApplicationUserInput;
 
  ------------------------------------------------------------------------------}
-procedure NotifyApplicationUserInput(Target: TControl; Msg: Cardinal);
+procedure NotifyApplicationUserInput(Target: TControl; var Msg: TLMessage);
 begin
   if Assigned(Application) then
     Application.NotifyUserInputHandler(Target, Msg);

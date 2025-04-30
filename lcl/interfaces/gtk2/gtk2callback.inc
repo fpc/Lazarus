@@ -1340,7 +1340,7 @@ begin
   // send the message directly to the LCL
   // (Posting the message via queue
   //  has the risk of getting out of sync with the gtk)
-  NotifyApplicationUserInput(AWinControl, Msg.Msg);
+  NotifyApplicationUserInput(AWinControl, PLMessage(@Msg)^);
   //DebugLn(['DeliverMouseMoveMessage ',dbgsName(AWinControl)]);
   DeliverMessage(AWinControl, Msg);
 
@@ -2006,7 +2006,7 @@ begin
     MessE.Button := 0;
 
     // send the message directly to the LCL
-    NotifyApplicationUserInput(AWinControl, MessE.Msg);
+    NotifyApplicationUserInput(AWinControl, PLMessage(@MessE)^);
     Result:=DeliverMessage(AWinControl, MessE);
   end
   else
@@ -2022,7 +2022,7 @@ begin
     MessE.Button := 0;
 
     // send the message directly to the LCL
-    NotifyApplicationUserInput(AWinControl, MessE.Msg);
+    NotifyApplicationUserInput(AWinControl, PLMessage(@MessE)^);
     Result:=DeliverMessage(AWinControl, MessE);
   end
   else
@@ -2078,7 +2078,7 @@ begin
     end;
 
     // send the message directly to the LCL
-    NotifyApplicationUserInput(AWinControl, MessI.Msg);
+    NotifyApplicationUserInput(AWinControl, PLMessage(@MessI)^);
     Result := DeliverMessage(AWinControl, MessI);
 
     // issue #19914
@@ -2246,7 +2246,7 @@ begin
     if event^.button in [8,9] then
       MessI.Keys := MessI.Keys or ((event^.button - 7) shl 16);
     MessI.Result := 0;
-    NotifyApplicationUserInput(AWinControl, MessI.Msg);
+    NotifyApplicationUserInput(AWinControl, PLMessage(@MessI)^);
     DeliverMessage(AWinControl, MessI);
     if not AWinControl.HandleAllocated then
       Result := True
@@ -2423,7 +2423,7 @@ begin
   MessE.Button := 0;
 
   // send the message directly to the LCL
-  NotifyApplicationUserInput(AWinControl, MessE.Msg);
+  NotifyApplicationUserInput(AWinControl, PLMessage(@MessE)^);
   if DeliverMessage(AWinControl, MessE) <> 0 then
     Result := True; // message handled by LCL, stop processing
 end;

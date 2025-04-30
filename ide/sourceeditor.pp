@@ -1268,7 +1268,7 @@ type
     function FindUniquePageName(FileName:string; IgnoreEditor: TSourceEditor):string;
     function SomethingModified(Verbose: boolean = false): boolean;
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
-    procedure OnUserInput(Sender: TObject; Msg: Cardinal);
+    procedure OnUserInput(Sender: TObject; var Msg: TLMessage);
     procedure LockAllEditorsInSourceChangeCache;
     procedure UnlockAllEditorsInSourceChangeCache;
     procedure BeginGlobalUpdate;
@@ -11862,7 +11862,7 @@ begin
   end;
 end;
 
-procedure TSourceEditorManager.OnUserInput(Sender: TObject; Msg: Cardinal);
+procedure TSourceEditorManager.OnUserInput(Sender: TObject; var Msg: TLMessage);
 begin
   CodeToolsToSrcEditTimer.Enabled:=true;
   // Hints
@@ -11872,16 +11872,16 @@ begin
     if FHints.PtIsOnHint(Mouse.CursorPos) then begin // ignore any action over Hint
       if FHints.CurHintWindow.Active then
         exit;
-      if (Msg = WM_MOUSEMOVE)
-         or (Msg = LM_MOUSELEAVE)
+      if (Msg.Msg = WM_MOUSEMOVE)
+         or (Msg.Msg = LM_MOUSELEAVE)
          {$IFDEF WINDOWS}
-         or (Msg = WM_NCMOUSEMOVE)
-         or ((Msg >= WM_MOUSEFIRST) and (Msg <= WM_MOUSELAST))
+         or (Msg.Msg = WM_NCMOUSEMOVE)
+         or ((Msg.Msg >= WM_MOUSEFIRST) and (Msg.Msg <= WM_MOUSELAST))
          {$ENDIF}
       then
         exit;
     end;
-    if (Msg = WM_MOUSEMOVE) {$IFDEF WINDOWS} or (Msg = WM_NCMOUSEMOVE){$ENDIF} then begin
+    if (Msg.Msg = WM_MOUSEMOVE) {$IFDEF WINDOWS} or (Msg.Msg = WM_NCMOUSEMOVE){$ENDIF} then begin
       FHints.HideAutoHintAfterMouseMoved;
       exit;
     end;

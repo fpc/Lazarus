@@ -1122,7 +1122,7 @@ begin
 
   // application processing
   if NotifyUserInput then
-    NotifyApplicationUserInput(lWinControl, PLMsg^.Msg);
+    NotifyApplicationUserInput(lWinControl, PLMsg^);
 
   if (lWinControl <> nil) and (PLMsg^.Msg <> LM_NULL) then
   begin
