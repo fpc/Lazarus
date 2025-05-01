@@ -14183,21 +14183,37 @@ to the current application.
 <p>
 <var>TOnUserInputEvent</var> is the type used for the <var>OnUserInput</var> 
 event handler in <var>TApplication</var> and 
-<var>TApplicationProperties</var>.
+<var>TApplicationProperties</var>. It is also passed as an argument to methods 
+like <var>AddOnUserInputHandler</var> and <var>RemoveOnUserInputHandler</var> 
+in TApplication.
+</p>
+<p>
+An application must implement and assign a handler routine using the signature 
+for the object procedure type to respond to the notification. Some components  (like TCustomIdleTimer) provide an implementation for the event handler which is assigned to the application.
 </p>
 </descr>
+<version>
+Modified in LCL version 5.0 to use TLMessage in the Msg argument instead of 
+the cardinal value for the notification message.
+</version>
 <seealso>
 <link id="TApplication.OnUserInput"/>
 <link id="TApplicationProperties.OnUserInput"/>
 <link id="TApplication.AddOnUserInputHandler"/>
 <link id="TApplication.RemoveOnUserInputHandler"/>
+<link id="#lcl.extctrls.TCustomIdleTimer.DoOnUserInput">TCustomIdleTimer.DoOnUserInput</link>
 </seealso>
 </element>
 <element name="TOnUserInputEvent.Sender">
-<short>Object for the event notification.</short>
+<short>
+TObject instance for the event notification.
+</short>
 </element>
 <element name="TOnUserInputEvent.Msg">
-<short>Message with the user input for the event.</short>
+<short>
+Message structure with the message code, parameters, and result for the user 
+input event.
+</short>
 </element>
 
 <element name="TDataEvent">
@@ -14569,11 +14585,6 @@ Default handler for KeyDown events, invoked after interface and LCL handlers.
 </element>
 <element name="TApplicationHandlerType.ahtUserInput">
 <short>Handler invoked on user input.</short>
-<notes>
-<note>
-Used in NotifyUserInputHandler; implemented in Sparta MDI package
-</note>
-</notes>
 </element>
 <element name="TApplicationHandlerType.ahtException">
 <short>Handler invoked on handled exception.</short>
@@ -17491,32 +17502,46 @@ disabled.
 </element>
 
 <element name="TApplication.NotifyUserInputHandler">
-<short>Notifies all user input handlers of the specified message.</short>
+<short>
+Notifies all user input handlers of the specified message.
+</short>
 <descr>
 <p>
-Ensures that ActivateHint or CancelHint is called for a mouse message in the 
-Msg argument.
-</p>
-<p>
-Signals the OnUserInput event handler when assigned to allow filtering 
-messages at the application level. Signals each of the user input handlers 
-for the application using the Sender object instance and Msg as arguments. 
-Sender defaults to the application instance when unassigned.
-</p>
-<p>
-<var>NotifyUserInputHandler</var> is used to pass mouse and character events 
+<var>NotifyUserInputHandler</var> is used to pass mouse or character events 
 between a widgetset class instance and the forms and controls in an 
 application. It is called from the message processing mechanism that is part 
 of the LCL interface.
 </p>
+<p>
+It signals the OnUserInput event handler (when assigned) to allow handling of 
+messages at the application level. It signals each of the handlers for the 
+ahtUserInput type in the application using the Sender object instance and Msg 
+as arguments.
+</p>
+<p>
+Sender defaults to the application instance when unassigned.
+</p>
+<p>
+NotifyUserInputHandler ensures that ActivateHint or CancelHint is called for a 
+mouse message in the Msg argument.
+</p>
 </descr>
+<version>
+Modified in LCL version 5.0 to use TLMessage in the Msg argument instead of 
+the cardinal value for the notification message.
+</version>
 <seealso>
+<link id="TApplication.OnUserInput"/>
 <link id="TApplicationHandlerType"/>
+<link id="TApplication.DoOnMouseMove"/>
+<link id="TApplication.CancelHint"/>
+<link id="TApplicationHandlerType"/>
+<link id="Application"/>
 </seealso>
 </element>
 <element name="TApplication.NotifyUserInputHandler.Msg">
 <short>
-Message examined in the method for mouse or character events.
+Message structure with the code, parameters, and result for the message notification.
 </short>
 </element>
 
@@ -21663,15 +21688,19 @@ message.
 </short>
 <descr>
 <p>
-Calls the NotifyUserInputHandler method in the Application singleton when it 
-has been assigned using Msg as an argument.
+Calls the NotifyUserInputHandler method in the Application singleton (when 
+assigned) using Msg as an argument.
 </p>
 <p>
 NotifyApplicationUserInput is used as a callback routine in widgetset 
-classes. It allows the widget to notify the application when a mouse or a 
-keyboard event is pending in the LCL interface.
+classes. It allows a widget to notify the application when a mouse or a 
+keyboard event is pending for the LCL interface.
 </p>
 </descr>
+<version>
+Modified in LCL version 5.0 to use TLMessage in the Msg argument instead of 
+the cardinal value for the notification message.
+</version>
 <seealso>
 <link id="TApplication.NotifyUserInputHandler"/>
 <link id="TApplication.OnUserInput"/>
@@ -21681,7 +21710,10 @@ keyboard event is pending in the LCL interface.
 </seealso>
 </element>
 <element name="NotifyApplicationUserInput.Msg">
-<short>The message to process.</short>
+<short>
+The message structure with the code, parameters, and result for the 
+notification message.
+</short>
 </element>
 
 <element name="GetShortHint">
