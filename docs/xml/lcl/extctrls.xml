@@ -1316,16 +1316,58 @@ timer.
 
 <element name="TCustomIdleTimer.DoOnUserInput">
 <short>
-<var>DoOnUserInput</var> performs the code for responding to user input.
+Enables or disables the timer when a user input event is received and 
+AutoEnable is set to <b>True</b>.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>DoOnUserInput</var> is an event handler routine used to enable or disable 
+the timer when a user input event has been received. It is an implementation 
+of the TOnUserInputEvent type, and is added to (or removed from) the 
+<var>ahtUserInput</var> handlers used in the <var>TApplication</var> instance 
+when the value in <var>AutoEnable</var> has been changed; changing AutoEnable 
+to <b>True</b> causes the handler routine to be added to the application.
+</p>
+<p>
+DoOnUserInput ensures that <var>FireOnIdle</var> is to <b>False</b> to prevent 
+execution of the <var>OnTimer</var> event while the method is active. No 
+additional actions are performed in the method if AutoEnable has been set to 
+<b>False</b>.
+</p>
+<p>
+If AutoEnable is <b>True</b>, the <var>Enabled</var> property is updated based 
+on the setting in <var>AutoStartEvent</var> and <var>AutoEndEvent</var>. 
+Enabled is set to <b>False</b> if AutoEndEvent is set to 
+<var>itaOnUserInput</var>. Enabled is set to <b>True</b> if AutoStartEvent is 
+set to itaOnUserInput. AutoStartEvent takes precedence if both properties are 
+set to itaOnUserInput.
+</p>
+</descr>
+<version>
+Modified in LCL version 5.0 to use TLMessage in the Msg argument instead of 
+the cardinal value for the notification message.
+</version>
+<seealso>
+<link id="TCustomIdleTimer.AutoEnabled"/>
+<link id="TCustomIdleTimer.AutoStartEvent"/>
+<link id="TCustomIdleTimer.AutoEndEvent"/>
+<link id="TCustomIdleTimer.FireOnIdle"/>
+<link id="#lcl.forms.TApplication.OnUserInput">TApplication.OnUserInput</link>
+<link id="#lcl.forms.TApplication.AddOnUserInputHandler">TApplication.AddOnUserInputHandler</link>
+<link id="#lcl.forms.TApplicationHandlerType">TApplicationHandlerType</link>
+<link id="#lcl.forms.TOnUserInputEvent">TOnUserInputEvent</link>
+</seealso>
 </element>
 <element name="TCustomIdleTimer.DoOnUserInput.Sender">
-<short>Object for the event notification.</short>
+<short>
+Object instance for the event notification. Not used in the method.
+</short>
 </element>
 <element name="TCustomIdleTimer.DoOnUserInput.Msg">
-<short>Message examined in the method.</short>
+<short>
+Message structure with the message code and parameter values for the event 
+notification. Not used in the method.
+</short>
 </element>
 
 <element name="TCustomIdleTimer.Loaded">
