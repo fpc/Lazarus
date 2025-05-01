@@ -2553,6 +2553,11 @@ begin
     FShape^.unref;
     FShape := nil;
   end;
+  if Assigned(FFont) then
+  begin
+    FFont^.free;
+    FFont := nil;
+  end;
 end;
 
 procedure TGtk3Widget.DoBeforeLCLPaint;
