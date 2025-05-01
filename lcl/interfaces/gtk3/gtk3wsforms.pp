@@ -263,6 +263,11 @@ begin
   g_list_free(Toplevels);
 end;
 
+function ModalFilter(xevent: PGdkXEvent; event: PGdkEvent; data: gpointer): TGdkFilterReturn;
+begin
+  Result := GDK_FILTER_REMOVE;
+end;
+
 class procedure TGtk3WSCustomForm.ShowHide(const AWinControl: TWinControl);
 var
   AMask:TGdkEventMask;
@@ -401,6 +406,8 @@ begin
           OtherGtk3Window:=TGtk3Window(OtherForm.Handle);
           if Gtk3IsGtkWindow(OtherGtk3Window.Widget) then
           begin
+            if Gtk3IsGdkWindow(OtherGtk3Window.Widget^.window) then
+              gdk_window_add_filter(OtherGtk3Window.Widget^.window, TGdkFilterFunc(@ModalFilter), AGtk3Widget);
             AWindow^.set_transient_for(PGtkWindow(OtherGtk3Window.Widget));
             break;
           end;
@@ -427,7 +434,11 @@ begin
       ((fsModal in AForm.FormState) or (AForm.BorderStyle = bsNone)) then
     begin
       if AWindow^.transient_for <> nil then
+      begin
+        if (fsModal in AForm.FormState) and Gtk3IsGdkWindow(AWindow^.transient_for^.window) then
+          gdk_window_remove_filter(AWindow^.transient_for^.window, TGdkFilterFunc(@ModalFilter), AGtk3Widget);
         AWindow^.set_transient_for(nil);
+      end;
     end;
   end;
   AGtk3Widget.EndUpdate;
