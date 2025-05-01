@@ -5297,16 +5297,34 @@ var
   Gtk3Page: TGtk3Page;
   AMinSize, ANaturalSize: gint;
   Bmp: TBitmap;
+  ImageIndex:integer;
+  HasIcon: Boolean;
+  IconSize: Types.TSize;
+  TheNotebook:TCustomTabControl;
+  Appi:integer;
 begin
   if IsWidgetOK then
   begin
     Gtk3Page := TGtk3Page(ACustomPage.Handle);
     Gtk3Page.CloseButtonVisible := nboShowCloseButtons in TCustomTabControl(LCLObject).Options;
-    if Assigned(TCustomTabControl(LCLObject).Images) and (ACustomPage.ImageIndex >= 0) and
-      (ACustomPage.ImageIndex < TCustomTabControl(LCLObject).Images.Count) then
+
+    TheNoteBook:=TCustomTabControl(LCLObject);
+    HasIcon:=false;
+    IconSize:=Size(0,0);
+    ImageIndex := TheNoteBook.GetImageIndex(AIndex);
+    Appi:=TheNoteBook.Font.PixelsPerInch;
+    if (TheNoteBook.Images<>nil)
+    and (ImageIndex >= 0)
+    and (ImageIndex < TheNoteBook.Images.Count) then
+    begin
+      // page has valid image
+      IconSize := TheNoteBook.Images.SizeForPPI[TheNoteBook.ImagesWidth, Appi];
+      HasIcon := (IconSize.cx>0) and (IconSize.cy>0);
+    end;
+    if HasIcon then
     begin
       Bmp := TBitmap.Create;
-      TCustomTabControl(LCLObject).Images.GetBitmap(ACustomPage.ImageIndex, Bmp);
+      TCustomTabControl(LCLObject).Images.ResolutionForPPI[IconSize.cx,Appi,1].GetBitmap(ImageIndex, Bmp);
       Gtk3Page.setTabImage(Bmp);
       Bmp.Free;
     end else
