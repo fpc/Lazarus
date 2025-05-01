@@ -2309,13 +2309,16 @@ begin
 end;
 
 procedure TGtk3Widget.SetFont(AValue: PPangoFontDescription);
+var
+  NewFont: PPangoFontDescription;
 begin
   if IsWidgetOk then
   begin
     GetContainerWidget^.override_font(AValue);
-    if Assigned(FFont) and (FFont <> AValue) then
+    NewFont := pango_font_description_copy(AValue); //keep description, otherwise we can easily crash in some circumstances
+    if Assigned(FFont) then
       FFont^.free;
-    FFont := AValue;
+    FFont := NewFont;
   end;
 end;
 
