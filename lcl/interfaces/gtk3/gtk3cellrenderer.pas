@@ -923,7 +923,12 @@ begin
     if ListColumn = nil then
       LCLCellRenderer^.ColumnIndex := -1
     else
-      LCLCellRenderer^.ColumnIndex := ListColumn.Index;
+    begin
+      if (TGtk3ListView(Data).ViewStyle = vsList) and (PtrUInt(ListColumn) = LISTVIEW_DEFAULT_COLUMN) then
+        LCLCellRenderer^.ColumnIndex := 0
+      else
+        LCLCellRenderer^.ColumnIndex := ListColumn.Index;
+    end;
 
     S := '';
     if LCLCellRenderer^.ColumnIndex <= 0 then

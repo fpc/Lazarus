@@ -393,6 +393,11 @@ begin
       AListView.setItemWidth(TLVHack(AWinControl).LargeImages.Width)
     else
       AListView.setItemWidth(0);
+  end else
+  if TLVHack(AWinControl).ViewStyle = vsList then
+  begin
+    if TLVHack(AWinControl).ColumnCount = 0 then
+      AListView.ColumnInsert(0, TListColumn(LISTVIEW_DEFAULT_COLUMN));
   end;
   Result := TLCLHandle(AListView);
 end;
@@ -468,12 +473,16 @@ begin
   gtk_tree_model_get(tree_model, iter, [0, @ListItem, -1]);
 
   ListColumn := TListColumn(g_object_get_data(PGObject(tree_column), 'TListColumn'));
+
   if ListColumn = nil then
   begin
     g_value_unset(@PixbufValue);
     Exit;
   end;
-  ColumnIndex := ListColumn.Index;
+  if (TGtk3ListView(aData).ViewStyle = vsList) and (PtrUInt(ListColumn) = LISTVIEW_DEFAULT_COLUMN) then
+    ColumnIndex := 0
+  else
+    ColumnIndex := ListColumn.Index;
   ImageList := nil;
   Images := TGtk3ListView(aData).Images;
   if TCustomListView(TGtk3ListView(aData).LCLObject).OwnerData then

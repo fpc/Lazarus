@@ -677,6 +677,7 @@ type
     FPreselectedIndices: TFPList;
     FImages: TFPList;
     FIsTreeView: Boolean;
+    FViewStyle: TViewStyle;
   protected
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
     function EatArrowKeys(const {%H-}AKey: Word): Boolean; override;
@@ -718,6 +719,7 @@ type
 
     property Images: TFPList read FImages write FImages;
     property IsTreeView: Boolean read FIsTreeView;
+    property ViewStyle: TViewStyle read FViewStyle;
   end;
 
   { TGtk3Box }
@@ -1063,6 +1065,9 @@ type
     procedure raiseWidget; override;
     property DesignContext: HDC read FDesignContext;
   end;
+
+const
+  LISTVIEW_DEFAULT_COLUMN = 1;
 
 implementation
 
@@ -7178,8 +7183,8 @@ begin
   Result := PGtkScrolledWindow(TGtkScrolledWindow.new(nil, nil));
 
   PtrType := G_TYPE_POINTER;
-
-  if AListView.ViewStyle in [vsIcon,vsSmallIcon] then
+  FViewStyle := AListView.ViewStyle;
+  if ViewStyle in [vsIcon,vsSmallIcon] then
   begin
     TreeModel := PGtkTreeModel(gtk_list_store_new(3, [
       G_TYPE_POINTER, // ListItem pointer
@@ -7197,7 +7202,7 @@ begin
     FCentralWidget := TGtkTreeView.new_with_model(TreeModel);
   end;
 
-  FIsTreeView := not (AListView.ViewStyle in [vsIcon,vsSmallIcon]);
+  FIsTreeView := not (ViewStyle in [vsIcon,vsSmallIcon]);
 
   FCentralWidget^.set_has_window(True);
   FCentralWidget^.show;
