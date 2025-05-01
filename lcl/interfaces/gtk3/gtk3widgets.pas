@@ -1172,6 +1172,8 @@ end;
 {$i gtk3lclnotebook.inc}
 
 class function TGtk3Widget.WidgetEvent(widget: PGtkWidget; event: PGdkEvent; data: GPointer): gboolean; cdecl;
+var
+  AForm: TCustomForm;
 begin
   {$IFDEF GTK3DEBUGCOMBOBOX}
   if (Data <> nil) and (wtComboBox in TGtk3Widget(Data).WidgetType) and
@@ -1211,10 +1213,22 @@ begin
   case event^.type_ of
   GDK_DELETE:
     begin
-      // DebugLn('****** GDK_DELETE FOR ',dbgsName(TGtk3Widget(Data).LCLObject),' main_level=',dbgs(gtk_main_level));
+      //DebugLn('****** GDK_DELETE FOR ',dbgsName(TGtk3Widget(Data).LCLObject),' main_level=',dbgs(gtk_main_level));
       if wtWindow in TGtk3Widget(Data).WidgetType then
       begin
-        TGtk3Window(Data).CloseQuery;
+        // check against wrong gtk3 behaviour about modal windows.
+        if Assigned(TGtk3Window(Data).LCLObject) then
+        begin
+          AForm := TCustomForm(TGtk3Window(Data).LCLObject);
+          if (Application.ModalLevel > 0) then
+          begin
+            if gtk_application_get_active_window(Gtk3WidgetSet.Gtk3Application) <> PGtkWindow(TGtk3Window(Data).Widget) then
+              AForm := nil;
+          end;
+        end else
+          AForm := nil;
+        if (AForm <> nil) then
+          TGtk3Window(Data).CloseQuery;
         // let lcl destroy widget
         Result := True;
       end;
