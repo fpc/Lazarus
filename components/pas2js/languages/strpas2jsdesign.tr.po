@@ -457,7 +457,9 @@ msgid "Warning"
 msgstr "Uyarı"
 
 #: strpas2jsdesign.pjsdwebappdescription
-msgid "A pas2js program running in the browser."
+#, fuzzy
+#| msgid "A pas2js program running in the browser."
+msgid "A pas2js program running in the browser, with optional support for running a webassembly program and threading."
 msgstr "Tarayıcıda çalışan bir pas2js programı."
 
 #: strpas2jsdesign.pjsdwebapplication
@@ -492,6 +494,10 @@ msgstr "HTML kaynağından tüm sınıfları yenileyin"
 #: strpas2jsdesign.pjsrefreshclassfromhtml
 msgid "Refresh class from HTML source"
 msgstr "Sınıfı HTML kaynağından yenileme"
+
+#: strpas2jsdesign.pjswasienablethreading
+msgid "Enable webassembly threading"
+msgstr ""
 
 #: strpas2jsdesign.pjswasiprogramfiletexthint
 msgid "Name of your WebAssembly file"

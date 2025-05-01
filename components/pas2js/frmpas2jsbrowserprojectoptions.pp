@@ -21,6 +21,8 @@ const
   WBBoolRunServerAtPort = 9;
   WBBoolRunBrowserWithURL = 10;
   WBBoolRunDefault = 11;
+  WBBoolEnableThreading = 12;
+
 type
 
   { TWebBrowserProjectOptionsForm }
@@ -37,6 +39,7 @@ type
     CBUseBrowserConsole: TCheckBox;
     CBUseModule: TCheckBox;
     CBUseWASI: TCheckBox;
+    CBEnableThreading: TCheckBox;
     edtWasmProgram: TEdit;
     RBRunLocationOnSWS: TRadioButton;
     RBRunBrowserWithURL: TRadioButton;
@@ -47,12 +50,15 @@ type
     procedure CBCreateHTMLChange(Sender: TObject);
     procedure CBUseBrowserAppChange(Sender: TObject);
     procedure CBUseHTTPServerChange(Sender: TObject);
+    procedure CBEnableThreadingChange(Sender: TObject);
+    procedure CBUseWASIChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure RBRunLocationOnSWSChange(Sender: TObject);
     procedure RBRunDefaultChange(Sender: TObject);
     procedure RBRunServerAtChange(Sender: TObject);
     procedure RBRunBrowserWithURLChange(Sender: TObject);
   private
+    procedure CheckWasiControls;
     function GetB(AIndex: Integer): Boolean;
     function GetLocation: string;
     function GetServerPort: Word;
@@ -81,6 +87,7 @@ type
 
     property UseBrowserApp : Boolean Index WBBoolUseBrowserApp read GetB Write SetB;
     property UseWASI : Boolean Index WBBoolUseWASI read GetB Write SetB;
+    Property EnableThreading : Boolean Index WBBoolEnableThreading Read GetB Write SetB;
     property WasmProgramURL : String Read GetWasmProgramURL Write SetWasmProgramURL;
 
     property UseBrowserConsole : Boolean Index WBBoolUseBrowserConsole read GetB Write SetB;
@@ -130,11 +137,32 @@ begin
 
 end;
 
+procedure TWebBrowserProjectOptionsForm.CBEnableThreadingChange(Sender: TObject);
+begin
+
+end;
+
+procedure TWebBrowserProjectOptionsForm.CBUseWASIChange(Sender: TObject);
+begin
+  CheckWasiControls;
+end;
+
+procedure TWebBrowserProjectOptionsForm.CheckWasiControls;
+
+begin
+  edtWasmProgram.Enabled:=UseWASI;
+  CBEnableThreading.Enabled:=UseWASI;
+  if not CBEnableThreading.Enabled then
+    CBEnableThreading.Checked:=False;
+end;
+
 procedure TWebBrowserProjectOptionsForm.UpdateBrowserAppControls;
 
 begin
   CBUseWASI.Enabled:=UseBrowserApp;
-  edtWasmProgram.Enabled:=UseBrowserApp;
+  if not CBUseWASI.Enabled then
+    CBUseWASI.Checked:=False;
+  CheckWasiControls;
 end;
 
 procedure TWebBrowserProjectOptionsForm.FormCreate(Sender: TObject);
@@ -148,6 +176,7 @@ begin
 
   CBUseBrowserApp.Caption:=pjsdUseBrowserApplicationObject;
   CBUseWASI.Caption:=pjsdUseWASIApplicationObject;
+  CBEnableThreading.Caption:=pjsWasiEnableThreading;
   edtWasmProgram.TextHint:=pjsWasiProgramFileTextHint;
 
   CBUseBrowserConsole.Caption:=pjsdUseBrowserConsoleUnitToDisplayWritelnOutput;
@@ -194,6 +223,7 @@ begin
     WBBoolShowUncaughtExceptions : Result:=CBShowUncaughtExceptions.Checked;
     WBBoolUseBrowserApp : Result:=CBUseBrowserApp.Checked;
     WBBoolUseWASI : Result:=cbUseWASI.Checked;
+    WBBoolEnableThreading : Result:=cbEnableThreading.Checked;
     WBBoolUseBrowserConsole : Result:=CBUseBrowserConsole.Checked;
     WBBoolUseModule : Result:=cbUseModule.Checked;
     WBBoolRunLocation : Result:=RBRunLocationOnSWS.Checked;
@@ -235,6 +265,7 @@ begin
     WBBoolUseBrowserConsole : CBUseBrowserConsole.Checked:=AValue;
   WBBoolUseBrowserApp : begin CBUseBrowserApp.Checked:=AValue; UpdateBrowserAppControls; end;
   WBBoolUseWASI : begin cbUseWASI.Checked:=AValue; UpdateBrowserAppControls; end;
+  WBBoolEnableThreading : cbEnableThreading.Checked;
   WBBoolUseModule : cbUseModule.Checked:=AValue;
   WBBoolRunLocation : begin RBRunLocationOnSWS.Checked:=AValue; UpdateRunControls; end;
   WBBoolRunServerAtPort : begin RBRunServerAt.Checked:=AValue; UpdateRunControls; end;

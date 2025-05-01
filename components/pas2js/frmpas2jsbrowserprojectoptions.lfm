@@ -7,7 +7,7 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
   ClientHeight = 512
   ClientWidth = 632
   Position = poScreenCenter
-  LCLVersion = '3.99.0.0'
+  LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
   object CBCreateHTML: TCheckBox
     AnchorSideLeft.Control = Owner
@@ -15,7 +15,7 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
     Left = 6
     Height = 23
     Top = 6
-    Width = 160
+    Width = 173
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'Create initial HTML page'
@@ -31,7 +31,7 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
     Left = 6
     Height = 23
     Top = 151
-    Width = 198
+    Width = 213
     BorderSpacing.Top = 6
     Caption = 'Use Browser Application object'
     TabOrder = 1
@@ -44,7 +44,7 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
     Left = 38
     Height = 23
     Top = 122
-    Width = 313
+    Width = 341
     BorderSpacing.Left = 32
     BorderSpacing.Top = 6
     Caption = 'Use Browser Console unit to display writeln() output'
@@ -52,8 +52,8 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
   end
   object BPHelpOptions: TButtonPanel
     Left = 6
-    Height = 56
-    Top = 450
+    Height = 38
+    Top = 468
     Width = 620
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -73,7 +73,7 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
     Left = 38
     Height = 23
     Top = 35
-    Width = 137
+    Width = 151
     BorderSpacing.Left = 32
     BorderSpacing.Top = 6
     Caption = 'Maintain HTML Page'
@@ -86,7 +86,7 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
     Left = 38
     Height = 23
     Top = 64
-    Width = 287
+    Width = 313
     BorderSpacing.Left = 32
     BorderSpacing.Top = 6
     Caption = 'Run rtl when all page resources are fully loaded'
@@ -99,7 +99,7 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
     Left = 38
     Height = 23
     Top = 93
-    Width = 209
+    Width = 226
     BorderSpacing.Left = 32
     BorderSpacing.Top = 6
     Caption = 'Let rtl show uncaught exceptions'
@@ -112,12 +112,13 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
     Left = 38
     Height = 23
     Top = 180
-    Width = 176
+    Width = 193
     BorderSpacing.Left = 32
     BorderSpacing.Top = 6
     Caption = 'Host webassembly program'
     Enabled = False
     TabOrder = 7
+    OnChange = CBUseWASIChange
   end
   object edtWasmProgram: TEdit
     AnchorSideLeft.Control = CBUseWASI
@@ -126,7 +127,7 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 70
-    Height = 32
+    Height = 28
     Top = 209
     Width = 556
     Anchors = [akTop, akLeft, akRight]
@@ -143,8 +144,8 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 23
-    Top = 247
-    Width = 272
+    Top = 243
+    Width = 293
     BorderSpacing.Top = 6
     Caption = 'Create a javascript module instead of a script'
     TabOrder = 9
@@ -157,14 +158,14 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 165
-    Top = 276
+    Height = 154
+    Top = 272
     Width = 620
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'Run'
-    ClientHeight = 149
+    ClientHeight = 137
     ClientWidth = 618
     TabOrder = 10
     object RBRunServerAt: TRadioButton
@@ -173,8 +174,8 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
       AnchorSideTop.Side = asrCenter
       Left = 6
       Height = 23
-      Top = 49
-      Width = 168
+      Top = 43
+      Width = 180
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       Caption = 'Start HTTP Server on port'
@@ -186,9 +187,9 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = CBRunLocationOnSWS
       AnchorSideTop.Side = asrBottom
-      Left = 180
-      Height = 32
-      Top = 44
+      Left = 192
+      Height = 28
+      Top = 40
       Width = 76
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
@@ -203,8 +204,8 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
       AnchorSideTop.Side = asrCenter
       Left = 6
       Height = 23
-      Top = 87
-      Width = 138
+      Top = 77
+      Width = 148
       Caption = 'Use URL to start app'
       TabOrder = 1
       OnChange = RBRunBrowserWithURLChange
@@ -216,10 +217,10 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = RunGroupBox
       AnchorSideRight.Side = asrBottom
-      Left = 150
-      Height = 32
-      Top = 82
-      Width = 462
+      Left = 160
+      Height = 28
+      Top = 74
+      Width = 452
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
@@ -233,8 +234,8 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 23
-      Top = 120
-      Width = 162
+      Top = 108
+      Width = 172
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       BorderSpacing.Bottom = 6
@@ -248,8 +249,8 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
       AnchorSideTop.Side = asrCenter
       Left = 6
       Height = 23
-      Top = 11
-      Width = 196
+      Top = 9
+      Width = 211
       BorderSpacing.Left = 6
       Caption = 'Location on Simple Web Server'
       Checked = True
@@ -263,10 +264,10 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
       AnchorSideTop.Control = RunGroupBox
       AnchorSideRight.Control = RunGroupBox
       AnchorSideRight.Side = asrBottom
-      Left = 208
-      Height = 32
+      Left = 223
+      Height = 28
       Top = 6
-      Width = 404
+      Width = 389
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
@@ -279,5 +280,18 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
       TabOrder = 5
       Text = '$NameOnly($(ProjFile))'
     end
+  end
+  object CBEnableThreading: TCheckBox
+    AnchorSideLeft.Control = CBUseWASI
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = CBUseWASI
+    Left = 311
+    Height = 23
+    Top = 180
+    Width = 130
+    BorderSpacing.Left = 80
+    Caption = 'Enable threading'
+    TabOrder = 11
+    OnChange = CBEnableThreadingChange
   end
 end

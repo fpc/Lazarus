@@ -49,7 +49,8 @@ type
                                baoUseModule,         // include as module as opposed to regular script
                                baoLocationOnSWS,     // location on Simple Web Server
                                baoStartServer,       // Start simple server
-                               baoUseURL             // Use this URL to run/show project in browser
+                               baoUseURL,            // Use this URL to run/show project in browser
+                               baoEnableThreading    // Enable threading support
                                );
   TBrowserApplicationOptions = set of TBrowserApplicationOption;
 
@@ -448,6 +449,7 @@ begin
 
       UseBrowserApp:=CO(baoUseBrowserApp);
       UseWASI:=CO(baoUseWASI);
+      EnableThreading:=CO(baoEnableThreading);
       WasmProgramURL:='';
 
       UseModule:=CO(baoUseModule);
@@ -476,6 +478,7 @@ begin
 
         SO(UseBrowserApp,baoUseBrowserApp);
         SO(UseWASI,baoUseWASI);
+        SO(EnableThreading,baoEnableThreading);
         FProjectWasmURL:=WasmProgramURL;
 
         SO(UseModule,baoUseModule);
@@ -668,7 +671,12 @@ begin
     begin
     Units:=Units+' BrowserApp,' ;
     if baoUseWASI in options then
-      Units:=Units+' WASIHostApp,' ;
+      begin
+      if baoEnableThreading in Options then
+        Units:=Units+' WASIThreadedApp,'
+      else
+        Units:=Units+' WASIHostApp,' ;
+      end;
     end;
   Units:=Units+' JS, Classes, SysUtils, Web';
   Src:=TStringList.Create;
@@ -685,7 +693,12 @@ begin
       begin
       Add('Type');
       if baoUseWASI in Options then
-        Add('  TMyApplication = Class(TWASIHostApplication)')
+        begin
+        if baoEnableThreading in Options then
+          Add('  TMyApplication = Class(TBrowserWASIThreadedHostApplication)')
+        else
+          Add('  TMyApplication = Class(TWASIHostApplication)');
+        end
       else
         Add('  TMyApplication = Class(TBrowserApplication)');
       Add('  protected');
