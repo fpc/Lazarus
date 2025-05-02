@@ -2598,8 +2598,6 @@ begin
 
   if not Assigned(w) then exit;
 
-  Context:=w^.get_style_context;
-
   cairo_set_operator(pcr, CAIRO_OPERATOR_OVER);
   Context:=w^.get_style_context;
   Context^.save;
