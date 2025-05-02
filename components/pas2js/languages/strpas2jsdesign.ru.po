@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
-"MIME-Version: 1.0\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
-"X-Generator: Poedit 2.3.1\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.5\n"
 
 #: strpas2jsdesign.pjscreateajavascriptmoduleinsteadofascript
 msgid "Create a javascript module instead of a script"
@@ -453,10 +453,8 @@ msgid "Warning"
 msgstr "Предупреждение"
 
 #: strpas2jsdesign.pjsdwebappdescription
-#, fuzzy
-#| msgid "A pas2js program running in the browser."
-msgid "A pas2js program running in the browser, with optional support for running a webassembly program and threading."
-msgstr "Программа pas2js, запускаемая в браузере."
+msgid "A pas2js program running in the browser, with optional support for running a WebAssembly program and threading."
+msgstr "Программа pas2js, запускаемая в браузере, с дополнительной поддержкой запуска программы WebAssembly и многопоточности."
 
 #: strpas2jsdesign.pjsdwebapplication
 msgid "Web Browser Application"
@@ -492,8 +490,8 @@ msgid "Refresh class from HTML source"
 msgstr "Обновить класс из исходного текста HTML"
 
 #: strpas2jsdesign.pjswasienablethreading
-msgid "Enable webassembly threading"
-msgstr ""
+msgid "Enable WebAssembly threading"
+msgstr "Включить многопоточность WebAssembly"
 
 #: strpas2jsdesign.pjswasiprogramfiletexthint
 msgid "Name of your WebAssembly file"

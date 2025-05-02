@@ -440,7 +440,7 @@ msgid "Warning"
 msgstr ""
 
 #: strpas2jsdesign.pjsdwebappdescription
-msgid "A pas2js program running in the browser, with optional support for running a webassembly program and threading."
+msgid "A pas2js program running in the browser, with optional support for running a WebAssembly program and threading."
 msgstr ""
 
 #: strpas2jsdesign.pjsdwebapplication
@@ -477,7 +477,7 @@ msgid "Refresh class from HTML source"
 msgstr ""
 
 #: strpas2jsdesign.pjswasienablethreading
-msgid "Enable webassembly threading"
+msgid "Enable WebAssembly threading"
 msgstr ""
 
 #: strpas2jsdesign.pjswasiprogramfiletexthint
