@@ -9,7 +9,7 @@ uses FileProcs, sysutils;
 Resourcestring
   // "Create new" dialog
   pjsdWebApplication = 'Web Browser Application';
-  pjsdWebAppDescription = 'A pas2js program running in the browser, with optional support for running a webassembly program and threading.';
+  pjsdWebAppDescription = 'A pas2js program running in the browser, with optional support for running a WebAssembly program and threading.';
   pjsdProgressiveWebApplication = 'Progressive Web Application';
   pjsdElectronWebApplication = 'Electron Web Application';
   pjsdAWebApplicationUsingElectronToRunAsDesktopApplicat = 'A pas2js Web Application '
@@ -126,7 +126,7 @@ Resourcestring
   pjsdUseBrowserApplicationObject = 'Use Browser Application object';
   pjsdUseWASIApplicationObject = 'Run WebAssembly program:';
   pjsWasiProgramFileTextHint = 'Name of your WebAssembly file';
-  pjsWasiEnableThreading = 'Enable webassembly threading';
+  pjsWasiEnableThreading = 'Enable WebAssembly threading';
 
   // New NodeJS project options form
   pjsdNodeJSProjectOptions = 'NodeJS project options';
