@@ -334,7 +334,7 @@ function ReplaceUnderscoresWithAmpersands(const S: string): string; inline;
 
 implementation
 
-uses gtk3int,controls;
+uses gtk3int, Controls;
 
 const
   PixelOffset = 0.5; // Cairo API needs 0.5 pixel offset to not make blurry lines
@@ -2569,20 +2569,29 @@ end;
 function TGtk3DeviceContext.drawFrameControl(arect:TRect;uType,uState:cardinal):boolean;
 var
   Context: PGtkStyleContext;
-  pw:PGtkWidget;
   path:PGtkwIdgetPath;
   w:PgtkWidget;
+  State: TGtkStateFlags;
+  aOldAntiAlias: Tcairo_antialias_t;
 begin
 
-  Result:=false;
+  Result := False;
 
   w:=nil;
 
   case uType of
-  DFC_BUTTON,DFC_CAPTION:
-    w:=GetStyleWidget(lgsButton);
-  DFC_MENU:
-    w:=GetStyleWidget(lgsMenu);
+    DFC_BUTTON,DFC_CAPTION:
+    begin
+      if (uState and $1F) in [DFCS_BUTTONCHECK, DFCS_BUTTON3STATE] then
+        w := GetStyleWidget(lgsCheckbox)
+      else
+      if (uState and DFCS_BUTTONRADIO) <> 0 then
+        w := GetStyleWidget(lgsRadiobutton)
+      else
+        w := GetStyleWidget(lgsButton);
+    end;
+    DFC_MENU:
+      w:=GetStyleWidget(lgsMenu);
   else
     w:=GetStyleWidget(lgsDefault);
   end;
@@ -2590,26 +2599,53 @@ begin
   if not Assigned(w) then exit;
 
   Context:=w^.get_style_context;
-  path:=w^.get_path;
-  //it is wrong to call gtk_style_context_set_path here. Zeljan.
-  //https://docs.gtk.org/gtk3/method.StyleContext.set_path.html
-  //gtk_style_context_set_path (context, path);
-  gtk_style_context_set_state(context,(* gtk_widget_path_iter_get_state (path, -1)*) [TGtkStateFlagsIdxMinValue..TGtkStateFlagsIdxMaxValue]);
-  gtk_style_context_set_state(context, [GTK_STATE_FLAG_FOCUSED, GTK_STATE_FLAG_PRELIGHT]);
 
-  pw:=w;
-  while Assigned(pw) do
+  cairo_set_operator(pcr, CAIRO_OPERATOR_OVER);
+  Context:=w^.get_style_context;
+  Context^.save;
+
+  State := GTK_STATE_FLAG_NORMAL;
+  if (uState and DFCS_PUSHED) <> 0 then
+    Include(State, GTK_STATE_FLAG_ACTIVE);
+  if (uState and DFCS_INACTIVE) <> 0 then
+    Include(State, GTK_STATE_FLAG_INSENSITIVE);
+  if (uState and DFCS_HOT) <> 0 then
+    Include(State, GTK_STATE_FLAG_PRELIGHT);
+  if (uState and DFCS_CHECKED) <> 0 then
   begin
+    Include(State, GTK_STATE_FLAG_CHECKED);
+    Include(State, GTK_STATE_FLAG_ACTIVE);
+  end;
+  gtk_style_context_set_state(Context, State);
 
-    Context:=pw^.get_style_context;
-    path:=pw^.get_path;
-    with aRect do
+  path := w^.get_path;
+
+  with aRect do
+  begin
+    if (uState and $1F) in [DFCS_BUTTONCHECK, DFCS_BUTTON3STATE] then
+    begin
+      aOldAntiAlias := cairo_get_antialias(pcr);
+      cairo_set_antialias(pcr, CAIRO_ANTIALIAS_BEST);
+      gtk_render_background(Context,pcr, Left, Top, Right - Left, Bottom - Top);
+      gtk_render_frame(Context,pcr, Left, Top, Right - Left, Bottom - Top);
+      gtk_render_check(Context, pcr, Left, Top, Right - Left, Bottom - Top);
+      cairo_set_antialias(pcr, aOldAntiAlias);
+    end else
+    if (uState and DFCS_BUTTONRADIO) <> 0 then
+    begin
+      aOldAntiAlias := cairo_get_antialias(pcr);
+      cairo_set_antialias(pcr, CAIRO_ANTIALIAS_BEST);
+      gtk_render_background(Context,pcr, Left, Top, Right - Left, Bottom - Top);
+      gtk_render_frame(Context, pcr, Left, Top, Right - Left, Bottom - Top);
+      gtk_render_option(Context, pcr, Left, Top, Right - Left, Bottom - Top);
+      cairo_set_antialias(pcr, aOldAntiAlias);
+    end else
     begin
       gtk_render_background(Context,pcr, Left, Top, Right - Left, Bottom - Top);
       gtk_render_frame(Context,pcr, Left, Top, Right - Left, Bottom - Top);
     end;
-    pw:=pw^.parent;
   end;
+  Context^.restore;
 
   Result := True;
 end;

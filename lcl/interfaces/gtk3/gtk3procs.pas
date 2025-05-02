@@ -257,6 +257,7 @@ function G_OBJECT_TYPE_NAME(AWidget: PGObject): string;
 
 function Gtk3IsObject(AWidget: PGObject): GBoolean;
 function Gtk3IsButton(AWidget: PGObject): GBoolean;
+function Gtk3IsToggleButton(AWidget: PGObject): GBoolean;
 
 function Gtk3IsCellView(AWidget: PGObject): GBoolean;
 function Gtk3IsComboBox(AWidget: PGObject): GBoolean;
@@ -544,6 +545,11 @@ end;
 function Gtk3IsButton(AWidget: PGObject): GBoolean;
 begin
   Result := (AWidget <> nil) and g_type_check_instance_is_a(PGTypeInstance(AWidget), gtk_button_get_type);
+end;
+
+function Gtk3IsToggleButton(AWidget: PGObject): GBoolean;
+begin
+  Result := (AWidget <> nil) and g_type_check_instance_is_a(PGTypeInstance(AWidget), gtk_toggle_button_get_type);
 end;
 
 function Gtk3IsCellView(AWidget: PGObject): GBoolean;
@@ -1031,7 +1037,7 @@ var
   MainStyle: PGtkStyle;
 begin
   if Widget = nil then exit;
-  if not (Lgs in [lgsButton, lgsWindow, lgsMenuBar, lgsMenuitem,
+  if not (Lgs in [lgsButton, lgsCheckbox, lgsRadiobutton, lgsWindow, lgsMenuBar, lgsMenuitem,
     lgsVerticalScrollbar, lgsHorizontalScrollbar, lgsTooltip, lgsMemo, lgsFrame]) then exit;
 
   {$IFDEF NoStyle}
@@ -1215,7 +1221,27 @@ begin
     if CompareText(WName, LazGtkStyleNames[lgsButton]) = 0 then
     begin
       StyleObject^.Widget := TGtkButton.new;
+      gtk_style_context_add_class(gtk_widget_get_style_context(StyleObject^.Widget), GTK_STYLE_CLASS_BACKGROUND);
+      gtk_style_context_add_class(gtk_widget_get_style_context(StyleObject^.Widget), GTK_STYLE_CLASS_BUTTON);
       lgs := lgsButton;
+    end else
+    if CompareText(WName, LazGtkStyleNames[lgsCheckbox]) = 0 then
+    begin
+      //gtk3 themes are badly designed so we use togglebutton because TGtkCheckBox.new draws only check mark
+      StyleObject^.Widget := TGtkToggleButton.new;
+      gtk_style_context_add_class(gtk_widget_get_style_context(StyleObject^.Widget), GTK_STYLE_CLASS_BACKGROUND);
+      gtk_style_context_add_class(gtk_widget_get_style_context(StyleObject^.Widget), GTK_STYLE_CLASS_BUTTON);
+      gtk_style_context_add_class(gtk_widget_get_style_context(StyleObject^.Widget), GTK_STYLE_CLASS_CHECK);
+      lgs := lgsCheckbox;
+    end else
+    if CompareText(WName, LazGtkStyleNames[lgsRadiobutton]) = 0 then
+    begin
+      //gtk3 themes are badly designed so we use togglebutton because TGtkRadioButton.new draws only check mark
+      StyleObject^.Widget := TGtkToggleButton.new;
+      gtk_style_context_add_class(gtk_widget_get_style_context(StyleObject^.Widget), GTK_STYLE_CLASS_BACKGROUND);
+      gtk_style_context_add_class(gtk_widget_get_style_context(StyleObject^.Widget), GTK_STYLE_CLASS_BUTTON);
+      gtk_style_context_add_class(gtk_widget_get_style_context(StyleObject^.Widget), GTK_STYLE_CLASS_RADIO);
+      lgs := lgsRadioButton;
     end else
     if CompareText(WName, LazGtkStyleNames[lgsNotebook]) = 0 then
     begin
