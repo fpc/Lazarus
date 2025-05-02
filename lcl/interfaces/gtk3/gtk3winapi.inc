@@ -292,6 +292,11 @@ var
   ABrush: TGtk3Brush;
 begin
   Result := 0;
+  if (LogBrush.lbHatch > 0) and (LogBrush.lbStyle = BS_PATTERN) then
+  begin
+    Result := CreatePatternBrush(LogBrush.lbHatch);
+    exit;
+  end;
   // DebugLn('TGtk3WidgetSet.CreateBrushIndirect color=',dbgs(logBrush.lbColor),' style=',dbgs(logBrush.lbStyle));
   ABrush := TGtk3Brush.Create;
   try
@@ -438,6 +443,38 @@ begin
   DebugLn('WARNING: TGtk3WidgetSet.CreatePalette not implemented ...');
   {$ENDIF}
   Result := 0;
+end;
+
+function TGtk3WidgetSet.CreatePatternBrush(ABitmap: HBITMAP): HBRUSH;
+var
+  Brush: TGtk3Brush;
+  Pixbuf: PGdkPixbuf;
+  Surface: Pcairo_surface_t;
+  Pattern: Pcairo_pattern_t;
+begin
+  Result := 0;
+
+  if ABitmap = 0 then Exit;
+
+  Pixbuf := TGtk3Image(ABitmap).Handle;
+  if Pixbuf = nil then Exit;
+
+  Surface := gdk_cairo_surface_create_from_pixbuf(Pixbuf, 0, nil);
+  if Surface = nil then Exit;
+
+  Pattern := cairo_pattern_create_for_surface(Surface);
+  cairo_pattern_set_extend(Pattern, CAIRO_EXTEND_REPEAT);
+
+  cairo_surface_destroy(Surface);
+
+
+  Brush := TGtk3Brush.Create;
+
+  Brush.LogBrush.lbStyle := BS_PATTERN;
+  Brush.brush_pattern := Pattern;
+  Brush.UpdatePattern(clNone);
+
+  Result := HBRUSH(Brush);
 end;
 
 function TGtk3WidgetSet.CreatePenIndirect(const LogPen: TLogPen): HPEN;
@@ -4582,10 +4619,17 @@ end;
 function TGtk3WidgetSet.StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; ROp: Cardinal): Boolean;
 begin
+  {$ifdef VerboseGtk3DeviceContext}
+    DebugLn('Trace:> [TGtk3WidgetSet.StretchBlt]');
+  {$endif}
+
   Result := StretchMaskBlt(DestDC,X,Y,Width,Height,
                           SrcDC,XSrc,YSrc,SrcWidth,SrcHeight,
                           0,0,0,
                           ROp);
+  {$ifdef VerboseGtk3DeviceContext}
+    DebugLn('Trace:< [TGtk3WidgetSet.StretchBlt]');
+  {$endif}
 end;
 
 function TGtk3WidgetSet.StretchMaskBlt(DestDC: HDC; X, Y, Width,
@@ -4595,9 +4639,14 @@ function TGtk3WidgetSet.StretchMaskBlt(DestDC: HDC; X, Y, Width,
 var
   DestContext: TGtk3DeviceContext absolute DestDC;
   SrcContext: TGtk3DeviceContext absolute SrcDC;
-  ATargetRect, ASrcRect: TRect;
+  ATargetRect, ASrcRect, AMaskRect: TRect;
 begin
   Result := False;
+
+  {$ifdef VerboseGtk3DeviceContext}
+    DebugLn('Trace:> [TGtk3WidgetSet.StretchMaskBlt]');
+  {$endif}
+
   if Assigned(SrcContext.pcr) and SrcContext.OwnsSurface then
   begin
     Width := Round(Width / SrcContext.CanvasScaleFactor);
@@ -4605,8 +4654,9 @@ begin
   end;
   ATargetRect := Rect(X, Y, Width + X, Height + Y);
   ASrcRect := Rect(XSrc, YSrc, SrcWidth + XSrc, SrcHeight + YSrc);
+  AMaskRect := Bounds(XMask, YMask, SrcWidth, SrcHeight);
   if (mask<>0) then
-    DestContext.drawImage1(@ATargetRect, SrcContext.CurrentImage.Handle , @ASrcRect, nil, nil)
+    DestContext.drawImage1(@ATargetRect, SrcContext.CurrentImage.Handle , @ASrcRect, TGtk3Image(mask).Handle, @AMaskRect)
   else
   begin
     if (cairo_surface_get_type(SrcContext.CairoSurface) = CAIRO_SURFACE_TYPE_IMAGE) and
@@ -4615,6 +4665,9 @@ begin
     else
       DestContext.drawSurface(@ATargetRect,SrcContext.CairoSurface , @ASrcRect, nil, nil, nil);
   end;
+  {$ifdef VerboseGtk3DeviceContext}
+    DebugLn('Trace:< [TGtk3WidgetSet.StretchMaskBlt]');
+  {$endif}
   Result := True;
 end;
 

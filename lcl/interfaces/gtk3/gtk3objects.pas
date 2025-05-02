@@ -1438,7 +1438,8 @@ var
   rgb:array[0..3] of byte absolute aColor;
   pat_sample,psrc,pdst:pdword;
 begin
-  if Self.LogBrush.lbStyle<>BS_HATCHED then exit;
+  if (LogBrush.lbStyle <> BS_HATCHED) and (LogBrush.lbStyle <> BS_PATTERN) then
+    exit;
 
   if Assigned(Self.brush_pattern) then
   begin
@@ -2576,7 +2577,6 @@ var
 begin
 
   Result := False;
-
   w:=nil;
 
   case uType of
