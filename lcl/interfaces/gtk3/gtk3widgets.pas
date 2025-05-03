@@ -938,6 +938,7 @@ type
     procedure SetTitle(const AValue: String);
   strict private
     class function WindowMapEvent(awidget:PGtkWindow;AEvent: PGdkEventAny; adata: gpointer): gboolean; cdecl; static; //uses lcl-window-first-map data.
+    class function WindowMoveEvent(awidget: PGtkWindow; AEvent: PGdkEventConfigure; adata: gpointer): gboolean; cdecl; static;
     class procedure WindowSizeAllocate(AWidget: PGtkWidget; AGdkRect: PGdkRectangle; Data: gpointer); cdecl; static;
     class function WindowStateSignal(AWidget: PGtkWidget; AEvent: PGdkEvent; AData: gPointer): gboolean; cdecl; static;
   protected
@@ -9413,10 +9414,30 @@ begin
   Result := gtk_false;
 end;
 
+class function TGtk3Window.WindowMoveEvent(awidget: PGtkWindow; AEvent: PGdkEventConfigure; adata: gpointer): gboolean; cdecl;
+var
+  MoveMsg: TLMMove;
+begin
+  if Gtk3IsGtkWindow(aWidget) then
+  begin
+    with MoveMsg do
+    begin
+      Result := 0;
+      Msg := LM_MOVE;
+      MoveType := Move_SourceIsInterface;
+      XPos := SmallInt(AEvent^.x);
+      YPos := SmallInt(AEvent^.y);
+    end;
+    Result := TGtk3Window(aData).DeliverMessage(MoveMsg) <> 0;
+  end else
+    Result := gtk_false;
+end;
+
 procedure TGtk3Window.ConnectSizeAllocateSignal(ToWidget:PGtkWidget);
 begin
   g_signal_connect_data(ToWidget,'size-allocate',TGCallback(@WindowSizeAllocate), Self, nil, G_CONNECT_DEFAULT);
   g_signal_connect_data(ToWidget,'map-event',TGCallback(@WindowMapEvent), Self, nil, G_CONNECT_DEFAULT);
+  g_signal_connect_data(ToWidget,'configure-event',TGCallback(@WindowMoveEvent), Self, nil, G_CONNECT_DEFAULT);
 end;
 
 class function TGtk3Window.decoration_flags(Aform: TCustomForm): TGdkWMDecoration;
