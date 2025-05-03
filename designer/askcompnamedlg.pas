@@ -219,7 +219,8 @@ begin
   if (Key=VK_RETURN) and (ssCtrl in Shift) then
   begin
     Key := 0;
-    ButtonPanel1.OKButton.Click;
+    if ButtonPanel1.OKButton.Enabled then
+      ButtonPanel1.OKButton.Click;
   end;
 end;
 
