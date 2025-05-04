@@ -369,7 +369,7 @@ end;
 procedure ScaleImg(AImage: TCustomBitmap; AWidth, AHeight: Integer);
 var
   srcImg, destImg: TLazIntfImage;
-  destCanvas: TLazCanvas = nil;
+  destCanvas: TLazCanvas;
 begin
   if (AImage.Width = AWidth) and (AImage.Height = AHeight) then
     exit;
