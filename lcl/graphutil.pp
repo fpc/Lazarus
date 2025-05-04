@@ -368,24 +368,28 @@ end;
 
 procedure ScaleImg(AImage: TCustomBitmap; AWidth, AHeight: Integer);
 var
-  srcImg: TLazIntfImage = nil;
-  destCanvas: TLazCanvas = nil;
+  srcImg, destImg: TLazIntfImage;
+  destCanvas: TLazCanvas;
 begin
   if (AImage.Width = AWidth) and (AImage.Height = AHeight) then
     exit;
 
+  srcImg := AImage.CreateIntfImage;
+  destImg := AImage.CreateIntfImage;
   try
-    // Create the source LazIntfImage
-    srcImg := AImage.CreateIntfImage;
-    // Create the destination LazCanvas
-    destCanvas := TLazCanvas.Create(srcImg);
-    // Execute the canvas.StretchDraw
-    destCanvas.StretchDraw(0, 0, AWidth, AHeight, srcImg);
-    // Reload the stretched image into the CustomBitmap
-    AImage.LoadFromIntfImage(srcImg);
-    AImage.SetSize(AWidth, AHeight);
+    destImg.SetSize(AWidth, AHeight);
+    destCanvas := TLazCanvas.Create(destImg);
+    try
+      if (AWidth > srcImg.Width) and (AHeight > srcImg.Height) then
+        destCanvas.Interpolation := TFPBaseInterpolation.Create;
+      destCanvas.StretchDraw(0, 0, AWidth, AHeight, srcImg);
+      destCanvas.Interpolation.Free;
+      AImage.LoadFromIntfImage(destImg);
+    finally
+      destCanvas.Free;
+    end;
   finally
-    destCanvas.Free;
+    destImg.Free;
     srcImg.Free;
   end;
 end;
