@@ -1784,7 +1784,7 @@ msgstr "Editor Itens \"TreeView\""
 #, fuzzy
 #| msgid "Information about node images cannot be stored in the file. Continue anyway?"
 msgctxt "objinspstrconsts.sccstredtconfirmationimagesloss"
-msgid "Information about node images cannot be stored in TXT file format (use XML for that). Continue anyway?"
+msgid "Information about node images can only be stored in XML file format. Continue anyway?"
 msgstr "As informações sobre imagens dos nodes não podem ser armazenadas no arquivo. Continue de qualquer maneira?"
 
 #: objinspstrconsts.sccstredtconfirmationtreereplace

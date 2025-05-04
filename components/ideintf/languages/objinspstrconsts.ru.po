@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-04-27 18:18+0300\n"
+"PO-Revision-Date: 2025-05-05 01:43+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -1753,11 +1753,9 @@ msgid "TreeView Items Editor"
 msgstr "Редактор элементов TreeView"
 
 #: objinspstrconsts.sccstredtconfirmationimagesloss
-#, fuzzy
-#| msgid "Information about node images cannot be stored in the file. Continue anyway?"
 msgctxt "objinspstrconsts.sccstredtconfirmationimagesloss"
-msgid "Information about node images cannot be stored in TXT file format (use XML for that). Continue anyway?"
-msgstr "Сведения об изображениях элементов не могут быть сохранены в файл. Продолжить всё равно?"
+msgid "Information about node images can only be stored in XML file format. Continue anyway?"
+msgstr "Сведения об изображениях элементов могут быть сохранены только в файл в формате XML. Продолжить всё равно?"
 
 #: objinspstrconsts.sccstredtconfirmationtreereplace
 msgid "The current tree will be overwritten, continue?"

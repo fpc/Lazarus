@@ -1776,7 +1776,7 @@ msgstr "Editor voci della Treeview"
 
 #: objinspstrconsts.sccstredtconfirmationimagesloss
 msgctxt "objinspstrconsts.sccstredtconfirmationimagesloss"
-msgid "Information about node images cannot be stored in TXT file format (use XML for that). Continue anyway?"
+msgid "Information about node images can only be stored in XML file format. Continue anyway?"
 msgstr ""
 
 #: objinspstrconsts.sccstredtconfirmationtreereplace
