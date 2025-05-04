@@ -733,6 +733,7 @@ The Canvas is configured to use interpolation when both the width and height
 for the scaled image are larger than the values in the original image. Pixels 
 generated / inserted into the destination image are an estimate of the 
 surrounding pixel values from the original image.
+</p>
 <p>
 AImage is updated with the resized image content prior to exiting from the 
 routine.
