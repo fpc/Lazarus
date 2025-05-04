@@ -115,8 +115,7 @@ resourcestring
   sccsTrEdtCancel          = '&Cancel';
   sccsTrEdtInvalidIndex         = '"%s" has only %d images';
   sccsTrEdtImageListNotAssigned = '"%s" not assigned';
-  sccsTrEdtConfirmationCaption     = 'Confirmation';
-  sccsTrEdtConfirmationImagesLoss  = 'Information about node images cannot be stored in the file. Continue anyway?';
+  sccsTrEdtConfirmationImagesLoss  = 'Information about node images cannot be stored in TXT file format (use XML for that). Continue anyway?';
   sccsTrEdtConfirmationTreeReplace = 'The current tree will be overwritten, continue?';
   sccsTrEdtOpenSaveDlgFilterXMLFiles = 'XML files (Node captions and properties)';
   sccsTrEdtOpenSaveDlgFilterTextFiles = 'Text files (Node captions only)';

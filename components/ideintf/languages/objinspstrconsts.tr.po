@@ -1756,13 +1756,11 @@ msgstr "&İptal"
 msgid "TreeView Items Editor"
 msgstr "TreeView Öğe düzenleyici"
 
-#: objinspstrconsts.sccstredtconfirmationcaption
-msgid "Confirmation"
-msgstr "Onay"
-
 #: objinspstrconsts.sccstredtconfirmationimagesloss
+#, fuzzy
+#| msgid "Information about node images cannot be stored in the file. Continue anyway?"
 msgctxt "objinspstrconsts.sccstredtconfirmationimagesloss"
-msgid "Information about node images cannot be stored in the file. Continue anyway?"
+msgid "Information about node images cannot be stored in TXT file format (use XML for that). Continue anyway?"
 msgstr "Düğüm görüntüleri hakkında bilgiler dosyada saklanamaz. Yine de devam etmek istiyor musunuz?"
 
 #: objinspstrconsts.sccstredtconfirmationtreereplace

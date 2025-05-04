@@ -1779,13 +1779,9 @@ msgstr "取消(&C)"
 msgid "TreeView Items Editor"
 msgstr "TreeView项目编辑器"
 
-#: objinspstrconsts.sccstredtconfirmationcaption
-msgid "Confirmation"
-msgstr ""
-
 #: objinspstrconsts.sccstredtconfirmationimagesloss
 msgctxt "objinspstrconsts.sccstredtconfirmationimagesloss"
-msgid "Information about node images cannot be stored in the file. Continue anyway?"
+msgid "Information about node images cannot be stored in TXT file format (use XML for that). Continue anyway?"
 msgstr ""
 
 #: objinspstrconsts.sccstredtconfirmationtreereplace

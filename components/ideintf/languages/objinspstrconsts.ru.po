@@ -1752,13 +1752,11 @@ msgstr "От&мена"
 msgid "TreeView Items Editor"
 msgstr "Редактор элементов TreeView"
 
-#: objinspstrconsts.sccstredtconfirmationcaption
-msgid "Confirmation"
-msgstr "Подтверждение"
-
 #: objinspstrconsts.sccstredtconfirmationimagesloss
+#, fuzzy
+#| msgid "Information about node images cannot be stored in the file. Continue anyway?"
 msgctxt "objinspstrconsts.sccstredtconfirmationimagesloss"
-msgid "Information about node images cannot be stored in the file. Continue anyway?"
+msgid "Information about node images cannot be stored in TXT file format (use XML for that). Continue anyway?"
 msgstr "Сведения об изображениях элементов не могут быть сохранены в файл. Продолжить всё равно?"
 
 #: objinspstrconsts.sccstredtconfirmationtreereplace

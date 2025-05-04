@@ -21,7 +21,7 @@ uses
   Classes, SysUtils,
   // LCL
   LCLType, Forms, Dialogs, Buttons, Controls, StdCtrls, ComCtrls, ImgList, Spin,
-  ButtonPanel, ExtCtrls, TreeStorage,
+  ButtonPanel, ExtCtrls, TreeStorage, LCLStrConsts,
   //LazUtils,
   FileUtil, LazFileUtils,
   // IdeIntf
@@ -160,6 +160,8 @@ begin
                     sccsTrEdtOpenSaveDlgFilterTextFiles + '|*.txt|' +
                     oisAllFiles + '|' + GetAllFilesMask + '|';
   dlgOpen.Filter := dlgSave.Filter;
+  dlgSave.FilterIndex := 1; // default XML files
+  dlgOpen.FilterIndex := 3; // default all files
 
   // button panel
   ButtonPanel.ShowHint := true;
@@ -419,7 +421,7 @@ var
   function ConfirmTreeReplace: boolean;
   begin
     if treEditor.Items.Count > 0 then
-      result := QuestionDlg(sccsTrEdtConfirmationCaption, sccsTrEdtConfirmationTreeReplace,
+      result := QuestionDlg(rsMtConfirmation, sccsTrEdtConfirmationTreeReplace,
         TMsgDlgType.mtConfirmation, [mrYes, sccsTrEdtYes, mrNo, sccsTrEdtNo,
         mrCancel, sccsTrEdtCancel], 0) = mrYes
     else
@@ -463,7 +465,7 @@ var
   function ConfirmImagesLoss: boolean;
   begin
     if ImagesFound then
-      result := QuestionDlg(sccsTrEdtConfirmationCaption, sccsTrEdtConfirmationImagesLoss,
+      result := QuestionDlg(rsMtConfirmation, sccsTrEdtConfirmationImagesLoss,
         TMsgDlgType.mtConfirmation, [mrYes, sccsTrEdtYes, mrNo, sccsTrEdtNo,
         mrCancel, sccsTrEdtCancel], 0) = mrYes
     else

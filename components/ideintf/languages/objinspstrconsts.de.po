@@ -1753,13 +1753,11 @@ msgstr "&Abbrechen"
 msgid "TreeView Items Editor"
 msgstr "Editor für TreeView-Einträge"
 
-#: objinspstrconsts.sccstredtconfirmationcaption
-msgid "Confirmation"
-msgstr "Bestätigung"
-
 #: objinspstrconsts.sccstredtconfirmationimagesloss
+#, fuzzy
+#| msgid "Information about node images cannot be stored in the file. Continue anyway?"
 msgctxt "objinspstrconsts.sccstredtconfirmationimagesloss"
-msgid "Information about node images cannot be stored in the file. Continue anyway?"
+msgid "Information about node images cannot be stored in TXT file format (use XML for that). Continue anyway?"
 msgstr "Information über die Knoten-Bilder kann nicht in der Datei gespeichert werden. Trotzdem fortfahren?"
 
 #: objinspstrconsts.sccstredtconfirmationtreereplace

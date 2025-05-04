@@ -1827,13 +1827,9 @@ msgstr "&Ongedaan"
 msgid "TreeView Items Editor"
 msgstr "TreeView Onderdelen editor"
 
-#: objinspstrconsts.sccstredtconfirmationcaption
-msgid "Confirmation"
-msgstr ""
-
 #: objinspstrconsts.sccstredtconfirmationimagesloss
 msgctxt "objinspstrconsts.sccstredtconfirmationimagesloss"
-msgid "Information about node images cannot be stored in the file. Continue anyway?"
+msgid "Information about node images cannot be stored in TXT file format (use XML for that). Continue anyway?"
 msgstr ""
 
 #: objinspstrconsts.sccstredtconfirmationtreereplace
