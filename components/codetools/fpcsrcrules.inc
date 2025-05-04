@@ -5,6 +5,7 @@ Add('rtl');
 Add('packages/fcl-');
 
 Score:=1;
+Add('rtl/objpas');
 Add('packages');
 Add('packages/fv');  // better than packages/amunits (unit msgbox)
 Add('packages/ncurses');  // better than packages/palmunits (unit from)
@@ -48,6 +49,14 @@ Add('rtl/netwlibc');
 Score:=10;
 Targets:='jvm';
 Add('rtl/java');
+
+Score:=10;
+Targets:='wasi,wasip1,wasip2,wasip1threads';
+Add('rtl/wasicommon');
+
+Score:=1;
+Targets:='wasi,wasip1,wasip2,wasip1threads';
+Add('rtl/embedded');
 
 // end.
 

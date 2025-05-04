@@ -111,7 +111,7 @@ const
   VirtualTempDir='TEMPORARYDIRECTORY';
   
   // FPC operating systems and processor types
-  FPCOperatingSystemNames: array[1..39] of shortstring =(
+  FPCOperatingSystemNames: array[1..43] of shortstring =(
      'linux',
      'win32','win64','wince',
      'darwin','macos',
@@ -144,7 +144,11 @@ const
      'watcom',
      'wdosx',
      'wii',
-     'wasi'
+     'wasi',
+     'wasip1',
+     'wasip1threads',
+     'wasip2',
+     'wasix'
     );
   FPCOperatingSystemCaptions: array[1..43] of shortstring =(
      'AIX',
@@ -7753,8 +7757,6 @@ function TFPCSourceRules.GetScore(Filename: string;
 var
   Node: TAVLTreeNode;
   Rule: TFPCSourceRule;
-  cmp: LongInt;
-  Cnt: Integer;
 begin
   Result:=0;
   if Filename='' then exit;
@@ -7762,52 +7764,19 @@ begin
   {Node:=RulesSortedForFilenameStart.FindLowest;
   while Node<>nil do begin
     Rule:=TFPCSourceRule(Node.Data);
-    DebugLn(['TFPCSourceRules.GetScore Rule: ',Rule.Score,' ',Rule.Filename]);
+    //if Filename='rtl/wasicommon/classes.pp' then
+    //  DebugLn(['TFPCSourceRules.GetScore Rule: ',Rule.Score,' ',Rule.Filename]);
     Node:=RulesSortedForFilenameStart.FindSuccessor(Node);
   end;}
-  // find first rule for Filename
-  Node:=RulesSortedForFilenameStart.Root;
-  while true do begin
-    Rule:=TFPCSourceRule(Node.Data);
-    cmp:=CompareFilenames(Filename,Rule.Filename);
-    //DebugLn(['TFPCSourceRules.GetScore Rule.Filename=',Rule.Filename,' Filename=',Filename,' cmp=',cmp]);
-    if cmp=0 then
-      break;
-    if cmp<0 then begin
-      if Node.Left<>nil then
-        Node:=Node.Left
-      else
-        break;
-    end else begin
-      if Node.Right<>nil then
-        Node:=Node.Right
-      else
-        break;
-    end;
-  end;
-  { The rules are sorted for the file name. Shorter file names comes before
-    longer ones.
-       packages/httpd20/examples
-       packages/httpd22
-       packages/httpd22/examples
-    A filename packages/httpd22/examples matches
-           packages/httpd22
-       and packages/httpd22/examples
-    If a file name has no exact match the binary search for packages/httpd22/e
-    can either point to
-           packages/httpd22
-        or packages/httpd22/examples
-  }
 
   // run through all fitting rules (the Filename is >= Rule.Filename)
-  Cnt:=0;
+  Node:=RulesSortedForFilenameStart.FindHighest;
   while Node<>nil do begin
-    inc(Cnt);
     Rule:=TFPCSourceRule(Node.Data);
+    //if Filename='rtl/wasicommon/classes.pp' then
+    //  DebugLn(['CHECK TFPCSourceRules.GetScore Rule.Filename=',Rule.Filename,' Filename=',Filename]);
     if Rule.FitsFilename(Filename) then
-      inc(Result,Rule.Score)
-    else if Cnt>1 then
-      break;
+      inc(Result,Rule.Score);
     Node:=RulesSortedForFilenameStart.FindPrecessor(Node);
   end;
 end;

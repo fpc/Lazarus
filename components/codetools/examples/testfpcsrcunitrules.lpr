@@ -30,7 +30,7 @@ program TestFPCSrcUnitRules;
 uses
   Classes, SysUtils, CustApp, AVL_Tree,
   // LazUtils
-  LazFileUtils, AvgLvlTree, LazLoggerBase,
+  LazFileUtils, AvgLvlTree, LazLogger,
   // CodeTools
   FileProcs, CodeToolManager, DefineTemplates, CodeToolsConfig;
 
