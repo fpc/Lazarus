@@ -926,6 +926,7 @@ type
     procedure BeforeDestruction; override;
     destructor Destroy; override;
     procedure AfterLoadFromFile;
+    procedure ScrollBy(DeltaX, DeltaY: Integer); override;
 
     procedure BeginUndoBlock{$IFDEF SynUndoDebugBeginEnd}(ACaller: String = ''){$ENDIF}; override;
     procedure BeginUpdate(WithUndoBlock: Boolean = True); override;
@@ -4349,6 +4350,17 @@ function TCustomSynEdit.CreateGutter(AOwner : TSynEditBase; ASide: TSynGutterSid
   ATextDrawer: TLazEditTextGridPainter): TSynGutter;
 begin
   Result := TSynGutter.Create(AOwner, ASide, ATextDrawer);
+end;
+
+procedure TCustomSynEdit.ScrollBy(DeltaX, DeltaY: Integer);
+begin
+  DoIncPaintLock(nil);
+  try
+    TopView := TopView - DeltaY;
+    LeftChar := LeftChar - DeltaX;
+  finally
+    DoDecPaintLock(nil);
+  end;
 end;
 
 procedure TCustomSynEdit.UnfoldAll;
