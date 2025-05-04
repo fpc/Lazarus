@@ -602,13 +602,14 @@ begin
     TCustomTreeView(lTree).EndUpdate;
   end;
 
-  // update tree
+  // update tree and filter
   with lTree.SearchObject do
     MainIDEInterface.FindInFiles(
       Project1, SearchString,
       SearchOptions, SearchMask, SearchDirectories,
       false, ResultsNoteBook.PageIndex
     );
+  SearchInListEdit.InvalidateFilter;
 
   // restore selection and scrolling
   TCustomTreeView(lTree).BeginUpdate;
