@@ -714,21 +714,28 @@ Scales the specified bitmap image to the required dimensions.
 <descr>
 <p>
 <var>ScaleImg</var> is a procedure used to scale the bitmap in 
-<var>AImage</var> to the dimensions in <var>AWidth</var> and 
-<var>AWidth</var>.
+<var>AImage</var> to the dimensions in <var>AWidth</var> and
+<var>AHeight</var>.
 </p>
 <p>
-No actions are performed in the routine if the image already has the dimensions 
+No actions are performed in the routine if AImage already has the dimensions 
 specified in AWidth and AHeight.
 </p>
 <p>
-ScaleImg calls the <var>CreateIntfImage</var> method in <var>AImage</var> to 
-get a <var>TLazIntfImage</var> instance with the original content. A temporary 
-<var>TLazCanvas</var> instance is created for the source image, and its 
-<var>StretchDraw</var> method is called to resize and draw the interface image 
-on its Canvas. AImage is updated with the resized content, and its 
-<var>Height</var> and <var>Width</var> properties are set to the parameter 
-values.
+ScaleImg uses the CreateIntfImage method in the bitmap image to create 
+TLazIntfImage instances for both the original source image and a destination 
+image. The destination image is configured with the new width and height. A 
+TLazCanvas instance is created for the scaled image and its StretchDraw method 
+is used to resize and draw the original image on the Canvas.
+</p>
+<p>
+The Canvas is configured to use interpolation when both the width and height 
+for the scaled image are larger than the values in the original image. Pixels 
+generated / inserted into the destination image are an estimate of the 
+surrounding pixel values from the original image.
+<p>
+AImage is updated with the resized image content prior to exiting from the 
+routine.
 </p>
 </descr>
 <seealso>
@@ -739,13 +746,19 @@ values.
 </seealso>
 </element>
 <element name="ScaleImg.AImage">
-<short>Bitmap image resized in the routine.</short>
+<short>
+Bitmap image resized in the routine.
+</short>
 </element>
 <element name="ScaleImg.AWidth">
-<short>New width requested for the image.</short>
+<short>
+New width requested for the image.
+</short>
 </element>
 <element name="ScaleImg.AHeight">
-<short>New height requested for the image.</short>
+<short>
+New height requested for the image.
+</short>
 </element>
 
 <element name="ColorRGBToHLS">
