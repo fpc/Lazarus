@@ -263,6 +263,7 @@ begin
           BP_PUSHBUTTON:
             begin
               Result.Widget := GetStyleWidget(lgsButton);
+              // style is always overwritten to lgsButton to avoid problems with TSpeedButton color, issue #22901
               Result.Style := GetStyle(lgsButton);
               Result.State := GtkButtonMap[Details.State];
               if Details.State = PBS_PRESSED then
@@ -482,6 +483,7 @@ begin
       end;
     teToolTip:
       begin
+        // style is always overwritten to avoid problems with theming, issue #41611
         Result.Style := GetStyle(lgsTooltip);
         Result.Widget := GetStyleWidget(lgsTooltip);
         Result.State := GTK_STATE_NORMAL;

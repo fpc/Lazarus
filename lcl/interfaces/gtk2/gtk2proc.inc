@@ -8185,7 +8185,11 @@ begin
         WidgetName := 'gtk-tooltip-lcl';
         StyleObject^.Owner := Tp;
         Tp := nil;
+        // The following line causes `Gtk-CRITICAL` warning on Linux, issue #41611.
+        // It seems to be only needed on OpenBSD, issue #41244.
+        {$IF DEFINED(OPENBSD)}
         AddToStyleWindow:=false;
+        {$ENDIF}
       end
     else
       If CompareText(WName,LazGtkStyleNames[lgsHScale])=0 then begin
