@@ -35,7 +35,6 @@ object FrameDockedOptions: TFrameDockedOptions
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Left = 6
     BevelOuter = bvNone
-    Caption = 'Panel1'
     ClientHeight = 470
     ClientWidth = 565
     TabOrder = 1
