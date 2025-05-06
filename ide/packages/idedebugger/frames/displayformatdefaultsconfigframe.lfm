@@ -346,7 +346,7 @@ object DisplayFormatDefaultsConfigFrame: TDisplayFormatDefaultsConfigFrame
           Height = 22
         end
         inherited tbIndent: TSpeedButton
-          Left = 51
+          Left = 541
         end
       end
       inherited PanelNum: TPanel
