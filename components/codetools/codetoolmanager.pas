@@ -3228,6 +3228,8 @@ begin
     exit(false);
   end;
 
+  MainUsesSection:=nil;
+  ImplUsesSection:=nil;
   FindUsedUnitNames(Source,MainUsesSection, ImplUsesSection); // this returns the names in the uses section, not the actual unitnames
 
   if MainUsesSection<>nil then

@@ -3007,6 +3007,8 @@ var
         inc(ErrorCount);
       end;
       VariableTypeName:=VarPropContext.Tool.ExtractDefinitionNodeType(VarPropContext.Node);
+      if VariableTypeName='' then
+        ;
     end else if (VarPropContext.Node.Desc=ctnProperty) then begin
       TypeNode:=VarPropContext.Node;
     end else begin
@@ -3221,6 +3223,9 @@ var
   var
     Params: TFindDeclarationParams;
   begin
+    if LFMProperty=nil then ;
+    if DefaultErrorPosition=0 then ;
+
     Result:=CleanFindContext;
     Params:=TFindDeclarationParams.Create;
     try
