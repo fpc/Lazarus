@@ -2178,8 +2178,8 @@ begin
   DebuggerOptions.ValueFormatterConfig.AddChangeNotification(@DoDisplayFormatChanged);
   DbgProjectLink.BackendConverterConfig.AddChangeNotification(@DoDebugConfChanged);
   DebuggerOptions.BackendConverterConfig.AddChangeNotification(@DoDebugConfChanged);
-  DbgProjectLink.DisplayFormatConfigs.AddChangeNotification(@DoDebugConfChanged);
-  DebuggerOptions.DisplayFormatConfigs.AddChangeNotification(@DoDebugConfChanged);
+  DbgProjectLink.DisplayFormatConfigs.AddChangeNotification(@DoDisplayFormatChanged);
+  DebuggerOptions.DisplayFormatConfigs.AddChangeNotification(@DoDisplayFormatChanged);
 end;
 
 destructor TDebugManager.Destroy;
