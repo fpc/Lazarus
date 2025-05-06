@@ -31,3 +31,4 @@ ide/revision.inc
 /config
 link*.res
 .DS_Store
+**/desktop.ini
