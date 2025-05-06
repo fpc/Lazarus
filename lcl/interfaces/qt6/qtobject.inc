@@ -41,7 +41,9 @@ begin
     QGuiApplication_setHighDpiScaleFactorRoundingPolicy(QtHighDpiScaleFactorRoundingPolicy_Round);
     App := QApplication_Create(@argc, argv);
   end;
+  {$IFNDEF DARWIN}
   QCoreApplication_setAttribute(QtAA_DontUseNativeDialogs, False);
+  {$ENDIF}
 
   {$IFDEF QtUseNativeEventLoop}
   FMainTimerID := -1;
