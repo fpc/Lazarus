@@ -10924,6 +10924,10 @@ msgstr "Paketin kaynak dizininde \"%s\"."
 msgid "In a source directory of the project. Check for duplicates."
 msgstr "Projenin kaynak dizininde. Yinelenenleri kontrol edin."
 
+#: lazarusidestrconsts.lisincludelfms
+msgid "Including LFM files"
+msgstr ""
+
 #: lazarusidestrconsts.lisincludepath
 msgid "include path"
 msgstr "yolu ekle"
@@ -19586,11 +19590,15 @@ msgid "Separator"
 msgstr "Ayırıcı"
 
 #: lazarusidestrconsts.optdispgutterusecurrentlinecolor
-msgid "Use current line color"
+#, fuzzy
+#| msgid "Use current line color"
+msgid "Use current line color (gutter: other)"
 msgstr "Geçerli çizgi rengini kullan"
 
 #: lazarusidestrconsts.optdispgutterusecurrentlinenumbercolor
-msgid "Use current line number color"
+#, fuzzy
+#| msgid "Use current line number color"
+msgid "Use current line number color (gutter: number)"
 msgstr "Geçerli satır numarası rengini kullan"
 
 #: lazarusidestrconsts.podaddpackageunittousessection

@@ -10959,6 +10959,10 @@ msgstr "在软件包\"%s\"中的一个源文件目录."
 msgid "In a source directory of the project. Check for duplicates."
 msgstr "在一个工程源文件目录中.检查是否有重复项."
 
+#: lazarusidestrconsts.lisincludelfms
+msgid "Including LFM files"
+msgstr ""
+
 #: lazarusidestrconsts.lisincludepath
 msgid "include path"
 msgstr "包含路径"
@@ -19642,11 +19646,11 @@ msgid "Separator"
 msgstr "分隔符"
 
 #: lazarusidestrconsts.optdispgutterusecurrentlinecolor
-msgid "Use current line color"
+msgid "Use current line color (gutter: other)"
 msgstr ""
 
 #: lazarusidestrconsts.optdispgutterusecurrentlinenumbercolor
-msgid "Use current line number color"
+msgid "Use current line number color (gutter: number)"
 msgstr ""
 
 #: lazarusidestrconsts.podaddpackageunittousessection

@@ -11041,6 +11041,10 @@ msgstr "A(z) \"%s\" csomag forráskódjának egyik könyvtárában."
 msgid "In a source directory of the project. Check for duplicates."
 msgstr "A projekt forráskódjának egyik könyvtárában. Ellenőrizze a másolatokat!"
 
+#: lazarusidestrconsts.lisincludelfms
+msgid "Including LFM files"
+msgstr ""
+
 #: lazarusidestrconsts.lisincludepath
 msgid "include path"
 msgstr "include útvonal"
@@ -19796,11 +19800,11 @@ msgid "Separator"
 msgstr ""
 
 #: lazarusidestrconsts.optdispgutterusecurrentlinecolor
-msgid "Use current line color"
+msgid "Use current line color (gutter: other)"
 msgstr ""
 
 #: lazarusidestrconsts.optdispgutterusecurrentlinenumbercolor
-msgid "Use current line number color"
+msgid "Use current line number color (gutter: number)"
 msgstr ""
 
 #: lazarusidestrconsts.podaddpackageunittousessection

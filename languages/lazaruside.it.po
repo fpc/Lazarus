@@ -11198,6 +11198,10 @@ msgstr "In una cartella dei sorgenti del pacchetto \"%s\"."
 msgid "In a source directory of the project. Check for duplicates."
 msgstr "In una cartella dei sorgenti del progetto. Verificare duplicati."
 
+#: lazarusidestrconsts.lisincludelfms
+msgid "Including LFM files"
+msgstr ""
+
 #: lazarusidestrconsts.lisincludepath
 msgid "include path"
 msgstr "percorso di inclusione"
@@ -20034,11 +20038,11 @@ msgid "Separator"
 msgstr ""
 
 #: lazarusidestrconsts.optdispgutterusecurrentlinecolor
-msgid "Use current line color"
+msgid "Use current line color (gutter: other)"
 msgstr ""
 
 #: lazarusidestrconsts.optdispgutterusecurrentlinenumbercolor
-msgid "Use current line number color"
+msgid "Use current line number color (gutter: number)"
 msgstr ""
 
 #: lazarusidestrconsts.podaddpackageunittousessection
