@@ -269,8 +269,8 @@
           <ahaDefault Background="clForm" Foreground="clBlack" UseSchemeGlobals="False"/>
           <ahaAsmSourceFunc Style="fsBold"/>
           <ahaAsmSourceLine Style="fsBold"/>
-          <ahaTextBlock Background="clHighlight" Foreground="clHighlightText" UseSchemeGlobals="False"/>
-          <ahaLineHighlight Foreground="clHighlightText" FrameColor="clBlack" UseSchemeGlobals="False" Background="clHighlight"/>
+          <ahaTextBlock Background="clHighlight" Foreground="clHighlightText" UseSchemeGlobals="False" ForePriority="400" BackPriority="400" FramePriority="400"/>
+          <ahaLineHighlight Foreground="clHighlightText" FrameColor="clBlack" UseSchemeGlobals="False" Background="clHighlight" ForePriority="1000" BackPriority="1000" FramePriority="1000"/>
           <ahaMouseLink Style="fsUnderline" FrameColor="clNone" UseSchemeGlobals="False"/>
           <ahaAsmLinkTarget Foreground="clHotLight"/>
         </SchemeDefault>
