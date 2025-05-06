@@ -3626,6 +3626,7 @@ resourcestring
   lisFRISearchInCommentsToo = 'Search in comments too';
   lisFRISearch = 'Search';
   lisFindOverridesToo = 'Find overrides too';
+  lisIncludeLFMs = 'Including LFM files';
   lisCodeToolsOptsColon       = 'Colon';
   lisCodeToolsOptsSemicolon   = 'Semicolon';
   lisCodeToolsOptsComma       = 'Comma';

@@ -178,6 +178,16 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
       Caption = 'ScopeOverridesCheckBox'
       TabOrder = 3
     end
+    object ScopeIncludeLFMs: TCheckBox
+      Left = 6
+      Height = 23
+      Top = 254
+      Width = 434
+      Align = alTop
+      BorderSpacing.Around = 6
+      Caption = 'ScopeIncludeLFMs'
+      TabOrder = 4
+    end
   end
   object ButtonPanel1: TButtonPanel
     Left = 6

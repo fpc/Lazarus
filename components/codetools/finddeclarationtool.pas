@@ -712,7 +712,9 @@ type
 
   // flags for FindReferences
   TFindRefsFlag = (
-    frfMethodOverrides // continue search on method overrides
+    frfMethodOverrides, // continue search on method overrides
+    frfIncludingLFM,    // find references in LFM files
+    frfIncludingLFMProps// find references to properties in LFM, needs frfIncludingLFM
     );
   TFindRefsFlags = set of TFindRefsFlag;
 
@@ -1072,10 +1074,8 @@ type
     procedure FindUsedUnitReferences(TargetTool: TFindDeclarationTool;
       SkipComments: boolean;
       out ListOfPCodeXYPosition: TFPList); // searches all references of TargetTool
-
     function CleanPosIsDeclarationIdentifier(CleanPos: integer;
                                              Node: TCodeTreeNode): boolean;
-
     procedure FindHelpersInContext(Params: TFindDeclarationParams);
     procedure FindHelpersInUsesSection(UsesNode: TCodeTreeNode;
       Params: TFindDeclarationParams);

@@ -574,11 +574,15 @@ type
     function RenameIdentifier(TreeOfPCodeXYPosition: TAVLTree;
           const OldIdentifier, NewIdentifier: string;
           DeclarationCode: TCodeBuffer; DeclarationCaretXY: PPoint): boolean;
+    function RenameIdentifierInLFMs(TreeOfPCodeXYPosition: TAVLTree;
+          const OldIdentifier, NewIdentifier: string): boolean;
 
     // find all references of the source name of a unit, program
     function FindSourceNameReferences(TargetFilename: string;
           Files: TStringList; SkipComments: boolean;
           out ListOfSrcNameRefs: TObjectList; WithDuplicates: boolean = false): boolean;
+    function SourceHasUnitInUses(Source, UnitCode: TCodeBuffer): boolean;
+    //SourceHasUnitInUses compares Target SourceName with uses name (which might be shorter or different) -> ToDo: check if this function is needed
     function RenameSourceNameReferences(OldFilename, NewFilename, NewSrcname: string;
           ListOfSrcNameRefs: TObjectList): boolean;
 
@@ -769,7 +773,7 @@ type
     function FindUsedUnitFiles(Code: TCodeBuffer; var MainUsesSection: TStrings
           ): boolean; // only main uses section, if unit not found, returns "unitname" or "unitname in 'filename'"
     function FindUsedUnitFiles(Code: TCodeBuffer; var MainUsesSection,
-          ImplementationUsesSection: TStrings): boolean;
+          ImplementationUsesSection: TStrings): boolean; // names in the uses section
     function FindUsedUnitNames(Code: TCodeBuffer; var MainUsesSection,
           ImplementationUsesSection: TStrings): boolean; // ignoring 'in'
     function FindMissingUnits(Code: TCodeBuffer; var MissingUnits: TStrings;
@@ -801,6 +805,10 @@ type
           RootMustBeClassInUnit, RootMustBeClassInIntf,
           ObjectsMustExist: boolean): boolean;
     function ParseLFM(LFMBuf: TCodeBuffer; out LFMTree: TLFMTree): boolean;
+    function GatherReferencesInLFM(PascalBuffer, LFMBuffer: TCodeBuffer;
+          const Identifier: string; DeclNode: TCodeTreeNode;
+          var LFMReferences: TCodeXYPositions;
+          const Flags: TFindRefsFlags): Boolean;
     function FindNextResourceFile(Code: TCodeBuffer;
           var LinkIndex: integer): TCodeBuffer;
     function AddLazarusResourceHeaderComment(Code: TCodeBuffer;
@@ -3198,6 +3206,42 @@ begin
   Result:=true;
 end;
 
+function TCodeToolManager.SourceHasUnitInUses(Source, UnitCode: TCodeBuffer
+  ): boolean;
+//function is not applicable for partially qualified unit names,
+// assumed that for units with lfm part it will never happen
+var
+  MainUsesSection, ImplUsesSection : TStrings;
+  TargetUnit: string;
+  i: integer;
+begin
+  Result:=false;
+  if (Source=nil) or (UnitCode=nil) then exit;
+  if (Source=UnitCode) then exit(true);
+  if UnitCode.Scanner=nil then begin
+    debugln(['Warning: TCodeToolManager.SourceHasUnitInUses target unit was not parsed -> skipped']);
+    exit(false);
+  end;
+  TargetUnit:=UnitCode.Scanner.SourceName;
+  if TargetUnit='' then begin
+    debugln(['Warning: TCodeToolManager.SourceHasUnitInUses target unitname was not parsed -> skipped']);
+    exit(false);
+  end;
+
+  FindUsedUnitNames(Source,MainUsesSection, ImplUsesSection); // this returns the names in the uses section, not the actual unitnames
+
+  if MainUsesSection<>nil then
+  for i:=0 to MainUsesSection.Count-1 do
+    if CompareDottedIdentifiers(PChar(MainUsesSection.Names[i]),
+      PChar(TargetUnit))=0 then  exit(true);
+
+  if ImplUsesSection<>nil then
+  for i:=0 to ImplUsesSection.Count-1 do
+    if CompareDottedIdentifiers(PChar(ImplUsesSection.Names[i]),
+      PChar(TargetUnit))=0 then  exit(true);
+end;
+
+
 function TCodeToolManager.RenameSourceNameReferences(OldFilename, NewFilename,
   NewSrcname: string; ListOfSrcNameRefs: TObjectList): boolean;
 var
@@ -3350,7 +3394,8 @@ begin
         IdentEndPos,
         NewIdentifier+aComment);
     end else begin
-      DebugLn('TCodeToolManager.RenameIdentifier KEPT ',GetIdent(@Code.Source[IdentStartPos]));
+      DebugLn('TCodeToolManager.RenameIdentifier KEPT "',
+        GetIdentifier(@Code.Source[IdentStartPos]),'" at ',dbgs(CurCodePos^));
     end;
     ANode:=TreeOfPCodeXYPosition.FindSuccessor(ANode);
   end;
@@ -3364,6 +3409,67 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.RenameIdentifier END ');
   {$ENDIF}
+end;
+
+function TCodeToolManager.RenameIdentifierInLFMs(
+  TreeOfPCodeXYPosition: TAVLTree; const OldIdentifier, NewIdentifier: string
+  ): boolean;
+var
+  ANode: TAVLTreeNode;
+  Code: TCodeBuffer;
+  CurCodePos: PCodeXYPosition;
+  IdentStartPos, IdentEndPos, len, i: integer;
+begin
+  Result:=false;
+
+  if (TreeOfPCodeXYPosition=nil) or (TreeOfPCodeXYPosition.Count=0) then
+    exit(true);
+  if not IsValidIdent(NewIdentifier) then // Note: no ampersand allowed in lfm!
+    exit;
+
+  ClearCurCodeTool;
+  SourceChangeCache.Clear;
+
+  // the tree is sorted for descending line code positions
+  // -> go from end of source to start of source, so that replacing does not
+  // change any CodeXYPosition not yet processed
+  len:=length(OldIdentifier);
+  ANode:=TreeOfPCodeXYPosition.FindLowest;
+  while ANode<>nil do begin
+    // next position
+    CurCodePos:=PCodeXYPosition(ANode.Data);
+    {$IFDEF VerboseFindReferences}
+    debugln(['TCodeToolManager.RenameIdentifierInLFMs ',dbgs(CurCodePos^)]);
+    {$ENDIF}
+    Code:=CurCodePos^.Code;
+    Code.LineColToPosition(CurCodePos^.Y,CurCodePos^.X,IdentStartPos);
+    // search absolute position in source
+    if IdentStartPos<1 then begin
+      SetError(20250412115700,Code, CurCodePos^.Y, CurCodePos^.X, ctsPositionNotInSource);
+      exit;
+    end;
+
+    i:=CompareIdentifiersCaseSensitive(@Code.Source[IdentStartPos],
+      PChar(Pointer(NewIdentifier)));
+    if i<>0 then begin
+      //DebugLn('TCodeToolManager.RenameIdentifierInLFMs Change ');
+      IdentEndPos:=IdentStartPos+len;
+      SourceChangeCache.ReplaceEx(gtNone,gtNone,1,1,Code,
+        IdentStartPos,
+        IdentEndPos,
+        NewIdentifier);
+    end else begin
+      DebugLn('TCodeToolManager.RenameIdentifierInLFMs KEPT "',
+        GetIdentifier(@Code.Source[IdentStartPos]),'" at ',dbgs(CurCodePos^));
+    end;
+    ANode:=TreeOfPCodeXYPosition.FindSuccessor(ANode);
+  end;
+  // apply
+  //DebugLn('TCodeToolManager.RenameIdentifierInLFMs Apply');
+  if not SourceChangeCache.Apply then exit;
+
+  //DebugLn('TCodeToolManager.RenameIdentifierInLFMs Success');
+  Result:=true;
 end;
 
 function TCodeToolManager.ReplaceWord(Code: TCodeBuffer; const OldWord,
@@ -5905,6 +6011,37 @@ begin
   LFMTree:=DefaultLFMTrees.GetLFMTree(LFMBuf,true);
   try
     Result:=LFMTree.ParseIfNeeded;
+  except
+    on e: Exception do HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.GatherReferencesInLFM(PascalBuffer,
+  LFMBuffer: TCodeBuffer; const Identifier: string;
+  DeclNode: TCodeTreeNode; var LFMReferences: TCodeXYPositions;
+  const Flags: TFindRefsFlags): Boolean;
+var
+  LFMTree: TLFMTree;
+  RootMustBeClassInUnit,RootMustBeClassInIntf,ObjectsMustExist: Boolean;
+begin
+  Result:=false;
+  if Identifier='' then exit;
+  if DeclNode=nil then exit;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.GatherReferencesInLFM A ',PascalBuffer.Filename,' ',
+  LFMBuffer.Filename);
+  {$ENDIF}
+  if not InitCurCodeTool(PascalBuffer) then exit;
+  RootMustBeClassInUnit:=true;
+  RootMustBeClassInIntf:=true;
+  ObjectsMustExist:=true;
+  if LFMReferences = nil then
+    LFMReferences:=TCodeXYPositions.Create;
+
+  try
+    Result:=FCurCodeTool.GatherReferencesInLFM(LFMBuffer,LFMTree,
+      OnFindDefinePropertyForContext, Identifier, DeclNode, LFMReferences,
+      Flags,RootMustBeClassInUnit,RootMustBeClassInIntf,ObjectsMustExist);
   except
     on e: Exception do HandleException(e);
   end;

@@ -291,6 +291,7 @@ function IndexOfCodePosition(var ListOfPCodeXYPosition: TFPList;
 procedure FreeListOfPCodeXYPosition(ListOfPCodeXYPosition: TFPList);
 
 function CreateTreeOfPCodeXYPosition: TAVLTree;
+
 function AddCodePosition(var TreeOfPCodeXYPosition: TAVLTree;
                           const NewCodePos: TCodeXYPosition; Unique: boolean = true): boolean; // false if duplicate not added
 procedure FreeTreeOfPCodeXYPosition(TreeOfPCodeXYPosition: TAVLTree);
@@ -354,8 +355,8 @@ end;
 
 function CompareCodeXYPositions(Pos1, Pos2: PCodeXYPosition): integer;
 begin
-  if Pointer(Pos1^.Code)>Pointer(Pos2^.Code) then Result:=1
-  else if Pointer(Pos1^.Code)<Pointer(Pos2^.Code) then Result:=-1
+  if Pointer(Pos1^.Code)<>Pointer(Pos2^.Code) then
+    Result:=CompareFilenames(Pos2^.Code.FFilename,Pos1^.Code.FFilename)
   else if Pos1^.Y<Pos2^.Y then Result:=1
   else if Pos1^.Y>Pos2^.Y then Result:=-1
   else if Pos1^.X<Pos2^.X then Result:=1
@@ -365,8 +366,8 @@ end;
 
 function CompareCodePositions(Pos1, Pos2: PCodePosition): integer;
 begin
-  if Pointer(Pos1^.Code)>Pointer(Pos2^.Code) then Result:=1
-  else if Pointer(Pos1^.Code)<Pointer(Pos2^.Code) then Result:=-1
+  if Pointer(Pos1^.Code)<>Pointer(Pos2^.Code) then
+    Result:=CompareFilenames(Pos2^.Code.FFilename,Pos1^.Code.FFilename)
   else if Pos1^.P<Pos2^.P then Result:=1
   else if Pos1^.P>Pos2^.P then Result:=-1
   else Result:=0;

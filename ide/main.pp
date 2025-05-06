@@ -186,7 +186,7 @@ type
     // event handlers
     procedure MainIDEFormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure MainIDEFormCloseQuery(Sender: TObject; var CanClose: boolean);
-    procedure HandleApplicationUserInput(Sender: TObject; var Msg: TLMessage);
+    procedure HandleApplicationUserInput(Sender: TObject; var {%H-}Msg: TLMessage);
     procedure HandleApplicationIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure HandleApplicationActivate(Sender: TObject);
     procedure HandleApplicationDeActivate(Sender: TObject);

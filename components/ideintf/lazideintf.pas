@@ -131,7 +131,7 @@ type
     sfDoNotSaveVirtualFiles,
     sfCanAbort,        // show 'Cancel all' button in error messages
     sfQuietUnitCheck,  // don't ask questions when adding unit dependency.
-    sfSkipReferences   // dont update references to this file, e.g. uses sections
+    sfSkipReferences   // don't update references in this file (in related *.lfm)
     );
   TSaveFlags = set of TSaveFlag;
   

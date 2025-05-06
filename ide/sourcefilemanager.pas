@@ -333,7 +333,7 @@ function GetDsgnComponentBaseClassname(aCompClass: TClass): string;
       var LFMCode, LRSCode: TCodeBuffer; CanAbort: boolean; Flags: TSaveFlags=[]): TModalResult;
   function SaveUnitComponent(AnUnitInfo: TUnitInfo;
       LRSCode, LFMCode: TCodeBuffer; Flags: TSaveFlags): TModalResult;
-  function RemoveLooseEvents(AnUnitInfo: TUnitInfo): TModalResult;
+  function RemoveLooseEvents(AnUnitInfo: TUnitInfo; Flags: TSaveFlags =[]): TModalResult;
   function RenameUnit(AnUnitInfo: TUnitInfo; NewFilename, NewUnitName: string;
       var LFMCode, LRSCode: TCodeBuffer; AutoRemoveOldFile: boolean = False): TModalResult;
   function RenameUnitLowerCase(AnUnitInfo: TUnitInfo; AskUser, AutoRemoveOldFile: boolean): TModalresult;
@@ -2881,8 +2881,10 @@ begin
   debugln(['*** HasResources=',AnUnitInfo.HasResources]);
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('SaveEditorFile B');{$ENDIF}
-  // save resource file and lfm file
-  if (LRSCode<>nil) or (AnUnitInfo.Component<>nil) then begin
+  // save resource file and lfm file, skip when externally renamed identifiers
+  if ((LRSCode<>nil) or (AnUnitInfo.Component<>nil))
+      and not (sfSkipReferences in Flags) then
+  begin
     Result:=SaveUnitComponent(AnUnitInfo,LRSCode,LFMCode,Flags);
     if not (Result in [mrIgnore, mrOk]) then
       exit;
@@ -5373,7 +5375,8 @@ begin
     ComponentSavingOk:=true;
 
     // clean up component
-    Result:=RemoveLooseEvents(AnUnitInfo);
+    // sfSkipReferences used -> events may have been changed from saved LFM state
+    Result:=RemoveLooseEvents(AnUnitInfo, Flags);
     if Result<>mrOk then exit;
 
     // save designer form properties to the component
@@ -5641,7 +5644,7 @@ begin
   {$ENDIF}
 end;
 
-function RemoveLooseEvents(AnUnitInfo: TUnitInfo): TModalResult;
+function RemoveLooseEvents(AnUnitInfo: TUnitInfo; Flags: TSaveFlags =[]): TModalResult;
 var
   ComponentModified: boolean;
   ActiveSrcEdit: TSourceEditor;
@@ -5658,9 +5661,12 @@ begin
     ObjectInspector1.EventGrid.ItemIndex:=-1;
     ObjectInspector1.FavoriteGrid.ItemIndex:=-1;
   end;
+
+  ComponentModified:=false;
   //debugln('RemoveLooseEvents ',AnUnitInfo.Filename,' ',dbgsName(AnUnitInfo.Component));
   // remove dangling methods
-  Result:=RemoveDanglingEvents(AnUnitInfo.Component, AnUnitInfo.Source, True,
+  if not (sfSkipReferences in Flags) then
+    Result:=RemoveDanglingEvents(AnUnitInfo.Component, AnUnitInfo.Source, True,
                                ComponentModified);
   // update ObjectInspector1
   if ComponentModified

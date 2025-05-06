@@ -61,6 +61,7 @@ type
     FIdentifierFilename: string;
     FIdentifierPosition: TPoint;
     FOverrides: boolean;
+    FIncludeLFMs: boolean;
     FRename: boolean;
     FRenameShowResult: boolean;
     FRenameTo: string;
@@ -78,6 +79,7 @@ type
     procedure SetRenameTo(AValue: string);
     procedure SetScope(AValue: TFindRenameScope);
     procedure SetSearchInComments(AValue: boolean);
+    procedure SetIncludingLFMs(AValue: boolean);
   public
     constructor Create;
     destructor Destroy; override;
@@ -92,6 +94,7 @@ type
     property RenameTo: string read FRenameTo write SetRenameTo;
     property SearchInComments: boolean read FSearchInComments write SetSearchInComments;
     property Overrides: boolean read FOverrides write SetOverrides;
+    property IncludeLFMs: boolean read FIncludeLFMs write SetIncludingLFMs;
     property RenameShowResult: boolean read FRenameShowResult write SetRenameShowResult;
     property Scope: TFindRenameScope read FScope write SetScope;
     property ExtraFiles: TStrings read FExtraFiles write SetExtraFiles;
@@ -475,6 +478,13 @@ begin
   IncreaseChangeStamp;
 end;
 
+procedure TFindRenameIdentifierOptions.SetIncludingLFMs(AValue: boolean);
+begin
+  if FIncludeLFMs=AValue then Exit;
+  FIncludeLFMs:=AValue;
+  IncreaseChangeStamp;
+end;
+
 constructor TFindRenameIdentifierOptions.Create;
 begin
   inherited;
@@ -497,6 +507,7 @@ begin
   fRenameTo:=XMLConfig.GetValue(Path+'Rename/Identifier','');
   fSearchInComments:=XMLConfig.GetValue(Path+'SearchInComments/Value',true);
   FOverrides:=XMLConfig.GetValue(Path+'Overrides/Value',true);
+  FIncludeLFMs:=XMLConfig.GetValue(Path+'IncludeLFMs/Value',true);
   fRenameShowResult:=XMLConfig.GetValue(Path+'RenameShowResult/Value',false);
   fScope:=FindRenameScopeNameToScope(XMLConfig.GetValue(Path+'Scope/Value',
                            FindRenameScopeNames[frAllOpenProjectsAndPackages]));
@@ -513,6 +524,7 @@ begin
   XMLConfig.SetDeleteValue(Path+'Rename/Identifier',RenameTo,'');
   XMLConfig.SetDeleteValue(Path+'SearchInComments/Value',SearchInComments,true);
   XMLConfig.SetDeleteValue(Path+'Overrides/Value',Overrides,true);
+  XMLConfig.SetDeleteValue(Path+'IncludeLFMs/Value',IncludeLFMs,true);
   XMLConfig.SetDeleteValue(Path+'RenameShowResult/Value',RenameShowResult,false);
   XMLConfig.SetDeleteValue(Path+'Scope/Value',FindRenameScopeNames[Scope],
                             FindRenameScopeNames[frAllOpenProjectsAndPackages]);

@@ -33,12 +33,14 @@ uses
   // RTL + FCL
   Classes, SysUtils, AVL_Tree, Contnrs,
   // LCL
-  Forms, Controls, Dialogs, StdCtrls, ExtCtrls, ComCtrls, ButtonPanel, LclIntf, Graphics,
+  LResources, Forms, Controls, Dialogs, StdCtrls, ExtCtrls, ComCtrls, ButtonPanel,
+  LclIntf, Graphics,
   // CodeTools
-  IdentCompletionTool, KeywordFuncLists, CTUnitGraph, CodeTree, CodeAtom, LinkScanner,
-  CodeCache, CodeToolManager, BasicCodeTools,
+  KeywordFuncLists, CTUnitGraph, LFMTrees, CodeTree, CodeAtom, LinkScanner,
+  CustomCodeTool, CodeCache, FileProcs, BasicCodeTools, IdentCompletionTool, CodeToolManager,
+  FindDeclarationTool, ChangeDeclarationTool,
   // LazUtils
-  LazFileUtils, LazFileCache, laz2_DOM, LazStringUtils, AvgLvlTree, LazLoggerBase,
+  LazFileUtils, FileUtil, LazFileCache, laz2_DOM, LazStringUtils, AvgLvlTree, LazLoggerBase,
   // IdeIntf
   IdeIntfStrConsts, LazIDEIntf, IDEWindowIntf, SrcEditorIntf, PackageIntf, ProjectIntf,
   IDEDialogs, InputHistory,
@@ -47,8 +49,8 @@ uses
   // LazConfig
   TransferMacros, IDEProcs, SearchPathProcs, EnvironmentOpts,
   // IDE
-  LazarusIDEStrConsts, MiscOptions, CodeToolsOptions, SearchResultView, CodeHelp, CustomCodeTool,
-  FindDeclarationTool, ChangeDeclarationTool, FileProcs, SourceFileManager, Project;
+  LazarusIDEStrConsts, MiscOptions, CustomFormEditor, CodeToolsOptions, SearchResultView,
+  CodeHelp, SourceFileManager, Project;
 
 type
 
@@ -68,6 +70,7 @@ type
     ScopeCommentsCheckBox: TCheckBox;
     ScopeGroupBox: TGroupBox;
     ScopeRadioGroup: TRadioGroup;
+    ScopeIncludeLFMs: TCheckBox;
     procedure FindOrRenameButtonClick(Sender: TObject);
     procedure FindRenameIdentifierDialogClose(Sender: TObject;
       var {%H-}CloseAction: TCloseAction);
@@ -133,9 +136,11 @@ function GatherIdentifierReferences(Files: TStringList;
 function ShowIdentifierReferences(
   DeclFilename: string;
   ListOfSrcNameRefs: TObjectList;
+  LFMReferences: TCodeXYPositions;
   Identifier: string; RenameTo: string = ''): TModalResult;
-procedure AddReferencesToResultView(Identifier: string; ListOfSrcNameRefs: TObjectList;
-  ClearItems: boolean; SearchPageIndex: integer);
+procedure AddReferencesToResultView(Identifier: string;
+  ListOfSrcNameRefs: TObjectList; LFMReferences: TCodeXYPositions;
+  ClearItems: boolean; SearchPageIndex: integer; RenameTo: string = '');
 
 function GatherFPDocReferencesForPascalFiles(PascalFiles: TStringList;
   DeclarationCode: TCodeBuffer; const DeclarationCaretXY: TPoint;
@@ -146,6 +151,14 @@ function GatherReferencesInFPDocFile(
   var ListOfLazFPDocNode: TFPList): TModalResult;
 
 function LCLEncodeAmps(const AmpString: string): string;
+
+// identifier references in lfm
+function GatherLFMsReferences(Files:TStringList;
+  const Identifier: string;
+  DeclCode: TCodeBuffer;
+  DeclNode: TCodeTreeNode;
+  var ListOfReferences: TCodeXYPositions;
+  const Flags: TFindRefsFlags): TModalResult;
 
 implementation
 
@@ -282,6 +295,65 @@ begin
     Result:= Result + AmpString[i];
     inc(i);
   end;
+end;
+
+function GatherLFMsReferences(Files:TStringList;
+  const Identifier: string;
+  DeclCode: TCodeBuffer;
+  DeclNode: TCodeTreeNode;
+  var ListOfReferences: TCodeXYPositions;
+  const Flags: TFindRefsFlags): TModalResult;
+var
+  i: integer;
+  LFMBuffer, Code: TCodeBuffer;
+  UnitInfo: TUnitInfo;
+  LFMFilename: String;
+begin
+  Result:=mrOk;
+  ListOfReferences:=nil;
+  if Files=nil then exit;
+  if Identifier='' then exit;
+  if DeclNode=nil then exit;
+  if not (frfIncludingLFM in Flags) then exit;
+
+  {$IFNDEF EnableFindLFMRefs}
+  exit;
+  {$ENDIF}
+
+  debugln(['GatherLFMsReferences Files.Count=',Files.Count]);
+  // Note: this only supports lfm, not other form formats like dfm or fmx
+
+  for i:=0 to Files.Count-1 do begin
+    UnitInfo:=Project1.UnitInfoWithFilename(Files[i]);
+    if UnitInfo=nil then
+      continue;
+
+    if not FilenameIsAbsolute(UnitInfo.Filename) then continue;
+    if not FilenameIsPascalSource(UnitInfo.Filename) then continue;
+    LFMFilename:=ChangeFileExt(UnitInfo.Filename,'.lfm');
+    if not FileExistsCached(LFMFilename) then
+      continue;
+
+    // ToDo: check if DeclCode in unit path
+
+    // load lfm source
+    LFMBuffer:=CodeToolBoss.LoadFile(LFMFilename,true,false);
+    if LFMBuffer=nil then continue;
+
+    // check if identifier exists in lfm
+    if Pos(LowerCase(Identifier),LowerCase(LFMBuffer.Source))<1 then
+      continue;
+
+    // check if Decl unit is used by this unit
+    Code:=CodeToolBoss.LoadFile(UnitInfo.Filename,true,false);
+    if Code=nil then continue;
+    if not CodeToolBoss.SourceHasUnitInUses(Code, DeclCode) then
+      continue;
+
+    CodeToolBoss.GatherReferencesInLFM(UnitInfo.Source, LFMBuffer, Identifier,
+      DeclNode, ListOfReferences, Flags);
+  end;
+  Result:= mrOK;
 end;
 
 function DoFindRenameIdentifier(AllowRename: boolean; SetRenameActive: boolean;
@@ -442,24 +514,26 @@ var
 
 var
   StartSrcEdit: TSourceEditorInterface;
-  StartSrcCode: TCodeBuffer;
-  DeclTopLine, StartTopLine, i, CleanPos: integer;
+  StartSrcCode, LastCode, Code: TCodeBuffer;
+  DeclTopLine, StartTopLine, i, j, CleanPos: integer;
   StartCaretXY, DeclXY: TPoint;
   OwnerList, ListOfLazFPDocNode: TFPList;
   ExtraFiles: TStrings;
   Files: TStringList;
   PascalReferences: TObjectList; // list of TSrcNameRefs
+  LFMReferences: TCodeXYPositions;
   OldChange, Completed, MovingFile, RenamingFile, IsConflicted, DoLowercase, Confirm,
     NewFileCreated: Boolean;
   Graph: TUsesGraph;
   AVLNode: TAVLTreeNode;
   UGUnit: TUGUnit;
-  Identifier, NewFilename, OldFileName, SrcNamed, lfmString, s: string;
+  Identifier, NewFilename, OldFileName, SrcNamed, PasFilename, s: string;
   FindRefFlags: TFindRefsFlags;
   Tool: TCodeTool;
   Node: TCodeTreeNode;
-  TreeOfPCodeXYPosition: TAVLTree;
+  TreeOfPCodeXYPosition, LFMTreeOfPCodeXYPosition: TAVLTree;
   Refs, OldRefs: TSrcNameRefs;
+  AUnitInfo: TUnitInfo;
 begin
   Result:=mrCancel;
   if not LazarusIDE.BeginCodeTools then exit(mrCancel);
@@ -491,6 +565,7 @@ begin
   Files:=nil;
   OwnerList:=nil;
   PascalReferences:=nil;
+  LFMReferences:=nil;
   ListOfLazFPDocNode:=nil;
   NewFilename:='';
   NewFileCreated:=false;
@@ -639,14 +714,28 @@ begin
       exit(mrCancel);
 
     // search pascal source references
-
     FindRefFlags:=[];
     if Options.Overrides then
       Include(FindRefFlags,frfMethodOverrides);
     if not GatherIdentifierReferences(Files,DeclCodeXY,DeclTool,DeclNode,
       Options.SearchInComments,PascalReferences,FindRefFlags) then
     begin
-      debugln('20250206162727 DoFindRenameIdentifier GatherIdentifierReferences failed');
+      debugln('Error: 20250206162727 DoFindRenameIdentifier GatherIdentifierReferences failed');
+      exit(mrCancel);
+    end;
+
+    // search references in lfm files
+    if Options.IncludeLFMs then begin
+      Include(FindRefFlags,frfIncludingLFM);
+      if not Options.Rename then  //property names are not to be changed
+        Include(FindRefFlags, frfIncludingLFMProps); // but can be shown when no renaming
+    end;
+
+    if (frfIncludingLFM in FindRefFlags)
+        and (GatherLFMsReferences(Files, Identifier, DeclCodeXY.Code, DeclNode,
+          LFMReferences, FindRefFlags)<>mrOk) then
+    begin
+      debugln('Error: 20250506120810 DoFindRenameIdentifier GatherLFMsReferences failed');
       exit(mrCancel);
     end;
 
@@ -662,7 +751,6 @@ begin
 
     // ToDo: search i18n references
     // ToDo: search fpdoc references
-    // ToDo: search designer references
 
     if Options.Rename then begin
 
@@ -700,6 +788,22 @@ begin
                 Identifier, Options.RenameTo, DeclCodeXY.Code, @DeclXY) then
               Result:=mrCancel;
           end;
+          LFMTreeOfPCodeXYPosition:=nil;
+          if (LFMReferences<>nil) and (LFMReferences.Count>0) then begin
+            try
+              LFMTreeOfPCodeXYPosition:=CreateTreeOfPCodeXYPosition;
+              for i:=0 to LFMReferences.Count-1 do
+                LFMTreeOfPCodeXYPosition.Add(LFMReferences.Items[i]);
+
+              if not CodeToolBoss.RenameIdentifierInLFMs(LFMTreeOfPCodeXYPosition,
+                Identifier, Options.RenameTo) then begin
+                // error occured, show something
+                Result:=mrCancel;
+              end;
+            finally
+              LFMTreeOfPCodeXYPosition.Free;
+            end;
+          end;
         end;
 
         if Result<>mrOk then begin
@@ -713,10 +817,38 @@ begin
           exit(mrCancel);
         end;
 
-        // ToDo: rename lfm references
         // ToDo: rename fpdoc references
-        // ToDo: rename designer references
 
+        // hack designers
+        if LFMReferences<>nil then begin
+          LastCode:=nil;
+          for i:=0 to LFMReferences.Count-1 do begin
+            Code:=LFMReferences.Items[i]^.Code;
+            if (Code<>LastCode) then begin
+              LastCode:=Code;
+              // hack LastCode related designers
+              AUnitInfo:=nil;
+              for j:=low(PascalSourceExt) to high(PascalSourceExt) do begin
+                PasFilename:=ExtractFileNameWithoutExt(Code.Filename)+PascalSourceExt[j];
+                AUnitInfo:=Project1.UnitInfoWithFilename(PasFilename);
+                if AUnitInfo<>nil then
+                  break;
+              end;
+
+              if AUnitInfo=nil then
+                continue;
+
+              if AUnitInfo.EditorInfoCount>1 then
+                for j:= AUnitInfo.EditorInfoCount-1 downto 1 do
+                  CloseEditorFile(AUnitInfo.EditorInfo[j].EditorComponent,[cfQuiet,
+                    cfCloseDependencies]);
+              //force dumb saving
+              CloseUnitComponent(AUnitInfo, [cfCloseDependencies]);
+              SaveEditorFile(AUnitInfo.Filename,[sfProjectSaving, sfSkipReferences]);
+              SaveEditorFile(Code.Filename,[sfProjectSaving, sfSkipReferences]);
+            end;
+          end;
+        end;
       finally
         LazarusIDE.OpenEditorsOnCodeToolChange:=OldChange;
       end;
@@ -729,12 +861,12 @@ begin
           OldRefs:=nil;
         end;
         Result:=ShowIdentifierReferences(DeclCodeXY.Code.Filename,
-          PascalReferences,Identifier,Options.RenameTo);
+          PascalReferences,LFMReferences,Identifier,Options.RenameTo);
       end;
 
     end else begin //no renaming, only references - always shown
       Result:=ShowIdentifierReferences(DeclCodeXY.Code.Filename,
-        PascalReferences,Identifier);
+        PascalReferences,LFMReferences,Identifier);
     end;
 
   finally
@@ -742,6 +874,7 @@ begin
     Files.Free;
     OwnerList.Free;
     PascalReferences.Free;
+    LFMReferences.Free;
     FreeListObjects(ListOfLazFPDocNode,true);
 
     if RenamingFile and NewFileCreated then
@@ -850,7 +983,8 @@ begin
   end;
 end;
 
-function ShowIdentifierReferences(DeclFilename: string; ListOfSrcNameRefs: TObjectList;
+function ShowIdentifierReferences(DeclFilename: string;
+  ListOfSrcNameRefs: TObjectList; LFMReferences: TCodeXYPositions;
   Identifier: string; RenameTo: string): TModalResult;
 var
   OldSearchPageIndex: TTabSheet;
@@ -880,7 +1014,10 @@ begin
 
     // list results
     SearchResultsView.BeginUpdate(SearchPageIndex.PageIndex);
-    AddReferencesToResultView(Identifier,ListOfSrcNameRefs,true,SearchPageIndex.PageIndex);
+    AddReferencesToResultView(Identifier,ListOfSrcNameRefs,LFMReferences,true,
+      SearchPageIndex.PageIndex, RenameTo);
+
+
     OldSearchPageIndex:=SearchPageIndex;
     SearchPageIndex:=nil;
     Identifier:=LCLEncodeAmps(Identifier);
@@ -894,8 +1031,9 @@ begin
   Result:=mrOK;
 end;
 
-procedure AddReferencesToResultView(Identifier: string; ListOfSrcNameRefs: TObjectList;
-  ClearItems: boolean; SearchPageIndex: integer);
+procedure AddReferencesToResultView(Identifier: string;
+  ListOfSrcNameRefs: TObjectList; LFMReferences: TCodeXYPositions;
+  ClearItems: boolean; SearchPageIndex: integer; RenameTo: string = '');
 var
   CodePos: PCodeXYPosition;
   CurLine, TrimmedLine, CurIdentifier: String;
@@ -919,7 +1057,10 @@ begin
       if Tree=nil then continue;
 
       CurIdentifier:=Refs.NewLocalSrcName;
-      if CurIdentifier='' then CurIdentifier:=Identifier;
+      if CurIdentifier='' then
+        CurIdentifier:=RenameTo;
+      if CurIdentifier='' then
+        CurIdentifier:=Identifier;
 
       ANode:=Tree.FindHighest;
       while ANode<>nil do begin
@@ -950,6 +1091,36 @@ begin
                                    CodePos^.X-TrimCnt, Len);
       end;
     end;
+  end;
+
+  if (LFMReferences<>nil) and (LFMReferences.Count>0) then begin
+    if RenameTo<>'' then
+      Len:=Length(RenameTo)
+    else
+      Len:=Length(Identifier);
+
+    Tree:=CreateTreeOfPCodeXYPosition;
+
+    for i:=0 to LFMReferences.Count-1 do
+      Tree.Add(LFMReferences.Items[i]);
+
+    ANode:=Tree.FindHighest;
+    while ANode<>nil do begin
+      CodePos:=PCodeXYPosition(ANode.Data);
+      ANode:=Tree.FindPrecessor(ANode);
+
+      CurLine:=TrimRight(CodePos^.Code.GetLine(CodePos^.Y-1,false));
+      TrimmedLine:=Trim(CurLine);
+      TrimCnt:=length(CurLine)-length(TrimmedLine);
+
+      SearchResultsView.AddMatch(SearchPageIndex,
+                                 CodePos^.Code.Filename,
+                                 Point(CodePos^.X,CodePos^.Y),
+                                 Point(CodePos^.X+Len,CodePos^.Y),
+                                 TrimmedLine,
+                                 CodePos^.X-TrimCnt, Len);
+    end;
+    Tree.Free;
   end;
   SearchResultsView.EndUpdate(SearchPageIndex);
 end;
@@ -1120,6 +1291,7 @@ begin
   ShowResultCheckBox.Caption:=lisRenameShowResult;
   ScopeCommentsCheckBox.Caption:=lisFRISearchInCommentsToo;
   ScopeOverridesCheckBox.Caption:=lisFindOverridesToo;
+  ScopeIncludeLFMs.Caption:=lisIncludeLFMs;
   ScopeGroupBox.Caption:=lisFRISearch;
   ScopeRadioGroup.Caption:=dlgSearchScope;
   ScopeRadioGroup.Items[0]:=lisFRIinCurrentUnit;
@@ -1447,6 +1619,12 @@ begin
   ShowResultCheckBox.Checked:=Options.RenameShowResult;
   ScopeCommentsCheckBox.Checked:=Options.SearchInComments;
   ScopeOverridesCheckBox.Checked:=Options.Overrides;
+  {$IFDEF EnableFindLFMRefs}
+  ScopeIncludeLFMs.Checked:=Options.IncludeLFMs;
+  {$ELSE}
+  ScopeIncludeLFMs.Checked:=false;
+  ScopeIncludeLFMs.Visible:=false;
+  {$ENDIF}
   case Options.Scope of
   frCurrentUnit: ScopeRadioGroup.ItemIndex:=0;
   frProject: ScopeRadioGroup.ItemIndex:=1;
@@ -1467,13 +1645,16 @@ begin
   Options.RenameShowResult := ShowResultCheckBox.Checked;
   Options.SearchInComments:=ScopeCommentsCheckBox.Checked;
   Options.Overrides:=ScopeOverridesCheckBox.Checked;
+  Options.IncludeLFMs:=ScopeIncludeLFMs.Checked;
   if ScopeRadioGroup.Enabled then
     case ScopeRadioGroup.ItemIndex of
     0: Options.Scope:=frCurrentUnit;
     1: Options.Scope:=frProject;
     2: Options.Scope:=frOwnerProjectPackage;
     else Options.Scope:=frAllOpenProjectsAndPackages;
-    end;
+    end
+  else
+    Options.Scope:=frCurrentUnit;
 end;
 
 procedure TFindRenameIdentifierDialog.SetIdentifier(
