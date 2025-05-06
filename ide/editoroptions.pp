@@ -2429,7 +2429,7 @@ procedure TEditorSynGutterOptions.ApplyLineColorTo(AGutterPart: TSynGutterPartBa
 begin
   if AGutterPart = nil then exit;
   case FShowLineColor of
-    glcOff:     ;
+    glcOff:     AGutterPart.MarkupInfoCurrentLine.Clear;
     glcOn:      if Attri    <> nil then Attri.ApplyTo(AGutterPart.MarkupInfoCurrentLine);
     glcLineNum: if NumAttri <> nil then NumAttri.ApplyTo(AGutterPart.MarkupInfoCurrentLine);
   end;
