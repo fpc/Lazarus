@@ -95,7 +95,6 @@ type
     procedure SetAllowRename(const AValue: boolean);
     procedure SetIsPrivate(const AValue: boolean);
     procedure SetFiles(const Files:TStringList);
-    procedure SetIsSourceName(const AValue: boolean);
     procedure UpdateRename;
     procedure GatherFiles;
     function NewIdentifierIsConflicted(var ErrMsg: string): boolean;
@@ -107,13 +106,13 @@ type
     procedure LoadFromOptions(Options: TFindRenameIdentifierOptions);
     procedure SaveToOptions(Options: TFindRenameIdentifierOptions);
     procedure SetIdentifier(const NewIdentifierFilename: string;
-                            var NewIdentifierPosition: TPoint);
+                            var NewIdentifierPosition: TPoint; IsSrcName: boolean);
 
     property IdentifierFilename: string read FIdentifierFilename;
     property IdentifierPosition: TPoint read FIdentifierPosition;
     property AllowRename: boolean read FAllowRename write SetAllowRename;
     property IsPrivate: boolean read FIsPrivate write SetIsPrivate;
-    property IsSourceName: boolean read FIsSourceName write SetIsSourceName;
+    property IsSourceName: boolean read FIsSourceName write FIsSourceName;
   end;
 
 function ShowFindRenameIdentifierDialog(const Filename: string;
@@ -173,9 +172,8 @@ begin
   FindRenameIdentifierDialog:=TFindRenameIdentifierDialog.Create(nil);
   try
     FindRenameIdentifierDialog.LoadFromConfig;
-    FindRenameIdentifierDialog.SetIdentifier(Filename,Position);
+    FindRenameIdentifierDialog.SetIdentifier(Filename,Position,IsSourceName);
     FindRenameIdentifierDialog.AllowRename:=AllowRename;
-    FindRenameIdentifierDialog.IsSourceName:=IsSourceName;
     FindRenameIdentifierDialog.RenameCheckBox.Checked:=SetRenameActive and AllowRename;
     if Options<>nil then
       FindRenameIdentifierDialog.ShowResultCheckBox.Checked:=Options.RenameShowResult and AllowRename;
@@ -1433,12 +1431,6 @@ begin
   FFiles.Assign(Files);
 end;
 
-procedure TFindRenameIdentifierDialog.SetIsSourceName(const AValue: boolean);
-begin
-  if FIsSourceName=AValue then Exit;
-  FIsSourceName:=AValue;
-end;
-
 procedure TFindRenameIdentifierDialog.FindOrRenameButtonClick(Sender: TObject);
 var
   ACodeBuffer:TCodeBuffer;
@@ -1657,8 +1649,8 @@ begin
     Options.Scope:=frCurrentUnit;
 end;
 
-procedure TFindRenameIdentifierDialog.SetIdentifier(
-  const NewIdentifierFilename: string; var NewIdentifierPosition: TPoint);
+procedure TFindRenameIdentifierDialog.SetIdentifier(const NewIdentifierFilename: string;
+  var NewIdentifierPosition: TPoint; IsSrcName: boolean);
 var
   s: String;
   ACodeBuffer, CurCode: TCodeBuffer;
@@ -1668,6 +1660,7 @@ var
   CleanPos: integer;
   Node: TCodeTreeNode;
 begin
+  IsSourceName:=IsSrcName;
   FIdentifierFilename:=NewIdentifierFilename;
   FIdentifierPosition:=NewIdentifierPosition;
   FNode:=nil;
