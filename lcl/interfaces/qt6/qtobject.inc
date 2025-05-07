@@ -38,13 +38,10 @@ begin
     WStr := 'plugins';
     QCoreApplication_addLibraryPath(@WStr);
     {$ENDIF}
-    // issue #39610
-    // QCoreApplication_setAttribute(QtAA_DisableHighDpiScaling, True);
+    QGuiApplication_setHighDpiScaleFactorRoundingPolicy(QtHighDpiScaleFactorRoundingPolicy_Round);
     App := QApplication_Create(@argc, argv);
   end;
   QCoreApplication_setAttribute(QtAA_DontUseNativeDialogs, False);
-  QGuiApplication_setHighDpiScaleFactorRoundingPolicy(QtHighDpiScaleFactorRoundingPolicy_Round);
-  //QCoreApplication_setAttribute(QtAA_DontCreateNativeWidgetSiblings, True);
 
   {$IFDEF QtUseNativeEventLoop}
   FMainTimerID := -1;
