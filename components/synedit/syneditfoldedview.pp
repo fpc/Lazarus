@@ -3186,7 +3186,9 @@ end;
 
 function TSynEditFoldedView.InternViewToTextIndex(aViewIndex: TLineIdx): TLineIdx;
 begin
-  if (aViewIndex >= ToIdx(fTopViewPos)) and (aViewIndex < ToIdx(fTopViewPos) + Length(fFoldTypeList) - 1) then
+  if (not (fvfNeedCalcMaps in FFlags)) and
+     (aViewIndex >= ToIdx(fTopViewPos)) and (aViewIndex < ToIdx(fTopViewPos) + Length(fFoldTypeList) - 1)
+  then
     Result := aViewIndex + fFoldTypeList[aViewIndex-ToIdx(fTopViewPos)+1].FoldedBefore
   else
     result := aViewIndex + fFoldTree.FindFoldForFoldedLine(ToPos(aViewIndex)).FoldedBefore;
@@ -3194,7 +3196,9 @@ end;
 
 function TSynEditFoldedView.InternViewToTextIndexOffest(aViewIndex: TLineIdx): integer;
 begin
-  if (aViewIndex >= ToIdx(fTopViewPos)) and (aViewIndex < ToIdx(fTopViewPos) + Length(fFoldTypeList) - 1) then
+  if (not (fvfNeedCalcMaps in FFlags)) and
+     (aViewIndex >= ToIdx(fTopViewPos)) and (aViewIndex < ToIdx(fTopViewPos) + Length(fFoldTypeList) - 1)
+  then
     Result := fFoldTypeList[aViewIndex-ToIdx(fTopViewPos)+1].FoldedBefore
   else
     result := fFoldTree.FindFoldForFoldedLine(ToPos(aViewIndex)).FoldedBefore;
