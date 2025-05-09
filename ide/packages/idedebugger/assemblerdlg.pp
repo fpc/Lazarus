@@ -700,6 +700,7 @@ begin
         Invalidate;
       FTargetLine := -1;
       FLinkLine := -1;
+      pbAsm.Cursor := crDefault;
       if X <= FGutterWidth then exit;
       if not(ssCtrl in Shift) then begin
         SetSelection(FTopLine + Y, False, ssShift in Shift);
@@ -712,6 +713,7 @@ begin
         FLinkLine := y;
         FTargetLine := LineForAddr(FLineMap[y].TargetAddr);
         Invalidate;
+        pbAsm.Cursor := crHandPoint;
       end;
     end;
     mbRight: ;
@@ -750,6 +752,10 @@ begin
     end;
   end;
 
+  if y = FLinkLine then
+    pbAsm.Cursor := crHandPoint
+  else
+    pbAsm.Cursor := crDefault;
 end;
 
 procedure TAssemblerDlg.pbAsmMouseUp(Sender: TObject; Button: TMouseButton;
@@ -768,6 +774,7 @@ begin
   if FLinkLine >= 0 then
     Invalidate;
   FLinkLine := -1;
+  pbAsm.Cursor := crDefault;
 end;
 
 procedure TAssemblerDlg.pbAsmMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -777,6 +784,7 @@ begin
   if not ToolButtonPower.Down then exit;
   Handled := True;
   FLinkLine := -1;
+  pbAsm.Cursor := crDefault;
 
   FWheelAccu := FWheelAccu + WheelDelta;
   j := FWheelAccu div 120;
