@@ -351,7 +351,26 @@ begin
             QStyle_drawControl(Style, Element.ControlElement, opt, Context.Widget, Context.Parent);
 
           Context.translate(-dx, -dy);
-          QStyleOption_Destroy(opt);
+          if (Element.ControlElement in [QStyleCE_ProgressBar, QStyleCE_ProgressBarContents,
+            QStyleCE_ProgressBarGroove]) then
+              QStyleOptionProgressBar_Destroy(QStyleOptionProgressBarH(opt))
+          else
+          if (Element.ControlElement = QStyleCE_TabBarTabShape) then
+            QStyleOptionTab_Destroy(QStyleOptionTabH(opt))
+          else
+          if (Element.ControlElement in [QStyleCE_PushButton, QStyleCE_RadioButton, QStyleCE_CheckBox]) then
+            QStyleOptionButton_Destroy(QStyleOptionButtonH(opt))
+          else
+          if (Element.ControlElement = QStyleCE_HeaderSection) then
+            QStyleOptionHeader_Destroy(QStyleOptionHeaderH(opt))
+          else
+          if (Element.ControlElement = QStyleCE_ItemViewItem) then
+            QStyleOptionViewItem_Destroy(QStyleOptionViewItemH(opt))
+          else
+          if (Element.ControlElement = QStyleCE_SizeGrip) then
+            QStyleOptionSizeGrip_Destroy(QStyleOptionSizeGripH(opt))
+          else
+            QStyleOption_Destroy(opt);
         end;
         qdvComplexControl:
         begin
@@ -429,7 +448,18 @@ begin
           QStyleOption_setRect(opt, @ARect);
           QStyle_drawComplexControl(Style, Element.ComplexControl,
             QStyleOptionComplexH(opt), Context.Widget, Context.Parent);
-          QStyleOption_Destroy(opt);
+
+          case Element.ComplexControl of
+            QStyleCC_GroupBox: QStyleOptionGroupBox_Destroy(QStyleOptionGroupBoxH(opt));
+            QStyleCC_ToolButton: QStyleOptionToolButton_Destroy(QStyleOptionToolButtonH(opt));
+            QStyleCC_ComboBox: QStyleOptionComboBox_Destroy(QStyleOptionComboBoxH(opt));
+            QStyleCC_SpinBox: QStyleOptionSpinBox_Destroy(QStyleOptionSpinBoxH(opt));
+            QStyleCC_TitleBar, QStyleCC_MdiControls: QStyleOptionTitleBar_Destroy(QStyleOptionTitleBarH(opt));
+            QStyleCC_Slider, QStyleCC_ScrollBar: QStyleOptionSlider_Destroy(QStyleOptionSliderH(opt));
+            else
+              QStyleOptionComplex_Destroy(QStyleOptionComplexH(opt));
+          end;
+
         end;
         qdvPrimitive:
         begin
@@ -524,7 +554,17 @@ begin
           QStyleOption_setRect(opt, @ARect);
           QStyle_drawPrimitive(Style, Element.PrimitiveElement, opt, Context.Widget,
             Context.Parent);
-          QStyleOption_Destroy(opt);
+
+          case Element.PrimitiveElement of
+            QStylePE_FrameTabWidget: QStyleOptionTabWidgetFrame_Destroy(QStyleOptionTabWidgetFrameH(opt));
+            QStylePE_FrameTabBarBase: QStyleOptionTabBarBase_Destroy(QStyleOptionTabBarBaseH(opt));
+            QStylePE_FrameFocusRect: QStyleOptionFocusRect_Destroy(QStyleOptionFocusRectH(opt));
+
+            QStylePE_PanelTipLabel,QStylePE_FrameLineEdit:
+              QStyleOptionFrame_Destroy(QStyleOptionFrameH(opt));
+            else
+              QStyleOption_Destroy(opt);
+          end;
         end;
         qdvStandardPixmap:
         begin
@@ -542,7 +582,10 @@ begin
           QIcon_paint(AIcon, Context.Widget, ARect.Left, ARect.Top,
             ARect.Right - ARect.Left, ARect.Bottom - ARect.Top);
           QIcon_destroy(AIcon);
-          QStyleOption_Destroy(opt);
+          if Element.StandardPixmap = QStyleSP_TitleBarCloseButton then
+            QStyleOptionDockWidget_Destroy(QStyleOptionDockWidgetH(opt))
+          else
+            QStyleOption_Destroy(opt);
         end;
       end;
     finally
