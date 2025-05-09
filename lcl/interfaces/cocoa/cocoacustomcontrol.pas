@@ -331,6 +331,7 @@ begin
      [kVK_Return, kVK_ANSI_KeypadEnter, kVK_Escape, kVK_Space]) then
   begin
     inherited;
+    self.callback.KeyEvHandled;
     exit;
   end;
 
