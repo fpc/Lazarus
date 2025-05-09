@@ -6918,21 +6918,6 @@ begin
 
     ASynEdit.Gutter.Width := fGutterWidth;
 
-    if ASynEdit is TIDESynEditor then begin
-      TIDESynEditor(ASynEdit).WordWrapCaretWrapPos  := WordWrapCaretWrapPos;
-      TIDESynEditor(ASynEdit).WordWrapForceHomeEnd  := FWordWrapForceHomeEnd;
-      TIDESynEditor(ASynEdit).WordWrapMinWidth      := WordWrapMinWidth;
-      if WordWrapFixedWidth then
-        TIDESynEditor(ASynEdit).WordWrapMaxWidth      := WordWrapMinWidth
-      else
-        TIDESynEditor(ASynEdit).WordWrapMaxWidth      := WordWrapMaxWidth;
-      TIDESynEditor(ASynEdit).WordWrapIndent           := WordWrapIndent;
-      TIDESynEditor(ASynEdit).WordWrapIndentUseOffset  := WordWrapIndentUseOffset;
-      TIDESynEditor(ASynEdit).WordWrapIndentMin        := WordWrapIndentMin;
-      TIDESynEditor(ASynEdit).WordWrapIndentMax        := WordWrapIndentMax;
-      TIDESynEditor(ASynEdit).WordWrapIndentMaxRel     := WordWrapIndentMaxRel;
-    end;
-
     ASynEdit.RightEdge := fRightMargin;
     if fVisibleRightMargin then
       ASynEdit.Options := ASynEdit.Options - [eoHideRightMargin]
@@ -7028,6 +7013,19 @@ begin
     TIDESynEditor(ASynEdit).WordWrapEnabled := True;
     ASynEdit.Options  := ASynEdit.Options  - [eoScrollPastEol];
     ASynEdit.Options2 := ASynEdit.Options2 - [eoScrollPastEolAddPage, eoScrollPastEolAutoCaret];
+
+    TIDESynEditor(ASynEdit).WordWrapCaretWrapPos  := WordWrapCaretWrapPos;
+    TIDESynEditor(ASynEdit).WordWrapForceHomeEnd  := FWordWrapForceHomeEnd;
+    TIDESynEditor(ASynEdit).WordWrapMinWidth      := WordWrapMinWidth;
+    if WordWrapFixedWidth then
+      TIDESynEditor(ASynEdit).WordWrapMaxWidth      := WordWrapMinWidth
+    else
+      TIDESynEditor(ASynEdit).WordWrapMaxWidth      := WordWrapMaxWidth;
+    TIDESynEditor(ASynEdit).WordWrapIndent           := WordWrapIndent;
+    TIDESynEditor(ASynEdit).WordWrapIndentUseOffset  := WordWrapIndentUseOffset;
+    TIDESynEditor(ASynEdit).WordWrapIndentMin        := WordWrapIndentMin;
+    TIDESynEditor(ASynEdit).WordWrapIndentMax        := WordWrapIndentMax;
+    TIDESynEditor(ASynEdit).WordWrapIndentMaxRel     := WordWrapIndentMaxRel;
   end
   else
   begin
