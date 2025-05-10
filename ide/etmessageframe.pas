@@ -3525,6 +3525,7 @@ end;
 
 procedure TMessagesFrame.HideSearch;
 begin
+  MessagesCtrl.SetFocus;
   SearchPanel.Visible:=false;
   MessagesCtrl.SearchText:='';
 end;
