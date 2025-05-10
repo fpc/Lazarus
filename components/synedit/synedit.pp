@@ -6860,7 +6860,11 @@ begin
     MinX:=PhysCaretXY.X;
     MaxX:=PhysCaretXY.X;
     // sfMouseSelecting: ignore block while selecting by mouse
-    if SelAvail and not(sfMouseSelecting in fStateFlags) then begin
+    if SelAvail and not(sfMouseSelecting in fStateFlags) and
+       FBlockSelection.Changed and
+       ( FCaret.IsAtLineByte(FBlockSelection.FirstLineBytePos) or
+         FCaret.IsAtLineByte(FBlockSelection.LastLineBytePos) )
+    then begin
       PhysBlockBeginXY:=FBlockSelection.ViewedFirstLineCharPos;
       PhysBlockEndXY  :=FBlockSelection.ViewedLastLineCharPos;
       if (PhysBlockBeginXY.X<>PhysBlockEndXY.X)
