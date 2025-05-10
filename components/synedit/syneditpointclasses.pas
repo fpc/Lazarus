@@ -103,6 +103,7 @@ type
 
   TSynEditSelection = class(TSynEditPointBase)
   private
+    FChanged: Boolean;
     FOnBeforeSetSelText: TSynBeforeSetSelTextList;
     FAutoExtend: Boolean;
     FCaret: TSynEditCaret;
@@ -120,6 +121,10 @@ type
     FAltStartLinePos, FAltStartBytePos: Integer; // 1 based // Alternate, for min selection
     FEndLinePos: Integer; // 1 based
     FEndBytePos: Integer; // 1 based
+    FOldStartLinePos: Integer; // 1 based
+    FOldStartBytePos: Integer; // 1 based
+    FOldEndLinePos: Integer; // 1 based
+    FOldEndBytePos: Integer; // 1 based
     FViewedFirstStartLineCharPos: TPoint; // 1 based
     FViewedLastEndLineCharPos: TPoint; // 1 based
     FFLags: set of (sbViewedFirstPosValid, sbViewedLastPosValid, sbHasLineMapHandler);
@@ -226,6 +231,7 @@ type
     property  AutoExtend: Boolean read FAutoExtend write SetAutoExtend;
     property  StickyAutoExtend: Boolean read FStickyAutoExtend write FStickyAutoExtend;
     property  Hide: Boolean read FHide write SetHide;
+    property  Changed: Boolean read FChanged;
   end;
 
   { TSynEditCaret }
@@ -1823,12 +1829,23 @@ procedure TSynEditSelection.DoLock;
 begin
   inherited DoLock;
   FLastCarePos := Point(-1, -1);
+  FOldStartLinePos := FStartLinePos;
+  FOldStartBytePos := FStartBytePos;
+  FOldEndLinePos   := FEndLinePos;
+  FOldEndBytePos   := FEndBytePos;
+  FChanged := False;
 end;
 
 procedure TSynEditSelection.DoUnlock;
 begin
   inherited DoUnlock;
   FLastCarePos := Point(-1, -1);
+
+  FChanged :=
+    (FOldStartLinePos <> FStartLinePos) or
+    (FOldStartBytePos <> FStartBytePos) or
+    (FOldEndLinePos   <> FEndLinePos) or
+    (FOldEndBytePos   <> FEndBytePos);
 end;
 
 function TSynEditSelection.GetSelText : string;
