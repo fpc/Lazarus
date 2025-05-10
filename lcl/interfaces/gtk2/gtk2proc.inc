@@ -9186,28 +9186,32 @@ end;
 -------------------------------------------------------------------------------}
 function Ampersands2Underscore(const ASource: String): String;
 var
-  n: Integer;
+  n, len: Integer;
   FirstFound: Boolean;
+  s: String;
 begin
   //TODO: escape underscores
+  Result := '';
   FirstFound := False;
-  Result := ASource;
   n := 1;
-  while n <= Length(Result) do
+  len := Length(ASource);
+  while n <= len do
   begin
-    if Result[n] = '&' then
-    begin
-      if FirstFound
-      or ( (n < Length(Result)) and (Result[n+1] = '&') ) // got &&
-      then begin
-        Delete(Result, n, 1);
-        if not FirstFound then
-          Inc(n);               // Skip the second & of &&
-      end
-      else begin
-        FirstFound := True;
-        Result[n] := '_';
-      end;
+    case ASource[n] of
+      '_': Result := Result + '__';
+      '&': begin
+          if (n < len) and (ASource[n+1] = '&') then // got &&
+          begin
+            Result := Result + '&';
+            Inc(n);               // Skip the second & of &&
+          end
+          else if not FirstFound then
+          begin
+            Result := Result + '_';
+            FirstFound := True;
+          end;
+        end;
+      else Result := Result + ASource[n];
     end;
     Inc(n);
   end;
