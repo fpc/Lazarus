@@ -3442,11 +3442,21 @@ begin
     SynInstance := LazSyntaxHighlighterClasses{%H-}[TheType].Create(nil);
     SetBothFilextensions('pp;pas;inc;lpr;lrs;dpr;dpk;fpd');
     SampleSource :=
-      '{ Comment }'#13 +
+      'program Sample; { Comment with Pasdoc @author someone }'#13 +
       '{$R- compiler directive}'#13 +
+      'type'#13 +
+      '  TMyData = class abstract'#13 +
+      '  public'#13 +
+      '    function GetItem(AnIndex: integer): boolean; virtual; experimental;'#13 +
+      '    property Item[AnIndex: integer]: boolean read GetItem;'#13 +
+      '  end deprecated ''reason'';'#13 +
       'procedure TForm1.Button1Click(Sender: TObject);'#13 +
+      'label JumpPos;'#13 +
+      'const BREAK_CHAR: char = ^C;'#13 +
       'var  // Slash Comment'#13 +
       '  Number, I, X: Integer;'#13 +
+      '  Text: String; MoreText: AnsiString;'#13 +
+      '  List: Array of record x,y: Byte; end;'#13 +
       'begin'#13 +
       '  Number := 12345 * (2 + 9); // << Brackets at caret'#13 +
       '  Caption := ''The number is '' + IntToStr(Number);'#13 +
@@ -3455,7 +3465,7 @@ begin
       '  end;'#13 +
       '  {%region /fold}'#13 +
       '  {%endregion}'#13 +
-      '  X := 10;'#13 +
+      '  X := 10 + (Number * (ord(''A'') + (I - Abs(X * (I+(1-((X))))))));'#13 +
       '  inc(X); {$R+} { Search Match, Text Block }'#13 +
       '  for I := 0 to Number do {$R-} { execution point }'#13 +
       '  begin'#13 +
@@ -3468,8 +3478,8 @@ begin
       '      mrOK: inc(X);'#13+
       '      mrCancel, mrIgnore: dec(X);'#13+
       '    end;'#13+
-      '    ListBox1.Items.Add(IntToStr(X));'#13 +
-//{$IFDEF WithSynMarkupIfDef}
+      '    ListBox1.Items.Add(IntToStr(X)); // TODO: more work'#13 +
+//{ $IFDEF WithSynMarkupIfDef}
 //      '    {$IFDEF Foo}' +
 //      '      X := X + 1.0; {$R-} { Error line }'#13 +
 //      '      {$DEFINE a}' +
@@ -3483,18 +3493,23 @@ begin
 //      '      with self do'#13 +
 //      '        X := 10;'#13 +
 //      '    {$ENDIF}' +
-//{$ENDIF}
+//{ $ENDIF}
       '  end;'#13 +
-      'end;'#13 + #13;
-    AddAttrSampleLines[ahaDisabledBreakpoint] := 20;
-    AddAttrSampleLines[ahaEnabledBreakpoint] := 19;
-    AddAttrSampleLines[ahaInvalidBreakpoint] := 21;
-    AddAttrSampleLines[ahaUnknownBreakpoint] := 22;
-    AddAttrSampleLines[ahaErrorLine] := 23;
-    AddAttrSampleLines[ahaExecutionPoint] := 17;
-    AddAttrSampleLines[ahaTextBlock] := 16;
-    AddAttrSampleLines[ahaFoldedCode] := 13;
-    CaretXY := Point(21, 7);
+      'JumpPos:'#13 +
+      'end;'#13+
+      '(* Multiline Ansi-Comment'#13+
+      ' * Foo Bar'#13+
+      ' *)'#13+
+      ''#13 + #13;
+    AddAttrSampleLines[ahaDisabledBreakpoint] := 30;
+    AddAttrSampleLines[ahaEnabledBreakpoint] := 29;
+    AddAttrSampleLines[ahaInvalidBreakpoint] := 31;
+    AddAttrSampleLines[ahaUnknownBreakpoint] := 32;
+    AddAttrSampleLines[ahaErrorLine] := 33;
+    AddAttrSampleLines[ahaExecutionPoint] := 27;
+    AddAttrSampleLines[ahaTextBlock] := 26;
+    AddAttrSampleLines[ahaFoldedCode] := 23;
+    CaretXY := Point(21, 17);
   end;
   Add(NewInfo);
 
@@ -3507,11 +3522,21 @@ begin
     SynInstance := LazSyntaxHighlighterClasses{%H-}[TheType].Create(nil);
     SetBothFilextensions('pp;pas;inc;lpr;lrs;dpr;dpk;fpd');
     SampleSource :=
-      '{ Comment }'#13 +
+      'program Sample; { Comment with Pasdoc @author someone }'#13 +
       '{$R- compiler directive}'#13 +
+      'type'#13 +
+      '  TMyData = class abstract'#13 +
+      '  public'#13 +
+      '    function GetItem(AnIndex: integer): boolean; virtual; experimental;'#13 +
+      '    property Item[AnIndex: integer]: boolean read GetItem;'#13 +
+      '  end deprecated ''reason'';'#13 +
       'procedure TForm1.Button1Click(Sender: TObject);'#13 +
+      'label JumpPos;'#13 +
+      'const BREAK_CHAR: char = ^C;'#13 +
       'var  // Slash Comment'#13 +
       '  Number, I, X: Integer;'#13 +
+      '  Text: String; MoreText: AnsiString;'#13 +
+      '  List: Array of record x,y: Byte; end;'#13 +
       'begin'#13 +
       '  Number := 12345 * (2 + 9); // << Brackets at caret'#13 +
       '  Caption := ''The number is '' + IntToStr(Number);'#13 +
@@ -3520,7 +3545,7 @@ begin
       '  end;'#13 +
       '  {%region /fold}'#13 +
       '  {%endregion}'#13 +
-      '  X := 10;'#13 +
+      '  X := 10 + (Number * (ord(''A'') + (I - Abs(X * (I+(1-((X))))))));'#13 +
       '  inc(X); {$R+} { Search Match, Text Block }'#13 +
       '  for I := 0 to Number do {$R-} { execution point }'#13 +
       '  begin'#13 +
@@ -3533,8 +3558,8 @@ begin
       '      mrOK: inc(X);'#13+
       '      mrCancel, mrIgnore: dec(X);'#13+
       '    end;'#13+
-      '    ListBox1.Items.Add(IntToStr(X));'#13 +
-//{$IFDEF WithSynMarkupIfDef}
+      '    ListBox1.Items.Add(IntToStr(X)); // TODO: more work'#13 +
+//{ $IFDEF WithSynMarkupIfDef}
 //      '    {$IFDEF Foo}' +
 //      '      X := X + 1.0; {$R-} { Error line }'#13 +
 //      '      {$DEFINE a}' +
@@ -3548,18 +3573,23 @@ begin
 //      '      with self do'#13 +
 //      '        X := 10;'#13 +
 //      '    {$ENDIF}' +
-//{$ENDIF}
+//{ $ENDIF}
       '  end;'#13 +
-      'end;'#13 + #13;
-    AddAttrSampleLines[ahaDisabledBreakpoint] := 20;
-    AddAttrSampleLines[ahaEnabledBreakpoint] := 19;
-    AddAttrSampleLines[ahaInvalidBreakpoint] := 21;
-    AddAttrSampleLines[ahaUnknownBreakpoint] := 22;
-    AddAttrSampleLines[ahaErrorLine] := 23;
-    AddAttrSampleLines[ahaExecutionPoint] := 17;
-    AddAttrSampleLines[ahaTextBlock] := 16;
-    AddAttrSampleLines[ahaFoldedCode] := 13;
-    CaretXY := Point(21, 7);
+      'JumpPos:'#13 +
+      'end;'#13+
+      '(* Multiline Ansi-Comment'#13+
+      ' * Foo Bar'#13+
+      ' *)'#13+
+      ''#13 + #13;
+    AddAttrSampleLines[ahaDisabledBreakpoint] := 30;
+    AddAttrSampleLines[ahaEnabledBreakpoint] := 29;
+    AddAttrSampleLines[ahaInvalidBreakpoint] := 31;
+    AddAttrSampleLines[ahaUnknownBreakpoint] := 32;
+    AddAttrSampleLines[ahaErrorLine] := 33;
+    AddAttrSampleLines[ahaExecutionPoint] := 27;
+    AddAttrSampleLines[ahaTextBlock] := 26;
+    AddAttrSampleLines[ahaFoldedCode] := 23;
+    CaretXY := Point(21, 17);
   end;
   Add(NewInfo);
 
