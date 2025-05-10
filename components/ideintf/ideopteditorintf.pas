@@ -29,7 +29,7 @@ uses
   // LCL
   Controls, Buttons, Forms, StdCtrls, Graphics, ComCtrls, Grids,
   // LazUtils
-  LazStringUtils,
+  LazStringUtils, LazUTF8,
   // BuildIntf
   IDEOptionsIntf,
   // IdeIntf
@@ -389,7 +389,7 @@ function TAbstractIDEOptionsEditor.ContainsTextInCaption(AText: string): Boolean
   begin
     Result:=False;
     for i := 0 to AControl.Items.Count-1 do begin
-      if PosI(AText, AControl.Items[i])>0 then begin
+      if Pos(AText, UTF8UpperCase(AControl.Items[i]))>0 then begin
         //if Length(AText)>2 then
         //  DebugLn('TAbstractIDEOptionsEditor.ContainsTextInCaption: Searching "',
         //      AText, '", Found "', AControl.Items[i], '", in ListBox ', AControl.Name);
@@ -443,7 +443,7 @@ function TAbstractIDEOptionsEditor.ContainsTextInCaption(AText: string): Boolean
       else if AControl is TCustomMemo then
         Result:=SearchMemo(TCustomMemo(AControl))
       else begin
-        Result:=PosI(AText, AControl.Caption)>0;
+        Result:=Pos(AText, UTF8UpperCase(AControl.Caption))>0;
         // Indicate the match
         if Result then
           AControl.Font.Style:=MatchFontStyle
@@ -467,6 +467,7 @@ function TAbstractIDEOptionsEditor.ContainsTextInCaption(AText: string): Boolean
   end;
 
 begin
+  AText:=UTF8UpperCase(AText);
   Result:=Search(Self);
 end;
 
