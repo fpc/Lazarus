@@ -1829,34 +1829,6 @@ begin
     OpenSelection;
     Key := 0;
   end
-  else if (Key = VK_F1) and (Shift = []) then
-  begin
-    TMessagesFrame(Owner).HelpMenuItemClick(nil);
-    Key := 0;
-  end
-  else if (Key = VK_S) and (Shift = [ssCtrl, ssShift]) then
-  begin
-    TMessagesFrame(Owner).SaveAllToFileMenuItemClick(nil);
-    Key := 0;
-  end
-  else if (Key = VK_F) and (Shift = [ssCtrl]) then
-  begin
-    TMessagesFrame(Owner).FindMenuItemClick(nil);
-    Key := 0;
-  end
-  else if (Key in [VK_0..VK_5]) and (Shift = [ssCtrl]) then
-  begin
-    with TMessagesFrame(Owner) do
-      case Key of
-        VK_0: FilterUrgencyMenuItemClick(MsgFilterNoneMenuItem);
-        VK_1: FilterUrgencyMenuItemClick(MsgFilterDebugMenuItem);
-        VK_2: FilterUrgencyMenuItemClick(MsgFilterVerboseMenuItem);
-        VK_3: FilterUrgencyMenuItemClick(MsgFilterHintsMenuItem);
-        VK_4: FilterUrgencyMenuItemClick(MsgFilterNotesMenuItem);
-        VK_5: FilterUrgencyMenuItemClick(MsgFilterWarningsMenuItem);
-      end;
-    Key := 0;
-  end
   else if (Key = VK_P) and (Shift = [ssCtrl]) then
     begin
       with TMessagesFrame(Owner) do
@@ -1870,18 +1842,6 @@ begin
 
   { Clipboard }
 
-  // [Ctrl+C] - copy selected messages
-  else if (Key = VK_C) and (Shift = [ssCtrl]) then
-  begin
-    TMessagesFrame(Owner).CopyMsgMenuItemClick(nil);
-    Key := 0;
-  end
-  // [Ctrl+Shift+C] - copy all original messages
-  else if (Key = VK_C) and (Shift = [ssCtrl, ssShift]) then
-  begin
-    TMessagesFrame(Owner).CopyAllMenuItemClick(nil);
-    Key := 0;
-  end
   // [Alt+C] - copy the displayed message hint
   else if (Key = VK_C) and (Shift = [ssAlt]) then
   begin
@@ -3012,6 +2972,7 @@ begin
     end;
 
     MsgFindMenuItem.OnClick:=@FindMenuItemClick;
+    MsgFindMenuItem.MenuItem.ShortCut:=ShortCut(VK_F, [ssCtrl]);
 
     // check selection
     View:=MessagesCtrl.SelectedView;
@@ -3079,56 +3040,67 @@ begin
     MsgFilterHintsWithoutPosMenuItem.Checked:=MessagesCtrl.ActiveFilter.FilterNotesWithoutPos;
     MsgFilterHintsWithoutPosMenuItem.OnClick:=@FilterHintsWithoutPosMenuItemClick;
 
+    // Urgency
     MinUrgency:=MessagesCtrl.ActiveFilter.MinUrgency;
-    MsgFilterNoneMenuItem.Checked:=MinUrgency in [mluNone..mluDebug];
-    MsgFilterNoneMenuItem.OnClick:=@FilterUrgencyMenuItemClick;
-    MsgFilterDebugMenuItem.Checked:=MinUrgency in [mluVerbose3..mluVerbose];
-    MsgFilterDebugMenuItem.OnClick:=@FilterUrgencyMenuItemClick;
-    MsgFilterVerboseMenuItem.Checked:=MinUrgency=mluHint;
-    MsgFilterVerboseMenuItem.OnClick:=@FilterUrgencyMenuItemClick;
-    MsgFilterHintsMenuItem.Checked:=MinUrgency=mluNote;
-    MsgFilterHintsMenuItem.OnClick:=@FilterUrgencyMenuItemClick;
-    MsgFilterNotesMenuItem.Checked:=MinUrgency in [mluWarning..mluImportant];
-    MsgFilterNotesMenuItem.OnClick:=@FilterUrgencyMenuItemClick;
-    MsgFilterWarningsMenuItem.Checked:=MinUrgency>=mluError;
-    MsgFilterWarningsMenuItem.OnClick:=@FilterUrgencyMenuItemClick;
+    MsgFilterNoneMenuItem    .Checked := MinUrgency in [mluNone..mluDebug];
+    MsgFilterDebugMenuItem   .Checked := MinUrgency in [mluVerbose3..mluVerbose];
+    MsgFilterVerboseMenuItem .Checked := MinUrgency = mluHint;
+    MsgFilterHintsMenuItem   .Checked := MinUrgency = mluNote;
+    MsgFilterNotesMenuItem   .Checked := MinUrgency in [mluWarning..mluImportant];
+    MsgFilterWarningsMenuItem.Checked := MinUrgency >= mluError;
+    MsgFilterNoneMenuItem    .OnClick := @FilterUrgencyMenuItemClick;
+    MsgFilterDebugMenuItem   .OnClick := @FilterUrgencyMenuItemClick;
+    MsgFilterVerboseMenuItem .OnClick := @FilterUrgencyMenuItemClick;
+    MsgFilterHintsMenuItem   .OnClick := @FilterUrgencyMenuItemClick;
+    MsgFilterNotesMenuItem   .OnClick := @FilterUrgencyMenuItemClick;
+    MsgFilterWarningsMenuItem.OnClick := @FilterUrgencyMenuItemClick;
+    MsgFilterNoneMenuItem    .MenuItem.ShortCut := ShortCut(VK_0, [ssCtrl]);
+    MsgFilterDebugMenuItem   .MenuItem.ShortCut := ShortCut(VK_1, [ssCtrl]);
+    MsgFilterVerboseMenuItem .MenuItem.ShortCut := ShortCut(VK_2, [ssCtrl]);
+    MsgFilterHintsMenuItem   .MenuItem.ShortCut := ShortCut(VK_3, [ssCtrl]);
+    MsgFilterNotesMenuItem   .MenuItem.ShortCut := ShortCut(VK_4, [ssCtrl]);
+    MsgFilterWarningsMenuItem.MenuItem.ShortCut := ShortCut(VK_5, [ssCtrl]);
 
     // Copying
-    MsgCopyMsgMenuItem.Enabled:=HasText;
-    MsgCopyMsgMenuItem.OnClick:=@CopyMsgMenuItemClick;
-    MsgCopyFilenameMenuItem.Enabled:=HasFilename;
-    MsgCopyFilenameMenuItem.OnClick:=@CopyFilenameMenuItemClick;
-    MsgCopyAllMenuItem.Enabled:=not Running;
-    MsgCopyAllMenuItem.OnClick:=@CopyAllMenuItemClick;
-    MsgCopyShownMenuItem.Enabled:=HasViewContent;
-    MsgCopyShownMenuItem.OnClick:=@CopyShownMenuItemClick;
+    MsgCopyMsgMenuItem     .Enabled := HasText;
+    MsgCopyFilenameMenuItem.Enabled := HasFilename;
+    MsgCopyAllMenuItem     .Enabled := not Running;
+    MsgCopyShownMenuItem   .Enabled := HasViewContent;
+    MsgCopyMsgMenuItem     .OnClick := @CopyMsgMenuItemClick;
+    MsgCopyFilenameMenuItem.OnClick := @CopyFilenameMenuItemClick;
+    MsgCopyAllMenuItem     .OnClick := @CopyAllMenuItemClick;
+    MsgCopyShownMenuItem   .OnClick := @CopyShownMenuItemClick;
+    MsgCopyMsgMenuItem.MenuItem.ShortCut := ShortCut(VK_C, [ssCtrl]);
+    MsgCopyAllMenuItem.MenuItem.ShortCut := ShortCut(VK_C, [ssCtrl, ssShift]);
 
     // Saving
-    MsgSaveAllToFileMenuItem.Enabled:=not Running;
-    MsgSaveAllToFileMenuItem.OnClick:=@SaveAllToFileMenuItemClick;
-    MsgSaveShownToFileMenuItem.Enabled:=HasViewContent;
-    MsgSaveShownToFileMenuItem.OnClick:=@SaveShownToFileMenuItemClick;
-    MsgHelpMenuItem.Enabled:=HasText;
-    MsgHelpMenuItem.OnClick:=@HelpMenuItemClick;
-    MsgEditHelpMenuItem.OnClick:=@EditHelpMenuItemClick;
-    MsgClearMenuItem.OnClick:=@ClearMenuItemClick;
-    MsgClearMenuItem.Enabled:=View<>nil;
+    MsgSaveAllToFileMenuItem  .Enabled := not Running;
+    MsgSaveShownToFileMenuItem.Enabled := HasViewContent;
+    MsgHelpMenuItem           .Enabled := HasText;
+    MsgClearMenuItem          .Enabled := View <> nil;
+    MsgSaveAllToFileMenuItem  .OnClick := @SaveAllToFileMenuItemClick;
+    MsgSaveShownToFileMenuItem.OnClick := @SaveShownToFileMenuItemClick;
+    MsgHelpMenuItem           .OnClick := @HelpMenuItemClick;
+    MsgEditHelpMenuItem       .OnClick := @EditHelpMenuItemClick;
+    MsgClearMenuItem          .OnClick := @ClearMenuItemClick;
+    MsgSaveAllToFileMenuItem.MenuItem.ShortCut := ShortCut(VK_S, [ssCtrl, ssShift]);
+    MsgHelpMenuItem         .MenuItem.ShortCut := ShortCut(VK_F1, []);
 
     // Options
-    MsgWndStayOnTopMenuItem.Checked:=mcoWndStayOnTop in MessagesCtrl.Options;
-    MsgWndStayOnTopMenuItem.OnClick:=@WndStayOnTopMenuItemClick;
-    MsgFileStyleShortMenuItem.Checked:=MessagesCtrl.FilenameStyle=mwfsShort;
-    MsgFileStyleShortMenuItem.OnClick:=@FileStyleMenuItemClick;
-    MsgFileStyleRelativeMenuItem.Checked:=MessagesCtrl.FilenameStyle=mwfsRelative;
-    MsgFileStyleRelativeMenuItem.OnClick:=@FileStyleMenuItemClick;
-    MsgFileStyleFullMenuItem.Checked:=MessagesCtrl.FilenameStyle=mwfsFull;
-    MsgFileStyleFullMenuItem.OnClick:=@FileStyleMenuItemClick;
+    MsgWndStayOnTopMenuItem     .Checked := mcoWndStayOnTop in MessagesCtrl.Options;
+    MsgFileStyleShortMenuItem   .Checked := MessagesCtrl.FilenameStyle = mwfsShort;
+    MsgFileStyleRelativeMenuItem.Checked := MessagesCtrl.FilenameStyle = mwfsRelative;
+    MsgFileStyleFullMenuItem    .Checked := MessagesCtrl.FilenameStyle = mwfsFull;
+    MsgWndStayOnTopMenuItem     .OnClick := @WndStayOnTopMenuItemClick;
+    MsgFileStyleShortMenuItem   .OnClick := @FileStyleMenuItemClick;
+    MsgFileStyleRelativeMenuItem.OnClick := @FileStyleMenuItemClick;
+    MsgFileStyleFullMenuItem    .OnClick := @FileStyleMenuItemClick;
 
-    MsgTranslateMenuItem.Checked:=mcoShowTranslated in MessagesCtrl.Options;
-    MsgTranslateMenuItem.OnClick:=@TranslateMenuItemClick;
-    MsgShowIDMenuItem.Checked:=mcoShowMessageID in MessagesCtrl.Options;
-    MsgShowIDMenuItem.OnClick:=@ShowIDMenuItemClick;
-    MsgMoreOptionsMenuItem.OnClick:=@MoreOptionsMenuItemClick;
+    MsgTranslateMenuItem.Checked := mcoShowTranslated in MessagesCtrl.Options;
+    MsgShowIDMenuItem   .Checked := mcoShowMessageID  in MessagesCtrl.Options;
+    MsgTranslateMenuItem  .OnClick := @TranslateMenuItemClick;
+    MsgShowIDMenuItem     .OnClick := @ShowIDMenuItemClick;
+    MsgMoreOptionsMenuItem.OnClick := @MoreOptionsMenuItemClick;
 
     UpdateRemoveCompOptHideMsgItems;
     UpdateRemoveMsgTypeFilterItems;
