@@ -841,8 +841,7 @@ var
     if (we^.Count = 2) and (we^.LineIdx >= 0) then begin
       if FScanModes * [spssWithCase, spssCtxWithCase] <> [] then begin
         //Wrd := Copy(ViewedTextBuffer[we^.LineIdx], we^.BytePos, ALen);
-        DebugLn(['TSynPluginSyncroEdit.Scan: Wrd=', Wrd,
-                 ', UTF8LowerCase(Wrd)=', UTF8LowerCase(Wrd), ', LWrd=', LWrd]);
+        //DebugLn(['TSynPluginSyncroEdit.Scan: Wrd=', Wrd, ', UTF8LowerCase(Wrd)=', UTF8LowerCase(Wrd), ', LWrd=', LWrd]);
         //Assert(UTF8LowerCase(Wrd) = LWrd, 'AddWordToHash: UTF8LowerCase(Wrd) <> LWrd');
 
         if spssWithCase in FScanModes then
