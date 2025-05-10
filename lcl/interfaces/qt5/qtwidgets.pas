@@ -3839,6 +3839,9 @@ begin
       SaveWidget := nil;
       SavedLCLControl := PtrUInt(LCLObject);
       if (FChildOfComplexWidget = ccwCustomControl) and (FOwner <> nil) then
+        SaveWidget := Widget
+      else
+      if (FChildOfComplexWidget = ccwComboBox) and (FOwner <> nil) then
         SaveWidget := Widget;
 
       NotifyApplicationUserInput(LCLObject, PLMessage(@Msg)^);
