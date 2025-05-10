@@ -3445,10 +3445,10 @@ begin
       '{ Comment }'#13 +
       '{$R- compiler directive}'#13 +
       'procedure TForm1.Button1Click(Sender: TObject);'#13 +
-      'var  // Delphi Comment'#13 +
+      'var  // Slash Comment'#13 +
       '  Number, I, X: Integer;'#13 +
       'begin'#13 +
-      '  Number := 12345 * (2 + 9) // << Matching Brackets ;'#13 +
+      '  Number := 12345 * (2 + 9); // << Brackets at caret'#13 +
       '  Caption := ''The number is '' + IntToStr(Number);'#13 +
       '  asm'#13 + '    MOV AX,1234h'#13 +
       '    MOV Number,AX'#13 +
@@ -3510,10 +3510,10 @@ begin
       '{ Comment }'#13 +
       '{$R- compiler directive}'#13 +
       'procedure TForm1.Button1Click(Sender: TObject);'#13 +
-      'var  // Delphi Comment'#13 +
+      'var  // Slash Comment'#13 +
       '  Number, I, X: Integer;'#13 +
       'begin'#13 +
-      '  Number := 12345 * (2 + 9) // << Matching Brackets ;'#13 +
+      '  Number := 12345 * (2 + 9); // << Brackets at caret'#13 +
       '  Caption := ''The number is '' + IntToStr(Number);'#13 +
       '  asm'#13 + '    MOV AX,1234h'#13 +
       '    MOV Number,AX'#13 +
