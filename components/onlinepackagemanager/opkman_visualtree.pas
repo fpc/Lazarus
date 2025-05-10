@@ -34,7 +34,7 @@ uses
   // LCL
   Controls, Graphics, Menus, Dialogs, Forms, LCLType, Buttons,
   // LazUtils
-  LazStringUtils,
+  LazStringUtils, LazUTF8,
   // IDEIntf
   LCLIntf, PackageIntf,
   // OpkMan
@@ -944,24 +944,16 @@ procedure TVisualTree.FilterTree(const AFilterBy: TFilterBy; const AText:
   var
     P: Integer;
   begin
-    P := PosI(AText, ADataText);
-    if P > 0 then
-      FVST.IsVisible[Node] := True
-    else
-      FVST.IsVisible[Node] := False;
+    P := Pos(UTF8UpperCase(AText), UTF8UpperCase(ADataText));
+    FVST.IsVisible[Node] := (P > 0);
     if AText = 'PackageCategory' then //special case for categories
     begin
-      if (P > 0) then
-      begin
-        FVST.IsVisible[Node^.Parent^.Parent] := True;
-        FVST.IsVisible[Node^.Parent^.Parent^.Parent] := True;
-      end
+      FVST.IsVisible[Node^.Parent^.Parent] := (P > 0);
+      if P > 0 then
+        FVST.IsVisible[Node^.Parent^.Parent^.Parent] := True
       else
-      begin
-        FVST.IsVisible[Node^.Parent^.Parent] := False;
         if not IsAtLeastOneChildVisible(Node^.Parent^.Parent^.Parent) then
           FVST.IsVisible[Node^.Parent^.Parent^.Parent] := False
-      end;
     end
     else
       HideShowParentNodes(Node, P > 0)
@@ -990,7 +982,7 @@ begin
         begin
           if Data^.DataType = 12 then
           begin
-            if PosI(CategoriesEng[AExtraParam], Data^.Category) > 0 then
+            if Pos(UTF8UpperCase(CategoriesEng[AExtraParam]), UTF8UpperCase(Data^.Category)) > 0 then
               FilterNode(Node, 'PackageCategory')
             else
               FilterNode(Node, '')
