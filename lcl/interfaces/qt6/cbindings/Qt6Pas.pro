@@ -25,7 +25,7 @@ TEMPLATE = lib
 VPATH = src
 MOC_DIR = tmp
 OBJECTS_DIR = tmp
-QMAKE_CXXFLAGS += -Wfatal-errors
+QMAKE_CXXFLAGS += -Wfatal-errors -fvisibility=hidden
 
 # Match Intel x86_64 i686 i586 i386 x86 ...
 is86 = $$find(QMAKE_HOST.arch, ".*86")
