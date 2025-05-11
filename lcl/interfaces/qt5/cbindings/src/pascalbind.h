@@ -30,7 +30,7 @@
 #if defined(__WIN32__)
 #define C_EXPORT extern "C" __declspec( dllexport )
 #else
-#define C_EXPORT extern "C"
+#define C_EXPORT extern "C" __attribute__(( visibility("default") ))
 #endif
 
 #ifdef __WIN32__
