@@ -1081,7 +1081,7 @@ msgstr ""
 
 #: idedebuggerstringconstants.liscurrent
 msgctxt "idedebuggerstringconstants.liscurrent"
-msgid "Current"
+msgid "Select as context"
 msgstr ""
 
 #: idedebuggerstringconstants.lisdadattach

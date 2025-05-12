@@ -1112,8 +1112,10 @@ msgid "Page up"
 msgstr ""
 
 #: idedebuggerstringconstants.liscurrent
+#, fuzzy
+#| msgid "Current"
 msgctxt "lazarusidestrconsts.liscurrent"
-msgid "Current"
+msgid "Select as context"
 msgstr "Поточний"
 
 #: idedebuggerstringconstants.lisdadattach

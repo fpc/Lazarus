@@ -167,7 +167,7 @@ resourcestring
   lisDbgTerminal = 'Console In/Output';
 
   // Call Stack Dialog
-  lisCurrent = 'Current';
+  lisCurrent = 'Select as context';
   lisViewSource = 'View Source';
   lisViewSourceDisass = 'View Assembler';
   lisMaxS = 'Max %d';
