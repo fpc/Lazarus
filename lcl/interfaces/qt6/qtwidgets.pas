@@ -6002,9 +6002,15 @@ begin
 end;
 
 procedure TQtWidget.DestroyWidget;
+var
+  ALCLEvent: QLCLMessageEventH;
 begin
   if (Widget <> nil) and FOwnWidget then
-    QObject_Destroy(Widget);
+  begin
+    ALCLEvent := QLCLMessageEvent_create(LCLQt_DestroyWidget, 0,
+          0, 0, 0);
+    QCoreApplication_postEvent(Widget, ALCLEvent, Ord(QtHighEventPriority));
+  end;
   Widget := nil;
 end;
 
