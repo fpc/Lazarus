@@ -819,6 +819,12 @@ begin
       end;
     end;
     {$ENDIF}
+    LCLQt_DestroyWidget:
+    begin
+      QEvent_accept(Event);
+      Result := True;
+      QObject_destroy(Sender);
+    end;
     QEventShortcutOverride: // issue #22827
     begin
       QKeyEvent_text(QKeyEventH(Event), @AKey);
