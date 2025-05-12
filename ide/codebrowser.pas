@@ -55,7 +55,7 @@ uses
   BasicCodeTools, DefineTemplates, CodeTree, CodeCache, CodeToolManager,
   PascalParserTool, LinkScanner, FileProcs, CodeIndex, StdCodeTools, SourceLog,
   // LazUtils
-  LazFileUtils, LazUTF8, AvgLvlTree,
+  LazFileUtils, LazStringUtils, LazUTF8, AvgLvlTree,
   // IDEIntf
   IDEWindowIntf, SrcEditorIntf, IDEMsgIntf, IDEDialogs, LazConfigStorage,
   IDEHelpIntf, PackageIntf, IDECommands, LazIDEIntf, IDEExternToolIntf, ProjectIntf,
@@ -1828,59 +1828,17 @@ end;
 procedure TCodeBrowserView.UpdateStatusBar(Lazy: boolean);
 const
   SmallTimeStep = 1/86400;
-
-  function BigIntToStr(i: integer): string;
-  var
-    p: Integer;
-    ThousandSep: String;
-  begin
-    if i=0 then begin
-      Result:='0';
-      exit;
-    end;
-    Result:='';
-    if i>=100000 then begin
-      i:=i div 1000;
-      Result:='k';
-      if i>=100000 then begin
-        i:=i div 1000;
-        Result:='m';
-        if i>=100000 then begin
-          i:=i div 1000;
-          Result:='g';
-          if i>=100000 then begin
-            i:=i div 1000;
-            Result:='t';
-          end;
-        end;
-      end;
-    end;
-
-    p:=0;
-    ThousandSep:=AnsiToUTF8(DefaultFormatSettings.ThousandSeparator);
-    while i>0 do begin
-      if p=3 then begin
-        Result:=ThousandSep+Result;
-        p:=0;
-      end;
-      Result:=chr((i mod 10)+ord('0'))+Result;
-      i:=i div 10;
-      inc(p);
-    end;
-  end;
 var
   s: String;
 begin
-  if Lazy and (Abs(Now-fLastStatusBarUpdate)<SmallTimeStep) then begin
-    // the last update is not long ago
-    // => skip update
-    exit;
-  end;
+  if Lazy and (Abs(Now-fLastStatusBarUpdate)<SmallTimeStep) then
+    exit;                      // the last update is not long ago => skip update
   fLastStatusBarUpdate:=Now;
-  s:=Format(lisPackagesUnitsIdentifiersLinesBytes, [BigIntToStr(VisiblePackages)
-    , BigIntToStr(ScannedPackages), BigIntToStr(VisibleUnits), BigIntToStr(
-    ScannedUnits), BigIntToStr(VisibleIdentifiers), BigIntToStr(
-    ScannedIdentifiers), BigIntToStr(ScannedLines), BigIntToStr(ScannedBytes)]);
+  s:=Format(lisPackagesUnitsIdentifiersLinesBytes, [
+      IntToStrWithSuffix(VisiblePackages),   IntToStrWithSuffix(ScannedPackages),
+      IntToStrWithSuffix(VisibleUnits),      IntToStrWithSuffix(ScannedUnits),
+      IntToStrWithSuffix(VisibleIdentifiers),IntToStrWithSuffix(ScannedIdentifiers),
+      IntToStrWithSuffix(ScannedLines),      IntToStrWithSuffix(ScannedBytes)]);
   if fStage<>cbwsFinished then
     s:=Format(lisScanning2, [s]);
   StatusBar1.SimpleText:=s;
@@ -1892,8 +1850,7 @@ begin
   Result:=AnUnit.CodeTool;
   if Result<>nil then exit;
   if AnUnit.CodeBuffer=nil then exit;
-  Result:=CodeToolBoss.GetCodeToolForSource(AnUnit.CodeBuffer,true,false)
-              as TCodeTool;
+  Result:=CodeToolBoss.GetCodeToolForSource(AnUnit.CodeBuffer,true,false) as TCodeTool;
   AnUnit.CodeTool:=Result;
   //DebugLn(['TCodeBrowserView.GetCodeTool END ',AnUnit.Filename,' ',Result<>nil]);
 end;

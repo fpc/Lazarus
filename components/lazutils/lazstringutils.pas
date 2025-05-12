@@ -63,6 +63,7 @@ function SpecialCharsToSpaces(const s: string; FixUTF8: boolean): string;
 function ShortDotsLine(const Line: string): string;
 function BeautifyLineXY(const Filename, Line: string; X, Y: integer): string;
 function BreakString(const s: string; MaxLineLength, Indent: integer): string;
+function IntToStrWithSuffix(i: PtrInt): string;
 
 // Conversions to and from a StringList
 function SplitString(const s: string; Delimiter: char): TStrings;
@@ -899,6 +900,55 @@ begin
     // cut string
     Src:=copy(Src,SplitPos,length(Src)-SplitPos+1);
   until false;
+end;
+
+function IntToStrWithSuffix(i: PtrInt): string;
+// Like IntToStr but adds system ThousandSeparator and suffix k,M,G,T for big numbers.
+var
+  ThousandSep: String;
+  Neg: Boolean;
+  p: Integer;
+begin
+  if i=0 then
+    exit('0');
+  Result:='';
+  Neg:=i<0;
+  if Neg then
+    i:=-i;              // Absolute value
+  if i>=100000 then begin
+    i:=i div 1000;
+    Result:='k';
+    if i>=100000 then begin
+      i:=i div 1000;
+      Result:='M';
+      if i>=100000 then begin
+        i:=i div 1000;
+        Result:='G';
+        if i>=100000 then begin
+          i:=i div 1000;
+          Result:='T';
+        end;
+      end;
+    end;
+  end;
+  // ThousandSeparator in some system locales shows as '?'. Prevent it.
+  // A wide-string RTL where SizeOf(Char)=2 may solve it.
+  if (SizeOf(Char)=1) and (DefaultFormatSettings.ThousandSeparator>=#$80) then
+    ThousandSep:=' '  // Fall back to space as a separator.
+  else
+    ThousandSep:=DefaultFormatSettings.ThousandSeparator;
+  p:=0;
+  while i>0 do begin
+    if p=3 then begin
+      Result:=ThousandSep+Result;
+      p:=0;
+    end;
+    Result:=chr((i mod 10)+ord('0'))+Result;
+    i:=i div 10;
+    inc(p);
+  end;
+  if Neg then
+    Result:='-'+Result;
 end;
 
 function SplitString(const s: string; Delimiter: char): TStrings;
