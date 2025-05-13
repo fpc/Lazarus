@@ -347,15 +347,11 @@ begin
       if Pos(LowerCase(Identifier),LowerCase(LFMBuffer.Source))<1 then
         continue;
 
-      // check if Decl unit is used by this unit
+      // parse lfm
       Code:=CodeToolBoss.LoadFile(Filename,true,false);
       if Code=nil then continue;
 
-      // ToDo: LFM can use identifiers indirectly, e.g. ancestor units
-      if not CodeToolBoss.SourceHasUnitInUses(Code, DeclFilename, false) then
-        continue;
-
-      CodeToolBoss.GatherReferencesInLFM(UnitInfo.Source, LFMBuffer, Identifier,
+      CodeToolBoss.GatherReferencesInLFM(Code, LFMBuffer, Identifier,
         DeclTool, DeclNode, ListOfReferences, Flags);
     end;
   finally
