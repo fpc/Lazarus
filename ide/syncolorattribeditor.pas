@@ -27,6 +27,7 @@ type
     BackPriorSpin: TSpinEdit;
     BackGroundColorBox: TColorBox;
     BackGroundLabel: TLabel;
+    ColorDialog1: TColorDialog;
     FeaturePastEOLCheckBox: TCheckBox;
     dropCustomWordKind: TComboBox;
     ForePriorLabel: TLabel;
