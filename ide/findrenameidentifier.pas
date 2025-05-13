@@ -38,7 +38,7 @@ uses
   // CodeTools
   KeywordFuncLists, CTUnitGraph, LFMTrees, CodeTree, CodeAtom, LinkScanner,
   CustomCodeTool, CodeCache, FileProcs, BasicCodeTools, IdentCompletionTool, CodeToolManager,
-  FindDeclarationTool, ChangeDeclarationTool,
+  CodeToolsStructs, FindDeclarationTool, ChangeDeclarationTool,
   // LazUtils
   LazFileUtils, FileUtil, LazFileCache, laz2_DOM, LazStringUtils, AvgLvlTree, LazLoggerBase,
   // IdeIntf
@@ -154,7 +154,7 @@ function LCLEncodeAmps(const AmpString: string): string;
 // identifier references in lfm
 function GatherLFMsReferences(Files:TStringList;
   const Identifier: string;
-  DeclCode: TCodeBuffer;
+  DeclTool: TCodeTool;
   DeclNode: TCodeTreeNode;
   var ListOfReferences: TCodeXYPositions;
   const Flags: TFindRefsFlags): TModalResult;
@@ -295,17 +295,15 @@ begin
   end;
 end;
 
-function GatherLFMsReferences(Files:TStringList;
-  const Identifier: string;
-  DeclCode: TCodeBuffer;
-  DeclNode: TCodeTreeNode;
-  var ListOfReferences: TCodeXYPositions;
-  const Flags: TFindRefsFlags): TModalResult;
+function GatherLFMsReferences(Files: TStringList; const Identifier: string; DeclTool: TCodeTool;
+  DeclNode: TCodeTreeNode; var ListOfReferences: TCodeXYPositions; const Flags: TFindRefsFlags
+  ): TModalResult;
 var
   i: integer;
   LFMBuffer, Code: TCodeBuffer;
   UnitInfo: TUnitInfo;
-  LFMFilename: String;
+  LFMFilename, Filename, DeclFilename: String;
+  aCache: CodeToolsStructs.TPointerToPointerTree;
 begin
   Result:=mrOk;
   ListOfReferences:=nil;
@@ -313,6 +311,8 @@ begin
   if Identifier='' then exit;
   if DeclNode=nil then exit;
   if not (frfIncludingLFM in Flags) then exit;
+  DeclFilename:=DeclTool.MainFilename;
+  if not FilenameIsPascalUnit(DeclTool.MainFilename) then exit;
 
   {$IFNDEF EnableFindLFMRefs}
   exit;
@@ -321,35 +321,44 @@ begin
   debugln(['GatherLFMsReferences Files.Count=',Files.Count]);
   // Note: this only supports lfm, not other form formats like dfm or fmx
 
-  for i:=0 to Files.Count-1 do begin
-    UnitInfo:=Project1.UnitInfoWithFilename(Files[i]);
-    if UnitInfo=nil then
-      continue;
+  aCache:=CodeToolsStructs.TPointerToPointerTree.Create;
+  try
+    for i:=0 to Files.Count-1 do begin
+      UnitInfo:=Project1.UnitInfoWithFilename(Files[i]);
+      if UnitInfo=nil then
+        continue;
 
-    if not FilenameIsAbsolute(UnitInfo.Filename) then continue;
-    if not FilenameIsPascalSource(UnitInfo.Filename) then continue;
-    LFMFilename:=ChangeFileExt(UnitInfo.Filename,'.lfm');
-    if not FileExistsCached(LFMFilename) then
-      continue;
+      Filename:=UnitInfo.Filename;
+      if not FilenameIsAbsolute(Filename) then continue;
+      if not FilenameIsPascalSource(Filename) then continue;
+      LFMFilename:=ChangeFileExt(Filename,'.lfm');
+      if not FileExistsCached(LFMFilename) then
+        continue;
 
-    // ToDo: check if DeclCode in unit path
+      // check if DeclTool in unit path
+      if not CodeToolBoss.IsUnitInUnitPath(Filename,DeclFilename,aCache) then
+        continue;
 
-    // load lfm source
-    LFMBuffer:=CodeToolBoss.LoadFile(LFMFilename,true,false);
-    if LFMBuffer=nil then continue;
+      // load lfm source
+      LFMBuffer:=CodeToolBoss.LoadFile(LFMFilename,true,false);
+      if LFMBuffer=nil then continue;
 
-    // check if identifier exists in lfm
-    if Pos(LowerCase(Identifier),LowerCase(LFMBuffer.Source))<1 then
-      continue;
+      // check if identifier exists in lfm
+      if Pos(LowerCase(Identifier),LowerCase(LFMBuffer.Source))<1 then
+        continue;
 
-    // check if Decl unit is used by this unit
-    Code:=CodeToolBoss.LoadFile(UnitInfo.Filename,true,false);
-    if Code=nil then continue;
-    if not CodeToolBoss.SourceHasUnitInUses(Code, DeclCode) then
-      continue;
+      // check if Decl unit is used by this unit
+      Code:=CodeToolBoss.LoadFile(Filename,true,false);
+      if Code=nil then continue;
 
-    CodeToolBoss.GatherReferencesInLFM(UnitInfo.Source, LFMBuffer, Identifier,
-      DeclNode, ListOfReferences, Flags);
+      if not CodeToolBoss.SourceHasUnitInUses(Code, DeclFilename, false) then
+        continue;
+
+      CodeToolBoss.GatherReferencesInLFM(UnitInfo.Source, LFMBuffer, Identifier,
+        DeclTool, DeclNode, ListOfReferences, Flags);
+    end;
+  finally
+    aCache.Free;
   end;
   Result:= mrOK;
 end;
@@ -730,7 +739,7 @@ begin
     end;
 
     if (frfIncludingLFM in FindRefFlags)
-        and (GatherLFMsReferences(Files, Identifier, DeclCodeXY.Code, DeclNode,
+        and (GatherLFMsReferences(Files, Identifier, DeclTool, DeclNode,
           LFMReferences, FindRefFlags)<>mrOk) then
     begin
       debugln('Error: 20250506120810 DoFindRenameIdentifier GatherLFMsReferences failed');

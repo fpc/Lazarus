@@ -12,7 +12,7 @@ interface
 
 uses
   Classes, SysUtils, LazLoggerBase, fpcunit, testregistry,
-  CodeToolManager, StdCodeTools, CodeCache, LinkScanner, SourceChanger;
+  CodeToolManager, StdCodeTools, CodeCache, LinkScanner, SourceChanger, CodeTree;
 
 type
 
@@ -42,6 +42,8 @@ type
     procedure TestCTUses_AddUses_AppendKeepComment; // ToDo
     procedure TestCTUses_AddUses_Append_DottedNoBreak;
     procedure TestCTUses_RemoveFromAllUsesSections;
+    procedure TestCTUsesSectionToUnitNames;
+
     procedure TestCTAddWarn5025_Program;
     procedure TestCTAddWarn5025_ProgramNoName;
     procedure TestCTAddWarn5025_Unit;
@@ -487,6 +489,55 @@ begin
   +'   Windows, Messages, Forms,'+LineEnding
   +'   Dialogs;'+LineEnding
   );
+end;
+
+procedure TTestCTStdCodetools.TestCTUsesSectionToUnitNames;
+
+  procedure Test(const UsesSrc, Expected: string);
+  var
+    Tool: TCodeTool;
+    UsesNode: TCodeTreeNode;
+    sl: TStrings;
+    i: Integer;
+    Actual: String;
+    Code: TCodeBuffer;
+  begin
+    Code:=CodeToolBoss.CreateFile('TestStdCodeTools.pas');
+    try
+      Code.Source:=
+         'program TestStdCodeTools;'+LineEnding
+        +UsesSrc+LineEnding
+        +'begin'+LineEnding
+        +'end.'+LineEnding;
+      if not CodeToolBoss.Explore(Code,Tool,false) then begin
+        debugln(['Test ',Code.Source]);
+        Fail('Explore failed: '+CodeToolBoss.ErrorMessage);
+      end;
+      UsesNode:=Tool.FindMainUsesNode;
+      if UsesNode=nil then
+        Fail('FindMainUsesNode failed');
+      sl:=Tool.UsesSectionToUnitnames(UsesNode);
+      try
+        Actual:='';
+        for i:=0 to sl.Count-1 do begin
+          if i>0 then Actual+=',';
+          Actual+=sl[i];
+        end;
+        if Expected=Actual then exit;
+        debugln(['Test ',Code.Source]);
+        AssertEquals(Expected,Actual);
+      finally
+        sl.Free;
+      end;
+    finally
+      Code.IsDeleted:=true;
+    end;
+  end;
+
+begin
+  Test('uses Bla;','Bla');
+  Test('uses Foo, Bar;','Bar,Foo');
+  Test('uses NS.Foo, Foo.Bar.Bird;','Foo.Bar.Bird,NS.Foo');
 end;
 
 procedure TTestCTStdCodetools.TestCTAddWarn5025_Program;
