@@ -351,6 +351,7 @@ begin
       Code:=CodeToolBoss.LoadFile(Filename,true,false);
       if Code=nil then continue;
 
+      // ToDo: LFM can use identifiers indirectly, e.g. ancestor units
       if not CodeToolBoss.SourceHasUnitInUses(Code, DeclFilename, false) then
         continue;
 
