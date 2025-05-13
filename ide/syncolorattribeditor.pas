@@ -26,6 +26,7 @@ type
     BackGroundColorBox: TColorBox;
     BackGroundLabel: TLabel;
     ColumnPosBevel: TPanel;
+    ColorDialog1: TColorDialog;
     ForePriorLabel: TLabel;
     ForePriorSpin: TSpinEdit;
     lblInfo: TLabel;
