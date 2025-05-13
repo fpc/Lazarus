@@ -7623,7 +7623,12 @@ begin
     Result := inherited getClientOffset;
   if Assigned(ScrollArea) and Assigned(FMenuBar) and
     (FMenuBar.getVisible) then
+  begin
+    if Assigned(LCLObject) and IsFormDesign(LCLObject) and (LCLObject.Parent <> nil) then
+      // issue #41637
+    else
       inc(Result.Y, FMenuBar.getHeight);
+  end;
   {$ELSE}
   Result:=inherited getClientOffset;
   {$ENDIF}
