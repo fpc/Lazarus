@@ -783,7 +783,7 @@ procedure TTreeNode.FreeAllNodeData;
 var
   i: Integer;
 begin
-  FreeAndNil(FData);
+  FreeAndNil(TObject(FData));
   for i:=0 to Count-1 do
     Items[i].FreeAllNodeData;
 end;
