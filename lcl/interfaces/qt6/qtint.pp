@@ -334,6 +334,7 @@ const
    // combobox OnCloseUp should be in order OnChange->OnSelect->OnCloseUp
    LCLQt_ComboBoxCloseUp = QEventType(Ord(QEventUser) + $1012);
    LCLQt_DestroyWidget = QEventType(Ord(QEventUser) + $1013);
+   LCLQt_DesignerUpdate = QEventType(Ord(QEventUser) + $1014);
 
 
    QtTextSingleLine            = $0100;
