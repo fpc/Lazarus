@@ -903,11 +903,9 @@ begin
 end;
 
 function IntToStrWithSuffix(Value: PtrInt): string;
-// Like IntToStr but adds system ThousandSeparator and suffix k,M,G,T for big numbers.
+// Like IntToStr but uses a suffix k,M,G,T for big numbers.
 var
-  ThousandSep: String;
   Neg: Boolean;
-  p: Integer;
 begin
   if Value=0 then
     exit('0');
@@ -931,22 +929,7 @@ begin
       end;
     end;
   end;
-  // ThousandSeparator in some system locales shows as '?'. Prevent it.
-  // A wide-string RTL where SizeOf(Char)=2 may solve it.
-  if (SizeOf(Char)=1) and (DefaultFormatSettings.ThousandSeparator>=#$80) then
-    ThousandSep:=' '  // Fall back to space as a separator.
-  else
-    ThousandSep:=DefaultFormatSettings.ThousandSeparator;
-  p:=0;
-  while Value>0 do begin
-    if p=3 then begin
-      Result:=ThousandSep+Result;
-      p:=0;
-    end;
-    Result:=chr((Value mod 10)+ord('0'))+Result;
-    Value:=Value div 10;
-    inc(p);
-  end;
+  Result:=IntToStr(Value)+Result;
   if Neg then
     Result:='-'+Result;
 end;
