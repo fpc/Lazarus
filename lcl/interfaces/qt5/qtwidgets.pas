@@ -20379,6 +20379,7 @@ var
   YStep, XStep: integer;
   B: Boolean;
   Bar: TQtScrollBar;
+  ALCLEvent: QLCLMessageEventH;
 
   function FindScrolledParent(AControl: TWinControl): TWinControl;
   begin
@@ -20584,9 +20585,22 @@ begin
       end;
       QEventPaint:
       begin
+        if Assigned(LCLObject) and (LCLObject.Parent <> nil) and Assigned(FMenuBar) and
+          FMenuBar.FVisible then
+        begin
+          QPaintEvent_rect(QPaintEventH(Event), @R);
+          if (R.Width < QWidget_width(FDesignControl)) or
+            (R.Height < QWidget_height(FDesignControl)) then
+          begin
+            ALCLEvent := QLCLMessageEvent_create(LCLQt_DesignerUpdate, 0, 0, 0, 0);
+            QCoreApplication_postEvent(FDesignControl, ALCLEvent, Ord(QtHighEventPriority));
+            exit(True);
+          end;
+        end;
         SlotDesignControlPaint(Sender, Event);
         Result := True;
       end;
+      LCLQt_DesignerUpdate: QWidget_update(FDesignControl);
       QEventContextMenu: SlotContextMenu(Sender, Event);
     end;
   finally
