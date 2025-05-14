@@ -47,7 +47,7 @@
       <Item>
         <Filename Value="todosynmarkup.pas"/>
         <HasRegisterProc Value="True"/>
-        <UnitName Value="todosynmarkup"/>
+        <UnitName Value="TodoSynMarkup"/>
       </Item>
     </Files>
     <i18n>
@@ -63,10 +63,6 @@
       </Item>
       <Item>
         <PackageName Value="CodeTools"/>
-      </Item>
-      <Item>
-        <PackageName Value="FCL"/>
-        <MinVersion Major="1" Valid="True"/>
       </Item>
     </RequiredPkgs>
     <UsageOptions>
