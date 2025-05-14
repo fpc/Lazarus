@@ -1364,7 +1364,10 @@ begin
   CB := nil;
   try
     if FEvalFlags * [defNoTypeInfo, defSimpleTypeInfo, defFullTypeInfo] = [defNoTypeInfo] then
-      FreeAndNil(FResText);
+    begin
+      FResText := '';
+//      FreeAndNil(FResText);
+    end;
 
     if (FCallback <> nil) then begin
       // All to local vars, because SELF may be destroyed before/while the callback happens
