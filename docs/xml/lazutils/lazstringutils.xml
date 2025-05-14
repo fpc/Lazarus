@@ -713,18 +713,11 @@ representation with a suffix like:
 The suffix is omitted if Value is smaller than 100,000.
 </p>
 <p>
-The return value includes the ThousandSeparator defined in 
-DefaultFormatSettings when the formatted value requires it. For system locales 
-where the thousands separator is a multi-byte character value, the Space (#32) 
-character is used instead.
-</p>
-<p>
 Negative Integer values are also handled in the routine.
 </p>
 <p>
 Please note that IntToStrWithSuffix does <b>not</b> take into account any 
-remainder after the divisibility suffix is applied. For example: 199999 
-results in '199k'.
+remainder after the suffix is applied. For example: 199999 results in '199k'.
 </p>
 <p>
 For example:
@@ -734,29 +727,29 @@ For example:
 
 procedure TForm1.FormCreate(Sender: TObject);
 var
-  nBase, nExp: Integer;
+  nBase, nExp:  Integer;
   nResult: Int64;
 begin
   Memo1.Clear;
 
   nBase := 1000;
-  for nExp := 1 to 5 do
+  for nExp := 0 to 11 do
   begin
-    nResult := nBase**nExp;
+    nResult := nBase * (10**nExp);
     Memo1.Lines.Add(nResult.ToString + ' = ' + IntToStrWithSuffix(nResult));
   end;
 
   nBase := 1000;
-  for nExp := 1 to 5 do
+  for nExp := 0 to 11 do
   begin
-    nResult := -1 * nBase**nExp;
+    nResult := -1 * nBase * (10**nExp);
     Memo1.Lines.Add(nResult.ToString + ' = ' + IntToStrWithSuffix(nResult));
   end;
 
   nBase := 1024;
-  for nExp := 1 to 5 do
+  for nExp := 0 to 11 do
   begin
-    nResult := nBase**nExp;
+    nResult := nBase * (10**nExp);
     Memo1.Lines.Add(nResult.ToString + ' = ' + IntToStrWithSuffix(nResult));
   end;
 
@@ -767,21 +760,42 @@ end;
 Results in the following output for the en_US locale:
 </p>
 <code>
-1000 = 1,000
-1000000 = 1,000k
-1000000000 = 1,000M
-1000000000000 = 1,000G
-1000000000000000 = 1,000T
--1000 = -1,000
--1000000 = -1,000k
--1000000000 = -1,000M
--1000000000000 = -1,000G
--1000000000000000 = -1,000T
-1024 = 1,024
-1048576 = 1,048k
-1073741824 = 1,073M
-1099511627776 = 1,099G
-1125899906842624 = 1,125T
+1000 = 1000
+10000 = 10000
+100000 = 100k
+1000000 = 1000k
+10000000 = 10000k
+100000000 = 100M
+1000000000 = 1000M
+10000000000 = 10000M
+100000000000 = 100G
+1000000000000 = 1000G
+10000000000000 = 10000G
+100000000000000 = 100T
+-1000 = -1000
+-10000 = -10000
+-100000 = -100k
+-1000000 = -1000k
+-10000000 = -10000k
+-100000000 = -100M
+-1000000000 = -1000M
+-10000000000 = -10000M
+-100000000000 = -100G
+-1000000000000 = -1000G
+-10000000000000 = -10000G
+-100000000000000 = -100T
+1024 = 1024
+10240 = 10240
+102400 = 102k
+1024000 = 1024k
+10240000 = 10240k
+102400000 = 102M
+1024000000 = 1024M
+10240000000 = 10240M
+102400000000 = 102G
+1024000000000 = 1024G
+10240000000000 = 10240G
+102400000000000 = 102T
 199999 = 199k
 </code>
 </descr>
