@@ -752,7 +752,7 @@ begin
 
   ParametersLabel.Caption:=lisEdtExtToolParameters;
   WorkingDirLabel.Caption:=lisEdtExtToolWorkingDirectory;
-  OptionsGroupBox.Caption:=lisLazBuildOptions;
+  OptionsGroupBox.Caption:=RemoveAmpersands(lisLazBuildOptions);
 
   with ScanOutputForFPCMessagesCheckBox do
     Caption:=lisEdtExtToolScanOutputForFreePascalCompilerMessages;

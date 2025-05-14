@@ -86,7 +86,7 @@ resourcestring
   lisPackage = 'Package';
   lisCompile = 'Compile';
   lisCompileStage = 'Compile';
-  lisBuild = 'Build';
+  lisBuild = '&Build';
   lisBuildCaption = 'Build';
   lisBuildStage = 'Build';
   lisRun = 'Run';
@@ -203,7 +203,7 @@ resourcestring
   lisLazarusDirectory = 'Lazarus directory';
   lisLazarusLanguageID = 'Lazarus language ID (e.g. en, de, br, fi)';
   lisLazarusLanguageName = 'Lazarus language name (e.g. english, deutsch)';
-  lisLCLWidgetType = 'LCL widget type';
+  lisLCLWidgetType = 'LCL &widget type';
   lisTargetCPU = 'Target CPU';
   lisTargetOS = 'Target OS';
   lisSubtarget = 'Subtarget';
@@ -3541,11 +3541,11 @@ resourcestring
     +'was not found.%sThis tool is needed to build Lazarus.';
   lisIDE = 'IDE';
   lisConfigureBuildLazarus = 'Configure "Build Lazarus"';
-  lisLazBuildOptions = 'Options:';
+  lisLazBuildOptions = '&Options:';
   lisLazBuildTargetOS = 'Target OS:';
   lisLazBuildTargetCPU = 'Target CPU:';
   lisLazBuildTargetDirectory = 'Target directory:';
-  lisLazBuildRestartAfterBuild = 'Restart after building IDE';
+  lisLazBuildRestartAfterBuild = '&Restart after building IDE';
   lisLazBuildUpdateRevInc = 'Update revision.inc';
   lisLazBuildCommonSettings = 'Common Settings';
   lisLazBuildConfirmBuild = 'Confirm before build';
@@ -3560,16 +3560,16 @@ resourcestring
   lisLazBuildRenameProf = 'Rename Profile';
   lisLazBuildRenameProfInfo = 'New name for profile:';
   lisCTDTemplates = 'Templates';
-  lisSaveSettings = 'Save Settings';
+  lisSaveSettings = '&Save Settings';
   lisCleanUp = 'Clean up';
-  lisLazBuildBuildMany = 'Build Many';
+  lisLazBuildBuildMany = 'Build &Many';
   lisAutomatically = 'Automatically';
-  lisCleanAll = 'Clean all';
+  lisCleanAll = '&Clean all';
   lisCleanOnlyOnce = 'Switch after building to automatically';
   lisAfterCleaningUpSwitchToAutomaticClean = 'After cleaning up (clean all or clean common files), switch to '
     +'clean automatically';
   lisLazBuildManageProfiles ='Manage Build Profiles';
-  lisLazBuildProfile ='Profile to build';
+  lisLazBuildProfile ='&Profile to build';
   lisLazBuildErrorWritingFile = 'Error writing file';
   lisLazBuildUnableToWriteFile = 'Unable to write file "%s":%s';
   lisLazBuildNormalIDE = 'Normal IDE';
@@ -3578,7 +3578,7 @@ resourcestring
   lisLazCleanUpBuildAll = 'Clean Up + Build all';
 
   lisLazBuildABOChooseOutputDir = 'Choose output directory of the IDE executable ';
-  lisLazBuildDefines = 'Defines';
+  lisLazBuildDefines = '&Defines';
   lisLazBuildEditDefines = 'Edit Defines';
   lisLazBuildNameOfTheActiveProfile = 'Name of the active profile';
   lisLazBuildManageProfiles2 = 'Manage profiles';

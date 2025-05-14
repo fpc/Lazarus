@@ -25,7 +25,7 @@ unit DefinesGui;
 interface
 
 uses
-  Classes, Forms, StdCtrls, Buttons, ButtonPanel, CheckLst, LCLType, Controls,
+  Classes, Forms, StdCtrls, Buttons, ButtonPanel, CheckLst, LCLType, Controls, LCLProc,
   IDEHelpIntf, IDEImagesIntf, IdeIntfStrConsts, LazarusIDEStrConsts, Compiler;
 
 type
@@ -79,7 +79,7 @@ implementation
 
 procedure TDefinesGuiForm.FormCreate(Sender: TObject);
 begin
-  Caption := lisLazBuildDefines;
+  Caption := RemoveAmpersands(lisLazBuildDefines);
   gbNewDefine.Caption := lisCodeToolsDefsDefine;
   AddBtn.Caption := lisBtnAdd;
   IDEImages.AssignImage(AddBtn, 'laz_add');
