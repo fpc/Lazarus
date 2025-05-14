@@ -48,8 +48,9 @@ uses
   {$IFDEF Windows}
   Windows,
   {$ENDIF}
+  // LCL
   Forms, Controls, StdCtrls, ExtCtrls, Buttons, Dialogs,
-  LCLPlatformDef, CheckLst, Menus, ComCtrls,
+  LCLPlatformDef, CheckLst, Menus, ComCtrls, LCLType,
   // LazUtils
   FPCAdds, FileUtil, LazFileUtils, LazUTF8, LazLoggerBase, LazFileCache,
   // Codetools
@@ -128,6 +129,7 @@ type
     procedure DefinesButtonClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormResize(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
@@ -1285,6 +1287,40 @@ begin
   TargetOSComboBox.DropDownCount:=EnvironmentOptions.DropDownCount;
   TargetCPUComboBox.DropDownCount:=EnvironmentOptions.DropDownCount;
   TargetDirectoryComboBox.DropDownCount:=EnvironmentOptions.DropDownCount;
+end;
+
+procedure TConfigureBuildLazarusDlg.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  // dialog
+  if (Key = VK_ESCAPE) and (Shift = []) then
+  begin
+    Close;
+    Key := 0;
+  end
+  else if (Key = VK_RETURN) and (Shift = [ssCtrl]) then
+  begin
+    if CompileButton.Enabled then
+      CompileButtonClick(Sender);
+    Key := 0;
+  end
+  else if (Key = VK_S) and (Shift = [ssCtrl]) then
+  begin
+    if SaveSettingsButton.Enabled then
+      SaveSettingsButtonClick(Sender);
+    Key := 0;
+  end
+
+  // tabs
+  else if (Key = VK_TAB) and (Shift = [ssCtrl]) then
+  begin
+    PageControl1.SelectNextPage(true);
+    Key := 0;
+  end
+  else if (Key = VK_TAB) and (Shift = [ssCtrl, ssShift]) then
+  begin
+    PageControl1.SelectNextPage(false);
+    Key := 0;
+  end
 end;
 
 procedure TConfigureBuildLazarusDlg.FormResize(Sender: TObject);
