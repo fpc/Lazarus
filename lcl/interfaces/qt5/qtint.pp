@@ -328,6 +328,7 @@ const
    LCLQt_RegisterSystemTrayIcon = QEventType(Ord(QEventUser) + $1011);
    // combobox OnCloseUp should be in order OnChange->OnSelect->OnCloseUp
    LCLQt_ComboBoxCloseUp = QEventType(Ord(QEventUser) + $1012);
+   LCLQt_DestroyWidget = QEventType(Ord(QEventUser) + $1013);
 
 
    QtTextSingleLine            = $0100;
