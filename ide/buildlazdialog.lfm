@@ -10,10 +10,12 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
   ClientWidth = 700
   Constraints.MinHeight = 440
   Constraints.MinWidth = 550
+  KeyPreview = True
   Position = poScreenCenter
   LCLVersion = '4.99.0.0'
   OnClose = FormClose
   OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
   OnResize = FormResize
   OnShow = FormShow
   object CBLDBtnPanel: TPanel
@@ -31,6 +33,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
     object CancelButton: TBitBtn
       Left = 612
       Height = 26
+      Hint = '[Esc]'
       Top = 6
       Width = 82
       Align = alRight
@@ -40,29 +43,37 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
       Caption = 'Cancel'
       Kind = bkCancel
       ModalResult = 2
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 4
     end
     object SaveSettingsButton: TBitBtn
       Left = 512
       Height = 26
+      Hint = '[Ctrl+S]'
       Top = 6
       Width = 94
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'Save settings'
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 3
       OnClick = SaveSettingsButtonClick
     end
     object CompileButton: TBitBtn
       Left = 302
       Height = 26
+      Hint = '[Ctrl+Enter]'
       Top = 6
       Width = 71
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'Compile'
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 1
       OnClick = CompileButtonClick
     end
