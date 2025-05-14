@@ -267,10 +267,34 @@ instead.
 </seealso>
 </element>
 
+<element name="TLCLHandle">
+<short>
+Alias to the TLCLHandle type defined for widgetset references.
+</short>
+<seealso>
+<link id="#wsreferences.TLCLHandle">TLCLHandle</link>
+</seealso>
+</element>
+
 <element link="HKEY" name="PHKEY"/>
 
 <element name="INVALID_HANDLE_VALUE">
-<short>Value representing an invalid (unassigned) Handle.</short>
+<short>
+Value used to represent an invalid (unassigned) Handle.
+</short>
+<descr>
+<p>
+<var>INVALID_HANDLE_VALUE</var> is a constant used to represent a handle which 
+is either invalid or unassigned. INVALID_HANDLE_VALUE, like other handle 
+values, are represented as the type needed for a specific platform. For the 
+Windows platform, the INVALID_HANDLE_VALUE defined in the 
+<file>windows.pp</file> unit is used. For other platforms, DWORD(-1) is used.
+</p>
+<p>
+For FPC compiler versions after 3.2.2, the INVALID_HANDLE_VALUE constant is 
+defined in the platform-specific <file>sysutils.pp </file> unit.
+</p>
+</descr>
 </element>
 
 <element name="MaxByte">
