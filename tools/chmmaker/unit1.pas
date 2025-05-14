@@ -65,6 +65,7 @@ type
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure ChmFileNameEditAcceptFileName(Sender: TObject; var Value: String);
+    procedure ChmFileNameEditEditingDone(Sender: TObject);
     procedure CompileBtnClick(Sender: TObject);
     procedure CompileViewBtnClick(Sender: TObject);
     procedure FileListBoxDrawItem({%H-}Control: TWinControl; Index: Integer;
@@ -74,6 +75,7 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure IndexEditAcceptFileName(Sender: TObject; var Value: String);
     procedure IndexEditBtnClick(Sender: TObject);
+    procedure IndexEditEditingDone(Sender: TObject);
     procedure ProjCloseItemClick(Sender: TObject);
     procedure ProjNewItemClick(Sender: TObject);
     procedure ProjOpenItemClick(Sender: TObject);
@@ -83,6 +85,7 @@ type
     procedure RemoveFilesBtnClick(Sender: TObject);
     procedure TOCEditAcceptFileName(Sender: TObject; var Value: String);
     procedure TOCEditBtnClick(Sender: TObject);
+    procedure TOCEditEditingDone(Sender: TObject);
   private
     FModified: Boolean;
     procedure AddItems({%H-}AParentItem: TTreeNode; {%H-}ChmItems: TChmSiteMapItems);
@@ -218,23 +221,36 @@ end;
 
 procedure TCHMForm.ChmFileNameEditAcceptFileName(Sender: TObject; var Value: String);
 begin
+  Modified := True;
+  Value := CreateRelativeProjectFile(Value);
   if ExtractFileExt(Value) = '' then Value := Value+'.chm';
+  Project.OutputFileName := Value;
+end;
+
+procedure TCHMForm.ChmFileNameEditEditingDone(Sender: TObject);
+begin
+  // Normalize filename and store in Project
+  if (ChmFileNameEdit.FileName = '') then Exit;
+  if (ExtractFileExt(ChmFileNameEdit.FileName)) = '' then ChmFileNameEdit.FileName := ChmFileNameEdit.FileName + '.chm';
+  ChmFileNameEdit.FileName := CreateRelativeProjectFile(ChmFileNameEdit.FileName);
+  Project.OutputFileName := ChmFileNameEdit.FileName;
+  Modified := True;
 end;
 
 procedure TCHMForm.CompileBtnClick(Sender: TObject);
 var
   OutFile: TFileStream;
 begin
-  if ChmFileNameEdit.FileName = '' then
+  if (Project.OutputFileName = '') then
   begin
     MessageDlg('You must set a filename for the output CHM file!', mtError, [mbCancel], 0);
     Exit;
   end;
   Save(False);
-  OutFile := TFileStream.Create(Project.OutputFileName, fmCreate or fmOpenWrite);
+  OutFile := TFileStream.Create(CreateAbsoluteProjectFile(Project.OutputFileName), fmCreate or fmOpenWrite);
   try
     Project.WriteChm(OutFile);
-    ShowMessage('CHM file '+ChmFileNameEdit.FileName+' was created.');
+    ShowMessage('CHM file '+Project.OutputFileName+' was created.');
   finally
     OutFile.Free;
   end;
@@ -248,7 +264,7 @@ var
   Proc: TProcessUTF8;
   ext: String;
 begin
-  if ChmFileNameEdit.FileName = '' then
+  if Project.OutputFileName = '' then
   begin
     MessageDlg('You must set a filename for the output CHM file!', mtError, [mbCancel], 0);
     Exit;
@@ -286,7 +302,7 @@ begin
   LHelpConn := TLHelpConnection.Create;
   try
     LHelpConn.StartHelpServer('chmmaker', LHelpName);
-    LHelpConn.OpenFile(ChmFileNameEdit.FileName);
+    LHelpConn.OpenFile(CreateAbsoluteProjectFile(Project.OutputFileName));
   finally
     LHelpConn.Free;
   end;
@@ -341,8 +357,8 @@ end;
 procedure TCHMForm.IndexEditAcceptFileName(Sender: TObject; var Value: String);
 begin
   Modified := True;
-  //Value := ExtractRelativepath(Project.ProjectDir, Value);
-  //WriteLn(Value);
+  Value := CreateRelativeProjectFile(Value);
+  if ExtractFileExt(Value) = '' then Value := Value + '.hhk';
   Project.IndexFileName := Value;
 end;
 
@@ -351,11 +367,14 @@ var
   Stream: TStream;
   FileName: String;
 begin
-  FileName := IndexEdit.FileName;
-  if FileName = '' then
+  if (Project.IndexFileName = '') then
   begin
-    FileName := Project.ProjectDir+'_index.hhk'
+    Project.IndexFileName := '_index.hhk';
+    IndexEdit.FileName := Project.IndexFileName;
+    Modified := True;
   end;
+
+  FileName := CreateAbsoluteProjectFile(Project.IndexFileName);
 
   if FileExists(FileName) then
   begin
@@ -367,10 +386,20 @@ begin
   end;
 
   try
-    if SitemapEditForm.Execute(Stream, stIndex, FileListBox.Items) then IndexEdit.FileName := FileName;
+    SitemapEditForm.Execute(Stream, stIndex, FileListBox.Items);
   finally
     Stream.Free;
   end;
+end;
+
+procedure TCHMForm.IndexEditEditingDone(Sender: TObject);
+begin
+  // Normalize filename and store in Project
+  if (IndexEdit.FileName = '') then Exit;
+  if (ExtractFileExt(IndexEdit.FileName)) = '' then IndexEdit.FileName := IndexEdit.FileName + '.hhk';
+  IndexEdit.FileName := CreateRelativeProjectFile(IndexEdit.FileName);
+  Project.IndexFileName := IndexEdit.FileName;
+  Modified := True;
 end;
 
 procedure TCHMForm.ProjCloseItemClick(Sender: TObject);
@@ -428,6 +457,8 @@ end;
 procedure TCHMForm.TOCEditAcceptFileName(Sender: TObject; var Value: String);
 begin
   Modified := True;
+  Value := CreateRelativeProjectFile(Value);
+  if ExtractFileExt(Value) = '' then Value := Value + '.hhc';
   Project.TableOfContentsFileName := Value;
 end;
 
@@ -435,14 +466,16 @@ procedure TCHMForm.TOCEditBtnClick(Sender: TObject);
 var
   Stream: TStream;
   FileName: String;
-  BDir: String;
 begin
-  FileName := TOCEdit.FileName;
-  if FileName = '' then
+  if (Project.TableOfContentsFileName = '') then
   begin
-    FileName := Project.ProjectDir+'_table_of_contents.hhc'
+    Project.TableOfContentsFileName := '_table_of_contents.hhc';
+    TOCEdit.FileName := Project.TableOfContentsFileName;
+    Modified := True;
   end;
-  
+
+  FileName := CreateAbsoluteProjectFile(Project.TableOfContentsFileName);
+
   if FileExists(FileName) then
   begin
     Stream := TFileStream.Create(FileName, fmOpenReadWrite);
@@ -453,12 +486,20 @@ begin
   end;
 
   try
-    BDir := ExtractFilePath(Project.FileName);
-    FileName := ExtractRelativepath(BDir, FileName);
-    if SitemapEditForm.Execute(Stream, stTOC, FileListBox.Items) then TOCEdit.FileName := FileName;
+    SitemapEditForm.Execute(Stream, stTOC, FileListBox.Items);
   finally
     Stream.Free;
   end;
+end;
+
+procedure TCHMForm.TOCEditEditingDone(Sender: TObject);
+begin
+  // Normalize filename and store in Project
+  if (TOCEdit.FileName = '') then Exit;
+  if (ExtractFileExt(TOCEdit.FileName)) = '' then TOCEdit.FileName := TOCEdit.FileName + '.hhc';
+  TOCEdit.FileName := CreateRelativeProjectFile(TOCEdit.FileName);
+  Project.TableOfContentsFileName := TOCEdit.FileName;
+  Modified := True;
 end;
 
 function TCHMForm.GetModified: Boolean;

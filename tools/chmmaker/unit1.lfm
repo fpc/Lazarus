@@ -1,302 +1,305 @@
 object CHMForm: TCHMForm
-  Left = 269
-  Height = 511
-  Top = 217
-  Width = 611
-  HorzScrollBar.Page = 595
-  VertScrollBar.Page = 427
+  Left = 371
+  Height = 639
+  Top = 200
+  Width = 764
+  HorzScrollBar.Page = 741
+  VertScrollBar.Page = 534
   ActiveControl = FileListBox
   AutoScroll = True
   Caption = 'Compiled HTML Help Project - [Made with Freepascal]'
-  ClientHeight = 491
-  ClientWidth = 611
+  ClientHeight = 639
+  ClientWidth = 764
+  DesignTimePPI = 120
   Menu = MainMenu1
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   ShowInTaskBar = stAlways
-  LCLVersion = '1.5'
+  LCLVersion = '3.2.0.0'
   object StatusBar1: TStatusBar
     Left = 0
-    Height = 23
-    Top = 468
-    Width = 611
+    Height = 29
+    Top = 610
+    Width = 764
     Panels = <>
   end
   object GroupBox1: TGroupBox
     Left = 0
-    Height = 468
+    Height = 610
     Top = 0
-    Width = 268
+    Width = 335
     Align = alLeft
     Caption = 'Files'
-    ClientHeight = 448
-    ClientWidth = 264
+    ClientHeight = 585
+    ClientWidth = 331
     TabOrder = 0
     object FileListBox: TListBox
       Left = 0
-      Height = 314
+      Height = 417
       Top = 0
-      Width = 264
+      Width = 331
       Align = alClient
       ItemHeight = 0
-      OnDrawItem = FileListBoxDrawItem
       ScrollWidth = 262
       Sorted = True
       Style = lbOwnerDrawFixed
       TabOrder = 0
+      OnDrawItem = FileListBoxDrawItem
     end
     object Panel2: TPanel
       Left = 0
-      Height = 134
-      Top = 314
-      Width = 264
+      Height = 168
+      Top = 417
+      Width = 331
       Align = alBottom
-      ClientHeight = 134
-      ClientWidth = 264
+      ClientHeight = 168
+      ClientWidth = 331
       TabOrder = 1
       object FilesNoteLabel: TLabel
-        Left = 16
-        Height = 48
-        Top = 85
-        Width = 232
+        Left = 20
+        Height = 60
+        Top = 107
+        Width = 291
         Align = alBottom
         AutoSize = False
-        BorderSpacing.Left = 15
-        BorderSpacing.Right = 15
+        BorderSpacing.Left = 19
+        BorderSpacing.Right = 19
         Caption = 'All files must be in the project file directory or a subdirectory.'
         ParentColor = False
         WordWrap = True
       end
       object AddFilesBtn: TButton
-        Left = 11
-        Height = 25
-        Top = 3
-        Width = 81
-        BorderSpacing.InnerBorder = 4
+        Left = 14
+        Height = 31
+        Top = 4
+        Width = 101
+        BorderSpacing.InnerBorder = 5
         Caption = 'Add Files'
-        OnClick = AddFilesBtnClick
         TabOrder = 0
+        OnClick = AddFilesBtnClick
       end
       object RemoveFilesBtn: TButton
-        Left = 94
-        Height = 25
-        Top = 3
-        Width = 156
-        BorderSpacing.InnerBorder = 4
+        Left = 118
+        Height = 31
+        Top = 4
+        Width = 195
+        BorderSpacing.InnerBorder = 5
         Caption = 'Remove Selected'
-        OnClick = RemoveFilesBtnClick
         TabOrder = 1
+        OnClick = RemoveFilesBtnClick
       end
       object AutoAddLinksBtn: TButton
-        Left = 11
-        Height = 25
-        Top = 59
-        Width = 239
-        BorderSpacing.InnerBorder = 4
+        Left = 14
+        Height = 31
+        Top = 74
+        Width = 299
+        BorderSpacing.InnerBorder = 5
         Caption = 'Auto add HREF files'
         Enabled = False
-        OnClick = AutoAddLinksBtnClick
         TabOrder = 2
+        OnClick = AutoAddLinksBtnClick
       end
       object AddAllBtn: TButton
-        Left = 11
-        Height = 25
-        Top = 32
-        Width = 239
-        BorderSpacing.InnerBorder = 4
+        Left = 14
+        Height = 31
+        Top = 40
+        Width = 299
+        BorderSpacing.InnerBorder = 5
         Caption = 'Add all files in Project Directory'
-        OnClick = AddAllBtnClick
         TabOrder = 3
+        OnClick = AddAllBtnClick
       end
     end
   end
   object MainPanel: TPanel
-    Left = 268
-    Height = 468
+    Left = 335
+    Height = 610
     Top = 0
-    Width = 343
+    Width = 429
     Align = alClient
-    ClientHeight = 468
-    ClientWidth = 343
+    ClientHeight = 610
+    ClientWidth = 429
     TabOrder = 1
     object TableOfContentsLabel: TLabel
-      Left = 11
-      Height = 15
-      Top = 11
-      Width = 133
+      Left = 14
+      Height = 20
+      Top = 14
+      Width = 161
       Caption = 'Table of Contents (*.hhc)'
       ParentColor = False
     end
     object IndexLabel: TLabel
-      Left = 11
-      Height = 15
-      Top = 59
-      Width = 67
+      Left = 14
+      Height = 20
+      Top = 74
+      Width = 82
       Caption = 'Index (*.hhk)'
       ParentColor = False
     end
     object CompileTimeOptionsLabel: TLabel
-      Left = 11
-      Height = 15
-      Top = 219
-      Width = 118
+      Left = 14
+      Height = 20
+      Top = 274
+      Width = 147
       Caption = 'Compile time options:'
       ParentColor = False
     end
     object DefaultPageLabel: TLabel
-      Left = 11
-      Height = 15
-      Top = 108
-      Width = 67
+      Left = 14
+      Height = 20
+      Top = 135
+      Width = 85
       Caption = 'Default Page'
       ParentColor = False
     end
     object CHMFilenameLabel: TLabel
-      Left = 12
-      Height = 15
-      Top = 356
-      Width = 77
+      Left = 15
+      Height = 20
+      Top = 445
+      Width = 95
       Caption = 'CHM filename'
       ParentColor = False
     end
     object TOCEdit: TFileNameEdit
       AnchorSideRight.Control = TOCEditBtn
-      Left = 10
-      Height = 23
-      Top = 31
-      Width = 236
+      Left = 12
+      Height = 29
+      Top = 39
+      Width = 295
       OnAcceptFileName = TOCEditAcceptFileName
       DialogOptions = []
       Filter = 'Table of Contents Files(*.hhc)|*.hhc|All files|*'
       FilterIndex = 0
       HideDirectories = False
-      ButtonWidth = 23
+      ButtonWidth = 29
       NumGlyphs = 1
       Anchors = [akTop, akLeft, akRight]
       AutoSelect = False
       AutoSize = False
       MaxLength = 0
       TabOrder = 0
+      OnEditingDone = TOCEditEditingDone
     end
     object IndexEdit: TFileNameEdit
       AnchorSideRight.Control = IndexEditBtn
-      Left = 10
-      Height = 23
-      Top = 79
-      Width = 236
+      Left = 12
+      Height = 29
+      Top = 99
+      Width = 295
       OnAcceptFileName = IndexEditAcceptFileName
       DialogOptions = []
       Filter = 'Index Files(*.hhk)|*.hhk|All Files|*'
       FilterIndex = 0
       HideDirectories = False
-      ButtonWidth = 23
+      ButtonWidth = 29
       NumGlyphs = 1
       Anchors = [akTop, akLeft, akRight]
       AutoSelect = False
       AutoSize = False
       MaxLength = 0
       TabOrder = 1
+      OnEditingDone = IndexEditEditingDone
     end
     object TOCEditBtn: TButton
       AnchorSideTop.Control = TOCEdit
       AnchorSideRight.Control = MainPanel
       AnchorSideRight.Side = asrBottom
-      Left = 276
-      Height = 25
-      Top = 31
-      Width = 60
+      Left = 345
+      Height = 30
+      Top = 39
+      Width = 75
       Anchors = [akTop, akRight]
       AutoSize = True
-      BorderSpacing.Left = 30
-      BorderSpacing.Right = 6
+      BorderSpacing.Left = 38
+      BorderSpacing.Right = 8
       Caption = 'Edit'
-      Constraints.MinWidth = 60
-      OnClick = TOCEditBtnClick
+      Constraints.MinWidth = 75
       TabOrder = 2
+      OnClick = TOCEditBtnClick
     end
     object IndexEditBtn: TButton
       AnchorSideTop.Control = IndexEdit
       AnchorSideRight.Control = MainPanel
       AnchorSideRight.Side = asrBottom
-      Left = 276
-      Height = 25
-      Top = 79
-      Width = 60
+      Left = 345
+      Height = 30
+      Top = 99
+      Width = 75
       Anchors = [akTop, akRight]
       AutoSize = True
-      BorderSpacing.Left = 30
-      BorderSpacing.Right = 6
+      BorderSpacing.Left = 38
+      BorderSpacing.Right = 8
       Caption = 'Edit'
-      Constraints.MinWidth = 60
-      OnClick = IndexEditBtnClick
+      Constraints.MinWidth = 75
       TabOrder = 3
+      OnClick = IndexEditBtnClick
     end
     object FollowLinksCheck: TCheckBox
-      Left = 19
-      Height = 19
-      Top = 252
-      Width = 307
+      Left = 24
+      Height = 24
+      Top = 315
+      Width = 381
       Caption = 'Parse *.htm* files to include '#10'linked pages and images'
       Enabled = False
       TabOrder = 4
     end
     object CreateSearchableCHMCheck: TCheckBox
-      Left = 19
-      Height = 19
+      Left = 24
+      Height = 24
       Hint = 'Only indexes files added to the project'#10'not files automatically added.'
-      Top = 304
-      Width = 149
+      Top = 380
+      Width = 183
       Caption = 'Create a searchable chm'
       ParentShowHint = False
       ShowHint = True
       TabOrder = 5
     end
     object DefaultPageCombo: TComboBox
-      Left = 11
-      Height = 23
-      Top = 128
-      Width = 287
+      Left = 14
+      Height = 28
+      Top = 160
+      Width = 359
       AutoSelect = False
-      ItemHeight = 15
+      ItemHeight = 20
       Style = csDropDownList
       TabOrder = 6
     end
     object CompileBtn: TButton
       AnchorSideLeft.Side = asrBottom
       AnchorSideRight.Control = CompileViewBtn
-      Left = 86
-      Height = 33
-      Top = 421
-      Width = 79
+      Left = 120
+      Height = 40
+      Top = 552
+      Width = 92
       Anchors = [akRight, akBottom]
       AutoSize = True
-      BorderSpacing.Right = 9
-      BorderSpacing.InnerBorder = 4
+      BorderSpacing.Right = 11
+      BorderSpacing.InnerBorder = 5
       Caption = 'Compile'
-      OnClick = CompileBtnClick
       TabOrder = 7
+      OnClick = CompileBtnClick
     end
     object CompileViewBtn: TButton
       AnchorSideLeft.Control = CompileBtn
       AnchorSideLeft.Side = asrBottom
-      Left = 174
-      Height = 33
-      Top = 421
-      Width = 130
+      Left = 223
+      Height = 40
+      Top = 552
+      Width = 157
       Anchors = [akRight, akBottom]
       AutoSize = True
-      BorderSpacing.Right = 13
-      BorderSpacing.InnerBorder = 4
+      BorderSpacing.Right = 16
+      BorderSpacing.InnerBorder = 5
       Caption = 'Compile and View'
-      OnClick = CompileViewBtnClick
       TabOrder = 8
+      OnClick = CompileViewBtnClick
     end
     object ChmFileNameEdit: TFileNameEdit
-      Left = 11
-      Height = 23
-      Top = 380
-      Width = 270
+      Left = 14
+      Height = 29
+      Top = 475
+      Width = 338
       OnAcceptFileName = ChmFileNameEditAcceptFileName
       DialogKind = dkSave
       DialogTitle = 'Save CHM as...'
@@ -304,30 +307,31 @@ object CHMForm: TCHMForm
       Filter = 'Compressed HTML Help Files|*.chm'
       FilterIndex = 0
       HideDirectories = False
-      ButtonWidth = 23
+      ButtonWidth = 29
       NumGlyphs = 1
       AutoSelect = False
       AutoSize = False
       MaxLength = 0
       TabOrder = 9
+      OnEditingDone = ChmFileNameEditEditingDone
     end
   end
   object OpenDialog1: TOpenDialog
     Filter = 'Help File Project(*.hfp)|*.hfp'
     FilterIndex = 0
     Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
-    left = 10
-    top = 20
+    Left = 13
+    Top = 25
   end
   object SaveDialog1: TSaveDialog
     Filter = 'Help File Project(*.hfp)|*.hfp'
     FilterIndex = 0
-    left = 40
-    top = 20
+    Left = 50
+    Top = 25
   end
   object MainMenu1: TMainMenu
-    left = 75
-    top = 20
+    Left = 94
+    Top = 25
     object MenuItem1: TMenuItem
       Caption = 'Project'
       object ProjNewItem: TMenuItem
@@ -386,7 +390,7 @@ object CHMForm: TCHMForm
   object OpenDialog2: TOpenDialog
     FilterIndex = 0
     Options = [ofAllowMultiSelect, ofEnableSizing, ofViewDetail]
-    left = 12
-    top = 304
+    Left = 15
+    Top = 380
   end
 end
