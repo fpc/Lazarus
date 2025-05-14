@@ -7722,8 +7722,13 @@ function TQtMainWindow.GetClientRectFix(): TSize;
 begin
   if Assigned(FMenuBar) and FMenuBar.FVisible and (not IsMdiChild) then
   begin
-    FMenuBar.sizeHint(@Result);
-    if Result.Height<10 then Result.Height:=0;
+    if Assigned(LCLObject) and IsFormDesign(LCLObject) and (LCLObject.Parent <> nil) then
+      Result := TSize.Create(0, 0)
+    else
+    begin
+      FMenuBar.sizeHint(@Result);
+      if Result.Height<10 then Result.Height:=0;
+    end;
   end else
     Result:= TSize.Create(0,0);
 end;
