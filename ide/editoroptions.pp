@@ -3958,7 +3958,7 @@ begin
 
       #13#10 +
       '/* Selected text */'#13#10 + #13#10;
-    AddAttrSampleLines[ahaTextBlock] := 2;
+    AddAttrSampleLines[ahaTextBlock] := 14;
     MappedAttributes := TStringList.Create;
     with MappedAttributes do
     begin
@@ -4098,7 +4098,7 @@ begin
   NewInfo.SampleSource := TSynPikeSyn.Pike_GetSampleSource();
   with NewInfo do
   begin
-    AddAttrSampleLines[ahaTextBlock] := 12;
+    AddAttrSampleLines[ahaTextBlock] := 9;
     MappedAttributes := TStringList.Create;
     with MappedAttributes do
     begin
