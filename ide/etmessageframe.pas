@@ -1639,9 +1639,6 @@ begin
       NodeRect:=Rect(0,y,ClientWidth,y+ItemHeight);
       Canvas.Brush.Color:=HeaderBackground[View.ToolState];
       Canvas.FillRect(NodeRect);
-      Canvas.Pen.Style:=psDash;
-      Canvas.Line(NodeRect.Left,NodeRect.Top,NodeRect.Right,NodeRect.Top);
-      Canvas.Pen.Style:=psSolid;
       DrawText(NodeRect,GetHeaderText(View),
         (fSelectedView=View) and (FSelectedLines.IndexOf(-1)>=0),TextColor);
       Canvas.Brush.Color:=BackgroundColor;
@@ -1694,10 +1691,7 @@ begin
       NodeRect:=Rect(0,NodeRect.Bottom,ClientWidth,ItemHeight);
       Canvas.GradientFill(NodeRect,HeaderBackground[View.ToolState],
         AutoHeaderBackground,gdVertical);
-      Canvas.Pen.Style:=psDash;
       NodeRect:=Rect(0,0,ClientWidth,ItemHeight);
-      Canvas.Line(NodeRect.Left,NodeRect.Bottom,NodeRect.Right,NodeRect.Bottom);
-      Canvas.Pen.Style:=psSolid;
       DrawText(NodeRect,'...'+GetHeaderText(View),false,TextColor);
       Canvas.Brush.Color:=BackgroundColor;
     end;
