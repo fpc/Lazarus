@@ -5869,8 +5869,10 @@ msgid "&Replace"
 msgstr "Cse&re"
 
 #: lazarusidestrconsts.lisbuild
+#, fuzzy
+#| msgid "Build"
 msgctxt "lazarusidestrconsts.lisbuild"
-msgid "Build"
+msgid "&Build"
 msgstr "Építés"
 
 #: lazarusidestrconsts.lisbuildallfilesofprojectpackageide
@@ -6752,7 +6754,9 @@ msgid "Simple Syntax (e.g. * instead of .*)"
 msgstr "Egyszerű szintaxis (pl. .* helyett *)"
 
 #: lazarusidestrconsts.liscleanall
-msgid "Clean all"
+#, fuzzy
+#| msgid "Clean all"
+msgid "&Clean all"
 msgstr "Minden tisztítása"
 
 #: lazarusidestrconsts.liscleanlazarussource
@@ -11909,7 +11913,9 @@ msgid "Are you sure you want to delete this build profile?"
 msgstr "Biztosan törölhető ez az építési profil?"
 
 #: lazarusidestrconsts.lislazbuildbuildmany
-msgid "Build Many"
+#, fuzzy
+#| msgid "Build Many"
+msgid "Build &Many"
 msgstr "Több építése"
 
 #: lazarusidestrconsts.lislazbuildcommonsettings
@@ -11929,7 +11935,9 @@ msgid "Debug IDE"
 msgstr "Hibakereső IDE"
 
 #: lazarusidestrconsts.lislazbuilddefines
-msgid "Defines"
+#, fuzzy
+#| msgid "Defines"
+msgid "&Defines"
 msgstr "Definíciók"
 
 #: lazarusidestrconsts.lislazbuilddefineswithoutd
@@ -11984,7 +11992,9 @@ msgid "Optimized IDE"
 msgstr "Optimalizált IDE"
 
 #: lazarusidestrconsts.lislazbuildoptions
-msgid "Options:"
+#, fuzzy
+#| msgid "Options:"
+msgid "&Options:"
 msgstr "Beállítások:"
 
 #: lazarusidestrconsts.lislazbuildoptionspassedtocompiler
@@ -11996,7 +12006,9 @@ msgid "lazbuild [options] <project/package filename or package name>"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildprofile
-msgid "Profile to build"
+#, fuzzy
+#| msgid "Profile to build"
+msgid "&Profile to build"
 msgstr "Építési profil"
 
 #: lazarusidestrconsts.lislazbuildrenameprof
@@ -12008,7 +12020,9 @@ msgid "New name for profile:"
 msgstr "A profil új neve:"
 
 #: lazarusidestrconsts.lislazbuildrestartafterbuild
-msgid "Restart after building IDE"
+#, fuzzy
+#| msgid "Restart after building IDE"
+msgid "&Restart after building IDE"
 msgstr "Újraíndítás az IDE építése után"
 
 #: lazarusidestrconsts.lislazbuildrestartlazarusautomatically
@@ -12065,7 +12079,9 @@ msgid "Lazarus Version (e.g. 1.2.4)"
 msgstr "Lazarus változat (pl. 1.2.4)"
 
 #: lazarusidestrconsts.lislclwidgettype
-msgid "LCL widget type"
+#, fuzzy
+#| msgid "LCL widget type"
+msgid "LCL &widget type"
 msgstr "LCL vezérlőkészlet típusa"
 
 #: lazarusidestrconsts.lisldaddlinktoinherited
@@ -17126,7 +17142,9 @@ msgid "Ctrl-Click on an identifier in code editor is stored in jump history."
 msgstr "A ctrl-kattintás egy azonosítón a kód szerkesztőben az ugrási előzményekben tárolódik."
 
 #: lazarusidestrconsts.lissavesettings
-msgid "Save Settings"
+#, fuzzy
+#| msgid "Save Settings"
+msgid "&Save Settings"
 msgstr "Beállítások mentése"
 
 #: lazarusidestrconsts.lissaveshownmessagestofile

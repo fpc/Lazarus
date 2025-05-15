@@ -6123,8 +6123,10 @@ msgid "&Replace"
 msgstr "החלף"
 
 #: lazarusidestrconsts.lisbuild
+#, fuzzy
+#| msgid "Build"
 msgctxt "lazarusidestrconsts.lisbuild"
-msgid "Build"
+msgid "&Build"
 msgstr "בנה"
 
 #: lazarusidestrconsts.lisbuildallfilesofprojectpackageide
@@ -7043,7 +7045,7 @@ msgid "Simple Syntax (e.g. * instead of .*)"
 msgstr "תחביר פשוט (כלומר * במקום .*)"
 
 #: lazarusidestrconsts.liscleanall
-msgid "Clean all"
+msgid "&Clean all"
 msgstr ""
 
 #: lazarusidestrconsts.liscleanlazarussource
@@ -12329,7 +12331,7 @@ msgid "Are you sure you want to delete this build profile?"
 msgstr "האם אתה בטוח שאתה רוצה למחוק את פרופיל הבנייה הזה?"
 
 #: lazarusidestrconsts.lislazbuildbuildmany
-msgid "Build Many"
+msgid "Build &Many"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildcommonsettings
@@ -12351,7 +12353,7 @@ msgid "Debug IDE"
 msgstr "נפה שגיאות IDE"
 
 #: lazarusidestrconsts.lislazbuilddefines
-msgid "Defines"
+msgid "&Defines"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuilddefineswithoutd
@@ -12406,7 +12408,9 @@ msgid "Optimized IDE"
 msgstr "במצב מיטבי  IDE"
 
 #: lazarusidestrconsts.lislazbuildoptions
-msgid "Options:"
+#, fuzzy
+#| msgid "Options:"
+msgid "&Options:"
 msgstr "אפשרויות:"
 
 #: lazarusidestrconsts.lislazbuildoptionspassedtocompiler
@@ -12420,7 +12424,7 @@ msgstr ""
 #: lazarusidestrconsts.lislazbuildprofile
 #, fuzzy
 #| msgid "Profile to Build"
-msgid "Profile to build"
+msgid "&Profile to build"
 msgstr "פרופיל בנייה"
 
 #: lazarusidestrconsts.lislazbuildrenameprof
@@ -12434,7 +12438,7 @@ msgstr "שם חדש לפרופיל:"
 #: lazarusidestrconsts.lislazbuildrestartafterbuild
 #, fuzzy
 #| msgid "Restart after building the IDE"
-msgid "Restart after building IDE"
+msgid "&Restart after building IDE"
 msgstr "אתחל אחרי בנייה מוצלחת"
 
 #: lazarusidestrconsts.lislazbuildrestartlazarusautomatically
@@ -12493,7 +12497,7 @@ msgstr ""
 #: lazarusidestrconsts.lislclwidgettype
 #, fuzzy
 #| msgid "LCL Widget Type"
-msgid "LCL widget type"
+msgid "LCL &widget type"
 msgstr "עצם מסוג LCL"
 
 #: lazarusidestrconsts.lisldaddlinktoinherited
@@ -17884,7 +17888,9 @@ msgid "Ctrl-Click on an identifier in code editor is stored in jump history."
 msgstr ""
 
 #: lazarusidestrconsts.lissavesettings
-msgid "Save Settings"
+#, fuzzy
+#| msgid "Save Settings"
+msgid "&Save Settings"
 msgstr "שמור הגדרות"
 
 #: lazarusidestrconsts.lissaveshownmessagestofile
