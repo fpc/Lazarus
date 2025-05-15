@@ -3466,7 +3466,7 @@ begin
       '  {%region /fold}'#13 +
       '  {%endregion}'#13 +
       '  X := 10 + (Number * (ord(''A'') + (I - Abs(X * (I+(1-((X))))))));'#13 +
-      '  inc(X); {$R+} { Search Match, Text Block }'#13 +
+      '  inc(X); {$R+} { Selected text }'#13 +
       '  for I := 0 to Number do {$R-} { execution point }'#13 +
       '  begin'#13 +
       '    Inc(X, 2); {$R+} { Enabled breakpoint }'#13 +
@@ -3546,7 +3546,7 @@ begin
       '  {%region /fold}'#13 +
       '  {%endregion}'#13 +
       '  X := 10 + (Number * (ord(''A'') + (I - Abs(X * (I+(1-((X))))))));'#13 +
-      '  inc(X); {$R+} { Search Match, Text Block }'#13 +
+      '  inc(X); {$R+} { Selected text }'#13 +
       '  for I := 0 to Number do {$R-} { execution point }'#13 +
       '  begin'#13 +
       '    Inc(X, 2); {$R+} { Enabled breakpoint }'#13 +
@@ -3607,7 +3607,7 @@ begin
       '<!-- Comment -->'#13 + '<img src="lazarus.jpg">'#13 +
       '<p>'#13 + '  Some Text'#13 +
       '  Ampersands: &nbsp;F&nbsp;P&nbsp;C'#13 + '</p>'#13 +
-      '<invalid_tag>'#13 + '<!-- Text Block -->'#13 +
+      '<invalid_tag>'#13 + '<!-- Selected text -->'#13 +
       '</body>'#13 + '</html>'#13 + #13;
     AddAttrSampleLines[ahaTextBlock] := 11;
     MappedAttributes := TStringList.Create;
@@ -3665,7 +3665,7 @@ begin
       '<?xml version="1.0"?>'#13 + '<!DOCTYPE root ['#13 +
       '  ]>'#13 + '<!-- Comment -->'#13 + '<root version="&test;">'#13 +
       '  <![CDATA[ **CDATA section** ]]>'#13 + '</root>'#13 +
-      '<!-- Text Block -->'#13 + ''#13 + #13;
+      '<!-- Selected text -->'#13 + ''#13 + #13;
     AddAttrSampleLines[ahaTextBlock] := 8;
     MappedAttributes := TStringList.Create;
     with MappedAttributes do
@@ -3692,7 +3692,7 @@ begin
       '{ Lazarus Form Definitions }'#13 + 'object TestForm: TTestForm'#13 +
       '  Left = 273'#13 + '  Top = 103'#13 +
       '  Caption = ''sample source'''#13 + 'end'#13 +
-      '{ Text Block }'#13 + ''#13 + #13;
+      '{ Selected text }'#13 + ''#13 + #13;
     AddAttrSampleLines[ahaTextBlock] := 7;
     MappedAttributes := TStringList.Create;
     with MappedAttributes do
@@ -3722,7 +3722,7 @@ begin
       '#!/usr/bin/perl'#13 + '# Perl sample code'#13 +
       ''#13 + '$i = "10";'#13 + 'print "$ENV{PATH}\n";'#13 +
       '($i =~ /\d+/) || die "Error\n";'#13 + ''#13 +
-      '# Text Block'#13 + ''#13 + #13;
+      '# Selected text'#13 + ''#13 + #13;
     AddAttrSampleLines[ahaTextBlock] := 8;
     MappedAttributes := TStringList.Create;
     with MappedAttributes do
@@ -3757,7 +3757,7 @@ begin
       '    for(i = 0; i < 10; i++)'#13#10 +
       '      System.out.println("Hello world");'#13#10 +
       '  }'#13#10 + '}'#13#10 +
-      '/* Text Block */'#13#10 + #13#10;
+      '/* Selected text */'#13#10 + #13#10;
     AddAttrSampleLines[ahaTextBlock] := 12;
     MappedAttributes := TStringList.Create;
     with MappedAttributes do
@@ -3792,7 +3792,7 @@ begin
       'for ver in devel stable; do'#13#10 +
       '  if [ "x$FPCVersion" = "x$ver" ]; then'#13#10 +
       '  fi'#13#10 + 'done'#13#10 +
-      '# Text Block'#13#10 + #13#10;
+      '# Selected text'#13#10 + #13#10;
     AddAttrSampleLines[ahaTextBlock] := 12;
     MappedAttributes := TStringList.Create;
     with MappedAttributes do
@@ -3825,7 +3825,7 @@ begin
       '  for i in Liste1:'#13#10 +
       '    if i in Liste2:'#13#10 +
       '      Liste1.remove(i)'#13#10 +
-      '/* Text Block */'#13#10 + #13#10;
+      '/* Selected text */'#13#10 + #13#10;
     AddAttrSampleLines[ahaTextBlock] := 9;
     MappedAttributes := TStringList.Create;
     with MappedAttributes do
@@ -3957,7 +3957,7 @@ begin
       '};'#13#10 +
 
       #13#10 +
-      '/* Text Block */'#13#10 + #13#10;
+      '/* Selected text */'#13#10 + #13#10;
     AddAttrSampleLines[ahaTextBlock] := 2;
     MappedAttributes := TStringList.Create;
     with MappedAttributes do
