@@ -959,12 +959,21 @@ type
   EInvalidGraphic = class(EGraphicException);
   EInvalidGraphicOperation = class(EGraphicException);
 
+{$IF FPC_FullVersion >= 30301}
+type
+  TGradientDirection = FPCanvas.TFPGradientDirection;
+const
+  gdVertical = FPCanvas.gdVertical;
+  gdHorizontal = FPCanvas.gdHorizontal;
+{$ELSE}
 type
   TGradientDirection = (
     gdVertical,   // Fill vertical
     gdHorizontal  // Fill Horizontal
   );
+{$IFEND}
 
+type
   TAntialiasingMode = (
     amDontCare, // default antialiasing
     amOn,       // enabled
