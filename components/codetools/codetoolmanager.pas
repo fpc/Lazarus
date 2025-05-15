@@ -562,7 +562,8 @@ type
     function GatherOverloads(Code: TCodeBuffer; X,Y: integer;
           out Graph: TDeclarationOverloadsGraph): boolean;
 
-    // find references, rename identifier, remove identifier. For unit/program name see FindSourceNameReferences
+    // find references, rename identifier, remove identifier.
+    // For unit/program name see FindSourceNameReferences
     function FindReferences(IdentifierCode: TCodeBuffer;
           X, Y: integer; SearchInCode: TCodeBuffer; SkipComments: boolean;
           var ListOfPCodeXYPosition: TFPList;
@@ -584,16 +585,15 @@ type
           out ListOfSrcNameRefs: TObjectList; WithDuplicates: boolean = false): boolean;
     function SourceHasUnitInUses(Code: TCodeBuffer; const TargetUnitFilename: string;
           CheckImplementation: boolean = true): boolean;
-    //SourceHasUnitInUses compares Target SourceName with uses names (which might be shorter or different) -> ToDo: check if this function is needed
     function RenameSourceNameReferences(OldFilename, NewFilename, NewSrcname: string;
           ListOfSrcNameRefs: TObjectList): boolean;
 
     // find all references inside UnitCode to TargetCode
     function FindUnitReferences(UnitCode, TargetCode: TCodeBuffer;
-          SkipComments: boolean; var ListOfPCodeXYPosition: TFPList): boolean;
+          SkipComments: boolean; var ListOfPCodeXYPosition: TFPList): boolean; deprecated 'use FindSourceNameReferences instead';
     function FindUsedUnitReferences(Code: TCodeBuffer; X, Y: integer;
           SkipComments: boolean; out UsedUnitFilename: string;
-          var ListOfPCodeXYPosition: TFPList): boolean;
+          var ListOfPCodeXYPosition: TFPList): boolean; deprecated 'use FindSourceNameReferences instead';
 
     function ReplaceWord(Code: TCodeBuffer; const OldWord, NewWord: string;
           ChangeStrings: boolean): boolean;
@@ -604,12 +604,12 @@ type
           const WithExpr: string; // if empty: collect Candidates
           Candidates: TStrings): boolean;
     function ChangeParamList(Code: TCodeBuffer;
-       Changes: TObjectList; // list of TChangeParamListItem
-       var ProcPos: TCodeXYPosition; // if it is in this unit the proc declaration is changed and this position is cleared
-       TreeOfPCodeXYPosition: TAVLTree // positions in this unit are processed and removed from the tree
-       ): boolean;
+          Changes: TObjectList; // list of TChangeParamListItem
+          var ProcPos: TCodeXYPosition; // if it is in this unit the proc declaration is changed and this position is cleared
+          TreeOfPCodeXYPosition: TAVLTree // positions in this unit are processed and removed from the tree
+          ): boolean;
     procedure ConvertTreeOf_CodeXYPosToToolCleanPos(TreeOfPCodeXYPosition: TAVLTree;
-      out TreeOfPCodeToolPos: TAVLTree);
+          out TreeOfPCodeToolPos: TAVLTree);
 
     // resourcestring sections
     function GatherResourceStringSections(

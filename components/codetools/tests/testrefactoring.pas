@@ -85,6 +85,9 @@ type
     procedure TestRenameUsedUnit_FN_KeepShort;
     procedure TestRenameUsedUnit_InFilename;
     procedure TestRenameUsedUnit_LongestUnitnameWins;
+
+    // rename also in lfm
+    procedure TestRenameAlsoLFM_Variable;
   end;
 
 implementation
@@ -96,8 +99,8 @@ procedure TCustomTestRefactoring.RenameReferences(NewIdentifier: string; const F
 var
   Marker: TFDMarker;
   Tool: TCodeTool;
-  DeclX, DeclY, DeclTopLine: integer;
-  DeclCode: TCodeBuffer;
+  DeclX, DeclY, DeclTopLine, i: integer;
+  DeclCode, LFMCode, CurCode: TCodeBuffer;
   Files: TStringList;
   Graph: TUsesGraph;
   Completed: boolean;
@@ -105,7 +108,7 @@ var
   UGUnit: TUGUnit;
   DeclarationCaretXY: TPoint;
   PascalReferences: TAVLTree;
-  OldIdentifier: string;
+  OldIdentifier, LFMFilename: string;
 begin
   if not IsDottedIdentifier(NewIdentifier) then
     Fail('TCustomTestRefactoring.RenameReferences invalid NewName="'+NewIdentifier+'"');
@@ -167,6 +170,18 @@ begin
     end;
 
     // todo: check for conflicts
+
+    if frfIncludingLFM in Flags then begin
+      for i:=0 to Files.Count-1 do begin
+        CurCode:=CodeToolBoss.FindFile(Files[i]);
+        if CurCode=nil then
+          Fail('CodeToolBoss.FindReferencesInFiles 20250515144047 source lost: "'+Files[i]+'"');
+        LFMFilename:=ChangeFileExt(CurCode.Filename,'.lfm');
+        LFMCode:=CodeToolBoss.FindFile(LFMFilename);
+        if (LFMCode=nil) or LFMCode.IsDeleted then continue;
+        // todo
+      end;
+    end;
 
     if not CodeToolBoss.RenameIdentifier(PascalReferences,
       OldIdentifier, NewIdentifier, DeclCode, @DeclarationCaretXY)
@@ -1960,6 +1975,56 @@ begin
     RedUnit.IsDeleted:=true;
     RedGreenUnit.IsDeleted:=true;
     RedGreenBlueUnit.IsDeleted:=true;
+  end;
+end;
+
+procedure TTestRefactoring.TestRenameAlsoLFM_Variable;
+var
+  RedLFM, RedUnit: TCodeBuffer;
+begin
+  exit;
+
+  RedUnit:=CodeToolBoss.CreateFile('red.pas');
+  RedLFM:=CodeToolBoss.CreateFile(ChangeFileExt(Code.Filename,'.lfm'));
+  try
+    RedUnit.Source:='unit Red;'+LineEnding
+      +'interface'+LineEnding
+      +'type'+LineEnding
+      +'  TForm = class'+LineEnding
+      +'  end;'+LineEnding
+      +'  TButton = class'+LineEnding
+      +'  end;'+LineEnding
+      +'implementation'+LineEnding
+      +'end.';
+
+    RedLFM.Source:=LinesToStr([
+      'object Form1: TForm1',
+      '  Left = 353',
+      '  object Button1: TButton',
+      '  end',
+      'end']);
+
+    Add(['unit Test1;',
+      '{$mode objfpc}{$H+}',
+      'interface',
+      'uses red;',
+      'type',
+      '  TForm1 = class(TForm)',
+      '    Button1{#Rename}: TButton;',
+      '  end;',
+      'implementation',
+      'end.']);
+    RenameReferences('OkBtn',[frfIncludingLFM,frfIncludingLFMProps]);
+    CheckDiff(RedLFM,[
+    'object Form1: TForm1',
+    '  Left = 353',
+    '  object OkBtn: TButton',
+    '  end',
+    'end']);
+
+  finally
+    RedUnit.IsDeleted:=true;
+    RedLFM.IsDeleted:=true;
   end;
 end;
 
