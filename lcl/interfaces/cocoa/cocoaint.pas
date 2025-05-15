@@ -48,11 +48,13 @@ type
     procedure timerFireMethod(atimer: NSTimer); message 'timerFireMethod:';
   end;
 
+  TCocoaAppOnOpenURLNotify = procedure (const url: NSURL) of object;
+
   { TAppDelegate }
 
-  TAppDelegate = objcclass(NSObject, NSApplicationDelegateProtocol)
+  TAppDelegate = objcclass(NSObject, NSApplicationDelegateProtocolFix)
   public
-    procedure application_openFiles(sender: NSApplication; filenames: NSArray);
+    procedure application_openURLs(sender: NSApplication; urls: NSArray);
     procedure applicationDidHide(notification: NSNotification);
     procedure applicationDidUnhide(notification: NSNotification);
     procedure applicationDidBecomeActive(notification: NSNotification);
@@ -91,6 +93,13 @@ type
     function isRunning: objc.ObjCBOOL; override;
     procedure stop(sender: id); override;
     {$endif}
+
+    procedure onOpenURL( const url: NSURL ); message 'lclOnOpenURL:';
+  private
+    _onOpenURLObserver: TCocoaAppOnOpenURLNotify;
+  public
+    procedure setOpenURLObserver( const onOpenURLObserver: TCocoaAppOnOpenURLNotify );
+      message 'lclSetOpenURLObserver:';
   end;
 
   { TModalSession }
@@ -751,6 +760,18 @@ begin
   Stopped := true;
   inherited stop(sender);
 end;
+
+procedure TCocoaApplication.onOpenURL(const url: NSURL);
+begin
+  if Assigned(_onOpenURLObserver) then
+    _onOpenURLObserver( url );
+end;
+
+procedure TCocoaApplication.setOpenURLObserver( const onOpenURLObserver: TCocoaAppOnOpenURLNotify);
+begin
+  _onOpenURLObserver:= onOpenURLObserver;
+end;
+
 {$endif}
 
 type

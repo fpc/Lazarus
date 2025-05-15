@@ -375,6 +375,10 @@ type
     function effectiveAppearance: NSAppearance; message 'effectiveAppearance'; // 10.14 (10.13)
   end;
 
+  NSApplicationDelegateProtocolFix = objcprotocol external (NSApplicationDelegateProtocol)
+    procedure application_openURLs (sender: NSApplication; urls: NSArray); message 'application:openURLs:'; // 10.13
+  end;
+
   {$ifdef BOOLFIX}
   NSButtonFix = objccategory external(NSButton)
     procedure setBordered_(flag: ObjCBool); message 'setBordered:';

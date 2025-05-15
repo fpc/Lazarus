@@ -38,7 +38,7 @@ begin
   { Creates the application NSApp object }
   FNSApp := InitApplication;
   FNSApp_Delegate := TAppDelegate.alloc.init;
-  FNSApp.setDelegate(FNSApp_Delegate);
+  FNSApp.setDelegate( NSApplicationDelegateProtocol(FNSApp_Delegate) );
   {$ifdef COCOALOOPOVERRIDE}
   FNSApp.finishLaunching;
   {$endif}
@@ -602,9 +602,26 @@ begin
   if Assigned(func) then func;
 end;
 
-procedure TAppDelegate.application_openFiles(sender: NSApplication; filenames: NSArray);
+// when the delegate implements application_openURLs(), macOS no longer calls
+// application_openFiles(). therefore, the action in application_openURLs is
+// determined based on the type of URL.
+// if they are local files, call WidgetSet.DropFiles(), otherwise call NSAPP.onOpenURL().
+procedure TAppDelegate.application_openURLs(sender: NSApplication; urls: NSArray);
+var
+  url: NSURL;
+  filenames: NSMutableArray;
 begin
-  TCocoaWidgetSet(WidgetSet).DropFiles(filenames);
+  filenames:= NSMutableArray.new;
+  for url in urls do begin
+    if url.isFileURL then begin
+      filenames.addObject( url.path );
+    end else begin
+      TCocoaApplication(NSAPP).onOpenURL( url );
+    end;
+  end;
+  if filenames.count > 0 then
+    TCocoaWidgetSet(WidgetSet).DropFiles(filenames);
+  filenames.release;
 end;
 
 procedure TAppDelegate.applicationDidHide(notification: NSNotification);
