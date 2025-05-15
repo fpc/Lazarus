@@ -58,7 +58,7 @@ uses
   // RTL + FCL
   Classes, SysUtils, Types, Math,
   // LCL
-  Buttons, Menus, ComCtrls, Controls, Graphics, Dialogs, Forms, ImgList,
+  Buttons, Menus, ComCtrls, Controls, Graphics, Dialogs, Forms, ImgList, LCLProc,
   // LazUtils
   LazUtilities, LazFileUtils, LazLoggerBase, LazTracer, LazUTF8,
   // Codetools
@@ -1363,7 +1363,7 @@ begin
     CreateMenuSeparatorSection(mnuRun,itmRunBuilding,'itmRunBuilding');
     ParentMI:=itmRunBuilding;
     CreateMenuItem(ParentMI,itmRunMenuCompile,'itmRunMenuCompile',lisCompile,'menu_compile');
-    CreateMenuItem(ParentMI,itmRunMenuBuild,'itmRunMenuBuild',lisBuild,'menu_build');
+    CreateMenuItem(ParentMI,itmRunMenuBuild,'itmRunMenuBuild',RemoveAmpersands(lisBuild),'menu_build');
     CreateMenuItem(ParentMI,itmRunMenuQuickCompile,'itmRunMenuQuickCompile',lisMenuQuickCompile,'menu_quick_compile');
     CreateMenuItem(ParentMI,itmRunMenuCleanUpAndBuild,'itmRunMenuCleanUpAndBuild',lisMenuCleanUpAndBuild,'menu_build_clean');
     CreateMenuItem(ParentMI,itmRunMenuBuildManyModes,'itmRunMenuBuildManyModes',lisMenuCompileManyModes,'menu_build_all');

@@ -138,6 +138,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
           BorderSpacing.Top = 5
           BorderSpacing.Around = 6
           Caption = 'Profile to Build'
+          FocusControl = BuildProfileComboBox
           Font.Style = [fsBold]
           ParentColor = False
           ParentFont = False
@@ -193,6 +194,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
           Alignment = taRightJustify
           BorderSpacing.Top = 6
           Caption = 'Options'
+          FocusControl = OptionsMemo
           Layout = tlBottom
           ParentColor = False
         end
@@ -228,6 +230,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
           BorderSpacing.Left = 6
           BorderSpacing.Top = 6
           Caption = 'Defines'
+          FocusControl = DefinesListBox
           ParentColor = False
         end
         object DefinesListBox: TCheckListBox
@@ -258,6 +261,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
           Width = 89
           BorderSpacing.Top = 6
           Caption = 'LCL Widget Type'
+          FocusControl = LCLWidgetTypeComboBox
           ParentColor = False
         end
         object LCLWidgetTypeComboBox: TComboBox
