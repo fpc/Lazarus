@@ -57,8 +57,8 @@ begin
   end;
   //debugln(['TCustomImage.GetCanvas B ',DbgSName(Self),' ',DbgSName(FPicture.Graphic),' FUseParentCanvas=',FUseAncestorCanvas]);
   // try draw on the bitmap, not on the form's canvas
-  if not FUseAncestorCanvas and (FPicture.Graphic is TBitmap) then
-    Result := TBitmap(FPicture.Graphic).Canvas
+  if not FUseAncestorCanvas and (FPicture.Graphic is TCustomBitmap) then
+    Result := TCustomBitmap(FPicture.Graphic).Canvas
   else
     Result := inherited Canvas;
 end;
