@@ -578,6 +578,9 @@ type
           DeclarationCode: TCodeBuffer; DeclarationCaretXY: PPoint): boolean;
     function RenameIdentifierInLFMs(TreeOfPCodeXYPosition: TAVLTree;
           const OldIdentifier, NewIdentifier: string): boolean;
+    function UpdateFindIdentifierRefCache(IdentifierCode: TCodeBuffer; X, Y: integer;
+          var Cache: TFindIdentifierReferenceCache  // you must free Cache
+          ): boolean;
 
     // find all references of the source name of a unit, program
     function FindSourceNameReferences(TargetFilename: string;
@@ -804,11 +807,16 @@ type
     property OnFindDefineProperty: TOnFindDefineProperty
                                            read FOnFindDefineProperty
                                            write FOnFindDefineProperty;
-    function FindLFMFileName(Code: TCodeBuffer): string;
+    function FindLFMFileName(Code: TCodeBuffer): string; // checks old lrs file first
     function CheckLFM(UnitCode, LFMBuf: TCodeBuffer; out LFMTree: TLFMTree;
           RootMustBeClassInUnit, RootMustBeClassInIntf,
           ObjectsMustExist: boolean): boolean;
     function ParseLFM(LFMBuf: TCodeBuffer; out LFMTree: TLFMTree): boolean;
+    function FindLFMReferences(IdentifierCode: TCodeBuffer;
+          X, Y: integer; PascalCode, LFMCode: TCodeBuffer;
+          var LFMReferences: TCodeXYPositions;
+          var Cache: TFindIdentifierReferenceCache;  // you must free Cache
+          const Flags: TFindRefsFlags = frfAllLFM): boolean;
     function GatherReferencesInLFM(PascalBuffer, LFMBuffer: TCodeBuffer;
           const Identifier: string; DeclTool: TCodeTool; DeclNode: TCodeTreeNode;
           var LFMReferences: TCodeXYPositions;
@@ -2905,8 +2913,6 @@ function TCodeToolManager.FindReferences(IdentifierCode: TCodeBuffer; X, Y: inte
   var Cache: TFindIdentifierReferenceCache; const Flags: TFindRefsFlags): boolean;
 var
   CursorPos: TCodeXYPosition;
-  NewTopLine: integer;
-  ImplementationNode: TCodeTreeNode;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
@@ -2916,70 +2922,13 @@ begin
     debugln(['TCodeToolManager.FindReferences A SearchInCode=',SearchInCode.Filename]);
   {$ENDIF}
   ListOfPCodeXYPosition:=nil;
-  if Cache=nil then
-    Cache:=TFindIdentifierReferenceCache.Create;
-  if (Cache.SourcesChangeStep=SourceCache.ChangeStamp)
-  and (Cache.SourcesChangeStep<>CTInvalidChangeStamp64)
-  and (Cache.FilesChangeStep=FileStateCache.TimeStamp)
-  and (Cache.FilesChangeStep<>CTInvalidChangeStamp64)
-  and (Cache.InitValuesChangeStep=DefineTree.ChangeStep)
-  and (Cache.InitValuesChangeStep<>CTInvalidChangeStamp)
-  and (Cache.IdentifierCode=IdentifierCode) and (Cache.X=X) and (Cache.Y=Y)
-  then begin
-    //debugln(['TCodeToolManager.FindReferences cache valid']);
-    // all sources and values are the same => use cache
-    Result:=true;
-  end else begin
-    //debugln(['TCodeToolManager.FindReferences cache not valid']);
-    //debugln(['TCodeToolManager.FindReferences IdentifierCode=',Cache.IdentifierCode=IdentifierCode,
-    //  ' X=',Cache.X=X,' Y=',Cache.Y=Y,
-    //  ' SourcesChangeStep=',Cache.SourcesChangeStep=SourceCache.ChangeStamp,',',Cache.SourcesChangeStep=CTInvalidChangeStamp64,
-    //  ' FilesChangeStep=',Cache.FilesChangeStep=FileStateCache.TimeStamp,',',Cache.FilesChangeStep=CTInvalidChangeStamp64,
-    //  ' InitValuesChangeStep=',Cache.InitValuesChangeStep=DefineTree.ChangeStep,',',Cache.InitValuesChangeStep=CTInvalidChangeStamp,
-    //  '']);
-    Cache.Clear;
-    Cache.IdentifierCode:=IdentifierCode;
-    Cache.X:=X;
-    Cache.Y:=Y;
-    Cache.SourcesChangeStep:=SourceCache.ChangeStamp;
-    Cache.FilesChangeStep:=FileStateCache.TimeStamp;
-    Cache.InitValuesChangeStep:=DefineTree.ChangeStep;
 
-    if not InitCurCodeTool(IdentifierCode) then exit;
-    CursorPos.X:=X;
-    CursorPos.Y:=Y;
-    CursorPos.Code:=IdentifierCode;
-    try
-      Result:=FCurCodeTool.FindDeclaration(CursorPos,[fsfFindMainDeclaration,fsfSearchSourceName],
-                       Cache.NewTool,Cache.NewNode,Cache.NewPos,NewTopLine);
-    except
-      on e: Exception do HandleException(e);
-    end;
-    if not Result then begin
-      debugln(['TCodeToolManager.FindReferences FCurCodeTool.FindDeclaration failed']);
-      exit;
-    end;
-    // check if scope can be limited
-    if Cache.NewTool<>nil then begin
-      Cache.IsPrivate:=(Cache.NewTool.GetSourceType in [ctnLibrary,ctnProgram]);
-      if not Cache.IsPrivate then begin
-        ImplementationNode:=Cache.NewTool.FindImplementationNode;
-        if (ImplementationNode<>nil)
-        and (Cache.NewNode.StartPos>=ImplementationNode.StartPos) then
-          Cache.IsPrivate:=true;
-      end;
-      if not Cache.IsPrivate then begin
-        if (Cache.NewNode.GetNodeOfTypes([ctnParameterList,ctnClassPrivate])<>nil) then
-          Cache.IsPrivate:=true;
-      end;
-    end;
-  end;
-  if (not Result) or (Cache.NewNode=nil) then begin
+  if not UpdateFindIdentifierRefCache(IdentifierCode,X,Y,Cache)
+      or (Cache.NewNode=nil) then begin
     DebugLn('TCodeToolManager.FindReferences unable to FindDeclaration ',IdentifierCode.Filename,' x=',dbgs(x),' y=',dbgs(y));
     exit;
   end;
   Result:=true;
-  if NewTopLine=0 then ;
   if not InitCurCodeTool(SearchInCode) then exit;
   if Cache.IsPrivate and (FCurCodeTool<>Cache.NewTool) then begin
     {$IFDEF VerboseFindReferences}
@@ -2990,7 +2939,7 @@ begin
 
   CursorPos:=Cache.NewPos;
   {$IF defined(CTDEBUG) or defined(VerboseFindReferences)}
-  DebugLn('TCodeToolManager.FindReferences Searching ',dbgs(FCurCodeTool.Scanner<>nil),' for reference to x=',dbgs(CursorPos.X),' y=',dbgs(CursorPos.Y),' ',CursorPos.Code.Filename);
+  DebugLn('TCodeToolManager.FindReferences Searching "',SearchInCode.Filename,'" for reference to x=',dbgs(CursorPos.X),' y=',dbgs(CursorPos.Y),' ',CursorPos.Code.Filename);
   {$ENDIF}
   try
     Result:=FCurCodeTool.FindReferences(CursorPos,SkipComments,
@@ -3488,6 +3437,77 @@ begin
 
   //DebugLn('TCodeToolManager.RenameIdentifierInLFMs Success');
   Result:=true;
+end;
+
+function TCodeToolManager.UpdateFindIdentifierRefCache(IdentifierCode: TCodeBuffer; X, Y: integer;
+  var Cache: TFindIdentifierReferenceCache): boolean;
+var
+  CursorPos: TCodeXYPosition;
+  NewTopLine: integer;
+  ImplementationNode: TCodeTreeNode;
+begin
+  Result:=false;
+  if Cache=nil then
+    Cache:=TFindIdentifierReferenceCache.Create;
+  if (Cache.SourcesChangeStep=SourceCache.ChangeStamp)
+  and (Cache.SourcesChangeStep<>CTInvalidChangeStamp64)
+  and (Cache.FilesChangeStep=FileStateCache.TimeStamp)
+  and (Cache.FilesChangeStep<>CTInvalidChangeStamp64)
+  and (Cache.InitValuesChangeStep=DefineTree.ChangeStep)
+  and (Cache.InitValuesChangeStep<>CTInvalidChangeStamp)
+  and (Cache.IdentifierCode=IdentifierCode) and (Cache.X=X) and (Cache.Y=Y)
+  then begin
+    //debugln(['TCodeToolManager.FindReferences cache valid']);
+    // all sources and values are the same => use cache
+    Result:=true;
+  end else begin
+    //debugln(['TCodeToolManager.FindReferences cache not valid']);
+    //debugln(['TCodeToolManager.FindReferences IdentifierCode=',Cache.IdentifierCode=IdentifierCode,
+    //  ' X=',Cache.X=X,' Y=',Cache.Y=Y,
+    //  ' SourcesChangeStep=',Cache.SourcesChangeStep=SourceCache.ChangeStamp,',',Cache.SourcesChangeStep=CTInvalidChangeStamp64,
+    //  ' FilesChangeStep=',Cache.FilesChangeStep=FileStateCache.TimeStamp,',',Cache.FilesChangeStep=CTInvalidChangeStamp64,
+    //  ' InitValuesChangeStep=',Cache.InitValuesChangeStep=DefineTree.ChangeStep,',',Cache.InitValuesChangeStep=CTInvalidChangeStamp,
+    //  '']);
+    Cache.Clear;
+    Cache.IdentifierCode:=IdentifierCode;
+    Cache.X:=X;
+    Cache.Y:=Y;
+    Cache.SourcesChangeStep:=SourceCache.ChangeStamp;
+    Cache.FilesChangeStep:=FileStateCache.TimeStamp;
+    Cache.InitValuesChangeStep:=DefineTree.ChangeStep;
+
+    if not InitCurCodeTool(IdentifierCode) then exit;
+    CursorPos.X:=X;
+    CursorPos.Y:=Y;
+    CursorPos.Code:=IdentifierCode;
+    try
+      Result:=FCurCodeTool.FindDeclaration(CursorPos,[fsfFindMainDeclaration,fsfSearchSourceName],
+                       Cache.NewTool,Cache.NewNode,Cache.NewPos,NewTopLine);
+    except
+      on e: Exception do HandleException(e);
+    end;
+    if not Result then begin
+      debugln(['TCodeToolManager.UpdateFindIdentifierRefCache FCurCodeTool.FindDeclaration failed']);
+      exit;
+    end;
+
+    GetIdentifierAt(Cache.NewPos.Code,Cache.NewPos.X,Cache.NewPos.Y,Cache.Identifier);
+
+    // check if scope can be limited
+    if Cache.NewTool<>nil then begin
+      Cache.IsPrivate:=(Cache.NewTool.GetSourceType in [ctnLibrary,ctnProgram]);
+      if not Cache.IsPrivate then begin
+        ImplementationNode:=Cache.NewTool.FindImplementationNode;
+        if (ImplementationNode<>nil)
+        and (Cache.NewNode.StartPos>=ImplementationNode.StartPos) then
+          Cache.IsPrivate:=true;
+      end;
+      if not Cache.IsPrivate then begin
+        if (Cache.NewNode.GetNodeOfTypes([ctnParameterList,ctnClassPrivate])<>nil) then
+          Cache.IsPrivate:=true;
+      end;
+    end;
+  end;
 end;
 
 function TCodeToolManager.ReplaceWord(Code: TCodeBuffer; const OldWord,
@@ -6048,6 +6068,53 @@ begin
   except
     on e: Exception do HandleException(e);
   end;
+end;
+
+function TCodeToolManager.FindLFMReferences(IdentifierCode: TCodeBuffer; X, Y: integer; PascalCode,
+  LFMCode: TCodeBuffer; var LFMReferences: TCodeXYPositions;
+  var Cache: TFindIdentifierReferenceCache; const Flags: TFindRefsFlags): boolean;
+var
+  LFMTree: TLFMTree;
+  RootMustBeClassInUnit, RootMustBeClassInIntf, ObjectsMustExist: Boolean;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindLFMReferences A ',IdentifierCode.Filename,' x=',dbgs(x),' y=',dbgs(y),' LFM=',LFMCode.Filename)
+  {$ENDIF}
+  if not UpdateFindIdentifierRefCache(IdentifierCode,X,Y,Cache)
+      or (Cache.NewNode=nil) then begin
+    DebugLn('TCodeToolManager.FindLFMReferences unable to FindDeclaration ',IdentifierCode.Filename,' x=',dbgs(x),' y=',dbgs(y));
+    exit;
+  end;
+  Result:=true;
+  if not InitCurCodeTool(PascalCode) then exit;
+  if Cache.IsPrivate and (FCurCodeTool<>Cache.NewTool) then begin
+    {$IFDEF VerboseFindReferences}
+    debugln(['TCodeToolManager.FindLFMReferences identifier is not reachable from unit "',PascalCode.Filename,'" => skipping search']);
+    {$ENDIF}
+    exit(true);
+  end;
+
+  {$IF defined(CTDEBUG) or defined(VerboseFindReferences)}
+  DebugLn('TCodeToolManager.FindLFMReferences Searching "',LFMCode.Filename,'" for reference to ',dbgs(Cache.NewPos));
+  {$ENDIF}
+  RootMustBeClassInUnit:=true;
+  RootMustBeClassInIntf:=true;
+  ObjectsMustExist:=true;
+  try
+    if LFMReferences=nil then
+      LFMReferences:=TCodeXYPositions.Create;
+    Result:=FCurCodeTool.GatherReferencesInLFM(LFMCode, LFMTree,
+      OnFindDefinePropertyForContext,
+      Cache.Identifier, TCodeTool(Cache.NewTool), Cache.NewNode,
+      LFMReferences,
+      Flags, RootMustBeClassInUnit, RootMustBeClassInIntf, ObjectsMustExist);
+  except
+    on e: Exception do HandleException(e);
+  end;
+  {$IFDEF CTDEBUG}
+  DebugLn(['TCodeToolManager.FindLFMReferences END ',Result]);
+  {$ENDIF}
 end;
 
 function TCodeToolManager.GatherReferencesInLFM(PascalBuffer, LFMBuffer: TCodeBuffer;

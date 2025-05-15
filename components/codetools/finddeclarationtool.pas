@@ -732,6 +732,7 @@ type
   TFindFileAtCursorFlags = set of TFindFileAtCursorFlag;
 const
   DefaultFindFileAtCursorAllowed = [Low(TFindFileAtCursorFlag)..high(TFindFileAtCursorFlag)];
+  frfAllLFM = [frfIncludingLFM,frfIncludingLFMProps];
 
 type
   //----------------------------------------------------------------------------

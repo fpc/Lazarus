@@ -2552,7 +2552,7 @@ begin
   Ok:=false;
   try
     if (FPCSrcDir='') or (not DirPathExists(FPCSrcDir)) then begin
-      DebugLn(['Warning: [CreateFPCSrcTemplate] FPCSrcDir does not exist: FPCSrcDir="',FPCSrcDir,'"']);
+      DebugLn(['Warning: [CreateFPCSrcTemplate] FPCSrcDir does not exist (env FPCDIR): FPCSrcDir="',FPCSrcDir,'"']);
       exit;
     end;
     DS:=PathDelim;

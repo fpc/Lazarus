@@ -109,6 +109,8 @@ var
   DeclarationCaretXY: TPoint;
   PascalReferences: TAVLTree;
   OldIdentifier, LFMFilename: string;
+  LFMFindRefCache: TFindIdentifierReferenceCache;
+  LFMReferences: TCodeXYPositions;
 begin
   if not IsDottedIdentifier(NewIdentifier) then
     Fail('TCustomTestRefactoring.RenameReferences invalid NewName="'+NewIdentifier+'"');
@@ -145,6 +147,8 @@ begin
   Files:=TStringList.Create;
   Graph:=nil;
   PascalReferences:=nil;
+  LFMReferences:=nil;
+  LFMFindRefCache:=nil;
   try
     Files.Add(DeclCode.Filename);
     if CompareFilenames(DeclCode.Filename,Code.Filename)<>0 then
@@ -166,12 +170,18 @@ begin
     // search pascal source references
     if not CodeToolBoss.FindReferencesInFiles(Files,DeclCode,
         DeclarationCaretXY,true,PascalReferences,Flags) then begin
-      Fail('CodeToolBoss.FindReferencesInFiles failed at '+dbgs(DeclarationCaretXY)+' File='+Code.Filename);
+      Fail('CodeToolBoss.FindReferencesInFiles 20250515155115 failed at '+dbgs(DeclarationCaretXY)+' File='+Code.Filename);
     end;
 
     // todo: check for conflicts
 
     if frfIncludingLFM in Flags then begin
+      if not CodeToolBoss.UpdateFindIdentifierRefCache(
+             DeclCode,DeclarationCaretXY.X,DeclarationCaretXY.Y,LFMFindRefCache)
+          or (LFMFindRefCache.NewNode=nil) then begin
+        Fail('CodeToolBoss.UpdateFindIdentifierRefCache 20250515155111 failed at '+dbgs(DeclarationCaretXY)+' File='+Code.Filename);
+      end;
+
       for i:=0 to Files.Count-1 do begin
         CurCode:=CodeToolBoss.FindFile(Files[i]);
         if CurCode=nil then
@@ -179,7 +189,10 @@ begin
         LFMFilename:=ChangeFileExt(CurCode.Filename,'.lfm');
         LFMCode:=CodeToolBoss.FindFile(LFMFilename);
         if (LFMCode=nil) or LFMCode.IsDeleted then continue;
-        // todo
+
+        if not CodeToolBoss.FindLFMReferences(LFMFindRefCache.NewPos.Code,LFMFindRefCache.NewPos.X,LFMFindRefCache.NewPos.Y,
+            CurCode,LFMCode,LFMReferences,LFMFindRefCache) then
+          Fail('CodeToolBoss.FindLFMReferences 20250515155330 failed for lfm: "'+LFMCode.Filename+'"');
       end;
     end;
 
@@ -192,6 +205,7 @@ begin
     CodeToolBoss.FreeTreeOfPCodeXYPosition(PascalReferences);
     Graph.Free;
     Files.Free;
+    LFMFindRefCache.Free;
   end;
 end;
 

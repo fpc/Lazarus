@@ -52,6 +52,7 @@ type
     NewTool: TFindDeclarationTool;
     NewNode: TCodeTreeNode;
     NewPos: TCodeXYPosition;
+    Identifier: string;
     IsPrivate: boolean;
     procedure Clear;
   end;
