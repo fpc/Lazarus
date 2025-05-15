@@ -921,6 +921,8 @@ begin
        ( (MarkupInfoCurLineMerged.Background = clNone) or (CaretRow < 0))
     then
   begin
+    AClip.Left := AClip.Left + FLeftOffset;
+    AClip.Right := AClip.Right - FRightOffset;
     Paint(Canvas, AClip, FirstLine, LastLine);
     exit;
   end;
