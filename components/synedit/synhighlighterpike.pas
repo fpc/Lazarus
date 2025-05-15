@@ -403,7 +403,7 @@ begin
             '        write("%O\n", cur_word);'#13#10 +
             '    return 0;'#13#10 +
             '}'#13#10 +
-            '/* Text Block */'#13#10 + #13#10;
+            '/* Selected text */'#13#10 + #13#10;
 end;
 
 class function TSynPikeSyn.GetLanguageName: string;
