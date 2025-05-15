@@ -54,8 +54,7 @@ type
 
   TAppDelegate = objcclass(NSObject, NSApplicationDelegateProtocolFix)
   public
-    procedure application_openFiles(sender: NSApplication; filenames: NSArray);
-    procedure application_openURLs (sender: NSApplication; urls: NSArray);
+    procedure application_openURLs(sender: NSApplication; urls: NSArray);
     procedure applicationDidHide(notification: NSNotification);
     procedure applicationDidUnhide(notification: NSNotification);
     procedure applicationDidBecomeActive(notification: NSNotification);

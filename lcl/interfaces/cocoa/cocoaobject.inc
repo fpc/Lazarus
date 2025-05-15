@@ -602,18 +602,26 @@ begin
   if Assigned(func) then func;
 end;
 
-procedure TAppDelegate.application_openFiles(sender: NSApplication; filenames: NSArray);
-begin
-  TCocoaWidgetSet(WidgetSet).DropFiles(filenames);
-end;
-
+// when the delegate implements application_openURLs(), macOS no longer calls
+// application_openFiles(). therefore, the action in application_openURLs is
+// determined based on the type of URL.
+// if they are local files, call WidgetSet.DropFiles(), otherwise call NSAPP.onOpenURL().
 procedure TAppDelegate.application_openURLs(sender: NSApplication; urls: NSArray);
 var
   url: NSURL;
+  filenames: NSMutableArray;
 begin
+  filenames:= NSMutableArray.new;
   for url in urls do begin
-    TCocoaApplication(NSAPP).onOpenURL( url );
+    if url.isFileURL then begin
+      filenames.addObject( url.path );
+    end else begin
+      TCocoaApplication(NSAPP).onOpenURL( url );
+    end;
   end;
+  if filenames.count > 0 then
+    TCocoaWidgetSet(WidgetSet).DropFiles(filenames);
+  filenames.release;
 end;
 
 procedure TAppDelegate.applicationDidHide(notification: NSNotification);
