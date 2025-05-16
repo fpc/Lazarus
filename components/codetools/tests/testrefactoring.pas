@@ -1994,12 +1994,10 @@ end;
 
 procedure TTestRefactoring.TestRenameAlsoLFM_Variable;
 var
-  RedLFM, RedUnit: TCodeBuffer;
+  Test1LFM, RedUnit: TCodeBuffer;
 begin
-  exit;
-
   RedUnit:=CodeToolBoss.CreateFile('red.pas');
-  RedLFM:=CodeToolBoss.CreateFile(ChangeFileExt(Code.Filename,'.lfm'));
+  Test1LFM:=CodeToolBoss.CreateFile(ChangeFileExt(Code.Filename,'.lfm'));
   try
     RedUnit.Source:='unit Red;'+LineEnding
       +'interface'+LineEnding
@@ -2011,7 +2009,7 @@ begin
       +'implementation'+LineEnding
       +'end.';
 
-    RedLFM.Source:=LinesToStr([
+    Test1LFM.Source:=LinesToStr([
       'object Form1: TForm1',
       '  Left = 353',
       '  object Button1: TButton',
@@ -2029,7 +2027,7 @@ begin
       'implementation',
       'end.']);
     RenameReferences('OkBtn',[frfIncludingLFM,frfIncludingLFMProps]);
-    CheckDiff(RedLFM,[
+    CheckDiff(Test1LFM,[
     'object Form1: TForm1',
     '  Left = 353',
     '  object OkBtn: TButton',
@@ -2038,7 +2036,7 @@ begin
 
   finally
     RedUnit.IsDeleted:=true;
-    RedLFM.IsDeleted:=true;
+    Test1LFM.IsDeleted:=true;
   end;
 end;
 
