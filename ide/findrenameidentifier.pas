@@ -538,6 +538,7 @@ var
   TreeOfPCodeXYPosition, LFMTreeOfPCodeXYPosition: TAVLTree;
   Refs, OldRefs: TSrcNameRefs;
   AUnitInfo: TUnitInfo;
+  PageIdx,WinID:integer;
 begin
   Result:=mrCancel;
   if not LazarusIDE.BeginCodeTools then exit(mrCancel);
@@ -850,6 +851,13 @@ begin
               CloseUnitComponent(AUnitInfo, [cfCloseDependencies]);
               SaveEditorFile(AUnitInfo.Filename,[sfProjectSaving, sfSkipReferences]);
               SaveEditorFile(Code.Filename,[sfProjectSaving, sfSkipReferences]);
+
+              PageIdx:=AUnitInfo.EditorInfo[0].PageIndex;
+              WinID:=AUnitInfo.EditorInfo[0].WindowID;
+
+              OpenEditorFile(Code.Filename,PageIdx,WinID,AUnitInfo.EditorInfo[0],
+                [],true);
+
             end;
           end;
         end;
