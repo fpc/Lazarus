@@ -477,9 +477,10 @@ for the rectangular region.
 <seealso/>
 </element>
 
-<!-- constructor Visibility: public -->
 <element name="TLazRegion.Create">
-<short>Constructor for the class instance.</short>
+<short>
+Constructor for the class instance.
+</short>
 <descr>
 <p>
 <var>Create</var> is the constructor for the class instance. Create calls the 
@@ -488,26 +489,34 @@ resources needed for the <var>Parts</var> member, and sets the default value
 for <var>IsSimpleRectRegion</var> to <b>True</b>.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TLazRegion.Clear"/>
+<link id="TLazRegion.Destroy"/>
+<link id="TLazRegion.IsSimpleRectRegion"/>
+<link id="TLazRegion.Parts"/>
+<link id="TLazRegionPart"/>
+</seealso>
 </element>
 
-<!-- destructor Visibility: public -->
 <element name="TLazRegion.Destroy">
-<short>Destructor for the class instance.</short>
+<short>
+Destructor for the class instance.
+</short>
 <descr>
 <p>
 <var>Destroy</var> is the overridden destructor for the class instance. 
-Destroy ensures that resource allocated for the <var>Parts</var> member are 
-freed. Destroy calls the inherited destructor prior to exiting from the 
-method.
+Destroy ensures that resources allocated to or stored in the <var>Parts</var> 
+member are freed. It calls Clear to free each of the TLazRegionPart instances 
+stored in Parts, and frees the list storage used for the Parts member. Destroy 
+calls the inherited virtual destructor prior to exiting from the method.
 </p>
-<remark>
-Destroy does not call <var>Parts.Clear</var> prior to freeing the 
-<var>Parts</var> member; that action is performed in the destructor for the 
-<var>TFPList</var> class instance.
-</remark>
 </descr>
-<seealso/>
+<seealso>
+<link id="TLazRegion.Clear"/>
+<link id="TLazRegion.Create"/>
+<link id="TLazRegion.Parts"/>
+<link id="TLazRegionPart"/>
+</seealso>
 </element>
 
 <element name="TLazRegion.Assign">
@@ -527,15 +536,23 @@ region.
 
 <element name="TLazRegion.Clear">
 <short>
-Frees all of the TLazRegionPart instances in Parts, and clears the list.
+Frees the TLazRegionPart instances in Parts, and clears the list storage.
 </short>
 <descr>
 <p>
-Frees all of the <var>TLazRegionPart</var> instances in the <var>Parts</var> 
-member, and clears the list.
+Frees each of the <var>TLazRegionPart</var> instances in the <var>Parts</var> 
+member. The Clear method in Parts is called to reset the Count, Capacity, and 
+internal storage for the list.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TLazRegion.Parts"/>
+<link id="TLazRegionPart"/>
+<link id="#rtl.classes.TFPList.Clear">TFPList.Clear</link>
+<link id="#rtl.classes.TFPList.Count">TFPList.Count</link>
+<link id="#rtl.classes.TFPList.Capacity">TFPList.Capacity</link>
+<link id="#rtl.classes.TFPList.List">TFPList.List</link>
+</seealso>
 </element>
 
 <element name="TLazRegion.CombineWith">
