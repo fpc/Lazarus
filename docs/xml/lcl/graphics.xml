@@ -7293,15 +7293,81 @@ operation.
 </element>
 
 <element name="TGradientDirection">
-<short>Represents fill directions for gradients.</short>
-<descr/>
-<seealso/>
+<short>
+Represents the fill directions used for gradient fills.
+</short>
+<descr>
+<p>
+<var>TGradientDirection</var> is an enumerated type with values that control 
+the fill direction used for a gradient color fill. It is an alias to the 
+TFPGradientDirection type defined in the FCL (<file>fpcanvas.pp</file>) for 
+compiler versions starting with 3.3.1. Separate constant aliases are defined 
+for the gdVertical and gdHorizontal values for these compiler versions.
+</p>
+<p>
+Previous FPC versions define the enumeration values in this unit.
+</p>
+<p>
+TGradientDirection is the type used for the argument passed to the 
+<var>TCanvas.GradientFill</var> method which controls the fill direction or 
+orientation for the colors used to fill a rectangular region on the canvas.
+</p>
+</descr>
+<version>
+Modified in LCL version 4.2 to be an alias to the TFPGradientDirection type 
+defined in the FCL for FPC compiler versions 3.3.1 and higher.
+</version>
+<seealso>
+<link id="TCanvas.GradientFill"/>
+<!--
+not currently documented in FCL
+<link id="#fcl.fpcanvas.TFPGradientDirection"/>
+<link id="#fcl.fpcanvas.gdVertical"/>
+<link id="#fcl.fpcanvas.gdHorizontal"/>
+-->
+</seealso>
 </element>
 <element name="TGradientDirection.gdVertical">
-<short>Gradient fill direction is vertically oriented.</short>
+<short>
+Gradient fill direction is vertically oriented.
+</short>
 </element>
 <element name="TGradientDirection.gdHorizontal">
-<short>Gradient fill direction is horizontally oriented.</short>
+<short>
+Gradient fill direction is horizontally oriented.
+</short>
+</element>
+
+<element name="gdVertical">
+<short>
+Alias to the gdVertical constant defined in FCL.
+</short>
+<descr>
+<p>
+Defined for FPC compiler version 3.3.1 and higher.
+</p>
+</descr>
+<seealso>
+<link id="gdHorizontal"/>
+<link id="TGradientDirection"/>
+<link id="TCanvas.GradientFill"/>
+</seealso>
+</element>
+
+<element name="gdHorizontal">
+<short>
+Alias to the gdHorizontal constant defined in FCL.
+</short>
+<descr>
+<p>
+Defined for FPC compiler version 3.3.1 and higher.
+</p>
+</descr>
+<seealso>
+<link id="gdVertical"/>
+<link id="TGradientDirection"/>
+<link id="TCanvas.GradientFill"/>
+</seealso>
 </element>
 
 <element name="TAntialiasingMode">
