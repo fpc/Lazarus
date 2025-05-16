@@ -225,6 +225,7 @@ end;
 
 destructor TLazRegion.Destroy;
 begin
+  Clear;
   Parts.Free;
   inherited Destroy;
 end;
