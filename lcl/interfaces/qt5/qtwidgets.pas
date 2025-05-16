@@ -20522,7 +20522,6 @@ begin
           begin
             ALCLEvent := QLCLMessageEvent_create(LCLQt_DesignerUpdate, 0, 0, 0, 0);
             QCoreApplication_postEvent(FDesignControl, ALCLEvent, Ord(QtHighEventPriority));
-            exit(True);
           end;
         end;
         SlotDesignControlPaint(Sender, Event);
