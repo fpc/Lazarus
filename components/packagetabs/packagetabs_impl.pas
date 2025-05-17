@@ -503,8 +503,9 @@ begin
   if IDEEditorOptions.TabPosition in [tpLeft, tpRight] then
   begin
     Alignment := taLeftJustify;
-    Margin := 2; // need for left text align
-    BorderSpacing.Left := 8;
+    Margin := Scale96ToFont(4); // need for left text align
+    BorderSpacing.Left := Scale96ToFont(8);
+    BorderSpacing.Right := 1;
   end;
 
   Transparent := True;
@@ -929,7 +930,7 @@ begin
         if FPanel is TPackageTabScrollBox then
         begin
           xLbl.Alignment := taLeftJustify;
-          xLbl.BorderSpacing.Left := 2;
+          xLbl.BorderSpacing.Left := FPanel.Scale96ToFont(4);
         end
         else if FPanel is TPackageTabFlowPanel then
         begin
