@@ -272,7 +272,7 @@ instead.
 Alias to the TLCLHandle type defined for widgetset references.
 </short>
 <seealso>
-<link id="#wsreferences.TLCLHandle">TLCLHandle</link>
+<link id="#lcl.wsreferences.TLCLHandle">TLCLHandle</link>
 </seealso>
 </element>
 
