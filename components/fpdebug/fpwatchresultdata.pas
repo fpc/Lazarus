@@ -886,7 +886,7 @@ begin
     //skRegister: ;
     //skAddress: ;
     else begin
-        if IsError(AnFpValue.LastError) then  // will be handled after the case
+        if not IsError(AnFpValue.LastError) then  // will be handled after the case
           AnResData.CreateError('Unknown data');
         Result := True;
       end;
