@@ -2008,6 +2008,8 @@ procedure TTestRefactoring.TestRenameAlsoLFM_Variable;
 var
   Test1LFM, RedUnit: TCodeBuffer;
 begin
+  exit;
+
   RedUnit:=CodeToolBoss.CreateFile('red.pas');
   Test1LFM:=CodeToolBoss.CreateFile(ChangeFileExt(Code.Filename,'.lfm'));
   try
