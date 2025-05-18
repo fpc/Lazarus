@@ -88,6 +88,7 @@ type
 
     // rename also in lfm
     procedure TestRenameAlsoLFM_Variable;
+    procedure TestRenameAlsoLFM_Event;
   end;
 
 implementation
@@ -2038,11 +2039,67 @@ begin
       '  end;',
       'implementation',
       'end.']);
-    RenameReferences('OkBtn',[frfIncludingLFM,frfIncludingLFMProps]);
+    RenameReferences('OkBtn',frfAllLFM);
     CheckDiff(Test1LFM,[
     'object Form1: TForm1',
     '  Left = 353',
     '  object OkBtn: TButton',
+    '  end',
+    'end']);
+
+  finally
+    RedUnit.IsDeleted:=true;
+    Test1LFM.IsDeleted:=true;
+  end;
+end;
+
+procedure TTestRefactoring.TestRenameAlsoLFM_Event;
+var
+  Test1LFM, RedUnit: TCodeBuffer;
+begin
+  RedUnit:=CodeToolBoss.CreateFile('red.pas');
+  Test1LFM:=CodeToolBoss.CreateFile(ChangeFileExt(Code.Filename,'.lfm'));
+  try
+    RedUnit.Source:='unit Red;'+LineEnding
+      +'interface'+LineEnding
+      +'type'+LineEnding
+      +'  TForm = class'+LineEnding
+      +'  end;'+LineEnding
+      +'  TButton = class'+LineEnding
+      +'  published'+LineEnding
+      +'    property OnClick: TNotifyEvent;'+LineEnding
+      +'  end;'+LineEnding
+      +'implementation'+LineEnding
+      +'end.';
+
+    Test1LFM.Source:=LinesToStr([
+      'object Form1: TForm1',
+      '  Left = 353',
+      '  object Button1: TButton',
+      '    OnClick = Button1Click',
+      '  end',
+      'end']);
+
+    Add(['unit Test1;',
+      '{$mode objfpc}{$H+}',
+      'interface',
+      'uses red;',
+      'type',
+      '  TForm1 = class(TForm)',
+      '    Button1: TButton;',
+      '    procedure Button1Click{#Rename}(Sender: TObject);',
+      '  end;',
+      'implementation',
+      'procedure TForm1.Button1Click(Sender: TObject);',
+      'begin',
+      'end;',
+      'end.']);
+    RenameReferences('OkClicked',frfAllLFM);
+    CheckDiff(Test1LFM,[
+    'object Form1: TForm1',
+    '  Left = 353',
+    '  object Button1: TButton',
+    '    OnClick = OkClicked',
     '  end',
     'end']);
 
