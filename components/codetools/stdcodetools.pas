@@ -2845,6 +2845,7 @@ var
   ErrorCount: integer = 0;
   RootContext: TFindContext;
   ARef: TCodeXYPosition;
+  IdentifierPositions: array of integer; // all start positions of Identifier in the LFM
 
   function FoundReference: string;
   begin
@@ -2857,6 +2858,50 @@ var
   begin
     ListOfReferences.Add(RefPos);
     debugln(FoundReference); // when code stabilized will be commented out
+  end;
+
+  procedure FindCandidates;
+  var
+    s: String;
+    LFMStream: TMemoryStream;
+    Parser: TParser;
+    p: SizeInt;
+  begin
+    IdentifierPositions:=nil;
+    s:=LFMBuffer.Source;
+    if s='' then exit;
+
+    Parser:=nil;
+    LFMStream:=TMemoryStream.Create;
+    try
+      LFMStream.Write(s[1],length(s));
+      LFMStream.Position:=0;
+      Parser := TParser.Create(LFMStream);
+      repeat
+        Parser.NextToken;
+        if Parser.Token=#0 then
+          break
+        else if Parser.TokenSymbolIs(Identifier) then begin
+          p:=Parser.SourcePos+1-Length(Identifier);
+          Insert(p,IdentifierPositions,length(IdentifierPositions));
+        end;
+      until false;
+    finally
+      Parser.Free;
+      LFMStream.Free;
+    end;
+  end;
+
+  function NodeContainsCandidate(Node: TLFMTreeNode): boolean;
+  var
+    i, p: Integer;
+  begin
+    for i:=0 to length(IdentifierPositions)-1 do begin
+      p:=IdentifierPositions[i];
+      if (Node.StartPos<=p) and (Node.EndPos>p) then
+        exit(true);
+    end;
+    Result:=false;
   end;
 
   function CheckLFMObjectValues(LFMObject: TLFMObjectNode;
@@ -3206,6 +3251,8 @@ var
     IdentifierFound: Boolean;
     Caret: TPoint;
   begin
+    if not NodeContainsCandidate(LFMObject) then exit;
+
     // find variable for object
     // find identifier in Lookup Root
     LFMObjectName:=LFMObject.Name;
@@ -3435,7 +3482,7 @@ var
         lfmnObject:
           CheckLFMChildObject(TLFMObjectNode(CurLFMNode),ClassContext,ContextIsDefault);
         lfmnProperty:
-          if not ContextIsDefault then begin
+          if (not ContextIsDefault) and NodeContainsCandidate(CurLFMNode) then begin
             CheckLFMProperty(TLFMPropertyNode(CurLFMNode),ClassContext,PropertyContext);
 
             if (CurLFMNode.FirstChild<>nil) and
@@ -3536,6 +3583,8 @@ var
   begin
     Result:=false;
 
+    if not NodeContainsCandidate(RootLFMNode) then exit;
+
     //DebugLn('TStandardCodeTool.CheckLFM.CheckLFMRoot checking root ...');
     // get root object node
     if (RootLFMNode=nil) or (not (RootLFMNode is TLFMObjectNode)) then begin
@@ -3619,7 +3668,10 @@ var
   CurRootLFMNode: TLFMTreeNode;
 begin
   Result:=false;
-  LFMTree:=nil;
+  LFMTree:=nil; // nil the out param
+
+  FindCandidates;
+  if Length(IdentifierPositions)=0 then exit(true);
   // create tree from LFM file
   LFMTree:=DefaultLFMTrees.GetLFMTree(LFMBuffer,true);
   ActivateGlobalWriteLock;
