@@ -107,7 +107,7 @@ var
   Node: TAVLTreeNode;
   UGUnit: TUGUnit;
   DeclarationCaretXY: TPoint;
-  PascalReferences: TAVLTree;
+  PascalReferences, LFMTreeOfPCodeXYPosition: TAVLTree;
   OldIdentifier, LFMFilename: string;
   LFMFindRefCache: TFindIdentifierReferenceCache;
   LFMReferences: TCodeXYPositions;
@@ -149,6 +149,7 @@ begin
   PascalReferences:=nil;
   LFMReferences:=nil;
   LFMFindRefCache:=nil;
+  LFMTreeOfPCodeXYPosition:=nil;
   try
     Files.Add(DeclCode.Filename);
     if CompareFilenames(DeclCode.Filename,Code.Filename)<>0 then
@@ -194,6 +195,16 @@ begin
             CurCode,LFMCode,LFMReferences,LFMFindRefCache) then
           Fail('CodeToolBoss.FindLFMReferences 20250515155330 failed for lfm: "'+LFMCode.Filename+'"');
       end;
+
+      if (LFMReferences<>nil) and (LFMReferences.Count>0) then begin
+        LFMTreeOfPCodeXYPosition:=CreateTreeOfPCodeXYPosition;
+        for i:=0 to LFMReferences.Count-1 do
+          LFMTreeOfPCodeXYPosition.Add(LFMReferences.Items[i]);
+
+        if not CodeToolBoss.RenameIdentifierInLFMs(LFMTreeOfPCodeXYPosition,
+          OldIdentifier, NewIdentifier) then
+            Fail('TCustomTestRefactoring.RenameReferences in LFM failed');
+      end;
     end;
 
     if not CodeToolBoss.RenameIdentifier(PascalReferences,
@@ -206,6 +217,7 @@ begin
     Graph.Free;
     Files.Free;
     LFMFindRefCache.Free;
+    LFMTreeOfPCodeXYPosition.Free;
   end;
 end;
 
