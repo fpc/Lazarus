@@ -1401,7 +1401,7 @@ begin
     // Override any old default cursor
     g_object_steal_data(PGObject(AWindow), 'havesavedcursor'); // OK?
     g_object_steal_data(PGObject(AWindow), 'savedcursor');
-    gdk_window_set_cursor(AWindow, Cursor);
+    gdk_window_set_cursor(AWindow, nil);
     Exit;
   end;
   if Cursor <> nil then
