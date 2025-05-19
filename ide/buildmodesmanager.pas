@@ -38,7 +38,7 @@ uses
   LazFileUtils, LazLoggerBase,
   // IdeIntf
   IDEDialogs, CompOptsIntf, IDEOptionsIntf, LazIDEIntf, IDEImagesIntf,
-  IDEWindowIntf,
+  IDEWindowIntf, IDEHelpIntf,
   // IdeUtils
   IdeUtilsPkgStrConsts,
   // IdeConfig
@@ -72,6 +72,7 @@ type
       aCol, aRow: Integer; aRect: TRect; {%H-}aState: TGridDrawState);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure HelpButtonClick(Sender: TObject);
     procedure DiffSpeedButtonClick(Sender: TObject);
     procedure AddSpeedButtonClick(Sender: TObject);
     procedure DeleteSpeedButtonClick(Sender: TObject);
@@ -431,12 +432,17 @@ end;
 
 procedure TBuildModesForm.FormCreate(Sender: TObject);
 begin
-  ;
+  ButtonPanel1.HelpButton.OnClick := @HelpButtonClick;
 end;
 
 procedure TBuildModesForm.FormDestroy(Sender: TObject);
 begin
   ;
+end;
+
+procedure TBuildModesForm.HelpButtonClick(Sender: TObject);
+begin
+  LazarusHelp.ShowHelpForIDEControl(self);
 end;
 
 procedure TBuildModesForm.FormShow(Sender: TObject);
