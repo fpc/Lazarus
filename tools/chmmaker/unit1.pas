@@ -21,7 +21,8 @@ type
     CompileBtn: TButton;
     DefaultPageCombo: TComboBox;
     ChmFileNameEdit: TFileNameEdit;
-    FollowLinksCheck: TCheckBox;
+    ChmTitleEdit: TEdit;
+    ScanHtmlCheck: TCheckBox;
     CreateSearchableCHMCheck: TCheckBox;
     CompileTimeOptionsLabel: TLabel;
     FilesNoteLabel: TLabel;
@@ -29,6 +30,7 @@ type
     CHMFilenameLabel: TLabel;
     OpenDialog2: TOpenDialog;
     RemoveFilesBtn: TButton;
+    ChmTitleLabel: TLabel;
     TOCEditBtn: TButton;
     IndexEditBtn: TButton;
     IndexEdit: TFileNameEdit;
@@ -66,6 +68,7 @@ type
     procedure Button2Click(Sender: TObject);
     procedure ChmFileNameEditAcceptFileName(Sender: TObject; var Value: String);
     procedure ChmFileNameEditEditingDone(Sender: TObject);
+    procedure ChmTitleEditChange(Sender: TObject);
     procedure CompileBtnClick(Sender: TObject);
     procedure CompileViewBtnClick(Sender: TObject);
     procedure FileListBoxDrawItem({%H-}Control: TWinControl; Index: Integer;
@@ -83,6 +86,7 @@ type
     procedure ProjSaveAsItemClick(Sender: TObject);
     procedure ProjSaveItemClick(Sender: TObject);
     procedure RemoveFilesBtnClick(Sender: TObject);
+    procedure ScanHtmlCheckClick(Sender: TObject);
     procedure TOCEditAcceptFileName(Sender: TObject; var Value: String);
     procedure TOCEditBtnClick(Sender: TObject);
     procedure TOCEditEditingDone(Sender: TObject);
@@ -92,19 +96,19 @@ type
 
     function GetModified: Boolean;
     procedure Save(aAs: Boolean);
-    procedure CloseProject;
+    function CloseProject: Boolean;
 
     procedure AddFilesToProject(Strings: TStrings);
     procedure InitFileDialog(Dlg: TFileDialog);
     procedure ProjectDirChanged;
     function CreateRelativeProjectFile(Filename: string): string;
-    function CreateAbsoluteProjectFile(Filename: string): string;
   public
     Project: TChmProject;
     procedure OpenProject(AFileName: String);
     // Dirty flag: has project been modified since opening?
     property Modified: Boolean read GetModified write FModified;
-  end; 
+    function CreateAbsoluteProjectFile(Filename: string): string;
+  end;
 
 var
   CHMForm: TCHMForm;
@@ -234,6 +238,11 @@ begin
   if (ExtractFileExt(ChmFileNameEdit.FileName)) = '' then ChmFileNameEdit.FileName := ChmFileNameEdit.FileName + '.chm';
   ChmFileNameEdit.FileName := CreateRelativeProjectFile(ChmFileNameEdit.FileName);
   Project.OutputFileName := ChmFileNameEdit.FileName;
+  Modified := True;
+end;
+
+procedure TCHMForm.ChmTitleEditChange(Sender: TObject);
+begin
   Modified := True;
 end;
 
@@ -408,12 +417,21 @@ begin
 end;
 
 procedure TCHMForm.ProjNewItemClick(Sender: TObject);
+var
+  bOverwrite: Boolean;
 begin
   InitFileDialog(SaveDialog1);
   If SaveDialog1.Execute then
   begin
-    if FileExists(SaveDialog1.FileName)
-    and (MessageDlg('File Already Exists! Ovewrite?', mtWarning, [mbYes, mbNo],0) <> mrYes) then Exit;
+    bOverwrite := False;
+    if FileExists(SaveDialog1.FileName) then
+    begin
+      bOverwrite := (MessageDlg('File Already Exists! Ovewrite?', mtWarning, [mbYes, mbNo],0) = mrYes);
+      if not bOverwrite then Exit;
+    end;
+    if (not CloseProject()) then Exit;
+    if bOverwrite then DeleteFile(SaveDialog1.FileName);
+
     OpenProject(SaveDialog1.FileName);
     Project.SaveToFile(SaveDialog1.FileName);
   end;
@@ -424,7 +442,8 @@ begin
   InitFileDialog(OpenDialog1);
   if OpenDialog1.Execute then
   begin
-    CloseProject;
+    if (not CloseProject()) then Exit;
+
     OpenProject(OpenDialog1.FileName);
   end;
 end;
@@ -452,6 +471,11 @@ begin
   for I := FileListBox.Items.Count-1 downto 0 do
     if FileListBox.Selected[I] then FileListBox.Items.Delete(I);
   DefaultPageCombo.Items.Assign(FileListBox.Items);
+end;
+
+procedure TCHMForm.ScanHtmlCheckClick(Sender: TObject);
+begin
+  Modified := True;
 end;
 
 procedure TCHMForm.TOCEditAcceptFileName(Sender: TObject; var Value: String);
@@ -519,10 +543,11 @@ begin
     end;
   end;
   Project.Files.Assign(FileListBox.Items);
+  Project.Title                   := ChmTitleEdit.Text;
   Project.TableOfContentsFileName := CreateRelativeProjectFile(TOCEdit.FileName);
   Project.IndexFileName           := CreateRelativeProjectFile(IndexEdit.FileName);
   Project.DefaultPage             := DefaultPageCombo.Text;
-  Project.AutoFollowLinks         := FollowLinksCheck.Checked;
+  Project.ScanHtmlContents        := ScanHtmlCheck.Checked;
   Project.MakeSearchable          := CreateSearchableCHMCheck.Checked;
   Project.OutputFileName          := CreateRelativeProjectFile(ChmFileNameEdit.FileName);
 
@@ -530,10 +555,21 @@ begin
   Modified := False;
 end;
 
-procedure TCHMForm.CloseProject;
+function TCHMForm.CloseProject: Boolean;
 begin
+  Result := True;
+
+  if Modified then
+  begin
+    case (MessageDlg('Save Changes?', mtConfirmation, [mbYes, mbNo, mbCancel],0)) of
+      mrCancel: Exit(False);
+      mrYes: Save(False);
+    end;
+  end;
+
   FileListBox.Clear;
   DefaultPageCombo.Clear;
+  ChmTitleEdit.Clear();
   TOCEdit.Clear;
   IndexEdit.Clear;
   GroupBox1.Enabled      := False;
@@ -543,9 +579,10 @@ begin
   ProjSaveItem.Enabled   := False;
   ProjCloseItem.Enabled  := False;
 
-  FollowLinksCheck.Checked := False;
+  ScanHtmlCheck.Checked  := False;
   CreateSearchableCHMCheck.Checked := False;
   FreeAndNil(Project);
+  Modified := False;
 end;
 
 procedure TCHMForm.OpenProject(AFileName: String);
@@ -560,14 +597,16 @@ begin
   ProjCloseItem.Enabled  := True;
 
   FileListBox.Items.AddStrings(Project.Files);
+  ChmTitleEdit.Text := Project.Title;
   TOCEdit.FileName := Project.TableOfContentsFileName;
   IndexEdit.FileName := Project.IndexFileName;
   DefaultPageCombo.Items.Assign(FileListBox.Items);
   DefaultPageCombo.Text := Project.DefaultPage;
-  FollowLinksCheck.Checked := Project.AutoFollowLinks;
+  ScanHtmlCheck.Checked := Project.ScanHtmlContents;
   CreateSearchableCHMCheck.Checked := Project.MakeSearchable;
   ChmFileNameEdit.FileName := Project.OutputFileName;
 
+  Modified := False;
   ProjectDirChanged;
 end;
 

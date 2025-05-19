@@ -6,6 +6,7 @@ interface
 
 uses
   Classes, SysUtils, chmsitemap,
+  RegExpr,
   Forms, Controls, Graphics, Dialogs, ComCtrls, ExtCtrls, StdCtrls;
 
 type
@@ -38,6 +39,7 @@ type
     procedure BeforeBtnClick(Sender: TObject);
     procedure CancelBtnClick(Sender: TObject);
     procedure DeleteBtnClick(Sender: TObject);
+    procedure DescFromTitleBtnClick(Sender: TObject);
     procedure DescriptionEditChange(Sender: TObject);
     procedure LocalComboChange(Sender: TObject);
     procedure LocalComboKeyUp(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
@@ -64,7 +66,7 @@ implementation
 {$R *.lfm}
 
 uses
-  LCLType;
+  LCLType, unit1;
 
 type
 
@@ -90,6 +92,39 @@ procedure TSitemapEditForm.DeleteBtnClick(Sender: TObject);
 begin
   SitemapTree.Selected.DeleteChildren;
   SitemapTree.Selected.Delete;
+end;
+
+procedure TSitemapEditForm.DescFromTitleBtnClick(Sender: TObject);
+var
+  iSub: Integer;
+  sFilename: String;
+  oLines: TStringList;
+  oRE: TRegExpr;
+begin
+  if (LocalCombo.ItemIndex = -1) then
+  begin
+    MessageDlg('You must select a Local file first', mtError, [mbCancel], 0);
+    Exit;
+  end;
+
+  // Load to StringList and Search for <title>
+  sFilename := CHMForm.CreateAbsoluteProjectFile(LocalCombo.Items[LocalCombo.ItemIndex]);
+  oLines := TStringList.Create();
+  oRE := TRegExpr.Create('(?i)<TITLE>(.*)</TITLE>');
+  try
+    oLines.LoadFromFile(sFilename);
+    for iSub := 0 to oLines.Count - 1 do
+    begin
+      if (oRE.Exec(oLines.Strings[iSub])) then
+      begin
+        DescriptionEdit.Text := oRE.Match[1];
+        Break;
+      end;
+    end;
+  finally
+    oRE.Free();
+    oLines.Free();
+  end;
 end;
 
 procedure TSitemapEditForm.DescriptionEditChange(Sender: TObject);

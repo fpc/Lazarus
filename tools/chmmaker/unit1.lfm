@@ -1,7 +1,7 @@
 object CHMForm: TCHMForm
-  Left = 371
+  Left = 368
   Height = 639
-  Top = 200
+  Top = 154
   Width = 764
   HorzScrollBar.Page = 741
   VertScrollBar.Page = 534
@@ -97,7 +97,7 @@ object CHMForm: TCHMForm
         BorderSpacing.InnerBorder = 5
         Caption = 'Auto add HREF files'
         Enabled = False
-        TabOrder = 2
+        TabOrder = 3
         OnClick = AutoAddLinksBtnClick
       end
       object AddAllBtn: TButton
@@ -107,7 +107,7 @@ object CHMForm: TCHMForm
         Width = 299
         BorderSpacing.InnerBorder = 5
         Caption = 'Add all files in Project Directory'
-        TabOrder = 3
+        TabOrder = 2
         OnClick = AddAllBtnClick
       end
     end
@@ -122,17 +122,17 @@ object CHMForm: TCHMForm
     ClientWidth = 429
     TabOrder = 1
     object TableOfContentsLabel: TLabel
-      Left = 14
+      Left = 10
       Height = 20
-      Top = 14
+      Top = 80
       Width = 161
       Caption = 'Table of Contents (*.hhc)'
       ParentColor = False
     end
     object IndexLabel: TLabel
-      Left = 14
+      Left = 10
       Height = 20
-      Top = 74
+      Top = 140
       Width = 82
       Caption = 'Index (*.hhk)'
       ParentColor = False
@@ -146,9 +146,9 @@ object CHMForm: TCHMForm
       ParentColor = False
     end
     object DefaultPageLabel: TLabel
-      Left = 14
+      Left = 10
       Height = 20
-      Top = 135
+      Top = 201
       Width = 85
       Caption = 'Default Page'
       ParentColor = False
@@ -163,10 +163,10 @@ object CHMForm: TCHMForm
     end
     object TOCEdit: TFileNameEdit
       AnchorSideRight.Control = TOCEditBtn
-      Left = 12
+      Left = 8
       Height = 29
-      Top = 39
-      Width = 295
+      Top = 105
+      Width = 299
       OnAcceptFileName = TOCEditAcceptFileName
       DialogOptions = []
       Filter = 'Table of Contents Files(*.hhc)|*.hhc|All files|*'
@@ -178,15 +178,15 @@ object CHMForm: TCHMForm
       AutoSelect = False
       AutoSize = False
       MaxLength = 0
-      TabOrder = 0
+      TabOrder = 1
       OnEditingDone = TOCEditEditingDone
     end
     object IndexEdit: TFileNameEdit
       AnchorSideRight.Control = IndexEditBtn
-      Left = 12
+      Left = 8
       Height = 29
-      Top = 99
-      Width = 295
+      Top = 165
+      Width = 299
       OnAcceptFileName = IndexEditAcceptFileName
       DialogOptions = []
       Filter = 'Index Files(*.hhk)|*.hhk|All Files|*'
@@ -198,7 +198,7 @@ object CHMForm: TCHMForm
       AutoSelect = False
       AutoSize = False
       MaxLength = 0
-      TabOrder = 1
+      TabOrder = 3
       OnEditingDone = IndexEditEditingDone
     end
     object TOCEditBtn: TButton
@@ -207,7 +207,7 @@ object CHMForm: TCHMForm
       AnchorSideRight.Side = asrBottom
       Left = 345
       Height = 30
-      Top = 39
+      Top = 105
       Width = 75
       Anchors = [akTop, akRight]
       AutoSize = True
@@ -224,7 +224,7 @@ object CHMForm: TCHMForm
       AnchorSideRight.Side = asrBottom
       Left = 345
       Height = 30
-      Top = 99
+      Top = 165
       Width = 75
       Anchors = [akTop, akRight]
       AutoSize = True
@@ -232,17 +232,17 @@ object CHMForm: TCHMForm
       BorderSpacing.Right = 8
       Caption = 'Edit'
       Constraints.MinWidth = 75
-      TabOrder = 3
+      TabOrder = 4
       OnClick = IndexEditBtnClick
     end
-    object FollowLinksCheck: TCheckBox
+    object ScanHtmlCheck: TCheckBox
       Left = 24
       Height = 24
       Top = 315
       Width = 381
       Caption = 'Parse *.htm* files to include '#10'linked pages and images'
-      Enabled = False
-      TabOrder = 4
+      TabOrder = 6
+      OnClick = ScanHtmlCheckClick
     end
     object CreateSearchableCHMCheck: TCheckBox
       Left = 24
@@ -253,17 +253,17 @@ object CHMForm: TCHMForm
       Caption = 'Create a searchable chm'
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 5
+      TabOrder = 7
     end
     object DefaultPageCombo: TComboBox
-      Left = 14
+      Left = 10
       Height = 28
-      Top = 160
-      Width = 359
+      Top = 226
+      Width = 363
       AutoSelect = False
       ItemHeight = 20
       Style = csDropDownList
-      TabOrder = 6
+      TabOrder = 5
     end
     object CompileBtn: TButton
       AnchorSideLeft.Side = asrBottom
@@ -277,7 +277,7 @@ object CHMForm: TCHMForm
       BorderSpacing.Right = 11
       BorderSpacing.InnerBorder = 5
       Caption = 'Compile'
-      TabOrder = 7
+      TabOrder = 9
       OnClick = CompileBtnClick
     end
     object CompileViewBtn: TButton
@@ -292,7 +292,7 @@ object CHMForm: TCHMForm
       BorderSpacing.Right = 16
       BorderSpacing.InnerBorder = 5
       Caption = 'Compile and View'
-      TabOrder = 8
+      TabOrder = 10
       OnClick = CompileViewBtnClick
     end
     object ChmFileNameEdit: TFileNameEdit
@@ -312,8 +312,24 @@ object CHMForm: TCHMForm
       AutoSelect = False
       AutoSize = False
       MaxLength = 0
-      TabOrder = 9
+      TabOrder = 8
       OnEditingDone = ChmFileNameEditEditingDone
+    end
+    object ChmTitleLabel: TLabel
+      Left = 10
+      Height = 20
+      Top = 23
+      Width = 66
+      Caption = 'CHM Title'
+      ParentColor = False
+    end
+    object ChmTitleEdit: TEdit
+      Left = 11
+      Height = 28
+      Top = 48
+      Width = 308
+      TabOrder = 0
+      OnChange = ChmTitleEditChange
     end
   end
   object OpenDialog1: TOpenDialog
