@@ -66,7 +66,7 @@ implementation
 {$R *.lfm}
 
 uses
-  LCLType, unit1;
+  LCLType, CHMMain;
 
 type
 

@@ -8,7 +8,12 @@
         <CompatibilityMode Value="True"/>
       </Flags>
       <SessionStorage Value="InIDEConfig"/>
+      <Scaled Value="True"/>
       <ResourceType Value="res"/>
+      <UseXPManifest Value="True"/>
+      <XPManifest>
+        <DpiAware Value="True"/>
+      </XPManifest>
     </General>
     <BuildModes Count="1">
       <Item1 Name="default" Default="True"/>
@@ -40,11 +45,12 @@
         <IsPartOfProject Value="True"/>
       </Unit0>
       <Unit1>
-        <Filename Value="unit1.pas"/>
+        <Filename Value="chmmain.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="CHMForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="CHMMain"/>
       </Unit1>
       <Unit2>
         <Filename Value="chmsitemapeditor.pas"/>

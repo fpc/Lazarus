@@ -8,13 +8,17 @@ uses
   {$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms, LazFileUtils,
-  unit1, CHMSiteMapEditor, lhelpcontrolpkg;
+  CHMMain, CHMSiteMapEditor;
 
 var
   i: Integer;
   Filename: String;
+
+{$R *.res}
+
 begin
-  Application.Title:='';
+  Application.Scaled := True;
+  Application.Title := '';
   Application.Initialize;
   Application.CreateForm(TCHMForm, CHMForm);
   Application.CreateForm(TSitemapEditForm, SitemapEditForm);
