@@ -53,6 +53,7 @@ object SitemapEditForm: TSitemapEditForm
       Top = 200
       Width = 295
       Anchors = [akLeft, akRight, akBottom]
+      AutoSize = True
       BorderSpacing.Around = 6
       BevelOuter = bvNone
       ClientHeight = 150
