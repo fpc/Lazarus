@@ -1719,7 +1719,7 @@ end;
 
 procedure TSynJScriptSyn.StringProc;
 var
-  l_strChar : String;
+  l_strChar : Char;
   p: PChar;
 begin
   fTokenID := tkString;
