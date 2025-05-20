@@ -1637,7 +1637,6 @@ end;
 procedure TJSONTab.ShowJSONDocument;
 
 begin
-  ShowJSONDocumentText;
   With TVJSON.Items do
     begin
     BeginUpdate;
@@ -1678,9 +1677,14 @@ procedure TJSONTab.ShowJSONDocumentText;
 begin
   IF Assigned(Root) then
   begin
-   FSyn.Text:=Root.FormatJSON();
-   FSyn.Modified:=false;
-   FSyn.CommandProcessor(ecRight,#0,Nil);
+   FSyn.BeginUpdate;
+   try
+     FSyn.Text:=Root.FormatJSON();
+     FSyn.Modified:=false;
+     FSyn.CommandProcessor(ecRight,#0,Nil);
+   finally
+     FSyn.EndUpdate;
+   end;
   end;
 end;
 
