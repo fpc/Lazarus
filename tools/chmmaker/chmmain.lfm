@@ -1,32 +1,34 @@
 object CHMForm: TCHMForm
-  Left = 368
+  Left = 419
   Height = 453
-  Top = 154
-  Width = 643
-  HorzScrollBar.Page = 582
+  Top = 157
+  Width = 570
+  HorzScrollBar.Page = 570
   VertScrollBar.Page = 399
   ActiveControl = FileListBox
   AutoScroll = True
   Caption = 'Compiled HTML Help Project - [Made with Freepascal]'
-  ClientHeight = 453
-  ClientWidth = 643
+  ClientHeight = 436
+  ClientWidth = 570
   Menu = MainMenu1
+  ShowHint = True
   ShowInTaskBar = stAlways
   LCLVersion = '4.99.0.0'
   OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  object StatusBar1: TStatusBar
+  object StatusBar: TStatusBar
     Left = 0
     Height = 23
-    Top = 430
-    Width = 643
+    Top = 413
+    Width = 574
+    AutoHint = True
     Panels = <>
   end
   object GroupBox1: TGroupBox
     Left = 8
-    Height = 414
+    Height = 397
     Top = 8
     Width = 228
     Align = alLeft
@@ -35,12 +37,12 @@ object CHMForm: TCHMForm
     BorderSpacing.Right = 4
     BorderSpacing.Bottom = 8
     Caption = 'Files'
-    ClientHeight = 394
+    ClientHeight = 377
     ClientWidth = 224
     TabOrder = 0
     object FileListBox: TListBox
       Left = 8
-      Height = 243
+      Height = 226
       Top = 8
       Width = 208
       Align = alClient
@@ -55,7 +57,7 @@ object CHMForm: TCHMForm
     object Panel2: TPanel
       Left = 0
       Height = 135
-      Top = 259
+      Top = 242
       Width = 224
       Align = alBottom
       AutoSize = True
@@ -92,7 +94,7 @@ object CHMForm: TCHMForm
         BorderSpacing.Left = 6
         BorderSpacing.Top = 6
         BorderSpacing.Bottom = 6
-        Caption = 'Add Files'
+        Caption = 'Add files'
         TabOrder = 0
         OnClick = AddFilesBtnClick
       end
@@ -111,7 +113,7 @@ object CHMForm: TCHMForm
         BorderSpacing.Top = 6
         BorderSpacing.Right = 6
         BorderSpacing.Bottom = 6
-        Caption = 'Remove Selected'
+        Caption = 'Remove selected'
         TabOrder = 1
         OnClick = RemoveFilesBtnClick
       end
@@ -146,14 +148,14 @@ object CHMForm: TCHMForm
         Anchors = [akTop, akLeft, akRight]
         AutoSize = True
         BorderSpacing.Around = 6
-        Caption = 'Add all files in Project Directory'
+        Caption = 'Add all files in project directory'
         TabOrder = 2
         OnClick = AddAllBtnClick
       end
       object Bevel1: TBevel
         Left = 86
         Height = 25
-        Top = 8
+        Top = 9
         Width = 7
         Anchors = [akTop]
         Shape = bsSpacer
@@ -162,17 +164,17 @@ object CHMForm: TCHMForm
   end
   object MainPanel: TPanel
     Left = 249
-    Height = 414
+    Height = 397
     Top = 8
-    Width = 386
+    Width = 317
     Align = alClient
     BorderSpacing.Left = 4
     BorderSpacing.Top = 8
     BorderSpacing.Right = 8
     BorderSpacing.Bottom = 8
     BevelOuter = bvNone
-    ClientHeight = 414
-    ClientWidth = 386
+    ClientHeight = 397
+    ClientWidth = 317
     TabOrder = 2
     object TableOfContentsLabel: TLabel
       AnchorSideLeft.Control = MainPanel
@@ -207,7 +209,7 @@ object CHMForm: TCHMForm
       Top = 162
       Width = 67
       BorderSpacing.Top = 12
-      Caption = 'Default Page'
+      Caption = 'Default page'
       ParentColor = False
     end
     object CHMFilenameLabel: TLabel
@@ -230,7 +232,7 @@ object CHMForm: TCHMForm
       Left = 0
       Height = 23
       Top = 73
-      Width = 310
+      Width = 241
       OnAcceptFileName = TOCEditAcceptFileName
       DialogOptions = []
       Filter = 'Table of Contents Files(*.hhc)|*.hhc|All files|*'
@@ -263,7 +265,6 @@ object CHMForm: TCHMForm
       NumGlyphs = 1
       AutoSelect = False
       BorderSpacing.Top = 4
-      AutoSize = False
       MaxLength = 0
       TabOrder = 3
       OnEditingDone = IndexEditEditingDone
@@ -273,7 +274,7 @@ object CHMForm: TCHMForm
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Control = MainPanel
       AnchorSideRight.Side = asrBottom
-      Left = 326
+      Left = 257
       Height = 25
       Top = 72
       Width = 60
@@ -290,7 +291,7 @@ object CHMForm: TCHMForm
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Control = MainPanel
       AnchorSideRight.Side = asrBottom
-      Left = 326
+      Left = 257
       Height = 25
       Top = 126
       Width = 60
@@ -311,7 +312,7 @@ object CHMForm: TCHMForm
       Left = 0
       Height = 23
       Top = 181
-      Width = 386
+      Width = 317
       Anchors = [akTop, akLeft, akRight]
       AutoSelect = False
       BorderSpacing.Top = 4
@@ -324,18 +325,17 @@ object CHMForm: TCHMForm
       AnchorSideRight.Control = CompileViewBtn
       AnchorSideBottom.Control = MainPanel
       AnchorSideBottom.Side = asrBottom
-      Left = 169
+      Left = 101
       Height = 33
-      Top = 381
+      Top = 364
       Width = 79
+      Action = AcCompile
       Anchors = [akRight, akBottom]
       AutoSize = True
       BorderSpacing.Top = 16
       BorderSpacing.Right = 8
       BorderSpacing.InnerBorder = 4
-      Caption = 'Compile'
       TabOrder = 8
-      OnClick = CompileBtnClick
     end
     object CompileViewBtn: TButton
       AnchorSideLeft.Side = asrBottom
@@ -343,16 +343,15 @@ object CHMForm: TCHMForm
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = MainPanel
       AnchorSideBottom.Side = asrBottom
-      Left = 256
+      Left = 188
       Height = 33
-      Top = 381
-      Width = 130
+      Top = 364
+      Width = 129
+      Action = AcCompileAndView
       Anchors = [akRight, akBottom]
       AutoSize = True
       BorderSpacing.InnerBorder = 4
-      Caption = 'Compile and View'
       TabOrder = 9
-      OnClick = CompileViewBtnClick
     end
     object ChmFileNameEdit: TFileNameEdit
       AnchorSideLeft.Control = MainPanel
@@ -363,7 +362,7 @@ object CHMForm: TCHMForm
       Left = 0
       Height = 23
       Top = 337
-      Width = 386
+      Width = 317
       OnAcceptFileName = ChmFileNameEditAcceptFileName
       DialogKind = dkSave
       DialogTitle = 'Save CHM as...'
@@ -376,7 +375,6 @@ object CHMForm: TCHMForm
       Anchors = [akTop, akLeft, akRight]
       AutoSelect = False
       BorderSpacing.Top = 4
-      AutoSize = False
       MaxLength = 0
       TabOrder = 7
       OnEditingDone = ChmFileNameEditEditingDone
@@ -400,7 +398,7 @@ object CHMForm: TCHMForm
       Left = 0
       Height = 23
       Top = 19
-      Width = 386
+      Width = 317
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 4
       TabOrder = 0
@@ -415,13 +413,14 @@ object CHMForm: TCHMForm
       Left = 0
       Height = 66
       Top = 228
-      Width = 325
+      Width = 317
+      Anchors = [akTop, akLeft, akRight]
       AutoSize = True
       BorderSpacing.Top = 24
-      Caption = 'Compiletime options:'
+      Caption = 'Compile-time options:'
       ChildSizing.ControlsPerLine = 1
       ClientHeight = 46
-      ClientWidth = 321
+      ClientWidth = 313
       TabOrder = 6
       object ScanHtmlCheck: TCheckBox
         AnchorSideLeft.Control = CompileTimeOptionsGroupbox
@@ -431,7 +430,7 @@ object CHMForm: TCHMForm
         Left = 8
         Height = 19
         Top = 0
-        Width = 305
+        Width = 297
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 8
         BorderSpacing.Right = 8
@@ -458,7 +457,7 @@ object CHMForm: TCHMForm
   end
   object Splitter: TSplitter
     Left = 240
-    Height = 430
+    Height = 413
     Top = 0
     Width = 5
     ResizeStyle = rsPattern
@@ -481,57 +480,43 @@ object CHMForm: TCHMForm
     object MenuItem1: TMenuItem
       Caption = 'Project'
       object ProjNewItem: TMenuItem
-        Caption = 'New'
-        OnClick = ProjNewItemClick
+        Action = AcNew
       end
       object ProjOpenItem: TMenuItem
-        Caption = 'Open...'
-        OnClick = ProjOpenItemClick
+        Action = AcOpen
       end
       object MenuItem9: TMenuItem
         Caption = '-'
       end
       object ProjSaveItem: TMenuItem
-        Caption = 'Save'
-        OnClick = ProjSaveItemClick
+        Action = AcSave
       end
       object ProjSaveAsItem: TMenuItem
-        Caption = 'Save as...'
-        OnClick = ProjSaveAsItemClick
+        Action = AcSaveAs
       end
       object ProjCloseItem: TMenuItem
-        Caption = 'Close'
-        OnClick = ProjCloseItemClick
+        Action = AcClose
       end
       object MenuItem12: TMenuItem
         Caption = '-'
       end
       object ProjQuitItem: TMenuItem
-        Caption = 'Quit Program'
-        OnClick = ProjQuitItemClick
+        Action = AcQuitProgram
       end
     end
     object CompileItem: TMenuItem
       Caption = 'Compile'
       object CompileProjItem: TMenuItem
-        Caption = 'Compile Project'
-        OnClick = CompileBtnClick
+        Action = AcCompile
       end
       object CompileOpenBttn: TMenuItem
-        Caption = 'Compile and Open chm'
-        OnClick = CompileViewBtnClick
+        Action = AcCompileAndView
       end
     end
     object MenuItem3: TMenuItem
       Caption = 'Help'
-      object HelpHelpItem: TMenuItem
-        Caption = 'Help'
-      end
-      object MenuItem5: TMenuItem
-        Caption = '-'
-      end
       object HelpAboutItem: TMenuItem
-        Caption = 'About...'
+        Action = AcAbout
       end
     end
   end
@@ -540,5 +525,63 @@ object CHMForm: TCHMForm
     Options = [ofAllowMultiSelect, ofEnableSizing, ofViewDetail]
     Left = 72
     Top = 192
+  end
+  object ActionList: TActionList
+    Left = 160
+    Top = 120
+    object AcNew: TAction
+      Category = 'File'
+      Caption = 'New...'
+      Hint = 'New project'
+      OnExecute = AcNewExecute
+    end
+    object AcOpen: TAction
+      Category = 'File'
+      Caption = 'Open...'
+      Hint = 'Open project file'
+      OnExecute = AcOpenExecute
+    end
+    object AcSave: TAction
+      Category = 'File'
+      Caption = 'Save'
+      Hint = 'Save project'
+      OnExecute = AcSaveExecute
+    end
+    object AcSaveAs: TAction
+      Category = 'File'
+      Caption = 'Save as...'
+      Hint = 'Save project under a new name'
+      OnExecute = AcSaveAsExecute
+    end
+    object AcClose: TAction
+      Category = 'File'
+      Caption = 'Close'
+      Hint = 'Close project'
+      OnExecute = AcCloseExecute
+    end
+    object AcQuitProgram: TAction
+      Category = 'File'
+      Caption = 'Quit program'
+      Hint = 'Quit program'
+      OnExecute = AcQuitProgramExecute
+    end
+    object AcCompile: TAction
+      Category = 'Compile'
+      Caption = 'Compile'
+      Hint = 'Compile project'
+      OnExecute = AcCompileExecute
+    end
+    object AcCompileAndView: TAction
+      Category = 'Compile'
+      Caption = 'Compile and view'
+      Hint = 'Compile project and view generated CHM file'
+      OnExecute = AcCompileAndViewExecute
+    end
+    object AcAbout: TAction
+      Category = 'Help'
+      Caption = 'About...'
+      Hint = 'Information about this appliation'
+      OnExecute = AcAboutExecute
+    end
   end
 end

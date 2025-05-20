@@ -369,14 +369,6 @@ begin
   LocalCombo.Items.Assign(AvailableLinks);
 
   Result := ShowModal = mrOK;
-  {
-  ShowModal;
-  
-  while ModalResult = mrNone do
-    Application.HandleMessage;
-    
-  Result := ModalResult = mrOK;
-  }
 end;
 
 end.

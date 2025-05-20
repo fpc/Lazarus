@@ -5,7 +5,7 @@ unit CHMMain;
 interface
 
 uses
-  Classes, SysUtils, Types,
+  ActnList, Classes, SysUtils, Types,
   Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls, Menus, ExtCtrls, EditBtn,
   LazFileUtils, UTF8Process,
   chmsitemap, chmfilewriter;
@@ -15,6 +15,16 @@ type
   { TCHMForm }
 
   TCHMForm = class(TForm)
+    AcNew: TAction;
+    AcOpen: TAction;
+    AcSave: TAction;
+    AcSaveAs: TAction;
+    AcClose: TAction;
+    AcQuitProgram: TAction;
+    AcCompile: TAction;
+    AcCompileAndView: TAction;
+    AcAbout: TAction;
+    ActionList: TActionList;
     AddFilesBtn: TButton;
     AutoAddLinksBtn: TButton;
     AddAllBtn: TButton;
@@ -52,8 +62,6 @@ type
     CompileOpenBttn: TMenuItem;
     ProjCloseItem: TMenuItem;
     MenuItem3: TMenuItem;
-    HelpHelpItem: TMenuItem;
-    MenuItem5: TMenuItem;
     HelpAboutItem: TMenuItem;
     ProjNewItem: TMenuItem;
     ProjOpenItem: TMenuItem;
@@ -62,8 +70,17 @@ type
     MainPanel: TPanel;
     Panel2: TPanel;
     SaveDialog1: TSaveDialog;
-    StatusBar1: TStatusBar;
+    StatusBar: TStatusBar;
     TOCEdit: TFileNameEdit;
+    procedure AcAboutExecute(Sender: TObject);
+    procedure AcCloseExecute(Sender: TObject);
+    procedure AcCompileAndViewExecute(Sender: TObject);
+    procedure AcCompileExecute(Sender: TObject);
+    procedure AcNewExecute(Sender: TObject);
+    procedure AcOpenExecute(Sender: TObject);
+    procedure AcQuitProgramExecute(Sender: TObject);
+    procedure AcSaveAsExecute(Sender: TObject);
+    procedure AcSaveExecute(Sender: TObject);
     procedure AddAllBtnClick(Sender: TObject);
     procedure AddFilesBtnClick(Sender: TObject);
     procedure AutoAddLinksBtnClick(Sender: TObject);
@@ -72,8 +89,6 @@ type
     procedure ChmFileNameEditAcceptFileName(Sender: TObject; var Value: String);
     procedure ChmFileNameEditEditingDone(Sender: TObject);
     procedure ChmTitleEditChange(Sender: TObject);
-    procedure CompileBtnClick(Sender: TObject);
-    procedure CompileViewBtnClick(Sender: TObject);
     procedure FileListBoxDrawItem({%H-}Control: TWinControl; Index: Integer;
       ARect: TRect; {%H-}State: TOwnerDrawState);
     procedure FormActivate(Sender: TObject);
@@ -83,12 +98,6 @@ type
     procedure IndexEditAcceptFileName(Sender: TObject; var Value: String);
     procedure IndexEditBtnClick(Sender: TObject);
     procedure IndexEditEditingDone(Sender: TObject);
-    procedure ProjCloseItemClick(Sender: TObject);
-    procedure ProjNewItemClick(Sender: TObject);
-    procedure ProjOpenItemClick(Sender: TObject);
-    procedure ProjQuitItemClick(Sender: TObject);
-    procedure ProjSaveAsItemClick(Sender: TObject);
-    procedure ProjSaveItemClick(Sender: TObject);
     procedure RemoveFilesBtnClick(Sender: TObject);
     procedure ScanHtmlCheckClick(Sender: TObject);
     procedure TOCEditAcceptFileName(Sender: TObject; var Value: String);
@@ -99,6 +108,7 @@ type
     FModified: Boolean;
     procedure AddItems({%H-}AParentItem: TTreeNode; {%H-}ChmItems: TChmSiteMapItems);
 
+    function Compile(ShowSuccessMsg: Boolean): Boolean;
     function GetModified: Boolean;
     procedure Save(aAs: Boolean);
     function CloseProject: Boolean;
@@ -122,9 +132,133 @@ implementation
 
 {$R *.lfm}
 
-uses CHMSiteMapEditor, LHelpControl, Process;
+uses
+  CHMSiteMapEditor, CHMAbout, LHelpControl, Process;
 
 { TCHMForm }
+
+procedure TCHMForm.AcAboutExecute(Sender: TObject);
+begin
+  with TAboutForm.Create(nil) do
+  begin
+    ShowModal;
+    Free;
+  end;
+end;
+
+procedure TCHMForm.AcNewExecute(Sender: TObject);
+var
+  bOverwrite: Boolean;
+begin
+  InitFileDialog(SaveDialog1);
+  If SaveDialog1.Execute then
+  begin
+    bOverwrite := False;
+    if FileExists(SaveDialog1.FileName) then
+    begin
+      bOverwrite := (MessageDlg('File already exists. Overwrite?', mtWarning, [mbYes, mbNo],0) = mrYes);
+      if not bOverwrite then Exit;
+    end;
+    if (not CloseProject()) then Exit;
+    if bOverwrite then DeleteFile(SaveDialog1.FileName);
+
+    OpenProject(SaveDialog1.FileName);
+    Project.SaveToFile(SaveDialog1.FileName);
+  end;
+end;
+
+procedure TCHMForm.AcCloseExecute(Sender: TObject);
+begin
+  CloseProject;
+end;
+
+procedure TCHMForm.AcCompileAndViewExecute(Sender: TObject);
+var
+  LHelpName: String;
+  LHelpConn: TLHelpConnection;
+  Proc: TProcessUTF8;
+  ext: String;
+begin
+  // Compile
+  if not Compile(false) then
+    exit;
+
+  // Open CHM in LHelp
+  ext := ExtractFileExt(Application.ExeName);
+  LHelpName := '../../components/chmhelp/lhelp/lhelp' + ext;
+  if not FileExists(LHelpName) then
+  begin
+    if MessageDlg(
+      'LHelp could not be located at '+ LHelpName +
+      LineEnding + LineEnding +
+      'Try to build using LazBuild?', mtError, [mbCancel, mbYes], 0) = mrYes then
+    begin
+      if not FileExists('../../lazbuild' + ext) then
+      begin
+        MessageDlg('LazBuild could not be found.', mtError, [mbCancel], 0);
+        Exit;
+      end;
+      Proc := TProcessUTF8.Create(Self);
+      try
+        Statusbar.SimpleText := 'Building LHelp...';
+        Proc.Executable := '../../../lazbuild';
+        Proc.Parameters.Add('./lhelp.lpi');
+        SetCurrentDir('../../components/chmhelp/lhelp/');
+        Proc.Options := [poWaitOnExit];
+        Proc.Execute;
+        SetCurrentDir('../../../tools/chmmaker/');
+        Statusbar.SimpleText := '';
+        if Proc.ExitStatus <> 0 then
+        begin
+          MessageDlg('LHelp failed to build.', mtError, [mbCancel], 0);
+          Exit;
+        end;
+      finally
+        Proc.Free;
+        Statusbar.SimpleText := '';
+      end;
+    end
+    else
+      Exit;
+  end;
+  LHelpConn := TLHelpConnection.Create;
+  try
+    LHelpConn.StartHelpServer('chmmaker', LHelpName);
+    LHelpConn.OpenFile(CreateAbsoluteProjectFile(Project.OutputFileName));
+  finally
+    LHelpConn.Free;
+  end;
+end;
+
+procedure TCHMForm.AcCompileExecute(Sender: TObject);
+begin
+  Compile(true);
+end;
+
+procedure TCHMForm.AcOpenExecute(Sender: TObject);
+begin
+  InitFileDialog(OpenDialog1);
+  if OpenDialog1.Execute then
+  begin
+    if CloseProject() then
+      OpenProject(OpenDialog1.FileName);
+  end;
+end;
+
+procedure TCHMForm.AcQuitProgramExecute(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TCHMForm.AcSaveAsExecute(Sender: TObject);
+begin
+  Save(True);
+end;
+
+procedure TCHMForm.AcSaveExecute(Sender: TObject);
+begin
+  Save(False);
+end;
 
 procedure TCHMForm.AddItems(AParentItem: TTreeNode; ChmItems: TChmSiteMapItems);
   begin
@@ -155,14 +289,17 @@ end;
 procedure TCHMForm.AddFilesBtnClick(Sender: TObject);
 begin
   InitFileDialog(OpenDialog2);
-  if OpenDialog2.Execute = False then exit;
-  Modified := True;
-  AddFilesToProject(OpenDialog2.Files);
+  if OpenDialog2.Execute then
+  begin
+    Modified := True;
+    AddFilesToProject(OpenDialog2.Files);
+  end;
 end;
 
 procedure TCHMForm.AddAllBtnClick(Sender: TObject);
 var
   Files: TStrings;
+
   procedure AddDir(ADir: String);
   var
     SearchRec: TSearchRec;
@@ -190,6 +327,7 @@ var
       FindClose(SearchRec);
     end;
   end;
+
 begin
   if MessageDlg('This will add all files in the project directory recursively.' + LineEnding +
                 'Do you want to continue?',
@@ -251,10 +389,11 @@ begin
   Modified := True;
 end;
 
-procedure TCHMForm.CompileBtnClick(Sender: TObject);
+function TCHMForm.Compile(ShowSuccessMsg: Boolean): Boolean;
 var
   OutFile: TFileStream;
 begin
+  Result := false;
   if (Project.OutputFileName = '') then
   begin
     MessageDlg('You must set a filename for the output CHM file.', mtError, [mbCancel], 0);
@@ -264,65 +403,11 @@ begin
   OutFile := TFileStream.Create(CreateAbsoluteProjectFile(Project.OutputFileName), fmCreate or fmOpenWrite);
   try
     Project.WriteChm(OutFile);
-    ShowMessage('CHM file '+Project.OutputFileName+' was created.');
+    if ShowSuccessMsg then
+      ShowMessage('CHM file '+Project.OutputFileName+' was created.');
+    Result := true;
   finally
     OutFile.Free;
-  end;
-end;
-
-
-procedure TCHMForm.CompileViewBtnClick(Sender: TObject);
-var
-  LHelpName: String;
-  LHelpConn: TLHelpConnection;
-  Proc: TProcessUTF8;
-  ext: String;
-begin
-  if Project.OutputFileName = '' then
-  begin
-    MessageDlg('You must set a filename for the output CHM file.', mtError, [mbCancel], 0);
-    Exit;
-  end;
-  CompileBtnClick(Sender);
-  // open
-  // ...
-  ext := ExtractFileExt(Application.ExeName);
-  LHelpName := '../../components/chmhelp/lhelp/lhelp' + ext;
-  if not FileExists(LHelpName) then
-  begin
-    if MessageDlg(
-      'LHelp could not be located at '+ LHelpName +
-      LineEnding + LineEnding +
-      'Try to build using LazBuild?', mtError, [mbCancel, mbYes], 0) = mrYes then
-    begin
-      if not FileExists('../../lazbuild' + ext) then
-      begin
-        MessageDlg('LazBuild could not be found.', mtError, [mbCancel], 0);
-        Exit;
-      end;
-      Proc := TProcessUTF8.Create(Self);
-      Proc.Executable := '../../../lazbuild';
-      Proc.Parameters.Add('./lhelp.lpi');
-      SetCurrentDir('../../components/chmhelp/lhelp/');
-      Proc.Options := [poWaitOnExit];
-      Proc.Execute;
-      SetCurrentDir('../../../tools/chmmaker/');
-      if Proc.ExitStatus <> 0 then
-      begin
-        MessageDlg('LHelp failed to build.', mtError, [mbCancel], 0);
-        Exit;
-      end;
-      Proc.Free;
-    end
-    else
-      Exit;
-  end;
-  LHelpConn := TLHelpConnection.Create;
-  try
-    LHelpConn.StartHelpServer('chmmaker', LHelpName);
-    LHelpConn.OpenFile(CreateAbsoluteProjectFile(Project.OutputFileName));
-  finally
-    LHelpConn.Free;
   end;
 end;
 
@@ -359,7 +444,7 @@ begin
     Constraints.MinHeight :=  CHMFileNameEdit.Top + CHMFileNameEdit.Height +
       CompileBtn.Height + CompileBtn.BorderSpacing.Top +
       MainPanel.BorderSpacing.Top + MainPanel.BorderSpacing.Bottom +
-      Statusbar1.Height;
+      StatusBar.Height;
     if Height < Constraints.MinHeight then
       Height := Constraints.MinHeight;
   end;
@@ -440,58 +525,6 @@ begin
   IndexEdit.FileName := CreateRelativeProjectFile(IndexEdit.FileName);
   Project.IndexFileName := IndexEdit.FileName;
   Modified := True;
-end;
-
-procedure TCHMForm.ProjCloseItemClick(Sender: TObject);
-begin
-  CloseProject;
-end;
-
-procedure TCHMForm.ProjNewItemClick(Sender: TObject);
-var
-  bOverwrite: Boolean;
-begin
-  InitFileDialog(SaveDialog1);
-  If SaveDialog1.Execute then
-  begin
-    bOverwrite := False;
-    if FileExists(SaveDialog1.FileName) then
-    begin
-      bOverwrite := (MessageDlg('File already exists. Overwrite?', mtWarning, [mbYes, mbNo],0) = mrYes);
-      if not bOverwrite then Exit;
-    end;
-    if (not CloseProject()) then Exit;
-    if bOverwrite then DeleteFile(SaveDialog1.FileName);
-
-    OpenProject(SaveDialog1.FileName);
-    Project.SaveToFile(SaveDialog1.FileName);
-  end;
-end;
-
-procedure TCHMForm.ProjOpenItemClick(Sender: TObject);
-begin
-  InitFileDialog(OpenDialog1);
-  if OpenDialog1.Execute then
-  begin
-    if (not CloseProject()) then Exit;
-
-    OpenProject(OpenDialog1.FileName);
-  end;
-end;
-
-procedure TCHMForm.ProjQuitItemClick(Sender: TObject);
-begin
-  Close;
-end;
-
-procedure TCHMForm.ProjSaveAsItemClick(Sender: TObject);
-begin
-  Save(True);
-end;
-
-procedure TCHMForm.ProjSaveItemClick(Sender: TObject);
-begin
-  Save(False);
 end;
 
 procedure TCHMForm.RemoveFilesBtnClick(Sender: TObject);
@@ -603,13 +636,15 @@ begin
   ChmTitleEdit.Clear();
   TOCEdit.Clear;
   IndexEdit.Clear;
-  GroupBox1.Enabled      := False;
-  MainPanel.Enabled      := False;
-  CompileItem.Enabled    := False;
-  ProjSaveAsItem.Enabled := False;
-  ProjSaveItem.Enabled   := False;
-  ProjCloseItem.Enabled  := False;
-  ScanHtmlCheck.Checked  := False;
+  GroupBox1.Enabled := False;
+  MainPanel.Enabled := False;
+  AcSaveAs.Enabled := False;
+  AcSave.Enabled := False;
+  AcClose.Enabled := False;
+  AcCompile.Enabled := False;
+  AcCompileAndView.Enabled := False;
+  CompileTimeOptionsGroupBox.Enabled := False;
+  ScanHtmlCheck.Checked := False;
   CreateSearchableCHMCheck.Checked := False;
   FreeAndNil(Project);
   Modified := False;
@@ -619,12 +654,14 @@ procedure TCHMForm.OpenProject(AFileName: String);
 begin
   if not Assigned(Project) then Project := TChmProject.Create;
   Project.LoadFromFile(AFileName);
-  GroupBox1.Enabled      := True;
-  MainPanel.Enabled      := True;
-  CompileItem.Enabled    := True;
-  ProjSaveAsItem.Enabled := True;
-  ProjSaveItem.Enabled   := True;
-  ProjCloseItem.Enabled  := True;
+  GroupBox1.Enabled := True;
+  MainPanel.Enabled := True;
+  AcSaveAs.Enabled := True;
+  AcSave.Enabled := True;
+  AcClose.Enabled := True;
+  AcCompile.Enabled := True;
+  AcCompileAndView.Enabled := True;
+  CompileTimeOptionsGroupBox.Enabled := True;
 
   FileListBox.Items.AddStrings(Project.Files);
   ChmTitleEdit.Text := Project.Title;

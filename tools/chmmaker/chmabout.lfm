@@ -1,0 +1,286 @@
+object AboutForm: TAboutForm
+  Left = 510
+  Height = 219
+  Top = 195
+  Width = 397
+  Anchors = [akLeft]
+  AutoSize = True
+  BorderStyle = bsDialog
+  Caption = 'About CHMMaker'
+  ClientHeight = 219
+  ClientWidth = 397
+  Position = poMainFormCenter
+  ShowHint = True
+  LCLVersion = '4.99.0.0'
+  OnCreate = FormCreate
+  object AppImage: TImage
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = InfoVersion
+    Left = 16
+    Height = 64
+    Top = 59
+    Width = 64
+    BorderSpacing.Left = 16
+    BorderSpacing.Top = 6
+    Proportional = True
+  end
+  object lblTitle: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 16
+    Height = 45
+    Top = 0
+    Width = 172
+    BorderSpacing.Left = 16
+    BorderSpacing.Right = 16
+    Caption = 'CHMMaker'
+    Font.Height = -32
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object CloseBtn: TBitBtn
+    AnchorSideTop.Control = Bevel1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 327
+    Height = 25
+    Top = 186
+    Width = 55
+    Anchors = [akTop, akRight]
+    AutoSize = True
+    BorderSpacing.Top = 12
+    BorderSpacing.Bottom = 12
+    Cancel = True
+    Caption = 'Close'
+    Default = True
+    ModalResult = 11
+    ImageIndex = 5
+    TabOrder = 0
+  end
+  object LblOperatingSystem: TLabel
+    AnchorSideLeft.Control = LblVersion
+    AnchorSideTop.Control = LblCreatedWith
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = AppImage
+    AnchorSideBottom.Side = asrBottom
+    Left = 96
+    Height = 15
+    Top = 99
+    Width = 101
+    BorderSpacing.Top = 8
+    Caption = 'Operating system:'
+    Font.Style = [fsBold]
+    ParentFont = False
+    WordWrap = True
+  end
+  object LblVersion: TLabel
+    AnchorSideLeft.Control = AppImage
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = lblTitle
+    AnchorSideTop.Side = asrBottom
+    Left = 96
+    Height = 15
+    Top = 53
+    Width = 44
+    BorderSpacing.Left = 16
+    BorderSpacing.Top = 8
+    Caption = 'Version:'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object LblTargetCPU: TLabel
+    AnchorSideLeft.Control = LblVersion
+    AnchorSideTop.Control = LblOperatingSystem
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = AppImage
+    AnchorSideBottom.Side = asrBottom
+    Left = 96
+    Height = 15
+    Top = 114
+    Width = 65
+    Caption = 'Target CPU:'
+    Font.Style = [fsBold]
+    ParentFont = False
+    WordWrap = True
+  end
+  object LblTargetOS: TLabel
+    AnchorSideLeft.Control = LblVersion
+    AnchorSideTop.Control = LblTargetCPU
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = AppImage
+    AnchorSideBottom.Side = asrBottom
+    Left = 96
+    Height = 15
+    Top = 129
+    Width = 58
+    Caption = 'Target OS:'
+    Font.Style = [fsBold]
+    ParentFont = False
+    WordWrap = True
+  end
+  object LblTargetPlatform: TLabel
+    AnchorSideLeft.Control = LblVersion
+    AnchorSideTop.Control = LblTargetOS
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = AppImage
+    AnchorSideBottom.Side = asrBottom
+    Left = 96
+    Height = 15
+    Top = 144
+    Width = 88
+    Caption = 'TargetPlatform:'
+    Font.Style = [fsBold]
+    ParentFont = False
+    WordWrap = True
+  end
+  object InfoVersion: TLabel
+    AnchorSideLeft.Control = LblVersion
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = LblVersion
+    Left = 148
+    Height = 15
+    Top = 53
+    Width = 59
+    BorderSpacing.Left = 8
+    Caption = 'InfoVersion'
+  end
+  object InfoOperatingSystem: TLabel
+    AnchorSideLeft.Control = LblOperatingSystem
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = LblOperatingSystem
+    AnchorSideBottom.Control = AppImage
+    AnchorSideBottom.Side = asrBottom
+    Left = 205
+    Height = 15
+    Top = 99
+    Width = 112
+    BorderSpacing.Left = 8
+    BorderSpacing.Right = 16
+    Caption = 'InfoOperatingSystem'
+    WordWrap = True
+  end
+  object InfoTargetCPU: TLabel
+    AnchorSideLeft.Control = LblTargetCPU
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = LblTargetCPU
+    AnchorSideBottom.Control = AppImage
+    AnchorSideBottom.Side = asrBottom
+    Left = 169
+    Height = 15
+    Top = 114
+    Width = 77
+    BorderSpacing.Left = 8
+    Caption = 'InfoTargetCPU'
+    WordWrap = True
+  end
+  object InfoTargetOS: TLabel
+    AnchorSideLeft.Control = LblTargetOS
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = LblTargetOS
+    AnchorSideBottom.Control = AppImage
+    AnchorSideBottom.Side = asrBottom
+    Left = 162
+    Height = 15
+    Top = 129
+    Width = 69
+    BorderSpacing.Left = 8
+    Caption = 'InfoTargetOS'
+    WordWrap = True
+  end
+  object InfoTargetPlatform: TLabel
+    AnchorSideLeft.Control = LblTargetPlatform
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = LblTargetPlatform
+    AnchorSideBottom.Control = AppImage
+    AnchorSideBottom.Side = asrBottom
+    Left = 192
+    Height = 15
+    Top = 144
+    Width = 100
+    BorderSpacing.Left = 8
+    BorderSpacing.Right = 16
+    Caption = 'InfoTargetPlatform'
+    WordWrap = True
+  end
+  object Bevel1: TBevel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = InfoTargetPlatform
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 12
+    Height = 3
+    Top = 171
+    Width = 373
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 12
+    BorderSpacing.Top = 12
+    BorderSpacing.Right = 12
+    Shape = bsTopLine
+  end
+  object LblCreatedWith: TLabel
+    AnchorSideLeft.Control = LblVersion
+    AnchorSideTop.Control = LblVersion
+    AnchorSideTop.Side = asrBottom
+    Left = 96
+    Height = 15
+    Top = 76
+    Width = 78
+    BorderSpacing.Top = 8
+    Caption = 'Created with  '
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object LblFreePascal: TLabel
+    AnchorSideLeft.Control = LblCreatedWith
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = LblVersion
+    AnchorSideTop.Side = asrBottom
+    Cursor = crHandPoint
+    Left = 174
+    Height = 15
+    Hint = 'https://www.freepascal.org/'
+    Top = 76
+    Width = 58
+    BorderSpacing.Top = 8
+    Caption = 'Free Pascal'
+    Font.Color = clBlue
+    ParentFont = False
+    OnClick = URLClick
+    OnMouseEnter = URLMouseEnter
+    OnMouseLeave = URLMouseLeave
+  end
+  object LblAnd: TLabel
+    AnchorSideLeft.Control = LblFreePascal
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = LblVersion
+    AnchorSideTop.Side = asrBottom
+    Left = 232
+    Height = 15
+    Top = 76
+    Width = 26
+    BorderSpacing.Top = 8
+    Caption = ' and '
+    ParentFont = False
+  end
+  object LblLazarus: TLabel
+    AnchorSideLeft.Control = LblAnd
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = LblVersion
+    AnchorSideTop.Side = asrBottom
+    Cursor = crHandPoint
+    Left = 258
+    Height = 15
+    Hint = 'https://www.lazarus-ide.org/'
+    Top = 76
+    Width = 39
+    BorderSpacing.Top = 8
+    BorderSpacing.Right = 16
+    Caption = 'Lazarus'
+    Font.Color = clBlue
+    ParentFont = False
+    OnClick = URLClick
+    OnMouseEnter = URLMouseEnter
+    OnMouseLeave = URLMouseLeave
+  end
+end

@@ -6,7 +6,7 @@ uses
   {$IFDEF UNIX}
   cthreads,
   {$ENDIF}
-  Interfaces, // this includes the LCL widgetset
+  chmAbout, Interfaces, // this includes the LCL widgetset
   Forms, LazFileUtils,
   CHMMain, CHMSiteMapEditor;
 
