@@ -5,9 +5,10 @@ unit CHMMain;
 interface
 
 uses
-  Classes, SysUtils, types, chmsitemap, chmfilewriter,
+  Classes, SysUtils, Types,
   Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls, Menus, ExtCtrls, EditBtn,
-  LazFileUtils, UTF8Process;
+  LazFileUtils, UTF8Process,
+  chmsitemap, chmfilewriter;
 
 type
 
@@ -17,20 +18,22 @@ type
     AddFilesBtn: TButton;
     AutoAddLinksBtn: TButton;
     AddAllBtn: TButton;
+    Bevel1: TBevel;
     CompileViewBtn: TButton;
     CompileBtn: TButton;
     DefaultPageCombo: TComboBox;
     ChmFileNameEdit: TFileNameEdit;
     ChmTitleEdit: TEdit;
+    CompileTimeOptionsGroupbox: TGroupBox;
     ScanHtmlCheck: TCheckBox;
     CreateSearchableCHMCheck: TCheckBox;
-    CompileTimeOptionsLabel: TLabel;
     FilesNoteLabel: TLabel;
     DefaultPageLabel: TLabel;
     CHMFilenameLabel: TLabel;
     OpenDialog2: TOpenDialog;
     RemoveFilesBtn: TButton;
     ChmTitleLabel: TLabel;
+    Splitter: TSplitter;
     TOCEditBtn: TButton;
     IndexEditBtn: TButton;
     IndexEdit: TFileNameEdit;
@@ -73,6 +76,7 @@ type
     procedure CompileViewBtnClick(Sender: TObject);
     procedure FileListBoxDrawItem({%H-}Control: TWinControl; Index: Integer;
       ARect: TRect; {%H-}State: TOwnerDrawState);
+    procedure FormActivate(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -91,6 +95,7 @@ type
     procedure TOCEditBtnClick(Sender: TObject);
     procedure TOCEditEditingDone(Sender: TObject);
   private
+    FActivated: Boolean;
     FModified: Boolean;
     procedure AddItems({%H-}AParentItem: TTreeNode; {%H-}ChmItems: TChmSiteMapItems);
 
@@ -293,7 +298,8 @@ begin
         Exit;
       end;
       Proc := TProcessUTF8.Create(Self);
-      Proc.CommandLine := '../../../lazbuild ./lhelp.lpi';
+      Proc.Parameters.Add('../../../lazbuild ./lhelp.lpi');
+//      Proc.CommandLine := '../../../lazbuild ./lhelp.lpi';
       SetCurrentDir('../../components/chmhelp/lhelp/');
       Proc.Options := [poWaitOnExit];
       Proc.Execute;
@@ -335,6 +341,25 @@ begin
     2, (ARect.Top + ARect.Bottom - FileListbox.Canvas.TextHeight('Tg')) div 2,
     FileListBox.Items[Index]
   );
+end;
+
+procedure TCHMForm.FormActivate(Sender: TObject);
+begin
+  if not FActivated then
+  begin
+    FActivated := true;
+    Constraints.MinWidth := GroupBox1.Width + GroupBox1.BorderSpacing.Left + GroupBox1.BorderSpacing.Right +
+      Splitter.Width + CompileTimeOptionsGroupbox.Width +
+      Mainpanel.BorderSpacing.Left + MainPanel.BorderSpacing.Right;
+    if Width < Constraints.MinWidth then
+      Width := Constraints.MinWidth;
+    Constraints.MinHeight :=  CHMFileNameEdit.Top + CHMFileNameEdit.Height +
+      CompileBtn.Height + CompileBtn.BorderSpacing.Top +
+      MainPanel.BorderSpacing.Top + MainPanel.BorderSpacing.Bottom +
+      Statusbar1.Height;
+    if Height < Constraints.MinHeight then
+      Height := Constraints.MinHeight;
+  end;
 end;
 
 procedure TCHMForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);

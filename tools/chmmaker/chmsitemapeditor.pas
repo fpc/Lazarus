@@ -16,24 +16,31 @@ type
   TSitemapEditForm = class(TForm)
     BeforeBtn: TButton;
     AfterBtn: TButton;
+    Bevel1: TBevel;
     DeleteBtn: TButton;
     CancelBtn: TButton;
+    DescriptionEdit: TEdit;
+    FontEdit: TEdit;
+    GlobalPropertiesGroupbox: TGroupBox;
+    FontLabel: TLabel;
+    DescriptionLabel: TLabel;
+    Panel3: TPanel;
+    URLEdit: TEdit;
+    URLLabel: TLabel;
+    Panel1: TPanel;
+    Panel2: TPanel;
     SaveBtn: TButton;
     FolderViewCheck: TCheckBox;
     ForegroundClrBtn: TColorButton;
     BackgroundClrBtn: TColorButton;
-    Label3: TLabel;
-    FontEdit: TLabeledEdit;
-    Label4: TLabel;
-    Label5: TLabel;
+    ForegroundColorLabel: TLabel;
+    BackgroundColorLabel: TLabel;
     SubItemBtn: TButton;
     Label2: TLabel;
-    URLEdit: TLabeledEdit;
     LocalCombo: TComboBox;
     DescFromTitleBtn: TButton;
     GroupBox1: TGroupBox;
-    Label1: TLabel;
-    DescriptionEdit: TLabeledEdit;
+    LocalLinkLabel: TLabel;
     SitemapTree: TTreeView;
     procedure AfterBtnClick(Sender: TObject);
     procedure BeforeBtnClick(Sender: TObject);
@@ -41,6 +48,7 @@ type
     procedure DeleteBtnClick(Sender: TObject);
     procedure DescFromTitleBtnClick(Sender: TObject);
     procedure DescriptionEditChange(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
     procedure LocalComboChange(Sender: TObject);
     procedure LocalComboKeyUp(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
     procedure SaveBtnClick(Sender: TObject);
@@ -52,6 +60,7 @@ type
   private
     FStream: TStream;
     FSiteMapType: TSiteMapType;
+    FActivated: Boolean;
     procedure InitControls;
   public
     procedure LoadFromStream(AStream: TStream);
@@ -131,6 +140,22 @@ procedure TSitemapEditForm.DescriptionEditChange(Sender: TObject);
 begin
   if SitemapTree.Selected = nil then Exit;
   TChmTreeNode(SitemapTree.Selected).Text := DescriptionEdit.Text;
+end;
+
+procedure TSitemapEditForm.FormActivate(Sender: TObject);
+begin
+  if not FActivated then
+  begin
+    FActivated := true;
+    Constraints.MinWidth := Panel3.Width + 2*GroupBox1.BorderSpacing.Around +
+      Panel1.Width + Panel1.BorderSpacing.Left + Panel1.BorderSpacing.Right;
+    Constraints.MinHeight := Panel3.Height + Panel3.BorderSpacing.Top + Panel3.BorderSpacing.Bottom +
+      Panel2.Height + 2*BorderSpacing.Around +
+      SiteMapTree.Constraints.MinHeight + 2*SiteMapTree.BorderSpacing.Around +
+      2*Groupbox1.BorderSpacing.Around;
+    if Width < Constraints.MinWidth then Width := Constraints.MinWidth;
+    if Height < Constraints.MinHeight then Height := Constraints.MinHeight;
+  end;
 end;
 
 procedure TSitemapEditForm.LocalComboChange(Sender: TObject);
@@ -246,10 +271,12 @@ begin
   
   BeforeBtn.Enabled := Value and (SitemapTree.Selected.Parent = nil) and (SitemapTree.Selected.Index <> 0);
   SubItemBtn.Enabled := Value and (FSiteMapType = stTOC);
-  Label1.Enabled := Value;
+  LocalLinkLabel.Enabled := Value;
   DescFromTitleBtn.Enabled := Value;
+  DescriptionLabel.Enabled := Value;
   DescriptionEdit.Enabled := Value;
   LocalCombo.Enabled := Value;
+  URLLabel.Enabled := Value;
   URLEdit.Enabled := Value;
 
   if Value then begin
@@ -290,8 +317,8 @@ begin
   FolderViewCheck.Enabled := Value;
   ForegroundClrBtn.Enabled := Value;
   BackgroundClrBtn.Enabled := Value;
-  Label4.Enabled := Value;
-  Label5.Enabled := Value;
+  ForegroundColorLabel.Enabled := Value;
+  BackgroundColorLabel.Enabled := Value;
 end;
 
 procedure TSitemapEditForm.LoadFromStream(AStream: TStream);
