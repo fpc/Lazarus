@@ -240,7 +240,6 @@ object CHMForm: TCHMForm
       Anchors = [akTop, akLeft, akRight]
       AutoSelect = False
       BorderSpacing.Top = 4
-      AutoSize = False
       MaxLength = 0
       TabOrder = 1
       OnEditingDone = TOCEditEditingDone
@@ -261,7 +260,6 @@ object CHMForm: TCHMForm
       HideDirectories = False
       ButtonWidth = 23
       NumGlyphs = 1
-      Anchors = [akTop, akLeft, akRight]
       AutoSelect = False
       BorderSpacing.Top = 4
       AutoSize = False
@@ -281,7 +279,7 @@ object CHMForm: TCHMForm
       Anchors = [akTop, akRight]
       AutoSize = True
       BorderSpacing.Left = 16
-      Caption = 'Edit'
+      Caption = 'Edit...'
       Constraints.MinWidth = 60
       TabOrder = 2
       OnClick = TOCEditBtnClick
@@ -298,7 +296,7 @@ object CHMForm: TCHMForm
       Anchors = [akTop, akRight]
       AutoSize = True
       BorderSpacing.Left = 16
-      Caption = 'Edit'
+      Caption = 'Edit...'
       Constraints.MinWidth = 60
       TabOrder = 4
       OnClick = IndexEditBtnClick
@@ -483,7 +481,7 @@ object CHMForm: TCHMForm
         OnClick = ProjNewItemClick
       end
       object ProjOpenItem: TMenuItem
-        Caption = 'Open'
+        Caption = 'Open...'
         OnClick = ProjOpenItemClick
       end
       object MenuItem9: TMenuItem
@@ -494,7 +492,7 @@ object CHMForm: TCHMForm
         OnClick = ProjSaveItemClick
       end
       object ProjSaveAsItem: TMenuItem
-        Caption = 'Save as'
+        Caption = 'Save as...'
         OnClick = ProjSaveAsItemClick
       end
       object ProjCloseItem: TMenuItem
@@ -529,7 +527,7 @@ object CHMForm: TCHMForm
         Caption = '-'
       end
       object HelpAboutItem: TMenuItem
-        Caption = 'About'
+        Caption = 'About...'
       end
     end
   end

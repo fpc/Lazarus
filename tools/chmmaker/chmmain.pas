@@ -299,7 +299,6 @@ begin
       end;
       Proc := TProcessUTF8.Create(Self);
       Proc.Parameters.Add('../../../lazbuild ./lhelp.lpi');
-//      Proc.CommandLine := '../../../lazbuild ./lhelp.lpi';
       SetCurrentDir('../../components/chmhelp/lhelp/');
       Proc.Options := [poWaitOnExit];
       Proc.Execute;
