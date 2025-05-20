@@ -1,15 +1,15 @@
 object CHMForm: TCHMForm
   Left = 368
-  Height = 447
+  Height = 453
   Top = 154
-  Width = 583
+  Width = 643
   HorzScrollBar.Page = 582
   VertScrollBar.Page = 399
   ActiveControl = FileListBox
   AutoScroll = True
   Caption = 'Compiled HTML Help Project - [Made with Freepascal]'
-  ClientHeight = 447
-  ClientWidth = 583
+  ClientHeight = 453
+  ClientWidth = 643
   Menu = MainMenu1
   ShowInTaskBar = stAlways
   LCLVersion = '4.99.0.0'
@@ -20,13 +20,13 @@ object CHMForm: TCHMForm
   object StatusBar1: TStatusBar
     Left = 0
     Height = 23
-    Top = 424
-    Width = 583
+    Top = 430
+    Width = 643
     Panels = <>
   end
   object GroupBox1: TGroupBox
     Left = 8
-    Height = 408
+    Height = 414
     Top = 8
     Width = 228
     Align = alLeft
@@ -35,12 +35,12 @@ object CHMForm: TCHMForm
     BorderSpacing.Right = 4
     BorderSpacing.Bottom = 8
     Caption = 'Files'
-    ClientHeight = 388
+    ClientHeight = 394
     ClientWidth = 224
     TabOrder = 0
     object FileListBox: TListBox
       Left = 8
-      Height = 238
+      Height = 243
       Top = 8
       Width = 208
       Align = alClient
@@ -54,12 +54,13 @@ object CHMForm: TCHMForm
     end
     object Panel2: TPanel
       Left = 0
-      Height = 134
-      Top = 254
+      Height = 135
+      Top = 259
       Width = 224
       Align = alBottom
+      AutoSize = True
       BevelOuter = bvNone
-      ClientHeight = 134
+      ClientHeight = 135
       ClientWidth = 224
       TabOrder = 1
       object FilesNoteLabel: TLabel
@@ -69,7 +70,7 @@ object CHMForm: TCHMForm
         AnchorSideRight.Control = Panel2
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 29
+        Height = 30
         Top = 99
         Width = 212
         Anchors = [akTop, akLeft, akRight, akBottom]
@@ -161,17 +162,17 @@ object CHMForm: TCHMForm
   end
   object MainPanel: TPanel
     Left = 249
-    Height = 408
+    Height = 414
     Top = 8
-    Width = 326
+    Width = 386
     Align = alClient
     BorderSpacing.Left = 4
     BorderSpacing.Top = 8
     BorderSpacing.Right = 8
     BorderSpacing.Bottom = 8
     BevelOuter = bvNone
-    ClientHeight = 408
-    ClientWidth = 326
+    ClientHeight = 414
+    ClientWidth = 386
     TabOrder = 2
     object TableOfContentsLabel: TLabel
       AnchorSideLeft.Control = MainPanel
@@ -229,7 +230,7 @@ object CHMForm: TCHMForm
       Left = 0
       Height = 23
       Top = 73
-      Width = 250
+      Width = 310
       OnAcceptFileName = TOCEditAcceptFileName
       DialogOptions = []
       Filter = 'Table of Contents Files(*.hhc)|*.hhc|All files|*'
@@ -272,7 +273,7 @@ object CHMForm: TCHMForm
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Control = MainPanel
       AnchorSideRight.Side = asrBottom
-      Left = 266
+      Left = 326
       Height = 25
       Top = 72
       Width = 60
@@ -289,7 +290,7 @@ object CHMForm: TCHMForm
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Control = MainPanel
       AnchorSideRight.Side = asrBottom
-      Left = 266
+      Left = 326
       Height = 25
       Top = 126
       Width = 60
@@ -310,7 +311,7 @@ object CHMForm: TCHMForm
       Left = 0
       Height = 23
       Top = 181
-      Width = 326
+      Width = 386
       Anchors = [akTop, akLeft, akRight]
       AutoSelect = False
       BorderSpacing.Top = 4
@@ -323,9 +324,9 @@ object CHMForm: TCHMForm
       AnchorSideRight.Control = CompileViewBtn
       AnchorSideBottom.Control = MainPanel
       AnchorSideBottom.Side = asrBottom
-      Left = 109
+      Left = 169
       Height = 33
-      Top = 375
+      Top = 381
       Width = 79
       Anchors = [akRight, akBottom]
       AutoSize = True
@@ -342,9 +343,9 @@ object CHMForm: TCHMForm
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = MainPanel
       AnchorSideBottom.Side = asrBottom
-      Left = 196
+      Left = 256
       Height = 33
-      Top = 375
+      Top = 381
       Width = 130
       Anchors = [akRight, akBottom]
       AutoSize = True
@@ -362,7 +363,7 @@ object CHMForm: TCHMForm
       Left = 0
       Height = 23
       Top = 337
-      Width = 326
+      Width = 386
       OnAcceptFileName = ChmFileNameEditAcceptFileName
       DialogKind = dkSave
       DialogTitle = 'Save CHM as...'
@@ -399,7 +400,7 @@ object CHMForm: TCHMForm
       Left = 0
       Height = 23
       Top = 19
-      Width = 326
+      Width = 386
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 4
       TabOrder = 0
@@ -425,10 +426,13 @@ object CHMForm: TCHMForm
       object ScanHtmlCheck: TCheckBox
         AnchorSideLeft.Control = CompileTimeOptionsGroupbox
         AnchorSideTop.Control = CompileTimeOptionsGroupbox
+        AnchorSideRight.Control = CompileTimeOptionsGroupbox
+        AnchorSideRight.Side = asrBottom
         Left = 8
         Height = 19
         Top = 0
         Width = 305
+        Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 8
         BorderSpacing.Right = 8
         Caption = 'Parse *.htm* files to include '#10'linked pages and images'
@@ -454,7 +458,7 @@ object CHMForm: TCHMForm
   end
   object Splitter: TSplitter
     Left = 240
-    Height = 424
+    Height = 430
     Top = 0
     Width = 5
     ResizeStyle = rsPattern

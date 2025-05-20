@@ -191,8 +191,8 @@ var
     end;
   end;
 begin
-  if MessageDlg('This will add all files in the project directory ' + LineEnding +
-                'recursively. Do you want to continue?',
+  if MessageDlg('This will add all files in the project directory recursively.' + LineEnding +
+                'Do you want to continue?',
                 mtConfirmation, [mbYes, mbNo],0) <> mrYes then exit;
   Modified := True;
   Files := TStringList.Create;
@@ -257,7 +257,7 @@ var
 begin
   if (Project.OutputFileName = '') then
   begin
-    MessageDlg('You must set a filename for the output CHM file!', mtError, [mbCancel], 0);
+    MessageDlg('You must set a filename for the output CHM file.', mtError, [mbCancel], 0);
     Exit;
   end;
   Save(False);
@@ -280,7 +280,7 @@ var
 begin
   if Project.OutputFileName = '' then
   begin
-    MessageDlg('You must set a filename for the output CHM file!', mtError, [mbCancel], 0);
+    MessageDlg('You must set a filename for the output CHM file.', mtError, [mbCancel], 0);
     Exit;
   end;
   CompileBtnClick(Sender);
@@ -290,22 +290,26 @@ begin
   LHelpName := '../../components/chmhelp/lhelp/lhelp' + ext;
   if not FileExists(LHelpName) then
   begin
-    if MessageDlg('LHelp could not be located at '+ LHelpName +' Try to build using lazbuild?', mtError, [mbCancel, mbYes], 0) = mrYes then
+    if MessageDlg(
+      'LHelp could not be located at '+ LHelpName +
+      LineEnding + LineEnding +
+      'Try to build using LazBuild?', mtError, [mbCancel, mbYes], 0) = mrYes then
     begin
       if not FileExists('../../lazbuild' + ext) then
       begin
-        MessageDlg('lazbuild coul not be found.', mtError, [mbCancel], 0);
+        MessageDlg('LazBuild could not be found.', mtError, [mbCancel], 0);
         Exit;
       end;
       Proc := TProcessUTF8.Create(Self);
-      Proc.Parameters.Add('../../../lazbuild ./lhelp.lpi');
+      Proc.Executable := '../../../lazbuild';
+      Proc.Parameters.Add('./lhelp.lpi');
       SetCurrentDir('../../components/chmhelp/lhelp/');
       Proc.Options := [poWaitOnExit];
       Proc.Execute;
       SetCurrentDir('../../../tools/chmmaker/');
       if Proc.ExitStatus <> 0 then
       begin
-        MessageDlg('lhelp failed to build', mtError, [mbCancel], 0);
+        MessageDlg('LHelp failed to build.', mtError, [mbCancel], 0);
         Exit;
       end;
       Proc.Free;
@@ -367,8 +371,11 @@ var
 begin
   if Modified then
   begin
-    MResult := MessageDlg('Project is modified would you like to save the changes?', mtConfirmation,
-                                      [mbYes, mbNo, mbCancel], 0);
+    MResult := MessageDlg(
+      'Project has been modified.' + LineEnding +
+      'Would you like to save the changes?',
+      mtConfirmation, [mbYes, mbNo, mbCancel], 0
+    );
     case MResult of
       mrYes: Save(False);
       mrNo: CloseAction := caFree;
@@ -450,7 +457,7 @@ begin
     bOverwrite := False;
     if FileExists(SaveDialog1.FileName) then
     begin
-      bOverwrite := (MessageDlg('File Already Exists! Ovewrite?', mtWarning, [mbYes, mbNo],0) = mrYes);
+      bOverwrite := (MessageDlg('File already exists. Overwrite?', mtWarning, [mbYes, mbNo],0) = mrYes);
       if not bOverwrite then Exit;
     end;
     if (not CloseProject()) then Exit;
@@ -585,7 +592,7 @@ begin
 
   if Modified then
   begin
-    case (MessageDlg('Save Changes?', mtConfirmation, [mbYes, mbNo, mbCancel],0)) of
+    case (MessageDlg('Save changes?', mtConfirmation, [mbYes, mbNo, mbCancel],0)) of
       mrCancel: Exit(False);
       mrYes: Save(False);
     end;
@@ -597,12 +604,11 @@ begin
   TOCEdit.Clear;
   IndexEdit.Clear;
   GroupBox1.Enabled      := False;
-  MainPanel.Enabled         := False;
+  MainPanel.Enabled      := False;
   CompileItem.Enabled    := False;
   ProjSaveAsItem.Enabled := False;
   ProjSaveItem.Enabled   := False;
   ProjCloseItem.Enabled  := False;
-
   ScanHtmlCheck.Checked  := False;
   CreateSearchableCHMCheck.Checked := False;
   FreeAndNil(Project);

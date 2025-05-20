@@ -112,7 +112,7 @@ var
 begin
   if (LocalCombo.ItemIndex = -1) then
   begin
-    MessageDlg('You must select a Local file first', mtError, [mbCancel], 0);
+    MessageDlg('You must select a local file first.', mtError, [mbCancel], 0);
     Exit;
   end;
 
@@ -367,13 +367,16 @@ begin
   LoadFromStream(AStream);
   
   LocalCombo.Items.Assign(AvailableLinks);
-  
+
+  Result := ShowModal = mrOK;
+  {
   ShowModal;
   
   while ModalResult = mrNone do
     Application.HandleMessage;
     
   Result := ModalResult = mrOK;
+  }
 end;
 
 end.
