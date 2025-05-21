@@ -12,6 +12,7 @@ object AboutForm: TAboutForm
   Position = poMainFormCenter
   ShowHint = True
   LCLVersion = '4.99.0.0'
+  OnActivate = FormActivate
   OnCreate = FormCreate
   object AppImage: TImage
     AnchorSideLeft.Control = Owner

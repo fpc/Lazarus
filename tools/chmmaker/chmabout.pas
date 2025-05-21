@@ -31,11 +31,13 @@ type
     LblOperatingSystem: TLabel;
     lblTitle: TLabel;
     InfoVersion: TLabel;
+    procedure FormActivate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure URLClick(Sender: TObject);
     procedure URLMouseEnter(Sender: TObject);
     procedure URLMouseLeave(Sender: TObject);
   private
+    FActivated: Boolean;
     procedure UpdateLanguage;
 
   public
@@ -125,6 +127,22 @@ begin
   InfoTargetCPU.Caption := LowerCase({$I %FPCTARGETCPU%});
   InfoTargetOS.Caption := LowerCase({$I %FPCTARGETOS%});
   InfoTargetPlatform.Caption := LCLPlatformDisplayNames[GetDefaultLCLWidgetType];
+end;
+
+procedure TAboutForm.FormActivate(Sender: TObject);
+var
+  y1, y2: Integer;
+begin
+  if not FActivated then
+  begin
+    FActivated := true;
+    y1 := LblTargetPlatform.Top + LblTargetPlatform.Height;
+    y2 := AppImage.Top + AppImage.Height;
+    if y1 > y2 then
+      Bevel1.AnchorSideTop.Control := LblTargetPlatform
+    else
+      Bevel1.AnchorSideTop.Control := AppImage;
+  end;
 end;
 
 procedure TAboutForm.URLClick(Sender: TObject);
