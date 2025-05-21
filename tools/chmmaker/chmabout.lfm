@@ -1,13 +1,13 @@
 object AboutForm: TAboutForm
   Left = 510
-  Height = 219
+  Height = 247
   Top = 195
   Width = 397
   Anchors = [akLeft]
   AutoSize = True
   BorderStyle = bsDialog
   Caption = 'About CHMMaker'
-  ClientHeight = 219
+  ClientHeight = 247
   ClientWidth = 397
   Position = poMainFormCenter
   ShowHint = True
@@ -17,11 +17,10 @@ object AboutForm: TAboutForm
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = InfoVersion
     Left = 16
-    Height = 64
-    Top = 59
-    Width = 64
+    Height = 128
+    Top = 53
+    Width = 128
     BorderSpacing.Left = 16
-    BorderSpacing.Top = 6
     Proportional = True
   end
   object lblTitle: TLabel
@@ -44,11 +43,11 @@ object AboutForm: TAboutForm
     AnchorSideRight.Side = asrBottom
     Left = 327
     Height = 25
-    Top = 186
+    Top = 206
     Width = 55
     Anchors = [akTop, akRight]
     AutoSize = True
-    BorderSpacing.Top = 12
+    BorderSpacing.Top = 10
     BorderSpacing.Bottom = 12
     Cancel = True
     Caption = 'Close'
@@ -63,7 +62,7 @@ object AboutForm: TAboutForm
     AnchorSideTop.Side = asrBottom
     AnchorSideBottom.Control = AppImage
     AnchorSideBottom.Side = asrBottom
-    Left = 96
+    Left = 160
     Height = 15
     Top = 99
     Width = 101
@@ -78,7 +77,7 @@ object AboutForm: TAboutForm
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = lblTitle
     AnchorSideTop.Side = asrBottom
-    Left = 96
+    Left = 160
     Height = 15
     Top = 53
     Width = 44
@@ -94,10 +93,11 @@ object AboutForm: TAboutForm
     AnchorSideTop.Side = asrBottom
     AnchorSideBottom.Control = AppImage
     AnchorSideBottom.Side = asrBottom
-    Left = 96
+    Left = 160
     Height = 15
-    Top = 114
+    Top = 116
     Width = 65
+    BorderSpacing.Top = 2
     Caption = 'Target CPU:'
     Font.Style = [fsBold]
     ParentFont = False
@@ -109,10 +109,11 @@ object AboutForm: TAboutForm
     AnchorSideTop.Side = asrBottom
     AnchorSideBottom.Control = AppImage
     AnchorSideBottom.Side = asrBottom
-    Left = 96
+    Left = 160
     Height = 15
-    Top = 129
+    Top = 133
     Width = 58
+    BorderSpacing.Top = 2
     Caption = 'Target OS:'
     Font.Style = [fsBold]
     ParentFont = False
@@ -124,10 +125,11 @@ object AboutForm: TAboutForm
     AnchorSideTop.Side = asrBottom
     AnchorSideBottom.Control = AppImage
     AnchorSideBottom.Side = asrBottom
-    Left = 96
+    Left = 160
     Height = 15
-    Top = 144
+    Top = 150
     Width = 88
+    BorderSpacing.Top = 2
     Caption = 'TargetPlatform:'
     Font.Style = [fsBold]
     ParentFont = False
@@ -137,7 +139,7 @@ object AboutForm: TAboutForm
     AnchorSideLeft.Control = LblVersion
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = LblVersion
-    Left = 148
+    Left = 212
     Height = 15
     Top = 53
     Width = 59
@@ -150,7 +152,7 @@ object AboutForm: TAboutForm
     AnchorSideTop.Control = LblOperatingSystem
     AnchorSideBottom.Control = AppImage
     AnchorSideBottom.Side = asrBottom
-    Left = 205
+    Left = 269
     Height = 15
     Top = 99
     Width = 112
@@ -165,9 +167,9 @@ object AboutForm: TAboutForm
     AnchorSideTop.Control = LblTargetCPU
     AnchorSideBottom.Control = AppImage
     AnchorSideBottom.Side = asrBottom
-    Left = 169
+    Left = 233
     Height = 15
-    Top = 114
+    Top = 116
     Width = 77
     BorderSpacing.Left = 8
     Caption = 'InfoTargetCPU'
@@ -179,9 +181,9 @@ object AboutForm: TAboutForm
     AnchorSideTop.Control = LblTargetOS
     AnchorSideBottom.Control = AppImage
     AnchorSideBottom.Side = asrBottom
-    Left = 162
+    Left = 226
     Height = 15
-    Top = 129
+    Top = 133
     Width = 69
     BorderSpacing.Left = 8
     Caption = 'InfoTargetOS'
@@ -193,9 +195,9 @@ object AboutForm: TAboutForm
     AnchorSideTop.Control = LblTargetPlatform
     AnchorSideBottom.Control = AppImage
     AnchorSideBottom.Side = asrBottom
-    Left = 192
+    Left = 256
     Height = 15
-    Top = 144
+    Top = 150
     Width = 100
     BorderSpacing.Left = 8
     BorderSpacing.Right = 16
@@ -204,13 +206,13 @@ object AboutForm: TAboutForm
   end
   object Bevel1: TBevel
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = InfoTargetPlatform
+    AnchorSideTop.Control = AppImage
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 12
     Height = 3
-    Top = 171
+    Top = 193
     Width = 373
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 12
@@ -222,7 +224,7 @@ object AboutForm: TAboutForm
     AnchorSideLeft.Control = LblVersion
     AnchorSideTop.Control = LblVersion
     AnchorSideTop.Side = asrBottom
-    Left = 96
+    Left = 160
     Height = 15
     Top = 76
     Width = 78
@@ -237,7 +239,7 @@ object AboutForm: TAboutForm
     AnchorSideTop.Control = LblVersion
     AnchorSideTop.Side = asrBottom
     Cursor = crHandPoint
-    Left = 174
+    Left = 238
     Height = 15
     Hint = 'https://www.freepascal.org/'
     Top = 76
@@ -255,7 +257,7 @@ object AboutForm: TAboutForm
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = LblVersion
     AnchorSideTop.Side = asrBottom
-    Left = 232
+    Left = 296
     Height = 15
     Top = 76
     Width = 26
@@ -269,7 +271,7 @@ object AboutForm: TAboutForm
     AnchorSideTop.Control = LblVersion
     AnchorSideTop.Side = asrBottom
     Cursor = crHandPoint
-    Left = 258
+    Left = 322
     Height = 15
     Hint = 'https://www.lazarus-ide.org/'
     Top = 76

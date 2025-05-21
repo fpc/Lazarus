@@ -36,6 +36,7 @@ type
     procedure URLMouseEnter(Sender: TObject);
     procedure URLMouseLeave(Sender: TObject);
   private
+    procedure UpdateLanguage;
 
   public
 
@@ -53,7 +54,8 @@ uses
   {$IFDEF MSWINDOWS}
   win32Proc,
   {$ENDIF}
-  FileInfo;
+  FileInfo,
+  CHMStrConsts;
 
 // https://forum.lazarus.freepascal.org/index.php/topic,15390.msg82563.html#msg82563
 function GetOSVersion: String;
@@ -110,6 +112,8 @@ end;
 
 procedure TAboutForm.FormCreate(Sender: TObject);
 begin
+  UpdateLanguage;
+
   with AppImage do
   begin
     Picture.Assign(Application.Icon);
@@ -136,6 +140,19 @@ end;
 procedure TAboutForm.URLMouseLeave(Sender: TObject);
 begin
   TControl(Sender).Font.Style := [];
+end;
+
+procedure TAboutForm.UpdateLanguage;
+begin
+  Caption := rsAboutCaption;
+  CloseBtn.Caption := rsClose;
+  LblVersion.Caption := rsVersion;
+  LblCreatedWith.Caption := rsCreatedWith;
+  LblAnd.Caption := rsAnd;
+  LblOperatingSystem.Caption := rsOperatingSystem;
+  LblTargetCPU.Caption := rsTargetCPU;
+  LblTargetOS.Caption := rsTargetOS;
+  LblTargetPlatform.Caption := rsTargetPlatform;
 end;
 
 end.

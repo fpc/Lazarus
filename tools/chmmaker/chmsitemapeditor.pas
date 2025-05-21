@@ -36,10 +36,10 @@ type
     ForegroundColorLabel: TLabel;
     BackgroundColorLabel: TLabel;
     SubItemBtn: TButton;
-    Label2: TLabel;
+    AddItemLabel: TLabel;
     LocalCombo: TComboBox;
     DescFromTitleBtn: TButton;
-    GroupBox1: TGroupBox;
+    SitemapGroupBox: TGroupBox;
     LocalLinkLabel: TLabel;
     SitemapTree: TTreeView;
     procedure AfterBtnClick(Sender: TObject);
@@ -49,6 +49,7 @@ type
     procedure DescFromTitleBtnClick(Sender: TObject);
     procedure DescriptionEditChange(Sender: TObject);
     procedure FormActivate(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure LocalComboChange(Sender: TObject);
     procedure LocalComboKeyUp(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
     procedure SaveBtnClick(Sender: TObject);
@@ -65,6 +66,7 @@ type
   public
     procedure LoadFromStream(AStream: TStream);
     function Execute(AStream: TStream; SiteType: TSiteMapType; AvailableLinks: TStrings): Boolean;
+    procedure UpdateLanguage;
   end; 
 
 var
@@ -75,7 +77,7 @@ implementation
 {$R *.lfm}
 
 uses
-  LCLType, CHMMain;
+  LCLType, CHMMain, CHMStrConsts;
 
 type
 
@@ -112,7 +114,7 @@ var
 begin
   if (LocalCombo.ItemIndex = -1) then
   begin
-    MessageDlg('You must select a local file first.', mtError, [mbCancel], 0);
+    MessageDlg(rsSelectLocalFile, mtError, [mbCancel], 0);
     Exit;
   end;
 
@@ -147,15 +149,20 @@ begin
   if not FActivated then
   begin
     FActivated := true;
-    Constraints.MinWidth := Panel3.Width + 2*GroupBox1.BorderSpacing.Around +
+    Constraints.MinWidth := Panel3.Width + 2*SitemapGroupBox.BorderSpacing.Around +
       Panel1.Width + Panel1.BorderSpacing.Left + Panel1.BorderSpacing.Right;
     Constraints.MinHeight := Panel3.Height + Panel3.BorderSpacing.Top + Panel3.BorderSpacing.Bottom +
       Panel2.Height + 2*BorderSpacing.Around +
       SiteMapTree.Constraints.MinHeight + 2*SiteMapTree.BorderSpacing.Around +
-      2*Groupbox1.BorderSpacing.Around;
+      2*SitemapGroupBox.BorderSpacing.Around;
     if Width < Constraints.MinWidth then Width := Constraints.MinWidth;
     if Height < Constraints.MinHeight then Height := Constraints.MinHeight;
   end;
+end;
+
+procedure TSitemapEditForm.FormCreate(Sender: TObject);
+begin
+  UpdateLanguage;
 end;
 
 procedure TSitemapEditForm.LocalComboChange(Sender: TObject);
@@ -240,7 +247,7 @@ procedure TSitemapEditForm.BeforeBtnClick(Sender: TObject);
 var
   Item: TTreeNode;
 begin
-  Item := SitemapTree.Items.Insert(SitemapTree.Selected, 'Untitled');
+  Item := SitemapTree.Items.Insert(SitemapTree.Selected, rsUntitled);
   Item.Selected := True;
   SitemapTreeSelectionChanged(Sender);
 end;
@@ -249,7 +256,7 @@ procedure TSitemapEditForm.AfterBtnClick(Sender: TObject);
 var
   Item: TTreeNode;
 begin
-  Item := SitemapTree.Items.Add(SitemapTree.Selected, 'Untitled');
+  Item := SitemapTree.Items.Add(SitemapTree.Selected, rsUntitled);
   Item.Selected := True;
   SitemapTreeSelectionChanged(Sender);
 end;
@@ -296,7 +303,7 @@ procedure TSitemapEditForm.SubItemBtnClick(Sender: TObject);
 var
   Item : TTreeNode;
 begin
-  Item := SitemapTree.Items.AddChild(SitemapTree.Selected, 'Untitled');
+  Item := SitemapTree.Items.AddChild(SitemapTree.Selected, rsUntitled);
   Item.Selected := True;
   SitemapTreeSelectionChanged(Sender);
 end;
@@ -369,6 +376,28 @@ begin
   LocalCombo.Items.Assign(AvailableLinks);
 
   Result := ShowModal = mrOK;
+end;
+
+procedure TSitemapEditForm.UpdateLanguage;
+begin
+  Caption := rsSiteMapEditor;
+  SitemapGroupBox.Caption := rsSiteMap;
+  DescriptionLabel.Caption := rsDescription;
+  DescFromTitleBtn.Caption := rsFromTitle;
+  LocalLinkLabel.Caption := rsLocalLink;
+  URLLabel.Caption := rsURL;
+  AddItemLabel.Caption := rsAddItem;
+  BeforeBtn.Caption := rsBefore;
+  AfterBtn.Caption := rsAfter;
+  DeleteBtn.Caption := rsDelete;
+  SubItemBtn.Caption := rsSubItem;
+  GlobalPropertiesGroupbox.Caption := rsGlobalProperties;
+  FontLabel.Caption := rsFont;
+  BackgroundColorLabel.Caption := rsBackgroundColor;
+  ForegroundColorLabel.Caption := rsForegroundColor;
+  FolderViewCheck.Caption := rsUseFolderIcons;
+  SaveBtn.Caption := rsSave;
+  CancelBtn.Caption := rsCancel;
 end;
 
 end.

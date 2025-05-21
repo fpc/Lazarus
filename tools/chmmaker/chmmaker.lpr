@@ -7,12 +7,8 @@ uses
   cthreads,
   {$ENDIF}
   chmAbout, Interfaces, // this includes the LCL widgetset
-  Forms, LazFileUtils,
-  CHMMain, CHMSiteMapEditor;
-
-var
-  i: Integer;
-  Filename: String;
+  Forms, LazFileUtils, LCLTranslator,
+  CHMMain, CHMSiteMapEditor, chmStrConsts;
 
 {$R *.res}
 
@@ -22,13 +18,6 @@ begin
   Application.Initialize;
   Application.CreateForm(TCHMForm, CHMForm);
   Application.CreateForm(TSitemapEditForm, SitemapEditForm);
-  for i:=1 to Application.ParamCount do
-  begin
-    Filename:=ParamStr(i);
-    if (Filename='') or (Filename[1]='-') then continue;
-    CHMForm.OpenProject(CleanAndExpandFilename(Filename));
-    break;
-  end;
   Application.Run;
 end.
 

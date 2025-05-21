@@ -5,9 +5,9 @@ unit CHMMain;
 interface
 
 uses
-  ActnList, Classes, SysUtils, Types,
+  Classes, SysUtils, Types, Math,
   Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls, Menus, ExtCtrls, EditBtn,
-  LazFileUtils, UTF8Process,
+  ActnList, LazFileUtils, UTF8Process, LCLTranslator,
   chmsitemap, chmfilewriter;
 
 type
@@ -20,7 +20,7 @@ type
     AcSave: TAction;
     AcSaveAs: TAction;
     AcClose: TAction;
-    AcQuitProgram: TAction;
+    AcQuit: TAction;
     AcCompile: TAction;
     AcCompileAndView: TAction;
     AcAbout: TAction;
@@ -47,7 +47,7 @@ type
     TOCEditBtn: TButton;
     IndexEditBtn: TButton;
     IndexEdit: TFileNameEdit;
-    GroupBox1: TGroupBox;
+    FilesGroupBox: TGroupBox;
     FileListBox: TListBox;
     TableOfContentsLabel: TLabel;
     IndexLabel: TLabel;
@@ -78,7 +78,7 @@ type
     procedure AcCompileExecute(Sender: TObject);
     procedure AcNewExecute(Sender: TObject);
     procedure AcOpenExecute(Sender: TObject);
-    procedure AcQuitProgramExecute(Sender: TObject);
+    procedure AcQuitExecute(Sender: TObject);
     procedure AcSaveAsExecute(Sender: TObject);
     procedure AcSaveExecute(Sender: TObject);
     procedure AddAllBtnClick(Sender: TObject);
@@ -117,6 +117,7 @@ type
     procedure InitFileDialog(Dlg: TFileDialog);
     procedure ProjectDirChanged;
     function CreateRelativeProjectFile(Filename: string): string;
+    procedure SetLanguage(ALang: string);
   public
     Project: TChmProject;
     procedure OpenProject(AFileName: String);
@@ -133,7 +134,7 @@ implementation
 {$R *.lfm}
 
 uses
-  CHMSiteMapEditor, CHMAbout, LHelpControl, Process;
+  CHMStrConsts, CHMSiteMapEditor, CHMAbout, LHelpControl, Process;
 
 { TCHMForm }
 
@@ -149,6 +150,7 @@ end;
 procedure TCHMForm.AcNewExecute(Sender: TObject);
 var
   bOverwrite: Boolean;
+  msg: String;
 begin
   InitFileDialog(SaveDialog1);
   If SaveDialog1.Execute then
@@ -156,7 +158,8 @@ begin
     bOverwrite := False;
     if FileExists(SaveDialog1.FileName) then
     begin
-      bOverwrite := (MessageDlg('File already exists. Overwrite?', mtWarning, [mbYes, mbNo],0) = mrYes);
+      msg := Format(rsFileAlreadyExists_Overwrite, [SaveDialog1.FileName]);
+      bOverwrite := (MessageDlg(msg, mtWarning, [mbYes, mbNo],0) = mrYes);
       if not bOverwrite then Exit;
     end;
     if (not CloseProject()) then Exit;
@@ -189,18 +192,21 @@ begin
   if not FileExists(LHelpName) then
   begin
     if MessageDlg(
-      'LHelp could not be located at '+ LHelpName +
-      LineEnding + LineEnding +
-      'Try to build using LazBuild?', mtError, [mbCancel, mbYes], 0) = mrYes then
+         Format(rsLHelpCouldNotBeLocatedAt, [LHelpName]) +
+         LineEnding + LineEnding +
+         rsTryToBuildUsingLazBuild,
+         mtError, [mbCancel, mbYes], 0
+      ) = mrYes then
     begin
       if not FileExists('../../lazbuild' + ext) then
       begin
-        MessageDlg('LazBuild could not be found.', mtError, [mbCancel], 0);
+        MessageDlg(rsLazBuildCouldNotBeFound, mtError, [mbCancel], 0);
         Exit;
       end;
       Proc := TProcessUTF8.Create(Self);
       try
-        Statusbar.SimpleText := 'Building LHelp...';
+        Statusbar.SimpleText := rsBuildingLHelp;
+        Application.ProcessMessages;
         Proc.Executable := '../../../lazbuild';
         Proc.Parameters.Add('./lhelp.lpi');
         SetCurrentDir('../../components/chmhelp/lhelp/');
@@ -210,7 +216,7 @@ begin
         Statusbar.SimpleText := '';
         if Proc.ExitStatus <> 0 then
         begin
-          MessageDlg('LHelp failed to build.', mtError, [mbCancel], 0);
+          MessageDlg(rsLHelpFailedtoBuild, mtError, [mbCancel], 0);
           Exit;
         end;
       finally
@@ -245,7 +251,7 @@ begin
   end;
 end;
 
-procedure TCHMForm.AcQuitProgramExecute(Sender: TObject);
+procedure TCHMForm.AcQuitExecute(Sender: TObject);
 begin
   Close;
 end;
@@ -329,9 +335,12 @@ var
   end;
 
 begin
-  if MessageDlg('This will add all files in the project directory recursively.' + LineEnding +
-                'Do you want to continue?',
-                mtConfirmation, [mbYes, mbNo],0) <> mrYes then exit;
+  if MessageDlg(
+       rsThisWillAddAllFiles + LineEnding + rsDoYouWantToContinue,
+       mtConfirmation, [mbYes, mbNo],0) <> mrYes
+  then
+    exit;
+
   Modified := True;
   Files := TStringList.Create;
   try
@@ -396,7 +405,7 @@ begin
   Result := false;
   if (Project.OutputFileName = '') then
   begin
-    MessageDlg('You must set a filename for the output CHM file.', mtError, [mbCancel], 0);
+    MessageDlg(rsFileNameNeeded, mtError, [mbCancel], 0);
     Exit;
   end;
   Save(False);
@@ -404,7 +413,7 @@ begin
   try
     Project.WriteChm(OutFile);
     if ShowSuccessMsg then
-      ShowMessage('CHM file '+Project.OutputFileName+' was created.');
+      MessageDlg(Format(rsFileCreated, [Project.OutputFileName]), mtInformation, [mbOk], 0);
     Result := true;
   finally
     OutFile.Free;
@@ -436,11 +445,25 @@ begin
   if not FActivated then
   begin
     FActivated := true;
-    Constraints.MinWidth := GroupBox1.Width + GroupBox1.BorderSpacing.Left + GroupBox1.BorderSpacing.Right +
+    AddFilesBtn.Anchors := AddFilesBtn.Anchors - [akRight];
+    RemoveFilesBtn.Anchors := RemoveFilesBtn.Anchors - [akLeft];
+    AddAllBtn.Anchors := AddAllBtn.Anchors - [akRight];
+    AutoAddLinksBtn.Anchors := AutoAddLinksBtn.Anchors - [akRight];
+    FilesGroupbox.Constraints.MinWidth :=
+      {%H-}MaxValue([AddAllBtn.Width, AutoAddLinksBtn.Width, AddFilesBtn.Width + RemoveFilesBtn.Width + Bevel1.Width]) +
+      AutoAddLinksBtn.BorderSpacing.Around * 2;
+    if FilesGroupbox.Width < FilesGroupbox.Constraints.MinWidth then
+      FilesGroupbox.Width := FilesGroupbox.Constraints.MinWidth;
+    Bevel1.Left := AddFilesBtn.Left + AddFilesBtn.Width;
+    Constraints.MinWidth := FilesGroupBox.Width + FilesGroupBox.BorderSpacing.Left + FilesGroupBox.BorderSpacing.Right +
       Splitter.Width + CompileTimeOptionsGroupbox.Width +
       Mainpanel.BorderSpacing.Left + MainPanel.BorderSpacing.Right;
     if Width < Constraints.MinWidth then
       Width := Constraints.MinWidth;
+    AddFilesBtn.Anchors := AddFilesBtn.Anchors + [akRight];
+    RemoveFilesBtn.Anchors := RemoveFilesBtn.Anchors + [akLeft];
+    AddAllBtn.Anchors := AddAllBtn.Anchors + [akRight];
+    AutoAddLinksBtn.Anchors := AutoAddLinksBtn.Anchors + [akRight];
     Constraints.MinHeight :=  CHMFileNameEdit.Top + CHMFileNameEdit.Height +
       CompileBtn.Height + CompileBtn.BorderSpacing.Top +
       MainPanel.BorderSpacing.Top + MainPanel.BorderSpacing.Bottom +
@@ -457,8 +480,7 @@ begin
   if Modified then
   begin
     MResult := MessageDlg(
-      'Project has been modified.' + LineEnding +
-      'Would you like to save the changes?',
+      rsProjectHasBeenModified + LineEnding + rsSaveChanges,
       mtConfirmation, [mbYes, mbNo, mbCancel], 0
     );
     case MResult of
@@ -470,8 +492,30 @@ begin
 end;
 
 procedure TCHMForm.FormCreate(Sender: TObject);
+var
+  i: Integer;
+  s: String;
+  sa: TStringArray;
+  filename: String;
 begin
+  filename := '';
+  Lang := '';
+  for i := 1 to ParamCount do
+  begin
+    s := ParamStr(i);
+    if s[1] <> '-' then
+      filename := s
+    else
+    begin
+      sa := s.Split('=');
+      if Lowercase(sa[0]) = '-lang' then
+        Lang := sa[1];
+    end;
+  end;
+  SetLanguage(Lang);
   CloseProject;
+  if filename <> '' then
+    OpenProject(CleanAndExpandFilename(filename));
 end;
 
 procedure TCHMForm.FormDestroy(Sender: TObject);
@@ -625,7 +669,7 @@ begin
 
   if Modified then
   begin
-    case (MessageDlg('Save changes?', mtConfirmation, [mbYes, mbNo, mbCancel],0)) of
+    case MessageDlg(rsSaveChanges, mtConfirmation, [mbYes, mbNo, mbCancel], 0) of
       mrCancel: Exit(False);
       mrYes: Save(False);
     end;
@@ -636,7 +680,7 @@ begin
   ChmTitleEdit.Clear();
   TOCEdit.Clear;
   IndexEdit.Clear;
-  GroupBox1.Enabled := False;
+  FilesGroupBox.Enabled := False;
   MainPanel.Enabled := False;
   AcSaveAs.Enabled := False;
   AcSave.Enabled := False;
@@ -652,9 +696,15 @@ end;
 
 procedure TCHMForm.OpenProject(AFileName: String);
 begin
+  if not FileExists(AFileName) then
+  begin
+    MessageDlg(Format(rsFileNotFound, [AFileName]), mtError, [mbOK], 0);
+    exit;
+  end;
+
   if not Assigned(Project) then Project := TChmProject.Create;
   Project.LoadFromFile(AFileName);
-  GroupBox1.Enabled := True;
+  FilesGroupBox.Enabled := True;
   MainPanel.Enabled := True;
   AcSaveAs.Enabled := True;
   AcSave.Enabled := True;
@@ -737,6 +787,36 @@ begin
   if (Project=nil) or (not FilenameIsAbsolute(Project.FileName)) then exit;
   Result:=ExtractFilePath(Project.FileName)+Filename;
 end;
+
+procedure TCHMForm.SetLanguage(ALang: String);
+begin
+  SetDefaultLang(ALang);
+  AcNew.Caption := rsNew;
+  AcOpen.Caption := rsOpen;
+  AcSave.Caption := rsSave;
+  AcSaveAs.Caption := rsSaveAs;
+  AcClose.Caption := rsClose;
+  AcQuit.Caption := rsQuit;
+  AcCompile.Caption := rsCompile;
+  AcCompileAndView.Caption := rsCompileAndView;
+  AcAbout.Caption := rsAbout;
+
+  FilesGroupbox.Caption := rsFiles;
+  TOCEditBtn.Caption := rsEdit;
+  IndexEditBtn.Caption := rsEdit;
+
+  AcNew.Hint := rsNew_Hint;
+  AcOpen.Hint := rsOpen_Hint;
+  AcSave.Hint := rsSave_Hint;
+  AcSaveAs.Hint := rsSaveAs_Hint;
+  AcClose.Hint := rsClose_Hint;
+  AcQuit.Hint := rsQuit_Hint;
+  AcCompile.Hint := rsCompile_Hint;
+  AcCompileAndView.Hint := rsCompileAndView_Hint;
+  AcAbout.Hint := rsAbout_Hint;
+  CreateSearchableCHMCheck.Hint := rsCreateSearchableHTML_Hint;
+end;
+
 
 end.
 

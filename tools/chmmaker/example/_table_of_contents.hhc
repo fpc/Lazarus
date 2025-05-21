@@ -9,23 +9,19 @@
 <UL>
         <LI> <OBJECT type="text/sitemap">
                 <param name="Name" value="Pages Available">
-                <param name="ImageNumber" value="0">
              </OBJECT>
-        <UL>
+        <UL> 
                 <LI> <OBJECT type="text/sitemap">
-                        <param name="Name" value="Main Page">
+                        <param name="Name" value="Main Page123">
                         <param name="Local" value="MainPage.html">
-                        <param name="ImageNumber" value="0">
                      </OBJECT>
                 <LI> <OBJECT type="text/sitemap">
                         <param name="Name" value="Second Page">
                         <param name="Local" value="SecondPage.html">
-                        <param name="ImageNumber" value="0">
                      </OBJECT>
                 <LI> <OBJECT type="text/sitemap">
                         <param name="Name" value="About Lazarus">
                         <param name="Local" value="AboutLazarus.html">
-                        <param name="ImageNumber" value="0">
                      </OBJECT>
         </UL>
 </UL>
