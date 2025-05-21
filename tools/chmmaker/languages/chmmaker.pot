@@ -150,7 +150,7 @@ msgstr ""
 
 #: chmstrconsts.rslazbuildcouldnotbefound
 msgctxt "chmstrconsts.rslazbuildcouldnotbefound"
-msgid "LazBuild could not be found."
+msgid "Lazbuild could not be found."
 msgstr ""
 
 #: chmstrconsts.rslhelpcouldnotbelocatedat
@@ -166,7 +166,7 @@ msgstr ""
 
 #: chmstrconsts.rslocallink
 msgctxt "chmstrconsts.rslocallink"
-msgid "Local link (in chm)"
+msgid "Local link (in CHM)"
 msgstr ""
 
 #: chmstrconsts.rsnew
@@ -271,7 +271,7 @@ msgstr ""
 
 #: chmstrconsts.rstrytobuildusinglazbuild
 msgctxt "chmstrconsts.rstrytobuildusinglazbuild"
-msgid "Try to build using LazBuild?"
+msgid "Try to build using Lazbuild?"
 msgstr ""
 
 #: chmstrconsts.rsuntitled
@@ -280,7 +280,7 @@ msgstr ""
 
 #: chmstrconsts.rsurl
 msgctxt "chmstrconsts.rsurl"
-msgid "URL (http)"
+msgid "URL (HTTP)"
 msgstr ""
 
 #: chmstrconsts.rsusefoldericons
@@ -290,19 +290,6 @@ msgstr ""
 #: chmstrconsts.rsversion
 msgctxt "chmstrconsts.rsversion"
 msgid "Version:"
-msgstr ""
-
-#: chmstrconsts.tscompile
-msgctxt "chmstrconsts.tscompile"
-msgid "Compile"
-msgstr ""
-
-#: taboutform.lbltargetplatform.caption
-msgid "TargetPlatform:"
-msgstr ""
-
-#: taboutform.lbltitle.caption
-msgid "CHMMaker"
 msgstr ""
 
 #: tchmform.addallbtn.caption
@@ -329,6 +316,11 @@ msgstr ""
 msgid "CHM Title"
 msgstr ""
 
+#: tchmform.compileitem.caption
+msgctxt "tchmform.compileitem.caption"
+msgid "Compile"
+msgstr ""
+
 #: tchmform.compiletimeoptionsgroupbox.caption
 msgid "Compile-time options:"
 msgstr ""
@@ -350,10 +342,12 @@ msgid "Index (*.hhk)"
 msgstr ""
 
 #: tchmform.menuitem1.caption
+msgctxt "tchmform.menuitem1.caption"
 msgid "Project"
 msgstr ""
 
 #: tchmform.menuitem3.caption
+msgctxt "tchmform.menuitem3.caption"
 msgid "Help"
 msgstr ""
 
@@ -369,10 +363,5 @@ msgstr ""
 
 #: tchmform.tableofcontentslabel.caption
 msgid "Table of Contents (*.hhc)"
-msgstr ""
-
-#: tsitemapeditform.caption
-msgctxt "tsitemapeditform.caption"
-msgid "Sitemap Editor"
 msgstr ""
 
