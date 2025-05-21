@@ -65,6 +65,8 @@ type
     FUpdatingAddr: boolean;
     FWatches: TCurrentWatches;
     FCurrentWatchValue: TIdeWatchValue;
+    FCurrentDisplayedWatchExpr: String;
+    FCurrentDisplayedWatchMemAddr: TDBGPtr;
     FCurrentWatchMode: (wmNone, wmInit, wmInitAddress, wmBefore, wmAfter);
     FTargetWidth: Integer;
     FCurrentMemAddress: TDBGPtr;     // Address for the actual known data i FCurrentMemData
@@ -305,6 +307,13 @@ var
 begin
   if FCurrentMemData = '' then
     exit;
+
+  if (edAddressBase.Text = FCurrentDisplayedWatchExpr) and
+     (FCurrentDisplayedWatchMemAddr = FCurrentMemAddress)
+  then
+    AKeepLines := True;
+  FCurrentDisplayedWatchExpr := edAddressBase.Text;
+  FCurrentDisplayedWatchMemAddr := FCurrentMemAddress;
 
   edMemViewer.BeginUpdate;
   if not AKeepLines then
