@@ -3458,14 +3458,14 @@ object CHMForm: TCHMForm
   ShowInTaskBar = stAlways
   LCLVersion = '4.99.0.0'
   OnActivate = FormActivate
-  OnClose = FormClose
+  OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   object StatusBar: TStatusBar
     Left = 0
     Height = 23
     Top = 415
-    Width = 574
+    Width = 582
     AutoHint = True
     Panels = <>
   end
@@ -3609,7 +3609,7 @@ object CHMForm: TCHMForm
     Left = 249
     Height = 399
     Top = 8
-    Width = 317
+    Width = 325
     Align = alClient
     BorderSpacing.Left = 4
     BorderSpacing.Top = 8
@@ -3617,7 +3617,7 @@ object CHMForm: TCHMForm
     BorderSpacing.Bottom = 8
     BevelOuter = bvNone
     ClientHeight = 399
-    ClientWidth = 317
+    ClientWidth = 325
     TabOrder = 2
     object TableOfContentsLabel: TLabel
       AnchorSideLeft.Control = MainPanel
@@ -3675,7 +3675,7 @@ object CHMForm: TCHMForm
       Left = 0
       Height = 23
       Top = 73
-      Width = 241
+      Width = 249
       OnAcceptFileName = TOCEditAcceptFileName
       DialogOptions = []
       Filter = 'Table of Contents Files(*.hhc)|*.hhc|All files|*'
@@ -3698,7 +3698,7 @@ object CHMForm: TCHMForm
       Left = 0
       Height = 23
       Top = 127
-      Width = 241
+      Width = 249
       OnAcceptFileName = IndexEditAcceptFileName
       DialogOptions = []
       Filter = 'Index Files(*.hhk)|*.hhk|All Files|*'
@@ -3718,7 +3718,7 @@ object CHMForm: TCHMForm
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Control = MainPanel
       AnchorSideRight.Side = asrBottom
-      Left = 257
+      Left = 265
       Height = 25
       Top = 72
       Width = 60
@@ -3735,7 +3735,7 @@ object CHMForm: TCHMForm
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Control = MainPanel
       AnchorSideRight.Side = asrBottom
-      Left = 257
+      Left = 265
       Height = 25
       Top = 126
       Width = 60
@@ -3756,20 +3756,21 @@ object CHMForm: TCHMForm
       Left = 0
       Height = 23
       Top = 181
-      Width = 317
+      Width = 325
       Anchors = [akTop, akLeft, akRight]
       AutoSelect = False
       BorderSpacing.Top = 4
       ItemHeight = 15
       Style = csDropDownList
       TabOrder = 5
+      OnEditingDone = DefaultPageComboEditingDone
     end
     object CompileBtn: TButton
       AnchorSideLeft.Side = asrBottom
       AnchorSideRight.Control = CompileViewBtn
       AnchorSideBottom.Control = MainPanel
       AnchorSideBottom.Side = asrBottom
-      Left = 76
+      Left = 84
       Height = 33
       Top = 366
       Width = 93
@@ -3787,7 +3788,7 @@ object CHMForm: TCHMForm
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = MainPanel
       AnchorSideBottom.Side = asrBottom
-      Left = 177
+      Left = 185
       Height = 33
       Top = 366
       Width = 140
@@ -3806,7 +3807,7 @@ object CHMForm: TCHMForm
       Left = 0
       Height = 23
       Top = 337
-      Width = 317
+      Width = 325
       OnAcceptFileName = ChmFileNameEditAcceptFileName
       DialogKind = dkSave
       DialogTitle = 'Save CHM as...'
@@ -3842,7 +3843,7 @@ object CHMForm: TCHMForm
       Left = 0
       Height = 23
       Top = 19
-      Width = 317
+      Width = 325
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 4
       TabOrder = 0
@@ -3857,14 +3858,14 @@ object CHMForm: TCHMForm
       Left = 0
       Height = 66
       Top = 228
-      Width = 317
+      Width = 325
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
       BorderSpacing.Top = 24
       Caption = 'Compile-time options:'
       ChildSizing.ControlsPerLine = 1
       ClientHeight = 46
-      ClientWidth = 313
+      ClientWidth = 321
       TabOrder = 6
       object ScanHtmlCheck: TCheckBox
         AnchorSideLeft.Control = CompileTimeOptionsGroupbox
@@ -3874,7 +3875,7 @@ object CHMForm: TCHMForm
         Left = 8
         Height = 19
         Top = 0
-        Width = 297
+        Width = 305
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 8
         BorderSpacing.Right = 8
@@ -3914,6 +3915,7 @@ object CHMForm: TCHMForm
   object SaveDialog1: TSaveDialog
     Filter = 'Help File Project (*.hfp)|*.hfp'
     FilterIndex = 0
+    Options = [ofOverwritePrompt, ofEnableSizing, ofViewDetail]
     Left = 72
     Top = 120
   end

@@ -89,10 +89,11 @@ type
     procedure ChmFileNameEditAcceptFileName(Sender: TObject; var Value: String);
     procedure ChmFileNameEditEditingDone(Sender: TObject);
     procedure ChmTitleEditChange(Sender: TObject);
+    procedure DefaultPageComboEditingDone(Sender: TObject);
     procedure FileListBoxDrawItem({%H-}Control: TWinControl; Index: Integer;
       ARect: TRect; {%H-}State: TOwnerDrawState);
     procedure FormActivate(Sender: TObject);
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure IndexEditAcceptFileName(Sender: TObject; var Value: String);
@@ -398,6 +399,11 @@ begin
   Modified := True;
 end;
 
+procedure TCHMForm.DefaultPageComboEditingDone(Sender: TObject);
+begin
+//
+end;
+
 function TCHMForm.Compile(ShowSuccessMsg: Boolean): Boolean;
 var
   OutFile: TFileStream;
@@ -473,7 +479,7 @@ begin
   end;
 end;
 
-procedure TCHMForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+procedure TCHMForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 var
   MResult: Integer;
 begin
@@ -485,10 +491,10 @@ begin
     );
     case MResult of
       mrYes: Save(False);
-      mrNo: CloseAction := caFree;
-      mrCancel: CloseAction := caNone;
+      mrNo: Modified := false;   // Avoid "can close" prompt when project is closed.
+      mrCancel: CanClose := false;
     end;
-   end;
+  end;
 end;
 
 procedure TCHMForm.FormCreate(Sender: TObject);
@@ -514,8 +520,14 @@ begin
   end;
   SetLanguage(Lang);
   CloseProject;
-  if filename <> '' then
-    OpenProject(CleanAndExpandFilename(filename));
+  if (filename <> '') then
+  begin
+    filename := CleanAndExpandFilename(filename);
+    if FileExists(filename) then
+      OpenProject(filename)
+    else
+      MessageDlg(Format(rsFileNotFound, [fileName]), mtError, [mbOK], 0);
+  end;
 end;
 
 procedure TCHMForm.FormDestroy(Sender: TObject);
@@ -664,14 +676,21 @@ begin
 end;
 
 function TCHMForm.CloseProject: Boolean;
+var
+  MResult: TModalResult;
 begin
   Result := True;
 
   if Modified then
   begin
-    case MessageDlg(rsSaveChanges, mtConfirmation, [mbYes, mbNo, mbCancel], 0) of
+    MResult := MessageDlg(
+      rsProjectHasBeenModified + LineEnding + rsSaveChanges,
+      mtConfirmation, [mbYes, mbNo, mbCancel], 0
+    );
+    case MResult of
       mrCancel: Exit(False);
       mrYes: Save(False);
+      mrNo: Modified := false;
     end;
   end;
 
@@ -696,14 +715,17 @@ end;
 
 procedure TCHMForm.OpenProject(AFileName: String);
 begin
+{
   if not FileExists(AFileName) then
   begin
     MessageDlg(Format(rsFileNotFound, [AFileName]), mtError, [mbOK], 0);
     exit;
   end;
-
-  if not Assigned(Project) then Project := TChmProject.Create;
-  Project.LoadFromFile(AFileName);
+ }
+  if not Assigned(Project) then
+    Project := TChmProject.Create;
+  if FileExists(AFileName) then
+    Project.LoadFromFile(AFileName);
   FilesGroupBox.Enabled := True;
   MainPanel.Enabled := True;
   AcSaveAs.Enabled := True;
