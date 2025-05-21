@@ -19,7 +19,7 @@
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
-      <ExcludedIdentifiers Count="49">
+      <ExcludedIdentifiers Count="48">
         <Item1 Value="tsitemapeditform.urllabel.caption"/>
         <Item2 Value="tsitemapeditform.subitembtn.caption"/>
         <Item3 Value="tsitemapeditform.afterbtn.caption"/>
@@ -64,11 +64,10 @@
         <Item42 Value="tchmform.accompile.caption"/>
         <Item43 Value="tchmform.accompileandview.caption"/>
         <Item44 Value="tchmform.acabout.caption"/>
-        <Item45 Value="tchmform.compileitem.caption"/>
-        <Item46 Value="tchmform.compileandview.caption"/>
-        <Item47 Value="tchmform.toceditbtn.caption"/>
-        <Item48 Value="tchmform.indexeditbtn.caption"/>
-        <Item49 Value="tchmform.filesgroupbox.caption"/>
+        <Item45 Value="tchmform.compileandview.caption"/>
+        <Item46 Value="tchmform.toceditbtn.caption"/>
+        <Item47 Value="tchmform.indexeditbtn.caption"/>
+        <Item48 Value="tchmform.filesgroupbox.caption"/>
       </ExcludedIdentifiers>
     </i18n>
     <VersionInfo>

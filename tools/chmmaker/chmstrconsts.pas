@@ -23,13 +23,12 @@ resourcestring
   rsCompile = 'Compile';
   rsEdit = 'Edit...';
   rsCompileAndView = 'Compile and view';
-  tsCompile = 'Compile';
   rsAbout = 'About...';
   rsFileNotFound = 'File "%s" not found.';
   rsFileAlreadyExists_Overwrite = 'File "%s" already exists. Overwrite?';
   rsLHelpCouldNotBeLocatedAt = 'LHelp could not be located at "%s".';
-  rsTryToBuildUsingLazBuild = 'Try to build using LazBuild?';
-  rsLazBuildCouldNotBeFound = 'LazBuild could not be found.';
+  rsTryToBuildUsingLazBuild = 'Try to build using Lazbuild?';
+  rsLazBuildCouldNotBeFound = 'Lazbuild could not be found.';
   rsLHelpFailedToBuild = 'LHelp failed to build.';
   rsThisWillAddAllFiles = 'This will add all files in the project directory recursively.';
   rsDoYouWantToContinue = 'Do you want to continue?';
@@ -61,8 +60,8 @@ resourcestring
   rsUntitled = 'Untitled';
   rsDescription = 'Description';
   rsFromTitle = 'From title';
-  rsLocalLink = 'Local link (in chm)';
-  rsURL = 'URL (http)';
+  rsLocalLink = 'Local link (in CHM)';
+  rsURL = 'URL (HTTP)';
   rsAddItem = 'Add item';
   rsBefore = 'Before';
   rsAfter = 'After';
