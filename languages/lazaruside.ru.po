@@ -11230,7 +11230,7 @@ msgstr "Новый пакет"
 
 #: lazarusidestrconsts.liskmnewproject
 msgid "New project"
-msgstr "Нрвый проект "
+msgstr "Новый проект"
 
 #: lazarusidestrconsts.liskmnewprojectfromfile
 msgid "New project from file"
