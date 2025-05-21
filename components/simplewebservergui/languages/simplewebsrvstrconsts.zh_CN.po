@@ -2,14 +2,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
+"PO-Revision-Date: 2025-05-21 23:37+0800\n"
 "Last-Translator: ACTom <i@actom.me>\n"
 "Language-Team: \n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.3.2\n"
+"X-Generator: TyPoEditor 0.2\n"
 
 #: simplewebsrvstrconsts.rsswadd
 msgid "Add"
@@ -42,7 +42,7 @@ msgstr "套接字绑定失败"
 #: simplewebsrvstrconsts.rsswbrowserfilenotfound
 #, object-pascal-format
 msgid "Browser file not found: \"%s\". See"
-msgstr ""
+msgstr "浏览器文件未找到：\"%s\"。请参阅"
 
 #: simplewebsrvstrconsts.rsswbrowsertoopenhtmlpagemacroswsbrowser
 msgid "Browser to open HTML page, macro $(SWSBrowser)"
@@ -140,7 +140,7 @@ msgstr "未找到文件： \"%s\""
 
 #: simplewebsrvstrconsts.rsswforcustombrowser
 msgid "For custom browser"
-msgstr ""
+msgstr "为自定义浏览器"
 
 #: simplewebsrvstrconsts.rsswinvalidmacrosee
 msgid "Invalid macro. See"
@@ -177,7 +177,7 @@ msgstr "路径已被使用。"
 
 #: simplewebsrvstrconsts.rsswmissingbrowserfilename
 msgid "Missing browser filename. See"
-msgstr ""
+msgstr "缺少浏览器文件名。见"
 
 #: simplewebsrvstrconsts.rsswmissingcontroller
 msgid "missing controller"

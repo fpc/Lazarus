@@ -1,0 +1,158 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: ACTom <i@actom.me>\n"
+"X-Generator: TyPoEditor 0.2\n"
+
+#: main.rserror
+msgid "Error"
+msgstr "错误"
+
+#: main.rsfreelyavailable
+msgid "(freely available, no restrictions in usage)"
+msgstr "(免费提供，使用无限制)"
+
+#: main.rsimageswereprovidedby
+#, object-pascal-format
+msgid "The images were kindly provided by Roland Hahn (%s)."
+msgstr "图片由 Roland Hahn (%s) 慷慨提供。"
+
+#: main.rsinformation
+msgid "Information"
+msgstr "信息"
+
+#: main.rsinfotext1
+msgid "The images in this folder can be used in Lazarus applications as toolbar or button icons."
+msgstr "此文件夹中的图像可以在 Lazarus 应用程序中用作工具栏或按钮图标。"
+
+#: main.rsinfotext2
+msgid "The different sizes as required by LCL scaling for Hi-DPI screens can be used like this, for example:"
+msgstr "LCL 缩放所需的不同比例大小可用于高 DPI 屏幕，例如："
+
+#: main.rslicense
+#, object-pascal-format
+msgid ""
+"License:\n"
+"%s"
+msgstr ""
+"许可证：\n"
+"%s"
+
+#: main.rsname
+msgid "Name"
+msgstr "名称"
+
+#: main.rsnomatchingpngimagefilesfoundin
+#, object-pascal-format
+msgid "No matching PNG image files found in %s"
+msgstr "在 %s 中未找到匹配的 PNG 图像文件"
+
+#: main.rsnopngimagefilesfoundin
+#, object-pascal-format
+msgid "No PNG image files found in %s"
+msgstr "未在 %s 中找到 PNG 图像文件"
+
+#: main.rssavedas
+#, object-pascal-format
+msgid "Saved as: %s"
+msgstr "已保存为：%s"
+
+#: main.rssize
+msgid "Size"
+msgstr "大小"
+
+#: main.rssizeinfolarge
+msgid "32x32, 48x48 and 64x64 pixels for \"large\" images."
+msgstr "32x32、48x48 和 64x64 像素用于 “大” 图像。"
+
+#: main.rssizeinfomedium
+msgid "24x24, 36x36 and 48x48 pixels for \"medium\" sized images,"
+msgstr "24x24、36x36 和 48x48 像素用于“中等”大小的图像，"
+
+#: main.rssizeinfosmall
+msgid "16x16, 24x24 and 32x32 pixels for \"small\" images,"
+msgstr "16x16、24x24 和 32x32 像素用于“小”图像，"
+
+#: main.rstheconfigurationcouldnotbesaved
+msgid "Configuration file could not be saved."
+msgstr "配置文件无法保存。"
+
+#: main.rsthefilecouldnotbesavedas
+#, object-pascal-format
+msgid "The file could not be saved as: %s"
+msgstr "文件无法保存为：%s"
+
+#: main.rsthefolderdoesnotexist
+#, object-pascal-format
+msgid ""
+"Folder \"%s\" does not exist or is currently not available.\n"
+"\n"
+"Should it be removed from the list?"
+msgstr ""
+"文件夹 \"%s\" 不存在或当前不可用\n"
+"\n"
+"是否应将其从列表中移除？"
+
+#: main.rsthetempfilecouldnotbedeleted
+msgid "Temporary file could not be deleted."
+msgstr "临时文件无法删除。"
+
+#: main.rsthisfoldercontains
+#, object-pascal-format
+msgid "This folder contains %0:d icons in %1:d icon groups with %2:d icon sizes."
+msgstr "此文件夹包含 %0:d 个图标，分为 %1:d 个图标组，每组包含 %2:d 个图标大小。"
+
+#: tmainform.bbtnclose.caption
+msgid "Close"
+msgstr "关闭"
+
+#: tmainform.bbtnclose.hint
+msgid "Close application"
+msgstr "关闭应用程序"
+
+#: tmainform.bbtncreatehtml.caption
+msgid "Create HTML"
+msgstr "创建 HTML"
+
+#: tmainform.bbtncreatehtml.hint
+msgid "Create HTML page for images found in the selected directory"
+msgstr "为选中目录中的图片创建 HTML 页面"
+
+#: tmainform.bbtnpreview.caption
+msgid "Preview"
+msgstr "预览"
+
+#: tmainform.bbtnsave.caption
+msgid "Save"
+msgstr "保存"
+
+#: tmainform.bbtnsave.hint
+msgid "Save created HTML page as \"IconTable.html\" file in the specified folder"
+msgstr "将创建的 HTML 页面保存为指定文件夹中的 \"IconTable.html\" 文件"
+
+#: tmainform.caption
+msgid "IconTable"
+msgstr "图标表"
+
+#: tmainform.directoryedit.hint
+msgid "Folder with images for which the HTML preview should be created"
+msgstr "应为其创建 HTML 预览的图像文件夹"
+
+#: tmainform.menudarkhtmlpage.caption
+msgid "Dark HTML page"
+msgstr "深色 HTML 页面"
+
+#: tmainform.menuhtmlpageenglish.caption
+msgid "HTML page in English"
+msgstr "HTML 页面（英文）"
+
+#: tmainform.tblastdirs.hint
+msgctxt "tmainform.tblastdirs.hint"
+msgid "Last used"
+msgstr "上次使用"
+
+#: tmainform.tbmenu.hint
+msgctxt "tmainform.tbmenu.hint"
+msgid "Options"
+msgstr "选项"
+

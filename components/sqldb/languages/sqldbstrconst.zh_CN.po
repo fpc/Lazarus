@@ -2,56 +2,56 @@ msgid ""
 msgstr ""
 "Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"PO-Revision-Date: 2025-05-21 23:40+0800\n"
+"Last-Translator: ACTom <i@actom.me>\n"
 "Language-Team: \n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.2\n"
+"X-Generator: TyPoEditor 0.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: sqldbstrconst.lrsgeneratesqlstatements
 msgid "Edit/Generate SQL Statements"
-msgstr ""
+msgstr "编辑/生成 SQL 语句"
 
 #: sqldbstrconst.lrssqldatasetopen
 #, object-pascal-format
 msgid "Dataset not open: %s"
-msgstr ""
+msgstr "数据集未打开： %s"
 
 #: sqldbstrconst.lrssqlgenselect
 msgid "You must select fields to be updated and key fields."
-msgstr ""
+msgstr "你必须选择要更新的字段和关键字段。"
 
 #: sqldbstrconst.screatestringconstant
 msgid "Create string constant"
-msgstr ""
+msgstr "创建字符串常量"
 
 #: sqldbstrconst.seditsql
 msgid "Edit SQL ..."
-msgstr ""
+msgstr "编辑 SQL ..."
 
 #: sqldbstrconst.seditupdatesql
 msgid "Edit all SQL statements"
-msgstr ""
+msgstr "编辑所有 SQL 语句"
 
 #: sqldbstrconst.serrconnectionnotassigned
 msgid "Database not assigned. Assign Database first."
-msgstr ""
+msgstr "数据库未分配，请先分配数据库。"
 
 #: sqldbstrconst.sfirebirddatabases
 msgid "Firebird databases"
-msgstr "Firebird数据库"
+msgstr "Firebird 数据库"
 
 #: sqldbstrconst.sgenerateupdatesql
 msgid "Generate update SQL"
-msgstr ""
+msgstr "生成更新 SQL"
 
 #: sqldbstrconst.sinterbasedatabases
 msgid "Interbase databases"
-msgstr "Interbase数据库"
+msgstr "Interbase 数据库"
 
 #: sqldbstrconst.slibraries
 msgid "Shared libraries"
@@ -59,7 +59,7 @@ msgstr "共享库"
 
 #: sqldbstrconst.sloadsqlcodehint
 msgid "Load SQL code ..."
-msgstr "加载SQL代码..."
+msgstr "加载 SQL 代码 ..."
 
 #: sqldbstrconst.smetacolumns
 msgid "Columns"
@@ -67,7 +67,7 @@ msgstr "列"
 
 #: sqldbstrconst.smetapleasespecifyatableintheobjectfield
 msgid "Please specify a table in the object field."
-msgstr "请在object field指定一个table"
+msgstr "请在对象字段中指定一个表。"
 
 #: sqldbstrconst.smetaprocedures
 msgid "Procedures"
@@ -75,23 +75,23 @@ msgstr "过程"
 
 #: sqldbstrconst.smetasystables
 msgid "SysTables"
-msgstr "SysTables"
+msgstr "系统表"
 
 #: sqldbstrconst.smetatabcaption
 msgid "Metadata"
-msgstr "Metadata"
+msgstr "元数据"
 
 #: sqldbstrconst.smetatables
 msgid "Tables"
-msgstr "Tables"
+msgstr "表"
 
 #: sqldbstrconst.sqlsyntaxok
 msgid "No syntax errors in SQL statement found."
-msgstr "在SQL声明没有发现语法错误"
+msgstr "在 SQL 语句中未发现语法错误。"
 
 #: sqldbstrconst.squickcheckofsqlsyntaxhint
 msgid "Quick check of SQL syntax"
-msgstr "快速检查SQL语法"
+msgstr "快速检查 SQL 语法"
 
 #: sqldbstrconst.sresulttabcaption
 msgid "Results"
@@ -99,85 +99,85 @@ msgstr "结果"
 
 #: sqldbstrconst.srunsqlcodehint
 msgid "Run SQL code"
-msgstr "运行SQL代码"
+msgstr "运行 SQL 代码"
 
 #: sqldbstrconst.ssavesqlcodehint
 msgid "Save SQL code ..."
-msgstr "保存SQL代码..."
+msgstr "保存 SQL 代码 ..."
 
 #: sqldbstrconst.ssqlbrackets
 msgctxt "sqldbstrconst.ssqlbrackets"
 msgid "Brackets"
-msgstr ""
+msgstr "括号"
 
 #: sqldbstrconst.ssqldelimitersforfieldtablenames
 msgctxt "sqldbstrconst.ssqldelimitersforfieldtablenames"
 msgid "Delimiters for field/table names"
-msgstr ""
+msgstr "字段/表 名称 的分隔符"
 
 #: sqldbstrconst.ssqledit
 msgid "Edit SQL Script ..."
-msgstr ""
+msgstr "编辑 SQL 脚本 ..."
 
 #: sqldbstrconst.ssqlerror
 msgid "Probable SQL error"
-msgstr "可能的SQL错误"
+msgstr "可能的 SQL 错误"
 
 #: sqldbstrconst.ssqlfullyqualifiedfields
 msgctxt "sqldbstrconst.ssqlfullyqualifiedfields"
 msgid "Fully qualified fields"
-msgstr ""
+msgstr "完全限定的字段"
 
 #: sqldbstrconst.ssqlgenerated
 msgid "SQL statements successfully generated."
-msgstr ""
+msgstr "SQL 语句已成功生成。"
 
 #: sqldbstrconst.ssqlgeneratesql
 msgctxt "sqldbstrconst.ssqlgeneratesql"
 msgid "Generate SQL"
-msgstr ""
+msgstr "生成 SQL"
 
 #: sqldbstrconst.ssqlindent
 msgctxt "sqldbstrconst.ssqlindent"
 msgid "Indent"
-msgstr ""
+msgstr "缩进"
 
 #: sqldbstrconst.ssqlite3databases
 msgid "SQLite3 databases"
-msgstr "SQLite3数据库"
+msgstr "SQLite3 数据库"
 
 #: sqldbstrconst.ssqlkeyfields
 msgctxt "sqldbstrconst.ssqlkeyfields"
 msgid "Key fields"
-msgstr ""
+msgstr "关键字段"
 
 #: sqldbstrconst.ssqllinelength
 msgctxt "sqldbstrconst.ssqllinelength"
 msgid "Line length"
-msgstr ""
+msgstr "行长度"
 
 #: sqldbstrconst.ssqlnosqlgenerated
 msgctxt "sqldbstrconst.ssqlnosqlgenerated"
 msgid "No SQL statements were generated. Do you really want to close?"
-msgstr ""
+msgstr "没有生成 SQL 语句。你确定要关闭吗？"
 
 #: sqldbstrconst.ssqlnotable
 msgid "No table is selected for generation of SQL statements."
-msgstr ""
+msgstr "没有选定表以生成 SQL 语句。"
 
 #: sqldbstrconst.ssqlok
 msgid "Quick SQL check OK"
-msgstr "快速SQL检查OK"
+msgstr "快速 SQL 检查正常"
 
 #: sqldbstrconst.ssqlonefieldperline
 msgctxt "sqldbstrconst.ssqlonefieldperline"
 msgid "One field per line"
-msgstr ""
+msgstr "每行一个字段"
 
 #: sqldbstrconst.ssqlquotechar
 msgctxt "sqldbstrconst.ssqlquotechar"
 msgid "Quote character"
-msgstr ""
+msgstr "引用字符"
 
 #: sqldbstrconst.ssqlscript
 msgid "SQL Script file"
@@ -190,22 +190,21 @@ msgstr "创建一个新的SQL脚本文件"
 #: sqldbstrconst.ssqlselectupdateinsertfields
 msgctxt "sqldbstrconst.ssqlselectupdateinsertfields"
 msgid "\"Select\"/\"Update\"/\"Insert\" fields"
-msgstr ""
+msgstr "“选择”/“更新”/“插入”字段"
 
 #: sqldbstrconst.ssqlshowsystemtables
 msgctxt "sqldbstrconst.ssqlshowsystemtables"
 msgid "Show system tables"
-msgstr ""
+msgstr "显示系统表"
 
 #: sqldbstrconst.ssqlsource
 msgid "Insert your SQL statements here"
 msgstr "在此处插入你的SQL语句"
 
 #: sqldbstrconst.ssqlstringspropertyeditordlgtitle
-#, object-pascal-format, fuzzy
-#| msgid "Editing %s"
+#, object-pascal-format
 msgid "Statement Editor (%s)"
-msgstr "编辑%s"
+msgstr "语句编辑器 (%s)"
 
 #: sqldbstrconst.ssqlsyntaxerror
 #, object-pascal-format
@@ -223,15 +222,15 @@ msgstr "SQL代码"
 #: sqldbstrconst.ssqltable
 msgctxt "sqldbstrconst.ssqltable"
 msgid "Table"
-msgstr ""
+msgstr "表"
 
 #: sqldbstrconst.ssqltablesandfields
 msgctxt "sqldbstrconst.ssqltablesandfields"
 msgid "Tables and Fields"
-msgstr ""
+msgstr "表和字段"
 
 #: sqldbstrconst.ssqluppercasekeywords
 msgctxt "sqldbstrconst.ssqluppercasekeywords"
 msgid "Uppercase keywords"
-msgstr ""
+msgstr "将关键词转换为大写"
 

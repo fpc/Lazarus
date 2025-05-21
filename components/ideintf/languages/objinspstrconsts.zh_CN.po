@@ -2,14 +2,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
+"PO-Revision-Date: 2025-05-21 22:26+0800\n"
 "Last-Translator: ACTom <i@actom.me>\n"
 "Language-Team: \n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.4.1\n"
+"X-Generator: TyPoEditor 0.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
@@ -84,7 +84,7 @@ msgstr "(未知)"
 
 #: objinspstrconsts.cgcheckduplicate
 msgid "On Add, Check for Duplicate in Items"
-msgstr ""
+msgstr "添加时，检查项目中的重复项"
 
 #: objinspstrconsts.cgcheckduplicatemsg
 #, object-pascal-format
@@ -160,7 +160,7 @@ msgstr "这将从数据集(dataset)替换所有的标题(captions).继续?"
 
 #: objinspstrconsts.dpeunabletoretrievefieldsdefinitions
 msgid "Unable to retrieve fields definition from dataset."
-msgstr ""
+msgstr "无法从数据集中检索字段定义。"
 
 #: objinspstrconsts.fescalculated
 msgid "&Calculated"
@@ -172,10 +172,8 @@ msgid "Cancel"
 msgstr "取消"
 
 #: objinspstrconsts.fescheckdset
-#, fuzzy
-#| msgid "Check dataset settings"
 msgid "Check dataset settings."
-msgstr "检查数据集设置"
+msgstr "检查数据集设置。"
 
 #: objinspstrconsts.fesdata
 msgid "&Data"
@@ -183,7 +181,7 @@ msgstr "数据(&D)"
 
 #: objinspstrconsts.fesdataset
 msgid "&Dataset:"
-msgstr ""
+msgstr "&数据集:"
 
 #: objinspstrconsts.feserrormessage
 #, object-pascal-format
@@ -191,6 +189,8 @@ msgid ""
 "Error message:\n"
 "%s"
 msgstr ""
+"错误消息：\n"
+"%s"
 
 #: objinspstrconsts.fesfetitle
 msgid "Edit Fields ..."
@@ -211,7 +211,7 @@ msgstr "字段类型"
 
 #: objinspstrconsts.fesfltitle
 msgid "FieldDefs"
-msgstr ""
+msgstr "字段定义"
 
 #: objinspstrconsts.fesformcaption
 msgctxt "objinspstrconsts.fesformcaption"
@@ -232,7 +232,7 @@ msgstr "查找定义"
 
 #: objinspstrconsts.feslookupkeys
 msgid "L&ookup keys:"
-msgstr ""
+msgstr "查找键值(&O)："
 
 #: objinspstrconsts.fesname
 msgid "&Name:"
@@ -240,11 +240,11 @@ msgstr "名称:(&N)"
 
 #: objinspstrconsts.fesnofields
 msgid "It was not possible to get the dataset fields list."
-msgstr ""
+msgstr "无法获取数据集字段列表。"
 
 #: objinspstrconsts.fesnofieldsnote
 msgid "Fields list is not available, can't check for duplicates."
-msgstr ""
+msgstr "字段列表不可用，无法检查重复项。"
 
 #: objinspstrconsts.fesokbtn
 msgctxt "objinspstrconsts.fesokbtn"
@@ -302,7 +302,7 @@ msgstr "IfDef"
 
 #: objinspstrconsts.liisifndef
 msgid "IfNDef"
-msgstr ""
+msgstr "如果未定义"
 
 #: objinspstrconsts.liissetvalue
 msgid "Set value"
@@ -310,39 +310,39 @@ msgstr "设置值"
 
 #: objinspstrconsts.lrsbufdsfilters
 msgid "XML data files|*.xml;Binary data files|*.dat"
-msgstr ""
+msgstr "XML 数据文件|*.xml;二进制数据文件|*.dat"
 
 #: objinspstrconsts.lrscopyfromdataset
 msgid "Copy data from other dataset"
-msgstr ""
+msgstr "从其他数据集复制数据"
 
 #: objinspstrconsts.lrscreatedataset
 msgid "Create dataset"
-msgstr ""
+msgstr "创建数据集"
 
 #: objinspstrconsts.lrsdatasetactive
 msgid "Dataset is already active, close it first."
-msgstr ""
+msgstr "数据集已激活请先关闭它。"
 
 #: objinspstrconsts.lrsloadfromfile
 msgid "Load data from file"
-msgstr ""
+msgstr "从文件加载数据"
 
 #: objinspstrconsts.lrsnodatasetsavailableforcopy
 msgid "No dataset available to copy data from."
-msgstr ""
+msgstr "没有可用的数据集来复制数据。"
 
 #: objinspstrconsts.lrsprovidedatafilename
 msgid "Select a data file to save data to"
-msgstr ""
+msgstr "选择一个数据文件来保存数据"
 
 #: objinspstrconsts.lrssavetofile
 msgid "Save data to file"
-msgstr ""
+msgstr "将数据保存到文件"
 
 #: objinspstrconsts.lrsselectdatafilename
 msgid "Select a file with data to load into dataset"
-msgstr ""
+msgstr "选择一个包含数据的文件以加载到数据集中"
 
 #: objinspstrconsts.nbcesaddpage
 msgctxt "objinspstrconsts.nbcesaddpage"
@@ -570,7 +570,7 @@ msgstr "%d行, %d字符"
 
 #: objinspstrconsts.oisenablesetshint
 msgid "Only affects the EnableSets property of the Test Input"
-msgstr ""
+msgstr "仅影响 Test Input 的 EnableSets 属性"
 
 #: objinspstrconsts.oisenumeration
 msgid "Enumeration"
@@ -596,7 +596,7 @@ msgstr "加载图片\"%s\":%s%s错误"
 #: objinspstrconsts.oiserrorreadingsamplefile
 #, object-pascal-format
 msgid "Error reading file %s"
-msgstr ""
+msgstr "读取文件 %s 时出错"
 
 #: objinspstrconsts.oiserrorwhiledeletingaction
 #, object-pascal-format
@@ -638,7 +638,7 @@ msgstr "方法不兼容"
 #: objinspstrconsts.oisinfinitynotsupported
 msgctxt "objinspstrconsts.oisinfinitynotsupported"
 msgid "Setting a floating point property to positive or negative Infinity at design time is not supported"
-msgstr ""
+msgstr "在设计时将浮点属性设置为正无穷大或负无穷大不受支持"
 
 #: objinspstrconsts.oisinputmask
 msgid "Input Mask:"
@@ -646,7 +646,7 @@ msgstr "输入掩码:"
 
 #: objinspstrconsts.oisinputmaskeditor
 msgid "Input Mask Editor"
-msgstr ""
+msgstr "输入掩码编辑器"
 
 #: objinspstrconsts.oisinsertpagename
 msgid "Insert Page Name"
@@ -705,7 +705,7 @@ msgstr "掩码..."
 
 #: objinspstrconsts.oismasksamplefilter
 msgid "Input mask sample files (*.lem;*.dem)|*.lem;*.dem|All files|*"
-msgstr ""
+msgstr "输入掩码示例文件 (*.lem;*.dem)|*.lem;*.dem|所有文件|*"
 
 #: objinspstrconsts.oismethod
 msgid "Method"
@@ -734,7 +734,7 @@ msgstr "上移字段"
 
 #: objinspstrconsts.oisnannotsupported
 msgid "Setting a floating point property to NaN at design time is not supported"
-msgstr ""
+msgstr "在设计时将浮点属性设置为 NaN 是不支持的"
 
 #: objinspstrconsts.oisnew
 msgid "&New"
@@ -811,7 +811,7 @@ msgstr "按一个键..."
 
 #: objinspstrconsts.oispressakeyegctrlp
 msgid "You can press e.g. Ctrl+P ..."
-msgstr ""
+msgstr "您可以按例如 Ctrl+P ..."
 
 #: objinspstrconsts.oisproperties
 msgid "Properties"
@@ -845,7 +845,7 @@ msgstr "限制"
 
 #: objinspstrconsts.oisreverttoinherited
 msgid "Revert to inherited"
-msgstr ""
+msgstr "恢复为继承的"
 
 #: objinspstrconsts.oissamplemasks
 msgid "Sample Masks:"
@@ -857,7 +857,7 @@ msgstr "保存(&S)"
 
 #: objinspstrconsts.oissaveliteralcharacters
 msgid "Save Literal Characters"
-msgstr ""
+msgstr "保存 字符 字面量"
 
 #: objinspstrconsts.oissavepicture
 msgid "Save picture"
@@ -889,7 +889,7 @@ msgstr "选择属性(&S)"
 
 #: objinspstrconsts.oisselectinputmasksample
 msgid "Select input mask sample file"
-msgstr ""
+msgstr "选择输入掩码样本文件"
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"
@@ -944,7 +944,7 @@ msgstr "显示信息框"
 
 #: objinspstrconsts.oisshowpropertyfilter
 msgid "Show Property Filter"
-msgstr ""
+msgstr "显示属性过滤器"
 
 #: objinspstrconsts.oisshowstatusbar
 msgid "Show Status Bar"
@@ -1280,7 +1280,7 @@ msgstr "该方法\"%s\"没有published.%s按取消撤销,%s按忽略强制执行
 #: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
 #, object-pascal-format
 msgid "Unable to change parent of control \"%s\" to new parent \"%s\".%s%s"
-msgstr ""
+msgstr "无法将控件 \"%s\" 的父级更改为新父级 \"%s\"。%s%s"
 
 #: objinspstrconsts.oisundo
 msgctxt "objinspstrconsts.oisundo"
@@ -1294,11 +1294,11 @@ msgstr "未知"
 
 #: objinspstrconsts.oisunload
 msgid "Unload"
-msgstr ""
+msgstr "卸载"
 
 #: objinspstrconsts.oisunloadhint
 msgid "Unloads the current sample file"
-msgstr ""
+msgstr "卸载当前样本文件"
 
 #: objinspstrconsts.oisunselectall
 msgid "&Unselect all"
@@ -1314,7 +1314,7 @@ msgstr "值:"
 
 #: objinspstrconsts.oisvalueoutofrange
 msgid "Property value out of range."
-msgstr ""
+msgstr "属性值超出范围。"
 
 #: objinspstrconsts.oisvariant
 msgid "Variant"
@@ -1326,7 +1326,7 @@ msgstr "查看受限属性"
 
 #: objinspstrconsts.oiswidgetsetrestrictions
 msgid "General widget set restrictions: "
-msgstr ""
+msgstr "通用控件集限制："
 
 #: objinspstrconsts.oisword
 msgid "Word"
@@ -1404,40 +1404,34 @@ msgid "Sections Editor ..."
 msgstr "节(Sections)编辑器..."
 
 #: objinspstrconsts.sccsiledtadd
-#, fuzzy
-#| msgid "&Add ..."
 msgctxt "objinspstrconsts.sccsiledtadd"
 msgid "Add"
-msgstr "添加...(&A)"
+msgstr "添加"
 
 #: objinspstrconsts.sccsiledtaddimg
 msgid "Add image ..."
-msgstr ""
+msgstr "添加图像 ..."
 
 #: objinspstrconsts.sccsiledtaddmoreresolutions
-#, fuzzy
-#| msgid "Add more resolutions ..."
 msgid "Add image with multiple resolutions ..."
-msgstr "添加更多分辨率(resolution)..."
+msgstr "添加具有多种分辨率的图像 ..."
 
 #: objinspstrconsts.sccsiledtaddnewresolution
-#, fuzzy
-#| msgid "New resolution ..."
 msgid "Register new resolution (image size) ..."
-msgstr "新分辨率(resolution)..."
+msgstr "注册新分辨率（图像大小）..."
 
 #: objinspstrconsts.sccsiledtaddsingleresolution
 msgctxt "objinspstrconsts.sccsiledtaddsingleresolution"
 msgid "Add image(s) with single resolution..."
-msgstr ""
+msgstr "添加单分辨率图像..."
 
 #: objinspstrconsts.sccsiledtaddsliced
 msgid "Add sliced ..."
-msgstr ""
+msgstr "添加切片 ..."
 
 #: objinspstrconsts.sccsiledtaddslicediconerror
 msgid "Adding sliced images is not supported."
-msgstr ""
+msgstr "添加切片图像不受支持。"
 
 #: objinspstrconsts.sccsiledtadjustment
 msgid "Adjustment"
@@ -1454,7 +1448,7 @@ msgstr "不能删除默认分辨率(resolution)."
 
 #: objinspstrconsts.sccsiledtcannotslice
 msgid "Source image size must be an integer multiple of the ImageList's Width and Height."
-msgstr ""
+msgstr "源图像大小必须是 ImageList 的 Width 和 Height 的整数倍。"
 
 #: objinspstrconsts.sccsiledtcaption
 msgid "ImageList Editor"
@@ -1465,34 +1459,26 @@ msgid "Center"
 msgstr "中心"
 
 #: objinspstrconsts.sccsiledtclear
-#, fuzzy
-#| msgid "&Clear"
 msgctxt "objinspstrconsts.sccsiledtclear"
 msgid "&Clear list"
-msgstr "清理(&C)"
+msgstr "清除列表(&C)"
 
 #: objinspstrconsts.sccsiledtcrop
 msgid "Crop"
 msgstr "Crop(产量)"
 
 #: objinspstrconsts.sccsiledtdelete
-#, fuzzy
-#| msgid "&Delete"
 msgctxt "objinspstrconsts.sccsiledtdelete"
 msgid "&Delete image"
-msgstr "删除(&D)"
+msgstr "删除 图像(&D)"
 
 #: objinspstrconsts.sccsiledtdeleteresolution
-#, fuzzy
-#| msgid "Delete resolution ..."
 msgid "Delete resolution (image size) ..."
-msgstr "删除分辨率(resolution)..."
+msgstr "删除分辨率（图像大小）..."
 
 #: objinspstrconsts.sccsiledtdeleteresolutionconfirmation
-#, fuzzy
-#| msgid "Select the resolution to delete."
 msgid "Select the resolution (image size) to delete."
-msgstr "选择认分辨率(resolution)予以删除."
+msgstr "选择要删除的分辨率（图像大小）。"
 
 #: objinspstrconsts.sccsiledtgrplcaption
 msgid "Images"
@@ -1504,7 +1490,7 @@ msgstr "选择的图像"
 
 #: objinspstrconsts.sccsiledtimagewidthofnewresolution
 msgid "Image width of the new resolution:"
-msgstr ""
+msgstr "新分辨率的图像宽度："
 
 #: objinspstrconsts.sccsiledtmovedown
 msgctxt "objinspstrconsts.sccsiledtmovedown"
@@ -1530,7 +1516,7 @@ msgstr "新图像"
 
 #: objinspstrconsts.sccsiledtpastefromclipboard
 msgid "Paste image from clipboard"
-msgstr ""
+msgstr "从剪贴板粘贴图像"
 
 #: objinspstrconsts.sccsiledtransparentcolor
 msgid "Transparent Color:"
@@ -1538,48 +1524,39 @@ msgstr "透明色:"
 
 #: objinspstrconsts.sccsiledtremove
 msgid "Remove"
-msgstr ""
+msgstr "移除"
 
 #: objinspstrconsts.sccsiledtreplace
-#, fuzzy
-#| msgid "&Replace ..."
 msgctxt "objinspstrconsts.sccsiledtreplace"
 msgid "Replace"
-msgstr "替换(&R) ..."
+msgstr "替换"
 
 #: objinspstrconsts.sccsiledtreplaceallresolutions
-#, fuzzy
-#| msgid "Replace all resolutions ..."
 msgid "Replace all resolutions of an image ..."
-msgstr "替换所有分辨率(resolution)..."
+msgstr "替换所有图像分辨率..."
 
 #: objinspstrconsts.sccsiledtreplaceimg
 msgid "Replace image ..."
-msgstr ""
+msgstr "替换图像..."
 
 #: objinspstrconsts.sccsiledtreplacesingleresolution
 msgid "Replace single resolution of an image ..."
-msgstr ""
+msgstr "替换图像的单个分辨率 ..."
 
 #: objinspstrconsts.sccsiledtresolutionsbtn
 msgid "Resolutions"
-msgstr ""
+msgstr "分辨率"
 
 #: objinspstrconsts.sccsiledtsave
-#, fuzzy
-#| msgid "&Save ..."
 msgctxt "objinspstrconsts.sccsiledtsave"
 msgid "&Save image ..."
-msgstr "保存...(&S)"
+msgstr "保存图像...(&S)"
 
 #: objinspstrconsts.sccsiledtsaveall
-#, fuzzy
-#| msgid "Save All ..."
 msgid "Save all ..."
-msgstr "保存所有..."
+msgstr "保存全部..."
 
 #: objinspstrconsts.sccsiledtsavebtn
-#, fuzzy
 msgctxt "objinspstrconsts.sccsiledtsavebtn"
 msgid "Save"
 msgstr "保存"
@@ -1646,7 +1623,7 @@ msgstr "状态索引:"
 
 #: objinspstrconsts.sccslvedtmsgownerdata
 msgid "List items cannot be edited at design-time when OwnerData is enabled. Use Items.Count and OnData at run-time instead."
-msgstr ""
+msgstr "当启用 OwnerData 时，设计时无法编辑列表项。请改用 Items.Count 和 OnData 运行时操作。"
 
 #: objinspstrconsts.sccslvedtnewitem
 msgctxt "objinspstrconsts.sccslvedtnewitem"
@@ -1686,37 +1663,37 @@ msgstr "清理"
 #: objinspstrconsts.sccssgedtcolrowinfo
 #, object-pascal-format
 msgid "(%d columns, %d rows)"
-msgstr ""
+msgstr "(%d 列 %d 行)"
 
 #: objinspstrconsts.sccssgedtdelcol
 msgid "Delete column"
-msgstr ""
+msgstr "删除列"
 
 #: objinspstrconsts.sccssgedtdelcolno
 #, object-pascal-format
 msgid "Delete column #%d?"
-msgstr ""
+msgstr "删除列#%d？"
 
 #: objinspstrconsts.sccssgedtdelrow
 msgid "Delete row"
-msgstr ""
+msgstr "删除行"
 
 #: objinspstrconsts.sccssgedtdelrowno
 #, object-pascal-format
 msgid "Delete row #%d?"
-msgstr ""
+msgstr "删除行 #%d？"
 
 #: objinspstrconsts.sccssgedteditcoltitle
 msgid "Edit column title"
-msgstr ""
+msgstr "编辑列标题"
 
 #: objinspstrconsts.sccssgedteditfixedcoltitle
 msgid "Edit fixed column title"
-msgstr ""
+msgstr "编辑固定列标题"
 
 #: objinspstrconsts.sccssgedteditrowheader
 msgid "Edit row header"
-msgstr ""
+msgstr "编辑行标题"
 
 #: objinspstrconsts.sccssgedtgrp
 msgid "String Grid"
@@ -1724,21 +1701,19 @@ msgstr "String 网格"
 
 #: objinspstrconsts.sccssgedtinscol
 msgid "Insert column"
-msgstr ""
+msgstr "插入列"
 
 #: objinspstrconsts.sccssgedtinsrow
 msgid "Insert row"
-msgstr ""
+msgstr "插入行"
 
 #: objinspstrconsts.sccssgedtload
 msgid "Load ..."
 msgstr "加载..."
 
 #: objinspstrconsts.sccssgedtmoverowscols
-#, fuzzy
-#| msgid "Move Rows/Cols"
 msgid "Move rows/columns"
-msgstr "移动 行/列"
+msgstr "移动行/列"
 
 #: objinspstrconsts.sccssgedtopendialog
 msgctxt "objinspstrconsts.sccssgedtopendialog"
@@ -1757,7 +1732,7 @@ msgstr "保存"
 
 #: objinspstrconsts.sccssgedttitle
 msgid "Title"
-msgstr ""
+msgstr "标题"
 
 #: objinspstrconsts.sccstredt
 msgctxt "objinspstrconsts.sccstredt"
@@ -1770,7 +1745,6 @@ msgid "Apply"
 msgstr "应用"
 
 #: objinspstrconsts.sccstredtcancel
-#, fuzzy
 msgctxt "objinspstrconsts.sccstredtcancel"
 msgid "&Cancel"
 msgstr "取消(&C)"
@@ -1782,11 +1756,11 @@ msgstr "TreeView项目编辑器"
 #: objinspstrconsts.sccstredtconfirmationimagesloss
 msgctxt "objinspstrconsts.sccstredtconfirmationimagesloss"
 msgid "Information about node images can only be stored in XML file format. Continue anyway?"
-msgstr ""
+msgstr "关于节点图像的信息只能存储为 XML 文件格式。是否继续？"
 
 #: objinspstrconsts.sccstredtconfirmationtreereplace
 msgid "The current tree will be overwritten, continue?"
-msgstr ""
+msgstr "当前树将被覆盖继续吗？"
 
 #: objinspstrconsts.sccstredtdelete
 msgctxt "objinspstrconsts.sccstredtdelete"
@@ -1796,12 +1770,12 @@ msgstr "删除"
 #: objinspstrconsts.sccstredtimagelistnotassigned
 #, object-pascal-format
 msgid "\"%s\" not assigned"
-msgstr ""
+msgstr "\"%s\" 未分配"
 
 #: objinspstrconsts.sccstredtinvalidindex
 #, object-pascal-format
 msgid "\"%s\" has only %d images"
-msgstr ""
+msgstr "\"%s\" 仅有 %d 张图片"
 
 #: objinspstrconsts.sccstredtitem
 msgctxt "objinspstrconsts.sccstredtitem"
@@ -1809,24 +1783,21 @@ msgid "Item"
 msgstr "项目"
 
 #: objinspstrconsts.sccstredtlabelimageindex
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Image Index"
+#, object-pascal-format
 msgctxt "objinspstrconsts.sccstredtlabelimageindex"
 msgid "Image Index%s:"
-msgstr "图片索引"
+msgstr "图像索引%s:"
 
 #: objinspstrconsts.sccstredtlabelselindex
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Selected Index"
+#, object-pascal-format
 msgid "Selected Index%s:"
-msgstr "选择索引"
+msgstr "选中索引%s:"
 
 #: objinspstrconsts.sccstredtlabelstateindex
-#, object-pascal-format, fuzzy, badformat
-#| msgid "State Index"
+#, object-pascal-format
 msgctxt "objinspstrconsts.sccstredtlabelstateindex"
 msgid "State Index%s:"
-msgstr "状态索引"
+msgstr "状态索引%s："
 
 #: objinspstrconsts.sccstredtnewitem
 msgctxt "objinspstrconsts.sccstredtnewitem"
@@ -1840,11 +1811,11 @@ msgstr "新子项"
 
 #: objinspstrconsts.sccstredtno
 msgid "&No"
-msgstr ""
+msgstr "否(&N)"
 
 #: objinspstrconsts.sccstredtopen
 msgid "Open file"
-msgstr ""
+msgstr "打开文件"
 
 #: objinspstrconsts.sccstredtopendialog
 msgctxt "objinspstrconsts.sccstredtopendialog"
@@ -1853,24 +1824,21 @@ msgstr "打开"
 
 #: objinspstrconsts.sccstredtopensavedlgfiltertextfiles
 msgid "Text files (Node captions only)"
-msgstr ""
+msgstr "文本文件（仅节点标题）"
 
 #: objinspstrconsts.sccstredtopensavedlgfilterxmlfiles
 msgid "XML files (Node captions and properties)"
-msgstr ""
+msgstr "XML 文件（节点标题和属性）"
 
 #: objinspstrconsts.sccstredtrename
-#, fuzzy
 msgctxt "objinspstrconsts.sccstredtrename"
 msgid "Rename"
 msgstr "重命名"
 
 #: objinspstrconsts.sccstredtsave
-#, fuzzy
-#| msgid "Save"
 msgctxt "objinspstrconsts.sccstredtsave"
 msgid "Save to file"
-msgstr "保存"
+msgstr "保存到文件"
 
 #: objinspstrconsts.sccstredtsavedialog
 msgctxt "objinspstrconsts.sccstredtsavedialog"
@@ -1879,7 +1847,7 @@ msgstr "保存"
 
 #: objinspstrconsts.sccstredtyes
 msgid "&Yes"
-msgstr ""
+msgstr "是(&Y)"
 
 #: objinspstrconsts.srgrabkey
 msgid "Grab key"

@@ -1,0 +1,30 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: ACTom <i@actom.me>\n"
+"X-Generator: TyPoEditor 0.2\n"
+
+#: charactermapfrm.lischaractermap
+msgid "Character Map"
+msgstr "字符映射表"
+
+#: charactermapfrm.lischarsize
+msgid "Character Size"
+msgstr "字符大小"
+
+#: charactermapfrm.liscodepage
+msgid "Code Page"
+msgstr "代码页"
+
+#: charactermapfrm.lisinsertcharacter
+msgid "Insert from Character Map..."
+msgstr "从字符映射表插入 ..."
+
+#: charactermapfrm.lisrange
+msgid "Range"
+msgstr "范围"
+
+#: charactermapfrm.lissortunicoderangelistalphabetically
+msgid "Sort Unicode range list alphabetically"
+msgstr "按字母顺序排序 Unicode 范围列表"
+

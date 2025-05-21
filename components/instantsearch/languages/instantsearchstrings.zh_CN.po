@@ -1,0 +1,529 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: ACTom <i@actom.me>\n"
+"X-Generator: TyPoEditor 0.2\n"
+
+#: instantsearchstrings.lrsabortoperation
+msgid "No, abort operation"
+msgstr "否，中止操作"
+
+#: instantsearchstrings.lrsallprojects
+msgid "All projects"
+msgstr "所有项目"
+
+#: instantsearchstrings.lrsalltreesneedindexing
+msgid "All source trees must be indexed."
+msgstr "所有源代码树必须被索引。"
+
+#: instantsearchstrings.lrsautomation
+msgid "Automation"
+msgstr "自动化"
+
+#: instantsearchstrings.lrscancelsearch
+msgid "Cancel search"
+msgstr "取消搜索"
+
+#: instantsearchstrings.lrscannotconnecttomanticore
+#, object-pascal-format
+msgid "Error \"%s\" trying to connect to Manticore server: %s"
+msgstr "尝试连接到 Manticore 服务器时出错：%s ：%s"
+
+#: instantsearchstrings.lrscannotdeleteindexwhileindexing
+msgid "Cannot delete an index while an indexing operation is in progress."
+msgstr "无法在索引操作进行时删除索引。"
+
+#: instantsearchstrings.lrscannotindexindexinprogress
+msgid "Cannot start an index operation while another one is in progress."
+msgstr "无法在另一个索引操作正在进行时启动新的索引操作。"
+
+#: instantsearchstrings.lrsconfigneeded
+msgid "Configuration needed"
+msgstr "需要配置"
+
+#: instantsearchstrings.lrsconfigneededreason
+#, object-pascal-format
+msgid ""
+"Instant search is not yet configured:\n"
+"%s"
+msgstr ""
+"即时搜索尚未配置：\n"
+"%s"
+
+#: instantsearchstrings.lrsconfigure
+msgid "Configure Instant Search"
+msgstr "配置即时搜索"
+
+#: instantsearchstrings.lrsconfirm
+msgid "Confirmation"
+msgstr "确认"
+
+#: instantsearchstrings.lrsconfirmdeletetree
+#, object-pascal-format
+msgid ""
+"Delete tree \"%s\", are you sure?\n"
+"This action cannot be undone."
+msgstr ""
+"删除树 \"%s\"，确定吗？\n"
+"此操作无法撤销。"
+
+#: instantsearchstrings.lrsconnectiontestfailed
+#, object-pascal-format
+msgid ""
+"Connection test failed, reason:\n"
+"%s"
+msgstr "连接测试失败，原因：%s"
+
+#: instantsearchstrings.lrsconnectiontestok
+msgid "Connection test succeeded!"
+msgstr "连接测试成功！"
+
+#: instantsearchstrings.lrscreateindex
+msgid "Create index table"
+msgstr "创建索引表"
+
+#: instantsearchstrings.lrscreateindex2
+msgid "Create index"
+msgstr "创建索引"
+
+#: instantsearchstrings.lrscreateindexbuttonhint
+msgid "Create the index table. You need to test the connection first."
+msgstr "创建索引表。你需要先测试连接。"
+
+#: instantsearchstrings.lrscreateindexfailed
+#, object-pascal-format
+msgid ""
+"Creation of index %s failed, reason:\n"
+"%s"
+msgstr "创建索引 %s 失败，原因：%s"
+
+#: instantsearchstrings.lrscreateindexwithname
+#, object-pascal-format
+msgid "Create index with name %s?"
+msgstr "创建名为 %s 的索引？"
+
+#: instantsearchstrings.lrscurrentproject
+msgid "Active project"
+msgstr "活动项目"
+
+#: instantsearchstrings.lrsdeleteindex
+msgid "Delete index"
+msgstr "删除索引"
+
+#: instantsearchstrings.lrsdeleteindexfailed
+#, object-pascal-format
+msgid ""
+"Deletion of index %s failed, reason:\n"
+"%s"
+msgstr "删除索引 %s 失败，原因：%s"
+
+#: instantsearchstrings.lrsdeleteindexhint
+msgid "Prompt for index name and delete the index."
+msgstr "提示输入索引名称并删除该索引。"
+
+#: instantsearchstrings.lrsdonotcreateindex
+msgid "No, do not create the index"
+msgstr "不，不要创建索引"
+
+#: instantsearchstrings.lrsenterhostnameleaveemptyforlocalhost
+msgid "Enter hostname, leave empty for localhost"
+msgstr "输入主机名，留空则使用 localhost"
+
+#: instantsearchstrings.lrserrnamecannotbeempty
+msgid "Source tree name cannot be empty."
+msgstr "源树名称不能为空。"
+
+#: instantsearchstrings.lrserrorconnecting
+#, object-pascal-format
+msgid "Error \"%s\" attempting to connect to Manticore server."
+msgstr "尝试连接到 Manticore 服务器时出错 \"%s\"。"
+
+#: instantsearchstrings.lrserrorduplicatename
+#, object-pascal-format
+msgid ""
+"Duplicate tree name: %s.\n"
+"Please choose another name."
+msgstr ""
+"重复的树名称：%s\n"
+"请选择另一个名称。"
+
+#: instantsearchstrings.lrserrorminlengthis2
+msgid "There should be at least two characters to search."
+msgstr "搜索的内容至少应包含两个字符。"
+
+#: instantsearchstrings.lrserrorsearching
+#, object-pascal-format
+msgid "Error \"%s\" when searching using Manticore server."
+msgstr "使用 Manticore 服务器搜索时出错“%s”。"
+
+#: instantsearchstrings.lrserrpathdoesnotexist
+#, object-pascal-format
+msgid ""
+"Directory \"%s\" does not exist.\n"
+"Please select an existing directory."
+msgstr ""
+"目录 \"%s\" 不存在\n"
+"请选择一个已存在的目录。"
+
+#: instantsearchstrings.lrsfinishedindexingproject
+#, object-pascal-format
+msgid "Finished indexing project \"%s\". Processed %d files."
+msgstr "已完成项目 \"%s\" 的索引。处理了 %d 个文件。"
+
+#: instantsearchstrings.lrsfinishedindexingtree
+#, object-pascal-format
+msgid "Finished indexing tree \"%s\". Processed %d files in %d minutes."
+msgstr "已完成索引树“%s”。处理了%d 个文件用时%d 分钟。"
+
+#: instantsearchstrings.lrshost
+msgid "Hostname"
+msgstr "主机名"
+
+#: instantsearchstrings.lrsidledisconnecttime
+msgid "Idle disconnect time"
+msgstr "空闲断开时间"
+
+#: instantsearchstrings.lrsindexalreadyexists
+#, object-pascal-format
+msgid "Index table \"%s\" already exists."
+msgstr "索引表 \"%s\" 已存在。"
+
+#: instantsearchstrings.lrsindexdeleted
+#, object-pascal-format
+msgid "Index %s successfully deleted."
+msgstr "索引 %s 已成功删除。"
+
+#: instantsearchstrings.lrsindexingoperationfinished
+msgid "Finished indexing operation."
+msgstr "已完成索引操作。"
+
+#: instantsearchstrings.lrsindexingoptions
+msgid "Indexing and searching"
+msgstr "索引和搜索"
+
+#: instantsearchstrings.lrsindexingprojectterminated
+#, object-pascal-format
+msgid "Indexing project \"%s\" was terminated. Processed %d files."
+msgstr "索引项目 \"%s\" 已终止。已处理 %d 个文件。"
+
+#: instantsearchstrings.lrsindexingtreefilecount
+#, object-pascal-format
+msgid "Tree \"%s\", indexed file count: %d"
+msgstr "树“%s”索引文件数：%d"
+
+#: instantsearchstrings.lrsindexlater
+msgid "No, do not index now"
+msgstr "不，现在不要索引"
+
+#: instantsearchstrings.lrsindexname
+msgid "Index name"
+msgstr "索引名称"
+
+#: instantsearchstrings.lrsindexneedssave
+msgid ""
+"In order to index a source tree, the settings must be saved.\n"
+"Save settings?"
+msgstr ""
+"为了索引源代码树，必须保存设置。\n"
+"保存设置？"
+
+#: instantsearchstrings.lrsindexnotfoundcreate
+#, object-pascal-format
+msgid ""
+"Search index table \"%s\" was not found.\n"
+"Create it?"
+msgstr ""
+"未找到索引表 \"%s\"。\n"
+"要创建它吗？"
+
+#: instantsearchstrings.lrsindexnow
+msgid "Would you like to start indexing them now?"
+msgstr "您想要现在开始索引它们吗？"
+
+#: instantsearchstrings.lrsindexoperationfailed
+msgid "Failed to start index operation."
+msgstr "未能启动索引操作。"
+
+#: instantsearchstrings.lrsindexproject
+msgid "Index project for Instant Search"
+msgstr "为即时搜索索引项目"
+
+#: instantsearchstrings.lrsindexprojectdelay1
+msgid "in"
+msgstr "在"
+
+#: instantsearchstrings.lrsindexprojectdelay2
+msgid "minutes after open"
+msgstr "打开后几分钟"
+
+#: instantsearchstrings.lrsindexprojectmoment
+msgid "Index project when"
+msgstr "索引项目时"
+
+#: instantsearchstrings.lrsindexprojectstrategy
+msgid "Mark project indexable"
+msgstr "将项目标记为可索引"
+
+#: instantsearchstrings.lrsindextodelete
+msgid "Enter the name of the index to delete. This operation cannot be undone."
+msgstr "请输入要删除的索引名称。此操作无法撤销。"
+
+#: instantsearchstrings.lrsinstantsearch
+msgctxt "instantsearchstrings.lrsinstantsearch"
+msgid "Instant search"
+msgstr "即时搜索"
+
+#: instantsearchstrings.lrsinstantsearchmenu
+msgctxt "instantsearchstrings.lrsinstantsearchmenu"
+msgid "Instant search"
+msgstr "即时搜索"
+
+#: instantsearchstrings.lrsmanticoreoptions
+msgid "Manticore server"
+msgstr "Manticore 服务器"
+
+#: instantsearchstrings.lrsmanual
+msgid "Manual only"
+msgstr "仅手动"
+
+#: instantsearchstrings.lrsmarkingindexable
+#, object-pascal-format
+msgid "Marking project \"%s\" as indexable."
+msgstr "将项目 \"%s\" 标记为可索引。"
+
+#: instantsearchstrings.lrsmarkprojectindexable
+msgid "Mark project indexable for Instant Search"
+msgstr "将项目标记为即时搜索可索引"
+
+#: instantsearchstrings.lrsmaxclipbrdsearchtermlength
+msgid "Max. clipboard length"
+msgstr "最大剪贴板长度"
+
+#: instantsearchstrings.lrsminsearchlength
+msgid "Min. searchterm length"
+msgstr "最小搜索词长度"
+
+#: instantsearchstrings.lrsmysqlversion
+msgid "MySQL client version"
+msgstr "MySQL 客户端版本"
+
+#: instantsearchstrings.lrsneedindexing
+msgid "Source trees must be indexed"
+msgstr "源树必须被索引"
+
+#: instantsearchstrings.lrsnewtree
+#, object-pascal-format
+msgid "New source tree %d"
+msgstr "新的源代码树%d"
+
+#: instantsearchstrings.lrsnoindex
+msgid "Search index table not found"
+msgstr "索引表未找到"
+
+#: instantsearchstrings.lrsnomysqlversion
+msgid "No MySQL Client library version was selected for MySQL transport."
+msgstr "没有选择 MySQL 传输的 MySQL 客户端库版本。"
+
+#: instantsearchstrings.lrsnosearchtrees
+msgid "No source trees were defined."
+msgstr "没有定义源代码树。"
+
+#: instantsearchstrings.lrsnoservertrees
+msgid "Source trees were not yet indexed."
+msgstr "源代码树 尚未 索引。"
+
+#: instantsearchstrings.lrsnosuchindex
+#, object-pascal-format
+msgid "No such index exists: %s"
+msgstr "不存在这样的索引： %s"
+
+#: instantsearchstrings.lrsnotconfigured
+msgid "User did not configure anything."
+msgstr "用户未配置任何内容。"
+
+#: instantsearchstrings.lrsnotproperlyconfigured
+#, object-pascal-format
+msgid "Instant search is not properly configured to connect to Manticore server: %s"
+msgstr "即时搜索未正确配置以连接到 Manticore 服务器： %s"
+
+#: instantsearchstrings.lrsnotransport
+msgid "No transport protocol was selected."
+msgstr "没有选择传输协议。"
+
+#: instantsearchstrings.lrsonfirstsave
+msgid "Project is first saved"
+msgstr "项目首次保存"
+
+#: instantsearchstrings.lrsonopen
+msgid "Project is opened"
+msgstr "项目已打开"
+
+#: instantsearchstrings.lrsport
+msgid "Port"
+msgstr "端口"
+
+#: instantsearchstrings.lrsprotocol
+msgid "Protocol"
+msgstr "协议"
+
+#: instantsearchstrings.lrsresultslimit
+msgid "Max. result count"
+msgstr "最大结果数量"
+
+#: instantsearchstrings.lrssave
+msgid "Yes, save settings"
+msgstr "是保存设置"
+
+#: instantsearchstrings.lrssaveandindex
+msgid "Yes, index needed source trees"
+msgstr "是的，索引需要源树"
+
+#: instantsearchstrings.lrssaveandindexall
+msgid "Yes, index all source trees"
+msgstr "是的，索引所有源树"
+
+#: instantsearchstrings.lrssaveneeded
+msgid "Save settings required."
+msgstr "需要保存设置。"
+
+#: instantsearchstrings.lrssearchengine
+msgid "Search engine"
+msgstr "搜索引擎"
+
+#: instantsearchstrings.lrssearchtexthint
+#, object-pascal-format
+msgid "Enter search text, at least %d characters"
+msgstr "输入搜索文本，至少 %d 个字符"
+
+#: instantsearchstrings.lrssourcetreeadd
+msgid "Add"
+msgstr "添加"
+
+#: instantsearchstrings.lrssourcetreeaddhint
+msgid "Add a new source tree definition."
+msgstr "添加新的源代码树定义。"
+
+#: instantsearchstrings.lrssourcetreeclear
+msgid "Clear"
+msgstr "清除"
+
+#: instantsearchstrings.lrssourcetreeclearall
+msgid "Clear all"
+msgstr "清除所有"
+
+#: instantsearchstrings.lrssourcetreeclearallhint
+msgid "Remove all words in all source tree definitions."
+msgstr "移除所有源树定义中的所有单词。"
+
+#: instantsearchstrings.lrssourcetreeclearhint
+msgid "Remove all words in the highlighted source tree definition."
+msgstr "删除源树定义中高亮显示的所有单词。"
+
+#: instantsearchstrings.lrssourcetreedelete
+msgid "Delete"
+msgstr "删除"
+
+#: instantsearchstrings.lrssourcetreedeletehint
+msgid "Delete the highlighted source tree definition."
+msgstr "删除高亮显示的源树定义。"
+
+#: instantsearchstrings.lrssourcetreeedit
+msgid "Edit"
+msgstr "编辑"
+
+#: instantsearchstrings.lrssourcetreeedithint
+msgid "Edit the highlighted source tree definition."
+msgstr "编辑高亮的源树定义。"
+
+#: instantsearchstrings.lrssourcetreeindex
+msgid "Index"
+msgstr "索引"
+
+#: instantsearchstrings.lrssourcetrees
+msgid "Source trees"
+msgstr "源代码树"
+
+#: instantsearchstrings.lrsstartindexingproject
+#, object-pascal-format
+msgid "Start indexing project \"%s\", directory: \"%s\""
+msgstr "开始索引项目 \"%s\"，目录：\"%s\""
+
+#: instantsearchstrings.lrsstartindexingtree
+#, object-pascal-format
+msgid "Start indexing tree \"%s\", directory: \"%s\""
+msgstr "开始索引树 \"%s\"，目录： \"%s\""
+
+#: instantsearchstrings.lrstestbuttonhint
+msgid "Test the connection parameters."
+msgstr "测试连接参数。"
+
+#: instantsearchstrings.lrstestconnection
+msgid "Test connection"
+msgstr "测试连接"
+
+#: instantsearchstrings.lrsthesetreesneedindexing
+#, object-pascal-format
+msgid ""
+"The following source trees need to be indexed:\n"
+"%s"
+msgstr ""
+"需要索引以下源代码树：\n"
+"%s"
+
+#: instantsearchstrings.lrsthisneedssavingsettings
+msgid "This operation runs in the background, and will cause the settings to be saved now."
+msgstr "此操作在后台运行，并将立即保存设置。"
+
+#: instantsearchstrings.lrstimed
+msgid "Delayed after project open"
+msgstr "项目打开后延迟"
+
+#: instantsearchstrings.lrstreeallfiles
+msgid "All files"
+msgstr "所有文件"
+
+#: instantsearchstrings.lrstreebasedir
+msgid "Path"
+msgstr "路径"
+
+#: instantsearchstrings.lrstreebasedirhint
+msgid "Directory with source files"
+msgstr "包含源文件的目录"
+
+#: instantsearchstrings.lrstreeenabled
+msgid "Enabled"
+msgstr "启用"
+
+#: instantsearchstrings.lrstreeextensions
+msgid "Extensions"
+msgstr "扩展"
+
+#: instantsearchstrings.lrstreeextensionshint
+msgid "Comma-separated list of extensions of files"
+msgstr "以逗号分隔的文件扩展名列表"
+
+#: instantsearchstrings.lrstreename
+msgid "Name"
+msgstr "名称"
+
+#: instantsearchstrings.lrstreenamehint
+msgid "Unique name for this tree"
+msgstr "此树的唯一名称"
+
+#: instantsearchstrings.lrstreenotfoundresfresh
+#, object-pascal-format
+msgid ""
+"Source tree %s not found.\n"
+"Please refresh search results."
+msgstr ""
+"源树 %s 未找到\n"
+"请刷新搜索结果"
+
+#: instantsearchstrings.lrstreerecurse
+msgid "Recurse"
+msgstr "递归"
+
+#: instantsearchstrings.lrsyescreateindex
+msgid "Yes, create the index"
+msgstr "是的，创建索引"
+

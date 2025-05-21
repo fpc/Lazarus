@@ -3,36 +3,36 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"PO-Revision-Date: 2025-05-21 22:18+0800\n"
+"Last-Translator: ACTom <i@actom.me>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Generator: TyPoEditor 0.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: fppkg_const.lisfppkgbuildmethodboth
 msgid "Both"
-msgstr ""
+msgstr "两者均"
 
 #: fppkg_const.lisfppkgbuildmethodfpmake
 msgctxt "fppkg_const.lisfppkgbuildmethodfpmake"
 msgid "FPMake"
-msgstr ""
+msgstr "FPMake"
 
 #: fppkg_const.lisfppkgbuildmethodlazarus
 msgid "Lazbuild"
-msgstr ""
+msgstr "Lazbuild"
 
 #: fppkg_const.lisfppkgpckoptsbuildmethod
 msgid "Supported build methods"
-msgstr ""
+msgstr "支持的构建方法"
 
 #: fppkg_const.lisfppkgpckoptstitle
 msgctxt "fppkg_const.lisfppkgpckoptstitle"
 msgid "Fppkg"
-msgstr ""
+msgstr "Fppkg"
 
 #: fppkg_const.rsaboutform
 msgid "About form"
@@ -81,15 +81,15 @@ msgstr "fpmake编译器配置"
 #: fppkg_const.rsfppkgenvironmentoptions
 msgctxt "fppkg_const.rsfppkgenvironmentoptions"
 msgid "Fppkg"
-msgstr ""
+msgstr "Fppkg"
 
 #: fppkg_const.rsfppkgenvironmentoptionscaption
 msgid "Compilation"
-msgstr ""
+msgstr "编译"
 
 #: fppkg_const.rsfppkgoptions
 msgid "fppkg options"
-msgstr "fppkg选项"
+msgstr "fppkg 选项"
 
 #: fppkg_const.rsfppkgsfailedresultds
 #, object-pascal-format
@@ -131,7 +131,7 @@ msgstr "选项"
 #: fppkg_const.rspackagefileoptionstitle
 msgctxt "fppkg_const.rspackagefileoptionstitle"
 msgid "FPMake"
-msgstr ""
+msgstr "FPMake"
 
 #: fppkg_const.rsremotemirrorsurl
 msgid "Remote mirrors URL"
@@ -147,67 +147,67 @@ msgstr "显示Fppkg包管理器"
 
 #: fppkg_const.sactarchivepackages
 msgid "create archive(s) for package(s)"
-msgstr ""
+msgstr "为软件包创建归档文件"
 
 #: fppkg_const.sactbuildpackages
 msgid "build package(s)"
-msgstr ""
+msgstr "构建软件包"
 
 #: fppkg_const.sactcleanpackages
 msgid "clean package(s)"
-msgstr ""
+msgstr "清理软件包"
 
 #: fppkg_const.sactcompilepackages
 msgid "compile packages"
-msgstr ""
+msgstr "编译软件包"
 
 #: fppkg_const.sactdownloadpackages
 msgid "download packages"
-msgstr ""
+msgstr "下载软件包"
 
 #: fppkg_const.sactfixbroken
 msgid "fix broken packages"
-msgstr ""
+msgstr "修复损坏的软件包"
 
 #: fppkg_const.sactinitializefppkg
 msgid "initialize fppkg"
-msgstr ""
+msgstr "初始化 fppkg"
 
 #: fppkg_const.sactinstallpackages
 msgid "install package(s)"
-msgstr ""
+msgstr "安装软件包"
 
 #: fppkg_const.sactuninstpackages
 msgid "uninstall package(s)"
-msgstr ""
+msgstr "卸载软件包"
 
 #: fppkg_const.sactupdate
 msgid "update repository"
-msgstr ""
+msgstr "更新仓库"
 
 #: fppkg_const.sauthor
 msgid "Author"
-msgstr ""
+msgstr "作者"
 
 #: fppkg_const.savailable
 msgid "Available"
-msgstr ""
+msgstr "可用"
 
 #: fppkg_const.scategory
 msgid "Category"
-msgstr ""
+msgstr "类别"
 
 #: fppkg_const.scpu
 msgid "CPU"
-msgstr ""
+msgstr "CPU"
 
 #: fppkg_const.sdownload
 msgid "Download"
-msgstr ""
+msgstr "下载"
 
 #: fppkg_const.semail
 msgid "Email"
-msgstr ""
+msgstr "电子邮件"
 
 #: fppkg_const.serractionfailed
 #, object-pascal-format
@@ -216,45 +216,48 @@ msgid ""
 "\n"
 "%s"
 msgstr ""
+"无法 %s：\n"
+"\n"
+"%s"
 
 #: fppkg_const.sfilename
 msgid "Filename"
-msgstr ""
+msgstr "文件名"
 
 #: fppkg_const.shomepage
 msgid "Homepage"
-msgstr ""
+msgstr "主页"
 
 #: fppkg_const.sinstalled
 msgid "Installed"
-msgstr ""
+msgstr "已安装"
 
 #: fppkg_const.skeywords
 msgid "Keywords"
-msgstr ""
+msgstr "关键字"
 
 #: fppkg_const.slicense
 msgid "License"
-msgstr ""
+msgstr "许可"
 
 #: fppkg_const.smsgactionsucceeded
 #, object-pascal-format
 msgid "%s succeeded."
-msgstr ""
+msgstr "%s 成功。"
 
 #: fppkg_const.smsgfppkgrunning
 msgid "A prior command is still in progress."
-msgstr ""
+msgstr "上一个命令仍在执行中。"
 
 #: fppkg_const.sos
 msgid "OS"
-msgstr ""
+msgstr "操作系统"
 
 #: fppkg_const.ssupport
 msgid "Support"
-msgstr ""
+msgstr "支持"
 
 #: fppkg_const.sunknown
 msgid "Unknown"
-msgstr ""
+msgstr "未知"
 

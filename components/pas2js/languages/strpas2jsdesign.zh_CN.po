@@ -2,14 +2,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
+"PO-Revision-Date: 2025-05-21 23:30+0800\n"
 "Last-Translator: ACTom <i@actom.me>\n"
 "Language-Team: \n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.3.2\n"
+"X-Generator: TyPoEditor 0.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: strpas2jsdesign.pjscreateajavascriptmoduleinsteadofascript
@@ -18,7 +18,7 @@ msgstr "创建 JavaScript 模块而不是脚本"
 
 #: strpas2jsdesign.pjsdapply
 msgid "Apply"
-msgstr ""
+msgstr "应用"
 
 #: strpas2jsdesign.pjsdatompackagetemplatedirectory
 msgid "Atom package template directory"
@@ -42,20 +42,20 @@ msgstr "取消刷新"
 
 #: strpas2jsdesign.pjsdcancel
 msgid "Cancel"
-msgstr ""
+msgstr "取消"
 
 #: strpas2jsdesign.pjsdchangesimplewebserverfromto
 #, object-pascal-format
 msgid "Change Simple Web Server from%s\"%s\"%sto%s\"%s\"%s?"
-msgstr ""
+msgstr "将简易 Web 服务器从%s\"%s\"%s更改为%s\"%s\"%s?"
 
 #: strpas2jsdesign.pjsdclose
 msgid "Close"
-msgstr ""
+msgstr "关闭"
 
 #: strpas2jsdesign.pjsdconfirmation
 msgid "Confirmation"
-msgstr ""
+msgstr "确认"
 
 #: strpas2jsdesign.pjsdcreateinitialhtmlpage
 msgid "Create initial HTML page"
@@ -63,7 +63,7 @@ msgstr "创建初始 HTML 页面"
 
 #: strpas2jsdesign.pjsddetails
 msgid "Details"
-msgstr ""
+msgstr "详细信息"
 
 #: strpas2jsdesign.pjsddirectorynotfound
 #, object-pascal-format
@@ -73,29 +73,29 @@ msgstr "目录 \"%s\" 未找到"
 #: strpas2jsdesign.pjsddownloadedbytes
 #, object-pascal-format
 msgid "Downloaded %s bytes"
-msgstr ""
+msgstr "已下载 %s 字节"
 
 #: strpas2jsdesign.pjsddownloaderror
 #, object-pascal-format
 msgid "Download error:%s"
-msgstr ""
+msgstr "下载错误：%s"
 
 #: strpas2jsdesign.pjsddownloading
 #, object-pascal-format
 msgid "Downloading \"%s\" ..."
-msgstr ""
+msgstr "正在下载 \"%s\" ..."
 
 #: strpas2jsdesign.pjsddownloading2
 msgid "Downloading"
-msgstr ""
+msgstr "下载中"
 
 #: strpas2jsdesign.pjsddownloadpas2jsrelease
 msgid "Download Pas2JS Release?"
-msgstr ""
+msgstr "下载 Pas2JS 版本？"
 
 #: strpas2jsdesign.pjsddownloadrelease
 msgid "Download Release"
-msgstr ""
+msgstr "下载发布版"
 
 #: strpas2jsdesign.pjsdelectronwebapplication
 msgid "Electron Web Application"
@@ -108,7 +108,7 @@ msgstr "错误"
 #: strpas2jsdesign.pjsderror2
 #, object-pascal-format
 msgid "Error: %s"
-msgstr ""
+msgstr "错误： %s"
 
 #: strpas2jsdesign.pjsdfilenamedoesnotstartwithpas2js
 msgid "filename does not start with \"pas2js\""
@@ -127,19 +127,19 @@ msgstr "未找到文件 \"%s\""
 #: strpas2jsdesign.pjsdfound
 #, object-pascal-format
 msgid "Found %s"
-msgstr ""
+msgstr "找到 %s"
 
 #: strpas2jsdesign.pjsdfpcexecutable
 msgid "FPC executable:"
-msgstr ""
+msgstr "FPC 可执行文件："
 
 #: strpas2jsdesign.pjsdfpcsourcedirectory
 msgid "FPC source directory:"
-msgstr ""
+msgstr "FPC 源代码目录："
 
 #: strpas2jsdesign.pjsdfreepascalcompilerusedforcompilingtoolsandpas2jsit
 msgid "Free Pascal Compiler used for compiling tools and pas2js itself"
-msgstr ""
+msgstr "用于编译工具和 pas2js 本身的 Free Pascal 编译器"
 
 #: strpas2jsdesign.pjsdhtmlfilenotfound
 #, object-pascal-format
@@ -162,7 +162,7 @@ msgstr "未找到 HTML 源代码"
 
 #: strpas2jsdesign.pjsdinstallupdatepas2js
 msgid "Install/Update Pas2JS"
-msgstr ""
+msgstr "安装/更新 Pas2JS"
 
 #: strpas2jsdesign.pjsdletrtlshowuncaughtexceptions
 msgid "Let RTL show uncaught exceptions"
@@ -178,12 +178,12 @@ msgstr "维护 HTML 页面"
 
 #: strpas2jsdesign.pjsdmissing
 msgid "Missing"
-msgstr ""
+msgstr "缺少"
 
 #: strpas2jsdesign.pjsdmissing2
 #, object-pascal-format
 msgid "Missing %s"
-msgstr ""
+msgstr "缺少 %s"
 
 #: strpas2jsdesign.pjsdmissingpathtopas2js
 msgid "missing path to pas2js"
@@ -232,11 +232,11 @@ msgstr "NodeJS 项目选项"
 #: strpas2jsdesign.pjsdnote
 #, object-pascal-format
 msgid "Note: %s"
-msgstr ""
+msgstr "注意：%s"
 
 #: strpas2jsdesign.pjsdnote2
 msgid "Note"
-msgstr ""
+msgstr "注意"
 
 #: strpas2jsdesign.pjsdoverwrite
 msgid "Overwrite?"
@@ -260,12 +260,12 @@ msgstr "Pas2JS 可执行文件"
 
 #: strpas2jsdesign.pjsdpas2jsinstaller
 msgid "Pas2JS Installer"
-msgstr ""
+msgstr "Pas2JS 安装程序"
 
 #: strpas2jsdesign.pjsdpas2jsisnotexecutableat
 #, object-pascal-format
 msgid "\"%s\" is not an executable"
-msgstr ""
+msgstr "\"%s\" 不是可执行文件"
 
 #: strpas2jsdesign.pjsdpas2jsselectedbrowserexecutable
 msgid "Pas2JS selected browser executable"
@@ -281,7 +281,7 @@ msgstr "Pas2JS 所选 NodeJS 可执行文件"
 
 #: strpas2jsdesign.pjsdpas2jssourcedirectory
 msgid "Pas2JS source directory"
-msgstr ""
+msgstr "Pas2JS 源代码目录"
 
 #: strpas2jsdesign.pjsdpathofelectronexecutablemacropas2jselectron
 msgid "Path of Electron executable, macro $(Pas2JSElectron)"
@@ -351,19 +351,19 @@ msgstr "选择浏览器可执行文件"
 
 #: strpas2jsdesign.pjsdselectdirectorywheretoextractpas2js
 msgid "Select directory where to extract Pas2JS"
-msgstr ""
+msgstr "选择要解压缩 Pas2JS 的目录"
 
 #: strpas2jsdesign.pjsdselectelectronexecutable
 msgid "Select Electron executable"
-msgstr ""
+msgstr "选择 Electron 可执行文件"
 
 #: strpas2jsdesign.pjsdselectfreepascalcompilerexecutable
 msgid "Select Free Pascal Compiler executable"
-msgstr ""
+msgstr "选择 Free Pascal 编译器可执行文件"
 
 #: strpas2jsdesign.pjsdselectfreepascalsourcedirectory
 msgid "Select Free Pascal source directory"
-msgstr ""
+msgstr "选择 Free Pascal 源代码目录"
 
 #: strpas2jsdesign.pjsdselectnodejsexecutable
 msgid "Select Node.js executable"
@@ -375,7 +375,7 @@ msgstr "选择 pas2js 可执行文件"
 
 #: strpas2jsdesign.pjsdselectpas2jssourcedirectory
 msgid "Select pas2js source directory"
-msgstr ""
+msgstr "选择 pas2js 源目录"
 
 #: strpas2jsdesign.pjsdselectvscodetemplatedir
 msgid "Select Visual Studio Code extension template directory"
@@ -400,12 +400,12 @@ msgstr "启动 HTTP 服务器在端口"
 #: strpas2jsdesign.pjsdthepas2jsexecutablefilenamedoesnotlooklikepas2js
 #, object-pascal-format
 msgid "The executable filename \"%s\" does not look like pas2js."
-msgstr ""
+msgstr "可执行文件名 \"%s\" 看起来不像 pas2js。"
 
 #: strpas2jsdesign.pjsdthereisnoreleasefortarget
 #, object-pascal-format
 msgid "There is no release for target \"%s-%s\"."
-msgstr ""
+msgstr "没有针对 \"%s-%s\" 的发行版。"
 
 #: strpas2jsdesign.pjsdthesimplewebserverisautomaticallystartedonrunthelo
 msgid "The Simple Web Server is automatically started on Run. The location is like a subfolder in the URL serving the disk folder of the HTML file."
@@ -414,12 +414,12 @@ msgstr "运行时会自动启动简易网站服务器。路径就像 URL 中的�
 #: strpas2jsdesign.pjsdunabletocreatedirectory
 #, object-pascal-format
 msgid "Unable to create directory \"%s\"."
-msgstr ""
+msgstr "无法创建目录 \"%s\"。"
 
 #: strpas2jsdesign.pjsdunabletofindpas2jsat
 #, object-pascal-format
 msgid "Unable to find \"%s\""
-msgstr ""
+msgstr "无法找到 \"%s\""
 
 #: strpas2jsdesign.pjsdusebrowserapplicationobject
 msgid "Use Browser Application object"
@@ -451,13 +451,11 @@ msgstr "Visual Studio Code 扩展模板目录"
 
 #: strpas2jsdesign.pjsdwarning
 msgid "Warning"
-msgstr ""
+msgstr "警告"
 
 #: strpas2jsdesign.pjsdwebappdescription
-#, fuzzy
-#| msgid "A pas2js program running in the browser."
 msgid "A pas2js program running in the browser, with optional support for running a WebAssembly program and threading."
-msgstr "在浏览器中运行的 pas2js 程序。"
+msgstr "一个在浏览器中运行的 pas2js 程序，可选支持运行 WebAssembly 程序和线程。"
 
 #: strpas2jsdesign.pjsdwebapplication
 msgid "Web Browser Application"
@@ -494,7 +492,7 @@ msgstr "从 HTML 源代码刷新类"
 
 #: strpas2jsdesign.pjswasienablethreading
 msgid "Enable WebAssembly threading"
-msgstr ""
+msgstr "启用 WebAssembly 线程"
 
 #: strpas2jsdesign.pjswasiprogramfiletexthint
 msgid "Name of your WebAssembly file"

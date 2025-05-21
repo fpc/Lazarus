@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-05-19 21:02+0800\n"
+"PO-Revision-Date: 2025-05-22 00:34+0800\n"
 "Last-Translator: ACTom <i@actom.me>\n"
 "Language-Team: \n"
 "Language: zh_CN\n"
@@ -194,10 +194,8 @@ msgid "Select text (Line mode)"
 msgstr "选择文本（行模式）"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonsetfreebookmark
-#, fuzzy
-#| msgid "Set free bookmark"
 msgid "Set a free bookmark"
-msgstr "设置自由书签"
+msgstr "设置一个自由书签"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonsetlinefull
 msgid "Select current Line (Full)"
@@ -492,7 +490,7 @@ msgstr "代码折叠（当前）"
 #: lazarusidestrconsts.dlgaddhiattrcustom
 #, object-pascal-format
 msgid "Custom %d"
-msgstr ""
+msgstr "自定义 %d"
 
 #: lazarusidestrconsts.dlgaddhiattrdefault
 msgid "Default Text"
@@ -565,35 +563,35 @@ msgstr "文本"
 
 #: lazarusidestrconsts.dlgaddhiattrgroupwrap
 msgid "Wrapping"
-msgstr ""
+msgstr "折行"
 
 #: lazarusidestrconsts.dlgaddhiattrgroup_comment
 msgid "Comments"
-msgstr ""
+msgstr "注释"
 
 #: lazarusidestrconsts.dlgaddhiattrgroup_declsection
 msgid "Declaration Blocks"
-msgstr ""
+msgstr "声明块"
 
 #: lazarusidestrconsts.dlgaddhiattrgroup_progheader
 msgid "Procedure Header"
-msgstr ""
+msgstr "过程头"
 
 #: lazarusidestrconsts.dlgaddhiattrgroup_suffix_custom
 msgid "(Custom)"
-msgstr ""
+msgstr "（自定义）"
 
 #: lazarusidestrconsts.dlgaddhiattrgroup_suffix_entrytype
 msgid "(entry type)"
-msgstr ""
+msgstr "(条目类型)"
 
 #: lazarusidestrconsts.dlgaddhiattrgroup_suffix_extended
 msgid "(Extended)"
-msgstr ""
+msgstr "（扩展）"
 
 #: lazarusidestrconsts.dlgaddhiattrgroup_suffix_nbrackets
 msgid "(Nested Brackets)"
-msgstr ""
+msgstr "（嵌套括号）"
 
 #: lazarusidestrconsts.dlgaddhiattrgutterseparator
 msgid "Gutter Separator"
@@ -643,12 +641,12 @@ msgstr "鼠标链接"
 #: lazarusidestrconsts.dlgaddhiattrnestedbracket
 #, object-pascal-format
 msgid "Nested bracket %d"
-msgstr ""
+msgstr "嵌套括号 %d"
 
 #: lazarusidestrconsts.dlgaddhiattroutlinelevelcolor
 #, object-pascal-format
 msgid "Level %s"
-msgstr ""
+msgstr "级别 %s"
 
 #: lazarusidestrconsts.dlgaddhiattrrecentlyused
 msgid "Recently used item"
@@ -706,17 +704,16 @@ msgstr "单词括号(Word-Brackets)"
 
 #: lazarusidestrconsts.dlgaddhiattrwrapeol
 msgid "EOL"
-msgstr ""
+msgstr "行末"
 
 #: lazarusidestrconsts.dlgaddhiattrwrapindent
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgaddhiattrwrapindent"
 msgid "Indent"
 msgstr "缩进"
 
 #: lazarusidestrconsts.dlgaddhiattrwrapsubline
 msgid "Sub-line"
-msgstr ""
+msgstr "子行"
 
 #: lazarusidestrconsts.dlgaddhispecialvisiblechars
 msgid "Visualized Special Chars"
@@ -755,10 +752,8 @@ msgid "An icon for error/warning/hint is shown in front of a message. The same i
 msgstr "一个错误/警告/提示图标显示在消息前面.在任何情况下,相同的图标都会显示在源文件编辑器的边栏中."
 
 #: lazarusidestrconsts.dlgansicommenttab
-#, fuzzy
-#| msgid "Ansi (* *)"
 msgid "ANSI (* *)"
-msgstr "标准 (* *)"
+msgstr "ANSI (* *)"
 
 #: lazarusidestrconsts.dlgapplicationsettings
 msgid "Application settings"
@@ -873,15 +868,15 @@ msgstr "(编辑符号表)"
 
 #: lazarusidestrconsts.dlgblockindentspaces
 msgid "Amount of spaces"
-msgstr ""
+msgstr "空格数量"
 
 #: lazarusidestrconsts.dlgblockindenttabs
 msgid "Amount of tabs (tab stops)"
-msgstr ""
+msgstr "制表位的数量（制表位）"
 
 #: lazarusidestrconsts.dlgblockindenttabs2spaces
 msgid "Amount of spaces (tab stops)"
-msgstr ""
+msgstr "缩进量（制表位）"
 
 #: lazarusidestrconsts.dlgblockindenttypecopy
 msgid "Space/tab as prev Line"
@@ -1167,7 +1162,7 @@ msgstr "编译器选项可以保存到一个XML文件."
 
 #: lazarusidestrconsts.dlgcolorfeatpasteol
 msgid "Extend past EOL"
-msgstr ""
+msgstr "扩展到行尾"
 
 #: lazarusidestrconsts.dlgcolorlink
 msgid "(Edit Color)"
@@ -2587,19 +2582,19 @@ msgstr "从当前单元"
 
 #: lazarusidestrconsts.dlgindentslineindentgroupoptions
 msgid "Indent (New line)"
-msgstr ""
+msgstr "缩进（新行）"
 
 #: lazarusidestrconsts.dlgindentstabindentgroupoptions
 msgid "Indent (Tab key on Selection)"
-msgstr ""
+msgstr "缩进（选择时使用 Tab 键）"
 
 #: lazarusidestrconsts.dlgindentstabskeyoptions
 msgid "Tab key"
-msgstr ""
+msgstr "Tab 键"
 
 #: lazarusidestrconsts.dlgindentstabswidthsoptions
 msgid "Tabs widths (Tab stop position)"
-msgstr ""
+msgstr "标签宽度（制表位位置）"
 
 #: lazarusidestrconsts.dlginfrontofmethods
 msgid "In front of methods"
@@ -2806,7 +2801,7 @@ msgstr "删除列表\"%s\"?"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivedit
 msgid "Edit list"
-msgstr ""
+msgstr "编辑列表"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivkeyadd
 msgid "Add Word or Term by key"
@@ -2822,7 +2817,7 @@ msgstr "切换单词或词条"
 
 #: lazarusidestrconsts.dlgmarkupuserdefineddivselect
 msgid "Create or Select list"
-msgstr ""
+msgstr "创建或选择列表"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedduplicate
 msgid "Duplicate Term"
@@ -3447,15 +3442,15 @@ msgstr "使用默认的 Lazarus 设置"
 
 #: lazarusidestrconsts.dlgoptdebugbackendeditdebuggerbackend
 msgid "Edit debugger backend"
-msgstr ""
+msgstr "编辑调试器后端"
 
 #: lazarusidestrconsts.dlgoptdebugbackendselectdebuggerbackend
 msgid "Select debugger backend"
-msgstr ""
+msgstr "选择调试器后端"
 
 #: lazarusidestrconsts.dlgoptdebugbackendtheprojectoptionshavebeen
 msgid "The project options have been set to use a different debugger backend"
-msgstr ""
+msgstr "项目选项已设置为使用不同的调试器后端"
 
 #: lazarusidestrconsts.dlgoptimizationlevels
 msgid "Optimization levels"
@@ -3463,79 +3458,79 @@ msgstr "优化等级"
 
 #: lazarusidestrconsts.dlgoptwordwrap
 msgid "Word-wrap"
-msgstr ""
+msgstr "自动换行"
 
 #: lazarusidestrconsts.dlgoptwordwrapallhl
 msgid "Select all"
-msgstr ""
+msgstr "全选"
 
 #: lazarusidestrconsts.dlgoptwordwrapcheckfixedlength
 msgid "Wrap at fixed column"
-msgstr ""
+msgstr "在固定列换行"
 
 #: lazarusidestrconsts.dlgoptwordwrapdisplaycaretatwrappositio
 msgid "Display caret at wrap-position..."
-msgstr ""
+msgstr "在折行位置显示 光标..."
 
 #: lazarusidestrconsts.dlgoptwordwrapendofline
 msgid "end of line"
-msgstr ""
+msgstr "行尾"
 
 #: lazarusidestrconsts.dlgoptwordwrapfixedlinelength
 msgid "Fixed line length"
-msgstr ""
+msgstr "固定行长度"
 
 #: lazarusidestrconsts.dlgoptwordwraphomeendkey
 msgid "Force default home/end keys to subline start/end"
-msgstr ""
+msgstr "强制默认的 Home/End 键到子行的开始/结束"
 
 #: lazarusidestrconsts.dlgoptwordwrapindent
 msgid "Indent width"
-msgstr ""
+msgstr "缩进宽度"
 
 #: lazarusidestrconsts.dlgoptwordwrapindentisoffset
 msgid "Indent relative to text"
-msgstr ""
+msgstr "相对于文本缩进"
 
 #: lazarusidestrconsts.dlgoptwordwrapindentmax
 msgid "Maximum indent width"
-msgstr ""
+msgstr "最大缩进宽度"
 
 #: lazarusidestrconsts.dlgoptwordwrapindentmaxrel
 msgid "Maximum indent width (percent)"
-msgstr ""
+msgstr "最大缩进宽度（百分比）"
 
 #: lazarusidestrconsts.dlgoptwordwrapindentmin
 msgid "Minimum indent width"
-msgstr ""
+msgstr "最小缩进宽度"
 
 #: lazarusidestrconsts.dlgoptwordwrapmaximumlinelength
 msgid "Maximum line length"
-msgstr ""
+msgstr "最长行长度"
 
 #: lazarusidestrconsts.dlgoptwordwrapminimumlinelength
 msgid "Minimum line length"
-msgstr ""
+msgstr "最小行长度"
 
 #: lazarusidestrconsts.dlgoptwordwrapnonehl
 msgid "Clear selection"
-msgstr ""
+msgstr "清除选中"
 
 #: lazarusidestrconsts.dlgoptwordwrapsectioncolumn
 msgid "Wrap column settings"
-msgstr ""
+msgstr "包裹列设置"
 
 #: lazarusidestrconsts.dlgoptwordwrapsectionindent
 msgid "Indent settings"
-msgstr ""
+msgstr "缩进设置"
 
 #: lazarusidestrconsts.dlgoptwordwrapstartofnextline
 msgid "start of next line"
-msgstr ""
+msgstr "下一行开始"
 
 #: lazarusidestrconsts.dlgoptwordwrapusewordwrap
 msgid "Use Word-wrap"
-msgstr ""
+msgstr "使用自动换行"
 
 #: lazarusidestrconsts.dlgotheroptimizations
 msgid "Other optimizations"
@@ -3581,35 +3576,35 @@ msgstr "组件面板提示"
 
 #: lazarusidestrconsts.dlgpascaselabelforotherwise
 msgid "Color otherwise/else as case-label"
-msgstr ""
+msgstr "case 标签中的 else 的颜色"
 
 #: lazarusidestrconsts.dlgpasdeclaredtypeattrmode
 msgid "Extend of type-highlight in declarations"
-msgstr ""
+msgstr "扩展类型高亮显示到声明中"
 
 #: lazarusidestrconsts.dlgpasdeclaredtypeattrmodeident
 msgid "Identifier only"
-msgstr ""
+msgstr "仅标识符"
 
 #: lazarusidestrconsts.dlgpasdeclaredtypeattrmodekeyandsym
 msgid "All, including symbols"
-msgstr ""
+msgstr "所有（包括符号）"
 
 #: lazarusidestrconsts.dlgpasdeclaredtypeattrmodekeywords
 msgid "Identifier, built-in and keywords"
-msgstr ""
+msgstr "标识符、内置和关键字"
 
 #: lazarusidestrconsts.dlgpasdeclaredtypeattrmodenames
 msgid "Identifier and built-in (types/values)"
-msgstr ""
+msgstr "标识符和内置（类型/值）"
 
 #: lazarusidestrconsts.dlgpasdeclaredtypevaluemode
 msgid "Extend of initial-value-highlight in declarations"
-msgstr ""
+msgstr "扩展声明中的初始值高亮"
 
 #: lazarusidestrconsts.dlgpasdeclaredtypevaluemodeliteral
 msgid "Include literals (Number, String) in initial-value-highlight in declarations"
-msgstr ""
+msgstr "在声明中将字面量（数字字符串）包含在初始值高亮中"
 
 #: lazarusidestrconsts.dlgpasext
 msgid "Default Pascal extension"
@@ -3617,13 +3612,11 @@ msgstr "默认 Pascal 扩展名"
 
 #: lazarusidestrconsts.dlgpasexthighlightgroup
 msgid "Extended Pascal Highlight Options"
-msgstr ""
+msgstr "扩展的 Pascal 高亮选项"
 
 #: lazarusidestrconsts.dlgpasextkeywords
-#, fuzzy
-#| msgid "Highlight control statements as keywords"
 msgid "Highlight flow control statements (break, continue, exit) as keywords"
-msgstr "高亮控件语句作为关键字"
+msgstr "将流程控制语句（break continue exit）突出显示为关键字"
 
 #: lazarusidestrconsts.dlgpaskeywordsmarkup
 msgid "Markup (on caret)"
@@ -3642,10 +3635,8 @@ msgid "Pass options to linker with \"-k\", delimiter is space"
 msgstr "用 \"-k\" 将选项传递给链接器，分隔符为空格"
 
 #: lazarusidestrconsts.dlgpasstringkeywords
-#, fuzzy
-#| msgid "Highlight \"String\" keyword(s)"
 msgid "Highlight \"String\" types as keyword"
-msgstr "高亮\"String\"关键字"
+msgstr "将 “String” 类型突出显示为关键字"
 
 #: lazarusidestrconsts.dlgpasstringkeywordsoptdefault
 msgctxt "lazarusidestrconsts.dlgpasstringkeywordsoptdefault"
@@ -4319,11 +4310,11 @@ msgstr "主快速按钮提示 (打开, 保存, ...)"
 
 #: lazarusidestrconsts.dlgsrcedcolorlabelinthesourceareonlyco
 msgid "Label in the source are only colored if the colon \":\" is placed immediately after the label."
-msgstr ""
+msgstr "源代码中的标签只有在冒号 \":\" 紧跟在标签后面时才会被着色。"
 
 #: lazarusidestrconsts.dlgsrcedcolormembercolorisappliedtoany
 msgid "\"Member\" color is applied to any identifier behind a dot \".\"."
-msgstr ""
+msgstr "“Member” 颜色应用于点 “.” 后面的任何标识符。"
 
 #: lazarusidestrconsts.dlgsrorigin
 msgid "Origin"
@@ -4351,15 +4342,15 @@ msgstr "字符串 ''"
 
 #: lazarusidestrconsts.dlgstringcontalignalignsecondlineafterfirst
 msgid "Align second line (after first break) with the position of the lowest matching group in the pattern, or the match position of the pattern itself."
-msgstr ""
+msgstr "对齐第二行（在第一次断点之后）与模式中最低匹配组的位置或模式本身的匹配位置。"
 
 #: lazarusidestrconsts.dlgstringcontalignalignsecondlineregex
 msgid "Align second line (reg-ex):"
-msgstr ""
+msgstr "对齐第二行（正则表达式）："
 
 #: lazarusidestrconsts.dlgstringcontalignmaxindentforsecondlineifb
 msgid "Max indent for second line if based on reg-ex:"
-msgstr ""
+msgstr "如果基于正则表达式，第二行的最大缩进："
 
 #: lazarusidestrconsts.dlgstringenableautocontinue
 msgid "Extend strings on linebreak"
@@ -5422,6 +5413,8 @@ msgid ""
 "%s already contains the help:\n"
 "%s"
 msgstr ""
+"%s 已经包含帮助：\n"
+"%s"
 
 #: lazarusidestrconsts.lisalternativekey
 msgid "Alternative key"
@@ -5808,11 +5801,9 @@ msgid "&Replace"
 msgstr "替换(&R)"
 
 #: lazarusidestrconsts.lisbuild
-#, fuzzy
-#| msgid "Build"
 msgctxt "lazarusidestrconsts.lisbuild"
 msgid "&Build"
-msgstr "构建(&B)"
+msgstr "&构建"
 
 #: lazarusidestrconsts.lisbuildallfilesofprojectpackageide
 msgid "Build all files of project/package/IDE."
@@ -6509,7 +6500,6 @@ msgid "Choose a different name"
 msgstr "选择一个不同的名称"
 
 #: lazarusidestrconsts.lischooseadifferentname2
-#, fuzzy
 msgctxt "lazarusidestrconsts.lischooseadifferentname2"
 msgid "Choose a different name"
 msgstr "选择一个不同的名称"
@@ -6687,10 +6677,8 @@ msgid "Simple Syntax (e.g. * instead of .*)"
 msgstr "简单语法 (例如 * 取代 .*)"
 
 #: lazarusidestrconsts.liscleanall
-#, fuzzy
-#| msgid "Clean all"
 msgid "&Clean all"
-msgstr "清理所有"
+msgstr "清理所有(&C)"
 
 #: lazarusidestrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
@@ -7375,22 +7363,21 @@ msgid "Comma"
 msgstr "逗号"
 
 #: lazarusidestrconsts.liscodetoolsoptscomment
-#, fuzzy
 msgctxt "lazarusidestrconsts.liscodetoolsoptscomment"
 msgid "Comment"
 msgstr "注释"
 
 #: lazarusidestrconsts.liscodetoolsoptscommentansi
 msgid "ANSI Comment: (*"
-msgstr ""
+msgstr "ANSI 注释：(*"
 
 #: lazarusidestrconsts.liscodetoolsoptscommentbor
 msgid "Curly Comment: {"
-msgstr ""
+msgstr "波浪线注释：{"
 
 #: lazarusidestrconsts.liscodetoolsoptscommentslash
 msgid "Slash Comment: //"
-msgstr ""
+msgstr "斜线注释：//"
 
 #: lazarusidestrconsts.liscodetoolsoptsidentifier
 msgctxt "lazarusidestrconsts.liscodetoolsoptsidentifier"
@@ -7430,7 +7417,7 @@ msgstr "Space空格"
 
 #: lazarusidestrconsts.liscodetoolsoptsstring
 msgid "String"
-msgstr ""
+msgstr "字符串"
 
 #: lazarusidestrconsts.liscodetoolsoptsstringconst
 msgid "String constant"
@@ -7698,7 +7685,7 @@ msgstr "旧软件包设置"
 
 #: lazarusidestrconsts.lisconfirmreplace
 msgid "Confirm Replace"
-msgstr ""
+msgstr "确认替换"
 
 #: lazarusidestrconsts.lisconflict
 msgid "Conflict"
@@ -9918,7 +9905,7 @@ msgstr "文件: "
 #: lazarusidestrconsts.lisfilealreadyexists
 #, object-pascal-format
 msgid "File \"%s\" already exists."
-msgstr ""
+msgstr "文件 \"%s\" 已存在。"
 
 #: lazarusidestrconsts.lisfileextensionofprograms
 msgid "File extension of programs"
@@ -10182,7 +10169,7 @@ msgstr "查找选项"
 
 #: lazarusidestrconsts.lisfindoverridestoo
 msgid "Find overrides too"
-msgstr ""
+msgstr "也查找重写"
 
 #: lazarusidestrconsts.lisfirst
 msgid "First"
@@ -10753,11 +10740,11 @@ msgstr "标识符起始于..."
 #: lazarusidestrconsts.lisidentifiercannotbedotted
 #, object-pascal-format
 msgid "Identifier \"%s\" cannot be dotted"
-msgstr ""
+msgstr "标识符 \"%s\" 不能有圆点"
 
 #: lazarusidestrconsts.lisidentifiercannotbeempty
 msgid "Identifier cannot be empty"
-msgstr ""
+msgstr "标识符不能为空"
 
 #: lazarusidestrconsts.lisidentifiercontains
 msgid "Identifier contains ..."
@@ -10766,32 +10753,32 @@ msgstr "标识符包含 ..."
 #: lazarusidestrconsts.lisidentifierisalreadyused
 #, object-pascal-format
 msgid "Identifier \"%s\" is already used"
-msgstr ""
+msgstr "标识符 \"%s\" 已经被使用"
 
 #: lazarusidestrconsts.lisidentifierisalreadyused2
 #, object-pascal-format
 msgid "Identifier \"%s\" is already used."
-msgstr ""
+msgstr "标识符 \"%s\" 已经被使用。"
 
 #: lazarusidestrconsts.lisidentifierisdeclaredcompilerfunction
 #, object-pascal-format
 msgid "Identifier \"%s\" is a declared compiler function."
-msgstr ""
+msgstr "标识符 \"%s\" 是已声明的编译器函数。"
 
 #: lazarusidestrconsts.lisidentifierisdeclaredcompilerprocedure
 #, object-pascal-format
 msgid "Identifier \"%s\" is a declared compiler procedure."
-msgstr ""
+msgstr "标识符 \"%s\" 是一个声明的编译器过程。"
 
 #: lazarusidestrconsts.lisidentifierisinvalid
 #, object-pascal-format
 msgid "Identifier \"%s\" is invalid"
-msgstr ""
+msgstr "标识符 \"%s\" 无效"
 
 #: lazarusidestrconsts.lisidentifierisreservedword
 #, object-pascal-format
 msgid "Identifier \"%s\" is a reserved word"
-msgstr ""
+msgstr "标识符 \"%s\" 是保留字"
 
 #: lazarusidestrconsts.lisideoptions
 msgid "IDE Options:"
@@ -10932,7 +10919,7 @@ msgstr "在一个项目源文件目录中.检查是否有重复项."
 
 #: lazarusidestrconsts.lisincludelfms
 msgid "Including LFM files"
-msgstr ""
+msgstr "包括 LFM 文件"
 
 #: lazarusidestrconsts.lisincludepath
 msgid "include path"
@@ -11180,7 +11167,7 @@ msgstr "内部错误:%s"
 
 #: lazarusidestrconsts.lisinvaliddeclaration
 msgid "Invalid Declaration"
-msgstr ""
+msgstr "无效声明"
 
 #: lazarusidestrconsts.lisinvaliddelete
 msgid "Invalid delete"
@@ -11786,10 +11773,8 @@ msgid "Are you sure you want to delete this build profile?"
 msgstr "您确定您要删除这个构建的配置文件吗？"
 
 #: lazarusidestrconsts.lislazbuildbuildmany
-#, fuzzy
-#| msgid "Build Many"
 msgid "Build &Many"
-msgstr "构建多种"
+msgstr "构建 &多个"
 
 #: lazarusidestrconsts.lislazbuildcommonsettings
 msgid "Common Settings"
@@ -11808,10 +11793,8 @@ msgid "Debug IDE"
 msgstr "调试的 IDE"
 
 #: lazarusidestrconsts.lislazbuilddefines
-#, fuzzy
-#| msgid "Defines"
 msgid "&Defines"
-msgstr "定义"
+msgstr "&定义"
 
 #: lazarusidestrconsts.lislazbuilddefineswithoutd
 msgid "Defines without -d"
@@ -11865,10 +11848,8 @@ msgid "Optimized IDE"
 msgstr "优化的 IDE"
 
 #: lazarusidestrconsts.lislazbuildoptions
-#, fuzzy
-#| msgid "Options:"
 msgid "&Options:"
-msgstr "选项："
+msgstr "&选项："
 
 #: lazarusidestrconsts.lislazbuildoptionspassedtocompiler
 msgid "Options passed to compiler"
@@ -11879,10 +11860,8 @@ msgid "lazbuild [options] <project/package filename or package name>"
 msgstr "lazbuild [选项] <项目/软件包文件名或软件包名>"
 
 #: lazarusidestrconsts.lislazbuildprofile
-#, fuzzy
-#| msgid "Profile to build"
 msgid "&Profile to build"
-msgstr "配置文件"
+msgstr "&要构建的配置文件"
 
 #: lazarusidestrconsts.lislazbuildrenameprof
 msgid "Rename Profile"
@@ -11893,10 +11872,8 @@ msgid "New name for profile:"
 msgstr "配置文件的新名称："
 
 #: lazarusidestrconsts.lislazbuildrestartafterbuild
-#, fuzzy
-#| msgid "Restart after building IDE"
 msgid "&Restart after building IDE"
-msgstr "构建 IDE 后重启"
+msgstr "&构建后重新启动 IDE"
 
 #: lazarusidestrconsts.lislazbuildrestartlazarusautomatically
 msgctxt "lazarusidestrconsts.lislazbuildrestartlazarusautomatically"
@@ -11952,10 +11929,8 @@ msgid "Lazarus Version (e.g. 1.2.4)"
 msgstr "Lazarus版本(例如1.2.4)"
 
 #: lazarusidestrconsts.lislclwidgettype
-#, fuzzy
-#| msgid "LCL widget type"
 msgid "LCL &widget type"
-msgstr "LCL 控件类型："
+msgstr "LCL &控件类型"
 
 #: lazarusidestrconsts.lisldaddlinktoinherited
 msgid "Add link to inherited"
@@ -12541,21 +12516,21 @@ msgstr "&Window,Basic window menu,&New Window,,&Tile,,&Cascade,,&Arrange all,,-,
 
 #: lazarusidestrconsts.lismenueditorcaption
 msgid "Caption"
-msgstr "标题(Caption)"
+msgstr "标题"
 
 #: lazarusidestrconsts.lismenueditorcaptioneditemss
 #, object-pascal-format
 msgid "Captioned items: %s"
-msgstr "给加标题的项目:%s"
+msgstr "带标题的项目： %s"
 
 #: lazarusidestrconsts.lismenueditorcaptionshouldnotbeblank
 msgid "Caption should not be blank"
-msgstr "标题(Caption)不应该是空白的"
+msgstr "标题不能为空"
 
 #: lazarusidestrconsts.lismenueditorchangeconflictingaccelerators
 #, object-pascal-format
 msgid "Change conflicting accelerator \"%s\""
-msgstr "更改冲突的加速器(accelerator)\"%s\""
+msgstr "更改冲突的快捷键 \"%s\""
 
 #: lazarusidestrconsts.lismenueditorchangeimagelisticon
 msgid "Change imagelist &icon"
@@ -12564,42 +12539,42 @@ msgstr "更改图像列表图标(&I)"
 #: lazarusidestrconsts.lismenueditorchangeshortcutcaptionforcomponent
 #, object-pascal-format
 msgid "Change %s for %s"
-msgstr "更改%s对于%s"
+msgstr "将 %s 更改为 %s"
 
 #: lazarusidestrconsts.lismenueditorchangeshortcutconflicts
 #, object-pascal-format
 msgid "Change shortcut conflict \"%s\""
-msgstr "更改快捷方式冲突(conflict)\"%s\""
+msgstr "更改快捷键冲突 \"%s\""
 
 #: lazarusidestrconsts.lismenueditorchangetheshortcutfors
 #, object-pascal-format
 msgid "Change the shortCut for %s"
-msgstr "更改快捷方式对于%s"
+msgstr "更改 %s 的快捷键"
 
 #: lazarusidestrconsts.lismenueditorchangetheshortcutkey2fors
 #, object-pascal-format
 msgid "Change the shortCutKey2 for %s"
-msgstr "更改快捷键(shortCutKey)2对于%s"
+msgstr "更改 %s 的快捷键2"
 
 #: lazarusidestrconsts.lismenueditorchoosetemplatetodelete
 msgid "Choose template to delete"
-msgstr "选择模板删除"
+msgstr "选择要删除的模板"
 
 #: lazarusidestrconsts.lismenueditorchoosetemplatetoinsert
 msgid "Choose template to insert"
-msgstr "选择模板插入"
+msgstr "选择要插入的模板"
 
 #: lazarusidestrconsts.lismenueditorclickanongreyeditemtoedititsshortcut
 msgid "Click a non-greyed item to edit its shortcut or click header to sort by that column"
-msgstr "单击一个非灰色项目来编辑它的快捷方式,或者单击标头(header)来依据列排序"
+msgstr "单击一个非灰色项目以编辑其快捷键或单击标题以按该列排序"
 
 #: lazarusidestrconsts.lismenueditorcomponentisunexpectedkind
 msgid "Component is unexpected kind"
-msgstr "组件是意外的种类"
+msgstr "组件是意料之外的类型"
 
 #: lazarusidestrconsts.lismenueditorcomponentisunnamed
 msgid "Component is unnamed"
-msgstr "组件是未命名的"
+msgstr "组件未命名"
 
 #: lazarusidestrconsts.lismenueditorconflictresolutioncomplete
 msgid "<conflict resolution complete>"
@@ -12608,12 +12583,12 @@ msgstr "<冲突解决完成>"
 #: lazarusidestrconsts.lismenueditorconflictsfoundinitiallyd
 #, object-pascal-format
 msgid "Conflicts found initially: %d"
-msgstr "最初发现的冲突： %d"
+msgstr "最初发现的冲突：%d"
 
 #: lazarusidestrconsts.lismenueditordeepestnestedmenulevels
 #, object-pascal-format
 msgid "Deepest nested menu level: %s"
-msgstr "最深的嵌套菜单层次: %s"
+msgstr "最深层次的嵌套菜单级别： %s"
 
 #: lazarusidestrconsts.lismenueditordeleteitem
 msgid "&Delete item"
@@ -12625,19 +12600,19 @@ msgstr "删除菜单模板(&D) ..."
 
 #: lazarusidestrconsts.lismenueditordeletesavedmenutemplate
 msgid "Delete saved menu template"
-msgstr "删除保存的菜单模板"
+msgstr "删除已保存的菜单模板"
 
 #: lazarusidestrconsts.lismenueditordeleteselectedmenutemplate
 msgid "Delete selected menu template"
-msgstr "删除选择菜单模板"
+msgstr "删除选中的菜单模板"
 
 #: lazarusidestrconsts.lismenueditordeletethisitemanditssubitems
 msgid "Delete this item and its subitems?"
-msgstr "删除这个项目和它的子项目?"
+msgstr "删除此项目及其子项？"
 
 #: lazarusidestrconsts.lismenueditordisplaypreviewaspopupmenu
 msgid "Display preview as &Popup menu"
-msgstr "显示预览作为(as)弹出式菜单(&P)"
+msgstr "显示预览为弹出菜单(&P)"
 
 #: lazarusidestrconsts.lismenueditoreditcaption
 msgid "Edit &Caption"
@@ -12723,7 +12698,7 @@ msgstr "没有分配"
 #: lazarusidestrconsts.lismenueditoritemswithicons
 #, object-pascal-format
 msgid "Items with icon: %s"
-msgstr "项目带有图标:%s"
+msgstr "带有图标的项目： %s"
 
 #: lazarusidestrconsts.lismenueditorlistshortcutsandaccelerators
 #, object-pascal-format
@@ -12814,7 +12789,7 @@ msgstr "选择一个图标从%s"
 #: lazarusidestrconsts.lismenueditorpopupassignmentss
 #, object-pascal-format
 msgid "Popup assignments: %s"
-msgstr "弹出式菜单(Popup )分配: %s"
+msgstr "已分配弹出式菜单的项目： %s"
 
 #: lazarusidestrconsts.lismenueditorradioitem
 msgid "RadioItem"
@@ -12874,47 +12849,47 @@ msgstr "分隔符(&P)"
 #: lazarusidestrconsts.lismenueditorshortcutitemss
 #, object-pascal-format
 msgid "Shortcut items: %s"
-msgstr "快捷方式项目：%s"
+msgstr "有快捷键的项目： %s"
 
 #: lazarusidestrconsts.lismenueditorshortcutnotyetchanged
 msgid "Shortcut not yet changed"
-msgstr "快捷方式尚未更改"
+msgstr "快捷键尚未更改"
 
 #: lazarusidestrconsts.lismenueditorshortcuts
 msgid "Shortcuts"
-msgstr "快捷方式"
+msgstr "快捷键"
 
 #: lazarusidestrconsts.lismenueditorshortcuts2
 msgid "Shortc&uts"
-msgstr "快捷方式(&U)"
+msgstr "快捷键(&U)"
 
 #: lazarusidestrconsts.lismenueditorshortcutsandacceleratorkeys
 msgid "Shortcuts and Accelerator keys"
-msgstr "快捷方式和快速键"
+msgstr "快捷键和加速键"
 
 #: lazarusidestrconsts.lismenueditorshortcutsd
 #, object-pascal-format
 msgid "Shortcuts (%d)"
-msgstr "快捷方式 (%d)"
+msgstr "快捷键 (%d)"
 
 #: lazarusidestrconsts.lismenueditorshortcutsdandacceleratorkeysd
 #, object-pascal-format
 msgid "Shortcuts (%d) and Accelerator keys (%d)"
-msgstr "快捷方式 (%d) 和快速键 (%d)"
+msgstr "快捷键(%d)和加速键(%d)"
 
 #: lazarusidestrconsts.lismenueditorshortcutsourceproperty
 msgid "Shortcut,Source Property"
-msgstr "快捷方式,源代码属性"
+msgstr "快捷键，源代码属性"
 
 #: lazarusidestrconsts.lismenueditorshortcutsusedins
 #, object-pascal-format
 msgid "Shortcuts used in %s"
-msgstr "快捷方式被使用在 %s"
+msgstr "在 %s 中使用的快捷键"
 
 #: lazarusidestrconsts.lismenueditorshortcutsusedinsd
 #, object-pascal-format
 msgid "Shortcuts used in %s (%d)"
-msgstr "快捷方式被使用在 %s (%d)"
+msgstr "在 %s (%d) 中使用的快捷键"
 
 #: lazarusidestrconsts.lismenueditorsins
 #, object-pascal-format
@@ -12927,28 +12902,28 @@ msgid ""
 "\"%s\" is already in use in %s as a shortcut.\n"
 "Try a different shortcut."
 msgstr ""
-"\"%s\"已经在%s中作为一个快捷键而使用.\n"
-"尝试一个不同的快捷键."
+"“%s” 在 %s 中已被用作快捷键。\n"
+"请尝试使用不同的快捷键。"
 
 #: lazarusidestrconsts.lismenueditorsisnotasufficientdescriptionpleaseexpand
 #, object-pascal-format
 msgid "Please expand: \"%s\" is not a sufficient Description"
-msgstr "\"%s\"不是一个充分的描述"
+msgstr "“%s”不是足够的描述"
 
 #: lazarusidestrconsts.lismenueditorsshortcuts
 #, object-pascal-format
 msgid "%s: Shortcuts"
-msgstr "%s:快捷方式"
+msgstr "%s: 快捷键"
 
 #: lazarusidestrconsts.lismenueditorsshortcutsandacceleratorkeys
 #, object-pascal-format
 msgid "%s: Shortcuts and accelerator keys"
-msgstr "%s:快捷方式和快速键(Accelerator keys)"
+msgstr "%s：快捷键和加速键"
 
 #: lazarusidestrconsts.lismenueditorsssonclicks
 #, object-pascal-format
 msgid "%s.%s.%s - OnClick: %s"
-msgstr "%s.%s.%s - 在单击时(OnClick): %s"
+msgstr "%s.%s.%s - OnClick: %s"
 
 #: lazarusidestrconsts.lismenueditorstandardtemplates
 msgid "Standard templates"
@@ -14632,22 +14607,26 @@ msgid "Open the file as normal source"
 msgstr "以常规源代码格式打开文件"
 
 #: lazarusidestrconsts.lisopenthepackage
-#, object-pascal-format, fuzzy
-#| msgid "Open the package %s?"
+#, object-pascal-format
 msgid ""
 "Open the package \"%s\"?\n"
 "\n"
 "The \"Package\" menu has separate commands for opening packages and a list of recent ones."
-msgstr "打开软件包%s?"
+msgstr ""
+"打开包 \"%s\"？\n"
+"\n"
+"“包”菜单中有单独的命令用于打开包和最近打开的包列表。"
 
 #: lazarusidestrconsts.lisopentheproject
-#, object-pascal-format, fuzzy
-#| msgid "Open the project %s?"
+#, object-pascal-format
 msgid ""
 "Open the project \"%s\"?\n"
 "\n"
 "The \"Project\" menu has separate commands for opening projects and a list of recent ones."
-msgstr "打开项目%s?"
+msgstr ""
+"打开项目 “%s”？\n"
+"\n"
+"“项目” 菜单有单独的命令用于打开项目和最近项目的列表。"
 
 #: lazarusidestrconsts.lisopentooloptions
 msgid "Open Tool Options"
@@ -14726,7 +14705,7 @@ msgstr "覆盖项目子目标。"
 #: lazarusidestrconsts.lisoverridetheprojectwidgetsetegdefault
 #, object-pascal-format
 msgid "Override the project widgetset. For example: %s. Default: %s."
-msgstr ""
+msgstr "覆盖项目的小部件集。例如：%s。默认：%s。"
 
 #: lazarusidestrconsts.lisownerisalreadyusedbytreadertwriterpleasechooseanot
 msgid "'Owner' is already used by TReader/TWriter. Please choose another name."
@@ -15723,7 +15702,7 @@ msgstr "软件包名称\"%s\"不是一个有效的软件包名称%s请选择另�
 #: lazarusidestrconsts.lispkgmangthepackagenameofthefileisinvalid
 #, object-pascal-format, fuzzy, badformat
 msgid "The package name \"%s\" of%sthe file \"%s\" is invalid."
-msgstr "文件 \"%s\" 的 软件包名称 \"%s\" 无效。"
+msgstr "文件 \"%s\" 的 软件包 名称 \"%s\" 无效。"
 
 #: lazarusidestrconsts.lispkgmangthepackagewasmarkedcurrentlylazarus
 #, object-pascal-format
@@ -15902,7 +15881,7 @@ msgstr "请在运行前打开一个单元."
 
 #: lazarusidestrconsts.lispleaseplacetheeditorcaretonanidentifierifthisisane
 msgid "Please place the editor caret on an identifier. If this is a new unit, please save the file first."
-msgstr ""
+msgstr "请将编辑器光标放在一个标识符上。如果是新单元，请先保存文件。"
 
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."
@@ -16289,7 +16268,7 @@ msgstr "项目单元路径"
 
 #: lazarusidestrconsts.lisprojectver
 msgid "Project version"
-msgstr ""
+msgstr "项目 版本"
 
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
@@ -16620,11 +16599,11 @@ msgstr "重命名为小写"
 
 #: lazarusidestrconsts.lisrenamingaborted
 msgid "Renaming aborted"
-msgstr ""
+msgstr "重命名已中止"
 
 #: lazarusidestrconsts.lisrenamingconflict
 msgid "Renaming conflict"
-msgstr ""
+msgstr "重命名冲突"
 
 #: lazarusidestrconsts.lisreopenproject
 msgid "Reopen project"
@@ -16991,10 +16970,8 @@ msgid "Ctrl-Click on an identifier in code editor is stored in jump history."
 msgstr "在代码编辑器中 Ctrl+单击一个标识符会被记录在跳转历史中。"
 
 #: lazarusidestrconsts.lissavesettings
-#, fuzzy
-#| msgid "Save Settings"
 msgid "&Save Settings"
-msgstr "保存设置"
+msgstr "&保存设置"
 
 #: lazarusidestrconsts.lissaveshownmessagestofile
 msgid "Save Shown Messages to File ..."
@@ -17082,10 +17059,8 @@ msgid "Select build mode"
 msgstr "选择构建模式"
 
 #: lazarusidestrconsts.lisselectdfmfiles
-#, fuzzy
-#| msgid "Select Delphi form files (*.dfm)"
 msgid "Select Delphi form files (*.dfm|*.fmx)"
-msgstr "选择 Delphi 窗体文件(*.dfm)"
+msgstr "选择 Delphi 表单文件 (*.dfm|*.fmx)"
 
 #: lazarusidestrconsts.lisselected
 msgctxt "lazarusidestrconsts.lisselected"
@@ -17934,7 +17909,7 @@ msgstr "该标识符是一个单元.请使用 文件-保存 作为函数来重�
 #: lazarusidestrconsts.listheidentifierisaunitproceedanyway
 #, object-pascal-format
 msgid "The identifier is a %s.%sNew file(s) will be created, old can be deleted.%sProceed anyway?"
-msgstr ""
+msgstr "标识符是一个 %s%s将创建新文件，旧文件可以被删除。%s仍要继续吗？"
 
 #: lazarusidestrconsts.listhekeyisalreadyassignedtoremovetheoldassignmentand
 #, object-pascal-format
@@ -17983,7 +17958,7 @@ msgstr "\"make\" 可执行文件的名称通常为 \"%s\"，构建 IDE 时需要
 #: lazarusidestrconsts.listhenamecontainsapascalkeyword
 #, object-pascal-format
 msgid "The name \"%s\" contains a Pascal keyword."
-msgstr ""
+msgstr "名称 \"%s\" 包含一个 Pascal 关键字。"
 
 #: lazarusidestrconsts.listhenewincludefileisnotyetintheincludesearchpathadd
 #, object-pascal-format
@@ -19181,7 +19156,7 @@ msgstr "使用 Ansistrings"
 #: lazarusidestrconsts.lisuseanyway
 #, object-pascal-format
 msgid "Use \"%s\" anyway"
-msgstr ""
+msgstr "仍使用 \"%s\""
 
 #: lazarusidestrconsts.lisusecheckboxforbooleanvalues
 msgid "Use CheckBox for Boolean values"
@@ -19220,7 +19195,7 @@ msgstr "使用标识符 %s 在 %s 中的 %s 处"
 #: lazarusidestrconsts.lisuseinstead
 #, object-pascal-format
 msgid "Use \"%s\" instead"
-msgstr ""
+msgstr "使用 \"%s\" 代替"
 
 #: lazarusidestrconsts.lisuselaunchingapplicationgroupbox
 msgid "Launching application"
@@ -19656,16 +19631,12 @@ msgid "Separator"
 msgstr "分隔符"
 
 #: lazarusidestrconsts.optdispgutterusecurrentlinecolor
-#, fuzzy
-#| msgid "Use current line color"
 msgid "Use current line color (gutter: other)"
-msgstr "使用当前行颜色"
+msgstr "使用当前行颜色（边栏：其他）"
 
 #: lazarusidestrconsts.optdispgutterusecurrentlinenumbercolor
-#, fuzzy
-#| msgid "Use current line number color"
 msgid "Use current line number color (gutter: number)"
-msgstr "使用当前行号颜色"
+msgstr "使用当前行号颜色（边栏：数字）"
 
 #: lazarusidestrconsts.podaddpackageunittousessection
 msgid "Add package unit to uses section"
@@ -19856,7 +19827,7 @@ msgstr "帮助菜单命令"
 
 #: lazarusidestrconsts.srkmcatclipboard
 msgid "Clipboard commands"
-msgstr ""
+msgstr "剪贴板命令"
 
 #: lazarusidestrconsts.srkmcatcmdcmd
 msgid "Command commands"
@@ -19888,7 +19859,7 @@ msgstr "文本折叠命令"
 
 #: lazarusidestrconsts.srkmcatlinewrap
 msgid "Line wrapping"
-msgstr ""
+msgstr "自动换行"
 
 #: lazarusidestrconsts.srkmcatmacrorecording
 msgctxt "lazarusidestrconsts.srkmcatmacrorecording"
@@ -20158,19 +20129,19 @@ msgstr "列选择：单词右边"
 
 #: lazarusidestrconsts.srkmeccolumnblockmoveleft
 msgid "Move column-block left (delete before columns)"
-msgstr ""
+msgstr "向左移动列块（删除前几列）"
 
 #: lazarusidestrconsts.srkmeccolumnblockmoveright
 msgid "Move column-block right (delete after columns)"
-msgstr ""
+msgstr "向右移动列块（删除后方列）"
 
 #: lazarusidestrconsts.srkmeccolumnblockshiftleft
 msgid "Shift column-block left (delete in columns)"
-msgstr ""
+msgstr "向左移动列块（在列中删除）"
 
 #: lazarusidestrconsts.srkmeccolumnblockshiftright
 msgid "Shift column-block right (delete in columns)"
-msgstr ""
+msgstr "向右移动列块 （在列中删除）"
 
 #: lazarusidestrconsts.srkmeccolumnselect
 msgid "Column selection mode"
@@ -20190,22 +20161,16 @@ msgid "Copy"
 msgstr "复制(&C)"
 
 #: lazarusidestrconsts.srkmeccopyadd
-#, fuzzy
-#| msgid "Copy (Add to Clipboard)"
 msgid "Copy to clipboard (append)"
-msgstr "复制（添加到剪贴板）"
+msgstr "复制到剪贴板（追加）"
 
 #: lazarusidestrconsts.srkmeccopyaddcurrentline
-#, fuzzy
-#| msgid "Copy current line (Add to Clipboard)"
 msgid "Copy current line to clipboard (append)"
-msgstr "复制当前行（添加到剪贴板）"
+msgstr "将当前行复制到剪贴板（追加）"
 
 #: lazarusidestrconsts.srkmeccopycurrentline
-#, fuzzy
-#| msgid "Copy current line"
 msgid "Copy current line to clipboard"
-msgstr "复制当前行"
+msgstr "复制当前行到剪贴板"
 
 #: lazarusidestrconsts.srkmeccopyeditornewwindow
 msgid "Copy editor to new window"
@@ -20225,22 +20190,16 @@ msgid "Cut"
 msgstr "剪切"
 
 #: lazarusidestrconsts.srkmeccutadd
-#, fuzzy
-#| msgid "Cut (Add to Clipboard)"
 msgid "Cut to clipboard (append)"
-msgstr "剪切（添加到剪贴板）"
+msgstr "剪切到剪贴板 （追加）"
 
 #: lazarusidestrconsts.srkmeccutaddcurrentline
-#, fuzzy
-#| msgid "Cut current line (Add to Clipboard)"
 msgid "Cut current line to clipboard (append)"
-msgstr "剪切当前行（添加到剪贴板）"
+msgstr "剪切当前行到剪贴板（追加）"
 
 #: lazarusidestrconsts.srkmeccutcurrentline
-#, fuzzy
-#| msgid "Cut current line"
 msgid "Cut current line to clipboard"
-msgstr "剪切当前行"
+msgstr "将当前行剪切到剪贴板"
 
 #: lazarusidestrconsts.srkmecdeletebol
 msgid "Delete to beginning of line"
@@ -20263,14 +20222,12 @@ msgid "Delete to start of word"
 msgstr "删除到单词的开始"
 
 #: lazarusidestrconsts.srkmecdeleteline
-#, fuzzy
-#| msgid "Delete current line"
 msgid "Delete current line (keep caret at BOL)"
-msgstr "删除当前行"
+msgstr "删除当前行（保持光标在行首）"
 
 #: lazarusidestrconsts.srkmecdeletelinekeepx
 msgid "Delete current line (restore caret x-pos)"
-msgstr ""
+msgstr "删除当前行（恢复光标 x-位置）"
 
 #: lazarusidestrconsts.srkmecdeleteword
 msgid "Delete to end of word"
@@ -20399,13 +20356,12 @@ msgstr "折叠到层次 %d"
 
 #: lazarusidestrconsts.srkmecfoldtoggle
 msgid "Toggle Fold at Cursor"
-msgstr ""
+msgstr "在光标处切换折叠"
 
 #: lazarusidestrconsts.srkmecgotoeditor
-#, object-pascal-format, fuzzy
-#| msgid "Go to editor %d"
+#, object-pascal-format
 msgid "Go to source editor %d"
-msgstr "转到编辑器 %d"
+msgstr "转到源代码编辑器 %d"
 
 #: lazarusidestrconsts.srkmecgotoincludedirective
 msgid "Go to include directive of current include file"
@@ -20547,11 +20503,11 @@ msgstr "压缩空白字符"
 
 #: lazarusidestrconsts.srkmecjumptonextsearchresult
 msgid "Jump to next search result"
-msgstr ""
+msgstr "跳转到下一个搜索结果"
 
 #: lazarusidestrconsts.srkmecjumptoprevsearchresult
 msgid "Jump to previous search result"
-msgstr ""
+msgstr "跳转到上一个搜索结果"
 
 #: lazarusidestrconsts.srkmeckeymapleft
 msgctxt "lazarusidestrconsts.srkmeckeymapleft"
@@ -21017,27 +20973,27 @@ msgstr "录制宏命令"
 
 #: lazarusidestrconsts.srkmecsynplinewrapcolsellineend
 msgid "Column Select to wrapped line end"
-msgstr ""
+msgstr "列选择到折行行尾"
 
 #: lazarusidestrconsts.srkmecsynplinewrapcolsellinestart
 msgid "Column Select to wrapped line start"
-msgstr ""
+msgstr "列选择到折行开始"
 
 #: lazarusidestrconsts.srkmecsynplinewraplineend
 msgid "Move cursor to wrapped line end"
-msgstr ""
+msgstr "将光标移动到换行末尾"
 
 #: lazarusidestrconsts.srkmecsynplinewraplinestart
 msgid "Move cursor to wrapped line start"
-msgstr ""
+msgstr "将光标移动到换行行首"
 
 #: lazarusidestrconsts.srkmecsynplinewrapsellineend
 msgid "Select to wrapped line end"
-msgstr ""
+msgstr "选择到折行行尾"
 
 #: lazarusidestrconsts.srkmecsynplinewrapsellinestart
 msgid "Select to wrapped line start"
-msgstr ""
+msgstr "选择到包裹行的起始处"
 
 #: lazarusidestrconsts.srkmecsynpsyncroedaddcell
 msgid "Add Cell"

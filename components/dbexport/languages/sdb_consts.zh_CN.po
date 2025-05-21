@@ -3,23 +3,23 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"PO-Revision-Date: 2025-05-21 21:58+0800\n"
+"Last-Translator: ACTom <i@actom.me>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Generator: TyPoEditor 0.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: sdb_consts.scancelrecordsexported
 #, object-pascal-format
 msgid "Exported %d before user canceled."
-msgstr "导出%d在用户取消以前."
+msgstr "导出 %d 个前被用户取消。"
 
 #: sdb_consts.sdb_availableexportformats
 msgid "Available export formats:"
-msgstr "可用的导出格式:"
+msgstr "可用的导出格式："
 
 #: sdb_consts.sdb_cancel
 msgid "&Cancel"
@@ -63,28 +63,28 @@ msgstr "选择数据导出格式"
 
 #: sdb_consts.sdb_selectfieldstoexport
 msgid "Select fi&elds to export"
-msgstr "选择字段导出(&e)"
+msgstr "选择要导出的字段(&E)"
 
 #: sdb_consts.serrnodatasetassigned
 msgid "DataExporter has no Dataset assigned."
-msgstr "DataExporter没有Dataset assigned(分配的数据集?)."
+msgstr "DataExporter 没有分配 Dataset。"
 
 #: sdb_consts.serropeningdataset
 #, object-pascal-format
 msgid "Could not open dataset for exporting: %s"
-msgstr "不能打开dataset(数据集)用于导出: %s"
+msgstr "无法打开数据集用于导出：%s"
 
 #: sdb_consts.sexecute
 msgid "Execute ..."
-msgstr "执行..."
+msgstr "执行 ..."
 
 #: sdb_consts.snrecordsexported
 #, object-pascal-format
 msgid "Successfully exported %d records."
-msgstr "成功导出%d记录."
+msgstr "成功导出 %d 条记录。"
 
 #: sdb_consts.sprogress
 #, object-pascal-format
 msgid "Exporting %d records"
-msgstr "导出%d记录"
+msgstr "正在导出 %d 条记录"
 

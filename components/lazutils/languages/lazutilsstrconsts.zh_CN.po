@@ -3,38 +3,38 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"PO-Revision-Date: 2025-05-21 23:25+0800\n"
+"Last-Translator: ACTom <i@actom.me>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Generator: TyPoEditor 0.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml
 #, object-pascal-format
 msgctxt "lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml"
 msgid "a directory component in %s does not exist or is a dangling symlink"
-msgstr "一个目录组件在%s不存在 或 是一个悬空符号链接"
+msgstr "%s 中的目录组件不存在或是一个无效的符号链接"
 
 #: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml2
 #, object-pascal-format
 msgctxt "lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml2"
 msgid "a directory component in %s does not exist or is a dangling symlink"
-msgstr "一个目录组件在%s不存在 或 是一个悬空符号链接"
+msgstr "%s 中的目录组件不存在或是一个断裂的符号链接"
 
 #: lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory
 #, object-pascal-format
 msgctxt "lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory"
 msgid "a directory component in %s is not a directory"
-msgstr "一个目录组件在%s不是一个目录"
+msgstr "在 %s 中的目录组件不是一个目录"
 
 #: lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory2
 #, object-pascal-format
 msgctxt "lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory2"
 msgid "a directory component in %s is not a directory"
-msgstr "一个目录组件在%s不是一个目录"
+msgstr "在 %s 中的目录组件不是一个目录"
 
 #: lazutilsstrconsts.lrsboolean
 msgid "boolean"
@@ -43,44 +43,44 @@ msgstr "布尔"
 #: lazutilsstrconsts.lrscannotexecute
 #, object-pascal-format
 msgid "can not execute %s"
-msgstr "不能执行%s"
+msgstr "不能执行 %s"
 
 #: lazutilsstrconsts.lrscreatinggdbcatchableerror
 msgid "Creating gdb catchable error:"
-msgstr ""
+msgstr "创建 gdb 可捕获的错误："
 
 #: lazutilsstrconsts.lrserrorincode
 msgid "ERROR in code: "
-msgstr ""
+msgstr "代码中存在错误："
 
 #: lazutilsstrconsts.lrsevalinvalidargcount
 msgid "Invalid number of function arguments"
-msgstr "函数参数的无效的数量"
+msgstr "无效的函数参数数量"
 
 #: lazutilsstrconsts.lrsevalunknownfunction
 #, object-pascal-format
 msgid "Unknown function: \"%s\""
-msgstr "未知的函数: \"%s\""
+msgstr "未知函数：%s"
 
 #: lazutilsstrconsts.lrsevalunknownvariable
 #, object-pascal-format
 msgid "Unknown variable: \"%s\""
-msgstr "未知的变量:\"%s\""
+msgstr "未知变量：“%s”"
 
 #: lazutilsstrconsts.lrsfiledoesnotexist
 #, object-pascal-format
 msgid "file \"%s\" does not exist"
-msgstr "文件\"%s\"不存在"
+msgstr "文件 \"%s\" 不存在"
 
 #: lazutilsstrconsts.lrsfileisadirectoryandnotanexecutable
 #, object-pascal-format
 msgid "file \"%s\" is a directory and not an executable"
-msgstr "文件\"%s\"是一个目录并不是一个可执行文件"
+msgstr "文件 \"%s\" 是一个目录而不是可执行文件"
 
 #: lazutilsstrconsts.lrshasacircularsymboliclink
 #, object-pascal-format
 msgid "%s has a circular symbolic link"
-msgstr "%s有一个循环符号链接(circular)"
+msgstr "%s 存在循环符号链接"
 
 #: lazutilsstrconsts.lrsinsufficientmemory
 msgid "insufficient memory"
@@ -89,18 +89,18 @@ msgstr "内存不足"
 #: lazutilsstrconsts.lrsisnotasymboliclink
 #, object-pascal-format
 msgid "%s is not a symbolic link"
-msgstr "%s不是一个符号链接"
+msgstr "%s 不是符号链接"
 
 #: lazutilsstrconsts.lrsisnotexecutable
 #, object-pascal-format
 msgid "%s is not executable"
-msgstr "%s是不可执行的"
+msgstr "%s 不是可执行文件"
 
 #: lazutilsstrconsts.lrslistindexexceedsbounds
 #, object-pascal-format
 msgctxt "lazutilsstrconsts.lrslistindexexceedsbounds"
 msgid "List index exceeds bounds (%d)"
-msgstr "list索引超过限制 (%d)"
+msgstr "列表索引超出范围（%d）"
 
 #: lazutilsstrconsts.lrslistmustbeempty
 msgctxt "lazutilsstrconsts.lrslistmustbeempty"
@@ -122,7 +122,7 @@ msgstr "数字"
 
 #: lazutilsstrconsts.lrsparserbadaxisname
 msgid "Invalid axis name"
-msgstr "无效的轴名称(axis)"
+msgstr "无效的轴名称"
 
 #: lazutilsstrconsts.lrsparserbadnodetype
 msgid "Invalid node type"
@@ -130,41 +130,41 @@ msgstr "无效节点类型"
 
 #: lazutilsstrconsts.lrsparserexpectedleftbracket
 msgid "Expected \"(\""
-msgstr "要求\"(\""
+msgstr "预期 “(”"
 
 #: lazutilsstrconsts.lrsparserexpectedrightbracket
 msgid "Expected \")\""
-msgstr "要求\")\""
+msgstr "期望 \")\""
 
 #: lazutilsstrconsts.lrsparserexpectedrightsquarebracket
 msgid "Expected \"]\" after predicate"
-msgstr "要求\"]\"在谓语后"
+msgstr "预期在谓词后出现 \"]\""
 
 #: lazutilsstrconsts.lrsparsergarbageafterexpression
 msgid "Unrecognized input after expression"
-msgstr "不被认可的输入在表达式后"
+msgstr "表达式后的输入无法识别"
 
 #: lazutilsstrconsts.lrsparserinvalidnodetest
 msgid "Invalid node test (syntax error)"
-msgstr "无效的节点测试(语法错误)"
+msgstr "无效的节点测试（语法错误）"
 
 #: lazutilsstrconsts.lrsparserinvalidprimexpr
 msgid "Invalid primary expression"
-msgstr "无效的基本表达式"
+msgstr "无效的主表达式"
 
 #: lazutilsstrconsts.lrsprogramfilenotfound
 #, object-pascal-format
 msgid "program file not found %s"
-msgstr "程序文件未找到%s"
+msgstr "程序文件未找到 %s"
 
 #: lazutilsstrconsts.lrsreadaccessdeniedfor
 #, object-pascal-format
 msgid "read access denied for %s"
-msgstr "读访问被拒绝对于%s"
+msgstr "读取访问被拒绝 %s"
 
 #: lazutilsstrconsts.lrsscannerexpectedvarname
 msgid "Expected variable name after \"$\""
-msgstr "在\"$\"后要求变量名"
+msgstr "预期变量名称后跟 \"$\""
 
 #: lazutilsstrconsts.lrsscannerinvalidchar
 msgid "Invalid character"
@@ -172,16 +172,16 @@ msgstr "无效字符"
 
 #: lazutilsstrconsts.lrsscannermalformedqname
 msgid "Expected \"*\" or local part after colon"
-msgstr "要求\"*\" 或 冒号后本地部分"
+msgstr "预期为 \"*\" 或 colont 后的本地部分"
 
 #: lazutilsstrconsts.lrsscannerunclosedstring
 msgid "String literal was not closed"
-msgstr "字符串文字没有关闭"
+msgstr "字符串字面量未关闭"
 
 #: lazutilsstrconsts.lrssize
 msgctxt "lazutilsstrconsts.lrssize"
 msgid "  size "
-msgstr "大小"
+msgstr "  大小 "
 
 #: lazutilsstrconsts.lrsstring
 msgid "string"
@@ -190,43 +190,43 @@ msgstr "字符串"
 #: lazutilsstrconsts.lrsunabletocreateconfigdirectorys
 #, object-pascal-format
 msgid "Unable to create config directory \"%s\""
-msgstr "不能创建配置目录\"%s\""
+msgstr "无法创建配置目录 \"%s\""
 
 #: lazutilsstrconsts.lrsvarnoconversion
 #, object-pascal-format
 msgid "Conversion from %s to %s not possible"
-msgstr "不能从%s到%s转换"
+msgstr "从 %s 到 %s 的转换无法完成"
 
 #: lazutilsstrconsts.rsincompletemask
 msgid "Reached end of mask, but missing close/escape sequence."
-msgstr ""
+msgstr "已到达掩码结尾，但缺少关闭/转义序列。"
 
 #: lazutilsstrconsts.rsinternalerror
 #, object-pascal-format
 msgid "Internal error in %s."
-msgstr ""
+msgstr "内部错误在 %s。"
 
 #: lazutilsstrconsts.rsinvalidcharmask
 #, object-pascal-format
 msgid "Invalid character \"%s\" in mask."
-msgstr ""
+msgstr "掩码中包含无效字符 \"%s\"。"
 
 #: lazutilsstrconsts.rsinvalidcharmaskat
 #, object-pascal-format
 msgid "Invalid character \"%s\" in mask (offset %d)."
-msgstr ""
+msgstr "无效字符 \"%s\" 在掩码中 (偏移量 %d)。"
 
 #: lazutilsstrconsts.rsinvalidescapechar
 msgid "Escape character must be ASCII <= 127."
-msgstr ""
+msgstr "转义字符必须是 ASCII <= 127。"
 
 #: lazutilsstrconsts.rsmissingclosecharmask
 #, object-pascal-format
 msgid "Missing closing character \"%s\" in mask."
-msgstr ""
+msgstr "在掩码中缺少关闭字符 \"%s\"。"
 
 #: lazutilsstrconsts.rsmissingclosecharmaskat
 #, object-pascal-format
 msgid "Missing closing character \"%s\" in mask (offset %d)."
-msgstr ""
+msgstr "在掩码中缺少结束字符 \"%s\"（偏移量 %d）。"
 

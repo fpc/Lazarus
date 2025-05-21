@@ -5,11 +5,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"PO-Revision-Date: 2025-05-22 00:05+0800\n"
+"Last-Translator: ACTom <i@actom.me>\n"
 "Language-Team: \n"
 "Language: zh_CN\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Generator: TyPoEditor 0.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: ipconst.cacheadding
@@ -18,9 +18,9 @@ msgid "Caching item (%s = %s)"
 msgstr "缓存项目 (%s = %s)"
 
 #: ipconst.cachecheckfreshness
-#, object-pascal-format, fuzzy, badformat
+#, object-pascal-format
 msgid "Checking Freshness (%s)"
-msgstr "检查编译器选项"
+msgstr "检查新旧程度 (%s)"
 
 #: ipconst.cachedirnotexist
 #, object-pascal-format
@@ -78,9 +78,8 @@ msgid "HEAD: (%s) FAILED"
 msgstr "头: (%s)失败"
 
 #: ipconst.httpnoheaderdata
-#, fuzzy
 msgid "No Header Data for Entity"
-msgstr "下载: (%s),获得数据头"
+msgstr "实体无头数据"
 
 #: ipconst.httppost
 #, object-pascal-format
@@ -93,14 +92,14 @@ msgid "POST: (%s) FAILED"
 msgstr "提交: (%s)失败"
 
 #: ipconst.httpprogress
-#, object-pascal-format, fuzzy
+#, object-pascal-format
 msgid "Progress Made: (%s), %s bytes received"
-msgstr "断开:(%s), 总接收字节%s"
+msgstr "已取得的进展：(%s)，%s 字节已接收"
 
 #: ipconst.httpsizemismatch
 #, object-pascal-format
 msgid "Download: (%s), Size Mismatch expecting %s , got %s"
-msgstr ""
+msgstr "下载：(%s)，大小不匹配，期望 %s ，实际 %s"
 
 #: ipconst.providerunknownformat
 #, object-pascal-format
@@ -118,43 +117,43 @@ msgstr "未知的请求类型\"%s\""
 
 #: ipconst.rsiphtmlpreviewclose
 msgid "Close"
-msgstr ""
+msgstr "关闭"
 
 #: ipconst.rsiphtmlpreviewfitall
 msgid "Fit all"
-msgstr ""
+msgstr "适合所有"
 
 #: ipconst.rsiphtmlpreviewfitheight
 msgid "Height"
-msgstr ""
+msgstr "高度"
 
 #: ipconst.rsiphtmlpreviewfitwidth
 msgid "Width"
-msgstr ""
+msgstr "宽度"
 
 #: ipconst.rsiphtmlpreviewof
 msgid "of"
-msgstr ""
+msgstr "的"
 
 #: ipconst.rsiphtmlpreviewpage
 msgid "Page:"
-msgstr ""
+msgstr "页面:"
 
 #: ipconst.rsiphtmlpreviewprint
 msgid "Print"
-msgstr ""
+msgstr "打印"
 
 #: ipconst.rsiphtmlpreviewprintpreview
 msgid "Print preview"
-msgstr ""
+msgstr "打印预览"
 
 #: ipconst.rsiphtmlpreviewselectprinter
 msgid "Select printer ..."
-msgstr ""
+msgstr "选择打印机 ..."
 
 #: ipconst.rsiphtmlpreviewzoom
 msgid "Zoom:"
-msgstr ""
+msgstr "缩放:"
 
 #: ipconst.saccessprocerr
 #, object-pascal-format
@@ -163,7 +162,7 @@ msgstr "Win32错误加载'%s' 指针: %s"
 
 #: ipconst.sactiveerr
 msgid "Cannot set property on an active socket"
-msgstr ""
+msgstr "无法在活动套接字上设置属性"
 
 #: ipconst.sattemptingtoread
 msgid "Attempting to read "
@@ -176,12 +175,11 @@ msgstr "尝试写入"
 #: ipconst.sbadframelistobject
 #, object-pascal-format
 msgid "Unrecognized object of class %s in GIF Frame List"
-msgstr ""
+msgstr "GIF 帧列表中未识别的 %s 类对象"
 
 #: ipconst.sbadimagelibfileformat
-#, fuzzy
 msgid "Unrecognized file format"
-msgstr "标记图像文件格式"
+msgstr "未识别的文件格式"
 
 #: ipconst.sbadimagelibstream
 msgid "ImageLib must use TMemoryStreams"
@@ -196,9 +194,8 @@ msgid "Invalid line terminator"
 msgstr "无效的行结束符"
 
 #: ipconst.sbadoffset
-#, fuzzy
 msgid "Invalid stream offset"
-msgstr "无效流格式"
+msgstr "无效的流偏移量"
 
 #: ipconst.sbadpath
 msgid "Path does not exist"
@@ -239,14 +236,12 @@ msgid "Invalid data length"
 msgstr "无效的数据长度"
 
 #: ipconst.sbinhexoddchar
-#, fuzzy
 msgid "One odd character"
-msgstr "字符"
+msgstr "一个奇怪的字符"
 
 #: ipconst.sbinhexresourceforkerr
-#, fuzzy
 msgid "Resource fork present"
-msgstr "没有MDI窗体出现"
+msgstr "资源叉存在"
 
 #: ipconst.sbrokerdownloadreq
 #, object-pascal-format
@@ -335,12 +330,11 @@ msgstr "重命名"
 
 #: ipconst.sftprestart
 msgid "Attempting to re-start transfer of "
-msgstr ""
+msgstr "尝试重新启动传输"
 
 #: ipconst.sftpretrieve
-#, fuzzy
 msgid "Retrieving "
-msgstr "检索mailbox列表"
+msgstr "正在检索 "
 
 #: ipconst.sftpstore
 msgid "Storing "
@@ -355,9 +349,8 @@ msgid "Transfer aborted by user"
 msgstr "用户中断传输"
 
 #: ipconst.shtmlcharstackoverfl
-#, fuzzy
 msgid "Character stack overflow"
-msgstr "栈"
+msgstr "字符堆栈溢出"
 
 #: ipconst.shtmldashexp
 msgid "- expected"
@@ -449,17 +442,16 @@ msgid "Error \"%s\" at line %d, position %d"
 msgstr "错误\"%s\"在行%d, 位置%d"
 
 #: ipconst.shtmlnodataprovider
-#, fuzzy
 msgid "No data provider assigned"
-msgstr "缓冲区未分配"
+msgstr "未分配数据提供程序"
 
 #: ipconst.shtmlnogetimage
 msgid "No OnGetImage event handler assigned"
-msgstr ""
+msgstr "未分配 OnGetImage 事件处理程序"
 
 #: ipconst.shtmlnographic
 msgid "Picture object contains no graphic object"
-msgstr ""
+msgstr "图片对象不包含任何图形对象"
 
 #: ipconst.shtmlnotcontainer
 msgid "Parent is not a container"
@@ -470,9 +462,8 @@ msgid "Resource unavailable:"
 msgstr "资源不可用:"
 
 #: ipconst.shtmltokenstackoverfl
-#, fuzzy
 msgid "Token stack overflow"
-msgstr "溢出"
+msgstr "令牌栈溢出"
 
 #: ipconst.shtmlunknowntok
 msgid "Unknown token"
@@ -493,16 +484,22 @@ msgid ""
 "             Tos = %d\n"
 "             IpFlags = %d"
 msgstr ""
+"Echo 回复 (跃点数： %d)\n"
+"             状态 = %d\n"
+"             往返时间 = %d\n"
+"             生存时间 = %d\n"
+"             服务类型 = %d\n"
+"             IP 标志 = %d"
 
 #: ipconst.sicmpechostring
-#, object-pascal-format, fuzzy, badformat
+#, object-pascal-format
 msgid "Echo string: %s"
-msgstr "字符串''"
+msgstr "回显字符串： %s"
 
 #: ipconst.sicmppingstart
-#, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Pinging %s with %d bytes data"
-msgstr ""
+msgstr "正在使用 %d 字节的数据 ping %s"
 
 #: ipconst.sicmpthreadexecute
 #, object-pascal-format
@@ -517,12 +514,12 @@ msgstr "线程 %d 中断(Hop number = %d)"
 #: ipconst.sicmptracecomplete
 #, object-pascal-format
 msgid "Trace complete (%s), %d hops"
-msgstr ""
+msgstr "跟踪完成 (%s)%d 跳"
 
 #: ipconst.sicmptracestart
-#, object-pascal-format, fuzzy, badformat
+#, object-pascal-format
 msgid "Trace to %s started"
-msgstr "块调用跟踪"
+msgstr "跟踪到 %s 已开始"
 
 #: ipconst.sindexerr
 msgid "Index out of range"
@@ -533,14 +530,12 @@ msgid "Invalid response code"
 msgstr "无效响应代码(response code)"
 
 #: ipconst.sinvitemsize
-#, fuzzy
 msgid "TIpTerminalArray.GetItemPtr: invalid item size"
-msgstr "无效图像的大小"
+msgstr "TIpTerminalArray.GetItemPtr: 无效的项目大小"
 
 #: ipconst.sinvscrollrow
-#, fuzzy
 msgid "TIpTerminalBuffer.SetScrollRegion: invalid row number(s)"
-msgstr "无效的整数数: %s"
+msgstr "TIpTerminalBuffer.SetScrollRegion: 无效的行号"
 
 #: ipconst.sipicmp_bad_destination
 msgid "Bad destination"
@@ -555,9 +550,8 @@ msgid "Bad request"
 msgstr "坏的请求"
 
 #: ipconst.sipicmp_bad_route
-#, fuzzy
 msgid "Bad route"
-msgstr "在 misc. bad 位置"
+msgstr "错误的路由"
 
 #: ipconst.sipicmp_buf_too_small
 msgid "Buffer too small"
@@ -585,7 +579,7 @@ msgstr "硬件错误"
 
 #: ipconst.sipicmp_no_resources
 msgid "Destination does not have resources to complete"
-msgstr ""
+msgstr "目标没有足够的资源来完成"
 
 #: ipconst.sipicmp_option_too_big
 msgid "Option too large"
@@ -613,11 +607,11 @@ msgstr "成功"
 
 #: ipconst.sipicmp_ttl_expired_reassem
 msgid "Time to live expired during reassembly"
-msgstr ""
+msgstr "生存时间在重组期间过期"
 
 #: ipconst.sipicmp_ttl_expired_transit
 msgid "Time to live expired during transmit"
-msgstr ""
+msgstr "生存时间在传输过程中过期"
 
 #: ipconst.sipicmp_unknown
 msgid "Unknown status"
@@ -626,12 +620,11 @@ msgstr "未知状态"
 #: ipconst.slesszero
 #, object-pascal-format
 msgid "%s: new col count %d is less than zero"
-msgstr ""
+msgstr "%s：新列数 %d 小于零"
 
 #: ipconst.slinelengtherr
-#, fuzzy
 msgid "Invalid line length for encoded text"
-msgstr "无效的行长度"
+msgstr "编码文本的行长度无效"
 
 #: ipconst.slistnotassigned
 msgid "List not assigned"
@@ -1028,27 +1021,24 @@ msgstr "你必须为TIpMemMapStream指定一个文件名"
 #: ipconst.smemmapmustbeclosed
 #, object-pascal-format
 msgid "The %s method requires the TIpMemMapStream instance to be closed"
-msgstr ""
+msgstr "%s 方法需要 TIpMemMapStream 实例被关闭"
 
 #: ipconst.smemmapmustbeopen
 #, object-pascal-format
 msgid "The %s method requires the TIpMemMapStream instance to be opened"
-msgstr ""
+msgstr "%s 方法需要 TIpMemMapStream 实例处于打开状态"
 
 #: ipconst.snntpcmdarticle
-#, fuzzy
 msgid "ARTICLE"
-msgstr "提交文章"
+msgstr "文章"
 
 #: ipconst.snntpcmdauthpass
-#, fuzzy
 msgid "AUTHINFO PASS"
-msgstr "通过统计"
+msgstr "AUTHINFO PASS"
 
 #: ipconst.snntpcmdauthuser
-#, fuzzy
 msgid "AUTHINFO USER"
-msgstr "用户"
+msgstr "AUTHINFO 用户"
 
 #: ipconst.snntpcmdbody
 msgid "BODY"
@@ -1080,19 +1070,16 @@ msgid "LIST"
 msgstr "列表"
 
 #: ipconst.snntpcmdlistacttimes
-#, fuzzy
 msgid "LIST ACTIVE.TIMES"
-msgstr "列表<>"
+msgstr "列出活动时间"
 
 #: ipconst.snntpcmdlistdistrib
-#, fuzzy
 msgid "LIST DISTRIBUTIONS"
-msgstr "列表<>"
+msgstr "分发列表"
 
 #: ipconst.snntpcmdlistdistribpats
-#, fuzzy
 msgid "LIST DISTRIB.PATS"
-msgstr "列表<>"
+msgstr "列出分发模式"
 
 #: ipconst.snntpcmdlistext
 msgid "LIST EXTENSIONS"
@@ -1103,14 +1090,12 @@ msgid "LISTGROUP"
 msgstr "列表组"
 
 #: ipconst.snntpcmdlistnewsgroups
-#, fuzzy
 msgid "LIST NEWSGROUPS"
-msgstr "列表<>"
+msgstr "列出新闻组"
 
 #: ipconst.snntpcmdlistoverfmt
-#, fuzzy
 msgid "LIST OVERVIEW.FMT"
-msgstr "列表<>"
+msgstr "列表概览.格式"
 
 #: ipconst.snntpcmdnewgroups
 msgid "NEWGROUPS"
@@ -1118,7 +1103,7 @@ msgstr "新组"
 
 #: ipconst.snntpcmdnewnews
 msgid "NEWNEWS"
-msgstr ""
+msgstr "新新闻"
 
 #: ipconst.snntpcmdnext
 msgid "NEXT"
@@ -1126,7 +1111,7 @@ msgstr "下一个"
 
 #: ipconst.snntpcmdpat
 msgid "PAT"
-msgstr ""
+msgstr "PAT"
 
 #: ipconst.snntpcmdpost
 msgid "POST"
@@ -1144,51 +1129,44 @@ msgstr "开始"
 
 #: ipconst.snntpcmdxover
 msgid "XOVER"
-msgstr ""
+msgstr "XOVER"
 
 #: ipconst.snoboundary
 msgid "No Mime boundary"
-msgstr ""
+msgstr "没有MIME边界"
 
 #: ipconst.snomemorystreamerr
-#, fuzzy
 msgid "No Memory Stream assigned"
-msgstr "缓冲区未分配"
+msgstr "未分配内存流"
 
 #: ipconst.snorecipients
-#, fuzzy
 msgid "No recipients specified"
-msgstr "没有指定调试器"
+msgstr "未指定收件人"
 
 #: ipconst.snoseekforread
-#, fuzzy
 msgid "No seek for read"
-msgstr "读"
+msgstr "没有读取定位"
 
 #: ipconst.snoseekforwrite
-#, fuzzy
 msgid "No seek for write"
-msgstr "写"
+msgstr "写入时无查找"
 
 #: ipconst.snosockerr
-#, fuzzy
 msgid "Socket not assigned"
-msgstr "缓冲区未分配"
+msgstr "套接字未分配"
 
 #: ipconst.snostreamerr
-#, fuzzy
 msgid "Stream not assigned"
-msgstr "缓冲区未分配"
+msgstr "流未分配"
 
 #: ipconst.snotenoughdata
 #, object-pascal-format
 msgid "Not enough data in queue (%s bytes) to satisfy read request (%s bytes)"
-msgstr ""
+msgstr "队列中数据不足（%s 字节）无法满足读取请求（%s 字节）"
 
 #: ipconst.snotimererr
-#, fuzzy
 msgid "Not enough system timers available"
-msgstr "无有效计时器"
+msgstr "系统定时器不足"
 
 #: ipconst.snowinsock2err
 #, object-pascal-format
@@ -1196,24 +1174,20 @@ msgid "%s requires WinSock 2, and this system only has WinSock 1"
 msgstr "%s需要WinSock 2, 而这个系统仅有WinSock 1"
 
 #: ipconst.snsarticle
-#, fuzzy
 msgid "Retrieving article"
-msgstr "提交文章"
+msgstr "正在检索文章"
 
 #: ipconst.snsauthpass
-#, fuzzy
 msgid "Authorizing password"
-msgstr "密码"
+msgstr "授权密码"
 
 #: ipconst.snsauthuser
-#, fuzzy
 msgid "Authorizing user"
-msgstr "用户"
+msgstr "授权用户"
 
 #: ipconst.snsbody
-#, fuzzy
 msgid "Retrieving body"
-msgstr "检索mailbox列表"
+msgstr "正在获取正文"
 
 #: ipconst.snsconnect
 msgctxt "ipconst.snsconnect"
@@ -1221,81 +1195,68 @@ msgid "Connecting"
 msgstr "连接"
 
 #: ipconst.snsdate
-#, fuzzy
 msgid "Retrieving server date"
-msgstr "日期"
+msgstr "获取服务器日期"
 
 #: ipconst.snsgroup
 msgid "Selecting group"
 msgstr "选择组"
 
 #: ipconst.snshead
-#, fuzzy
 msgid "Retrieving heading"
-msgstr "检索mailbox列表"
+msgstr "正在获取标题"
 
 #: ipconst.snshelp
-#, fuzzy
 msgid "Retrieving help"
-msgstr "帮助(&H)"
+msgstr "正在检索帮助"
 
 #: ipconst.snslast
-#, fuzzy
 msgid "Selecting previous article"
-msgstr "前一个"
+msgstr "选择上一篇文章"
 
 #: ipconst.snslist
-#, fuzzy
 msgid "Retrieving list"
-msgstr "检索mailbox列表"
+msgstr "正在获取列表"
 
 #: ipconst.snslistactivetimes
-#, fuzzy
 msgid "Retrieving active times"
-msgstr "激活"
+msgstr "获取活动时间"
 
 #: ipconst.snslistdistribpats
-#, fuzzy
 msgid "Retrieving distribution patterns"
-msgstr "累积正态分布"
+msgstr "检索 分布模式"
 
 #: ipconst.snslistdistributions
-#, fuzzy
 msgid "Retrieving list of distributions"
-msgstr "检索mailbox UID列表"
+msgstr "正在检索发行版列表"
 
 #: ipconst.snslistext
-#, fuzzy
 msgid "Retrieving list of extended commands"
-msgstr "检索mailbox UID列表"
+msgstr "正在获取扩展命令列表"
 
 #: ipconst.snslistgroup
-#, fuzzy
 msgid "Retrieving article numbers"
-msgstr "提交文章"
+msgstr "获取文章编号"
 
 #: ipconst.snslistnewsgroups
 msgid "Retrieving list of available news groups"
-msgstr ""
+msgstr "正在获取可用新闻组列表"
 
 #: ipconst.snslistoverviewfmt
-#, fuzzy
 msgid "Retrieving overview format"
-msgstr "概述"
+msgstr "正在检索概述格式"
 
 #: ipconst.snsnewgroups
-#, fuzzy
 msgid "Getting new news groups"
-msgstr "获取新的文章"
+msgstr "获取新的新闻组"
 
 #: ipconst.snsnewnews
 msgid "Getting new articles"
 msgstr "获取新的文章"
 
 #: ipconst.snsnext
-#, fuzzy
 msgid "Selecting next article"
-msgstr "选择组"
+msgstr "选择下一个文章"
 
 #: ipconst.snsnoop
 msgctxt "ipconst.snsnoop"
@@ -1303,14 +1264,12 @@ msgid "No operation"
 msgstr "没有操作"
 
 #: ipconst.snsover
-#, fuzzy
 msgid "Retrieving overview"
-msgstr "概述"
+msgstr "检索概述"
 
 #: ipconst.snspat
-#, fuzzy
 msgid "Retrieving patterns"
-msgstr "检索mailbox列表"
+msgstr "获取模式"
 
 #: ipconst.snspost
 msgctxt "ipconst.snspost"
@@ -1318,9 +1277,8 @@ msgid "Posting article"
 msgstr "提交文章"
 
 #: ipconst.snsprepost
-#, fuzzy
 msgid "Preparing to post article"
-msgstr "提交文章"
+msgstr "准备发布文章"
 
 #: ipconst.snsquit
 msgctxt "ipconst.snsquit"
@@ -1333,18 +1291,16 @@ msgid "Sending special command"
 msgstr "发送指定命令"
 
 #: ipconst.snsstat
-#, fuzzy
 msgid "Retrieving status"
-msgstr "检索mailbox列表"
+msgstr "获取状态"
 
 #: ipconst.sntauthenticate
 msgid "Authenticating"
 msgstr "认证(Authenticating)"
 
 #: ipconst.sntnewnews
-#, fuzzy
 msgid "Retrieving new news"
-msgstr "检索mailbox列表"
+msgstr "获取新新闻"
 
 #: ipconst.sntnotask
 msgctxt "ipconst.sntnotask"
@@ -1362,31 +1318,30 @@ msgstr "选择组"
 
 #: ipconst.soriginfrombegin
 msgid "When origin is soFromBeginning, Offset must be >= 0"
-msgstr ""
+msgstr "当 origin 为 soFromBeginning 时 Offset 必须 >= 0"
 
 #: ipconst.soriginfromend
 msgid "When origin is soFromEnd, Offset must be <= 0"
-msgstr ""
+msgstr "当 origin 为 soFromEnd 时Offset 必须 <= 0"
 
 #: ipconst.spngbadbitdepth
-#, object-pascal-format, fuzzy
+#, object-pascal-format
 msgid "Unsupported Bit Depth of %d"
-msgstr "不支持压缩格式%d."
+msgstr "不支持的位深度 %d"
 
 #: ipconst.spngbadchunktype
-#, object-pascal-format, fuzzy, badformat
+#, object-pascal-format
 msgid "Unrecognized Chunk Type: %s"
-msgstr "替换类型\"%s\"用\"%s\"."
+msgstr "未识别的 Chunk 类型： %s"
 
 #: ipconst.spngbadcolortype
-#, object-pascal-format, fuzzy
+#, object-pascal-format
 msgid "Unrecognized color type of %d"
-msgstr "颜色类型: %d"
+msgstr "无法识别的颜色类型 %d"
 
 #: ipconst.spngbadinterlacemethod
-#, fuzzy
 msgid "Unrecognized Interlace Method"
-msgstr "不被认可的输入在表达式后"
+msgstr "未识别的交织方法"
 
 #: ipconst.spngbadmodificationtime
 msgid "Invalid Modification Time"
@@ -1399,7 +1354,7 @@ msgstr "无效的调色板(Palette)长度"
 #: ipconst.spngbadpixeldepth
 #, object-pascal-format
 msgid "Unrecognized pixel depth of %d"
-msgstr ""
+msgstr "无法识别的像素深度 %d"
 
 #: ipconst.spngbadsignature
 msgid "Invalid PNG Signature"
@@ -1421,7 +1376,7 @@ msgstr "PNG保存不支持"
 #: ipconst.spngchunkidandlength
 #, object-pascal-format
 msgid "PNG Chunk: %s  Length: %d"
-msgstr ""
+msgstr "PNG 数据块： %s 长度： %d"
 
 #: ipconst.spngcolortype
 #, object-pascal-format
@@ -1436,12 +1391,12 @@ msgstr "压缩方法: %d"
 #: ipconst.spngdefilterpass
 #, object-pascal-format
 msgid "Unfiltering Pass %d  Size: %dx%d  From: %dx%d"
-msgstr ""
+msgstr "取消过滤 通过 %d  大小： %dx%d  来自： %dx%d"
 
 #: ipconst.spngeffectivefilter
-#, object-pascal-format, fuzzy
+#, object-pascal-format
 msgid "Effective filter is %s"
-msgstr "过滤器:%s"
+msgstr "有效的过滤器是 %s"
 
 #: ipconst.spngerrorconstant
 msgid "**** ERROR ****"
@@ -1450,7 +1405,7 @@ msgstr "****错误****"
 #: ipconst.spngfilterchange
 #, object-pascal-format
 msgid "Filter changed on Row %d to %x"
-msgstr ""
+msgstr "过滤器在第 %d 行更改为 %x"
 
 #: ipconst.spngfiltermethod
 #, object-pascal-format
@@ -1458,29 +1413,25 @@ msgid "Filter Method: %d"
 msgstr "过滤器方法:%d"
 
 #: ipconst.spnggamatoolong
-#, fuzzy
 msgid "gAMA chunk is long"
-msgstr "长的过程(procedures)"
+msgstr "gAMA 块很长"
 
 #: ipconst.spnggamatooshort
-#, fuzzy
 msgid "gAMA chunk is short"
-msgstr "Chunk(块)"
+msgstr "gAMA 块太短"
 
 #: ipconst.spnggammacorrection
-#, object-pascal-format, fuzzy, badformat
+#, object-pascal-format
 msgid "Gamma Correction: %f"
-msgstr "Ctrl+F"
+msgstr "伽玛校正： %f"
 
 #: ipconst.spngihdrtoolong
-#, fuzzy
 msgid "IHDR chunk is long."
-msgstr "长的过程(procedures)"
+msgstr "IHDR 块很长。"
 
 #: ipconst.spngihdrtooshort
-#, fuzzy
 msgid "IHDR chunk is short."
-msgstr "Chunk(块)"
+msgstr "IHDR 块太短。"
 
 #: ipconst.spngimagesize
 #, object-pascal-format
@@ -1488,28 +1439,27 @@ msgid "Image size is %dx%d pixels"
 msgstr "图像大小是%dx%d像素"
 
 #: ipconst.spnginterlacemethod
-#, object-pascal-format, fuzzy
+#, object-pascal-format
 msgid "Interlace Method: %d"
-msgstr "压缩方法: %d"
+msgstr "交织方法： %d"
 
 #: ipconst.spngmemoryrequired
 #, object-pascal-format
 msgid "Memory required for image: %d bytes"
-msgstr ""
+msgstr "图像所需内存： %d 字节"
 
 #: ipconst.spngmissingiend
 msgid "End of PNG found with no IEND chunk"
-msgstr ""
+msgstr "PNG 结束时未找到 IEND 块"
 
 #: ipconst.spngmissingihdr
-#, fuzzy
 msgid "IHDR Chunk is missing"
-msgstr "Chunk(块)行end丢失"
+msgstr "IHDR 块 丢失"
 
 #: ipconst.spngmodificationdate
-#, object-pascal-format, fuzzy, badformat
+#, object-pascal-format
 msgid "Modification Date: %s"
-msgstr "报告上次修改日期"
+msgstr "修改日期：%s"
 
 #: ipconst.spngnoclipboard
 msgid "PNG Clipboard support is not supported."
@@ -1518,27 +1468,24 @@ msgstr "PNG剪贴板支持不支持."
 #: ipconst.spngpaletteentry
 #, object-pascal-format
 msgid "Palette Entry %d - Red: %d   Green: %d   Blue: %d"
-msgstr ""
+msgstr "面板条目 %d - 红色：%d 绿色：%d 蓝色：%d"
 
 #: ipconst.spngpalettetoolong
-#, fuzzy
 msgid "Too many palette entries"
-msgstr "打开太多的文件"
+msgstr "面板条目过多"
 
 #: ipconst.spngpalettetransparency
 #, object-pascal-format
 msgid "Palette Transparency: %d  Alpha %d"
-msgstr ""
+msgstr "面板 透明度: %d  Alpha %d"
 
 #: ipconst.spngtimetoolong
-#, fuzzy
 msgid "tIME chunk is long."
-msgstr "时间"
+msgstr "tIME 块很长。"
 
 #: ipconst.spngtimetooshort
-#, fuzzy
 msgid "tIME chunk is short."
-msgstr "Chunk(块)"
+msgstr "tIME 块很短。"
 
 #: ipconst.spngtransparentcolor
 #, object-pascal-format
@@ -1546,19 +1493,17 @@ msgid "Transparent Color: %x"
 msgstr "透明色:%x"
 
 #: ipconst.spngtruncatedcrc
-#, fuzzy
 msgid "CRC Code is truncated"
-msgstr "代码(&C)"
+msgstr "CRC 代码被截断"
 
 #: ipconst.spngtruncateddata
-#, fuzzy
 msgid "Chunk data is truncated"
-msgstr "Chunk(块)"
+msgstr "数据块被截断"
 
 #: ipconst.spngunsupportedfeature
 #, object-pascal-format
 msgid "A %s chunk was found in the PNG File. This feature is not supported in this version of the PNG decoder"
-msgstr ""
+msgstr "在 PNG 文件中发现了 %s 块。此功能在当前版本的 PNG 解码器中不受支持。"
 
 #: ipconst.spngwarningconstant
 msgid "**** WARNING ****"
@@ -1566,11 +1511,11 @@ msgstr "****警告****"
 
 #: ipconst.spop3cmdapop
 msgid "APOP"
-msgstr ""
+msgstr "APOP"
 
 #: ipconst.spop3cmddele
 msgid "DELE"
-msgstr ""
+msgstr "删除"
 
 #: ipconst.spop3cmdlist
 msgctxt "ipconst.spop3cmdlist"
@@ -1579,12 +1524,11 @@ msgstr "列表"
 
 #: ipconst.spop3cmdnoop
 msgid "NOOP"
-msgstr ""
+msgstr "无操作"
 
 #: ipconst.spop3cmdpass
-#, fuzzy
 msgid "PASS"
-msgstr "通过统计列"
+msgstr "通过"
 
 #: ipconst.spop3cmdquit
 msgctxt "ipconst.spop3cmdquit"
@@ -1593,11 +1537,11 @@ msgstr "退出"
 
 #: ipconst.spop3cmdretr
 msgid "RETR"
-msgstr ""
+msgstr "RETR"
 
 #: ipconst.spop3cmdrset
 msgid "RSET"
-msgstr ""
+msgstr "重置(R)"
 
 #: ipconst.spop3cmdstat
 msgctxt "ipconst.spop3cmdstat"
@@ -1605,13 +1549,12 @@ msgid "STAT"
 msgstr "开始"
 
 #: ipconst.spop3cmdtop
-#, fuzzy
 msgid "TOP"
-msgstr "上部"
+msgstr "顶部"
 
 #: ipconst.spop3cmduidl
 msgid "UIDL"
-msgstr ""
+msgstr "UIDL"
 
 #: ipconst.spop3cmduser
 msgid "USER"
@@ -1624,17 +1567,16 @@ msgstr "-ERR"
 #: ipconst.spop3notauthenticating
 #, object-pascal-format
 msgid "%s can not be called in transaction state"
-msgstr ""
+msgstr "%s 不能在事务状态下调用"
 
 #: ipconst.spop3nottransacting
 #, object-pascal-format
 msgid "%s can not be called in authentication state"
-msgstr ""
+msgstr "%s 不能在认证状态下调用"
 
 #: ipconst.spop3okresp
-#, fuzzy
 msgid "+OK"
-msgstr "确定(&O)"
+msgstr "+确定"
 
 #: ipconst.sposreqd
 #, object-pascal-format
@@ -1642,18 +1584,16 @@ msgid "%s: count must be positive"
 msgstr "%s: 计数必须为正数"
 
 #: ipconst.spsapop
-#, fuzzy
 msgid "Logging on with APOP"
-msgstr "登录..."
+msgstr "使用 APOP 登录"
 
 #: ipconst.spsconnect
 msgid "Connecting to server"
 msgstr "连接到服务器"
 
 #: ipconst.spsdele
-#, fuzzy
 msgid "Marking message for deletion"
-msgstr "信息"
+msgstr "标记消息以删除"
 
 #: ipconst.spslist
 msgctxt "ipconst.spslist"
@@ -1666,9 +1606,8 @@ msgid "No operation"
 msgstr "没有操作"
 
 #: ipconst.spspass
-#, fuzzy
 msgid "Logging on with Password"
-msgstr "登录..."
+msgstr "使用密码登录"
 
 #: ipconst.spsquit
 msgctxt "ipconst.spsquit"
@@ -1676,9 +1615,8 @@ msgid "Disconnecting"
 msgstr "断开"
 
 #: ipconst.spsretr
-#, fuzzy
 msgid "Retrieving message"
-msgstr "信息"
+msgstr "正在检索消息"
 
 #: ipconst.spsrset
 msgid "Resetting messages"
@@ -1689,14 +1627,12 @@ msgid "Special command"
 msgstr "专用(Special)命令"
 
 #: ipconst.spsstat
-#, fuzzy
 msgid "Retrieving mailbox status"
-msgstr "检索mailbox UID列表"
+msgstr "正在检索邮箱状态"
 
 #: ipconst.spstop
-#, fuzzy
 msgid "Retrieving top of message"
-msgstr "检索mailbox列表"
+msgstr "获取消息顶部"
 
 #: ipconst.spsuidl
 msgctxt "ipconst.spsuidl"
@@ -1708,13 +1644,12 @@ msgid "Unknown state"
 msgstr "未知状态(state)"
 
 #: ipconst.spsuser
-#, fuzzy
 msgid "Logging on with User"
-msgstr "登录..."
+msgstr "使用 User 登录"
 
 #: ipconst.spterror
 msgid "An error occurred with the last task."
-msgstr ""
+msgstr "上一个任务发生错误。"
 
 #: ipconst.sptlist
 msgctxt "ipconst.sptlist"
@@ -1741,24 +1676,20 @@ msgid "Unknown task"
 msgstr "未知任务"
 
 #: ipconst.srasalldevicesconnected
-#, fuzzy
 msgid "All devices connected"
-msgstr "连接到"
+msgstr "所有设备已连接"
 
 #: ipconst.srasauthack
-#, fuzzy
 msgid "Authenticate acknowledged"
-msgstr "认证"
+msgstr "身份验证已确认"
 
 #: ipconst.srasauthcallback
-#, fuzzy
 msgid "Authenticate callback"
-msgstr "认证"
+msgstr "身份验证回调"
 
 #: ipconst.srasauthchangepassword
-#, fuzzy
 msgid "Authenticate change password"
-msgstr "密码"
+msgstr "验证更改密码"
 
 #: ipconst.srasauthenticate
 msgid "Authenticate"
@@ -1769,34 +1700,28 @@ msgid "Authenticated"
 msgstr "已认证"
 
 #: ipconst.srasauthlinkspeed
-#, fuzzy
 msgid "Authenticate link speed"
-msgstr "认证"
+msgstr "验证链接速度"
 
 #: ipconst.srasauthnotify
-#, fuzzy
 msgid "Authenticate notify"
-msgstr "认证"
+msgstr "身份验证通知"
 
 #: ipconst.srasauthproject
-#, fuzzy
 msgid "Authenticate project"
-msgstr "认证"
+msgstr "验证项目"
 
 #: ipconst.srasauthretry
-#, fuzzy
 msgid "Authenticate retry"
-msgstr "认证"
+msgstr "身份验证重试"
 
 #: ipconst.srascallbackcomplete
-#, fuzzy
 msgid "Callback complete"
-msgstr "自动补全对(on)"
+msgstr "回调完成"
 
 #: ipconst.srascallbacksetbycaller
-#, fuzzy
 msgid "Callback set by caller"
-msgstr "设置..."
+msgstr "由调用者设置的回调"
 
 #: ipconst.srasconnectdevice
 msgid "Connect device"
@@ -1816,14 +1741,13 @@ msgid "Disconnected"
 msgstr "断开"
 
 #: ipconst.sraserr
-#, object-pascal-format, fuzzy, badformat
+#, object-pascal-format
 msgid "Ras Error (%d): on API '%s'"
-msgstr "WinSock错误(%d): %s,关于API '%s'"
+msgstr "Ras 错误 (%d)：在 API '%s' 上"
 
 #: ipconst.srasinteractive
-#, fuzzy
 msgid "Interactive"
-msgstr "%s%s%s%slazbuild是非交互的,现在放弃(aborting)."
+msgstr "交互式"
 
 #: ipconst.sraslogonnetwork
 msgid "Logon network"
@@ -1834,9 +1758,8 @@ msgid "Open port"
 msgstr "打开端口"
 
 #: ipconst.sraspasswordexpired
-#, fuzzy
 msgid "Password expired"
-msgstr "密码"
+msgstr "密码已过期"
 
 #: ipconst.sraspaused
 msgid "Paused"
@@ -1848,59 +1771,52 @@ msgstr "端口已打开"
 
 #: ipconst.srasprepareforcallback
 msgid "Prepare for callback"
-msgstr ""
+msgstr "准备回调"
 
 #: ipconst.srasprojected
 msgid "Projected"
 msgstr "工程"
 
 #: ipconst.srasreauthenticate
-#, fuzzy
 msgid "Re-authenticate"
-msgstr "认证"
+msgstr "重新身份验证"
 
 #: ipconst.srasretryauthentication
-#, fuzzy
 msgid "Retry authentication"
-msgstr "重试(&R)"
+msgstr "重试认证"
 
 #: ipconst.srasstartauthentication
-#, fuzzy
 msgid "Start authentication"
-msgstr "认证"
+msgstr "开始身份验证"
 
 #: ipconst.srassubentryconnected
-#, fuzzy
 msgid "Sub-entry connected"
-msgstr "连接到"
+msgstr "子条目已连接"
 
 #: ipconst.srassubentrydisconnected
-#, fuzzy
 msgid "Sub-entry disconnected"
-msgstr "断开"
+msgstr "子条目已断开连接"
 
 #: ipconst.sraswaitforcallback
-#, fuzzy
 msgid "Wait for callback"
-msgstr ".请等候..."
+msgstr "等待回调"
 
 #: ipconst.sraswaitformodemreset
-#, fuzzy
 msgid "Wait for modem reset"
-msgstr "重置..."
+msgstr "等待调制解调器重置"
 
 #: ipconst.sreadlineerr
 msgid "Received line too long, exceeds MaxLineBuf"
-msgstr ""
+msgstr "接收行太长，超过 MaxLineBuf"
 
 #: ipconst.srenameddiskfileto
 msgid "Renamed disk file to "
 msgstr "重命名磁盘文件为"
 
 #: ipconst.srowcoloor
-#, object-pascal-format, fuzzy, badformat
+#, object-pascal-format
 msgid "%s: either row %d or col %d is out of range"
-msgstr "单元格索引超过范围[列=%d 行=%d]"
+msgstr "%s：第%d 行或第%d 列超出范围"
 
 #: ipconst.srowoor
 #, object-pascal-format
@@ -1910,17 +1826,15 @@ msgstr "%s: 行数超出范围"
 #: ipconst.srowrowoor
 #, object-pascal-format
 msgid "TIpTerminalArray.ScrollRows: either start row %d or end row %d is out of range"
-msgstr ""
+msgstr "TIpTerminalArray.ScrollRows：起始行 %d 或结束行 %d 超出了范围"
 
 #: ipconst.sseekingdiskfileto
-#, fuzzy
 msgid "Seeking disk file to "
-msgstr "重命名磁盘文件为"
+msgstr "定位到磁盘文件"
 
 #: ipconst.sslnopremastersecret
-#, fuzzy
 msgid "No pre-master secret."
-msgstr "插入HTML INPUT标签"
+msgstr "没有预主密钥。"
 
 #: ipconst.ssmtpresponse02
 msgid "Success, "
@@ -1928,11 +1842,11 @@ msgstr "成功, "
 
 #: ipconst.ssmtpresponse04
 msgid "Transient, "
-msgstr ""
+msgstr "瞬时的"
 
 #: ipconst.ssmtpresponse05
 msgid "Persistent, "
-msgstr ""
+msgstr "持久的"
 
 #: ipconst.ssmtpresponse10
 msgid "Other address status"
@@ -1940,23 +1854,23 @@ msgstr "其它地址状态"
 
 #: ipconst.ssmtpresponse11
 msgid "Bad destination mailbox address"
-msgstr ""
+msgstr "无效的目标邮箱地址"
 
 #: ipconst.ssmtpresponse12
 msgid "Bad destination system address"
-msgstr ""
+msgstr "错误的目标系统地址"
 
 #: ipconst.ssmtpresponse13
 msgid "Bad destination mailbox address syntax"
-msgstr ""
+msgstr "目标邮箱地址语法错误"
 
 #: ipconst.ssmtpresponse14
 msgid "Destination mailbox address ambiguous"
-msgstr ""
+msgstr "目标邮箱地址不明确"
 
 #: ipconst.ssmtpresponse15
 msgid "Destination mailbox address valid"
-msgstr ""
+msgstr "目标邮箱地址有效"
 
 #: ipconst.ssmtpresponse16
 msgid "Mailbox has moved"
@@ -1964,20 +1878,19 @@ msgstr "Mailbox已被移除"
 
 #: ipconst.ssmtpresponse17
 msgid "Bad sender's mailbox address syntax"
-msgstr ""
+msgstr "发送方邮箱地址格式错误"
 
 #: ipconst.ssmtpresponse18
 msgid "Bad sender's system address"
-msgstr ""
+msgstr "发件人的系统地址无效"
 
 #: ipconst.ssmtpresponse20
-#, fuzzy
 msgid "Other or undefined mailbox status"
-msgstr "其它地址状态"
+msgstr "其他或未定义的邮箱状态"
 
 #: ipconst.ssmtpresponse21
 msgid "Mailbox disabled, not accepting messages"
-msgstr ""
+msgstr "邮箱已禁用，不接受消息"
 
 #: ipconst.ssmtpresponse22
 msgid "Mailbox full"
@@ -1985,77 +1898,67 @@ msgstr "Mailbox装满"
 
 #: ipconst.ssmtpresponse23
 msgid "Message length exceeds administrative limit."
-msgstr ""
+msgstr "消息长度超过管理限制。"
 
 #: ipconst.ssmtpresponse24
 msgid "Mailing list expansion problem"
-msgstr ""
+msgstr "邮件列表扩展问题"
 
 #: ipconst.ssmtpresponse30
 msgid "Other or undefined mail system status"
-msgstr ""
+msgstr "其他或未定义的邮件系统状态"
 
 #: ipconst.ssmtpresponse31
-#, fuzzy
 msgid "Mail system full"
-msgstr "系统"
+msgstr "邮件系统已满"
 
 #: ipconst.ssmtpresponse32
 msgid "System not accepting network messages"
-msgstr ""
+msgstr "系统不接受网络消息"
 
 #: ipconst.ssmtpresponse33
 msgid "System not capable of selected features"
-msgstr ""
+msgstr "系统不支持所选功能"
 
 #: ipconst.ssmtpresponse34
-#, fuzzy
 msgid "Message too big for system"
-msgstr "Chunk(块)太大"
+msgstr "消息太大系统无法处理"
 
 #: ipconst.ssmtpresponse40
 msgid "Other or undefined network or routing status"
-msgstr ""
+msgstr "其他或未定义的网络或路由状态"
 
 #: ipconst.ssmtpresponse41
-#, fuzzy
 msgid "No answer from host"
-msgstr "主机"
+msgstr "主机无响应"
 
 #: ipconst.ssmtpresponse42
-#, fuzzy
 msgid "Bad connection"
-msgstr "在 misc. bad 位置"
+msgstr "连接不良"
 
 #: ipconst.ssmtpresponse43
-#, fuzzy
 msgid "Routing server failure"
-msgstr "压缩失败."
+msgstr "路由服务器故障"
 
 #: ipconst.ssmtpresponse44
-#, fuzzy
 msgid "Unable to route"
-msgstr "不能打开"
+msgstr "无法路由"
 
 #: ipconst.ssmtpresponse45
-#, fuzzy
 msgid "Network congestion"
-msgstr "网络已关闭"
+msgstr "网络拥塞"
 
 #: ipconst.ssmtpresponse46
-#, fuzzy
 msgid "Routing loop detected"
-msgstr "检测"
+msgstr "检测到路由环路"
 
 #: ipconst.ssmtpresponse47
-#, fuzzy
 msgid "Delivery time expired"
-msgstr "时间和统计"
+msgstr "交付时间已过期"
 
 #: ipconst.ssmtpresponse50
-#, fuzzy
 msgid "Other or undefined protocol status"
-msgstr "其它地址状态"
+msgstr "其他或未定义的协议状态"
 
 #: ipconst.ssmtpresponse51
 msgid "Invalid command"
@@ -2066,114 +1969,97 @@ msgid "Syntax error"
 msgstr "语法错误"
 
 #: ipconst.ssmtpresponse53
-#, fuzzy
 msgid "Too many recipients"
-msgstr "打开太多的文件"
+msgstr "收件人过多"
 
 #: ipconst.ssmtpresponse54
 msgid "Invalid command arguments"
 msgstr "无效命令参数"
 
 #: ipconst.ssmtpresponse55
-#, fuzzy
 msgid "Wrong protocol version"
-msgstr "错误版本在%s: %s"
+msgstr "错误的协议版本"
 
 #: ipconst.ssmtpresponse60
 msgid "Other or undefined media error"
-msgstr ""
+msgstr "其他或未定义的媒体错误"
 
 #: ipconst.ssmtpresponse61
-#, fuzzy
 msgid "Media not supported"
-msgstr "支持的widgetsets"
+msgstr "媒体不支持"
 
 #: ipconst.ssmtpresponse62
-#, fuzzy
 msgid "Conversion required and prohibited"
-msgstr "转换放弃(Aborted)."
+msgstr "转换所需和禁止"
 
 #: ipconst.ssmtpresponse63
-#, fuzzy
 msgid "Conversion required but not supported"
-msgstr "转换放弃(Aborted)."
+msgstr "需要转换但不支持"
 
 #: ipconst.ssmtpresponse64
-#, fuzzy
 msgid "Conversion with loss performed"
-msgstr "文本转换工具编辑器"
+msgstr "已执行有损转换"
 
 #: ipconst.ssmtpresponse65
 msgid "Conversion failed"
 msgstr "转换失败"
 
 #: ipconst.ssmtpresponse70
-#, fuzzy
 msgid "Other or undefined security status"
-msgstr "其它地址状态"
+msgstr "其他或未定义的安全状态"
 
 #: ipconst.ssmtpresponse71
 msgid "Delivery not authorized, message refused"
-msgstr ""
+msgstr "递送未授权，消息被拒绝"
 
 #: ipconst.ssmtpresponse72
 msgid "Mailing list expansion prohibited"
-msgstr ""
+msgstr "禁止扩展邮件列表"
 
 #: ipconst.ssmtpresponse73
-#, fuzzy
 msgid "Security conversion required but not possible"
-msgstr "不能从%s到%s转换"
+msgstr "需要安全转换但无法进行"
 
 #: ipconst.ssmtpresponse74
-#, fuzzy
 msgid "Security features not supported"
-msgstr "安全"
+msgstr "安全功能不支持"
 
 #: ipconst.ssmtpresponse75
-#, fuzzy
 msgid "Cryptographic failure"
-msgstr "压缩失败."
+msgstr "加密失败"
 
 #: ipconst.ssmtpresponse76
-#, fuzzy
 msgid "Cryptographic algorithm not supported"
-msgstr "提交(COMMIT)还不支持"
+msgstr "加密算法不支持"
 
 #: ipconst.ssmtpresponse77
-#, fuzzy
 msgid "Message integrity failure"
-msgstr "压缩失败."
+msgstr "消息完整性失败"
 
 #: ipconst.ssmtpresponsesubunknown
-#, fuzzy
 msgid "Unknown subcode"
-msgstr "(未知)"
+msgstr "未知子代码"
 
 #: ipconst.ssmtpresponseunknown
-#, fuzzy
 msgid "Unknown response code"
-msgstr "无效响应代码(response code)"
+msgstr "未知的响应代码"
 
 #: ipconst.ssockserr
 #, object-pascal-format
 msgid "SOCKS request refused - %d"
-msgstr ""
+msgstr "SOCKS 请求被拒绝 - %d"
 
 #: ipconst.sssauthlogin
-#, fuzzy
 msgid "Requesting authentication"
-msgstr "认证"
+msgstr "请求身份验证"
 
 #: ipconst.sssauthpass
-#, fuzzy
 msgid "Authenticating password"
-msgstr "密码"
+msgstr "正在验证密码"
 
 #: ipconst.sssauthuser
-#, fuzzy
 msgid "Authenticating username"
-msgstr "认证(Authenticating)"
+msgstr "验证用户名"
 
 #: ipconst.sssconnect
 msgctxt "ipconst.sssconnect"
@@ -2185,46 +2071,40 @@ msgid "Sending Data"
 msgstr "发送数据"
 
 #: ipconst.sssehlo
-#, fuzzy
 msgid "Logging on with EHLO"
-msgstr "登录..."
+msgstr "使用 EHLO 登录"
 
 #: ipconst.sssexpand
 msgid "Expanding"
-msgstr ""
+msgstr "展开"
 
 #: ipconst.ssshelo
-#, fuzzy
 msgid "Logging on with HELO"
-msgstr "登录..."
+msgstr "使用 HELO 登录"
 
 #: ipconst.ssshelp
 msgid "Help"
 msgstr "帮助"
 
 #: ipconst.ssslbadcertificate
-#, fuzzy
 msgid "Bad certificate."
-msgstr "在 misc. bad 位置"
+msgstr "证书无效。"
 
 #: ipconst.ssslbadcerttype
-#, fuzzy
 msgid "Cert type not found"
-msgstr "类型未找到"
+msgstr "未找到证书类型"
 
 #: ipconst.ssslbadcompressionvalue
-#, fuzzy
 msgid "Compression value is wrong."
-msgstr "无效值或错误类型:\"%s\""
+msgstr "压缩值错误。"
 
 #: ipconst.ssslbadkeyexchangetype
 msgid "Key exchange message expected but not received"
-msgstr ""
+msgstr "期望接收密钥交换消息但未收到"
 
 #: ipconst.ssslbadmac
-#, fuzzy
 msgid "MAC did not match."
-msgstr "MD5 hash不匹配."
+msgstr "MAC 不匹配。"
 
 #: ipconst.ssslbadmd5hash
 msgid "MD5 hash did not match."
@@ -2232,11 +2112,11 @@ msgstr "MD5 hash不匹配."
 
 #: ipconst.ssslbadpublicencoding
 msgid "Bad public encoding type."
-msgstr ""
+msgstr "错误的公共编码类型。"
 
 #: ipconst.ssslbadrecordmac
 msgid "Server received a bad record MAC."
-msgstr ""
+msgstr "服务器收到一个错误的记录 MAC。"
 
 #: ipconst.ssslbadsha1hash
 msgid "SHA1 hash did not match."
@@ -2247,17 +2127,16 @@ msgid "Block size error"
 msgstr "语句块大小错误"
 
 #: ipconst.ssslbufferoverflow
-#, fuzzy
 msgid "Buffer overflow error."
-msgstr "溢出"
+msgstr "缓冲区溢出错误。"
 
 #: ipconst.ssslbuffersizemissmatch
 msgid "Buffer size miss-match."
-msgstr ""
+msgstr "缓冲区大小不匹配。"
 
 #: ipconst.ssslclosenotify
 msgid "Server sent close notify."
-msgstr ""
+msgstr "服务器发送了关闭通知。"
 
 #: ipconst.ssslcompressionfailure
 msgid "Compression failure."
@@ -2265,78 +2144,67 @@ msgstr "压缩失败."
 
 #: ipconst.ssslconnectchange
 msgid "Can not change SSL status while connected."
-msgstr ""
+msgstr "无法在连接时更改 SSL 状态。"
 
 #: ipconst.ssslencryptbuf2small
-#, fuzzy
 msgid "Encrypt buffer to small."
-msgstr "PNG 缓冲区太小."
+msgstr "加密缓冲区太小。"
 
 #: ipconst.ssslencryptiontype
-#, fuzzy
 msgid "Encryption type not defined."
-msgstr "已经定义"
+msgstr "加密类型未定义。"
 
 #: ipconst.ssslexpiredcertificate
 msgid "Expired Certificate."
-msgstr ""
+msgstr "证书已过期。"
 
 #: ipconst.ssslfailedhelloparse
 msgid "Did not parse server hello correctly."
-msgstr ""
+msgstr "未正确解析服务器问候。"
 
 #: ipconst.ssslhandshakefailure
-#, fuzzy
 msgid "Handshake failure."
-msgstr "压缩失败."
+msgstr "握手失败。"
 
 #: ipconst.ssslillegalparameter
-#, fuzzy
 msgid "Illegal Parameter."
-msgstr "参数"
+msgstr "非法参数。"
 
 #: ipconst.ssslinvalidcipher
-#, fuzzy
 msgid "Invalid cipher."
-msgstr "无效 (On)"
+msgstr "无效的密钥。"
 
 #: ipconst.ssslnocertificate
-#, fuzzy
 msgid "Certificate is not available."
-msgstr "可用的"
+msgstr "证书不可用。"
 
 #: ipconst.ssslnohashtype
 msgid "No hash type selected."
 msgstr "没有hash选择."
 
 #: ipconst.ssslnomessageencslected
-#, fuzzy
 msgid "No message encoding type selected."
-msgstr "移除信息类型过滤器"
+msgstr "没有选择消息编码类型。"
 
 #: ipconst.ssslnoroom
 msgid "Not enough memory available to read SSL record."
-msgstr ""
+msgstr "没有足够的内存来读取 SSL 记录。"
 
 #: ipconst.ssslnotenoughkeymaterail
-#, fuzzy
 msgid "Not enough key material."
-msgstr "(编辑符号表)"
+msgstr "密钥材料不足。"
 
 #: ipconst.ssslpaddingerror
-#, fuzzy
 msgid "Padding error."
-msgstr "单元格填充(Cell padding)"
+msgstr "填充错误。"
 
 #: ipconst.ssslparsererror
-#, fuzzy
 msgid "Parsing error."
-msgstr "分析"
+msgstr "解析错误。"
 
 #: ipconst.ssslpointernotassigned
-#, fuzzy
 msgid "Pointer not assigned."
-msgstr "缓冲区未分配"
+msgstr "指针未分配。"
 
 #: ipconst.ssslreaderror
 msgid "Read error."
@@ -2344,23 +2212,23 @@ msgstr "读取错误."
 
 #: ipconst.ssslreadsizemissmatch
 msgid "Read size miss-match."
-msgstr ""
+msgstr "读取大小不匹配。"
 
 #: ipconst.ssslrevokedcertificate
 msgid "Revoked Certificate."
-msgstr ""
+msgstr "已撤销的证书。"
 
 #: ipconst.ssslservernohandshake
 msgid "Server did not return a handshake message."
-msgstr ""
+msgstr "服务器未返回握手消息。"
 
 #: ipconst.ssslservernoserverhello
 msgid "Server did not return a server hello message."
-msgstr ""
+msgstr "服务器未返回服务器问候消息。"
 
 #: ipconst.ssslsessidtolong
 msgid "Session ID is longer than 32 bytes."
-msgstr ""
+msgstr "会话 ID 长度超过 32 字节。"
 
 #: ipconst.ssslshabuf2small
 msgid "SHA1 buffer to small."
@@ -2368,37 +2236,31 @@ msgstr "SHA!缓冲区变小."
 
 #: ipconst.ssslunexpectedmessage
 msgid "Server received an unexpected message."
-msgstr ""
+msgstr "服务器收到意外消息。"
 
 #: ipconst.ssslunknowncertificate
-#, fuzzy
 msgid "Unknown Certificate."
-msgstr "(未知)"
+msgstr "未知的证书。"
 
 #: ipconst.ssslunprocesseddata
-#, fuzzy
 msgid "SSL data processing error."
-msgstr "读取数据从socket(套接字)错误"
+msgstr "SSL 数据处理错误。"
 
 #: ipconst.ssslunsupportedcertificate
-#, fuzzy
 msgid "Unsupported Certificate."
-msgstr "不支持位图格式."
+msgstr "不支持的证书。"
 
 #: ipconst.ssslunsupportedchiper
-#, fuzzy
 msgid "Unsupported cipher chosen."
-msgstr "不支持位图格式."
+msgstr "选择了不支持的加密算法。"
 
 #: ipconst.ssslunsupportedencoding
-#, fuzzy
 msgid "Unsupported public encoding."
-msgstr "编码"
+msgstr "不支持的公共编码。"
 
 #: ipconst.sssmailfrom
-#, fuzzy
 msgid "Sending sender's info"
-msgstr "发送MailTo信息"
+msgstr "发送发件人信息"
 
 #: ipconst.sssnoop
 msgctxt "ipconst.sssnoop"
@@ -2427,11 +2289,11 @@ msgstr "重新设置服务器"
 
 #: ipconst.ssssaml
 msgid "ssSaml"
-msgstr ""
+msgstr "ssSaml"
 
 #: ipconst.ssssend
 msgid "ssSend"
-msgstr ""
+msgstr "发送"
 
 #: ipconst.ssssendenvelope
 msgid "Sending Envelope"
@@ -2443,7 +2305,7 @@ msgstr "发送消息"
 
 #: ipconst.ssssoml
 msgid "ssSoml"
-msgstr ""
+msgstr "ssSoml"
 
 #: ipconst.sssspecial
 msgctxt "ipconst.sssspecial"
@@ -2452,7 +2314,7 @@ msgstr "发送指定命令"
 
 #: ipconst.sssturn
 msgid "ssTurn"
-msgstr ""
+msgstr "ssTurn"
 
 #: ipconst.sssverify
 msgid "Verifying"
@@ -2460,7 +2322,7 @@ msgstr "检验(Verifying)"
 
 #: ipconst.ssterror
 msgid "An error has occurred during this task."
-msgstr ""
+msgstr "在此任务中发生了一个错误。"
 
 #: ipconst.sstlogon
 msgctxt "ipconst.sstlogon"
@@ -2484,14 +2346,12 @@ msgid "Sending mail"
 msgstr "发送邮件"
 
 #: ipconst.sunsupportedencoding
-#, fuzzy
 msgid "Encoding method not supported"
-msgstr " 编码不支持"
+msgstr "不支持的编码方法"
 
 #: ipconst.suuencodecounterr
-#, fuzzy
 msgid "Count <> Len or Count > 63"
-msgstr "通过统计"
+msgstr "计数 <> 长度 或 计数 > 63"
 
 #: ipconst.swebimagecannotload
 #, object-pascal-format
@@ -2518,7 +2378,7 @@ msgstr "***重命名后写入"
 
 #: ipconst.swrongstateerr
 msgid "Can not comply, wrong state"
-msgstr ""
+msgstr "无法遵从，状态错误"
 
 #: ipconst.swsaeacces
 msgid "Permission denied"
@@ -2530,21 +2390,19 @@ msgstr "地址已经在使用"
 
 #: ipconst.swsaeaddrnotavail
 msgid "Cannot assign requested address"
-msgstr ""
+msgstr "无法分配请求的地址"
 
 #: ipconst.swsaeafnosupport
-#, fuzzy
 msgid "Address family not supported by protocol family"
-msgstr "协议族不支持"
+msgstr "地址族不被协议族支持"
 
 #: ipconst.swsaealready
 msgid "Operation already in progress"
 msgstr "操作已经在进程中"
 
 #: ipconst.swsaebadf
-#, fuzzy
 msgid "Bad file descriptor"
-msgstr "在 misc. bad 位置"
+msgstr "无效的文件描述符"
 
 #: ipconst.swsaecancelled
 msgid "Cancelled"
@@ -2552,46 +2410,39 @@ msgstr "取消"
 
 #: ipconst.swsaeconnaborted
 msgid "Software caused connection abort"
-msgstr ""
+msgstr "软件导致连接终止"
 
 #: ipconst.swsaeconnrefused
 msgid "Connection refused"
 msgstr "连接被拒绝"
 
 #: ipconst.swsaeconnreset
-#, fuzzy
 msgid "Connection reset by peer"
-msgstr "重置..."
+msgstr "连接被对端重置"
 
 #: ipconst.swsaedestaddrreq
-#, fuzzy
 msgid "Destination address required"
-msgstr "需要的包"
+msgstr "目标地址必需"
 
 #: ipconst.swsaediscon
-#, fuzzy
 msgid "Graceful shutdown in progress"
-msgstr "进度"
+msgstr "正在优雅地关闭"
 
 #: ipconst.swsaedquot
-#, fuzzy
 msgid "Disk quota exceeded"
-msgstr "重命名磁盘文件为"
+msgstr "磁盘配额超出"
 
 #: ipconst.swsaefault
-#, fuzzy
 msgid "Bad address"
-msgstr "地址:"
+msgstr "错误的地址"
 
 #: ipconst.swsaehostdown
-#, fuzzy
 msgid "Host is down"
-msgstr "主机"
+msgstr "主机已断开连接"
 
 #: ipconst.swsaehostunreach
-#, fuzzy
 msgid "No route to host"
-msgstr "主机"
+msgstr "没有到主机的路由"
 
 #: ipconst.swsaeinprogress
 msgid "Operation now in progress"
@@ -2607,20 +2458,19 @@ msgstr "非法参数"
 
 #: ipconst.swsaeinvalidproctable
 msgid "Invalid procedure table from service provider"
-msgstr ""
+msgstr "来自服务提供者的无效过程表"
 
 #: ipconst.swsaeinvalidprovider
 msgid "Invalid service provider version number"
-msgstr ""
+msgstr "无效的服务提供程序版本号"
 
 #: ipconst.swsaeisconn
-#, fuzzy
 msgid "Socket is already connected"
-msgstr "连接到"
+msgstr "套接字已连接"
 
 #: ipconst.swsaeloop
 msgid "Too many levels of symbolic links"
-msgstr ""
+msgstr "符号链接层次过多"
 
 #: ipconst.swsaemfile
 msgid "Too many open files"
@@ -2640,7 +2490,7 @@ msgstr "网络已关闭"
 
 #: ipconst.swsaenetreset
 msgid "Network dropped connection on reset"
-msgstr ""
+msgstr "网络连接在重置时断开"
 
 #: ipconst.swsaenetunreach
 msgid "Network is unreachable"
@@ -2656,23 +2506,20 @@ msgid "No more data available"
 msgstr "没有更多可用数据"
 
 #: ipconst.swsaenoprotoopt
-#, fuzzy
 msgid "Bad protocol option"
-msgstr "协议不支持"
+msgstr "无效的协议选项"
 
 #: ipconst.swsaenotconn
-#, fuzzy
 msgid "Socket is not connected"
-msgstr "连接到"
+msgstr "套接字未连接"
 
 #: ipconst.swsaenotempty
 msgid "Directory not empty"
 msgstr "目录非空"
 
 #: ipconst.swsaenotsock
-#, fuzzy
 msgid "Socket operation on non socket"
-msgstr "读取数据从socket(套接字)错误"
+msgstr "在非套接字上进行套接字操作"
 
 #: ipconst.swsaeopnotsupp
 msgid "Operation not supported"
@@ -2691,13 +2538,12 @@ msgid "Protocol not supported"
 msgstr "协议不支持"
 
 #: ipconst.swsaeprototype
-#, fuzzy
 msgid "Protocol wrong type for socket"
-msgstr "无效值或错误类型:\"%s\""
+msgstr "协议类型对于套接字不正确"
 
 #: ipconst.swsaeproviderfailedinit
 msgid "Unable to initialize a service provider"
-msgstr ""
+msgstr "无法初始化服务提供者"
 
 #: ipconst.swsaerefused
 msgid "Refused"
@@ -2705,20 +2551,19 @@ msgstr "拒绝"
 
 #: ipconst.swsaeremote
 msgid "Too many levels of remote in path"
-msgstr ""
+msgstr "路径中的远程级别过多"
 
 #: ipconst.swsaeshutdown
 msgid "Cannot send after socket shutdown"
-msgstr ""
+msgstr "无法在套接字关闭后发送"
 
 #: ipconst.swsaesocktnosupport
-#, fuzzy
 msgid "Socket type not supported"
-msgstr "支持的URL类型:(%s)"
+msgstr "套接字类型不受支持"
 
 #: ipconst.swsaestale
 msgid "Stale NFS file handle"
-msgstr ""
+msgstr "失效的 NFS 文件句柄"
 
 #: ipconst.swsaetimedout
 msgid "Connection timed out"
@@ -2726,7 +2571,7 @@ msgstr "连接超时"
 
 #: ipconst.swsaetoomanyrefs
 msgid "Too many references; cannot splice"
-msgstr ""
+msgstr "引用过多；无法拆分"
 
 #: ipconst.swsaeusers
 msgid "Too many users"
@@ -2742,11 +2587,11 @@ msgstr "主机未找到"
 
 #: ipconst.swsanotinitialised
 msgid "Successful WSAStartup not yet performed"
-msgstr ""
+msgstr "成功的 WSAStartup 尚未执行"
 
 #: ipconst.swsano_data
 msgid "Valid name, no data record of requested type"
-msgstr ""
+msgstr "有效的名称，没有请求类型的数据记录"
 
 #: ipconst.swsano_recovery
 msgid "This is a nonrecoverable error"
@@ -2765,9 +2610,8 @@ msgid "Network subsystem is unavailable"
 msgstr "网络子系统不可用"
 
 #: ipconst.swsatry_again
-#, fuzzy
 msgid "Non-authoritative host not found"
-msgstr "主机未找到"
+msgstr "未找到非权威主机"
 
 #: ipconst.swsatype_not_found
 msgid "Type not found"
@@ -2778,9 +2622,8 @@ msgid "WinSock DLL version not supported"
 msgstr "WinSock DLL版本不支持"
 
 #: ipconst.swsa_e_cancelled
-#, fuzzy
 msgid "Lookup cancelled"
-msgstr "查找(&L)"
+msgstr "查找已取消"
 
 #: ipconst.swsa_e_no_more
 msgctxt "ipconst.swsa_e_no_more"
@@ -2793,7 +2636,7 @@ msgstr "错误 因为缺乏资源(resources)"
 
 #: ipconst.swsa_qos_bad_object
 msgid "Problem filterspec or provider specific buffer"
-msgstr ""
+msgstr "问题 过滤器规范 或 提供程序 特定 缓冲区"
 
 #: ipconst.swsa_qos_bad_style
 msgid "Unknown or conflicting style"
@@ -2805,7 +2648,7 @@ msgstr "一般错误"
 
 #: ipconst.swsa_qos_no_receivers
 msgid "There are no receivers"
-msgstr ""
+msgstr "没有接收器"
 
 #: ipconst.swsa_qos_no_senders
 msgid "There are no senders"
@@ -2813,16 +2656,15 @@ msgstr "没有发送者"
 
 #: ipconst.swsa_qos_policy_failure
 msgid "Rejected for administrative reasons - bad credentials"
-msgstr ""
+msgstr "因管理原因拒绝 - 凭证无效"
 
 #: ipconst.swsa_qos_receivers
-#, fuzzy
 msgid "At least one Reserve has arrived"
-msgstr "至少单程已到达"
+msgstr "至少一个 Reserve 已到达"
 
 #: ipconst.swsa_qos_request_confirmed
 msgid "Reserve has been confirmed"
-msgstr ""
+msgstr "预订已确认"
 
 #: ipconst.swsa_qos_senders
 msgid "At least one Path has arrived"
@@ -2830,5 +2672,5 @@ msgstr "至少单程已到达"
 
 #: ipconst.swsa_qos_traffic_ctrl_error
 msgid "Problem with some part of the flowspec"
-msgstr ""
+msgstr "flowspec 的某些部分存在问题"
 

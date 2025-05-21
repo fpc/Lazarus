@@ -1,0 +1,42 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: ACTom <i@actom.me>\n"
+"X-Generator: TyPoEditor 0.2\n"
+
+#: strdelphitool.sconfigfileextensioncaption
+msgid "Configuration file extension"
+msgstr "配置文件扩展名"
+
+#: strdelphitool.sconvertdostounixcaption
+msgid "Map filenames from Windows to Unix notation"
+msgstr "将文件名从 Windows 映射到 Unix 格式"
+
+#: strdelphitool.sdelphicompilecommand
+msgid "Delphi compile command"
+msgstr "Delphi 编译命令"
+
+#: strdelphitool.sdelphicompilerargs
+msgid "Additional compiler options"
+msgstr "附加编译器选项"
+
+#: strdelphitool.sdelphicompilerconfigfilename
+msgid "Delphi compiler configuration filename for project"
+msgstr "项目的 Delphi 编译器配置文件名"
+
+#: strdelphitool.sdelphicompilerfilenamecaption
+msgid "Delphi compiler executable"
+msgstr "Delphi 编译器可执行文件"
+
+#: strdelphitool.sdelphilocalizedparsername
+msgid "Delphi Compiler"
+msgstr "Delphi 编译器"
+
+#: strdelphitool.sgenerateconfigfilecaption
+msgid "Generate Delphi config file based on FPC compiler options"
+msgstr "生成基于 FPC 编译器选项的 Delphi 配置文件"
+
+#: strdelphitool.sselectdelphiexecutable
+msgid "Select Delphi compiler executable"
+msgstr "选择 Delphi 编译器可执行文件"
+

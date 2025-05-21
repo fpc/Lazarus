@@ -1,121 +1,124 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
+"PO-Revision-Date: 2025-05-22 00:13+0800\n"
+"Last-Translator: ACTom <i@actom.me>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: TyPoEditor 0.2\n"
 
 #: ideconfstrconsts.liscomponentnameisapascalkeyword
 #, object-pascal-format
 msgid "Component name \"%s\" is a Pascal keyword."
-msgstr "组件名\"%s\"是一个Pascal关键字."
+msgstr "组件名称 \"%s\" 是一个 Pascal 关键字。"
 
 #: ideconfstrconsts.liscomponentnameisnotavalididentifier
 #, object-pascal-format
 msgid "Component name \"%s\" is not a valid identifier"
-msgstr "组件名\"%s\"不是一个有效的标识符"
+msgstr "组件名称 \"%s\" 不是有效的标识符"
 
 #: ideconfstrconsts.lisedtdefallpackages
 msgid "All packages"
-msgstr ""
+msgstr "所有软件包"
 
 #: ideconfstrconsts.lisedtdefsallprojects
 msgid "All projects"
-msgstr ""
+msgstr "所有项目"
 
 #: ideconfstrconsts.lisedtdefsetfpcmodetodelphi
 msgid "set FPC mode to DELPHI"
-msgstr ""
+msgstr "将 FPC 模式设置为 DELPHI"
 
 #: ideconfstrconsts.lisedtdefsetfpcmodetofpc
 msgid "set FPC mode to FPC"
-msgstr ""
+msgstr "将 FPC 模式设置为 FPC"
 
 #: ideconfstrconsts.lisedtdefsetfpcmodetogpc
 msgid "set FPC mode to GPC"
-msgstr ""
+msgstr "将 FPC 模式设置为 GPC"
 
 #: ideconfstrconsts.lisedtdefsetfpcmodetomacpas
 msgid "set FPC mode to MacPas"
-msgstr ""
+msgstr "将 FPC 模式设置为 MacPas"
 
 #: ideconfstrconsts.lisedtdefsetfpcmodetotp
 msgid "set FPC mode to TP"
-msgstr ""
+msgstr "将 FPC 模式设置为 TP"
 
 #: ideconfstrconsts.lisedtdefsetiocheckson
 msgid "set IOCHECKS on"
-msgstr ""
+msgstr "设置 IOCHECKS 开启"
 
 #: ideconfstrconsts.lisedtdefsetoverflowcheckson
 msgid "set OVERFLOWCHECKS on"
-msgstr ""
+msgstr "设置 OVERFLOWCHECKS 开启"
 
 #: ideconfstrconsts.lisedtdefsetrangecheckson
 msgid "set RANGECHECKS on"
-msgstr ""
+msgstr "设置 RANGECHECKS 为开"
 
 #: ideconfstrconsts.lisedtdefuseheaptrcunit
 msgid "use HeapTrc unit"
-msgstr ""
+msgstr "使用 HeapTrc 单元"
 
 #: ideconfstrconsts.lisedtdefuselineinfounit
 msgid "use LineInfo unit"
-msgstr ""
+msgstr "使用 LineInfo 单元"
 
 #: ideconfstrconsts.lisendlessloopinmacros
 msgid "Endless loop in macros"
-msgstr ""
+msgstr "宏中出现无限循环"
 
 #: ideconfstrconsts.lisfppkgcompilernotexecutable
 #, object-pascal-format
 msgid "The compiler [%s] configured for Fppkg is not an executable."
-msgstr ""
+msgstr "为 Fppkg 配置的编译器 [%s] 不是可执行文件。"
 
 #: ideconfstrconsts.lisfppkgcompilernotexists
 #, object-pascal-format
 msgid "The compiler [%s] configured for Fppkg does not exist."
-msgstr ""
+msgstr "配置给 Fppkg 的编译器 [%s] 不存在。"
 
 #: ideconfstrconsts.lisfppkgcompilernotfound
 #, object-pascal-format
 msgid "Could not find the compiler [%s] configured for Fppkg."
-msgstr ""
+msgstr "未能找到为 Fppkg 配置的编译器 [%s]。"
 
 #: ideconfstrconsts.lisfppkgrtlnotfound
 msgid "Fppkg reports that the RTL is not installed."
-msgstr ""
+msgstr "Fppkg 报告说 RTL 未安装。"
 
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
-msgstr "功能: 附加路径分隔符"
+msgstr "功能：追加路径分隔符"
 
 #: ideconfstrconsts.listmfunctionchomppathdelimiter
 msgid "Function: remove trailing path delimiter"
-msgstr "函数:移除追踪(trailing)路径分隔符"
+msgstr "功能：移除尾部路径分隔符"
 
 #: ideconfstrconsts.listmfunctionenclosebrackets
 msgid "Function: enclose in ()"
-msgstr ""
+msgstr "功能：用 () 括起"
 
 #: ideconfstrconsts.listmfunctionextractfileextension
 msgid "Function: extract file extension"
-msgstr "函数: 提取文件扩展名"
+msgstr "功能：提取文件扩展名"
 
 #: ideconfstrconsts.listmfunctionextractfilenameextension
 msgid "Function: extract file name+extension"
-msgstr "函数:提取文件名名称和后缀扩展名"
+msgstr "功能：提取文件名+扩展名"
 
 #: ideconfstrconsts.listmfunctionextractfilenameonly
 msgid "Function: extract file name only"
-msgstr "函数: 仅提取文件名"
+msgstr "功能：仅提取文件名"
 
 #: ideconfstrconsts.listmfunctionextractfilepath
 msgid "Function: extract file path"
-msgstr "函数:提取文件路径"
+msgstr "功能：提取文件路径"
 
 #: ideconfstrconsts.listmunknownmacro
 #, object-pascal-format
 msgid "(unknown macro: %s)"
-msgstr "(未知的宏命令: %s)"
+msgstr "(未知宏：%s)"
 

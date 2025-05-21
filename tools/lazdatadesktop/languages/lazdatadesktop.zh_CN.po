@@ -3,13 +3,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"PO-Revision-Date: 2025-05-21 21:26+0800\n"
+"Last-Translator: ACTom <i@actom.me>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Generator: TyPoEditor 0.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: lazdatadeskstr.eoaddterminator
@@ -65,11 +65,11 @@ msgstr "选项"
 
 #: lazdatadeskstr.scolreadonly
 msgid "Read-Only"
-msgstr ""
+msgstr "只读"
 
 #: lazdatadeskstr.scolrequired
 msgid "Required"
-msgstr ""
+msgstr "必需"
 
 #: lazdatadeskstr.scolsize
 msgid "Size"
@@ -81,11 +81,11 @@ msgstr "类型"
 
 #: lazdatadeskstr.scommit
 msgid "Commit"
-msgstr ""
+msgstr "提交"
 
 #: lazdatadeskstr.scommittransaction
 msgid "Commit active transaction"
-msgstr ""
+msgstr "提交活动事务"
 
 #: lazdatadeskstr.sconfirmclose
 msgid "Confirm close"
@@ -96,16 +96,13 @@ msgid "Enter a descriptive name for the connection"
 msgstr "输入一个描述名称用于该连接"
 
 #: lazdatadeskstr.sconnectionnameexists
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "There is already a connection named \"%s\"\n"
-#| "Would you like to override the connection data ?\n"
+#, object-pascal-format
 msgid ""
 "There is already a connection named \"%s\"\n"
 "Would you like to override the connection data ?"
 msgstr ""
-"这里已经有一个连接命为\"%s\"\n"
-"你想覆盖该连接的数据?\n"
+"已经存在名为 \"%s\" 的连接\n"
+"您是否要覆盖连接数据？"
 
 #: lazdatadeskstr.screatecode
 msgid "Create code"
@@ -116,16 +113,13 @@ msgid "Would you like to create a new connection for this database ?"
 msgstr "你想为这个database创建一个新的连接?"
 
 #: lazdatadeskstr.sddmodified
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "Data dictionary \"%s\" has changed.\n"
-#| "What do you want to do with the changes?\n"
+#, object-pascal-format
 msgid ""
 "Data dictionary \"%s\" has changed.\n"
 "What do you want to do with the changes?"
 msgstr ""
-"数据字典\"%s\"已经更改.\n"
-"你想做这些更改?\n"
+"数据字典 \"%s\" 已更改。\n"
+"您想对这些更改做什么？"
 
 #: lazdatadeskstr.sdeleteobject
 #, object-pascal-format
@@ -162,16 +156,12 @@ msgid "Error in SQL script"
 msgstr "错误在SQL脚本"
 
 #: lazdatadeskstr.serrinscriptchoice
-#, fuzzy
-#| msgid ""
-#| "An error occurred in the SQL script.\n"
-#| "How would you like to continue ?\n"
 msgid ""
 "An error occurred in the SQL script.\n"
 "How would you like to continue ?"
 msgstr ""
-"一个错误发生在SQL脚本.\n"
-"你想要继续吗?\n"
+"SQL 脚本中发生了一个错误。\n"
+"您希望如何继续？"
 
 #: lazdatadeskstr.serrnoengine
 msgid "No database engine !"
@@ -494,9 +484,9 @@ msgid "Connections/Dictionaries"
 msgstr "连接/字典(Connections/Dictionaries)"
 
 #: lazdatadeskstr.sld_connecttoadatabase
-#, object-pascal-format, fuzzy, badformat
+#, object-pascal-format
 msgid "Connect to a database of type %s"
-msgstr "连接到类型%c的一个数据库"
+msgstr "连接到类型为 %s 的数据库"
 
 #: lazdatadeskstr.sld_createfulltablecreationsql
 msgid "Create full table creation SQL"
@@ -522,7 +512,7 @@ msgstr "字典"
 
 #: lazdatadeskstr.sld_firststart
 msgid "First start of database desktop"
-msgstr ""
+msgstr "首次启动数据库桌面"
 
 #: lazdatadeskstr.sld_fromconnection
 msgid "From connection"
@@ -727,10 +717,9 @@ msgid "Create new domain"
 msgstr "创建新domain"
 
 #: lazdatadeskstr.snewdomainde
-#, fuzzy
 msgctxt "lazdatadeskstr.snewdomainde"
 msgid "New domain"
-msgstr "新domain"
+msgstr "新建域"
 
 #: lazdatadeskstr.snewdomainname
 msgid "Enter a name for the new domain:"
@@ -743,7 +732,7 @@ msgstr "创建新字段在table%s"
 
 #: lazdatadeskstr.snewfieldde
 msgid "New field"
-msgstr ""
+msgstr "新字段"
 
 #: lazdatadeskstr.snewfieldname
 msgid "Enter a name for the new field:"
@@ -756,7 +745,7 @@ msgstr "创建新foreign key在table%s"
 
 #: lazdatadeskstr.snewforeignkeyde
 msgid "New foreign key"
-msgstr ""
+msgstr "新建外键"
 
 #: lazdatadeskstr.snewforeignkeyname
 msgid "Enter a name for the new foreign key:"
@@ -768,7 +757,6 @@ msgid "Create new index on table %s"
 msgstr "创建新索引关于table%s"
 
 #: lazdatadeskstr.snewindexde
-#, fuzzy
 msgctxt "lazdatadeskstr.snewindexde"
 msgid "New index"
 msgstr "新建索引"
@@ -787,10 +775,9 @@ msgid "Create new sequence"
 msgstr "创建新数列"
 
 #: lazdatadeskstr.snewsequencede
-#, fuzzy
 msgctxt "lazdatadeskstr.snewsequencede"
 msgid "New sequence"
-msgstr "新数列"
+msgstr "新建序列"
 
 #: lazdatadeskstr.snewsequencename
 msgid "Enter a name for the new sequence:"
@@ -802,7 +789,7 @@ msgstr "创建新的table"
 
 #: lazdatadeskstr.snewtablede
 msgid "New table"
-msgstr ""
+msgstr "新表格"
 
 #: lazdatadeskstr.snewtablename
 msgid "Enter a name for the new table:"
@@ -814,7 +801,7 @@ msgstr "下一个"
 
 #: lazdatadeskstr.sno
 msgid "No"
-msgstr ""
+msgstr "否"
 
 #: lazdatadeskstr.snodedatabase
 msgctxt "lazdatadeskstr.snodedatabase"
@@ -879,6 +866,8 @@ msgid ""
 "No connections or data dictionaries were found.\n"
 " Start by creating a new connection or data dictionary."
 msgstr ""
+"未找到任何连接或数据字典。\n"
+" 从创建一个新的连接或数据字典开始。"
 
 #: lazdatadeskstr.squery
 msgid "Run query"
@@ -891,7 +880,7 @@ msgstr "准备执行SQL声明(statements)"
 #: lazdatadeskstr.srecordsfetched
 #, object-pascal-format
 msgid "Records fetched: %d"
-msgstr ""
+msgstr "获取的记录数： %d"
 
 #: lazdatadeskstr.sretrystatement
 msgid "Retry the statement"
@@ -899,11 +888,11 @@ msgstr "重试该声明(statement)"
 
 #: lazdatadeskstr.srollback
 msgid "Rollback"
-msgstr ""
+msgstr "回滚"
 
 #: lazdatadeskstr.srollbackransaction
 msgid "Rollback active transaction"
-msgstr ""
+msgstr "回滚活动事务"
 
 #: lazdatadeskstr.srowsaffected
 #, object-pascal-format
@@ -921,7 +910,7 @@ msgstr "保存更改"
 #: lazdatadeskstr.sscriptaborted
 #, object-pascal-format
 msgid "Script was aborted after %d statements"
-msgstr ""
+msgstr "脚本在执行 %d 条语句后被中止"
 
 #: lazdatadeskstr.sscriptcompleted
 #, object-pascal-format
@@ -931,7 +920,7 @@ msgstr "执行%d声明(statements)从脚本"
 #: lazdatadeskstr.sscripterrorcount
 #, object-pascal-format
 msgid "%d script statements resulted in errors"
-msgstr ""
+msgstr "%d 脚本语句导致错误"
 
 #: lazdatadeskstr.sselectdbfdir
 msgid "Select a directory with DBF files"
@@ -1004,5 +993,5 @@ msgstr "一个数据字典是激活的.你想导入到这个数据字典吗?"
 
 #: lazdatadeskstr.syes
 msgid "Yes"
-msgstr ""
+msgstr "是"
 

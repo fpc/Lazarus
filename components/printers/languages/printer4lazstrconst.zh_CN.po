@@ -3,22 +3,22 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"PO-Revision-Date: 2025-05-21 23:36+0800\n"
+"Last-Translator: ACTom <i@actom.me>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Generator: TyPoEditor 0.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: printer4lazstrconst.p4lrsabbrevunitsinches
 msgid "\""
-msgstr ""
+msgstr "\""
 
 #: printer4lazstrconst.p4lrsabbrevunitsmm
 msgid "mm"
-msgstr ""
+msgstr "mm"
 
 #: printer4lazstrconst.p4lrsadvanced
 msgid "Advanced"
@@ -26,7 +26,7 @@ msgstr "高级"
 
 #: printer4lazstrconst.p4lrsallpages
 msgid "All"
-msgstr ""
+msgstr "全部"
 
 #: printer4lazstrconst.p4lrsbanners
 msgid "Banners"
@@ -34,11 +34,11 @@ msgstr "横幅标题"
 
 #: printer4lazstrconst.p4lrsbuttonlessarrow
 msgid "<< Less"
-msgstr ""
+msgstr "<< 较少"
 
 #: printer4lazstrconst.p4lrsbuttonmorearrow
 msgid "More >>"
-msgstr ""
+msgstr "更多 >>"
 
 #: printer4lazstrconst.p4lrscancel
 msgid "Cancel"
@@ -54,27 +54,27 @@ msgstr "一般"
 
 #: printer4lazstrconst.p4lrsjobstateaccepting
 msgid "(Accepting jobs)"
-msgstr ""
+msgstr "(接受任务)"
 
 #: printer4lazstrconst.p4lrsjobstateprinting
 msgid "Printing"
-msgstr ""
+msgstr "打印中"
 
 #: printer4lazstrconst.p4lrsjobstateready
 msgid "Ready"
-msgstr ""
+msgstr "就绪"
 
 #: printer4lazstrconst.p4lrsjobstaterejecting
 msgid "(Rejecting jobs)"
-msgstr ""
+msgstr "(拒绝任务)"
 
 #: printer4lazstrconst.p4lrsjobstatestopped
 msgid "Stopped"
-msgstr ""
+msgstr "已停止"
 
 #: printer4lazstrconst.p4lrslandscape
 msgid "Landscape"
-msgstr "横排格式"
+msgstr "横向"
 
 #: printer4lazstrconst.p4lrsmargins
 msgid "Margins"
@@ -82,11 +82,11 @@ msgstr "边距"
 
 #: printer4lazstrconst.p4lrsnodefaultprinter
 msgid "No default printer found."
-msgstr ""
+msgstr "未找到默认打印机。"
 
 #: printer4lazstrconst.p4lrsnotavailable
 msgid "Not available"
-msgstr ""
+msgstr "不可用"
 
 #: printer4lazstrconst.p4lrsok
 msgid "Ok"
@@ -98,19 +98,19 @@ msgstr "方向"
 
 #: printer4lazstrconst.p4lrspageeven
 msgid "Even"
-msgstr ""
+msgstr "即使"
 
 #: printer4lazstrconst.p4lrspageodd
 msgid "Odd"
-msgstr ""
+msgstr "奇数"
 
 #: printer4lazstrconst.p4lrspagespersheet
 msgid "Pages per sheet"
-msgstr "每张页数"
+msgstr "每张纸的页数"
 
 #: printer4lazstrconst.p4lrspapersize
 msgid "Paper size"
-msgstr "页面大小"
+msgstr "纸张大小"
 
 #: printer4lazstrconst.p4lrspapersource
 msgid "Paper source"
@@ -122,7 +122,7 @@ msgstr "纸张类型"
 
 #: printer4lazstrconst.p4lrsportrait
 msgid "Portrait"
-msgstr "竖排格式"
+msgstr "竖向"
 
 #: printer4lazstrconst.p4lrsprinterproperties
 msgid "Printer properties"
@@ -138,15 +138,15 @@ msgstr "横向翻转"
 
 #: printer4lazstrconst.p4lrsreverseportrait
 msgid "Reverse portrait"
-msgstr "反向直印"
+msgstr "纵向翻转"
 
 #: printer4lazstrconst.p4lrsshortunitsinches
 msgid "(inches)"
-msgstr ""
+msgstr "(英寸)"
 
 #: printer4lazstrconst.p4lrsshortunitsmm
 msgid "(mm)"
-msgstr ""
+msgstr "(毫米)"
 
 #: printer4lazstrconst.p4lrsstart
 msgid "Start"

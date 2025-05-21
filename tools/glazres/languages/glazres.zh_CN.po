@@ -2,21 +2,19 @@ msgid ""
 msgstr ""
 "Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"PO-Revision-Date: 2025-05-21 21:19+0800\n"
+"Last-Translator: ACTom <i@actom.me>\n"
 "Language-Team: \n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.0.1\n"
+"X-Generator: TyPoEditor 0.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: glazresmain.cbtncancel
-#, fuzzy
-#| msgid "Cancel"
 msgid "Close"
-msgstr "取消"
+msgstr "关闭"
 
 #: glazresmain.defilter
 msgctxt "glazresmain.defilter"
@@ -69,10 +67,9 @@ msgid "Processing \"%s\""
 msgstr "处理(Processing)\"%s\""
 
 #: glazresmain.msgresourcenametype
-#, object-pascal-format, fuzzy
-#| msgid " Resource name = \"%s\", Type = \"%s\""
+#, object-pascal-format
 msgid "Resource name = \"%s\", Type = \"%s\""
-msgstr "资源名称= \"%s\",类型= \"%s\""
+msgstr "资源名称 = \"%s\"，类型 = \"%s\""
 
 #: glazresmain.msgsuccess
 #, object-pascal-format
@@ -93,11 +90,9 @@ msgid "Open existing file"
 msgstr "打开存在的文件"
 
 #: glazresmain.opdfilter
-#, fuzzy
-#| msgid "Graphic (*.png;*.xpm;*.bmp;*.cur;*.ico;*.icns;*.jpeg;*.jpg;*.jpe;*.jfif;*.tif;*.tiff;*.gif;*.pbm;*.pgm;*.ppm;*.gif;*.tga)|*.png;*.xpm;*.bmp;*.cur;*.ico;*.icns;*.jpeg;*.jpg;*.jpe;*.jfif;*.tif;*.tiff;*.gif;*.pbm;*.pgm;*.ppm;*.gif;*.tga|Portable Network Graphic (*.png)|*.png|Pixmap (*.xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp|Cursor (*.cur)|*.cur|Icon (*.ico)|*.ico|Mac OS X Icon (*.icns)|*.icns|Joint Picture Expert Group (*.jpeg;*.jpg;*.jpe;*.jfif)|*.jpeg;*.jpg;*.jpe;*.jfif|Tagged Image File Format (*.tif;*.tiff)|*.tif;*.tiff|Graphics Interchange Format (*.gif)|*.gif|Portable PixMap (*.pbm;*.pgm;*.ppm)|*.pbm;*.pgm;*.ppm|Animated GIF (*.gif)|*.gif|TGA Image File (*.tga)|*.tga|"
 msgctxt "glazresmain.opdfilter"
 msgid "Graphic (*.png;*.xpm;*.bmp;*.cur;*.ico;*.icns;*.jpeg;*.jpg;*.jpe;*.jfif;*.tif;*.tiff;*.gif;*.pbm;*.pgm;*.ppm;*.gif;*.tga)|*.png;*.xpm;*.bmp;*.cur;*.ico;*.icns;*.jpeg;*.jpg;*.jpe;*.jfif;*.tif;*.tiff;*.gif;*.pbm;*.pgm;*.ppm;*.gif;*.tga|Portable Network Graphic (*.png)|*.png|Pixmap (*.xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp|Cursor (*.cur)|*.cur|Icon (*.ico)|*.ico|macOS Icon (*.icns)|*.icns|Joint Picture Expert Group (*.jpeg;*.jpg;*.jpe;*.jfif)|*.jpeg;*.jpg;*.jpe;*.jfif|Tagged Image File Format (*.tif;*.tiff)|*.tif;*.tiff|Graphics Interchange Format (*.gif)|*.gif|Portable PixMap (*.pbm;*.pgm;*.ppm)|*.pbm;*.pgm;*.ppm|Animated GIF (*.gif)|*.gif|TGA Image File (*.tga)|*.tga|"
-msgstr "图形(*.png;*.xpm;*.bmp;*.cur;*.ico;*.icns;*.jpeg;*.jpg;*.jpe;*.jfif;*.tif;*.tiff;*.gif;*.pbm;*.pgm;*.ppm;*.gif;*.tga)|*.png;*.xpm;*.bmp;*.cur;*.ico;*.icns;*.jpeg;*.jpg;*.jpe;*.jfif;*.tif;*.tiff;*.gif;*.pbm;*.pgm;*.ppm;*.gif;*.tga|便携式网络图形(*.png)|*.png|像素图(*.xpm)|*.xpm|位图(*.bmp)|*.bmp|Cursor (*.cur)|*.cur|图标(*.ico)|*.ico|Mac OS X图标 (*.icns)|*.icns|联合图片专家组(*.jpeg;*.jpg;*.jpe;*.jfif)|*.jpeg;*.jpg;*.jpe;*.jfif|标记图像文件格式(*.tif;*.tiff)|*.tif;*.tiff|图形交换格式 (*.gif)|*.gif|便携式像素图(*.pbm;*.pgm;*.ppm)|*.pbm;*.pgm;*.ppm|动画GIF(*.gif)|*.gif|TGA图像文件(*.tga)|*.tga|"
+msgstr "图像 (*.png;*.xpm;*.bmp;*.cur;*.ico;*.icns;*.jpeg;*.jpg;*.jpe;*.jfif;*.tif;*.tiff;*.gif;*.pbm;*.pgm;*.ppm;*.gif;*.tga)|*.png;*.xpm;*.bmp;*.cur;*.ico;*.icns;*.jpeg;*.jpg;*.jpe;*.jfif;*.tif;*.tiff;*.gif;*.pbm;*.pgm;*.ppm;*.gif;*.tga|便携式网络图形 (*.png)|*.png|像素图 (*.xpm)|*.xpm|位图 (*.bmp)|*.bmp|光标 (*.cur)|*.cur|图标 (*.ico)|*.ico|macOS 图标 (*.icns)|*.icns|联合图片专家组 (*.jpeg;*.jpg;*.jpe;*.jfif)|*.jpeg;*.jpg;*.jpe;*.jfif|标签图像文件格式 (*.tif;*.tiff)|*.tif;*.tiff|图形交换格式 (*.gif)|*.gif|便携式像素图 (*.pbm;*.pgm;*.ppm)|*.pbm;*.pgm;*.ppm|动画 GIF (*.gif)|*.gif|TGA 图像文件 (*.tga)|*.tga|"
 
 #: glazresmain.opdfilterall
 msgid "All files"
@@ -111,7 +106,7 @@ msgstr "打开存在的图片"
 #: tglazresform.addanybtn.caption
 msgctxt "tglazresform.addanybtn.caption"
 msgid "Add files"
-msgstr ""
+msgstr "添加文件"
 
 #: tglazresform.addanybtn.hint
 msgid "Add (any kind of) files to the list"
@@ -120,7 +115,7 @@ msgstr "添加(任何种类)文件到列表"
 #: tglazresform.addimgbtn.caption
 msgctxt "tglazresform.addimgbtn.caption"
 msgid "Add images"
-msgstr ""
+msgstr "添加图片"
 
 #: tglazresform.addimgbtn.hint
 msgid "Add images to the list"
@@ -128,18 +123,16 @@ msgstr "添加图像到列表"
 
 #: tglazresform.caption
 msgid "LRS Builder"
-msgstr "LRS构建器(Builder)"
+msgstr "LRS 构建器"
 
 #: tglazresform.clearbtn.caption
 msgctxt "tglazresform.clearbtn.caption"
 msgid "Delete all"
-msgstr ""
+msgstr "删除所有"
 
 #: tglazresform.clearbtn.hint
-#, fuzzy
-#| msgid "Cleare the entire list"
 msgid "Clear the entire list"
-msgstr "清理该整个列表"
+msgstr "清除整个列表"
 
 #: tglazresform.closebtn.hint
 msgid "Exit the program"
@@ -148,7 +141,7 @@ msgstr "退出程序"
 #: tglazresform.deletebtn.caption
 msgctxt "tglazresform.deletebtn.caption"
 msgid "Delete selected"
-msgstr ""
+msgstr "删除选中项"
 
 #: tglazresform.deletebtn.hint
 msgid "Delete selected files from the list"
@@ -167,11 +160,9 @@ msgid "Messages"
 msgstr "信息"
 
 #: tglazresform.startbtn.caption
-#, fuzzy
-#| msgid "Create LRS"
 msgctxt "tglazresform.startbtn.caption"
 msgid "Create"
-msgstr "创建LRS"
+msgstr "创建"
 
 #: tglazresform.startbtn.hint
 msgid "Create the output LRS file"

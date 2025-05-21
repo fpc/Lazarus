@@ -1,0 +1,59 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: ACTom <i@actom.me>\n"
+"X-Generator: TyPoEditor 0.2\n"
+
+#: iconfinderstrconstside.rsgraphpropeditor_iconfinder
+msgid "Icon Finder ..."
+msgstr "图标查找器 ..."
+
+#: iconfinderstrconstside.rsiconfinderide_caption
+#, object-pascal-format
+msgid "Icon Finder (%d out of %d icons)"
+msgstr "图标查找器 (%d 个图标中的 %d 个)"
+
+#: iconfinderstrconstside.rsiconfinderide_folderhint
+msgid "Icon folder management"
+msgstr "图标文件夹管理"
+
+#: iconfinderstrconstside.rsiconfinderide_folders
+msgid "Folders ..."
+msgstr "文件夹 ..."
+
+#: iconfinderstrconstside.rsiconfinderide_general
+msgid "General"
+msgstr "常规"
+
+#: iconfinderstrconstside.rsiconfinderide_iconlibrary
+msgid "Icon Finder"
+msgstr "图标查找器"
+
+#: iconfinderstrconstside.rsiconfinderide_metadata
+msgid "Metadata ..."
+msgstr "元数据 ..."
+
+#: iconfinderstrconstside.rsiconfinderide_metadatahint
+msgid "Edit icon metadata"
+msgstr "编辑图标元数据"
+
+#: iconfinderstrconstside.rsiconfinderide_savemetadata
+msgid "Save metadata"
+msgstr "保存元数据"
+
+#: iconfinderstrconstside.rsiconfinderide_savemetadatahint
+msgid "Save icon metadata files"
+msgstr "保存图标元数据文件"
+
+#: iconfinderstrconstside.rsiconfinderide_select
+msgid "Select"
+msgstr "选择"
+
+#: iconfinderstrconstside.rsimglisteditor_addfromiconfinder
+msgid "Add from Icon Finder ..."
+msgstr "从图标查找器添加 ..."
+
+#: iconfinderstrconstside.rsimglisteditor_replacefromiconfinder
+msgid "Replace by Icon Finder ..."
+msgstr "用图标查找器替换 ..."
+

@@ -2,14 +2,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
+"PO-Revision-Date: 2025-05-21 22:21+0800\n"
 "Last-Translator: ACTom <i@actom.me>\n"
 "Language-Team: \n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.3.2\n"
+"X-Generator: TyPoEditor 0.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: h2passtrconsts.h2padd
@@ -325,7 +325,7 @@ msgstr "H2Pas 项目(*.h2p)|*.h2p|所有文件(*.*)|%s"
 
 #: h2passtrconsts.h2ph2pastool
 msgid "H2PasTool"
-msgstr ""
+msgstr "H2PasTool 工具"
 
 #: h2passtrconsts.h2picreateanincludefileinsteadofaunit
 msgid "-i  Create an include file instead of a unit"
@@ -435,26 +435,26 @@ msgid "Please enable at least one c header file that is not merged."
 msgstr "请至少启用一个未合并的 c 语言头文件。"
 
 #: h2passtrconsts.h2pposth2pasasetofcommontoolstorunafterh2pasphreplace
-#, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Post H2Pas - a set of common tools to run after H2Pas%sphReplaceUnitFilenameWithUnitName - Replace \"unit filename;\" with \"unit name;\"%sphRemoveIncludeDirectives - Remove include directives%sphRemoveSystemTypes - Remove type redefinitons like PLongint%sphFixH2PasMissingIFDEFsInUnit - Add missing IFDEFs for function bodies%sphReduceCompilerDirectivesInUnit - Removes unneeded directives%sphRemoveRedefinedPointerTypes - Remove redefined pointer types%sphRemoveEmptyTypeVarConstSections - Remove empty type/var/const sections%sphReplaceImplicitTypes - Search implicit types in parameters and add types for them%sphFixArrayOfParameterType - Replace \"array of )\" with \"array of const)\"%sphRemoveRedefinitionsInUnit - Removes redefinitions of types, variables, constants and resourcestrings%sphFixAliasDefinitionsInUnit - Fix section type of alias definitions%sphReplaceConstFunctionsInUnit - Replace simple assignment functions with constants%sphReplaceTypeCastFunctionsInUnit - Replace simple type cast functions with types%sphFixForwardDefinitions - Fix forward definitions by reordering%sphAddUnitsToUsesSection - Add units to uses section%s"
-msgstr ""
+msgstr "Post H2Pas - 一套常用的 H2Pas 后处理工具%sphReplaceUnitFilenameWithUnitName - 将 \"unit filename;\" 替换为 \"unit name;\"%sphRemoveIncludeDirectives - 删除 include 指令%sphRemoveSystemTypes - 删除诸如 PLongint 的类型重定义%sphFixH2PasMissingIFDEFsInUnit - 添加缺失的 IFDEF 以支持函数体%sphReduceCompilerDirectivesInUnit - 删除不必要的编译指令%sphRemoveRedefinedPointerTypes - 删除已重新定义的指针类型%sphRemoveEmptyTypeVarConstSections - 删除空的 type/var/const 部分%sphReplaceImplicitTypes - 查找参数中的隐式类型并为其添加类型%sphFixArrayOfParameterType - 将 \"array of )\" 替换为 \"array of const)\"%sphRemoveRedefinitionsInUnit - 删除类型、变量、常量和资源字符串的重新定义%sphFixAliasDefinitionsInUnit - 修复别名定义的节类型%sphReplaceConstFunctionsInUnit - 将简单的赋值函数替换为常量%sphReplaceTypeCastFunctionsInUnit - 将简单的类型转换函数替换为类型%sphFixForwardDefinitions - 通过重新排序修复前向定义%sphAddUnitsToUsesSection - 将单元添加到 uses 部分%"
 
 #: h2passtrconsts.h2ppreh2pasasetofcommontoolstorunbeforeh2pasphremovec
 #, object-pascal-format
 msgid "Pre H2Pas - a set of common tools to run before H2Pas%sphRemoveCPlusPlusExternCTool - Remove C++ 'extern \"C\"' lines%sphRemoveEmptyCMacrosTool - Remove empty C macros%sphReplaceEdgedBracketPairWithStar - Replace [] with *%sphReplace0PointerWithNULL - Replace macro values 0 pointer like (char *)0%sphConvertFunctionTypesToPointers - Convert function types to pointers%sphConvertEnumsToTypeDef - Convert anonymous enums to typedef enums%sphCommentComplexCMacros - Comment macros too complex for H2Pas%sphCommentComplexCFunctions - Comment functions too complex for H2Pas%s"
-msgstr ""
+msgstr "Pre H2Pas - 运行 H2Pas 之前的一组常用工具%sphRemoveCPlusPlusExternCTool - 移除 C++ 'extern \"C\"' 行%sphRemoveEmptyCMacrosTool - 移除空的 C 宏%sphReplaceEdgedBracketPairWithStar - 将 [] 替换为 *%sphReplace0PointerWithNULL - 将形如 (char *)0 的宏值 0 指针替换为 NULL%sphConvertFunctionTypesToPointers - 将函数类型转换为指针%sphConvertEnumsToTypeDef - 将匿名枚举转换为 typedef 枚举%sphCommentComplexCMacros - 注释掉对 H2Pas 来说太复杂的宏%sphCommentComplexCFunctions - 注释掉对 H2Pas 来说太复杂的函数%s"
 
 #: h2passtrconsts.h2pprpackallrecords1bytealignment
 msgid "-pr Pack all records (1 byte alignment)"
-msgstr ""
+msgstr "-pr 打包所有记录（1 字节对齐）"
 
 #: h2passtrconsts.h2ppuseletterpforpointertypesinsteadof
 msgid "-p  Use letter P for pointer types instead of \"^\""
-msgstr ""
+msgstr "-p 使用字母 P 作为指针类型而不是 \"^\""
 
 #: h2passtrconsts.h2ppuseprocvarsforimports
 msgid "-P  use proc. vars for imports"
-msgstr ""
+msgstr "-P  使用过程变量进行导入"
 
 #: h2passtrconsts.h2preaderror
 msgid "Read error"
@@ -463,7 +463,7 @@ msgstr "读取错误"
 #: h2passtrconsts.h2preducecompilerdirectivesinpascalfileshortensexpres
 #, object-pascal-format
 msgid "Reduce compiler directives in pascal file%sShortens expressions in $IF directives%sand removes unneeded $IFDEF and $DEFINE directives."
-msgstr ""
+msgstr "减少 pascal 文件中的编译器指令%s缩短 $IF 指令中的表达式%s并移除不必要的 $IFDEF 和 $DEFINE 指令。"
 
 #: h2passtrconsts.h2premoveallfiles
 msgid "Remove all files"
@@ -508,11 +508,11 @@ msgstr "替换文件?"
 #: h2passtrconsts.h2preplaceimplicittypesforexampleprocedureprocnameaar
 #, object-pascal-format
 msgid "Replace implicit types%sFor example:%s    procedure ProcName(a: array[0..2] of char)%s  is replaced with%s    procedure ProcName(a: Tarray_0to2_of_char)%s  and a new type is added%s    Tarray_0to2_of_char = array[0..2] of char"
-msgstr ""
+msgstr "替换隐式类型%s例如：%s    过程 ProcName(a: array[0..2] of char)%s  将被替换为%s    过程 ProcName(a: Tarray_0to2_of_char)%s  并添加一个新类型%s    Tarray_0to2_of_char = array[0..2] of char"
 
 #: h2passtrconsts.h2preplacemacrovalues0pointerlikechar0withnull
 msgid "Replace macro values 0 pointer like (char *)0 with NULL"
-msgstr ""
+msgstr "将宏值 0 指针如 (char *)0 替换为 NULL"
 
 #: h2passtrconsts.h2preplacesimplefunctionswithconstants
 msgid "Replace simple functions with constants"
@@ -532,7 +532,7 @@ msgstr "替换[]用*"
 
 #: h2passtrconsts.h2preplacingofnullwithnilfailed
 msgid "replacing of NULL with nil failed"
-msgstr ""
+msgstr "将 NULL 替换为 nil 失败"
 
 #: h2passtrconsts.h2prunh2pas
 msgid "Run H2Pas"
@@ -603,7 +603,7 @@ msgstr "TH2PasDialog.h2pasOptionsCheckGroupItemClick:未知选项%s"
 #: h2passtrconsts.h2pthefilealreadyexists
 #, object-pascal-format
 msgid "The file \"%s\"%salready exists."
-msgstr ""
+msgstr "文件 \"%s\"%s已存在。"
 
 #: h2passtrconsts.h2ptools
 msgid "Tools:"
@@ -616,11 +616,11 @@ msgstr "TPostH2PasTools.Execute.AddToUsesSection无效单元名\"%s\""
 
 #: h2passtrconsts.h2ptprependtypedeftypeswitht
 msgid "-t  Prepend  typedef  types with T"
-msgstr ""
+msgstr "- 在 typedef 类型前加上 T"
 
 #: h2passtrconsts.h2ptprependtypedeftypeswithtandremove__
 msgid "-T  Prepend  typedef  types with T, and remove __"
-msgstr ""
+msgstr "- T  在 typedef 类型前添加 T，并移除 __"
 
 #: h2passtrconsts.h2punabletocopyfileto
 #, object-pascal-format

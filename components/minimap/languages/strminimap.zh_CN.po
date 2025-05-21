@@ -1,0 +1,34 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: ACTom <i@actom.me>\n"
+"X-Generator: TyPoEditor 0.2\n"
+
+#: strminimap.sinitialfontsize
+msgid "Initial font size"
+msgstr "初始字体大小"
+
+#: strminimap.smapwidth
+msgid "Minimap width"
+msgstr "小地图宽度"
+
+#: strminimap.sminimapconfigtitle
+msgid "Minimap"
+msgstr "小地图"
+
+#: strminimap.sputmapleftofeditorre
+msgid "Put minimap left of editor (requires IDE restart for existing tabs)"
+msgstr "将小地图置于编辑器左侧（需要重启 IDE 以应用到现有标签页）"
+
+#: strminimap.sshowminimap
+msgid "Show minimap"
+msgstr "显示迷你地图"
+
+#: strminimap.sviewwindowcolor
+msgid "View window color"
+msgstr "查看窗口颜色"
+
+#: strminimap.sviewwindowtextcolor
+msgid "View window text color"
+msgstr "查看窗口文本颜色"
+

@@ -3,13 +3,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"PO-Revision-Date: 2025-05-21 23:58+0800\n"
+"Last-Translator: ACTom <i@actom.me>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Generator: TyPoEditor 0.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: tachartstrconsts.descolor
@@ -18,7 +18,7 @@ msgstr "颜色"
 
 #: tachartstrconsts.desdatapointeditor
 msgid "DataPoints editor"
-msgstr "DataPoints编辑器"
+msgstr "DataPoints 编辑器"
 
 #: tachartstrconsts.desdeleterow
 msgid "Delete row"
@@ -30,19 +30,19 @@ msgstr "插入行"
 
 #: tachartstrconsts.desmovedown
 msgid "Move down"
-msgstr ""
+msgstr "向下移动"
 
 #: tachartstrconsts.desmoveup
 msgid "Move up"
-msgstr ""
+msgstr "向上移动"
 
 #: tachartstrconsts.desnointeger
 msgid "Value must be an integer."
-msgstr ""
+msgstr "值必须是整数。"
 
 #: tachartstrconsts.desnonumber
 msgid "Non-numeric value."
-msgstr ""
+msgstr "非数值。"
 
 #: tachartstrconsts.destext
 msgid "Text"
@@ -62,7 +62,7 @@ msgstr "自动缩放"
 
 #: tachartstrconsts.rsaxisclicktool
 msgid "Axis click"
-msgstr ""
+msgstr "轴点击"
 
 #: tachartstrconsts.rsbarseries
 msgid "Bar series"
@@ -78,36 +78,36 @@ msgstr "盒须图系列"
 
 #: tachartstrconsts.rsbsbdiagonal
 msgid "backward-diagonal hatch"
-msgstr "反向对角阴影(backward-diagonal hatch)"
+msgstr "向后对角线纹理"
 
 #: tachartstrconsts.rsbsclear
 msgctxt "tachartstrconsts.rsbsclear"
 msgid "no fill"
-msgstr "没有填充(fill)"
+msgstr "无填充"
 
 #: tachartstrconsts.rsbscross
 msgid "crossed"
-msgstr "交叉(crossed)"
+msgstr "交叉的"
 
 #: tachartstrconsts.rsbsdiagcross
 msgid "diagonally crossed"
-msgstr "对角交叉(diagonally crossed)"
+msgstr "对角线交叉"
 
 #: tachartstrconsts.rsbsfdiagonal
 msgid "forward-diagonal hatch"
-msgstr "正向对角阴影(forward-diagonal hatch)"
+msgstr "向前对角线填充"
 
 #: tachartstrconsts.rsbshorizontal
 msgid "horizontally hatched"
-msgstr "水平阴影(horizontally hatched)"
+msgstr "水平条纹"
 
 #: tachartstrconsts.rsbsimage
 msgid "image fill"
-msgstr "图像填充(fill)"
+msgstr "图像填充"
 
 #: tachartstrconsts.rsbspattern
 msgid "pattern fill"
-msgstr "图案填充(fill)"
+msgstr "图案填充"
 
 #: tachartstrconsts.rsbsplineseries
 msgid "B-Spline series"
@@ -115,19 +115,19 @@ msgstr "B-样条系列"
 
 #: tachartstrconsts.rsbssolid
 msgid "solid fill"
-msgstr "实体(solid)填充(fill)"
+msgstr "实心填充"
 
 #: tachartstrconsts.rsbsvertical
 msgid "vertically hatched"
-msgstr "垂直阴影(vertically hatched)"
+msgstr "垂直条纹"
 
 #: tachartstrconsts.rsbubbleseries
 msgid "Bubble series"
-msgstr "散点图系列"
+msgstr "气泡系列"
 
 #: tachartstrconsts.rscirclesymbol
 msgid "Circle"
-msgstr "圆(Circle)"
+msgstr "圆"
 
 #: tachartstrconsts.rscolormapseries
 msgid "Color map series"
@@ -135,11 +135,11 @@ msgstr "彩色图系列"
 
 #: tachartstrconsts.rsconstantline
 msgid "Constant line"
-msgstr "恒线(Constant)"
+msgstr "常量行"
 
 #: tachartstrconsts.rscrosssymbol
 msgid "Plus"
-msgstr "加(Plus)"
+msgstr "加号"
 
 #: tachartstrconsts.rscubicsplineseries
 msgid "Cubic spline series"
@@ -167,7 +167,7 @@ msgstr "数据点提示"
 
 #: tachartstrconsts.rsdatapointmarksclicktool
 msgid "Data point marks click"
-msgstr ""
+msgstr "数据点标记点击"
 
 #: tachartstrconsts.rsdelete
 msgid "Delete"
@@ -175,7 +175,7 @@ msgstr "删除"
 
 #: tachartstrconsts.rsdiagcrosssymbol
 msgid "Cross"
-msgstr "交叉(Cross)"
+msgstr "交叉"
 
 #: tachartstrconsts.rsdiamondsymbol
 msgid "Diamond"
@@ -191,36 +191,36 @@ msgstr "下三角形"
 
 #: tachartstrconsts.rserrfitdimerror
 msgid "Non-matching count of x and y values."
-msgstr ""
+msgstr "x 和 y 值的数量不匹配。"
 
 #: tachartstrconsts.rserrfitmoreparamsthanvalues
 msgid "There are more fitting parameters than data values."
-msgstr ""
+msgstr "参数的数量超过了数据值的数量。"
 
 #: tachartstrconsts.rserrfitnobasefunctions
 msgid "Not enough user-provided base functions."
-msgstr ""
+msgstr "用户提供的基础函数不足。"
 
 #: tachartstrconsts.rserrfitnofitparams
 msgid "No fit parameters specified."
-msgstr ""
+msgstr "未指定拟合参数。"
 
 #: tachartstrconsts.rserrfitsingular
 msgid "Fitting matrix is (nearly) singular."
-msgstr ""
+msgstr "拟合矩阵是（接近）奇异的。"
 
 #: tachartstrconsts.rserrillegalfitparamcount
 msgid "The number of fit parameters cannot be less than 1."
-msgstr ""
+msgstr "拟合参数的数量不能少于 1。"
 
 #: tachartstrconsts.rserrinvalidresulttype
 #, object-pascal-format
 msgid "Expression result type must be integer or float. Got \"%s\"."
-msgstr "表达式结果类型必须是整型(integer)或浮点型(float).得到\"%s\"."
+msgstr "表达式结果类型必须是整数或浮点数。得到了 \"%s\"。"
 
 #: tachartstrconsts.rserrnumericaloverflow
 msgid "Numerical overflow."
-msgstr ""
+msgstr "数值溢出。"
 
 #: tachartstrconsts.rsexpressioncolormapseries
 msgid "Math expression color map series"
@@ -236,59 +236,59 @@ msgstr "向量场系列"
 
 #: tachartstrconsts.rsfitadjcoefficientofdetermination
 msgid "Adj. coefficient of determination"
-msgstr ""
+msgstr "调整后的决定系数"
 
 #: tachartstrconsts.rsfitchisquared
 msgid "Chi-squared"
-msgstr ""
+msgstr "卡方"
 
 #: tachartstrconsts.rsfitcoefficientofdetermination
 msgid "Coefficient of determination (R2)"
-msgstr ""
+msgstr "决定系数 (R2)"
 
 #: tachartstrconsts.rsfitdegreesoffreedom
 msgid "Degrees of freedom"
-msgstr ""
+msgstr "自由度"
 
 #: tachartstrconsts.rsfiterrorsumofsquares
 msgid "Error sum of squares (SSE)"
-msgstr ""
+msgstr "误差平方和 (SSE)"
 
 #: tachartstrconsts.rsfitnumfitparams
 msgid "Number of fit parameters"
-msgstr ""
+msgstr "拟合参数数量"
 
 #: tachartstrconsts.rsfitnumobservations
 msgid "Number of observations"
-msgstr ""
+msgstr "观察数"
 
 #: tachartstrconsts.rsfitpvalue
 msgid "p value"
-msgstr ""
+msgstr "p 值"
 
 #: tachartstrconsts.rsfitreducedchisquared
 msgid "Reduced Chi-squared"
-msgstr ""
+msgstr "减少的 Chi-squared"
 
 #: tachartstrconsts.rsfitregressionsumofsquares
 msgid "Regression sum of squares (SSR)"
-msgstr ""
+msgstr "回归平方和 (SSR)"
 
 #: tachartstrconsts.rsfitresidualstandarderror
 msgid "Residual standard error"
-msgstr ""
+msgstr "残差标准误差"
 
 #: tachartstrconsts.rsfittotalsumofsquares
 msgid "Total sum of squares (SST)"
-msgstr ""
+msgstr "总平方和 (SST)"
 
 #: tachartstrconsts.rsfittvalue
 msgid "t value"
-msgstr ""
+msgstr "t 值"
 
 #: tachartstrconsts.rsfitvarianceratio
 msgid "Variance ratio F"
-msgstr ""
+msgstr "方差比率 F"
 
 #: tachartstrconsts.rsfullstarsymbol
 msgid "Star (full)"
@@ -300,7 +300,7 @@ msgstr "函数系列"
 
 #: tachartstrconsts.rsheaderfooterclicktool
 msgid "Header/footer click"
-msgstr ""
+msgstr "标题/页脚 点击"
 
 #: tachartstrconsts.rshexagonsymbol
 msgid "Hexagon"
@@ -312,23 +312,23 @@ msgstr "隐藏"
 
 #: tachartstrconsts.rshighbracketsymbol
 msgid "High bracket"
-msgstr "高括号(High bracket)"
+msgstr "高括号"
 
 #: tachartstrconsts.rshorbarsymbol
 msgid "Horizontal bar"
-msgstr "水平条(Horizontal bar)"
+msgstr "水平栏"
 
 #: tachartstrconsts.rsinvalidlogbase
 msgid "Logarithm base must be > 0 and <> 1."
-msgstr "对数技术必须>0和<>1."
+msgstr "对数底数必须 > 0 且 ≠ 1。"
 
 #: tachartstrconsts.rsinverted
 msgid "inverted"
-msgstr "反向的(inverted)"
+msgstr "反向"
 
 #: tachartstrconsts.rsleastsquaresfitseries
 msgid "Least-squares fit series"
-msgstr "最小二乘拟合系列"
+msgstr "最小二乘拟合序列"
 
 #: tachartstrconsts.rsleft
 msgid "Left"
@@ -344,11 +344,11 @@ msgstr "左三角形"
 
 #: tachartstrconsts.rslegendclicktool
 msgid "Legend click"
-msgstr ""
+msgstr "图例点击"
 
 #: tachartstrconsts.rslinear
 msgid "Linear"
-msgstr "线性的(Linear)"
+msgstr "线性"
 
 #: tachartstrconsts.rslineseries
 msgid "Line series"
@@ -357,17 +357,17 @@ msgstr "折线图系列"
 #: tachartstrconsts.rslistsourcecolorerror
 #, object-pascal-format
 msgid "The %0:s.DataPoints string \"%1:s\" is not an integer."
-msgstr ""
+msgstr "%0:s.DataPoints 字符串 \"%1:s\" 不是整数。"
 
 #: tachartstrconsts.rslistsourcenumericerror
 #, object-pascal-format
 msgid "The %0:s.DataPoints string \"%1:s\" is not a valid number."
-msgstr ""
+msgstr "%0:s.DataPoints 字符串 \"%1:s\" 不是有效的数字。"
 
 #: tachartstrconsts.rslistsourcestringformaterror
 #, object-pascal-format
 msgid "The data value count in the %0:s.DataPoints string \"%1:s\" differs from what is expected from XCount and YCount."
-msgstr ""
+msgstr "%0:s.DataPoints 字符串 \"%1:s\" 中的数据值数量与 XCount 和 YCount 预期的数量不同。"
 
 #: tachartstrconsts.rslogarithmic
 msgid "Logarithmic"
@@ -375,7 +375,7 @@ msgstr "对数的"
 
 #: tachartstrconsts.rslowbracketsymbol
 msgid "Low bracket"
-msgstr "低括号(Low bracket)"
+msgstr "低括号"
 
 #: tachartstrconsts.rsmanhattanplotseries
 msgid "Manhattan plot series"
@@ -423,11 +423,11 @@ msgstr "点"
 
 #: tachartstrconsts.rspolarseries
 msgid "Polar series"
-msgstr "极线系列(Polar)"
+msgstr "极坐标系列"
 
 #: tachartstrconsts.rspolygonseries
 msgid "Polygon series"
-msgstr ""
+msgstr "多边形系列"
 
 #: tachartstrconsts.rspsclear
 msgctxt "tachartstrconsts.rspsclear"
@@ -448,11 +448,11 @@ msgstr "双点划线"
 
 #: tachartstrconsts.rspsdot
 msgid "dotted line"
-msgstr "点线(dotted line)"
+msgstr "虚线"
 
 #: tachartstrconsts.rspsinsideframe
 msgid "solid (inside frame)"
-msgstr "实心的(内部骨架)(inside frame)"
+msgstr "实心（边框内）"
 
 #: tachartstrconsts.rspspattern
 msgid "patterned line"
@@ -481,21 +481,21 @@ msgstr "直角三角形"
 #: tachartstrconsts.rssourcecounterror
 #, object-pascal-format
 msgid "%0:s requires a chart source with at least %1:d %2:s value(s) per data point."
-msgstr ""
+msgstr "%0:s 需要一个图表源，其中每个数据点至少包含 %1:d %2:s 值。"
 
 #: tachartstrconsts.rssourcecounterror2
 #, object-pascal-format
 msgid "This %0:s instance must have at least %1:d %2:s value(s) per data point."
-msgstr ""
+msgstr "此 %0:s 实例必须每个数据点至少有 %1:d 个 %2:s 值。"
 
 #: tachartstrconsts.rssourcenoteditable
 msgid "Editable chart source required"
-msgstr ""
+msgstr "需要可编辑的图表源"
 
 #: tachartstrconsts.rssourcesorterror
 #, object-pascal-format
 msgid "Selected sorting parameters are not supported by %s."
-msgstr ""
+msgstr "选中的排序参数不受 %s 支持。"
 
 #: tachartstrconsts.rsstarsymbol
 msgid "Star (lines)"
@@ -503,7 +503,7 @@ msgstr "星(线)"
 
 #: tachartstrconsts.rsstateseries
 msgid "State series"
-msgstr ""
+msgstr "状态序列"
 
 #: tachartstrconsts.rstop
 msgid "Top"
@@ -529,7 +529,7 @@ msgstr "用户绘制系列"
 
 #: tachartstrconsts.rsvertbarsymbol
 msgid "Vertical bar"
-msgstr "垂直条(Vertical bar)"
+msgstr "垂直线"
 
 #: tachartstrconsts.rszoombyclick
 msgid "Zoom by click"
@@ -554,7 +554,7 @@ msgstr "编辑轴转换"
 #: tachartstrconsts.tasfailedsubcomponentrename
 #, object-pascal-format
 msgid "Failed to rename components: %s"
-msgstr "重命名组件:%s失败"
+msgstr "无法重命名组件： %s"
 
 #: tachartstrconsts.tastoolseditortitle
 msgid "Edit tools"

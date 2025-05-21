@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
+"PO-Revision-Date: 2025-05-22 00:22+0800\n"
 "Last-Translator: ACTom <i@actom.me>\n"
 "Language-Team: \n"
 "Language: zh_CN\n"
@@ -10,24 +10,24 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Generator: Poedit 3.3.2\n"
+"X-Generator: TyPoEditor 0.2\n"
 
 #: idedebuggerstringconstants.arrnavautohide
 msgid "Hide automatically"
-msgstr ""
+msgstr "自动隐藏"
 
 #: idedebuggerstringconstants.arrnavenforcebounds
 msgctxt "idedebuggerstringconstants.arrnavenforcebounds"
 msgid "Enforce bounds"
-msgstr ""
+msgstr "强制边界"
 
 #: idedebuggerstringconstants.breakviewheaderaddgroup
 msgid "- Add new group -"
-msgstr ""
+msgstr "- 添加新组 -"
 
 #: idedebuggerstringconstants.breakviewheadernogroup
 msgid "No group"
-msgstr ""
+msgstr "无组"
 
 #: idedebuggerstringconstants.dbgbreakgroupdlgcaption
 msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
@@ -36,63 +36,62 @@ msgstr "选择组"
 
 #: idedebuggerstringconstants.dbgbreakgroupdlgheaderdisable
 msgid "Select groups to disable when breakpoint is hit"
-msgstr "选择组来禁用 当断点被命中时"
+msgstr "选择在断点触发时禁用的组"
 
 #: idedebuggerstringconstants.dbgbreakgroupdlgheaderenable
 msgid "Select groups to enable when breakpoint is hit"
-msgstr "选择组来启用 当断点被命中时"
+msgstr "选择在断点命中时启用的组"
 
 #: idedebuggerstringconstants.dbgbreakpropertygroupnotfound
 #, object-pascal-format
 msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%0:s%1:s"
-msgstr "一些组在启用/禁用列表中不存在。%0:s创建它们吗？%0:s%0:s%1:s"
+msgstr "启用/禁用列表中的一些组不存在。%0:s是否创建它们？%0:s%0:s%1:s"
 
 #: idedebuggerstringconstants.dbgconvertordinaltoname
 msgid "Conversion of ordinal to name"
-msgstr ""
+msgstr "序数到名称的转换"
 
 #: idedebuggerstringconstants.dbgdonotshowthismessageagain
 msgid "Do not ask again"
-msgstr ""
+msgstr "不再询问"
 
 #: idedebuggerstringconstants.dispformatarrayhidelenifless
 msgctxt "idedebuggerstringconstants.dispformatarrayhidelenifless"
 msgid "Max len"
-msgstr ""
+msgstr "最大长度"
 
 #: idedebuggerstringconstants.dispformatarrayhidelenkeepdepth
 msgid "Min nested"
-msgstr ""
+msgstr "最小嵌套"
 
 #: idedebuggerstringconstants.dispformatarrayhidelenthreseach
 msgctxt "idedebuggerstringconstants.dispformatarrayhidelenthreseach"
 msgid "Max sub-values"
-msgstr ""
+msgstr "最大子值"
 
 #: idedebuggerstringconstants.dispformatarrayhidelenthresfulllen
 msgctxt "idedebuggerstringconstants.dispformatarrayhidelenthresfulllen"
 msgid "Max text len"
-msgstr ""
+msgstr "最大文本长度"
 
 #: idedebuggerstringconstants.dispformatarrayhidelentoggle
 msgid "Hide \"Len\", if ..."
-msgstr ""
+msgstr "隐藏 “Len” 如果..."
 
 #: idedebuggerstringconstants.dispformatarraynavautohide
 msgid "Auto-hide"
-msgstr ""
+msgstr "自动隐藏"
 
 #: idedebuggerstringconstants.dispformatarraynavenforcebounds
 msgctxt "idedebuggerstringconstants.dispformatarraynavenforcebounds"
 msgid "Enforce bounds"
-msgstr ""
+msgstr "强制边界"
 
 #: idedebuggerstringconstants.dispformatarraynavpagesize
 msgid "Page-size"
-msgstr ""
+msgstr "页面大小"
 
 #: idedebuggerstringconstants.dispformatbasebin
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatbasebin"
 msgid "Binary"
 msgstr "二进制"
@@ -100,26 +99,23 @@ msgstr "二进制"
 #: idedebuggerstringconstants.dispformatbasechar
 msgctxt "idedebuggerstringconstants.dispformatbasechar"
 msgid "Char"
-msgstr ""
+msgstr "字符"
 
 #: idedebuggerstringconstants.dispformatbasedecimal
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatbasedecimal"
 msgid "Decimal"
-msgstr "小数"
+msgstr "十进制"
 
 #: idedebuggerstringconstants.dispformatbasehex
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatbasehex"
 msgid "Hex"
 msgstr "十六进制"
 
 #: idedebuggerstringconstants.dispformatbaseoct
 msgid "Oct"
-msgstr ""
+msgstr "八月"
 
 #: idedebuggerstringconstants.dispformatboolname
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatboolname"
 msgid "Name"
 msgstr "名称"
@@ -127,100 +123,98 @@ msgstr "名称"
 #: idedebuggerstringconstants.dispformatboolnameandord
 msgctxt "idedebuggerstringconstants.dispformatboolnameandord"
 msgid "Both"
-msgstr ""
+msgstr "两者皆是"
 
 #: idedebuggerstringconstants.dispformatboolord
 msgctxt "idedebuggerstringconstants.dispformatboolord"
 msgid "Ordinal"
-msgstr ""
+msgstr "序号"
 
 #: idedebuggerstringconstants.dispformatcategorydata
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatcategorydata"
 msgid "Value"
 msgstr "值"
 
 #: idedebuggerstringconstants.dispformatcategorymemdump
 msgid "Memory dump"
-msgstr ""
+msgstr "内存转储"
 
 #: idedebuggerstringconstants.dispformatcharletter
 msgid "Letter"
-msgstr ""
+msgstr "字母"
 
 #: idedebuggerstringconstants.dispformatcharletterandord
 msgctxt "idedebuggerstringconstants.dispformatcharletterandord"
 msgid "Both"
-msgstr ""
+msgstr "两者"
 
 #: idedebuggerstringconstants.dispformatcharord
 msgctxt "idedebuggerstringconstants.dispformatcharord"
 msgid "Ordinal"
-msgstr ""
+msgstr "序号"
 
 #: idedebuggerstringconstants.dispformatdlgarraycombine
 msgid "Combine lengths"
-msgstr ""
+msgstr "合并长度"
 
 #: idedebuggerstringconstants.dispformatdlgarraycombineall
 msgid "Always"
-msgstr ""
+msgstr "总是"
 
 #: idedebuggerstringconstants.dispformatdlgarraycombinedyn
 msgid "Dynamic"
-msgstr ""
+msgstr "动态"
 
 #: idedebuggerstringconstants.dispformatdlgarraycombinenone
 msgid "Never"
-msgstr ""
+msgstr "从不"
 
 #: idedebuggerstringconstants.dispformatdlgarraycombinestat
 msgid "Static"
-msgstr ""
+msgstr "静态"
 
 #: idedebuggerstringconstants.dispformatdlgarraylen
 msgid "Array len"
-msgstr ""
+msgstr "数组长度(len)"
 
 #: idedebuggerstringconstants.dispformatdlgarraymaxnest
 msgid "Nested"
-msgstr ""
+msgstr "嵌套"
 
 #: idedebuggerstringconstants.dispformatdlgarraynav
 msgid "Array navigation"
-msgstr ""
+msgstr "数组导航"
 
 #: idedebuggerstringconstants.dispformatdlgarrayshowprefix
 msgid "Show len"
-msgstr ""
+msgstr "显示 len"
 
 #: idedebuggerstringconstants.dispformatdlgarrayshowprefixembedded
 msgid "Include embedded"
-msgstr ""
+msgstr "包含嵌入式"
 
 #: idedebuggerstringconstants.dispformatdlgbtnadrformat
 msgid "Address"
-msgstr ""
+msgstr "地址"
 
 #: idedebuggerstringconstants.dispformatdlgbtnall
 msgid "All"
-msgstr ""
+msgstr "所有"
 
 #: idedebuggerstringconstants.dispformatdlgbtnarray
 msgid "Array"
-msgstr ""
+msgstr "数组"
 
 #: idedebuggerstringconstants.dispformatdlgbtnbool
 msgid "Boolean"
-msgstr ""
+msgstr "布尔值"
 
 #: idedebuggerstringconstants.dispformatdlgbtnchar
 msgctxt "idedebuggerstringconstants.dispformatdlgbtnchar"
 msgid "Char"
-msgstr ""
+msgstr "字符"
 
 #: idedebuggerstringconstants.dispformatdlgbtncurrent
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatdlgbtncurrent"
 msgid "Current"
 msgstr "当前"
@@ -228,73 +222,72 @@ msgstr "当前"
 #: idedebuggerstringconstants.dispformatdlgbtnenum
 msgctxt "idedebuggerstringconstants.dispformatdlgbtnenum"
 msgid "Enum"
-msgstr ""
+msgstr "枚举"
 
 #: idedebuggerstringconstants.dispformatdlgbtnenumval
 msgid "Enum (Identifier)"
-msgstr ""
+msgstr "枚举 (标识符)"
 
 #: idedebuggerstringconstants.dispformatdlgbtnfloat
 msgctxt "idedebuggerstringconstants.dispformatdlgbtnfloat"
 msgid "Float"
-msgstr ""
+msgstr "浮动"
 
 #: idedebuggerstringconstants.dispformatdlgbtnnum2visible
 msgid "Show value in a second format"
-msgstr ""
+msgstr "以第二种格式显示值"
 
 #: idedebuggerstringconstants.dispformatdlgbtnnumber
 msgid "Number"
-msgstr ""
+msgstr "数字"
 
 #: idedebuggerstringconstants.dispformatdlgbtnnumber2
 msgid "Number (2nd)"
-msgstr ""
+msgstr "数字 (第 2 个)"
 
 #: idedebuggerstringconstants.dispformatdlgbtnoptions
 msgid "Options"
-msgstr ""
+msgstr "选项"
 
 #: idedebuggerstringconstants.dispformatdlgbtnpointer
 msgctxt "idedebuggerstringconstants.dispformatdlgbtnpointer"
 msgid "Pointer"
-msgstr ""
+msgstr "指针"
 
 #: idedebuggerstringconstants.dispformatdlgbtnstruct
 msgid "Structure"
-msgstr ""
+msgstr "结构"
 
 #: idedebuggerstringconstants.dispformatdlgcaptionaddress
 msgid "(Address)"
-msgstr ""
+msgstr "(地址)"
 
 #: idedebuggerstringconstants.dispformatdlgcaptionderef
 msgid "(Deref)"
-msgstr ""
+msgstr "(取消引用)"
 
 #: idedebuggerstringconstants.dispformatdlgcaptionnumber
 msgid "(Number)"
-msgstr ""
+msgstr "（数字）"
 
 #: idedebuggerstringconstants.dispformatdlgcaptionshowchar
 msgid "(Show Char)"
-msgstr ""
+msgstr "(显示字符)"
 
 #: idedebuggerstringconstants.dispformatdlgcaptionsign
 msgid "(Sign)"
-msgstr ""
+msgstr "(符号)"
 
 #: idedebuggerstringconstants.dispformatdlgcaptiontyped
 msgid "(Typed)"
-msgstr ""
+msgstr "(已输入)"
 
 #: idedebuggerstringconstants.dispformatdlgindent
 msgctxt "idedebuggerstringconstants.dispformatdlgindent"
 msgid "Multiline"
-msgstr ""
+msgstr "多行"
 
 #: idedebuggerstringconstants.dispformatenumname
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatenumname"
 msgid "Name"
 msgstr "名称"
@@ -302,125 +295,123 @@ msgstr "名称"
 #: idedebuggerstringconstants.dispformatenumnameandord
 msgctxt "idedebuggerstringconstants.dispformatenumnameandord"
 msgid "Both"
-msgstr ""
+msgstr "两者"
 
 #: idedebuggerstringconstants.dispformatenumord
 msgctxt "idedebuggerstringconstants.dispformatenumord"
 msgid "Ordinal"
-msgstr ""
+msgstr "序号"
 
 #: idedebuggerstringconstants.dispformatfloatpoint
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatfloatpoint"
 msgid "Decimal"
-msgstr "小数"
+msgstr "十进制"
 
 #: idedebuggerstringconstants.dispformatfloatscientific
 msgid "Exponent"
-msgstr ""
+msgstr "指数"
 
 #: idedebuggerstringconstants.dispformatforcesinglelinearraylen
 msgctxt "idedebuggerstringconstants.dispformatforcesinglelinearraylen"
 msgid "Max len"
-msgstr ""
+msgstr "最大长度"
 
 #: idedebuggerstringconstants.dispformatforcesinglelinedepth
 msgid "Max sub-levels"
-msgstr ""
+msgstr "最大子级数"
 
 #: idedebuggerstringconstants.dispformatforcesinglelinedigitsany
 msgid "Any"
-msgstr ""
+msgstr "任何"
 
 #: idedebuggerstringconstants.dispformatforcesinglelineeach
 msgctxt "idedebuggerstringconstants.dispformatforcesinglelineeach"
 msgid "Max sub-values"
-msgstr ""
+msgstr "最大子值"
 
 #: idedebuggerstringconstants.dispformatforcesinglelinelen
 msgctxt "idedebuggerstringconstants.dispformatforcesinglelinelen"
 msgid "Max text len"
-msgstr ""
+msgstr "最大文本长度"
 
 #: idedebuggerstringconstants.dispformatforcesinglelinestructfld
 msgid "Max fields"
-msgstr ""
+msgstr "最大字段数"
 
 #: idedebuggerstringconstants.dispformatforcesinglelinetoggle
 msgid "Keep singleline, if ..."
-msgstr ""
+msgstr "保持单行，如果 ..."
 
 #: idedebuggerstringconstants.dispformatgroupaddress
 msgctxt "idedebuggerstringconstants.dispformatgroupaddress"
 msgid "Pointer (Addr)"
-msgstr ""
+msgstr "指针 (Addr)"
 
 #: idedebuggerstringconstants.dispformatgroupbase
 msgid "Number base"
-msgstr ""
+msgstr "数制"
 
 #: idedebuggerstringconstants.dispformatgroupbool
 msgid "Bool"
-msgstr ""
+msgstr "布尔"
 
 #: idedebuggerstringconstants.dispformatgroupcategory
 msgid "Display type"
-msgstr ""
+msgstr "显示类型"
 
 #: idedebuggerstringconstants.dispformatgroupchar
 msgctxt "idedebuggerstringconstants.dispformatgroupchar"
 msgid "Char"
-msgstr ""
+msgstr "字符"
 
 #: idedebuggerstringconstants.dispformatgroupenum
 msgctxt "idedebuggerstringconstants.dispformatgroupenum"
 msgid "Enum"
-msgstr ""
+msgstr "枚举"
 
 #: idedebuggerstringconstants.dispformatgroupfloat
 msgctxt "idedebuggerstringconstants.dispformatgroupfloat"
 msgid "Float"
-msgstr ""
+msgstr "浮点数"
 
 #: idedebuggerstringconstants.dispformatgrouppointerderef
 msgid "Deref Pointer"
-msgstr ""
+msgstr "取消引用指针"
 
 #: idedebuggerstringconstants.dispformatgroupsign
 msgid "Number sign"
-msgstr ""
+msgstr "井号"
 
 #: idedebuggerstringconstants.dispformatgroupstruct
 msgid "Structures"
-msgstr ""
+msgstr "结构体"
 
 #: idedebuggerstringconstants.dispformatgroupstructaddress
 msgid "Structures (Addr)"
-msgstr ""
+msgstr "结构 (Addr)"
 
 #: idedebuggerstringconstants.dispformatindentmaxwrap
 msgid "Max multiline level"
-msgstr ""
+msgstr "最大多行级别"
 
 #: idedebuggerstringconstants.dispformatnoleadzero
 msgid "Hide leading zeros"
-msgstr ""
+msgstr "隐藏前导零"
 
 #: idedebuggerstringconstants.dispformatnumdigits
 msgid "Digits"
-msgstr ""
+msgstr "数字"
 
 #: idedebuggerstringconstants.dispformatnumdigitsfull
 msgctxt "idedebuggerstringconstants.dispformatnumdigitsfull"
 msgid "Full"
-msgstr ""
+msgstr "完整"
 
 #: idedebuggerstringconstants.dispformatnumseperator
 msgid "Separator (1000)"
-msgstr ""
+msgstr "分隔符 (1000)"
 
 #: idedebuggerstringconstants.dispformatnumsepgroup
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatnumsepgroup"
 msgid "Group"
 msgstr "组"
@@ -428,70 +419,69 @@ msgstr "组"
 #: idedebuggerstringconstants.dispformatnumsepgroupbyte
 msgctxt "idedebuggerstringconstants.dispformatnumsepgroupbyte"
 msgid "Byte"
-msgstr ""
+msgstr "字节"
 
 #: idedebuggerstringconstants.dispformatnumsepgrouplong
 msgid "DWord"
-msgstr ""
+msgstr "DWord"
 
 #: idedebuggerstringconstants.dispformatnumsepgroupnone
 msgctxt "idedebuggerstringconstants.dispformatnumsepgroupnone"
 msgid "Off"
-msgstr ""
+msgstr "关闭"
 
 #: idedebuggerstringconstants.dispformatnumsepgroupword
 msgid "Word"
-msgstr ""
+msgstr "Word"
 
 #: idedebuggerstringconstants.dispformatoptchangingdescrall
 msgctxt "idedebuggerstringconstants.dispformatoptchangingdescrall"
 msgid "Setting fallback options for all windows."
-msgstr ""
+msgstr "为所有窗口设置回退选项。"
 
 #: idedebuggerstringconstants.dispformatoptchangingdescrpreset
 msgid "Presets that can be applied to individual watches/locals."
-msgstr ""
+msgstr "可以应用于各个监视点/局部变量的预设。"
 
 #: idedebuggerstringconstants.dispformatoptchangingdescrsome
 msgctxt "idedebuggerstringconstants.dispformatoptchangingdescrsome"
 msgid "Setting fallback options for selected windows."
-msgstr ""
+msgstr "为选中的窗口设置回退选项。"
 
 #: idedebuggerstringconstants.dispformatoptprojecttext
 msgid "General and specific project settings will be used first. Only if none of them sets a default, then the IDE-wide settings will be used."
-msgstr ""
+msgstr "通用和特定的项目设置将首先被使用。只有当它们都没有设置默认值时，才会使用IDE范围的设置。"
 
 #: idedebuggerstringconstants.dispformatpointeraddressplain
 msgctxt "idedebuggerstringconstants.dispformatpointeraddressplain"
 msgid "Plain address"
-msgstr ""
+msgstr "普通地址"
 
 #: idedebuggerstringconstants.dispformatpointeraddresstyped
 msgctxt "idedebuggerstringconstants.dispformatpointeraddresstyped"
 msgid "Typed address"
-msgstr ""
+msgstr "键入的地址"
 
 #: idedebuggerstringconstants.dispformatpointerderefoff
 msgctxt "idedebuggerstringconstants.dispformatpointerderefoff"
 msgid "No deref data"
-msgstr ""
+msgstr "无 deref 数据"
 
 #: idedebuggerstringconstants.dispformatpointerderefon
 msgctxt "idedebuggerstringconstants.dispformatpointerderefon"
 msgid "Show deref data"
-msgstr ""
+msgstr "显示 deref 数据"
 
 #: idedebuggerstringconstants.dispformatpointerderefonly
 msgctxt "idedebuggerstringconstants.dispformatpointerderefonly"
 msgid "Only deref data"
-msgstr ""
+msgstr "仅取消引用数据"
 
 #: idedebuggerstringconstants.dispformatpresetdefaults
 msgid "Add Defaults"
-msgstr ""
+msgstr "添加默认值"
 
 #: idedebuggerstringconstants.dispformatpresetdel
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatpresetdel"
 msgid "Delete"
 msgstr "删除"
@@ -499,92 +489,90 @@ msgstr "删除"
 #: idedebuggerstringconstants.dispformatpresetdown
 msgctxt "idedebuggerstringconstants.dispformatpresetdown"
 msgid "Down"
-msgstr ""
+msgstr "下"
 
 #: idedebuggerstringconstants.dispformatpresetname
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformatpresetname"
 msgid "Name"
 msgstr "名称"
 
 #: idedebuggerstringconstants.dispformatpresetnew
 msgid "New"
-msgstr ""
+msgstr "新建"
 
 #: idedebuggerstringconstants.dispformatpresetup
 msgctxt "idedebuggerstringconstants.dispformatpresetup"
 msgid "Up"
-msgstr ""
+msgstr "上"
 
 #: idedebuggerstringconstants.dispformatsignauto
 msgctxt "idedebuggerstringconstants.dispformatsignauto"
 msgid "Auto-sign"
-msgstr ""
+msgstr "自动签名"
 
 #: idedebuggerstringconstants.dispformatsignsigned
 msgid "Signed"
-msgstr ""
+msgstr "已签名"
 
 #: idedebuggerstringconstants.dispformatsignunsigned
 msgctxt "idedebuggerstringconstants.dispformatsignunsigned"
 msgid "Unsigned"
-msgstr ""
+msgstr "无符号"
 
 #: idedebuggerstringconstants.dispformatstructaddressoff
 msgid "Hide pointer"
-msgstr ""
+msgstr "隐藏指针"
 
 #: idedebuggerstringconstants.dispformatstructaddresson
 msgid "Show pointer"
-msgstr ""
+msgstr "显示指针"
 
 #: idedebuggerstringconstants.dispformatstructaddressonly
 msgid "Only pointer"
-msgstr ""
+msgstr "仅指针"
 
 #: idedebuggerstringconstants.dispformatstructfields
 msgid "Field names"
-msgstr ""
+msgstr "字段名称"
 
 #: idedebuggerstringconstants.dispformatstructfull
 msgctxt "idedebuggerstringconstants.dispformatstructfull"
 msgid "Full"
-msgstr ""
+msgstr "完整"
 
 #: idedebuggerstringconstants.dispformatstructvalonly
 msgid "Values only"
-msgstr ""
+msgstr "仅值"
 
 #: idedebuggerstringconstants.dispformattargetevalmod
 msgid "Eval/Modify"
-msgstr ""
+msgstr "评估/修改"
 
 #: idedebuggerstringconstants.dispformattargetglobal
 msgid "General"
-msgstr ""
+msgstr "常规"
 
 #: idedebuggerstringconstants.dispformattargethint
 msgid "Hints"
-msgstr ""
+msgstr "提示"
 
 #: idedebuggerstringconstants.dispformattargetinspect
 msgctxt "idedebuggerstringconstants.dispformattargetinspect"
 msgid "Inspect"
-msgstr ""
+msgstr "检查"
 
 #: idedebuggerstringconstants.dispformattargetlocals
 msgid "Locals"
-msgstr ""
+msgstr "局部变量"
 
 #: idedebuggerstringconstants.dispformattargetpreset
 msgid "Presets"
-msgstr ""
+msgstr "预设"
 
 #: idedebuggerstringconstants.dispformattargetwatches
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dispformattargetwatches"
 msgid "Watches"
-msgstr "监视(&W)"
+msgstr "监视点"
 
 #: idedebuggerstringconstants.dlgbackconvoptaction
 msgctxt "idedebuggerstringconstants.dlgbackconvoptaction"
@@ -610,11 +598,11 @@ msgstr "名称"
 
 #: idedebuggerstringconstants.dlgbackconvoptnesting
 msgid "Limit to (un)nested"
-msgstr ""
+msgstr "限制为 (非)嵌套"
 
 #: idedebuggerstringconstants.dlgbackconvoptnestlvl
 msgid "Min/Max level"
-msgstr ""
+msgstr "最小/最大级别"
 
 #: idedebuggerstringconstants.dlgbackconvoptremove
 msgid "Remove"
@@ -634,7 +622,7 @@ msgstr "- 禁用 -"
 
 #: idedebuggerstringconstants.dlgdisplayformatdebugoptions
 msgid "Display Format"
-msgstr ""
+msgstr "显示格式"
 
 #: idedebuggerstringconstants.dlgenvtype
 msgctxt "lazarusidestrconsts.dlgenvtype"
@@ -653,11 +641,11 @@ msgstr "XML文件"
 
 #: idedebuggerstringconstants.dlghistorydeleteallconfirm
 msgid "Delete complete History?"
-msgstr ""
+msgstr "删除完整历史记录？"
 
 #: idedebuggerstringconstants.dlgidedbgdebugger
 msgid "Debugger"
-msgstr ""
+msgstr "调试器"
 
 #: idedebuggerstringconstants.dlgidedbgentername
 msgid "Enter name"
@@ -669,26 +657,26 @@ msgstr "新建项目"
 
 #: idedebuggerstringconstants.dlginspectamountofitemstoshow
 msgid "Amount of items to show"
-msgstr ""
+msgstr "显示的项目数量"
 
 #: idedebuggerstringconstants.dlginspectboundsdd
 #, object-pascal-format
 msgid "Bounds: %d .. %d"
-msgstr ""
+msgstr "范围： %d .. %d"
 
 #: idedebuggerstringconstants.dlginspectindexoffirstitemtoshow
 msgid "Index of first item to show"
-msgstr ""
+msgstr "要显示的第一项的索引"
 
 #: idedebuggerstringconstants.dlgsortdown
 msgctxt "idedebuggerstringconstants.dlgsortdown"
 msgid "Down"
-msgstr ""
+msgstr "下"
 
 #: idedebuggerstringconstants.dlgsortup
 msgctxt "idedebuggerstringconstants.dlgsortup"
 msgid "Up"
-msgstr ""
+msgstr "上"
 
 #: idedebuggerstringconstants.dlgunitdeprefresh
 msgctxt "lazarusidestrconsts.dlgunitdeprefresh"
@@ -702,19 +690,19 @@ msgstr "值"
 
 #: idedebuggerstringconstants.dlgvaluedataaddr
 msgid "Data-Address"
-msgstr ""
+msgstr "数据-地址"
 
 #: idedebuggerstringconstants.dlgvarformatterdebugoptions
 msgid "Value Formatter"
-msgstr ""
+msgstr "值格式化器"
 
 #: idedebuggerstringconstants.dlgwatchesdeleteallconfirm
 msgid "Delete all watches?"
-msgstr ""
+msgstr "删除所有监视点？"
 
 #: idedebuggerstringconstants.dlgwatchpropertyunknown
 msgid ">> Mixed/Keep <<"
-msgstr ""
+msgstr ">> 混合/保持 <<"
 
 #: idedebuggerstringconstants.drsaddwatch
 msgctxt "idedebuggerstringconstants.drsaddwatch"
@@ -723,7 +711,7 @@ msgstr "增加监视"
 
 #: idedebuggerstringconstants.drsappendresultatbottomofhis
 msgid "Append result at bottom of history"
-msgstr ""
+msgstr "在历史记录底部追加结果"
 
 #: idedebuggerstringconstants.drsbreakpointcolwidthaction
 msgid "Action column"
@@ -752,7 +740,7 @@ msgstr "通过统计列"
 
 #: idedebuggerstringconstants.drscolwidthaddr
 msgid "Address column"
-msgstr ""
+msgstr "地址列"
 
 #: idedebuggerstringconstants.drscolwidthbrkpointimg
 msgid "Break indication column"
@@ -789,7 +777,7 @@ msgstr "状态列"
 
 #: idedebuggerstringconstants.drscolwidthtid
 msgid "Thread ID column"
-msgstr ""
+msgstr "线程 ID 列"
 
 #: idedebuggerstringconstants.drscolwidthvalue
 msgid "Value column"
@@ -797,11 +785,11 @@ msgstr "值列"
 
 #: idedebuggerstringconstants.drsdebugconverter
 msgid "Converter"
-msgstr ""
+msgstr "转换器"
 
 #: idedebuggerstringconstants.drsdebugvalformatter
 msgid "Value formatter"
-msgstr ""
+msgstr "值格式化器"
 
 #: idedebuggerstringconstants.drsdisableenableupdatesforth
 msgctxt "idedebuggerstringconstants.drsdisableenableupdatesforth"
@@ -810,17 +798,16 @@ msgstr "禁用/启用整个窗口的更新"
 
 #: idedebuggerstringconstants.drsenterexpression
 msgid "Enter Expression"
-msgstr ""
+msgstr "输入表达式"
 
 #: idedebuggerstringconstants.drsevaluate
 msgid "Evaluate"
-msgstr ""
+msgstr "评估"
 
 #: idedebuggerstringconstants.drshistory
-#, fuzzy
 msgctxt "idedebuggerstringconstants.drshistory"
 msgid "History"
-msgstr "历史"
+msgstr "历史记录"
 
 #: idedebuggerstringconstants.drshistorycolwidthcurrent
 msgid "Current column"
@@ -836,12 +823,12 @@ msgstr "时间列"
 
 #: idedebuggerstringconstants.drsinsertresultattopofhistor
 msgid "Insert result at top of history"
-msgstr ""
+msgstr "在历史记录顶部插入结果"
 
 #: idedebuggerstringconstants.drsinspect
 msgctxt "idedebuggerstringconstants.drsinspect"
 msgid "Inspect"
-msgstr ""
+msgstr "检查"
 
 #: idedebuggerstringconstants.drsinspectcolwidthdataclass
 msgid "Data class column"
@@ -887,27 +874,27 @@ msgstr "长度=%d:"
 #: idedebuggerstringconstants.drslen2
 #, object-pascal-format
 msgid "Len=%s: "
-msgstr ""
+msgstr "长度=%s:"
 
 #: idedebuggerstringconstants.drsnewvalue
 msgid "New Value"
-msgstr ""
+msgstr "新值"
 
 #: idedebuggerstringconstants.drsnewvaluetoassigntothevari
 msgid "New value to assign to the variable in the debugged process (use Shift-Enter to confirm)"
-msgstr ""
+msgstr "要分配给调试过程中变量的新值（使用 Shift-Enter 确认）"
 
 #: idedebuggerstringconstants.drsnodebugconverter
 msgid "No Converter"
-msgstr ""
+msgstr "无转换器"
 
 #: idedebuggerstringconstants.drsnohistorykept
 msgid "No history kept"
-msgstr ""
+msgstr "没有保留历史记录"
 
 #: idedebuggerstringconstants.drsnovalformatter
 msgid "No value formatter"
-msgstr ""
+msgstr "无值格式化程序"
 
 #: idedebuggerstringconstants.drsrunallthreadswhileevaluat
 msgid "Run all threads while evaluating"
@@ -924,7 +911,7 @@ msgstr "函数"
 
 #: idedebuggerstringconstants.drsusefunctioncallshint
 msgid "Allow function calls"
-msgstr ""
+msgstr "允许函数调用"
 
 #: idedebuggerstringconstants.drsuseinstanceclass
 msgctxt "idedebuggerstringconstants.drsuseinstanceclass"
@@ -1089,7 +1076,7 @@ msgstr "复制所有输出到剪贴板"
 
 #: idedebuggerstringconstants.liscopyline
 msgid "Copy Line"
-msgstr ""
+msgstr "复制行"
 
 #: idedebuggerstringconstants.liscsbottom
 msgctxt "lazarusidestrconsts.liscsbottom"
@@ -1098,7 +1085,7 @@ msgstr "底部"
 
 #: idedebuggerstringconstants.liscsdown
 msgid "Page down"
-msgstr ""
+msgstr "向下翻页"
 
 #: idedebuggerstringconstants.liscstop
 msgctxt "lazarusidestrconsts.liscstop"
@@ -1107,14 +1094,12 @@ msgstr "上部"
 
 #: idedebuggerstringconstants.liscsup
 msgid "Page up"
-msgstr ""
+msgstr "页上"
 
 #: idedebuggerstringconstants.liscurrent
-#, fuzzy
-#| msgid "Current"
 msgctxt "lazarusidestrconsts.liscurrent"
 msgid "Select as context"
-msgstr "当前"
+msgstr "选择为上下文"
 
 #: idedebuggerstringconstants.lisdadattach
 msgid "Attach"
@@ -1164,7 +1149,7 @@ msgstr "激活所有"
 
 #: idedebuggerstringconstants.lisdbgasmcopyaddresstoclipboard
 msgid "Copy address to Clipboard"
-msgstr ""
+msgstr "复制地址到剪贴板"
 
 #: idedebuggerstringconstants.lisdbgasmcopytoclipboard
 msgid "Copy to Clipboard"
@@ -1228,15 +1213,15 @@ msgstr "调试器警告"
 
 #: idedebuggerstringconstants.lisdebugoptionsfrmresume
 msgid "Resume"
-msgstr "恢复(Resume)"
+msgstr "恢复"
 
 #: idedebuggerstringconstants.lisdebugoptionsfrmresumehandled
 msgid "Resume Handled"
-msgstr "恢复(Resume)已处理"
+msgstr "恢复已处理"
 
 #: idedebuggerstringconstants.lisdebugoptionsfrmresumeunhandled
 msgid "Resume Unhandled"
-msgstr "恢复(Resume)未处理"
+msgstr "恢复未处理"
 
 #: idedebuggerstringconstants.lisdeleteall
 msgid "&Delete All"
@@ -1498,15 +1483,15 @@ msgstr "属性"
 
 #: idedebuggerstringconstants.lisinspectshowcolclass
 msgid "Show class column"
-msgstr ""
+msgstr "显示类列"
 
 #: idedebuggerstringconstants.lisinspectshowcoltype
 msgid "Show type column"
-msgstr ""
+msgstr "显示类型列"
 
 #: idedebuggerstringconstants.lisinspectshowcolvisibility
 msgid "Show visibility column"
-msgstr ""
+msgstr "显示可见性列"
 
 #: idedebuggerstringconstants.lisinspectunavailableerror
 #, object-pascal-format
@@ -1682,7 +1667,7 @@ msgstr "调试输出(&D)"
 
 #: idedebuggerstringconstants.lismenuviewmemviewer
 msgid "Mem viewer"
-msgstr ""
+msgstr "内存查看器"
 
 #: idedebuggerstringconstants.lismore
 msgctxt "lazarusidestrconsts.lismore"
@@ -1756,7 +1741,7 @@ msgstr "获取快照"
 
 #: idedebuggerstringconstants.listhreadid
 msgid "Thread ID"
-msgstr ""
+msgstr "线程 ID"
 
 #: idedebuggerstringconstants.listhreads
 msgctxt "lazarusidestrconsts.listhreads"
@@ -1887,11 +1872,11 @@ msgstr "表达式"
 #: idedebuggerstringconstants.liswlinspectpane
 msgctxt "idedebuggerstringconstants.liswlinspectpane"
 msgid "Inspect pane"
-msgstr "查看窗格"
+msgstr "检查面板"
 
 #: idedebuggerstringconstants.liswlmemview
 msgid "Memory"
-msgstr ""
+msgstr "内存"
 
 #: idedebuggerstringconstants.liswlproperties
 msgid "&Properties"
@@ -1899,49 +1884,49 @@ msgstr "属性(&P)"
 
 #: idedebuggerstringconstants.liswlquickformat
 msgid "&Format"
-msgstr ""
+msgstr "格式(&F)"
 
 #: idedebuggerstringconstants.liswlwatchlist
 msgctxt "lazarusidestrconsts.liswlwatchlist"
 msgid "Watches"
-msgstr "监视(&W)"
+msgstr "监视"
 
 #: idedebuggerstringconstants.liswordwrapbtnhint
 msgid "Word wrap"
-msgstr ""
+msgstr "自动换行"
 
 #: idedebuggerstringconstants.memviewgroupbyte
 msgctxt "idedebuggerstringconstants.memviewgroupbyte"
 msgid "Byte"
-msgstr ""
+msgstr "字节"
 
 #: idedebuggerstringconstants.memviewgroupdwordbigendian
 msgid "DWord (Big Endian)"
-msgstr ""
+msgstr "DWord (Big Endian)"
 
 #: idedebuggerstringconstants.memviewgroupdwordlittleendian
 msgid "DWord (Little Endian)"
-msgstr ""
+msgstr "DWord (Little Endian)"
 
 #: idedebuggerstringconstants.memviewgroupqwordbigendian
 msgid "QWord (Big Endian)"
-msgstr ""
+msgstr "QWord (Big Endian)"
 
 #: idedebuggerstringconstants.memviewgroupqwordlittleendian
 msgid "QWord (Little Endian)"
-msgstr ""
+msgstr "QWord (Little Endian)"
 
 #: idedebuggerstringconstants.memviewgroupwordbigendian
 msgid "Word (Big Endian)"
-msgstr ""
+msgstr "Word (Big Endian)"
 
 #: idedebuggerstringconstants.memviewgroupwordlittleendian
 msgid "Word (Little Endian)"
-msgstr ""
+msgstr "Word (Little Endian)"
 
 #: idedebuggerstringconstants.optdispguttercustomdisplayformat
 msgid "Custom Display Format"
-msgstr ""
+msgstr "自定义显示格式"
 
 #: idedebuggerstringconstants.regdlgbinary
 msgctxt "lazarusidestrconsts.regdlgbinary"
@@ -1956,7 +1941,7 @@ msgstr "小数"
 #: idedebuggerstringconstants.regdlgdefault
 msgctxt "idedebuggerstringconstants.regdlgdefault"
 msgid "Default"
-msgstr ""
+msgstr "默认"
 
 #: idedebuggerstringconstants.regdlgdisplaytypeforselectedregisters
 msgid "Display type for selected Registers"
@@ -1981,7 +1966,7 @@ msgstr "原始"
 
 #: idedebuggerstringconstants.rsaddressoffset
 msgid "Address-offset"
-msgstr ""
+msgstr "地址偏移"
 
 #: idedebuggerstringconstants.rsattachto
 msgid "Attach to"
@@ -1989,7 +1974,7 @@ msgstr "附加到"
 
 #: idedebuggerstringconstants.rsbaseaddress
 msgid "Base-address"
-msgstr ""
+msgstr "基地址"
 
 #: idedebuggerstringconstants.rsenterpid
 msgid "Enter PID"
@@ -1997,7 +1982,7 @@ msgstr "进入PID"
 
 #: idedebuggerstringconstants.rslength
 msgid "Length"
-msgstr ""
+msgstr "长度"
 
 #: idedebuggerstringconstants.synfnewvalueisempty
 msgid "\"New value\" is empty."
@@ -2013,65 +1998,65 @@ msgstr "切换断点(&B)"
 
 #: idedebuggerstringconstants.valformatterchararraytostringname
 msgid "CharArray as String"
-msgstr ""
+msgstr "字符数组 作为 字符串"
 
 #: idedebuggerstringconstants.valformatterchararraytostringstopnull
 msgid "Stop at #0"
-msgstr ""
+msgstr "在 #0 处停止"
 
 #: idedebuggerstringconstants.valformattercolorname
 msgid "TColor"
-msgstr ""
+msgstr "TColor"
 
 #: idedebuggerstringconstants.valformattercolornamealpha
 msgid "TAlphaColor"
-msgstr ""
+msgstr "TAlphaColor"
 
 #: idedebuggerstringconstants.valformattercolorrgbdec
 msgid "RGB in decimal"
-msgstr ""
+msgstr "RGB 十进制"
 
 #: idedebuggerstringconstants.valformattercolorshowboth
 msgid "Show Both"
-msgstr ""
+msgstr "显示两者"
 
 #: idedebuggerstringconstants.valformattercolorshowname
 msgid "Show name"
-msgstr ""
+msgstr "显示名称"
 
 #: idedebuggerstringconstants.valformattercolorshowrgb
 msgid "Show RGB"
-msgstr ""
+msgstr "显示 RGB"
 
 #: idedebuggerstringconstants.valformattercurrencyname
 msgid "Currency"
-msgstr ""
+msgstr "货币"
 
 #: idedebuggerstringconstants.valformatterdatetimeformatd
 msgid "Format for date"
-msgstr ""
+msgstr "日期格式"
 
 #: idedebuggerstringconstants.valformatterdatetimeformatdt
 msgid "Format for date-time"
-msgstr ""
+msgstr "日期时间格式"
 
 #: idedebuggerstringconstants.valformatterdatetimeformatt
 msgid "Format for time"
-msgstr ""
+msgstr "时间格式"
 
 #: idedebuggerstringconstants.valformatterdatetimename
 msgid "DateTime"
-msgstr ""
+msgstr "日期时间"
 
 #: idedebuggerstringconstants.valformatterorigvalatend
 msgid "Show original value at end"
-msgstr ""
+msgstr "显示原始值于末尾"
 
 #: idedebuggerstringconstants.valformatterorigvalatstart
 msgid "Show original value at start"
-msgstr ""
+msgstr "显示初始值"
 
 #: idedebuggerstringconstants.valformatterorigvalhide
 msgid "Replace/Hide original value"
-msgstr ""
+msgstr "替换/隐藏原始值"
 

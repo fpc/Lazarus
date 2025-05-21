@@ -2,14 +2,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
+"PO-Revision-Date: 2025-05-21 22:03+0800\n"
 "Last-Translator: ACTom <i@actom.me>\n"
 "Language-Team: \n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.3.2\n"
+"X-Generator: TyPoEditor 0.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: dockedstrconsts.sallowsizingcaption
@@ -121,31 +121,31 @@ msgstr "分离控制面板"
 
 #: dockedstrconsts.senabledockeddsgner
 msgid "Show the form-editor as (docked) tab in the editor window (Requires IDE restart)"
-msgstr ""
+msgstr "在 编辑器 窗口中以 (停靠) 选项卡形式显示 窗体 编辑器 (需要重启 IDE)"
 
 #: dockedstrconsts.setupdesignerclassic
 msgid "Classic Form Editor (floating):"
-msgstr ""
+msgstr "经典窗体编辑器（浮动）"
 
 #: dockedstrconsts.setupdesignerdocked
 msgid "The form editor is part of the IDE's source editor (tabbed interface)."
-msgstr ""
+msgstr "窗体编辑器是 IDE 源代码编辑器（标签式界面）的一部分。"
 
 #: dockedstrconsts.setupdesignerfloat
 msgid "The form editor shows the edited form as a normal window."
-msgstr ""
+msgstr "窗体编辑器将编辑的窗体显示为普通窗口。"
 
 #: dockedstrconsts.setupdesignerinfo
 msgid "The \"classic\" designer can be positioned on your screen independent of other parts of the IDE. The \"modern\" docked designer will be embedded into the source-edit window, and you will have a tab to toggle between source and form. You can open a 2nd source-edit window to see both at the same time."
-msgstr ""
+msgstr "“经典” 设计器可以独立于 IDE 的其他部分放置在屏幕上。“现代” 码放式设计器将嵌入到源代码编辑窗口中，您将有一个选项卡在源代码和窗体之间切换。您可以打开第二个源代码编辑窗口以同时查看两者。"
 
 #: dockedstrconsts.setupdesignermodern
 msgid "Modern Form Editor (docked/tabbed):"
-msgstr ""
+msgstr "现代窗体编辑器 (停靠/标签页式)"
 
 #: dockedstrconsts.setupmultiwindowideoption
 msgid "You can change this in the IDE options under: \"Docked Form Editor\""
-msgstr ""
+msgstr "你可以在 IDE 选项中的 “停靠的窗体编辑器” 下更改此设置。"
 
 #: dockedstrconsts.sforcerefreshingcaption
 msgid "Force Refreshing At Sizing"
@@ -157,11 +157,11 @@ msgstr "用户调整大小时强制刷新窗体"
 
 #: dockedstrconsts.sformeditor
 msgid "Form editor / Designer"
-msgstr ""
+msgstr "窗体编辑器 / 设计器"
 
 #: dockedstrconsts.sidelayout
 msgid "IDE Layout"
-msgstr ""
+msgstr "IDE 布局"
 
 #: dockedstrconsts.smouseborderfactorcaption
 msgid "Mouse cursor factor for BorderSpacing property"

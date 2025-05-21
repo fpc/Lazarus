@@ -1,0 +1,230 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: ACTom <i@actom.me>\n"
+"X-Generator: TyPoEditor 0.2\n"
+
+#: fperrormessages.fpgdbmidisplaygdbinsteadoffpdebugwatches
+msgid "Display GDB instead of FpDebug Watches"
+msgstr "显示 GDB 而不是 FpDebug 监视点"
+
+#: fperrormessages.msgfperraddressisnil
+msgid "Cannot access data, Address is NIL"
+msgstr "无法访问数据，地址为空"
+
+#: fperrormessages.msgfperranyerror
+#, object-pascal-format
+msgid "%1:s"
+msgstr "%1:s"
+
+#: fperrormessages.msgfperrattachprocess
+#, object-pascal-format
+msgid "Failed to attach to process \"%1:s\".%0:sError message: %2:d \"%3:s\".%0:s%4:s"
+msgstr "无法附加到进程 \"%1:s\"。%0:s错误信息：%2:d \"%3:s\"。%0:s%4:s"
+
+#: fperrormessages.msgfperrcannotcasttopointer_p
+#, object-pascal-format
+msgid "Can't cast value to pointer '%1:s'%2:s"
+msgstr "无法将值转换为指针 '%1:s'%2:s"
+
+#: fperrormessages.msgfperrcannotderef_p
+#, object-pascal-format
+msgid "Can't dereference expression '%1:s'%2:s"
+msgstr "无法解引用表达式 '%1:s'%2:s"
+
+#: fperrormessages.msgfperrcannotreadmemataddr
+#, object-pascal-format
+msgctxt "fperrormessages.msgfperrcannotreadmemataddr"
+msgid "Failed to read Mem at Address $%1:x"
+msgstr "无法在地址 $%1:x 读取内存"
+
+#: fperrormessages.msgfperrcannotwritememataddr
+#, object-pascal-format
+msgctxt "fperrormessages.msgfperrcannotwritememataddr"
+msgid "Failed to write Mem at Address $%1:x"
+msgstr "无法在地址 $%1:x 写入 Mem"
+
+#: fperrormessages.msgfperrchangevariablenotsupported
+msgid "Changing the value of this variable is not supported"
+msgstr "更改此变量的值不受支持"
+
+#: fperrormessages.msgfperrcreateprocess
+#, object-pascal-format
+msgid "Failed to start process \"%1:s\".%0:sError message: %2:d \"%3:s\".%0:s%4:s"
+msgstr "无法启动进程 \"%1:s\"。%0:s错误信息：%2:d \"%3:s\"。%0:s%4:s"
+
+#: fperrormessages.msgfperrexpectedordinalval_p
+#, object-pascal-format
+msgctxt "fperrormessages.msgfperrexpectedordinalval_p"
+msgid "Expected an ordinal value, but found '%1:s'%2:s"
+msgstr "期望一个序数值，但找到了 '%1:s'%2:s"
+
+#: fperrormessages.msgfperrfailedreadregiseter
+msgid "Failed to read data from register"
+msgstr "无法从寄存器读取数据"
+
+#: fperrormessages.msgfperrfailedwritemem
+msgctxt "fperrormessages.msgfperrfailedwritemem"
+msgid "Failed to write data"
+msgstr "写入数据失败"
+
+#: fperrormessages.msgfperrindexoutofrange
+#, object-pascal-format
+msgctxt "fperrormessages.msgfperrindexoutofrange"
+msgid "Index out of range: %1:d"
+msgstr "索引超出范围： %1:d"
+
+#: fperrormessages.msgfperrlocationnotinlist
+msgid "Value not available at current code location"
+msgstr "当前代码位置无法获取值"
+
+#: fperrormessages.msgfperrlocationparser
+msgid "Internal Error: Cannot calculate location."
+msgstr "内部错误：无法计算位置。"
+
+#: fperrormessages.msgfperrlocationparserinit
+msgid "Internal Error: Cannot calculate location (Init)."
+msgstr "内部错误：无法计算位置 (初始化)。"
+
+#: fperrormessages.msgfperrlocationparsermemread
+#, object-pascal-format
+msgid "%1:s (while calculating location)"
+msgstr "%1:s (在计算位置时)"
+
+#: fperrormessages.msgfperrlocationparserminstack
+msgid "Not enough elements on stack."
+msgstr "栈中元素不足。"
+
+#: fperrormessages.msgfperrlocationparsernoaddressonstack
+msgid "Not an address on stack"
+msgstr "不是堆栈上的地址"
+
+#: fperrormessages.msgfperrnomemberwithname
+#, object-pascal-format
+msgid "Member not found: %1:s"
+msgstr "成员未找到： %1:s"
+
+#: fperrormessages.msgfperrorbadfloatsize
+msgid "Unsupported float value: Unknown precision"
+msgstr "不受支持的浮点值：未知精度"
+
+#: fperrormessages.msgfperrornotastructure
+#, object-pascal-format, fuzzy, badformat
+msgid "Cannot get member \"%1:s\" from non-structured type: %2:s"
+msgstr "无法从非结构化类型 %2:s 中获取成员 %1:s"
+
+#: fperrormessages.msgfperrpasparseremptyexpression
+msgid "Empty expression"
+msgstr "空表达式"
+
+#: fperrormessages.msgfperrpasparserexpectednumber_p
+#, object-pascal-format
+msgctxt "fperrormessages.msgfperrpasparserexpectednumber_p"
+msgid "Expected Number, but found '%1:s'%2:s"
+msgstr "期望数字，但找到 '%1:s'%2:s"
+
+#: fperrormessages.msgfperrpasparserindexerror_wrapper
+#, object-pascal-format
+msgid "Index error at pos %2:d for '%1:s'[]: %3:s"
+msgstr "索引错误 在位置 %2:d 对于 '%1:s'[]: %3:s"
+
+#: fperrormessages.msgfperrpasparserinvalidexpression
+msgid "Invalid Expression"
+msgstr "无效表达式"
+
+#: fperrormessages.msgfperrpasparsermissingexpraftercomma
+#, object-pascal-format
+msgid "Expected Expression after Comma, but found closing bracket %1:s at pos %2:d"
+msgstr "期望逗号后有表达式，但发现了闭合括号 %1:s 位置 %2:d"
+
+#: fperrormessages.msgfperrpasparsermissingindexexpression
+#, object-pascal-format
+msgid "Expected Expression but found closing bracket: '%1:s' at pos %2:d"
+msgstr "期望表达式但发现闭合括号：'%1:s' 位于位置 %2:d"
+
+#: fperrormessages.msgfperrpasparsermissingopenbracket_p
+#, object-pascal-format
+msgctxt "fperrormessages.msgfperrpasparsermissingopenbracket_p"
+msgid "No opening bracket for '%1:s' found%2:s"
+msgstr "未找到 %1:s 的 开始括号%2:s"
+
+#: fperrormessages.msgfperrpasparserunexpectedendofexpression
+#, object-pascal-format
+msgid "Unexpected end of expression after '%1:s'"
+msgstr "在 '%1:s' 之后表达式意外结束"
+
+#: fperrormessages.msgfperrpasparserunexpectedtoken_p
+#, object-pascal-format
+msgctxt "fperrormessages.msgfperrpasparserunexpectedtoken_p"
+msgid "Unexpected token '%1:s'%2:s"
+msgstr "意外的标记 '%1:s'%2:s"
+
+#: fperrormessages.msgfperrpasparserunknownintrinsic_p
+#, object-pascal-format
+msgctxt "fperrormessages.msgfperrpasparserunknownintrinsic_p"
+msgid "Intrinsic function '%1:s' not found%2:s"
+msgstr "未找到固有函数 '%1:s'%2:s"
+
+#: fperrormessages.msgfperrpasparserunterminatedstring_p
+#, object-pascal-format
+msgctxt "fperrormessages.msgfperrpasparserunterminatedstring_p"
+msgid "String not terminated%1:s"
+msgstr "字符串未终止%1:s"
+
+#: fperrormessages.msgfperrpasparserwrongopenbracket_p
+#, object-pascal-format
+msgctxt "fperrormessages.msgfperrpasparserwrongopenbracket_p"
+msgid "Mismatched opening bracket ('%3:s' at pos %2:d) for '%1:s' found%4:s"
+msgstr "不匹配的 开始 括号 ('%3:s' 在 位置 %2:d) 对于 '%1:s' 被发现%4:s"
+
+#: fperrormessages.msgfperrpasparser_atstart
+msgid " at start of expression"
+msgstr "在表达式开头"
+
+#: fperrormessages.msgfperrpasparser_position
+#, object-pascal-format
+msgid " at pos %1:d"
+msgstr "在位置 %1:d"
+
+#: fperrormessages.msgfperrpasparser_positionafter
+#, object-pascal-format
+msgctxt "fperrormessages.msgfperrpasparser_positionafter"
+msgid " at pos %1:d after '%2:s'"
+msgstr "在位置 %1:d 处 '%2:s' 之后"
+
+#: fperrormessages.msgfperrreadmemsizelimit
+msgid "Memory read size exceeds limit"
+msgstr "内存读取大小超过限制"
+
+#: fperrormessages.msgfperrsymbolnotfound_p
+#, object-pascal-format
+msgid "Identifier not found: \"%1:s\"%2:s"
+msgstr "未找到标识符：“%1:s”%2:s"
+
+#: fperrormessages.msgfperrtypehasnoindex
+#, object-pascal-format
+msgid "Cannot access indexed element in expression %1:s"
+msgstr "无法在表达式 %1:s 中访问索引元素"
+
+#: fperrormessages.msgfperrtypenotindexable
+msgctxt "fperrormessages.msgfperrtypenotindexable"
+msgid "The value has no index"
+msgstr "该值没有索引"
+
+#: fperrormessages.msgfpinternalerr
+#, object-pascal-format
+msgid "Internal error: %1:s"
+msgstr "内部错误： %1:s"
+
+#: fperrormessages.msgfpinternalerrcannotreadinvalidmem
+msgid "Internal error: Missing data location"
+msgstr "内部错误：缺少数据位置"
+
+#: fperrormessages.msgfpinternalerrcannotwriteinvalidmem
+msgid "Internal error writing data: Missing data location"
+msgstr "内部错误写入数据：缺少数据位置"
+
+#: fperrormessages.msgfpinternalerrfperrfailedreadmem
+msgid "Internal error: Failed to read data from memory"
+msgstr "内部错误：从内存读取数据失败"
+

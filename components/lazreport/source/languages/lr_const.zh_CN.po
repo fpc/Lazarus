@@ -5,20 +5,20 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"PO-Revision-Date: 2025-05-21 23:22+0800\n"
+"Last-Translator: ACTom <i@actom.me>\n"
 "Language-Team: \n"
 "Language: zh_CN\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Generator: TyPoEditor 0.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: lr_const.saboutformcapt
 msgid "About FastReport"
-msgstr "关于FastReport"
+msgstr "关于 FastReport"
 
 #: lr_const.saggregatecategory
 msgid "Aggregate"
-msgstr "Aggregate(总计的)"
+msgstr "聚合"
 
 #: lr_const.sallfiles
 msgid "All files"
@@ -46,51 +46,51 @@ msgstr "自动尺寸"
 
 #: lr_const.sband
 msgid "Band:"
-msgstr ""
+msgstr "Band:"
 
 #: lr_const.sband1
 msgid "Report title"
-msgstr "报告标题(title)"
+msgstr "报告标题"
 
 #: lr_const.sband10
 msgid "Detail footer"
-msgstr ""
+msgstr "详细页脚"
 
 #: lr_const.sband11
 msgid "Subdetail header"
-msgstr ""
+msgstr "子详细信息标题"
 
 #: lr_const.sband12
 msgid "Subdetail data"
-msgstr ""
+msgstr "子详细数据"
 
 #: lr_const.sband13
 msgid "Subdetail footer"
-msgstr ""
+msgstr "子详细信息页脚"
 
 #: lr_const.sband14
 msgid "Overlay"
-msgstr ""
+msgstr "叠加层"
 
 #: lr_const.sband15
 msgid "Column header"
-msgstr "列header"
+msgstr "列页眉"
 
 #: lr_const.sband16
 msgid "Column footer"
-msgstr "列footer"
+msgstr "列页脚"
 
 #: lr_const.sband17
 msgid "Group header"
-msgstr "组header"
+msgstr "组页眉"
 
 #: lr_const.sband18
 msgid "Group footer"
-msgstr "组footer"
+msgstr "组页脚"
 
 #: lr_const.sband19
 msgid "Cross header"
-msgstr "跨平台"
+msgstr "跨行标题"
 
 #: lr_const.sband2
 msgid "Report summary"
@@ -98,79 +98,79 @@ msgstr "报告摘要"
 
 #: lr_const.sband20
 msgid "Cross data"
-msgstr ""
+msgstr "跨数据"
 
 #: lr_const.sband21
 msgid "Cross footer"
-msgstr ""
+msgstr "跨页脚"
 
 #: lr_const.sband22
 msgctxt "lr_const.sband22"
 msgid "Child"
-msgstr ""
+msgstr "子项"
 
 #: lr_const.sband23
 msgctxt "lr_const.sband23"
 msgid "None"
-msgstr "None"
+msgstr "无"
 
 #: lr_const.sband3
 msgid "Page header"
-msgstr "页header"
+msgstr "页面页眉"
 
 #: lr_const.sband4
 msgid "Page footer"
-msgstr "页footer"
+msgstr "页面页脚"
 
 #: lr_const.sband5
 msgid "Master header"
-msgstr ""
+msgstr "主标题"
 
 #: lr_const.sband6
 msgid "Master data"
-msgstr ""
+msgstr "主数据"
 
 #: lr_const.sband7
 msgid "Master footer"
-msgstr ""
+msgstr "主页脚"
 
 #: lr_const.sband8
 msgid "Detail header"
-msgstr ""
+msgstr "详细标题"
 
 #: lr_const.sband9
 msgid "Detail data"
-msgstr ""
+msgstr "详细数据"
 
 #: lr_const.sbandeditorformcapt
 msgid "Band data source"
-msgstr ""
+msgstr "Band 数据源"
 
 #: lr_const.sbandeditorformdatasrc
 msgctxt "lr_const.sbandeditorformdatasrc"
 msgid "Data source"
-msgstr "Data源代码"
+msgstr "数据源"
 
 #: lr_const.sbandeditorformreccount
 msgctxt "lr_const.sbandeditorformreccount"
 msgid "&Record count"
-msgstr ""
+msgstr "记录计数(&R)"
 
 #: lr_const.sbandtypesformbtype
 msgid "Band type"
-msgstr ""
+msgstr "Band 类型"
 
 #: lr_const.sbandtypesformcapt
 msgid "Insert new band"
-msgstr "插入新band"
+msgstr "插入新 band"
 
 #: lr_const.sbarcodeerror
 msgid "Error in barcode"
-msgstr ""
+msgstr "条码错误"
 
 #: lr_const.sbarcodeformchksum
 msgid "Check&sum"
-msgstr ""
+msgstr "校验和(&M)"
 
 #: lr_const.sbarcodeformcode
 msgid "&Code"
@@ -179,7 +179,7 @@ msgstr "代码(&C)"
 #: lr_const.sbarcodeformdbfld
 msgctxt "lr_const.sbarcodeformdbfld"
 msgid "Insert DB field"
-msgstr "插入DB字段"
+msgstr "插入 DB 字段"
 
 #: lr_const.sbarcodeformopts
 msgctxt "lr_const.sbarcodeformopts"
@@ -188,7 +188,7 @@ msgstr "选项"
 
 #: lr_const.sbarcodeformreadable
 msgid "&Human readable"
-msgstr ""
+msgstr "人类可读(&H)"
 
 #: lr_const.sbarcodeformrotate
 msgid "Rotation"
@@ -200,7 +200,7 @@ msgstr "条形码编辑器"
 
 #: lr_const.sbarcodeformtype
 msgid "&Type of barcode"
-msgstr ""
+msgstr "条形码类型(&T)"
 
 #: lr_const.sbarcodeformvar
 msgid "Insert variable"
@@ -216,7 +216,7 @@ msgstr "位图文件"
 
 #: lr_const.sbreaked
 msgid "Breaked"
-msgstr ""
+msgstr "断点"
 
 #: lr_const.scancel
 msgid "Cancel"
@@ -252,7 +252,7 @@ msgstr "0"
 #: lr_const.sclassobjectnotfound
 #, object-pascal-format
 msgid "Class Object \"%s\" not found"
-msgstr "类对象\"%s\"未找到"
+msgstr "类对象 \"%s\" 未找到"
 
 #: lr_const.sconfirm
 msgid "Confirm"
@@ -268,11 +268,11 @@ msgstr "蓝色"
 
 #: lr_const.scrosseditorbluewhite
 msgid "Blue and White"
-msgstr "蓝白色"
+msgstr "蓝色和白色"
 
 #: lr_const.scrosseditorcaption
 msgid "Cross tab editor"
-msgstr ""
+msgstr "交叉表编辑器"
 
 #: lr_const.scrosseditorcount
 msgid "Count"
@@ -292,7 +292,7 @@ msgstr "绿色"
 
 #: lr_const.scrosseditorgreenorange
 msgid "Green and Orange"
-msgstr "绿橙色"
+msgstr "绿色和橙色"
 
 #: lr_const.scrosseditormax
 msgid "Max"
@@ -313,11 +313,11 @@ msgstr "橙色"
 
 #: lr_const.scrosseditorshowcolheader
 msgid "Show column header"
-msgstr "显示列header"
+msgstr "显示列标题"
 
 #: lr_const.scrosseditorshowcoltotal
 msgid "Show column total"
-msgstr ""
+msgstr "显示列总计"
 
 #: lr_const.scrosseditorshowcorner1
 msgid "Show corner 1"
@@ -329,19 +329,19 @@ msgstr "显示角2"
 
 #: lr_const.scrosseditorshowgrantotal
 msgid "Show grand total"
-msgstr ""
+msgstr "显示总计"
 
 #: lr_const.scrosseditorshowrowheader
 msgid "Show row header"
-msgstr "显示行header"
+msgstr "显示行标题"
 
 #: lr_const.scrosseditorshowrowtotal
 msgid "Show row total"
-msgstr ""
+msgstr "显示行总计"
 
 #: lr_const.scrosseditorshowtitle
 msgid "Show title"
-msgstr "显示标题(title)"
+msgstr "显示标题"
 
 #: lr_const.scrosseditorsource
 msgid "Source data"
@@ -349,7 +349,7 @@ msgstr "源代码数据"
 
 #: lr_const.scrosseditorstructure
 msgid "Cross-tab structure"
-msgstr ""
+msgstr "交叉表结构"
 
 #: lr_const.scrosseditorstyle
 msgid "Select style"
@@ -357,7 +357,7 @@ msgstr "选择样式"
 
 #: lr_const.scrosseditorsum
 msgid "Sum"
-msgstr ""
+msgstr "和"
 
 #: lr_const.scrosseditorwhite
 msgid "White"
@@ -365,11 +365,11 @@ msgstr "白色"
 
 #: lr_const.scrosstabcoltitle
 msgid "Col title"
-msgstr ""
+msgstr "列标题"
 
 #: lr_const.scrosstabcoltotal
 msgid "Col total"
-msgstr ""
+msgstr "列总计"
 
 #: lr_const.scrosstabdata
 msgid "Data"
@@ -377,23 +377,23 @@ msgstr "数据"
 
 #: lr_const.scrosstabgrantotal
 msgid "Grand total"
-msgstr ""
+msgstr "总计"
 
 #: lr_const.scrosstabrowtitle
 msgid "Row title"
-msgstr ""
+msgstr "行标题"
 
 #: lr_const.scrosstabrowtotal
 msgid "Row total"
-msgstr ""
+msgstr "行总计"
 
 #: lr_const.scrosstabtotalchcell
 msgid "Total CH cell"
-msgstr ""
+msgstr "总 CH 单元格"
 
 #: lr_const.scrosstabtotalrhcell
 msgid "Total RH cell"
-msgstr ""
+msgstr "总 RH 单元"
 
 #: lr_const.scsvfile
 msgid "CSV File"
@@ -414,19 +414,19 @@ msgstr "变量"
 
 #: lr_const.sdateformat1
 msgid "mm.dd.yy"
-msgstr ""
+msgstr "mm.dd.yy"
 
 #: lr_const.sdateformat2
 msgid "mm.dd.yyyy"
-msgstr ""
+msgstr "mm.dd.yyyy"
 
 #: lr_const.sdateformat3
 msgid "d mmm yyyy"
-msgstr ""
+msgstr "d mmm yyyy"
 
 #: lr_const.sdateformat4
 msgid "d mmmm yyyy"
-msgstr ""
+msgstr "d mmmm yyyy"
 
 #: lr_const.sdatetimecategory
 msgid "Date and time"
@@ -434,7 +434,7 @@ msgstr "日期和时间"
 
 #: lr_const.sdbfield
 msgid "DB field"
-msgstr "DB字段"
+msgstr "数据库字段"
 
 #: lr_const.sdefaultprinter
 msgid "Default printer"
@@ -442,63 +442,63 @@ msgstr "默认打印机"
 
 #: lr_const.sdescriptionavg
 msgid "AVG(<Expression> [,BandName [,1]])/Calculates the average of <Expression> for [BandName] row given. If [1] parameter is used, calculates average for non-visible rows too."
-msgstr ""
+msgstr "AVG(<表达式> [,BandName[,1]])/计算给定 [BandName] 行的 <表达式> 平均值。如果使用 [1] 参数，则同时计算非可见行的平均值。"
 
 #: lr_const.sdescriptioncopy
 msgid "COPY(<String>, <Position>, <Length>)/Returns <Length> characters from <String> starting at <Position>."
-msgstr ""
+msgstr "COPY(<字符串>, <位置>, <长度>)/从 <字符串> 的 <位置> 开始返回 <长度> 个字符。"
 
 #: lr_const.sdescriptioncount
 msgid "COUNT(<BandName>)/Returns count of data rows given in the <BandName>. "
-msgstr ""
+msgstr "COUNT(<BandName>)/返回给定 <BandName> 中的数据行数。"
 
 #: lr_const.sdescriptioncrlf
 msgid "CRLF/Returns lineending character sequence."
-msgstr ""
+msgstr "CRLF/换行符字符序列。"
 
 #: lr_const.sdescriptiondayof
 msgid "DAYOF(<Date>)/Returns day number (1..31) of given <Date>."
-msgstr ""
+msgstr "DAYOF(<日期>)/返回给定 <日期> 的天数 (1..31)。"
 
 #: lr_const.sdescriptiondec
 msgid "DEC(<Value>)/Decrement <Value>."
-msgstr ""
+msgstr "DEC(<值>)/递减 <值>。"
 
 #: lr_const.sdescriptionformatdatetime
 msgid "FORMATDATETIME(<Fmt>, <DateTime>)/Converts a <DateTime> value to a string using mask in <Fmt>."
-msgstr ""
+msgstr "FORMATDATETIME(<Fmt><DateTime>)/将 <DateTime> 值转换为使用 <Fmt> 中的掩码的字符串。"
 
 #: lr_const.sdescriptionformatfloat
 msgid "FORMATFLOAT(<Fmt>, <Numeric>)/Converts a <Numeric> value to a string using mask in <Fmt>."
-msgstr ""
+msgstr "FORMATFLOAT(<Fmt><Numeric>)/将 <Numeric> 值转换为使用 <Fmt> 中的掩码的字符串。"
 
 #: lr_const.sdescriptionformattext
 msgid "FORMATTEXT(<Mask>, <String>)/Applies <Mask> to given <String> and returns formatted string."
-msgstr ""
+msgstr "FORMATTEXT(<Mask><String>)/将 <Mask> 应用到给定的 <String> 并返回格式化后的字符串。"
 
 #: lr_const.sdescriptionfrac
 msgid "FRAC(<Value>)/Returns the fractional part of floating point <Value>."
-msgstr ""
+msgstr "FRAC(<值>)/返回浮点数 <值> 的小数部分。"
 
 #: lr_const.sdescriptionif
 msgid "IF(<expression>, <Value1>, <Value2>)/Returns <Value1>, if <expression> is true; otherwise returns <Value2>."
-msgstr ""
+msgstr "IF(<表达式>, <值1>, <值2>)/如果 <表达式> 为真则返回 <值1>；否则返回 <值2>。"
 
 #: lr_const.sdescriptioninc
 msgid "INC(<Value>)/Increment <Value>."
-msgstr ""
+msgstr "INC(<值>)/累加 <值>。"
 
 #: lr_const.sdescriptioninput
 msgid "INPUT(<Caption> [,Default])/Shows dialog window with title <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
-msgstr ""
+msgstr "INPUT(<标题> [,默认值])/显示一个标题为 <标题> 和编辑框的对话窗口。如果设置 [默认值] 参数，则将此字符串放入编辑框中。用户点击确定后，返回输入的字符串。"
 
 #: lr_const.sdescriptionint
 msgid "INT(<Value>)/Returns the integer part of floating point <Value>."
-msgstr ""
+msgstr "INT(<值>)/返回浮点 <值> 的整数部分。"
 
 #: lr_const.sdescriptionlength
 msgid "LENGTH(<String>)/Returns length of <String>."
-msgstr ""
+msgstr "LENGTH(<字符串>)/返回 <字符串> 的长度。"
 
 #: lr_const.sdescriptionlowercase
 msgid "LOWERCASE(<String>)/Converts <String> symbols to lower case."
@@ -506,39 +506,39 @@ msgstr "LOWERCASE(<String>)/转换 <String> 符号为小写字母."
 
 #: lr_const.sdescriptionmax
 msgid "MAX(<Expression> [,BandName [,1]])/Calculates the maximum of <Expression> for [BandName] row given. If [1] parameter is used, calculates maximum for non-visible rows too."
-msgstr ""
+msgstr "MAX(<表达式> [,BandName [,1]])/计算给定 [BandName] 行的 <表达式> 的最大值。如果使用 [1] 参数，也会计算非可见行的最大值。"
 
 #: lr_const.sdescriptionmaxnum
 msgid "MAXNUM(<Value1>, <Value2>)/Returns max of given values."
-msgstr ""
+msgstr "MAXNUM(<Value1><Value2>)/返回给定值中的最大值。"
 
 #: lr_const.sdescriptionmessagebox
 msgid "MESSAGEBOX(<Text>, <Title>, <Buttons>)/Shows standard dialog window with title, text and buttons."
-msgstr ""
+msgstr "MESSAGEBOX(<文本>, <标题>, <按钮>)/显示具有标题、文本和按钮的标准对话框窗口。"
 
 #: lr_const.sdescriptionmin
 msgid "MIN(<Expression> [,BandName [,1]])/Calculates the minimum of <Expression> for [BandName] row given. If [1] parameter is used, calculates minimum for non-visible rows too."
-msgstr ""
+msgstr "MIN(<表达式> [,BandName [,1]])/计算给定 [BandName] 行的 <表达式> 最小值。如果使用 [1] 参数，也会计算非可见行的最小值。"
 
 #: lr_const.sdescriptionminnum
 msgid "MINNUM(<Value1>, <Value2>)/Returns min of given values."
-msgstr ""
+msgstr "MINNUM(<Value1><Value2>)/返回给定值中的最小值。"
 
 #: lr_const.sdescriptionmonthof
 msgid "MONTHOF(<Date>)/Returns month number (1..12) of given <Date>."
-msgstr ""
+msgstr "MONTHOF(<日期>)/返回给定<日期>的月份编号（1..12）。"
 
 #: lr_const.sdescriptionnamecase
 msgid "NAMECASE(<String>)/Converts <String> symbols to lower case, and first symbol is in upper case."
-msgstr ""
+msgstr "NAMECASE(<字符串>)/将 <字符串> 的符号转换为小写，第一个符号转换为大写。"
 
 #: lr_const.sdescriptionnewcolumn
 msgid "NEWCOLUMN/Create new column on page for current report."
-msgstr ""
+msgstr "NEWCOLUMN/在当前报表的页面上创建新列。"
 
 #: lr_const.sdescriptionnewpage
 msgid "NEWPAGE/Create new page for current report."
-msgstr ""
+msgstr "NEWPAGE/为当前报告创建新页面。"
 
 #: lr_const.sdescriptionpos
 msgid "POS(<SubString>, <String>)/Returns position of substring in given string."
@@ -546,19 +546,19 @@ msgstr "POS(<SubString>, <String>)/返回在所给字符串中的子字符串的
 
 #: lr_const.sdescriptionround
 msgid "ROUND(<Value>)/Rounds the floating point <Value> to nearest integer number."
-msgstr ""
+msgstr "ROUND(<值>)/将浮点 <值> 四舍五入到最接近的整数。"
 
 #: lr_const.sdescriptionshowband
 msgid "SHOWBAND(<BandName>)/Show <BandName> in report."
-msgstr ""
+msgstr "SHOWBAND(<BandName>)/在 报表 中显示 <BandName>。"
 
 #: lr_const.sdescriptionstopreport
 msgid "STOPREPORT/Terminate report creation."
-msgstr "STOPREPORT/结束报告创建."
+msgstr "STOPREPORT/终止报告创建。"
 
 #: lr_const.sdescriptionstr
 msgid "STR(<Value>)/Converts the given (numeric) <Value> in string."
-msgstr ""
+msgstr "STR(<值>)/将给定的（数值）<值>转换为字符串。"
 
 #: lr_const.sdescriptionstrtodate
 msgid "STRTODATE(<String>)/Converts <String> to date."
@@ -570,19 +570,19 @@ msgstr "STRTOTIME(<String>)/转换<String>为时间."
 
 #: lr_const.sdescriptionsum
 msgid "SUM(<Expression> [,BandName [,1]])/Calculates the sum of <Expression> for [BandName] row given. If [1] parameter is used, calculates sum for non-visible rows too."
-msgstr ""
+msgstr "SUM(<表达式> [,BandName [,1]])/计算给定 [BandName] 行的 <表达式> 之和。如果使用 [1] 参数，则也会计算非可见行的和。"
 
 #: lr_const.sdescriptiontrim
 msgid "TRIM(<String>)/Trims all heading and trailing spaces in <String> and returns resulting string."
-msgstr ""
+msgstr "TRIM(<字符串>)/移除 <字符串> 中的所有前导和尾随空格并返回结果字符串。"
 
 #: lr_const.sdescriptionuppercase
 msgid "UPPERCASE(<String>)/Converts <String> symbols to upper case."
-msgstr "UPPERCASE(<String>)/转换 <String>符号为大写字母."
+msgstr "UPPERCASE(<字符串>)/将 <字符串> 符号转换为大写。"
 
 #: lr_const.sdescriptionyearof
 msgid "YEAROF(<Date>)/Returns year of given <Date>."
-msgstr ""
+msgstr "YEAROF(<Date>)/返回给定 <Date> 的年份。"
 
 #: lr_const.sdesignreport
 msgid "Design report"
@@ -602,15 +602,15 @@ msgstr "8像素(&8)"
 
 #: lr_const.sdesoptionsformaligngrd
 msgid "Align to &grid"
-msgstr "对齐到网格"
+msgstr "对齐到网格(&G)"
 
 #: lr_const.sdesoptionsformcoloredbutton
 msgid "Colored &buttons"
-msgstr "有色的按钮(&b)"
+msgstr "彩色按钮(&N)"
 
 #: lr_const.sdesoptionsformcontents
 msgid "&Contents"
-msgstr "目录(&C)"
+msgstr "内容(&C)"
 
 #: lr_const.sdesoptionsformdes
 msgctxt "lr_const.sdesoptionsformdes"
@@ -636,7 +636,7 @@ msgstr "英寸(&I)"
 
 #: lr_const.sdesoptionsforminplace
 msgid "Use inplace editor"
-msgstr "使用内置(inplace)编辑器"
+msgstr "使用内置编辑器"
 
 #: lr_const.sdesoptionsformmm
 msgid "&MM"
@@ -666,7 +666,7 @@ msgstr "形状(&h)"
 
 #: lr_const.sdesoptionsformshowband
 msgid "Show band &titles"
-msgstr ""
+msgstr "显示带标题(&T)"
 
 #: lr_const.sdesoptionsformshowgrd
 msgid "&Show grid"
@@ -698,7 +698,7 @@ msgstr "副版本号"
 
 #: lr_const.sdocoptform2pass
 msgid "&Two-pass report"
-msgstr ""
+msgstr "两次传递报告(&T)"
 
 #: lr_const.sdocoptformcomments
 msgid "Comments"
@@ -724,15 +724,15 @@ msgstr "打印机"
 
 #: lr_const.sdocoptformselect
 msgid "&Select when report loaded"
-msgstr ""
+msgstr "选择加载报告时(&S)"
 
 #: lr_const.sdocoptformsubject
 msgid "Subject"
-msgstr "主题(Subject)"
+msgstr "主题"
 
 #: lr_const.sdocoptformtitle
 msgid "Title"
-msgstr "标题(Title)"
+msgstr "标题"
 
 #: lr_const.sdocrelease
 msgid "Release"
@@ -745,7 +745,7 @@ msgstr "版本"
 #: lr_const.sduplicatedobjectname
 #, object-pascal-format
 msgid "An object named \"%s\" already exists"
-msgstr "一个对象名称\"%s\"已经存在"
+msgstr "名为 \"%s\" 的对象已存在"
 
 #: lr_const.seditor
 msgid "Editor"
@@ -753,7 +753,7 @@ msgstr "编辑器"
 
 #: lr_const.seditorformbig
 msgid "&Big font"
-msgstr ""
+msgstr "大字体(&B)"
 
 #: lr_const.seditorformcapt
 msgid "Text editor"
@@ -761,7 +761,7 @@ msgstr "文本编辑器"
 
 #: lr_const.seditorformfield
 msgid "&DB field"
-msgstr "DB字段(&D)"
+msgstr "数据库字段(&D)"
 
 #: lr_const.seditorformformat
 msgctxt "lr_const.seditorformformat"
@@ -779,11 +779,11 @@ msgstr "Memo(&M)"
 
 #: lr_const.seditorformscr
 msgid "S&cript"
-msgstr ""
+msgstr "脚本(&C)"
 
 #: lr_const.seditorformscript
 msgid "&Script"
-msgstr "Script(脚本)(&S)"
+msgstr "脚本(&S)"
 
 #: lr_const.seditorformvar
 msgctxt "lr_const.seditorformvar"
@@ -792,43 +792,43 @@ msgstr "变量(&V)"
 
 #: lr_const.seditorformword
 msgid "&Word wrap"
-msgstr ""
+msgstr "自动换行(&W)"
 
 #: lr_const.serrexpectedassign
 msgid "Expected \":=\""
-msgstr "要求\":=\""
+msgstr "预期 \":=\""
 
 #: lr_const.serrexpectedclosingbracket1
 msgid "Expected \")\""
-msgstr "要求\")\""
+msgstr "预期 \")\""
 
 #: lr_const.serrexpectedclosingbracket2
 msgid "Expected \"]\""
-msgstr "要求\"]\""
+msgstr "预期 “]”"
 
 #: lr_const.serrexpectedcomma
 msgid "Expected \",\" or \")\""
-msgstr "要求\",\"或\")\""
+msgstr "预期 \",\" 或 \")\""
 
 #: lr_const.serrexpecteddo
 msgid "Expected \"do\""
-msgstr "要求\"do\""
+msgstr "预期 “do”"
 
 #: lr_const.serrexpectedend
 msgid "Expected \";\" or \"end\""
-msgstr "要求\";\"或\"end\""
+msgstr "预期 \";\" 或 \"end\""
 
 #: lr_const.serrexpectedthen
 msgid "Expected \"then\""
-msgstr "要求\"then\""
+msgstr "预期 “then”"
 
 #: lr_const.serrexpecteduntil
 msgid "Expected \";\" or \"until\""
-msgstr "要求\";\"或\"until\""
+msgstr "预期 \";\" 或 \"until\""
 
 #: lr_const.serrlabelgoto
 msgid "Label in goto must be a number"
-msgstr ""
+msgstr "goto 标签必须是数字"
 
 #: lr_const.serrline
 msgid "Line"
@@ -836,11 +836,11 @@ msgstr "行"
 
 #: lr_const.serrneeddo
 msgid "Need \"do\" here"
-msgstr "需要\"do\"在这里"
+msgstr "此处需要“do”"
 
 #: lr_const.serrneedto
 msgid "Need \"to\" here"
-msgstr "需要\"to\"在这里"
+msgstr "需要在这里添加“to”"
 
 #: lr_const.serror
 msgid "Error"
@@ -848,7 +848,7 @@ msgstr "错误"
 
 #: lr_const.serroroccurred
 msgid "An error occurred during calculation"
-msgstr ""
+msgstr "计算过程中发生错误"
 
 #: lr_const.sevformcapt
 msgid "Variables editor"
@@ -868,7 +868,7 @@ msgstr "粘贴变量"
 
 #: lr_const.sevformvalue
 msgid "Va&lue"
-msgstr "值(&l)"
+msgstr "值(&L)"
 
 #: lr_const.sevformvar
 msgctxt "lr_const.sevformvar"
@@ -877,20 +877,20 @@ msgstr "变量(&V)"
 
 #: lr_const.sevformvars
 msgid "Va&riables ..."
-msgstr "变量...(&r)"
+msgstr "变量(&R) ..."
 
 #: lr_const.sexportfilterindexerror
 msgid "Export filter index out of range"
-msgstr ""
+msgstr "导出过滤器索引超出范围"
 
 #: lr_const.sfieldsformaviabledb
 msgid "&Available DB's"
-msgstr ""
+msgstr "可用的数据库(&A)"
 
 #: lr_const.sfieldsforminsert
 msgctxt "lr_const.sfieldsforminsert"
 msgid "Insert DB field"
-msgstr "插入DB字段"
+msgstr "插入数据库字段"
 
 #: lr_const.sfilenotfound
 msgid "File not found"
@@ -916,7 +916,7 @@ msgstr "区分大小写(&C)"
 #: lr_const.sfindtextcurrentpg
 msgctxt "lr_const.sfindtextcurrentpg"
 msgid "Current &page"
-msgstr "当前页面(&p)"
+msgstr "当前页(&P)"
 
 #: lr_const.sfindtextfirstpg
 msgid "&1st page"
@@ -924,7 +924,7 @@ msgstr "第1页(&1)"
 
 #: lr_const.sfindtextnotfound
 msgid "Search text not found."
-msgstr "搜索文本未找到."
+msgstr "未找到搜索文本。"
 
 #: lr_const.sfindtextoptions
 msgctxt "lr_const.sfindtextoptions"
@@ -933,23 +933,23 @@ msgstr "选项"
 
 #: lr_const.sfindtextorg
 msgid "Origin"
-msgstr ""
+msgstr "源"
 
 #: lr_const.sfindtexttext
 msgid "Text to &find"
-msgstr ""
+msgstr "查找文本(&F)"
 
 #: lr_const.sfirstpass
 msgid "Performing 1st pass:"
-msgstr ""
+msgstr "正在进行第 1 遍："
 
 #: lr_const.sfmtformdecid
 msgid "&Decimal digits"
-msgstr ""
+msgstr "&小数位数"
 
 #: lr_const.sfmtformfrac
 msgid "Fraction &symbol"
-msgstr ""
+msgstr "分数符号(&S)"
 
 #: lr_const.sfmtformfrmt
 msgctxt "lr_const.sfmtformfrmt"
@@ -966,7 +966,7 @@ msgstr "变量格式"
 
 #: lr_const.sfont
 msgid "Font ..."
-msgstr "字体..."
+msgstr "字体 ..."
 
 #: lr_const.sformat11
 msgctxt "lr_const.sformat11"
@@ -996,19 +996,19 @@ msgstr "自定义"
 
 #: lr_const.sformat31
 msgid "11.15.98"
-msgstr "11.15.98(98年11月15日)"
+msgstr "11.15.98"
 
 #: lr_const.sformat32
 msgid "11.15.1998"
-msgstr "11.15.1998(1998年11月15日)"
+msgstr "11.15.1998"
 
 #: lr_const.sformat33
 msgid "15 nov 1998"
-msgstr "15 nov (11月) 1998"
+msgstr "15 nov 1998"
 
 #: lr_const.sformat34
 msgid "15 november 1998"
-msgstr "15 november (11月) 1998"
+msgstr "15 november 1998"
 
 #: lr_const.sformat35
 msgctxt "lr_const.sformat35"
@@ -1059,11 +1059,11 @@ msgstr "自定义"
 
 #: lr_const.sformfile
 msgid "FastReport form"
-msgstr "FastReport窗体"
+msgstr "FastReport 窗体"
 
 #: lr_const.sformnewpage
 msgid "Force new page"
-msgstr ""
+msgstr "强制新页"
 
 #: lr_const.sfrdesignerdatainsp
 msgid "Data inspector"
@@ -1071,7 +1071,7 @@ msgstr "数据查看器"
 
 #: lr_const.sfrdesignerexists
 msgid "You already have one TfrDesigner component"
-msgstr "你已经有一个TfrDesigner组件"
+msgstr "您已经有一个 TfrDesigner 组件"
 
 #: lr_const.sfrdesignerformaddpg
 msgctxt "lr_const.sfrdesignerformaddpg"
@@ -1108,11 +1108,11 @@ msgstr "垂直居中对齐"
 
 #: lr_const.sfrdesignerformallframe
 msgid "All frame lines"
-msgstr ""
+msgstr "所有帧线"
 
 #: lr_const.sfrdesignerformback
 msgid "Send to back"
-msgstr ""
+msgstr "移至底层"
 
 #: lr_const.sfrdesignerformbackcolor
 msgid "Background color"
@@ -1128,11 +1128,11 @@ msgstr "底部对齐"
 
 #: lr_const.sfrdesignerformbottomframe
 msgid "Bottom frame line"
-msgstr ""
+msgstr "底部框架线"
 
 #: lr_const.sfrdesignerformbring
 msgid "Bring to front"
-msgstr ""
+msgstr "置顶"
 
 #: lr_const.sfrdesignerformcapt
 msgctxt "lr_const.sfrdesignerformcapt"
@@ -1173,7 +1173,7 @@ msgstr "画线"
 
 #: lr_const.sfrdesignerformfitgrid
 msgid "Fit to grid"
-msgstr ""
+msgstr "对齐到网格"
 
 #: lr_const.sfrdesignerformfont
 msgid "Font color"
@@ -1189,11 +1189,11 @@ msgstr "字体大小"
 
 #: lr_const.sfrdesignerformframecolor
 msgid "Frame color"
-msgstr "Frame颜色"
+msgstr "框架颜色"
 
 #: lr_const.sfrdesignerformframewidth
 msgid "Frame width"
-msgstr "Frame宽度"
+msgstr "框架宽度"
 
 #: lr_const.sfrdesignerformgrid
 msgctxt "lr_const.sfrdesignerformgrid"
@@ -1207,11 +1207,11 @@ msgstr "网格对齐"
 #: lr_const.sfrdesignerformhightlight
 msgctxt "lr_const.sfrdesignerformhightlight"
 msgid "Highlight attributes"
-msgstr "高亮属性(attributes)"
+msgstr "突出显示属性"
 
 #: lr_const.sfrdesignerforminsband
 msgid "Insert band"
-msgstr "插入band"
+msgstr "插入 band"
 
 #: lr_const.sfrdesignerforminspict
 msgid "Insert picture"
@@ -1219,7 +1219,7 @@ msgstr "插入图片"
 
 #: lr_const.sfrdesignerforminsrect
 msgid "Insert rectangle object"
-msgstr "插入矩形(rectangle)对象"
+msgstr "插入矩形对象"
 
 #: lr_const.sfrdesignerforminssub
 msgid "Insert subreport"
@@ -1235,7 +1235,7 @@ msgstr "左对齐"
 
 #: lr_const.sfrdesignerformleftframe
 msgid "Left frame line"
-msgstr ""
+msgstr "左侧框架线"
 
 #: lr_const.sfrdesignerformnewrp
 msgctxt "lr_const.sfrdesignerformnewrp"
@@ -1244,11 +1244,11 @@ msgstr "新建报告"
 
 #: lr_const.sfrdesignerformnoframe
 msgid "No frame"
-msgstr "没有框架(frame)"
+msgstr "无框架"
 
 #: lr_const.sfrdesignerformnormaltext
 msgid "Normal text / 90 degrees"
-msgstr ""
+msgstr "普通文本 / 90 度"
 
 #: lr_const.sfrdesignerformobj
 msgid "Objects"
@@ -1279,7 +1279,7 @@ msgstr "矩形"
 
 #: lr_const.sfrdesignerformredo
 msgid "Redo cancelled action"
-msgstr ""
+msgstr "重做取消的操作"
 
 #: lr_const.sfrdesignerformremovepg
 msgid "Remove page"
@@ -1291,7 +1291,7 @@ msgstr "右对齐"
 
 #: lr_const.sfrdesignerformrightframe
 msgid "Right frame line"
-msgstr ""
+msgstr "右侧框架线"
 
 #: lr_const.sfrdesignerformsaverp
 msgctxt "lr_const.sfrdesignerformsaverp"
@@ -1304,7 +1304,7 @@ msgstr "选择所有"
 
 #: lr_const.sfrdesignerformselectsameclass
 msgid "Select same class objects"
-msgstr ""
+msgstr "选择相同类的对象"
 
 #: lr_const.sfrdesignerformselobj
 msgid "Select object"
@@ -1312,11 +1312,11 @@ msgstr "选择对象"
 
 #: lr_const.sfrdesignerformspace
 msgid "Space equally, horizontally"
-msgstr ""
+msgstr "水平等间距"
 
 #: lr_const.sfrdesignerformspaceeqvert
 msgid "Space equally, vertically"
-msgstr ""
+msgstr "等间距垂直排列"
 
 #: lr_const.sfrdesignerformstd
 msgid "Standard"
@@ -1337,7 +1337,7 @@ msgstr "顶端对齐"
 
 #: lr_const.sfrdesignerformtopframe
 msgid "Top frame line"
-msgstr ""
+msgstr "顶部框架线"
 
 #: lr_const.sfrdesignerformunabletocreatetemplatedir
 msgid "Unable to create template directory"
@@ -1373,15 +1373,15 @@ msgstr "对齐面板(&A)"
 
 #: lr_const.sfrdesignerform_back
 msgid "Send to &back"
-msgstr ""
+msgstr "发送到后面(&B)"
 
 #: lr_const.sfrdesignerform_beforeprintscript
 msgid "&Before print script ..."
-msgstr "在打印脚本前...(&B)"
+msgstr "打印前脚本(&B) ..."
 
 #: lr_const.sfrdesignerform_bring
 msgid "Bring to &front"
-msgstr ""
+msgstr "置于前(&F)"
 
 #: lr_const.sfrdesignerform_copy
 msgid "&Copy"
@@ -1389,7 +1389,7 @@ msgstr "复制(&C)"
 
 #: lr_const.sfrdesignerform_cut
 msgid "C&ut"
-msgstr "剪切(&u)"
+msgstr "剪切(&U)"
 
 #: lr_const.sfrdesignerform_datainsp
 msgid "&Data inspector"
@@ -1533,11 +1533,11 @@ msgstr "变量列表...(&l)"
 
 #: lr_const.sfrom
 msgid "from"
-msgstr ""
+msgstr "from"
 
 #: lr_const.sfrvariables
 msgid "FR variables"
-msgstr ""
+msgstr "FR 变量"
 
 #: lr_const.sfunctioneditor
 msgid "Function editor"
@@ -1571,7 +1571,7 @@ msgstr "伸展(&S)"
 #: lr_const.sgroupeditorformadddbfield
 msgctxt "lr_const.sgroupeditorformadddbfield"
 msgid "Insert DB field"
-msgstr "插入DB字段"
+msgstr "插入 DB 字段"
 
 #: lr_const.sgroupeditorformcapt
 msgid "Group"
@@ -1584,7 +1584,7 @@ msgstr "状态"
 
 #: lr_const.shidezerovalues
 msgid "Hide zero values"
-msgstr "隐藏0值"
+msgstr "隐藏零值"
 
 #: lr_const.shilightformback
 msgid "Background"
@@ -1596,7 +1596,7 @@ msgstr "粗体(&B)"
 
 #: lr_const.shilightformcolor
 msgid "C&olor ..."
-msgstr "颜色...(&o)"
+msgstr "颜色...(&O)"
 
 #: lr_const.shilightformcolor2
 msgid "Co&lor ..."
@@ -1614,7 +1614,7 @@ msgstr "字体"
 #: lr_const.shilightformhilitattr
 msgctxt "lr_const.shilightformhilitattr"
 msgid "Highlight attributes"
-msgstr "高亮属性(attributes)"
+msgstr "高亮属性"
 
 #: lr_const.shilightformitalic
 msgid "&Italic"
@@ -1622,7 +1622,7 @@ msgstr "斜体(&I)"
 
 #: lr_const.shilightformother
 msgid "Ot&her"
-msgstr "其他(&h)"
+msgstr "其他(&H)"
 
 #: lr_const.shilightformtransp
 msgid "&Transparent"
@@ -1634,7 +1634,7 @@ msgstr "下划线(&U)"
 
 #: lr_const.shtmfile
 msgid "HTML file"
-msgstr "HTML文件"
+msgstr "HTML 文件"
 
 #: lr_const.sinches
 msgid "Inches"
@@ -1642,19 +1642,19 @@ msgstr "英寸"
 
 #: lr_const.sinsbarcode
 msgid "Insert Barcode object"
-msgstr "插入Barcode对象"
+msgstr "插入 Barcode 对象"
 
 #: lr_const.sinschart
 msgid "Insert Chart object"
-msgstr "插入Chart对象"
+msgstr "插入 Chart 对象"
 
 #: lr_const.sinscheckbox
 msgid "Insert CheckBox object"
-msgstr "插入CheckBox控制"
+msgstr "插入 CheckBox 对象"
 
 #: lr_const.sinscrosstab
 msgid "Insert Cross-tab object"
-msgstr "插入Cross-tab对象"
+msgstr "插入 Cross-tab 对象"
 
 #: lr_const.sinsert
 msgid "Insert"
@@ -1670,15 +1670,15 @@ msgstr "插入DB字段"
 
 #: lr_const.sinsertfieldsdbnofields
 msgid "Database without fields"
-msgstr ""
+msgstr "没有字段的数据库"
 
 #: lr_const.sinsertfieldsformaviabledset
 msgid "&Available datasets"
-msgstr ""
+msgstr "可用数据集(&A)"
 
 #: lr_const.sinsertfieldsformband
 msgid "Include &bands"
-msgstr ""
+msgstr "包括带区(&B)"
 
 #: lr_const.sinsertfieldsformcapt
 msgid "Insert fields"
@@ -1686,7 +1686,7 @@ msgstr "插入字段"
 
 #: lr_const.sinsertfieldsformheader
 msgid "&Include headers"
-msgstr ""
+msgstr "包含头文件(&H)"
 
 #: lr_const.sinsertfieldsformhorz
 msgid "&Horizontal"
@@ -1694,15 +1694,15 @@ msgstr "水平(&H)"
 
 #: lr_const.sinsertfieldsformplace
 msgid "Placement"
-msgstr "安置(Placement)"
+msgstr "放置"
 
 #: lr_const.sinsertfieldsformvert
 msgid "&Vertical"
-msgstr "垂直(&v)"
+msgstr "垂直(&V)"
 
 #: lr_const.sinsroundrect
 msgid "Insert a RoundRect with shadow area"
-msgstr ""
+msgstr "插入一个带有阴影区域的RoundRect"
 
 #: lr_const.sinsshape
 msgid "Insert Shape object"
@@ -1731,15 +1731,15 @@ msgstr "\"%s\"不是一个有效的变量名称."
 
 #: lr_const.skeepaspectratio
 msgid "Keep aspect ratio"
-msgstr ""
+msgstr "保持纵横比"
 
 #: lr_const.skeepchild
 msgid "Keep child together with parent"
-msgstr ""
+msgstr "保持子项与父项一起"
 
 #: lr_const.slazformfile
 msgid "LazReport form"
-msgstr "LazReport窗体"
+msgstr "LazReport 窗体"
 
 #: lr_const.slaztemplatefile
 msgid "LazReport template"
@@ -1751,7 +1751,7 @@ msgstr "数学"
 
 #: lr_const.smemoeditor
 msgid "Memo editor"
-msgstr "Memo编辑器"
+msgstr "备忘录编辑器"
 
 #: lr_const.smm
 msgid "MM"
@@ -1772,7 +1772,7 @@ msgstr "没有有效的导入文件名称被支持"
 
 #: lr_const.snovalidfilterclasswassupplied
 msgid "No valid filterclass was supplied"
-msgstr "没有有效的过滤器类被支持"
+msgstr "未提供有效的 filterclass"
 
 #: lr_const.sobjectinspector
 msgid "Object inspector"
@@ -1781,7 +1781,7 @@ msgstr "对象查看器"
 #: lr_const.sobjectnotfound
 #, object-pascal-format
 msgid "Object \"%s\" not found"
-msgstr "对象\"%s\"未找到"
+msgstr "未找到对象 \"%s\""
 
 #: lr_const.sok
 msgid "Ok"
@@ -1797,7 +1797,7 @@ msgstr "在最后一页"
 
 #: lr_const.sother
 msgid "Other ..."
-msgstr "其他..."
+msgstr "其他 ..."
 
 #: lr_const.sothercategory
 msgctxt "lr_const.sothercategory"
@@ -1810,7 +1810,7 @@ msgstr "处理页:"
 
 #: lr_const.spageprinting
 msgid "Printing page:"
-msgstr "打印页:"
+msgstr "打印页面："
 
 #: lr_const.spaper1
 msgid "Letter, 8 1/2 x 11\""
@@ -1818,47 +1818,47 @@ msgstr "信纸, 8 1/2 x 11\""
 
 #: lr_const.spaper10
 msgid "A4 small sheet, 210 x 297 mm"
-msgstr "A4 small sheet(小纸), 210 x 297 mm"
+msgstr "A4 小张，210 x 297 mm"
 
 #: lr_const.spaper100
 msgid "DMPAPER_PENV_5 110X220"
-msgstr ""
+msgstr "DMPAPER_PENV_5 110X220"
 
 #: lr_const.spaper101
 msgid "DMPAPER_PENV_6 120X230"
-msgstr ""
+msgstr "DMPAPER_PENV_6 120X230"
 
 #: lr_const.spaper102
 msgid "DMPAPER_PENV_7 160X230"
-msgstr ""
+msgstr "DMPAPER_PENV_7 160X230"
 
 #: lr_const.spaper103
 msgid "DMPAPER_PENV_8 120X309"
-msgstr ""
+msgstr "DMPAPER_PENV_8 120X309"
 
 #: lr_const.spaper104
 msgid "DMPAPER_PENV_9 229X324"
-msgstr ""
+msgstr "DMPAPER_PENV_9 229X324"
 
 #: lr_const.spaper105
 msgid "DMPAPER_PENV_10 324X458"
-msgstr ""
+msgstr "DMPAPER_PENV_10 324X458"
 
 #: lr_const.spaper106
 msgid "DMPAPER_P16K_ROTATED 215X146"
-msgstr ""
+msgstr "DMPAPER_P16K_ROTATED 215X146"
 
 #: lr_const.spaper107
 msgid "DMPAPER_P32K_ROTATED 151X97"
-msgstr ""
+msgstr "DMPAPER_P32K_ROTATED 151X97"
 
 #: lr_const.spaper108
 msgid "DMPAPER_P32KBIG_ROTATED 151X97"
-msgstr ""
+msgstr "DMPAPER_P32KBIG_ROTATED 151X97"
 
 #: lr_const.spaper109
 msgid "DMPAPER_PENV_1_ROTATED 165X102"
-msgstr ""
+msgstr "DMPAPER_PENV_1_ROTATED 165X102"
 
 #: lr_const.spaper11
 msgid "A5 148 x 210 mm"
@@ -1866,39 +1866,39 @@ msgstr "A5 148 x 210 mm"
 
 #: lr_const.spaper110
 msgid "DMPAPER_PENV_2_ROTATED 176X102"
-msgstr ""
+msgstr "DMPAPER_PENV_2_ROTATED 176X102"
 
 #: lr_const.spaper111
 msgid "DMPAPER_PENV_3_ROTATED 176X125"
-msgstr ""
+msgstr "DMPAPER_PENV_3_ROTATED 176X125"
 
 #: lr_const.spaper112
 msgid "DMPAPER_PENV_4_ROTATED 208X110"
-msgstr ""
+msgstr "DMPAPER_PENV_4_ROTATED 208X110"
 
 #: lr_const.spaper113
 msgid "DMPAPER_PENV_5_ROTATED 220X110"
-msgstr ""
+msgstr "DMPAPER_PENV_5_ROTATED 220X110"
 
 #: lr_const.spaper114
 msgid "DMPAPER_PENV_6_ROTATED 230X120"
-msgstr ""
+msgstr "DMPAPER_PENV_6_ROTATED 230X120"
 
 #: lr_const.spaper115
 msgid "DMPAPER_PENV_7_ROTATED 230X160"
-msgstr ""
+msgstr "DMPAPER_PENV_7_ROTATED 230X160"
 
 #: lr_const.spaper116
 msgid "DMPAPER_PENV_8_ROTATED 309X120"
-msgstr ""
+msgstr "DMPAPER_PENV_8_ROTATED 309X120"
 
 #: lr_const.spaper117
 msgid "DMPAPER_PENV_9_ROTATED 324X229"
-msgstr ""
+msgstr "DMPAPER_PENV_9_ROTATED 324X229"
 
 #: lr_const.spaper118
 msgid "DMPAPER_PENV_10_ROTATED 458X324"
-msgstr ""
+msgstr "DMPAPER_PENV_10_ROTATED 458X324"
 
 #: lr_const.spaper12
 msgid "B4 250 x 354 mm"
@@ -1906,15 +1906,15 @@ msgstr "B4 250 x 354 mm"
 
 #: lr_const.spaper13
 msgid "B5 182 x 257 mm"
-msgstr ""
+msgstr "B5 182 x 257 mm"
 
 #: lr_const.spaper14
 msgid "Folio, 8 1/2 x 13\""
-msgstr ""
+msgstr "Folio，8 1/2 x 13\""
 
 #: lr_const.spaper15
 msgid "Quarto Sheet, 215 x 275 mm"
-msgstr ""
+msgstr "四开纸，215 x 275 mm"
 
 #: lr_const.spaper16
 msgid "10 x 14\""
@@ -1926,39 +1926,39 @@ msgstr "11 x 17\""
 
 #: lr_const.spaper18
 msgid "Note, 8 1/2 x 11\""
-msgstr ""
+msgstr "笔记，8 1/2 x 11\""
 
 #: lr_const.spaper19
 msgid "9 Envelope, 3 7/8 x 8 7/8\""
-msgstr "9 Envelope(信封), 3 7/8 x 8 7/8\""
+msgstr "9 号信封，3 7/8 x 8 7/8\""
 
 #: lr_const.spaper2
 msgid "Letter small, 8 1/2 x 11\""
-msgstr ""
+msgstr "小号信纸，8 1/2 x 11\""
 
 #: lr_const.spaper20
 msgid "#10 Envelope, 4 1/8  x 9 1/2\""
-msgstr "#10 Envelope(信封), 4 1/8  x 9 1/2\""
+msgstr "#10 信封，4 1/8 x 9 1/2\""
 
 #: lr_const.spaper21
 msgid "#11 Envelope, 4 1/2 x 10 3/8\""
-msgstr "#11 Envelope(信封), 4 1/2 x 10 3/8\""
+msgstr "#11 信封，4 1/2 x 10 3/8\""
 
 #: lr_const.spaper22
 msgid "#12 Envelope, 4 3/4 x 11\""
-msgstr "#12 Envelope(信封), 4 3/4 x 11\""
+msgstr "#12 信封，4 3/4 x 11\""
 
 #: lr_const.spaper23
 msgid "#14 Envelope, 5 x 11 1/2\""
-msgstr "#14 Envelope(信封), 5 x 11 1/2\""
+msgstr "#14 信封，5 x 11 1/2\""
 
 #: lr_const.spaper24
 msgid "C Sheet, 17 x 22\""
-msgstr ""
+msgstr "C 幅面，17 x 22\""
 
 #: lr_const.spaper25
 msgid "D Sheet, 22 x 34\""
-msgstr ""
+msgstr "D 幅面，22 x 34英寸"
 
 #: lr_const.spaper256
 msgctxt "lr_const.spaper256"
@@ -1967,75 +1967,75 @@ msgstr "自定义"
 
 #: lr_const.spaper26
 msgid "E Sheet, 34 x 44\""
-msgstr ""
+msgstr "E 幅面，34 x 44\""
 
 #: lr_const.spaper27
 msgid "DL Envelope, 110 x 220 mm"
-msgstr "DL Envelope(信封), 110 x 220 mm"
+msgstr "DL 信封，110 x 220 mm"
 
 #: lr_const.spaper28
 msgid "C5 Envelope, 162 x 229 mm"
-msgstr "C5 Envelope(信封), 162 x 229 mm"
+msgstr "C5 信封，162 x 229 mm"
 
 #: lr_const.spaper29
 msgid "C3 Envelope,  324 x 458 mm"
-msgstr "C3 Envelope(信封),  324 x 458 mm"
+msgstr "C3 信封，324 x 458 mm"
 
 #: lr_const.spaper3
 msgid "Tabloid, 11 x 17\""
-msgstr "Tabloid(小型包), 11 x 17\""
+msgstr "Tabloid 11 x 17\""
 
 #: lr_const.spaper30
 msgid "C4 Envelope,  229 x 324 mm"
-msgstr "C4 Envelope(信封),  229 x 324 mm"
+msgstr "C4 信封 229 x 324 mm"
 
 #: lr_const.spaper31
 msgid "C6 Envelope,  114 x 162 mm"
-msgstr "C6 Envelope(信封),  114 x 162 mm"
+msgstr "C6 信封 114 x 162 mm"
 
 #: lr_const.spaper32
 msgid "C65 Envelope, 114 x 229 mm"
-msgstr "C65 Envelope(信封), 114 x 229 mm"
+msgstr "C65 信封，114 x 229 mm"
 
 #: lr_const.spaper33
 msgid "B4 Envelope,  250 x 353 mm"
-msgstr "B4 Envelope(信封),  250 x 353 mm"
+msgstr "B4 信封，250 x 353 mm"
 
 #: lr_const.spaper34
 msgid "B5 Envelope,  176 x 250 mm"
-msgstr ""
+msgstr "B5 信封，176 x 250 mm"
 
 #: lr_const.spaper35
 msgid "B6 Envelope,  176 x 125 mm"
-msgstr ""
+msgstr "B6 信封，176 x 125 mm"
 
 #: lr_const.spaper36
 msgid "Italy Envelope, 110 x 230 mm"
-msgstr "意大利 Envelope(信封), 110 x 230 mm"
+msgstr "意大利信封 110 x 230 mm"
 
 #: lr_const.spaper37
 msgid "Monarch Envelope, 3 7/8 x 7 1/2\""
-msgstr ""
+msgstr "Monarch 信封，3 7/8 x 7 1/2\""
 
 #: lr_const.spaper38
 msgid "6 3/4 Envelope, 3 5/8 x 6 1/2\""
-msgstr "6 3/4 Envelope(信封), 3 5/8 x 6 1/2\""
+msgstr "6 3/4 号信封 3 5/8 x 6 1/2\""
 
 #: lr_const.spaper39
 msgid "US Std Fanfold, 14 7/8 x 11\""
-msgstr ""
+msgstr "US 标准扇形纸 14 7/8 x 11\""
 
 #: lr_const.spaper4
 msgid "Ledger, 17 x 11\""
-msgstr ""
+msgstr "账簿 17 x 11\""
 
 #: lr_const.spaper40
 msgid "German Std Fanfold, 8 1/2 x 12\""
-msgstr ""
+msgstr "德国标准扇形纸 8 1/2 x 12\""
 
 #: lr_const.spaper41
 msgid "German Legal Fanfold, 8 1/2 x 13\""
-msgstr ""
+msgstr "德国法律扇形纸，8 1/2 x 13\""
 
 #: lr_const.spaper42
 msgid "B4 (ISO) 250 x 353 mm"
@@ -2043,7 +2043,7 @@ msgstr "B4 (ISO) 250 x 353 mm"
 
 #: lr_const.spaper43
 msgid "Japanese Postcard 100 x 148 mm"
-msgstr "日本明信片100 x 148 mm"
+msgstr "日本明信片 100 x 148 mm"
 
 #: lr_const.spaper44
 msgid "9 x 11\""
@@ -2059,27 +2059,27 @@ msgstr "15 x 11\""
 
 #: lr_const.spaper47
 msgid "Envelope Invite 220 x 220 mm"
-msgstr ""
+msgstr "信封邀请 220 x 220 mm"
 
 #: lr_const.spaper5
 msgid "Legal, 8 1/2 x 14\""
-msgstr ""
+msgstr "Legal, 8 1/2 x 14\""
 
 #: lr_const.spaper50
 msgid "Letter Extra 9/275 x 12\""
-msgstr ""
+msgstr "Letter Extra 9/275 x 12英寸"
 
 #: lr_const.spaper51
 msgid "Legal Extra 9/275 x 15\""
-msgstr ""
+msgstr "Legal Extra 9/275 x 15\""
 
 #: lr_const.spaper52
 msgid "Tabloid Extra 11.69 x 18\""
-msgstr ""
+msgstr "Tabloid Extra 11.69 x 18\""
 
 #: lr_const.spaper53
 msgid "A4 Extra 9.27 x 12.69\""
-msgstr "A4 Extra(特大的) 9.27 x 12.69\""
+msgstr "A4 Extra 9.27 x 12.69\""
 
 #: lr_const.spaper54
 msgid "Letter Transverse 8/275 x 11\""
@@ -2091,27 +2091,27 @@ msgstr "A4 横向 210 x 297 mm"
 
 #: lr_const.spaper56
 msgid "Letter Extra Transverse 9/275 x 12\""
-msgstr ""
+msgstr "Letter Extra Transverse 9/275 x 12\""
 
 #: lr_const.spaper57
 msgid "SuperASuperAA4 227 x 356 mm"
-msgstr ""
+msgstr "SuperASuperAA4 227 x 356 mm"
 
 #: lr_const.spaper58
 msgid "SuperBSuperBA3 305 x 487 mm"
-msgstr ""
+msgstr "SuperBSuperBA3 305 x 487 mm"
 
 #: lr_const.spaper59
 msgid "Letter Plus 8.5 x 12.69\""
-msgstr ""
+msgstr "Letter Plus 8.5 x 12.69\""
 
 #: lr_const.spaper6
 msgid "Statement, 5 1/2 x 8 1/2\""
-msgstr "Statement(报表), 5 1/2 x 8 1/2\""
+msgstr "声明，5 1/2 x 8 1/2\""
 
 #: lr_const.spaper60
 msgid "A4 Plus 210 x 330 mm"
-msgstr "A4 Plus(附加的) 210 x 330 mm"
+msgstr "A4 Plus 210 x 330 mm"
 
 #: lr_const.spaper61
 msgid "A5 Transverse 148 x 210 mm"
@@ -2119,23 +2119,23 @@ msgstr "A5 横向 148 x 210 mm"
 
 #: lr_const.spaper62
 msgid "B5 (JIS) Transverse 182 x 257 mm"
-msgstr ""
+msgstr "B5 (JIS) 横向 182 x 257 mm"
 
 #: lr_const.spaper63
 msgid "A3 Extra 322 x 445 mm"
-msgstr "A3 Extra(特大的) 322 x 445 mm"
+msgstr "A3 Extra 322 x 445 mm"
 
 #: lr_const.spaper64
 msgid "A5 Extra 174 x 235 mm"
-msgstr "A5 Extra(特大的) 174 x 235 mm"
+msgstr "A5 Extra 174 x 235 mm"
 
 #: lr_const.spaper65
 msgid "B5 (ISO) Extra 201 x 276 mm"
-msgstr ""
+msgstr "B5 (ISO) 额外 201 x 276 mm"
 
 #: lr_const.spaper66
 msgid "A2 420 x 594 mm"
-msgstr "A2 420 x 594mm"
+msgstr "A2 420 x 594 mm"
 
 #: lr_const.spaper67
 msgid "A3 Transverse 297 x 420 mm"
@@ -2143,55 +2143,55 @@ msgstr "A3 横向 297 x 420 mm"
 
 #: lr_const.spaper68
 msgid "A3 Extra Transverse 322 x 445 mm"
-msgstr "A3 Extra Transverse(特大的横向) 322 x 445 mm"
+msgstr "A3 加大横向 322 x 445 mm"
 
 #: lr_const.spaper69
 msgid "Double Japanese Postcard 200 x 148 mm"
-msgstr ""
+msgstr "双联日本明信片 200 x 148 毫米"
 
 #: lr_const.spaper7
 msgid "Executive, 7 1/4 x 10 1/2\""
-msgstr ""
+msgstr "Executive 7 1/4 x 10 1/2 英寸"
 
 #: lr_const.spaper70
 msgid "A6 105x148 mm"
-msgstr "A6 105x148mm"
+msgstr "A6 105x148 mm"
 
 #: lr_const.spaper71
 msgid "DMPAPER_JENV_KAKU2 240X132"
-msgstr ""
+msgstr "DMPAPER_JENV_KAKU2 240X132"
 
 #: lr_const.spaper72
 msgid "DMPAPER_JENV_KAKU3 216X277"
-msgstr ""
+msgstr "DMPAPER_JENV_KAKU3 216X277"
 
 #: lr_const.spaper73
 msgid "DMPAPER_JENV_CHOU3 120X235"
-msgstr ""
+msgstr "DMPAPER_JENV_CHOU3 120X235"
 
 #: lr_const.spaper74
 msgid "DMPAPER_JENV_CHOU4 90X205"
-msgstr ""
+msgstr "DMPAPER_JENV_CHOU4 90X205"
 
 #: lr_const.spaper75
 msgid "DMPAPER_LETTER_ROTATED 279.4x215.9"
-msgstr ""
+msgstr "DMPAPER_LETTER_ROTATED 279.4x215.9"
 
 #: lr_const.spaper76
 msgid "DMPAPER_A3_ROTATED 420x297"
-msgstr ""
+msgstr "DMPAPER_A3_ROTATED 420x297"
 
 #: lr_const.spaper77
 msgid "DMPAPER_A4_ROTATED 297X210"
-msgstr ""
+msgstr "DMPAPER_A4_ROTATED 297X210"
 
 #: lr_const.spaper78
 msgid "DMPAPER_A5_ROTATED 210X148"
-msgstr ""
+msgstr "DMPAPER_A5_ROTATED 210X148"
 
 #: lr_const.spaper79
 msgid "DMPAPER_B4_JIS_ROTATED 364X257"
-msgstr ""
+msgstr "DMPAPER_B4_JIS_ROTATED 364X257"
 
 #: lr_const.spaper8
 msgid "A3 297 x 420 mm"
@@ -2199,43 +2199,43 @@ msgstr "A3 297 x 420mm"
 
 #: lr_const.spaper80
 msgid "DMPAPER_B5_JIS_ROTATED 257X182"
-msgstr ""
+msgstr "DMPAPER_B5_JIS_ROTATED 257X182"
 
 #: lr_const.spaper81
 msgid "DMPAPER_JAPANESE_POSTCARD_ROTATED 148X100"
-msgstr ""
+msgstr "DMPAPER_JAPANESE_POSTCARD_ROTATED 148X100"
 
 #: lr_const.spaper82
 msgid "DMPAPER_DBL_JAPANESE_POSTCARD_ROTATED 148X200"
-msgstr ""
+msgstr "DMPAPER_DBL_JAPANESE_POSTCARD_ROTATED 148X200"
 
 #: lr_const.spaper83
 msgid "DMPAPER_A6_ROTATED 148X105"
-msgstr ""
+msgstr "DM_PAPER_A6_ROTATED 148X105"
 
 #: lr_const.spaper84
 msgid "DMPAPER_JENV_KAKU2_ROTATED 332X240"
-msgstr ""
+msgstr "DMPAPER_JENV_KAKU2_ROTATED 332X240"
 
 #: lr_const.spaper85
 msgid "DMPAPER_JENV_KAKU3_ROTATED 277X216"
-msgstr ""
+msgstr "DMPAPER_JENV_KAKU3_ROTATED 277X216"
 
 #: lr_const.spaper86
 msgid "DMPAPER_JENV_CHOU3_ROTATED 235X120"
-msgstr ""
+msgstr "DMPAPER_JENV_CHOU3_ROTATED 235X120"
 
 #: lr_const.spaper87
 msgid "DMPAPER_JENV_CHOU4_ROTATED 205X90"
-msgstr ""
+msgstr "DMPAPER_JENV_CHOU4_ROTATED 205X90"
 
 #: lr_const.spaper88
 msgid "DMPAPER_B6_JIS 128X122"
-msgstr ""
+msgstr "DMPAPER_B6_JIS 128X122"
 
 #: lr_const.spaper89
 msgid "DMPAPER_B6_JIS_ROTATED 182X128"
-msgstr ""
+msgstr "DMPAPER_B6_JIS_ROTATED 182X128"
 
 #: lr_const.spaper9
 msgid "A4 210 x 297 mm"
@@ -2243,43 +2243,43 @@ msgstr "A4 210 x 297mm"
 
 #: lr_const.spaper90
 msgid "DMPAPER_12X11 304.8X279.4"
-msgstr ""
+msgstr "DMPAPER_12X11 304.8X279.4"
 
 #: lr_const.spaper91
 msgid "DMPAPER_JENV_YOU4 105X235"
-msgstr ""
+msgstr "DMPAPER_JENV_YOU4 105X235"
 
 #: lr_const.spaper92
 msgid "DMPAPER_JENV_YOU4_ROTATED 235X105"
-msgstr ""
+msgstr "DMPAPER_JENV_YOU4_ROTATED 235X105"
 
 #: lr_const.spaper93
 msgid "DMPAPER_P16K 146X215"
-msgstr ""
+msgstr "DMPAPER_P16K 146X215"
 
 #: lr_const.spaper94
 msgid "DMPAPER_P32K 97X151"
-msgstr ""
+msgstr "DMPAPER_P32K 97X151"
 
 #: lr_const.spaper95
 msgid "DMPAPER_P32KBIG 97X151"
-msgstr ""
+msgstr "DMPAPER_P32KBIG 97X151"
 
 #: lr_const.spaper96
 msgid "DMPAPER_PENV_1 102X165"
-msgstr ""
+msgstr "DMPAPER_PENV_1 102X165"
 
 #: lr_const.spaper97
 msgid "DMPAPER_PENV_2 102X176"
-msgstr ""
+msgstr "DMPAPER_PENV_2 102X176"
 
 #: lr_const.spaper98
 msgid "DMPAPER_PENV_3 125X176"
-msgstr ""
+msgstr "DMPAPER_PENV_3 125X176"
 
 #: lr_const.spaper99
 msgid "DMPAPER_PENV_4 110X208"
-msgstr ""
+msgstr "DMPAPER_PENV_4 110X208"
 
 #: lr_const.spg
 msgid "Page"
@@ -2291,11 +2291,11 @@ msgstr "底,mm(&B)"
 
 #: lr_const.spgoptformbycolumns
 msgid "By Colum&ns"
-msgstr ""
+msgstr "按列(&N)"
 
 #: lr_const.spgoptformbyrows
 msgid "By Row&s"
-msgstr ""
+msgstr "按行(&S)"
 
 #: lr_const.spgoptformcapt
 msgctxt "lr_const.spgoptformcapt"
@@ -2304,7 +2304,7 @@ msgstr "页面选项"
 
 #: lr_const.spgoptformcolgap
 msgid "&Column gap, mm"
-msgstr ""
+msgstr "列间距, mm(&C)"
 
 #: lr_const.spgoptformcolumn
 msgid "Columns"
@@ -2320,11 +2320,11 @@ msgstr "高,mm(&H)"
 
 #: lr_const.spgoptforminvalidcustompapersize
 msgid "Invalid custom paper size."
-msgstr ""
+msgstr "无效的自定义纸张尺寸。"
 
 #: lr_const.spgoptformland
 msgid "&Landscape"
-msgstr ""
+msgstr "横向(&L)"
 
 #: lr_const.spgoptformlayoutorder
 msgid "Layout Order"
@@ -2349,7 +2349,7 @@ msgstr "选项"
 
 #: lr_const.spgoptformor
 msgid "Orientation"
-msgstr ""
+msgstr "方向"
 
 #: lr_const.spgoptformpaper
 msgid "Paper"
@@ -2361,7 +2361,7 @@ msgstr "页边距"
 
 #: lr_const.spgoptformport
 msgid "&Portrait"
-msgstr ""
+msgstr "肖像(&P)"
 
 #: lr_const.spgoptformprint
 msgid "&Print to previous page"
@@ -2461,7 +2461,7 @@ msgstr "整页(&W)"
 
 #: lr_const.sprintchildifnotvisible
 msgid "Print child if not visible"
-msgstr ""
+msgstr "如果不可见则打印子项"
 
 #: lr_const.sprintererror
 msgid "Selected printer is not valid"
@@ -2473,7 +2473,7 @@ msgstr "所有(&A)"
 
 #: lr_const.sprintformcollate
 msgid "Collate"
-msgstr ""
+msgstr "整理"
 
 #: lr_const.sprintformcopy
 msgid "&Copies:"
@@ -2482,15 +2482,15 @@ msgstr "副本:(&C)"
 #: lr_const.sprintformcurpg
 msgctxt "lr_const.sprintformcurpg"
 msgid "Current &page"
-msgstr "当前页面(&p)"
+msgstr "当前页(&P)"
 
 #: lr_const.sprintforminfo
 msgid "Enter page numbers and/or page ranges, separated by commas. For example, 1,3,5-12"
-msgstr "输入页数 和/或 页范围,以逗号分割.例如,1,3,5-12"
+msgstr "输入页码和/或页码范围，用逗号分隔。例如，1,3,5-12"
 
 #: lr_const.sprintformnumber
 msgid "&Numbers:"
-msgstr "数字:(&N)"
+msgstr "数字：(&N)"
 
 #: lr_const.sprintformpgrange
 msgid "Page range"
@@ -2511,11 +2511,11 @@ msgstr "属性"
 
 #: lr_const.sprintifsubsetempty
 msgid "Print if detail empty"
-msgstr "打印 假如细节是空的"
+msgstr "如果详细信息为空则打印"
 
 #: lr_const.sremovepg
 msgid "Remove this page?"
-msgstr "移除该页?"
+msgstr "删除此页？"
 
 #: lr_const.srepeatheader
 msgid "Show on all pages"
@@ -2528,12 +2528,12 @@ msgstr "报告文件"
 #: lr_const.sreportcorruptoldknowversion
 #, object-pascal-format
 msgid "This report is corrupt, it probably needs \"LRE_OLDV%d_FRF_READ\"=true"
-msgstr ""
+msgstr "此报告已损坏，可能需要 \"LRE OLDV%d FRF READ\"=true"
 
 #: lr_const.sreportcorruptunknownversion
 #, object-pascal-format
 msgid "This report is corrupt, frVersion=%d"
-msgstr ""
+msgstr "此报告已损坏，frVersion=%d"
 
 #: lr_const.sreportcreatedate
 msgid "Report creation date"
@@ -2565,31 +2565,31 @@ msgstr "颜色"
 
 #: lr_const.sroundrectformcurve
 msgid "Curve"
-msgstr ""
+msgstr "曲线"
 
 #: lr_const.sroundrectformdata
 msgid "Data .."
-msgstr "数据.."
+msgstr "数据 .."
 
 #: lr_const.sroundrectformendcolor
 msgid "End Color"
-msgstr "End颜色"
+msgstr "End 颜色"
 
 #: lr_const.sroundrectformframed
 msgid "Framed zone"
-msgstr ""
+msgstr "带框区域"
 
 #: lr_const.sroundrectformgradient
 msgid "Gradient"
-msgstr ""
+msgstr "渐变"
 
 #: lr_const.sroundrectformhint
 msgid "Click here to define the shadow color or gradient colors"
-msgstr ""
+msgstr "点击这里定义阴影颜色或渐变颜色"
 
 #: lr_const.sroundrectformsample
 msgid "Sample :"
-msgstr "样例:"
+msgstr "示例："
 
 #: lr_const.sroundrectformshadow
 msgid "Shadow width"
@@ -2601,15 +2601,15 @@ msgstr "样式"
 
 #: lr_const.sroundrectformstyledif
 msgid "Vertical,Horizontal,Elliptic,Rectangle,Horiz._Center,Vert._Center"
-msgstr ""
+msgstr "Vertical,Horizontal,Elliptic,Rectangle,Horiz._Center,Vert._Center"
 
 #: lr_const.sroundrectformvar
 msgid "Variables ..."
-msgstr "变量..."
+msgstr "变量 ..."
 
 #: lr_const.sroundrectsqrcorners
 msgid "Squared corners"
-msgstr ""
+msgstr "方形角"
 
 #: lr_const.srtffile
 msgid "Rich Text file"
@@ -2621,7 +2621,7 @@ msgstr "保存更改"
 
 #: lr_const.sscripteditor
 msgid "Script editor"
-msgstr "Script编辑器"
+msgstr "脚本编辑器"
 
 #: lr_const.sshape1
 msgctxt "lr_const.sshape1"
@@ -2642,11 +2642,11 @@ msgstr "三角形"
 
 #: lr_const.sshape5
 msgid "Diagonal1"
-msgstr "对角线(Diagonal)1"
+msgstr "对角线1"
 
 #: lr_const.sshape6
 msgid "Diagonal2"
-msgstr "对角线(Diagonal)2"
+msgstr "对角线2"
 
 #: lr_const.sshapeformcaption
 msgid "Shape"
@@ -2654,7 +2654,7 @@ msgstr "形状"
 
 #: lr_const.sshapeformkind
 msgid "Shape kind"
-msgstr ""
+msgstr "形状类型"
 
 #: lr_const.sspecval
 msgctxt "lr_const.sspecval"
@@ -2671,11 +2671,11 @@ msgstr "字符串"
 
 #: lr_const.ssubreportonpage
 msgid "SubReport on page"
-msgstr ""
+msgstr "子报表在页"
 
 #: lr_const.stemplemptydesc
 msgid "New report based on empty template"
-msgstr ""
+msgstr "基于空模板的新报告"
 
 #: lr_const.stemplemtpyrp
 msgid "Empty template"
@@ -2683,7 +2683,7 @@ msgstr "空模板"
 
 #: lr_const.stemplfile
 msgid "FastReport template"
-msgstr "FastReport模板"
+msgstr "FastReport 模板"
 
 #: lr_const.stemplformdesc
 msgid "Description"
@@ -2700,23 +2700,23 @@ msgstr "ASCII文本文件"
 
 #: lr_const.stimeformat1
 msgid "hh:nn:ss"
-msgstr ""
+msgstr "hh:nn:ss"
 
 #: lr_const.stimeformat2
 msgid "h:nn:ss"
-msgstr ""
+msgstr "h:nn:ss"
 
 #: lr_const.stimeformat3
 msgid "hh:nn"
-msgstr ""
+msgstr "hh:nn"
 
 #: lr_const.stimeformat4
 msgid "h:nn"
-msgstr ""
+msgstr "h:nn"
 
 #: lr_const.sto
 msgid "to"
-msgstr ""
+msgstr "到"
 
 #: lr_const.stransparent
 msgid "Transparent"
@@ -2724,19 +2724,19 @@ msgstr "透明"
 
 #: lr_const.sunabletoreadversion
 msgid "Unable to read report version"
-msgstr "不能读取报告版本"
+msgstr "无法读取报告版本"
 
 #: lr_const.suntitled
 msgid "Untitled"
-msgstr "无标题(Untitled)"
+msgstr "未命名"
 
 #: lr_const.susefixedfontsettings
 msgid "Use fixed font settings"
-msgstr ""
+msgstr "使用固定字体设置"
 
 #: lr_const.susememofontsettings
 msgid "Use Memo font settings"
-msgstr ""
+msgstr "使用 Memo 字体设置"
 
 #: lr_const.susesyntaxhighlight
 msgid "Use syntax highlight"
@@ -2766,7 +2766,7 @@ msgstr "行#"
 
 #: lr_const.svar6
 msgid "Line through#"
-msgstr ""
+msgstr "贯穿线#"
 
 #: lr_const.svar7
 msgid "Column#"
@@ -2778,7 +2778,7 @@ msgstr "当前行#"
 
 #: lr_const.svar9
 msgid "TotalPages"
-msgstr "总页数(TotalPages)"
+msgstr "总页数"
 
 #: lr_const.svaredformcapt
 msgid "Variables list"
@@ -2786,7 +2786,7 @@ msgstr "变量列表"
 
 #: lr_const.svaredformcat
 msgid "&Categories and variables"
-msgstr ""
+msgstr "类别和变量(&C)"
 
 #: lr_const.svarformat
 msgid "Variable format ..."
@@ -2807,31 +2807,31 @@ msgstr "变量"
 
 #: lr_const.svbandeditorformbnd
 msgid "Bands"
-msgstr ""
+msgstr "Bands"
 
 #: lr_const.svbandeditorformcapt
 msgid "Band data sources"
-msgstr ""
+msgstr "Band 数据源"
 
 #: lr_const.svbandeditorformdatasource
 msgctxt "lr_const.svbandeditorformdatasource"
 msgid "Data source"
-msgstr "Data源代码"
+msgstr "数据源"
 
 #: lr_const.svbandeditorformrecordcount
 msgctxt "lr_const.svbandeditorformrecordcount"
 msgid "&Record count"
-msgstr ""
+msgstr "记录数(&R)"
 
 #: lr_const.svirtualdataset
 msgid "Virtual Dataset"
-msgstr ""
+msgstr "虚拟数据集"
 
 #: lr_const.swordbreak
 msgid "Word break"
-msgstr ""
+msgstr "断字"
 
 #: lr_const.swordwrap
 msgid "Word wrap"
-msgstr ""
+msgstr "自动换行"
 

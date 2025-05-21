@@ -5,11 +5,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"PO-Revision-Date: 2025-05-21 21:42+0800\n"
+"Last-Translator: ACTom <i@actom.me>\n"
 "Language-Team: \n"
 "Language: zh_CN\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Generator: TyPoEditor 0.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: codetoolsstrconsts.crsbracketnotfound
@@ -45,7 +45,7 @@ msgstr "添加 %s 到源代码目录"
 
 #: codetoolsstrconsts.ctsancestorisnotproperty
 msgid "ancestor of untyped property is not a property"
-msgstr ""
+msgstr "未指定类型的属性的祖先不是一个属性"
 
 #: codetoolsstrconsts.ctsanlclproject
 msgid "an LCL project"
@@ -92,7 +92,7 @@ msgstr "要求括号打开, 但是找到%s"
 
 #: codetoolsstrconsts.ctscannotaddaunittotheimplementationbecauseonlyaunith
 msgid "cannot add a unit to the implementation, because only a unit has one"
-msgstr ""
+msgstr "无法将单元添加到实现中，因为一个单元只有一个"
 
 #: codetoolsstrconsts.ctscharacterconstantoutofrange
 msgid "character constant out of range"
@@ -108,7 +108,7 @@ msgstr "预期的类标识符未出现"
 
 #: codetoolsstrconsts.ctsclassnodewithoutparentnode
 msgid "class node without parent node"
-msgstr ""
+msgstr "没有父节点的节点类"
 
 #: codetoolsstrconsts.ctsclassnotfound
 #, object-pascal-format
@@ -123,7 +123,7 @@ msgstr "类未找到\"%s\""
 #: codetoolsstrconsts.ctsclassofdefinitionnotresolved
 #, object-pascal-format
 msgid "\"class of\" definition not resolved: %s"
-msgstr ""
+msgstr "\"class of\" 定义未解析： %s"
 
 #: codetoolsstrconsts.ctsclasssnotfound
 #, object-pascal-format
@@ -173,7 +173,7 @@ msgstr "调试器目录"
 #: codetoolsstrconsts.ctsdefaultancestornotfound
 #, object-pascal-format
 msgid "default ancestor %s not found"
-msgstr ""
+msgstr "未找到默认祖先 %s"
 
 #: codetoolsstrconsts.ctsdefaultclassancestortobjectnotfound
 msgid "default class ancestor TObject not found"
@@ -181,11 +181,11 @@ msgstr "默认类原型TObject未找到"
 
 #: codetoolsstrconsts.ctsdefaultdispinterfaceancestoridispatchnotfound
 msgid "default dispinterface ancestor IDispatch not found"
-msgstr ""
+msgstr "默认 dispinterface 祖先 IDispatch 未找到"
 
 #: codetoolsstrconsts.ctsdefaultfpcsource2operatingsystem
 msgid "Default fpc source Operating System 2"
-msgstr "默认fpc源代码操作系统2"
+msgstr "默认 fpc 源 操作系统 2"
 
 #: codetoolsstrconsts.ctsdefaultfpcsourceoperatingsystem
 msgid "Default fpc source Operating System"
@@ -205,16 +205,16 @@ msgstr "默认fpc目标处理器"
 
 #: codetoolsstrconsts.ctsdefaultinterfaceancestoriinterfacenotfound
 msgid "default interface ancestor IInterface not found"
-msgstr ""
+msgstr "未找到默认接口祖先 IInterface"
 
 #: codetoolsstrconsts.ctsdefaultjavaclassancestorjlobjectnotfound
 msgid "default java class ancestor JLObject not found"
-msgstr ""
+msgstr "默认的 Java 类祖先 JLObject 未找到"
 
 #: codetoolsstrconsts.ctsdefaultparameterexpectedbutatomfound
 #, object-pascal-format
 msgid "default parameter expected, but %s found"
-msgstr ""
+msgstr "预期默认参数，但找到 %s"
 
 #: codetoolsstrconsts.ctsdefaultpropertynotfound
 msgid "default property not found"
@@ -222,7 +222,7 @@ msgstr "默认属性未找到"
 
 #: codetoolsstrconsts.ctsdefaultspecifierredefined
 msgid "default specifier redefined"
-msgstr ""
+msgstr "默认说明符已重新定义"
 
 #: codetoolsstrconsts.ctsdefine
 msgid "Define "
@@ -247,7 +247,7 @@ msgstr "定义处理器类型"
 
 #: codetoolsstrconsts.ctsdefsforlazarussources
 msgid "Definitions for the Lazarus Sources"
-msgstr ""
+msgstr "Lazarus 源代码的定义"
 
 #: codetoolsstrconsts.ctsdesignerdirectory
 msgid "Designer Directory"
@@ -256,20 +256,20 @@ msgstr "设计器目录"
 #: codetoolsstrconsts.ctsdispidparameterexpectedbutatomfound
 #, object-pascal-format
 msgid "dispid parameter expected, but %s found"
-msgstr ""
+msgstr "需要 dispid 参数，但找到的是 %s"
 
 #: codetoolsstrconsts.ctsdispidspecifierredefined
 msgid "dispid specifier redefined"
-msgstr ""
+msgstr "dispID 指定符已被重新定义"
 
 #: codetoolsstrconsts.ctsduplicateidentifier
 #, object-pascal-format
 msgid "duplicate identifier: %s"
-msgstr ""
+msgstr "重复标识符： %s"
 
 #: codetoolsstrconsts.ctselse
 msgid "else"
-msgstr ""
+msgstr "其他"
 
 #: codetoolsstrconsts.ctsendforclassnotfound
 msgid "\"end\" for class/object not found"
@@ -277,7 +277,7 @@ msgstr "\"end\"对于类/对象未找到"
 
 #: codetoolsstrconsts.ctsendforrecordnotfound
 msgid "end for record not found"
-msgstr ""
+msgstr "结束 因 未找到 记录"
 
 #: codetoolsstrconsts.ctsendoffile
 msgid "end of file"
@@ -294,27 +294,27 @@ msgstr "source中未找到End."
 
 #: codetoolsstrconsts.ctsenumerationtype
 msgid "enumeration type"
-msgstr ""
+msgstr "枚举类型"
 
 #: codetoolsstrconsts.ctserrorduringcreationofnewprocbodies
 msgid "error during creation of new proc bodies"
-msgstr ""
+msgstr "在创建新 proc bodies 时出错"
 
 #: codetoolsstrconsts.ctserrorduringinsertingnewclassparts
 msgid "error during inserting new class parts"
-msgstr ""
+msgstr "在插入新类部分时出错"
 
 #: codetoolsstrconsts.ctserrorduringinsertingnewusessection
 msgid "error during inserting new units to the main uses section"
-msgstr ""
+msgstr "在将新单元添加到主 uses 部分时发生错误"
 
 #: codetoolsstrconsts.ctserrorindirectiveexpression
 msgid "error in directive expression"
-msgstr ""
+msgstr "指令表达式中存在错误"
 
 #: codetoolsstrconsts.ctserrorinparamlist
 msgid "error in paramlist"
-msgstr ""
+msgstr "参数列表中存在错误"
 
 #: codetoolsstrconsts.ctsexpected
 #, object-pascal-format
@@ -353,7 +353,7 @@ msgstr "要求;of statement,但是找到%s"
 
 #: codetoolsstrconsts.ctsexportsclauseonlyallowedinlibraries
 msgid "exports clause only allowed in libraries"
-msgstr ""
+msgstr "导出子句仅允许在库中使用"
 
 #: codetoolsstrconsts.ctsexprtypemustbeclassorrecord
 msgid "expression type must be class or record type"
@@ -370,7 +370,7 @@ msgstr "向前"
 #: codetoolsstrconsts.ctsforwardclassdefinitionnotresolved
 #, object-pascal-format
 msgid "Forward class definition not resolved: %s"
-msgstr ""
+msgstr "前向类定义未解析：%s"
 
 #: codetoolsstrconsts.ctsfpdocsystemon
 msgid "enable FPDocSystem"
@@ -414,7 +414,7 @@ msgstr "HasError"
 #: codetoolsstrconsts.ctshelperisnotallowed
 #, object-pascal-format
 msgid "Helper after %s is not allowed"
-msgstr ""
+msgstr "在 %s 之后不允许使用帮助程序"
 
 #: codetoolsstrconsts.ctsidedirectory
 msgid "IDE Directory"
@@ -450,41 +450,41 @@ msgstr "标识符未找到:%s"
 
 #: codetoolsstrconsts.ctsifdefdarwin
 msgid "IfDef Darwin"
-msgstr ""
+msgstr "如果定义了 Darwin"
 
 #: codetoolsstrconsts.ctsifdeflinux
 msgid "IfDef Linux"
-msgstr ""
+msgstr "如果定义了 Linux"
 
 #: codetoolsstrconsts.ctsifdefwindows
 msgid "IfDef Windows"
-msgstr ""
+msgstr "如果定义了 Windows"
 
 #: codetoolsstrconsts.ctsiflclwidgettypeequalsgtk2
 msgid "If LCLWidgetType=gtk2 then"
-msgstr ""
+msgstr "如果 LCLWidgetType=gtk2 则"
 
 #: codetoolsstrconsts.ctsiftargetosisnotsrcos
 msgid "If TargetOS<>SrcOS"
-msgstr ""
+msgstr "如果 TargetOS <> SrcOS"
 
 #: codetoolsstrconsts.ctsiftargetosisnotsrcos2
 msgid "If TargetOS<>SrcOS2"
-msgstr ""
+msgstr "如果 TargetOS<>SrcOS2"
 
 #: codetoolsstrconsts.ctsiftargetosisnotwin32
 msgid "If TargetOS<>win32 then"
-msgstr ""
+msgstr "如果 TargetOS<>win32 则"
 
 #: codetoolsstrconsts.ctsillegalcircleinusedunits
 #, object-pascal-format
 msgid "illegal circle using unit: %s"
-msgstr ""
+msgstr "非法循环引用单元： %s"
 
 #: codetoolsstrconsts.ctsillegalqualifier
 #, object-pascal-format
 msgid "illegal qualifier %s found"
-msgstr ""
+msgstr "非法限定符 %s 被发现"
 
 #: codetoolsstrconsts.ctsimplementationnodenotfound
 msgid "implementation node not found"
@@ -492,7 +492,7 @@ msgstr "implementation节点未找到"
 
 #: codetoolsstrconsts.ctsincludecircledetected
 msgid "Include circle detected"
-msgstr ""
+msgstr "检测到包含循环"
 
 #: codetoolsstrconsts.ctsincludedirectoriesplusdirs
 #, object-pascal-format
@@ -547,7 +547,7 @@ msgstr "无效类名\"%s\""
 #: codetoolsstrconsts.ctsinvalidflagvaluefordirective
 #, object-pascal-format
 msgid "invalid flag value \"%s\" for directive %s"
-msgstr ""
+msgstr "无效的标志值 \"%s\" 对于指令 %s"
 
 #: codetoolsstrconsts.ctsinvalidmode
 #, object-pascal-format
@@ -561,7 +561,7 @@ msgstr "无效运算符%s"
 
 #: codetoolsstrconsts.ctsinvalidpositionforinsertionofstatements
 msgid "invalid position for insertion of statements"
-msgstr ""
+msgstr "无效的位置 用于 插入 语句"
 
 #: codetoolsstrconsts.ctsinvalidsubrange
 msgid "invalid subrange"
@@ -605,7 +605,7 @@ msgstr "Lazarus源代码"
 #: codetoolsstrconsts.ctsmethodhasnodeclaration
 #, object-pascal-format
 msgid "method \"%s\" has no declaration"
-msgstr ""
+msgstr "方法 \"%s\" 没有声明"
 
 #: codetoolsstrconsts.ctsmethodname
 msgid "method name"
@@ -614,7 +614,7 @@ msgstr "方法名称"
 #: codetoolsstrconsts.ctsmethodsignaturesnotfoundinclass
 #, object-pascal-format
 msgid "Method signature %s not found in class"
-msgstr ""
+msgstr "未在类中找到方法签名 %s"
 
 #: codetoolsstrconsts.ctsmethodtypedefinitionnotfound
 msgid "method type definition not found"
@@ -654,11 +654,11 @@ msgstr " (需要的模式\"%s\")"
 #: codetoolsstrconsts.ctsnesteddefinitionsarenotallowed
 #, object-pascal-format
 msgid "Nested %s definitions are not allowed"
-msgstr ""
+msgstr "不允许嵌套的 %s 定义"
 
 #: codetoolsstrconsts.ctsnewprocbodynotfound
 msgid "new proc body not found"
-msgstr ""
+msgstr "新的过程体未找到"
 
 #: codetoolsstrconsts.ctsnocontextnodefoundatcursor
 msgid "no context node found at cursor"
@@ -666,12 +666,12 @@ msgstr "光标处未找到关联节点"
 
 #: codetoolsstrconsts.ctsnodefaultspecifierdefinedtwice
 msgid "nodefault specifier defined twice"
-msgstr ""
+msgstr "nodefault 说明符定义了两次"
 
 #: codetoolsstrconsts.ctsnopascalcodefound
 #, object-pascal-format
 msgid "no pascal code found (first token is %s)"
-msgstr ""
+msgstr "未找到 pascal 代码（第一个标记为 %s）"
 
 #: codetoolsstrconsts.ctsnoscanneravailable
 msgid "No scanner available"
@@ -680,11 +680,11 @@ msgstr "没有扫描仪可用"
 #: codetoolsstrconsts.ctsnoscannerfound
 #, object-pascal-format
 msgid "No scanner found for \"%s\". If this is an include file, please open the main source first."
-msgstr ""
+msgstr "未找到针对 \"%s\" 的扫描器。如果这是一个包含文件，请先打开主源文件。"
 
 #: codetoolsstrconsts.ctsnotenoughgenparams
 msgid "Not enough actual generic parameters"
-msgstr ""
+msgstr "泛型参数数量不足"
 
 #: codetoolsstrconsts.ctsoldmethodnotfound
 #, object-pascal-format
@@ -757,7 +757,7 @@ msgstr "位置不在源代码中"
 
 #: codetoolsstrconsts.ctsprocedureorfunctionorconstructorordestructor
 msgid "procedure or function or constructor or destructor"
-msgstr ""
+msgstr "过程 或 函数 或 构造器 或 析构器"
 
 #: codetoolsstrconsts.ctsprocessorspecific
 msgid "processor specific"
@@ -820,7 +820,7 @@ msgstr "设置SrcPath到%s"
 
 #: codetoolsstrconsts.ctssourcefilenamesforstandardfpcunits
 msgid "Source filenames for the standard fpc units"
-msgstr ""
+msgstr "标准 fpc 单元的源文件名"
 
 #: codetoolsstrconsts.ctssourceisnotunit
 msgid "source is not unit"
@@ -851,7 +851,7 @@ msgstr "表达式语法错误\"%s\""
 
 #: codetoolsstrconsts.ctstermnotsimple
 msgid "Term has no simple type"
-msgstr ""
+msgstr "术语没有简单类型"
 
 #: codetoolsstrconsts.ctsthenexpectedbutfound
 #, object-pascal-format
@@ -872,11 +872,11 @@ msgstr "类型标识符"
 
 #: codetoolsstrconsts.ctstypeisonlyallowedingenericsendofclassnotfound
 msgid "type is only allowed in generics, end of class not found"
-msgstr ""
+msgstr "类型 仅允许在泛型中使用，未找到类的结尾"
 
 #: codetoolsstrconsts.ctstypesectionofclassnotfound
 msgid "type section of class not found"
-msgstr ""
+msgstr "类的类型部分未找到"
 
 #: codetoolsstrconsts.ctsunabletoapplychanges
 msgid "unable to apply changes"
@@ -917,16 +917,16 @@ msgstr "意外关键字\"%s\"在begin..end语句块中找到"
 #: codetoolsstrconsts.ctsunexpectedkeywordwhilereadingbackwards
 #, object-pascal-format
 msgid "unexpected keyword \"%s\" found while reading blocks backwards"
-msgstr ""
+msgstr "向后读取块时发现意外的关键字 \"%s\""
 
 #: codetoolsstrconsts.ctsunexpectedsectionkeyword
 #, object-pascal-format
 msgid "unexpected section keyword %s found"
-msgstr ""
+msgstr "找到未预期的节关键字 %s"
 
 #: codetoolsstrconsts.ctsunexpectedsubrangeoperatorfound
 msgid "unexpected subrange operator '..' found"
-msgstr ""
+msgstr "发现意外的子范围运算符 '..'"
 
 #: codetoolsstrconsts.ctsunitnotfound
 #, object-pascal-format
@@ -965,7 +965,7 @@ msgstr "Utils目录"
 
 #: codetoolsstrconsts.ctsvarisonlyallowedingenericsendofclassnotfound
 msgid "var is only allowed in generics, end of class not found"
-msgstr ""
+msgstr "var 仅允许在泛型中，未找到类的结尾"
 
 #: codetoolsstrconsts.ctswordnotfound
 #, object-pascal-format
