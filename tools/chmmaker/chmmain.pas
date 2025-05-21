@@ -112,6 +112,7 @@ type
     function Compile(ShowSuccessMsg: Boolean): Boolean;
     function GetModified: Boolean;
     procedure Save(aAs: Boolean);
+    function StrictModified: Boolean;
     function CloseProject: Boolean;
 
     procedure AddFilesToProject(Strings: TStrings);
@@ -483,7 +484,7 @@ procedure TCHMForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 var
   MResult: Integer;
 begin
-  if Modified then
+  if StrictModified then
   begin
     MResult := MessageDlg(
       rsProjectHasBeenModified + LineEnding + rsSaveChanges,
@@ -651,6 +652,22 @@ begin
   Result := (Project <> nil) and FModified;
 end;
 
+function TCHMForm.StrictModified: Boolean;
+begin
+  Result := Modified;
+
+  // The following case happens that one of the FileNameEdits has been changed
+  // and the project is closed in a way which does not fire the OnEditingDone
+  // event (e.g., close form by 'x' button).
+  if (not Result) and Assigned(Project) and (
+    (ExtractFileName(CHMFilenameEdit.FileName) <> Project.OutputFileName) or
+    (ExtractFileName(TOCEdit.FileName) <> Project.TableOfContentsFileName) or
+    (ExtractFileName(IndexEdit.FileName) <> Project.IndexFileName)
+    )
+  then
+    Result := true;
+end;
+
 procedure TCHMForm.Save(aAs: Boolean);
 begin
   if aAs or (Project.FileName = '') then
@@ -699,6 +716,7 @@ begin
   ChmTitleEdit.Clear();
   TOCEdit.Clear;
   IndexEdit.Clear;
+  ChmFileNameEdit.Clear;
   FilesGroupBox.Enabled := False;
   MainPanel.Enabled := False;
   AcSaveAs.Enabled := False;
