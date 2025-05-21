@@ -450,7 +450,7 @@ begin
     AddAllBtn.Anchors := AddAllBtn.Anchors - [akRight];
     AutoAddLinksBtn.Anchors := AutoAddLinksBtn.Anchors - [akRight];
     FilesGroupbox.Constraints.MinWidth :=
-      {%H-}MaxValue([AddAllBtn.Width, AutoAddLinksBtn.Width, AddFilesBtn.Width + RemoveFilesBtn.Width + Bevel1.Width]) +
+      Max(AddAllBtn.Width, Max(AutoAddLinksBtn.Width, AddFilesBtn.Width + RemoveFilesBtn.Width + Bevel1.Width)) +
       AutoAddLinksBtn.BorderSpacing.Around * 2;
     if FilesGroupbox.Width < FilesGroupbox.Constraints.MinWidth then
       FilesGroupbox.Width := FilesGroupbox.Constraints.MinWidth;

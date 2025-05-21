@@ -19,7 +19,7 @@
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
-      <ExcludedIdentifiers Count="51">
+      <ExcludedIdentifiers Count="49">
         <Item1 Value="tsitemapeditform.urllabel.caption"/>
         <Item2 Value="tsitemapeditform.subitembtn.caption"/>
         <Item3 Value="tsitemapeditform.afterbtn.caption"/>
@@ -86,17 +86,7 @@
       <Version Value="2"/>
     </PublishOptions>
     <RunParams>
-      <local>
-        <CommandLineParams Value="example/example.hfp -lang=de"/>
-      </local>
       <FormatVersion Value="2"/>
-      <Modes Count="1">
-        <Mode0 Name="default">
-          <local>
-            <CommandLineParams Value="example/example.hfp -lang=de"/>
-          </local>
-        </Mode0>
-      </Modes>
     </RunParams>
     <RequiredPackages Count="3">
       <Item1>

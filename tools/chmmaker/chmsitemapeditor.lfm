@@ -3609,10 +3609,10 @@ object SitemapEditForm: TSitemapEditForm
       AnchorSideLeft.Side = asrCenter
       AnchorSideBottom.Control = SitemapGroupBox
       AnchorSideBottom.Side = asrBottom
-      Left = 23
+      Left = 7
       Height = 56
       Top = 362
-      Width = 238
+      Width = 270
       Anchors = [akLeft, akBottom]
       AutoSize = True
       BorderSpacing.Left = 6
@@ -3621,7 +3621,7 @@ object SitemapEditForm: TSitemapEditForm
       BorderSpacing.Bottom = 8
       BevelOuter = bvNone
       ClientHeight = 56
-      ClientWidth = 238
+      ClientWidth = 270
       TabOrder = 2
       object AddItemLabel: TLabel
         AnchorSideLeft.Control = DeleteBtn
@@ -3629,7 +3629,7 @@ object SitemapEditForm: TSitemapEditForm
         AnchorSideTop.Control = BeforeBtn
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Side = asrBottom
-        Left = 14
+        Left = 30
         Height = 15
         Top = 5
         Width = 49
@@ -3639,7 +3639,7 @@ object SitemapEditForm: TSitemapEditForm
         AnchorSideLeft.Control = DeleteBtn
         AnchorSideLeft.Side = asrBottom
         AnchorSideRight.Control = Bevel1
-        Left = 83
+        Left = 99
         Height = 25
         Top = 0
         Width = 75
@@ -3657,7 +3657,7 @@ object SitemapEditForm: TSitemapEditForm
         AnchorSideLeft.Side = asrBottom
         AnchorSideRight.Control = SubItemBtn
         AnchorSideRight.Side = asrBottom
-        Left = 163
+        Left = 179
         Height = 25
         Top = 0
         Width = 75
@@ -3675,13 +3675,14 @@ object SitemapEditForm: TSitemapEditForm
         AnchorSideTop.Side = asrBottom
         AnchorSideBottom.Control = DeleteBtn
         AnchorSideBottom.Side = asrBottom
-        Left = 83
+        Left = 99
         Height = 25
         Top = 31
         Width = 155
         Anchors = [akTop, akLeft, akBottom]
         BorderSpacing.Left = 6
         BorderSpacing.Top = 6
+        BorderSpacing.Right = 16
         Caption = 'SubitemBtn'
         Enabled = False
         TabOrder = 3
@@ -3691,11 +3692,12 @@ object SitemapEditForm: TSitemapEditForm
         AnchorSideLeft.Control = Panel3
         AnchorSideTop.Control = BeforeBtn
         AnchorSideTop.Side = asrBottom
-        Left = 0
+        Left = 16
         Height = 25
         Top = 31
         Width = 77
         AutoSize = True
+        BorderSpacing.Left = 16
         BorderSpacing.Top = 6
         Caption = 'DeleteBtn'
         Constraints.MinWidth = 75
@@ -3705,7 +3707,7 @@ object SitemapEditForm: TSitemapEditForm
       object Bevel1: TBevel
         AnchorSideLeft.Control = SubItemBtn
         AnchorSideLeft.Side = asrCenter
-        Left = 157
+        Left = 173
         Height = 24
         Top = 3
         Width = 6

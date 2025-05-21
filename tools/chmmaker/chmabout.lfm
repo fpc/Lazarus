@@ -201,6 +201,7 @@ object AboutForm: TAboutForm
     Width = 100
     BorderSpacing.Left = 8
     BorderSpacing.Right = 16
+    BorderSpacing.Bottom = 18
     Caption = 'InfoTargetPlatform'
     WordWrap = True
   end
