@@ -103,7 +103,7 @@
       <Node2 Name="EditorsPanel" ChildCount="68">
         <Node1 Name="EditorMarkupUserDefinedFrame" Path="Editor_User_Defined_Words" HasHelp="True" IsRoot="True"/>
         <Node2 Name="CompOptModeMatrixFrame" Path="_Compiler_Options#Additions_and_Overrides" HasHelp="True" IsRoot="True"/>
-        <Node3 Name="CompilerOtherOptionsFrame" Path="_Compiler_Options#Other" HasHelp="True" IsRoot="True"/>
+        <Node3 Name="CompilerOtherOptionsFrame" Path="_Compiler_Options#Custom_Options" HasHelp="True" IsRoot="True"/>
         <Node4 Name="CompilerMessagesOptionsFrame" Path="_Compiler_Options#Messages" HasHelp="True" IsRoot="True"/>
         <Node5 Name="CompilerCompilationOptionsFrame" Path="_Compiler_Options#Compilation" HasHelp="True" IsRoot="True"/>
         <Node6 Name="CompilerVerbosityOptionsFrame" Path="_Compiler_Options#Verbosity" HasHelp="True" IsRoot="True"/>
