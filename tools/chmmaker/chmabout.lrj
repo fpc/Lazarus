@@ -1,0 +1,21 @@
+{"version":1,"strings":[
+{"hash":110043586,"name":"taboutform.caption","sourcebytes":[65,98,111,117,116,32,67,72,77,77,97,107,101,114],"value":"About CHMMaker"},
+{"hash":220431794,"name":"taboutform.lbltitle.caption","sourcebytes":[67,72,77,77,97,107,101,114],"value":"CHMMaker"},
+{"hash":4863637,"name":"taboutform.closebtn.caption","sourcebytes":[67,108,111,115,101],"value":"Close"},
+{"hash":66097146,"name":"taboutform.lbloperatingsystem.caption","sourcebytes":[79,112,101,114,97,116,105,110,103,32,115,121,115,116,101,109,58],"value":"Operating system:"},
+{"hash":211419610,"name":"taboutform.lblversion.caption","sourcebytes":[86,101,114,115,105,111,110,58],"value":"Version:"},
+{"hash":205393242,"name":"taboutform.lbltargetcpu.caption","sourcebytes":[84,97,114,103,101,116,32,67,80,85,58],"value":"Target CPU:"},
+{"hash":230948074,"name":"taboutform.lbltargetos.caption","sourcebytes":[84,97,114,103,101,116,32,79,83,58],"value":"Target OS:"},
+{"hash":7448234,"name":"taboutform.lbltargetplatform.caption","sourcebytes":[84,97,114,103,101,116,80,108,97,116,102,111,114,109,58],"value":"TargetPlatform:"},
+{"hash":211407646,"name":"taboutform.infoversion.caption","sourcebytes":[73,110,102,111,86,101,114,115,105,111,110],"value":"InfoVersion"},
+{"hash":7684301,"name":"taboutform.infooperatingsystem.caption","sourcebytes":[73,110,102,111,79,112,101,114,97,116,105,110,103,83,121,115,116,101,109],"value":"InfoOperatingSystem"},
+{"hash":143770245,"name":"taboutform.infotargetcpu.caption","sourcebytes":[73,110,102,111,84,97,114,103,101,116,67,80,85],"value":"InfoTargetCPU"},
+{"hash":227089891,"name":"taboutform.infotargetos.caption","sourcebytes":[73,110,102,111,84,97,114,103,101,116,79,83],"value":"InfoTargetOS"},
+{"hash":251915101,"name":"taboutform.infotargetplatform.caption","sourcebytes":[73,110,102,111,84,97,114,103,101,116,80,108,97,116,102,111,114,109],"value":"InfoTargetPlatform"},
+{"hash":259524064,"name":"taboutform.lblcreatedwith.caption","sourcebytes":[67,114,101,97,116,101,100,32,119,105,116,104,32,32],"value":"Created with  "},
+{"hash":160633695,"name":"taboutform.lblfreepascal.hint","sourcebytes":[104,116,116,112,115,58,47,47,119,119,119,46,102,114,101,101,112,97,115,99,97,108,46,111,114,103,47],"value":"https://www.freepascal.org/"},
+{"hash":86315532,"name":"taboutform.lblfreepascal.caption","sourcebytes":[70,114,101,101,32,80,97,115,99,97,108],"value":"Free Pascal"},
+{"hash":2524256,"name":"taboutform.lbland.caption","sourcebytes":[32,97,110,100,32],"value":" and "},
+{"hash":151649599,"name":"taboutform.lbllazarus.hint","sourcebytes":[104,116,116,112,115,58,47,47,119,119,119,46,108,97,122,97,114,117,115,45,105,100,101,46,111,114,103,47],"value":"https://www.lazarus-ide.org/"},
+{"hash":43026835,"name":"taboutform.lbllazarus.caption","sourcebytes":[76,97,122,97,114,117,115],"value":"Lazarus"}
+]}

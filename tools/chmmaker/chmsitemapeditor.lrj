@@ -1,0 +1,20 @@
+{"version":1,"strings":[
+{"hash":68630754,"name":"tsitemapeditform.caption","sourcebytes":[83,105,116,101,109,97,112,32,69,100,105,116,111,114],"value":"Sitemap Editor"},
+{"hash":61847432,"name":"tsitemapeditform.sitemapgroupbox.caption","sourcebytes":[83,105,116,101,109,97,112,71,114,111,117,112,98,111,120],"value":"SitemapGroupbox"},
+{"hash":126654446,"name":"tsitemapeditform.descfromtitlebtn.caption","sourcebytes":[68,101,115,99,70,114,111,109,84,105,116,108,101,66,116,110],"value":"DescFromTitleBtn"},
+{"hash":24801132,"name":"tsitemapeditform.locallinklabel.caption","sourcebytes":[76,111,99,97,108,76,105,110,107,76,97,98,101,108],"value":"LocalLinkLabel"},
+{"hash":13020732,"name":"tsitemapeditform.descriptionlabel.caption","sourcebytes":[68,101,115,99,114,105,112,116,105,111,110,76,97,98,101,108],"value":"DescriptionLabel"},
+{"hash":48897481,"name":"tsitemapeditform.urllabel.caption","sourcebytes":[85,82,76,32,40,104,116,116,112,41],"value":"URL (http)"},
+{"hash":174395085,"name":"tsitemapeditform.additemlabel.caption","sourcebytes":[65,100,100,32,73,116,101,109],"value":"Add Item"},
+{"hash":224973086,"name":"tsitemapeditform.beforebtn.caption","sourcebytes":[66,101,102,111,114,101,66,116,110],"value":"BeforeBtn"},
+{"hash":229404126,"name":"tsitemapeditform.afterbtn.caption","sourcebytes":[65,102,116,101,114,66,116,110],"value":"AfterBtn"},
+{"hash":11514430,"name":"tsitemapeditform.subitembtn.caption","sourcebytes":[83,117,98,105,116,101,109,66,116,110],"value":"SubitemBtn"},
+{"hash":46846830,"name":"tsitemapeditform.deletebtn.caption","sourcebytes":[68,101,108,101,116,101,66,116,110],"value":"DeleteBtn"},
+{"hash":90149576,"name":"tsitemapeditform.globalpropertiesgroupbox.caption","sourcebytes":[71,108,111,98,97,108,80,114,111,112,101,114,116,105,101,115,71,114,111,117,112,98,111,120],"value":"GlobalPropertiesGroupbox"},
+{"hash":93468124,"name":"tsitemapeditform.fontlabel.caption","sourcebytes":[70,111,110,116,76,97,98,101,108],"value":"FontLabel"},
+{"hash":145879324,"name":"tsitemapeditform.foregroundcolorlabel.caption","sourcebytes":[70,111,114,101,103,114,111,117,110,100,67,111,108,111,114,76,97,98,101,108],"value":"ForegroundColorLabel"},
+{"hash":194769260,"name":"tsitemapeditform.backgroundcolorlabel.caption","sourcebytes":[66,97,99,107,103,114,111,117,110,100,67,111,108,111,114,76,97,98,101,108],"value":"BackgroundColorLabel"},
+{"hash":236313099,"name":"tsitemapeditform.folderviewcheck.caption","sourcebytes":[70,111,108,100,101,114,86,105,101,119,67,104,101,99,107],"value":"FolderViewCheck"},
+{"hash":160209406,"name":"tsitemapeditform.savebtn.caption","sourcebytes":[83,97,118,101,66,116,110],"value":"SaveBtn"},
+{"hash":77348910,"name":"tsitemapeditform.cancelbtn.caption","sourcebytes":[67,97,110,99,101,108,66,116,110],"value":"CancelBtn"}
+]}
