@@ -855,6 +855,13 @@ begin
   AcCompileAndView.Hint := rsCompileAndView_Hint;
   AcAbout.Hint := rsAbout_Hint;
   CreateSearchableCHMCheck.Hint := rsCreateSearchableHTML_Hint;
+
+  OpenDialog1.Filter := rsHelpFileProjectHfp + '|*.hfp';
+  SaveDialog1.Filter := OpenDialog1.Filter;
+
+  TOCEdit.Filter := rsTOCFiles + '|*.hhc|' + rsAllFiles + '|*';
+  IndexEdit.Filter := rsIndexFiles + '|*.hhk|' + rsAllFiles + '|*';
+  ChmFileNameEdit.Filter := rsCompressedHTMLHelpFiles + '|*.chm';
 end;
 
 

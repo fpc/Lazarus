@@ -53,6 +53,12 @@ resourcestring
     'Only files added to the project manually are indexed, ' +
     'files added automatically are not indexed.';
 
+  rsHelpFileProjectHfp = 'Help File Project (*.hfp)';
+  rsTOCFiles = 'Table of Contents files (*.hhc)';
+  rsIndexFiles = 'Index files (*.hhk)';
+  rsCompressedHTMLHelpFiles = 'Compressed HTML Help files';
+  rsAllFiles = 'All files';
+
   // CHMSiteMapEditor
   rsSiteMapEditor = 'Sitemap Editor';
   rsSiteMap = 'Sitemap (Tree/List)';
