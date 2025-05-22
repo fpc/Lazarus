@@ -292,6 +292,10 @@ msgctxt "chmstrconsts.rsversion"
 msgid "Version:"
 msgstr ""
 
+#: taboutform.lbltitle.caption
+msgid "CHMMaker"
+msgstr ""
+
 #: tchmform.addallbtn.caption
 msgid "Add all files in project directory"
 msgstr ""

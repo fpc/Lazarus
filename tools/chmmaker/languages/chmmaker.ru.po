@@ -18,7 +18,7 @@ msgstr "О программе..."
 #: chmstrconsts.rsaboutcaption
 msgctxt "chmstrconsts.rsaboutcaption"
 msgid "About CHMMaker"
-msgstr "О CHMMaker"
+msgstr "О компоновщике CHM"
 
 #: chmstrconsts.rsabout_hint
 msgctxt "chmstrconsts.rsabout_hint"
@@ -301,6 +301,10 @@ msgstr "Использовать значки каталога"
 msgctxt "chmstrconsts.rsversion"
 msgid "Version:"
 msgstr "Версия:"
+
+#: taboutform.lbltitle.caption
+msgid "CHMMaker"
+msgstr "Компоновщик CHM"
 
 #: tchmform.addallbtn.caption
 msgid "Add all files in project directory"
