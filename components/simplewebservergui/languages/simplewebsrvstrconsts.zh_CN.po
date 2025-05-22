@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-05-21 23:37+0800\n"
+"PO-Revision-Date: 2025-05-22 21:55+0800\n"
 "Last-Translator: ACTom <i@actom.me>\n"
 "Language-Team: \n"
 "Language: zh_CN\n"
@@ -272,7 +272,7 @@ msgstr "简易网页服务器端口"
 
 #: simplewebsrvstrconsts.rsswspathofcompileserver
 msgid "Path of compileserver, macro $(SWSExe)"
-msgstr "compileserver 的路径，宏 $(SWSExe)"
+msgstr "已编译的服务器路径，宏 $(SWSExe)"
 
 #: simplewebsrvstrconsts.rsswsportmacro
 msgctxt "simplewebsrvstrconsts.rsswsportmacro"

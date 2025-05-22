@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-05-21 21:34+0800\n"
+"PO-Revision-Date: 2025-05-22 21:45+0800\n"
 "Last-Translator: ACTom <i@actom.me>\n"
 "Language-Team: \n"
 "Language: zh_CN\n"
@@ -68,7 +68,7 @@ msgstr "自定义停靠点 \"%s\" 只能有一个站点。"
 
 #: anchordockstr.adrsdockinganchordocking
 msgid "Docking / Anchordocking"
-msgstr "停靠站 / 锚定停靠"
+msgstr "IDE 窗口停靠"
 
 #: anchordockstr.adrsdockingoptions
 msgid "Docking options"

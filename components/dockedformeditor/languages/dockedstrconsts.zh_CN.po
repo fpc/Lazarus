@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-05-21 22:03+0800\n"
+"PO-Revision-Date: 2025-05-22 21:29+0800\n"
 "Last-Translator: ACTom <i@actom.me>\n"
 "Language-Team: \n"
 "Language: zh_CN\n"
@@ -121,7 +121,7 @@ msgstr "分离控制面板"
 
 #: dockedstrconsts.senabledockeddsgner
 msgid "Show the form-editor as (docked) tab in the editor window (Requires IDE restart)"
-msgstr "在 编辑器 窗口中以 (停靠) 选项卡形式显示 窗体 编辑器 (需要重启 IDE)"
+msgstr "在编辑器窗口中以（停靠）标签形式显示窗体编辑器（需要重启 IDE）"
 
 #: dockedstrconsts.setupdesignerclassic
 msgid "Classic Form Editor (floating):"

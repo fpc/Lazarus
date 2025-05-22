@@ -1,0 +1,396 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: ACTom <i@actom.me>\n"
+"X-Generator: TyPoEditor 0.2\n"
+
+#: chmstrconsts.rsabout
+msgid "About..."
+msgstr "关于 ..."
+
+#: chmstrconsts.rsaboutcaption
+msgctxt "chmstrconsts.rsaboutcaption"
+msgid "About CHMMaker"
+msgstr "关于 CHMMaker"
+
+#: chmstrconsts.rsabout_hint
+msgctxt "chmstrconsts.rsabout_hint"
+msgid "Information about this application"
+msgstr "关于此应用程序的信息"
+
+#: chmstrconsts.rsadditem
+msgid "Add item"
+msgstr "添加项"
+
+#: chmstrconsts.rsafter
+msgctxt "chmstrconsts.rsafter"
+msgid "After"
+msgstr "之后"
+
+#: chmstrconsts.rsallfiles
+msgid "All files"
+msgstr "所有文件"
+
+#: chmstrconsts.rsand
+msgctxt "chmstrconsts.rsand"
+msgid " and "
+msgstr " 和"
+
+#: chmstrconsts.rsbackgroundcolor
+msgid "Background color"
+msgstr "背景颜色"
+
+#: chmstrconsts.rsbefore
+msgctxt "chmstrconsts.rsbefore"
+msgid "Before"
+msgstr "之前"
+
+#: chmstrconsts.rsbuildinglhelp
+msgid "Building LHelp..."
+msgstr "正在构建 LHelp ..."
+
+#: chmstrconsts.rscancel
+msgid "Cancel"
+msgstr "取消"
+
+#: chmstrconsts.rsclose
+msgctxt "chmstrconsts.rsclose"
+msgid "Close"
+msgstr "关闭"
+
+#: chmstrconsts.rsclose_hint
+msgctxt "chmstrconsts.rsclose_hint"
+msgid "Close project"
+msgstr "关闭项目"
+
+#: chmstrconsts.rscompile
+msgctxt "chmstrconsts.rscompile"
+msgid "Compile"
+msgstr "编译"
+
+#: chmstrconsts.rscompileandview
+msgctxt "chmstrconsts.rscompileandview"
+msgid "Compile and view"
+msgstr "编译并查看"
+
+#: chmstrconsts.rscompileandview_hint
+msgctxt "chmstrconsts.rscompileandview_hint"
+msgid "Compile project and view generated CHM file"
+msgstr "编译项目并查看生成的 CHM 文件"
+
+#: chmstrconsts.rscompile_hint
+msgctxt "chmstrconsts.rscompile_hint"
+msgid "Compile project"
+msgstr "编译项目"
+
+#: chmstrconsts.rscompressedhtmlhelpfiles
+msgid "Compressed HTML Help files"
+msgstr "压缩的 HTML 帮助文件"
+
+#: chmstrconsts.rscreatedwith
+msgid "Created with "
+msgstr "创建于"
+
+#: chmstrconsts.rscreatesearchablehtml_hint
+msgid "Only files added to the project manually are indexed, files added automatically are not indexed."
+msgstr "只有手动添加到项目的文件才会被索引，自动添加的文件不会被索引。"
+
+#: chmstrconsts.rsdelete
+msgctxt "chmstrconsts.rsdelete"
+msgid "Delete"
+msgstr "删除"
+
+#: chmstrconsts.rsdescription
+msgctxt "chmstrconsts.rsdescription"
+msgid "Description"
+msgstr "描述"
+
+#: chmstrconsts.rsdoyouwanttocontinue
+msgctxt "chmstrconsts.rsdoyouwanttocontinue"
+msgid "Do you want to continue?"
+msgstr "你是否要继续？"
+
+#: chmstrconsts.rsedit
+msgctxt "chmstrconsts.rsedit"
+msgid "Edit..."
+msgstr "编辑 ..."
+
+#: chmstrconsts.rsfilealreadyexists_overwrite
+#, object-pascal-format
+msgctxt "chmstrconsts.rsfilealreadyexists_overwrite"
+msgid "File \"%s\" already exists. Overwrite?"
+msgstr "文件 \"%s\" 已存在。是否覆盖？"
+
+#: chmstrconsts.rsfilecreated
+#, object-pascal-format
+msgctxt "chmstrconsts.rsfilecreated"
+msgid "CHM file \"%s\" was created successfully."
+msgstr "CHM 文件 \"%s\" 创建成功。"
+
+#: chmstrconsts.rsfilenameneeded
+msgctxt "chmstrconsts.rsfilenameneeded"
+msgid "You must set a filename for the output CHM file."
+msgstr "您必须为输出的 CHM 文件设置一个文件名。"
+
+#: chmstrconsts.rsfilenotfound
+#, object-pascal-format
+msgid "File \"%s\" not found."
+msgstr "文件 \"%s\" 未找到。"
+
+#: chmstrconsts.rsfiles
+msgctxt "chmstrconsts.rsfiles"
+msgid "Files"
+msgstr "文件"
+
+#: chmstrconsts.rsfont
+msgctxt "chmstrconsts.rsfont"
+msgid "Font"
+msgstr "字体"
+
+#: chmstrconsts.rsforegroundcolor
+msgid "Foreground color"
+msgstr "前景颜色"
+
+#: chmstrconsts.rsfromtitle
+msgid "From title"
+msgstr "从标题"
+
+#: chmstrconsts.rsglobalproperties
+msgid "Global properties"
+msgstr "全局属性"
+
+#: chmstrconsts.rshelpfileprojecthfp
+msgid "Help File Project (*.hfp)"
+msgstr "帮助文件项目 (*.hfp)"
+
+#: chmstrconsts.rsindexfiles
+msgid "Index files (*.hhk)"
+msgstr "索引文件 (*.hhk)"
+
+#: chmstrconsts.rslazbuildcouldnotbefound
+msgctxt "chmstrconsts.rslazbuildcouldnotbefound"
+msgid "Lazbuild could not be found."
+msgstr "找不到 Lazbuild。"
+
+#: chmstrconsts.rslhelpcouldnotbelocatedat
+#, object-pascal-format
+msgctxt "chmstrconsts.rslhelpcouldnotbelocatedat"
+msgid "LHelp could not be located at \"%s\"."
+msgstr "LHelp 未能在 \"%s\" 位置找到。"
+
+#: chmstrconsts.rslhelpfailedtobuild
+msgctxt "chmstrconsts.rslhelpfailedtobuild"
+msgid "LHelp failed to build."
+msgstr "LHelp 构建失败。"
+
+#: chmstrconsts.rslocallink
+msgctxt "chmstrconsts.rslocallink"
+msgid "Local link (in CHM)"
+msgstr "本地链接 (在 CHM 中)"
+
+#: chmstrconsts.rsnew
+msgid "New project..."
+msgstr "新建项目 ..."
+
+#: chmstrconsts.rsnew_hint
+msgctxt "chmstrconsts.rsnew_hint"
+msgid "New project"
+msgstr "新建项目"
+
+#: chmstrconsts.rsopen
+msgid "Open project..."
+msgstr "打开项目 ..."
+
+#: chmstrconsts.rsopen_hint
+msgctxt "chmstrconsts.rsopen_hint"
+msgid "Open project file"
+msgstr "打开项目文件"
+
+#: chmstrconsts.rsoperatingsystem
+msgctxt "chmstrconsts.rsoperatingsystem"
+msgid "Operating system:"
+msgstr "操作系统："
+
+#: chmstrconsts.rsprojecthasbeenmodified
+msgctxt "chmstrconsts.rsprojecthasbeenmodified"
+msgid "Project has been modified."
+msgstr "项目已被修改。"
+
+#: chmstrconsts.rsquit
+msgctxt "chmstrconsts.rsquit"
+msgid "Quit"
+msgstr "退出"
+
+#: chmstrconsts.rsquit_hint
+msgctxt "chmstrconsts.rsquit_hint"
+msgid "Quit program"
+msgstr "退出程序"
+
+#: chmstrconsts.rssave
+msgctxt "chmstrconsts.rssave"
+msgid "Save"
+msgstr "保存"
+
+#: chmstrconsts.rssaveas
+msgctxt "chmstrconsts.rssaveas"
+msgid "Save as..."
+msgstr "另存为 ..."
+
+#: chmstrconsts.rssaveas_hint
+msgctxt "chmstrconsts.rssaveas_hint"
+msgid "Save project under a new name"
+msgstr "将项目另存为新名称"
+
+#: chmstrconsts.rssavechanges
+msgctxt "chmstrconsts.rssavechanges"
+msgid "Save changes?"
+msgstr "保存更改？"
+
+#: chmstrconsts.rssave_hint
+msgctxt "chmstrconsts.rssave_hint"
+msgid "Save project"
+msgstr "保存项目"
+
+#: chmstrconsts.rsselectlocalfile
+msgid "You must select a local file first."
+msgstr "你必须首先选择一个本地文件。"
+
+#: chmstrconsts.rssitemap
+msgid "Sitemap (Tree/List)"
+msgstr "站点地图 (树/列表)"
+
+#: chmstrconsts.rssitemapeditor
+msgctxt "chmstrconsts.rssitemapeditor"
+msgid "Sitemap Editor"
+msgstr "站点地图编辑器"
+
+#: chmstrconsts.rssubitem
+msgctxt "chmstrconsts.rssubitem"
+msgid "Subitem"
+msgstr "子项"
+
+#: chmstrconsts.rstargetcpu
+msgctxt "chmstrconsts.rstargetcpu"
+msgid "Target CPU:"
+msgstr "目标 CPU:"
+
+#: chmstrconsts.rstargetos
+msgctxt "chmstrconsts.rstargetos"
+msgid "Target OS:"
+msgstr "目标操作系统："
+
+#: chmstrconsts.rstargetplatform
+msgid "Target platform:"
+msgstr "目标平台："
+
+#: chmstrconsts.rsthiswilladdallfiles
+msgctxt "chmstrconsts.rsthiswilladdallfiles"
+msgid "This will add all files in the project directory recursively."
+msgstr "这将递归地添加项目目录中的所有文件。"
+
+#: chmstrconsts.rstocfiles
+msgid "Table of Contents files (*.hhc)"
+msgstr "目录文件 (*.hhc)"
+
+#: chmstrconsts.rstrytobuildusinglazbuild
+msgctxt "chmstrconsts.rstrytobuildusinglazbuild"
+msgid "Try to build using Lazbuild?"
+msgstr "尝试使用 Lazbuild 构建？"
+
+#: chmstrconsts.rsuntitled
+msgid "Untitled"
+msgstr "未命名"
+
+#: chmstrconsts.rsurl
+msgctxt "chmstrconsts.rsurl"
+msgid "URL (HTTP)"
+msgstr "URL (HTTP)"
+
+#: chmstrconsts.rsusefoldericons
+msgid "Use folder icons"
+msgstr "使用文件夹图标"
+
+#: chmstrconsts.rsversion
+msgctxt "chmstrconsts.rsversion"
+msgid "Version:"
+msgstr "版本："
+
+#: taboutform.lbltitle.caption
+msgid "CHMMaker"
+msgstr "CHMMaker"
+
+#: tchmform.addallbtn.caption
+msgid "Add all files in project directory"
+msgstr "将项目目录中的所有文件添加到项目中"
+
+#: tchmform.addfilesbtn.caption
+msgid "Add files"
+msgstr "添加文件"
+
+#: tchmform.autoaddlinksbtn.caption
+msgid "Auto add HREF files"
+msgstr "自动添加 HREF 文件"
+
+#: tchmform.caption
+msgid "CHM Help File Maker"
+msgstr "CHM 帮助文件制作器"
+
+#: tchmform.chmfilenamelabel.caption
+msgid "CHM filename"
+msgstr "CHM 文件名"
+
+#: tchmform.chmtitlelabel.caption
+msgid "CHM Title"
+msgstr "CHM 标题"
+
+#: tchmform.compileitem.caption
+msgctxt "tchmform.compileitem.caption"
+msgid "Compile"
+msgstr "编译"
+
+#: tchmform.compiletimeoptionsgroupbox.caption
+msgid "Compile-time options:"
+msgstr "编译时选项:"
+
+#: tchmform.createsearchablechmcheck.caption
+msgid "Create a searchable CHM file"
+msgstr "创建可搜索的 CHM 文件"
+
+#: tchmform.defaultpagelabel.caption
+msgid "Default page"
+msgstr "默认页"
+
+#: tchmform.filesnotelabel.caption
+msgid "All files must be in the project file directory or a subdirectory."
+msgstr "所有文件必须在项目文件目录或其子目录中。"
+
+#: tchmform.indexlabel.caption
+msgid "Index (*.hhk)"
+msgstr "索引 (*.hhk)"
+
+#: tchmform.menuitem1.caption
+msgctxt "tchmform.menuitem1.caption"
+msgid "Project"
+msgstr "项目"
+
+#: tchmform.menuitem3.caption
+msgctxt "tchmform.menuitem3.caption"
+msgid "Help"
+msgstr "帮助"
+
+#: tchmform.removefilesbtn.caption
+msgid "Remove selected"
+msgstr "移除选中项"
+
+#: tchmform.scanhtmlcheck.caption
+msgid ""
+"Parse *.htm* files to include \n"
+"linked pages and images"
+msgstr ""
+"解析 *.htm* 文件以包含 \n"
+"链接的页面和图片"
+
+#: tchmform.tableofcontentslabel.caption
+msgid "Table of Contents (*.hhc)"
+msgstr "目录 (*.hhc)"
+

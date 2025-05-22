@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-05-22 00:34+0800\n"
+"PO-Revision-Date: 2025-05-22 21:53+0800\n"
 "Last-Translator: ACTom <i@actom.me>\n"
 "Language-Team: \n"
 "Language: zh_CN\n"
@@ -822,8 +822,8 @@ msgid ""
 "Save active desktop on IDE close\n"
 "Save debug desktop on IDE close and debug end"
 msgstr ""
-"在IDE关闭时保存活动桌面\n"
-"在IDE关闭和调试结束时，保存调试桌面\n"
+"在 IDE 关闭时保存活动桌面\n"
+"在 IDE 关闭和调试结束时保存调试桌面"
 
 #: lazarusidestrconsts.dlgavailableforms
 msgid "Available forms:"
@@ -5001,7 +5001,7 @@ msgstr "页名称太长"
 
 #: lazarusidestrconsts.lisa2ppalettepage
 msgid "Palette page:"
-msgstr "调色板页："
+msgstr "面板页:"
 
 #: lazarusidestrconsts.lisa2pshortenorexpandfilename
 msgid "Shorten or expand filename"
@@ -5193,7 +5193,7 @@ msgstr "添加模拟 Delphi7 的定义"
 
 #: lazarusidestrconsts.lisadddelphidefinehint
 msgid "Useful when the code has checks for supported compiler versions"
-msgstr "当代码中有检查支持的编译器版本时很有用。"
+msgstr "当代码对支持的编译器版本进行检查时非常有用"
 
 #: lazarusidestrconsts.lisaddedmissingobjectstopascalsource
 #, object-pascal-format
@@ -5567,11 +5567,11 @@ msgstr "自动调整 IDE 主窗口的高度"
 
 #: lazarusidestrconsts.lisautoadjustideheightfullcomponentpalette
 msgid "Show complete component palette"
-msgstr "显示完整的组件调色板"
+msgstr "显示完整的组件面板"
 
 #: lazarusidestrconsts.lisautoadjustideheightfullcomponentpalettehint
 msgid "If component palette spans over more lines, show them all and not only one."
-msgstr "如果组件调色板范围跨度多行,那么全部显示它们而不是仅一行."
+msgstr "如果组件面板跨越多行，请全部显示而不仅是其中一行。"
 
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
@@ -6796,7 +6796,7 @@ msgstr "列表"
 
 #: lazarusidestrconsts.liscmplstpalette
 msgid "Palette"
-msgstr "调色板"
+msgstr "分类"
 
 #: lazarusidestrconsts.liscmppages
 msgid "Pages"
@@ -6804,7 +6804,7 @@ msgstr "页"
 
 #: lazarusidestrconsts.liscmppalettevisible
 msgid "Palette is &visible"
-msgstr "显示调色板(&V)"
+msgstr "显示面板(&V)"
 
 #: lazarusidestrconsts.liscmprestoredefaults
 msgid "&Restore defaults"
@@ -10193,7 +10193,7 @@ msgstr "强制重命名"
 
 #: lazarusidestrconsts.lisforexampleshowattopthelocalvariablesthenthemembers
 msgid "\"Scoped\" sorting will show local variables on top, then the members of current class, then of the ancestors, then the current unit, then of used units"
-msgstr "“Scoped” 排序将显示本地变量在最上方，然后是当前类的成员，接着是祖先类的成员，然后是当前单元的成员，最后是使用单元的成员。"
+msgstr "\"作用域 \"排序将首先显示局部变量，然后是当前类的成员，然后是祖先的成员，然后是当前单元，然后是使用过的单元"
 
 #: lazarusidestrconsts.lisform
 msgid "Form"
@@ -10281,7 +10281,7 @@ msgstr "Free Pascal 编译器可执行文件出现了问题，"
 
 #: lazarusidestrconsts.lisfppkgconfgenproblems
 msgid "Warnings have to be resolved first"
-msgstr "警告必须首先解决。"
+msgstr "必须先解决警告问题"
 
 #: lazarusidestrconsts.lisfppkgconfiguration
 msgid "The configuration file typically has the name \"fppkg.cfg\". When incorrect it may be impossible to resolve dependencies on Free Pascal packages. Leave empty to use the default."
@@ -11628,7 +11628,7 @@ msgstr "切换至代码探测器"
 
 #: lazarusidestrconsts.liskmtoggleviewcomponentpalette
 msgid "Toggle View Component Palette"
-msgstr "切换至组件调色板"
+msgstr "切换视图组件面板"
 
 #: lazarusidestrconsts.liskmtoggleviewdebugevents
 msgid "View Debuger Event Log"
@@ -12026,7 +12026,7 @@ msgid ""
 "\n"
 "You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA."
 msgstr ""
-"<说明>\n"
+"<description>\n"
 "\n"
 "版权 (C) <年> <作者姓名> <联系人>\n"
 "\n"
@@ -13551,7 +13551,7 @@ msgstr "代码探测器(&E)"
 
 #: lazarusidestrconsts.lismenuviewcomponentpalette
 msgid "Component Palette"
-msgstr "组件调色板"
+msgstr "组件面板"
 
 #: lazarusidestrconsts.lismenuviewcomponents
 msgid "&Components"
@@ -15700,9 +15700,9 @@ msgid "The package name \"%s\" is not a valid package name%sPlease choose anothe
 msgstr "软件包名称\"%s\"不是一个有效的软件包名称%s请选择另一个名称(例如.package1.lpk)"
 
 #: lazarusidestrconsts.lispkgmangthepackagenameofthefileisinvalid
-#, object-pascal-format, fuzzy, badformat
+#, object-pascal-format
 msgid "The package name \"%s\" of%sthe file \"%s\" is invalid."
-msgstr "文件 \"%s\" 的 软件包 名称 \"%s\" 无效。"
+msgstr "软件包名称 \"%s\" 是无效的%s文件 \"%s\"。"
 
 #: lazarusidestrconsts.lispkgmangthepackagewasmarkedcurrentlylazarus
 #, object-pascal-format
@@ -15736,7 +15736,7 @@ msgstr "有一个与包同名的 FPC 单元：%s\"%s\""
 #: lazarusidestrconsts.lispkgmangthereisafpcunitwiththesamenamefrom
 #, object-pascal-format
 msgid "There is a FPC unit with the same name as:%s\"%s\" from %s"
-msgstr "存在一个与 %s \"%s\" 从 %s 名称相同的 FPC 单元。"
+msgstr "存在一个与 %s\"%s\" 名称相同的 FPC 单元，在 %s"
 
 #: lazarusidestrconsts.lispkgmangthereisalreadyanotherpackagewiththename
 #, object-pascal-format

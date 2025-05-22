@@ -2,136 +2,136 @@ msgid ""
 msgstr ""
 "Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
+"PO-Revision-Date: 2025-05-22 21:41+0800\n"
 "Last-Translator: ACTom <i@actom.me>\n"
 "Language-Team: \n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.3.2\n"
+"X-Generator: TyPoEditor 0.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: strtestcaseopts.rsalltests
 msgid "All Tests"
-msgstr ""
+msgstr "所有测试"
 
 #: strtestcaseopts.rsautomaticallyfetchtestlistonopen
 msgid "Automatically fetch test list on open"
-msgstr ""
+msgstr "打开时自动获取测试列表"
 
 #: strtestcaseopts.rscouldnotdete
 #, object-pascal-format
 msgid "Could not determine class and method from test path \"%s\""
-msgstr ""
+msgstr "无法从测试路径 \"%s\" 确定类和方法"
 
 #: strtestcaseopts.rserrors
 #, object-pascal-format
 msgid "%s    Errors: %s"
-msgstr ""
+msgstr "%s    错误：%s"
 
 #: strtestcaseopts.rsexception
 #, object-pascal-format
 msgid "Exception: %s"
-msgstr ""
+msgstr "异常： %s"
 
 #: strtestcaseopts.rsexceptioncla
 #, object-pascal-format
 msgid "Exception class: %s"
-msgstr ""
+msgstr "异常类: %s"
 
 #: strtestcaseopts.rsexceptionmes
 #, object-pascal-format
 msgid "Exception message: %s"
-msgstr ""
+msgstr "异常消息： %s"
 
 #: strtestcaseopts.rsfailures
 #, object-pascal-format
 msgid "%s     Failures: %s"
-msgstr ""
+msgstr "%s     失败: %s"
 
 #: strtestcaseopts.rsmessage
 #, object-pascal-format
 msgid "Message: %s"
-msgstr ""
+msgstr "消息: %s"
 
 #: strtestcaseopts.rsnexterror
 msgid "Next error"
-msgstr ""
+msgstr "下一个错误"
 
 #: strtestcaseopts.rspreviouserror
 msgid "Previous error"
-msgstr ""
+msgstr "上一个错误"
 
 #: strtestcaseopts.rsruns
 #, object-pascal-format
 msgid "Runs: %s/%s"
-msgstr ""
+msgstr "运行: %s/%s"
 
 #: strtestcaseopts.rsserverpath
 msgid "Server path"
-msgstr ""
+msgstr "服务器路径"
 
 #: strtestcaseopts.rsserverport
 msgid "Server port"
-msgstr ""
+msgstr "服务器端口"
 
 #: strtestcaseopts.rstestinsighttitle
 msgid "Test Insight"
-msgstr ""
+msgstr "Test Insight"
 
 #: strtestcaseopts.sactcheckall
 msgid "Select all tests"
-msgstr ""
+msgstr "选择所有测试"
 
 #: strtestcaseopts.sactcheckcurrentsuite
 msgid "Select current suite"
-msgstr ""
+msgstr "选择当前套件"
 
 #: strtestcaseopts.sactcloseform
 msgid "Quit"
-msgstr ""
+msgstr "退出"
 
 #: strtestcaseopts.sactcloseformh
 msgid "Quit testing"
-msgstr ""
+msgstr "退出测试"
 
 #: strtestcaseopts.sactcopyalltoclipboard
 msgid "Copy text to clipboard"
-msgstr ""
+msgstr "将文本复制到剪贴板"
 
 #: strtestcaseopts.sactcopyalltoclipboardh
 msgid "Copy the entire text to clipboard"
-msgstr ""
+msgstr "将整个文本复制到剪贴板"
 
 #: strtestcaseopts.sactcopymessagetoclipboard
 msgctxt "strtestcaseopts.sactcopymessagetoclipboard"
 msgid "Copy message to clipboard"
-msgstr ""
+msgstr "将消息复制到剪贴板"
 
 #: strtestcaseopts.sactrunaction
 msgid "&Run all"
-msgstr ""
+msgstr "运行全部(&R)"
 
 #: strtestcaseopts.sactrunactionh
 msgid "Run all checked tests"
-msgstr ""
+msgstr "运行所有选中的测试"
 
 #: strtestcaseopts.sactrunhighlightedtest
 msgid "Run selected"
-msgstr ""
+msgstr "运行选中的"
 
 #: strtestcaseopts.sactrunhighlightedtesth
 msgid "Run selected test"
-msgstr ""
+msgstr "运行选中的测试"
 
 #: strtestcaseopts.sactuncheckall
 msgid "Deselect all tests"
-msgstr ""
+msgstr "取消选择所有测试"
 
 #: strtestcaseopts.sactuncheckcurrentsuite
 msgid "Deselect current suite"
-msgstr ""
+msgstr "取消选择当前套件"
 
 #: strtestcaseopts.sbtncreate
 msgid "Create unit"
@@ -147,15 +147,15 @@ msgstr "创建 TearDown 方法"
 
 #: strtestcaseopts.screatefirsttestcase
 msgid "&Create first test case"
-msgstr ""
+msgstr "创建第一个测试用例(&C)"
 
 #: strtestcaseopts.sdefault
 msgid "Default"
-msgstr ""
+msgstr "默认"
 
 #: strtestcaseopts.sdefaultoutputformat
 msgid "Default output &format"
-msgstr ""
+msgstr "默认输出格式(&F)"
 
 #: strtestcaseopts.sfpcunconsoletestapp
 msgid "FPCUnit Console Test Application"
@@ -183,15 +183,15 @@ msgstr "一个含有 FPCUnit 测试用例的单元。"
 
 #: strtestcaseopts.sfrmguitest
 msgid "FPCUnit - run unit test"
-msgstr ""
+msgstr "FPCUnit - 运行单元测试"
 
 #: strtestcaseopts.sfrmtest
 msgid "TestCase Options"
-msgstr "TestCase选择"
+msgstr "测试用例选项"
 
 #: strtestcaseopts.sgrpfixture
 msgid "Fixture"
-msgstr "初始化设置"
+msgstr "装置"
 
 #: strtestcaseopts.sgrpnames
 msgid "Names"
@@ -199,7 +199,7 @@ msgstr "名称"
 
 #: strtestcaseopts.slatex
 msgid "LaTeX"
-msgstr ""
+msgstr "LaTeX"
 
 #: strtestcaseopts.slbldefault
 msgid "Default Test Name"
@@ -207,56 +207,56 @@ msgstr "默认测试名称"
 
 #: strtestcaseopts.smiactions
 msgid "Actions"
-msgstr ""
+msgstr "操作"
 
 #: strtestcaseopts.smicollapsenodes
 msgid "Collapse Nodes"
-msgstr ""
+msgstr "折叠节点"
 
 #: strtestcaseopts.smiedit
 msgid "Edit"
-msgstr ""
+msgstr "编辑"
 
 #: strtestcaseopts.smiexpandnodes
 msgid "Expand Nodes"
-msgstr ""
+msgstr "展开节点"
 
 #: strtestcaseopts.smitesttree
 msgid "Test tree"
-msgstr ""
+msgstr "测试树"
 
 #: strtestcaseopts.snavigationnotavailable
 msgid "Source navigation not available."
-msgstr ""
+msgstr "源代码导航不可用。"
 
 #: strtestcaseopts.snewfpcunitprogramtor
 msgid "New FPCUnit console testrunner program"
-msgstr ""
+msgstr "新的 FPCUnit 控制台测试运行程序"
 
 #: strtestcaseopts.snoexecutableavailable
 #, object-pascal-format
 msgid "Test executable is not available: \"%s\""
-msgstr ""
+msgstr "测试可执行文件不可用： \"%s\""
 
 #: strtestcaseopts.snotestprojectconfigured
 msgid "No test project configured."
-msgstr ""
+msgstr "没有配置测试项目。"
 
 #: strtestcaseopts.splaintext
 msgid "Plain text"
-msgstr ""
+msgstr "纯文本"
 
 #: strtestcaseopts.splaintextwithouttimi
 msgid "Plain text without timings"
-msgstr ""
+msgstr "不带时间标记的纯文本"
 
 #: strtestcaseopts.srunalltests
 msgid "&Run all tests by default"
-msgstr ""
+msgstr "按默认运行所有测试(&R)"
 
 #: strtestcaseopts.susetextinsight
 msgid "Use &Test Insight to communicate results to the IDE"
-msgstr ""
+msgstr "使用 Test Insight 将结果传达给 IDE(&T)"
 
 #: strtestcaseopts.swriteyourowntest
 msgid "Write your own test"
@@ -264,5 +264,5 @@ msgstr "编写您自己的测试"
 
 #: strtestcaseopts.sxml
 msgid "XML"
-msgstr ""
+msgstr "XML"
 
