@@ -1194,6 +1194,8 @@ begin
   MiActionsSearch.Enabled:=en;
 
   HomeBttn.Enabled := en;
+  BackBttn.Enabled := en;
+  ForwardBttn.Enabled := en;
   FileMenuCloseItem.Enabled := en;
   ViewMenuContents.Enabled := en;
 

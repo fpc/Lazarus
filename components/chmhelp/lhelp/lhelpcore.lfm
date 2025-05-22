@@ -3411,7 +3411,7 @@ object HelpForm: THelpForm
     end
   end
   object MainMenu1: TMainMenu
-    Left = 208
+    Left = 224
     Top = 87
     object FileMenuItem: TMenuItem
       Caption = '&File'
@@ -3470,7 +3470,7 @@ object HelpForm: THelpForm
     object MiActions: TMenuItem
       Caption = '&Actions'
       object MiActionsTOC: TMenuItem
-        Caption = 'TOC'
+        Caption = 'Table of contents'
         ShortCut = 16468
         OnClick = MiActionsTOCClick
       end

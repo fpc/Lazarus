@@ -34,7 +34,7 @@ msgid "&Search by text"
 msgstr ""
 
 #: lhelpstrconsts.slhelp_actionstoc
-msgid "&TOC"
+msgid "&Table of contents"
 msgstr ""
 
 #: lhelpstrconsts.slhelp_cannothandlethistypeofcontentforurl

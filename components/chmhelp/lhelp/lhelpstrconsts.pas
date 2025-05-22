@@ -51,7 +51,7 @@ resourcestring
   slhelp_CloseConfirm = 'You can hide Help via Esc key. Do you really want to close LHelp?';
 
   slhelp_Actions = '&Actions';
-  slhelp_ActionsTOC = '&TOC';
+  slhelp_ActionsTOC = '&Table of contents';
   slhelp_ActionsIndex = 'Search by &index';
   slhelp_ActionsSearch = '&Search by text';
   slhelp_ActionsGoHome = 'Go home';

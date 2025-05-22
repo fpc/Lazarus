@@ -1,16 +1,16 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: Sławomir Niedziela <slniedz@poczta.onet.pl>\n"
 "Language-Team: \n"
-"MIME-Version: 1.0\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Language: pl\n"
-"X-Generator: Poedit 2.4.2\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Poedit 3.6\n"
 
 #: lhelpstrconsts.slhelp_about
 msgid "About"
@@ -45,7 +45,7 @@ msgid "&Search by text"
 msgstr ""
 
 #: lhelpstrconsts.slhelp_actionstoc
-msgid "&TOC"
+msgid "&Table of contents"
 msgstr ""
 
 #: lhelpstrconsts.slhelp_cannothandlethistypeofcontentforurl
@@ -166,11 +166,9 @@ msgstr "Brak wynikẘ"
 #: lhelpstrconsts.slhelp_notfound
 #, object-pascal-format
 msgid "%s not found!"
-msgstr "Nie znaleziono %s"
+msgstr "Nie znaleziono %s!"
 
 #: lhelpstrconsts.slhelp_ok
-#, fuzzy
-#| msgid "Ok"
 msgid "OK"
 msgstr "OK"
 
@@ -242,4 +240,3 @@ msgstr ""
 #: lhelpstrconsts.slhelp_view
 msgid "&View"
 msgstr "&Widok"
-
