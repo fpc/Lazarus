@@ -24,6 +24,10 @@ msgctxt "chmstrconsts.rsafter"
 msgid "After"
 msgstr ""
 
+#: chmstrconsts.rsallfiles
+msgid "All files"
+msgstr ""
+
 #: chmstrconsts.rsand
 msgctxt "chmstrconsts.rsand"
 msgid " and "
@@ -74,6 +78,10 @@ msgstr ""
 #: chmstrconsts.rscompile_hint
 msgctxt "chmstrconsts.rscompile_hint"
 msgid "Compile project"
+msgstr ""
+
+#: chmstrconsts.rscompressedhtmlhelpfiles
+msgid "Compressed HTML Help files"
 msgstr ""
 
 #: chmstrconsts.rscreatedwith
@@ -146,6 +154,14 @@ msgstr ""
 
 #: chmstrconsts.rsglobalproperties
 msgid "Global properties"
+msgstr ""
+
+#: chmstrconsts.rshelpfileprojecthfp
+msgid "Help File Project (*.hfp)"
+msgstr ""
+
+#: chmstrconsts.rsindexfiles
+msgid "Index files (*.hhk)"
 msgstr ""
 
 #: chmstrconsts.rslazbuildcouldnotbefound
@@ -267,6 +283,10 @@ msgstr ""
 #: chmstrconsts.rsthiswilladdallfiles
 msgctxt "chmstrconsts.rsthiswilladdallfiles"
 msgid "This will add all files in the project directory recursively."
+msgstr ""
+
+#: chmstrconsts.rstocfiles
+msgid "Table of Contents files (*.hhc)"
 msgstr ""
 
 #: chmstrconsts.rstrytobuildusinglazbuild

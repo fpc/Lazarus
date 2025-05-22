@@ -34,6 +34,10 @@ msgctxt "chmstrconsts.rsafter"
 msgid "After"
 msgstr "После"
 
+#: chmstrconsts.rsallfiles
+msgid "All files"
+msgstr "Все файлы"
+
 #: chmstrconsts.rsand
 msgctxt "chmstrconsts.rsand"
 msgid " and "
@@ -85,6 +89,10 @@ msgstr "Компилировать проект и просмотреть соз
 msgctxt "chmstrconsts.rscompile_hint"
 msgid "Compile project"
 msgstr "Компилировать проект"
+
+#: chmstrconsts.rscompressedhtmlhelpfiles
+msgid "Compressed HTML Help files"
+msgstr "Сжатые файлы справки в HTML"
 
 #: chmstrconsts.rscreatedwith
 msgid "Created with "
@@ -157,6 +165,14 @@ msgstr "Из заголовка"
 #: chmstrconsts.rsglobalproperties
 msgid "Global properties"
 msgstr "Глобальные свойства"
+
+#: chmstrconsts.rshelpfileprojecthfp
+msgid "Help File Project (*.hfp)"
+msgstr "Проект файла справки (*.hfp)"
+
+#: chmstrconsts.rsindexfiles
+msgid "Index files (*.hhk)"
+msgstr "Файлы индекса (*.hhk)"
 
 #: chmstrconsts.rslazbuildcouldnotbefound
 msgctxt "chmstrconsts.rslazbuildcouldnotbefound"
@@ -279,6 +295,10 @@ msgctxt "chmstrconsts.rsthiswilladdallfiles"
 msgid "This will add all files in the project directory recursively."
 msgstr "Это действие рекурсивно добавит все файлы в каталоге проекта."
 
+#: chmstrconsts.rstocfiles
+msgid "Table of Contents files (*.hhc)"
+msgstr "Файлы оглавления (*.hhc)"
+
 #: chmstrconsts.rstrytobuildusinglazbuild
 msgctxt "chmstrconsts.rstrytobuildusinglazbuild"
 msgid "Try to build using Lazbuild?"
@@ -379,5 +399,5 @@ msgstr ""
 
 #: tchmform.tableofcontentslabel.caption
 msgid "Table of Contents (*.hhc)"
-msgstr "Содержание (*.hhc)"
+msgstr "Оглавление (*.hhc)"
 

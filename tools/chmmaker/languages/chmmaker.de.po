@@ -34,6 +34,10 @@ msgctxt "chmstrconsts.rsafter"
 msgid "After"
 msgstr "Nach"
 
+#: chmstrconsts.rsallfiles
+msgid "All files"
+msgstr ""
+
 #: chmstrconsts.rsand
 msgctxt "chmstrconsts.rsand"
 msgid " and "
@@ -85,6 +89,10 @@ msgstr "Projekt kompilieren und erzeugte CHM-Datei anzeigen"
 msgctxt "chmstrconsts.rscompile_hint"
 msgid "Compile project"
 msgstr "Projekt kompilieren"
+
+#: chmstrconsts.rscompressedhtmlhelpfiles
+msgid "Compressed HTML Help files"
+msgstr ""
 
 #: chmstrconsts.rscreatedwith
 msgid "Created with "
@@ -157,6 +165,14 @@ msgstr "Aus Titel"
 #: chmstrconsts.rsglobalproperties
 msgid "Global properties"
 msgstr "Globale Eigenschaften"
+
+#: chmstrconsts.rshelpfileprojecthfp
+msgid "Help File Project (*.hfp)"
+msgstr ""
+
+#: chmstrconsts.rsindexfiles
+msgid "Index files (*.hhk)"
+msgstr ""
 
 #: chmstrconsts.rslazbuildcouldnotbefound
 #, fuzzy
@@ -282,6 +298,10 @@ msgstr "Ziel-Plattform:"
 msgctxt "chmstrconsts.rsthiswilladdallfiles"
 msgid "This will add all files in the project directory recursively."
 msgstr "Das fügt alle Dateien im Projektverzeichnis rekursiv hinzu."
+
+#: chmstrconsts.rstocfiles
+msgid "Table of Contents files (*.hhc)"
+msgstr ""
 
 #: chmstrconsts.rstrytobuildusinglazbuild
 #, fuzzy
