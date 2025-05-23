@@ -874,9 +874,9 @@ begin
   CreateSearchableCHMCheck.Hint := rsCreateSearchableHTML_Hint;
 
   OpenDialog1.Filter :=
-    rsHelpProjectFiles  + ' (*.hfp;*.hhp)|*.hfp;*.hhp|' +
-    rsHelpFileProjectHFP + ' (*.hfp)|*.hfp|'+
-    rsHelpWorkshopProjectHHP + ' (*.hhp)|*.hhp';
+    rsHelpProjectFiles  + '|*.hfp;*.hhp|' +
+    rsHelpFileProjectHFP + '|*.hfp|'+
+    rsHelpWorkshopProjectHHP + '|*.hhp';
   SaveDialog1.Filter := OpenDialog1.Filter;
 
   TOCEdit.Filter := rsTOCFiles + '|*.hhc|' + rsAllFiles + '|*';

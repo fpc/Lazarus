@@ -168,15 +168,15 @@ msgstr "全局属性"
 #: chmstrconsts.rshelpfileprojecthfp
 #, fuzzy
 #| msgid "Help File Project (*.hfp)"
-msgid "Help File Project"
+msgid "Help File Project (*.hfp)"
 msgstr "帮助文件项目 (*.hfp)"
 
 #: chmstrconsts.rshelpprojectfiles
-msgid "Help Project Files"
+msgid "Help Project Files (*.hfp;*.hhp)"
 msgstr ""
 
 #: chmstrconsts.rshelpworkshopprojecthhp
-msgid "Help Workshop Project"
+msgid "Help Workshop Project (*.hhp)"
 msgstr ""
 
 #: chmstrconsts.rsindexfiles

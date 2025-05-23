@@ -162,15 +162,15 @@ msgid "Global properties"
 msgstr ""
 
 #: chmstrconsts.rshelpfileprojecthfp
-msgid "Help File Project"
+msgid "Help File Project (*.hfp)"
 msgstr ""
 
 #: chmstrconsts.rshelpprojectfiles
-msgid "Help Project Files"
+msgid "Help Project Files (*.hfp;*.hhp)"
 msgstr ""
 
 #: chmstrconsts.rshelpworkshopprojecthhp
-msgid "Help Workshop Project"
+msgid "Help Workshop Project (*.hhp)"
 msgstr ""
 
 #: chmstrconsts.rsindexfiles

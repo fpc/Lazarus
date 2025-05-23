@@ -23,7 +23,7 @@
     <AutoFollowLinks Value="False"/>
     <MakeSearchable Value="True"/>
     <DefaultPage Value="MainPage.html"/>
-    <Title Value="chmmaker Example"/>
+    <Title Value="chmmaker Example 123"/>
     <OutputFileName Value="example.chm"/>
     <DefaultFont Value=""/>
     <DefaultWindow Value=""/>
