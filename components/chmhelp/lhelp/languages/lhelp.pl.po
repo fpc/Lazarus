@@ -240,3 +240,4 @@ msgstr ""
 #: lhelpstrconsts.slhelp_view
 msgid "&View"
 msgstr "&Widok"
+

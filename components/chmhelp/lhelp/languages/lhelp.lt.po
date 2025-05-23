@@ -241,3 +241,4 @@ msgstr "    Naudojimas: lhelp [[failo_pavadinimas] [--context id] [--hide] [--ip
 #: lhelpstrconsts.slhelp_view
 msgid "&View"
 msgstr "&Rodymas"
+

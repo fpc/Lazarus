@@ -44,7 +44,6 @@ msgid "&Search by text"
 msgstr "&Localizar pelo texto"
 
 #: lhelpstrconsts.slhelp_actionstoc
-#| msgid "&TOC"
 msgid "&Table of contents"
 msgstr "&Table of contents"
 
@@ -240,3 +239,4 @@ msgstr "    Uso: lhelp [[arquivo] [--context id] [--hide] [--ipcname lhelp-meuap
 #: lhelpstrconsts.slhelp_view
 msgid "&View"
 msgstr "&Exibir"
+

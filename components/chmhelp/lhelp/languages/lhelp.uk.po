@@ -242,3 +242,4 @@ msgstr "    Використання: lhelp [[назва файлу] [--context 
 #: lhelpstrconsts.slhelp_view
 msgid "&View"
 msgstr "&Вигляд"
+

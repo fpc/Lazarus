@@ -45,7 +45,9 @@ msgid "&Search by text"
 msgstr "按文本搜索(&S)"
 
 #: lhelpstrconsts.slhelp_actionstoc
-msgid "&TOC"
+#, fuzzy
+#| msgid "&TOC"
+msgid "&Table of contents"
 msgstr "目录(&T)"
 
 #: lhelpstrconsts.slhelp_cannothandlethistypeofcontentforurl
