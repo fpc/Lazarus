@@ -61,7 +61,6 @@ msgid "Cancel"
 msgstr "Отмена"
 
 #: chmstrconsts.rschmmakercaption
-#, fuzzy
 msgctxt "chmstrconsts.rschmmakercaption"
 msgid "CHM Help File Maker"
 msgstr "Компоновщик файлов справки CHM"
@@ -173,18 +172,16 @@ msgid "Global properties"
 msgstr "Глобальные свойства"
 
 #: chmstrconsts.rshelpfileprojecthfp
-#, fuzzy
-#| msgid "Help File Project (*.hfp)"
 msgid "Help File Project (*.hfp)"
 msgstr "Проект файла справки (*.hfp)"
 
 #: chmstrconsts.rshelpprojectfiles
-msgid "Help Project Files (*.hfp;*.hhp)"
-msgstr ""
+msgid "Help Project Files (*.hfp; *.hhp)"
+msgstr "Проекты справки (*.hfp; *.hhp)"
 
 #: chmstrconsts.rshelpworkshopprojecthhp
 msgid "Help Workshop Project (*.hhp)"
-msgstr ""
+msgstr "Проект Help Workshop (*.hhp)"
 
 #: chmstrconsts.rsindexfiles
 msgid "Index files (*.hhk)"
@@ -222,7 +219,7 @@ msgstr "Новый проект"
 
 #: chmstrconsts.rsnoname
 msgid "[no name]"
-msgstr ""
+msgstr "[без имени]"
 
 #: chmstrconsts.rsopen
 msgid "Open project..."
@@ -357,11 +354,6 @@ msgstr "Добавить файлы"
 #: tchmform.autoaddlinksbtn.caption
 msgid "Auto add HREF files"
 msgstr "Автоматически добавить файлы HREF"
-
-#: tchmform.caption
-msgctxt "tchmform.caption"
-msgid "CHM Help File Maker"
-msgstr "Компоновщик файлов справки CHM"
 
 #: tchmform.chmfilenamelabel.caption
 msgid "CHM filename"

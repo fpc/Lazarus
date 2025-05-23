@@ -172,7 +172,7 @@ msgid "Help File Project (*.hfp)"
 msgstr "帮助文件项目 (*.hfp)"
 
 #: chmstrconsts.rshelpprojectfiles
-msgid "Help Project Files (*.hfp;*.hhp)"
+msgid "Help Project Files (*.hfp; *.hhp)"
 msgstr ""
 
 #: chmstrconsts.rshelpworkshopprojecthhp
@@ -350,11 +350,6 @@ msgstr "添加文件"
 #: tchmform.autoaddlinksbtn.caption
 msgid "Auto add HREF files"
 msgstr "自动添加 HREF 文件"
-
-#: tchmform.caption
-msgctxt "tchmform.caption"
-msgid "CHM Help File Maker"
-msgstr "CHM 帮助文件制作器"
 
 #: tchmform.chmfilenamelabel.caption
 msgid "CHM filename"
