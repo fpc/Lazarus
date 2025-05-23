@@ -44,8 +44,9 @@ msgid "&Search by text"
 msgstr "&Localizar pelo texto"
 
 #: lhelpstrconsts.slhelp_actionstoc
+#, fuzzy
 msgid "&Table of contents"
-msgstr "&Table of contents"
+msgstr "&TOC"
 
 #: lhelpstrconsts.slhelp_cannothandlethistypeofcontentforurl
 #, object-pascal-format
