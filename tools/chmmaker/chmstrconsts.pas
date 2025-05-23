@@ -37,6 +37,7 @@ resourcestring
   rsSaveChanges = 'Save changes?';
   rsProjectHasBeenModified = 'Project has been modified.';
   rsFileNameNeeded = 'You must set a filename for the output CHM file.';
+  rsTableOfContentsFileNameNeeded = 'The name of the table-of-contents-file (.hhc) is not specified.';
   rsFileCreated = 'CHM file "%s" was created successfully.';
   rsBuildingLHelp = 'Building LHelp...';
   rsFiles = 'Files';

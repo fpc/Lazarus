@@ -19,7 +19,7 @@
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
-      <ExcludedIdentifiers Count="51">
+      <ExcludedIdentifiers Count="50">
         <Item1 Value="tsitemapeditform.caption"/>
         <Item2 Value="tsitemapeditform.urllabel.caption"/>
         <Item3 Value="tsitemapeditform.subitembtn.caption"/>
@@ -56,21 +56,20 @@
         <Item34 Value="taboutform.lblfreepascal.hint"/>
         <Item35 Value="taboutform.lbllazarus.caption"/>
         <Item36 Value="taboutform.lbllazarus.hint"/>
-        <Item37 Value="taboutform.lbltargetplatform.caption"/>
-        <Item38 Value="tchmform.caption"/>
-        <Item39 Value="tchmform.acnew.caption"/>
-        <Item40 Value="tchmform.acopen.caption"/>
-        <Item41 Value="tchmform.acsave.caption"/>
-        <Item42 Value="tchmform.acsaveas.caption"/>
-        <Item43 Value="tchmform.acclose.caption"/>
-        <Item44 Value="tchmform.acquit.caption"/>
-        <Item45 Value="tchmform.accompile.caption"/>
-        <Item46 Value="tchmform.accompileandview.caption"/>
-        <Item47 Value="tchmform.acabout.caption"/>
-        <Item48 Value="tchmform.compileandview.caption"/>
-        <Item49 Value="tchmform.toceditbtn.caption"/>
-        <Item50 Value="tchmform.indexeditbtn.caption"/>
-        <Item51 Value="tchmform.filesgroupbox.caption"/>
+        <Item37 Value="taboutform.lbltargetplatform.Caption"/>
+        <Item38 Value="tchmform.acnew.caption"/>
+        <Item39 Value="tchmform.acopen.caption"/>
+        <Item40 Value="tchmform.acsave.caption"/>
+        <Item41 Value="tchmform.acsaveas.caption"/>
+        <Item42 Value="tchmform.acclose.caption"/>
+        <Item43 Value="tchmform.acquit.caption"/>
+        <Item44 Value="tchmform.accompile.caption"/>
+        <Item45 Value="tchmform.accompileandview.caption"/>
+        <Item46 Value="tchmform.acabout.caption"/>
+        <Item47 Value="tchmform.compileandview.caption"/>
+        <Item48 Value="tchmform.toceditbtn.caption"/>
+        <Item49 Value="tchmform.indexeditbtn.caption"/>
+        <Item50 Value="tchmform.filesgroupbox.caption"/>
       </ExcludedIdentifiers>
     </i18n>
     <VersionInfo>

@@ -8,11 +8,11 @@
 </OBJECT>
 <UL>
         <LI> <OBJECT type="text/sitemap">
-                <param name="Name" value="Pages Available">
+                <param name="Name" value="Overview">
              </OBJECT>
         <UL> 
                 <LI> <OBJECT type="text/sitemap">
-                        <param name="Name" value="Main Page123">
+                        <param name="Name" value="Main Page">
                         <param name="Local" value="MainPage.html">
                      </OBJECT>
                 <LI> <OBJECT type="text/sitemap">

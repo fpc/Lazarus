@@ -289,6 +289,10 @@ msgctxt "chmstrconsts.rssubitem"
 msgid "Subitem"
 msgstr "子项"
 
+#: chmstrconsts.rstableofcontentsfilenameneeded
+msgid "The name of the table-of-contents-file (.hhc) is not specified."
+msgstr ""
+
 #: chmstrconsts.rstargetcpu
 msgctxt "chmstrconsts.rstargetcpu"
 msgid "Target CPU:"
@@ -350,6 +354,11 @@ msgstr "添加文件"
 #: tchmform.autoaddlinksbtn.caption
 msgid "Auto add HREF files"
 msgstr "自动添加 HREF 文件"
+
+#: tchmform.caption
+msgctxt "tchmform.caption"
+msgid "CHM Help File Maker"
+msgstr ""
 
 #: tchmform.chmfilenamelabel.caption
 msgid "CHM filename"

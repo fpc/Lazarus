@@ -151,23 +151,17 @@ begin
 end;
 
 procedure TCHMForm.AcNewExecute(Sender: TObject);
-var
-  bOverwrite: Boolean;
-  msg: String;
 begin
+  // The new file will be saved first. (wp: Is this really needed?)
   InitFileDialog(SaveDialog1);
-  If SaveDialog1.Execute then
+  SaveDialog1.Title := 'Save new project as';
+  if SaveDialog1.Execute then
   begin
-    bOverwrite := False;
+    if (not CloseProject) then Exit;
+    // Note: The OverwritePrompt must be active in SaveDialog1.Options so that
+    // the user can be notified that an existing file will be deleted.
     if FileExists(SaveDialog1.FileName) then
-    begin
-      msg := Format(rsFileAlreadyExists_Overwrite, [SaveDialog1.FileName]);
-      bOverwrite := (MessageDlg(msg, mtWarning, [mbYes, mbNo],0) = mrYes);
-      if not bOverwrite then Exit;
-    end;
-    if (not CloseProject()) then Exit;
-    if bOverwrite then DeleteFile(SaveDialog1.FileName);
-
+      DeleteFile(SaveDialog1.FileName);
     OpenProject(SaveDialog1.FileName);
     case Lowercase(ExtractFileExt(SaveDialog1.FileName)) of
       '.hfp': Project.SaveToFile(SaveDialog1.FileName);
@@ -418,10 +412,19 @@ begin
   if (Project.OutputFileName = '') then
   begin
     MessageDlg(rsFileNameNeeded, mtError, [mbCancel], 0);
+    ChmFileNameEdit.SetFocus;
     Exit;
   end;
+  if (Project.TableOfContentsFileName = '') then
+  begin
+    MessageDlg(rsTableOfContentsFileNameNeeded, mtError, [mbCancel], 0);
+    TOCEdit.SetFocus;
+    exit;
+  end;
+
   if not Save(False) then
     exit;
+
   OutFile := TFileStream.Create(CreateAbsoluteProjectFile(Project.OutputFileName), fmCreate or fmOpenWrite);
   try
     Project.WriteChm(OutFile);
@@ -645,10 +648,12 @@ end;
 
 procedure TCHMForm.TOCEditEditingDone(Sender: TObject);
 begin
-  // Normalize filename and store in Project
-  if (TOCEdit.FileName = '') then Exit;
-  if (ExtractFileExt(TOCEdit.FileName)) = '' then TOCEdit.FileName := TOCEdit.FileName + '.hhc';
-  TOCEdit.FileName := CreateRelativeProjectFile(TOCEdit.FileName);
+  if (TOCEdit.FileName <> '') then
+  begin
+    if (ExtractFileExt(TOCEdit.FileName)) = '' then
+      TOCEdit.FileName := TOCEdit.FileName + '.hhc';
+    TOCEdit.FileName := CreateRelativeProjectFile(TOCEdit.FileName);
+  end;
   Project.TableOfContentsFileName := TOCEdit.FileName;
   Modified := True;
 end;
@@ -751,6 +756,7 @@ procedure TCHMForm.OpenProject(AFileName: String);
 begin
   if not Assigned(Project) then
     Project := TChmProject.Create;
+
   if FileExists(AFileName) then
   begin
     case lowercase(ExtractFileExt(AFileName)) of
@@ -759,7 +765,8 @@ begin
       else raise Exception.Create('File type not supported');
     end;
     ProjectDirChanged;
-  end;
+  end else
+    Project.FileName := AFileName;
 
   FilesGroupBox.Enabled := True;
   MainPanel.Enabled := True;

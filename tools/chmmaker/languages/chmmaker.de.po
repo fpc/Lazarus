@@ -173,19 +173,19 @@ msgstr "Globale Eigenschaften"
 
 #: chmstrconsts.rshelpfileprojecthfp
 msgid "Help File Project (*.hfp)"
-msgstr ""
+msgstr "Hilfedatei-Projekt (*.hfp)"
 
 #: chmstrconsts.rshelpprojectfiles
 msgid "Help Project Files (*.hfp; *.hhp)"
-msgstr ""
+msgstr "Hilfeprojekt-Dateien (*.hfp; *.hhp)"
 
 #: chmstrconsts.rshelpworkshopprojecthhp
 msgid "Help Workshop Project (*.hhp)"
-msgstr ""
+msgstr "Help Workshop Projekt (*.hhp)"
 
 #: chmstrconsts.rsindexfiles
 msgid "Index files (*.hhk)"
-msgstr ""
+msgstr "Index-Dateien (*.hhk)"
 
 #: chmstrconsts.rslazbuildcouldnotbefound
 msgctxt "chmstrconsts.rslazbuildcouldnotbefound"
@@ -293,6 +293,10 @@ msgctxt "chmstrconsts.rssubitem"
 msgid "Subitem"
 msgstr "Untereintrag"
 
+#: chmstrconsts.rstableofcontentsfilenameneeded
+msgid "The name of the table-of-contents-file (.hhc) is not specified."
+msgstr "Der Name der Inhaltsverzeichnis-Datei (.hhc) ist nicht angegeben."
+
 #: chmstrconsts.rstargetcpu
 msgctxt "chmstrconsts.rstargetcpu"
 msgid "Target CPU:"
@@ -314,7 +318,7 @@ msgstr "Das fügt alle Dateien im Projektverzeichnis rekursiv hinzu."
 
 #: chmstrconsts.rstocfiles
 msgid "Table of Contents files (*.hhc)"
-msgstr ""
+msgstr "Inhaltsverzeichnis-Dateien (*.hhc)"
 
 #: chmstrconsts.rstrytobuildusinglazbuild
 msgctxt "chmstrconsts.rstrytobuildusinglazbuild"
@@ -341,27 +345,32 @@ msgstr "Version:"
 
 #: taboutform.lbltitle.caption
 msgid "CHMMaker"
-msgstr ""
+msgstr "CHMMaker"
 
 #: tchmform.addallbtn.caption
 msgid "Add all files in project directory"
-msgstr ""
+msgstr "Alle Dateien im Projektordner hinzufügen"
 
 #: tchmform.addfilesbtn.caption
 msgid "Add files"
-msgstr ""
+msgstr "Dateien hinzufügen"
 
 #: tchmform.autoaddlinksbtn.caption
 msgid "Auto add HREF files"
-msgstr ""
+msgstr "Automatisch HREF-Dateien hinzufügen"
+
+#: tchmform.caption
+msgctxt "tchmform.caption"
+msgid "CHM Help File Maker"
+msgstr "CHM Help File Maker"
 
 #: tchmform.chmfilenamelabel.caption
 msgid "CHM filename"
-msgstr ""
+msgstr "CHM-Dateiname"
 
 #: tchmform.chmtitlelabel.caption
 msgid "CHM Title"
-msgstr ""
+msgstr "CHM-Titel"
 
 #: tchmform.compileitem.caption
 msgctxt "tchmform.compileitem.caption"
@@ -370,45 +379,46 @@ msgstr "Kompilieren"
 
 #: tchmform.compiletimeoptionsgroupbox.caption
 msgid "Compile-time options:"
-msgstr ""
+msgstr "Kompilier-Optionen:"
 
 #: tchmform.createsearchablechmcheck.caption
 msgid "Create a searchable CHM file"
-msgstr ""
+msgstr "Durchsuchbare CHM-Datei erzeugen"
 
 #: tchmform.defaultpagelabel.caption
 msgid "Default page"
-msgstr ""
+msgstr "Default-Seite"
 
 #: tchmform.filesnotelabel.caption
 msgid "All files must be in the project file directory or a subdirectory."
-msgstr ""
+msgstr "Alle Dateien müssen sich im Ordner der Projekt-Datei oder einem Unterverzeichnis befinden."
 
 #: tchmform.indexlabel.caption
 msgid "Index (*.hhk)"
-msgstr ""
+msgstr "Index (*.hhk)"
 
 #: tchmform.menuitem1.caption
 msgctxt "tchmform.menuitem1.caption"
 msgid "Project"
-msgstr ""
+msgstr "Projekt"
 
 #: tchmform.menuitem3.caption
 msgctxt "tchmform.menuitem3.caption"
 msgid "Help"
-msgstr ""
+msgstr "Hilfe"
 
 #: tchmform.removefilesbtn.caption
 msgid "Remove selected"
-msgstr ""
+msgstr "Auswahl entfernen"
 
 #: tchmform.scanhtmlcheck.caption
 msgid ""
 "Parse *.htm* files to include \n"
 "linked pages and images"
 msgstr ""
+"html-Dateien auf verlinkte Seiten\n"
+"und Bilder untersuchen"
 
 #: tchmform.tableofcontentslabel.caption
 msgid "Table of Contents (*.hhc)"
-msgstr ""
-
+msgstr "Inhaltsverzeichnis (*.hhc)"
