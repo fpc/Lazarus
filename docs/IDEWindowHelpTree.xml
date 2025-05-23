@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<CONFIG Name="IDE windows and dialogs" Path="IDE_Window:_" ChildCount="72">
+<CONFIG Name="IDE windows and dialogs" Path="IDE_Window:_" ChildCount="74">
   <Node1 Name="TObjectInspector" Path="Object_Inspector" HasHelp="True"/>
   <Node2 Name="TfrmCompilerOptions" Path="Compiler_Options" HasHelp="True" IsRoot="True" ChildCount="1">
     <Node1 Name="MainNotebook" ChildCount="7">
@@ -103,7 +103,7 @@
       <Node2 Name="EditorsPanel" ChildCount="68">
         <Node1 Name="EditorMarkupUserDefinedFrame" Path="Editor_User_Defined_Words" HasHelp="True" IsRoot="True"/>
         <Node2 Name="CompOptModeMatrixFrame" Path="_Compiler_Options#Additions_and_Overrides" HasHelp="True" IsRoot="True"/>
-        <Node3 Name="CompilerOtherOptionsFrame" Path="_Compiler_Options#Other" HasHelp="True" IsRoot="True"/>
+        <Node3 Name="CompilerOtherOptionsFrame" Path="_Compiler_Options#Custom_Options" HasHelp="True" IsRoot="True"/>
         <Node4 Name="CompilerMessagesOptionsFrame" Path="_Compiler_Options#Messages" HasHelp="True" IsRoot="True"/>
         <Node5 Name="CompilerCompilationOptionsFrame" Path="_Compiler_Options#Compilation" HasHelp="True" IsRoot="True"/>
         <Node6 Name="CompilerVerbosityOptionsFrame" Path="_Compiler_Options#Verbosity" HasHelp="True" IsRoot="True"/>
@@ -198,4 +198,6 @@
   <Node70 Name="TMacroListView" Path="Editor Macros" HasHelp="True" IsRoot="True"/>
   <Node71 Name="TShowCompilerOptionsDlg" Path="Show_Compiler_Options" HasHelp="True" IsRoot="True"/>
   <Node72 Name="TBuildModesForm" Path="_Project_Options#Build_modes" HasHelp="True" IsRoot="True"/>
+  <Node73 Name="TDefinesGuiForm" Path="_Compiler_Options#Custom_Options" HasHelp="True" IsRoot="True"/>
+  <Node74 Name="TfrmAllCompilerOptions" Path="_Compiler_Options#Other" HasHelp="True" IsRoot="True"/>
 </CONFIG>
