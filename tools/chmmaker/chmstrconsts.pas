@@ -56,7 +56,7 @@ resourcestring
     'Only files added to the project manually are indexed, ' +
     'files added automatically are not indexed.';
 
-  rsHelpProjectFiles = 'Help Project Files (*.hfp;*.hhp)';
+  rsHelpProjectFiles = 'Help Project Files (*.hfp; *.hhp)';
   rsHelpFileProjectHfp = 'Help File Project (*.hfp)';
   rsHelpWorkshopProjectHHP = 'Help Workshop Project (*.hhp)';
   rsTOCFiles = 'Table of Contents files (*.hhc)';
