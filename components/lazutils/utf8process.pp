@@ -81,7 +81,7 @@ uses ctypes;
 {$ENDIF}
 
 {$IFDEF Linux}
-const _SC_NPROCESSORS_ONLN = 83;
+const _SC_NPROCESSORS_ONLN = 84;
 function sysconf(i: cint): clong; cdecl; external name 'sysconf';
 {$ENDIF}
 
