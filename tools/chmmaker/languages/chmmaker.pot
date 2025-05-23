@@ -50,6 +50,11 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
+#: chmstrconsts.rschmmakercaption
+msgctxt "chmstrconsts.rschmmakercaption"
+msgid "CHM Help File Maker"
+msgstr ""
+
 #: chmstrconsts.rsclose
 msgctxt "chmstrconsts.rsclose"
 msgid "Close"
@@ -157,7 +162,15 @@ msgid "Global properties"
 msgstr ""
 
 #: chmstrconsts.rshelpfileprojecthfp
-msgid "Help File Project (*.hfp)"
+msgid "Help File Project"
+msgstr ""
+
+#: chmstrconsts.rshelpprojectfiles
+msgid "Help Project Files"
+msgstr ""
+
+#: chmstrconsts.rshelpworkshopprojecthhp
+msgid "Help Workshop Project"
 msgstr ""
 
 #: chmstrconsts.rsindexfiles
@@ -192,6 +205,10 @@ msgstr ""
 #: chmstrconsts.rsnew_hint
 msgctxt "chmstrconsts.rsnew_hint"
 msgid "New project"
+msgstr ""
+
+#: chmstrconsts.rsnoname
+msgid "[no name]"
 msgstr ""
 
 #: chmstrconsts.rsopen
@@ -329,6 +346,7 @@ msgid "Auto add HREF files"
 msgstr ""
 
 #: tchmform.caption
+msgctxt "tchmform.caption"
 msgid "CHM Help File Maker"
 msgstr ""
 

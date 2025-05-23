@@ -36,7 +36,7 @@ msgstr "Nach"
 
 #: chmstrconsts.rsallfiles
 msgid "All files"
-msgstr ""
+msgstr "Alle Dateien"
 
 #: chmstrconsts.rsand
 msgctxt "chmstrconsts.rsand"
@@ -59,6 +59,11 @@ msgstr "Erzeuge LHelp..."
 #: chmstrconsts.rscancel
 msgid "Cancel"
 msgstr "Abbrechen"
+
+#: chmstrconsts.rschmmakercaption
+msgctxt "chmstrconsts.rschmmakercaption"
+msgid "CHM Help File Maker"
+msgstr "CHM Help File Maker"
 
 #: chmstrconsts.rsclose
 msgctxt "chmstrconsts.rsclose"
@@ -92,7 +97,7 @@ msgstr "Projekt kompilieren"
 
 #: chmstrconsts.rscompressedhtmlhelpfiles
 msgid "Compressed HTML Help files"
-msgstr ""
+msgstr "Komprimierte HTML Hilfe-Dateien"
 
 #: chmstrconsts.rscreatedwith
 msgid "Created with "
@@ -167,7 +172,15 @@ msgid "Global properties"
 msgstr "Globale Eigenschaften"
 
 #: chmstrconsts.rshelpfileprojecthfp
-msgid "Help File Project (*.hfp)"
+msgid "Help File Project"
+msgstr ""
+
+#: chmstrconsts.rshelpprojectfiles
+msgid "Help Project Files"
+msgstr ""
+
+#: chmstrconsts.rshelpworkshopprojecthhp
+msgid "Help Workshop Project"
 msgstr ""
 
 #: chmstrconsts.rsindexfiles
@@ -175,8 +188,6 @@ msgid "Index files (*.hhk)"
 msgstr ""
 
 #: chmstrconsts.rslazbuildcouldnotbefound
-#, fuzzy
-#| msgid "LazBuild could not be found."
 msgctxt "chmstrconsts.rslazbuildcouldnotbefound"
 msgid "Lazbuild could not be found."
 msgstr "LazBuild wurde nicht gefunden."
@@ -193,8 +204,6 @@ msgid "LHelp failed to build."
 msgstr "LHelp konnte nicht erzeugt werden."
 
 #: chmstrconsts.rslocallink
-#, fuzzy
-#| msgid "Local link (in chm)"
 msgctxt "chmstrconsts.rslocallink"
 msgid "Local link (in CHM)"
 msgstr "Lokaler Verweis (in CHM)"
@@ -207,6 +216,10 @@ msgstr "Neues Projekt..."
 msgctxt "chmstrconsts.rsnew_hint"
 msgid "New project"
 msgstr "Neues Projekt"
+
+#: chmstrconsts.rsnoname
+msgid "[no name]"
+msgstr "[ohne Namen]"
 
 #: chmstrconsts.rsopen
 msgid "Open project..."
@@ -304,8 +317,6 @@ msgid "Table of Contents files (*.hhc)"
 msgstr ""
 
 #: chmstrconsts.rstrytobuildusinglazbuild
-#, fuzzy
-#| msgid "Try to build using LazBuild?"
 msgctxt "chmstrconsts.rstrytobuildusinglazbuild"
 msgid "Try to build using Lazbuild?"
 msgstr "Mit LazBuild erzeugen??"
@@ -315,11 +326,9 @@ msgid "Untitled"
 msgstr "Ohne Namen"
 
 #: chmstrconsts.rsurl
-#, fuzzy
-#| msgid "URL (http)"
 msgctxt "chmstrconsts.rsurl"
 msgid "URL (HTTP)"
-msgstr "URL (http)"
+msgstr "URL (HTTP)"
 
 #: chmstrconsts.rsusefoldericons
 msgid "Use folder icons"
@@ -347,8 +356,10 @@ msgid "Auto add HREF files"
 msgstr ""
 
 #: tchmform.caption
+#, fuzzy
+msgctxt "tchmform.caption"
 msgid "CHM Help File Maker"
-msgstr ""
+msgstr "CHM Help File Maker"
 
 #: tchmform.chmfilenamelabel.caption
 msgid "CHM filename"
@@ -359,7 +370,6 @@ msgid "CHM Title"
 msgstr ""
 
 #: tchmform.compileitem.caption
-#, fuzzy
 msgctxt "tchmform.compileitem.caption"
 msgid "Compile"
 msgstr "Kompilieren"

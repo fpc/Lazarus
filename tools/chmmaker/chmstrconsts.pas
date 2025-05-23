@@ -11,6 +11,8 @@ var
   Lang: String = '';
 
 resourcestring
+  rsCHMMakerCaption = 'CHM Help File Maker';
+
   // Common
   rsClose = 'Close';
   rsSave = 'Save';
@@ -38,6 +40,7 @@ resourcestring
   rsFileCreated = 'CHM file "%s" was created successfully.';
   rsBuildingLHelp = 'Building LHelp...';
   rsFiles = 'Files';
+  rsNoName = '[no name]';
 
   rsNew_Hint = 'New project';
   rsOpen_Hint = 'Open project file';
@@ -53,7 +56,9 @@ resourcestring
     'Only files added to the project manually are indexed, ' +
     'files added automatically are not indexed.';
 
-  rsHelpFileProjectHfp = 'Help File Project (*.hfp)';
+  rsHelpProjectFiles = 'Help Project Files';
+  rsHelpFileProjectHfp = 'Help File Project';
+  rsHelpWorkshopProjectHHP = 'Help Workshop Project';
   rsTOCFiles = 'Table of Contents files (*.hhc)';
   rsIndexFiles = 'Index files (*.hhk)';
   rsCompressedHTMLHelpFiles = 'Compressed HTML Help files';

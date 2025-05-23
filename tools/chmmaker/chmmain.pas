@@ -111,7 +111,7 @@ type
 
     function Compile(ShowSuccessMsg: Boolean): Boolean;
     function GetModified: Boolean;
-    procedure Save(aAs: Boolean);
+    function Save(aAs: Boolean): Boolean;
     function StrictModified: Boolean;
     function CloseProject: Boolean;
 
@@ -120,6 +120,7 @@ type
     procedure ProjectDirChanged;
     function CreateRelativeProjectFile(Filename: string): string;
     procedure SetLanguage(ALang: string);
+    procedure UpdateCaption;
   public
     Project: TChmProject;
     procedure OpenProject(AFileName: String);
@@ -168,7 +169,11 @@ begin
     if bOverwrite then DeleteFile(SaveDialog1.FileName);
 
     OpenProject(SaveDialog1.FileName);
-    Project.SaveToFile(SaveDialog1.FileName);
+    case Lowercase(ExtractFileExt(SaveDialog1.FileName)) of
+      '.hfp': Project.SaveToFile(SaveDialog1.FileName);
+      '.hhp': Project.SaveToHHP(SaveDialog1.FileName);
+    end;
+    UpdateCaption;
   end;
 end;
 
@@ -415,7 +420,8 @@ begin
     MessageDlg(rsFileNameNeeded, mtError, [mbCancel], 0);
     Exit;
   end;
-  Save(False);
+  if not Save(False) then
+    exit;
   OutFile := TFileStream.Create(CreateAbsoluteProjectFile(Project.OutputFileName), fmCreate or fmOpenWrite);
   try
     Project.WriteChm(OutFile);
@@ -668,16 +674,20 @@ begin
     Result := true;
 end;
 
-procedure TCHMForm.Save(aAs: Boolean);
+function TCHMForm.Save(aAs: Boolean): Boolean;
+var
+  ext: String;
 begin
+  Result := false;
   if aAs or (Project.FileName = '') then
   begin
     InitFileDialog(SaveDialog1);
     if SaveDialog1.Execute then
     begin
-      Project.FileName := ChangeFileExt(SaveDialog1.FileName,'.hfp');
+      Project.FileName := SaveDialog1.FileName;
       ProjectDirChanged;
-    end;
+    end else
+      exit;
   end;
   Project.Files.Assign(FileListBox.Items);
   Project.Title                   := ChmTitleEdit.Text;
@@ -688,8 +698,14 @@ begin
   Project.MakeSearchable          := CreateSearchableCHMCheck.Checked;
   Project.OutputFileName          := CreateRelativeProjectFile(ChmFileNameEdit.FileName);
 
-  Project.SaveToFile(Project.FileName);
+  case Lowercase(ExtractFileExt(Project.FileName)) of
+    '.hfp': Project.SaveToFile(Project.FileName);
+    '.hhp': Project.SaveToHHP(Project.FileName);
+  end;
+  UpdateCaption;
+
   Modified := False;
+  Result := true;
 end;
 
 function TCHMForm.CloseProject: Boolean;
@@ -733,17 +749,18 @@ end;
 
 procedure TCHMForm.OpenProject(AFileName: String);
 begin
-{
-  if not FileExists(AFileName) then
-  begin
-    MessageDlg(Format(rsFileNotFound, [AFileName]), mtError, [mbOK], 0);
-    exit;
-  end;
- }
   if not Assigned(Project) then
     Project := TChmProject.Create;
   if FileExists(AFileName) then
-    Project.LoadFromFile(AFileName);
+  begin
+    case lowercase(ExtractFileExt(AFileName)) of
+      '.hhp': Project.LoadFromHHP(AFileName, true);
+      '.hfp': Project.LoadFromFile(AFileName);
+      else raise Exception.Create('File type not supported');
+    end;
+    ProjectDirChanged;
+  end;
+
   FilesGroupBox.Enabled := True;
   MainPanel.Enabled := True;
   AcSaveAs.Enabled := True;
@@ -764,7 +781,7 @@ begin
   ChmFileNameEdit.FileName := Project.OutputFileName;
 
   Modified := False;
-  ProjectDirChanged;
+  UpdateCaption;
 end;
 
 procedure TCHMForm.AddFilesToProject(Strings: TStrings);
@@ -856,7 +873,10 @@ begin
   AcAbout.Hint := rsAbout_Hint;
   CreateSearchableCHMCheck.Hint := rsCreateSearchableHTML_Hint;
 
-  OpenDialog1.Filter := rsHelpFileProjectHfp + '|*.hfp';
+  OpenDialog1.Filter :=
+    rsHelpProjectFiles  + ' (*.hfp;*.hhp)|*.hfp;*.hhp|' +
+    rsHelpFileProjectHFP + ' (*.hfp)|*.hfp|'+
+    rsHelpWorkshopProjectHHP + ' (*.hhp)|*.hhp';
   SaveDialog1.Filter := OpenDialog1.Filter;
 
   TOCEdit.Filter := rsTOCFiles + '|*.hhc|' + rsAllFiles + '|*';
@@ -864,6 +884,20 @@ begin
   ChmFileNameEdit.Filter := rsCompressedHTMLHelpFiles + '|*.chm';
 end;
 
+procedure TCHMForm.UpdateCaption;
+var
+  fn: string;
+begin
+  if Assigned(Project) then
+  begin
+    if Project.FileName <> '' then
+      fn := ExtractFileName(Project.Filename)
+    else
+      fn := rsNoName;
+    Caption := Format('%s - %s', [rsCHMMakerCaption, fn]);
+  end else
+    Caption := rsCHMMakerCaption;
+end;
 
 end.
 
