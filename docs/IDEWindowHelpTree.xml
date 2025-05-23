@@ -100,7 +100,7 @@
   <Node55 Name="TIDEOptionsDialog" Path="IDE_Options_Dialog" HasHelp="True" ChildCount="1">
     <Node1 Name="RightPanel" ChildCount="2">
       <Node1 Name="BuildModeSelectPanel" Path="_Project_Options#Build_modes" HasHelp="True" IsRoot="True"/>
-      <Node2 Name="EditorsPanel" ChildCount="76">
+      <Node2 Name="EditorsPanel" ChildCount="77">
         <Node1 Name="EditorMarkupUserDefinedFrame" Path="Editor_User_Defined_Words" HasHelp="True" IsRoot="True"/>
         <Node2 Name="CompOptModeMatrixFrame" Path="_Compiler_Options#Additions_and_Overrides" HasHelp="True" IsRoot="True"/>
         <Node3 Name="CompilerOtherOptionsFrame" Path="_Compiler_Options#Custom_Options" HasHelp="True" IsRoot="True"/>
@@ -162,10 +162,10 @@
         <Node59 Name="CompilerInheritedOptionsFrame" Path="Compiler_Options#Inherited" HasHelp="True" IsRoot="True"/>
         <Node60 Name="EditorMarkupOptionsFrame" Path="Editor_Options_Markup" HasHelp="True" IsRoot="True"/>
         <Node61 Name="EditorGeneralMiscOptionsFrame" Path="Editor_Options_General_Misc" HasHelp="True" IsRoot="True"/>
-        <Node62 Name="PackageUsageOptionsFrame" Path="Package_Options" HasHelp="True" IsRoot="True"/>
-        <Node63 Name="PackageI18NOptionsFrame" Path="Package_Options" HasHelp="True" IsRoot="True"/>
-        <Node64 Name="PackageDescriptionOptionsFrame" Path="Package_Options" HasHelp="True" IsRoot="True"/>
-        <Node65 Name="PackageIntegrationOptionsFrame" Path="Package_Options" HasHelp="True" IsRoot="True"/>
+        <Node62 Name="PackageUsageOptionsFrame" Path="Package_Options#Usage" HasHelp="True" IsRoot="True"/>
+        <Node63 Name="PackageI18NOptionsFrame" Path="Package_Options#i18n" HasHelp="True" IsRoot="True"/>
+        <Node64 Name="PackageDescriptionOptionsFrame" Path="Package_Options#Description" HasHelp="True" IsRoot="True"/>
+        <Node65 Name="PackageIntegrationOptionsFrame" Path="Package_Options#IDE_Integration" HasHelp="True" IsRoot="True"/>
         <Node66 Name="IdeDbgValFormatOptionsFrame" Path="IDE Options - Debugger Value-Formatter" HasHelp="True" IsRoot="True"/>
         <Node67 Name="ProjectDisplayFormatOptionsFrame" Path="IDE Options - Debugger DisplayFormat" HasHelp="True" IsRoot="True"/>
         <Node68 Name="IdeProjectValueFormatterOptionsFrame" Path="IDE Options - Debugger Value-Formatter" HasHelp="True" IsRoot="True"/>
@@ -177,6 +177,7 @@
         <Node74 Name="EditorToolbarOptionsFrame" Path="Environment_Options#Editor_ToolBar" HasHelp="True" IsRoot="True"/>
         <Node75 Name="IdeCoolbarOptionsFrame" Path="Environment_Options#IDE_CoolBar" HasHelp="True" IsRoot="True"/>
         <Node76 Name="MsgWndOptionsFrame" Path="Environment_Options#Messages_Window" HasHelp="True" IsRoot="True"/>
+        <Node77 Name="PackageProvidesOptionsFrame" Path="Package_Options#Provides" HasHelp="True" IsRoot="True"/>
       </Node2>
     </Node1>
   </Node55>
