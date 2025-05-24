@@ -547,6 +547,7 @@ type
     procedure CloseBracket(ALastAddedPart: TFpPascalExpressionPart;
                            APreviousArraySliceList: PFpPascalExpressionPartOperatorArraySlice;
                            AStartChar: PChar; AnEndChar: PChar = nil); override;
+    function ReturnsVariant: boolean; override;
   end;
 
   { TFpPascalExpressionPartOperator }
@@ -2323,6 +2324,21 @@ begin
   inherited CloseBracket(ALastAddedPart, APreviousArraySliceList, AStartChar, AnEndChar);
   for i := 1 to Count - 1 do
     Items[i].DoParentIndexBraceClosed(APreviousArraySliceList);
+end;
+
+function TFpPascalExpressionPartBracketIndex.ReturnsVariant: boolean;
+var
+  Itm0: TFpPascalExpressionPart;
+begin
+  Result := inherited ReturnsVariant;
+  if Result then
+    exit;
+
+  Itm0 := Items[0];
+  if Itm0 = nil then
+    exit;
+
+  Result := Itm0.ReturnsVariant;
 end;
 
 { TFpPascalExpressionPartBracketSet }
