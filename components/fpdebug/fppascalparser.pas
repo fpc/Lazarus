@@ -3229,7 +3229,11 @@ var
           DisplayVal.AddReference;
         end
         else
+        begin
+          AMapExpr.BeginNeedCopy;
           DisplayVal := EvalExression(AMapExpr, ACurrentVal, OrigVal, False, ACurDepth, ACurKeyIdx, ACurKey);
+          AMapExpr.EndNeedCopy;
+        end;
 
         if (DisplayVal <> nil) then begin
           ResIdx := InternalAdd(DisplayVal, ACurDepth, ACurKeyIdx, ACurKey);
