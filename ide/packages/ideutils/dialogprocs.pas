@@ -598,6 +598,8 @@ var
   CurFilename: String;
   Found: Boolean;
 begin
+  if FileName='' then
+    exit(mrAbort);  // Serious bug on the calling side, so abort.
   CurFilename:=Filename;
   repeat
     Result:=mrOk;
