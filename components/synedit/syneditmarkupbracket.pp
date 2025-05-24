@@ -47,8 +47,6 @@ type
   protected
     procedure FindMatchingBracketPair(LogCaret: TPoint; var StartBracket, EndBracket: TPoint); virtual;
     procedure DoCaretChanged(Sender: TObject); override;
-    procedure DoTopLineChanged(OldTopLine : Integer); override;
-    procedure DoLinesInWindoChanged(OldLinesInWindow : Integer); override;
     procedure DoTextChanged(StartLine, EndLine, ACountDiff: Integer); override;
     procedure DoMarkupChanged(AMarkup: TSynSelectedColor); override;
     procedure DoEnabledChanged(Sender: TObject); override;
@@ -147,16 +145,6 @@ begin
 end;
 
 procedure TSynEditMarkupBracket.DoCaretChanged(Sender: TObject);
-begin
-  InvalidateBracketHighlight;
-end;
-
-procedure TSynEditMarkupBracket.DoTopLineChanged(OldTopLine: Integer);
-begin
-  InvalidateBracketHighlight;
-end;
-
-procedure TSynEditMarkupBracket.DoLinesInWindoChanged(OldLinesInWindow: Integer);
 begin
   InvalidateBracketHighlight;
 end;
