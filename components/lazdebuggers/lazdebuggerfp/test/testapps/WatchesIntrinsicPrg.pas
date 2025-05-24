@@ -27,6 +27,7 @@ type
 var
   f1, f2, f3, f4, f5, f6, f7, f8: TFoo;
   fa: array [0..9] of TFoo;
+  bytes: array [0..30] of byte;
 
 
 type
@@ -75,8 +76,12 @@ var
   AnIntf1: IIntf1;  AnIntf2: IIntf2;
   AnObj1:  TIntf1;  AnObj2:  TIntf2;
   i: Integer;
+  o: TObject;
 
 begin
+  for i := 0 to high(bytes) do bytes[i] := i+1;
+  o := TObject.Create;
+
   f1 := TFoo.Create(1);
   f2 := TFoo.Create(2);
   f3 := TFoo.Create(3);

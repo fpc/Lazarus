@@ -2264,6 +2264,20 @@ begin
         weInteger(1),weInteger(2)
       ], 45)).IgnTypeName();
 
+    t.Add('flatten + slice', ':flatten( TObject(@bytes[0]), ( TObject(^byte(:_)+8 ) ) : ( ^byte(:_)[0..7]! ), [max=3])',
+        weArray([
+            weMatch('.', skClass).IgnAll(),
+            weArray(weCardinal([9,10,11,12,13,14,15,16], #1, 1), 8).IgnKindArrayType().IgnTypeName(),
+            weArray(weCardinal([17,18,19,20,21,22,23,24], #1, 1), 8).IgnKindArrayType().IgnTypeName()
+        ], 3)
+      ).IgnTypeName();
+    t.Add('flatten + map', '^byte( :flatten(TObject(@bytes[0]), ( TObject(^byte(:_)+8) ), [max=3]) [0..2] ) [0..7]',
+        weArray([
+            weArray(weCardinal([1,2,3,4,5,6,7,8], #1, 1), 8).IgnKindArrayType().IgnTypeName(),
+            weArray(weCardinal([9,10,11,12,13,14,15,16], #1, 1), 8).IgnKindArrayType().IgnTypeName(),
+            weArray(weCardinal([17,18,19,20,21,22,23,24], #1, 1), 8).IgnKindArrayType().IgnTypeName()
+        ], 3)
+      ).IgnTypeName();
 
     t.Add('i2o', ':i2o(AnIntf1)', weClass([
         weInteger(123).N('a'), weInteger(987).N('b'), weInteger(551177).N('c') ], 'TIntf1'));
