@@ -252,6 +252,7 @@ const
   ecSmartUnindent   = 512;  // NOT regocniced as command, used for group-undo, set by beautifier
   ecDeleteCharNoCrLf= 513;  // Delete char at cursor (i.e. delete key), but do not join lines
   ecDeleteLineKeepX = 514;  // Delete current line
+  ecDeleteWordNoCrLf= 515;  // Delete word at cursor (i.e. ctrl+delete shourtcut), but do not join lines
 
   ecImeStr          = 550;  // Insert character(s) from IME
 

@@ -2631,6 +2631,8 @@ begin
     ecSelectAll:                    Action := ccaClearCarets;
     ecDeleteChar:                   if smcoDeleteSkipLineBreak in Options then
                                       Command := ecDeleteCharNoCrLf;
+    ecDeleteWord:                   if smcoDeleteSkipLineBreak in Options then
+                                      Command := ecDeleteWordNoCrLf;
     else
       if Command >= ecUserFirst then
         Action := ccaNoneRepeatCommand;

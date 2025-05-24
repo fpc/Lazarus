@@ -7334,31 +7334,33 @@ begin
             end;
           end;
         end;
-      ecDeleteWord, ecDeleteEOL:
+      ecDeleteWord, ecDeleteWordNoCrLf, ecDeleteEOL:
         if not ReadOnly then begin
           Helper := '';
-          Caret := CaretXY;
-          if Command = ecDeleteWord then begin
-            Len := LogicalToPhysicalCol(LineText, CaretY-1,Length(LineText)+1)-1;
-            if CaretX > Len + 1 then begin
-              Helper := StringOfChar(' ', CaretX - 1 - Len);
-              CaretX := 1 + Len;
+          LogCaretXY := LogicalCaretXY;
+          if (Command = ecDeleteWord) or (Command = ecDeleteWordNoCrLf) then begin
+            Len := Length(LineText);
+            if LogCaretXY.X > Len + 1 then begin
+              Helper := StringOfChar(' ', LogCaretXY.X - 1 - Len);
+              LogCaretXY.X := Len + 1;
             end;
             // if we are not in a word, delete word + spaces (up to next token)
-            if WordBreaker.IsAtWordStart(LineText, LogicalCaretXY.X) or
-               WordBreaker.IsAtWordEnd(LineText, LogicalCaretXY.X) or
-               (not WordBreaker.IsInWord(LineText, LogicalCaretXY.X)) or
-               (LogicalCaretXY.X > Length(LineText))
+            if WordBreaker.IsAtWordStart(LineText, LogCaretXY.X) or
+               WordBreaker.IsAtWordEnd(LineText, LogCaretXY.X) or
+               (not WordBreaker.IsInWord(LineText, LogCaretXY.X)) or
+               (LogCaretXY.X > Length(LineText))
             then
               WP := NextWordLogicalPos(swbTokenBegin, True)
             else
               // if we are inside a word, delete to word-end
               WP := NextWordLogicalPos(swbWordEnd, True);
+            if (Command = ecDeleteWordNoCrLf) and (WP.Y <> LogCaretXY.Y) then
+              WP := LogCaretXY;
           end else
             WP := Point(Length(LineText) + 1, CaretY);
-          if (WP.X <> FCaret.BytePos) or (WP.Y <> FCaret.LinePos) then begin
+          if (WP.X <> LogCaretXY.X) or (WP.Y <> LogCaretXY.Y) then begin
             FInternalBlockSelection.StartLineBytePos := WP;
-            FInternalBlockSelection.EndLineBytePos := LogicalCaretXY;
+            FInternalBlockSelection.EndLineBytePos := LogCaretXY;
             FInternalBlockSelection.ActiveSelectionMode := smNormal;
             FInternalBlockSelection.SetSelTextPrimitive(smNormal, PChar(Helper));
             FCaret.BytePos := FInternalBlockSelection.StartBytePos;
