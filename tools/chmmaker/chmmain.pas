@@ -855,6 +855,8 @@ end;
 procedure TCHMForm.SetLanguage(ALang: String);
 begin
   SetDefaultLang(ALang);
+  Caption := rsCHMMakerCaption;
+
   AcNew.Caption := rsNew;
   AcOpen.Caption := rsOpen;
   AcSave.Caption := rsSave;
