@@ -188,7 +188,7 @@ type
     procedure OnRefreshPropertyValues;
     procedure OnSetSelection(const ASelection: TPersistentSelectionList);
     function GetSelectedControls: TList;
-    function FindSibling(const Sibling: string): TControl;
+    function FindSibling(Sibling: string): TControl;
     procedure FillComboBoxWithSiblings(AComboBox: TComboBox);
     function AnchorDesignerNoSiblingText: string;
     function AnchorDesignerNeighbourText(direction: TAnchorKind): string;
@@ -753,7 +753,7 @@ begin
     if SelectedControls=nil then exit;
     UseNeighbours:=false;
     NewSibling:=nil;
-    if (NewValue<>AnchorDesignerNoSiblingText) then
+    if (NewValue<>AnchorDesignerNoSiblingText) and (NewValue <> '') then
     begin
       CurNeighbour:=low(TAnchorKind);
       // Check if relative Anchor to be used, such as '(selected left neighbour)'
@@ -1106,7 +1106,7 @@ begin
   end;
 end;
 
-function TAnchorDesigner.FindSibling(const Sibling: string): TControl;
+function TAnchorDesigner.FindSibling(Sibling: string): TControl;
 var
   Root: TPersistent;
   RootComponent: TComponent;
@@ -1118,6 +1118,13 @@ begin
   Root:=GlobalDesignHook.LookupRoot;
   if not (Root is TComponent) then exit;
   RootComponent:=TComponent(Root);
+  if (pos(':', Sibling) = 0) and (RootComponent is TControl) then
+  begin
+    if CompareText(Sibling, RootComponent.Name) = 0 then
+      Sibling := ControlToStr(TControl(RootComponent))
+    else
+      Sibling := ControlToStr(TControl(RootComponent.FindComponent(Sibling)));
+  end;
   if (RootComponent is TControl)
   and (CompareText(Sibling,ControlToStr(TControl(RootComponent)))=0) then begin
     Result:=TControl(RootComponent);
