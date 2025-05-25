@@ -1876,6 +1876,9 @@ begin
           NewBlockEnd := LogCaret;
         end;
         //debugln('TSynCompletion.Validate B Position=',dbgs(Position));
+        if (ItemList.Count = 0) then
+          Cancel(Sender)
+        else
         if Position>=0 then begin
           if Assigned(FOnCodeCompletion) then
           begin
@@ -1891,10 +1894,7 @@ begin
             TextBetweenPointsEx[NewBlockBegin, NewBlockEnd, scamEnd] := ItemList[Position];
             TCustomSynEdit(F.CurrentEditor).SetFocus;
           end;
-        end
-        else
-        if (ItemList.Count = 0) then
-          Cancel(Sender);
+        end;
       finally
         EndUpdate;
         EndUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TSynCompletion.Validate'){$ENDIF};
