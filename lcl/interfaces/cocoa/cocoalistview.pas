@@ -207,6 +207,9 @@ type
     procedure setCaptionEditor( captionEditor: TCocoaTextField ); message 'setCaptionEditor:';
     procedure setCaptionFont( captionFont: NSFont ); message 'setCaptionFont:';
     procedure setCaptionAlignment( alignment: NSTextAlignment ); message 'setCaptionAlignment:';
+
+    procedure rightMouseDown(event: NSEvent); override;
+    procedure rightMouseUp(event: NSEvent); override;
   end;
 
 implementation
@@ -271,6 +274,18 @@ procedure TCocoaListView.setCaptionAlignment( alignment: NSTextAlignment );
 begin
   _captionAlignment:= alignment;
   _captionEditor.setAlignment( _captionAlignment );
+end;
+
+procedure TCocoaListView.rightMouseDown(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited;
+end;
+
+procedure TCocoaListView.rightMouseUp(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited;
 end;
 
 procedure TCocoaListView.setViewStyle(viewStyle: TViewStyle);
