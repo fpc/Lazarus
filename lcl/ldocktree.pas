@@ -504,6 +504,8 @@ end;
 class procedure TDockHeader.PerformMouseDown(AControl: TControl;
   APart: TLazDockHeaderPart);
 begin
+  if AControl=nil then
+    exit;
   case APart of
     ldhpAll, ldhpCaption:
       // mouse down on not buttons => start drag
