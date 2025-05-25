@@ -355,11 +355,6 @@ msgstr "添加文件"
 msgid "Auto add HREF files"
 msgstr "自动添加 HREF 文件"
 
-#: tchmform.caption
-msgctxt "tchmform.caption"
-msgid "CHM Help File Maker"
-msgstr ""
-
 #: tchmform.chmfilenamelabel.caption
 msgid "CHM filename"
 msgstr "CHM 文件名"

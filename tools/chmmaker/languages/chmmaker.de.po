@@ -359,11 +359,6 @@ msgstr "Dateien hinzufügen"
 msgid "Auto add HREF files"
 msgstr "Automatisch HREF-Dateien hinzufügen"
 
-#: tchmform.caption
-msgctxt "tchmform.caption"
-msgid "CHM Help File Maker"
-msgstr "CHM Help File Maker"
-
 #: tchmform.chmfilenamelabel.caption
 msgid "CHM filename"
 msgstr "CHM-Dateiname"
@@ -422,3 +417,4 @@ msgstr ""
 #: tchmform.tableofcontentslabel.caption
 msgid "Table of Contents (*.hhc)"
 msgstr "Inhaltsverzeichnis (*.hhc)"
+

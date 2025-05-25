@@ -295,7 +295,7 @@ msgstr "Подэлемент"
 
 #: chmstrconsts.rstableofcontentsfilenameneeded
 msgid "The name of the table-of-contents-file (.hhc) is not specified."
-msgstr ""
+msgstr "Не задано имя файла оглавления (.hhc)."
 
 #: chmstrconsts.rstargetcpu
 msgctxt "chmstrconsts.rstargetcpu"
@@ -358,12 +358,6 @@ msgstr "Добавить файлы"
 #: tchmform.autoaddlinksbtn.caption
 msgid "Auto add HREF files"
 msgstr "Автоматически добавить файлы HREF"
-
-#: tchmform.caption
-#, fuzzy
-msgctxt "tchmform.caption"
-msgid "CHM Help File Maker"
-msgstr "Компоновщик файлов справки CHM"
 
 #: tchmform.chmfilenamelabel.caption
 msgid "CHM filename"
