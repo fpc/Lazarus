@@ -5799,15 +5799,10 @@ begin
     NewLFMFilename:='';
     if FilenameHasPascalExt(NewFilename) then
        NewLFMFilename:=ChangeFileExt(NewFilename,'.lfm');
-    if AnUnitInfo.ComponentName='' then begin
+    if (AnUnitInfo.ComponentName='') and (NewLFMFilename<>'') then begin
       // unit has no component
       // -> remove lfm file, so that it will not be auto loaded on next open
-      if (FileExistsUTF8(NewLFMFilename))
-      and (not DeleteFileUTF8(NewLFMFilename))
-      and (IDEMessageDialog(lisPkgMangDeleteFailed,
-            Format(lisDeletingOfFileFailed, [NewLFMFilename]),
-            mtError, [mbIgnore, mbCancel])=mrCancel)
-      then
+      if not (DeleteFileInteractive(NewLFMFilename,[mbIgnore]) in [mrOk,mrIgnore]) then
         exit(mrCancel);
     end;
 
