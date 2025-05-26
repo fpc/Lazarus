@@ -50,6 +50,7 @@ type
     procedure LFMUnitname;
     procedure LFM_RootUnitnameWrong;
     procedure LFM_ChildUnitnameWrong;
+    procedure LFM_BinaryData;
   end;
 
 implementation
@@ -111,9 +112,12 @@ begin
     '    property OnClick: TNotifyEvent;',
     '  end;',
     '',
+    '  TBitmap = class(TPersistent)',
+    '  end;',
     '  TButton = class(TControl)',
     '  published',
     '    property Default: Boolean;',
+    '    property Glyph: TBitmap;',
     '  end;',
     '',
     '  TFormStyle = (fsNormal, fsMDIChild, fsMDIForm, fsStayOnTop, fsSplash, fsSystemStayOnTop);',
@@ -338,6 +342,25 @@ begin
     'end'
     ]));
   CheckLFMParseError(lfmeObjectIncompatible,CodeXYPosition(19,2,FLFMCode),'Controls expected, but Fool found. See unit1.pas(7,5)');
+end;
+
+procedure TTestLFMTrees.LFM_BinaryData;
+begin
+  AddControls;
+  AddFormUnit(['Button1: TButton']);
+  FLFMCode:=AddSource('unit1.lfm',LinesToStr([
+    'object Form1: TForm1',
+    '  object Button1: TButton',
+    '    Glyph.Data = {',
+    '      36040000424D3604000000000000360000002800000010000000100000000100',
+    '      49EE000000000004000064000000640000000000000000000000000000000000',
+    '    }',
+    '    Caption = ''ClickMe''',
+    '    Default = True',
+    '  end',
+    'end'
+    ]));
+  CheckLFMParseError(lfmeIdentifierNotFound,CodeXYPosition(11,3,FLFMCode),'identifier Data not found in class "TBitmap"');
 end;
 
 initialization

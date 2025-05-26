@@ -2863,7 +2863,7 @@ var
   procedure FindCandidates;
   var
     s: String;
-    LFMStream: TMemoryStream;
+    LFMStream, MemStream: TMemoryStream;
     Parser: TParser;
     p: SizeInt;
   begin
@@ -2879,11 +2879,23 @@ var
       Parser := TParser.Create(LFMStream);
       repeat
         Parser.NextToken;
-        if Parser.Token=#0 then
-          break
-        else if Parser.TokenSymbolIs(Identifier) then begin
-          p:=Parser.SourcePos+1-Length(Identifier);
-          Insert(p,IdentifierPositions,length(IdentifierPositions));
+        case Parser.Token of
+        #0: break;
+        toSymbol:
+          begin
+            p:=Parser.SourcePos+1-Length(Identifier);
+            Insert(p,IdentifierPositions,length(IdentifierPositions));
+          end;
+        '{':
+          begin
+            MemStream := TMemoryStream.Create;
+            try
+              Parser.HexToBinary(MemStream);
+            finally
+              MemStream.Free;
+            end;
+            Parser.NextToken;
+          end;
         end;
       until false;
     finally

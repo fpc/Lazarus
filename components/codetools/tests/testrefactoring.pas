@@ -89,6 +89,7 @@ type
     // rename also in lfm
     procedure TestRenameAlsoLFM_Variable;
     procedure TestRenameAlsoLFM_Event;
+    procedure TestRenameAlsoLFM_SkipBinaryData;
   end;
 
 implementation
@@ -2100,6 +2101,64 @@ begin
     '  Left = 353',
     '  object Button1: TButton',
     '    OnClick = OkClicked',
+    '  end',
+    'end']);
+
+  finally
+    RedUnit.IsDeleted:=true;
+    Test1LFM.IsDeleted:=true;
+  end;
+end;
+
+procedure TTestRefactoring.TestRenameAlsoLFM_SkipBinaryData;
+var
+  Test1LFM, RedUnit: TCodeBuffer;
+begin
+  RedUnit:=CodeToolBoss.CreateFile('red.pas');
+  Test1LFM:=CodeToolBoss.CreateFile(ChangeFileExt(Code.Filename,'.lfm'));
+  try
+    RedUnit.Source:='unit Red;'+LineEnding
+      +'interface'+LineEnding
+      +'type'+LineEnding
+      +'  TForm = class'+LineEnding
+      +'  end;'+LineEnding
+      +'  TBitmap = class'+LineEnding
+      +'  end;'+LineEnding
+      +'  TButton = class'+LineEnding
+      +'  published'+LineEnding
+      +'    property Glyph: TBitmap;'+LineEnding
+      +'  end;'+LineEnding
+      +'implementation'+LineEnding
+      +'end.';
+
+    Test1LFM.Source:=LinesToStr([
+      'object Form1: TForm1',
+      '  object Button1: TButton',
+      '    Glyph.Data = {',
+      '      36040000424D3604000000000000360000002800000010000000100000000100',
+      '      49EE000000000004000064000000640000000000000000000000000000000000',
+      '    }',
+      '  end',
+      'end']);
+
+    Add(['unit Test1;',
+      '{$mode objfpc}{$H+}',
+      'interface',
+      'uses red;',
+      'type',
+      '  TForm1 = class(TForm)',
+      '    Button1{#Rename}: TButton;',
+      '  end;',
+      'implementation',
+      'end.']);
+    RenameReferences('OkBtn',frfAllLFM);
+    CheckDiff(Test1LFM,[
+    'object Form1: TForm1',
+    '  object OkBtn: TButton',
+    '    Glyph.Data = {',
+    '      36040000424D3604000000000000360000002800000010000000100000000100',
+    '      49EE000000000004000064000000640000000000000000000000000000000000',
+    '    }',
     '  end',
     'end']);
 
