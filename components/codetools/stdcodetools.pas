@@ -2882,7 +2882,7 @@ var
         case Parser.Token of
         #0: break;
         toSymbol:
-          begin
+          if Parser.TokenSymbolIs(Identifier) then begin
             p:=Parser.SourcePos+1-Length(Identifier);
             Insert(p,IdentifierPositions,length(IdentifierPositions));
           end;
@@ -2894,7 +2894,6 @@ var
             finally
               MemStream.Free;
             end;
-            Parser.NextToken;
           end;
         end;
       until false;
