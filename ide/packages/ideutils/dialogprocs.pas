@@ -615,7 +615,7 @@ begin
         repeat
           CurFilename:=Info.Name;
           if (CurFilename='') or (CurFilename='.') or (CurFilename='..') then continue;
-          if SameText(Filename,ShortFilename) then begin
+          if SameText(CurFilename,ShortFilename) then begin
             CurFilename:=Dir+CurFilename;
             Found:=true;
             break;
