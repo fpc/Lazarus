@@ -1789,7 +1789,7 @@ msgid "Underline"
 msgstr "Aláhúzott"
 
 #: lazarusidestrconsts.dlgelastictabs
-msgid "Elastic tabs"
+msgid "Elastic tabstops"
 msgstr ""
 
 #: lazarusidestrconsts.dlgelastictabswidths
@@ -15499,6 +15499,10 @@ msgstr "Nincs új fájl a beemelhető fájlok útvonalán"
 msgctxt "lazarusidestrconsts.lispenofilesmissingallfilesexist"
 msgid "No files missing. All files exist."
 msgstr "Nincs hiányzó fájl. Minden fájl létezik."
+
+#: lazarusidestrconsts.lispeoffsortforreorder
+msgid "Please disable alphabetical sorting if you need to reorder items manually."
+msgstr ""
 
 #: lazarusidestrconsts.lisperemovefiles
 msgid "Remove files"

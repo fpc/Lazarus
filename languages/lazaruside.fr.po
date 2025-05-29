@@ -1777,7 +1777,9 @@ msgid "Underline"
 msgstr "Souligné"
 
 #: lazarusidestrconsts.dlgelastictabs
-msgid "Elastic tabs"
+#, fuzzy
+#| msgid "Elastic tabs"
+msgid "Elastic tabstops"
 msgstr "Onglets élastiques"
 
 #: lazarusidestrconsts.dlgelastictabswidths
@@ -15381,6 +15383,10 @@ msgstr "Nouveau fichier absent du chemin d'inclusion"
 msgctxt "lazarusidestrconsts.lispenofilesmissingallfilesexist"
 msgid "No files missing. All files exist."
 msgstr "Aucun fichier manquant. Tous les fichiers existent."
+
+#: lazarusidestrconsts.lispeoffsortforreorder
+msgid "Please disable alphabetical sorting if you need to reorder items manually."
+msgstr ""
 
 #: lazarusidestrconsts.lisperemovefiles
 msgid "Remove files"

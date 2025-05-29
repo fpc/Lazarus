@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-05-22 02:52+0300\n"
+"PO-Revision-Date: 2025-05-29 19:42+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -1767,7 +1767,7 @@ msgid "Underline"
 msgstr "Подчёркнутый"
 
 #: lazarusidestrconsts.dlgelastictabs
-msgid "Elastic tabs"
+msgid "Elastic tabstops"
 msgstr "Эластичные ТАБы"
 
 #: lazarusidestrconsts.dlgelastictabswidths
@@ -15333,6 +15333,10 @@ msgstr "Путь к новому файлу отсутствует в списк
 msgctxt "lazarusidestrconsts.lispenofilesmissingallfilesexist"
 msgid "No files missing. All files exist."
 msgstr "Все файлы имеются в наличии."
+
+#: lazarusidestrconsts.lispeoffsortforreorder
+msgid "Please disable alphabetical sorting if you need to reorder items manually."
+msgstr "При необходимости упорядочивать элементы вручную следует выключить сортировку в алфавитном порядке."
 
 #: lazarusidestrconsts.lisperemovefiles
 msgid "Remove files"

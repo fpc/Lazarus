@@ -1816,7 +1816,7 @@ msgid "Underline"
 msgstr "Subrayado"
 
 #: lazarusidestrconsts.dlgelastictabs
-msgid "Elastic tabs"
+msgid "Elastic tabstops"
 msgstr ""
 
 #: lazarusidestrconsts.dlgelastictabswidths
@@ -15683,6 +15683,10 @@ msgstr "Nuevo archivo no está en ruta de inclusión"
 msgctxt "lazarusidestrconsts.lispenofilesmissingallfilesexist"
 msgid "No files missing. All files exist."
 msgstr "Ningún archivo perdido. Todos los archivos existen."
+
+#: lazarusidestrconsts.lispeoffsortforreorder
+msgid "Please disable alphabetical sorting if you need to reorder items manually."
+msgstr ""
 
 #: lazarusidestrconsts.lisperemovefiles
 msgid "Remove files"

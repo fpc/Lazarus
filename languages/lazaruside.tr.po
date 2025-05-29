@@ -1773,7 +1773,9 @@ msgid "Underline"
 msgstr "Altını çiz"
 
 #: lazarusidestrconsts.dlgelastictabs
-msgid "Elastic tabs"
+#, fuzzy
+#| msgid "Elastic tabs"
+msgid "Elastic tabstops"
 msgstr "Elastik sekmeler"
 
 #: lazarusidestrconsts.dlgelastictabswidths
@@ -15328,6 +15330,10 @@ msgstr "Yeni dosya yolunda değil"
 #: lazarusidestrconsts.lispenofilesmissingallfilesexist
 msgid "No files missing. All files exist."
 msgstr "Eksik dosya yok. Tüm dosyalar var."
+
+#: lazarusidestrconsts.lispeoffsortforreorder
+msgid "Please disable alphabetical sorting if you need to reorder items manually."
+msgstr ""
 
 #: lazarusidestrconsts.lisperemovefiles
 msgid "Remove files"

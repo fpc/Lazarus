@@ -1766,7 +1766,9 @@ msgid "Underline"
 msgstr "下划线"
 
 #: lazarusidestrconsts.dlgelastictabs
-msgid "Elastic tabs"
+#, fuzzy
+#| msgid "Elastic tabs"
+msgid "Elastic tabstops"
 msgstr "弹性制表符"
 
 #: lazarusidestrconsts.dlgelastictabswidths
@@ -15334,6 +15336,10 @@ msgstr "新文件不在包含的路径"
 msgctxt "lazarusidestrconsts.lispenofilesmissingallfilesexist"
 msgid "No files missing. All files exist."
 msgstr "无文件缺少.所有文件存在."
+
+#: lazarusidestrconsts.lispeoffsortforreorder
+msgid "Please disable alphabetical sorting if you need to reorder items manually."
+msgstr ""
 
 #: lazarusidestrconsts.lisperemovefiles
 msgid "Remove files"
