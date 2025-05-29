@@ -58,7 +58,7 @@ uses
   Classes, SysUtils,
   // LCL
   LCLType, LCLIntf, LResources, Forms, Controls, Buttons, ComCtrls, Menus, Dialogs,
-  ExtCtrls, StdCtrls, Graphics,
+  ExtCtrls, StdCtrls, Graphics, LCLStrConsts,
   // LazControls
   TreeFilterEdit,
   // LazUtils
@@ -659,20 +659,36 @@ procedure TProjectInspectorForm.MoveDependencyUpClick(Sender: TObject);
 var
   Dependency: TPkgDependency;
 begin
-  Dependency:=GetSingleSelectedDependency;
-  if SortAlphabetically or (Dependency=nil) or Dependency.Removed
-  or (Dependency.PrevRequiresDependency=nil) then exit;
-  LazProject.MoveRequiredDependencyUp(Dependency);
+  if SortAlphabetically then
+  begin
+    IDEMessageDialog(rsMtWarning, lisPEOffSortForReorder, mtWarning, [mbOK]);
+    exit;
+  end;
+
+  Dependency := GetSingleSelectedDependency;
+  if (Dependency = nil) or Dependency.Removed then
+    exit;
+
+  if assigned(Dependency.PrevRequiresDependency) then
+    LazProject.MoveRequiredDependencyUp(Dependency);
 end;
 
 procedure TProjectInspectorForm.MoveDependencyDownClick(Sender: TObject);
 var
   Dependency: TPkgDependency;
 begin
-  Dependency:=GetSingleSelectedDependency;
-  if SortAlphabetically or (Dependency=nil) or Dependency.Removed
-  or (Dependency.NextRequiresDependency=nil) then exit;
-  LazProject.MoveRequiredDependencyDown(Dependency);
+  if SortAlphabetically then
+  begin
+    IDEMessageDialog(rsMtWarning, lisPEOffSortForReorder, mtWarning, [mbOK]);
+    exit;
+  end;
+
+  Dependency := GetSingleSelectedDependency;
+  if (Dependency = nil) or Dependency.Removed then
+    exit;
+
+  if assigned(Dependency.NextRequiresDependency) then
+    LazProject.MoveRequiredDependencyDown(Dependency);
 end;
 
 procedure TProjectInspectorForm.PropsGroupBoxResize(Sender: TObject);
@@ -1042,9 +1058,9 @@ begin
   SetItem(ProjInspMenuReAddDependency,@ReAddMenuItemClick,CanReAddCount>0);
   // move up/down
   SetItem(ProjInspMenuMoveDependencyUp,@MoveDependencyUpClick,
-    (SingleSelectedDep<>nil) and (SingleSelectedDep.PrevRequiresDependency<>nil), not SortAlphabetically);
+    (SingleSelectedDep<>nil) and (SingleSelectedDep.PrevRequiresDependency<>nil));
   SetItem(ProjInspMenuMoveDependencyDown,@MoveDependencyDownClick,
-    (SingleSelectedDep<>nil) and (SingleSelectedDep.NextRequiresDependency<>nil), not SortAlphabetically);
+    (SingleSelectedDep<>nil) and (SingleSelectedDep.NextRequiresDependency<>nil));
   // default and preferred filename
   SetItem(ProjInspMenuStoreFilenameAsDefaultOfDependencyDown,@SetDependencyDefaultFilenameMenuItemClick,
     HasValidDep>0);
