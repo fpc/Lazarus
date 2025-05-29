@@ -1619,7 +1619,7 @@ resourcestring
   dlgIndentsLineIndentGroupOptions = 'Indent (New line)';
 
   dlgTabWidths         = 'Tab widths';
-  dlgElasticTabs       = 'Elastic tabs';
+  dlgElasticTabs       = 'Elastic tabstops';
   dlgElasticTabsWidths = 'Elastic min Widths';
 
   dlgTabsToSpaces = 'Tabs to spaces';
