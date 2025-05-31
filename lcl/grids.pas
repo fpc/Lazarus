@@ -6530,29 +6530,32 @@ var
   aBorderWidth: Integer;
   aCol, aRow: Longint;
 begin
+  {$ifdef dbgGrid}
+  debugln(['TCustomGrid.MouseToGridZone: X=',X,', Y=',Y,', FGCache.FixedWidth=',FGCache.FixedWidth,', FGCache.FixedHeight=',FGCache.FixedHeight]);
+  {$endif}
   aBorderWidth := GetBorderWidth;
   if FlipX(X)<FGCache.FixedWidth+aBorderWidth then begin
-    // in fixedwidth zone
+    // in fixedwidth zone: either a fixedcol or a fixedcell
     if Y<FGcache.FixedHeight+aBorderWidth then
       Result:= gzFixedCells
-    else begin
-      OffsetToColRow(False, True, Y, aRow, aCol);
-      if (aRow<0) or (RowCount<=FixedRows) then
-        Result := gzInvalid
-      else
-        Result := gzFixedRows;
-    end;
-  end
-  else if Y<FGCache.FixedHeight+aBorderWidth then begin
-    // if fixedheight zone
-    if FlipX(X)<FGCache.FixedWidth+aBorderWidth then
-      Result:=gzFixedCells
     else begin
       OffsetToColRow(True, True, X, aCol, aRow);
       if (aCol<0) or (ColCount<=FixedCols) then
         Result := gzInvalid
       else
         Result := gzFixedCols;
+    end;
+  end
+  else if Y<FGCache.FixedHeight+aBorderWidth then begin
+    // if fixedheight zone: either a fixedrow or a fixedcell
+    if FlipX(X)<FGCache.FixedWidth+aBorderWidth then
+      Result:=gzFixedCells
+    else begin
+      OffsetToColRow(False, True, Y, aRow, aCol);
+      if (aRow<0) or (RowCount<=FixedRows) then
+        Result := gzInvalid
+      else
+        Result := gzFixedRows;
     end;
   end
   else if not FixedGrid then begin
@@ -6565,6 +6568,9 @@ begin
   end
   else
     result := gzInvalid;
+  {$ifdef dbgGrid}
+  debugln(['TCustomGrid.MouseToGridZone: Result=',Dbgs(Result)]);
+  {$endif}
 end;
 
 function TCustomGrid.CellToGridZone(aCol, aRow: Integer): TGridZone;
@@ -6576,13 +6582,13 @@ begin
     if aRow<FFixedRows then
       Result:= gzFixedCells
     else
-      Result:= gzFixedRows
+      Result:= gzFixedCols
   else
   if (aRow<FFixedRows) then
     if aCol<FFixedCols then
       Result:= gzFixedCells
     else
-      Result:= gzFixedCols
+      Result:= gzFixedRows
   else
     Result := gzNormal;
 end;
