@@ -1,7 +1,6 @@
 unit Test_ChildSizing;
 
 {$mode objfpc}{$H+}
-{off $DEFINE WITHOUT_AUTOSIZE_LOCK} // Don't call DisableAutoSizing / let Autosize compute every intermediate result / SLOW
 
 interface
 
@@ -54,10 +53,12 @@ type
   private
     FContainer: TTestContainer;
   protected
-    class procedure AssertApprox(Expected, Actual: integer);
+    class procedure AssertApprox(Expected, Actual: integer; AnAllowance: Integer = 1);
     class procedure AssertApprox(AName: String; Expected, Actual: integer);
     class procedure AssertNoDecrementInList(ANew,AOld: TIntegerArray);
     class procedure AssertMaxOneDecrementInList(ANew,AOld: TIntegerArray);
+    procedure EnableAutoSizing(c: TWinControl); virtual;
+    procedure DisableAutoSizing(c: TWinControl); virtual;
     procedure Init1(
       out P: TTestContainer; AContainerWidth: integer;
       AStyle: TChildControlResizeStyle; APerLine: Integer;
@@ -80,6 +81,15 @@ type
     procedure TestHomogenousChildResizeConstrained;
     procedure TestHomogenousSpaceResize;
     procedure TestCalculateCellConstraints;
+  end;
+
+  { TTestChildSizingWithTempAutoSizing }
+
+  TTestChildSizingWithTempAutoSizing = class(TTestChildSizing)
+  protected
+    // Do nothing / let every change compute the size
+    procedure EnableAutoSizing(c: TWinControl); override;
+    procedure DisableAutoSizing(c: TWinControl); override;
   end;
 
 implementation
@@ -123,6 +133,7 @@ procedure TTestWinControl.SetTestPrefSize(APrefWidth, APrefHeight: Integer);
 begin
   FPrefWidth := APrefWidth;
   FPrefHeight := APrefHeight;
+  AdjustSize;
 end;
 
 { TTestChild }
@@ -148,9 +159,9 @@ end;
 
 { TTestChildSizing }
 
-class procedure TTestChildSizing.AssertApprox(Expected, Actual: integer);
+class procedure TTestChildSizing.AssertApprox(Expected, Actual: integer; AnAllowance: Integer);
 begin
-  if Actual = Expected + 1 then dec(Actual);
+  if (Actual >= Expected) and (Actual <= Expected + AnAllowance) then Actual := Expected;
   AssertEquals(Expected, Actual);
 end;
 
@@ -178,6 +189,16 @@ begin
     AssertTrue('MAX ONE DECR', ANew[i] >= AOld[i]-1);
 end;
 
+procedure TTestChildSizing.EnableAutoSizing(c: TWinControl);
+begin
+  c.EnableAutoSizing;
+end;
+
+procedure TTestChildSizing.DisableAutoSizing(c: TWinControl);
+begin
+  c.DisableAutoSizing;
+end;
+
 procedure TTestChildSizing.Init1(out P: TTestContainer; AContainerWidth: integer;
   AStyle: TChildControlResizeStyle; APerLine: Integer; out C: TTestChildArray;
   AWidths: array of integer; AInitContainerHeight: boolean);
@@ -200,14 +221,14 @@ begin
     p.ChildSizing.Layout := cclLeftToRightThenTopToBottom;
   end;
 
-  {$IFnDEF WITHOUT_AUTOSIZE_LOCK} p.DisableAutoSizing; {$ENDIF}
+  DisableAutoSizing(p);
   SetLength(C, Length(AWidths));
   for i := 0 to Length(AWidths) - 1 do
     if AInitContainerHeight then
       C[i] := TTestChild.Create(P, 10, AWidths[i])
     else
       C[i] := TTestChild.Create(P, AWidths[i], 10);
-  {$IFnDEF WITHOUT_AUTOSIZE_LOCK} P.EnableAutoSizing; {$ENDIF}
+  EnableAutoSizing(P);
 end;
 
 procedure TTestChildSizing.AddPaddingAround(var C: TTestChildArray; APadding: integer;
@@ -217,10 +238,10 @@ var
 begin
   if ALowIdx = -1 then ALowIdx := low(C);
   if AHighIdx = -1 then AHighIdx := High(C);
-  {$IFnDEF WITHOUT_AUTOSIZE_LOCK} FContainer.DisableAutoSizing; {$ENDIF}
+  DisableAutoSizing(FContainer);
   for i := ALowIdx to AHighIdx do
     C[i].BorderSpacing.Around := APadding;
-  {$IFnDEF WITHOUT_AUTOSIZE_LOCK} FContainer.EnableAutoSizing; {$ENDIF}
+  EnableAutoSizing(FContainer);
 end;
 
 function TTestChildSizing.GetLefts(C: TTestChildArray; ALowIdx, AHighIdx: integer): TIntegerArray;
@@ -291,11 +312,11 @@ begin
     Init1(FContainer, 300 + TotalSpace,crsScaleChilds, 3, C,
           [20, 70, 30,
            20, 35  {-}]);
-    {$IFnDEF WITHOUT_AUTOSIZE_LOCK} FContainer.DisableAutoSizing; {$ENDIF}
+    DisableAutoSizing(FContainer);
     FContainer.ChildSizing.LeftRightSpacing := ALeftSpace;
     FContainer.ChildSizing.HorizontalSpacing := AMidSpace;
     AddPaddingAround(C, ACtrlSpace);
-    {$IFnDEF WITHOUT_AUTOSIZE_LOCK} FContainer.EnableAutoSizing; {$ENDIF}
+    EnableAutoSizing(FContainer);
 
     AssertEquals(50,  C[0].Width);
     AssertEquals(50,  C[3].Width);
@@ -349,14 +370,14 @@ begin
     Init1(FContainer, 170 + TotalSpace,crsScaleChilds, 3, C,
           [20, 40, 30,
            20, 35  {-}]);
-    {$IFnDEF WITHOUT_AUTOSIZE_LOCK} FContainer.DisableAutoSizing; {$ENDIF}
+    DisableAutoSizing(FContainer);
     FContainer.ChildSizing.LeftRightSpacing := ALeftSpace;
     FContainer.ChildSizing.HorizontalSpacing := AMidSpace;
     c[1].Constraints.MinWidth := 35;
     c[1].Constraints.MaxWidth := 45;
     c[4].Constraints.MinWidth := 35;
     c[4].Constraints.MaxWidth := 45;
-    {$IFnDEF WITHOUT_AUTOSIZE_LOCK} FContainer.EnableAutoSizing; {$ENDIF}
+    EnableAutoSizing(FContainer);
 
     AssertEquals(50,  C[0].Width);
     AssertEquals(50,  C[3].Width);
@@ -437,11 +458,11 @@ begin
     Init1(FContainer, 150 + TotalSpace,crsSameSize, 3, C,
           [20, 40, 30,
            20, 35  {-}]);
-    {$IFnDEF WITHOUT_AUTOSIZE_LOCK} FContainer.DisableAutoSizing; {$ENDIF}
+    DisableAutoSizing(FContainer);
     FContainer.ChildSizing.LeftRightSpacing := ALeftSpace;
     FContainer.ChildSizing.HorizontalSpacing := AMidSpace;
     AddPaddingAround(C, ACtrlSpace);
-    {$IFnDEF WITHOUT_AUTOSIZE_LOCK} FContainer.EnableAutoSizing; {$ENDIF}
+    EnableAutoSizing(FContainer);
 
     AssertEquals(50, C[0].Width);
     AssertEquals(50, C[3].Width);
@@ -493,14 +514,14 @@ begin
     Init1(FContainer, 145 + TotalSpace,crsSameSize, 3, C,
           [20, 40, 30,
            20, 35  {-}]);
-    {$IFnDEF WITHOUT_AUTOSIZE_LOCK} FContainer.DisableAutoSizing; {$ENDIF}
+    DisableAutoSizing(FContainer);
     FContainer.ChildSizing.LeftRightSpacing := ALeftSpace;
     FContainer.ChildSizing.HorizontalSpacing := AMidSpace;
     c[1].Constraints.MinWidth := 35;
     c[1].Constraints.MaxWidth := 45;
     c[4].Constraints.MinWidth := 35;
     c[4].Constraints.MaxWidth := 45;
-    {$IFnDEF WITHOUT_AUTOSIZE_LOCK} FContainer.EnableAutoSizing; {$ENDIF}
+    EnableAutoSizing(FContainer);
 
     AssertEquals(50, C[0].Width);
     AssertEquals(50, C[3].Width);
@@ -581,11 +602,11 @@ begin
     Init1(FContainer, 120 + TotalSpace, crsHomogenousChildResize, 3, C,
           [20, 40, 30,
            20, 35  {-}]);
-    {$IFnDEF WITHOUT_AUTOSIZE_LOCK} FContainer.DisableAutoSizing; {$ENDIF}
+    DisableAutoSizing(FContainer);
     FContainer.ChildSizing.LeftRightSpacing := ALeftSpace;
     FContainer.ChildSizing.HorizontalSpacing := AMidSpace;
     AddPaddingAround(C, ACtrlSpace);
-    {$IFnDEF WITHOUT_AUTOSIZE_LOCK} FContainer.EnableAutoSizing; {$ENDIF}
+    EnableAutoSizing(FContainer);
 
     AssertEquals(30,  C[0].Width);
     AssertEquals(30,  C[3].Width);
@@ -668,12 +689,12 @@ begin
   Init1(FContainer, 115, crsHomogenousChildResize, 3, C,
         [20, 40, 30,
          20, 35  {-}]);
-  {$IFnDEF WITHOUT_AUTOSIZE_LOCK} FContainer.DisableAutoSizing; {$ENDIF}
+  DisableAutoSizing(FContainer);
     c[1].Constraints.MinWidth := 35;
     c[1].Constraints.MaxWidth := 45;
     c[4].Constraints.MinWidth := 35;
     c[4].Constraints.MaxWidth := 45;
-  {$IFnDEF WITHOUT_AUTOSIZE_LOCK} FContainer.EnableAutoSizing; {$ENDIF}
+  EnableAutoSizing(FContainer);
 
   //   // 90 + 25 (5 Constrained / +20 for the 2 other column)
   AssertEquals(30,  C[0].Width);
@@ -769,11 +790,11 @@ begin
   Init1(FContainer, 120, crsHomogenousSpaceResize, 3, C,
         [20, 40, 30,
          20, 35  {-}]);
-  {$IFnDEF WITHOUT_AUTOSIZE_LOCK} FContainer.DisableAutoSizing; {$ENDIF}
+  DisableAutoSizing(FContainer);
   FContainer.ChildSizing.LeftRightSpacing  := 9;
   FContainer.ChildSizing.HorizontalSpacing := 4;
   C[2].BorderSpacing.Left := 11;
-  {$IFnDEF WITHOUT_AUTOSIZE_LOCK} FContainer.EnableAutoSizing; {$ENDIF}
+  EnableAutoSizing(FContainer);
   // Spacing   9  C0  4  C1  11  C2  9
 
 
@@ -835,14 +856,17 @@ end;
 procedure TTestChildSizing.TestCalculateCellConstraints;
 var
   C: TTestChildArray;
-  w1, w2, w3: Integer;
+  UseMaxTop, UseMaxBtm: Integer;
+  cc1, cc2, cc3: TControlCellAlign;
+  w1, w2, w2Top, w2Btm, w3: Integer;
+  MaxW2, PrefW2: Integer;
 begin
   Init1(FContainer, 1000,crsScaleChilds, 3, C,
         [20, 90, 30,
          25, 85, 30,
          20, 95, 30]);
 
-  // preferred witd
+  // preferred width
   w1 := 25 * 1000 div (25+95+30);
   w2 := 95 * 1000 div (25+95+30);
   w3 := 30 * 1000 div (25+95+30);
@@ -850,24 +874,59 @@ begin
   AssertApprox(w1, C[3].Width); AssertApprox(w2, C[4].Width); AssertApprox(w3, C[5].Width);
   AssertApprox(w1, C[6].Width); AssertApprox(w2, C[7].Width); AssertApprox(w3, C[8].Width);
 
-  {$IFnDEF WITHOUT_AUTOSIZE_LOCK} FContainer.DisableAutoSizing; {$ENDIF}
-  c[4].Constraints.MaxWidth := 70; // lowest MaxWidth
-  c[7].Constraints.MaxWidth := 75;
-  {$IFnDEF WITHOUT_AUTOSIZE_LOCK} FContainer.EnableAutoSizing; {$ENDIF}
-  w1 := 25 * (1000-70) div (25+30);
-  w2 := 70;
-  w3 := 30 * (1000-70) div (25+30);
-  AssertApprox(w1, C[0].Width); AssertEquals(w2, C[1].Width); AssertApprox(w3, C[2].Width);
-  AssertApprox(w1, C[3].Width); AssertEquals(w2, C[4].Width); AssertApprox(w3, C[5].Width);
-  AssertApprox(w1, C[6].Width); AssertEquals(w2, C[7].Width); AssertApprox(w3, C[8].Width);
+  (* MaxWidth only limits the column if the control has CellAlignHorizontal = ccaLeftTop
+  *)
+  for UseMaxTop   := 0 to 1 do  // Enable/disable MaxWidth on top row
+  for UseMaxBtm   := 0 to 1 do  // Enable/disable MaxWidth on bottom row
+  for cc1 := low(TControlCellAlign) to high(TControlCellAlign) do
+  for cc2 := low(TControlCellAlign) to high(TControlCellAlign) do
+  for cc3 := low(TControlCellAlign) to high(TControlCellAlign) do begin
+    DisableAutoSizing(FContainer);
+    // constraints for cells in column 2
+    c[1].Constraints.MaxWidth := 75 * UseMaxTop;
+    c[4].Constraints.MaxWidth := 70;       // lowest MaxWidth, always set - only applies to column if ccaFill;
+    c[7].Constraints.MaxWidth := 75 * UseMaxBtm;
+    // alignment for cells in column 2
+    c[1].BorderSpacing.CellAlignHorizontal := cc1;
+    c[4].BorderSpacing.CellAlignHorizontal := cc2;
+    c[7].BorderSpacing.CellAlignHorizontal := cc3;
+    EnableAutoSizing(FContainer);
 
-  {$IFnDEF WITHOUT_AUTOSIZE_LOCK} FContainer.DisableAutoSizing; {$ENDIF}
+    // Check if any limit applies
+    MaxW2  :=  0;   // if the column is constrained, then use the constrained width
+    if cc2 = ccaFill      then MaxW2  := 70
+    else if (cc1 = ccaFill) and (UseMaxTop=1) then MaxW2  := 75
+    else if (cc3 = ccaFill) and (UseMaxBtm=1) then MaxW2  := 75;
+
+    PrefW2 := 75;                        // PrefWidth from constrained top or bottom row
+    if UseMaxTop = 0 then PrefW2 := 90;  // PrefWidth from top row
+    if UseMaxBtm = 0 then PrefW2 := 95;  // PrefWidth from bottom row
+    if MaxW2 > 0 then PrefW2 := 0;
+
+    w1 := 25     * (1000-MaxW2) div (25+PrefW2+30);
+    w2 := PrefW2 * (1000-MaxW2) div (25+PrefW2+30)  + MaxW2;
+    w3 := 30     * (1000-MaxW2) div (25+PrefW2+30);
+    w2Top := w2;
+    if cc1 <> ccaFill then w2Top := Min(w2, 90);  // not enlarged to column - not FILLing
+    if UseMaxTop = 1  then w2Top := Min(w2, 75);  // constrained
+    w2Btm := w2;
+    if cc3 <> ccaFill then w2Btm := Min(w2, 95);  // not enlarged to column - not FILLing
+    if UseMaxBtm = 1  then w2Btm := Min(w2, 75);  // constrained
+
+    AssertApprox(w1, C[0].Width);   AssertApprox(w2Top, C[1].Width);   AssertApprox(w3, C[2].Width);
+    AssertApprox(w1, C[3].Width);   AssertEquals(70,    C[4].Width);   AssertApprox(w3, C[5].Width);
+    AssertApprox(w1, C[6].Width);   AssertApprox(w2Btm, C[7].Width);   AssertApprox(w3, C[8].Width);
+
+    AssertApprox(w1+w2, C[2].Left, 2); // check left of 3rd column
+  end;
+
+  DisableAutoSizing(FContainer);
   c[4].Constraints.MaxWidth := 900;
   c[7].Constraints.MaxWidth := 900;
   c[0].Constraints.MinWidth := 135; // highest MinWidth
   c[3].Constraints.MinWidth := 115;
   FContainer.Width := 200;
-  {$IFnDEF WITHOUT_AUTOSIZE_LOCK} FContainer.EnableAutoSizing; {$ENDIF}
+  EnableAutoSizing(FContainer);
   w1 := 135;
   w2 := 95 * (200-135) div (95+30);
   w3 := 30 * (200-135) div (95+30);
@@ -884,7 +943,6 @@ begin
          20, 95, 30],
         True);
 
-  // preferred witd
   w1 := 25 * 1000 div (25+95+30);
   w2 := 95 * 1000 div (25+95+30);
   w3 := 30 * 1000 div (25+95+30);
@@ -892,24 +950,58 @@ begin
   AssertApprox(w1, C[3].Height); AssertApprox(w2, C[4].Height); AssertApprox(w3, C[5].Height);
   AssertApprox(w1, C[6].Height); AssertApprox(w2, C[7].Height); AssertApprox(w3, C[8].Height);
 
-  {$IFnDEF WITHOUT_AUTOSIZE_LOCK} FContainer.DisableAutoSizing; {$ENDIF}
-  c[4].Constraints.MaxHeight := 70; // lowest MaxHeight
-  c[7].Constraints.MaxHeight := 75;
-  {$IFnDEF WITHOUT_AUTOSIZE_LOCK} FContainer.EnableAutoSizing; {$ENDIF}
-  w1 := 25 * (1000-70) div (25+30);
-  w2 := 70;
-  w3 := 30 * (1000-70) div (25+30);
-  AssertApprox(w1, C[0].Height); AssertEquals(w2, C[1].Height); AssertApprox(w3, C[2].Height);
-  AssertApprox(w1, C[3].Height); AssertEquals(w2, C[4].Height); AssertApprox(w3, C[5].Height);
-  AssertApprox(w1, C[6].Height); AssertEquals(w2, C[7].Height); AssertApprox(w3, C[8].Height);
+  // preferred height
+  for UseMaxTop   := 0 to 1 do  // Enable/disable MaxWidth on top row
+  for UseMaxBtm   := 0 to 1 do  // Enable/disable MaxWidth on bottom row
+  for cc1 := low(TControlCellAlign) to high(TControlCellAlign) do
+  for cc2 := low(TControlCellAlign) to high(TControlCellAlign) do
+  for cc3 := low(TControlCellAlign) to high(TControlCellAlign) do begin
+    DisableAutoSizing(FContainer);
+    // constraints for cells in column 2
+    c[1].Constraints.MaxHeight := 75 * UseMaxTop;
+    c[4].Constraints.MaxHeight := 70;       // lowest MaxHeight, always set - only applies to column if ccaFill;
+    c[7].Constraints.MaxHeight := 75 * UseMaxBtm;
+    // alignment for cells in column 2
+    c[1].BorderSpacing.CellAlignVertical := cc1;
+    c[4].BorderSpacing.CellAlignVertical := cc2;
+    c[7].BorderSpacing.CellAlignVertical := cc3;
+    EnableAutoSizing(FContainer);
 
-  {$IFnDEF WITHOUT_AUTOSIZE_LOCK} FContainer.DisableAutoSizing; {$ENDIF}
+    // Check if any limit applies
+    MaxW2  :=  0;   // if the column is constrained, then use the constrained Height
+    if cc2 = ccaFill      then MaxW2  := 70
+    else if (cc1 = ccaFill) and (UseMaxTop=1) then MaxW2  := 75
+    else if (cc3 = ccaFill) and (UseMaxBtm=1) then MaxW2  := 75;
+
+    PrefW2 := 75;                        // PrefHeight from constrained first or last column
+    if UseMaxTop = 0 then PrefW2 := 90;  // PrefHeight from first column
+    if UseMaxBtm = 0 then PrefW2 := 95;  // PrefHeight from last column
+    if MaxW2 > 0 then PrefW2 := 0;
+
+    w1 := 25     * (1000-MaxW2) div (25+PrefW2+30);
+    w2 := PrefW2 * (1000-MaxW2) div (25+PrefW2+30)  + MaxW2;
+    w3 := 30     * (1000-MaxW2) div (25+PrefW2+30);
+    w2Top := w2;
+    if cc1 <> ccaFill then w2Top := Min(w2, 90);  // not enlarged to row - not FILLing
+    if UseMaxTop = 1  then w2Top := Min(w2, 75);  // constrained
+    w2Btm := w2;
+    if cc3 <> ccaFill then w2Btm := Min(w2, 95);  // not enlarged to row - not FILLing
+    if UseMaxBtm = 1  then w2Btm := Min(w2, 75);  // constrained
+
+    AssertApprox(w1, C[0].Height);   AssertApprox(w2Top, C[1].Height);   AssertApprox(w3, C[2].Height);
+    AssertApprox(w1, C[3].Height);   AssertEquals(70,    C[4].Height);   AssertApprox(w3, C[5].Height);
+    AssertApprox(w1, C[6].Height);   AssertApprox(w2Btm, C[7].Height);   AssertApprox(w3, C[8].Height);
+
+    AssertApprox(w1+w2, C[2].Top, 2); // check Top of 3rd row
+  end;
+
+  DisableAutoSizing(FContainer);
   c[4].Constraints.MaxHeight := 900;
   c[7].Constraints.MaxHeight := 900;
   c[0].Constraints.MinHeight := 135; // highest MinHeight
   c[3].Constraints.MinHeight := 115;
   FContainer.Height := 200;
-  {$IFnDEF WITHOUT_AUTOSIZE_LOCK} FContainer.EnableAutoSizing; {$ENDIF}
+  EnableAutoSizing(FContainer);
   w1 := 135;
   w2 := 95 * (200-135) div (95+30);
   w3 := 30 * (200-135) div (95+30);
@@ -921,9 +1013,22 @@ begin
 
 end;
 
+{ TTestChildSizingWithTempAutoSizing }
+
+procedure TTestChildSizingWithTempAutoSizing.EnableAutoSizing(c: TWinControl);
+begin
+  //
+end;
+
+procedure TTestChildSizingWithTempAutoSizing.DisableAutoSizing(c: TWinControl);
+begin
+  //
+end;
+
 
 initialization
 
   RegisterTest(TTestChildSizing);
+  RegisterTest(TTestChildSizingWithTempAutoSizing);
 end.
 

@@ -1399,8 +1399,12 @@ begin
   Control:=AControl;
   MinimumSize[asboHorizontal]:=Control.Constraints.EffectiveMinWidth;
   MinimumSize[asboVertical]:=Control.Constraints.EffectiveMinHeight;
-  MaximumSize[asboHorizontal]:=Control.Constraints.EffectiveMaxWidth;
-  MaximumSize[asboVertical]:=Control.Constraints.EffectiveMaxHeight;
+  MaximumSize[asboHorizontal]:=0;
+  MaximumSize[asboVertical]  :=0;
+  if Control.BorderSpacing.CellAlignHorizontal = ccaFill then
+    MaximumSize[asboHorizontal]:=Control.Constraints.EffectiveMaxWidth;
+  if Control.BorderSpacing.CellAlignVertical = ccaFill then
+    MaximumSize[asboVertical]:=Control.Constraints.EffectiveMaxHeight;
   Control.GetPreferredSize(PreferredSize[asboHorizontal],
                            PreferredSize[asboVertical],
                            true, // without constraints
