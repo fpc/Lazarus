@@ -124,7 +124,9 @@ type
     goScrollToLastRow,   // Allow scrolling to last row (so that last row can be TopRow)
     goEditorParentColor, // Set editor's ParentColor to True
     goEditorParentFont,  // Set editor's ParentFont to True
-    goCopyWithoutTrailingLinebreak  // Copy to clipboard without trailing linebreak
+    goCopyWithoutTrailingLinebreak,  // Copy to clipboard without trailing linebreak
+    goFixedColClick,     // Issue OnClick if clicked on FixedCol area
+    goFixedRowClick      // Issue OnClick if clicked on FixedRow area
   );
   TGridOptions2 = set of TGridOption2;
 
@@ -6915,21 +6917,26 @@ begin
           if ((goHeaderPushedLook in Options) and
               (FGCache.HotGridZone in FHeaderPushZones)) then
             DoPushCell;
+          if (goFixedColClick in Options2) then
+            FIgnoreClick := False;
         end;
       end;
 
     gzFixedRows:
-      if (goRowSizing in Options) and (FCursorState=gcsRowHeightChanging) then
-        fGridState:= gsRowSizing
-      else begin
-        // RowMoving or Clicking
-        fGridState:=gsRowMoving;
-        ResetLastMove;
-        if ((goHeaderPushedLook in Options) and
-            (FGCache.HotGridZone in FHeaderPushZones)) then
-          DoPushCell;
+      begin
+        if (goRowSizing in Options) and (FCursorState=gcsRowHeightChanging) then
+          fGridState:= gsRowSizing
+        else begin
+          // RowMoving or Clicking
+          fGridState:=gsRowMoving;
+          ResetLastMove;
+          if ((goHeaderPushedLook in Options) and
+              (FGCache.HotGridZone in FHeaderPushZones)) then
+            DoPushCell;
+          if (goFixedRowClick in Options2) then
+            FIgnoreClick := False;
+        end;
       end;
-
     gzNormal:
       begin
         LockEditor;
