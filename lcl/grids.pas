@@ -6908,7 +6908,7 @@ begin
           FGCache.OldMaxTopLeft := FGCache.MaxTopLeft;
         end
         else begin
-          // ColMoving or Clicking
+          // RowMoving or Clicking
           if fGridState<>gsRowMoving then begin
             fGridState:=gsRowMoving;
             ResetLastMove;
@@ -6927,7 +6927,7 @@ begin
         if (goColSizing in Options) and (FCursorState=gcsColWidthChanging) then
           fGridState:= gsColSizing
         else begin
-          // RowMoving or Clicking
+          // ColMoving or Clicking
           fGridState:=gsColMoving;
           ResetLastMove;
           if ((goHeaderPushedLook in Options) and
