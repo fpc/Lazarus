@@ -7198,6 +7198,7 @@
       <keywords>
         <keyword>database</keyword>
         <keyword>find</keyword>
+        <keyword>magnifier</keyword>
         <keyword>search</keyword>
       </keywords>
     </icon>
@@ -7205,6 +7206,7 @@
       <keywords>
         <keyword>database</keyword>
         <keyword>find</keyword>
+        <keyword>magnifier</keyword>
         <keyword>search</keyword>
       </keywords>
     </icon>
@@ -7212,6 +7214,7 @@
       <keywords>
         <keyword>database</keyword>
         <keyword>find</keyword>
+        <keyword>magnifier</keyword>
         <keyword>search</keyword>
       </keywords>
     </icon>
@@ -7219,6 +7222,7 @@
       <keywords>
         <keyword>database</keyword>
         <keyword>find</keyword>
+        <keyword>magnifier</keyword>
         <keyword>search</keyword>
       </keywords>
     </icon>
@@ -7226,6 +7230,7 @@
       <keywords>
         <keyword>database</keyword>
         <keyword>find</keyword>
+        <keyword>magnifier</keyword>
         <keyword>search</keyword>
       </keywords>
     </icon>
@@ -7233,6 +7238,7 @@
       <keywords>
         <keyword>database</keyword>
         <keyword>find</keyword>
+        <keyword>magnifier</keyword>
         <keyword>search</keyword>
       </keywords>
     </icon>
@@ -28798,54 +28804,6 @@
         <keyword>select</keyword>
       </keywords>
     </icon>
-    <icon filename="Setup_09_16.png" width="16" height="16" style="flat">
-      <keywords>
-        <keyword>configuration</keyword>
-        <keyword>gear</keyword>
-        <keyword>settings</keyword>
-        <keyword>setup</keyword>
-      </keywords>
-    </icon>
-    <icon filename="Setup_09_24.png" width="24" height="24" style="flat">
-      <keywords>
-        <keyword>configuration</keyword>
-        <keyword>gear</keyword>
-        <keyword>settings</keyword>
-        <keyword>setup</keyword>
-      </keywords>
-    </icon>
-    <icon filename="Setup_09_32.png" width="32" height="32" style="flat">
-      <keywords>
-        <keyword>configuration</keyword>
-        <keyword>gear</keyword>
-        <keyword>settings</keyword>
-        <keyword>setup</keyword>
-      </keywords>
-    </icon>
-    <icon filename="Setup_09_36.png" width="36" height="36" style="flat">
-      <keywords>
-        <keyword>configuration</keyword>
-        <keyword>gear</keyword>
-        <keyword>settings</keyword>
-        <keyword>setup</keyword>
-      </keywords>
-    </icon>
-    <icon filename="Setup_09_48.png" width="48" height="48" style="flat">
-      <keywords>
-        <keyword>configuration</keyword>
-        <keyword>gear</keyword>
-        <keyword>settings</keyword>
-        <keyword>setup</keyword>
-      </keywords>
-    </icon>
-    <icon filename="Setup_09_64.png" width="64" height="64" style="flat">
-      <keywords>
-        <keyword>configuration</keyword>
-        <keyword>gear</keyword>
-        <keyword>settings</keyword>
-        <keyword>setup</keyword>
-      </keywords>
-    </icon>
     <icon filename="Target_02_16.png" width="16" height="16" style="flat">
       <keywords>
         <keyword>arrow</keyword>
@@ -29798,6 +29756,852 @@
         <keyword>plugin</keyword>
         <keyword>puzzle</keyword>
         <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Dark_01_16.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>dark</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Dark_01_24.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>dark</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Dark_01_32.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>dark</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Dark_01_36.png" width="36" height="36" style="flat">
+      <keywords>
+        <keyword>dark</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Dark_01_48.png" width="48" height="48" style="flat">
+      <keywords>
+        <keyword>dark</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Dark_01_64.png" width="64" height="64" style="flat">
+      <keywords>
+        <keyword>dark</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Database_23_16.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>database</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Database_23_24.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>database</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Database_23_32.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>database</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Database_23_36.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>database</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Database_23_48.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>database</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Database_23_64.png" width="64" height="64" style="classic">
+      <keywords>
+        <keyword>database</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Database_24_16.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>commit</keyword>
+        <keyword>database</keyword>
+        <keyword>download</keyword>
+        <keyword>export</keyword>
+        <keyword>file</keyword>
+        <keyword>import</keyword>
+        <keyword>save</keyword>
+        <keyword>store</keyword>
+        <keyword>upload</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Database_24_24.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>commit</keyword>
+        <keyword>database</keyword>
+        <keyword>download</keyword>
+        <keyword>export</keyword>
+        <keyword>file</keyword>
+        <keyword>import</keyword>
+        <keyword>save</keyword>
+        <keyword>store</keyword>
+        <keyword>upload</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Database_24_32.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>commit</keyword>
+        <keyword>database</keyword>
+        <keyword>download</keyword>
+        <keyword>export</keyword>
+        <keyword>file</keyword>
+        <keyword>import</keyword>
+        <keyword>save</keyword>
+        <keyword>store</keyword>
+        <keyword>upload</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Database_24_36.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>commit</keyword>
+        <keyword>database</keyword>
+        <keyword>download</keyword>
+        <keyword>export</keyword>
+        <keyword>file</keyword>
+        <keyword>import</keyword>
+        <keyword>save</keyword>
+        <keyword>store</keyword>
+        <keyword>upload</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Database_24_48.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>commit</keyword>
+        <keyword>database</keyword>
+        <keyword>download</keyword>
+        <keyword>export</keyword>
+        <keyword>file</keyword>
+        <keyword>import</keyword>
+        <keyword>save</keyword>
+        <keyword>store</keyword>
+        <keyword>upload</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Database_24_64.png" width="64" height="64" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>commit</keyword>
+        <keyword>database</keyword>
+        <keyword>download</keyword>
+        <keyword>export</keyword>
+        <keyword>file</keyword>
+        <keyword>import</keyword>
+        <keyword>save</keyword>
+        <keyword>store</keyword>
+        <keyword>upload</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Database_25_16.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>commit</keyword>
+        <keyword>database</keyword>
+        <keyword>download</keyword>
+        <keyword>export</keyword>
+        <keyword>file</keyword>
+        <keyword>import</keyword>
+        <keyword>save</keyword>
+        <keyword>store</keyword>
+        <keyword>upload</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Database_25_24.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>commit</keyword>
+        <keyword>database</keyword>
+        <keyword>download</keyword>
+        <keyword>export</keyword>
+        <keyword>file</keyword>
+        <keyword>import</keyword>
+        <keyword>save</keyword>
+        <keyword>store</keyword>
+        <keyword>upload</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Database_25_32.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>commit</keyword>
+        <keyword>database</keyword>
+        <keyword>download</keyword>
+        <keyword>export</keyword>
+        <keyword>file</keyword>
+        <keyword>import</keyword>
+        <keyword>save</keyword>
+        <keyword>store</keyword>
+        <keyword>upload</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Database_25_36.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>commit</keyword>
+        <keyword>database</keyword>
+        <keyword>download</keyword>
+        <keyword>export</keyword>
+        <keyword>file</keyword>
+        <keyword>import</keyword>
+        <keyword>save</keyword>
+        <keyword>store</keyword>
+        <keyword>upload</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Database_25_48.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>commit</keyword>
+        <keyword>database</keyword>
+        <keyword>download</keyword>
+        <keyword>export</keyword>
+        <keyword>file</keyword>
+        <keyword>import</keyword>
+        <keyword>save</keyword>
+        <keyword>store</keyword>
+        <keyword>upload</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Database_25_64.png" width="64" height="64" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>commit</keyword>
+        <keyword>database</keyword>
+        <keyword>download</keyword>
+        <keyword>export</keyword>
+        <keyword>file</keyword>
+        <keyword>import</keyword>
+        <keyword>save</keyword>
+        <keyword>store</keyword>
+        <keyword>upload</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Database_26_16.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>clock</keyword>
+        <keyword>database</keyword>
+        <keyword>time</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Database_26_24.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>clock</keyword>
+        <keyword>database</keyword>
+        <keyword>time</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Database_26_32.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>clock</keyword>
+        <keyword>database</keyword>
+        <keyword>time</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Database_26_36.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>clock</keyword>
+        <keyword>database</keyword>
+        <keyword>time</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Database_26_48.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>clock</keyword>
+        <keyword>database</keyword>
+        <keyword>time</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Database_26_64.png" width="64" height="64" style="classic">
+      <keywords>
+        <keyword>clock</keyword>
+        <keyword>database</keyword>
+        <keyword>time</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Database_27_16.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>database</keyword>
+        <keyword>find</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>search</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Database_27_24.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>database</keyword>
+        <keyword>find</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>search</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Database_27_32.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>database</keyword>
+        <keyword>find</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>search</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Database_27_36.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>database</keyword>
+        <keyword>find</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>search</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Database_27_48.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>database</keyword>
+        <keyword>find</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>search</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Database_27_64.png" width="64" height="64" style="classic">
+      <keywords>
+        <keyword>database</keyword>
+        <keyword>find</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>search</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Database_28_16.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>database</keyword>
+        <keyword>gear</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Database_28_24.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>database</keyword>
+        <keyword>gear</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Database_28_32.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>database</keyword>
+        <keyword>gear</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Database_28_36.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>database</keyword>
+        <keyword>gear</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Database_28_48.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>database</keyword>
+        <keyword>gear</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Database_28_64.png" width="64" height="64" style="classic">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>database</keyword>
+        <keyword>gear</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Light_05_16.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>bright</keyword>
+        <keyword>light</keyword>
+        <keyword>sun</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Light_05_24.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>bright</keyword>
+        <keyword>light</keyword>
+        <keyword>sun</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Light_05_32.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>bright</keyword>
+        <keyword>light</keyword>
+        <keyword>sun</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Light_05_36.png" width="36" height="36" style="flat">
+      <keywords>
+        <keyword>bright</keyword>
+        <keyword>light</keyword>
+        <keyword>sun</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Light_05_48.png" width="48" height="48" style="flat">
+      <keywords>
+        <keyword>bright</keyword>
+        <keyword>light</keyword>
+        <keyword>sun</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Light_05_64.png" width="64" height="64" style="flat">
+      <keywords>
+        <keyword>bright</keyword>
+        <keyword>light</keyword>
+        <keyword>sun</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Link_03_16.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>link</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Link_03_24.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>link</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Link_03_32.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>link</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Link_03_36.png" width="36" height="36" style="flat">
+      <keywords>
+        <keyword>link</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Link_03_48.png" width="48" height="48" style="flat">
+      <keywords>
+        <keyword>link</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Link_03_64.png" width="64" height="64" style="flat">
+      <keywords>
+        <keyword>link</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Link_04_16.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>link</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Link_04_24.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>link</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Link_04_32.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>link</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Link_04_36.png" width="36" height="36" style="flat">
+      <keywords>
+        <keyword>link</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Link_04_48.png" width="48" height="48" style="flat">
+      <keywords>
+        <keyword>link</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Link_04_64.png" width="64" height="64" style="flat">
+      <keywords>
+        <keyword>link</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Magnet_02_16.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>magnet</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Magnet_02_24.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>magnet</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Magnet_02_32.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>magnet</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Magnet_02_36.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>magnet</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Magnet_02_48.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>magnet</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Magnet_02_64.png" width="64" height="64" style="classic">
+      <keywords>
+        <keyword>magnet</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Map_05_16.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>compass</keyword>
+        <keyword>device</keyword>
+        <keyword>map</keyword>
+        <keyword>navigation</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Map_05_24.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>compass</keyword>
+        <keyword>device</keyword>
+        <keyword>map</keyword>
+        <keyword>navigation</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Map_05_32.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>compass</keyword>
+        <keyword>device</keyword>
+        <keyword>map</keyword>
+        <keyword>navigation</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Map_05_36.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>compass</keyword>
+        <keyword>device</keyword>
+        <keyword>map</keyword>
+        <keyword>navigation</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Map_05_48.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>compass</keyword>
+        <keyword>device</keyword>
+        <keyword>map</keyword>
+        <keyword>navigation</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Map_05_64.png" width="64" height="64" style="classic">
+      <keywords>
+        <keyword>compass</keyword>
+        <keyword>device</keyword>
+        <keyword>map</keyword>
+        <keyword>navigation</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Package_03_16.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>package</keyword>
+        <keyword>plus</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Package_03_24.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>package</keyword>
+        <keyword>plus</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Package_03_32.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>package</keyword>
+        <keyword>plus</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Package_03_36.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>package</keyword>
+        <keyword>plus</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Package_03_48.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>package</keyword>
+        <keyword>plus</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Package_03_64.png" width="64" height="64" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>package</keyword>
+        <keyword>plus</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Sound_08_16.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>music</keyword>
+        <keyword>sound</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Sound_08_24.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>music</keyword>
+        <keyword>sound</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Sound_08_32.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>music</keyword>
+        <keyword>sound</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Sound_08_36.png" width="36" height="36" style="flat">
+      <keywords>
+        <keyword>music</keyword>
+        <keyword>sound</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Sound_08_48.png" width="48" height="48" style="flat">
+      <keywords>
+        <keyword>music</keyword>
+        <keyword>sound</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Sound_08_64.png" width="64" height="64" style="flat">
+      <keywords>
+        <keyword>music</keyword>
+        <keyword>sound</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Storage_01_16.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>memory</keyword>
+        <keyword>rack</keyword>
+        <keyword>save</keyword>
+        <keyword>storage</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Storage_01_24.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>memory</keyword>
+        <keyword>rack</keyword>
+        <keyword>save</keyword>
+        <keyword>storage</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Storage_01_32.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>memory</keyword>
+        <keyword>rack</keyword>
+        <keyword>save</keyword>
+        <keyword>storage</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Storage_01_36.png" width="36" height="36" style="flat">
+      <keywords>
+        <keyword>memory</keyword>
+        <keyword>rack</keyword>
+        <keyword>save</keyword>
+        <keyword>storage</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Storage_01_48.png" width="48" height="48" style="flat">
+      <keywords>
+        <keyword>memory</keyword>
+        <keyword>rack</keyword>
+        <keyword>save</keyword>
+        <keyword>storage</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Storage_01_64.png" width="64" height="64" style="flat">
+      <keywords>
+        <keyword>memory</keyword>
+        <keyword>rack</keyword>
+        <keyword>save</keyword>
+        <keyword>storage</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Time_14_16.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>clock</keyword>
+        <keyword>time</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Time_14_24.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>clock</keyword>
+        <keyword>time</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Time_14_32.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>clock</keyword>
+        <keyword>time</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Time_14_36.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>clock</keyword>
+        <keyword>time</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Time_14_48.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>clock</keyword>
+        <keyword>time</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Time_14_64.png" width="64" height="64" style="classic">
+      <keywords>
+        <keyword>clock</keyword>
+        <keyword>time</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Zoom_08_16.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>magnify</keyword>
+        <keyword>zoom</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Zoom_08_24.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>magnify</keyword>
+        <keyword>zoom</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Zoom_08_32.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>magnify</keyword>
+        <keyword>zoom</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Zoom_08_36.png" width="36" height="36" style="flat">
+      <keywords>
+        <keyword>magnify</keyword>
+        <keyword>zoom</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Zoom_08_48.png" width="48" height="48" style="flat">
+      <keywords>
+        <keyword>magnify</keyword>
+        <keyword>zoom</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Zoom_08_64.png" width="64" height="64" style="flat">
+      <keywords>
+        <keyword>magnify</keyword>
+        <keyword>zoom</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Zoom_09_16.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>magnify</keyword>
+        <keyword>reduce</keyword>
+        <keyword>zoom</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Zoom_09_24.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>magnify</keyword>
+        <keyword>reduce</keyword>
+        <keyword>zoom</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Zoom_09_32.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>magnify</keyword>
+        <keyword>reduce</keyword>
+        <keyword>zoom</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Zoom_09_36.png" width="36" height="36" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>magnify</keyword>
+        <keyword>reduce</keyword>
+        <keyword>zoom</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Zoom_09_48.png" width="48" height="48" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>magnify</keyword>
+        <keyword>reduce</keyword>
+        <keyword>zoom</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Zoom_09_64.png" width="64" height="64" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>magnify</keyword>
+        <keyword>reduce</keyword>
+        <keyword>zoom</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Zoom_10_16.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>magnify</keyword>
+        <keyword>zoom</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Zoom_10_24.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>magnify</keyword>
+        <keyword>zoom</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Zoom_10_32.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>magnify</keyword>
+        <keyword>zoom</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Zoom_10_36.png" width="36" height="36" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>magnify</keyword>
+        <keyword>zoom</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Zoom_10_48.png" width="48" height="48" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>magnify</keyword>
+        <keyword>zoom</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Zoom_10_64.png" width="64" height="64" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>magnify</keyword>
+        <keyword>zoom</keyword>
       </keywords>
     </icon>
   </icons>
