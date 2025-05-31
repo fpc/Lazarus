@@ -20622,8 +20622,8 @@ TPoint instance with the physical mouse coordinates in its X and Y members.
 
 <element name="TCustomGrid.MouseToGridZone">
 <short>
-Converts the specified coordinates for the mouse pointer to the grid zone 
-where they are located.
+Converts the specified mouse coordinates to the grid zone where the 
+coordinates are located.
 </short>
 <descr>
 <p>
@@ -20633,7 +20633,7 @@ grid zone where the specified mouse pointer coordinates are located. The
 the mouse pointer is located.
 </p>
 <p>
-The return value is a <var>TGridZone</var> enumeration value determine by 
+The return value is a <var>TGridZone</var> enumeration value determined by 
 comparing the screen coordinates to the cached sizes and offsets for the grid 
 control. The screen coordinates are converted to cell coordinates when 
 available, and used to the determine the return value.
@@ -20646,7 +20646,7 @@ client area for the control.
 </dd>
 <dt>gzFixedCells</dt>
 <dd>
-X and Y are located in the fixed header cell (column 0) on the control.
+X and Y are both located in a fixed header cell (located in column 0 row 0).
 </dd>
 <dt>gzFixedRows</dt>
 <dd>
@@ -20661,9 +20661,31 @@ X and Y are located in a fixed header cell for a column on the control.
 X and Y are located in a non-fixed cell in the display area for the control.
 </dd>
 </dl>
+<p>
+MouseToGridZone is called during execution of the MouseMove method. It occurs 
+after the OnMouseMove event handler has been signalled (when assigned), and 
+before cached grid data (in GCache) are updated for the mouse movement.
+</p>
+<p>
+Use CellToGridZone to get the grid zone for a cell at a specific column and 
+row number.
+</p>
 </descr>
 <seealso>
+<link id="TCustomGrid.BorderStyle"/>
+<link id="TCustomGrid.Flat"/>
+<link id="TCustomGrid.FixedRows"/>
+<link id="TCustomGrid.FixedCols"/>
+<link id="TCustomGrid.GCache"/>
+<link id="TCustomGrid.OffsetToColRow"/>
+<link id="TCustomGrid.MouseToCell"/>
+<link id="TCustomGrid.MouseMove"/>
+<link id="TCustomGrid.CellToGridZone"/>
 <link id="TGridZone"/>
+<link id="#lcl.controls.TControl.MouseMove">TControl.MouseMove</link>
+<link id="#lcl.controls.TControl.OnMouseMove">TControl.OnMouseMove</link>
+<link id="#lcl.controls.TControl.UseRightToLeftAlignment">TControl.UseRightToLeftAlignment</link>
+<link id="#lcl.controls.TControl.BiDiMode">TControl.BiDiMode</link>
 </seealso>
 </element>
 <element name="TCustomGrid.MouseToGridZone.Result">
