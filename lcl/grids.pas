@@ -6903,14 +6903,14 @@ begin
 
     gzFixedCols:
       begin
-        if (goColSizing in Options) and (FCursorState=gcsColWidthChanging) then begin
-          fGridState:= gsColSizing;
+        if (goRowSizing in Options) and (FCursorState=gcsRowHeightChanging) then begin
+          fGridState:= gsRowSizing;
           FGCache.OldMaxTopLeft := FGCache.MaxTopLeft;
         end
         else begin
           // ColMoving or Clicking
-          if fGridState<>gsColMoving then begin
-            fGridState:=gsColMoving;
+          if fGridState<>gsRowMoving then begin
+            fGridState:=gsRowMoving;
             ResetLastMove;
           end;
 
@@ -6924,11 +6924,11 @@ begin
 
     gzFixedRows:
       begin
-        if (goRowSizing in Options) and (FCursorState=gcsRowHeightChanging) then
-          fGridState:= gsRowSizing
+        if (goColSizing in Options) and (FCursorState=gcsColWidthChanging) then
+          fGridState:= gsColSizing
         else begin
           // RowMoving or Clicking
-          fGridState:=gsRowMoving;
+          fGridState:=gsColMoving;
           ResetLastMove;
           if ((goHeaderPushedLook in Options) and
               (FGCache.HotGridZone in FHeaderPushZones)) then
