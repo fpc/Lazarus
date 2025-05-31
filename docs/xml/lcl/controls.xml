@@ -19200,7 +19200,7 @@ Defines how child controls are resized / aligned.
 <p>
 <var>TChildControlResizeStyle</var> is an enumerated type with values that 
 represent the resizing styles used to resize and position child controls in a 
-tabular arrangement.
+grid (table) layout.
 </p>
 <p>
 TChildControlResizeStyle the type used for the EnlargeHorizontal, 
@@ -19213,64 +19213,76 @@ child controls on a parent when its ChildSizing.Layout property set to a value
 other than clNone. The resizing algorithms apply to child controls which do 
 <b>not</b> have settings in their Align, Anchors, or AnchorSide properties 
 which determine the position / alignment for the child control. Anchored or 
-aligned controls are excluded from the tabular layout.
+aligned controls are excluded from the grid layout.
 </p>
+<p>
+There are different algorithm for sizing the rows and columns in the grid.
+All algorithms base their calculations on the "PreferredSize" of the child-controls.
+This is usually the size to which the controls would autosize. For controls 
+that have constraints, the PreferredSize is the size after applying those constraints. 
+(E.g., a TLabel with 20 pixel of text, but a MinSize of 50 will report a PreferredSize of 50)<br/>
+For each column or row in the grid, all child-controls in that column/row are checked for their PreferredSize. 
+Each columns/rows size is then based on the largest PreferredSize it contains.
+</p>
+<p>
+Rows/Columns will not shrink below the MinWidth/MinHeight of any child that they contain, even if the algorithm would compute a lower value.
+Any algorithm will instead shrink other Rows/Columns more aggressively. 
+As a result other row/columns can become invisible due to being zero sized. 
+Also the grid may become wider than the control in which it is shown and will be cut off or need scrolling.<br/>
+Rows/Columns will shrink (even if being otherwise enlarged) to the smallest MaxWidth/MaxHeight of any child they contain, if - and only if - that child has
+CellAlignHorizontal/CellAlignVertical = ccaFill. For other alignments rows/cells will grow based on the PreferredSize. 
+If the PreferredSize is the constrained Maximum, then the cell will still be scaled according to the algorithm, but the child will not fill the entire cell.
+If rows/columns are constrained by maximum values, then the grid may not fill the entire control in which it is shown.
+</p>
+<p>
+All algorithms (except crsAnchorAligning) distribute the entire available parent's ClientArea to the grid for the children.
+Space for each child-ontrols' BorderSpacing and the parent's ChildSizing's spacing will be put around and between the cells.
+<br/>
+See TControl.BorderSpacing and TControl.ChildSizing for more information.
+<br/>
+When Constraints.MinWidth/MinHeight is used, the grid can become larger than the ClientArea. 
+And when Constraints.MaxWidth/MaxHeight is used together with ccaFill, then the grid may end up smaller.
+</p>
+<p>
+Conflicts between MaxWidth and MinWidth are solved by using the MaxWidth.
+</p>
+</p>
+Child-controls will be sized to their cells dimension if they have BorderSpacing.CellAlignHorizontal/CellAlignVertical = ccaFill.
+Otherwise they will keep their preferred size and be placed inside the cell according to the specified position in CellAlign.
+<p>
 <dl>
 <dt>crsAnchorAligning</dt>
 <dd>
 <p>
-Uses a static layout for normally anchored controls.
+Uses a static layout for the child-controls. Each cell will have exactly the size of the 
+largest PreferredWidth and largest PreferredHeight of any child in its row or column.
+There is no scaling taking place.
 </p>
 <p>
-crsAnchorAligning examines child controls to get the preferred size and any 
-size constraints (minimum or maximum) for each. Preferred size determines the 
-dimensions for a control. Size constraints determine whether the control size 
-is adjusted to the corresponding minimum or maximum value. The child sizing 
-Layout in the parent control determines the order and direction the child 
-controls are arranged in the tabular layout. The larger of the derived control 
-sizes is used for all controls in the same column or row in the tabular layout.
-</p>
-<p>
-Values from the BorderSpacing and ChildSizing properties in the parent control 
-determine where the control matrix is displayed and the spacing used between 
-adjacent controls. See TControl.BorderSpacing and TControl.ChildSizing for more 
-information.
+crsAnchorAligning will not shrink any controls, since each cell will always be big enough to hold
+the control at its preferred size.
+crsAnchorAligning may grow a control, if other controls in the same row/column have a bigger preferred size 
+and the control itself has an CellAlign of ccaFill. 
+Cells will not grow past the biggest preferred size of any control in each cells' column or row.
 </p>
 <p>
 The derived sizes for child controls and their positions do not change when the 
 parent control is resized. This algorithm does not try to fill unused 
 space on the parent control. Unused space is displayed to right of or beneath 
-the control matrix.
+the control grid. The grid may also exceed the available space of the parent control.
 </p>
 </dd>
 <dt>crsScaleChilds</dt>
 <dd>
 <p>
-Scales child controls with fixed spacing between the controls.
+Scales child keeps the relative proportion between the children sizes. 
 </p>
 <p>
-crsScaleChilds examines child controls to get the preferred size and any 
-size constraints (minimum or maximum) for each. Preferred size determines the 
-dimensions for a control. Size constraints determine whether the control size 
-is adjusted to the corresponding minimum or maximum value. The derived control 
-size is the size to which it would autosize if it was not anchored / 
-size-controlled.
-</p>
-<p>
-The child sizing Layout in the parent control determines the order and 
-direction the child controls are arranged in the tabular layout. Values from 
-the BorderSpacing and ChildSizing properties in the parent control determine 
-where the control matrix is displayed and the spacing used between adjacent 
-controls. See TControl.BorderSpacing and TControl.ChildSizing for more
-information.
-</p>
-<p>
-The larger of the derived control sizes is used for all controls in the same 
-column or row in the tabular layout. The size for a column or row is scaled to 
-fill the unused space in the parent while keeping the ratio for the derived 
-size relative to the size of the parent control. A size constraint present in a 
-column or a row is enforced in the tabular layout. Adjacent controls are scaled 
-to fill unused space after the size constraint has been applied.
+crsScaleChilds scales the size of each column or row to 
+fit the space in the parent, while keeping the ratio of the rows/columns 
+equal to the ratio of the PreferredSizes
+<br/>
+The proportional ratio may not be kept, if child controls are limited by size constraints.
 </p>
 <p>
 For a horizontal left-to-right layout with 3 controls A, B, and C:
@@ -19302,12 +19314,12 @@ Enlarge or shrink child controls equally, i.e. by the same number of pixels.
 </p>
 <p>
 crsHomogenousChildResize applies a homogenous size to child controls in the 
-tabular layout. Child controls are resized to their preferred size by default 
-and use the controls per line and spacing defined in the ChildSizing for the 
-parent control. Size constraints in child controls are used when calculating 
-the display size for the controls in the same column or row. Unused space in 
-the client area for a parent control is distributed equally to the size for 
-each child control which is not size constrained.
+grid layout. All children are grown/shrunk by the same number of pixels.
+<br/>
+The algorithm takes the difference between the parents ClientSize and the sum of
+all PreferredSizes. This difference (free or missing space in the parent control)
+is then divided by the number of rows/columns and the correct fraction of the
+space is added/subtracted to/from the size of each cell.
 </p>
 <p>
 For a horizontal left-to-right layout with 3 controls A, B, and C:
@@ -19339,13 +19351,13 @@ Enlarges the space between child controls equally.
 </p>
 <p>
 crsHomogenousSpaceResize applies a uniform number of pixels as horizontal or 
-vertical spacing between child controls on the same column or row. The size for 
-the controls are derived using the preferred size and any size constraints 
-(minimum or maximum) for the child controls. The collective derived size is 
-applied to all controls in the same column or row. The remaining space on the 
-parent is allocated equally as spacing before, between, and after each column 
-or row in the tabular layout - including on the left / right or top / bottom 
-edges of the Control.
+vertical spacing between child controls on the same column or row. 
+<br/>
+The algorithm takes the difference between the parents ClientSize and the sum of
+all PreferredSizes. This difference (free or missing space in the parent control)
+is then divided by the number of rows/columns and the correct fraction of the
+space is added/subtracted to/from the spacing between the cells and the spacing 
+at the border of the grid.
 </p>
 <p>
 For a horizontal left-to-right layout with 3 controls A, B, and C:
@@ -19487,17 +19499,30 @@ column is started.
 
 <element name="TControlChildSizing">
 <short>
-Contains settings which determine how child controls are sized and positioned 
-on their parent.
+Provides settings to layout child-controls into a grid (table) layout.
 </short>
 <descr>
 <p>
 <var>TControlChildSizing</var> is a <var>TPersistent</var> descendant which 
 provides properties and methods used to layout, align, and resize child 
-controls relative to their parent control. Properties are provided which define 
-the horizontal and vertical spacing between controls, the preferred direction 
-controls are aligned, and whether controls are scaled or resized to fill the 
-parent control.
+controls fitting into a grid on their parent control.
+<br/>
+<var>TControlChildSizing</var> also provided "Spacing" settings. 
+Those are applied to the grid <b>and also</b> to anchored or aligned controls
+outside the grid.
+</p>
+<p>
+<var>Layout</var> and <var>ControlsPerLine</var> control if the grid is used,
+how it is sized and in which order the child-controls are placed into the grid.
+<br/>
+<var>EnlargeHorizontal</var>, <var>EnlargeVerticalHorizontal</var>,
+<var>ShrinkHorizontal</var>, <var>ShrinkVerticalHorizontal</var> define 
+how the cells of the grid are sized. Child-controls are then adjusted to that
+size depending on their BorderSpacing.CellAlignHorizontal/CellAlignVertical properties.
+<br/>
+<var>HorizontalSpacing</var>, <var>VerticalSpacingHorizontalSpacing</var>, 
+<var>LeftRightSpacing</var>, <var>TopBottomSpacing</var> can be used to add
+space between and around the cells.
 </p>
 <p>
 See <link id="TChildControlResizeStyle"/> and <link 
@@ -24619,22 +24644,34 @@ The intended ClientWidth, as sent to the widgetset class.
 
 <element name="TWinControl.ChildSizing">
 <short>
-Provides settings used to resize and align child controls using a tabular 
-layout.
+Provides a grid (table) layout for the children of this control.
 </short>
 <descr>
 <p>
-<var>ChildSizing</var> is a <var>TControlChildSizing</var> property which 
-contains properties and methods used to resize and layout the child controls on 
-a control instance. ChildSizing provides an alternative to using Anchors and 
-Align properties to position and resize child controls. It allows a dynamic 
-tabular (or matrix) layout to be applied to its child Controls.
+<var>ChildSizing</var> provides access to the <var>TControlChildSizing</var>
+properties and methods of the control.
+Those manage how the child-controls are resized and placed into a grid layout.<br/>
+ChildSizing is an alternative to using Anchors and Align properties to 
+position and resize child controls.
 </p>
 <p>
-Use the Layout property to specify both the order and direction child controls 
-are aligned, and which algorithm is used to size and position child controls. 
-Values in ChildSizing are used and applied when its Layout property is set to a 
-value other than cclNone.
+Use the <link id="TControlChildrenLayout">Layout</link> 
+property to enable the grid and specify the order and direction 
+in which child controls are aligned. This affects how 
+TControlChildSizing.ControlsPerLine determines the size of grid setting 
+either the amount of columns or rows.
+The default is cclNone and disables the grid layout.
+<br/>
+Choose a <link id="TChildControlResizeStyle">resize algorithm</link> for 
+shrinking or growing children's width and height. This does nothing 
+when cclNone is chosen.
+<br/>
+Spacing between and around the cells of the grid can be set as part of the
+TControlChildSizing. It can also be set by using the BorderSpacing of 
+individual child-controls. The TControlChildSizing properties for spacing
+are also used when the layout is set to cclNone. They affect child-controls
+that are anchored or aligned in a similar manner as setting the child's 
+BorderSpacing.
 </p>
 <p>
 See <link id="TControlChildSizing">TControlChildSizing</link> for more 
@@ -24662,8 +24699,12 @@ Behavior modified in LCL version 3.4 to use the adjusted client rectangle when
 controls are aligned.
 </version>
 <version>
-Implementation refactored in LCL version 4.0. This may result in behavior that 
-differs from previous LCL versions.
+Implementation refactored in LCL version 4.0. This may result in behaviour that 
+differs from previous LCL versions.<br/>
+Children with Constraints.MaxWidth/MaxHeight now limit the size of their column/row.
+In version 4.2 that was fixed to only apply for children with Constraints.MaxWidth/MaxHeight
+and BorderSpacing.CellAlignHorizontal/CellAlignVertical = ccaFill. Values other than ccaFill 
+can be used to get the layout behaviour of version 3
 </version>
 <seealso>
 <link id="TWinControl.ControlCount"/>
