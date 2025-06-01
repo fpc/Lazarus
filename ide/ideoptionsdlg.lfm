@@ -112,7 +112,6 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
         OnCollapsed = CategoryTreeCollapsed
         OnCustomDrawItem = CategoryTreeCustomDrawItem
         OnExpanded = CategoryTreeExpanded
-        OnKeyDown = CategoryTreeKeyDown
       end
     end
   end
