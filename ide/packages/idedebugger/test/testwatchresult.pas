@@ -108,7 +108,23 @@ type
     end;
     TBuildInfoArray = array of TBuildInfo;
   protected
+    // speed up / don't compute the fail message if not needed
+    class procedure AssertEquals(const AMessage: string; Expected, Actual: Ansistring); overload;
+    class procedure AssertEquals(const AMessage: string; Expected, Actual: integer); overload;
+    class procedure AssertEquals(const AMessage: string; Expected, Actual: int64); overload;
+    class procedure AssertEquals(const AMessage: string; Expected, Actual: QWord); overload;
+    class procedure AssertEquals(const AMessage: string; Expected, Actual: boolean); overload;
+
+    class procedure AssertTrue(const ABaseMsg, AMessage: string; ACond: boolean); overload;
+    class procedure AssertEquals(const ABaseMsg, AMessage: string; Expected, Actual: Ansistring);
+    class procedure AssertEquals(const ABaseMsg, AMessage: string; Expected, Actual: integer);
+    class procedure AssertEquals(const ABaseMsg, AMessage: string; Expected, Actual: int64);
+    class procedure AssertEquals(const ABaseMsg, AMessage: string; Expected, Actual: QWord);
+    class procedure AssertEquals(const ABaseMsg, AMessage: string; Expected, Actual: boolean);
+
+  protected
     class procedure AssertEquals(const AMessage: string; Expected, Actual: TWatchResultDataKind); overload;
+    class procedure AssertEquals(const ABaseMsg, AMessage: string; Expected, Actual: TWatchResultDataKind); overload;
 
     procedure AssertValKind(const AMessage: string; IdeRes: TWatchResultData;
       ExpKind: TWatchResultDataKind);
@@ -369,23 +385,108 @@ end;
 
 { TTestBaseIdeDebuggerWatchResult }
 
+class procedure TTestBaseIdeDebuggerWatchResult.AssertEquals(const AMessage: string; Expected,
+  Actual: Ansistring);
+begin
+  if Expected = Actual then exit;
+  inherited AssertEquals(AMessage, Expected, Actual);
+end;
+
+class procedure TTestBaseIdeDebuggerWatchResult.AssertEquals(const AMessage: string; Expected,
+  Actual: integer);
+begin
+  if Expected = Actual then exit;
+  inherited AssertEquals(AMessage, Expected, Actual);
+end;
+
+class procedure TTestBaseIdeDebuggerWatchResult.AssertEquals(const AMessage: string; Expected,
+  Actual: int64);
+begin
+  if Expected = Actual then exit;
+  inherited AssertEquals(AMessage, Expected, Actual);
+end;
+
+class procedure TTestBaseIdeDebuggerWatchResult.AssertEquals(const AMessage: string; Expected,
+  Actual: QWord);
+begin
+  if Expected = Actual then exit;
+  inherited AssertEquals(AMessage, Expected, Actual);
+end;
+
+class procedure TTestBaseIdeDebuggerWatchResult.AssertEquals(const AMessage: string; Expected,
+  Actual: boolean);
+begin
+  if Expected = Actual then exit;
+  inherited AssertEquals(AMessage, Expected, Actual);
+end;
+
+class procedure TTestBaseIdeDebuggerWatchResult.AssertTrue(const ABaseMsg, AMessage: string;
+  ACond: boolean);
+begin
+  if ACond then exit;
+  inherited AssertTrue(ABaseMsg+AMessage, ACond);
+end;
+
+class procedure TTestBaseIdeDebuggerWatchResult.AssertEquals(const ABaseMsg, AMessage: string;
+  Expected, Actual: Ansistring);
+begin
+  if Expected = Actual then exit;
+  inherited AssertEquals(ABaseMsg+AMessage, Expected, Actual);
+end;
+
+class procedure TTestBaseIdeDebuggerWatchResult.AssertEquals(const ABaseMsg, AMessage: string;
+  Expected, Actual: integer);
+begin
+  if Expected = Actual then exit;
+  inherited AssertEquals(ABaseMsg+AMessage, Expected, Actual);
+end;
+
+class procedure TTestBaseIdeDebuggerWatchResult.AssertEquals(const ABaseMsg, AMessage: string;
+  Expected, Actual: int64);
+begin
+  if Expected = Actual then exit;
+  inherited AssertEquals(ABaseMsg+AMessage, Expected, Actual);
+end;
+
+class procedure TTestBaseIdeDebuggerWatchResult.AssertEquals(const ABaseMsg, AMessage: string;
+  Expected, Actual: QWord);
+begin
+  if Expected = Actual then exit;
+  inherited AssertEquals(ABaseMsg+AMessage, Expected, Actual);
+end;
+
+class procedure TTestBaseIdeDebuggerWatchResult.AssertEquals(const ABaseMsg, AMessage: string;
+  Expected, Actual: boolean);
+begin
+  if Expected = Actual then exit;
+  inherited AssertEquals(ABaseMsg+AMessage, Expected, Actual);
+end;
+
 class procedure TTestBaseIdeDebuggerWatchResult.AssertEquals(
   const AMessage: string; Expected, Actual: TWatchResultDataKind);
 begin
+  if Expected = Actual then exit;
   AssertEquals(AMessage, dbgs(Expected), dbgs(Actual));
+end;
+
+class procedure TTestBaseIdeDebuggerWatchResult.AssertEquals(const ABaseMsg, AMessage: string;
+  Expected, Actual: TWatchResultDataKind);
+begin
+  if Expected = Actual then exit;
+  AssertEquals(ABaseMsg + AMessage, dbgs(Expected), dbgs(Actual));
 end;
 
 procedure TTestBaseIdeDebuggerWatchResult.AssertValKind(const AMessage: string;
   IdeRes: TWatchResultData; ExpKind: TWatchResultDataKind);
 begin
-  AssertTrue(AMessage+': not nil', IdeRes <> nil);
+  AssertTrue(AMessage,': not nil', IdeRes <> nil);
   AssertEquals(AMessage, ExpKind, IdeRes.ValueKind);
 end;
 
 procedure TTestBaseIdeDebuggerWatchResult.AssertTypeName(const AMessage: string;
   IdeRes: TWatchResultData; ExpTypeName: String);
 begin
-  AssertTrue(AMessage+': not nil', IdeRes <> nil);
+  AssertTrue(AMessage,': not nil', IdeRes <> nil);
   if ExpTypeName <> #1 then
     AssertEquals(AMessage, ExpTypeName, IdeRes.TypeName);
 end;
@@ -397,12 +498,12 @@ procedure TTestBaseIdeDebuggerWatchResult.AssertNumData(const AMessage: string;
 var
   t: TWatchResultData;
 begin
-  AssertTrue(AMessage+': not nil', IdeRes <> nil);
-  AssertEquals(AMessage + ': VKind',  ExpKind,    IdeRes.ValueKind);
-  AssertEquals(AMessage + ': Int64',  ExpInt64,   IdeRes.AsInt64);
-  AssertEquals(AMessage + ': QWord',  ExpQW,      IdeRes.AsQWord);
-  AssertEquals(AMessage + ': String', ExpStr,     IdeRes.AsString);
-  AssertEquals(AMessage + ': BSize',  ExpNumByte, IdeRes.ByteSize);
+  AssertTrue(AMessage, ': not nil', IdeRes <> nil);
+  AssertEquals(AMessage, ': VKind',  ExpKind,    IdeRes.ValueKind);
+  AssertEquals(AMessage, ': Int64',  ExpInt64,   IdeRes.AsInt64);
+  AssertEquals(AMessage, ': QWord',  ExpQW,      IdeRes.AsQWord);
+  AssertEquals(AMessage, ': String', ExpStr,     IdeRes.AsString);
+  AssertEquals(AMessage, ': BSize',  ExpNumByte, IdeRes.ByteSize);
 
   AssertTypeName(AMessage + ': TypeName',  IdeRes, ExpTypeName);
 
@@ -432,9 +533,9 @@ procedure TTestBaseIdeDebuggerWatchResult.AssertErrData(const AMessage: string;
 var
   t: TWatchResultData;
 begin
-  AssertTrue(AMessage+': not nil', IdeRes <> nil);
-  AssertEquals(AMessage + ': VKind', rdkError, IdeRes.ValueKind);
-  AssertEquals(AMessage + ': Err',   ExpErr,   IdeRes.AsString);
+  AssertTrue(AMessage, ': not nil', IdeRes <> nil);
+  AssertEquals(AMessage, ': VKind', rdkError, IdeRes.ValueKind);
+  AssertEquals(AMessage, ': Err',   ExpErr,   IdeRes.AsString);
 
   if ASaveLoad and not SkipSubTestSave then begin
     t := SaveLoad(IdeRes);
@@ -454,9 +555,9 @@ procedure TTestBaseIdeDebuggerWatchResult.AssertPrePrintData(
 var
   t: TWatchResultData;
 begin
-  AssertTrue(AMessage+': not nil', IdeRes <> nil);
-  AssertEquals(AMessage + ': VKind',  rdkPrePrinted, IdeRes.ValueKind);
-  AssertEquals(AMessage + ': String', ExpStr,        IdeRes.AsString);
+  AssertTrue(AMessage, ': not nil', IdeRes <> nil);
+  AssertEquals(AMessage, ': VKind',  rdkPrePrinted, IdeRes.ValueKind);
+  AssertEquals(AMessage, ': String', ExpStr,        IdeRes.AsString);
 
   AssertTypeName(AMessage + ': TypeName',  IdeRes, ExpTypeName);
 
@@ -478,10 +579,10 @@ procedure TTestBaseIdeDebuggerWatchResult.AssertPointerData(const AMessage: stri
 var
   t: TWatchResultData;
 begin
-  AssertTrue(AMessage+': not nil', IdeRes <> nil);
-  AssertEquals(AMessage + ': VKind',    rdkPointerVal, IdeRes.ValueKind);
-  AssertEquals(AMessage + ': Addr',     ExpAddr,       IdeRes.AsQWord);
-  AssertEquals(AMessage + ': HasDeref', ExpHasDeref,   IdeRes.DerefData<>nil);
+  AssertTrue(AMessage, ': not nil', IdeRes <> nil);
+  AssertEquals(AMessage, ': VKind',    rdkPointerVal, IdeRes.ValueKind);
+  AssertEquals(AMessage, ': Addr',     ExpAddr,       IdeRes.AsQWord);
+  AssertEquals(AMessage, ': HasDeref', ExpHasDeref,   IdeRes.DerefData<>nil);
 
   AssertTypeName(AMessage + ': TypeName',  IdeRes, ExpTypeName);
 
@@ -504,10 +605,10 @@ procedure TTestBaseIdeDebuggerWatchResult.AssertPointerToPrePrintData(
 var
   t: TWatchResultData;
 begin
-  AssertTrue(AMessage+': not nil', IdeRes <> nil);
-  AssertEquals(AMessage + ': VKind',    rdkPointerVal, IdeRes.ValueKind);
-  AssertEquals(AMessage + ': Addr',     ExpAddr,       IdeRes.AsQWord);
-  AssertEquals(AMessage + ': HasDeref', True,          IdeRes.DerefData<>nil);
+  AssertTrue(AMessage, ': not nil', IdeRes <> nil);
+  AssertEquals(AMessage, ': VKind',    rdkPointerVal, IdeRes.ValueKind);
+  AssertEquals(AMessage, ': Addr',     ExpAddr,       IdeRes.AsQWord);
+  AssertEquals(AMessage, ': HasDeref', True,          IdeRes.DerefData<>nil);
 
   AssertTypeName(AMessage + ': TypeName',  IdeRes, ExpTypeName);
 
@@ -532,10 +633,10 @@ procedure TTestBaseIdeDebuggerWatchResult.AssertPointerToErrData(
 var
   t: TWatchResultData;
 begin
-  AssertTrue(AMessage+': not nil', IdeRes <> nil);
-  AssertEquals(AMessage + ': VKind',    rdkPointerVal, IdeRes.ValueKind);
-  AssertEquals(AMessage + ': Addr',     ExpAddr,       IdeRes.AsQWord);
-  AssertEquals(AMessage + ': HasDeref', True,          IdeRes.DerefData<>nil);
+  AssertTrue(AMessage, ': not nil', IdeRes <> nil);
+  AssertEquals(AMessage, ': VKind',    rdkPointerVal, IdeRes.ValueKind);
+  AssertEquals(AMessage, ': Addr',     ExpAddr,       IdeRes.AsQWord);
+  AssertEquals(AMessage, ': HasDeref', True,          IdeRes.DerefData<>nil);
 
   AssertTypeName(AMessage + ': TypeName',  IdeRes, ExpTypeName);
 
@@ -560,10 +661,10 @@ procedure TTestBaseIdeDebuggerWatchResult.AssertPointerToSignedNumData(
 var
   t: TWatchResultData;
 begin
-  AssertTrue(AMessage+': not nil', IdeRes <> nil);
-  AssertEquals(AMessage + ': VKind',    rdkPointerVal, IdeRes.ValueKind);
-  AssertEquals(AMessage + ': Addr',     ExpAddr,       IdeRes.AsQWord);
-  AssertEquals(AMessage + ': HasDeref', True,          IdeRes.DerefData<>nil);
+  AssertTrue(AMessage, ': not nil', IdeRes <> nil);
+  AssertEquals(AMessage, ': VKind',    rdkPointerVal, IdeRes.ValueKind);
+  AssertEquals(AMessage, ': Addr',     ExpAddr,       IdeRes.AsQWord);
+  AssertEquals(AMessage, ': HasDeref', True,          IdeRes.DerefData<>nil);
 
   AssertTypeName(AMessage + ': TypeName',  IdeRes, ExpTypeName);
 
@@ -588,10 +689,10 @@ procedure TTestBaseIdeDebuggerWatchResult.AssertPtrPointerToErrData(
 var
   t: TWatchResultData;
 begin
-  AssertTrue(AMessage+': not nil', IdeRes <> nil);
-  AssertEquals(AMessage + ': VKind',    rdkPointerVal, IdeRes.ValueKind);
-  AssertEquals(AMessage + ': Addr',     ExpAddr,       IdeRes.AsQWord);
-  AssertEquals(AMessage + ': HasDeref', True,          IdeRes.DerefData<>nil);
+  AssertTrue(AMessage, ': not nil', IdeRes <> nil);
+  AssertEquals(AMessage, ': VKind',    rdkPointerVal, IdeRes.ValueKind);
+  AssertEquals(AMessage, ': Addr',     ExpAddr,       IdeRes.AsQWord);
+  AssertEquals(AMessage, ': HasDeref', True,          IdeRes.DerefData<>nil);
 
   AssertTypeName(AMessage + ': TypeName',  IdeRes, ExpTypeName);
 
@@ -617,10 +718,10 @@ procedure TTestBaseIdeDebuggerWatchResult.AssertPtrPointerToSignedNumData(
 var
   t: TWatchResultData;
 begin
-  AssertTrue(AMessage+': not nil', IdeRes <> nil);
-  AssertEquals(AMessage + ': VKind',    rdkPointerVal, IdeRes.ValueKind);
-  AssertEquals(AMessage + ': Addr',     ExpAddr,       IdeRes.AsQWord);
-  AssertEquals(AMessage + ': HasDeref', True,          IdeRes.DerefData<>nil);
+  AssertTrue(AMessage, ': not nil', IdeRes <> nil);
+  AssertEquals(AMessage, ': VKind',    rdkPointerVal, IdeRes.ValueKind);
+  AssertEquals(AMessage, ': Addr',     ExpAddr,       IdeRes.AsQWord);
+  AssertEquals(AMessage, ': HasDeref', True,          IdeRes.DerefData<>nil);
 
   AssertTypeName(AMessage + ': TypeName',  IdeRes, ExpTypeName);
 
@@ -710,10 +811,10 @@ procedure TTestBaseIdeDebuggerWatchResult.AssertPtrArrayOfNumData(
 var
   t: TWatchResultData;
 begin
-  AssertTrue(AMessage+': not nil', IdeRes <> nil);
-  AssertEquals(AMessage + ': VKind',    rdkPointerVal, IdeRes.ValueKind);
-  AssertEquals(AMessage + ': Addr',     1500,       IdeRes.AsQWord);
-  AssertEquals(AMessage + ': HasDeref', True,          IdeRes.DerefData<>nil);
+  AssertTrue(AMessage, ': not nil', IdeRes <> nil);
+  AssertEquals(AMessage, ': VKind',    rdkPointerVal, IdeRes.ValueKind);
+  AssertEquals(AMessage, ': Addr',     1500,       IdeRes.AsQWord);
+  AssertEquals(AMessage, ': HasDeref', True,          IdeRes.DerefData<>nil);
 
   AssertTypeName(AMessage + ': TypeName',  IdeRes, ExpTypeName);
 
@@ -741,16 +842,16 @@ procedure TTestBaseIdeDebuggerWatchResult.AssertArrayData(
 var
   t: TWatchResultData;
 begin
-  AssertTrue(AMessage+': not nil', IdeRes <> nil);
-  AssertEquals(AMessage + ': VKind',    rdkArray, IdeRes.ValueKind);
-  AssertEquals(AMessage + ': Type',     ord(ExpArrayType),  ord(IdeRes.ArrayType));
-  AssertEquals(AMessage + ': Len',      ExpLength,          IdeRes.Count);
+  AssertTrue(AMessage, ': not nil', IdeRes <> nil);
+  AssertEquals(AMessage, ': VKind',    rdkArray, IdeRes.ValueKind);
+  AssertEquals(AMessage, ': Type',     ord(ExpArrayType),  ord(IdeRes.ArrayType));
+  AssertEquals(AMessage, ': Len',      ExpLength,          IdeRes.Count);
   case ExpArrayType of
     datUnknown: ;
     datDynArray:
-      AssertEquals(AMessage + ': Addr', ExpLowIdxOrAddr,  IdeRes.DataAddress);
+      AssertEquals(AMessage, ': Addr', ExpLowIdxOrAddr,  IdeRes.DataAddress);
     datStatArray:
-      AssertEquals(AMessage + ': Low', int64(ExpLowIdxOrAddr),  IdeRes.LowBound);
+      AssertEquals(AMessage, ': Low', int64(ExpLowIdxOrAddr),  IdeRes.LowBound);
   end;
 
   AssertTypeName(AMessage + ': TypeName',  IdeRes, ExpTypeName);
@@ -776,22 +877,22 @@ var
   t: TWatchResultData;
   FldData: TWatchResultDataFieldInfo;
 begin
-  AssertTrue(AMessage+': not nil', IdeRes <> nil);
-  AssertTrue(AMessage+': in range', IdeRes.FieldCount > TestFieldNum);
+  AssertTrue(AMessage, ': not nil', IdeRes <> nil);
+  AssertTrue(AMessage, ': in range', IdeRes.FieldCount > TestFieldNum);
 
   FldData := IdeRes.Fields[TestFieldNum];
   if not aOnlyFieldData then
-    AssertTrue(AMessage+': Field not nil', FldData.Field <> nil);
-  AssertTrue(AMessage+': Owner not nil', FldData.Owner <> nil);
+    AssertTrue(AMessage, ': Field not nil', FldData.Field <> nil);
+  AssertTrue(AMessage, ': Owner not nil', FldData.Owner <> nil);
 
-  AssertEquals(AMessage+': Field Name',       ExpName, FldData.FieldName);
-  AssertEquals(AMessage+': Field Visibility', ord(ExpVisibilty), ord(FldData.FieldVisibility));
-  AssertTrue  (AMessage+': Field Flags',      ExpFlags = FldData.FieldFlags);
+  AssertEquals(AMessage, ': Field Name',       ExpName, FldData.FieldName);
+  AssertEquals(AMessage, ': Field Visibility', ord(ExpVisibilty), ord(FldData.FieldVisibility));
+  AssertTrue  (AMessage,': Field Flags',      ExpFlags = FldData.FieldFlags);
 
   if (ExpKind <> rdkUnknown) and
      (not aOnlyFieldData)
   then
-    AssertEquals(AMessage + ': VKind',    ExpKind, FldData.Field.ValueKind);
+    AssertEquals(AMessage, ': VKind',    ExpKind, FldData.Field.ValueKind);
 
   AssertTypeName(AMessage + ': Anch TypeName',   FldData.Owner, ExpAnchTypeName);
   if (not aOnlyFieldData) and
@@ -821,15 +922,15 @@ procedure TTestBaseIdeDebuggerWatchResult.AssertStructData(const AMessage: strin
 var
   t: TWatchResultData;
 begin
-  AssertTrue(AMessage+': not nil', IdeRes <> nil);
-  AssertEquals(AMessage + ': VKind',    rdkStruct, IdeRes.ValueKind);
-  AssertEquals(AMessage + ': Type',     ord(ExpType),  ord(IdeRes.StructType));
+  AssertTrue(AMessage, ': not nil', IdeRes <> nil);
+  AssertEquals(AMessage, ': VKind',    rdkStruct, IdeRes.ValueKind);
+  AssertEquals(AMessage, ': Type',     ord(ExpType),  ord(IdeRes.StructType));
 
   if ExpType in [dstClass, dstInterface] then
-    AssertEquals(AMessage + ': Addr',     ExpAddr,          IdeRes.DataAddress);
+    AssertEquals(AMessage, ': Addr',     ExpAddr,          IdeRes.DataAddress);
 
   if ExpFieldCnt >= 0 then
-    AssertEquals(AMessage + ': Cnt',      ExpFieldCnt,      IdeRes.FieldCount);
+    AssertEquals(AMessage, ': Cnt',      ExpFieldCnt,      IdeRes.FieldCount);
 
   AssertTypeName(AMessage + ': TypeName',  IdeRes, ExpTypeName);
 
@@ -854,11 +955,11 @@ procedure TTestBaseIdeDebuggerWatchResult.AssertStructAnch(const AMessage: strin
 var
   t: TWatchResultData;
 begin
-  AssertTrue(AMessage+': not nil', IdeRes <> nil);
-  AssertEquals(AMessage + ': VKind',    rdkStruct, IdeRes.ValueKind);
-  AssertEquals(AMessage + ': Type',     ord(ExpType),  ord(IdeRes.StructType));
+  AssertTrue(AMessage, ': not nil', IdeRes <> nil);
+  AssertEquals(AMessage, ': VKind',    rdkStruct, IdeRes.ValueKind);
+  AssertEquals(AMessage, ': Type',     ord(ExpType),  ord(IdeRes.StructType));
 
-  AssertEquals(AMessage + ': Cnt',      ExpDirectFieldCnt,      IdeRes.DirectFieldCount);
+  AssertEquals(AMessage, ': Cnt',      ExpDirectFieldCnt,      IdeRes.DirectFieldCount);
 
   AssertTypeName(AMessage + ': TypeName',  IdeRes, ExpTypeName);
 
