@@ -84,7 +84,6 @@ type
     procedure CategoryTreeCustomDrawItem(Sender: TCustomTreeView;
       Node: TTreeNode; {%H-}State: TCustomDrawState; var {%H-}DefaultDraw: Boolean);
     procedure CategoryTreeExpanded(Sender: TObject; Node: TTreeNode);
-    procedure CategoryTreeKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     function FilterEditFilterItem(ItemData: Pointer; out Done: Boolean): Boolean;
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -228,14 +227,6 @@ begin
   UpdateBuildModeGUI;
 end;
 
-procedure TIDEOptionsDialog.HelpButtonClick(Sender: TObject);
-begin
-  if FPrevEditor<>nil then
-    LazarusHelp.ShowHelpForIDEControl(FPrevEditor)
-  else
-    LazarusHelp.ShowHelpForIDEControl(Self);
-end;
-
 procedure TIDEOptionsDialog.CategoryTreeChange(Sender: TObject; Node: TTreeNode);
 var
   GroupClass: TAbstractIDEOptionsClass;
@@ -335,18 +326,6 @@ begin
     TAbstractIDEOptionsEditor(Node.GetFirstChild.Data).GroupRec^.Collapsed := False;
 end;
 
-procedure TIDEOptionsDialog.CategoryTreeKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-var
-  Command: Word;
-begin
-  Command := EditorOpts.KeyMap.TranslateKey(Key,Shift,nil);
-  if (Command=ecContextHelp) and (FPrevEditor <> nil) then begin
-    Key:=VK_UNKNOWN;
-    LazarusHelp.ShowHelpForIDEControl(FPrevEditor);
-  end;
-end;
-
 function TIDEOptionsDialog.FilterEditFilterItem(ItemData: Pointer; out Done: Boolean): Boolean;
 var
   OptEditor: TAbstractIDEOptionsEditor;
@@ -365,10 +344,29 @@ begin
     IDEDialogLayoutList.SaveLayout(self);
 end;
 
+procedure TIDEOptionsDialog.HelpButtonClick(Sender: TObject);
+begin
+  if assigned(FPrevEditor) then
+    LazarusHelp.ShowHelpForIDEControl(FPrevEditor)
+  else
+    LazarusHelp.ShowHelpForIDEControl(self);
+end;
+
 procedure TIDEOptionsDialog.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
+  // help
+  if EditorOpts.KeyMap.TranslateKey(Key, Shift, nil) = ecContextHelp then
+  begin
+    // in these controls, show help for open options frame
+    if FilterEdit.Focused or CategoryTree.Focused then
+    begin
+      HelpButtonClick(Sender);
+      Key := 0;
+    end;
+  end
+
   // dialog
-  if (Key = VK_ESCAPE) and (Shift = []) then
+  else if (Key = VK_ESCAPE) and (Shift = []) then
   begin
     CancelButtonClick(Sender);
     Key := 0;
