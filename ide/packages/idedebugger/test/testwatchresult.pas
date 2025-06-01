@@ -72,6 +72,12 @@ type
       //(cdStruct_EmptyFields, cdStruct_EmptyFields)  // cdStruct_EmptyFields
     );
   protected type
+    TCreateStructFlag = (
+      csfSkipAnchestorErr,
+      csfAbortFieldsAfterError,
+      csfAbortFieldsAfterAnchestorError
+    );
+    TCreateStructFlags = set of TCreateStructFlag;
 
     { TBuildInfo }
 
@@ -237,7 +243,8 @@ type
                           aErr1, aErr2: Boolean;
                           aNil: Boolean = False;
                           ExpTypeName: String = '';
-                          aOnlyFieldData: Boolean = False
+                          aOnlyFieldData: Boolean = False;
+                          AFlags: TCreateStructFlags = []
                          );
 
     function SaveLoad(ARes: TWatchResultData): TWatchResultData;
@@ -262,7 +269,7 @@ type
                           aErr1, aErr2: Boolean;
                           aNil: Boolean = False;
                           aOnlyFieldData: Boolean = False;
-                          abortFieldsAfterErr: Boolean = False
+                          AFlags: TCreateStructFlags = []
                          );
 
     function  CreateData(ResIntf: IDbgWatchDataIntf;
@@ -289,6 +296,8 @@ type
                         );
 
   end;
+
+  { TTestIdeDebuggerWatchResult }
 
   TTestIdeDebuggerWatchResult = class(TTestBaseIdeDebuggerWatchResult)
   published
@@ -867,10 +876,10 @@ begin
 end;
 
 procedure TTestBaseIdeDebuggerWatchResult.AssertStruct(const AMessage: string;
-  IdeRes: TWatchResultData; StrctTyp: TLzDbgStructType; WithFld: Boolean;
-  WithAnch: Integer; WithAnch1Fld, WithAnch2Fld: Boolean; aEntryType1,
-  aEntryType2: TTestCreateDataKind; aErr1, aErr2: Boolean; aNil: Boolean;
-  ExpTypeName: String; aOnlyFieldData: Boolean);
+  IdeRes: TWatchResultData; StrctTyp: TLzDbgStructType; WithFld: Boolean; WithAnch: Integer;
+  WithAnch1Fld, WithAnch2Fld: Boolean; aEntryType1, aEntryType2: TTestCreateDataKind; aErr1,
+  aErr2: Boolean; aNil: Boolean; ExpTypeName: String; aOnlyFieldData: Boolean;
+  AFlags: TCreateStructFlags);
 var
   ExpCnt, ExpOffs: Integer;
 begin
@@ -912,10 +921,17 @@ begin
   end;
 
   if WithAnch1Fld and (WithAnch >= 1) then begin
-    AssertStructField('', IdeRes, ExpOffs+0, 'P1Abc', dfvPrivate,   [], 'TAnch1', #1, rdkError,
-      True, True, aOnlyFieldData);
-    if not aOnlyFieldData then
-      AssertErrData('', IdeRes.Fields[ExpOffs+0].Field, 'bad');
+    if csfSkipAnchestorErr in AFlags then begin
+      AssertStructField('', IdeRes, ExpOffs+0, 'P1Abc', dfvPrivate,   [], 'TAnch1', 'TMyAnchNum', rdkSignedNumVal,
+        True, True, aOnlyFieldData);
+      // TODO: if not aOnlyFieldData then AssertData();
+    end
+    else begin
+      AssertStructField('', IdeRes, ExpOffs+0, 'P1Abc', dfvPrivate,   [], 'TAnch1', #1, rdkError,
+        True, True, aOnlyFieldData);
+      if not aOnlyFieldData then
+        AssertErrData('', IdeRes.Fields[ExpOffs+0].Field, 'bad');
+    end;
 
     AssertStructField('', IdeRes, ExpOffs+1, 'P1Foo', dfvProtected, [], 'TAnch1', 'TMyFoo',
       rdkUnknown, True, True, aOnlyFieldData);
@@ -927,8 +943,9 @@ begin
   if WithAnch2Fld and (WithAnch >= 2) then begin
     AssertStructField('', IdeRes, ExpOffs+0, 'P2Foo', dfvProtected, [], 'TAnch2', 'TMyXyz',
       rdkUnknown, True, True, aOnlyFieldData);
+    aErr2 := (not aErr2) and not(csfSkipAnchestorErr in AFlags);
     if not aOnlyFieldData then
-      AssertData('', IdeRes.Fields[ExpOffs+0].Field, aEntryType2, not aErr2, 'TMyXyz', 320, 1220);
+      AssertData('', IdeRes.Fields[ExpOffs+0].Field, aEntryType2, aErr2, 'TMyXyz', 320, 1220);
     ExpOffs := ExpOffs + 1;
   end;
 
@@ -1081,9 +1098,8 @@ end;
 procedure TTestBaseIdeDebuggerWatchResult.CreateStruct(ResIntf: IDbgWatchDataIntf;
   StrctTyp: TLzDbgStructType; WithFld: Boolean; WithAnch: Integer; WithAnch1Fld,
   WithAnch2Fld: Boolean; aEntryType1, aEntryType2: TTestCreateDataKind; aErr1, aErr2: Boolean;
-  aNil: Boolean; aOnlyFieldData: Boolean; abortFieldsAfterErr: Boolean);
+  aNil: Boolean; aOnlyFieldData: Boolean; AFlags: TCreateStructFlags);
 var
-  ExpCnt: Integer;
   FldIntf, Anch1Intf: IDbgWatchDataIntf;
 begin
   if aNil then begin
@@ -1101,12 +1117,11 @@ begin
     ResIntf.CreateStructure(StrctTyp);
   ResIntf.SetTypeName('TMyStruct');
 
-  ExpCnt := 0;
   if WithFld then begin
     FldIntf := ResIntf.AddField('Foo', dfvProtected, []);
     if not aOnlyFieldData then
       CreateData(FldIntf, aEntryType1, aErr1, 'TMyFoo', 300, 1200);
-    if aErr1 and abortFieldsAfterErr then
+    if aErr1 and (csfAbortFieldsAfterError in AFlags) then
       exit;
     //if aErr3 then
     if aErr1 and not aErr2 then
@@ -1118,29 +1133,37 @@ begin
     FldIntf := ResIntf.AddField('Bar', dfvPublic, []);
     if not aOnlyFieldData then
       CreateData(FldIntf, aEntryType2, aErr2, 'TMyBar', 301, 1201);
-    ExpCnt := ExpCnt + 3;
   end;
 
   if WithAnch > 0 then begin
     Anch1Intf := ResIntf.SetAnchestor('TAnch1');
     if WithAnch1Fld then begin
       FldIntf := Anch1Intf.AddField('P1Abc', dfvPrivate, []);
-      FldIntf.CreateError('bad');
+      if csfSkipAnchestorErr in AFlags then begin
+        if not aOnlyFieldData then
+          CreateData(FldIntf, cdErrNum, False, 'TMyAnchNum', 131, 11210);
+      end
+      else begin
+        FldIntf.CreateError('bad');
+        if csfAbortFieldsAfterAnchestorError in AFlags then
+          exit;
+      end;
 
       FldIntf := Anch1Intf.AddField('P1Foo', dfvProtected, []);
       if not aOnlyFieldData then
         CreateData(FldIntf, aEntryType1, False, 'TMyFoo', 310, 1210);
-      ExpCnt := ExpCnt + 2;
     end;
 
     if WithAnch = 2 then begin
       Anch1Intf := Anch1Intf.SetAnchestor('TAnch2');
+      aErr2 := (not aErr2) and not(csfSkipAnchestorErr in AFlags);
 
       if WithAnch2Fld then begin
         FldIntf := Anch1Intf.AddField('P2Foo', dfvProtected, []);
         if not aOnlyFieldData then
-          CreateData(FldIntf, aEntryType2, not aErr2, 'TMyXyz', 320, 1220);
-        ExpCnt := ExpCnt + 1;
+          CreateData(FldIntf, aEntryType2, aErr2, 'TMyXyz', 320, 1220);
+        if aErr2 and (csfAbortFieldsAfterAnchestorError in AFlags) then
+          exit;
       end;
     end;
   end;
@@ -2331,22 +2354,26 @@ procedure TTestIdeDebuggerWatchResult.TestWatchArrayStuct;
 var
   t: TTestWatchResWrapper;
   ProtoIntf, FldIntf, OuterIntf: IDbgWatchDataIntf;
-  x, WithAnch, i: Integer;
+  x, WithAnch, i, ArrayCnt: Integer;
   StrctTyp: TLzDbgStructType;
   aSetProto, aUsePtr, aUseExtraStuct, WithFld, aErr1, aErr2, aErr1b, aErr2b,
-    aNil, aNilb, aOuterErr: Boolean;
+  AnAbortErr, AnAbortAnchErr,
+    aNil, aNilb, aOuterErr, aOuterErr2: Boolean;
   aEntryType1, aEntryType2: TTestCreateDataKind;
   Res, InnerRes: TWatchResultData;
+  AFlags: TCreateStructFlags;
 begin
   StrctTyp := dstClass;
 
   for x :=  0 to 2 do
   for aSetProto := low(Boolean) to high(Boolean) do
   //for StrctTyp := low(TLzDbgStructType) to high(TLzDbgStructType) do
+  for ArrayCnt := 1 to 2 do
   for aUsePtr := low(Boolean) to high(Boolean) do
   for aUseExtraStuct := low(Boolean) to high(Boolean) do
   for WithFld := low(Boolean) to high(Boolean) do
   for aOuterErr := low(Boolean) to high(Boolean) do
+  for aOuterErr2 := low(Boolean) to high(Boolean) do
   for aEntryType1 := low(TTestCreateDataKind) to high(TTestCreateDataKind) do
   for aEntryType2 := low(TTestCreateDataKind) to high(TTestCreateDataKind) do
   for WithAnch := 0 to 2 do
@@ -2356,6 +2383,8 @@ begin
   for aErr2 := low(Boolean) to high(Boolean) do
   for aErr1b := low(Boolean) to high(Boolean) do
   for aErr2b := low(Boolean) to high(Boolean) do
+  for AnAbortErr := low(Boolean) to high(Boolean) do
+  for AnAbortAnchErr := low(Boolean) to high(Boolean) do
   begin
 //if x <> 0 then continue;
 //if aSetProto <> False then continue;
@@ -2373,26 +2402,42 @@ begin
 //if aNil <> False then continue;
 //if aNilb <> False then continue;
 
+    if (AnAbortAnchErr or AnAbortErr) and not (aOuterErr2) then    // partial fields are not allowed, so the struct MUST be replaced by an error
+      continue;
+    if AnAbortAnchErr and ( (WithAnch = 0) or (not WithFld) ) then // No abort, if no fields in Anchestor
+      continue;
+
     if (aNil and aNilb) and
        ( (not aSetProto) or aUsePtr) and  // main struct is NOT proto-type
        ( WithFld or (WithAnch>0) )
     then
-      Continue;
-    if ( (not WithFld) or (aSetProto and (aUsePtr or aUseExtraStuct)) or aOuterErr ) and
+      continue;
+    if ( aNil  and (aErr1 or aErr2)                       ) or    // nil class can't have errors in fields
+       ( aNilb and (aErr1b or aErr2b) and (not aSetProto) )
+    then
+      continue;
+    if ( (not WithFld) or (aNil and aNilb) or    // no fields (except maybe in prototype)
+         aOuterErr or aOuterErr2                 // or if fields aren't actually stored
+       ) and
        ( (aEntryType1 > low(TTestCreateDataKind)) or
          (aEntryType2 > low(TTestCreateDataKind)) or
          aErr1 or aErr2 or aErr1b or aErr2b
        )
     then
-      Continue;
-    if aOuterErr and not(aUsePtr or aUseExtraStuct) then
-      Continue;
-
+      continue;
+    if ( (aSetProto and (aUsePtr or aUseExtraStuct)) or (WithAnch =2) ) and     // just reduce loops
+       ( (not (aEntryType1 in [cdErrNum, cdErrStruct, cdArr_ErrNum])) or
+         (not (aEntryType2 in [cdErrNum, cdErrStruct, cdArr_ErrNum]))
+       )
+    then
+      continue;
     if abs(ord(aEntryType1) - ord(aEntryType2)) > 1 then
-      Continue;
+      continue;
+    if aSetProto and (AnAbortErr or AnAbortAnchErr or aOuterErr2) then // proto should only affect first element added / first element is otherwise used as proto
+      continue;
 
     t.Init;
-    ProtoIntf := t.ResIntf.CreateArrayValue(datDynArray, 2, 0);
+    ProtoIntf := t.ResIntf.CreateArrayValue(datDynArray, ArrayCnt+1, 0);
     t.ResIntf.SetTypeName('TMyArray');
 
     if aSetProto then begin
@@ -2412,7 +2457,7 @@ begin
       end;
     end;
 
-    for i := 0 to 1 do begin
+    for i := 0 to ArrayCnt do begin
       ProtoIntf := t.ResIntf.SetNextArrayData;
       OuterIntf := ProtoIntf;
       if aUsePtr then begin
@@ -2432,10 +2477,20 @@ begin
           OuterIntf.CreateError('boom');
         end;
       end
-      else begin
+      else if i = 1 then begin
         // Index 1
+        AFlags := [];
+        if AnAbortErr then AFlags     := AFlags + [csfAbortFieldsAfterError];
+        if AnAbortAnchErr then AFlags := AFlags + [csfAbortFieldsAfterAnchestorError];
         CreateStruct(ProtoIntf, StrctTyp, WithFld, WithAnch, WithFld, WithFld,
-          aEntryType1, aEntryType2, aErr1b, aErr2b, aNilb);
+          aEntryType1, aEntryType2, aErr1b, aErr2b, aNilb, False, AFlags);
+        if aOuterErr2 then
+          OuterIntf.CreateError('boom2');
+      end
+      else begin
+        // Index 2
+        CreateStruct(ProtoIntf, StrctTyp, WithFld, WithAnch, WithFld, WithFld,
+          aEntryType1, aEntryType2, aErr1b, aErr2b, aNilb, False);
       end;
     end;
 
@@ -2450,13 +2505,18 @@ begin
 
 
     AssertValKind('', Res, rdkArray);
-    AssertArrayData('', Res, datDynArray, 2, 0, 'TMyArray');
+    AssertArrayData('', Res, datDynArray, ArrayCnt+1, 0, 'TMyArray');
 
-    for i := 0 to 1 do begin
+    for i := 0 to ArrayCnt do begin
       Res.SetSelectedIndex(i);
 
       if (i = 0) and aOuterErr then begin
         AssertErrData('outer err', Res.SelectedEntry, 'boom');
+        continue;
+      end;
+
+      if (i = 1) and aOuterErr2 then begin
+        AssertErrData('outer err', Res.SelectedEntry, 'boom2');
         continue;
       end;
 
@@ -2477,11 +2537,20 @@ begin
         AssertStruct('', InnerRes, StrctTyp, WithFld, WithAnch, WithFld, WithFld,
           aEntryType1, aEntryType2, aErr1, aErr2, aNil);
       end
-      else begin
+      else if i = 1 then begin
         // Index 1
+        AFlags := [];
+        if AnAbortErr then AFlags     := AFlags + [csfAbortFieldsAfterError];
+        if AnAbortAnchErr then AFlags := AFlags + [csfAbortFieldsAfterAnchestorError];
         AssertValKind('', InnerRes, rdkStruct);
         AssertStruct('', InnerRes, StrctTyp, WithFld, WithAnch, WithFld, WithFld,
-          aEntryType1, aEntryType2, aErr1b, aErr2b, aNilb);
+          aEntryType1, aEntryType2, aErr1b, aErr2b, aNilb, '', False, AFlags);
+      end
+      else begin
+        // Index 2
+        AssertValKind('', InnerRes, rdkStruct);
+        AssertStruct('', InnerRes, StrctTyp, WithFld, WithAnch, WithFld, WithFld,
+          aEntryType1, aEntryType2, aErr1b, aErr2b, aNilb, '', False);
       end;
     end;
 
@@ -2844,7 +2913,7 @@ begin
 
 
       ProtoIntf := t.ResIntf.SetNextArrayData;
-      CreateStruct(ProtoIntf, dstClass, True, 0, False, False, cdPtr_ErrNum, cdPtr_ErrNum, True, False, False, False, True);
+      CreateStruct(ProtoIntf, dstClass, True, 0, False, False, cdPtr_ErrNum, cdPtr_ErrNum, True, False, False, False, [csfAbortFieldsAfterError]);
       ProtoIntf.CreateError('Err');
 
       ProtoIntf := t.ResIntf.SetNextArrayData;

@@ -2,6 +2,7 @@ unit IdeDebuggerWatchResult;
 
 {$mode objfpc}{$H+}
 {$ModeSwitch typehelpers}
+{$IFDEF INLINE_OFF}{$INLINE OFF}{$ENDIF}
 
 interface
 
