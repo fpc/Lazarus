@@ -311,6 +311,7 @@ type
     procedure TestWatchResPCharOrStringWithArray;
     procedure TestWatchArray;
     procedure TestWatchArrayNested;
+    procedure TestWatchArrayPtrErr; // either ptr or data can be error
     procedure TestWatchStuct;
     procedure TestWatchStuctNested;
     procedure TestWatchArrayStuct;
@@ -2192,6 +2193,82 @@ begin
   end;
 end;
 
+procedure TTestIdeDebuggerWatchResult.TestWatchArrayPtrErr;
+var
+  t: TTestWatchResWrapper;
+  ProtoIntf: IDbgWatchDataIntf;
+  Res: TWatchResultData;
+  i, x, aProtoErr: Integer;
+  ADataErr, aDataErr1, aDataErr2, aDataErr3: integer;
+  aSetProto: Boolean;
+begin
+  for x := 0 to 2 do
+  for aSetProto := low(Boolean) to high(Boolean) do
+  for aProtoErr := 0 to 4 do
+  for aDataErr1 := 0 to 4 do
+  for aDataErr2 := 0 to 4 do
+  for aDataErr3 := 0 to 4 do
+  begin
+    if (not aSetProto) and (aProtoErr > 0) then continue;
+
+    t.Init;
+    ProtoIntf := t.ResIntf.CreateArrayValue(datStatArray, 3, 0);
+    t.ResIntf.SetTypeName('TMyArray');
+
+    if aSetProto then begin
+      if aProtoErr in [0..3] then
+        CreateData(ProtoIntf, cdPtr_ErrNum, (aProtoErr and 1) <> 0, 'TMyProto', 987, 87, 'ZZ'); // value part should be ignored
+      if aProtoErr in [2..4] then
+        ProtoIntf.CreateError('protoerr');
+    end;
+
+    for i := 0 to 2 do begin
+      case i of
+        0: ADataErr := aDataErr1;
+        1: ADataErr := aDataErr2;
+        2: ADataErr := aDataErr3;
+      end;
+
+      ProtoIntf := t.ResIntf.SetNextArrayData;
+      if ADataErr in [0..3] then
+        CreateData(ProtoIntf, cdPtr_ErrNum, (aDataErr and 1) <> 0, 'TMyProto', 200+i, 990+i, 'E'+IntToStr(i));
+      if ADataErr in [2..4] then
+        ProtoIntf.CreateError('dataerr'+IntToStr(i));
+    end;
+
+    Res := t.GetIdeRes;
+    case x of
+      1: Res := SaveLoad(Res);
+      2: Res := Res.CreateCopy;
+    end;
+    if x > 0 then
+      t.Done;
+
+    AssertValKind('', Res, rdkArray);
+    AssertArrayData('', Res, datStatArray, 3, 0, 'TMyArray');
+
+    for i := 0 to 2 do begin
+      case i of
+        0: ADataErr := aDataErr1;
+        1: ADataErr := aDataErr2;
+        2: ADataErr := aDataErr3;
+      end;
+
+      Res.SetSelectedIndex(i);
+      if ADataErr in [2..4] then
+        AssertErrData('err-'+IntToStr(i), Res.SelectedEntry, 'dataerr'+IntToStr(i))
+      else
+        AssertData(''+IntToStr(i), Res.SelectedEntry, cdPtr_ErrNum, (aDataErr and 1) = 1, 'TMyProto', 200+i, 990+i, 'E'+IntToStr(i));
+    end;
+
+
+    if x > 0 then
+      Res.Free
+    else
+      t.Done;
+  end;
+end;
+
 procedure TTestIdeDebuggerWatchResult.TestWatchStuct;
 var
   t: TTestWatchResWrapper;
@@ -2358,7 +2435,7 @@ var
   StrctTyp: TLzDbgStructType;
   aSetProto, aUsePtr, aUseExtraStuct, WithFld, aErr1, aErr2, aErr1b, aErr2b,
   AnAbortErr, AnAbortAnchErr,
-    aNil, aNilb, aOuterErr, aOuterErr2: Boolean;
+  aNil, aNilb, aOuterErr, aOuterErr2, aStructErr: Boolean;
   aEntryType1, aEntryType2: TTestCreateDataKind;
   Res, InnerRes: TWatchResultData;
   AFlags: TCreateStructFlags;
@@ -2374,6 +2451,7 @@ begin
   for WithFld := low(Boolean) to high(Boolean) do
   for aOuterErr := low(Boolean) to high(Boolean) do
   for aOuterErr2 := low(Boolean) to high(Boolean) do
+  for aStructErr := low(Boolean) to high(Boolean) do
   for aEntryType1 := low(TTestCreateDataKind) to high(TTestCreateDataKind) do
   for aEntryType2 := low(TTestCreateDataKind) to high(TTestCreateDataKind) do
   for WithAnch := 0 to 2 do
@@ -2402,7 +2480,7 @@ begin
 //if aNil <> False then continue;
 //if aNilb <> False then continue;
 
-    if (AnAbortAnchErr or AnAbortErr) and not (aOuterErr2) then    // partial fields are not allowed, so the struct MUST be replaced by an error
+    if (AnAbortAnchErr or AnAbortErr) and not (aOuterErr2 or aStructErr) then    // partial fields are not allowed, so the struct MUST be replaced by an error
       continue;
     if AnAbortAnchErr and ( (WithAnch = 0) or (not WithFld) ) then // No abort, if no fields in Anchestor
       continue;
@@ -2417,7 +2495,7 @@ begin
     then
       continue;
     if ( (not WithFld) or (aNil and aNilb) or    // no fields (except maybe in prototype)
-         aOuterErr or aOuterErr2                 // or if fields aren't actually stored
+         aOuterErr or aOuterErr2 or aStructErr   // or if fields aren't actually stored
        ) and
        ( (aEntryType1 > low(TTestCreateDataKind)) or
          (aEntryType2 > low(TTestCreateDataKind)) or
@@ -2431,9 +2509,11 @@ begin
        )
     then
       continue;
+    if aStructErr and (aOuterErr2 or not(aUsePtr or aUseExtraStuct)) then
+      continue;
     if abs(ord(aEntryType1) - ord(aEntryType2)) > 1 then
       continue;
-    if aSetProto and (AnAbortErr or AnAbortAnchErr or aOuterErr2) then // proto should only affect first element added / first element is otherwise used as proto
+    if aSetProto and (AnAbortErr or AnAbortAnchErr or aOuterErr2 or aStructErr) then // proto should only affect first element added / first element is otherwise used as proto
       continue;
 
     t.Init;
@@ -2484,13 +2564,15 @@ begin
         if AnAbortAnchErr then AFlags := AFlags + [csfAbortFieldsAfterAnchestorError];
         CreateStruct(ProtoIntf, StrctTyp, WithFld, WithAnch, WithFld, WithFld,
           aEntryType1, aEntryType2, aErr1b, aErr2b, aNilb, False, AFlags);
+        if aStructErr then
+          ProtoIntf.CreateError('boom2');
         if aOuterErr2 then
           OuterIntf.CreateError('boom2');
       end
       else begin
         // Index 2
         CreateStruct(ProtoIntf, StrctTyp, WithFld, WithAnch, WithFld, WithFld,
-          aEntryType1, aEntryType2, aErr1b, aErr2b, aNilb, False);
+          aEntryType1, aEntryType2, False, False, aNilb, False, [csfSkipAnchestorErr]);
       end;
     end;
 
@@ -2539,6 +2621,11 @@ begin
       end
       else if i = 1 then begin
         // Index 1
+        if aStructErr then begin
+          AssertErrData('outer err', InnerRes, 'boom2');
+          continue;
+        end;
+
         AFlags := [];
         if AnAbortErr then AFlags     := AFlags + [csfAbortFieldsAfterError];
         if AnAbortAnchErr then AFlags := AFlags + [csfAbortFieldsAfterAnchestorError];
@@ -2550,7 +2637,7 @@ begin
         // Index 2
         AssertValKind('', InnerRes, rdkStruct);
         AssertStruct('', InnerRes, StrctTyp, WithFld, WithAnch, WithFld, WithFld,
-          aEntryType1, aEntryType2, aErr1b, aErr2b, aNilb, '', False);
+          aEntryType1, aEntryType2, False, False, aNilb, '', False, [csfSkipAnchestorErr]);
       end;
     end;
 
