@@ -7912,11 +7912,11 @@ begin
   Gz:=MouseToGridZone(Mouse.x, Mouse.y);
   Result:=MouseToCell(Mouse);
   if gz<>gzNormal then begin
-    if (gz=gzFixedRows)or(gz=gzFixedCells) then begin
+    if (gz=gzFixedCols)or(gz=gzFixedCells) then begin
       Result.x:= fTopLeft.x-1;
       if Result.x<FFixedCols then Result.x:=FFixedCols;
     end;
-    if (gz=gzFixedCols)or(gz=gzFixedCells) then begin
+    if (gz=gzFixedRows)or(gz=gzFixedCells) then begin
       Result.y:=fTopleft.y-1;
       if Result.y<fFixedRows then Result.y:=FFixedRows;
     end;
