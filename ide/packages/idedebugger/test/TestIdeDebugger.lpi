@@ -44,6 +44,72 @@
           </Linking>
         </CompilerOptions>
       </Item>
+      <Item Name="O1  Criot Sa  gt BUT NO heaptrc">
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <Target>
+            <Filename Value="TestIdeDebugger"/>
+          </Target>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <Parsing>
+            <SyntaxOptions>
+              <IncludeAssertionCode Value="True"/>
+            </SyntaxOptions>
+          </Parsing>
+          <CodeGeneration>
+            <Checks>
+              <IOChecks Value="True"/>
+              <RangeChecks Value="True"/>
+              <OverflowChecks Value="True"/>
+              <StackChecks Value="True"/>
+            </Checks>
+          </CodeGeneration>
+          <Linking>
+            <Debugging>
+              <DebugInfoType Value="dsDwarf3"/>
+            </Debugging>
+          </Linking>
+        </CompilerOptions>
+      </Item>
+      <Item Name="O3 Criot Sa gh">
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <Target>
+            <Filename Value="TestIdeDebugger"/>
+          </Target>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <Parsing>
+            <SyntaxOptions>
+              <IncludeAssertionCode Value="True"/>
+            </SyntaxOptions>
+          </Parsing>
+          <CodeGeneration>
+            <Checks>
+              <IOChecks Value="True"/>
+              <RangeChecks Value="True"/>
+              <OverflowChecks Value="True"/>
+              <StackChecks Value="True"/>
+            </Checks>
+            <Optimizations>
+              <OptimizationLevel Value="3"/>
+            </Optimizations>
+          </CodeGeneration>
+          <Linking>
+            <Debugging>
+              <DebugInfoType Value="dsDwarf3"/>
+              <UseHeaptrc Value="True"/>
+            </Debugging>
+          </Linking>
+        </CompilerOptions>
+      </Item>
       <Item Name="full test -O3">
         <CompilerOptions>
           <Version Value="11"/>
@@ -151,23 +217,24 @@
           </Linking>
         </CompilerOptions>
       </Item>
-      <SharedMatrixOptions Count="16">
-        <Item1 ID="717612394343" Modes="O1  Criot Sa gh gtttt&lt;nil>,full test -O3,no assert/check -O3 -gh,O1  Criot Sa gh gt" Value="-gw3"/>
+      <SharedMatrixOptions Count="17">
+        <Item1 ID="717612394343" Modes="O1  Criot Sa gh gtttt&lt;nil>,full test -O3,no assert/check -O3 -gh,O1  Criot Sa gh gt,O1  Criot Sa  gt BUT NO heaptrc,O3 Criot Sa gh" Value="-gw3"/>
         <Item2 ID="392943395475" Modes="valgrind O2"/>
         <Item3 ID="354904912079" Targets="LazUtils" Modes="full test -O3,no assert/check -O3 -gh" Value="-O-4 -Sa- -Si -Cr- -Ci- -Co- -Ct- -gt-"/>
-        <Item4 ID="337989334087" Targets="IdeDebugger" Modes="full test -O3,O1  Criot Sa gh gt,O1  Criot Sa gh gtttt&lt;nil>,valgrind O1" Value="-O-1"/>
-        <Item5 ID="507698440931" Targets="IdeDebugger" Modes="valgrind O2" Value="-O-2"/>
-        <Item6 ID="351599647225" Targets="IdeDebugger" Modes="no assert/check -O3 -gh,full test -O3" Value="-O-3"/>
-        <Item7 ID="703841857666" Targets="IdeDebugger" Modes="no assert/check -O3 -gh,valgrind O1,valgrind O2" Value="-gt-"/>
-        <Item8 ID="149801562947" Targets="IdeDebugger" Modes="full test -O3,O1  Criot Sa gh gt" Value="-gt- -gt"/>
-        <Item9 ID="565851929886" Targets="IdeDebugger" Modes="O1  Criot Sa gh gtttt&lt;nil>" Value="-gt- -gtttt"/>
-        <Item10 ID="538318268753" Targets="IdeDebugger" Modes="O1  Criot Sa gh gt,O1  Criot Sa gh gtttt&lt;nil>,full test -O3" Value="-gh"/>
-        <Item11 ID="512719448339" Targets="IdeDebugger" Modes="full test -O3,O1  Criot Sa gh gt,O1  Criot Sa gh gtttt&lt;nil>" Value="-Sa"/>
-        <Item12 ID="026959990514" Targets="IdeDebugger" Modes="full test -O3,O1  Criot Sa gh gt,O1  Criot Sa gh gtttt&lt;nil>" Value="-Criot"/>
-        <Item13 ID="654923802929" Targets="IdeDebugger" Modes="no assert/check -O3 -gh,valgrind O1,valgrind O2" Value="-Sa- -Cr- -Ci- -Co- -Ct- -gh-"/>
-        <Item14 ID="874538370462" Targets="IdeDebugger" Modes="O1  Criot Sa gh gt,O1  Criot Sa gh gtttt&lt;nil>,valgrind O1,valgrind O2" Value="-Si-"/>
-        <Item15 ID="342603141025" Targets="IdeDebugger" Modes="no assert/check -O3 -gh,full test -O3" Value="-Si"/>
-        <Item16 ID="055694731928" Targets="IdeDebugger" Modes="valgrind O2" Value="-gh- -gv"/>
+        <Item4 ID="337989334087" Targets="#Project,IdeDebugger" Modes="full test -O3,O1  Criot Sa gh gt,O1  Criot Sa gh gtttt&lt;nil>,valgrind O1,O1  Criot Sa  gt BUT NO heaptrc" Value="-O-1"/>
+        <Item5 ID="507698440931" Targets="#Project,IdeDebugger" Modes="valgrind O2" Value="-O-2"/>
+        <Item6 ID="351599647225" Targets="#Project,IdeDebugger" Modes="no assert/check -O3 -gh,full test -O3,O3 Criot Sa gh" Value="-O-3"/>
+        <Item7 ID="703841857666" Targets="#Project,IdeDebugger" Modes="no assert/check -O3 -gh,valgrind O1,valgrind O2" Value="-gt-"/>
+        <Item8 ID="149801562947" Targets="#Project,IdeDebugger" Modes="full test -O3,O1  Criot Sa gh gt,O1  Criot Sa  gt BUT NO heaptrc,O3 Criot Sa gh" Value="-gt- -gt"/>
+        <Item9 ID="565851929886" Targets="#Project,IdeDebugger" Modes="O1  Criot Sa gh gtttt&lt;nil>" Value="-gt- -gtttt"/>
+        <Item10 ID="538318268753" Targets="#Project,IdeDebugger" Modes="O1  Criot Sa gh gt,O1  Criot Sa gh gtttt&lt;nil>,full test -O3,O3 Criot Sa gh" Value="-gh"/>
+        <Item11 ID="512719448339" Targets="#Project,IdeDebugger" Modes="full test -O3,O1  Criot Sa gh gt,O1  Criot Sa gh gtttt&lt;nil>,O1  Criot Sa  gt BUT NO heaptrc,O3 Criot Sa gh" Value="-Sa"/>
+        <Item12 ID="026959990514" Targets="#Project,IdeDebugger" Modes="full test -O3,O1  Criot Sa gh gt,O1  Criot Sa gh gtttt&lt;nil>,O1  Criot Sa  gt BUT NO heaptrc,O3 Criot Sa gh" Value="-Criot"/>
+        <Item13 ID="654923802929" Targets="#Project,IdeDebugger" Modes="no assert/check -O3 -gh,valgrind O1,valgrind O2" Value="-Sa- -Cr- -Ci- -Co- -Ct- -gh-"/>
+        <Item14 ID="874538370462" Targets="#Project,IdeDebugger" Modes="O1  Criot Sa gh gt,O1  Criot Sa gh gtttt&lt;nil>,valgrind O1,valgrind O2,O1  Criot Sa  gt BUT NO heaptrc" Value="-Si- -dINLINE_OFF"/>
+        <Item15 ID="342603141025" Targets="#Project,IdeDebugger" Modes="no assert/check -O3 -gh,full test -O3" Value="-Si"/>
+        <Item16 ID="055694731928" Targets="#Project,IdeDebugger" Modes="valgrind O2" Value="-gh- -gv"/>
+        <Item17 ID="744209428850" Targets="#Project,IdeDebugger" Modes="O1  Criot Sa  gt BUT NO heaptrc" Value="-gh-"/>
       </SharedMatrixOptions>
     </BuildModes>
     <PublishOptions>

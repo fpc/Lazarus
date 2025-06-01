@@ -34,6 +34,7 @@ unit Debugger;
 {$mode objfpc}{$H+}
 {$Interfaces CORBA}
 
+{$IFDEF INLINE_OFF}{$INLINE OFF}{$ENDIF}
 {$IFDEF linux} {$DEFINE DBG_ENABLE_TERMINAL} {$ENDIF}
 
 interface
@@ -3634,11 +3635,13 @@ begin
 
   Include(FFLags, crfDone);
 
-  if FAnchestorCurrentData <> nil then
-    FAnchestorCurrentData.Done;
-  if FCurrentFields <> nil then
-    for i := 0 to FCurrentFields.Count-1 do
-      FCurrentFields[i].Done;
+  if not (FNewResultData is TWatchResultDataError) then begin
+    if FAnchestorCurrentData <> nil then
+      FAnchestorCurrentData.Done;
+    if FCurrentFields <> nil then
+      for i := 0 to FCurrentFields.Count-1 do
+        FCurrentFields[i].Done;
+  end;
 
   if (FNewResultData <> nil) then begin
     Include(FFLags, crfWasDone);
@@ -3950,6 +3953,8 @@ end;
 
 procedure TCurrentResData.CreateStructure(AStructType: TLzDbgStructType;
   ADataAddress: TDBGPtr);
+var
+  Anch: TCurrentResData;
 begin
   BeforeCreateValue;
   assert((FNewResultData=nil) or (FNewResultData.ValueKind=rdkStruct), 'TCurrentResData.CreateStructure: (FNewResultData=nil) or (FNewResultData.ValueKind=rdkPointerVal)');
@@ -3965,7 +3970,14 @@ begin
     else
       TWatchResultDataStruct(FNewResultData).Create(AStructType);
   end;
-  FCurrentIdx := 0;
+
+  // Reset FCurrentIdx including for all anchestors
+  // Anchestors may have incomplete fields, after error in anchestor (first field error)
+  Anch := Self;
+  repeat
+    Anch.FCurrentIdx := 0;
+    Anch := Anch.FAnchestorCurrentData;
+  until Anch = nil;
   AfterDataCreated;
 end;
 
