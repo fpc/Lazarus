@@ -3300,7 +3300,7 @@ begin
   AddDefault(C, 'Toggle view Call Stack', lisKMToggleViewCallStack, ecToggleCallStack);
   AddDefault(C, 'Toggle view Registers', lisKMToggleViewRegisters, ecToggleRegisters);
   AddDefault(C, 'Toggle view Assembler', lisKMToggleViewAssembler, ecToggleAssembler);
-  AddDefault(C, 'Toggle view Mem viewer', lisKMToggleViewMemViewer, ecToggleMemViewer);
+  AddDefault(C, 'Toggle view Mem viewer', srkmecToggleMemViewer, ecToggleMemViewer);
   AddDefault(C, 'Toggle view Event Log', lisKMToggleViewDebugEvents, ecToggleDebugEvents);
   AddDefault(C, 'Toggle view Debugger Output', lisKMToggleViewDebuggerOutput, ecToggleDebuggerOut);
   AddDefault(C, 'Toggle view Debug History', lisKMToggleViewHistory, ecViewHistory);
