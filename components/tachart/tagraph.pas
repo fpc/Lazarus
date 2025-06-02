@@ -2031,6 +2031,7 @@ begin
     FLogicalExtent := GetFullExtent;
   if not FIsZoomed then exit;
   FIsZoomed := false;
+  InvalidateClipRect;
   Invalidate;
 end;
 
