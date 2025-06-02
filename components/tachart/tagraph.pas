@@ -359,6 +359,7 @@ type
     procedure GetAllSeriesAxisLimits(AAxis: TChartAxis; out AMin, AMax: Double);
     function GetFullExtent: TDoubleRect;
     function GetLegendItems(AIncludeHidden: Boolean = false): TChartLegendItems;
+    procedure InvalidateClipRect;
     procedure Notify(ACommand: Integer; AParam1, AParam2: Pointer; var AData); override;
     procedure PaintOnAuxCanvas(ACanvas: TCanvas; ARect: TRect);
     procedure PaintOnCanvas(ACanvas: TCanvas; ARect: TRect);
@@ -1382,6 +1383,14 @@ begin
   Result.Y := YImageToGraph(APoint.Y);
 end;
 
+{ Enforce calling ClipRectChanged. Without that, TColorMapSeries may not repaint
+  after a change in LogicalExtent.
+  https://forum.lazarus.freepascal.org/index.php/topic,71327.msg556598 }
+procedure TChart.InvalidateClipRect;
+begin
+  FOldClipRect := ZeroRect;
+end;
+
 function TChart.IsPointInViewPort(const AP: TDoublePoint): Boolean;
 begin
   Result :=
@@ -1797,6 +1806,8 @@ begin
       UseYMin and (h < YMin) or UseYMax and (h > YMax)
     then
       exit;
+  if (FLogicalExtent <> AValue) then
+    InvalidateClipRect;
   FLogicalExtent := AValue;
   FIsZoomed := true;
   StyleChanged(Self);
