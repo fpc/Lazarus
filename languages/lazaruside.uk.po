@@ -11739,7 +11739,9 @@ msgid "Toggle View Component Palette"
 msgstr "Перемкнути до перегляду палітри компонентів"
 
 #: lazarusidestrconsts.liskmtoggleviewdebugevents
-msgid "View Debuger Event Log"
+#, fuzzy
+#| msgid "View Debuger Event Log"
+msgid "View Debugger Event Log"
 msgstr "Переглянути журнал подій зневаджувача"
 
 #: lazarusidestrconsts.liskmtoggleviewdebuggeroutput
@@ -11762,11 +11764,6 @@ msgstr "Перемкнути до перегляду гарячих клавіш
 #: lazarusidestrconsts.liskmtoggleviewlocalvariables
 msgid "View Local Variables"
 msgstr "Перегляд локальних змінних"
-
-#: lazarusidestrconsts.liskmtoggleviewmemviewer
-msgctxt "lazarusidestrconsts.liskmtoggleviewmemviewer"
-msgid "View Mem viewer"
-msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewmessages
 msgid "Toggle view Messages"
@@ -21370,10 +21367,6 @@ msgstr "Попередня комірка (всі вибрані / лише пе
 msgid "Syntax Check"
 msgstr "Перевірка синтаксису"
 
-#: lazarusidestrconsts.srkmectoggleassembler
-msgid "View assembler"
-msgstr "Переглянути асемблер"
-
 #: lazarusidestrconsts.srkmectogglebreakpoint
 msgid "toggle breakpoint"
 msgstr "перемкнути точку зупинки"
@@ -21381,14 +21374,6 @@ msgstr "перемкнути точку зупинки"
 #: lazarusidestrconsts.srkmectogglebreakpointenabled
 msgid "enable/disable breakpoint"
 msgstr "увімкнути/вимкнути точку зупинки"
-
-#: lazarusidestrconsts.srkmectogglebreakpoints
-msgid "View breakpoints"
-msgstr "Переглядання точок зупинки"
-
-#: lazarusidestrconsts.srkmectogglecallstack
-msgid "View call stack"
-msgstr "Переглядання стеку викликів"
 
 #: lazarusidestrconsts.srkmectogglecodebrowser
 msgid "View code browser"
@@ -21401,10 +21386,6 @@ msgstr "Показувати Дослідник коду"
 #: lazarusidestrconsts.srkmectogglecomppalette
 msgid "View component palette"
 msgstr "Переглянути палітру компонетів"
-
-#: lazarusidestrconsts.srkmectoggledebuggerout
-msgid "View debugger output"
-msgstr "Показати вивід зневаджувача"
 
 #: lazarusidestrconsts.srkmectoggleformunit
 msgid "Switch between form and unit"
@@ -21419,10 +21400,6 @@ msgctxt "lazarusidestrconsts.srkmectoggleidespeedbtns"
 msgid "View IDE speed buttons"
 msgstr "Переглянути швидкі клавіші графічної оболонки"
 
-#: lazarusidestrconsts.srkmectogglelocals
-msgid "View local variables"
-msgstr "Переглядання локальних змінних"
-
 #: lazarusidestrconsts.srkmectogglemarker
 #, object-pascal-format
 msgid "Toggle bookmark %d"
@@ -21434,7 +21411,7 @@ msgstr "Перемкнути підсвічення поточного слов�
 
 #: lazarusidestrconsts.srkmectogglememviewer
 msgctxt "lazarusidestrconsts.srkmectogglememviewer"
-msgid "View Mem viewer"
+msgid "View Memory Viewer"
 msgstr ""
 
 #: lazarusidestrconsts.srkmectogglemessages
@@ -21449,10 +21426,6 @@ msgstr "Перемкнути режим"
 msgid "View Object Inspector"
 msgstr "Показувати інспектор об'єктів"
 
-#: lazarusidestrconsts.srkmectoggleregisters
-msgid "View registers"
-msgstr "Переглянути регістри"
-
 #: lazarusidestrconsts.srkmectogglerestrictionbrowser
 msgid "View restriction browser"
 msgstr "Дивитись браузер обмежень"
@@ -21464,10 +21437,6 @@ msgstr "Показувати результати пошуку"
 #: lazarusidestrconsts.srkmectogglesourceeditor
 msgid "View Source Editor"
 msgstr "Показувати редактор тексту"
-
-#: lazarusidestrconsts.srkmectogglewatches
-msgid "View watches"
-msgstr "Показувати спостереження"
 
 #: lazarusidestrconsts.srkmecunfoldall
 msgctxt "lazarusidestrconsts.srkmecunfoldall"
@@ -21506,24 +21475,9 @@ msgstr "Показати макроси редактора"
 msgid "View forms"
 msgstr "Показувати форми"
 
-#: lazarusidestrconsts.srkmecviewhistory
-msgctxt "lazarusidestrconsts.srkmecviewhistory"
-msgid "View History"
-msgstr "Переглянути історію"
-
-#: lazarusidestrconsts.srkmecviewpseudoterminal
-msgctxt "lazarusidestrconsts.srkmecviewpseudoterminal"
-msgid "View console in/output"
-msgstr "Показати консольний ввід/вивід"
-
 #: lazarusidestrconsts.srkmecviewtaborder
 msgid "View Tab Order"
 msgstr "Переглянути Таб-порядок"
-
-#: lazarusidestrconsts.srkmecviewthreads
-msgctxt "lazarusidestrconsts.srkmecviewthreads"
-msgid "View Threads"
-msgstr "Переглянути нитки"
 
 #: lazarusidestrconsts.srkmecviewunitdependencies
 msgid "View unit dependencies"

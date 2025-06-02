@@ -11857,7 +11857,7 @@ msgid "Toggle View Component Palette"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewdebugevents
-msgid "View Debuger Event Log"
+msgid "View Debugger Event Log"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewdebuggeroutput
@@ -11879,11 +11879,6 @@ msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewlocalvariables
 msgid "View Local Variables"
-msgstr ""
-
-#: lazarusidestrconsts.liskmtoggleviewmemviewer
-msgctxt "lazarusidestrconsts.liskmtoggleviewmemviewer"
-msgid "View Mem viewer"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewmessages
@@ -21771,10 +21766,6 @@ msgstr ""
 msgid "Syntax Check"
 msgstr "Comprova la sintaxi"
 
-#: lazarusidestrconsts.srkmectoggleassembler
-msgid "View assembler"
-msgstr ""
-
 #: lazarusidestrconsts.srkmectogglebreakpoint
 msgid "toggle breakpoint"
 msgstr ""
@@ -21782,14 +21773,6 @@ msgstr ""
 #: lazarusidestrconsts.srkmectogglebreakpointenabled
 msgid "enable/disable breakpoint"
 msgstr ""
-
-#: lazarusidestrconsts.srkmectogglebreakpoints
-msgid "View breakpoints"
-msgstr "Mostra els punts de ruptura"
-
-#: lazarusidestrconsts.srkmectogglecallstack
-msgid "View call stack"
-msgstr "Mostra la pila de les crides"
 
 #: lazarusidestrconsts.srkmectogglecodebrowser
 msgid "View code browser"
@@ -21802,10 +21785,6 @@ msgstr "Mostra l'explorador del codi"
 #: lazarusidestrconsts.srkmectogglecomppalette
 msgid "View component palette"
 msgstr "Vore paleta de components"
-
-#: lazarusidestrconsts.srkmectoggledebuggerout
-msgid "View debugger output"
-msgstr "Mostra la sortida del depurador"
 
 #: lazarusidestrconsts.srkmectoggleformunit
 msgid "Switch between form and unit"
@@ -21820,10 +21799,6 @@ msgctxt "lazarusidestrconsts.srkmectoggleidespeedbtns"
 msgid "View IDE speed buttons"
 msgstr ""
 
-#: lazarusidestrconsts.srkmectogglelocals
-msgid "View local variables"
-msgstr "Mostra les variables locals"
-
 #: lazarusidestrconsts.srkmectogglemarker
 #, object-pascal-format
 msgid "Toggle bookmark %d"
@@ -21835,7 +21810,7 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmectogglememviewer
 msgctxt "lazarusidestrconsts.srkmectogglememviewer"
-msgid "View Mem viewer"
+msgid "View Memory Viewer"
 msgstr ""
 
 #: lazarusidestrconsts.srkmectogglemessages
@@ -21850,10 +21825,6 @@ msgstr "Canvia el mode"
 msgid "View Object Inspector"
 msgstr "Mostra l'inspector dels objectes"
 
-#: lazarusidestrconsts.srkmectoggleregisters
-msgid "View registers"
-msgstr ""
-
 #: lazarusidestrconsts.srkmectogglerestrictionbrowser
 msgid "View restriction browser"
 msgstr ""
@@ -21865,10 +21836,6 @@ msgstr "Mostra els resultats de recerca"
 #: lazarusidestrconsts.srkmectogglesourceeditor
 msgid "View Source Editor"
 msgstr "Mostra l'editor del codi font"
-
-#: lazarusidestrconsts.srkmectogglewatches
-msgid "View watches"
-msgstr "Mostra els controls"
 
 #: lazarusidestrconsts.srkmecunfoldall
 msgctxt "lazarusidestrconsts.srkmecunfoldall"
@@ -21907,23 +21874,8 @@ msgstr ""
 msgid "View forms"
 msgstr "Mostra les formes"
 
-#: lazarusidestrconsts.srkmecviewhistory
-msgctxt "lazarusidestrconsts.srkmecviewhistory"
-msgid "View History"
-msgstr ""
-
-#: lazarusidestrconsts.srkmecviewpseudoterminal
-msgctxt "lazarusidestrconsts.srkmecviewpseudoterminal"
-msgid "View console in/output"
-msgstr ""
-
 #: lazarusidestrconsts.srkmecviewtaborder
 msgid "View Tab Order"
-msgstr ""
-
-#: lazarusidestrconsts.srkmecviewthreads
-msgctxt "lazarusidestrconsts.srkmecviewthreads"
-msgid "View Threads"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecviewunitdependencies

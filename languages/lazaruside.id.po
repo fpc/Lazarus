@@ -11964,7 +11964,7 @@ msgid "Toggle View Component Palette"
 msgstr "Toggle lihat palet komponen"
 
 #: lazarusidestrconsts.liskmtoggleviewdebugevents
-msgid "View Debuger Event Log"
+msgid "View Debugger Event Log"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewdebuggeroutput
@@ -11991,11 +11991,6 @@ msgstr "Toggle lihat tombol cepat IDE"
 #| msgid "Toggle view Local Variables"
 msgid "View Local Variables"
 msgstr "Toggle lihat Variabel Lokal"
-
-#: lazarusidestrconsts.liskmtoggleviewmemviewer
-msgctxt "lazarusidestrconsts.liskmtoggleviewmemviewer"
-msgid "View Mem viewer"
-msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewmessages
 msgid "Toggle view Messages"
@@ -21958,10 +21953,6 @@ msgstr ""
 msgid "Syntax Check"
 msgstr "Pemeriksaan Sintaks"
 
-#: lazarusidestrconsts.srkmectoggleassembler
-msgid "View assembler"
-msgstr ""
-
 #: lazarusidestrconsts.srkmectogglebreakpoint
 msgid "toggle breakpoint"
 msgstr ""
@@ -21969,14 +21960,6 @@ msgstr ""
 #: lazarusidestrconsts.srkmectogglebreakpointenabled
 msgid "enable/disable breakpoint"
 msgstr ""
-
-#: lazarusidestrconsts.srkmectogglebreakpoints
-msgid "View breakpoints"
-msgstr "Lihat breakpoint"
-
-#: lazarusidestrconsts.srkmectogglecallstack
-msgid "View call stack"
-msgstr "Lihat pemanggilan stack"
 
 #: lazarusidestrconsts.srkmectogglecodebrowser
 msgid "View code browser"
@@ -21989,10 +21972,6 @@ msgstr "Lihat Eksplorer Kode"
 #: lazarusidestrconsts.srkmectogglecomppalette
 msgid "View component palette"
 msgstr "Lihat palet komponen"
-
-#: lazarusidestrconsts.srkmectoggledebuggerout
-msgid "View debugger output"
-msgstr "Lihat output debugger"
 
 #: lazarusidestrconsts.srkmectoggleformunit
 msgid "Switch between form and unit"
@@ -22007,10 +21986,6 @@ msgctxt "lazarusidestrconsts.srkmectoggleidespeedbtns"
 msgid "View IDE speed buttons"
 msgstr "Lihat tombol cepat IDE"
 
-#: lazarusidestrconsts.srkmectogglelocals
-msgid "View local variables"
-msgstr "Lihat variabel lokal"
-
 #: lazarusidestrconsts.srkmectogglemarker
 #, object-pascal-format
 msgid "Toggle bookmark %d"
@@ -22022,7 +21997,7 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmectogglememviewer
 msgctxt "lazarusidestrconsts.srkmectogglememviewer"
-msgid "View Mem viewer"
+msgid "View Memory Viewer"
 msgstr ""
 
 #: lazarusidestrconsts.srkmectogglemessages
@@ -22037,10 +22012,6 @@ msgstr "Toggle Mode"
 msgid "View Object Inspector"
 msgstr "Lihat Inspektor Objek"
 
-#: lazarusidestrconsts.srkmectoggleregisters
-msgid "View registers"
-msgstr ""
-
 #: lazarusidestrconsts.srkmectogglerestrictionbrowser
 msgid "View restriction browser"
 msgstr ""
@@ -22052,10 +22023,6 @@ msgstr "Lihat Hasil Pencarian"
 #: lazarusidestrconsts.srkmectogglesourceeditor
 msgid "View Source Editor"
 msgstr "Lihat Editor Sumber"
-
-#: lazarusidestrconsts.srkmectogglewatches
-msgid "View watches"
-msgstr "Lihat pengawasan"
 
 #: lazarusidestrconsts.srkmecunfoldall
 msgctxt "lazarusidestrconsts.srkmecunfoldall"
@@ -22094,23 +22061,8 @@ msgstr ""
 msgid "View forms"
 msgstr "Lihat form"
 
-#: lazarusidestrconsts.srkmecviewhistory
-msgctxt "lazarusidestrconsts.srkmecviewhistory"
-msgid "View History"
-msgstr ""
-
-#: lazarusidestrconsts.srkmecviewpseudoterminal
-msgctxt "lazarusidestrconsts.srkmecviewpseudoterminal"
-msgid "View console in/output"
-msgstr ""
-
 #: lazarusidestrconsts.srkmecviewtaborder
 msgid "View Tab Order"
-msgstr ""
-
-#: lazarusidestrconsts.srkmecviewthreads
-msgctxt "lazarusidestrconsts.srkmecviewthreads"
-msgid "View Threads"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecviewunitdependencies

@@ -11648,7 +11648,9 @@ msgid "Toggle View Component Palette"
 msgstr "Bileşen Paleti görünümü Aç/Kapat"
 
 #: lazarusidestrconsts.liskmtoggleviewdebugevents
-msgid "View Debuger Event Log"
+#, fuzzy
+#| msgid "View Debuger Event Log"
+msgid "View Debugger Event Log"
 msgstr "Hata Ayıklama Olay Günlüğünü Göster"
 
 #: lazarusidestrconsts.liskmtoggleviewdebuggeroutput
@@ -11671,11 +11673,6 @@ msgstr "IDE hızlı düğmeleri görünümü Aç/Kapat"
 #: lazarusidestrconsts.liskmtoggleviewlocalvariables
 msgid "View Local Variables"
 msgstr "Yerel Değişkenleri Görüntüle"
-
-#: lazarusidestrconsts.liskmtoggleviewmemviewer
-msgctxt "lazarusidestrconsts.liskmtoggleviewmemviewer"
-msgid "View Mem viewer"
-msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewmessages
 msgid "Toggle view Messages"
@@ -21191,10 +21188,6 @@ msgstr "Önceki Hücre (tüm seçilenler / sadece ilkler)"
 msgid "Syntax Check"
 msgstr "Sözdizimi Kontrolü"
 
-#: lazarusidestrconsts.srkmectoggleassembler
-msgid "View assembler"
-msgstr "Montajcıyı görüntüle"
-
 #: lazarusidestrconsts.srkmectogglebreakpoint
 msgid "toggle breakpoint"
 msgstr "kesme noktası aç/kapat"
@@ -21202,14 +21195,6 @@ msgstr "kesme noktası aç/kapat"
 #: lazarusidestrconsts.srkmectogglebreakpointenabled
 msgid "enable/disable breakpoint"
 msgstr "kesme noktasını etkinleştir/pasifleştir"
-
-#: lazarusidestrconsts.srkmectogglebreakpoints
-msgid "View breakpoints"
-msgstr "Kesme noktalarını görüntüle"
-
-#: lazarusidestrconsts.srkmectogglecallstack
-msgid "View call stack"
-msgstr "Çağrı yığınını görüntüle"
 
 #: lazarusidestrconsts.srkmectogglecodebrowser
 msgid "View code browser"
@@ -21223,10 +21208,6 @@ msgstr "Kod Gezgini'ni görüntüle"
 msgid "View component palette"
 msgstr "Bileşen paletini görüntüle"
 
-#: lazarusidestrconsts.srkmectoggledebuggerout
-msgid "View debugger output"
-msgstr "Hata ayıklayıcı çıktısını görüntüle"
-
 #: lazarusidestrconsts.srkmectoggleformunit
 msgid "Switch between form and unit"
 msgstr "Form ve birim arasında geçiş"
@@ -21239,10 +21220,6 @@ msgstr "Belge Düzenleyiciyi Görüntüle"
 msgid "View IDE speed buttons"
 msgstr "IDE hızlı düğmelerini görüntüle"
 
-#: lazarusidestrconsts.srkmectogglelocals
-msgid "View local variables"
-msgstr "Yerel değişkenleri görüntüle"
-
 #: lazarusidestrconsts.srkmectogglemarker
 #, object-pascal-format
 msgid "Toggle bookmark %d"
@@ -21254,7 +21231,7 @@ msgstr "Geçerli Kelime vurgusunu değiştir"
 
 #: lazarusidestrconsts.srkmectogglememviewer
 msgctxt "lazarusidestrconsts.srkmectogglememviewer"
-msgid "View Mem viewer"
+msgid "View Memory Viewer"
 msgstr ""
 
 #: lazarusidestrconsts.srkmectogglemessages
@@ -21269,10 +21246,6 @@ msgstr "Modu aç/kapat"
 msgid "View Object Inspector"
 msgstr "Nesne Denetçisini Görüntüle"
 
-#: lazarusidestrconsts.srkmectoggleregisters
-msgid "View registers"
-msgstr "Kayıtları görüntüle"
-
 #: lazarusidestrconsts.srkmectogglerestrictionbrowser
 msgid "View restriction browser"
 msgstr "Görüntüleme kısıtlama tarayıcısı"
@@ -21284,10 +21257,6 @@ msgstr "Arama Sonuçlarını Görüntüle"
 #: lazarusidestrconsts.srkmectogglesourceeditor
 msgid "View Source Editor"
 msgstr "Kaynak Düzenleyiciyi Görüntüle"
-
-#: lazarusidestrconsts.srkmectogglewatches
-msgid "View watches"
-msgstr "Saatleri görüntüle"
 
 #: lazarusidestrconsts.srkmecunfoldall
 msgctxt "lazarusidestrconsts.srkmecunfoldall"
@@ -21326,23 +21295,9 @@ msgstr "Editör makrolarını görüntüle"
 msgid "View forms"
 msgstr "Formları görüntüle"
 
-#: lazarusidestrconsts.srkmecviewhistory
-msgctxt "lazarusidestrconsts.srkmecviewhistory"
-msgid "View History"
-msgstr "Geçmişi Görüntüle"
-
-#: lazarusidestrconsts.srkmecviewpseudoterminal
-msgid "View console in/output"
-msgstr "Terminal Çıkışını Görüntüle"
-
 #: lazarusidestrconsts.srkmecviewtaborder
 msgid "View Tab Order"
 msgstr "Sekme Sırasını Görüntüle"
-
-#: lazarusidestrconsts.srkmecviewthreads
-msgctxt "lazarusidestrconsts.srkmecviewthreads"
-msgid "View Threads"
-msgstr "Konuları Görüntüle"
 
 #: lazarusidestrconsts.srkmecviewunitdependencies
 msgid "View unit dependencies"

@@ -11619,7 +11619,7 @@ msgid "Toggle View Component Palette"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewdebugevents
-msgid "View Debuger Event Log"
+msgid "View Debugger Event Log"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewdebuggeroutput
@@ -11641,11 +11641,6 @@ msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewlocalvariables
 msgid "View Local Variables"
-msgstr ""
-
-#: lazarusidestrconsts.liskmtoggleviewmemviewer
-msgctxt "lazarusidestrconsts.liskmtoggleviewmemviewer"
-msgid "View Mem viewer"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewmessages
@@ -21231,24 +21226,12 @@ msgstr ""
 msgid "Syntax Check"
 msgstr ""
 
-#: lazarusidestrconsts.srkmectoggleassembler
-msgid "View assembler"
-msgstr ""
-
 #: lazarusidestrconsts.srkmectogglebreakpoint
 msgid "toggle breakpoint"
 msgstr ""
 
 #: lazarusidestrconsts.srkmectogglebreakpointenabled
 msgid "enable/disable breakpoint"
-msgstr ""
-
-#: lazarusidestrconsts.srkmectogglebreakpoints
-msgid "View breakpoints"
-msgstr ""
-
-#: lazarusidestrconsts.srkmectogglecallstack
-msgid "View call stack"
 msgstr ""
 
 #: lazarusidestrconsts.srkmectogglecodebrowser
@@ -21261,10 +21244,6 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmectogglecomppalette
 msgid "View component palette"
-msgstr ""
-
-#: lazarusidestrconsts.srkmectoggledebuggerout
-msgid "View debugger output"
 msgstr ""
 
 #: lazarusidestrconsts.srkmectoggleformunit
@@ -21280,10 +21259,6 @@ msgctxt "lazarusidestrconsts.srkmectoggleidespeedbtns"
 msgid "View IDE speed buttons"
 msgstr ""
 
-#: lazarusidestrconsts.srkmectogglelocals
-msgid "View local variables"
-msgstr ""
-
 #: lazarusidestrconsts.srkmectogglemarker
 #, object-pascal-format
 msgid "Toggle bookmark %d"
@@ -21295,7 +21270,7 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmectogglememviewer
 msgctxt "lazarusidestrconsts.srkmectogglememviewer"
-msgid "View Mem viewer"
+msgid "View Memory Viewer"
 msgstr ""
 
 #: lazarusidestrconsts.srkmectogglemessages
@@ -21310,10 +21285,6 @@ msgstr ""
 msgid "View Object Inspector"
 msgstr ""
 
-#: lazarusidestrconsts.srkmectoggleregisters
-msgid "View registers"
-msgstr ""
-
 #: lazarusidestrconsts.srkmectogglerestrictionbrowser
 msgid "View restriction browser"
 msgstr ""
@@ -21324,10 +21295,6 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmectogglesourceeditor
 msgid "View Source Editor"
-msgstr ""
-
-#: lazarusidestrconsts.srkmectogglewatches
-msgid "View watches"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecunfoldall
@@ -21367,23 +21334,8 @@ msgstr ""
 msgid "View forms"
 msgstr ""
 
-#: lazarusidestrconsts.srkmecviewhistory
-msgctxt "lazarusidestrconsts.srkmecviewhistory"
-msgid "View History"
-msgstr ""
-
-#: lazarusidestrconsts.srkmecviewpseudoterminal
-msgctxt "lazarusidestrconsts.srkmecviewpseudoterminal"
-msgid "View console in/output"
-msgstr ""
-
 #: lazarusidestrconsts.srkmecviewtaborder
 msgid "View Tab Order"
-msgstr ""
-
-#: lazarusidestrconsts.srkmecviewthreads
-msgctxt "lazarusidestrconsts.srkmecviewthreads"
-msgid "View Threads"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecviewunitdependencies

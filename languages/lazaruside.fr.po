@@ -11671,7 +11671,9 @@ msgid "Toggle View Component Palette"
 msgstr "Commuter la vue de la palette des composants"
 
 #: lazarusidestrconsts.liskmtoggleviewdebugevents
-msgid "View Debuger Event Log"
+#, fuzzy
+#| msgid "View Debuger Event Log"
+msgid "View Debugger Event Log"
 msgstr "Afficher le journal d'événements du débogueur"
 
 #: lazarusidestrconsts.liskmtoggleviewdebuggeroutput
@@ -11694,11 +11696,6 @@ msgstr "Commuter la vue des boutons rapides de l'EDI"
 #: lazarusidestrconsts.liskmtoggleviewlocalvariables
 msgid "View Local Variables"
 msgstr "Afficher les variables locales"
-
-#: lazarusidestrconsts.liskmtoggleviewmemviewer
-msgctxt "lazarusidestrconsts.liskmtoggleviewmemviewer"
-msgid "View Mem viewer"
-msgstr "Afficher le visualiseur de mémoire"
 
 #: lazarusidestrconsts.liskmtoggleviewmessages
 msgid "Toggle view Messages"
@@ -21268,10 +21265,6 @@ msgstr "Cellule précédente (toutes sélectionnées/premières seulement)"
 msgid "Syntax Check"
 msgstr "Vérification de la syntaxe"
 
-#: lazarusidestrconsts.srkmectoggleassembler
-msgid "View assembler"
-msgstr "Afficher l'assembleur"
-
 #: lazarusidestrconsts.srkmectogglebreakpoint
 msgid "toggle breakpoint"
 msgstr "inverser le point d'arrêt"
@@ -21279,14 +21272,6 @@ msgstr "inverser le point d'arrêt"
 #: lazarusidestrconsts.srkmectogglebreakpointenabled
 msgid "enable/disable breakpoint"
 msgstr "activer/désactiver le point d'arrêt"
-
-#: lazarusidestrconsts.srkmectogglebreakpoints
-msgid "View breakpoints"
-msgstr "Afficher les points d'arrêt"
-
-#: lazarusidestrconsts.srkmectogglecallstack
-msgid "View call stack"
-msgstr "Afficher la pile d'appels"
 
 #: lazarusidestrconsts.srkmectogglecodebrowser
 msgid "View code browser"
@@ -21299,10 +21284,6 @@ msgstr "Afficher l'explorateur de code"
 #: lazarusidestrconsts.srkmectogglecomppalette
 msgid "View component palette"
 msgstr "Afficher la palette de composants"
-
-#: lazarusidestrconsts.srkmectoggledebuggerout
-msgid "View debugger output"
-msgstr "Afficher la sortie du débogueur"
 
 #: lazarusidestrconsts.srkmectoggleformunit
 msgid "Switch between form and unit"
@@ -21317,10 +21298,6 @@ msgctxt "lazarusidestrconsts.srkmectoggleidespeedbtns"
 msgid "View IDE speed buttons"
 msgstr "Afficher les boutons rapides de l'EDI"
 
-#: lazarusidestrconsts.srkmectogglelocals
-msgid "View local variables"
-msgstr "Afficher les variables locales"
-
 #: lazarusidestrconsts.srkmectogglemarker
 #, object-pascal-format
 msgid "Toggle bookmark %d"
@@ -21331,8 +21308,10 @@ msgid "Toggle Current-Word highlight"
 msgstr "Inverser le surlignage du mot en cours"
 
 #: lazarusidestrconsts.srkmectogglememviewer
+#, fuzzy
+#| msgid "View Mem viewer"
 msgctxt "lazarusidestrconsts.srkmectogglememviewer"
-msgid "View Mem viewer"
+msgid "View Memory Viewer"
 msgstr "Voir le visualiseur de mémoire"
 
 #: lazarusidestrconsts.srkmectogglemessages
@@ -21347,10 +21326,6 @@ msgstr "Inverser le mode"
 msgid "View Object Inspector"
 msgstr "Afficher l'inspecteur d'objets"
 
-#: lazarusidestrconsts.srkmectoggleregisters
-msgid "View registers"
-msgstr "Afficher les registres"
-
 #: lazarusidestrconsts.srkmectogglerestrictionbrowser
 msgid "View restriction browser"
 msgstr "Afficher le navigateur de restrictions"
@@ -21362,10 +21337,6 @@ msgstr "Afficher les résultats de recherche"
 #: lazarusidestrconsts.srkmectogglesourceeditor
 msgid "View Source Editor"
 msgstr "Afficher l'éditeur de source"
-
-#: lazarusidestrconsts.srkmectogglewatches
-msgid "View watches"
-msgstr "Afficher les points de suivi"
 
 #: lazarusidestrconsts.srkmecunfoldall
 msgctxt "lazarusidestrconsts.srkmecunfoldall"
@@ -21404,24 +21375,9 @@ msgstr "Afficher les macros de l'éditeur"
 msgid "View forms"
 msgstr "Afficher les fiches"
 
-#: lazarusidestrconsts.srkmecviewhistory
-msgctxt "lazarusidestrconsts.srkmecviewhistory"
-msgid "View History"
-msgstr "Afficher l'historique"
-
-#: lazarusidestrconsts.srkmecviewpseudoterminal
-msgctxt "lazarusidestrconsts.srkmecviewpseudoterminal"
-msgid "View console in/output"
-msgstr "Afficher l'entrée et la sortie de la console"
-
 #: lazarusidestrconsts.srkmecviewtaborder
 msgid "View Tab Order"
 msgstr "Afficher l'ordre de tabulation"
-
-#: lazarusidestrconsts.srkmecviewthreads
-msgctxt "lazarusidestrconsts.srkmecviewthreads"
-msgid "View Threads"
-msgstr "Afficher les tâches"
 
 #: lazarusidestrconsts.srkmecviewunitdependencies
 msgid "View unit dependencies"

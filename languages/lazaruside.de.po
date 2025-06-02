@@ -11630,7 +11630,9 @@ msgid "Toggle View Component Palette"
 msgstr "Ansicht der Komponentenpalette umschalten"
 
 #: lazarusidestrconsts.liskmtoggleviewdebugevents
-msgid "View Debuger Event Log"
+#, fuzzy
+#| msgid "View Debuger Event Log"
+msgid "View Debugger Event Log"
 msgstr "Debug-Ereignisse anzeigen"
 
 #: lazarusidestrconsts.liskmtoggleviewdebuggeroutput
@@ -11653,11 +11655,6 @@ msgstr "Ansicht der  IDE-Speedbuttons umschalten"
 #: lazarusidestrconsts.liskmtoggleviewlocalvariables
 msgid "View Local Variables"
 msgstr "Lokale Variablen anzeigen"
-
-#: lazarusidestrconsts.liskmtoggleviewmemviewer
-msgctxt "lazarusidestrconsts.liskmtoggleviewmemviewer"
-msgid "View Mem viewer"
-msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewmessages
 msgid "Toggle view Messages"
@@ -21184,10 +21181,6 @@ msgstr "Vorherige Zelle (alle gewählten / nur erste)"
 msgid "Syntax Check"
 msgstr "Syntaxüberprüfung"
 
-#: lazarusidestrconsts.srkmectoggleassembler
-msgid "View assembler"
-msgstr "Assembler anzeigen"
-
 #: lazarusidestrconsts.srkmectogglebreakpoint
 msgid "toggle breakpoint"
 msgstr "Haltepunkt umschalten"
@@ -21195,14 +21188,6 @@ msgstr "Haltepunkt umschalten"
 #: lazarusidestrconsts.srkmectogglebreakpointenabled
 msgid "enable/disable breakpoint"
 msgstr ""
-
-#: lazarusidestrconsts.srkmectogglebreakpoints
-msgid "View breakpoints"
-msgstr "Haltepunkte anzeigen"
-
-#: lazarusidestrconsts.srkmectogglecallstack
-msgid "View call stack"
-msgstr "Aufruf-Stack anzeigen"
 
 #: lazarusidestrconsts.srkmectogglecodebrowser
 msgid "View code browser"
@@ -21215,10 +21200,6 @@ msgstr "CodeExplorer anzeigen"
 #: lazarusidestrconsts.srkmectogglecomppalette
 msgid "View component palette"
 msgstr "Komponentenpalette anzeigen"
-
-#: lazarusidestrconsts.srkmectoggledebuggerout
-msgid "View debugger output"
-msgstr "Debuggerausgabe anzeigen"
 
 #: lazarusidestrconsts.srkmectoggleformunit
 msgid "Switch between form and unit"
@@ -21233,10 +21214,6 @@ msgctxt "lazarusidestrconsts.srkmectoggleidespeedbtns"
 msgid "View IDE speed buttons"
 msgstr "Speedbuttons der IDE anzeigen"
 
-#: lazarusidestrconsts.srkmectogglelocals
-msgid "View local variables"
-msgstr "Lokale Variablen anzeigen"
-
 #: lazarusidestrconsts.srkmectogglemarker
 #, object-pascal-format
 msgid "Toggle bookmark %d"
@@ -21248,7 +21225,7 @@ msgstr "Aktuelles Wort hervorheben (ein/aus)"
 
 #: lazarusidestrconsts.srkmectogglememviewer
 msgctxt "lazarusidestrconsts.srkmectogglememviewer"
-msgid "View Mem viewer"
+msgid "View Memory Viewer"
 msgstr ""
 
 #: lazarusidestrconsts.srkmectogglemessages
@@ -21263,10 +21240,6 @@ msgstr "Modus wechseln"
 msgid "View Object Inspector"
 msgstr "Objektinspektor anzeigen"
 
-#: lazarusidestrconsts.srkmectoggleregisters
-msgid "View registers"
-msgstr "Register anzeigen"
-
 #: lazarusidestrconsts.srkmectogglerestrictionbrowser
 msgid "View restriction browser"
 msgstr "Browser für bedingte Eigenschaften anzeigen"
@@ -21278,10 +21251,6 @@ msgstr "Suchergebnisse anzeigen"
 #: lazarusidestrconsts.srkmectogglesourceeditor
 msgid "View Source Editor"
 msgstr "Quelltexteditor anzeigen"
-
-#: lazarusidestrconsts.srkmectogglewatches
-msgid "View watches"
-msgstr "Überwachte Ausdrücke anzeigen"
 
 #: lazarusidestrconsts.srkmecunfoldall
 msgctxt "lazarusidestrconsts.srkmecunfoldall"
@@ -21320,24 +21289,9 @@ msgstr "Editormakros anzeigen"
 msgid "View forms"
 msgstr "Formulare anzeigen"
 
-#: lazarusidestrconsts.srkmecviewhistory
-msgctxt "lazarusidestrconsts.srkmecviewhistory"
-msgid "View History"
-msgstr "Historie anzeigen"
-
-#: lazarusidestrconsts.srkmecviewpseudoterminal
-msgctxt "lazarusidestrconsts.srkmecviewpseudoterminal"
-msgid "View console in/output"
-msgstr "Zeige die Ein/Ausgaben der Konsole"
-
 #: lazarusidestrconsts.srkmecviewtaborder
 msgid "View Tab Order"
 msgstr "Tabulatorreihenfolge anzeigen"
-
-#: lazarusidestrconsts.srkmecviewthreads
-msgctxt "lazarusidestrconsts.srkmecviewthreads"
-msgid "View Threads"
-msgstr "Zeige die Threads"
 
 #: lazarusidestrconsts.srkmecviewunitdependencies
 msgid "View unit dependencies"

@@ -11633,7 +11633,9 @@ msgid "Toggle View Component Palette"
 msgstr "切换视图组件面板"
 
 #: lazarusidestrconsts.liskmtoggleviewdebugevents
-msgid "View Debuger Event Log"
+#, fuzzy
+#| msgid "View Debuger Event Log"
+msgid "View Debugger Event Log"
 msgstr "查看调试器事件日志"
 
 #: lazarusidestrconsts.liskmtoggleviewdebuggeroutput
@@ -11656,11 +11658,6 @@ msgstr "切换查看IDE快速按钮"
 #: lazarusidestrconsts.liskmtoggleviewlocalvariables
 msgid "View Local Variables"
 msgstr "查看局部变量"
-
-#: lazarusidestrconsts.liskmtoggleviewmemviewer
-msgctxt "lazarusidestrconsts.liskmtoggleviewmemviewer"
-msgid "View Mem viewer"
-msgstr "查看内存查看器"
 
 #: lazarusidestrconsts.liskmtoggleviewmessages
 msgid "Toggle view Messages"
@@ -21195,10 +21192,6 @@ msgstr "前一个单元格（所有选择的/仅第一个）"
 msgid "Syntax Check"
 msgstr "语法检查"
 
-#: lazarusidestrconsts.srkmectoggleassembler
-msgid "View assembler"
-msgstr "查看汇编"
-
 #: lazarusidestrconsts.srkmectogglebreakpoint
 msgid "toggle breakpoint"
 msgstr "切换断点"
@@ -21206,14 +21199,6 @@ msgstr "切换断点"
 #: lazarusidestrconsts.srkmectogglebreakpointenabled
 msgid "enable/disable breakpoint"
 msgstr "启用/禁用断点"
-
-#: lazarusidestrconsts.srkmectogglebreakpoints
-msgid "View breakpoints"
-msgstr "查看断点"
-
-#: lazarusidestrconsts.srkmectogglecallstack
-msgid "View call stack"
-msgstr "查看调用栈"
 
 #: lazarusidestrconsts.srkmectogglecodebrowser
 msgid "View code browser"
@@ -21226,10 +21211,6 @@ msgstr "查看代码探测器"
 #: lazarusidestrconsts.srkmectogglecomppalette
 msgid "View component palette"
 msgstr "查看组件面板"
-
-#: lazarusidestrconsts.srkmectoggledebuggerout
-msgid "View debugger output"
-msgstr "查看调试器输出"
 
 #: lazarusidestrconsts.srkmectoggleformunit
 msgid "Switch between form and unit"
@@ -21244,10 +21225,6 @@ msgctxt "lazarusidestrconsts.srkmectoggleidespeedbtns"
 msgid "View IDE speed buttons"
 msgstr "查看 IDE 快速按钮"
 
-#: lazarusidestrconsts.srkmectogglelocals
-msgid "View local variables"
-msgstr "查看局部变量"
-
 #: lazarusidestrconsts.srkmectogglemarker
 #, object-pascal-format
 msgid "Toggle bookmark %d"
@@ -21258,8 +21235,10 @@ msgid "Toggle Current-Word highlight"
 msgstr "切换当前单词高亮"
 
 #: lazarusidestrconsts.srkmectogglememviewer
+#, fuzzy
+#| msgid "View Mem viewer"
 msgctxt "lazarusidestrconsts.srkmectogglememviewer"
-msgid "View Mem viewer"
+msgid "View Memory Viewer"
 msgstr "查看内存查看器"
 
 #: lazarusidestrconsts.srkmectogglemessages
@@ -21274,10 +21253,6 @@ msgstr "切换模式"
 msgid "View Object Inspector"
 msgstr "查看对象检查器"
 
-#: lazarusidestrconsts.srkmectoggleregisters
-msgid "View registers"
-msgstr "查看寄存器"
-
 #: lazarusidestrconsts.srkmectogglerestrictionbrowser
 msgid "View restriction browser"
 msgstr "查看限制浏览器"
@@ -21289,10 +21264,6 @@ msgstr "查看搜索结果"
 #: lazarusidestrconsts.srkmectogglesourceeditor
 msgid "View Source Editor"
 msgstr "查看源代码编辑器"
-
-#: lazarusidestrconsts.srkmectogglewatches
-msgid "View watches"
-msgstr "查看监视点"
 
 #: lazarusidestrconsts.srkmecunfoldall
 msgctxt "lazarusidestrconsts.srkmecunfoldall"
@@ -21331,24 +21302,9 @@ msgstr "查看编辑器宏命令"
 msgid "View forms"
 msgstr "查看窗体"
 
-#: lazarusidestrconsts.srkmecviewhistory
-msgctxt "lazarusidestrconsts.srkmecviewhistory"
-msgid "View History"
-msgstr "查看历史"
-
-#: lazarusidestrconsts.srkmecviewpseudoterminal
-msgctxt "lazarusidestrconsts.srkmecviewpseudoterminal"
-msgid "View console in/output"
-msgstr "查看控制台输入/输出"
-
 #: lazarusidestrconsts.srkmecviewtaborder
 msgid "View Tab Order"
 msgstr "查看 Tab 键顺序"
-
-#: lazarusidestrconsts.srkmecviewthreads
-msgctxt "lazarusidestrconsts.srkmecviewthreads"
-msgid "View Threads"
-msgstr "查看线程"
 
 #: lazarusidestrconsts.srkmecviewunitdependencies
 msgid "View unit dependencies"

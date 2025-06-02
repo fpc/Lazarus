@@ -11879,7 +11879,9 @@ msgid "Toggle View Component Palette"
 msgstr "コンポーネントパレットの表示の切り替え"
 
 #: lazarusidestrconsts.liskmtoggleviewdebugevents
-msgid "View Debuger Event Log"
+#, fuzzy
+#| msgid "View Debuger Event Log"
+msgid "View Debugger Event Log"
 msgstr "デバッガイベントログを表示"
 
 #: lazarusidestrconsts.liskmtoggleviewdebuggeroutput
@@ -11902,11 +11904,6 @@ msgstr "IDEのスピードボタンの表示の切り替え"
 #: lazarusidestrconsts.liskmtoggleviewlocalvariables
 msgid "View Local Variables"
 msgstr "ローカル変数を表示"
-
-#: lazarusidestrconsts.liskmtoggleviewmemviewer
-msgctxt "lazarusidestrconsts.liskmtoggleviewmemviewer"
-msgid "View Mem viewer"
-msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewmessages
 msgid "Toggle view Messages"
@@ -21615,10 +21612,6 @@ msgstr "前のセル（選択部すべて/冒頭のみ）"
 msgid "Syntax Check"
 msgstr "表記法チェック"
 
-#: lazarusidestrconsts.srkmectoggleassembler
-msgid "View assembler"
-msgstr "アセンブラを表示"
-
 #: lazarusidestrconsts.srkmectogglebreakpoint
 msgid "toggle breakpoint"
 msgstr "ブレークポイント状態の切り替え"
@@ -21626,14 +21619,6 @@ msgstr "ブレークポイント状態の切り替え"
 #: lazarusidestrconsts.srkmectogglebreakpointenabled
 msgid "enable/disable breakpoint"
 msgstr ""
-
-#: lazarusidestrconsts.srkmectogglebreakpoints
-msgid "View breakpoints"
-msgstr "ブレークポイントを表示"
-
-#: lazarusidestrconsts.srkmectogglecallstack
-msgid "View call stack"
-msgstr "呼び出しスタックを表示"
 
 #: lazarusidestrconsts.srkmectogglecodebrowser
 msgid "View code browser"
@@ -21646,10 +21631,6 @@ msgstr "コードエクスプローラーを表示"
 #: lazarusidestrconsts.srkmectogglecomppalette
 msgid "View component palette"
 msgstr "コンポーネントパレットを表示"
-
-#: lazarusidestrconsts.srkmectoggledebuggerout
-msgid "View debugger output"
-msgstr "デバッガ出力を表示"
 
 #: lazarusidestrconsts.srkmectoggleformunit
 msgid "Switch between form and unit"
@@ -21664,10 +21645,6 @@ msgctxt "lazarusidestrconsts.srkmectoggleidespeedbtns"
 msgid "View IDE speed buttons"
 msgstr "IDEスピードボタンを表示"
 
-#: lazarusidestrconsts.srkmectogglelocals
-msgid "View local variables"
-msgstr "ローカル変数を表示"
-
 #: lazarusidestrconsts.srkmectogglemarker
 #, object-pascal-format
 msgid "Toggle bookmark %d"
@@ -21679,7 +21656,7 @@ msgstr "現在の単語強調を切り替え"
 
 #: lazarusidestrconsts.srkmectogglememviewer
 msgctxt "lazarusidestrconsts.srkmectogglememviewer"
-msgid "View Mem viewer"
+msgid "View Memory Viewer"
 msgstr ""
 
 #: lazarusidestrconsts.srkmectogglemessages
@@ -21694,10 +21671,6 @@ msgstr "切り替えモード"
 msgid "View Object Inspector"
 msgstr "オブジェクトインスペクタを表示"
 
-#: lazarusidestrconsts.srkmectoggleregisters
-msgid "View registers"
-msgstr "レジスタを表示"
-
 #: lazarusidestrconsts.srkmectogglerestrictionbrowser
 msgid "View restriction browser"
 msgstr "制限ブラウザを表示"
@@ -21709,10 +21682,6 @@ msgstr "検索結果を表示"
 #: lazarusidestrconsts.srkmectogglesourceeditor
 msgid "View Source Editor"
 msgstr "ソースエディタを表示"
-
-#: lazarusidestrconsts.srkmectogglewatches
-msgid "View watches"
-msgstr "監視ウィンドウ表示"
 
 #: lazarusidestrconsts.srkmecunfoldall
 msgctxt "lazarusidestrconsts.srkmecunfoldall"
@@ -21751,26 +21720,9 @@ msgstr "エディタマクロを表示"
 msgid "View forms"
 msgstr "フォームを表示"
 
-#: lazarusidestrconsts.srkmecviewhistory
-msgctxt "lazarusidestrconsts.srkmecviewhistory"
-msgid "View History"
-msgstr "履歴を表示"
-
-#: lazarusidestrconsts.srkmecviewpseudoterminal
-#, fuzzy
-#| msgid "View Terminal Output"
-msgctxt "lazarusidestrconsts.srkmecviewpseudoterminal"
-msgid "View console in/output"
-msgstr "ターミナル出力を表示"
-
 #: lazarusidestrconsts.srkmecviewtaborder
 msgid "View Tab Order"
 msgstr "タブ順序を表示"
-
-#: lazarusidestrconsts.srkmecviewthreads
-msgctxt "lazarusidestrconsts.srkmecviewthreads"
-msgid "View Threads"
-msgstr "スレッドを表示"
 
 #: lazarusidestrconsts.srkmecviewunitdependencies
 msgid "View unit dependencies"

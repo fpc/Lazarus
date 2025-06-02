@@ -12177,7 +12177,7 @@ msgstr "החלף (הצג/הסתר) לוח הרכיבים"
 #: lazarusidestrconsts.liskmtoggleviewdebugevents
 #, fuzzy
 #| msgid "Toggle view Debuger Event Log"
-msgid "View Debuger Event Log"
+msgid "View Debugger Event Log"
 msgstr "החלף (הצג/הסתר) לוג ארועי מנפה השגיאות"
 
 #: lazarusidestrconsts.liskmtoggleviewdebuggeroutput
@@ -12204,11 +12204,6 @@ msgstr "החלף (הצג/הסתר) לחצנים מהירים של ה IDE"
 #| msgid "Toggle view Local Variables"
 msgid "View Local Variables"
 msgstr "החלף (הצג/הסתר) משתנים מקומיים"
-
-#: lazarusidestrconsts.liskmtoggleviewmemviewer
-msgctxt "lazarusidestrconsts.liskmtoggleviewmemviewer"
-msgid "View Mem viewer"
-msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewmessages
 msgid "Toggle view Messages"
@@ -22326,10 +22321,6 @@ msgstr ""
 msgid "Syntax Check"
 msgstr "בדיקת תחביר"
 
-#: lazarusidestrconsts.srkmectoggleassembler
-msgid "View assembler"
-msgstr "הצג אסמבלר"
-
 #: lazarusidestrconsts.srkmectogglebreakpoint
 #, fuzzy
 #| msgid "toggle break point"
@@ -22339,14 +22330,6 @@ msgstr "החלף נקודת עצירה"
 #: lazarusidestrconsts.srkmectogglebreakpointenabled
 msgid "enable/disable breakpoint"
 msgstr ""
-
-#: lazarusidestrconsts.srkmectogglebreakpoints
-msgid "View breakpoints"
-msgstr "הצג נקודות עצירה"
-
-#: lazarusidestrconsts.srkmectogglecallstack
-msgid "View call stack"
-msgstr "הצג את מחסנית הקריאות"
 
 #: lazarusidestrconsts.srkmectogglecodebrowser
 msgid "View code browser"
@@ -22359,10 +22342,6 @@ msgstr "הצג את סייר הקוד"
 #: lazarusidestrconsts.srkmectogglecomppalette
 msgid "View component palette"
 msgstr "הצג את פלטת הרכיבים"
-
-#: lazarusidestrconsts.srkmectoggledebuggerout
-msgid "View debugger output"
-msgstr "הצג את פלט מנפה השגיאות"
 
 #: lazarusidestrconsts.srkmectoggleformunit
 msgid "Switch between form and unit"
@@ -22377,10 +22356,6 @@ msgctxt "lazarusidestrconsts.srkmectoggleidespeedbtns"
 msgid "View IDE speed buttons"
 msgstr "הצג את כפתורי ה Speed ב IDE"
 
-#: lazarusidestrconsts.srkmectogglelocals
-msgid "View local variables"
-msgstr "הצג משתנים מקומיים"
-
 #: lazarusidestrconsts.srkmectogglemarker
 #, object-pascal-format, fuzzy, badformat
 #| msgid "Toggle Marker %d"
@@ -22393,7 +22368,7 @@ msgstr "החלף  הדגשת מילה נוכחית (כן לא)"
 
 #: lazarusidestrconsts.srkmectogglememviewer
 msgctxt "lazarusidestrconsts.srkmectogglememviewer"
-msgid "View Mem viewer"
+msgid "View Memory Viewer"
 msgstr ""
 
 #: lazarusidestrconsts.srkmectogglemessages
@@ -22408,10 +22383,6 @@ msgstr "החלף אופן"
 msgid "View Object Inspector"
 msgstr "הצג את Object Inspector"
 
-#: lazarusidestrconsts.srkmectoggleregisters
-msgid "View registers"
-msgstr "הצג אוגרים"
-
 #: lazarusidestrconsts.srkmectogglerestrictionbrowser
 msgid "View restriction browser"
 msgstr "הצג את סייר ההגבלות"
@@ -22423,10 +22394,6 @@ msgstr "הצג את תוצאות החיפוש"
 #: lazarusidestrconsts.srkmectogglesourceeditor
 msgid "View Source Editor"
 msgstr "הצג את עורך קוד המקור"
-
-#: lazarusidestrconsts.srkmectogglewatches
-msgid "View watches"
-msgstr "הצג משגיחים"
 
 #: lazarusidestrconsts.srkmecunfoldall
 msgctxt "lazarusidestrconsts.srkmecunfoldall"
@@ -22467,23 +22434,8 @@ msgstr ""
 msgid "View forms"
 msgstr "הצג טפסים"
 
-#: lazarusidestrconsts.srkmecviewhistory
-msgctxt "lazarusidestrconsts.srkmecviewhistory"
-msgid "View History"
-msgstr ""
-
-#: lazarusidestrconsts.srkmecviewpseudoterminal
-msgctxt "lazarusidestrconsts.srkmecviewpseudoterminal"
-msgid "View console in/output"
-msgstr ""
-
 #: lazarusidestrconsts.srkmecviewtaborder
 msgid "View Tab Order"
-msgstr ""
-
-#: lazarusidestrconsts.srkmecviewthreads
-msgctxt "lazarusidestrconsts.srkmecviewthreads"
-msgid "View Threads"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecviewunitdependencies

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-05-29 19:42+0300\n"
+"PO-Revision-Date: 2025-06-02 16:10+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -11629,7 +11629,7 @@ msgid "Toggle View Component Palette"
 msgstr "Показывать палитру компонентов"
 
 #: lazarusidestrconsts.liskmtoggleviewdebugevents
-msgid "View Debuger Event Log"
+msgid "View Debugger Event Log"
 msgstr "Показать журнал событий отладчика"
 
 #: lazarusidestrconsts.liskmtoggleviewdebuggeroutput
@@ -11652,11 +11652,6 @@ msgstr "Показывать кнопки быстрого запуска IDE"
 #: lazarusidestrconsts.liskmtoggleviewlocalvariables
 msgid "View Local Variables"
 msgstr "Показать локальные переменные"
-
-#: lazarusidestrconsts.liskmtoggleviewmemviewer
-msgctxt "lazarusidestrconsts.liskmtoggleviewmemviewer"
-msgid "View Mem viewer"
-msgstr "Показать средство просмотра памяти"
 
 #: lazarusidestrconsts.liskmtoggleviewmessages
 msgid "Toggle view Messages"
@@ -21193,10 +21188,6 @@ msgstr "Предыдущее поле (все выбранные / первое 
 msgid "Syntax Check"
 msgstr "Проверить синтаксис"
 
-#: lazarusidestrconsts.srkmectoggleassembler
-msgid "View assembler"
-msgstr "Просмотр кода ассемблера"
-
 #: lazarusidestrconsts.srkmectogglebreakpoint
 msgid "toggle breakpoint"
 msgstr "Переключить точку останова"
@@ -21204,14 +21195,6 @@ msgstr "Переключить точку останова"
 #: lazarusidestrconsts.srkmectogglebreakpointenabled
 msgid "enable/disable breakpoint"
 msgstr "Включить/выключить точку останова"
-
-#: lazarusidestrconsts.srkmectogglebreakpoints
-msgid "View breakpoints"
-msgstr "Просмотр точек останова"
-
-#: lazarusidestrconsts.srkmectogglecallstack
-msgid "View call stack"
-msgstr "Просмотр стека вызовов"
 
 #: lazarusidestrconsts.srkmectogglecodebrowser
 msgid "View code browser"
@@ -21224,10 +21207,6 @@ msgstr "Показать обозреватель кода"
 #: lazarusidestrconsts.srkmectogglecomppalette
 msgid "View component palette"
 msgstr "Показать палитру компонентов"
-
-#: lazarusidestrconsts.srkmectoggledebuggerout
-msgid "View debugger output"
-msgstr "Просмотр вывода отладчика"
 
 #: lazarusidestrconsts.srkmectoggleformunit
 msgid "Switch between form and unit"
@@ -21242,10 +21221,6 @@ msgctxt "lazarusidestrconsts.srkmectoggleidespeedbtns"
 msgid "View IDE speed buttons"
 msgstr "Показывать кнопки быстрого доступа IDE"
 
-#: lazarusidestrconsts.srkmectogglelocals
-msgid "View local variables"
-msgstr "Просмотр локальных переменных"
-
 #: lazarusidestrconsts.srkmectogglemarker
 #, object-pascal-format
 msgid "Toggle bookmark %d"
@@ -21257,7 +21232,7 @@ msgstr "Переключение режима подсветки текущег�
 
 #: lazarusidestrconsts.srkmectogglememviewer
 msgctxt "lazarusidestrconsts.srkmectogglememviewer"
-msgid "View Mem viewer"
+msgid "View Memory Viewer"
 msgstr "Показать средство просмотра памяти"
 
 #: lazarusidestrconsts.srkmectogglemessages
@@ -21272,10 +21247,6 @@ msgstr "Переключить режим"
 msgid "View Object Inspector"
 msgstr "Показать инспектор объектов"
 
-#: lazarusidestrconsts.srkmectoggleregisters
-msgid "View registers"
-msgstr "Просмотр значений регистров"
-
 #: lazarusidestrconsts.srkmectogglerestrictionbrowser
 msgid "View restriction browser"
 msgstr "Показать браузер ограничений"
@@ -21287,10 +21258,6 @@ msgstr "Показать результаты поиска"
 #: lazarusidestrconsts.srkmectogglesourceeditor
 msgid "View Source Editor"
 msgstr "Показать редактор исходного кода"
-
-#: lazarusidestrconsts.srkmectogglewatches
-msgid "View watches"
-msgstr "Показать наблюдения"
 
 #: lazarusidestrconsts.srkmecunfoldall
 msgctxt "lazarusidestrconsts.srkmecunfoldall"
@@ -21329,24 +21296,9 @@ msgstr "Показать макросы редактора"
 msgid "View forms"
 msgstr "Показать формы"
 
-#: lazarusidestrconsts.srkmecviewhistory
-msgctxt "lazarusidestrconsts.srkmecviewhistory"
-msgid "View History"
-msgstr "Показать историю"
-
-#: lazarusidestrconsts.srkmecviewpseudoterminal
-msgctxt "lazarusidestrconsts.srkmecviewpseudoterminal"
-msgid "View console in/output"
-msgstr "Показать ввод/вывод в консоли"
-
 #: lazarusidestrconsts.srkmecviewtaborder
 msgid "View Tab Order"
 msgstr "Показать порядок перехода"
-
-#: lazarusidestrconsts.srkmecviewthreads
-msgctxt "lazarusidestrconsts.srkmecviewthreads"
-msgid "View Threads"
-msgstr "Показать потоки исполнения"
 
 #: lazarusidestrconsts.srkmecviewunitdependencies
 msgid "View unit dependencies"

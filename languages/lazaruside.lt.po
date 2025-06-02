@@ -11907,7 +11907,9 @@ msgid "Toggle View Component Palette"
 msgstr "Rodyti komponenčių paletę"
 
 #: lazarusidestrconsts.liskmtoggleviewdebugevents
-msgid "View Debuger Event Log"
+#, fuzzy
+#| msgid "View Debuger Event Log"
+msgid "View Debugger Event Log"
 msgstr "Rodyti „Derintuvės įvykių žurnalas“"
 
 #: lazarusidestrconsts.liskmtoggleviewdebuggeroutput
@@ -11930,11 +11932,6 @@ msgstr "Keisti IKA sparčiųjų mygtukų matomumą"
 #: lazarusidestrconsts.liskmtoggleviewlocalvariables
 msgid "View Local Variables"
 msgstr "Rodyti „Vietiniai kintamieji“"
-
-#: lazarusidestrconsts.liskmtoggleviewmemviewer
-msgctxt "lazarusidestrconsts.liskmtoggleviewmemviewer"
-msgid "View Mem viewer"
-msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewmessages
 msgid "Toggle view Messages"
@@ -21653,10 +21650,6 @@ msgstr "Ankstesnis langelis (visi pažymėti/tik pirmieji)"
 msgid "Syntax Check"
 msgstr "Sintaksės patikra"
 
-#: lazarusidestrconsts.srkmectoggleassembler
-msgid "View assembler"
-msgstr "Rodyti asemblerį"
-
 #: lazarusidestrconsts.srkmectogglebreakpoint
 msgid "toggle breakpoint"
 msgstr "įjungti ar išjungti stabdos tašką"
@@ -21664,14 +21657,6 @@ msgstr "įjungti ar išjungti stabdos tašką"
 #: lazarusidestrconsts.srkmectogglebreakpointenabled
 msgid "enable/disable breakpoint"
 msgstr ""
-
-#: lazarusidestrconsts.srkmectogglebreakpoints
-msgid "View breakpoints"
-msgstr "Rodyti stabdos taškus"
-
-#: lazarusidestrconsts.srkmectogglecallstack
-msgid "View call stack"
-msgstr "Rodyti kreipčių dėklą"
 
 #: lazarusidestrconsts.srkmectogglecodebrowser
 msgid "View code browser"
@@ -21684,10 +21669,6 @@ msgstr "Rodyti kodo tyrinėtoją"
 #: lazarusidestrconsts.srkmectogglecomppalette
 msgid "View component palette"
 msgstr "Rodyti komponenčių paletę"
-
-#: lazarusidestrconsts.srkmectoggledebuggerout
-msgid "View debugger output"
-msgstr "Rodyti derintuvės išvestį"
 
 #: lazarusidestrconsts.srkmectoggleformunit
 msgid "Switch between form and unit"
@@ -21702,10 +21683,6 @@ msgctxt "lazarusidestrconsts.srkmectoggleidespeedbtns"
 msgid "View IDE speed buttons"
 msgstr "Rodyti IKA sparčiuosius mygtukus"
 
-#: lazarusidestrconsts.srkmectogglelocals
-msgid "View local variables"
-msgstr "Rodyti vietinius kintamuosius"
-
 #: lazarusidestrconsts.srkmectogglemarker
 #, object-pascal-format
 msgid "Toggle bookmark %d"
@@ -21717,7 +21694,7 @@ msgstr "Įjungti ar išjungti dabartinio žodžio paryškinimą"
 
 #: lazarusidestrconsts.srkmectogglememviewer
 msgctxt "lazarusidestrconsts.srkmectogglememviewer"
-msgid "View Mem viewer"
+msgid "View Memory Viewer"
 msgstr ""
 
 #: lazarusidestrconsts.srkmectogglemessages
@@ -21732,10 +21709,6 @@ msgstr "Perjungti veikseną"
 msgid "View Object Inspector"
 msgstr "Rodyti objektų inspektorių"
 
-#: lazarusidestrconsts.srkmectoggleregisters
-msgid "View registers"
-msgstr "Rodyti registrus"
-
 #: lazarusidestrconsts.srkmectogglerestrictionbrowser
 msgid "View restriction browser"
 msgstr "Rodyti apribojimų naršyklę"
@@ -21747,10 +21720,6 @@ msgstr "Rodyti ieškos rezultatus"
 #: lazarusidestrconsts.srkmectogglesourceeditor
 msgid "View Source Editor"
 msgstr "Rodyti pirminio kodo rengyklę"
-
-#: lazarusidestrconsts.srkmectogglewatches
-msgid "View watches"
-msgstr "Rodyti stebimuosius"
 
 #: lazarusidestrconsts.srkmecunfoldall
 msgctxt "lazarusidestrconsts.srkmecunfoldall"
@@ -21789,26 +21758,9 @@ msgstr "Rodyti rengyklės makrokomandas"
 msgid "View forms"
 msgstr "Rodyti formas"
 
-#: lazarusidestrconsts.srkmecviewhistory
-msgctxt "lazarusidestrconsts.srkmecviewhistory"
-msgid "View History"
-msgstr "Rodyti praeitį"
-
-#: lazarusidestrconsts.srkmecviewpseudoterminal
-#, fuzzy
-#| msgid "View Terminal Output"
-msgctxt "lazarusidestrconsts.srkmecviewpseudoterminal"
-msgid "View console in/output"
-msgstr "Rodyti pulto išvestį"
-
 #: lazarusidestrconsts.srkmecviewtaborder
 msgid "View Tab Order"
 msgstr "Rodyti tabuliatoriaus eilė"
-
-#: lazarusidestrconsts.srkmecviewthreads
-msgctxt "lazarusidestrconsts.srkmecviewthreads"
-msgid "View Threads"
-msgstr "Rodyti gijas"
 
 #: lazarusidestrconsts.srkmecviewunitdependencies
 msgid "View unit dependencies"
