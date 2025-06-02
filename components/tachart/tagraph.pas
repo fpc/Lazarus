@@ -1806,8 +1806,7 @@ begin
       UseYMin and (h < YMin) or UseYMax and (h > YMax)
     then
       exit;
-  if (FLogicalExtent <> AValue) then
-    InvalidateClipRect;
+  InvalidateClipRect;
   FLogicalExtent := AValue;
   FIsZoomed := true;
   StyleChanged(Self);
