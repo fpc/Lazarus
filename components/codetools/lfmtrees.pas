@@ -422,11 +422,10 @@ begin
   Parser := TParser.Create(LFMStream);
   try
     try
-      repeat
+      while Parser.TokenSymbolIs('OBJECT')
+          or Parser.TokenSymbolIs('INHERITED')
+          or Parser.TokenSymbolIs('INLINE') do
         ProcessObject;
-      until (not Parser.TokenSymbolIs('OBJECT'))
-        and (not Parser.TokenSymbolIs('INHERITED'))
-        and (not Parser.TokenSymbolIs('INLINE'));
       Result:=true;
     except
       on E: EParserError do begin

@@ -30,6 +30,7 @@ type
     procedure RenameUsedUnitRefs(UsedUnit: TCodeBuffer; NewName, NewFilename: string); // only in Code, not in UsedUnit
     procedure RenameUsedUnitRefs(UsedUnit: TCodeBuffer; NewName, NewFilename: string; const AddFiles: array of string);
     procedure CheckDiff(CurCode: TCodeBuffer; const ExpLines: array of string);
+    procedure CheckDiffStr(CurCode: TCodeBuffer; const ExpSrc: string);
   end;
 
   { TTestRefactoring }
@@ -37,6 +38,8 @@ type
   TTestRefactoring = class(TCustomTestRefactoring)
   private
   protected
+    procedure TestRenameAlsoLFM(const RedUnitIntf, Form1IntfSrc, NewIdentifier,
+      LFMSrc: string; const ExpLFMLines: array of string); virtual;
   published
     procedure TestExplodeWith;
 
@@ -87,6 +90,8 @@ type
     procedure TestRenameUsedUnit_LongestUnitnameWins;
 
     // rename also in lfm
+    procedure TestRenameAlsoLFM_Empty;
+    procedure TestRenameAlsoLFM_Garbage;
     procedure TestRenameAlsoLFM_Variable;
     procedure TestRenameAlsoLFM_Event;
     procedure TestRenameAlsoLFM_SkipBinaryData;
@@ -361,7 +366,98 @@ begin
   Fail('TCustomTestRefactoring.CheckDiff ');
 end;
 
+procedure TCustomTestRefactoring.CheckDiffStr(CurCode: TCodeBuffer; const ExpSrc: string);
+var
+  ExpLines: TStringList;
+  Differ: Boolean;
+  i: Integer;
+  CurLine: String;
+begin
+  if (ExpSrc='') and (CurCode.Source='') then exit;
+  ExpLines:=TStringList.Create;
+  try
+    ExpLines.Text:=ExpSrc;
+    //debugln(['TCustomTestRefactoring.CheckDiffStr ',CurCode.Filename,' ',length(ExpLines)]);
+    if ExpLines.Count=CurCode.LineCount then begin
+      Differ:=false;
+      for i:=0 to ExpLines.Count-1 do begin
+        if ExpLines[i]<>CurCode.GetLine(i,false) then
+          Differ:=true;
+      end;
+      if not Differ then exit;
+    end;
+
+    debugln('TCustomTestRefactoring.CheckDiffStr Expected=');
+    for i:=0 to ExpLines.Count-1 do
+      debugln('  ',ExpLines[i]);
+    debugln('TCustomTestRefactoring.CheckDiffStr Found=');
+    for i:=0 to CurCode.LineCount-1 do
+      debugln('  ',CurCode.GetLine(i,false));
+
+    debugln('TCustomTestRefactoring.CheckDiffStr Diff=');
+    for i:=0 to ExpLines.Count-1 do begin
+      if i>=CurCode.LineCount then begin
+        debugln('  Expec: ',ExpLines[i]);
+        debugln('  Found: ');
+      end else begin
+        CurLine:=CurCode.GetLine(i,false);
+        if ExpLines[i]<>CurLine then begin
+          debugln('  Expec: ',ExpLines[i]);
+          debugln('  Found: ',CurLine);
+        end else begin
+          debugln('       : ',ExpLines[i]);
+        end;
+      end;
+    end;
+    for i:=ExpLines.Count to CurCode.LineCount-1 do begin
+      debugln('>>Expec: ');
+      debugln('<<Found: ',CurCode.GetLine(i,false));
+    end;
+
+    Fail('TCustomTestRefactoring.CheckDiff ');
+  finally
+    ExpLines.Free;
+  end;
+end;
+
 { TTestRefactoring }
+
+procedure TTestRefactoring.TestRenameAlsoLFM(const RedUnitIntf, Form1IntfSrc, NewIdentifier,
+  LFMSrc: string; const ExpLFMLines: array of string);
+var
+  Test1LFM, RedUnit: TCodeBuffer;
+begin
+  RedUnit:=CodeToolBoss.CreateFile('red.pas');
+  Test1LFM:=CodeToolBoss.CreateFile(ChangeFileExt(Code.Filename,'.lfm'));
+  try
+    RedUnit.Source:=
+      'unit Red;'+LineEnding
+      +'interface'+LineEnding
+      +RedUnitIntf
+      +'implementation'+LineEnding
+      +'end.'+LineEnding;
+
+    Test1LFM.Source:=LFMSrc;
+
+    Add('unit Test1;'+LineEnding
+      +'{$mode objfpc}{$H+}'+LineEnding
+      +'interface'+LineEnding
+      +'uses red;'+LineEnding
+      +'type'+LineEnding
+      +'  TForm1 = class(TForm)'+LineEnding
+      +Form1IntfSrc
+      +'  end;'+LineEnding
+      +'implementation'+LineEnding
+      +'end.'+LineEnding);
+
+    RenameReferences(NewIdentifier,frfAllLFM);
+    CheckDiff(Test1LFM,ExpLFMLines);
+
+  finally
+    RedUnit.IsDeleted:=true;
+    Test1LFM.IsDeleted:=true;
+  end;
+end;
 
 procedure TTestRefactoring.TestExplodeWith;
 type
@@ -2006,108 +2102,96 @@ begin
   end;
 end;
 
-procedure TTestRefactoring.TestRenameAlsoLFM_Variable;
-var
-  Test1LFM, RedUnit: TCodeBuffer;
+procedure TTestRefactoring.TestRenameAlsoLFM_Empty;
 begin
-  RedUnit:=CodeToolBoss.CreateFile('red.pas');
-  Test1LFM:=CodeToolBoss.CreateFile(ChangeFileExt(Code.Filename,'.lfm'));
-  try
-    RedUnit.Source:='unit Red;'+LineEnding
-      +'interface'+LineEnding
-      +'type'+LineEnding
-      +'  TForm = class'+LineEnding
-      +'  end;'+LineEnding
-      +'  TButton = class'+LineEnding
-      +'  end;'+LineEnding
-      +'implementation'+LineEnding
-      +'end.';
+  TestRenameAlsoLFM(LinesToStr([ // red unit interface
+  'type',
+  '  TForm = class',
+  '  end;',
+  '  TButton = class',
+  '  end;']),
+  '    Button1{#Rename}: TButton;', // form interface
+  'OkBtn', // new identifier
+  '', // LFM source
+  [] // expected LFM source after rename
+  );
+end;
 
-    Test1LFM.Source:=LinesToStr([
-      'object Form1: TForm1',
-      '  Left = 353',
-      '  object Button1: TButton',
-      '  end',
-      'end']);
+procedure TTestRefactoring.TestRenameAlsoLFM_Garbage;
+begin
+  TestRenameAlsoLFM(LinesToStr([ // red unit interface
+  'type',
+  '  TForm = class',
+  '  end;',
+  '  TButton = class',
+  '  end;']),
+  '    Button1{#Rename}: TButton;', // form interface
+  'OkBtn', // new identifier
+  'bla'+LineEnding, // LFM source
+  ['bla'] // expected LFM source after rename
+  );
+end;
 
-    Add(['unit Test1;',
-      '{$mode objfpc}{$H+}',
-      'interface',
-      'uses red;',
-      'type',
-      '  TForm1 = class(TForm)',
-      '    Button1{#Rename}: TButton;',
-      '  end;',
-      'implementation',
-      'end.']);
-    RenameReferences('OkBtn',frfAllLFM);
-    CheckDiff(Test1LFM,[
-    'object Form1: TForm1',
-    '  Left = 353',
-    '  object OkBtn: TButton',
-    '  end',
-    'end']);
-
-  finally
-    RedUnit.IsDeleted:=true;
-    Test1LFM.IsDeleted:=true;
-  end;
+procedure TTestRefactoring.TestRenameAlsoLFM_Variable;
+begin
+  TestRenameAlsoLFM(LinesToStr([ // red unit interface
+  'type',
+  '  TForm = class',
+  '  end;',
+  '  TButton = class',
+  '  end;']),
+  // form interface
+  '    Button1{#Rename}: TButton;',
+  'OkBtn', // new identifier
+  LinesToStr([ // LFM source
+  'object Form1: TForm1',
+  '  Left = 353',
+  '  object Button1: TButton',
+  '  end',
+  'end']),
+  [  // expected LFM source after rename
+  'object Form1: TForm1',
+  '  Left = 353',
+  '  object OkBtn: TButton',
+  '  end',
+  'end']
+  );
 end;
 
 procedure TTestRefactoring.TestRenameAlsoLFM_Event;
 var
   Test1LFM, RedUnit: TCodeBuffer;
 begin
-  RedUnit:=CodeToolBoss.CreateFile('red.pas');
-  Test1LFM:=CodeToolBoss.CreateFile(ChangeFileExt(Code.Filename,'.lfm'));
-  try
-    RedUnit.Source:='unit Red;'+LineEnding
-      +'interface'+LineEnding
-      +'type'+LineEnding
-      +'  TForm = class'+LineEnding
-      +'  end;'+LineEnding
-      +'  TButton = class'+LineEnding
-      +'  published'+LineEnding
-      +'    property OnClick: TNotifyEvent;'+LineEnding
-      +'  end;'+LineEnding
-      +'implementation'+LineEnding
-      +'end.';
-
-    Test1LFM.Source:=LinesToStr([
-      'object Form1: TForm1',
-      '  Left = 353',
-      '  object Button1: TButton',
-      '    OnClick = Button1Click',
-      '  end',
-      'end']);
-
-    Add(['unit Test1;',
-      '{$mode objfpc}{$H+}',
-      'interface',
-      'uses red;',
-      'type',
-      '  TForm1 = class(TForm)',
-      '    Button1: TButton;',
-      '    procedure Button1Click{#Rename}(Sender: TObject);',
-      '  end;',
-      'implementation',
-      'procedure TForm1.Button1Click(Sender: TObject);',
-      'begin',
-      'end;',
-      'end.']);
-    RenameReferences('OkClicked',frfAllLFM);
-    CheckDiff(Test1LFM,[
-    'object Form1: TForm1',
-    '  Left = 353',
-    '  object Button1: TButton',
-    '    OnClick = OkClicked',
-    '  end',
-    'end']);
-
-  finally
-    RedUnit.IsDeleted:=true;
-    Test1LFM.IsDeleted:=true;
-  end;
+  TestRenameAlsoLFM(LinesToStr([ // red unit interface
+  'type',
+  '  TForm = class',
+  '  end;',
+  '  TButton = class',
+  '  published',
+  '    property OnClick: TNotifyEvent;',
+  '  end;']),
+  // TForm1 interface
+  LinesToStr([
+  '    Button1: TButton;',
+  '    procedure Button1Click{#Rename}(Sender: TObject);']),
+  // new identifier
+  'OkClicked',
+  // LFM source
+  LinesToStr([
+  'object Form1: TForm1',
+  '  Left = 353',
+  '  object Button1: TButton',
+  '    OnClick = Button1Click',
+  '  end',
+  'end']),
+  [  // expected LFM source after rename
+  'object Form1: TForm1',
+  '  Left = 353',
+  '  object Button1: TButton',
+  '    OnClick = OkClicked',
+  '  end',
+  'end']
+  );
 end;
 
 procedure TTestRefactoring.TestRenameAlsoLFM_SkipBinaryData;
