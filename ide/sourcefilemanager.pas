@@ -64,7 +64,7 @@ uses
   // IDE
   DialogProcs, IDEProtocol, LazarusIDEStrConsts, NewDialog,
   NewProjectDlg, MainBase, MainBar, MainIntf, Project, ProjectDefs,
-  ProjectInspector, SourceSynEditor, SourceEditor,
+  ProjectInspector, SourceSynEditor, SourceEditor, ComCtrls,
   EditorOptions, CustomFormEditor, ControlSelection,
   FormEditor, EmptyMethodsDlg, BaseDebugManager, BuildManager,
   EditorMacroListViewer, BuildModesManager, ViewUnit_Dlg, CheckLFMDlg,
@@ -257,7 +257,7 @@ function SaveEditorFile(const Filename: string; Flags: TSaveFlags): TModalResult
 function CloseEditorFile(AEditor: TSourceEditorInterface; Flags: TCloseFlags):TModalResult;
 function CloseEditorFile(const Filename: string; Flags: TCloseFlags): TModalResult;
 // interactive unit selection
-//function IfNotOkJumpToCodetoolErrorAndAskToAbort(Ok: boolean;
+// function IfNotOkJumpToCodetoolErrorAndAskToAbort(Ok: boolean;
 //                            Ask: boolean; out NewResult: TModalResult): boolean;
 function JumpToCodetoolErrorAndAskToAbort(Ask: boolean): TModalResult;
 function SelectProjectItems(ItemList: TViewUnitEntries; ItemType: TIDEProjectItem): TModalResult;
@@ -305,6 +305,7 @@ function ResolveAmbiguousLFMClasses(AnUnitInfo: TUnitInfo;
 function OpenComponent(const UnitFilename: string; OpenFlags: TOpenFlags;
     CloseFlags: TCloseFlags; out Component: TComponent): TModalResult;
 function CloseUnitComponent(AnUnitInfo: TUnitInfo; Flags: TCloseFlags): TModalResult;
+function ReloadUnitComponent(AnUnitInfo: TUnitInfo): TModalResult; experimental;
 function CloseDependingUnitComponents(AnUnitInfo: TUnitInfo;
                                       Flags: TCloseFlags): TModalResult;
 function UnitComponentIsUsed(AnUnitInfo: TUnitInfo;
@@ -7854,6 +7855,35 @@ begin
   finally
     Project1.UnlockUnitComponentDependencies;
   end;
+  Result:=mrOk;
+end;
+
+function ReloadUnitComponent(AnUnitInfo: TUnitInfo): TModalResult;
+var
+  PageIdx, WinID: integer;
+begin
+  Result:=mrCancel;
+  if AnUnitInfo.EditorInfoCount<1 then exit;
+
+  PageIdx:=AnUnitInfo.EditorInfo[0].PageIndex;
+  WinID:=AnUnitInfo.EditorInfo[0].WindowID;
+
+  CloseUnitComponent(AnUnitInfo, [cfCloseDependencies]);
+  SaveEditorFile(AnUnitInfo.Filename,[sfProjectSaving, sfSkipReferences]);
+  SaveEditorFile(ChangeFileExt(AnUnitInfo.Filename,'.lfm'),
+    [sfProjectSaving, sfSkipReferences]);
+  CloseEditorFile(AnUnitInfo.Filename,[cfCloseDependencies]);
+
+  // reopen a unit + recreate a component
+  if OpenEditorFile(AnUnitInfo.Filename,PageIdx,WinID,AnUnitInfo.EditorInfo[0],
+    [ofDoLoadResource, ofUseCache],true)<>mrOK then begin
+      debugln(['ReloadUnitComponent OpenEditorFile failed']);
+    exit(mrCancel);
+  end;
+
+  // clear history, for units with modified lfm content it is useless
+  AnUnitInfo.Modified:=false;
+  AnUnitInfo.SessionModified:=false;
   Result:=mrOk;
 end;
 

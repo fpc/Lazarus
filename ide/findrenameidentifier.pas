@@ -847,16 +847,9 @@ begin
                 for j:= AUnitInfo.EditorInfoCount-1 downto 1 do
                   CloseEditorFile(AUnitInfo.EditorInfo[j].EditorComponent,[cfQuiet,
                     cfCloseDependencies]);
+
               //force dumb saving
-              CloseUnitComponent(AUnitInfo, [cfCloseDependencies]);
-              SaveEditorFile(AUnitInfo.Filename,[sfProjectSaving, sfSkipReferences]);
-              SaveEditorFile(Code.Filename,[sfProjectSaving, sfSkipReferences]);
-
-              PageIdx:=AUnitInfo.EditorInfo[0].PageIndex;
-              WinID:=AUnitInfo.EditorInfo[0].WindowID;
-
-              OpenEditorFile(Code.Filename,PageIdx,WinID,AUnitInfo.EditorInfo[0],
-                [],true);
+              ReloadUnitComponent(AUnitInfo);
 
             end;
           end;
