@@ -1683,7 +1683,7 @@ msgid "Debug Output"
 msgstr "Повідомлення зневаджувача"
 
 #: idedebuggerstringconstants.lismenuviewmemviewer
-msgid "Mem viewer"
+msgid "Memory Viewer"
 msgstr ""
 
 #: idedebuggerstringconstants.lismore

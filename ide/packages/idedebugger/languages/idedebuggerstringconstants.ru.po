@@ -1671,7 +1671,7 @@ msgid "Debug Output"
 msgstr "Вывод отладчика"
 
 #: idedebuggerstringconstants.lismenuviewmemviewer
-msgid "Mem viewer"
+msgid "Memory Viewer"
 msgstr "Средство просмотра памяти"
 
 #: idedebuggerstringconstants.lismore

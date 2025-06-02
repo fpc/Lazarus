@@ -1688,7 +1688,7 @@ msgid "Debug Output"
 msgstr "Hibakeresési kimenet"
 
 #: idedebuggerstringconstants.lismenuviewmemviewer
-msgid "Mem viewer"
+msgid "Memory Viewer"
 msgstr ""
 
 #: idedebuggerstringconstants.lismore

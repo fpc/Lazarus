@@ -1714,7 +1714,7 @@ msgid "Debug Output"
 msgstr "פלט ניפוי השגיאות"
 
 #: idedebuggerstringconstants.lismenuviewmemviewer
-msgid "Mem viewer"
+msgid "Memory Viewer"
 msgstr ""
 
 #: idedebuggerstringconstants.lismore

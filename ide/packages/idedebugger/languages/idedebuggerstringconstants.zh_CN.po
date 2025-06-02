@@ -1666,7 +1666,9 @@ msgid "Debug Output"
 msgstr "调试输出(&D)"
 
 #: idedebuggerstringconstants.lismenuviewmemviewer
-msgid "Mem viewer"
+#, fuzzy
+#| msgid "Mem viewer"
+msgid "Memory Viewer"
 msgstr "内存查看器"
 
 #: idedebuggerstringconstants.lismore

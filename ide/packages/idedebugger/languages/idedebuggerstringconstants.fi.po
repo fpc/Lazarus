@@ -1682,7 +1682,7 @@ msgid "Debug Output"
 msgstr "Virheenjäljittimen tuloste"
 
 #: idedebuggerstringconstants.lismenuviewmemviewer
-msgid "Mem viewer"
+msgid "Memory Viewer"
 msgstr ""
 
 #: idedebuggerstringconstants.lismore

@@ -1662,7 +1662,7 @@ msgid "Debug Output"
 msgstr "Sortida de depuració"
 
 #: idedebuggerstringconstants.lismenuviewmemviewer
-msgid "Mem viewer"
+msgid "Memory Viewer"
 msgstr ""
 
 #: idedebuggerstringconstants.lismore
