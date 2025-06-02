@@ -332,7 +332,7 @@ resourcestring
   //Disassembler dialog
   lisDisAssAssembler = 'Assembler';
   lisMenuViewAssembler = 'Assembler';
-  lisMenuViewMemViewer = 'Mem viewer';
+  lisMenuViewMemViewer = 'Memory Viewer';
   lisDbgAsmCopyToClipboard = 'Copy to Clipboard';
   lisDbgAsmCopyAddressToClipboard = 'Copy address to Clipboard';
   lisDisAssGotoCurrentAddress = 'Goto Current Address';
