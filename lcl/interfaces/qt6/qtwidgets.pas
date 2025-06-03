@@ -6007,9 +6007,14 @@ var
 begin
   if (Widget <> nil) and FOwnWidget then
   begin
-    ALCLEvent := QLCLMessageEvent_create(LCLQt_DestroyWidget, 0,
+    if QObject_inherits(Widget, 'QMainWindow') then
+      QMainWindow_Destroy(QMainWindowH(Widget))
+    else
+    begin
+      ALCLEvent := QLCLMessageEvent_create(LCLQt_DestroyWidget, 0,
           0, 0, 0);
-    QCoreApplication_postEvent(Widget, ALCLEvent, Ord(QtHighEventPriority));
+      QCoreApplication_postEvent(Widget, ALCLEvent, Ord(QtHighEventPriority));
+    end;
   end;
   Widget := nil;
 end;
@@ -7403,11 +7408,6 @@ begin
   if QtWidgetSet.IsValidHandle(HWND(FMenuBar)) then
   begin
     FMenuBar.DetachEvents;
-    if FOwnWidget and (FMenuBar.Widget <> nil) then
-    begin
-      QObject_deleteLater(FMenuBar.Widget);
-      FMenuBar.Widget := nil;
-    end;
     FMenuBar.Widget := nil;
     FreeThenNil(FMenuBar);
   end;
