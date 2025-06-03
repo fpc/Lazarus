@@ -2088,7 +2088,7 @@ begin
       t.Done;
 
     AssertValKind('', Res, rdkArray);
-    AssertArrayData('', Res, aArrType, max(0, aLen), 0, 'TMyArray');
+    AssertArrayData('', Res, aArrType, max(0, aLen), 0, 'TMyArray', False, False);
 
     for i := 0 to aLen-1 do begin
       Res.SetSelectedIndex(i);
@@ -2235,7 +2235,7 @@ begin
       t.Done;
 
     AssertValKind('', Res, rdkArray);
-    AssertArrayData('', Res, datDynArray, aLen, 0, 'TMyArray');
+    AssertArrayData('', Res, datDynArray, aLen, 0, 'TMyArray', False, False);
 
     for i := 0 to aLen-1 do begin
       Res.SetSelectedIndex(i);
@@ -2346,7 +2346,7 @@ begin
       t.Done;
 
     AssertValKind('', Res, rdkArray);
-    AssertArrayData('', Res, datStatArray, 3, 0, 'TMyArray');
+    AssertArrayData('', Res, datStatArray, 3, 0, 'TMyArray', False, False);
 
     for i := 0 to 2 do begin
       case i of
@@ -2688,7 +2688,7 @@ begin
 
 
     AssertValKind('', Res, rdkArray);
-    AssertArrayData('', Res, datDynArray, ArrayCnt+1, 0, 'TMyArray');
+    AssertArrayData('', Res, datDynArray, ArrayCnt+1, 0, 'TMyArray', False, False);
 
     for i := 0 to ArrayCnt do begin
       Res.SetSelectedIndex(i);
@@ -2877,7 +2877,7 @@ begin
 
 
     AssertValKind('', Res, rdkArray);
-    AssertArrayData('', Res, datDynArray, 2, 0, 'TMyArray');
+    AssertArrayData('', Res, datDynArray, 2, 0, 'TMyArray', False, False);
 
       // [0]
       res.SetSelectedIndex(0);
@@ -3030,7 +3030,7 @@ begin
 
 
     AssertValKind('', Res, rdkArray);
-    AssertArrayData('', Res, datUnknown, 3, 0);
+    AssertArrayData('', Res, datUnknown, 3, 0, #1, False, False);
 
     Res.SetSelectedIndex(0);
     if aVarErr = 0 then begin
@@ -3139,7 +3139,7 @@ begin
       t.Done;
 
     AssertValKind('', Res, rdkArray);
-    AssertArrayData('', Res, datDynArray, 10, 0, 'TMyArray');
+    AssertArrayData('', Res, datDynArray, 10, 0, 'TMyArray', False, False);
 
     Res.SetSelectedIndex(0);
     AssertStructData('idx:0', Res.SelectedEntry, dstClass, 10, -1, ''); // TODO: field cnt
