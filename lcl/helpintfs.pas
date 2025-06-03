@@ -39,15 +39,15 @@ type
   EHelpSystemException = class(Exception);
 
   TShowHelpResult = (
-    shrNone,
-    shrSuccess,
-    shrCancel,
-    shrDatabaseNotFound,
-    shrContextNotFound, // database found, but the element was not found
-    shrViewerNotFound,  // no viewer registered for this format
-    shrHelpNotFound,
-    shrViewerError,
-    shrSelectorError
+    shrNone,             // help error
+    shrSuccess,          // success
+    shrCancel,           // operation was cancelled
+    shrDatabaseNotFound, // there is no help database installed for this topic
+    shrContextNotFound,  // a help database was found for this topic, but this topic was not found
+    shrViewerNotFound,   // no viewer registered for this format
+    shrHelpNotFound,     // no help found for this topic
+    shrViewerError,      // help viewer error
+    shrSelectorError     // help selector error
     );
   TShowHelpResults = set of TShowHelpResult;
 
