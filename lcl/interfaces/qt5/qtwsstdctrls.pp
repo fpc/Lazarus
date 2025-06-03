@@ -580,8 +580,17 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 class function TQtWSCustomListBox.GetTopIndex(const ACustomListBox: TCustomListBox): integer;
+var
+  QtListWidget: TQtListWidget;
+  AQtPoint: TQtPoint;
 begin
   Result := 0;
+  if not WSCheckHandleAllocated(ACustomListBox, 'GetTopIndex') then
+    Exit;
+  QtListWidget := TQtListWidget(ACustomListBox.Handle);
+  AQtPoint.x := 0;
+  AQtPoint.y := 0;
+  Result := QtListWidget.IndexAt(@AQtPoint);
 end;
 
 {------------------------------------------------------------------------------
