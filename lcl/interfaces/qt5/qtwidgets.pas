@@ -16605,10 +16605,6 @@ begin
     FActions.Free;
   end;
 
-  if Assigned(FActionHandle) then
-    QAction_Destroy(FActionHandle);
-  FActionHandle := nil;
-
   inherited Destroy;
 end;
 
@@ -16662,6 +16658,11 @@ begin
     QMenu_hook_destroy(FAboutToHideHook);
     FAboutToHideHook := nil;
   end;
+
+  if Assigned(FActionHandle) then
+    QAction_Destroy(FActionHandle);
+  FActionHandle := nil;
+
   inherited DetachEvents;
 end;
 
