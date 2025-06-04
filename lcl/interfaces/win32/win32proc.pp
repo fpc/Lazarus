@@ -1044,25 +1044,44 @@ begin
   ChangedMenus.Clear;
 end;
 
-function MeasureTextForWnd(const AWindow: HWND; Text: string; var Width,
-  Height: integer): boolean;
+function MeasureTextForWnd(const AWindow: HWND; Text: string;
+  var Width, Height: integer): boolean;
 var
   textSize: Windows.SIZE = (cx: 0; cy: 0);
   canvasHandle: HDC;
   oldFontHandle, newFontHandle: HFONT;
+  style: PtrInt;
+  isMultiLine: Boolean;
+  flags: Integer;
+  R: TRect;
 begin
   canvasHandle := Windows.GetDC(AWindow);
   newFontHandle := HFONT(SendMessage(AWindow, WM_GETFONT, 0, 0));
   oldFontHandle := SelectObject(canvasHandle, newFontHandle);
-  DeleteAmpersands(Text);
 
-  Result := LCLIntf.GetTextExtentPoint32(canvasHandle, PChar(Text), Length(Text), textSize);
-
-  if Result then
+  style := GetWindowLong(AWindow, GWL_STYLE);
+  isMultiLine := (style and BS_MULTILINE <> 0);
+  if isMultiLine then
   begin
-    Width := textSize.cx;
-    Height := textSize.cy;
+    flags := DT_CALCRECT or DT_NOPREFIX;
+    R := Rect(0, 0, 10000, 10000);
+    Result := Windows.DrawText(canvasHandle, PChar(Text), Length(Text), R, flags) <> 0;
+    if Result then
+    begin
+      Width := R.Right;
+      Height := R.Bottom;
+    end;
+  end else
+  begin
+    DeleteAmpersands(Text);
+    Result := Windows.GetTextExtentPoint32(canvasHandle, PChar(Text), Length(Text), textSize);
+    if Result then
+    begin
+      Width := textSize.cx;
+      Height := textSize.cy;
+    end;
   end;
+
   SelectObject(canvasHandle, oldFontHandle);
   Windows.ReleaseDC(AWindow, canvasHandle);
 end;
