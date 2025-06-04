@@ -300,6 +300,8 @@ type
   published
     class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+          var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
   end;
 
   { TWin32WSRadioButton }
@@ -1987,6 +1989,7 @@ begin
     pClassName := @ButtonClsName[0];
     SubClassWndProc := @ButtonWndProc;
     WindowTitle := StrCaption;
+    Flags:= Flags or BS_MULTILINE;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
@@ -2150,6 +2153,21 @@ begin
   // create window
   FinishCreateWindow(AWinControl, Params, false);
   Result := Params.Window;
+end;
+
+class procedure TWin32WSToggleBox.GetPreferredSize(const AWinControl: TWinControl;
+  var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
+begin
+  if MeasureText(AWinControl, AWinControl.Caption, PreferredWidth, PreferredHeight) then
+  begin
+    Inc(PreferredWidth, 20);
+    Inc(PreferredHeight, 4);
+    if WithThemeSpace then
+    begin
+      Inc(PreferredWidth, 6);
+      Inc(PreferredHeight, 6);
+    end;
+  end;
 end;
 
 

@@ -269,7 +269,7 @@ var
       Options := Default(DTTOpts);
       Options.dwSize := SizeOf(Options);
       Options.dwFlags := DTT_COMPOSITED;
-      TextFlags := DT_SINGLELINE;
+      TextFlags := DT_CENTER; //DT_SINGLELINE;
       if not ShowAccel then
         TextFlags := TextFlags or DT_HIDEPREFIX;
       if AState <> bsDisabled then
@@ -574,7 +574,7 @@ begin
   with Params do
   begin
     pClassName := @ButtonClsName[0];
-    Flags := Flags or BS_BITMAP;
+    Flags := Flags or BS_BITMAP or BS_MULTILINE;
     WindowTitle := '';
     SubClassWndProc := @BitBtnWndProc;
   end;
