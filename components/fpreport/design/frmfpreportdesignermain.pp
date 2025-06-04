@@ -1610,6 +1610,7 @@ function TFPReportDesignerForm.GetModified: boolean;
 
 Var
   i : Integer;
+  RDC : TFPReportDesignerControl;
 
 begin
   Result:=Assigned(FReport);
@@ -1620,7 +1621,11 @@ begin
   I:=0;
   While Result and (I<DesignerCount) do
     begin
-    Result:=PageDesigner(I).Objects.Modified;
+    RDC:=PageDesigner(I);
+    if RDC<>nil then
+      Result:=RDC.Objects.Modified
+    else
+      Result:=False;
     Inc(I);
     end;
 end;
