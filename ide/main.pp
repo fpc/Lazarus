@@ -3569,7 +3569,9 @@ begin
     if IsOnWindow(MessagesView) then
       HelpBoss.ShowHelpForMessage()
     else if Sender is TObjectInspectorDlg then
-      HelpBoss.ShowHelpForObjectInspector(Sender);
+      HelpBoss.ShowHelpForObjectInspector(Sender)
+    else
+      Handled:=false;
   ecSave:
     begin
       if Assigned(ObjectInspector1) then
