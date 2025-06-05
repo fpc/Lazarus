@@ -1063,7 +1063,7 @@ begin
   isMultiLine := (style and BS_MULTILINE <> 0);
   if isMultiLine then
   begin
-    flags := DT_CALCRECT or DT_NOPREFIX;
+    flags := DT_CALCRECT;
     R := Rect(0, 0, 10000, 10000);
     Result := Windows.DrawText(canvasHandle, PChar(Text), Length(Text), R, flags) <> 0;
     if Result then
