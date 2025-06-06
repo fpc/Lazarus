@@ -204,7 +204,7 @@ begin
     frm:= Screen.CustomForms[fi];
     if not frm.Visible then continue;
     if frm.WindowState=wsMinimized then continue;
-    if frm.HandleAllocated then continue;
+    if not frm.HandleAllocated then continue;
     if frm.Handle = WindowPos.hwnd then continue;
     if not frm.SnapOptions.SnapFormTarget then continue;
     if GetWindowRect(frm.Handle, br) = 0 then continue;
