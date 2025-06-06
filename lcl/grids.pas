@@ -2288,7 +2288,6 @@ var
   Gz: TGridZone;
   ButtonColumn: boolean;
 begin
-
   with FGCache do begin
 
     Gz := MouseToGridZone(X,Y);
@@ -6529,38 +6528,61 @@ end;
 
 function TCustomGrid.MouseToGridZone(X, Y: Integer): TGridZone;
 var
-  aBorderWidth: Integer;
+  aBorderWidth, FlippedX: Integer;
   aCol, aRow: Longint;
+  XMaybeOverFixedCols, YMaybeOverFixedRows: Boolean;
 begin
   {$ifdef dbgGrid}
   debugln(['TCustomGrid.MouseToGridZone: X=',X,', Y=',Y,', FGCache.FixedWidth=',FGCache.FixedWidth,', FGCache.FixedHeight=',FGCache.FixedHeight]);
   {$endif}
-  aBorderWidth := GetBorderWidth;
-  if FlipX(X)<FGCache.FixedWidth+aBorderWidth then begin
+  aBorderWidth:=GetBorderWidth;
+  FlippedX:=FlipX(X);
+  XMaybeOverFixedCols:=(FlippedX<FGCache.FixedWidth+aBorderWidth);
+  YMaybeOverFixedRows:=(Y<FGCache.FixedHeight+aBorderWidth);
+
+  if XMaybeOverFixedCols then begin
     // in fixedwidth zone: either a fixedcol or a fixedcell
-    if Y<FGcache.FixedHeight+aBorderWidth then
+    if YMaybeOverFixedRows then
       Result:= gzFixedCells
     else begin
       OffsetToColRow(True, True, X, aCol, aRow);
       if (aCol<0) or (ColCount<=FixedCols) then
         Result := gzInvalid
-      else
-        Result := gzFixedCols;
+      else begin
+        if AllowOutboundEvents then
+          Result := gzFixedCols
+        else begin
+          OffSetToColRow(False, True, Y, aRow, aCol);
+          if (aRow<0) then
+            Result := gzInvalid
+          else
+            Result := gzFixedCols;
+        end;
+      end;
     end;
   end
-  else if Y<FGCache.FixedHeight+aBorderWidth then begin
+  else if YMaybeOverFixedRows then begin
     // if fixedheight zone: either a fixedrow or a fixedcell
-    if FlipX(X)<FGCache.FixedWidth+aBorderWidth then
+    if XMaybeOverFixedCols then
       Result:=gzFixedCells
     else begin
       OffsetToColRow(False, True, Y, aRow, aCol);
       if (aRow<0) or (RowCount<=FixedRows) then
         Result := gzInvalid
-      else
-        Result := gzFixedRows;
+      else begin
+        if AllowOutboundEvents then
+          Result := gzFixedRows
+        else begin
+          OffSetToColRow(True, True, X, aCol, aRow);
+          if (aCol<0) then
+            Result := gzInvalid
+          else
+            Result := gzFixedRows;
+        end;
+      end;
     end;
   end
-  else if not FixedGrid then begin
+  else if not FixedGrid then begin  //I think a FixedGrid should be covered by the scenario's above?
     // in normal cell zone (though, might be outbounds)
     MouseToCell(x, y, aCol, aRow);
     if (aCol<0) or (aRow<0) then
