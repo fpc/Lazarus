@@ -3292,7 +3292,7 @@ forms in an application.
 
 <element name="TWindowMagnetOptions.SnapToForms">
 <short>
-Enables or disables snapping the current form to other forms in the 
+Enables or disables snapping the current form to another form in the 
 application.
 </short>
 <descr/>
@@ -3345,10 +3345,10 @@ The Enabled property determines whether the magnetic window manager is enabled
 or disabled in the global Screen instance.
 </p>
 <remark>
-Use  of TWindowMagnetManager depends on the LM_WINDOWPOSCHANGING message 
+Use of TWindowMagnetManager depends on the LM_WINDOWPOSCHANGING message 
 dispatched when the position for a form (window) is changed. In the current 
 LCL release, the LM_WINDOWPOSCHANGING message is dispatched for the Windows 
-platform only. None of the other widgetsets checked for or apply the message.
+platform only. None of the other widgetsets check for or apply the message.
 </remark>
 </descr>
 <version>
@@ -3457,22 +3457,78 @@ the method. The variable parameter can be updated in the method.
 </short>
 </element>
 
-<element name="TWindowMagnetManager.SnapToForms">
+<element name="TWindowMagnetManager.SnapToForms">	
 <short>
 Snaps a form to an edge on another form in the application which is a valid 
 snap target.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>SnapToForms</var> is a <var>Boolean</var> function which indicates 
+whether the window magnet manager snapped the specified form to another form 
+on the current screen. 
+</p>
+<p>
+<var>WindowPos</var> contains the coordinates for the form snapped in the 
+method, the width and height for the window, its handle, and relevant window 
+flags. The value(s) in WindowPos are updated if the form is snapped to another 
+form during execution of the method.
+</p>
+<p>
+<var>Opts</var> contains the settings used in the window magnet manager class 
+instance. The <var>SnapToForms</var> setting in Opts indicates whether the 
+snapping feature is enabled.
+</p>
+<p>
+SnapToForms builds a list of forms on the current Screen which are eligible 
+snap targets. Candidates for left-to-right alignment are checked first, 
+followed by candidates for top-to-bottom alignment. SnapToSides is used to 
+resize and / or reposition the form to eligible snap targets (forms).
+</p>
+<p>
+SnapToForms returns <b>True</b> if the form was snapped to one of the other 
+forms on the screen. The return value is <b>False</b> when:
+</p>
+<ul>
+<li>The SnapToForms feature is not enabled in Opts.</li>
+<li>A form was not found for use as a snap target.</li>
+<li>All of the screen forms are minimized.</li>
+<li>None of the screen forms are visible.</li>
+<li>None of the screen forms have an allocated handle.</li>
+<li>None of the screen forms have a non-zero window rectangle.</li>
+</ul>
+<p>
+SnapToForms is used, along with <var>SnapToMonitor</var>, to implement the 
+<var>TWindowMagnetManager.SnapForm</var> method.
+</p>
+</descr>
+<seealso>
+<link id="TWindowMagnetManager.SnapToForms"/>
+<link id="TWindowMagnetManager.SnapToMonitor"/>
+<link id="TWindowMagnetManager.SnapForm"/>
+<link id="TWindowMagnetOptions"/>
+<link id="Screen"/>
+<link id="TScreen.CustomForms"/>
+<link id="TCustomForm"/>
+<link id="#lcl.lmessages.TWindowPos">TWindowPos</link>
+</seealso>
 </element>
 <element name="TWindowMagnetManager.SnapToForms.Result">
-<short/>
+<short>
+Returns <b>True</b> if the window was successfully snapped to another form on 
+the screen.
+</short>
 </element>
 <element name="TWindowMagnetManager.SnapToForms.Opts">
-<short/>
+<short>
+Window magnet manager Options enabled in the method.
+</short>
 </element>
 <element name="TWindowMagnetManager.SnapToForms.WindowPos">
-<short/>
+<short>
+Coordinates for the window snapped in the method. Values in the structure are 
+updated during execution of the method.
+</short>
 </element>
 
 <!-- public -->
