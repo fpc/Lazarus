@@ -9,13 +9,13 @@ object MainForm: TMainForm
   ClientWidth = 700
   Constraints.MinHeight = 515
   Constraints.MinWidth = 700
+  Position = poScreenCenter
+  ShowHint = True
+  LCLVersion = '4.99.0.0'
   OnClose = FormClose
   OnCreate = FormCreate
   OnDropFiles = FormDropFiles
   OnShow = FormShow
-  Position = poScreenCenter
-  ShowHint = True
-  LCLVersion = '3.6.0.0'
   inline SynEdit: TSynEdit
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = ToolBar
@@ -34,6 +34,7 @@ object MainForm: TMainForm
     Font.Name = 'Courier New'
     Font.Pitch = fpFixed
     Font.Quality = fqCleartype
+    Font.Style = [fsBold]
     ParentColor = False
     ParentFont = False
     TabOrder = 6
@@ -470,24 +471,25 @@ object MainForm: TMainForm
     VisibleSpecialChars = [vscSpace, vscTabAtLast]
     ReadOnly = True
     RightEdge = -1
-    SelectedColor.BackPriority = 50
     SelectedColor.ForePriority = 50
+    SelectedColor.BackPriority = 50
     SelectedColor.FramePriority = 50
-    SelectedColor.BoldPriority = 50
-    SelectedColor.ItalicPriority = 50
-    SelectedColor.UnderlinePriority = 50
-    SelectedColor.StrikeOutPriority = 50
+    SelectedColor.BoldPriority = 0
+    SelectedColor.ItalicPriority = 0
+    SelectedColor.UnderlinePriority = 0
+    SelectedColor.StrikeOutPriority = 0
+    SelectedColor.Features = [lafPastEOL]
     BracketHighlightStyle = sbhsBoth
-    BracketMatchColor.Background = clNone
     BracketMatchColor.Foreground = clNone
+    BracketMatchColor.Background = clNone
     BracketMatchColor.Style = [fsBold]
-    FoldedCodeColor.Background = clNone
     FoldedCodeColor.Foreground = clGray
+    FoldedCodeColor.Background = clNone
     FoldedCodeColor.FrameColor = clGray
-    MouseLinkColor.Background = clNone
     MouseLinkColor.Foreground = clBlue
-    LineHighlightColor.Background = clNone
+    MouseLinkColor.Background = clNone
     LineHighlightColor.Foreground = clNone
+    LineHighlightColor.Background = clNone
     WantTabs = False
     inline SynLeftGutterPartList1: TSynGutterPartList
     end
@@ -510,11 +512,11 @@ object MainForm: TMainForm
     Caption = 'Close'
     Images = ImageList
     ImageIndex = 6
-    OnClick = bbtnCloseClick
     ParentShowHint = False
     ShowHint = True
     Spacing = 5
     TabOrder = 5
+    OnClick = bbtnCloseClick
   end
   object bbtnSave: TBitBtn
     AnchorSideTop.Control = bbtnClose
@@ -532,19 +534,19 @@ object MainForm: TMainForm
     Enabled = False
     Images = ImageList
     ImageIndex = 5
-    OnClick = bbtnSaveClick
     Spacing = 5
     TabOrder = 4
+    OnClick = bbtnSaveClick
   end
   object bbtnCreateHTML: TBitBtn
     AnchorSideTop.Control = bbtnPreview
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = bbtnPreview
-    Left = 316
+    Left = 315
     Height = 26
     Hint = 'Create HTML page for images found in the selected directory'
     Top = 479
-    Width = 116
+    Width = 117
     Anchors = [akTop, akRight]
     AutoSize = True
     BorderSpacing.Right = 8
@@ -553,9 +555,9 @@ object MainForm: TMainForm
     Enabled = False
     Images = ImageList
     ImageIndex = 3
-    OnClick = bbtnCreateHTMLClick
     Spacing = 5
     TabOrder = 2
+    OnClick = bbtnCreateHTMLClick
   end
   object bbtnPreview: TBitBtn
     AnchorSideTop.Control = bbtnSave
@@ -571,8 +573,8 @@ object MainForm: TMainForm
     Enabled = False
     Images = ImageList
     ImageIndex = 4
-    OnClick = bbtnPreviewClick
     TabOrder = 3
+    OnClick = bbtnPreviewClick
   end
   object ToolBar: TToolBar
     AnchorSideTop.Control = Owner
@@ -638,6 +640,7 @@ object MainForm: TMainForm
   object TaskDialog: TTaskDialog
     Buttons = <>
     RadioButtons = <>
+    QueryItemIndex = 0
     Left = 96
     Top = 104
   end

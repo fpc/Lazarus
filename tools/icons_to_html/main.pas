@@ -66,7 +66,7 @@ implementation
 const
   ConfigFileName = 'IconTableConfig.ini';
   IconTableFileName = 'IconTable.html';
-  InfoTextFileName = 'lazarus_general_purpose_images.txt';
+  InfoTextFileName = 'readme.txt';
   TempFileName = 'IconTableTemp.html';
   DefaultDirectory = '../../images/general_purpose/';
   LastDirsMax = 9;
