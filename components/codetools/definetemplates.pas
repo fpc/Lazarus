@@ -3736,38 +3736,43 @@ end;
 function GetDefaultSrcOSForTargetOS(const TargetOS: string): string;
 begin
   Result:='';
-  if (CompareText(TargetOS,'linux')=0)
-  or (CompareText(TargetOS,'freebsd')=0)
-  or (CompareText(TargetOS,'netbsd')=0)
-  or (CompareText(TargetOS,'openbsd')=0)
-  or (CompareText(TargetOS,'dragonfly')=0)
-  or (CompareText(TargetOS,'darwin')=0)
-  or (CompareText(TargetOS,'ios')=0)
-  or (CompareText(TargetOS,'solaris')=0)
-  or (CompareText(TargetOS,'haiku')=0)
-  or (CompareText(TargetOS,'android')=0)
-  then
-    Result:='unix'
-  else
-  if (CompareText(TargetOS,'win32')=0)
-  or (CompareText(TargetOS,'win64')=0)
-  or (CompareText(TargetOS,'wince')=0)
-  then
+  case lowercase(TargetOS) of
+  'linux',
+  'freebsd',
+  'netbsd',
+  'openbsd',
+  'dragonfly',
+  'darwin',
+  'ios',
+  'solaris',
+  'haiku',
+  'android':
+    Result:='unix';
+  'win32',
+  'win64',
+  'wince':
     Result:='win';
+  'wasi',
+  'wasip1',
+  'wasip2',
+  'wasip1threads':
+    Result:='wasicommon';
+  end;
 end;
 
 function GetDefaultSrcOS2ForTargetOS(const TargetOS: string): string;
 begin
   Result:='';
-  if (CompareText(TargetOS,'freebsd')=0)
-  or (CompareText(TargetOS,'netbsd')=0)
-  or (CompareText(TargetOS,'openbsd')=0)
-  or (CompareText(TargetOS,'dragonfly')=0)
-  or (CompareText(TargetOS,'darwin')=0)
-  then
-    Result:='bsd'
-  else if (CompareText(TargetOS,'android')=0) then
+  case lowercase(TargetOS) of
+  'freebsd',
+  'netbsd',
+  'openbsd',
+  'dragonfly',
+  'darwin':
+    Result:='bsd';
+  'android':
     Result:='linux';
+  end;
 end;
 
 function GetDefaultSrcCPUForTargetCPU(const TargetCPU: string): string;
