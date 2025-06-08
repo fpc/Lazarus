@@ -9220,7 +9220,6 @@ var
   FirstFound: Boolean;
   s: String;
 begin
-  //TODO: escape underscores
   Result := '';
   FirstFound := False;
   n := 1;
