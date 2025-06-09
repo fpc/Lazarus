@@ -1596,6 +1596,7 @@ type
     property InplaceEditor;
   published
     property Align;
+    property AllowOutBoundEvents;
     property AlternateColor;
     property Anchors;
     property AutoAdvance;
@@ -1841,6 +1842,7 @@ type
     property InplaceEditor;
   published
     property Align;
+    property AllowOutBoundEvents;
     property AlternateColor;
     property Anchors;
     property AutoAdvance;
