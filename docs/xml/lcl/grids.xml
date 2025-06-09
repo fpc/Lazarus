@@ -16837,12 +16837,20 @@ the nearest valid cell.
 <p>
 Normally, when a user clicks on a point over the empty space after cells (for 
 example if grid has three rows but user clicks on imaginary fourth row) the 
-current focused cell will move to the nearest cell to clicked point. We call 
-this an outbound event.
+current focused cell will move to the nearest cell to the point clicked on the 
+grid. We call this an outbound event.
 </p>
 <p>
-The default value or the property is <b>True</b>, as this has been the grid's 
-behavior since the beginning.
+AllowOutboundEvent affects actions performed when columns are resized, and 
+when the Row or Col number is changed for the grid control, and the grid zone 
+reported for a mouse click on a fixed grid cell. The value is temporarily 
+reset and restored during execution of the MouseDown, MouseMove, and 
+IsMouseOverCellButton methods.
+</p>
+<p>
+The default value for the property is <b>True</b>, as this has been the grid's 
+behavior since the beginning. It allows OnClick events to be signalled 
+for the corresponding actions and options enabled for the grid.
 </p>
 <p>
 This was added to mimic Delphi behavior where outbound events are not 
@@ -16850,7 +16858,20 @@ available; to enable Delphi compatibility, set AllowOutboundEvents to
 <b>False</b>.
 </p>
 </descr>
-<seealso/>
+<version>
+Published in TDrawGrid and TStringGrid descendants in LCL version 5.0.
+</version>
+<seealso>
+<link id="TCustomGrid.Col"/>
+<link id="TCustomGrid.Row"/>
+<link id="TCustomGrid.ColRow"/>
+<link id="TCustomGrid.Options2"/>
+<link id="TCustomGrid.MouseDown"/>
+<link id="TCustomGrid.MouseMove"/>
+<link id="TCustomGrid.IsMouseOverCellButton"/>
+<link id="TCustomGrid.OnButtonClick"/>
+<link id="#lcl.controls.TControl.OnClick">TControl.OnClick</link>
+</seealso>
 </element>
 
 <element name="TCustomGrid.AlternateColor">
@@ -23207,6 +23228,7 @@ TStringGrid
 
 <!-- published -->
 <element name="TDrawGrid.Align" link="#lcl.controls.TControl.Align"/>
+<element name="TDrawGrid.AllowOutboundEvents" link="TCustomDrawGrid.AllowOutboundEvents"/>
 <element name="TDrawGrid.AlternateColor" link="#lcl.grids.TCustomGrid.AlternateColor"/>
 <element name="TDrawGrid.Anchors" link="#lcl.controls.TControl.Anchors"/>
 <element name="TDrawGrid.AutoAdvance" link="#lcl.grids.TCustomGrid.AutoAdvance"/>
@@ -25555,6 +25577,7 @@ TStringGrid
 
 <!-- published -->
 <element name="TStringGrid.Align" link="#lcl.controls.TControl.Align"/>
+<element name="TStringGrid.AllowOutboundEvents" link="TCustomDrawGrid.AllowOutboundEvents"/>
 <element name="TStringGrid.AlternateColor" link="#lcl.grids.TCustomGrid.AlternateColor"/>
 <element name="TStringGrid.Anchors" link="#lcl.controls.TControl.Anchors"/>
 <element name="TStringGrid.AutoAdvance" link="#lcl.grids.TCustomGrid.AutoAdvance"/>
