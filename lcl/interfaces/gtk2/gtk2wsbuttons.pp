@@ -169,6 +169,8 @@ begin
   if ImageWidget <> nil then
     g_object_unref(ImageWidget);
 
+  if LabelWidget <> nil then
+    gtk_label_set_justify(PGtkLabel(LabelWidget), GTK_JUSTIFY_CENTER);
   ABitBtnInfo^.LabelWidget := LabelWidget;
 end;
 

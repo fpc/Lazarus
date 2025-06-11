@@ -350,6 +350,7 @@ type
   TGtk2WSToggleBox = class(TWSToggleBox)
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
   end;
 
   { TGtk2WSRadioButton }
@@ -2563,6 +2564,7 @@ begin
 
   { Creates the button and inserts it into the EventBox }
   BtnWidget := gtk_button_new_with_label('button');
+  gtk_label_set_justify(PGtkLabel(PGtkBin(BtnWidget)^.Child), GTK_JUSTIFY_CENTER);
   gtk_container_add(PGtkContainer(EventBox), BtnWidget);
   gtk_widget_show_all(EventBox);
 
@@ -2883,6 +2885,20 @@ begin
 
   Set_RC_Name(AWinControl, Widget);
   TGtk2WSCustomCheckBox.SetCallbacks(Widget, WidgetInfo);
+end;
+
+class procedure TGtk2WSToggleBox.SetFont(const AWinControl: TWinControl;
+  const AFont: TFont);
+var
+  LblWidget: PGtkWidget;
+begin
+  if not AWinControl.HandleAllocated then exit;
+
+  inherited SetFont(AWinControl, AFont);
+
+  LblWidget := PGtkBin({%H-}PGtkWidget(AWinControl.Handle))^.Child;
+  if LblWidget <> nil then
+    gtk_label_set_justify(PGtkLabel(LblWidget), GTK_JUSTIFY_CENTER);
 end;
 
 { TGtk2WSCustomStaticText }
