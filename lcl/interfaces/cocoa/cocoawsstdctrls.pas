@@ -922,9 +922,20 @@ end;
 class procedure TCocoaWSButton.SetText(const AWinControl: TWinControl; const AText: String);
 var
   btn : NSButton;
+  bezelStyle: NSBezelStyle;
 begin
   btn := NSButton(AWinControl.Handle);
   btn.setTitle(ControlTitleToNSStr(AText));
+
+  if NOT ((AWinControl is TCustomButton) or (AWinControl is TToggleBox)) then
+    Exit;
+
+  if AText.IndexOf(char(LineEnding)) < 0 then begin
+    bezelStyle:= NSRoundedBezelStyle;
+  end else begin;
+    bezelStyle:= NSRegularSquareBezelStyle;
+  end;
+  btn.setBezelStyle( bezelStyle );
 end;
 
 class function TCocoaWSButton.GetText(const AWinControl: TWinControl;
