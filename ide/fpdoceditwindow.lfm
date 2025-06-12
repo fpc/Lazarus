@@ -148,47 +148,77 @@ object FPDocEditor: TFPDocEditor
         TabOrder = 0
         Text = 'InheritedShortEdit'
       end
-      object MoveToInheritedButton: TButton
+      object InheritedFlowPanel: TFlowPanel
+        AnchorSideLeft.Control = InheritedTabSheet
         AnchorSideTop.Control = InheritedShortEdit
         AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = InheritedTabSheet
+        AnchorSideRight.Side = asrBottom
         Left = 0
-        Height = 30
-        Top = 54
-        Width = 161
+        Height = 29
+        Top = 38
+        Width = 796
+        Anchors = [akTop, akLeft, akRight]
         AutoSize = True
-        BorderSpacing.Around = 6
-        Caption = 'MoveToInheritedButton'
+        BevelOuter = bvNone
+        ControlList = <
+          item
+            Control = MoveToInheritedButton
+            WrapAfter = waAuto
+            Index = 0
+          end
+          item
+            Control = CopyFromInheritedButton
+            WrapAfter = waAuto
+            Index = 1
+          end
+          item
+            Control = AddLinkToInheritedButton
+            WrapAfter = waAuto
+            Index = 2
+          end>
+        FlowLayout = tlTop
+        FlowStyle = fsLeftRightTopBottom
         TabOrder = 1
-        OnClick = MoveToInheritedButtonClick
-      end
-      object CopyFromInheritedButton: TButton
-        AnchorSideLeft.Control = MoveToInheritedButton
-        AnchorSideLeft.Side = asrBottom
-        AnchorSideTop.Control = MoveToInheritedButton
-        AnchorSideTop.Side = asrCenter
-        Left = 171
-        Height = 30
-        Top = 54
-        Width = 174
-        AutoSize = True
-        BorderSpacing.Left = 10
-        Caption = 'CopyFromInheritedButton'
-        TabOrder = 2
-        OnClick = CopyFromInheritedButtonClick
-      end
-      object AddLinkToInheritedButton: TButton
-        AnchorSideLeft.Control = CopyFromInheritedButton
-        AnchorSideLeft.Side = asrBottom
-        AnchorSideTop.Control = CopyFromInheritedButton
-        Left = 355
-        Height = 30
-        Top = 54
-        Width = 177
-        AutoSize = True
-        BorderSpacing.Left = 10
-        Caption = 'AddLinkToInheritedButton'
-        TabOrder = 3
-        OnClick = AddLinkToInheritedButtonClick
+        object MoveToInheritedButton: TButton
+          Left = 0
+          Height = 23
+          Top = 6
+          Width = 140
+          Align = alLeft
+          AutoSize = True
+          BorderSpacing.Top = 6
+          BorderSpacing.Right = 6
+          Caption = 'MoveToInheritedButton'
+          TabOrder = 0
+          OnClick = MoveToInheritedButtonClick
+        end
+        object CopyFromInheritedButton: TButton
+          Left = 146
+          Height = 23
+          Top = 6
+          Width = 151
+          Align = alLeft
+          AutoSize = True
+          BorderSpacing.Top = 6
+          BorderSpacing.Right = 6
+          Caption = 'CopyFromInheritedButton'
+          TabOrder = 1
+          OnClick = CopyFromInheritedButtonClick
+        end
+        object AddLinkToInheritedButton: TButton
+          Left = 303
+          Height = 23
+          Top = 6
+          Width = 151
+          Align = alLeft
+          AutoSize = True
+          BorderSpacing.Top = 6
+          BorderSpacing.Right = 6
+          Caption = 'AddLinkToInheritedButton'
+          TabOrder = 2
+          OnClick = AddLinkToInheritedButtonClick
+        end
       end
     end
     object DescrTabSheet: TTabSheet

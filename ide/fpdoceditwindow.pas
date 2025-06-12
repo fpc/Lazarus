@@ -90,6 +90,7 @@ type
     ErrorsTabSheet: TTabSheet;
     ExampleEdit: TEdit;
     ExampleTabSheet: TTabSheet;
+    InheritedFlowPanel: TFlowPanel;
     InheritedShortEdit: TEdit;
     InheritedShortLabel: TLabel;
     InheritedTabSheet: TTabSheet;
