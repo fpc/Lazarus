@@ -2742,18 +2742,23 @@ begin
     if LazStartsStr(EditorMacroVirtualDrive, AnUnitInfo.Filename) then
     begin
       // save to macros
+      Result := mrOK;
       EMacro := MacroListViewer.MacroByFullName(AnUnitInfo.Filename);
       if EMacro <> nil then begin
         EMacro.SetFromSource(AEditor.SourceText);
         if EMacro.IsInvalid and (EMacro.ErrorMsg <> '') then
           IDEMessagesWindow.AddCustomMessage(mluError,EMacro.ErrorMsg);
+      end
+      else begin
+        Result := mrCancel;
+        IDEMessageDialog(lisError, lisFailedToSaveMacro, mtError, [mbOK]);
       end;
       MacroListViewer.UpdateDisplay;
       AnUnitInfo.ClearModifieds;
       AEditor.Modified:=false;
     end;
     // otherwise unknown internal file => skip
-    exit(mrOk);
+    exit;
   end;
 
   // if this is a new unit then a simple Save becomes a SaveAs

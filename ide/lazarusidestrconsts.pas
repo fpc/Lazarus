@@ -6368,6 +6368,7 @@ resourcestring
     +' is placed immediately after the label.';
   dlgSrcEdColorMemberColorIsAppliedToAny = '"Member" color is applied to any identifier behind a '
     +'dot ".".';
+  lisFailedToSaveMacro = 'Failed to save macro.';
 
 implementation
 
