@@ -80,7 +80,7 @@ type
     procedure SetTitle(const Value: string);
   protected
     fBackgroundColor: TColor;
-    fClipboardFormat: UINT;
+    fClipboardFormat: TClipboardFormat;
     fDefaultFilter: string;
     fExportAsText: boolean;
     fFont: TFont;
@@ -99,7 +99,7 @@ type
     procedure AddNewLine;
     { Copies the data under this format to the clipboard. The clipboard has to
       be opened explicitly when more than one format is to be set. }
-    procedure CopyToClipboardFormat(AFormat: UINT);
+    procedure CopyToClipboardFormat(AFormat: TClipboardFormat);
     { Has to be overridden in descendant classes to add the closing format
       strings to the output buffer.  The parameters can be used to track what
       changes are made for the next token. }
@@ -140,7 +140,7 @@ type
       in the format header or footer. }
     function GetBufferSize: integer;
     { The clipboard format the exporter creates as native format. }
-    function GetClipboardFormat: UINT; virtual;
+    function GetClipboardFormat: TClipboardFormat; virtual;
     { Has to be overridden in descendant classes to return the correct output
       format footer. }
     function GetFooter: string; virtual; abstract;
@@ -285,7 +285,7 @@ begin
     CopyToClipboardFormat(GetClipboardFormat);
 end;
 
-procedure TSynCustomExporter.CopyToClipboardFormat(AFormat: UINT);
+procedure TSynCustomExporter.CopyToClipboardFormat(AFormat: TClipboardFormat);
 begin
   fBuffer.Position:=0;
   //if we don't clear the clipboard, external applications will only ever see the
@@ -425,7 +425,7 @@ begin
   Result := integer(fBuffer.Size);
 end;
 
-function TSynCustomExporter.GetClipboardFormat: UINT;
+function TSynCustomExporter.GetClipboardFormat: TClipboardFormat;
 begin
   Result := fClipboardFormat;
 end;
