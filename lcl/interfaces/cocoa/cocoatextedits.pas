@@ -1862,16 +1862,20 @@ end;
 
 { TCocoaReadOnlyComboBoxMenuDelegate }
 
+// for OwnerDraw
 procedure TCocoaReadOnlyComboBoxMenuDelegate.menu_willHighlightItem(
   menu: NSMenu; item: NSMenuItem);
 begin
-  if Assigned(_lastHightlightItem) then
-    _lastHightlightItem.view.setNeedsDisplay_( True );
+  if Assigned(_lastHightlightItem) then begin
+    if menu.indexOfItem(_lastHightlightItem) >=0 then
+      _lastHightlightItem.view.setNeedsDisplay_( True );
+  end;
   _lastHightlightItem:= item;
 end;
 
 procedure TCocoaReadOnlyComboBoxMenuDelegate.menuDidClose(menu: NSMenu);
 begin
+  _lastHightlightItem:= nil;
   TCocoaReadOnlyComboBox(_comboBox).comboboxAction( nil );
 end;
 
