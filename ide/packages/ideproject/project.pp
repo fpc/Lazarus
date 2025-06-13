@@ -2081,8 +2081,14 @@ end;
 
 procedure TUnitInfo.SetFilename(const AValue: string);
 begin
-  if fSource<>nil then
-    LazTracer.RaiseGDBException('TUnitInfo.SetFilename Source<>nil')
+  if fSource<>nil then begin
+    if InternalFile then begin
+      fSource.Filename := AValue;
+      fFileName:=AValue
+    end
+    else
+      LazTracer.RaiseGDBException('TUnitInfo.SetFilename Source<>nil');
+  end
   else
     SetInternalFilename(AValue);
 end;

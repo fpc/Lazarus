@@ -41,7 +41,7 @@ uses
   LazIDEIntf, IDEDialogs,
   // IDE
   LazarusIDEStrConsts, ProjectDefs, LazConf, Project, KeyMapping,
-  KeyMapShortCutDlg, MainIntf, ToolBarIntf;
+  KeyMapShortCutDlg, MainIntf, ToolBarIntf, ProjectIntf;
 
 type
   TSynEditorMacro = class(TSynMacroRecorder)
@@ -299,6 +299,8 @@ procedure SaveGlobalInfo;
 
 implementation
 
+uses SourceFileManager;
+
 {$R *.lfm}
 
 var
@@ -347,6 +349,11 @@ begin
   if AName = 'Rec' then Result := EditorMacroListRec
   else if AName = 'Prj' then Result := EditorMacroListProj
   else if AName = 'Ide' then Result := EditorMacroListGlob;
+end;
+
+function InternalFilenameForMacro(AnOwnerList: TEditorMacroList; AMacro: TEditorMacro): string;
+begin
+  Result := EditorMacroVirtualDrive+MacroListToName(AnOwnerList)+'|'+AMacro.MacroName;
 end;
 
 procedure DoEditorMacroStateChanged;
@@ -1099,6 +1106,8 @@ procedure TMacroListViewer.btnRenameClick(Sender: TObject);
 var
   s: String;
   M: TEditorMacro;
+  UnitInfo: TUnitInfo;
+  i: Integer;
 begin
   if lbMacroView.ItemIndex < 0 then exit;
   M := CurrentEditorMacroList.Macros[lbMacroView.ItemIndex];
@@ -1115,8 +1124,14 @@ begin
           s := '';
       end;
     end;
-    if s <> '' then
+    if s <> '' then begin
+      UnitInfo := Project1.UnitInfoWithFilename(InternalFilenameForMacro(CurrentEditorMacroList, M), [pfsfOnlyVirtualFiles]);
       M.MacroName := s;
+      if UnitInfo <> nil then begin
+        UnitInfo.Filename := InternalFilenameForMacro(CurrentEditorMacroList, M);
+        UpdateSourceNames;
+      end;
+    end;
     UpdateDisplay;
   end;
 end;
@@ -1180,7 +1195,7 @@ begin
   M := CurrentEditorMacroList.Macros[lbMacroView.ItemIndex];
   if M = nil then exit;
   LazarusIDE.DoOpenEditorFile(
-    EditorMacroVirtualDrive+MacroListToName(CurrentEditorMacroList)+'|'+M.MacroName,
+    InternalFilenameForMacro(CurrentEditorMacroList, M),
     -1, -1, [ofVirtualFile, ofInternalFile]);
 end;
 
@@ -1231,7 +1246,7 @@ begin
   CurrentEditorMacroList.Add(M);
   Assert(not FIsPlaying, 'TMacroListViewer.btnAddEditNewClick: IsPlaying');
   LazarusIDE.DoOpenEditorFile(
-    EditorMacroVirtualDrive+MacroListToName(CurrentEditorMacroList)+'|'+M.MacroName,
+    InternalFilenameForMacro(CurrentEditorMacroList, M),
     -1, -1, [ofVirtualFile, ofInternalFile]);
 
   UpdateDisplay;
@@ -1351,26 +1366,42 @@ end;
 procedure TMacroListViewer.tbMoveIDEClick(Sender: TObject);
 var
   i: Integer;
+  M: TEditorMacro;
+  UnitInfo: TUnitInfo;
 begin
   if (lbMacroView.ItemIndex < 0) or (CurrentEditorMacroList = EditorMacroListGlob) then exit;
   i := lbMacroView.ItemIndex;
-  EditorMacroListGlob.Add(CurrentEditorMacroList.Macros[i]);
+  M := CurrentEditorMacroList.Macros[i];
+  UnitInfo := Project1.UnitInfoWithFilename(InternalFilenameForMacro(CurrentEditorMacroList, M), [pfsfOnlyVirtualFiles]);
+  EditorMacroListGlob.Add(M);
   CurrentEditorMacroList.Delete(i);
   if CurrentEditorMacroList = EditorMacroListProj then Project1.Modified := True;
   MainIDEInterface.SaveEnvironment(False);
+  if UnitInfo <> nil then begin
+    UnitInfo.Filename := InternalFilenameForMacro(EditorMacroListGlob, M);
+    UpdateSourceNames;
+  end;
   UpdateDisplay;
 end;
 
 procedure TMacroListViewer.tbMoveProjectClick(Sender: TObject);
 var
   i: Integer;
+  M: TEditorMacro;
+  UnitInfo: TUnitInfo;
 begin
   if (lbMacroView.ItemIndex < 0) or (CurrentEditorMacroList = EditorMacroListProj) then exit;
   i := lbMacroView.ItemIndex;
-  EditorMacroListProj.Add(CurrentEditorMacroList.Macros[i]);
+  M := CurrentEditorMacroList.Macros[i];
+  UnitInfo := Project1.UnitInfoWithFilename(InternalFilenameForMacro(CurrentEditorMacroList, M), [pfsfOnlyVirtualFiles]);
+  EditorMacroListProj.Add(M);
   CurrentEditorMacroList.Delete(i);
   Project1.Modified := True;
   if CurrentEditorMacroList = EditorMacroListGlob then MainIDEInterface.SaveEnvironment(False);
+  if UnitInfo <> nil then begin
+    UnitInfo.Filename := InternalFilenameForMacro(EditorMacroListProj, M);
+    UpdateSourceNames;
+  end;
   UpdateDisplay;
 end;
 

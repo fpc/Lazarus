@@ -957,8 +957,12 @@ end;
 
 procedure TCodeCache.OnBufferSetFileName(Sender: TCodeBuffer;
   const OldFilename: string);
+var
+  OldFile: TCodeBuffer;
 begin
-  FItems.Delete(FItems.Find(FindFile(OldFilename)));
+  OldFile := FindFile(OldFilename);
+  if OldFile <> nil then
+    FItems.Delete(FItems.Find(OldFile));
   if FindFile(Sender.Filename)=nil then
     FItems.Add(Sender);
 end;
