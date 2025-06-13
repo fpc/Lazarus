@@ -5,7 +5,6 @@ object EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
   Width = 662
   ClientHeight = 512
   ClientWidth = 662
-  DesignTimePPI = 108
   ParentFont = False
   TabOrder = 0
   Visible = False
