@@ -6212,6 +6212,11 @@ procedure TQtPushButton.preferredSize(var PreferredWidth,
 var
   Size: TSize;
 
+  function HasLineBreak(AText: WideString): Boolean;
+  begin
+    Result := (pos(#10, AText) > 0) or (pos(#13, AText) > 0);
+  end;
+
   function AutoSizeButtonFromStyle(const ASize: TSize): TSize;
   var
     AOpt: QStyleOptionButtonH;
@@ -6221,9 +6226,9 @@ var
     BtnHeight: Integer;
     AIcon: QIconH;
     IconSize: TSize;
+    R: TRect;
     {style pixel metrics}
     BtnMargin, FocusH, FocusV, ShiftH, ShiftV: Integer;
-    ARect: TRect;
   begin
     Result := ASize;
     AOpt := QStyleOptionButton_create();
@@ -6233,9 +6238,16 @@ var
     AMetrics := QFontMetrics_create(QWidget_font(Widget));
     try
       QStyleOption_fontMetrics(AOpt, AMetrics);
-      //QFontMetrics_boundingRect(AMetrics,@ARect, 0, 0, 10000,10000, 0, PWideString(@AText));
-      BtnWidth := QFontMetrics_width(AMetrics, PWideString(@AText));
-      BtnHeight := QFontMetrics_height(AMetrics);
+      if HasLineBreak(AText) then
+      begin
+        QFontMetrics_boundingrect(AMetrics, @R, 0, 0, 10000, 10000, 0, PWideString(@AText));
+        BtnWidth := R.Right - R.Left;
+        BtnHeight := R.Bottom - R.Top;
+      end else
+      begin
+        BtnWidth := QFontMetrics_width(AMetrics, PWideString(@AText));
+        BtnHeight := QFontMetrics_height(AMetrics);
+      end;
       Result.cx := BtnWidth;
       Result.cy := BtnHeight;
 
