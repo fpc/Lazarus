@@ -6259,7 +6259,7 @@ procedure TQtPushButton.preferredSize(var PreferredWidth,
 var
   Size: TSize;
 
-  function HasLineBreak(AText: WideString): Boolean;
+  function HasLineBreak(const AText: WideString): Boolean;
   begin
     Result := (pos(#10, AText) > 0) or (pos(#13, AText) > 0);
   end;
