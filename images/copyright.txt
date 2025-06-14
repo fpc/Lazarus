@@ -185,9 +185,11 @@ packages directory
 --------------------------------------------------------------------------------
 
 The following component palette and menu/toolbar icons (including equally named
-files with appendix _150 and _200) were created by Roland Hahn (no restrictions). 
-svg sources can be found on Lazarus Components and Code Repository, 
-folder image_sources.
+files with appendix _150 and _200) were created by Roland Hahn (license CC0,
+no restrictions). 
+
+svg sources can be found at 
+https://gitlab.com/freepascal.org/lazarus/resources/-/tree/main/image_sources
 
 actions folder:
 	execute.png
