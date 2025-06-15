@@ -232,7 +232,7 @@ resourcestring
   crsCaretOutsideOfCode = 'Caret outside of code';
   crsPackage2 = 'Package: %s';
 
-  crsIDEIntegration = 'IDE Integration';
+  crsCodyOptionsTitle = 'Cody';
   crsMinutes = '%s minutes';
   crsSeconds = '%s seconds';
   crsLoadDictionaryAfter = 'Load dictionary after %s';
