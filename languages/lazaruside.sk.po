@@ -9641,6 +9641,10 @@ msgstr ""
 msgid "Failed to save file."
 msgstr ""
 
+#: lazarusidestrconsts.lisfailedtosavemacro
+msgid "Failed to save macro."
+msgstr ""
+
 #: lazarusidestrconsts.lisfatal
 msgctxt "lazarusidestrconsts.lisfatal"
 msgid "Fatal"

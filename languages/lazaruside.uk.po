@@ -9617,6 +9617,10 @@ msgstr "не вдалось розкрити макрос"
 msgid "Failed to save file."
 msgstr "Не вдалось зберегти файл."
 
+#: lazarusidestrconsts.lisfailedtosavemacro
+msgid "Failed to save macro."
+msgstr ""
+
 #: lazarusidestrconsts.lisfatal
 msgctxt "lazarusidestrconsts.lisfatal"
 msgid "Fatal"

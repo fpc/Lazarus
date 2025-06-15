@@ -9792,6 +9792,10 @@ msgstr "resolución de macros fallida"
 msgid "Failed to save file."
 msgstr "Fallo al guardar archivo."
 
+#: lazarusidestrconsts.lisfailedtosavemacro
+msgid "Failed to save macro."
+msgstr ""
+
 #: lazarusidestrconsts.lisfatal
 msgctxt "lazarusidestrconsts.lisfatal"
 msgid "Fatal"

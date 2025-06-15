@@ -1,16 +1,16 @@
 msgid ""
 msgstr ""
-"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Project-Id-Version: lazaruside\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2025-06-15 12:00+0300\n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-10-28 19:05+0300\n"
-"Language-Team: \n"
-"MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
-"Language: ru\n"
-"X-Generator: Poedit 2.3.1\n"
+"X-Generator: Poedit 3.5\n"
 
 #: lazarusidestrconsts.cocoamfstbicommand
 msgid "Command"
@@ -9561,6 +9561,10 @@ msgstr "не удалось раскрыть макрос"
 #: lazarusidestrconsts.lisfailedtosavefile
 msgid "Failed to save file."
 msgstr "Не удалось сохранить файл."
+
+#: lazarusidestrconsts.lisfailedtosavemacro
+msgid "Failed to save macro."
+msgstr "Не удалось сохранить макрос."
 
 #: lazarusidestrconsts.lisfatal
 msgctxt "lazarusidestrconsts.lisfatal"

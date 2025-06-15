@@ -9621,6 +9621,10 @@ msgstr "makrojen selvitys epäonnistui"
 msgid "Failed to save file."
 msgstr "Tiedoston tallennus epäonnistui."
 
+#: lazarusidestrconsts.lisfailedtosavemacro
+msgid "Failed to save macro."
+msgstr ""
+
 #: lazarusidestrconsts.lisfatal
 msgctxt "lazarusidestrconsts.lisfatal"
 msgid "Fatal"

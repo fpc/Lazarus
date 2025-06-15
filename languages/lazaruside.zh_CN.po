@@ -9591,6 +9591,10 @@ msgstr "解决(resolve)宏失败"
 msgid "Failed to save file."
 msgstr "保存文件失败."
 
+#: lazarusidestrconsts.lisfailedtosavemacro
+msgid "Failed to save macro."
+msgstr ""
+
 #: lazarusidestrconsts.lisfatal
 msgctxt "lazarusidestrconsts.lisfatal"
 msgid "Fatal"
