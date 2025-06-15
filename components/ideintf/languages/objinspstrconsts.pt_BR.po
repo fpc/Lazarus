@@ -1523,6 +1523,11 @@ msgstr "Mover A&cima"
 msgid "None"
 msgstr "Nenhum"
 
+#: objinspstrconsts.sccsiledtnovalidimagewidth
+#, object-pascal-format
+msgid "\"%s\" is not a valid image width."
+msgstr ""
+
 #: objinspstrconsts.sccsiledtopendialog
 msgid "Add Images"
 msgstr "Adicionar Imagens"

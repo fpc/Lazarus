@@ -1562,6 +1562,11 @@ msgstr "Naikan"
 msgid "None"
 msgstr "Tidak ada"
 
+#: objinspstrconsts.sccsiledtnovalidimagewidth
+#, object-pascal-format
+msgid "\"%s\" is not a valid image width."
+msgstr ""
+
 #: objinspstrconsts.sccsiledtopendialog
 msgid "Add Images"
 msgstr "Tambah Gambar"

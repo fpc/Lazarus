@@ -1566,6 +1566,11 @@ msgstr "הזז למעלה"
 msgid "None"
 msgstr "ללא"
 
+#: objinspstrconsts.sccsiledtnovalidimagewidth
+#, object-pascal-format
+msgid "\"%s\" is not a valid image width."
+msgstr ""
+
 #: objinspstrconsts.sccsiledtopendialog
 msgid "Add Images"
 msgstr "הוסף דמויות"

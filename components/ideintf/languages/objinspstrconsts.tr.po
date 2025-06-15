@@ -1509,6 +1509,11 @@ msgstr "Yukarı &Taşı"
 msgid "None"
 msgstr "Yok"
 
+#: objinspstrconsts.sccsiledtnovalidimagewidth
+#, object-pascal-format
+msgid "\"%s\" is not a valid image width."
+msgstr ""
+
 #: objinspstrconsts.sccsiledtopendialog
 msgid "Add Images"
 msgstr "Resim ekle"

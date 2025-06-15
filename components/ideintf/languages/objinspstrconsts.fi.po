@@ -1525,6 +1525,11 @@ msgstr "Siirrä &ylöspäin"
 msgid "None"
 msgstr "Ei mitään"
 
+#: objinspstrconsts.sccsiledtnovalidimagewidth
+#, object-pascal-format
+msgid "\"%s\" is not a valid image width."
+msgstr ""
+
 #: objinspstrconsts.sccsiledtopendialog
 msgid "Add Images"
 msgstr "Lisää Kuvat"

@@ -578,20 +578,23 @@ var
   R: Longint;
   Res: TDragImageListResolution;
   px, perc: Integer;
+  NewWidthStr: String;
 begin
   perc := cInputQueryEditSizePercents;
   px := cInputQueryEditSizePixels;
   cInputQueryEditSizePercents := 0;
   cInputQueryEditSizePixels := 250;
 
-  if TryStrToInt(InputBox(sccsILEdtAddNewResolution, sccsILEdtImageWidthOfNewResolution, ''), R) then
+  NewWidthStr := InputBox(sccsILEdtAddNewResolution, sccsILEdtImageWidthOfNewResolution, '');
+  if TryStrToInt(NewWidthStr, R) and (R > 0) then
   begin
     Res := ImageList.Resolution[R];
     Res.AutoCreatedInDesignTime := False;
     RefreshItemHeight;
     ImageListBox.Repaint;
     UpdateMenus;
-  end;
+  end else
+    MessageDlg(Format(sccsILEdtNoValidImageWidth, [NewWidthStr]), mtError, [mbOK], 0);
 
   cInputQueryEditSizePercents := perc;
   cInputQueryEditSizePixels := px;

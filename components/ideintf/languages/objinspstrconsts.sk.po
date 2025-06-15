@@ -1533,6 +1533,11 @@ msgstr "Presunúť vyššie"
 msgid "None"
 msgstr "Žiadny"
 
+#: objinspstrconsts.sccsiledtnovalidimagewidth
+#, object-pascal-format
+msgid "\"%s\" is not a valid image width."
+msgstr ""
+
 #: objinspstrconsts.sccsiledtopendialog
 msgid "Add Images"
 msgstr "Pridať obrázky"

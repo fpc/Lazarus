@@ -1506,6 +1506,11 @@ msgstr "向上移动(&U)"
 msgid "None"
 msgstr "None"
 
+#: objinspstrconsts.sccsiledtnovalidimagewidth
+#, object-pascal-format
+msgid "\"%s\" is not a valid image width."
+msgstr ""
+
 #: objinspstrconsts.sccsiledtopendialog
 msgid "Add Images"
 msgstr "添加图像"

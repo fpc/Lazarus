@@ -166,6 +166,7 @@ resourcestring
   sccsILEdtDeleteResolutionConfirmation = 'Select the resolution (image size) to delete.';
   sccsILEdtCannotDeleteResolution = 'Cannot delete default resolution.';
   sccsILEdtImageWidthOfNewResolution = 'Image width of the new resolution:';
+  sccsILEdtNoValidImageWidth = '"%s" is not a valid image width.';
   sccsILEdtransparentColor = 'Transparent Color:';
   sccsILEdtAdjustment  = 'Adjustment';
   sccsILEdtNone        = 'None';

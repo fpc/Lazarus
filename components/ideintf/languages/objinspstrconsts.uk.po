@@ -1526,6 +1526,11 @@ msgstr "Перемістити в&гору"
 msgid "None"
 msgstr "Немає"
 
+#: objinspstrconsts.sccsiledtnovalidimagewidth
+#, object-pascal-format
+msgid "\"%s\" is not a valid image width."
+msgstr ""
+
 #: objinspstrconsts.sccsiledtopendialog
 msgid "Add Images"
 msgstr "Додати зображення"

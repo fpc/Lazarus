@@ -1517,6 +1517,11 @@ msgstr "Perkelti au&kštyn"
 msgid "None"
 msgstr "Jokios"
 
+#: objinspstrconsts.sccsiledtnovalidimagewidth
+#, object-pascal-format
+msgid "\"%s\" is not a valid image width."
+msgstr ""
+
 #: objinspstrconsts.sccsiledtopendialog
 msgid "Add Images"
 msgstr "Pridėti paveikslų"

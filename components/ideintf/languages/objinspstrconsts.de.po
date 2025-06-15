@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-07-03 12:28+0200\n"
+"PO-Revision-Date: 2025-06-15 23:39+0200\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "Language: de\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Generator: Poedit 3.4.4\n"
+"X-Generator: Poedit 3.6\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -734,7 +734,7 @@ msgstr "Feld nach oben"
 
 #: objinspstrconsts.oisnannotsupported
 msgid "Setting a floating point property to NaN at design time is not supported"
-msgstr ""
+msgstr "Eine Gleitkomma-Eigenschaft zur Entwurfszeit auf NaN zu setzen wird nicht unterstützt."
 
 #: objinspstrconsts.oisnew
 msgid "&New"
@@ -944,7 +944,7 @@ msgstr "Infobox anzeigen"
 
 #: objinspstrconsts.oisshowpropertyfilter
 msgid "Show Property Filter"
-msgstr ""
+msgstr "Eigenschafts-Filter anzeigen"
 
 #: objinspstrconsts.oisshowstatusbar
 msgid "Show Status Bar"
@@ -1314,7 +1314,7 @@ msgstr "Wert:"
 
 #: objinspstrconsts.oisvalueoutofrange
 msgid "Property value out of range."
-msgstr ""
+msgstr "Wert der Eigenschaft nicht im zulässigen Bereich."
 
 #: objinspstrconsts.oisvariant
 msgid "Variant"
@@ -1506,6 +1506,11 @@ msgstr "Nach oben"
 msgid "None"
 msgstr "Keiner"
 
+#: objinspstrconsts.sccsiledtnovalidimagewidth
+#, object-pascal-format
+msgid "\"%s\" is not a valid image width."
+msgstr "\"%s\" ist keine gültige Bildbreite."
+
 #: objinspstrconsts.sccsiledtopendialog
 msgid "Add Images"
 msgstr "Bilder hinzufügen"
@@ -1663,7 +1668,7 @@ msgstr "Löschen"
 #: objinspstrconsts.sccssgedtcolrowinfo
 #, object-pascal-format
 msgid "(%d columns, %d rows)"
-msgstr ""
+msgstr "(%d Spalten, %d Zeilen)"
 
 #: objinspstrconsts.sccssgedtdelcol
 msgid "Delete column"
@@ -1754,11 +1759,9 @@ msgid "TreeView Items Editor"
 msgstr "Editor für TreeView-Einträge"
 
 #: objinspstrconsts.sccstredtconfirmationimagesloss
-#, fuzzy
-#| msgid "Information about node images cannot be stored in the file. Continue anyway?"
 msgctxt "objinspstrconsts.sccstredtconfirmationimagesloss"
 msgid "Information about node images can only be stored in XML file format. Continue anyway?"
-msgstr "Information über die Knoten-Bilder kann nicht in der Datei gespeichert werden. Trotzdem fortfahren?"
+msgstr "Information über die Knoten-Bilder kann nur im XML-Dateiformat gespeichert werden. Trotzdem fortfahren?"
 
 #: objinspstrconsts.sccstredtconfirmationtreereplace
 msgid "The current tree will be overwritten, continue?"
@@ -1826,11 +1829,11 @@ msgstr "Öffnen"
 
 #: objinspstrconsts.sccstredtopensavedlgfiltertextfiles
 msgid "Text files (Node captions only)"
-msgstr ""
+msgstr "Text-Dateien (nur Knoten-Texte)"
 
 #: objinspstrconsts.sccstredtopensavedlgfilterxmlfiles
 msgid "XML files (Node captions and properties)"
-msgstr ""
+msgstr "XML-Dateien (Knoten-Texte und -Eigenschaften)"
 
 #: objinspstrconsts.sccstredtrename
 msgctxt "objinspstrconsts.sccstredtrename"
@@ -1906,4 +1909,3 @@ msgstr "Tab nach links bewegen"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Tab nach rechts bewegen"
-

@@ -1518,6 +1518,11 @@ msgstr "Sposta in &alto"
 msgid "None"
 msgstr "Nessuno"
 
+#: objinspstrconsts.sccsiledtnovalidimagewidth
+#, object-pascal-format
+msgid "\"%s\" is not a valid image width."
+msgstr ""
+
 #: objinspstrconsts.sccsiledtopendialog
 msgid "Add Images"
 msgstr "Aggiungi Immagini"

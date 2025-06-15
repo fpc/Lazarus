@@ -1527,6 +1527,11 @@ msgstr "Mozgatás &fel"
 msgid "None"
 msgstr "Semmi"
 
+#: objinspstrconsts.sccsiledtnovalidimagewidth
+#, object-pascal-format
+msgid "\"%s\" is not a valid image width."
+msgstr ""
+
 #: objinspstrconsts.sccsiledtopendialog
 msgid "Add Images"
 msgstr "Képek hozzáadása"

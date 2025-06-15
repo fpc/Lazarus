@@ -1510,6 +1510,11 @@ msgstr "Przenieś w &górę"
 msgid "None"
 msgstr "Brak"
 
+#: objinspstrconsts.sccsiledtnovalidimagewidth
+#, object-pascal-format
+msgid "\"%s\" is not a valid image width."
+msgstr ""
+
 #: objinspstrconsts.sccsiledtopendialog
 msgid "Add Images"
 msgstr "Dodaj obrazy"
