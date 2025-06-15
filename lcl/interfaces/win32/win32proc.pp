@@ -1076,7 +1076,7 @@ begin
   begin
     flags := DT_CALCRECT;
     R := Rect(0, 0, 10000, 10000);
-    Result := Windows.DrawText(canvasHandle, PChar(Text), Length(Text), R, flags) <> 0;
+    Result := LCLIntf.DrawText(canvasHandle, PChar(Text), Length(Text), R, flags) <> 0;
     if Result then
     begin
       Width := R.Right;
