@@ -3140,6 +3140,7 @@ begin
       end;
   end;
 
+  UpdateBounds;
   EndResizing(false, false);
 end;
 
