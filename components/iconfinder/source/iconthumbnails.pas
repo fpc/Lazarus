@@ -18,8 +18,8 @@ unit IconThumbNails;
 interface
 
 uses
-  Classes, SysUtils, fgl, contnrs, FPImage, FPReadBMP, StrUtils, LazLoggerBase,
-  laz2_dom, laz2_xmlread, laz2_xmlwrite, IntfGraphics,
+  Classes, SysUtils, fgl, contnrs, FPImage, FPReadBMP, FPReadPNG, StrUtils,
+  LazLoggerBase, laz2_dom, laz2_xmlread, laz2_xmlwrite, IntfGraphics,
   FileUtil, LazFileUtils, Graphics, Controls, Dialogs, Menus, Forms,
   IconFinderStrConsts, BasicThumbnails;
 
@@ -144,6 +144,7 @@ type
     function AcceptIcon(AIcon: TIconItem): Boolean; virtual;
     function AcceptKeywords(AIcon: TIconItem): Boolean;
     function AddIcon(AFileName, AKeywords: String; AStyle: TIconStyle; AWidth, AHeight: Integer): TIconItem;
+    procedure AddIconToMetafile(AFileName: String; AHidden: Boolean);
     procedure DeleteIconFolder(AFolder: String);
     procedure FilterIcons;
     function MetadataDirty: Boolean;
@@ -710,6 +711,43 @@ begin
   SelectedIndex := -1;
 end;
 
+procedure TIconThumbnailViewer.AddIconToMetaFile(AFileName: String; AHidden: Boolean);
+var
+  stream: TStream;
+  reader: TFPCustomImageReaderClass;
+  w, h: Integer;
+begin
+  stream := TFileStream.Create(AFileName, fmOpenRead or fmShareDenyNone);
+  try
+    reader := TFPCustomImage.FindReaderFromStream(stream);
+    if reader <> nil then
+    begin
+      // Workaround for failure to get the image size when BGRABitmap is
+      // installed since the bgra readers do not implement the ImageSize
+      // method.
+      case Lowercase(reader.ClassName) of
+        'tbgrareaderpng': reader := TFPReaderPNG;
+        'tbgrareaderbmp': reader := TFPReaderBMP;
+      end;
+     {$if FPC_FullVersion < 30301}
+      // Workaround for FPReaderBMP not implementing "ImageSize"
+      if reader = TFPReaderBMP then
+        reader := TLazReaderBMP;
+     {$ifend}
+
+      stream.Position := 0;
+      with reader.ImageSize(stream) do
+      begin
+        w := X;
+        h := Y;
+      end;
+      AddIcon(AFileName, '', isAnyStyle, w, h).Hidden := AHidden;
+    end;
+  finally
+    stream.Free;
+  end;
+end;
+
 procedure TIconThumbnailViewer.Clear;
 begin
   SelectedIndex := -1;
@@ -1142,37 +1180,13 @@ end;
 procedure TIconThumbnailViewer.ReadIcons(AFolder: String; AHidden: Boolean);
 var
   files: TStrings;
-  reader: TFPCustomImageReaderClass;
-  stream: TStream;
-  i, w, h: Integer;
+  i: Integer;
 begin
   files := TStringList.Create;
   try
     FindAllFiles(files, AFolder, IMAGES_MASK, false);
     for i := 0 to files.Count-1 do
-    begin
-      stream := TFileStream.Create(files[i], fmOpenRead or fmShareDenyNone);
-      try
-        reader := TFPCustomImage.FindReaderFromStream(stream);
-        if reader <> nil then
-        begin
-          {$if FPC_FullVersion < 30301}
-          // Workaround for FPReaderBMP not implementing "ImageSize"
-          if reader = TFPReaderBMP then
-            reader := TLazReaderBMP;
-          {$ifend}
-          stream.Position := 0;
-          with reader.ImageSize(stream) do
-          begin
-            w := X;
-            h := Y;
-          end;
-          AddIcon(files[i], '', isAnyStyle, w, h).Hidden := AHidden;
-        end;
-      finally
-        stream.Free;
-      end;
-    end;
+      AddIconToMetaFile(files[i], AHidden);
   finally
     files.Free;
   end;
@@ -1268,27 +1282,9 @@ begin
 
     // Every image which exists in the metadata file has been deleted from
     // the files list. The entries which are left identify new files. Add them
-    // to the metafile
+    // to the metafile.
     for i := 0 to files.Count-1 do
-    begin
-      fn := files[i];
-      stream := TFileStream.Create(files[i], fmOpenRead or fmShareDenyNone);
-      try
-        reader := TFPCustomImage.FindReaderFromStream(stream);
-        if reader <> nil then
-        begin
-          stream.Position := 0;
-          with reader.ImageSize(stream) do
-          begin
-            w := X;
-            h := Y;
-          end;
-          AddIcon(files[i], '', isAnyStyle, w, h).Hidden := AHidden;
-        end;
-      finally
-        stream.Free;
-      end;
-    end;
+      AddIconToMetafile(files[i], AHidden);
 
     {$ifdef SPEED_TIMER}
     t2 := Now()-t2;
