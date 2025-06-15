@@ -10115,6 +10115,10 @@ msgstr "nepavyko nustatyti makrokomandų"
 msgid "Failed to save file."
 msgstr "Nepavyko įrašyti failan."
 
+#: lazarusidestrconsts.lisfailedtosavemacro
+msgid "Failed to save macro."
+msgstr ""
+
 #: lazarusidestrconsts.lisfatal
 msgctxt "lazarusidestrconsts.lisfatal"
 msgid "Fatal"

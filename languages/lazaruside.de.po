@@ -9912,6 +9912,10 @@ msgstr ""
 msgid "Failed to save file."
 msgstr "Speichern der Datei fehlgeschlagen."
 
+#: lazarusidestrconsts.lisfailedtosavemacro
+msgid "Failed to save macro."
+msgstr ""
+
 #: lazarusidestrconsts.lisfatal
 msgctxt "lazarusidestrconsts.lisfatal"
 msgid "Fatal"

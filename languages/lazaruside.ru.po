@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-06-02 16:10+0300\n"
+"PO-Revision-Date: 2025-06-15 12:00+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -9884,6 +9884,10 @@ msgstr "не удалось раскрыть макрос"
 #: lazarusidestrconsts.lisfailedtosavefile
 msgid "Failed to save file."
 msgstr "Не удалось сохранить файл."
+
+#: lazarusidestrconsts.lisfailedtosavemacro
+msgid "Failed to save macro."
+msgstr "Не удалось сохранить макрос."
 
 #: lazarusidestrconsts.lisfatal
 msgctxt "lazarusidestrconsts.lisfatal"

@@ -9994,6 +9994,10 @@ msgstr "a makrók feloldása sikertelen"
 msgid "Failed to save file."
 msgstr "A fájl mentése nem sikerült."
 
+#: lazarusidestrconsts.lisfailedtosavemacro
+msgid "Failed to save macro."
+msgstr ""
+
 #: lazarusidestrconsts.lisfatal
 msgctxt "lazarusidestrconsts.lisfatal"
 msgid "Fatal"

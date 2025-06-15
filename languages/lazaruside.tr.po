@@ -9898,6 +9898,10 @@ msgstr "makroları çözemedi"
 msgid "Failed to save file."
 msgstr "Dosya kaydedilemedi."
 
+#: lazarusidestrconsts.lisfailedtosavemacro
+msgid "Failed to save macro."
+msgstr ""
+
 #: lazarusidestrconsts.lisfatal
 msgctxt "lazarusidestrconsts.lisfatal"
 msgid "Fatal"

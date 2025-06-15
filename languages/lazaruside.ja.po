@@ -10111,6 +10111,10 @@ msgstr "マクロの解決に失敗しました"
 msgid "Failed to save file."
 msgstr "ファイルの保存に失敗"
 
+#: lazarusidestrconsts.lisfailedtosavemacro
+msgid "Failed to save macro."
+msgstr ""
+
 #: lazarusidestrconsts.lisfatal
 msgctxt "lazarusidestrconsts.lisfatal"
 msgid "Fatal"
