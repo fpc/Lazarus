@@ -21330,7 +21330,7 @@
     </icon>
     <icon filename="Setup_06_16.png" width="16" height="16" style="outline">
       <keywords>
-        <keyword>configurations</keyword>
+        <keyword>configuration</keyword>
         <keyword>gear</keyword>
         <keyword>options</keyword>
         <keyword>settings</keyword>
@@ -21339,7 +21339,7 @@
     </icon>
     <icon filename="Setup_06_24.png" width="24" height="24" style="outline">
       <keywords>
-        <keyword>configurations</keyword>
+        <keyword>configuration</keyword>
         <keyword>gear</keyword>
         <keyword>options</keyword>
         <keyword>settings</keyword>
@@ -21348,7 +21348,7 @@
     </icon>
     <icon filename="Setup_06_32.png" width="32" height="32" style="outline">
       <keywords>
-        <keyword>configurations</keyword>
+        <keyword>configuration</keyword>
         <keyword>gear</keyword>
         <keyword>options</keyword>
         <keyword>settings</keyword>
@@ -21357,7 +21357,7 @@
     </icon>
     <icon filename="Setup_06_36.png" width="36" height="36" style="outline">
       <keywords>
-        <keyword>configurations</keyword>
+        <keyword>configuration</keyword>
         <keyword>gear</keyword>
         <keyword>options</keyword>
         <keyword>settings</keyword>
@@ -21366,7 +21366,7 @@
     </icon>
     <icon filename="Setup_06_48.png" width="48" height="48" style="outline">
       <keywords>
-        <keyword>configurations</keyword>
+        <keyword>configuration</keyword>
         <keyword>gear</keyword>
         <keyword>options</keyword>
         <keyword>settings</keyword>
@@ -21375,7 +21375,7 @@
     </icon>
     <icon filename="Setup_06_64.png" width="64" height="64" style="outline">
       <keywords>
-        <keyword>configurations</keyword>
+        <keyword>configuration</keyword>
         <keyword>gear</keyword>
         <keyword>options</keyword>
         <keyword>settings</keyword>
@@ -21384,7 +21384,7 @@
     </icon>
     <icon filename="Setup_07_16.png" width="16" height="16" style="flat">
       <keywords>
-        <keyword>configurations</keyword>
+        <keyword>configuration</keyword>
         <keyword>gear</keyword>
         <keyword>options</keyword>
         <keyword>settings</keyword>
@@ -21393,7 +21393,7 @@
     </icon>
     <icon filename="Setup_07_24.png" width="24" height="24" style="flat">
       <keywords>
-        <keyword>configurations</keyword>
+        <keyword>configuration</keyword>
         <keyword>gear</keyword>
         <keyword>options</keyword>
         <keyword>settings</keyword>
@@ -21402,7 +21402,7 @@
     </icon>
     <icon filename="Setup_07_32.png" width="32" height="32" style="flat">
       <keywords>
-        <keyword>configurations</keyword>
+        <keyword>configuration</keyword>
         <keyword>gear</keyword>
         <keyword>options</keyword>
         <keyword>settings</keyword>
@@ -21411,7 +21411,7 @@
     </icon>
     <icon filename="Setup_07_36.png" width="36" height="36" style="flat">
       <keywords>
-        <keyword>configurations</keyword>
+        <keyword>configuration</keyword>
         <keyword>gear</keyword>
         <keyword>options</keyword>
         <keyword>settings</keyword>
@@ -21420,7 +21420,7 @@
     </icon>
     <icon filename="Setup_07_48.png" width="48" height="48" style="flat">
       <keywords>
-        <keyword>configurations</keyword>
+        <keyword>configuration</keyword>
         <keyword>gear</keyword>
         <keyword>options</keyword>
         <keyword>settings</keyword>
@@ -21429,7 +21429,7 @@
     </icon>
     <icon filename="Setup_07_64.png" width="64" height="64" style="flat">
       <keywords>
-        <keyword>configurations</keyword>
+        <keyword>configuration</keyword>
         <keyword>gear</keyword>
         <keyword>options</keyword>
         <keyword>settings</keyword>
@@ -30602,6 +30602,60 @@
         <keyword>arrow</keyword>
         <keyword>magnify</keyword>
         <keyword>zoom</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Setup_09_16.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Setup_09_24.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Setup_09_32.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Setup_09_36.png" width="36" height="36" style="flat">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Setup_09_48.png" width="48" height="48" style="flat">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Setup_09_64.png" width="64" height="64" style="flat">
+      <keywords>
+        <keyword>configuration</keyword>
+        <keyword>gear</keyword>
+        <keyword>options</keyword>
+        <keyword>settings</keyword>
+        <keyword>setup</keyword>
       </keywords>
     </icon>
   </icons>
