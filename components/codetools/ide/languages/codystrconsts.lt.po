@@ -199,6 +199,10 @@ msgstr "Cody - rasti daugiareikšmiškumus"
 msgid "Identifier Dictionary"
 msgstr "Identifikatorių žodynas"
 
+#: codystrconsts.crscodyoptionstitle
+msgid "Cody"
+msgstr ""
+
 #: codystrconsts.crscogeneral
 msgctxt "codystrconsts.crscogeneral"
 msgid "General"
@@ -404,10 +408,6 @@ msgstr "Slėpti absatrakčius metodus ir klasių metodų sąsajas"
 #: codystrconsts.crshideunitsofotherprojects
 msgid "Hide units of other projects"
 msgstr "Slėpti kitų projektų modulius"
-
-#: codystrconsts.crsideintegration
-msgid "IDE Integration"
-msgstr "IKA integravimas"
 
 #: codystrconsts.crsidentifiernotfound
 msgid "Identifier not found"

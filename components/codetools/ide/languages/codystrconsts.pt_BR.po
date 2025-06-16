@@ -198,6 +198,10 @@ msgstr "Cody - Encontrar Sobrecargas"
 msgid "Identifier Dictionary"
 msgstr "Dicionário de identificadores"
 
+#: codystrconsts.crscodyoptionstitle
+msgid "Cody"
+msgstr ""
+
 #: codystrconsts.crscogeneral
 msgctxt "codystrconsts.crscogeneral"
 msgid "General"
@@ -403,10 +407,6 @@ msgstr "Ocultar métodos abstratos e métodos de classes de interface"
 #: codystrconsts.crshideunitsofotherprojects
 msgid "Hide units of other projects"
 msgstr "Ocultar unidades de outros projetos"
-
-#: codystrconsts.crsideintegration
-msgid "IDE Integration"
-msgstr "Integração com a IDE"
 
 #: codystrconsts.crsidentifiernotfound
 msgid "Identifier not found"

@@ -198,6 +198,10 @@ msgstr "Cody - Aşırı Yük Bul"
 msgid "Identifier Dictionary"
 msgstr "Tanımlayıcı Sözlüğü"
 
+#: codystrconsts.crscodyoptionstitle
+msgid "Cody"
+msgstr ""
+
 #: codystrconsts.crscogeneral
 msgctxt "codystrconsts.crscogeneral"
 msgid "General"
@@ -401,10 +405,6 @@ msgstr "Soyut yöntem ve sınıf arayüzleri yöntemlerini gizle"
 #: codystrconsts.crshideunitsofotherprojects
 msgid "Hide units of other projects"
 msgstr "Diğer projelerin birimlerini gizle"
-
-#: codystrconsts.crsideintegration
-msgid "IDE Integration"
-msgstr "IDE Entegrasyonu"
 
 #: codystrconsts.crsidentifiernotfound
 msgid "Identifier not found"

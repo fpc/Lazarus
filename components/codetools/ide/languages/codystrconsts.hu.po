@@ -198,6 +198,10 @@ msgstr "Cody - Felültöltések keresése"
 msgid "Identifier Dictionary"
 msgstr "Azonosítók szótára"
 
+#: codystrconsts.crscodyoptionstitle
+msgid "Cody"
+msgstr ""
+
 #: codystrconsts.crscogeneral
 msgctxt "codystrconsts.crscogeneral"
 msgid "General"
@@ -403,10 +407,6 @@ msgstr "Absztrakt metódusok és osztályfelületek metódusainak elrejtése"
 #: codystrconsts.crshideunitsofotherprojects
 msgid "Hide units of other projects"
 msgstr "Más projektek unit-jainak elrejtése"
-
-#: codystrconsts.crsideintegration
-msgid "IDE Integration"
-msgstr "Beépülés az IDE-be"
 
 #: codystrconsts.crsidentifiernotfound
 msgid "Identifier not found"

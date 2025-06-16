@@ -200,6 +200,10 @@ msgstr "Cody - Знайти перевантажені"
 msgid "Identifier Dictionary"
 msgstr "Словник ідентифікаторів"
 
+#: codystrconsts.crscodyoptionstitle
+msgid "Cody"
+msgstr ""
+
 #: codystrconsts.crscogeneral
 msgctxt "codystrconsts.crscogeneral"
 msgid "General"
@@ -405,10 +409,6 @@ msgstr "Призовати абстрактні методи і методи і�
 #: codystrconsts.crshideunitsofotherprojects
 msgid "Hide units of other projects"
 msgstr "Приховати модулі з інших проєктів"
-
-#: codystrconsts.crsideintegration
-msgid "IDE Integration"
-msgstr "Інтегрування в ІСР"
 
 #: codystrconsts.crsidentifiernotfound
 msgid "Identifier not found"

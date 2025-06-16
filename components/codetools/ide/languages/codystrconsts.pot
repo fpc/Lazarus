@@ -188,6 +188,10 @@ msgstr ""
 msgid "Identifier Dictionary"
 msgstr ""
 
+#: codystrconsts.crscodyoptionstitle
+msgid "Cody"
+msgstr ""
+
 #: codystrconsts.crscogeneral
 msgctxt "codystrconsts.crscogeneral"
 msgid "General"
@@ -390,10 +394,6 @@ msgstr ""
 
 #: codystrconsts.crshideunitsofotherprojects
 msgid "Hide units of other projects"
-msgstr ""
-
-#: codystrconsts.crsideintegration
-msgid "IDE Integration"
 msgstr ""
 
 #: codystrconsts.crsidentifiernotfound

@@ -199,6 +199,10 @@ msgstr ""
 msgid "Identifier Dictionary"
 msgstr "标识符字典"
 
+#: codystrconsts.crscodyoptionstitle
+msgid "Cody"
+msgstr ""
+
 #: codystrconsts.crscogeneral
 msgctxt "codystrconsts.crscogeneral"
 msgid "General"
@@ -404,10 +408,6 @@ msgstr "隐藏抽象方法和类接口方法"
 #: codystrconsts.crshideunitsofotherprojects
 msgid "Hide units of other projects"
 msgstr "隐藏其他项目的单元"
-
-#: codystrconsts.crsideintegration
-msgid "IDE Integration"
-msgstr "IDE集成"
 
 #: codystrconsts.crsidentifiernotfound
 msgid "Identifier not found"
