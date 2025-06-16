@@ -685,8 +685,19 @@ control.
 <p>
 <var>TGridZone</var> is an enumeration type with values representing zones in 
 a grid control which are monitored to determine activity and subsequent 
-changes in the control state.
+changes in the control state. It represents the area on a grid where the mouse 
+is located when a mouse move, mouse down, or mouse up event is handled for the 
+control.
 </p>
+<p>
+TGridZone is the type returned by TCustomGrid methods like:
+</p>
+<ul>
+<li>CellToGridZone</li>
+<li>MouseToGridZone</li>
+<li>MouseToLogcell</li>
+<li>CacheMouseDown</li>
+</ul>
 <p>
 Values from TGridZone are stored in the TGridZoneSet type, and used to 
 implement properties in TCustomGrid like:
@@ -696,12 +707,16 @@ implement properties in TCustomGrid like:
 <li>HeaderPushZones</li>
 </ul>
 <p>
-The type is also passed as an argument to the Clean method in 
+The TGridZoneSet type is also passed as an argument to the Clean method in 
 TCustomStringGrid.
 </p>
 </descr>
 <seealso>
 <link id="TGridZoneSet"/>
+<link id="TCustomGrid.CellToGridZone"/>
+<link id="TCustomGrid.MouseToGridZone"/>
+<link id="TCustomGrid.MouseToLogcell"/>
+<link id="TCustomGrid.CacheMouseDown"/>
 <link id="TCustomGrid.HeaderHotZones"/>
 <link id="TCustomGrid.HeaderPushZones"/>
 <link id="TCustomStringGrid.Clean"/>
@@ -713,10 +728,10 @@ Area normally used for cell data (not fixed row or column headers).
 </short>
 </element>
 <element name="TGridZone.gzFixedCols">
-<short>Area used for fixed column headers </short>
+<short>Area used for fixed column headers.</short>
 </element>
 <element name="TGridZone.gzFixedRows">
-<short>Area used for fixed row headers </short>
+<short>Area used for fixed row headers.</short>
 </element>
 <element name="TGridZone.gzFixedCells">
 <short>
@@ -724,7 +739,10 @@ Area for fixed cells (where both the column and the row are fixed).
 </short>
 </element>
 <element name="TGridZone.gzInvalid">
-<short>Area not valid for grid cells.</short>
+<short>
+Area not valid for grid cells. Used when outbound (or out-of-bounds) events 
+are enabled on a grid control.
+</short>
 </element>
 
 <element name="TGridZoneSet">
@@ -7275,8 +7293,9 @@ id="TCustomGrid.VisibleRowCount">VisibleRowCount</link> properties contain
 information about the visible area of the grid.
 </p>
 <p>
-The <link id="TCustomGrid.Options">Options</link> controls options for the 
-grid.
+The <link id="TCustomGrid.Options">Options</link> and 
+<link id="TCustomGrid.Options2">Options2</link> control the options enabled 
+for the grid.
 </p>
 <p>
 Please note that most of these properties are declared as protected members. 
@@ -7295,8 +7314,19 @@ the <link id="TCustomGrid.Col">Col</link> and <link
 id="TCustomGrid.Row">Row</link> property.
 </p>
 <p>
-The <link id="TCustomGrid.MouseToCell">MouseToCell</link> method calculates a 
-grid cell from a given screen position.
+The <link id="#lcl.controls.TControl.OnClick">OnClick</link> event is 
+signalled when a mouse down event is handled for the control, and when cell 
+navigation is performed using cursor keys on the keyboard. It is signalled 
+when for fixed cells on the grid when the row or column features are enabled 
+in Options2.
+</p>
+<p>
+The <link id="TCustomGrid.MouseToCell">MouseToCell</link> method gets the 
+column and row number for a grid cell at a given position on the screen.
+<link id="TCustomGrid.MouseToGridZone">MouseToGridZone</link> gets the grid 
+area where the mouse down event occurred. 
+<link id="TCustomGrid.CellToGridZone">CellToGridZone</link> gets the grid area 
+for the specified column and row number.
 </p>
 <p>
 Huge changes to the grid should be encapsulated in calls to <link 
@@ -14760,8 +14790,8 @@ zone is in HeaderPushZones.
 <b>gzFixedCols</b>
 </p>
 <p>
-GridState is set to gsColSizing when goColSizing has been included in the 
-Options and the cursor state is gcsColWidthChanging.
+GridState is set to gsColSizing when goColSizing has been included in Options 
+and the cursor state is gcsColWidthChanging.
 </p>
 <p>
 Otherwise, GridState is set to gsColMoving and the coordinates for the most 
@@ -20879,10 +20909,10 @@ coordinates are located.
 </short>
 <descr>
 <p>
-<var>MouseToGridZone</var> is a <var>TGridZone</var> function used to get the 
-grid zone where the specified mouse pointer coordinates are located. The 
-<var>X</var> and <var>Y</var> arguments contain the screen coordinates where 
-the mouse pointer is located.
+<var>MouseToGridZone</var> is a <var>TGridZone</var> function 
+which returns the grid zone where the specified mouse pointer coordinates are 
+located. The <var>X</var> and <var>Y</var> arguments contain the screen 
+coordinates where the mouse pointer is located.
 </p>
 <p>
 The return value is a <var>TGridZone</var> enumeration value determined by 
@@ -20894,19 +20924,23 @@ available, and used to the determine the return value.
 <dt>gzInvalid</dt>
 <dd>
 X and Y are located on the border or in a area not used for cells in the 
-client area for the control.
+client area for the control. Used when AllowOutboundEvents has been disabled 
+on the control.
 </dd>
 <dt>gzFixedCells</dt>
 <dd>
-X and Y are both located in a fixed header cell (located in column 0 row 0).
+X and Y are both located in a fixed header cell (located in column 0 row 0 - 
+or a cell where both the row and column are fixed).
 </dd>
 <dt>gzFixedRows</dt>
 <dd>
-X and Y are located in a fixed header cell for a row on the control.
+X and Y are located in a fixed header cell located in a fixed row on the 
+control.
 </dd>
 <dt>gzFixedCols</dt>
 <dd>
-X and Y are located in a fixed header cell for a column on the control.
+X and Y are located in a fixed header cell located in a fixed column on the 
+control.
 </dd>
 <dt>gzNormal</dt>
 <dd>
@@ -20924,15 +20958,16 @@ row number.
 </p>
 </descr>
 <seealso>
+<link id="TCustomGrid.AllowOutboundEvents"/>
 <link id="TCustomGrid.BorderStyle"/>
+<link id="TCustomGrid.CellToGridZone"/>
 <link id="TCustomGrid.Flat"/>
 <link id="TCustomGrid.FixedRows"/>
 <link id="TCustomGrid.FixedCols"/>
 <link id="TCustomGrid.GCache"/>
-<link id="TCustomGrid.OffsetToColRow"/>
 <link id="TCustomGrid.MouseToCell"/>
 <link id="TCustomGrid.MouseMove"/>
-<link id="TCustomGrid.CellToGridZone"/>
+<link id="TCustomGrid.OffsetToColRow"/>
 <link id="TGridZone"/>
 <link id="#lcl.controls.TControl.MouseMove">TControl.MouseMove</link>
 <link id="#lcl.controls.TControl.OnMouseMove">TControl.OnMouseMove</link>
