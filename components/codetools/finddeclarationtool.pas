@@ -10841,7 +10841,7 @@ var
 
   procedure ResolveChildren;
   var
-    NewNode: TCodeTreeNode;
+    NewNode, PointedNode: TCodeTreeNode;
     NewTool: TFindDeclarationTool;
   begin
     if (ExprType.Context.Node=nil) then exit;
@@ -10903,9 +10903,9 @@ var
       // -> check for pointer type
       // left side of expression has defined a special context
       // => this '.' is a dereference
-      NewNode:=FindPointedTypeBehind(NewTool,NewNode);
-      if NewNode<>nil then begin
-        ExprType.Context:=NewTool.FindBaseTypeOfNode(Params,NewNode);
+      PointedNode:=FindPointedTypeBehind(NewTool,NewNode);
+      if PointedNode<>nil then begin
+        ExprType.Context:=NewTool.FindBaseTypeOfNode(Params,PointedNode);
       end else begin
         ExprType.Context:=NewTool.FindBaseTypeOfNode(Params,NewNode.FirstChild);
       end;
