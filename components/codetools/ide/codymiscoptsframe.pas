@@ -146,7 +146,7 @@ end;
 
 function TCodyMiscOptionsFrame.GetTitle: String;
 begin
-  Result:=crsIDEIntegration;
+  Result:=crsCodyOptionsTitle;
 end;
 
 procedure TCodyMiscOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions
