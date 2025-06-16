@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-05-05 01:43+0300\n"
+"PO-Revision-Date: 2025-06-16 16:43+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -1508,7 +1508,7 @@ msgstr "Нет"
 #: objinspstrconsts.sccsiledtnovalidimagewidth
 #, object-pascal-format
 msgid "\"%s\" is not a valid image width."
-msgstr ""
+msgstr "\"%s\" не является корректной шириной изображения."
 
 #: objinspstrconsts.sccsiledtopendialog
 msgid "Add Images"
