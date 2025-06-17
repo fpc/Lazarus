@@ -3798,13 +3798,16 @@ begin
           if ACommand = emcWheelHorizScrollUp then i := -i;
           if i <> 0 then begin
             LeftChar := LeftChar + i;
-            if fStateFlags * [sfMouseSelecting, sfWaitForMouseSelecting] <> [] then begin
-              FStateFlags := FStateFlags - [sfWaitForMouseSelecting] + [sfMouseSelecting, sfMouseDoneSelecting];
-              ResetMouseCapture := False;
+            if AnAction.MoveCaret or (fStateFlags * [sfMouseSelecting, sfWaitForMouseSelecting] <> [])
+            then begin
               AnInfo.NewCaret.LineCharPos := PixelsToRowColumn(Point(AnInfo.MouseX, AnInfo.MouseY));
-              FBlockSelection.AutoExtend := True;
-              MoveCaret;
-              FBlockSelection.ActiveSelectionMode := FMouseSelectionMode;
+              if fStateFlags * [sfMouseSelecting, sfWaitForMouseSelecting] <> [] then begin
+                FStateFlags := FStateFlags - [sfWaitForMouseSelecting] + [sfMouseSelecting, sfMouseDoneSelecting];
+                ResetMouseCapture := False;
+                FBlockSelection.AutoExtend := True;
+                MoveCaret;
+                FBlockSelection.ActiveSelectionMode := FMouseSelectionMode;
+              end;
             end;
           end;
         end;
@@ -3814,13 +3817,16 @@ begin
           if ACommand = emcWheelVertScrollUp then i := -i;
           if i <> 0 then begin
             TopView := TopView + i;
-            if fStateFlags * [sfMouseSelecting, sfWaitForMouseSelecting] <> [] then begin
-              FStateFlags := FStateFlags - [sfWaitForMouseSelecting] + [sfMouseSelecting, sfMouseDoneSelecting];
-              ResetMouseCapture := False;
+            if AnAction.MoveCaret or (fStateFlags * [sfMouseSelecting, sfWaitForMouseSelecting] <> [])
+            then begin
               AnInfo.NewCaret.LineCharPos := PixelsToRowColumn(Point(AnInfo.MouseX, AnInfo.MouseY));
-              FBlockSelection.AutoExtend := True;
-              MoveCaret;
-              FBlockSelection.ActiveSelectionMode := FMouseSelectionMode;
+              if fStateFlags * [sfMouseSelecting, sfWaitForMouseSelecting] <> [] then begin
+                FStateFlags := FStateFlags - [sfWaitForMouseSelecting] + [sfMouseSelecting, sfMouseDoneSelecting];
+                ResetMouseCapture := False;
+                FBlockSelection.AutoExtend := True;
+                MoveCaret;
+                FBlockSelection.ActiveSelectionMode := FMouseSelectionMode;
+              end;
             end;
           end;
         end;
