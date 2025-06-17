@@ -8,63 +8,78 @@ object NewProjectDialog: TNewProjectDialog
   ClientHeight = 302
   ClientWidth = 561
   Position = poScreenCenter
-  LCLVersion = '4.99.0.0'
-  object Panel1: TPanel
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = Owner
-    AnchorSideRight.Control = Owner
+  object pnlList: TPanel
     Left = 6
     Height = 258
     Top = 6
-    Width = 549
-    Align = alClient
-    BorderSpacing.Around = 6
+    Width = 269
+    Align = alLeft
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 2
     BevelOuter = bvNone
     ClientHeight = 258
-    ClientWidth = 549
+    ClientWidth = 269
     TabOrder = 0
-    object DescriptionGroupBox: TGroupBox
-      Left = 274
-      Height = 258
-      Top = 0
-      Width = 275
-      Align = alClient
-      Caption = 'DescriptionGroupBox'
-      ClientHeight = 238
-      ClientWidth = 271
-      TabOrder = 1
-      object HelpLabel: TLabel
-        Left = 6
-        Height = 226
-        Top = 6
-        Width = 259
-        Align = alClient
-        BorderSpacing.Around = 6
-        Caption = 'HelpLabel'
-        ParentColor = False
-        WordWrap = True
-      end
-    end
-    object Splitter1: TSplitter
-      Left = 269
-      Height = 258
-      Top = 0
-      Width = 5
-    end
     object Tree: TTreeView
       Left = 0
-      Height = 258
-      Top = 0
+      Height = 229
+      Top = 29
       Width = 269
-      Align = alLeft
+      Align = alClient
       Anchors = []
       HideSelection = False
       ReadOnly = True
       ScrollBars = ssAutoBoth
-      TabOrder = 0
+      TabOrder = 1
       Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
       OnDblClick = OkClick
       OnSelectionChanged = TreeSelectionChange
+    end
+    object TypeFilter: TTreeFilterEdit
+      Left = 0
+      Height = 23
+      Top = 0
+      Width = 269
+      CharCase = ecNormal
+      ButtonWidth = 23
+      Align = alTop
+      BorderSpacing.Bottom = 6
+      NumGlyphs = 1
+      MaxLength = 0
+      TabOrder = 0
+      FilteredTreeview = Tree
+    end
+  end
+  object Splitter1: TSplitter
+    Left = 277
+    Height = 264
+    Top = 0
+    Width = 5
+  end
+  object DescriptionGroupBox: TGroupBox
+    Left = 284
+    Height = 258
+    Top = 6
+    Width = 271
+    Align = alClient
+    BorderSpacing.Left = 2
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    Caption = 'DescriptionGroupBox'
+    ClientHeight = 238
+    ClientWidth = 267
+    TabOrder = 1
+    object HelpLabel: TLabel
+      Left = 6
+      Height = 226
+      Top = 6
+      Width = 255
+      Align = alClient
+      BorderSpacing.Around = 6
+      Caption = 'HelpLabel'
+      ParentColor = False
+      WordWrap = True
     end
   end
   object ButtonPanel: TButtonPanel
@@ -83,7 +98,7 @@ object NewProjectDialog: TNewProjectDialog
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
     CancelButton.DefaultCaption = True
-    TabOrder = 1
+    TabOrder = 3
     ShowButtons = [pbOK, pbCancel, pbHelp]
     ShowBevel = False
   end

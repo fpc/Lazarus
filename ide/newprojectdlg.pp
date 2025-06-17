@@ -34,6 +34,8 @@ uses
   Classes, SysUtils,
   // LCL
   Forms, Graphics, Controls, Buttons, ButtonPanel, StdCtrls, ExtCtrls, ComCtrls,
+  // LazControls
+  TreeFilterEdit,
   // BuildIntf
   ProjectIntf,
   // IdeIntf
@@ -49,8 +51,9 @@ type
     ButtonPanel: TButtonPanel;
     DescriptionGroupBox: TGroupBox;
     HelpLabel: TLabel;
+    TypeFilter: TTreeFilterEdit;
     Tree: TTreeView;
-    Panel1: TPanel;
+    pnlList: TPanel;
     Splitter1: TSplitter;
     procedure HelpButtonClick(Sender: TObject);
     procedure OkClick(Sender: TObject);
@@ -138,6 +141,7 @@ begin
       ItemNode.SelectedIndex:=NIndexTemplate;
     end;
   Tree.FullExpand;
+  TypeFilter.InvalidateFilter;
   Tree.Items.EndUpdate;
 
   //select first child node
