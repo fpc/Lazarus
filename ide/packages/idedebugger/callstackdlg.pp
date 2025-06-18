@@ -714,13 +714,17 @@ end;
 procedure TCallStackDlg.actSetAsCurrentClick(Sender : TObject);
 var
   Entry: TIdeCallStackEntry;
+  cs: TIdeCallStack;
 begin
   try
   DisableAllActions;
     Entry := GetCurrentEntry;
     if Entry = nil then Exit;
 
-    GetSelectedCallstack.ChangeCurrentIndex(Entry.Index);
+    cs := GetSelectedCallstack;
+    if Entry.Index = cs.NewCurrentIndex then Exit;
+
+    cs.ChangeCurrentIndex(Entry.Index);
     if GetSelectedSnapshot <> nil
     then CallStackMonitor.NotifyCurrent; // TODO: move to snapshot callstack object
   finally
