@@ -114,6 +114,8 @@ type
     procedure actViewUpExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure lvCallStackClick(Sender: TObject);
+    procedure lvCallStackMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X,
+      Y: Integer);
     procedure popCountClick(Sender: TObject);
     procedure ToolButtonPowerClick(Sender: TObject);
     procedure txtGotoKeyPress(Sender: TObject; var Key: char);
@@ -956,6 +958,27 @@ begin
   // if clicked on the first column of a valid item
   if (Item <> nil) and (P.X <= lvCallStack.Column[0].Width) then
     ToggleBreakPoint(Item);
+end;
+
+procedure TCallStackDlg.lvCallStackMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+var
+  itm: TListItem;
+begin
+  if Button = mbMiddle then begin
+    itm := lvCallStack.GetItemAt(X, Y);
+    if itm <> nil then begin
+      DisableAllActions;
+      try
+        itm.Selected := True;
+        actSetAsCurrentClick(nil);
+        if ssDouble in Shift then
+          JumpToSource;
+      finally
+        EnableAllActions;
+      end;
+    end;
+  end;
 end;
 
 procedure TCallStackDlg.actViewLimitExecute(Sender: TObject);

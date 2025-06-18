@@ -44,6 +44,7 @@ object CallStackDlg: TCallStackDlg
     ViewStyle = vsReport
     OnClick = lvCallStackClick
     OnDblClick = lvCallStackDBLCLICK
+    OnMouseDown = lvCallStackMouseDown
   end
   object ToolBar1: TToolBar
     Left = 0
