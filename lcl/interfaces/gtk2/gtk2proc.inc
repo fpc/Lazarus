@@ -6745,11 +6745,11 @@ begin
     end;
     if WidthHeightChanged then
     begin
-      // SetWindowSizeAndPosition should be always called in xfwm4, see issue #41219
-      if (TopLevelWindowResizeLocked = 0) or (GTK2WidgetSet.GetWindowManager = 'xfwm4') then
-        SetWindowSizeAndPosition(PGtkWindow(MainWidget), LCLControl);
-      if TopLevelWindowResizeLocked = 0 then
+      if (TopLevelWindowResizeLocked = 0) or
+         (not gtk_window_get_resizable(PGtkWindow(MainWidget))) // #41219
+      then
       begin
+        SetWindowSizeAndPosition(PGtkWindow(MainWidget), LCLControl);
         SetResizeRequest(MainWidget);
       end;
       SetWidgetConstraints(LCLControl);

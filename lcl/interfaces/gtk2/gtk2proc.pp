@@ -882,22 +882,25 @@ var
 
 // Ref.to https://gitlab.com/freepascal.org/lazarus/lazarus/-/issues/40752
 function LockTopLevelWindowResizeOnNativeCall: Boolean;
+{$IFDEF HASX}
 var
   AWindowManager: string;
 begin
   if fLockTopLevelWindowResizeOnNativeCall < 0 then
   begin
-    {$IFDEF HASX}
     AWindowManager := GTK2WidgetSet.GetWindowManager;
-    {$ELSE}
-    AWindowManager := 'Nil';
-    {$ENDIF}
-    if (AWindowManager = 'fly-wm') or (AWindowManager = 'openbox') or (AWindowManager = 'xfwm4') then
+    if (AWindowManager = 'fly-wm') or (AWindowManager = 'openbox') or //#40752
+       (AWindowManager = 'xfwm4') //#41012 + #41219
+    then
       fLockTopLevelWindowResizeOnNativeCall := 1
     else
       fLockTopLevelWindowResizeOnNativeCall := 0;
   end;
-  Result := fLockTopLevelWindowResizeOnNativeCall <> 0;
+  Result := (fLockTopLevelWindowResizeOnNativeCall <> 0) and not GTK2WidgetSet.compositeManagerRunning;
+{$ELSE}
+begin
+  Result := False;
+{$ENDIF}
 end;
 {$EndRegion}
 
