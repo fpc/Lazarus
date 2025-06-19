@@ -348,37 +348,40 @@ function TFileBrowserForm.FindNode(aNodePath : String) : TTreeNode;
 
 var
   StartDir: string;
-  i, p: integer;
-  SubDir: PChar;
+  Parts : TStringArray;
+  i, p, len: integer;
+  SubDir: String;
   Node : TTreeNode;
+
 
 begin
   Result:=nil;
-  StartDir:=IncludeTrailingPathDelimiter(aNodePath);
-  UniqueString(StartDir);
-  p := AnsiPos(RootDirectory, StartDir);
-  if p = 1 then
-    Delete(StartDir, P, Length(RootDirectory));
-  for i := 1 to Length(StartDir) do
-    if (StartDir[i] = PathDelim) then
-      StartDir[i] := #0;
-  SubDir := PChar(StartDir);
-  if SubDir[0] = #0 then
-    SubDir := @SubDir[1];
   Node := TV.Items.GetFirstNode;
   if Node=Nil then
     exit;
-  while SubDir[0] <> #0 do
-  begin
+  StartDir:=aNodePath;
+  if Not FilesInTree then
+    StartDir:=IncludeTrailingPathDelimiter(aNodePath);
+  p := AnsiPos(RootDirectory, StartDir);
+  if p = 1 then
+    Delete(StartDir, P, Length(RootDirectory));
+  Parts:=StartDir.Split(['/'],TStringSplitOptions.ExcludeEmpty);
+  Len:=Length(Parts);
+  I:=0;
+  While I<Len do
+    begin
+    SubDir:=Parts[i];
     Node := Node.GetFirstChild;
     while (Node <> nil) and (AnsiCompareStr(Node.Text, SubDir) <> 0) do
       Node := Node.GetNextSibling;
     if Node = nil then
+      begin
       break
+      end
     else
       Node.Expand(False);
-    SubDir := SubDir + StrLen(SubDir) + 1;
-  end;
+    Inc(I);
+    end;
   Result:=Node;
 end;
 
