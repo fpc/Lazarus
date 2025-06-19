@@ -24,23 +24,7 @@ object NewOtherDialog: TNewOtherDialog
     ClientHeight = 390
     ClientWidth = 729
     TabOrder = 0
-    object ItemsTreeView: TTreeView
-      Left = 0
-      Height = 390
-      Top = 0
-      Width = 295
-      Align = alClient
-      ExpandSignSize = 10
-      HideSelection = False
-      ReadOnly = True
-      ScrollBars = ssAutoBoth
-      TabOrder = 0
-      Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
-      OnDblClick = OkButtonClick
-      OnSelectionChanged = ItemsTreeViewSelectionChanged
-    end
     object DescriptionGroupBox: TGroupBox
-      AnchorSideLeft.Control = ItemsTreeView
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Owner
       AnchorSideRight.Control = Owner
@@ -49,10 +33,11 @@ object NewOtherDialog: TNewOtherDialog
       Top = 0
       Width = 429
       Align = alRight
+      BorderSpacing.Left = 2
       Caption = 'DescriptionGroupBox'
       ClientHeight = 370
       ClientWidth = 425
-      TabOrder = 1
+      TabOrder = 2
       object DescriptionLabel: TLabel
         Left = 6
         Height = 15
@@ -124,6 +109,47 @@ object NewOtherDialog: TNewOtherDialog
       Width = 5
       Align = alRight
       ResizeAnchor = akRight
+    end
+    object pnlList: TPanel
+      Left = 0
+      Height = 390
+      Top = 0
+      Width = 291
+      Align = alClient
+      BorderSpacing.Right = 2
+      BevelOuter = bvNone
+      ClientHeight = 390
+      ClientWidth = 291
+      TabOrder = 0
+      object TypeFilter: TTreeFilterEdit
+        Left = 0
+        Height = 23
+        Top = 0
+        Width = 291
+        CharCase = ecNormal
+        ButtonWidth = 23
+        Align = alTop
+        BorderSpacing.Bottom = 6
+        NumGlyphs = 1
+        MaxLength = 0
+        TabOrder = 0
+        FilteredTreeview = ItemsTreeView
+      end
+      object ItemsTreeView: TTreeView
+        Left = 0
+        Height = 361
+        Top = 29
+        Width = 291
+        Align = alClient
+        ExpandSignSize = 10
+        HideSelection = False
+        ReadOnly = True
+        ScrollBars = ssAutoBoth
+        TabOrder = 1
+        Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+        OnDblClick = OkButtonClick
+        OnSelectionChanged = ItemsTreeViewSelectionChanged
+      end
     end
   end
   object ButtonPanel: TButtonPanel

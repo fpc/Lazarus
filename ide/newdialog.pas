@@ -41,8 +41,9 @@ interface
 uses
   SysUtils, Classes,
   // LCL
-  ComCtrls, Controls, Dialogs, Forms, StdCtrls, ExtCtrls,
-  ButtonPanel, ListViewFilterEdit,
+  ComCtrls, Controls, Dialogs, Forms, StdCtrls, ExtCtrls, ButtonPanel,
+  // LazControls
+  ListViewFilterEdit, TreeFilterEdit,
   // LazUtils
   LazUTF8, FileUtil,
   // IdeIntf
@@ -127,6 +128,8 @@ type
     ButtonPanel: TButtonPanel;
     DescriptionGroupBox: TGroupBox;
     DescriptionLabel: TLabel;
+    pnlList: TPanel;
+    TypeFilter: TTreeFilterEdit;
     ItemsTreeView: TTreeView;
     InheritableComponentsListView: TListView;
     CompFilterEdit: TListViewFilterEdit;
@@ -334,6 +337,7 @@ begin
     end;
     NewParentNode.Expand(True);
   end;
+  TypeFilter.InvalidateFilter;
   ItemsTreeView.EndUpdate;
 end;
 
