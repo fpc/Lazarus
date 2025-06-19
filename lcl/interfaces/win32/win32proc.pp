@@ -1074,7 +1074,7 @@ begin
   end else
   begin
     DeleteAmpersands(Text);
-    Result := Windows.GetTextExtentPoint32(canvasHandle, PChar(Text), Length(Text), textSize);
+    Result := LCLIntf.GetTextExtentPoint32(canvasHandle, PChar(Text), Length(Text), textSize);
     if Result then
     begin
       Width := textSize.cx;
