@@ -1879,6 +1879,10 @@ begin
     if not FCurrentProcess.WaitForDebugEvent(AProcessIdentifier, AThreadIdentifier) then
       Continue;
     InterLockedExchange(FRunning, 0);
+    if FCurrentProcess.GotExitProcess and (AProcessIdentifier = 0) then begin
+      FPDEvent := deExitProcess;
+      break;
+    end;
 
     (* Do not change CurrentProcess/Thread,
        unless the debugger can actually controll/debug those processes
