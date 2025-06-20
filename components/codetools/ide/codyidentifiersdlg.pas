@@ -41,8 +41,8 @@ uses
   // LCL
   Forms, Controls, Dialogs, ButtonPanel, StdCtrls, ExtCtrls, LCLType, Buttons, Menus,
   // IdeIntf
-  PackageIntf, LazIDEIntf, SrcEditorIntf, ProjectIntf,
-  CompOptsIntf, IDEDialogs, IDEMsgIntf, IDEExternToolIntf, ProjPackIntf,
+  PackageIntf, LazIDEIntf, SrcEditorIntf, ProjectIntf, CompOptsIntf, IDEDialogs,
+  IDEMsgIntf, IDEWindowIntf, IDEExternToolIntf, ProjPackIntf,
   // Codetools
   CodeCache, BasicCodeTools, CustomCodeTool, CodeToolManager, UnitDictionary,
   CodeTree, LinkScanner, DefineTemplates, FindDeclarationTool,
@@ -969,6 +969,7 @@ begin
   CodyOptions.PreferImplementationUsesSection:=
                                         AddToImplementationUsesCheckBox.Checked;
   FreeAndNil(FItems);
+  IDEDialogLayoutList.SaveLayout(self);
 end;
 
 procedure TCodyIdentifiersDlg.FormCreate(Sender: TObject);
@@ -998,6 +999,7 @@ begin
   ContainsRadioButton.Checked:=false;
   ContainsRadioButton.Caption:=crsContains;
   ContainsRadioButton.Hint:=crsShowOnlyIdentifiersContainingFilterText;
+  IDEDialogLayoutList.ApplyLayout(self, 550, 550);
 end;
 
 procedure TCodyIdentifiersDlg.HideOtherProjectsCheckBoxChange(Sender: TObject);
