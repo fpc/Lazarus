@@ -172,7 +172,7 @@ type
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure HideOtherProjectsCheckBoxChange(Sender: TObject);
-    procedure ItemsListBoxClick(Sender: TObject);
+    procedure ItemsListBoxDblClick(Sender: TObject);
     procedure ItemsListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure PopupMenu1Popup(Sender: TObject);
@@ -1006,10 +1006,17 @@ begin
   IdleConnected:=true;
 end;
 
-procedure TCodyIdentifiersDlg.ItemsListBoxClick(Sender: TObject);
+procedure TCodyIdentifiersDlg.ItemsListBoxDblClick(Sender: TObject);
+var
+  lClickPos: TPoint;
 begin
-  if FItems=nil then exit;
+  // ignore clicks in empty area
+  lClickPos := ItemsListBox.ScreenToClient(Mouse.CursorPos);
+  if ItemsListBox.ItemAtPos(lClickPos, true) < 0 then exit;
 
+  // only if valid identificator is selected
+  if assigned(FindSelectedIdentifier) then
+    UseIdentifierClick(Sender);
 end;
 
 procedure TCodyIdentifiersDlg.ItemsListBoxSelectionChange(Sender: TObject;
