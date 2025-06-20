@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="5">
+    <Name Value="lazfastopenunit"/>
+    <Type Value="DesignTime"/>
+    <Author Value="Michael Van Canneyt (michael@freepascal.org)"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/"/>
+      </SearchPaths>
+    </CompilerOptions>
+    <Description Value="Fast open of unit file: 
+This functionality mimics the open file at cursor."/>
+    <License Value="Lazarus version of LGPL"/>
+    <Version Minor="1"/>
+    <Files>
+      <Item>
+        <Filename Value="regfastopen.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="regfastopen"/>
+      </Item>
+    </Files>
+    <RequiredPkgs>
+      <Item>
+        <PackageName Value="IDEIntf"/>
+      </Item>
+      <Item>
+        <PackageName Value="FCL"/>
+      </Item>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>
