@@ -39,7 +39,7 @@ uses
   // BuildIntf
   ProjectIntf,
   // IdeIntf
-  IDEHelpIntf, IDEImagesIntf,
+  IDEHelpIntf, IDEImagesIntf, IDEWindowIntf,
   // IDE
   LazarusIDEStrConsts, Project;
 
@@ -58,6 +58,7 @@ type
     procedure HelpButtonClick(Sender: TObject);
     procedure OkClick(Sender: TObject);
     procedure TreeSelectionChange(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
   private
     FProjectDescriptor: TProjectDescriptor;
     procedure FillHelpLabel;
@@ -96,6 +97,12 @@ begin
   Caption:=lisNPCreateANewProject;
   SetupComponents;
   FillHelpLabel;
+  IDEDialogLayoutList.ApplyLayout(Self, 550, 500);
+end;
+
+procedure TNewProjectDialog.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(self);
 end;
 
 procedure TNewProjectDialog.FillHelpLabel;
