@@ -8,6 +8,7 @@ object NewProjectDialog: TNewProjectDialog
   ClientHeight = 302
   ClientWidth = 561
   Position = poScreenCenter
+  OnClose = FormClose
   object pnlList: TPanel
     Left = 6
     Height = 258
