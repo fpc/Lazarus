@@ -796,8 +796,8 @@ end;
 constructor TCodyUnitDictionary.Create;
 begin
   inherited Create;
-  FSaveIntervalInS:=60*3; // every 3 minutes
-  FLoadAfterStartInS:=3;
+  FSaveIntervalInS:=cDefSaveIntervalInS;
+  FLoadAfterStartInS:=cDefLoadDelayInS;
   InitCriticalSection(fCritSec);
   fQueuedTools:=TAVLTree.Create;
   CodeToolBoss.AddHandlerToolTreeChanging(@ToolTreeChanged);
@@ -977,7 +977,7 @@ begin
   ButtonPanel1.HelpButton.OnClick:=@ButtonPanel1HelpButtonClick;
   ButtonPanel1.OKButton.Caption:=crsUseIdentifier;
   ButtonPanel1.OKButton.OnClick:=@UseIdentifierClick;
-  FMaxItems:=40;
+  FMaxItems:=cDefMaxListItems;
   FilterEdit.TextHint:=crsFilter;
   FItems:=TObjectList.Create;
   HideOtherProjectsCheckBox.Checked:=true;
