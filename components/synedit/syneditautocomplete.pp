@@ -560,12 +560,13 @@ var
         raise Exception.Create('TCustomSynAutoComplete.ParseCompletionList: "'
                               + CodeTemplateAttributesEndMagic + '" not found.');
       Template.Attributes.Text := Copy(sValue, StartI, EndI-StartI);
-      // Start of value
-      StartI := EndI + Length(CodeTemplateAttributesEndMagic);
-      while (StartI <= Length(sValue)) and (sValue[StartI] in [#10,#13]) do
-        Inc(StartI);
-      Template.Value := Copy(sValue, StartI, Length(sValue));
-    end;
+      StartI := EndI + Length(CodeTemplateAttributesEndMagic); // Start of value
+    end
+    else
+      StartI := 1;
+    while (StartI <= Length(sValue)) and (sValue[StartI] in [#10,#13]) do
+      Inc(StartI);
+    Template.Value := Copy(sValue, StartI, Length(sValue)); // Extract value
     fCodeTemplates.Add(Template);
     sKey := '';
     sValue := '';
@@ -617,20 +618,24 @@ begin
           TemplateStarted:=false;
           sValue := sValue + S;
         end;
-      end else begin
+      end
+      else begin
         // the original style
-        if (Len > 0) and (S[1] <> '=') then begin
-          // save last entry
-          if sKey <> '' then
-            SaveEntry;
-          // new completion entry
-          sKey := S;
-          TemplateStarted:=true;
-        end else if (Len > 0) and (S[1] = '=') then begin
-          if not TemplateStarted then
-            sValue := sValue + LineEnding;
-          TemplateStarted:=false;
-          sValue := sValue + Copy(S, 2, Len);
+        if Len > 0 then begin
+          if S[1] <> '=' then begin
+            // save last entry
+            if sKey <> '' then
+              SaveEntry;
+            // new completion entry
+            sKey := S;
+            TemplateStarted:=true;
+          end
+          else begin
+            if not TemplateStarted then
+              sValue := sValue + LineEnding;
+            TemplateStarted:=false;
+            sValue := sValue + Copy(S, 2, Len);
+          end;
         end;
       end;
     end;
