@@ -2547,6 +2547,7 @@ begin
 
   ListOfPCodeXYPosition:=nil;
   Complete:=not (chhoSmallStep in Options);
+  HasXML:=False;
   ElementNames:=TStringList.Create;
   try
     try
