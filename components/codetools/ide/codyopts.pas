@@ -15,12 +15,16 @@ uses
 
 const
   CodyConfigVersion = 1;
+
+const
+  cDefLoadDelayInS    =  10;
+  cDefSaveIntervalInS = 600;
+  cDefMaxListItems    =  50;
+
 var
   CodyMiscOptionID: integer = 1000;
+
 type
-
-  { TCodyMiscOptions }
-
   TCodyMiscOptions = class(TPersistent)
   private
     FChangeStep: integer;
@@ -60,8 +64,6 @@ var
   CodyOptions: TCodyMiscOptions = nil;
 
 implementation
-
-{ TCodyMiscOptions }
 
 procedure TCodyMiscOptions.SetModified(AValue: boolean);
 begin
@@ -104,29 +106,21 @@ begin
 end;
 
 procedure TCodyMiscOptions.Assign(Source: TPersistent);
-var
-  aSource: TCodyMiscOptions;
 begin
   if Source is TCodyMiscOptions then
   begin
-    aSource:=TCodyMiscOptions(Source);
-    UDSaveIntervalInS:=aSource.UDSaveIntervalInS;
-    UDLoadDelayInS:=aSource.UDLoadDelayInS;
+    UDSaveIntervalInS := TCodyMiscOptions(Source).UDSaveIntervalInS;
+    UDLoadDelayInS    := TCodyMiscOptions(Source).UDLoadDelayInS;
   end else
     inherited Assign(Source);
 end;
 
 function TCodyMiscOptions.Equals(Obj: TObject): boolean;
-var
-  Src: TCodyMiscOptions;
 begin
-  Result:=false;
-  if not (Obj is TCodyMiscOptions) then exit;
-  Src:=TCodyMiscOptions(Obj);
-  if (UDLoadDelayInS<>Src.UDLoadDelayInS)
-  or (UDSaveIntervalInS<>Src.UDSaveIntervalInS)
-  then exit;
-  Result:=true;
+  Result :=
+    (Obj is TCodyMiscOptions) and // "is" also checks for nil
+    (UDLoadDelayInS    = TCodyMiscOptions(Obj).UDLoadDelayInS   ) and
+    (UDSaveIntervalInS = TCodyMiscOptions(Obj).UDSaveIntervalInS);
 end;
 
 procedure TCodyMiscOptions.SaveSafe;
@@ -157,8 +151,8 @@ var
 begin
   Cfg:=GetIDEConfigStorage(Filename,false);
   try
-    Cfg.SetDeleteValue('UnitDictionary/LoadDelay',UDLoadDelayInS,10);
-    Cfg.SetDeleteValue('UnitDictionary/SaveInterval',UDSaveIntervalInS,600);
+    Cfg.SetDeleteValue('UnitDictionary/LoadDelay',   UDLoadDelayInS,   cDefLoadDelayInS);
+    Cfg.SetDeleteValue('UnitDictionary/SaveInterval',UDSaveIntervalInS,cDefSaveIntervalInS);
     Cfg.SetDeleteValue('Uses/PreferImplementationSection',PreferImplementationUsesSection,false);
   finally
     Cfg.Free;
@@ -172,8 +166,8 @@ begin
   Clear;
   Cfg:=GetIDEConfigStorage(Filename,true);
   try
-    UDLoadDelayInS:=Cfg.GetValue('UnitDictionary/LoadDelay',10);
-    UDSaveIntervalInS:=Cfg.GetValue('UnitDictionary/SaveInterval',600);
+    UDLoadDelayInS   :=Cfg.GetValue('UnitDictionary/LoadDelay',   cDefLoadDelayInS);
+    UDSaveIntervalInS:=Cfg.GetValue('UnitDictionary/SaveInterval',cDefSaveIntervalInS);
     PreferImplementationUsesSection:=Cfg.GetValue('Uses/PreferImplementationSection',false);
     //debugln(['TCodyMiscOptions.LoadFromFile UDSaveIntervalInS=',UDSaveIntervalInS,' LoadDelay=',UDLoadDelayInS]);
   finally
@@ -183,8 +177,8 @@ end;
 
 procedure TCodyMiscOptions.Clear;
 begin
-  UDLoadDelayInS:=10;
-  UDSaveIntervalInS:=600;
+  UDLoadDelayInS    := cDefLoadDelayInS;
+  UDSaveIntervalInS := cDefSaveIntervalInS;
 end;
 
 procedure TCodyMiscOptions.Apply;
