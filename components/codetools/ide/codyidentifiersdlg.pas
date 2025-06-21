@@ -937,18 +937,23 @@ procedure TCodyIdentifiersDlg.FilterEditKeyDown(Sender: TObject; var Key: Word;
 var
   i: Integer;
 begin
-  i:=ItemsListBox.ItemIndex;
-  case Key of
-  VK_DOWN:
+  if (Key = VK_DOWN) and (Shift = []) then
+  begin
+    i:=ItemsListBox.ItemIndex;
     if i<0 then
       ItemsListBox.ItemIndex:=Min(ItemsListBox.Items.Count-1,0)
     else if i<ItemsListBox.Count-1 then
       ItemsListBox.ItemIndex:=i+1;
-  VK_UP:
+    Key := 0;
+  end
+  else if (Key = VK_UP) and (Shift = []) then
+  begin
+    i:=ItemsListBox.ItemIndex;
     if i<0 then
       ItemsListBox.ItemIndex:=ItemsListBox.Count-1
     else if i>0 then
       ItemsListBox.ItemIndex:=i-1;
+    Key := 0;
   end;
 end;
 
