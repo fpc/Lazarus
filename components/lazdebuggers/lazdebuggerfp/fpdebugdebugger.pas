@@ -4157,7 +4157,19 @@ begin
     {$ifdef windows}
     FDbgController.ForceNewConsoleWin:=TFpDebugDebuggerProperties(GetProperties).ForceNewConsole;
     {$endif windows}
+
+    FDbgController.AttachToPid := 0;
+    if ACommand = dcAttach then begin
+      FDbgController.AttachToPid := StrToIntDef(String(AParams[0].VAnsiString), 0);
+      Result := FDbgController.AttachToPid <> 0;
+      if not Result then begin
+        FileName := '';
+        Exit;
+      end;
+    end;
+
     // Check if CreateDbgProcess returns a valid TDbgProcess
+//    if ACommand <> dcAttach then begin
     if Assigned(FDbgController.CurrentProcess) then begin
       FDbgController.CurrentProcess.Config.UseConsoleWinPos    := FUseConsoleWinPos;
       FDbgController.CurrentProcess.Config.UseConsoleWinSize   := FUseConsoleWinSize;
@@ -4175,15 +4187,6 @@ begin
 
       FDbgController.CurrentProcess.Config.BreakpointSearchMaxLines := TFpDebugDebuggerProperties(GetProperties).BreakpointSearchMaxLines;
 
-      FDbgController.AttachToPid := 0;
-      if ACommand = dcAttach then begin
-        FDbgController.AttachToPid := StrToIntDef(String(AParams[0].VAnsiString), 0);
-        Result := FDbgController.AttachToPid <> 0;
-        if not Result then begin
-          FileName := '';
-          Exit;
-        end;
-      end;
       FWorkQueue.Clear;
       FWorkQueue.ThreadCount := 1;
       {$IFDEF FPDEBUG_THREAD_CHECK} CurrentFpDebugThreadIdForAssert := FWorkQueue.Threads[0].ThreadID;{$ENDIF}

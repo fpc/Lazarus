@@ -305,6 +305,7 @@ type
     procedure SetParams(AValue: TStringList);
 
     procedure CheckExecutableAndLoadClasses(out ATargetInfo: TTargetDescriptor);
+    procedure InitForDefaultTargetAndLoadClasses(out ATargetInfo: TTargetDescriptor);
   protected
     FMainProcess: TDbgProcess;
     FCurrentProcess: TDbgProcess;
@@ -1554,6 +1555,13 @@ begin
   FOsDbgClasses := FpDbgClasses.GetDbgProcessClass(ATargetInfo);
 end;
 
+procedure TDbgController.InitForDefaultTargetAndLoadClasses(out ATargetInfo: TTargetDescriptor);
+begin
+  ATargetInfo := hostDescriptor;
+
+  FOsDbgClasses := FpDbgClasses.GetDbgProcessClass(ATargetInfo);
+end;
+
 procedure TDbgController.SetExecutableFilename(const AValue: string);
 begin
   if assigned(FMainProcess) then
@@ -2163,19 +2171,26 @@ begin
   Result := nil;
   assert(FMainProcess = nil, 'TDbgController.CreateDbgProcess: FMainProcess = nil');
 
-  if FExecutableFilename = '' then begin
-    DebugLn(DBG_WARNINGS, 'No filename given to execute.');
-    FLastError := CreateError(fpInternalErr, ['No filename given to execute.']);
-    Exit;
-  end;
-  if not FileExists(FExecutableFilename) then begin
-    DebugLn(DBG_WARNINGS, 'File %s does not exist.',[FExecutableFilename]);
-    FLastError := CreateError(fpInternalErr, ['File does not exist: ' + FExecutableFilename]);
-    Exit;
+  if AttachToPid = 0 then begin
+    if FExecutableFilename = '' then begin
+      DebugLn(DBG_WARNINGS, 'No filename given to execute.');
+      FLastError := CreateError(fpInternalErr, ['No filename given to execute.']);
+      Exit;
+    end;
+    if not FileExists(FExecutableFilename) then begin
+      DebugLn(DBG_WARNINGS, 'File %s does not exist.',[FExecutableFilename]);
+      FLastError := CreateError(fpInternalErr, ['File does not exist: ' + FExecutableFilename]);
+      Exit;
+    end;
+
+    // Get exe info, load classes
+    CheckExecutableAndLoadClasses(TargetDescriptor);
+  end
+  else begin
+    // Attach, get debug classes for the host system
+    InitForDefaultTargetAndLoadClasses(TargetDescriptor);
   end;
 
-  // Get exe info, load classes
-  CheckExecutableAndLoadClasses(TargetDescriptor);
   if not Assigned(OsDbgClasses) then begin
     DebugLn(DBG_WARNINGS, 'Error - No support registered for debug target');
     FLastError := CreateError(fpInternalErr, ['Unsupported target for file: ' + FExecutableFilename+'.'#13#10 +
