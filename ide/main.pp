@@ -1702,6 +1702,8 @@ begin
   Screen.AddHandlerActiveControlChanged(@HandleScreenChangedControl);
   IDEComponentPalette.OnClassSelected := @ComponentPaletteClassSelected;
   IDEWindowCreators.AddLayoutChangedHandler(@LayoutChangeHandler);
+
+  CreateOftenUsedForms;
   SetupIDEWindowsLayout;
   RestoreIDEWindows;
   MainIDEBar.SetupHints;
