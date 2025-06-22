@@ -68,7 +68,7 @@ uses
   // BuildIntf
   ProjectIntf, PackageIntf, PackageLinkIntf, PackageDependencyIntf,
   // IDEIntf
-  IDEHelpIntf, IDECommands, IDEDialogs, IDEImagesIntf, LazIDEIntf, ToolBarIntf,
+  IDECommands, IDEDialogs, IDEImagesIntf, LazIDEIntf, ToolBarIntf,
   IdeIntfStrConsts, MenuIntf, FormEditingIntf, SrcEditorIntf, InputHistory,
   // IdeConfig
   EnvironmentOpts, IDEOptionDefs, TransferMacros, IDEProcs,
@@ -173,7 +173,6 @@ type
     procedure ClearDependencyFilenameMenuItemClick(Sender: TObject);
     procedure OpenButtonClick(Sender: TObject);
     procedure OptionsBitBtnClick(Sender: TObject);
-    procedure HelpBitBtnClick(Sender: TObject);
     procedure ReAddMenuItemClick(Sender: TObject);
     procedure RemoveBitBtnClick(Sender: TObject);
     procedure RemoveNonExistingFilesMenuItemClick(Sender: TObject);
@@ -1124,11 +1123,6 @@ begin
   MainIDEBar.itmProjectOptions.DoOnClick;
 end;
 
-procedure TProjectInspectorForm.HelpBitBtnClick(Sender: TObject);
-begin
-  LazarusHelp.ShowHelpForIDEControl(Self);
-end;
-
 procedure TProjectInspectorForm.ReAddMenuItemClick(Sender: TObject);
 var
   Dependency: TPkgDependency;
@@ -1463,7 +1457,7 @@ begin
   OptionsBitBtn := CreateToolButton('OptionsBitBtn', lisOptions, lisPckEditEditGeneralOptions, 'menu_environment_options', @OptionsBitBtnClick);
   OptionsBitBtn.DropdownMenu := TSetBuildModeToolButton.TBuildModeMenu.Create(Self);
   OptionsBitBtn.Style := tbsDropDown;
-  HelpBitBtn    := CreateToolButton('HelpBitBtn', GetButtonCaption(idButtonHelp), lisMenuOnlineHelp, 'btn_help', @HelpBitBtnClick);
+  HelpBitBtn    := CreateToolButton('HelpButton', GetButtonCaption(idButtonHelp), lisMenuOnlineHelp, 'btn_help', nil);
 
   AddBitBtn.DropdownMenu:=AddPopupMenu;
 

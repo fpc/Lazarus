@@ -40,7 +40,7 @@ uses
   // Codetools
   BasicCodeTools, CodeTree, CodeCache, CodeToolManager, ExtractProcTool,
   // IdeIntf
-  IDEHelpIntf, IDEDialogs,
+  IDEDialogs,
   // IDE
   LazarusIDEStrConsts, MiscOptions, EnvironmentOpts;
 
@@ -60,7 +60,6 @@ type
     NameGroupbox: TGroupBox;
     TypeRadiogroup: TRadioGroup;
     procedure CreateFunctionCheckBoxChange(Sender: TObject);
-    procedure HelpButtonClick(Sender: TObject);
     procedure ExtractProcDialogCreate(Sender: TObject);
     procedure ExtractProcDialogClose(Sender: TObject;
       var {%H-}CloseAction: TCloseAction);
@@ -194,11 +193,6 @@ begin
   
   ButtonPanel.OkButton.Caption:=lisExtract;
   FuncVariableComboBox.DropDownCount:=EnvironmentOptions.DropDownCount;
-end;
-
-procedure TExtractProcDialog.HelpButtonClick(Sender: TObject);
-begin
-  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TExtractProcDialog.CreateFunctionCheckBoxChange(Sender: TObject);

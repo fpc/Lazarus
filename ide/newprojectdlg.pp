@@ -39,7 +39,7 @@ uses
   // BuildIntf
   ProjectIntf,
   // IdeIntf
-  IDEHelpIntf, IDEImagesIntf, IDEWindowIntf,
+  IDEImagesIntf, IDEWindowIntf,
   // IDE
   LazarusIDEStrConsts, Project;
 
@@ -55,7 +55,6 @@ type
     Tree: TTreeView;
     pnlList: TPanel;
     Splitter1: TSplitter;
-    procedure HelpButtonClick(Sender: TObject);
     procedure OkClick(Sender: TObject);
     procedure TreeSelectionChange(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -157,11 +156,6 @@ begin
       Selected:=Items[1];
 
   DescriptionGroupBox.Caption:=lisCodeHelpDescrTag;
-end;
-
-procedure TNewProjectDialog.HelpButtonClick(Sender: TObject);
-begin
-  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TNewProjectDialog.OkClick(Sender: TObject);

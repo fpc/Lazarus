@@ -88,7 +88,6 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
       Caption = '&Help'
       Kind = bkHelp
       TabOrder = 0
-      OnClick = HelpButtonClick
     end
     object CompileAdvancedButton: TBitBtn
       Left = 379

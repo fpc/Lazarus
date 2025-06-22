@@ -40,7 +40,7 @@ uses
   // Codetools
   DefineTemplates,
   // IdeIntf
-  IdeIntfStrConsts, IDEImagesIntf, IDEHelpIntf, IDEDialogs,
+  IdeIntfStrConsts, IDEImagesIntf, IDEDialogs,
   // IdeConfig
   EnvironmentOpts, TransferMacros, IdeXmlConfigProcs,
   // IDE
@@ -149,7 +149,6 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure ProfilesListboxClick(Sender: TObject);
     procedure AddButtonClick(Sender: TObject);
-    procedure HelpButtonClick(Sender: TObject);
     procedure RemoveButtonClick(Sender: TObject);
     procedure EditButtonClick(Sender: TObject);
     procedure MoveUpButtonClick(Sender: TObject);
@@ -674,11 +673,6 @@ begin
   EditButton.Enabled:=(i>=0);
   MoveUpButton.Enabled:=(i>0);
   MoveDownButton.Enabled:=(i>=0) and (i<ProfilesListbox.Items.Count-1);
-end;
-
-procedure TBuildProfileManagerForm.HelpButtonClick(Sender: TObject);
-begin
-  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 end.

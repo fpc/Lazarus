@@ -56,7 +56,7 @@ uses
   // BuildIntf
   BaseIDEIntf, ProjectIntf, MacroIntf,
   // IdeIntf
-  IdeIntfStrConsts, IDEHelpIntf, IDEDialogs, IDEImagesIntf, IDEWindowIntf,
+  IdeIntfStrConsts, IDEDialogs, IDEImagesIntf, IDEWindowIntf,
   // IdeProject
   RunParamOptions,
   // IdeConfig
@@ -135,7 +135,6 @@ type
     procedure FormActivate(Sender: TObject);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
-    procedure HelpButtonClick(Sender: TObject);
     procedure ModesComboBoxChange(Sender: TObject);
     procedure NotebookChange(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
@@ -542,11 +541,6 @@ begin
 
   AutoSize:=IDEDialogLayoutList.Find(Self,false)=nil;
   IDEDialogLayoutList.ApplyLayout(Self);
-end;
-
-procedure TRunParamsOptsDlg.HelpButtonClick(Sender: TObject);
-begin
-  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TRunParamsOptsDlg.HostApplicationBrowseBtnClick(Sender: TObject);

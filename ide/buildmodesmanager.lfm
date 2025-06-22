@@ -8,8 +8,6 @@ object BuildModesForm: TBuildModesForm
   Caption = 'BuildModesForm'
   ClientHeight = 354
   ClientWidth = 612
-  OnCreate = FormCreate
-  OnDestroy = FormDestroy
   OnShow = FormShow
   Position = poScreenCenter
   LCLVersion = '2.1.0.0'

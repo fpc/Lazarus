@@ -37,7 +37,7 @@ uses
   // SynEdit
   SynMacroRecorder, SynEdit, SynEditKeyCmds,
   // IdeIntf
-  IdeIntfStrConsts, IDEWindowIntf, IDEImagesIntf, SrcEditorIntf, IDEHelpIntf, IDECommands,
+  IdeIntfStrConsts, IDEWindowIntf, IDEImagesIntf, SrcEditorIntf, IDECommands,
   LazIDEIntf, IDEDialogs,
   // IDE
   LazarusIDEStrConsts, ProjectDefs, LazConf, Project, KeyMapping,
@@ -239,7 +239,6 @@ type
     procedure btnSetKeysClick(Sender: TObject);
     procedure BtnWarnCloseClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
-    procedure HelpButtonClick(Sender: TObject);
     procedure lbMacroViewSelectItem(Sender: TObject; {%H-}Item: TListItem; {%H-}Selected: Boolean);
     procedure mnExportClick(Sender: TObject);
     procedure mnImportClick(Sender: TObject);
@@ -1301,11 +1300,6 @@ begin
   DebugLn(['TMacroListViewer.FormActivate: Active=', Active]);
   lbMacroView.HideSelection := Active; // Active = False always ?
   UpdateButtons;
-end;
-
-procedure TMacroListViewer.HelpButtonClick(Sender: TObject);
-begin
-  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TMacroListViewer.lbMacroViewSelectItem(Sender: TObject; Item: TListItem;

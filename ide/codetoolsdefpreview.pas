@@ -40,7 +40,7 @@ uses
   // SynEdit
   SynEdit,
   // IdeIntf
-  IDEWindowIntf, IDEHelpIntf, InputHistory,
+  IDEWindowIntf, InputHistory,
   // IdeConfig
   RecentListProcs, EnvironmentOpts,
   // IDE
@@ -83,7 +83,6 @@ type
     procedure DirectoryBrowseButtonCLICK(Sender: TObject);
     procedure DirectoryComboboxCHANGE(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure HelpButtonClick(Sender: TObject);
     procedure ParsedTemplatesTreeViewSelectionChanged(Sender: TObject);
     procedure ValuesListviewSELECTITEM(Sender: TObject; {%H-}Item: TListItem;
       {%H-}Selected: Boolean);
@@ -210,11 +209,6 @@ begin
     FNodeValues.FreeAndClear;
     FreeAndNil(FNodeValues);
   end;
-end;
-
-procedure TCodeToolsDefinesDialog.HelpButtonClick(Sender: TObject);
-begin
-  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TCodeToolsDefinesDialog.ParsedTemplatesTreeViewSelectionChanged(
@@ -458,7 +452,6 @@ begin
   ListColumn.Caption:=lisValue;
   
   DirectoryGroupbox.Caption:=lisCodeToolsDefsInsertBehindDirectory;
-  ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
   DirectoryCombobox.Items.Assign(
     InputHistories.HistoryLists.GetList(hlCodeToolsDirectories,true,rltFile));
   if DirectoryCombobox.Items.Count>0 then

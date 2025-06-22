@@ -45,7 +45,7 @@ uses
   // IdeUtils
   IdeUtilsPkgStrConsts,
   // IDEIntf
-  SrcEditorIntf, MenuIntf, IDEWindowIntf, LazIDEIntf, IDEHelpIntf, IDEDialogs,
+  SrcEditorIntf, MenuIntf, IDEWindowIntf, LazIDEIntf, IDEDialogs,
   // IDE
   IdeIntfStrConsts, LazarusIDEStrConsts, EditorOptions, CodeMacroSelect, CodeMacroPrompt;
 
@@ -100,7 +100,6 @@ type
     procedure RenameButtonClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
-    procedure HelpButtonClick(Sender: TObject);
     procedure InsertMacroButtonClick(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure TemplateListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
@@ -917,11 +916,6 @@ begin
   BuildPopupMenu;
 end;
 
-procedure TCodeTemplateDialog.HelpButtonClick(Sender: TObject);
-begin
-  LazarusHelp.ShowHelpForIDEControl(Self);
-end;
-
 procedure TCodeTemplateDialog.InsertMacroButtonClick(Sender: TObject);
 begin
   DoInsertMacro;
@@ -1042,12 +1036,6 @@ begin
   begin
     Key := 0;
     OkButtonClick(Sender);
-  end
-  // call help
-  else if (Key = VK_F1) and (Shift = []) then
-  begin
-    HelpButtonClick(Sender);
-    Key := 0;
   end
   
   // open file

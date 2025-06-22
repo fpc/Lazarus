@@ -41,7 +41,7 @@ uses
   Classes, SysUtils,
   Controls, Forms, StdCtrls, ComCtrls, Dialogs, ButtonPanel, Menus,
   FileUtil,
-  IDEImagesIntf, IDEDialogs, IDEHelpIntf, IDECommands,
+  IDEImagesIntf, IDEDialogs, IDECommands,
   ExtToolEditDlg, TransferMacros,
   IdeIntfStrConsts, LazarusIDEStrConsts, IDEOptionDefs, EditorOptions;
 
@@ -72,7 +72,6 @@ type
     tbSeparator2: TToolButton;
     ExtraButton: TToolButton;
     procedure AddButtonClick(Sender: TObject);
-    procedure HelpButtonClick(Sender: TObject);
     procedure MenuItemCloneClick(Sender: TObject);
     procedure MenuItemExportClick(Sender: TObject);
     procedure MenuItemImportClick(Sender: TObject);
@@ -144,8 +143,6 @@ begin
   MenuItemClone.Caption:=lisClone;
   MenuItemExport.Caption:=lisDlgExport;
   MenuItemImport.Caption:=lisDlgImport;
-
-  ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
 
   AddButton.ImageIndex := IDEImages.LoadImage('laz_add');
   RemoveButton.ImageIndex := IDEImages.LoadImage('laz_delete');
@@ -219,11 +216,6 @@ begin
     NewTool.Free;
   end;
   EnableButtons;
-end;
-
-procedure TExternalToolDialog.HelpButtonClick(Sender: TObject);
-begin
-  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TExternalToolDialog.MenuItemCloneClick(Sender: TObject);

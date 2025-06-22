@@ -35,7 +35,7 @@ uses
   Classes, SysUtils, RegExpr,
   LCLType, Controls, StdCtrls, Forms, Buttons, ExtCtrls, Dialogs, Graphics, ButtonPanel,
   SynEditTypes, SynEdit,
-  IDEHelpIntf, IDEImagesIntf, IDEWindowIntf, IDEDialogs, InputHistory,
+  IDEImagesIntf, IDEWindowIntf, IDEDialogs, InputHistory,
   EnvironmentOpts,
   LazarusIdeStrConsts;
 
@@ -78,7 +78,6 @@ type
     procedure FormChangeBounds(Sender: TObject);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormShow(Sender: TObject);
-    procedure HelpButtonClick(Sender: TObject);
     procedure OptionsGroupBoxResize(Sender: TObject);
     procedure ReplaceWithCheckboxChange(Sender: TObject);
     procedure TextToFindComboboxKeyDown(Sender: TObject; var Key: Word;
@@ -311,11 +310,6 @@ begin
       Key:=VK_UNKNOWN;
     end;
   end;
-end;
-
-procedure TLazFindReplaceDialog.HelpButtonClick(Sender: TObject);
-begin
-  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TLazFindReplaceDialog.OptionsGroupBoxResize(Sender: TObject);

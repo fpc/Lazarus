@@ -48,7 +48,7 @@ uses
   LazUTF8, FileUtil,
   // IdeIntf
   IDEWindowIntf, IDEImagesIntf, NewItemIntf, ProjectIntf,
-  IdeIntfStrConsts, LazIDEIntf, IDEHelpIntf, IDEDialogs, InputHistory,
+  IdeIntfStrConsts, LazIDEIntf, IDEDialogs, InputHistory,
   // IDE
   LazarusIDEStrConsts, Project, MainIntf;
 
@@ -137,7 +137,6 @@ type
     Splitter1: TSplitter;
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
-    procedure HelpButtonClick(Sender: TObject);
     procedure InheritableComponentsListViewSelectItem(Sender: TObject;
       {%H-}Item: TListItem; {%H-}Selected: Boolean);
     procedure ItemsTreeViewSelectionChanged(Sender: TObject);
@@ -360,11 +359,6 @@ procedure TNewOtherDialog.InheritableComponentsListViewSelectItem(
   Sender: TObject; Item: TListItem; Selected: Boolean);
 begin
   ButtonPanel.OKButton.Enabled := Assigned((Sender as TListView).Selected);
-end;
-
-procedure TNewOtherDialog.HelpButtonClick(Sender: TObject);
-begin
-  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TNewOtherDialog.FormClose(Sender: TObject; var CloseAction: TCloseAction);

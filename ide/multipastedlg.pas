@@ -45,7 +45,7 @@ uses
   // SynEdit
   SynEdit,
   // IdeIntf
-  IDEHelpIntf, InputHistory,
+  InputHistory,
   // IdeConfig
   EnvironmentOpts, RecentListProcs,
   // IDE
@@ -80,7 +80,6 @@ type
     procedure DoUpdatePreview; virtual;
     function DoFormatContent(const AContent: string): string; virtual;
     procedure DoEscQuotesCheckBoxChange(Sender: TObject); virtual;
-    procedure DoHelpButtonClick(Sender: TObject); virtual;
   public
     property Content: TStringList read FContent;
   end;
@@ -103,7 +102,6 @@ begin
   EscQuotesCheckBox.OnChange := @DoEscQuotesCheckBoxChange;
   EscQuotesStyleComboBox.OnChange := @DoWatch;
   TrimClipbrdContentsCheckBox.OnChange := @DoWatch;
-  BottomButtonPanel.HelpButton.OnClick := @DoHelpButtonClick;
 
   List:=InputHistories.HistoryLists.GetList(hlFormatPasteTxtBefore,true,rltCaseSensitive);
   List.AppendEntry('Add(''');
@@ -180,11 +178,6 @@ procedure TMultiPasteDialog.DoEscQuotesCheckBoxChange(Sender: TObject);
 begin
   DoWatch(Sender);
   EscQuotesStyleComboBox.Enabled := EscQuotesCheckBox.Checked;
-end;
-
-procedure TMultiPasteDialog.DoHelpButtonClick(Sender: TObject);
-begin
-  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 end.

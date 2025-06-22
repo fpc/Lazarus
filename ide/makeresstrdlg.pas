@@ -47,7 +47,7 @@ uses
   // CodeTools
   CodeToolManager, CodeToolsStructs, CodeCache,
   // IdeIntf
-  IdeIntfStrConsts, IDEWindowIntf, IDEHelpIntf, IDEDialogs, InputHistory,
+  IdeIntfStrConsts, IDEWindowIntf, IDEDialogs, InputHistory,
   // IdeUtils
   IdeUtilsPkgStrConsts,
   // IdeConfig
@@ -94,7 +94,6 @@ type
     SynPasSyn: TSynPasSyn;
 
     procedure CustomIdentifierCheckBoxClick(Sender: TObject);
-    procedure HelpButtonClick(Sender: TObject);
     procedure IdentLengthComboBoxChange(Sender: TObject);
     procedure IdentPrefixComboBoxChange(Sender: TObject);
     procedure IdentifierEditChange(Sender: TObject);
@@ -335,11 +334,6 @@ end;
 procedure TMakeResStrDialog.CustomIdentifierCheckBoxClick(Sender: TObject);
 begin
   UpdateIdentifier;
-end;
-
-procedure TMakeResStrDialog.HelpButtonClick(Sender: TObject);
-begin
-  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TMakeResStrDialog.IdentLengthComboBoxChange(Sender: TObject);

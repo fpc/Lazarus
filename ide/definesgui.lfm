@@ -98,7 +98,6 @@ object DefinesGuiForm: TDefinesGuiForm
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
     HelpButton.DefaultCaption = True
-    HelpButton.OnClick = HelpButtonClick
     CloseButton.Name = 'CloseButton'
     CloseButton.DefaultCaption = True
     CancelButton.Name = 'CancelButton'
