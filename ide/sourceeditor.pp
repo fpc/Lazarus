@@ -5050,31 +5050,29 @@ begin
   aha := ahaNone;
   Special := False;
 
-  if ErrorLine = Line
-  then begin
-    aha := ahaErrorLine
-  end
-  else begin
+  if ErrorLine = Line then begin
+    EditorOpts.SetMarkupColor(TCustomSynEdit(Sender).Highlighter, ahaErrorLine, Markup);
+    Special := Markup.IsEnabled;
+  end;
+
+  if not Special then begin
     SourceEditorMarks.GetMarksForLine(Self, Line, CurMarks, CurMarkCount);
-    if CurMarkCount > 0 then
-    begin
-      for i := 0 to CurMarkCount - 1 do
-      begin
+    if CurMarkCount > 0 then begin
+      for i := 0 to CurMarkCount - 1 do begin
         if not CurMarks[i].Visible then
           Continue;
         // check highlight attribute
         aha := CurMarks[i].LineColorAttrib;
-        if aha <> ahaNone then Break;
+        if aha = ahaNone then
+          Continue;
+        EditorOpts.SetMarkupColor(TCustomSynEdit(Sender).Highlighter, aha, Markup);
+        Special := Markup.IsEnabled;
+        if Special then
+          break;
       end;
       // clean up
       FreeMem(CurMarks);
     end;
-  end;
-
-  if aha <> ahaNone
-  then begin
-    Special := True;
-    EditorOpts.SetMarkupColor(TCustomSynEdit(Sender).Highlighter, aha, Markup);
   end;
 end;
 
