@@ -20,7 +20,6 @@ object WatchPropertyDlg: TWatchPropertyDlg
     OKButton.OnClick = btnOKClick
     HelpButton.Name = 'HelpButton'
     HelpButton.DefaultCaption = True
-    HelpButton.OnClick = btnHelpClick
     CloseButton.Name = 'CloseButton'
     CloseButton.DefaultCaption = True
     CloseButton.Enabled = False

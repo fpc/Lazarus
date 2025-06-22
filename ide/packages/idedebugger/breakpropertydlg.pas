@@ -11,7 +11,7 @@ uses
   // LazUtils
   LazUTF8,
   // IdeIntf
-  IdeIntfStrConsts, IDEHelpIntf, InputHistory,
+  IdeIntfStrConsts, InputHistory,
   // DebuggerIntf
   DbgIntfDebuggerBase,
   // IdeConfig
@@ -67,7 +67,6 @@ type
     rbLocal: TRadioButton;
     rgWatchKind: TPanel;
     rgWatchScope: TPanel;
-    procedure btnHelpClick(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
     procedure BreakPointRemove(const {%H-}ASender: TIDEBreakPoints;
       const ABreakpoint: TIDEBreakPoint);
@@ -167,11 +166,6 @@ procedure TBreakPropertyDlg.FormCreate(Sender: TObject);
 begin
   edtCondition.DropDownCount := EnvironmentOptions.DropDownCount;
   cmbGroup.DropDownCount := EnvironmentOptions.DropDownCount;
-end;
-
-procedure TBreakPropertyDlg.btnHelpClick(Sender: TObject);
-begin
-  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TBreakPropertyDlg.BreakPointRemove(

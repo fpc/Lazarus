@@ -43,7 +43,7 @@ uses
   // LCL
   Forms, StdCtrls, Extctrls, ButtonPanel, Spin,
   // IdeIntf
-  IDEHelpIntf, IdeIntfStrConsts, IdeDebuggerWatchValueIntf,
+  IdeIntfStrConsts, IdeDebuggerWatchValueIntf,
   // IdeConfig
   //EnvironmentOpts,
   // DebuggerIntf
@@ -79,7 +79,6 @@ type
     Spacer2: TLabel;
     txtExpression: TEdit;
     txtRepCount: TSpinEdit;
-    procedure btnHelpClick(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
     procedure chkAllowFuncChange(Sender: TObject);
     procedure txtExpressionChange(Sender: TObject);
@@ -364,11 +363,6 @@ begin
       txtRepCount.Text := '';
       txtRepCount.Tag := 2;
     end;
-end;
-
-procedure TWatchPropertyDlg.btnHelpClick(Sender: TObject);
-begin
-  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 constructor TWatchPropertyDlg.Create(AnOWner: TComponent; const AWatch: TIdeWatch;
