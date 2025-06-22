@@ -5065,17 +5065,6 @@ begin
         // check highlight attribute
         aha := CurMarks[i].LineColorAttrib;
         if aha <> ahaNone then Break;
-
-        // check custom colors
-        CurFG := CurMarks[i].LineColorForeGround;
-        CurBG := CurMarks[i].LineColorBackGround;
-        if (CurFG <> clNone) or (CurBG <> clNone) then
-        begin
-          Markup.Foreground := CurFG;
-          Markup.Background := CurBG;
-          Special := True;
-          break;
-        end;
       end;
       // clean up
       FreeMem(CurMarks);

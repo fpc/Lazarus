@@ -141,8 +141,6 @@ type
   private
     FIsBreakPoint: boolean;
     FLineColorAttrib: TAdditionalHilightAttribute;
-    FLineColorBackGround: TColor;
-    FLineColorForeGround: TColor;
   protected
     procedure DoChange(AChanges: TSynEditMarkChangeReasons); override;
     procedure AddHandler(HandlerType: TSourceMarkHandler;
@@ -153,8 +151,6 @@ type
     procedure SetData(const AValue: TObject); virtual;
     procedure SetIsBreakPoint(const AValue: boolean); virtual;
     procedure SetLineColorAttrib(const AValue: TAdditionalHilightAttribute); virtual;
-    procedure SetLineColorBackGround(const AValue: TColor); virtual;
-    procedure SetLineColorForeGround(const AValue: TColor); virtual;
 
     procedure SetColumn(const Value: Integer); override;
     procedure SetLine(const Value: Integer); override;
@@ -188,10 +184,6 @@ type
   public
     property LineColorAttrib: TAdditionalHilightAttribute read FLineColorAttrib
                                                        write SetLineColorAttrib;
-    property LineColorForeGround: TColor read FLineColorForeGround
-                                         write SetLineColorForeGround;
-    property LineColorBackGround: TColor read FLineColorBackGround
-                                         write SetLineColorBackGround;
   public
     property IsBreakPoint: boolean read FIsBreakPoint write SetIsBreakPoint;
   end;
@@ -329,22 +321,6 @@ begin
   Changed;
 end;
 
-procedure TSourceMark.SetLineColorBackGround(const AValue: TColor);
-begin
-  if FLineColorBackGround=AValue then exit;
-  FLineColorBackGround:=AValue;
-  DoLineUpdate;
-  Changed;
-end;
-
-procedure TSourceMark.SetLineColorForeGround(const AValue: TColor);
-begin
-  if FLineColorForeGround=AValue then exit;
-  FLineColorForeGround:=AValue;
-  DoLineUpdate;
-  Changed;
-end;
-
 procedure TSourceMark.SetLineColorAttrib(
   const AValue: TAdditionalHilightAttribute);
 begin
@@ -422,8 +398,6 @@ begin
   inherited Create(TSynEdit(TheOwner.EditorControl));
   FData:=TheData;
   FLineColorAttrib:=ahaNone;
-  FLineColorBackGround:=clNone;
-  FLineColorForeGround:=clNone;
   TSynEdit(TheOwner.EditorControl).Marks.Add(Self);
 end;
 
