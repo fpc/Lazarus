@@ -158,7 +158,6 @@ object ChgEncodingDialog: TChgEncodingDialog
       BorderSpacing.Around = 6
       Caption = '&Help'
       Kind = bkHelp
-      OnClick = HelpButtonClick
       TabOrder = 0
     end
   end
