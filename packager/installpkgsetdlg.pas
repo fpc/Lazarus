@@ -50,7 +50,7 @@ uses
   // BuildIntf
   PackageIntf, PackageLinkIntf, PackageDependencyIntf,
   // IdeIntf
-  IDEImagesIntf, IdeIntfStrConsts, IDEHelpIntf, IDEDialogs, IDEWindowIntf, InputHistory,
+  IDEImagesIntf, IdeIntfStrConsts, IDEDialogs, IDEWindowIntf, InputHistory,
   // IdeUtils
   IdeUtilsPkgStrConsts,
   // IdeProject
@@ -107,7 +107,6 @@ type
       var PaintImages, {%H-}DefaultDraw: Boolean);
     procedure AvailableTreeViewSelectionChanged(Sender: TObject);
     procedure ExportButtonClick(Sender: TObject);
-    procedure HelpButtonClick(Sender: TObject);
     procedure ImportButtonClick(Sender: TObject);
     procedure SaveAndRebuildButtonClick(Sender: TObject);
     procedure InstallPkgSetDialogCreate(Sender: TObject);
@@ -327,11 +326,6 @@ begin
   finally
     SaveDialog.Free;
   end;
-end;
-
-procedure TInstallPkgSetDialog.HelpButtonClick(Sender: TObject);
-begin
-  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TInstallPkgSetDialog.ImportButtonClick(Sender: TObject);
