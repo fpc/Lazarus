@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LCLIntf, LCLType, Forms, SynEdit, Laz2_XMLCfg,
-  MenuIntf, IDECommands, IDEHelpIntf, SrcEditorIntf, EnvironmentOpts,
+  MenuIntf, IDECommands, SrcEditorIntf, EnvironmentOpts,
   CharacterMapFrm;
 
 type
@@ -16,13 +16,10 @@ type
   TCharacterMapDialog = class(TCharacterMapForm)
   private
     FXMLCfg: TXMLConfig;
-    procedure HelpButtonClick(Sender: TObject);
     procedure InsertCharacter(const C: TUTF8Char);
     procedure CloseQueryHandler(Sender: TObject; var CanClose: Boolean);
     procedure LoadConfig;
     procedure SaveConfig;
-  protected
-    procedure Activate; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -63,21 +60,11 @@ begin
   inherited;
 end;
 
-procedure TCharacterMapDialog.Activate;
-begin
-  OnShowHelp := @HelpButtonClick;
-end;
-
 procedure TCharacterMapDialog.CloseQueryHandler(Sender: TObject;
   var CanClose: Boolean);
 begin
   if CanClose then
     SaveConfig;
-end;
-
-procedure TCharacterMapDialog.HelpButtonClick(Sender: TObject);
-begin
-  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TCharacterMapDialog.InsertCharacter(const C: TUTF8Char);
