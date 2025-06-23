@@ -747,7 +747,6 @@ object DiffDlg: TDiffDlg
     BorderSpacing.Around = 6
     Caption = '&Help'
     Kind = bkHelp
-    OnClick = HelpButtonClick
     TabOrder = 6
   end
   object ProgressBar1: TProgressBar

@@ -58,7 +58,7 @@ uses
   // LazUtils
   LazFileUtils, Laz2_XMLCfg, LazFileCache, LazLoggerBase,
   // IdeIntf
-  IDEHelpIntf, IDEImagesIntf, IdeIntfStrConsts,
+  IDEImagesIntf, IdeIntfStrConsts,
   // IdeConfig
   LazConf, EnvironmentOpts,
   // IDE
@@ -84,7 +84,6 @@ type
     procedure btnSaveClick(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
     procedure TestEditChange(Sender: TObject);
-    procedure HelpButtonClick(Sender: TObject);
     procedure CondFormCREATE(Sender: TObject);
     procedure ListBoxClick(Sender: TObject);
     procedure ListBoxDblClick(Sender: TObject);
@@ -335,11 +334,6 @@ begin
   SaveIfChanged;
   with ListBox do
     FS := Items[ItemIndex];  // Return selected row to caller.
-end;
-
-procedure TEncloseIfDefForm.HelpButtonClick(Sender: TObject);
-begin
-  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TEncloseIfDefForm.ListBoxClick(Sender: TObject);

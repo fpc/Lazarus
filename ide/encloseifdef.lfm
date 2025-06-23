@@ -171,7 +171,6 @@ object EncloseIfDefForm: TEncloseIfDefForm
     OKButton.OnClick = OKButtonClick
     HelpButton.Name = 'HelpButton'
     HelpButton.DefaultCaption = True
-    HelpButton.OnClick = HelpButtonClick
     CloseButton.Name = 'CloseButton'
     CloseButton.DefaultCaption = True
     CloseButton.OnClick = btnSaveClick

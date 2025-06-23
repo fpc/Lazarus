@@ -58,7 +58,7 @@ uses
   // LazControls
   DividerBevel,
   // IDEIntf
-  IdeIntfStrConsts, LazIDEIntf, IDEMsgIntf, IDEHelpIntf, IDEImagesIntf, IDEWindowIntf,
+  IdeIntfStrConsts, LazIDEIntf, IDEMsgIntf, IDEImagesIntf, IDEWindowIntf,
   PackageIntf, IDEExternToolIntf, IDEDialogs, IDEUtils,
   // IdeConfig
   EnvironmentOpts, LazConf, TransferMacros, ParsedCompilerOpts, CompilerOptions,
@@ -132,7 +132,6 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormResize(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure HelpButtonClick(Sender: TObject);
     procedure ShowOptsMenuItemClick(Sender: TObject);
     procedure SaveSettingsButtonClick(Sender: TObject);
     procedure TargetDirectoryButtonClick(Sender: TObject);
@@ -1333,11 +1332,6 @@ end;
 procedure TConfigureBuildLazarusDlg.FormShow(Sender: TObject);
 begin
   UpdateProfileNamesUI;
-end;
-
-procedure TConfigureBuildLazarusDlg.HelpButtonClick(Sender: TObject);
-begin
-  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TConfigureBuildLazarusDlg.ShowOptsMenuItemClick(Sender: TObject);

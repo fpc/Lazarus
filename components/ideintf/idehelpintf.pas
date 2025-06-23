@@ -96,6 +96,7 @@ type
     procedure ShowHelpForMessage; virtual; abstract;
     procedure ShowHelpForObjectInspector(Sender: TObject); virtual; abstract;
     procedure ShowHelpForIDEControl(Sender: TControl); virtual; abstract;
+    procedure HelpButtonClick(Sender: TObject);
     function GetHintForSourcePosition(const ExpandedFilename: string;
       const CodePos: TPoint; out BaseURL, HTMLHint: string;
       Flags: TIDEHelpManagerCreateHintFlags = []): TShowHelpResult; virtual; abstract;
@@ -285,6 +286,12 @@ begin
 end;
 
 { TBaseHelpManager }
+
+procedure TBaseHelpManager.HelpButtonClick(Sender: TObject);
+begin
+  if Sender is TControl then
+    ShowHelpForIDEControl(TControl(Sender));
+end;
 
 procedure TBaseHelpManager.RegisterFPDocEditorTextButton(const aCaption, aHint: string;
   const OnExecute: TFPDocEditorTxtBtnClick);

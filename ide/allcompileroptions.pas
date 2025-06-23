@@ -34,7 +34,7 @@ uses
   // LazUtils
   LazUTF8, LazLoggerBase,
   // IdeIntf
-  IDEImagesIntf, IDEWindowIntf, IDEHelpIntf,
+  IDEImagesIntf, IDEWindowIntf,
   // IDE
   Compiler, LazarusIDEStrConsts;
 
@@ -53,7 +53,6 @@ type
     txtErrorMsg: TStaticText;
     procedure btnResetOptionsFilterClick(Sender: TObject);
     procedure cbShowModifiedClick(Sender: TObject);
-    procedure HelpButtonClick(Sender: TObject);
     procedure sbMouseWheel(Sender: TObject; {%H-}Shift: TShiftState;
       WheelDelta: Integer; {%H-}MousePos: TPoint; var Handled: Boolean);
     procedure edOptionsFilterChange(Sender: TObject);
@@ -145,11 +144,6 @@ end;
 procedure TfrmAllCompilerOptions.cbShowModifiedClick(Sender: TObject);
 begin
   IdleConnected := True;
-end;
-
-procedure TfrmAllCompilerOptions.HelpButtonClick(Sender: TObject);
-begin
-  LazarusHelp.ShowHelpForIDEControl(self);
 end;
 
 procedure TfrmAllCompilerOptions.SetIdleConnected(AValue: Boolean);

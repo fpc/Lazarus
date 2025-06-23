@@ -144,7 +144,6 @@ begin
   TMainIDE.Create(Application);
   if not Application.Terminated then
   begin
-    MainIDE.CreateOftenUsedForms;
     try
       MainIDE.StartIDE;
     except

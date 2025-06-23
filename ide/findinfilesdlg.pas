@@ -25,7 +25,7 @@ uses
   // SynEdit
   SynEditTypes, SynEdit,
   // IdeIntf
-  MacroIntf, IDEWindowIntf, SrcEditorIntf, IDEHelpIntf, IDEDialogs,
+  MacroIntf, IDEWindowIntf, SrcEditorIntf, IDEDialogs,
   IdeIntfStrConsts, ProjectGroupIntf, InputHistory,
   // IdeUtils
   IdeUtilsPkgStrConsts,
@@ -58,7 +58,6 @@ type
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure HelpButtonClick(Sender: TObject);
     procedure OKButtonClick(Sender : TObject);
     procedure ReplaceCheckBoxChange(Sender: TObject);
     procedure WhereRadioGroupClick(Sender: TObject);
@@ -223,11 +222,6 @@ begin
   ReplaceTextComboBox.DropDownCount:=EnvironmentOptions.DropDownCount;
   DirectoriesComboBox.DropDownCount:=EnvironmentOptions.DropDownCount;
   FileMaskComboBox.DropDownCount:=EnvironmentOptions.DropDownCount;
-end;
-
-procedure TLazFindInFilesDialog.HelpButtonClick(Sender: TObject);
-begin
-  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TLazFindInFilesDialog.OKButtonClick(Sender : TObject);

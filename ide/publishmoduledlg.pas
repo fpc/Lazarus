@@ -40,8 +40,7 @@ uses
   // BuildIntf
   ProjPackIntf, CompOptsIntf, PublishModuleIntf,
   // IdeIntf
-  IdeIntfStrConsts, IDEWindowIntf, IDEHelpIntf, IDEDialogs, IDEImagesIntf,
-  LazIDEIntf, InputHistory,
+  IdeIntfStrConsts, IDEWindowIntf, IDEDialogs, IDEImagesIntf, LazIDEIntf, InputHistory,
   // IdeUtils
   IdeUtilsPkgStrConsts,
   // IdeConfig
@@ -67,7 +66,6 @@ type
     procedure BrowseDestDirBitBtnCLICK(Sender: TObject);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
-    procedure HelpButtonClick(Sender: TObject);
     procedure OkButtonCLICK(Sender: TObject);
     procedure SaveSettingsButtonClick(Sender: TObject);
     procedure UseFiltersCheckboxClick(Sender: TObject);
@@ -565,7 +563,6 @@ begin
   if ButtonPanel1.CloseButton.Glyph.Empty then
     IDEImages.AssignImage(ButtonPanel1.CloseButton, 'laz_save');
   ButtonPanel1.CloseButton.OnClick:=@SaveSettingsButtonCLICK;
-  ButtonPanel1.HelpButton.OnClick:=@HelpButtonClick;
   DestDirComboBox.DropDownCount:=EnvironmentOptions.DropDownCount;
   FilterCombobox.DropDownCount:=EnvironmentOptions.DropDownCount;
 end;
@@ -583,11 +580,6 @@ begin
     SetComboBox(DestDirComboBox,NewDir,20);
   end;
   SelectDirDialog.Free;
-end;
-
-procedure TPublishModuleDialog.HelpButtonClick(Sender: TObject);
-begin
-  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TPublishModuleDialog.OkButtonCLICK(Sender: TObject);

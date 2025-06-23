@@ -39,7 +39,7 @@ uses
   // LazUtils
   LConvEncoding, LazFileUtils, LazFileCache, LazStringUtils, LazUTF8, AvgLvlTree,
   // IDEIntf
-  IdeIntfStrConsts, IDEWindowIntf, SrcEditorIntf, IDEHelpIntf, IDEImagesIntf,
+  IdeIntfStrConsts, IDEWindowIntf, SrcEditorIntf, IDEImagesIntf,
   // IdeConfig
   IDEProcs,
   // IDE
@@ -72,7 +72,6 @@ type
     procedure ApplyButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure HelpButtonClick(Sender: TObject);
     procedure PreviewClick(Sender: TObject);
   private
     FFiles: TFilenameToStringTree;
@@ -237,11 +236,6 @@ begin
   for i := OldCount - 1 downto 0 do PreviewListView.Items.Delete(i);
   PreviewListView.EndUpdate;
   PreviewGroupBox.Caption:=Format(lisEncodingNumberOfFilesFailed, [PreviewListView.Items.Count]);
-end;
-
-procedure TChgEncodingDialog.HelpButtonClick(Sender: TObject);
-begin
-  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TChgEncodingDialog.PreviewClick(Sender: TObject);

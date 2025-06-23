@@ -39,7 +39,7 @@ uses
   // LazControls
   ListViewFilterEdit,
   // IdeIntf
-  IDEHelpIntf, IDEWindowIntf, PackageIntf,
+  IDEWindowIntf, PackageIntf,
   // IDE
   PackageDefs, LazarusIDEStrConsts, PackageSystem;
 
@@ -55,7 +55,6 @@ type
     Splitter1: TSplitter;
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
-    procedure HelpButtonClick(Sender: TObject);
     procedure OpenButtonClick(Sender: TObject);
     procedure PkgListViewDblClick(Sender: TObject);
     procedure PkgListViewKeyPress(Sender: TObject; var Key: char);
@@ -175,11 +174,6 @@ end;
 procedure TOpenLoadedPackagesDlg.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
-end;
-
-procedure TOpenLoadedPackagesDlg.HelpButtonClick(Sender: TObject);
-begin
-  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 function PkgStateToString(APackage: TLazPackage): string;

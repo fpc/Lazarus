@@ -36,7 +36,7 @@ uses
   // LazUtils
   FileUtil, LazFileUtils, Laz2_XMLCfg, LazStringUtils, LazLoggerBase,
   // IdeIntf
-  IdeIntfStrConsts, IDEWindowIntf, IDEHelpIntf, IDEDialogs, InputHistory,
+  IdeIntfStrConsts, IDEWindowIntf, IDEDialogs, InputHistory,
   // IdeUtils
   IdeUtilsPkgStrConsts,
   // IdeConfig
@@ -63,7 +63,6 @@ type
     RemoveGroupbox: TGroupBox;
     procedure CleanDirectoryDialogCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure HelpButtonClick(Sender: TObject);
     procedure DirBrowseButtonClick(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
   private
@@ -163,7 +162,6 @@ begin
   ButtonPanel.CancelButton.Caption:=lisCancel;
 
   ButtonPanel.OKButton.OnClick := @OKButtonClick;
-  ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
 
   IDEDialogLayoutList.ApplyLayout(Self);
   DirCombobox.DropDownCount:=EnvironmentOptions.DropDownCount;
@@ -174,11 +172,6 @@ end;
 procedure TCleanDirectoryDialog.FormDestroy(Sender: TObject);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
-end;
-
-procedure TCleanDirectoryDialog.HelpButtonClick(Sender: TObject);
-begin
-  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TCleanDirectoryDialog.DirBrowseButtonClick(Sender: TObject);

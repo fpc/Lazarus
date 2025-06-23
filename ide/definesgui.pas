@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, Forms, StdCtrls, Buttons, ButtonPanel, CheckLst, LCLType, Controls, LCLProc,
-  IDEHelpIntf, IDEImagesIntf, IdeIntfStrConsts, LazarusIDEStrConsts, Compiler;
+  IDEImagesIntf, IdeIntfStrConsts, LazarusIDEStrConsts, Compiler;
 
 type
 
@@ -44,7 +44,6 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure AddBtnClick(Sender: TObject);
     procedure EditChange(Sender: TObject);
-    procedure HelpButtonClick(Sender: TObject);
     procedure DefinesCheckListClick(Sender: TObject);
     procedure DefinesCheckListDblClick(Sender: TObject);
     procedure RemoveBtnClick(Sender: TObject);
@@ -109,11 +108,6 @@ end;
 procedure TDefinesGuiForm.EditChange(Sender: TObject);
 begin
   UpdateButtons;
-end;
-
-procedure TDefinesGuiForm.HelpButtonClick(Sender: TObject);
-begin
-  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TDefinesGuiForm.DefinesCheckListClick(Sender: TObject);

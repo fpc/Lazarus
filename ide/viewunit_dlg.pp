@@ -51,7 +51,7 @@ uses
   // LazControls
   ListFilterEdit,
   // IdeIntf
-  IdeIntfStrConsts, IDEWindowIntf, IDEHelpIntf, IDEImagesIntf, TextTools,
+  IdeIntfStrConsts, IDEWindowIntf, IDEImagesIntf, TextTools,
   // IdeConfig
   SearchPathProcs,
   // IDE
@@ -140,7 +140,6 @@ type
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure SortAlphabeticallySpeedButtonClick(Sender: TObject);
     procedure OKButtonClick(Sender :TObject);
-    procedure HelpButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender :TObject);
     procedure MultiselectCheckBoxClick(Sender :TObject);
   private
@@ -530,11 +529,6 @@ Begin
       ModalResult := mrOK;
   end;
 End;
-
-procedure TViewUnitDialog.HelpButtonClick(Sender: TObject);
-begin
-  LazarusHelp.ShowHelpForIDEControl(Self);
-end;
 
 procedure TViewUnitDialog.CancelButtonClick(Sender: TObject);
 Begin

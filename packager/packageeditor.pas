@@ -47,7 +47,7 @@ uses
   ProjectIntf, PackageDependencyIntf, PackageIntf, PackageLinkIntf,
   IDEOptionsIntf, NewItemIntf, ComponentReg,
   // IDEIntf
-  IDEImagesIntf, MenuIntf, LazIDEIntf, FormEditingIntf, IDEHelpIntf, InputHistory,
+  IDEImagesIntf, MenuIntf, LazIDEIntf, FormEditingIntf, InputHistory,
   IdeIntfStrConsts, IDEWindowIntf, IDEDialogs, IDEOptEditorIntf, SrcEditorIntf,
   // IdeConfig
   EnvironmentOpts, SearchPathProcs, ParsedCompilerOpts, CompilerOptions,
@@ -235,7 +235,6 @@ type
     procedure ItemsTreeViewDblClick(Sender: TObject);
     procedure ItemsTreeViewSelectionChanged(Sender: TObject);
     procedure FixFilesCaseMenuItemClick(Sender: TObject);
-    procedure HelpBitBtnClick(Sender: TObject);
     procedure InstallClick(Sender: TObject);
     procedure MoveDownBtnClick(Sender: TObject);
     procedure MoveUpBtnClick(Sender: TObject);
@@ -1160,11 +1159,6 @@ begin
   UpdateButtons;
 end;
 
-procedure TPackageEditorForm.HelpBitBtnClick(Sender: TObject);
-begin
-  LazarusHelp.ShowHelpForIDEControl(Self);
-end;
-
 procedure TPackageEditorForm.InstallClick(Sender: TObject);
 begin
   PackageEditors.InstallPackage(LazPackage);
@@ -1981,7 +1975,7 @@ begin
   RemoveBitBtn  := CreateToolButton('RemoveBitBtn', lisRemove, lisPckEditRemoveSelectedItem, 'laz_delete', @RemoveBitBtnClick);
   CreateDivider;
   OptionsBitBtn := CreateToolButton('OptionsBitBtn', lisOptions, lisPckEditEditGeneralOptions, 'pkg_properties', @OptionsBitBtnClick);
-  HelpBitBtn    := CreateToolButton('HelpBitBtn', GetButtonCaption(idButtonHelp), lisMenuOnlineHelp, 'btn_help', @HelpBitBtnClick);
+  HelpBitBtn    := CreateToolButton('HelpButton', GetButtonCaption(idButtonHelp), lisMenuOnlineHelp, 'btn_help', nil);
   MoreBitBtn    := CreateToolButton('MoreBitBtn', lisMoreSub, lisPkgEdMoreFunctionsForThePackage, '', nil);
   MoreBitBtn.Style:=tbsButtonDrop;
 

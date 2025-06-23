@@ -15,7 +15,7 @@ uses
   // CodeTools
   BasicCodeTools,
   // IdeIntf
-  IdeIntfStrConsts, IDEHelpIntf, MacroDefIntf, LazIDEIntf, IDEUtils, InputHistory,
+  IdeIntfStrConsts, MacroDefIntf, LazIDEIntf, IDEUtils, InputHistory,
   // IdeConfig
   EnvironmentOpts, TransferMacros,
   // IDE
@@ -75,7 +75,6 @@ type
     procedure BuildFileDialogKeyDown(Sender: TObject; var Key: Word;
                                      {%H-}Shift: TShiftState);
     procedure BuildMacroSelectionBoxAddMacro(Sender: TObject);
-    procedure HelpButtonClick(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure RunMacroSelectionBoxAddMacro(Sender: TObject);
   private
@@ -461,11 +460,6 @@ begin
   BuildCommandMemo.SelText:=MacroCode;
 end;
 
-procedure TBuildFileDialog.HelpButtonClick(Sender: TObject);
-begin
-  LazarusHelp.ShowHelpForIDEControl(Self);
-end;
-
 procedure TBuildFileDialog.OkButtonClick(Sender: TObject);
 begin
   WriteDirectiveList;
@@ -528,7 +522,6 @@ begin
   RunWorkDirGroupbox.Caption:=lisBFWorkingDirectoryLeaveEmptyForFilePath;
   RunCommandGroupbox.Caption:=lisBFRunCommand;
 
-  ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
   ButtonPanel.OKButton.OnClick := @OKButtonClick;
 
   BuildWorkDirCombobox.DropDownCount:=EnvironmentOptions.DropDownCount;

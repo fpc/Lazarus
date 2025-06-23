@@ -98,7 +98,6 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       Constraints.MinWidth = 75
       Kind = bkHelp
       TabOrder = 0
-      OnClick = HelpButtonClick
     end
     object CancelButton: TBitBtn
       Left = 519

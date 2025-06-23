@@ -91,7 +91,6 @@ type
     procedure UnicodeGridMouseMove(Sender: TObject; {%H-}Shift: TShiftState; X,
       Y: Integer);
   private
-    FOnShowHelp: TNotifyEvent;
     FOnInsertCharacter: TOnInsertCharacterEvent;
     FUnicodeBlockIndex: Integer;
     procedure DoStatusAnsiGrid(ACol, ARow: integer);
@@ -110,7 +109,6 @@ type
     procedure SetAlphaSort(AValue: Boolean);
     procedure SetDropDownCount(AValue: Integer);
     procedure SetFontSize(AValue: Integer);
-    procedure SetOnShowHelp(AValue: TNotifyEvent);
   public
     property ActivePage: TCharMapPage read GetActivePage write SetActivePage;
     property AlphaSort: Boolean read GetAlphaSort write SetAlphaSort;
@@ -118,8 +116,6 @@ type
     property FontSize: Integer read GetFontSize write SetFontSize;
     property OnInsertCharacter: TOnInsertCharacterEvent
       read FOnInsertCharacter write FOnInsertCharacter;
-    property OnShowHelp: TNotifyEvent
-      read FOnShowHelp write SetOnShowHelp;
   end;
 
 procedure ShowCharacterMap(AOnInsertChar: TOnInsertCharacterEvent);
@@ -170,7 +166,7 @@ begin
   SortUniRangeListButton.ImageIndex := LCLGlyphs.GetImageIndex('charmap_sortalphabetically');
   ButtonPanel.HelpButton.Caption := rsMbHelp;
   ButtonPanel.CloseButton.Caption := rsMbClose;
-  ButtonPanel.ShowButtons := [pbClose];
+  ButtonPanel.ShowButtons := [pbClose, pbHelp];
 
   //EnvironmentOptions.IDEWindowLayoutList.Apply(Self, Name);
   PageControl1.ActivePageIndex := 0;
@@ -510,16 +506,6 @@ end;
 function TCharacterMapForm.UnicodeBlockSelected: Boolean;
 begin
   Result:=(FUnicodeBlockIndex>=Low(UnicodeBlocks)) and (FUnicodeBlockIndex<=High(UnicodeBlocks));
-end;
-
-procedure TCharacterMapForm.SetOnShowHelp(AValue: TNotifyEvent);
-begin
-  FOnShowHelp := AValue;
-  ButtonPanel.HelpButton.OnClick := FOnShowHelp;
-  if FOnShowHelp <> nil then
-    ButtonPanel.ShowButtons := ButtonPanel.ShowButtons + [pbHelp]
-  else
-    ButtonPanel.ShowButtons := ButtonPanel.ShowButtons - [pbHelp];
 end;
 
 end.

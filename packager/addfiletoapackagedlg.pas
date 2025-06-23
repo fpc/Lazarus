@@ -45,7 +45,7 @@ uses
   // LazUtils
   FileUtil, LazFileUtils,
   // IdeIntf
-  IdeIntfStrConsts, IDEWindowIntf, PackageIntf, IDEHelpIntf,
+  IdeIntfStrConsts, IDEWindowIntf, PackageIntf,
   // IDE
   LazarusIDEStrConsts, PackageDefs, PackageSystem, EnvironmentOpts;
 
@@ -63,7 +63,6 @@ type
     procedure AddFileToAPackageDlgClose(Sender: TObject;
       var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
-    procedure HelpButtonClick(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure PackagesGroupBoxResize(Sender: TObject);
     procedure ShowAllCheckBoxClick(Sender: TObject);
@@ -104,11 +103,6 @@ procedure TAddFileToAPackageDialog.AddFileToAPackageDlgClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
-end;
-
-procedure TAddFileToAPackageDialog.HelpButtonClick(Sender: TObject);
-begin
-  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TAddFileToAPackageDialog.OkButtonClick(Sender: TObject);
@@ -185,7 +179,6 @@ begin
   BtnPanel.OkButton.Caption:=lisBtnOk;
   BtnPanel.OkButton.OnClick:=@OkButtonClick;
   BtnPanel.OkButton.ModalResult:=mrNone;
-  BtnPanel.HelpButton.OnClick:=@HelpButtonClick;
 end;
 
 procedure TAddFileToAPackageDialog.SetFilename(const AValue: string);

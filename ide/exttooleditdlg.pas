@@ -49,7 +49,7 @@ uses
   // Codetools
   FileProcs,
   // IdeIntf
-  IdeIntfStrConsts, IDEExternToolIntf, IDEHelpIntf, PropEdits, IDEDialogs, IDECommands, IDEUtils,
+  IdeIntfStrConsts, IDEExternToolIntf, PropEdits, IDEDialogs, IDECommands, IDEUtils,
   // IdeConfig
   TransferMacros, EnvironmentOpts,
   // IDE
@@ -173,7 +173,6 @@ type
     WorkingDirLabel: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure HelpButtonClick(Sender: TObject);
     procedure MacrosInsertButtonClick(Sender: TObject);
     procedure MacrosListboxClick(Sender: TObject);
     procedure MacrosListboxDblClick(Sender: TObject);
@@ -791,11 +790,6 @@ procedure TExternalToolOptionDlg.FormDestroy(Sender: TObject);
 begin
   FreeAndNil(fOptions);
   FreeAndNil(fScanners);
-end;
-
-procedure TExternalToolOptionDlg.HelpButtonClick(Sender: TObject);
-begin
-  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TExternalToolOptionDlg.SetOptions(TheOptions: TExternalUserTool);

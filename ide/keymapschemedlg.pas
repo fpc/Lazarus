@@ -31,8 +31,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, Buttons, KeyMapping, LazarusIDEStrConsts, ButtonPanel,
-  IDEHelpIntf;
+  ExtCtrls, Buttons, KeyMapping, LazarusIDEStrConsts, ButtonPanel;
 
 type
 
@@ -43,7 +42,6 @@ type
     NoteLabel: TLABEL;
     SchemeRadiogroup: TRADIOGROUP;
     procedure ChooseKeySchemeDlgCREATE(Sender: TObject);
-    procedure HelpButtonClick(Sender: TObject);
   private
     function GetKeymapScheme: string;
     procedure SetKeymapScheme(const AValue: string);
@@ -80,8 +78,6 @@ begin
   NoteLabel.Caption:=lisKMNoteAllKeysWillBeSetToTheValuesOfTheChosenScheme;
   SchemeRadiogroup.Caption:=lisKMKeymappingScheme;
 
-  ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
-
   with SchemeRadiogroup.Items do begin
     Clear;
     // keep order of TKeyMapScheme
@@ -98,11 +94,6 @@ begin
   for i:=0 to CustomKeySchemas.Count-1 do
     SchemeRadiogroup.Items.Add(CustomKeySchemas[i]);
   UpdateColumns;
-end;
-
-procedure TChooseKeySchemeDlg.HelpButtonClick(Sender: TObject);
-begin
-  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 function TChooseKeySchemeDlg.GetKeymapScheme: string;

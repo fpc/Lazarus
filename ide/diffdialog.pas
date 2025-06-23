@@ -47,7 +47,7 @@ uses
   // SynEdit
   SynEdit, SynHighlighterDiff,
   // IdeIntf
-  IDEWindowIntf, IDEHelpIntf, IDEImagesIntf, InputHistory,
+  IDEWindowIntf, IDEImagesIntf, InputHistory,
   // IDE
   LazarusIDEStrConsts, EditorOptions, DiffPatch, SourceEditor, EnvironmentOpts;
 
@@ -128,7 +128,6 @@ type
     procedure CancelScanningButtonClick(Sender: TObject);
     procedure FileOpenClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure HelpButtonClick(Sender: TObject);
     procedure OnChangeFlag(Sender: TObject);
     procedure Text1ComboboxChange(Sender: TObject);
     procedure Text2ComboboxChange(Sender: TObject);
@@ -311,11 +310,6 @@ end;
 procedure TDiffDlg.CancelScanningButtonClick(Sender: TObject);
 begin
   fCancelled := True;
-end;
-
-procedure TDiffDlg.HelpButtonClick(Sender: TObject);
-begin
-  LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 procedure TDiffDlg.Text1ComboboxChange(Sender: TObject);
