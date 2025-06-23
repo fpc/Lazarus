@@ -984,7 +984,7 @@ begin
   ButtonPanel1.HelpButton.OnClick:=@ButtonPanel1HelpButtonClick;
   ButtonPanel1.OKButton.Caption:=crsUseIdentifier;
   ButtonPanel1.OKButton.OnClick:=@UseIdentifierClick;
-  FMaxItems:=cDefMaxListItems;
+  FMaxItems:=CodyOptions.UDMaxListItems;
   FilterEdit.TextHint:=crsFilter;
   FItems:=TObjectList.Create;
   HideOtherProjectsCheckBox.Checked:=true;
@@ -1090,6 +1090,7 @@ end;
 
 procedure TCodyIdentifiersDlg.SetMaxItems(AValue: integer);
 begin
+  AValue:=EnsureRange(AValue,cMaxListItemsLow,cMaxListItemsHigh);
   if FMaxItems=AValue then Exit;
   FMaxItems:=AValue;
   UpdateItemsList;

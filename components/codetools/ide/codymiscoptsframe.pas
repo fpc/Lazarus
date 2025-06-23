@@ -9,7 +9,7 @@ uses
   // LazUtils
   FileUtil,
   // LCL
-  LResources, Forms, Controls, StdCtrls, ComCtrls,
+  LResources, Forms, Controls, StdCtrls, ComCtrls, Spin,
   // LazControls
   DividerBevel,
   // IdeIntf
@@ -21,6 +21,8 @@ type
   { TCodyMiscOptionsFrame }
 
   TCodyMiscOptionsFrame = class(TAbstractIDEOptionsEditor)
+    UDMaxItemsLabel: TLabel;
+    UDMaxItemsSpinEdit: TSpinEdit;
     UDDividerBevel: TDividerBevel;
     UDLoadDelayLabel: TLabel;
     UDLoadDelayTrackBar: TTrackBar;
@@ -30,6 +32,7 @@ type
     procedure UDLoadDelayTrackBarChange(Sender: TObject);
     procedure UDSaveButtonClick(Sender: TObject);
     procedure UDSaveIntervalTrackBarChange(Sender: TObject);
+    procedure UDMaxItemsSpinEditChange(Sender: TObject);
   private
     FOldOptions: TCodyMiscOptions;
     FLoaded: boolean;
@@ -87,6 +90,13 @@ begin
   UDUpdateLoadDelayInfo;
 end;
 
+procedure TCodyMiscOptionsFrame.UDMaxItemsSpinEditChange(Sender: TObject);
+begin
+  if not FLoaded then exit;
+
+  CodyOptions.UDMaxListItems:=UDMaxItemsSpinEdit.Value;
+end;
+
 function TCodyMiscOptionsFrame.UDLoadDelayToTrackbarPos(Seconds: integer
   ): integer;
 begin
@@ -98,8 +108,9 @@ end;
 
 procedure TCodyMiscOptionsFrame.GatherOptions(Options: TCodyMiscOptions);
 begin
-  Options.UDLoadDelayInS:=CodyUnitDictionary.LoadAfterStartInS;
+  Options.UDLoadDelayInS   :=CodyUnitDictionary.LoadAfterStartInS;
   Options.UDSaveIntervalInS:=CodyUnitDictionary.SaveIntervalInS;
+  Options.UDMaxListItems   :=CodyOptions       .UDMaxListItems;
 end;
 
 function TCodyMiscOptionsFrame.UDSaveIntervalToTrackbarPos(Seconds: integer
@@ -160,6 +171,7 @@ begin
   UDUpdateLoadDelayInfo;
   UDSaveIntervalTrackBar.Position:=UDSaveIntervalToTrackbarPos(CodyUnitDictionary.SaveIntervalInS);
   UDUpdateSaveIntervalInfo;
+  UDMaxItemsSpinEdit.Value:=CodyOptions.UDMaxListItems;
 end;
 
 procedure TCodyMiscOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog
@@ -178,6 +190,10 @@ begin
   UDSaveButton.Caption:=crsSaveDictionaryNow;
   UDSaveButton.ShowHint:=true;
   UDSaveButton.Hint:=Format(crsSaveToFile, [CodyUnitDictionary.GetFilename]);
+
+  UDMaxItemsLabel.Caption:=crsDictionaryMaxListItems;
+  UDMaxItemsSpinEdit.MinValue:=cMaxListItemsLow;
+  UDMaxItemsSpinEdit.MaxValue:=cMaxListItemsHigh;
 end;
 
 class function TCodyMiscOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
@@ -200,7 +216,8 @@ procedure TCodyMiscOptionsFrame.RestoreSettings(
 begin
   if not (AOptions is SupportedOptionsClass) then exit;
   CodyUnitDictionary.LoadAfterStartInS:=OldOptions.UDLoadDelayInS;
-  CodyUnitDictionary.SaveIntervalInS:=OldOptions.UDSaveIntervalInS;
+  CodyUnitDictionary.SaveIntervalInS  :=OldOptions.UDSaveIntervalInS;
+  CodyOptions       .UDMaxListItems   :=OldOptions.UDMaxListItems;
 end;
 
 {$R *.lfm}
