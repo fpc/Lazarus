@@ -69,6 +69,7 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     BorderSpacing.Right = 6
     BorderSpacing.Bottom = 1
     ItemHeight = 0
+    OnContextPopup = ItemsListBoxContextPopup
     OnDblClick = ItemsListBoxDblClick
     OnSelectionChange = ItemsListBoxSelectionChange
     PopupMenu = PopupMenu1
@@ -163,7 +164,6 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     TabOrder = 6
   end
   object PopupMenu1: TPopupMenu
-    OnPopup = PopupMenu1Popup
     left = 177
     top = 133
     object JumpMenuItem: TMenuItem
