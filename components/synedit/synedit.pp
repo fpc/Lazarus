@@ -2616,6 +2616,7 @@ begin
     FTrimmedLinesView.UnLock; // Must be unlocked after caret // May Change lines
 
     if (FPaintLock=1) and (not WaitingForInitialSize) then begin
+      FLines.FlushNotificationCache;
       ScanChangedLines(FChangedLinesStart, FChangedLinesEnd, FChangedLinesDiff,
                  FLastTextChangeStamp <> TSynEditStringList(FLines).TextChangeStamp);
       if sfAfterLoadFromFileNeeded in fStateFlags then
