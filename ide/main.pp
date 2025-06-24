@@ -12539,6 +12539,7 @@ var
   HasResources: Boolean;
   FileItem: PStringToStringItem;
   lHelpButton: TControl;
+  lContextHelpCommand: TIDECommand;
 begin
   GetDefaultProcessList.FreeStoppedProcesses;
   if (SplashForm<>nil) then FreeThenNil(SplashForm);
@@ -12571,9 +12572,20 @@ begin
     with FFormsForSetupHelpButton do
       if Count>0 then begin
         // process in idle one window at a time
-        if FindHelpButton(TWinControl(Extract(First)),lHelpButton) then
+        if FindHelpButton(TWinControl(Extract(First)),lHelpButton) then begin
+          // set click event
           if lHelpButton.OnClick=nil then
             lHelpButton.OnClick:=@LazarusHelp.HelpButtonClick;
+          // set shortcut hint
+          if lHelpButton.Hint='' then begin
+            lContextHelpCommand:=IDECommandList.FindIDECommand(ecContextHelp);
+            if Assigned(lContextHelpCommand) then begin
+              with lContextHelpCommand do
+                lHelpButton.Hint:=KeyValuesToCaptionStr(ShortcutA,ShortcutB);
+              lHelpButton.ShowHint:=true;
+            end;
+          end;
+        end;
         // free empty list
         if FFormsForSetupHelpButton.Count <= 0 then
           FreeAndNil(FFormsForSetupHelpButton);
