@@ -26168,14 +26168,18 @@ TabOrder, <b>False</b> for the preceding control.
 
 <element name="TWinControl.FindChildControl">
 <short>Finds a child control with the specified name.</short>
-<descr/>
-<seealso/>
+<descr>
+<p>Only finds direct children, no recursion. The name is case insensitive.</p>
+<p>Note that unique names are not guaranteed for components created in code
+(if they have different owners). Therefore, only the first matching control
+will be returned.</p>
+</descr>
 </element>
 <element name="TWinControl.FindChildControl.Result">
-<short><b>True</b> when the control has been found.</short>
+<short>Control with the given name or <b>nil</b>.</short>
 </element>
 <element name="TWinControl.FindChildControl.ControlName">
-<short>The Name of the control to find.</short>
+<short>The name of the control to find (case insensitive).</short>
 </element>
 
 <element name="TWinControl.SelectNext">
