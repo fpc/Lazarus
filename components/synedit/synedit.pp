@@ -5671,6 +5671,8 @@ end;
 
 procedure TCustomSynEdit.LineCountChanged(Sender: TSynEditStrings; AIndex,
   ACount: Integer);
+var
+  StartLine: Integer;
 begin
   {$IFDEF SynFoldDebug}debugln(['FOLD-- LineCountChanged Aindex', AIndex, '  ACount=', ACount]);{$ENDIF}
   FBlockSelection.StickyAutoExtend := False;
@@ -5688,20 +5690,21 @@ begin
       FBeautifyEndLineIdx := AIndex;
   end;
 
+  StartLine := ToPos(AIndex);
   if PaintLock>0 then begin
     // FChangedLinesStart is also given to Markup.TextChanged
-    if (FChangedLinesStart<1) or (FChangedLinesStart>AIndex+1) then
-      FChangedLinesStart:=AIndex+1;
+    if (FChangedLinesStart<1) or (FChangedLinesStart>StartLine) then
+      FChangedLinesStart:=StartLine;
     FChangedLinesEnd := -1; // Invalidate the rest of lines
     // TODO: review FChangedLinesDiff // Do not allow to reset (accumulate) to zero / just an indicator that theline count changed
     FChangedLinesDiff := FChangedLinesDiff + ACount;
   end else begin
-    ScanChangedLines(ToPos(AIndex), -1, ACount, True);
-    InvalidateLines(AIndex + 1, -1);
-    InvalidateGutterLines(AIndex + 1, -1);
+    ScanChangedLines(StartLine, -1, ACount, True);
+    InvalidateLines(StartLine, -1);
+    InvalidateGutterLines(StartLine, -1);
     if FCaret.LinePos > FLines.Count then FCaret.LinePos := FLines.Count;
   end;
-  if TopLine > AIndex + 1 then
+  if TopLine > StartLine then
     TopLine := TopLine + ACount // will call UpdateScrollBars
   else
     UpdateScrollBars;
@@ -5709,6 +5712,8 @@ end;
 
 procedure TCustomSynEdit.LineTextChanged(Sender: TSynEditStrings; AIndex,
   ACount: Integer);
+var
+  StartLine: Integer;
 begin
   {$IFDEF SynFoldDebug}debugln(['FOLD-- LineTextChanged Aindex', AIndex, '  ACount=', ACount]);{$ENDIF}
   FBlockSelection.StickyAutoExtend := False;
@@ -5718,23 +5723,27 @@ begin
   if (AIndex + ACount - 1 > FBeautifyEndLineIdx) then
     FBeautifyEndLineIdx := AIndex + ACount - 1;
 
+  StartLine := ToPos(AIndex);
   if PaintLock>0 then begin
-    if (FChangedLinesStart<1) or (FChangedLinesStart>AIndex+1) then
-      FChangedLinesStart:=AIndex+1;
-    if (FChangedLinesEnd >= 0) and (FChangedLinesEnd<AIndex+1) then
-      FChangedLinesEnd:=AIndex + 1 + MaX(ACount, 0);  // TODO: why 2 (TWO) extra lines?
+    if (FChangedLinesStart<1) or (FChangedLinesStart>StartLine) then
+      FChangedLinesStart:=StartLine;
+    if (FChangedLinesEnd >= 0) and (FChangedLinesEnd<StartLine) then
+      FChangedLinesEnd:=StartLine + MaX(ACount-1, 0);
   end else begin
-    ScanChangedLines(ToPos(AIndex), ToPos(AIndex) + max(ACount-1, 0), 0, True);
-    InvalidateLines(AIndex + 1, AIndex + ACount);
-    InvalidateGutterLines(AIndex + 1, AIndex + ACount);
+    ScanChangedLines(StartLine, StartLine + max(ACount-1, 0), 0, True);
+    InvalidateLines(StartLine, AIndex + ACount);
+    InvalidateGutterLines(StartLine, AIndex + ACount);
   end;
   UpdateScrollBars;
 end;
 
 procedure TCustomSynEdit.DoHighlightChanged(Sender: TSynEditStrings; AIndex,
   ACount: Integer);
+var
+  StartLine: Integer;
 begin
-  InvalidateLines(AIndex + 1, AIndex + 1 + ACount);
+  StartLine := ToPos(AIndex);
+  InvalidateLines(StartLine, StartLine + ACount - 1);
   InvalidateGutterLines(AIndex + 1, AIndex + 1 + ACount);
   FFoldedLinesView.FixFoldingAtTextIndex(AIndex, AIndex + ACount);
   if FPendingFoldState <> '' then
