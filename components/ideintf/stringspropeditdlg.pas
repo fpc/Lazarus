@@ -18,7 +18,7 @@ interface
 uses
   SysUtils,
   // LCL
-  Forms, Controls, StdCtrls, ButtonPanel, Dialogs,
+  Forms, Controls, StdCtrls, ButtonPanel, Dialogs, LCLType,
   // LazUtils
   LazUTF8,
   // IdeIntf
@@ -40,6 +40,7 @@ type
     procedure ClearButtonClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure MemoChange(Sender: TObject);
     procedure SaveButtonClick(Sender: TObject);
     procedure SortButtonClick(Sender: TObject);
@@ -63,6 +64,15 @@ begin
   SaveButton.Caption := oisSave;
   AddButtons;
   IDEDialogLayoutList.ApplyLayout(Self);
+end;
+
+procedure TStringsPropEditorFrm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) and (Shift = [ssCtrl]) then
+  begin
+    ModalResult := mrOK;
+    Key := 0;
+  end;
 end;
 
 procedure TStringsPropEditorFrm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
