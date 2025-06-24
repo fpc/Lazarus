@@ -4857,7 +4857,6 @@ resourcestring
   lisMenuEditorEnterANewShortCutKey2ForS = 'Enter a new ShortCutKey2 for %s';
   lisMenuEditorExistingSavedTemplates = 'Existing saved templates';
   lisMenuEditorFurtherShortcutConflict = 'Further shortcut conflict';
-  lisMenuEditorGetHelpToUseThisEditor = 'Get help to use this editor';
   lisMenuEditorGrabKey = '&Grab key';
   lisMenuEditorInadequateDescription = 'Inadequate Description';
   lisMenuEditorInsertMenuTemplateIntoRootOfS = 'Insert menu template into root of %s';

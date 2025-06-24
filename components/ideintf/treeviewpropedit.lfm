@@ -26,7 +26,6 @@ object TreeViewItemsEditorForm: TTreeViewItemsEditorForm
     OKButton.Hint = '[Ctrl+Enter]'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
-    HelpButton.Hint = '[F1]'
     HelpButton.DefaultCaption = True
     CloseButton.Name = 'CloseButton'
     CloseButton.DefaultCaption = True

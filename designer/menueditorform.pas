@@ -518,7 +518,6 @@ begin
   IDEImages.AssignImage(DeleteItemButton, 'laz_delete');
   IDEImages.AssignImage(AddSeparatorAboveButton, 'add_sep_above', 24);
   IDEImages.AssignImage(AddSeparatorBelowButton, 'add_sep_below', 24);
-  HelpButton.Hint:=lisMenuEditorGetHelpToUseThisEditor;
 end;
 
 procedure TMenuDesignerForm.EnableGUI(selectedIsNil: boolean);
