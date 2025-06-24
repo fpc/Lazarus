@@ -689,7 +689,8 @@ type
     procedure MoveCaretVert(DY: integer; UseScreenLine: Boolean = False);
     procedure PrimarySelectionRequest(const RequestedFormatID: TClipboardFormat;
       Data: TStream);
-    procedure ScanRanges(ATextChanged: Boolean = True);
+    procedure ScanRanges;
+    procedure ScanChangedLines(AChangedLinesStart, AChangedLinesEnd, AChangedLinesDiff: Integer; ATextChanged: Boolean);
     procedure IdleScanRanges(Sender: TObject; var Done: Boolean);
     procedure DoBlockSelectionChanged(Sender: TObject);
     procedure SetBlockIndent(const AValue: integer);
@@ -2599,7 +2600,7 @@ begin
     FMarkupManager.IncPaintLock;
   end;
   inc(FPaintLock);
-  FFoldedLinesView.Lock; //DecPaintLock triggers ScanRanges, and folds must wait
+  FFoldedLinesView.Lock; //DecPaintLock triggers ScanChangedLines, and folds must wait
   FTrimmedLinesView.Lock; // Lock before caret
   FBlockSelection.Lock;
   FCaret.Lock;
@@ -2620,11 +2621,12 @@ begin
 
     FCaret.Unlock;            // Maybe after FFoldedLinesView
     FBlockSelection.Unlock;
-    // FTrimmedLinesView sets the highlighter to modified. Until fixed, must be done before ScanRanges
+    // FTrimmedLinesView sets the highlighter to modified. Until fixed, must be done before ScanRanges;
     FTrimmedLinesView.UnLock; // Must be unlocked after caret // May Change lines
 
     if (FPaintLock=1) and (not WaitingForInitialSize) then begin
-      ScanRanges(FLastTextChangeStamp <> TSynEditStringList(FLines).TextChangeStamp);
+      ScanChangedLines(FChangedLinesStart, FChangedLinesEnd, FChangedLinesDiff,
+                 FLastTextChangeStamp <> TSynEditStringList(FLines).TextChangeStamp);
       if sfAfterLoadFromFileNeeded in fStateFlags then
         AfterLoadFromFile;
       if FChangedLinesStart > 0 then begin
@@ -2702,7 +2704,7 @@ begin
   // block all events during destruction
   inc(FPaintLock);
   FMarkupManager.IncPaintLock;
-  FFoldedLinesView.Lock; //DecPaintLock triggers ScanRanges, and folds must wait
+  FFoldedLinesView.Lock; //DecPaintLock triggers ScanChangedLines, and folds must wait
   FTrimmedLinesView.Lock; // Lock before caret
   FBlockSelection.Lock;
   FCaret.Lock;
@@ -4733,7 +4735,7 @@ begin
     if eoFoldedCopyPaste in fOptions2 then begin
       PTxt := ClipHelper.GetTagPointer(synClipTagFold);
       if PTxt <> nil then begin
-        ScanRanges;
+        ScanRanges; // Only update HL. Need HL to provide fold info
         FFoldedLinesView.ApplyFoldDescription(InsStart.Y -1, InsStart.X,
             FInternalBlockSelection.StartLinePos-1, FInternalBlockSelection.StartBytePos,
             PTxt, ClipHelper.GetTagLen(synClipTagFold));
@@ -5620,7 +5622,16 @@ begin
   end;
 end;
 
-procedure TCustomSynEdit.ScanRanges(ATextChanged: Boolean = True);
+procedure TCustomSynEdit.ScanRanges;
+begin
+  if fHighlighter = nil then
+    exit;
+  FHighlighter.CurrentLines := FLines; // Trailing spaces are not needed
+  FHighlighter.ScanRanges;
+end;
+
+procedure TCustomSynEdit.ScanChangedLines(AChangedLinesStart, AChangedLinesEnd,
+  AChangedLinesDiff: Integer; ATextChanged: Boolean);
 begin
   if WaitingForInitialSize then begin
     Application.RemoveOnIdleHandler(@IdleScanRanges); // avoid duplicate add
@@ -5629,20 +5640,18 @@ begin
     exit;
   end;
 //TODO: exit if in paintlock ???
-  if not assigned(FHighlighter) then begin
-    if ATextChanged then begin
-      fMarkupManager.TextChanged(FChangedLinesStart, FChangedLinesEnd, FChangedLinesDiff);
-      // TODO: see TSynEditFoldedView.LineCountChanged, this is only needed, because NeedFixFrom does not always work
-      FFoldedLinesView.FixFoldingAtTextIndex(FChangedLinesStart, FChangedLinesEnd);
-    end;
-    exit;
-  end;
-  FHighlighter.CurrentLines := FLines; // Trailing spaces are not needed
-  FHighlighter.ScanRanges;
+
+  ScanRanges;
 
   // Todo: text may not have changed
-  if ATextChanged then
-    fMarkupManager.TextChanged(FChangedLinesStart, FChangedLinesEnd, FChangedLinesDiff);
+  if ATextChanged then begin
+    fMarkupManager.TextChanged(AChangedLinesStart, AChangedLinesEnd, AChangedLinesDiff);
+
+    if not assigned(FHighlighter) then begin
+      // TODO: see TSynEditFoldedView.LineCountChanged, this is only needed, because NeedFixFrom does not always work
+      FFoldedLinesView.FixFoldingAtTextIndex(AChangedLinesStart, AChangedLinesEnd);
+    end;
+  end;
 end;
 
 procedure TCustomSynEdit.IdleScanRanges(Sender: TObject; var Done: Boolean);
@@ -5680,13 +5689,14 @@ begin
   end;
 
   if PaintLock>0 then begin
-    // FChangedLinesStart is also given to Markup.TextChanged; but it is not used there
+    // FChangedLinesStart is also given to Markup.TextChanged
     if (FChangedLinesStart<1) or (FChangedLinesStart>AIndex+1) then
       FChangedLinesStart:=AIndex+1;
     FChangedLinesEnd := -1; // Invalidate the rest of lines
+    // TODO: review FChangedLinesDiff // Do not allow to reset (accumulate) to zero / just an indicator that theline count changed
     FChangedLinesDiff := FChangedLinesDiff + ACount;
   end else begin
-    ScanRanges;
+    ScanChangedLines(ToPos(AIndex), -1, ACount, True);
     InvalidateLines(AIndex + 1, -1);
     InvalidateGutterLines(AIndex + 1, -1);
     if FCaret.LinePos > FLines.Count then FCaret.LinePos := FLines.Count;
@@ -5714,7 +5724,7 @@ begin
     if (FChangedLinesEnd >= 0) and (FChangedLinesEnd<AIndex+1) then
       FChangedLinesEnd:=AIndex + 1 + MaX(ACount, 0);  // TODO: why 2 (TWO) extra lines?
   end else begin
-    ScanRanges;
+    ScanChangedLines(ToPos(AIndex), ToPos(AIndex) + max(ACount-1, 0), 0, True);
     InvalidateLines(AIndex + 1, AIndex + ACount);
     InvalidateGutterLines(AIndex + 1, AIndex + ACount);
   end;
@@ -5786,7 +5796,7 @@ begin
 
   (* ToDo: FFoldedLinesView.TopLine := AValue;
     Required, if "TopView := TopView" or "TopLine := TopLine" is called,
-    after ScanRanges (used to be: LineCountChanged / LineTextChanged)
+    after ScanChangedLines/ScanRanges (used to be: LineCountChanged / LineTextChanged)
   *)
   FFoldedLinesView.TopViewPos := AValue;
 
@@ -6691,7 +6701,7 @@ begin
             else
               SetTextBetweenPoints(NewCaret, NewCaret, DragDropText, [setSelect], scamEnd, smaMoveUp, sm);
             if (FoldInfo <> '') and (sm <> smColumn) then begin
-              ScanRanges;
+              ScanRanges; // Only update HL. Need HL to provide fold info
               FFoldedLinesView.ApplyFoldDescription(NewCaret.Y -1, NewCaret.X,
                     FBlockSelection.EndLinePos-1, FBlockSelection.EndBytePos,
                     PChar(FoldInfo), length(FoldInfo));
@@ -6813,7 +6823,7 @@ begin
         fTSearch.ResetIdentChars;
       end;
       RecalcCharExtent;
-      ScanRanges; // Todo: Skip if paintlocked
+      ScanChangedLines(0,0,0, False); // Todo: Skip if paintlocked
       // There may not have been a scan
       if fHighlighter <> nil then
         FHighlighter.CurrentLines := FLines;
@@ -7945,7 +7955,7 @@ begin
   end;
   Exclude(fStateFlags, sfAfterLoadFromFileNeeded);
   if assigned(FFoldedLinesView) then begin
-    ScanRanges;
+    ScanRanges; // Only update HL. Need HL to provide fold info
     FFoldedLinesView.UnfoldAll;
     FFoldedLinesView.CollapseDefaultFolds;
     if FPendingFoldState <> '' then
