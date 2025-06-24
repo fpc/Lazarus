@@ -12714,10 +12714,6 @@ msgstr "Modèles sauvegardés"
 msgid "Further shortcut conflict"
 msgstr "Conflit de raccourci ultérieur"
 
-#: lazarusidestrconsts.lismenueditorgethelptousethiseditor
-msgid "Get help to use this editor"
-msgstr "Obtenir de l'aide pour cet éditeur"
-
 #: lazarusidestrconsts.lismenueditorgrabkey
 msgid "&Grab key"
 msgstr "&Touche d'accroche"

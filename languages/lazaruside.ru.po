@@ -12657,10 +12657,6 @@ msgstr "Имеющиеся сохранённые шаблоны"
 msgid "Further shortcut conflict"
 msgstr "Дополнительный конфликт комбинаций клавиш"
 
-#: lazarusidestrconsts.lismenueditorgethelptousethiseditor
-msgid "Get help to use this editor"
-msgstr "Открыть справку для этого редактора"
-
 #: lazarusidestrconsts.lismenueditorgrabkey
 msgid "&Grab key"
 msgstr "&Захватить клавишу"

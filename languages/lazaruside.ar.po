@@ -12655,10 +12655,6 @@ msgstr ""
 msgid "Further shortcut conflict"
 msgstr ""
 
-#: lazarusidestrconsts.lismenueditorgethelptousethiseditor
-msgid "Get help to use this editor"
-msgstr ""
-
 #: lazarusidestrconsts.lismenueditorgrabkey
 msgid "&Grab key"
 msgstr ""

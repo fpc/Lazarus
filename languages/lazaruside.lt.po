@@ -12974,10 +12974,6 @@ msgstr "Egzistuojantys įrašyti šabblonai"
 msgid "Further shortcut conflict"
 msgstr "Tolesnis sparčiojo klavišo konfliktas"
 
-#: lazarusidestrconsts.lismenueditorgethelptousethiseditor
-msgid "Get help to use this editor"
-msgstr "Gauti žinių kaip naudoti šią rengyklę"
-
 #: lazarusidestrconsts.lismenueditorgrabkey
 msgid "&Grab key"
 msgstr "&Detektuoti klavišų paspaudimą"

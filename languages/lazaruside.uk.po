@@ -12784,10 +12784,6 @@ msgstr "Наявні збережені шаблони"
 msgid "Further shortcut conflict"
 msgstr "Додатковий конфлікт сполучень клавіш"
 
-#: lazarusidestrconsts.lismenueditorgethelptousethiseditor
-msgid "Get help to use this editor"
-msgstr "Отримати довідку з користування цим редактором"
-
 #: lazarusidestrconsts.lismenueditorgrabkey
 msgid "&Grab key"
 msgstr "&Захопити клавішу"

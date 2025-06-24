@@ -12944,10 +12944,6 @@ msgstr "保存されたテンプレートが存在"
 msgid "Further shortcut conflict"
 msgstr "さらなるショートカットキーの衝突"
 
-#: lazarusidestrconsts.lismenueditorgethelptousethiseditor
-msgid "Get help to use this editor"
-msgstr "このエディタを使うためのヘルプを入手"
-
 #: lazarusidestrconsts.lismenueditorgrabkey
 msgid "&Grab key"
 msgstr "キーの取得(&G)"

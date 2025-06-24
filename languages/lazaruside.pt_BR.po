@@ -12832,10 +12832,6 @@ msgstr "Encerrando modelos salvos"
 msgid "Further shortcut conflict"
 msgstr "Outros conflitos de atalho"
 
-#: lazarusidestrconsts.lismenueditorgethelptousethiseditor
-msgid "Get help to use this editor"
-msgstr "Obtenha ajuda para usar este editor"
-
 #: lazarusidestrconsts.lismenueditorgrabkey
 msgid "&Grab key"
 msgstr "Tecla &garra"

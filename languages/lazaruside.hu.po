@@ -12818,10 +12818,6 @@ msgstr "Létező mentett sablonok"
 msgid "Further shortcut conflict"
 msgstr "További ütköző gyorsbillentyűk"
 
-#: lazarusidestrconsts.lismenueditorgethelptousethiseditor
-msgid "Get help to use this editor"
-msgstr "Segítség ezen szerkesztő használatával kapcsolatban"
-
 #: lazarusidestrconsts.lismenueditorgrabkey
 msgid "&Grab key"
 msgstr "Bekérés"

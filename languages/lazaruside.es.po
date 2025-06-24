@@ -12984,10 +12984,6 @@ msgstr "Plantillas guardadas existentes"
 msgid "Further shortcut conflict"
 msgstr "Otro conflicto de atajo"
 
-#: lazarusidestrconsts.lismenueditorgethelptousethiseditor
-msgid "Get help to use this editor"
-msgstr "Obtener ayuda para usar este editor"
-
 #: lazarusidestrconsts.lismenueditorgrabkey
 #, fuzzy
 msgid "&Grab key"

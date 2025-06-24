@@ -12860,10 +12860,6 @@ msgstr "Existující uložené šablony"
 msgid "Further shortcut conflict"
 msgstr "Další konflik zkratky"
 
-#: lazarusidestrconsts.lismenueditorgethelptousethiseditor
-msgid "Get help to use this editor"
-msgstr "Získejte nápovědu pro použití tohoto editoru"
-
 #: lazarusidestrconsts.lismenueditorgrabkey
 msgid "&Grab key"
 msgstr "&Odchytit klávesu"

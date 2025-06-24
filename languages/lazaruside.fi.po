@@ -12742,10 +12742,6 @@ msgstr "Tallennetut mallineet"
 msgid "Further shortcut conflict"
 msgstr "Muita pikanäppäimen ristiriitoja"
 
-#: lazarusidestrconsts.lismenueditorgethelptousethiseditor
-msgid "Get help to use this editor"
-msgstr "Hae apua tämän editorin käyttöön"
-
 #: lazarusidestrconsts.lismenueditorgrabkey
 msgid "&Grab key"
 msgstr "Sieppaa näppäin"

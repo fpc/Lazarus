@@ -12672,10 +12672,6 @@ msgstr "Existierende gespeicherte Vorlagen"
 msgid "Further shortcut conflict"
 msgstr "Weiterer Tastaturbefehl-Konflikt"
 
-#: lazarusidestrconsts.lismenueditorgethelptousethiseditor
-msgid "Get help to use this editor"
-msgstr "Hilfe für die Verwendung dieses Editors"
-
 #: lazarusidestrconsts.lismenueditorgrabkey
 msgid "&Grab key"
 msgstr ""

@@ -12684,10 +12684,6 @@ msgstr "Mevcut kaydedilmiş şablonlar"
 msgid "Further shortcut conflict"
 msgstr "Daha fazla kısayol çakışması"
 
-#: lazarusidestrconsts.lismenueditorgethelptousethiseditor
-msgid "Get help to use this editor"
-msgstr "Bu editörü kullanmak için yardım alın"
-
 #: lazarusidestrconsts.lismenueditorgrabkey
 msgid "&Grab key"
 msgstr "&Tutma tuşu"

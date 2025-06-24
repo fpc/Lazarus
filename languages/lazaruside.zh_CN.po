@@ -12663,10 +12663,6 @@ msgstr "现存的保存模板"
 msgid "Further shortcut conflict"
 msgstr "更多的快捷方式冲突(conflict)"
 
-#: lazarusidestrconsts.lismenueditorgethelptousethiseditor
-msgid "Get help to use this editor"
-msgstr "获取帮助来使用这个编辑器"
-
 #: lazarusidestrconsts.lismenueditorgrabkey
 msgid "&Grab key"
 msgstr "抓取键(&G)"

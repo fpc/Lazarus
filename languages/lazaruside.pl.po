@@ -12930,10 +12930,6 @@ msgstr "Istniejące zapisane szablony"
 msgid "Further shortcut conflict"
 msgstr "Konflikt "
 
-#: lazarusidestrconsts.lismenueditorgethelptousethiseditor
-msgid "Get help to use this editor"
-msgstr ""
-
 #: lazarusidestrconsts.lismenueditorgrabkey
 msgid "&Grab key"
 msgstr "Przechwyć klawisz"
