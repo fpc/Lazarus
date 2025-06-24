@@ -159,7 +159,7 @@ type
     procedure TreeviewDblClick(Sender: TObject);
     procedure TreeviewDeletion(Sender: TObject; Node: TTreeNode);
     procedure TreeviewKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure UserInputHandler(Sender: TObject; var Msg: TLMessage);
+    procedure UserInputHandler(Sender: TObject; var {%H-}Msg: TLMessage);
   private
     fCategoryNodes: array[TCodeExplorerCategory] of TTreeNode;
     FCodeFilename: string;

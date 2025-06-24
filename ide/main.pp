@@ -12703,6 +12703,7 @@ begin
   case Command of
   ecContextHelp, ecEditContextHelp:
     begin
+      Handled:=false;
       ProcessIDECommand(Sender,Command,Handled);
       if Handled then Key:=VK_UNKNOWN;
     end;
