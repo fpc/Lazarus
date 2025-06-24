@@ -27,7 +27,7 @@ Uses System.Classes,
      System.Math;
 {$ELSE FPC_DOTTEDUNITS}
 Uses Classes,
-     pipes331  in 'fcl-proc331/pipes331.pp',
+     pipes331,
      SysUtils,
      Math;
 {$ENDIF FPC_DOTTEDUNITS}
