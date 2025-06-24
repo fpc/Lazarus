@@ -17,9 +17,11 @@ const
   CodyConfigVersion = 1;
 
 const
-  cDefLoadDelayInS    =  10;
-  cDefSaveIntervalInS = 600;
-  cDefMaxListItems    =  50;
+  cDefLoadDelayInS    =    10;
+  cDefSaveIntervalInS =   600;
+  cDefMaxListItems    =    50;
+  cMaxListItemsLow    =    10;
+  cMaxListItemsHigh   = 10000;
 
 var
   CodyMiscOptionID: integer = 1000;
@@ -31,16 +33,19 @@ type
     FPreferImplementationUsesSection: boolean;
     FUDLoadDelayInS: integer;
     FUDSaveIntervalInS: integer;
+    FUDMaxListItems: integer;
     fLastSavedChangeStep: integer;
     fApplyHandlers: TMethodList;
     function GetModified: boolean;
     procedure SetModified(AValue: boolean);
     procedure SetUDLoadDelayInS(AValue: integer);
     procedure SetUDSaveIntervalInS(AValue: integer);
+    procedure SetUDMaxListItems(AValue: integer);
   public
     // unit / identifier dictionary
-    property UDLoadDelayInS: integer read FUDLoadDelayInS write SetUDLoadDelayInS;
+    property UDLoadDelayInS   : integer read FUDLoadDelayInS    write SetUDLoadDelayInS;
     property UDSaveIntervalInS: integer read FUDSaveIntervalInS write SetUDSaveIntervalInS;
+    property UDMaxListItems   : integer read FUDMaxListItems    write SetUDMaxListItems;
     property PreferImplementationUsesSection: boolean
       read FPreferImplementationUsesSection write FPreferImplementationUsesSection;
     procedure Assign(Source: TPersistent); override;
@@ -92,6 +97,13 @@ begin
   IncreaseChangeStep;
 end;
 
+procedure TCodyMiscOptions.SetUDMaxListItems(AValue: integer);
+begin
+  if FUDMaxListItems=AValue then Exit;
+  FUDMaxListItems:=AValue;
+  IncreaseChangeStep;
+end;
+
 constructor TCodyMiscOptions.Create;
 begin
   inherited Create;
@@ -111,6 +123,7 @@ begin
   begin
     UDSaveIntervalInS := TCodyMiscOptions(Source).UDSaveIntervalInS;
     UDLoadDelayInS    := TCodyMiscOptions(Source).UDLoadDelayInS;
+    UDMaxListItems    := TCodyMiscOptions(Source).UDMaxListItems;
   end else
     inherited Assign(Source);
 end;
@@ -120,7 +133,8 @@ begin
   Result :=
     (Obj is TCodyMiscOptions) and // "is" also checks for nil
     (UDLoadDelayInS    = TCodyMiscOptions(Obj).UDLoadDelayInS   ) and
-    (UDSaveIntervalInS = TCodyMiscOptions(Obj).UDSaveIntervalInS);
+    (UDSaveIntervalInS = TCodyMiscOptions(Obj).UDSaveIntervalInS) and
+    (UDMaxListItems    = TCodyMiscOptions(Obj).UDMaxListItems);
 end;
 
 procedure TCodyMiscOptions.SaveSafe;
@@ -153,6 +167,7 @@ begin
   try
     Cfg.SetDeleteValue('UnitDictionary/LoadDelay',   UDLoadDelayInS,   cDefLoadDelayInS);
     Cfg.SetDeleteValue('UnitDictionary/SaveInterval',UDSaveIntervalInS,cDefSaveIntervalInS);
+    Cfg.SetDeleteValue('UnitDictionary/MaxListItems',UDMaxListItems,   cDefMaxListItems);
     Cfg.SetDeleteValue('Uses/PreferImplementationSection',PreferImplementationUsesSection,false);
   finally
     Cfg.Free;
@@ -168,6 +183,7 @@ begin
   try
     UDLoadDelayInS   :=Cfg.GetValue('UnitDictionary/LoadDelay',   cDefLoadDelayInS);
     UDSaveIntervalInS:=Cfg.GetValue('UnitDictionary/SaveInterval',cDefSaveIntervalInS);
+    UDMaxListItems   :=Cfg.GetValue('UnitDictionary/MaxListItems',cDefMaxListItems);
     PreferImplementationUsesSection:=Cfg.GetValue('Uses/PreferImplementationSection',false);
     //debugln(['TCodyMiscOptions.LoadFromFile UDSaveIntervalInS=',UDSaveIntervalInS,' LoadDelay=',UDLoadDelayInS]);
   finally
@@ -179,6 +195,7 @@ procedure TCodyMiscOptions.Clear;
 begin
   UDLoadDelayInS    := cDefLoadDelayInS;
   UDSaveIntervalInS := cDefSaveIntervalInS;
+  UDMaxListItems    := cDefMaxListItems;
 end;
 
 procedure TCodyMiscOptions.Apply;

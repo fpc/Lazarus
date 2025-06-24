@@ -1,76 +1,77 @@
-inherited CodyMiscOptionsFrame: TCodyMiscOptionsFrame
+object CodyMiscOptionsFrame: TCodyMiscOptionsFrame
+  Left = 0
   Height = 336
+  Top = 0
   Width = 558
   ClientHeight = 336
   ClientWidth = 558
   TabOrder = 0
   DesignLeft = 358
   DesignTop = 166
-  object UDDividerBevel: TDividerBevel[0]
+  object UDDividerBevel: TDividerBevel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 16
+    Height = 15
     Top = 0
     Width = 558
     Caption = 'UDDividerBevel'
-    Autosize = True
     Anchors = [akTop, akLeft, akRight]
   end
-  object UDLoadDelayLabel: TLabel[1]
+  object UDLoadDelayLabel: TLabel
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = UDDividerBevel
+    AnchorSideTop.Control = UDMaxItemsSpinEdit
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 17
-    Top = 22
-    Width = 118
+    Height = 15
+    Top = 56
+    Width = 99
     BorderSpacing.Left = 6
-    BorderSpacing.Top = 6
+    BorderSpacing.Top = 12
     Caption = 'UDLoadDelayLabel'
     ParentColor = False
   end
-  object UDLoadDelayTrackBar: TTrackBar[2]
+  object UDLoadDelayTrackBar: TTrackBar
     AnchorSideLeft.Control = UDLoadDelayLabel
     AnchorSideTop.Control = UDLoadDelayLabel
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 20
-    Top = 39
-    Width = 138
-    OnChange = UDLoadDelayTrackBarChange
+    Top = 71
+    Width = 200
     Position = 0
+    OnChange = UDLoadDelayTrackBarChange
     TabOrder = 0
   end
-  object UDSaveButton: TButton[3]
+  object UDSaveButton: TButton
     AnchorSideLeft.Control = UDLoadDelayLabel
     AnchorSideTop.Control = UDSaveIntervalTrackBar
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 20
-    Top = 108
-    Width = 113
+    Height = 25
+    Top = 138
+    Width = 102
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'UDSaveButton'
+    TabOrder = 2
     OnClick = UDSaveButtonClick
-    TabOrder = 1
   end
-  object UDSaveIntervalLabel: TLabel[4]
+  object UDSaveIntervalLabel: TLabel
     AnchorSideLeft.Control = UDLoadDelayLabel
     AnchorSideTop.Control = UDLoadDelayTrackBar
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 17
-    Top = 65
-    Width = 128
+    Height = 15
+    Top = 97
+    Width = 107
     BorderSpacing.Top = 6
     Caption = 'UDSaveIntervalLabel'
     ParentColor = False
   end
-  object UDSaveIntervalTrackBar: TTrackBar[5]
+  object UDSaveIntervalTrackBar: TTrackBar
     AnchorSideLeft.Control = UDLoadDelayLabel
     AnchorSideTop.Control = UDSaveIntervalLabel
     AnchorSideTop.Side = asrBottom
@@ -78,11 +79,39 @@ inherited CodyMiscOptionsFrame: TCodyMiscOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 20
-    Top = 82
-    Width = 138
-    OnChange = UDSaveIntervalTrackBarChange
+    Top = 112
+    Width = 200
     Position = 0
+    OnChange = UDSaveIntervalTrackBarChange
     Anchors = [akTop, akLeft, akRight]
-    TabOrder = 2
+    TabOrder = 1
+  end
+  object UDMaxItemsLabel: TLabel
+    AnchorSideLeft.Control = UDLoadDelayLabel
+    AnchorSideTop.Control = UDMaxItemsSpinEdit
+    AnchorSideTop.Side = asrCenter
+    Left = 6
+    Height = 15
+    Top = 25
+    Width = 95
+    Caption = 'UDMaxItemsLabel'
+  end
+  object UDMaxItemsSpinEdit: TSpinEdit
+    AnchorSideLeft.Control = UDMaxItemsLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = UDDividerBevel
+    AnchorSideTop.Side = asrBottom
+    Left = 107
+    Height = 23
+    Top = 21
+    Width = 58
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    Increment = 10
+    MaxValue = 10000
+    MinValue = 10
+    TabOrder = 3
+    Value = 50
+    OnChange = UDMaxItemsSpinEditChange
   end
 end

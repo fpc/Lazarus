@@ -246,6 +246,7 @@ resourcestring
     +'on demand or after this time';
   crsTheDictionaryIsSavedInIntervals = 'The dictionary is saved in intervals';
   crsSaveDictionaryNow = 'Save dictionary now';
+  crsDictionaryMaxListItems = 'Maximum displayed items in the list';
   crsSaveToFile = 'Save to file %s';
   crsConfigureNewIDEWindow = 'Configure new IDE window';
   crsNoteTheNameOfTheFormMustBeAValidPascalIdentifierAn = 'Note: The name of '
