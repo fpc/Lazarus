@@ -223,6 +223,26 @@ msgstr "Configurer une nouvelle fenêtre de l'EDI"
 msgid "Contains"
 msgstr "Contient"
 
+#: codystrconsts.crscontextdeletepackage
+#, object-pascal-format
+msgid "Delete package \"%s\""
+msgstr ""
+
+#: codystrconsts.crscontextdeleteunit
+#, object-pascal-format
+msgid "Delete unit \"%s\""
+msgstr ""
+
+#: codystrconsts.crscontextjumpto
+#, object-pascal-format
+msgid "Jump to \"%s\""
+msgstr ""
+
+#: codystrconsts.crscontextuseidentifier
+#, object-pascal-format
+msgid "Use \"%s\""
+msgstr ""
+
 #: codystrconsts.crscontinue
 msgid "Continue"
 msgstr "Continuer"
@@ -302,6 +322,10 @@ msgstr "Faut-il supprimer le paquet ?"
 #: codystrconsts.crsdeleteunit
 msgid "Delete unit?"
 msgstr "Faut-il supprimer l'unité ?"
+
+#: codystrconsts.crsdictionarymaxlistitems
+msgid "Maximum displayed items in the list"
+msgstr ""
 
 #: codystrconsts.crsdistance
 msgid "Distance"

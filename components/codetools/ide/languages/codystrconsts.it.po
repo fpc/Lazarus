@@ -224,6 +224,26 @@ msgstr "Configurare una nuova finestra dell'IDE"
 msgid "Contains"
 msgstr "Contiene"
 
+#: codystrconsts.crscontextdeletepackage
+#, object-pascal-format
+msgid "Delete package \"%s\""
+msgstr ""
+
+#: codystrconsts.crscontextdeleteunit
+#, object-pascal-format
+msgid "Delete unit \"%s\""
+msgstr ""
+
+#: codystrconsts.crscontextjumpto
+#, object-pascal-format
+msgid "Jump to \"%s\""
+msgstr ""
+
+#: codystrconsts.crscontextuseidentifier
+#, object-pascal-format
+msgid "Use \"%s\""
+msgstr ""
+
 #: codystrconsts.crscontinue
 msgid "Continue"
 msgstr "Continuare"
@@ -303,6 +323,10 @@ msgstr "Cancellare il pacchetto"
 #: codystrconsts.crsdeleteunit
 msgid "Delete unit?"
 msgstr "Cancellare la unit?"
+
+#: codystrconsts.crsdictionarymaxlistitems
+msgid "Maximum displayed items in the list"
+msgstr ""
 
 #: codystrconsts.crsdistance
 msgid "Distance"

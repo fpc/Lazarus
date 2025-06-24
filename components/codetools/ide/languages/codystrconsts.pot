@@ -213,6 +213,26 @@ msgstr ""
 msgid "Contains"
 msgstr ""
 
+#: codystrconsts.crscontextdeletepackage
+#, object-pascal-format
+msgid "Delete package \"%s\""
+msgstr ""
+
+#: codystrconsts.crscontextdeleteunit
+#, object-pascal-format
+msgid "Delete unit \"%s\""
+msgstr ""
+
+#: codystrconsts.crscontextjumpto
+#, object-pascal-format
+msgid "Jump to \"%s\""
+msgstr ""
+
+#: codystrconsts.crscontextuseidentifier
+#, object-pascal-format
+msgid "Use \"%s\""
+msgstr ""
+
 #: codystrconsts.crscontinue
 msgid "Continue"
 msgstr ""
@@ -291,6 +311,10 @@ msgstr ""
 
 #: codystrconsts.crsdeleteunit
 msgid "Delete unit?"
+msgstr ""
+
+#: codystrconsts.crsdictionarymaxlistitems
+msgid "Maximum displayed items in the list"
 msgstr ""
 
 #: codystrconsts.crsdistance

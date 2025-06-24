@@ -225,6 +225,26 @@ msgstr "Налаштувати нове вікно ІСР"
 msgid "Contains"
 msgstr "Містить"
 
+#: codystrconsts.crscontextdeletepackage
+#, object-pascal-format
+msgid "Delete package \"%s\""
+msgstr ""
+
+#: codystrconsts.crscontextdeleteunit
+#, object-pascal-format
+msgid "Delete unit \"%s\""
+msgstr ""
+
+#: codystrconsts.crscontextjumpto
+#, object-pascal-format
+msgid "Jump to \"%s\""
+msgstr ""
+
+#: codystrconsts.crscontextuseidentifier
+#, object-pascal-format
+msgid "Use \"%s\""
+msgstr ""
+
 #: codystrconsts.crscontinue
 msgid "Continue"
 msgstr "Продовжити"
@@ -304,6 +324,10 @@ msgstr "Видалити пакунок?"
 #: codystrconsts.crsdeleteunit
 msgid "Delete unit?"
 msgstr "Видалити модуль?"
+
+#: codystrconsts.crsdictionarymaxlistitems
+msgid "Maximum displayed items in the list"
+msgstr ""
 
 #: codystrconsts.crsdistance
 msgid "Distance"

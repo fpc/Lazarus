@@ -223,6 +223,26 @@ msgstr "Параметры нового окна IDE"
 msgid "Contains"
 msgstr "Содержит"
 
+#: codystrconsts.crscontextdeletepackage
+#, object-pascal-format
+msgid "Delete package \"%s\""
+msgstr "Удалить пакет \"%s\""
+
+#: codystrconsts.crscontextdeleteunit
+#, object-pascal-format
+msgid "Delete unit \"%s\""
+msgstr "Удалить модуль \"%s\""
+
+#: codystrconsts.crscontextjumpto
+#, object-pascal-format
+msgid "Jump to \"%s\""
+msgstr "Перейти к \"%s\""
+
+#: codystrconsts.crscontextuseidentifier
+#, object-pascal-format
+msgid "Use \"%s\""
+msgstr "Использовать \"%s\""
+
 #: codystrconsts.crscontinue
 msgid "Continue"
 msgstr "Продолжить"
@@ -302,6 +322,10 @@ msgstr "Удалить пакет?"
 #: codystrconsts.crsdeleteunit
 msgid "Delete unit?"
 msgstr "Удалить модуль?"
+
+#: codystrconsts.crsdictionarymaxlistitems
+msgid "Maximum displayed items in the list"
+msgstr "Максимальное количество отображаемых элементов списка"
 
 #: codystrconsts.crsdistance
 msgid "Distance"
