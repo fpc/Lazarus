@@ -175,7 +175,8 @@ type
     procedure ItemsListBoxDblClick(Sender: TObject);
     procedure ItemsListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
-    procedure PopupMenu1Popup(Sender: TObject);
+    procedure ItemsListBoxContextPopup(Sender: TObject; MousePos: TPoint;
+      var Handled: Boolean);
     procedure StartsRadioButtonClick(Sender: TObject);
   private
     FDlgAction: TCodyIdentifierDlgAction;
@@ -1044,29 +1045,19 @@ begin
   IdleConnected:=false;
 end;
 
-procedure TCodyIdentifiersDlg.PopupMenu1Popup(Sender: TObject);
+procedure TCodyIdentifiersDlg.ItemsListBoxContextPopup(Sender: TObject;
+  MousePos: TPoint; var Handled: Boolean);
 var
-  Identifier: string;
-  UnitFilename: string;
-  GroupName: string;
-  GroupFilename: string;
+  Identifier, UnitFilename, GroupName, GroupFilename: string;
 begin
-  if FindSelectedItem(Identifier, UnitFilename, GroupName, GroupFilename) then
-  begin
-    UseMenuItem.Caption:='Use '+Identifier;
-    UseMenuItem.Enabled:=true;
-    JumpMenuItem.Caption:='Jump to '+Identifier;
-    JumpMenuItem.Enabled:=true;
-    DeleteUnitMenuItem.Caption:='Delete unit '+ExtractFilename(UnitFilename);
-    DeleteUnitMenuItem.Enabled:=true;
-    DeletePackageMenuItem.Caption:='Delete package '+ExtractFilename(GroupFilename);
-    DeletePackageMenuItem.Enabled:=true;
-  end else begin
-    UseMenuItem.Enabled:=false;
-    JumpMenuItem.Enabled:=false;
-    DeleteUnitMenuItem.Enabled:=false;
-    DeletePackageMenuItem.Enabled:=false;
-  end;
+  // show popup menu only if valid identificator is selected
+  Handled := not FindSelectedItem(Identifier, UnitFilename, GroupName, GroupFilename);
+  if Handled then exit;
+
+  UseMenuItem          .Caption := 'Use ' + Identifier;
+  JumpMenuItem         .Caption := 'Jump to ' + Identifier;
+  DeleteUnitMenuItem   .Caption := 'Delete unit ' + ExtractFilename(UnitFilename);
+  DeletePackageMenuItem.Caption := 'Delete package ' + ExtractFilename(GroupFilename);
 end;
 
 procedure TCodyIdentifiersDlg.StartsRadioButtonClick(Sender: TObject);
