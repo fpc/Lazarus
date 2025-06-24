@@ -1131,7 +1131,7 @@ var
           if IdentifierPos(FilterP,PChar(Pointer(Item.Name)))<0 then continue;
         end;
       end;
-      if Found>MaxItems then begin
+      if Found>MaxItems+1 then begin
         inc(Found); // only count, do not check
         continue;
       end;
@@ -1186,7 +1186,7 @@ var
         end;
         if FileExistsCached(Item.DUnit.Filename) then begin
           inc(Found);
-          if Found<MaxItems then begin
+          if Found<=MaxItems then begin
             FItems.Add(TCodyIdentifier.Create(Item.Name,
               Item.DUnit.Name,Item.DUnit.Filename,
               Group.Name,Group.Filename,AddExactMatches));
