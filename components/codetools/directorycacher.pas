@@ -940,10 +940,9 @@ begin
     FDirectory:=''
   else
     FDirectory:=AppendPathDelim(FDirectory);
-  // A non-existent unit name is not absolute, but the compiler may accept it.
-  //  eg. 'process331 in fcl-proc331/'  Do not raise exception then.
-  //if (FDirectory<>'') and not FilenameIsAbsolute(FDirectory) then
-  //  raise Exception.Create('directory not absolute "'+FDirectory+'"');
+  if (FDirectory<>'') and not FilenameIsAbsolute(FDirectory) then
+    // bug: caller forgot to expand filename
+    raise Exception.Create('directory not absolute "'+FDirectory+'"');
   FListing:=TCTDirectoryListing.Create;
   FPool:=ThePool;
   FRefCount:=1;
