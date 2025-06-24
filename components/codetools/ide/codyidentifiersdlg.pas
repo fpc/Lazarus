@@ -1054,10 +1054,10 @@ begin
   Handled := not FindSelectedItem(Identifier, UnitFilename, GroupName, GroupFilename);
   if Handled then exit;
 
-  UseMenuItem          .Caption := 'Use ' + Identifier;
-  JumpMenuItem         .Caption := 'Jump to ' + Identifier;
-  DeleteUnitMenuItem   .Caption := 'Delete unit ' + ExtractFilename(UnitFilename);
-  DeletePackageMenuItem.Caption := 'Delete package ' + ExtractFilename(GroupFilename);
+  UseMenuItem          .Caption := Format(crsContextUseIdentifier, [Identifier]);
+  JumpMenuItem         .Caption := Format(crsContextJumpTo       , [Identifier]);
+  DeleteUnitMenuItem   .Caption := Format(crsContextDeleteUnit   , [ExtractFilename(UnitFilename)]);
+  DeletePackageMenuItem.Caption := Format(crsContextDeletePackage, [ExtractFilename(GroupFilename)]);
 end;
 
 procedure TCodyIdentifiersDlg.StartsRadioButtonClick(Sender: TObject);

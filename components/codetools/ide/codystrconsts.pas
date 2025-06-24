@@ -183,6 +183,10 @@ resourcestring
     +'containing filter text';
   crsUseIdentifier = '&Use identifier';
   crsAndMoreIdentifiers = '... and %s more identifiers';
+  crsContextUseIdentifier = 'Use "%s"';
+  crsContextJumpTo = 'Jump to "%s"';
+  crsContextDeleteUnit = 'Delete unit "%s"';
+  crsContextDeletePackage = 'Delete package "%s"';
   crsCodyIdentifierDictionary = 'Identifier Dictionary';
   crsReallyDeleteTheUnitFromTheDatabaseNoteThisDoesNo = 'Really delete the '
     +'unit from the database?%sNote: This does not change the source or any'
