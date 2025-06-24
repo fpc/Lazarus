@@ -9,9 +9,11 @@ object StringsPropEditorFrm: TStringsPropEditorFrm
   ClientWidth = 400
   Constraints.MinHeight = 160
   Constraints.MinWidth = 180
+  KeyPreview = True
   Position = poScreenCenter
   OnClose = FormClose
   OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
   object TextGroupBox: TGroupBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -111,13 +113,17 @@ object StringsPropEditorFrm: TStringsPropEditorFrm
     Top = 258
     Width = 388
     OKButton.Name = 'OKButton'
+    OKButton.Hint = '[Ctrl+Enter]'
     OKButton.DefaultCaption = True
+    OKButton.ShowHint = True
     HelpButton.Name = 'HelpButton'
     HelpButton.DefaultCaption = True
     CloseButton.Name = 'CloseButton'
     CloseButton.DefaultCaption = True
     CancelButton.Name = 'CancelButton'
+    CancelButton.Hint = '[Esc]'
     CancelButton.DefaultCaption = True
+    CancelButton.ShowHint = True
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel]
     ShowBevel = False
