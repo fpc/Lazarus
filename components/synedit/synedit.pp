@@ -5003,7 +5003,8 @@ end;
 
 function TCustomSynEdit.WaitingForInitialSize: boolean;
 begin
-  Result := (sfAfterHandleCreatedNeeded in fStateFlags) or AutoSizeDelayed or (not HandleAllocated);
+  Result := ((sfAfterHandleCreatedNeeded in fStateFlags) and AutoSizeDelayed) or
+            (not HandleAllocated);
 end;
 
 procedure TCustomSynEdit.DoHandleInitialSizeFinished;
