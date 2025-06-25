@@ -1050,6 +1050,11 @@ procedure TCodyIdentifiersDlg.ItemsListBoxContextPopup(Sender: TObject;
 var
   Identifier, UnitFilename, GroupName, GroupFilename: string;
 begin
+  // when calling the menu from keyboard, the MousePos is (-1;-1)
+  if not InvalidPoint(MousePos) then
+    // select item under mouse
+    ItemsListBox.ItemIndex := ItemsListBox.ItemAtPos(MousePos, true);
+
   // show popup menu only if valid identificator is selected
   Handled := not FindSelectedItem(Identifier, UnitFilename, GroupName, GroupFilename);
   if Handled then exit;
