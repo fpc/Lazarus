@@ -398,7 +398,7 @@ procedure TCocoaButton.keyDown(event: NSEvent);
 begin
   if event.keyCode = kVK_Space then begin
     lclCheckMixedAllowance;
-    inherited keyDown(event);
+    self.performClick( nil );
   end;
 end;
 

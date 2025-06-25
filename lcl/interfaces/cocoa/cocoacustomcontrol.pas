@@ -328,10 +328,9 @@ var
   isFirst: Boolean;
 begin
   if (not _inIME) and (theEvent.keyCode in
-     [kVK_Return, kVK_ANSI_KeypadEnter, kVK_Escape, kVK_Space]) then
+     [kVK_Return, kVK_ANSI_KeypadEnter, kVK_Escape]) then
   begin
     inherited;
-    self.callback.KeyEvHandled;
     exit;
   end;
 
