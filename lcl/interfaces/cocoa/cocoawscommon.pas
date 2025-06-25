@@ -852,6 +852,8 @@ procedure TLCLCommonCallback.KeyEvAfter;
 var
   AllowCocoaHandle: Boolean;
 begin
+  if NOT Assigned(self.Target) then
+    Exit;
   if _IsKeyDown then KeyEvAfterDown(AllowCocoaHandle)
   else KeyEvAfterUp;
 end;
