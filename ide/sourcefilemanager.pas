@@ -3634,12 +3634,13 @@ begin
           begin
             CurFilename:=TCodeBuffer(FoundInUnits.Objects[i]).Filename;
             Add(CurFilename); // units with 'in' filename always belong to the
-                // project, that's the Delphi way
+                              // project, that's the Delphi way
             AddUsedUnit(CurFilename);
           end;
         if NormalUnits<>nil then
           for i:=0 to NormalUnits.Count-1 do
-            AddUsedUnit(TCodeBuffer(NormalUnits.Objects[i]).Filename);
+            if Assigned(NormalUnits.Objects[i]) then // A unit may not be found.
+              AddUsedUnit(TCodeBuffer(NormalUnits.Objects[i]).Filename);
       end;
     end;
     if (fuooSourceEditor in Flags) then
