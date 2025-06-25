@@ -65,13 +65,16 @@ type
   TTodoItem = class(TObject)
   private
     FCategory: string;
-    FToDoType: TToDoType;
     FTokenStyle: TTokenStyle;
-    FFilename: string;
-    FLineNumber: integer;
-    FOwner: string;
+    FToDoType: TToDoType;
     FPriority: integer;
     FText: string;
+    FHasColon: Boolean;
+    FCodePos: TPoint;      // Column : line in file.
+    FCommentLen: integer;  // Original length including comment characters.
+    FCommentType: char;    // Characters of comment start / end.
+    FFilename: string;
+    FOwner: string;
     function GetQuotedCategory: string;
     function GetQuotedOwner: string;
     function GetAsComment: string;
@@ -80,13 +83,16 @@ type
     function Parse(const aTokenString: string; aRequireColon: Boolean): Boolean;
   public
     property Category: string read FCategory write FCategory;
-    property QuotedCategory:string read GetQuotedCategory;
+    property QuotedCategory: string read GetQuotedCategory;
     property TokenStyle: TTokenStyle read FTokenStyle write FTokenStyle;
-    property ToDoType:TToDoType read FToDoType write FToDoType;
-    property LineNumber: integer read FLineNumber write FLineNumber;
+    property ToDoType: TToDoType read FToDoType write FToDoType;
+    property HasColon: Boolean read FHasColon write FHasColon;
+    property CodePos: TPoint read FCodePos write FCodePos;
+    property CommentLen: integer read FCommentLen write FCommentLen;
+    property CommentType: char read FCommentType write FCommentType;
     property Filename: string read FFilename write FFilename;
     property Owner: string read FOwner write FOwner;
-    property QuotedOwner:string read GetQuotedOwner;
+    property QuotedOwner: string read GetQuotedOwner;
     property Priority: integer read FPriority write FPriority;
     property Text: string read FText write FText;
     property AsString: string read GetAsString;
@@ -107,8 +113,7 @@ type
     FScannedIncFiles: TStringMap;
     function GetCount: integer;
     function GetItems(Index: integer): TTodoItem;
-    procedure CreateToDoItem(const aStartComment, aEndComment: string;
-      aLineNumber: Integer);
+    procedure CreateToDoItem(aCommentType: char; aCodePos: TPoint);
     procedure ScanPascalToDos;
     procedure ScanToDoFile;
   public
@@ -162,7 +167,7 @@ begin
         s:=LIST_INDICATORS[lToDoItem.ToDoType] + ',';
         t:=DelChars(lToDoItem.Text,',');{Strip any commas that can cause a faulty csv file}
         s:=s+t+','+IntToStr(lToDoItem.Priority)+','+lToDoItem.Filename+
-           ','+IntToStr(lToDoItem.LineNumber)+','+lToDoItem.Owner+','+lToDoItem.Category;
+           ','+IntToStr(lToDoItem.CodePos.Y)+','+lToDoItem.Owner+','+lToDoItem.Category;
         lCommaList.Add(s);
         Inc(i);
       end;
@@ -235,24 +240,30 @@ begin
   Result:=TTodoItem(FItems[Index]);
 end;
 
-procedure TTLScannedFile.CreateToDoItem(const aStartComment, aEndComment: string;
-  aLineNumber: Integer);
+procedure TTLScannedFile.CreateToDoItem(aCommentType: char; aCodePos: TPoint);
 var
   TheToken: string;
   lTokenFound: boolean;
+  lCommentLen, lStartLen, lEndLen: Integer;
   lTodoType, lFoundToDoType: TToDoType;
   lTokenStyle, lFoundTokenStyle: TTokenStyle;
   NewToDoItem: TTodoItem;
 begin
   //DebugLn(['TTLScannedFile.CreateToDoItem FileName=',FRealFilename,
-  //         ', LineNumber=',aLineNumber, ', FCommentStr=',FCommentStr]);
+  //         ', aCodePos=',aCodePos.X,':',aCodePos.Y,', FCommentStr=',FCommentStr]);
+  lCommentLen := Length(FCommentStr);
   // Remove beginning and ending comment characters from the string
-  if aStartComment <> '' then
-    Delete(FCommentStr, 1, Length(aStartComment));
-  if aEndComment <> '' then begin
-    Assert(LazEndsStr(aEndComment, FCommentStr), 'TTLScannedFile.CreateToDoItem: No comment end.');
-    SetLength(FCommentStr, Length(FCommentStr)-Length(aEndComment));
+  case aCommentType of
+    #0  : begin lStartLen := 0; lEndLen := 0; end; // A dedicated .todo file
+    '/' : begin lStartLen := 2; lEndLen := 0; end; // //
+    '{' : begin lStartLen := 1; lEndLen := 1; end; // { }
+    '(' : begin lStartLen := 2; lEndLen := 2; end; // (* *)
+    else raise Exception.Create('TTLScannedFile.CreateToDoItem: Wrong comment char.');
   end;
+  if lStartLen > 0 then
+    Delete(FCommentStr, 1, lStartLen);
+  if lEndLen > 0 then
+    SetLength(FCommentStr, Length(FCommentStr)-lEndLen);
   FCommentStr := TextToSingleLine(FCommentStr);
 
   // Determine Token and Style
@@ -291,7 +302,9 @@ begin
   begin
     NewToDoItem.ToDoType   := lFoundToDoType;
     NewToDoItem.TokenStyle := lFoundTokenStyle;
-    NewToDoItem.LineNumber := aLineNumber;
+    NewToDoItem.CodePos    := aCodePos;
+    NewToDoItem.CommentLen := lCommentLen;
+    NewToDoItem.CommentType:= aCommentType;
     NewToDoItem.Filename   := FRealFilename;
     Add(NewToDoItem);            // Add to list.
   end
@@ -337,7 +350,8 @@ var
   Src, LocationIncTodo: String;
   p, CommentEnd: Integer;
   NestedComment: Boolean;
-  CodePos: TCodeXYPosition;
+  CaretPos: TCodeXYPosition;
+  CodePos: TPoint;
 begin
   Src:=FTool.Src;
   Assert(FCode.Filename=FTool.MainFilename, 'TTLScannedFile.ScanPascalToDos: aCode.Filename<>FTool.MainFilename');
@@ -347,15 +361,15 @@ begin
     p:=FindNextComment(Src,p);
     if p>length(Src) then  // No more comments found, break loop
       break;
-    if not FTool.CleanPosToCaret(p,CodePos) then
+    if not FTool.CleanPosToCaret(p,CaretPos) then
     begin
       ShowMessageFmt(errScanFileFailed, [ExtractFileName(FFilename)]);
       Exit;
     end;
     // Study include file names. Use heuristics, assume name ends with ".inc".
-    FRealFilename:=CodePos.Code.Filename;
+    FRealFilename:=CaretPos.Code.Filename;
     if FilenameExtIs(FRealFilename, 'inc') then // Filename and location in an include file.
-      LocationIncTodo:=FRealFilename+'_'+IntToStr(CodePos.Y)
+      LocationIncTodo:=FRealFilename+'_'+IntToStr(CaretPos.Y)
     else
       LocationIncTodo:='';
     // Process a comment
@@ -364,12 +378,9 @@ begin
     // Process each include file location only once. Units are processed always.
     if (LocationIncTodo='') or not FScannedIncFiles.Contains(LocationIncTodo) then
     begin
-      if Src[p]='/' then
-        CreateToDoItem('//', '', CodePos.Y)
-      else if Src[p]='{' then
-        CreateToDoItem('{', '}', CodePos.Y)
-      else if Src[p]='(' then
-        CreateToDoItem('(*', '*)', CodePos.Y);
+      CodePos.X:=CaretPos.X;
+      CodePos.Y:=CaretPos.Y;
+      CreateToDoItem(Src[p], CodePos);
       if LocationIncTodo<>'' then    // Store include file location for future.
         FScannedIncFiles.Add(LocationIncTodo);
     end;
@@ -380,6 +391,7 @@ end;
 procedure TTLScannedFile.ScanToDoFile;
 var
   List: TStringList;
+  CodePos: TPoint;
   i: Integer;
 begin
   List:=TStringList.Create;
@@ -389,7 +401,9 @@ begin
     begin
       FRealFilename:=FCode.Filename;
       FCommentStr:=List[i];
-      CreateToDoItem('', '', i+1)
+      CodePos.X:=1;
+      CodePos.Y:=i+1;
+      CreateToDoItem(#0, CodePos)
     end;
   finally
     List.Free;
@@ -435,7 +449,13 @@ end;
 
 function TTodoItem.GetAsComment: string;
 begin
-  Result := '{ '+AsString+' }';
+  case CommentType of
+    #0  : Result := AsString;               // A dedicated .todo file
+    '/' : Result := '// '+AsString;
+    '{' : Result := '{ ' +AsString+' }';
+    '(' : Result := '(* '+AsString+' *)';
+    else raise Exception.Create('TTodoItem.GetAsComment: Wrong comment char.');
+  end;
 end;
 
 type
@@ -452,7 +472,6 @@ function TTodoItem.Parse(const aTokenString: string; aRequireColon: Boolean): Bo
 var
   lParseState: TParseState;
   i, lPriorityStart: Integer;
-  HasColon: Boolean;
   lTempStr, lStr: string;
   lpTemp: PChar;
 begin

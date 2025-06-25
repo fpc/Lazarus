@@ -31,6 +31,7 @@
    Alexander du Plessis
    Silvio Clecio
    Kevin Jesshope
+   Juha Manninen
 
   Abstract:
     List all to do comments of current project and the file
@@ -70,7 +71,7 @@ uses
   // Codetools
   CodeToolManager, FileProcs,
   // IDEIntf
-  LazIDEIntf, IDEImagesIntf, PackageIntf, ProjectIntf,
+  LazIDEIntf, IDEImagesIntf, PackageIntf, ProjectIntf, SrcEditorIntf, IDECommands,
   // ToDoList
   ToDoListCore, ToDoListStrConsts;
 
@@ -78,12 +79,12 @@ Const
   ToDoWindowName = 'IDETodoWindow';
 
 type
-  TOnOpenFile = procedure(Sender: TObject; const Filename: string;
-                          const LineNumber: integer) of object;
+  TOnEditToDo = procedure(aTodoItem: TTodoItem);
 
   { TIDETodoWindow }
 
   TIDETodoWindow = class(TForm)
+    acEdit: TAction;
     acGoto: TAction;
     acRefresh: TAction;
     acExport: TAction;
@@ -97,25 +98,28 @@ type
     lblOptions: TLabel;
     lblShowWhat: TLabel;
     lvTodo: TListView;
+    N1: TToolButton;
     pnlOptions: TPanel;
     pnlShowWhat: TPanel;
     SaveDialog: TSaveDialog;
+    tbEdit: TToolButton;
     ToolBar: TToolBar;
     tbGoto: TToolButton;
     tbRefresh: TToolButton;
     tbExport: TToolButton;
-    N1: TToolButton;
     N2: TToolButton;
     N3: TToolButton;
+    N4: TToolButton;
     tbHelp: TToolButton;
     XMLPropStorage: TXMLPropStorage;
+    procedure acEditExecute(Sender: TObject);
     procedure acExportExecute(Sender: TObject);
     procedure acGotoExecute(Sender: TObject);
+    procedure acRefreshExecute(Sender: TObject);
     procedure acHelpExecute(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var {%H-}CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; {%H-}Shift:TShiftState);
-    procedure DoUpdateToDos(Sender: TObject);
     procedure lvTodoClick(Sender: TObject);
     procedure lvTodoCompare(Sender : TObject; Item1, Item2 : TListItem;
       {%H-}Data : Integer; var Compare : Integer);
@@ -130,9 +134,10 @@ type
     FLoadingOptions: boolean;
     FStartFilename: String;
     FOwnerProjPack: TObject;  // Project or package owning the FStartFilename.
-    FOnOpenFile  : TOnOpenFile;
     FScannedFiles: TAvlTree;// tree of TTLScannedFile
     FScannedIncFiles: TStringMap;
+    FOnEditItem: TOnEditToDo;
+    procedure GotoTodo(aTodoItem: TTodoItem);
     procedure SetIDEItem(AValue: string);
     procedure SetIdleConnected(const AValue: boolean);
     function ProjectOpened(Sender: TObject; AProject: TLazProject): TModalResult;
@@ -149,8 +154,9 @@ type
 
     property IDEItem: string read FIDEItem write SetIDEItem; // package name or empty for active project
     property BaseDirectory: string read FBaseDirectory;
-    property OnOpenFile: TOnOpenFile read FOnOpenFile write FOnOpenFile;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
+
+    property OnEditItem: TOnEditToDo read FOnEditItem write FOnEditItem;
   end;
 
 var
@@ -171,6 +177,7 @@ begin
   if Name<>ToDoWindowName then
     RaiseGDBException('');
   ToolBar.Images := IDEImages.Images_16;
+  acEdit.ImageIndex := IDEImages.LoadImage('laz_edit');
   acGoto.ImageIndex := IDEImages.LoadImage('menu_goto_line');
   acRefresh.ImageIndex := IDEImages.LoadImage('laz_refresh');
   acExport.ImageIndex := IDEImages.LoadImage('menu_saveas');
@@ -270,11 +277,6 @@ begin
     ModalResult:=mrCancel;
 end;
 
-procedure TIDETodoWindow.DoUpdateToDos(Sender: TObject);
-begin
-  UpdateTodos;
-end;
-
 procedure TIDETodoWindow.lvTodoClick(Sender: TObject);
 begin
   acGoto.Execute;
@@ -312,9 +314,10 @@ begin
     2, 4  :
       begin
         if TryStrToInt(Item1.SubItems.Strings[lvTodo.SortColumn-1], Int1)
-           and TryStrToInt(Item2.SubItems.Strings[lvTodo.SortColumn-1], Int2) then
-           Compare := CompareValue(Int1, Int2)
-        else Compare := 0;
+        and TryStrToInt(Item2.SubItems.Strings[lvTodo.SortColumn-1], Int2) then
+          Compare := CompareValue(Int1, Int2)
+        else
+          Compare := 0;
       end;
     else Compare := 0;
   end;
@@ -457,26 +460,42 @@ begin
   XMLPropStorage.Active := True;
 end;
 
+procedure TIDETodoWindow.GotoTodo(aTodoItem: TTodoItem);
+begin
+  LazarusIDE.DoOpenFileAndJumpToPos(aTodoItem.Filename, aTodoItem.CodePos,-1,-1,-1,
+    [ofOnlyIfExists,ofRegularFile,ofVirtualFile,ofDoNotLoadResource]);
+end;
+
+procedure TIDETodoWindow.acEditExecute(Sender: TObject);
+var
+  ListItem: TListItem;
+  TodoItem: TTodoItem;
+  SrcEdit: TSourceEditorInterface;
+begin
+  Assert(Assigned(OnEditItem), 'TIDETodoWindow.acEditExecute: OnEditItem=Nil');
+  ListItem := lvtodo.Selected;
+  if (ListItem=nil) or (ListItem.Data=nil) then exit;
+  TodoItem := TTodoItem(ListItem.Data);
+  SrcEdit := SourceEditorManagerIntf.ActiveEditor;
+  if (SrcEdit=nil) or SrcEdit.ReadOnly then exit;
+  debugln(['TIDETodoWindow.acEditExecute ToDo=', TodoItem.Filename, ', Src=', SrcEdit.FileName]);
+  if (TodoItem.Filename<>SrcEdit.FileName) or (TodoItem.CodePos<>SrcEdit.CursorTextXY) then
+    GotoTodo(TodoItem);       // Move to the right place if not there already.
+  OnEditItem(TodoItem);       // Open the dialog for editing.
+end;
+
 procedure TIDETodoWindow.acGotoExecute(Sender: TObject);
 var
-  CurFilename: String;
-  aTodoItem: TTodoItem;
-  aListItem: TListItem;
-  TheLine: integer;
+  ListItem: TListItem;
 begin
-  CurFilename:='';
-  aListItem:= lvtodo.Selected;
-  if Assigned(aListItem) and Assigned(aListItem.Data) then
-  begin
-    aTodoItem := TTodoItem(aListItem.Data);
-    CurFileName := aTodoItem.Filename;
-    TheLine     := aTodoItem.LineNumber;
-    if Assigned(OnOpenFile) then
-      OnOpenFile(Self,CurFilename,TheLine)
-    else
-      LazarusIDE.DoOpenFileAndJumpToPos(CurFilename,Point(1,TheLine),-1,-1,-1,
-        [ofOnlyIfExists,ofRegularFile,ofVirtualFile,ofDoNotLoadResource]);
-  end;
+  ListItem := lvtodo.Selected;
+  if Assigned(ListItem) and Assigned(ListItem.Data) then
+    GotoTodo(TTodoItem(ListItem.Data));
+end;
+
+procedure TIDETodoWindow.acRefreshExecute(Sender: TObject);
+begin
+  UpdateTodos;
 end;
 
 procedure TIDETodoWindow.acHelpExecute(Sender: TObject);
@@ -499,7 +518,7 @@ end;
 
 procedure TIDETodoWindow.AddListItem(aTodoItem: TTodoItem);
 
-  function ShowThisToDoItem:boolean;
+  function ShowThisToDoItem: boolean;
   // Add this ToDoItem based on the cboShowWhat selection
   begin
     case cboShowWhat.ItemIndex of
@@ -514,7 +533,6 @@ procedure TIDETodoWindow.AddListItem(aTodoItem: TTodoItem);
 var
    aListItem: TListItem;
    aFilename: String;
-
 begin
   if Assigned(aTodoItem) and ShowThisToDoItem then
   begin
@@ -528,7 +546,7 @@ begin
     if (BaseDirectory<>'') and FilenameIsAbsolute(aFilename) then
       aFilename:=CreateRelativePath(aFilename,BaseDirectory);
     aListitem.SubItems.Add(aFilename);
-    aListitem.SubItems.Add(IntToStr(aTodoItem.LineNumber));
+    aListitem.SubItems.Add(IntToStr(aTodoItem.CodePos.Y));
     aListitem.SubItems.Add(aTodoItem.Owner);
     aListitem.SubItems.Add(aTodoItem.Category);
   end;

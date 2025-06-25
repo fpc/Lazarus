@@ -78,11 +78,15 @@ var
   ViewToDoListCmd: TIDECommand;
 
 procedure Register;
-procedure InsertToDoForActiveSourceEditor(Sender: TObject);
+// ToDo List
 procedure ViewToDoList(Sender: TObject);
 procedure CreateIDEToDoWindow(Sender: TObject; aFormName: string;
                           var AForm: TCustomForm; DoDisableAutoSizing: boolean);
-function ExecuteTodoDialog: TTodoItem;
+// ToDo Dialog
+function ExecuteTodoDialog(const aCaption: string; var aTodoItem: TTodoItem): TModalResult;
+procedure InsertToDoForActiveSourceEditor(Sender: TObject);
+procedure EditToDo(aTodoItem: TTodoItem);
+
 
 implementation
 
@@ -137,23 +141,6 @@ begin
   IDEWindowCreators.Add(ToDoWindowName,@CreateIDEToDoWindow,nil,'250','250','','');
 end;
 
-procedure InsertToDoForActiveSourceEditor(Sender: TObject);
-var
-  SrcEdit: TSourceEditorInterface;
-  aTodoItem: TTodoItem;
-begin
-  SrcEdit:=SourceEditorManagerIntf.ActiveEditor;
-  if SrcEdit=nil then exit;
-  if SrcEdit.ReadOnly then exit;
-  aTodoItem := ExecuteTodoDialog;
-  try
-    if Assigned(aTodoItem) then
-      SrcEdit.Selection:=aTodoItem.AsComment;
-  finally
-    aTodoItem.Free;
-  end;
-end;
-
 procedure ViewToDoList(Sender: TObject);
 var
   Pkg: TIDEPackage;
@@ -171,33 +158,85 @@ end;
 procedure CreateIDEToDoWindow(Sender: TObject; aFormName: string;
   var AForm: TCustomForm; DoDisableAutoSizing: boolean);
 begin
-  if CompareText(aFormName,ToDoWindowName)<>0 then exit;
+  Assert(aFormName=ToDoWindowName, 'CreateIDEToDoWindow: aFormName<>ToDoWindowName');
   IDEWindowCreators.CreateForm(IDETodoWindow,TIDETodoWindow,DoDisableAutoSizing,
                                LazarusIDE.OwningComponent);
+  IDETodoWindow.OnEditItem:=@EditToDo;  // Edit the selected ToDo item.
   AForm:=IDETodoWindow;
 end;
 
-function ExecuteTodoDialog: TTodoItem;
+function ExecuteTodoDialog(const aCaption: string; var aTodoItem: TTodoItem): TModalResult;
 var
   aTodoDialog: TTodoDialog;
 begin
-  Result := nil;
   aTodoDialog := TTodoDialog.Create(nil);
+  aTodoDialog.Caption:=aCaption;
+  if Assigned(aTodoItem) then begin
+    aTodoDialog.CategoryEdit.Text  := aTodoItem.Category;
+    aTodoDialog.grpboxToDoType.Tag := PtrInt(aTodoItem.ToDoType);
+    case aTodoItem.ToDoType of
+      tdToDo: aTodoDialog.rdoToDo.Checked := True;
+      tdDone: aTodoDialog.rdoDone.Checked := True;
+      tdNote: aTodoDialog.rdoNote.Checked := True;
+    end;
+    aTodoDialog.chkAlternateTokens.Checked := aTodoItem.TokenStyle=tsAlternate;
+    aTodoDialog.OwnerEdit.Text     := aTodoItem.Owner;
+    aTodoDialog.TodoMemo.Text      := aTodoItem.Text;
+    aTodoDialog.PriorityEdit.Value := aTodoItem.Priority;
+  end;
   aTodoDialog.ShowModal;
-  if aTodoDialog.ModalResult = mrOk then
+  Result := aTodoDialog.ModalResult;
+  if Result = mrOk then
   begin
-    Result := TTodoItem.Create;
-    Result.Category    := aTodoDialog.CategoryEdit.Text;
-    Result.ToDoType    := TToDoType(aTodoDialog.grpboxToDoType.Tag);
+    if aTodoItem=nil then begin
+      aTodoItem := TTodoItem.Create;
+      aTodoItem.CommentType := '{';
+      aTodoItem.HasColon := True;
+    end;
+    aTodoItem.Category    := aTodoDialog.CategoryEdit.Text;
+    aTodoItem.ToDoType    := TToDoType(aTodoDialog.grpboxToDoType.Tag);
     if aTodoDialog.chkAlternateTokens.Checked then
-      Result.TokenStyle:=tsAlternate
+      aTodoItem.TokenStyle:=tsAlternate
     else
-      Result.TokenStyle:=tsNormal;
-    Result.Owner       := aTodoDialog.OwnerEdit.Text;
-    Result.Text        := aTodoDialog.TodoMemo.Text;
-    Result.Priority    := aTodoDialog.PriorityEdit.Value;
+      aTodoItem.TokenStyle:=tsNormal;
+    aTodoItem.Owner       := aTodoDialog.OwnerEdit.Text;
+    aTodoItem.Text        := aTodoDialog.TodoMemo.Text;
+    aTodoItem.Priority    := aTodoDialog.PriorityEdit.Value;
   end;
   aTodoDialog.Free;
+end;
+
+procedure InsertToDoForActiveSourceEditor(Sender: TObject);
+var
+  SrcEdit: TSourceEditorInterface;
+  TodoItem: TTodoItem;
+begin
+  SrcEdit := SourceEditorManagerIntf.ActiveEditor;
+  if (SrcEdit=nil) or SrcEdit.ReadOnly then exit;
+  TodoItem := nil;
+  if ExecuteTodoDialog(lisTDDInsertToDo, TodoItem) <> mrOK then exit;
+  try
+    if Assigned(TodoItem) then
+      SrcEdit.Selection := TodoItem.AsComment;
+  finally
+    TodoItem.Free;
+  end;
+  IDETodoWindow.UpdateTodos;
+end;
+
+procedure EditToDo(aTodoItem: TTodoItem);
+var
+  SrcEdit: TSourceEditorInterface;
+  EndPos: TPoint;
+begin
+  SrcEdit := SourceEditorManagerIntf.ActiveEditor;
+  if (SrcEdit=nil) or SrcEdit.ReadOnly then exit;
+  if ExecuteTodoDialog(lisTDDEditToDo, aTodoItem) <> mrOK then exit;
+  EndPos.X := aTodoItem.CodePos.X + aTodoItem.CommentLen;
+  EndPos.Y := aTodoItem.CodePos.Y;  // ToDo -oJuha : Deal with multiline comments.
+  SrcEdit.SelectText(aTodoItem.CodePos, EndPos);
+  SrcEdit.Selection := aTodoItem.AsComment;
+  IDETodoWindow.UpdateTodos;  { TODO -oJuha : Retain selection in the list. }
 end;
 
 { TTodoDialog }
@@ -205,7 +244,6 @@ end;
 procedure TTodoDialog.FormCreate(Sender: TObject);
 begin
   ActiveControl:=TodoMemo;
-  Caption:=lisTDDInsertToDo;
   TodoLabel.Caption:=lisPkgFileTypeText;
   PriorityLabel.Caption:=lisToDoLPriority;
   OwnerLabel.Caption:=lisToDoLOwner;

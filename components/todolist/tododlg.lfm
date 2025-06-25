@@ -20,7 +20,7 @@ object TodoDialog: TTodoDialog
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 8
-    Height = 19
+    Height = 18
     Top = 4
     Width = 29
     BorderSpacing.Left = 8
@@ -35,9 +35,9 @@ object TodoDialog: TTodoDialog
     AnchorSideTop.Side = asrBottom
     AnchorSideBottom.Control = PriorityEdit
     Left = 8
-    Height = 19
-    Top = 93
-    Width = 46
+    Height = 18
+    Top = 95
+    Width = 45
     Anchors = [akLeft, akBottom]
     BorderSpacing.Top = 4
     BorderSpacing.Bottom = 2
@@ -48,8 +48,8 @@ object TodoDialog: TTodoDialog
     AnchorSideLeft.Control = OwnerEdit
     AnchorSideBottom.Control = OwnerEdit
     Left = 74
-    Height = 19
-    Top = 91
+    Height = 18
+    Top = 95
     Width = 43
     Anchors = [akLeft, akBottom]
     BorderSpacing.Top = 4
@@ -61,9 +61,9 @@ object TodoDialog: TTodoDialog
     AnchorSideLeft.Control = CategoryEdit
     AnchorSideBottom.Control = CategoryEdit
     Left = 235
-    Height = 19
-    Top = 91
-    Width = 58
+    Height = 18
+    Top = 95
+    Width = 56
     Anchors = [akLeft, akBottom]
     BorderSpacing.Top = 4
     BorderSpacing.Bottom = 2
@@ -78,8 +78,8 @@ object TodoDialog: TTodoDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = PriorityLabel
     Left = 8
-    Height = 64
-    Top = 25
+    Height = 67
+    Top = 24
     Width = 381
     Anchors = [akTop, akLeft, akRight, akBottom]
     ScrollBars = ssAutoBoth
@@ -92,8 +92,8 @@ object TodoDialog: TTodoDialog
     AnchorSideRight.Control = Bevel2
     AnchorSideBottom.Control = grpboxToDoType
     Left = 74
-    Height = 31
-    Top = 112
+    Height = 32
+    Top = 115
     Width = 153
     Anchors = [akLeft, akRight, akBottom]
     BorderSpacing.Left = 8
@@ -108,8 +108,8 @@ object TodoDialog: TTodoDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = grpboxToDoType
     Left = 235
-    Height = 31
-    Top = 112
+    Height = 32
+    Top = 115
     Width = 154
     Anchors = [akLeft, akRight, akBottom]
     BorderSpacing.Right = 8
@@ -119,8 +119,8 @@ object TodoDialog: TTodoDialog
   object BtnPanel: TButtonPanel
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 34
-    Top = 250
+    Height = 29
+    Top = 255
     Width = 385
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -139,8 +139,8 @@ object TodoDialog: TTodoDialog
     AnchorSideTop.Side = asrBottom
     AnchorSideBottom.Control = grpboxToDoType
     Left = 8
-    Height = 29
-    Top = 114
+    Height = 32
+    Top = 115
     Width = 58
     Anchors = [akLeft, akBottom]
     BorderSpacing.Bottom = 8
@@ -150,18 +150,18 @@ object TodoDialog: TTodoDialog
     AnchorSideTop.Side = asrBottom
     Left = 8
     Height = 66
-    Top = 151
+    Top = 155
     Width = 381
     Align = alBottom
     BorderSpacing.Left = 8
     BorderSpacing.Right = 8
     Caption = 'ToDo type'
-    ClientHeight = 46
-    ClientWidth = 379
+    ClientHeight = 36
+    ClientWidth = 377
     TabOrder = 4
     object rdoToDo: TRadioButton
       Left = 6
-      Height = 21
+      Height = 22
       Top = 0
       Width = 56
       BorderSpacing.Left = 6
@@ -177,9 +177,9 @@ object TodoDialog: TTodoDialog
       AnchorSideLeft.Control = grpboxToDoType
       AnchorSideLeft.Side = asrCenter
       Left = 162
-      Height = 21
+      Height = 22
       Top = 0
-      Width = 58
+      Width = 57
       Anchors = [akTop]
       Caption = 'Done'
       TabOrder = 1
@@ -189,10 +189,10 @@ object TodoDialog: TTodoDialog
       Tag = 2
       AnchorSideRight.Control = grpboxToDoType
       AnchorSideRight.Side = asrBottom
-      Left = 318
-      Height = 21
+      Left = 317
+      Height = 22
       Top = 0
-      Width = 55
+      Width = 54
       Anchors = [akTop, akRight]
       BorderSpacing.Right = 6
       Caption = 'Note'
@@ -203,8 +203,8 @@ object TodoDialog: TTodoDialog
   object chkAlternateTokens: TCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 8
-    Height = 21
-    Top = 223
+    Height = 22
+    Top = 227
     Width = 381
     Align = alBottom
     Anchors = [akLeft, akBottom]

@@ -53,6 +53,7 @@ resourcestring
   lisSourceEditorHint = 'Add units in source editor';
   dlgUnitDepRefresh = 'Refresh';
   lisTDDInsertToDo = 'Insert a ToDo/Done/Note';
+  lisTDDEditToDo = 'Edit the ToDo/Done/Note';
   lisViewToDoList = 'View ToDo List';
   lisToDoList = 'ToDo List';
   lisPkgFileTypeText = 'Text';
