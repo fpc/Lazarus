@@ -73,8 +73,11 @@ type
   public
     procedure TearDown; override;
   published
+    procedure TestAnchorAlign;
+    procedure TestAnchorAlignBideRTL;
     procedure TestScaleChilds;
     procedure TestScaleChildsConstrained;
+    procedure TestScaleChildsBidiRtl;
     procedure TestSameSize;
     procedure TestSameSizeConstrained;
     procedure TestHomogenousChildResize;
@@ -298,6 +301,95 @@ begin
   FreeAndNil(FContainer);
 end;
 
+procedure TTestChildSizing.TestAnchorAlign;
+var
+  C: TTestChildArray;
+  ALeftSpace, AMidSpace, ACtrlSpace, j, L1, L2, L3: Integer;
+begin
+  for ALeftSpace := 0 to 3 do
+  for AMidSpace := 0 to 3 do
+  for ACtrlSpace := 0 to 2 do
+  begin
+    Init1(FContainer, 300, crsAnchorAligning, 3, C,
+          [20, 70, 30,
+           25, 35  {-}]);
+    DisableAutoSizing(FContainer);
+    FContainer.ChildSizing.LeftRightSpacing := ALeftSpace;
+    FContainer.ChildSizing.HorizontalSpacing := AMidSpace;
+    AddPaddingAround(C, ACtrlSpace);
+    EnableAutoSizing(FContainer);
+
+    AssertEquals(25,  C[0].Width);
+    AssertEquals(25,  C[3].Width);
+    AssertEquals(70,  C[1].Width);
+    AssertEquals(70,  C[4].Width);
+    AssertEquals(30,  C[2].Width);
+
+    for j := 0 to 150 do begin
+      FContainer.Width := j;
+      L1 := Max(ALeftSpace, ACtrlSpace);
+      AssertEquals(L1, C[0].Left);
+      AssertEquals(L1, C[3].Left);
+      AssertEquals(25,  C[0].Width);
+      AssertEquals(25,  C[3].Width);
+      L2 := L1 + 25 + Max(AMidSpace, ACtrlSpace);
+      AssertEquals(L2, C[1].Left);
+      AssertEquals(L2, C[4].Left);
+      AssertEquals(70,  C[1].Width);
+      AssertEquals(70,  C[4].Width);
+      L3 := L2 + 70 + Max(AMidSpace, ACtrlSpace);
+      AssertEquals(L3, C[2].Left);
+      AssertEquals(30,  C[2].Width);
+    end;
+    FreeAndNil(FContainer);
+  end;
+end;
+
+procedure TTestChildSizing.TestAnchorAlignBideRTL;
+var
+  C: TTestChildArray;
+  ALeftSpace, AMidSpace, ACtrlSpace, j, L1, L2, L3: Integer;
+begin
+  for ALeftSpace := 0 to 3 do
+  for AMidSpace := 0 to 3 do
+  for ACtrlSpace := 0 to 2 do
+  begin
+    Init1(FContainer, 300, crsAnchorAligning, 3, C,
+          [20, 70, 30,
+           25, 35  {-}]);
+    FContainer.BiDiMode := bdRightToLeft;
+    DisableAutoSizing(FContainer);
+    FContainer.ChildSizing.LeftRightSpacing := ALeftSpace;
+    FContainer.ChildSizing.HorizontalSpacing := AMidSpace;
+    AddPaddingAround(C, ACtrlSpace);
+    EnableAutoSizing(FContainer);
+
+    AssertEquals(25,  C[0].Width);
+    AssertEquals(25,  C[3].Width);
+    AssertEquals(70,  C[1].Width);
+    AssertEquals(70,  C[4].Width);
+    AssertEquals(30,  C[2].Width);
+
+    for j := 0 to 150 do begin
+      FContainer.Width := j;
+      L1 := j - Max(ALeftSpace, ACtrlSpace) - 25;
+      AssertEquals(L1, C[0].Left);
+      AssertEquals(L1, C[3].Left);
+      AssertEquals(25,  C[0].Width);
+      AssertEquals(25,  C[3].Width);
+      L2 := L1 - Max(AMidSpace, ACtrlSpace) - 70;
+      AssertEquals(L2, C[1].Left);
+      AssertEquals(L2, C[4].Left);
+      AssertEquals(70,  C[1].Width);
+      AssertEquals(70,  C[4].Width);
+      L3 := L2 - Max(AMidSpace, ACtrlSpace) - 30;
+      AssertEquals(L3, C[2].Left);
+      AssertEquals(30,  C[2].Width);
+    end;
+    FreeAndNil(FContainer);
+  end;
+end;
+
 procedure TTestChildSizing.TestScaleChilds;
 var
   C: TTestChildArray;
@@ -439,6 +531,69 @@ begin
       AssertEquals(ALeftSpace + AMidSpace + C[0].Width, C[1].Left);
       AssertEquals(ALeftSpace + AMidSpace + C[0].Width, C[4].Left);
       AssertEquals(ALeftSpace + AMidSpace * 2 + C[0].Width+C[1].Width, C[2].Left);
+    end;
+    FreeAndNil(FContainer);
+  end;
+end;
+
+procedure TTestChildSizing.TestScaleChildsBidiRtl;
+var
+  C: TTestChildArray;
+  i, MinVal, ALeftSpace, AMidSpace, ACtrlSpace, TotalSpace, j, k, L1, L2, L3: Integer;
+  WList, OldWList, LList, OldLList: TIntegerArray;
+begin
+  for ALeftSpace := 0 to 3 do
+  for AMidSpace := 0 to 3 do
+  for ACtrlSpace := 0 to 2 do
+  begin
+    TotalSpace := 2*Max(ALeftSpace, ACtrlSpace) + 2*Max(AMidSpace, ACtrlSpace);
+    Init1(FContainer, 300 + TotalSpace,crsScaleChilds, 3, C,
+          [20, 70, 30,
+           20, 35  {-}]);
+    FContainer.BiDiMode := bdRightToLeft;
+    DisableAutoSizing(FContainer);
+    FContainer.ChildSizing.LeftRightSpacing := ALeftSpace;
+    FContainer.ChildSizing.HorizontalSpacing := AMidSpace;
+    AddPaddingAround(C, ACtrlSpace);
+    EnableAutoSizing(FContainer);
+
+    AssertEquals(50,  C[0].Width);
+    AssertEquals(50,  C[3].Width);
+    AssertEquals(175, C[1].Width);
+    AssertEquals(175, C[4].Width);
+    AssertEquals(75,  C[2].Width);
+
+    for j := 0 to 200 do begin
+      FContainer.Width := j;
+      i := Max(0, j - TotalSpace);
+      MinVal := 1;
+      if i <= 2 then MinVal := 0;
+
+      WList := GetWidths(C, 0,2);
+      if j > 0 then
+        AssertMaxOneDecrementInList(WList, OldWList);
+      OldWList := WList;
+      LList := GetLefts(C, 0,2);
+      if j > 0 then
+        AssertNoDecrementInList(LList, OldLList);
+      OldLList := LList;
+
+      k := 0;
+      if i < 4 then k := -1; // column 2 may be restricted by others forced to 1
+      AssertEquals('Total Width', i, SumWidths(C, 0, 2));
+      AssertApprox(Max(MinVal, 20 * i div 120), C[0].Width);
+      AssertApprox(Max(MinVal, 20 * i div 120), C[3].Width);
+      AssertApprox(Max(MinVal, 70 * i div 120 + k), C[1].Width);
+      AssertApprox(Max(MinVal, 70 * i div 120 + k), C[4].Width);
+      AssertApprox(Max(MinVal, 30 * i div 120), C[2].Width);
+      L1 := j - Max(ALeftSpace, ACtrlSpace) - C[0].Width;
+      AssertEquals(L1, C[0].Left);
+      AssertEquals(L1, C[3].Left);
+      L2 := L1 - Max(AMidSpace, ACtrlSpace) - C[1].Width;
+      AssertEquals(L2, C[1].Left);
+      AssertEquals(L2, C[4].Left);
+      L3 := L2 - Max(AMidSpace, ACtrlSpace) - C[2].Width;
+      AssertEquals(L3, C[2].Left);
     end;
     FreeAndNil(FContainer);
   end;
