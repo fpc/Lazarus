@@ -3,13 +3,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"PO-Revision-Date: 2025-06-25 22:28+0800\n"
+"Last-Translator: ACTom <i@actom.me>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Generator: TyPoEditor 0.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: reconstsunit.sabout
@@ -18,7 +18,7 @@ msgstr "关于..."
 
 #: reconstsunit.sallfilesexcutablefilesexeexedlldlldll
 msgid "All files (*.*)|*.*|Excutable files (*.exe)|*.exe|DLL (*.dll)|*.dll"
-msgstr "所有文件 (*.*)|*.*|可执行文件(*.exe)|*.exe|DLL (*.dll)|*.dll"
+msgstr "所有文件 (*.*)|*.*|可执行文件 (*.exe)|*.exe|DLL (*.dll)|*.dll"
 
 #: reconstsunit.sallfilessharedlibsoso
 msgid "All files (*)|*|Shared libraries (*.so)|*.so"
@@ -26,11 +26,11 @@ msgstr "所有文件 (*)|*|共享库 (*.so)|*.so"
 
 #: reconstsunit.sbuilddate
 msgid "Build date: "
-msgstr "构建日期: "
+msgstr "构建日期："
 
 #: reconstsunit.scarbonwidgetset
 msgid "Carbon widget set"
-msgstr "Carbon widget系列"
+msgstr "Carbon 组件集"
 
 #: reconstsunit.sexit
 msgid "Exit"
@@ -42,19 +42,19 @@ msgstr "文件"
 
 #: reconstsunit.sfpcversion
 msgid "FPC version: "
-msgstr "FPC版本:"
+msgstr "FPC 版本："
 
 #: reconstsunit.sfpguiwidgetset
 msgid "FpGUI widget set"
-msgstr "FpGUI widget系列"
+msgstr "FpGUI 组件集"
 
 #: reconstsunit.sgtk2widgetset
 msgid "GTK 2 widget set"
-msgstr "GTK 2 widget系列"
+msgstr "GTK 2 组件集"
 
 #: reconstsunit.sgtkwidgetset
 msgid "GTK widget set"
-msgstr "GTK widget系列"
+msgstr "GTK 组件集"
 
 #: reconstsunit.shelp
 msgid "Help"
@@ -66,11 +66,11 @@ msgstr "图片"
 
 #: reconstsunit.slclversion
 msgid "LCL Version: "
-msgstr "LCL版本:"
+msgstr "LCL 版本："
 
 #: reconstsunit.slicense
 msgid "This program is free software under GNU GPL 2 license, see COPYING file"
-msgstr "这个应用程序是在GNU GPL 2协议要求下的自由软件, 查看COPYING文件"
+msgstr "本程序是 GNU GPL 2 许可下的自由软件，参见 COPYING 文件"
 
 #: reconstsunit.sopen
 msgid "Open ..."
@@ -78,15 +78,15 @@ msgstr "打开..."
 
 #: reconstsunit.sotherguiwidgetset
 msgid "Other gui"
-msgstr "其他gui"
+msgstr "其他图形界面"
 
 #: reconstsunit.sqtwidgetset
 msgid "QT widget set"
-msgstr "QT widget系列"
+msgstr "QT 组件集"
 
 #: reconstsunit.sresourceexplorer
 msgid "Resource explorer"
-msgstr "资源管理器"
+msgstr "资源浏览器"
 
 #: reconstsunit.sresources
 msgid "Resources"
@@ -102,17 +102,17 @@ msgstr "字符串"
 
 #: reconstsunit.stargetcpu
 msgid "Target CPU: "
-msgstr "目标CPU:"
+msgstr "目标 CPU:"
 
 #: reconstsunit.stargetos
 msgid "Target OS: "
-msgstr "目标OS:"
+msgstr "目标操作系统："
 
 #: reconstsunit.swin32_64widgetset
 msgid "Win32/Win64 widget set"
-msgstr "Win32/Win64 widget系列"
+msgstr "Win32/Win64 组件集"
 
 #: reconstsunit.swincewidgetset
 msgid "WinCE widget set"
-msgstr "WinCE widget系列"
+msgstr "WinCE 组件集"
 

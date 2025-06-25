@@ -1,9 +1,12 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
+"PO-Revision-Date: 2025-06-25 22:24+0800\n"
+"Last-Translator: ACTom <i@actom.me>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: TyPoEditor 0.2\n"
 
 #: idepackagerstrconsts.dlgcompileroptions
 msgid "Compiler Options"
@@ -11,17 +14,17 @@ msgstr "编译器选项"
 
 #: idepackagerstrconsts.lisambiguousunitfound
 msgid "Ambiguous unit found"
-msgstr "多义单元找到"
+msgstr "发现多义的单元"
 
 #: idepackagerstrconsts.liscein
 #, object-pascal-format
 msgid "%s in %s"
-msgstr "%s在%s"
+msgstr "%s 在 %s"
 
 #: idepackagerstrconsts.lisdeletingoffilefailed
 #, object-pascal-format
 msgid "Deleting of file \"%s\" failed."
-msgstr "删除文件\"%s\"失败."
+msgstr "删除文件 \"%s\" 失败。"
 
 #: idepackagerstrconsts.lisexecutingcommandafter
 msgid "Executing command after"
@@ -32,14 +35,14 @@ msgid "Executing command before"
 msgstr "执行命令前"
 
 #: idepackagerstrconsts.lisextendincludefilesearchpathofpackagewith
-#, object-pascal-format, fuzzy, badformat
+#, object-pascal-format
 msgid "Extend include file search path of package \"%s\" with%s\"%s\"?"
-msgstr "新的include尚不在include搜索路径.%s添加目录%s?"
+msgstr "扩展软件包 \"%s\" 的包含文件搜索路径为 %s\"%s\"?"
 
 #: idepackagerstrconsts.lisextendincludefilessearchpathofprojectwith
 #, object-pascal-format
 msgid "Extend include files search path of project with%s\"%s\"?"
-msgstr ""
+msgstr "扩展项目包含文件搜索路径为%s\"%s\"?"
 
 #: idepackagerstrconsts.lisextendincludepath
 msgid "Extend include path?"
@@ -50,9 +53,9 @@ msgid "Extend unit path?"
 msgstr "扩展单元路径?"
 
 #: idepackagerstrconsts.lisextendunitsearchpathofpackagewith
-#, object-pascal-format, fuzzy, badformat
+#, object-pascal-format
 msgid "Extend unit search path of package \"%s\" with%s\"%s\"?"
-msgstr "新的单元尚不在单元搜索路径.%s添加目录%s?"
+msgstr "扩展软件包 \"%s\" 的单元搜索路径为 %s\"%s\"？"
 
 #: idepackagerstrconsts.lisideinfocreatingmakefileforpackage
 #, object-pascal-format
@@ -62,22 +65,21 @@ msgstr "为软件包%s创建Makefile"
 #: idepackagerstrconsts.lispassingcompilerdefinetwicewithdifferentvalues
 #, object-pascal-format
 msgid "passing compiler define \"%s\" twice with different values"
-msgstr ""
+msgstr "传递编译器定义 \"%s\" 两次但值不同"
 
 #: idepackagerstrconsts.lispassingcompileroptiontwicewithdifferentvalues
 #, object-pascal-format
 msgid "passing compiler option -%s twice with different values"
-msgstr ""
+msgstr "传递编译器选项 -%s 两次且值不同"
 
 #: idepackagerstrconsts.lispckeditdefault
 #, object-pascal-format
 msgid "%s, default: %s"
-msgstr "%s,默认:%s"
+msgstr "%s，默认：%s"
 
 #: idepackagerstrconsts.lispckeditfpmakepackage
-#, fuzzy
 msgid "(fpmake)"
-msgstr "自定义fpmake选项"
+msgstr "(fpmake)"
 
 #: idepackagerstrconsts.lispckoptspackageoptions
 msgid "Package Options"
@@ -85,11 +87,11 @@ msgstr "软件包选项"
 
 #: idepackagerstrconsts.lispignoreall
 msgid "Ignore all"
-msgstr ""
+msgstr "忽略所有"
 
 #: idepackagerstrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
-msgstr "CompiledSrcPath附加"
+msgstr "CompiledSrcPath 添加"
 
 #: idepackagerstrconsts.lispkgdefsoutputdirectory
 msgid "Output directory"
@@ -97,7 +99,7 @@ msgstr "输出目录"
 
 #: idepackagerstrconsts.lispkgdefssrcdirmark
 msgid "Package Source Directory Mark"
-msgstr "项目源代码目录标记(Mark)"
+msgstr "软件包源目录标记"
 
 #: idepackagerstrconsts.lispkgdefsunitpath
 msgid "Unit Path"
@@ -113,19 +115,19 @@ msgstr "包含文件"
 
 #: idepackagerstrconsts.lispkgfiletypeissues
 msgid "Issues xml file"
-msgstr "发布xml文件"
+msgstr "Issues xml 文件"
 
 #: idepackagerstrconsts.lispkgfiletypelfm
 msgid "LFM - Lazarus form text"
-msgstr "LFM-Lazarus窗体文本"
+msgstr "LFM - Lazarus 窗体文本"
 
 #: idepackagerstrconsts.lispkgfiletypelrs
 msgid "LRS - Lazarus resource"
-msgstr "LRS-Lazarus资源"
+msgstr "LRS - Lazarus 资源"
 
 #: idepackagerstrconsts.lispkgfiletypemainunit
 msgid "Main Unit"
-msgstr "Main单元"
+msgstr "主单元"
 
 #: idepackagerstrconsts.lispkgfiletypetext
 msgid "Text"
@@ -137,32 +139,32 @@ msgstr "虚拟单元"
 
 #: idepackagerstrconsts.lispkgmacropackagedirectoryparameterispackageid
 msgid "Package directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "软件包目录.参数是软件包ID,例如\"Name\"或\"Name 1.0\""
+msgstr "软件包目录，参数是软件包 ID，例如 \"Name\" 或 \"Name 1.0\""
 
 #: idepackagerstrconsts.lispkgmacropackageincludefilessearchpathparameterispackageid
 msgid "Package include files search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "软件包包括文件搜索路径.参数是软件包ID,例如\"Name\"或\"Name 1.0\""
+msgstr "软件包包含文件搜索路径。参数是软件包 ID，例如 \"Name\" 或 \"Name 1.0\""
 
 #: idepackagerstrconsts.lispkgmacropackagenameparameterispackageid
 msgid "Package name. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "软件包名称.参数是软件包ID,例如\"Name\"或\"Name 1.0\""
+msgstr "软件包名称 参数是软件包 ID例如 \"Name\" 或 \"Name 1.0\""
 
 #: idepackagerstrconsts.lispkgmacropackageoutputdirectoryparameterispackageid
 msgid "Package output directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "软件包输出目录.参数是软件包ID,例如\"Name\"或\"Name 1.0\""
+msgstr "软件包输出目录。参数为软件包 ID，例如 \"Name\" 或 \"Name 1.0\""
 
 #: idepackagerstrconsts.lispkgmacropackagesourcesearchpathparameterispackageid
 msgid "Package source search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "软件包源文件搜索路径.参数是软件包ID,例如\"Name\"或\"Name 1.0\""
+msgstr "软件包源搜索路径 参数是软件包 ID 例如 \"Name\" 或 \"Name 1.0\""
 
 #: idepackagerstrconsts.lispkgmacropackageunitsearchpathparameterispackageid
 msgid "Package unit search path. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
-msgstr "软件包单元搜索路径.参数是软件包ID,例如\"Name\"或\"Name 1.0\""
+msgstr "软件包单元搜索路径。参数是软件包 ID，例如 \"Name\" 或 \"Name 1.0\""
 
 #: idepackagerstrconsts.lispkgmangcompilepackage
 #, object-pascal-format
 msgid "Compile package %s"
-msgstr "编译软件包%s"
+msgstr "编译软件包 %s"
 
 #: idepackagerstrconsts.lispkgmangdeletefailed
 msgid "Delete failed"
@@ -178,7 +180,7 @@ msgstr "写文件错误"
 
 #: idepackagerstrconsts.lispkgmangpackagemainsourcefile
 msgid "package main source file"
-msgstr "软件包主要(main)源文件文件"
+msgstr "软件包主要源文件"
 
 #: idepackagerstrconsts.lispkgmangstaticpackagesconfigfile
 msgid "static packages config file"
@@ -192,12 +194,12 @@ msgstr "该文件\"%s\"对于软件包\"%s\"未找到."
 #: idepackagerstrconsts.lispkgmangunabletocreateoutputdirectoryforpackage
 #, object-pascal-format
 msgid "Unable to create output directory \"%s\"%sfor package %s."
-msgstr "不能创建输出目录\"%s\"%s对于软件包%s."
+msgstr "无法 创建 输出目录 \"%s\"%s用于软件包 %s。"
 
 #: idepackagerstrconsts.lispkgmangunabletocreatepackagesourcedirectoryforpackage
 #, object-pascal-format
 msgid "Unable to create package source directory \"%s\"%sfor package %s."
-msgstr "不能创建软件包源码目录目录\"%s\"%s对于软件包%s."
+msgstr "无法创建软件包源目录 \"%s\"%s为软件包 %s 。"
 
 #: idepackagerstrconsts.lispkgmangunabletodeletefilename
 msgid "Unable to delete file"
@@ -206,7 +208,7 @@ msgstr "不能删除文件"
 #: idepackagerstrconsts.lispkgmangunabletodeleteoldstatefileforpackage
 #, object-pascal-format
 msgid "Unable to delete old state file \"%s\"%sfor package %s."
-msgstr "不能够删除旧的状态文件\"%s\"%s 对于软件包%s."
+msgstr "无法删除旧的状态文件 \"%s\"%s 用于软件包 %s。"
 
 #: idepackagerstrconsts.lispkgmangunabletoloadpackage
 msgid "Unable to load package"
@@ -215,17 +217,17 @@ msgstr "不能加载软件包"
 #: idepackagerstrconsts.lispkgmangunabletoopenthepackage
 #, object-pascal-format
 msgid "Unable to open the package \"%s\".%sThis package was marked for installation."
-msgstr "不能打开软件包\"%s\".%s,这个软件包已经被标记安装."
+msgstr "无法打开软件包 \"%s\"。%s此软件包已被标记为安装。"
 
 #: idepackagerstrconsts.lispkgmangunabletoreadstatefileofpackageerror
 #, object-pascal-format
 msgid "Unable to read state file \"%s\"%sof package %s.%sError: %s"
-msgstr "不能读取状态(state)文件\"%s\"%s关于软件包%s.%s错误:%s"
+msgstr "无法读取状态文件 \"%s\"%s来自软件包 %s。%s错误：%s"
 
 #: idepackagerstrconsts.lispkgmangunabletowritestatefileofpackageerror
 #, object-pascal-format
 msgid "Unable to write state file \"%s\"%sof package %s.%sError: %s"
-msgstr "不能写入状态(state)文件\"%s\"%s关于软件包%s.%s错误:%s"
+msgstr "无法写入状态文件 \"%s\"%s的软件包 %s：%s错误： %s"
 
 #: idepackagerstrconsts.lispkgsyscannotregistercomponentswithoutunit
 msgid "Cannot register components without unit"
@@ -234,12 +236,12 @@ msgstr "不能注册没有单元的组件"
 #: idepackagerstrconsts.lispkgsyscomponentclassalreadydefined
 #, object-pascal-format
 msgid "Component Class \"%s\" already defined"
-msgstr "组件类\"%s\"已经定义"
+msgstr "组件类 \"%s\" 已定义"
 
 #: idepackagerstrconsts.lispkgsysfilename
 #, object-pascal-format
 msgid "%s%sFile Name: \"%s\""
-msgstr "%s%s文件名:\"%s\""
+msgstr "%s%s文件名：\"%s\""
 
 #: idepackagerstrconsts.lispkgsysinvalidcomponentclass
 msgid "Invalid component class"
@@ -248,12 +250,12 @@ msgstr "无效组件类"
 #: idepackagerstrconsts.lispkgsysinvalidunitname
 #, object-pascal-format
 msgid "Invalid Unitname: %s"
-msgstr "无效的单元名:%s"
+msgstr "无效的单元名称：%s"
 
 #: idepackagerstrconsts.lispkgsyslpkfilename
 #, object-pascal-format
 msgid "%s%slpk file: \"%s\""
-msgstr "%s%slpk文件:\"%s\""
+msgstr "%s%slpk 文件：\"%s\""
 
 #: idepackagerstrconsts.lispkgsyspackagefilenotfound
 msgid "Package file not found"
@@ -265,46 +267,44 @@ msgstr "软件包注册错误"
 
 #: idepackagerstrconsts.lispkgsysregisterprocedureisnil
 msgid "Register procedure is nil"
-msgstr "注册过程是nil"
+msgstr "注册过程为 nil"
 
 #: idepackagerstrconsts.lispkgsysregisterunitwascalledbutnopackageisregistering
-#, fuzzy
 msgid "RegisterUnit was called but no package is registering."
-msgstr "注册单元(RegisterUnit)已经调用,但是没有软件包被注册."
+msgstr "调用了 RegisterUnit 但没有软件包正在注册。"
 
 #: idepackagerstrconsts.lispkgsysthelpkfilewasnotfound
 #, object-pascal-format
 msgid "%s%sThe lpk file was not found."
-msgstr "%s%s该lpk文件未找到."
+msgstr "%s%s未找到 lpk 文件。"
 
 #: idepackagerstrconsts.lispkgsysthepackageisinstalledbutnovalidpackagefilewasfound
-#, object-pascal-format, fuzzy
+#, object-pascal-format
 msgid "The package \"%s\" is installed but no valid package file (.lpk) was found.%sA broken dummy package was created."
-msgstr "该软件包\"%s\" 已经安装, 但是未找到有效的软件包文件(.lpk) .%s一个残缺的虚拟的软件包被创建."
+msgstr "软件包 \"%s\" 已安装但未找到有效的软件包文件 (.lpk)。%s已创建了一个损坏的虚拟软件包。"
 
 #: idepackagerstrconsts.lispkgsysthisisthedefaultpackageusedonlyforcomponents
 msgid "This is the default package. Used only for components without a package. These components are outdated."
-msgstr "这是默认的软件包.仅使用于不带有软件包的组件.这些组件是过时的."
+msgstr "这是默认的软件包。仅用于没有软件包的组件。这些组件已过时。"
 
 #: idepackagerstrconsts.lispkgsysthispackageisinstalledbutthelpkfilewasnotfound
-#, fuzzy
 msgid "This package is installed but the lpk file was not found. All its components are deactivated. Please fix this."
-msgstr "该软件包已经安装,但是lpk文件未找到.它的所有组件都不可用,请修复这个软件包."
+msgstr "此软件包已安装但未找到 lpk 文件。所有组件均已停用。请修复此问题。"
 
 #: idepackagerstrconsts.lispkgsysunitname
 #, object-pascal-format
 msgid "%s%sUnit Name: \"%s\""
-msgstr "%s%s单元名:\"%s\""
+msgstr "%s%s单元名称：\"%s\""
 
 #: idepackagerstrconsts.lispkgsysunitwasnotfoundinthelpkfileprobablythislpkfilewasn
 #, object-pascal-format
 msgid "Unit \"%s\" was not found in the lpk file.%sProbably this lpk file was not used for building this IDE. Or the package misuses the procedure RegisterUnit."
-msgstr ""
+msgstr "未在 lpk 文件中找到单元 \"%s\"。%s可能此 lpk 文件未用于构建此 IDE。或者软件包错误使用了 RegisterUnit 过程。"
 
 #: idepackagerstrconsts.lispkgsysunitwasremovedfrompackagelpk
 #, object-pascal-format
 msgid "Unit \"%s\" was removed from package (lpk)"
-msgstr "单元\"%s\"已从软件包(lpk)移除"
+msgstr "单元 \"%s\" 已从 软件包 (lpk) 中移除"
 
 #: idepackagerstrconsts.lisskipthesewarnings
 msgid "Skip these warnings"
@@ -313,7 +313,7 @@ msgstr "跳过这些警告"
 #: idepackagerstrconsts.listhefilewasfoundinoneofthesourcedirectoriesofthepac
 #, object-pascal-format
 msgid "The file \"%s\"%swas found in one of the source directories of the package %s and looks like a compiled unit. Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%sDelete ambiguous file?"
-msgstr ""
+msgstr "文件 \"%s\"%s在软件包 %s 的其中一个源目录中找到并且看起来像是一个编译后的单元。编译后的单元必须位于软件包的输出目录中，否则其他软件包可能会使用此软件包时出现问题。%s删除有歧义的文件？"
 
 #: idepackagerstrconsts.lisunit
 msgid "Unit"

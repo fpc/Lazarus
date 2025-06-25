@@ -2,14 +2,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
+"PO-Revision-Date: 2025-06-25 22:14+0800\n"
 "Last-Translator: ACTom <i@actom.me>\n"
 "Language-Team: \n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.3.2\n"
+"X-Generator: TyPoEditor 0.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
@@ -39,7 +39,7 @@ msgstr "无法找到 HTML 浏览器。%s请在工具 -> 选项 -> 帮助 -> 帮�
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
 #, object-pascal-format
 msgid "The help database \"%s\" was unable to find file \"%s\"."
-msgstr ""
+msgstr "帮助数据库 \"%s\" 无法找到文件 \"%s\"。"
 
 #: lclstrconsts.hhshelpthemacrosinbrowserparamswillbereplacedbytheurl
 #, object-pascal-format
@@ -65,7 +65,7 @@ msgstr "帮助"
 
 #: lclstrconsts.ifsvk_meta
 msgid "Meta"
-msgstr ""
+msgstr "元数据"
 
 #: lclstrconsts.ifsvk_shift
 msgid "Shift"
@@ -73,7 +73,7 @@ msgstr "Shift"
 
 #: lclstrconsts.ifsvk_super
 msgid "Super"
-msgstr ""
+msgstr "超级"
 
 #: lclstrconsts.ifsvk_unknown
 msgid "Unknown"
@@ -95,7 +95,7 @@ msgstr "3D 光线"
 
 #: lclstrconsts.rsacontrolcannothaveitselfasparent
 msgid "A control can't have itself as a parent"
-msgstr ""
+msgstr "控件不能将自身作为父控件"
 
 #: lclstrconsts.rsactivebordercolorcaption
 msgid "Active Border"
@@ -121,7 +121,7 @@ msgstr "湖绿色"
 #: lclstrconsts.rsascannothaveasparent
 #, object-pascal-format
 msgid "Class %s cannot have %s as parent."
-msgstr ""
+msgstr "类 %s 不能将 %s 作为父类。"
 
 #: lclstrconsts.rsbackgroundcolorcaption
 msgid "Desktop"
@@ -191,17 +191,17 @@ msgstr "区分大小写"
 #: lclstrconsts.rscontrolclasscantcontainchildclass
 #, object-pascal-format
 msgid "Control of class '%s' can't have control of class '%s' as a child"
-msgstr ""
+msgstr "类为 '%s' 的控件不能将类为 '%s' 的控件作为子控件"
 
 #: lclstrconsts.rscontrolhasnoparentformorframe
 #, object-pascal-format
 msgid "Control '%s' has no parent form or frame"
-msgstr ""
+msgstr "控件 '%s' 没有父窗体或框架"
 
 #: lclstrconsts.rscontrolisnotaparent
 #, object-pascal-format
 msgid "'%s' is not a parent of '%s'"
-msgstr ""
+msgstr "'%s' 不是 '%s' 的父级"
 
 #: lclstrconsts.rscreamcolorcaption
 msgid "Cream"
@@ -218,12 +218,12 @@ msgstr "自定义 ..."
 #: lclstrconsts.rsdatetoolarge
 #, object-pascal-format
 msgid "Date cannot be past %s"
-msgstr ""
+msgstr "日期不能早于 %s"
 
 #: lclstrconsts.rsdatetoosmall
 #, object-pascal-format
 msgid "Date cannot be before %s"
-msgstr ""
+msgstr "日期不能早于 %s"
 
 #: lclstrconsts.rsdefaultcolorcaption
 msgid "Default"
@@ -271,7 +271,7 @@ msgstr "编辑"
 
 #: lclstrconsts.rsentirescope
 msgid "Search entire file"
-msgstr ""
+msgstr "搜索整个文件"
 
 #: lclstrconsts.rserror
 msgctxt "lclstrconsts.rserror"
@@ -281,12 +281,12 @@ msgstr "错误"
 #: lclstrconsts.rserrorcreatingdevicecontext
 #, object-pascal-format
 msgid "Error creating device context for %s.%s"
-msgstr ""
+msgstr "创建 %s 的设备上下文时出错。%s"
 
 #: lclstrconsts.rserroroccurredinataddressframe
 #, object-pascal-format
 msgid "Error occurred in %s at %sAddress %s%s Frame %s"
-msgstr ""
+msgstr "错误发生在 %s 在 %s地址 %s%s 帧 %s"
 
 #: lclstrconsts.rserrorwhilesavingbitmap
 msgid "Error while saving bitmap."
@@ -394,7 +394,7 @@ msgstr "窗体"
 #: lclstrconsts.rsformresourcesnotfoundforresourcelessformscreatenew
 #, object-pascal-format
 msgid "Form resource %s not found. For resourceless forms CreateNew constructor must be used. See the global variable RequireDerivedFormResource."
-msgstr ""
+msgstr "未找到表单资源 %s。对于无资源表单必须使用 CreateNew 构造函数。请参阅全局变量 RequireDerivedFormResource。"
 
 #: lclstrconsts.rsformstreamingerror
 #, object-pascal-format
@@ -435,7 +435,7 @@ msgstr "渐变非活动标题"
 
 #: lclstrconsts.rsgraphic
 msgid "Graphic"
-msgstr ""
+msgstr "图形"
 
 #: lclstrconsts.rsgraycolorcaption
 msgid "Gray"
@@ -455,11 +455,11 @@ msgstr "网格文件不存在"
 
 #: lclstrconsts.rsgridhasnocols
 msgid "Cannot insert rows into a grid when it has no columns"
-msgstr ""
+msgstr "无法在没有列 的网格中插入行"
 
 #: lclstrconsts.rsgridhasnorows
 msgid "Cannot insert columns into a grid when it has no rows"
-msgstr ""
+msgstr "无法在网格没有行时插入列"
 
 #: lclstrconsts.rsgridindexoutofrange
 msgid "Grid index out of range."
@@ -467,7 +467,7 @@ msgstr "网格索引越界."
 
 #: lclstrconsts.rsgroupindexcannotbelessthanprevious
 msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
-msgstr ""
+msgstr "GroupIndex 不能小于前一个菜单项的 GroupIndex"
 
 #: lclstrconsts.rsgtkfilter
 msgid "Filter:"
@@ -479,7 +479,7 @@ msgstr "历史:"
 
 #: lclstrconsts.rsgtkoptionclass
 msgid "Following Xt conventions, the class of a program is the program name with the initial character capitalized. For example, the classname for gimp is \"Gimp\". If --class is specified, the class of the program will be set to \"classname\"."
-msgstr ""
+msgstr "遵循 Xt 约定，程序的类是程序名称并将首字符大写。例如，gimp 的类名称是 \"Gimp\"。如果指定了 --class，程序的类将被设置为 \"classname\"。"
 
 #: lclstrconsts.rsgtkoptiondebug
 msgid "Turn on specific Gtk+ trace/debug messages."
@@ -487,7 +487,7 @@ msgstr "打开Gtk+跟踪/调试信息."
 
 #: lclstrconsts.rsgtkoptiondisplay
 msgid "Connect to the specified X server, where \"h\" is the hostname, \"s\" is the server number (usually 0), and \"d\" is the display number (typically omitted). If --display is not specified, the DISPLAY environment variable is used."
-msgstr ""
+msgstr "连接到指定的 X 服务器，其中 \"h\" 是主机名，\"s\" 是服务器编号（通常是 0），\"d\" 是显示编号（通常省略）。如果未指定 --display，则使用 DISPLAY 环境变量。"
 
 #: lclstrconsts.rsgtkoptionmodule
 msgid "Load the specified module at startup."
@@ -495,7 +495,7 @@ msgstr "启动时加载指定模块."
 
 #: lclstrconsts.rsgtkoptionname
 msgid "Set program name to \"progname\". If not specified, program name will be set to ParamStrUTF8(0)."
-msgstr ""
+msgstr "将程序名称设置为 \"progname\"。如果未指定，程序名称将被设置为 ParamStrUTF8(0)。"
 
 #: lclstrconsts.rsgtkoptionnodebug
 msgid "Turn off specific Gtk+ trace/debug messages."
@@ -503,7 +503,7 @@ msgstr "关闭Gtk+跟踪/调试信息."
 
 #: lclstrconsts.rsgtkoptionnotransient
 msgid "Do not set transient order for modal forms."
-msgstr ""
+msgstr "不要为模式窗体设置临时顺序。"
 
 #: lclstrconsts.rsgtkoptionnoxshm
 msgid "Disable use of the X Shared Memory Extension."
@@ -511,7 +511,7 @@ msgstr "禁止使用 X共享内存扩展。"
 
 #: lclstrconsts.rsgtkoptionsync
 msgid "Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediately after the protocol request that generated the error has been processed by the X server."
-msgstr ""
+msgstr "在与 Xserver 建立连接后调用 XSynchronize (display, True)。这会使调试 X 协议错误变得更加容易，因为 X 请求缓冲将被禁用，X 错误将在生成错误的协议请求被 X 服务器处理后立即收到。"
 
 #: lclstrconsts.rshelp
 msgctxt "lclstrconsts.rshelp"
@@ -525,11 +525,11 @@ msgstr "%s:已经注册"
 
 #: lclstrconsts.rshelpcontextnotfound
 msgid "A help database was found for this topic, but this topic was not found"
-msgstr ""
+msgstr "已找到与此主题相关的帮助数据库，但未找到此主题"
 
 #: lclstrconsts.rshelpdatabasenotfound
 msgid "There is no help database installed for this topic"
-msgstr ""
+msgstr "没有为该主题安装帮助数据库"
 
 #: lclstrconsts.rshelperror
 msgid "Help Error"
@@ -543,27 +543,27 @@ msgstr "帮助上下文%s未找到."
 #: lclstrconsts.rshelphelpcontextnotfoundindatabase
 #, object-pascal-format
 msgid "Help context %s not found in Database \"%s\"."
-msgstr ""
+msgstr "帮助上下文 %s 在数据库 \"%s\" 中未找到。"
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
 #, object-pascal-format
 msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
-msgstr ""
+msgstr "帮助数据库 \"%s\" 没有找到类型为 %s 的帮助页面的查看器"
 
 #: lclstrconsts.rshelphelpdatabasenotfound
 #, object-pascal-format
 msgid "Help Database \"%s\" not found"
-msgstr ""
+msgstr "未找到帮助数据库 \"%s\""
 
 #: lclstrconsts.rshelphelpfordirectivenotfound
 #, object-pascal-format
 msgid "Help for directive \"%s\" not found."
-msgstr ""
+msgstr "未找到指令 \"%s\" 的帮助。"
 
 #: lclstrconsts.rshelphelpfordirectivenotfoundindatabase
 #, object-pascal-format
 msgid "Help for directive \"%s\" not found in Database \"%s\"."
-msgstr ""
+msgstr "未在数据库 \"%s\" 中找到指令 \"%s\" 的帮助。"
 
 #: lclstrconsts.rshelphelpkeywordnotfound
 #, object-pascal-format
@@ -578,16 +578,16 @@ msgstr "帮助关键字\"%s\"未找到在数据库\"%s\"."
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
 #, object-pascal-format
 msgid "Help node \"%s\" has no Help Database"
-msgstr ""
+msgstr "帮助节点 \"%s\" 没有帮助数据库"
 
 #: lclstrconsts.rshelpnohelpfoundforsource
-#, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "No help found for line %d, column %d of %s."
-msgstr ""
+msgstr "没有找到关于 %s 的第 %d 行第 %d 列的帮助。"
 
 #: lclstrconsts.rshelpnohelpnodesavailable
 msgid "No help entries available for this topic"
-msgstr ""
+msgstr "没有可用的帮助条目此主题"
 
 #: lclstrconsts.rshelpnotfound
 msgid "No help found for this topic"
@@ -605,7 +605,7 @@ msgstr "帮助选择器错误"
 #: lclstrconsts.rshelpthereisnoviewerforhelptype
 #, object-pascal-format
 msgid "There is no viewer for help type \"%s\""
-msgstr ""
+msgstr "没有用于帮助类型 \"%s\" 的查看器"
 
 #: lclstrconsts.rshelpviewererror
 msgid "Help Viewer Error"
@@ -613,11 +613,11 @@ msgstr "帮助查看器错误"
 
 #: lclstrconsts.rshelpviewernotfound
 msgid "No viewer was found for this type of help content"
-msgstr ""
+msgstr "未找到此类帮助内容的查看器"
 
 #: lclstrconsts.rshidedetails
 msgid "Hide details"
-msgstr ""
+msgstr "隐藏详情"
 
 #: lclstrconsts.rshighlightcolorcaption
 msgid "Highlight"
@@ -685,7 +685,7 @@ msgstr "%s索引%d超出范围0..%d"
 #: lclstrconsts.rsindexoutofboundsminusone
 #, object-pascal-format
 msgid "%s Index %d out of bounds -1 .. %d"
-msgstr ""
+msgstr "%s 索引 %d 超出范围 -1 .. %d"
 
 #: lclstrconsts.rsindexoutofrange
 #, object-pascal-format
@@ -782,7 +782,7 @@ msgstr "撤销"
 
 #: lclstrconsts.rsmacosfileformat
 msgid "File Format:"
-msgstr ""
+msgstr "文件格式："
 
 #: lclstrconsts.rsmacosmenuabout
 #, object-pascal-format
@@ -983,7 +983,7 @@ msgstr "提交"
 #: lclstrconsts.rspressoktoignoreandriskdatacorruptionpressaborttok
 #, object-pascal-format
 msgid "%s%sPress OK to ignore and risk data corruption.%sPress Abort to kill the program."
-msgstr ""
+msgstr "%s%s按确定以忽略并风险数据损坏。%s按中止以终止程序。"
 
 #: lclstrconsts.rspriorrecordhint
 msgctxt "lclstrconsts.rspriorrecordhint"
@@ -992,7 +992,7 @@ msgstr "优先"
 
 #: lclstrconsts.rspromptonreplace
 msgid "Prompt on replace"
-msgstr ""
+msgstr "替换时提示"
 
 #: lclstrconsts.rspropertydoesnotexist
 #, object-pascal-format
@@ -1005,47 +1005,47 @@ msgstr "紫色"
 
 #: lclstrconsts.rsqtoptiondisableaccurateframe
 msgid "Disables fully accurate window frame under X11. This feature is implemented for Qt, Qt5 and Gtk2 interfaces and used mostly by GetWindowRect()."
-msgstr ""
+msgstr "禁用 X11 下的完全精确的窗口框架。此功能针对 Qt Qt5 和 Gtk2 接口实现，并主要用于 GetWindowRect()。"
 
 #: lclstrconsts.rsqtoptiondograb
 msgid "Running under a debugger can cause an implicit -nograb, use -dograb to override. Works only under X11, needs QT_DEBUG."
-msgstr ""
+msgstr "在调试器下运行可能会导致隐式的 -nograb 使用 -dograb 进行覆盖。仅在 X11 下有效，需要 QT_DEBUG。"
 
 #: lclstrconsts.rsqtoptiongraphicsstyle
 msgid "Sets the backend to be used for on-screen widgets and QPixmaps. Available options are native, raster and opengl. OpenGL is still unstable."
-msgstr ""
+msgstr "设置用于屏幕小部件和 QPixmaps 的后端。可用选项有 native raster 和 opengl。OpenGL 仍然不稳定。"
 
 #: lclstrconsts.rsqtoptionnograb
 msgid "Tells Qt that it must never grab the mouse or the keyboard. Needs QT_DEBUG."
-msgstr ""
+msgstr "告诉 Qt 从不捕获鼠标或键盘。需要 QT_DEBUG。"
 
 #: lclstrconsts.rsqtoptionreverse
 msgid "Sets the application's layout direction to Qt::RightToLeft."
-msgstr ""
+msgstr "将应用程序的布局方向设置为 Qt :: RightToLeft。"
 
 #: lclstrconsts.rsqtoptionsession
 msgid "Restores the application from an earlier session."
-msgstr ""
+msgstr "从先前的会话中恢复应用程序。"
 
 #: lclstrconsts.rsqtoptionstyle
 msgid "Sets the application GUI style. Possible values are motif, windows, and platinum. If you compiled Qt with additional styles or have additional styles as plugins these will be available to the -style command line option. NOTE: Not all styles are available on all platforms. If style param does not exist Qt will start an application with default common style (windows)."
-msgstr ""
+msgstr "设置应用程序的 GUI 样式。可能的值有 motif、windows 和 platinum。如果你用额外的样式编译了 Qt 或者有额外的样式插件，这些将可用于 -style 命令行选项。注意：并非所有样式在所有平台上都可用。如果 style 参数不存在，Qt 将使用默认的通用样式（windows）启动应用程序。"
 
 #: lclstrconsts.rsqtoptionstylesheet
 msgid "Sets the application Style Sheet. The value must be a path to a file that contains the Style Sheet. Note: Relative URLs in the Style Sheet file are relative to the Style Sheet file's path."
-msgstr ""
+msgstr "设置应用程序样式表。值必须是指向包含样式表的文件的路径。注意：样式表文件中的相对 URL 是相对于样式表文件的路径的。"
 
 #: lclstrconsts.rsqtoptionsync
 msgid "Switches to synchronous mode for debugging. Works only under X11."
-msgstr ""
+msgstr "切换到同步模式以进行调试。仅在 X11 下有效。"
 
 #: lclstrconsts.rsqtoptionwidgetcount
 msgid "Prints debug message at the end about number of widgets left undestroyed and maximum number of widgets existed at the same time."
-msgstr ""
+msgstr "在结束时打印关于未销毁的 widget 数量和同时存在的 widget 最大数量的调试信息。"
 
 #: lclstrconsts.rsqtoptionx11bgcolor
 msgid "Sets the default background color and an application palette (light and dark shades are calculated)."
-msgstr ""
+msgstr "设置默认背景色和应用程序调色板（会计算浅色和深色阴影）。"
 
 #: lclstrconsts.rsqtoptionx11btncolor
 msgid "Sets the default button color."
@@ -1053,11 +1053,11 @@ msgstr "设置默认按钮颜色。"
 
 #: lclstrconsts.rsqtoptionx11cmap
 msgid "Causes the application to install a private color map on an 8-bit display."
-msgstr ""
+msgstr "使应用程序在一个 8 位显示上安装一个私有颜色映射表。"
 
 #: lclstrconsts.rsqtoptionx11display
 msgid "Sets the X display. Default is $DISPLAY."
-msgstr ""
+msgstr "设置 X 显示。默认是 $DISPLAY。"
 
 #: lclstrconsts.rsqtoptionx11fgcolor
 msgid "Sets the default foreground color."
@@ -1065,19 +1065,19 @@ msgstr "设置默认前景颜色."
 
 #: lclstrconsts.rsqtoptionx11font
 msgid "Defines the application font. The font should be specified using an X logical font description."
-msgstr ""
+msgstr "定义应用程序字体。字体应使用 X 逻辑字体描述来指定。"
 
 #: lclstrconsts.rsqtoptionx11geometry
 msgid "Sets the client geometry of the first window that is shown."
-msgstr ""
+msgstr "设置第一个显示窗口的客户端几何形状。"
 
 #: lclstrconsts.rsqtoptionx11im
 msgid "Sets the input method server (equivalent to setting the XMODIFIERS environment variable)."
-msgstr ""
+msgstr "设置输入法服务器（相当于设置 XMODIFIERS 环境变量）。"
 
 #: lclstrconsts.rsqtoptionx11inputstyle
 msgid "Defines how the input is inserted into the given widget, e.g. onTheSpot makes the input appear directly in the widget, while overTheSpot makes the input appear in a box floating over the widget and is not inserted until the editing is done."
-msgstr ""
+msgstr "定义输入如何插入到给定的控件中，例如 onTheSpot 使输入直接出现在控件中，而 overTheSpot 使输入出现在浮动在控件上方的框中，并且在编辑完成后才会插入。"
 
 #: lclstrconsts.rsqtoptionx11name
 msgid "Sets the application name."
@@ -1085,7 +1085,7 @@ msgstr "设置应用名称。"
 
 #: lclstrconsts.rsqtoptionx11ncols
 msgid "Limits the number of colors allocated in the color cube on an 8-bit display, if the application is using the QApplication::ManyColor color specification. If count is 216 then a 6x6x6 color cube is used (i.e. 6 levels of red, 6 of green, and 6 of blue); for other values, a cube approximately proportional to a 2x3x1 cube is used."
-msgstr ""
+msgstr "在 8 位显示中限制颜色立方体中分配的颜色数量，如果应用程序使用了 QApplication::ManyColor 颜色规格。如果 count 是 216，则使用 6x6x6 的颜色立方体（即 6 级红色，6 级绿色和 6 级蓝色）；对于其他值，将使用大约与 2x3x1 立方体成比例的立方体。"
 
 #: lclstrconsts.rsqtoptionx11title
 msgid "Sets the application title."
@@ -1093,11 +1093,11 @@ msgstr "设置应用标题。"
 
 #: lclstrconsts.rsqtoptionx11visual
 msgid "Forces the application to use a TrueColor visual on an 8-bit display."
-msgstr ""
+msgstr "强制应用程序在 8 位显示上使用 TrueColor 可视效果。"
 
 #: lclstrconsts.rsrasterimageendupdate
 msgid "Endupdate while no update in progress"
-msgstr ""
+msgstr "结束更新时没有正在进行的更新"
 
 #: lclstrconsts.rsrasterimagesaveinupdate
 msgid "Cannot save image while update in progress"
@@ -1105,7 +1105,7 @@ msgstr "更新时候不能保存图片"
 
 #: lclstrconsts.rsrasterimageupdateall
 msgid "Cannot begin update all when canvas only update in progress"
-msgstr ""
+msgstr "无法在仅画布更新时开始更新全部"
 
 #: lclstrconsts.rsredcolorcaption
 msgid "Red"
@@ -1163,7 +1163,7 @@ msgstr "天蓝色"
 
 #: lclstrconsts.rstcustomtabcontrolaccessibilitydescription
 msgid "A control with tabs"
-msgstr ""
+msgstr "带有标签的控件"
 
 #: lclstrconsts.rstealcolorcaption
 msgid "Teal"
@@ -1175,11 +1175,11 @@ msgstr "文本"
 
 #: lclstrconsts.rstga
 msgid "TGA Image Files"
-msgstr ""
+msgstr "TGA 图像文件"
 
 #: lclstrconsts.rsthebuiltinurlisreadonlychangethebaseurlinstead
 msgid "The built-in URL is read only. Change the BaseURL instead."
-msgstr ""
+msgstr "内置的 URL 是只读的。请改为更改 BaseURL。"
 
 #: lclstrconsts.rstiff
 msgid "Tagged Image File Format Files"
@@ -1193,7 +1193,7 @@ msgstr "面板"
 #: lclstrconsts.rstsplitteraccessibilitydescription
 msgctxt "lclstrconsts.rstsplitteraccessibilitydescription"
 msgid "A grip to control how much size to give two parts of an area"
-msgstr ""
+msgstr "一个控制两个区域部分大小的握手点"
 
 #: lclstrconsts.rsttreeviewaccessibilitydescription
 msgctxt "lclstrconsts.rsttreeviewaccessibilitydescription"
@@ -1228,12 +1228,12 @@ msgstr "不支持剪贴板格式: %s"
 #: lclstrconsts.rswarningunreleaseddcsdump
 #, object-pascal-format
 msgid " WARNING: There are %d unreleased DCs, a detailed dump follows:"
-msgstr ""
+msgstr "警告：有 %d 个未释放的 DC，详细转储如下："
 
 #: lclstrconsts.rswarningunreleasedgdiobjectsdump
 #, object-pascal-format
 msgid " WARNING: There are %d unreleased GDIObjects, a detailed dump follows:"
-msgstr ""
+msgstr "警告：存在 %d 个未释放的 GDIObjects，详细信息如下："
 
 #: lclstrconsts.rswarningunreleasedmessagesinqueue
 #, object-pascal-format
@@ -1284,11 +1284,11 @@ msgstr "黄色"
 
 #: lclstrconsts.scannotfocus
 msgid "Cannot focus a disabled or invisible window"
-msgstr ""
+msgstr "无法将焦点设置到已禁用或不可见的窗口"
 
 #: lclstrconsts.sduplicatemenus
 msgid "Duplicate menus"
-msgstr ""
+msgstr "重复菜单"
 
 #: lclstrconsts.sinvalidactioncreation
 msgid "Invalid action creation"
@@ -1316,7 +1316,7 @@ msgstr "无效图像列表索引"
 
 #: lclstrconsts.smaskeditnomatch
 msgid "The current text does not match the specified mask."
-msgstr ""
+msgstr "当前文本不符合指定的掩码。"
 
 #: lclstrconsts.smenuindexerror
 msgid "Menu index out of range"
@@ -1328,7 +1328,7 @@ msgstr "MenuItem是nil(空)"
 
 #: lclstrconsts.smenunotfound
 msgid "Sub-menu is not in menu"
-msgstr ""
+msgstr "子菜单不在菜单中"
 
 #: lclstrconsts.smkcalt
 msgid "Alt+"
@@ -1420,12 +1420,12 @@ msgstr "无有效计时器"
 #: lclstrconsts.sparentrequired
 #, object-pascal-format
 msgid "Control \"%s\" has no parent window."
-msgstr ""
+msgstr "控件 \"%s\" 没有父窗口。"
 
 #: lclstrconsts.sparexpected
 #, object-pascal-format
 msgid "Wrong token type: %s expected"
-msgstr ""
+msgstr "错误的标记类型：预期为 %s"
 
 #: lclstrconsts.sparinvalidfloat
 #, object-pascal-format
@@ -1440,25 +1440,25 @@ msgstr "无效的整数数: %s"
 #: lclstrconsts.sparlocinfo
 #, object-pascal-format
 msgid " (at %d,%d, stream offset %d)"
-msgstr ""
+msgstr "（在 %d,%d，流偏移 %d）"
 
 #: lclstrconsts.sparunterminatedbinvalue
 msgid "Unterminated byte value"
-msgstr ""
+msgstr "未终止的字节值"
 
 #: lclstrconsts.sparunterminatedstring
 msgid "Unterminated string"
-msgstr ""
+msgstr "未终止的字符串"
 
 #: lclstrconsts.sparwrongtokensymbol
 #, object-pascal-format
 msgid "Wrong token symbol: %s expected but %s found"
-msgstr ""
+msgstr "错误的标记符号：期望 %s 但找到 %s"
 
 #: lclstrconsts.sparwrongtokentype
 #, object-pascal-format
 msgid "Wrong token type: %s expected but %s found"
-msgstr ""
+msgstr "错误的标记类型：期望 %s 但找到 %s"
 
 #: lclstrconsts.sshellctrlsbytes
 #, object-pascal-format

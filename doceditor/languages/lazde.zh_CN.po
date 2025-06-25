@@ -3,13 +3,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"PO-Revision-Date: 2025-06-25 22:39+0800\n"
+"Last-Translator: ACTom <i@actom.me>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Generator: TyPoEditor 0.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: lazdemsg.saboutformcaption
@@ -60,11 +60,11 @@ msgstr "示例代码文件"
 
 #: lazdemsg.scopyright1
 msgid "This application is (c) by  Michael Van Canneyt and the Lazarus team"
-msgstr "这个应用程序是 (c) 由Michael Van Canneyt和Lazarus团队"
+msgstr "本应用程序由 Michael Van Canneyt 和 Lazarus 团队版权所有"
 
 #: lazdemsg.scopyright2
 msgid "It is released under the terms of the  GENERAL PUBLIC LICENSE:"
-msgstr "它是在\"GENERAL PUBLIC LICENSE\"限制下发布的"
+msgstr "它根据 通用公共许可证 的条款发布："
 
 #: lazdemsg.scpu
 msgid "CPU"
@@ -72,7 +72,7 @@ msgstr "CPU"
 
 #: lazdemsg.screatecontentfile
 msgid "Create cont&ent file"
-msgstr "创建目录文件(&e)"
+msgstr "创建内容文件(&E)"
 
 #: lazdemsg.sdataforelement
 #, object-pascal-format
@@ -86,17 +86,17 @@ msgstr "删除(&D)"
 #: lazdemsg.sdeletemodule
 #, object-pascal-format
 msgid "Are you sure you want to delete module \"%s\" ?"
-msgstr "你真的想删除模块\"%s\"?"
+msgstr "你真的想删除模块 \"%s\"?"
 
 #: lazdemsg.sdeletepackage
 #, object-pascal-format
 msgid "Are you sure you want to delete package \"%s\" ?"
-msgstr "你真的想删除包\"%s\"?"
+msgstr "您确定要删除软件包 \"%s\" ？"
 
 #: lazdemsg.sdeletetopic
 #, object-pascal-format
 msgid "Are you sure you want to delete topic \"%s\" ?"
-msgstr "你真的想删除topic(主题?)\"%s\"?"
+msgstr "你真的想删除主题 \"%s\"？"
 
 #: lazdemsg.sdescription
 msgid "Description"
@@ -113,32 +113,32 @@ msgstr "更改描述文件"
 #: lazdemsg.serrfpdoc
 #, object-pascal-format
 msgid "Building failed with exit code %d. Please check log."
-msgstr "构建失败 出口代码%d.请检查日志."
+msgstr "构建失败，退出代码为 %d。请检查日志。"
 
 #: lazdemsg.serrnomoduleforelement
 #, object-pascal-format
 msgid "No module found to insert element \"%s\""
-msgstr "没有模块找到来插入元素\"%s\""
+msgstr "没有找到可以插入元素 \"%s\" 的模块"
 
 #: lazdemsg.serrnonodeformodule
 #, object-pascal-format
 msgid "No node found for module \"%s\""
-msgstr "没有节点找到对于模块\"%s\""
+msgstr "未找到模块 \"%s\" 的节点"
 
 #: lazdemsg.serrnonodeforpackage
 #, object-pascal-format
 msgid "No node found for package \"%s\""
-msgstr "没有节点找到对于包\"%s\""
+msgstr "没有找到软件包 \"%s\" 的节点"
 
 #: lazdemsg.serrnonodefortopic
 #, object-pascal-format
 msgid "No parent node found to insert topic \"%s\""
-msgstr "没有父节点找到来插入主题\"%s\""
+msgstr "未找到插入主题 \"%s\" 的父节点"
 
 #: lazdemsg.serrnopackageformodule
 #, object-pascal-format
 msgid "No package found to insert module \"%s\""
-msgstr "没有包找到来插入模块\"%s\""
+msgstr "没有找到可以插入模块 \"%s\" 的软件包"
 
 #: lazdemsg.serrors
 msgid "Errors"
@@ -147,12 +147,12 @@ msgstr "错误"
 #: lazdemsg.serrunknowndomelement
 #, object-pascal-format
 msgid "Unknwon DOM element as parent for selected element: \"%s\""
-msgstr "未知DOM元素作为父类用于选择元素\"%s\""
+msgstr "未知的 DOM 元素作为选定元素的父级：\"%s\""
 
 #: lazdemsg.sfilemodified
 #, object-pascal-format
 msgid "Document \"%s\" was modified, would you like to save it?"
-msgstr "文档\"%s\"已被修改,你想要保存它?"
+msgstr "文档 \"%s\" 已被修改，您是否要保存它？"
 
 #: lazdemsg.sfilestructure
 msgid "Documentation structure"
@@ -176,7 +176,7 @@ msgstr "在模块"
 
 #: lazdemsg.sforpackage
 msgid " in package "
-msgstr "在包"
+msgstr "在软件包"
 
 #: lazdemsg.sfortopic
 msgid " in topic "
@@ -184,11 +184,11 @@ msgstr "在主题"
 
 #: lazdemsg.shideprotectedmethods
 msgid "&Hide protected methods"
-msgstr "隐藏protected方法(&H)"
+msgstr "隐藏受保护的方法(&H)"
 
 #: lazdemsg.shinteditelementlink
 msgid "Edit element link"
-msgstr "编辑element链接"
+msgstr "编辑元素链接"
 
 #: lazdemsg.shintfileclose
 msgid "Close current file"
@@ -196,7 +196,7 @@ msgstr "关闭当前文件"
 
 #: lazdemsg.shintfileexit
 msgid "Close doc editor"
-msgstr "关闭doc编辑器"
+msgstr "关闭文档编辑器"
 
 #: lazdemsg.shintfilenew
 msgctxt "lazdemsg.shintfilenew"
@@ -246,12 +246,12 @@ msgstr "变量"
 #: lazdemsg.shintinsertbulletedlist
 msgctxt "lazdemsg.shintinsertbulletedlist"
 msgid "Insert bulleted list"
-msgstr "插入bulleted(项目符号?)列表"
+msgstr "插入项目符号列表"
 
 #: lazdemsg.shintinsertelement
 msgctxt "lazdemsg.shintinsertelement"
 msgid "New element"
-msgstr "新建element"
+msgstr "新元素"
 
 #: lazdemsg.shintinsertlink
 msgctxt "lazdemsg.shintinsertlink"
@@ -261,17 +261,17 @@ msgstr "插入链接"
 #: lazdemsg.shintinsertmodule
 msgctxt "lazdemsg.shintinsertmodule"
 msgid "New module"
-msgstr "新建module"
+msgstr "新建模块"
 
 #: lazdemsg.shintinsertnumberedlist
 msgctxt "lazdemsg.shintinsertnumberedlist"
 msgid "Insert numbered list"
-msgstr "插入numbered列表"
+msgstr "插入编号列表"
 
 #: lazdemsg.shintinsertpackage
 msgctxt "lazdemsg.shintinsertpackage"
 msgid "New package"
-msgstr "新建包"
+msgstr "新建软件包"
 
 #: lazdemsg.shintinsertprintshortlink
 msgid "Insert a short description link"
@@ -285,7 +285,7 @@ msgstr "插入table"
 #: lazdemsg.shintinserttopic
 msgctxt "lazdemsg.shintinserttopic"
 msgid "New topic"
-msgstr "新建topic(主题?)"
+msgstr "新主题"
 
 #: lazdemsg.shintmenunewfromfile
 msgid "New from file ..."
@@ -319,7 +319,7 @@ msgstr "导入目录文件"
 #: lazdemsg.sinsertbulletedlist
 msgctxt "lazdemsg.sinsertbulletedlist"
 msgid "Insert bulleted list"
-msgstr "插入bulleted(项目符号?)列表"
+msgstr "插入项目符号列表"
 
 #: lazdemsg.sinsertexamplecode
 msgid "Insert example code"
@@ -333,7 +333,7 @@ msgstr "插入链接"
 #: lazdemsg.sinsertnumberedlist
 msgctxt "lazdemsg.sinsertnumberedlist"
 msgid "Insert numbered list"
-msgstr "插入numbered列表"
+msgstr "插入编号列表"
 
 #: lazdemsg.sinsertprintshortlink
 msgid "Insert short description link"
@@ -342,7 +342,7 @@ msgstr "插入简短的描述链接"
 #: lazdemsg.sinserttable
 msgctxt "lazdemsg.sinserttable"
 msgid "Insert table"
-msgstr "插入table"
+msgstr "插入表格"
 
 #: lazdemsg.sitemscount
 msgid "Items count"
@@ -350,7 +350,7 @@ msgstr "项目计数"
 
 #: lazdemsg.slazdoceditor
 msgid "Lazarus Documentation Editor"
-msgstr "Lazarus文档编辑器"
+msgstr "Lazarus 文档编辑器"
 
 #: lazdemsg.slinksto
 msgid " links to "
@@ -440,7 +440,7 @@ msgstr "保存(&S)"
 
 #: lazdemsg.smenufilesaveas
 msgid "Save &as"
-msgstr "另存为 ...(&a)"
+msgstr "另存为(&a) ..."
 
 #: lazdemsg.smenuformat
 msgid "Format"
@@ -485,7 +485,7 @@ msgstr "帮助(&H)"
 
 #: lazdemsg.smenuhelpabout
 msgid "&About ..."
-msgstr "关于...(&A)"
+msgstr "关于(&A) ..."
 
 #: lazdemsg.smenuinsert
 msgid "&Insert"
@@ -493,11 +493,11 @@ msgstr "插入(&I)"
 
 #: lazdemsg.smenuinsertbulletedlist
 msgid "Bulleted list"
-msgstr "bulleted(项目符号?)列表"
+msgstr "项目符号列表"
 
 #: lazdemsg.smenuinsertelement
 msgid "&Element"
-msgstr "&Element"
+msgstr "元素(&E)"
 
 #: lazdemsg.smenuinsertlink
 msgid "&Link"
@@ -513,7 +513,7 @@ msgstr "模块(&M)"
 
 #: lazdemsg.smenuinsertnumberedlist
 msgid "Numbered list"
-msgstr "Numbered列表"
+msgstr "编号列表"
 
 #: lazdemsg.smenuinsertpackage
 msgctxt "lazdemsg.smenuinsertpackage"
@@ -538,7 +538,7 @@ msgstr "&Table"
 
 #: lazdemsg.smenuinserttopic
 msgid "T&opic"
-msgstr "主题(&o)"
+msgstr "主题(&O)"
 
 #: lazdemsg.smenurename
 msgid "Rename"
@@ -559,7 +559,7 @@ msgstr "新建文档"
 #: lazdemsg.snewelement
 msgctxt "lazdemsg.snewelement"
 msgid "New element"
-msgstr "新建element"
+msgstr "新元素"
 
 #: lazdemsg.snewfile
 msgctxt "lazdemsg.snewfile"
@@ -569,17 +569,17 @@ msgstr "新建文件"
 #: lazdemsg.snewmodule
 msgctxt "lazdemsg.snewmodule"
 msgid "New module"
-msgstr "新建module"
+msgstr "新模块"
 
 #: lazdemsg.snewpackage
 msgctxt "lazdemsg.snewpackage"
 msgid "New package"
-msgstr "新建包"
+msgstr "新建软件包"
 
 #: lazdemsg.snewtopic
 msgctxt "lazdemsg.snewtopic"
 msgid "New topic"
-msgstr "新建topic(主题?)"
+msgstr "新建主题"
 
 #: lazdemsg.snodename
 msgid "Node name"
@@ -587,7 +587,7 @@ msgstr "节点名称"
 
 #: lazdemsg.snoelement
 msgid "No element selected"
-msgstr "没有element被选择"
+msgstr "没有选中任何元素"
 
 #: lazdemsg.soptdlgbackupextension
 msgid "Backup extension"
@@ -595,11 +595,11 @@ msgstr "备份扩展名"
 
 #: lazdemsg.soptdlgconfirmdeletes
 msgid "C&onfirm deletes"
-msgstr "确认删除(&o)"
+msgstr "确认删除(&O)"
 
 #: lazdemsg.soptdlgcreatebackups
 msgid "Create &backups"
-msgstr "创建备份(&b)"
+msgstr "创建备份(&B)"
 
 #: lazdemsg.soptdlgdefaultextension
 msgid "Default extension"
@@ -672,11 +672,11 @@ msgstr "重命名模块"
 
 #: lazdemsg.srenamepackage
 msgid "Rename package"
-msgstr "重命名包"
+msgstr "重命名软件包"
 
 #: lazdemsg.srenametopic
 msgid "Rename topic"
-msgstr "重命名topic(主题?)"
+msgstr "重命名主题"
 
 #: lazdemsg.ssave
 msgctxt "lazdemsg.ssave"
@@ -686,7 +686,7 @@ msgstr "保存(&S)"
 #: lazdemsg.ssavebeforebuildquestion
 #, object-pascal-format
 msgid "You have unsaved changes in \"%s\".%sThey should be saved in order to be visible in built documentation. Save them?"
-msgstr "你没有保存变更在\"%s\".%s它们应该被保存 以便于可见于构建文件.保存它们?"
+msgstr "你在 \"%s\" 中有未保存的更改。%s这些更改需要保存才能在生成的文档中可见。是否保存？"
 
 #: lazdemsg.sseealso
 msgid "See Also"
@@ -715,12 +715,12 @@ msgstr "显示私有方法(&r)"
 #: lazdemsg.sskelerrorwithfile
 #, object-pascal-format
 msgid "makeskel reported an error (%d). Try to load produced file anyway ?"
-msgstr "makeskel报告一个错误(%d).无论如何都尝试加载产生的文件?"
+msgstr "makeskel 报告了一个错误（%d）。是否尝试加载生成的文件？"
 
 #: lazdemsg.sskelerrorwithoutfile
 #, object-pascal-format
 msgid "makeskel reported an error (%d) and produced no file."
-msgstr "makeskel报告一个错误(%d)并且无产生文件."
+msgstr "makeskel 报告了一个错误 (%d) 并未生成任何文件。"
 
 #: lazdemsg.ssourcescapt
 msgid "Sources"
@@ -749,9 +749,9 @@ msgstr "目标操作系统"
 
 #: lazdemsg.susingcommand
 msgid "Building docs using command: "
-msgstr "构建docs使用命令:"
+msgstr "正在使用命令构建文档："
 
 #: lazdemsg.swarnifnodocumentationnodefound
 msgid "Warn if no documentation node found"
-msgstr "警告 假如没有找到文档节点"
+msgstr "如果未找到文档节点请警告"
 
