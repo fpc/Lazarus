@@ -1354,6 +1354,16 @@ begin
     Err:=Format(lisIdentifierCannotBeDotted,[FNewIdentifier]);
   end;
 
+  if ok
+      and (FNode.Desc=ctnBeginBlock) // 'Result'
+      and (CompareIdentifiers(PChar(FNewIdentifier),
+                              PChar(FOldIdentifier))<>0) // only case change allowed
+  then begin
+    // Result inside function
+    ok:=false;
+    Err:=Format(lisIdentifierIsReservedWord,['Result']);
+  end;
+
   if ok and (FTool<>nil) then begin
     i:=1;
     while ok and (i<=length(FNewIdentifier)) do begin

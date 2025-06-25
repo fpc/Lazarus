@@ -240,8 +240,7 @@ const
   DefaultCompilerModeSwitches: array[TCompilerMode] of TCompilerModeSwitches = (
     // cmFPC
     [cmsString_pchar,cmsNested_comment,cmsRepeat_forward,cmsCvar_support,
-     cmsInitfinal,cmsHintdirective,cmsProperty,cmsDefault_inline,
-     cmsResult],
+     cmsInitfinal,cmsHintdirective,cmsProperty,cmsDefault_inline],
     // cmDELPHI
     [cmsClass,cmsObjpas,cmsResult,cmsString_pchar,
      cmsPointer_2_procedure,cmsAutoderef,cmsTp_procvar,cmsInitfinal,cmsDefault_ansistring,
@@ -260,7 +259,7 @@ const
     // cmGPC
     [cmsTp_procvar],
     // cmTP
-    [cmsResult,cmsTp_procvar,cmsDuplicate_names],
+    [cmsTp_procvar,cmsDuplicate_names],
     // cmOBJFPC
     [cmsClass,cmsObjpas,cmsResult,cmsString_pchar,cmsNested_comment,
      cmsRepeat_forward,cmsCvar_support,cmsInitfinal,cmsOut,cmsDefault_para,

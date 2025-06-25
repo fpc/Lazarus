@@ -2064,6 +2064,54 @@ var
   CleanCursorPos: integer;
   CursorNode, ClassNode: TCodeTreeNode;
   DirectSearch, SkipChecks, SearchForward: boolean;
+
+  function IsPredefinedResult: boolean;
+  var
+    ANode: TCodeTreeNode;
+    p: Integer;
+  begin
+    Result:=false;
+    p:=GetIdentStartPosition(Src,CleanCursorPos);
+    if p<1 then exit;
+    if CompareIdentifiers('Result',@Src[p])<>0 then exit;
+
+    if CursorNode.Desc<>ctnBeginBlock then exit;
+    if not CursorNode.HasParentOfType(ctnProcedure) then exit;
+    if not (cmsResult in Scanner.CompilerModeSwitches) then begin
+      debugln('Predefined "Result" inside a function body is not allowed');
+      exit;
+    end;
+    ANode:=CursorNode.Parent;
+    while ANode<>nil do begin
+      if (ANode.Desc = ctnProcedure) then begin
+        if CompareIdentifiers('function',@Src[ANode.StartPos])=0 then
+          break;
+      end;
+      ANode:=ANode.Parent
+    end;
+    if ANode=nil then exit;
+    CursorNode:=ANode;
+    MoveCursorToCleanPos(CleanCursorPos);
+    Result:=true;
+  end;
+
+  function FindFunctionResultTypeNode: TCodeTreeNode;
+  var ANode: TCodeTreeNode;
+  begin
+    Result:=nil;
+    if CursorNode.Desc<>ctnProcedure then exit;
+    ANode:=CursorNode.FirstChild;
+    if ANode.Desc<>ctnProcedureHead then exit;
+    ANode:=ANode.FirstChild;
+    while ANode<>nil do begin
+      if ANode.Desc=ctnIdentifier then break;
+      ANode:=Anode.NextBrother;
+    end;
+
+    if (ANode<>nil) and (ANode.Desc=ctnIdentifier) then
+      Result:=ANode;
+  end;
+
   function CheckIfNodeIsForwardDefinedClass(ANode: TCodeTreeNode;
     ATool: TFindDeclarationTool): Boolean;
   var
@@ -2272,7 +2320,6 @@ var
       BlockBottomLine := NewSkipBlockBottomLine;
     end;
   end;
-
 var
   CleanPosInFront: integer;
   CursorAtIdentifier: boolean;
@@ -2321,8 +2368,8 @@ begin
     if (Tree.Root<>nil) and (Tree.Root.StartPos<=CleanCursorPos) then begin
       CursorNode:=BuildSubTreeAndFindDeepestNodeAtPos(CleanCursorPos,true);
       if (fsfFindMainDeclaration in SearchSmartFlags)
-      and CleanPosIsDeclarationIdentifier(CleanCursorPos,CursorNode)
-      then begin
+          and CleanPosIsDeclarationIdentifier(CleanCursorPos,CursorNode) then
+      begin
         //DebugLn(['TFindDeclarationTool.FindDeclaration CleanPosIsDeclarationIdentifier ',CursorNode.DescAsString]);
         NewExprType.Desc:=xtContext;
         NewExprType.Context.Tool:=Self;
@@ -2426,6 +2473,23 @@ begin
         end;
         {$ENDIF}
       end;
+      exit;
+    end else if IsPredefinedResult then begin
+      // "Result" is allowed
+      Result:=false;
+      CleanCursorPos:=GetIdentStartPosition(Src,CleanCursorPos);
+      NewExprType.Desc:=xtContext;
+      NewExprType.Context.Tool:=Self;
+      NewExprType.Context.Node:=FindFunctionResultTypeNode();
+      if (NewExprType.Context.Node<>nil) and (NewExprType.Context.Node.StartPos<CleanCursorPos)
+      then begin
+        CleanPosToCaret(CleanCursorPos, NewPos);
+        NewTopLine := NewPos.Y;
+        BlockTopLine := NewTopLine;
+        BlockBottomLine := NewPos.Y;
+        Result:=true;
+      end else
+        NewExprType.Context.Node:=CursorNode;
       exit;
     end;
 
@@ -3697,7 +3761,7 @@ begin
         Result += lowercase(Node.Parent.DescAsString)+' ';
         MoveCursorToNodeStart(Node);
         Result := Result + ReadIdentifierWithDots+' ';
-      end
+      end;
     else
       DebugLn('ToDo: TFindDeclarationTool.GetSmartHint ',Node.DescAsString);
     end;
@@ -6573,6 +6637,8 @@ var
   var
     p: LongInt;
   begin
+    if Node.Desc=ctnBeginBlock then
+      exit; // e.g. Result in function
     p:=Node.StartPos;
     if Node.Desc in [ctnProcedure,ctnProcedureHead] then begin
       MoveCursorToProcName(Node,true);
@@ -6748,7 +6814,7 @@ var
     then begin
       // declaration itself found
       //debugln(['ReadIdentifier declaration itself found, adding ...']);
-      AddReference(IdentStartPos)
+      AddReference(IdentStartPos);
     end
     else if CleanPosIsDeclarationIdentifier(IdentStartPos,CursorNode) then begin
       // this identifier is another declaration with the same name
