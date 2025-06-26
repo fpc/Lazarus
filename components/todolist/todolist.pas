@@ -123,6 +123,8 @@ type
     procedure lvTodoClick(Sender: TObject);
     procedure lvTodoCompare(Sender : TObject; Item1, Item2 : TListItem;
       {%H-}Data : Integer; var Compare : Integer);
+    procedure lvTodoEnter(Sender: TObject);
+    procedure lvTodoSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
     procedure SaveDialogShow(Sender: TObject);
     procedure XMLPropStorageRestoreProperties(Sender: TObject);
     procedure XMLPropStorageRestoringProperties(Sender: TObject);
@@ -322,12 +324,25 @@ begin
     else Compare := 0;
   end;
 
-  if lvTodo.SortDirection = sdDescending then Compare := -Compare;
+  if lvTodo.SortDirection = sdDescending then
+    Compare := -Compare;
+end;
+
+procedure TIDETodoWindow.lvTodoEnter(Sender: TObject);
+begin
+  acEdit.Enabled := lvTodo.Selected<>nil;
+  acGoto.Enabled := acEdit.Enabled;
+end;
+
+procedure TIDETodoWindow.lvTodoSelectItem(Sender: TObject; Item: TListItem;
+  Selected: Boolean);
+begin
+  lvTodoEnter(Sender);
 end;
 
 procedure TIDETodoWindow.SaveDialogShow(Sender: TObject);
 begin
-  SaveDialog.InitialDir:=GetCurrentDirUTF8;
+  SaveDialog.InitialDir := GetCurrentDirUTF8;
 end;
 
 procedure TIDETodoWindow.XMLPropStorageRestoreProperties(Sender: TObject);
@@ -478,7 +493,6 @@ begin
   TodoItem := TTodoItem(ListItem.Data);
   SrcEdit := SourceEditorManagerIntf.ActiveEditor;
   if (SrcEdit=nil) or SrcEdit.ReadOnly then exit;
-  debugln(['TIDETodoWindow.acEditExecute ToDo=', TodoItem.Filename, ', Src=', SrcEdit.FileName]);
   if (TodoItem.Filename<>SrcEdit.FileName) or (TodoItem.CodePos<>SrcEdit.CursorTextXY) then
     GotoTodo(TodoItem);       // Move to the right place if not there already.
   OnEditItem(TodoItem);       // Open the dialog for editing.

@@ -68,6 +68,8 @@ object IDETodoWindow: TIDETodoWindow
     ViewStyle = vsReport
     OnClick = lvTodoClick
     OnCompare = lvTodoCompare
+    OnEnter = lvTodoEnter
+    OnSelectItem = lvTodoSelectItem
   end
   object ToolBar: TToolBar
     Left = 0
