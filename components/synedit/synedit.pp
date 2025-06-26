@@ -447,6 +447,8 @@ type
 
   TCustomSynEdit = class(TSynEditBase)
     procedure SelAvailChange(Sender: TObject);
+  private type
+    TSynDecPaintLockState = (iplFalse, iplIgnore, iplSubLock);
   private
     FImeHandler: LazSynIme;
   {$IFDEF Gtk2IME}
@@ -540,7 +542,7 @@ type
     FRecalcCharsAndLinesLock: Integer;
     FDoingResizeLock: Integer;
     FInvalidateRect: TRect;
-    FIsInDecPaintLock: Boolean;
+    FIsInDecPaintLock: TSynDecPaintLockState;
     FScrollBars: TScrollStyle;
     FOldTopView: Integer;
     FCachedTopLine: Integer;
@@ -1369,6 +1371,11 @@ var
 
 const
   GutterTextDist = 2; //Pixel
+
+function DbgS(const s: TSynEdit.TSynDecPaintLockState): string; overload;
+begin
+  WriteStr(Result, s);
+end;
 
 type
 
@@ -2539,7 +2546,11 @@ end;
 
 procedure TCustomSynEdit.IncPaintLock;
 begin
-  if FIsInDecPaintLock then exit;
+  if FIsInDecPaintLock <> iplFalse then begin
+    if FIsInDecPaintLock = iplSubLock then
+      inc(FPaintLock);
+    exit;
+  end;
   if (PaintLockOwner = nil) then begin
     PaintLockOwner := Self;
     FLines.SendNotification(senrIncOwnedPaintLock, Self);  // DoIncForeignPaintLock
@@ -2551,7 +2562,11 @@ end;
 
 procedure TCustomSynEdit.DecPaintLock;
 begin
-  if FIsInDecPaintLock then exit;
+  if FIsInDecPaintLock <> iplFalse then begin
+    if FIsInDecPaintLock = iplSubLock then
+      dec(FPaintLock);
+    exit;
+  end;
   if FPaintLockOwnerCnt = 1 then
     FLines.EndUpdate(Self);
   dec(FPaintLockOwnerCnt);
@@ -2595,7 +2610,11 @@ end;
 
 procedure TCustomSynEdit.DoIncPaintLock(Sender: TObject);
 begin
-  if FIsInDecPaintLock then exit;
+  if FIsInDecPaintLock <> iplFalse then begin
+    if FIsInDecPaintLock = iplSubLock then
+      inc(FPaintLock);
+    exit;
+  end;
   if FPaintLock = 0 then begin
     SetUpdateState(True, Self);
     FInvalidateRect := Rect(-1, -1, -2, -2);
@@ -2613,8 +2632,12 @@ end;
 
 procedure TCustomSynEdit.DoDecPaintLock(Sender: TObject);
 begin
-  if FIsInDecPaintLock then exit;
-  FIsInDecPaintLock := True;
+  if FIsInDecPaintLock <> iplFalse then begin
+    if FIsInDecPaintLock = iplSubLock then
+      dec(FPaintLock);
+    exit;
+  end;
+  FIsInDecPaintLock := iplIgnore;
   try
     if (FUndoBlockAtPaintLock >= FPaintLock) then begin
       if (FUndoBlockAtPaintLock > FPaintLock) then
@@ -2655,31 +2678,47 @@ begin
     *)
 
     Dec(FPaintLock);
-    if (FPaintLock = 0) and (not WaitingForInitialSize) then begin
-      ScrollAfterTopLineChanged;
-      if sfScrollbarChanged in fStateFlags then
-        UpdateScrollbars;
-      // must be past UpdateScrollbars; but before UpdateCaret (for ScrollBar-Auto-show)
-      if sfEnsureCursorPos in fStateFlags then
-        EnsureCursorPosVisible;              // TODO: This may call SetTopLine, change order
-                                             // This does Paintlock, should be before final decrease
-      // Must be after EnsureCursorPosVisible (as it does MoveCaretToVisibleArea)
-      if FCaret.LinePos > Max(FLines.Count, 1) then
-        FCaret.LinePos := Max(FLines.Count, 1);
-      if sfCaretChanged in fStateFlags then
-        UpdateCaret;
-      //if sfScrollbarChanged in fStateFlags then
-      //  UpdateScrollbars;
-    end;
     if (FPaintLock = 0) then begin
-      FMarkupManager.DecPaintLock; // Todo: Markup can do invalidation, should be before ScrollAfterTopLineChanged;
+      if (not WaitingForInitialSize) then begin
+        if sfScrollbarChanged in fStateFlags then
+          UpdateScrollbars;
+
+        (* EnsureCursorPosVisible must be past UpdateScrollbars; but before UpdateCaret (for ScrollBar-Auto-show)
+           - May Change TopView and LeftChar
+           - Needs iplSubLock: This prevents calls to UpdateScrollBars and ScrollAfterTopLineChanged
+        *)
+        FIsInDecPaintLock := iplSubLock;
+        if sfEnsureCursorPos in fStateFlags then
+          EnsureCursorPosVisible;              // TODO: This may call SetTopLine, change order
+                                               // This does Paintlock, should be before final decrease
+        FIsInDecPaintLock := iplIgnore;
+
+        (* EnsureCursorPosVisible; may have scrolled
+           This should not change the visibility of eithre scrollbar.
+           So no further update of the Caret needed.
+           - If needed this could move down, until right before ScrollAfterTopLineChanged
+        *)
+        if sfScrollbarChanged in fStateFlags then
+          UpdateScrollbars;
+
+        // Must be after EnsureCursorPosVisible (as it does MoveCaretToVisibleArea)
+        if FCaret.LinePos > Max(FLines.Count, 1) then
+          FCaret.LinePos := Max(FLines.Count, 1);
+        if sfCaretChanged in fStateFlags then
+          UpdateCaret;  // MoveCaretToVisibleArea and ScreenCaret.DisplayPos / ScreenCaret is still locked
+      end;
+
+      FMarkupManager.DecPaintLock;
       FBlockSelection.AutoExtend := False;
       if fStatusChanges <> [] then
         DoOnStatusChange(fStatusChanges);
+
+      if (not WaitingForInitialSize) then
+        ScrollAfterTopLineChanged;
     end;
   finally
     FScreenCaret.UnLock;
-    FIsInDecPaintLock := False;
+    FIsInDecPaintLock := iplFalse;
     if FPaintLock = 0 then begin
       SetUpdateState(False, Self);
       if FInvalidateRect.Bottom >= FInvalidateRect.Top then begin
@@ -5151,6 +5190,7 @@ var
 begin
   if (sfPainting in fStateFlags) or (fPaintLock <> 0) or WaitingForInitialSize then
     exit;
+  assert(FIsInDecPaintLock <> iplSubLock, 'TCustomSynEdit.ScrollAfterTopLineChanged: FIsInDecPaintLock <> iplSubLock');
   Delta := FOldTopView - TopView;
   {$IFDEF SYNSCROLLDEBUG}
   if (sfHasScrolled in fStateFlags) then debugln(['ScrollAfterTopLineChanged with sfHasScrolled Delta=',Delta,' topline=',TopLine, '  FOldTopView=',FOldTopView ]);
@@ -5265,6 +5305,7 @@ begin
   if WaitingForInitialSize or (PaintLock <> 0) or (FDoingResizeLock <> 0) then
     Include(fStateFlags, sfScrollbarChanged)
   else begin
+    assert(FIsInDecPaintLock <> iplSubLock, 'TCustomSynEdit.UpdateScrollBars: FIsInDecPaintLock <> iplSubLock');
     Exclude(fStateFlags, sfScrollbarChanged);
     ScrollInfo.cbSize := SizeOf(ScrollInfo);
     ScrollInfo.fMask := SIF_ALL or SIF_DISABLENOSCROLL and not SIF_TRACKPOS;
@@ -5797,7 +5838,7 @@ begin
   //  don't use MinMax here, it will fail in design mode (Lines.Count is zero,
   // but the painting code relies on TopLine >= 1)
   {$IFDEF SYNSCROLLDEBUG}
-  if (fPaintLock = 0) and (not FIsInDecPaintLock) then debugln(['SetTopView outside Paintlock New=',AValue, ' Old=', FFoldedLinesView.TopLine]);
+  if (fPaintLock = 0) and (FIsInDecPaintLock = iplFalse) then debugln(['SetTopView outside Paintlock New=',AValue, ' Old=', FFoldedLinesView.TopLine]);
   if (sfHasScrolled in fStateFlags) then debugln(['SetTopView with sfHasScrolled Value=',AValue, '  FOldTopView=',FOldTopView ]);
   {$ENDIF}
   FCachedTopLine := -1;
@@ -5830,7 +5871,7 @@ begin
     fMarkupManager.TopLine := TopLine;
 
   {$IFDEF SYNSCROLLDEBUG}
-  if (fPaintLock = 0) and (not FIsInDecPaintLock) then debugln('SetTopline outside Paintlock EXIT');
+  if (fPaintLock = 0) and (FIsInDecPaintLock = iplFalse) then debugln('SetTopline outside Paintlock EXIT');
   {$ENDIF}
 end;
 
@@ -7963,7 +8004,7 @@ end;
 procedure TCustomSynEdit.AfterLoadFromFile;
 begin
   if WaitingForInitialSize or
-     ( (FPaintLock > 0) and not((FPaintLock = 1) and FIsInDecPaintLock) )
+     ( (FPaintLock > 0) and not((FPaintLock = 1) and (FIsInDecPaintLock <> iplFalse)) )
   then begin
     Include(fStateFlags, sfAfterLoadFromFileNeeded);
     exit;
