@@ -1091,10 +1091,7 @@ begin
   {$ENDIF}
 
   if pEndLine < 0 then
-    pEndLine := pStartLine
-  else
-    // pEndLine seems to be the first line after the change
-    pEndLine := Max(1, pEndLine - 1);
+    pEndLine := pStartLine;
   lEndLine := pEndLine;
   FColumnCache[ToIdx(lEndLine)] := FirstCharacterColumn[ToIdx(lEndLine)];
   x := FColumnCache[ToIdx(lEndLine)];
