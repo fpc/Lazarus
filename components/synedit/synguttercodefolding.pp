@@ -193,7 +193,7 @@ begin
   tmp := FoldView.FoldType[AScreenLine];
   tmp2 := FoldView.FoldType[AScreenLine-1];
   FIsFoldHidePreviousLine := False;
-  if (AScreenLine = 0) and (ToIdx(GutterArea.TextArea.TopLine) = 0) and
+  if (AScreenLine = 0) and (ToIdx(GutterArea.TextArea.TopViewedLine) = 0) and
      (cfCollapsedHide in tmp2)
   then begin
     Result := cfCollapsedHide;
@@ -536,7 +536,7 @@ var
   ScrLine: Integer;
 begin
   Result := False;
-  ScrLine := ToIdx(AnInfo.NewCaret.ViewedLinePos) - ToIdx(GutterArea.TextArea.TopLine);
+  ScrLine := ToIdx(AnInfo.NewCaret.ViewedLinePos) - ToIdx(GutterArea.TextArea.TopViewedLine);
   tmp := FoldTypeForLine(ScrLine);
   case tmp of
     cfCollapsedFold, cfCollapsedHide:
@@ -562,7 +562,7 @@ begin
   if (ACommand = emcNone) then exit;
   line := AnInfo.NewCaret.LinePos;
 
-  ScrLine := ToIdx(AnInfo.NewCaret.ViewedLinePos) - ToIdx(GutterArea.TextArea.TopLine);
+  ScrLine := ToIdx(AnInfo.NewCaret.ViewedLinePos) - ToIdx(GutterArea.TextArea.TopViewedLine);
 
   // TODO: Keepvisible is incorrect, if the line can fold AND unfold, and the action does not match the symbol
 
@@ -572,7 +572,7 @@ begin
 
   if (FoldTypeForLine(ScrLine) = cfCollapsedHide) then begin
     if IsFoldHidePreviousLine(ScrLine) then
-      line := ToPos(ViewedTextBuffer.DisplayView.ViewToTextIndex(ScrLine - 1 + ToIdx(GutterArea.TextArea.TopLine)));
+      line := ToPos(ViewedTextBuffer.DisplayView.ViewToTextIndex(ScrLine - 1 + ToIdx(GutterArea.TextArea.TopViewedLine)));
     inc(line);
     KeepVisible := 0;
   end

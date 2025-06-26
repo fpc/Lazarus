@@ -358,7 +358,7 @@ begin
   aFirstCustomColumnIdx := 0;
   if (FBookMarkOpt.DrawBookmarksFirst) then
     aFirstCustomColumnIdx := 1;
-  aScreenLine := aScreenLine + ToIdx(GutterArea.TextArea.TopLine);
+  aScreenLine := aScreenLine + ToIdx(GutterArea.TextArea.TopViewedLine);
   j := ViewedTextBuffer.DisplayView.ViewToTextIndexEx(aScreenLine, iRange);
   if aScreenLine <> iRange.Top then
     exit;

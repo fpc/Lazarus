@@ -83,7 +83,7 @@ begin
 
   LineHeight := SynEdit.LineHeight;
   c := SynEdit.Lines.Count;
-  t := ToIdx(GutterArea.TextArea.TopLine);
+  t := ToIdx(GutterArea.TextArea.TopViewedLine);
 
   PaintBackground(Canvas, AClip);
 

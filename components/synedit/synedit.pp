@@ -1987,7 +1987,7 @@ begin
   if not Assigned(FTextArea) then
     Result := -1
   else
-    Result := FTheLinesView.ViewToTextIndex(ToIdx(FTextArea.TopLine)) + 1;
+    Result := FTheLinesView.ViewToTextIndex(ToIdx(FTextArea.TopViewedLine)) + 1;
 end;
 
 procedure TCustomSynEdit.SetBlockTabIndent(AValue: integer);
@@ -5811,10 +5811,10 @@ begin
   *)
   FFoldedLinesView.TopViewPos := AValue;
 
-  if FTextArea.TopLine <> AValue then begin
+  if FTextArea.TopViewedLine <> AValue then begin
     if FPaintLock = 0 then
       FOldTopView := TopView;
-    FTextArea.TopLine := AValue;
+    FTextArea.TopViewedLine := AValue;
     UpdateScrollBars;
     // call MarkupMgr before ScrollAfterTopLineChanged, in case we aren't in a PaintLock
     fMarkupManager.TopLine := TopLine;
@@ -5832,7 +5832,7 @@ end;
 
 function TCustomSynEdit.GetTopView : Integer;
 begin
-  Result := FTextArea.TopLine;
+  Result := FTextArea.TopViewedLine;
 end;
 
 procedure TCustomSynEdit.SetWordBlock(Value: TPoint);

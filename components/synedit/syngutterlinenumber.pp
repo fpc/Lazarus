@@ -244,7 +244,7 @@ begin
 
   LineHeight := SynEdit.LineHeight;
   c := SynEdit.Lines.Count;
-  t := ToIdx(GutterArea.TextArea.TopLine);
+  t := ToIdx(GutterArea.TextArea.TopViewedLine);
   // Changed to use fTextDrawer.BeginDrawing and fTextDrawer.EndDrawing only
   // when absolutely necessary.  Note: Never change brush / pen / font of the
   // canvas inside of this block (only through methods of fTextDrawer)!

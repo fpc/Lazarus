@@ -141,7 +141,7 @@ type
     FRightEdgeColumn: integer;
     FRightEdgeVisible: boolean;
 
-    FTopLine: TLinePos;
+    FViewedTopLine: TLinePos;
     FLeftChar: Integer;
 
     function GetExtraCharSpacing: integer;
@@ -150,7 +150,7 @@ type
     procedure SetExtraLineSpacing(AValue: integer);
     procedure SetLeftChar(AValue: Integer);
     procedure SetPadding(Side: TLazSynBorderSide; AValue: integer);
-    procedure SetTopLine(AValue: TLinePos);
+    procedure SetViewedTopLine(AValue: TLinePos);
     procedure DoDrawerFontChanged(Sender: TObject; Changes: TSynStatusChanges);
   protected
     procedure BoundsChanged; override;
@@ -183,7 +183,8 @@ type
     property RightEdgeVisible: boolean read FRightEdgeVisible write FRightEdgeVisible;
     property RightEdgeColor: TColor    read FRightEdgeColor write FRightEdgeColor;
 
-    property TopLine: TLinePos read FTopLine write SetTopLine; // TopView
+    property TopViewedLine: TLinePos read FViewedTopLine write SetViewedTopLine;
+    property TopLine: TLinePos read FViewedTopLine write SetViewedTopLine; deprecated 'Renamed to TopViewedLine - To be removed in 5.99';
     property LeftChar: Integer read FLeftChar write SetLeftChar;
 
     property TheLinesView:  TSynEditStrings       read FTheLinesView  write FTheLinesView;
@@ -1324,14 +1325,14 @@ begin
     ViewedRange := DisplayView.TextToViewIndex(FirstTextLine);
     rcInval.Top := Max(TextArea.TextBounds.Top,
                        TextArea.TextBounds.Top + (ViewedRange.Top + AScreenLineOffset
-                          - TextArea.TopLine + 1) * TextArea.LineHeight);
+                          - TextArea.TopViewedLine + 1) * TextArea.LineHeight);
   end;
   if (LastTextLine >= 0) then begin
     if LastTextLine <> FirstTextLine then
       ViewedRange := DisplayView.TextToViewIndex(LastTextLine);
     rcInval.Bottom := Min(TextArea.TextBounds.Bottom,
                           TextArea.TextBounds.Top + ({%H-}ViewedRange.Bottom + AScreenLineOffset
-                             - TextArea.TopLine + 2)  * TextArea.LineHeight);
+                             - TextArea.TopViewedLine + 2)  * TextArea.LineHeight);
   end;
 
   {$IFDEF VerboseSynEditInvalidate}
@@ -1400,11 +1401,11 @@ begin
   FontChanged;
 end;
 
-procedure TLazSynTextArea.SetTopLine(AValue: TLinePos);
+procedure TLazSynTextArea.SetViewedTopLine(AValue: TLinePos);
 begin
   if AValue < 1 then AValue := 1;
-  if FTopLine = AValue then Exit;
-  FTopLine := AValue;
+  if FViewedTopLine = AValue then Exit;
+  FViewedTopLine := AValue;
 end;
 
 procedure TLazSynTextArea.DoDrawerFontChanged(Sender: TObject; Changes: TSynStatusChanges);
@@ -1428,7 +1429,7 @@ end;
 
 function TLazSynTextArea.RowColumnToPixels(const RowCol: TScreenPoint_0): TPoint;
 begin
-  // Inludes LeftChar, but not Topline
+  // Inludes LeftChar, but not TopViewedline
   Result.X := FTextBounds.Left + (RowCol.X - LeftChar) * CharWidth;
   Result.Y := FTextBounds.Top + RowCol.Y * LineHeight;
 end;
@@ -1436,7 +1437,7 @@ end;
 function TLazSynTextArea.PixelsToRowColumn(Pixels: TPoint;
   aFlags: TSynCoordinateMappingFlags): TPhysScreenPoint_0;
 begin
-  // Inludes LeftChar, but not Topline
+  // Inludes LeftChar, but not TopViewedline
   if (Pixels.X >= FTextBounds.Left) and (Pixels.X < FTextBounds.Right) then begin
     if not (scmForceLeftSidePos in aFlags) then
       Pixels.X := Pixels.X +  (CharWidth div 2);  // nearest side of char
@@ -1469,7 +1470,7 @@ begin
   FPaintLineColor2 := TSynSelectedColor.Create;
   for i := low(TLazSynBorderSide) to high(TLazSynBorderSide) do
     FPadding[i] := 0;
-  FTopLine := 1;
+  FViewedTopLine := 1;
   FLeftChar := 1;
   FRightEdgeColumn  := 80;
   FRightEdgeVisible := True;
@@ -1512,7 +1513,7 @@ begin
   for i := low(TLazSynBorderSide) to high(TLazSynBorderSide) do
     FPadding[i] := TLazSynTextArea(Src).FPadding[i];
 
-  FTopLine := TLazSynTextArea(Src).FTopLine;
+  FViewedTopLine := TLazSynTextArea(Src).FViewedTopLine;
   FLeftChar := TLazSynTextArea(Src).FLeftChar;
 
   BoundsChanged;
@@ -1528,13 +1529,13 @@ begin
   if (FirstTextLine >= 0) then begin
     ViewedRange := DisplayView.TextToViewIndex(FirstTextLine);
     rcInval.Top := Max(TextBounds.Top,
-                       TextBounds.Top + (ViewedRange.Top + AScreenLineOffset - TopLine + 1) * LineHeight);
+                       TextBounds.Top + (ViewedRange.Top + AScreenLineOffset - TopViewedLine + 1) * LineHeight);
   end;
   if (LastTextLine >= 0) then begin
     if LastTextLine <> FirstTextLine then
       ViewedRange := DisplayView.TextToViewIndex(LastTextLine);
     rcInval.Bottom := Min(TextBounds.Bottom,
-                          TextBounds.Top + ({%H-}ViewedRange.Bottom + AScreenLineOffset - TopLine + 2)  * LineHeight);
+                          TextBounds.Top + ({%H-}ViewedRange.Bottom + AScreenLineOffset - TopViewedLine + 2)  * LineHeight);
   end;
 
   {$IFDEF VerboseSynEditInvalidate}
@@ -1920,7 +1921,7 @@ var
     rcLine := AClip;
     rcLine.Bottom := TextBounds.Top + FirstLine * fTextHeight;
 
-    TV := TopLine - 1;
+    TV := TopViewedLine - 1;
 
     // Now loop through all the lines. The indices are valid for Lines.
     MaxLine := DisplayView.GetLinesCount-1;
@@ -1991,7 +1992,7 @@ begin
 
   //DebugLn(['TCustomSynEdit.PaintTextLines ',dbgs(AClip)]);
   CurLine:=-1;
-  //DebugLn('TCustomSynEdit.PaintTextLines ',DbgSName(Self),' TopLine=',dbgs(TopLine),' AClip=',dbgs(AClip));
+  //DebugLn('TCustomSynEdit.PaintTextLines ',DbgSName(Self),' TopViewedLine=',dbgs(TopViewedLine),' AClip=',dbgs(AClip));
   colEditorBG := BackgroundColor;
   // If the right edge is visible and in the invalid area, prepare to paint it.
   // Do this first to realize the pen when getting the dc variable.

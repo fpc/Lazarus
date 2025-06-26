@@ -1531,7 +1531,7 @@ begin
 
   txt := TLazSynTextArea.Create(AOwner, FOriginalManager.TextArea.TextDrawer);
   txt.Assign(FOriginalManager.TextArea);
-  txt.TopLine := 1;
+  txt.TopViewedLine := 1;
   txt.LeftChar := 1;
 
   lgutter:= TSourceLazSynSurfaceGutter.Create(AOwner);
@@ -2699,7 +2699,7 @@ var
 begin
   CheckTextBuffer;
 
-  aScreenLine2 := aScreenLine + ToIdx(GutterArea.TextArea.TopLine);
+  aScreenLine2 := aScreenLine + ToIdx(GutterArea.TextArea.TopViewedLine);
   TxtIdx:= ViewedTextBuffer.DisplayView.ViewToTextIndexEx(aScreenLine2, iRange);
   FCurLineHasDebugMark := (aScreenLine2 = iRange.Top) and (aScreenLine2 >= 0) and
     (TxtIdx >= 0) and (TxtIdx < TSynEdit(SynEdit).Lines.Count) and

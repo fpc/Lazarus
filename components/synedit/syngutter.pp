@@ -156,12 +156,12 @@ begin
     rcInval.Top := Max(TextArea.TextBounds.Top,
                        TextArea.TextBounds.Top
                        + (DisplayView.TextToViewIndex(FirstTextLine).Top + AScreenLineOffset
-                          - TextArea.TopLine + 1) * TextArea.LineHeight);
+                          - TextArea.TopViewedLine + 1) * TextArea.LineHeight);
   if (LastTextLine >= 0) then
     rcInval.Bottom := Min(TextArea.TextBounds.Bottom,
                           TextArea.TextBounds.Top
                           + (DisplayView.TextToViewIndex(LastTextLine).Bottom + AScreenLineOffset
-                             - TextArea.TopLine + 2)  * TextArea.LineHeight);
+                             - TextArea.TopViewedLine + 2)  * TextArea.LineHeight);
 
   {$IFDEF VerboseSynEditInvalidate}
   DebugLn(['TCustomSynEdit.InvalidateGutterLines ',DbgSName(self), ' FirstLine=',FirstTextLine, ' LastLine=',LastTextLine, ' rect=',dbgs(rcInval)]);
