@@ -543,6 +543,7 @@ type
     FIsInDecPaintLock: Boolean;
     FScrollBars: TScrollStyle;
     FOldTopView: Integer;
+    FCachedTopLine: Integer;
     FLastTextChangeStamp: Int64;
     fHighlighter: TSynCustomHighlighter;
     fUndoList: TSynEditUndoList;
@@ -1985,9 +1986,12 @@ end;
 function TCustomSynEdit.GetTopLine: Integer;
 begin
   if not Assigned(FTextArea) then
-    Result := -1
-  else
-    Result := FTheLinesView.ViewToTextIndex(ToIdx(FTextArea.TopViewedLine)) + 1;
+    exit(-1);
+
+  if FCachedTopLine > 0 then
+    exit(FCachedTopLine);
+  Result := FTheLinesView.ViewToTextIndex(ToIdx(FTextArea.TopViewedLine)) + 1;
+  FCachedTopLine := Result;
 end;
 
 procedure TCustomSynEdit.SetBlockTabIndent(AValue: integer);
@@ -5139,6 +5143,7 @@ begin
   if NewTopView <> TopView then begin
     TopView := NewTopView;
   end;
+  FCachedTopLine := Value;
 end;
 
 procedure TCustomSynEdit.ScrollAfterTopLineChanged;
@@ -5797,6 +5802,7 @@ begin
   if (fPaintLock = 0) and (not FIsInDecPaintLock) then debugln(['SetTopView outside Paintlock New=',AValue, ' Old=', FFoldedLinesView.TopLine]);
   if (sfHasScrolled in fStateFlags) then debugln(['SetTopView with sfHasScrolled Value=',AValue, '  FOldTopView=',FOldTopView ]);
   {$ENDIF}
+  FCachedTopLine := -1;
   TSynEditStringList(FLines).SendCachedNotify; // TODO: review
 
   AValue := Min(AValue, CurrentMaxTopView);
