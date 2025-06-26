@@ -1675,7 +1675,7 @@ procedure TIDESynEditor.SrcSynCaretChanged(Sender: TObject);
     Result := TopLine - TSourceLazSynSurfaceManager(FPaintArea).TopLineCount;
   end;
 var
-  InfCnt, i, t, ListCnt: Integer;
+  InfCnt, i, NewTopLn, ListCnt, TopLn, TopLnAdjusted, CY: Integer;
   InfList: array [0..1] of
     record
       LineIndex: Integer;
@@ -1693,13 +1693,16 @@ begin
   end;
   FSrcSynCaretChangedNeeded := False;
 
+  TopLn := TopLine;
+  TopLnAdjusted := TopLn - TSourceLazSynSurfaceManager(FPaintArea).TopLineCount;
+  CY := CaretY;
   FSrcSynCaretChangedLock := True;
   try
     ListCnt := 0;
 
-    if CaretY >= RealTopLine then begin
+    if CY >= TopLnAdjusted then begin
       FTopInfoNestList.Lines := TextBuffer; // in case it changed
-      FTopInfoNestList.Line := CaretY-1;
+      FTopInfoNestList.Line := CY-1;
       FTopInfoNestList := FTopInfoNestList;
 
       InfCnt := FTopInfoNestList.Count;
@@ -1736,20 +1739,20 @@ begin
       end;
     end;
 
-    if TopLine <> FTopInfoLastTopLine then // if Sender = nil;
-      ListCnt := Min(ListCnt, Max(0, CaretY - RealTopLine));
+    if TopLn <> FTopInfoLastTopLine then // if Sender = nil;
+      ListCnt := Min(ListCnt, Max(0, CY - TopLnAdjusted));
 
-    t := TopLine + ListCnt - TSourceLazSynSurfaceManager(FPaintArea).TopLineCount;
-    if (CaretY >= TopLine) and (CaretY < t) then
-      t := CaretY;
+    NewTopLn := TopLnAdjusted + ListCnt;
+    if (CY >= TopLn) and (CY < NewTopLn) then
+      NewTopLn := CY;
 
     while ListCnt > 0 do begin
-      if InfList[0].LineIndex + 1 >= t-1 then begin
+      if InfList[0].LineIndex + 1 >= NewTopLn-1 then begin
         InfList[0] := InfList[1];
         dec(ListCnt);
-        t := TopLine + ListCnt - TSourceLazSynSurfaceManager(FPaintArea).TopLineCount;
-        if (CaretY >= TopLine) and (CaretY < t) then
-          t := CaretY;
+        NewTopLn := TopLnAdjusted + ListCnt;
+        if (CY >= TopLn) and (CY < NewTopLn) then
+          NewTopLn := CY;
       end
       else
         break;
@@ -1759,7 +1762,7 @@ begin
 
     if ListCnt <> TSourceLazSynSurfaceManager(FPaintArea).TopLineCount then begin
       TSourceLazSynSurfaceManager(FPaintArea).TopLineCount := ListCnt;
-      TopLine := t;
+      TopLine := NewTopLn;
       SizeOrFontChanged(FALSE);
       Invalidate; // TODO: move to PaintArea
     end;
