@@ -2670,11 +2670,9 @@ begin
         UpdateCaret;
       //if sfScrollbarChanged in fStateFlags then
       //  UpdateScrollbars;
-      fMarkupHighCaret.CheckState; // Todo: need a global lock, including the markup
-                                   // Todo: Markup can do invalidation, should be before ScrollAfterTopLineChanged;
     end;
     if (FPaintLock = 0) then begin
-      FMarkupManager.DecPaintLock;
+      FMarkupManager.DecPaintLock; // Todo: Markup can do invalidation, should be before ScrollAfterTopLineChanged;
       FBlockSelection.AutoExtend := False;
       if fStatusChanges <> [] then
         DoOnStatusChange(fStatusChanges);

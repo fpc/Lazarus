@@ -2932,6 +2932,7 @@ end;
 procedure TSynEditMarkupHighlightAllCaret.DecPaintLock;
 begin
   inherited DecPaintLock;
+  CheckState;
   if FWaitForHandle and SynEdit.HandleAllocated then
     ScrollTimerHandler(Self);
 end;
