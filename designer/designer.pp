@@ -1258,8 +1258,7 @@ begin
   Result:=nil;
   for i:=0 to Selection.Count-1 do begin
     if (Selection[i].IsTWinControl)
-    and (csAcceptsControls in
-         TWinControl(Selection[i].Persistent).ControlStyle)
+    and (csAcceptsControls in TWinControl(Selection[i].Persistent).ControlStyle)
     and (not Selection[i].ParentInSelection) then begin
       Result:=TWinControl(Selection[i].Persistent);
       if GetLookupRootForComponent(Result)<>FLookupRoot then
@@ -1370,7 +1369,6 @@ begin
   try
     Form.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TDesigner.DoInsertFromStream'){$ENDIF};
     try
-
       // read component stream from clipboard
       if (s.Size<=S.Position) then begin
         debugln('TDesigner.DoInsertFromStream Stream Empty s.Size=',dbgs(s.Size),' S.Position=',dbgs(S.Position));
@@ -1418,6 +1416,7 @@ begin
     GroupId := FUndoList[FUndoCurr].GroupId;
     ExecuteUndoItem(true);
   until (FUndoCurr=Low(FUndoList)) or (GroupId <> FUndoList[FUndoCurr - 1].GroupId);
+  Selection.Clear;
 end;
 
 function TDesigner.DoRedo: Boolean;
@@ -1506,7 +1505,8 @@ var
 var
   CurTextCompStream: TMemoryStream;
   SaveControlSelection: TControlSelection;
-  CompN: TComponentName;
+  CompN, ParentName: TComponentName;
+  Parent: TWinControl;
 begin
   // Undo Add component
   if (IsActUndo and (FUndoList[FUndoCurr].opType = uopAdd)) or
@@ -1539,8 +1539,12 @@ begin
       Inc(FUndoLock);
       CurTextCompStream.Write(FUndoList[FUndoCurr].obj[1], Length(FUndoList[FUndoCurr].obj));
       CurTextCompStream.Position := 0;
-      DoInsertFromStream(CurTextCompStream,
-        TWinControl(FForm.FindChildControl(FUndoList[FUndoCurr].parentName)), []);
+      ParentName := FUndoList[FUndoCurr].parentName;
+      if ParentName = FLookupRoot.Name then
+        Parent := TWinControl(FLookupRoot)
+      else
+        Parent := TWinControl(FForm.FindChildControl(ParentName));
+      DoInsertFromStream(CurTextCompStream, Parent, []);
     finally
       Dec(FUndoLock);
       CurTextCompStream.Free;
