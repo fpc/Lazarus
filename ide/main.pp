@@ -1125,6 +1125,7 @@ var
     AddCmdLineParamDesc(result, ['--verbose'], lisBeMoreVerboseCanBeGivenMultipleTimes);
     // debug file
     AddCmdLineParamDesc(result, [DebugLogOpt + '<file>'], lisFileWhereDebugOutputIsWritten);
+    AddCmdLineParamDesc(result, [DebugLogCloseLogOpt], lisDebugLogCloseOptDescr);
     // debug groups (sorted)
     lLogGroups := TStringList.Create;
     for i := 0 to DebugLogger.LogGroupList.Count - 1 do
