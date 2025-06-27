@@ -28,6 +28,7 @@ const
   csvHeader = 'Type,Description,Priority,Module,Line,Owner,Category';
 
 resourcestring
+  lisTodolistEdit='Edit selected item';
   lisTodolistRefresh='Refresh todo items';
   lisTodoListGotoLine='Goto selected source line';
   lisCTInsertMacro = 'Insert Macro';

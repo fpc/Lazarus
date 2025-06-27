@@ -435,6 +435,7 @@ begin
 
   Caption := lisToDoList;
 
+  acEdit.Hint := lisTodolistEdit;
   acRefresh.Hint := lisTodolistRefresh;
   acGoto.Hint := listodoListGotoLine;
   acExport.Hint := rsExportTodoIt;
