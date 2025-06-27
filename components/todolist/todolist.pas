@@ -124,6 +124,7 @@ type
     procedure lvTodoCompare(Sender : TObject; Item1, Item2 : TListItem;
       {%H-}Data : Integer; var Compare : Integer);
     procedure lvTodoEnter(Sender: TObject);
+    procedure lvTodoKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure lvTodoSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
     procedure SaveDialogShow(Sender: TObject);
     procedure XMLPropStorageRestoreProperties(Sender: TObject);
@@ -334,6 +335,15 @@ begin
   acGoto.Enabled := acEdit.Enabled;
 end;
 
+procedure TIDETodoWindow.lvTodoKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) and (Shift = []) then
+  begin
+    acGotoExecute(Sender);
+    Key := 0;
+  end;
+end;
+
 procedure TIDETodoWindow.lvTodoSelectItem(Sender: TObject; Item: TListItem;
   Selected: Boolean);
 begin
@@ -425,6 +435,7 @@ begin
 
   Caption := lisToDoList;
 
+  acEdit.Hint := lisTodolistEdit;
   acRefresh.Hint := lisTodolistRefresh;
   acGoto.Hint := listodoListGotoLine;
   acExport.Hint := rsExportTodoIt;

@@ -69,6 +69,7 @@ object IDETodoWindow: TIDETodoWindow
     OnClick = lvTodoClick
     OnCompare = lvTodoCompare
     OnEnter = lvTodoEnter
+    OnKeyDown = lvTodoKeyDown
     OnSelectItem = lvTodoSelectItem
   end
   object ToolBar: TToolBar
@@ -276,6 +277,10 @@ object IDETodoWindow: TIDETodoWindow
     Top = 152
     object acEdit: TAction
       Caption = 'Edit'
+      SecondaryShortCuts.Strings = (
+        'Alt+Enter'
+      )
+      ShortCut = 113
       OnExecute = acEditExecute
     end
     object acGoto: TAction
@@ -284,6 +289,7 @@ object IDETodoWindow: TIDETodoWindow
     end
     object acRefresh: TAction
       Caption = 'Refresh'
+      ShortCut = 116
       OnExecute = acRefreshExecute
     end
     object acExport: TAction
