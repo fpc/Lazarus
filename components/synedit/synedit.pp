@@ -2689,8 +2689,7 @@ begin
         *)
         FIsInDecPaintLock := iplSubLock;
         if sfEnsureCursorPos in fStateFlags then
-          EnsureCursorPosVisible;              // TODO: This may call SetTopLine, change order
-                                               // This does Paintlock, should be before final decrease
+          EnsureCursorPosVisible;
         FIsInDecPaintLock := iplIgnore;
 
         (* EnsureCursorPosVisible; may have scrolled
