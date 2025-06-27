@@ -2704,13 +2704,18 @@ begin
           UpdateCaret;  // MoveCaretToVisibleArea and ScreenCaret.DisplayPos / ScreenCaret is still locked
       end;
 
+      (* Call user code
+         May change anything. All changes are immediate, usercode can not start another paintlock.
+         TOOD: Needs further review
+      *)
+      if fStatusChanges <> [] then
+        DoOnStatusChange(fStatusChanges);
+      // Caret should no longer change. No more need for AutoExtend
+      FBlockSelection.AutoExtend := False;
       (* Markup may depend on Caret pos
          Markup should not change the caret
       *)
       FMarkupManager.DecPaintLock;
-      FBlockSelection.AutoExtend := False;
-      if fStatusChanges <> [] then
-        DoOnStatusChange(fStatusChanges);
 
       if (not WaitingForInitialSize) then begin
         FIsInDecPaintLock := iplIgnoreAllowScroll;  // Allow UpdateScrollBars and ScrollAfterTopLineChanged;
