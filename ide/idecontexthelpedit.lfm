@@ -13,9 +13,11 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
   ClientHeight = 515
   ClientWidth = 655
   LCLVersion = '4.99.0.0'
+  KeyPreview = True
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnKeyDown = FormKeyDown
   object WindowControlsGroupBox: TGroupBox
     Left = 6
     Height = 471
@@ -47,6 +49,7 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
     object CreateHelpNodeForControlButton: TButton
       Left = 6
       Height = 35
+      Hint = '[Ctrl+N]'
       Top = 369
       Width = 289
       Align = alBottom
@@ -58,6 +61,7 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
     object TestButton: TButton
       Left = 6
       Height = 35
+      Hint = '[Ctrl+T]'
       Top = 410
       Width = 289
       Align = alBottom
@@ -72,6 +76,7 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
       AnchorSideBottom.Control = CreateHelpNodeForControlButton
       Left = 6
       Height = 25
+      Hint = '[Ctrl+O]'
       Top = 338
       Width = 147
       Anchors = [akLeft, akBottom]
