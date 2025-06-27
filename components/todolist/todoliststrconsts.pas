@@ -40,6 +40,7 @@ resourcestring
   lisToDoLLine  = 'Line';
   lisToDoLOwner = 'Owner';
   listToDoLCategory = 'Category';
+  lisEdit = 'Edit';
   lisToDoGoto = 'Goto';
   lisToDoExport = 'Export';
   lisOptions = 'Options';

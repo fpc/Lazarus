@@ -439,6 +439,7 @@ begin
   acRefresh.Hint := lisTodolistRefresh;
   acGoto.Hint := listodoListGotoLine;
   acExport.Hint := rsExportTodoIt;
+  acEdit.Caption := lisEdit;
   acRefresh.Caption := dlgUnitDepRefresh;
   acGoto.Caption := lisToDoGoto;
   acExport.Caption := lisToDoExport;
