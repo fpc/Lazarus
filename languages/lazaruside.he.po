@@ -9071,6 +9071,10 @@ msgstr "(ניפוי שגיאות)"
 msgid "Automatic typecast for objects"
 msgstr ""
 
+#: lazarusidestrconsts.lisdebuglogcloseoptdescr
+msgid "Close log file between writes. Prevents loss of unsaved data when the IDE crashes. By default, writes are buffered by the OS for performance."
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmaddexception
 msgid "Add Exception"
 msgstr "הוסף חריגה"

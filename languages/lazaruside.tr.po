@@ -8642,6 +8642,10 @@ msgstr "%s (hata ayıklanıyor ...)"
 msgid "Automatic typecast for objects"
 msgstr "Nesneler için otomatik tip analizi"
 
+#: lazarusidestrconsts.lisdebuglogcloseoptdescr
+msgid "Close log file between writes. Prevents loss of unsaved data when the IDE crashes. By default, writes are buffered by the OS for performance."
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmaddexception
 msgid "Add Exception"
 msgstr "İstisna Ekle"

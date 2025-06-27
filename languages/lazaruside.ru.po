@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-06-15 12:00+0300\n"
+"PO-Revision-Date: 2025-06-27 18:26+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -8628,6 +8628,10 @@ msgstr "%s (идёт отладка ...)"
 #: lazarusidestrconsts.lisdebughintautotypecastclass
 msgid "Automatic typecast for objects"
 msgstr "Автоматически выполнять приведение типов объектов"
+
+#: lazarusidestrconsts.lisdebuglogcloseoptdescr
+msgid "Close log file between writes. Prevents loss of unsaved data when the IDE crashes. By default, writes are buffered by the OS for performance."
+msgstr "Закрывать файл журнала между записями. Предотвращает потерю несохранённых данных при аварийном завершении работы IDE. По умолчанию записи буферизуются ОС для повышения производительности."
 
 #: lazarusidestrconsts.lisdebugoptionsfrmaddexception
 msgid "Add Exception"
