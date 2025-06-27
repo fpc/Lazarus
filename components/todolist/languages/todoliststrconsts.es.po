@@ -53,6 +53,10 @@ msgstr ""
 msgid "Insert Macro"
 msgstr "Insertar Macro"
 
+#: todoliststrconsts.lisedit
+msgid "Edit"
+msgstr ""
+
 #: todoliststrconsts.lisfilteritem0
 msgid "All"
 msgstr ""
@@ -119,6 +123,10 @@ msgctxt "todoliststrconsts.lissourceeditorhint"
 msgid "Add units in source editor"
 msgstr ""
 
+#: todoliststrconsts.listddedittodo
+msgid "Edit the ToDo/Done/Note"
+msgstr ""
+
 #: todoliststrconsts.listddinserttodo
 #, fuzzy
 #| msgid "Insert ToDo"
@@ -155,6 +163,10 @@ msgstr ""
 
 #: todoliststrconsts.listodolistedhint
 msgid "Add units listed in project inspector/package editor"
+msgstr ""
+
+#: todoliststrconsts.listodolistedit
+msgid "Edit selected item"
 msgstr ""
 
 #: todoliststrconsts.listodolistgotoline
