@@ -2073,6 +2073,8 @@ var
   ATransientWindow2: PTransientWindow;
   ParentTransientWindow: PTransientWindow;
   OldTransientParent: PGtkWindow;
+  WidgetInfo: PWidgetInfo;
+  WndParentPresent: Boolean;
 begin
   if (not UseTransientForModalWindows) then exit;
   if UpdatingTransientWindows then begin
@@ -2161,11 +2163,44 @@ begin
       // there is no modal window
       // -> break all transient window relation ships
       for i:=AllWindows.Count-1 downto 0 do begin
-        ATransientWindow:=PTransientWindow(AllWindows[i]);
+        ATransientWindow := PTransientWindow(AllWindows[i]);
         {$IFDEF VerboseTransient}
         debugln(['TGtk2WidgetSet.UpdateTransientWindows  Untransient ',i,
           ' ',dbgsname(ATransientWindow^.Component)]);
         {$ENDIF}
+        LCLObject := ATransientWindow^.Component;
+        if LCLObject is TCustomForm then
+        begin
+          if TCustomForm(LCLObject).PopupParent <> nil then
+          begin
+            gtk_window_set_transient_for(ATransientWindow^.GtkWindow,
+              {%H-}PGtkWindow(TCustomForm(LCLObject).PopupParent.Handle));
+            Continue;
+          end
+          else
+          begin
+            WidgetInfo := GetWidgetInfo(ATransientWindow^.GtkWindow);
+            Window := {%H-}PGtkWindow(WidgetInfo^.WndParent);
+            if Window <> nil then
+            begin
+              WndParentPresent := False;
+              for j := 0 to AllWindows.Count - 1 do
+              begin
+                ATransientWindow2 := PTransientWindow(AllWindows[j]);
+                if ATransientWindow2^.GtkWindow = Window then
+                begin
+                  WndParentPresent := True;
+                  gtk_window_set_transient_for(ATransientWindow^.GtkWindow, Window);
+                  Break;
+                end;
+              end;
+              if WndParentPresent then
+                Continue
+              else
+                WidgetInfo^.WndParent := 0;
+            end;
+          end;
+        end;
         gtk_window_set_transient_for(ATransientWindow^.GtkWindow,nil);
       end;
     end else begin

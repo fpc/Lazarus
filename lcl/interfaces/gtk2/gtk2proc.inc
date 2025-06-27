@@ -4176,6 +4176,7 @@ begin
   Result^.Style := AParams.Style;
   Result^.ExStyle := AParams.ExStyle;
   Result^.WndProc := {%H-}PtrUInt(AParams.WindowClass.lpfnWndProc);
+  Result^.WndParent := AParams.WndParent;
 end;
 
 function GetWidgetInfo(const AWidget: Pointer): PWidgetInfo;
