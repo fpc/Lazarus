@@ -1540,8 +1540,8 @@ begin
       CurTextCompStream.Write(FUndoList[FUndoCurr].obj[1], Length(FUndoList[FUndoCurr].obj));
       CurTextCompStream.Position := 0;
       ParentName := FUndoList[FUndoCurr].parentName;
-      if ParentName = FLookupRoot.Name then
-        Parent := TWinControl(FLookupRoot)
+      if ParentName = FForm.Name then
+        Parent := FForm
       else
         Parent := TWinControl(FForm.FindChildControl(ParentName));
       DoInsertFromStream(CurTextCompStream, Parent, []);
