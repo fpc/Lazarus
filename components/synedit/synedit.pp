@@ -2715,6 +2715,11 @@ begin
 
       if (not WaitingForInitialSize) then
         ScrollAfterTopLineChanged;
+      (* After this InvalidateLines now longer must adjust for
+         "pretend not to have scrolled".
+         If ScrollAfterTopLineChanged did not scroll, then it did InvalidateAll
+       *)
+       FIsInDecPaintLock := iplFalse;
     end;
   finally
     FScreenCaret.UnLock;
@@ -3108,7 +3113,7 @@ begin
         SwapInt(FirstLine, LastLine);
 
       offs := 0;
-      if FPaintLock > 0 then begin
+      if (FPaintLock > 0) or (FIsInDecPaintLock <> iplFalse) then begin
         // pretend we haven't scrolled
         offs := - (FOldTopView - TopView);
       end;
@@ -3137,7 +3142,7 @@ begin
         SwapInt(FirstLine, LastLine);
 
       offs := 0;
-      if FPaintLock > 0 then begin
+      if (FPaintLock > 0) or (FIsInDecPaintLock <> iplFalse) then begin
         // pretend we haven't scrolled
         offs := - (FOldTopView - TopView);
       end;
