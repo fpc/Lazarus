@@ -34,6 +34,7 @@ uses
   Classes, SysUtils,
   // LCL
   Forms, Controls, Graphics, Dialogs, Buttons, ButtonPanel, StdCtrls, ComCtrls, ExtCtrls,
+  LCLType,
   // LazUtils
   LazLoggerBase,
   // codetools
@@ -89,6 +90,7 @@ type
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure HelpNodesTreeViewSelectionChanged(Sender: TObject);
     procedure NodeHasHelpCheckBoxEditingDone(Sender: TObject);
     procedure NodeIsRootCheckBoxEditingDone(Sender: TObject);
@@ -263,6 +265,25 @@ end;
 procedure TContextHelpEditorDlg.FormDestroy(Sender: TObject);
 begin
   FreeAndNil(FWorkingHelpNodes);
+end;
+
+procedure TContextHelpEditorDlg.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  if (Key = VK_O) and (Shift = [ssCtrl]) then
+  begin
+    OpenDeclarationBitBtnClick(Sender);
+    Key := 0;
+  end
+  else if (Key = VK_N) and (Shift = [ssCtrl]) then
+  begin
+    CreateHelpNodeForControlButtonClick(Sender);
+    Key := 0;
+  end
+  else if (Key = VK_T) and (Shift = [ssCtrl]) then
+  begin
+    TestButtonClick(Sender);
+    Key := 0;
+  end;
 end;
 
 procedure TContextHelpEditorDlg.HelpNodesTreeViewSelectionChanged(
