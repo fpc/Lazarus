@@ -1505,7 +1505,7 @@ var
 var
   CurTextCompStream: TMemoryStream;
   SaveControlSelection: TControlSelection;
-  CompN, ParentName: TComponentName;
+  CompN: TComponentName;
   Parent: TWinControl;
 begin
   // Undo Add component
@@ -1539,11 +1539,11 @@ begin
       Inc(FUndoLock);
       CurTextCompStream.Write(FUndoList[FUndoCurr].obj[1], Length(FUndoList[FUndoCurr].obj));
       CurTextCompStream.Position := 0;
-      ParentName := FUndoList[FUndoCurr].parentName;
-      if ParentName = FForm.Name then
+      CompN := FUndoList[FUndoCurr].parentName;
+      if CompN = FForm.Name then
         Parent := FForm
       else
-        Parent := TWinControl(FForm.FindChildControl(ParentName));
+        Parent := TWinControl(FForm.FindChildControl(CompN));
       DoInsertFromStream(CurTextCompStream, Parent, []);
     finally
       Dec(FUndoLock);
