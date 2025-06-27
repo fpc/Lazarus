@@ -448,7 +448,7 @@ type
   TCustomSynEdit = class(TSynEditBase)
     procedure SelAvailChange(Sender: TObject);
   private type
-    TSynDecPaintLockState = (iplFalse, iplIgnore, iplSubLock);
+    TSynDecPaintLockState = (iplFalse, iplIgnore, iplIgnoreAllowScroll, iplSubLock);
   private
     FImeHandler: LazSynIme;
   {$IFDEF Gtk2IME}
@@ -2678,27 +2678,24 @@ begin
     *)
 
     Dec(FPaintLock);
+    (* FIsInDecPaintLock will still prevent/affect some actions:
+       - InvalidateLines/InvalidateGutterLines: keep using "pretend not scrolled offset"
+       - UpdateScrollBars
+       - ScrollAfterTopLineChanged
+    *)
     if (FPaintLock = 0) then begin
       if (not WaitingForInitialSize) then begin
-        if sfScrollbarChanged in fStateFlags then
+        if sfScrollbarChanged in fStateFlags then begin
+          FIsInDecPaintLock := iplIgnoreAllowScroll;  // Allow UpdateScrollBars
           UpdateScrollbars;
+          FIsInDecPaintLock := iplIgnore;
+        end;
 
         (* EnsureCursorPosVisible must be past UpdateScrollbars; but before UpdateCaret (for ScrollBar-Auto-show)
            - May Change TopView and LeftChar
-           - Needs iplSubLock: This prevents calls to UpdateScrollBars and ScrollAfterTopLineChanged
         *)
-        FIsInDecPaintLock := iplSubLock;
         if sfEnsureCursorPos in fStateFlags then
           EnsureCursorPosVisible;
-        FIsInDecPaintLock := iplIgnore;
-
-        (* EnsureCursorPosVisible; may have scrolled
-           This should not change the visibility of eithre scrollbar.
-           So no further update of the Caret needed.
-           - If needed this could move down, until right before ScrollAfterTopLineChanged
-        *)
-        if sfScrollbarChanged in fStateFlags then
-          UpdateScrollbars;
 
         // Must be after EnsureCursorPosVisible (as it does MoveCaretToVisibleArea)
         if FCaret.LinePos > Max(FLines.Count, 1) then
@@ -2707,18 +2704,30 @@ begin
           UpdateCaret;  // MoveCaretToVisibleArea and ScreenCaret.DisplayPos / ScreenCaret is still locked
       end;
 
+      (* Markup may depend on Caret pos
+         Markup should not change the caret
+      *)
       FMarkupManager.DecPaintLock;
       FBlockSelection.AutoExtend := False;
       if fStatusChanges <> [] then
         DoOnStatusChange(fStatusChanges);
 
-      if (not WaitingForInitialSize) then
+      if (not WaitingForInitialSize) then begin
+        FIsInDecPaintLock := iplIgnoreAllowScroll;  // Allow UpdateScrollBars and ScrollAfterTopLineChanged;
+        (* EnsureCursorPosVisible or StatusChanged-events: may have scrolled
+           This should not change the visibility of eithre scrollbar.
+           So no further update of the Caret needed.
+           - If needed this could move down, until right before ScrollAfterTopLineChanged
+        *)
+        if sfScrollbarChanged in fStateFlags then
+          UpdateScrollbars;
+
         ScrollAfterTopLineChanged;
-      (* After this InvalidateLines now longer must adjust for
-         "pretend not to have scrolled".
-         If ScrollAfterTopLineChanged did not scroll, then it did InvalidateAll
-       *)
-       FIsInDecPaintLock := iplFalse;
+        (* After ScrollAfterTopLineChanged InvalidateLines now longer must adjust for
+           "pretend not to have scrolled".
+           If ScrollAfterTopLineChanged did not scroll, then it did InvalidateAll
+        *)
+      end;
     end;
   finally
     FScreenCaret.UnLock;
@@ -5192,9 +5201,11 @@ var
   Delta: Integer;
   srect: TRect;
 begin
-  if (sfPainting in fStateFlags) or (fPaintLock <> 0) or WaitingForInitialSize then
+  if (sfPainting in fStateFlags) or
+     (fPaintLock <> 0) or (not (FIsInDecPaintLock in [iplFalse, iplIgnoreAllowScroll])) or
+     WaitingForInitialSize
+  then
     exit;
-  assert(FIsInDecPaintLock <> iplSubLock, 'TCustomSynEdit.ScrollAfterTopLineChanged: FIsInDecPaintLock <> iplSubLock');
   Delta := FOldTopView - TopView;
   {$IFDEF SYNSCROLLDEBUG}
   if (sfHasScrolled in fStateFlags) then debugln(['ScrollAfterTopLineChanged with sfHasScrolled Delta=',Delta,' topline=',TopLine, '  FOldTopView=',FOldTopView ]);
@@ -5306,10 +5317,12 @@ procedure TCustomSynEdit.UpdateScrollBars;
 var
   ScrollInfo: TScrollInfo;
 begin
-  if WaitingForInitialSize or (PaintLock <> 0) or (FDoingResizeLock <> 0) then
+  if WaitingForInitialSize or
+     (PaintLock <> 0) or (not (FIsInDecPaintLock in [iplFalse, iplIgnoreAllowScroll])) or
+     (FDoingResizeLock <> 0)
+  then
     Include(fStateFlags, sfScrollbarChanged)
   else begin
-    assert(FIsInDecPaintLock <> iplSubLock, 'TCustomSynEdit.UpdateScrollBars: FIsInDecPaintLock <> iplSubLock');
     Exclude(fStateFlags, sfScrollbarChanged);
     ScrollInfo.cbSize := SizeOf(ScrollInfo);
     ScrollInfo.fMask := SIF_ALL or SIF_DISABLENOSCROLL and not SIF_TRACKPOS;
