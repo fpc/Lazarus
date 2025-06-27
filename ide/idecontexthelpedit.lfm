@@ -55,7 +55,7 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
       Align = alBottom
       BorderSpacing.Around = 6
       Caption = 'CreateHelpNodeForControlButton'
-      TabOrder = 1
+      TabOrder = 2
       OnClick = CreateHelpNodeForControlButtonClick
     end
     object TestButton: TButton
@@ -67,7 +67,7 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
       Align = alBottom
       BorderSpacing.Around = 6
       Caption = 'TestButton'
-      TabOrder = 2
+      TabOrder = 3
       OnClick = TestButtonClick
     end
     object OpenDeclarationBitBtn: TBitBtn
@@ -85,7 +85,7 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
       Caption = 'OpenDeclarationBitBtn'
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 3
+      TabOrder = 1
       OnClick = OpenDeclarationBitBtnClick
     end
   end
@@ -99,7 +99,7 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
     Caption = 'NodesGroupBox'
     ClientHeight = 451
     ClientWidth = 317
-    TabOrder = 1
+    TabOrder = 2
     object HelpNodesTreeView: TTreeView
       Left = 6
       Height = 254
@@ -150,7 +150,7 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
         Caption = 'NodeHasHelpCheckBox'
-        TabOrder = 0
+        TabOrder = 2
         OnEditingDone = NodeHasHelpCheckBoxEditingDone
       end
       object NodeNameEdit: TEdit
@@ -162,7 +162,7 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
         Width = 225
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
-        TabOrder = 1
+        TabOrder = 0
         Text = 'NodeNameEdit'
         OnEditingDone = NodeNameEditEditingDone
       end
@@ -177,7 +177,7 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
         Width = 225
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
-        TabOrder = 2
+        TabOrder = 1
         Text = 'NodePathEdit'
         OnEditingDone = NodePathEditEditingDone
       end
