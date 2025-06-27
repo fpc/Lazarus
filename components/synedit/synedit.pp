@@ -2720,9 +2720,8 @@ begin
       if (not WaitingForInitialSize) then begin
         FIsInDecPaintLock := iplIgnoreAllowScroll;  // Allow UpdateScrollBars and ScrollAfterTopLineChanged;
         (* EnsureCursorPosVisible or StatusChanged-events: may have scrolled
-           This should not change the visibility of eithre scrollbar.
-           So no further update of the Caret needed.
-           - If needed this could move down, until right before ScrollAfterTopLineChanged
+           This should not change the visibility of either scrollbar,
+           so no further update of the Caret needed.
         *)
         if sfScrollbarChanged in fStateFlags then
           UpdateScrollbars;
