@@ -799,7 +799,7 @@ begin
     // use space at front of list
     i := ACount;
     if (AIndex = Cnt) and (CntFreeFront-ACount > CntFreeEnd) then             // move all entries;
-      i := i + Max(Cardinal(CntFreeFront-ACount-CntFreeEnd) div 2 - 1, 0);    // Make some room at the end of the list
+      i := i + Max(integer(Cardinal(CntFreeFront-ACount-CntFreeEnd) div 2) - 1, 0);    // Make some room at the end of the list
 
     PSource := FMem.FirstItemPointer;
     PTarget := PSource - (i * FItemSize.ItemSize);
@@ -816,7 +816,7 @@ begin
   if CanEnd then begin
     // use space at end of list
     if (AIndex = 0) and (CntFreeEnd-ACount > CntFreeFront) then             // move all entries;
-      i := max(Cardinal(CntFreeEnd-ACount-CntFreeFront) div 2 - 1, 0)    // Make some room at the end of the list
+      i := max(integer(Cardinal(CntFreeEnd-ACount-CntFreeFront) div 2) - 1, 0)    // Make some room at the end of the list
     else
       i := 0;
 
@@ -837,7 +837,7 @@ begin
   begin
  	// split to both ends
     assert((cap >= ACount) and (CntFreeFront> 0) and (CntFreeEnd > 0), 'TLazShiftBufferListObj.InsertRows: (cap >= ACount) and (CntFreeFront> 0) and (CntFreeEnd > 0)');
-    i := Max(Cardinal(Cap-Cnt-ACount) div 2 - 1, 0);
+    i := Max(integer(Cardinal(Cap-Cnt-ACount) div 2) - 1, 0);
 
     PSource := FMem.FirstItemPointer;
     PTarget := PSource - ((CntFreeFront - i) * FItemSize.ItemSize);
