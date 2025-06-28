@@ -214,6 +214,7 @@ var
   i: Integer;
 begin
   FTodoItemToEdit := nil;
+  ACaption := lisTDDInsertToDo;
   SrcEdit := SourceEditorManagerIntf.ActiveEditor;
   if SrcEdit=nil then exit;
   for i := 0 to lvtodo.Items.Count-1 do
@@ -222,14 +223,14 @@ begin
     TodoItem := TTodoItem(ListItem.Data);
     SrcPos := SrcEdit.CursorTextXY;
     if (TodoItem.Filename = SrcEdit.FileName)
+    and (SrcPos.Y = TodoItem.CodePos.Y)
     and (SrcPos.X > TodoItem.CodePos.X)
-    and (SrcPos.X < TodoItem.CodePos.X + TodoItem.CommentLen)
-    and (SrcPos.Y = TodoItem.CodePos.Y) then
+    and (SrcPos.X < TodoItem.CodePos.X + TodoItem.CommentLen) then
     begin
       // Editor cursor is inside a ToDo item > change menu item captions.
       lvTodo.Selected := ListItem;
       FTodoItemToEdit := TodoItem; // InsertOrEditToDo in ToDoDlg knows what to do.
-      ACaption:=lisTDDEditToDo;
+      ACaption := lisTDDEditToDo;
       Break;
     end;
   end;
