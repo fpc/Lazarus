@@ -51,14 +51,14 @@ type
   TSynMarkupHighAllMatchList = class(TSynEditStorageMem)
   private
     FChangeStamp: int64;
-    function GetEndPoint(const Index : Integer) : TPoint;
-    function GetPoint(const Index : Integer) : TPoint;
+    function GetEndPoint(const AnIndex : Integer) : TPoint;
+    function GetPoint(const AnIndex : Integer) : TPoint;
     function GetPointCount : Integer;
-    function GetStartPoint(const Index : Integer) : TPoint;
-    function  GetMatch(const Index : Integer) : TSynMarkupHighAllMatch;
-    procedure SetEndPoint(const Index : Integer; const AValue : TPoint);
-    procedure SetMatch(const Index : Integer; const AValue : TSynMarkupHighAllMatch);
-    procedure SetStartPoint(const Index : Integer; const AValue : TPoint);
+    function GetStartPoint(const AnIndex : Integer) : TPoint;
+    function  GetMatch(const AnIndex : Integer) : TSynMarkupHighAllMatch;
+    procedure SetEndPoint(const AnIndex : Integer; const AValue : TPoint);
+    procedure SetMatch(const AnIndex : Integer; const AValue : TSynMarkupHighAllMatch);
+    procedure SetStartPoint(const AnIndex : Integer; const AValue : TPoint);
   protected
     function  GetInintialForItemSize: Integer; override;
     procedure SetCount(const AValue : Integer); override;
@@ -66,13 +66,13 @@ type
     constructor Create;
     Function MaybeReduceCapacity : Boolean;
     (* IndexOfFirstMatchForLine
-       Index for the first Item (match) that ENDS AT/AFTER the ALine
+       AnIndex for the first Item (match) that ENDS AT/AFTER the ALine
        That is either it - includes ALine
                          - is after ALine (aka: is in the RANGE ALine..infinity)
        RESULT = 0..Count
        // Count => for not found (all items are before ALine)
      * IndexOfLastMatchForLine
-       Index for the last item that is STARTS BEFORE/At the ALine
+       AnIndex for the last item that is STARTS BEFORE/At the ALine
        That is either it - includes ALine
                          - is before ALine (aka: is in the RANGE 0..ALine)
        RESULT = -1..Count-1
@@ -82,18 +82,18 @@ type
     function IndexOfLastMatchForLine(ALine: Integer): Integer;
     (* IndexOf 0..count
        - if in GAP, or at End-Of-Match: Next match after the GAP for APoint
-       - if in Match (excluding end): Index of thah match
+       - if in Match (excluding end): Index of that match
     *)
     function IndexOf(APoint: TPoint): Integer;
-    procedure Delete(AIndex: Integer; ACount: Integer = 1);
-    procedure Insert(AIndex: Integer; ACount: Integer = 1);
-    procedure Insert(AIndex: Integer; AStartPoint, AEndPoint: TPoint);
-    function Insert(AStartPoint, AEndPoint: TPoint): integer;
-    property Match [const Index : Integer] : TSynMarkupHighAllMatch read GetMatch write SetMatch; default;
-    property StartPoint [const Index : Integer] : TPoint read GetStartPoint write SetStartPoint;
-    property EndPoint   [const Index : Integer] : TPoint read GetEndPoint write SetEndPoint;
+    procedure Delete(AnIndex: Integer; ACount: Integer = 1);
+    procedure Insert(AnIndex: Integer; ACount: Integer = 1);
+    procedure Insert(AnIndex: Integer; AStartPoint, AnEndPoint: TPoint);
+    function Insert(AStartPoint, AnEndPoint: TPoint): integer;
+    property Match [const AnIndex : Integer] : TSynMarkupHighAllMatch read GetMatch write SetMatch; default;
+    property StartPoint [const AnIndex : Integer] : TPoint read GetStartPoint write SetStartPoint;
+    property EndPoint   [const AnIndex : Integer] : TPoint read GetEndPoint write SetEndPoint;
     property PointCount : Integer read GetPointCount;
-    property Point      [const Index : Integer] : TPoint read GetPoint;
+    property Point      [const AnIndex : Integer] : TPoint read GetPoint;
     property ChangeStamp: int64 read FChangeStamp;
   end;
 
@@ -102,12 +102,12 @@ type
   TSynMarkupHighAllMultiMatchList = class(TSynMarkupHighAllMatchList)
   private
     FParentItemSize: Integer;
-    function GetMarkupId(Index: Integer): Integer;
-    procedure SetMarkupId(Index: Integer; AValue: Integer);
+    function GetMarkupId(AnIndex: Integer): Integer;
+    procedure SetMarkupId(AnIndex: Integer; AValue: Integer);
   protected
     function GetInintialForItemSize: Integer; override;
   public
-    property MarkupId[Index: Integer]: Integer read GetMarkupId write SetMarkupId;
+    property MarkupId[AnIndex: Integer]: Integer read GetMarkupId write SetMarkupId;
   end;
 
   { TSynEditMarkupHighlightMatches }
@@ -177,7 +177,7 @@ type
 
     function GetMatchCount: Integer;
     procedure SetHideSingleMatch(AValue: Boolean);
-    procedure DoFoldChanged(Sender: TSynEditStrings; aIndex, aCount: Integer);
+    procedure DoFoldChanged(Sender: TSynEditStrings; AnIndex, aCount: Integer);
 
     Procedure ValidateMatches(SkipPaint: Boolean = False);
 
@@ -187,11 +187,11 @@ type
     function HasDisplayAbleMatches: Boolean; override;
     function  SearchStringMaxLines: Integer; virtual; abstract;
     procedure FindInitialize;  virtual; abstract;
-    function  FindMatches(AStartPoint, AEndPoint: TPoint;
-                          var AIndex: Integer;
-                          AStopAfterLine: Integer = -1; // AEndPoint may be set further down, for multi-line matches
+    function  FindMatches(AStartPoint, AnEndPoint: TPoint;
+                          var AnIndex: Integer;
+                          AStopAfterLine: Integer = -1; // AnEndPoint may be set further down, for multi-line matches
                           ABackward : Boolean = False
-                         ): TPoint;  virtual; abstract; // returns searhed until point
+                         ): TPoint;  virtual; abstract; // returns searched until point
 
 
     procedure DoTopLineChanged(OldTopLine : Integer); override;
@@ -234,9 +234,9 @@ type
     function  HasSearchData: Boolean; override;
     function  SearchStringMaxLines: Integer; override;
     procedure FindInitialize;  override;
-    function  FindMatches(AStartPoint, AEndPoint: TPoint;
-                          var AIndex: Integer;
-                          AStopAfterLine: Integer = -1; // AEndPoint may be set further down, for multi-line matches
+    function  FindMatches(AStartPoint, AnEndPoint: TPoint;
+                          var AnIndex: Integer;
+                          AStopAfterLine: Integer = -1; // AnEndPoint may be set further down, for multi-line matches
                           ABackward : Boolean = False
                          ): TPoint;  override; // returns searhed until point
   public
@@ -275,8 +275,8 @@ type
     procedure ClearDictionary;
     procedure DeleteNode(aNode: PSynSearchDictionaryNode);
     procedure BuildDictionary;
-    function GetTerms(AIndex: Integer): String;
-    procedure SetTerms(AIndex: Integer; AValue: String);
+    function GetTerms(AnIndex: Integer): String;
+    procedure SetTerms(AnIndex: Integer; AValue: String);
   public
     constructor Create;
     destructor Destroy; override;
@@ -288,9 +288,9 @@ type
     function  Add(ATerm: String; ATag: Integer): Integer;
     function  IndexOf(ATerm: String): Integer;
     procedure Remove(ATerm: String);
-    procedure Delete(AIndex: Integer);
+    procedure Delete(AnIndex: Integer);
     function  Count: Integer;
-    property  Terms[AIndex: Integer]: String read GetTerms write SetTerms;
+    property  Terms[AnIndex: Integer]: String read GetTerms write SetTerms;
 
     function Search(AText: PChar; ATextLen: Integer; AFoundEvent: TSynSearchDictFoundEvent): PChar;
     function GetMatchAtChar(AText: PChar; ATextLen: Integer; AFoundEvent: TSynSearchDictFoundEvent = nil): Integer;
@@ -330,8 +330,8 @@ type
   TSynSearchTermList = class(TCollection)
   private
     FOnChanged: TNotifyEvent;
-    function GetItem(Index: Integer): TSynSearchTerm;
-    procedure SetItem(Index: Integer; AValue: TSynSearchTerm);
+    function GetItem(AnIndex: Integer): TSynSearchTerm;
+    procedure SetItem(AnIndex: Integer; AValue: TSynSearchTerm);
   protected
     procedure Update(Item: TCollectionItem); override;
     procedure Notify(Item: TCollectionItem; Action: TCollectionNotification); override;
@@ -342,7 +342,7 @@ type
     function IndexOfSearchTerm(ATerm: String; ASearchStartIdx: Integer = 0): Integer;
     function IndexOfSearchTerm(ATerm: TSynSearchTerm; ASearchStartIdx: Integer = 0): Integer;
     function IndexOfSearchTerm(ATerm: String; ACaseSensitive: Boolean; ASearchStartIdx: Integer = 0): Integer;
-    property Items[Index: Integer]: TSynSearchTerm read GetItem write SetItem; default;
+    property Items[AnIndex: Integer]: TSynSearchTerm read GetItem write SetItem; default;
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
   end;
 
@@ -360,8 +360,8 @@ type
     FNeedNotify: Boolean;
 
     procedure DoTermsChanged(Sender: TObject);
-    function GetItem(Index: Integer): TSynSearchTerm;
-    procedure SetItem(Index: Integer; AValue: TSynSearchTerm);
+    function GetItem(AnIndex: Integer): TSynSearchTerm;
+    procedure SetItem(AnIndex: Integer; AValue: TSynSearchTerm);
   protected
     procedure MaybeInitDict;
     property Dict: TSynSearchDictionary read FDict;
@@ -380,14 +380,14 @@ type
     procedure ClearDictionary;
     function  Count: Integer;
     function  Add: TSynSearchTerm;
-    procedure Delete(AIndex: Integer);
+    procedure Delete(AnIndex: Integer);
     function  IndexOfSearchTerm(ATerm: String): Integer;
     function  IndexOfSearchTerm(ATerm: TSynSearchTerm): Integer;
 
     procedure  Search(AText: PChar; ATextLen: Integer; AFoundEvent: TSynSearchDictFoundEvent);
-    function   GetIndexForNextWordOccurrence(AIndex: Integer): Integer;
+    function   GetIndexForNextWordOccurrence(AnIndex: Integer): Integer;
 
-    property Items[Index: Integer]: TSynSearchTerm read GetItem write SetItem; default;
+    property Items[AnIndex: Integer]: TSynSearchTerm read GetItem write SetItem; default;
   end;
 
   { TSynEditMarkupHighlightAllMulti }
@@ -412,9 +412,9 @@ type
     function  HasSearchData: Boolean; override;
     function  SearchStringMaxLines: Integer; override;
     procedure FindInitialize; override;
-    function  FindMatches(AStartPoint, AEndPoint: TPoint;
-                          var AIndex: Integer;
-                          AStopAfterLine: Integer = -1; // AEndPoint may be set further down, for multi-line matches
+    function  FindMatches(AStartPoint, AnEndPoint: TPoint;
+                          var AnIndex: Integer;
+                          AStopAfterLine: Integer = -1; // AnEndPoint may be set further down, for multi-line matches
                           ABackward : Boolean = False
                          ): TPoint;  override; // returns searched until point
     function CreateTermsList: TSynSearchTermDict; virtual;
@@ -427,7 +427,7 @@ type
     function  AddSearchTerm(ATerm: String): Integer;
     function  IndexOfSearchTerm(ATerm: String): Integer;
     procedure RemoveSearchTerm(ATerm: String);
-    procedure DeleteSearchTerm(AIndex: Integer);
+    procedure DeleteSearchTerm(AnIndex: Integer);
 
     property WordBreakChars: TSynIdentChars read FWordBreakChars write SetWordBreakChars;
     property Terms: TSynSearchTermDict read FTermDict write SetTerms;
@@ -719,9 +719,9 @@ begin
   FChangedNotifyList.CallNotifyEvents(Self);
 end;
 
-function TSynSearchTermDict.GetItem(Index: Integer): TSynSearchTerm;
+function TSynSearchTermDict.GetItem(AnIndex: Integer): TSynSearchTerm;
 begin
-  Result := FTerms[Index];
+  Result := FTerms[AnIndex];
 end;
 
 procedure TSynSearchTermDict.IncChangeNotifyLock;
@@ -736,9 +736,9 @@ begin
     DoTermsChanged(Self);
 end;
 
-procedure TSynSearchTermDict.SetItem(Index: Integer; AValue: TSynSearchTerm);
+procedure TSynSearchTermDict.SetItem(AnIndex: Integer; AValue: TSynSearchTerm);
 begin
-  FTerms[Index] := AValue;
+  FTerms[AnIndex] := AValue;
 end;
 
 procedure TSynSearchTermDict.MaybeInitDict;
@@ -833,9 +833,9 @@ begin
   Result := TSynSearchTerm(FTerms.Add);
 end;
 
-procedure TSynSearchTermDict.Delete(AIndex: Integer);
+procedure TSynSearchTermDict.Delete(AnIndex: Integer);
 begin
-  FTerms.Delete(AIndex);
+  FTerms.Delete(AnIndex);
 end;
 
 function TSynSearchTermDict.IndexOfSearchTerm(ATerm: String): Integer;
@@ -855,9 +855,9 @@ begin
   FDict.Search(AText, ATextLen, AFoundEvent);
 end;
 
-function TSynSearchTermDict.GetIndexForNextWordOccurrence(AIndex: Integer): Integer;
+function TSynSearchTermDict.GetIndexForNextWordOccurrence(AnIndex: Integer): Integer;
 begin
-  Result := FNextTermWIthSameWord[AIndex];
+  Result := FNextTermWIthSameWord[AnIndex];
 end;
 
 { TSynSearchTermList }
@@ -1066,14 +1066,14 @@ begin
   FSortedList.Clear;
 end;
 
-function TSynSearchDictionary.GetTerms(AIndex: Integer): String;
+function TSynSearchDictionary.GetTerms(AnIndex: Integer): String;
 begin
-  Result := FList[AIndex];
+  Result := FList[AnIndex];
 end;
 
-procedure TSynSearchDictionary.SetTerms(AIndex: Integer; AValue: String);
+procedure TSynSearchDictionary.SetTerms(AnIndex: Integer; AValue: String);
 begin
-  FList[AIndex] := AValue;
+  FList[AnIndex] := AValue;
   ClearDictionary;
 end;
 
@@ -1164,9 +1164,9 @@ begin
   ClearDictionary;
 end;
 
-procedure TSynSearchDictionary.Delete(AIndex: Integer);
+procedure TSynSearchDictionary.Delete(AnIndex: Integer);
 begin
-  FList.Delete(AIndex);
+  FList.Delete(AnIndex);
   ClearDictionary;
 end;
 
@@ -1374,14 +1374,14 @@ end;
 
 { TSynSearchTermList }
 
-function TSynSearchTermList.GetItem(Index: Integer): TSynSearchTerm;
+function TSynSearchTermList.GetItem(AnIndex: Integer): TSynSearchTerm;
 begin
-  Result := TSynSearchTerm(inherited GetItem(Index));
+  Result := TSynSearchTerm(inherited GetItem(AnIndex));
 end;
 
-procedure TSynSearchTermList.SetItem(Index: Integer; AValue: TSynSearchTerm);
+procedure TSynSearchTermList.SetItem(AnIndex: Integer; AValue: TSynSearchTerm);
 begin
-  inherited SetItem(Index, AValue);
+  inherited SetItem(AnIndex, AValue);
 end;
 
 procedure TSynSearchTermList.Update(Item: TCollectionItem);
@@ -1595,35 +1595,35 @@ begin
   Invalidate;
 end;
 
-function TSynEditMarkupHighlightAllMulti.FindMatches(AStartPoint, AEndPoint: TPoint;
-  var AIndex: Integer; AStopAfterLine: Integer; ABackward: Boolean): TPoint;
+function TSynEditMarkupHighlightAllMulti.FindMatches(AStartPoint, AnEndPoint: TPoint;
+  var AnIndex: Integer; AStopAfterLine: Integer; ABackward: Boolean): TPoint;
 var
   LineLen: Integer;
   LineText, LineTextLower: String;
   x: integer;
 begin
-  //debugln(['FindMatches IDX=', AIndex, ' Cnt=', Matches.Count, ' LCnt=', AEndPoint.y-AStartPoint.y , ' # ', FTerms[0].SearchTerm, ' # ',dbgs(AStartPoint),' - ',dbgs(AEndPoint), ' AStopAfterLine=',AStopAfterLine, ' Back=', dbgs(ABackward), '  ']);
-  FFindInsertIndex := AIndex;
+  //debugln(['FindMatches IDX=', AnIndex, ' Cnt=', Matches.Count, ' LCnt=', AnEndPoint.y-AStartPoint.y , ' # ', FTerms[0].SearchTerm, ' # ',dbgs(AStartPoint),' - ',dbgs(AnEndPoint), ' AStopAfterLine=',AStopAfterLine, ' Back=', dbgs(ABackward), '  ']);
+  FFindInsertIndex := AnIndex;
   FFindStartedAtIndex := FFindInsertIndex;
   FBackward := ABackward; // Currently supports only finding a single match
 
   if ABackward then begin
     FBackwardReplace := False;
     x := 1;
-    while AStartPoint.y <= AEndPoint.y do begin
-      LineText := Lines[AEndPoint.y-1];
+    while AStartPoint.y <= AnEndPoint.y do begin
+      LineText := Lines[AnEndPoint.y-1];
       LineTextLower := LowerCase(LineText);
 
-      LineLen := Min(Length(LineTextLower), AEndPoint.x-1);
-      if AEndPoint.X <= LineLen then
-        LineLen := AEndPoint.x - 1;
-      if (AStartPoint.y = AEndPoint.y) and (AStartPoint.x > 1) then begin
+      LineLen := Min(Length(LineTextLower), AnEndPoint.x-1);
+      if AnEndPoint.X <= LineLen then
+        LineLen := AnEndPoint.x - 1;
+      if (AStartPoint.y = AnEndPoint.y) and (AStartPoint.x > 1) then begin
         x := AStartPoint.x - 1;
         LineLen := Max(0, LineLen - x);
       end;
 
       if LineLen > 0 then begin
-        FFindLineY := AEndPoint.Y;
+        FFindLineY := AnEndPoint.Y;
         FFindStartedAtIndex := FFindInsertIndex;
         FFindLineText := @LineText[1];
         FFindLineTextEnd := FFindLineText + LineLen;
@@ -1636,13 +1636,13 @@ begin
       if FBackwardReplace then
         break; // Only one supported
 
-      dec(AEndPoint.y);
-      AEndPoint.x := MaxInt;
+      dec(AnEndPoint.y);
+      AnEndPoint.x := MaxInt;
 
       //if (AStopAfterLine >= 0) and (AStartPoint.Y-1 > AStopAfterLine) and
-      //   (FFindInsertIndex > AIndex)
+      //   (FFindInsertIndex > AnIndex)
       //then begin
-      //  AEndPoint := point(LineLen, AStartPoint.Y-1);
+      //  AnEndPoint := point(LineLen, AStartPoint.Y-1);
       //  break;
       //end;
     end;
@@ -1651,13 +1651,13 @@ begin
       inc(FFindInsertIndex);
   end
   else begin
-    while AStartPoint.y <= AEndPoint.y do begin
+    while AStartPoint.y <= AnEndPoint.y do begin
       LineText := Lines[AStartPoint.y-1];
       LineTextLower := LowerCase(LineText);
 
       LineLen := Length(LineTextLower) + 1 - AStartPoint.x;
-      if AStartPoint.y = AEndPoint.y then
-        LineLen := Min(LineLen, AEndPoint.x - AStartPoint.x + 1);
+      if AStartPoint.y = AnEndPoint.y then
+        LineLen := Min(LineLen, AnEndPoint.x - AStartPoint.x + 1);
 
       if LineLen > 0 then begin
         FFindLineY := AStartPoint.Y;
@@ -1674,16 +1674,16 @@ begin
       AStartPoint.x := 1;
 
       if (AStopAfterLine >= 0) and (AStartPoint.Y-1 > AStopAfterLine) and
-         (FFindInsertIndex > AIndex)
+         (FFindInsertIndex > AnIndex)
       then begin
-        AEndPoint := point(LineLen, AStartPoint.Y-1);
+        AnEndPoint := point(LineLen, AStartPoint.Y-1);
         break;
       end;
     end;
   end;
 
-  AIndex := FFindInsertIndex;
-  Result := AEndPoint;
+  AnIndex := FFindInsertIndex;
+  Result := AnEndPoint;
 end;
 
 function TSynEditMarkupHighlightAllMulti.CreateTermsList: TSynSearchTermDict;
@@ -1736,9 +1736,9 @@ begin
   FTermDict.Delete(IndexOfSearchTerm(ATerm));
 end;
 
-procedure TSynEditMarkupHighlightAllMulti.DeleteSearchTerm(AIndex: Integer);
+procedure TSynEditMarkupHighlightAllMulti.DeleteSearchTerm(AnIndex: Integer);
 begin
-  FTermDict.Delete(AIndex);
+  FTermDict.Delete(AnIndex);
 end;
 
 { TSynEditMarkupHighlightAll }
@@ -1824,26 +1824,26 @@ begin
   fSearch.Backwards := False;
 end;
 
-function TSynEditMarkupHighlightAll.FindMatches(AStartPoint, AEndPoint: TPoint;
-  var AIndex: Integer; AStopAfterLine: Integer; ABackward: Boolean): TPoint;
+function TSynEditMarkupHighlightAll.FindMatches(AStartPoint, AnEndPoint: TPoint;
+  var AnIndex: Integer; AStopAfterLine: Integer; ABackward: Boolean): TPoint;
 var
   ptFoundStart, ptFoundEnd: TPoint;
 begin
   fSearch.Backwards := ABackward;
   While (true) do begin
-    if not fSearch.FindNextOne(Lines, AStartPoint, AEndPoint, ptFoundStart, ptFoundEnd)
+    if not fSearch.FindNextOne(Lines, AStartPoint, AnEndPoint, ptFoundStart, ptFoundEnd)
     then break;
     AStartPoint := ptFoundEnd;
 
-    FMatches.Insert(AIndex, ptFoundStart, ptFoundEnd);
-    inc(AIndex); // BAckward learch needs final index to point to last inserted (currently support only find ONE)
+    FMatches.Insert(AnIndex, ptFoundStart, ptFoundEnd);
+    inc(AnIndex); // BAckward learch needs final index to point to last inserted (currently support only find ONE)
 
     if (AStopAfterLine >= 0) and (ptFoundStart.Y > AStopAfterLine) then begin
-      AEndPoint := ptFoundEnd;
+      AnEndPoint := ptFoundEnd;
       break;
     end;
   end;
-  Result := AEndPoint;
+  Result := AnEndPoint;
 end;
 
 constructor TSynEditMarkupHighlightAll.Create(ASynEdit: TSynEditBase);
@@ -1940,36 +1940,36 @@ begin
     inc(Result);
 end;
 
-procedure TSynMarkupHighAllMatchList.Delete(AIndex: Integer; ACount: Integer);
+procedure TSynMarkupHighAllMatchList.Delete(AnIndex: Integer; ACount: Integer);
 begin
-  if AIndex >= Count then
+  if AnIndex >= Count then
     exit;
-  if AIndex + ACount > Count then
-    ACount := Count - AIndex;
+  if AnIndex + ACount > Count then
+    ACount := Count - AnIndex;
   {$PUSH}{$R-}{$Q-}FChangeStamp := FChangeStamp+1;{$POP}
-  DeleteRows(AIndex, ACount);
+  DeleteRows(AnIndex, ACount);
 end;
 
-procedure TSynMarkupHighAllMatchList.Insert(AIndex: Integer; ACount: Integer);
+procedure TSynMarkupHighAllMatchList.Insert(AnIndex: Integer; ACount: Integer);
 begin
-  if AIndex > Count then
+  if AnIndex > Count then
     exit;
   {$PUSH}{$R-}{$Q-}FChangeStamp := FChangeStamp+1;{$POP}
-  InsertRows(AIndex, ACount);
+  InsertRows(AnIndex, ACount);
 end;
 
-procedure TSynMarkupHighAllMatchList.Insert(AIndex: Integer; AStartPoint, AEndPoint: TPoint);
+procedure TSynMarkupHighAllMatchList.Insert(AnIndex: Integer; AStartPoint, AnEndPoint: TPoint);
 begin
   {$PUSH}{$R-}{$Q-}FChangeStamp := FChangeStamp+1;{$POP}
-  Insert(AIndex);
-  PSynMarkupHighAllMatch(ItemPointer[AIndex])^.StartPoint := AStartPoint;
-  PSynMarkupHighAllMatch(ItemPointer[AIndex])^.EndPoint   := AEndPoint;
+  Insert(AnIndex);
+  PSynMarkupHighAllMatch(ItemPointer[AnIndex])^.StartPoint := AStartPoint;
+  PSynMarkupHighAllMatch(ItemPointer[AnIndex])^.EndPoint   := AnEndPoint;
 end;
 
-function TSynMarkupHighAllMatchList.Insert(AStartPoint, AEndPoint: TPoint): integer;
+function TSynMarkupHighAllMatchList.Insert(AStartPoint, AnEndPoint: TPoint): integer;
 begin
   Result := IndexOf(AStartPoint);
-  Insert(Result, AStartPoint, AEndPoint);
+  Insert(Result, AStartPoint, AnEndPoint);
 end;
 
 procedure TSynMarkupHighAllMatchList.SetCount(const AValue : Integer);
@@ -1991,23 +1991,23 @@ begin
   result := Count * 2;
 end;
 
-function TSynMarkupHighAllMatchList.GetPoint(const Index : Integer) : TPoint;
+function TSynMarkupHighAllMatchList.GetPoint(const AnIndex : Integer) : TPoint;
 begin
-  if (Index and 1) = 0
-  then Result := PSynMarkupHighAllMatch(ItemPointer[Index>>1])^.StartPoint
-  else Result := PSynMarkupHighAllMatch(ItemPointer[Index>>1])^.EndPoint
+  if (AnIndex and 1) = 0
+  then Result := PSynMarkupHighAllMatch(ItemPointer[AnIndex>>1])^.StartPoint
+  else Result := PSynMarkupHighAllMatch(ItemPointer[AnIndex>>1])^.EndPoint
 end;
 
-function TSynMarkupHighAllMatchList.GetStartPoint(const Index : Integer) : TPoint;
+function TSynMarkupHighAllMatchList.GetStartPoint(const AnIndex : Integer) : TPoint;
 begin
-  Result := PSynMarkupHighAllMatch(ItemPointer[Index])^.StartPoint;
+  Result := PSynMarkupHighAllMatch(ItemPointer[AnIndex])^.StartPoint;
 end;
 
-procedure TSynMarkupHighAllMatchList.SetStartPoint(const Index : Integer; const AValue : TPoint);
+procedure TSynMarkupHighAllMatchList.SetStartPoint(const AnIndex : Integer; const AValue : TPoint);
 begin
-  if Index = Count
+  if AnIndex = Count
   then Count := Count + 1; // AutoIncrease
-  PSynMarkupHighAllMatch(ItemPointer[Index])^.StartPoint := AValue;
+  PSynMarkupHighAllMatch(ItemPointer[AnIndex])^.StartPoint := AValue;
   {$PUSH}{$R-}{$Q-}FChangeStamp := FChangeStamp+1;{$POP}
 end;
 
@@ -2016,43 +2016,43 @@ begin
   Result := SizeOf(TSynMarkupHighAllMatch);
 end;
 
-function TSynMarkupHighAllMatchList.GetEndPoint(const Index : Integer) : TPoint;
+function TSynMarkupHighAllMatchList.GetEndPoint(const AnIndex : Integer) : TPoint;
 begin
-  Result := PSynMarkupHighAllMatch(ItemPointer[Index])^.EndPoint;
+  Result := PSynMarkupHighAllMatch(ItemPointer[AnIndex])^.EndPoint;
 end;
 
-procedure TSynMarkupHighAllMatchList.SetEndPoint(const Index : Integer; const AValue : TPoint);
+procedure TSynMarkupHighAllMatchList.SetEndPoint(const AnIndex : Integer; const AValue : TPoint);
 begin
-  if Index = Count
+  if AnIndex = Count
   then Count := Count + 1; // AutoIncrease
-  PSynMarkupHighAllMatch(ItemPointer[Index])^.EndPoint := AValue;
+  PSynMarkupHighAllMatch(ItemPointer[AnIndex])^.EndPoint := AValue;
   {$PUSH}{$R-}{$Q-}FChangeStamp := FChangeStamp+1;{$POP}
 end;
 
-function TSynMarkupHighAllMatchList.GetMatch(const Index: Integer): TSynMarkupHighAllMatch;
+function TSynMarkupHighAllMatchList.GetMatch(const AnIndex: Integer): TSynMarkupHighAllMatch;
 begin
-  Result := PSynMarkupHighAllMatch(ItemPointer[Index])^;
+  Result := PSynMarkupHighAllMatch(ItemPointer[AnIndex])^;
 end;
 
-procedure TSynMarkupHighAllMatchList.SetMatch(const Index: Integer;
+procedure TSynMarkupHighAllMatchList.SetMatch(const AnIndex: Integer;
   const AValue: TSynMarkupHighAllMatch);
 begin
-  if Index = Count
+  if AnIndex = Count
   then Count := Count + 1; // AutoIncrease
-  PSynMarkupHighAllMatch(ItemPointer[Index])^ := AValue;
+  PSynMarkupHighAllMatch(ItemPointer[AnIndex])^ := AValue;
   {$PUSH}{$R-}{$Q-}FChangeStamp := FChangeStamp+1;{$POP}
 end;
 
 { TSynMarkupHighAllMultiMatchList }
 
-function TSynMarkupHighAllMultiMatchList.GetMarkupId(Index: Integer): Integer;
+function TSynMarkupHighAllMultiMatchList.GetMarkupId(AnIndex: Integer): Integer;
 begin
-  Result := PInteger(ItemPointer[Index]+FParentItemSize)^;
+  Result := PInteger(ItemPointer[AnIndex]+FParentItemSize)^;
 end;
 
-procedure TSynMarkupHighAllMultiMatchList.SetMarkupId(Index: Integer; AValue: Integer);
+procedure TSynMarkupHighAllMultiMatchList.SetMarkupId(AnIndex: Integer; AValue: Integer);
 begin
-  PInteger(ItemPointer[Index]+FParentItemSize)^ := AValue;
+  PInteger(ItemPointer[AnIndex]+FParentItemSize)^ := AValue;
 end;
 
 function TSynMarkupHighAllMultiMatchList.GetInintialForItemSize: Integer;
@@ -2138,9 +2138,9 @@ begin
 end;
 
 procedure TSynEditMarkupHighlightAllBase.DoFoldChanged(Sender: TSynEditStrings;
-  aIndex, aCount: Integer);
+  AnIndex, aCount: Integer);
 begin
-  InvalidateLines(aIndex+1, MaxInt, True);
+  InvalidateLines(AnIndex+1, MaxInt, True);
 end;
 
 procedure TSynEditMarkupHighlightAllBase.ValidateMatches(SkipPaint: Boolean);
@@ -2419,7 +2419,7 @@ begin
     exit;
   end;
 
-  // Find the minimum gap that needs to be cecalculated for invalidated lines
+  // Find the minimum gap that needs to be recalculated for invalidated lines
   GapStartPoint.y := -1;
   GapEndPoint.y   := -1;
   if FFirstInvalidLine > 0 then begin
