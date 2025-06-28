@@ -326,9 +326,29 @@ procedure TCocoaCustomControlWithBaseInputClient.keyDown(theEvent: NSEvent);
 var
   textView: NSView;
   isFirst: Boolean;
+
+  function isControlKey: Boolean;
+  begin
+    Result:= False;
+    if _inIME then
+      Exit;
+    Result:= theEvent.keyCode in [kVK_Return, kVK_ANSI_KeypadEnter, kVK_Escape];
+  end;
+
+  function isSpaceShortCut: Boolean;
+  const
+    ModifiersOfInterest: NSUInteger = (NSControlKeyMask or NSShiftKeyMask or NSAlternateKeyMask or NSCommandKeyMask or NSFunctionKeyMask);
+  begin
+    Result:= False;
+    if _inIME then
+      Exit;
+    if theEvent.keyCode <> kVK_Space then
+      Exit;
+    Result:= (theEvent.modifierFlags and ModifiersOfInterest) <> 0;
+  end;
+
 begin
-  if (not _inIME) and (theEvent.keyCode in
-     [kVK_Return, kVK_ANSI_KeypadEnter, kVK_Escape]) then
+  if isControlKey or isSpaceShortCut then
   begin
     inherited;
     exit;
