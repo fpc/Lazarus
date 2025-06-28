@@ -710,6 +710,7 @@ type
     procedure SetKeystrokes(const Value: TSynEditKeyStrokes);
     procedure SetLastMouseCaret(const AValue: TPoint);
     function  CurrentMaxLeftChar(AIncludeCharsInWin: Boolean = False): Integer;
+
     function  CurrentMaxLineLen: Integer;
     procedure SetLineText(Value: string);
     procedure SetMaxLeftChar(Value: integer);
@@ -2704,12 +2705,6 @@ begin
           UpdateCaret;  // MoveCaretToVisibleArea and ScreenCaret.DisplayPos / ScreenCaret is still locked
       end;
 
-      (* Call user code
-         May change anything. All changes are immediate, usercode can not start another paintlock.
-         TOOD: Needs further review
-      *)
-      if fStatusChanges <> [] then
-        DoOnStatusChange(fStatusChanges);
       // Caret should no longer change. No more need for AutoExtend
       FBlockSelection.AutoExtend := False;
       (* Markup may depend on Caret pos
@@ -2732,6 +2727,18 @@ begin
            If ScrollAfterTopLineChanged did not scroll, then it did InvalidateAll
         *)
       end;
+
+      (* Call user code.
+         - Allow user code to enter a new PaintLock.
+         - This may call ProcessMessages or trigger Paint by other means. Therefore
+           it must be after ScrollAfterTopLineChanged
+         - This may also change the state of any part of the edit. In this case
+           a new round of work must be started.
+           If this changes Topline, then there will be 2 Scrolls
+      *)
+      FIsInDecPaintLock := iplFalse;
+      if fStatusChanges <> [] then
+        DoOnStatusChange(fStatusChanges);
     end;
   finally
     FScreenCaret.UnLock;
