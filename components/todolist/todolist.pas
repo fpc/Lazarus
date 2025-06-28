@@ -71,7 +71,7 @@ uses
   // Codetools
   CodeToolManager, FileProcs,
   // IDEIntf
-  LazIDEIntf, IDEImagesIntf, PackageIntf, ProjectIntf, SrcEditorIntf, IDECommands,
+  LazIDEIntf, IDEImagesIntf, MenuIntf, PackageIntf, ProjectIntf, SrcEditorIntf,
   // ToDoList
   ToDoListCore, ToDoListStrConsts;
 
@@ -139,7 +139,9 @@ type
     FOwnerProjPack: TObject;  // Project or package owning the FStartFilename.
     FScannedFiles: TAvlTree;// tree of TTLScannedFile
     FScannedIncFiles: TStringMap;
+    FTodoItemToEdit: TTodoItem;
     FOnEditItem: TOnEditToDo;
+    procedure DecideMenuCaption(Sender: TObject; var ACaption, AHint: string);
     procedure GotoTodo(aTodoItem: TTodoItem);
     procedure SetIDEItem(AValue: string);
     procedure SetIdleConnected(const AValue: boolean);
@@ -158,12 +160,16 @@ type
     property IDEItem: string read FIDEItem write SetIDEItem; // package name or empty for active project
     property BaseDirectory: string read FBaseDirectory;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
+    property TodoItemToEdit: TTodoItem read FTodoItemToEdit;
 
     property OnEditItem: TOnEditToDo read FOnEditItem write FOnEditItem;
   end;
 
 var
   IDETodoWindow: TIDETodoWindow;
+  SrcEditMenuCmd: TIDEMenuCommand;     // MenuItem in Source editor popup menu.
+  IdeSourceMenuCmd: TIDEMenuCommand;   // MenuItem in IDE's Source menu.
+
 
 implementation
 
@@ -185,7 +191,9 @@ begin
   acRefresh.ImageIndex := IDEImages.LoadImage('laz_refresh');
   acExport.ImageIndex := IDEImages.LoadImage('menu_saveas');
   acHelp.ImageIndex := IDEImages.LoadImage('btn_help');
-  SaveDialog.Filter:= dlgFilterCsv+'|*.csv';
+  SaveDialog.Filter := dlgFilterCsv+'|*.csv';
+  SrcEditMenuCmd.OnRequestCaptionHint := @DecideMenuCaption;
+  IdeSourceMenuCmd.OnRequestCaptionHint := @DecideMenuCaption;
   LazarusIDE.AddHandlerOnProjectOpened(@ProjectOpened);
 end;
 
@@ -195,6 +203,36 @@ begin
   FreeAndNil(FScannedFiles);
   FreeAndNil(FScannedIncFiles);
   inherited Destroy;
+end;
+
+procedure TIDETodoWindow.DecideMenuCaption(Sender: TObject; var ACaption, AHint: string);
+var
+  ListItem: TListItem;
+  TodoItem: TTodoItem;
+  SrcEdit: TSourceEditorInterface;
+  SrcPos: TPoint;
+  i: Integer;
+begin
+  FTodoItemToEdit := nil;
+  SrcEdit := SourceEditorManagerIntf.ActiveEditor;
+  if SrcEdit=nil then exit;
+  for i := 0 to lvtodo.Items.Count-1 do
+  begin
+    ListItem := lvtodo.Items[i];
+    TodoItem := TTodoItem(ListItem.Data);
+    SrcPos := SrcEdit.CursorTextXY;
+    if (TodoItem.Filename = SrcEdit.FileName)
+    and (SrcPos.X > TodoItem.CodePos.X)
+    and (SrcPos.X < TodoItem.CodePos.X + TodoItem.CommentLen)
+    and (SrcPos.Y = TodoItem.CodePos.Y) then
+    begin
+      // Editor cursor is inside a ToDo item > change menu item captions.
+      lvTodo.Selected := ListItem;
+      FTodoItemToEdit := TodoItem; // InsertOrEditToDo in ToDoDlg knows what to do.
+      ACaption:=lisTDDEditToDo;
+      Break;
+    end;
+  end;
 end;
 
 procedure TIDETodoWindow.UpdateTodos(Immediately: boolean);

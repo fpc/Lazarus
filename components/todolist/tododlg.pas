@@ -84,8 +84,9 @@ procedure CreateIDEToDoWindow(Sender: TObject; aFormName: string;
                           var AForm: TCustomForm; DoDisableAutoSizing: boolean);
 // ToDo Dialog
 function ExecuteTodoDialog(const aCaption: string; var aTodoItem: TTodoItem): TModalResult;
-procedure InsertToDoForActiveSourceEditor(Sender: TObject);
+procedure InsertToDoForActiveSE;
 procedure EditToDo(aTodoItem: TTodoItem);
+procedure InsertOrEditToDo(Sender: TObject);
 
 
 implementation
@@ -109,17 +110,17 @@ begin
   // register shortcut for insert todo
   Key := IDEShortCut(VK_T,[ssCtrl,ssShift],VK_UNKNOWN,[]);
   Cat:=IDECommandList.FindCategoryByName(CommandCategoryTextEditingName);
-  InsertToDoCmd:=RegisterIDECommand(Cat, 'Insert ToDo', lisTDDInsertToDo,Key,
-    nil,@InsertToDoForActiveSourceEditor);
+  InsertToDoCmd:=RegisterIDECommand(Cat, 'InsertToDo', lisTDDInsertToDo,Key,
+    nil,@InsertOrEditToDo);
 
   // add a menu item in the source editor
-  RegisterIDEMenuCommand(SrcEditMenuSectionFirstStatic, 'InsertToDo',
+  SrcEditMenuCmd:=RegisterIDEMenuCommand(SrcEditMenuSectionFirstStatic, 'InsertToDo',
     lisTDDInsertToDo,nil,nil,InsertToDoCmd,'item_todo');
   // add a menu item in the Edit / Insert Text section
-  MenuCmd:=RegisterIDEMenuCommand(itmSourceInsertions,'itmSourceInsertTodo',
+  IdeSourceMenuCmd:=RegisterIDEMenuCommand(itmSourceInsertions,'itmSourceInsertTodo',
     lisTDDInsertToDo,nil,nil,InsertToDoCmd,'item_todo');
   ButtonCmd:=RegisterIDEButtonCommand(InsertToDoCmd);    // toolbutton
-  ButtonCmd.ImageIndex:=MenuCmd.ImageIndex;
+  ButtonCmd.ImageIndex:=IdeSourceMenuCmd.ImageIndex;
 
   // register shortcut for view todo list
   Key := IDEShortCut(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -206,7 +207,7 @@ begin
   aTodoDialog.Free;
 end;
 
-procedure InsertToDoForActiveSourceEditor(Sender: TObject);
+procedure InsertToDoForActiveSE;
 var
   SrcEdit: TSourceEditorInterface;
   TodoItem: TTodoItem;
@@ -237,6 +238,14 @@ begin
   SrcEdit.SelectText(aTodoItem.CodePos, EndPos);
   SrcEdit.Selection := aTodoItem.AsComment;
   IDETodoWindow.UpdateTodos;  { TODO -oJuha : Retain selection in the list. }
+end;
+
+procedure InsertOrEditToDo(Sender: TObject);
+begin
+  if Assigned(IDETodoWindow) and Assigned(IDETodoWindow.TodoItemToEdit) then
+    EditToDo(IDETodoWindow.TodoItemToEdit)
+  else
+    InsertToDoForActiveSE
 end;
 
 { TTodoDialog }
