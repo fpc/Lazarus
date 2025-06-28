@@ -40,6 +40,8 @@ uses
 
 type
 
+  TSynEditMarkupHighlightMatches = class;
+
   { TSynMarkupHighAllMatch }
   TSynMarkupHighAllMatch = Record
     StartPoint, EndPoint : TPoint;
@@ -51,6 +53,7 @@ type
   TSynMarkupHighAllMatchList = class(TSynEditStorageMem)
   private
     FChangeStamp: int64;
+    FOwner: TSynEditMarkupHighlightMatches;
     function GetEndPoint(const AnIndex : Integer) : TPoint;
     function GetPoint(const AnIndex : Integer) : TPoint;
     function GetPointCount : Integer;
@@ -63,7 +66,7 @@ type
     function  GetInintialForItemSize: Integer; override;
     procedure SetCount(const AValue : Integer); override;
   public
-    constructor Create;
+    constructor Create(AnOwner: TSynEditMarkupHighlightMatches = nil);
     Function MaybeReduceCapacity : Boolean;
     (* IndexOfFirstMatchForLine
        AnIndex for the first Item (match) that ENDS AT/AFTER the ALine
@@ -85,10 +88,13 @@ type
        - if in Match (excluding end): Index of that match
     *)
     function IndexOf(APoint: TPoint): Integer;
+    procedure Clear;
+    procedure SendInvalidateAll;
     procedure Delete(AnIndex: Integer; ACount: Integer = 1);
     procedure Insert(AnIndex: Integer; ACount: Integer = 1);
     procedure Insert(AnIndex: Integer; AStartPoint, AnEndPoint: TPoint);
     function Insert(AStartPoint, AnEndPoint: TPoint): integer;
+    procedure SetMatchPoints(const AnIndex : Integer; AStartPoint, AnEndPoint: TPoint);
     property Match [const AnIndex : Integer] : TSynMarkupHighAllMatch read GetMatch write SetMatch; default;
     property StartPoint [const AnIndex : Integer] : TPoint read GetStartPoint write SetStartPoint;
     property EndPoint   [const AnIndex : Integer] : TPoint read GetEndPoint write SetEndPoint;
@@ -116,7 +122,17 @@ type
   private
     FMatches : TSynMarkupHighAllMatchList;
     FCurrentRowNextPosIdx, FCurrentRow: Integer;
+  strict private
+    FSendingInvalidationLock, FSkipSendingInvalidationLock: Integer;
+    FPendingInvalidationStartLine, FPendingInvalidationEndLine: integer;
   protected
+    procedure BeginSkipSendingInvalidation; inline;
+    procedure EndSkipSendingInvalidation; inline;
+    property  SkipSendingInvalidationLock: Integer read FSkipSendingInvalidationLock;
+    procedure BeginSendingInvalidation; virtual;
+    procedure EndSendingInvalidation; virtual;
+    property  SendingInvalidationLock: Integer read FSendingInvalidationLock;
+    procedure SendMatchLineInvalidation(AStartIndex, AnEndIndex: Integer); virtual;
     function  HasDisplayAbleMatches: Boolean; virtual;
     function  CreateMatchList: TSynMarkupHighAllMatchList; virtual;
     function  MarkupIdForMatch(Idx: Integer): Integer; virtual;
@@ -174,6 +190,7 @@ type
     FSearchedEnd: TPoint;
     FFirstInvalidLine, FLastInvalidLine: Integer;
     FHideSingleMatch: Boolean;
+    FInvalidationHasHiddenMatch: boolean;
 
     function GetMatchCount: Integer;
     procedure SetHideSingleMatch(AValue: Boolean);
@@ -182,6 +199,8 @@ type
     Procedure ValidateMatches(SkipPaint: Boolean = False);
 
   protected
+    procedure BeginSendingInvalidation; override;
+    procedure SendMatchLineInvalidation(AStartIndex, AnEndIndex: Integer); override;
     procedure SetLines(const AValue: TSynEditStringsLinked); override;
     function  HasSearchData: Boolean; virtual; abstract;
     function HasDisplayAbleMatches: Boolean; override;
@@ -211,7 +230,7 @@ type
     // AFirst/ ALast are 1 based
     Procedure Invalidate(SkipPaint: Boolean = False);
     Procedure InvalidateLines(AFirstLine: Integer = 0; ALastLine: Integer = 0; SkipPaint: Boolean = False);
-    Procedure SendLineInvalidation(AFirstIndex: Integer = -1;ALastIndex: Integer = -1);
+    Procedure SendLineInvalidation(AFirstIndex: Integer = -1;ALastIndex: Integer = -1); //deprecated 'use invalidation via FMatches';
 
     property HideSingleMatch: Boolean read FHideSingleMatch write SetHideSingleMatch;
   end;
@@ -494,6 +513,80 @@ const
 
 { TSynEditMarkupHighlightMatches }
 
+procedure TSynEditMarkupHighlightMatches.BeginSkipSendingInvalidation;
+begin
+  inc(FSkipSendingInvalidationLock);
+end;
+
+procedure TSynEditMarkupHighlightMatches.EndSkipSendingInvalidation;
+begin
+  dec(FSkipSendingInvalidationLock);
+end;
+
+procedure TSynEditMarkupHighlightMatches.BeginSendingInvalidation;
+begin
+  if FSendingInvalidationLock = 0 then begin
+    FPendingInvalidationStartLine := -1;
+    FPendingInvalidationEndLine   := -1;
+  end;
+  inc(FSendingInvalidationLock);
+end;
+
+procedure TSynEditMarkupHighlightMatches.EndSendingInvalidation;
+begin
+  dec(FSendingInvalidationLock);
+  if FSendingInvalidationLock = 0 then begin
+    if FPendingInvalidationStartLine >= 0 then
+      InvalidateSynLines(FPendingInvalidationStartLine, FPendingInvalidationEndLine);
+  end;
+end;
+
+procedure TSynEditMarkupHighlightMatches.SendMatchLineInvalidation(AStartIndex, AnEndIndex: Integer);
+var
+  i: Integer;
+  m: TSynMarkupHighAllMatch;
+  L1, L2: LongInt;
+begin
+  if (FSkipSendingInvalidationLock > 0) then
+    exit;
+
+  if FPendingInvalidationStartLine < 0 then begin
+    if AStartIndex > AnEndIndex then
+      exit;
+    m := FMatches.Match[AStartIndex];
+    FPendingInvalidationStartLine := m.StartPoint.Y;
+    FPendingInvalidationEndLine   := m.EndPoint.Y;
+
+    inc(AStartIndex);
+  end;
+
+  for i := AStartIndex to AnEndIndex do begin
+    m := FMatches.Match[i];
+    L1 := m.StartPoint.Y;
+    L2 := m.EndPoint.Y;
+
+    if (L1 >= FPendingInvalidationStartLine) then begin
+      if (L1 <= FPendingInvalidationEndLine + 1) then begin
+        FPendingInvalidationEndLine := Max(FPendingInvalidationEndLine, L2);
+        continue;
+      end;
+
+      // Start new pending block
+      InvalidateSynLines(FPendingInvalidationStartLine, FPendingInvalidationEndLine);
+    end
+    else
+    if (L2 >= FPendingInvalidationStartLine - 1) then begin
+      FPendingInvalidationStartLine := Min(FPendingInvalidationStartLine, L1);
+      continue;
+    end
+    else
+      InvalidateSynLines(FPendingInvalidationStartLine, FPendingInvalidationEndLine);
+
+    FPendingInvalidationStartLine := L1;
+    FPendingInvalidationEndLine   := L2;
+  end;
+end;
+
 function TSynEditMarkupHighlightMatches.HasDisplayAbleMatches: Boolean;
 begin
   Result := FMatches.Count > 0;
@@ -501,7 +594,7 @@ end;
 
 function TSynEditMarkupHighlightMatches.CreateMatchList: TSynMarkupHighAllMatchList;
 begin
-  Result := TSynMarkupHighAllMatchList.Create;
+  Result := TSynMarkupHighAllMatchList.Create(Self);
 end;
 
 function TSynEditMarkupHighlightMatches.MarkupIdForMatch(Idx: Integer): Integer;
@@ -681,7 +774,7 @@ end;
 
 function TSynEditMarkupHighlightMultiMatches.CreateMatchList: TSynMarkupHighAllMatchList;
 begin
-  Result := TSynMarkupHighAllMultiMatchList.Create;
+  Result := TSynMarkupHighAllMultiMatchList.Create(Self);
 end;
 
 function TSynEditMarkupHighlightMultiMatches.MarkupIdForMatch(Idx: Integer): Integer;
@@ -1537,8 +1630,9 @@ begin
   if (i < NextInsertIdx) then begin
     //DebugLn(['Replacing match at idx=', i, ' Back:', FFindInsertIndex-i, ' y=', FFindLineY,
     //         ' x1=', FMatches.StartPoint[i].X, ' x2=', MatchBegin-FFindLineText+1, ' with longer. Len=', Len]);
-    FMatches.StartPoint[i] := Point(MatchBegin-FFindLineText+1, FFindLineY);
-    FMatches.EndPoint[i]   := Point(MatchBegin-FFindLineText+1+Len, FFindLineY);
+    FMatches.SetMatchPoints(i, Point(MatchBegin-FFindLineText+1, FFindLineY),
+                            Point(MatchBegin-FFindLineText+1+Len, FFindLineY)
+                           );
     if i + 1 < FFindInsertIndex then
       FMatches.Delete(i+1, FFindInsertIndex - (i + 1));
     if not FBackward then
@@ -1548,8 +1642,10 @@ begin
   else begin
     if FBackwardReplace then begin
       // Replace, only keep last match
-      FMatches.StartPoint[FFindInsertIndex] := Point(MatchBegin-FFindLineText+1, FFindLineY);
-      FMatches.EndPoint[FFindInsertIndex]   := Point(MatchBegin-FFindLineText+1+Len, FFindLineY);
+      FMatches.SetMatchPoints(FFindInsertIndex,
+                              Point(MatchBegin-FFindLineText+1, FFindLineY),
+                              Point(MatchBegin-FFindLineText+1+Len, FFindLineY)
+                             );
     end
     else
       FMatches.Insert(FFindInsertIndex,
@@ -1862,9 +1958,10 @@ end;
 
 { TSynMarkupHighAllMatchList }
 
-constructor TSynMarkupHighAllMatchList.Create;
+constructor TSynMarkupHighAllMatchList.Create(AnOwner: TSynEditMarkupHighlightMatches);
 begin
   inherited Create;
+  FOwner := AnOwner;
   Count := 0;
   Capacity := 256;
 end;
@@ -1940,6 +2037,19 @@ begin
     inc(Result);
 end;
 
+procedure TSynMarkupHighAllMatchList.Clear;
+begin
+  if (FOwner <> nil) and (Count > 0) then
+    FOwner.SendMatchLineInvalidation(0, Count-1);
+  Count := 0;
+end;
+
+procedure TSynMarkupHighAllMatchList.SendInvalidateAll;
+begin
+  if (FOwner <> nil) and (Count > 0) then
+    FOwner.SendMatchLineInvalidation(0, Count-1);
+end;
+
 procedure TSynMarkupHighAllMatchList.Delete(AnIndex: Integer; ACount: Integer);
 begin
   if AnIndex >= Count then
@@ -1947,6 +2057,8 @@ begin
   if AnIndex + ACount > Count then
     ACount := Count - AnIndex;
   {$PUSH}{$R-}{$Q-}FChangeStamp := FChangeStamp+1;{$POP}
+  if FOwner <> nil then
+    FOwner.SendMatchLineInvalidation(AnIndex, AnIndex+ACount-1);
   DeleteRows(AnIndex, ACount);
 end;
 
@@ -1959,17 +2071,41 @@ begin
 end;
 
 procedure TSynMarkupHighAllMatchList.Insert(AnIndex: Integer; AStartPoint, AnEndPoint: TPoint);
+var
+  p: PSynMarkupHighAllMatch;
 begin
   {$PUSH}{$R-}{$Q-}FChangeStamp := FChangeStamp+1;{$POP}
   Insert(AnIndex);
-  PSynMarkupHighAllMatch(ItemPointer[AnIndex])^.StartPoint := AStartPoint;
-  PSynMarkupHighAllMatch(ItemPointer[AnIndex])^.EndPoint   := AnEndPoint;
+  p := PSynMarkupHighAllMatch(ItemPointer[AnIndex]);
+  p^.StartPoint := AStartPoint;
+  p^.EndPoint   := AnEndPoint;
+  if FOwner <> nil then
+    FOwner.SendMatchLineInvalidation(AnIndex, AnIndex);
 end;
 
 function TSynMarkupHighAllMatchList.Insert(AStartPoint, AnEndPoint: TPoint): integer;
 begin
   Result := IndexOf(AStartPoint);
   Insert(Result, AStartPoint, AnEndPoint);
+end;
+
+procedure TSynMarkupHighAllMatchList.SetMatchPoints(const AnIndex: Integer; AStartPoint,
+  AnEndPoint: TPoint);
+var
+  p: PSynMarkupHighAllMatch;
+  r: Boolean;
+begin
+  p := PSynMarkupHighAllMatch(ItemPointer[AnIndex]);
+  if (p^.StartPoint = AStartPoint) and (p^.EndPoint = AnEndPoint) then
+    exit;
+  if FOwner <> nil then begin
+    r := (p^.StartPoint.Y <> AStartPoint.Y) or (p^.EndPoint.Y <> AnEndPoint.Y);
+    FOwner.SendMatchLineInvalidation(AnIndex, AnIndex);
+  end;
+  p^.StartPoint := AStartPoint;
+  p^.EndPoint   := AnEndPoint;
+  if (FOwner <> nil) and r then
+    FOwner.SendMatchLineInvalidation(AnIndex, AnIndex);
 end;
 
 procedure TSynMarkupHighAllMatchList.SetCount(const AValue : Integer);
@@ -2005,6 +2141,7 @@ end;
 
 procedure TSynMarkupHighAllMatchList.SetStartPoint(const AnIndex : Integer; const AValue : TPoint);
 begin
+  assert(FOwner=nil, 'TSynMarkupHighAllMatchList.SetStartPoint: FOwner=nil');
   if AnIndex = Count
   then Count := Count + 1; // AutoIncrease
   PSynMarkupHighAllMatch(ItemPointer[AnIndex])^.StartPoint := AValue;
@@ -2023,6 +2160,7 @@ end;
 
 procedure TSynMarkupHighAllMatchList.SetEndPoint(const AnIndex : Integer; const AValue : TPoint);
 begin
+  assert(FOwner=nil, 'TSynMarkupHighAllMatchList.SetEndPoint: FOwner=nil');
   if AnIndex = Count
   then Count := Count + 1; // AutoIncrease
   PSynMarkupHighAllMatch(ItemPointer[AnIndex])^.EndPoint := AValue;
@@ -2036,11 +2174,18 @@ end;
 
 procedure TSynMarkupHighAllMatchList.SetMatch(const AnIndex: Integer;
   const AValue: TSynMarkupHighAllMatch);
+var
+  p: PSynMarkupHighAllMatch;
+  r: Boolean;
 begin
   if AnIndex = Count
   then Count := Count + 1; // AutoIncrease
-  PSynMarkupHighAllMatch(ItemPointer[AnIndex])^ := AValue;
+  p := PSynMarkupHighAllMatch(ItemPointer[AnIndex]);
+  r := (FOwner <> nil) and CompareMem(p, @AValue, SizeOf(TSynMarkupHighAllMatch));
+  p^ := AValue;
   {$PUSH}{$R-}{$Q-}FChangeStamp := FChangeStamp+1;{$POP}
+  if r then
+    FOwner.SendMatchLineInvalidation(AnIndex, AnIndex);
 end;
 
 { TSynMarkupHighAllMultiMatchList }
@@ -2051,8 +2196,14 @@ begin
 end;
 
 procedure TSynMarkupHighAllMultiMatchList.SetMarkupId(AnIndex: Integer; AValue: Integer);
+var
+  p: PInteger;
 begin
-  PInteger(ItemPointer[AnIndex]+FParentItemSize)^ := AValue;
+  p := PInteger(ItemPointer[AnIndex]+FParentItemSize);
+  if p^ = AValue then
+    exit;
+  p^ := AValue;
+  FOwner.SendMatchLineInvalidation(AnIndex, AnIndex);
 end;
 
 function TSynMarkupHighAllMultiMatchList.GetInintialForItemSize: Integer;
@@ -2106,7 +2257,7 @@ begin
   If (not FMarkupEnabled) and MarkupInfo.IsEnabled then
     Invalidate
   else
-    SendLineInvalidation;
+    FMatches.SendInvalidateAll;
   FMarkupEnabled := MarkupInfo.IsEnabled;
 end;
 
@@ -2134,7 +2285,7 @@ begin
       Invalidate // TODO only need extend search
       //ValidateMatches()  // May find a 2nd, by extending startpos
     else
-      SendLineInvalidation; // Show the existing match
+      FMatches.SendInvalidateAll;
 end;
 
 procedure TSynEditMarkupHighlightAllBase.DoFoldChanged(Sender: TSynEditStrings;
@@ -2166,22 +2317,6 @@ var
   begin
     Result := SearchStringMaxLines - 1;
     if Result < 0 then Result := SEARCH_START_OFFS;
-  end;
-
-  procedure MaybeSendLineInvalidation(AFirstIndex, ALastIndex: Integer);
-  begin
-    if SkipPaint or (ALastIndex < AFirstIndex) then
-      exit;
-    if HideSingleMatch and (FMatches.Count = 1) then begin
-      assert((UnsentLineInvalidation < 0) and (AFirstIndex = 0) and (ALastIndex=0), 'UnsentLineInvalidation < 0');
-      UnsentLineInvalidation := AFirstIndex;
-      exit;
-    end;
-
-    SendLineInvalidation(AFirstIndex, ALastIndex);
-    if UnsentLineInvalidation >= 0 then
-      SendLineInvalidation(UnsentLineInvalidation, UnsentLineInvalidation);
-    UnsentLineInvalidation := -1;
   end;
 
   procedure MaybeDropOldMatches;
@@ -2230,8 +2365,6 @@ var
       if FirstInvalIdx < FMatches.Count then begin
         LastInvalIdx  := FMatches.IndexOfLastMatchForLine(FLastInvalidLine);
         if FirstInvalIdx <= LastInvalIdx then begin
-          if (not SkipPaint) and HasDisplayAbleMatches then
-            SendLineInvalidation(FirstInvalIdx, LastInvalIdx);
           FMatches.Delete(FirstInvalIdx, LastInvalIdx-FirstInvalIdx+1);
           if FirstInvalIdx > FMatches.Count then
             FirstInvalIdx := FMatches.Count;
@@ -2297,8 +2430,6 @@ var
       FSearchedEnd := FindMatches(FSearchedEnd,
                                   Point(Length(Lines[EndOffsLine - 1])+1, EndOffsLine),
                                   Idx, LastScreenLine);
-      if ch <> FMatches.ChangeStamp then
-        SendLineInvalidation;
       if Idx > 1 then
         exit;
     end;
@@ -2316,7 +2447,6 @@ var
         exit;
       end;
       FStartPoint := FMatches.StartPoint[0];
-      SendLineInvalidation;
     end
   end;
 
@@ -2351,8 +2481,6 @@ var
     FSearchedEnd := FindMatches(p,
                                 Point(Length(Lines[EndOffsLine - 1])+1, EndOffsLine),
                                 Idx, LastScreenLine);
-    if (not SkipPaint) and (Idx > Idx2) and HasDisplayAbleMatches then
-      MaybeSendLineInvalidation(0, Idx-1);
 
     MaybeExtendForHideSingle;
     FinishValidate;
@@ -2377,10 +2505,13 @@ begin
   FNeedValidate := False;
   FNeedValidatePaint := False;
 
+  if SkipPaint then
+    BeginSkipSendingInvalidation;
+  BeginSendingInvalidation;
+  try
+
   if (not HasSearchData) or (not MarkupInfo.IsEnabled) then begin
-    if (not SkipPaint) and (fMatches.Count > 0) then
-      SendLineInvalidation;
-    fMatches.Count := 0;
+      fMatches.Clear;
     exit;
   end;
 
@@ -2513,8 +2644,6 @@ begin
           Idx2 := Idx;
           FindMatches(WorkStartPoint, OldStartPoint, Idx);
           //WorkStartPoint := OldStartPoint;
-          if (not SkipPaint) and (Idx > Idx2) then // TODO: avoid, if only 1 and 1 to hide
-            MaybeSendLineInvalidation(Idx2, Idx-1);
           if (FirstKeptValidIdx >= 0) and (Idx > Idx2) then
             inc(FirstKeptValidIdx, Idx-Idx2);
         end;
@@ -2548,9 +2677,6 @@ begin
     then
       GapStartPoint := FindMatches(GapStartPoint, GapEndPoint, Idx, LastScreenLine);
 
-    if (not SkipPaint) and (Idx > FirstKeptValidIdx) then // TODO: avoid, if only 1 and 1 to hide
-      MaybeSendLineInvalidation(FirstKeptValidIdx, Idx-1);
-
     if (ComparePoints(GapStartPoint, GapEndPoint) < 0) and
        ((not HideSingleMatch) or (FirstKeptValidIdx > 1))
     then begin
@@ -2573,14 +2699,49 @@ begin
     p := Point(Length(Lines[EndOffsLine - 1])+1, EndOffsLine);
     if ComparePoints(OldEndPoint, p) < 0 then begin
       FSearchedEnd := FindMatches(OldEndPoint, p, Idx, LastScreenLine);
-      if (not SkipPaint) and (Idx > Idx2) and HasDisplayAbleMatches then
-        MaybeSendLineInvalidation(Idx2, Idx-1);
     end;
   end;
 
   MaybeExtendForHideSingle;
   FinishValidate;
   //finally  DebugLnExit(['  < ValidateMatches Cnt=',FMatches.Count, '  <<< # ', dbgs(FStartPoint), ' - ', dbgs(FSearchedEnd)]); end;
+  finally
+    EndSendingInvalidation;
+    if SkipPaint then
+      EndSkipSendingInvalidation;
+end;
+end;
+
+procedure TSynEditMarkupHighlightAllBase.BeginSendingInvalidation;
+begin
+  inherited BeginSendingInvalidation;
+  if SendingInvalidationLock = 1 then begin
+    FInvalidationHasHiddenMatch := (FMatches.Count = 1) and FHideSingleMatch;
+  end;
+end;
+
+procedure TSynEditMarkupHighlightAllBase.SendMatchLineInvalidation(AStartIndex, AnEndIndex: Integer
+  );
+begin
+  if (SkipSendingInvalidationLock > 0) then
+    exit;
+
+  if FInvalidationHasHiddenMatch then begin
+    if FMatches.Count > 1 then begin
+      FInvalidationHasHiddenMatch := False;
+      inherited SendMatchLineInvalidation(0,0);
+    end
+    else
+      exit;
+  end
+  else
+  if FHideSingleMatch then begin
+    if FMatches.Count <= 1 then begin
+      FInvalidationHasHiddenMatch := True;
+      exit;
+    end;
+  end;
+  inherited SendMatchLineInvalidation(AStartIndex, AnEndIndex);
 end;
 
 procedure TSynEditMarkupHighlightAllBase.SetLines(
@@ -2683,14 +2844,21 @@ end;
 
 procedure TSynEditMarkupHighlightAllBase.Invalidate(SkipPaint: Boolean);
 begin
-  if (not SkipPaint) and HasDisplayAbleMatches then
-    SendLineInvalidation;
+  if SkipPaint then
+    BeginSkipSendingInvalidation;
+  BeginSendingInvalidation;
+  try
   FStartPoint.y := -1;
   FSearchedEnd.y := -1;
-  FMatches.Count := 0;
+      FMatches.Clear;
   FFirstInvalidLine := 1;
   FLastInvalidLine := MaxInt;
   ValidateMatches(SkipPaint);
+  finally
+    EndSendingInvalidation;
+    if SkipPaint then
+      EndSkipSendingInvalidation;
+  end;
 end;
 
 { TSynEditMarkupHighlightAllCaret }
