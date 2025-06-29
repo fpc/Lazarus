@@ -70,9 +70,8 @@ type
     FPriority: integer;
     FText: string;
     FHasColon: Boolean;
-    FCodePos: TPoint;      // Column : line in file.
-    FCommentLen: integer;  // Original length including comment characters.
-    FCommentType: char;    // Characters of comment start / end.
+    FStartPos, FEndPos: TPoint; // Comment Column:Line in file.
+    FCommentType: char;         // Characters of comment start / end.
     FFilename: string;
     FOwner: string;
     function GetQuotedCategory: string;
@@ -87,8 +86,8 @@ type
     property TokenStyle: TTokenStyle read FTokenStyle write FTokenStyle;
     property ToDoType: TToDoType read FToDoType write FToDoType;
     property HasColon: Boolean read FHasColon write FHasColon;
-    property CodePos: TPoint read FCodePos write FCodePos;
-    property CommentLen: integer read FCommentLen write FCommentLen;
+    property StartPos: TPoint read FStartPos write FStartPos;
+    property EndPos: TPoint read FEndPos write FEndPos;
     property CommentType: char read FCommentType write FCommentType;
     property Filename: string read FFilename write FFilename;
     property Owner: string read FOwner write FOwner;
@@ -167,7 +166,7 @@ begin
         s:=LIST_INDICATORS[lToDoItem.ToDoType] + ',';
         t:=DelChars(lToDoItem.Text,',');{Strip any commas that can cause a faulty csv file}
         s:=s+t+','+IntToStr(lToDoItem.Priority)+','+lToDoItem.Filename+
-           ','+IntToStr(lToDoItem.CodePos.Y)+','+lToDoItem.Owner+','+lToDoItem.Category;
+           ','+IntToStr(lToDoItem.StartPos.Y)+','+lToDoItem.Owner+','+lToDoItem.Category;
         lCommaList.Add(s);
         Inc(i);
       end;
@@ -247,6 +246,7 @@ var
   lCommentLen, lStartLen, lEndLen: Integer;
   lTodoType, lFoundToDoType: TToDoType;
   lTokenStyle, lFoundTokenStyle: TTokenStyle;
+  lEndPos: TPoint;
   NewToDoItem: TTodoItem;
 begin
   //DebugLn(['TTLScannedFile.CreateToDoItem FileName=',FRealFilename,
@@ -295,6 +295,8 @@ begin
   Assert(TheToken=TODO_TOKENS[lFoundTokenStyle,lFoundToDoType], 'TTLScannedFile.CreateToDoItem: TheToken');
   Delete(FCommentStr, 1, Length(TheToken));
   FCommentStr := TrimLeft(FCommentStr);
+  lEndPos.X := aCodePos.X + lCommentLen;
+  lEndPos.Y := aCodePos.Y;
 
   // Require a colon with plain "done" but not with "#done". Prevent false positives.
   NewToDoItem:=TTodoItem.Create;
@@ -302,8 +304,8 @@ begin
   begin
     NewToDoItem.ToDoType   := lFoundToDoType;
     NewToDoItem.TokenStyle := lFoundTokenStyle;
-    NewToDoItem.CodePos    := aCodePos;
-    NewToDoItem.CommentLen := lCommentLen;
+    NewToDoItem.StartPos   := aCodePos;
+    NewToDoItem.EndPos     := lEndPos;
     NewToDoItem.CommentType:= aCommentType;
     NewToDoItem.Filename   := FRealFilename;
     Add(NewToDoItem);            // Add to list.

@@ -79,7 +79,7 @@ Const
   ToDoWindowName = 'IDETodoWindow';
 
 type
-  TOnEditToDo = procedure(aTodoItem: TTodoItem);
+  TOnEditToDo = procedure(aTodoItem: TTodoItem; aSrcEdit: TSourceEditorInterface);
 
   { TIDETodoWindow }
 
@@ -223,9 +223,9 @@ begin
     TodoItem := TTodoItem(ListItem.Data);
     SrcPos := SrcEdit.CursorTextXY;
     if (TodoItem.Filename = SrcEdit.FileName)
-    and (SrcPos.Y = TodoItem.CodePos.Y)
-    and (SrcPos.X > TodoItem.CodePos.X)
-    and (SrcPos.X < TodoItem.CodePos.X + TodoItem.CommentLen) then
+    and (SrcPos.Y = TodoItem.StartPos.Y)
+    and (SrcPos.X > TodoItem.StartPos.X)
+    and (SrcPos.X < TodoItem.EndPos.X) then
     begin
       // Editor cursor is inside a ToDo item > change menu item captions.
       lvTodo.Selected := ListItem;
@@ -528,7 +528,7 @@ end;
 
 procedure TIDETodoWindow.GotoTodo(aTodoItem: TTodoItem);
 begin
-  LazarusIDE.DoOpenFileAndJumpToPos(aTodoItem.Filename, aTodoItem.CodePos,-1,-1,-1,
+  LazarusIDE.DoOpenFileAndJumpToPos(aTodoItem.Filename, aTodoItem.StartPos,-1,-1,-1,
     [ofOnlyIfExists,ofRegularFile,ofVirtualFile,ofDoNotLoadResource]);
 end;
 
@@ -544,9 +544,9 @@ begin
   TodoItem := TTodoItem(ListItem.Data);
   SrcEdit := SourceEditorManagerIntf.ActiveEditor;
   if (SrcEdit=nil) or SrcEdit.ReadOnly then exit;
-  if (TodoItem.Filename<>SrcEdit.FileName) or (TodoItem.CodePos<>SrcEdit.CursorTextXY) then
-    GotoTodo(TodoItem);       // Move to the right place if not there already.
-  OnEditItem(TodoItem);       // Open the dialog for editing.
+  if (TodoItem.Filename<>SrcEdit.FileName) or (TodoItem.StartPos<>SrcEdit.CursorTextXY) then
+    GotoTodo(TodoItem);          // Move to the right place if not there already.
+  OnEditItem(TodoItem, SrcEdit); // Open the dialog for editing.
 end;
 
 procedure TIDETodoWindow.acGotoExecute(Sender: TObject);
@@ -611,7 +611,7 @@ begin
     if (BaseDirectory<>'') and FilenameIsAbsolute(aFilename) then
       aFilename:=CreateRelativePath(aFilename,BaseDirectory);
     aListitem.SubItems.Add(aFilename);
-    aListitem.SubItems.Add(IntToStr(aTodoItem.CodePos.Y));
+    aListitem.SubItems.Add(IntToStr(aTodoItem.StartPos.Y));
     aListitem.SubItems.Add(aTodoItem.Owner);
     aListitem.SubItems.Add(aTodoItem.Category);
   end;

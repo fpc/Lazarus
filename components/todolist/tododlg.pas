@@ -84,8 +84,8 @@ procedure CreateIDEToDoWindow(Sender: TObject; aFormName: string;
                           var AForm: TCustomForm; DoDisableAutoSizing: boolean);
 // ToDo Dialog
 function ExecuteTodoDialog(const aCaption: string; var aTodoItem: TTodoItem): TModalResult;
-procedure InsertToDoForActiveSE;
-procedure EditToDo(aTodoItem: TTodoItem);
+procedure InsertToDoForActiveSE(aSrcEdit: TSourceEditorInterface);
+procedure EditToDo(aTodoItem: TTodoItem; aSrcEdit: TSourceEditorInterface);
 procedure InsertOrEditToDo(Sender: TObject);
 
 
@@ -207,45 +207,39 @@ begin
   aTodoDialog.Free;
 end;
 
-procedure InsertToDoForActiveSE;
+procedure InsertToDoForActiveSE(aSrcEdit: TSourceEditorInterface);
 var
-  SrcEdit: TSourceEditorInterface;
   TodoItem: TTodoItem;
 begin
-  SrcEdit := SourceEditorManagerIntf.ActiveEditor;
-  if (SrcEdit=nil) or SrcEdit.ReadOnly then exit;
   TodoItem := nil;
   if ExecuteTodoDialog(lisTDDInsertToDo, TodoItem) <> mrOK then exit;
   try
     if Assigned(TodoItem) then
-      SrcEdit.Selection := TodoItem.AsComment;
+      aSrcEdit.Selection := TodoItem.AsComment;
   finally
     TodoItem.Free;
   end;
   IDETodoWindow.UpdateTodos;
 end;
 
-procedure EditToDo(aTodoItem: TTodoItem);
-var
-  SrcEdit: TSourceEditorInterface;
-  EndPos: TPoint;
+procedure EditToDo(aTodoItem: TTodoItem; aSrcEdit: TSourceEditorInterface);
 begin
-  SrcEdit := SourceEditorManagerIntf.ActiveEditor;
-  if (SrcEdit=nil) or SrcEdit.ReadOnly then exit;
   if ExecuteTodoDialog(lisTDDEditToDo, aTodoItem) <> mrOK then exit;
-  EndPos.X := aTodoItem.CodePos.X + aTodoItem.CommentLen;
-  EndPos.Y := aTodoItem.CodePos.Y;  // ToDo -oJuha : Deal with multiline comments.
-  SrcEdit.SelectText(aTodoItem.CodePos, EndPos);
-  SrcEdit.Selection := aTodoItem.AsComment;
+  aSrcEdit.SelectText(aTodoItem.StartPos, aTodoItem.EndPos);
+  aSrcEdit.Selection := aTodoItem.AsComment;
   IDETodoWindow.UpdateTodos;  { TODO -oJuha : Retain selection in the list. }
 end;
 
 procedure InsertOrEditToDo(Sender: TObject);
+var
+  SrcEdit: TSourceEditorInterface;
 begin
+  SrcEdit := SourceEditorManagerIntf.ActiveEditor;
+  if (SrcEdit=nil) or SrcEdit.ReadOnly then exit;
   if Assigned(IDETodoWindow) and Assigned(IDETodoWindow.TodoItemToEdit) then
-    EditToDo(IDETodoWindow.TodoItemToEdit)
+    EditToDo(IDETodoWindow.TodoItemToEdit, SrcEdit)
   else
-    InsertToDoForActiveSE
+    InsertToDoForActiveSE(SrcEdit)
 end;
 
 { TTodoDialog }
