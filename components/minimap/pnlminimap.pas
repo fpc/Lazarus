@@ -75,7 +75,7 @@ var
 
 begin
   TopLine:=FSourceSynEdit.TopLine;
-  BottomLine:=TopLine+FSourceSynEdit.LinesInWindow;
+  BottomLine:=FSourceSynEdit.BottomLine;
   if (Line>=TopLine) and (Line<=BottomLine) then
     begin
     Markup.Background:=FViewWindowColor;
@@ -138,7 +138,7 @@ begin
   if (FSourceSynEdit=nil) then
     Exit;
   CurrTop:=FSourceSynEdit.TopLine;
-  CurrBottom:=CurrTop+FSourceSynEdit.LinesInWindow;
+  CurrBottom:=FSourceSynEdit.BottomLine;
   if (CurrTop<FMiniSynEdit.TopLine) then
     FMiniSynEdit.TopLine:=CurrTop
   else if (CurrBottom>(FMiniSynEdit.TopLine+FMiniSynEdit.LinesInWindow)) then
