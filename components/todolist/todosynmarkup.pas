@@ -9,7 +9,7 @@ uses
   Classes, SysUtils, Controls, Graphics,
   LazLoggerBase,
   // TodoList
-  ToDoListStrConsts,
+  ToDoListStrConsts, ToDoListCore,
   // IdeIntf
   SrcEditorIntf, EditorSyntaxHighlighterDef,
   // LazEdit
@@ -24,11 +24,10 @@ type
 
   TSynEditTodoMarkup = class(TSynEditMarkup)
   private type
-    TCommentKind = (ckTodo, ckDone, ckNote);
     TFoundTodo = record
       StartPos: TLogPoint;
       EndPos: TLogPoint;
-      Kind: TCommentKind;
+      Kind: TToDoType;
     end;
   private
     FPasHl: TSynPasSyn;
@@ -37,7 +36,7 @@ type
     FSkipStartLine, FSkipEndLine: integer;
     FNxtIdx, FMrkIdx: integer;
 
-    function MarkupFor(AKind: TCommentKind): TSynSelectedColor;
+    function MarkupFor(AKind: TToDoType): TSynSelectedColor;
   public
     procedure BeginMarkup; override;
     procedure PrepareMarkupForRow(aRow: Integer); override;
@@ -147,11 +146,11 @@ end;
 
 { TSynEditTodoMarkup }
 
-function TSynEditTodoMarkup.MarkupFor(AKind: TCommentKind): TSynSelectedColor;
+function TSynEditTodoMarkup.MarkupFor(AKind: TToDoType): TSynSelectedColor;
 begin
   case AKind of
-    ckTodo: Result := CommentAttribTodo;
-    ckDone: Result := CommentAttribDone;
+    tdTodo: Result := CommentAttribTodo;
+    tdDone: Result := CommentAttribDone;
     else    Result := CommentAttribNote;
   end;
 end;
@@ -189,6 +188,7 @@ var
     p := PChar(LineText);
     pe := p + Length(LineText);
   end;
+
   function AdvanceToNextLine(var ALineNum: integer): boolean; inline;
   begin
     repeat
@@ -268,7 +268,7 @@ var
 var
   fnd, firstRun, HasHash, IsEnd: Boolean;
   LogX, TkEnd: integer;
-  Kind: TCommentKind;
+  Kind: TToDoType;
   pos: TPoint;
   i: SizeInt;
 begin
@@ -386,15 +386,15 @@ begin
     if (p+4 <= pe) then begin
       case p^ of
         't', 'T': begin
-            Kind := ckTodo;
+            Kind := tdTodo;
             fnd := (p[1] in ['o', 'O']) and (p[2] in ['d', 'D']) and (p[3] in ['o', 'O']);
           end;
         'd', 'D': begin
-            Kind := ckDone;
+            Kind := tdDone;
             fnd := (p[1] in ['o', 'O']) and (p[2] in ['n', 'N']) and (p[3] in ['e', 'E']);
           end;
         'n', 'N': begin
-            Kind := ckNote;
+            Kind := tdNote;
             fnd := (p[1] in ['o', 'O']) and (p[2] in ['t', 'T']) and (p[3] in ['e', 'E']);
           end;
       end;
