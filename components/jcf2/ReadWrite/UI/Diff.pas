@@ -66,6 +66,9 @@
 * 7 January 2021   - Removed Delphi support from version copied to JCF package *
 *                    under Lazarus sources. Use TCardinalList from LazUtils.   *
 *                    by Juha Manninen.                                         *
+* 29 Jun 2025      - Port change from https://github.com/rickard67/TextDiff    *
+*                    Fix bug comparing strings ( are 1 based).                 *
+*                    by Domingo Galmés                                         *
 *******************************************************************************)
 
 interface
@@ -293,7 +296,7 @@ begin
     //finally, append any trailing matches onto compareList ...
     with FLastCompareRec do
     begin
-      AddChangeChr(oldIndex1,len1Minus1-oldIndex1, ckNone);
+      AddChangeChr(oldIndex1,len1Minus1-oldIndex1+1, ckNone);
     end;
   finally
     FExecuting := false;
