@@ -3233,7 +3233,7 @@ begin
   if (not SynEdit.IsVisible) or (not HasEnabledMarkup) or (Highlighter = nil) then
     exit;
 
-  LastLine := ScreenRowToRow(LinesInWindow+1);
+  LastLine := SynEdit.PartialBottomLine + 1; // TODO: is +1 needed
   FAdjustedTop := ToIdx(TopLine);
   PrepareHighlighter;
 
@@ -3553,13 +3553,13 @@ begin
   if (Highlighter = nil) or (not HasEnabledMarkup) then begin
     FIfDefTree.Clear;
     if Matches.Count > 0 then
-      InvalidateSynLines(TopLine, ScreenRowToRow(LinesInWindow+1));
+      InvalidateSynLines(TopLine, SynEdit.PartialBottomLine);
     Matches.Count := 0;
     exit;
   end;
 
   PrepareHighlighter;
-  LastLine := ScreenRowToRow(LinesInWindow+1);
+  LastLine := SynEdit.PartialBottomLine + 1; // TODO: is +1 needed
   if (FLastValidTopLine  <= TopLine) and (FLastValidLastLine >= LastLine) and
      (FLastValidTreeStep = FIfDefTree.ChangeStep)
   then

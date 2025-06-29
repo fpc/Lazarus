@@ -785,7 +785,7 @@ begin
     Result := TCustomSynEdit(SynEdit).CaretY;
   if Result < TopLine then
     Result := TopLine;
-  i := ScreenRowToRow(LinesInWindow);
+  i := SynEdit.BottomLine;
   if Result > i then
     Result := i;
 end;

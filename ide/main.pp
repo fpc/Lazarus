@@ -10456,8 +10456,10 @@ begin
         else
         begin
           if not(
-            CodeToolsOpts.AvoidUnnecessaryJumps
-            and ((BlockTopLine>=NewSrcEdit.TopLine) and (BlockBottomLine<=NewSrcEdit.TopLine+NewSrcEdit.LinesInWindow)))
+            CodeToolsOpts.AvoidUnnecessaryJumps and
+            (BlockTopLine>=NewSrcEdit.TopLine) and
+            (BlockBottomLine<=NewSrcEdit.EditorComponent.BottomLine)
+          )
           then
             NewSrcEdit.TopLine:=NewTopLine;
         end;

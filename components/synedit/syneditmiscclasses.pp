@@ -186,6 +186,8 @@ type
     function GetLineHeight: integer; virtual; abstract;
     function GetLinesInWindow: Integer; virtual; abstract;
     function GetTopLine: Integer; virtual; abstract;
+    function GetBottomLine: Integer; virtual; abstract;
+    function GetPartialBottomLine: Integer; virtual; abstract;
     procedure SetLeftChar(Value: Integer); virtual; abstract;
     procedure SetTopLine(Value: Integer); virtual; abstract;
 
@@ -350,8 +352,10 @@ type
     property CharWidth: integer read GetCharWidth;
     property LeftChar: Integer read GetLeftChar write SetLeftChar;
     property LineHeight: integer read GetLineHeight;
-    property LinesInWindow: Integer read GetLinesInWindow;
+    property LinesInWindow: Integer read GetLinesInWindow;  // Excludes partially visible last line
     property TopLine: Integer read GetTopLine write SetTopLine;
+    property BottomLine: Integer read GetBottomLine;               // Fully visible bottomline
+    property PartialBottomLine: Integer read GetPartialBottomLine; // Partly visible bottomline
 
     property BlockBegin: TPoint read GetBlockBegin write SetBlockBegin;         // Set Blockbegin. For none persistent also sets Blockend. Setting Caret may undo this and should be done before setting block
     property BlockEnd: TPoint read GetBlockEnd write SetBlockEnd;

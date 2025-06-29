@@ -545,7 +545,7 @@ type
     FIsInDecPaintLock: TSynDecPaintLockState;
     FScrollBars: TScrollStyle;
     FOldTopView: Integer;
-    FCachedTopLine: Integer;
+    FCachedTopLine, FCachedBottomLine, FCachedPartialBottomLine: Integer;
     FLastTextChangeStamp: Int64;
     fHighlighter: TSynCustomHighlighter;
     fUndoList: TSynEditUndoList;
@@ -828,6 +828,8 @@ type
     function GetLineHeight: integer; override;
     function GetLinesInWindow: Integer; override;
     function GetTopLine: Integer; override;
+    function GetBottomLine: Integer; override;
+    function GetPartialBottomLine: Integer; override;
     procedure SetLeftChar(Value: Integer); override;
     procedure SetTopLine(Value: Integer); override;
 
@@ -2000,6 +2002,39 @@ begin
     exit(FCachedTopLine);
   Result := FTheLinesView.ViewToTextIndex(ToIdx(FTextArea.TopViewedLine)) + 1;
   FCachedTopLine := Result;
+end;
+
+function TCustomSynEdit.GetBottomLine: Integer;
+begin
+  if not Assigned(FTextArea) then
+    exit(-1);
+
+  if FCachedBottomLine > 0 then
+    exit(FCachedBottomLine);
+
+  Result := ToPos(FTheLinesView.ViewToTextIndex(ToIdx(TopView + LinesInWindow-1)));
+  if (Result >= Lines.Count) then
+    Result := Lines.Count;
+
+  FCachedBottomLine := Result;
+end;
+
+function TCustomSynEdit.GetPartialBottomLine: Integer;
+begin
+  if not Assigned(FTextArea) then
+    exit(-1);
+
+  if not FTextArea.HasPartiallyVisibleLastLine then
+    exit(GetBottomLine);
+
+  if FCachedPartialBottomLine > 0 then
+    exit(FCachedPartialBottomLine);
+
+  Result := ToPos(FTheLinesView.ViewToTextIndex(ToIdx(TopView + LinesInWindow)));
+  if (Result >= Lines.Count) then
+    Result := Lines.Count;
+
+  FCachedPartialBottomLine := Result;
 end;
 
 procedure TCustomSynEdit.SetBlockTabIndent(AValue: integer);
@@ -5205,6 +5240,8 @@ begin
     TopView := NewTopView;
   end;
   FCachedTopLine := Value;
+  FCachedBottomLine := -1;
+  FCachedPartialBottomLine := -1;
 end;
 
 procedure TCustomSynEdit.ScrollAfterTopLineChanged;
@@ -5283,7 +5320,7 @@ begin
   if NewCaretXY.Y < TopLine then
     NewCaretXY.Y := TopLine
   else begin
-    MaxY:= ScreenRowToRow(Max(0,LinesInWindow-1));
+    MaxY:= BottomLine;
     if NewCaretXY.Y > MaxY then
       NewCaretXY.Y := MaxY;
   end;
@@ -5843,7 +5880,8 @@ procedure TCustomSynEdit.FoldChanged(Sender: TSynEditStrings; aIndex,
 var
   i: Integer;
 begin
-  {$IFDEF SynFoldDebug}debugln(['FOLD-- FoldChanged; Index=', aIndex, ' TopView=', TopView, '  ScreenRowToRow(LinesInWindow + 1)=', ScreenRowToRow(LinesInWindow + 1)]);{$ENDIF}
+  {$IFDEF SynFoldDebug}debugln(['FOLD-- FoldChanged; Index=', aIndex, ' TopView=', TopView, '  PartialBottomLine=', PartialBottomLine]);{$ENDIF}
+  // TODO: TopView may only need to be (re-)set if aIndex <= current topline
   TopView := TopView;
   if (not FTheLinesView.IsTextIdxVisible(ToIdx(CaretY))) and (FTheLinesView.ViewedCount > 0) then begin
     i := Max(0, FTheLinesView.TextToViewIndex(ToIdx(CaretY)));
@@ -5855,8 +5893,8 @@ begin
   if eoAlwaysVisibleCaret in fOptions2 then
     MoveCaretToVisibleArea;
   UpdateScrollBars;
-  if aIndex + 1 > Max(1, ScreenRowToRow(LinesInWindow + 1)) then exit;
-  if aIndex + 1 < TopLine then aIndex := TopLine - 1;
+  if ToPos(aIndex) > PartialBottomLine then exit;
+  if ToPos(aIndex) < TopLine then aIndex := TopLine - 1;
   InvalidateLines(aIndex + 1, -1);
   InvalidateGutterLines(aIndex + 1, -1);
 end;
@@ -5870,6 +5908,8 @@ begin
   if (sfHasScrolled in fStateFlags) then debugln(['SetTopView with sfHasScrolled Value=',AValue, '  FOldTopView=',FOldTopView ]);
   {$ENDIF}
   FCachedTopLine := -1;
+  FCachedBottomLine := -1;
+  FCachedPartialBottomLine := -1;
   TSynEditStringList(FLines).SendCachedNotify; // TODO: review
 
   AValue := Min(AValue, CurrentMaxTopView);
@@ -7291,7 +7331,7 @@ begin
         end;
       ecPageBottom, ecSelPageBottom, ecColSelPageBottom:
         begin
-          FCaret.LinePos := ScreenRowToRow(LinesInWindow - 1);
+          FCaret.LinePos := BottomLine;
         end;
       ecEditorTop, ecSelEditorTop:
         begin
@@ -7773,8 +7813,8 @@ begin
       ecScrollUp:
         begin
           TopView := TopView - 1;
-          if CaretY > ScreenRowToRow(LinesInWindow-1) then
-            CaretY := ScreenRowToRow(LinesInWindow-1);
+          if CaretY > BottomLine then
+            CaretY := BottomLine;
         end;
       ecScrollDown:
         begin
@@ -9004,8 +9044,7 @@ begin
     FBlockSelection.ActiveSelectionMode := Mode;
 
   if MakeSelectionVisible then begin
-    //l1 := FBlockSelection.FirstLineBytePos;;
-    LBottomLine := ToPos(FTheLinesView.AddVisibleOffsetToTextIndex(ToIdx(TopLine), LinesInWindow));
+    LBottomLine := BottomLine;
 
     LCaretFirst := CaretY;
     LCaretLast := Max(1, ToPos(FTheLinesView.AddVisibleOffsetToTextIndex(ToIdx(CaretY), 1-LinesInWindow)));  // Will have caret on last visible line
@@ -10083,7 +10122,7 @@ var
         if PosY = 1 then break;
         Dec(PosY);
         if OnlyVisible
-        and ((PosY<TopLine) or (PosY >= ScreenRowToRow(LinesInWindow)))
+        and ((PosY<TopLine) or (PosY > PartialBottomLine))
         then
           break;
         Line := FTheLinesView[PosY - 1];
@@ -10113,7 +10152,7 @@ var
         if PosY = FTheLinesView.Count then break;
         Inc(PosY);
         if OnlyVisible
-        and ((PosY < TopLine) or (PosY >= ScreenRowToRow(LinesInWindow)))
+        and ((PosY < TopLine) or (PosY > PartialBottomLine))
         then
           break;
         Line := FTheLinesView[PosY - 1];
@@ -10152,7 +10191,7 @@ begin
   PosY := LogicalStartBracket.Y;
   if (PosY<1) or (PosY>FTheLinesView.Count) then exit;
   if OnlyVisible
-  and ((PosY<TopLine) or (PosY >= ScreenRowToRow(LinesInWindow)))
+  and ((PosY<TopLine) or (PosY > PartialBottomLine))
   then
    exit;
 

@@ -2367,7 +2367,7 @@ begin
     exit;
   end;
 
-  LastScreenLine := ScreenRowToRow(LinesInWindow+1);
+  LastScreenLine := SynEdit.PartialBottomLine;
   UnsentLineInvalidation := -1;
 
   MaybeDropOldMatches;

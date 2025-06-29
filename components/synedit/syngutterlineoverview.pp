@@ -962,7 +962,7 @@ procedure TSynGutterLOvProviderCurrentPage.SynStatusChanged(Sender: TObject;
 begin
   InvalidatePixelLines(FPixelTopLine, FPixelBottomLine);
   FCurTopLine := SynEdit.TopLine;
-  FCurBottomLine := SynEdit.ScreenRowToRow(SynEdit.LinesInWindow);
+  FCurBottomLine := SynEdit.PartialBottomLine;
   ReCalc;
   InvalidatePixelLines(FPixelTopLine, FPixelBottomLine);
 end;
@@ -1573,7 +1573,7 @@ begin
 
   if Result then begin
     if ({%H-}TextLine < SynEdit.TopLine) or
-       (TextLine > SynEdit.TopLine + SynEdit.LinesInWindow)
+       (TextLine > SynEdit.BottomLine)
     then
       SynEdit.TopLine := Max(1, TextLine - SynEdit.LinesInWindow div 2);
 

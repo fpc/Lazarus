@@ -1095,7 +1095,7 @@ begin
   lEndLine := pEndLine;
   FColumnCache[ToIdx(lEndLine)] := FirstCharacterColumn[ToIdx(lEndLine)];
   x := FColumnCache[ToIdx(lEndLine)];
-  lBottomLine := SynEdit.TopLine + SynEdit.LinesInWindow;
+  lBottomLine := SynEdit.PartialBottomLine;
 
   fNestList.Clear;
   fNestList2.Clear;

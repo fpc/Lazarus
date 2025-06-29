@@ -1696,7 +1696,7 @@ begin
 
   w := Editor.LinesInWindow + 1;
   TopLine := Editor.TopLine;
-  BottomLine := ToPos(ViewedTextBuffer.ViewToTextIndex(ToIdx(Editor.TopView + w)));
+  BottomLine := Editor.PartialBottomLine;
   for i := 0 to CaretsCount - 1 do begin
     if cfNoneVisual in Carets.Flags[i] then continue;
 

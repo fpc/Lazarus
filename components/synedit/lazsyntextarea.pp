@@ -6,7 +6,7 @@ unit LazSynTextArea;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, Math,
   // LCL
   Graphics, Controls, LCLType, LCLIntf,
   // LazUtils
@@ -116,6 +116,7 @@ type
   private
     FCharsInWindow: Integer;
     FCharWidth: integer;
+    FHasPartiallyVisibleLastLine: boolean;
     FLinesInWindow: Integer;
     fOnStatusChange: TStatusChangeEvent;
     FTextSizeChangeList: TMethodList;
@@ -196,7 +197,8 @@ type
 
     property LineHeight: integer read FTextHeight;
     property CharWidth: integer  read FCharWidth;
-    property LinesInWindow: Integer read FLinesInWindow;
+    property LinesInWindow: Integer read FLinesInWindow; // Excludes partially visible last line
+    property HasPartiallyVisibleLastLine: boolean read FHasPartiallyVisibleLastLine;
     property CharsInWindow: Integer read FCharsInWindow;
     property OnStatusChange: TStatusChangeEvent read fOnStatusChange write fOnStatusChange;
   end;
@@ -1549,6 +1551,7 @@ procedure TLazSynTextArea.FontChanged;
 var
   OldChars, OldLines: Integer;
   Chg: TSynStatusChanges;
+  t: LongInt;
 begin
   // ToDo: wait for handle creation
   // Report FLinesInWindow=-1 if no handle
@@ -1559,10 +1562,13 @@ begin
   OldLines := FLinesInWindow;
   FCharsInWindow :=  0;
   FLinesInWindow :=  0;
+  FHasPartiallyVisibleLastLine := False;
   if FCharWidth > 0 then
     FCharsInWindow := Max(0, (FTextBounds.Right - FTextBounds.Left) div FCharWidth);
-  if FTextHeight > 0 then
-    FLinesInWindow := Max(0, (FTextBounds.Bottom - FTextBounds.Top) div FTextHeight);
+  if FTextHeight > 0 then begin
+    DivMod(Max(0, FTextBounds.Bottom - FTextBounds.Top), FTextHeight, FLinesInWindow, t);
+    FHasPartiallyVisibleLastLine := t > 0;
+  end;
 
   if assigned(fOnStatusChange) then begin
     Chg := [];

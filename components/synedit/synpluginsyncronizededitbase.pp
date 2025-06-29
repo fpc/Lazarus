@@ -741,14 +741,14 @@ begin
     i := 0;
     j := Cells.Count - 1;
     t := TopLine;
-    b := ScreenRowToRow(LinesInWindow + 1) + 1;
+    b := SynEdit.PartialBottomLine;
     while (i <= j) and ((Cells[i].Group < 0 ) or ((Cells[i].LogStart.y < t) and (Cells[i].LogEnd.y < t))) do
       inc(i);
     FPreparedCellTop := i;
     while (i <= j) and ((Cells[j].Group < 0 ) or ((Cells[j].LogStart.y > b) and (Cells[j].LogEnd.y > b))) do
       dec(j);
     FPreparedCellBottom := j;
-  end;;
+  end;
   i := FPreparedCellTop;
   j := FPreparedCellBottom;
   if FPreparedRow >= 0 then begin
