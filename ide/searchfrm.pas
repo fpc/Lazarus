@@ -423,8 +423,7 @@ var
         // replaced with some words
         if FoundStartPos.Y=FoundEndPos.Y then begin
           // replaced some words with some words
-          inc(LastReplaceColOffset,
-                               aLastLineLength-(FoundEndPos.X-FoundStartPos.X));
+          inc(LastReplaceColOffset,aLastLineLength-(FoundEndPos.X-FoundStartPos.X));
         end else begin
           // replaced several lines with some words
           inc(LastReplaceColOffset,FoundStartPos.X+aLastLineLength-FoundEndPos.X);

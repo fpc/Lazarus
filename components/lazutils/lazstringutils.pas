@@ -1277,7 +1277,7 @@ function TextToSingleLine(const AText: string): string;
 var
   i, wstart, wlen: Integer;
 begin
-  Result := Trim(AText);
+  Result := AText;
   wstart := 0;
   i := 1;
   while i <= Length(Result) do

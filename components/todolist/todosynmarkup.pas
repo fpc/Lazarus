@@ -19,23 +19,22 @@ uses
   SynEditHighlighter, SynEditHighlighterFoldBase;
 
 type
+  TFoundTodo = record
+    StartPos: TLogPoint;
+    EndPos: TLogPoint;
+    Kind: TToDoType;
+  end;
 
   { TSynEditTodoMarkup }
 
   TSynEditTodoMarkup = class(TSynEditMarkup)
-  private type
-    TFoundTodo = record
-      StartPos: TLogPoint;
-      EndPos: TLogPoint;
-      Kind: TToDoType;
-    end;
   private
     FPasHl: TSynPasSyn;
     FLineLen: integer;
     FFoundPos: array of TFoundTodo;
     FSkipStartLine, FSkipEndLine: integer;
     FNxtIdx, FMrkIdx: integer;
-
+    function GetStartOfComment(var ALineNum: integer; out ALogX: integer): boolean;
     function MarkupFor(AKind: TToDoType): TSynSelectedColor;
   public
     procedure BeginMarkup; override;
@@ -48,6 +47,7 @@ type
       ): TSynSelectedColor; override;
     function GetMarkupAttributeAtWrapEnd(const aRow: Integer;
       const aWrapCol: TLazSynDisplayTokenBound): TSynSelectedColor; override;
+    function CursorInsideToDo(aCol: integer; out aToDo: TFoundTodo): boolean;
   end;
 
 procedure Register;
@@ -178,7 +178,7 @@ var
   p: PChar;
   pe: Pointer;
 
-  function GetLine(ALineNum: integer): boolean; inline;
+  function GetLine(ALineNum: integer): boolean;
   begin
     Result := False;
     if ALineNum >= SynEdit.Lines.Count then
@@ -189,7 +189,7 @@ var
     pe := p + Length(LineText);
   end;
 
-  function AdvanceToNextLine(var ALineNum: integer): boolean; inline;
+  function AdvanceToNextLine(var ALineNum: integer): boolean;
   begin
     repeat
       inc(ALineNum);
@@ -197,60 +197,11 @@ var
     until (not Result) or (LineText <> '');
   end;
 
-  function StartsWithContinuedComment(ALineNum: integer): boolean; inline;
+  function StartsWithContinuedComment(ALineNum: integer): boolean;
   begin
     FPasHl.StartAtLineIndex(ToIdx(ALineNum));
     Result := FPasHl.GetTokenIsComment and
               not FPasHl.GetTokenIsCommentStart(True);
-  end;
-
-  function GetStartOfComment(var ALineNum: integer; out ALogX: integer): boolean; inline;
-  var
-    lvl: Integer;
-    IsComment, IsNewCommentStart: Boolean;
-  begin
-    ALogX := 1;
-    FPasHl.StartAtLineIndex(ToIdx(ALineNum));
-    Result := FPasHl.GetTokenIsComment and (ALineNum > 1);
-    if (not Result) or
-       (FPasHl.GetTokenIsCommentStart(True))
-    then
-      exit;
-
-    repeat
-      dec(ALineNum);
-      lvl := FPasHl.FoldBlockEndLevel(ToIdx(ALineNum), FOLDGROUP_PASCAL, [sfbIncludeDisabled]);
-      while (ALineNum > 1) and
-            (FPasHl.FoldBlockMinLevel(ToIdx(ALineNum), FOLDGROUP_PASCAL, [sfbIncludeDisabled]) >= lvl)
-      do begin
-        dec(ALineNum);
-        if ALineNum = FSkipEndLine then
-          exit(False);
-      end;
-
-      // Get ALogX and check for nested comment
-      FPasHl.StartAtLineIndex(ToIdx(ALineNum));
-      IsComment := FPasHl.GetTokenIsComment;
-      // if not a comment, then pretend its a new start => used for "result"
-      IsNewCommentStart := (not IsComment) or FPasHl.GetTokenIsCommentStart(True);
-      if IsComment and (not IsNewCommentStart) and FPasHl.GetEol then
-        continue;
-
-      Result := IsNewCommentStart;
-      while not FPasHl.GetEol do begin
-        if not IsComment then begin
-          ALogX := ToPos(FPasHl.GetTokenPos);
-          Result := True;
-        end;
-        FPasHl.Next;
-        IsComment := FPasHl.GetTokenIsComment;
-      end;
-
-      if Result then
-        exit;
-
-    until false;
-    Result := False;
   end;
 
 var
@@ -502,6 +453,67 @@ begin
     p := PChar(LineText) + TkEnd - 1;
   until (p >= pe) or (curRow > aRow);
 
+end;
+
+function TSynEditTodoMarkup.GetStartOfComment(var ALineNum: integer;
+                                              out ALogX: integer): boolean;
+var
+  lvl: Integer;
+  IsComment, IsNewCommentStart: Boolean;
+begin
+  ALogX := 1;
+  FPasHl.StartAtLineIndex(ToIdx(ALineNum));
+  Result := FPasHl.GetTokenIsComment and (ALineNum > 1);
+  if (not Result) or FPasHl.GetTokenIsCommentStart(True) then
+    exit;
+
+  repeat
+    dec(ALineNum);
+    lvl := FPasHl.FoldBlockEndLevel(ToIdx(ALineNum), FOLDGROUP_PASCAL, [sfbIncludeDisabled]);
+    while (ALineNum > 1) and
+          (FPasHl.FoldBlockMinLevel(ToIdx(ALineNum), FOLDGROUP_PASCAL, [sfbIncludeDisabled]) >= lvl)
+    do begin
+      dec(ALineNum);
+      if ALineNum = FSkipEndLine then
+        exit(False);
+    end;
+
+    // Get ALogX and check for nested comment
+    FPasHl.StartAtLineIndex(ToIdx(ALineNum));
+    IsComment := FPasHl.GetTokenIsComment;
+    // if not a comment, then pretend its a new start => used for "result"
+    IsNewCommentStart := (not IsComment) or FPasHl.GetTokenIsCommentStart(True);
+    if IsComment and (not IsNewCommentStart) and FPasHl.GetEol then
+      continue;
+
+    Result := IsNewCommentStart;
+    while not FPasHl.GetEol do begin
+      if not IsComment then begin
+        ALogX := ToPos(FPasHl.GetTokenPos);
+        Result := True;
+      end;
+      FPasHl.Next;
+      IsComment := FPasHl.GetTokenIsComment;
+    end;
+    if Result then
+      exit;
+  until false;
+  Result := False;
+end;
+
+function TSynEditTodoMarkup.CursorInsideToDo(aCol: integer; out aToDo: TFoundTodo): boolean;
+begin
+  Result := False;
+  if Length(FFoundPos) > 0 then begin
+    aToDo := FFoundPos[0];
+    if (aCol > aToDo.StartPos.X) and (aCol < aToDo.EndPos.X) then
+      Result := True;
+  end;
+  if not Result then begin
+    aToDo.StartPos := Point(0,0);
+    aToDo.EndPos := Point(0,0);
+    aToDo.Kind := tdToDo;
+  end;
 end;
 
 procedure TSynEditTodoMarkup.GetNextMarkupColAfterRowCol(const aRow: Integer;

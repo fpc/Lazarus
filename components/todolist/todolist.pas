@@ -145,9 +145,7 @@ type
     FOwnerProjPack: TObject;  // Project or package owning the FStartFilename.
     FScannedFiles: TAvlTree;// tree of TTLScannedFile
     FScannedIncFiles: TStringMap;
-    FTodoItemToEdit: TTodoItem;
     FOnEditItem: TOnEditToDo;
-    procedure DecideMenuCaption(Sender: TObject; var ACaption, AHint: string);
     procedure GotoTodo(aTodoItem: TTodoItem);
     procedure SetIDEItem(AValue: string);
     procedure SetIdleConnected(const AValue: boolean);
@@ -166,15 +164,12 @@ type
     property IDEItem: string read FIDEItem write SetIDEItem; // package name or empty for active project
     property BaseDirectory: string read FBaseDirectory;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
-    property TodoItemToEdit: TTodoItem read FTodoItemToEdit;
 
     property OnEditItem: TOnEditToDo read FOnEditItem write FOnEditItem;
   end;
 
 var
   IDETodoWindow: TIDETodoWindow;
-  SrcEditMenuCmd: TIDEMenuCommand;     // MenuItem in Source editor popup menu.
-  IdeSourceMenuCmd: TIDEMenuCommand;   // MenuItem in IDE's Source menu.
 
 
 implementation
@@ -199,8 +194,6 @@ begin
   acColors.ImageIndex := IDEImages.LoadImage('pastel_colors');
   acHelp.ImageIndex := IDEImages.LoadImage('btn_help');
   SaveDialog.Filter := dlgFilterCsv+'|*.csv';
-  SrcEditMenuCmd.OnRequestCaptionHint := @DecideMenuCaption;
-  IdeSourceMenuCmd.OnRequestCaptionHint := @DecideMenuCaption;
   LazarusIDE.AddHandlerOnProjectOpened(@ProjectOpened);
 end;
 
@@ -252,7 +245,6 @@ begin
       Items[4] := lisFilterItem4;
       Items[5] := lisFilterItem5;
       Items[6] := lisFilterItem6;
-
       Hint := lisShowWhatHint;
     end;
   lblShowWhat.Caption:=lisShowWhat;
@@ -271,37 +263,6 @@ begin
   XMLPropStorage.FileName := Concat(AppendPathDelim(LazarusIDE.GetPrimaryConfigPath),
     DefaultTodoListCfgFile);
   XMLPropStorage.Active := True;
-end;
-
-procedure TIDETodoWindow.DecideMenuCaption(Sender: TObject; var ACaption, AHint: string);
-var
-  ListItem: TListItem;
-  TodoItem: TTodoItem;
-  SrcEdit: TSourceEditorInterface;
-  SrcPos: TPoint;
-  i: Integer;
-begin
-  FTodoItemToEdit := nil;
-  ACaption := lisTDDInsertToDo;
-  SrcEdit := SourceEditorManagerIntf.ActiveEditor;
-  if SrcEdit=nil then exit;
-  for i := 0 to lvtodo.Items.Count-1 do
-  begin
-    ListItem := lvtodo.Items[i];
-    TodoItem := TTodoItem(ListItem.Data);
-    SrcPos := SrcEdit.CursorTextXY;
-    if (TodoItem.Filename = SrcEdit.FileName)
-    and (SrcPos.Y = TodoItem.StartPos.Y)
-    and (SrcPos.X > TodoItem.StartPos.X)
-    and (SrcPos.X < TodoItem.EndPos.X) then
-    begin
-      // Editor cursor is inside a ToDo item > change menu item captions.
-      lvTodo.Selected := ListItem;
-      FTodoItemToEdit := TodoItem; // InsertOrEditToDo in ToDoDlg knows what to do.
-      ACaption := lisTDDEditToDo;
-      Break;
-    end;
-  end;
 end;
 
 procedure TIDETodoWindow.UpdateTodos(Immediately: boolean);

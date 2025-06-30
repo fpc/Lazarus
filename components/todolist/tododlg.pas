@@ -37,13 +37,14 @@ uses
   LCLType, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
   Buttons, ButtonPanel, Menus, Spin, XMLPropStorage,
   // LazUtils
-  LazFileUtils,
+  LazFileUtils, LazLoggerBase,
   // BuildIntf
   PackageIntf,
   // IdeIntf
   IDECommands, MenuIntf, ToolBarIntf, SrcEditorIntf, IDEWindowIntf, LazIDEIntf,
+  SynEdit,
   // TodoList
-  ToDoList, ToDoListStrConsts, ToDoListCore;
+  ToDoList, ToDoListStrConsts, ToDoListCore, TodoSynMarkup;
 
 type
 
@@ -72,10 +73,12 @@ type
     procedure FormShow(Sender: TObject);
     procedure rdoToDoTypeChange(Sender: TObject);
   end;
-  
+
 var
   InsertToDoCmd: TIDECommand;
   ViewToDoListCmd: TIDECommand;
+  SrcEditMenuCmd: TIDEMenuCommand;     // MenuItem in Source editor popup menu.
+  IdeSourceMenuCmd: TIDEMenuCommand;   // MenuItem in IDE's Source menu.
 
 procedure Register;
 // ToDo List
@@ -93,8 +96,17 @@ implementation
 
 {$R *.lfm}
 
+type
+  TToDoManager = class  // For an event handler that needs a class instance.
+    procedure DecideMenuCaption(Sender: TObject; var ACaption, AHint: string);
+  end;
+
 const
   DefaultTodoListCfgFile = 'todolistdialogoptions.xml';
+
+var
+  ToDoManager: TToDoManager;
+  TodoItemToEdit: TTodoItem;
 
 procedure Register;
 var
@@ -106,6 +118,8 @@ begin
   // mattias: move icon resource item_todo to package
   // mattias: add menu item to package editor
   // mattias: test short cut
+
+  ToDoManager := TToDoManager.Create;
 
   // register shortcut for insert todo
   Key := IDEShortCut(VK_T,[ssCtrl,ssShift],VK_UNKNOWN,[]);
@@ -121,6 +135,8 @@ begin
     lisTDDInsertToDo,nil,nil,InsertToDoCmd,'item_todo');
   ButtonCmd:=RegisterIDEButtonCommand(InsertToDoCmd);    // toolbutton
   ButtonCmd.ImageIndex:=IdeSourceMenuCmd.ImageIndex;
+  SrcEditMenuCmd.OnRequestCaptionHint := @ToDoManager.DecideMenuCaption;
+  IdeSourceMenuCmd.OnRequestCaptionHint := @ToDoManager.DecideMenuCaption;
 
   // register shortcut for view todo list
   Key := IDEShortCut(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -219,7 +235,8 @@ begin
   finally
     TodoItem.Free;
   end;
-  IDETodoWindow.UpdateTodos;
+  if Assigned(IDETodoWindow) then
+    IDETodoWindow.UpdateTodos;
 end;
 
 procedure EditToDo(aTodoItem: TTodoItem; aSrcEdit: TSourceEditorInterface);
@@ -227,7 +244,10 @@ begin
   if ExecuteTodoDialog(lisTDDEditToDo, aTodoItem) <> mrOK then exit;
   aSrcEdit.SelectText(aTodoItem.StartPos, aTodoItem.EndPos);
   aSrcEdit.Selection := aTodoItem.AsComment;
-  IDETodoWindow.UpdateTodos;  { TODO -oJuha : Retain selection in the list. }
+  if aTodoItem.Temporary then
+    aTodoItem.Free;
+  if Assigned(IDETodoWindow) then
+    IDETodoWindow.UpdateTodos;  { TODO -oJuha : Retain selection in the list. }
 end;
 
 procedure InsertOrEditToDo(Sender: TObject);
@@ -236,8 +256,8 @@ var
 begin
   SrcEdit := SourceEditorManagerIntf.ActiveEditor;
   if (SrcEdit=nil) or SrcEdit.ReadOnly then exit;
-  if Assigned(IDETodoWindow) and Assigned(IDETodoWindow.TodoItemToEdit) then
-    EditToDo(IDETodoWindow.TodoItemToEdit, SrcEdit)
+  if Assigned(TodoItemToEdit) then
+    EditToDo(TodoItemToEdit, SrcEdit)
   else
     InsertToDoForActiveSE(SrcEdit)
 end;
@@ -289,6 +309,56 @@ begin
   lGroupBox := lRadioButton.Parent as TGroupBox;
   lGroupBox.Tag := lRadioButton.Tag;
 end;
+
+{ TToDoManager }
+
+procedure TToDoManager.DecideMenuCaption(Sender: TObject; var ACaption, AHint: string);
+var
+  SrcEdit: TSourceEditorInterface;
+  SrcPos: TPoint;
+  SynEd: TSynEdit;
+  MarkUp: TSynEditTodoMarkup;
+  InToDo: Boolean;
+  ToDoLoc: TFoundTodo;
+  Line: String;
+begin
+  TodoItemToEdit := nil;
+  ACaption := lisTDDInsertToDo;
+  SrcEditMenuCmd.Enabled := True;
+  IdeSourceMenuCmd.Enabled := True;
+  SrcEdit := SourceEditorManagerIntf.ActiveEditor;
+  if SrcEdit=nil then exit;
+  SrcEditMenuCmd.Enabled := not SrcEdit.ReadOnly;
+  IdeSourceMenuCmd.Enabled := not SrcEdit.ReadOnly;
+
+  SrcPos := SrcEdit.CursorTextXY;
+  SynEd := SrcEdit.EditorControl as TSynEdit;
+  MarkUp := SynEd.MarkupManager.MarkupByClass[TSynEditTodoMarkup] as TSynEditTodoMarkup;
+  InToDo := MarkUp.CursorInsideToDo(SrcPos.X, ToDoLoc);
+  debugln(['DecideMenuCaption: ToDo start=', ToDoLoc.StartPos.X,':',ToDoLoc.StartPos.Y,
+           ', ToDo end=', ToDoLoc.EndPos.X,':',ToDoLoc.EndPos.Y, ', Line=', SrcPos.Y]);
+  if InToDo then
+    with ToDoLoc do begin
+      if (EndPos.X=MaxInt)
+      or ((StartPos.Y<>EndPos.Y) and (EndPos.Y=SrcPos.Y) and (EndPos.X>SrcPos.X)) then
+      begin
+        // ToDo: Support multiline ToDo comments. Now just disable the menu items.
+        SrcEditMenuCmd.Enabled := False;
+        IdeSourceMenuCmd.Enabled := False;
+      end
+      else begin
+        ACaption := lisTDDEditToDo;
+        Line := SrcEdit.Lines[StartPos.Y-1];
+        Line := Copy(Line, StartPos.X, EndPos.X-StartPos.X);
+        // Now InsertOrEditToDo in ToDoDlg knows what to do.
+        TodoItemToEdit := CreateToDoItem(Line, StartPos);
+        TodoItemToEdit.Temporary := True;  // Will be freed after editing.
+      end;
+    end;
+end;
+
+finalization
+  ToDoManager.Free;
 
 end.
 

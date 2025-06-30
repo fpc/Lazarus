@@ -74,6 +74,7 @@ type
     FCommentType: char;         // Characters of comment start / end.
     FFilename: string;
     FOwner: string;
+    FTemporary: Boolean;        // Must be freed after editing a ToDo.
     function GetQuotedCategory: string;
     function GetQuotedOwner: string;
     function GetAsComment: string;
@@ -96,6 +97,7 @@ type
     property Text: string read FText write FText;
     property AsString: string read GetAsString;
     property AsComment: string read GetAsComment;
+    property Temporary: Boolean read FTemporary write FTemporary;
   end;
 
   { TTLScannedFile }
@@ -112,7 +114,7 @@ type
     FScannedIncFiles: TStringMap;
     function GetCount: integer;
     function GetItems(Index: integer): TTodoItem;
-    procedure CreateToDoItem(aCommentType: char; aCodePos: TPoint);
+    procedure AddToDoItem(aCommentStr: string; aCodePos: TPoint);
     procedure ScanPascalToDos;
     procedure ScanToDoFile;
   public
@@ -129,6 +131,7 @@ type
   procedure ExtractToCSV(const aFilename: string; aListItems: TListItems);
   procedure ScanFile(const aFileName: string;
     aScannedFiles: TAvlTree; aScannedIncFiles: TStringMap);
+  function CreateToDoItem(aCommentStr: string; aCodePos: TPoint): TTodoItem;
 
 
 implementation
@@ -224,47 +227,39 @@ begin
   end;
 end;
 
-{ TTLScannedFile }
-
-function TTLScannedFile.GetCount: integer;
-begin
-  if Assigned(FItems) then
-    Result:=FItems.Count
-  else
-    Result:=0
-end;
-
-function TTLScannedFile.GetItems(Index: integer): TTodoItem;
-begin
-  Result:=TTodoItem(FItems[Index]);
-end;
-
-procedure TTLScannedFile.CreateToDoItem(aCommentType: char; aCodePos: TPoint);
+function CreateToDoItem(aCommentStr: string; aCodePos: TPoint): TTodoItem;
 var
   TheToken: string;
+  CT: char;  // Character starting the comment
   lTokenFound: boolean;
   lCommentLen, lStartLen, lEndLen: Integer;
   lTodoType, lFoundToDoType: TToDoType;
   lTokenStyle, lFoundTokenStyle: TTokenStyle;
   lEndPos: TPoint;
-  NewToDoItem: TTodoItem;
 begin
-  //DebugLn(['TTLScannedFile.CreateToDoItem FileName=',FRealFilename,
-  //         ', aCodePos=',aCodePos.X,':',aCodePos.Y,', FCommentStr=',FCommentStr]);
-  lCommentLen := Length(FCommentStr);
+  //DebugLn(['CreateToDoItem aCodePos=',aCodePos.X,':',aCodePos.Y,', aCommentStr="',aCommentStr,'"']);
+  Result := nil;
+  lCommentLen := Length(aCommentStr);
+  Assert(lCommentLen>0, 'CreateToDoItem: aCommentStr is empty.');
+  CT := aCommentStr[1];
   // Remove beginning and ending comment characters from the string
-  case aCommentType of
-    #0  : begin lStartLen := 0; lEndLen := 0; end; // A dedicated .todo file
+  case CT of
     '/' : begin lStartLen := 2; lEndLen := 0; end; // //
     '{' : begin lStartLen := 1; lEndLen := 1; end; // { }
     '(' : begin lStartLen := 2; lEndLen := 2; end; // (* *)
-    else raise Exception.Create('TTLScannedFile.CreateToDoItem: Wrong comment char.');
+    else  begin lStartLen := 0; lEndLen := 0; end; // A dedicated .todo file
   end;
-  if lStartLen > 0 then
-    Delete(FCommentStr, 1, lStartLen);
-  if lEndLen > 0 then
-    SetLength(FCommentStr, Length(FCommentStr)-lEndLen);
-  FCommentStr := TextToSingleLine(FCommentStr);
+  if lStartLen > 0 then begin
+    while aCommentStr[lStartLen+1] in [' ',#9] do
+      Inc(lStartLen);
+    Delete(aCommentStr, 1, lStartLen);
+  end;
+  if lEndLen > 0 then begin
+    while aCommentStr[Length(aCommentStr)-lEndLen] in [' ',#9] do
+      Inc(lEndLen);
+    SetLength(aCommentStr, Length(aCommentStr)-lEndLen);
+  end;
+  aCommentStr := TextToSingleLine(aCommentStr);
 
   // Determine Token and Style
   lTokenFound := False;
@@ -274,10 +269,10 @@ begin
     for lTodoType := Low(TToDoType) to High(TToDoType) do
     begin
       TheToken := TODO_TOKENS[lTokenStyle,lTodoType];
-      if LazStartsText(TheToken, FCommentStr) then
+      if LazStartsText(TheToken, aCommentStr) then
       begin
-        if (Length(FCommentStr)=Length(TheToken)) // Don't match with 'ToDoX'
-        or (FCommentStr[Length(TheToken)+1] in [#9,' ',':']) then
+        if (Length(aCommentStr)=Length(TheToken)) // Don't match with 'ToDoX'
+        or (aCommentStr[Length(TheToken)+1] in [#9,' ',':']) then
         begin
           lTokenFound := True;       // Token match
           lFoundToDoType := lTodoType;
@@ -292,27 +287,29 @@ begin
     Exit; // Not a Todo/Done item, leave
 
   // Remove the ToDo token
-  Assert(TheToken=TODO_TOKENS[lFoundTokenStyle,lFoundToDoType], 'TTLScannedFile.CreateToDoItem: TheToken');
-  Delete(FCommentStr, 1, Length(TheToken));
-  FCommentStr := TrimLeft(FCommentStr);
+  Assert(TheToken=TODO_TOKENS[lFoundTokenStyle,lFoundToDoType], 'CreateToDoItem: TheToken');
+  lStartLen := Length(TheToken);
+  while (lStartLen > Length(aCommentStr)) and (aCommentStr[lStartLen+1] in [' ',#9]) do
+    Inc(lStartLen);
+  Delete(aCommentStr, 1, lStartLen);  // Remove the token and whitespace.
+
   lEndPos.X := aCodePos.X + lCommentLen;
   lEndPos.Y := aCodePos.Y;
-
   // Require a colon with plain "done" but not with "#done". Prevent false positives.
-  NewToDoItem:=TTodoItem.Create;
-  if NewToDoItem.Parse(FCommentStr, lFoundTokenStyle=tsAlternate) then
+  Result := TTodoItem.Create;
+  if Result.Parse(aCommentStr, lFoundTokenStyle=tsAlternate) then
   begin
-    NewToDoItem.ToDoType   := lFoundToDoType;
-    NewToDoItem.TokenStyle := lFoundTokenStyle;
-    NewToDoItem.StartPos   := aCodePos;
-    NewToDoItem.EndPos     := lEndPos;
-    NewToDoItem.CommentType:= aCommentType;
-    NewToDoItem.Filename   := FRealFilename;
-    Add(NewToDoItem);            // Add to list.
+    Result.ToDoType   := lFoundToDoType;
+    Result.TokenStyle := lFoundTokenStyle;
+    Result.StartPos   := aCodePos;
+    Result.EndPos     := lEndPos;
+    Result.CommentType:= CT;
   end
   else
-    NewToDoItem.Free;            // Parsing failed, dispose.
+    FreeAndNil(Result);     // Parsing failed, dispose.
 end;
+
+{ TTLScannedFile }
 
 constructor TTLScannedFile.Create(const aFilename: string; aTool: TCodeTool;
   aCode: TCodeBuffer; aScannedIncFiles: TStringMap);
@@ -345,6 +342,31 @@ begin
   if not Assigned(FItems) then
     FItems:=TFPList.Create;
   FItems.Add(aItem);
+end;
+
+function TTLScannedFile.GetCount: integer;
+begin
+  if Assigned(FItems) then
+    Result:=FItems.Count
+  else
+    Result:=0
+end;
+
+function TTLScannedFile.GetItems(Index: integer): TTodoItem;
+begin
+  Result:=TTodoItem(FItems[Index]);
+end;
+
+procedure TTLScannedFile.AddToDoItem(aCommentStr: string; aCodePos: TPoint);
+var
+  Item: TTodoItem;
+begin
+  debugln(['TTLScannedFile.AddToDoItem aCommentStr=', aCommentStr, ', aCodePos=', aCodePos.X,':',aCodePos.Y]);
+  Item := CreateToDoItem(aCommentStr, aCodePos);
+  if Assigned(Item) then begin
+    Item.Filename := FRealFilename;
+    Add(Item);            // Add to list.
+  end;
 end;
 
 procedure TTLScannedFile.ScanPascalToDos;
@@ -382,7 +404,7 @@ begin
     begin
       CodePos.X:=CaretPos.X;
       CodePos.Y:=CaretPos.Y;
-      CreateToDoItem(Src[p], CodePos);
+      AddToDoItem(FCommentStr, CodePos);
       if LocationIncTodo<>'' then    // Store include file location for future.
         FScannedIncFiles.Add(LocationIncTodo);
     end;
@@ -405,7 +427,7 @@ begin
       FCommentStr:=List[i];
       CodePos.X:=1;
       CodePos.Y:=i+1;
-      CreateToDoItem(#0, CodePos)
+      AddToDoItem(FCommentStr, CodePos)
     end;
   finally
     List.Free;
