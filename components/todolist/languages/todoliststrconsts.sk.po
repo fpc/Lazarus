@@ -52,6 +52,14 @@ msgstr "Použiť alternatívne symboly"
 msgid "Standard token is #todo etc. Alternate is without the #"
 msgstr ""
 
+#: todoliststrconsts.liscoloroptions
+msgid "Color Options"
+msgstr ""
+
+#: todoliststrconsts.liscolors
+msgid "Colors"
+msgstr ""
+
 #: todoliststrconsts.lisctinsertmacro
 msgid "Insert Macro"
 msgstr "Vložiť makro"
@@ -92,9 +100,9 @@ msgstr "Done & Note"
 msgid "Help"
 msgstr "Pomoc"
 
-#: todoliststrconsts.lisoptions
-msgid "Options"
-msgstr "Voľby"
+#: todoliststrconsts.lisinclude
+msgid "Include"
+msgstr ""
 
 #: todoliststrconsts.lispackages
 msgid "Packages"

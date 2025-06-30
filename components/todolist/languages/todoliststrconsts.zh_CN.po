@@ -55,6 +55,14 @@ msgstr "使用替代标记"
 msgid "Standard token is #todo etc. Alternate is without the #"
 msgstr "标准标记是 #todo 等。替代标记不带 #"
 
+#: todoliststrconsts.liscoloroptions
+msgid "Color Options"
+msgstr ""
+
+#: todoliststrconsts.liscolors
+msgid "Colors"
+msgstr ""
+
 #: todoliststrconsts.lisctinsertmacro
 msgid "Insert Macro"
 msgstr "插入宏"
@@ -96,9 +104,9 @@ msgstr "已办事项 & 笔记"
 msgid "Help"
 msgstr "帮助"
 
-#: todoliststrconsts.lisoptions
-msgid "Options"
-msgstr "选项"
+#: todoliststrconsts.lisinclude
+msgid "Include"
+msgstr ""
 
 #: todoliststrconsts.lispackages
 msgid "Packages"

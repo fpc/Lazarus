@@ -49,6 +49,14 @@ msgstr ""
 msgid "Standard token is #todo etc. Alternate is without the #"
 msgstr ""
 
+#: todoliststrconsts.liscoloroptions
+msgid "Color Options"
+msgstr ""
+
+#: todoliststrconsts.liscolors
+msgid "Colors"
+msgstr ""
+
 #: todoliststrconsts.lisctinsertmacro
 msgid "Insert Macro"
 msgstr "Insertar Macro"
@@ -89,8 +97,8 @@ msgstr ""
 msgid "Help"
 msgstr ""
 
-#: todoliststrconsts.lisoptions
-msgid "Options"
+#: todoliststrconsts.lisinclude
+msgid "Include"
 msgstr ""
 
 #: todoliststrconsts.lispackages

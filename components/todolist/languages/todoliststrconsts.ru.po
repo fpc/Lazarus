@@ -54,6 +54,14 @@ msgstr "Альтернативный стиль элементов"
 msgid "Standard token is #todo etc. Alternate is without the #"
 msgstr "Пример стандартного элемента: #todo. Альтернативный элемент не имеет #."
 
+#: todoliststrconsts.liscoloroptions
+msgid "Color Options"
+msgstr "Параметры цветов"
+
+#: todoliststrconsts.liscolors
+msgid "Colors"
+msgstr "Цвета"
+
 #: todoliststrconsts.lisctinsertmacro
 msgid "Insert Macro"
 msgstr "Вставить макрос"
@@ -94,9 +102,9 @@ msgstr "Done и Note"
 msgid "Help"
 msgstr "Справка"
 
-#: todoliststrconsts.lisoptions
-msgid "Options"
-msgstr "Параметры"
+#: todoliststrconsts.lisinclude
+msgid "Include"
+msgstr "Обрабатывать"
 
 #: todoliststrconsts.lispackages
 msgid "Packages"

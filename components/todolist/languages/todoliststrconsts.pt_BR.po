@@ -54,6 +54,14 @@ msgstr "Usar símbolo substituto"
 msgid "Standard token is #todo etc. Alternate is without the #"
 msgstr "Símbolo padrão é #todo etc. Substituto é sem o #"
 
+#: todoliststrconsts.liscoloroptions
+msgid "Color Options"
+msgstr ""
+
+#: todoliststrconsts.liscolors
+msgid "Colors"
+msgstr ""
+
 #: todoliststrconsts.lisctinsertmacro
 msgid "Insert Macro"
 msgstr "Inserir Macro"
@@ -94,9 +102,9 @@ msgstr "Feito e Nota"
 msgid "Help"
 msgstr "Ajuda"
 
-#: todoliststrconsts.lisoptions
-msgid "Options"
-msgstr "Opções"
+#: todoliststrconsts.lisinclude
+msgid "Include"
+msgstr ""
 
 #: todoliststrconsts.lispackages
 msgid "Packages"
