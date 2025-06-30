@@ -1371,16 +1371,10 @@ begin
   Result:=false;
   if EndPos<1 then exit;
   if EndPos>length(ASource) then exit;
-  if ASource[EndPos]='}' then begin
-    // delphi or codetools comment end
-    Result:=true;
-    exit;
-  end;
-  if (EndPos>1) and (ASource[EndPos]=')') and (ASource[EndPos-1]='*') then begin
-    // TP comment end
-    Result:=true;
-    exit;
-  end;
+  if ASource[EndPos]='}' then
+    exit(true);          // Delphi or codetools comment end
+  if (EndPos>1) and (ASource[EndPos]=')') and (ASource[EndPos-1]='*') then
+    exit(true);          // TP comment end
   // test for Delphi comment //
   // skip line end
   LineStart:=EndPos;
@@ -1398,11 +1392,8 @@ begin
   while (LineStart<=EndPos) and (ASource[LineStart] in [' ',#9]) do
     inc(LineStart);
   if (LineStart<EndPos)
-  and (ASource[LineStart]='/') and (ASource[LineStart+1]='/') then begin
-    // Delphi comment end
-    Result:=true;
-    exit;
-  end;
+  and (ASource[LineStart]='/') and (ASource[LineStart+1]='/') then
+    exit(true);          // Delphi comment end
 end;
 
 function FindNextComment(const ASource: string; StartPos: integer;
