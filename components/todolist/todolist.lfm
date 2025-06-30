@@ -1,7 +1,7 @@
 object IDETodoWindow: TIDETodoWindow
-  Left = 714
+  Left = 379
   Height = 230
-  Top = 510
+  Top = 239
   Width = 820
   ActiveControl = lvTodo
   Caption = 'IDETodoWindow'
@@ -267,9 +267,21 @@ object IDETodoWindow: TIDETodoWindow
       Style = tbsDivider
     end
     object tbHelp: TToolButton
-      Left = 614
+      Left = 666
       Top = 2
       Action = acHelp
+    end
+    object N5: TToolButton
+      Left = 661
+      Height = 46
+      Top = 2
+      Caption = 'N5'
+      Style = tbsDivider
+    end
+    object tbColors: TToolButton
+      Left = 614
+      Top = 2
+      Action = acColors
     end
   end
   object ActionList: TActionList
@@ -297,8 +309,12 @@ object IDETodoWindow: TIDETodoWindow
       OnExecute = acExportExecute
     end
     object acHelp: TAction
-      Caption = 'acHelp'
+      Caption = 'Help'
       OnExecute = acHelpExecute
+    end
+    object acColors: TAction
+      Caption = 'Colors'
+      OnExecute = acColorsExecute
     end
   end
   object SaveDialog: TSaveDialog

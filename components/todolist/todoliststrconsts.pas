@@ -31,6 +31,7 @@ resourcestring
   lisTodolistEdit='Edit selected item';
   lisTodolistRefresh='Refresh todo items';
   lisTodoListGotoLine='Goto selected source line';
+  lisColorOptions = 'Color Options';
   lisCTInsertMacro = 'Insert Macro';
   lisToDoLDone = 'Done';
   lisToDoLType = 'Type';
@@ -43,7 +44,8 @@ resourcestring
   lisEdit = 'Edit';
   lisToDoGoto = 'Goto';
   lisToDoExport = 'Export';
-  lisOptions = 'Options';
+  lisInclude = 'Include';
+  lisColors = 'Colors';
   lisHelp = 'Help';
   lisToDoListed = 'Listed';
   lisToDoListedHint = 'Add units listed in project inspector/package editor';
