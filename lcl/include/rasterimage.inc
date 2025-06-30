@@ -379,9 +379,7 @@ begin
   then FTransparentMode := tmAuto
   else FTransparentMode := tmFixed;
 
-  if MaskHandleAllocated
-  then MaskHandle := 0
-  else Changed(Self);
+  ApplyTransparent;
 end;
 
 procedure TRasterImage.Changed(Sender: TObject);
@@ -702,9 +700,14 @@ begin
   if AValue = TransparentMode then exit;
   FTransparentMode := AValue;
 
-  if AValue = tmAuto
+  if FTransparentColor = clDefault then
+    FTransparentMode := tmAuto;
+
+  if FTransparentMode = tmAuto
   then TransparentColor := clDefault
   else TransparentColor := RequestTransparentColor;
+
+  ApplyTransparent;
 end;
 
 procedure TRasterImage.SetTransparent(AValue: Boolean);
@@ -714,8 +717,8 @@ begin
   lTransparent := GetTransparent();
   if AValue = lTransparent then Exit;
 
-  // some delphi compatibility, we can only change transparency through the mask.
-  Masked := AValue;
+  FTransparentPending := AValue;
+  ApplyTransparent;
 end;
 
 // release handles without freeing them
@@ -974,6 +977,15 @@ end;
 procedure TRasterImage.SetHeight(AHeight: Integer);
 begin
   SetSize(Width, AHeight);
+end;
+
+procedure TRasterImage.ApplyTransparent;
+begin
+  if MaskHandleAllocated then
+    MaskHandle := 0;
+
+  // some delphi compatibility, we can only change transparency through the mask.
+  SetMasked(FTransparentPending);
 end;
 
 // included by graphics.pp

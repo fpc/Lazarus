@@ -1245,6 +1245,7 @@ type
     FUpdateCount: Integer;
     FUpdateCanvasOnly: Boolean;
     FMasked: Boolean;
+    FTransparentPending: Boolean;
 
     procedure CanvasChanging(Sender: TObject);
     procedure CreateCanvas;
@@ -1300,6 +1301,7 @@ type
     procedure WriteData(Stream: TStream); override;
     procedure WriteStream(AStream: TMemoryStream); virtual; abstract;
     function  RequestTransparentColor: TColor;
+    procedure ApplyTransparent;
   public
     constructor Create; override;
     destructor Destroy; override;
