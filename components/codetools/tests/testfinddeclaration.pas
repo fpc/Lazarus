@@ -123,6 +123,7 @@ type
     procedure TestFindDeclaration_Proc_BaseTypes;
     procedure TestFindDeclaration_ProcNested;
     procedure TestFindDeclaration_With;
+    procedure TestFindDeclaration_WithResult;
     procedure TestFindDeclaration_ClassOf;
     procedure TestFindDeclaration_NestedClasses;
     procedure TestFindDeclaration_NestedAliasClass;
@@ -826,6 +827,29 @@ end;
 procedure TTestFindDeclaration.TestFindDeclaration_With;
 begin
   FindDeclarations('moduletests/fdt_with.pas');
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_WithResult;
+begin
+  StartProgram;
+  Add([
+  '{$mode objfpc}',
+  'type',
+  '  TBird = record',
+  '    Result: word;',
+  '  end;',
+  'var Bird: TBird;',
+  'function Fly: word;',
+  'begin',
+  '  Result{declaration:Fly}:=1;',
+  '  with Bird do begin',
+  //'    Result{declaration:TBird.Result}:=3;',
+  '  end;',
+  'end;',
+  'begin',
+  'end.',
+  '']);
+  FindDeclarations(Code);
 end;
 
 procedure TTestFindDeclaration.TestFindDeclaration_ClassOf;

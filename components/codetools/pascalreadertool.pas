@@ -3615,17 +3615,20 @@ end;
 
 function TPascalReaderTool.GetProcResultNode(ProcNode: TCodeTreeNode
   ): TCodeTreeNode;
+// procedure: none
+// operator: ctnVarDefinition,ctnIdentifier
+// function: ctnIdentifier
 begin
   Result:=nil;
   if ProcNode=nil then exit;
   if ProcNode.Desc in [ctnProcedure,ctnProcedureType] then begin
-    Result:=ProcNode.FirstChild;
-    if Result=nil then exit;
+    ProcNode:=ProcNode.FirstChild;
+    if ProcNode=nil then exit;
   end;
-  if (ProcNode=nil) or (ProcNode.Desc<>ctnProcedureHead) then exit;
+  if ProcNode.Desc<>ctnProcedureHead then exit;
   Result:=ProcNode.FirstChild;
   while Result<>nil do begin
-    if Result.Desc=ctnIdentifier then exit;
+    if Result.Desc in [ctnVarDefinition,ctnIdentifier] then exit;
     Result:=Result.NextBrother;
   end;
 end;

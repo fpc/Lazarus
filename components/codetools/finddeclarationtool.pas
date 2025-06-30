@@ -2065,53 +2065,6 @@ var
   CursorNode, ClassNode: TCodeTreeNode;
   DirectSearch, SkipChecks, SearchForward: boolean;
 
-  function IsPredefinedResult: boolean;
-  var
-    ANode: TCodeTreeNode;
-    p: Integer;
-  begin
-    Result:=false;
-    p:=GetIdentStartPosition(Src,CleanCursorPos);
-    if p<1 then exit;
-    if CompareIdentifiers('Result',@Src[p])<>0 then exit;
-
-    if CursorNode.Desc<>ctnBeginBlock then exit;
-    if not CursorNode.HasParentOfType(ctnProcedure) then exit;
-    if not (cmsResult in Scanner.CompilerModeSwitches) then begin
-      debugln('Predefined "Result" inside a function body is not allowed');
-      exit;
-    end;
-    ANode:=CursorNode.Parent;
-    while ANode<>nil do begin
-      if (ANode.Desc = ctnProcedure) then begin
-        if CompareIdentifiers('function',@Src[ANode.StartPos])=0 then
-          break;
-      end;
-      ANode:=ANode.Parent
-    end;
-    if ANode=nil then exit;
-    CursorNode:=ANode;
-    MoveCursorToCleanPos(CleanCursorPos);
-    Result:=true;
-  end;
-
-  function FindFunctionResultTypeNode: TCodeTreeNode;
-  var ANode: TCodeTreeNode;
-  begin
-    Result:=nil;
-    if CursorNode.Desc<>ctnProcedure then exit;
-    ANode:=CursorNode.FirstChild;
-    if ANode.Desc<>ctnProcedureHead then exit;
-    ANode:=ANode.FirstChild;
-    while ANode<>nil do begin
-      if ANode.Desc=ctnIdentifier then break;
-      ANode:=Anode.NextBrother;
-    end;
-
-    if (ANode<>nil) and (ANode.Desc=ctnIdentifier) then
-      Result:=ANode;
-  end;
-
   function CheckIfNodeIsForwardDefinedClass(ANode: TCodeTreeNode;
     ATool: TFindDeclarationTool): Boolean;
   var
@@ -2473,23 +2426,6 @@ begin
         end;
         {$ENDIF}
       end;
-      exit;
-    end else if IsPredefinedResult then begin
-      // "Result" is allowed
-      Result:=false;
-      CleanCursorPos:=GetIdentStartPosition(Src,CleanCursorPos);
-      NewExprType.Desc:=xtContext;
-      NewExprType.Context.Tool:=Self;
-      NewExprType.Context.Node:=FindFunctionResultTypeNode();
-      if (NewExprType.Context.Node<>nil) and (NewExprType.Context.Node.StartPos<CleanCursorPos)
-      then begin
-        CleanPosToCaret(CleanCursorPos, NewPos);
-        NewTopLine := NewPos.Y;
-        BlockTopLine := NewTopLine;
-        BlockBottomLine := NewPos.Y;
-        Result:=true;
-      end else
-        NewExprType.Context.Node:=CursorNode;
       exit;
     end;
 
@@ -10600,13 +10536,14 @@ var
               ResultNode:=FindClassOfMethod(ProcNode,True,
                 fdfExceptionOnNotFound in Params.Flags);
               if (ResultNode<>nil) and
-                 (ResultNode.Desc in [ctnClassHelper,ctnRecordHelper,ctnTypeHelper])
-              then//Self is helper -> return extended type
+                 (ResultNode.Desc in [ctnClassHelper,ctnRecordHelper,ctnTypeHelper]) then
               begin
+                // Self is helper -> return extended type
                 ExprType := FindExtendedExprOfHelper(ResultNode);
                 ResultNode := ExprType.Context.Node;
               end else
-              begin//Self is class/record
+              begin
+                // Self is class/record
                 if (ResultNode<>nil) and (ResultNode.Parent<>nil) then
                 begin
                   ExprType.Desc:=xtContext;
@@ -10638,19 +10575,11 @@ var
           if (ProcNode<>nil) then begin
             if IsEnd and (fdfFindVariable in StartFlags) then begin
               BuildSubTreeForProcHead(ProcNode);
-              ResultNode:=ProcNode.FirstChild.FirstChild;
-              while (ResultNode<>nil) do begin
-                if ResultNode.Desc in [ctnVarDefinition,ctnIdentifier] then begin
-                  // procedure: none
-                  // operator: ctnVarDefinition,ctnIdentifier
-                  // function: ctnIdentifier
-                  ExprType.Desc:=xtContext;
-                  ExprType.Context.Node:=ResultNode;
-                  ExprType.Context.Tool:=Self;
-                  exit;
-                end;
-                ResultNode:=ResultNode.NextBrother;
-              end;
+              ResultNode:=GetProcResultNode(ProcNode);
+              ExprType.Desc:=xtContext;
+              ExprType.Context.Node:=ResultNode;
+              ExprType.Context.Tool:=Self;
+              exit;
             end else begin
               OldFlags:=Params.Flags;
               Params.Flags:=Params.Flags+[fdfFunctionResult,fdfFindChildren];

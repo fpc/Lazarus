@@ -13,7 +13,7 @@ interface
 
 uses
   Classes, SysUtils, math, CodeToolManager, CodeCache, CodeAtom, DefineTemplates, ExprEval,
-  LazLogger, fpcunit, testregistry, TestGlobals;
+  CodeTree, PascalParserTool, LazLogger, fpcunit, testregistry, TestGlobals;
 
 type
 
@@ -66,6 +66,7 @@ type
     procedure TestParseUnderscoreIsSeparator;
     procedure TestParseDirective_IF_SizeOf_Char;
     procedure TestParseObjectSealedAbstract;
+    procedure TestGetProcResultNode;
   end;
 
 implementation
@@ -748,6 +749,40 @@ begin
   'end;',
   'begin']);
   ParseModule;
+end;
+
+procedure TTestPascalParser.TestGetProcResultNode;
+var
+  Tool: TCodeTool;
+  Node, ResultNode: TCodeTreeNode;
+begin
+  StartProgram;
+  Add([
+  'procedure Fly(a: word);',
+  'begin',
+  'end;',
+  'function Fly(a: boolean): boolean;',
+  'begin',
+  'end;',
+  'operator =() IsEqual: boolean;',
+  'begin',
+  'end;',
+  'begin',
+  'end.']);
+  DoParseModule(Code,Tool);
+
+  Node:=Tool.Tree.Root;
+  while Node<>nil do begin
+    if Node.Desc=ctnProcedure then begin
+      ResultNode:=Tool.GetProcResultNode(Node);
+      writeln('TTestPascalParser.TestGetProcResultNode Proc="',
+        Tool.ExtractProcHead(Node,[phpWithStart,phpWithVarModifiers,phpWithParameterNames,
+                                   phpWithResultType,phpWithOfObject,phpWithCallingSpecs]),'"');
+      writeln('TTestPascalParser.TestGetProcResultNode Result=',ResultNode.DescAsString,'="',
+               Tool.ExtractNode(ResultNode,[]),'"');
+    end;
+    Node:=Node.Next;
+  end;
 end;
 
 initialization
