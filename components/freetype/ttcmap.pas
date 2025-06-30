@@ -36,7 +36,7 @@ type
   (* the glyphIdArray for this format has 256 entries      *)
 
   TCMap0 = record
-             glyphIdArray : PUShort;
+             glyphIdArray : PByte;
            end;
 
   (* FORMAT 2 *)
