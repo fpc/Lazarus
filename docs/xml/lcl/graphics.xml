@@ -11254,9 +11254,9 @@ Class reference used to create new instances of <var>TSharedRasterImage</var>.
 
 <element name="TRasterImage">
 <short>
-<var>TRasterImage</var> - base class for a number of graphic controls, 
-including <var>TCustomBitmap</var> and <var>TCustomIcon</var>, which use a 
-raster of dots to display graphic information.
+Base class for a number of graphic controls, including 
+<var>TCustomBitmap</var> and <var>TCustomIcon</var>, which use a raster of 
+dots to display graphic information.
 </short>
 <descr>
 <p>
@@ -11291,6 +11291,7 @@ specific image format.
 <element name="TRasterImage.FUpdateCount"/>
 <element name="TRasterImage.FUpdateCanvasOnly"/>
 <element name="TRasterImage.FMasked"/>
+<element name="TRasterImage.FTransparentPending"/>
 
 <element name="TRasterImage.CanvasChanging">
 <short>Performs actions needed before the canvas is modified.</short>
@@ -11453,6 +11454,7 @@ property.
 <element name="TRasterImage.GetTransparentColor.Result">
 <short>Value for the property.</short>
 </element>
+
 <element name="TRasterImage.SetTransparentColor">
 <short>Sets the value for the TransparentColor property.</short>
 <descr/>
@@ -11460,10 +11462,10 @@ property.
 <link id="TRasterImage.TransparentColor"/>
 </seealso>
 </element>
-
 <element name="TRasterImage.SetTransparentColor.AValue">
-<short>Value for the property.</short>
+<short>New value for the property.</short>
 </element>
+
 <element name="TRasterImage.FSharedImage">
 <short>Shared image with existing handles, canvases, etc.</short>
 <descr/>
@@ -11937,8 +11939,25 @@ class.
 </element>
 
 <element name="TRasterImage.SetTransparent">
-<short>Sets the value for the Transparent property.</short>
-<descr/>
+<short>
+Sets the value for the Transparent property.
+</short>
+<descr>
+<p>
+SetTransparent ensures that both the Masked property and the alpha channel in 
+the raw image data are considered when updating the value in the Transparent 
+property. GetTransparent is called to retrieve the existing property value.
+</p>
+<p>
+No actions are performed in the method if the existing property value is the 
+same as AValue. Otherwise, ApplyTransparent is called to apply the effective 
+image transparency using the values in Transparent, TransparentMode, and 
+TransparentColor.
+</p>
+</descr>
+<version>
+Modified in LCL version 4.2 to call the ApplyTransparent method.
+</version>
 <seealso>
 <link id="TGraphic.Transparent"/>
 </seealso>
@@ -12184,24 +12203,35 @@ property and the value for the <var>AWidth</var> parameter.
 </element>
 
 <element name="TRasterImage.SetTransparentMode">
-<short>Sets the value for the TransparentMode property.</short>
+<short>
+Sets the value for the TransparentMode property.
+</short>
 <descr>
 <p>
 No actions are performed in the method when AValue is the same as the 
 existing value for the property.
 </p>
 <p>
-When <var>AValue</var> contains <var>tmAuto</var>, the <var>clDefault</var> 
-constant is used as the value for the property. Otherwise, the 
-<var>RequestTransparentColor</var> method is called to get the color stored 
-in the bottom-left pixel in the raw image data.
+TransparentMode is set to tmAuto when TransparentColor contains clDefault. 
+Otherwise, the <var>RequestTransparentColor</var> method is called to get and 
+store the color in the bottom-left pixel in the raw image data to the 
+TransparentColor property.
+</p>
+<p>
+ApplyTransparent is called to apply the effective transparency for the image 
+based on the settings in Transparent, TransparentColor, and TransparentMode.
 </p>
 </descr>
+<version>
+Modified in LCL version 4.2 to call the ApplyTransparent method.
+</version>
 <seealso>
 <link id="TRasterImage.TransparentMode"/>
+<link id="TRasterImage.TransparentColor"/>
 <link id="TRasterImage.RequestTransparentColor"/>
 <link id="TTransparentMode"/>
 <link id="clDefault"/>
+<link id="TGraphic.Transparent"/>
 </seealso>
 </element>
 <element name="TRasterImage.SetTransparentMode.AValue">
@@ -12312,6 +12342,58 @@ is used as specified.
 <link id="TTransparentMode"/>
 </seealso>
 </element>
+
+<element name="TRasterImage.ApplyTransparent">
+<short>
+Applies transparency to an image based on the settings in Transparent, 
+TransparentColor, and TransparentMode.
+</short>
+<descr>
+<p>
+<var>ApplyTransparent</var> is a method which applies transparency to the 
+image. It is called when one of the values in Transparent, TransparentColor, 
+or TransparentMode is changed.
+</p>
+<p>
+While the transparency mechanism today is based on the alpha channel in an 
+image, the older color transparency is still supported in TBitmap. This means 
+that pixels which have a specified color are not painted, and this way the 
+image appears to be "transparent".
+</p>
+<p>
+There are two TransparentMode settings related to how the transparent color is 
+defined: in tmAuto the color in the lower/left corner of the image is 
+considered to be transparent, while in tmFixed the color must be explicitly 
+specified by the user in the TransparentColor property (where the default 
+setting, clDefault, again behaves in the same way as tmAuto).
+</p>
+<p>
+In Delphi, setting the Transparent property in TBitmap is enough to render a 
+bitmap as transparent in tmAuto mode. ApplyTransparent provides a measure of 
+Delphi compatibility by ensuring that all of the transparency-related 
+properties are respected while ignoring the order in which they are specified.
+</p>
+<p>
+ApplyTransparent resets the handle for the Mask image when allocated. It calls 
+SetMasked to apply the new transparency setting and to call the Changed method 
+for the class instance.
+</p>
+</descr>
+<version>
+Added in LCL version 4.2.
+</version>
+<seealso>
+<link id="TRasterImage.TransparentColor"/>
+<link id="TRasterImage.TransparentMode"/>
+<link id="TRasterImage.Mask"/>
+<link id="TRasterImage.Masked"/>
+<link id="TRasterImage.SetMasked"/>
+<link id="TRasterImage.Changed"/>
+<link id="TRasterImage.MaskHandleAllocated"/>
+<link id="TGraphic.Transparent"/>
+</seealso>
+</element>
+
 
 <element name="TRasterImage.Create">
 <short>Constructor for the class instance.</short>
@@ -13122,12 +13204,15 @@ platforms or widgetsets.
 </element>
 
 <element name="TRasterImage.TransparentColor">
-<short>Color used for transparent pixels in the image.</short>
+<short>
+Color used to represent transparent pixels in the image.
+</short>
 <descr>
 <p>
 <var>TransparentColor</var> is a <var>TColor</var> property which indicates 
-the color used for transparent pixels in the raw image data. The default 
-value for the property is <var>clDefault</var>.
+the color used to represent transparent pixels in the raw image data. Pixels 
+with this color are not drawn on the image - so they have a transparent 
+appearance. The default value for the property is <var>clDefault</var>.
 </p>
 <p>
 TransparentColor is used along with <var>TransparentMode</var> to determine 
@@ -13140,26 +13225,25 @@ When TransparentColor contains <var>clDefault</var>, the
 color value from the bottom-left pixel in the raw image data.
 </p>
 <p>
-When setting a new value for the property, the TransparentMode property is 
+When setting a new value for the property, the TransparentMode property may be 
 updated as well. When clDefault is assigned to the property, TransparentMode 
 is set to <var>tmAuto</var>. For other color values, TransparentMode is set 
 to <var>tmFixed</var>.
 </p>
 <p>
-<var>MaskHandleAllocated</var> is called to determine if a HBITMAP handle has 
-been allocated for the MaskHandle property. When <b>True</b>, the 
-<var>MaskHandle</var> is reset to 0 to indicate the handle is no longer in 
-use or is invalid.
-</p>
-<p>
-The <var>Changed</var> method is called to update the internal save stream 
-for the image (when needed), set <var>Modified</var> to <b>True</b>, and 
-signal the <var>OnChange</var> event handler (when assigned).
+The ApplyTransparent method is called to apply the effective transparency for 
+the image using the values in Transparent, TransparentColor, and 
+TransparentMode.
 </p>
 </descr>
+<version>
+Modified in LCL version 4.2 to call ApplyTransparent when the property value 
+has been changed.
+</version>
 <seealso>
 <link id="TRasterImage.RequestTransparentColor"/>
 <link id="TRasterImage.TransparentMode"/>
+<link id="TRasterImage.ApplyTransparent"/>
 <link id="TRasterImage.MaskHandleAllocated"/>
 <link id="TRasterImage.MaskHandle"/>
 <link id="TRasterImage.Changed"/>
@@ -13171,34 +13255,45 @@ signal the <var>OnChange</var> event handler (when assigned).
 </element>
 
 <element name="TRasterImage.TransparentMode">
-<short>Determines how transparent pixels are represented in the image.</short>
+<short>
+Determines how transparent pixels are represented in the image.
+</short>
 <descr>
 <p>
 <var>TransparentMode</var> is a <var>TTransparentMode</var> property which 
 indicates how transparent pixels in the image are represented in the raw 
-image data. It is related to the <var>TransparentColor</var> and 
-<var>Masked</var> properties. TransparentMode can contain one of the 
-following values from the TTransparentMode enumeration:
+image data. It is related to the <var>TransparentColor</var>, 
+<var>Transparent</var> and <var>Masked</var> properties.
+</p>
+<p>
+TransparentMode can contain one of the following values from the 
+TTransparentMode enumeration:
 </p>
 <dl>
 <dt>tmAuto</dt>
 <dd>
 Transparent pixels are represented using the color stored at the bottom-left 
-pixel in the raw image data. TransparentColor is set to clDefault.
+pixel in the raw image data.
 </dd>
 <dt>tmFixed</dt>
 <dd>
 Transparent pixels are represented using the color stored in the 
-TransparentColor property. Masked is set to <b>True</b>.
+TransparentColor property. The RequestTransparentColor method is called to 
+resolve the color to the pixel color used on the raw image data (when 
+available) or the canvas (by default).
 </dd>
 </dl>
 <p>
-The default value for the property is <var>tmAuto</var>.
+The default value for the property is <var>tmAuto</var>. The property value is 
+automatically set to tmAuto if TransparentColor contains clDefault. In 
+addition, TransparentColor is automatically set to clDefault when 
+TransparentMode is set to tmAuto.
 </p>
 </descr>
 <seealso>
 <link id="TRasterImage.TransparentColor"/>
 <link id="TRasterImage.Masked"/>
+<link id="TGraphic.Transparent"/>
 <link id="TTransparentMode"/>
 </seealso>
 </element>
