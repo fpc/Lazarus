@@ -144,6 +144,10 @@ msgstr "Редактирование элемента списка ToDo/Done/Not
 msgid "Insert a ToDo/Done/Note"
 msgstr "Вставить элемент списка ToDo/Done/Note"
 
+#: todoliststrconsts.listodocolorsareattheendofcolorlist
+msgid "ToDo colors are at the end of color list"
+msgstr "Цвета ToDo находятся в конце списка"
+
 #: todoliststrconsts.listodoexport
 msgid "Export"
 msgstr "Экспорт"

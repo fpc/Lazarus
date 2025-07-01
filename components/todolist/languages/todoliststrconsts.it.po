@@ -144,6 +144,10 @@ msgstr ""
 msgid "Insert a ToDo/Done/Note"
 msgstr "Inserisci ToDo"
 
+#: todoliststrconsts.listodocolorsareattheendofcolorlist
+msgid "ToDo colors are at the end of color list"
+msgstr ""
+
 #: todoliststrconsts.listodoexport
 msgid "Export"
 msgstr "Esporta"
