@@ -248,14 +248,15 @@ begin
     else  begin lStartLen := 0; lEndLen := 0; end; // A dedicated .todo file
   end;
   if lStartLen > 0 then begin
-    while aCommentStr[lStartLen+1] in [' ',#9] do
+    while (lStartLen < Length(aCommentStr)) and (aCommentStr[lStartLen+1] in [' ',#9]) do
       Inc(lStartLen);
     Delete(aCommentStr, 1, lStartLen);
   end;
   if lEndLen > 0 then begin
-    while aCommentStr[Length(aCommentStr)-lEndLen] in [' ',#9] do
+    lStartLen := Length(aCommentStr);  // Reuse lStartLen.
+    while (lEndLen < lStartLen) and (aCommentStr[lStartLen-lEndLen] in [' ',#9]) do
       Inc(lEndLen);
-    SetLength(aCommentStr, Length(aCommentStr)-lEndLen);
+    SetLength(aCommentStr, lStartLen-lEndLen);
   end;
   aCommentStr := TextToSingleLine(aCommentStr);
 
@@ -359,7 +360,7 @@ procedure TTLScannedFile.AddToDoItem(aCommentStr: string; aCodePos: TPoint);
 var
   Item: TTodoItem;
 begin
-  debugln(['TTLScannedFile.AddToDoItem aCommentStr=', aCommentStr, ', aCodePos=', aCodePos.X,':',aCodePos.Y]);
+  //debugln(['TTLScannedFile.AddToDoItem aCommentStr=', aCommentStr, ', aCodePos=', aCodePos.X,':',aCodePos.Y]);
   Item := CreateToDoItem(aCommentStr, aCodePos);
   if Assigned(Item) then begin
     Item.Filename := FRealFilename;
