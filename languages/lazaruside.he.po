@@ -7353,7 +7353,7 @@ msgstr "התעלם מהקבועים חסרי השם הבאים"
 #, fuzzy
 #| msgid "Add"
 msgctxt "lazarusidestrconsts.liscodetempladd"
-msgid "Add template"
+msgid "Add template ..."
 msgstr "הוסף"
 
 #: lazarusidestrconsts.liscodetempladdcodetemplate

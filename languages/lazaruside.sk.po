@@ -7054,8 +7054,10 @@ msgid "Ignore next unnamed constants"
 msgstr ""
 
 #: lazarusidestrconsts.liscodetempladd
+#, fuzzy
+#| msgid "Add template"
 msgctxt "lazarusidestrconsts.liscodetempladd"
-msgid "Add template"
+msgid "Add template ..."
 msgstr "Pridať šablónu"
 
 #: lazarusidestrconsts.liscodetempladdcodetemplate

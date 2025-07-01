@@ -6999,7 +6999,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liscodetempladd
 msgctxt "lazarusidestrconsts.liscodetempladd"
-msgid "Add template"
+msgid "Add template ..."
 msgstr ""
 
 #: lazarusidestrconsts.liscodetempladdcodetemplate

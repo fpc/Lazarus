@@ -6986,8 +6986,10 @@ msgid "Ignore next unnamed constants"
 msgstr "Sonraki adsız sabitleri yoksay"
 
 #: lazarusidestrconsts.liscodetempladd
+#, fuzzy
+#| msgid "Add template"
 msgctxt "lazarusidestrconsts.liscodetempladd"
-msgid "Add template"
+msgid "Add template ..."
 msgstr "Şablon ekle"
 
 #: lazarusidestrconsts.liscodetempladdcodetemplate

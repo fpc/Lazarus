@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-06-27 18:26+0300\n"
+"PO-Revision-Date: 2025-07-01 23:11+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -6975,8 +6975,8 @@ msgstr "Игнорировать неименованные константы:"
 
 #: lazarusidestrconsts.liscodetempladd
 msgctxt "lazarusidestrconsts.liscodetempladd"
-msgid "Add template"
-msgstr "Добавить шаблон"
+msgid "Add template ..."
+msgstr "Добавить шаблон ..."
 
 #: lazarusidestrconsts.liscodetempladdcodetemplate
 msgid "Add code template"

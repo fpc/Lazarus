@@ -7167,8 +7167,10 @@ msgid "Ignore next unnamed constants"
 msgstr "Ignoruoti tolesnes bevardes konstantas"
 
 #: lazarusidestrconsts.liscodetempladd
+#, fuzzy
+#| msgid "Add template"
 msgctxt "lazarusidestrconsts.liscodetempladd"
-msgid "Add template"
+msgid "Add template ..."
 msgstr "Pridėti šabloną"
 
 #: lazarusidestrconsts.liscodetempladdcodetemplate

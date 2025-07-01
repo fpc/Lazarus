@@ -7037,7 +7037,9 @@ msgid "Ignore next unnamed constants"
 msgstr "Älä huomioi nimettömiä vakioita"
 
 #: lazarusidestrconsts.liscodetempladd
-msgid "Add template"
+#, fuzzy
+#| msgid "Add template"
+msgid "Add template ..."
 msgstr "Lisää malline"
 
 #: lazarusidestrconsts.liscodetempladdcodetemplate

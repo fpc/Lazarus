@@ -7041,8 +7041,10 @@ msgid "Ignore next unnamed constants"
 msgstr "Знехтувати такі неіменовані константи"
 
 #: lazarusidestrconsts.liscodetempladd
+#, fuzzy
+#| msgid "Add template"
 msgctxt "lazarusidestrconsts.liscodetempladd"
-msgid "Add template"
+msgid "Add template ..."
 msgstr "Додати шаблон"
 
 #: lazarusidestrconsts.liscodetempladdcodetemplate

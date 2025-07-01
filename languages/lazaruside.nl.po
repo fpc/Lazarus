@@ -7199,7 +7199,7 @@ msgstr ""
 #, fuzzy
 #| msgid "Add"
 msgctxt "lazarusidestrconsts.liscodetempladd"
-msgid "Add template"
+msgid "Add template ..."
 msgstr "Toevoegen"
 
 #: lazarusidestrconsts.liscodetempladdcodetemplate

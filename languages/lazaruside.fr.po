@@ -7007,8 +7007,10 @@ msgid "Ignore next unnamed constants"
 msgstr "Ignorer les prochaines constantes sans nom"
 
 #: lazarusidestrconsts.liscodetempladd
+#, fuzzy
+#| msgid "Add template"
 msgctxt "lazarusidestrconsts.liscodetempladd"
-msgid "Add template"
+msgid "Add template ..."
 msgstr "Ajouter un modèle"
 
 #: lazarusidestrconsts.liscodetempladdcodetemplate
