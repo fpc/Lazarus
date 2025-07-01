@@ -411,6 +411,10 @@ msgstr "Dalt"
 msgid "0 lines, 0 chars"
 msgstr "0 línies, 0 caràcters"
 
+#: objinspstrconsts.ois1item
+msgid "1 item"
+msgstr ""
+
 #: objinspstrconsts.ois1linedchars
 #, object-pascal-format
 msgid "1 line, %d chars"
@@ -703,6 +707,11 @@ msgstr "Valor invàlid per la propietat"
 #: objinspstrconsts.oisisnotavalidmethodname
 #, object-pascal-format
 msgid "\"%s\" is not a valid method name."
+msgstr ""
+
+#: objinspstrconsts.oisitems
+#, object-pascal-format
+msgid "%s items"
 msgstr ""
 
 #: objinspstrconsts.oisitemsselected

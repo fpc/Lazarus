@@ -400,6 +400,10 @@ msgstr "Ylös"
 msgid "0 lines, 0 chars"
 msgstr "Ei rivejä eikä merkkejä"
 
+#: objinspstrconsts.ois1item
+msgid "1 item"
+msgstr ""
+
 #: objinspstrconsts.ois1linedchars
 #, object-pascal-format
 msgid "1 line, %d chars"
@@ -679,6 +683,11 @@ msgstr "Kelvoton ominaisuuden arvo"
 #, object-pascal-format
 msgid "\"%s\" is not a valid method name."
 msgstr "\"%s\" ei ole sallittu metodin nimi."
+
+#: objinspstrconsts.oisitems
+#, object-pascal-format
+msgid "%s items"
+msgstr ""
 
 #: objinspstrconsts.oisitemsselected
 #, object-pascal-format

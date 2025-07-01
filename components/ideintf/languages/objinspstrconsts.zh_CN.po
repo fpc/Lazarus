@@ -397,6 +397,10 @@ msgstr "上"
 msgid "0 lines, 0 chars"
 msgstr "0行,0字符"
 
+#: objinspstrconsts.ois1item
+msgid "1 item"
+msgstr ""
+
 #: objinspstrconsts.ois1linedchars
 #, object-pascal-format
 msgid "1 line, %d chars"
@@ -676,6 +680,11 @@ msgstr "无效属性值"
 #, object-pascal-format
 msgid "\"%s\" is not a valid method name."
 msgstr "\"%s\"不是一个有效的方法名称."
+
+#: objinspstrconsts.oisitems
+#, object-pascal-format
+msgid "%s items"
+msgstr ""
 
 #: objinspstrconsts.oisitemsselected
 #, object-pascal-format

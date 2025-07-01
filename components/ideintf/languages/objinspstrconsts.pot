@@ -387,6 +387,10 @@ msgstr ""
 msgid "0 lines, 0 chars"
 msgstr ""
 
+#: objinspstrconsts.ois1item
+msgid "1 item"
+msgstr ""
+
 #: objinspstrconsts.ois1linedchars
 #, object-pascal-format
 msgid "1 line, %d chars"
@@ -665,6 +669,11 @@ msgstr ""
 #: objinspstrconsts.oisisnotavalidmethodname
 #, object-pascal-format
 msgid "\"%s\" is not a valid method name."
+msgstr ""
+
+#: objinspstrconsts.oisitems
+#, object-pascal-format
+msgid "%s items"
 msgstr ""
 
 #: objinspstrconsts.oisitemsselected

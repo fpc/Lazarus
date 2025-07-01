@@ -362,7 +362,6 @@ type
     procedure ShowValue; virtual; // called when Ctrl-Click on value
     function GetAttributes: TPropertyAttributes; virtual;
     function IsReadOnly: boolean; virtual;
-    // For Delphi compatibility it is called GetComponent instead of GetPersistent
     function GetComponent(Index: Integer): TPersistent;
     function GetUnitName(Index: Integer = 0): string;
     function GetPropTypeUnitName(Index: Integer = 0): string;
@@ -1130,7 +1129,7 @@ type
   A property editor with dynamic sub properties representing a list of objects.
   The items are shown embedded in the OI and if the user presses the Edit button
   as extra window to select items, which are then shown in the OI.
-  UNDER CONSTRUCTION by Mattias
+
   The problem with all properties is, that we don't get notified, when something
   changes. In this case, the list can change, which means the property editors
   for the list elements must be deleted or created.
@@ -1140,6 +1139,9 @@ type
   private
     FSaveElementLock: integer;
     FSubPropertiesChanged: boolean;
+    FSavedList: TObject;
+    FSavedElements: TList;
+    FSavedPropertyEditors: TList;
   protected
     procedure BeginSaveElement;
     procedure EndSaveElement;
@@ -1147,11 +1149,6 @@ type
     property SaveElementLock: integer read FSaveElementLock;
   protected
     // methods and variables usable for descendent property editors:
-    // MWE: hmm... don't like "public" objects
-    // TODO: change this ?
-    SavedList: TObject;
-    SavedElements: TList;
-    SavedPropertyEditors: TList;
     function ReadElementCount: integer; virtual;
     function ReadElement(Index: integer): TPersistent; virtual;
     function CreateElementPropEditor(
@@ -1170,6 +1167,9 @@ type
       {%H-}Proc: TGetStrProc); virtual;
     procedure SetElementValue({%H-}Element: TListElementPropertyEditor;
       {%H-}NewValue: ansistring); virtual;
+    property SavedList: TObject read FSavedList;
+    property SavedElements: TList read FSavedElements;
+    property SavedPropertyEditors: TList read FSavedPropertyEditors;
   public
     constructor Create(Hook:TPropertyEditorHook; APropCount:Integer); override;
     destructor Destroy; override;
@@ -1186,8 +1186,7 @@ type
   end;
 
 { TCollectionPropertyEditor
-  Default property editor for all TCollections, embedded in the OI
-  UNDER CONSTRUCTION by Mattias}
+  Default property editor for all TCollections, embedded in the OI }
 
   TCollectionPropertyEditor = class(TListPropertyEditor)
   private
@@ -5153,7 +5152,7 @@ procedure TListPropertyEditor.DoSaveElements;
 var
   i, ElementCount: integer;
 begin
-  SavedList:=GetComponent(0);
+  FSavedList:=GetComponent(0);
   ElementCount:=GetElementCount;
   SavedElements.Count:=ElementCount;
   for i:=0 to ElementCount-1 do
@@ -5218,16 +5217,16 @@ constructor TListPropertyEditor.Create(Hook: TPropertyEditorHook;
   APropCount: Integer);
 begin
   inherited Create(Hook, APropCount);
-  SavedElements:=TList.Create;
-  SavedPropertyEditors:=TList.Create;
+  FSavedElements:=TList.Create;
+  FSavedPropertyEditors:=TList.Create;
 end;
 
 destructor TListPropertyEditor.Destroy;
 begin
   UnregisterListPropertyEditor(Self);
   FreeElementPropertyEditors;
-  FreeAndNil(SavedPropertyEditors);
-  FreeAndNil(SavedElements);
+  FreeAndNil(FSavedPropertyEditors);
+  FreeAndNil(FSavedElements);
   inherited Destroy;
 end;
 
@@ -5252,9 +5251,9 @@ var
 begin
   ElementCount:=GetElementCount;
   if ElementCount<>1 then
-    Result:=IntToStr(GetElementCount)+' items'
+    Result:=Format(oisItems, [IntToStr(GetElementCount)])
   else
-    Result:='1 item';
+    Result:=ois1Item;
 end;
 
 procedure TListPropertyEditor.Initialize;

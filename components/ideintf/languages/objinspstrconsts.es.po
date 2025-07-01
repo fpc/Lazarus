@@ -400,6 +400,10 @@ msgstr "Arriba"
 msgid "0 lines, 0 chars"
 msgstr "0 líneas, 0 caracteres"
 
+#: objinspstrconsts.ois1item
+msgid "1 item"
+msgstr ""
+
 #: objinspstrconsts.ois1linedchars
 #, object-pascal-format
 msgid "1 line, %d chars"
@@ -681,6 +685,11 @@ msgstr "Valor de propiedad inválido"
 #, object-pascal-format
 msgid "\"%s\" is not a valid method name."
 msgstr "\"%s\" no es un nombre de método válido."
+
+#: objinspstrconsts.oisitems
+#, object-pascal-format
+msgid "%s items"
+msgstr ""
 
 #: objinspstrconsts.oisitemsselected
 #, object-pascal-format

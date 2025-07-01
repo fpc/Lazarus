@@ -397,6 +397,10 @@ msgstr "Vyššie"
 msgid "0 lines, 0 chars"
 msgstr "0 riadkov, 0 znakov"
 
+#: objinspstrconsts.ois1item
+msgid "1 item"
+msgstr ""
+
 #: objinspstrconsts.ois1linedchars
 #, object-pascal-format
 msgid "1 line, %d chars"
@@ -684,6 +688,11 @@ msgstr "Neplatná hodnota vlastnosti"
 #, object-pascal-format
 msgid "\"%s\" is not a valid method name."
 msgstr "\"%s\" nie je platné meno metódy."
+
+#: objinspstrconsts.oisitems
+#, object-pascal-format
+msgid "%s items"
+msgstr ""
 
 #: objinspstrconsts.oisitemsselected
 #, object-pascal-format

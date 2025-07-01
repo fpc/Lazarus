@@ -402,6 +402,10 @@ msgstr "Viršun"
 msgid "0 lines, 0 chars"
 msgstr "0 eilučių, 0 simbolių"
 
+#: objinspstrconsts.ois1item
+msgid "1 item"
+msgstr ""
+
 #: objinspstrconsts.ois1linedchars
 #, object-pascal-format
 msgid "1 line, %d chars"
@@ -681,6 +685,11 @@ msgstr "Klaidinga savybės reikšmė"
 #, object-pascal-format
 msgid "\"%s\" is not a valid method name."
 msgstr "„%s“ nėra tinkamas pavadinimas metodui."
+
+#: objinspstrconsts.oisitems
+#, object-pascal-format
+msgid "%s items"
+msgstr ""
 
 #: objinspstrconsts.oisitemsselected
 #, object-pascal-format

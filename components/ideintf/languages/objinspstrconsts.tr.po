@@ -400,6 +400,10 @@ msgstr "Yukarı"
 msgid "0 lines, 0 chars"
 msgstr "0 satır, 0 karakter"
 
+#: objinspstrconsts.ois1item
+msgid "1 item"
+msgstr ""
+
 #: objinspstrconsts.ois1linedchars
 #, object-pascal-format
 msgid "1 line, %d chars"
@@ -679,6 +683,11 @@ msgstr "Geçersiz özellik değeri"
 #, object-pascal-format
 msgid "\"%s\" is not a valid method name."
 msgstr "\"%s\" geçerli bir yöntem adı değil."
+
+#: objinspstrconsts.oisitems
+#, object-pascal-format
+msgid "%s items"
+msgstr ""
 
 #: objinspstrconsts.oisitemsselected
 #, object-pascal-format

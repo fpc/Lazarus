@@ -412,6 +412,10 @@ msgstr "למעלה"
 msgid "0 lines, 0 chars"
 msgstr "אפס שורות, אפס תווים"
 
+#: objinspstrconsts.ois1item
+msgid "1 item"
+msgstr ""
+
 #: objinspstrconsts.ois1linedchars
 #, object-pascal-format, fuzzy, badformat
 msgid "1 line, %d chars"
@@ -704,6 +708,11 @@ msgstr "ערך לא חוקי של תכונה"
 #| msgid "%s%s%s is not a valid method name."
 msgid "\"%s\" is not a valid method name."
 msgstr "זה לא שם חוקי של מתודה %s%s%"
+
+#: objinspstrconsts.oisitems
+#, object-pascal-format
+msgid "%s items"
+msgstr ""
 
 #: objinspstrconsts.oisitemsselected
 #, object-pascal-format

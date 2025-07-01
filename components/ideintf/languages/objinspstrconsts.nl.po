@@ -410,6 +410,10 @@ msgstr "Omhoog"
 msgid "0 lines, 0 chars"
 msgstr "0 regels, 0 letters"
 
+#: objinspstrconsts.ois1item
+msgid "1 item"
+msgstr ""
+
 #: objinspstrconsts.ois1linedchars
 #, object-pascal-format
 msgid "1 line, %d chars"
@@ -697,6 +701,11 @@ msgstr "Ongeldige waarde voor eigenschap"
 #: objinspstrconsts.oisisnotavalidmethodname
 #, object-pascal-format
 msgid "\"%s\" is not a valid method name."
+msgstr ""
+
+#: objinspstrconsts.oisitems
+#, object-pascal-format
+msgid "%s items"
 msgstr ""
 
 #: objinspstrconsts.oisitemsselected

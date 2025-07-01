@@ -399,6 +399,10 @@ msgstr "Вгору"
 msgid "0 lines, 0 chars"
 msgstr "0 рядків, 0 символів"
 
+#: objinspstrconsts.ois1item
+msgid "1 item"
+msgstr ""
+
 #: objinspstrconsts.ois1linedchars
 #, object-pascal-format
 msgid "1 line, %d chars"
@@ -678,6 +682,11 @@ msgstr "Недопустима величина властивості"
 #, object-pascal-format
 msgid "\"%s\" is not a valid method name."
 msgstr "\"%s\" не є правильною назвою методу."
+
+#: objinspstrconsts.oisitems
+#, object-pascal-format
+msgid "%s items"
+msgstr ""
 
 #: objinspstrconsts.oisitemsselected
 #, object-pascal-format
