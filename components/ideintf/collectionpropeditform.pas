@@ -13,8 +13,8 @@ uses
   // IdeIntf
   ObjInspStrConsts, PropEditUtils, IDEImagesIntf, IDEWindowIntf;
 
-
 type
+
   { TCollectionPropertyEditorForm }
 
   TCollectionPropertyEditorForm = class(TForm)
@@ -128,6 +128,7 @@ procedure TCollectionPropertyEditorForm.actDelExecute(Sender: TObject);
 var
   I : Integer;
   NewItemIndex: Integer;
+  Item: TCollectionItem;
 begin
   if Collection = nil then Exit;
 
@@ -159,7 +160,11 @@ begin
       // unselect all items in OI (collections can act strange on delete)
       ClearSelectionInObjectInspector;
       // now delete
-      Collection.Items[I].Free;
+      Item:=Collection.Items[I];
+      GlobalDesignHook.PersistentDeleting(Item);
+      Item.Free;
+      GlobalDesignHook.PersistentDeleted(Item);
+      Item:=nil;
       // update listbox after whatever happened
       FillCollectionListBox;
       // set NewItemIndex
