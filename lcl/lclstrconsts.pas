@@ -282,8 +282,6 @@ resourceString
   rsTGA = 'TGA Image Files';
   rsGraphic = 'Graphic';
   rsUnsupportedClipboardFormat = 'Unsupported clipboard format: %s';
-  rsGroupIndexCannotBeLessThanPrevious = 'GroupIndex cannot be less than a '
-    +'previous menu item''s GroupIndex';
   rsIsAlreadyAssociatedWith = '%s is already associated with %s';
   rsCanvasDoesNotAllowDrawing = 'Canvas does not allow drawing';
   rsUnsupportedBitmapFormat = 'Unsupported bitmap format.';
