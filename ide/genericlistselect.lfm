@@ -6,6 +6,8 @@ object GenericListSelectForm: TGenericListSelectForm
   Caption = 'GenericCheckListForm'
   ClientHeight = 277
   ClientWidth = 466
+  KeyPreview = True
+  OnKeyDown = FormKeyDown
   OnShow = FormShow
   Position = poScreenCenter
   LCLVersion = '1.9.0.0'
@@ -15,7 +17,9 @@ object GenericListSelectForm: TGenericListSelectForm
     Top = 241
     Width = 454
     OKButton.Name = 'OKButton'
+    OKButton.Hint = '[Ctrl+Enter]'
     OKButton.DefaultCaption = True
+    OKButton.ShowHint = True
     HelpButton.Name = 'HelpButton'
     HelpButton.DefaultCaption = True
     HelpButton.Enabled = False
@@ -24,7 +28,7 @@ object GenericListSelectForm: TGenericListSelectForm
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
     CancelButton.DefaultCaption = True
-    TabOrder = 0
+    TabOrder = 1
     ShowButtons = [pbOK, pbCancel]
     ShowBevel = False
   end
@@ -53,6 +57,6 @@ object GenericListSelectForm: TGenericListSelectForm
     ItemHeight = 0
     OnClick = ListBoxClick
     OnDblClick = ListBoxDblClick
-    TabOrder = 1
+    TabOrder = 0
   end
 end
