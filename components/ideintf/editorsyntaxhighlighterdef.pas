@@ -153,9 +153,14 @@ end;
 
 procedure _IDE_CallOnIdeColorSchemeListCreated;
 begin
+  if OnIdeColorSchemeListCreated = nil then
+    exit;
   OnIdeColorSchemeListCreated.CallNotifyEvents(nil);
   FreeAndNil(OnIdeColorSchemeListCreated);
 end;
+
+finalization
+  FreeAndNil(OnIdeColorSchemeListCreated);
 
 end.
 
