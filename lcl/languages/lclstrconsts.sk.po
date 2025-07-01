@@ -174,7 +174,9 @@ msgid "Cancel"
 msgstr "Zrušiť"
 
 #: lclstrconsts.rscannotfocus
-msgid "Can not focus"
+#, fuzzy
+#| msgid "Can not focus"
+msgid "Cannot focus"
 msgstr "Nemožno zamerať"
 
 #: lclstrconsts.rscanvasdoesnotallowdrawing
@@ -902,10 +904,6 @@ msgstr "Zvýraznenie ponuky"
 msgid "Menu Text"
 msgstr "Text ponuky"
 
-#: lclstrconsts.rsmodified
-msgid "  modified "
-msgstr "  zmenené "
-
 #: lclstrconsts.rsmoneygreencolorcaption
 msgid "Money Green"
 msgstr "Peňažne zelená"
@@ -1153,10 +1151,6 @@ msgstr "Zobraziť podrobnosti"
 msgid "Silver"
 msgstr "Strieborná"
 
-#: lclstrconsts.rssize
-msgid "  size "
-msgstr "  veľkosť "
-
 #: lclstrconsts.rsskybluecolorcaption
 msgid "Sky Blue"
 msgstr "Nebesky modrá"
@@ -1283,7 +1277,9 @@ msgid "Yellow"
 msgstr "Žltá"
 
 #: lclstrconsts.scannotfocus
-msgid "Cannot focus a disabled or invisible window"
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Cannot focus a disabled or invisible window"
+msgid "Cannot focus a disabled or invisible window \"%s\":\"%s\""
 msgstr "Nemôžem zamerať vypnuté alebo neviditeľné okno"
 
 #: lclstrconsts.sduplicatemenus

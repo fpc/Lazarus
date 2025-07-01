@@ -179,7 +179,9 @@ msgid "Cancel"
 msgstr "Cancel·la"
 
 #: lclstrconsts.rscannotfocus
-msgid "Can not focus"
+#, fuzzy
+#| msgid "Can not focus"
+msgid "Cannot focus"
 msgstr "No es pot focalitzar"
 
 #: lclstrconsts.rscanvasdoesnotallowdrawing
@@ -959,10 +961,6 @@ msgstr ""
 msgid "Menu Text"
 msgstr ""
 
-#: lclstrconsts.rsmodified
-msgid "  modified "
-msgstr " modificat "
-
 #: lclstrconsts.rsmoneygreencolorcaption
 msgid "Money Green"
 msgstr ""
@@ -1214,10 +1212,6 @@ msgstr ""
 msgid "Silver"
 msgstr ""
 
-#: lclstrconsts.rssize
-msgid "  size "
-msgstr " mida "
-
 #: lclstrconsts.rsskybluecolorcaption
 msgid "Sky Blue"
 msgstr ""
@@ -1344,7 +1338,9 @@ msgid "Yellow"
 msgstr ""
 
 #: lclstrconsts.scannotfocus
-msgid "Cannot focus a disabled or invisible window"
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Cannot focus a disabled or invisible window"
+msgid "Cannot focus a disabled or invisible window \"%s\":\"%s\""
 msgstr "No puc accedir a una finestra invisible o tancada"
 
 #: lclstrconsts.sduplicatemenus

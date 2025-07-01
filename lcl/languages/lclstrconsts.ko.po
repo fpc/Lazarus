@@ -175,7 +175,9 @@ msgid "Cancel"
 msgstr "취소"
 
 #: lclstrconsts.rscannotfocus
-msgid "Can not focus"
+#, fuzzy
+#| msgid "Can not focus"
+msgid "Cannot focus"
 msgstr "초점을 맞출 수 없음"
 
 #: lclstrconsts.rscanvasdoesnotallowdrawing
@@ -937,10 +939,6 @@ msgstr "메뉴 강조"
 msgid "Menu Text"
 msgstr "메뉴 텍스트"
 
-#: lclstrconsts.rsmodified
-msgid "  modified "
-msgstr "  수정 날짜 "
-
 #: lclstrconsts.rsmoneygreencolorcaption
 msgid "Money Green"
 msgstr "연두색"
@@ -1242,10 +1240,6 @@ msgstr ""
 msgid "Silver"
 msgstr "은색"
 
-#: lclstrconsts.rssize
-msgid "  size "
-msgstr "  크기 "
-
 #: lclstrconsts.rsskybluecolorcaption
 msgid "Sky Blue"
 msgstr "하늘색"
@@ -1374,7 +1368,9 @@ msgid "Yellow"
 msgstr "노랑"
 
 #: lclstrconsts.scannotfocus
-msgid "Cannot focus a disabled or invisible window"
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Cannot focus a disabled or invisible window"
+msgid "Cannot focus a disabled or invisible window \"%s\":\"%s\""
 msgstr "비활성화되거나 보이지 않는 창에 초점을 맞출 수 없습니다"
 
 #: lclstrconsts.sduplicatemenus

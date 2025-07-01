@@ -173,7 +173,9 @@ msgid "Cancel"
 msgstr "取消"
 
 #: lclstrconsts.rscannotfocus
-msgid "Can not focus"
+#, fuzzy
+#| msgid "Can not focus"
+msgid "Cannot focus"
 msgstr "无法聚焦"
 
 #: lclstrconsts.rscanvasdoesnotallowdrawing
@@ -902,10 +904,6 @@ msgstr "菜单高亮"
 msgid "Menu Text"
 msgstr "菜单文本"
 
-#: lclstrconsts.rsmodified
-msgid "  modified "
-msgstr "  已修改 "
-
 #: lclstrconsts.rsmoneygreencolorcaption
 msgid "Money Green"
 msgstr "钱绿色"
@@ -1153,10 +1151,6 @@ msgstr "显示详细信息"
 msgid "Silver"
 msgstr "银白色"
 
-#: lclstrconsts.rssize
-msgid "  size "
-msgstr "  大小 "
-
 #: lclstrconsts.rsskybluecolorcaption
 msgid "Sky Blue"
 msgstr "天蓝色"
@@ -1283,7 +1277,9 @@ msgid "Yellow"
 msgstr "黄色"
 
 #: lclstrconsts.scannotfocus
-msgid "Cannot focus a disabled or invisible window"
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Cannot focus a disabled or invisible window"
+msgid "Cannot focus a disabled or invisible window \"%s\":\"%s\""
 msgstr "无法将焦点设置到已禁用或不可见的窗口"
 
 #: lclstrconsts.sduplicatemenus

@@ -165,7 +165,7 @@ msgid "Cancel"
 msgstr ""
 
 #: lclstrconsts.rscannotfocus
-msgid "Can not focus"
+msgid "Cannot focus"
 msgstr ""
 
 #: lclstrconsts.rscanvasdoesnotallowdrawing
@@ -896,10 +896,6 @@ msgstr ""
 msgid "Menu Text"
 msgstr ""
 
-#: lclstrconsts.rsmodified
-msgid "  modified "
-msgstr ""
-
 #: lclstrconsts.rsmoneygreencolorcaption
 msgid "Money Green"
 msgstr ""
@@ -1147,10 +1143,6 @@ msgstr ""
 msgid "Silver"
 msgstr ""
 
-#: lclstrconsts.rssize
-msgid "  size "
-msgstr ""
-
 #: lclstrconsts.rsskybluecolorcaption
 msgid "Sky Blue"
 msgstr ""
@@ -1277,7 +1269,8 @@ msgid "Yellow"
 msgstr ""
 
 #: lclstrconsts.scannotfocus
-msgid "Cannot focus a disabled or invisible window"
+#, object-pascal-format
+msgid "Cannot focus a disabled or invisible window \"%s\":\"%s\""
 msgstr ""
 
 #: lclstrconsts.sduplicatemenus

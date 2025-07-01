@@ -172,7 +172,9 @@ msgid "Cancel"
 msgstr "Peruuta"
 
 #: lclstrconsts.rscannotfocus
-msgid "Can not focus"
+#, fuzzy
+#| msgid "Can not focus"
+msgid "Cannot focus"
 msgstr "Ei voi fokusoida"
 
 #: lclstrconsts.rscanvasdoesnotallowdrawing
@@ -930,10 +932,6 @@ msgstr "Valikon korostus"
 msgid "Menu Text"
 msgstr "Valikon teksti"
 
-#: lclstrconsts.rsmodified
-msgid "  modified "
-msgstr "  muokattu "
-
 #: lclstrconsts.rsmoneygreencolorcaption
 msgid "Money Green"
 msgstr "Rahan vihreä"
@@ -1229,10 +1227,6 @@ msgstr ""
 msgid "Silver"
 msgstr "Hopea"
 
-#: lclstrconsts.rssize
-msgid "  size "
-msgstr "  koko "
-
 #: lclstrconsts.rsskybluecolorcaption
 msgid "Sky Blue"
 msgstr "Taivaan sininen"
@@ -1359,7 +1353,9 @@ msgid "Yellow"
 msgstr "Keltainen"
 
 #: lclstrconsts.scannotfocus
-msgid "Cannot focus a disabled or invisible window"
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Cannot focus a disabled or invisible window"
+msgid "Cannot focus a disabled or invisible window \"%s\":\"%s\""
 msgstr "Ei voi fokusoida estettyä tai näkymätöntä ikkunaa"
 
 #: lclstrconsts.sduplicatemenus

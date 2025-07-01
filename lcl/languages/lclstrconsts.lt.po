@@ -176,7 +176,9 @@ msgid "Cancel"
 msgstr "Atsisakyti"
 
 #: lclstrconsts.rscannotfocus
-msgid "Can not focus"
+#, fuzzy
+#| msgid "Can not focus"
+msgid "Cannot focus"
 msgstr "Negalima sufokusuoti"
 
 #: lclstrconsts.rscanvasdoesnotallowdrawing
@@ -939,10 +941,6 @@ msgstr "Paryškintas meniu"
 msgid "Menu Text"
 msgstr "Menu tekstas"
 
-#: lclstrconsts.rsmodified
-msgid "  modified "
-msgstr "  pakeista "
-
 #: lclstrconsts.rsmoneygreencolorcaption
 msgid "Money Green"
 msgstr "Žalsva"
@@ -1240,10 +1238,6 @@ msgstr ""
 msgid "Silver"
 msgstr "Sidabrinė"
 
-#: lclstrconsts.rssize
-msgid "  size "
-msgstr "  dydis "
-
 #: lclstrconsts.rsskybluecolorcaption
 msgid "Sky Blue"
 msgstr "Dangaus žydrumo"
@@ -1372,7 +1366,9 @@ msgid "Yellow"
 msgstr "Geltona"
 
 #: lclstrconsts.scannotfocus
-msgid "Cannot focus a disabled or invisible window"
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Cannot focus a disabled or invisible window"
+msgid "Cannot focus a disabled or invisible window \"%s\":\"%s\""
 msgstr "Negalima sufokusuoti neveiksnaus ar nematomo lango"
 
 #: lclstrconsts.sduplicatemenus

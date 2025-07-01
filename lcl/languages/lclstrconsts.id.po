@@ -180,7 +180,9 @@ msgid "Cancel"
 msgstr "Batal"
 
 #: lclstrconsts.rscannotfocus
-msgid "Can not focus"
+#, fuzzy
+#| msgid "Can not focus"
+msgid "Cannot focus"
 msgstr "Tidak bisa memfokuskan"
 
 #: lclstrconsts.rscanvasdoesnotallowdrawing
@@ -958,10 +960,6 @@ msgstr ""
 msgid "Menu Text"
 msgstr ""
 
-#: lclstrconsts.rsmodified
-msgid "  modified "
-msgstr "  diubah "
-
 #: lclstrconsts.rsmoneygreencolorcaption
 msgid "Money Green"
 msgstr ""
@@ -1213,10 +1211,6 @@ msgstr ""
 msgid "Silver"
 msgstr ""
 
-#: lclstrconsts.rssize
-msgid "  size "
-msgstr "  ukuran "
-
 #: lclstrconsts.rsskybluecolorcaption
 msgid "Sky Blue"
 msgstr ""
@@ -1343,7 +1337,9 @@ msgid "Yellow"
 msgstr ""
 
 #: lclstrconsts.scannotfocus
-msgid "Cannot focus a disabled or invisible window"
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Cannot focus a disabled or invisible window"
+msgid "Cannot focus a disabled or invisible window \"%s\":\"%s\""
 msgstr "Tidak bisa memberikan fokus ke jendela yang dimatikan atau tidak nampak"
 
 #: lclstrconsts.sduplicatemenus

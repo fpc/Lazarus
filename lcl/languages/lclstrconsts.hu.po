@@ -174,7 +174,9 @@ msgid "Cancel"
 msgstr "Mégsem"
 
 #: lclstrconsts.rscannotfocus
-msgid "Can not focus"
+#, fuzzy
+#| msgid "Can not focus"
+msgid "Cannot focus"
 msgstr "Nem lehet fókuszálni"
 
 #: lclstrconsts.rscanvasdoesnotallowdrawing
@@ -936,10 +938,6 @@ msgstr "Menü kiemelése"
 msgid "Menu Text"
 msgstr "Menü szövege"
 
-#: lclstrconsts.rsmodified
-msgid "  modified "
-msgstr " módosítva"
-
 #: lclstrconsts.rsmoneygreencolorcaption
 msgid "Money Green"
 msgstr "Pénzzöld"
@@ -1237,10 +1235,6 @@ msgstr ""
 msgid "Silver"
 msgstr "Ezüst"
 
-#: lclstrconsts.rssize
-msgid "  size "
-msgstr " méret "
-
 #: lclstrconsts.rsskybluecolorcaption
 msgid "Sky Blue"
 msgstr "Égszín kék"
@@ -1369,7 +1363,9 @@ msgid "Yellow"
 msgstr "Sárga"
 
 #: lclstrconsts.scannotfocus
-msgid "Cannot focus a disabled or invisible window"
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Cannot focus a disabled or invisible window"
+msgid "Cannot focus a disabled or invisible window \"%s\":\"%s\""
 msgstr "Nem lehet letiltott vagy láthatatlan ablakot előtérbe hozni"
 
 #: lclstrconsts.sduplicatemenus

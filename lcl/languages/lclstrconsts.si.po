@@ -173,7 +173,9 @@ msgid "Cancel"
 msgstr "අවලංගු කරන්න"
 
 #: lclstrconsts.rscannotfocus
-msgid "Can not focus"
+#, fuzzy
+#| msgid "Can not focus"
+msgid "Cannot focus"
 msgstr "අවධානය යොමු කළ නොහැක"
 
 #: lclstrconsts.rscanvasdoesnotallowdrawing
@@ -901,10 +903,6 @@ msgstr "මෙනු උද්දීපනය"
 msgid "Menu Text"
 msgstr "මෙනු පෙළ"
 
-#: lclstrconsts.rsmodified
-msgid "  modified "
-msgstr " වෙනස් කරන ලදී"
-
 #: lclstrconsts.rsmoneygreencolorcaption
 msgid "Money Green"
 msgstr "මුදල් කොළ පාට"
@@ -1152,10 +1150,6 @@ msgstr "විස්තර පෙන්වන්න"
 msgid "Silver"
 msgstr "රිදී"
 
-#: lclstrconsts.rssize
-msgid "  size "
-msgstr " ප්රමාණය"
-
 #: lclstrconsts.rsskybluecolorcaption
 msgid "Sky Blue"
 msgstr "අහස නිල්"
@@ -1282,7 +1276,9 @@ msgid "Yellow"
 msgstr "කහ"
 
 #: lclstrconsts.scannotfocus
-msgid "Cannot focus a disabled or invisible window"
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Cannot focus a disabled or invisible window"
+msgid "Cannot focus a disabled or invisible window \"%s\":\"%s\""
 msgstr "ආබාධිත හෝ නොපෙනෙන කවුළුවක් නාභිගත කළ නොහැක"
 
 #: lclstrconsts.sduplicatemenus

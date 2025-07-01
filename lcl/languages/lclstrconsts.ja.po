@@ -174,7 +174,9 @@ msgid "Cancel"
 msgstr "キャンセル"
 
 #: lclstrconsts.rscannotfocus
-msgid "Can not focus"
+#, fuzzy
+#| msgid "Can not focus"
+msgid "Cannot focus"
 msgstr "フォーカスを設定できません"
 
 #: lclstrconsts.rscanvasdoesnotallowdrawing
@@ -937,10 +939,6 @@ msgstr "選択メニューの背景色"
 msgid "Menu Text"
 msgstr "メニューの文字色"
 
-#: lclstrconsts.rsmodified
-msgid "  modified "
-msgstr "  修正済み "
-
 #: lclstrconsts.rsmoneygreencolorcaption
 msgid "Money Green"
 msgstr "マネーグリーン"
@@ -1238,10 +1236,6 @@ msgstr ""
 msgid "Silver"
 msgstr "銀色"
 
-#: lclstrconsts.rssize
-msgid "  size "
-msgstr "  サイズ "
-
 #: lclstrconsts.rsskybluecolorcaption
 msgid "Sky Blue"
 msgstr "空色"
@@ -1370,7 +1364,9 @@ msgid "Yellow"
 msgstr "黄色"
 
 #: lclstrconsts.scannotfocus
-msgid "Cannot focus a disabled or invisible window"
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Cannot focus a disabled or invisible window"
+msgid "Cannot focus a disabled or invisible window \"%s\":\"%s\""
 msgstr "無効または不可視ウィンドウにフォーカスはできません"
 
 #: lclstrconsts.sduplicatemenus

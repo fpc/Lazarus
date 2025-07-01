@@ -172,7 +172,9 @@ msgid "Cancel"
 msgstr "İptal"
 
 #: lclstrconsts.rscannotfocus
-msgid "Can not focus"
+#, fuzzy
+#| msgid "Can not focus"
+msgid "Cannot focus"
 msgstr "Odaklanamıyor"
 
 #: lclstrconsts.rscanvasdoesnotallowdrawing
@@ -924,10 +926,6 @@ msgstr "Menü Vurgusu"
 msgid "Menu Text"
 msgstr "Menü Metni"
 
-#: lclstrconsts.rsmodified
-msgid "  modified "
-msgstr "  değiştirilmiş "
-
 #: lclstrconsts.rsmoneygreencolorcaption
 msgid "Money Green"
 msgstr "Para yeşili"
@@ -1221,10 +1219,6 @@ msgstr ""
 msgid "Silver"
 msgstr "Gümüş"
 
-#: lclstrconsts.rssize
-msgid "  size "
-msgstr "  boyut "
-
 #: lclstrconsts.rsskybluecolorcaption
 msgid "Sky Blue"
 msgstr "Gök Mavisi"
@@ -1351,7 +1345,9 @@ msgid "Yellow"
 msgstr "Sarı"
 
 #: lclstrconsts.scannotfocus
-msgid "Cannot focus a disabled or invisible window"
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Cannot focus a disabled or invisible window"
+msgid "Cannot focus a disabled or invisible window \"%s\":\"%s\""
 msgstr "Etkisizleştirilmiş ya da görünmez pencerelere odaklanılamaz"
 
 #: lclstrconsts.sduplicatemenus

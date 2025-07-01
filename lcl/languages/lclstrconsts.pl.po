@@ -175,7 +175,9 @@ msgid "Cancel"
 msgstr "Anuluj"
 
 #: lclstrconsts.rscannotfocus
-msgid "Can not focus"
+#, fuzzy
+#| msgid "Can not focus"
+msgid "Cannot focus"
 msgstr "Nie można ustawić aktywności"
 
 #: lclstrconsts.rscanvasdoesnotallowdrawing
@@ -937,10 +939,6 @@ msgstr "Podświetlenie Menu"
 msgid "Menu Text"
 msgstr "Tekst Menu"
 
-#: lclstrconsts.rsmodified
-msgid "  modified "
-msgstr " zmodyfikowany "
-
 #: lclstrconsts.rsmoneygreencolorcaption
 msgid "Money Green"
 msgstr "Zieleń pieniądza"
@@ -1238,10 +1236,6 @@ msgstr ""
 msgid "Silver"
 msgstr "Srebrny"
 
-#: lclstrconsts.rssize
-msgid "  size "
-msgstr "  rozmiar "
-
 #: lclstrconsts.rsskybluecolorcaption
 msgid "Sky Blue"
 msgstr "Błękit nieba"
@@ -1370,7 +1364,9 @@ msgid "Yellow"
 msgstr "Żółty"
 
 #: lclstrconsts.scannotfocus
-msgid "Cannot focus a disabled or invisible window"
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Cannot focus a disabled or invisible window"
+msgid "Cannot focus a disabled or invisible window \"%s\":\"%s\""
 msgstr "Nie można ustawić aktywności na niedostępnym lub niewidocznym oknie"
 
 #: lclstrconsts.sduplicatemenus

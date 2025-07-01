@@ -176,7 +176,9 @@ msgid "Cancel"
 msgstr "Zrušit"
 
 #: lclstrconsts.rscannotfocus
-msgid "Can not focus"
+#, fuzzy
+#| msgid "Can not focus"
+msgid "Cannot focus"
 msgstr "Nelze zaměřit"
 
 #: lclstrconsts.rscanvasdoesnotallowdrawing
@@ -938,10 +940,6 @@ msgstr "Zvýraznění nabídky"
 msgid "Menu Text"
 msgstr "Text nabídky"
 
-#: lclstrconsts.rsmodified
-msgid "  modified "
-msgstr " upravený"
-
 #: lclstrconsts.rsmoneygreencolorcaption
 msgid "Money Green"
 msgstr "Peněžní zelená"
@@ -1239,10 +1237,6 @@ msgstr ""
 msgid "Silver"
 msgstr "Stříbrná"
 
-#: lclstrconsts.rssize
-msgid "  size "
-msgstr "  velikost "
-
 #: lclstrconsts.rsskybluecolorcaption
 msgid "Sky Blue"
 msgstr "Nebeská modrá"
@@ -1371,7 +1365,9 @@ msgid "Yellow"
 msgstr "Žlutá"
 
 #: lclstrconsts.scannotfocus
-msgid "Cannot focus a disabled or invisible window"
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Cannot focus a disabled or invisible window"
+msgid "Cannot focus a disabled or invisible window \"%s\":\"%s\""
 msgstr "Nelze zaktivnit zakázané nebo neviditelné okno"
 
 #: lclstrconsts.sduplicatemenus

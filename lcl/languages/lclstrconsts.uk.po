@@ -175,7 +175,9 @@ msgid "Cancel"
 msgstr "Скасувати"
 
 #: lclstrconsts.rscannotfocus
-msgid "Can not focus"
+#, fuzzy
+#| msgid "Can not focus"
+msgid "Cannot focus"
 msgstr "Не можу сфокусуватися"
 
 #: lclstrconsts.rscanvasdoesnotallowdrawing
@@ -927,10 +929,6 @@ msgstr "Підсічене меню"
 msgid "Menu Text"
 msgstr "Текст меню"
 
-#: lclstrconsts.rsmodified
-msgid "  modified "
-msgstr "  змінений "
-
 #: lclstrconsts.rsmoneygreencolorcaption
 msgid "Money Green"
 msgstr "Сиво-зелений"
@@ -1224,10 +1222,6 @@ msgstr ""
 msgid "Silver"
 msgstr "Срібний"
 
-#: lclstrconsts.rssize
-msgid "  size "
-msgstr "  розмір "
-
 #: lclstrconsts.rsskybluecolorcaption
 msgid "Sky Blue"
 msgstr "Небесно-синій"
@@ -1354,7 +1348,9 @@ msgid "Yellow"
 msgstr "Жовтий"
 
 #: lclstrconsts.scannotfocus
-msgid "Cannot focus a disabled or invisible window"
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Cannot focus a disabled or invisible window"
+msgid "Cannot focus a disabled or invisible window \"%s\":\"%s\""
 msgstr "Не можна дати фокус вимкненому або невидимому вікну"
 
 #: lclstrconsts.sduplicatemenus

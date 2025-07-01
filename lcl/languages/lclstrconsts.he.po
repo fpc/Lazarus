@@ -176,7 +176,9 @@ msgid "Cancel"
 msgstr "ביטול"
 
 #: lclstrconsts.rscannotfocus
-msgid "Can not focus"
+#, fuzzy
+#| msgid "Can not focus"
+msgid "Cannot focus"
 msgstr "לא יכול להתמקד"
 
 #: lclstrconsts.rscanvasdoesnotallowdrawing
@@ -960,10 +962,6 @@ msgstr "הדגשת תפריט"
 msgid "Menu Text"
 msgstr "טקסט התפריט"
 
-#: lclstrconsts.rsmodified
-msgid "  modified "
-msgstr "השתנה"
-
 #: lclstrconsts.rsmoneygreencolorcaption
 msgid "Money Green"
 msgstr "ירוק של שטרות כסף"
@@ -1261,10 +1259,6 @@ msgstr ""
 msgid "Silver"
 msgstr "כסף"
 
-#: lclstrconsts.rssize
-msgid "  size "
-msgstr "גודל"
-
 #: lclstrconsts.rsskybluecolorcaption
 msgid "Sky Blue"
 msgstr "כחול שמיים"
@@ -1393,7 +1387,9 @@ msgid "Yellow"
 msgstr "צהוב"
 
 #: lclstrconsts.scannotfocus
-msgid "Cannot focus a disabled or invisible window"
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Cannot focus a disabled or invisible window"
+msgid "Cannot focus a disabled or invisible window \"%s\":\"%s\""
 msgstr "לא יכול להתמקד בחלון מנוטרל או בלתי נראה"
 
 #: lclstrconsts.sduplicatemenus

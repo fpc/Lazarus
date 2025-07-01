@@ -175,7 +175,9 @@ msgid "Cancel"
 msgstr "Abbandunà"
 
 #: lclstrconsts.rscannotfocus
-msgid "Can not focus"
+#, fuzzy
+#| msgid "Can not focus"
+msgid "Cannot focus"
 msgstr "Ùn si pò mette in evidenza"
 
 #: lclstrconsts.rscanvasdoesnotallowdrawing
@@ -903,10 +905,6 @@ msgstr "Sopralineamentu di listinu"
 msgid "Menu Text"
 msgstr "Testu di listinu"
 
-#: lclstrconsts.rsmodified
-msgid "  modified "
-msgstr "  mudificatu "
-
 #: lclstrconsts.rsmoneygreencolorcaption
 msgid "Money Green"
 msgstr "Verde buttiglia"
@@ -1154,10 +1152,6 @@ msgstr "Affissà i detaglii"
 msgid "Silver"
 msgstr "Argentu"
 
-#: lclstrconsts.rssize
-msgid "  size "
-msgstr "  dimensione "
-
 #: lclstrconsts.rsskybluecolorcaption
 msgid "Sky Blue"
 msgstr "Celu turchinu"
@@ -1284,7 +1278,9 @@ msgid "Yellow"
 msgstr "Ghjallu"
 
 #: lclstrconsts.scannotfocus
-msgid "Cannot focus a disabled or invisible window"
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Cannot focus a disabled or invisible window"
+msgid "Cannot focus a disabled or invisible window \"%s\":\"%s\""
 msgstr "Ùn si pò micca mette in evidenza una finestra disattivata o invisibile"
 
 #: lclstrconsts.sduplicatemenus
