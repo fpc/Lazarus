@@ -8,7 +8,6 @@ object IDETodoWindow: TIDETodoWindow
   ClientHeight = 230
   ClientWidth = 820
   KeyPreview = True
-  Position = poScreenCenter
   SessionProperties = 'cboShowWhat.ItemIndex;chkListed.Checked;chkPackages.Checked;chkSourceEditor.Checked;chkUsed.Checked;lvTodo.Columns'
   LCLVersion = '4.99.0.0'
   OnCloseQuery = FormCloseQuery
