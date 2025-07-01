@@ -5257,14 +5257,8 @@ begin
 end;
 
 function TListPropertyEditor.GetValue: AnsiString;
-var
-  ElementCount: integer;
 begin
-  ElementCount:=GetElementCount;
-  if ElementCount<>1 then
-    Result:=Format(oisItems, [IntToStr(GetElementCount)])
-  else
-    Result:=ois1Item;
+  Result:=Format(oisItems, [IntToStr(GetElementCount)])
 end;
 
 procedure TListPropertyEditor.Initialize;
