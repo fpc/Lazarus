@@ -6,16 +6,15 @@ interface
 
 uses
   Classes, SysUtils,
-  Controls, Forms, StdCtrls, Dialogs, ButtonPanel;
+  // LCL
+  Controls, Forms, Dialogs, StdCtrls, ButtonPanel, LCLType;
 
 type
-
-  { TGenericListSelectForm }
-
   TGenericListSelectForm = class(TForm)
     ButtonPanel1: TButtonPanel;
     ListBox: TListBox;
     InfoLabel: TLabel;
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormShow(Sender: TObject);
     procedure ListBoxClick(Sender: TObject);
     procedure ListBoxDblClick(Sender: TObject);
@@ -27,11 +26,21 @@ implementation
 
 {$R *.lfm}
 
-{ TGenericListSelectForm }
-
 procedure TGenericListSelectForm.FormShow(Sender: TObject);
 begin
   UpdateButtons;
+end;
+
+procedure TGenericListSelectForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) and (Shift = [ssCtrl]) then
+  begin
+    if ButtonPanel1.OKButton.IsEnabled then
+    begin
+      Key := 0;
+      ModalResult := mrOK;
+    end;
+  end;
 end;
 
 procedure TGenericListSelectForm.ListBoxClick(Sender: TObject);

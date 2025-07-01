@@ -8,15 +8,19 @@ object GenericListEditForm: TGenericListEditForm
   Caption = 'GenericListEditForm'
   ClientHeight = 301
   ClientWidth = 343
+  KeyPreview = True
   Position = poScreenCenter
   LCLVersion = '2.1.0.0'
+  OnKeyDown = FormKeyDown
   object ButtonPanel1: TButtonPanel
     Left = 6
     Height = 29
     Top = 266
     Width = 331
     OKButton.Name = 'OKButton'
+    OKButton.Hint = '[Ctrl+Enter]'
     OKButton.DefaultCaption = True
+    OKButton.ShowHint = True
     HelpButton.Name = 'HelpButton'
     HelpButton.DefaultCaption = True
     HelpButton.Enabled = False
