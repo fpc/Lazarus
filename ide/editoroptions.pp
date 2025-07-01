@@ -2892,9 +2892,9 @@ begin
 end;
 
 // The lazy-man color scheme factory
+var
+  TheColorSchemeFactorSingleton: TColorSchemeFactory = nil;
 function ColorSchemeFactory: TColorSchemeFactory;
-const
-  Singleton: TColorSchemeFactory = nil;
 var
   FileList: TStringList;
   i, j, c: Integer;
@@ -2911,17 +2911,17 @@ var
     Stream := TLazarusResourceStream.CreateFromHandle(HInstance, FPResource);
     XMLConfig := TRttiXMLConfig.Create('');
     XMLConfig.ReadFromStream(Stream);
-    Singleton.RegisterScheme(XMLConfig, ASchemeName, 'Lazarus/ColorSchemes/');
+    TheColorSchemeFactorSingleton.RegisterScheme(XMLConfig, ASchemeName, 'Lazarus/ColorSchemes/');
     FreeAndNil(XMLConfig);
     FreeAndNil(Stream);
   end;
 
 begin
-  if not Assigned(Singleton) then begin
+  if not Assigned(TheColorSchemeFactorSingleton) then begin
     HighlighterList.Init; // defer init
 
     InitLocale;
-    Singleton := TColorSchemeFactory.Create;
+    TheColorSchemeFactorSingleton := TColorSchemeFactory.Create;
     // register all built-in color schemes
 
     AddFromResource('ColorSchemeDefault', 'Default');
@@ -2941,7 +2941,7 @@ begin
           for j := 1 to c do begin
             n := XMLConfig.GetValue('Lazarus/ColorSchemes/Names/Item'+IntToStr(j)+'/Value', '');
             if n <> '' then
-              Singleton.RegisterScheme(XMLConfig, n, 'Lazarus/ColorSchemes/');
+              TheColorSchemeFactorSingleton.RegisterScheme(XMLConfig, n, 'Lazarus/ColorSchemes/');
           end;
         except
           ShowMessage(Format(dlgUserSchemeError, [FileList[i]]));
@@ -2951,9 +2951,9 @@ begin
       FileList.Free;
     end;
   end;
-  IdeColorSchemeList := Singleton;
+  IdeColorSchemeList := TheColorSchemeFactorSingleton;
   _IDE_CallOnIdeColorSchemeListCreated;
-  Result := Singleton;
+  Result := TheColorSchemeFactorSingleton;
 end;
 
 function UserKeySchemeDirectory(CreateIfNotExists: Boolean): String;
@@ -2970,13 +2970,13 @@ begin
     CreateDirUTF8(Result);
 end;
 
+var
+  TheIdeHiglighterListSingleton: TEditOptLangList = nil;
 function HighlighterList: TEditOptLangList;
-const
-  Singleton: TEditOptLangList = nil;
 begin
-  if not Assigned(Singleton) then
-    Singleton := TEditOptLangList.Create;
-  Result := Singleton;
+  if not Assigned(TheIdeHiglighterListSingleton) then
+    TheIdeHiglighterListSingleton := TEditOptLangList.Create;
+  Result := TheIdeHiglighterListSingleton;
 end;
 
 procedure InitLocale;
@@ -8491,8 +8491,8 @@ initialization
 
 finalization
   IdeColorSchemeList := nil;
-  ColorSchemeFactory.Free;
-  HighlighterList.Free;
+  TheColorSchemeFactorSingleton.Free;
+  TheIdeHiglighterListSingleton.Free;
   RegisteredAttribGroupNames := nil;
   EdOptsChangedHandlers.Free;
 
