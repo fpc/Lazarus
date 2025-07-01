@@ -479,10 +479,6 @@ msgstr "Nie można wstawić kolumn do siatki gdy nie ma wierszy"
 msgid "Grid index out of range."
 msgstr "Indeks siatki poza zakresem."
 
-#: lclstrconsts.rsgroupindexcannotbelessthanprevious
-msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
-msgstr "GroupIndex nie może być mniejsza niż poprzednia pozycja menu GroupIndex"
-
 #: lclstrconsts.rsgtkfilter
 msgid "Filter:"
 msgstr "Filtr:"

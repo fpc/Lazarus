@@ -472,10 +472,6 @@ msgstr "Izgarada satır yokken sütün eklenemiyor"
 msgid "Grid index out of range."
 msgstr "Izgara tanımlayıcısı sınırın dışında."
 
-#: lclstrconsts.rsgroupindexcannotbelessthanprevious
-msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
-msgstr "GroupIndex değeri, önceki menü bileşeninin GroupIndex değerinden az olamaz"
-
 #: lclstrconsts.rsgtkfilter
 msgid "Filter:"
 msgstr "Süzgeç:"

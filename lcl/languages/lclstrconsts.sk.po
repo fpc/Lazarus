@@ -468,10 +468,6 @@ msgstr "Nie je možné vložiť stĺpce do mriežky, keď nemá žiadne riadky"
 msgid "Grid index out of range."
 msgstr "Index mriežky mimo rozsahu."
 
-#: lclstrconsts.rsgroupindexcannotbelessthanprevious
-msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
-msgstr "GroupIndex nemôže byť menší ako GroupIndex predchádzajúcej položky ponuky"
-
 #: lclstrconsts.rsgtkfilter
 msgid "Filter:"
 msgstr "Filter:"

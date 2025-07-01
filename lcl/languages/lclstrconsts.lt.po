@@ -480,10 +480,6 @@ msgstr "Neimanoma lentelėn įterpti stulpelių kai ji neturi eilučių"
 msgid "Grid index out of range."
 msgstr "Tinklelio indeksas peržengia ribas."
 
-#: lclstrconsts.rsgroupindexcannotbelessthanprevious
-msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
-msgstr "„GroupIndex“ negali būti mažesnis už ankstesnių menių punktų „GroupIndex“"
-
 #: lclstrconsts.rsgtkfilter
 msgid "Filter:"
 msgstr "Filtras:"

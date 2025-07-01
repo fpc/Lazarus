@@ -474,10 +474,6 @@ msgstr "No se pueden insertar columnas en la rejilla cuando ésta no tiene filas
 msgid "Grid index out of range."
 msgstr "Índice de la rejilla de datos fuera de rango."
 
-#: lclstrconsts.rsgroupindexcannotbelessthanprevious
-msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
-msgstr "GroupIndex no puede ser menor que un elemento de menú anterior de GroupIndex"
-
 #: lclstrconsts.rsgtkfilter
 msgid "Filter:"
 msgstr "Filtro:"

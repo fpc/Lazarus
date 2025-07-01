@@ -467,10 +467,6 @@ msgstr "无法在网格没有行时插入列"
 msgid "Grid index out of range."
 msgstr "网格索引越界."
 
-#: lclstrconsts.rsgroupindexcannotbelessthanprevious
-msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
-msgstr "GroupIndex 不能小于前一个菜单项的 GroupIndex"
-
 #: lclstrconsts.rsgtkfilter
 msgid "Filter:"
 msgstr "过滤器:"

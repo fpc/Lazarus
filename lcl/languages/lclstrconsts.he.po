@@ -486,10 +486,6 @@ msgstr ""
 msgid "Grid index out of range."
 msgstr "אינדקס הרשת מחוץ לתחום"
 
-#: lclstrconsts.rsgroupindexcannotbelessthanprevious
-msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
-msgstr "אינדקס הקבוצה לא יכול להיות קטן מאינדקס הקבוצה של פריט התפריט הקודם"
-
 #: lclstrconsts.rsgtkfilter
 msgid "Filter:"
 msgstr "מסנן:"

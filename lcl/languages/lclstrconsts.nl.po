@@ -483,10 +483,6 @@ msgstr "Kan geen kolommen invoegen als het rooster geen rijen heeft"
 msgid "Grid index out of range."
 msgstr "Rooster index buiten bereik"
 
-#: lclstrconsts.rsgroupindexcannotbelessthanprevious
-msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
-msgstr "De GroupIndex kan niet minder zijn dan de GroupIndex van een vorig item."
-
 #: lclstrconsts.rsgtkfilter
 msgid "Filter:"
 msgstr "Filter:"

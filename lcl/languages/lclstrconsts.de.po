@@ -479,10 +479,6 @@ msgstr "Kann keine Spalten in ein Grid einfügen, wenn es keine Zeilen hat"
 msgid "Grid index out of range."
 msgstr "Gitterindex außerhalb des Bereichs."
 
-#: lclstrconsts.rsgroupindexcannotbelessthanprevious
-msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
-msgstr "GroupIndex darf nicht kleiner als der GroupIndex eines vorherigen Menüeintrags sein"
-
 #: lclstrconsts.rsgtkfilter
 msgid "Filter:"
 msgstr "Filter:"

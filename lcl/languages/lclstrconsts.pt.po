@@ -480,10 +480,6 @@ msgstr "Impossível inserir colunas numa grelha sem linhas"
 msgid "Grid index out of range."
 msgstr "Índice grade fora de faixa."
 
-#: lclstrconsts.rsgroupindexcannotbelessthanprevious
-msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
-msgstr "\"GroupIndex\" não pode ser menor que um \"GroupIndex\" anterior dos itens de menu"
-
 #: lclstrconsts.rsgtkfilter
 msgid "Filter:"
 msgstr "Filtro:"

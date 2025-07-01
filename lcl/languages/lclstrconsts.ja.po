@@ -478,10 +478,6 @@ msgstr "行を持たない場合、列をグリッドに挿入できません"
 msgid "Grid index out of range."
 msgstr "グリッドインデックスが範囲外です"
 
-#: lclstrconsts.rsgroupindexcannotbelessthanprevious
-msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
-msgstr "グループインデックスは前にあるメニューアイテムのグループインデックスより小さい値にすることはできません"
-
 #: lclstrconsts.rsgtkfilter
 msgid "Filter:"
 msgstr "フィルタ："

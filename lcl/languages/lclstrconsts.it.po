@@ -482,10 +482,6 @@ msgstr "Non si possono inserire colonne in una griglia che non ha nessuna riga"
 msgid "Grid index out of range."
 msgstr "Indice della griglia fuori dai limiti."
 
-#: lclstrconsts.rsgroupindexcannotbelessthanprevious
-msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
-msgstr "GroupIndex non può essere minore del GroupIndex di un elemento menu precedente"
-
 #: lclstrconsts.rsgtkfilter
 msgid "Filter:"
 msgstr "Filtro:"

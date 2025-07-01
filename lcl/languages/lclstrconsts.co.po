@@ -469,10 +469,6 @@ msgstr "Ùn si pò framette di culonna in una quadrittera chì ùn hà nisuna li
 msgid "Grid index out of range."
 msgstr "Indice di quadrittera fora di e confine."
 
-#: lclstrconsts.rsgroupindexcannotbelessthanprevious
-msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
-msgstr "« GroupIndex » ùn pò micca esse inferiore à quellu d’un elementu di u listinu precedente"
-
 #: lclstrconsts.rsgtkfilter
 msgid "Filter:"
 msgstr "Filtru :"

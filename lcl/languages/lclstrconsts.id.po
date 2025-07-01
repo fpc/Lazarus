@@ -488,10 +488,6 @@ msgstr ""
 msgid "Grid index out of range."
 msgstr "Indeks grid di luar jangkauan"
 
-#: lclstrconsts.rsgroupindexcannotbelessthanprevious
-msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
-msgstr "GroupIndex tidak bisa kurang dari item GroupIndex menu sebelumnya"
-
 #: lclstrconsts.rsgtkfilter
 msgid "Filter:"
 msgstr "Filter:"

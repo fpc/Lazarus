@@ -464,10 +464,6 @@ msgstr "Невозможно вставить столбцы, если отсу�
 msgid "Grid index out of range."
 msgstr "Индекс Grid вне диапазона допустимых значений."
 
-#: lclstrconsts.rsgroupindexcannotbelessthanprevious
-msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
-msgstr "GroupIndex не может быть меньше GroupIndex для предыдущего элемента меню"
-
 #: lclstrconsts.rsgtkfilter
 msgid "Filter:"
 msgstr "Фильтр:"

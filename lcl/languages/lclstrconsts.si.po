@@ -467,10 +467,6 @@ msgstr "පේළි නොමැති විට ජාලයකට තීර�
 msgid "Grid index out of range."
 msgstr "ජාල දර්ශකය පරාසයෙන් පිටත."
 
-#: lclstrconsts.rsgroupindexcannotbelessthanprevious
-msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
-msgstr "GroupIndex පෙර මෙනු අයිතමයේ GroupIndex වලට වඩා අඩු විය නොහැක"
-
 #: lclstrconsts.rsgtkfilter
 msgid "Filter:"
 msgstr "පෙරහන:"

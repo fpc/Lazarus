@@ -479,10 +479,6 @@ msgstr "행이 없을 때는 격자에 열을 삽입할 수 없습니다"
 msgid "Grid index out of range."
 msgstr "격자 인덱스가 범위를 벗어났습니다."
 
-#: lclstrconsts.rsgroupindexcannotbelessthanprevious
-msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
-msgstr "GroupIndex는 이전 메뉴 항목의 GroupIndex보다 작을 수 없습니다"
-
 #: lclstrconsts.rsgtkfilter
 msgid "Filter:"
 msgstr "필터:"

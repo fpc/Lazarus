@@ -478,10 +478,6 @@ msgstr "Impossible d'ajouter des colonnes à une grille sans lignes"
 msgid "Grid index out of range."
 msgstr "Index de grille hors limites."
 
-#: lclstrconsts.rsgroupindexcannotbelessthanprevious
-msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
-msgstr "\"GroupIndex\" ne peut pas être inférieur au \"GroupIndex\" d'un élément de menu précédent"
-
 #: lclstrconsts.rsgtkfilter
 msgid "Filter:"
 msgstr "Filtre :"

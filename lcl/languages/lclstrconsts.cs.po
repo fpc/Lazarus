@@ -480,10 +480,6 @@ msgstr "Nelze vložit sloupce do mřížky, když nemá řádky"
 msgid "Grid index out of range."
 msgstr "Index mřížky mimo rozsah."
 
-#: lclstrconsts.rsgroupindexcannotbelessthanprevious
-msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
-msgstr "GroupIndex nemůže být menší než předchozí GroupIndex položky nabídky"
-
 #: lclstrconsts.rsgtkfilter
 msgid "Filter:"
 msgstr "Filtr:"

@@ -487,10 +487,6 @@ msgstr ""
 msgid "Grid index out of range."
 msgstr "Índex de la graella fora de rang"
 
-#: lclstrconsts.rsgroupindexcannotbelessthanprevious
-msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
-msgstr "GroupIndex no pot ser menor que un ítem de menú GroupIndex anterior."
-
 #: lclstrconsts.rsgtkfilter
 msgid "Filter:"
 msgstr "Filtre:"

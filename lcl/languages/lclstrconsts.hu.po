@@ -478,10 +478,6 @@ msgstr "Nem szúrhatók be oszlopok a rácsba ha nincsenek sorok"
 msgid "Grid index out of range."
 msgstr "A táblaindex kilóg a lehetséges tartományból"
 
-#: lclstrconsts.rsgroupindexcannotbelessthanprevious
-msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
-msgstr "GroupIndex nem lehet kisebb, mint egy előző menü elem GroupIndex-e"
-
 #: lclstrconsts.rsgtkfilter
 msgid "Filter:"
 msgstr "Szűrő:"

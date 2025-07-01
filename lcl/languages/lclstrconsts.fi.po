@@ -474,10 +474,6 @@ msgstr "Taulukon sarakkeen lisäys ei onnistu, koska siinä ei ole rivejä"
 msgid "Grid index out of range."
 msgstr "Taulukon osoitin sallitun alueen ulkopuolella."
 
-#: lclstrconsts.rsgroupindexcannotbelessthanprevious
-msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
-msgstr "GroupIndex ei voi olla pienempi kuin edellisen valikon GroupIndex"
-
 #: lclstrconsts.rsgtkfilter
 msgid "Filter:"
 msgstr "Suodatus:"
