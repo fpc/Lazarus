@@ -42,7 +42,6 @@ uses
   PackageIntf,
   // IdeIntf
   IDECommands, MenuIntf, ToolBarIntf, SrcEditorIntf, IDEWindowIntf, LazIDEIntf,
-  EditorSyntaxHighlighterDef,
   SynEdit,
   // TodoList
   ToDoList, ToDoListStrConsts, ToDoListCore, TodoSynMarkup;
@@ -121,8 +120,6 @@ begin
   // mattias: test short cut
 
   ToDoManager := TToDoManager.Create;
-  // Register syntax highlighter
-  RegisterOnIdeColorSchemeListCreated(@TTodoEditorHandler(nil).DoRegisterAttribs);
 
   // register shortcut for insert todo
   Key := IDEShortCut(VK_T,[ssCtrl,ssShift],VK_UNKNOWN,[]);

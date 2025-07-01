@@ -19,14 +19,6 @@ uses
   SynEditHighlighter, SynEditHighlighterFoldBase;
 
 type
-  { TTodoEditorHandler }
-
-  TTodoEditorHandler = class
-    procedure DoEditorCreated(Sender: TObject);
-    procedure DoColorsChanged(Sender: TObject);
-    procedure DoRegisterAttribs(Sender: TObject);
-  end;
-
   TFoundTodo = record
     StartPos: TLogPoint;
     EndPos: TLogPoint;
@@ -61,6 +53,16 @@ type
 procedure Register;
 
 implementation
+
+type
+
+  { TTodoEditorHandler }
+
+  TTodoEditorHandler = class
+    procedure DoEditorCreated(Sender: TObject);
+    procedure DoColorsChanged(Sender: TObject);
+    procedure DoRegisterAttribs(Sender: TObject);
+  end;
 
 var
   AttribGroupIdx: Integer;
@@ -588,8 +590,9 @@ begin
   end;
 end;
 
+initialization
+  RegisterOnIdeColorSchemeListCreated(@TTodoEditorHandler(nil).DoRegisterAttribs);
 finalization
   FreeAttribs;
-
 end.
 
