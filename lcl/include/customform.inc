@@ -1875,9 +1875,9 @@ begin
         AWinControl:=AWinControl.Parent;
       end;
       {$IFDEF VerboseFocus}
-      RaiseGDBException(SCannotFocus);
+      RaiseGDBException(Format(SCannotFocus,[AWinControl.Name,AWinControl.ClassName]));
       {$ELSE}
-      raise EInvalidOperation.Create(SCannotFocus);
+      raise EInvalidOperation.Create(Format(SCannotFocus,[AWinControl.Name,AWinControl.ClassName]));
       {$ENDIF}
     end;
   end;
