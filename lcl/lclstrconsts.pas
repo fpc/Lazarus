@@ -309,8 +309,6 @@ resourceString
   rsCalculator = 'Calculator';
   rsError      = 'Error';
   rsPickDate   = 'Select a date';
-  rsSize = '  size ';
-  rsModified = '  modified ';
   rsDoCopy = 'Copy';
   rsDoPaste = 'Paste';
 
