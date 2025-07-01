@@ -590,6 +590,8 @@ var
 begin
   if not FActivated then
   begin
+    FActivated := true;
+
     w1 := ButtonPanel1.HelpButton.Width + ButtonPanel1.CloseButton.Width +
       ButtonPanel1.OKButton.Width + ButtonPanel1.CancelButton.Width;
     inc(w1, ButtonPanel1.Spacing * 3 + ButtonPanel1.BorderSpacing.Around * 2);
