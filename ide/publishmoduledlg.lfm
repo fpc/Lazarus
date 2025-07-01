@@ -13,6 +13,10 @@ object PublishModuleDialog: TPublishModuleDialog
   OnClose = FormClose
   OnCreate = FormCreate
   object DestDirGroupBox: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 66
     Top = 6
@@ -54,21 +58,26 @@ object PublishModuleDialog: TPublishModuleDialog
     end
   end
   object OptionsGroupbox: TGroupBox
+    AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = FilterCombobox
     AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 51
     Top = 153
-    Width = 628
+    Width = 630
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'Options'
     ChildSizing.TopBottomSpacing = 6
     ClientHeight = 31
-    ClientWidth = 624
+    ClientWidth = 626
     TabOrder = 4
     object CompressCheckbox: TCheckBox
+      AnchorSideLeft.Control = OptionsGroupbox
+      AnchorSideTop.Control = OptionsGroupbox
       AnchorSideRight.Side = asrBottom
       Left = 6
       Height = 19
@@ -82,12 +91,15 @@ object PublishModuleDialog: TPublishModuleDialog
       TabOrder = 0
     end
     object OpenInFileManCheckbox: TCheckBox
+      AnchorSideLeft.Control = CompressCheckbox
+      AnchorSideLeft.Side = asrBottom
       AnchorSideRight.Side = asrBottom
-      Left = 108
+      Left = 107
       Height = 19
       Hint = 'Open destination directory in file manager'
       Top = 6
       Width = 129
+      BorderSpacing.Left = 24
       BorderSpacing.Around = 6
       Caption = 'Open in file manager'
       ParentShowHint = False
@@ -112,9 +124,10 @@ object PublishModuleDialog: TPublishModuleDialog
     ShowBevel = False
   end
   object UseFiltersCheckbox: TCheckBox
+    AnchorSideLeft.Control = DestDirGroupBox
     AnchorSideTop.Control = NoteLabel
     AnchorSideTop.Side = asrBottom
-    Left = 11
+    Left = 12
     Height = 19
     Top = 99
     Width = 134
@@ -124,9 +137,10 @@ object PublishModuleDialog: TPublishModuleDialog
     OnClick = UseFiltersCheckboxClick
   end
   object NoteLabel: TLabel
+    AnchorSideLeft.Control = DestDirGroupBox
     AnchorSideTop.Control = DestDirGroupBox
     AnchorSideTop.Side = asrBottom
-    Left = 11
+    Left = 12
     Height = 15
     Top = 78
     Width = 350
@@ -142,10 +156,10 @@ object PublishModuleDialog: TPublishModuleDialog
     AnchorSideTop.Control = UseFiltersCheckbox
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = FilterSimpleSyntaxCheckbox
-    Left = 24
+    Left = 25
     Height = 23
     Top = 124
-    Width = 515
+    Width = 514
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 13
     ItemHeight = 15
