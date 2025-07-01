@@ -502,7 +502,8 @@ begin
   Value:=GetCaptionValue(ValueMenuItem.Caption,fCaptionPatternMacroValue);
   Value:=DisplayNameToDirName(Value);
   CreateNewOption(BuildMatrixOptionTypeCaption(bmotIDEMacro),'LCLWidgetType:='+Value);
-  // Update LCLWidgetType to Config and Target page. ToDo: update also when deleting or changing.
+  // Update LCLWidgetType to Config and Target page.
+  // ToDo: update also when deleting or changing.
   TargetFrame := TCompilerConfigTargetFrame(FDialog.FindEditor(TCompilerConfigTargetFrame));
   Assert(Assigned(TargetFrame));
   TargetFrame.UpdateWidgetSet(Value);

@@ -87,7 +87,7 @@ procedure CreateIDEToDoWindow(Sender: TObject; aFormName: string;
                           var AForm: TCustomForm; DoDisableAutoSizing: boolean);
 // ToDo Dialog
 function ExecuteTodoDialog(const aCaption: string; var aTodoItem: TTodoItem): TModalResult;
-procedure InsertToDoForActiveSE(aSrcEdit: TSourceEditorInterface);
+procedure InsertToDo(aSrcEdit: TSourceEditorInterface);
 procedure EditToDo(aTodoItem: TTodoItem; aSrcEdit: TSourceEditorInterface);
 procedure InsertOrEditToDo(Sender: TObject);
 
@@ -223,7 +223,7 @@ begin
   aTodoDialog.Free;
 end;
 
-procedure InsertToDoForActiveSE(aSrcEdit: TSourceEditorInterface);
+procedure InsertToDo(aSrcEdit: TSourceEditorInterface);
 var
   TodoItem: TTodoItem;
 begin
@@ -244,8 +244,6 @@ begin
   if ExecuteTodoDialog(lisTDDEditToDo, aTodoItem) <> mrOK then exit;
   aSrcEdit.SelectText(aTodoItem.StartPos, aTodoItem.EndPos);
   aSrcEdit.Selection := aTodoItem.AsComment;
-  if aTodoItem.Temporary then
-    aTodoItem.Free;
   if Assigned(IDETodoWindow) then
     IDETodoWindow.UpdateTodos;  { TODO -oJuha : Retain selection in the list. }
 end;
@@ -256,10 +254,13 @@ var
 begin
   SrcEdit := SourceEditorManagerIntf.ActiveEditor;
   if (SrcEdit=nil) or SrcEdit.ReadOnly then exit;
-  if Assigned(TodoItemToEdit) then
-    EditToDo(TodoItemToEdit, SrcEdit)
+  if Assigned(TodoItemToEdit) then begin
+    EditToDo(TodoItemToEdit, SrcEdit);
+    if TodoItemToEdit.Temporary then
+      FreeAndNil(TodoItemToEdit);
+  end
   else
-    InsertToDoForActiveSE(SrcEdit)
+    InsertToDo(SrcEdit)
 end;
 
 { TTodoDialog }
