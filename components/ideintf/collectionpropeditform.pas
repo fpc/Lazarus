@@ -111,13 +111,11 @@ begin
 end;
 
 procedure TCollectionPropertyEditorForm.actAddExecute(Sender: TObject);
-var
-  lItem: TCollectionItem;
 begin
   if Collection = nil then Exit;
-  lItem := Collection.Add;
-  // notify about addition (this also call its own handler)
-  GlobalDesignHook.PersistentAdded(lItem, true);
+  Collection.Add;
+
+  FillCollectionListBox;
   if CollectionListBox.Items.Count > 0 then
     CollectionListBox.ItemIndex := CollectionListBox.Items.Count - 1;
   SelectInObjectInspector(True);
@@ -130,7 +128,6 @@ procedure TCollectionPropertyEditorForm.actDelExecute(Sender: TObject);
 var
   I : Integer;
   NewItemIndex: Integer;
-  lItem: TCollectionItem;
 begin
   if Collection = nil then Exit;
 
@@ -161,9 +158,10 @@ begin
       //debugln('TCollectionPropertyEditorForm.DeleteClick A NewItemIndex=',dbgs(NewItemIndex),' ItemIndex=',dbgs(CollectionListBox.ItemIndex),' CollectionListBox.Items.Count=',dbgs(CollectionListBox.Items.Count),' Collection.Count=',dbgs(Collection.Count));
       // unselect all items in OI (collections can act strange on delete)
       ClearSelectionInObjectInspector;
-      // now delete (this also call its own handler)
-      lItem := Collection.Items[I];
-      GlobalDesignHook.DeletePersistent(TPersistent(lItem));
+      // now delete
+      Collection.Items[I].Free;
+      // update listbox after whatever happened
+      FillCollectionListBox;
       // set NewItemIndex
       if NewItemIndex < CollectionListBox.Items.Count then
       begin
@@ -266,18 +264,14 @@ end;
 
 procedure TCollectionPropertyEditorForm.PersistentDeleting(APersistent: TPersistent);
 begin
-  if APersistent = OwnerPersistent then
-  begin
-    SetCollection(nil, nil, '');
-  end
-  else if APersistent is TCollectionItem then
-  begin
-    if TCollectionItem(APersistent).Collection = Collection then
-    begin
-      TCollectionItem(APersistent).Collection := nil;
-      FillCollectionListBox;
-    end;
-  end;
+  // For some reason this is called only when the whole collection is deleted,
+  // for example when changing to another project. Thus clear the whole collection.
+  DebugLn(['TCollectionPropertyEditorForm.PersistentDeleting: APersistent=', APersistent,
+           ', OwnerPersistent=', OwnerPersistent]);
+  SetCollection(nil, nil, '');
+  Hide;
+  UpdateButtons;
+  UpdateCaption;
 end;
 
 procedure TCollectionPropertyEditorForm.RefreshPropertyValues;
