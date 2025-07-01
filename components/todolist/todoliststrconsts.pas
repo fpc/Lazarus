@@ -87,6 +87,8 @@ resourcestring
   AttribNameDone  = 'Done comment';
   AttribNameNote  = 'Note comment';
 
+  lisToDoColorsAreAtTheEndOfColorList = 'ToDo colors are at the end of color list';
+
 implementation
 
 end.
