@@ -175,6 +175,8 @@ function IDEEditorGroups: TIDEOptionsGroupList;
 
 var
   IDEEditorOptions: TIDEEditorOptions;
+  // Certain packages may want to reach Editor Color Options.
+  EditorColorOptionsEditorClass: TAbstractIDEOptionsEditorClass;
 
 const
   // Font style used by filter

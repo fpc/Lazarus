@@ -1862,4 +1862,6 @@ end;
 
 initialization
   RegisterIDEOptionsEditor(GroupEditor, TEditorColorOptionsFrame, EdtOptionsColors, EdtOptionsDisplay);
+  EditorColorOptionsEditorClass := TEditorColorOptionsFrame;
+
 end.
