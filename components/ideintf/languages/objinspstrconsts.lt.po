@@ -402,10 +402,6 @@ msgstr "Viršun"
 msgid "0 lines, 0 chars"
 msgstr "0 eilučių, 0 simbolių"
 
-#: objinspstrconsts.ois1item
-msgid "1 item"
-msgstr ""
-
 #: objinspstrconsts.ois1linedchars
 #, object-pascal-format
 msgid "1 line, %d chars"
@@ -688,7 +684,7 @@ msgstr "„%s“ nėra tinkamas pavadinimas metodui."
 
 #: objinspstrconsts.oisitems
 #, object-pascal-format
-msgid "%s items"
+msgid "items: %s"
 msgstr ""
 
 #: objinspstrconsts.oisitemsselected

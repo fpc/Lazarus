@@ -400,10 +400,6 @@ msgstr "Fel"
 msgid "0 lines, 0 chars"
 msgstr "0 sor, 0 karakter"
 
-#: objinspstrconsts.ois1item
-msgid "1 item"
-msgstr ""
-
 #: objinspstrconsts.ois1linedchars
 #, object-pascal-format
 msgid "1 line, %d chars"
@@ -686,7 +682,7 @@ msgstr "A(z) \"%s\" nem egy érvényes metódusnév."
 
 #: objinspstrconsts.oisitems
 #, object-pascal-format
-msgid "%s items"
+msgid "items: %s"
 msgstr ""
 
 #: objinspstrconsts.oisitemsselected

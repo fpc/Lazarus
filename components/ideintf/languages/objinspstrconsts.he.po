@@ -412,10 +412,6 @@ msgstr "למעלה"
 msgid "0 lines, 0 chars"
 msgstr "אפס שורות, אפס תווים"
 
-#: objinspstrconsts.ois1item
-msgid "1 item"
-msgstr ""
-
 #: objinspstrconsts.ois1linedchars
 #, object-pascal-format, fuzzy, badformat
 msgid "1 line, %d chars"
@@ -711,7 +707,7 @@ msgstr "זה לא שם חוקי של מתודה %s%s%"
 
 #: objinspstrconsts.oisitems
 #, object-pascal-format
-msgid "%s items"
+msgid "items: %s"
 msgstr ""
 
 #: objinspstrconsts.oisitemsselected

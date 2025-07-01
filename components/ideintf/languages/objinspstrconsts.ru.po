@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-06-16 16:43+0300\n"
+"PO-Revision-Date: 2025-07-01 17:58+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -396,10 +396,6 @@ msgstr "Вверх"
 msgid "0 lines, 0 chars"
 msgstr "0 строк, 0 символов"
 
-#: objinspstrconsts.ois1item
-msgid "1 item"
-msgstr ""
-
 #: objinspstrconsts.ois1linedchars
 #, object-pascal-format
 msgid "1 line, %d chars"
@@ -682,8 +678,8 @@ msgstr "\"%s\" не является корректным именем мето�
 
 #: objinspstrconsts.oisitems
 #, object-pascal-format
-msgid "%s items"
-msgstr ""
+msgid "items: %s"
+msgstr "элементов: %s"
 
 #: objinspstrconsts.oisitemsselected
 #, object-pascal-format

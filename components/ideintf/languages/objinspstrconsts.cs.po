@@ -400,10 +400,6 @@ msgstr "Nahoru"
 msgid "0 lines, 0 chars"
 msgstr "0 řádků, 0 znaků"
 
-#: objinspstrconsts.ois1item
-msgid "1 item"
-msgstr ""
-
 #: objinspstrconsts.ois1linedchars
 #, object-pascal-format
 msgid "1 line, %d chars"
@@ -687,7 +683,7 @@ msgstr "\"%s\" není platné jméno jednotky."
 
 #: objinspstrconsts.oisitems
 #, object-pascal-format
-msgid "%s items"
+msgid "items: %s"
 msgstr ""
 
 #: objinspstrconsts.oisitemsselected

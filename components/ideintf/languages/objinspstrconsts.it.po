@@ -401,10 +401,6 @@ msgstr "Su"
 msgid "0 lines, 0 chars"
 msgstr "0 righe, 0 caratteri"
 
-#: objinspstrconsts.ois1item
-msgid "1 item"
-msgstr ""
-
 #: objinspstrconsts.ois1linedchars
 #, object-pascal-format
 msgid "1 line, %d chars"
@@ -689,7 +685,7 @@ msgstr "\"%s\" non è un nome valido per un metodo."
 
 #: objinspstrconsts.oisitems
 #, object-pascal-format
-msgid "%s items"
+msgid "items: %s"
 msgstr ""
 
 #: objinspstrconsts.oisitemsselected
