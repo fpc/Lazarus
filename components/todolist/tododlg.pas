@@ -256,8 +256,7 @@ begin
   if (SrcEdit=nil) or SrcEdit.ReadOnly then exit;
   if Assigned(TodoItemToEdit) then begin
     EditToDo(TodoItemToEdit, SrcEdit);
-    if TodoItemToEdit.Temporary then
-      FreeAndNil(TodoItemToEdit);
+    FreeAndNil(TodoItemToEdit);
   end
   else
     InsertToDo(SrcEdit)
@@ -353,7 +352,6 @@ begin
         Line := Copy(Line, StartPos.X, EndPos.X-StartPos.X);
         // Now InsertOrEditToDo in ToDoDlg knows what to do.
         TodoItemToEdit := CreateToDoItem(Line, StartPos);
-        TodoItemToEdit.Temporary := True;  // Will be freed after editing.
       end;
     end;
 end;

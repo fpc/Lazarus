@@ -540,6 +540,7 @@ end;
 procedure TIDETodoWindow.acColorsExecute(Sender: TObject);
 begin
   { #todo 1 -oJuha : Move to the actual ToDo items in the color settings list. }
+  //LazarusIDE.DoOpenIDEOptions(TEditorColorOptionsFrame, 'Go to end of color options list', [TIDEEditorOptions], []);
   LazarusIDE.DoOpenIDEOptions(nil, 'Go to end of color options list', [TIDEEditorOptions], []);
 end;
 

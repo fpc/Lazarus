@@ -74,7 +74,6 @@ type
     FCommentType: char;         // Characters of comment start / end.
     FFilename: string;
     FOwner: string;
-    FTemporary: Boolean;        // Must be freed after editing a ToDo.
     function GetQuotedCategory: string;
     function GetQuotedOwner: string;
     function GetAsComment: string;
@@ -97,7 +96,6 @@ type
     property Text: string read FText write FText;
     property AsString: string read GetAsString;
     property AsComment: string read GetAsComment;
-    property Temporary: Boolean read FTemporary write FTemporary;
   end;
 
   { TTLScannedFile }
