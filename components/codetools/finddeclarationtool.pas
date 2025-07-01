@@ -280,6 +280,7 @@ type
     xtNativeUInt,  // depends on compiler and platform
     xtCompilerFunc,// SUCC, PREC, LOW, HIGH, ORD, LENGTH, COPY (1.1), ...
     xtVariant,     // variant
+    xtOleVariant,  // OleVariant
     xtJSValue,     // jsvalue only in Pas2JS, similar to variant
     xtNil,         // nil  = pointer, class, procedure, method, ...
     xtSizeInt      // SizeInt for Length intrinsic
@@ -337,6 +338,7 @@ var
     'NativeUInt',
     'CompilerFunc',
     'Variant',
+    'OleVariant',
     'JSValue',
     'Nil',
     'SizeInt'
@@ -1385,6 +1387,8 @@ begin
     Result:=xtConstBoolean
   else if CompareIdentifiers(Identifier,'VARIANT')=0 then
     Result:=xtVariant
+  else if CompareIdentifiers(Identifier,'OLEVARIANT')=0 then
+    Result:=xtOleVariant
   else if CompareIdentifiers(Identifier,'CURRENCY')=0 then
     Result:=xtCurrency
   else if CompareIdentifiers(Identifier,'LONGINT')=0 then
