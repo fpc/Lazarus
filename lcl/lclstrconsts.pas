@@ -303,7 +303,7 @@ resourceString
   rsPressOkToIgnoreAndRiskDataCorruptionPressAbortToK = '%s'
     +'%sPress OK to ignore and risk data corruption.'
     +'%sPress Abort to kill the program.';
-  rsCanNotFocus = 'Can not focus';
+  rsCanNotFocus = 'Cannot focus';
   rsListIndexExceedsBounds = 'List index exceeds bounds (%d)';
   rsResourceNotFound = 'Resource %s not found';
   rsCalculator = 'Calculator';
