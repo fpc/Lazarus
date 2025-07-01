@@ -64,12 +64,14 @@ type
     CompressCheckbox: TCheckBox;
     UseFiltersCheckbox: TCheckBox;
     procedure BrowseDestDirBitBtnCLICK(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure OkButtonCLICK(Sender: TObject);
     procedure SaveSettingsButtonClick(Sender: TObject);
     procedure UseFiltersCheckboxClick(Sender: TObject);
   private
+    FActivated: Boolean;
     FOptions: TPublishModuleOptions;
     procedure SetComboBox(AComboBox: TComboBox; const NewText: string;
                           MaxItemCount: integer);
@@ -580,6 +582,30 @@ begin
     SetComboBox(DestDirComboBox,NewDir,20);
   end;
   SelectDirDialog.Free;
+end;
+
+procedure TPublishModuleDialog.FormActivate(Sender: TObject);
+var
+  w1, w2: Integer;
+begin
+  if not FActivated then
+  begin
+    w1 := ButtonPanel1.HelpButton.Width + ButtonPanel1.CloseButton.Width +
+      ButtonPanel1.OKButton.Width + ButtonPanel1.CancelButton.Width;
+    inc(w1, ButtonPanel1.Spacing * 3 + ButtonPanel1.BorderSpacing.Around * 2);
+    w2 := NoteLabel.Width + NoteLabel.Left * 2;
+    if w1 < w2 then
+      Constraints.MinWidth := w2
+    else
+      Constraints.MinWidth := w1;
+
+    Constraints.MinHeight := OptionsGroupBox.Top + OptionsGroupBox.Height +
+      ButtonPanel1.Height + ButtonPanel1.BorderSpacing.Around * 2;
+
+    // Enforce MinWidth and MinHeight
+    if Width < Constraints.MinWidth then Width := 0;
+    if Height < Constraints.MinHeight then Height := 0;
+  end;
 end;
 
 procedure TPublishModuleDialog.OkButtonCLICK(Sender: TObject);
