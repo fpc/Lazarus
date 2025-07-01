@@ -15,7 +15,7 @@ uses
   // LCL
   Forms, Controls, Dialogs, StdCtrls, Buttons, Grids, ExtCtrls,
   // IdeIntf
-  ObjInspStrConsts, IDEWindowIntf;
+  ObjInspStrConsts, IDEWindowIntf, PropEdits;
 
 type
 
@@ -95,7 +95,9 @@ procedure TStringGridEditorDlg.AssignGrid(Dest, Src: TStringGrid);
 var
   I, J: Integer;
   col: TGridColumn;
+  aColumnCollectionChanged: Boolean;
 begin
+  aColumnCollectionChanged:=false;
   Dest.BeginUpdate;
   try
     Dest.Clear;  
@@ -103,16 +105,29 @@ begin
 
     if Src.Columns.Enabled then
     begin
-      Dest.Columns.Clear;
       for I := 0 to Src.Columns.Count-1 do
       begin
-        col := Dest.Columns.Add;
+        if i=Dest.Columns.Count then
+        begin
+          aColumnCollectionChanged:=true;
+          col := Dest.Columns.Add
+        end
+        else
+          col := Dest.Columns[i];
         col.Assign(Src.Columns[I]);
+      end;
+      while Dest.Columns.Count>Src.Columns.Count do
+      begin
+        Dest.Columns[Dest.Columns.Count-1].Free;
+        aColumnCollectionChanged:=true;
       end;
       Dest.FixedCols := Src.FixedCols;
       Dest.FixedRows := Src.FixedRows;
-    end else      
+    end else if Dest.ColCount <> Src.ColCount then
+    begin
+      aColumnCollectionChanged:=true;
       Dest.ColCount := Src.ColCount;
+    end;
 
     for I := 0 to Src.RowCount - 1 do
       Dest.RowHeights[I] := Src.RowHeights[I];
@@ -126,6 +141,9 @@ begin
   finally
     Dest.EndUpdate;
   end;
+
+  if aColumnCollectionChanged and (GlobalDesignHook<>nil) then
+    GlobalDesignHook.CallCollectionChangedHandlers(Self,Dest.Columns);
 end;
 
 procedure TStringGridEditorDlg.FormCreate(Sender: TObject);

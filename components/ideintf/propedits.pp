@@ -1440,6 +1440,7 @@ type
                                       ) of object;
   TPropHookPersistentDel = procedure(APersistent: TPersistent) of object;
   TPropHookDeletePersistent = procedure(var APersistent: TPersistent) of object;
+  TPropHookCollectionChanged = procedure(Sender: TObject; aColl: TCollection) of object;
   TPropHookGetSelection = procedure(const ASelection: TPersistentSelectionList
                                              ) of object;
   TPropHookSetSelection = procedure(const ASelection: TPersistentSelectionList
@@ -1490,6 +1491,7 @@ type
     htPersistentDeleting,
     htPersistentDeleted,
     htDeletePersistent,
+    htCollectionChanged,
     htGetSelectedPersistents,
     htSetSelectedPersistents,
     // persistent objects
@@ -1684,6 +1686,12 @@ type
                            const OnDeletePersistent: TPropHookDeletePersistent);
     procedure RemoveHandlerDeletePersistent(
                            const OnDeletePersistent: TPropHookDeletePersistent);
+    procedure AddHandlerCollectionChanged(
+                           const OnCollectionChanged: TPropHookCollectionChanged);
+    procedure RemoveHandlerCollectionChanged(
+                           const OnCollectionChanged: TPropHookCollectionChanged);
+    procedure CallCollectionChangedHandlers(Sender: TObject; aCollection: TCollection);
+
     // persistent selection
     procedure AddHandlerGetSelection(const OnGetSelection: TPropHookGetSelection);
     procedure RemoveHandlerGetSelection(const OnGetSelection: TPropHookGetSelection);
@@ -1713,7 +1721,10 @@ type
                  const OnRefreshPropertyValues: TPropHookRefreshPropertyValues);
     procedure AddHandlerAddDependency(const OnAddDependency: TPropHookAddDependency);
     procedure RemoveHandlerAddDependency(const OnAddDependency: TPropHookAddDependency);
+
     procedure AddHandlerGetCheckboxForBoolean(
+                 const OnGetCheckboxForBoolean: TPropHookGetCheckboxForBoolean);
+    procedure RemoveHandlerGetCheckboxForBoolean(
                  const OnGetCheckboxForBoolean: TPropHookGetCheckboxForBoolean);
   end;
 
@@ -7966,6 +7977,28 @@ begin
   RemoveHandler(htDeletePersistent,TMethod(OnDeletePersistent));
 end;
 
+procedure TPropertyEditorHook.AddHandlerCollectionChanged(
+  const OnCollectionChanged: TPropHookCollectionChanged);
+begin
+  AddHandler(htCollectionChanged,TMethod(OnCollectionChanged));
+end;
+
+procedure TPropertyEditorHook.RemoveHandlerCollectionChanged(
+  const OnCollectionChanged: TPropHookCollectionChanged);
+begin
+  RemoveHandler(htCollectionChanged,TMethod(OnCollectionChanged));
+end;
+
+procedure TPropertyEditorHook.CallCollectionChangedHandlers(Sender: TObject;
+  aCollection: TCollection);
+var
+  i: Integer;
+begin
+  i:=FHandlers[htCollectionChanged].Count;
+  while FHandlers[htCollectionChanged].NextDownIndex(i) do
+    TPropHookCollectionChanged(FHandlers[htCollectionChanged][i])(Sender,aCollection);
+end;
+
 procedure TPropertyEditorHook.AddHandlerGetSelection(
   const OnGetSelection: TPropHookGetSelection);
 begin
@@ -8121,6 +8154,12 @@ procedure TPropertyEditorHook.AddHandlerGetCheckboxForBoolean(
   const OnGetCheckboxForBoolean: TPropHookGetCheckboxForBoolean);
 begin
   AddHandler(htGetCheckboxForBoolean,TMethod(OnGetCheckboxForBoolean));
+end;
+
+procedure TPropertyEditorHook.RemoveHandlerGetCheckboxForBoolean(
+  const OnGetCheckboxForBoolean: TPropHookGetCheckboxForBoolean);
+begin
+  RemoveHandler(htGetCheckboxForBoolean,TMethod(OnGetCheckboxForBoolean));
 end;
 
 procedure TPropertyEditorHook.SetLookupRoot(APersistent: TPersistent);

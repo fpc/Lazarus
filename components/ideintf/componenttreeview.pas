@@ -69,6 +69,7 @@ type
     function IterateTree(ANode: TTreeNode; APers: TPersistent): TTreeNode;
     procedure NodeCollapsed(Sender: TObject; Node: TTreeNode);
     procedure NodeExpanded(Sender: TObject; Node: TTreeNode);
+    procedure OnCollectionChanged(Sender: TObject; aColl: TCollection);
     procedure OnIdle(Sender: TObject; var Done: Boolean);
     procedure OnPersistentDeleted(APersistent: TPersistent);
     procedure OnPersistentDeleting(APersistent: TPersistent);
@@ -654,6 +655,7 @@ begin
   begin
     FPropertyEditorHook.RemoveHandlerPersistentDeleting(@OnPersistentDeleting);
     FPropertyEditorHook.RemoveHandlerPersistentDeleted(@OnPersistentDeleted);
+    FPropertyEditorHook.RemoveHandlerCollectionChanged(@OnCollectionChanged);
   end;
 
   FPropertyEditorHook:=AValue;
@@ -661,6 +663,7 @@ begin
   begin
     FPropertyEditorHook.AddHandlerPersistentDeleting(@OnPersistentDeleting);
     FPropertyEditorHook.AddHandlerPersistentDeleted(@OnPersistentDeleted);
+    FPropertyEditorHook.AddHandlerCollectionChanged(@OnCollectionChanged);
   end;
 end;
 
@@ -714,6 +717,15 @@ begin
     DebugLn(['TComponentTreeView.NodeExpanded: Removing node ', TPersistent(Node.Data), ' failed.']);
 end;
 
+procedure TComponentTreeView.OnCollectionChanged(Sender: TObject; aColl: TCollection);
+var
+  Node: TTreeNode;
+begin
+  Node:=IterateTree(Items.GetFirstNode,aColl);
+  if Node=nil then exit;
+  IdleBuildNodes:=true;
+end;
+
 procedure TComponentTreeView.OnIdle(Sender: TObject; var Done: Boolean);
 begin
   BuildComponentNodes(true);
@@ -730,10 +742,8 @@ var
 begin
   Node:=IterateTree(Items.GetFirstNode,APersistent);
   if Node=nil then exit;
-  BeginUpdate;
   Node.Free;
   IdleBuildNodes:=true;
-  EndUpdate;
 end;
 
 function TComponentTreeView.AddOrGetPersNode(AParentNode: TTreeNode;

@@ -1396,8 +1396,11 @@ procedure TOICustomPropertyGrid.SetPropertyEditorHook(
   NewPropertyEditorHook:TPropertyEditorHook);
 begin
   if FPropertyEditorHook=NewPropertyEditorHook then exit;
+  if FPropertyEditorHook<>nil then
+    FPropertyEditorHook.RemoveHandlerGetCheckboxForBoolean(@HookGetCheckboxForBoolean);
   FPropertyEditorHook:=NewPropertyEditorHook;
-  FPropertyEditorHook.AddHandlerGetCheckboxForBoolean(@HookGetCheckboxForBoolean);
+  if FPropertyEditorHook<>nil then
+    FPropertyEditorHook.AddHandlerGetCheckboxForBoolean(@HookGetCheckboxForBoolean);
   IncreaseChangeStep;
   SetSelection(FSelection);
 end;
