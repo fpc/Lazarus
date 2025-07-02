@@ -42,6 +42,7 @@ type
     procedure ClearButtonClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
+    procedure FormDropFiles(Sender: TObject; const FileNames: array of string);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure MemoChange(Sender: TObject);
     procedure SaveButtonClick(Sender: TObject);
@@ -128,6 +129,17 @@ begin
   OpenDialog1.Title:=sccsSGEdtOpenDialog;
   if OpenDialog1.Execute then
     Memo.Lines.LoadFromFile(OpenDialog1.FileName);
+end;
+
+procedure TStringsPropEditorFrm.FormDropFiles(Sender: TObject; const FileNames: array of string);
+begin
+  if length(FileNames) <> 1 then
+  begin
+    MessageDlg(oisError, oisOnlyOneFile, mtError, [mbOK], 0);
+    exit;
+  end;
+
+  Memo.Lines.LoadFromFile(FileNames[0]);
 end;
 
 procedure TStringsPropEditorFrm.SortButtonClick(Sender: TObject);
