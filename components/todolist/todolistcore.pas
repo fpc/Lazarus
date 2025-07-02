@@ -104,15 +104,12 @@ type
   private
     FItems: TFPList;          // list of TTodoItem
     FFilename: string;        // Tool.MainFilename
-    FRealFilename: string;    // Can be an include file inside FFilename.
-    FCommentStr: string;      // The comment where a ToDo is extracted.
     FCodeChangeStep: integer; // Tool.Scanner.ChangeStep
     FTool: TCodeTool;
     FCode: TCodeBuffer;
     FScannedIncFiles: TStringMap;
     function GetCount: integer;
     function GetItems(Index: integer): TTodoItem;
-    procedure AddToDoItem(aCommentStr: string; aStartPos, aEndPos: TPoint);
     procedure ScanPascalToDos;
     procedure ScanToDoFile;
   public
@@ -244,7 +241,7 @@ begin
     '/' : begin lStartLen := 2; lEndLen := 0; end; // //
     '{' : begin lStartLen := 1; lEndLen := 1; end; // { }
     '(' : begin lStartLen := 2; lEndLen := 2; end; // (* *)
-    else  begin lStartLen := 0; lEndLen := 0; end; // A dedicated .todo file
+    else  begin lStartLen := 0; lEndLen := 0; CT := #0; end; // A dedicated .todo file
   end;
   if lStartLen > 0 then begin
     while (lStartLen < Length(aCommentStr)) and (aCommentStr[lStartLen+1] in [' ',#9]) do
@@ -352,24 +349,15 @@ begin
   Result:=TTodoItem(FItems[Index]);
 end;
 
-procedure TTLScannedFile.AddToDoItem(aCommentStr: string; aStartPos, aEndPos: TPoint);
-var
-  Item: TTodoItem;
-begin
-  Item := CreateToDoItem(aCommentStr, aStartPos, aEndPos);
-  if Assigned(Item) then begin
-    Item.Filename := FRealFilename;
-    Add(Item);            // Add to list.
-  end;
-end;
-
 procedure TTLScannedFile.ScanPascalToDos;
 var
-  Src, LocationIncTodo: String;
+  Src, CommentStr, LocationIncTodo: String;
+  RealFilename: string;    // Can be an include file inside FFilename.
   pStart, pEnd: Integer;
   NestedComment, B: Boolean;
   StartCaret, EndCaret: TCodeXYPosition;
   StartPos, EndPos: TPoint;
+  ToDoItem: TTodoItem;
 begin
   Src:=FTool.Src;
   Assert(FCode.Filename=FTool.MainFilename, 'TTLScannedFile.ScanPascalToDos: aCode.Filename<>FTool.MainFilename');
@@ -386,16 +374,16 @@ begin
       Exit;
     end;
     // Study include file names. Use heuristics, assume name ends with ".inc".
-    FRealFilename:=StartCaret.Code.Filename;
-    if FilenameExtIs(FRealFilename, 'inc') then // Filename and location in an include file.
-      LocationIncTodo:=FRealFilename+'_'+IntToStr(StartCaret.Y)
+    RealFilename:=StartCaret.Code.Filename;
+    if FilenameExtIs(RealFilename, 'inc') then // Filename and location in an include file.
+      LocationIncTodo:=RealFilename+'_'+IntToStr(StartCaret.Y)
     else
       LocationIncTodo:='';
     // Process a comment
     pEnd:=FindCommentEnd(Src,pStart,NestedComment);
     B := FTool.CleanPosToCaret(pEnd,EndCaret);
     Assert(B, 'TTLScannedFile.ScanPascalToDos: No comment end.');
-    FCommentStr:=copy(Src,pStart,pEnd-pStart);
+    CommentStr:=copy(Src,pStart,pEnd-pStart);
     // Process each include file location only once. Units are processed always.
     if (LocationIncTodo='') or not FScannedIncFiles.Contains(LocationIncTodo) then
     begin
@@ -403,7 +391,12 @@ begin
       StartPos.Y:=StartCaret.Y;
       EndPos.X:=EndCaret.X;
       EndPos.Y:=EndCaret.Y;
-      AddToDoItem(FCommentStr, StartPos, EndPos);
+      ToDoItem := CreateToDoItem(CommentStr, StartPos, EndPos);
+      if Assigned(ToDoItem) then begin
+        ToDoItem.Filename := RealFilename;
+        Add(ToDoItem);            // Add to list.
+      end;
+      //AddToDoItem(CommentStr, StartPos, EndPos);
       if LocationIncTodo<>'' then    // Store include file location for future.
         FScannedIncFiles.Add(LocationIncTodo);
     end;
@@ -414,22 +407,45 @@ end;
 procedure TTLScannedFile.ScanToDoFile;
 var
   List: TStringList;
-  StartPos, EndPos: TPoint;
+  SPos, EPos: TPoint;    // Start and End.
+  Line: String;
+  OldItem, NewItem: TTodoItem;
   i: Integer;
 begin
+  OldItem := nil;
   List:=TStringList.Create;
   try
     List.Text:=FCode.Source;
     for i:=0 to List.Count-1 do
     begin
-      FRealFilename:=FCode.Filename;
-      FCommentStr:=List[i];
-      StartPos.X:=1;
-      StartPos.Y:=i+1;
-      EndPos.X:=Length(FCommentStr)+1;
-      EndPos.Y:=StartPos.Y;
-      AddToDoItem(FCommentStr, StartPos, EndPos);
+      Line:=List[i];
+      if Line <> '' then begin
+        SPos.X := 1;
+        SPos.Y := i+1;
+        EPos.X := Length(Line)+1;
+        EPos.Y := SPos.Y;
+        // Try creating a ToDo item. It fails if the signature is wrong.
+        NewItem := CreateToDoItem(Line, SPos, EPos);
+        if Assigned(NewItem) then begin
+          NewItem.Filename := FCode.Filename;
+          //NewItem.CommentType := #0;
+          //NewItem.HasColon := True;
+          if Assigned(OldItem) then
+            Add(OldItem);             // Add previously created item to list.
+          OldItem := NewItem;
+        end
+        else if Assigned(OldItem) then begin
+          // Extend the text of a previous item with Line contents.
+          OldItem.Text := OldItem.Text + LineEnding + Line;
+          // Update EPos
+          EPos.X := OldItem.EndPos.X + Length(Line)+1;
+          EPos.Y := SPos.Y;
+          OldItem.EndPos := EPos;
+        end;
+      end;
     end;
+    if Assigned(OldItem) then
+      Add(OldItem);             // Add previously created item to list.
   finally
     List.Free;
   end;
@@ -479,7 +495,7 @@ begin
     '/' : Result := '// '+AsString;
     '{' : Result := '{ ' +AsString+' }';
     '(' : Result := '(* '+AsString+' *)';
-    else raise Exception.Create('TTodoItem.GetAsComment: Wrong comment char.');
+    else raise Exception.Create('TTodoItem.GetAsComment: Wrong comment char "'+CommentType+'".');
   end;
 end;
 
