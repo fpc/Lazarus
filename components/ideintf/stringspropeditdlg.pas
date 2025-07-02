@@ -32,7 +32,9 @@ type
     BtnPanel: TButtonPanel;
     ClearButton: TButton;
     SaveButton: TButton;
+    LoadButton: TButton;
     SaveDialog1: TSaveDialog;
+    OpenDialog1: TOpenDialog;
     StatusLabel: TLabel;
     SortButton: TButton;
     TextGroupBox: TGroupBox;
@@ -43,6 +45,7 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure MemoChange(Sender: TObject);
     procedure SaveButtonClick(Sender: TObject);
+    procedure LoadButtonClick(Sender: TObject);
     procedure SortButtonClick(Sender: TObject);
   public
     procedure AddButtons; virtual;
@@ -62,15 +65,28 @@ begin
   SortButton.Caption := oisSort;
   ClearButton.Caption := oisClear;
   SaveButton.Caption := oisSave;
+  LoadButton.Caption := oisLoad;
   AddButtons;
   IDEDialogLayoutList.ApplyLayout(Self);
 end;
 
 procedure TStringsPropEditorFrm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
+  // dialog
   if (Key = VK_RETURN) and (Shift = [ssCtrl]) then
   begin
     ModalResult := mrOK;
+    Key := 0;
+  end
+  // save and load
+  else if (Key = VK_S) and (Shift = [ssCtrl]) then
+  begin
+    SaveButtonClick(Sender);
+    Key := 0;
+  end
+  else if (Key = VK_O) and (Shift = [ssCtrl]) then
+  begin
+    LoadButtonClick(Sender);
     Key := 0;
   end;
 end;
@@ -105,6 +121,13 @@ begin
   SaveDialog1.Title:=sccsSGEdtSaveDialog;
   if SaveDialog1.Execute then
     Memo.Lines.SaveToFile(SaveDialog1.FileName);
+end;
+
+procedure TStringsPropEditorFrm.LoadButtonClick(Sender: TObject);
+begin
+  OpenDialog1.Title:=sccsSGEdtOpenDialog;
+  if OpenDialog1.Execute then
+    Memo.Lines.LoadFromFile(OpenDialog1.FileName);
 end;
 
 procedure TStringsPropEditorFrm.SortButtonClick(Sender: TObject);
