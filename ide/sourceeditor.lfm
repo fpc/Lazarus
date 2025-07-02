@@ -49,6 +49,10 @@ object SourceNotebook: TSourceNotebook
       Caption = 'Goto line ...'
       OnClick = GoToLineMenuItemClick
     end
+    object CopyFullPathMenuItem: TMenuItem
+      Caption = 'Copy full path'
+      OnClick = CopyFullPathMenuItemClick
+    end
     object OpenFolderMenuItem: TMenuItem
       Caption = 'Open folder ...'
       OnClick = OpenFolderMenuItemClick
