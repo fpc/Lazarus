@@ -2972,6 +2972,7 @@ function TCodeHelpManager.GetFPDocNodeAsHTML(FPDocFile: TLazFPDocFile;
     if (Node.NodeName='p')
     or (Node.NodeName='b')
     or (Node.NodeName='i')
+    or (Node.NodeName='u')
     or (Node.NodeName='pre')
     or (Node.NodeName='table')
     or (Node.NodeName='th')
