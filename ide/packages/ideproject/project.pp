@@ -424,7 +424,6 @@ type
   public
     { Properties }
     property UnitResourceFileformat: TUnitResourcefileFormatClass read GetUnitResourceFileformat;
-  public
     property Bookmarks: TFileBookmarks read FBookmarks write FBookmarks;
     property BuildFileIfActive: boolean read GetBuildFileIfActive
                                         write SetBuildFileIfActive;

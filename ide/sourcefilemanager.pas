@@ -874,16 +874,21 @@ begin
   // read form data
   if FilenameIsPascalUnit(FFilename) then begin
     // this could be a unit with a form
-    //debugln('TFileOpener.OpenResource ',FFilename,' ',OpenFlagsToString(Flags));
+    //debugln(['TFileOpener.OpenResource ',FFilename,' ',OpenFlagsToString(FFlags),
+    //         ', LoadedDesigner=', FNewUnitInfo.LoadedDesigner,
+    //         ', AutoCreateFormsOnOpen=', EnvironmentGuiOpts.AutoCreateFormsOnOpen,
+    //         ', AutoOpenDesignerFormsDisabled=', Project1.AutoOpenDesignerFormsDisabled]);
     if ([ofDoNotLoadResource]*FFlags=[])
     and ( (ofDoLoadResource in FFlags)
-       or ((ofProjectLoading in FFlags)
-           and FNewUnitInfo.LoadedDesigner
-           and (not Project1.AutoOpenDesignerFormsDisabled)
-           and EnvironmentGuiOpts.AutoCreateFormsOnOpen))
+       or ((ofProjectLoading in FFlags) and (not Project1.AutoOpenDesignerFormsDisabled)
+           // Read resources even if designer is not opened. Allow checking faulty references.
+           //and FNewUnitInfo.LoadedDesigner and EnvironmentGuiOpts.AutoCreateFormsOnOpen
+          )
+        )
     then begin
       // -> try to (re)load the lfm file
-      //debugln(['TFileOpener.OpenResource Loading LFM for ',FNewUnitInfo.Filename,' LoadedDesigner=',FNewUnitInfo.LoadedDesigner]);
+      //debugln(['TFileOpener.OpenResource Loading LFM for ',FNewUnitInfo.Filename,
+      //         ' LoadedDesigner=',FNewUnitInfo.LoadedDesigner]);
       CloseFlags:=[cfSaveDependencies];
       if ofRevert in FFlags then
         Include(CloseFlags,cfCloseDependencies);
@@ -2713,7 +2718,7 @@ var
 begin
   Result:=mrCancel;
   CanAbort:=[sfCanAbort,sfProjectSaving]*Flags<>[];
-  //debugln('SaveEditorFile A PageIndex=',PageIndex,' Flags=',SaveFlagsToString(Flags));
+  //debugln(['SaveEditorFile A AEditor=',AEditor,' Flags=',SaveFlagsToString(Flags)]);
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('SaveEditorFile A');{$ENDIF}
   if not (MainIDE.ToolStatus in [itNone,itDebugger]) then
     exit(mrAbort);
@@ -2777,7 +2782,7 @@ begin
     exit(SaveProject([sfSaveAs]));
 
   // if nothing modified then a simple Save can be skipped
-  //debugln(['SaveEditorFile A ',AnUnitInfo.Filename,' ',AnUnitInfo.NeedsSaveToDisk]);
+  //debugln(['SaveEditorFile A ',AnUnitInfo.Filename,' ',AnUnitInfo.NeedsSaveToDisk(true)]);
   if ([sfSaveToTestDir,sfSaveAs]*Flags=[]) and (not AnUnitInfo.NeedsSaveToDisk(true)) then
   begin
     if AEditor.Modified then
@@ -5416,7 +5421,6 @@ begin
           if HasI18N then
             Grubber:=TLRJGrubber.Create(Writer);
           Writer.OnWriteMethodProperty:=@FormEditor1.WriteMethodPropertyEvent;
-          //DebugLn(['SaveUnitComponent AncestorInstance=',dbgsName(AncestorInstance)]);
           Writer.OnFindAncestor:=@FormEditor1.WriterFindAncestor;
           AncestorUnit:=AnUnitInfo.FindAncestorUnit;
           Ancestor:=nil;
@@ -5647,7 +5651,7 @@ begin
 
   Result:=mrOk;
   {$IFDEF IDE_DEBUG}
-  debugln('SaveUnitComponent G ',LFMCode<>nil);
+  debugln(['SaveUnitComponent G ',LFMCode<>nil]);
   {$ENDIF}
 end;
 
