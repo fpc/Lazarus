@@ -112,7 +112,7 @@ type
     FScannedIncFiles: TStringMap;
     function GetCount: integer;
     function GetItems(Index: integer): TTodoItem;
-    procedure AddToDoItem(aCommentStr: string; aCodePos: TPoint);
+    procedure AddToDoItem(aCommentStr: string; aStartPos, aEndPos: TPoint);
     procedure ScanPascalToDos;
     procedure ScanToDoFile;
   public
@@ -129,7 +129,7 @@ type
   procedure ExtractToCSV(const aFilename: string; aListItems: TListItems);
   procedure ScanFile(const aFileName: string;
     aScannedFiles: TAvlTree; aScannedIncFiles: TStringMap);
-  function CreateToDoItem(aCommentStr: string; aCodePos: TPoint): TTodoItem;
+  function CreateToDoItem(aCommentStr: string; aStartPos, aEndPos: TPoint): TTodoItem;
 
 
 implementation
@@ -225,20 +225,19 @@ begin
   end;
 end;
 
-function CreateToDoItem(aCommentStr: string; aCodePos: TPoint): TTodoItem;
+function CreateToDoItem(aCommentStr: string; aStartPos, aEndPos: TPoint): TTodoItem;
 var
   TheToken: string;
   CT: char;  // Character starting the comment
   lTokenFound: boolean;
-  lCommentLen, lStartLen, lEndLen: Integer;
+  lStartLen, lEndLen: Integer;
   lTodoType, lFoundToDoType: TToDoType;
   lTokenStyle, lFoundTokenStyle: TTokenStyle;
-  lEndPos: TPoint;
 begin
-  //DebugLn(['CreateToDoItem aCodePos=',aCodePos.X,':',aCodePos.Y,', aCommentStr="',aCommentStr,'"']);
+  //DebugLn(['CreateToDoItem Start=',aStartPos.X,':',aStartPos.Y,', End=',aEndPos.X,':',aEndPos.Y
+  //         ', aCommentStr="',aCommentStr,'"']);
   Result := nil;
-  lCommentLen := Length(aCommentStr);
-  Assert(lCommentLen>0, 'CreateToDoItem: aCommentStr is empty.');
+  Assert(aCommentStr<>'', 'CreateToDoItem: aCommentStr is empty.');
   CT := aCommentStr[1];
   // Remove beginning and ending comment characters from the string
   case CT of
@@ -258,7 +257,6 @@ begin
       Inc(lEndLen);
     SetLength(aCommentStr, lStartLen-lEndLen);
   end;
-  aCommentStr := TextToSingleLine(aCommentStr);
 
   // Determine Token and Style
   lTokenFound := False;
@@ -292,16 +290,14 @@ begin
     Inc(lStartLen);
   Delete(aCommentStr, 1, lStartLen);  // Remove the token and whitespace.
 
-  lEndPos.X := aCodePos.X + lCommentLen;
-  lEndPos.Y := aCodePos.Y;
   // Require a colon with plain "done" but not with "#done". Prevent false positives.
   Result := TTodoItem.Create;
   if Result.Parse(aCommentStr, lFoundTokenStyle=tsAlternate) then
   begin
     Result.ToDoType   := lFoundToDoType;
     Result.TokenStyle := lFoundTokenStyle;
-    Result.StartPos   := aCodePos;
-    Result.EndPos     := lEndPos;
+    Result.StartPos   := aStartPos;
+    Result.EndPos     := aEndPos;
     Result.CommentType:= CT;
   end
   else
@@ -356,12 +352,11 @@ begin
   Result:=TTodoItem(FItems[Index]);
 end;
 
-procedure TTLScannedFile.AddToDoItem(aCommentStr: string; aCodePos: TPoint);
+procedure TTLScannedFile.AddToDoItem(aCommentStr: string; aStartPos, aEndPos: TPoint);
 var
   Item: TTodoItem;
 begin
-  //debugln(['TTLScannedFile.AddToDoItem aCommentStr=', aCommentStr, ', aCodePos=', aCodePos.X,':',aCodePos.Y]);
-  Item := CreateToDoItem(aCommentStr, aCodePos);
+  Item := CreateToDoItem(aCommentStr, aStartPos, aEndPos);
   if Assigned(Item) then begin
     Item.Filename := FRealFilename;
     Add(Item);            // Add to list.
@@ -371,50 +366,55 @@ end;
 procedure TTLScannedFile.ScanPascalToDos;
 var
   Src, LocationIncTodo: String;
-  p, CommentEnd: Integer;
-  NestedComment: Boolean;
-  CaretPos: TCodeXYPosition;
-  CodePos: TPoint;
+  pStart, pEnd: Integer;
+  NestedComment, B: Boolean;
+  StartCaret, EndCaret: TCodeXYPosition;
+  StartPos, EndPos: TPoint;
 begin
   Src:=FTool.Src;
   Assert(FCode.Filename=FTool.MainFilename, 'TTLScannedFile.ScanPascalToDos: aCode.Filename<>FTool.MainFilename');
-  p:=1;
+  pStart:=1;
   NestedComment:=CodeToolBoss.GetNestedCommentsFlagForFile(FCode.Filename);
   repeat
-    p:=FindNextComment(Src,p);
-    if p>length(Src) then  // No more comments found, break loop
+    pStart:=FindNextComment(Src,pStart);
+    if pStart>length(Src) then  // No more comments found, break loop
       break;
-    if not FTool.CleanPosToCaret(p,CaretPos) then
+
+    if not FTool.CleanPosToCaret(pStart,StartCaret) then
     begin
       ShowMessageFmt(errScanFileFailed, [ExtractFileName(FFilename)]);
       Exit;
     end;
     // Study include file names. Use heuristics, assume name ends with ".inc".
-    FRealFilename:=CaretPos.Code.Filename;
+    FRealFilename:=StartCaret.Code.Filename;
     if FilenameExtIs(FRealFilename, 'inc') then // Filename and location in an include file.
-      LocationIncTodo:=FRealFilename+'_'+IntToStr(CaretPos.Y)
+      LocationIncTodo:=FRealFilename+'_'+IntToStr(StartCaret.Y)
     else
       LocationIncTodo:='';
     // Process a comment
-    CommentEnd:=FindCommentEnd(Src,p,NestedComment);
-    FCommentStr:=copy(Src,p,CommentEnd-p);
+    pEnd:=FindCommentEnd(Src,pStart,NestedComment);
+    B := FTool.CleanPosToCaret(pEnd,EndCaret);
+    Assert(B, 'TTLScannedFile.ScanPascalToDos: No comment end.');
+    FCommentStr:=copy(Src,pStart,pEnd-pStart);
     // Process each include file location only once. Units are processed always.
     if (LocationIncTodo='') or not FScannedIncFiles.Contains(LocationIncTodo) then
     begin
-      CodePos.X:=CaretPos.X;
-      CodePos.Y:=CaretPos.Y;
-      AddToDoItem(FCommentStr, CodePos);
+      StartPos.X:=StartCaret.X;
+      StartPos.Y:=StartCaret.Y;
+      EndPos.X:=EndCaret.X;
+      EndPos.Y:=EndCaret.Y;
+      AddToDoItem(FCommentStr, StartPos, EndPos);
       if LocationIncTodo<>'' then    // Store include file location for future.
         FScannedIncFiles.Add(LocationIncTodo);
     end;
-    p:=CommentEnd;
+    pStart:=pEnd;
   until false;
 end;
 
 procedure TTLScannedFile.ScanToDoFile;
 var
   List: TStringList;
-  CodePos: TPoint;
+  StartPos, EndPos: TPoint;
   i: Integer;
 begin
   List:=TStringList.Create;
@@ -424,9 +424,11 @@ begin
     begin
       FRealFilename:=FCode.Filename;
       FCommentStr:=List[i];
-      CodePos.X:=1;
-      CodePos.Y:=i+1;
-      AddToDoItem(FCommentStr, CodePos)
+      StartPos.X:=1;
+      StartPos.Y:=i+1;
+      EndPos.X:=Length(FCommentStr)+1;
+      EndPos.Y:=StartPos.Y;
+      AddToDoItem(FCommentStr, StartPos, EndPos);
     end;
   finally
     List.Free;

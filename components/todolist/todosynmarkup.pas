@@ -47,7 +47,7 @@ type
       ): TSynSelectedColor; override;
     function GetMarkupAttributeAtWrapEnd(const aRow: Integer;
       const aWrapCol: TLazSynDisplayTokenBound): TSynSelectedColor; override;
-    function CursorInsideToDo(aCol: integer; out aToDo: TFoundTodo): boolean;
+    function CursorInsideToDo(aSrcPos: TPoint; out aToDo: TFoundTodo): boolean;
   end;
 
 procedure Register;
@@ -425,7 +425,7 @@ begin
       GetLine(curRow);
     end;
     pos.Y := curRow;
-    pos.x := 1;
+    pos.X := 1;
     if StartPos.Y = curRow then
       pos.X := StartPos.x;
 
@@ -446,8 +446,8 @@ begin
     i := Length(FFoundPos);
     SetLength(FFoundPos, i + 1);
     FFoundPos[i].StartPos := StartPos;
-    FFoundPos[i].EndPos.y := curRow;
-    FFoundPos[i].EndPos.x := TkEnd;
+    FFoundPos[i].EndPos.Y := curRow;
+    FFoundPos[i].EndPos.X := TkEnd;
     FFoundPos[i].Kind     := Kind;
 
     p := PChar(LineText) + TkEnd - 1;
@@ -501,15 +501,44 @@ begin
   Result := False;
 end;
 
-function TSynEditTodoMarkup.CursorInsideToDo(aCol: integer; out aToDo: TFoundTodo): boolean;
+function TSynEditTodoMarkup.CursorInsideToDo(aSrcPos: TPoint; out aToDo: TFoundTodo): boolean;
 begin
   Result := False;
+  FFoundPos := nil;
+  FSkipStartLine := -1;
+  FPasHl := TSynPasSyn(TSynEdit(SynEdit).Highlighter);
+  if (FPasHl <> nil) and not(TSynCustomHighlighter(FPasHl) is TSynPasSyn) then exit;
+
+  PrepareMarkupForRow(aSrcPos.Y);
   if Length(FFoundPos) > 0 then begin
     aToDo := FFoundPos[0];
-    if (aCol > aToDo.StartPos.X) and (aCol < aToDo.EndPos.X) then
-      Result := True;
-  end;
-  if not Result then begin
+    debugln(['TSynEditTodoMarkup.CursorInsideToDo Start=',aToDo.StartPos.X,':',aToDo.StartPos.Y,
+             ', End=',aToDo.EndPos.X,':',aToDo.EndPos.Y, ', aSrcPos=',aSrcPos.X,':',aSrcPos.Y]);
+    //Example inside a single line ToDo comment:
+    //  Start=7:28, End=54:28, aSrcPos=22:28
+    //Example inside a 3 line ToDo comment:
+    //  Start=2:6, End=2147483647:6, aSrcPos=16:6
+    //  Start=2:6, End=2147483647:7, aSrcPos=9:7
+    //  Start=2:6, End=3:8, aSrcPos=2:8
+    Assert(aSrcPos.Y = aToDo.EndPos.Y, 'TSynEditTodoMarkup.CursorInsideToDo: aSrcPos.Y <> aToDo.EndPos.Y');
+    Result := (aSrcPos.X < aToDo.EndPos.X) and (
+          // First line
+          ((aSrcPos.Y = aToDo.StartPos.Y) and (aSrcPos.X > aToDo.StartPos.X))
+        or (aSrcPos.Y > aToDo.StartPos.Y) // The last line of multiline
+      );
+    if Result and (aToDo.EndPos.X = MaxInt) then begin
+      // We are inside a multiline comment but not on its last line.
+      // Iterate to the last line and update EndPos.
+      repeat
+        Inc(aSrcPos.Y);
+        FFoundPos := nil;
+        PrepareMarkupForRow(aSrcPos.Y);
+        Assert(Length(FFoundPos) > 0, 'TSynEditTodoMarkup.CursorInsideToDo: FFoundPos is empty');
+      until FFoundPos[0].EndPos.X <> MaxInt;
+      aToDo.EndPos := FFoundPos[0].EndPos;   // This is the real end of comment.
+    end;
+  end
+  else begin
     aToDo.StartPos := Point(0,0);
     aToDo.EndPos := Point(0,0);
     aToDo.Kind := tdToDo;

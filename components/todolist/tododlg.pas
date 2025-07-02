@@ -315,48 +315,30 @@ end;
 procedure TToDoManager.DecideMenuCaption(Sender: TObject; var ACaption, AHint: string);
 var
   SrcEdit: TSourceEditorInterface;
-  SrcPos: TPoint;
-  SynEd: TSynEdit;
+  SynEdt: TSynEdit;
   MarkUp: TSynEditTodoMarkup;
-  InToDo: Boolean;
   ToDoLoc: TFoundTodo;
-  Line: String;
+  Txt: String;
 begin
-  TodoItemToEdit := nil;
+  FreeAndNil(TodoItemToEdit); // Free a possible ToDo created when a menu opened but not used.
   ACaption := lisTDDInsertToDo;
-  SrcEditMenuCmd.Enabled := True;
-  IdeSourceMenuCmd.Enabled := True;
   SrcEdit := SourceEditorManagerIntf.ActiveEditor;
   if SrcEdit=nil then exit;
   SrcEditMenuCmd.Enabled := not SrcEdit.ReadOnly;
   IdeSourceMenuCmd.Enabled := not SrcEdit.ReadOnly;
-
-  SrcPos := SrcEdit.CursorTextXY;
-  SynEd := SrcEdit.EditorControl as TSynEdit;
-  MarkUp := SynEd.MarkupManager.MarkupByClass[TSynEditTodoMarkup] as TSynEditTodoMarkup;
-  InToDo := MarkUp.CursorInsideToDo(SrcPos.X, ToDoLoc);
-  debugln(['DecideMenuCaption: ToDo start=', ToDoLoc.StartPos.X,':',ToDoLoc.StartPos.Y,
-           ', ToDo end=', ToDoLoc.EndPos.X,':',ToDoLoc.EndPos.Y, ', Line=', SrcPos.Y]);
-  if InToDo then
-    with ToDoLoc do begin
-      if (EndPos.X=MaxInt)
-      or ((StartPos.Y<>EndPos.Y) and (EndPos.Y=SrcPos.Y) and (EndPos.X>SrcPos.X)) then
-      begin
-        // ToDo: Support multiline ToDo comments. Now just disable the menu items.
-        SrcEditMenuCmd.Enabled := False;
-        IdeSourceMenuCmd.Enabled := False;
-      end
-      else begin
-        ACaption := lisTDDEditToDo;
-        Line := SrcEdit.Lines[StartPos.Y-1];
-        Line := Copy(Line, StartPos.X, EndPos.X-StartPos.X);
-        // Now InsertOrEditToDo in ToDoDlg knows what to do.
-        TodoItemToEdit := CreateToDoItem(Line, StartPos);
-      end;
-    end;
+  if SrcEdit.ReadOnly then exit;
+  SynEdt := SrcEdit.EditorControl as TSynEdit;
+  MarkUp := SynEdt.MarkupManager.MarkupByClass[TSynEditTodoMarkup] as TSynEditTodoMarkup;
+  if MarkUp.CursorInsideToDo(SrcEdit.CursorTextXY, ToDoLoc) then begin
+    ACaption := lisTDDEditToDo;
+    Txt := SynEdt.TextBetweenPoints[ToDoLoc.StartPos, ToDoLoc.EndPos];
+    // Now InsertOrEditToDo in ToDoDlg knows what to do.
+    TodoItemToEdit := CreateToDoItem(Txt, ToDoLoc.StartPos, ToDoLoc.EndPos);
+  end;
 end;
 
 finalization
+  FreeAndNil(TodoItemToEdit);
   ToDoManager.Free;
 
 end.

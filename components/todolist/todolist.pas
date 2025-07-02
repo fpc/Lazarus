@@ -67,7 +67,7 @@ uses
   LCLType, LclIntf, Forms, Controls, StdCtrls, Dialogs, ComCtrls,
   ActnList, XMLPropStorage, ExtCtrls,
   // LazUtils
-  LazFileUtils, LazFileCache, LazLoggerBase, LazTracer, AvgLvlTree,
+  LazFileUtils, LazStringUtils, LazFileCache, LazLoggerBase, LazTracer, AvgLvlTree,
   // Codetools
   CodeToolManager, FileProcs,
   // BuildIntf
@@ -580,7 +580,7 @@ begin
     aListitem := lvTodo.Items.Add;
     aListitem.Data := aTodoItem;
     aListItem.Caption := LIST_INDICATORS[aTodoItem.ToDoType];
-    aListitem.SubItems.Add(aTodoItem.Text);
+    aListitem.SubItems.Add(TextToSingleLine(aTodoItem.Text)); // Join lines if there are many.
     aListitem.SubItems.Add(IntToStr(aTodoItem.Priority));
     aFilename:=aTodoItem.Filename;
     if (BaseDirectory<>'') and FilenameIsAbsolute(aFilename) then
