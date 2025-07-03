@@ -8951,6 +8951,9 @@ begin
 
   IncStatusChangeLock;
   try
+    FCachedBottomLine := -1;
+    FCachedPartialBottomLine := -1;
+
     if FLeftGutter.Visible
     then l := FLeftGutter.Width
     else l := 0;
@@ -9172,6 +9175,10 @@ end;
 
 procedure TCustomSynEdit.StatusChangedEx(Sender: TObject; Changes: TSynStatusChanges);
 begin
+  if scLinesInWindow in Changes then begin
+    FCachedBottomLine := -1;
+    FCachedPartialBottomLine := -1;
+  end;
   StatusChanged(Changes);
 end;
 
