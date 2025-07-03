@@ -122,6 +122,7 @@ resourcestring
   lisDbgAllItemDelete       = 'Delete all';
   lisDbgAllItemDeleteHint   = 'Delete all';
   lisDbgBreakpointPropertiesHint = 'Breakpoint Properties ...';
+  lisDbgBreakpointGroupsHint = 'Show breakpoints by group';
 
   liswlProperties = '&Properties';
   liswlQuickFormat = '&Format';
