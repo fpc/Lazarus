@@ -2893,13 +2893,23 @@ begin
   debugln(['*** HasResources=',AnUnitInfo.HasResources]);
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('SaveEditorFile B');{$ENDIF}
-  // save resource file and lfm file, skip when externally renamed identifiers
-  if ((LRSCode<>nil) or (AnUnitInfo.Component<>nil))
-      and not (sfSkipReferences in Flags) then
+  debugln(['SaveEditorFile Component=', AnUnitInfo.Component,
+           ', LoadedDesigner=', AnUnitInfo.LoadedDesigner]);
+  if not (sfSkipReferences in Flags) then // skip when externally renamed identifiers
   begin
-    Result:=SaveUnitComponent(AnUnitInfo,LRSCode,LFMCode,Flags);
-    if not (Result in [mrIgnore, mrOk]) then
-      exit;
+    // Resource is needed for the check.
+    if (AnUnitInfo.Component=nil)
+    and not AnUnitInfo.LoadedDesigner
+    and not EnvironmentGuiOpts.AutoCreateFormsOnOpen
+    then
+      LoadLFM(AnUnitInfo, [], []);
+    // save resource file and lfm file,
+    if (LRSCode<>nil) or (AnUnitInfo.Component<>nil) then
+    begin
+      Result:=SaveUnitComponent(AnUnitInfo,LRSCode,LFMCode,Flags);
+      if not (Result in [mrIgnore, mrOk]) then
+        exit;
+    end;
   end;
 
   // unset all modified flags
