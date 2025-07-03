@@ -5925,7 +5925,7 @@ begin
   FFoldedLinesView.TopViewPos := AValue;
 
   if FTextArea.TopViewedLine <> AValue then begin
-    if FPaintLock = 0 then
+    if (FPaintLock = 0) and (FIsInDecPaintLock = iplFalse) then
       FOldTopView := TopView;
     FTextArea.TopViewedLine := AValue;
     UpdateScrollBars;
