@@ -9156,7 +9156,9 @@ end;
 procedure TCustomSynEdit.StatusChanged(AChanges: TSynStatusChanges);
 begin
   fStatusChanges := fStatusChanges + AChanges;
-  if (PaintLock = 0) and (FStatusChangeLock = 0) and (fStatusChanges <> []) then
+  if (PaintLock = 0) and (FIsInDecPaintLock = iplFalse) and
+    (FStatusChangeLock = 0) and (fStatusChanges <> [])
+  then
     DoOnStatusChange(fStatusChanges);
 end;
 
