@@ -2751,7 +2751,7 @@ procedure TSynEditMarkupHighlightAllCaret.CheckState;
 var
   t: String;
 begin
-  if (not FStateChanged) or (Caret = nil) then
+  if (not FStateChanged) or (Caret = nil) or (FPaintLock > 0) then
     exit;
   FStateChanged := False;
 
