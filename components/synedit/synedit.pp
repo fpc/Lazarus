@@ -453,7 +453,7 @@ type
       dplNoAfterLoadFromFile,
       dplNoUpdateScrollBar, dplNoScrollAfterTopline,
       dplNoEnsureCursorPos, dplNoUpdateCaret,
-      dplNoSelAvailChange
+      dplNoStatusChange, dplNoSelAvailChange
     );
     TSynDecPaintLockStates = set of TSynDecPaintLockState;
   private
@@ -2787,7 +2787,7 @@ begin
            a new round of work must be started.
            If this changes Topline, then there will be 2 Scrolls
       *)
-      FInDecPaintLockState := OrigIsInDecPaintLock + [dplNoSelAvailChange];
+      FInDecPaintLockState := OrigIsInDecPaintLock + [dplNoSelAvailChange] - [dplNoStatusChange];
       if fStatusChanges <> [] then
         DoOnStatusChange(fStatusChanges);
     end;
@@ -9178,7 +9178,7 @@ end;
 procedure TCustomSynEdit.StatusChanged(AChanges: TSynStatusChanges);
 begin
   fStatusChanges := fStatusChanges + AChanges;
-  if (PaintLock = 0) and (FInDecPaintLockState = []) and
+  if (PaintLock = 0) and not (dplNoStatusChange in FInDecPaintLockState) and
     (FStatusChangeLock = 0) and (fStatusChanges <> [])
   then
     DoOnStatusChange(fStatusChanges);
