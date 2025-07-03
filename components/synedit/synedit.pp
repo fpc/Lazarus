@@ -2767,10 +2767,6 @@ begin
 
       // Caret should no longer change. No more need for AutoExtend
       FBlockSelection.AutoExtend := False;
-      (* Markup may depend on Caret pos
-         Markup should not change the caret
-      *)
-      FMarkupManager.DecPaintLock;
 
       if (not WaitingForInitialSize) then begin
         (* EnsureCursorPosVisible or StatusChanged-events: may have scrolled
@@ -2797,6 +2793,11 @@ begin
            If ScrollAfterTopLineChanged did not scroll, then it did InvalidateAll
         *)
       end;
+
+      (* Markup may depend on Caret pos
+         Markup should not change the caret
+      *)
+      FMarkupManager.DecPaintLock;
 
       (* Call user code.
          - Allow user code to enter a new PaintLock.
