@@ -4233,7 +4233,7 @@ begin
       else
         TopView := TopView + fScrollDeltaY;
       if fScrollDeltaY > 0
-      then Y := TopView + LinesInWindow
+      then Y := TopView + LinesInWindow - 1
       else Y := TopView;  // scrolling up
       if Y < 1   // past end of file
       then y := FCaret.ViewedLinePos;
