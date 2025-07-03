@@ -13126,7 +13126,7 @@ function TFindDeclarationTool.FindForInTypeAsString(TermPos: TAtomPosition;
       xtLongint,
       xtLongWord,
       xtCompilerFunc,
-      xtVariant,
+      xtVariant, xtOleVariant,
       xtJSValue,
       xtNil:
         RaiseTermHasNoIterator(20170421211217,SubExprType);

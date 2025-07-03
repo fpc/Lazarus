@@ -1765,7 +1765,7 @@ begin
   // system types
   if InSystemContext then
   begin
-    for I in [xtChar..xtPointer, xtLongint..xtByte, xtVariant] do
+    for I in [xtChar..xtPointer, xtLongint..xtByte, xtVariant, xtOleVariant] do
       AddBaseType(PChar(ExpressionTypeDescNames[I]));
     if not (ilcfStartInStatement in CurrentIdentifierList.ContextFlags) then
       for I in [xtFile, xtText] do
