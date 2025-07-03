@@ -550,6 +550,9 @@ type
     FDoingResizeLock: Integer;
     FInvalidateRect: TRect;
     FInDecPaintLockState: TSynDecPaintLockStates;
+    {$IFOPT C+} // asserts on
+    FAssertInDecPaintLockDone: TSynDecPaintLockStates;
+    {$ENDIF}
     FScrollBars: TScrollStyle;
     FOldTopView: Integer;
     FCachedTopLine, FCachedBottomLine, FCachedPartialBottomLine: Integer;
@@ -2687,6 +2690,8 @@ begin
 
   OrigIsInDecPaintLock := FInDecPaintLockState;
   FInDecPaintLockState := [low(TSynDecPaintLockState)..high(TSynDecPaintLockState)];
+  {$IFOPT C+} FAssertInDecPaintLockDone := []; {$ENDIF}
+
   try
     if (FUndoBlockAtPaintLock >= FPaintLock) then begin
       if (FUndoBlockAtPaintLock > FPaintLock) then
@@ -2738,6 +2743,7 @@ begin
           Exclude(FInDecPaintLockState, dplNoUpdateScrollBar);
           UpdateScrollbars;
           Include(FInDecPaintLockState, dplNoUpdateScrollBar);
+          {$IFOPT C+} Exclude(FAssertInDecPaintLockDone, dplNoUpdateScrollBar); {$ENDIF}
         end;
 
         (* EnsureCursorPosVisible must be past UpdateScrollbars; but before UpdateCaret (for ScrollBar-Auto-show)
@@ -2808,6 +2814,7 @@ begin
         SelAvailChange(nil);
     end;
     FInDecPaintLockState := OrigIsInDecPaintLock;
+    {$IFOPT C+} FAssertInDecPaintLockDone := []; {$ENDIF}
   end;
 end;
 
@@ -5272,6 +5279,8 @@ begin
      WaitingForInitialSize
   then
     exit;
+
+  {$IFOPT C+} assert(not(dplNoScrollAfterTopline in FInDecPaintLockState) or not(dplNoScrollAfterTopline in FAssertInDecPaintLockDone), 'ScrollAfterTopLineChanged called twice in one DecPaintLock'); Include(FAssertInDecPaintLockDone, dplNoScrollAfterTopline); {$ENDIF}
   Delta := FOldTopView - TopView;
   {$IFDEF SYNSCROLLDEBUG}
   if (sfHasScrolled in fStateFlags) then debugln(['ScrollAfterTopLineChanged with sfHasScrolled Delta=',Delta,' topline=',TopLine, '  FOldTopView=',FOldTopView ]);
@@ -5371,6 +5380,7 @@ begin
   then begin
     Include(fStateFlags, sfCaretChanged);
   end else begin
+    {$IFOPT C+} assert(not(dplNoNewPaintLock in FInDecPaintLockState) or not(dplNoUpdateCaret in FAssertInDecPaintLockDone), 'UpdateCaret called twice in one DecPaintLock'); Include(FAssertInDecPaintLockDone, dplNoUpdateCaret); {$ENDIF}
     Exclude(fStateFlags, sfCaretChanged);
     if eoAlwaysVisibleCaret in fOptions2 then
       MoveCaretToVisibleArea;
@@ -5391,6 +5401,7 @@ begin
   then
     Include(fStateFlags, sfScrollbarChanged)
   else begin
+    {$IFOPT C+} assert(not(dplNoNewPaintLock in FInDecPaintLockState) or not(dplNoUpdateScrollBar in FAssertInDecPaintLockDone), 'UpdateScrollBars called twice in one DecPaintLock'); Include(FAssertInDecPaintLockDone, dplNoUpdateScrollBar); {$ENDIF}
     Exclude(fStateFlags, sfScrollbarChanged);
     ScrollInfo.cbSize := SizeOf(ScrollInfo);
     ScrollInfo.fMask := SIF_ALL or SIF_DISABLENOSCROLL and not SIF_TRACKPOS;
@@ -5481,6 +5492,7 @@ begin
     Include(FStateFlags, sfSelChanged);
     exit;
   end;
+  {$IFOPT C+} assert(not(dplNoNewPaintLock in FInDecPaintLockState) or not(dplNoSelAvailChange in FAssertInDecPaintLockDone), 'SelAvailChange called twice in one DecPaintLock'); Include(FAssertInDecPaintLockDone, dplNoSelAvailChange); {$ENDIF}
   Exclude(FStateFlags, sfSelChanged);
   if SelAvail
   then AquirePrimarySelection
@@ -8099,6 +8111,7 @@ begin
     Include(fStateFlags, sfAfterLoadFromFileNeeded);
     exit;
   end;
+  {$IFOPT C+} assert(not(dplNoNewPaintLock in FInDecPaintLockState) or not(dplNoAfterLoadFromFile in FAssertInDecPaintLockDone), 'AfterLoadFromFile called twice in one DecPaintLock'); Include(FAssertInDecPaintLockDone, dplNoAfterLoadFromFile); {$ENDIF}
   Exclude(fStateFlags, sfAfterLoadFromFileNeeded);
   if assigned(FFoldedLinesView) then begin
     ScanRanges; // Only update HL. Need HL to provide fold info
