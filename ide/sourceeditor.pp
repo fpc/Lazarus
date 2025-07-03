@@ -684,6 +684,7 @@ type
 
   TSourceNotebook = class(TSourceEditorWindowInterface)
     GoToLineMenuItem: TMenuItem;
+    CopyFullPathMenuItem: TMenuItem;
     OpenFolderMenuItem: TMenuItem;
     StatusPopUpMenu: TPopupMenu;
     StatusBar: TStatusBar;
@@ -691,6 +692,7 @@ type
       {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
     procedure FormResize(Sender: TObject);
     procedure GoToLineMenuItemClick(Sender: TObject);
+    procedure CopyFullPathMenuItemClick(Sender: TObject);
     procedure OpenFolderMenuItemClick(Sender: TObject);
     procedure StatusBarClick(Sender: TObject);
     procedure StatusBarDblClick(Sender: TObject);
@@ -7692,6 +7694,7 @@ begin
   end;
 
   GoToLineMenuItem.Caption := lisMenuGotoLine;
+  CopyFullPathMenuItem.Caption := uemCopyFilename;
   OpenFolderMenuItem.Caption := lisMenuOpenFolder;
   {$IFDEF VerboseMenuIntf}
   SrcPopupMenu.Items.WriteDebugReport('TSourceNotebook.BuildPopupMenu ');
@@ -8885,6 +8888,7 @@ var
 begin
   i := StatusBar.GetPanelIndexAt(MousePos.X, MousePos.Y);
   GoToLineMenuItem.Visible := i=CStatusPanelXY;
+  CopyFullPathMenuItem.Visible := i=CStatusPanelFile;
   OpenFolderMenuItem.Visible := i=CStatusPanelFile;
   if i in [CStatusPanelXY, CStatusPanelFile] then
     StatusPopUpMenu.PopUp
@@ -9118,6 +9122,11 @@ procedure TSourceNotebook.GoToLineMenuItemClick(Sender: TObject);
 begin
   if Assigned(Manager) then
     Manager.GotoLineClicked(nil);
+end;
+
+procedure TSourceNotebook.CopyFullPathMenuItemClick(Sender: TObject);
+begin
+  Clipboard.AsText := Statusbar.Panels[CStatusPanelFile].Text;
 end;
 
 procedure TSourceNotebook.OpenFolderMenuItemClick(Sender: TObject);
