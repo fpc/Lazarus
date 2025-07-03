@@ -1108,7 +1108,7 @@ var
       lDescr := lDescr + LineEnding + SkipChecksKeys[e];
     AddCmdLineParamDesc(result, [SkipChecksOptLong + '[OptName][,OptName][...]'], lDescr);
     // lazdir
-    AddCmdLineParamDesc(result, [LazarusDirOpt + '<directory>'], lisLazarusDirOverride);
+    AddCmdLineParamDesc(result, [LazarusDirOpt + '<directory>', LazarusDir2Opt + '<directory>'], lisLazarusDirOverride);
     // config
     AddCmdLineParamDesc(result, [PrimaryConfPathOptShort + '<path>', PrimaryConfPathOptLong + '<path>'],
       Format(lisPrimaryConfigDirectoryWhereLazarusStoresItsConfig, [LazConf.GetPrimaryConfigPath]));
@@ -1272,7 +1272,7 @@ begin
     debugln('Hint: (lazarus) [TMainIDE.LoadGlobalOptions] overriding language with command line: ',s);
     EnvironmentOptions.LanguageID := s;
   end;
-  if GetParamOptionPlusValue('--lazarusdir=',s) then
+  if GetParamOptionPlusValue(LazarusDirOpt,s) or GetParamOptionPlusValue(LazarusDir2Opt,s) then
   begin
     debugln('Hint: (lazarus) [TMainIDE.LoadGlobalOptions] overriding Lazarusdir with command line: ',s);
     EnvironmentOptions.Lazarusdirectory:= s;
