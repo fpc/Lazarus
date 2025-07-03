@@ -362,8 +362,8 @@ const
   xtAllStringTypes = [xtConstString, xtShortString, xtString, xtAnsiString];
   xtAllWideStringTypes = [xtConstString, xtWideString, xtUnicodeString];
   xtAllPointerTypes = [xtPointer, xtNil];
-  xtAllTypeHelperTypes = xtAllPredefinedTypes-[xtCompilerFunc,xtVariant,xtJSValue,xtNil];
-
+  xtAllTypeHelperTypes = xtAllPredefinedTypes-[xtCompilerFunc,xtVariant,xtOleVariant,
+                                               xtJSValue,xtNil];
   xtAllStringCompatibleTypes = xtAllStringTypes+[xtChar,xtAnsiChar,xtJSValue];
   xtAllWideStringCompatibleTypes = xtAllWideStringTypes+[xtWideChar,xtChar];
 
