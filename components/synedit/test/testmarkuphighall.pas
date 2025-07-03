@@ -22,6 +22,7 @@ type
     procedure DoDictMatch(Match: PChar; MatchIdx: Integer; var IsMatch: Boolean;
       var StopSeach: Boolean);
   protected
+    procedure SetLinesInWindow(ALinesInWindow: Integer);
     //procedure SetUp; override; 
     //procedure TearDown; override; 
     //procedure ReCreateEdit; reintroduce;
@@ -80,6 +81,16 @@ DebugLn([copy(Match, 1, MatchIdx)]);
   IsMatch   := FNoMatchCount <= 0;
   dec(FStopAtMatch);
   dec(FNoMatchCount);
+end;
+
+procedure TTestMarkupHighAll.SetLinesInWindow(ALinesInWindow: Integer);
+var
+  offs: Integer;
+begin
+  offs := SynEdit.Height - SynEdit.ClientHeight;
+  AssertTrue('Clientheight <= height', offs >= 0);
+  SynEdit.Height := SynEdit.LineHeight * ALinesInWindow + SynEdit.LineHeight div 2 + offs;
+  AssertEquals('LinesInWindow', ALinesInWindow, SynEdit.LinesInWindow);
 end;
 
 procedure TTestMarkupHighAll.TestDictionary;
@@ -562,12 +573,14 @@ var
     for i := 1 to 700 do
       SynEdit.Lines.Add('  a'+IntToStr(i)+'a  b  c'+IntToStr(i)+'d');
     SynEdit.Align := alTop;
-    SynEdit.Height := SynEdit.LineHeight * 40 + SynEdit.LineHeight div 2;
+    SynEdit.EndUpdate;
+
+    SetLinesInWindow(40);
+
     M := TTestSynEditMarkupHighlightAllMulti.Create(SynEdit);
     M.HideSingleMatch := HideSingle;
     SynEdit.MarkupMgr.AddMarkUp(M);
     SynEdit.TopLine := ATopLine;
-    SynEdit.EndUpdate;
   end;
 
   procedure SetTextAndStart(ATopLine: Integer = 1; HideSingle: Boolean = False; Words: Array of string);
@@ -618,7 +631,7 @@ var
     AName: String = '');
   begin
     M.ResetScannedCount;
-    SynEdit.Height := SynEdit.LineHeight * ALineCnt + SynEdit.LineHeight div 2;
+    SetLinesInWindow(ALineCnt);
     TestHasMatches(AName + ' height ', length(AExp), AExpMax, AExp);
   end;
 
@@ -915,7 +928,7 @@ begin
     SynEdit.BeginUpdate;
     SynEdit.TextBetweenPoints[point(10, i), point(10, i)] := 'X';
     SynEdit.TopLine := 248; // 2 new lines
-    SynEdit.Height := SynEdit.LineHeight * 44 + SynEdit.LineHeight div 2; // another 2 lines
+    SetLinesInWindow(44);
     SynEdit.EndUpdate;
     SynEdit.SimulatePaintText;
     TestHasMatches(N+' Found after edit',   2,  [l(265, 3, 8), l(275, 3,8)]);
@@ -929,7 +942,7 @@ begin
     SynEdit.BeginUpdate;
     SynEdit.TextBetweenPoints[point(10, i), point(10, i)] := 'X';
     SynEdit.TopLine := 248; // 2 new lines
-    SynEdit.Height := SynEdit.LineHeight * 44 + SynEdit.LineHeight div 2; // another 2 lines
+    SetLinesInWindow(44);
     SynEdit.EndUpdate;
     SynEdit.SimulatePaintText;
     TestHasMatches(N+' Found after edit',   4,  [l(265, 3, 8), l(275, 3,8), l(248, 3,8), l(292, 3,8)]);
