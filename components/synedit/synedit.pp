@@ -2771,6 +2771,13 @@ begin
         if sfScrollbarChanged in fStateFlags then
           UpdateScrollbars;
 
+        if FInvalidateRect.Bottom >= FInvalidateRect.Top then begin
+          InvalidateRect(Handle, @FInvalidateRect, False);
+          {$IFDEF SynCheckPaintLock}
+          debugln('Returning from Paintlock, wich had Paint called while active');
+          DumpStack;
+          {$ENDIF}
+        end;
         Exclude(FInDecPaintLockState, dplNoScrollAfterTopline);
         ScrollAfterTopLineChanged;
         (* After ScrollAfterTopLineChanged InvalidateLines now longer must adjust for
@@ -2796,13 +2803,6 @@ begin
     FScreenCaret.UnLock;
     if FPaintLock = 0 then begin
       SetUpdateState(False, Self);
-      if FInvalidateRect.Bottom >= FInvalidateRect.Top then begin
-        InvalidateRect(Handle, @FInvalidateRect, False);
-        {$IFDEF SynCheckPaintLock}
-        debugln('Returning from Paintlock, wich had Paint called while active');
-        DumpStack;
-        {$ENDIF}
-      end;
       FInDecPaintLockState := OrigIsInDecPaintLock;
       if sfSelChanged in FStateFlags then
         SelAvailChange(nil);
@@ -4388,7 +4388,7 @@ begin
   // Get the invalidated rect. Compute the invalid area in lines / columns.
   rcClip := Canvas.ClipRect;
 
-  If FPaintLock > 0 then begin
+  If (FPaintLock > 0) or (dplNoScrollAfterTopline in FInDecPaintLockState) then begin
     debugln(['Warning: SynEdit.Paint called during PaintLock']);
     {$IFDEF SynCheckPaintLock}
     DumpStack;
