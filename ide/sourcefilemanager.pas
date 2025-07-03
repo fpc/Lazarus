@@ -880,9 +880,10 @@ begin
     //         ', AutoOpenDesignerFormsDisabled=', Project1.AutoOpenDesignerFormsDisabled]);
     if ([ofDoNotLoadResource]*FFlags=[])
     and ( (ofDoLoadResource in FFlags)
-       or ((ofProjectLoading in FFlags) and (not Project1.AutoOpenDesignerFormsDisabled)
-           // Read resources even if designer is not opened. Allow checking faulty references.
-           //and FNewUnitInfo.LoadedDesigner and EnvironmentGuiOpts.AutoCreateFormsOnOpen
+       or ((ofProjectLoading in FFlags)
+           and FNewUnitInfo.LoadedDesigner
+           and (not Project1.AutoOpenDesignerFormsDisabled)
+           and EnvironmentGuiOpts.AutoCreateFormsOnOpen
           )
         )
     then begin
@@ -4116,9 +4117,9 @@ begin
     end;
 
     if ([ofDoNotLoadResource]*Flags=[])
-    and ( (not Project1.AutoOpenDesignerFormsDisabled)
-           and EnvironmentGuiOpts.AutoCreateFormsOnOpen
-           and (SourceEditorManager.ActiveEditor<>nil) )
+    and (not Project1.AutoOpenDesignerFormsDisabled)
+    and EnvironmentGuiOpts.AutoCreateFormsOnOpen
+    and (SourceEditorManager.ActiveEditor<>nil)
     then begin
       // auto open form of active unit
       AnUnitInfo:=Project1.UnitWithEditorComponent(SourceEditorManager.ActiveEditor);
