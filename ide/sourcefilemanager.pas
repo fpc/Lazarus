@@ -2889,12 +2889,9 @@ begin
   if sfCheckAmbiguousFiles in Flags then
     MainBuildBoss.CheckAmbiguousSources(DestFilename,false);
 
-  {$IFDEF IDE_DEBUG}
-  debugln(['*** HasResources=',AnUnitInfo.HasResources]);
-  {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('SaveEditorFile B');{$ENDIF}
-  debugln(['SaveEditorFile Component=', AnUnitInfo.Component,
-           ', LoadedDesigner=', AnUnitInfo.LoadedDesigner]);
+  //debugln(['SaveEditorFile Component=', AnUnitInfo.Component, ', HasResources=', AnUnitInfo.HasResources
+  //         ', LoadedDesigner=', AnUnitInfo.LoadedDesigner]);
   if not (sfSkipReferences in Flags) then // skip when externally renamed identifiers
   begin
     // Resource is needed for the check.

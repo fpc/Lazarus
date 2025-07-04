@@ -7979,8 +7979,7 @@ begin
   {$ENDIF}
 end;
 
-procedure TSourceNotebook.RemoveUpdateEditorPageCaptionHandler(
-  AEvent: TNotifyEvent);
+procedure TSourceNotebook.RemoveUpdateEditorPageCaptionHandler(AEvent: TNotifyEvent);
 begin
   FOnEditorPageCaptionUpdate.Remove(TMethod(AEvent));
 end;
