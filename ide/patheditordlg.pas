@@ -310,13 +310,16 @@ begin
   TemplateForm := TGenericListSelectForm.Create(Nil);
   try
     TemplateForm.Caption := lisPathEditPathTemplates;
+    TemplateForm.ListBox.MultiSelect := true;
     // Let a user select only templates which are not in the list already.
     for i := 0 to FTemplateList.Count-1 do
       if PathListBox.Items.IndexOf(FTemplateList[i]) = -1 then
         TemplateForm.ListBox.Items.Add(FTemplateList[i]);
     if TemplateForm.ShowModal = mrOK then
       with TemplateForm.ListBox do
-        AddPath(Items[ItemIndex], TObject(1));
+        for i := 0 to Items.Count - 1 do
+          if Selected[i] then
+            AddPath(Items[i], TObject(1));
   finally
     TemplateForm.Free;
   end;

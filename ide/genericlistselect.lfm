@@ -59,7 +59,7 @@ object GenericListSelectForm: TGenericListSelectForm
     ItemHeight = 0
     TabOrder = 0
     TopIndex = -1
-    OnClick = ListBoxClick
+    OnSelectionChange = ListBoxSelectionChange
     OnDblClick = ListBoxDblClick
   end
 end

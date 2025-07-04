@@ -16,7 +16,7 @@ type
     InfoLabel: TLabel;
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormShow(Sender: TObject);
-    procedure ListBoxClick(Sender: TObject);
+    procedure ListBoxSelectionChange(Sender: TObject; User: boolean);
     procedure ListBoxDblClick(Sender: TObject);
   private
     procedure UpdateButtons;
@@ -43,7 +43,7 @@ begin
   end;
 end;
 
-procedure TGenericListSelectForm.ListBoxClick(Sender: TObject);
+procedure TGenericListSelectForm.ListBoxSelectionChange(Sender: TObject; User: boolean);
 begin
   UpdateButtons;
 end;
@@ -55,8 +55,16 @@ begin
 end;
 
 procedure TGenericListSelectForm.UpdateButtons;
+var
+  i: integer;
 begin
-  ButtonPanel1.OKButton.Enabled := ListBox.ItemIndex >= 0;
+  for i := 0 to ListBox.Items.Count - 1 do
+    if ListBox.Selected[i] then
+    begin
+      ButtonPanel1.OKButton.Enabled := true;
+      exit;
+    end;
+  ButtonPanel1.OKButton.Enabled := false;
 end;
 
 end.
