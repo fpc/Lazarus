@@ -7045,6 +7045,7 @@ begin
     exit;
 
   if WaitingForInitialSize or (fPaintLock > 0) or
+     (dplNoEnsureCursorPos in FInDecPaintLockState) or
      (FWinControlFlags * [wcfInitializing, wcfCreatingHandle] <> [])
   then begin
     include(fStateFlags, sfEnsureCursorPos);
