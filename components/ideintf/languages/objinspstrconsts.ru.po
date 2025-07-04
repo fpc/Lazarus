@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-07-01 17:58+0300\n"
+"PO-Revision-Date: 2025-07-04 22:36+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -763,6 +763,10 @@ msgstr "&ОК"
 #: objinspstrconsts.oisok2
 msgid "Ok"
 msgstr "ОК"
+
+#: objinspstrconsts.oisonlyonefile
+msgid "Only one file can be opened."
+msgstr "Можно открыть только один файл."
 
 #: objinspstrconsts.oisoptions
 msgid "Options"

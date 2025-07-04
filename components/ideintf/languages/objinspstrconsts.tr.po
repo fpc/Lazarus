@@ -768,6 +768,10 @@ msgstr "&TAMAM"
 msgid "Ok"
 msgstr "Tamam"
 
+#: objinspstrconsts.oisonlyonefile
+msgid "Only one file can be opened."
+msgstr ""
+
 #: objinspstrconsts.oisoptions
 msgid "Options"
 msgstr "Seçenekler"

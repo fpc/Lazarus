@@ -4,6 +4,7 @@ object StringsPropEditorFrm: TStringsPropEditorFrm
   Top = 359
   Width = 400
   ActiveControl = Memo
+  AllowDropFiles = True
   Caption = 'StringsPropEditorFrm'
   ClientHeight = 302
   ClientWidth = 400
@@ -13,6 +14,7 @@ object StringsPropEditorFrm: TStringsPropEditorFrm
   Position = poScreenCenter
   OnClose = FormClose
   OnCreate = FormCreate
+  OnDropFiles = FormDropFiles
   OnKeyDown = FormKeyDown
   object TextGroupBox: TGroupBox
     AnchorSideLeft.Control = Owner
@@ -97,14 +99,37 @@ object StringsPropEditorFrm: TStringsPropEditorFrm
       AnchorSideRight.Side = asrBottom
       Left = 305
       Height = 32
+      Hint = '[Ctrl+S]'
       Top = 82
       Width = 75
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
       BorderSpacing.Top = 6
       Caption = 'Save'
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 3
       OnClick = SaveButtonClick
+    end
+    object LoadButton: TButton
+      AnchorSideLeft.Control = SortButton
+      AnchorSideTop.Control = SaveButton
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = SortButton
+      AnchorSideRight.Side = asrBottom
+      Left = 303
+      Height = 23
+      Hint = '[Ctrl+O]'
+      Top = 93
+      Width = 75
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
+      BorderSpacing.Top = 6
+      Caption = 'Load'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 4
+      OnClick = LoadButtonClick
     end
   end
   object BtnPanel: TButtonPanel
@@ -131,7 +156,12 @@ object StringsPropEditorFrm: TStringsPropEditorFrm
   object SaveDialog1: TSaveDialog
     DefaultExt = '.txt'
     Options = [ofOverwritePrompt, ofEnableSizing, ofViewDetail]
-    Left = 183
-    Top = 148
+    Left = 224
+    Top = 80
+  end
+  object OpenDialog1: TOpenDialog
+    Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
+    Left = 224
+    Top = 136
   end
 end

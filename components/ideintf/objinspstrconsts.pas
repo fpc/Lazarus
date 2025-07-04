@@ -396,6 +396,7 @@ resourcestring
   ois1LineDChars = '1 line, %d chars';
   oisStringsEditorDialog = 'Strings Editor Dialog';
   ois0Lines0Chars = '0 lines, 0 chars';
+  oisOnlyOneFile = 'Only one file can be opened.';
   oisInvalidPropertyValue = 'Invalid property value';
   oisInfinityNotSupported = 'Setting a floating point property to positive or negative Infinity at design time is not supported';
   oisNaNNotSupported = 'Setting a floating point property to NaN at design time is not supported';
