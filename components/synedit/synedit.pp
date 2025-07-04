@@ -5408,7 +5408,7 @@ begin
   then
     Include(fStateFlags, sfScrollbarChanged)
   else begin
-    {$IFOPT C+} assert(not(dplNoNewPaintLock in FInDecPaintLockState) or not(dplNoUpdateScrollBar in FAssertInDecPaintLockDone), 'UpdateScrollBars called twice in one DecPaintLock'); Include(FAssertInDecPaintLockDone, dplNoUpdateScrollBar); {$ENDIF}
+    //{$IFOPT C+} assert(not(dplNoNewPaintLock in FInDecPaintLockState) or not(dplNoUpdateScrollBar in FAssertInDecPaintLockDone), 'UpdateScrollBars called twice in one DecPaintLock'); Include(FAssertInDecPaintLockDone, dplNoUpdateScrollBar); {$ENDIF}
     Exclude(fStateFlags, sfScrollbarChanged);
     ScrollInfo.cbSize := SizeOf(ScrollInfo);
     ScrollInfo.fMask := SIF_ALL or SIF_DISABLENOSCROLL and not SIF_TRACKPOS;
@@ -7078,6 +7078,7 @@ begin
     include(fStateFlags, sfEnsureCursorPos);
     exit;
   end;
+  {$IFOPT C+} assert(not(dplNoEnsureCursorPos in FInDecPaintLockState) or not(dplNoEnsureCursorPos in FAssertInDecPaintLockDone), 'EnsureCursorPosVisible called twice in one DecPaintLock'); Include(FAssertInDecPaintLockDone, dplNoEnsureCursorPos); {$ENDIF}
 
   //{BUG21996} DebugLnEnter(['TCustomSynEdit.EnsureCursorPosVisible Caret=',dbgs(CaretXY),', BlockBegin=',dbgs(BlockBegin),' BlockEnd=',dbgs(BlockEnd), ' StateFlags=',dbgs(fStateFlags), ' paintlock', FPaintLock]);
   exclude(fStateFlags, sfEnsureCursorPos);
