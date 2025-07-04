@@ -194,7 +194,7 @@ type
     procedure DoEnabledChanged(Sender: TObject); override;
     procedure DoTextChanged(StartLine, EndLine, ACountDiff: Integer); override; // 1 based
     procedure DoVisibleChanged(AVisible: Boolean); override;
-    function  HasVisibleMatch: Boolean; // does not check, if in visible line range. Only Count and DideSingleMatch
+    function  HasVisibleMatch: Boolean; deprecated 'use HasDisplayAbleMatches / to be removed in 5.99';
     property  MatchCount: Integer read GetMatchCount;
     property  MarkupEnabled: Boolean read FMarkupEnabled;
   public
@@ -2213,7 +2213,7 @@ var
       if FirstInvalIdx < FMatches.Count then begin
         LastInvalIdx  := FMatches.IndexOfLastMatchForLine(FLastInvalidLine);
         if FirstInvalIdx <= LastInvalIdx then begin
-          if (not SkipPaint) and HasVisibleMatch then
+          if (not SkipPaint) and HasDisplayAbleMatches then
             SendLineInvalidation(FirstInvalIdx, LastInvalIdx);
           FMatches.Delete(FirstInvalIdx, LastInvalIdx-FirstInvalIdx+1);
           if FirstInvalIdx > FMatches.Count then
@@ -2334,7 +2334,7 @@ var
     FSearchedEnd := FindMatches(p,
                                 Point(Length(Lines[EndOffsLine - 1])+1, EndOffsLine),
                                 Idx, LastScreenLine);
-    if (not SkipPaint) and (Idx > Idx2) and HasVisibleMatch then
+    if (not SkipPaint) and (Idx > Idx2) and HasDisplayAbleMatches then
       MaybeSendLineInvalidation(0, Idx-1);
 
     MaybeExtendForHideSingle;
@@ -2556,7 +2556,7 @@ begin
     p := Point(Length(Lines[EndOffsLine - 1])+1, EndOffsLine);
     if ComparePoints(OldEndPoint, p) < 0 then begin
       FSearchedEnd := FindMatches(OldEndPoint, p, Idx, LastScreenLine);
-      if (not SkipPaint) and (Idx > Idx2) and HasVisibleMatch then
+      if (not SkipPaint) and (Idx > Idx2) and HasDisplayAbleMatches then
         MaybeSendLineInvalidation(Idx2, Idx-1);
     end;
   end;
@@ -2579,7 +2579,6 @@ end;
 function TSynEditMarkupHighlightAllBase.HasDisplayAbleMatches: Boolean;
 begin
   Result := (inherited HasDisplayAbleMatches) and
-            HasSearchData and
             ( (not HideSingleMatch) or (Matches.Count > 1) );
 end;
 
@@ -2602,8 +2601,7 @@ end;
 
 function TSynEditMarkupHighlightAllBase.HasVisibleMatch: Boolean;
 begin
-  Result := ( HideSingleMatch and (FMatches.Count > 1) ) or
-            ( (not HideSingleMatch) and (FMatches.Count > 0) );
+  Result := HasDisplayAbleMatches;
 end;
 
 procedure TSynEditMarkupHighlightAllBase.InvalidateLines(AFirstLine: Integer;
