@@ -77,6 +77,7 @@ const
   DebugLogOptEnable='--debug-enable=';
   LanguageOpt='--language=';
   LazarusDirOpt ='--lazarusdir=';
+  LazarusDir2Opt ='--lazarus-dir=';
   SkipChecksOptLong='--skip-checks=';
   SkipChecksKeys: array[TSkipAbleChecks] of string = (
     'LazarusDir',
@@ -95,10 +96,10 @@ const
   CompilerOptLong = '--compiler';
   AddPackageLink = '--add-package-link';
 
-  LazFileOpts: array[1..7] of string = (
+  LazFileOpts: array[1..8] of string = (
     PrimaryConfPathOptLong,PrimaryConfPathOptShort,
     SecondaryConfPathOptLong,SecondaryConfPathOptShort,
-    LazarusDirOpt,
+    LazarusDirOpt,LazarusDir2Opt,
     CompilerOptLong,
     AddPackageLink
   );
@@ -258,7 +259,7 @@ begin
   CleanDuplicates([PrimaryConfPathOptShort,PrimaryConfPathOptLong]);
   CleanDuplicates([SecondaryConfPathOptShort,SecondaryConfPathOptLong]);
   CleanDuplicates([LanguageOpt]);
-  CleanDuplicates([LazarusDirOpt]);
+  CleanDuplicates([LazarusDirOpt,LazarusDir2Opt]);
 
   Result := ParamsAndCfgFileContent;
 end;
