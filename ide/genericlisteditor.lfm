@@ -8,9 +8,11 @@ object GenericListEditForm: TGenericListEditForm
   Caption = 'GenericListEditForm'
   ClientHeight = 301
   ClientWidth = 343
+  Constraints.MinHeight = 200
+  Constraints.MinWidth = 260
   KeyPreview = True
   Position = poScreenCenter
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '4.99.0.0'
   OnKeyDown = FormKeyDown
   object ButtonPanel1: TButtonPanel
     Left = 6

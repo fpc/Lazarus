@@ -33,6 +33,12 @@ implementation
 
 {$R *.lfm}
 
+constructor TGenericCheckListForm.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  fDisallowNoneSelected := False;
+end;
+
 constructor TGenericCheckListForm.CreateWithActionButton(aCaption: TCaption;
   aResourceGlyphName: string);
 begin
@@ -87,12 +93,6 @@ begin
     if Assigned(fActionBtn) then fActionBtn.Enabled := False;
     if DisallowNoneSelected then ButtonPanel1.OKButton.Enabled := False;
   end;
-end;
-
-constructor TGenericCheckListForm.Create(TheOwner: TComponent);
-begin
-  inherited Create(TheOwner);
-  fDisallowNoneSelected := False;
 end;
 
 end.
