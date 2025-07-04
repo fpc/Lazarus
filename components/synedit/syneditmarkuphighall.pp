@@ -2111,7 +2111,12 @@ end;
 procedure TSynEditMarkupHighlightAllBase.SetHideSingleMatch(AValue: Boolean);
 begin
   if FHideSingleMatch = AValue then Exit;
+
+  if FMatches.Count = 1 then
+    SendLineInvalidation;
+
   FHideSingleMatch := AValue;
+
   if FMatches.Count = 1 then
     if FHideSingleMatch then
       Invalidate // TODO only need extend search
@@ -2666,7 +2671,7 @@ end;
 
 procedure TSynEditMarkupHighlightAllBase.Invalidate(SkipPaint: Boolean);
 begin
-  if not SkipPaint then
+  if (not SkipPaint) and HasDisplayAbleMatches then
     SendLineInvalidation;
   FStartPoint.y := -1;
   FSearchedEnd.y := -1;
