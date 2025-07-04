@@ -1186,6 +1186,10 @@ msgstr "Copiar endereço para Área de Transferência"
 msgid "Copy to Clipboard"
 msgstr "Copiar para a área de transferência"
 
+#: idedebuggerstringconstants.lisdbgbreakpointgroupshint
+msgid "Show breakpoints by group"
+msgstr ""
+
 #: idedebuggerstringconstants.lisdbgbreakpointpropertieshint
 msgctxt "lazarusidestrconsts.lisdbgbreakpointpropertieshint"
 msgid "Breakpoint Properties ..."

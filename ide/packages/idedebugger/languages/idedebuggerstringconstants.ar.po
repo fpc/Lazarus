@@ -1140,6 +1140,10 @@ msgstr ""
 msgid "Copy to Clipboard"
 msgstr ""
 
+#: idedebuggerstringconstants.lisdbgbreakpointgroupshint
+msgid "Show breakpoints by group"
+msgstr ""
+
 #: idedebuggerstringconstants.lisdbgbreakpointpropertieshint
 msgctxt "idedebuggerstringconstants.lisdbgbreakpointpropertieshint"
 msgid "Breakpoint Properties ..."

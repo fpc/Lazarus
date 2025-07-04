@@ -1170,6 +1170,10 @@ msgstr "Kopírovať adresu do schránky"
 msgid "Copy to Clipboard"
 msgstr "Kopírovať do schránky"
 
+#: idedebuggerstringconstants.lisdbgbreakpointgroupshint
+msgid "Show breakpoints by group"
+msgstr ""
+
 #: idedebuggerstringconstants.lisdbgbreakpointpropertieshint
 msgctxt "idedebuggerstringconstants.lisdbgbreakpointpropertieshint"
 msgid "Breakpoint Properties ..."

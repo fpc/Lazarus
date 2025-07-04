@@ -1155,6 +1155,10 @@ msgstr "复制地址到剪贴板"
 msgid "Copy to Clipboard"
 msgstr "复制到剪贴板"
 
+#: idedebuggerstringconstants.lisdbgbreakpointgroupshint
+msgid "Show breakpoints by group"
+msgstr ""
+
 #: idedebuggerstringconstants.lisdbgbreakpointpropertieshint
 msgctxt "lazarusidestrconsts.lisdbgbreakpointpropertieshint"
 msgid "Breakpoint Properties ..."

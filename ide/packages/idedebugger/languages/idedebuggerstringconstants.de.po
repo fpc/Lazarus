@@ -1169,6 +1169,10 @@ msgstr ""
 msgid "Copy to Clipboard"
 msgstr "In Zwischenablage kopieren"
 
+#: idedebuggerstringconstants.lisdbgbreakpointgroupshint
+msgid "Show breakpoints by group"
+msgstr ""
+
 #: idedebuggerstringconstants.lisdbgbreakpointpropertieshint
 msgctxt "lazarusidestrconsts.lisdbgbreakpointpropertieshint"
 msgid "Breakpoint Properties ..."

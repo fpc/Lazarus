@@ -1171,6 +1171,10 @@ msgstr "Adresi panoya kopyala"
 msgid "Copy to Clipboard"
 msgstr "Panoya kopyala"
 
+#: idedebuggerstringconstants.lisdbgbreakpointgroupshint
+msgid "Show breakpoints by group"
+msgstr ""
+
 #: idedebuggerstringconstants.lisdbgbreakpointpropertieshint
 msgctxt "lazarusidestrconsts.lisdbgbreakpointpropertieshint"
 msgid "Breakpoint Properties ..."

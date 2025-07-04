@@ -1172,6 +1172,10 @@ msgstr "Копіювати адресу в буфер обміну"
 msgid "Copy to Clipboard"
 msgstr "Копіювати в буфер"
 
+#: idedebuggerstringconstants.lisdbgbreakpointgroupshint
+msgid "Show breakpoints by group"
+msgstr ""
+
 #: idedebuggerstringconstants.lisdbgbreakpointpropertieshint
 msgctxt "lazarusidestrconsts.lisdbgbreakpointpropertieshint"
 msgid "Breakpoint Properties ..."

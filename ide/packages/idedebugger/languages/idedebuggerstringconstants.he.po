@@ -1167,6 +1167,10 @@ msgstr ""
 msgid "Copy to Clipboard"
 msgstr "העתק ללוח הזמני"
 
+#: idedebuggerstringconstants.lisdbgbreakpointgroupshint
+msgid "Show breakpoints by group"
+msgstr ""
+
 #: idedebuggerstringconstants.lisdbgbreakpointpropertieshint
 #, fuzzy
 #| msgid "Breakpoint Properties..."
