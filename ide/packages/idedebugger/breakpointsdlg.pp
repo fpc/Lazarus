@@ -623,6 +623,7 @@ begin
   actProperties.ImageIndex := IDEImages.LoadImage('menu_environment_options');
 
   tbGroupByBrkGroup.ImageIndex := IDEImages.LoadImage('ttreeview');
+  tbGroupByBrkGroup.Hint := lisDbgBreakpointGroupsHint;
   case DebuggerOptions.BreakpointsDialogShowTree of
     bstNone:     tbGroupByBrkGroup.Down := False;
     bstBrkGroup: tbGroupByBrkGroup.Down := True;
