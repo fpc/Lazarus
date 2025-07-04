@@ -59,6 +59,7 @@ object IDETodoWindow: TIDETodoWindow
         Caption = 'Category'
         Width = 100
       end>
+    PopupMenu = mnuPopup
     ReadOnly = True
     RowSelect = True
     ScrollBars = ssAutoBoth
@@ -331,5 +332,12 @@ object IDETodoWindow: TIDETodoWindow
     OnRestoreProperties = XMLPropStorageRestoreProperties
     Left = 416
     Top = 152
+  end
+  object mnuPopup: TPopupMenu
+    Left = 324
+    Top = 133
+    object EditMenuItem: TMenuItem
+      Action = acEdit
+    end
   end
 end

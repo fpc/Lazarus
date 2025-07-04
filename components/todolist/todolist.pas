@@ -65,7 +65,7 @@ uses
   Classes, SysUtils, Math, AVL_Tree,
   // LCL
   LCLType, LclIntf, Forms, Controls, StdCtrls, Dialogs, ComCtrls,
-  ActnList, XMLPropStorage, ExtCtrls,
+  ActnList, XMLPropStorage, ExtCtrls, Menus,
   // LazUtils
   LazFileUtils, LazStringUtils, LazFileCache, LazLoggerBase, LazTracer, AvgLvlTree,
   // Codetools
@@ -101,10 +101,12 @@ type
     lblOptions: TLabel;
     lblShowWhat: TLabel;
     lvTodo: TListView;
+    EditMenuItem: TMenuItem;
     N1: TToolButton;
     N5: TToolButton;
     pnlOptions: TPanel;
     pnlShowWhat: TPanel;
+    mnuPopup: TPopupMenu;
     SaveDialog: TSaveDialog;
     tbEdit: TToolButton;
     tbColors: TToolButton;
