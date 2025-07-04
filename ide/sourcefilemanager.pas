@@ -2896,6 +2896,7 @@ begin
     MainIDE.UpdateSaveMenuItemsAndButtons(not (sfProjectSaving in Flags));
   end;
   TSourceEditor(AEditor).SourceNotebook.UpdateStatusBar;
+  TSourceEditor(AEditor).SourceNotebook.UpdateCaption;
 
   // fix all references
   NewUnitName:='';
