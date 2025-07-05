@@ -27,6 +27,8 @@ var
 
 begin
   {$ifdef NOGUI}
+  DefaultRunAllTests:=True;
+  DefaultFormat:=fXML;
   LclApp := Forms.Application.Create(nil);
   LclApp.Initialize;
   Application := TTestRunner.Create(nil);
