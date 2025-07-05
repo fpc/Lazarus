@@ -378,7 +378,7 @@ begin
           if Assigned(MaxVerTest) then
             NewDependency.MaxVersion.Assign(MaxVerTest);
           NewDependency.Flags := NewDependency.Flags + MinMaxVerFlags;
-          if not CheckAddingDependency(fProjPack, NewDependency) then exit;
+          if CheckAddingDependency(fProjPack, NewDependency, true) <> mrOK then exit;
           fResultDependencies.Add(NewDependency);
           NewDependency := nil;
         end;

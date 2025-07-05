@@ -1139,7 +1139,7 @@ begin
       if not NodeData.Removed then continue;
       if not (Item is TPkgDependency) then continue;
       Dependency:=TPkgDependency(Item);
-      if TPrjFileCheck.AddingDependency(LazProject,Dependency)<>mrOK then exit;
+      if TPrjFileCheck.AddingDependency(LazProject, Dependency, true)<>mrOK then exit;
       if Assigned(OnReAddDependency) then
         OnReAddDependency(Self,Dependency);
     end;
