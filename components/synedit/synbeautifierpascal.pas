@@ -407,6 +407,7 @@ begin
   FCacheLastHlTokenCol    := -1;
   if (CurrentLines[AIndex] <> '') then begin
     FPasHighlighter.StartAtLineIndex(AIndex);
+    FPasHighlighter.SetIsInNextToEOL;
     while not FPasHighlighter.GetEol do begin
       FCacheLastHlTokenKind := TtkTokenKind(FPasHighlighter.GetTokenKind);
       FCacheLastHlTokenCol := FPasHighlighter.GetTokenPos + 1;

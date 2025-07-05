@@ -980,6 +980,7 @@ type
     function GetTokenIsCommentEnd: Boolean;
     function IsKeyword(const AKeyword: string): boolean; override;
     procedure Next; override;
+    procedure SetIsInNextToEOL; experimental; // scan without extra colors
 
     procedure ResetRange; override;
     procedure SetLine(const NewValue: string; LineNumber: Integer); override;
@@ -5522,6 +5523,11 @@ begin
   if FAtLineStart and not(FTokenID in [tkSpace, tkComment, tkIDEDirective]) then
     FAtLineStart := False;
   //DebugLn('TSynPasSyn.Next Run=%2d TkPos=%2d %12s Tk="%s" -- TS=%s  Rng=%s  F=%s  ()=%d', [Run, fTokenPos, dbgs(FTokenID), GetToken, dbgs(FTokenState), dbgs(fRange), dbgs(TopPascalCodeFoldBlockType), PasCodeFoldRange.BracketNestLevel]);
+end;
+
+procedure TSynPasSyn.SetIsInNextToEOL;
+begin
+  FIsInNextToEOL := True;
 end;
 
 function TSynPasSyn.GetDefaultAttribute(Index: integer):
