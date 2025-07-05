@@ -557,7 +557,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
       AutoExpand = True
       BorderSpacing.Top = 6
       BorderSpacing.Right = 1
-      Constraints.MinWidth = 150
+      Constraints.MinWidth = 50
       HideSelection = False
       ReadOnly = True
       ScrollBars = ssAutoBoth

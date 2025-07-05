@@ -54,7 +54,7 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
     BevelOuter = bvNone
     ClientHeight = 460
     ClientWidth = 255
-    Constraints.MinWidth = 150
+    Constraints.MinWidth = 50
     TabOrder = 0
     object SettingsPanel: TPanel
       Left = 0
