@@ -10611,7 +10611,7 @@ var
   s: string;
   ClipHelper: TSynClipboardStream;
 begin
-  if (not SelAvail) then exit;
+  if (Data = nil) or (not SelAvail) then exit;
   s:=SelText;
   if s = ''  then
     exit;
