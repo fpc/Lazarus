@@ -557,7 +557,42 @@
           </Other>
         </CompilerOptions>
       </Item>
-      <SharedMatrixOptions Count="19">
+      <Item Name="No GUI - MOCK">
+        <MacroValues Count="1">
+          <Macro19 Name="LCLWidgetType" Value="testmock"/>
+        </MacroValues>
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <UnitOutputDirectory Value="units\$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <Parsing>
+            <SyntaxOptions>
+              <CPPInline Value="False"/>
+            </SyntaxOptions>
+          </Parsing>
+          <CodeGeneration>
+            <Checks>
+              <RangeChecks Value="True"/>
+              <OverflowChecks Value="True"/>
+              <StackChecks Value="True"/>
+            </Checks>
+          </CodeGeneration>
+          <Linking>
+            <Debugging>
+              <DebugInfoType Value="dsDwarf3"/>
+              <UseHeaptrc Value="True"/>
+            </Debugging>
+          </Linking>
+          <Other>
+            <CustomOptions Value="-gt
+-dWithSynBiDi"/>
+          </Other>
+        </CompilerOptions>
+      </Item>
+      <SharedMatrixOptions Count="20">
         <Item1 ID="394047217475" Targets="SynEdit" Modes="O0riota,O1riota,O2riota,O3riota,O4riota" Value="-CR"/>
         <Item2 ID="832332610162" Targets="SynEdit" Modes="O0riota,O1riota,O2riota,O3riota,O4riota,O1 - SynFoldDebug SynFoldSaveDebug,O0riota1  NO-gt,O0 -gt,O0 -gtt,O0 -gttt,O0 -gtttt &lt;nil>,No GUI" Value="-dSynCheckPaintLock -dSynClipboardExceptions -dAssertSynMemIndex -dSynAssert -dSynAssertFold"/>
         <Item3 ID="058689630976" Targets="SynEdit" Modes="O1 - SynFoldDebug SynFoldSaveDebug" Value="-dSynFoldDebug -dSynFoldSaveDebug"/>
@@ -576,7 +611,8 @@
         <Item16 ID="710122956011" Targets="#project,SynEdit,LCL,LazUtils" Modes="O0 -gtt" Value="-gt- -gtt"/>
         <Item17 ID="041078026067" Targets="#project,SynEdit,LCL,LazUtils" Modes="O0 -gttt" Value="-gt- -gttt"/>
         <Item18 ID="961200635277" Targets="#project,SynEdit,LCL,LazUtils" Value="-gt- -gtttt"/>
-        <Item19 ID="940714568938" Targets="#project" Modes="No GUI" Value="-dNOGUI"/>
+        <Item19 ID="213690431896" Targets="#project,SynEdit,LCL,LazUtils" Modes="No GUI - MOCK" Type="IDEMacro" MacroName="LCLWidgetType" Value="testmock"/>
+        <Item20 ID="940714568938" Targets="#project" Modes="No GUI,No GUI - MOCK" Value="-dNOGUI"/>
       </SharedMatrixOptions>
     </BuildModes>
     <PublishOptions>
