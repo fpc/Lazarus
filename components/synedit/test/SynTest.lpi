@@ -525,23 +525,25 @@
           </Other>
         </CompilerOptions>
       </Item>
-      <SharedMatrixOptions Count="16">
+      <SharedMatrixOptions Count="18">
         <Item1 ID="394047217475" Targets="SynEdit" Modes="O0riota,O1riota,O2riota,O3riota,O4riota" Value="-CR"/>
-        <Item2 ID="832332610162" Targets="#project,SynEdit,LCL,LazUtils" Modes="O0riota,O1riota,O2riota,O3riota,O4riota,O1 - SynFoldDebug SynFoldSaveDebug,O0riota1  NO-gt,O0 -gt,O0 -gtt,O0 -gttt,O0 -gtttt &lt;nil>" Value="-dSynCheckPaintLock -dSynClipboardExceptions -dAssertSynMemIndex -dSynAssert -dSynAssertFold"/>
-        <Item3 ID="476451423372" Targets="#project,SynEdit,LCL,LazUtils" Modes="O0,O0riota,O0riota1  NO-gt,O0 -gt,O0 -gtt,O0 -gttt,O0 -gtttt &lt;nil>,O0   NO-gt1" Value="-O-"/>
-        <Item4 ID="353669118028" Targets="#project,SynEdit,LCL,LazUtils" Modes="O1,O1riota,O1 - SynFoldDebug SynFoldSaveDebug" Value="-O-1"/>
-        <Item5 ID="705666282637" Targets="#project,SynEdit,LCL,LazUtils" Modes="O2,O2riota" Value="-O-2"/>
-        <Item6 ID="139516671950" Targets="#project,SynEdit,LCL,LazUtils" Modes="O3,O3riota" Value="-O-3"/>
-        <Item7 ID="951152446553" Targets="#project,SynEdit,LCL,LazUtils" Modes="O4,O4riota" Value="-O-4"/>
-        <Item8 ID="290834599239" Targets="#project,SynEdit,LCL,LazUtils" Modes="O0riota,O1riota,O2riota,O3riota,O4riota,O1 - SynFoldDebug SynFoldSaveDebug,O0 -gtttt &lt;nil>,O0 -gttt,O0 -gtt,O0 -gt,O0riota1  NO-gt" Value="-Criot"/>
-        <Item9 ID="862413201644" Targets="#project,SynEdit,LCL,LazUtils" Value="-CR"/>
-        <Item10 ID="552061010909" Targets="#project,SynEdit,LCL,LazUtils" Modes="O0riota,O1riota,O2riota,O3riota,O4riota,O1 - SynFoldDebug SynFoldSaveDebug,O0riota1  NO-gt,O0 -gt,O0 -gtt,O0 -gttt,O0 -gtttt &lt;nil>" Value="-Sa"/>
-        <Item11 ID="362454399046" Targets="#project,SynEdit,LCL,LazUtils" Modes="O1 - SynFoldDebug SynFoldSaveDebug,O0 -gt" Value="-gt- -gt"/>
-        <Item12 ID="710122956011" Targets="#project,SynEdit,LCL,LazUtils" Modes="O0 -gtt" Value="-gt- -gtt"/>
-        <Item13 ID="041078026067" Targets="#project,SynEdit,LCL,LazUtils" Modes="O0 -gttt" Value="-gt- -gttt"/>
-        <Item14 ID="961200635277" Targets="#project,SynEdit,LCL,LazUtils" Modes="O0 -gtttt &lt;nil>" Value="-gt- -gtttt"/>
-        <Item15 ID="901082361902" Targets="#project,SynEdit,LCL,LazUtils" Modes="O0riota1  NO-gt,O0   NO-gt1,O4,O3,O2,O1" Value="-gt-"/>
-        <Item16 ID="058689630976" Targets="#project,SynEdit,LCL,LazUtils" Modes="O1 - SynFoldDebug SynFoldSaveDebug" Value="-dSynFoldDebug -dSynFoldSaveDebug"/>
+        <Item2 ID="832332610162" Targets="SynEdit" Modes="O0riota,O1riota,O2riota,O3riota,O4riota,O1 - SynFoldDebug SynFoldSaveDebug,O0riota1  NO-gt,O0 -gt,O0 -gtt,O0 -gttt,O0 -gtttt &lt;nil>" Value="-dSynCheckPaintLock -dSynClipboardExceptions -dAssertSynMemIndex -dSynAssert -dSynAssertFold"/>
+        <Item3 ID="058689630976" Targets="SynEdit" Modes="O1 - SynFoldDebug SynFoldSaveDebug" Value="-dSynFoldDebug -dSynFoldSaveDebug"/>
+        <Item4 ID="476451423372" Targets="#project,SynEdit,LCL,LazUtils" Modes="O0,O0riota,O0riota1  NO-gt,O0 -gt,O0 -gtt,O0 -gttt,O0 -gtttt &lt;nil>,O0   NO-gt1" Value="-O-"/>
+        <Item5 ID="353669118028" Targets="#project,SynEdit,LCL,LazUtils" Modes="O1,O1riota,O1 - SynFoldDebug SynFoldSaveDebug" Value="-O-1"/>
+        <Item6 ID="705666282637" Targets="#project,SynEdit,LCL,LazUtils" Modes="O2,O2riota" Value="-O-2"/>
+        <Item7 ID="139516671950" Targets="#project,SynEdit,LCL,LazUtils" Modes="O3,O3riota" Value="-O-3"/>
+        <Item8 ID="951152446553" Targets="#project,SynEdit,LCL,LazUtils" Modes="O4,O4riota" Value="-O-4"/>
+        <Item9 ID="290834599239" Targets="#project,SynEdit,LCL,LazUtils" Modes="O0riota,O1riota,O2riota,O3riota,O4riota,O1 - SynFoldDebug SynFoldSaveDebug,O0 -gtttt &lt;nil>,O0 -gttt,O0 -gtt,O0 -gt,O0riota1  NO-gt" Value="-Criot"/>
+        <Item10 ID="460156594764" Targets="#project,SynEdit,LCL,LazUtils" Modes="O4,O0,O0   NO-gt1,O1,O2" Value="-Cr- -Ci- -Co- -Ct-"/>
+        <Item11 ID="862413201644" Targets="#project,SynEdit,LCL,LazUtils" Value="-CR"/>
+        <Item12 ID="552061010909" Targets="#project,SynEdit,LCL,LazUtils" Modes="O0riota,O1riota,O2riota,O3riota,O4riota,O1 - SynFoldDebug SynFoldSaveDebug,O0riota1  NO-gt,O0 -gt,O0 -gtt,O0 -gttt,O0 -gtttt &lt;nil>" Value="-Sa"/>
+        <Item13 ID="297278821722" Targets="#project,SynEdit,LCL,LazUtils" Modes="O4,O0,O0   NO-gt1,O1,O2" Value="-Sa-"/>
+        <Item14 ID="901082361902" Targets="#project,SynEdit,LCL,LazUtils" Modes="O0riota1  NO-gt,O0   NO-gt1,O4,O3,O2,O1,O1riota,O2riota,O3riota,O4riota" Value="-gt-"/>
+        <Item15 ID="362454399046" Targets="#project,SynEdit,LCL,LazUtils" Modes="O1 - SynFoldDebug SynFoldSaveDebug,O0 -gt,O0,O0riota" Value="-gt- -gt"/>
+        <Item16 ID="710122956011" Targets="#project,SynEdit,LCL,LazUtils" Modes="O0 -gtt" Value="-gt- -gtt"/>
+        <Item17 ID="041078026067" Targets="#project,SynEdit,LCL,LazUtils" Modes="O0 -gttt" Value="-gt- -gttt"/>
+        <Item18 ID="961200635277" Targets="#project,SynEdit,LCL,LazUtils" Modes="O0 -gtttt &lt;nil>" Value="-gt- -gtttt"/>
       </SharedMatrixOptions>
     </BuildModes>
     <PublishOptions>
