@@ -2243,7 +2243,7 @@ function ValidParentForm(Control: TControl; TopForm: Boolean): TCustomForm;
 begin
   Result := GetParentForm(Control, TopForm);
   if Result = nil then
-    raise EInvalidOperation.CreateFmt(sParentRequired, [Control.Name]);
+    raise EInvalidOperation.CreateFmt(sParentRequired, [Control.Name+':'+Control.ClassName]);
 end;
 
 

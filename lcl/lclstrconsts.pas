@@ -230,7 +230,7 @@ resourceString
   sInvalidIndex = 'Invalid ImageList Index';
   sInvalidImageSize = 'Invalid image size';
   sDuplicateMenus = 'Duplicate menus';
-  sCannotFocus = 'Cannot focus a disabled or invisible window "%s":"%s"';
+  sCannotFocus = 'Cannot focus a disabled or invisible window "%s"';
   sParentRequired = 'Control "%s" has no parent window.';
   SMaskEditNoMatch = 'The current text does not match the specified mask.';
 

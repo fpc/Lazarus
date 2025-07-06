@@ -1632,7 +1632,7 @@ end;
 function TControl.GetClientOrigin: TPoint;
 begin
   if Parent = nil then
-    raise EInvalidOperation.CreateFmt(sParentRequired, [Name]);
+    raise EInvalidOperation.CreateFmt(sParentRequired, [Name+':'+ClassName]);
   Result := Parent.ClientOrigin;
   Inc(Result.X, FLeft);
   Inc(Result.Y, FTop);
@@ -5315,7 +5315,7 @@ end;
 function TControl.GetDeviceContext(var WindowHandle: HWND): HDC;
 begin
   if Parent = nil then
-    raise EInvalidOperation.CreateFmt(sParentRequired, [Name]);
+    raise EInvalidOperation.CreateFmt(sParentRequired, [Name+':'+ClassName]);
 
   Result := Parent.GetDeviceContext(WindowHandle);
   MoveWindowOrgEx(Result, Left, Top);
