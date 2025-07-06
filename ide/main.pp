@@ -6527,7 +6527,7 @@ begin
       mnuNewProjectClicked(Sender);
     tpws_open:
       mnuOpenProjectClicked(Sender);
-    tpws_openRecent:
+    tpws_openRecent, tpws_droppedProject:
       begin
         ARecentProject := ExpandFileNameUTF8(ARecentProject);
         if DoOpenProjectFile(ARecentProject, [ofAddToRecent]) <> mrOk then
