@@ -80,6 +80,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="Test_ChildSizing"/>
       </Unit>
+      <Unit>
+        <Filename Value="test_dpiscaling.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Test_DpiScaling"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

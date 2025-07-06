@@ -4,7 +4,7 @@ program test_lcl;
 
 uses
   Interfaces,
-  Classes, consoletestrunner, Test_ChildSizing, Forms;
+  Classes, consoletestrunner, Test_ChildSizing, Test_DpiScaling, Forms;
 
 type
 
