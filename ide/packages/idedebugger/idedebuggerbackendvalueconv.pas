@@ -5,8 +5,13 @@ unit IdeDebuggerBackendValueConv;
 interface
 
 uses
-  Classes, SysUtils, fgl, Laz2_XMLCfg, LazClasses, lazCollections, IdeDebuggerUtils,
-  LazDebuggerValueConverter;
+  Classes, SysUtils, fgl,
+  // LazUtils
+  Laz2_XMLCfg, LazClasses, lazCollections,
+  // LazDebuggerIntf
+  LazDebuggerValueConverter,
+  // IdeDebugger
+  IdeDebuggerUtils;
 
 type
 

@@ -698,7 +698,6 @@ begin
     SourceEditorManager.ActiveEditor := NewSrcEdit;
     SourceEditorManager.ShowActiveWindowOnTop(True);
   end;
-  SrcNoteBook.UpdateStatusBar;
   SrcNotebook.BringToFront;
 
   Result:=mrOk;

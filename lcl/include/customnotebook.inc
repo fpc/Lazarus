@@ -1245,7 +1245,8 @@ begin
   if HandleAllocated then
   begin
     if Assigned(Images) then
-      TWSCustomTabControlClass(WidgetSetClass).SetImageList(Self, Images.ResolutionForPPI[ImagesWidth, Font.PixelsPerInch, 1].Resolution) // to-do: support scaling factor
+      TWSCustomTabControlClass(WidgetSetClass).SetImageList(Self, // to-do: support scaling factor
+            Images.ResolutionForPPI[ImagesWidth,Font.PixelsPerInch,1].Resolution)
     else
       TWSCustomTabControlClass(WidgetSetClass).SetImageList(Self, nil);
   end;

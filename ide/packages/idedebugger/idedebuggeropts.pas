@@ -5,10 +5,19 @@ unit IdeDebuggerOpts;
 interface
 
 uses
-  Classes, SysUtils, IDEOptionsIntf, Laz2_XMLCfg, LazFileUtils, LazUTF8,
-  LazLoggerBase, Laz2_DOM, Laz2_XMLRead, Laz2_XMLWrite, DbgIntfDebuggerBase,
+  Classes, SysUtils,
+  // LazUtils
+  Laz2_XMLCfg, LazFileUtils, LazUTF8, LazLoggerBase,
+  Laz2_DOM, Laz2_XMLRead, Laz2_XMLWrite,
+  // BuildIntf
+  IDEOptionsIntf,
+  // IdeConfig
+  EnvironmentOpts,
+  // DebuggerIntf
+  DbgIntfDebuggerBase,
+  // IdeDebugger
   IdeDebuggerStringConstants, IdeDebuggerBackendValueConv,
-  IdeDebuggerValueFormatter, IdeDebuggerDisplayFormats, EnvironmentOpts;
+  IdeDebuggerValueFormatter, IdeDebuggerDisplayFormats;
 
 type
 
