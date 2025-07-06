@@ -1274,7 +1274,7 @@ msgstr "කහ"
 #: lclstrconsts.scannotfocus
 #, object-pascal-format, fuzzy, badformat
 #| msgid "Cannot focus a disabled or invisible window"
-msgid "Cannot focus a disabled or invisible window \"%s\":\"%s\""
+msgid "Cannot focus a disabled or invisible window \"%s\""
 msgstr "ආබාධිත හෝ නොපෙනෙන කවුළුවක් නාභිගත කළ නොහැක"
 
 #: lclstrconsts.sduplicatemenus

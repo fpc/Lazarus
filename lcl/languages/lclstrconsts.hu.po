@@ -1361,7 +1361,7 @@ msgstr "Sárga"
 #: lclstrconsts.scannotfocus
 #, object-pascal-format, fuzzy, badformat
 #| msgid "Cannot focus a disabled or invisible window"
-msgid "Cannot focus a disabled or invisible window \"%s\":\"%s\""
+msgid "Cannot focus a disabled or invisible window \"%s\""
 msgstr "Nem lehet letiltott vagy láthatatlan ablakot előtérbe hozni"
 
 #: lclstrconsts.sduplicatemenus

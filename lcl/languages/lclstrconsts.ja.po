@@ -1362,7 +1362,7 @@ msgstr "黄色"
 #: lclstrconsts.scannotfocus
 #, object-pascal-format, fuzzy, badformat
 #| msgid "Cannot focus a disabled or invisible window"
-msgid "Cannot focus a disabled or invisible window \"%s\":\"%s\""
+msgid "Cannot focus a disabled or invisible window \"%s\""
 msgstr "無効または不可視ウィンドウにフォーカスはできません"
 
 #: lclstrconsts.sduplicatemenus

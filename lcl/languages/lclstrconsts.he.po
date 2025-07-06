@@ -1385,7 +1385,7 @@ msgstr "צהוב"
 #: lclstrconsts.scannotfocus
 #, object-pascal-format, fuzzy, badformat
 #| msgid "Cannot focus a disabled or invisible window"
-msgid "Cannot focus a disabled or invisible window \"%s\":\"%s\""
+msgid "Cannot focus a disabled or invisible window \"%s\""
 msgstr "לא יכול להתמקד בחלון מנוטרל או בלתי נראה"
 
 #: lclstrconsts.sduplicatemenus

@@ -1362,7 +1362,7 @@ msgstr "Żółty"
 #: lclstrconsts.scannotfocus
 #, object-pascal-format, fuzzy, badformat
 #| msgid "Cannot focus a disabled or invisible window"
-msgid "Cannot focus a disabled or invisible window \"%s\":\"%s\""
+msgid "Cannot focus a disabled or invisible window \"%s\""
 msgstr "Nie można ustawić aktywności na niedostępnym lub niewidocznym oknie"
 
 #: lclstrconsts.sduplicatemenus

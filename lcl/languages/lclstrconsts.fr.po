@@ -1363,7 +1363,7 @@ msgstr "Jaune"
 #: lclstrconsts.scannotfocus
 #, object-pascal-format, fuzzy, badformat
 #| msgid "Cannot focus a disabled or invisible window"
-msgid "Cannot focus a disabled or invisible window \"%s\":\"%s\""
+msgid "Cannot focus a disabled or invisible window \"%s\""
 msgstr "Impossible de focaliser une fenêtre invisible ou désactivée"
 
 #: lclstrconsts.sduplicatemenus

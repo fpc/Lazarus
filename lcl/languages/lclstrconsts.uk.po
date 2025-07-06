@@ -1346,7 +1346,7 @@ msgstr "Жовтий"
 #: lclstrconsts.scannotfocus
 #, object-pascal-format, fuzzy, badformat
 #| msgid "Cannot focus a disabled or invisible window"
-msgid "Cannot focus a disabled or invisible window \"%s\":\"%s\""
+msgid "Cannot focus a disabled or invisible window \"%s\""
 msgstr "Не можна дати фокус вимкненому або невидимому вікну"
 
 #: lclstrconsts.sduplicatemenus

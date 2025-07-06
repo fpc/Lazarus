@@ -1336,7 +1336,7 @@ msgstr ""
 #: lclstrconsts.scannotfocus
 #, object-pascal-format, fuzzy, badformat
 #| msgid "Cannot focus a disabled or invisible window"
-msgid "Cannot focus a disabled or invisible window \"%s\":\"%s\""
+msgid "Cannot focus a disabled or invisible window \"%s\""
 msgstr "No puc accedir a una finestra invisible o tancada"
 
 #: lclstrconsts.sduplicatemenus

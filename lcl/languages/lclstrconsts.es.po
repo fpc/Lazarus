@@ -1354,7 +1354,7 @@ msgstr "Amarillo"
 #: lclstrconsts.scannotfocus
 #, object-pascal-format, fuzzy, badformat
 #| msgid "Cannot focus a disabled or invisible window"
-msgid "Cannot focus a disabled or invisible window \"%s\":\"%s\""
+msgid "Cannot focus a disabled or invisible window \"%s\""
 msgstr "No se puede establecer el foco en una ventana desactivada o invisible"
 
 #: lclstrconsts.sduplicatemenus

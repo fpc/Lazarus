@@ -1366,7 +1366,7 @@ msgstr "노랑"
 #: lclstrconsts.scannotfocus
 #, object-pascal-format, fuzzy, badformat
 #| msgid "Cannot focus a disabled or invisible window"
-msgid "Cannot focus a disabled or invisible window \"%s\":\"%s\""
+msgid "Cannot focus a disabled or invisible window \"%s\""
 msgstr "비활성화되거나 보이지 않는 창에 초점을 맞출 수 없습니다"
 
 #: lclstrconsts.sduplicatemenus

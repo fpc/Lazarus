@@ -1270,7 +1270,7 @@ msgstr ""
 
 #: lclstrconsts.scannotfocus
 #, object-pascal-format
-msgid "Cannot focus a disabled or invisible window \"%s\":\"%s\""
+msgid "Cannot focus a disabled or invisible window \"%s\""
 msgstr ""
 
 #: lclstrconsts.sduplicatemenus

@@ -1369,7 +1369,7 @@ msgstr "Geel"
 #: lclstrconsts.scannotfocus
 #, object-pascal-format, fuzzy, badformat
 #| msgid "Cannot focus a disabled or invisible window"
-msgid "Cannot focus a disabled or invisible window \"%s\":\"%s\""
+msgid "Cannot focus a disabled or invisible window \"%s\""
 msgstr "Kan geen focus geven aan een onzichtbaar of disabled venster"
 
 #: lclstrconsts.sduplicatemenus

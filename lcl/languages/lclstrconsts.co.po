@@ -1276,7 +1276,7 @@ msgstr "Ghjallu"
 #: lclstrconsts.scannotfocus
 #, object-pascal-format, fuzzy, badformat
 #| msgid "Cannot focus a disabled or invisible window"
-msgid "Cannot focus a disabled or invisible window \"%s\":\"%s\""
+msgid "Cannot focus a disabled or invisible window \"%s\""
 msgstr "Ùn si pò micca mette in evidenza una finestra disattivata o invisibile"
 
 #: lclstrconsts.sduplicatemenus

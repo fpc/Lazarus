@@ -1364,7 +1364,7 @@ msgstr "Geltona"
 #: lclstrconsts.scannotfocus
 #, object-pascal-format, fuzzy, badformat
 #| msgid "Cannot focus a disabled or invisible window"
-msgid "Cannot focus a disabled or invisible window \"%s\":\"%s\""
+msgid "Cannot focus a disabled or invisible window \"%s\""
 msgstr "Negalima sufokusuoti neveiksnaus ar nematomo lango"
 
 #: lclstrconsts.sduplicatemenus
