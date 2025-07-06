@@ -5,7 +5,7 @@ unit Test_ChildSizing;
 interface
 
 uses
-  Classes, SysUtils, Math, fpcunit, testutils, testregistry, Controls;
+  Classes, SysUtils, Math, fpcunit, testutils, testregistry, Controls, Forms;
 
 type
   TIntegerArray = array of integer;
@@ -52,6 +52,7 @@ type
   TTestChildSizing = class(TTestCase)
   private
     FContainer: TTestContainer;
+    FTestForm: TForm;
   protected
     class procedure AssertApprox(Expected, Actual: integer; AnAllowance: Integer = 1);
     class procedure AssertApprox(AName: String; Expected, Actual: integer);
@@ -101,12 +102,19 @@ implementation
 
 procedure TTestWinControl.CreateHandle;
 begin
+  {$IFDEF LCLNOGUI}
   Handle := 1;
+  {$ELSE}
+  inherited;
+  {$ENDIF}
 end;
 
 procedure TTestWinControl.DestroyHandle;
 begin
-  //
+  {$IFDEF LCLNOGUI}
+  {$ELSE}
+  inherited;
+  {$ENDIF}
 end;
 
 function TTestWinControl.IsVisible: Boolean;
@@ -208,7 +216,16 @@ procedure TTestChildSizing.Init1(out P: TTestContainer; AContainerWidth: integer
 var
   i: Integer;
 begin
-  P := TTestContainer.Create(nil);
+  {$IFnDEF LCLNOGUI}
+  if FTestForm = nil then begin
+    FTestForm := TForm.CreateNew(nil);
+    FTestForm.SetBounds(10,10,100,100);
+    FTestForm.Show;
+  end;
+  {$ENDIF}
+
+  P := TTestContainer.Create(FTestForm);
+  p.Parent := FTestForm;
   if AInitContainerHeight then begin
     P.SetBounds(0,0, 150, AContainerWidth);
     p.ChildSizing.ControlsPerLine := APerLine;
@@ -299,6 +316,7 @@ procedure TTestChildSizing.TearDown;
 begin
   inherited TearDown;
   FreeAndNil(FContainer);
+  FreeAndNil(FTestForm);
 end;
 
 procedure TTestChildSizing.TestAnchorAlign;

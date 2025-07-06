@@ -4,7 +4,7 @@ program test_lcl;
 
 uses
   Interfaces,
-  Classes, consoletestrunner, Test_ChildSizing;
+  Classes, consoletestrunner, Test_ChildSizing, Forms;
 
 type
 
@@ -16,14 +16,19 @@ type
   end;
 
 var
-  Application: TMyTestRunner;
+  TestApplication: TMyTestRunner;
 
 begin
+  {$IFnDEF LCLNOGUI}
+  Application.Scaled:=True;
+  Application.Initialize;
+  {$ENDIF}
+
   DefaultRunAllTests:=True;
   DefaultFormat:=fXML;
-  Application := TMyTestRunner.Create(nil);
-  Application.Initialize;
-  Application.Title := 'FPCUnit Console test runner';
-  Application.Run;
-  Application.Free;
+  TestApplication := TMyTestRunner.Create(nil);
+  TestApplication.Initialize;
+  TestApplication.Title := 'FPCUnit Console test runner';
+  TestApplication.Run;
+  TestApplication.Free;
 end.
