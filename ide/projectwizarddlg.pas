@@ -31,6 +31,8 @@ uses
   Classes, SysUtils,
   // LCL
   Forms, Controls, StdCtrls, Graphics, Dialogs, Buttons,
+  // LazUtils
+  LazFileUtils, LazLoggerBase,
   // BuildIntf
   PackageIntf,
   // IdeIntf
@@ -43,6 +45,7 @@ type
     tpws_new,
     tpws_open,
     tpws_openRecent,
+    tpws_droppedProject,
     tpws_examples,
     tpws_convert,
     tpws_closeIDE
@@ -66,24 +69,30 @@ type
     procedure cbRecentProjectsSelect(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
+    procedure FormDragDrop(Sender, Source: TObject; X, Y: Integer);
+    procedure FormDragOver(Sender, Source: TObject; X, Y: Integer;
+      State: TDragState; var Accept: Boolean);
+    procedure FormDropFiles(Sender: TObject; const FileNames: array of string);
   private
     FResult: TProjectWizardSelectionType;
+    FDroppedProjectInfo: string;
   public
     property Result: TProjectWizardSelectionType read FResult;
-  end; 
+    property DroppedProjectInfo: string read FDroppedProjectInfo;
+  end;
 
-function ShowProjectWizardDlg(out ARecentProject: String): TProjectWizardSelectionType;
+function ShowProjectWizardDlg(out AProjectToOpen: String): TProjectWizardSelectionType;
 
 implementation
 
 {$R *.lfm}
 
-function ShowProjectWizardDlg(out ARecentProject: String): TProjectWizardSelectionType;
+function ShowProjectWizardDlg(out AProjectToOpen: String): TProjectWizardSelectionType;
 var
   ProjectWizardDialog: TProjectWizardDialog;
 begin
   Result := tpws_closeIDE;
-  ARecentProject := '';
+  AProjectToOpen := '';
   ProjectWizardDialog := TProjectWizardDialog.create(nil);
   with ProjectWizardDialog do
   begin
@@ -110,7 +119,12 @@ begin
     if ProjectWizardDialog.ShowModal <> mrOk then
       Exit;
     Result := ProjectWizardDialog.Result;
-    ARecentProject := ProjectWizardDialog.cbRecentProjects.Text;
+    case Result of
+      tpws_openRecent:
+        AProjectToOpen := ProjectWizardDialog.cbRecentProjects.Text;
+      tpws_droppedProject:
+        AProjectToOpen := ProjectWizardDialog.DroppedProjectInfo;
+    end;
   finally
     ProjectWizardDialog.free;
   end;
@@ -158,6 +172,35 @@ end;
 procedure TProjectWizardDialog.FormCreate(Sender: TObject);
 begin
   IDEDialogLayoutList.ApplyLayout(self);
+end;
+
+// How are FormDragDrop and FormDragOver triggered? Nothing is shown.
+procedure TProjectWizardDialog.FormDragDrop(Sender, Source: TObject; X, Y: Integer);
+begin
+  //ShowMessage('TProjectWizardDialog.FormDragDrop: Source=' + Source.ClassName);
+  debugln(['TProjectWizardDialog.FormDragDrop: XY=', X,':',Y, ', Sender', Sender, ', Source=', Source]);
+end;
+
+procedure TProjectWizardDialog.FormDragOver(Sender, Source: TObject; X,
+  Y: Integer; State: TDragState; var Accept: Boolean);
+begin
+  //ShowMessage('TProjectWizardDialog.FormDragOver: Source=' + Source.ClassName + ', State=' + IntToStr(Ord(State)));
+  debugln(['TProjectWizardDialog.FormDragOver: XY=', X,':',Y, ', Sender', Sender,
+           ', Source=', Source, ', State=', State, ', Accept=', Accept]);
+  Accept := True;
+end;
+
+// This works when AllowDropFiles is enabled.
+procedure TProjectWizardDialog.FormDropFiles(Sender: TObject;
+  const FileNames: array of string);
+begin
+  Assert(Length(FileNames)>0, 'TProjectWizardDialog.FormDropFiles: FileNames is empty.');
+  debugln(['TProjectWizardDialog.FormDropFiles File[0]=', FileNames[0]]);
+  if FilenameExtIs(FileNames[0], 'lpi') then begin
+    FDroppedProjectInfo := FileNames[0];
+    FResult := tpws_droppedProject;
+    ModalResult := mrOK;
+  end;
 end;
 
 end.

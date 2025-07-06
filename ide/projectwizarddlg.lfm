@@ -4,14 +4,19 @@ object ProjectWizardDialog: TProjectWizardDialog
   Top = 322
   Width = 572
   ActiveControl = btnNewProject
+  AllowDropFiles = True
   BorderIcons = [biSystemMenu]
   Caption = 'Project Wizard '
   ClientHeight = 294
   ClientWidth = 572
+  DragMode = dmAutomatic
   Position = poScreenCenter
-  LCLVersion = '3.99.0.0'
+  LCLVersion = '4.99.0.0'
   OnClose = FormClose
   OnCreate = FormCreate
+  OnDragDrop = FormDragDrop
+  OnDragOver = FormDragOver
+  OnDropFiles = FormDropFiles
   object btnNewProject: TBitBtn
     AnchorSideTop.Control = Owner
     AnchorSideRight.Side = asrBottom
