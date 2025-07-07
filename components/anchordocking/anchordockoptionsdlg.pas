@@ -302,6 +302,7 @@ begin
   HeaderStyleComboBox.Enabled:=HasHeaders;
   HighlightFocusedCheckBox.Enabled:=HasHeaders;
   DockSitesCanBeMinimized.Enabled:=HasHeaders;
+  FlatHeadersButtons.Enabled:=HasHeaders;
 end;
 
 constructor TAnchorDockOptionsFrame.Create(TheOwner: TComponent);
