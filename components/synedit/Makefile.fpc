@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for SynEdit 1.0
 #
-#   This file was generated on 12/09/2023
+#   This file was generated on 07/07/2025
 
 [package]
 name=synedit
@@ -10,8 +10,8 @@ version=1.0
 
 [compiler]
 unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
-unitdir=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazedit/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
-options=-MObjFPC -Scghi -CR -O1 -g -gl -l -vewnhibq -vm6058,5024,4055 -dLCL -dLCL$(LCL_PLATFORM) -CR -dgc $(DBG_OPTIONS)
+unitdir=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../lazedit/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+options=-MObjFPC -Scghi -CR -O1 -g -gl -l -vewnhibq -vm6058,5091,5024,4055,3124,3123 -dLCL -dLCL$(LCL_PLATFORM) -CR -dgc -vm6060 $(DBG_OPTIONS)
 
 [target]
 units=allsynedit.pas
