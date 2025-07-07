@@ -183,7 +183,7 @@ type
     // Methods used by SaveIDEMakeOptions :
     function BreakExtraOptions: string;
     // Methods used by CalcTargets :
-    procedure SpecialIdeConfig;
+    procedure AppendOption_IdeConfig;
     // This is used by CreateIDEMakeOptions and IsWriteProtected
     function CalcTargets(Flags: TBuildLazarusFlags): TModalResult;
     // Methods used by CreateIDEMakeOptions :
@@ -688,7 +688,7 @@ begin
   end;
 end;
 
-procedure TLazarusBuilder.SpecialIdeConfig;
+procedure TLazarusBuilder.AppendOption_IdeConfig;
 var
   MakeIDECfgFilename: string;
 begin
@@ -735,7 +735,7 @@ begin
   //DebugLn(['CreateIDEMakeOptions blfUseMakeIDECfg=',blfUseMakeIDECfg in FLags,' ExtraOptions="',fExtraOptions,'" ',fPackageOptions]);
   if (blfUseMakeIDECfg in Flags) then
   begin
-    SpecialIdeConfig;
+    AppendOption_IdeConfig;
   end
   else begin
     AppendExtraOption(fPackageOptions,false);
