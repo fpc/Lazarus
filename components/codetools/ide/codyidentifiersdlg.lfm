@@ -68,9 +68,12 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
     BorderSpacing.Bottom = 1
+    ClickOnSelChange = False
     ItemHeight = 0
+    OnClick = ItemsListBoxClick
     OnContextPopup = ItemsListBoxContextPopup
     OnDblClick = ItemsListBoxDblClick
+    OnKeyDown = ItemsListBoxKeyDown
     OnSelectionChange = ItemsListBoxSelectionChange
     PopupMenu = PopupMenu1
     TabOrder = 2

@@ -172,6 +172,9 @@ type
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure HideOtherProjectsCheckBoxChange(Sender: TObject);
+    procedure ItemsListBoxKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure ItemsListBoxClick(Sender: TObject);
     procedure ItemsListBoxDblClick(Sender: TObject);
     procedure ItemsListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
@@ -956,6 +959,9 @@ begin
       ItemsListBox.ItemIndex:=i-1;
     Key := 0;
   end;
+
+  if Key <> 0 then
+    ItemsListBoxKeyDown(Sender, Key, Shift);
 end;
 
 procedure TCodyIdentifiersDlg.FormDestroy(Sender: TObject);
@@ -1012,6 +1018,32 @@ procedure TCodyIdentifiersDlg.HideOtherProjectsCheckBoxChange(Sender: TObject);
 begin
   if FItems=nil then exit;
   IdleConnected:=true;
+end;
+
+procedure TCodyIdentifiersDlg.ItemsListBoxKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) and (Shift = []) then
+  begin
+    if FindSelectedIdentifier = nil then
+    begin
+      MaxItems := MaxItems + CodyOptions.UDMaxListItems;
+      Key := 0;
+    end;
+  end;
+end;
+
+procedure TCodyIdentifiersDlg.ItemsListBoxClick(Sender: TObject);
+var
+  lClickPos: TPoint;
+begin
+  // ignore clicks in empty area
+  lClickPos := ItemsListBox.ScreenToClient(Mouse.CursorPos);
+  if ItemsListBox.ItemAtPos(lClickPos, true) < 0 then exit;
+
+  // if a special item "show more" is clicked
+  if (ItemsListBox.ItemIndex >= 0) and (FindSelectedIdentifier = nil) then
+    MaxItems := MaxItems + CodyOptions.UDMaxListItems;
 end;
 
 procedure TCodyIdentifiersDlg.ItemsListBoxDblClick(Sender: TObject);
@@ -1243,8 +1275,13 @@ begin
       end;
       sl.Add(s);
     end;
-    if Found>sl.Count then
-      sl.Add(Format(crsAndMoreIdentifiers, [IntToStr(Found-sl.Count)]));
+    if Found > sl.Count then
+    begin
+      if Found - sl.Count > CodyOptions.UDMaxListItems then
+        sl.Add(Format(crsShowMoreIdentifiers, [CodyOptions.UDMaxListItems, Found - sl.Count]))
+      else
+        sl.Add(Format(crsShowRemainingIdentifiers, [Found - sl.Count]));
+    end;
 
     ItemsListBox.Items.Assign(sl);
     if Found>0 then
