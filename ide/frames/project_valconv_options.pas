@@ -87,15 +87,8 @@ end;
 
 procedure TIdeProjectValConvOptionsFrame.WriteSettings(
   AOptions: TAbstractIDEOptions);
-var
-  HasChg: Boolean;
 begin
   DbgValConvFrame1.SaveCurrent;
-
-  HasChg :=
-    (DbgProjectLink.UseBackendConverterFromIDE <> chkUseGlobalList.Checked) or
-    (DbgProjectLink.UseBackendConverterFromProject <> chkUseProjList.Checked) or
-    FValConvList.Changed;
 
   DbgProjectLink.StoreBackendConverterConfigInSession := chkStoreInSession.Checked;
   DbgProjectLink.UseBackendConverterFromIDE := chkUseGlobalList.Checked;
@@ -104,7 +97,6 @@ begin
   if FValConvList.Changed then begin
     DbgProjectLink.BackendConverterConfig.Assign(FValConvList);
     DbgProjectLink.BackendConverterConfig.Changed := True;
-
   end;
 end;
 

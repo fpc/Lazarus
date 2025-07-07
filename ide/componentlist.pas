@@ -90,7 +90,7 @@ type
     procedure chbKeepOpenChange(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure TreeMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
+      {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
     procedure ListTreeSelectionChanged(Sender: TObject);
     procedure miCollapseAllClick(Sender: TObject);
     procedure miCollapseClick(Sender: TObject);
