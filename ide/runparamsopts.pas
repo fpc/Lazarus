@@ -52,7 +52,7 @@ uses
   Controls, Forms, Buttons, StdCtrls, ComCtrls, Dialogs, ButtonPanel, ExtCtrls,
   Spin, EditBtn,
   // LazUtils
-  LazFileUtils, LazFileCache, LazUTF8, Laz2_XMLCfg, DbgIntfDebuggerBase,
+  LazFileUtils, LazFileCache, LazUTF8, DbgIntfDebuggerBase,
   // BuildIntf
   BaseIDEIntf, ProjectIntf, MacroIntf,
   // IdeIntf

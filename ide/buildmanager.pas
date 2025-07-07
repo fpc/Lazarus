@@ -62,7 +62,7 @@ uses
   LazarusIDEStrConsts, DialogProcs, ProjectResources,
   MiscOptions, ExtTools, etFPCMsgParser, etPas2jsMsgParser, Compiler,
   FPCSrcScan, PackageDefs, PackageSystem, Project, ProjectIcon, BaseBuildManager,
-  ApplicationBundle, RunParamsOpts, IdeTransferMacros, SearchPathProcs, RunParamOptions;
+  ApplicationBundle, IdeTransferMacros, SearchPathProcs, RunParamOptions;
 
 const
   cInvalidCompiler = 'InvalidCompiler';
