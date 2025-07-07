@@ -67,27 +67,31 @@ type
   private
   public
     class function AddingFile(AProject: TProject; const AFilename: string): TModalResult;
-    class function AddingDependency(AProject: TProject; NewDependency: TPkgDependency): TModalResult;
+    class function AddingDependency(AProject: TProject;
+      NewDependency: TPkgDependency; WarnIfAlreadyThere: boolean): TModalResult;
   end;
 
 // Project or Package using the common interface
-function CheckAddingDependency(AProjPack: IProjPack; ADependency: TPkgDependency): boolean;
+function CheckAddingDependency(AProjPack: IProjPack;
+  ADependency: TPkgDependency; WarnIfAlreadyThere: boolean): TModalResult;
 
 
 implementation
 
 // Package or Project:
 
-function CheckAddingDependency(AProjPack: IProjPack; ADependency: TPkgDependency): boolean;
+function CheckAddingDependency(AProjPack: IProjPack;
+  ADependency: TPkgDependency; WarnIfAlreadyThere: boolean): TModalResult;
+// Returns mrOk=can be added, mrCancel=do not add, mrIgnore=already there
 // ToDo: Try to combine CheckAddingPackageDependency and CheckAddingProjectDependency
 //  somehow to use IProjPack param.
 begin
   //Assert((AProjPack is TLazPackage) or (AProjPack is TProject),
   //       'CheckAddingDependency: AProjPack is neither a project nor a package.');
   if AProjPack is TLazPackage then
-    Result := TPkgFileCheck.AddingDependency(AProjPack as TLazPackage, ADependency, True) = mrOK
+    Result := TPkgFileCheck.AddingDependency(AProjPack as TLazPackage, ADependency, WarnIfAlreadyThere)
   else
-    Result := TPrjFileCheck.AddingDependency(AProjPack as TProject, ADependency) = mrOK;
+    Result := TPrjFileCheck.AddingDependency(AProjPack as TProject, ADependency, WarnIfAlreadyThere);
 end;
 
 { TYesToAllList }
@@ -476,7 +480,8 @@ begin
 end;
 
 class function TPrjFileCheck.AddingDependency(AProject: TProject;
-  NewDependency: TPkgDependency): TModalResult;
+  NewDependency: TPkgDependency; WarnIfAlreadyThere: boolean): TModalResult;
+// Returns mrOk=can be added, mrCancel=do not add, mrIgnore=already there
 var
   NewPkgName: String;
 begin
@@ -495,10 +500,11 @@ begin
   Assert(IsValidPkgName(NewPkgName), 'CheckAddingProjectDependency: ' + NewPkgName + ' is not valid.');
   // check if package is already required
   if AProject.FindDependencyByName(NewPkgName)<>nil then begin
-    IDEMessageDialog(lisProjAddDependencyAlreadyExists,
-      Format(lisProjAddTheProjectHasAlreadyADependency, [NewPkgName]),
-      mtError,[mbCancel]);
-    exit(mrCancel);
+    if WarnIfAlreadyThere then
+      IDEMessageDialog(lisProjAddDependencyAlreadyExists,
+        Format(lisProjAddTheProjectHasAlreadyADependency, [NewPkgName]),
+        mtError,[mbCancel]);
+    exit(mrIgnore);
   end;
   // check if required package exists
   if not PackageGraph.DependencyExists(NewDependency,fpfSearchAllExisting)

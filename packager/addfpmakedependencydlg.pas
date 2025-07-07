@@ -85,7 +85,7 @@ begin
         NewDependency := TPkgDependency.Create;   // Will be added to package graph.
         NewDependency.PackageName := DependPkgNameListBox.Items[i];
         NewDependency.DependencyType := pdtFPMake;
-        //if not CheckAddingDependency(fProjPack, NewDependency) then exit;
+        //if CheckAddingDependency(fProjPack, NewDependency, true) <> mrOK then exit;
         FResultDependencies.Add(NewDependency);
         NewDependency := nil;
       end;
