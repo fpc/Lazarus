@@ -60,12 +60,6 @@ Additional licenses may be granted in each individual file. See the headers in e
       <Item>
         <PackageName Value="LCLBase"/>
       </Item>
-      <Item>
-        <PackageName Value="LazUtils"/>
-      </Item>
-      <Item>
-        <PackageName Value="FCL"/>
-      </Item>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>
