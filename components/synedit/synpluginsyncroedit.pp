@@ -54,7 +54,6 @@ type
     FList: Array of TSynPluginSyncroEditWordsHashEntry;
   public
     constructor Create;
-    destructor Destroy; override;
     procedure Clear;
 
     function InsertEntry(aEntry: TSynPluginSyncroEditWordsHashEntry) : Integer;
@@ -86,13 +85,11 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
-
-    // Excpects PChat to an already lowercase word
     function AddWord(aLineIdx, aBytePos: Integer; const aWord: String): PSynPluginSyncroEditWordsHashEntry;
     function RemoveWord(const aWord: String): integer;
-    function  GetWord(const aWord: String): TSynPluginSyncroEditWordsHashEntry;
-    function  GetWordP(const aWord: String): PSynPluginSyncroEditWordsHashEntry;
-    function  GetWordModHash(const aWord: String): Integer;
+    function GetWord(const aWord: String): TSynPluginSyncroEditWordsHashEntry;
+    function GetWordP(const aWord: String): PSynPluginSyncroEditWordsHashEntry;
+    function GetWordModHash(const aWord: String): Integer;
 
     property HashEntry[aModHash, aIndex: Integer]: TSynPluginSyncroEditWordsHashEntry
       read GetEntry;
@@ -164,7 +161,6 @@ type
 
   TSynPluginSyncroEdit = class(TSynPluginCustomSyncroEdit)
   private
-    FCaseSensitive: boolean deprecated;
     FGutterGlyph: TBitmap;
     FOnBeginEdit: TNotifyEvent;
     FOnEndEdit: TNotifyEvent;
@@ -175,7 +171,7 @@ type
     FWordScanCount: Integer;
     FCallQueued: Boolean;
     FEditModeQueued: Boolean;
-    FeditScanMode: TSynPluginSyncroScanMode;
+    FEditScanMode: TSynPluginSyncroScanMode;
     FLastSelStart, FLastSelEnd: TPoint;
     FParsedStart, FParsedStop: TPoint;
     FMouseActions: TSynPluginSyncroEditMouseActions;
@@ -183,7 +179,6 @@ type
 
     FKeystrokesSelecting: TSynEditKeyStrokes;
     FKeystrokes, FKeyStrokesOffCell: TSynEditKeyStrokes;
-    procedure SetCaseSensitive(AValue: boolean);
     procedure SetKeystrokesSelecting(const AValue: TSynEditKeyStrokes);
     procedure SetKeystrokes(const AValue: TSynEditKeyStrokes);
     procedure SetKeystrokesOffCell(const AValue: TSynEditKeyStrokes);
@@ -229,7 +224,6 @@ type
     destructor Destroy; override;
 
   published
-    property CaseSensitive: boolean read FCaseSensitive write SetCaseSensitive default false; deprecated 'Use ScanModes and/or different "ec" commands';
     property ScanModes: TSynPluginSyncroScanModes read FScanModes write FScanModes;
     property GutterGlyph: TBitmap read FGutterGlyph write SetGutterGlyph;
     property KeystrokesSelecting: TSynEditKeyStrokes
@@ -337,12 +331,6 @@ end;
 constructor TSynPluginSyncroEditWordsList.Create;
 begin
   inherited;
-  clear;
-end;
-
-destructor TSynPluginSyncroEditWordsList.Destroy;
-begin
-  inherited Destroy;
   clear;
 end;
 
@@ -816,13 +804,12 @@ function TSynPluginSyncroEdit.Scan(AFrom, aTo: TPoint; BackWard: Boolean): TPoin
 var
   Line: String;
 
-  procedure AddWordToHash(AStart, ALen: integer); //inline;
+  procedure AddWordToHash(AStart, ALen: integer);
   var
     Wrd, LWrd, Ctx: String;
     we: PSynPluginSyncroEditWordsHashEntry;
   begin
     Wrd := copy(Line, AStart, ALen);
-//    if not CaseSensitive then
     LWrd := UTF8LowerString(Wrd);
     we := FWordIndex[spssNoCase].AddWord(ToIdx(AFrom.y), AStart, LWrd);
     if we^.Count = 1 then
@@ -839,14 +826,9 @@ var
     end;
 
     if (we^.Count = 2) and (we^.LineIdx >= 0) then begin
-      if FScanModes * [spssWithCase, spssCtxWithCase] <> [] then begin
-        //Wrd := Copy(ViewedTextBuffer[we^.LineIdx], we^.BytePos, ALen);
-        //DebugLn(['TSynPluginSyncroEdit.Scan: Wrd=', Wrd, ', UTF8LowerCase(Wrd)=', UTF8LowerCase(Wrd), ', LWrd=', LWrd]);
-        //Assert(UTF8LowerCase(Wrd) = LWrd, 'AddWordToHash: UTF8LowerCase(Wrd) <> LWrd');
-
+      if FScanModes * [spssWithCase, spssCtxWithCase] <> [] then
         if spssWithCase in FScanModes then
           FWordIndex[spssWithCase].AddWord(ToIdx(AFrom.y), AStart, Wrd);
-      end;
 
       if FScanModes * [spssCtxNoCase, spssCtxWithCase] <> [] then begin
         Ctx := GetContextAt(Point(we^.BytePos, ToPos(we^.LineIdx)));
@@ -914,20 +896,6 @@ begin
     FKeystrokesSelecting.Clear
   else
     FKeystrokesSelecting.Assign(AValue);
-end;
-
-procedure TSynPluginSyncroEdit.SetCaseSensitive(AValue: boolean);
-var
-  m: TSynPluginSyncroScanMode;
-begin
-  if FCaseSensitive = AValue then Exit;
-  FCaseSensitive := AValue;
-  for m in TSynPluginSyncroScanMode do
-    FWordIndex[m].Clear;
-  if FCaseSensitive then
-    FScanModes := [spssWithCase, spssCtxWithCase]
-  else
-    FScanModes := [spssNoCase, spssWithCase, spssCtxNoCase, spssCtxWithCase];
 end;
 
 procedure TSynPluginSyncroEdit.SetKeystrokes(const AValue: TSynEditKeyStrokes);
@@ -1061,7 +1029,7 @@ var
 begin
   if FCallQueued then begin
     FEditModeQueued := True;
-    FeditScanMode := AScanMode;
+    FEditScanMode := AScanMode;
     exit;
   end;
   FEditModeQueued := False;
@@ -1290,7 +1258,7 @@ begin
   end;
   FCallQueued := False;
   if FEditModeQueued and (Mode = spseSelecting) then
-    StartSyncroMode(FeditScanMode);
+    StartSyncroMode(FEditScanMode);
   FEditModeQueued := False;
 end;
 
@@ -1339,12 +1307,8 @@ begin
   Result := False;
 
   if AnAction.Command = emcSynPSyncroEdGutterGlyph then begin
-    if Mode = spseSelecting then begin
-      if FCaseSensitive then
-        StartSyncroMode(spssWithCase)
-      else
-        StartSyncroMode(spssNoCase);
-    end
+    if Mode = spseSelecting then
+      StartSyncroMode(spssNoCase)
     else
       StopSyncroMode;
     Result := true;
@@ -1431,24 +1395,14 @@ begin
   if Mode = spseSelecting then begin
     // todo: finish word-hash calculations / check if any cells exist
     Handled := True;
-    if FCaseSensitive then
-      case Command of
-        ecSynPSyncroEdStart,
-        ecSynPSyncroEdStartCase:    StartSyncroMode(spssWithCase);
-        ecSynPSyncroEdStartCtx,
-        ecSynPSyncroEdStartCtxCase: StartSyncroMode(spssCtxWithCase);
-        else
-          Handled := False;
-      end
-    else
-      case Command of
-        ecSynPSyncroEdStart:        StartSyncroMode(spssNoCase);
-        ecSynPSyncroEdStartCase:    StartSyncroMode(spssWithCase);
-        ecSynPSyncroEdStartCtx:     StartSyncroMode(spssCtxNoCase);
-        ecSynPSyncroEdStartCtxCase: StartSyncroMode(spssCtxWithCase);
-        else
-          Handled := False;
-      end;
+    case Command of
+      ecSynPSyncroEdStart:        StartSyncroMode(spssNoCase);
+      ecSynPSyncroEdStartCase:    StartSyncroMode(spssWithCase);
+      ecSynPSyncroEdStartCtx:     StartSyncroMode(spssCtxNoCase);
+      ecSynPSyncroEdStartCtxCase: StartSyncroMode(spssCtxWithCase);
+      else
+        Handled := False;
+    end;
   end;
 
   if Mode = spseEditing then begin
