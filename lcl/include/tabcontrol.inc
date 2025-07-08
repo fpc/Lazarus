@@ -498,11 +498,7 @@ end;
 procedure TTabControl.SetImages(const AValue: TCustomImageList);
 begin
   if FImages = AValue then Exit;
-  if FImages <> nil then
-    FImages.RemoveFreeNotification(Self);
-  FImages := TImageList(AValue);
-  if FImages <> nil then
-    FImages.FreeNotification(Self);
+  inherited SetImages(AValue);
   TTabControlStrings(FTabs).Images := FImages;
 end;
 
