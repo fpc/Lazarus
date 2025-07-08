@@ -244,7 +244,7 @@ var
   Data: Pointer;
   Src, Dst, SrcRowPtr, DstRowPtr: PByte;
   x, y: Cardinal;
-  CreateWithAlpha: boolean;
+  WithAlpha: boolean;
   ADivResult, ARemainder: DWord;
 begin
   Result := False;
@@ -254,7 +254,7 @@ begin
   if ImgWidth = 0 then Exit;
   if ImgHeight = 0 then Exit;
 
-  CreateWithAlpha := True;
+  WithAlpha := True;
   try
     {$IFDEF VerboseRawImage}
     DebugLn('TGtk2WidgetSet.CreateBitmapFromRawImage A ',
@@ -352,16 +352,25 @@ begin
             ADivResult := 0;
             ARemainder := 0;
             DivMod(ARawImage.DataSize, ARawImage.MaskSize, ADivResult, ARemainder);
-            CreateWithAlpha := (ARemainder = 0) and ARawImage.IsMasked(True);
-            {$IFDEF VerboseRawImage}
-            if not CreateWithAlpha then
-              DebugLn('TGtk2WidgetSet.CreateBitmapFromRawImage B WARNING: This image have invalid DataSize / MaskSize.');
-            {$ENDIF}
+            WithAlpha := ARemainder=0;
+            if WithAlpha then
+            begin
+              // A hack testing image size was added for issue #41750.
+              if (ARawImage.Description.Width>=32) or (ARawImage.Description.Height>=32) then
+              begin
+                // IsMasked test was added for issue #41070.
+                // IsMasked may have a bug with the small icon images.(?)
+                WithAlpha := ARawImage.IsMasked(True);
+                DebugLn(['TGtk2WidgetSet.RawImage_CreateBitmaps: TRawImage.IsMasked(True) returned ', WithAlpha]);
+              end;
+            end
+            else
+              DebugLn('TGtk2WidgetSet.RawImage_CreateBitmaps: This image has invalid DataSize / MaskSize.')
           end;
           Data := ImgData;
         end;
 
-        TmpPixBuf := gdk_pixbuf_new_from_data(Data, GDK_COLORSPACE_RGB, CreateWithAlpha,
+        TmpPixBuf := gdk_pixbuf_new_from_data(Data, GDK_COLORSPACE_RGB, WithAlpha,
           8, ImgWidth, ImgHeight, RowStride, nil, nil);
 
         // we need to copy our pixbuf into a new one to allow data deallocation
