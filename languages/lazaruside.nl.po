@@ -5556,7 +5556,7 @@ msgid "A filter with the name \"%s\" already exists."
 msgstr ""
 
 #: lazarusidestrconsts.lisaftercleaningupswitchtoautomaticclean
-msgid "After cleaning up (clean all or clean common files), switch to clean automatically"
+msgid "After building with cleaning all switch to \"automatic\" clean up mode"
 msgstr ""
 
 #: lazarusidestrconsts.lisalignment
@@ -5787,7 +5787,8 @@ msgid "Automatic"
 msgstr ""
 
 #: lazarusidestrconsts.lisautomatically
-msgid "Automatically"
+msgctxt "lazarusidestrconsts.lisautomatically"
+msgid "Automatic"
 msgstr ""
 
 #: lazarusidestrconsts.lisautomaticallyconvertlfmtolrs
@@ -6901,11 +6902,7 @@ msgid "Clean Lazarus Source"
 msgstr "Maak Lazarus-broncode schoon"
 
 #: lazarusidestrconsts.liscleanonlyonce
-msgid "Switch after building to automatically"
-msgstr ""
-
-#: lazarusidestrconsts.liscleanup
-msgid "Clean up"
+msgid "Switch to \"automatic\" mode after building"
 msgstr ""
 
 #: lazarusidestrconsts.liscleanupandbuild
@@ -6919,6 +6916,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liscleanuplazbuild
 msgid "Clean up + lazbuild"
+msgstr ""
+
+#: lazarusidestrconsts.liscleanupmode
+msgid "Clean up mode"
 msgstr ""
 
 #: lazarusidestrconsts.liscleanuppackage

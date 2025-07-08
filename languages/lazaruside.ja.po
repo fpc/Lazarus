@@ -5530,7 +5530,9 @@ msgid "A filter with the name \"%s\" already exists."
 msgstr "\"%s\"という名前のフィルタは既に存在します。"
 
 #: lazarusidestrconsts.lisaftercleaningupswitchtoautomaticclean
-msgid "After cleaning up (clean all or clean common files), switch to clean automatically"
+#, fuzzy
+#| msgid "After cleaning up (clean all or clean common files), switch to clean automatically"
+msgid "After building with cleaning all switch to \"automatic\" clean up mode"
 msgstr "掃除（すべて掃除もしくは共通ファイルを掃除）の後、自動清掃に切り替え"
 
 #: lazarusidestrconsts.lisalignment
@@ -5760,7 +5762,10 @@ msgid "Automatic"
 msgstr "自動"
 
 #: lazarusidestrconsts.lisautomatically
-msgid "Automatically"
+#, fuzzy
+#| msgid "Automatically"
+msgctxt "lazarusidestrconsts.lisautomatically"
+msgid "Automatic"
 msgstr "自動的に"
 
 #: lazarusidestrconsts.lisautomaticallyconvertlfmtolrs
@@ -6873,12 +6878,10 @@ msgid "Clean Lazarus Source"
 msgstr "Lazarusソースを掃除"
 
 #: lazarusidestrconsts.liscleanonlyonce
-msgid "Switch after building to automatically"
+#, fuzzy
+#| msgid "Switch after building to automatically"
+msgid "Switch to \"automatic\" mode after building"
 msgstr "構築後自動的に切り替え"
-
-#: lazarusidestrconsts.liscleanup
-msgid "Clean up"
-msgstr "掃除"
 
 #: lazarusidestrconsts.liscleanupandbuild
 msgctxt "lazarusidestrconsts.liscleanupandbuild"
@@ -6891,6 +6894,10 @@ msgstr "掃除してプロジェクトを構築"
 
 #: lazarusidestrconsts.liscleanuplazbuild
 msgid "Clean up + lazbuild"
+msgstr ""
+
+#: lazarusidestrconsts.liscleanupmode
+msgid "Clean up mode"
 msgstr ""
 
 #: lazarusidestrconsts.liscleanuppackage

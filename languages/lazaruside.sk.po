@@ -5417,7 +5417,7 @@ msgid "A filter with the name \"%s\" already exists."
 msgstr ""
 
 #: lazarusidestrconsts.lisaftercleaningupswitchtoautomaticclean
-msgid "After cleaning up (clean all or clean common files), switch to clean automatically"
+msgid "After building with cleaning all switch to \"automatic\" clean up mode"
 msgstr ""
 
 #: lazarusidestrconsts.lisalignment
@@ -5650,7 +5650,10 @@ msgid "Automatic"
 msgstr "Automaticky"
 
 #: lazarusidestrconsts.lisautomatically
-msgid "Automatically"
+#, fuzzy
+#| msgid "Automatically"
+msgctxt "lazarusidestrconsts.lisautomatically"
+msgid "Automatic"
 msgstr "Automaticky"
 
 #: lazarusidestrconsts.lisautomaticallyconvertlfmtolrs
@@ -6762,12 +6765,10 @@ msgid "Clean Lazarus Source"
 msgstr "Vyčistiť zdrojové kódy Lazarus"
 
 #: lazarusidestrconsts.liscleanonlyonce
-msgid "Switch after building to automatically"
+#, fuzzy
+#| msgid "Switch after building to automatically"
+msgid "Switch to \"automatic\" mode after building"
 msgstr "Prepnúť po vybudovaní na Automaticky"
-
-#: lazarusidestrconsts.liscleanup
-msgid "Clean up"
-msgstr "Vyčistiť"
 
 #: lazarusidestrconsts.liscleanupandbuild
 msgctxt "lazarusidestrconsts.liscleanupandbuild"
@@ -6780,6 +6781,10 @@ msgstr "Vyčistiť a vybudovať projekt"
 
 #: lazarusidestrconsts.liscleanuplazbuild
 msgid "Clean up + lazbuild"
+msgstr ""
+
+#: lazarusidestrconsts.liscleanupmode
+msgid "Clean up mode"
 msgstr ""
 
 #: lazarusidestrconsts.liscleanuppackage

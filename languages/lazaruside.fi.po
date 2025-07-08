@@ -5415,7 +5415,9 @@ msgid "A filter with the name \"%s\" already exists."
 msgstr "Suodatin nimellä \"%s\" on jo olemassa."
 
 #: lazarusidestrconsts.lisaftercleaningupswitchtoautomaticclean
-msgid "After cleaning up (clean all or clean common files), switch to clean automatically"
+#, fuzzy
+#| msgid "After cleaning up (clean all or clean common files), switch to clean automatically"
+msgid "After building with cleaning all switch to \"automatic\" clean up mode"
 msgstr "Siivouksen jälkeen (kaikki tai yleiset tiedostot), vaihda automaattisiivoukseen"
 
 #: lazarusidestrconsts.lisalignment
@@ -5645,7 +5647,10 @@ msgid "Automatic"
 msgstr "Automaattinen"
 
 #: lazarusidestrconsts.lisautomatically
-msgid "Automatically"
+#, fuzzy
+#| msgid "Automatically"
+msgctxt "lazarusidestrconsts.lisautomatically"
+msgid "Automatic"
 msgstr "Automaattisesti"
 
 #: lazarusidestrconsts.lisautomaticallyconvertlfmtolrs
@@ -6752,12 +6757,10 @@ msgid "Clean Lazarus Source"
 msgstr "Siivoa Lazaruksen lähdekoodi"
 
 #: lazarusidestrconsts.liscleanonlyonce
-msgid "Switch after building to automatically"
+#, fuzzy
+#| msgid "Switch after building to automatically"
+msgid "Switch to \"automatic\" mode after building"
 msgstr "Kokoamisen jälkeen valitse 'Automaattisesti'"
-
-#: lazarusidestrconsts.liscleanup
-msgid "Clean up"
-msgstr "Siivoa"
 
 #: lazarusidestrconsts.liscleanupandbuild
 msgctxt "lazarusidestrconsts.liscleanupandbuild"
@@ -6770,6 +6773,10 @@ msgstr "Siivoa ja kokoa projekti"
 
 #: lazarusidestrconsts.liscleanuplazbuild
 msgid "Clean up + lazbuild"
+msgstr ""
+
+#: lazarusidestrconsts.liscleanupmode
+msgid "Clean up mode"
 msgstr ""
 
 #: lazarusidestrconsts.liscleanuppackage

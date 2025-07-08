@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-07-01 23:11+0300\n"
+"PO-Revision-Date: 2025-07-09 01:54+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -5364,8 +5364,8 @@ msgid "A filter with the name \"%s\" already exists."
 msgstr "Фильтр с именем \"%s\" уже имеется."
 
 #: lazarusidestrconsts.lisaftercleaningupswitchtoautomaticclean
-msgid "After cleaning up (clean all or clean common files), switch to clean automatically"
-msgstr "После выполнения очистки (всех файлов или только типичных) переключаться в автоматический режим"
+msgid "After building with cleaning all switch to \"automatic\" clean up mode"
+msgstr "После сборки с очисткой всех файлов переключаться в автоматический режим"
 
 #: lazarusidestrconsts.lisalignment
 msgid "Alignment"
@@ -5593,8 +5593,9 @@ msgid "Automatic"
 msgstr "Автоматически"
 
 #: lazarusidestrconsts.lisautomatically
-msgid "Automatically"
-msgstr "Автоматическая"
+msgctxt "lazarusidestrconsts.lisautomatically"
+msgid "Automatic"
+msgstr "Автоматический"
 
 #: lazarusidestrconsts.lisautomaticallyconvertlfmtolrs
 msgid "Automatically convert .lfm files to .lrs resource files"
@@ -6687,12 +6688,8 @@ msgid "Clean Lazarus Source"
 msgstr "Очистка каталога исходного кода Lazarus"
 
 #: lazarusidestrconsts.liscleanonlyonce
-msgid "Switch after building to automatically"
+msgid "Switch to \"automatic\" mode after building"
 msgstr "После сборки переключаться в автоматический режим"
-
-#: lazarusidestrconsts.liscleanup
-msgid "Clean up"
-msgstr "Очистка"
 
 #: lazarusidestrconsts.liscleanupandbuild
 msgctxt "lazarusidestrconsts.liscleanupandbuild"
@@ -6706,6 +6703,10 @@ msgstr "Очистка и сборка проекта"
 #: lazarusidestrconsts.liscleanuplazbuild
 msgid "Clean up + lazbuild"
 msgstr "Очистить и собрать с lazbuild"
+
+#: lazarusidestrconsts.liscleanupmode
+msgid "Clean up mode"
+msgstr "Режим очистки"
 
 #: lazarusidestrconsts.liscleanuppackage
 #, object-pascal-format

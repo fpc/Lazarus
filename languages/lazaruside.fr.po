@@ -5391,7 +5391,9 @@ msgid "A filter with the name \"%s\" already exists."
 msgstr "Un filtre dont le nom est \"%s\" existe déjà."
 
 #: lazarusidestrconsts.lisaftercleaningupswitchtoautomaticclean
-msgid "After cleaning up (clean all or clean common files), switch to clean automatically"
+#, fuzzy
+#| msgid "After cleaning up (clean all or clean common files), switch to clean automatically"
+msgid "After building with cleaning all switch to \"automatic\" clean up mode"
 msgstr "Après nettoyage (nettoyer tous les fichiers ou les fichiers communs), passer à nettoyer automatiquement"
 
 #: lazarusidestrconsts.lisalignment
@@ -5618,7 +5620,10 @@ msgid "Automatic"
 msgstr "Automatique"
 
 #: lazarusidestrconsts.lisautomatically
-msgid "Automatically"
+#, fuzzy
+#| msgid "Automatically"
+msgctxt "lazarusidestrconsts.lisautomatically"
+msgid "Automatic"
 msgstr "Automatiquement"
 
 #: lazarusidestrconsts.lisautomaticallyconvertlfmtolrs
@@ -6717,12 +6722,10 @@ msgid "Clean Lazarus Source"
 msgstr "Nettoyer les codes sources de Lazarus"
 
 #: lazarusidestrconsts.liscleanonlyonce
-msgid "Switch after building to automatically"
+#, fuzzy
+#| msgid "Switch after building to automatically"
+msgid "Switch to \"automatic\" mode after building"
 msgstr "Remettre à automatique  après la construction"
-
-#: lazarusidestrconsts.liscleanup
-msgid "Clean up"
-msgstr "Nettoyer"
 
 #: lazarusidestrconsts.liscleanupandbuild
 msgctxt "lazarusidestrconsts.liscleanupandbuild"
@@ -6736,6 +6739,10 @@ msgstr "Nettoyer et construire le projet"
 #: lazarusidestrconsts.liscleanuplazbuild
 msgid "Clean up + lazbuild"
 msgstr "Nettoyage + lazbuild"
+
+#: lazarusidestrconsts.liscleanupmode
+msgid "Clean up mode"
+msgstr ""
 
 #: lazarusidestrconsts.liscleanuppackage
 #, object-pascal-format

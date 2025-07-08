@@ -5410,7 +5410,9 @@ msgid "A filter with the name \"%s\" already exists."
 msgstr "Фільтр з назвою \"%s\" вже існує."
 
 #: lazarusidestrconsts.lisaftercleaningupswitchtoautomaticclean
-msgid "After cleaning up (clean all or clean common files), switch to clean automatically"
+#, fuzzy
+#| msgid "After cleaning up (clean all or clean common files), switch to clean automatically"
+msgid "After building with cleaning all switch to \"automatic\" clean up mode"
 msgstr "Після очищення (очищення всіх або загальних файлів), перейти до чистої автоматично"
 
 #: lazarusidestrconsts.lisalignment
@@ -5640,7 +5642,10 @@ msgid "Automatic"
 msgstr "Автоматично"
 
 #: lazarusidestrconsts.lisautomatically
-msgid "Automatically"
+#, fuzzy
+#| msgid "Automatically"
+msgctxt "lazarusidestrconsts.lisautomatically"
+msgid "Automatic"
 msgstr "Автоматично"
 
 #: lazarusidestrconsts.lisautomaticallyconvertlfmtolrs
@@ -6751,12 +6756,10 @@ msgid "Clean Lazarus Source"
 msgstr "Очистити коди Lazarus"
 
 #: lazarusidestrconsts.liscleanonlyonce
-msgid "Switch after building to automatically"
+#, fuzzy
+#| msgid "Switch after building to automatically"
+msgid "Switch to \"automatic\" mode after building"
 msgstr "Перейти після збирання на автоматично"
-
-#: lazarusidestrconsts.liscleanup
-msgid "Clean up"
-msgstr "Очистка"
 
 #: lazarusidestrconsts.liscleanupandbuild
 msgctxt "lazarusidestrconsts.liscleanupandbuild"
@@ -6769,6 +6772,10 @@ msgstr "Очистити і зібрати проєкт"
 
 #: lazarusidestrconsts.liscleanuplazbuild
 msgid "Clean up + lazbuild"
+msgstr ""
+
+#: lazarusidestrconsts.liscleanupmode
+msgid "Clean up mode"
 msgstr ""
 
 #: lazarusidestrconsts.liscleanuppackage

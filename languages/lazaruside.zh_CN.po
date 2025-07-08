@@ -5364,7 +5364,9 @@ msgid "A filter with the name \"%s\" already exists."
 msgstr "一个带有名称\"%s\"的过滤器已经存在."
 
 #: lazarusidestrconsts.lisaftercleaningupswitchtoautomaticclean
-msgid "After cleaning up (clean all or clean common files), switch to clean automatically"
+#, fuzzy
+#| msgid "After cleaning up (clean all or clean common files), switch to clean automatically"
+msgid "After building with cleaning all switch to \"automatic\" clean up mode"
 msgstr "清理（清理所有文件或清理常用文件）后，切换到自动清理"
 
 #: lazarusidestrconsts.lisalignment
@@ -5593,7 +5595,10 @@ msgid "Automatic"
 msgstr "自动"
 
 #: lazarusidestrconsts.lisautomatically
-msgid "Automatically"
+#, fuzzy
+#| msgid "Automatically"
+msgctxt "lazarusidestrconsts.lisautomatically"
+msgid "Automatic"
 msgstr "自动"
 
 #: lazarusidestrconsts.lisautomaticallyconvertlfmtolrs
@@ -6687,12 +6692,10 @@ msgid "Clean Lazarus Source"
 msgstr "清理 Lazarus 源代码"
 
 #: lazarusidestrconsts.liscleanonlyonce
-msgid "Switch after building to automatically"
+#, fuzzy
+#| msgid "Switch after building to automatically"
+msgid "Switch to \"automatic\" mode after building"
 msgstr "构建后切换到自动"
-
-#: lazarusidestrconsts.liscleanup
-msgid "Clean up"
-msgstr "清理"
 
 #: lazarusidestrconsts.liscleanupandbuild
 msgctxt "lazarusidestrconsts.liscleanupandbuild"
@@ -6706,6 +6709,10 @@ msgstr "清理并构建项目"
 #: lazarusidestrconsts.liscleanuplazbuild
 msgid "Clean up + lazbuild"
 msgstr "清理 + 编译构建"
+
+#: lazarusidestrconsts.liscleanupmode
+msgid "Clean up mode"
+msgstr ""
 
 #: lazarusidestrconsts.liscleanuppackage
 #, object-pascal-format
