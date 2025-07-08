@@ -42,11 +42,6 @@ msgstr "Già definito"
 msgid "Already defined at %s"
 msgstr "Già definito in %s"
 
-#: codystrconsts.crsandmoreidentifiers
-#, object-pascal-format
-msgid "... and %s more identifiers"
-msgstr "... e altri %s identificatori"
-
 #: codystrconsts.crsany
 msgid "Any"
 msgstr ""
@@ -779,6 +774,11 @@ msgstr "Mostra l'informazione del nodo CodeTools ..."
 msgid "Show Cody Dictionary for \"%s\""
 msgstr "Mostra il dizionario Cody per \"%s\""
 
+#: codystrconsts.crsshowmoreidentifiers
+#, object-pascal-format
+msgid "... click to show %d more (up to %d left)"
+msgstr ""
+
 #: codystrconsts.crsshowonlyidentifierscontainingfiltertext
 msgid "Show only identifiers containing filter text"
 msgstr "Mostra solo gli identificatori contenenti il testo del filtro"
@@ -786,6 +786,11 @@ msgstr "Mostra solo gli identificatori contenenti il testo del filtro"
 #: codystrconsts.crsshowonlyidentifiersstartingwithfiltertext
 msgid "Show only identifiers starting with filter text"
 msgstr "Mostra solo gli identificatori che cominciano con il testo del filtro"
+
+#: codystrconsts.crsshowremainingidentifiers
+#, object-pascal-format
+msgid "... click to show remaining (up to %d left)"
+msgstr ""
 
 #: codystrconsts.crsshowunitidentifierdictionary
 msgid "Show Unit / Identifier Dictionary ..."

@@ -43,11 +43,6 @@ msgstr "Вже визначений"
 msgid "Already defined at %s"
 msgstr "Вже визначений в %s"
 
-#: codystrconsts.crsandmoreidentifiers
-#, object-pascal-format
-msgid "... and %s more identifiers"
-msgstr "... і ще %s ідентифікатор(ів)"
-
 #: codystrconsts.crsany
 msgid "Any"
 msgstr "Будь-який"
@@ -780,6 +775,11 @@ msgstr "Показати дані про вузол CodeTools ..."
 msgid "Show Cody Dictionary for \"%s\""
 msgstr "Показати словник Cody для \"%s\""
 
+#: codystrconsts.crsshowmoreidentifiers
+#, object-pascal-format
+msgid "... click to show %d more (up to %d left)"
+msgstr ""
+
 #: codystrconsts.crsshowonlyidentifierscontainingfiltertext
 msgid "Show only identifiers containing filter text"
 msgstr "Показати лише ідентифікатори, які містять текст фільтру"
@@ -787,6 +787,11 @@ msgstr "Показати лише ідентифікатори, які міст�
 #: codystrconsts.crsshowonlyidentifiersstartingwithfiltertext
 msgid "Show only identifiers starting with filter text"
 msgstr "Показати лише ідентифікатори, які починаються текстом фільтру"
+
+#: codystrconsts.crsshowremainingidentifiers
+#, object-pascal-format
+msgid "... click to show remaining (up to %d left)"
+msgstr ""
 
 #: codystrconsts.crsshowunitidentifierdictionary
 msgid "Show Unit / Identifier Dictionary ..."

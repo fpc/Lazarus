@@ -42,11 +42,6 @@ msgstr "Jau įgyvendinta"
 msgid "Already defined at %s"
 msgstr "Jau įgyvendinta ties %s"
 
-#: codystrconsts.crsandmoreidentifiers
-#, object-pascal-format
-msgid "... and %s more identifiers"
-msgstr "… dar liko identifikatorių: %s"
-
 #: codystrconsts.crsany
 msgid "Any"
 msgstr "Bet koks"
@@ -779,6 +774,11 @@ msgstr "Rodyti informaciją apie CodeTools mazgą…"
 msgid "Show Cody Dictionary for \"%s\""
 msgstr "Rodyti „%s“ skirtą „Cody“ žodyną"
 
+#: codystrconsts.crsshowmoreidentifiers
+#, object-pascal-format
+msgid "... click to show %d more (up to %d left)"
+msgstr ""
+
 #: codystrconsts.crsshowonlyidentifierscontainingfiltertext
 msgid "Show only identifiers containing filter text"
 msgstr "Rodyti tik tuos identifikatorius, kuriuose yra filtro tekstas"
@@ -786,6 +786,11 @@ msgstr "Rodyti tik tuos identifikatorius, kuriuose yra filtro tekstas"
 #: codystrconsts.crsshowonlyidentifiersstartingwithfiltertext
 msgid "Show only identifiers starting with filter text"
 msgstr "Rodyti tik tuos identifikatorius, kurie prasideda filtro tekstu"
+
+#: codystrconsts.crsshowremainingidentifiers
+#, object-pascal-format
+msgid "... click to show remaining (up to %d left)"
+msgstr ""
 
 #: codystrconsts.crsshowunitidentifierdictionary
 msgid "Show Unit / Identifier Dictionary ..."

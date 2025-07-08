@@ -40,11 +40,6 @@ msgstr "Bereits definiert"
 msgid "Already defined at %s"
 msgstr "Bereits definiert bei %s"
 
-#: codystrconsts.crsandmoreidentifiers
-#, object-pascal-format
-msgid "... and %s more identifiers"
-msgstr "... und %s weitere Bezeichner"
-
 #: codystrconsts.crsany
 msgid "Any"
 msgstr ""
@@ -771,12 +766,22 @@ msgstr ""
 msgid "Show Cody Dictionary for \"%s\""
 msgstr "Zeige Cody-Verzeichnis für \"%s\""
 
+#: codystrconsts.crsshowmoreidentifiers
+#, object-pascal-format
+msgid "... click to show %d more (up to %d left)"
+msgstr ""
+
 #: codystrconsts.crsshowonlyidentifierscontainingfiltertext
 msgid "Show only identifiers containing filter text"
 msgstr ""
 
 #: codystrconsts.crsshowonlyidentifiersstartingwithfiltertext
 msgid "Show only identifiers starting with filter text"
+msgstr ""
+
+#: codystrconsts.crsshowremainingidentifiers
+#, object-pascal-format
+msgid "... click to show remaining (up to %d left)"
 msgstr ""
 
 #: codystrconsts.crsshowunitidentifierdictionary

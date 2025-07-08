@@ -41,11 +41,6 @@ msgstr "Идентификатор уже объявлен"
 msgid "Already defined at %s"
 msgstr "Уже объявлена (%s)"
 
-#: codystrconsts.crsandmoreidentifiers
-#, object-pascal-format
-msgid "... and %s more identifiers"
-msgstr "... дополнительно идентификаторов: %s"
-
 #: codystrconsts.crsany
 msgid "Any"
 msgstr "Любые"
@@ -772,6 +767,11 @@ msgstr "Показать сведения об элементе CodeTools ..."
 msgid "Show Cody Dictionary for \"%s\""
 msgstr "Показать словарь идентификаторов для \"%s\""
 
+#: codystrconsts.crsshowmoreidentifiers
+#, object-pascal-format
+msgid "... click to show %d more (up to %d left)"
+msgstr "... щёлкните для показа ещё %d (осталось до %d шт.)"
+
 #: codystrconsts.crsshowonlyidentifierscontainingfiltertext
 msgid "Show only identifiers containing filter text"
 msgstr "Показывать только идентификаторы, содержащие текст фильтра"
@@ -779,6 +779,11 @@ msgstr "Показывать только идентификаторы, соде
 #: codystrconsts.crsshowonlyidentifiersstartingwithfiltertext
 msgid "Show only identifiers starting with filter text"
 msgstr "Показывать только идентификаторы, начинающиеся с текста фильтра"
+
+#: codystrconsts.crsshowremainingidentifiers
+#, object-pascal-format
+msgid "... click to show remaining (up to %d left)"
+msgstr "... щёлкните для показа оставшихся (до %d шт.)"
 
 #: codystrconsts.crsshowunitidentifierdictionary
 msgid "Show Unit / Identifier Dictionary ..."

@@ -42,11 +42,6 @@ msgstr "已经定义"
 msgid "Already defined at %s"
 msgstr "已经定义在 %s"
 
-#: codystrconsts.crsandmoreidentifiers
-#, object-pascal-format
-msgid "... and %s more identifiers"
-msgstr "...和 %s 更多的标识符"
-
 #: codystrconsts.crsany
 msgid "Any"
 msgstr "任何"
@@ -779,12 +774,22 @@ msgstr "显示 CodeTools 节点信息(&C) ..."
 msgid "Show Cody Dictionary for \"%s\""
 msgstr ""
 
+#: codystrconsts.crsshowmoreidentifiers
+#, object-pascal-format
+msgid "... click to show %d more (up to %d left)"
+msgstr ""
+
 #: codystrconsts.crsshowonlyidentifierscontainingfiltertext
 msgid "Show only identifiers containing filter text"
 msgstr ""
 
 #: codystrconsts.crsshowonlyidentifiersstartingwithfiltertext
 msgid "Show only identifiers starting with filter text"
+msgstr ""
+
+#: codystrconsts.crsshowremainingidentifiers
+#, object-pascal-format
+msgid "... click to show remaining (up to %d left)"
 msgstr ""
 
 #: codystrconsts.crsshowunitidentifierdictionary

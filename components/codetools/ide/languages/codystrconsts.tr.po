@@ -41,11 +41,6 @@ msgstr "Zaten tanımlı"
 msgid "Already defined at %s"
 msgstr "%s 'de zaten tanımlanmış"
 
-#: codystrconsts.crsandmoreidentifiers
-#, object-pascal-format
-msgid "... and %s more identifiers"
-msgstr "... ve %s daha fazla tanımlayıcılar"
-
 #: codystrconsts.crsany
 msgid "Any"
 msgstr "Herhangi"
@@ -772,6 +767,11 @@ msgstr "Kod Araçları Düğüm Bilgilerini Göster ..."
 msgid "Show Cody Dictionary for \"%s\""
 msgstr "\"%s\" için Cody Sözlüğünü göster"
 
+#: codystrconsts.crsshowmoreidentifiers
+#, object-pascal-format
+msgid "... click to show %d more (up to %d left)"
+msgstr ""
+
 #: codystrconsts.crsshowonlyidentifierscontainingfiltertext
 msgid "Show only identifiers containing filter text"
 msgstr "Yalnızca filtre metni içeren tanımlayıcıları göster"
@@ -779,6 +779,11 @@ msgstr "Yalnızca filtre metni içeren tanımlayıcıları göster"
 #: codystrconsts.crsshowonlyidentifiersstartingwithfiltertext
 msgid "Show only identifiers starting with filter text"
 msgstr "Show only identifiers starting with filter text"
+
+#: codystrconsts.crsshowremainingidentifiers
+#, object-pascal-format
+msgid "... click to show remaining (up to %d left)"
+msgstr ""
 
 #: codystrconsts.crsshowunitidentifierdictionary
 msgid "Show Unit / Identifier Dictionary ..."

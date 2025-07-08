@@ -41,11 +41,6 @@ msgstr "Már definiálva van"
 msgid "Already defined at %s"
 msgstr "Már definiálva van itt: %s"
 
-#: codystrconsts.crsandmoreidentifiers
-#, object-pascal-format
-msgid "... and %s more identifiers"
-msgstr "... és további %s azonosító"
-
 #: codystrconsts.crsany
 msgid "Any"
 msgstr "Bármi"
@@ -778,6 +773,11 @@ msgstr "CodeTools csomópont-információk megjelenítése ..."
 msgid "Show Cody Dictionary for \"%s\""
 msgstr "Cody szótár megjelenítése ehhez: \"%s\""
 
+#: codystrconsts.crsshowmoreidentifiers
+#, object-pascal-format
+msgid "... click to show %d more (up to %d left)"
+msgstr ""
+
 #: codystrconsts.crsshowonlyidentifierscontainingfiltertext
 msgid "Show only identifiers containing filter text"
 msgstr "Csak a szűrőszöveget tartalmazó azonosítók megjelenítése"
@@ -785,6 +785,11 @@ msgstr "Csak a szűrőszöveget tartalmazó azonosítók megjelenítése"
 #: codystrconsts.crsshowonlyidentifiersstartingwithfiltertext
 msgid "Show only identifiers starting with filter text"
 msgstr "Csak a szűrőszöveggel kezdődő azonosítók megjelenítése"
+
+#: codystrconsts.crsshowremainingidentifiers
+#, object-pascal-format
+msgid "... click to show remaining (up to %d left)"
+msgstr ""
 
 #: codystrconsts.crsshowunitidentifierdictionary
 msgid "Show Unit / Identifier Dictionary ..."
