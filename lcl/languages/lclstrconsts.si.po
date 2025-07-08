@@ -32,8 +32,9 @@ msgid "Unable to find a HTML browser."
 msgstr "HTML බ්‍රව්සරයක් සොයා ගැනීමට නොහැකි විය."
 
 #: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineone
-#, object-pascal-format
-msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options"
+#, object-pascal-format, fuzzy
+#| msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options"
+msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options."
 msgstr "HTML බ්‍රව්සරයක් හමු නොවීය.%sකරුණාකර මෙවලම් -> විකල්ප -> උදව් -> උදව් විකල්ප යටතේ එකක් අර්ථ දක්වන්න"
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
@@ -517,8 +518,9 @@ msgid "Help"
 msgstr "උදව්"
 
 #: lclstrconsts.rshelpalreadyregistered
-#, object-pascal-format
-msgid "%s: Already registered"
+#, object-pascal-format, fuzzy
+#| msgid "%s: Already registered"
+msgid "%s: already registered."
 msgstr "%s: දැනටමත් ලියාපදිංචි වී ඇත"
 
 #: lclstrconsts.rshelpcontextnotfound
@@ -544,13 +546,15 @@ msgid "Help context %s not found in Database \"%s\"."
 msgstr "උදව් සන්දර්භය %s \"%s\" දත්ත සමුදාය තුළ හමු නොවේ."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
-#, object-pascal-format
-msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
+#, object-pascal-format, fuzzy
+#| msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
+msgid "Help Database \"%s\" did not find a viewer for a help page of type %s."
 msgstr "උදවු දත්ත සමුදාය \"%s\" %s ආකාරයේ උපකාර පිටුවක් සඳහා නරඹන්නෙකු සොයා ගත්තේ නැත"
 
 #: lclstrconsts.rshelphelpdatabasenotfound
-#, object-pascal-format
-msgid "Help Database \"%s\" not found"
+#, object-pascal-format, fuzzy
+#| msgid "Help Database \"%s\" not found"
+msgid "Help Database \"%s\" not found."
 msgstr "උදව් දත්ත සමුදාය \"%s\" හමු නොවීය"
 
 #: lclstrconsts.rshelphelpfordirectivenotfound
@@ -574,8 +578,9 @@ msgid "Help keyword \"%s\" not found in Database \"%s\"."
 msgstr "උපකාරක මූල පදය \"%s\" \"%s\" දත්ත සමුදායේ හමු නොවේ."
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
-#, object-pascal-format
-msgid "Help node \"%s\" has no Help Database"
+#, object-pascal-format, fuzzy
+#| msgid "Help node \"%s\" has no Help Database"
+msgid "Help node \"%s\" has no Help Database."
 msgstr "උපකාරක නෝඩය \"%s\" හි උදවු දත්ත සමුදායක් නොමැත"
 
 #: lclstrconsts.rshelpnohelpfoundforsource
@@ -584,7 +589,9 @@ msgid "No help found for line %d, column %d of %s."
 msgstr "%d පේළිය, %d තීරුව  %s හි සඳහා කිසිදු උපකාරයක් හමු නොවීය."
 
 #: lclstrconsts.rshelpnohelpnodesavailable
-msgid "No help entries available for this topic"
+#, fuzzy
+#| msgid "No help entries available for this topic"
+msgid "No help entries available for this topic."
 msgstr "මෙම මාතෘකාව සඳහා උපකාරක ඇතුළත් කිරීම් නොමැත"
 
 #: lclstrconsts.rshelpnotfound
@@ -592,8 +599,9 @@ msgid "No help found for this topic"
 msgstr "මෙම මාතෘකාව සඳහා උපකාරයක් හමු නොවීය"
 
 #: lclstrconsts.rshelpnotregistered
-#, object-pascal-format
-msgid "%s: Not registered"
+#, object-pascal-format, fuzzy
+#| msgid "%s: Not registered"
+msgid "%s: not registered."
 msgstr "%s: ලියාපදිංචි වී නැත"
 
 #: lclstrconsts.rshelpselectorerror
@@ -601,8 +609,9 @@ msgid "Help Selector Error"
 msgstr "උදව් තේරීම් දෝෂය"
 
 #: lclstrconsts.rshelpthereisnoviewerforhelptype
-#, object-pascal-format
-msgid "There is no viewer for help type \"%s\""
+#, object-pascal-format, fuzzy
+#| msgid "There is no viewer for help type \"%s\""
+msgid "There is no viewer for help type \"%s\"."
 msgstr "උදව් වර්ගය \"%s\" සඳහා නරඹන්නෙකු නොමැත"
 
 #: lclstrconsts.rshelpviewererror

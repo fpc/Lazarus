@@ -33,8 +33,9 @@ msgid "Unable to find a HTML browser."
 msgstr "Nie je možné nájsť prehliadač HTML."
 
 #: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineone
-#, object-pascal-format
-msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options"
+#, object-pascal-format, fuzzy
+#| msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options"
+msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options."
 msgstr "HTML prehliadač nebol nájdený.%sProsím zadajte jeden v Nástroje -> Možnosti -> Pomoc -> Možnosti pomoci"
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
@@ -518,8 +519,9 @@ msgid "Help"
 msgstr "Pomoc"
 
 #: lclstrconsts.rshelpalreadyregistered
-#, object-pascal-format
-msgid "%s: Already registered"
+#, object-pascal-format, fuzzy
+#| msgid "%s: Already registered"
+msgid "%s: already registered."
 msgstr "%s: Už je registrovaný"
 
 #: lclstrconsts.rshelpcontextnotfound
@@ -545,13 +547,15 @@ msgid "Help context %s not found in Database \"%s\"."
 msgstr "Kontextová pomoc %s nenájdená v databáze \"%s\"."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
-#, object-pascal-format
-msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
+#, object-pascal-format, fuzzy
+#| msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
+msgid "Help Database \"%s\" did not find a viewer for a help page of type %s."
 msgstr "Databáza pomoci \"%s\" nenašla zobrazovač pre stránku pomocníka typu %s"
 
 #: lclstrconsts.rshelphelpdatabasenotfound
-#, object-pascal-format
-msgid "Help Database \"%s\" not found"
+#, object-pascal-format, fuzzy
+#| msgid "Help Database \"%s\" not found"
+msgid "Help Database \"%s\" not found."
 msgstr "Databáza pomoci \"%s\" nenájdená"
 
 #: lclstrconsts.rshelphelpfordirectivenotfound
@@ -575,8 +579,9 @@ msgid "Help keyword \"%s\" not found in Database \"%s\"."
 msgstr "Kľúčové slovo pomoci \"%s\" nenájdené v databáze \"%s\"."
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
-#, object-pascal-format
-msgid "Help node \"%s\" has no Help Database"
+#, object-pascal-format, fuzzy
+#| msgid "Help node \"%s\" has no Help Database"
+msgid "Help node \"%s\" has no Help Database."
 msgstr "Uzol pomocníka \"%s\" nemá databázu pomocníka"
 
 #: lclstrconsts.rshelpnohelpfoundforsource
@@ -585,7 +590,9 @@ msgid "No help found for line %d, column %d of %s."
 msgstr "Nenájdený pomocník pre riadok %d, stĺpec %d %s."
 
 #: lclstrconsts.rshelpnohelpnodesavailable
-msgid "No help entries available for this topic"
+#, fuzzy
+#| msgid "No help entries available for this topic"
+msgid "No help entries available for this topic."
 msgstr "Pre túto tému nie sú k dispozícii žiadne položky pomoci"
 
 #: lclstrconsts.rshelpnotfound
@@ -593,8 +600,9 @@ msgid "No help found for this topic"
 msgstr "Pre túto tému nebola nájdená pomoc"
 
 #: lclstrconsts.rshelpnotregistered
-#, object-pascal-format
-msgid "%s: Not registered"
+#, object-pascal-format, fuzzy
+#| msgid "%s: Not registered"
+msgid "%s: not registered."
 msgstr "%s: Neregistrovaný"
 
 #: lclstrconsts.rshelpselectorerror
@@ -602,8 +610,9 @@ msgid "Help Selector Error"
 msgstr "Chyba selektora pomoci"
 
 #: lclstrconsts.rshelpthereisnoviewerforhelptype
-#, object-pascal-format
-msgid "There is no viewer for help type \"%s\""
+#, object-pascal-format, fuzzy
+#| msgid "There is no viewer for help type \"%s\""
+msgid "There is no viewer for help type \"%s\"."
 msgstr "Nie je zobrazovač pre pomoc typu \"%s\""
 
 #: lclstrconsts.rshelpviewererror

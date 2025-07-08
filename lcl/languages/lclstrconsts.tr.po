@@ -31,8 +31,9 @@ msgid "Unable to find a HTML browser."
 msgstr "HTML tarayıcı bulunamıyor."
 
 #: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineone
-#, object-pascal-format
-msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options"
+#, object-pascal-format, fuzzy
+#| msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options"
+msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options."
 msgstr "HTML Tarayıcı bulunamadı.%sLütfen Araçlar -> Seçenekler -> Yardım -> Yardım Seçenekleri içinde bir tane tanımlayın"
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
@@ -540,8 +541,9 @@ msgid "Help"
 msgstr "Yardım"
 
 #: lclstrconsts.rshelpalreadyregistered
-#, object-pascal-format
-msgid "%s: Already registered"
+#, object-pascal-format, fuzzy
+#| msgid "%s: Already registered"
+msgid "%s: already registered."
 msgstr "%s: Zaten kaydedilmiş"
 
 #: lclstrconsts.rshelpcontextnotfound
@@ -567,13 +569,15 @@ msgid "Help context %s not found in Database \"%s\"."
 msgstr "%s yardım bağlamı, \"%s\" veritabanı içinde bulunamadı."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
-#, object-pascal-format
-msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
+#, object-pascal-format, fuzzy
+#| msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
+msgid "Help Database \"%s\" did not find a viewer for a help page of type %s."
 msgstr "Yardım Veritabanı \"%s\", \"%s\" türündeki yardım sayfası için bir görüntüleyici bulamadı"
 
 #: lclstrconsts.rshelphelpdatabasenotfound
-#, object-pascal-format
-msgid "Help Database \"%s\" not found"
+#, object-pascal-format, fuzzy
+#| msgid "Help Database \"%s\" not found"
+msgid "Help Database \"%s\" not found."
 msgstr "Yardım Veritabanı \"%s\" bulunamadı"
 
 #: lclstrconsts.rshelphelpfordirectivenotfound
@@ -597,8 +601,9 @@ msgid "Help keyword \"%s\" not found in Database \"%s\"."
 msgstr "Yardım anahtar sözcüğü \"%s\", \"%s\" veritabanı içinde bulunamadı."
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
-#, object-pascal-format
-msgid "Help node \"%s\" has no Help Database"
+#, object-pascal-format, fuzzy
+#| msgid "Help node \"%s\" has no Help Database"
+msgid "Help node \"%s\" has no Help Database."
 msgstr "Yardım düğümü \"%s\" Yardım Veritabanına sahip değil"
 
 #: lclstrconsts.rshelpnohelpfoundforsource
@@ -607,7 +612,9 @@ msgid "No help found for line %d, column %d of %s."
 msgstr "%d satırının, %d satırı %s sutünü için yardım bulunamadı."
 
 #: lclstrconsts.rshelpnohelpnodesavailable
-msgid "No help entries available for this topic"
+#, fuzzy
+#| msgid "No help entries available for this topic"
+msgid "No help entries available for this topic."
 msgstr "Bu konu için kullanılabilir yardım girdisi yok"
 
 #: lclstrconsts.rshelpnotfound
@@ -615,8 +622,9 @@ msgid "No help found for this topic"
 msgstr "Bu konu için yardım bulunamadı"
 
 #: lclstrconsts.rshelpnotregistered
-#, object-pascal-format
-msgid "%s: Not registered"
+#, object-pascal-format, fuzzy
+#| msgid "%s: Not registered"
+msgid "%s: not registered."
 msgstr "%s: Kaydedilmemiş"
 
 #: lclstrconsts.rshelpselectorerror
@@ -624,8 +632,9 @@ msgid "Help Selector Error"
 msgstr "Yardım Seçici Hatası"
 
 #: lclstrconsts.rshelpthereisnoviewerforhelptype
-#, object-pascal-format
-msgid "There is no viewer for help type \"%s\""
+#, object-pascal-format, fuzzy
+#| msgid "There is no viewer for help type \"%s\""
+msgid "There is no viewer for help type \"%s\"."
 msgstr "\"%s\" yardım türü için bir görüntüleyici yok"
 
 #: lclstrconsts.rshelpviewererror

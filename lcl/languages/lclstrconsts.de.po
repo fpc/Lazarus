@@ -32,8 +32,9 @@ msgid "Unable to find a HTML browser."
 msgstr "Kann den HTML-Browser nicht finden."
 
 #: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineone
-#, object-pascal-format
-msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options"
+#, object-pascal-format, fuzzy
+#| msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options"
+msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options."
 msgstr "Kein HTML-Browser gefunden.%sBitte legen Sie einen fest unter Werkzeuge -> Einstellungen -> Hilfe -> Hilfeeinstellungen"
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
@@ -548,8 +549,9 @@ msgid "Help"
 msgstr "Hilfe"
 
 #: lclstrconsts.rshelpalreadyregistered
-#, object-pascal-format
-msgid "%s: Already registered"
+#, object-pascal-format, fuzzy
+#| msgid "%s: Already registered"
+msgid "%s: already registered."
 msgstr "%s: Bereits registriert"
 
 #: lclstrconsts.rshelpcontextnotfound
@@ -575,13 +577,15 @@ msgid "Help context %s not found in Database \"%s\"."
 msgstr "Hilfekontext %s nicht in der Datenbank \"%s\" gefunden."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
-#, object-pascal-format
-msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
+#, object-pascal-format, fuzzy
+#| msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
+msgid "Help Database \"%s\" did not find a viewer for a help page of type %s."
 msgstr "Die Hilfedatenbank \"%s\" fand keinen Betrachter für eine Hilfeseite des Typs %s"
 
 #: lclstrconsts.rshelphelpdatabasenotfound
-#, object-pascal-format
-msgid "Help Database \"%s\" not found"
+#, object-pascal-format, fuzzy
+#| msgid "Help Database \"%s\" not found"
+msgid "Help Database \"%s\" not found."
 msgstr "Hilfedatenbank \"%s\" nicht gefunden"
 
 #: lclstrconsts.rshelphelpfordirectivenotfound
@@ -605,8 +609,9 @@ msgid "Help keyword \"%s\" not found in Database \"%s\"."
 msgstr "Hilfeschlüsselwort \"%s\" nicht in der Datenbank \"%s\" gefunden."
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
-#, object-pascal-format
-msgid "Help node \"%s\" has no Help Database"
+#, object-pascal-format, fuzzy
+#| msgid "Help node \"%s\" has no Help Database"
+msgid "Help node \"%s\" has no Help Database."
 msgstr "Hilfeknoten \"%s\" besitzt keine Hilfedatenbank"
 
 #: lclstrconsts.rshelpnohelpfoundforsource
@@ -615,7 +620,9 @@ msgid "No help found for line %d, column %d of %s."
 msgstr "Keine Hilfe für Zeile %d, Spalte %d von %s gefunden."
 
 #: lclstrconsts.rshelpnohelpnodesavailable
-msgid "No help entries available for this topic"
+#, fuzzy
+#| msgid "No help entries available for this topic"
+msgid "No help entries available for this topic."
 msgstr "Keine Hilfeeinträge verfügbar"
 
 #: lclstrconsts.rshelpnotfound
@@ -623,8 +630,9 @@ msgid "No help found for this topic"
 msgstr "Hilfe für dieses Thema nicht gefunden"
 
 #: lclstrconsts.rshelpnotregistered
-#, object-pascal-format
-msgid "%s: Not registered"
+#, object-pascal-format, fuzzy
+#| msgid "%s: Not registered"
+msgid "%s: not registered."
 msgstr "%s: Nicht registriert"
 
 #: lclstrconsts.rshelpselectorerror
@@ -632,8 +640,9 @@ msgid "Help Selector Error"
 msgstr "Hilfeauswahlfehler"
 
 #: lclstrconsts.rshelpthereisnoviewerforhelptype
-#, object-pascal-format
-msgid "There is no viewer for help type \"%s\""
+#, object-pascal-format, fuzzy
+#| msgid "There is no viewer for help type \"%s\""
+msgid "There is no viewer for help type \"%s\"."
 msgstr "Es gibt keinen Viewer für den Hilfetyp \"%s\"."
 
 #: lclstrconsts.rshelpviewererror

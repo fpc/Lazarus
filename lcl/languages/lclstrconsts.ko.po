@@ -32,8 +32,9 @@ msgid "Unable to find a HTML browser."
 msgstr "HTML 브라우저를 찾을 수 없습니다."
 
 #: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineone
-#, object-pascal-format
-msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options"
+#, object-pascal-format, fuzzy
+#| msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options"
+msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options."
 msgstr "HTML 브라우저를 찾을 수 없습니다.%s도구 -> 옵션 -> 도움말 -> 도움말 -> 도움말 옵션에서 하나를 정의하십시오"
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
@@ -547,8 +548,9 @@ msgid "Help"
 msgstr "도움말"
 
 #: lclstrconsts.rshelpalreadyregistered
-#, object-pascal-format
-msgid "%s: Already registered"
+#, object-pascal-format, fuzzy
+#| msgid "%s: Already registered"
+msgid "%s: already registered."
 msgstr "%s: 이미 등록되어 있습니다"
 
 #: lclstrconsts.rshelpcontextnotfound
@@ -574,13 +576,15 @@ msgid "Help context %s not found in Database \"%s\"."
 msgstr "도움말 컨텍스트 %s을(를) 데이터베이스 \"%s\"에서 찾을 수 없습니다."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
-#, object-pascal-format
-msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
+#, object-pascal-format, fuzzy
+#| msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
+msgid "Help Database \"%s\" did not find a viewer for a help page of type %s."
 msgstr "도움말 데이터베이스 \"%s\"에서 %s 유형의 도움말 페이지에 대한 뷰어를 찾지 못했습니다"
 
 #: lclstrconsts.rshelphelpdatabasenotfound
-#, object-pascal-format
-msgid "Help Database \"%s\" not found"
+#, object-pascal-format, fuzzy
+#| msgid "Help Database \"%s\" not found"
+msgid "Help Database \"%s\" not found."
 msgstr "도움말 데이터베이스 \"%s\"를 찾을 수 없습니다"
 
 #: lclstrconsts.rshelphelpfordirectivenotfound
@@ -604,8 +608,9 @@ msgid "Help keyword \"%s\" not found in Database \"%s\"."
 msgstr "도움말 키워드 \"%s\"를 \"%s\" 데이터베이스에서 찾을 수 없습니다."
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
-#, object-pascal-format
-msgid "Help node \"%s\" has no Help Database"
+#, object-pascal-format, fuzzy
+#| msgid "Help node \"%s\" has no Help Database"
+msgid "Help node \"%s\" has no Help Database."
 msgstr "도움말 노드 \"%s\"에 도움말 데이터베이스가 없습니다"
 
 #: lclstrconsts.rshelpnohelpfoundforsource
@@ -614,7 +619,9 @@ msgid "No help found for line %d, column %d of %s."
 msgstr "%s의 줄 %d, 열 %d에 대한 도움말을 찾을 수 없습니다."
 
 #: lclstrconsts.rshelpnohelpnodesavailable
-msgid "No help entries available for this topic"
+#, fuzzy
+#| msgid "No help entries available for this topic"
+msgid "No help entries available for this topic."
 msgstr "이 주제에 사용할 수 있는 도움말 항목이 없습니다"
 
 #: lclstrconsts.rshelpnotfound
@@ -622,8 +629,9 @@ msgid "No help found for this topic"
 msgstr "이 주제에 대한 도움말을 찾을 수 없습니다"
 
 #: lclstrconsts.rshelpnotregistered
-#, object-pascal-format
-msgid "%s: Not registered"
+#, object-pascal-format, fuzzy
+#| msgid "%s: Not registered"
+msgid "%s: not registered."
 msgstr "%s: 등록되지 않음"
 
 #: lclstrconsts.rshelpselectorerror
@@ -631,8 +639,9 @@ msgid "Help Selector Error"
 msgstr "도움말 선택 오류"
 
 #: lclstrconsts.rshelpthereisnoviewerforhelptype
-#, object-pascal-format
-msgid "There is no viewer for help type \"%s\""
+#, object-pascal-format, fuzzy
+#| msgid "There is no viewer for help type \"%s\""
+msgid "There is no viewer for help type \"%s\"."
 msgstr "도움말 유형 \"%s\"에 대한 뷰어가 없습니다"
 
 #: lclstrconsts.rshelpviewererror

@@ -34,8 +34,9 @@ msgid "Unable to find a HTML browser."
 msgstr "Impussibule di truvà un navigatore HTML."
 
 #: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineone
-#, object-pascal-format
-msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options"
+#, object-pascal-format, fuzzy
+#| msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options"
+msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options."
 msgstr "Ùn si pò truvà alcunu navigatore HTML.%sCi vole à definiscene unu in Attrezzi -> Ozzioni -> Aiutu -> Ozzioni d’aiutu"
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
@@ -519,8 +520,9 @@ msgid "Help"
 msgstr "Aiutu"
 
 #: lclstrconsts.rshelpalreadyregistered
-#, object-pascal-format
-msgid "%s: Already registered"
+#, object-pascal-format, fuzzy
+#| msgid "%s: Already registered"
+msgid "%s: already registered."
 msgstr "%s : dighjà arregistratu"
 
 #: lclstrconsts.rshelpcontextnotfound
@@ -546,13 +548,15 @@ msgid "Help context %s not found in Database \"%s\"."
 msgstr "Ùn si pò truvà u cuntestu d’aiutu %s in a basa di dati « %s »."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
-#, object-pascal-format
-msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
+#, object-pascal-format, fuzzy
+#| msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
+msgid "Help Database \"%s\" did not find a viewer for a help page of type %s."
 msgstr "A basa di dati d’aiutu « %s » ùn hà micca trovu un’affissadore per una pagina d’aiutu di tipu %s"
 
 #: lclstrconsts.rshelphelpdatabasenotfound
-#, object-pascal-format
-msgid "Help Database \"%s\" not found"
+#, object-pascal-format, fuzzy
+#| msgid "Help Database \"%s\" not found"
+msgid "Help Database \"%s\" not found."
 msgstr "Ùn si pò truvà a basa di dati d’aiutu « %s »"
 
 #: lclstrconsts.rshelphelpfordirectivenotfound
@@ -576,8 +580,9 @@ msgid "Help keyword \"%s\" not found in Database \"%s\"."
 msgstr "Ùn si pò truvà a parolla chjave d’aiutu « %s » in a basa di dati « %s »."
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
-#, object-pascal-format
-msgid "Help node \"%s\" has no Help Database"
+#, object-pascal-format, fuzzy
+#| msgid "Help node \"%s\" has no Help Database"
+msgid "Help node \"%s\" has no Help Database."
 msgstr "U nodu d’aiutu « %s » ùn hà micca di basa di dati d’aiutu"
 
 #: lclstrconsts.rshelpnohelpfoundforsource
@@ -586,7 +591,9 @@ msgid "No help found for line %d, column %d of %s."
 msgstr "Ùn si trova alcunu aiutu per a linea %d, culonna %d di %s."
 
 #: lclstrconsts.rshelpnohelpnodesavailable
-msgid "No help entries available for this topic"
+#, fuzzy
+#| msgid "No help entries available for this topic"
+msgid "No help entries available for this topic."
 msgstr "Ùn ci hè alcuna rubrica d’aiutu per st’articulu"
 
 #: lclstrconsts.rshelpnotfound
@@ -594,8 +601,9 @@ msgid "No help found for this topic"
 msgstr "Ùn ci hè alcunu aiutu per st’articulu"
 
 #: lclstrconsts.rshelpnotregistered
-#, object-pascal-format
-msgid "%s: Not registered"
+#, object-pascal-format, fuzzy
+#| msgid "%s: Not registered"
+msgid "%s: not registered."
 msgstr "%s : micca arregistratu"
 
 #: lclstrconsts.rshelpselectorerror
@@ -603,8 +611,9 @@ msgid "Help Selector Error"
 msgstr "Sbagliu di selettore d’aiutu"
 
 #: lclstrconsts.rshelpthereisnoviewerforhelptype
-#, object-pascal-format
-msgid "There is no viewer for help type \"%s\""
+#, object-pascal-format, fuzzy
+#| msgid "There is no viewer for help type \"%s\""
+msgid "There is no viewer for help type \"%s\"."
 msgstr "Ùn ci hè alcunu affissadore per u tipu d’aiutu « %s »"
 
 #: lclstrconsts.rshelpviewererror

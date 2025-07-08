@@ -33,7 +33,7 @@ msgstr "Ikke istand til å finne en HTML-leser."
 
 #: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineone
 #, object-pascal-format
-msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options"
+msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options."
 msgstr ""
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
@@ -551,8 +551,9 @@ msgid "Help"
 msgstr "Hjelp"
 
 #: lclstrconsts.rshelpalreadyregistered
-#, object-pascal-format
-msgid "%s: Already registered"
+#, object-pascal-format, fuzzy
+#| msgid "%s: Already registered"
+msgid "%s: already registered."
 msgstr "%s: Allerede registrert"
 
 #: lclstrconsts.rshelpcontextnotfound
@@ -585,13 +586,13 @@ msgstr "Hjelp-kontekst %s ikke funnet i database %s%s%s."
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
 #, object-pascal-format, fuzzy, badformat
 #| msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
-msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
+msgid "Help Database \"%s\" did not find a viewer for a help page of type %s."
 msgstr "Hjelp-database %s%s%s fant ingen viser for en hjelpeside av type %s"
 
 #: lclstrconsts.rshelphelpdatabasenotfound
 #, object-pascal-format, fuzzy, badformat
 #| msgid "Help Database %s%s%s not found"
-msgid "Help Database \"%s\" not found"
+msgid "Help Database \"%s\" not found."
 msgstr "Hjelp-database %s%s%s ikke funnet"
 
 #: lclstrconsts.rshelphelpfordirectivenotfound
@@ -619,7 +620,7 @@ msgstr "Hjelp-nøkkelord %s%s%s ikke funnet i database %s%s%s."
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
 #, object-pascal-format, fuzzy, badformat
 #| msgid "Help node %s%s%s has no Help Database"
-msgid "Help node \"%s\" has no Help Database"
+msgid "Help node \"%s\" has no Help Database."
 msgstr "Hjelpnode %s%s%s har ingen Hjelp-database"
 
 #: lclstrconsts.rshelpnohelpfoundforsource
@@ -630,7 +631,7 @@ msgstr "Ingen hjelp funnet for linje %d, kolonne %d av %s."
 #: lclstrconsts.rshelpnohelpnodesavailable
 #, fuzzy
 #| msgid "No help nodes available"
-msgid "No help entries available for this topic"
+msgid "No help entries available for this topic."
 msgstr "Ingen hjelp-noder tilgjengelig"
 
 #: lclstrconsts.rshelpnotfound
@@ -640,8 +641,9 @@ msgid "No help found for this topic"
 msgstr "Hjelp ikke funnet"
 
 #: lclstrconsts.rshelpnotregistered
-#, object-pascal-format
-msgid "%s: Not registered"
+#, object-pascal-format, fuzzy
+#| msgid "%s: Not registered"
+msgid "%s: not registered."
 msgstr "%s: Ikke registrert"
 
 #: lclstrconsts.rshelpselectorerror
@@ -651,7 +653,7 @@ msgstr "Hjelp-selektor-feil"
 #: lclstrconsts.rshelpthereisnoviewerforhelptype
 #, object-pascal-format, fuzzy, badformat
 #| msgid "There is no viewer for help type %s%s%s"
-msgid "There is no viewer for help type \"%s\""
+msgid "There is no viewer for help type \"%s\"."
 msgstr "Det er ingen viser for hjelpetype %s%s%s"
 
 #: lclstrconsts.rshelpviewererror

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-07-06 22:55+0300\n"
+"PO-Revision-Date: 2025-07-09 00:51+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -32,8 +32,8 @@ msgstr "Невозможно найти браузер HTML."
 
 #: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineone
 #, object-pascal-format
-msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options"
-msgstr "Браузер HTML не найден.%sЗадайте его в меню Сервис -> Параметры -> Параметры справки"
+msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options."
+msgstr "Браузер HTML не найден.%sЗадайте его в меню Сервис -> Параметры -> Параметры справки."
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
 #, object-pascal-format
@@ -515,8 +515,8 @@ msgstr "Справка"
 
 #: lclstrconsts.rshelpalreadyregistered
 #, object-pascal-format
-msgid "%s: Already registered"
-msgstr "%s: уже зарегистрирован"
+msgid "%s: already registered."
+msgstr "%s: уже зарегистрирован."
 
 #: lclstrconsts.rshelpcontextnotfound
 msgid "A help database was found for this topic, but this topic was not found"
@@ -542,13 +542,13 @@ msgstr "Контекст справки %s не найден в базе дан�
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
 #, object-pascal-format
-msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
-msgstr "База данных справки \"%s\" не нашла программу просмотра для страницы справки типа %s"
+msgid "Help Database \"%s\" did not find a viewer for a help page of type %s."
+msgstr "База данных справки \"%s\" не нашла программу просмотра для страницы справки типа %s."
 
 #: lclstrconsts.rshelphelpdatabasenotfound
 #, object-pascal-format
-msgid "Help Database \"%s\" not found"
-msgstr "База данных справки \"%s\" не найдена"
+msgid "Help Database \"%s\" not found."
+msgstr "База данных справки \"%s\" не найдена."
 
 #: lclstrconsts.rshelphelpfordirectivenotfound
 #, object-pascal-format
@@ -572,8 +572,8 @@ msgstr "Ключевое слово справки \"%s\" не найдено в
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
 #, object-pascal-format
-msgid "Help node \"%s\" has no Help Database"
-msgstr "Элемент справки \"%s\" не имеет соответствующей базы данных"
+msgid "Help node \"%s\" has no Help Database."
+msgstr "Элемент справки \"%s\" не имеет соответствующей базы данных."
 
 #: lclstrconsts.rshelpnohelpfoundforsource
 #, object-pascal-format
@@ -581,8 +581,8 @@ msgid "No help found for line %d, column %d of %s."
 msgstr "Не найдено справки для строки %d, столбца %d из %s."
 
 #: lclstrconsts.rshelpnohelpnodesavailable
-msgid "No help entries available for this topic"
-msgstr "Доступные элементы справки для данной темы отсутствуют"
+msgid "No help entries available for this topic."
+msgstr "Доступные элементы справки для данной темы отсутствуют."
 
 #: lclstrconsts.rshelpnotfound
 msgid "No help found for this topic"
@@ -590,8 +590,8 @@ msgstr "Справка для данной темы не найдена"
 
 #: lclstrconsts.rshelpnotregistered
 #, object-pascal-format
-msgid "%s: Not registered"
-msgstr "%s: Не зарегистрирован"
+msgid "%s: not registered."
+msgstr "%s: не зарегистрирован."
 
 #: lclstrconsts.rshelpselectorerror
 msgid "Help Selector Error"
@@ -599,8 +599,8 @@ msgstr "Ошибка переключателя справки"
 
 #: lclstrconsts.rshelpthereisnoviewerforhelptype
 #, object-pascal-format
-msgid "There is no viewer for help type \"%s\""
-msgstr "Отсутствует программа просмотра для типа справки \"%s\""
+msgid "There is no viewer for help type \"%s\"."
+msgstr "Отсутствует программа просмотра для типа справки \"%s\"."
 
 #: lclstrconsts.rshelpviewererror
 msgid "Help Viewer Error"

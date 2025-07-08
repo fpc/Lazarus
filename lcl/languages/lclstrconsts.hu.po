@@ -31,8 +31,9 @@ msgid "Unable to find a HTML browser."
 msgstr "Nem található HTML böngésző."
 
 #: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineone
-#, object-pascal-format
-msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options"
+#, object-pascal-format, fuzzy
+#| msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options"
+msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options."
 msgstr "Nincs HTML böngésző. %s Meg kell adni egyet: Eszközök -> Beállítások -> Súgó -> Súgó beállítások"
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
@@ -546,8 +547,9 @@ msgid "Help"
 msgstr "Súgó"
 
 #: lclstrconsts.rshelpalreadyregistered
-#, object-pascal-format
-msgid "%s: Already registered"
+#, object-pascal-format, fuzzy
+#| msgid "%s: Already registered"
+msgid "%s: already registered."
 msgstr "%s: Már regisztrálva van"
 
 #: lclstrconsts.rshelpcontextnotfound
@@ -573,13 +575,15 @@ msgid "Help context %s not found in Database \"%s\"."
 msgstr "A(z) %s súgó témakör nem található a(z) \"%s\" adatbázisban."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
-#, object-pascal-format
-msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
+#, object-pascal-format, fuzzy
+#| msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
+msgid "Help Database \"%s\" did not find a viewer for a help page of type %s."
 msgstr "A(z) \"%s\" súgó adatbázis nem talált megjelenítőt a(z) %s típusú súgó oldalhoz"
 
 #: lclstrconsts.rshelphelpdatabasenotfound
-#, object-pascal-format
-msgid "Help Database \"%s\" not found"
+#, object-pascal-format, fuzzy
+#| msgid "Help Database \"%s\" not found"
+msgid "Help Database \"%s\" not found."
 msgstr "A(z) \"%s\" súgó adatbázis nem található"
 
 #: lclstrconsts.rshelphelpfordirectivenotfound
@@ -603,8 +607,9 @@ msgid "Help keyword \"%s\" not found in Database \"%s\"."
 msgstr "A(z) \"%s\" súgó kulcsszó nem található a(z) \"%s\" adatbázisban."
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
-#, object-pascal-format
-msgid "Help node \"%s\" has no Help Database"
+#, object-pascal-format, fuzzy
+#| msgid "Help node \"%s\" has no Help Database"
+msgid "Help node \"%s\" has no Help Database."
 msgstr "A(z) \"%s\" elemhez nincs súgó adatbázis"
 
 #: lclstrconsts.rshelpnohelpfoundforsource
@@ -613,7 +618,9 @@ msgid "No help found for line %d, column %d of %s."
 msgstr "Nem található súgó a %d. sorhoz, %d. oszlophoz ebben: %s."
 
 #: lclstrconsts.rshelpnohelpnodesavailable
-msgid "No help entries available for this topic"
+#, fuzzy
+#| msgid "No help entries available for this topic"
+msgid "No help entries available for this topic."
 msgstr "Nincs elérhető súgóbejegyzés ehhez a témához"
 
 #: lclstrconsts.rshelpnotfound
@@ -621,8 +628,9 @@ msgid "No help found for this topic"
 msgstr "Nincs súgó ehhez a témához"
 
 #: lclstrconsts.rshelpnotregistered
-#, object-pascal-format
-msgid "%s: Not registered"
+#, object-pascal-format, fuzzy
+#| msgid "%s: Not registered"
+msgid "%s: not registered."
 msgstr "%s: Nincs regisztrálva"
 
 #: lclstrconsts.rshelpselectorerror
@@ -630,8 +638,9 @@ msgid "Help Selector Error"
 msgstr "Súgó kiválasztó hiba"
 
 #: lclstrconsts.rshelpthereisnoviewerforhelptype
-#, object-pascal-format
-msgid "There is no viewer for help type \"%s\""
+#, object-pascal-format, fuzzy
+#| msgid "There is no viewer for help type \"%s\""
+msgid "There is no viewer for help type \"%s\"."
 msgstr "Nincs megjelenítő a(z) \"%s\" típusú súgóhoz."
 
 #: lclstrconsts.rshelpviewererror

@@ -33,7 +33,7 @@ msgstr "לא יכול למצוא דפדפן HTML."
 
 #: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineone
 #, object-pascal-format
-msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options"
+msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options."
 msgstr ""
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
@@ -555,8 +555,9 @@ msgid "Help"
 msgstr "עזרה"
 
 #: lclstrconsts.rshelpalreadyregistered
-#, object-pascal-format
-msgid "%s: Already registered"
+#, object-pascal-format, fuzzy
+#| msgid "%s: Already registered"
+msgid "%s: already registered."
 msgstr "כבר רשום %s:"
 
 #: lclstrconsts.rshelpcontextnotfound
@@ -589,13 +590,13 @@ msgstr "עזרה תלויית הקשר %s לא נמצאה בבסיס הנתונ�
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
 #, object-pascal-format, fuzzy, badformat
 #| msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
-msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
+msgid "Help Database \"%s\" did not find a viewer for a help page of type %s."
 msgstr "בסיס הנתונים של העזרה %s%s%s  לא מצא תוכנה להצגת דף עזרה מסוג %s"
 
 #: lclstrconsts.rshelphelpdatabasenotfound
 #, object-pascal-format, fuzzy, badformat
 #| msgid "Help Database %s%s%s not found"
-msgid "Help Database \"%s\" not found"
+msgid "Help Database \"%s\" not found."
 msgstr "בסיס הנתונים של העזרה %s%s%s  לא נמצא "
 
 #: lclstrconsts.rshelphelpfordirectivenotfound
@@ -623,7 +624,7 @@ msgstr "מלת מפתח לעזרה %s%s%s  לא נמצאה בבסיס הנתונ
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
 #, object-pascal-format, fuzzy, badformat
 #| msgid "Help node %s%s%s has no Help Database"
-msgid "Help node \"%s\" has no Help Database"
+msgid "Help node \"%s\" has no Help Database."
 msgstr "לצומת  העזרה %s%s% אין בסיס נתונים"
 
 #: lclstrconsts.rshelpnohelpfoundforsource
@@ -634,7 +635,7 @@ msgstr "לא נמצאה עזרה לשורה %d, עמודה %d,  של %s."
 #: lclstrconsts.rshelpnohelpnodesavailable
 #, fuzzy
 #| msgid "No help nodes available"
-msgid "No help entries available for this topic"
+msgid "No help entries available for this topic."
 msgstr "אין צומת עזרה זמינה"
 
 #: lclstrconsts.rshelpnotfound
@@ -644,8 +645,9 @@ msgid "No help found for this topic"
 msgstr "עזרה לא נמצאה"
 
 #: lclstrconsts.rshelpnotregistered
-#, object-pascal-format
-msgid "%s: Not registered"
+#, object-pascal-format, fuzzy
+#| msgid "%s: Not registered"
+msgid "%s: not registered."
 msgstr "לא רשום %s:"
 
 #: lclstrconsts.rshelpselectorerror
@@ -655,7 +657,7 @@ msgstr "שגיאת בורר העזרה"
 #: lclstrconsts.rshelpthereisnoviewerforhelptype
 #, object-pascal-format, fuzzy, badformat
 #| msgid "There is no viewer for help type %s%s%s"
-msgid "There is no viewer for help type \"%s\""
+msgid "There is no viewer for help type \"%s\"."
 msgstr "אין תוכנה להצגת עזרה מסוג  %s%s%s"
 
 #: lclstrconsts.rshelpviewererror

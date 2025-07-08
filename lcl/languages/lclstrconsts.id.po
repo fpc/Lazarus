@@ -34,7 +34,7 @@ msgstr "Tidak bisa menemukan HTML browser"
 
 #: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineone
 #, object-pascal-format
-msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options"
+msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options."
 msgstr ""
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
@@ -555,8 +555,9 @@ msgid "Help"
 msgstr "Panduan"
 
 #: lclstrconsts.rshelpalreadyregistered
-#, object-pascal-format
-msgid "%s: Already registered"
+#, object-pascal-format, fuzzy
+#| msgid "%s: Already registered"
+msgid "%s: already registered."
 msgstr "%s: Sudah teregistrasi"
 
 #: lclstrconsts.rshelpcontextnotfound
@@ -589,13 +590,13 @@ msgstr "Konteks Bantuan %s tidak ditemukan dalam Database %s%s%s."
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
 #, object-pascal-format, fuzzy, badformat
 #| msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
-msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
+msgid "Help Database \"%s\" did not find a viewer for a help page of type %s."
 msgstr "Database Bantuan %s%s%s tidak ditemukan peninjau untuk halaman bantuan dari tipe %s"
 
 #: lclstrconsts.rshelphelpdatabasenotfound
 #, object-pascal-format, fuzzy, badformat
 #| msgid "Help Database %s%s%s not found"
-msgid "Help Database \"%s\" not found"
+msgid "Help Database \"%s\" not found."
 msgstr "Database Bantuan %s%s%s tidak ditemukan"
 
 #: lclstrconsts.rshelphelpfordirectivenotfound
@@ -623,7 +624,7 @@ msgstr "Kata kunci Bantuan %s%s%s tidak ditemukan dalam Database %s%s%s."
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
 #, object-pascal-format, fuzzy, badformat
 #| msgid "Help node %s%s%s has no Help Database"
-msgid "Help node \"%s\" has no Help Database"
+msgid "Help node \"%s\" has no Help Database."
 msgstr "Node Bantuan %s%s%s tidak mempunyai Database Bantuan"
 
 #: lclstrconsts.rshelpnohelpfoundforsource
@@ -634,7 +635,7 @@ msgstr "Tidak ada bantuan ditemukan untuk baris %d, column %d of %s."
 #: lclstrconsts.rshelpnohelpnodesavailable
 #, fuzzy
 #| msgid "No help nodes available"
-msgid "No help entries available for this topic"
+msgid "No help entries available for this topic."
 msgstr "Node bantuan tidak tersedia"
 
 #: lclstrconsts.rshelpnotfound
@@ -644,8 +645,9 @@ msgid "No help found for this topic"
 msgstr "Bantuan tidak ditemukan"
 
 #: lclstrconsts.rshelpnotregistered
-#, object-pascal-format
-msgid "%s: Not registered"
+#, object-pascal-format, fuzzy
+#| msgid "%s: Not registered"
+msgid "%s: not registered."
 msgstr "%s: Tidak teregistrasi"
 
 #: lclstrconsts.rshelpselectorerror
@@ -655,7 +657,7 @@ msgstr "Selektor Bantuan Salah"
 #: lclstrconsts.rshelpthereisnoviewerforhelptype
 #, object-pascal-format, fuzzy, badformat
 #| msgid "There is no viewer for help type %s%s%s"
-msgid "There is no viewer for help type \"%s\""
+msgid "There is no viewer for help type \"%s\"."
 msgstr "Tidak ada peninjau untuk tipe bantuan %s%s%s"
 
 #: lclstrconsts.rshelpviewererror

@@ -33,8 +33,9 @@ msgid "Unable to find a HTML browser."
 msgstr "Nepavyko rasti HTML naršyklės."
 
 #: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineone
-#, object-pascal-format
-msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options"
+#, object-pascal-format, fuzzy
+#| msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options"
+msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options."
 msgstr "Nerasta HTML Naršyklė.%sJą galima nustatyti „Aplinka -> Aplinkos parinktys -> Žinynas -> Žinyno parinktys“"
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
@@ -549,8 +550,9 @@ msgid "Help"
 msgstr "Žinynas"
 
 #: lclstrconsts.rshelpalreadyregistered
-#, object-pascal-format
-msgid "%s: Already registered"
+#, object-pascal-format, fuzzy
+#| msgid "%s: Already registered"
+msgid "%s: already registered."
 msgstr "%s: jau yra registruotas"
 
 #: lclstrconsts.rshelpcontextnotfound
@@ -576,13 +578,15 @@ msgid "Help context %s not found in Database \"%s\"."
 msgstr "Žinyno turinys „%s“ duomenų bazėje „%s“ nerastas."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
-#, object-pascal-format
-msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
+#, object-pascal-format, fuzzy
+#| msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
+msgid "Help Database \"%s\" did not find a viewer for a help page of type %s."
 msgstr "Žinyno duomenų bazė „%s“ nerado žiūryklės „%s“ tipo žinyno lapui."
 
 #: lclstrconsts.rshelphelpdatabasenotfound
-#, object-pascal-format
-msgid "Help Database \"%s\" not found"
+#, object-pascal-format, fuzzy
+#| msgid "Help Database \"%s\" not found"
+msgid "Help Database \"%s\" not found."
 msgstr "Žinyno duomenų bazė „%s“ nerasta."
 
 #: lclstrconsts.rshelphelpfordirectivenotfound
@@ -606,8 +610,9 @@ msgid "Help keyword \"%s\" not found in Database \"%s\"."
 msgstr "Žinyno raktažodis „%s“ duomenų bazėje „%s“ nerastas."
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
-#, object-pascal-format
-msgid "Help node \"%s\" has no Help Database"
+#, object-pascal-format, fuzzy
+#| msgid "Help node \"%s\" has no Help Database"
+msgid "Help node \"%s\" has no Help Database."
 msgstr "Žinyno mazgas „%s“ neturi žinyno duomenų bazės."
 
 #: lclstrconsts.rshelpnohelpfoundforsource
@@ -616,7 +621,9 @@ msgid "No help found for line %d, column %d of %s."
 msgstr "Žinyne nėra duomenų eilutei %d, stulpeliui %d šio %s."
 
 #: lclstrconsts.rshelpnohelpnodesavailable
-msgid "No help entries available for this topic"
+#, fuzzy
+#| msgid "No help entries available for this topic"
+msgid "No help entries available for this topic."
 msgstr "Žinyne nėra įrašų šia tema"
 
 #: lclstrconsts.rshelpnotfound
@@ -624,8 +631,9 @@ msgid "No help found for this topic"
 msgstr "Žinyne nėra informacijos šia tema"
 
 #: lclstrconsts.rshelpnotregistered
-#, object-pascal-format
-msgid "%s: Not registered"
+#, object-pascal-format, fuzzy
+#| msgid "%s: Not registered"
+msgid "%s: not registered."
 msgstr "%s: neregistruotas"
 
 #: lclstrconsts.rshelpselectorerror
@@ -633,8 +641,9 @@ msgid "Help Selector Error"
 msgstr "Žinyno parinkiklio klaida"
 
 #: lclstrconsts.rshelpthereisnoviewerforhelptype
-#, object-pascal-format
-msgid "There is no viewer for help type \"%s\""
+#, object-pascal-format, fuzzy
+#| msgid "There is no viewer for help type \"%s\""
+msgid "There is no viewer for help type \"%s\"."
 msgstr "Nerasta žiūryklė „%s“ žinyno tipui."
 
 #: lclstrconsts.rshelpviewererror

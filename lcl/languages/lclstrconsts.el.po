@@ -25,7 +25,7 @@ msgstr ""
 
 #: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineone
 #, object-pascal-format
-msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options"
+msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options."
 msgstr ""
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
@@ -511,7 +511,7 @@ msgstr ""
 
 #: lclstrconsts.rshelpalreadyregistered
 #, object-pascal-format
-msgid "%s: Already registered"
+msgid "%s: already registered."
 msgstr ""
 
 #: lclstrconsts.rshelpcontextnotfound
@@ -538,12 +538,12 @@ msgstr ""
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
 #, object-pascal-format
-msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
+msgid "Help Database \"%s\" did not find a viewer for a help page of type %s."
 msgstr ""
 
 #: lclstrconsts.rshelphelpdatabasenotfound
 #, object-pascal-format
-msgid "Help Database \"%s\" not found"
+msgid "Help Database \"%s\" not found."
 msgstr ""
 
 #: lclstrconsts.rshelphelpfordirectivenotfound
@@ -568,7 +568,7 @@ msgstr ""
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
 #, object-pascal-format
-msgid "Help node \"%s\" has no Help Database"
+msgid "Help node \"%s\" has no Help Database."
 msgstr ""
 
 #: lclstrconsts.rshelpnohelpfoundforsource
@@ -577,7 +577,7 @@ msgid "No help found for line %d, column %d of %s."
 msgstr ""
 
 #: lclstrconsts.rshelpnohelpnodesavailable
-msgid "No help entries available for this topic"
+msgid "No help entries available for this topic."
 msgstr ""
 
 #: lclstrconsts.rshelpnotfound
@@ -586,7 +586,7 @@ msgstr ""
 
 #: lclstrconsts.rshelpnotregistered
 #, object-pascal-format
-msgid "%s: Not registered"
+msgid "%s: not registered."
 msgstr ""
 
 #: lclstrconsts.rshelpselectorerror
@@ -595,7 +595,7 @@ msgstr ""
 
 #: lclstrconsts.rshelpthereisnoviewerforhelptype
 #, object-pascal-format
-msgid "There is no viewer for help type \"%s\""
+msgid "There is no viewer for help type \"%s\"."
 msgstr ""
 
 #: lclstrconsts.rshelpviewererror
