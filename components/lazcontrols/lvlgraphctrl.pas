@@ -367,7 +367,9 @@ const
   DefaultLvlGraphEdgeNearMouseDistMax   = 5;
   DefaultLvlGraphEdgeShape              = lgesCurved;
   DefaultLvlGraphEdgeColor              = clSilver;
+  DefaultLvlGraphEdgeWidth              = 1;
   DefaultLvlGraphEdgeHighlightColor     = clBlack;
+  DefaultLvlGraphEdgeHighlightWidth     = 3;
   DefaultLvlGraphEdgeBackColor          = clRed;
   DefaultLvlGraphEdgeBackHighlightColor = clBlue;
   DefaultMaxLevelHeightAbs              = 0;
@@ -431,16 +433,20 @@ type
     FControl: TCustomLvlGraphControl;
     FBackHighlightColor: TColor;
     FHighlightColor: TColor;
+    FHighlightWidth: integer;
     FMouseDistMax: integer;
     FShape: TLvlGraphEdgeShape;
     FSplitMode: TLvlGraphEdgeSplitMode;
+    FWidth: integer;
     procedure SetBackColor(AValue: TColor);
-    procedure SetColor(AValue: TColor);
     procedure SetBackHighlightColor(AValue: TColor);
+    procedure SetColor(AValue: TColor);
     procedure SetHighlightColor(AValue: TColor);
+    procedure SetHighlightWidth(const AValue: integer);
     procedure SetMouseDistMax(AValue: integer);
     procedure SetShape(AValue: TLvlGraphEdgeShape);
     procedure SetSplitMode(AValue: TLvlGraphEdgeSplitMode);
+    procedure SetWidth(const AValue: integer);
   public
     constructor Create(AControl: TCustomLvlGraphControl);
     destructor Destroy; override;
@@ -448,13 +454,15 @@ type
     function Equals(Obj: TObject): boolean; override;
     property Control: TCustomLvlGraphControl read FControl;
   published
-    property SplitMode: TLvlGraphEdgeSplitMode read FSplitMode write SetSplitMode default DefaultLvlGraphEdgeSplitMode;
+    property BackColor: TColor read FBackColor write SetBackColor default DefaultLvlGraphEdgeBackColor;
+    property BackHighlightColor: TColor read FBackHighlightColor write SetBackHighlightColor default DefaultLvlGraphEdgeBackHighlightColor;
+    property Color: TColor read FColor write SetColor default DefaultLvlGraphEdgeColor;
+    property HighlightColor: TColor read FHighlightColor write SetHighlightColor default DefaultLvlGraphEdgeHighlightColor;
+    property HighlightWidth: integer read FHighlightWidth write SetHighlightWidth default DefaultLvlGraphEdgeHighlightWidth;
     property MouseDistMax: integer read FMouseDistMax write SetMouseDistMax default DefaultLvlGraphEdgeNearMouseDistMax;
     property Shape: TLvlGraphEdgeShape read FShape write SetShape default DefaultLvlGraphEdgeShape;
-    property Color: TColor read FColor write SetColor default DefaultLvlGraphEdgeColor;
-    property BackColor: TColor read FBackColor write SetBackColor default DefaultLvlGraphEdgeBackColor;
-    property HighlightColor: TColor read FHighlightColor write SetHighlightColor default DefaultLvlGraphEdgeHighlightColor;
-    property BackHighlightColor: TColor read FBackHighlightColor write SetBackHighlightColor default DefaultLvlGraphEdgeBackHighlightColor;
+    property SplitMode: TLvlGraphEdgeSplitMode read FSplitMode write SetSplitMode default DefaultLvlGraphEdgeSplitMode;
+    property Width: integer read FWidth write SetWidth default DefaultLvlGraphEdgeWidth;
   end;
 
   { TLvlGraphLimits }
@@ -1397,6 +1405,13 @@ begin
   Control.Invalidate;
 end;
 
+procedure TLvlGraphEdgeStyle.SetHighlightWidth(const AValue: integer);
+begin
+  if FHighlightWidth=AValue then Exit;
+  FHighlightWidth:=AValue;
+  Control.Invalidate;
+end;
+
 procedure TLvlGraphEdgeStyle.SetShape(AValue: TLvlGraphEdgeShape);
 begin
   if FShape=AValue then Exit;
@@ -1411,6 +1426,13 @@ begin
   Control.InvalidateAutoLayout;
 end;
 
+procedure TLvlGraphEdgeStyle.SetWidth(const AValue: integer);
+begin
+  if FWidth=AValue then Exit;
+  FWidth:=AValue;
+  Control.Invalidate;
+end;
+
 constructor TLvlGraphEdgeStyle.Create(AControl: TCustomLvlGraphControl);
 begin
   FControl:=AControl;
@@ -1419,8 +1441,10 @@ begin
   FShape:=DefaultLvlGraphEdgeShape;
   FColor:=DefaultLvlGraphEdgeColor;
   FHighlightColor:=DefaultLvlGraphEdgeHighlightColor;
+  FHighlightWidth:=DefaultLvlGraphEdgeHighlightWidth;
   FBackColor:=DefaultLvlGraphEdgeBackColor;
   FBackHighlightColor:=DefaultLvlGraphEdgeBackHighlightColor;
+  FWidth:=DefaultLvlGraphEdgeWidth;
 end;
 
 destructor TLvlGraphEdgeStyle.Destroy;
@@ -1440,8 +1464,10 @@ begin
     Shape:=Src.Shape;
     Color:=Src.Color;
     HighlightColor:=Src.HighlightColor;
+    HighlightWidth:=Src.HighlightWidth;
     BackColor:=Src.BackColor;
     BackHighlightColor:=Src.BackHighlightColor;
+    Width:=Src.Width;
   end else
     inherited Assign(Source);
 end;
@@ -1459,8 +1485,10 @@ begin
         and (Shape=Src.Shape)
         and (Color=Src.Color)
         and (HighlightColor=Src.HighlightColor)
+        and (HighlightWidth=Src.HighlightWidth)
         and (BackColor=Src.BackColor)
-        and (BackHighlightColor=Src.BackHighlightColor);
+        and (BackHighlightColor=Src.BackHighlightColor)
+        and (Width=Src.Width);
   end;
 end;
 
@@ -2474,10 +2502,11 @@ var
   Level: TLvlGraphLevel;
   j: Integer;
   Node: TLvlGraphNode;
-  k: Integer;
+  k, OldPenWidth: Integer;
   Edge: TLvlGraphEdge;
   TargetNode: TLvlGraphNode;
 begin
+  OldPenWidth:=Canvas.Pen.Width;
   for i:=0 to Graph.LevelCount-1 do begin
     Level:=Graph.Levels[i];
     for j:=0 to Level.Count-1 do begin
@@ -2487,6 +2516,10 @@ begin
         TargetNode:=Edge.Target;
         if Edge.Highlighted<>Highlighted then continue;
         // compare Level in case MarkBackEdges was skipped
+        if Edge.Highlighted then
+          Canvas.Pen.Width:=EdgeStyle.HighlightWidth
+        else
+          Canvas.Pen.Width:=EdgeStyle.Width;
         if (TargetNode.Level.Index>Level.Index) and (not Edge.BackEdge) then begin
           // normal dependency
           // => draw line from right of Node to left of TargetNode
@@ -2506,6 +2539,7 @@ begin
       end;
     end;
   end;
+  Canvas.Pen.Width:=OldPenWidth;
 end;
 
 procedure TCustomLvlGraphControl.GraphSelectionChanged(Sender: TObject);
