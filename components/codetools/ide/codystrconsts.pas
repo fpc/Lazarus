@@ -182,7 +182,8 @@ resourcestring
   crsShowOnlyIdentifiersContainingFilterText = 'Show only identifiers '
     +'containing filter text';
   crsUseIdentifier = '&Use identifier';
-  crsAndMoreIdentifiers = '... and %s more identifiers';
+  crsShowMoreIdentifiers = '... click to show %d more (up to %d left)';
+  crsShowRemainingIdentifiers = '... click to show remaining (up to %d left)';
   crsContextUseIdentifier = 'Use "%s"';
   crsContextJumpTo = 'Jump to "%s"';
   crsContextDeleteUnit = 'Delete unit "%s"';
