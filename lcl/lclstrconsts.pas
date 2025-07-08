@@ -365,13 +365,13 @@ resourceString
   SmkcMeta = 'Meta+';
 
   // help
-  rsHelpHelpNodeHasNoHelpDatabase = 'Help node "%s" has no Help Database';
-  rsHelpThereIsNoViewerForHelpType = 'There is no viewer for help type "%s"';
+  rsHelpHelpNodeHasNoHelpDatabase = 'Help node "%s" has no Help Database.';
+  rsHelpThereIsNoViewerForHelpType = 'There is no viewer for help type "%s".';
   rsHelpHelpDatabaseDidNotFoundAViewerForAHelpPageOfType = 'Help Database "%s" '
-    +'did not find a viewer for a help page of type %s';
-  rsHelpAlreadyRegistered = '%s: Already registered';
-  rsHelpNotRegistered = '%s: Not registered';
-  rsHelpHelpDatabaseNotFound = 'Help Database "%s" not found';
+    +'did not find a viewer for a help page of type %s.';
+  rsHelpAlreadyRegistered = '%s: already registered.';
+  rsHelpNotRegistered = '%s: not registered.';
+  rsHelpHelpDatabaseNotFound = 'Help Database "%s" not found.';
   rsHelpHelpKeywordNotFoundInDatabase = 'Help keyword "%s" not found in Database "%s".';
   rsHelpHelpKeywordNotFound = 'Help keyword "%s" not found.';
   rsHelpHelpForDirectiveNotFoundInDatabase = 'Help for directive "%s" not found in '
@@ -380,7 +380,7 @@ resourceString
   rsHelpHelpContextNotFoundInDatabase = 'Help context %s not found in Database "%s".';
   rsHelpHelpContextNotFound = 'Help context %s not found.';
   rsHelpNoHelpFoundForSource = 'No help found for line %d, column %d of %s.';
-  rsHelpNoHelpNodesAvailable = 'No help entries available for this topic';
+  rsHelpNoHelpNodesAvailable = 'No help entries available for this topic.';
   rsHelpError = 'Help Error';
   rsHelpDatabaseNotFound = 'There is no help database installed for this topic';
   rsHelpContextNotFound = 'A help database was found for this topic, but this topic was not found';
@@ -397,7 +397,7 @@ resourceString
   hhsHelpTheMacroSInBrowserParamsWillBeReplacedByTheURL = 'The macro %s in '
     +'BrowserParams will be replaced by the URL.';
   hhsHelpNoHTMLBrowserFoundPleaseDefineOne = 'No HTML Browser found.'
-    +'%sPlease define one in Tools -> Options -> Help -> Help Options';
+    +'%sPlease define one in Tools -> Options -> Help -> Help Options.';
   hhsHelpNoHTMLBrowserFound = 'Unable to find a HTML browser.';
   hhsHelpBrowserNotFound = 'Browser "%s" not found.';
   hhsHelpBrowserNotExecutable = 'Browser "%s" not executable.';
