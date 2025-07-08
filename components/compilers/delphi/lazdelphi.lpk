@@ -44,12 +44,6 @@
       <Item>
         <PackageName Value="IDEIntf"/>
       </Item>
-      <Item>
-        <PackageName Value="BuildIntf"/>
-      </Item>
-      <Item>
-        <PackageName Value="FCL"/>
-      </Item>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>

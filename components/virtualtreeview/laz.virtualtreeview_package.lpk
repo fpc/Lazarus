@@ -163,9 +163,6 @@ end;"/>
         <MaxVersion Minor="6"/>
         <MinVersion Minor="6" Valid="True"/>
       </Item>
-      <Item>
-        <PackageName Value="LCL"/>
-      </Item>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>

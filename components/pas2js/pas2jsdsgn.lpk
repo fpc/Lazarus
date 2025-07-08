@@ -120,19 +120,13 @@
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
     </i18n>
-    <RequiredPkgs Count="4">
+    <RequiredPkgs Count="2">
       <Item1>
         <PackageName Value="LazProjectGroups"/>
       </Item1>
       <Item2>
         <PackageName Value="SimpleWebServerGUI"/>
       </Item2>
-      <Item3>
-        <PackageName Value="CodeTools"/>
-      </Item3>
-      <Item4>
-        <PackageName Value="IDEIntf"/>
-      </Item4>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>

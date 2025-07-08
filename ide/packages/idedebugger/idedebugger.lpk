@@ -331,13 +331,7 @@
         <PackageName Value="LazDebuggerGdbmi"/>
       </Item>
       <Item>
-        <PackageName Value="IdeConfig"/>
-      </Item>
-      <Item>
         <PackageName Value="LazDebuggerFp"/>
-      </Item>
-      <Item>
-        <PackageName Value="DebuggerIntf"/>
       </Item>
     </RequiredPkgs>
     <UsageOptions>

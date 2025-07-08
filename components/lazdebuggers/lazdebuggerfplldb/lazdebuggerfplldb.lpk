@@ -44,16 +44,13 @@ Fp-Debug is used to present watches and locals in pascal style."/>
       </Item1>
     </Files>
     <CompatibilityMode Value="True"/>
-    <RequiredPkgs Count="3">
+    <RequiredPkgs Count="2">
       <Item1>
         <PackageName Value="fpdebug"/>
       </Item1>
       <Item2>
         <PackageName Value="LazDebuggerLldb"/>
       </Item2>
-      <Item3>
-        <PackageName Value="FCL"/>
-      </Item3>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>

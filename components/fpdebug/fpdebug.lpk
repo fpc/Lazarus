@@ -265,9 +265,6 @@ File(s) with other licenses (see also header in file(s):
       <Item>
         <PackageName Value="LCLBase"/>
       </Item>
-      <Item>
-        <PackageName Value="FCL"/>
-      </Item>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>

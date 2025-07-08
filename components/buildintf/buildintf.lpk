@@ -99,9 +99,6 @@
       <Item>
         <PackageName Value="LazUtils"/>
       </Item>
-      <Item>
-        <PackageName Value="FCL"/>
-      </Item>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>

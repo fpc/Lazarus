@@ -75,9 +75,6 @@ With the exception of the unit registersqldb, which is GPL-2. This unit contains
       <Item>
         <PackageName Value="SynEdit"/>
       </Item>
-      <Item>
-        <PackageName Value="FCL"/>
-      </Item>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>

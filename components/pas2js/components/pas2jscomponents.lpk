@@ -159,22 +159,7 @@
         <PackageName Value="weblaz"/>
       </Item>
       <Item>
-        <PackageName Value="SynEditDsgn"/>
-      </Item>
-      <Item>
-        <PackageName Value="SynEdit"/>
-      </Item>
-      <Item>
         <PackageName Value="Pas2JSDsgn"/>
-      </Item>
-      <Item>
-        <PackageName Value="IDEIntf"/>
-      </Item>
-      <Item>
-        <PackageName Value="FCL"/>
-      </Item>
-      <Item>
-        <PackageName Value="LCL"/>
       </Item>
     </RequiredPkgs>
     <UsageOptions>

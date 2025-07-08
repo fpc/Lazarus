@@ -66,13 +66,10 @@ This debugger uses gdb and is based on gdb&apos;s mi interface."/>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
     </i18n>
-    <RequiredPkgs Count="2">
+    <RequiredPkgs Count="1">
       <Item1>
         <PackageName Value="CmdLineDebuggerBase"/>
       </Item1>
-      <Item2>
-        <PackageName Value="DebuggerIntf"/>
-      </Item2>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>

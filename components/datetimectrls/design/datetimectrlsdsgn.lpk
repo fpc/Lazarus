@@ -42,9 +42,6 @@
       <Item>
         <PackageName Value="IDEIntf"/>
       </Item>
-      <Item>
-        <PackageName Value="FCL"/>
-      </Item>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>

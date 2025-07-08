@@ -71,12 +71,6 @@
       <Item>
         <PackageName Value="fpdebug"/>
       </Item>
-      <Item>
-        <PackageName Value="DebuggerIntf"/>
-      </Item>
-      <Item>
-        <PackageName Value="FCL"/>
-      </Item>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>

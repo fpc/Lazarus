@@ -347,9 +347,6 @@
         <PackageName Value="DebuggerIntf"/>
       </Item>
       <Item>
-        <PackageName Value="LazDebuggerIntf"/>
-      </Item>
-      <Item>
         <PackageName Value="BuildIntf"/>
       </Item>
       <Item>

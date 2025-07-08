@@ -146,12 +146,6 @@ Files in this package are for the main configuration of the IDE."/>
       <Item>
         <PackageName Value="BuildIntf"/>
       </Item>
-      <Item>
-        <PackageName Value="LazUtils"/>
-      </Item>
-      <Item>
-        <PackageName Value="FCL"/>
-      </Item>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>

@@ -158,16 +158,10 @@ For more info please visit: https://wiki.freepascal.org/Online_Package_Manager"/
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
     </i18n>
-    <RequiredPkgs Count="3">
+    <RequiredPkgs Count="1">
       <Item1>
         <PackageName Value="laz.virtualtreeview_package"/>
       </Item1>
-      <Item2>
-        <PackageName Value="IDEIntf"/>
-      </Item2>
-      <Item3>
-        <PackageName Value="FCL"/>
-      </Item3>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>
