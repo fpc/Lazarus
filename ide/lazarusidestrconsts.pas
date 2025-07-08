@@ -3554,13 +3554,13 @@ resourcestring
   lisLazBuildRenameProfInfo = 'New name for profile:';
   lisCTDTemplates = 'Templates';
   lisSaveSettings = '&Save Settings';
-  lisCleanUp = 'Clean up';
+  lisCleanUpMode = 'Clean up mode';
   lisLazBuildBuildMany = 'Build &Many';
-  lisAutomatically = 'Automatically';
+  lisAutomatically = 'Automatic';
   lisCleanAll = '&Clean all';
-  lisCleanOnlyOnce = 'Switch after building to automatically';
-  lisAfterCleaningUpSwitchToAutomaticClean = 'After cleaning up (clean all or clean common files), switch to '
-    +'clean automatically';
+  lisCleanOnlyOnce = 'Switch to "automatic" mode after building';
+  lisAfterCleaningUpSwitchToAutomaticClean = 'After building with cleaning all switch to '
+    +'"automatic" clean up mode';
   lisLazBuildManageProfiles ='Manage Build Profiles';
   lisLazBuildProfile ='&Profile to build';
   lisLazBuildErrorWritingFile = 'Error writing file';

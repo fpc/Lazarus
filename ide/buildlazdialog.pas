@@ -1196,7 +1196,7 @@ begin
   DefinesButton.Caption := lisLazBuildEditDefines;
   DefinesButton.Hint := lisLazBuildEditListOfDefinesWhichCanBeUsedByAnyProfile;
 
-  CleanUpGroupBox.Caption:=lisCleanUp;
+  CleanUpGroupBox.Caption:=lisCleanUpMode;
   CleanAutoRadioButton.Caption:=lisAutomatically;
   CleanAllRadioButton.Caption:=lisCleanAll;
   CleanOnceCheckBox.Caption:=lisCleanOnlyOnce;
