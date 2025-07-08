@@ -39,7 +39,7 @@ interface
 uses
   Classes, sysutils, process, Pipes,
   // LCL
-  InterfaceBase,
+  InterfaceBase, {$IFDEF NATIVE_ASYNC_PROCESS}LCLIntf,{$ENDIF}
   // LazUtils
   {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif},
   UTF8Process;
