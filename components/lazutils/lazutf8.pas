@@ -3018,50 +3018,61 @@ end;
     EscapeMode: controls the human readable format for escape characters.
 }
 function Utf8EscapeControlChars(S: String; EscapeMode: TEscapeMode = emPascal): String;
+type
+  TEscapedStrings = array[#0..#31] of string;
+  PEscapedStrings = ^TEscapedStrings;
 const
   //lookuptables are about 1.8 to 1.3 times faster than a function using IntToStr or IntToHex
-  PascalEscapeStrings: Array[#0..#31] of string = (
+  PascalEscapeStrings: TEscapedStrings = (
     '#00', '#01', '#02', '#03', '#04', '#05', '#06', '#07',
     '#08', '#09', '#10', '#11', '#12', '#13', '#14', '#15',
     '#16', '#17', '#18', '#19', '#20', '#21', '#22', '#23',
     '#24', '#25', '#26', '#27', '#28', '#29', '#30', '#31');
-  CEscapeStrings: Array[#0..#31] of string = (
+  CEscapeStrings: TEscapedStrings = (
     '\0'   , '\0x01', '\0x02', '\0x03', '\0x04', '\0x05', '\0x06', '\a'   ,
     '\b'   , '\t'   , '\r'   , '\v'   , '\f'   , '\n'   , '\0x0E', '\0x0F',
     '\0x10', '\0x11', '\0x12', '\0x13', '\0x14', '\0x15', '\0x16', '\0x17',
     '\0x18', '\0x19', '\0x1A', '\e'   , '\0x1C', '\0x1D', '\0x1E', '\0x1F');
-  HexEscapeCStrings: Array[#0..#31] of string = (
+  HexEscapeCStrings: TEscapedStrings = (
     '\0x00', '\0x01', '\0x02', '\0x03', '\0x04', '\0x05', '\0x06', '\0x07',
     '\0x08', '\0x09', '\0x0A', '\0x0B', '\0x0C', '\0x0D', '\0x0E', '\0x0F',
     '\0x10', '\0x11', '\0x12', '\0x13', '\0x14', '\0x15', '\0x16', '\0x17',
     '\0x18', '\0x19', '\0x1A', '\0x1B', '\0x1C', '\0x1D', '\0x1E', '\0x1F');
-  HexEscapePascalStrings: Array[#0..#31] of string = (
+  HexEscapePascalStrings: TEscapedStrings = (
     '#$00', '#$01', '#$02', '#$03', '#$04', '#$05', '#$06', '#$07',
     '#$08', '#$09', '#$0A', '#$0B', '#$0C', '#$0D', '#$0E', '#$0F',
     '#$10', '#$11', '#$12', '#$13', '#$14', '#$15', '#$16', '#$17',
     '#$18', '#$19', '#$1A', '#$1B', '#$1C', '#$1D', '#$1E', '#$1F');
-  AsciiControlStrings: Array[#0..#31] of string = (
+  AsciiControlStrings: TEscapedStrings = (
     '[NUL]', '[SOH]', '[STX]', '[ETX]', '[EOT]', '[ENQ]', '[ACK]', '[BEL]',
     '[BS]' , '[HT]' , '[LF]' , '[VT]' , '[FF]' , '[CR]' , '[SO]' , '[SI]' ,
     '[DLE]', '[DC1]', '[DC2]', '[DC3]', '[DC4]', '[NAK]', '[SYN]', '[ETB]',
     '[CAN]', '[EM]' , '[SUB]', '[ESC]', '[FS]' , '[GS]' , '[RS]' , '[US]');
 var
+  EscapedStrings: PEscapedStrings;
   Ch: Char;
   i,ResLen: Integer;
   SLen, SubLen: SizeInt;
 const
   MaxGrowFactor: array[TEscapeMode] of integer = (3, 4, 5, 5, 5);
 begin
-  if FindInvalidUTF8Codepoint(PChar(S), Length(S)) <> -1 then
-  begin
-    UTF8FixBroken(S);
-  end;
   Result := '';
-  SetLength(Result, Length(S)*MaxGrowFactor[EscapeMode]);
-  ResLen := 0;
-  //a byte < 127 cannot be part of a multi-byte codepoint, so this is safe
+  case EscapeMode of
+    emPascal           : EscapedStrings := @EscapedStringsOfPascal;
+    emHexPascal        : EscapedStrings := @EscapedStringsOfPascalHex;
+    emC                : EscapedStrings := @EscapedStringsOfC;
+    emHexC             : EscapedStrings := @EscapedStringsOfCHex;
+    emAsciiControlNames: EscapedStrings := @EscapedStringsOfAscii;
+  else
+    raise Exception.Create('Invalid EscapeMode is specified');
+  end;
+
+  if FindInvalidUTF8Codepoint(PChar(S), Length(S)) >= 0 then
+    UTF8FixBroken(S);
 
   //for i := 1 to Length(S) do
+  SetLength(Result, Length(S) * MaxGrowFactor[EscapeMode]);
+  ResLen := 0;
   i := 1;
   SLen := Length(S);
   while (i <= SLen) do
@@ -3070,35 +3081,9 @@ begin
     Ch := S[i];
     if (Ch < #32) then
     begin
-      case EscapeMode of
-        emPascal:
-        begin
-          Move(PascalEscapeStrings[Ch][1], Result[ResLen], 3);
-          Inc(ResLen, 3-1);
-        end;
-        emHexPascal:
-        begin
-          Move(HexEscapePascalStrings[Ch][1], Result[ResLen], 4);
-          Inc(ResLen, 4-1);
-        end;
-        emHexC:
-        begin
-          Move(HexEscapeCStrings[Ch][1], Result[ResLen], 5);
-          Inc(ResLen, 5-1);
-        end;
-        emC:
-        begin
-          SubLen := Length(CEscapeStrings[Ch]);
-          Move(CEscapeStrings[Ch][1], Result[ResLen], SubLen);
-          Inc(ResLen, SubLen-1);
-        end;
-        emAsciiControlNames:
-        begin
-          SubLen := Length(AsciiControlStrings[Ch]);
-          Move(AsciiControlStrings[Ch][1], Result[ResLen], SubLen);
-          Inc(ResLen, SubLen-1);
-        end;
-      end;//case
+      SubLen := Length(EscapedStrings^[Ch]);
+      Move(EscapedStrings^[Ch][1], Result[ResLen], SubLen);
+      Inc(ResLen, SubLen - 1);
       Inc(i);
     end
     else
