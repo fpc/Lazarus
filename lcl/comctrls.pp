@@ -412,7 +412,7 @@ type
     procedure PageRemoved(Index: Integer);
     procedure SetActivePage(const Value: String);
     procedure SetActivePageComponent(const AValue: TCustomPage);
-    procedure SetImages(const AValue: TCustomImageList);
+    procedure SetImages(const AValue: TCustomImageList); virtual;
     procedure SetImagesWidth(const aImagesWidth: Integer);
     procedure SetPageIndex(AValue: Integer);
     procedure SetPages(AValue: TStrings);
@@ -816,7 +816,7 @@ type
     function GetTabRectWithBorder: TRect;
     function GetTabStop: Boolean;
     procedure SetHotTrack(const AValue: Boolean);
-    procedure SetImages(const AValue: TCustomImageList);
+    procedure SetImages(const AValue: TCustomImageList); override;
     procedure SetMultiLine(const AValue: Boolean);
     procedure SetMultiSelect(const AValue: Boolean);
     procedure SetOwnerDraw(const AValue: Boolean);
