@@ -32,6 +32,7 @@ type
     procedure TestUnicodeToUTF8;
     procedure TestUTF8QuotedStr;
     procedure TestUTF8FixBroken;
+    procedure TestUTF8EscapeControlChars;
   end;
 
 implementation
@@ -265,6 +266,67 @@ begin
   t(#$F0#$CF#$BF#$BF,' '#$CF#$BF' ');
   t(#$F4#$8F#$BF#$BF,#$F4#$8F#$BF#$BF);
   t(#$F4#$90#$80#$80,'    ');
+end;
+
+procedure TTestLazUTF8.TestUTF8EscapeControlChars;
+
+  procedure t(EscapeMode: TEscapeMode; const S, Expected: string);
+  var
+    Actual: String;
+  begin
+    Actual := Utf8EscapeControlChars(S, EscapeMode);
+    AssertEquals('S: '+S, Expected, Actual);
+  end;
+
+var
+  m: TEscapeMode;
+  s: string;
+  c: char;
+begin
+  // empty result for empty string
+  for m in TEscapeMode do
+    t(m, '', '');
+
+  // no escape not control chars (and not chars for escape)
+  for m in TEscapeMode do
+    for c in [#$20..#$7F] - ['#', '\', '['] do
+      t(m, c, c);
+
+  // no escape string which not contain control chars (and chars for escape)
+  s := '';
+  for c in [#$20..#$7F] - ['#', '\', '[', '%'] do
+    s := s + c;
+  for m in TEscapeMode do
+    t(m, s, s);
+
+  // some "random" tests
+  t(emPascal,
+    'Abc124',
+    'Abc124');
+  t(emPascal,
+    'Abc'#10'124',
+    'Abc#10124');
+  t(emHexPascal,
+    'Abc'#10'124',
+    'Abc#$0A124');
+  t(emC,
+    'Abc'#10'124',
+    'Abc\r124');
+  t(emC,
+    'Abc'#13'124',
+    'Abc\n124');
+  t(emC,
+    'Abc\n123',
+    'Abc\n123');
+  t(emHexC,
+    'Abc'#10'124',
+    'Abc\0x0A124');
+  t(emHexC,
+    'Abc'#13'124',
+    'Abc\0x0D124');
+  t(emHexC,
+    'Abc\'#13'124',
+    'Abc\\0x0D124');
 end;
 
 initialization
