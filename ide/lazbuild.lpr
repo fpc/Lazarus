@@ -762,7 +762,7 @@ end;
 procedure TLazBuildApplication.DoCreateMakefile(APackage: TLazPackage);
 begin
   PrintHint('Create makefile for package "' + APackage.Filename + '"');
-  PackageGraph.WriteMakeFile(APackage);
+  PackageGraph.WriteMakeFile(APackage,true);
 end;
 
 procedure TLazBuildApplication.CheckPackageGraphForCompilation(
