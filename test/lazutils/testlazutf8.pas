@@ -289,7 +289,7 @@ begin
 
   // no escape not control chars (and not chars for escape)
   for m in TEscapeMode do
-    for c in [#$20..#$7F] - ['#', '\', '['] do
+    for c in [#$20..#$7F] - ['#', '\', '[', '%'] do
       t(m, c, c);
 
   // no escape string which not contain control chars (and chars for escape)
@@ -298,6 +298,12 @@ begin
     s := s + c;
   for m in TEscapeMode do
     t(m, s, s);
+
+  // percent encoding
+  for c in [#$0..#$1F] do
+    t(emPercent, c, '%' + IntToHex(ord(c), 2));
+  for c in [#$20..#$7F] do
+    t(emPercent, c, c);
 
   // some "random" tests
   t(emPascal,
@@ -327,6 +333,18 @@ begin
   t(emHexC,
     'Abc\'#13'124',
     'Abc\\0x0D124');
+  t(emPercent,
+    'Abc\'#13'124',
+    'Abc\%0D124');
+  t(emPercent,
+    'Abc%'#13'124',
+    'Abc%%0D124');
+  t(emPercent,
+    '%%',
+    '%%');
+  t(emPercent,
+    '%25',
+    '%25');
 end;
 
 initialization
