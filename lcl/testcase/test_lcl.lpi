@@ -15,11 +15,14 @@
       <ResourceType Value="res"/>
     </General>
     <MacroValues Count="1">
-      <Macro1 Name="LCLWidgetType" Value="nogui"/>
+      <Macro2 Name="LCLWidgetType" Value="testmock"/>
     </MacroValues>
     <BuildModes>
-      <Item Name="NO GUI" Default="True"/>
-      <Item Name="Real WS">
+      <Item Name="TestMock" Default="True"/>
+      <Item Name="NO GUI">
+        <MacroValues Count="1">
+          <Macro1 Name="LCLWidgetType" Value="nogui"/>
+        </MacroValues>
         <CompilerOptions>
           <Version Value="11"/>
           <PathDelim Value="\"/>
@@ -51,10 +54,7 @@
           </Linking>
         </CompilerOptions>
       </Item>
-      <Item Name="TestMock">
-        <MacroValues Count="1">
-          <Macro2 Name="LCLWidgetType" Value="testmock"/>
-        </MacroValues>
+      <Item Name="Real WS">
         <CompilerOptions>
           <Version Value="11"/>
           <PathDelim Value="\"/>
