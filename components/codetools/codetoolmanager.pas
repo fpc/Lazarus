@@ -593,10 +593,10 @@ type
 
     // find all references inside UnitCode to TargetCode
     function FindUnitReferences(UnitCode, TargetCode: TCodeBuffer;
-          SkipComments: boolean; var ListOfPCodeXYPosition: TFPList): boolean; deprecated 'use FindSourceNameReferences instead';
+          SkipComments: boolean; var ListOfPCodeXYPosition: TFPList): boolean;
     function FindUsedUnitReferences(Code: TCodeBuffer; X, Y: integer;
           SkipComments: boolean; out UsedUnitFilename: string;
-          var ListOfPCodeXYPosition: TFPList): boolean; deprecated 'use FindSourceNameReferences instead';
+          var ListOfPCodeXYPosition: TFPList): boolean;
 
     function ReplaceWord(Code: TCodeBuffer; const OldWord, NewWord: string;
           ChangeStrings: boolean): boolean;
