@@ -2852,12 +2852,7 @@ begin
   If Filled or (not Continuous) then
     Result := Inherited PolyBezier(DC,Points,NumPts, Filled, Continuous)
   else
-  begin
-    // Make sure that only complete bezier segments are included in this mode. 
-    // Otherwise, Windows will not draw anything at all.
-    NumPts := (NumPts - 1) div 3 * 3 + 1;
     Result := Boolean(Windows.PolyBezier(DC, LPPOINT(Points)^, NumPts));
-  end;
 end;
 
 {------------------------------------------------------------------------------
