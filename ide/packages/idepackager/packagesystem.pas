@@ -443,7 +443,8 @@ type
       TargetCompiledFile, UnitPath, IncPath, OtherOptions: string): TModalResult;
     function WriteMakeFile(APackage: TLazPackage; UserRequest: boolean): TModalResult;
     function WriteFpmake(APackage: TLazPackage; UserRequest: boolean): TModalResult;
-    procedure CleanMakefileParams(List: TStringListUTF8Fast);
+    function CleanMakefileParams(Params: string): string;
+    procedure CleanMakefileParams(List: TStrings);
   public
     // installed packages
     FirstInstallDependency: TPkgDependency;
@@ -4967,6 +4968,7 @@ begin
                                                  coptParsedPlatformIndependent);
   CustomOptions:=APackage.CompilerOptions.GetCustomOptions(
                                                  coptParsedPlatformIndependent);
+  CustomOptions:=CleanMakefileParams(CustomOptions);
   List:=APackage.CompilerOptions.MakeCompilerParams(
                               [ccloDoNotAppendOutFileOption,ccloNoMacroParams]);
   CleanMakefileParams(List);
@@ -4974,8 +4976,7 @@ begin
   List.Free;
 
   // remove path delimiter at the end, or else it will fail on windows
-  UnitOutputPath:=ConvertLazarusToMakefileDirectory(
-                                                ChompPathDelim(UnitOutputPath));
+  UnitOutputPath:=ConvertLazarusToMakefileDirectory(ChompPathDelim(UnitOutputPath));
 
   // "make distclean" should delete all variable output directories
   // For example if output directory is units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
@@ -5465,7 +5466,23 @@ begin
   Result:=mrOk;
 end;
 
-procedure TLazPackageGraph.CleanMakefileParams(List: TStringListUTF8Fast);
+function TLazPackageGraph.CleanMakefileParams(Params: string): string;
+var
+  List: TStrings;
+begin
+  Result:=Params;
+  if Pos('-vm',Params)<1 then exit;
+  List:=TStringListUTF8Fast.Create;
+  try
+    SplitCmdLineParams(Params,List);
+    CleanMakefileParams(List);
+    Result:=MergeCmdLineParams(List);
+  finally
+    List.Free;
+  end;
+end;
+
+procedure TLazPackageGraph.CleanMakefileParams(List: TStrings);
 // delete switches irrelevant for building via make, but might fail with various compilers
 // At the moment only -vm switches
 var

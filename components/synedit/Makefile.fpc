@@ -11,7 +11,7 @@ version=1.0
 [compiler]
 unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
 unitdir=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../lazedit/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
-options=-MObjFPC -Scghi -CR -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) -CR -dgc -vm6060 $(DBG_OPTIONS)
+options=-MObjFPC -Scghi -CR -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) -CR -dgc $(DBG_OPTIONS)
 
 [target]
 units=allsynedit.pas
