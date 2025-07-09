@@ -72,6 +72,7 @@ type
     function GetSpaces(C: TTestChildArray; AStartX, ATotalWidth, ALowIdx, AHighIdx: integer): TIntegerArray;
     function SumSpaces(s: TIntegerArray): integer;
   public
+    class procedure AssertZero(Expected, Actual: integer); overload;
     procedure TearDown; override;
   published
     procedure TestAnchorAlign;
@@ -97,6 +98,19 @@ type
   end;
 
 implementation
+
+const
+  {$IFDEF LCLNOGUI}
+  MIN_CTRL_WIDTH = 0;
+  {$ELSE}
+    {$IFDEF LCLTESTMOCK}
+  MIN_CTRL_WIDTH = 0;
+    {$ELSE}
+  MIN_CTRL_WIDTH = 1; // Not every WS allows the containes to have size zero
+    {$ENDIF}
+  {$ENDIF}
+  MIN_CONTAINER_WIDTH = 3 * MIN_CTRL_WIDTH; // container (3 columns)
+
 
 { TTestWinControl }
 
@@ -312,6 +326,17 @@ begin
     Result := Result + s[i];
 end;
 
+class procedure TTestChildSizing.AssertZero(Expected, Actual: integer);
+begin
+  if Expected = 0 then begin
+    if Expected = Actual then
+      exit;
+    if MIN_CTRL_WIDTH = Actual then
+      exit;
+  end;
+  AssertEquals(Expected, Actual);
+end;
+
 procedure TTestChildSizing.TearDown;
 begin
   inherited TearDown;
@@ -343,7 +368,7 @@ begin
     AssertEquals(70,  C[4].Width);
     AssertEquals(30,  C[2].Width);
 
-    for j := 0 to 150 do begin
+    for j := MIN_CONTAINER_WIDTH to 150 do begin
       FContainer.Width := j;
       L1 := Max(ALeftSpace, ACtrlSpace);
       AssertEquals(L1, C[0].Left);
@@ -388,7 +413,7 @@ begin
     AssertEquals(70,  C[4].Width);
     AssertEquals(30,  C[2].Width);
 
-    for j := 0 to 150 do begin
+    for j := MIN_CONTAINER_WIDTH to 150 do begin
       FContainer.Width := j;
       L1 := j - Max(ALeftSpace, ACtrlSpace) - 25;
       AssertEquals(L1, C[0].Left);
@@ -434,24 +459,25 @@ begin
     AssertEquals(175, C[4].Width);
     AssertEquals(75,  C[2].Width);
 
-    for j := 0 to 1000 do begin
+    for j := MIN_CONTAINER_WIDTH to 1000 do begin
       FContainer.Width := j;
       i := Max(0, j - TotalSpace);
       MinVal := 1;
       if i <= 2 then MinVal := 0;
 
       WList := GetWidths(C, 0,2);
-      if j > 0 then
+      if j > MIN_CONTAINER_WIDTH then
         AssertMaxOneDecrementInList(WList, OldWList);
       OldWList := WList;
       LList := GetLefts(C, 0,2);
-      if j > 0 then
+      if j > MIN_CONTAINER_WIDTH then
         AssertNoDecrementInList(LList, OldLList);
       OldLList := LList;
 
       k := 0;
       if i < 4 then k := -1; // column 2 may be restricted by others forced to 1
-      AssertEquals('Total Width', i, SumWidths(C, 0, 2));
+      if i >= MIN_CONTAINER_WIDTH then
+        AssertEquals('Total Width', i, SumWidths(C, 0, 2));
       AssertApprox(Max(MinVal, 20 * i div 120), C[0].Width);
       AssertApprox(Max(MinVal, 20 * i div 120), C[3].Width);
       AssertApprox(Max(MinVal, 70 * i div 120 + k), C[1].Width);
@@ -495,29 +521,30 @@ begin
     AssertEquals(45,  C[4].Width);
     AssertEquals(75,  C[2].Width);
 
-    for j := 0 to 1000 do begin
+    for j := MIN_CONTAINER_WIDTH to 1000 do begin
       FContainer.Width := j;
       i := Max(0, j - TotalSpace);
       MinVal := 1;
       if i < 2+35 then MinVal := 0;
 
       WList := GetWidths(C, 0,2);
-      if j > 0 then
+      if j > MIN_CONTAINER_WIDTH then
         AssertMaxOneDecrementInList(WList, OldWList);
       OldWList := WList;
       LList := GetLefts(C, 0,2);
-      if j > 0 then
+      if j > MIN_CONTAINER_WIDTH then
         AssertNoDecrementInList(LList, OldLList);
       OldLList := LList;
 
-      AssertEquals('Total Width', Max(35, i), SumWidths(C, 0, 2));
+      if i >= MIN_CONTAINER_WIDTH*38 then
+        AssertEquals('Total Width', Max(35, i), SumWidths(C, 0, 2));
 
       if i <= 35 then begin
-        AssertEquals(MinVal, C[0].Width);
-        AssertEquals(MinVal, C[3].Width);
+        AssertZero(MinVal, C[0].Width);
+        AssertZero(MinVal, C[3].Width);
         AssertEquals(35,     C[1].Width);
         AssertEquals(35,     C[4].Width);
-        AssertEquals(MinVal, C[2].Width);
+        AssertZero(MinVal, C[2].Width);
       end
       else
       if i <= 80 then begin
@@ -581,24 +608,25 @@ begin
     AssertEquals(175, C[4].Width);
     AssertEquals(75,  C[2].Width);
 
-    for j := 0 to 200 do begin
+    for j := MIN_CONTAINER_WIDTH to 200 do begin
       FContainer.Width := j;
       i := Max(0, j - TotalSpace);
       MinVal := 1;
       if i <= 2 then MinVal := 0;
 
       WList := GetWidths(C, 0,2);
-      if j > 0 then
+      if j > MIN_CONTAINER_WIDTH then
         AssertMaxOneDecrementInList(WList, OldWList);
       OldWList := WList;
       LList := GetLefts(C, 0,2);
-      if j > 0 then
+      if j > MIN_CONTAINER_WIDTH then
         AssertNoDecrementInList(LList, OldLList);
       OldLList := LList;
 
       k := 0;
       if i < 4 then k := -1; // column 2 may be restricted by others forced to 1
-      AssertEquals('Total Width', i, SumWidths(C, 0, 2));
+      if i >= MIN_CONTAINER_WIDTH then
+        AssertEquals('Total Width', i, SumWidths(C, 0, 2));
       AssertApprox(Max(MinVal, 20 * i div 120), C[0].Width);
       AssertApprox(Max(MinVal, 20 * i div 120), C[3].Width);
       AssertApprox(Max(MinVal, 70 * i div 120 + k), C[1].Width);
@@ -643,22 +671,23 @@ begin
     AssertEquals(50, C[4].Width);
     AssertEquals(50, C[2].Width);
 
-    for j := 0 to 1000 do begin
+    for j := MIN_CONTAINER_WIDTH to 1000 do begin
       FContainer.Width := j;
       i := Max(0, j - TotalSpace);
       MinVal := 1;
       if i <= 2 then MinVal := 0;
 
       WList := GetWidths(C, 0,2);
-      if j > 0 then
+      if j > MIN_CONTAINER_WIDTH then
         AssertMaxOneDecrementInList(WList, OldWList);
       OldWList := WList;
       LList := GetLefts(C, 0,2);
-      if j > 0 then
+      if j > MIN_CONTAINER_WIDTH then
         AssertNoDecrementInList(LList, OldLList);
       OldLList := LList;
 
-      AssertEquals('Total Width', i, SumWidths(C, 0, 2));
+      if i >= MIN_CONTAINER_WIDTH then
+        AssertEquals('Total Width', i, SumWidths(C, 0, 2));
       AssertApprox(Max(MinVal, i div 3), C[0].Width);
       AssertApprox(Max(MinVal, i div 3), C[3].Width);
       AssertApprox(Max(MinVal, i div 3), C[1].Width);
@@ -702,29 +731,30 @@ begin
     AssertEquals(45, C[4].Width);
     AssertEquals(50, C[2].Width);
 
-    for j := 0 to 1000 do begin
+    for j := MIN_CONTAINER_WIDTH to 1000 do begin
       FContainer.Width := j;
       i := Max(0, j - TotalSpace);
       MinVal := 1;
       if i < 2+35 then MinVal := 0;
 
       WList := GetWidths(C, 0,2);
-      if j > 0 then
+      if j > MIN_CONTAINER_WIDTH then
         AssertMaxOneDecrementInList(WList, OldWList);
       OldWList := WList;
       LList := GetLefts(C, 0,2);
-      if j > 0 then
+      if j > MIN_CONTAINER_WIDTH then
         AssertNoDecrementInList(LList, OldLList);
       OldLList := LList;
 
-      AssertEquals('Total Width', Max(35, i), SumWidths(C, 0, 2));
+      if i >= MIN_CONTAINER_WIDTH*38 then
+        AssertEquals('Total Width', Max(35, i), SumWidths(C, 0, 2));
 
       if i <= 35 then begin
-        AssertEquals(MinVal, C[0].Width);
-        AssertEquals(MinVal, C[3].Width);
+        AssertZero(MinVal, C[0].Width);
+        AssertZero(MinVal, C[3].Width);
         AssertEquals(35,     C[1].Width);
         AssertEquals(35,     C[4].Width);
-        AssertEquals(MinVal, C[2].Width);
+        AssertZero(MinVal, C[2].Width);
       end
       else
       if i <= 105 then begin
@@ -787,20 +817,21 @@ begin
     AssertEquals(50, C[4].Width);
     AssertEquals(40,  C[2].Width);
 
-    for j := 0 to 1000 do begin
+    for j := MIN_CONTAINER_WIDTH to 1000 do begin
       FContainer.Width := j;
       i := Max(0, j - TotalSpace);
 
       WList := GetWidths(C, 0,2);
-      if j > 0 then
+      if j > MIN_CONTAINER_WIDTH then
         AssertMaxOneDecrementInList(WList, OldWList);
       OldWList := WList;
       LList := GetLefts(C, 0,2);
-      if j > 0 then
+      if j > MIN_CONTAINER_WIDTH then
         AssertNoDecrementInList(LList, OldLList);
       OldLList := LList;
 
-      AssertEquals('Total Width', i, SumWidths(C, 0, 2));
+      if i >= MIN_CONTAINER_WIDTH then
+        AssertEquals('Total Width', i, SumWidths(C, 0, 2));
       if i < 3 then begin  // All column are limited
         AssertApprox(0, C[0].Width);
         AssertApprox(0, C[3].Width);
@@ -856,7 +887,7 @@ end;
 procedure TTestChildSizing.TestHomogenousChildResizeConstrained;
 var
   C: TTestChildArray;
-  i, MinVal, j: Integer;
+  i, j: Integer;
   WList, OldWList, LList, OldLList: TIntegerArray;
 begin
   Init1(FContainer, 115, crsHomogenousChildResize, 3, C,
@@ -898,28 +929,29 @@ begin
   AssertEquals( 4,  C[2].Width);
 
   FContainer.Width := 30;
-  AssertEquals( 0,  C[0].Width);
-  AssertEquals( 0,  C[3].Width);
+  AssertZero( 0,  C[0].Width);
+  AssertZero( 0,  C[3].Width);
   AssertEquals(35, C[1].Width);
   AssertEquals(35, C[4].Width);
-  AssertEquals( 0,  C[2].Width);
+  AssertZero( 0,  C[2].Width);
 
 
 
-  for j := 0 to 1000 do begin
+  for j := MIN_CONTAINER_WIDTH to 1000 do begin
     FContainer.Width := j;
     i := Max(0, j);
 
     WList := GetWidths(C, 0,2);
-    if j > 0 then
+    if j > MIN_CONTAINER_WIDTH then
       AssertMaxOneDecrementInList(WList, OldWList);
     OldWList := WList;
     LList := GetLefts(C, 0,2);
-    if j > 0 then
+    if j > MIN_CONTAINER_WIDTH then
       AssertNoDecrementInList(LList, OldLList);
     OldLList := LList;
 
-    AssertEquals('Total Width', Max(35, i), SumWidths(C, 0, 2));
+    if i >= MIN_CONTAINER_WIDTH*38 then
+      AssertEquals('Total Width', Max(35, i), SumWidths(C, 0, 2));
 
     AssertEquals(0, C[0].Left);
     AssertEquals(0, C[3].Left);
@@ -940,9 +972,10 @@ begin
         [20, 40, 30,
          20, 35  {-}]);
 
-  for i := 0 to 1000 do begin
+  for i := MIN_CONTAINER_WIDTH to 1000 do begin
     FContainer.Width := i;
-    AssertEquals('Total Width', 90, SumWidths(C, 0, 2));
+    if i >= MIN_CONTAINER_WIDTH then
+      AssertEquals('Total Width', 90, SumWidths(C, 0, 2));
     AssertEquals(20,  C[0].Width);
     AssertEquals(20,  C[3].Width);
     AssertEquals(40, C[1].Width);
@@ -971,9 +1004,10 @@ begin
   // Spacing   9  C0  4  C1  11  C2  9
 
 
-  for i := 0 to 1000 do begin
+  for i := MIN_CONTAINER_WIDTH to 1000 do begin
     FContainer.Width := i;
-    AssertEquals('Total Width', 90, SumWidths(C, 0, 2));
+    if i >= MIN_CONTAINER_WIDTH then
+      AssertEquals('Total Width', 90, SumWidths(C, 0, 2));
     AssertEquals(20,  C[0].Width);
     AssertEquals(20,  C[3].Width);
     AssertEquals(40, C[1].Width);
@@ -981,34 +1015,34 @@ begin
     AssertEquals(30,  C[2].Width);
 
     gaps := GetSpaces(C, 0, Max(90,i), 0,2);
-    if i > 0 then
+    if i > MIN_CONTAINER_WIDTH then
       AssertMaxOneDecrementInList(gaps, OldGaps);
     OldGaps := gaps;
     LList := GetLefts(C, 0,2);
-    if i > 0 then
+    if i > MIN_CONTAINER_WIDTH then
       AssertNoDecrementInList(LList, OldLList);
     OldLList := LList;
     AssertEquals('Spaces', Max(0, i-90), SumSpaces(gaps));
 
     if i <= 90 then begin
-      AssertEquals( 0, gaps[0]);
-      AssertEquals( 0, gaps[1]);
-      AssertEquals( 0, gaps[2]);
-      AssertEquals( 0, gaps[3]);
+      AssertZero( 0, gaps[0]);
+      AssertZero( 0, gaps[1]);
+      AssertZero( 0, gaps[2]);
+      AssertZero( 0, gaps[3]);
     end
     else
     if i <= 92 then begin
       d := i-90;
-      AssertEquals( 0, gaps[0]);
-      AssertEquals( 0, gaps[1]);
-      AssertEquals( 0 + d, gaps[2]); // 91 = 1 .... 92 = 2
-      AssertEquals( 0, gaps[3]);
+      AssertZero( 0, gaps[0]);
+      AssertZero( 0, gaps[1]);
+      AssertZero( 0 + d, gaps[2]); // 91 = 1 .... 92 = 2
+      AssertZero( 0, gaps[3]);
     end
     else
     if i <= 107 then begin
       d := Max(0, i-92) div 3;   // 93-95=1 ..  105..107=5
       AssertApprox( 0 + d, gaps[0]);
-      AssertEquals( 0, gaps[1]);
+      AssertZero( 0, gaps[1]);
       AssertApprox( 2 + d, gaps[2]);
       AssertApprox( 0 + d, gaps[3]);
     end
