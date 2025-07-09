@@ -840,19 +840,11 @@ end;
 procedure TCanvas.PolyBezier(const Points: array of TPoint;
   Filled: boolean = False;
   Continuous: boolean = True);
-var NPoints, i: integer;
-  PointArray: ^TPoint;
+var NPoints: integer;
 begin
   NPoints:=High(Points)-Low(Points)+1;
   if NPoints<4 then exit; // Curve must have at least 4 points
-  GetMem(PointArray,SizeOf(TPoint)*NPoints);
-  try
-    for i:=0 to NPoints-1 do
-      PointArray[i]:=Points[i+Low(Points)];
-    PolyBezier(PointArray, NPoints, Filled, Continuous);
-  finally
-    FreeMem(PointArray);
-  end;
+  PolyBezier(@Points[0], NPoints, Filled, Continuous);
 end;
 
 procedure TCanvas.PolyBezier(Points: PPoint; NumPts: Integer;
