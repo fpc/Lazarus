@@ -441,8 +441,8 @@ type
     function ConvertPackageRSTFiles(APackage: TLazPackage): TModalResult;
     function WriteMakefileCompiled(APackage: TLazPackage;
       TargetCompiledFile, UnitPath, IncPath, OtherOptions: string): TModalResult;
-    function WriteMakeFile(APackage: TLazPackage): TModalResult;
-    function WriteFpmake(APackage: TLazPackage): TModalResult;
+    function WriteMakeFile(APackage: TLazPackage; UserRequest: boolean): TModalResult;
+    function WriteFpmake(APackage: TLazPackage; UserRequest: boolean): TModalResult;
   public
     // installed packages
     FirstInstallDependency: TPkgDependency;
@@ -4527,7 +4527,7 @@ begin
       // create Makefile
       if ((pcfCreateMakefile in Flags)
       or (APackage.CompilerOptions.CreateMakefileOnBuild)) then begin
-        Result:=WriteMakeFile(APackage);
+        Result:=WriteMakeFile(APackage,pcfCreateMakefile in Flags);
         if Result<>mrOk then begin
           DebugLn('Error: (lazarus) [TLazPackageGraph.CompilePackage] DoWriteMakefile failed: ',APackage.IDAsString);
           exit;
@@ -4538,7 +4538,7 @@ begin
       if ((pcfCreateFpmakeFile in Flags)
       or (APackage.GetActiveBuildMethod = bmFPMake)
       or ((APackage.CompilerOptions.CreateMakefileOnBuild) and (APackage.BuildMethod in [bmBoth, bmFPMake]) and Assigned(FppkgInterface))) then begin
-        Result:=WriteFpmake(APackage);
+        Result:=WriteFpmake(APackage,pcfCreateFpmakeFile in Flags);
         if Result<>mrOk then begin
           DebugLn('Error: (lazarus) [TLazPackageGraph.CompilePackage] DoWriteFpmakeFile failed: ',APackage.IDAsString);
           exit;
@@ -4860,7 +4860,7 @@ begin
   Result:=mrOk;
 end;
 
-function TLazPackageGraph.WriteMakeFile(APackage: TLazPackage): TModalResult;
+function TLazPackageGraph.WriteMakeFile(APackage: TLazPackage; UserRequest: boolean): TModalResult;
 var
   PathDelimNeedsReplace: Boolean;
 
@@ -4940,14 +4940,18 @@ begin
   Result:=mrCancel;
   PathDelimNeedsReplace:=PathDelim<>'/';
 
-  if not DirectoryIsWritableCached(APackage.Directory) then begin
-    // The Makefile.fpc is only needed for custom building.
-    // If the package directory is not writable, then the user does not want to
-    // custom build
-    // => silently skip
-    DebugLn(['Error: (lazarus) Skipping writing Makefile, because package directory is not writable: ',APackage.Directory]);
-    Result:=mrOk;
-    exit;
+  if (not DirectoryIsWritableCached(APackage.Directory)) then begin
+    if UserRequest then begin
+      DebugLn(['Error: (lazarus) Writing Makefile failed, because package directory is not writable: ',APackage.Directory]);
+      exit;
+    end else begin
+      // The Makefile.fpc is only needed for custom building.
+      // If the package directory is not writable, then the user does not want to custom build
+      // => silently skip
+      DebugLn(['Error: (lazarus) Skipping writing Makefile, because package directory is not writable: ',APackage.Directory]);
+      Result:=mrOk;
+      exit;
+    end;
   end;
   MakefileFPCFilename:=AppendPathDelim(APackage.Directory)+'Makefile.fpc';
   MakefileCompiledFilename:=AppendPathDelim(APackage.Directory)+'Makefile.compiled';
@@ -5159,7 +5163,7 @@ begin
   Result:=mrOk;
 end;
 
-function TLazPackageGraph.WriteFpmake(APackage: TLazPackage): TModalResult;
+function TLazPackageGraph.WriteFpmake(APackage: TLazPackage; UserRequest: boolean): TModalResult;
 var
   PathDelimNeedsReplace: Boolean;
 
@@ -5261,13 +5265,17 @@ begin
   PathDelimNeedsReplace:=PathDelim<>'/';
 
   if not DirectoryIsWritableCached(APackage.Directory) then begin
-    // The fpmake.pp is only needed for custom building.
-    // If the package directory is not writable, then the user does not want to
-    // custom build
-    // => silently skip
-    DebugLn(['Note: (lazarus) Skipping writing fpmake.pp, because package directory is not writable: ',APackage.Directory]);
-    Result:=mrOk;
-    exit;
+    if UserRequest then begin
+      DebugLn(['Error: (lazarus) Writing fpmake.pp failed, because package directory is not writable: ',APackage.Directory]);
+      exit;
+    end else begin
+      // The fpmake.pp is only needed for custom building.
+      // If the package directory is not writable, then the user does not want to custom build
+      // => silently skip
+      DebugLn(['Note: (lazarus) Skipping writing fpmake.pp, because package directory is not writable: ',APackage.Directory]);
+      Result:=mrOk;
+      exit;
+    end;
   end;
   FpmakeFPCFilename:=AppendPathDelim(APackage.Directory)+'fpmake.pp';
   FPmakeCompiledFilename:=AppendPathDelim(APackage.Directory)+lowercase(APackage.Name)+'.compiled';
