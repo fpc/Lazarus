@@ -443,6 +443,7 @@ type
       TargetCompiledFile, UnitPath, IncPath, OtherOptions: string): TModalResult;
     function WriteMakeFile(APackage: TLazPackage; UserRequest: boolean): TModalResult;
     function WriteFpmake(APackage: TLazPackage; UserRequest: boolean): TModalResult;
+    procedure CleanMakefileParams(List: TStringListUTF8Fast);
   public
     // installed packages
     FirstInstallDependency: TPkgDependency;
@@ -4968,6 +4969,7 @@ begin
                                                  coptParsedPlatformIndependent);
   List:=APackage.CompilerOptions.MakeCompilerParams(
                               [ccloDoNotAppendOutFileOption,ccloNoMacroParams]);
+  CleanMakefileParams(List);
   OtherOptions:=MergeCmdLineParams(List);
   List.Free;
 
@@ -5461,6 +5463,21 @@ begin
     debugln(['Hint: (lazarus) wrote fpmake.pp: ',FpmakeFPCFilename]);
 
   Result:=mrOk;
+end;
+
+procedure TLazPackageGraph.CleanMakefileParams(List: TStringListUTF8Fast);
+// delete switches irrelevant for building via make, but might fail with various compilers
+// At the moment only -vm switches
+var
+  i: Integer;
+  Param: String;
+begin
+  for i:=List.Count-1 downto 0 do
+  begin
+    Param:=List[i];
+    if (Param='') or (StrBeginsWith(Param,'-vm')) then
+      List.Delete(i);
+  end;
 end;
 
 function TLazPackageGraph.ParseBasePackages(Verbose: boolean): boolean;
