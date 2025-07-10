@@ -167,7 +167,8 @@ type
     emHexPascal,         // two-digit hexadecimal character code: "#$0D"
     emC,                 // C-style character encoding: "\n" (if present, otherwise hex)
     emHexC,              // C-style character encoding: "\0x0D"
-    emAsciiControlNames  // abbreviation of ASCII control characters in square brackets: "[CR]"
+    emAsciiControlNames, // abbreviation of ASCII control characters in square brackets: "[CR]"
+    emPercent            // percent encoding (control characters only): "%0D"
   );
 
 function Utf8EscapeControlChars(S: String; EscapeMode: TEscapeMode = emPascal): String;
@@ -3055,13 +3056,18 @@ const
     '[BS]' , '[HT]' , '[LF]' , '[VT]' , '[FF]' , '[CR]' , '[SO]' , '[SI]' ,
     '[DLE]', '[DC1]', '[DC2]', '[DC3]', '[DC4]', '[NAK]', '[SYN]', '[ETB]',
     '[CAN]', '[EM]' , '[SUB]', '[ESC]', '[FS]' , '[GS]' , '[RS]' , '[US]');
+  EscapedStringsOfPercent: TEscapedStrings = (
+    '%00', '%01', '%02', '%03', '%04', '%05', '%06', '%07',
+    '%08', '%09', '%0A', '%0B', '%0C', '%0D', '%0E', '%0F',
+    '%10', '%11', '%12', '%13', '%14', '%15', '%16', '%17',
+    '%18', '%19', '%1A', '%1B', '%1C', '%1D', '%1E', '%1F');
 var
   EscapedStrings: PEscapedStrings;
   Ch: Char;
   i, ResLen: Integer;
   SLen, SubLen: SizeInt;
 const
-  MaxGrowFactor: array[TEscapeMode] of integer = (3, 4, 5, 5, 5);
+  MaxGrowFactor: array[TEscapeMode] of integer = (3, 4, 5, 5, 5, 3);
 begin
   Result := '';
   case EscapeMode of
@@ -3070,6 +3076,7 @@ begin
     emC                : EscapedStrings := @EscapedStringsOfC;
     emHexC             : EscapedStrings := @EscapedStringsOfCHex;
     emAsciiControlNames: EscapedStrings := @EscapedStringsOfAscii;
+    emPercent          : EscapedStrings := @EscapedStringsOfPercent;
   else
     raise Exception.Create('Invalid EscapeMode is specified');
   end;
