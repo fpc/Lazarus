@@ -46,6 +46,10 @@
   circle equals 5760 (16*360). Positive values of Angle and AngleLength mean
   counter-clockwise while negative values mean clockwise direction.
   Zero degrees is at the 3'o clock position.
+
+  But note that due to the elliptic eccetricity these angles are not the
+  same as "real" polar angles, but only correspond to the parameter t in the
+  ellipse equations:  x = a * cos(t);  y = b * sin(t)
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.Arc(DC: HDC; Left, Top, Right, Bottom, Angle16Deg, Angle16DegLength: Integer): Boolean;
 var
@@ -58,7 +62,7 @@ begin
   if Angle16DegLength < 0 then OldArcDirection := Windows.SetArcDirection(DC, AD_CLOCKWISE)
   else OldArcDirection := Windows.SetArcDirection(DC, AD_COUNTERCLOCKWISE);
 
-  Angles2Coords(Left, Top, Right - Left, Bottom - Top, Angle16Deg, Angle16DegLength, SX, SY, EX, EY);
+  EllipseParam2Coords(Left, Top, Right - Left, Bottom - Top, Angle16Deg, Angle16DegLength, SX, SY, EX, EY);
   Result := Boolean(Windows.Arc(DC, Left, Top, Right, Bottom, SX, SY, EX, EY));
   // Revert the arc direction to the previous value
   Windows.SetArcDirection(DC, OldArcDirection);

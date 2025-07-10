@@ -72,6 +72,9 @@ function Distance(const Pt, SP, EP : TFloatPoint) : Extended; overload;
 
 function EccentricAngle(const PT : TPoint; const Rect : TRect) : Extended;
 
+procedure EllipseParams2Coords(X, Y, Width, Height: Integer;
+  Angle1, Angle2: Integer; var SX, SY, EX, EY: Integer);
+
 function EllipseRadialLength(const Rect : TRect; EccentricAngle : Extended) : Longint;
 function EllipsePolygon(const aRect: TRect): TPointArray;
 
@@ -338,6 +341,41 @@ begin
   SY := SP.Y;
   EX := EP.X;
   EY := EP.Y;
+end;
+
+{-------------------------------------------------------------------------------
+  Method:   EllipseParams2Coords
+  Params:   x, y, width, height, angle1, angle2, sx, sy, ex, ey
+  Returns:  Nothing
+
+  In parametric form, the ellipse equation for every point (x, y) along the
+  perimeter is
+    x = a * cos (t),  y = b * sin(t)
+  where a and b are the major and minor half-axes of the ellipse, and t is
+  an "angle" parameter ranging between 0 and 2*pi.
+
+  This procedure used by the Windows Arc method calculates the start and end
+  points, (SX, SY) and (EX, EY), respectively, of an arc beginning at
+  parameter t = angle1 and ending at parameter t = angle1 + angle2.
+  But note that angle1 and angle2 are expressed as multiples of 1/16 degree.
+  Positive values of the angles are in counter-clockwise, negative values in
+  clockwise direction.
+  Zero degrees is at 3'o clock position.
+-------------------------------------------------------------------------------}
+procedure EllipseParams2Coords(X, Y, Width, Height: Integer;
+  Angle1, Angle2: Integer; var SX, SY, EX, EY: Integer);
+var
+  sinAngle1, cosAngle1, sinAngle2, cosAngle2: Extended;
+  a, b: Integer;
+begin
+  SinCos(DegToRad(Angle1/16), sinAngle1, cosAngle1);
+  SinCos(DegToRad((Angle1 + Angle2)/16), sinAngle2, cosAngle2);
+  a := Width div 2;
+  b := Height div 2;
+  SX := X + a + round(cosAngle1 * a);
+  SY := Y + b - round(sinAngle1 * b);
+  EX := X + a + round(cosAngle2 * a);
+  EY := Y + b - round(sinAngle2 * b);
 end;
 
 {------------------------------------------------------------------------------
