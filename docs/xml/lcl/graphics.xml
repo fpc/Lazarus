@@ -11944,9 +11944,16 @@ Sets the value for the Transparent property.
 </short>
 <descr>
 <p>
-SetTransparent ensures that both the Masked property and the alpha channel in 
-the raw image data are considered when updating the value in the Transparent 
-property. GetTransparent is called to retrieve the existing property value.
+<var>SetTransparent</var> ensures that the image in <var>Mask</var> is 
+considered when updating the value in the <var>Transparent</var> property. The 
+Mask is a black &amp; white (1-bit-depth) image to identify the pixels which 
+are skipped when the image is painted and thus should appear transparent. Note 
+that this applies only for images having no alpha channel; when an alpha 
+channel is present, no Mask is required since the transparency is defined by 
+the alpha channel itself.
+</p>
+<p>
+GetTransparent is called to retrieve the existing property value.
 </p>
 <p>
 No actions are performed in the method if the existing property value is the 
@@ -11963,7 +11970,9 @@ Modified in LCL version 4.2 to call the ApplyTransparent method.
 </seealso>
 </element>
 <element name="TRasterImage.SetTransparent.AValue">
-<short>New value for the property.</short>
+<short>
+New value for the property.
+</short>
 </element>
 
 <element name="TRasterImage.UnshareImage">
