@@ -7441,14 +7441,35 @@ including border space.
 </element>
 
 <element name="TTabControl.SetImages">
-<short>Sets the value for the Images property.</short>
-<descr/>
+<short>
+Sets the value for the Images property.
+</short>
+<descr>
+<p>
+<var>SetImages</var> is an overridden method in <var>TTabControl</var> used as 
+the write access specifier for the Images property. It calls the inherited 
+method to store AValue in the Images member, and ensures that the value in 
+Images is then propagated to the Images member in the Tabs property.
+</p>
+<p>
+No actions are performed in the method if AValue is the image list already 
+assigned to the Images property.
+</p>
+</descr>
+<version>
+Modified in LCL version 4.2. The method is declared as an override for the 
+virtual method in the ancestor class (TCustomTabControl).
+</version>
 <seealso>
 <link id="TTabControl.Images"/>
+<link id="TTabControl.Tabs"/>
+<link id="TTabControlStrings.Images"/>
 </seealso>
 </element>
 <element name="TTabControl.SetImages.AValue">
-<short>New value for the property.</short>
+<short>
+New value for the Images property.
+</short>
 </element>
 
 <element name="TTabControl.SetMultiLine">
@@ -8160,7 +8181,52 @@ client rectangle for the control as the value for the property. Use
 </element>
 
 <element name="TTabControl.HotTrack" link="#lcl.comctrls.TCustomTabControl.HotTrack"/>
-<element name="TTabControl.Images" link="#lcl.comctrls.TCustomTabControl.Images"/>
+
+<element name="TTabControl.Images">
+<short>
+Contains the images displayed on the tabs for the control.
+</short>
+<descr>
+<p>
+<var>Images</var> is a published <var>TCustomImageList</var> property in 
+<var>TTabControl</var>. It contains the images displayed on the Tabs for the 
+control.
+</p>
+<p>
+Assigning a new image list to the property causes the widgetset class instance 
+to be updated; the image list, the tab position, and properties for the page 
+objects are sent to the widget. The new value in Images is also copied to the 
+Images member in Tabs (TTabControlStrings). No actions are performed when the 
+an image list already assigned to the property is assigned to Images again.
+</p>
+<p>
+The Invalidate method is called to cause the control to be redrawn after the 
+property value is changed.
+</p>
+<p>
+Use ImagesWidth to set the default width and height for the images in the list.
+</p>
+<p>
+Use the indexed Page property to access each TCustomPage object on the tabbed 
+control to read or write its ImageIndex property. Or, Use OnGetImageIndex to 
+determine the position in Images for a given page/tab index.
+</p>
+</descr>
+<version>
+Modified in LCL version 4.2. Write access is an overridden method where the 
+image list is copied to the Images in the Tabs property.
+</version>
+<seealso>
+<link id="TTabControl.Tabs"/>
+<link id="TTabControl.ImagesWidth"/>
+<link id="TCustomTabControl.Images"/>
+<link id="TCustomTabControl.Page"/>
+<link id="TCustomTabControl.PageIndex"/>
+<link id="TCustomPage.ImageIndex"/>
+<link id="#lcl.imglist.TCustomImageList">TCustomImageList</link>
+</seealso>
+</element>
+
 <element name="TTabControl.ImagesWidth" link="#lcl.comctrls.TCustomTabControl.ImagesWidth"/>
 <element name="TTabControl.MultiLine" link="#lcl.comctrls.TCustomTabControl.MultiLine"/>
 <element name="TTabControl.MultiSelect" link="#lcl.comctrls.TCustomTabControl.MultiSelect"/>
@@ -22289,7 +22355,7 @@ persistent. When Style contains tsButton, Down is reset to <b>False</b> when a
 mouse up message occurs for the button. For the tbsCheck style, it is a 
 toggle; mouse down changes the state but mouse up does not automatically 
 release it.
-</p> 
+</p>
 <p>
 Changing the value for the property causes the control to be redrawn. It may 
 also affect adjacent buttons on the tool bar with their Grouped properties 
