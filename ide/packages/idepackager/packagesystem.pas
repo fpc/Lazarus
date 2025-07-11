@@ -3657,7 +3657,7 @@ begin
   if ForceBuild then begin
     // user demands to rebuild the package
   end else begin
-    if (APackage.AutoUpdate=pupManually) then
+    if APackage.AutoUpdate=pupManually then
       exit(mrNo);
     // check the current output directory
     Result:=CheckIfCurPkgOutDirNeedsCompile(APackage,
@@ -3779,7 +3779,7 @@ begin
 
   SrcFilename:=APackage.GetSrcFilename;
   CompilerFilename:=APackage.GetCompilerFilename;
-  // Note: use absolute paths, because some external tools resolve symlinked directories
+  // Note: use absolute paths, because some external tools resolve symlinked directories and some do not
   CompilerParams:=GetPackageCompilerParams(APackage);
   try
     o:=APackage.GetOutputDirType;
@@ -4265,7 +4265,8 @@ begin
             end;
           end;
 
-          // add dependencies between tools of this package (execute before, compile, after)
+          // add dependencies between tools of this package:
+          //   execute before, compile first, compile second, execute after
           for j:=1 to BuildItem.Count-1 do begin
             Tool1:=BuildItem[j-1];
             Tool2:=BuildItem[j];

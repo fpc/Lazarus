@@ -58,7 +58,7 @@ type
     procedure menuGroupItemClicked(Sender: TObject);
     procedure SynGutterLineNumber1FormatLineNumber(
       Sender: TSynGutterLineNumber; ALine: integer; out AText: string;
-      const ALineInfo: TSynEditGutterLineInfo);
+      const {%H-}ALineInfo: TSynEditGutterLineInfo);
     procedure btnCancelOffsClick(Sender: TObject);
   private
     FPowerImgIdx, FPowerImgIdxGrey: Integer;
