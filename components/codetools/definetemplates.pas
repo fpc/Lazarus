@@ -7054,19 +7054,6 @@ begin
   DirTempl:=TDefineTemplate.Create('Components',ctsComponentsDirectory,
     '','components',da_Directory);
 
-  // <LazarusSrcDir>/components/custom
-  SubDirTempl:=TDefineTemplate.Create('Custom Components',
-    ctsCustomComponentsDirectory,
-    '','custom',da_Directory);
-  SubDirTempl.AddChild(TDefineTemplate.Create('lazarus standard components',
-    Format(ctsAddsDirToSourcePath,['synedit']),
-    SrcPathMacroName,
-    d('../synedit;')
-    +SrcPath
-    ,da_DefineRecurse));
-  DirTempl.AddChild(SubDirTempl);
-  MainDir.AddChild(DirTempl);
-
   // <LazarusSrcDir>/tools
   DirTempl:=TDefineTemplate.Create('Tools',
     ctsToolsDirectory,'','tools',da_Directory);
