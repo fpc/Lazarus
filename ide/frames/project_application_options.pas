@@ -10,6 +10,7 @@ uses
   FileUtil,
   // LCL
   LCLType, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls, Buttons, ComCtrls, ExtDlgs,
+  LCLStrConsts,
   // LazControls
   DividerBevel,
   // IdeIntf
@@ -194,8 +195,16 @@ end;
 
 procedure TProjectApplicationOptionsFrame.SaveIconButtonClick(Sender: TObject);
 begin
+  if (IconImage.Picture.Graphic = nil) or IconImage.Picture.Graphic.Empty then
+    exit;
+
   if SavePictureDialog1.Execute then
-    IconImage.Picture.SaveToFile(SavePictureDialog1.FileName);
+    try
+      IconImage.Picture.SaveToFile(SavePictureDialog1.FileName);
+    except
+      on E: Exception do
+        IDEMessageDialog(rsMtError, E.Message, mtError, [mbCancel]);
+    end;
 end;
 
 procedure TProjectApplicationOptionsFrame.UseAppBundleCheckBoxChange(
