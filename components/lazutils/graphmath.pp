@@ -73,7 +73,7 @@ function Distance(const Pt, SP, EP : TFloatPoint) : Extended; overload;
 function EccentricAngle(const PT : TPoint; const Rect : TRect) : Extended;
 
 procedure EllipseParams2Coords(X, Y, Width, Height: Integer; t1, t2: Extended;
-  var SX, SY, EX, EY: Integer);
+  out SX, SY, EX, EY: Integer);
 function EllipseRadialLength(const Rect : TRect; EccentricAngle : Extended) : Longint;
 function EllipsePolygon(const aRect: TRect): TPointArray;
 
@@ -363,7 +363,7 @@ end;
   t=0 is at the 3'o clock position. The t parameters are given in radians.
 -------------------------------------------------------------------------------}
 procedure EllipseParams2Coords(X, Y, Width, Height: Integer;
-  t1, t2: extended; var SX, SY, EX, EY: Integer);
+  t1, t2: extended; out SX, SY, EX, EY: Integer);
 var
   sin_t1, cos_t1, sin_t2, cos_t2: Extended;
   a, b: Integer;
