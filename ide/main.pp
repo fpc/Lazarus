@@ -12581,11 +12581,14 @@ begin
             lHelpButton.OnClick:=@LazarusHelp.HelpButtonClick;
           // set shortcut hint
           if lHelpButton.Hint='' then begin
+            // explain the button action
+            lHelpButton.ShowHint:=true;
+            lHelpButton.Hint:=lisOpenContextHelpInBrowser;
+            // maybe add shortcut
             lContextHelpCommand:=IDECommandList.FindIDECommand(ecContextHelp);
             if Assigned(lContextHelpCommand) then begin
               with lContextHelpCommand do
-                lHelpButton.Hint:=KeyValuesToCaptionStr(ShortcutA,ShortcutB);
-              lHelpButton.ShowHint:=true;
+                lHelpButton.Hint:=lHelpButton.Hint+' '+KeyValuesToCaptionStr(ShortcutA,ShortcutB);
             end;
           end;
         end;
