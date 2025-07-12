@@ -95,6 +95,7 @@ type
     procedure TestRenameAlsoLFM_Variable;
     procedure TestRenameAlsoLFM_Event;
     procedure TestRenameAlsoLFM_SkipBinaryData;
+    procedure TestRenameAlsoLFM_Property; // ToDo
   end;
 
 implementation
@@ -2159,8 +2160,6 @@ begin
 end;
 
 procedure TTestRefactoring.TestRenameAlsoLFM_Event;
-var
-  Test1LFM, RedUnit: TCodeBuffer;
 begin
   TestRenameAlsoLFM(LinesToStr([ // red unit interface
   'type',
@@ -2248,6 +2247,53 @@ begin
 
   finally
     RedUnit.IsDeleted:=true;
+    Test1LFM.IsDeleted:=true;
+  end;
+end;
+
+procedure TTestRefactoring.TestRenameAlsoLFM_Property;
+var
+  Test1LFM: TCodeBuffer;
+begin
+  exit;
+
+  Test1LFM:=CodeToolBoss.CreateFile(ChangeFileExt(Code.Filename,'.lfm'));
+  try
+    Test1LFM.Source:=LinesToStr([
+      'object Form1: TForm1',
+      '  Checked = False',
+      '  object Button1',
+      '    Checked = True',
+      '  end',
+      'end']);
+
+    Add(LinesToStr([
+      'unit Test1;',
+      '{$mode objfpc}{$H+}',
+      'interface',
+      'type',
+      '  TForm = class(TComponent)',
+      '    property Checked: boolean;',
+      '  end;',
+      '  TButton = class(TComponent)',
+      '    property Checked{#Rename}: boolean;',
+      '  end;',
+      '  TForm1 = class(TForm)',
+      '    Button1: TButton;',
+      '  end;',
+      'implementation',
+      'end.']));
+
+    RenameReferences('Activated',frfAllLFM);
+    CheckDiff(Test1LFM,LinesToStr([
+      'object Form1: TForm1',
+      '  Checked = False',
+      '  object Button1',
+      '    Activated = True',
+      '  end',
+      'end']));
+
+  finally
     Test1LFM.IsDeleted:=true;
   end;
 end;
