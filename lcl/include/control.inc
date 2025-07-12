@@ -3185,47 +3185,54 @@ begin
     OldHeight := Height;
 
     ShouldAutoAdjust(AAWidth, AAHeight);
-    AAWidth := AAWidth and (Align in [alNone, alLeft, alRight])
-      and not((akLeft in Anchors) and (akRight in Anchors));
-    AAHeight := AAHeight and (Align in [alNone, alTop, alBottom])
-      and not((akTop in Anchors) and (akBottom in Anchors));
+    //AAWidth := AAWidth and (Align in [alNone, alLeft, alRight]);
+    //AAHeight := AAHeight and (Align in [alNone, alTop, alBottom]);
 
-    if (Align in [alNone, alRight]) and (akLeft in Anchors) then
-      NewLeft := Round(NewLeft * AXProportion);
-    if (Align=alNone) and (akRight in Anchors) and (Parent<>nil)
-    and (AnchorSideRight.Control=nil) then
-    begin
-      if not(akLeft in Anchors) then
-      begin
-        NewRight := Round((Parent.ClientWidth-NewLeft-OldWidth) * AXProportion);
-        NewLeft := Parent.ClientWidth-NewRight-OldWidth
-      end else
-      begin
-        NewRight := Round((Parent.ClientWidth-Left-OldWidth) * AXProportion);
-        NewWidth := Parent.ClientWidth-NewLeft-NewRight;
+    NewLeft := Round(NewLeft * AXProportion);
+    if (not AAWidth) and (Parent<>nil) and (Align=alNone) then begin
+      if (Anchors * [akLeft, akRight] = [akRight]) and
+         (AnchorSideRight.Control=nil)
+      then begin
+        // Width is not scaled, make NewLeft follow the right side;
+        (* Right = Left + OldWidth;
+           NewRight = Right * AXProportion
+           NewLeft := NewLeft + (NewRight - Right); *)
+        NewLeft := Left;
+        NewLeft := NewLeft + Round((NewLeft + OldWidth) * (AXProportion - 1));
       end;
+      if (Anchors * [akLeft, akRight] = []) then begin
+        (* Middle = Left + OldWidth / 2
+           NewMiddle = Middle * AXProportion
+           NewLeft := NewMiddle - Left + OldWidth / 2 *)
+        NewLeft := Left;
+        NewLeft := NewLeft + Round((NewLeft + OldWidth / 2) * (AXProportion - 1));
+      end
     end;
 
-    if (Align in [alNone, alBottom]) and (akTop in Anchors) then
-      NewTop := Round(NewTop * AYProportion);
-    if (Align=alNone) and (akBottom in Anchors) and (Parent<>nil)
-    and (AnchorSideBottom.Control=nil) then
-    begin
-      if not(akTop in Anchors) then
-      begin
-        NewBottom := Round((Parent.ClientHeight-NewTop-OldHeight) * AYProportion);
-        NewTop := Parent.ClientHeight-NewBottom-OldHeight
-      end else
-      begin
-        NewBottom := Round((Parent.ClientHeight-Top-OldHeight) * AYProportion);
-        NewHeight := Parent.ClientHeight-NewTop-NewBottom;
+    NewTop := Round(NewTop * AYProportion);
+    if (not AAHeight) and (Parent<>nil) and (Align=alNone) then begin
+      if (Anchors * [akTop, akBottom] = [akBottom]) and
+         (AnchorSideBottom.Control=nil)
+      then begin
+        NewTop := Top;
+        NewTop := NewTop + Round((NewTop + OldHeight) * (AYProportion - 1));
       end;
+      if (Anchors * [akTop, akBottom] = []) then begin
+        NewTop := Top;
+        NewTop := NewTop + Round((NewTop + OldHeight / 2) * (AYProportion - 1));
+      end
     end;
 
+    (* Scale Right/Bottom rather than Width/Height
+       - This avoids double rounding errors where the RIGHT can be
+         "round(left) + round(width)".
+         But an adjacent other left would be rounded only once.
+       - The result is then stored as The difference to the rounded left.
+    *)
     if AAWidth then
-      NewWidth := Round(Width * AXProportion);
+      NewWidth := Round((Width + Left) * AXProportion) - NewLeft;
     if AAHeight then
-      NewHeight := Round(Height * AYProportion);
+      NewHeight := Round((Height + Top) * AYProportion) - NewTop;
 
     BorderSpacing.AutoAdjustLayout(AXProportion, AYProportion);
     Constraints.AutoAdjustLayout(AXProportion, AYProportion);
@@ -3237,20 +3244,6 @@ begin
     NewWidth := Constraints.MinMaxWidth(NewWidth);
     NewHeight := Constraints.MinMaxHeight(NewHeight);
 
-    if AAWidth or (NewBaseWidth<>NewWidth) then
-    begin
-      if akRight in Anchors then
-        NewLeft := NewLeft-NewWidth+OldWidth;
-    end;
-    if AAHeight or (NewBaseHeight<>NewHeight) then
-    begin
-      if akBottom in Anchors then
-        NewTop := NewTop-NewHeight+OldHeight;
-    end;
-    if AAWidth and (akRight in Anchors) then
-      NewBaseLeft := NewBaseLeft-NewBaseWidth+OldWidth;
-    if AAHeight and (akBottom in Anchors) then
-      NewBaseTop := NewBaseTop-NewBaseHeight+OldHeight;
 
     FBaseBounds.Left:=NewBaseLeft;
     FBaseBounds.Top:=NewBaseTop;
@@ -3258,8 +3251,27 @@ begin
     FBaseBounds.Bottom:=NewBaseTop+NewBaseHeight;
     if Parent<>nil then
     begin
-      FBaseParentClientSize.cx:=Parent.ClientWidth;
-      FBaseParentClientSize.cy:=Parent.ClientHeight;
+      if AAWidth then
+        FBaseParentClientSize.cx:=Round(FBaseParentClientSize.cx * AXProportion)
+      else
+      if  (akRight in Anchors) then
+        (* Cound the parent size separately from our right.
+           Calculate the diff, between the 2 rounded values.
+           This avoids miscalculations, as the rounded parent size must later
+           match the size that the parent calculates itself.
+           (and that is rounded without taking our right into account)
+        *)
+        FBaseParentClientSize.cx:= (NewBaseLeft+NewBaseWidth) +
+          Round(FBaseParentClientSize.cx * AXProportion) -
+          Round((Left+Width) * AXProportion);
+
+      if AAHeight then
+        FBaseParentClientSize.cy:=Round(FBaseParentClientSize.cy * AYProportion)
+      else
+      if  (akBottom in Anchors) then
+        FBaseParentClientSize.cy:= (NewBaseTop+NewBaseHeight) +
+          Round(FBaseParentClientSize.cy * AYProportion) -
+          Round((Top+Height) * AYProportion);
     end;
 
     SetBoundsKeepBase(NewLeft, NewTop, NewWidth, NewHeight);
