@@ -2889,23 +2889,13 @@ begin
     MainBuildBoss.CheckAmbiguousSources(DestFilename,false);
 
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('SaveEditorFile B');{$ENDIF}
-  //debugln(['SaveEditorFile Component=', AnUnitInfo.Component, ', HasResources=', AnUnitInfo.HasResources
-  //         ', LoadedDesigner=', AnUnitInfo.LoadedDesigner]);
-  if not (sfSkipReferences in Flags) then // skip when externally renamed identifiers
+  // save resource file and lfm file, skip when externally renamed identifiers
+  if ((LRSCode<>nil) or (AnUnitInfo.Component<>nil))
+      and not (sfSkipReferences in Flags) then
   begin
-    // Resource is needed for the check.
-    if (AnUnitInfo.Component=nil)
-    and not AnUnitInfo.LoadedDesigner
-    and not EnvironmentGuiOpts.AutoCreateFormsOnOpen
-    then
-      LoadLFM(AnUnitInfo, [], []);
-    // save resource file and lfm file,
-    if (LRSCode<>nil) or (AnUnitInfo.Component<>nil) then
-    begin
-      Result:=SaveUnitComponent(AnUnitInfo,LRSCode,LFMCode,Flags);
-      if not (Result in [mrIgnore, mrOk]) then
-        exit;
-    end;
+    Result:=SaveUnitComponent(AnUnitInfo,LRSCode,LFMCode,Flags);
+    if not (Result in [mrIgnore, mrOk]) then
+      exit;
   end;
 
   // unset all modified flags
