@@ -81,6 +81,7 @@ object AboutForm: TAboutForm
     Height = 40
     Top = 285
     Width = 516
+    HelpButton.OnClick = HelpButtonClick
     TabOrder = 1
     ShowButtons = [pbClose, pbHelp]
   end
