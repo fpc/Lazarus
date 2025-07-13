@@ -168,10 +168,15 @@ type
     emC,                 // C-style character encoding: "\n" (if present, otherwise hex)
     emHexC,              // C-style character encoding: "\0x0D"
     emAsciiControlNames, // abbreviation of ASCII control characters in square brackets: "[CR]"
-    emPercent            // percent encoding (control characters only): "%0D"
+    emPercent,           // percent encoding (control characters only): "%0D"
+    emCustom             // user defined scheme
   );
+  TControlChars = #0..#31;
+  TEscapedStrings = array[TControlChars] of string;
+  PEscapedStrings = ^TEscapedStrings;
 
-function Utf8EscapeControlChars(S: String; EscapeMode: TEscapeMode = emPascal): String;
+
+function Utf8EscapeControlChars(S: String; EscapeMode: TEscapeMode = emPascal; CustomStrings: PEscapedStrings = nil; AMaxGrowFactor: Cardinal = 0): String;
 
 type
   TUTF8TrimFlag = (
@@ -3022,13 +3027,14 @@ end;
   human readable format.
   Mainly used for logging purposes.
   Parameters:
-    S         : Input string. Must be UTF8 encoded.
-    EscapeMode: controls the human readable format for escape characters.
+    S             : Input string. Must be UTF8 encoded.
+    EscapeMode    : controls the human readable format for escape characters.
+    CustomStrings : only applicable if EscapeMode=emCustom: pointer to a fixed array of strings
+    AMaxGrowFactor: max growfactor for EscapeMode=emCustom.
+                      If non-zero, no error checking is done on it's value
+                      If set to zero, it will be calculated on the fly (which is time consuming)
 }
-function Utf8EscapeControlChars(S: String; EscapeMode: TEscapeMode = emPascal): String;
-type
-  TEscapedStrings = array[#0..#31] of string;
-  PEscapedStrings = ^TEscapedStrings;
+function Utf8EscapeControlChars(S: String; EscapeMode: TEscapeMode; CustomStrings: PEscapedStrings; AMaxGrowFactor: Cardinal): String;
 const
   // lookup tables are almost 2x faster than using IntToStr or IntToHex
   EscapedStringsOfPascal: TEscapedStrings = (
@@ -3067,7 +3073,7 @@ var
   i, ResLen: Integer;
   SLen, SubLen: SizeInt;
 const
-  MaxGrowFactor: array[TEscapeMode] of integer = (3, 4, 5, 5, 5, 3);
+  MaxGrowFactor: array[TEscapeMode] of Cardinal = (3, 4, 5, 5, 5, 3, 0);
 begin
   Result := '';
   case EscapeMode of
@@ -3077,8 +3083,22 @@ begin
     emHexC             : EscapedStrings := @EscapedStringsOfCHex;
     emAsciiControlNames: EscapedStrings := @EscapedStringsOfAscii;
     emPercent          : EscapedStrings := @EscapedStringsOfPercent;
-  else
-    raise Exception.Create('Invalid EscapeMode is specified');
+    emCustom           : begin
+      if not Assigned(EscapedStrings) then
+        Raise EInvalidOp.Create('Utf8EscapeControlChars: CustomStrings cannot be nil when EscapeMode=emCustom.');
+      EscapedStrings := CustomStrings;
+      MaxGrowFactor[emCustom] := AMaxGrowFactor;
+      if (MaxGrowFactor[emCustom] = 0) then
+      begin
+        MaxGrowFactor[emCustom] := 1;
+        for Ch := #0 to #31 do
+        begin
+          SLen := Length(EscapedStrings^[Ch]);
+          if (SLen > MaxGrowFactor[emCustom]) then
+            MaxGrowFactor[emCustom] := SLen;
+        end;
+      end;
+    end;
   end;
 
   if FindInvalidUTF8Codepoint(PChar(S), Length(S)) >= 0 then
