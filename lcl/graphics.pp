@@ -1668,6 +1668,7 @@ type
     procedure SetHandles(ABitmap, AMask: HBITMAP); override;
     procedure Sort;
     function GetBestIndexForSize(ASize: TSize): Integer;
+    function ExportImage(AIndex: Integer; AImageClass: TFPImageBitmapClass): TFPImageBitmap;
 
     property Current: Integer read FCurrent write SetCurrent;
     property Count: Integer read GetCount;

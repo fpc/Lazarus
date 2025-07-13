@@ -523,6 +523,15 @@ begin
   end;
 end;
 
+{ Exports the image at the specified index to another TFPImageBitmap class.
+  NOTE: The created instance must be destroyed by the calling routine. }
+function TCustomIcon.ExportImage(AIndex: Integer;
+  AImageClass: TFPImageBitmapClass): TFPImageBitmap;
+begin
+  Result := AImageClass.Create;
+  Result.LoadFromRawImage(TSharedIcon(FSharedImage).Images[AIndex].RawImage, false);
+end;
+
 function TCustomIcon.GetCount: Integer;
 begin
   Result := TSharedIcon(FSharedImage).Count;
