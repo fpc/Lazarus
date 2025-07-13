@@ -1,18 +1,18 @@
 # Translators:
-# * Patriccollu di Santa Maria è Sichè
+# * Patriccollu di Santa Maria è Sichè, 2021-2025
 msgid ""
 msgstr ""
+"Project-Id-Version: LCL in Corsican\n"
+"POT-Creation-Date: 2025-07-08 23:56\n"
+"PO-Revision-Date: 2025-07-12 20:28+0200\n"
+"Last-Translator: Patriccollu di Santa Maria è Sichè <https://github.com/Patriccollu/Lingua_Corsa-Infurmatica/#readme>\n"
+"Language-Team: Patriccollu di Santa Maria è Sichè\n"
+"Language: co\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Project-Id-Version: LCL in Corsican\n"
-"POT-Creation-Date: 2025-01-19 19:17\n"
-"PO-Revision-Date: 2025-01-20 17:51+0100\n"
-"Language-Team: Patriccollu di Santa Maria è Sichè\n"
-"X-Generator: Poedit 3.5.2\n"
-"Last-Translator: Patriccollu di Santa Maria è Sichè <https://github.com/Patriccollu/Lingua_Corsa-Infurmatica/#readme>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"Language: co\n"
+"X-Generator: Poedit 3.6.3\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
 #, object-pascal-format
@@ -34,10 +34,9 @@ msgid "Unable to find a HTML browser."
 msgstr "Impussibule di truvà un navigatore HTML."
 
 #: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineone
-#, object-pascal-format, fuzzy
-#| msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options"
+#, object-pascal-format
 msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options."
-msgstr "Ùn si pò truvà alcunu navigatore HTML.%sCi vole à definiscene unu in Attrezzi -> Ozzioni -> Aiutu -> Ozzioni d’aiutu"
+msgstr "Ùn si pò truvà alcunu navigatore HTML.%sCi vole à definiscene unu in Attrezzi -> Ozzioni -> Aiutu -> Ozzioni d’aiutu."
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
 #, object-pascal-format
@@ -176,8 +175,6 @@ msgid "Cancel"
 msgstr "Abbandunà"
 
 #: lclstrconsts.rscannotfocus
-#, fuzzy
-#| msgid "Can not focus"
 msgid "Cannot focus"
 msgstr "Ùn si pò mette in evidenza"
 
@@ -520,10 +517,9 @@ msgid "Help"
 msgstr "Aiutu"
 
 #: lclstrconsts.rshelpalreadyregistered
-#, object-pascal-format, fuzzy
-#| msgid "%s: Already registered"
+#, object-pascal-format
 msgid "%s: already registered."
-msgstr "%s : dighjà arregistratu"
+msgstr "%s : dighjà arregistratu."
 
 #: lclstrconsts.rshelpcontextnotfound
 msgid "A help database was found for this topic, but this topic was not found"
@@ -548,16 +544,14 @@ msgid "Help context %s not found in Database \"%s\"."
 msgstr "Ùn si pò truvà u cuntestu d’aiutu %s in a basa di dati « %s »."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
-#, object-pascal-format, fuzzy
-#| msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
+#, object-pascal-format
 msgid "Help Database \"%s\" did not find a viewer for a help page of type %s."
-msgstr "A basa di dati d’aiutu « %s » ùn hà micca trovu un’affissadore per una pagina d’aiutu di tipu %s"
+msgstr "A basa di dati d’aiutu « %s » ùn hà micca trovu un’affissadore per una pagina d’aiutu di tipu %s."
 
 #: lclstrconsts.rshelphelpdatabasenotfound
-#, object-pascal-format, fuzzy
-#| msgid "Help Database \"%s\" not found"
+#, object-pascal-format
 msgid "Help Database \"%s\" not found."
-msgstr "Ùn si pò truvà a basa di dati d’aiutu « %s »"
+msgstr "Ùn si pò truvà a basa di dati d’aiutu « %s »."
 
 #: lclstrconsts.rshelphelpfordirectivenotfound
 #, object-pascal-format
@@ -580,10 +574,9 @@ msgid "Help keyword \"%s\" not found in Database \"%s\"."
 msgstr "Ùn si pò truvà a parolla chjave d’aiutu « %s » in a basa di dati « %s »."
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
-#, object-pascal-format, fuzzy
-#| msgid "Help node \"%s\" has no Help Database"
+#, object-pascal-format
 msgid "Help node \"%s\" has no Help Database."
-msgstr "U nodu d’aiutu « %s » ùn hà micca di basa di dati d’aiutu"
+msgstr "U nodu d’aiutu « %s » ùn hà micca di basa di dati d’aiutu."
 
 #: lclstrconsts.rshelpnohelpfoundforsource
 #, object-pascal-format
@@ -591,30 +584,26 @@ msgid "No help found for line %d, column %d of %s."
 msgstr "Ùn si trova alcunu aiutu per a linea %d, culonna %d di %s."
 
 #: lclstrconsts.rshelpnohelpnodesavailable
-#, fuzzy
-#| msgid "No help entries available for this topic"
 msgid "No help entries available for this topic."
-msgstr "Ùn ci hè alcuna rubrica d’aiutu per st’articulu"
+msgstr "Ùn ci hè alcuna rubrica d’aiutu per st’articulu."
 
 #: lclstrconsts.rshelpnotfound
 msgid "No help found for this topic"
 msgstr "Ùn ci hè alcunu aiutu per st’articulu"
 
 #: lclstrconsts.rshelpnotregistered
-#, object-pascal-format, fuzzy
-#| msgid "%s: Not registered"
+#, object-pascal-format
 msgid "%s: not registered."
-msgstr "%s : micca arregistratu"
+msgstr "%s : micca arregistratu."
 
 #: lclstrconsts.rshelpselectorerror
 msgid "Help Selector Error"
 msgstr "Sbagliu di selettore d’aiutu"
 
 #: lclstrconsts.rshelpthereisnoviewerforhelptype
-#, object-pascal-format, fuzzy
-#| msgid "There is no viewer for help type \"%s\""
+#, object-pascal-format
 msgid "There is no viewer for help type \"%s\"."
-msgstr "Ùn ci hè alcunu affissadore per u tipu d’aiutu « %s »"
+msgstr "Ùn ci hè alcunu affissadore per u tipu d’aiutu « %s »."
 
 #: lclstrconsts.rshelpviewererror
 msgid "Help Viewer Error"
@@ -1283,10 +1272,9 @@ msgid "Yellow"
 msgstr "Ghjallu"
 
 #: lclstrconsts.scannotfocus
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Cannot focus a disabled or invisible window"
+#, object-pascal-format
 msgid "Cannot focus a disabled or invisible window \"%s\""
-msgstr "Ùn si pò micca mette in evidenza una finestra disattivata o invisibile"
+msgstr "Ùn si pò micca mette in evidenza una finestra disattivata o invisibile « %s »"
 
 #: lclstrconsts.sduplicatemenus
 msgid "Duplicate menus"
