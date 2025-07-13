@@ -644,9 +644,28 @@ end;
 procedure TPicture.SaveToStreamWithFileExt(Stream: TStream; const FileExt: string);
 var
   GraphicClass: TGraphicClass;
-  IntfImg: TLazIntfImage;
-  ImgWriter: TFPCustomImageWriter;
+  fpBmpClass: TFPImageBitmapClass;
   fpBmp: TFPImageBitmap;
+  icn: TCustomIcon;
+
+  procedure SaveFPBmp(AFpBmp: TFPImageBitmap);
+  var
+    IntfImg: TLazIntfImage;
+    ImgWriter: TFPCustomImageWriter = nil;
+  begin
+    IntfImg := TLazIntfImage.Create(0,0,[]);
+    try
+      ImgWriter := TFPImageBitmapClass(GraphicClass).GetWriterClass.Create;
+      IntfImg.SetRawImage(AFpBmp.GetRawImagePtr^, False);
+      AFpBmp.InitializeWriter(IntfImg, ImgWriter);
+      IntfImg.SaveToStream(Stream, ImgWriter);
+      AFpBmp.FinalizeWriter(ImgWriter);
+    finally
+      IntfImg.Free;
+      ImgWriter.Free;
+    end;
+  end;
+
 begin
   if Graphic = nil then Exit;
   if FileExt <> '' then
@@ -663,19 +682,30 @@ begin
   if (Graphic is TFPImageBitmap) and GraphicClass.InheritsFrom(TFPImageBitmap)
   then begin
     fpBmp := TFPImageBitmap(Graphic);
-    ImgWriter := nil;
-    IntfImg := TLazIntfImage.Create(0,0,[]);
-    try
-      ImgWriter := TFPImageBitmapClass(GraphicClass).GetWriterClass.Create;
-      IntfImg.SetRawImage(fpBmp.GetRawImagePtr^, False);
-      fpBmp.InitializeWriter(IntfImg, ImgWriter);
-      IntfImg.SaveToStream(Stream, ImgWriter);
-      fpBmp.FinalizeWriter(ImgWriter);
-    finally
-      IntfImg.Free;
-      ImgWriter.Free;
-    end;
+    SaveFpBmp(TFPImageBitmap(Graphic));
     Exit;
+  end;
+
+  if (Graphic is TCustomIcon) then
+  begin
+    // Save Icon as .ico or .icns
+    if SameText(FileExt, TIcon.GetFileExtensions) or SameText(FileExt, TIcnsIcon.GetFileExtensions) then
+      TCustomIcon(Graphic).SaveToStream(Stream)
+    else
+    // Save current image of Icon as format given by FileExt
+    if GraphicClass.InheritsFrom(TFPImageBitmap) then
+    begin
+      icn := TCustomIcon(Graphic);
+      fpBmpClass := TFPImageBitmapClass(GraphicClass);
+      fpBmp := icn.ExportImage(icn.Current, fpBmpClass);
+      try
+        SaveFpBmp(fpBmp);
+        exit;
+      finally
+        fpBmp.Free;
+      end;
+    end;
+    exit;
   end;
 
   // no conversion available yet
