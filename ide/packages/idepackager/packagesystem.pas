@@ -3631,7 +3631,7 @@ begin
   OutputDir:=APackage.GetOutputDirectory(false);
   IsDefDirWritable:=OutputDirectoryIsWritable(APackage,OutputDir,false);
 
-  if APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride='' then
+  if APackage.CompilerOptions.OutputDirectoryOverride='' then
   begin
     // the last compile was put to the normal/default output directory
     if IsDefDirWritable then
@@ -3648,7 +3648,7 @@ begin
       exit;
     end;
     Note+='Normal output directory is not writable, switching to fallback.'+LineEnding;
-    APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride:=NewOutputDir;
+    APackage.CompilerOptions.OutputDirectoryOverride:=NewOutputDir;
     if ForceBuild then
       Result:=mrYes
     else
@@ -3678,8 +3678,8 @@ begin
       // => try using the default output directory
     end;
 
-    OldOverride:=APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride;
-    APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride:='';
+    OldOverride:=APackage.CompilerOptions.OutputDirectoryOverride;
+    APackage.CompilerOptions.OutputDirectoryOverride:='';
     if ConsoleVerbosity>=0 then
       debugln(['Hint: (lazarus) trying the default output directory of package ',APackage.IDAsString]);
     OldNeedBuildAllFlag:=NeedBuildAllFlag;
@@ -3696,7 +3696,7 @@ begin
     // => switch back to the fallback
     if ConsoleVerbosity>=0 then
       debugln(['Hint: (lazarus) switching back to fallback output directory package ',APackage.IDAsString]);
-    APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride:=OldOverride;
+    APackage.CompilerOptions.OutputDirectoryOverride:=OldOverride;
     NeedBuildAllFlag:=OldNeedBuildAllFlag;
   end;
 end;
@@ -5488,7 +5488,7 @@ begin
     // the output directory is not writable
     debugln(['Error: (lazarus) [TLazPackageGraph.PreparePackageOutputDirectory] failed to create writable directory (',APackage.IDAsString,'): ',OutputDir]);
     Result:=mrCancel;
-  end else if APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride<>''
+  end else if APackage.CompilerOptions.OutputDirectoryOverride<>''
   then
     // package is already using the fallback directory
     DeleteAllFilesInOutputDir:=true

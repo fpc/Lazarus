@@ -541,14 +541,14 @@ begin
   if MainIDEBar=nil then exit; // not interactive
   if InputHistories=nil then exit;
 
-  if not Assigned(OnGetOutputDirectoryOverride) then exit;
+  if not Assigned(OnGetMatrixOutputDirectoryOverride) then exit;
   PkgWithProjOverriddenOutDirs:=TFPList.Create;
   try
     for i:=0 to aPkgList.Count-1 do
     begin
       CurPkg:=TLazPackage(aPkgList[i]);
       OutDir:='';
-      OnGetOutputDirectoryOverride(CurPkg,OutDir,[bmgtProject,bmgtSession]);
+      OnGetMatrixOutputDirectoryOverride(CurPkg,OutDir,[bmgtProject,bmgtSession]);
       if OutDir<>'' then begin
         IgnoreItem:=InputHistories.Ignores.Find(GetIgnorePkgOutDirID(CurPkg));
         if (IgnoreItem=nil) then

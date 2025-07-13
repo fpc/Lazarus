@@ -245,6 +245,7 @@ type
     FDefaultMakeOptionsFlags: TCompilerCmdLineOptions;
     fInheritedOptions: TInheritedCompOptsParseTypesStrings;
     fInheritedOptParseStamps: integer;
+    FOutputDirectoryOverride: string;
     FParsedOpts: TParsedCompilerOptions;
     FStorePathDelim: TPathDelimSwitch;
     FOtherDefines: TStrings; // list of user selectable defines for custom options
@@ -253,6 +254,7 @@ type
     procedure AppendDefaultExt(var aFilename: string);
     function GetExecuteAfter: TCompilationToolOptions;
     function GetExecuteBefore: TCompilationToolOptions;
+    function GetOutputDirOverride: string;
     procedure PrependDefaultType(var AFilename: string);
     procedure SetCreateMakefileOnBuild(AValue: boolean);
   protected
@@ -279,6 +281,7 @@ type
     procedure SetUnitPaths(const AValue: String); override;
     procedure SetUnitOutputDir(const AValue: string); override;
     procedure SetObjectPath(const AValue: string); override;
+    procedure SetOutputDirectoryOverride(const AValue: string); virtual;
     procedure SetSrcPath(const AValue: string); override;
     procedure SetDebugPath(const AValue: string); override;
     procedure SetTargetCPU(const AValue: string); override;
@@ -396,6 +399,7 @@ type
     property BaseDirectory: string read GetBaseDirectory write SetBaseDirectory;
     property DefaultMakeOptionsFlags: TCompilerCmdLineOptions
                  read FDefaultMakeOptionsFlags write SetDefaultMakeOptionsFlags;
+    property OutputDirectoryOverride: string read FOutputDirectoryOverride write SetOutputDirectoryOverride;
     // stored properties
     property StorePathDelim: TPathDelimSwitch read FStorePathDelim write FStorePathDelim;
     property OtherDefines: TStrings read FOtherDefines;
@@ -826,6 +830,7 @@ constructor TBaseCompilerOptions.Create(const AOwner: TObject;
 begin
   inherited Create(AOwner);
   FParsedOpts := TParsedCompilerOptions.Create(Self);
+  ParsedOpts.OnGetOutputDirectoryOverride:=@GetOutputDirOverride;
   FOtherDefines := TStringList.Create;
   FExecuteBefore := AToolClass.Create(Self);
   FExecuteAfter := AToolClass.Create(Self);
@@ -1112,6 +1117,11 @@ begin
   Result:=TCompilationToolOptions(fExecuteBefore);
 end;
 
+function TBaseCompilerOptions.GetOutputDirOverride: string;
+begin
+  Result:=OutputDirectoryOverride;
+end;
+
 procedure TBaseCompilerOptions.SetBaseDirectory(AValue: string);
 begin
   if BaseDirectory=AValue then exit;
@@ -1204,6 +1214,18 @@ begin
   debugln(['TBaseCompilerOptions.SetObjectPath ',AValue]);
   {$ENDIF}
   IncreaseChangeStamp;
+end;
+
+procedure TBaseCompilerOptions.SetOutputDirectoryOverride(const AValue: string);
+begin
+  if FOutputDirectoryOverride=AValue then Exit;
+  FOutputDirectoryOverride:=AValue;
+  if ParsedOpts.InvalidateParseOnChange then
+    IncreaseCompilerParseStamp;// the output dir is used by other packages
+  //if FOutputDirectoryOverride<>'' then
+  //  DebugLn(['TBaseCompilerOptions.SetOutputDirectoryOverride New=',FOutputDirectoryOverride])
+  //else
+  //  DebugLn(['TBaseCompilerOptions.SetOutputDirectoryOverride using default']);
 end;
 
 {------------------------------------------------------------------------------
@@ -1752,8 +1774,8 @@ begin
   if (Result<>'') and FilenameIsAbsolute(Result) then begin
     // fully specified target filename
   end else if Result<>'' then begin
-    //debugln(['TBaseCompilerOptions.CreateTargetFilename ParsedOpts.OutputDirectoryOverride=',ParsedOpts.OutputDirectoryOverride]);
-    if ParsedOpts.OutputDirectoryOverride<>'' then
+    //debugln(['TBaseCompilerOptions.CreateTargetFilename OutputDirectoryOverride=',OutputDirectoryOverride]);
+    if OutputDirectoryOverride<>'' then
     begin
       // the program/package is put into the output directory
       UnitOutDir:=GetUnitOutPath(false);
@@ -2788,7 +2810,7 @@ begin
   if FilenameIsAbsolute(Result) then begin
     // fully specified target filename
   end else if (UnitOutputDirectory='')
-  and (ParsedOpts.OutputDirectoryOverride='')
+  and (OutputDirectoryOverride='')
   and (ExtractFilePath(TargetFilename)='') then begin
     // the unit is put into the same directory as its source
     Result:=CreateAbsolutePath(Result,BaseDirectory);

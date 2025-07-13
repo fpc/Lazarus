@@ -156,16 +156,16 @@ const
 type
   TLocalSubstitutionEvent = function(s: string;
                                 PlatformIndependent: boolean): string of object;
+  TPCOGetOverride = function: string of object;
 
   { TParsedCompilerOptions }
 
   TParsedCompilerOptions = class
   private
     FInvalidateParseOnChange: boolean;
+    FOnGetOutputDirectoryOverride: TPCOGetOverride;
     FOnLocalSubstitute: TLocalSubstitutionEvent;
-    FOutputDirectoryOverride: string;
     FOwner: TObject;
-    procedure SetOutputDirectoryOverride(const AValue: string);
   public
     // parsed
     Values: array[TParsedCompilerOptString] of TParseString;
@@ -208,8 +208,8 @@ type
                                                        write FOnLocalSubstitute;
     property InvalidateParseOnChange: boolean read FInvalidateParseOnChange
                                               write FInvalidateParseOnChange;
-    property OutputDirectoryOverride: string read FOutputDirectoryOverride
-                                             write SetOutputDirectoryOverride;
+    property OnGetOutputDirectoryOverride: TPCOGetOverride read FOnGetOutputDirectoryOverride
+                                                           write FOnGetOutputDirectoryOverride;
   end;
 
   { TAdditionalCompilerOptions
@@ -273,12 +273,12 @@ type
     const UnparsedValue: string; PlatformIndependent: boolean): string of object;
   TOnAppendCustomOptions = procedure(Sender: TObject;
     var CustomOptions: string; Types: TBuildMatrixGroupTypes) of object;
-  TOnGetOutputDirectoryOverride = procedure(Sender: TObject;
+  TOnGetMatrixOutputDirectoryOverride = procedure(Sender: TObject;
              var OutDir: string; Types: TBuildMatrixGroupTypes) of object;
 
 var
   OnAppendCustomOption: TOnAppendCustomOptions = nil; // set by MainBuildBoss
-  OnGetOutputDirectoryOverride: TOnGetOutputDirectoryOverride = nil; // set by MainBuildBoss
+  OnGetMatrixOutputDirectoryOverride: TOnGetMatrixOutputDirectoryOverride = nil; // set by MainBuildBoss
   OnParseString: TParseStringEvent = nil;
   GetBuildMacroValues: TGetBuildMacroValues = nil; // set by TPkgManager, do not change or free the variables
 
@@ -378,18 +378,6 @@ end;
 
 { TParsedCompilerOptions }
 
-procedure TParsedCompilerOptions.SetOutputDirectoryOverride(const AValue: string);
-begin
-  if FOutputDirectoryOverride=AValue then exit;
-  FOutputDirectoryOverride:=AValue;
-  if InvalidateParseOnChange then
-    IncreaseCompilerParseStamp;// the output dir is used by other packages
-  //if FOutputDirectoryOverride<>'' then
-  //  DebugLn(['TParsedCompilerOptions.SetOutputDirectoryOverride New=',FOutputDirectoryOverride])
-  //else
-  //  DebugLn(['TParsedCompilerOptions.SetOutputDirectoryOverride using default']);
-end;
-
 constructor TParsedCompilerOptions.Create(TheOwner: TObject);
 begin
   FOwner:=TheOwner;
@@ -477,9 +465,11 @@ var
   s: String;
 begin
   if WithOverrides then begin
-    if (Option=pcosOutputDir) and (OutputDirectoryOverride<>'') then begin
-      Result:=OutputDirectoryOverride;
-      exit;
+    if (Option=pcosOutputDir) and Assigned(OnGetOutputDirectoryOverride) then
+    begin
+      s:=OnGetOutputDirectoryOverride();
+      if s<>'' then
+        exit(s);
     end;
   end;
   if Values[Option].ParseStamp<>CompilerParseStamp then begin
@@ -573,8 +563,8 @@ begin
   // apply overrides
   if not PlatformIndependent then begin
     if Option=pcosOutputDir then begin
-      if Assigned(OnGetOutputDirectoryOverride) then
-        OnGetOutputDirectoryOverride(Self,Result,bmgtAll);
+      if Assigned(OnGetMatrixOutputDirectoryOverride) then
+        OnGetMatrixOutputDirectoryOverride(Self,Result,bmgtAll);
     end;
   end;
 
@@ -627,7 +617,6 @@ procedure TParsedCompilerOptions.Assign(Src: TParsedCompilerOptions);
 begin
   FInvalidateParseOnChange := Src.FInvalidateParseOnChange;
 //  FOnLocalSubstitute := Src.FOnLocalSubstitute;
-  FOutputDirectoryOverride := Src.FOutputDirectoryOverride;
   Values := Src.Values;
   ParsedErrorOption := Src.ParsedErrorOption;
   ParsedErrorMsg := Src.ParsedErrorMsg;
