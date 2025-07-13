@@ -7050,10 +7050,6 @@ begin
     ,da_Define));
   MainDir.AddChild(DirTempl);
 
-  // <LazarusSrcDir>/components
-  DirTempl:=TDefineTemplate.Create('Components',ctsComponentsDirectory,
-    '','components',da_Directory);
-
   // <LazarusSrcDir>/tools
   DirTempl:=TDefineTemplate.Create('Tools',
     ctsToolsDirectory,'','tools',da_Directory);
