@@ -153,6 +153,7 @@ type
   private
     FActiveFilter: TLMsgViewFilter;
     FBackgroundColor: TColor;
+    FCursorLine: integer;    // Ctrl-Arrow can move in lines without selecting.
     FFilenameStyle: TMsgWndFileNameStyle;
     FHeaderBackground: array[TLMVToolState] of TColor;
     FIdleConnected: boolean;
@@ -183,7 +184,8 @@ type
     procedure CreateSourceMarks(View: TLMsgWndView; StartLineNumber: Integer);
     function GetActiveFilter: TLMsgViewFilter; inline;
     function GetHeaderBackground(aToolState: TLMVToolState): TColor;
-    function GetSelectedLine: integer;
+    function GetSelLineFirst: integer;
+    function GetSelLineLast: integer;
     function GetUrgencyStyles(Urgency: TMessageLineUrgency): TMsgCtrlUrgencyStyle;
     function GetViews(Index: integer): TLMsgWndView;
     procedure ViewChanged(Sender: TObject); // (main thread)
@@ -200,7 +202,7 @@ type
     procedure SetScrollLeft(AValue: integer);
     procedure SetScrollTop(AValue: integer);
     procedure SetSearchText(AValue: string);
-    procedure SetSelectedLine(AValue: integer);
+    procedure SetSelLineFirst(AValue: integer);
     procedure SetSelectedView(AValue: TLMsgWndView);
     procedure SetSourceMarks(AValue: TETMarks);
     procedure SetTextColor(AValue: TColor);
@@ -261,9 +263,11 @@ type
 
     // select, search
     procedure ToggleSelectedLine(View: TLMsgWndView; LineNumber: integer);
+    procedure ToggleCursorLine;
     procedure ExtendSelection(View: TLMsgWndView; LineNumber: integer);
     procedure ExtendSelByOffset(Offset: integer);
-    procedure MoveWithoutSelecting(Offset: integer);
+    procedure MoveWithoutSelecting(LineNumber: integer);
+    procedure MoveWithoutSelectByOffs(Offset: integer);
     function SearchNext(StartView: TLMsgWndView; StartLine: integer;
       SkipStart, Downwards: boolean;
       out View: TLMsgWndView; out LineNumber: integer): boolean;
@@ -315,7 +319,9 @@ type
     property Options: TMsgCtrlOptions read FOptions write SetOptions default MCDefaultOptions;
     property SearchText: string read FSearchText write SetSearchText;
     // First initially selected line, -1=header line, can be on progress line (=View.Count)
-    property SelectedLine1: integer read GetSelectedLine write SetSelectedLine;
+    property SelLineFirst: integer read GetSelLineFirst write SetSelLineFirst;
+    // Last line selected by mouse, arrow keys or Ctrl-Space. FSelectedLines is adjusted accordingly.
+    property SelLineLast: integer read GetSelLineLast;
     property SelectedView: TLMsgWndView read FSelectedView write SetSelectedView;
     property ShowHint default true;
     property SourceMarks: TETMarks read FSourceMarks write SetSourceMarks;
@@ -1283,7 +1289,7 @@ begin
   IdleConnected:=true;
 end;
 
-procedure TMessagesCtrl.SetSelectedLine(AValue: integer);
+procedure TMessagesCtrl.SetSelLineFirst(AValue: integer);
 // Select the given line, clear possibly existing selections.
 begin
   Assert(AValue>=-1, 'TMessagesCtrl.SetSelectedLine: AValue < -1.');
@@ -1297,6 +1303,7 @@ begin
   end;
   FSelectedLines.Count:=1;    // One line.
   FSelectedLines[0]:=AValue;
+  FCursorLine:=AValue;
   Invalidate;
 end;
 
@@ -1479,11 +1486,20 @@ begin
   {$ENDIF}
 end;
 
-function TMessagesCtrl.GetSelectedLine: integer;
+function TMessagesCtrl.GetSelLineFirst: integer;
 // Return the first selected line number.
 begin
   if FSelectedLines.Count>0 then
     Result:=FSelectedLines[0]
+  else
+    Result:=-1;   // No selection.
+end;
+
+function TMessagesCtrl.GetSelLineLast: integer;
+// Return the last selected line number.
+begin
+  if FSelectedLines.Count>0 then
+    Result:=FSelectedLines.Last
   else
     Result:=-1;   // No selection.
 end;
@@ -1594,11 +1610,10 @@ var
 
 var
   i, j, y: Integer;
+  Indent, ImgIndex: Integer;
   View: TLMsgWndView;
   Line: TMessageLine;
-  Indent: Integer;
   NodeRect: TRect;
-  ImgIndex: LongInt;
   IsSelected: Boolean;
   FirstLineIsNotSelectedMessage: Boolean;
   SecondLineIsNotSelectedMessage: Boolean;
@@ -1676,7 +1691,15 @@ begin
       col:=UrgencyStyles[Line.Urgency].Color;
       if col=clDefault then
         col:=TextColor;
-      DrawText(NodeRect,GetLineText(Line),IsSelected,col);
+      if j=FCursorLine then begin
+        Canvas.Pen.Style:=psDash;                           // Dash line top
+        Canvas.Line(NodeRect.Left,NodeRect.Top,NodeRect.Right,NodeRect.Top);
+      end;
+      DrawText(NodeRect,GetLineText(Line),IsSelected,col);  // Text
+      if j=FCursorLine then begin
+        Canvas.Line(NodeRect.Left,NodeRect.Bottom,NodeRect.Right,NodeRect.Bottom);
+        Canvas.Pen.Style:=psSolid;                          // Dash line bottom
+      end;
       inc(y,ItemHeight);
       inc(j);
     end;
@@ -1855,6 +1878,12 @@ begin
     ExtendSelection(SelectedView,SelectedView.Lines.Count-1);
     Key := 0;
   end
+  // [Ctrl-Space]
+  else if (Key = VK_SPACE) and (Shift = [ssCtrl]) then
+  begin
+    ToggleCursorLine;
+    Key := 0;
+  end
   // [Up]
   else if (Key = VK_UP) and (Shift = []) then
   begin
@@ -1868,7 +1897,7 @@ begin
   end
   else if (Key = VK_UP) and (Shift = [ssCtrl]) then
   begin
-    MoveWithoutSelecting(-1);
+    MoveWithoutSelectByOffs(-1);
     Key := 0;
   end
   // [Down]
@@ -1884,7 +1913,7 @@ begin
   end
   else if (Key = VK_DOWN) and (Shift = [ssCtrl]) then
   begin
-    MoveWithoutSelecting(+1);
+    MoveWithoutSelectByOffs(+1);
     Key := 0;
   end
   // [Home]
@@ -1898,6 +1927,11 @@ begin
     ExtendSelection(SelectedView,-1);
     Key := 0;
   end
+  else if (Key = VK_HOME) and (Shift = [ssCtrl]) then
+  begin
+    MoveWithoutSelecting(-1);
+    Key := 0;
+  end
   // [End]
   else if (Key = VK_END) and (Shift = []) then
   begin
@@ -1907,6 +1941,11 @@ begin
   else if (Key = VK_END) and (Shift = [ssShift]) then
   begin
     ExtendSelection(SelectedView,SelectedView.Lines.Count-1);
+    Key := 0;
+  end
+  else if (Key = VK_END) and (Shift = [ssCtrl]) then
+  begin
+    MoveWithoutSelecting(SelectedView.Lines.Count-1);
     Key := 0;
   end
   // [PageUp]
@@ -1920,6 +1959,11 @@ begin
     ExtendSelByOffset(-Max(1, ClientHeight div ItemHeight));
     Key := 0;
   end
+  else if (Key = VK_PRIOR) and (Shift = [ssCtrl]) then
+  begin
+    MoveWithoutSelectByOffs(-Max(1, ClientHeight div ItemHeight));
+    Key := 0;
+  end
   // [PageDown]
   else if (Key = VK_NEXT) and (Shift = []) then
   begin
@@ -1929,6 +1973,11 @@ begin
   else if (Key = VK_NEXT) and (Shift = [ssShift]) then
   begin
     ExtendSelByOffset(+Max(1, ClientHeight div ItemHeight));
+    Key := 0;
+  end
+  else if (Key = VK_NEXT) and (Shift = [ssCtrl]) then
+  begin
+    MoveWithoutSelectByOffs(+Max(1, ClientHeight div ItemHeight));
     Key := 0;
   end;
 
@@ -2103,12 +2152,30 @@ var
 begin
   BeginUpdate;
   SelectedView:=View;
-  if FSelectedLines.Count=0 then        // No existing selection.
+  if FSelectedLines.Count=0 then       // No existing selection.
     i:=-1
   else
     i:=FSelectedLines.IndexOf(LineNumber);
   if i=-1 then
     FSelectedLines.Add(LineNumber)
+  else
+    FSelectedLines.Delete(i);          // Was already selected -> toggle.
+  FCursorLine:=LineNumber;
+  Invalidate;
+  EndUpdate;
+end;
+
+procedure TMessagesCtrl.ToggleCursorLine;
+var
+  i: Integer;
+begin
+  BeginUpdate;
+  if FSelectedLines.Count=0 then       // No existing selection.
+    i:=-1
+  else
+    i:=FSelectedLines.IndexOf(FCursorLine);
+  if i=-1 then
+    FSelectedLines.Add(FCursorLine)
   else
     FSelectedLines.Delete(i);          // Was already selected -> toggle.
   Invalidate;
@@ -2135,6 +2202,7 @@ begin
     for i:=FSelectedLines[0]+1 to LineNumber do
       FSelectedLines.Add(i);
   // if LineNumber=FSelectedLines[0] then do nothing.
+  FCursorLine:=SelLineLast;               // Cursor at last line selected.
   ScrollToLine(SelectedView,LineNumber,True);
   Invalidate;
   EndUpdate;
@@ -2147,8 +2215,8 @@ begin
   Assert(Offset<>0, 'TMessagesCtrl.ExtendSelByOffset: Offset=0');
   if SelectedView=nil then
     SelectFirst(true,true);
-  if ( (Offset<0) and (FSelectedLines.Last=-1) )
-  or ( (Offset>0) and (FSelectedLines.Last=SelectedView.Lines.Count-1) ) then
+  if ( (Offset<0) and (FCursorLine=-1) )
+  or ( (Offset>0) and (FCursorLine=SelectedView.Lines.Count-1) ) then
   begin
     {$IFDEF VerboseMsgCtrlSelection}
     debugln(['TMessagesCtrl.ExtendSelByOffset: Cannot extend more. Offset=', Offset,
@@ -2156,7 +2224,7 @@ begin
     {$ENDIF}
     Exit;
   end;
-  LineNro:=FSelectedLines.Last+Offset;  // The last selection + offset.
+  LineNro:=FCursorLine+Offset;            // Cursor + offset.
   if LineNro<-1 then
     LineNro:=-1
   else if LineNro>=SelectedView.Lines.Count then
@@ -2164,11 +2232,28 @@ begin
   ExtendSelection(SelectedView, LineNro);
 end;
 
-procedure TMessagesCtrl.MoveWithoutSelecting(Offset: integer);
+procedure TMessagesCtrl.MoveWithoutSelecting(LineNumber: integer);
 begin
-{ #todo -oJuha : Move cursor without changing the selection.
-  Cursor position must be indicated somehow in the Paint procedure.
-}
+  if SelectedView=nil then
+    SelectFirst(true,true);
+  FCursorLine:=LineNumber;
+  Assert((FCursorLine>=-1) and (FCursorLine<SelectedView.Lines.Count), 'MoveWithoutSelecting: Out of bounds.');
+  ScrollToLine(SelectedView,FCursorLine,True);
+  Invalidate;
+end;
+
+procedure TMessagesCtrl.MoveWithoutSelectByOffs(Offset: integer);
+// Move cursor without changing the selection.
+begin
+  if SelectedView=nil then
+    SelectFirst(true,true);
+  Inc(FCursorLine, Offset);
+  if FCursorLine<-1 then
+    FCursorLine:=-1
+  else if FCursorLine>=SelectedView.Lines.Count then
+    FCursorLine:=SelectedView.Lines.Count-1;
+  ScrollToLine(SelectedView,FCursorLine,True);
+  Invalidate;
 end;
 
 procedure TMessagesCtrl.Select(View: TLMsgWndView; LineNumber: integer;
@@ -2176,7 +2261,7 @@ procedure TMessagesCtrl.Select(View: TLMsgWndView; LineNumber: integer;
 begin
   BeginUpdate;
   SelectedView:=View;
-  SelectedLine1:=LineNumber;
+  SelLineFirst:=LineNumber;
   if DoScroll then
     ScrollToLine(SelectedView,LineNumber,FullyVisible);
   EndUpdate;
@@ -2192,7 +2277,7 @@ begin
     Invalidate;
   end else begin
     SelectedView:=TLMsgWndView(Msg.Lines.Owner);
-    SelectedLine1:=Msg.Index;
+    SelLineFirst:=Msg.Index;
     if DoScroll then
       ScrollToLine(SelectedView,Msg.Index,true);
   end;
@@ -2205,7 +2290,7 @@ var
   LineNumber: integer;
 begin
   StoreSelectedAsSearchStart;
-  Result:=SearchNext(SelectedView,SelectedLine1,true,Downwards,View,LineNumber);
+  Result:=SearchNext(SelectedView,SelLineFirst,true,Downwards,View,LineNumber);
   if not Result then exit;
   Select(View,LineNumber,true,true);
 end;
@@ -2237,7 +2322,7 @@ begin
       Result:=true;
     end else begin
       View:=SelectedView;
-      Line:=SelectedLine1;
+      Line:=SelLineFirst;
       if Offset>0 then begin
         {$IFDEF VerboseMsgCtrlSelection}
         DebugLn(['TMessagesCtrl.SelectNextShown NEXT View.GetShownLineCount(false,true)=',
@@ -2339,7 +2424,7 @@ begin
   Result:=nil;
   View:=SelectedView;
   if View=nil then exit;
-  Line:=SelectedLine1;
+  Line:=SelLineFirst;
   if (Line<0) then exit;
   if Line<View.Lines.Count then
     Result:=View.Lines[Line]
@@ -2467,7 +2552,7 @@ var
   LineNumber: integer;
 begin
   Result:=false;
-  if not SearchNextUrgent(SelectedView,SelectedLine1,true,Downwards,
+  if not SearchNextUrgent(SelectedView,SelLineFirst,true,Downwards,
     aMinUrgency,WithSrcPos,View,LineNumber)
   then exit;
   Select(View,LineNumber,true,true);
@@ -2836,7 +2921,7 @@ procedure TMessagesCtrl.StoreSelectedAsSearchStart;
 begin
   fLastLoSearchText:=UTF8LowerCase(FSearchText);
   fLastSearchStartView:=FSelectedView;
-  fLastSearchStartLine:=SelectedLine1;
+  fLastSearchStartLine:=SelLineFirst;
 end;
 
 function TMessagesCtrl.OpenSelection: boolean;
