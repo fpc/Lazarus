@@ -421,7 +421,7 @@ begin
 
   GetBuildMacroValues:=@GetBuildMacroValuesHandler;
   OnAppendCustomOption:=@AppendMatrixCustomOption;
-  OnGetOutputDirectoryOverride:=@GetMatrixOutputDirectoryOverride;
+  OnGetMatrixOutputDirectoryOverride:=@GetMatrixOutputDirectoryOverride;
 
   CodeToolBoss.OnRescanFPCDirectoryCache:=@DoOnRescanFPCDirectoryCache;
 end;

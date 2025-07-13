@@ -386,7 +386,7 @@ var
       AddChildNode(liscustomOptions, CustomOptions, icoCustomOptions);
     end;
     OutDir:='.*';
-    OnGetOutputDirectoryOverride(CompilerOpts,OutDir,[Grp]);
+    OnGetMatrixOutputDirectoryOverride(CompilerOpts,OutDir,[Grp]);
     if OutDir<>'.*' then begin
       AddMatrixGroupNode(Grp);
       AddChildNode('Output directory', OutDir, icoNone);

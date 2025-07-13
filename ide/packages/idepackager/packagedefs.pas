@@ -305,7 +305,7 @@ type
   private
     FLazPackage: TLazPackage;
     FSkipCompiler: Boolean;
-    procedure InvalidateOptions;
+    procedure InvalidateUsageOptions;
   protected
     procedure SetLazPackage(const AValue: TLazPackage);
     procedure SetCustomOptions(const AValue: string); override;
@@ -316,6 +316,7 @@ type
     procedure SetSrcPath(const AValue: string); override;
     procedure SetUnitPaths(const AValue: string); override;
     procedure SetUnitOutputDir(const AValue: string); override;
+    procedure SetOutputDirectoryOverride(const AValue: string); override;
     procedure SetConditionals(AValue: string); override;
   public
     constructor Create(const AOwner: TObject); override;
@@ -3753,8 +3754,7 @@ end;
 function TLazPackage.GetOutputDirType: TPkgOutputDir;
 begin
   if (CompilerOptions<>nil)
-  and (CompilerOptions.ParsedOpts<>nil)
-  and (CompilerOptions.ParsedOpts.OutputDirectoryOverride<>'') then
+  and (CompilerOptions.OutputDirectoryOverride<>'') then
     Result:=podFallback
   else
     Result:=podDefault;
@@ -4089,7 +4089,7 @@ end;
 procedure TPkgCompilerOptions.SetCustomOptions(const AValue: string);
 begin
   if CustomOptions=AValue then exit;
-  InvalidateOptions;
+  InvalidateUsageOptions;
   inherited SetCustomOptions(AValue);
   if LazPackage<>nil then
     LazPackage.DefineTemplates.CustomDefinesChanged;
@@ -4098,50 +4098,59 @@ end;
 procedure TPkgCompilerOptions.SetIncludePaths(const AValue: string);
 begin
   if IncludePath=AValue then exit;
-  InvalidateOptions;
+  InvalidateUsageOptions;
   inherited SetIncludePaths(AValue);
 end;
 
 procedure TPkgCompilerOptions.SetLibraryPaths(const AValue: string);
 begin
   if Libraries=AValue then exit;
-  InvalidateOptions;
+  InvalidateUsageOptions;
   inherited SetLibraryPaths(AValue);
 end;
 
 procedure TPkgCompilerOptions.SetLinkerOptions(const AValue: string);
 begin
   if LinkerOptions=AValue then exit;
-  InvalidateOptions;
+  InvalidateUsageOptions;
   inherited SetLinkerOptions(AValue);
 end;
 
 procedure TPkgCompilerOptions.SetObjectPath(const AValue: string);
 begin
   if ObjectPath=AValue then exit;
-  InvalidateOptions;
+  InvalidateUsageOptions;
   inherited SetObjectPath(AValue);
 end;
 
 procedure TPkgCompilerOptions.SetSrcPath(const AValue: string);
 begin
   if SrcPath=AValue then exit;
-  InvalidateOptions;
+  InvalidateUsageOptions;
   inherited SetSrcPath(AValue);
 end;
 
 procedure TPkgCompilerOptions.SetUnitPaths(const AValue: string);
 begin
   if OtherUnitFiles=AValue then exit;
-  InvalidateOptions;
+  InvalidateUsageOptions;
   inherited SetUnitPaths(AValue);
 end;
 
 procedure TPkgCompilerOptions.SetUnitOutputDir(const AValue: string);
 begin
   if UnitOutputDirectory=AValue then exit;
-  InvalidateOptions;
+  InvalidateUsageOptions;
   inherited SetUnitOutputDir(AValue);
+  if LazPackage<>nil then
+    LazPackage.DefineTemplates.OutputDirectoryChanged;
+end;
+
+procedure TPkgCompilerOptions.SetOutputDirectoryOverride(const AValue: string);
+begin
+  if AValue=OutputDirectoryOverride then exit;
+  inherited SetOutputDirectoryOverride(AValue);
+  InvalidateUsageOptions;
   if LazPackage<>nil then
     LazPackage.DefineTemplates.OutputDirectoryChanged;
 end;
@@ -4150,7 +4159,7 @@ procedure TPkgCompilerOptions.SetConditionals(AValue: string);
 begin
   AValue:=UTF8Trim(AValue,[]);
   if Conditionals=AValue then exit;
-  InvalidateOptions;
+  InvalidateUsageOptions;
   inherited SetConditionals(AValue);
 end;
 
@@ -4201,7 +4210,7 @@ begin
     Result:='';
 end;
 
-procedure TPkgCompilerOptions.InvalidateOptions;
+procedure TPkgCompilerOptions.InvalidateUsageOptions;
 begin
   if (LazPackage=nil) then exit;
   if LazPackage.UsageOptions=nil then RaiseGDBException('');
