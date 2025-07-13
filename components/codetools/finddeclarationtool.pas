@@ -715,8 +715,7 @@ type
   // flags for FindReferences
   TFindRefsFlag = (
     frfMethodOverrides, // continue search on method overrides
-    frfIncludingLFM,    // find references in LFM files
-    frfIncludingLFMProps// find references to properties in LFM, needs frfIncludingLFM
+    frfIncludingLFM     // find references in LFM files
     );
   TFindRefsFlags = set of TFindRefsFlag;
 
@@ -734,7 +733,6 @@ type
   TFindFileAtCursorFlags = set of TFindFileAtCursorFlag;
 const
   DefaultFindFileAtCursorAllowed = [Low(TFindFileAtCursorFlag)..high(TFindFileAtCursorFlag)];
-  frfAllLFM = [frfIncludingLFM,frfIncludingLFMProps];
 
 type
   //----------------------------------------------------------------------------

@@ -730,11 +730,8 @@ begin
     end;
 
     // search references in lfm files
-    if Options.IncludeLFMs then begin
+    if Options.IncludeLFMs then
       Include(FindRefFlags,frfIncludingLFM);
-      if not Options.Rename then  //property names are not to be changed
-        Include(FindRefFlags, frfIncludingLFMProps); // but can be shown when no renaming
-    end;
 
     if (frfIncludingLFM in FindRefFlags)
         and (GatherLFMsReferences(Files, Identifier, DeclTool, DeclNode,

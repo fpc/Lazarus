@@ -451,7 +451,7 @@ begin
       +'implementation'+LineEnding
       +'end.'+LineEnding);
 
-    RenameReferences(NewIdentifier,frfAllLFM);
+    RenameReferences(NewIdentifier,[frfIncludingLFM]);
     CheckDiff(Test1LFM,ExpLFMLines);
 
   finally
@@ -2234,7 +2234,7 @@ begin
       '  end;',
       'implementation',
       'end.']);
-    RenameReferences('OkBtn',frfAllLFM);
+    RenameReferences('OkBtn',[frfIncludingLFM]);
     CheckDiff(Test1LFM,[
     'object Form1: TForm1',
     '  object OkBtn: TButton',
@@ -2271,11 +2271,14 @@ begin
       'unit Test1;',
       '{$mode objfpc}{$H+}',
       'interface',
+      'uses Classes;',
       'type',
       '  TForm = class(TComponent)',
+      '  published',
       '    property Checked: boolean;',
       '  end;',
       '  TButton = class(TComponent)',
+      '  published',
       '    property Checked{#Rename}: boolean;',
       '  end;',
       '  TForm1 = class(TForm)',
@@ -2284,7 +2287,7 @@ begin
       'implementation',
       'end.']));
 
-    RenameReferences('Activated',frfAllLFM);
+    RenameReferences('Activated',[frfIncludingLFM]);
     CheckDiff(Test1LFM,LinesToStr([
       'object Form1: TForm1',
       '  Checked = False',

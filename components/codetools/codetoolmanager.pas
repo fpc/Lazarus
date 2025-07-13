@@ -816,7 +816,7 @@ type
           X, Y: integer; PascalCode, LFMCode: TCodeBuffer;
           var LFMReferences: TCodeXYPositions;
           var Cache: TFindIdentifierReferenceCache;  // you must free Cache
-          const Flags: TFindRefsFlags = frfAllLFM): boolean;
+          const Flags: TFindRefsFlags = [frfIncludingLFM]): boolean;
     function GatherReferencesInLFM(PascalBuffer, LFMBuffer: TCodeBuffer;
           const Identifier: string; DeclTool: TCodeTool; DeclNode: TCodeTreeNode;
           var LFMReferences: TCodeXYPositions;

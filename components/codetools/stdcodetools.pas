@@ -3022,15 +3022,18 @@ var
           '"'+GetIdentifier(Params.Identifier)+'"',
           ' Context="'+ClassContext.Node.DescAsString,'" "',StringToPascalConst(copy(ClassContext.Tool.Src,ClassContext.Node.StartPos,20))+'"',
           ' File="'+ExtractFilename(ClassContext.Tool.MainFilename)+'"',
-          ' Flags=['+FindDeclarationFlagsAsString(Params.Flags)+']'
-          );}
+          ' Flags=['+dbgs(Params.Flags)+']'
+          ); }
         if ClassContext.Tool.FindIdentifierInContext(Params) then begin
+          debugln(['AAA2 FindLFMIdentifier ']);
           IdentContext:=CleanFindContext;
           repeat
             CurContext:=CreateFindContext(Params);
+            debugln(['AAA3 FindLFMIdentifier ',FindContextToString(CurContext)]);
             if (not IsPublished)
             and (CurContext.Node.HasParentOfType(ctnClassPublished)) then
               IsPublished:=true;
+            debugln(['AAA4 FindLFMIdentifier ',IsPublished]);
 
             if (IdentContext.Node=nil) then begin
               if (LFMNode.TheType<>lfmnProperty)
@@ -3039,6 +3042,7 @@ var
               then
                 IdentContext:=CurContext;
             end;
+            debugln(['AAA5 FindLFMIdentifier ',FindContextToString(IdentContext)]);
 
             if (IdentContext.Node<>nil) and IsPublished then break;
 
@@ -3377,7 +3381,7 @@ var
 
   begin
     // find complete property name
-    //DebugLn('CheckLFMProperty A LFMProperty Name="',LFMProperty.CompleteName,'" ParentContext=',FindContextToString(ParentContext));
+    DebugLn('CheckLFMProperty A LFMProperty Name="',LFMProperty.CompleteName,'" ParentContext=',FindContextToString(ParentContext));
     PropertyContext:=CleanFindContext; //out
 
     if LFMProperty.CompleteName='' then begin
@@ -3396,6 +3400,7 @@ var
       end;
 
       CurName:=LFMProperty.NameParts.Names[i];
+      //debugln(['CheckLFMProperty CurName=',CurName]);
 
       if not FindLFMIdentifier(LFMProperty,
                                LFMProperty.NameParts.NamePositions[i],
@@ -3448,12 +3453,10 @@ var
           break;
       end;
       //  Pascal declaration found
-      if frfIncludingLFMProps in Flags then begin
-        Caret:=LFMTree.PositionToCaret(LFMProperty.NameParts.NamePositions[i]);
-        ARef.X:=Caret.X;
-        ARef.Y:=Caret.Y;
-        AddReference(Aref);
-      end;
+      Caret:=LFMTree.PositionToCaret(LFMProperty.NameParts.NamePositions[i]);
+      ARef.X:=Caret.X;
+      ARef.Y:=Caret.Y;
+      AddReference(Aref);
 
       SearchContext:=CurPropertyContext;
     end;
@@ -3586,10 +3589,8 @@ var
   function CheckLFMRoot(RootLFMNode: TLFMTreeNode): boolean;
   var
     LookupRootLFMNode: TLFMObjectNode;
-    RootName, LookupRootTypeName, LookupRootTypeUnitName, CurUnitName: String;
-    RootClassNode, RootObjectNode: TCodeTreeNode;
-    ChildContext: TFindContext;
-    IdentifierFound: boolean;
+    LookupRootTypeName, LookupRootTypeUnitName, CurUnitName: String;
+    RootClassNode: TCodeTreeNode;
     Caret: TPoint;
   begin
     Result:=false;
