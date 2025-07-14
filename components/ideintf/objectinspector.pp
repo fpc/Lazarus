@@ -5798,8 +5798,8 @@ end;
 
 procedure TObjectInspectorDlg.MainPopupMenuPopup(Sender: TObject);
 const
-  PropertyEditorMIPrefix = 'PropertyEditorVerbMenuItem';
-  ComponentEditorMIPrefix = 'ComponentEditorVerbMenuItem';
+  PropertyEditorMIPrefix = 'PropEdVerb';
+  ComponentEditorMIPrefix = 'CompEdVerb';
 var
   ComponentEditorVerbSeparator: TMenuItem;
   PropertyEditorVerbSeparator: TMenuItem;
@@ -5810,7 +5810,7 @@ var
   begin
     PropertyEditorVerbSeparator := nil;
     for I := MainPopupMenu.Items.Count - 1 downto 0 do
-      if Pos(PropertyEditorMIPrefix, MainPopupMenu.Items[I].Name) = 1 then
+      if StartsStr(PropertyEditorMIPrefix, MainPopupMenu.Items[I].Name) then
         MainPopupMenu.Items[I].Free;
   end;
 
@@ -5843,7 +5843,7 @@ var
   begin
     ComponentEditorVerbSeparator:=nil;
     for I := MainPopupMenu.Items.Count - 1 downto 0 do
-      if Pos(ComponentEditorMIPrefix, MainPopupMenu.Items[I].Name) = 1 then
+      if StartsStr(ComponentEditorMIPrefix, MainPopupMenu.Items[I].Name) then
         MainPopupMenu.Items[I].Free;
   end;
 
