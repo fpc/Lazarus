@@ -243,7 +243,7 @@ end;
 procedure TEditorMarkupOptionsFrame.chkExtPasKeywordsChange(Sender: TObject);
 begin
   GeneralPage.PasExtendedKeywordsMode := chkExtPasKeywords.Checked;
-  GeneralPage.UpdatePrevieEdits;
+  GeneralPage.UpdatePreviewEdits;
 end;
 
 procedure TEditorMarkupOptionsFrame.chkKWGroupsClick(Sender: TObject);
@@ -290,7 +290,7 @@ end;
 procedure TEditorMarkupOptionsFrame.dropPasStringKeywordsChange(Sender: TObject);
 begin
   GeneralPage.PasStringKeywordMode := TSynPasStringMode(dropPasStringKeywords.ItemIndex);
-  GeneralPage.UpdatePrevieEdits;
+  GeneralPage.UpdatePreviewEdits;
 end;
 
 function TEditorMarkupOptionsFrame.GeneralPage: TEditorGeneralOptionsFrame; inline;

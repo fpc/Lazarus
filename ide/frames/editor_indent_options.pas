@@ -148,7 +148,7 @@ type
   public
     procedure SetPreviewOption(AValue: Boolean; AnOption: TSynEditorOption); overload;
     procedure SetPreviewOption(AValue: Boolean; AnOption: TSynEditorOption2); overload;
-    procedure UpdatePrevieEdits;
+    procedure UpdatePreviewEdits;
 
     constructor Create(AOwner: TComponent); override;
     function GetTitle: String; override;
@@ -534,7 +534,7 @@ begin
     end;
 end;
 
-procedure TEditorIndentOptionsFrame.UpdatePrevieEdits;
+procedure TEditorIndentOptionsFrame.UpdatePreviewEdits;
 var
   a: Integer;
 begin
@@ -748,14 +748,14 @@ procedure TEditorIndentOptionsFrame.SetExtendedKeywordsMode(const AValue: Boolea
 begin
   if FPasExtendedKeywordsMode = AValue then exit;
   FPasExtendedKeywordsMode := AValue;
-  UpdatePrevieEdits;
+  UpdatePreviewEdits;
 end;
 
 procedure TEditorIndentOptionsFrame.SetStringKeywordMode(const AValue: TSynPasStringMode);
 begin
   if FPasStringKeywordMode = AValue then exit;
   FPasStringKeywordMode := AValue;
-  UpdatePrevieEdits;
+  UpdatePreviewEdits;
 end;
 
 function TEditorIndentOptionsFrame.GeneralPage: TEditorGeneralOptionsFrame;
