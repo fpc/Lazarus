@@ -1,9 +1,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.6\n"
 
 #: ideprojectstrconsts.dlgprojectoptions
 msgid "Project Options"
@@ -48,6 +54,14 @@ msgstr "Unit-Suchpfad des Projekts um%s\"%s\" erweitern?"
 msgid "File \"%s\" not found."
 msgstr "Datei \"%s\" nicht gefunden."
 
+#: ideprojectstrconsts.lishowtoproceed
+msgid "How to proceed?"
+msgstr "Wie soll es weitergehen?"
+
+#: ideprojectstrconsts.lismultipleimagesinfo
+msgid "An icon can contain images at several sizes, but the selected file format allows only a single image per file."
+msgstr "Ein Icon kann mehrere unterschiedlich große Bilder enthalten, aber das gewählte Dateiformat erlaubt nur ein einziges Bild pro Datei."
+
 #: ideprojectstrconsts.lispkgdefsnamespaces
 msgid "Namespaces"
 msgstr "Namensräume"
@@ -65,6 +79,18 @@ msgstr "Kann Statusdatei für das Projekt %s nicht schreiben%sFehler: %s"
 #: ideprojectstrconsts.lisprojprojectsourcedirectorymark
 msgid "Project Source Directory Mark"
 msgstr "Projekt-Quellverzeichnismarke"
+
+#: ideprojectstrconsts.lissaveallimagesizestoindividualfiles
+msgid "Save all image sizes to individual files"
+msgstr "Bilder aller Größen in Einzeldateien speichern"
+
+#: ideprojectstrconsts.lissaveicontofile
+msgid "Save icon to file"
+msgstr "Icon in Datei speichern"
+
+#: ideprojectstrconsts.lissaveonlycurrentimagesize
+msgid "Save only current image size"
+msgstr "Nur das Bild in der aktuellen Größe speichern"
 
 #: ideprojectstrconsts.lisstrangelpifile
 msgid "Strange lpi file"
@@ -93,4 +119,3 @@ msgstr "Kann die Projekt-Infodatei%s\"%s\"nicht schreiben.%sFehler: %s"
 #, object-pascal-format
 msgid "Unable to write the project session file%s\"%s\".%sError: %s"
 msgstr "Kann die Projekt-Sitzungsdatei %s\"%s\" nicht schreiben.%sFehler: %s"
-

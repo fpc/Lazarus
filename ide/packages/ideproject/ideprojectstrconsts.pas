@@ -32,6 +32,15 @@ resourcestring
     +'file %s of project %s%sError: %s';
   lisProjMangUnableToWriteStateFileForProjectError = 'Unable to write state '
     +'file for project %s%sError: %s';
+
+  // Save icon in application options
+  lisSaveIconToFile = 'Save icon to file';
+  lisMultipleImagesInfo = 'An icon can contain images at several sizes, ' +
+    'but the selected file format allows only a single image per file.';
+  lisHowToProceed = 'How to proceed?';
+  lisSaveOnlyCurrentImageSize = 'Save only current image size';
+  lisSaveAllImageSizesToIndividualFiles = 'Save all image sizes to individual files';
+
   // package defs
   lisPkgDefsNamespaces = 'Namespaces';
   lisProjProjectSourceDirectoryMark = 'Project Source Directory Mark';

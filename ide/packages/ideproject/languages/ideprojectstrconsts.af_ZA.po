@@ -48,6 +48,14 @@ msgstr ""
 msgid "File \"%s\" not found."
 msgstr ""
 
+#: ideprojectstrconsts.lishowtoproceed
+msgid "How to proceed?"
+msgstr ""
+
+#: ideprojectstrconsts.lismultipleimagesinfo
+msgid "An icon can contain images at several sizes, but the selected file format allows only a single image per file."
+msgstr ""
+
 #: ideprojectstrconsts.lispkgdefsnamespaces
 msgid "Namespaces"
 msgstr ""
@@ -64,6 +72,18 @@ msgstr ""
 
 #: ideprojectstrconsts.lisprojprojectsourcedirectorymark
 msgid "Project Source Directory Mark"
+msgstr ""
+
+#: ideprojectstrconsts.lissaveallimagesizestoindividualfiles
+msgid "Save all image sizes to individual files"
+msgstr ""
+
+#: ideprojectstrconsts.lissaveicontofile
+msgid "Save icon to file"
+msgstr ""
+
+#: ideprojectstrconsts.lissaveonlycurrentimagesize
+msgid "Save only current image size"
 msgstr ""
 
 #: ideprojectstrconsts.lisstrangelpifile

@@ -51,6 +51,14 @@ msgstr "扩展项目单元搜索路径至%s\"%s\"?"
 msgid "File \"%s\" not found."
 msgstr "文件 \"%s\" 未找到。"
 
+#: ideprojectstrconsts.lishowtoproceed
+msgid "How to proceed?"
+msgstr ""
+
+#: ideprojectstrconsts.lismultipleimagesinfo
+msgid "An icon can contain images at several sizes, but the selected file format allows only a single image per file."
+msgstr ""
+
 #: ideprojectstrconsts.lispkgdefsnamespaces
 msgid "Namespaces"
 msgstr "命名空间"
@@ -68,6 +76,18 @@ msgstr "无法为项目 %s 写入状态文件 %s 错误： %s"
 #: ideprojectstrconsts.lisprojprojectsourcedirectorymark
 msgid "Project Source Directory Mark"
 msgstr "项目源目录标记"
+
+#: ideprojectstrconsts.lissaveallimagesizestoindividualfiles
+msgid "Save all image sizes to individual files"
+msgstr ""
+
+#: ideprojectstrconsts.lissaveicontofile
+msgid "Save icon to file"
+msgstr ""
+
+#: ideprojectstrconsts.lissaveonlycurrentimagesize
+msgid "Save only current image size"
+msgstr ""
 
 #: ideprojectstrconsts.lisstrangelpifile
 msgid "Strange lpi file"

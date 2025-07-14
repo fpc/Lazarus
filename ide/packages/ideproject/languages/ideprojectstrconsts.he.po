@@ -54,6 +54,14 @@ msgstr ""
 msgid "File \"%s\" not found."
 msgstr "הקובץ s%s%s% לא נמצא"
 
+#: ideprojectstrconsts.lishowtoproceed
+msgid "How to proceed?"
+msgstr ""
+
+#: ideprojectstrconsts.lismultipleimagesinfo
+msgid "An icon can contain images at several sizes, but the selected file format allows only a single image per file."
+msgstr ""
+
 #: ideprojectstrconsts.lispkgdefsnamespaces
 msgid "Namespaces"
 msgstr ""
@@ -71,6 +79,18 @@ msgstr "לא יכול לכתוב את קובץ המצב של הפרוייקט s%
 #: ideprojectstrconsts.lisprojprojectsourcedirectorymark
 msgid "Project Source Directory Mark"
 msgstr "סימן תיקיית קוד המקור של הפרויקט"
+
+#: ideprojectstrconsts.lissaveallimagesizestoindividualfiles
+msgid "Save all image sizes to individual files"
+msgstr ""
+
+#: ideprojectstrconsts.lissaveicontofile
+msgid "Save icon to file"
+msgstr ""
+
+#: ideprojectstrconsts.lissaveonlycurrentimagesize
+msgid "Save only current image size"
+msgstr ""
 
 #: ideprojectstrconsts.lisstrangelpifile
 msgid "Strange lpi file"

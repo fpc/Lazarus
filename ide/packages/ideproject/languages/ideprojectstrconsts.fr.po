@@ -48,6 +48,14 @@ msgstr "Faut-il étendre le chemin de recherche du projet avec %s\"%s\"?"
 msgid "File \"%s\" not found."
 msgstr "Fichier \"%s\" non trouvé."
 
+#: ideprojectstrconsts.lishowtoproceed
+msgid "How to proceed?"
+msgstr ""
+
+#: ideprojectstrconsts.lismultipleimagesinfo
+msgid "An icon can contain images at several sizes, but the selected file format allows only a single image per file."
+msgstr ""
+
 #: ideprojectstrconsts.lispkgdefsnamespaces
 msgid "Namespaces"
 msgstr "Espaces de nommage"
@@ -65,6 +73,18 @@ msgstr "Impossible d'écrire l'état du fichier pour le projet %s%sErreur : %s"
 #: ideprojectstrconsts.lisprojprojectsourcedirectorymark
 msgid "Project Source Directory Mark"
 msgstr "Marque de répertoire du code source du projet"
+
+#: ideprojectstrconsts.lissaveallimagesizestoindividualfiles
+msgid "Save all image sizes to individual files"
+msgstr ""
+
+#: ideprojectstrconsts.lissaveicontofile
+msgid "Save icon to file"
+msgstr ""
+
+#: ideprojectstrconsts.lissaveonlycurrentimagesize
+msgid "Save only current image size"
+msgstr ""
 
 #: ideprojectstrconsts.lisstrangelpifile
 msgid "Strange lpi file"

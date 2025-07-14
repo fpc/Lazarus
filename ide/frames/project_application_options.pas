@@ -5,7 +5,7 @@ unit project_application_options;
 interface
 
 uses
-  Classes, SysUtils, Math,
+  Classes, SysUtils, Math, System.UITypes,
   // LazUtils
   FileUtil,
   // LCL
@@ -140,20 +140,14 @@ end;
 constructor TProjectApplicationOptionsFrame.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  {$IFDEF MSWINDOWS}
-  SavePictureDialog1.DefaultExt := '.ico';
-  SavePictureDialog1.FilterIndex := 6;
-  {$ENDIF}
   {$IFDEF DARWIN}
   SavePictureDialog1.DefaultExt := '.icns';
   SavePictureDialog1.FilterIndex := 7;
-  {$ENDIF}
-  {$IFDEF LINUX}
-  SavePictureDialog1.DefaultExt := '.png';
-  SavePictureDialog1.FilterIndex := 2;
+  {$ELSE}
+  SavePictureDialog1.DefaultExt := '.ico';
+  SavePictureDialog1.FilterIndex := 6;
   {$ENDIF}
   OpenPictureDialog1.DefaultExt := SavePictureDialog1.DefaultExt;
-  //OpenPictureDialog1.FilterIndex := SavePictureDialog1.FilterIndex;
 end;
 
 function TProjectApplicationOptionsFrame.HasIcon: Boolean;
@@ -218,17 +212,66 @@ begin
 end;
 
 procedure TProjectApplicationOptionsFrame.SaveIconButtonClick(Sender: TObject);
+var
+  ext: String;
+
+  procedure SaveAllImages;
+  var
+    savedCurrent: Integer;
+    fn: String;
+    pf: TPixelFormat;
+    w, h: Word;
+    i: Integer;
+  begin
+    savedCurrent := IconImage.Picture.Icon.Current;
+    try
+      fn := ChangeFileExt(SavePictureDialog1.FileName, '');
+      for i := 0 to IconImage.Picture.Icon.Count-1 do
+      begin
+        IconImage.Picture.Icon.Current := i;
+        IconImage.Picture.Icon.GetDescription(i, pf, h, w);  // order h-w is correct
+        IconImage.Picture.SaveToFile(Format('%s_%dx%d.%s', [fn, w, h, ext]));
+      end;
+    finally
+      IconImage.Picture.Icon.Current := savedCurrent;
+    end;
+  end;
+
+var
+  res: TModalResult;
+  selIdx: Integer;
+  info: String;
+  options: array[0..1] of string;
 begin
   if not HasIcon then
     exit;
 
   if SavePictureDialog1.Execute then
+  begin
+    ext := ExtractFileExt(SavePictureDialog1.FileName);
+    Delete(ext, 1, 1);
+    // Save as icon
     try
-      IconImage.Picture.SaveToFile(SavePictureDialog1.FileName);
+      if SameText(ext, 'ico') or SameText(ext, 'icns') or SameText(ext, 'cur') then
+        IconImage.Picture.SaveToFile(SavePictureDialog1.FileName)
+      else
+      begin
+        // Save as another format allowing only a single image per file
+        info := lisMultipleImagesInfo + LineEnding + lisHowToProceed;
+        options[0] := lisSaveOnlyCurrentImageSize;
+        options[1] := lisSaveAllImageSizesToIndividualFiles;
+        res := TaskDlg(rsMtInformation, lisSaveIconToFile, info, tdiQuestion, [mbOK, mbCancel], options, selIdx);
+        if res = mrOK then
+          case selIdx of
+            0: IconImage.Picture.SaveToFile(SavePictureDialog1.FileName);
+            1: SaveAllImages;
+          end;
+      end;
     except
       on E: Exception do
         IDEMessageDialog(rsMtError, E.Message, mtError, [mbCancel]);
     end;
+  end;
 end;
 
 procedure TProjectApplicationOptionsFrame.UseAppBundleCheckBoxChange(

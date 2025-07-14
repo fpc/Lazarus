@@ -688,8 +688,10 @@ begin
 
   if (Graphic is TCustomIcon) then
   begin
-    // Save Icon as .ico or .icns
-    if SameText(FileExt, TIcon.GetFileExtensions) or SameText(FileExt, TIcnsIcon.GetFileExtensions) then
+    // Save Icon as .ico or .icns or .cur
+    if SameText(FileExt, TIcon.GetFileExtensions) or SameText(FileExt, TIcnsIcon.GetFileExtensions) or
+       SameText(FileExt, TCursorImage.GetFileExtensions)
+    then
       TCustomIcon(Graphic).SaveToStream(Stream)
     else
     // Save current image of Icon as format given by FileExt

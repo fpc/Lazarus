@@ -48,6 +48,14 @@ msgstr ""
 msgid "File \"%s\" not found."
 msgstr "Nie znaleziono pliku \"%s\"."
 
+#: ideprojectstrconsts.lishowtoproceed
+msgid "How to proceed?"
+msgstr ""
+
+#: ideprojectstrconsts.lismultipleimagesinfo
+msgid "An icon can contain images at several sizes, but the selected file format allows only a single image per file."
+msgstr ""
+
 #: ideprojectstrconsts.lispkgdefsnamespaces
 msgid "Namespaces"
 msgstr "Przestrzenie nazw"
@@ -66,6 +74,18 @@ msgstr "Nie można zapisać pliku statusu \"%s\"%spakietu %s.%sBłąd: %s"
 #, fuzzy
 msgid "Project Source Directory Mark"
 msgstr "Znacznik katalogu źródeł pakietu"
+
+#: ideprojectstrconsts.lissaveallimagesizestoindividualfiles
+msgid "Save all image sizes to individual files"
+msgstr ""
+
+#: ideprojectstrconsts.lissaveicontofile
+msgid "Save icon to file"
+msgstr ""
+
+#: ideprojectstrconsts.lissaveonlycurrentimagesize
+msgid "Save only current image size"
+msgstr ""
 
 #: ideprojectstrconsts.lisstrangelpifile
 msgid "Strange lpi file"

@@ -48,6 +48,14 @@ msgstr "Laajenna projektin käännösyksikköjen hakupolku tällä:%s\"%s\"?"
 msgid "File \"%s\" not found."
 msgstr "Tiedostoa \"%s\" ei löytynyt."
 
+#: ideprojectstrconsts.lishowtoproceed
+msgid "How to proceed?"
+msgstr ""
+
+#: ideprojectstrconsts.lismultipleimagesinfo
+msgid "An icon can contain images at several sizes, but the selected file format allows only a single image per file."
+msgstr ""
+
 #: ideprojectstrconsts.lispkgdefsnamespaces
 msgid "Namespaces"
 msgstr "Nimiavaruudet"
@@ -65,6 +73,18 @@ msgstr "Tilatiedon kirjoittaminen projektilta %s epäonnistui%sVirhe: %s"
 #: ideprojectstrconsts.lisprojprojectsourcedirectorymark
 msgid "Project Source Directory Mark"
 msgstr "Projektin lähdehakemiston merkki"
+
+#: ideprojectstrconsts.lissaveallimagesizestoindividualfiles
+msgid "Save all image sizes to individual files"
+msgstr ""
+
+#: ideprojectstrconsts.lissaveicontofile
+msgid "Save icon to file"
+msgstr ""
+
+#: ideprojectstrconsts.lissaveonlycurrentimagesize
+msgid "Save only current image size"
+msgstr ""
 
 #: ideprojectstrconsts.lisstrangelpifile
 msgid "Strange lpi file"
