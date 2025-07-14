@@ -27,7 +27,7 @@ unit FrmAbout;
 interface
 
 uses
-  SysUtils, Forms, StdCtrls, ButtonPanel, LazFileUtils;
+  SysUtils, Forms, StdCtrls, ButtonPanel, LCLIntf, LazFileUtils;
 
 const
   LicenseFile = 'COPYING.GPL.txt';
@@ -43,6 +43,7 @@ type
     LCopyRight2: TLabel;
     MCopyRight: TMemo;
     procedure FormCreate(Sender: TObject);
+    procedure HelpButtonClick(Sender: TObject);
   private
     procedure LoadLicense;
   public
@@ -66,6 +67,11 @@ begin
   LCopyRight1.Caption:=sCopyRight1;
   LCopyRight2.Caption:=sCopyRight2;
   LoadLicense;
+end;
+
+procedure TAboutForm.HelpButtonClick(Sender: TObject);
+begin
+  OpenURL('https://wiki.freepascal.org/Lazarus_Documentation_Editor');
 end;
 
 procedure TAboutForm.LoadLicense;
