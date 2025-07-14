@@ -5013,6 +5013,7 @@ resourcestring
   lisHOFPCDocHTMLPath = 'FPC Doc HTML Path';
   lisHlpOptsProperties = 'Properties:';
   lisHlpOptsDatabases = 'Databases';
+  lisOpenContextHelpInBrowser = 'Open context help in the browser';
 
   // enclose selection dialog
   lisChooseStructureToEncloseSelection = 'Choose structure to enclose selection';
