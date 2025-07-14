@@ -1452,6 +1452,7 @@ function LoadStringFromFile(const aFileName: String): String;
 var
   fs: TFileStream;
 begin
+  Result:='';
   fs:=TFileStream.Create(aFileName, fmOpenRead);
   try
     SetLength(Result, fs.Size);

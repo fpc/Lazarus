@@ -2900,6 +2900,7 @@ var
   c: Integer;
   t: Char;
 begin
+  Result:='';
   SetLength(Result, Length(AText));
   if Result = '' then
     exit;
@@ -2925,6 +2926,7 @@ var
   c: Integer;
   t: Char;
 begin
+  Result:='';
   SetLength(Result, Length(AText));
   if Result = '' then
     exit;
