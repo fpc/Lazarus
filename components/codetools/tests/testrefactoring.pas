@@ -96,6 +96,8 @@ type
     procedure TestRenameAlsoLFM_Event;
     procedure TestRenameAlsoLFM_SkipBinaryData;
     procedure TestRenameAlsoLFM_Property; // ToDo
+    // todo: typeless property
+    // todo: dotted property
   end;
 
 implementation

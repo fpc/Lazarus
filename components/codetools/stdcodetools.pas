@@ -3017,23 +3017,20 @@ var
       Params.ContextNode:=ClassContext.Node;
       Params.SetIdentifier(ClassContext.Tool,PChar(Pointer(IdentName)),nil);
       try
-        {DebugLn('FindLFMIdentifier A ',
+        DebugLn('FindLFMIdentifier A ',
           ' Ident=',
           '"'+GetIdentifier(Params.Identifier)+'"',
           ' Context="'+ClassContext.Node.DescAsString,'" "',StringToPascalConst(copy(ClassContext.Tool.Src,ClassContext.Node.StartPos,20))+'"',
           ' File="'+ExtractFilename(ClassContext.Tool.MainFilename)+'"',
           ' Flags=['+dbgs(Params.Flags)+']'
-          ); }
+          );
         if ClassContext.Tool.FindIdentifierInContext(Params) then begin
-          debugln(['AAA2 FindLFMIdentifier ']);
           IdentContext:=CleanFindContext;
           repeat
             CurContext:=CreateFindContext(Params);
-            debugln(['AAA3 FindLFMIdentifier ',FindContextToString(CurContext)]);
             if (not IsPublished)
             and (CurContext.Node.HasParentOfType(ctnClassPublished)) then
               IsPublished:=true;
-            debugln(['AAA4 FindLFMIdentifier ',IsPublished]);
 
             if (IdentContext.Node=nil) then begin
               if (LFMNode.TheType<>lfmnProperty)
@@ -3042,7 +3039,6 @@ var
               then
                 IdentContext:=CurContext;
             end;
-            debugln(['AAA5 FindLFMIdentifier ',FindContextToString(IdentContext)]);
 
             if (IdentContext.Node<>nil) and IsPublished then break;
 
@@ -3073,6 +3069,7 @@ var
       Params.Free;
     end;
 
+    //DebugLn(['FindLFMIdentifier '+LFMNode.GetPath+' IdentContext=',FindContextToString(IdentContext),' IdentName=',IdentName,' IsPublished=',IsPublished]);
     IsMissingInCode := False;
     if (IdentContext.Node<>nil) and IsPublished then begin
       Result:=true;
@@ -3406,57 +3403,37 @@ var
                                LFMProperty.NameParts.NamePositions[i],
                                CurName,SearchContext,true,true,
                                CurPropertyContext)
-      then
+      then begin
+        debugln(['CheckLFMProperty FindLFMIdentifier failed: CurName="',CurName,'" Context=',FindContextToString(SearchContext)]);
         break;
+      end;
       if CurPropertyContext.Node=nil then begin
         // this is an extra entry, created via DefineProperties.
         // There is no generic way to test such things
+        debugln(['CheckLFMProperty FindLFMIdentifier failed (maybe DefineProperties): CurName="',CurName,'" Context=',FindContextToString(SearchContext),' CurPropertyContext.Node=nil']);
         break;
       end;
 
       PropDeclNode:=CurPropertyContext.Node;
-      PropertyContext:= CurPropertyContext; //out
-
-      if not SameText(Identifier,CurName) then
+      if PropDeclNode.Desc<>ctnProperty then begin
+        debugln(['CheckLFMProperty FindLFMIdentifier failed: CurName="',CurName,'" expected property, but found ',PropDeclNode.DescAsString,' at ',FindContextToString(CurPropertyContext)]);
         break;
-
-      //if PropDeclNode.Desc=ctnProperty then begin
-      //  debugln([PropertyContext.Tool.GetSourceName,': ',
-      //    PropertyContext.Tool.ExtractProperty(PropDeclNode,[])]);
-      //end;
-
-      if PropDeclNode<>DeclNode then begin
-        // the comment below to be removed, for explanation what was observed:
-        // PropDeclNode found in Controls but DeclNode was in StdCtrls
-        // if property from DeclNode is a start to find declaration then this points
-        // at declaration at StdCtrls
-
-        SearchContext.Node:=DeclNode;
-        AnUnitName:=DeclTool.Scanner.SourceName;
-        if AnUnitName = '' then
-        ;
-        SearchContext.Tool:=FindCodeToolForUsedUnit(AnUnitName,'',true);
-        if SearchContext.Tool = nil then
-          break;
-        SearchContext.Tool.MoveCursorToPropName(DeclNode);
-        if not SearchContext.Tool.CleanPosToCaret(SearchContext.Tool.CurPos.StartPos,
-          CodeXYPosition) then
-          break;
-
-        if SearchContext.Tool.FindDeclaration(CodeXYPosition,[],
-          NewTool, NewNode, NewCodeXYPosition, TopLine) then begin
-            if NewNode = PropDeclNode then
-              // debugln('GOT IT');
-              // new declaration node  = PropDeclNode,
-              // so proper declaration found
-        end else
-          break;
       end;
-      //  Pascal declaration found
-      Caret:=LFMTree.PositionToCaret(LFMProperty.NameParts.NamePositions[i]);
-      ARef.X:=Caret.X;
-      ARef.Y:=Caret.Y;
-      AddReference(Aref);
+
+      if i=LFMProperty.NameParts.Count-1 then
+        PropertyContext:=CurPropertyContext;
+
+      //debugln(['CheckLFMProperty ',PropDeclNode=DeclNode,' Cur=',FindContextToString(CurPropertyContext),' Decl=',DeclTool.CleanPosToStr(DeclNode.StartPos,true)]);
+      if PropDeclNode=DeclNode then begin
+        // todo: checking typeless published properties
+        if DeclTool=nil then ;
+
+        //  Pascal declaration found
+        Caret:=LFMTree.PositionToCaret(LFMProperty.NameParts.NamePositions[i]);
+        ARef.X:=Caret.X;
+        ARef.Y:=Caret.Y;
+        AddReference(Aref);
+      end;
 
       SearchContext:=CurPropertyContext;
     end;
@@ -3499,10 +3476,10 @@ var
           if (not ContextIsDefault) and NodeContainsCandidate(CurLFMNode) then begin
             CheckLFMProperty(TLFMPropertyNode(CurLFMNode),ClassContext,PropertyContext);
 
-            if (CurLFMNode.FirstChild<>nil) and
-              (CurLFMNode.FirstChild.TheType in [lfmnValue,lfmnEnum]) then begin
-              Ident:=
-                ExtractContent(LFMBuffer.Source, CurLFMNode.FirstChild.StartPos);
+            if (CurLFMNode.FirstChild<>nil)
+                and (CurLFMNode.FirstChild.TheType in [lfmnValue,lfmnEnum]) then
+            begin
+              Ident:=ExtractContent(LFMBuffer.Source, CurLFMNode.FirstChild.StartPos);
 
               if (Ident<>'') and (IsIdentStartChar[Ident[1]]) then begin
                 if CompareIdentifiers(Pchar(Ident),PChar(Identifier))=0 then begin
@@ -3681,6 +3658,7 @@ var
 begin
   Result:=false;
   LFMTree:=nil; // nil the out param
+  if Flags=[] then ;
 
   FindCandidates;
   if Length(IdentifierPositions)=0 then exit(true);
