@@ -145,7 +145,7 @@ type
     procedure CancelButtonClick(Sender :TObject);
     procedure MultiselectCheckBoxClick(Sender :TObject);
   private
-    FFirstDraw: boolean;
+    FFirstUpdate: boolean;
     FIdleConnected: boolean;
     FItemType: TIDEProjectItem;
     FSortAlphabetically: boolean;
@@ -381,7 +381,7 @@ begin
   mniMultiselect.Enabled := EnableMultiSelect;
   mniMultiselect.Checked := EnableMultiSelect;
   ListBox.MultiSelect := mniMultiselect.Checked;
-  FFirstDraw := True;
+  FFirstUpdate := True;
   ShowEntries;
   FilterEdit.SimpleSelection := true;
 
@@ -396,8 +396,11 @@ begin
       if Dir<>'' then
         fSearchDirectories[Dir]:='';
     end;
-    IdleConnected:=fSearchDirectories.Count>0;
-  end;
+  end
+  else
+    Assert(fSearchDirectories.Count=0,
+      'TViewUnitDialog.Init: fSearchDirectories.Count='+IntToStr(fSearchDirectories.Count));
+  IdleConnected:=True;
 end;
 
 procedure TViewUnitDialog.SortAlphabeticallySpeedButtonClick(Sender: TObject);
@@ -422,14 +425,6 @@ begin
     UEntry := TViewUnitsEntry(Items.Objects[Index]);
     if vufOpen in UEntry.Flags then        // already open indicator
       Canvas.TextRect(ARect, ARect.Right - Scale96ToFont(8), aTop, '•'); // • ● 🟢
-    // Update the initial Selected state here.
-    if FFirstDraw then begin
-      if vufSelected in UEntry.Flags then
-        ListBox.Selected[Index] := True;
-      // Assume the items are drawn in order. After the last one reset FFirstDraw.
-      if Index = ListBox.Items.Count-1 then
-        FFirstDraw := False;;
-    end;
   end;
 end;
 
@@ -489,28 +484,41 @@ var
   AVLNode: TAVLTreeNode;
   StartTime: int64;
   aFilename: String;
+  UEntry: TViewUnitsEntry;
+  i: Integer;
 begin
-  StartTime:=int64(GetTickCount64);
-  while Abs(StartTime-int64(GetTickCount64))<100 do begin
-    AVLNode:=fSearchFiles.Tree.FindLowest;
-    if AVLNode<>nil then begin
-      aFilename:=fSearchFiles.GetNodeData(AVLNode)^.Name;
-      fSearchFiles.Remove(aFilename);
-      CheckFile(aFilename);
-    end else begin
-      AVLNode:=fSearchDirectories.Tree.FindLowest;
+  if fSearchDirectories.Count>0 then begin
+    StartTime:=int64(GetTickCount64);
+    while Abs(StartTime-int64(GetTickCount64))<100 do begin
+      AVLNode:=fSearchFiles.Tree.FindLowest;
       if AVLNode<>nil then begin
-        aFilename:=fSearchDirectories.GetNodeData(AVLNode)^.Name;
-        fSearchDirectories.Remove(aFilename);
-        CheckDirectory(aFilename);
+        aFilename:=fSearchFiles.GetNodeData(AVLNode)^.Name;
+        fSearchFiles.Remove(aFilename);
+        CheckFile(aFilename);
       end else begin
-        // update entries from fFoundFiles
-        UpdateEntries;
-        IdleConnected:=false;
-        exit;
+        AVLNode:=fSearchDirectories.Tree.FindLowest;
+        if AVLNode<>nil then begin
+          aFilename:=fSearchDirectories.GetNodeData(AVLNode)^.Name;
+          fSearchDirectories.Remove(aFilename);
+          CheckDirectory(aFilename);
+        end else begin
+          // update entries from fFoundFiles
+          UpdateEntries;
+          Break;
+        end;
       end;
     end;
   end;
+  // Update the initial Selected state here.
+  if FFirstUpdate then begin
+    for i := 0 to ListBox.Items.Count-1 do begin
+      UEntry := TViewUnitsEntry(ListBox.Items.Objects[i]);
+      if vufSelected in UEntry.Flags then
+        ListBox.Selected[i] := True;
+    end;
+    FFirstUpdate := False;
+  end;
+  IdleConnected:=false;
 end;
 
 procedure TViewUnitDialog.OKButtonClick(Sender: TObject);
