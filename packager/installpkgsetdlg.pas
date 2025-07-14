@@ -878,11 +878,37 @@ procedure TInstallPkgSetDialog.UpdateButtonStates;
     result := assigned(FilteredBranch) and (FilteredBranch.Items.Count <> Cnt);
   end;
   //
+  function CanUninstall: boolean;
+  var
+    lPackageID: TLazPackageID;
+    lNode: TTreeNode;
+    i: integer;
+  begin
+    if InstallTreeView.Items.SelectionCount <= 0 then
+      exit(false);
+    lPackageID := TLazPackageID.Create;
+    try
+      for i := 0 to InstallTreeView.Items.TopLvlCount - 1 do
+      begin
+        lNode := InstallTreeView.Items.TopLvlItems[i];
+        if not lNode.MultiSelected then
+          continue;
+        if not lPackageID.StringToID(lNode.Text) then
+          continue;
+        if IsBasePkg(lPackageID) then
+          continue;
+        exit(true);
+      end;
+    finally
+      lPackageID.Free;
+    end;
+    result := false;
+  end;
+  //
 begin
   SaveAndRebuildButton.Enabled := ChangesFound;
   SaveAndExitButton   .Enabled := SaveAndRebuildButton.Enabled;
-  UninstallButton     .Enabled := (InstallTreeView.Selected <> nil) and
-                                  not IsBasePkg(InstallTreeView.Selected.Text);
+  UninstallButton     .Enabled := CanUninstall;
   AddToInstallButton  .Enabled := AvailableTreeView.Selected <> nil;
 end;
 
