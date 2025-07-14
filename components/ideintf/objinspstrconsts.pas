@@ -47,7 +47,6 @@ resourcestring
   oisUndo = 'Undo';
   oisFinddeclaration = 'Jump to declaration';
   oisJumpToDeclarationOf = 'Jump to declaration of %s';
-  oisAnchorEditor = 'Anchor Editor';
   oisCutComponents = 'Cu&t';
   oisCopyComponents = '&Copy';
   oisPasteComponents = '&Paste';

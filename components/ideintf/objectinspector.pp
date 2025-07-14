@@ -734,7 +734,6 @@ type
     function GridPropertyHint(Sender: TObject; PointedRow: TOIPropertyGridRow;
       out AHint: string): boolean;
     procedure PropEditPopupClick(Sender: TObject);
-    procedure AnchorEditorItemClick(Sender: TObject);
     procedure AddToFavoritesPopupmenuItemClick(Sender: TObject);
     procedure RemoveFromFavoritesPopupmenuItemClick(Sender: TObject);
     procedure ViewRestrictionsPopupmenuItemClick(Sender: TObject);
@@ -5222,18 +5221,6 @@ begin
     OnFindDeclarationOfProperty(Self);
 end;
 
-procedure TObjectInspectorDlg.AnchorEditorItemClick(Sender: TObject);
-var
-  idx: integer;
-begin
-  for idx := 0 to PropertyGrid.RowCount-1 do
-    if PropertyGrid.Rows[idx].Name = 'Anchors' then
-    begin
-      PropertyGrid.Rows[idx].Editor.Edit;
-      Break;
-    end;
-end;
-
 procedure TObjectInspectorDlg.CutPopupmenuItemClick(Sender: TObject);
 var
   ADesigner: TIDesigner;
@@ -5811,8 +5798,8 @@ end;
 
 procedure TObjectInspectorDlg.MainPopupMenuPopup(Sender: TObject);
 const
-  PropertyEditorMIPrefix = 'PropEdVerb';
-  ComponentEditorMIPrefix = 'CompEdVerb';
+  PropertyEditorMIPrefix = 'PropertyEditorVerbMenuItem';
+  ComponentEditorMIPrefix = 'ComponentEditorVerbMenuItem';
 var
   ComponentEditorVerbSeparator: TMenuItem;
   PropertyEditorVerbSeparator: TMenuItem;
@@ -5823,7 +5810,7 @@ var
   begin
     PropertyEditorVerbSeparator := nil;
     for I := MainPopupMenu.Items.Count - 1 downto 0 do
-      if StartsStr(PropertyEditorMIPrefix, MainPopupMenu.Items[I].Name) then
+      if Pos(PropertyEditorMIPrefix, MainPopupMenu.Items[I].Name) = 1 then
         MainPopupMenu.Items[I].Free;
   end;
 
@@ -5856,7 +5843,7 @@ var
   begin
     ComponentEditorVerbSeparator:=nil;
     for I := MainPopupMenu.Items.Count - 1 downto 0 do
-      if StartsStr(ComponentEditorMIPrefix, MainPopupMenu.Items[I].Name) then
+      if Pos(ComponentEditorMIPrefix, MainPopupMenu.Items[I].Name) = 1 then
         MainPopupMenu.Items[I].Free;
   end;
 
@@ -5924,15 +5911,9 @@ var
       MainPopupMenu.Items.Insert(ComponentEditorVerbSeparator.MenuIndex + 1, ZItem)
     else
       MainPopupMenu.Items.Insert(0, ZItem);
-    // Add MenuItem for AnchorEditor at the same go.
-    Item := NewItem(oisAnchorEditor, 0, False, True, @AnchorEditorItemClick, 0,
-                    ComponentEditorMIPrefix+'AnchorEditor');
-    Item.ImageIndex := IDEImages.LoadImage('menu_view_anchor_editor');
-    MainPopupMenu.Items.Insert(ZItem.MenuIndex + 1, Item);
-    // Then a separator
     Item := NewLine;
     Item.Name := ComponentEditorMIPrefix+'ZOrderSeparator';
-    MainPopupMenu.Items.Insert(ZItem.MenuIndex + 2, Item);
+    MainPopupMenu.Items.Insert(ZItem.MenuIndex + 1, Item);
   end;
 
 var
