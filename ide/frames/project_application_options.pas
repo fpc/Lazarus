@@ -78,7 +78,9 @@ type
     procedure EnableManifest(aEnable: Boolean);
     procedure SetIconFromStream(Value: TStream);
     function GetIconAsStream: TStream;
+    function HasIcon: Boolean;
   public
+    constructor Create(AOwner: TComponent); override;
     function GetTitle: string; override;
     procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
@@ -135,13 +137,35 @@ end;
 
 { TProjectApplicationOptionsFrame }
 
+constructor TProjectApplicationOptionsFrame.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  {$IFDEF MSWINDOWS}
+  SavePictureDialog1.DefaultExt := '.ico';
+  SavePictureDialog1.FilterIndex := 6;
+  {$ENDIF}
+  {$IFDEF DARWIN}
+  SavePictureDialog1.DefaultExt := '.icns';
+  SavePictureDialog1.FilterIndex := 7;
+  {$ENDIF}
+  {$IFDEF LINUX}
+  SavePictureDialog1.DefaultExt := '.png';
+  SavePictureDialog1.FilterIndex := 2;
+  {$ENDIF}
+  OpenPictureDialog1.DefaultExt := SavePictureDialog1.DefaultExt;
+  //OpenPictureDialog1.FilterIndex := SavePictureDialog1.FilterIndex;
+end;
+
+function TProjectApplicationOptionsFrame.HasIcon: Boolean;
+begin
+  Result := (IconImage.Picture.Graphic <> nil) and
+    (not IconImage.Picture.Graphic.Empty);
+end;
+
 procedure TProjectApplicationOptionsFrame.IconImagePictureChanged(Sender: TObject);
 var
-  HasIcon: boolean;
   cx, cy: integer;
 begin
-  HasIcon := (IconImage.Picture.Graphic <> nil) and
-    (not IconImage.Picture.Graphic.Empty);
   IconTrack.Enabled := HasIcon;
   if HasIcon then
   begin
@@ -195,7 +219,7 @@ end;
 
 procedure TProjectApplicationOptionsFrame.SaveIconButtonClick(Sender: TObject);
 begin
-  if (IconImage.Picture.Graphic = nil) or IconImage.Picture.Graphic.Empty then
+  if not HasIcon then
     exit;
 
   if SavePictureDialog1.Execute then
@@ -243,10 +267,12 @@ begin
     end;
 end;
 
+// NOTE: This creates an instance of TMemoryStream which must be destroyed by
+// the calling routine.
 function TProjectApplicationOptionsFrame.GetIconAsStream: TStream;
 begin
   Result := nil;
-  if not ((IconImage.Picture.Graphic = nil) or IconImage.Picture.Graphic.Empty) then
+  if HasIcon then
   begin
     Result := TMemoryStream.Create;
     IconImage.Picture.Icon.SaveToStream(Result);
