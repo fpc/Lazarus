@@ -15050,6 +15050,10 @@ msgstr "Buka"
 msgid "Open as XML file"
 msgstr "Buka sebagai file XML"
 
+#: lazarusidestrconsts.lisopencontexthelpinbrowser
+msgid "Open context help in the browser"
+msgstr ""
+
 #: lazarusidestrconsts.lisopendesigneronopenunit
 msgid "Open designer on open unit"
 msgstr ""

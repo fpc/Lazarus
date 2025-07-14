@@ -14861,6 +14861,10 @@ msgstr "開く"
 msgid "Open as XML file"
 msgstr "XMLファイルとして開く"
 
+#: lazarusidestrconsts.lisopencontexthelpinbrowser
+msgid "Open context help in the browser"
+msgstr ""
+
 #: lazarusidestrconsts.lisopendesigneronopenunit
 msgid "Open designer on open unit"
 msgstr "開かれたユニットにデザイナを開く"

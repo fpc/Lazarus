@@ -14548,6 +14548,10 @@ msgstr "Aç"
 msgid "Open as XML file"
 msgstr "XML dosyası olarak aç"
 
+#: lazarusidestrconsts.lisopencontexthelpinbrowser
+msgid "Open context help in the browser"
+msgstr ""
+
 #: lazarusidestrconsts.lisopendesigneronopenunit
 msgid "Open designer on open unit"
 msgstr "Açık ünitede tasarımcıyı aç"

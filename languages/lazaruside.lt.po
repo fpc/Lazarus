@@ -14898,6 +14898,10 @@ msgstr "Atverti"
 msgid "Open as XML file"
 msgstr "Įkelti kaip XML failą"
 
+#: lazarusidestrconsts.lisopencontexthelpinbrowser
+msgid "Open context help in the browser"
+msgstr ""
+
 #: lazarusidestrconsts.lisopendesigneronopenunit
 msgid "Open designer on open unit"
 msgstr "Atveriant modulį, atverti konstruktorių"

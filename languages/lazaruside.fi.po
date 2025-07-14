@@ -14599,6 +14599,10 @@ msgstr "Avaa"
 msgid "Open as XML file"
 msgstr "Avaa XML-tiedostona"
 
+#: lazarusidestrconsts.lisopencontexthelpinbrowser
+msgid "Open context help in the browser"
+msgstr ""
+
 #: lazarusidestrconsts.lisopendesigneronopenunit
 msgid "Open designer on open unit"
 msgstr "Avaa lomake-editori tiedostoa avattaessa"

@@ -15312,6 +15312,10 @@ msgstr "פתח"
 msgid "Open as XML file"
 msgstr "פתח כקובץ XML"
 
+#: lazarusidestrconsts.lisopencontexthelpinbrowser
+msgid "Open context help in the browser"
+msgstr ""
+
 #: lazarusidestrconsts.lisopendesigneronopenunit
 msgid "Open designer on open unit"
 msgstr "פתח מעצב או פתח יחידה"

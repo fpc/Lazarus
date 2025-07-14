@@ -14630,6 +14630,10 @@ msgstr "Otvoriť"
 msgid "Open as XML file"
 msgstr "Otvoriť ako súbor XML"
 
+#: lazarusidestrconsts.lisopencontexthelpinbrowser
+msgid "Open context help in the browser"
+msgstr ""
+
 #: lazarusidestrconsts.lisopendesigneronopenunit
 msgid "Open designer on open unit"
 msgstr ""
