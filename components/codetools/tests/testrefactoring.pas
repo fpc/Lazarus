@@ -101,9 +101,10 @@ type
     procedure TestRenameAlsoLFM_EnumProperty;
     procedure TestRenameAlsoLFM_SetProperty;
     procedure TestRenameAlsoLFM_AnonymousSetProperty;
-    // todo: anonymous set
-    // todo: component property
+    procedure TestRenameAlsoLFM_ComponentProperty;
     // todo: component property of another root component
+    // todo: rename class of a component
+    // todo: rename class of root
     // todo: list property
     // todo: collection property
   end;
@@ -2526,6 +2527,54 @@ begin
       '  end',
       'end']);
 
+  finally
+    Test1LFM.IsDeleted:=true;
+  end;
+end;
+
+procedure TTestRefactoring.TestRenameAlsoLFM_ComponentProperty;
+var
+  Test1LFM: TCodeBuffer;
+begin
+  Test1LFM:=CodeToolBoss.CreateFile(ChangeFileExt(Code.Filename,'.lfm'));
+  try
+    Test1LFM.Source:=LinesToStr([
+      'object Form1: TForm1',
+      '  object Button1: TButton',
+      '    Link = Edit1',
+      '  end',
+      '  object Edit1: TEdit',
+      '  end',
+      'end']);
+
+    Add(LinesToStr([
+      'unit Test1;',
+      '{$mode objfpc}{$H+}',
+      'interface',
+      'uses Classes;',
+      'type',
+      '  TButton = class(TComponent)',
+      '  published',
+      '    property Link: TComponent;',
+      '  end;',
+      '  TEdit = class(TComponent)',
+      '  end;',
+      '  TForm1 = class(TComponent)',
+      '    Button1: TButton;',
+      '    Edit1{#Rename}: TEdit;',
+      '  end;',
+      'implementation',
+      'end.']));
+
+    RenameReferences('Input1',[frfIncludingLFM]);
+    CheckDiff(Test1LFM,[
+      'object Form1: TForm1',
+      '  object Button1: TButton',
+      '    Link = Input1',
+      '  end',
+      '  object Input1: TEdit',
+      '  end',
+      'end']);
   finally
     Test1LFM.IsDeleted:=true;
   end;

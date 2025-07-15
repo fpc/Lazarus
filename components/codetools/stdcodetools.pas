@@ -2596,8 +2596,7 @@ var
     end;
   end;
 
-  procedure CheckLFMChildObject(LFMObject: TLFMObjectNode;
-    const ParentContext: TFindContext; ContextIsDefault: boolean);
+  procedure CheckLFMChildObject(LFMObject: TLFMObjectNode; const ParentContext: TFindContext);
   var
     LFMObjectName: String;
     ChildContext: TFindContext;
@@ -2615,8 +2614,7 @@ var
       exit;
     end;
 
-    ChildContext:=CleanFindContext;
-    IdentifierFound:=(not ContextIsDefault) and
+    IdentifierFound:=
       FindLFMIdentifier(LFMObject,LFMObject.NamePosition,LFMObjectName,RootContext,
           false,ObjectsMustExist,ChildContext);
 
@@ -2636,7 +2634,6 @@ var
     end else begin
       // try the object type
       ClassContext:=FindClassContext(LFMObject);
-      if ClassContext.Node=nil then exit;
     end;
     // check child LFM nodes
     if ClassContext.Node<>nil then
@@ -2728,6 +2725,8 @@ var
 
   function CheckLFMObjectValues(LFMObject: TLFMObjectNode;
     const ClassContext: TFindContext; ContextIsDefault: boolean): boolean;
+  // ContextIsDefault = true means ClassContext is the default, so dont check properties
+  // child objects can be checked
   var
     CurLFMNode: TLFMTreeNode;
   begin
@@ -2737,7 +2736,7 @@ var
       //DebugLn('TStandardCodeTool.CheckLFM.CheckLFMObjectValues B ',CurLFMNode.ClassName);
       case CurLFMNode.TheType of
         lfmnObject:
-          CheckLFMChildObject(TLFMObjectNode(CurLFMNode),ClassContext,ContextIsDefault);
+          CheckLFMChildObject(TLFMObjectNode(CurLFMNode),ClassContext);
         lfmnProperty:
           if not ContextIsDefault then
             CheckLFMProperty(TLFMPropertyNode(CurLFMNode),ClassContext);
@@ -2842,7 +2841,6 @@ function TStandardCodeTool.GatherReferencesInLFM(LFMBuffer: TCodeBuffer; out LFM
   ObjectsMustExist: boolean): boolean;
 
 var
-  ErrorCount: integer = 0;
   RootContext: TFindContext;
   ARef: TCodeXYPosition;
   IdentifierPositions: array of integer; // all start positions of Identifier in the LFM
@@ -3016,11 +3014,11 @@ var
   function FindLFMIdentifier(LFMNode: TLFMTreeNode;
     DefaultErrorPosition: integer;
     const IdentName: string; const ClassContext: TFindContext;
-    SearchInDefinePropertiesToo, ErrorOnNotFound: boolean;
+    SearchInDefinePropertiesToo: boolean;
     out IdentContext: TFindContext): boolean;
   var
     Params: TFindDeclarationParams;
-    IsPublished, IsMissingInCode: Boolean;
+    IsPublished: Boolean;
     CurContext: TFindContext;
   begin
     Result:=false;
@@ -3029,7 +3027,6 @@ var
     if (ClassContext.Node=nil)
     or (not (ClassContext.Node.Desc in AllClasses)) then begin
       DebugLn('TStandardCodeTool.CheckLFM.FindLFMIdentifier Internal error');
-      inc(ErrorCount);
       exit;
     end;
     Params:=TFindDeclarationParams.Create;
@@ -3079,9 +3076,7 @@ var
             Params.SetIdentifier(ClassContext.Tool,PChar(Pointer(IdentName)),nil);
             if not CurContext.Tool.FindIdentifierInContext(Params) then
             begin
-              {$IFDEF VerboseCheckLFM}
-              DebugLn(['FindLFMIdentifier ERROR ancestor of '+LFMNode.GetPath+' not found: ',FindContextToString(IdentContext),' IdentName=',IdentName]);
-              {$ENDIF}
+              DebugLn(['Error: FindLFMIdentifier [20250715121848] ancestor of '+LFMNode.GetPath+' not found: ',FindContextToString(IdentContext),' IdentName=',IdentName]);
               break;
             end;
           until Params.NewNode=nil;
@@ -3095,7 +3090,6 @@ var
     end;
 
     //DebugLn(['FindLFMIdentifier '+LFMNode.GetPath+' IdentContext=',FindContextToString(IdentContext),' IdentName=',IdentName,' IsPublished=',IsPublished]);
-    IsMissingInCode := False;
     if (IdentContext.Node<>nil) and IsPublished then begin
       Result:=true;
     end else begin
@@ -3108,19 +3102,6 @@ var
           {$ENDIF}
           Result:=true;
         end;
-      end
-      else
-        IsMissingInCode := True;
-    end;
-    if (not Result) and ErrorOnNotFound then begin
-      if (IdentContext.Node<>nil) and (not IsPublished) then begin
-        inc(ErrorCount);
-      end
-      else if IsMissingInCode then begin
-        inc(ErrorCount);
-      end
-      else begin
-        inc(ErrorCount);
       end;
     end;
   end;
@@ -3138,15 +3119,18 @@ var
     if (VarPropContext.Node.Desc=ctnVarDefinition) then begin
       TypeNode:=VarPropContext.Tool.FindTypeNodeOfDefinition(VarPropContext.Node);
       if TypeNode=nil then begin
-        inc(ErrorCount);
+        debugln(['Error: FindClassNodeForLFMObject [20250715121825] type of var not found: ',FindContextToString(VarPropContext)]);
+        exit;
       end;
       VariableTypeName:=VarPropContext.Tool.ExtractDefinitionNodeType(VarPropContext.Node);
-      if VariableTypeName='' then
-        ;
+      if VariableTypeName='' then begin
+        debugln(['Error: FindClassNodeForLFMObject [20250715121947] var without name: ',FindContextToString(VarPropContext)]);
+        exit;
+      end;
     end else if (VarPropContext.Node.Desc=ctnProperty) then begin
       TypeNode:=VarPropContext.Node;
     end else begin
-      inc(ErrorCount);
+      debugln(['Error: FindClassNodeForLFMObject [20250715122009] expected var or prop, but found ',VarPropContext.Node.DescAsString,' ',FindContextToString(VarPropContext)]);
       exit;
     end;
 
@@ -3163,7 +3147,7 @@ var
         // ignore search/parse errors
         on E: ECodeToolError do begin
           {$IFDEF VerboseCheckLFM}
-          debugln(['FindClassNodeForLFMObject ',E.Message]);
+          debugln(['Error: FindClassNodeForLFMObject [20250715122101] ',E.Message]);
           {$ENDIF}
         end;
       end;
@@ -3171,17 +3155,11 @@ var
       Params.Free;
     end;
     if (Result.Node=nil) then begin
-      {$IFDEF VerboseCheckLFM}
-      debugln(['FindClassNodeForLFMObject FindBaseTypeOfNode failed. LFMNode=',LFMObject.GetPath,' ',FindContextToString(CreateFindContext(VarPropContext.Tool,TypeNode))]);
-      {$ENDIF}
-      inc(ErrorCount);
+      debugln(['Error: FindClassNodeForLFMObject [20250715122111] FindBaseTypeOfNode failed. LFMNode=',LFMObject.GetPath,' ',FindContextToString(CreateFindContext(VarPropContext.Tool,TypeNode))]);
       Result:=CleanFindContext;
       exit;
     end else if (not (Result.Node.Desc in AllClasses)) then begin
-      {$IFDEF VerboseCheckLFM}
-      debugln(['FindClassNodeForLFMObject base type is not a class. LFMNode=',LFMObject.GetPath,' ',FindContextToString(Result)]);
-      {$ENDIF}
-      inc(ErrorCount);
+      debugln(['Error: FindClassNodeForLFMObject [20250715122121] base type is not a class. LFMNode=',LFMObject.GetPath,' ',FindContextToString(Result)]);
       Result:=CleanFindContext;
       exit;
     end;
@@ -3189,7 +3167,7 @@ var
     // check classname
     TypeName:=Result.Tool.ExtractClassName(Result.Node,false);
     if not SameText(TypeName,LFMObject.TypeName) then begin
-      inc(ErrorCount);
+      debugln(['Error: FindClassNodeForLFMObject [20250715122158] expected type name "',LFMObject.TypeName,'", but found "',TypeName,'"']);
       exit;
     end;
 
@@ -3197,7 +3175,7 @@ var
       // lfm has explicit unitname
       AnUnitName:=Result.Tool.GetSourceName(false);
       if not SameText(AnUnitName,LFMObject.TypeUnitName) then begin
-        inc(ErrorCount);
+        debugln(['Error: FindClassNodeForLFMObject [20250715122246] expected unit name "',LFMObject.TypeUnitName,'", but found "',AnUnitName,'"']);
         exit;
       end;
     end;
@@ -3224,7 +3202,7 @@ var
         on E: ECodeToolError do ;
       end;
       if Result.Tool=nil then begin
-        inc(ErrorCount);
+        debugln(['Error: FindClassContext [20250715122318] cant find unit "',LFMObject.TypeUnitName,'"']);
         exit;
       end;
 
@@ -3238,7 +3216,7 @@ var
       if (Result.Node=nil)
           or (not (Result.Node.Desc in AllClasses)) then begin
         Result.Tool:=nil;
-        inc(ErrorCount);
+        debugln(['Error: FindClassContext [20250715122424] unable to find class "',aClassName,'" in "',LFMObject.TypeUnitName,'"']);
         exit;
       end;
       exit;
@@ -3259,19 +3237,22 @@ var
       Params.SetIdentifier(StartTool,Identifier,nil);
       try
         Params.Save(OldInput);
-        if FindIdentifierInContext(Params) then begin
-          Params.Load(OldInput,true);
-          Result:=Params.NewCodeTool.FindBaseTypeOfNode(Params,Params.NewNode);
-          if (Result.Node=nil)
-              or (not (Result.Node.Desc in AllClasses)) then
-            Result:=CleanFindContext;
+        if not FindIdentifierInContext(Params) then begin
+          debugln(['Error: FindClassContext [20250715122641] cant find "',Identifier,'"']);
+          exit;
+        end;
+        Params.Load(OldInput,true);
+        Result:=Params.NewCodeTool.FindBaseTypeOfNode(Params,Params.NewNode);
+        if (Result.Node=nil)
+            or (not (Result.Node.Desc in AllClasses)) then
+        begin
+          Result:=CleanFindContext;
+          debugln(['Error: FindClassContext [20250715122741] FindBaseTypeOfNode failed for "',Identifier,'"']);
+          exit;
         end;
       except
         // ignore search/parse errors
         on E: ECodeToolError do ;
-      end;
-      if Result.Node=nil then begin
-        inc(ErrorCount);
       end;
     finally
       Params.Free;
@@ -3279,7 +3260,7 @@ var
   end;
 
   procedure CheckLFMChildObject(LFMObject: TLFMObjectNode;
-    const ParentContext: TFindContext; ContextIsDefault: boolean);
+    const ParentContext: TFindContext);
   var
     LFMObjectName, LFMObjectTypeName: String;
     ChildContext: TFindContext;
@@ -3293,17 +3274,16 @@ var
     // find identifier in Lookup Root
     LFMObjectName:=LFMObject.Name;
 
-    //DebugLn('CheckChildObject A LFMObjectName="',LFMObjectName,'"');
+    //DebugLn(['CheckChildObject A LFMObjectName="',LFMObjectName,'"']);
     if LFMObjectName='' then begin
-      inc(ErrorCount);
+      debugln(['Error: CheckLFMChildObject [20250715122827] object without name ',LFMObject.GetPath]);
       exit;
     end;
     LFMObjectTypeName:=LFMObject.TypeName;
     ChildContext:=CleanFindContext;
 
-    IdentifierFound:=(not ContextIsDefault) and
-      FindLFMIdentifier(LFMObject,LFMObject.NamePosition,LFMObjectName,RootContext,
-      false,ObjectsMustExist,ChildContext);
+    IdentifierFound:=FindLFMIdentifier(LFMObject,LFMObject.NamePosition,LFMObjectName,
+      RootContext,false,ChildContext);
     //debugln(['CheckLFMChildObject LFMObjectName="',LFMObjectName,'" IdentifierFound=',IdentifierFound,' ObjectsMustExist=',ObjectsMustExist,' ',FindContextToString(ChildContext)]);
     if IdentifierFound and (ObjectsMustExist or (ChildContext.Node<>nil)) then
     begin
@@ -3325,10 +3305,11 @@ var
     end else begin
       // try the object type
       ClassContext:=FindClassContext(LFMObject);
-      if ClassContext.Node=nil then exit;
     end;
-    if (CompareIdentifiers(PChar(Identifier),PChar(LFMObjectTypeName))=0) then
-    if (ClassContext.Node<>nil) and (ClassContext.Node=DeclNode.FirstChild) then begin
+    if (ClassContext.Node<>nil)
+        and (ClassContext.Node=DeclNode.FirstChild)
+        and (CompareIdentifiers(PChar(Identifier),PChar(LFMObjectTypeName))=0) then
+    begin
       // = Pascal declaration found
       //debugln(['CheckLFMChildObject matching to "', Identifier,'" found (type/class)']);
       AddReferenceP(LFMObject.TypeNamePosition);
@@ -3368,7 +3349,7 @@ var
       Params.Free;
     end;
     if Result.Node=nil then begin
-      inc(ErrorCount);
+      debugln(['Error: MyFindBaseType [20250715122906] FindBaseTypeOfNode failed ',FindContextToString(aDeclContext)]);
       exit;
     end;
   end;
@@ -3382,6 +3363,7 @@ var
     IdentName, s: String;
     aTypeContext, IdentContext, PropTypeContext, EnumTypeContext: TFindContext;
   begin
+    //debugln(['CheckLFMPropertyValue ',LFMProperty.GetPath]);
     ChildNode:=LFMProperty.FirstChild;
     if (ChildNode=nil) then exit;
     if not NodeContainsCandidate(ChildNode) then exit;
@@ -3411,13 +3393,14 @@ var
           end;
         end else begin
           // default: search identifier in lookuproot and global
+          //debugln(['CheckLFMPropertyValue ',FindContextToString(RootContext)]);
           aTypeContext:=RootContext;
           repeat
             StartP:=p;
             while (p<l) and IsIdentChar[s[p]] do inc(p);
             IdentName:=copy(s,StartP,p-StartP);
             //debugln(['CheckLFMPropertyValue Identifier "',IdentName,'" ',FindContextToString(aTypeContext)]);
-            if not FindLFMIdentifier(ChildNode,StartP,IdentName,aTypeContext,false,false,IdentContext) then
+            if not FindLFMIdentifier(ChildNode,StartP,IdentName,aTypeContext,false,IdentContext) then
             begin
               debugln(['CheckLFMPropertyValue Symbol ',LFMProperty.GetPath,': failed to resolve "',IdentName,'" in ',FindContextToString(aTypeContext)]);
               exit;
@@ -3513,7 +3496,7 @@ var
     {$ENDIF}
 
     if LFMProperty.CompleteName='' then begin
-      inc(ErrorCount);
+      debugln(['Error: CheckLFMProperty [20250715123004] property without name: ',LFMProperty.GetPath]);
       exit;
     end;
 
@@ -3532,7 +3515,7 @@ var
 
       if not FindLFMIdentifier(LFMProperty,
                                LFMProperty.NameParts.NamePositions[i],
-                               CurName,SearchContext,true,true,
+                               CurName,SearchContext,true,
                                CurPropertyContext)
       then begin
         debugln(['CheckLFMProperty FindLFMIdentifier failed: CurName="',CurName,'" Context=',FindContextToString(SearchContext)]);
@@ -3567,6 +3550,8 @@ var
 
   function CheckLFMObjectValues(LFMObject: TLFMObjectNode;
     const ClassContext: TFindContext; ContextIsDefault: boolean): boolean;
+  // ContextIsDefault = true means ClassContext is a fallback, do not check properties
+  // child objects are still checked
   var
     CurLFMNode: TLFMTreeNode;
   begin
@@ -3577,9 +3562,10 @@ var
       if NodeContainsCandidate(CurLFMNode) then begin
         case CurLFMNode.TheType of
         lfmnObject:
-          CheckLFMChildObject(TLFMObjectNode(CurLFMNode),ClassContext,ContextIsDefault);
+          CheckLFMChildObject(TLFMObjectNode(CurLFMNode),ClassContext);
         lfmnProperty:
-          CheckLFMProperty(TLFMPropertyNode(CurLFMNode),ClassContext);
+          if not ContextIsDefault then
+            CheckLFMProperty(TLFMPropertyNode(CurLFMNode),ClassContext);
         end;
       end;
       CurLFMNode:=CurLFMNode.NextSibling;
@@ -3601,14 +3587,14 @@ var
     //DebugLn('TStandardCodeTool.CheckLFM.CheckLFMRoot checking root ...');
     // get root object node
     if (RootLFMNode=nil) or (not (RootLFMNode is TLFMObjectNode)) then begin
-      inc(ErrorCount);
+      debugln(['Error: CheckLFMRoot [20250715123059] internal error']);
       exit;
     end;
     LookupRootLFMNode:=TLFMObjectNode(RootLFMNode);
     // get type name of root object
     LookupRootTypeName:=LookupRootLFMNode.TypeName;
     if LookupRootTypeName='' then begin
-      inc(ErrorCount);
+      debugln(['Error: CheckLFMRoot [20250715123122] lookup root without type']);
       exit;
     end;
 
@@ -3620,7 +3606,7 @@ var
       begin
         // unitname fits
       end else if RootMustBeClassInIntf or RootMustBeClassInUnit then begin
-        inc(ErrorCount);
+        debugln(['Error: CheckLFMRoot [20250715123227] expected root in unit "',CurUnitName,'", but is in "',LookupRootTypeUnitName,'"']);
         exit;
       end;
     end;
@@ -3700,9 +3686,7 @@ begin
   finally
     DeactivateGlobalWriteLock;
   end;
-  Result:= (ErrorCount=0);
-  if not Result then
-    debugln(['TStandardCodeTool.GatherReferencesInLFM ErrorCount = ',ErrorCount]);
+  Result:= true;
 end;
 
 function TStandardCodeTool.FindCreateFormStatement(StartPos: integer;
