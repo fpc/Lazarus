@@ -95,9 +95,15 @@ type
     procedure TestRenameAlsoLFM_Variable;
     procedure TestRenameAlsoLFM_Event;
     procedure TestRenameAlsoLFM_SkipBinaryData;
-    procedure TestRenameAlsoLFM_Property; // ToDo
-    // todo: typeless property
+    procedure TestRenameAlsoLFM_Property;
+    procedure TestRenameAlsoLFM_Property_Typeless;
     // todo: dotted property
+    // todo: enum property
+    // todo: set property
+    // todo: component property
+    // todo: component property of another root component
+    // todo: list property
+    // todo: collection property
   end;
 
 implementation
@@ -2257,14 +2263,12 @@ procedure TTestRefactoring.TestRenameAlsoLFM_Property;
 var
   Test1LFM: TCodeBuffer;
 begin
-  exit;
-
   Test1LFM:=CodeToolBoss.CreateFile(ChangeFileExt(Code.Filename,'.lfm'));
   try
     Test1LFM.Source:=LinesToStr([
       'object Form1: TForm1',
       '  Checked = False',
-      '  object Button1',
+      '  object Button1: TButton',
       '    Checked = True',
       '  end',
       'end']);
@@ -2290,13 +2294,59 @@ begin
       'end.']));
 
     RenameReferences('Activated',[frfIncludingLFM]);
-    CheckDiff(Test1LFM,LinesToStr([
+    CheckDiff(Test1LFM,[
       'object Form1: TForm1',
       '  Checked = False',
-      '  object Button1',
+      '  object Button1: TButton',
       '    Activated = True',
       '  end',
-      'end']));
+      'end']);
+
+  finally
+    Test1LFM.IsDeleted:=true;
+  end;
+end;
+
+procedure TTestRefactoring.TestRenameAlsoLFM_Property_Typeless;
+var
+  Test1LFM: TCodeBuffer;
+begin
+  Test1LFM:=CodeToolBoss.CreateFile(ChangeFileExt(Code.Filename,'.lfm'));
+  try
+    Test1LFM.Source:=LinesToStr([
+      'object Form1: TForm1',
+      '  object Button1: TButton',
+      '    Checked = True',
+      '  end',
+      'end']);
+
+    Add(LinesToStr([
+      'unit Test1;',
+      '{$mode objfpc}{$H+}',
+      'interface',
+      'uses Classes;',
+      'type',
+      '  TControl = class(TComponent)',
+      '  public',
+      '    property Checked{#Rename}: boolean;',
+      '  end;',
+      '  TButton = class(TControl)',
+      '  published',
+      '    property Checked;',
+      '  end;',
+      '  TForm1 = class(TComponent)',
+      '    Button1: TButton;',
+      '  end;',
+      'implementation',
+      'end.']));
+
+    RenameReferences('Activated',[frfIncludingLFM]);
+    CheckDiff(Test1LFM,[
+      'object Form1: TForm1',
+      '  object Button1: TButton',
+      '    Activated = True',
+      '  end',
+      'end']);
 
   finally
     Test1LFM.IsDeleted:=true;
