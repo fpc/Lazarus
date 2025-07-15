@@ -868,8 +868,6 @@ type
     function FindOperatorEnumerator(Node: TCodeTreeNode;
       ExprType: TExpressionType; Need: TFindOperatorEnumerator;
       out ResultExprType: TExpressionType): boolean;
-    function FindEnumerationTypeOfSetType(SetTypeNode: TCodeTreeNode;
-      out Context: TFindContext): boolean;
     function FindElementTypeOfArrayType(ArrayNode: TCodeTreeNode;
       out ExprType: TExpressionType; AliasType: PFindContext;
       ParentParams: TFindDeclarationParams = nil): boolean;
@@ -975,6 +973,7 @@ type
       out NewPos: TCodeXYPosition; out NewTopLine, BlockTopLine, BlockBottomLine: integer): boolean;
     function FindDeclarationWithMainUsesSection(const Identifier: string;
       out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
+
     function FindClassMember(aClassNode: TCodeTreeNode;
       const Identifier: String; SearchInAncestors: boolean): TFindContext;
     function FindDeclarationOfPropertyPath(const PropertyPath: string;
@@ -982,12 +981,18 @@ type
     function FindDeclarationOfPropertyPath(const PropertyPath: string;
       out NewPos: TCodeXYPosition; out NewTopLine: integer;
       IgnoreTypeLess: boolean = false): boolean;
+
     function FindDeclarationNodeInInterface(const Identifier: string;
       BuildTheTree: Boolean): TCodeTreeNode;// search for type, const, var, proc, prop
     function FindDeclarationNodeInImplementation(Identifier: string;
       BuildTheTree: Boolean): TCodeTreeNode;// search for type, const, var, proc, prop
     function FindSubDeclaration(Identifier: string; ParentNode: TCodeTreeNode
       ): TCodeTreeNode; // search for type, const, var, proc, prop
+
+    function FindEnumerationTypeOfSetType(SetTypeNode: TCodeTreeNode;
+      out Context: TFindContext): boolean;
+
+    // uses and units
     function FindNameInUsesSection(UsesNode: TCodeTreeNode; const AUnitName: string): TCodeTreeNode;
     function FindUnitInUsesSection(UsesNode: TCodeTreeNode; const AnUnitName: string;
           out NamePos, InPos: TAtomPosition): boolean;
@@ -14455,38 +14460,40 @@ function TFindDeclarationTool.FindEnumerationTypeOfSetType(
 var
   Params: TFindDeclarationParams;
   p: LongInt;
+  Child: TCodeTreeNode;
 begin
   Result:=false;
+  Context:=Default(TFindContext);
   if (SetTypeNode=nil) or (SetTypeNode.Desc<>ctnSetType) then exit;
-  MoveCursorToNodeStart(SetTypeNode);
-  ReadNextAtom; // set
-  if not UpAtomIs('SET') then exit;
-  ReadNextAtom; // of
-  if not UpAtomIs('OF') then exit;
-  ReadNextAtom;
-  if not IsIdentStartChar[Src[CurPos.StartPos]] then
-    // set of ()
-    exit;
-  Params:=TFindDeclarationParams.Create;
-  try
-    Params.Flags:=fdfDefaultForExpressions;
-    Params.ContextNode:=SetTypeNode;
-    p:=CurPos.StartPos;
-    Params.SetIdentifier(Self,@Src[p],nil);
-    if not FindIdentifierInContext(Params) then exit;
-    if (Params.NewNode=nil)
-    or (Params.NewNode.Desc<>ctnTypeDefinition)
-    or (Params.NewNode.FirstChild=nil)
-    or (Params.NewNode.FirstChild.Desc<>ctnEnumerationType) then begin
-      MoveCursorToCleanPos(p);
-      ReadNextAtom;
-      RaiseStringExpectedButAtomFound(20170421200656,ctsEnumerationType);
+  debugln(['TFindDeclarationTool.FindEnumerationTypeOfSetType ',SetTypeNode.FirstChild.DescAsString]);
+  Child:=SetTypeNode.FirstChild;
+  if Child=nil then exit;
+  if Child.Desc=ctnIdentifier then begin
+    Params:=TFindDeclarationParams.Create;
+    try
+      Params.Flags:=fdfDefaultForExpressions;
+      Params.ContextNode:=SetTypeNode;
+      p:=Child.StartPos;
+      Params.SetIdentifier(Self,@Src[p],nil);
+      if not FindIdentifierInContext(Params) then exit;
+      if (Params.NewNode=nil)
+      or (Params.NewNode.Desc<>ctnTypeDefinition)
+      or (Params.NewNode.FirstChild=nil)
+      or (Params.NewNode.FirstChild.Desc<>ctnEnumerationType) then begin
+        MoveCursorToCleanPos(p);
+        ReadNextAtom;
+        RaiseStringExpectedButAtomFound(20170421200656,ctsEnumerationType);
+      end;
+      Context.Tool:=Params.NewCodeTool;
+      Context.Node:=Params.NewNode;
+      Result:=true;
+    finally
+      Params.Free;
     end;
-    Context.Tool:=Params.NewCodeTool;
-    Context.Node:=Params.NewNode;
+  end else if Child.Desc=ctnEnumerationType then begin
+    Context.Tool:=Self;
+    Context.Node:=Child;
     Result:=true;
-  finally
-    Params.Free;
   end;
 end;
 

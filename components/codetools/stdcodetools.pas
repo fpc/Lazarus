@@ -3377,10 +3377,10 @@ var
     const PropContext: TFindContext);
   // PropContext: the property node
   var
-    ChildNode: TLFMTreeNode;
+    ChildNode, EnumNode: TLFMTreeNode;
     l, p, StartP: integer;
     IdentName, s: String;
-    aTypeContext, IdentContext, PropTypeContext: TFindContext;
+    aTypeContext, IdentContext, PropTypeContext, EnumTypeContext: TFindContext;
   begin
     ChildNode:=LFMProperty.FirstChild;
     if (ChildNode=nil) then exit;
@@ -3441,7 +3441,44 @@ var
         end;
       end;
     lfmvSet:
-      ; // todo
+      begin
+        PropTypeContext:=MyFindBaseType(LFMProperty,LFMProperty.StartPos,PropContext);
+        if (PropTypeContext.Node<>nil) and (PropTypeContext.Node.Desc=ctnSetType) then
+        begin
+          PropTypeContext.Tool.FindEnumerationTypeOfSetType(PropTypeContext.Node,EnumTypeContext);
+          if (EnumTypeContext.Node=nil) then begin
+            debugln(['CheckLFMPropertyValue ',LFMProperty.GetPath,': failed to resolve set to enumeration type: ',FindContextToString(PropTypeContext)]);
+            exit;
+          end;
+          if EnumTypeContext.Node.Desc=ctnEnumerationType then
+          else if (EnumTypeContext.Node.FirstChild<>nil)
+              and (EnumTypeContext.Node.FirstChild.Desc=ctnEnumerationType) then
+            EnumTypeContext.Node:=EnumTypeContext.Node.FirstChild
+          else begin
+            // not an enum type
+            debugln(['CheckLFMPropertyValue ',LFMProperty.GetPath,': expected a enumeration type, but found ',FindContextToString(EnumTypeContext)]);
+            exit;
+          end;
+        end else begin
+          debugln(['CheckLFMPropertyValue ',LFMProperty.GetPath,': expected set type, but found: ',FindContextToString(PropTypeContext)]);
+          exit;
+        end;
+
+        s:=LFMBuffer.Source;
+        EnumNode:=ChildNode.FirstChild;
+        while EnumNode<>nil do begin
+          if CompareIdentifiers(PChar(Identifier),@s[EnumNode.StartPos])=0 then begin
+            if EnumTypeContext.Node<>nil then begin
+              IdentContext.Node:=EnumTypeContext.Tool.FindEnumWithName(EnumTypeContext.Node,Identifier);
+              if IdentContext.Node=DeclNode then
+                AddReferenceP(EnumNode.StartPos);
+            end else begin
+              // todo
+            end;
+          end;
+          EnumNode:=EnumNode.NextSibling;
+        end;
+      end;
     lfmvList:
       ; // todo
     lfmvCollection:

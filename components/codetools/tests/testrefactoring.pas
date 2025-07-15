@@ -99,8 +99,9 @@ type
     procedure TestRenameAlsoLFM_Property_Typeless;
     procedure TestRenameAlsoLFM_DottedProperty;
     procedure TestRenameAlsoLFM_EnumProperty;
-    // todo: enum property
-    // todo: set property
+    procedure TestRenameAlsoLFM_SetProperty;
+    procedure TestRenameAlsoLFM_AnonymousSetProperty;
+    // todo: anonymous set
     // todo: component property
     // todo: component property of another root component
     // todo: list property
@@ -2435,6 +2436,93 @@ begin
       'object Form1: TForm1',
       '  object Button1: TButton',
       '    Color = Violet',
+      '  end',
+      'end']);
+
+  finally
+    Test1LFM.IsDeleted:=true;
+  end;
+end;
+
+procedure TTestRefactoring.TestRenameAlsoLFM_SetProperty;
+var
+  Test1LFM: TCodeBuffer;
+begin
+  Test1LFM:=CodeToolBoss.CreateFile(ChangeFileExt(Code.Filename,'.lfm'));
+  try
+    Test1LFM.Source:=LinesToStr([
+      'object Form1: TForm1',
+      '  object Button1: TButton',
+      '    Colors = [red, green]',
+      '  end',
+      'end']);
+
+    Add(LinesToStr([
+      'unit Test1;',
+      '{$mode objfpc}{$H+}',
+      'interface',
+      'uses Classes;',
+      'type',
+      '  TColor = (red,green{#Rename},blue);',
+      '  TColors = set of TColor;',
+      '  TButton = class(TComponent)',
+      '  published',
+      '    property Colors: TColors;',
+      '  end;',
+      '  TForm1 = class(TComponent)',
+      '    Button1: TButton;',
+      '  end;',
+      'implementation',
+      'end.']));
+
+    RenameReferences('Violet',[frfIncludingLFM]);
+    CheckDiff(Test1LFM,[
+      'object Form1: TForm1',
+      '  object Button1: TButton',
+      '    Colors = [red, Violet]',
+      '  end',
+      'end']);
+
+  finally
+    Test1LFM.IsDeleted:=true;
+  end;
+end;
+
+procedure TTestRefactoring.TestRenameAlsoLFM_AnonymousSetProperty;
+var
+  Test1LFM: TCodeBuffer;
+begin
+  Test1LFM:=CodeToolBoss.CreateFile(ChangeFileExt(Code.Filename,'.lfm'));
+  try
+    Test1LFM.Source:=LinesToStr([
+      'object Form1: TForm1',
+      '  object Button1: TButton',
+      '    Colors = [red, green]',
+      '  end',
+      'end']);
+
+    Add(LinesToStr([
+      'unit Test1;',
+      '{$mode objfpc}{$H+}',
+      'interface',
+      'uses Classes;',
+      'type',
+      '  TColors = set of (red,green{#Rename},blue);',
+      '  TButton = class(TComponent)',
+      '  published',
+      '    property Colors: TColors;',
+      '  end;',
+      '  TForm1 = class(TComponent)',
+      '    Button1: TButton;',
+      '  end;',
+      'implementation',
+      'end.']));
+
+    RenameReferences('Violet',[frfIncludingLFM]);
+    CheckDiff(Test1LFM,[
+      'object Form1: TForm1',
+      '  object Button1: TButton',
+      '    Colors = [red, Violet]',
       '  end',
       'end']);
 
