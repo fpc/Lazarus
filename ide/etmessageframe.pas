@@ -64,12 +64,27 @@ type
   private
     FAsyncQueued: boolean;
     FControl: TMessagesCtrl;
+    FCursorLine: integer;     // Ctrl-Arrow can move in lines without selecting
     FFilter: TLMsgViewFilter;
-    fPaintBottom: integer; // only valid if FPaintStamp=Control.FPaintStamp
+    fPaintBottom: integer;    // only valid if FPaintStamp=Control.FPaintStamp
     FPaintStamp: int64;
-    fPaintTop: integer; // only valid if FPaintStamp=Control.FPaintStamp
+    fPaintTop: integer;       // only valid if FPaintStamp=Control.FPaintStamp
     FPendingChanges: TETMultiSrcChanges;
+    FSelectedLines: TIntegerList;
+    function GetSelLineFirst: integer;
+    function GetSelLineLast: integer;
     procedure SetFilter(AValue: TLMsgViewFilter);
+    procedure SetSelLineFirst(AValue: integer);
+    // Selection
+    procedure ClearSelection;
+    procedure ExtendSelection(LineNumber: integer);
+    procedure ExtendSelByOffset(Offset: integer);
+    procedure MoveWithoutSelecting(LineNumber: integer);
+    procedure MoveWithoutSelectByOffs(Offset: integer);
+    procedure SelectAll;
+    procedure ToggleCursorLine;
+    procedure ToggleSelectedLine(LineNumber: integer);
+    //
     procedure MarksFixed(ListOfTMessageLine: TFPList); // (main thread) called after mlfFixed was added to these messages
     procedure CallOnChangedInMainThread({%H-}Data: PtrInt); // (main thread)
     function AsHintString(const aHintLastLine: integer): string;
@@ -82,16 +97,21 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    function GetHeaderText: string;
     function LineFits(Line: TMessageLine): boolean; override; // (worker thread)
-    property Control: TMessagesCtrl read FControl;
     function HasContent: boolean;
     function GetShownLineCount(WithHeader, WithProgressLine: boolean): integer;
     procedure RebuildLines; // (main thread)
     function ApplySrcChanges(Changes: TETSingleSrcChanges): boolean; // true if something changed
   public
+    property Control: TMessagesCtrl read FControl;
     // requires Enter/LeaveCriticalSection, write only via main thread
     property Filter: TLMsgViewFilter read FFilter write SetFilter;
     property PendingChanges: TETMultiSrcChanges read FPendingChanges;// src changes for messages adding to view
+    // First initially selected line, -1=header line, can be on progress line (=View.Count)
+    property SelLineFirst: integer read GetSelLineFirst write SetSelLineFirst;
+    // Last line selected by mouse, arrow keys or Ctrl-Space. FSelectedLines is adjusted accordingly.
+    property SelLineLast: integer read GetSelLineLast;
   end;
 
   { TMsgCtrlUrgencyStyle }
@@ -153,7 +173,6 @@ type
   private
     FActiveFilter: TLMsgViewFilter;
     FBackgroundColor: TColor;
-    FCursorLine: integer;    // Ctrl-Arrow can move in lines without selecting.
     FFilenameStyle: TMsgWndFileNameStyle;
     FHeaderBackground: array[TLMVToolState] of TColor;
     FIdleConnected: boolean;
@@ -168,7 +187,6 @@ type
     FScrollTop: integer;
     fScrollTopMax: integer;
     FSearchText: string;
-    FSelectedLines: TIntegerList;
     FSelectedView: TLMsgWndView;
     FSourceMarks: TETMarks;
     FTextColor: TColor;
@@ -180,12 +198,17 @@ type
     FAutoHeaderBackground: TColor;
     FHintLastLine: integer;
     FHintLastView: TLMsgWndView;
+    FViews: TFPList;               // list of TMessagesViewMap
+    FStates: TMsgCtrlStates;
+    FPaintStamp: int64;
+    fLastSearchStartView: TLMsgWndView;
+    fLastSearchStartLine: integer;
+    fLastLoSearchText: string;     // lower case search text
     procedure CreateSourceMark(MsgLine: TMessageLine; aSynEdit: TSynEdit);
     procedure CreateSourceMarks(View: TLMsgWndView; StartLineNumber: Integer);
+    procedure DoAllViewsStopped;
     function GetActiveFilter: TLMsgViewFilter; inline;
     function GetHeaderBackground(aToolState: TLMVToolState): TColor;
-    function GetSelLineFirst: integer;
-    function GetSelLineLast: integer;
     function GetUrgencyStyles(Urgency: TMessageLineUrgency): TMsgCtrlUrgencyStyle;
     function GetViews(Index: integer): TLMsgWndView;
     procedure ViewChanged(Sender: TObject); // (main thread)
@@ -202,7 +225,6 @@ type
     procedure SetScrollLeft(AValue: integer);
     procedure SetScrollTop(AValue: integer);
     procedure SetSearchText(AValue: string);
-    procedure SetSelLineFirst(AValue: integer);
     procedure SetSelectedView(AValue: TLMsgWndView);
     procedure SetSourceMarks(AValue: TETMarks);
     procedure SetTextColor(AValue: TColor);
@@ -218,23 +240,16 @@ type
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure FilterChanged(Sender: TObject);
     function GetPageScroll: integer;
-  protected
-    FViews: TFPList;// list of TMessagesViewMap
-    FStates: TMsgCtrlStates;
-    FPaintStamp: int64;
-    fLastSearchStartView: TLMsgWndView;
-    fLastSearchStartLine: integer;
-    fLastLoSearchText: string; // lower case search text
     procedure FetchNewMessages;
     function FetchNewMessages(View: TLMsgWndView): boolean; // true if new lines
+    procedure UpdateScrollBar(InvalidateScrollMax: boolean);
+  protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Paint; override;
-    procedure UpdateScrollBar(InvalidateScrollMax: boolean);
     procedure CreateWnd; override;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-    procedure DoAllViewsStopped;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -253,7 +268,6 @@ type
     function GetView(aCaption: string; CreateIfNotExist: boolean): TLMsgWndView;
     function GetLineAt(Y: integer; out View: TLMsgWndView; out Line: integer): boolean;
     function GetLineText(Line: TMessageLine): string;
-    function GetHeaderText(View: TLMsgWndView): string;
     function FindUnfinishedView: TLMsgWndView; // running or waiting for run
     function GetLastViewWithContent: TLMsgWndView;
 
@@ -262,22 +276,25 @@ type
     function Filters: TLMsgViewFilters; inline;
 
     // select, search
-    procedure ToggleSelectedLine(View: TLMsgWndView; LineNumber: integer);
-    procedure ToggleCursorLine;
-    procedure ExtendSelection(View: TLMsgWndView; LineNumber: integer);
+    procedure ClearSelections;
+    procedure ExtendSelection(LineNumber: integer); //overload;
+    procedure ExtendSelection(View: TLMsgWndView; LineNumber: integer); //overload;
     procedure ExtendSelByOffset(Offset: integer);
     procedure MoveWithoutSelecting(LineNumber: integer);
     procedure MoveWithoutSelectByOffs(Offset: integer);
-    function SearchNext(StartView: TLMsgWndView; StartLine: integer;
-      SkipStart, Downwards: boolean;
-      out View: TLMsgWndView; out LineNumber: integer): boolean;
+    procedure ToggleCursorLine;
+    procedure ToggleSelectedLine(View: TLMsgWndView; LineNumber: integer);
     procedure Select(View: TLMsgWndView; LineNumber: integer; DoScroll, FullyVisible: boolean);
-    procedure Select(Msg: TMessageLine; DoScroll: boolean);
+    procedure SelectAll;
+    procedure SelectMsgLine(Msg: TMessageLine; DoScroll: boolean);
     function SelectNextOccurrence(Downwards: boolean): boolean;
     function SelectNextShown(Offset: integer): boolean;
     function SelectLast(DoScroll, FullyVisible: boolean): boolean;
     function SelectFirst(DoScroll, FullyVisible: boolean): boolean;
     function GetSelectedMsg: TMessageLine;
+    function SearchNext(StartView: TLMsgWndView; StartLine: integer;
+      SkipStart, Downwards: boolean;
+      out View: TLMsgWndView; out LineNumber: integer): boolean;
     function SearchNextUrgent(StartView: TLMsgWndView; StartLine: integer;
       SkipStart, Downwards: boolean;
       aMinUrgency: TMessageLineUrgency; WithSrcPos: boolean;
@@ -318,10 +335,6 @@ type
     Property OnOptionsChanged: TNotifyEvent read FOnOptionsChanged write FOnOptionsChanged;
     property Options: TMsgCtrlOptions read FOptions write SetOptions default MCDefaultOptions;
     property SearchText: string read FSearchText write SetSearchText;
-    // First initially selected line, -1=header line, can be on progress line (=View.Count)
-    property SelLineFirst: integer read GetSelLineFirst write SetSelLineFirst;
-    // Last line selected by mouse, arrow keys or Ctrl-Space. FSelectedLines is adjusted accordingly.
-    property SelLineLast: integer read GetSelLineLast;
     property SelectedView: TLMsgWndView read FSelectedView write SetSelectedView;
     property ShowHint default true;
     property SourceMarks: TETMarks read FSourceMarks write SetSourceMarks;
@@ -589,14 +602,86 @@ end;
 
 {$R *.lfm}
 
+function GetStats(Lines: TMessageLines): string;
+var
+  ErrCnt, WarnCnt, HintCnt: Integer;
+  c: TMessageLineUrgency;
+begin
+  Result:='';
+  ErrCnt:=0;
+  WarnCnt:=0;
+  HintCnt:=0;
+  for c:=Low(Lines.UrgencyCounts) to high(Lines.UrgencyCounts) do begin
+    //debugln(['GetStats cat=',dbgs(c),' count=',Lines.UrgencyCounts[c]]);
+    if c>=mluError then
+      inc(ErrCnt,Lines.UrgencyCounts[c])
+    else if c=mluWarning then
+      inc(WarnCnt,Lines.UrgencyCounts[c])
+    else if c in [mluHint,mluNote] then
+      inc(HintCnt,Lines.UrgencyCounts[c]);
+  end;
+  if ErrCnt>0 then
+    Result+=Format(lisErrors2, [IntToStr(ErrCnt)]);
+  if WarnCnt>0 then
+    Result+=Format(lisWarnings, [IntToStr(WarnCnt)]);
+  if HintCnt>0 then
+    Result+=Format(lisHints, [IntToStr(HintCnt)]);
+end;
+
 { TLMsgWndView }
+
+constructor TLMsgWndView.Create(AOwner: TComponent);
+begin
+  fMessageLineClass:=TLMsgViewLine;
+  inherited Create(AOwner);
+  Lines.OnMarksFixed:=@MarksFixed;
+  FFilter:=TLMsgViewFilter.Create;
+  FPendingChanges:=TETMultiSrcChanges.Create(nil);
+  FSelectedLines:=TIntegerList.Create;
+end;
+
+destructor TLMsgWndView.Destroy;
+begin
+  inherited Destroy;
+  FreeAndNil(FSelectedLines);
+  FreeAndNil(FPendingChanges);
+  FreeAndNil(FFilter);
+end;
+
+function TLMsgWndView.GetHeaderText: string;
+begin
+  Result:=Caption;
+  if Result='' then
+    Result:=lisMenuViewMessages;
+  if SummaryMsg<>'' then
+    Result+=': '+SummaryMsg;
+  if mcoShowStats in Control.Options then begin
+    Result+=GetStats(Lines);
+  end;
+end;
+
+function TLMsgWndView.GetSelLineFirst: integer;
+// Return the first selected line number.
+begin
+  if FSelectedLines.Count>0 then
+    Result:=FSelectedLines[0]
+  else
+    Result:=-1;   // No selection.
+end;
+
+function TLMsgWndView.GetSelLineLast: integer;
+// Return the last selected line number.
+begin
+  if FSelectedLines.Count>0 then
+    Result:=FSelectedLines.Last
+  else
+    Result:=-1;   // No selection.
+end;
 
 procedure TLMsgWndView.MarksFixed(ListOfTMessageLine: TFPList);
 var
-  i: Integer;
-  ViewLine: TMessageLine;
-  j: Integer;
-  WorkerMsg: TMessageLine;
+  i, j: Integer;
+  ViewLine, WorkerMsg: TMessageLine;
 begin
   //debugln(['TLMsgWndView.OnMarksFixed START ',ListOfTMessageLine.Count]);
   // apply marks to WorkerMessages
@@ -638,6 +723,123 @@ end;
 procedure TLMsgWndView.SetFilter(AValue: TLMsgViewFilter);
 begin
   FFilter.Assign(AValue);
+end;
+
+procedure TLMsgWndView.SetSelLineFirst(AValue: integer);
+// Select the given line, clear possibly existing selections.
+begin
+  Assert(AValue>=-1, 'TMessagesCtrl.SetSelectedLine: AValue < -1.');
+  //Assert(Assigned(SelectedView), 'TMessagesCtrl.SetSelectedLine: View = Nil.');
+  AValue:=Min(AValue, {SelectedView.}GetShownLineCount(false,true)-1);
+  if (FSelectedLines.Count>0) and (FSelectedLines[0]=AValue) then begin
+    //DebugLn(['TLMsgWndView.SetSelectedLine: Value ', AValue, ' already selected.']);
+    Exit;
+  end;
+  FSelectedLines.Count:=1;    // One line.
+  FSelectedLines[0]:=AValue;
+  FCursorLine:=AValue;
+  Control.Invalidate;
+end;
+
+procedure TLMsgWndView.ClearSelection;
+begin
+  FSelectedLines.Clear;
+  FCursorLine:=-1;
+end;
+
+procedure TLMsgWndView.ExtendSelection(LineNumber: integer);
+var
+  i: Integer;
+  Empty: Boolean;
+begin
+  Empty:=FSelectedLines.Count=0;
+  FSelectedLines.Count:=1; // Delete possible earlier selections except first one.
+  if Empty then
+    FSelectedLines[0]:=LineNumber  // No earlier selection.
+  else if LineNumber<FSelectedLines[0] then
+    for i:=FSelectedLines[0]-1 downto LineNumber do
+      FSelectedLines.Add(i)
+  else if LineNumber>FSelectedLines[0] then
+    for i:=FSelectedLines[0]+1 to LineNumber do
+      FSelectedLines.Add(i);
+  // if LineNumber=FSelectedLines[0] then do nothing.
+  FCursorLine:=SelLineLast;               // Cursor at last line selected.
+end;
+
+procedure TLMsgWndView.ExtendSelByOffset(Offset: integer);
+var
+  LineNro: Integer;
+begin
+  Assert(Offset<>0, 'TMessagesCtrl.ExtendSelByOffset: Offset=0');
+  if ( (Offset<0) and (FCursorLine=-1) )
+  or ( (Offset>0) and (FCursorLine=Lines.Count-1) ) then
+  begin
+    {$IFDEF VerboseMsgCtrlSelection}
+    debugln(['TMessagesCtrl.ExtendSelByOffset: Cannot extend more. Offset=', Offset,
+             ', Last=', FSelectedLines.Last]);
+    {$ENDIF}
+    Exit;
+  end;
+  LineNro:=FCursorLine+Offset;            // Cursor + offset.
+  if LineNro<-1 then
+    LineNro:=-1
+  else if LineNro>=Lines.Count then
+    LineNro:=Lines.Count-1;
+  ExtendSelection(LineNro);
+end;
+
+procedure TLMsgWndView.MoveWithoutSelecting(LineNumber: integer);
+begin
+  FCursorLine:=LineNumber;
+  Assert((FCursorLine>=-1) and (FCursorLine<Lines.Count), 'MoveWithoutSelecting: Out of bounds.');
+end;
+
+procedure TLMsgWndView.MoveWithoutSelectByOffs(Offset: integer);
+// Move cursor without changing the selection.
+begin
+  Inc(FCursorLine, Offset);
+  if FCursorLine<-1 then
+    FCursorLine:=-1
+  else if FCursorLine>=Lines.Count then
+    FCursorLine:=Lines.Count-1;
+end;
+
+procedure TLMsgWndView.SelectAll;
+var
+  i: Integer;
+begin
+  FSelectedLines.Clear;
+  for i:=0 to Lines.Count-1 do
+    FSelectedLines.Add(i);
+end;
+
+procedure TLMsgWndView.ToggleCursorLine;
+var
+  i: Integer;
+begin
+  if FSelectedLines.Count=0 then       // No existing selection.
+    i:=-1
+  else
+    i:=FSelectedLines.IndexOf(FCursorLine);
+  if i=-1 then
+    FSelectedLines.Add(FCursorLine)
+  else
+    FSelectedLines.Delete(i);          // Was already selected -> toggle.
+end;
+
+procedure TLMsgWndView.ToggleSelectedLine(LineNumber: integer);
+var
+  i: Integer;
+begin
+  if FSelectedLines.Count=0 then       // No existing selection.
+    i:=-1
+  else
+    i:=FSelectedLines.IndexOf(LineNumber);
+  if i=-1 then
+    FSelectedLines.Add(LineNumber)
+  else
+    FSelectedLines.Delete(i);          // Was already selected -> toggle.
+  FCursorLine:=LineNumber;
 end;
 
 procedure TLMsgWndView.FetchAllPending;
@@ -776,7 +978,7 @@ begin
   if Self=nil then Exit;
   MsgLine := nil;
   if aHintLastLine<0 then
-    Result := Control.GetHeaderText(Self)
+    Result := GetHeaderText
   else if aHintLastLine < Lines.Count then
     MsgLine := Lines[aHintLastLine]
   else
@@ -803,22 +1005,6 @@ begin
   FAsyncQueued:=false;
   if Application<>nil then
     Application.RemoveAsyncCalls(Self);
-end;
-
-constructor TLMsgWndView.Create(AOwner: TComponent);
-begin
-  fMessageLineClass:=TLMsgViewLine;
-  inherited Create(AOwner);
-  Lines.OnMarksFixed:=@MarksFixed;
-  FFilter:=TLMsgViewFilter.Create;
-  fPendingChanges:=TETMultiSrcChanges.Create(nil);
-end;
-
-destructor TLMsgWndView.Destroy;
-begin
-  inherited Destroy;
-  FreeAndNil(FPendingChanges);
-  FreeAndNil(FFilter);
 end;
 
 function TLMsgWndView.LineFits(Line: TMessageLine): boolean;
@@ -1065,6 +1251,56 @@ end;
 
 { TMessagesCtrl }
 
+constructor TMessagesCtrl.Create(AOwner: TComponent);
+var
+  u: TMessageLineUrgency;
+begin
+  inherited Create(AOwner);
+  ControlStyle:=ControlStyle-[csCaptureMouse]+[csReflector];
+  FOptions:=MCDefaultOptions;
+  Filters.OnChanged:=@FilterChanged;
+  FActiveFilter:=Filters[0];
+  FViews:=TFPList.Create;
+  FUpdateTimer:=TTimer.Create(Self);
+  FUpdateTimer.Name:='MsgUpdateTimer';
+  FUpdateTimer.Interval:=200;
+  FUpdateTimer.OnTimer:=@MsgUpdateTimerTimer;
+  FItemHeight:=20;
+  FSelectedView:=nil;
+  FHintLastLine:=cNotALineHint;
+  BorderWidth:=0;
+  fBackgroundColor:=MsgWndDefBackgroundColor;
+  FHeaderBackground[lmvtsRunning]:=MsgWndDefHeaderBackgroundRunning;
+  FHeaderBackground[lmvtsSuccess]:=MsgWndDefHeaderBackgroundSuccess;
+  FHeaderBackground[lmvtsFailed]:=MsgWndDefHeaderBackgroundFailed;
+  FAutoHeaderBackground:=MsgWndDefAutoHeaderBackground;
+  FTextColor:=MsgWndDefTextColor;
+  TabStop:=True;
+  ParentColor:=False;
+  FImageChangeLink:=TChangeLink.Create;
+  FImageChangeLink.OnChange:=@ImageListChange;
+  for u:=Low(TMessageLineUrgency) to high(TMessageLineUrgency) do
+    fUrgencyStyles[u]:=TMsgCtrlUrgencyStyle.Create(Self,u);
+  ShowHint:= True;
+  OnMouseMove:=@MsgCtrlMouseMove;
+  OnShowHint:=@MsgCtrlShowHint;
+end;
+
+destructor TMessagesCtrl.Destroy;
+var
+  u: TMessageLineUrgency;
+begin
+  IdleConnected:=false;
+  Images:=nil;
+  ClearViews(false);
+  FreeAndNil(FViews);
+  FreeAndNil(FUpdateTimer);
+  FreeAndNil(FImageChangeLink);
+  for u:=Low(TMessageLineUrgency) to high(TMessageLineUrgency) do
+    FreeAndNil(fUrgencyStyles[u]);
+  inherited Destroy;
+end;
+
 // inline
 function TMessagesCtrl.ViewCount: integer;
 begin
@@ -1289,24 +1525,6 @@ begin
   IdleConnected:=true;
 end;
 
-procedure TMessagesCtrl.SetSelLineFirst(AValue: integer);
-// Select the given line, clear possibly existing selections.
-begin
-  Assert(AValue>=-1, 'TMessagesCtrl.SetSelectedLine: AValue < -1.');
-  Assert(Assigned(SelectedView), 'TMessagesCtrl.SetSelectedLine: View = Nil.');
-  AValue:=Min(AValue, SelectedView.GetShownLineCount(false,true)-1);
-  if (FSelectedLines.Count>0) and (FSelectedLines[0]=AValue) then begin
-    {$IFDEF VerboseMsgCtrlSelection}
-    DebugLn(['TMessagesCtrl.SetSelectedLine: Value ', AValue, ' already selected.']);
-    {$ENDIF}
-    Exit;
-  end;
-  FSelectedLines.Count:=1;    // One line.
-  FSelectedLines[0]:=AValue;
-  FCursorLine:=AValue;
-  Invalidate;
-end;
-
 procedure TMessagesCtrl.SetSelectedView(AValue: TLMsgWndView);
 begin
   if FSelectedView=AValue then Exit;
@@ -1473,7 +1691,7 @@ end;
 
 procedure TMessagesCtrl.FilterChanged(Sender: TObject);
 begin
-  FSelectedLines.Clear;
+  ClearSelections;
   IdleConnected:=true;
 end;
 
@@ -1486,24 +1704,6 @@ begin
   {$ENDIF}
 end;
 
-function TMessagesCtrl.GetSelLineFirst: integer;
-// Return the first selected line number.
-begin
-  if FSelectedLines.Count>0 then
-    Result:=FSelectedLines[0]
-  else
-    Result:=-1;   // No selection.
-end;
-
-function TMessagesCtrl.GetSelLineLast: integer;
-// Return the last selected line number.
-begin
-  if FSelectedLines.Count>0 then
-    Result:=FSelectedLines.Last
-  else
-    Result:=-1;   // No selection.
-end;
-
 procedure TMessagesCtrl.CreateSourceMarks(View: TLMsgWndView;
   StartLineNumber: Integer);
 var
@@ -1512,6 +1712,67 @@ begin
   if SourceMarks=nil then exit;
   for i:=StartLineNumber to View.Lines.Count-1 do
     CreateSourceMark(View.Lines[i],nil);
+end;
+
+procedure TMessagesCtrl.DoAllViewsStopped;
+{off $DEFINE VerboseMsgFrame}
+
+  {$IFDEF VerboseMsgFrame}
+  procedure DbgViews;
+  var
+    i, j: Integer;
+    View: TLMsgWndView;
+    Tool: TAbstractExternalTool;
+    SrcMsg: TMessageLine;
+  begin
+    debugln(['TMessagesCtrl.DoAllViewsStopped ']);
+    debugln(['DbgViews===START========================================']);
+    for i:=0 to ViewCount-1 do
+    begin
+      View:=Views[i];
+      View.RebuildLines;
+      Tool:=View.Tool;
+      if Tool=nil then continue;
+      debugln(['DbgViews ',i,'/',ViewCount,' Tool.Title=',Tool.Title]);
+      Tool.EnterCriticalSection; // lock Tool before View
+      try
+        View.EnterCriticalSection;
+        try
+          for j:=0 to Tool.WorkerMessages.Count-1 do begin
+            SrcMsg:=Tool.WorkerMessages[j];
+            debugln(['WorkerMsg ',SrcMsg.Filename,'(',SrcMsg.Line,',',SrcMsg.Column,') ',UrgencyToStr(SrcMsg.Urgency),'/',SrcMsg.SubTool,': ',SrcMsg.Msg]);
+          end;
+          for j:=0 to View.Lines.Count-1 do begin
+            SrcMsg:=View.Lines[j];
+            debugln(['ViewMsg ',SrcMsg.Filename,'(',SrcMsg.Line,',',SrcMsg.Column,') ',UrgencyToStr(SrcMsg.Urgency),'/',SrcMsg.SubTool,': ',SrcMsg.Msg]);
+          end;
+        finally
+          View.LeaveCriticalSection;
+        end;
+      finally
+        Tool.LeaveCriticalSection;
+      end;
+    end;
+    debugln(['DbgViews===END==========================================']);
+  end;
+  {$ENDIF}
+
+var
+  CurLine: TMessageLine;
+begin
+  if Assigned(OnAllViewsStopped) then
+    OnAllViewsStopped(Self);
+  if mcoAutoOpenFirstError in Options then begin
+    CurLine:=GetSelectedMsg;
+    if (CurLine<>nil) and (CurLine.Urgency>=mluError)
+    and CurLine.HasSourcePosition then
+      exit;
+    if SelectFirstUrgentMessage(mluError,true) then
+      OpenSelection;
+  end;
+  {$IFDEF VerboseMsgFrame}
+  DbgViews;
+  {$ENDIF}
 end;
 
 function TMessagesCtrl.GetHeaderBackground(aToolState: TLMVToolState): TColor;
@@ -1654,8 +1915,8 @@ begin
       NodeRect:=Rect(0,y,ClientWidth,y+ItemHeight);
       Canvas.Brush.Color:=HeaderBackground[View.ToolState];
       Canvas.FillRect(NodeRect);
-      DrawText(NodeRect,GetHeaderText(View),
-        (fSelectedView=View) and (FSelectedLines.IndexOf(-1)>=0),TextColor);
+      DrawText(NodeRect,View.GetHeaderText,
+        {(fSelectedView=View) and} (View.FSelectedLines.IndexOf(-1)>=0),TextColor);
       Canvas.Brush.Color:=BackgroundColor;
     end;
     inc(y,ItemHeight);
@@ -1671,7 +1932,7 @@ begin
     while (j<View.Lines.Count) and (y<ClientHeight) do begin
       Line:=View.Lines[j];
       NodeRect:=Rect(Indent,y,ClientWidth,y+ItemHeight);
-      IsSelected:=(fSelectedView=View) and (FSelectedLines.IndexOf(j)>=0);
+      IsSelected:={(fSelectedView=View) and} (View.FSelectedLines.IndexOf(j)>=0);
       if not IsSelected then begin
         if (y>-ItemHeight) and (y<=0) then
           FirstLineIsNotSelectedMessage:=true
@@ -1693,7 +1954,7 @@ begin
         col:=TextColor;
       DrawText(NodeRect,GetLineText(Line),IsSelected,col);
       // cursor line
-      if (j=FCursorLine) and (fSelectedView=View) and (mcsFocused in FStates) then begin
+      if (j=View.FCursorLine) and (fSelectedView=View) and (mcsFocused in FStates) then begin
         Canvas.Pen.Style:=psDash;                           // Dash line top
         Canvas.Line(NodeRect.Left,NodeRect.Top,NodeRect.Right,NodeRect.Top);
         Canvas.Line(NodeRect.Left,NodeRect.Bottom-1,NodeRect.Right,NodeRect.Bottom-1);
@@ -1715,7 +1976,7 @@ begin
       Canvas.GradientFill(NodeRect,HeaderBackground[View.ToolState],
         AutoHeaderBackground,gdVertical);
       NodeRect:=Rect(0,0,ClientWidth,ItemHeight);
-      DrawText(NodeRect,'...'+GetHeaderText(View),false,TextColor);
+      DrawText(NodeRect,'...'+View.GetHeaderText,false,TextColor);
       Canvas.Brush.Color:=BackgroundColor;
     end;
     inc(y,ItemHeight*(View.Lines.Count-j));
@@ -1729,7 +1990,7 @@ begin
         if col=clDefault then
           col:=TextColor;
         DrawText(NodeRect,View.ProgressLine.Msg,
-          (fSelectedView=View) and (FSelectedLines.IndexOf(View.Lines.Count)>=0),col);
+          {(fSelectedView=View) and} (View.FSelectedLines.IndexOf(View.Lines.Count)>=0),col);
       end;
       inc(y,ItemHeight);
     end;
@@ -1811,15 +2072,15 @@ begin
   if GetLineAt(Y,View,LineNumber) then begin
     if not (Button in [mbLeft,mbRight]) then Exit;
     if (Button=mbLeft) and (ssCtrl in Shift) then begin
-      ToggleSelectedLine(View,LineNumber);
+      ToggleSelectedLine(View, LineNumber);
     end
     else if (Button=mbLeft) and (ssShift in Shift) then
-      ExtendSelection(View,LineNumber)
+      ExtendSelection(View, LineNumber)
     else if (Button=mbLeft) and (ssAlt in Shift) then
-      ToggleSelectedLine(View,LineNumber)
+      ToggleSelectedLine(View, LineNumber)
     else begin
       if (Button=mbLeft)
-      or (View<>SelectedView) or (FSelectedLines.IndexOf(LineNumber)=-1) then
+      or {(View<>SelectedView) or} (View.FSelectedLines.IndexOf(LineNumber)=-1) then
       begin
         if fHasHeaderHint and (Y<ItemHeight) then
           // The header is drawn on top as a hint. Select the actual header line.
@@ -1874,12 +2135,7 @@ begin
   // [Ctrl-A]
   else if (Key = VK_A) and (Shift = [ssCtrl]) then
   begin
-    if SelectedView=nil then
-      SelectFirst(true,true);
-    if SelectedView<>nil then begin
-      Select(SelectedView,-1,false,false);
-      ExtendSelection(SelectedView,SelectedView.Lines.Count-1);
-    end;
+    SelectAll;
     Key := 0;
   end
   // [Ctrl-Space]
@@ -1928,7 +2184,7 @@ begin
   end
   else if (Key = VK_HOME) and (Shift = [ssShift]) then
   begin
-    ExtendSelection(SelectedView,-1);
+    ExtendSelection(-1);
     Key := 0;
   end
   else if (Key = VK_HOME) and (Shift = [ssCtrl]) then
@@ -1944,7 +2200,7 @@ begin
   end
   else if (Key = VK_END) and (Shift = [ssShift]) then
   begin
-    ExtendSelection(SelectedView,SelectedView.Lines.Count-1);
+    ExtendSelection(SelectedView.Lines.Count-1);
     Key := 0;
   end
   else if (Key = VK_END) and (Shift = [ssCtrl]) then
@@ -1991,297 +2247,110 @@ begin
     inherited KeyDown(Key, Shift);
 end;
 
-procedure TMessagesCtrl.DoAllViewsStopped;
-{off $DEFINE VerboseMsgFrame}
-
-  {$IFDEF VerboseMsgFrame}
-  procedure DbgViews;
-  var
-    i, j: Integer;
-    View: TLMsgWndView;
-    Tool: TAbstractExternalTool;
-    SrcMsg: TMessageLine;
-  begin
-    debugln(['TMessagesCtrl.DoAllViewsStopped ']);
-    debugln(['DbgViews===START========================================']);
-    for i:=0 to ViewCount-1 do
-    begin
-      View:=Views[i];
-      View.RebuildLines;
-      Tool:=View.Tool;
-      if Tool=nil then continue;
-      debugln(['DbgViews ',i,'/',ViewCount,' Tool.Title=',Tool.Title]);
-      Tool.EnterCriticalSection; // lock Tool before View
-      try
-        View.EnterCriticalSection;
-        try
-          for j:=0 to Tool.WorkerMessages.Count-1 do begin
-            SrcMsg:=Tool.WorkerMessages[j];
-            debugln(['WorkerMsg ',SrcMsg.Filename,'(',SrcMsg.Line,',',SrcMsg.Column,') ',UrgencyToStr(SrcMsg.Urgency),'/',SrcMsg.SubTool,': ',SrcMsg.Msg]);
-          end;
-          for j:=0 to View.Lines.Count-1 do begin
-            SrcMsg:=View.Lines[j];
-            debugln(['ViewMsg ',SrcMsg.Filename,'(',SrcMsg.Line,',',SrcMsg.Column,') ',UrgencyToStr(SrcMsg.Urgency),'/',SrcMsg.SubTool,': ',SrcMsg.Msg]);
-          end;
-        finally
-          View.LeaveCriticalSection;
-        end;
-      finally
-        Tool.LeaveCriticalSection;
-      end;
-    end;
-    debugln(['DbgViews===END==========================================']);
-  end;
-  {$ENDIF}
-
-var
-  CurLine: TMessageLine;
-begin
-  if Assigned(OnAllViewsStopped) then
-    OnAllViewsStopped(Self);
-  if mcoAutoOpenFirstError in Options then begin
-    CurLine:=GetSelectedMsg;
-    if (CurLine<>nil) and (CurLine.Urgency>=mluError)
-    and CurLine.HasSourcePosition then
-      exit;
-    if SelectFirstUrgentMessage(mluError,true) then
-      OpenSelection;
-  end;
-  {$IFDEF VerboseMsgFrame}
-  DbgViews;
-  {$ENDIF}
-end;
-
-function TMessagesCtrl.SearchNext(StartView: TLMsgWndView; StartLine: integer;
-  SkipStart, Downwards: boolean; out View: TLMsgWndView; out LineNumber: integer
-  ): boolean;
-var
-  CurView: TLMsgWndView;
-  CurLine: Integer;
-  CurViewLineCnt: integer;
-  Txt: String;
-
-  function Next: boolean;
-  var
-    i: Integer;
-  begin
-    if Downwards then begin
-      inc(CurLine);
-      if CurLine>=CurViewLineCnt then begin
-        i:=IndexOfView(CurView);
-        repeat
-          inc(i);
-          if i>=ViewCount then exit(false);
-          CurView:=Views[i];
-        until CurView.HasContent;
-        CurLine:=-1;
-        CurViewLineCnt:=CurView.GetShownLineCount(true,true);
-      end;
-    end else begin
-      dec(CurLine);
-      if CurLine<-1 then begin
-        i:=IndexOfView(CurView);
-        repeat
-          dec(i);
-          if i<0 then exit(false);
-          CurView:=Views[i];
-        until CurView.HasContent;
-        CurViewLineCnt:=CurView.GetShownLineCount(true,true);
-        CurLine:=CurViewLineCnt-1;
-      end;
-    end;
-    Result:=true;
-  end;
-
-begin
-  Result:=false;
-  View:=nil;
-  LineNumber:=-1;
-  if ViewCount=0 then exit;
-  if StartView=nil then begin
-    // use default start
-    if Downwards then begin
-      StartView:=Views[0];
-      StartLine:=-1;
-    end else begin
-      StartView:=Views[ViewCount-1];
-      StartLine:=StartView.GetShownLineCount(true,true);
-    end;
-  end;
-  CurView:=StartView;
-  CurLine:=StartLine;
-  CurViewLineCnt:=CurView.GetShownLineCount(true,true);
-  // skip invalid line numbers
-  if CurLine<-1 then begin
-    SkipStart:=false;
-    if Downwards then
-      CurLine:=-1
-    else if not Next then
-      exit;
-  end else if CurLine>=CurViewLineCnt then begin
-    SkipStart:=false;
-    if Downwards then begin
-      if not Next then exit;
-    end else
-      CurLine:=CurViewLineCnt-1;
-  end;
-  // skip invalid views
-  if not CurView.HasContent then begin
-    SkipStart:=false;
-    if not Next then exit;
-  end;
-  // skip start
-  if SkipStart then
-    if not Next then exit;
-  // search
-  repeat
-    if CurLine<0 then
-      Txt:=GetHeaderText(CurView)
-    else if CurLine<CurView.Lines.Count then
-      Txt:=GetLineText(CurView.Lines[CurLine])
-    else
-      Txt:=CurView.ProgressLine.Msg;
-    Txt:=UTF8LowerCase(Txt);
-    if Pos(fLastLoSearchText,Txt)>0 then begin
-      View:=CurView;
-      LineNumber:=CurLine;
-      exit(true);
-    end;
-  until not Next;
-end;
-
-procedure TMessagesCtrl.ToggleSelectedLine(View: TLMsgWndView; LineNumber: integer);
+procedure TMessagesCtrl.ClearSelections;
 var
   i: Integer;
 begin
-  BeginUpdate;
-  SelectedView:=View;
-  if FSelectedLines.Count=0 then       // No existing selection.
-    i:=-1
-  else
-    i:=FSelectedLines.IndexOf(LineNumber);
-  if i=-1 then
-    FSelectedLines.Add(LineNumber)
-  else
-    FSelectedLines.Delete(i);          // Was already selected -> toggle.
-  FCursorLine:=LineNumber;
-  Invalidate;
-  EndUpdate;
+  for i:=0 to ViewCount-1 do
+    Views[i].ClearSelection;
 end;
 
-procedure TMessagesCtrl.ToggleCursorLine;
-var
-  i: Integer;
+procedure TMessagesCtrl.ExtendSelection(LineNumber: integer);
+// ToDo: Support selection over many views.
 begin
   BeginUpdate;
-  if FSelectedLines.Count=0 then       // No existing selection.
-    i:=-1
-  else
-    i:=FSelectedLines.IndexOf(FCursorLine);
-  if i=-1 then
-    FSelectedLines.Add(FCursorLine)
-  else
-    FSelectedLines.Delete(i);          // Was already selected -> toggle.
-  Invalidate;
-  EndUpdate;
-end;
-
-procedure TMessagesCtrl.ExtendSelection(View: TLMsgWndView; LineNumber: integer);
-var
-  i: Integer;
-  Empty: Boolean;
-begin
-  BeginUpdate;
-  SelectedView:=View;
-  if SelectedView=nil then
-    SelectFirst(true,true);
-  Empty:=FSelectedLines.Count=0;
-  FSelectedLines.Count:=1; // Delete possible earlier selections except first one.
-  if Empty then
-    FSelectedLines[0]:=LineNumber  // No earlier selection.
-  else if LineNumber<FSelectedLines[0] then
-    for i:=FSelectedLines[0]-1 downto LineNumber do
-      FSelectedLines.Add(i)
-  else if LineNumber>FSelectedLines[0] then
-    for i:=FSelectedLines[0]+1 to LineNumber do
-      FSelectedLines.Add(i);
-  // if LineNumber=FSelectedLines[0] then do nothing.
-  FCursorLine:=SelLineLast;               // Cursor at last line selected.
+  SelectedView.ExtendSelection(LineNumber);
   ScrollToLine(SelectedView,LineNumber,True);
   Invalidate;
   EndUpdate;
 end;
 
-procedure TMessagesCtrl.ExtendSelByOffset(Offset: integer);
-var
-  LineNro: Integer;
+procedure TMessagesCtrl.ExtendSelection(View: TLMsgWndView; LineNumber: integer);
 begin
-  Assert(Offset<>0, 'TMessagesCtrl.ExtendSelByOffset: Offset=0');
-  if SelectedView=nil then
-    SelectFirst(true,true);
-  if ( (Offset<0) and (FCursorLine=-1) )
-  or ( (Offset>0) and (FCursorLine=SelectedView.Lines.Count-1) ) then
-  begin
-    {$IFDEF VerboseMsgCtrlSelection}
-    debugln(['TMessagesCtrl.ExtendSelByOffset: Cannot extend more. Offset=', Offset,
-             ', Last=', FSelectedLines.Last]);
-    {$ENDIF}
-    Exit;
-  end;
-  LineNro:=FCursorLine+Offset;            // Cursor + offset.
-  if LineNro<-1 then
-    LineNro:=-1
-  else if LineNro>=SelectedView.Lines.Count then
-    LineNro:=SelectedView.Lines.Count-1;
-  ExtendSelection(SelectedView, LineNro);
+  SelectedView:=View;
+  ExtendSelection(LineNumber);
+end;
+
+procedure TMessagesCtrl.ExtendSelByOffset(Offset: integer);
+// ToDo: Support selection over many views.
+begin
+  BeginUpdate;
+  SelectedView.ExtendSelByOffset(Offset);
+  ScrollToLine(SelectedView,SelectedView.FCursorLine,True);
+  Invalidate;
+  EndUpdate;
 end;
 
 procedure TMessagesCtrl.MoveWithoutSelecting(LineNumber: integer);
+// ToDo: Support selection over many views.
 begin
-  if SelectedView=nil then
-    SelectFirst(true,true);
-  FCursorLine:=LineNumber;
-  Assert((FCursorLine>=-1) and (FCursorLine<SelectedView.Lines.Count), 'MoveWithoutSelecting: Out of bounds.');
-  ScrollToLine(SelectedView,FCursorLine,True);
+  SelectedView.MoveWithoutSelecting(LineNumber);
+  ScrollToLine(SelectedView,SelectedView.FCursorLine,True);
   Invalidate;
 end;
 
 procedure TMessagesCtrl.MoveWithoutSelectByOffs(Offset: integer);
-// Move cursor without changing the selection.
+// ToDo: Support selection over many views.
 begin
-  if SelectedView=nil then
-    SelectFirst(true,true);
-  Inc(FCursorLine, Offset);
-  if FCursorLine<-1 then
-    FCursorLine:=-1
-  else if FCursorLine>=SelectedView.Lines.Count then
-    FCursorLine:=SelectedView.Lines.Count-1;
-  ScrollToLine(SelectedView,FCursorLine,True);
+  SelectedView.MoveWithoutSelectByOffs(Offset);
+  ScrollToLine(SelectedView,SelectedView.FCursorLine,True);
   Invalidate;
+end;
+
+procedure TMessagesCtrl.ToggleCursorLine;
+begin
+  BeginUpdate;
+  SelectedView.ToggleCursorLine;
+  Invalidate;
+  EndUpdate;
+end;
+
+procedure TMessagesCtrl.ToggleSelectedLine(View: TLMsgWndView; LineNumber: integer);
+begin
+  BeginUpdate;
+  SelectedView:=View;
+  View.ToggleSelectedLine(LineNumber);
+  Invalidate;
+  EndUpdate;
 end;
 
 procedure TMessagesCtrl.Select(View: TLMsgWndView; LineNumber: integer;
   DoScroll, FullyVisible: boolean);
 begin
   BeginUpdate;
+  ClearSelections;
   SelectedView:=View;
-  SelLineFirst:=LineNumber;
+  View.SelLineFirst:=LineNumber;
   if DoScroll then
     ScrollToLine(SelectedView,LineNumber,FullyVisible);
   EndUpdate;
 end;
 
-procedure TMessagesCtrl.Select(Msg: TMessageLine; DoScroll: boolean);
+procedure TMessagesCtrl.SelectAll;
+var
+  i: Integer;
+begin
+  BeginUpdate;
+  if SelectedView=nil then
+    if not SelectFirst(true,true) then
+      exit;
+  for i:=0 to ViewCount-1 do
+    Views[i].SelectAll;
+  Invalidate;
+  EndUpdate;
+end;
+
+procedure TMessagesCtrl.SelectMsgLine(Msg: TMessageLine; DoScroll: boolean);
 begin
   BeginUpdate;
   if (Msg=nil) or (Msg.Lines=nil) or not (Msg.Lines.Owner is TLMsgWndView) then
   begin
     SelectedView:=nil;
-    FSelectedLines.Clear;
+    ClearSelections;
     Invalidate;
   end else begin
     SelectedView:=TLMsgWndView(Msg.Lines.Owner);
-    SelLineFirst:=Msg.Index;
+    SelectedView.SelLineFirst:=Msg.Index;
     if DoScroll then
       ScrollToLine(SelectedView,Msg.Index,true);
   end;
@@ -2294,7 +2363,7 @@ var
   LineNumber: integer;
 begin
   StoreSelectedAsSearchStart;
-  Result:=SearchNext(SelectedView,SelLineFirst,true,Downwards,View,LineNumber);
+  Result:=SearchNext(SelectedView,SelectedView.SelLineFirst,true,Downwards,View,LineNumber);
   if not Result then exit;
   Select(View,LineNumber,true,true);
 end;
@@ -2326,7 +2395,7 @@ begin
       Result:=true;
     end else begin
       View:=SelectedView;
-      Line:=SelLineFirst;
+      Line:=SelectedView.SelLineFirst;
       if Offset>0 then begin
         {$IFDEF VerboseMsgCtrlSelection}
         DebugLn(['TMessagesCtrl.SelectNextShown NEXT View.GetShownLineCount(false,true)=',
@@ -2428,7 +2497,7 @@ begin
   Result:=nil;
   View:=SelectedView;
   if View=nil then exit;
-  Line:=SelLineFirst;
+  Line:=View.SelLineFirst;
   if (Line<0) then exit;
   if Line<View.Lines.Count then
     Result:=View.Lines[Line]
@@ -2436,6 +2505,104 @@ begin
     Assert((Line=View.Lines.Count), 'TMessagesCtrl.GetSelectedMsg: Line is too big.');
     Result:=View.ProgressLine;
   end;
+end;
+
+function TMessagesCtrl.SearchNext(StartView: TLMsgWndView; StartLine: integer;
+  SkipStart, Downwards: boolean; out View: TLMsgWndView; out LineNumber: integer
+  ): boolean;
+var
+  CurView: TLMsgWndView;
+  CurLine: Integer;
+  CurViewLineCnt: integer;
+  Txt: String;
+
+  function Next: boolean;
+  var
+    i: Integer;
+  begin
+    if Downwards then begin
+      inc(CurLine);
+      if CurLine>=CurViewLineCnt then begin
+        i:=IndexOfView(CurView);
+        repeat
+          inc(i);
+          if i>=ViewCount then exit(false);
+          CurView:=Views[i];
+        until CurView.HasContent;
+        CurLine:=-1;
+        CurViewLineCnt:=CurView.GetShownLineCount(true,true);
+      end;
+    end else begin
+      dec(CurLine);
+      if CurLine<-1 then begin
+        i:=IndexOfView(CurView);
+        repeat
+          dec(i);
+          if i<0 then exit(false);
+          CurView:=Views[i];
+        until CurView.HasContent;
+        CurViewLineCnt:=CurView.GetShownLineCount(true,true);
+        CurLine:=CurViewLineCnt-1;
+      end;
+    end;
+    Result:=true;
+  end;
+
+begin
+  Result:=false;
+  View:=nil;
+  LineNumber:=-1;
+  if ViewCount=0 then exit;
+  if StartView=nil then begin
+    // use default start
+    if Downwards then begin
+      StartView:=Views[0];
+      StartLine:=-1;
+    end else begin
+      StartView:=Views[ViewCount-1];
+      StartLine:=StartView.GetShownLineCount(true,true);
+    end;
+  end;
+  CurView:=StartView;
+  CurLine:=StartLine;
+  CurViewLineCnt:=CurView.GetShownLineCount(true,true);
+  // skip invalid line numbers
+  if CurLine<-1 then begin
+    SkipStart:=false;
+    if Downwards then
+      CurLine:=-1
+    else if not Next then
+      exit;
+  end else if CurLine>=CurViewLineCnt then begin
+    SkipStart:=false;
+    if Downwards then begin
+      if not Next then exit;
+    end else
+      CurLine:=CurViewLineCnt-1;
+  end;
+  // skip invalid views
+  if not CurView.HasContent then begin
+    SkipStart:=false;
+    if not Next then exit;
+  end;
+  // skip start
+  if SkipStart then
+    if not Next then exit;
+  // search
+  repeat
+    if CurLine<0 then
+      Txt:=CurView.GetHeaderText
+    else if CurLine<CurView.Lines.Count then
+      Txt:=GetLineText(CurView.Lines[CurLine])
+    else
+      Txt:=CurView.ProgressLine.Msg;
+    Txt:=UTF8LowerCase(Txt);
+    if Pos(fLastLoSearchText,Txt)>0 then begin
+      View:=CurView;
+      LineNumber:=CurLine;
+      exit(true);
+    end;
+  until not Next;
 end;
 
 function TMessagesCtrl.SearchNextUrgent(StartView: TLMsgWndView;
@@ -2556,7 +2723,7 @@ var
   LineNumber: integer;
 begin
   Result:=false;
-  if not SearchNextUrgent(SelectedView,SelLineFirst,true,Downwards,
+  if not SearchNextUrgent(SelectedView,SelectedView.SelLineFirst,true,Downwards,
     aMinUrgency,WithSrcPos,View,LineNumber)
   then exit;
   Select(View,LineNumber,true,true);
@@ -2609,44 +2776,6 @@ begin
     Result+=Line.TranslatedMsg
   else
     Result+=Line.Msg;
-end;
-
-function GetStats(Lines: TMessageLines): string;
-var
-  ErrCnt, WarnCnt, HintCnt: Integer;
-  c: TMessageLineUrgency;
-begin
-  Result:='';
-  ErrCnt:=0;
-  WarnCnt:=0;
-  HintCnt:=0;
-  for c:=Low(Lines.UrgencyCounts) to high(Lines.UrgencyCounts) do begin
-    //debugln(['GetStats cat=',dbgs(c),' count=',Lines.UrgencyCounts[c]]);
-    if c>=mluError then
-      inc(ErrCnt,Lines.UrgencyCounts[c])
-    else if c=mluWarning then
-      inc(WarnCnt,Lines.UrgencyCounts[c])
-    else if c in [mluHint,mluNote] then
-      inc(HintCnt,Lines.UrgencyCounts[c]);
-  end;
-  if ErrCnt>0 then
-    Result+=Format(lisErrors2, [IntToStr(ErrCnt)]);
-  if WarnCnt>0 then
-    Result+=Format(lisWarnings, [IntToStr(WarnCnt)]);
-  if HintCnt>0 then
-    Result+=Format(lisHints, [IntToStr(HintCnt)]);
-end;
-
-function TMessagesCtrl.GetHeaderText(View: TLMsgWndView): string;
-begin
-  Result:=View.Caption;
-  if Result='' then
-    Result:=lisMenuViewMessages;
-  if View.SummaryMsg<>'' then
-    Result+=': '+View.SummaryMsg;
-  if mcoShowStats in Options then begin
-    Result+=GetStats(View.Lines);
-  end;
 end;
 
 function TMessagesCtrl.FindUnfinishedView: TLMsgWndView;
@@ -2722,59 +2851,6 @@ begin
   end;
   if Scrolled then
     dec(Result,ScrollTop);
-end;
-
-constructor TMessagesCtrl.Create(AOwner: TComponent);
-var
-  u: TMessageLineUrgency;
-begin
-  inherited Create(AOwner);
-  ControlStyle:=ControlStyle-[csCaptureMouse]+[csReflector];
-  FOptions:=MCDefaultOptions;
-  Filters.OnChanged:=@FilterChanged;
-  FActiveFilter:=Filters[0];
-  FViews:=TFPList.Create;
-  FSelectedLines:=TIntegerList.Create;
-  FUpdateTimer:=TTimer.Create(Self);
-  FUpdateTimer.Name:='MsgUpdateTimer';
-  FUpdateTimer.Interval:=200;
-  FUpdateTimer.OnTimer:=@MsgUpdateTimerTimer;
-  FItemHeight:=20;
-  FSelectedView:=nil;
-  FHintLastLine:=cNotALineHint;
-  BorderWidth:=0;
-  fBackgroundColor:=MsgWndDefBackgroundColor;
-  FHeaderBackground[lmvtsRunning]:=MsgWndDefHeaderBackgroundRunning;
-  FHeaderBackground[lmvtsSuccess]:=MsgWndDefHeaderBackgroundSuccess;
-  FHeaderBackground[lmvtsFailed]:=MsgWndDefHeaderBackgroundFailed;
-  FAutoHeaderBackground:=MsgWndDefAutoHeaderBackground;
-  FTextColor:=MsgWndDefTextColor;
-  TabStop:=True;
-  ParentColor:=False;
-  FImageChangeLink:=TChangeLink.Create;
-  FImageChangeLink.OnChange:=@ImageListChange;
-  for u:=Low(TMessageLineUrgency) to high(TMessageLineUrgency) do
-    fUrgencyStyles[u]:=TMsgCtrlUrgencyStyle.Create(Self,u);
-  ShowHint:= True;
-  OnMouseMove:=@MsgCtrlMouseMove;
-  OnShowHint:=@MsgCtrlShowHint;
-end;
-
-destructor TMessagesCtrl.Destroy;
-var
-  u: TMessageLineUrgency;
-begin
-  IdleConnected:=false;
-  Images:=nil;
-  ClearViews(false);
-
-  FreeAndNil(FSelectedLines);
-  FreeAndNil(FViews);
-  FreeAndNil(FUpdateTimer);
-  FreeAndNil(FImageChangeLink);
-  for u:=Low(TMessageLineUrgency) to high(TMessageLineUrgency) do
-    FreeAndNil(fUrgencyStyles[u]);
-  inherited Destroy;
 end;
 
 procedure TMessagesCtrl.BeginUpdate;
@@ -2925,7 +3001,7 @@ procedure TMessagesCtrl.StoreSelectedAsSearchStart;
 begin
   fLastLoSearchText:=UTF8LowerCase(FSearchText);
   fLastSearchStartView:=FSelectedView;
-  fLastSearchStartLine:=SelLineFirst;
+  fLastSearchStartLine:=FSelectedView.SelLineFirst;
 end;
 
 function TMessagesCtrl.OpenSelection: boolean;
@@ -3142,8 +3218,8 @@ begin
     // check selection
     View:=MessagesCtrl.SelectedView;
     if View<>nil then begin
-      for i:=0 to MessagesCtrl.FSelectedLines.Count-1 do begin
-        LineNumber:=MessagesCtrl.FSelectedLines[i];
+      for i:=0 to View.FSelectedLines.Count-1 do begin
+        LineNumber:=View.FSelectedLines[i];
         if LineNumber=-1 then Continue;            // header
         if LineNumber=View.Lines.Count then
           Line:=View.ProgressLine                  // progress line
@@ -3435,7 +3511,7 @@ begin
     if OnlyShown or (View.Tool=nil) then begin
       // save shown messages
       if not View.HasContent then continue;
-      s+=MessagesCtrl.GetHeaderText(View)+LineEnding;
+      s+=View.GetHeaderText+LineEnding;
       for j:=0 to View.Lines.Count-1 do
         s+=MessagesCtrl.GetLineText(View.Lines[j])+LineEnding;
     end else begin
@@ -3771,7 +3847,7 @@ begin
   try
     // The initially selected line is first in the list. The list is not sorted.
     // Here we need the line numbers sorted.
-    OrderedSelection.Assign(MessagesCtrl.FSelectedLines);
+    OrderedSelection.Assign(View.FSelectedLines);
     OrderedSelection.Sort;
     for i:=0 to OrderedSelection.Count-1 do begin
       LineNumber:=OrderedSelection[i];
@@ -3780,7 +3856,7 @@ begin
         if OnlyFilename then
           Txt:=rsResourceFileName
         else
-          Txt:=MessagesCtrl.GetHeaderText(View); // header
+          Txt:=View.GetHeaderText;               // header
       end
       else begin
         if LineNumber=View.Lines.Count then
@@ -4002,7 +4078,7 @@ begin
   if IDEQuickFixes.Count>0 then begin
     IDEQuickFixes.OnPopupMenu(SrcEditMenuSectionFirstDynamic);
     if mcoSrcEditPopupSelect in MessagesCtrl.Options then
-      MessagesCtrl.Select(BestMark.MsgLine,true);
+      MessagesCtrl.SelectMsgLine(BestMark.MsgLine,true);
   end;
 end;
 
@@ -4028,7 +4104,7 @@ end;
 
 procedure TMessagesFrame.SelectMsgLine(Msg: TMessageLine; DoScroll: boolean);
 begin
-  MessagesCtrl.Select(Msg,DoScroll);
+  MessagesCtrl.SelectMsgLine(Msg,DoScroll);
 end;
 
 function TMessagesFrame.SelectFirstUrgentMessage(
