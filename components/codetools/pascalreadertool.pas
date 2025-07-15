@@ -287,6 +287,9 @@ type
     function ExtractArrayRanges(ArrayNode: TCodeTreeNode;
         Attr: TProcHeadAttributes): string;
 
+    // enums
+    function FindEnumWithName(EnumType: TCodeTreeNode; const aName: string): TCodeTreeNode;
+
     // module sections
     function ExtractSourceName: string;
     function GetSourceNamePos(out NamePos: TAtomPosition): boolean;
@@ -3439,6 +3442,21 @@ begin
     ArrayNode:=ArrayNode.LastChild;
   until not (ArrayNode.Desc in AllArrays);
   Result:='['+Result+']';
+end;
+
+function TPascalReaderTool.FindEnumWithName(EnumType: TCodeTreeNode; const aName: string
+  ): TCodeTreeNode;
+var
+  p: PChar;
+begin
+  if (EnumType=nil) or (EnumType.Desc<>ctnEnumerationType) then
+    exit(nil);
+  Result:=EnumType.FirstChild;
+  p:=PChar(aName);
+  while Result<>nil do begin
+    if CompareIdentifiers(p,@Src[Result.StartPos])=0 then exit;
+    Result:=Result.NextBrother;
+  end;
 end;
 
 function TPascalReaderTool.PropertyIsDefault(PropertyNode: TCodeTreeNode): boolean;
