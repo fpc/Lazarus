@@ -119,3 +119,4 @@ msgstr "Kann die Projekt-Infodatei%s\"%s\"nicht schreiben.%sFehler: %s"
 #, object-pascal-format
 msgid "Unable to write the project session file%s\"%s\".%sError: %s"
 msgstr "Kann die Projekt-Sitzungsdatei %s\"%s\" nicht schreiben.%sFehler: %s"
+

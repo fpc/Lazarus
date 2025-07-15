@@ -1,9 +1,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.5\n"
 
 #: ideprojectstrconsts.dlgprojectoptions
 msgid "Project Options"
@@ -50,11 +56,11 @@ msgstr "Файл \"%s\" не найден."
 
 #: ideprojectstrconsts.lishowtoproceed
 msgid "How to proceed?"
-msgstr ""
+msgstr "Что следует сделать?"
 
 #: ideprojectstrconsts.lismultipleimagesinfo
 msgid "An icon can contain images at several sizes, but the selected file format allows only a single image per file."
-msgstr ""
+msgstr "Значок может содержать изображения нескольких размеров, но выбранный формат позволяет иметь в файле только одно изображение."
 
 #: ideprojectstrconsts.lispkgdefsnamespaces
 msgid "Namespaces"
@@ -76,15 +82,15 @@ msgstr "Метка каталога с исходным кодом проект�
 
 #: ideprojectstrconsts.lissaveallimagesizestoindividualfiles
 msgid "Save all image sizes to individual files"
-msgstr ""
+msgstr "Сохранить изображения всех размеров в отдельные файлы"
 
 #: ideprojectstrconsts.lissaveicontofile
 msgid "Save icon to file"
-msgstr ""
+msgstr "Сохранение значка в файл"
 
 #: ideprojectstrconsts.lissaveonlycurrentimagesize
 msgid "Save only current image size"
-msgstr ""
+msgstr "Сохранить только изображение текущего размера"
 
 #: ideprojectstrconsts.lisstrangelpifile
 msgid "Strange lpi file"
