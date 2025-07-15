@@ -1315,6 +1315,7 @@ var
   TVNode: TTreeNode;
   PkgName: String;
   FilteredBranch: TTreeFilterBranch;
+  lSomePackagesSkipped: boolean = false;
 begin
   NewSelectedIndex:=-1;
   LastNonSelectedIndex:=-1;
@@ -1337,14 +1338,11 @@ begin
         continue;
       end;
       if IsBasePkg(DelPackageID) then begin
-        MessageDlg(
-          lisUninstallImpossible,
-          Format(lisThePackageCanNotBeUninstalledBecauseItIsNeededByTh, [PkgName]),
-          mtError,
-          [mbCancel],
-          0
-        );
-        exit;
+        if not lSomePackagesSkipped then begin
+          lSomePackagesSkipped := true;
+          MessageDlg(lisUninstallImpossible, lisUninstBasePackagesSkipped, mtInformation, [mbOK], 0);
+        end;
+        continue;
       end;
       // ok => add to deletions
       Deletions.Add(DelPackageID);
