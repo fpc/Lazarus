@@ -3263,7 +3263,12 @@ begin
         *)
         FBaseParentClientSize.cx:= (NewBaseLeft+NewBaseWidth) +
           Round(FBaseParentClientSize.cx * AXProportion) -
-          Round((Left+Width) * AXProportion);
+          Round((Left+Width) * AXProportion)
+      else
+      if (Anchors * [akLeft, akRight] = []) then
+        FBaseParentClientSize.cx:= Round(NewBaseLeft+NewBaseWidth / 2) +
+          Round(FBaseParentClientSize.cx * AXProportion) -
+          Round((Left+Width / 2) * AXProportion);
 
       if AAHeight then
         FBaseParentClientSize.cy:=Round(FBaseParentClientSize.cy * AYProportion)
@@ -3271,7 +3276,12 @@ begin
       if  (akBottom in Anchors) then
         FBaseParentClientSize.cy:= (NewBaseTop+NewBaseHeight) +
           Round(FBaseParentClientSize.cy * AYProportion) -
-          Round((Top+Height) * AYProportion);
+          Round((Top+Height) * AYProportion)
+      else
+      if (Anchors * [akTop, akBottom] = []) then
+        FBaseParentClientSize.cy:= Round(NewBaseTop+NewBaseHeight / 2) +
+          Round(FBaseParentClientSize.cy * AYProportion) -
+          Round((Top+Height / 2) * AYProportion);
     end;
 
     SetBoundsKeepBase(NewLeft, NewTop, NewWidth, NewHeight);

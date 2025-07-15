@@ -45,6 +45,7 @@ type
     procedure DoShrinkForm(Sender: TObject);
   protected
     FForceApprox: boolean;
+    FForceApproxThreshold: integer;
     function CreateTestForm(AFormName: String; AFormCLass: TFormClass; ALfm: array of string): TForm;
     function BuildLfm(const AName, AClass: String; ALeft, ATop, AWidth, AHeight: Integer;
       AnAutoSize: Boolean = False; AnAnchors: TAnchors = [akLeft, akTop]; AnAlign: TAlign = alNone;
@@ -297,7 +298,7 @@ procedure TTestDpiScaling.AssertEquals(AMessage: string; const AMsgParam: array 
   Expected, Actual: integer; AnApprox: boolean; AnThreshold: integer);
 begin
   if AnApprox or FForceApprox then begin
-    if abs(Expected - Actual) <= AnThreshold then exit;
+    if abs(Expected - Actual) <= Max(AnThreshold, FForceApproxThreshold) then exit;
     AMessage := 'Approx: '+ AMessage;
   end
   else
@@ -310,14 +311,13 @@ procedure TTestDpiScaling.AssertPos(const AName: String; AControl: TControl; Exp
 var
   IsRight, IsCenter, IsApprox, IsUnknown: boolean;
 begin
-  // TODO: Remove: IsCenter: allow threshold of 2
   ExpLeft := DecodePos(ExpLeft, IsRight, IsCenter, IsApprox, IsUnknown);
   if not IsUnknown then begin
     if IsRight then
       AssertEquals('%s Right (%s, %s)', [AName, AControl.ClassName, AControl.Name],   ExpLeft,   AControl.Left + AControl.Width, IsApprox)
     else
     if IsCenter then
-      AssertEquals('%s X-Center (%s, %s)', [AName, AControl.ClassName, AControl.Name],   ExpLeft,   AControl.Left + AControl.Width div 2, IsApprox, 2)
+      AssertEquals('%s X-Center (%s, %s)', [AName, AControl.ClassName, AControl.Name],   ExpLeft,   AControl.Left + AControl.Width div 2, IsApprox)
     else
       AssertEquals('%s Left (%s, %s)', [AName, AControl.ClassName, AControl.Name],   ExpLeft,   AControl.Left, IsApprox);
   end;
@@ -328,7 +328,7 @@ begin
       AssertEquals('%s Bottom (%s, %s)', [AName, AControl.ClassName, AControl.Name],    ExpTop,    AControl.Top + AControl.Height, IsApprox)
     else
     if IsCenter then
-      AssertEquals('%s Y-Center (%s, %s)', [AName, AControl.ClassName, AControl.Name],    ExpTop,    AControl.Top + AControl.Height div 2, IsApprox, 2)
+      AssertEquals('%s Y-Center (%s, %s)', [AName, AControl.ClassName, AControl.Name],    ExpTop,    AControl.Top + AControl.Height div 2, IsApprox)
     else
       AssertEquals('%s Top (%s, %s)', [AName, AControl.ClassName, AControl.Name],    ExpTop,    AControl.Top, IsApprox);
   end;
@@ -514,6 +514,7 @@ begin
     *)
 
     SkipAutoSizeLbl := False;
+    FForceApproxThreshold := 0;
     if (CntrIdx in [4..7]) then begin // Autosizing parent
       if (BndIdxLeft in [0,6]) or     // outside parent / don't resize
          (BndIdxRight in [0,5,6]) or
@@ -526,6 +527,12 @@ begin
         ( (BndIdxRight in [4]) or
           (BndIdxBottom in [4]) );
     end;
+    if (CntrIdx = 6) and
+       ( (Anch * [akLeft, akRight] = []) or
+         (Anch * [akTop, akBottom] = []) )
+    then
+      FForceApproxThreshold := 2;  // TODO: Because it moves in the container, when the container grows...
+
     // TODO:
     if (Scale >= 4) and
        ( (BndIdxLeft = 4) or (BndIdxRight = 5) or  // +1 or -1 // Currently can be 1 off
@@ -593,17 +600,17 @@ begin
       0..3: begin
         TestLabel('Label1', TheForm.Label1, LblBnd, PWidth, PHeight, F, False, aaNone);
         if not SkipAutoSizeLbl then
-          TestLabel('Label2', TheForm.Label1, LblBnd, PWidth, PHeight, F, True, aaNone);
+          TestLabel('Label2', TheForm.Label2, LblBnd, PWidth, PHeight, F, True, aaNone);
       end;
       6: begin
         TestLabel('Label1', TheForm.Label1, LblBnd, PWidth, PHeight, F, False, aaParentAutoSizeGrow);
         if not SkipAutoSizeLbl then
-          TestLabel('Label2', TheForm.Label1, LblBnd, PWidth, PHeight, F, True, aaParentAutoSizeGrow);
+          TestLabel('Label2', TheForm.Label2, LblBnd, PWidth, PHeight, F, True, aaParentAutoSizeGrow);
       end;
       4..5,7: begin
         TestLabel('Label1', TheForm.Label1, LblBnd, PWidth, PHeight, F, False, aaParentAutoSize);
         if not SkipAutoSizeLbl then
-          TestLabel('Label2', TheForm.Label1, LblBnd, PWidth, PHeight, F, True, aaParentAutoSize);
+          TestLabel('Label2', TheForm.Label2, LblBnd, PWidth, PHeight, F, True, aaParentAutoSize);
       end;
     end;
 
@@ -625,7 +632,7 @@ begin
 
         TestLabel('Label1', TheForm.Label1, LblBnd, PWidth, PHeight, F2, False, aaNone);
         if not SkipAutoSizeLbl then
-          TestLabel('Label2', TheForm.Label1, LblBnd, PWidth, PHeight, F2, True, aaNone);
+          TestLabel('Label2', TheForm.Label2, LblBnd, PWidth, PHeight, F2, True, aaNone);
       end
       else begin
 
@@ -637,7 +644,7 @@ begin
         end;
         TestLabel('Label1', TheForm.Label1, LblBnd, PWidth, PHeight, 1, False, aaNone);
         if not SkipAutoSizeLbl then
-          TestLabel('Label2', TheForm.Label1, LblBnd, PWidth, PHeight, 1, True, aaNone);
+          TestLabel('Label2', TheForm.Label2, LblBnd, PWidth, PHeight, 1, True, aaNone);
 
         SendNewDPI(NormPpi, TheForm);
         case CntrIdx of
@@ -648,7 +655,7 @@ begin
 
         TestLabel('Label1', TheForm.Label1, LblBnd, PWidth, PHeight, F, False, aaNone);
         if not SkipAutoSizeLbl then
-          TestLabel('Label2', TheForm.Label1, LblBnd, PWidth, PHeight, F, True, aaNone);
+          TestLabel('Label2', TheForm.Label2, LblBnd, PWidth, PHeight, F, True, aaNone);
 
       end;
     end;
@@ -716,17 +723,17 @@ begin
           0..3: begin
             TestLabel('Label1', TheForm.Label1, LblBnd2, PWidth, PHeight, F, False, aaNone);
             if not SkipAutoSizeLbl then
-              TestLabel('Label2', TheForm.Label1, LblBnd2, PWidth, PHeight, F, True, aaNone);
+              TestLabel('Label2', TheForm.Label2, LblBnd2, PWidth, PHeight, F, True, aaNone);
           end;
           6: begin
             TestLabel('Label1', TheForm.Label1, LblBnd2, PWidth, PHeight, F, False, aaParentAutoSizeGrow);
             if not SkipAutoSizeLbl then
-              TestLabel('Label2', TheForm.Label1, LblBnd2, PWidth, PHeight, F, True, aaParentAutoSizeGrow);
+              TestLabel('Label2', TheForm.Label2, LblBnd2, PWidth, PHeight, F, True, aaParentAutoSizeGrow);
           end;
           4..5,7: begin
             TestLabel('Label1', TheForm.Label1, LblBnd2, PWidth, PHeight, F, False, aaParentAutoSize);
             if not SkipAutoSizeLbl then
-              TestLabel('Label2', TheForm.Label1, LblBnd2, PWidth, PHeight, F, True, aaParentAutoSize);
+              TestLabel('Label2', TheForm.Label2, LblBnd2, PWidth, PHeight, F, True, aaParentAutoSize);
           end;
         end;
       end;
@@ -787,6 +794,7 @@ var
 
 begin
   FForceApprox := False;
+  FForceApproxThreshold := 0;
   GlobalTestFormOnCreate := nil;
   NormPpi := Screen.PixelsPerInch;
   HalfPpi := NormPpi div 2;
