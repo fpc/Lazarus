@@ -616,7 +616,7 @@ const
 
   // $E3-$E4 OEM specific
 
-  VK_PROCESSKEY          = $E7; // IME Process key
+  VK_PROCESSKEY          = $E5; // IME Process key
 
   // $E8 Unassigned
   // $E9-$F5 OEM specific
