@@ -159,6 +159,8 @@ var
   fos: FILEOPENDIALOGOPTIONS;
 begin
   Result := inherited CreateHandle(ACommonDialog);
+  if (Result = 0) or (Result = INVALID_HANDLE_VALUE) then
+    Exit;
   if CanUseVistaDialogs(TOpenDialog(ACommonDialog)) then
   begin
     Dialog := IFileOpenDialog(Result);
@@ -201,6 +203,8 @@ var
   fos: FILEOPENDIALOGOPTIONS;
 begin
   Result := inherited CreateHandle(ACommonDialog);
+  if (Result = 0) or (Result = INVALID_HANDLE_VALUE) then
+    Exit;
   if CanUseVistaDialogs(TOpenDialog(ACommonDialog)) then
   begin
     Dialog := IFileSaveDialog(Result);
