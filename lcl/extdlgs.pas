@@ -67,6 +67,11 @@ type
 
   { TOpenPictureDialog }
 
+const
+  DefaultOpenDialogPictureOptions = DefaultOpenDialogOptions + [ofAutoPreview];
+
+type
+
   TOpenPictureDialog = class(TPreviewFileDialog)
   private
     FDefaultFilter: string;
@@ -90,6 +95,7 @@ type
     property DefaultFilter: string read FDefaultFilter;
   published
     property Filter stored IsFilterStored;
+    property Options default DefaultOpenDialogPictureOptions;
   end;
 
   { TSavePictureDialog }
@@ -395,6 +401,7 @@ end;
 constructor TOpenPictureDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+  Options := DefaultOpenDialogPictureOptions;
   FDefaultFilter := GraphicFilter(TGraphic)+'|'+
                        Format(rsAllFiles,[GetAllFilesMask, GetAllFilesMask,'']);
   Filter:=FDefaultFilter;
