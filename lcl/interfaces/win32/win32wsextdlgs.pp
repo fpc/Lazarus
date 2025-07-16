@@ -161,7 +161,7 @@ begin
   Result := inherited CreateHandle(ACommonDialog);
   if (Result = 0) or (Result = INVALID_HANDLE_VALUE) then
     Exit;
-  if CanUseVistaDialogs(TOpenDialog(ACommonDialog)) then
+  if CanUseVistaDialogs(TOpenDialog(ACommonDialog)) and not IsXPStyleFallBack(TOpenDialog(ACommonDialog)) then
   begin
     Dialog := IFileOpenDialog(Result);
     if Succeeded(Dialog.GetOptions(@fos)) then
@@ -205,7 +205,7 @@ begin
   Result := inherited CreateHandle(ACommonDialog);
   if (Result = 0) or (Result = INVALID_HANDLE_VALUE) then
     Exit;
-  if CanUseVistaDialogs(TOpenDialog(ACommonDialog)) then
+  if CanUseVistaDialogs(TOpenDialog(ACommonDialog)) and not IsXPStyleFallBack(TOpenDialog(ACommonDialog)) then
   begin
     Dialog := IFileSaveDialog(Result);
     if Succeeded(Dialog.GetOptions(@fos)) then

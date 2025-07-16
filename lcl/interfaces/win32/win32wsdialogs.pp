@@ -185,6 +185,9 @@ function UTF8StringToPWideChar(const s: string) : PWideChar;
 function UTF8StringToPAnsiChar(const s: string) : PAnsiChar;
 
 function CanUseVistaDialogs(const AOpenDialog: TOpenDialog): Boolean;
+function IsXPStyleFallBack(const AOpenDialog: TOpenDialog): Boolean;
+function IsXPStyleFallBack(const AOpenDialog: TOpenDialog; out Idx: Integer): Boolean;
+
 
 var
   cOpenDialogAllFiles: string = 'All files';
