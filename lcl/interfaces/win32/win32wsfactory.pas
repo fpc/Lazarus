@@ -443,7 +443,7 @@ end;
 
 function RegisterSavePictureDialog: Boolean; alias : 'WSRegisterSavePictureDialog';
 begin
-  RegisterWSComponent(TSavePictureDialog, TWin32WSSaveDialog);
+  RegisterWSComponent(TSavePictureDialog, TWin32WSSavePictureDialog);
   Result := True;
 end;
 
