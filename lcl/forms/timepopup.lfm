@@ -9,12 +9,11 @@ object TimePopupForm: TTimePopupForm
   Caption = 'TimePopupForm'
   ClientHeight = 185
   ClientWidth = 294
+  PopupMode = pmAuto
+  LCLVersion = '4.99.0.0'
   OnClose = FormClose
   OnCreate = FormCreate
   OnDeactivate = FormDeactivate
-  PopupMode = pmAuto
-  LCLVersion = '1.7'
-  Scaled = True
   object MainPanel: TPanel
     Left = 0
     Height = 185
@@ -28,6 +27,7 @@ object TimePopupForm: TTimePopupForm
     ClientHeight = 181
     ClientWidth = 290
     Color = clWindow
+    ParentBackground = False
     ParentColor = False
     TabOrder = 0
     UseDockManager = False
@@ -37,7 +37,6 @@ object TimePopupForm: TTimePopupForm
       Top = 1
       Width = 288
       Align = alTop
-      AutoFillColumns = True
       BorderStyle = bsNone
       Color = clBtnFace
       ColCount = 12
@@ -47,7 +46,7 @@ object TimePopupForm: TTimePopupForm
       FixedCols = 0
       FixedRows = 0
       GridLineWidth = 0
-      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goDrawFocusSelected, goSmoothScroll, goSelectionActive]
+      Options = [goFixedVertLine, goFixedHorzLine, goDrawFocusSelected, goSmoothScroll, goSelectionActive]
       RowCount = 2
       ScrollBars = ssNone
       TabOrder = 0
@@ -55,6 +54,7 @@ object TimePopupForm: TTimePopupForm
       OnDblClick = GridsDblClick
       OnKeyDown = GridsKeyDown
       OnPrepareCanvas = GridPrepareCanvas
+      OnSelectCell = HoursGridSelectCell
       ColWidths = (
         24
         24
@@ -229,16 +229,17 @@ object TimePopupForm: TTimePopupForm
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = MainPanel
       AnchorSideRight.Side = asrBottom
-      Left = 155
-      Height = 22
+      Left = 247
+      Height = 25
       Hint = 'Ctrl + >'
       Top = 125
-      Width = 134
-      Anchors = [akTop, akLeft, akRight]
+      Width = 42
+      Anchors = [akTop, akRight]
+      AutoSize = True
       BorderSpacing.Top = 5
       Caption = '>>'
-      OnClick = MoreLessBtnClick
       TabOrder = 2
+      OnClick = MoreLessBtnClick
     end
   end
 end
