@@ -19029,6 +19029,10 @@ msgstr "卸载选中的"
 msgid "Uninstall them too"
 msgstr "把它们也卸载"
 
+#: lazarusidestrconsts.lisuninstbasepackagesskipped
+msgid "Some packages were not uninstalled because they are needed by the IDE itself."
+msgstr ""
+
 #: lazarusidestrconsts.lisunithaschangedsave
 #, object-pascal-format
 msgid "Unit \"%s\" has changed. Save?"

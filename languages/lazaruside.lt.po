@@ -19469,6 +19469,10 @@ msgstr "Išdiegti pažymėtą"
 msgid "Uninstall them too"
 msgstr ""
 
+#: lazarusidestrconsts.lisuninstbasepackagesskipped
+msgid "Some packages were not uninstalled because they are needed by the IDE itself."
+msgstr ""
+
 #: lazarusidestrconsts.lisunithaschangedsave
 #, object-pascal-format
 msgid "Unit \"%s\" has changed. Save?"

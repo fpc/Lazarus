@@ -19010,6 +19010,10 @@ msgstr "Seçimi kaldır"
 msgid "Uninstall them too"
 msgstr "Onları da kaldırın"
 
+#: lazarusidestrconsts.lisuninstbasepackagesskipped
+msgid "Some packages were not uninstalled because they are needed by the IDE itself."
+msgstr ""
+
 #: lazarusidestrconsts.lisunithaschangedsave
 #, object-pascal-format
 msgid "Unit \"%s\" has changed. Save?"

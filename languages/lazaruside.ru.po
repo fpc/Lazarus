@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-07-14 22:32+0300\n"
+"PO-Revision-Date: 2025-07-17 16:09+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -19016,6 +19016,10 @@ msgstr "Удалить выбранное"
 #: lazarusidestrconsts.lisuninstallthemtoo
 msgid "Uninstall them too"
 msgstr "Удалить их тоже"
+
+#: lazarusidestrconsts.lisuninstbasepackagesskipped
+msgid "Some packages were not uninstalled because they are needed by the IDE itself."
+msgstr "Некоторые пакеты не были удалены, так как они требуются самой IDE."
 
 #: lazarusidestrconsts.lisunithaschangedsave
 #, object-pascal-format
