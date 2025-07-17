@@ -37,6 +37,8 @@ type
     procedure GridsKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure GridPrepareCanvas(sender: TObject; aCol, aRow: Integer;
       aState: TGridDrawState);
+    procedure HoursGridSelectCell(Sender: TObject; aCol, aRow: Integer;
+      var CanSelect: Boolean);
     procedure MoreLessBtnClick(Sender: TObject);
   private
     FClosed: Boolean;
@@ -44,6 +46,8 @@ type
     FSimpleLayout: Boolean;
     FPopupOrigin: TPoint;
     FCaller: TControl;
+    FAMPM: Boolean;
+    FAMPMString: array[0..1] of String;
     procedure ActivateDoubleBuffered;
     procedure CalcGridHeights;
     function GetTime: TDateTime;
@@ -60,7 +64,8 @@ type
 
 procedure ShowTimePopup(const Position: TPoint; ATime: TDateTime; const DoubleBufferedForm: Boolean;
                         const OnReturnTime: TReturnTimeEvent; const OnShowHide: TNotifyEvent = nil;
-                        SimpleLayout: Boolean = True; ACaller: TControl = nil);
+                        SimpleLayout: Boolean = True; ACaller: TControl = nil; AMPM: Boolean = false;
+                        AMString: String = ''; PMString: String = '');
 
 implementation
 
@@ -68,7 +73,8 @@ implementation
 
 procedure ShowTimePopup(const Position: TPoint; ATime: TDateTime; const DoubleBufferedForm: Boolean;
                         const OnReturnTime: TReturnTimeEvent; const OnShowHide: TNotifyEvent;
-                        SimpleLayout: Boolean; ACaller: TControl);
+                        SimpleLayout: Boolean; ACaller: TControl; AMPM: Boolean;
+                        AMString, PMString: String);
 var
   NewForm: TTimePopupForm;
   P: TPoint;
@@ -77,6 +83,9 @@ begin
   NewForm.FCaller := ACaller;
   NewForm.Initialize(Position, ATime);
   NewForm.FOnReturnTime := OnReturnTime;
+  NewForm.FAMPM := AMPM;
+  NewForm.FAMPMString[0] := AMString;
+  NewForm.FAMPMString[1] := PMString;
   NewForm.OnShow := OnShowHide;
   NewForm.OnHide := OnShowHide;
   if DoubleBufferedForm then
@@ -125,6 +134,8 @@ procedure TTimePopupForm.FormCreate(Sender: TObject);
 begin
   FClosed := False;
   FSimpleLayout := True;
+  FAMPMString[0] := 'am';
+  FAMPMString[1] := 'pm';
   Application.AddOnDeactivateHandler(@FormDeactivate);
   SetLayout(FSimpleLayout);
 end;
@@ -171,6 +182,12 @@ begin
   (Sender as TStringGrid).Canvas.TextStyle := ts;
 end;
 
+procedure TTimePopupForm.HoursGridSelectCell(Sender: TObject; aCol,
+  aRow: Integer; var CanSelect: Boolean);
+begin
+  if FAMPM and (aCol = 12) then CanSelect := false;
+end;
+
 procedure TTimePopupForm.MoreLessBtnClick(Sender: TObject);
 var
   OldMin: Integer;
@@ -200,9 +217,62 @@ begin
 end;
 
 procedure TTimePopupForm.SetLayout(SimpleLayout: Boolean);
+
+  function NeededColWidth(AGrid: TCustomGrid; AText: String): Integer;
+  var
+    C: TControlCanvas;
+  begin
+    C := TControlCanvas.Create;
+    try
+      C.Control := AGrid;
+      Result := C.TextWidth(AText) + 2*varCellPadding;
+    finally
+      C.Free;
+    end;
+  end;
+
 var
   r, c: Integer;
+  w, w1, w2, wAMPM: Integer;
+  hr: Integer;
 begin
+  HoursGrid.BeginUpdate;
+  try
+    if FAMPM then
+    begin
+      HoursGrid.ColCount := 12 + 1;
+      HoursGrid.Cells[12, 0] := FAMPMString[0];
+      HoursGrid.Cells[12, 1] := FAMPMString[1];
+      for c := 0 to 11 do
+      begin
+        if c = 0 then hr := 12 else hr := c;
+        HoursGrid.Cells[c, 0] := Format('%2d', [hr]);
+        HoursGrid.Cells[c, 1] := Format('%2d', [hr]);
+      end;
+      w := NeededColWidth(HoursGrid, '000');
+      w1 := NeededColWidth(HoursGrid, FAMPMString[0]);
+      w2 := NeededColWidth(HoursGrid, FAMPMString[1]);
+      if w1 > w2 then wAMPM := w1 else wAMPM := w2;
+      if w > wAMPM then wAMPM := w;
+      HoursGrid.DefaultColWidth := w;
+      HoursGrid.ColWidths[12] := wAMPM;
+      HoursGrid.Constraints.MinWidth := 12*w + wAMPM;
+    end else
+    begin
+      HoursGrid.ColCount := 12;
+      for c := 0 to 11 do
+      begin
+        HoursGrid.Cells[c, 0] := IntToStr(c);
+        HoursGrid.Cells[c, 1] := IntToStr(c + 12);
+      end;
+      w := NeededColWidth(HoursGrid, '000');
+      HoursGrid.DefaultColWidth := w;
+      HoursGrid.Constraints.MinWidth := 12*w;
+    end;
+  finally
+    HoursGrid.EndUpdate;
+  end;
+
   MinutesGrid.BeginUpdate;
   try
   if SimpleLayout then
