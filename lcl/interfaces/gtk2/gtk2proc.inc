@@ -7192,13 +7192,11 @@ begin
   // resize
   gtk_window_resize(Window, Width, Height);
   // reposition
-  if LockTopLevelWindowResizeOnNativeCall then
-  begin
-    gtk_window_get_position(Window, @x, @y);
-    if (x <> AWinControl.Left) or (y <> AWinControl.Top) then // for fly-wm + openbox
-      gtk_window_move(Window, AWinControl.Left, AWinControl.Top);
-  end
-  else
+  gtk_window_get_position(Window, @x, @y);
+  // dont move the control if position does not change.
+  // Required for fly-wm + openbox (refer to the LockTopLevelWindowResizeOnNativeCall method)
+  // Additionally, it required for maximized forms running on XCFE with borderless_maximize=off
+  if (x <> AWinControl.Left) or (y <> AWinControl.Top) then
     gtk_window_move(Window, AWinControl.Left, AWinControl.Top);
   // force early resize
   allocation := PGtkWidget(Window)^.allocation;
