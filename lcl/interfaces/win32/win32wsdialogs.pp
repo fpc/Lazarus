@@ -1029,7 +1029,7 @@ end;
 
 class function TWin32WSOpenDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
 var
-  Dialog: IFileDialog; //IFileOpenDialog;
+  Dialog: IFileDialog;
   HRes: HRESULT;
   DlgType: TIID;
   CLS_ID: TGUID;
@@ -1037,12 +1037,12 @@ var
 begin
   if CanUseVistaDialogs(AOpenDialog) then
   begin
-    //if (ACommonDialog is TSaveDialog) then
-    //begin
-    //  CLS_ID := CLSID_FileSaveDialog;
-    //  DlgType := IFileSaveDialog;
-    //end
-    //else
+    if (ACommonDialog.FCompStyle = csSaveFileDialog) then
+    begin
+      CLS_ID := CLSID_FileSaveDialog;
+      DlgType := IFileSaveDialog;
+    end
+    else
     begin
       CLS_ID := CLSID_FileOpenDialog;
       DlgType := IFileOpenDialog;
@@ -1143,46 +1143,8 @@ end;
 { TWin32WSSaveDialog }
 
 class function TWin32WSSaveDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
-var
-  Dialog: IFileDialog;
-  HRes: HRESULT;
-  DlgType: TIID;
-  CLS_ID: TGUID;
-  AOpenDialog: TOpenDialog absolute ACommonDialog;
 begin
-  {
-  Note: this is mostly copy-paste from TWin32WSOpenDialog.CreateHandle
-  This is necessary because TSavePictureDialog does not inherit from TSaveDialog
-  (The WS implementation inherits from TWin32WSSaveDialog though),
-  so in TWin32WSOpenDialog.CreateHandle you cannot correctly determine that
-  TSavePictureDialog needs CLSID_FileSaveDialog and IFileSaveDialog.
-  See Issue #41760
-  }
-  if CanUseVistaDialogs(AOpenDialog) then
-  begin
-    CLS_ID := CLSID_FileSaveDialog;
-    DlgType := IFileSaveDialog;
-    HRes := CoCreateInstance(CLS_ID, nil, CLSCTX_INPROC_SERVER, DlgType, Dialog);
-    if Succeeded(HRes) and Assigned(Dialog) then
-    begin
-      Dialog._AddRef;
-      TWin32WSOpenDialog.SetupVistaFileDialog(Dialog, AOpenDialog);
-      Result := THandle(Dialog);
-    end
-    else
-    begin
-      if (ofUseXPStyleAsFallback in AOpenDialog.OptionsEx) then
-      begin
-        MaybeInitXPStyleFallBackList;
-        XPStyleFallbackList.Add(ACommonDialog);
-        Result := CreateFileDialogHandle(AOpenDialog);
-      end
-      else
-        Result := INVALID_HANDLE_VALUE;
-    end;
-  end//CanUseVistaDialogs
-  else
-    Result := CreateFileDialogHandle(AOpenDialog);
+  Result := TWin32WSOpenDialog.CreateHandle(ACommonDialog);
 end;
 
 class procedure TWin32WSSaveDialog.DestroyHandle(const ACommonDialog: TCommonDialog);
