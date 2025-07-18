@@ -55,7 +55,7 @@ unit ProjectInspector;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, Math,
   // LCL
   LCLType, LCLIntf, LResources, Forms, Controls, Buttons, ComCtrls, Menus, Dialogs,
   ExtCtrls, StdCtrls, Graphics, LCLStrConsts,
@@ -927,7 +927,7 @@ end;
 
 procedure TProjectInspectorForm.FormResize(Sender: TObject);
 begin
-  PropsGroupBox.Constraints.MaxHeight := self.Height - FilterPanel.Height - ToolBar.Height - 20;
+  PropsGroupBox.Constraints.MaxHeight := max(1, self.Height - FilterPanel.Height - ToolBar.Height - 20);
 end;
 
 procedure TProjectInspectorForm.FormShow(Sender: TObject);
