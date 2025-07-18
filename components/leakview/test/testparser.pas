@@ -522,6 +522,7 @@ begin
 '==2119==    by 0x1640D46: FPLLDBDEBUGGER$_$TFPLLDBDEBUGGER_$__$$_REQUESTCOMMAND$TDBGCOMMAND$array_of_const$TMETHOD$$BOOLEAN (fplldbdebugger.pas:1006)' + FLineEnd +
 '==2119==  Address 0x24986000 is 144 bytes inside a block of size 160 in arena "client"' + FLineEnd +
 '==2119==' + FLineEnd +
+'==2119== Thread 21:' + FLineEnd +
 '==2119== Invalid read of size 8' + FLineEnd +
 '==2119==    at 0x1535916: FPDMEMORYTOOLS$_$TFPDBGMEMCACHEMANAGERSIMPLE_$__$$_HASMEMORY$TDBGPTR$LONGWORD$$BOOLEAN (fpdmemorytools.pas:708)' + FLineEnd +
 '==2119==    by 0x1535A9A: FPDMEMORYTOOLS$_$TFPDBGMEMCACHEMANAGERSIMPLE_$__$$_ADDCACHE$TDBGPTR$LONGWORD$$TFPDBGMEMCACHEBASE (fpdmemorytools.pas:737)' + FLineEnd +
@@ -969,6 +970,7 @@ el('fplldbdebugger.pas' , 1298, $1642298, '==2119==    by 0x1642298: FPLLDBDEBUG
 el('fplldbdebugger.pas' , 1006, $1640D46, '==2119==    by 0x1640D46: FPLLDBDEBUGGER$_$TFPLLDBDEBUGGER_$__$$_REQUESTCOMMAND$TDBGCOMMAND$array_of_const$TMETHOD$$BOOLEAN (fplldbdebugger.pas:1006)'),
 el(''                   ,    0, 0, '==2119==  Address 0x24986000 is 144 bytes inside a block of size 160 in arena "client"')
 ,el('',0,0,'==2119==')
+,el('',0,0,'==2119== Thread 21:')  // TODO
     ], TrcList[0]);
 
   CheckTrace('T1', [
