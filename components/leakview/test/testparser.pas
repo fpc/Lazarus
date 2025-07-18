@@ -34,6 +34,7 @@ type
     procedure CheckGdb2(TrcList: TStackTraceList; ReplHash: String = '#');
     function  TextLldb1: String;
     function  TextValgrind: String;
+    function  TextValgrind_Hel: String;
     function  TextRaw1: String;
     function  TextRaw2: String;
   published
@@ -47,6 +48,7 @@ type
     procedure TestGdb2Mantis;
     procedure TestLldb;
     procedure TestValgrind;
+    procedure TestValgrind_Hel;
     procedure TestRaw1;
     procedure TestRaw2;
   end;
@@ -578,6 +580,128 @@ begin
   ;
 end;
 
+function TTestLeakParser.TextValgrind_Hel: String;
+begin
+  Result :=
+'==33000== Helgrind, a thread error detector' + FLineEnd +
+'==33000== Copyright (C) 2007-2017, and GNU GPL''d, by OpenWorks LLP et al.' + FLineEnd +
+'==33000== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info' + FLineEnd +
+'==33000== Command: ./lazarus' + FLineEnd +
+'==33000== Parent PID: 2947' + FLineEnd +
+'==33000== ' + FLineEnd +
+'==33000== ---Thread-Announcement------------------------------------------' + FLineEnd +
+'==33000== ' + FLineEnd +
+'==33000== Thread #1 is the program''s root thread' + FLineEnd +
+'==33000== ' + FLineEnd +
+'==33000== ----------------------------------------------------------------' + FLineEnd +
+'==33000== ' + FLineEnd +
+'==33000== Thread #1 unlocked a not-locked lock at 0x143AB788' + FLineEnd +
+'==33000==    at 0x484DE5A: mutex_unlock_WRK (hg_intercepts.c:1181)' + FLineEnd +
+'==33000==    by 0x48527C8: pthread_mutex_unlock (hg_intercepts.c:1202)' + FLineEnd +
+'==33000==    by 0x449240: CTHREADS_$$_CDONECRITICALSECTION$formal (in /home/m/laz/lazgit/lazarus)' + FLineEnd +
+'==33000==    by 0x5316B89: (below main) (libc_start_call_main.h:58)' + FLineEnd +
+'==33000==  Lock at 0x143AB788 was first observed' + FLineEnd +
+'==33000==    at 0x48526EC: pthread_mutex_init (hg_intercepts.c:818)' + FLineEnd +
+'==33000==    by 0x44918B: CTHREADS_$$_CINITCRITICALSECTION$formal (in /home/m/laz/lazgit/lazarus)' + FLineEnd +
+'==33000==    by 0x1FFEFFFF67: ???' + FLineEnd +
+'==33000==    by 0x421629: SI_C_$$_MAIN_STUB (in /home/m/laz/lazgit/lazarus)' + FLineEnd +
+'==33000==    by 0x5316B89: (below main) (libc_start_call_main.h:58)' + FLineEnd +
+'==33000==  Address 0x143ab788 is 88 bytes inside a block of size 304 alloc''d' + FLineEnd +
+'==33000==    at 0x484488F: malloc (vg_replace_malloc.c:442)' + FLineEnd +
+'==33000==    by 0x44444C: CMEM_$$_CGETMEM$QWORD$$POINTER (in /home/m/laz/lazgit/lazarus)' + FLineEnd +
+'==33000==    by 0x1FFEFFFF67: ???' + FLineEnd +
+'==33000==    by 0x421629: SI_C_$$_MAIN_STUB (in /home/m/laz/lazgit/lazarus)' + FLineEnd +
+'==33000==    by 0x5316B89: (below main) (libc_start_call_main.h:58)' + FLineEnd +
+'==33000==  Block was alloc''d by thread #1' + FLineEnd +
+'==33000== ' + FLineEnd +
+'==33000== ' + FLineEnd +
+'==33000== ----------------------------------------------------------------' + FLineEnd +
+'==33000== ' + FLineEnd +
+'==33000== Thread #1''s call to pthread_mutex_unlock failed' + FLineEnd +
+'==33000==    with error code 1 (EPERM: Operation not permitted)' + FLineEnd +
+'==33000==    at 0x484DF91: mutex_unlock_WRK (hg_intercepts.c:1190)' + FLineEnd +
+'==33000==    by 0x48527C8: pthread_mutex_unlock (hg_intercepts.c:1202)' + FLineEnd +
+'==33000==    by 0x1FFEFFFF67: ???' + FLineEnd +
+'==33000==    by 0x421629: SI_C_$$_MAIN_STUB (in /home/m/laz/lazgit/lazarus)' + FLineEnd +
+'==33000==    by 0x5316B89: (below main) (libc_start_call_main.h:58)' + FLineEnd +
+'==33000== ' + FLineEnd +
+'==33000== ----------------------------------------------------------------' + FLineEnd +
+'==33000== ' + FLineEnd +
+'==33000== Thread #1 unlocked a not-locked lock at 0x145DFB08' + FLineEnd +
+'==33000==    at 0x484DE5A: mutex_unlock_WRK (hg_intercepts.c:1181)' + FLineEnd +
+'==33000==    by 0x48527C8: pthread_mutex_unlock (hg_intercepts.c:1202)' + FLineEnd +
+'==33000==    by 0x421878: main (lazarus.pp:142)' + FLineEnd +
+'==33000==  Lock at 0x145DFB08 was first observed' + FLineEnd +
+'==33000==    at 0x48526EC: pthread_mutex_init (hg_intercepts.c:818)' + FLineEnd +
+'==33000==    by 0x49EF8B: FORMS$_$TAPPLICATION_$__$$_CREATEFORM$TCOMPONENTCLASS$formal (application.inc:2283)' + FLineEnd +
+'==33000==    by 0x421878: main (lazarus.pp:142)' + FLineEnd +
+'==33000==  Address 0x145dfb08 is 88 bytes inside a block of size 304 alloc''d' + FLineEnd +
+'==33000==    at 0x484488F: malloc (vg_replace_malloc.c:442)' + FLineEnd +
+'==33000==    by 0x44444C: CMEM_$$_CGETMEM$QWORD$$POINTER (in /home/m/laz/lazgit/lazarus)' + FLineEnd +
+'==33000==    by 0x421878: main (lazarus.pp:142)' + FLineEnd +
+'==33000==  Block was alloc''d by thread #1' + FLineEnd +
+'==33000== ' + FLineEnd +
+'==33000== ' + FLineEnd +
+'==33000== ---Thread-Announcement------------------------------------------' + FLineEnd +
+'==33000== ' + FLineEnd +
+'==33000== Thread #44 was created' + FLineEnd +
+'==33000==    at 0x5401863: clone (clone.S:76)' + FLineEnd +
+'==33000==    by 0x5401920: __clone_internal (clone-internal.c:83)' + FLineEnd +
+'==33000==    by 0x49BBA4: FORMS$_$TAPPLICATION_$__$$_HANDLEMESSAGE (application.inc:1316)' + FLineEnd +
+'==33000==    by 0x49C4CE: FORMS$_$TAPPLICATION_$__$$_RUNLOOP (application.inc:1459)' + FLineEnd +
+'==33000== ' + FLineEnd +
+'==33000== ----------------------------------------------------------------' + FLineEnd +
+'==33000== ' + FLineEnd +
+'==33000==  Lock at 0x2F25650 was first observed' + FLineEnd +
+'==33000==    at 0x48526EC: pthread_mutex_init (hg_intercepts.c:818)' + FLineEnd +
+'==33000==    by 0x1FFEFFFF67: ???' + FLineEnd +
+'==33000==    by 0x421629: SI_C_$$_MAIN_STUB (in /home/m/laz/lazgit/lazarus)' + FLineEnd +
+'==33000==    by 0x5316B89: (below main) (libc_start_call_main.h:58)' + FLineEnd +
+'==33000==  Address 0x2f25650 is 0 bytes inside data symbol "U_$CLASSES_$$_THREADQUEUELOCK"' + FLineEnd +
+'==33000== ' + FLineEnd +
+'==33000== Possible data race during write of size 8 at 0x2F25630 by thread #44' + FLineEnd +
+'==33000== Locks held: 1, at address 0x2F25650' + FLineEnd +
+'==33000==    at 0x55741F: CLASSES_$$_THREADQUEUEAPPEND$TThread.PTHREADQUEUEENTRY$BOOLEAN (in /home/m/laz/lazgit/lazarus)' + FLineEnd +
+'==33000==    by 0x557A95: CLASSES$_$TTHREAD_$__$$_INTERNALQUEUE$TTHREAD$TTHREADMETHOD$BOOLEAN (in /home/m/laz/lazgit/lazarus)' + FLineEnd +
+'==33000==    by 0x537B946: start_thread (pthread_create.c:444)' + FLineEnd +
+'==33000==    by 0x5401873: clone (clone.S:100)' + FLineEnd +
+'==33000== ' + FLineEnd +
+'==33000== This conflicts with a previous read of size 8 by thread #1' + FLineEnd +
+'==33000== Locks held: none' + FLineEnd +
+'==33000==    at 0x557725: CLASSES_$$_POPTHREADQUEUEHEAD$$TThread.PTHREADQUEUEENTRY (in /home/m/laz/lazgit/lazarus)' + FLineEnd +
+'==33000==    by 0x5183A3: GTK2INT_$$_THREADSYNC_IOCALLBACK$PGIOCHANNEL$LONGINT$POINTER$$BOOLEAN32 (gtk2widgetset.inc:2021)' + FLineEnd +
+'==33000==    by 0x501D4FB: UnknownInlinedFun (gmain.c:3460)' + FLineEnd +
+'==33000==  Address 0x2f25630 is 0 bytes inside data symbol "U_$CLASSES_$$_THREADQUEUEHEAD"' + FLineEnd +
+'==33000== ' + FLineEnd +
+'==33000== ----------------------------------------------------------------' + FLineEnd +
+'==33000== ' + FLineEnd +
+'==33000==  Lock at 0x2F25650 was first observed' + FLineEnd +
+'==33000==    at 0x48526EC: pthread_mutex_init (hg_intercepts.c:818)' + FLineEnd +
+'==33000==    by 0x44918B: CTHREADS_$$_CINITCRITICALSECTION$formal (in /home/m/laz/lazgit/lazarus)' + FLineEnd +
+'==33000==    by 0x443A1B: SYSTEM_$$_SYSENTRY$TENTRYINFORMATION (in /home/m/laz/lazgit/lazarus)' + FLineEnd +
+'==33000==    by 0x1FFEFFFF67: ???' + FLineEnd +
+'==33000==    by 0x421629: SI_C_$$_MAIN_STUB (in /home/m/laz/lazgit/lazarus)' + FLineEnd +
+'==33000==    by 0x5316B89: (below main) (libc_start_call_main.h:58)' + FLineEnd +
+'==33000==  Address 0x2f25650 is 0 bytes inside data symbol "U_$CLASSES_$$_THREADQUEUELOCK"' + FLineEnd +
+'==33000== ' + FLineEnd +
+'==33000== Possible data race during write of size 8 at 0x2F25630 by thread #44' + FLineEnd +
+'==33000== Locks held: 1, at address 0x2F25650' + FLineEnd +
+'==33000==    at 0x55741F: CLASSES_$$_THREADQUEUEAPPEND$TThread.PTHREADQUEUEENTRY$BOOLEAN (in /home/m/laz/lazgit/lazarus)' + FLineEnd +
+'==33000==    by 0x557A95: CLASSES$_$TTHREAD_$__$$_INTERNALQUEUE$TTHREAD$TTHREADMETHOD$BOOLEAN (in /home/m/laz/lazgit/lazarus)' + FLineEnd +
+'==33000==    by 0x537B946: start_thread (pthread_create.c:444)' + FLineEnd +
+'==33000==    by 0x5401873: clone (clone.S:100)' + FLineEnd +
+'==33000== ' + FLineEnd +
+'==33000== This conflicts with a previous read of size 8 by thread #1' + FLineEnd +
+'==33000== Locks held: none' + FLineEnd +
+'==33000==    at 0x557725: CLASSES_$$_POPTHREADQUEUEHEAD$$TThread.PTHREADQUEUEENTRY (in /home/m/laz/lazgit/lazarus)' + FLineEnd +
+'==33000==    by 0x5183A3: GTK2INT_$$_THREADSYNC_IOCALLBACK$PGIOCHANNEL$LONGINT$POINTER$$BOOLEAN32 (gtk2widgetset.inc:2021)' + FLineEnd +
+'==33000==    by 0x49BBA4: FORMS$_$TAPPLICATION_$__$$_HANDLEMESSAGE (application.inc:1316)' + FLineEnd +
+'==33000==    by 0x49C4CE: FORMS$_$TAPPLICATION_$__$$_RUNLOOP (application.inc:1459)' + FLineEnd +
+'==33000==  Address 0x2f25630 is 0 bytes inside data symbol "U_$CLASSES_$$_THREADQUEUEHEAD"' + FLineEnd +
+'==33000== ' + FLineEnd ;
+
+end;
+
 function TTestLeakParser.TextRaw1: String;
 begin
   Result :=
@@ -905,6 +1029,25 @@ el('fppascalbuilder.pas',  684, $152D29B, '==2119==    by 0x152D29B: FPPASCALBUI
 el('fppascalbuilder.pas',  900, $152C67F, '==2119==    by 0x152C67F: FPPASCALBUILDER$_$TFPPASCALPRETTYPRINTER_$__$$_INTERNALPRINTVALUE$crc05F9855F (fppascalbuilder.pas:900)')
 ,el('',0,0,'==2119==')
     ], TrcList[2]);
+
+  TrcList.Free;
+end;
+
+procedure TTestLeakParser.TestValgrind_Hel;
+var
+  Trc: TLeakInfo;
+  TrcData: TLeakStatus;
+  TrcList: TStackTraceList;
+begin
+  FLineEnd := LineEnding;
+  Trc := AllocHeapTraceInfoFromText(TextValgrind_Hel);
+  TrcList := TStackTraceList.Create();
+  Trc.GetLeakInfo(TrcData, TrcList);
+
+  (* NOT detecting as there is no trace:
+     " Thread #1 is the program''s root thread' "
+  *)
+  AssertEquals('Has 6 traces', 6, TrcList.Count);
 
   TrcList.Free;
 end;
