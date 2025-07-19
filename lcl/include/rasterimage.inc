@@ -234,6 +234,12 @@ begin
   BitmapHandleNeeded;
   if not BitmapHandleAllocated then Exit;
 
+  if FTransparentDelayed then
+  begin
+    ApplyTransparent;
+    FTransparentDelayed := false;
+  end;
+
   if Masked then
     UseMaskHandle:=MaskHandle
   else
@@ -714,11 +720,17 @@ procedure TRasterImage.SetTransparent(AValue: Boolean);
 var
   lTransparent: Boolean;
 begin
-  lTransparent := GetTransparent();
-  if AValue = lTransparent then Exit;
-
-  FTransparentPending := AValue;
-  ApplyTransparent;
+  if not HandleAllocated then
+  begin
+    FTransparentPending := AValue;
+    FTransparentDelayed := true;
+  end else
+  begin
+   // lTransparent := GetTransparent();
+   // if AValue = lTransparent then Exit;
+    FTransparentPending := AValue;
+    ApplyTransparent;
+  end;
 end;
 
 // release handles without freeing them
