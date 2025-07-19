@@ -2462,10 +2462,6 @@ begin
         Msg := LM_WINDOWPOSCHANGED;
         Unused := WParam;
         WindowPos := PWindowPos(LParam);
-        // In certain cases CallDefaultWindowProc will sent WM_Move/Size when it shouldn't
-        // (seen when DPI changed, while window minimzied / Issue #41448 )
-        if (WindowPos^.flags and SWP_NOMOVE) <> 0 then include(WindowInfo^.flags, wiSkipMove);
-        if (WindowPos^.flags and SWP_NOSIZE) <> 0 then include(WindowInfo^.flags, wiSkipSize);
       end;
       // cross-interface compatible: complete invalidate on resize
       if (PWindowPos(LParam)^.flags and SWP_NOSIZE) = 0 then
@@ -2521,7 +2517,6 @@ begin
 
   // Update MDI form client bounds
   if WinProcess and (Msg=WM_SIZE) and Assigned(Application.MainForm)
-  and (not(wiSkipSize in WindowInfo^.flags))
   and (Application.MainForm.FormStyle=fsMDIForm)
   and Application.MainForm.HandleAllocated and (Window=Application.MainForm.Handle) then
   begin
@@ -2537,12 +2532,8 @@ begin
 
   case Msg of
     WM_ACTIVATEAPP: DoMsgActivateApp;
-    WM_MOVE: if (wiSkipMove in WindowInfo^.flags)
-             then exit(0)
-             else if DoMsgMove then Exit(0);
-    WM_SIZE: if (wiSkipSize in WindowInfo^.flags)
-             then exit(0)
-             else DoMsgSize;
+    WM_MOVE:        if DoMsgMove then Exit(0);
+    WM_SIZE:        DoMsgSize;
     BM_SETCHECK:
     begin
       //LParam holds BST_CHECKED, BST_UNCHECKED or SKIP_LMCHANGE;
@@ -2761,8 +2752,6 @@ begin
   else                               Result := PLMsg^.Result;
 
   finally
-    if Msg = WM_WINDOWPOSCHANGED then
-      WindowInfo^.flags := WindowInfo^.flags - [wiSkipSize, wiSkipMove];
     lWinControl := nil;
   end;
 end;

@@ -63,7 +63,6 @@ Type
     DrawItemIndex: integer;   // in case of listbox, when handling WM_DRAWITEM
     DrawItemSelected: boolean;// whether this item is selected LB_GETSEL not uptodate yet
     needParentPaint: boolean; // has a tabpage as parent, and is winxp themed
-    flags: set of (wiSkipSize, wiSkipMove);
     isTabPage: boolean;       // is window of tabpage
     isComboEdit: boolean;     // is buddy of combobox, the edit control
     isChildEdit: boolean;     // is buddy edit of a control
