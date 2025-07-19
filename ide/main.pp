@@ -6341,7 +6341,7 @@ function TMainIDE.CreateNewUniqueFilename(const Prefix, Ext: string;
     end;
 
     // search in project unit path
-    if FilenameIsPascalUnit(ShortFilename) then begin
+    if not Project1.IsVirtual and FilenameIsPascalUnit(ShortFilename) then begin
       aUnitName:=ExtractFileNameOnly(ShortFilename);
       InFilename:='';
       if CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(Project1.Directory,
