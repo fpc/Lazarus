@@ -357,35 +357,33 @@ function TPublisher.Compress: TModalResult;
 var
   Zipper: TZipper;
   ZipFileEntries: TZipFileEntries;
-  CurProject: TProject;
+  Drive, S: String;
   I: Integer;
-  ZipDestDir: String;
-  RelPath, Drive: String;
 begin
   Result := mrNone;
-  CurProject := TProject(FOptions.Owner);
-  if CurProject = nil then
-    Exit;
-
   ZipFileEntries := TZipFileEntries.Create(TZipFileEntry);
   try
     if DirPathExists(FDestDir) then
     begin
       for I := 0 to FCopiedFiles.Count - 1 do
       begin
-        RelPath := ExtractRelativePath(FTopDir, FCopiedFiles[I]);
-        Drive := ExtractFileDrive(RelPath);
+        S := ExtractRelativePath(FTopDir, FCopiedFiles[I]);
+        Drive := ExtractFileDrive(S);
         if Trim(Drive) <> '' then
-          RelPath := StringReplace(RelPath, AppendPathDelim(Drive), '', [rfIgnoreCase]);
-        ZipFileEntries.AddFileEntry(FDestDir + RelPath, RelPath);
+          S := StringReplace(S, AppendPathDelim(Drive), '', [rfIgnoreCase]);
+        ZipFileEntries.AddFileEntry(FDestDir + S, S);
       end;
 
       if (ZipFileEntries.Count > 0) then
       begin
         Zipper := TZipper.Create;
         try
-          ZipDestDir := AppendPathDelim(LazarusIDE.GetPrimaryConfigPath);
-          Zipper.FileName := ChangeFileExt(ZipDestDir + ExtractFileName(CurProject.ProjectInfoFile), '.zip');
+          if FProjPack is TProject then
+            S := TProject(FProjPack).ProjectInfoFile
+          else
+            S := TLazPackage(FProjPack).Filename;
+          Zipper.FileName := AppendPathDelim(LazarusIDE.GetPrimaryConfigPath)
+                           + ExtractFileNameOnly(S)+'.zip';
           try
             Zipper.ZipFiles(ZipFileEntries);
             if FileExists(Zipper.FileName) then
