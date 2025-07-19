@@ -104,7 +104,7 @@ type
     procedure TestRenameAlsoLFM_ComponentProperty;
     // todo: procedure TestRenameAlsoLFM_ComponentProperty_Foreign;  from another root component, e.g. DataModule
     // todo: procedure TestRenameAlsoLFM_CollectionProperty;
-    // todo: list property
+    procedure TestRenameAlsoLFM_ListProperty;
     procedure TestRenameAlsoLFM_ComponentClass;
     procedure TestRenameAlsoLFM_RootComponentClass;
     procedure TestRenameAlsoLFM_RootComponentName;
@@ -2579,6 +2579,54 @@ begin
   finally
     Test1LFM.IsDeleted:=true;
   end;
+end;
+
+procedure TTestRefactoring.TestRenameAlsoLFM_ListProperty;
+var
+  Test1LFM: TCodeBuffer;
+begin
+  Test1LFM:=CodeToolBoss.CreateFile(ChangeFileExt(Code.Filename,'.lfm'));
+  try
+    Test1LFM.Source:=LinesToStr([
+      'object Form1: TForm1',
+      '  object Memo1: TMemo',
+      '    Lines.Strings = (',
+      '      ''Memo1''',
+      '      ''Bla''',
+      '    )',
+      '  end',
+      'end']);
+
+    Add(LinesToStr([
+      'unit Test1;',
+      '{$mode objfpc}{$H+}',
+      'interface',
+      'uses Classes;',
+      'type',
+      '  TMemo = class(TComponent)',
+      '  published',
+      '    property Lines: TStrings;',
+      '  end;',
+      '  TForm1 = class(TComponent)',
+      '    Memo1{#Rename}: TMemo;',
+      '  end;',
+      'implementation',
+      'end.']));
+
+    RenameReferences('Input1',[frfIncludingLFM]);
+    CheckDiff(Test1LFM,[
+      'object Form1: TForm1',
+      '  object Input1: TMemo',
+      '    Lines.Strings = (',
+      '      ''Memo1''',
+      '      ''Bla''',
+      '    )',
+      '  end',
+      'end']);
+  finally
+    Test1LFM.IsDeleted:=true;
+  end;
+
 end;
 
 procedure TTestRefactoring.TestRenameAlsoLFM_ComponentClass;

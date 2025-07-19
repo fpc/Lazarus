@@ -3147,7 +3147,7 @@ var
         // ignore search/parse errors
         on E: ECodeToolError do begin
           {$IFDEF VerboseCheckLFM}
-          debugln(['Error: FindClassNodeForLFMObject [20250715122101] ',E.Message]);
+          debugln(['Error: FindClassNodeForLFMObject [20250715122101] ',FindContextToString(VarPropContext),':',E.Message]);
           {$ENDIF}
         end;
       end;
@@ -3167,7 +3167,7 @@ var
     // check classname
     TypeName:=Result.Tool.ExtractClassName(Result.Node,false);
     if not SameText(TypeName,LFMObject.TypeName) then begin
-      debugln(['Error: FindClassNodeForLFMObject [20250715122158] expected type name "',LFMObject.TypeName,'", but found "',TypeName,'"']);
+      debugln(['Error: FindClassNodeForLFMObject [20250715122158] ',FindContextToString(VarPropContext),': expected type name "',LFMObject.TypeName,'", but found "',TypeName,'"']);
       exit;
     end;
 
@@ -3175,7 +3175,7 @@ var
       // lfm has explicit unitname
       AnUnitName:=Result.Tool.GetSourceName(false);
       if not SameText(AnUnitName,LFMObject.TypeUnitName) then begin
-        debugln(['Error: FindClassNodeForLFMObject [20250715122246] expected unit name "',LFMObject.TypeUnitName,'", but found "',AnUnitName,'"']);
+        debugln(['Error: FindClassNodeForLFMObject [20250715122246] ',FindContextToString(VarPropContext),': expected unit name "',LFMObject.TypeUnitName,'", but found "',AnUnitName,'"']);
         exit;
       end;
     end;
