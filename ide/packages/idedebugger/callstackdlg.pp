@@ -724,7 +724,7 @@ begin
     if Entry = nil then Exit;
 
     cs := GetSelectedCallstack;
-    if Entry.Index = cs.NewCurrentIndex then Exit;
+    if Entry.Index = cs.CurrentIndex then Exit;
 
     cs.ChangeCurrentIndex(Entry.Index);
     if GetSelectedSnapshot <> nil
