@@ -523,6 +523,8 @@ type
 
   TWatchesNotificationList = class(TDebuggerNotificationList)
   private
+    FCurWatch: TCurrentWatch;
+    procedure DoWatchFreed(Sender: TObject);
     function GetItem(AIndex: Integer): TWatchesNotification;
   public
     procedure NotifyAdd(const ASender: TCurrentWatches; const AWatch: TCurrentWatch);
@@ -4923,6 +4925,12 @@ begin
   Result := TWatchesNotification(FList[AIndex]);
 end;
 
+procedure TWatchesNotificationList.DoWatchFreed(Sender: TObject);
+begin
+  if Sender = FCurWatch then
+    FCurWatch := nil;
+end;
+
 procedure TWatchesNotificationList.NotifyAdd(const ASender: TCurrentWatches;
   const AWatch: TCurrentWatch);
 var
@@ -4940,9 +4948,19 @@ var
   i: LongInt;
 begin
   i := Count;
-  while NextDownIndex(i) do
-    if Assigned(Items[i].OnUpdate) then
+  FCurWatch := AWatch;
+  if FCurWatch <> nil then
+    FCurWatch.AddFreeNotification(@DoWatchFreed);
+  while NextDownIndex(i) do begin
+    if Assigned(Items[i].OnUpdate) then begin
       Items[i].OnUpdate(ASender, AWatch);
+      if (AWatch <> nil) and (FCurWatch = nil) then
+        break; // watch got freed
+    end;
+  end;
+  if FCurWatch <> nil then
+    AWatch.RemoveFreeNotification(@DoWatchFreed);
+  FCurWatch := nil;
 end;
 
 procedure TWatchesNotificationList.NotifyRemove(const ASender: TCurrentWatches;
