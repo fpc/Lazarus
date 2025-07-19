@@ -20,7 +20,8 @@ interface
 
 uses
   Classes, SysUtils, DateUtils, FileUtil, LCLType, Forms, Controls,
-  Graphics, Dialogs, Grids, ExtCtrls, Buttons, StdCtrls, ActnList, WSForms;
+  Graphics, Dialogs, Grids, ExtCtrls, Buttons, StdCtrls, ActnList, WSForms,
+  ButtonPanel, ImgList;
 
 type
   TReturnTimeEvent = procedure (Sender: TObject; const ATime: TDateTime) of object;
@@ -29,10 +30,12 @@ type
   
   TTimePopupForm = class(TForm)
     Bevel1: TBevel;
+    ButtonPanel1: TButtonPanel;
     MainPanel: TPanel;
     HoursGrid: TStringGrid;
     MinutesGrid: TStringGrid;
     MoreLessBtn: TBitBtn;
+    procedure CancelButtonClick(Sender: TObject);
     procedure GridsDblClick(Sender: TObject);
     procedure GridsKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure GridPrepareCanvas(sender: TObject; aCol, aRow: Integer;
@@ -40,6 +43,7 @@ type
     procedure HoursGridSelectCell(Sender: TObject; aCol, aRow: Integer;
       var CanSelect: Boolean);
     procedure MoreLessBtnClick(Sender: TObject);
+    procedure OKButtonClick(Sender: TObject);
   private
     FClosed: Boolean;
     FOnReturnTime: TReturnTimeEvent;
@@ -70,6 +74,15 @@ procedure ShowTimePopup(const Position: TPoint; ATime: TDateTime; const DoubleBu
 implementation
 
 {$R *.lfm}
+
+type
+  TMoreLess = (mlMore, mlLess);
+
+const
+  MoreLessResNames: array[TMoreLess] of String = (
+    'sortdesc',   // Caption was: >>
+    'sortasc'     // Caption was: <<
+  );
 
 procedure ShowTimePopup(const Position: TPoint; ATime: TDateTime; const DoubleBufferedForm: Boolean;
                         const OnReturnTime: TReturnTimeEvent; const OnShowHide: TNotifyEvent;
@@ -132,6 +145,8 @@ end;
 
 procedure TTimePopupForm.FormCreate(Sender: TObject);
 begin
+  MoreLessBtn.Images := LCLGlyphs;
+  MoreLessBtn.Caption := '';
   FClosed := False;
   FSimpleLayout := True;
   FAMPMString[0] := 'am';
@@ -152,6 +167,11 @@ end;
 procedure TTimePopupForm.GridsDblClick(Sender: TObject);
 begin
   ReturnTime;
+end;
+
+procedure TTimePopupForm.CancelButtonClick(Sender: TObject);
+begin
+  Close;
 end;
 
 procedure TTimePopupForm.GridsKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -201,7 +221,7 @@ begin
 
     MinutesGrid.Col := OldMin mod 5;
     MinutesGrid.Row := OldMin div 5;
-    MoreLessBtn.Caption := '<<';
+    MoreLessBtn.ImageIndex := LCLGlyphs.GetImageIndex(MoreLessResNames[mlLess]);
   end
   else
   begin
@@ -212,8 +232,13 @@ begin
     SetLayout(True);
     MinutesGrid.Col := (OldMin mod 30) div 5;
     MinutesGrid.Row := OldMin div 30;
-    MoreLessBtn.Caption := '>>';
+    MoreLessBtn.ImageIndex := LCLGlyphs.GetImageIndex(MoreLessResNames[mlMore]);
   end;
+end;
+
+procedure TTimePopupForm.OKButtonClick(Sender: TObject);
+begin
+  ReturnTime;
 end;
 
 procedure TTimePopupForm.SetLayout(SimpleLayout: Boolean);
@@ -277,7 +302,7 @@ begin
   try
   if SimpleLayout then
   begin
-    MoreLessBtn.Caption := '>>';
+    MoreLessBtn.ImageIndex := LCLGlyphs.GetImageIndex(MoreLessResNames[mlMore]);
     MinutesGrid.RowCount := 2;
     MinutesGrid.ColCount := 6;
     for r := 0 to MinutesGrid.RowCount - 1 do
@@ -289,7 +314,7 @@ begin
   end
   else
   begin
-    MoreLessBtn.Caption := '<<';
+    MoreLessBtn.ImageIndex := LCLGlyphs.GetImageIndex(MoreLessResNames[mlLess]);
     MinutesGrid.RowCount := 12;
     MinutesGrid.ColCount := 5;
     for r := 0 to MinutesGrid.RowCount - 1 do
