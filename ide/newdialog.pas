@@ -190,6 +190,9 @@ var
   AnUnitInfo: TUnitInfo;
   InhCompItem: TFileDescInheritedComponent;
 begin
+  if not ButtonPanel.OKButton.IsEnabled then
+    exit;
+
   ANode := ItemsTreeView.Selected;
   if (ANode = nil) or (ANode.Data = nil) or
     (not (TObject(ANode.Data) is TNewIDEItemTemplate)) then
