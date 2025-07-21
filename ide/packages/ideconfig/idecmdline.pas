@@ -173,12 +173,22 @@ var
   procedure ExpandCfgFilename(var aParam: string);
   // expand relative filenames in lazarus.cfg using the path of the cfg, not the currentdir
   var
-    i: Integer;
+    i, l: Integer;
     aFilename: String;
   begin
     for i:=low(LazFileOpts) to high(LazFileOpts) do
       if LazStartsText(LazFileOpts[i],aParam) then begin
         aFilename:=copy(aParam,length(LazFileOpts[i])+1,length(aParam));
+        // remove quotes
+        l := length(aFilename);
+        if l >= 2 then
+        begin
+          if ((aFilename[1]='"' ) and (aFilename[l]='"' )) or
+             ((aFilename[1]='''') and (aFilename[l]=''''))
+          then
+            aFilename := copy(aFilename, 2, length(aFilename) - 2);
+        end;
+        //
         aFilename:=ExpandFileNameUTF8(aFilename,CfgDir);
         aParam:=LazFileOpts[i]+aFilename;
         //debugln(['ExpandCfgFilename ',aParam]);
