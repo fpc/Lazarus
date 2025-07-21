@@ -963,6 +963,9 @@ implementation
 const
   DTEpsilon = Double(1.0)/(24*3600*1000*10); //0.1 millisec (0.000000001157407407);
 
+  DEFAULT_TIMEAMSTRING = 'am';
+  DEFAULT_TIMEPMSTRING = 'pm';
+
 { TEditSpeedButton }
 
 procedure TEditSpeedButton.GlyphChanged(Sender: TObject);
@@ -2368,8 +2371,8 @@ begin
   Result := DefaultFormatSettings;
   Result.TimeSeparator := UsedTimeSeparator;
   Result.ShortTimeFormat := UsedTimeFormat;
-  Result.TimeAMString := TimeAMString;
-  Result.TimePMString := TimePMString;
+  Result.TimeAMString := UsedTimeAMString;
+  Result.TimePMString := UsedTimePMString;
 end;
 
 function TTimeEdit.UsedTimeAMString: String;
@@ -2380,9 +2383,9 @@ begin
       Result := DefaultFormatSettings.TimeAMString
     else
       Result := TimeAMString;
-    if Result = '' then Result := 'am';
+    if Result = '' then Result := DEFAULT_TIMEAMSTRING;
   end else
-    Result := 'am';
+    Result := DEFAULT_TIMEAMSTRING;
 end;
 
 function TTimeEdit.UsedTimeFormat: String;
@@ -2401,9 +2404,9 @@ begin
       Result := DefaultFormatSettings.TimePMString
     else
       Result := TimePMString;
-    if Result = '' then Result := 'pm';
+    if Result = '' then Result := DEFAULT_TIMEPMSTRING;
   end else
-    Result := 'pm';
+    Result := DEFAULT_TIMEPMSTRING;
 end;
 
 function TTimeEdit.UsedTimeSeparator: Char;
