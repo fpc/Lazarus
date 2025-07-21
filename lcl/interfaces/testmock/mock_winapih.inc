@@ -1,4 +1,4 @@
-{%MainUnit TestMockInt}
+{%MainUnit testmockint.pp}
 
 (******************************************************************************
   All Winapi related MOCKING goes here.

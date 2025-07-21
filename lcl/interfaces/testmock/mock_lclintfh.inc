@@ -1,4 +1,4 @@
-{%MainUnit TestMockInt}
+{%MainUnit testmockint.pp}
 
 (******************************************************************************
   All interface communication related MOCKING goes here.
