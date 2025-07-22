@@ -246,10 +246,10 @@ begin
 
   SynEdit.CommandProcessor(Cmd, '', nil);
   TestIsFullText(Format('Cmd at (%d,%d) %s / %s', [X, Y, FName, AName]), Exp);
-  AssertEquals(Format('Cmd at (%d,%d) %s / %s - Sync Running', [X, Y, FName, AName]), SyncRunning, FCurModule^.Active );
+  AssertEquals('Cmd at (%d,%d) %s / %s - Sync Running', [X, Y, FName, AName], SyncRunning, FCurModule^.Active );
 
   if ExpCurCell <> -99 then
-    AssertEquals(Format('Cmd at (%d,%d) %s / %s CurrentCell', [X, Y, FName, AName]), ExpCurCell, CurrentCell);
+    AssertEquals('Cmd at (%d,%d) %s / %s CurrentCell', [X, Y, FName, AName], ExpCurCell, CurrentCell);
   if ExpCells <> nil then
     CheckCells(Format('Cmd at (%d,%d) %s / %s', [X, Y, FName, AName]), ExpCells);
 
@@ -279,10 +279,10 @@ begin
 debugln(['!!!! key']);
   DoKeyPress(Key, Shift);
   TestIsFullText(Format('KeyPress at (%d,%d) %s / %s', [X, Y, FName, AName]), Exp);
-  AssertEquals(Format('KeyPress at (%d,%d) %s / %s - Sync Running', [X, Y, FName, AName]), SyncRunning, FCurModule^.Active );
+  AssertEquals('KeyPress at (%d,%d) %s / %s - Sync Running', [X, Y, FName, AName], SyncRunning, FCurModule^.Active );
 
   if ExpCurCell <> -99 then
-    AssertEquals(Format('KeyPress at (%d,%d) %s / %s CurrentCell', [X, Y, FName, AName]), ExpCurCell, CurrentCell);
+    AssertEquals('KeyPress at (%d,%d) %s / %s CurrentCell', [X, Y, FName, AName], ExpCurCell, CurrentCell);
   if ExpCells <> nil then
     CheckCells(Format('KeyPress at (%d,%d) %s / %s', [X, Y, FName, AName]), ExpCells);
 
@@ -312,10 +312,10 @@ begin
 
   DoKeyPress(Key, Shift);
   TestIsFullText(Format('KeyPress+Sel at (%d,%d) %s / %s', [X, Y, FName, AName]), Exp);
-  AssertEquals(Format('KeyPress+Sel at (%d,%d) %s / %s - Sync Running', [X, Y, FName, AName]), SyncRunning, FCurModule^.Active );
+  AssertEquals('KeyPress+Sel at (%d,%d) %s / %s - Sync Running', [X, Y, FName, AName], SyncRunning, FCurModule^.Active );
 
   if ExpCurCell <> -99 then
-    AssertEquals(Format('KeyPress+Sel at (%d,%d) %s / %s CurrentCell', [X, Y, FName, AName]), ExpCurCell, CurrentCell);
+    AssertEquals('KeyPress+Sel at (%d,%d) %s / %s CurrentCell', [X, Y, FName, AName], ExpCurCell, CurrentCell);
   if ExpCells <> nil then
     CheckCells(Format('KeyPress+Sel at (%d,%d) %s / %s', [X, Y, FName, AName]), ExpCells);
 
@@ -341,7 +341,7 @@ debugln(['!!!! undo',j]);
       TestIsCaret(Format('%s UNDONE %d', [AName, j]), FExpectUndoneList[l-j].Caret.x, FExpectUndoneList[l-j].Caret.y);
       if SyncRunning then begin // no cells, if expected to have gone inactive
         CheckCells(Format('%s UNDONE %d Cells', [AName, j]), FExpectUndoneList[l-j].CellData);
-        AssertEquals(Format('%s UNDONE %d CurCell', [AName, j]), FExpectUndoneList[l-j].CurrentCell, CurrentCell);
+        AssertEquals('%s UNDONE %d CurCell', [AName, j], FExpectUndoneList[l-j].CurrentCell, CurrentCell);
       end;
     end;
 
@@ -357,7 +357,7 @@ debugln(['!!!! redo',j]);
 
       if SyncRunning then begin
         if FExpectUndoneList[l-j].ExpCurrentCell <> -99 then
-          AssertEquals(Format('%s UNDONE %d CurrentCell', [AName, j]), FExpectUndoneList[l-j].ExpCurrentCell, CurrentCell);
+          AssertEquals('%s UNDONE %d CurrentCell', [AName, j], FExpectUndoneList[l-j].ExpCurrentCell, CurrentCell);
         if FExpectUndoneList[l-j].ExpCellData <> nil then
           CheckCells(Format('%s UNDONE %d Cells', [AName, j]), FExpectUndoneList[l-j].ExpCellData);
       end;
@@ -365,7 +365,7 @@ debugln(['!!!! redo',j]);
     end;
     TestIsFullText(Format('%s REDONE', [AName]), Exp);
 
-    AssertEquals(Format('%s - REDONE Sync Running', [AName]), SyncRunning, FCurModule^.Active );
+    AssertEquals('%s - REDONE Sync Running', [AName], SyncRunning, FCurModule^.Active );
   end;
 end;
 

@@ -141,10 +141,10 @@ var
   i: Integer;
 begin
   for i := 0 to high(Expected) do
-    AssertEquals(Name + 'OpenCount Line OLD='+IntToStr(i),  Expected[i], FTheHighLighter.FoldOpenCount(i));
+    AssertEquals('%s OpenCount Line OLD%d=', [Name, i], Expected[i], FTheHighLighter.FoldOpenCount(i));
 
   for i := 0 to high(Expected) do
-    AssertEquals(Name + 'OpenCount Line='+IntToStr(i),  Expected[i], FTheHighLighter.FoldBlockOpeningCount(i));
+    AssertEquals('%s OpenCount Line=%d', [Name, i],  Expected[i], FTheHighLighter.FoldBlockOpeningCount(i));
 end;
 
 procedure TTestBaseHighlighterFoldBase.CheckFoldLengths(Name: String;
@@ -154,7 +154,7 @@ var
 begin
   for i := 0 to high(Expected) do
     for j := 0 to high(Expected[i].Exp) do
-      AssertEquals(Name + 'FoldLength Line='+IntToStr(Expected[i].Line) + ' idx='+IntToStr(j),
+      AssertEquals('%s FoldLength Line=%d idx=%d', [Name, Expected[i].Line, j],
         Expected[i].Exp[j], FTheHighLighter.FoldLineLength(Expected[i].Line, j));
 end;
 
@@ -165,7 +165,7 @@ var
 begin
   for i := 0 to high(Expected) do
     for j := 0 to high(Expected[i].Exp) do
-      AssertEquals(Name + 'FoldEnd Line='+IntToStr(Expected[i].Line) + ' idx='+IntToStr(j),
+      AssertEquals('%s FoldEnd Line=%d idx=%d', [Name, Expected[i].Line, j],
         Expected[i].Exp[j], FTheHighLighter.FoldEndLine(Expected[i].Line, j));
 end;
 
@@ -183,13 +183,13 @@ var
 begin
   for i := 0 to high(Expected) do begin
     l := FTheHighLighter.FoldNodeInfo[i];
-    AssertEquals(Name + 'InfoCount(Ex) Line='+IntToStr(i),
+    AssertEquals('%s InfoCount(Ex) Line=%d', [Name, i],
                  Expected[i],
                  l.CountEx(Filter, Group));
     l.ClearFilter;
     l.ActionFilter := Filter;
     l.GroupFilter := Group;
-    AssertEquals(Name + 'InfoCount Line='+IntToStr(i),
+    AssertEquals('%s InfoCount Line=%d', [Name, i],
                  Expected[i],
                  FTheHighLighter.FoldNodeInfo[i].Count);
   end;
@@ -221,15 +221,15 @@ begin
     //DebugLn([FTheHighLighter.GetToken,' (',FTheHighLighter.GetTokenKind ,') at ', FTheHighLighter.GetTokenPos]);
 
     if etiKind in e.Flags then
-      AssertEquals(Name + ' ASSERT token-kind @ TokenId Line='+IntToStr(LineIdx)+' pos='+IntToStr(c)+' Src='+FTheHighLighter.GetToken+' @'+IntToStr(FTheHighLighter.GetTokenPos),
+      AssertEquals('%s ASSERT token-kind @ TokenId Line=%d pos=%d Src=%s @ %d', [Name, LineIdx, c, FTheHighLighter.GetToken, FTheHighLighter.GetTokenPos],
         e.ExpKind, FTheHighLighter.GetTokenKind);
 
     GotAttr := FTheHighLighter.GetTokenAttributeEx;
     if etiAttr in e.Flags then
-      AssertEquals(Name + ' Attr @ TokenId Line='+IntToStr(LineIdx)+' pos='+IntToStr(c)+' Src='+FTheHighLighter.GetToken+' @'+IntToStr(FTheHighLighter.GetTokenPos),
+      AssertEquals('%s Attr @ TokenId Line=%d pos=%d Src=%s @ %d', [Name, LineIdx, c, FTheHighLighter.GetToken, FTheHighLighter.GetTokenPos],
         AttrVal(e.ExpAttr), AttrVal(GotAttr))
     else
-      AssertTrue(Name + ' Attr is NOT modifier @ TokenId Line='+IntToStr(LineIdx)+' pos='+IntToStr(c)+' Src='+FTheHighLighter.GetToken+' @'+IntToStr(FTheHighLighter.GetTokenPos),
+      AssertTrue('%s Attr is NOT modifier @ TokenId Line=%d pos=%d Src=%s @ %d', [Name, LineIdx, c, FTheHighLighter.GetToken, FTheHighLighter.GetTokenPos],
         (GotAttr=nil) or (not (GotAttr is TSynHighlighterAttributesModifier)) );
 
     FTheHighLighter.Next;
@@ -237,7 +237,7 @@ begin
     if c >= length(ExpTokens) then
       break;
   end;
-  AssertEquals(Name+ 'TokenId Line='+IntToStr(LineIdx)+'  amount of tokens', length(ExpTokens), c );
+  AssertEquals('%s TokenId Line=%d  amount of tokens', [Name, LineIdx], length(ExpTokens), c );
 end;
 
 function TTestBaseHighlighterFoldBase.FoldActionsToString(AFoldActions: TSynFoldActions): String;

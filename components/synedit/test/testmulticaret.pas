@@ -465,15 +465,15 @@ procedure TTestMultiCaret.CaretList;
     for i := 0 to high(a) do begin
       c.AddCaret(1,a[i],0);
       for j := 1 to c.Count-1 do
-        AssertTrue(Format(name+' Test %d %d', [i, j]), c.Caret[j].y > c.Caret[j-1].y);
+        AssertTrue(name+' Test %d %d', [i, j], c.Caret[j].y > c.Caret[j-1].y);
     end;
 
     c.Clear;
     for i := 0 to high(a) do begin
       k := c.AddCaret(1,a[i],0);
-      AssertEquals(Format(name+' Test %d %d', [i, j]),a[i], c.Caret[k].y);
+      AssertEquals(name+' Test %d %d', [i, j],a[i], c.Caret[k].y);
       for j := 1 to c.Count-1 do
-        AssertTrue(Format(name+' Test %d %d', [i, j]), c.Caret[j].y > c.Caret[j-1].y);
+        AssertTrue(name+' Test %d %d', [i, j], c.Caret[j].y > c.Caret[j-1].y);
     end;
 
     c.Clear;
@@ -481,14 +481,14 @@ procedure TTestMultiCaret.CaretList;
       c.AddCaret(1,a[i],0);
     end;
     for j := 1 to c.Count-1 do
-      AssertTrue(Format(name+' Test %d %d', [i, j]), c.Caret[j].y > c.Caret[j-1].y);
+      AssertTrue(name+' Test %d %d', [i, j], c.Caret[j].y > c.Caret[j-1].y);
 
     c.Clear;
     for i := high(a) downto 0 do begin
       k := c.AddCaret(1,a[i],0);
-      AssertEquals(Format(name+' Test %d %d', [i, j]),a[i], c.Caret[k].y);
+      AssertEquals(name+' Test %d %d', [i, j],a[i], c.Caret[k].y);
       for j := 1 to c.Count-1 do
-        AssertTrue(Format(name+' Test %d %d', [i, j]), c.Caret[j].y > c.Caret[j-1].y);
+        AssertTrue(name+' Test %d %d', [i, j], c.Caret[j].y > c.Caret[j-1].y);
     end;
 
 
@@ -497,15 +497,15 @@ procedure TTestMultiCaret.CaretList;
         c.Clear;
         for i := 0 to m do begin
           k := c.AddCaret(1,a[i],0);
-          AssertEquals(Format(name+' Test %d %d', [i, j]),a[i], c.Caret[k].y);
+          AssertEquals(name+' Test %d %d', [i, j],a[i], c.Caret[k].y);
         end;
         for j := 1 to c.Count-1 do
-          AssertTrue(Format(name+' Test %d %d', [i, j]), c.Caret[j].y > c.Caret[j-1].y);
+          AssertTrue(name+' Test %d %d', [i, j], c.Caret[j].y > c.Caret[j-1].y);
         k := c.Caret[n].y;
         c.RemoveCaret(n);
         for j := 1 to c.Count-1 do begin
-          AssertTrue(Format(name+' Test %d %d', [i, j]), c.Caret[j].y > c.Caret[j-1].y);
-          AssertTrue(Format(name+' Test %d %d', [i, j]), c.Caret[j].y <> k);
+          AssertTrue(name+' Test %d %d', [i, j], c.Caret[j].y > c.Caret[j-1].y);
+          AssertTrue(name+' Test %d %d', [i, j], c.Caret[j].y <> k);
         end;
 
 

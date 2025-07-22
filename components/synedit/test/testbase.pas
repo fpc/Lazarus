@@ -121,6 +121,11 @@ type
     procedure SetUp; override;
     procedure TearDown; override;
   public
+    class procedure AssertTrue(const AMessage: string; ACondition: boolean; AErrorAddrs: Pointer = nil); overload;
+    class procedure AssertTrue(const AMessage: string; const AFormatArgs: array of const; ACondition: boolean; AErrorAddrs: Pointer = nil); overload;
+    class procedure AssertEquals(const AMessage: string; Expected, Actual: integer); overload;
+    class procedure AssertEquals(const AMessage: string; const AFormatArgs: array of const; Expected, Actual: integer); overload;
+  public
     procedure TestIsCaret(Name: String; X, Y: Integer); // logical caret
     procedure TestIsCaret(Name: String; X, Y, Offs: Integer); // logical caret
     procedure TestIsCaretPhys(Name: String; X, Y: Integer);
@@ -309,6 +314,33 @@ begin
   FreeAndNil(FSharedSynEdit);
   FreeAndNil(FSynEdit);
   FreeAndNil(FForm);
+end;
+
+class procedure TTestBase.AssertTrue(const AMessage: string; ACondition: boolean;
+  AErrorAddrs: Pointer);
+begin
+  if ACondition then exit;
+  inherited AssertTrue(AMessage, ACondition, AErrorAddrs);
+end;
+
+class procedure TTestBase.AssertTrue(const AMessage: string; const AFormatArgs: array of const;
+  ACondition: boolean; AErrorAddrs: Pointer);
+begin
+  if ACondition then exit;
+  inherited AssertTrue(Format(AMessage, AFormatArgs), ACondition, AErrorAddrs);
+end;
+
+class procedure TTestBase.AssertEquals(const AMessage: string; Expected, Actual: integer);
+begin
+  if Actual = Expected then exit;
+  inherited AssertEquals(AMessage, Expected, Actual);
+end;
+
+class procedure TTestBase.AssertEquals(const AMessage: string; const AFormatArgs: array of const;
+  Expected, Actual: integer);
+begin
+  if Actual = Expected then exit;
+  inherited AssertEquals(Format(AMessage, AFormatArgs), Expected, Actual);
 end;
 
 procedure TTestBase.TestIsCaret(Name: String; X, Y: Integer);

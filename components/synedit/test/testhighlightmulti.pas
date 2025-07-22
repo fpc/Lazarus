@@ -299,7 +299,7 @@ var
     i: Integer;
   begin
     i := sl.IndexOfFirstSectionAtLineIdx(y1, x1, True);
-    AssertEquals(Format('%s / Insert %d,%d - %d,%d at Pos %d', [Name, Y1, X1, Y2, X2, ExpectInsPos]),
+    AssertEquals('%s / Insert %d,%d - %d,%d at Pos %d', [Name, Y1, X1, Y2, X2, ExpectInsPos],
       ExpectInsPos, i);
     s.StartPos.y := y1;
     s.StartPos.x := x1;
@@ -323,13 +323,13 @@ var
   const BoolName: Array [Boolean] of String = ('F', 'T');
   begin
     //debugln([Format('===== %s / %s: Sect %d, %d (%s)', [Name, AName, Y, X, BoolName[UseNext]])]);
-    AssertEquals(Format('%s / %s: %d, %d (%s)', [Name, AName, Y, X, BoolName[UseNext]]),
+    AssertEquals('%s / %s: %d, %d (%s)', [Name, AName, Y, X, BoolName[UseNext]],
       Expected, sl.IndexOfFirstSectionAtLineIdx(Y, X, UseNext));
   end;
   procedure TestIndex(AName: String; V: Integer; Expected: Integer);
   begin
     //debugln([Format('===== %s / %s: %d, %d (%s)', [Name, AName, Y, X, BoolName[UseNext]])]);
-    AssertEquals(Format('%s / %s: Virtual %d', [Name, AName, V]),
+    AssertEquals('%s / %s: Virtual %d', [Name, AName, V],
       Expected, sl.IndexOfFirstSectionAtVirtualIdx(V));
   end;
 
@@ -547,7 +547,7 @@ var
   begin
     sl := vl.SectionList;
     i := sl.IndexOfFirstSectionAtLineIdx(y1, x1, True);
-    AssertEquals(Format('%s / Insert %d,%d - %d,%d at Pos %d', [Name, Y1, X1, Y2, X2, ExpectInsPos]),
+    AssertEquals('%s / Insert %d,%d - %d,%d at Pos %d', [Name, Y1, X1, Y2, X2, ExpectInsPos],
       ExpectInsPos, i);
     s.StartPos.y := y1;
     s.StartPos.x := x1;
@@ -561,9 +561,9 @@ var
   var
     i: Integer;
   begin
-    AssertEquals(Format('%s / %s: Count', [Name, AName]), length(ExpLines), vl.Count);
+    AssertEquals('%s / %s: Count', [Name, AName], length(ExpLines), vl.Count);
     for i := 0 to high(ExpLines) do
-      AssertEquals(Format('%s / %s: Line %d', [Name, AName, i]), ExpLines[i], vl[i]);
+      AssertEquals('%s / %s: Line %d', [Name, AName, i], ExpLines[i], vl[i]);
   end;
 
   procedure InitVRange;
@@ -576,10 +576,10 @@ var
   var
     i: Integer;
   begin
-    AssertEquals(Format('%s / %s: Range-Count', [Name, AName]), length(ExpRanges), r.Count);
+    AssertEquals('%s / %s: Range-Count', [Name, AName], length(ExpRanges), r.Count);
     for i := 0 to high(ExpRanges) do
       if ExpRanges[i] <> -1 then
-        AssertEquals(Format('%s / %s: Line %d', [Name, AName, i]), ExpRanges[i], Integer(PtrUInt(r[i])));
+        AssertEquals('%s / %s: Line %d', [Name, AName, i], ExpRanges[i], Integer(PtrUInt(r[i])));
   end;
 
   function RPoint(Y,X: Integer): TPoint;
@@ -769,9 +769,9 @@ var
       AssertFalse(Format('%s / %s line %d token-no %d: not yet eol', [Name, AName, ALine, i]), MultiHl.GetEol);
       MultiHl.GetTokenEx(tkpos, tklen);
       MultiHl.Next;
-      AssertEquals(Format('%s / %s line %d token-no %d ', [Name, AName, ALine, i]), AExpTokens[i], copy(tkpos, 1, tklen));
+      AssertEquals('%s / %s line %d token-no %d ', [Name, AName, ALine, i], AExpTokens[i], copy(tkpos, 1, tklen));
     end;
-    AssertTrue(Format('%s / %s line %d after run get eol', [Name, AName, ALine, i]), MultiHl.GetEol);
+    AssertTrue('%s / %s line %d after run get eol', [Name, AName, ALine, i], MultiHl.GetEol);
   end;
 
   procedure CreateSetupXmlLfmPas(Order: String);

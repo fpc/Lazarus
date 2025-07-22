@@ -133,6 +133,7 @@ type
   protected
     FWordWrap: TTestSynEditLineWrapPlugin;
     class procedure AssertEquals(const AMessage: string; Expected, Actual: TPoint); overload;
+    class procedure AssertEquals(const AMessage: string; const AFormatArgs: array of const; Expected, Actual: TPoint); overload;
     procedure AddLines(AFirstLineIdx, ACount, ALen: Integer; AnID: String; SkipBeginUpdate: Boolean = False; AReplaceExisting: Boolean = False);
     procedure InternalCheckLine(AName: String; dsp: TLazSynDisplayView; ALine: TLineIdx; AExpTextStart: String; NoTrim: Boolean = False);
     procedure CheckLine(AName: String; ALine: TLineIdx; AExpTextStart: String; NoTrim: Boolean = False);
@@ -285,9 +286,9 @@ begin
 
   i := 0;
   while ANode <> nil do begin
-    AssertTrue(Format('%s(%d): MinLine', [AName, i]), ANodeLine >= AMinLine);
+    AssertTrue('%s(%d): MinLine', [AName, i], ANodeLine >= AMinLine);
     EndLine := ANodeLine + Max(0, ANode.RealEndLine);
-    AssertTrue(Format('%s(%d): EndLine', [AName, i]), EndLine <= AMaxLine);
+    AssertTrue('%s(%d): EndLine', [AName, i], EndLine <= AMaxLine);
 
     AMinLine := EndLine + 1;
     ANode := ANode.Successor(ANodeLine, dummy);
@@ -424,7 +425,7 @@ var
   i: Integer;
 begin
   for i := 0 to ExpWrapOffsets.len - 1 do
-    AssertEquals(format('%s: RealToWrap Idx %d StartOffs: %d ', [AName, i, AStartOffs]),
+    AssertEquals('%s: RealToWrap Idx %d StartOffs: %d ', [AName, i, AStartOffs],
       ExpWrapOffsets.w[i], ALine.WrappedOffsetFor[AStartOffs + i]);
 end;
 
@@ -436,9 +437,9 @@ var
 begin
   for i := 0 to ExpRealAndSubOffsets.len div 2 - 1 do begin
     r := ALine.GetOffsetForWrap(AStartOffs + i, sub);
-    AssertEquals(format('%s: WrapToReal Idx %d StartOffs: %d ', [AName, i, AStartOffs]),
+    AssertEquals('%s: WrapToReal Idx %d StartOffs: %d ', [AName, i, AStartOffs],
       ExpRealAndSubOffsets.w[i*2], r);
-    AssertEquals(format('%s: WrapToReal(SUB) Idx %d StartOffs: %d ', [AName, i, AStartOffs]),
+    AssertEquals('%s: WrapToReal(SUB) Idx %d StartOffs: %d ', [AName, i, AStartOffs],
       ExpRealAndSubOffsets.w[i*2+1], sub);
   end;
 end;
@@ -456,23 +457,23 @@ begin
     inc(i);
   if i = ExpWrapForEachLine.len then
     i := 0;
-  AssertEquals(Format('%s: Offset', [AName]), i, ALine.Offset);
+  AssertEquals('%s: Offset', [AName], i, ALine.Offset);
 
   j := ExpWrapForEachLine.len - 1;
   while (j >= 0) and (ExpWrapForEachLine.w[j] = 1) do
     dec(j);
-  AssertEquals(Format('%s: RealCount', [AName]), j + 1 - i, ALine.RealCount);
+  AssertEquals('%s: RealCount', [AName], j + 1 - i, ALine.RealCount);
 
   ExpWrap := 0;
   TestWrapToReal := 0;
   for i := 0 to ExpWrapForEachLine.len - 1 do begin
-    AssertEquals(Format('%s: RealToWrap Idx %d', [AName, i]), ExpWrap, ALine.WrappedOffsetFor[i]);
+    AssertEquals('%s: RealToWrap Idx %d', [AName, i], ExpWrap, ALine.WrappedOffsetFor[i]);
     ExpWrap := ExpWrap + ExpWrapForEachLine.w[i];
 
     for j := 0 to ExpWrapForEachLine.w[i] - 1 do begin
       GotReal := ALine.GetOffsetForWrap(TestWrapToReal, sub);
-      AssertEquals(Format('%s: WrapToReal Idx %d', [AName, TestWrapToReal]), i, GotReal);
-      AssertEquals(Format('%s: WrapToReal Idx %d SUB', [AName, TestWrapToReal]), j, sub);
+      AssertEquals('%s: WrapToReal Idx %d', [AName, TestWrapToReal], i, GotReal);
+      AssertEquals('%s: WrapToReal Idx %d SUB', [AName, TestWrapToReal], j, sub);
       inc(TestWrapToReal);
     end;
   end;
@@ -543,16 +544,16 @@ var
 begin
   w := AStartOffs;
   for i := 0 to (ExpWrapForEachLine.len - 1) do begin
-    AssertEquals(Format('%s // l=%d getWrap', [AName, i]),
+    AssertEquals('%s // l=%d getWrap', [AName, i],
       w,
       FTree.GetWrapLineForForText(AStartOffs + i)
     );
     w := w + ExpWrapForEachLine.w[i];
-    AssertEquals(Format('%s // l=%d getLine', [AName, i]),
+    AssertEquals('%s // l=%d getLine', [AName, i],
       i,
       FTree.GetLineForForWrap(w-1, sub)
     );
-    AssertEquals(Format('%s // l=%d sub', [AName, i]),
+    AssertEquals('%s // l=%d sub', [AName, i],
       ExpWrapForEachLine.w[i]-1,
       sub
     );
@@ -1635,7 +1636,7 @@ begin
     // del
     FTree.AdjustForLinesDeleted(DelPos, DelCount, 0);
     CurWraps.SpliceArray(DelPos, DelCount);
-    AssertTrue(Format('valid After del at pos %d Len %d ins at pos %d Len %d', [DelPos, DelCount, InsPos, InsLen]),
+    AssertTrue('valid After del at pos %d Len %d ins at pos %d Len %d', [DelPos, DelCount, InsPos, InsLen],
       not FTree.NeedsValidation);
     AssertTreeForWraps(Format('After del at pos %d Len %d ins at pos %d Len %d', [DelPos, DelCount, InsPos, InsLen]), CurWraps);
   end;
@@ -1666,7 +1667,7 @@ begin
     // del
     FTree.AdjustForLinesDeleted(DelPos, DelCount, 0);
     CurWraps.SpliceArray(DelPos, DelCount);
-    AssertTrue(Format('valid After del at pos %d Len %d ins at pos %d Len %d', [DelPos, DelCount, InsPos, InsLen]),
+    AssertTrue('valid After del at pos %d Len %d ins at pos %d Len %d', [DelPos, DelCount, InsPos, InsLen],
       not FTree.NeedsValidation);
     AssertTreeForWraps(Format('After del at pos %d Len %d ins at pos %d Len %d', [DelPos, DelCount, InsPos, InsLen]), CurWraps);
 
@@ -1721,15 +1722,23 @@ begin
   end;
   writestr(src, SourcePt);
   writestr(dest, ExpPt);
-  AssertEquals(Format('%s (%s -> %s)', [AName, src, dest]), AnExp, got);
+  AssertEquals('%s (%s -> %s)', [AName, src, dest], AnExp, got);
   if (ExpPt = ptLog) and (AnExpOffs >= 0) then
-    AssertEquals(Format('%s (%s -> %s) Offs: ', [AName, src, dest]), AnExpOffs, SynEdit.CaretObj.BytePosOffset);
+    AssertEquals('%s (%s -> %s) Offs: ', [AName, src, dest], AnExpOffs, SynEdit.CaretObj.BytePosOffset);
 end;
 
 class procedure TTestWordWrapPluginBase.AssertEquals(const AMessage: string;
   Expected, Actual: TPoint);
 begin
+  if Actual = Expected then exit;
   AssertEquals(AMessage, dbgs(Expected), dbgs(Actual));
+end;
+
+class procedure TTestWordWrapPluginBase.AssertEquals(const AMessage: string;
+  const AFormatArgs: array of const; Expected, Actual: TPoint);
+begin
+  if Actual = Expected then exit;
+  AssertEquals(Format(AMessage, AFormatArgs), dbgs(Expected), dbgs(Actual));
 end;
 
 procedure TTestWordWrapPluginBase.AddLines(AFirstLineIdx, ACount,
@@ -1882,10 +1891,10 @@ begin
   GotTextXY := v.ViewXYToTextXY(AViewedXY);
   GotViewXY := v.TextXYToViewXY(APhysTExtXY);
 
-  AssertTrue(Format('%s: Viewed %s to Text %s (exp) => got %s', [AName, dbgs(AViewedXY), dbgs(APhysTExtXY), dbgs(GotTextXY)]),
+  AssertTrue('%s: Viewed %s to Text %s (exp) => got %s', [AName, dbgs(AViewedXY), dbgs(APhysTExtXY), dbgs(GotTextXY)],
              (GotTextXY.x = APhysTExtXY.x) and (GotTextXY.y = APhysTExtXY.y) );
   if not OnlyViewToText then
-  AssertTrue(Format('%s: Text %s to viewed %s (exp) => got %s', [AName, dbgs(APhysTExtXY), dbgs(AViewedXY), dbgs(GotViewXY)]),
+  AssertTrue('%s: Text %s to viewed %s (exp) => got %s', [AName, dbgs(APhysTExtXY), dbgs(AViewedXY), dbgs(GotViewXY)],
              (GotViewXY.x = AViewedXY.x) and (GotViewXY.y = AViewedXY.y) );
 end;
 
@@ -2417,7 +2426,7 @@ procedure TTestWordWrapPlugin.TestWrapSplitJoin;
   procedure AddLineTestCount(AName: String; ALineIdx, ACount, ALen: Integer; AExpCount: Integer);
   begin
     AddLines(ALineIdx, ACount, ALen, 'A');
-    AssertEquals(Format('%s : After ins %d Line(s) at %d  Len %d', [AName, ACount, ALineIdx, ALen]), AExpCount, TreeNodeCount);
+    AssertEquals('%s : After ins %d Line(s) at %d  Len %d', [AName, ACount, ALineIdx, ALen], AExpCount, TreeNodeCount);
   end;
   procedure AddLineTestCount(AName: String; ALineIdx, ALen: Integer; AExpCount: Integer);
   begin
@@ -2427,7 +2436,7 @@ procedure TTestWordWrapPlugin.TestWrapSplitJoin;
   procedure ChangeLineTestCount(AName: String; ALineIdx, ALen: Integer; AExpCount: Integer);
   begin
     AddLines(ALineIdx, 1, ALen, 'A', False, True);
-    AssertEquals(Format('%s : After ins %d Line(s) at %d  Len %d', [AName, 1, ALineIdx, ALen]), AExpCount, TreeNodeCount);
+    AssertEquals('%s : After ins %d Line(s) at %d  Len %d', [AName, 1, ALineIdx, ALen], AExpCount, TreeNodeCount);
   end;
   procedure ChangeLineTestCount(AName: String; ALineIdx, ANodeIdx, ALen: Integer; AExpCount: Integer);
   var
@@ -2437,7 +2446,7 @@ procedure TTestWordWrapPlugin.TestWrapSplitJoin;
     if ALineIdx >= 0
     then AddLines(n.RealStartLine + ALineIdx, 1, ALen, 'A', False, True)
     else AddLines(n.RealEndLine + 1 + ALineIdx, 1, ALen, 'A', False, True);
-    AssertEquals(Format('%s : After ins %d Line(s) at %d  Len %d', [AName, 1, ALineIdx, ALen]), AExpCount, TreeNodeCount);
+    AssertEquals('%s : After ins %d Line(s) at %d  Len %d', [AName, 1, ALineIdx, ALen], AExpCount, TreeNodeCount);
   end;
 
   procedure DelLineTestCount(AName: String; ALineIdx: Integer; AExpCount: Integer);
@@ -2445,7 +2454,7 @@ procedure TTestWordWrapPlugin.TestWrapSplitJoin;
     if ALineIdx < 0
     then SynEdit.Lines.Delete(SynEdit.Lines.Count + 1 + ALineIdx)
     else SynEdit.Lines.Delete(ALineIdx);
-    AssertEquals(Format('%s : After DEL Line at %d  Len %d', [AName, ALineIdx]), AExpCount, TreeNodeCount);
+    AssertEquals('%s : After DEL Line at %d  Len %d', [AName, ALineIdx], AExpCount, TreeNodeCount);
   end;
   procedure DelLineTestCount(AName: String; ANodeIdx, ALineIdx: Integer; AExpCount: Integer);
   var
@@ -2455,7 +2464,7 @@ procedure TTestWordWrapPlugin.TestWrapSplitJoin;
     if ALineIdx < 0
     then SynEdit.Lines.Delete(n.RealEndLine + 1 + ALineIdx)
     else SynEdit.Lines.Delete(n.RealStartLine + ALineIdx);
-    AssertEquals(Format('%s : After DEL Line at %d  Len %d', [AName, ALineIdx]), AExpCount, TreeNodeCount);
+    AssertEquals('%s : After DEL Line at %d  Len %d', [AName, ALineIdx], AExpCount, TreeNodeCount);
   end;
 
 var

@@ -240,25 +240,25 @@ procedure TTestBaseHighlighterPas.CheckPasFoldNodeInfo(AName: String; nd: TSynFo
   FoldAction: TSynFoldActions);
 begin
   AName := BaseTestName + AName;
-  AssertEquals(Format('%s (%d/%d) LineIndex',    [AName, ALine, AColumn]), ALine, nd.LineIndex);
-  AssertEquals(Format('%s (%d/%d) NodeIndex',    [AName, ALine, AColumn]), AColumn, nd.NodeIndex);
+  AssertEquals('%s (%d/%d) LineIndex',    [AName, ALine, AColumn], ALine, nd.LineIndex);
+  AssertEquals('%s (%d/%d) NodeIndex',    [AName, ALine, AColumn], AColumn, nd.NodeIndex);
   if AAllColIndex >= 0 then
-  AssertEquals(Format('%s (%d/%d) NodeIndex',    [AName, ALine, AColumn]), AAllColIndex, nd.AllNodeIndex);
+  AssertEquals('%s (%d/%d) NodeIndex',    [AName, ALine, AColumn], AAllColIndex, nd.AllNodeIndex);
   if not(sfaInvalid in nd.FoldAction) then begin
-    AssertEquals(Format('%s (%d/%d) LogXStart',    [AName, ALine, AColumn]), LogXStart, nd.LogXStart);
-    AssertEquals(Format('%s (%d/%d) LogXEnd',      [AName, ALine, AColumn]), LogXEnd, nd.LogXEnd);
+    AssertEquals('%s (%d/%d) LogXStart',    [AName, ALine, AColumn], LogXStart, nd.LogXStart);
+    AssertEquals('%s (%d/%d) LogXEnd',      [AName, ALine, AColumn], LogXEnd, nd.LogXEnd);
     if FoldLvlStart >= 0 then
-    AssertEquals(Format('%s (%d/%d) FoldLvlStart', [AName, ALine, AColumn]), FoldLvlStart, nd.FoldLvlStart);
+    AssertEquals('%s (%d/%d) FoldLvlStart', [AName, ALine, AColumn], FoldLvlStart, nd.FoldLvlStart);
     if FoldLvlEnd >= 0 then
-    AssertEquals(Format('%s (%d/%d) FoldLvlEnd',   [AName, ALine, AColumn]), FoldLvlEnd, nd.FoldLvlEnd);
-    AssertEquals(Format('%s (%d/%d) NestLvlStart', [AName, ALine, AColumn]), NestLvlStart, nd.NestLvlStart);
-    AssertEquals(Format('%s (%d/%d) NestLvlEnd',   [AName, ALine, AColumn]), NestLvlEnd, nd.NestLvlEnd);
-    AssertEquals(Format('%s (%d/%d) FoldType',     [AName, ALine, AColumn]), PtrInt(FoldType), PtrInt(nd.FoldType));
-    AssertEquals(Format('%s (%d/%d) FoldTypeCompatible', [AName, ALine, AColumn]),
+    AssertEquals('%s (%d/%d) FoldLvlEnd',   [AName, ALine, AColumn], FoldLvlEnd, nd.FoldLvlEnd);
+    AssertEquals('%s (%d/%d) NestLvlStart', [AName, ALine, AColumn], NestLvlStart, nd.NestLvlStart);
+    AssertEquals('%s (%d/%d) NestLvlEnd',   [AName, ALine, AColumn], NestLvlEnd, nd.NestLvlEnd);
+    AssertEquals('%s (%d/%d) FoldType',     [AName, ALine, AColumn], PtrInt(FoldType), PtrInt(nd.FoldType));
+    AssertEquals('%s (%d/%d) FoldTypeCompatible', [AName, ALine, AColumn],
                        PtrInt(FoldTypeCompatible), PtrInt(nd.FoldTypeCompatible));
-    AssertEquals(Format('%s (%d/%d) FoldGroup:',   [AName, ALine, AColumn]), FoldGroup, nd.FoldGroup);
+    AssertEquals('%s (%d/%d) FoldGroup:',   [AName, ALine, AColumn], FoldGroup, nd.FoldGroup);
   end;
-  AssertEquals(Format('%s (%d/%d) FoldAction',   [AName, ALine, AColumn]),
+  AssertEquals('%s (%d/%d) FoldAction',   [AName, ALine, AColumn],
     FoldActionsToString(FoldAction),
     FoldActionsToString(nd.FoldAction - [sfaOutline..sfaOutlineNoLine]));
 end;
@@ -2652,7 +2652,7 @@ procedure TTestHighlighterPas.TestContextForClassOf;
   procedure CheckClassOfField(ALine: Integer);
   begin
     CheckTokensForLine('Fint: integer; '+IntToStr(ALine),  ALine, [ tkIdentifier, TK_Colon, tkSpace, tkKey, TK_Semi ]);
-    AssertEquals('no Fold-OpenCount '+IntToStr(ALine), 0, FTheHighLighter.FoldOpenCount(ALine));
+    AssertEquals('no Fold-OpenCount %d', [ALine], 0, FTheHighLighter.FoldOpenCount(ALine));
   end;
   procedure CheckClassOfFold(ALine: Integer; AFold: Boolean);
   begin
@@ -2660,11 +2660,11 @@ procedure TTestHighlighterPas.TestContextForClassOf;
 
     if AFold then begin
       CheckTokensForLine('private '+IntToStr(ALine),  ALine, [ tkKey ]);
-      AssertEquals('Fold-OpenCount '+IntToStr(ALine), 1, FTheHighLighter.FoldOpenCount(ALine));
+      AssertEquals('Fold-OpenCount %d', [ALine], 1, FTheHighLighter.FoldOpenCount(ALine));
     end
     else begin
       CheckTokensForLine('private '+IntToStr(ALine),  ALine, [ tkIdentifier ]);
-      AssertEquals('no Fold-OpenCount '+IntToStr(ALine), 0, FTheHighLighter.FoldOpenCount(ALine));
+      AssertEquals('no Fold-OpenCount %d', [ALine], 0, FTheHighLighter.FoldOpenCount(ALine));
     end;
   end;
 begin
