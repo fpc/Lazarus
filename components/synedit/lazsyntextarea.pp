@@ -1689,14 +1689,18 @@ var
     pl, pt: PChar;
     TxtLeft: Integer;
     NeedExpansion, NeedTransform: Boolean;
+    cl: TColor;
   begin
     Attr := ATokenInfo.Attr;
-    FTextDrawer.ForeColor := Attr.Foreground;
+    cl := Attr.Foreground; if cl = clDefault then cl := ForegroundColor;
+    FTextDrawer.ForeColor := cl;
+    cl := Attr.Background; if cl = clDefault then cl := BackgroundColor;
     FTextDrawer.BackColor := Attr.Background;
     FTextDrawer.Style     := Attr.Style;
     HasFrame := False;
     for s := low(TLazSynBorderSide) to high(TLazSynBorderSide) do begin
-      HasFrame := HasFrame or (Attr.FrameSideColors[s] <> clNone);
+      HasFrame := HasFrame or
+        ( (Attr.FrameSideColors[s] <> clNone) and (Attr.FrameSideColors[s] <> clDefault) );
       FTextDrawer.FrameColor[s] := Attr.FrameSideColors[s];
       FTextDrawer.FrameStyle[s] := Attr.FrameSideStyles[s];
     end;
