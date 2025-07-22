@@ -56,8 +56,9 @@ interface
 {$I SynEdit.inc}
 
 uses
-  Classes, Graphics, SynEditTypes, SynEditHighlighter,
-  SynEditHighlighterFoldBase, SynEditHighlighterXMLBase, SynEditStrConst;
+  Classes, Graphics, SynEditTypes, SynEditHighlighter, SynEditHighlighterFoldBase,
+  SynEditHighlighterXMLBase, SynEditStrConst, SynEditMiscClasses, SynEditMiscProcs,
+  LazEditTextAttributes;
 
 type
   TtkTokenKind = (tkAposAttrValue, tkAposEntityRef, tkAttribute, tkCDATA,
@@ -74,7 +75,7 @@ type
   );
 
   TRangeState = (rsAposAttrValue, rsAPosEntityRef, rsAttribute, rsCDATA,
-    rsComment, rsElement, rsCloseElement, rsOpenElement, rsEntityRef, rsEqual, rsProcessingInstruction,
+    rsComment, rsElement, rsCloseElement, rsOpenElement, rsEntityRef, rsEqual,
     rsQuoteAttrValue, rsQuoteEntityRef, rsText,
     //
     rsnsAposAttrValue, rsnsAPosEntityRef, rsnsEqual, rsnsQuoteAttrValue,
@@ -85,6 +86,8 @@ type
      rsDocTypeElement, rsDocTypeEqual, rsDocTypeQuoteAttrValue,
      rsDocTypeQuoteEntityRef}
   );
+  TRangeFlag = (rsProcessingInstruction);
+  TRangeFlags = set of TRangeFlag;
 
  TXmlCodeFoldBlockType = (
     cfbtXmlNode,     // <foo>...</node>
@@ -103,9 +106,23 @@ type
   { TSynXMLSyn }
 
   TSynXMLSyn = class(TSynCustomXmlHighlighter)
+  private type
+    {$PUSH}{$PackEnum 1}{$PackSet 1}
+    TRangeStore = packed record
+      case integer of
+      1:( fRange: TRangeState;
+          fRangeFlags: packed set of TRangeFlag;
+        );
+      2: (p: Pointer);
+    end;
+    {$POP}
+    {$if sizeof(TRangeStore) <> sizeof(Pointer)}
+      {$error range storage needs fixing}
+    {$endif}
   private
     fCommentSymbolAttri: TSynHighlighterAttributes;
     fRange: TRangeState;
+    fRangeFlags: TRangeFlags;
     fLine: PChar;
     Run: Longint;
     fTokenPos: Integer;
@@ -115,7 +132,8 @@ type
     fSpaceAttri: TSynHighlighterAttributes;
     fTextAttri: TSynHighlighterAttributes;
     fEntityRefAttri: TSynHighlighterAttributes;
-    fProcessingInstructionAttri: TSynHighlighterAttributes;
+    fProcessingInstructionAttri: TSynHighlighterAttributesModifier;
+    fProcessingInstructionAttriResult: TSynSelectedColorMergeResult;
     fCDATAAttri: TSynHighlighterAttributes;
     fCommentAttri: TSynHighlighterAttributes;
     fDocTypeAttri: TSynHighlighterAttributes;
@@ -130,10 +148,10 @@ type
     procedure CarriageReturnProc;
     procedure LineFeedProc;
     procedure SpaceProc;
+    procedure QuestionMarkProc;
     procedure LessThanProc;
     procedure GreaterThanProc;
     procedure CommentProc;
-    procedure ProcessingInstructionProc;
     procedure DocTypeProc;
     procedure CDATAProc;
     procedure TextProc;
@@ -168,6 +186,7 @@ type
     class function GetLanguageName: string; override;
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
       override;
     function GetEol: Boolean; override;
@@ -177,6 +196,7 @@ type
     function GetToken: string; override;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
     function GetTokenAttribute: TSynHighlighterAttributes; override;
+    function GetTokenAttributeEx: TLazCustomEditTextAttribute; override;
     function GetTokenKind: integer; override;
     function GetTokenPos: Integer; override;
     procedure Next; override;
@@ -200,7 +220,7 @@ type
       write fCDATAAttri;
     property EntityRefAttri: TSynHighlighterAttributes read fEntityRefAttri
       write fEntityRefAttri;
-    property ProcessingInstructionAttri: TSynHighlighterAttributes
+    property ProcessingInstructionAttri: TSynHighlighterAttributesModifier
       read fProcessingInstructionAttri write fProcessingInstructionAttri;
     property CommentAttri: TSynHighlighterAttributes read fCommentAttri
       write fCommentAttri;
@@ -222,6 +242,8 @@ const
   NameChars : set of char = ['0'..'9', 'a'..'z', 'A'..'Z', '_', '.', ':', '-'];
 
 constructor TSynXMLSyn.Create(AOwner: TComponent);
+var
+  s: TFontStyle;
 begin
   inherited Create(AOwner);
 
@@ -229,7 +251,8 @@ begin
   fTextAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrText, SYNS_XML_AttrText);
   fSpaceAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrWhitespace, SYNS_XML_AttrWhitespace);
   fEntityRefAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrEntityReference, SYNS_XML_AttrEntityReference);
-  fProcessingInstructionAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrProcessingInstr, SYNS_XML_AttrProcessingInstr);
+  fProcessingInstructionAttri:= TSynHighlighterAttributesModifier.Create(@SYNS_AttrProcessingInstr, SYNS_XML_AttrProcessingInstr);
+  fProcessingInstructionAttriResult := TSynSelectedColorMergeResult.Create;
   fCDATAAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrCDATASection, SYNS_XML_AttrCDATASection);
   fCommentAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrComment, SYNS_XML_AttrComment);
   fCommentSymbolAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrCommentSym, SYNS_XML_AttrCommentSym);
@@ -253,7 +276,11 @@ begin
   fEntityRefAttri.Style:= [fsbold];
 
   fProcessingInstructionAttri.Foreground:= clblue;
+  fProcessingInstructionAttri.Background:= clDefault;
+  fProcessingInstructionAttri.FrameColor:= clDefault;
   fProcessingInstructionAttri.Style:= [];
+  fProcessingInstructionAttri.StyleMask:= [low(TFontStyle)..high(TFontStyle)];
+  fProcessingInstructionAttri.SetAllPriorities(100);
 
   fTextAttri.Foreground:= clBlack;
   fTextAttri.Style:= [fsBold];
@@ -300,6 +327,12 @@ begin
   fDefaultFilter := SYNS_FilterXML;
 end;
 
+destructor TSynXMLSyn.Destroy;
+begin
+  inherited Destroy;
+  fProcessingInstructionAttriResult.Free;
+end;
+
 procedure TSynXMLSyn.MakeMethodTables;
 var
   i: Char;
@@ -322,6 +355,8 @@ begin
       begin
         fProcTable[i] := @SpaceProc;
       end;
+    '?':
+        fProcTable[i] := @QuestionMarkProc;
     '<':
       begin
         fProcTable[i] := @LessThanProc;
@@ -374,6 +409,20 @@ begin
   end;
 end;
 
+procedure TSynXMLSyn.QuestionMarkProc;
+begin
+  if (rsProcessingInstruction in fRangeFlags) and (fLine[Run+1] = '>') then begin
+    fTokenID := tkProcessingInstruction;
+    fRange := rsText;
+    Exclude(fRangeFlags, rsProcessingInstruction);
+    Inc(Run, 2);
+    if TopXmlCodeFoldBlockType = cfbtXmlProcess then
+      EndXmlCodeFoldBlock;
+  end
+  else
+    IdentProc;
+end;
+
 procedure TSynXMLSyn.LessThanProc;
 begin
   Inc(Run);
@@ -408,7 +457,8 @@ begin
     end;
   end else if fLine[Run]= '?' then begin
     fTokenID := tkProcessingInstruction;
-    fRange := rsProcessingInstruction;
+    fRange := rsElement;
+    Include(fRangeFlags, rsProcessingInstruction);
     StartXmlCodeFoldBlock(cfbtXmlProcess);
     Inc(Run);
   end else begin
@@ -452,27 +502,6 @@ begin
     if (fLine[Run] = '-') and (fLine[Run + 1] = '-') and (fLine[Run + 2] = '>')
     then begin
       fRange := rsComment;
-      break;
-    end;
-    Inc(Run);
-  end;
-end;
-
-procedure TSynXMLSyn.ProcessingInstructionProc;
-begin
-  fTokenID := tkProcessingInstruction;
-  if (fLine[Run] In [#0, #10, #13]) then begin
-    fProcTable[fLine[Run]]();
-    Exit;
-  end;
-
-  while not (fLine[Run] in [#0, #10, #13]) do begin
-    if (fLine[Run] = '>') and (fLine[Run - 1] = '?')
-    then begin
-      fRange := rsText;
-      Inc(Run);
-      if TopXmlCodeFoldBlockType = cfbtXmlProcess then
-        EndXmlCodeFoldBlock;
       break;
     end;
     Inc(Run);
@@ -808,10 +837,6 @@ begin
       begin
         CommentProc();
       end;
-    rsProcessingInstruction:
-      begin
-        ProcessingInstructionProc();
-      end;
     rsDocType, rsDocTypeSquareBraces:                                            //ek 2001-11-11
       begin
         DocTypeProc();
@@ -883,7 +908,7 @@ end;
 
 function TSynXMLSyn.GetTokenAttribute: TSynHighlighterAttributes;
 begin
-  case fTokenID of
+case fTokenID of
     tkElement: Result:= fElementAttri;
     tkAttribute: Result:= fAttributeAttri;
     tknsAttribute: Result:= fnsAttributeAttri;
@@ -900,7 +925,7 @@ begin
     tkAposEntityRef: Result:= fEntityRefAttri;
     tknsQuoteEntityRef: Result:= fEntityRefAttri;
     tknsAposEntityRef: Result:= fEntityRefAttri;
-    tkProcessingInstruction: Result:= fProcessingInstructionAttri;
+    tkProcessingInstruction: Result:= fSymbolAttri;
     tkComment: Result:= fCommentAttri;
     tkCommentSym: Result:= fCommentSymbolAttri;
     tkDocType: Result:= fDocTypeAttri;
@@ -908,6 +933,33 @@ begin
     tkSpace: Result:= fSpaceAttri;
   else
     Result := nil;
+  end;
+end;
+
+function TSynXMLSyn.GetTokenAttributeEx: TLazCustomEditTextAttribute;
+var
+  x1, x2: Integer;
+  LeftCol, RightCol: TLazSynDisplayTokenBound;
+begin
+  Result := GetTokenAttribute;
+
+  if (rsProcessingInstruction in fRangeFlags) or
+     (fTokenID = tkProcessingInstruction)
+  then begin
+    x1 := ToPos(fTokenPos);
+    x2 := ToPos(Run);
+    LeftCol.Init(-1, x1);
+    RightCol.Init(-1, x2);
+    fProcessingInstructionAttriResult.CleanupMergeInfo;
+    fProcessingInstructionAttriResult.Merge(Result, LeftCol, RightCol);
+
+    if (not(rsProcessingInstruction in fRangeFlags)) or (fTokenID <> tkProcessingInstruction) then
+      x1 := 1;
+    if (rsProcessingInstruction in fRangeFlags) then
+      x2 := Length(CurrentLineText) + 1;
+    fProcessingInstructionAttri.SetFrameBoundsLog(x1, x2);
+    fProcessingInstructionAttriResult.Merge(fProcessingInstructionAttri, LeftCol, RightCol);
+    Result:= fProcessingInstructionAttriResult;
   end;
 end;
 
@@ -922,21 +974,30 @@ begin
 end;
 
 function TSynXMLSyn.GetRange: Pointer;
+var
+  t: TRangeStore;
 begin
-  CodeFoldRange.RangeType:=Pointer(PtrUInt(Integer(fRange)));
+  t.fRange      := fRange;
+  t.fRangeFlags := fRangeFlags;
+  CodeFoldRange.RangeType := t.p;
   Result := inherited;
 end;
 
 procedure TSynXMLSyn.SetRange(Value: Pointer);
+var
+  t: TRangeStore;
 begin
   inherited;
-  fRange := TRangeState(Integer(PtrUInt(CodeFoldRange.RangeType)));
+  t := TRangeStore(CodeFoldRange.RangeType);
+  fRange      := t.fRange;
+  fRangeFlags := t.fRangeFlags;
 end;
 
 procedure TSynXMLSyn.ReSetRange;
 begin
   inherited;
   fRange:= rsText;
+  fRangeFlags := [];
 end;
 
 function TSynXMLSyn.GetIdentChars: TSynIdentChars;
