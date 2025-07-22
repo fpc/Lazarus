@@ -125,6 +125,10 @@ type
     class procedure AssertTrue(const AMessage: string; const AFormatArgs: array of const; ACondition: boolean; AErrorAddrs: Pointer = nil); overload;
     class procedure AssertEquals(const AMessage: string; Expected, Actual: integer); overload;
     class procedure AssertEquals(const AMessage: string; const AFormatArgs: array of const; Expected, Actual: integer); overload;
+    class procedure AssertEquals(const AMessage: string; Expected, Actual: string); overload;
+    class procedure AssertEquals(const AMessage: string; const AFormatArgs: array of const; Expected, Actual: string); overload;
+    class procedure AssertEquals(const AMessage: string; Expected, Actual: Boolean); overload;
+    class procedure AssertEquals(const AMessage: string; const AFormatArgs: array of const; Expected, Actual: Boolean); overload;
   public
     procedure TestIsCaret(Name: String; X, Y: Integer); // logical caret
     procedure TestIsCaret(Name: String; X, Y, Offs: Integer); // logical caret
@@ -338,6 +342,32 @@ end;
 
 class procedure TTestBase.AssertEquals(const AMessage: string; const AFormatArgs: array of const;
   Expected, Actual: integer);
+begin
+  if Actual = Expected then exit;
+  inherited AssertEquals(Format(AMessage, AFormatArgs), Expected, Actual);
+end;
+
+class procedure TTestBase.AssertEquals(const AMessage: string; Expected, Actual: string);
+begin
+  if Actual = Expected then exit;
+  inherited AssertEquals(AMessage, Expected, Actual);
+end;
+
+class procedure TTestBase.AssertEquals(const AMessage: string; const AFormatArgs: array of const;
+  Expected, Actual: string);
+begin
+  if Actual = Expected then exit;
+  inherited AssertEquals(Format(AMessage, AFormatArgs), Expected, Actual);
+end;
+
+class procedure TTestBase.AssertEquals(const AMessage: string; Expected, Actual: Boolean);
+begin
+  if Actual = Expected then exit;
+  inherited AssertEquals(AMessage, Expected, Actual);
+end;
+
+class procedure TTestBase.AssertEquals(const AMessage: string; const AFormatArgs: array of const;
+  Expected, Actual: Boolean);
 begin
   if Actual = Expected then exit;
   inherited AssertEquals(Format(AMessage, AFormatArgs), Expected, Actual);

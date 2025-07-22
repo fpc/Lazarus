@@ -108,7 +108,7 @@ type
   TSynXMLSyn = class(TSynCustomXmlHighlighter)
   private type
     {$PUSH}{$PackEnum 1}{$PackSet 1}
-    TRangeStore = packed record
+    TRangeStore = bitpacked record
       case integer of
       1:( fRange: TRangeState;
           fRangeFlags: packed set of TRangeFlag;
