@@ -3086,7 +3086,7 @@ begin
     emAsciiControlNames: EscapedStrings := @EscapedStringsOfAscii;
     emPercent          : EscapedStrings := @EscapedStringsOfPercent;
     emCustom           : begin
-      if not Assigned(EscapedStrings) then
+      if not Assigned(CustomStrings) then
         Raise EInvalidOp.Create('Utf8EscapeControlChars: CustomStrings cannot be nil when EscapeMode=emCustom.');
       EscapedStrings := CustomStrings;
       MaxGrowFactor[emCustom] := AMaxGrowFactor;
