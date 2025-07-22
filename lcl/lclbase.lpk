@@ -27,7 +27,7 @@
     <License Value="modified LGPL-2
 "/>
     <Version Major="4" Minor="99"/>
-    <Files Count="290">
+    <Files Count="289">
       <Item1>
         <Filename Value="checklst.pas"/>
         <UnitName Value="CheckLst"/>
@@ -1133,71 +1133,67 @@
         <UnitName Value="GroupedEdit"/>
       </Item274>
       <Item275>
-        <Filename Value="lcltaskdialog.pas"/>
-        <UnitName Value="LCLTaskDialog"/>
-      </Item275>
-      <Item276>
         <Filename Value="include/taskdialog.inc"/>
         <Type Value="Include"/>
-      </Item276>
-      <Item277>
+      </Item275>
+      <Item276>
         <Filename Value="widgetset/wslazdeviceapis.pas"/>
         <UnitName Value="WSLazDeviceAPIS"/>
-      </Item277>
-      <Item278>
+      </Item276>
+      <Item277>
         <Filename Value="include/customdesigncontrol.inc"/>
         <Type Value="Include"/>
-      </Item278>
-      <Item279>
+      </Item277>
+      <Item278>
         <Filename Value="lclplatformdef.pas"/>
         <UnitName Value="LCLPlatformDef"/>
-      </Item279>
-      <Item280>
+      </Item278>
+      <Item279>
         <Filename Value="industrialbase.pp"/>
         <UnitName Value="IndustrialBase"/>
-      </Item280>
-      <Item281>
+      </Item279>
+      <Item280>
         <Filename Value="include/patternbitmap.inc"/>
         <Type Value="Include"/>
-      </Item281>
-      <Item282>
+      </Item280>
+      <Item281>
         <Filename Value="jsonpropstorage.pas"/>
         <UnitName Value="JSONPropStorage"/>
-      </Item282>
-      <Item283>
+      </Item281>
+      <Item282>
         <Filename Value="forms/dblogdlg.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="DBLogDlg"/>
-      </Item283>
-      <Item284>
+      </Item282>
+      <Item283>
         <Filename Value="include/comboex.inc"/>
         <Type Value="Include"/>
-      </Item284>
-      <Item285>
+      </Item283>
+      <Item284>
         <Filename Value="lclexceptionstacktrace.pas"/>
         <UnitName Value="LCLExceptionStackTrace"/>
-      </Item285>
-      <Item286>
+      </Item284>
+      <Item285>
         <Filename Value="widgetset/wsshellctrls.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="WSShellCtrls"/>
-      </Item286>
-      <Item287>
+      </Item285>
+      <Item286>
         <Filename Value="dialogres.pas"/>
         <UnitName Value="DialogRes"/>
-      </Item287>
-      <Item288>
+      </Item286>
+      <Item287>
         <Filename Value="taskdlgemulation.pp"/>
         <UnitName Value="TaskDlgEmulation"/>
-      </Item288>
-      <Item289>
+      </Item287>
+      <Item288>
         <Filename Value="include/windowmagnet.inc"/>
         <Type Value="Include"/>
-      </Item289>
-      <Item290>
+      </Item288>
+      <Item289>
         <Filename Value="treestorage.pp"/>
         <UnitName Value="TreeStorage"/>
-      </Item290>
+      </Item289>
     </Files>
     <CompatibilityMode Value="True"/>
     <LazDoc Paths="../docs/xml/lcl"/>

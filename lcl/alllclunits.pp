@@ -26,9 +26,9 @@ uses
   CustomDrawn_Common, CustomDrawnControls, CustomDrawnDrawers, LazDeviceApis, 
   LDockTree, LazFreeTypeIntfDrawer, CustomDrawn_WinXP, CustomDrawn_Android, 
   Arrow, EditBtn, ComboEx, DBExtCtrls, CustomDrawn_Mac, CalcForm, 
-  LCLTranslator, GroupedEdit, LCLTaskDialog, WSLazDeviceAPIS, LCLPlatformDef, 
-  IndustrialBase, JSONPropStorage, LCLExceptionStackTrace, DialogRes, 
-  TaskDlgEmulation, TreeStorage, LazarusPackageIntf;
+  LCLTranslator, GroupedEdit, WSLazDeviceAPIS, LCLPlatformDef, IndustrialBase, 
+  JSONPropStorage, LCLExceptionStackTrace, DialogRes, TaskDlgEmulation, 
+  TreeStorage, LazarusPackageIntf;
 
 implementation
 
