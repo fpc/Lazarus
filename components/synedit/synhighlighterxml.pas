@@ -56,7 +56,7 @@ interface
 {$I SynEdit.inc}
 
 uses
-  Classes, Graphics, SynEditTypes, SynEditHighlighter, SynEditHighlighterFoldBase,
+  Classes, SysUtils, Graphics, SynEditTypes, SynEditHighlighter, SynEditHighlighterFoldBase,
   SynEditHighlighterXMLBase, SynEditStrConst, SynEditMiscClasses, SynEditMiscProcs,
   LazEditTextAttributes;
 
@@ -128,6 +128,7 @@ type
     fTokenPos: Integer;
     fTokenID: TtkTokenKind;
     fLineNumber: Integer;
+    fLineLen: Integer;
     fElementAttri: TSynHighlighterAttributes;
     fSpaceAttri: TSynHighlighterAttributes;
     fTextAttri: TSynHighlighterAttributes;
@@ -376,6 +377,7 @@ procedure TSynXMLSyn.SetLine(const NewValue: string;
 begin
   inherited;
   fLine := PChar(NewValue);
+  fLineLen := Length(NewValue);
   Run := 0;
   fLineNumber := LineNumber;
   Next;
@@ -624,7 +626,12 @@ begin
   //Read the name
   while (fLine[Run] in NameChars) do Inc(Run);
   //Check if this is an xmlns: attribute
-  if (Pos('xmlns', GetToken) > 0) then begin
+  if (Run - fTokenPos >= 5) and
+     (StrLComp(pchar('xmlns'), fLine + fTokenPos, 5) = 0) and
+     ( (fLineLen - fTokenPos = 5) or
+       ((fLine + fTokenPos + 5)^ in [':', '=', #10, #13, #9, #32, #0])
+     )
+  then begin
     fTokenID := tknsAttribute;
     fRange := rsnsEqual;
   end else begin
