@@ -3074,7 +3074,7 @@ var
   Ch: Char;
   i, ResLen: Integer;
   SLen, SubLen: SizeInt;
-const
+var
   MaxGrowFactor: array[TEscapeMode] of Cardinal = (3, 4, 5, 5, 5, 3, 0);
 begin
   Result := '';
