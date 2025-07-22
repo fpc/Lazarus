@@ -108,6 +108,10 @@ msgstr ""
 msgid "Slash Comment"
 msgstr ""
 
+#: syneditstrconst.syns_attrcommentsym
+msgid "Comment Symbol"
+msgstr ""
+
 #: syneditstrconst.syns_attrcondition
 msgid "Condition"
 msgstr "Condizione"

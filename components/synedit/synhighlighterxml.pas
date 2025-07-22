@@ -61,7 +61,7 @@ uses
 
 type
   TtkTokenKind = (tkAposAttrValue, tkAposEntityRef, tkAttribute, tkCDATA,
-    tkComment, tkElement, tkEntityRef, tkEqual, tkNull, tkProcessingInstruction,
+    tkComment, tkCommentSym, tkElement, tkEntityRef, tkEqual, tkNull, tkProcessingInstruction,
     tkQuoteAttrValue, tkQuoteEntityRef, tkSpace, tkSymbol, tkText,
     //
     tknsAposAttrValue, tknsAposEntityRef, tknsAttribute, tknsEqual,
@@ -104,6 +104,7 @@ type
 
   TSynXMLSyn = class(TSynCustomXmlHighlighter)
   private
+    fCommentSymbolAttri: TSynHighlighterAttributes;
     fRange: TRangeState;
     fLine: PChar;
     Run: Longint;
@@ -203,6 +204,8 @@ type
       read fProcessingInstructionAttri write fProcessingInstructionAttri;
     property CommentAttri: TSynHighlighterAttributes read fCommentAttri
       write fCommentAttri;
+    property CommentSymbolAttri: TSynHighlighterAttributes read fCommentSymbolAttri
+      write fCommentSymbolAttri;
     property DocTypeAttri: TSynHighlighterAttributes read fDocTypeAttri
       write fDocTypeAttri;
     property SpaceAttri: TSynHighlighterAttributes read fSpaceAttri
@@ -229,6 +232,7 @@ begin
   fProcessingInstructionAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrProcessingInstr, SYNS_XML_AttrProcessingInstr);
   fCDATAAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrCDATASection, SYNS_XML_AttrCDATASection);
   fCommentAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrComment, SYNS_XML_AttrComment);
+  fCommentSymbolAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrCommentSym, SYNS_XML_AttrCommentSym);
   fDocTypeAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrDOCTYPESection, SYNS_XML_AttrDOCTYPESection);
   fAttributeAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrAttributeName, SYNS_XML_AttrAttributeName);
   fnsAttributeAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrNamespaceAttrName, SYNS_XML_AttrNamespaceAttrName);
@@ -269,6 +273,7 @@ begin
   fCommentAttri.Background:= clSilver;
   fCommentAttri.Foreground:= clGray;
   fCommentAttri.Style:= [fsbold, fsItalic];
+  fCommentSymbolAttri.Clear;
 
   fSymbolAttri.Foreground:= clblue;
   fSymbolAttri.Style:= [];
@@ -277,6 +282,7 @@ begin
   AddAttribute(fProcessingInstructionAttri);
   AddAttribute(fDocTypeAttri);
   AddAttribute(fCommentAttri);
+  AddAttribute(fCommentSymbolAttri);
   AddAttribute(fElementAttri);
   AddAttribute(fAttributeAttri);
   AddAttribute(fnsAttributeAttri);
@@ -381,7 +387,7 @@ begin
   if (fLine[Run] = '!') then
   begin
     if NextTokenIs('--') then begin
-      fTokenID := tkSymbol;
+      fTokenID := tkCommentSym;
       fRange := rsComment;
       StartXmlCodeFoldBlock(cfbtXmlComment);
       Inc(Run, 3);
@@ -427,7 +433,7 @@ begin
   if (fLine[Run] = '-') and (fLine[Run + 1] = '-') and
      (fLine[Run + 2] = '>')
   then begin
-    fTokenID := tkSymbol;
+    fTokenID := tkCommentSym;
     fRange:= rsText;
     Inc(Run, 3);
     if TopXmlCodeFoldBlockType = cfbtXmlComment then
@@ -896,6 +902,7 @@ begin
     tknsAposEntityRef: Result:= fEntityRefAttri;
     tkProcessingInstruction: Result:= fProcessingInstructionAttri;
     tkComment: Result:= fCommentAttri;
+    tkCommentSym: Result:= fCommentSymbolAttri;
     tkDocType: Result:= fDocTypeAttri;
     tkSymbol: Result:= fSymbolAttri;
     tkSpace: Result:= fSpaceAttri;
