@@ -3441,6 +3441,17 @@ begin
   CheckTokensForLine('else foo;',  9, [tkKey, tkSpace, tkIdentifier, TK_Semi]);
   CheckTokensForLine('end;',  10, [tkKey, TK_Semi]);
 
+  PasHighLighter.CustomTokenCount := 1;
+  PasHighLighter.CustomTokens[0].Markup.Foreground := 999;
+  PasHighLighter.CustomTokens[0].MatchTokenKinds := [tkString];
+  PasHighLighter.CustomTokens[0].Tokens.Add('''');
+  CheckTokensForLine('''123'': foo;',  7,
+    // 3 times string, one extra for each matchesd '
+    [tkString+FCaseLabelAttri,tkString+FCaseLabelAttri,tkString+FCaseLabelAttri,
+     TK_Colon, tkSpace, tkIdentifier, TK_Semi]);
+
+
+  PasHighLighter.CustomTokenCount := 0;
 
   FCaseLabelAttri.Clear;
   FCaseLabelAttri := nil;
