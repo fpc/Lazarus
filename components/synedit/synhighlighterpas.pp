@@ -5435,8 +5435,11 @@ begin
         DirectiveProc
       else if (rsSlash in fRange) or FIsInSlash then
         SlashContinueProc
-      else if FInString then
-        StringProc
+      else if FInString then begin
+        StringProc;
+        if (rsAtCaseLabel in fRange) then
+          FTokenIsCaseLabel := True;
+      end
       else begin
         FNextTokenState := tsNone;
         OldNestLevel := PasCodeFoldRange.BracketNestLevel;
